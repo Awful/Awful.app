@@ -575,6 +575,7 @@
 		115A05DA134814B6004FDCE5 /* arrowright.png in Resources */ = {isa = PBXBuildFile; fileRef = 115A05D9134814B6004FDCE5 /* arrowright.png */; };
 		115A05DF13490D39004FDCE5 /* dotdotdot.png in Resources */ = {isa = PBXBuildFile; fileRef = 115A05DE13490D39004FDCE5 /* dotdotdot.png */; };
 		116B299F139C3E2400984955 /* libFlurry.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 116B299D139C3DD400984955 /* libFlurry.a */; };
+		116B29A1139C3F0600984955 /* README in Resources */ = {isa = PBXBuildFile; fileRef = 116B29A0139C3F0600984955 /* README */; };
 		11884DED1358D68700ADDA45 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 11884DEB1358D68700ADDA45 /* NSString+HTML.m */; };
 		11884DF01358D73000ADDA45 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 11884DEF1358D73000ADDA45 /* GTMNSString+HTML.m */; };
 		1D3623260D0F684500981E51 /* AwfulAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* AwfulAppDelegate.m */; };
@@ -1211,6 +1212,7 @@
 		115A05DE13490D39004FDCE5 /* dotdotdot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dotdotdot.png; path = images/dotdotdot.png; sourceTree = "<group>"; };
 		116B299B139C3D7200984955 /* FlurryAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlurryAPI.h; path = Classes/FlurryAPI.h; sourceTree = SOURCE_ROOT; };
 		116B299D139C3DD400984955 /* libFlurry.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry.a; sourceTree = "<group>"; };
+		116B29A0139C3F0600984955 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		11884DEA1358D68700ADDA45 /* NSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+HTML.h"; sourceTree = "<group>"; };
 		11884DEB1358D68700ADDA45 /* NSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+HTML.m"; sourceTree = "<group>"; };
 		11884DEE1358D73000ADDA45 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
@@ -2040,6 +2042,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				116B29A0139C3F0600984955 /* README */,
 				10E38BC212BEC0B3002DBA3F /* xibs */,
 				10F5BB2E124998B6006C5ED0 /* icon_57.png */,
 				10F5BC58124BE14D006C5ED0 /* icon_114.png */,
@@ -2631,6 +2634,7 @@
 				1109906A134B8C370013444C /* grayArrow.png in Resources */,
 				1109906B134B8C370013444C /* grayArrow@2x.png in Resources */,
 				11099079134BAC190013444C /* 37x-Checkmark.png in Resources */,
+				116B29A1139C3F0600984955 /* README in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
