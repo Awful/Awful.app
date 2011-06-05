@@ -1,0 +1,103 @@
+html {
+    margin:0px;
+    padding:0px;
+}
+
+body {
+    word-wrap:break-word;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size:15px;
+    margin:0px;
+    padding:0px;
+}
+
+img {
+    max-width:100%;
+}
+
+#userbox {
+    width:100%;
+    height:50px;
+    background-color:#006698;
+}
+
+#userbox_op {
+    width:100%;
+    height:50px;
+    background-color:#199ed7;
+}
+
+#avatar {
+    width:50px;
+    height:45px;
+    padding-left: 5px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+#name_date_box {
+    padding:7px;
+    color:white;
+    width:270px;
+}
+
+span.username {
+    font-weight:bold;
+}
+
+span.username_op {
+    font-weight:bold;
+}
+
+span.post_date {
+    font-size:0.75em;
+}
+
+img.avatar {
+    max-height:45px;
+    max-width:45px;
+}
+
+div.postbody {
+    margin:5px;
+    padding-bottom:10px;
+}
+
+div.complete_shit {
+    margin:5px;
+    padding-bottom:10px;
+}
+
+.altcolor1 {
+    background-color:#f4f4f4;
+}
+.altcolor2 {
+    background-color:#e8e8e8;
+}
+
+.seen1 { background-color:#dbe8f5; }
+.seen2 { background-color:#e7eff5; }
+
+hr {
+    margin:0px;
+}
+
+p.editedby {
+    font-size:0.5em;
+    font-style:italic;
+}
+
+.bbc-block, .bbc-block h5 { border-bottom:1px #999 solid;}
+.bbc-block h4, .bbc-block h5 { display:block; color:#555; margin:0; padding:0; }
+.bbc-block h4 { padding:1px 0 2px 0; border-top:1px #999 solid; font-size:13px; font-style:italic; }
+.bbc-block h5 { font-size:12px; }
+.bbc-block blockquote {font-size:12px; padding:5px; margin:0px;}
+
+blockquote img {
+    max-width:160px;
+    max-height:100px;
+}
+
+.bbc-spoiler, .bbc-spoiler li { background:#000; }
+.bbc-spoiler a:link, .bbc-spoiler a:visited, .bbc-spoiler a:active, .bbc-spoiler a:link { color:#000; }
+.bbc-spoiler:hover a:link, .bbc-spoiler:hover a:visited, .bbc-spoiler:hover a:active, .bbc-spoiler:hover a:link { color:#80c0ff; }
