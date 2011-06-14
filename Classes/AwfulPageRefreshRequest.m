@@ -9,6 +9,7 @@
 #import "AwfulPageRefreshRequest.h"
 #import "AwfulParse.h"
 #import "AwfulNavController.h"
+#import "AwfulPageCount.h"
 
 @implementation AwfulPageRefreshRequest
 
@@ -40,20 +41,20 @@
     TFHpple *page_data = [[TFHpple alloc] initWithHTMLData:converted];
     [raw_s release];
     
-    if(page.thread.threadTitle == nil) {
+    if(page.thread.title == nil) {
         TFHppleElement *thread_title = [page_data searchForSingle:@"//a[@class='bclast']"];
         if(thread_title != nil) {
             [page setThreadTitle:[thread_title content]];
         }
     }
     
-    if(page.thread.forumTitle == nil) {
+    if(page.thread.forum.name == nil) {
         NSArray *breadcrumb_strings = [page_data rawSearch:@"//div[@class='breadcrumbs']"];
         if([breadcrumb_strings count] > 0) {
             NSString *bread = [breadcrumb_strings objectAtIndex:0];
             NSRange bread_range = [bread rangeOfString:@"FYAD"];
             if(bread_range.location != NSNotFound) {
-                page.thread.forumTitle = @"FYAD";
+                page.thread.forum.name = @"FYAD";
             }
         }
     }
@@ -65,11 +66,11 @@
     }
     [pool drain];
     
-    PageManager *pager = [AwfulParse newPageManager:page_data];
+    AwfulPageCount *pager = [AwfulParse newPageCount:page_data];
     [page setPages:pager];
     [pager release];
     
-    BOOL fyad = [page.thread.forumTitle isEqualToString:@"FYAD"];
+    BOOL fyad = [page.thread.forum.name isEqualToString:@"FYAD"];
     NSMutableArray *parsed_posts = [AwfulParse newPostsFromThread:page_data isFYAD:fyad];
 
     [page acceptPosts:parsed_posts];

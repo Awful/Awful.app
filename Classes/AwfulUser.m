@@ -13,18 +13,18 @@
 
 @implementation AwfulUser
 
-@synthesize userName, postsPerPage;
+@synthesize userName = _userName;
+@synthesize postsPerPage = _postsPerPage;
 
 -(id)init
 {
-    userName = nil;
-    postsPerPage = 40;
+    _postsPerPage = 40;
     return self;
 }
 
 -(void)dealloc
 {
-    [userName release];
+    [_userName release];
     [super dealloc];
 }
 
@@ -35,7 +35,7 @@
     if([[NSFileManager defaultManager] fileExistsAtPath:path]) {
         NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:path];
         [self setUserName:[dict objectForKey:@"userName"]];
-        postsPerPage = [[dict objectForKey:@"postsPerPage"] intValue];
+        self.postsPerPage = [[dict objectForKey:@"postsPerPage"] intValue];
         //NSLog(@"Already Loaded: %@ %d", userName, postsPerPage);
     } else {
         AwfulUserNameRequest *name_req = [[AwfulUserNameRequest alloc] initWithAwfulUser:self];
@@ -52,16 +52,16 @@
 
 -(void)setUserName:(NSString *)user_name
 {
-    if(user_name != userName) {
-        [userName release];
-        userName = [user_name retain];
+    if(user_name != _userName) {
+        [_userName release];
+        _userName = [user_name retain];
         [self saveUser];
     }
 }
 
 -(void)setPostsPerPage:(int)in_posts
 {
-    postsPerPage = in_posts;
+    _postsPerPage = in_posts;
     [self saveUser];
 }
 
@@ -81,14 +81,12 @@
 
 -(void)saveUser
 {
-    if(userName == nil) {
+    if(self.userName == nil) {
         return;
     }
     
-    //NSLog(@"%@ %d", userName, postsPerPage);
-    
-    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:userName, @"userName", 
-        [NSNumber numberWithInt:postsPerPage], @"postsPerPage", nil];
+    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:self.userName, @"userName", 
+        [NSNumber numberWithInt:self.postsPerPage], @"postsPerPage", nil];
     [dict writeToFile:[self getPath] atomically:YES];
 }
 

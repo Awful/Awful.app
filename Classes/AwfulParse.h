@@ -6,14 +6,17 @@
 //  Copyright 2010 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulPost.h"
-#import "TFHpple.h"
+#import <Foundation/Foundation.h>
+
+@class AwfulPageCount;
+@class AwfulPost;
+@class TFHpple;
 
 @interface AwfulParse : NSObject {
 
 }
 
-+(NSString *)constructPostHTML : (AwfulPost *)post alt : (NSString *)alt;
++(NSString *)constructPostHTML : (AwfulPost *)post withBody : (NSString *)post_body alt : (NSString *)alt;
 
 +(NSMutableArray *)newPostsFromThread : (TFHpple *)hpple isFYAD : (BOOL)is_fyad;
 
@@ -23,7 +26,7 @@
 +(NSMutableArray *)newThreadsFromForum : (TFHpple *)hpple;
 +(NSString *)getAdHTMLFromData : (TFHpple *)hpple;
 
-+(PageManager *)newPageManager : (TFHpple *)hpple;
++(AwfulPageCount *)newPageCount : (TFHpple *)hpple;
 +(int)getNewPostNumFromURL : (NSURL *)url;
 
 @end

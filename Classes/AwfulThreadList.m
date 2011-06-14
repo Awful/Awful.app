@@ -15,7 +15,7 @@
 #import "AwfulParse.h"
 #import "AwfulForumRefreshRequest.h"
 #import "AwfulConfig.h"
-#import "AwfulHistory.h"
+#import "AwfulPageCount.h"
 
 #define CELL_UNREAD_POSTS 1
 #define CELL_THREAD_TITLE 2
@@ -49,8 +49,8 @@
     if ((self = [super initWithStyle:UITableViewStylePlain])) {
         awfulThreads = [[NSMutableArray alloc] init];
         
-        pages = [[PageManager alloc] init];
-        pages.current = page_num;
+        pages = [[AwfulPageCount alloc] init];
+        pages.currentPage = page_num;
         
         swipedRow = -1;
         
@@ -76,7 +76,7 @@
 -(id)initWithAwfulForum : (AwfulForum *)in_forum atPageNum : (int)page_num
 {
     forum = [in_forum retain];
-    self = [self initWithString:forum.forumName atPageNum:page_num];
+    self = [self initWithString:forum.name atPageNum:page_num];
     return self;
 }
 
@@ -130,7 +130,7 @@
     
     UILabel *page_label = [[UILabel alloc] initWithFrame:CGRectMake(275, 0, 40, 45)];
     page_label.font = [UIFont fontWithName:@"Helvetica" size:12.0];
-    page_label.text = [NSString stringWithFormat:@"pg: %d", pages.current];
+    page_label.text = [NSString stringWithFormat:@"pg: %d", pages.currentPage];
     page_label.numberOfLines = 2;
     page_label.textAlignment = UITextAlignmentCenter;
     page_label.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
@@ -197,20 +197,20 @@
 
 -(void)choseForumOption : (int)option
 {
-    if(option == 0 && pages.current > 1) {
+    if(option == 0 && pages.currentPage > 1) {
         [self prevPage];
-    } else if(option == 0 && pages.current == 1) {
+    } else if(option == 0 && pages.currentPage == 1) {
         [self nextPage];
-    } else if(option == 1 && pages.current > 1) {
+    } else if(option == 1 && pages.currentPage > 1) {
         [self nextPage];
     }
 }
 
 -(void)prevPage
 {
-    if(pages.current > 1) {
+    if(pages.currentPage > 1) {
         AwfulNavController *nav = getnav();
-        AwfulThreadList *prev_list = [[AwfulThreadList alloc] initWithAwfulForum:forum atPageNum:pages.current-1];
+        AwfulThreadList *prev_list = [[AwfulThreadList alloc] initWithAwfulForum:forum atPageNum:pages.currentPage-1];
         [nav loadForum:prev_list];
         [prev_list release];
     }
@@ -219,7 +219,7 @@
 -(void)nextPage
 {
     AwfulNavController *nav = getnav();
-    AwfulThreadList *next_list = [[AwfulThreadList alloc] initWithAwfulForum:forum atPageNum:pages.current+1];
+    AwfulThreadList *next_list = [[AwfulThreadList alloc] initWithAwfulForum:forum atPageNum:pages.currentPage+1];
     [nav loadForum:next_list];
     [next_list release];
 }
@@ -231,7 +231,7 @@
 
 -(NSString *)getURLSuffix
 {
-    return [NSString stringWithFormat:@"forumdisplay.php?forumid=%@&pagenumber=%d", forum.forumID, pages.current];
+    return [NSString stringWithFormat:@"forumdisplay.php?forumid=%@&pagenumber=%d", forum.forumID, pages.currentPage];
 }
 
 -(void)loadList
@@ -287,7 +287,7 @@
     awfulThreads = [in_threads retain];
     
     float offwhite = 241.0/255;
-    if([[forum forumName] isEqualToString:@"FYAD"]) {
+    if([[forum name] isEqualToString:@"FYAD"]) {
         self.tableView.backgroundColor = [UIColor colorWithRed:1.0 green:204.0/255 blue:204.0/255 alpha:1.0];
     } else {
         self.tableView.backgroundColor = [UIColor colorWithRed:offwhite green:offwhite blue:offwhite alpha:1.0];
@@ -306,7 +306,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    if([[forum forumName] isEqualToString:@"FYAD"]) {
+    if([[forum name] isEqualToString:@"FYAD"]) {
         self.tableView.separatorColor = [UIColor colorWithRed:0.0 green:51.0/255 blue:51.0/255 alpha:1.0];
     } else {
         self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
@@ -450,15 +450,15 @@
     float offwhite = 241.0/255;
     UIColor *back_color = [UIColor colorWithRed:offwhite green:offwhite blue:offwhite alpha:1.0];
     
-    if([[forum forumName] isEqualToString:@"FYAD"]) {
+    if([[forum name] isEqualToString:@"FYAD"]) {
         back_color = [UIColor colorWithRed:255.0/255 green:204.0/255 blue:255.0/255 alpha:1.0];
-    } else if(thread.category == 0) {
+    } else if(thread.starCategory == AwfulStarCategoryBlue) {
         back_color = [UIColor colorWithRed:219.0/255 green:232.0/255 blue:245.0/255 alpha:1.0];
-    } else if(thread.category == 1) {
+    } else if(thread.starCategory == AwfulStarCategoryRed) {
         back_color = [UIColor colorWithRed:242.0/255 green:220.0/255 blue:220.0/255 alpha:1.0];
-    } else if(thread.category == 2) {
+    } else if(thread.starCategory == AwfulStarCategoryYellow) {
         back_color = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:220.0/255 alpha:1.0];
-    } else if(thread.alreadyRead) {
+    } else if(thread.seen) {
         back_color = [UIColor colorWithRed:219.0/255 green:232.0/255 blue:245.0/255 alpha:1.0];
     }
     
@@ -551,9 +551,9 @@
     }
     
     if(type == PAGE_NAV_CELL) {
-        cell.textLabel.text = [NSString stringWithFormat:@"Page %d", pages.current];
+        cell.textLabel.text = [NSString stringWithFormat:@"Page %d", pages.currentPage];
         [nextPageButton removeFromSuperview];
-        if(pages.current > 1) {
+        if(pages.currentPage > 1) {
             [cell addSubview:prevPageButton];
         } else {
             [prevPageButton removeFromSuperview];
@@ -585,10 +585,10 @@
         int total_pages = ((thread.totalReplies-1)/getPostsPerPage()) + 1;
         pages_label.text = [NSString stringWithFormat:@"Pages: %d", total_pages];
         
-        NSString *unread_str = [NSString stringWithFormat:@"%d", thread.numUnreadPosts];
+        NSString *unread_str = [NSString stringWithFormat:@"%d", thread.totalUnreadPosts];
         [unread setTitle:unread_str forState:UIControlStateNormal];
         
-        title_label.text = thread.threadTitle;
+        title_label.text = thread.title;
         
         
         // visibility of labels
@@ -600,9 +600,9 @@
             pages_label.hidden = NO;
         }
         
-        if(thread.numUnreadPosts == -1) {
+        if(thread.totalUnreadPosts == -1) {
             unread.hidden = YES;
-        } else if(thread.numUnreadPosts == 0) {
+        } else if(thread.totalUnreadPosts == 0) {
             [unread setTitle:@"0" forState:UIControlStateNormal];
             unread.alpha = 0.5;
         } else {
@@ -611,11 +611,11 @@
         
         // size and positioning of labels
         float title_width = getWidth() - 100;
-        if(thread.numUnreadPosts == -1) {
+        if(thread.totalUnreadPosts == -1) {
             title_width = getWidth() - 40;
         }
         
-        CGSize title_size = [thread.threadTitle sizeWithFont:[AwfulConfig getCellTitleFont] constrainedToSize:CGSizeMake(title_width, 60)];
+        CGSize title_size = [thread.title sizeWithFont:[AwfulConfig getCellTitleFont] constrainedToSize:CGSizeMake(title_width, 60)];
         title_label.frame = CGRectMake(20, 0, title_width, 60);
         
         CGSize unread_size = [unread_str sizeWithFont:[AwfulConfig getCellUnreadFont]];
@@ -754,9 +754,9 @@
         
         if(thread.threadID != nil) {
             int start = THREAD_POS_NEWPOST;
-            if(thread.numUnreadPosts == -1) {
+            if(thread.totalUnreadPosts == -1) {
                 start = THREAD_POS_FIRST;
-            } else if(thread.numUnreadPosts == 0) {
+            } else if(thread.totalUnreadPosts == 0) {
                 start = THREAD_POS_LAST;
                 // if the last page is full, it won't work if you go for &goto=newpost
                 // therefore I'm setting it to last page here
@@ -848,7 +848,7 @@
 -(id)newRecordedHistory
 {
     AwfulHistory *hist = [[AwfulHistory alloc] init];
-    hist.pageNum = pages.current;
+    hist.pageNum = pages.currentPage;
     hist.modelObj = forum;
     hist.historyType = AWFUL_HISTORY_THREADLIST;
     return hist;

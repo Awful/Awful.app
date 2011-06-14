@@ -21,6 +21,7 @@
 #import "AwfulPageNavController.h"
 #import "AwfulEditRequest.h"
 #import "Appirater.h"
+#import "AwfulPageCount.h"
 #import "AwfulConfig.h"
 
 #define TITLE_BAR 0
@@ -126,7 +127,7 @@ float getMinHeight()
         UILabel *thread_title_label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 230, 45)];
         thread_title_label.font = f;
         thread_title_label.numberOfLines = 3;
-        thread_title_label.text = thread.threadTitle;
+        thread_title_label.text = thread.title;
         thread_title_label.textAlignment = UITextAlignmentCenter;
         thread_title_label.textColor = [UIColor whiteColor];
         thread_title_label.backgroundColor = [UIColor clearColor];
@@ -196,7 +197,7 @@ float getMinHeight()
     if(pages == nil) {
         return currentURL;
     }
-    return [NSString stringWithFormat:@"showthread.php?threadid=%@&pagenumber=%d", thread.threadID, pages.current];
+    return [NSString stringWithFormat:@"showthread.php?threadid=%@&pagenumber=%d", thread.threadID, pages.currentPage];
 }
 
 -(void)makeButtons
@@ -224,14 +225,14 @@ float getMinHeight()
     [prevPageButton addTarget:self action:@selector(prevPage) forControlEvents:UIControlEventTouchUpInside];
 }
 
--(void)setPages:(PageManager *)in_page
+-(void)setPages:(AwfulPageCount *)in_page
 {
     if(in_page != pages) {
         [pages release];
         pages = [in_page retain];
         UILabel *page_label = (UILabel *)[titleBar viewWithTag:PAGE_TAG];
-        page_label.text = [NSString stringWithFormat:@"pg %d of %d", pages.current, pages.total];
-        [self.pageHistory setPageNum:pages.current];
+        page_label.text = [NSString stringWithFormat:@"pg %d of %d", pages.currentPage, pages.totalPages];
+        [self.pageHistory setPageNum:pages.currentPage];
     }
 }
 
@@ -283,7 +284,7 @@ float getMinHeight()
 {
     UILabel *lab = (UILabel *)[titleBar viewWithTag:THREAD_TITLE_LABEL];
     lab.text = in_title;
-    [thread setThreadTitle:in_title];
+    [thread setTitle:in_title];
 }
 
 -(void)swapToView : (UIView *)v
@@ -346,7 +347,7 @@ float getMinHeight()
 {
     [self stopLoading];
     
-    bottomAllowed = (pages.current == pages.total);
+    bottomAllowed = (pages.currentPage == pages.totalPages);
     
     int post_count_diff = [posts count] - [self.allRawPosts count];
     
@@ -367,7 +368,7 @@ float getMinHeight()
             [self.unreadPosts addObject:post];
             UIWebView *web = [self newWebViewFromAwfulPost:post];
             [self.renderedPosts addObject:web];
-            [web loadHTMLString:post.content baseURL:[NSURL URLWithString:@""]];
+            [web loadHTMLString:post.formattedHTML baseURL:[NSURL URLWithString:@""]];
             [web release];
         }
         return;
@@ -411,7 +412,7 @@ float getMinHeight()
     for(AwfulPost *post in self.unreadPosts) {
         UIWebView *web = [self newWebViewFromAwfulPost:post];
         [self.renderedPosts addObject:web];
-        [web loadHTMLString:post.content baseURL:[NSURL URLWithString:@""]];
+        [web loadHTMLString:post.formattedHTML baseURL:[NSURL URLWithString:@""]];
         [web release];
     }
 }
@@ -560,8 +561,8 @@ float getMinHeight()
 
 -(void)nextPage
 {
-    if(pages.current < pages.total) {
-        AwfulPage *next_page = [[AwfulPage alloc] initWithAwfulThread:thread startAt:THREAD_POS_SPECIFIC pageNum:pages.current+1];
+    if(pages.currentPage < pages.totalPages) {
+        AwfulPage *next_page = [[AwfulPage alloc] initWithAwfulThread:thread startAt:THREAD_POS_SPECIFIC pageNum:pages.currentPage+1];
         AwfulNavController *nav = getnav();
         [nav loadPage:next_page];
         [next_page release];
@@ -570,8 +571,8 @@ float getMinHeight()
 
 -(void)prevPage
 {
-    if(pages.current > 1) {
-        AwfulPage *prev_page = [[AwfulPage alloc] initWithAwfulThread:thread startAt:THREAD_POS_SPECIFIC pageNum:pages.current-1];
+    if(pages.currentPage > 1) {
+        AwfulPage *prev_page = [[AwfulPage alloc] initWithAwfulThread:thread startAt:THREAD_POS_SPECIFIC pageNum:pages.currentPage-1];
         AwfulNavController *nav = getnav();
         [nav loadPage:prev_page];
         [prev_page release];
@@ -615,7 +616,7 @@ float getMinHeight()
         if(post_index != NSNotFound && post_index < [self.unreadPosts count]) {
             if(post_index < [self.unreadPosts count])  {
                 AwfulPost *post = [self.unreadPosts objectAtIndex:post_index];
-                if([post.avatar isEqualToString:src]) {
+                if([[post.avatarURL absoluteString] isEqualToString:src]) {
                     proceed = NO;
                 }
             }
@@ -655,8 +656,8 @@ float getMinHeight()
         [html release];
         
     } else if(actual_option == 3) {
-        if(highlightedPost.seenLink != nil) {
-            NSURL *seen_url = [NSURL URLWithString:[@"http://forums.somethingawful.com/" stringByAppendingString:highlightedPost.seenLink]];
+        if(highlightedPost.markSeenLink != nil) {
+            NSURL *seen_url = [NSURL URLWithString:[@"http://forums.somethingawful.com/" stringByAppendingString:highlightedPost.markSeenLink]];
             ASIHTTPRequest *seen_req = [ASIHTTPRequest requestWithURL:seen_url];
             seen_req.userInfo = [NSDictionary dictionaryWithObjectsAndKeys:@"Marked up to there.", @"completionMsg", nil];
             [nav loadRequestAndWait:seen_req];
@@ -747,7 +748,7 @@ float getMinHeight()
             AwfulPost *post = [self.unreadPosts objectAtIndex:index];
             if(web != nil) {
                 web.frame = CGRectMake(CGRectGetMinX(web.frame), CGRectGetMinY(web.frame), getWidth(), 100);
-                [web loadHTMLString:post.content baseURL:[NSURL URLWithString:@""]];
+                [web loadHTMLString:post.formattedHTML baseURL:[NSURL URLWithString:@""]];
             }
         }
     }
@@ -862,12 +863,12 @@ float getMinHeight()
     
     if([self.renderedPosts count] > 0) {
         // X pages left at bottom
-        if(pages.current < pages.total) {
+        if(pages.currentPage < pages.totalPages) {
             rows++;
         }
         
         // display too short, pull to refresh gets broken
-        if(pages.current == pages.total && totalFinished > 0) {
+        if(pages.currentPage == pages.totalPages && totalFinished > 0) {
             CGSize size = [self.tableView contentSize];
             if(size.height < self.tableView.frame.size.height) {
                 //rows++;
@@ -913,7 +914,7 @@ float getMinHeight()
     }
     
     // single post on page weirdness with pull to refresh
-    if(pages.current == pages.total && type == ITS_A_POST_YOU_IDIOT && web == [self.renderedPosts lastObject]) {        
+    if(pages.currentPage == pages.totalPages && type == ITS_A_POST_YOU_IDIOT && web == [self.renderedPosts lastObject]) {        
         float web_height = 45;
         for(UIWebView *web in self.renderedPosts) {
             web_height += web.frame.size.height;
@@ -993,12 +994,12 @@ float getMinHeight()
         }
         
     } else if([cell_ident isEqualToString:page_info_ident]) {
-        if(pages.current == pages.total) {
+        if(pages.currentPage == pages.totalPages) {
             cell.textLabel.text = @"";
-        } else if(pages.current == pages.total - 1) {
+        } else if(pages.currentPage == pages.totalPages - 1) {
             cell.textLabel.text = @"1 page left.";
          } else {
-            cell.textLabel.text = [NSString stringWithFormat:@"%d pages left.", pages.total-pages.current];
+            cell.textLabel.text = [NSString stringWithFormat:@"%d pages left.", pages.totalPages-pages.currentPage];
         }
         
         /*[prevPageButton removeFromSuperview];
@@ -1179,7 +1180,7 @@ float getMinHeight()
             AwfulPost *post = [self.allRawPosts objectAtIndex:i];
             if(i < [self.renderedPosts count]) {
                 UIWebView *web = [self.renderedPosts objectAtIndex:i];
-                [web loadHTMLString:post.content baseURL:[NSURL URLWithString:@""]];
+                [web loadHTMLString:post.formattedHTML baseURL:[NSURL URLWithString:@""]];
             }
         }
     }
@@ -1207,7 +1208,7 @@ float getMinHeight()
 -(id)newRecordedHistory
 {
     AwfulHistory *hist = [[AwfulHistory alloc] init];
-    hist.pageNum = pages.current;
+    hist.pageNum = pages.currentPage;
     hist.modelObj = thread;
     hist.historyType = AWFUL_HISTORY_PAGE;
     [self setRecorder:hist];

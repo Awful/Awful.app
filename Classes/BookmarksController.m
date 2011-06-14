@@ -18,6 +18,7 @@
 #import "Stylin.h"
 #import "ASIFormDataRequest.h"
 #import "AwfulConfig.h"
+#import "AwfulPageCount.h"
 
 @implementation BookmarksController
 
@@ -133,10 +134,10 @@
 
 -(void)prevPage
 {
-    if(pages.current > 1) {
+    if(pages.currentPage > 1) {
         [awfulThreads removeAllObjects];
         [self.tableView reloadData];
-        pages.current--;
+        pages.currentPage--;
         [self refresh];
     }
 }
@@ -145,7 +146,7 @@
 {
     [awfulThreads removeAllObjects];
     [self.tableView reloadData];
-    pages.current++;
+    pages.currentPage++;
     [self refresh];
 }
 
@@ -180,7 +181,7 @@
 
 -(NSString *)getURLSuffix
 {
-    return [NSString stringWithFormat:@"bookmarkthreads.php?pagenumber=%d", pages.current];
+    return [NSString stringWithFormat:@"bookmarkthreads.php?pagenumber=%d", pages.currentPage];
 }
 
 -(BOOL)isTitleBarInTable
@@ -206,7 +207,7 @@
     int total = [awfulThreads count];
     
     // bottom page-nav cell
-    if(pages.current > 1 || ([awfulThreads count] > 0)) {
+    if(pages.currentPage > 1 || ([awfulThreads count] > 0)) {
         total++;
     }
     

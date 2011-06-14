@@ -6,42 +6,57 @@
 //  Copyright 2010 Regular Berry Software LLC. All rights reserved.
 //
 
-enum {
-    RATED_SHIT,
-    RATED_NOTHING,
-    RATED_GOLD
-};
+@class AwfulForum;
+
+typedef enum {
+    AwfulThreadRatingZero = 0,
+    AwfulThreadRatingOne,
+    AwfulThreadRatingTwo,
+    AwfulThreadRatingThree,
+    AwfulThreadRatingFour,
+    AwfulThreadRatingFive,
+    AwfulThreadRatingUnknown
+} AwfulThreadRating;
+
+#define AwfulThreadRatingIsGold(rating) ((rating) == AwfulThreadRatingFour || (rating) == AwfulThreadRatingFive)
+#define AwfulThreadRatingIsShit(rating) ((rating) == AwfulThreadRatingZero || (rating) == AwfulThreadRatingOne || (rating) == AwfulThreadRatingTwo)
+
+typedef enum {
+    AwfulStarCategoryBlue = 0,
+    AwfulStarCategoryRed,
+    AwfulStarCategoryYellow,
+    AwfulStarCategoryNone
+} AwfulStarCategory;
 
 @interface AwfulThread : NSObject <NSCoding> {
-    NSString *forumTitle;
-    NSString *threadTitle;
-    NSString *threadID;
-    int numUnreadPosts;
-    int threadRating;
-    int totalReplies;
-    BOOL alreadyRead;
-    NSString *threadIcon;
-    NSString *threadAuthor;
-    NSString *killedBy;
-    BOOL isStickied;
-    BOOL isLocked;
-    int category;
+    NSString *_threadID;
+    NSString *_title;
+    int _totalUnreadPosts;
+    int _totalReplies;
+    AwfulThreadRating _threadRating;
+    AwfulStarCategory _starCategory;
+    NSURL *_iconURL;
+    NSString *_authorName;
+    NSString *_lastPostAuthorName;
+    BOOL _seen;
+    BOOL _isStickied;
+    BOOL _isLocked;
+    
+    AwfulForum *_forum;
 }
 
-@property (nonatomic, retain) NSString *forumTitle;
-@property (nonatomic, retain) NSString *threadTitle;
 @property (nonatomic, retain) NSString *threadID;
-@property int numUnreadPosts;
-@property int threadRating;
+@property (nonatomic, retain) NSString *title;
+@property int totalUnreadPosts;
 @property int totalReplies;
-@property BOOL alreadyRead;
-@property (nonatomic, retain) NSString *threadIcon;
-@property (nonatomic, retain) NSString *threadAuthor;
-@property (nonatomic, retain) NSString *killedBy;
+@property AwfulThreadRating threadRating;
+@property AwfulStarCategory starCategory;
+@property (nonatomic, retain) NSURL *iconURL;
+@property (nonatomic, retain) NSString *authorName;
+@property (nonatomic, retain) NSString *lastPostAuthorName;
+@property BOOL seen;
 @property BOOL isStickied;
 @property BOOL isLocked;
-@property int category;
-
--(NSString *)getThreadTagHTML;
+@property (nonatomic, retain) AwfulForum *forum;
 
 @end

@@ -10,8 +10,9 @@
 #import "AwfulForum.h"
 #import "AwfulPost.h"
 #import "AwfulPage.h"
+#import "AwfulHistory.h"
 
-@protocol AwfulHistoryRecorder;
+@class AwfulPageCount;
 
 @interface AwfulThreadList : UITableViewController <AwfulHistoryRecorder> {
     NSMutableArray *awfulThreads;
@@ -22,7 +23,7 @@
     UIButton *refreshButton;
     UIButton *stopButton;
     
-    PageManager *pages;
+    AwfulPageCount *pages;
     
     UIButton *firstPageButton;
     UIButton *lastPageButton;
@@ -32,7 +33,7 @@
 }
 
 @property (nonatomic, retain) AwfulForum *forum;
-@property (nonatomic, retain) PageManager *pages;
+@property (nonatomic, retain) AwfulPageCount *pages;
 @property (nonatomic, retain) NSMutableArray *awfulThreads;
 
 -(id)initWithString : (NSString *)str atPageNum : (int)page_num;

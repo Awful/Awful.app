@@ -21,6 +21,8 @@ enum {
     THREAD_POS_SPECIFIC
 };
 
+@class AwfulPageCount;
+
 #define MIN_PORTRAIT_HEIGHT 75
 #define MIN_LANDSCAPE_HEIGHT 75
 #define TOUCH_POST 1
@@ -38,7 +40,7 @@ enum {
     NSMutableArray *_readPosts;
     NSMutableArray *_unreadPosts;
   
-    PageManager *pages; 
+    AwfulPageCount *pages; 
     AwfulHistory *pageHistory;
     
     AwfulPost *highlightedPost;
@@ -63,7 +65,7 @@ enum {
 }
 
 @property (nonatomic, retain) AwfulThread *thread;
-@property (nonatomic, retain) PageManager *pages;
+@property (nonatomic, retain) AwfulPageCount *pages;
 @property (nonatomic, retain) AwfulHistory *pageHistory;
 @property (nonatomic, retain) NSString *currentURL;
 @property (nonatomic, retain) UIWebView *ad;

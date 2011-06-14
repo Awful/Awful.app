@@ -6,16 +6,20 @@
 //  Copyright 2010 Regular Berry Software LLC. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
 
+@class AwfulForum;
 
 @interface AwfulForum : NSObject <NSCoding> {
-    NSString *forumName;
-    NSString *forumID;
+    NSString *_forumID;
+    NSString *_name;
+    NSString *_parentForumID;
+    NSString *_acronym;
 }
 
-@property (nonatomic, retain) NSString *forumName;
 @property (nonatomic, retain) NSString *forumID;
-
--(id)initWithName : (NSString *)name forumid : (NSString *)forumid;
+@property (nonatomic, retain) NSString *name;
+@property (nonatomic, retain) NSString *parentForumID;
+@property (nonatomic, retain) NSString *acronym;
 
 @end

@@ -19,6 +19,7 @@
 #import "AwfulHistory.h"
 #import "MWPhoto.h"
 #import "MWPhotoBrowser.h"
+#import "AwfulPageCount.h"
 
 @implementation AwfulNavController
 
@@ -515,7 +516,7 @@
 {
     [vote setThread:page.thread];
     
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"Vote: %@", page.thread.threadTitle] delegate:vote cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"Vote: %@", page.thread.title] delegate:vote cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
     [sheet addButtonWithTitle:@"5"];
     [sheet addButtonWithTitle:@"4"];
     [sheet addButtonWithTitle:@"3"];
@@ -531,10 +532,10 @@
 {
     AwfulThreadList *list = (AwfulThreadList *)[history lastObject];
     
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"Current Page %d", list.pages.current] delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"Current Page %d", list.pages.currentPage] delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
     
     int cancel = 1;
-    if(list.pages.current > 1) {
+    if(list.pages.currentPage > 1) {
         [sheet addButtonWithTitle:@"Previous Page"];
         cancel = 2;
     }
@@ -550,7 +551,7 @@
     if(!displayingPostOptions) {
         displayingPostOptions = YES;
         
-        UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"%@'s Post Options", p.userName] delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"%@'s Post Options", p.authorName] delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
         
         if(p.canEdit) {
             [sheet addButtonWithTitle:@"Edit"];
@@ -572,10 +573,10 @@
 -(void)showThreadOptions
 {
     AwfulPage *thread = (AwfulPage *)[history lastObject];
-    BOOL on_last_page = thread.pages.current < thread.pages.total;
+    BOOL on_last_page = thread.pages.currentPage < thread.pages.totalPages;
     int cancel_index = 4;
     
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"Thread Actions: Current Page %d/%d", thread.pages.current, thread.pages.total] delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"Thread Actions: Current Page %d/%d", thread.pages.currentPage, thread.pages.totalPages] delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
     
     [sheet addButtonWithTitle:@"Specific Page"];
     [sheet addButtonWithTitle:@"Vote"];

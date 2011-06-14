@@ -61,7 +61,9 @@
                 if([fid isEqualToString:@"177"]) {
                     forum_name = @"Punchsport Pagoda";
                 }
-                AwfulForum *f = [[AwfulForum alloc] initWithName:forum_name forumid:fid];
+                AwfulForum *f = [[AwfulForum alloc] init];
+                [f setName:forum_name];
+                [f setForumID:fid];
                 
                 if([forum_name isEqualToString:@"Comedy Goldmine"]) {
                     goldmine = f;
@@ -72,7 +74,9 @@
             }
             
             if([name isEqualToString:@"Games"]) {
-                AwfulForum *rift = [[AwfulForum alloc] initWithName:@"Rift: Goon Squad HQ" forumid:@"254"];
+                AwfulForum *rift = [[AwfulForum alloc] init];
+                [rift setName:@"Rift: Goon Squad HQ"];
+                [rift setForumID:@"254"];
                 [section_forums addObject:rift];
                 [rift release];
             }
@@ -344,7 +348,7 @@
         aw = goldmine;
     }
     
-    cell.textLabel.text = aw.forumName;
+    cell.textLabel.text = aw.name;
     [fav setTitle:aw.forumID forState:UIControlStateDisabled];
     
     return cell;

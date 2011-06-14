@@ -576,6 +576,7 @@
 		115A05DF13490D39004FDCE5 /* dotdotdot.png in Resources */ = {isa = PBXBuildFile; fileRef = 115A05DE13490D39004FDCE5 /* dotdotdot.png */; };
 		116B299F139C3E2400984955 /* libFlurry.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 116B299D139C3DD400984955 /* libFlurry.a */; };
 		116B29A1139C3F0600984955 /* README in Resources */ = {isa = PBXBuildFile; fileRef = 116B29A0139C3F0600984955 /* README */; };
+		1185087713A7FA6100FCACF8 /* AwfulPageCount.m in Sources */ = {isa = PBXBuildFile; fileRef = 1185087613A7FA6100FCACF8 /* AwfulPageCount.m */; };
 		11884DED1358D68700ADDA45 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 11884DEB1358D68700ADDA45 /* NSString+HTML.m */; };
 		11884DF01358D73000ADDA45 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 11884DEF1358D73000ADDA45 /* GTMNSString+HTML.m */; };
 		1D3623260D0F684500981E51 /* AwfulAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* AwfulAppDelegate.m */; };
@@ -1213,6 +1214,8 @@
 		116B299B139C3D7200984955 /* FlurryAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlurryAPI.h; path = Classes/FlurryAPI.h; sourceTree = SOURCE_ROOT; };
 		116B299D139C3DD400984955 /* libFlurry.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry.a; sourceTree = "<group>"; };
 		116B29A0139C3F0600984955 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
+		1185087513A7FA6100FCACF8 /* AwfulPageCount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPageCount.h; sourceTree = "<group>"; };
+		1185087613A7FA6100FCACF8 /* AwfulPageCount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPageCount.m; sourceTree = "<group>"; };
 		11884DEA1358D68700ADDA45 /* NSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+HTML.h"; sourceTree = "<group>"; };
 		11884DEB1358D68700ADDA45 /* NSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+HTML.m"; sourceTree = "<group>"; };
 		11884DEE1358D73000ADDA45 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
@@ -1302,6 +1305,8 @@
 				107CF9F511FF7E3C007C16F4 /* AwfulForum.m */,
 				10D494F41299B918008EF8C0 /* AwfulUser.h */,
 				10D494F51299B918008EF8C0 /* AwfulUser.m */,
+				1185087513A7FA6100FCACF8 /* AwfulPageCount.h */,
+				1185087613A7FA6100FCACF8 /* AwfulPageCount.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -2702,6 +2707,7 @@
 				11099077134BA6860013444C /* MBProgressHUD.m in Sources */,
 				11884DED1358D68700ADDA45 /* NSString+HTML.m in Sources */,
 				11884DF01358D73000ADDA45 /* GTMNSString+HTML.m in Sources */,
+				1185087713A7FA6100FCACF8 /* AwfulPageCount.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,82 +7,72 @@
 //
 
 #import "AwfulThread.h"
+#import "AwfulForum.h"
 #import "TFHpple.h"
 #import "XPathQuery.h"
 
 @implementation AwfulThread
 
-@synthesize threadTitle, threadID, numUnreadPosts, threadRating, threadIcon;
-@synthesize threadAuthor, forumTitle, totalReplies, alreadyRead, killedBy;
-@synthesize isLocked, isStickied, category;
+@synthesize threadID = _threadID;
+@synthesize title = _title;
+@synthesize totalUnreadPosts = _totalUnreadPosts;
+@synthesize totalReplies = _totalReplies;
+@synthesize threadRating = _threadRating;
+@synthesize starCategory = _starCategory;
+@synthesize iconURL = _iconURL;
+@synthesize authorName = _authorName;
+@synthesize lastPostAuthorName = _lastPostAuthorName;
+@synthesize seen = _seen;
+@synthesize isStickied = _isStickied;
+@synthesize isLocked = _isLocked;
+@synthesize forum = _forum;
 
 -(id)init
 {
-    threadID = nil;
-    threadTitle = nil;
-    numUnreadPosts = -1; // haven't read it
-    threadRating = RATED_NOTHING;
-    totalReplies = 0;
-    threadIcon = nil;
-    threadAuthor = nil;
-    alreadyRead = NO;
-    forumTitle = nil;
-    killedBy = nil;
-    isStickied = NO;
-    isLocked = NO;
-    category = -1;
+    _threadRating = AwfulThreadRatingUnknown;
+    _starCategory = AwfulStarCategoryNone;
+    _seen = NO;
+    _isStickied = NO;
+    _isLocked = NO;
+    
     return self;
 }
 
 -(void)dealloc
 {
-    [forumTitle release];
-    [threadID release];
-    [threadTitle release];
-    [threadIcon release];
-    [threadAuthor release];
-    [killedBy release];
+    [_threadID release];
+    [_title release];
+    [_iconURL release];
+    [_authorName release];
+    [_lastPostAuthorName release];
+    [_forum release];
     [super dealloc];
 }
 
--(void)encodeWithCoder:(NSCoder *)aCoder
+- (id)initWithCoder:(NSCoder *)decoder 
 {
-    [aCoder encodeObject:threadID forKey:@"threadID"];
-    [aCoder encodeObject:threadTitle forKey:@"threadTitle"];
-    [aCoder encodeInt:numUnreadPosts forKey:@"numUnreadPosts"];
-    [aCoder encodeInt:threadRating forKey:@"threadRating"];
-    [aCoder encodeInt:totalReplies forKey:@"totalReplies"];
-    [aCoder encodeBool:alreadyRead forKey:@"alreadyRead"];
-    [aCoder encodeInt:category forKey:@"category"];
+	if ((self=[super init])) {
+		self.threadID = [decoder decodeObjectForKey:@"threadID"];
+		self.title = [decoder decodeObjectForKey:@"title"];
+		self.iconURL = [decoder decodeObjectForKey:@"iconURL"];
+        self.authorName = [decoder decodeObjectForKey:@"authorName"];
+        self.lastPostAuthorName = [decoder decodeObjectForKey:@"lastPostAuthorName"];
+        
+        //NSString *forum_id = [decoder decodeObjectForKey:@"forumID"];
+        
+        // TODO grab forum from forum_id
+	}
+	return self;
 }
 
--(id)initWithCoder:(NSCoder *)aDecoder
-{
-    NSString *tid = [aDecoder decodeObjectForKey:@"threadID"];
-    NSString *tt =  [aDecoder decodeObjectForKey:@"threadTitle"];
-    int num = [aDecoder decodeIntForKey:@"numUnreadPosts"];
-    int rate = [aDecoder decodeIntForKey:@"threadRating"];
-    int rep = [aDecoder decodeIntForKey:@"totalReplies"];
-    BOOL already = [aDecoder decodeBoolForKey:@"alreadyRead"];
-    int cat = [aDecoder decodeIntForKey:@"category"];
+- (void)encodeWithCoder:(NSCoder *)encoder {
+	[encoder encodeObject:self.threadID forKey:@"threadID"];
+    [encoder encodeObject:self.title forKey:@"title"];
+    [encoder encodeObject:self.iconURL forKey:@"iconURL"];
+    [encoder encodeObject:self.authorName forKey:@"authorName"];
+    [encoder encodeObject:self.lastPostAuthorName forKey:@"lastPostAuthorName"];
     
-    self.threadID = tid;
-    self.threadTitle = tt;
-    self.numUnreadPosts = num;
-    self.threadRating = rate;
-    self.totalReplies = rep;
-    self.alreadyRead = already;
-    self.category = cat;
-    
-    return self;
-}
-
--(NSString *)getThreadTagHTML
-{
-    if([threadIcon isEqualToString:@""]) {
-        return @"";
-    }
-    return [NSString stringWithFormat:@"<html><head><style type='text/css'>html {margin:0px;padding0px;} body{margin:0px;padding0px;}</style></head><body><img width='36' height='9' src='%@'/></body></html>", threadIcon];
+    // TODO save forum id
 }
 
 @end

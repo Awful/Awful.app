@@ -8,36 +8,38 @@
 
 #import "AwfulForum.h"
 
-
 @implementation AwfulForum
 
-@synthesize forumName, forumID;
-
--(id)initWithName : (NSString *)name forumid : (NSString *)forumid
-{
-    forumName = [name retain];
-    forumID = [forumid retain];
-    return self;
-}
+@synthesize forumID = _forumID;
+@synthesize name = _name;
+@synthesize parentForumID = _parentForumID;
+@synthesize acronym = _acronym;
 
 -(void)dealloc
 {
-    [forumName release];
-    [forumID release];
+    [_forumID release];
+    [_name release];
+    [_parentForumID release];
+    [_acronym release];
     [super dealloc];
 }
 
-- (void)encodeWithCoder:(NSCoder *)coder
+- (id)initWithCoder:(NSCoder *)decoder 
 {
-    [coder encodeObject:forumName forKey:@"name"];
-    [coder encodeObject:forumID forKey:@"forum_id"];
+	if ((self=[super init])) {
+		self.forumID = [decoder decodeObjectForKey:@"forumID"];
+        self.name = [decoder decodeObjectForKey:@"name"];
+        self.parentForumID = [decoder decodeObjectForKey:@"parentForumID"];
+        self.acronym = [decoder decodeObjectForKey:@"acronym"];
+	}
+	return self;
 }
 
-- (id)initWithCoder:(NSCoder *)coder
-{
-    forumName = [[coder decodeObjectForKey:@"name"] retain];
-    forumID = [[coder decodeObjectForKey:@"forum_id"] retain];
-    return self;
+- (void)encodeWithCoder:(NSCoder *)encoder {
+	[encoder encodeObject:self.forumID forKey:@"forumID"];
+    [encoder encodeObject:self.name forKey:@"name"];
+    [encoder encodeObject:self.parentForumID forKey:@"parentForumID"];
+    [encoder encodeObject:self.acronym forKey:@"acronym"];
 }
 
 @end

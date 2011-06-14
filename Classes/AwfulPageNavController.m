@@ -8,6 +8,7 @@
 
 #import "AwfulPageNavController.h"
 #import "AwfulNavController.h"
+#import "AwfulPageCount.h"
 
 @implementation AwfulPageNavController
 
@@ -33,8 +34,8 @@
     
     [picker reloadAllComponents];
     if(page != nil) {
-        [picker selectRow:page.pages.current-1 inComponent:0 animated:NO];
-        pageLabel.text = [NSString stringWithFormat:@"Current Page: %d", page.pages.current];
+        [picker selectRow:page.pages.currentPage-1 inComponent:0 animated:NO];
+        pageLabel.text = [NSString stringWithFormat:@"Current Page: %d", page.pages.currentPage];
     }
 }
 
@@ -46,7 +47,7 @@
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
     if(page != nil) {
-        return page.pages.total;
+        return page.pages.totalPages;
     }
     return 0;
 }

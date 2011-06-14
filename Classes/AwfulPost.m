@@ -8,59 +8,37 @@
 
 #import "AwfulPost.h"
 
-@implementation PageManager
-
-@synthesize current, total;
-
--(id)init
-{
-    current = -1;
-    total = -1;
-    return self;
-}
-
-@end
-
-
 @implementation AwfulPost
 
-@synthesize postID, postDate, userName;
-@synthesize avatar, content, edited, userType;
-@synthesize byOP, rawContent, newest, seenLink;
-@synthesize postBody, isMod, isAdmin, isLoaded;
-@synthesize canEdit;
+@synthesize postID = _postID;
+@synthesize postDate = _postDate;
+@synthesize authorName = _authorName;
+@synthesize authorType = _authorType;
+@synthesize avatarURL = _avatarURL;
+@synthesize editedStr = _editedStr;
+@synthesize formattedHTML = _formattedHTML;
+@synthesize rawContent = _rawContent;
+@synthesize markSeenLink = _markSeenLink;
+@synthesize isOP = _isOP;
+@synthesize canEdit = _canEdit;
 
 -(id)init
 {
-    postID = nil;
-    postDate = nil;
-    userName = nil;
-    avatar = nil;
-    content = nil;
-    edited = nil;
-    userType = USER_TYPE_NORMAL;
-    rawContent = nil;
-    newest = NO;
-    seenLink = nil;
-    postBody = nil;
-    isMod = NO;
-    isAdmin = NO;
-    isLoaded = NO;
-    canEdit = NO;
+    _authorType = AwfulUserTypeNormal;
+    _isOP = NO;
+    _canEdit = NO;
     return self;
 }
 
 -(void)dealloc
 {
-    [postID release];
-    [postDate release];
-    [userName release];
-    [avatar release];
-    [content release];
-    [edited release];
-    [rawContent release];
-    [seenLink release];
-    [postBody release];
+    [_postID release];
+    [_postDate release];
+    [_authorName release];
+    [_editedStr release];
+    [_formattedHTML release];
+    [_rawContent release];
+    [_markSeenLink release];
     [super dealloc];
 }
 

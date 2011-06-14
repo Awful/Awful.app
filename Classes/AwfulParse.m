@@ -12,41 +12,44 @@
 #import "AwfulPage.h"
 #import "AwfulNavController.h"
 #import "AwfulConfig.h"
+#import "AwfulPost.h"
+#import "TFHpple.h"
+#import "AwfulPageCount.h"
 
 @implementation AwfulParse
 
-+(NSString *)constructPostHTML : (AwfulPost *)post alt : (NSString *)alt
++(NSString *)constructPostHTML : (AwfulPost *)post withBody : (NSString *)post_body alt : (NSString *)alt
 {
     NSString *avatar_str;
     
-    if(post.avatar == nil) {
+    if(post.avatarURL == nil) {
         avatar_str = @"";
     } else {
-        avatar_str = [NSString stringWithFormat:@"<td id='avatar'><img class='avatar' src='%@'/></td>", post.avatar];
+        avatar_str = [NSString stringWithFormat:@"<td id='avatar'><img class='avatar' src='%@'/></td>", post.avatarURL];
     }
     
     NSString *userbox_str = @"userbox";
     NSString *user_str = @"username";
-    if(post.byOP) {
+    if(post.isOP) {
         user_str = @"username_op";
         userbox_str = @"userbox_op";
     }
 
-    NSString *username_info = post.userName;
-    if(post.isAdmin) {
-        username_info = [NSString stringWithFormat:@"<img src='http://fi.somethingawful.com/star_admin.gif'/>&nbsp;%@", post.userName];
-    } else if(post.isMod) {
-        username_info = [NSString stringWithFormat:@"<img src='http://fi.somethingawful.com/star_moderator.gif'/>&nbsp;%@", post.userName];
+    NSString *username_info = post.authorName;
+    if(post.authorType == AwfulUserTypeAdmin) {
+        username_info = [NSString stringWithFormat:@"<img src='http://fi.somethingawful.com/star_admin.gif'/>&nbsp;%@", post.authorName];
+    } else if(post.authorType == AwfulUserTypeMod) {
+        username_info = [NSString stringWithFormat:@"<img src='http://fi.somethingawful.com/star_moderator.gif'/>&nbsp;%@", post.authorName];
     }
     
     NSString *name_avatar_box = [NSString stringWithFormat:@"<table id='%@'><tr>%@<td id='name_date_box'><span class='%@'>%@</span><br/><span class='post_date'>Posted on %@</span></td><td></td></tr></table>", userbox_str, avatar_str, user_str, username_info, post.postDate];
     
     NSString *css = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"post" ofType:@"css"] encoding:NSUTF8StringEncoding error:nil];
 
-    NSString *post_body = [AwfulParse parseThumbnails:post.postBody];
-    post_body = [AwfulParse parseYouTubes:post_body];
+    NSString *parsed_post_body = [AwfulParse parseThumbnails:post_body];
+    parsed_post_body = [AwfulParse parseYouTubes:parsed_post_body];
 
-    NSString *html = [NSString stringWithFormat:@"<html><head><style type='text/css'>%@</style></head><body class='%@'>%@%@</body></html>", css, alt, name_avatar_box, post_body];
+    NSString *html = [NSString stringWithFormat:@"<html><head><style type='text/css'>%@</style></head><body class='%@'>%@%@</body></html>", css, alt, name_avatar_box, parsed_post_body];
     html = [html stringByReplacingOccurrencesOfString:@"<td class=\"postbody\">" withString:@"<div class='postbody'>"];
     html = [html stringByReplacingOccurrencesOfString:@"</td>" withString:@"</div>"];
     //html = [html stringByReplacingOccurrencesOfString:@"<!-- EndContentMarker -->\n\n\n" withString:@""];
@@ -76,23 +79,24 @@
         
         TFHppleElement *author = [post_base searchForSingle:username_search];
         if(author != nil) {
-            post.userName = [author content];
+            post.authorName = [author content];
             if([[author objectForKey:@"class"] isEqualToString:@"author op"] || [[author objectForKey:@"class"] isEqualToString:@"author role-admin op"] || [[author objectForKey:@"class"] isEqualToString:@"author role-mod op"]) {
-                post.byOP = YES;
+                post.isOP = YES;
             } else {
-                post.byOP = NO;
+                post.isOP = NO;
             }
+            
             TFHppleElement *mod = [post_base searchForSingle:@"//dt[@class='author role-mod']|//dt[@class='author role-mod op']"];
             if(mod != nil) {
-                post.isMod = YES;
+                post.authorType = AwfulUserTypeMod;
             }
             
             TFHppleElement *admin = [post_base searchForSingle:@"//dt[@class='author role-admin']|//dt[@class='author role-admin op']"];
             if(admin != nil) {
-                post.isAdmin = YES;
+                post.authorType = AwfulUserTypeAdmin;
             }
             
-            if([post.userName isEqualToString:username]) {
+            if([post.authorName isEqualToString:username]) {
                 post.canEdit = YES;
             }
         }
@@ -110,17 +114,17 @@
         
         TFHppleElement *seen_link = [post_base searchForSingle:@"//td[@class='postdate']//a[@title='Mark thread seen up to this post']"];
         if(seen_link != nil) {
-            post.seenLink = [seen_link objectForKey:@"href"];
+            post.markSeenLink = [seen_link objectForKey:@"href"];
         }
         
         TFHppleElement *avatar = [post_base searchForSingle:@"//dd[@class='title']//img"];
         if(avatar != nil && show_avatars) {
-            post.avatar = [avatar objectForKey:@"src"];
+            post.avatarURL = [NSURL URLWithString:[avatar objectForKey:@"src"]];
         }
         
         TFHppleElement *edited = [post_base searchForSingle:@"//p[@class='editedby']/span"];
         if(edited != nil) {
-            post.edited = [[edited content] stringByReplacingOccurrencesOfString:@"fucked around with this message" withString:@"edited"];
+            post.editedStr = [[edited content] stringByReplacingOccurrencesOfString:@"fucked around with this message" withString:@"edited"];
         }
         
         NSString *body_search_str = nil;
@@ -133,7 +137,7 @@
         NSArray *body_strings = [post_base rawSearch:body_search_str];
         
         if([body_strings count] == 1) {
-            post.postBody = [body_strings objectAtIndex:0];
+            NSString *post_body = [body_strings objectAtIndex:0];
                         
             TFHppleElement *seen = [post_base searchForSingle:@"//tr[@class='seen1']|//tr[@class='seen2']"];
             
@@ -153,7 +157,7 @@
             }
             
             NSAutoreleasePool *body_pool = [[NSAutoreleasePool alloc] init];
-            post.content = [AwfulParse constructPostHTML:post alt:alt];
+            post.formattedHTML = [AwfulParse constructPostHTML:post withBody:post_body alt:alt];
             [body_pool release];
         }
         
@@ -320,7 +324,7 @@
         
         TFHppleElement *title = [thread_base searchForSingle:@"//a[@class='thread_title']"];
         if(title != nil) {
-            thread.threadTitle = [title content];
+            thread.title = [title content];
         }
         
         TFHppleElement *sticky = [thread_base searchForSingle:@"//td[@class='title title_sticky']"];
@@ -331,12 +335,12 @@
         TFHppleElement *icon = [thread_base searchForSingle:@"//td[@class='icon']/img"];
         if(icon != nil) {
             NSString *icon_str = [icon objectForKey:@"src"];
-            thread.threadIcon = icon_str;
+            thread.iconURL = [NSURL URLWithString:icon_str];
         }
         
         TFHppleElement *author = [thread_base searchForSingle:@"//td[@class='author']/a"];
         if(author != nil) {
-            thread.threadAuthor = [author content];
+            thread.authorName = [author content];
         }
         
         TFHppleElement *tid = [thread_base searchForSingle:big_str];
@@ -355,7 +359,7 @@
         
         TFHppleElement *seen = [thread_base searchForSingle:seen_str];
         if(seen != nil) {
-            thread.alreadyRead = YES;
+            thread.seen = YES;
         }
         
         TFHppleElement *locked = [thread_base searchForSingle:closed_str];
@@ -365,28 +369,28 @@
         
         TFHppleElement *cat_zero = [thread_base searchForSingle:category_zero];
         if(cat_zero != nil) {
-            thread.category = 0;
+            thread.starCategory = AwfulStarCategoryBlue;
         }
         
         TFHppleElement *cat_one = [thread_base searchForSingle:category_one];
         if(cat_one != nil) {
-            thread.category = 1;
+            thread.starCategory = AwfulStarCategoryRed;
         }
         
         TFHppleElement *cat_two = [thread_base searchForSingle:category_two];
         if(cat_two != nil) {
-            thread.category = 2;
+            thread.starCategory = AwfulStarCategoryYellow;
         }
         
         TFHppleElement *unread = [thread_base searchForSingle:@"//a[@class='count']/b"];
         if(unread != nil) {
             NSString *unread_str = [unread content];
-            thread.numUnreadPosts = [unread_str intValue];
+            thread.totalUnreadPosts = [unread_str intValue];
         } else {
             unread = [thread_base searchForSingle:@"//a[@class='x']"];
             if(unread != nil) {
                 // they've read it all
-                thread.numUnreadPosts = 0;
+                thread.totalUnreadPosts = 0;
             }
         }
         
@@ -405,12 +409,18 @@
             NSString *rating_str = [rating objectForKey:@"src"];
             NSURL *rating_url = [NSURL URLWithString:rating_str];
             NSString *last = [rating_url lastPathComponent];
-            if([last isEqualToString:@"4stars.gif"] || [last isEqualToString:@"5stars.gif"]) {
-                thread.threadRating = RATED_GOLD;
+            if([last isEqualToString:@"5stars.gif"]) {
+                thread.threadRating = AwfulThreadRatingFive;
+            } else if([last isEqualToString:@"4stars.gif"]) {
+                thread.threadRating = AwfulThreadRatingFour;
             } else if([last isEqualToString:@"3stars.gif"]) {
-                thread.threadRating = RATED_NOTHING;
-            } else if([last isEqualToString:@"2stars.gif"] || [last isEqualToString:@"1stars.gif"] || [last isEqualToString:@"0stars.gif"]) {
-                thread.threadRating = RATED_SHIT;
+                thread.threadRating = AwfulThreadRatingThree;
+            } else if([last isEqualToString:@"2stars.gif"]) {
+                thread.threadRating = AwfulThreadRatingTwo;
+            } else if([last isEqualToString:@"1stars.gif"]) {
+                thread.threadRating = AwfulThreadRatingOne;
+            } else if([last isEqualToString:@"0stars.gif"]) {
+                thread.threadRating = AwfulThreadRatingZero;
             }
         }
         
@@ -418,7 +428,7 @@
         TFHppleElement *last_author = [thread_base searchForSingle:@"//td[@class='lastpost']//a[@class='author']"];
         
         if(date != nil && last_author != nil) {
-            thread.killedBy = [NSString stringWithFormat:@"%@", [last_author content]];
+            thread.lastPostAuthorName = [NSString stringWithFormat:@"%@", [last_author content]];
         }
         
         [parsed_threads addObject:thread];
@@ -432,9 +442,9 @@
     return parsed_threads;
 }
 
-+(PageManager *)newPageManager : (TFHpple *)hpple
++(AwfulPageCount *)newPageCount : (TFHpple *)hpple
 {
-    PageManager *pages = [[PageManager alloc] init];
+    AwfulPageCount *pages = [[AwfulPageCount alloc] init];
     
     NSArray *strings = PerformRawHTMLXPathQuery(hpple.data, @"//div[@class='pages top']");
     if(strings != nil && [strings count] > 0) {
@@ -448,17 +458,17 @@
             combined.location = first_paren.location + 1;
             combined.length = last_paren.location - first_paren.location - 1;
             NSString *total_pages_str = [page_info substringWithRange:combined];
-            pages.total = [total_pages_str intValue];
+            pages.totalPages = [total_pages_str intValue];
             
             TFHpple *base = [[TFHpple alloc] initWithHTMLData:[page_info dataUsingEncoding:NSUTF8StringEncoding]];
             TFHppleElement *curpage = [base searchForSingle:@"//span[@class='curpage']"];
             if(curpage != nil) {
-                pages.current = [[curpage content] intValue];
+                pages.currentPage = [[curpage content] intValue];
             }
             [base release];
         } else {
-            pages.total = 1;
-            pages.current = 1;
+            pages.totalPages = 1;
+            pages.currentPage = 1;
         }
     }
     

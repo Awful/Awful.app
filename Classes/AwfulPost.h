@@ -8,57 +8,37 @@
 
 #import <Foundation/Foundation.h>
 
-enum {
-    USER_TYPE_ADMIN,
-    USER_TYPE_MOD,
-    USER_TYPE_NORMAL
-};
-
-@interface PageManager : NSObject
-{
-    int current;
-    int total;
-}
-
-@property int current;
-@property int total;
-
-@end
+typedef enum {
+    AwfulUserTypeNormal = 0,
+    AwfulUserTypeMod,
+    AwfulUserTypeAdmin
+} AwfulUserType;
 
 @interface AwfulPost : NSObject {
-    NSString *postID;
-    NSString *postDate;
-    NSString *userName;
-    NSString *avatar;
-    NSString *content;
-    NSString *edited;
-    int userType;
-    BOOL byOP;
-    BOOL newest;
-    NSString *rawContent;
-    NSString *seenLink;
-    NSString *postBody;
-    BOOL isMod;
-    BOOL isAdmin;
-    BOOL isLoaded;
-    BOOL canEdit;
+    NSString *_postID;
+    NSString *_postDate;
+    NSString *_authorName;
+    AwfulUserType _authorType;
+    NSURL *_avatarURL;
+    NSString *_editedStr;
+    NSString *_formattedHTML;
+    
+    NSString *_rawContent;
+    NSString *_markSeenLink;
+    BOOL _isOP;
+    BOOL _canEdit;
 }
 
 @property (nonatomic, retain) NSString *postID;
 @property (nonatomic, retain) NSString *postDate;
-@property (nonatomic, retain) NSString *userName;
-@property (nonatomic, retain) NSString *avatar;
-@property (nonatomic, retain) NSString *content;
-@property (nonatomic, retain) NSString *edited;
-@property BOOL byOP;
-@property BOOL newest;
-@property int userType;
+@property (nonatomic, retain) NSString *authorName;
+@property AwfulUserType authorType;
+@property (nonatomic, retain) NSURL *avatarURL;
+@property (nonatomic, retain) NSString *editedStr;
+@property (nonatomic, retain) NSString *formattedHTML;
 @property (nonatomic, retain) NSString *rawContent;
-@property (nonatomic, retain) NSString *seenLink;
-@property (nonatomic, retain) NSString *postBody;
-@property BOOL isMod;
-@property BOOL isAdmin;
-@property BOOL isLoaded;
+@property (nonatomic, retain) NSString *markSeenLink;
+@property BOOL isOP;
 @property BOOL canEdit;
 
 @end
