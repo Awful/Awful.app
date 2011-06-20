@@ -15,7 +15,7 @@
 @implementation AwfulLineDrawer
 
 @synthesize totalAncestors = _totalAncestors;
-
+/*
 -(void)drawRect:(CGRect)rect
 {    
     CGContextRef context = UIGraphicsGetCurrentContext();
@@ -35,7 +35,7 @@
         }
         CGContextStrokePath(context);
     }
-}
+}*/
 
 @end
 
@@ -89,17 +89,23 @@
         if(section.totalAncestors > 1) {
             self.arrow.frame = CGRectOffset(self.arrow.frame, LINE_SPACE, 0);
         }
+        
+        if([self.delegate isAwfulForumSectionFavorited:section]) {
+            [self.star setImage:[UIImage imageNamed:@"star_on.png"] forState:UIControlStateNormal];
+        } else {
+            [self.star setImage:[UIImage imageNamed:@"star_off.png"] forState:UIControlStateNormal];
+        }
     }
 }
 
 -(IBAction)tappedArrow : (id)sender
 {
-    [self.delegate toggleForumSection:self.section];
+    [self.delegate toggleExpandForForumSection:self.section];
 }
 
 -(IBAction)tappedStar : (id)sender
 {
-    
+    [self.delegate toggleFavoriteForForumSection:self.section];
 }
 
 @end

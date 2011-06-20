@@ -26,6 +26,8 @@
 @property NSUInteger rowIndex;
 @property NSUInteger totalAncestors;
 
++(AwfulForumSection *)sectionWithForum : (AwfulForum *)forum;
+
 @end
 
 @interface AwfulForumsList : UITableViewController <UIAlertViewDelegate> {
@@ -42,16 +44,18 @@
 @property (nonatomic, retain) AwfulForum *goldmine;
 @property (nonatomic, retain) IBOutlet AwfulForumCell *forumCell;
 
--(void)signOut;
--(void)makeFavorite : (UIButton *)sender;
--(void)removeFavorite : (UIButton *)sender;
+-(void)loadFavorites;
+-(void)saveFavorites;
+-(BOOL)isAwfulForumSectionFavorited : (AwfulForumSection *)section;
+-(void)toggleFavoriteForForumSection : (AwfulForumSection *)section;
 
+-(void)signOut;
 -(void)updateSignedIn;
 -(void)hitDone;
 
 -(void)grabFreshList;
 
--(void)toggleForumSection : (AwfulForumSection *)section;
+-(void)toggleExpandForForumSection : (AwfulForumSection *)section;
 -(void)addForumToSectionTree : (AwfulForum *)forum;
 -(AwfulForumSection *)getForumSectionAtSection : (NSUInteger)section_index;
 -(NSUInteger)getSectionForForumSection : (AwfulForumSection *)forum_section;

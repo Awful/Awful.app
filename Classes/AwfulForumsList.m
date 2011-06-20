@@ -38,6 +38,13 @@
     return self;
 }
 
++(AwfulForumSection *)sectionWithForum : (AwfulForum *)forum
+{
+    AwfulForumSection *sec = [[AwfulForumSection alloc] init];
+    [sec setForum:forum];
+    return [sec autorelease];
+}
+
 -(void)dealloc
 {
     [_children release];
@@ -60,9 +67,7 @@
 - (id)initWithStyle:(UITableViewStyle)style {
     // Override initWithStyle: if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
     if ((self = [super initWithStyle:style])) {
-        NSMutableArray *chosen = [AwfulUtil newChosenForums];
-        _favorites = [chosen retain];
-        [chosen release];
+        _favorites = [[NSMutableArray alloc] init];
         
         _forums = [[NSMutableArray alloc] init];
         _forumSections = [[NSMutableArray alloc] init];
@@ -72,12 +77,12 @@
                 }*/
                   
         AwfulNavController *nav = getnav();
-        NSString *awful_str = @"Awful    ";
+        NSString *awful_str = @"Awful";
         if(![nav isLoggedIn]) {
-            awful_str = @"Awful ";
+            awful_str = @"Awful";
         }
         [self.navigationItem setTitle:awful_str];
-        
+        [self loadFavorites];
     }
     return self;
 }
@@ -132,10 +137,6 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    NSMutableArray *chosen = [AwfulUtil newChosenForums];
-    [self setFavorites:chosen];
-    [chosen release];
-    [self.tableView reloadData];
 }
 
 -(void)signOut
@@ -202,33 +203,66 @@
     return NO;
 }
 
--(void)makeFavorite : (UIButton *)sender
+#pragma mark -
+#pragma mark Favorites
+
+-(void)loadFavorites
 {
-    NSString *forum_id = [sender titleForState:UIControlStateDisabled];
-    AwfulForumSection *section = [self getForumSectionFromID:forum_id];
-    if(section != nil) {
-        [self.favorites addObject:section.forum];
-        [AwfulUtil saveChosenForums:self.favorites];
-        NSArray *insert = [NSArray arrayWithObject:[NSIndexPath indexPathForRow:[self.favorites count]-1 inSection:0]];
-        [self.tableView insertRowsAtIndexPaths:insert withRowAnimation:UITableViewRowAnimationTop];
+    NSData *arc = [[NSUserDefaults standardUserDefaults] valueForKey:@"favorites"];
+    if(arc != nil) {
+        self.favorites = [NSKeyedUnarchiver unarchiveObjectWithData:arc];
     }
 }
 
--(void)removeFavorite : (UIButton *)sender
+-(void)saveFavorites
 {
-    NSString *forum_id = [sender titleForState:UIControlStateDisabled];
-    
-    AwfulForum *fav = nil;
-    for(AwfulForum *f in self.favorites) {
-        if([f.forumID isEqualToString:forum_id]) {
-            fav = f;
-        }
+    if(self.favorites != nil) {
+        NSData *arc = [NSKeyedArchiver archivedDataWithRootObject:self.favorites];
+        [[NSUserDefaults standardUserDefaults] setValue:arc forKey:@"favorites"];
     }
-    
-    [self.favorites removeObject:fav];
-    [AwfulUtil saveChosenForums:self.favorites];
-    NSArray *remove = [NSArray arrayWithObject:[NSIndexPath indexPathForRow:[self.favorites count] inSection:0]];
-    [self.tableView deleteRowsAtIndexPaths:remove withRowAnimation:UITableViewRowAnimationFade];
+}
+
+-(BOOL)isAwfulForumSectionFavorited : (AwfulForumSection *)section
+{
+    NSUInteger index = [self.favorites indexOfObject:section.forum];
+    return index != NSNotFound;
+}
+
+-(void)toggleFavoriteForForumSection : (AwfulForumSection *)section
+{    
+    if([self isAwfulForumSectionFavorited:section]) {
+        NSUInteger fav_index = [self.favorites indexOfObject:section.forum];
+        if(fav_index == NSNotFound) {
+            NSLog(@"couldn't find index of favorited section to remove");
+            return;
+        }
+        [self.favorites removeObject:section.forum];
+        
+        AwfulForumSection *bottom_section = [self getForumSectionFromID:section.forum.forumID];
+        NSIndexPath *bottom_path = [self getIndexPathForSection:bottom_section];
+        
+        NSArray *remove = [NSArray arrayWithObject:[NSIndexPath indexPathForRow:fav_index inSection:0]];
+        [self.tableView beginUpdates];
+        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:bottom_path] 
+                              withRowAnimation:UITableViewRowAnimationNone];
+        [self.tableView deleteRowsAtIndexPaths:remove withRowAnimation:UITableViewRowAnimationBottom];
+        [self.tableView endUpdates];
+        
+    } else {
+        [self.favorites addObject:section.forum];
+        
+        NSIndexPath *reload_path = [self getIndexPathForSection:section];
+        NSArray *reload = [NSArray arrayWithObject:reload_path];
+        
+        NSIndexPath *add_path = [NSIndexPath indexPathForRow:[self.favorites count]-1 inSection:0];
+        NSArray *add = [NSArray arrayWithObject:add_path];
+        
+        [self.tableView beginUpdates];
+        [self.tableView insertRowsAtIndexPaths:add withRowAnimation:UITableViewRowAnimationTop];
+        [self.tableView reloadRowsAtIndexPaths:reload withRowAnimation:UITableViewRowAnimationNone];
+        [self.tableView endUpdates];
+    }
+    [self saveFavorites];
 }
 
 #pragma mark -
@@ -249,13 +283,6 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    AwfulAppDelegate *del = (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
-    AwfulNavController *nav = del.navController;
-    BOOL logged_in = [nav isLoggedIn];
-    if(!logged_in) {
-        return 1;
-    }
-    
     if(section == 0) {
         return [self.favorites count];
     } 
@@ -281,48 +308,8 @@
         self.forumCell = nil;
     }
     
-    // Configure the cell...
-    AwfulNavController *nav = getnav();
-    BOOL logged_in = [nav isLoggedIn];
-    
-    /*UIButton *fav = (UIButton *)cell.star;
-    [fav removeTarget:self action:@selector(removeFavorite:) forControlEvents:UIControlEventTouchUpInside];
-    [fav removeTarget:self action:@selector(makeFavorite:) forControlEvents:UIControlEventTouchUpInside]; */
-    
-    AwfulForum *forum = nil;
-    
-    if(logged_in) {
-        forum = [self getForumAtIndexPath:indexPath];
-    
-        /*if(indexPath.section == 0) {
-            [fav setImage:[UIImage imageNamed:@"star_on.png"] forState:UIControlStateNormal];
-            [fav addTarget:self action:@selector(removeFavorite:) forControlEvents:UIControlEventTouchUpInside];
-        } else {
-            BOOL winner = NO;
-            for(AwfulForum *f in self.favorites) {
-                if([f.forumID isEqualToString:forum.forumID]) {
-                    winner = YES;
-                }
-            }
-            if(winner) {
-                [fav setImage:[UIImage imageNamed:@"star_on.png"] forState:UIControlStateNormal];
-                [fav addTarget:self action:@selector(removeFavorite:) forControlEvents:UIControlEventTouchUpInside];
-            } else {
-                [fav setImage:[UIImage imageNamed:@"star_off.png"] forState:UIControlStateNormal];
-                [fav addTarget:self action:@selector(makeFavorite:) forControlEvents:UIControlEventTouchUpInside];
-            }
-        }*/
-    } else {
-        forum = self.goldmine;
-    }
-    
     AwfulForumSection *section = [self getForumSectionAtIndexPath:indexPath];
     [cell setSection:section];
-    
-    //[cell.title setText:forum.name];
-    //cell.textLabel.text = forum.name;
-    //[fav setTitle:forum.forumID forState:UIControlStateDisabled];
-    
     return cell;
 }
 
@@ -336,21 +323,15 @@
         str = [[[self.forumSections objectAtIndex:section-SECTION_INDEX_OFFSET] forum] name];
     }
     
-    AwfulNavController *nav = getnav();
-    BOOL logged_in = [nav isLoggedIn];
-    
-    if(!logged_in) {
-        str = @"Not Logged In";
-    }
-    
     UIFont *f = [UIFont fontWithName:@"Helvetica-Bold" size:18.0];
     
-    UIView *v = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 250, 30)] autorelease];
+    UIView *v = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, getWidth(), 50)] autorelease];
     UILabel *forum_label = [[UILabel alloc] initWithFrame:CGRectMake(12, 0, 200, 30)];
     forum_label.font = f;
     forum_label.text = str;
     forum_label.textColor = [UIColor whiteColor];
-    forum_label.backgroundColor = [UIColor clearColor];
+    forum_label.backgroundColor = [UIColor blackColor];
+    [v setBackgroundColor:[UIColor blackColor]];
     
     [v addSubview:forum_label];
     [forum_label release];
@@ -421,23 +402,10 @@
 	 [self.navigationController pushViewController:detailViewController animated:YES];
 	 [detailViewController release];
 	 */
-
-    AwfulForum *forum = nil;
+    
     AwfulNavController *nav = getnav();
     
-    BOOL logged_in = [nav isLoggedIn];
-    
-    if(!logged_in) {
-        forum = self.goldmine;
-    } else {
-        if(indexPath.section == 0) {
-            forum = [self.favorites objectAtIndex:indexPath.row];
-        } else {
-            AwfulForumSection *section = [self getForumSectionAtIndexPath:indexPath];
-            forum = section.forum;
-        }
-    }
-    
+    AwfulForum *forum = [self getForumAtIndexPath:indexPath];
     AwfulThreadList *detail = [[AwfulThreadList alloc] initWithAwfulForum:forum];
     [nav loadForum:detail];
     [detail release];
@@ -461,7 +429,7 @@
 #pragma mark -
 #pragma mark Misc Methods
 
--(void)toggleForumSection : (AwfulForumSection *)section
+-(void)toggleExpandForForumSection : (AwfulForumSection *)section
 {
     NSArray *update = [NSArray arrayWithObject:[self getIndexPathForSection:section]];
     BOOL expanded = section.expanded;
@@ -574,6 +542,11 @@
 
 -(AwfulForumSection *)getForumSectionAtIndexPath : (NSIndexPath *)path
 {
+    if(path.section == 0) {
+        AwfulForum *forum = [self.favorites objectAtIndex:path.row];
+        return [AwfulForumSection sectionWithForum:forum];
+    }
+    
     AwfulForumSection *big_section = [self getForumSectionAtSection:path.section];
     NSMutableArray *visible_descendants = [self getVisibleDescendantsListForForumSection:big_section];
     if(path.row < [visible_descendants count]) {
@@ -612,6 +585,7 @@
         return [NSIndexPath indexPathForRow:row inSection:section_index];
     } else {
         NSLog(@"asking for index path of non-visible section");
+        return nil;
     }
     
     return nil;
