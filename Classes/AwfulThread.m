@@ -29,7 +29,7 @@
 
 -(id)init
 {
-    _threadRating = AwfulThreadRatingUnknown;
+    _threadRating = NSNotFound;
     _starCategory = AwfulStarCategoryNone;
     _seen = NO;
     _isStickied = NO;

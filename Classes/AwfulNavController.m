@@ -7,7 +7,7 @@
 //
 
 #import "AwfulNavController.h"
-#import "ForumsList.h"
+#import "AwfulForumsList.h"
 #import "AwfulWebCache.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulPage.h"
@@ -372,7 +372,7 @@
 
 -(void)openForums
 {
-    ForumsList *forums = [[ForumsList alloc] initWithStyle:UITableViewStyleGrouped];
+    AwfulForumsList *forums = [[AwfulForumsList alloc] initWithStyle:UITableViewStyleGrouped];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:forums];
     if([AwfulConfig isColorSchemeBlack]) {
         nav.navigationBar.barStyle = UIBarStyleBlack;

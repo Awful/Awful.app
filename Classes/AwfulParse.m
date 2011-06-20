@@ -410,17 +410,17 @@
             NSURL *rating_url = [NSURL URLWithString:rating_str];
             NSString *last = [rating_url lastPathComponent];
             if([last isEqualToString:@"5stars.gif"]) {
-                thread.threadRating = AwfulThreadRatingFive;
+                thread.threadRating = 5;
             } else if([last isEqualToString:@"4stars.gif"]) {
-                thread.threadRating = AwfulThreadRatingFour;
+                thread.threadRating = 4;
             } else if([last isEqualToString:@"3stars.gif"]) {
-                thread.threadRating = AwfulThreadRatingThree;
+                thread.threadRating = 3;
             } else if([last isEqualToString:@"2stars.gif"]) {
-                thread.threadRating = AwfulThreadRatingTwo;
+                thread.threadRating = 2;
             } else if([last isEqualToString:@"1stars.gif"]) {
-                thread.threadRating = AwfulThreadRatingOne;
+                thread.threadRating = 1;
             } else if([last isEqualToString:@"0stars.gif"]) {
-                thread.threadRating = AwfulThreadRatingZero;
+                thread.threadRating = 0;
             }
         }
         

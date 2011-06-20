@@ -8,18 +8,8 @@
 
 @class AwfulForum;
 
-typedef enum {
-    AwfulThreadRatingZero = 0,
-    AwfulThreadRatingOne,
-    AwfulThreadRatingTwo,
-    AwfulThreadRatingThree,
-    AwfulThreadRatingFour,
-    AwfulThreadRatingFive,
-    AwfulThreadRatingUnknown
-} AwfulThreadRating;
-
-#define AwfulThreadRatingIsGold(rating) ((rating) == AwfulThreadRatingFour || (rating) == AwfulThreadRatingFive)
-#define AwfulThreadRatingIsShit(rating) ((rating) == AwfulThreadRatingZero || (rating) == AwfulThreadRatingOne || (rating) == AwfulThreadRatingTwo)
+#define AwfulThreadRatingIsGold(rating) ((rating) >= 4)
+#define AwfulThreadRatingIsShit(rating) ((rating) < 3)
 
 typedef enum {
     AwfulStarCategoryBlue = 0,
@@ -33,7 +23,7 @@ typedef enum {
     NSString *_title;
     int _totalUnreadPosts;
     int _totalReplies;
-    AwfulThreadRating _threadRating;
+    NSUInteger _threadRating;
     AwfulStarCategory _starCategory;
     NSURL *_iconURL;
     NSString *_authorName;
@@ -49,7 +39,7 @@ typedef enum {
 @property (nonatomic, retain) NSString *title;
 @property int totalUnreadPosts;
 @property int totalReplies;
-@property AwfulThreadRating threadRating;
+@property NSUInteger threadRating;
 @property AwfulStarCategory starCategory;
 @property (nonatomic, retain) NSURL *iconURL;
 @property (nonatomic, retain) NSString *authorName;

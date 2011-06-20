@@ -13,7 +13,7 @@
 #import "FlurryAPI.h"
 #import "AwfulThreadList.h"
 #import "AwfulPage.h"
-#import "ForumsList.h"
+#import "AwfulForumsList.h"
 #import "Appirater.h"
 #import "AwfulConfig.h"
 

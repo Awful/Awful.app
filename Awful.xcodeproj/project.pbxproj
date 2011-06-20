@@ -14,7 +14,7 @@
 		107CF8CE11FF550A007C16F4 /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 107CF8CA11FF550A007C16F4 /* TFHppleElement.m */; };
 		107CF8CF11FF550A007C16F4 /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 107CF8CC11FF550A007C16F4 /* XPathQuery.m */; };
 		107CF93C11FF5EDC007C16F4 /* AwfulThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 107CF93B11FF5EDC007C16F4 /* AwfulThread.m */; };
-		107CF98F11FF6DDB007C16F4 /* ForumsList.m in Sources */ = {isa = PBXBuildFile; fileRef = 107CF98E11FF6DDB007C16F4 /* ForumsList.m */; };
+		107CF98F11FF6DDB007C16F4 /* AwfulForumsList.m in Sources */ = {isa = PBXBuildFile; fileRef = 107CF98E11FF6DDB007C16F4 /* AwfulForumsList.m */; };
 		107CF9A311FF7776007C16F4 /* libxml2.2.7.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 107CF9A211FF7776007C16F4 /* libxml2.2.7.3.dylib */; };
 		107CF9E111FF79D5007C16F4 /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 107CF9E011FF79D5007C16F4 /* libsqlite3.0.dylib */; };
 		107CF9EF11FF7D4E007C16F4 /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 107CF9EA11FF7D4E007C16F4 /* FMDatabase.m */; };
@@ -577,8 +577,12 @@
 		116B299F139C3E2400984955 /* libFlurry.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 116B299D139C3DD400984955 /* libFlurry.a */; };
 		116B29A1139C3F0600984955 /* README in Resources */ = {isa = PBXBuildFile; fileRef = 116B29A0139C3F0600984955 /* README */; };
 		1185087713A7FA6100FCACF8 /* AwfulPageCount.m in Sources */ = {isa = PBXBuildFile; fileRef = 1185087613A7FA6100FCACF8 /* AwfulPageCount.m */; };
+		1185088313A8533F00FCACF8 /* AwfulForumListRefreshRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1185088213A8533F00FCACF8 /* AwfulForumListRefreshRequest.m */; };
+		1185088713AA905600FCACF8 /* AwfulForumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1185088613AA905600FCACF8 /* AwfulForumCell.m */; };
+		1185088913AA90EE00FCACF8 /* AwfulForumCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1185088813AA90EE00FCACF8 /* AwfulForumCell.xib */; };
 		11884DED1358D68700ADDA45 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 11884DEB1358D68700ADDA45 /* NSString+HTML.m */; };
 		11884DF01358D73000ADDA45 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 11884DEF1358D73000ADDA45 /* GTMNSString+HTML.m */; };
+		1199D7CF13AA9C4200264DE9 /* tiny_arrow_right.png in Resources */ = {isa = PBXBuildFile; fileRef = 1199D7CE13AA9C4200264DE9 /* tiny_arrow_right.png */; };
 		1D3623260D0F684500981E51 /* AwfulAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* AwfulAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -600,8 +604,8 @@
 		107CF8CC11FF550A007C16F4 /* XPathQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XPathQuery.m; path = "topfunky-hpple/XPathQuery.m"; sourceTree = "<group>"; };
 		107CF93A11FF5EDC007C16F4 /* AwfulThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThread.h; sourceTree = "<group>"; };
 		107CF93B11FF5EDC007C16F4 /* AwfulThread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThread.m; sourceTree = "<group>"; };
-		107CF98D11FF6DDB007C16F4 /* ForumsList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ForumsList.h; sourceTree = "<group>"; };
-		107CF98E11FF6DDB007C16F4 /* ForumsList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ForumsList.m; sourceTree = "<group>"; };
+		107CF98D11FF6DDB007C16F4 /* AwfulForumsList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumsList.h; sourceTree = "<group>"; };
+		107CF98E11FF6DDB007C16F4 /* AwfulForumsList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumsList.m; sourceTree = "<group>"; };
 		107CF9A211FF7776007C16F4 /* libxml2.2.7.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.2.7.3.dylib; path = usr/lib/libxml2.2.7.3.dylib; sourceTree = SDKROOT; };
 		107CF9E011FF79D5007C16F4 /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
 		107CF9E911FF7D4E007C16F4 /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDatabase.h; path = fmdb/FMDatabase.h; sourceTree = "<group>"; };
@@ -1216,11 +1220,17 @@
 		116B29A0139C3F0600984955 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		1185087513A7FA6100FCACF8 /* AwfulPageCount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPageCount.h; sourceTree = "<group>"; };
 		1185087613A7FA6100FCACF8 /* AwfulPageCount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPageCount.m; sourceTree = "<group>"; };
+		1185088113A8533F00FCACF8 /* AwfulForumListRefreshRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AwfulForumListRefreshRequest.h; path = Classes/AwfulForumListRefreshRequest.h; sourceTree = "<group>"; };
+		1185088213A8533F00FCACF8 /* AwfulForumListRefreshRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AwfulForumListRefreshRequest.m; path = Classes/AwfulForumListRefreshRequest.m; sourceTree = "<group>"; };
+		1185088513AA905600FCACF8 /* AwfulForumCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumCell.h; sourceTree = "<group>"; };
+		1185088613AA905600FCACF8 /* AwfulForumCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumCell.m; sourceTree = "<group>"; };
+		1185088813AA90EE00FCACF8 /* AwfulForumCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AwfulForumCell.xib; sourceTree = "<group>"; };
 		11884DEA1358D68700ADDA45 /* NSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+HTML.h"; sourceTree = "<group>"; };
 		11884DEB1358D68700ADDA45 /* NSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+HTML.m"; sourceTree = "<group>"; };
 		11884DEE1358D73000ADDA45 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
 		11884DEF1358D73000ADDA45 /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
 		11884DF11358D74800ADDA45 /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMDefines.h; sourceTree = "<group>"; };
+		1199D7CE13AA9C4200264DE9 /* tiny_arrow_right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tiny_arrow_right.png; path = images/tiny_arrow_right.png; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* AwfulAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* AwfulAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAppDelegate.m; sourceTree = "<group>"; };
@@ -1261,6 +1271,7 @@
 				107CFB5F1201DDCD007C16F4 /* Util */,
 				107CFB5E1201DDBE007C16F4 /* AwfulPage */,
 				107CFB5D1201DD88007C16F4 /* AwfulThreadList */,
+				1185088413AA8F2B00FCACF8 /* AwfulForumList */,
 				107CFB5B1201DD32007C16F4 /* Models */,
 			);
 			path = Classes;
@@ -1320,8 +1331,6 @@
 				107CFA5111FF90A8007C16F4 /* AwfulThreadList.m */,
 				107CF8B211FE94E7007C16F4 /* BookmarksController.h */,
 				107CF8B311FE94E7007C16F4 /* BookmarksController.m */,
-				107CF98D11FF6DDB007C16F4 /* ForumsList.h */,
-				107CF98E11FF6DDB007C16F4 /* ForumsList.m */,
 			);
 			name = AwfulThreadList;
 			sourceTree = "<group>";
@@ -1390,6 +1399,8 @@
 				10E38BD712BEC0FF002DBA3F /* AwfulPageRefreshRequest.m */,
 				10E38BD812BEC0FF002DBA3F /* AwfulUserInfoRequest.h */,
 				10E38BD912BEC0FF002DBA3F /* AwfulUserInfoRequest.m */,
+				1185088113A8533F00FCACF8 /* AwfulForumListRefreshRequest.h */,
+				1185088213A8533F00FCACF8 /* AwfulForumListRefreshRequest.m */,
 				10D35013128F53930026C7C2 /* Classes */,
 			);
 			name = ASIHTTP;
@@ -1448,6 +1459,7 @@
 		10E93EB9121DC70E00CCBF6D /* images */ = {
 			isa = PBXGroup;
 			children = (
+				1199D7CE13AA9C4200264DE9 /* tiny_arrow_right.png */,
 				115A05DE13490D39004FDCE5 /* dotdotdot.png */,
 				115A05D9134814B6004FDCE5 /* arrowright.png */,
 				10913B6312CC03F3007583AC /* number-background@2x.png */,
@@ -1988,6 +2000,18 @@
 				11099076134BA6860013444C /* MBProgressHUD.m */,
 			);
 			path = MBProgressHUD;
+			sourceTree = "<group>";
+		};
+		1185088413AA8F2B00FCACF8 /* AwfulForumList */ = {
+			isa = PBXGroup;
+			children = (
+				107CF98D11FF6DDB007C16F4 /* AwfulForumsList.h */,
+				107CF98E11FF6DDB007C16F4 /* AwfulForumsList.m */,
+				1185088513AA905600FCACF8 /* AwfulForumCell.h */,
+				1185088613AA905600FCACF8 /* AwfulForumCell.m */,
+				1185088813AA90EE00FCACF8 /* AwfulForumCell.xib */,
+			);
+			name = AwfulForumList;
 			sourceTree = "<group>";
 		};
 		11884DE81358D68600ADDA45 /* mwaterfall-MWFeedParser-ea43013 */ = {
@@ -2640,6 +2664,8 @@
 				1109906B134B8C370013444C /* grayArrow@2x.png in Resources */,
 				11099079134BAC190013444C /* 37x-Checkmark.png in Resources */,
 				116B29A1139C3F0600984955 /* README in Resources */,
+				1185088913AA90EE00FCACF8 /* AwfulForumCell.xib in Resources */,
+				1199D7CF13AA9C4200264DE9 /* tiny_arrow_right.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2658,7 +2684,7 @@
 				107CF8CE11FF550A007C16F4 /* TFHppleElement.m in Sources */,
 				107CF8CF11FF550A007C16F4 /* XPathQuery.m in Sources */,
 				107CF93C11FF5EDC007C16F4 /* AwfulThread.m in Sources */,
-				107CF98F11FF6DDB007C16F4 /* ForumsList.m in Sources */,
+				107CF98F11FF6DDB007C16F4 /* AwfulForumsList.m in Sources */,
 				107CF9EF11FF7D4E007C16F4 /* FMDatabase.m in Sources */,
 				107CF9F011FF7D4E007C16F4 /* FMDatabaseAdditions.m in Sources */,
 				107CF9F111FF7D4E007C16F4 /* FMResultSet.m in Sources */,
@@ -2708,6 +2734,8 @@
 				11884DED1358D68700ADDA45 /* NSString+HTML.m in Sources */,
 				11884DF01358D73000ADDA45 /* GTMNSString+HTML.m in Sources */,
 				1185087713A7FA6100FCACF8 /* AwfulPageCount.m in Sources */,
+				1185088313A8533F00FCACF8 /* AwfulForumListRefreshRequest.m in Sources */,
+				1185088713AA905600FCACF8 /* AwfulForumCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

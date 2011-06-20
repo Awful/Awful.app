@@ -398,7 +398,9 @@
 	CGRect visibleBounds = pagingScrollView.bounds;
 	int index = floorf(CGRectGetMidX(visibleBounds) / CGRectGetWidth(visibleBounds));
 	if (index < 0) index = 0;
-	if (index > photos.count-1) photos.count-1;
+	if (index > photos.count-1) {
+        index = photos.count-1;
+    }
 	int previousCurrentPage = currentPageIndex;
 	currentPageIndex = index;
 	if (currentPageIndex != previousCurrentPage) [self didStartViewingPageAtIndex:index];
