@@ -11,11 +11,11 @@
 @class AwfulForumSection;
 @class AwfulForumsList;
 
-@interface AwfulLineDrawer : UIView {
-    int _totalAncestors;
+@interface AwfulForumHeader : UIView {
+    UILabel *_title;
 }
 
-@property (nonatomic, assign) int totalAncestors;
+@property (nonatomic, retain) IBOutlet UILabel *title;
 
 @end
 
@@ -24,7 +24,6 @@
     UIButton *_star;
     UIButton *_arrow;
     AwfulForumSection *_section;
-    AwfulLineDrawer *_line;
     AwfulForumsList *_delegate;
 }
 
@@ -32,7 +31,6 @@
 @property (nonatomic, retain) IBOutlet UIButton *star;
 @property (nonatomic, retain) IBOutlet UIButton *arrow;
 @property (nonatomic, retain) AwfulForumSection *section;
-@property (nonatomic, retain) IBOutlet AwfulLineDrawer *line;
 @property (nonatomic, assign) AwfulForumsList *delegate;
 
 -(IBAction)tappedArrow : (id)sender;

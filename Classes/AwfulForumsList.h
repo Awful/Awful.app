@@ -10,6 +10,7 @@
 
 @class AwfulForum;
 @class AwfulForumCell;
+@class AwfulForumHeader;
 
 @interface AwfulForumSection : NSObject
 {
@@ -36,6 +37,8 @@
     NSMutableArray *_forumSections;
     AwfulForum *_goldmine;
     AwfulForumCell *_forumCell;
+    AwfulForumHeader *_headerView;
+    UITableViewCell *_refreshCell;
 }
 
 @property (nonatomic, retain) NSMutableArray *favorites;
@@ -43,6 +46,8 @@
 @property (nonatomic, retain) NSMutableArray *forumSections;
 @property (nonatomic, retain) AwfulForum *goldmine;
 @property (nonatomic, retain) IBOutlet AwfulForumCell *forumCell;
+@property (nonatomic, retain) IBOutlet AwfulForumHeader *headerView;
+@property (nonatomic, retain) IBOutlet UITableViewCell *refreshCell;
 
 -(void)loadFavorites;
 -(void)saveFavorites;
@@ -53,9 +58,12 @@
 -(void)updateSignedIn;
 -(void)hitDone;
 
--(void)grabFreshList;
-
+-(IBAction)grabFreshList;
+-(void)saveForums;
+-(void)loadForums;
 -(void)toggleExpandForForumSection : (AwfulForumSection *)section;
+-(BOOL)isRefreshSection : (NSIndexPath *)indexPath;
+
 -(void)addForumToSectionTree : (AwfulForum *)forum;
 -(AwfulForumSection *)getForumSectionAtSection : (NSUInteger)section_index;
 -(NSUInteger)getSectionForForumSection : (AwfulForumSection *)forum_section;

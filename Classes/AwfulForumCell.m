@@ -12,30 +12,23 @@
 
 #define LINE_SPACE 10
 
-@implementation AwfulLineDrawer
+@implementation AwfulForumHeader
 
-@synthesize totalAncestors = _totalAncestors;
-/*
--(void)drawRect:(CGRect)rect
-{    
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    CGColorRef black = [UIColor blackColor].CGColor;
-    CGContextSetStrokeColorWithColor(context, black);
-    
-    if(self.totalAncestors >= 2) {
-        CGContextBeginPath(context);
-        int ancestors = self.totalAncestors;
-        int x_value = LINE_SPACE*2;
-        while(ancestors >= 2) {
-            CGContextMoveToPoint(context, x_value, 0);
-            CGContextAddLineToPoint(context, x_value, rect.size.height);
-            x_value += LINE_SPACE;
-            ancestors--;
-        }
-        CGContextStrokePath(context);
+@synthesize title = _title;
+
+-(id)initWithCoder:(NSCoder *)aDecoder
+{
+    if((self=[super initWithCoder:aDecoder])) {
+        
     }
-}*/
+    return self;
+}
+
+-(void)dealloc
+{
+    [_title release];
+    [super dealloc];
+}
 
 @end
 
@@ -45,7 +38,6 @@
 @synthesize star = _star;
 @synthesize arrow = _arrow;
 @synthesize section = _section;
-@synthesize line = _line;
 @synthesize delegate = _delegate;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -62,7 +54,6 @@
     [_title release];
     [_star release];
     [_arrow release];
-    [_line release];
     [super dealloc];
 }
 
@@ -78,16 +69,28 @@
     if(section != _section) {
         [_section release];
         _section = [section retain];
+    }
+    
+    if(section != nil) {
+        
         self.title.text = section.forum.name;
+        
         if([section.children count] == 0) {
             [self.arrow removeFromSuperview];
+        } else {
+            [self addSubview:self.arrow];
         }
+        
         if(section.expanded) {
             self.arrow.transform = CGAffineTransformMakeRotation(3.14159/2);
+        } else {
+            self.arrow.transform = CGAffineTransformIdentity;
         }
-        self.line.totalAncestors = section.totalAncestors;
+        
         if(section.totalAncestors > 1) {
-            self.arrow.frame = CGRectOffset(self.arrow.frame, LINE_SPACE, 0);
+            self.arrow.center = CGPointMake(LINE_SPACE*3, self.arrow.center.y);
+        } else {
+            self.arrow.center = CGPointMake(LINE_SPACE*2, self.arrow.center.y);
         }
         
         if([self.delegate isAwfulForumSectionFavorited:section]) {

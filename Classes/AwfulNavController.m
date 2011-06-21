@@ -160,7 +160,6 @@
     if(self.hud != nil) {
         NSString *msg = [request.userInfo objectForKey:@"completionMsg"];
         if(msg != nil) {
-            
             self.hud.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"37x-Checkmark.png"]] autorelease];
             self.hud.mode = MBProgressHUDModeCustomView;
             self.hud.labelText = msg;

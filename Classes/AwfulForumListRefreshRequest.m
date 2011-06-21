@@ -33,6 +33,7 @@
 
 -(void)requestFinished
 {
+    [super requestFinished];
     TFHpple *page_data = [[TFHpple alloc] initWithHTMLData:[self responseData]];
     NSArray *forum_elements = [page_data search:@"//select[@name='forumid']/option"];
     
