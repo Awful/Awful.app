@@ -28,8 +28,8 @@
 {
     self = [super init];
     
-    AwfulAppDelegate *del = (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
-    [del disableCache];
+    //AwfulAppDelegate *del = (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
+    //[del disableCache];
     sprung = NO;
     
     [self setUrl:in_url];

@@ -11,19 +11,15 @@
 #import "AwfulPost.h"
 #import "AwfulPage.h"
 #import "AwfulHistory.h"
+#import "AwfulNavigator.h"
+#import "AwfulTableViewController.h"
 
 @class AwfulPageCount;
 
-@interface AwfulThreadList : UITableViewController <AwfulHistoryRecorder> {
+@interface AwfulThreadList : AwfulTableViewController <AwfulHistoryRecorder> {
     NSMutableArray *awfulThreads;
     AwfulForum *forum;
     int swipedRow;
-    
-    UIImageView *titleBar;
-    UIButton *refreshButton;
-    UIButton *stopButton;
-    
-    AwfulPageCount *pages;
     
     UIButton *firstPageButton;
     UIButton *lastPageButton;
@@ -33,14 +29,12 @@
 }
 
 @property (nonatomic, retain) AwfulForum *forum;
-@property (nonatomic, retain) AwfulPageCount *pages;
 @property (nonatomic, retain) NSMutableArray *awfulThreads;
 
 -(id)initWithString : (NSString *)str atPageNum : (int)page_num;
 -(id)initWithAwfulForum : (AwfulForum *)in_forum atPageNum : (int)page_num;
 -(id)initWithAwfulForum : (AwfulForum *)in_forum;
 
--(void)configureTitleBar : (NSString *)title_text;
 -(void)configureButtons;
 -(AwfulThread *)getThreadAtIndexPath : (NSIndexPath *)path;
 -(UIColor *)getBackgroundColorForThread : (AwfulThread *)thread;
@@ -60,14 +54,7 @@
 -(void)choseForumOption : (int)option;
 -(int)getTypeAtIndexPath : (NSIndexPath *)path;
 
--(void)swapToView : (UIView *)v;
--(void)swapToStop;
--(void)stop;
--(void)refresh;
-
 -(UITableViewCell *)makeThreadListCell;
-
--(BOOL)isTitleBarInTable;
 
 -(void)slideToBottom;
 -(void)slideToTop;

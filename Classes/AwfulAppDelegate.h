@@ -7,21 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "AwfulNavController.h"
-#import "AwfulWebCache.h"
-#import "SmilieGrabber.h"
 #import "CrashReportSender.h"
+#import "AwfulNavController.h"
+
+@class AwfulNavigator;
 
 @interface AwfulAppDelegate : NSObject <UIApplicationDelegate, UIWebViewDelegate, CrashReportSenderDelegate> {
-    UIWindow *window;
-    AwfulNavController *navController;
-    AwfulWebCache *cache;
+    UIWindow *_window;
+    UINavigationController *_navigationController;
+    AwfulNavigator *_navigator;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
-@property (nonatomic, retain) IBOutlet AwfulNavController *navController;
-
--(void)enableCache;
--(void)disableCache;
+@property (nonatomic, retain) IBOutlet UINavigationController *navigationController;
+@property (nonatomic, retain) IBOutlet AwfulNavigator *navigator;
 
 @end

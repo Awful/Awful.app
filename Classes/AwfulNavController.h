@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LoginController.h"
 #import "AwfulPost.h"
 #import "AwfulThreadList.h"
 #import "AwfulPage.h"
@@ -22,10 +21,10 @@
 #define MAX_HISTORY 3
 #define MAX_RECORDED_HISTORY 20
 
-@class LoginController;
+@class AwfulLoginController;
 
 @interface AwfulNavController : UINavigationController <UIActionSheetDelegate, UIAlertViewDelegate, MBProgressHUDDelegate> {
-    LoginController *login;
+    AwfulLoginController *login;
     VoteDelegate *vote;
     
     BOOL displayingPostOptions;

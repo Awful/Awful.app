@@ -13,6 +13,7 @@
 #import "AwfulPostBoxController.h"
 #import "AwfulHistory.h"
 #import "PullRefreshTableViewController.h"
+#import "AwfulNavigator.h"
 
 enum {
     THREAD_POS_FIRST,
@@ -40,7 +41,6 @@ enum {
     NSMutableArray *_readPosts;
     NSMutableArray *_unreadPosts;
   
-    AwfulPageCount *pages; 
     AwfulHistory *pageHistory;
     
     AwfulPost *highlightedPost;
@@ -65,7 +65,6 @@ enum {
 }
 
 @property (nonatomic, retain) AwfulThread *thread;
-@property (nonatomic, retain) AwfulPageCount *pages;
 @property (nonatomic, retain) AwfulHistory *pageHistory;
 @property (nonatomic, retain) NSString *currentURL;
 @property (nonatomic, retain) UIWebView *ad;
@@ -87,10 +86,7 @@ enum {
 -(NSString *)getURLSuffix;
 -(void)makeButtons;
 
--(void)swapToView : (UIView *)v;
--(void)refresh;
 -(void)hardRefresh;
--(void)stop;
 -(void)setThreadTitle : (NSString *)in_title;
 
 -(UIWebView *)newWebViewFromAwfulPost : (AwfulPost *)post;

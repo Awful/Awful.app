@@ -7,20 +7,16 @@
 //
 
 #import "AwfulAppDelegate.h"
-#import "AwfulUtil.h"
+#import "AwfulNavigator.h"
 #import "BookmarksController.h"
-#import "TFHpple.h"
 #import "FlurryAPI.h"
-#import "AwfulThreadList.h"
-#import "AwfulPage.h"
-#import "AwfulForumsList.h"
 #import "Appirater.h"
-#import "AwfulConfig.h"
 
 @implementation AwfulAppDelegate
 
-@synthesize window;
-@synthesize navController;
+@synthesize window = _window;
+@synthesize navigationController = _navigationController;
+@synthesize navigator = _navigator;
 
 
 #pragma mark -
@@ -30,15 +26,15 @@
         
     // Override point for customization after application launch.
 
-    cache = nil;
+    //cache = nil;
     
-    [AwfulUtil initializeDatabase];
+    //[AwfulUtil initializeDatabase];
             
-    // Add the tab bar controller's view to the window and display.
-    [window addSubview:navController.view];
-    [window makeKeyAndVisible];
+    
+    [self.window addSubview:self.navigationController.view];
+    [self.window makeKeyAndVisible];
 
-    [self enableCache];
+    //[self enableCache];
     
     [FlurryAPI startSession:@"EU3TLVQM9U8T8QKNI9ID"];
     
@@ -57,9 +53,9 @@
 }
 
 - (void)dealloc {
-    [cache release];
-    [navController release];
-    [window release];
+    [_navigationController release];
+    [_navigator release];
+    [_window release];
     [super dealloc];
 }
 
@@ -91,13 +87,13 @@
     /*
      Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
      */
-     if([navController.modalViewController isMemberOfClass:[UINavigationController class]]) {
-        UINavigationController *nav = (UINavigationController *)navController.modalViewController;
+     /*if([self.navController.modalViewController isMemberOfClass:[UINavigationController class]]) {
+        UINavigationController *nav = (UINavigationController *)self.navController.modalViewController;
         if([nav.topViewController isMemberOfClass:[BookmarksController class]]) {
             BookmarksController *book = (BookmarksController *)nav.topViewController;
             [book refresh];
         }
-     }
+     }*/
 }
 
 
@@ -117,21 +113,22 @@
      */
 }
 
+
 -(void)enableCache
 {
-    if(cache == nil) {
-        NSString *path = [[NSBundle mainBundle] pathForResource:@"awfulcache" ofType:nil];
-        cache = [[AwfulWebCache alloc] initWithMemoryCapacity:512*1024 diskCapacity:10*1024*1024 diskPath:path];
+    /*if(cache == nil) {
+        //NSString *path = [[NSBundle mainBundle] pathForResource:@"awfulcache" ofType:nil];
+        //cache = [[AwfulWebCache alloc] initWithMemoryCapacity:512*1024 diskCapacity:10*1024*1024 diskPath:path];
     }
     //NSLog(@"cache enabled");
     
-    [NSURLCache setSharedURLCache:cache];
+    //[NSURLCache setSharedURLCache:cache];*/
 }
 
 -(void)disableCache
 {
     //NSLog(@"cache disabled");
-    [NSURLCache setSharedURLCache:nil];
+    //[NSURLCache setSharedURLCache:nil];
 }
 
 @end

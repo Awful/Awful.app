@@ -34,7 +34,7 @@
 
 -(void)requestStarted
 {
-    [threadList swapToStop];
+    [super requestStarted];
 }
 
 -(void)requestFinished

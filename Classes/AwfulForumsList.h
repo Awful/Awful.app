@@ -54,8 +54,6 @@
 -(BOOL)isAwfulForumSectionFavorited : (AwfulForumSection *)section;
 -(void)toggleFavoriteForForumSection : (AwfulForumSection *)section;
 
--(void)signOut;
--(void)updateSignedIn;
 -(void)hitDone;
 
 -(IBAction)grabFreshList;

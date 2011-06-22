@@ -30,6 +30,7 @@
 
 -(void)requestFinished
 {
+    [super requestFinished];
     TFHpple *page_data = [[TFHpple alloc] initWithHTMLData:[self responseData]];
     TFHppleElement *name_el = [page_data searchForSingle:@"//div[@class='mainbodytextsmall']/b"];
     if(name_el != nil) {
@@ -54,6 +55,7 @@
 
 -(void)requestFinished
 {
+    [super requestFinished];
     TFHpple *page_data = [[TFHpple alloc] initWithHTMLData:[self responseData]];
     NSArray *options_el = [page_data search:@"//select[@name='umaxposts']//option"];
     

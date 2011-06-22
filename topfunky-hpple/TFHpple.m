@@ -31,7 +31,6 @@
 #import "XPathQuery.h"
 #import "AwfulPost.h"
 #import "AwfulThread.h"
-#import "AwfulWebCache.h"
 
 @implementation TFHpple
 

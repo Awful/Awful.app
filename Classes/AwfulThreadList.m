@@ -16,6 +16,8 @@
 #import "AwfulForumRefreshRequest.h"
 #import "AwfulConfig.h"
 #import "AwfulPageCount.h"
+#import "AwfulLoginController.h"
+#import "AwfulNavigator.h"
 
 #define CELL_UNREAD_POSTS 1
 #define CELL_THREAD_TITLE 2
@@ -42,23 +44,19 @@
 #pragma mark -
 #pragma mark Initialization
 
-@synthesize forum, pages, awfulThreads;
+@synthesize forum, awfulThreads;
 
 -(id)initWithString : (NSString *)str atPageNum : (int)page_num
 {
     if ((self = [super initWithStyle:UITableViewStylePlain])) {
         awfulThreads = [[NSMutableArray alloc] init];
         
-        pages = [[AwfulPageCount alloc] init];
+        AwfulPageCount *pages = [[AwfulPageCount alloc] init];
         pages.currentPage = page_num;
+        self.pages = pages;
+        [pages release];
         
         swipedRow = -1;
-        
-        titleBar = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 45)];
-        refreshButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
-        stopButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
-        
-        [self configureTitleBar:str];
         
         firstPageButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
         lastPageButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
@@ -95,72 +93,13 @@
 }*/
 
 - (void)dealloc {
-    [stopButton release];
-    [refreshButton release];
-    [titleBar release];
     [firstPageButton release];
     [lastPageButton release];
     [nextPageButton release];
     [prevPageButton release];
     [awfulThreads release];
     [forum release];
-    [pages release];
     [super dealloc];
-}
-
--(void)configureTitleBar : (NSString *)title_text
-{
-    UIFont *f = [UIFont fontWithName:@"Helvetica-Bold" size:18.0];
-    
-    UILabel *forum_label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 230, 45)];
-    forum_label.font = f;
-    forum_label.text = title_text;
-    if(title_text == nil) {
-        forum_label.text = @"No Forum Selected (tap bottom-right)";
-    }
-    forum_label.adjustsFontSizeToFitWidth = NO;
-    forum_label.textAlignment = UITextAlignmentCenter;
-    forum_label.textColor = [UIColor whiteColor];
-    forum_label.backgroundColor = [UIColor clearColor];
-    forum_label.numberOfLines = 2;
-    forum_label.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    
-    forum_label.center = CGPointMake(160, 20);
-    forum_label.tag = LABEL_TAG;
-    
-    UILabel *page_label = [[UILabel alloc] initWithFrame:CGRectMake(275, 0, 40, 45)];
-    page_label.font = [UIFont fontWithName:@"Helvetica" size:12.0];
-    page_label.text = [NSString stringWithFormat:@"pg: %d", pages.currentPage];
-    page_label.numberOfLines = 2;
-    page_label.textAlignment = UITextAlignmentCenter;
-    page_label.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-    page_label.textColor = [UIColor whiteColor];
-    page_label.backgroundColor = [UIColor clearColor];
-    page_label.tag = PAGE_TAG;
-    
-    [titleBar setImage:[UIImage imageNamed:@"nav_bar_landscape_bg_iphone.png"]];
-    
-    titleBar.userInteractionEnabled = YES;
-    titleBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    
-    refreshButton.frame = CGRectMake(5, 0, 40, 40);
-    refreshButton.contentMode = UIViewContentModeCenter;
-    [refreshButton setImage:[UIImage imageNamed:@"reload.png"] forState:UIControlStateNormal];
-    [refreshButton addTarget:self action:@selector(refresh) forControlEvents:UIControlEventTouchUpInside];
-    refreshButton.tag = REFRESH_TAG;
-    
-    stopButton.frame = CGRectMake(5, 0, 40, 40);
-    stopButton.contentMode = UIViewContentModeCenter;
-    [stopButton setImage:[UIImage imageNamed:@"stop.png"] forState:UIControlStateNormal];
-    [stopButton addTarget:self action:@selector(stop) forControlEvents:UIControlEventTouchUpInside];
-    stopButton.tag = REFRESH_TAG;
-    
-    [titleBar addSubview:forum_label];
-    [titleBar addSubview:refreshButton];
-    [titleBar addSubview:page_label];
-    
-    [page_label release];
-    [forum_label release];
 }
 
 -(void)configureButtons
@@ -197,20 +136,20 @@
 
 -(void)choseForumOption : (int)option
 {
-    if(option == 0 && pages.currentPage > 1) {
+    if(option == 0 && self.pages.currentPage > 1) {
         [self prevPage];
-    } else if(option == 0 && pages.currentPage == 1) {
+    } else if(option == 0 && self.pages.currentPage == 1) {
         [self nextPage];
-    } else if(option == 1 && pages.currentPage > 1) {
+    } else if(option == 1 && self.pages.currentPage > 1) {
         [self nextPage];
     }
 }
 
 -(void)prevPage
 {
-    if(pages.currentPage > 1) {
+    if(self.pages.currentPage > 1) {
         AwfulNavController *nav = getnav();
-        AwfulThreadList *prev_list = [[AwfulThreadList alloc] initWithAwfulForum:forum atPageNum:pages.currentPage-1];
+        AwfulThreadList *prev_list = [[AwfulThreadList alloc] initWithAwfulForum:forum atPageNum:self.pages.currentPage-1];
         [nav loadForum:prev_list];
         [prev_list release];
     }
@@ -219,7 +158,7 @@
 -(void)nextPage
 {
     AwfulNavController *nav = getnav();
-    AwfulThreadList *next_list = [[AwfulThreadList alloc] initWithAwfulForum:forum atPageNum:pages.currentPage+1];
+    AwfulThreadList *next_list = [[AwfulThreadList alloc] initWithAwfulForum:forum atPageNum:self.pages.currentPage+1];
     [nav loadForum:next_list];
     [next_list release];
 }
@@ -231,7 +170,7 @@
 
 -(NSString *)getURLSuffix
 {
-    return [NSString stringWithFormat:@"forumdisplay.php?forumid=%@&pagenumber=%d", forum.forumID, pages.currentPage];
+    return [NSString stringWithFormat:@"forumdisplay.php?forumid=%@&pagenumber=%d", forum.forumID, self.pages.currentPage];
 }
 
 -(void)loadList
@@ -242,23 +181,21 @@
     [threads release];
 }
 
--(void)swapToView : (UIView *)v
-{
-    if(v == stopButton) {
-        [[refreshButton superview] addSubview:stopButton];
-        [refreshButton removeFromSuperview];
-    } else {
-        [[stopButton superview] addSubview:refreshButton];
-        [stopButton removeFromSuperview];
-    }
+-(void)refresh
+{        
+    [super refresh];
+    
+    AwfulForumRefreshRequest *ref_req = [[AwfulForumRefreshRequest alloc] initWithAwfulThreadList:self];
+    loadRequest(ref_req);
+    [ref_req release];
 }
 
 -(void)stop
 {
+    [super stop];
     AwfulNavController *nav = getnav();
     [nav stopAllRequests];
     
-    [self swapToView:refreshButton];
     
     self.view.userInteractionEnabled = YES;
     [UIView animateWithDuration:0.25 animations:^{
@@ -266,22 +203,9 @@
     }];
 }
 
--(void)swapToStop
-{
-    [self swapToView:stopButton];
-}
-
--(void)refresh
-{        
-    AwfulForumRefreshRequest *ref_req = [[AwfulForumRefreshRequest alloc] initWithAwfulThreadList:self];
-    AwfulNavController *nav = getnav();
-    [nav loadRequest:ref_req];
-    [ref_req release];
-}
-
 -(void)acceptThreads : (NSMutableArray *)in_threads
 {
-    [self swapToView:refreshButton];
+    [super stop];
     
     [awfulThreads release];
     awfulThreads = [in_threads retain];
@@ -306,27 +230,19 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    if([[forum name] isEqualToString:@"FYAD"]) {
-        self.tableView.separatorColor = [UIColor colorWithRed:0.0 green:51.0/255 blue:51.0/255 alpha:1.0];
-    } else {
-        self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
-    }
-
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
     
-    AwfulNavController *nav = getnav();
-    NSArray *items = [nav getToolbarItems];
+    [self.forumLabel setText:self.forum.name];
+    self.delegate.navigationItem.titleView = self.forumLabel;
     
-    [self setToolbarItems:items];
+    AwfulNavigator *nav = getNavigator();
     
     BOOL is_bookmarks = [[self getSaveID] isEqualToString:@"bookmarks"];
-    //[self loadList];
     if(forum.forumID == nil && !is_bookmarks) {
-        if([nav isLoggedIn]) {
-            [nav openBookmarks];
+        if(isLoggedIn()) {
+            [nav tappedBookmarks];
         } else {
-            [nav openForums];
+            [nav tappedForumsList];
         }
     } else if(!is_bookmarks) {
         [self refresh];
@@ -339,11 +255,10 @@
     [super viewWillAppear:animated];
 }*/
 
-
+/*
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    //[self refresh];
-}
+}*/
 
 /*
 - (void)viewWillDisappear:(BOOL)animated {
@@ -403,36 +318,22 @@
 }
 
 -(int)getTypeAtIndexPath : (NSIndexPath *)path
-{
-    int extra = 0;
-    if([self isTitleBarInTable]) {
-        extra = 1;
-    }
-    
-    if(path.row == 0 && [self isTitleBarInTable]) {
-        return TITLE_BAR_CELL;
-    }
-    
-    if(path.row < [awfulThreads count] + extra) {
+{    
+    if(path.row < [awfulThreads count]) {
         return THREAD_CELL;
     }
     
-    if(path.row == [awfulThreads count] + extra) {
+    if(path.row == [awfulThreads count]) {
         return PAGE_NAV_CELL;
     }
     
     NSLog(@"unknown row type in threadlist");
-    return TITLE_BAR_CELL;
+    return THREAD_CELL;
 }
 
 -(AwfulThread *)getThreadAtIndexPath : (NSIndexPath *)path
-{
-    int diff = 0;
-    if([self isTitleBarInTable]) {
-        diff = 1;
-    }
-    
-    int index = path.row - diff;
+{    
+    int index = path.row;
     
     AwfulThread *thread = nil;
     
@@ -450,9 +351,7 @@
     float offwhite = 241.0/255;
     UIColor *back_color = [UIColor colorWithRed:offwhite green:offwhite blue:offwhite alpha:1.0];
     
-    if([[forum name] isEqualToString:@"FYAD"]) {
-        back_color = [UIColor colorWithRed:255.0/255 green:204.0/255 blue:255.0/255 alpha:1.0];
-    } else if(thread.starCategory == AwfulStarCategoryBlue) {
+    if(thread.starCategory == AwfulStarCategoryBlue) {
         back_color = [UIColor colorWithRed:219.0/255 green:232.0/255 blue:245.0/255 alpha:1.0];
     } else if(thread.starCategory == AwfulStarCategoryRed) {
         back_color = [UIColor colorWithRed:242.0/255 green:220.0/255 blue:220.0/255 alpha:1.0];
@@ -468,11 +367,6 @@
 #pragma mark -
 #pragma mark Table view data source
 
--(BOOL)isTitleBarInTable
-{
-    return YES;
-}
-
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // Return the number of sections.
     return 1;
@@ -481,9 +375,6 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
     int total = [awfulThreads count];
-    if([self isTitleBarInTable]) {
-        total++;
-    }
     
     // bottom page-nav cell
     if([awfulThreads count] > 0) {
@@ -499,9 +390,6 @@
     
     int type = [self getTypeAtIndexPath:indexPath];
     switch (type) {
-        case TITLE_BAR_CELL:
-            height = 45;
-            break;
         case THREAD_CELL:
             height = THREAD_HEIGHT;
             break;
@@ -520,15 +408,12 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *reg = @"Cell";
-    static NSString *title_str = @"titleCell";
     static NSString *pagenav_str = @"PageNav";
     
     NSString *ident = nil;
     
     int type = [self getTypeAtIndexPath:indexPath];
-    if(type == TITLE_BAR_CELL) {
-        ident = title_str;
-    } else if(type == THREAD_CELL) {
+    if(type == THREAD_CELL) {
         ident = reg;
     } else if(type == PAGE_NAV_CELL) {
         ident = pagenav_str;
@@ -537,11 +422,7 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ident];
     
     if (cell == nil) {
-        if(ident == title_str) {
-            cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ident] autorelease];
-            [cell.contentView addSubview:titleBar];
-            cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        } else if(ident == pagenav_str) {
+        if(ident == pagenav_str) {
             cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ident] autorelease];
             cell.textLabel.textAlignment = UITextAlignmentCenter;
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -551,9 +432,9 @@
     }
     
     if(type == PAGE_NAV_CELL) {
-        cell.textLabel.text = [NSString stringWithFormat:@"Page %d", pages.currentPage];
+        cell.textLabel.text = [NSString stringWithFormat:@"Page %d", self.pages.currentPage];
         [nextPageButton removeFromSuperview];
-        if(pages.currentPage > 1) {
+        if(self.pages.currentPage > 1) {
             [cell addSubview:prevPageButton];
         } else {
             [prevPageButton removeFromSuperview];
@@ -579,7 +460,7 @@
         
         UIButton *unread = (UIButton *)[cell.contentView viewWithTag:CELL_UNREAD_POSTS];
         UILabel *title_label = (UILabel *)[cell.contentView viewWithTag:CELL_THREAD_TITLE];
-        UILabel *pages_label = (UILabel *)[cell.contentView viewWithTag:CELL_THREAD_PAGES];
+        UILabel *pages_label = nil;//(UILabel *)[cell.contentView viewWithTag:CELL_THREAD_PAGES];
         
         // content of labels
         int total_pages = ((thread.totalReplies-1)/getPostsPerPage()) + 1;
@@ -692,12 +573,12 @@
     [cell.contentView addSubview:unread_button];
     [cell.contentView addSubview:pages_label];
     
-    if([self isTitleBarInTable]) {
+    /*if([self isTitleBarInTable]) {
         UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedRow:)];
         swipe.direction = UISwipeGestureRecognizerDirectionLeft | UISwipeGestureRecognizerDirectionRight;
         [cell addGestureRecognizer:swipe];
         [swipe release];
-    }
+    }*/
     
     [title_label release];
     [pages_label release];
@@ -762,9 +643,8 @@
                 // therefore I'm setting it to last page here
             }
             
-            AwfulNavController *nav = getnav();
             AwfulPage *thread_detail = [[AwfulPage alloc] initWithAwfulThread:thread startAt:start];
-            [nav loadPage:thread_detail];
+            loadContentVC(thread_detail);
             [thread_detail release];  
         }
     }
@@ -773,9 +653,6 @@
 -(void)firstPage
 {
     int spot = swipedRow;
-    if([self isTitleBarInTable]) {
-        spot--;
-    }
     
     if(spot >= [awfulThreads count]) {
         return;
@@ -794,9 +671,7 @@
 -(void)lastPage
 {
     int spot = swipedRow;
-    if([self isTitleBarInTable]) {
-        spot--;
-    }
+
     if(spot >= [awfulThreads count]) {
         return;
     }
@@ -804,9 +679,8 @@
     AwfulThread *thread = [awfulThreads objectAtIndex:spot];
     if(thread.threadID != nil) {
         
-        AwfulNavController *nav = getnav();
         AwfulPage *thread_detail = [[AwfulPage alloc] initWithAwfulThread:thread startAt:THREAD_POS_LAST];
-        [nav loadPage:thread_detail];
+        loadContentVC(thread_detail);
         [thread_detail release];
     }
 }
@@ -848,7 +722,7 @@
 -(id)newRecordedHistory
 {
     AwfulHistory *hist = [[AwfulHistory alloc] init];
-    hist.pageNum = pages.currentPage;
+    hist.pageNum = self.pages.currentPage;
     hist.modelObj = forum;
     hist.historyType = AWFUL_HISTORY_THREADLIST;
     return hist;

@@ -7,8 +7,11 @@
 //
 
 #import "AwfulUser.h"
+#import "AwfulLoginController.h"
 #import "AwfulUserInfoRequest.h"
-#import "AwfulNavController.h"
+#import "AwfulNavigator.h"
+#import "AwfulRequestHandler.h"
+#import "ASINetworkQueue.h"
 #import "AwfulUtil.h"
 
 @implementation AwfulUser
@@ -36,17 +39,20 @@
         NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:path];
         [self setUserName:[dict objectForKey:@"userName"]];
         self.postsPerPage = [[dict objectForKey:@"postsPerPage"] intValue];
-        //NSLog(@"Already Loaded: %@ %d", userName, postsPerPage);
     } else {
-        AwfulUserNameRequest *name_req = [[AwfulUserNameRequest alloc] initWithAwfulUser:self];
-        AwfulUserSettingsRequest *settings_req = [[AwfulUserSettingsRequest alloc] initWithAwfulUser:self];
-        
-        AwfulNavController *nav = getnav();
-        [nav.queue addOperation:name_req];
-        [nav.queue addOperation:settings_req];
-        [nav.queue go];
-        [name_req release];
-        [settings_req release];
+        if(isLoggedIn()) {
+            AwfulUserNameRequest *name_req = [[AwfulUserNameRequest alloc] initWithAwfulUser:self];
+            AwfulUserSettingsRequest *settings_req = [[AwfulUserSettingsRequest alloc] initWithAwfulUser:self];
+            
+            AwfulNavigator *nav = getNavigator();
+            [nav.requestHandler loadAllWithMessage:@"Loading Username..." forRequests:name_req, settings_req, nil];
+            //[nav.requestHandler.queue addOperation:name_req];
+            //loadRequestAndWait(settings_req);
+            //[nav.requestHandler.queue addOperation:settings_req];
+            //[nav.requestHandler.queue go];
+            [name_req release];
+            [settings_req release];
+        }
     }
 }
 

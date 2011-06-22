@@ -30,12 +30,6 @@
 {
     self = [super initWithString:@"Bookmarks" atPageNum:1];
     
-    refreshButton.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-    stopButton.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-    
-    UIView *page_view = [titleBar viewWithTag:PAGE_TAG];
-    [page_view removeFromSuperview];
-    
     UIView *custom_title = [Stylin newCustomNavbarTitleWithText:@"Bookmarks"];
         
     UITapGestureRecognizer *top_tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(slideToTop)];
@@ -75,29 +69,14 @@
 
 
 -(void)viewDidLoad {
-    UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(hitDone)];
-    self.navigationItem.rightBarButtonItem = done;
-    [done release];
-    
-    UIBarButtonItem *ref = [[UIBarButtonItem alloc] initWithCustomView:refreshButton];
-    self.navigationItem.leftBarButtonItem = ref;
-    [ref release];
-
     [super viewDidLoad];
+    
+    UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(hitDone)];
+    self.delegate.navigationItem.rightBarButtonItem = done;
+    [done release];
 
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     //self.navigationItem.rightBarButtonItem = self.editButtonItem;
-}
-
--(void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
-{
-    CGRect stop_rect;
-    if(UIInterfaceOrientationIsPortrait(toInterfaceOrientation)) {
-        stop_rect = CGRectMake(10, 5, 30, 30);
-    } else {
-        stop_rect = CGRectMake(10, 1, 30, 30);
-    }
-    stopButton.frame = stop_rect;
 }
 
 -(void)startTimer
@@ -134,10 +113,10 @@
 
 -(void)prevPage
 {
-    if(pages.currentPage > 1) {
+    if(self.pages.currentPage > 1) {
         [awfulThreads removeAllObjects];
         [self.tableView reloadData];
-        pages.currentPage--;
+        self.pages.currentPage--;
         [self refresh];
     }
 }
@@ -146,7 +125,7 @@
 {
     [awfulThreads removeAllObjects];
     [self.tableView reloadData];
-    pages.currentPage++;
+    self.pages.currentPage++;
     [self refresh];
 }
 
@@ -181,7 +160,7 @@
 
 -(NSString *)getURLSuffix
 {
-    return [NSString stringWithFormat:@"bookmarkthreads.php?pagenumber=%d", pages.currentPage];
+    return [NSString stringWithFormat:@"bookmarkthreads.php?pagenumber=%d", self.pages.currentPage];
 }
 
 -(BOOL)isTitleBarInTable
@@ -207,7 +186,7 @@
     int total = [awfulThreads count];
     
     // bottom page-nav cell
-    if(pages.currentPage > 1 || ([awfulThreads count] > 0)) {
+    if(self.pages.currentPage > 1 || ([awfulThreads count] > 0)) {
         total++;
     }
     

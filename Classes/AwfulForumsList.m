@@ -10,13 +10,15 @@
 #import "FMDatabase.h"
 #import "AwfulForum.h"
 #import "AwfulThreadList.h"
+#import "AwfulNavigator.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulNavController.h"
+#import "AwfulNavigator.h"
 #import "AwfulUtil.h"
 #import "Stylin.h"
 #import "AwfulConfig.h"
 #import "AwfulForumListRefreshRequest.h"
 #import "AwfulForumCell.h"
+#import "AwfulLoginController.h"
 
 #define SECTION_INDEX_OFFSET 1
 
@@ -66,8 +68,10 @@
 @synthesize headerView = _headerView;
 @synthesize refreshCell = _refreshCell;
 
-- (id)initWithStyle:(UITableViewStyle)style {
-    if ((self = [super initWithStyle:style])) {
+
+-(id)init
+{
+    if((self=[super initWithStyle:UITableViewStyleGrouped])) {
         _favorites = [[NSMutableArray alloc] init];
         _forums = [[NSMutableArray alloc] init];
         _forumSections = [[NSMutableArray alloc] init];
@@ -98,69 +102,15 @@
     self.navigationItem.rightBarButtonItem = done;
     [done release];
     
-    [self updateSignedIn];
-    
     self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
     self.tableView.backgroundColor = [UIColor colorWithRed:0 green:0.4 blue:0.6 alpha:1.0];
 }
 
 -(void)hitDone
 {
-    AwfulNavController *nav = getnav();
+    AwfulNavigator *nav = getNavigator();
     [nav dismissModalViewControllerAnimated:YES];
 }
-
--(void)updateSignedIn
-{
-    AwfulNavController *nav = getnav();
-    [nav.user loadUser];
-
-    UIBarButtonItem *sign;
-    BOOL logged_in = [nav isLoggedIn];
-    if(logged_in) {
-        sign = [[UIBarButtonItem alloc] initWithTitle:@"Logout" style:UIBarButtonItemStyleDone target:self action:@selector(signOut)];
-    } else {
-        sign = [[UIBarButtonItem alloc] initWithTitle:@"Login" style:UIBarButtonItemStyleDone target:nav action:@selector(showLogin)];
-    }
-    
-    self.navigationItem.leftBarButtonItem = sign;
-    [sign release];
-}
-
--(void)viewWillAppear:(BOOL)animated
-{
-}
-
--(void)signOut
-{
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log Out Confirm" message:@"Log Out? Are you sure?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Log Out", nil];
-    alert.delegate = self;
-    [alert show];
-    [alert release];
-}
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if(buttonIndex == 1) {
-        NSURL *awful_url = [NSURL URLWithString:@"http://forums.somethingawful.com"];
-        NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:awful_url];
-        
-        for(NSHTTPCookie *cookie in cookies) {
-            [[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteCookie:cookie];
-        }
-        
-        AwfulNavController *nav = getnav();
-        [nav.user killUser];
-        
-        AwfulAppDelegate *del = (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
-        [del disableCache];
-        self.navigationItem.rightBarButtonItem = nil;
-        [self.tableView reloadData];
-        
-        [self updateSignedIn];
-    }
-}
-
 
 /*
 - (void)viewWillAppear:(BOOL)animated {
@@ -184,7 +134,7 @@
 */
 
 // Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+/*- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Return YES for supported orientations
     
     if([AwfulConfig allowRotation:interfaceOrientation]) {
@@ -193,7 +143,7 @@
         return YES;
     }
     return NO;
-}
+}*/
 
 #pragma mark -
 #pragma mark Favorites
@@ -278,12 +228,9 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 
-    AwfulAppDelegate *del = (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
-    AwfulNavController *nav = del.navController;
-    BOOL logged_in = [nav isLoggedIn];
-    if(!logged_in) {
+    if(!isLoggedIn()) {
         return 1;
-    }    
+    }
     
     // Return the number of sections.
     return [self.forumSections count] + SECTION_INDEX_OFFSET + 1;
@@ -426,11 +373,9 @@
 	 [detailViewController release];
 	 */
     
-    AwfulNavController *nav = getnav();
-    
     AwfulForum *forum = [self getForumAtIndexPath:indexPath];
     AwfulThreadList *detail = [[AwfulThreadList alloc] initWithAwfulForum:forum];
-    [nav loadForum:detail];
+    loadContentVC(detail);
     [detail release];
 }
 
@@ -484,8 +429,7 @@
 -(IBAction)grabFreshList
 {
     AwfulForumListRefreshRequest *req = [[AwfulForumListRefreshRequest alloc] initWithForumsList:self];
-    AwfulNavController *nav = getnav();
-    [nav loadRequestAndWait:req];
+    loadRequestAndWait(req);
     [req release];
 }
 

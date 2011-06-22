@@ -20,4 +20,12 @@
     return self;
 }
 
+-(NSString *)description
+{
+    if(self.totalPages != -1) {
+        return [NSString stringWithFormat:@"pg %d of %d", self.currentPage, self.totalPages];
+    }
+    return [NSString stringWithFormat:@"pg %d", self.currentPage];
+}
+
 @end

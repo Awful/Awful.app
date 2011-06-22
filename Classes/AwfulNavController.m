@@ -8,7 +8,6 @@
 
 #import "AwfulNavController.h"
 #import "AwfulForumsList.h"
-#import "AwfulWebCache.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulPage.h"
 #import "AwfulUtil.h"
@@ -19,6 +18,7 @@
 #import "AwfulHistory.h"
 #import "MWPhoto.h"
 #import "MWPhotoBrowser.h"
+#import "AwfulLoginController.h"
 #import "AwfulPageCount.h"
 
 @implementation AwfulNavController
@@ -436,26 +436,11 @@
 
 -(void)showLogin
 {
-    AwfulAppDelegate *del = (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
-    [del disableCache];
-    login = [[LoginController alloc] initWithNibName:@"LoginController" bundle:[NSBundle mainBundle] controller:self];
+    //AwfulAppDelegate *del = (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
+    //[del disableCache];
+    login = [[AwfulLoginController alloc] initWithNibName:@"LoginController" bundle:[NSBundle mainBundle] controller:self];
     [self dismissModalViewControllerAnimated:NO];
     [self presentModalViewController:login animated:NO];
-}
-
--(BOOL)isLoggedIn
-{
-    NSURL *awful_url = [NSURL URLWithString:@"http://forums.somethingawful.com"];
-    NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:awful_url];
-    
-    BOOL logged_in = NO;
-    
-    for(NSHTTPCookie *cookie in cookies) {
-        if([cookie.name isEqualToString:@"bbuserid"]) {
-            logged_in = YES;
-        }
-    }
-    return logged_in;
 }
 
 -(void)tappedTop
@@ -621,7 +606,7 @@
 -(UIViewController *)popViewControllerAnimated:(BOOL)animated
 {
     AwfulAppDelegate *del = (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
-    [del enableCache];
+    //[del enableCache];
     [self setToolbarHidden:NO animated:YES];
     [self setNavigationBarHidden:YES animated:YES];
     
@@ -708,7 +693,8 @@
 AwfulNavController *getnav()
 {
     AwfulAppDelegate *del = (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
-    return del.navController;
+    return nil;
+    //return del.navController;
 }
 
 int getPostsPerPage()

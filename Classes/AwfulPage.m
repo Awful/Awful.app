@@ -58,7 +58,7 @@ float getMinHeight()
 
 @implementation AwfulPage
 
-@synthesize pages, currentURL, thread, pageHistory;
+@synthesize currentURL, thread, pageHistory;
 @synthesize ad, isBookmarked, newPostIndex;
 @synthesize adHTML;
 @synthesize allRawPosts = _allRawPosts;
@@ -93,7 +93,6 @@ float getMinHeight()
         _readPosts = [[NSMutableArray alloc] init];
         _unreadPosts = [[NSMutableArray alloc] init];
         
-        pages = nil;
         highlightedPost = nil;
         newPostIndex = -1;
         oldRotationRow = -1;
@@ -121,44 +120,10 @@ float getMinHeight()
         }
         
         currentURL = [[NSString alloc] initWithFormat:@"showthread.php?threadid=%@%@", thread.threadID, append];
-        
-        UIFont *f = [UIFont fontWithName:@"Helvetica-Bold" size:11.0];
-        
-        UILabel *thread_title_label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 230, 45)];
-        thread_title_label.font = f;
-        thread_title_label.numberOfLines = 3;
-        thread_title_label.text = thread.title;
-        thread_title_label.textAlignment = UITextAlignmentCenter;
-        thread_title_label.textColor = [UIColor whiteColor];
-        thread_title_label.backgroundColor = [UIColor clearColor];
-        thread_title_label.center = CGPointMake(160, 20);
-        thread_title_label.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-        thread_title_label.tag = THREAD_TITLE_LABEL;
-        
-        UILabel *page_label = [[UILabel alloc] initWithFrame:CGRectMake(275, 0, 40, 45)];
-        page_label.font = [UIFont fontWithName:@"Helvetica" size:10.0];
-        page_label.numberOfLines = 2;
-        page_label.textAlignment = UITextAlignmentCenter;
-        page_label.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-        page_label.textColor = [UIColor whiteColor];
-        page_label.backgroundColor = [UIColor clearColor];
-        page_label.tag = PAGE_TAG;
-        
+
         isReplying = NO;
         
         [self makeButtons];
-        
-        titleBar = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 45)];
-        [titleBar setImage:[UIImage imageNamed:@"nav_bar_landscape_bg_iphone.png"]];
-        [titleBar addSubview:thread_title_label];
-        titleBar.userInteractionEnabled = YES;
-        titleBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-        
-        
-        [titleBar addSubview:refreshButton];
-        [titleBar addSubview:page_label];
-        [page_label release];
-        [thread_title_label release];
         
         isBookmarked = NO;
         NSMutableArray *bookmarked_threads = [AwfulUtil newThreadListForForumId:@"bookmarks"];
@@ -175,7 +140,6 @@ float getMinHeight()
 - (void)dealloc {
     [ad release];
     [currentURL release];
-    [pages release];
     [thread release];
     [titleBar release];
     [refreshButton release];
@@ -194,10 +158,10 @@ float getMinHeight()
 
 -(NSString *)getURLSuffix
 {
-    if(pages == nil) {
+    if(self.pages == nil) {
         return currentURL;
     }
-    return [NSString stringWithFormat:@"showthread.php?threadid=%@&pagenumber=%d", thread.threadID, pages.currentPage];
+    return [NSString stringWithFormat:@"showthread.php?threadid=%@&pagenumber=%d", thread.threadID, self.pages.currentPage];
 }
 
 -(void)makeButtons
@@ -225,6 +189,7 @@ float getMinHeight()
     [prevPageButton addTarget:self action:@selector(prevPage) forControlEvents:UIControlEventTouchUpInside];
 }
 
+/*
 -(void)setPages:(AwfulPageCount *)in_page
 {
     if(in_page != pages) {
@@ -234,7 +199,7 @@ float getMinHeight()
         page_label.text = [NSString stringWithFormat:@"pg %d of %d", pages.currentPage, pages.totalPages];
         [self.pageHistory setPageNum:pages.currentPage];
     }
-}
+}*/
 
 -(void)addBookmark
 {
@@ -282,39 +247,13 @@ float getMinHeight()
 
 -(void)setThreadTitle : (NSString *)in_title
 {
-    UILabel *lab = (UILabel *)[titleBar viewWithTag:THREAD_TITLE_LABEL];
-    lab.text = in_title;
-    [thread setTitle:in_title];
-}
-
--(void)swapToView : (UIView *)v
-{
-    if(v == stopButton) {
-        [[refreshButton superview] addSubview:stopButton];
-        [refreshButton removeFromSuperview];
-    } else {
-        [[stopButton superview] addSubview:refreshButton];
-        [stopButton removeFromSuperview];
-    }
-}
-
--(void)refresh
-{
-    [self swapToView:stopButton];
-
-    newPostIndex = -1;
-    oldRotationRow = -1;
-    self.tableView.backgroundColor = [UIColor whiteColor];
-    
-    AwfulNavController *nav = getnav();
-    AwfulPageRefreshRequest *ref_req = [[AwfulPageRefreshRequest alloc] initWithAwfulPage:self];
-    [nav loadRequest:ref_req];
-    [ref_req release];
+    [self.thread setTitle:in_title];
+    [self.threadTitleLabel setText:in_title];
 }
 
 -(void)hardRefresh
 {
-    [self swapToView:stopButton];
+    [super refresh];
     
     newPostIndex = -1;
     oldRotationRow = -1;
@@ -326,14 +265,27 @@ float getMinHeight()
     [self.readPosts removeAllObjects];
     self.tableView.backgroundColor = [UIColor whiteColor];
     
-    AwfulNavController *nav = getnav();
     AwfulPageRefreshRequest *ref_req = [[AwfulPageRefreshRequest alloc] initWithAwfulPage:self];
-    [nav loadRequest:ref_req];
+    loadRequest(ref_req);
+    [ref_req release];
+}
+
+-(void)refresh
+{
+    [super refresh];
+    
+    newPostIndex = -1;
+    oldRotationRow = -1;
+    self.tableView.backgroundColor = [UIColor whiteColor];
+    
+    AwfulPageRefreshRequest *ref_req = [[AwfulPageRefreshRequest alloc] initWithAwfulPage:self];
+    loadRequest(ref_req);
     [ref_req release];
 }
 
 -(void)stop
 {
+    [super stop];
     AwfulNavController *nav = getnav();
     [nav stopAllRequests];
     
@@ -347,7 +299,7 @@ float getMinHeight()
 {
     [self stopLoading];
     
-    bottomAllowed = (pages.currentPage == pages.totalPages);
+    bottomAllowed = (self.pages.currentPage == self.pages.totalPages);
     
     int post_count_diff = [posts count] - [self.allRawPosts count];
     
@@ -465,13 +417,9 @@ float getMinHeight()
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.tableView.separatorColor = [UIColor blackColor];//[UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
-
-    AwfulAppDelegate *del = (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
-    AwfulNavController *nav = del.navController;
-    
-    NSArray *items = [nav getToolbarItems];
-    [self setToolbarItems:items];
+    self.tableView.separatorColor = [UIColor blackColor];
+    [self.threadTitleLabel setText:self.thread.title];
+    self.delegate.navigationItem.titleView = self.threadTitleLabel;
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
@@ -556,13 +504,13 @@ float getMinHeight()
 
 -(void)doneLoadingPage
 {
-    [self swapToView:refreshButton];
+    [super stop];
 }
 
 -(void)nextPage
 {
-    if(pages.currentPage < pages.totalPages) {
-        AwfulPage *next_page = [[AwfulPage alloc] initWithAwfulThread:thread startAt:THREAD_POS_SPECIFIC pageNum:pages.currentPage+1];
+    if(self.pages.currentPage < self.pages.totalPages) {
+        AwfulPage *next_page = [[AwfulPage alloc] initWithAwfulThread:thread startAt:THREAD_POS_SPECIFIC pageNum:self.pages.currentPage+1];
         AwfulNavController *nav = getnav();
         [nav loadPage:next_page];
         [next_page release];
@@ -571,8 +519,8 @@ float getMinHeight()
 
 -(void)prevPage
 {
-    if(pages.currentPage > 1) {
-        AwfulPage *prev_page = [[AwfulPage alloc] initWithAwfulThread:thread startAt:THREAD_POS_SPECIFIC pageNum:pages.currentPage-1];
+    if(self.pages.currentPage > 1) {
+        AwfulPage *prev_page = [[AwfulPage alloc] initWithAwfulThread:thread startAt:THREAD_POS_SPECIFIC pageNum:self.pages.currentPage-1];
         AwfulNavController *nav = getnav();
         [nav loadPage:prev_page];
         [prev_page release];
@@ -775,19 +723,15 @@ float getMinHeight()
 #pragma mark Table view data source
 
 -(int)getTypeAtIndexPath : (NSIndexPath *)path
-{
-    if(path.row == 0) {
-        return TITLE_BAR;
-    } 
-    
+{    
     if([self.renderedPosts count] > 0) {
         
-        int read_posts_extra = 1;
+        int read_posts_extra = 0;
         if([self.readPosts count] > 0) {
-            read_posts_extra = 2;
+            read_posts_extra = 1;
         }
         
-        if(path.row == 1 && [self.readPosts count] > 0) {
+        if(path.row == 0 && [self.readPosts count] > 0) {
             return READ_POSTS_BAR;
         }
         
@@ -810,12 +754,12 @@ float getMinHeight()
         return AD_BAR;
     }
     
-    return TITLE_BAR;
+    return PAGES_LEFT_BAR;
 }
 
 -(UIWebView *)getRenderedPostAtIndexPath : (NSIndexPath *)path
 {
-    int above_extra = 1;
+    int above_extra = 0;
     if([self.readPosts count] > 0) {
         above_extra++;
     }
@@ -834,7 +778,7 @@ float getMinHeight()
 
 -(NSUInteger)getRowForWebView : (UIWebView *)web
 {
-    int above_extra = 1;
+    int above_extra = 0;
     if([self.readPosts count] > 0) {
         above_extra++;
     }
@@ -854,21 +798,20 @@ float getMinHeight()
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
     
-    // title bar at top
-    int rows = 1;
+    int rows = 0;
     if(ad != nil) {
         // ad at bottom
-        rows = 2;
+        rows = 1;
     }
     
     if([self.renderedPosts count] > 0) {
         // X pages left at bottom
-        if(pages.currentPage < pages.totalPages) {
+        if(self.pages.currentPage < self.pages.totalPages) {
             rows++;
         }
         
         // display too short, pull to refresh gets broken
-        if(pages.currentPage == pages.totalPages && totalFinished > 0) {
+        if(self.pages.currentPage == self.pages.totalPages && totalFinished > 0) {
             CGSize size = [self.tableView contentSize];
             if(size.height < self.tableView.frame.size.height) {
                 //rows++;
@@ -895,9 +838,6 @@ float getMinHeight()
     UIWebView *web;
     
     switch (type) {
-        case TITLE_BAR:
-            height = 45;
-            break;
         case READ_POSTS_BAR:
         case PAGES_LEFT_BAR:
             height = 60;
@@ -914,7 +854,7 @@ float getMinHeight()
     }
     
     // single post on page weirdness with pull to refresh
-    if(pages.currentPage == pages.totalPages && type == ITS_A_POST_YOU_IDIOT && web == [self.renderedPosts lastObject]) {        
+    if(self.pages.currentPage == self.pages.totalPages && type == ITS_A_POST_YOU_IDIOT && web == [self.renderedPosts lastObject]) {        
         float web_height = 45;
         for(UIWebView *web in self.renderedPosts) {
             web_height += web.frame.size.height;
@@ -940,16 +880,13 @@ float getMinHeight()
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *web_cell_ident = @"WebCell";
-    static NSString *title_ident = @"titleCell";
     static NSString *page_info_ident = @"PagesInfo";
     static NSString *read_posts_ident = @"ReadPosts";
     NSString *cell_ident = nil;
     
     int row_type = [self getTypeAtIndexPath:indexPath];
     
-    if(row_type == TITLE_BAR) {
-        cell_ident = title_ident;
-    } else if(row_type == ITS_A_POST_YOU_IDIOT || row_type == AD_BAR) {
+    if(row_type == ITS_A_POST_YOU_IDIOT || row_type == AD_BAR) {
         cell_ident = web_cell_ident;
     } else if(row_type == PAGES_LEFT_BAR) {
         cell_ident = page_info_ident;
@@ -969,8 +906,6 @@ float getMinHeight()
             if(web != nil) {
                 [cell.contentView addSubview:web];
             }
-        } else if([cell_ident isEqualToString:title_ident]) {
-            [cell.contentView addSubview:titleBar];
         } else if([cell_ident isEqualToString:page_info_ident] || [cell_ident isEqualToString:read_posts_ident]) {
             cell.textLabel.textAlignment = UITextAlignmentCenter;
             cell.textLabel.backgroundColor = [UIColor colorWithRed:offwhite green:offwhite blue:offwhite alpha:1.0];
@@ -994,12 +929,12 @@ float getMinHeight()
         }
         
     } else if([cell_ident isEqualToString:page_info_ident]) {
-        if(pages.currentPage == pages.totalPages) {
+        if(self.pages.currentPage == self.pages.totalPages) {
             cell.textLabel.text = @"";
-        } else if(pages.currentPage == pages.totalPages - 1) {
+        } else if(self.pages.currentPage == self.pages.totalPages - 1) {
             cell.textLabel.text = @"1 page left.";
          } else {
-            cell.textLabel.text = [NSString stringWithFormat:@"%d pages left.", pages.totalPages-pages.currentPage];
+            cell.textLabel.text = [NSString stringWithFormat:@"%d pages left.", self.pages.totalPages-self.pages.currentPage];
         }
         
         /*[prevPageButton removeFromSuperview];
@@ -1173,9 +1108,7 @@ float getMinHeight()
         [self.unreadPosts removeAllObjects];
         
         [self.unreadPosts addObjectsFromArray:self.allRawPosts];
-        
-        [self swapToView:stopButton];
-        
+                
         for(int i = 0; i < [self.allRawPosts count]; i++) {
             AwfulPost *post = [self.allRawPosts objectAtIndex:i];
             if(i < [self.renderedPosts count]) {
@@ -1203,12 +1136,12 @@ float getMinHeight()
 }
 
 #pragma mark -
-#pragma AwfulHistoryRecorder
+#pragma mark AwfulHistoryRecorder
 
 -(id)newRecordedHistory
 {
     AwfulHistory *hist = [[AwfulHistory alloc] init];
-    hist.pageNum = pages.currentPage;
+    hist.pageNum = self.pages.currentPage;
     hist.modelObj = thread;
     hist.historyType = AWFUL_HISTORY_PAGE;
     [self setRecorder:hist];
