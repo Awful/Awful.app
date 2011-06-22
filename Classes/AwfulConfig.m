@@ -121,20 +121,4 @@
     return ill_allow_it;
 }
 
-+(UIFont *)getCellTitleFont
-{
-    return [UIFont fontWithName:@"Helvetica" size:14.0];
-}
-
-+(UIFont *)getCellUnreadFont
-{
-    return [UIFont fontWithName:@"Helvetica-Bold" size:17.0];
-}
-
-+(UIFont *)getCellPagesFont
-{
-    return [UIFont fontWithName:@"Helvetica" size:10.0];
-
-}
-
 @end

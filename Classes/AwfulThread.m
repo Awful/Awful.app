@@ -34,6 +34,7 @@
     _seen = NO;
     _isStickied = NO;
     _isLocked = NO;
+    _totalUnreadPosts = -1;
     
     return self;
 }

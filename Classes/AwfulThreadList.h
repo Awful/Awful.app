@@ -15,48 +15,77 @@
 #import "AwfulTableViewController.h"
 
 @class AwfulPageCount;
+@class AwfulThread;
+
+@interface AwfulThreadCell : UITableViewCell {
+    UILabel *_threadTitleLabel;
+    UILabel *_pagesLabel;
+    UIButton *_unreadButton;
+    UIImageView *_sticky;
+}
+
+@property (nonatomic, retain) IBOutlet UILabel *threadTitleLabel;
+@property (nonatomic, retain) IBOutlet UILabel *pagesLabel;
+@property (nonatomic, retain) IBOutlet UIButton *unreadButton;
+@property (nonatomic, retain) IBOutlet UIImageView *sticky;
+
+-(void)configureForThread : (AwfulThread *)thread;
+-(UIColor *)getBackgroundColorForThread : (AwfulThread *)thread;
+
+@end
+
+@interface AwfulPageNavCell : UITableViewCell {
+    UIButton *_nextButton;
+    UIButton *_prevButton;
+    UILabel *_pageLabel;
+}
+
+@property (nonatomic, retain) IBOutlet UIButton *nextButton;
+@property (nonatomic, retain) IBOutlet UIButton *prevButton;
+@property (nonatomic, retain) IBOutlet UILabel *pageLabel;
+
+-(void)configureForPageCount : (AwfulPageCount *)pages thread_count : (int)count;
+
+@end
+
+typedef enum {
+    AwfulThreadCellTypeUnknown,
+    AwfulThreadCellTypeThread,
+    AwfulThreadCellTypePageNav
+} AwfulThreadCellType;
 
 @interface AwfulThreadList : AwfulTableViewController <AwfulHistoryRecorder> {
-    NSMutableArray *awfulThreads;
-    AwfulForum *forum;
-    int swipedRow;
+    NSMutableArray *_awfulThreads;
+    AwfulForum *_forum;
     
-    UIButton *firstPageButton;
-    UIButton *lastPageButton;
-    
-    UIButton *nextPageButton;
-    UIButton *prevPageButton;
+    AwfulThreadCell *_threadCell;
+    AwfulPageNavCell *_pageNavCell;
 }
 
 @property (nonatomic, retain) AwfulForum *forum;
 @property (nonatomic, retain) NSMutableArray *awfulThreads;
+@property (nonatomic, retain) IBOutlet AwfulThreadCell *threadCell;
+@property (nonatomic, retain) IBOutlet AwfulPageNavCell *pageNavCell;
 
 -(id)initWithString : (NSString *)str atPageNum : (int)page_num;
 -(id)initWithAwfulForum : (AwfulForum *)in_forum atPageNum : (int)page_num;
 -(id)initWithAwfulForum : (AwfulForum *)in_forum;
 
--(void)configureButtons;
 -(AwfulThread *)getThreadAtIndexPath : (NSIndexPath *)path;
--(UIColor *)getBackgroundColorForThread : (AwfulThread *)thread;
 
 -(void)acceptThreads : (NSMutableArray *)in_threads;
--(void)swipedRow:(UISwipeGestureRecognizer *)gestureRecognizer;
+-(void)loadList;
+-(BOOL)shouldReloadOnViewLoad;
+
 -(void)firstPage;
 -(void)lastPage;
--(void)loadList;
-
--(void)nextPage;
--(void)prevPage;
+-(IBAction)nextPage;
+-(IBAction)prevPage;
 
 -(NSString *)getSaveID;
 -(NSString *)getURLSuffix;
 
 -(void)choseForumOption : (int)option;
--(int)getTypeAtIndexPath : (NSIndexPath *)path;
-
--(UITableViewCell *)makeThreadListCell;
-
--(void)slideToBottom;
--(void)slideToTop;
+-(AwfulThreadCellType)getTypeAtIndexPath : (NSIndexPath *)path;
 
 @end

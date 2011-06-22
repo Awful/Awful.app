@@ -23,8 +23,4 @@
 +(BOOL)isLandscapeLock;
 +(BOOL)allowRotation : (UIInterfaceOrientation)orient;
 
-+(UIFont *)getCellTitleFont;
-+(UIFont *)getCellUnreadFont;
-+(UIFont *)getCellPagesFont;
-
 @end

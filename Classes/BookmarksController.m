@@ -79,6 +79,11 @@
     //self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
+-(BOOL)shouldReloadOnViewLoad
+{
+    return NO;
+}
+
 -(void)startTimer
 {
     if(refreshed || refreshTimer != nil) {
@@ -114,7 +119,7 @@
 -(void)prevPage
 {
     if(self.pages.currentPage > 1) {
-        [awfulThreads removeAllObjects];
+        [self.awfulThreads removeAllObjects];
         [self.tableView reloadData];
         self.pages.currentPage--;
         [self refresh];
@@ -123,7 +128,7 @@
 
 -(void)nextPage
 {
-    [awfulThreads removeAllObjects];
+    [self.awfulThreads removeAllObjects];
     [self.tableView reloadData];
     self.pages.currentPage++;
     [self refresh];
@@ -175,7 +180,7 @@
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     // Return NO if you do not want the specified item to be editable.
-    if(indexPath.row == [awfulThreads count]) {
+    if(indexPath.row == [self.awfulThreads count]) {
         return NO;
     }
     return YES;
@@ -183,10 +188,10 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    int total = [awfulThreads count];
+    int total = [self.awfulThreads count];
     
     // bottom page-nav cell
-    if(self.pages.currentPage > 1 || ([awfulThreads count] > 0)) {
+    if(self.pages.currentPage > 1 || ([self.awfulThreads count] > 0)) {
         total++;
     }
     
@@ -198,9 +203,9 @@
     
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
-        AwfulThread *t = [[awfulThreads objectAtIndex:indexPath.row] retain];
-        [awfulThreads removeObjectAtIndex:indexPath.row];
-        [AwfulUtil saveThreadList:awfulThreads forForumId:[self getSaveID]];       
+        AwfulThread *t = [[self.awfulThreads objectAtIndex:indexPath.row] retain];
+        [self.awfulThreads removeObjectAtIndex:indexPath.row];
+        [AwfulUtil saveThreadList:self.awfulThreads forForumId:[self getSaveID]];       
         [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
         
 

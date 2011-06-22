@@ -19,24 +19,136 @@
 #import "AwfulLoginController.h"
 #import "AwfulNavigator.h"
 
-#define CELL_UNREAD_POSTS 1
-#define CELL_THREAD_TITLE 2
-#define CELL_TOTAL_REPLIES 3
-#define CELL_THREAD_PAGES 4
-#define CELL_THREAD_KILLEDBY 5
-#define CELL_STICKY 6
-#define CELL_THREAD_TAG 7
-
-#define LABEL_TAG 20
-#define REFRESH_TAG 21
-#define FIRST_BUTTON_TAG 22
-#define LAST_BUTTON_TAG 23
-
 #define THREAD_HEIGHT 72
 
-#define TITLE_BAR_CELL 1
-#define THREAD_CELL 2
-#define PAGE_NAV_CELL 3
+@implementation AwfulThreadCell
+
+@synthesize threadTitleLabel = _threadTitleLabel;
+@synthesize pagesLabel = _pagesLabel;
+@synthesize unreadButton = _unreadButton;
+@synthesize sticky = _sticky;
+
+-(void)dealloc
+{
+    [_threadTitleLabel release];
+    [_pagesLabel release];
+    [_unreadButton release];
+    [super dealloc];
+}
+
+-(void)setUnreadButton:(UIButton *)unreadButton
+{
+    if(unreadButton != _unreadButton) {
+        [_unreadButton release];
+        _unreadButton = [unreadButton retain];
+        UIImage *number_back = [UIImage imageNamed:@"number-background.png"];
+        UIImage *stretch_back = [number_back stretchableImageWithLeftCapWidth:15.5 topCapHeight:9.5];
+        [_unreadButton setBackgroundImage:stretch_back forState:UIControlStateDisabled];
+    }
+}
+
+-(void)configureForThread:(AwfulThread *)thread
+{
+    self.contentView.backgroundColor = [self getBackgroundColorForThread:thread];
+    
+    if(thread.isLocked) {
+        self.contentView.alpha = 0.5;
+    } else {
+        self.contentView.alpha = 1.0;
+    }
+    
+    // Content
+    int total_pages = ((thread.totalReplies-1)/getPostsPerPage()) + 1;
+    self.pagesLabel.text = [NSString stringWithFormat:@"Pages: %d", total_pages];
+    
+    NSString *unread_str = [NSString stringWithFormat:@"%d", thread.totalUnreadPosts];
+    [self.unreadButton setTitle:unread_str forState:UIControlStateNormal];
+    
+    self.threadTitleLabel.text = thread.title;
+    
+    self.unreadButton.hidden = NO;
+    self.unreadButton.alpha = 1.0;
+    
+    if(thread.totalUnreadPosts == -1) {
+        self.unreadButton.hidden = YES;
+    } else if(thread.totalUnreadPosts == 0) {
+        [self.unreadButton setTitle:@"0" forState:UIControlStateNormal];
+        self.unreadButton.alpha = 0.5;
+    }
+    
+    // size and positioning of labels
+    float title_width = getWidth() - 100;
+    if(thread.totalUnreadPosts == -1) {
+        title_width = getWidth() - 40;
+    }
+    
+    CGSize title_size = [thread.title sizeWithFont:self.threadTitleLabel.font constrainedToSize:CGSizeMake(title_width, 60)];
+    self.threadTitleLabel.frame = CGRectMake(20, 0, title_width, 60);
+    
+    CGSize unread_size = [unread_str sizeWithFont:self.unreadButton.titleLabel.font];
+    self.unreadButton.frame = CGRectMake(getWidth()-30-unread_size.width, THREAD_HEIGHT/2 - 10, unread_size.width+20, 20);
+    
+    self.pagesLabel.frame = CGRectMake(20, (THREAD_HEIGHT-title_size.height)/2 + title_size.height - 4, 100, 10);
+    
+    // Stickied?
+    [self.sticky removeFromSuperview];
+    if(thread.isStickied) {            
+        self.sticky.frame = CGRectMake(CGRectGetMinX(self.threadTitleLabel.frame)-16, (THREAD_HEIGHT-title_size.height)/2 - 3, 12, 12);
+        [self.contentView addSubview:self.sticky];
+    }
+
+}
+
+-(UIColor *)getBackgroundColorForThread : (AwfulThread *)thread
+{
+    float offwhite = 241.0/255;
+    UIColor *back_color = [UIColor colorWithRed:offwhite green:offwhite blue:offwhite alpha:1.0];
+    
+    if(thread.starCategory == AwfulStarCategoryBlue) {
+        back_color = [UIColor colorWithRed:219.0/255 green:232.0/255 blue:245.0/255 alpha:1.0];
+    } else if(thread.starCategory == AwfulStarCategoryRed) {
+        back_color = [UIColor colorWithRed:242.0/255 green:220.0/255 blue:220.0/255 alpha:1.0];
+    } else if(thread.starCategory == AwfulStarCategoryYellow) {
+        back_color = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:220.0/255 alpha:1.0];
+    } else if(thread.seen) {
+        back_color = [UIColor colorWithRed:219.0/255 green:232.0/255 blue:245.0/255 alpha:1.0];
+    }
+    
+    return back_color;
+}
+
+@end
+
+@implementation AwfulPageNavCell
+
+@synthesize nextButton = _nextButton;
+@synthesize prevButton = _prevButton;
+@synthesize pageLabel = _pageLabel;
+
+-(void)dealloc
+{
+    [_nextButton release];
+    [_prevButton release];
+    [_pageLabel release];
+    [super dealloc];
+}
+
+-(void)configureForPageCount : (AwfulPageCount *)pages thread_count : (int)count
+{
+    self.pageLabel.text = [NSString stringWithFormat:@"Page %d", pages.currentPage];
+    
+    [self.prevButton removeFromSuperview];
+    if(pages.currentPage > 1) {
+        [self addSubview:self.prevButton];
+    }
+    
+    [self.nextButton removeFromSuperview];
+    if(count == 40) {
+        [self addSubview:self.nextButton];
+    }
+}
+
+@end
 
 @implementation AwfulThreadList
 
@@ -44,28 +156,20 @@
 #pragma mark -
 #pragma mark Initialization
 
-@synthesize forum, awfulThreads;
+@synthesize forum = _forum;
+@synthesize awfulThreads = _awfulThreads;
+@synthesize threadCell = _threadCell;
+@synthesize pageNavCell = _pageNavCell;
 
 -(id)initWithString : (NSString *)str atPageNum : (int)page_num
 {
     if ((self = [super initWithStyle:UITableViewStylePlain])) {
-        awfulThreads = [[NSMutableArray alloc] init];
+        _awfulThreads = [[NSMutableArray alloc] init];
         
         AwfulPageCount *pages = [[AwfulPageCount alloc] init];
         pages.currentPage = page_num;
         self.pages = pages;
-        [pages release];
-        
-        swipedRow = -1;
-        
-        firstPageButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
-        lastPageButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
-        
-        nextPageButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
-        prevPageButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
-        
-        [self configureButtons];       
-                
+        [pages release];      
     }
     
     return self;
@@ -73,8 +177,8 @@
 
 -(id)initWithAwfulForum : (AwfulForum *)in_forum atPageNum : (int)page_num
 {
-    forum = [in_forum retain];
-    self = [self initWithString:forum.name atPageNum:page_num];
+    _forum = [in_forum retain];
+    self = [self initWithString:_forum.name atPageNum:page_num];
     return self;
 }
 
@@ -93,45 +197,9 @@
 }*/
 
 - (void)dealloc {
-    [firstPageButton release];
-    [lastPageButton release];
-    [nextPageButton release];
-    [prevPageButton release];
-    [awfulThreads release];
-    [forum release];
+    [_awfulThreads release];
+    [_forum release];
     [super dealloc];
-}
-
--(void)configureButtons
-{
-    UIImage *button_back = [UIImage imageNamed:@"btn_template_bg.png"];
-    UIImage *stretch_back = [button_back stretchableImageWithLeftCapWidth:17 topCapHeight:17];
-    
-    firstPageButton.frame = CGRectMake(160, 5, 65, 50);
-    firstPageButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-    firstPageButton.backgroundColor = [UIColor clearColor];
-    [firstPageButton setTitle:@"First" forState:UIControlStateNormal];
-    [firstPageButton setBackgroundImage:stretch_back forState:UIControlStateNormal];
-    [firstPageButton addTarget:self action:@selector(firstPage) forControlEvents:UIControlEventTouchUpInside];
-    firstPageButton.tag = FIRST_BUTTON_TAG;
-    
-    lastPageButton.frame = CGRectMake(245, 5, 65, 50);
-    lastPageButton.backgroundColor = [UIColor clearColor];
-    lastPageButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-    [lastPageButton setTitle:@"Last" forState:UIControlStateNormal];
-    [lastPageButton setBackgroundImage:stretch_back forState:UIControlStateNormal];
-    [lastPageButton addTarget:self action:@selector(lastPage) forControlEvents:UIControlEventTouchUpInside];
-    lastPageButton.tag = LAST_BUTTON_TAG;
-    
-    nextPageButton.frame = CGRectMake(270, 10, 40, 40);
-    nextPageButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-    [nextPageButton setImage:[UIImage imageNamed:@"arrowright.png"] forState:UIControlStateNormal];
-    [nextPageButton addTarget:self action:@selector(nextPage) forControlEvents:UIControlEventTouchUpInside];
-    
-    prevPageButton.frame = CGRectMake(10, 10, 40, 40);
-    prevPageButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
-    [prevPageButton setImage:[UIImage imageNamed:@"arrowleft.png"] forState:UIControlStateNormal];
-    [prevPageButton addTarget:self action:@selector(prevPage) forControlEvents:UIControlEventTouchUpInside];
 }
 
 -(void)choseForumOption : (int)option
@@ -145,39 +213,20 @@
     }
 }
 
--(void)prevPage
-{
-    if(self.pages.currentPage > 1) {
-        AwfulNavController *nav = getnav();
-        AwfulThreadList *prev_list = [[AwfulThreadList alloc] initWithAwfulForum:forum atPageNum:self.pages.currentPage-1];
-        [nav loadForum:prev_list];
-        [prev_list release];
-    }
-}
-
--(void)nextPage
-{
-    AwfulNavController *nav = getnav();
-    AwfulThreadList *next_list = [[AwfulThreadList alloc] initWithAwfulForum:forum atPageNum:self.pages.currentPage+1];
-    [nav loadForum:next_list];
-    [next_list release];
-}
-
 -(NSString *)getSaveID
 {
-    return forum.forumID;
+    return self.forum.forumID;
 }
 
 -(NSString *)getURLSuffix
 {
-    return [NSString stringWithFormat:@"forumdisplay.php?forumid=%@&pagenumber=%d", forum.forumID, self.pages.currentPage];
+    return [NSString stringWithFormat:@"forumdisplay.php?forumid=%@&pagenumber=%d", self.forum.forumID, self.pages.currentPage];
 }
 
 -(void)loadList
 {
-    [awfulThreads release];
     NSMutableArray *threads = [AwfulUtil newThreadListForForumId:[self getSaveID]];
-    awfulThreads = [threads retain];
+    self.awfulThreads = threads;
     [threads release];
 }
 
@@ -207,17 +256,13 @@
 {
     [super stop];
     
-    [awfulThreads release];
-    awfulThreads = [in_threads retain];
+    self.awfulThreads = in_threads;
     
     float offwhite = 241.0/255;
-    if([[forum name] isEqualToString:@"FYAD"]) {
-        self.tableView.backgroundColor = [UIColor colorWithRed:1.0 green:204.0/255 blue:204.0/255 alpha:1.0];
-    } else {
-        self.tableView.backgroundColor = [UIColor colorWithRed:offwhite green:offwhite blue:offwhite alpha:1.0];
-    }
+    self.tableView.backgroundColor = [UIColor colorWithRed:offwhite green:offwhite blue:offwhite alpha:1.0];
     [self.tableView reloadData];
     self.view.userInteractionEnabled = YES;
+    
     [UIView animateWithDuration:0.25 animations:^{
         self.view.alpha = 1.0;
     }];
@@ -234,21 +279,16 @@
     
     [self.forumLabel setText:self.forum.name];
     self.delegate.navigationItem.titleView = self.forumLabel;
-    
-    AwfulNavigator *nav = getNavigator();
-    
-    BOOL is_bookmarks = [[self getSaveID] isEqualToString:@"bookmarks"];
-    if(forum.forumID == nil && !is_bookmarks) {
-        if(isLoggedIn()) {
-            [nav tappedBookmarks];
-        } else {
-            [nav tappedForumsList];
-        }
-    } else if(!is_bookmarks) {
+        
+    if([self shouldReloadOnViewLoad]) {
         [self refresh];
     }
 }
 
+-(BOOL)shouldReloadOnViewLoad
+{
+    return YES;
+}
 
 /*
 - (void)viewWillAppear:(BOOL)animated {
@@ -271,97 +311,34 @@
 }
 */
 
-// Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    // Return YES for supported orientations
-
-    if([AwfulConfig allowRotation:interfaceOrientation]) {
-        AwfulNavController *nav = getnav();
-        [self setToolbarItems:[nav getToolbarItemsForOrientation:interfaceOrientation]];
-        return YES;
-    }
-    return NO;
-}
-
-- (void)swipedRow:(UISwipeGestureRecognizer *)gestureRecognizer
-{
-    UITableViewCell *cell = (UITableViewCell *)gestureRecognizer.view;
-    NSIndexPath *path = [self.tableView indexPathForCell:cell];
-    
-    int old_swiped = swipedRow;
-    swipedRow = path.row;
-    
-    NSArray *paths;
-    
-    if(swipedRow == old_swiped) {
-        swipedRow = -1;
-        paths = [[NSArray alloc] initWithObjects:path, nil];
-    } else if(old_swiped == -1) {
-        paths = [[NSArray alloc] initWithObjects:path, nil];
-    } else {
-        NSIndexPath *old_path = [NSIndexPath indexPathForRow:old_swiped inSection:0];
-        paths = [[NSArray alloc] initWithObjects:path, old_path, nil];
-    }
-    
-    @try {
-        [self.tableView reloadRowsAtIndexPaths:paths withRowAnimation:UISwipeGestureRecognizerDirectionLeft];
-    } @catch (NSException *exception) {
-    }
-    [paths release];
-}
-
--(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
-{
-    if([awfulThreads count] > 0) {
-        [self.tableView reloadData];
-    }
-}
-
--(int)getTypeAtIndexPath : (NSIndexPath *)path
+-(AwfulThreadCellType)getTypeAtIndexPath : (NSIndexPath *)path
 {    
-    if(path.row < [awfulThreads count]) {
-        return THREAD_CELL;
+    if(path.row < [self.awfulThreads count]) {
+        return AwfulThreadCellTypeThread;
     }
     
-    if(path.row == [awfulThreads count]) {
-        return PAGE_NAV_CELL;
+    if(path.row == [self.awfulThreads count]) {
+        return AwfulThreadCellTypePageNav;
     }
     
-    NSLog(@"unknown row type in threadlist");
-    return THREAD_CELL;
+    return AwfulThreadCellTypeUnknown;
 }
 
 -(AwfulThread *)getThreadAtIndexPath : (NSIndexPath *)path
 {    
-    int index = path.row;
+    if([self getTypeAtIndexPath:path] != AwfulThreadCellTypeThread) {
+        return nil;
+    }
     
     AwfulThread *thread = nil;
     
-    if(index < [awfulThreads count]) {
-        thread = [awfulThreads objectAtIndex:index];
+    if(path.row < [self.awfulThreads count]) {
+        thread = [self.awfulThreads objectAtIndex:path.row];
     } else {
-        NSLog(@"why am I getting a thread out of bounds?");
+        NSLog(@"thread out of bounds");
     }
     
     return thread;
-}
-
--(UIColor *)getBackgroundColorForThread : (AwfulThread *)thread
-{
-    float offwhite = 241.0/255;
-    UIColor *back_color = [UIColor colorWithRed:offwhite green:offwhite blue:offwhite alpha:1.0];
-    
-    if(thread.starCategory == AwfulStarCategoryBlue) {
-        back_color = [UIColor colorWithRed:219.0/255 green:232.0/255 blue:245.0/255 alpha:1.0];
-    } else if(thread.starCategory == AwfulStarCategoryRed) {
-        back_color = [UIColor colorWithRed:242.0/255 green:220.0/255 blue:220.0/255 alpha:1.0];
-    } else if(thread.starCategory == AwfulStarCategoryYellow) {
-        back_color = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:220.0/255 alpha:1.0];
-    } else if(thread.seen) {
-        back_color = [UIColor colorWithRed:219.0/255 green:232.0/255 blue:245.0/255 alpha:1.0];
-    }
-    
-    return back_color;
 }
 
 #pragma mark -
@@ -374,10 +351,10 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    int total = [awfulThreads count];
+    int total = [self.awfulThreads count];
     
     // bottom page-nav cell
-    if([awfulThreads count] > 0) {
+    if([self.awfulThreads count] > 0) {
         total++;
     }
     
@@ -388,17 +365,11 @@
 {
     float height = 5;
     
-    int type = [self getTypeAtIndexPath:indexPath];
-    switch (type) {
-        case THREAD_CELL:
-            height = THREAD_HEIGHT;
-            break;
-        case PAGE_NAV_CELL:
-            height = 60;
-            break;
-            
-        default:
-            break;
+    AwfulThreadCellType type = [self getTypeAtIndexPath:indexPath];
+    if(type == AwfulThreadCellTypeThread) {
+        height = THREAD_HEIGHT;
+    } else if(type == AwfulThreadCellTypePageNav) {
+        height = 60;
     }
     
     return height;
@@ -407,181 +378,42 @@
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    static NSString *reg = @"Cell";
-    static NSString *pagenav_str = @"PageNav";
+    static NSString *threadCell = @"ThreadCell";
+    static NSString *pageNav = @"PageNav";
     
     NSString *ident = nil;
     
-    int type = [self getTypeAtIndexPath:indexPath];
-    if(type == THREAD_CELL) {
-        ident = reg;
-    } else if(type == PAGE_NAV_CELL) {
-        ident = pagenav_str;
+    AwfulThreadCellType type = [self getTypeAtIndexPath:indexPath];
+    if(type == AwfulThreadCellTypeThread) {
+        ident = threadCell;
+    } else if(type == AwfulThreadCellTypePageNav) {
+        ident = pageNav;
     }
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ident];
     
     if (cell == nil) {
-        if(ident == pagenav_str) {
-            cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ident] autorelease];
-            cell.textLabel.textAlignment = UITextAlignmentCenter;
-            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        [[NSBundle mainBundle] loadNibNamed:@"AwfulThreadListCells" owner:self options:nil];
+        
+        if(ident == pageNav) {
+            cell = self.pageNavCell;
         } else {
-            cell = [self makeThreadListCell];
+            cell = self.threadCell;
+            
         }
-    }
-    
-    if(type == PAGE_NAV_CELL) {
-        cell.textLabel.text = [NSString stringWithFormat:@"Page %d", self.pages.currentPage];
-        [nextPageButton removeFromSuperview];
-        if(self.pages.currentPage > 1) {
-            [cell addSubview:prevPageButton];
-        } else {
-            [prevPageButton removeFromSuperview];
-        }
-        if([awfulThreads count] == 40) {
-            [cell addSubview:nextPageButton];
-        }
+        self.threadCell = nil;
+        self.pageNavCell = nil;
     }
     
     // Configure the cell...
-    if(type == THREAD_CELL) {
-
+    if(type == AwfulThreadCellTypeThread) {
         AwfulThread *thread = [self getThreadAtIndexPath:indexPath];
-        
-        cell.contentView.backgroundColor = [self getBackgroundColorForThread:thread];
-        
-        if(thread.isLocked) {
-            cell.contentView.alpha = 0.5;
-        } else {
-            cell.contentView.alpha = 1.0;
-        }
-        
-        
-        UIButton *unread = (UIButton *)[cell.contentView viewWithTag:CELL_UNREAD_POSTS];
-        UILabel *title_label = (UILabel *)[cell.contentView viewWithTag:CELL_THREAD_TITLE];
-        UILabel *pages_label = nil;//(UILabel *)[cell.contentView viewWithTag:CELL_THREAD_PAGES];
-        
-        // content of labels
-        int total_pages = ((thread.totalReplies-1)/getPostsPerPage()) + 1;
-        pages_label.text = [NSString stringWithFormat:@"Pages: %d", total_pages];
-        
-        NSString *unread_str = [NSString stringWithFormat:@"%d", thread.totalUnreadPosts];
-        [unread setTitle:unread_str forState:UIControlStateNormal];
-        
-        title_label.text = thread.title;
-        
-        
-        // visibility of labels
-        if(indexPath.row == swipedRow) {
-            unread.hidden = YES;
-            pages_label.hidden = YES;
-        } else {
-            unread.hidden = NO;
-            pages_label.hidden = NO;
-        }
-        
-        if(thread.totalUnreadPosts == -1) {
-            unread.hidden = YES;
-        } else if(thread.totalUnreadPosts == 0) {
-            [unread setTitle:@"0" forState:UIControlStateNormal];
-            unread.alpha = 0.5;
-        } else {
-            unread.alpha = 1.0;
-        }
-        
-        // size and positioning of labels
-        float title_width = getWidth() - 100;
-        if(thread.totalUnreadPosts == -1) {
-            title_width = getWidth() - 40;
-        }
-        
-        CGSize title_size = [thread.title sizeWithFont:[AwfulConfig getCellTitleFont] constrainedToSize:CGSizeMake(title_width, 60)];
-        title_label.frame = CGRectMake(20, 0, title_width, 60);
-        
-        CGSize unread_size = [unread_str sizeWithFont:[AwfulConfig getCellUnreadFont]];
-        unread.frame = CGRectMake(getWidth()-30-unread_size.width, THREAD_HEIGHT/2 - 10, unread_size.width+20, 20);
-        
-        //pages_label.frame = CGRectMake(5, 26, 100, 10);
-        pages_label.frame = CGRectMake(20, (THREAD_HEIGHT-title_size.height)/2 + title_size.height - 4, 100, 10);
-                              
-        // Stickied?
-        UIView *old_sticky = [cell.contentView viewWithTag:CELL_STICKY];
-        [old_sticky removeFromSuperview];
-                              
-        if(thread.isStickied) {            
-            UIImageView *stick = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sticky.png"]];
-            stick.frame = CGRectMake(CGRectGetMinX(title_label.frame)-16, (THREAD_HEIGHT-title_size.height)/2 - 3, 12, 12);
-            stick.tag = CELL_STICKY;
-            [cell.contentView addSubview:stick];
-            [stick release];
-        }
-        
-        // Swiped?
-        if(indexPath.row == swipedRow) {
-            title_label.frame = CGRectMake(CGRectGetMinX(title_label.frame), CGRectGetMinY(title_label.frame), CGRectGetWidth(title_label.frame)-110, CGRectGetHeight(title_label.frame));
-            [cell addSubview:firstPageButton];
-            [cell addSubview:lastPageButton];
-        } else {
-            UIView *first_throwaway = [cell viewWithTag:FIRST_BUTTON_TAG];
-            [first_throwaway removeFromSuperview];
-            UIView *last_throwaway = [cell viewWithTag:LAST_BUTTON_TAG];
-            [last_throwaway removeFromSuperview];
-        }
+        AwfulThreadCell *thread_cell = (AwfulThreadCell *)cell;
+        [thread_cell configureForThread:thread];
+    } else if(type == AwfulThreadCellTypePageNav) {
+        AwfulPageNavCell *nav_cell = (AwfulPageNavCell *)cell;
+        [nav_cell configureForPageCount:self.pages thread_count:[self.awfulThreads count]];
     }
-    
-    return cell;
-}
-
-
--(UITableViewCell *)makeThreadListCell
-{
-    UITableViewCell *cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"] autorelease];
-    
-    UIImage *number_back = [UIImage imageNamed:@"number-background.png"];
-    UIImage *stretch_back = [number_back stretchableImageWithLeftCapWidth:15.5 topCapHeight:9.5];
-    
-    UIButton *unread_button = [UIButton buttonWithType:UIButtonTypeCustom];
-    unread_button.frame = CGRectMake(50, 5, 32, 20);
-    unread_button.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-    [unread_button setBackgroundImage:stretch_back forState:UIControlStateDisabled];
-    unread_button.enabled = NO;
-    unread_button.titleLabel.font = [AwfulConfig getCellUnreadFont];;
-    unread_button.titleLabel.textAlignment = UITextAlignmentCenter;
-    unread_button.titleLabel.textColor = [UIColor whiteColor];
-    unread_button.tag = CELL_UNREAD_POSTS;
-    
-    UILabel *pages_label = [[UILabel alloc] initWithFrame:CGRectMake(277, 40, 35, 10)];
-    pages_label.font = [AwfulConfig getCellPagesFont];
-    pages_label.tag = CELL_THREAD_PAGES;
-    pages_label.textColor = [UIColor colorWithRed:0.5 green:0.5 blue:0.5 alpha:1.0];
-    pages_label.textAlignment = UITextAlignmentLeft;
-    pages_label.backgroundColor = [UIColor clearColor];
-    pages_label.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
-    
-    UILabel *title_label = [[UILabel alloc] initWithFrame:CGRectMake(5, 0, getWidth()-80, 68)];
-    title_label.numberOfLines = 3;
-    title_label.textAlignment = UITextAlignmentLeft;
-    title_label.tag = CELL_THREAD_TITLE;
-    title_label.backgroundColor = [UIColor clearColor];
-    title_label.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    title_label.font = [AwfulConfig getCellTitleFont];
-    
-    float offwhite = 241.0/255;
-    cell.contentView.backgroundColor = [UIColor colorWithRed:offwhite green:offwhite blue:offwhite alpha:1.0];
-    [cell.contentView addSubview:title_label];
-    [cell.contentView addSubview:unread_button];
-    [cell.contentView addSubview:pages_label];
-    
-    /*if([self isTitleBarInTable]) {
-        UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedRow:)];
-        swipe.direction = UISwipeGestureRecognizerDirectionLeft | UISwipeGestureRecognizerDirectionRight;
-        [cell addGestureRecognizer:swipe];
-        [swipe release];
-    }*/
-    
-    [title_label release];
-    [pages_label release];
     
     return cell;
 }
@@ -628,8 +460,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
      
-    int type = [self getTypeAtIndexPath:indexPath];
-    if(type == THREAD_CELL) {
+    AwfulThreadCellType type = [self getTypeAtIndexPath:indexPath];
+    
+    if(type == AwfulThreadCellTypeThread) {
         
         AwfulThread *thread = [self getThreadAtIndexPath:indexPath];
         
@@ -649,7 +482,7 @@
         }
     }
 }
-
+/*
 -(void)firstPage
 {
     int spot = swipedRow;
@@ -683,22 +516,22 @@
         loadContentVC(thread_detail);
         [thread_detail release];
     }
+}*/
+
+-(IBAction)prevPage
+{
+    if(self.pages.currentPage > 1) {
+        AwfulThreadList *prev_list = [[AwfulThreadList alloc] initWithAwfulForum:self.forum atPageNum:self.pages.currentPage-1];
+        loadContentVC(prev_list);
+        [prev_list release];
+    }
 }
 
--(void)slideToBottom
+-(IBAction)nextPage
 {
-    /*if([awfulThreads count] > 0) {
-        NSIndexPath *path = [NSIndexPath indexPathForRow:[awfulThreads count]-1 inSection:0];
-        [self.tableView scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-    }*/
-}
-
--(void)slideToTop
-{
-    /*if([awfulThreads count] > 0) {
-        NSIndexPath *path = [NSIndexPath indexPathForRow:0 inSection:0];
-        [self.tableView scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionTop animated:YES];
-    }*/
+    AwfulThreadList *next_list = [[AwfulThreadList alloc] initWithAwfulForum:self.forum atPageNum:self.pages.currentPage+1];
+    loadContentVC(next_list);
+    [next_list release];
 }
 
 #pragma mark -
@@ -723,7 +556,7 @@
 {
     AwfulHistory *hist = [[AwfulHistory alloc] init];
     hist.pageNum = self.pages.currentPage;
-    hist.modelObj = forum;
+    hist.modelObj = self.forum;
     hist.historyType = AWFUL_HISTORY_THREADLIST;
     return hist;
 }
