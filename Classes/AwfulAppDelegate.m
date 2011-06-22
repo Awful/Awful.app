@@ -8,7 +8,6 @@
 
 #import "AwfulAppDelegate.h"
 #import "AwfulNavigator.h"
-#import "BookmarksController.h"
 #import "FlurryAPI.h"
 #import "Appirater.h"
 

@@ -32,6 +32,8 @@
 
 -(void)requestFinished
 {
+    [super requestFinished];
+    
     NSURL *edit_url = [NSURL URLWithString:@"http://forums.somethingawful.com/editpost.php"];
     ASIFormDataRequest *form = [ASIFormDataRequest requestWithURL:edit_url];
     

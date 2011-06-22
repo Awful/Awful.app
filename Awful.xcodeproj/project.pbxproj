@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		10241B781247DF7F00EE71CA /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 10241B771247DF7F00EE71CA /* Default.png */; };
 		107CF84211FE7107007C16F4 /* AwfulNavController.m in Sources */ = {isa = PBXBuildFile; fileRef = 107CF84111FE7107007C16F4 /* AwfulNavController.m */; };
-		107CF8B411FE94E7007C16F4 /* BookmarksController.m in Sources */ = {isa = PBXBuildFile; fileRef = 107CF8B311FE94E7007C16F4 /* BookmarksController.m */; };
+		107CF8B411FE94E7007C16F4 /* AwfulBookmarksController.m in Sources */ = {isa = PBXBuildFile; fileRef = 107CF8B311FE94E7007C16F4 /* AwfulBookmarksController.m */; };
 		107CF8CD11FF550A007C16F4 /* TFHpple.m in Sources */ = {isa = PBXBuildFile; fileRef = 107CF8C811FF550A007C16F4 /* TFHpple.m */; };
 		107CF8CE11FF550A007C16F4 /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 107CF8CA11FF550A007C16F4 /* TFHppleElement.m */; };
 		107CF8CF11FF550A007C16F4 /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 107CF8CC11FF550A007C16F4 /* XPathQuery.m */; };
@@ -603,8 +603,8 @@
 		10241B771247DF7F00EE71CA /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		107CF84011FE7107007C16F4 /* AwfulNavController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNavController.h; sourceTree = "<group>"; };
 		107CF84111FE7107007C16F4 /* AwfulNavController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNavController.m; sourceTree = "<group>"; };
-		107CF8B211FE94E7007C16F4 /* BookmarksController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarksController.h; sourceTree = "<group>"; };
-		107CF8B311FE94E7007C16F4 /* BookmarksController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarksController.m; sourceTree = "<group>"; };
+		107CF8B211FE94E7007C16F4 /* AwfulBookmarksController.h */ = {isa = PBXFileReference; fileEncoding = 4; path = AwfulBookmarksController.h; sourceTree = "<group>"; };
+		107CF8B311FE94E7007C16F4 /* AwfulBookmarksController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulBookmarksController.m; sourceTree = "<group>"; };
 		107CF8C711FF550A007C16F4 /* TFHpple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TFHpple.h; path = "topfunky-hpple/TFHpple.h"; sourceTree = "<group>"; };
 		107CF8C811FF550A007C16F4 /* TFHpple.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TFHpple.m; path = "topfunky-hpple/TFHpple.m"; sourceTree = "<group>"; };
 		107CF8C911FF550A007C16F4 /* TFHppleElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TFHppleElement.h; path = "topfunky-hpple/TFHppleElement.h"; sourceTree = "<group>"; };
@@ -1353,8 +1353,8 @@
 			children = (
 				107CFA5011FF90A8007C16F4 /* AwfulThreadList.h */,
 				107CFA5111FF90A8007C16F4 /* AwfulThreadList.m */,
-				107CF8B211FE94E7007C16F4 /* BookmarksController.h */,
-				107CF8B311FE94E7007C16F4 /* BookmarksController.m */,
+				107CF8B211FE94E7007C16F4 /* AwfulBookmarksController.h */,
+				107CF8B311FE94E7007C16F4 /* AwfulBookmarksController.m */,
 				11C1E97113B2891C008A0BE9 /* AwfulThreadListCells.xib */,
 			);
 			name = AwfulThreadList;
@@ -2758,7 +2758,7 @@
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
 				1D3623260D0F684500981E51 /* AwfulAppDelegate.m in Sources */,
 				107CF84211FE7107007C16F4 /* AwfulNavController.m in Sources */,
-				107CF8B411FE94E7007C16F4 /* BookmarksController.m in Sources */,
+				107CF8B411FE94E7007C16F4 /* AwfulBookmarksController.m in Sources */,
 				107CF8CD11FF550A007C16F4 /* TFHpple.m in Sources */,
 				107CF8CE11FF550A007C16F4 /* TFHppleElement.m in Sources */,
 				107CF8CF11FF550A007C16F4 /* XPathQuery.m in Sources */,

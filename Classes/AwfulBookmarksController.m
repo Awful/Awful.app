@@ -6,61 +6,47 @@
 //  Copyright 2010 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "BookmarksController.h"
-#import "AwfulAppDelegate.h"
-#import "AwfulNavController.h"
-#import "AwfulThread.h"
-#import "AwfulThreadList.h"
-#import "TFHpple.h"
-#import "AwfulPage.h"
+#import "AwfulBookmarksController.h"
 #import "AwfulUtil.h"
-#import "AwfulParse.h"
-#import "Stylin.h"
-#import "ASIFormDataRequest.h"
 #import "AwfulConfig.h"
+#import "AwfulForumRefreshRequest.h"
+#import "AwfulNavigator.h"
 #import "AwfulPageCount.h"
+#import "ASIFormDataRequest.h"
 
-@implementation BookmarksController
+@implementation AwfulBookmarksController
 
 
 #pragma mark -
 #pragma mark Initialization
 
+@synthesize refreshTimer = _refreshTimer;
+@synthesize refreshed = _refreshed;
+
 -(id)init
 {
     self = [super initWithString:@"Bookmarks" atPageNum:1];
     
-    UIView *custom_title = [Stylin newCustomNavbarTitleWithText:@"Bookmarks"];
+    if(self) {
+                
+        NSMutableArray *old_bookmarks = [AwfulUtil newThreadListForForumId:[self getSaveID]];
+        self.awfulThreads = old_bookmarks;
+        [old_bookmarks release];
         
-    UITapGestureRecognizer *top_tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(slideToTop)];
-    [custom_title addGestureRecognizer:top_tap];
-    [top_tap release];
-    
-    [self.navigationItem setTitleView:custom_title];
-    [custom_title release];
-    
-    NSMutableArray *old_bookmarks = [AwfulUtil newThreadListForForumId:[self getSaveID]];
-    [self setAwfulThreads:old_bookmarks];
-    [old_bookmarks release];
-    
-    AwfulForumRefreshRequest *ref_req = [[AwfulForumRefreshRequest alloc] initWithAwfulThreadList:self];
-    AwfulNavController *nav = getnav();
-    [nav setBookmarksRefreshReq:ref_req];
-    [ref_req release];
-    
-    self.tableView.delegate = self;
-    
-    refreshed = NO;
-    
-    refreshTimer = nil;
-    [self startTimer];
+        self.tableView.delegate = self;
+        
+        _refreshed = NO;
+        
+        _refreshTimer = nil;
+        //[self startTimer];
+    }
     
     return self;
 }
 
 -(void)dealloc
 {
-    [refreshTimer release];
+    [_refreshTimer release];
     [super dealloc];
 }
 
@@ -71,37 +57,35 @@
 -(void)viewDidLoad {
     [super viewDidLoad];
     
+    self.forumLabel.text = @"Bookmarks";
+    self.navigationItem.titleView = self.forumLabel;
+    
     UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(hitDone)];
-    self.delegate.navigationItem.rightBarButtonItem = done;
+    self.navigationItem.rightBarButtonItem = done;
     [done release];
-
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    //self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 -(BOOL)shouldReloadOnViewLoad
 {
-    return NO;
+    return YES;
 }
 
 -(void)startTimer
 {
-    if(refreshed || refreshTimer != nil) {
+    if(self.refreshed || self.refreshTimer != nil) {
         return;
     }
     
-    AwfulNavController *nav = getnav();
+    AwfulNavigator *nav = getNavigator();
     float delay = [AwfulConfig bookmarksDelay];
-    refreshTimer = [NSTimer scheduledTimerWithTimeInterval:delay target:nav selector:@selector(callBookmarksRefresh) userInfo:nil repeats:NO];
-    [refreshTimer retain];
+    self.refreshTimer = [NSTimer scheduledTimerWithTimeInterval:delay target:nav selector:@selector(callBookmarksRefresh) userInfo:nil repeats:NO];
 }
 
 -(void)endTimer
 {
-    if([refreshTimer isValid]) {
-        [refreshTimer invalidate];
-        [refreshTimer release];
-        refreshTimer = nil;
+    if([self.refreshTimer isValid]) {
+        [self.refreshTimer invalidate];
+        self.refreshTimer = nil;
     }
 }
 
@@ -112,7 +96,7 @@
     [UIView animateWithDuration:0.25 animations:^{
         self.view.alpha = 0.3;
     }];
-    refreshed = YES;
+    self.refreshed = YES;
     [super refresh];
 }
 
@@ -154,7 +138,7 @@
 -(void)hitDone
 {
     [self endTimer];
-    AwfulNavController *nav = getnav();
+    AwfulNavigator *nav = getNavigator();
     [nav dismissModalViewControllerAnimated:YES];
 }
 
@@ -166,15 +150,6 @@
 -(NSString *)getURLSuffix
 {
     return [NSString stringWithFormat:@"bookmarkthreads.php?pagenumber=%d", self.pages.currentPage];
-}
-
--(BOOL)isTitleBarInTable
-{
-    return NO;
-}
-
--(void)swipedRow:(UISwipeGestureRecognizer *)gestureRecognizer
-{
 }
 
 // Override to support conditional editing of the table view.
@@ -203,10 +178,10 @@
     
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
-        AwfulThread *t = [[self.awfulThreads objectAtIndex:indexPath.row] retain];
+        AwfulThread *thread = [[self.awfulThreads objectAtIndex:indexPath.row] retain];
         [self.awfulThreads removeObjectAtIndex:indexPath.row];
         [AwfulUtil saveThreadList:self.awfulThreads forForumId:[self getSaveID]];       
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
+        [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
         
 
         ASIFormDataRequest *req = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"http://forums.somethingawful.com/bookmarkthreads.php"]];
@@ -214,12 +189,11 @@
         
         [req setPostValue:@"1" forKey:@"json"];
         [req setPostValue:@"remove" forKey:@"action"];
-        [req setPostValue:t.threadID forKey:@"threadid"];
+        [req setPostValue:thread.threadID forKey:@"threadid"];
         
-        AwfulNavController *nav = getnav();
-        [nav loadRequestAndWait:req];
+        loadRequestAndWait(req);
         
-        [t release];
+        [thread release];
 
     }   
     else if (editingStyle == UITableViewCellEditingStyleInsert) {

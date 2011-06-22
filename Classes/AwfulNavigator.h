@@ -37,6 +37,8 @@
 
 -(void)tappedThreeTimes : (UITapGestureRecognizer *)gesture;
 
+-(void)callBookmarksRefresh;
+
 @end
 
 AwfulNavigator *getNavigator();

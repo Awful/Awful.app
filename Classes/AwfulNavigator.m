@@ -14,6 +14,7 @@
 #import "AwfulRequestHandler.h"
 #import "AwfulPageCount.h"
 #import "AwfulTableViewController.h"
+#import "AwfulBookmarksController.h"
 #import "AwfulUser.h"
 
 @implementation AwfulNavigator
@@ -98,7 +99,12 @@
 
 -(IBAction)tappedBookmarks
 {
+    AwfulBookmarksController *books = [[AwfulBookmarksController alloc] init];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:books];
     
+    [self presentModalViewController:nav animated:YES];
+    [nav release];
+    [books release];
 }
 
 -(IBAction)tappedMore
@@ -106,6 +112,11 @@
     AwfulExtrasController *extras = [[AwfulExtrasController alloc] init];
     [self.navigationController pushViewController:extras animated:YES];
     [extras release];
+}
+
+-(void)callBookmarksRefresh
+{
+    
 }
 
 #pragma mark Awful Content Navigation

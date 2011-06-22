@@ -30,6 +30,7 @@
 
 -(void)requestFinished
 {
+    [super requestFinished];
     NSString *raw_s = [[NSString alloc] initWithData:[self responseData] encoding:NSASCIIStringEncoding];
     NSData *converted = [raw_s dataUsingEncoding:NSUTF8StringEncoding];
     [raw_s release];

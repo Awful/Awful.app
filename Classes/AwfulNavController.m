@@ -12,7 +12,7 @@
 #import "AwfulPage.h"
 #import "AwfulUtil.h"
 #import "AwfulThreadList.h"
-#import "BookmarksController.h"
+#import "AwfulBookmarksController.h"
 #import "AwfulConfig.h"
 #import "OtherWebController.h"
 #import "AwfulHistory.h"
@@ -384,7 +384,7 @@
 }
 
 -(void)openBookmarks
-{
+{/*
     BookmarksController *book = [[BookmarksController alloc] init];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:book];
     if([AwfulConfig isColorSchemeBlack]) {
@@ -394,7 +394,7 @@
     }
     [self presentModalViewController:nav animated:YES];
     [nav release];
-    [book release];
+    [book release];*/
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
