@@ -572,6 +572,7 @@
 		111386C81343A64000C33617 /* AwfulHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = 111386C71343A64000C33617 /* AwfulHistory.m */; };
 		115A05DA134814B6004FDCE5 /* arrowright.png in Resources */ = {isa = PBXBuildFile; fileRef = 115A05D9134814B6004FDCE5 /* arrowright.png */; };
 		115A05DF13490D39004FDCE5 /* dotdotdot.png in Resources */ = {isa = PBXBuildFile; fileRef = 115A05DE13490D39004FDCE5 /* dotdotdot.png */; };
+		1162233E13B2D49F0035320A /* AwfulTestPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 1162233D13B2D49F0035320A /* AwfulTestPage.m */; };
 		1165DBA113AFD31A00AA8010 /* AwfulForumHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1165DBA013AFD31A00AA8010 /* AwfulForumHeaderView.xib */; };
 		1165DBAC13B0196000AA8010 /* forumslist in Resources */ = {isa = PBXBuildFile; fileRef = 1165DBAB13B0196000AA8010 /* forumslist */; };
 		1165DBAE13B01D0000AA8010 /* AwfulForumRefreshButton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1165DBAD13B01D0000AA8010 /* AwfulForumRefreshButton.xib */; };
@@ -603,7 +604,7 @@
 		10241B771247DF7F00EE71CA /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		107CF84011FE7107007C16F4 /* AwfulNavController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNavController.h; sourceTree = "<group>"; };
 		107CF84111FE7107007C16F4 /* AwfulNavController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNavController.m; sourceTree = "<group>"; };
-		107CF8B211FE94E7007C16F4 /* AwfulBookmarksController.h */ = {isa = PBXFileReference; fileEncoding = 4; path = AwfulBookmarksController.h; sourceTree = "<group>"; };
+		107CF8B211FE94E7007C16F4 /* AwfulBookmarksController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulBookmarksController.h; sourceTree = "<group>"; };
 		107CF8B311FE94E7007C16F4 /* AwfulBookmarksController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulBookmarksController.m; sourceTree = "<group>"; };
 		107CF8C711FF550A007C16F4 /* TFHpple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TFHpple.h; path = "topfunky-hpple/TFHpple.h"; sourceTree = "<group>"; };
 		107CF8C811FF550A007C16F4 /* TFHpple.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TFHpple.m; path = "topfunky-hpple/TFHpple.m"; sourceTree = "<group>"; };
@@ -1221,6 +1222,8 @@
 		111386C71343A64000C33617 /* AwfulHistory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulHistory.m; sourceTree = "<group>"; };
 		115A05D9134814B6004FDCE5 /* arrowright.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = arrowright.png; path = images/arrowright.png; sourceTree = "<group>"; };
 		115A05DE13490D39004FDCE5 /* dotdotdot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dotdotdot.png; path = images/dotdotdot.png; sourceTree = "<group>"; };
+		1162233C13B2D49F0035320A /* AwfulTestPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTestPage.h; sourceTree = "<group>"; };
+		1162233D13B2D49F0035320A /* AwfulTestPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTestPage.m; sourceTree = "<group>"; };
 		1165DBA013AFD31A00AA8010 /* AwfulForumHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AwfulForumHeaderView.xib; sourceTree = "<group>"; };
 		1165DBAB13B0196000AA8010 /* forumslist */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = forumslist; sourceTree = "<group>"; };
 		1165DBAD13B01D0000AA8010 /* AwfulForumRefreshButton.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AwfulForumRefreshButton.xib; sourceTree = "<group>"; };
@@ -1363,12 +1366,14 @@
 		107CFB5E1201DDBE007C16F4 /* AwfulPage */ = {
 			isa = PBXGroup;
 			children = (
-				10D4987F129A1407008EF8C0 /* AwfulPostBoxController.h */,
-				10D49880129A1407008EF8C0 /* AwfulPostBoxController.m */,
 				107CFB561201DAE2007C16F4 /* AwfulPage.h */,
 				107CFB571201DAE2007C16F4 /* AwfulPage.m */,
+				10D4987F129A1407008EF8C0 /* AwfulPostBoxController.h */,
+				10D49880129A1407008EF8C0 /* AwfulPostBoxController.m */,
 				109A20C512A06880006DB267 /* AwfulPageNavController.h */,
 				109A20C612A06880006DB267 /* AwfulPageNavController.m */,
+				1162233C13B2D49F0035320A /* AwfulTestPage.h */,
+				1162233D13B2D49F0035320A /* AwfulTestPage.m */,
 			);
 			name = AwfulPage;
 			sourceTree = "<group>";
@@ -2818,6 +2823,7 @@
 				1165DBB813B11EF900AA8010 /* AwfulExtrasController.m in Sources */,
 				1165DBC513B12B0B00AA8010 /* AwfulRequestHandler.m in Sources */,
 				11A6CE8313B1489C00AADE7B /* AwfulTableViewController.m in Sources */,
+				1162233E13B2D49F0035320A /* AwfulTestPage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

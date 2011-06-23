@@ -46,12 +46,14 @@
     
     NSString *css = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"post" ofType:@"css"] encoding:NSUTF8StringEncoding error:nil];
 
-    NSString *parsed_post_body = [AwfulParse parseThumbnails:post_body];
-    parsed_post_body = [AwfulParse parseYouTubes:parsed_post_body];
+    //NSString *parsed_post_body = [AwfulParse parseThumbnails:post_body];
+    //parsed_post_body = [AwfulParse parseYouTubes:parsed_post_body];
+    NSString *parsed_post_body = [AwfulParse parseYouTubes:post_body];
 
-    NSString *html = [NSString stringWithFormat:@"<html><head><style type='text/css'>%@</style></head><body class='%@'>%@%@</body></html>", css, alt, name_avatar_box, parsed_post_body];
-    html = [html stringByReplacingOccurrencesOfString:@"<td class=\"postbody\">" withString:@"<div class='postbody'>"];
-    html = [html stringByReplacingOccurrencesOfString:@"</td>" withString:@"</div>"];
+    //NSString *html = [NSString stringWithFormat:@"<html><head><style type='text/css'>%@</style></head><body class='%@'>%@%@</body></html>", css, alt, name_avatar_box, parsed_post_body];
+    NSString *html = [NSString stringWithFormat:@"%@<table><tr>%@</tr></table>", name_avatar_box, parsed_post_body];
+    //html = [html stringByReplacingOccurrencesOfString:@"<td class=\"postbody\">" withString:@"<div class='postbody'>"];
+    //html = [html stringByReplacingOccurrencesOfString:@"</td>" withString:@"</div>"];
     //html = [html stringByReplacingOccurrencesOfString:@"<!-- EndContentMarker -->\n\n\n" withString:@""];
     
     return html;
@@ -170,6 +172,25 @@
     }
 
     return parsed_posts;
+}
+
++(NSString *)parseTestPageFromPageData : (TFHpple *)hpple
+{
+    NSMutableArray *posts = [AwfulParse newPostsFromThread:hpple isFYAD:NO];
+    NSString *combined = @"";
+    for(AwfulPost *post in posts) {
+        combined = [combined stringByAppendingString:post.formattedHTML];
+    }
+    [posts release];
+    
+    
+    NSString *css = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"post" ofType:@"css"] encoding:NSUTF8StringEncoding error:nil];
+    
+    
+    
+    NSString *html = [NSString stringWithFormat:@"<html><head><style type='text/css'>%@</style></head><body class='altcolor1'>%@</body></html>", css, combined];
+    
+    return html;
 }
 
 +(NSString *)parseYouTubes : (NSString *)html

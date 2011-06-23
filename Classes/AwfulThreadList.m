@@ -467,11 +467,11 @@
         AwfulThread *thread = [self getThreadAtIndexPath:indexPath];
         
         if(thread.threadID != nil) {
-            int start = THREAD_POS_NEWPOST;
+            int start = AwfulPageDestinationTypeNewpost;
             if(thread.totalUnreadPosts == -1) {
-                start = THREAD_POS_FIRST;
+                start = AwfulPageDestinationTypeFirst;
             } else if(thread.totalUnreadPosts == 0) {
-                start = THREAD_POS_LAST;
+                start = AwfulPageDestinationTypeLast;
                 // if the last page is full, it won't work if you go for &goto=newpost
                 // therefore I'm setting it to last page here
             }

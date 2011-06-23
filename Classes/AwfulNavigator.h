@@ -28,6 +28,7 @@
 @property (nonatomic, retain) AwfulUser *user;
 
 -(void)loadContentVC : (AwfulTableViewController *)content;
+-(void)loadOtherView : (UIView *)other_view;
 
 -(IBAction)tappedBack;
 -(IBAction)tappedForumsList;

@@ -15,12 +15,12 @@
 #import "PullRefreshTableViewController.h"
 #import "AwfulNavigator.h"
 
-enum {
-    THREAD_POS_FIRST,
-    THREAD_POS_LAST,
-    THREAD_POS_NEWPOST,
-    THREAD_POS_SPECIFIC
-};
+typedef enum {
+    AwfulPageDestinationTypeFirst,
+    AwfulPageDestinationTypeLast,
+    AwfulPageDestinationTypeNewpost,
+    AwfulPageDestinationTypeSpecific
+} AwfulPageDestinationType;
 
 @class AwfulPageCount;
 
@@ -33,53 +33,48 @@ enum {
 @class ThreadNavigationView;
 
 @interface AwfulPage : PullRefreshTableViewController <UIWebViewDelegate, AwfulHistoryRecorder, UIGestureRecognizerDelegate> {
-    AwfulThread *thread;
-    NSString *currentURL;
+    AwfulThread *_thread;
+    NSString *_url;
     
     NSMutableArray *_allRawPosts;
     NSMutableArray *_renderedPosts;
     NSMutableArray *_readPosts;
     NSMutableArray *_unreadPosts;
   
-    AwfulHistory *pageHistory;
+    AwfulHistory *_pageHistory;
+    AwfulPost *_highlightedPost;
     
-    AwfulPost *highlightedPost;
+    BOOL _isBookmarked;
     
-    BOOL isBookmarked;
-    BOOL isReplying;
+    int _totalLoading;
+    int _totalFinished;
     
-    int totalLoading;
-    int totalFinished;
+    int _newPostIndex;
     
-    int newPostIndex;
-    int oldRotationRow;
-    
-    UIImageView *titleBar;
-    UIButton *refreshButton;
-    UIButton *stopButton;
-    UIButton *nextPageButton;
-    UIButton *prevPageButton;
-    
-    UIWebView *ad;
-    NSString *adHTML;
+    UIWebView *_ad;
+    NSString *_adHTML;
 }
 
 @property (nonatomic, retain) AwfulThread *thread;
 @property (nonatomic, retain) AwfulHistory *pageHistory;
-@property (nonatomic, retain) NSString *currentURL;
+@property (nonatomic, retain) NSString *url;
 @property (nonatomic, retain) UIWebView *ad;
-@property (nonatomic, assign) int newPostIndex;
 @property (nonatomic, retain) NSString *adHTML;
+@property (nonatomic, retain) AwfulPost *highlightedPost;
+
+@property BOOL isBookmarked;
+@property int totalLoading;
+@property int totalFinished;
+@property int newPostIndex;
 
 @property (nonatomic, retain) NSMutableArray *allRawPosts;
 @property (nonatomic, retain) NSMutableArray *renderedPosts;
 @property (nonatomic, retain) NSMutableArray *readPosts;
 @property (nonatomic, retain) NSMutableArray *unreadPosts;
 
-@property BOOL isBookmarked;
 
--(id)initWithAwfulThread : (AwfulThread *)in_thread startAt : (int)thread_pos;
--(id)initWithAwfulThread : (AwfulThread *)in_thread startAt : (int)thread_pos pageNum : (int)page_num;
+-(id)initWithAwfulThread : (AwfulThread *)in_thread startAt : (AwfulPageDestinationType)thread_pos;
+-(id)initWithAwfulThread : (AwfulThread *)in_thread startAt : (AwfulPageDestinationType)thread_pos pageNum : (int)page_num;
 -(void)acceptPosts : (NSMutableArray *)posts;
 -(void)acceptAd : (NSString *)ad_html;
 
@@ -111,8 +106,6 @@ enum {
 
 -(void)slideDown;
 -(void)slideUp;
--(void)slideToBottom;
--(void)slideToTop;
 
 @end
 

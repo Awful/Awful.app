@@ -16,6 +16,7 @@
 #import "AwfulTableViewController.h"
 #import "AwfulBookmarksController.h"
 #import "AwfulUser.h"
+#import "AwfulTestPage.h"
 
 @implementation AwfulNavigator
 
@@ -59,6 +60,9 @@
     [super viewDidLoad];
     
     [self setToolbarItems:[self.toolbar items] animated:YES];
+    
+    AwfulTestPage *test = [[AwfulTestPage alloc] initWithNibName:nil bundle:nil];
+    [test refresh];
 }
 
 - (void)viewDidUnload
@@ -137,6 +141,12 @@
     gest.numberOfTapsRequired = 3;
     [self.view addGestureRecognizer:gest];
     [gest release];
+}
+
+-(void)loadOtherView : (UIView *)other_view
+{
+    [self dismissModalViewControllerAnimated:YES];
+    self.view = other_view;
 }
 
 #pragma mark Gestures

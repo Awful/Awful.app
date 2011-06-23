@@ -19,6 +19,7 @@
 +(NSString *)constructPostHTML : (AwfulPost *)post withBody : (NSString *)post_body alt : (NSString *)alt;
 
 +(NSMutableArray *)newPostsFromThread : (TFHpple *)hpple isFYAD : (BOOL)is_fyad;
++(NSString *)parseTestPageFromPageData : (TFHpple *)hpple;
 
 +(NSString *)parseThumbnails : (NSString *)body_html;
 +(NSString *)parseYouTubes : (NSString *)html;

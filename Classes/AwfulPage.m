@@ -23,6 +23,7 @@
 #import "Appirater.h"
 #import "AwfulPageCount.h"
 #import "AwfulConfig.h"
+#import "AwfulNavigator.h"
 
 #define TITLE_BAR 0
 #define READ_POSTS_BAR 1
@@ -58,13 +59,21 @@ float getMinHeight()
 
 @implementation AwfulPage
 
-@synthesize currentURL, thread, pageHistory;
-@synthesize ad, isBookmarked, newPostIndex;
-@synthesize adHTML;
+@synthesize thread = _thread;
+@synthesize url = _url;
+@synthesize pageHistory = _pageHistory;
+@synthesize ad = _ad;
+@synthesize adHTML = _adHTML;
+@synthesize isBookmarked = _isBookmarked;
+@synthesize highlightedPost = _highlightedPost;
 @synthesize allRawPosts = _allRawPosts;
 @synthesize renderedPosts = _renderedPosts;
 @synthesize readPosts = _readPosts;
 @synthesize unreadPosts = _unreadPosts;
+
+@synthesize totalLoading = _totalLoading;
+@synthesize totalFinished = _totalFinished;
+@synthesize newPostIndex = _newPostIndex;
 
 #pragma mark -
 #pragma mark Initialization
@@ -78,40 +87,40 @@ float getMinHeight()
 }
 */
 
--(id)initWithAwfulThread : (AwfulThread *)in_thread startAt : (int)thread_pos
+-(id)initWithAwfulThread : (AwfulThread *)in_thread startAt : (AwfulPageDestinationType)thread_pos
 {
     return [self initWithAwfulThread:in_thread startAt:thread_pos pageNum:-1];
 }
 
--(id)initWithAwfulThread : (AwfulThread *)in_thread startAt : (int)thread_pos pageNum : (int)page_num
+-(id)initWithAwfulThread : (AwfulThread *)in_thread startAt : (AwfulPageDestinationType)thread_pos pageNum : (int)page_num
 {
     if((self = [super initWithStyle:UITableViewStylePlain])) {
-        thread = [in_thread retain];
+        _thread = [in_thread retain];
         
         _allRawPosts = [[NSMutableArray alloc] init];
         _renderedPosts = [[NSMutableArray alloc] init];
         _readPosts = [[NSMutableArray alloc] init];
         _unreadPosts = [[NSMutableArray alloc] init];
         
-        highlightedPost = nil;
-        newPostIndex = -1;
-        oldRotationRow = -1;
-        adHTML = nil;
-        ad = nil;
+        _highlightedPost = nil;
+        _newPostIndex = -1;
+        _adHTML = nil;
+        _ad = nil;
+        
         self.pageHistory = nil;
         
         NSString *append;
         switch(thread_pos) {
-            case THREAD_POS_FIRST:
+            case AwfulPageDestinationTypeFirst:
                 append = @"";
                 break;
-            case THREAD_POS_LAST:
+            case AwfulPageDestinationTypeLast:
                 append = @"&goto=lastpost";
                 break;
-            case THREAD_POS_NEWPOST:
+            case AwfulPageDestinationTypeNewpost:
                 append = @"&goto=newpost";
                 break;
-            case THREAD_POS_SPECIFIC:
+            case AwfulPageDestinationTypeSpecific:
                 append = [NSString stringWithFormat:@"&pagenumber=%d", page_num];
                 break;
             default:
@@ -119,17 +128,13 @@ float getMinHeight()
                 break;
         }
         
-        currentURL = [[NSString alloc] initWithFormat:@"showthread.php?threadid=%@%@", thread.threadID, append];
-
-        isReplying = NO;
-        
-        [self makeButtons];
-        
-        isBookmarked = NO;
+        _url = [[NSString alloc] initWithFormat:@"showthread.php?threadid=%@%@", _thread.threadID, append];
+                
+        _isBookmarked = NO;
         NSMutableArray *bookmarked_threads = [AwfulUtil newThreadListForForumId:@"bookmarks"];
-        for(AwfulThread *t in bookmarked_threads) {
-            if([t.threadID isEqualToString:thread.threadID]) {
-                isBookmarked = YES;
+        for(AwfulThread *thread in bookmarked_threads) {
+            if([thread.threadID isEqualToString:_thread.threadID]) {
+                _isBookmarked = YES;
             }
         }
         [bookmarked_threads release];
@@ -138,20 +143,17 @@ float getMinHeight()
 }
 
 - (void)dealloc {
-    [ad release];
-    [currentURL release];
-    [thread release];
-    [titleBar release];
-    [refreshButton release];
-    [stopButton release];
-    [nextPageButton release];
-    [prevPageButton release];
-    [adHTML release];
+    [_url release];
+    [_thread release];
+    [_pageHistory release];
+    [_ad release];
+    [_adHTML release];
+    [_highlightedPost release];
     
-    self.allRawPosts = nil;
-    self.renderedPosts = nil;
-    self.readPosts = nil;
-    self.unreadPosts = nil;
+    [_allRawPosts release];
+    [_renderedPosts release];
+    [_readPosts release];
+    [_unreadPosts release];
     
     [super dealloc];
 }
@@ -159,34 +161,9 @@ float getMinHeight()
 -(NSString *)getURLSuffix
 {
     if(self.pages == nil) {
-        return currentURL;
+        return self.url;
     }
-    return [NSString stringWithFormat:@"showthread.php?threadid=%@&pagenumber=%d", thread.threadID, self.pages.currentPage];
-}
-
--(void)makeButtons
-{
-    refreshButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
-    refreshButton.frame = CGRectMake(5, 0, 40, 40);
-    [refreshButton setImage:[UIImage imageNamed:@"reload.png"] forState:UIControlStateNormal];
-    [refreshButton addTarget:self action:@selector(hardRefresh) forControlEvents:UIControlEventTouchUpInside];
-    
-    stopButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
-    stopButton.frame = CGRectMake(5, 0, 40, 40);
-    [stopButton setImage:[UIImage imageNamed:@"stop.png"] forState:UIControlStateNormal];
-    [stopButton addTarget:self action:@selector(stop) forControlEvents:UIControlEventTouchUpInside];
-    
-    nextPageButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
-    nextPageButton.frame = CGRectMake(270, 10, 40, 40);
-    nextPageButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-    [nextPageButton setImage:[UIImage imageNamed:@"arrowright.png"] forState:UIControlStateNormal];
-    [nextPageButton addTarget:self action:@selector(nextPage) forControlEvents:UIControlEventTouchUpInside];
-    
-    prevPageButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
-    prevPageButton.frame = CGRectMake(10, 10, 40, 40);
-    prevPageButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
-    [prevPageButton setImage:[UIImage imageNamed:@"arrowleft.png"] forState:UIControlStateNormal];
-    [prevPageButton addTarget:self action:@selector(prevPage) forControlEvents:UIControlEventTouchUpInside];
+    return [NSString stringWithFormat:@"showthread.php?threadid=%@&pagenumber=%d", self.thread.threadID, self.pages.currentPage];
 }
 
 /*
@@ -208,16 +185,15 @@ float getMinHeight()
     
     [req setPostValue:@"1" forKey:@"json"];
     [req setPostValue:@"add" forKey:@"action"];
-    [req setPostValue:thread.threadID forKey:@"threadid"];
-    isBookmarked = YES;
+    [req setPostValue:self.thread.threadID forKey:@"threadid"];
+    self.isBookmarked = YES;
     
     NSMutableArray *bookmarked_threads = [AwfulUtil newThreadListForForumId:@"bookmarks"];
-    [bookmarked_threads addObject:thread];
+    [bookmarked_threads addObject:self.thread];
     [AwfulUtil saveThreadList:bookmarked_threads forForumId:@"bookmarks"];
     [bookmarked_threads release];
     
-    AwfulNavController *nav = getnav();
-    [nav loadRequestAndWait:req];
+    loadRequestAndWait(req);
 }
 
 -(void)removeBookmark
@@ -227,22 +203,21 @@ float getMinHeight()
     
     [req setPostValue:@"1" forKey:@"json"];
     [req setPostValue:@"remove" forKey:@"action"];
-    [req setPostValue:thread.threadID forKey:@"threadid"];
-    isBookmarked = NO;
+    [req setPostValue:self.thread.threadID forKey:@"threadid"];
+    self.isBookmarked = NO;
     
     NSMutableArray *bookmarked_threads = [AwfulUtil newThreadListForForumId:@"bookmarks"];
     AwfulThread *found = nil;
-    for(AwfulThread *t in bookmarked_threads) {
-        if([t.threadID isEqualToString:thread.threadID]) {
-            found = t;
+    for(AwfulThread *thread in bookmarked_threads) {
+        if([thread.threadID isEqualToString:self.thread.threadID]) {
+            found = thread;
         }
     }
     [bookmarked_threads removeObject:found];
     [AwfulUtil saveThreadList:bookmarked_threads forForumId:@"bookmarks"];
     [bookmarked_threads release];
     
-    AwfulNavController *nav = getnav();
-    [nav loadRequestAndWait:req];
+    loadRequestAndWait(req);
 }
 
 -(void)setThreadTitle : (NSString *)in_title
@@ -255,14 +230,14 @@ float getMinHeight()
 {
     [super refresh];
     
-    newPostIndex = -1;
-    oldRotationRow = -1;
-    totalLoading = 0;
-    totalFinished = 0;
+    self.newPostIndex = -1;
+    self.totalLoading = 0;
+    self.totalFinished = 0;
     [self.allRawPosts removeAllObjects];
     [self.renderedPosts removeAllObjects];
     [self.unreadPosts removeAllObjects];
     [self.readPosts removeAllObjects];
+    
     self.tableView.backgroundColor = [UIColor whiteColor];
     
     AwfulPageRefreshRequest *ref_req = [[AwfulPageRefreshRequest alloc] initWithAwfulPage:self];
@@ -274,8 +249,7 @@ float getMinHeight()
 {
     [super refresh];
     
-    newPostIndex = -1;
-    oldRotationRow = -1;
+    self.newPostIndex = -1;
     self.tableView.backgroundColor = [UIColor whiteColor];
     
     AwfulPageRefreshRequest *ref_req = [[AwfulPageRefreshRequest alloc] initWithAwfulPage:self];
@@ -286,8 +260,6 @@ float getMinHeight()
 -(void)stop
 {
     [super stop];
-    AwfulNavController *nav = getnav();
-    [nav stopAllRequests];
     
     [self doneLoadingPage];
     for(UIWebView *web in self.renderedPosts) {
@@ -327,19 +299,19 @@ float getMinHeight()
     }
     
     int start_index = 0;
-    if(newPostIndex > 1) {
-        start_index = newPostIndex-1;
+    if(self.newPostIndex > 1) {
+        start_index = self.newPostIndex-1;
     }
     
     int above_config = [AwfulConfig numReadPostsAbove];
     start_index = MAX(0, start_index - above_config);
     
-    totalLoading = 0;
-    totalFinished = 0;
+    self.totalLoading = 0;
+    self.totalFinished = 0;
     
-    if(above_config < 10 && newPostIndex > 1) {
+    if(above_config < 10 && self.newPostIndex > 1) {
         if(start_index > 0) {
-            newPostIndex = above_config+2;
+            self.newPostIndex = above_config+2;
         }
     }
     
@@ -371,25 +343,26 @@ float getMinHeight()
 
 -(void)acceptAd : (NSString *)ad_html
 {
-    [adHTML release];
-    adHTML = [[NSString alloc] initWithString:ad_html];
+    self.adHTML = nil;
+    self.adHTML = [[[NSString alloc] initWithString:ad_html] autorelease];
     
     int width = getWidth();
     int height = width * 0.128;
     
     UIWebView *web = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
     [(UIScrollView *)[web.subviews objectAtIndex:0] setScrollEnabled:NO];
-    [web loadHTMLString:adHTML baseURL:[NSURL URLWithString:@""]];
-    [self setAd:web];
+    [web loadHTMLString:self.adHTML baseURL:[NSURL URLWithString:@""]];
+    self.ad = web;
     [web release];
     
-    ad.delegate = self;
+    self.ad.delegate = self;
 }
 
 -(UIWebView *)newWebViewFromAwfulPost : (AwfulPost *)post
 {
     UIWebView *web = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, getWidth(), 50)];
     [(UIScrollView *)[web.subviews objectAtIndex:0] setScrollEnabled:NO];
+    web.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     
     UIView *invis = [[UIView alloc] initWithFrame:CGRectMake(0, 0, getWidth(), 50)];
     invis.backgroundColor = [UIColor clearColor];
@@ -429,7 +402,6 @@ float getMinHeight()
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {    
-    AwfulNavController *nav = getnav();
 
     if(navigationType == UIWebViewNavigationTypeLinkClicked) {
             
@@ -456,18 +428,17 @@ float getMinHeight()
                 AwfulPage *page = nil;
                 
                 if(page_number == nil) {
-                    page = [[AwfulPage alloc] initWithAwfulThread:intra startAt:THREAD_POS_FIRST];
+                    page = [[AwfulPage alloc] initWithAwfulThread:intra startAt:AwfulPageDestinationTypeFirst];
                 } else {
-                    page = [[AwfulPage alloc] initWithAwfulThread:intra startAt:THREAD_POS_SPECIFIC pageNum:[page_number intValue]];
+                    page = [[AwfulPage alloc] initWithAwfulThread:intra startAt:AwfulPageDestinationTypeSpecific pageNum:[page_number intValue]];
                     int pti = [AwfulParse getNewPostNumFromURL:request.URL];
-                    page.currentURL = [NSString stringWithFormat:@"showthread.php?threadid=%@&pagenumber=%@#pti%d", thread_id, page_number, pti];
+                    page.url = [NSString stringWithFormat:@"showthread.php?threadid=%@&pagenumber=%@#pti%d", thread_id, page_number, pti];
                 }
                 
                 [intra release];
                 
                 if(page != nil) {
-                    AwfulNavController *nav = getnav();
-                    [nav loadPage:page];
+                    loadContentVC(page);
                     [page release];
                     return NO;
                 }
@@ -483,6 +454,8 @@ float getMinHeight()
         [other_nav setToolbarHidden:NO];
         other_nav.toolbar.barStyle = UIBarStyleBlack;
         [other release];
+        
+        AwfulNavigator *nav = getNavigator();
         [nav presentModalViewController:other_nav animated:YES];
         [other_nav release];
         
@@ -510,9 +483,8 @@ float getMinHeight()
 -(void)nextPage
 {
     if(self.pages.currentPage < self.pages.totalPages) {
-        AwfulPage *next_page = [[AwfulPage alloc] initWithAwfulThread:thread startAt:THREAD_POS_SPECIFIC pageNum:self.pages.currentPage+1];
-        AwfulNavController *nav = getnav();
-        [nav loadPage:next_page];
+        AwfulPage *next_page = [[AwfulPage alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeSpecific pageNum:self.pages.currentPage+1];
+        loadContentVC(next_page);
         [next_page release];
     }
 }
@@ -520,29 +492,28 @@ float getMinHeight()
 -(void)prevPage
 {
     if(self.pages.currentPage > 1) {
-        AwfulPage *prev_page = [[AwfulPage alloc] initWithAwfulThread:thread startAt:THREAD_POS_SPECIFIC pageNum:self.pages.currentPage-1];
-        AwfulNavController *nav = getnav();
-        [nav loadPage:prev_page];
+        AwfulPage *prev_page = [[AwfulPage alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeSpecific pageNum:self.pages.currentPage-1];
+        loadContentVC(prev_page);
         [prev_page release];
     }
 }
 
 -(void)heldPost:(UILongPressGestureRecognizer *)gestureRecognizer
 {
-    if(highlightedPost == nil) {
+    if(self.highlightedPost == nil) {
         for(UIWebView *web in self.renderedPosts) {
             UIView *v = [web viewWithTag:TOUCH_POST];
             if(v == gestureRecognizer.view) {
                 int index = [self.renderedPosts indexOfObject:web];
                 if(index < [self.unreadPosts count]) {
-                    highlightedPost = [self.unreadPosts objectAtIndex:index];
+                    self.highlightedPost = [self.unreadPosts objectAtIndex:index];
                 }
             }
         }
         
-        if(highlightedPost != nil) {
-            AwfulNavController *nav = getnav();
-            [nav showPostOptions:highlightedPost];
+        if(self.highlightedPost != nil) {
+            //AwfulNavController *nav = getnav();
+            //[nav showPostOptions:highlightedPost];
         }
     }
 }
@@ -571,51 +542,49 @@ float getMinHeight()
         }
         
         if(proceed) {
-            AwfulNavController *nav = getnav();
-            [nav showImage:src];
+            //AwfulNavController *nav = getnav();
+            //[nav showImage:src];
         }
     }
 }
 
 -(void)chosePostOption : (int)option
-{
-    AwfulNavController *nav = getnav();
-    
+{    
     int actual_option = option;
-    if(!highlightedPost.canEdit) {
+    if(!self.highlightedPost.canEdit) {
         actual_option++;
     }
     
     if(actual_option == 0) {
-        if(highlightedPost.canEdit) {
-            AwfulEditContentRequest *edit_req = [[AwfulEditContentRequest alloc] initWithAwfulPage:self forAwfulPost:highlightedPost];
-            [nav loadRequest:edit_req];
+        if(self.highlightedPost.canEdit) {
+            AwfulEditContentRequest *edit_req = [[AwfulEditContentRequest alloc] initWithAwfulPage:self forAwfulPost:self.highlightedPost];
+            loadRequest(edit_req);
             [edit_req release];
         }
     } else if(actual_option == 1) {
         
-        AwfulQuoteRequest *quote_req = [[AwfulQuoteRequest alloc] initWithPost:highlightedPost fromPage:self];
-        [nav loadRequest:quote_req];
+        AwfulQuoteRequest *quote_req = [[AwfulQuoteRequest alloc] initWithPost:self.highlightedPost fromPage:self];
+        loadRequest(quote_req);
         [quote_req release];
         
     } else if(actual_option == 2) {
-        NSString *html = [[NSString alloc] initWithFormat:@"<html><head><link rel='stylesheet' type='text/css' href='/css/main.css'><link rel='stylesheet' type='text/css' href='/css/bbcode.css'></head><body>%@</body></html>", highlightedPost.rawContent];
+        NSString *html = [[NSString alloc] initWithFormat:@"<html><head><link rel='stylesheet' type='text/css' href='/css/main.css'><link rel='stylesheet' type='text/css' href='/css/bbcode.css'></head><body>%@</body></html>", self.highlightedPost.rawContent];
         [(AwfulNavController *)self.navigationController showUnfilteredWithHTML:html];
         [html release];
         
     } else if(actual_option == 3) {
-        if(highlightedPost.markSeenLink != nil) {
-            NSURL *seen_url = [NSURL URLWithString:[@"http://forums.somethingawful.com/" stringByAppendingString:highlightedPost.markSeenLink]];
+        if(self.highlightedPost.markSeenLink != nil) {
+            NSURL *seen_url = [NSURL URLWithString:[@"http://forums.somethingawful.com/" stringByAppendingString:self.highlightedPost.markSeenLink]];
             ASIHTTPRequest *seen_req = [ASIHTTPRequest requestWithURL:seen_url];
             seen_req.userInfo = [NSDictionary dictionaryWithObjectsAndKeys:@"Marked up to there.", @"completionMsg", nil];
-            [nav loadRequestAndWait:seen_req];
+            loadRequestAndWait(seen_req);
         } else {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Not available" message:@"That feature requires you set 'Show an icon next to each post indicating if it has been seen or not' in your forum options" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
             [alert show];
             [alert release];
         }
     }   
-    highlightedPost = nil;
+    self.highlightedPost = nil;
 }
 
 -(void)choseThreadOption : (int)option
@@ -628,12 +597,12 @@ float getMinHeight()
         [nav showVoteOptions:self];
     } else if(option == 2) {
         AwfulPostBoxController *post_box = [[AwfulPostBoxController alloc] initWithText:@""];
-        [post_box setReplyBox:thread];
+        [post_box setReplyBox:self.thread];
         AwfulNavController *nav = getnav();
         [nav presentModalViewController:post_box animated:YES];
         [post_box release];
     } else if(option == 3) {
-        if(isBookmarked) {
+        if(self.isBookmarked) {
             [self removeBookmark];
         } else {
             [self addBookmark];
@@ -641,16 +610,6 @@ float getMinHeight()
     } else if(option == 4) {
         [self nextPage];
     }
-}
-
--(void)slideToBottom
-{
-
-}
-
--(void)slideToTop
-{
-    [self scrollToRow:0];
 }
 
 /*
@@ -683,7 +642,7 @@ float getMinHeight()
 
 -(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
-    [self stop];
+    /*[self stop];
     NSString *other_ad = [[NSString alloc] initWithString:adHTML];
     [self acceptAd:other_ad];
     [other_ad release];
@@ -699,12 +658,12 @@ float getMinHeight()
                 [web loadHTMLString:post.formattedHTML baseURL:[NSURL URLWithString:@""]];
             }
         }
-    }
+    }*/
+    //[self.tableView reloadData];
 }
-
+/*
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
-    oldRotationRow = -1;
     UITableViewCell *winning_cell = nil;
     NSArray *visibles = [self.tableView visibleCells];
     if([visibles count] >= 2) {
@@ -717,7 +676,7 @@ float getMinHeight()
         NSIndexPath *path = [self.tableView indexPathForCell:winning_cell];
         oldRotationRow = path.row;
     }
-}
+}*/
 
 #pragma mark -
 #pragma mark Table view data source
@@ -736,7 +695,7 @@ float getMinHeight()
         }
         
         if(path.row == [self.renderedPosts count] + read_posts_extra) {
-            if(ad != nil) {
+            if(self.ad != nil) {
                 return AD_BAR;
             } else {
                 return PAGES_LEFT_BAR;
@@ -750,7 +709,7 @@ float getMinHeight()
         if(path.row < [self.renderedPosts count] + read_posts_extra) {
             return ITS_A_POST_YOU_IDIOT;
         }
-    } else if(path.row == 1 && ad != nil) {
+    } else if(path.row == 1 && self.ad != nil) {
         return AD_BAR;
     }
     
@@ -771,7 +730,7 @@ float getMinHeight()
     
     int type = [self getTypeAtIndexPath:path];
     if(type == AD_BAR) {
-        return ad;
+        return self.ad;
     }
     return nil;
 }
@@ -799,7 +758,7 @@ float getMinHeight()
     // Return the number of rows in the section.
     
     int rows = 0;
-    if(ad != nil) {
+    if(self.ad != nil) {
         // ad at bottom
         rows = 1;
     }
@@ -811,7 +770,7 @@ float getMinHeight()
         }
         
         // display too short, pull to refresh gets broken
-        if(self.pages.currentPage == self.pages.totalPages && totalFinished > 0) {
+        if(self.pages.currentPage == self.pages.totalPages && self.totalFinished > 0) {
             CGSize size = [self.tableView contentSize];
             if(size.height < self.tableView.frame.size.height) {
                 //rows++;
@@ -847,7 +806,7 @@ float getMinHeight()
             height = CGRectGetHeight(web.frame);
             break;
         case AD_BAR:
-            height = CGRectGetHeight(ad.frame);
+            height = CGRectGetHeight(self.ad.frame);
             break;
         default:
             break;
@@ -860,8 +819,8 @@ float getMinHeight()
             web_height += web.frame.size.height;
         }
         
-        if(ad != nil) {
-            web_height += ad.frame.size.height;
+        if(self.ad != nil) {
+            web_height += self.ad.frame.size.height;
         }
         
         if([self.readPosts count] > 0) {
@@ -936,15 +895,6 @@ float getMinHeight()
          } else {
             cell.textLabel.text = [NSString stringWithFormat:@"%d pages left.", self.pages.totalPages-self.pages.currentPage];
         }
-        
-        /*[prevPageButton removeFromSuperview];
-        [nextPageButton removeFromSuperview];
-        if(pages.current > 1) {
-            [cell addSubview:prevPageButton];
-        }
-        if(pages.current < pages.total) {
-            [cell addSubview:nextPageButton];
-        }*/
     } else if([cell_ident isEqualToString:read_posts_ident]) {
         if([self.readPosts count] == 1) {
             cell.textLabel.text = [NSString stringWithFormat:@"Load 1 earlier post"];
@@ -958,12 +908,12 @@ float getMinHeight()
 
 -(void)webViewDidStartLoad:(UIWebView *)webView
 {
-    if(webView == ad) {
+    if(webView == self.ad) {
         return;
     }
     
-    totalLoading++;
-    if(totalLoading == [self.unreadPosts count]) {
+    self.totalLoading++;
+    if(self.totalLoading == [self.unreadPosts count]) {
         [self.tableView reloadData];
     }
 }
@@ -975,12 +925,13 @@ float getMinHeight()
 
 -(void)webViewDidFinishLoad:(UIWebView *)sender
 {
-    if(sender == ad) {
+    if(sender == self.ad) {
         return;
     }
     
-    float height = [[sender stringByEvaluatingJavaScriptFromString:@"document.body.offsetHeight"] floatValue];
-    sender.frame = CGRectMake(0, 0, getWidth(), MAX(getMinHeight(), height));
+    //float height = [[sender stringByEvaluatingJavaScriptFromString:@"document.body.offsetHeight"] floatValue];
+    //sender.frame = CGRectMake(0, 0, getWidth(), MAX(getMinHeight(), height));
+    [sender sizeToFit];
     
     NSUInteger index = [self getRowForWebView:sender];
     if(index != NSNotFound) {
@@ -995,8 +946,8 @@ float getMinHeight()
         [paths release];
     }
     
-    totalFinished++;
-    if(totalFinished == [self.unreadPosts count]) {
+    self.totalFinished++;
+    if(self.totalFinished == [self.unreadPosts count]) {
         [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(finalRefresh) userInfo:nil repeats:NO];
         [self doneLoadingPage];
     }
@@ -1016,10 +967,10 @@ float getMinHeight()
     [self reverifyHeights];
     
     int winning_row = -1;
-    if(oldRotationRow != -1) {
+    /*if(oldRotationRow != -1) {
         winning_row = oldRotationRow;
-    } else if(newPostIndex > 1) {
-        winning_row = newPostIndex;
+    } else*/ if(self.newPostIndex > 1) {
+        winning_row = self.newPostIndex;
     }
     
     if(winning_row != -1) {
@@ -1092,9 +1043,9 @@ float getMinHeight()
         [self nextPage];
     } else if(row_type == READ_POSTS_BAR) {
         
-        totalLoading = 0;
-        totalFinished = 0;
-        newPostIndex = 0;
+        self.totalLoading = 0;
+        self.totalFinished = 0;
+        self.newPostIndex = 0;
         
         [self.renderedPosts removeAllObjects];
         
@@ -1142,7 +1093,7 @@ float getMinHeight()
 {
     AwfulHistory *hist = [[AwfulHistory alloc] init];
     hist.pageNum = self.pages.currentPage;
-    hist.modelObj = thread;
+    hist.modelObj = self.thread;
     hist.historyType = AWFUL_HISTORY_PAGE;
     [self setRecorder:hist];
     return hist;
@@ -1150,7 +1101,7 @@ float getMinHeight()
 
 -(id)initWithAwfulHistory : (AwfulHistory *)history
 {
-    return [self initWithAwfulThread:history.modelObj startAt:THREAD_POS_SPECIFIC pageNum:history.pageNum];
+    return [self initWithAwfulThread:history.modelObj startAt:AwfulPageDestinationTypeSpecific pageNum:history.pageNum];
 }
 
 -(void)setRecorder : (AwfulHistory *)history

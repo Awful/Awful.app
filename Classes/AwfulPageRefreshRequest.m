@@ -10,6 +10,7 @@
 #import "AwfulParse.h"
 #import "AwfulNavController.h"
 #import "AwfulPageCount.h"
+#import "AwfulNavigator.h"
 
 @implementation AwfulPageRefreshRequest
 
@@ -89,4 +90,46 @@
     [page stop];
 }
     
+@end
+
+
+@implementation AwfulTestPageRequest
+
+@synthesize page = _page;
+
+-(id)initWithAwfulTestPage : (AwfulTestPage *)page
+{
+    _page = [page retain];
+    NSString *url_str = [page getURLSuffix];
+    self = [super initWithURL:[NSURL URLWithString:url_str]];
+    
+    return self;
+}
+
+-(void)dealloc
+{
+    [_page release];
+    [super dealloc];
+}
+
+-(void)requestFinished
+{
+    [super requestFinished];
+    NSString *raw_s = [[NSString alloc] initWithData:[self responseData] encoding:NSASCIIStringEncoding];
+    NSData *converted = [raw_s dataUsingEncoding:NSUTF8StringEncoding];
+    
+    TFHpple *page_data = [[TFHpple alloc] initWithHTMLData:converted];
+    [raw_s release];
+    
+    NSString *str = [AwfulParse parseTestPageFromPageData:page_data];
+    AwfulNavigator *nav = getNavigator();
+    UIWebView *web = [[UIWebView alloc] initWithFrame:nav.view.frame];
+    [web loadHTMLString:str baseURL:[NSURL URLWithString:@""]];
+    self.page.view = web;
+    [web release];
+    
+    [page_data release];
+}
+
+
 @end

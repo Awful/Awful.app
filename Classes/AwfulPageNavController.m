@@ -67,11 +67,10 @@
 {
     int chosen_page = [picker selectedRowInComponent:0] + 1;
     if(page != nil) {
-        AwfulPage *req_page = [[AwfulPage alloc] initWithAwfulThread:page.thread startAt:THREAD_POS_SPECIFIC pageNum:chosen_page];
-        AwfulNavController *nav = getnav();
-        [nav loadPage:req_page];
+        AwfulPage *req_page = [[AwfulPage alloc] initWithAwfulThread:page.thread startAt:AwfulPageDestinationTypeSpecific pageNum:chosen_page];
+        loadContentVC(req_page);
         [req_page release];
-        [nav hidePageNav];
+        //[nav hidePageNav];
     }
 }
 
