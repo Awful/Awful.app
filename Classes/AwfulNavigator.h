@@ -14,6 +14,8 @@
 @class AwfulPageCount;
 @class AwfulUser;
 @class AwfulNavigator;
+@class AwfulActions;
+@class AwfulPageNavController;
 
 @protocol AwfulNavigatorContent <NSObject>
 
@@ -21,6 +23,7 @@
 -(void)setDelegate : (AwfulNavigator *)delegate;
 -(void)refresh;
 -(void)stop;
+-(AwfulActions *)getActions;
 
 @end
 
@@ -29,12 +32,16 @@
     id<AwfulNavigatorContent> _contentVC;
     AwfulRequestHandler *_requestHandler;
     AwfulUser *_user;
+    AwfulActions *_actions;
+    AwfulPageNavController *_pageNav;
 }
 
 @property (nonatomic, retain) IBOutlet UIToolbar *toolbar;
 @property (nonatomic, retain) id<AwfulNavigatorContent> contentVC;
 @property (nonatomic, retain) AwfulRequestHandler *requestHandler;
 @property (nonatomic, retain) AwfulUser *user;
+@property (nonatomic, retain) AwfulActions *actions;
+@property (nonatomic, retain) AwfulPageNavController *pageNav;
 
 -(void)loadContentVC : (id<AwfulNavigatorContent>)content;
 

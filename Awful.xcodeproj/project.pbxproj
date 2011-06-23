@@ -587,6 +587,7 @@
 		1185088313A8533F00FCACF8 /* AwfulForumListRefreshRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1185088213A8533F00FCACF8 /* AwfulForumListRefreshRequest.m */; };
 		1185088713AA905600FCACF8 /* AwfulForumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1185088613AA905600FCACF8 /* AwfulForumCell.m */; };
 		1185088913AA90EE00FCACF8 /* AwfulForumCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1185088813AA90EE00FCACF8 /* AwfulForumCell.xib */; };
+		118591EF13B3CEBA0036E607 /* AwfulThreadActions.m in Sources */ = {isa = PBXBuildFile; fileRef = 118591EE13B3CEBA0036E607 /* AwfulThreadActions.m */; };
 		11884DED1358D68700ADDA45 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 11884DEB1358D68700ADDA45 /* NSString+HTML.m */; };
 		11884DF01358D73000ADDA45 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 11884DEF1358D73000ADDA45 /* GTMNSString+HTML.m */; };
 		1199D7CF13AA9C4200264DE9 /* tiny_arrow_right.png in Resources */ = {isa = PBXBuildFile; fileRef = 1199D7CE13AA9C4200264DE9 /* tiny_arrow_right.png */; };
@@ -1245,6 +1246,8 @@
 		1185088513AA905600FCACF8 /* AwfulForumCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumCell.h; sourceTree = "<group>"; };
 		1185088613AA905600FCACF8 /* AwfulForumCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumCell.m; sourceTree = "<group>"; };
 		1185088813AA90EE00FCACF8 /* AwfulForumCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AwfulForumCell.xib; sourceTree = "<group>"; };
+		118591ED13B3CEBA0036E607 /* AwfulThreadActions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadActions.h; sourceTree = "<group>"; };
+		118591EE13B3CEBA0036E607 /* AwfulThreadActions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadActions.m; sourceTree = "<group>"; };
 		11884DEA1358D68700ADDA45 /* NSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+HTML.h"; sourceTree = "<group>"; };
 		11884DEB1358D68700ADDA45 /* NSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+HTML.m"; sourceTree = "<group>"; };
 		11884DEE1358D73000ADDA45 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
@@ -2014,6 +2017,8 @@
 			children = (
 				1162234113B3C92F0035320A /* AwfulActions.h */,
 				1162234213B3C92F0035320A /* AwfulActions.m */,
+				118591ED13B3CEBA0036E607 /* AwfulThreadActions.h */,
+				118591EE13B3CEBA0036E607 /* AwfulThreadActions.m */,
 			);
 			name = Actions;
 			sourceTree = "<group>";
@@ -2832,6 +2837,7 @@
 				1165DBC513B12B0B00AA8010 /* AwfulRequestHandler.m in Sources */,
 				11A6CE8313B1489C00AADE7B /* AwfulNavigatorLabels.m in Sources */,
 				1162234313B3C92F0035320A /* AwfulActions.m in Sources */,
+				118591EF13B3CEBA0036E607 /* AwfulThreadActions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -132,3 +132,9 @@
 
 @end
 
+UIViewController *getRootController()
+{
+    AwfulAppDelegate *del = [[UIApplication sharedApplication] delegate];
+    return del.navigationController;
+}
+

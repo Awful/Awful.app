@@ -17,4 +17,6 @@
 @property int currentPage;
 @property int totalPages;
 
+-(BOOL)onLastPage;
+
 @end

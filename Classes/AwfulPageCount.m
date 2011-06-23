@@ -28,4 +28,9 @@
     return [NSString stringWithFormat:@"pg %d", self.currentPage];
 }
 
+-(BOOL)onLastPage
+{
+    return self.currentPage == self.totalPages;
+}
+
 @end

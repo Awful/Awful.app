@@ -15,6 +15,8 @@
 #import "AwfulPageCount.h"
 #import "AwfulBookmarksController.h"
 #import "AwfulUser.h"
+#import "AwfulActions.h"
+#import "AwfulPageNavController.h"
 
 @implementation AwfulNavigator
 
@@ -22,12 +24,16 @@
 @synthesize contentVC = _contentVC;
 @synthesize requestHandler = _requestHandler;
 @synthesize user = _user;
+@synthesize actions = _actions;
+@synthesize pageNav = _pageNav;
 
 -(id)initWithCoder:(NSCoder *)aDecoder
 {
     if((self = [super initWithCoder:aDecoder])) {
         _requestHandler = [[AwfulRequestHandler alloc] init];
         _contentVC = nil;
+        _actions = nil;
+        _pageNav = nil;
         _user = [[AwfulUser alloc] init];
         [_user loadUser];
     }
@@ -40,6 +46,8 @@
     [_contentVC release];
     [_requestHandler release];
     [_user release];
+    [_actions release];
+    [_pageNav release];
     [super dealloc];
 }
 
@@ -49,6 +57,30 @@
     [super didReceiveMemoryWarning];
     
     // Release any cached data, images, etc that aren't in use.
+}
+
+-(void)setActions:(AwfulActions *)actions
+{
+    if(actions != _actions) {
+        [_actions release];
+        _actions = [actions retain];
+        _actions.delegate = self;
+        [_actions show];
+    }
+}
+
+-(void)setPageNav:(AwfulPageNavController *)pageNav
+{
+    if(_pageNav != pageNav) {
+        [_pageNav.view removeFromSuperview];
+        [_pageNav release];
+        _pageNav = [pageNav retain];
+        
+        if(_pageNav != nil) {
+            AwfulAppDelegate *del = [[UIApplication sharedApplication] delegate];
+            [del.navigationController.view addSubview:_pageNav.view];
+        }
+    }
 }
 
 #pragma mark - View lifecycle
@@ -123,7 +155,10 @@
 
 -(IBAction)tappedAction
 {
-    
+    AwfulActions *actions = [self.contentVC getActions];
+    if(actions != nil) {
+        [self setActions:actions];
+    }
 }
 
 -(IBAction)tappedBookmarks

@@ -594,5 +594,10 @@
     return self.view;
 }
 
+-(AwfulActions *)getActions
+{
+    return nil;
+}
+
 @end
 

@@ -23,3 +23,5 @@
 @property (nonatomic, retain) IBOutlet AwfulNavigator *navigator;
 
 @end
+
+UIViewController *getRootController();

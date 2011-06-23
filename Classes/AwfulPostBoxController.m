@@ -10,7 +10,8 @@
 #import "AwfulNavController.h"
 #import "AwfulReplyRequest.h"
 #import "AwfulEditRequest.h"
-#import "AwfulPage.h"           
+#import "AwfulPage.h"
+#import "AwfulThread.h"
 
 #define CLEAR_BUTTON 1
 #define SEND_BUTTON 2
@@ -20,6 +21,7 @@
 @synthesize sendButton, replyTextView;
 @synthesize cancelButton, clearButton;
 @synthesize buttonGroup;
+@synthesize thread = _thread;
 
 // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 
@@ -28,7 +30,7 @@
     if (self) {
         // Custom initialization.
         post = nil;
-        thread = nil;
+        _thread = nil;
         startingText = nil;
     }
     return self;
@@ -40,7 +42,7 @@
     if((self = [super initWithNibName:@"TextInput" bundle:[NSBundle mainBundle]])) {
         startingText = [text retain];
         post = nil;
-        thread = nil;
+        _thread = nil;
     }
     return self;
 }
@@ -117,6 +119,7 @@
     [clearButton release];
     [cancelButton release];
     [startingText release];
+    [_thread release];
     [super dealloc];
 }
 
@@ -139,8 +142,8 @@
             
             ASIHTTPRequest *req = nil;
             
-            if(thread != nil) {
-                req = [[AwfulReplyRequest alloc] initWithReply:replyTextView.text forThread:thread];
+            if(self.thread != nil) {
+                req = [[AwfulReplyRequest alloc] initWithReply:replyTextView.text forThread:self.thread];
             } else if(post != nil) {
                 req = [[AwfulEditRequest alloc] initWithAwfulPost:post withText:replyTextView.text];
             }
@@ -162,17 +165,22 @@
     [nav dismissModalViewControllerAnimated:YES];
 }
 
--(void)setReplyBox : (AwfulThread *)in_thread
+-(void)setThread:(AwfulThread *)thread 
 {
-    post = nil;
-    thread = in_thread;
-    
-    [sendButton setTitle:@"Send" forState:UIControlStateNormal];
+    if(thread != _thread) {
+        [_thread release];
+        _thread = [thread retain];
+        
+        if(_thread != nil) {
+            post = nil;
+            [sendButton setTitle:@"Send" forState:UIControlStateNormal];
+        }
+    }
 }
 
 -(void)setEditBox : (AwfulPost *)in_post
 {
-    thread = nil;
+    self.thread = nil;
     post = in_post;
     
     [sendButton setTitle:@"Save" forState:UIControlStateNormal];

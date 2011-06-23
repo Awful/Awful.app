@@ -8,7 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "AwfulPost.h"
-#import "AwfulThread.h"
+
+@class AwfulThread;
 
 @interface AwfulPostBoxController : UIViewController <UIAlertViewDelegate> {
     UIButton *sendButton;
@@ -17,7 +18,7 @@
     UITextView *replyTextView;
     UIView *buttonGroup;
     
-    AwfulThread *thread;
+    AwfulThread *_thread;
     AwfulPost *post;
     NSString *startingText;
 }
@@ -28,13 +29,14 @@
 @property (nonatomic, retain) IBOutlet UITextView *replyTextView;
 @property (nonatomic, retain) IBOutlet UIView *buttonGroup;
 
+@property (nonatomic, retain) AwfulThread *thread;
+
 -(id)initWithText : (NSString *)text;
 
 -(IBAction)hideReply;
 -(IBAction)clearReply;
 -(IBAction)hitSend;
 
--(void)setReplyBox : (AwfulThread *)in_thread;
 -(void)setEditBox : (AwfulPost *)in_post;
 -(void)addText : (NSString *)in_text;
 

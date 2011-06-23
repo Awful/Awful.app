@@ -25,6 +25,7 @@
 #import "AwfulConfig.h"
 #import "AwfulNavigator.h"
 #import "AwfulNavigatorLabels.h"
+#import "AwfulThreadActions.h"
 
 float getWidth()
 {
@@ -154,48 +155,6 @@ float getWidth()
         self.pagesLabel.text = [pages description];
         [self.pageHistory setPageNum:pages.currentPage];
     }
-}
-
--(void)addBookmark
-{
-    ASIFormDataRequest *req = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"http://forums.somethingawful.com/bookmarkthreads.php"]];
-    req.userInfo = [NSDictionary dictionaryWithObject:@"Added to bookmarks." forKey:@"completionMsg"];
-    
-    [req setPostValue:@"1" forKey:@"json"];
-    [req setPostValue:@"add" forKey:@"action"];
-    [req setPostValue:self.thread.threadID forKey:@"threadid"];
-    self.isBookmarked = YES;
-    
-    NSMutableArray *bookmarked_threads = [AwfulUtil newThreadListForForumId:@"bookmarks"];
-    [bookmarked_threads addObject:self.thread];
-    [AwfulUtil saveThreadList:bookmarked_threads forForumId:@"bookmarks"];
-    [bookmarked_threads release];
-    
-    loadRequestAndWait(req);
-}
-
--(void)removeBookmark
-{
-    ASIFormDataRequest *req = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"http://forums.somethingawful.com/bookmarkthreads.php"]];
-    req.userInfo = [NSDictionary dictionaryWithObject:@"Removed from bookmarks." forKey:@"completionMsg"];
-    
-    [req setPostValue:@"1" forKey:@"json"];
-    [req setPostValue:@"remove" forKey:@"action"];
-    [req setPostValue:self.thread.threadID forKey:@"threadid"];
-    self.isBookmarked = NO;
-    
-    NSMutableArray *bookmarked_threads = [AwfulUtil newThreadListForForumId:@"bookmarks"];
-    AwfulThread *found = nil;
-    for(AwfulThread *thread in bookmarked_threads) {
-        if([thread.threadID isEqualToString:self.thread.threadID]) {
-            found = thread;
-        }
-    }
-    [bookmarked_threads removeObject:found];
-    [AwfulUtil saveThreadList:bookmarked_threads forForumId:@"bookmarks"];
-    [bookmarked_threads release];
-    
-    loadRequestAndWait(req);
 }
 
 -(void)setThreadTitle : (NSString *)in_title
@@ -553,6 +512,11 @@ float getWidth()
 -(UIView *)getView
 {
     return self.view;
+}
+
+-(AwfulActions *)getActions
+{
+    return [[[AwfulThreadActions alloc] initWithAwfulPage:self] autorelease];
 }
 
 @end

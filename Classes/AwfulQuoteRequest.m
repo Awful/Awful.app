@@ -39,7 +39,7 @@
     TFHppleElement *quote_el = [base searchForSingle:@"//textarea[@name='message']"];
     
     AwfulPostBoxController *post_box = [[AwfulPostBoxController alloc] initWithText:[NSString stringWithFormat:@"%@\n", [quote_el content]]];
-    [post_box setReplyBox:page.thread];
+    [post_box setThread:page.thread];
     
     AwfulNavController *nav = getnav();
     [nav presentModalViewController:post_box animated:YES];
