@@ -588,6 +588,7 @@
 		1185088713AA905600FCACF8 /* AwfulForumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1185088613AA905600FCACF8 /* AwfulForumCell.m */; };
 		1185088913AA90EE00FCACF8 /* AwfulForumCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1185088813AA90EE00FCACF8 /* AwfulForumCell.xib */; };
 		118591EF13B3CEBA0036E607 /* AwfulThreadActions.m in Sources */ = {isa = PBXBuildFile; fileRef = 118591EE13B3CEBA0036E607 /* AwfulThreadActions.m */; };
+		118591F413B3F1D30036E607 /* jquery.txt in Resources */ = {isa = PBXBuildFile; fileRef = 118591F313B3F1D30036E607 /* jquery.txt */; };
 		11884DED1358D68700ADDA45 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 11884DEB1358D68700ADDA45 /* NSString+HTML.m */; };
 		11884DF01358D73000ADDA45 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 11884DEF1358D73000ADDA45 /* GTMNSString+HTML.m */; };
 		1199D7CF13AA9C4200264DE9 /* tiny_arrow_right.png in Resources */ = {isa = PBXBuildFile; fileRef = 1199D7CE13AA9C4200264DE9 /* tiny_arrow_right.png */; };
@@ -1248,6 +1249,7 @@
 		1185088813AA90EE00FCACF8 /* AwfulForumCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AwfulForumCell.xib; sourceTree = "<group>"; };
 		118591ED13B3CEBA0036E607 /* AwfulThreadActions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadActions.h; sourceTree = "<group>"; };
 		118591EE13B3CEBA0036E607 /* AwfulThreadActions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadActions.m; sourceTree = "<group>"; };
+		118591F313B3F1D30036E607 /* jquery.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = jquery.txt; sourceTree = "<group>"; };
 		11884DEA1358D68700ADDA45 /* NSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+HTML.h"; sourceTree = "<group>"; };
 		11884DEB1358D68700ADDA45 /* NSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+HTML.m"; sourceTree = "<group>"; };
 		11884DEE1358D73000ADDA45 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
@@ -2155,6 +2157,7 @@
 				28A0AB4B0D9B1048005BE974 /* Awful_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 				109CD8171204F21700A778B5 /* post.css */,
+				118591F313B3F1D30036E607 /* jquery.txt */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -2763,6 +2766,7 @@
 				1165DBBA13B11FC700AA8010 /* AwfulExtrasCells.xib in Resources */,
 				11C1E95E13B26657008A0BE9 /* AwfulNavigatorLabels.xib in Resources */,
 				11C1E97213B2891C008A0BE9 /* AwfulThreadListCells.xib in Resources */,
+				118591F413B3F1D30036E607 /* jquery.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

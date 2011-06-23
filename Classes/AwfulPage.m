@@ -184,6 +184,16 @@ float getWidth()
     [ref_req release];
 }
 
+-(AwfulPost *)getNewestPost
+{
+    int index = self.newPostIndex - 1;
+    if(index >= 0 && index < [self.allRawPosts count]) {
+        AwfulPost *post = [self.allRawPosts objectAtIndex:index];
+        return post;
+    }
+    return nil;
+}
+
 -(void)stop
 {
 }
@@ -269,7 +279,6 @@ float getWidth()
 
 -(void)webViewDidFinishLoad:(UIWebView *)sender
 {
-    
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
@@ -472,7 +481,7 @@ float getWidth()
     self.delegate.navigationItem.titleView = self.threadTitleLabel;
     
     UIBarButtonItem *cust = [[UIBarButtonItem alloc] initWithCustomView:self.pagesLabel];
-    self.navigationItem.rightBarButtonItem = cust;
+    self.delegate.navigationItem.rightBarButtonItem = cust;
     [cust release];
 }
 

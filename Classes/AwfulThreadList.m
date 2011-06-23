@@ -278,7 +278,7 @@
     self.delegate.navigationItem.titleView = self.forumLabel;
     
     UIBarButtonItem *cust = [[UIBarButtonItem alloc] initWithCustomView:self.pagesLabel];
-    self.navigationItem.rightBarButtonItem = cust;
+    self.delegate.navigationItem.rightBarButtonItem = cust;
     [cust release];
         
     if([self shouldReloadOnViewLoad]) {

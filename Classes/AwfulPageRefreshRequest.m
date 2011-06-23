@@ -67,8 +67,15 @@
     
     BOOL fyad = [self.page.thread.forum.name isEqualToString:@"FYAD"];
     NSMutableArray *parsed_posts = [AwfulParse newPostsFromThread:page_data isFYAD:fyad];
+    [self.page acceptPosts:parsed_posts];
+    
+    AwfulPost *newest_post = [self.page getNewestPost];
     
     NSString *html = [AwfulParse constructPageHTMLFromPosts:parsed_posts];
+    
+    if(self.page.newPostIndex > 0) {
+        html = [html stringByAppendingFormat:@"<script>$(window).bind('load', function() {$.scrollTo('#%@', 200);});</script>", newest_post.postID];
+    }
     
     AwfulNavigator *nav = getNavigator();
     UIWebView *web = [[UIWebView alloc] initWithFrame:nav.view.frame];
@@ -76,7 +83,7 @@
     self.page.webView = web;
     [web release];
 
-    [self.page acceptPosts:parsed_posts];
+    
     [parsed_posts release];
     
     [page_data release];

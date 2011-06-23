@@ -37,12 +37,12 @@
 
     NSString *username_info = post.authorName;
     if(post.authorType == AwfulUserTypeAdmin) {
-        username_info = [NSString stringWithFormat:@"<img src='http://fi.somethingawful.com/star_admin.gif'/>&nbsp;%@", post.authorName];
+        username_info = [NSString stringWithFormat:@"<img src='http://www.regularberry.com/star_admin.gif'/>&nbsp;%@", post.authorName];
     } else if(post.authorType == AwfulUserTypeMod) {
-        username_info = [NSString stringWithFormat:@"<img src='http://fi.somethingawful.com/star_moderator.gif'/>&nbsp;%@", post.authorName];
+        username_info = [NSString stringWithFormat:@"<img src='http://www.regularberry.com/star_moderator.gif'/>&nbsp;%@", post.authorName];
     }
     
-    NSString *name_avatar_box = [NSString stringWithFormat:@"<table class='%@'><tr>%@<td class='name_date_box'><span class='%@'>%@</span><br/><span class='post_date'>Posted on %@</span></td><td></td></tr></table>", userbox_str, avatar_str, user_str, username_info, post.postDate];
+    NSString *name_avatar_box = [NSString stringWithFormat:@"<table id='%@' class='%@'><tr>%@<td class='name_date_box'><span class='%@'>%@</span><br/><span class='post_date'>Posted on %@</span></td><td></td></tr></table>", post.postID, userbox_str, avatar_str, user_str, username_info, post.postDate];
     
     NSString *parsed_post_body = [AwfulParse parseYouTubes:post_body];
 
@@ -171,11 +171,13 @@
     NSString *combined = @"";
     for(AwfulPost *post in posts) {
         combined = [combined stringByAppendingString:post.formattedHTML];
-    }    
+    }
     
     NSString *css = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"post" ofType:@"css"] encoding:NSUTF8StringEncoding error:nil];
     
-    NSString *html = [NSString stringWithFormat:@"<html><head><style type='text/css'>%@</style></head><body>%@</body></html>", css, combined];
+    NSString *js = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"jquery" ofType:@"txt"] encoding:NSUTF8StringEncoding error:nil];
+    
+    NSString *html = [NSString stringWithFormat:@"<html><head><script>%@</script><style type='text/css'>%@</style></head><body>%@</body></html>", js, css, combined];
     
     return html;
 }

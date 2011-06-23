@@ -8,12 +8,16 @@
 
 #import "AwfulQuoteRequest.h"
 #import "AwfulNavController.h"
+#import "AwfulPage.h"
+#import "AwfulPost.h"
 
 @implementation AwfulQuoteRequest
 
--(id)initWithPost : (AwfulPost *)post fromPage : (AwfulPage *)in_page
+@synthesize page = _page;
+
+-(id)initWithPost : (AwfulPost *)post fromPage : (AwfulPage *)page
 {
-    page = [in_page retain];
+    _page = [page retain];
     
     NSString *url_str = [NSString stringWithFormat:@"http://forums.somethingawful.com/newreply.php?action=newreply&postid=%@", post.postID];
     
@@ -24,7 +28,7 @@
 
 -(void)dealloc
 {
-    [page release];
+    [_page release];
     [super dealloc];
 }
 
@@ -39,7 +43,7 @@
     TFHppleElement *quote_el = [base searchForSingle:@"//textarea[@name='message']"];
     
     AwfulPostBoxController *post_box = [[AwfulPostBoxController alloc] initWithText:[NSString stringWithFormat:@"%@\n", [quote_el content]]];
-    [post_box setThread:page.thread];
+    [post_box setThread:self.page.thread];
     
     AwfulNavController *nav = getnav();
     [nav presentModalViewController:post_box animated:YES];

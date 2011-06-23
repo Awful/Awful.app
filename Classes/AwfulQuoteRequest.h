@@ -7,13 +7,16 @@
 //
 
 #import "ASIHTTPRequest.h"
-#import "AwfulPost.h"
-#import "AwfulPage.h"
+
+@class AwfulPost;
+@class AwfulPage;
 
 @interface AwfulQuoteRequest : ASIHTTPRequest {
-    AwfulPage *page;
+    AwfulPage *_page;
 }
 
--(id)initWithPost : (AwfulPost *)post fromPage : (AwfulPage *)in_page;
+@property (nonatomic, retain) AwfulPage *page;
+
+-(id)initWithPost : (AwfulPost *)post fromPage : (AwfulPage *)page;
 
 @end

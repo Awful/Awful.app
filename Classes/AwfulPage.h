@@ -82,6 +82,8 @@ typedef enum {
 -(void)chosePostOption : (int)option;
 -(void)choseThreadOption : (int)option;
 
+-(AwfulPost *)getNewestPost;
+
 @end
 
 float getWidth();
