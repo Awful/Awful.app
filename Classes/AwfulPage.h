@@ -78,7 +78,6 @@ typedef enum {
 -(void)prevPage;
 
 -(void)heldPost:(UILongPressGestureRecognizer *)gestureRecognizer;
--(void)imageGesture : (UITapGestureRecognizer *)sender;
 -(void)chosePostOption : (int)option;
 -(void)choseThreadOption : (int)option;
 

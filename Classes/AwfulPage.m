@@ -134,6 +134,12 @@ float getWidth()
     if(webView != _webView) {
         [_webView release];
         _webView = [webView retain];
+        
+        UILongPressGestureRecognizer *press = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(heldPost:)];
+        press.delegate = self;
+        press.minimumPressDuration = 0.3;
+        [_webView addGestureRecognizer:press];
+        [press release];
         _webView.delegate = self;
         self.view = _webView;
     }
@@ -305,7 +311,16 @@ float getWidth()
 }
 
 -(void)heldPost:(UILongPressGestureRecognizer *)gestureRecognizer
-{
+{    
+    CGPoint point = [gestureRecognizer locationInView:self.webView];
+    NSString *table_id_first = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).parentNode.parentNode.parentNode.id", point.x, point.y];
+    NSString *post_id = [self.webView stringByEvaluatingJavaScriptFromString:table_id_first];
+    if([post_id isEqualToString:@""]) {
+        NSString *table_id_second = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).parentNode.parentNode.parentNode.parentNode.id", point.x, point.y];
+        post_id = [self.webView stringByEvaluatingJavaScriptFromString:table_id_second];
+    }
+    NSLog(@"%@", post_id);
+    
     if(self.highlightedPost == nil) {
         /*for(UIWebView *web in self.renderedPosts) {
             UIView *v = [web viewWithTag:TOUCH_POST];
