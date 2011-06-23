@@ -25,7 +25,7 @@
     if(post.avatarURL == nil) {
         avatar_str = @"";
     } else {
-        avatar_str = [NSString stringWithFormat:@"<td id='avatar'><img class='avatar' src='%@'/></td>", post.avatarURL];
+        avatar_str = [NSString stringWithFormat:@"<td class='avatar'><img class='avatar' src='%@'/></td>", post.avatarURL];
     }
     
     NSString *userbox_str = @"userbox";
@@ -42,19 +42,11 @@
         username_info = [NSString stringWithFormat:@"<img src='http://fi.somethingawful.com/star_moderator.gif'/>&nbsp;%@", post.authorName];
     }
     
-    NSString *name_avatar_box = [NSString stringWithFormat:@"<table id='%@'><tr>%@<td id='name_date_box'><span class='%@'>%@</span><br/><span class='post_date'>Posted on %@</span></td><td></td></tr></table>", userbox_str, avatar_str, user_str, username_info, post.postDate];
+    NSString *name_avatar_box = [NSString stringWithFormat:@"<table class='%@'><tr>%@<td class='name_date_box'><span class='%@'>%@</span><br/><span class='post_date'>Posted on %@</span></td><td></td></tr></table>", userbox_str, avatar_str, user_str, username_info, post.postDate];
     
-    NSString *css = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"post" ofType:@"css"] encoding:NSUTF8StringEncoding error:nil];
-
-    //NSString *parsed_post_body = [AwfulParse parseThumbnails:post_body];
-    //parsed_post_body = [AwfulParse parseYouTubes:parsed_post_body];
     NSString *parsed_post_body = [AwfulParse parseYouTubes:post_body];
 
-    //NSString *html = [NSString stringWithFormat:@"<html><head><style type='text/css'>%@</style></head><body class='%@'>%@%@</body></html>", css, alt, name_avatar_box, parsed_post_body];
-    NSString *html = [NSString stringWithFormat:@"%@<table><tr>%@</tr></table>", name_avatar_box, parsed_post_body];
-    //html = [html stringByReplacingOccurrencesOfString:@"<td class=\"postbody\">" withString:@"<div class='postbody'>"];
-    //html = [html stringByReplacingOccurrencesOfString:@"</td>" withString:@"</div>"];
-    //html = [html stringByReplacingOccurrencesOfString:@"<!-- EndContentMarker -->\n\n\n" withString:@""];
+    NSString *html = [NSString stringWithFormat:@"%@<table class='postbodymain %@'><tr>%@</tr></table>", name_avatar_box, alt, parsed_post_body];
     
     return html;
 }
@@ -174,21 +166,16 @@
     return parsed_posts;
 }
 
-+(NSString *)parseTestPageFromPageData : (TFHpple *)hpple
++(NSString *)constructPageHTMLFromPosts : (NSMutableArray *)posts
 {
-    NSMutableArray *posts = [AwfulParse newPostsFromThread:hpple isFYAD:NO];
     NSString *combined = @"";
     for(AwfulPost *post in posts) {
         combined = [combined stringByAppendingString:post.formattedHTML];
-    }
-    [posts release];
-    
+    }    
     
     NSString *css = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"post" ofType:@"css"] encoding:NSUTF8StringEncoding error:nil];
     
-    
-    
-    NSString *html = [NSString stringWithFormat:@"<html><head><style type='text/css'>%@</style></head><body class='altcolor1'>%@</body></html>", css, combined];
+    NSString *html = [NSString stringWithFormat:@"<html><head><style type='text/css'>%@</style></head><body>%@</body></html>", css, combined];
     
     return html;
 }

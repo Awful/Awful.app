@@ -15,19 +15,19 @@ img {
     max-width:100%;
 }
 
-#userbox {
+.userbox {
     width:100%;
     height:50px;
     background-color:#006698;
 }
 
-#userbox_op {
+.userbox_op {
     width:100%;
     height:50px;
     background-color:#199ed7;
 }
 
-#avatar {
+.avatar {
     width:50px;
     height:45px;
     padding-left: 5px;
@@ -35,7 +35,7 @@ img {
     padding-bottom: 2px;
 }
 
-#name_date_box {
+.name_date_box {
     padding:7px;
     color:white;
     width:270px;
@@ -58,9 +58,10 @@ img.avatar {
     max-width:45px;
 }
 
-div.postbody {
-    margin:5px;
-    padding-bottom:10px;
+.postbodymain {
+    width:100%;
+    padding:5px;
+    padding-bottom:5px;
 }
 
 div.complete_shit {

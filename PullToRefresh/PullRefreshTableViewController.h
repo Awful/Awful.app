@@ -28,9 +28,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "AwfulTableViewController.h"
 
-@interface PullRefreshTableViewController : AwfulTableViewController {
+@interface PullRefreshTableViewController : UITableViewController {
     UIView *refreshHeaderView;
     UILabel *refreshLabel;
     UILabel *endOfThreadLabel;
@@ -57,5 +56,6 @@
 - (void)addPullToRefreshHeader;
 - (void)startLoading;
 - (void)stopLoading;
+-(void)refresh;
 
 @end

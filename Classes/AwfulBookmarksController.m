@@ -93,9 +93,9 @@
 {
     [self endTimer];
     self.view.userInteractionEnabled = NO;
-    [UIView animateWithDuration:0.25 animations:^{
+    /*[UIView animateWithDuration:0.25 animations:^{
         self.view.alpha = 0.3;
-    }];
+    }];*/
     self.refreshed = YES;
     [super refresh];
 }

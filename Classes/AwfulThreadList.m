@@ -18,6 +18,7 @@
 #import "AwfulPageCount.h"
 #import "AwfulLoginController.h"
 #import "AwfulNavigator.h"
+#import "AwfulNavigatorLabels.h"
 
 #define THREAD_HEIGHT 72
 
@@ -160,16 +161,18 @@
 @synthesize awfulThreads = _awfulThreads;
 @synthesize threadCell = _threadCell;
 @synthesize pageNavCell = _pageNavCell;
+@synthesize pages = _pages;
+@synthesize delegate = _delegate;
+@synthesize pagesLabel = _pagesLabel;
+@synthesize forumLabel = _forumLabel;
 
 -(id)initWithString : (NSString *)str atPageNum : (int)page_num
 {
     if ((self = [super initWithStyle:UITableViewStylePlain])) {
         _awfulThreads = [[NSMutableArray alloc] init];
-        
-        AwfulPageCount *pages = [[AwfulPageCount alloc] init];
-        pages.currentPage = page_num;
-        self.pages = pages;
-        [pages release];      
+        _delegate = nil;
+        _pages = [[AwfulPageCount alloc] init];
+        _pages.currentPage = page_num;
     }
     
     return self;
@@ -188,17 +191,12 @@
     return self;
 }
 
-/*
-- (id)initWithStyle:(UITableViewStyle)style {
-    // Override initWithStyle: if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
-    if ((self = [super initWithStyle:style])) {
-    }
-    return self;
-}*/
-
 - (void)dealloc {
     [_awfulThreads release];
     [_forum release];
+    [_pages release];
+    [_pagesLabel release];
+    [_forumLabel release];
     [super dealloc];
 }
 
@@ -232,8 +230,6 @@
 
 -(void)refresh
 {        
-    [super refresh];
-    
     AwfulForumRefreshRequest *ref_req = [[AwfulForumRefreshRequest alloc] initWithAwfulThreadList:self];
     loadRequest(ref_req);
     [ref_req release];
@@ -241,20 +237,15 @@
 
 -(void)stop
 {
-    [super stop];
-    AwfulNavController *nav = getnav();
-    [nav stopAllRequests];
-    
-    
     self.view.userInteractionEnabled = YES;
-    [UIView animateWithDuration:0.25 animations:^{
+    /*[UIView animateWithDuration:0.25 animations:^{
         self.view.alpha = 1.0;
-    }];
+    }];*/
 }
 
 -(void)acceptThreads : (NSMutableArray *)in_threads
 {
-    [super stop];
+    [self.delegate swapToRefreshButton];
     
     self.awfulThreads = in_threads;
     
@@ -275,14 +266,34 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    AwfulNavigatorLabels *labels = [[AwfulNavigatorLabels alloc] init];
+    self.pagesLabel = labels.pagesLabel;
+    self.forumLabel = labels.forumLabel;
+    [labels release];
+    
     self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
     
     [self.forumLabel setText:self.forum.name];
+    [self.pagesLabel setText:[self.pages description]];
     self.delegate.navigationItem.titleView = self.forumLabel;
+    
+    UIBarButtonItem *cust = [[UIBarButtonItem alloc] initWithCustomView:self.pagesLabel];
+    self.navigationItem.rightBarButtonItem = cust;
+    [cust release];
         
     if([self shouldReloadOnViewLoad]) {
         [self refresh];
     }
+}
+
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+    // Release any retained subviews of the main view.
+    // e.g. self.myOutlet = nil;
+    
+    self.pagesLabel = nil;
+    self.forumLabel = nil;
 }
 
 -(BOOL)shouldReloadOnViewLoad
@@ -310,6 +321,15 @@
     [super viewDidDisappear:animated];
 }
 */
+
+-(void)setPages:(AwfulPageCount *)pages
+{
+    if(pages != _pages) {
+        [_pages release];
+        _pages = [pages retain];
+        [self.pagesLabel setText:[_pages description]];
+    }
+}
 
 -(AwfulThreadCellType)getTypeAtIndexPath : (NSIndexPath *)path
 {    
@@ -482,9 +502,9 @@
         }
     }
 }
-/*
+
 -(void)firstPage
-{
+{/*
     int spot = swipedRow;
     
     if(spot >= [awfulThreads count]) {
@@ -498,11 +518,11 @@
         AwfulPage *thread_detail = [[AwfulPage alloc] initWithAwfulThread:thread startAt:THREAD_POS_FIRST];
         [nav loadPage:thread_detail];
         [thread_detail release];
-    }
+    }*/
 }
 
 -(void)lastPage
-{
+{/*
     int spot = swipedRow;
 
     if(spot >= [awfulThreads count]) {
@@ -515,8 +535,8 @@
         AwfulPage *thread_detail = [[AwfulPage alloc] initWithAwfulThread:thread startAt:THREAD_POS_LAST];
         loadContentVC(thread_detail);
         [thread_detail release];
-    }
-}*/
+    }*/
+}
 
 -(IBAction)prevPage
 {
@@ -544,11 +564,6 @@
     // Relinquish ownership any cached data, images, etc that aren't in use.
 }
 
-- (void)viewDidUnload {
-    // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
-    // For example: self.myOutlet = nil;
-}
-
 #pragma mark -
 #pragma AwfulHistoryRecorder
 
@@ -569,6 +584,14 @@
 -(void)setRecorder : (AwfulHistory *)history
 {
     
+}
+
+#pragma mark -
+#pragma mark Navigator Contnet
+
+-(UIView *)getView
+{
+    return self.view;
 }
 
 @end

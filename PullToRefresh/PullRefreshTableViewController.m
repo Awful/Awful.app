@@ -133,6 +133,11 @@
     }
 }
 
+-(void)refresh
+{
+    
+}
+
 - (void)startLoading {
     isLoading = YES;
 

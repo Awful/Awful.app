@@ -12,24 +12,36 @@
 @class ASIHTTPRequest;
 @class AwfulRequestHandler;
 @class AwfulPageCount;
-@class AwfulTableViewController;
 @class AwfulUser;
+@class AwfulNavigator;
 
-@interface AwfulNavigator : UIViewController {
+@protocol AwfulNavigatorContent <NSObject>
+
+-(UIView *)getView;
+-(void)setDelegate : (AwfulNavigator *)delegate;
+-(void)refresh;
+-(void)stop;
+
+@end
+
+@interface AwfulNavigator : UIViewController <UINavigationControllerDelegate, UIGestureRecognizerDelegate> {
     UIToolbar *_toolbar;
-    AwfulTableViewController *_contentVC;
+    id<AwfulNavigatorContent> _contentVC;
     AwfulRequestHandler *_requestHandler;
     AwfulUser *_user;
 }
 
 @property (nonatomic, retain) IBOutlet UIToolbar *toolbar;
-@property (nonatomic, retain) AwfulTableViewController *contentVC;
+@property (nonatomic, retain) id<AwfulNavigatorContent> contentVC;
 @property (nonatomic, retain) AwfulRequestHandler *requestHandler;
 @property (nonatomic, retain) AwfulUser *user;
 
--(void)loadContentVC : (AwfulTableViewController *)content;
--(void)loadOtherView : (UIView *)other_view;
+-(void)loadContentVC : (id<AwfulNavigatorContent>)content;
 
+-(void)refresh;
+-(void)stop;
+-(void)swapToRefreshButton;
+-(void)swapToStopButton;
 -(IBAction)tappedBack;
 -(IBAction)tappedForumsList;
 -(IBAction)tappedAction;
@@ -43,6 +55,6 @@
 @end
 
 AwfulNavigator *getNavigator();
-void loadContentVC(AwfulTableViewController *content);
+void loadContentVC(id<AwfulNavigatorContent> content);
 void loadRequest(ASIHTTPRequest *req);
 void loadRequestAndWait(ASIHTTPRequest *req);

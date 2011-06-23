@@ -13,10 +13,8 @@
 #import "AwfulForumsList.h"
 #import "AwfulRequestHandler.h"
 #import "AwfulPageCount.h"
-#import "AwfulTableViewController.h"
 #import "AwfulBookmarksController.h"
 #import "AwfulUser.h"
-#import "AwfulTestPage.h"
 
 @implementation AwfulNavigator
 
@@ -59,10 +57,11 @@
 {
     [super viewDidLoad];
     
-    [self setToolbarItems:[self.toolbar items] animated:YES];
+    UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refresh)];
+    self.navigationItem.leftBarButtonItem = refresh;
+    [refresh release];
     
-    AwfulTestPage *test = [[AwfulTestPage alloc] initWithNibName:nil bundle:nil];
-    [test refresh];
+    [self setToolbarItems:[self.toolbar items] animated:YES];
 }
 
 - (void)viewDidUnload
@@ -81,6 +80,32 @@
 }
 
 #pragma mark - Toolbar Items
+
+-(void)refresh
+{
+    [self swapToStopButton];
+    [self.contentVC refresh];
+}
+
+-(void)stop
+{
+    [self swapToRefreshButton];
+    [self.contentVC stop];
+}
+
+-(void)swapToRefreshButton
+{
+    UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refresh)];
+    self.navigationItem.leftBarButtonItem = refresh;
+    [refresh release];
+}
+
+-(void)swapToStopButton
+{
+    UIBarButtonItem *stop = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop)];
+    self.navigationItem.leftBarButtonItem = stop;
+    [stop release];
+}
 
 -(IBAction)tappedBack
 {
@@ -125,28 +150,23 @@
 
 #pragma mark Awful Content Navigation
 
--(void)loadContentVC : (AwfulTableViewController *)content
+-(void)loadContentVC : (id<AwfulNavigatorContent>)content
 {
     [self dismissModalViewControllerAnimated:YES];
     
     self.contentVC = content;
     [self.contentVC setDelegate:self];
     
-    self.view = self.contentVC.view;
+    self.view = [self.contentVC getView];
     [self.contentVC refresh];
     
     UITapGestureRecognizer *gest = [[UITapGestureRecognizer alloc] 
                                     initWithTarget:self 
                                     action:@selector(tappedThreeTimes:)];
     gest.numberOfTapsRequired = 3;
+    gest.delegate = self;
     [self.view addGestureRecognizer:gest];
     [gest release];
-}
-
--(void)loadOtherView : (UIView *)other_view
-{
-    [self dismissModalViewControllerAnimated:YES];
-    self.view = other_view;
 }
 
 #pragma mark Gestures
@@ -162,6 +182,21 @@
     }
 }
 
+#pragma Navigation Controller Delegate
+- (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated
+{
+    if(viewController == self) {
+        //self.view = [self.contentVC getView];
+    }
+}
+
+#pragma mark Gesture Delegate
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return YES;
+}
+
 @end
 
 AwfulNavigator *getNavigator()
@@ -170,7 +205,7 @@ AwfulNavigator *getNavigator()
     return del.navigator;
 }
 
-void loadContentVC(AwfulTableViewController *content)
+void loadContentVC(id<AwfulNavigatorContent> content)
 {
     AwfulNavigator *nav = getNavigator();
     [nav loadContentVC:content];

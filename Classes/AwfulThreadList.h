@@ -12,7 +12,6 @@
 #import "AwfulPage.h"
 #import "AwfulHistory.h"
 #import "AwfulNavigator.h"
-#import "AwfulTableViewController.h"
 
 @class AwfulPageCount;
 @class AwfulThread;
@@ -54,18 +53,27 @@ typedef enum {
     AwfulThreadCellTypePageNav
 } AwfulThreadCellType;
 
-@interface AwfulThreadList : AwfulTableViewController <AwfulHistoryRecorder> {
+@interface AwfulThreadList : UITableViewController <AwfulNavigatorContent, AwfulHistoryRecorder> {
     NSMutableArray *_awfulThreads;
     AwfulForum *_forum;
+    AwfulPageCount *_pages;
+    AwfulNavigator *_delegate;
     
     AwfulThreadCell *_threadCell;
     AwfulPageNavCell *_pageNavCell;
+    
+    UILabel *_pagesLabel;
+    UILabel *_forumLabel;
 }
 
 @property (nonatomic, retain) AwfulForum *forum;
 @property (nonatomic, retain) NSMutableArray *awfulThreads;
 @property (nonatomic, retain) IBOutlet AwfulThreadCell *threadCell;
 @property (nonatomic, retain) IBOutlet AwfulPageNavCell *pageNavCell;
+@property (nonatomic, retain) AwfulPageCount *pages;
+@property (nonatomic, assign) AwfulNavigator *delegate;
+@property (nonatomic, retain) UILabel *pagesLabel;
+@property (nonatomic, retain) UILabel *forumLabel;
 
 -(id)initWithString : (NSString *)str atPageNum : (int)page_num;
 -(id)initWithAwfulForum : (AwfulForum *)in_forum atPageNum : (int)page_num;
@@ -84,6 +92,8 @@ typedef enum {
 
 -(NSString *)getSaveID;
 -(NSString *)getURLSuffix;
+
+-(void)refresh;
 
 -(void)choseForumOption : (int)option;
 -(AwfulThreadCellType)getTypeAtIndexPath : (NSIndexPath *)path;
