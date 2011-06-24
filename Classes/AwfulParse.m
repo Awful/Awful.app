@@ -42,8 +42,7 @@
         username_info = [NSString stringWithFormat:@"<img src='http://www.regularberry.com/star_moderator.gif'/>&nbsp;%@", post.authorName];
     }
     
-    NSString *name_avatar_box = [NSString stringWithFormat:@"<table id='%@' class='%@'><tr>%@<td class='name_date_box'><span class='%@'>%@</span><br/><span class='post_date'>Posted on %@</span></td><td></td></tr></table>", post.postID, userbox_str, avatar_str, user_str, username_info, post.postDate];
-    
+    NSString *name_avatar_box = [NSString stringWithFormat:@"<table class='%@'><tr>%@<td class='name_date_box'><span class='%@'>%@</span><br/><span class='post_date'>Posted on %@</span></td><td></td><td class='quotebutton' onclick=tappedPost('%@')></td></tr></table>", userbox_str, avatar_str, user_str, username_info, post.postDate, post.postID];
     NSString *parsed_post_body = [AwfulParse parseYouTubes:post_body];
 
     NSString *html = [NSString stringWithFormat:@"%@<table class='postbodymain %@'><tr>%@</tr></table>", name_avatar_box, alt, parsed_post_body];

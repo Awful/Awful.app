@@ -31,7 +31,6 @@ typedef enum {
     
     NSMutableArray *_allRawPosts;
   
-    AwfulHistory *_pageHistory;
     AwfulPost *_highlightedPost;
     
     BOOL _isBookmarked;
@@ -49,8 +48,6 @@ typedef enum {
 @property (nonatomic, retain) NSString *url;
 
 @property (nonatomic, retain) NSMutableArray *allRawPosts;
-
-@property (nonatomic, retain) AwfulHistory *pageHistory;
 
 @property (nonatomic, retain) AwfulPost *highlightedPost;
 
@@ -80,7 +77,6 @@ typedef enum {
 -(void)prevPage;
 
 -(void)heldPost:(UILongPressGestureRecognizer *)gestureRecognizer;
--(void)chosePostOption : (int)option;
 
 -(AwfulPost *)getNewestPost;
 

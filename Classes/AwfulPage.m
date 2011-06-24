@@ -28,6 +28,7 @@
 #import "AwfulThreadActions.h"
 #import "AwfulHistoryManager.h"
 #import "AwfulHistory.h"
+#import "AwfulPostActions.h"
 
 float getWidth()
 {
@@ -45,7 +46,6 @@ float getWidth()
 
 @synthesize thread = _thread;
 @synthesize url = _url;
-@synthesize pageHistory = _pageHistory;
 @synthesize isBookmarked = _isBookmarked;
 @synthesize highlightedPost = _highlightedPost;
 @synthesize allRawPosts = _allRawPosts;
@@ -80,7 +80,6 @@ float getWidth()
         _highlightedPost = nil;
         _newPostIndex = -1;
         
-        _pageHistory = nil;
         _webView = nil;
         
         NSString *append;
@@ -119,7 +118,6 @@ float getWidth()
 - (void)dealloc {
     [_url release];
     [_thread release];
-    [_pageHistory release];
     [_highlightedPost release];
     
     [_allRawPosts release];
@@ -257,31 +255,7 @@ float getWidth()
 
 -(void)heldPost:(UILongPressGestureRecognizer *)gestureRecognizer
 {    
-    CGPoint point = [gestureRecognizer locationInView:self.webView];
-    NSString *table_id_first = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).parentNode.parentNode.parentNode.id", point.x, point.y];
-    NSString *post_id = [self.webView stringByEvaluatingJavaScriptFromString:table_id_first];
-    if([post_id isEqualToString:@""]) {
-        NSString *table_id_second = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).parentNode.parentNode.parentNode.parentNode.id", point.x, point.y];
-        post_id = [self.webView stringByEvaluatingJavaScriptFromString:table_id_second];
-    }
-    NSLog(@"%@", post_id);
     
-    if(self.highlightedPost == nil) {
-        /*for(UIWebView *web in self.renderedPosts) {
-            UIView *v = [web viewWithTag:TOUCH_POST];
-            if(v == gestureRecognizer.view) {
-                int index = [self.renderedPosts indexOfObject:web];
-                if(index < [self.unreadPosts count]) {
-                    self.highlightedPost = [self.unreadPosts objectAtIndex:index];
-                }
-            }
-        }*/
-        
-        if(self.highlightedPost != nil) {
-            //AwfulNavController *nav = getnav();
-            //[nav showPostOptions:highlightedPost];
-        }
-    }
 }
 
 -(void)imageGesture : (UITapGestureRecognizer *)sender
@@ -312,45 +286,6 @@ float getWidth()
             //[nav showImage:src];
         }
     }*/
-}
-
--(void)chosePostOption : (int)option
-{    
-    /*int actual_option = option;
-    if(!self.highlightedPost.canEdit) {
-        actual_option++;
-    }
-    
-    if(actual_option == 0) {
-        if(self.highlightedPost.canEdit) {
-            AwfulEditContentRequest *edit_req = [[AwfulEditContentRequest alloc] initWithAwfulPage:self forAwfulPost:self.highlightedPost];
-            loadRequest(edit_req);
-            [edit_req release];
-        }
-    } else if(actual_option == 1) {
-        
-        AwfulQuoteRequest *quote_req = [[AwfulQuoteRequest alloc] initWithPost:self.highlightedPost fromPage:self];
-        loadRequest(quote_req);
-        [quote_req release];
-        
-    } else if(actual_option == 2) {
-        NSString *html = [[NSString alloc] initWithFormat:@"<html><head><link rel='stylesheet' type='text/css' href='/css/main.css'><link rel='stylesheet' type='text/css' href='/css/bbcode.css'></head><body>%@</body></html>", self.highlightedPost.rawContent];
-        [(AwfulNavController *)self.navigationController showUnfilteredWithHTML:html];
-        [html release];
-        
-    } else if(actual_option == 3) {
-        if(self.highlightedPost.markSeenLink != nil) {
-            NSURL *seen_url = [NSURL URLWithString:[@"http://forums.somethingawful.com/" stringByAppendingString:self.highlightedPost.markSeenLink]];
-            ASIHTTPRequest *seen_req = [ASIHTTPRequest requestWithURL:seen_url];
-            seen_req.userInfo = [NSDictionary dictionaryWithObjectsAndKeys:@"Marked up to there.", @"completionMsg", nil];
-            loadRequestAndWait(seen_req);
-        } else {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Not available" message:@"That feature requires you set 'Show an icon next to each post indicating if it has been seen or not' in your forum options" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-            [alert show];
-            [alert release];
-        }
-    }   */
-    self.highlightedPost = nil;
 }
 
 /*
@@ -467,6 +402,20 @@ float getWidth()
             [self nextPage];
         } else if([action isEqualToString:@"loadOlderPosts"]) {
             [self loadOlderPosts];
+        } else if([action isEqualToString:@"postOptions"]) {
+            
+            AwfulNavigator *nav = getNavigator();
+            NSString *post_id = [dictionary objectForKey:@"postid"];
+            
+            if(![post_id isEqualToString:@""] && nav.actions == nil) {
+                for(AwfulPost *post in self.allRawPosts) {
+                    if([post.postID isEqualToString:post_id]) {
+                        AwfulPostActions *actions = [[AwfulPostActions alloc] initWithAwfulPost:post page:self];
+                        [nav setActions:actions];
+                        [actions release];
+                    }
+                }
+            }
         }
     }
 }

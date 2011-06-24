@@ -436,3 +436,11 @@ function tappedOlderPosts()
     obj.addObject("action", "loadOlderPosts");
     obj.sendBridgeObject();
 }
+
+function tappedPost(postid)
+{
+    var obj = new JSBridgeObj();
+    obj.addObject("action", "postOptions");
+    obj.addObject("postid", postid);
+    obj.sendBridgeObject();
+}

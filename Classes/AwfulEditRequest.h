@@ -25,13 +25,11 @@
 
 
 @interface AwfulEditContentRequest : ASIHTTPRequest {
-    AwfulPage *_page;
     AwfulPost *_post;
 }
 
--(id)initWithAwfulPage : (AwfulPage *)page forAwfulPost : (AwfulPost *)post;
+-(id)initWithAwfulPost : (AwfulPost *)post;
 
-@property (nonatomic, retain) AwfulPage *page;
 @property (nonatomic, retain) AwfulPost *post;
 
 @end

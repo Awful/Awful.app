@@ -71,15 +71,13 @@
 
 @implementation AwfulEditContentRequest
 
-@synthesize page = _page;
 @synthesize post = _post;
 
--(id)initWithAwfulPage : (AwfulPage *)page forAwfulPost : (AwfulPost *)post
+-(id)initWithAwfulPost : (AwfulPost *)post
 {
     NSURL *edit_url = [NSURL URLWithString:[NSString stringWithFormat:@"http://forums.somethingawful.com/editpost.php?action=editpost&postid=%@", post.postID]];
     self = [super initWithURL:edit_url];
     
-    _page = [page retain];
     _post = [post retain];
     
     return self;
@@ -87,7 +85,6 @@
 
 -(void)dealloc
 {
-    [_page release];
     [_post release];
     [super dealloc];
 }
