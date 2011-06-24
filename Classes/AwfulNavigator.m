@@ -153,6 +153,7 @@
 {
     AwfulForumsList *forums = [[AwfulForumsList alloc] init];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:forums];
+    nav.navigationBar.barStyle = UIBarStyleBlackOpaque;
     [self presentModalViewController:nav animated:YES];
     [nav release];
     [forums release];

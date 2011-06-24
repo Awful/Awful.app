@@ -65,13 +65,12 @@
 								<float key="IBUIWidth">30</float>
 								<reference key="IBUIToolbar" ref="463373950"/>
 							</object>
-							<object class="IBUIBarButtonItem" id="46971287">
+							<object class="IBUIBarButtonItem" id="143386815">
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-								<float key="IBUIWidth">10</float>
 								<reference key="IBUIToolbar" ref="463373950"/>
 								<int key="IBUISystemItemIdentifier">6</int>
 							</object>
-							<object class="IBUIBarButtonItem" id="95224404">
+							<object class="IBUIBarButtonItem" id="178541761">
 								<object class="NSCustomResource" key="IBUIImage">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">icon_arrow_right.png</string>
@@ -85,6 +84,16 @@
 								<reference key="IBUIToolbar" ref="463373950"/>
 								<int key="IBUISystemItemIdentifier">5</int>
 							</object>
+							<object class="IBUIBarButtonItem" id="1038655552">
+								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+								<reference key="IBUIToolbar" ref="463373950"/>
+								<int key="IBUISystemItemIdentifier">9</int>
+							</object>
+							<object class="IBUIBarButtonItem" id="182885363">
+								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+								<reference key="IBUIToolbar" ref="463373950"/>
+								<int key="IBUISystemItemIdentifier">5</int>
+							</object>
 							<object class="IBUIBarButtonItem" id="630230048">
 								<object class="NSCustomResource" key="IBUIImage">
 									<string key="NSClassName">NSImage</string>
@@ -93,16 +102,6 @@
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<float key="IBUIWidth">30</float>
 								<reference key="IBUIToolbar" ref="463373950"/>
-							</object>
-							<object class="IBUIBarButtonItem" id="182885363">
-								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-								<reference key="IBUIToolbar" ref="463373950"/>
-								<int key="IBUISystemItemIdentifier">5</int>
-							</object>
-							<object class="IBUIBarButtonItem" id="1038655552">
-								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-								<reference key="IBUIToolbar" ref="463373950"/>
-								<int key="IBUISystemItemIdentifier">9</int>
 							</object>
 							<object class="IBUIBarButtonItem" id="81695746">
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -212,7 +211,7 @@
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
 						<string key="label">tappedForward</string>
-						<reference key="source" ref="95224404"/>
+						<reference key="source" ref="178541761"/>
 						<reference key="destination" ref="372490531"/>
 					</object>
 					<int key="connectionID">26</int>
@@ -221,7 +220,7 @@
 					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">forwardButton</string>
 						<reference key="source" ref="372490531"/>
-						<reference key="destination" ref="95224404"/>
+						<reference key="destination" ref="178541761"/>
 					</object>
 					<int key="connectionID">30</int>
 				</object>
@@ -263,14 +262,14 @@
 							<reference ref="128768400"/>
 							<reference ref="536875823"/>
 							<reference ref="81695746"/>
-							<reference ref="1038655552"/>
 							<reference ref="182885363"/>
 							<reference ref="523538642"/>
-							<reference ref="630230048"/>
 							<reference ref="284858870"/>
-							<reference ref="95224404"/>
+							<reference ref="178541761"/>
 							<reference ref="180482656"/>
-							<reference ref="46971287"/>
+							<reference ref="143386815"/>
+							<reference ref="1038655552"/>
+							<reference ref="630230048"/>
 						</object>
 						<reference key="parent" ref="191373211"/>
 					</object>
@@ -319,7 +318,7 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">25</int>
-						<reference key="object" ref="95224404"/>
+						<reference key="object" ref="178541761"/>
 						<reference key="parent" ref="463373950"/>
 						<string key="objectName">Bar Button Item - Forward</string>
 					</object>
@@ -330,7 +329,7 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">31</int>
-						<reference key="object" ref="46971287"/>
+						<reference key="object" ref="143386815"/>
 						<reference key="parent" ref="463373950"/>
 					</object>
 				</object>

@@ -111,4 +111,14 @@
     [self.delegate toggleFavoriteForForumSection:self.section];
 }
 
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated
+{
+    [super setEditing:editing animated:animated];
+    if(editing) {
+        [self.star removeFromSuperview];
+    } else {
+        [self addSubview:self.star];
+    }
+}
+
 @end
