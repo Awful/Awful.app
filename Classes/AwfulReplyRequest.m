@@ -7,27 +7,43 @@
 //
 
 #import "AwfulReplyRequest.h"
-#import "AwfulNavController.h"
-#import "ASIFormDataRequest.h"
+#import "AwfulThread.h"
+#import "AwfulNavigator.h"
+#import "TFHpple.h"
 #import "NSString+HTML.h"
+
+@implementation CloserFormRequest
+
+-(void)requestFinished
+{
+    [super requestFinished];
+    
+    AwfulNavigator *nav = getNavigator();
+    [nav dismissModalViewControllerAnimated:YES];
+}
+
+@end
 
 @implementation AwfulReplyRequest
 
--(id)initWithReply : (NSString *)in_reply forThread : (AwfulThread *)in_thread
+@synthesize reply = _reply;
+@synthesize thread = _thread;
+
+-(id)initWithReply : (NSString *)reply forThread : (AwfulThread *)thread
 {
-    NSString *url_str = [NSString stringWithFormat:@"http://forums.somethingawful.com/newreply.php?s=&action=newreply&threadid=%@", in_thread.threadID];
+    NSString *url_str = [NSString stringWithFormat:@"http://forums.somethingawful.com/newreply.php?s=&action=newreply&threadid=%@", thread.threadID];
     self = [super initWithURL:[NSURL URLWithString:url_str]];
 
-    reply = [in_reply retain];
-    thread = [in_thread retain];
+    _reply = [reply retain];
+    _thread = [thread retain];
     
     return self;
 }
 
 -(void)dealloc
 {
-    [reply release];
-    [thread release];
+    [_reply release];
+    [_thread release];
     [super dealloc];
 }
 
@@ -41,7 +57,7 @@
     TFHpple *page_data = [[TFHpple alloc] initWithHTMLData:converted];
     [raw_s release];
     
-    ASIFormDataRequest *req = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"http://forums.somethingawful.com/newreply.php"]];
+    CloserFormRequest *req = [CloserFormRequest requestWithURL:[NSURL URLWithString:@"http://forums.somethingawful.com/newreply.php"]];
     
     TFHppleElement *formkey_element = [page_data searchForSingle:@"//input[@name='formkey']"];
     TFHppleElement *formcookie_element = [page_data searchForSingle:@"//input[@name='form_cookie']"];
@@ -55,11 +71,11 @@
     }
     [page_data release];
     
-    [req addPostValue:thread.threadID forKey:@"threadid"];
+    [req addPostValue:self.thread.threadID forKey:@"threadid"];
     [req addPostValue:formkey forKey:@"formkey"];
     [req addPostValue:formcookie forKey:@"form_cookie"];
     [req addPostValue:@"postreply" forKey:@"action"];
-    [req addPostValue:[reply stringByEscapingUnicode] forKey:@"message"];
+    [req addPostValue:[self.reply stringByEscapingUnicode] forKey:@"message"];
     [req addPostValue:@"yes" forKey:@"parseurl"];
     [req addPostValue:@"Submit Reply" forKey:@"submit"];
     
@@ -68,8 +84,7 @@
     
     req.userInfo = dict;
     
-    AwfulNavController *nav = getnav();
-    [nav loadRequestAndWait:req];
+    loadRequestAndWait(req);
 }
 
 @end

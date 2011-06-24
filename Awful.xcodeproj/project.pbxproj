@@ -61,8 +61,8 @@
 		10E38BB912BEBFED002DBA3F /* AwfulLoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = 10E38BB812BEBFED002DBA3F /* AwfulLoginController.m */; };
 		10E38BC712BEC0C9002DBA3F /* AwfulLoginController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 10E38BC312BEC0C9002DBA3F /* AwfulLoginController.xib */; };
 		10E38BC812BEC0C9002DBA3F /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 10E38BC412BEC0C9002DBA3F /* MainWindow.xib */; };
-		10E38BC912BEC0C9002DBA3F /* PageNumber.xib in Resources */ = {isa = PBXBuildFile; fileRef = 10E38BC512BEC0C9002DBA3F /* PageNumber.xib */; };
-		10E38BCA12BEC0C9002DBA3F /* TextInput.xib in Resources */ = {isa = PBXBuildFile; fileRef = 10E38BC612BEC0C9002DBA3F /* TextInput.xib */; };
+		10E38BC912BEC0C9002DBA3F /* AwfulPageNav.xib in Resources */ = {isa = PBXBuildFile; fileRef = 10E38BC512BEC0C9002DBA3F /* AwfulPageNav.xib */; };
+		10E38BCA12BEC0C9002DBA3F /* AwfulPostBox.xib in Resources */ = {isa = PBXBuildFile; fileRef = 10E38BC612BEC0C9002DBA3F /* AwfulPostBox.xib */; };
 		10E38BCD12BEC0E8002DBA3F /* AwfulParse.m in Sources */ = {isa = PBXBuildFile; fileRef = 10E38BCC12BEC0E8002DBA3F /* AwfulParse.m */; };
 		10E38BDA12BEC0FF002DBA3F /* AwfulEditRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 10E38BCF12BEC0FF002DBA3F /* AwfulEditRequest.m */; };
 		10E38BDB12BEC0FF002DBA3F /* AwfulForumRefreshRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 10E38BD112BEC0FF002DBA3F /* AwfulForumRefreshRequest.m */; };
@@ -589,6 +589,7 @@
 		1185088913AA90EE00FCACF8 /* AwfulForumCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1185088813AA90EE00FCACF8 /* AwfulForumCell.xib */; };
 		118591EF13B3CEBA0036E607 /* AwfulThreadActions.m in Sources */ = {isa = PBXBuildFile; fileRef = 118591EE13B3CEBA0036E607 /* AwfulThreadActions.m */; };
 		118591F413B3F1D30036E607 /* jquery.txt in Resources */ = {isa = PBXBuildFile; fileRef = 118591F313B3F1D30036E607 /* jquery.txt */; };
+		118591F713B424DC0036E607 /* AwfulVoteActions.m in Sources */ = {isa = PBXBuildFile; fileRef = 118591F613B424DC0036E607 /* AwfulVoteActions.m */; };
 		11884DED1358D68700ADDA45 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 11884DEB1358D68700ADDA45 /* NSString+HTML.m */; };
 		11884DF01358D73000ADDA45 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 11884DEF1358D73000ADDA45 /* GTMNSString+HTML.m */; };
 		1199D7CF13AA9C4200264DE9 /* tiny_arrow_right.png in Resources */ = {isa = PBXBuildFile; fileRef = 1199D7CE13AA9C4200264DE9 /* tiny_arrow_right.png */; };
@@ -695,8 +696,8 @@
 		10E38BB812BEBFED002DBA3F /* AwfulLoginController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLoginController.m; sourceTree = "<group>"; };
 		10E38BC312BEC0C9002DBA3F /* AwfulLoginController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = AwfulLoginController.xib; path = ../xibs/AwfulLoginController.xib; sourceTree = "<group>"; };
 		10E38BC412BEC0C9002DBA3F /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = MainWindow.xib; path = ../xibs/MainWindow.xib; sourceTree = "<group>"; };
-		10E38BC512BEC0C9002DBA3F /* PageNumber.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = PageNumber.xib; path = xibs/PageNumber.xib; sourceTree = "<group>"; };
-		10E38BC612BEC0C9002DBA3F /* TextInput.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = TextInput.xib; path = xibs/TextInput.xib; sourceTree = "<group>"; };
+		10E38BC512BEC0C9002DBA3F /* AwfulPageNav.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = AwfulPageNav.xib; path = ../xibs/AwfulPageNav.xib; sourceTree = "<group>"; };
+		10E38BC612BEC0C9002DBA3F /* AwfulPostBox.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = AwfulPostBox.xib; path = ../xibs/AwfulPostBox.xib; sourceTree = "<group>"; };
 		10E38BCB12BEC0E8002DBA3F /* AwfulParse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AwfulParse.h; path = Classes/AwfulParse.h; sourceTree = "<group>"; };
 		10E38BCC12BEC0E8002DBA3F /* AwfulParse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AwfulParse.m; path = Classes/AwfulParse.m; sourceTree = "<group>"; };
 		10E38BCE12BEC0FF002DBA3F /* AwfulEditRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulEditRequest.h; sourceTree = "<group>"; };
@@ -1250,6 +1251,8 @@
 		118591ED13B3CEBA0036E607 /* AwfulThreadActions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadActions.h; sourceTree = "<group>"; };
 		118591EE13B3CEBA0036E607 /* AwfulThreadActions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadActions.m; sourceTree = "<group>"; };
 		118591F313B3F1D30036E607 /* jquery.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = jquery.txt; sourceTree = "<group>"; };
+		118591F513B424DC0036E607 /* AwfulVoteActions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulVoteActions.h; sourceTree = "<group>"; };
+		118591F613B424DC0036E607 /* AwfulVoteActions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulVoteActions.m; sourceTree = "<group>"; };
 		11884DEA1358D68700ADDA45 /* NSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+HTML.h"; sourceTree = "<group>"; };
 		11884DEB1358D68700ADDA45 /* NSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+HTML.m"; sourceTree = "<group>"; };
 		11884DEE1358D73000ADDA45 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
@@ -1376,8 +1379,10 @@
 				107CFB571201DAE2007C16F4 /* AwfulPage.m */,
 				10D4987F129A1407008EF8C0 /* AwfulPostBoxController.h */,
 				10D49880129A1407008EF8C0 /* AwfulPostBoxController.m */,
+				10E38BC612BEC0C9002DBA3F /* AwfulPostBox.xib */,
 				109A20C512A06880006DB267 /* AwfulPageNavController.h */,
 				109A20C612A06880006DB267 /* AwfulPageNavController.m */,
+				10E38BC512BEC0C9002DBA3F /* AwfulPageNav.xib */,
 			);
 			name = AwfulPage;
 			sourceTree = "<group>";
@@ -1454,8 +1459,6 @@
 		10E38BC212BEC0B3002DBA3F /* xibs */ = {
 			isa = PBXGroup;
 			children = (
-				10E38BC512BEC0C9002DBA3F /* PageNumber.xib */,
-				10E38BC612BEC0C9002DBA3F /* TextInput.xib */,
 			);
 			name = xibs;
 			sourceTree = "<group>";
@@ -2021,6 +2024,8 @@
 				1162234213B3C92F0035320A /* AwfulActions.m */,
 				118591ED13B3CEBA0036E607 /* AwfulThreadActions.h */,
 				118591EE13B3CEBA0036E607 /* AwfulThreadActions.m */,
+				118591F513B424DC0036E607 /* AwfulVoteActions.h */,
+				118591F613B424DC0036E607 /* AwfulVoteActions.m */,
 			);
 			name = Actions;
 			sourceTree = "<group>";
@@ -2722,8 +2727,8 @@
 				10F5BC59124BE14D006C5ED0 /* icon_114.png in Resources */,
 				10E38BC712BEC0C9002DBA3F /* AwfulLoginController.xib in Resources */,
 				10E38BC812BEC0C9002DBA3F /* MainWindow.xib in Resources */,
-				10E38BC912BEC0C9002DBA3F /* PageNumber.xib in Resources */,
-				10E38BCA12BEC0C9002DBA3F /* TextInput.xib in Resources */,
+				10E38BC912BEC0C9002DBA3F /* AwfulPageNav.xib in Resources */,
+				10E38BCA12BEC0C9002DBA3F /* AwfulPostBox.xib in Resources */,
 				10E38C0C12BEC14F002DBA3F /* arrowdown.png in Resources */,
 				10E38C0D12BEC14F002DBA3F /* arrowleft.png in Resources */,
 				10E38C0E12BEC14F002DBA3F /* btn_template_bg.png in Resources */,
@@ -2842,6 +2847,7 @@
 				11A6CE8313B1489C00AADE7B /* AwfulNavigatorLabels.m in Sources */,
 				1162234313B3C92F0035320A /* AwfulActions.m in Sources */,
 				118591EF13B3CEBA0036E607 /* AwfulThreadActions.m in Sources */,
+				118591F713B424DC0036E607 /* AwfulVoteActions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -15,6 +15,7 @@
 #import "AwfulAppDelegate.h"
 #import "ASIFormDataRequest.h"
 #import "AwfulUtil.h"
+#import "AwfulVoteActions.h"
 
 typedef enum {
     AwfulThreadActionSpecificPage,
@@ -51,6 +52,11 @@ typedef enum {
     return self;
 }
 
+-(NSString *)getOverallTitle
+{
+    return @"Thread Actions";
+}
+
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {    
     if([self isCancelled:buttonIndex]) {
@@ -60,11 +66,16 @@ typedef enum {
     if(buttonIndex == AwfulThreadActionSpecificPage) {
         
         AwfulPageNavController *page_nav = [[AwfulPageNavController alloc] initWithAwfulPage:self.page];
-        [self.delegate setPageNav:page_nav];
+        UIViewController *vc = getRootController();
+        [vc presentModalViewController:page_nav animated:YES];
         [page_nav release];
         
     } else if(buttonIndex == AwfulThreadActionVote) {
-        // make vote actions
+        
+        AwfulVoteActions *vote = [[AwfulVoteActions alloc] initWithAwfulThread:self.page.thread];
+        [self.delegate setActions:vote];
+        [vote release];
+        
     } else if(buttonIndex == AwfulThreadActionReply) {
         
         AwfulPostBoxController *post_box = [[AwfulPostBoxController alloc] initWithText:@""];
@@ -85,7 +96,9 @@ typedef enum {
         [self.page nextPage];
     }
     
-    [self.delegate setActions:nil];
+    if(buttonIndex != AwfulThreadActionVote) {
+        [self.delegate setActions:nil];
+    }
 }
 
 -(void)addBookmark

@@ -7,36 +7,54 @@
 //
 
 #import "AwfulPageNavController.h"
-#import "AwfulNavController.h"
+#import "AwfulPage.h"
 #import "AwfulPageCount.h"
+#import "AwfulAppDelegate.h"
 
 @implementation AwfulPageNavController
 
-@synthesize cancelButton, pageLabel, picker;
-@synthesize goButton;
+@synthesize picker = _picker;
+@synthesize page = _page;
+@synthesize pageLabel = _pageLabel;
+@synthesize toolbar = _toolbar;
 
--(id)initWithAwfulPage : (AwfulPage *)in_page
+-(id)initWithAwfulPage : (AwfulPage *)page
 {
-    self = [super initWithNibName:@"PageNumber" bundle:[NSBundle mainBundle]];
+    self = [super initWithNibName:@"AwfulPageNav" bundle:[NSBundle mainBundle]];
     if(self) {
-        page = in_page;
+        _page = page;
     }
     return self;
+}
+
+-(void)dealloc
+{
+    [_page release];
+    [_pageLabel release];
+    [_picker release];
+    [_toolbar release];
+    [super dealloc];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    UIImage *button_back = [UIImage imageNamed:@"btn_template_bg.png"];
-    UIImage *stretch_back = [button_back stretchableImageWithLeftCapWidth:17 topCapHeight:17];
-    [cancelButton setBackgroundImage:stretch_back forState:UIControlStateNormal];
-    [goButton setBackgroundImage:stretch_back forState:UIControlStateNormal];
+    [self.view bringSubviewToFront:self.picker];
+    [self.view bringSubviewToFront:self.toolbar];
     
-    [picker reloadAllComponents];
-    if(page != nil) {
-        [picker selectRow:page.pages.currentPage-1 inComponent:0 animated:NO];
-        pageLabel.text = [NSString stringWithFormat:@"Current Page: %d", page.pages.currentPage];
+    [self.picker reloadAllComponents];
+    if(self.page != nil) {
+        [self.picker selectRow:self.page.pages.currentPage-1 inComponent:0 animated:NO];
+        self.pageLabel.title = [NSString stringWithFormat:@"Current Page: %d", self.page.pages.currentPage];
     }
+}
+
+-(void)viewDidUnload
+{
+    [super viewDidUnload];
+    self.picker = nil;
+    self.pageLabel = nil;
+    self.toolbar = nil;
 }
 
 - (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
@@ -46,8 +64,8 @@
 
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
-    if(page != nil) {
-        return page.pages.totalPages;
+    if(self.page != nil) {
+        return self.page.pages.totalPages;
     }
     return 0;
 }
@@ -65,19 +83,18 @@
 
 -(IBAction)go
 {
-    int chosen_page = [picker selectedRowInComponent:0] + 1;
-    if(page != nil) {
-        AwfulPage *req_page = [[AwfulPage alloc] initWithAwfulThread:page.thread startAt:AwfulPageDestinationTypeSpecific pageNum:chosen_page];
+    int chosen_page = [self.picker selectedRowInComponent:0] + 1;
+    if(self.page != nil) {
+        AwfulPage *req_page = [[AwfulPage alloc] initWithAwfulThread:self.page.thread pageNum:chosen_page];
         loadContentVC(req_page);
         [req_page release];
-        //[nav hidePageNav];
     }
 }
 
 -(IBAction)cancel
 {
-    AwfulNavController *nav = getnav();
-    [nav hidePageNav];
+    UIViewController *vc = getRootController();
+    [vc dismissModalViewControllerAnimated:YES];
 }
 
 @end

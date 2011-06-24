@@ -7,26 +7,32 @@
 //
 
 #import "AwfulEditRequest.h"
-#import "AwfulNavController.h"
 #import "AwfulPostBoxController.h"
+#import "AwfulPage.h"
+#import "AwfulPost.h"
 #import "NSString+HTML.h"
+#import "AwfulReplyRequest.h"
+#import "AwfulNavigator.h"
 
 @implementation AwfulEditRequest
 
--(id)initWithAwfulPost : (AwfulPost *)in_post withText : (NSString *)post_text
+@synthesize post = _post;
+@synthesize text = _text;
+
+-(id)initWithAwfulPost : (AwfulPost *)post withText : (NSString *)post_text
 {
-    NSURL *edit_url = [NSURL URLWithString:[NSString stringWithFormat:@"http://forums.somethingawful.com/editpost.php?action=editpost&postid=%@", in_post.postID]];
+    NSURL *edit_url = [NSURL URLWithString:[NSString stringWithFormat:@"http://forums.somethingawful.com/editpost.php?action=editpost&postid=%@", post.postID]];
     self = [super initWithURL:edit_url];
     
-    post = [in_post retain];
-    text = [post_text retain];
+    _post = [post retain];
+    _text = [post_text retain];
     return self;
 }
 
 -(void)dealloc
 {
-    [post release];
-    [text release];
+    [_post release];
+    [_text release];
     [super dealloc];
 }
 
@@ -35,7 +41,7 @@
     [super requestFinished];
     
     NSURL *edit_url = [NSURL URLWithString:@"http://forums.somethingawful.com/editpost.php"];
-    ASIFormDataRequest *form = [ASIFormDataRequest requestWithURL:edit_url];
+    CloserFormRequest *form = [CloserFormRequest requestWithURL:edit_url];
     
     NSString *raw_s = [[NSString alloc] initWithData:[self responseData] encoding:NSASCIIStringEncoding];
     NSData *converted = [raw_s dataUsingEncoding:NSUTF8StringEncoding];
@@ -51,36 +57,38 @@
     
     [form addPostValue:@"updatepost" forKey:@"action"];
     [form addPostValue:@"Save Changes" forKey:@"submit"];
-    [form addPostValue:post.postID forKey:@"postid"];
-    [form addPostValue:[text stringByEscapingUnicode] forKey:@"message"];
+    [form addPostValue:self.post.postID forKey:@"postid"];
+    [form addPostValue:[self.text stringByEscapingUnicode] forKey:@"message"];
     
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:self.userInfo];
     
     form.userInfo = dict;
     
-    AwfulNavController *nav = getnav();
-    [nav loadRequestAndWait:form];
+    loadRequestAndWait(form);
 }
 
 @end
 
 @implementation AwfulEditContentRequest
 
--(id)initWithAwfulPage : (AwfulPage *)in_page forAwfulPost : (AwfulPost *)in_post
+@synthesize page = _page;
+@synthesize post = _post;
+
+-(id)initWithAwfulPage : (AwfulPage *)page forAwfulPost : (AwfulPost *)post
 {
-    NSURL *edit_url = [NSURL URLWithString:[NSString stringWithFormat:@"http://forums.somethingawful.com/editpost.php?action=editpost&postid=%@", in_post.postID]];
+    NSURL *edit_url = [NSURL URLWithString:[NSString stringWithFormat:@"http://forums.somethingawful.com/editpost.php?action=editpost&postid=%@", post.postID]];
     self = [super initWithURL:edit_url];
     
-    page = [in_page retain];
-    post = [in_post retain];
+    _page = [page retain];
+    _post = [post retain];
     
     return self;
 }
 
 -(void)dealloc
 {
-    [page release];
-    [post release];
+    [_page release];
+    [_post release];
     [super dealloc];
 }
 
@@ -94,9 +102,9 @@
     TFHppleElement *quote_el = [base searchForSingle:@"//textarea[@name='message']"];
     
     AwfulPostBoxController *post_box = [[AwfulPostBoxController alloc] initWithText:[NSString stringWithFormat:@"%@\n", [quote_el content]]];
-    [post_box setEditBox:post];
+    post_box.post = self.post;
     
-    AwfulNavController *nav = getnav();
+    AwfulNavigator *nav = getNavigator();
     [nav presentModalViewController:post_box animated:YES];
     [post_box release];
     

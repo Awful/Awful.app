@@ -7,13 +7,24 @@
 //
 
 #import "ASIHTTPRequest.h"
-#import "AwfulThread.h"
+#import "ASIFormDataRequest.h"
 
-@interface AwfulReplyRequest : ASIHTTPRequest {
-    NSString *reply;
-    AwfulThread *thread;
+@class AwfulThread;
+
+@interface CloserFormRequest : ASIFormDataRequest {
+    
 }
 
--(id)initWithReply : (NSString *)in_reply forThread : (AwfulThread *)in_thread;
+@end
+
+@interface AwfulReplyRequest : ASIHTTPRequest {
+    NSString *_reply;
+    AwfulThread *_thread;
+}
+
+@property (nonatomic, retain) NSString *reply;
+@property (nonatomic, retain) AwfulThread *thread;
+
+-(id)initWithReply : (NSString *)reply forThread : (AwfulThread *)thread;
 
 @end

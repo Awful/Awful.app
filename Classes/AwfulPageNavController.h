@@ -7,25 +7,22 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "AwfulPage.h"
-#import "AwfulForum.h"
+
+@class AwfulPage;
 
 @interface AwfulPageNavController : UIViewController <UIPickerViewDelegate, UIPickerViewDataSource> {
-    UIButton *cancelButton;
-    UIButton *goButton;
-    UILabel *pageLabel;
-    
-    UIPickerView *picker;
-    
-    AwfulPage *page;
+    UIBarButtonItem *_pageLabel;
+    UIPickerView *_picker;
+    AwfulPage *_page;
+    UIToolbar *_toolbar;
 }
 
--(id)initWithAwfulPage : (AwfulPage *)in_page;
+-(id)initWithAwfulPage : (AwfulPage *)page;
 
-@property (nonatomic, retain) IBOutlet UIButton *cancelButton;
-@property (nonatomic, retain) IBOutlet UIButton *goButton;
-@property (nonatomic, retain) IBOutlet UILabel *pageLabel;
+@property (nonatomic, retain) AwfulPage *page;
+@property (nonatomic, retain) IBOutlet UIBarButtonItem *pageLabel;
 @property (nonatomic, retain) IBOutlet UIPickerView *picker;
+@property (nonatomic, retain) IBOutlet UIToolbar *toolbar;
 
 -(IBAction)go;
 -(IBAction)cancel;

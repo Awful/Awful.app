@@ -12,24 +12,20 @@
 @class AwfulThread;
 
 @interface AwfulPostBoxController : UIViewController <UIAlertViewDelegate> {
-    UIButton *sendButton;
-    UIButton *cancelButton;
-    UIButton *clearButton;
-    UITextView *replyTextView;
-    UIView *buttonGroup;
+    UITextView *_replyTextView;
+    UIBarButtonItem *_sendButton;
     
     AwfulThread *_thread;
-    AwfulPost *post;
-    NSString *startingText;
+    AwfulPost *_post;
+    NSString *_startingText;
 }
 
-@property (nonatomic, retain) IBOutlet UIButton *sendButton;
-@property (nonatomic, retain) IBOutlet UIButton *cancelButton;
-@property (nonatomic, retain) IBOutlet UIButton *clearButton;
+@property (nonatomic, retain) IBOutlet UIBarButtonItem *sendButton;
 @property (nonatomic, retain) IBOutlet UITextView *replyTextView;
-@property (nonatomic, retain) IBOutlet UIView *buttonGroup;
 
 @property (nonatomic, retain) AwfulThread *thread;
+@property (nonatomic, retain) AwfulPost *post;
+@property (nonatomic, retain) NSString *startingText;
 
 -(id)initWithText : (NSString *)text;
 
@@ -37,7 +33,6 @@
 -(IBAction)clearReply;
 -(IBAction)hitSend;
 
--(void)setEditBox : (AwfulPost *)in_post;
 -(void)addText : (NSString *)in_text;
 
 @end

@@ -58,6 +58,8 @@
 		self.iconURL = [decoder decodeObjectForKey:@"iconURL"];
         self.authorName = [decoder decodeObjectForKey:@"authorName"];
         self.lastPostAuthorName = [decoder decodeObjectForKey:@"lastPostAuthorName"];
+        self.totalUnreadPosts = [decoder decodeIntForKey:@"totalUnreadPosts"];
+        self.totalReplies = [decoder decodeIntForKey:@"totalReplies"];
         
         //NSString *forum_id = [decoder decodeObjectForKey:@"forumID"];
         
@@ -72,6 +74,8 @@
     [encoder encodeObject:self.iconURL forKey:@"iconURL"];
     [encoder encodeObject:self.authorName forKey:@"authorName"];
     [encoder encodeObject:self.lastPostAuthorName forKey:@"lastPostAuthorName"];
+    [encoder encodeInt:self.totalUnreadPosts forKey:@"totalUnreadPosts"];
+    [encoder encodeInt:self.totalReplies forKey:@"totalReplies"];
     
     // TODO save forum id
 }

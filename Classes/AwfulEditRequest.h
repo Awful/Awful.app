@@ -7,25 +7,31 @@
 //
 
 #import "ASIHTTPRequest.h"
-#import "ASIFormDataRequest.h"
-#import "AwfulPage.h"
-#import "AwfulPost.h"
+
+@class AwfulPost;
+@class AwfulPage;
 
 @interface AwfulEditRequest : ASIHTTPRequest {
-    AwfulPost *post;
-    NSString *text;
+    AwfulPost *_post;
+    NSString *_text;
 }
 
--(id)initWithAwfulPost : (AwfulPost *)in_post withText : (NSString *)post_text;
+-(id)initWithAwfulPost : (AwfulPost *)post withText : (NSString *)post_text;
+
+@property (nonatomic, retain) AwfulPost *post;
+@property (nonatomic, retain) NSString *text;
 
 @end
 
 
 @interface AwfulEditContentRequest : ASIHTTPRequest {
-    AwfulPage *page;
-    AwfulPost *post;
+    AwfulPage *_page;
+    AwfulPost *_post;
 }
 
--(id)initWithAwfulPage : (AwfulPage *)in_page forAwfulPost : (AwfulPost *)in_post;
+-(id)initWithAwfulPage : (AwfulPage *)page forAwfulPost : (AwfulPost *)post;
+
+@property (nonatomic, retain) AwfulPage *page;
+@property (nonatomic, retain) AwfulPost *post;
 
 @end

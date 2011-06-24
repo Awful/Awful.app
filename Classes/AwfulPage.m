@@ -140,6 +140,14 @@ float getWidth()
         press.minimumPressDuration = 0.3;
         [_webView addGestureRecognizer:press];
         [press release];
+        
+        AwfulNavigator *nav = getNavigator();
+        UITapGestureRecognizer *three_times = [[UITapGestureRecognizer alloc] initWithTarget:nav action:@selector(tappedThreeTimes:)];
+        three_times.numberOfTapsRequired = 3;
+        three_times.delegate = self;
+        [_webView addGestureRecognizer:three_times];
+        [three_times release];
+        
         _webView.delegate = self;
         self.view = _webView;
     }
@@ -186,7 +194,7 @@ float getWidth()
     self.newPostIndex = -1;
     
     AwfulPageRefreshRequest *ref_req = [[AwfulPageRefreshRequest alloc] initWithAwfulPage:self];
-    loadRequest(ref_req);
+    loadRequestAndWait(ref_req);
     [ref_req release];
 }
 

@@ -7,68 +7,60 @@
 //
 
 #import "AwfulPostBoxController.h"
-#import "AwfulNavController.h"
+#import "AwfulNavigator.h"
 #import "AwfulReplyRequest.h"
 #import "AwfulEditRequest.h"
 #import "AwfulPage.h"
 #import "AwfulThread.h"
+#import "AwfulAppDelegate.h"
 
 #define CLEAR_BUTTON 1
 #define SEND_BUTTON 2
 
 @implementation AwfulPostBoxController
 
-@synthesize sendButton, replyTextView;
-@synthesize cancelButton, clearButton;
-@synthesize buttonGroup;
+@synthesize replyTextView = _replyTextView;
 @synthesize thread = _thread;
+@synthesize post = _post;
+@synthesize startingText = _startingText;
+@synthesize sendButton = _sendButton;
 
 // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization.
-        post = nil;
-        _thread = nil;
-        startingText = nil;
-    }
-    return self;
-}
-
-
 -(id)initWithText : (NSString *)text
 {
-    if((self = [super initWithNibName:@"TextInput" bundle:[NSBundle mainBundle]])) {
-        startingText = [text retain];
-        post = nil;
+    if((self = [super initWithNibName:@"AwfulPostBox" bundle:[NSBundle mainBundle]])) {
+        _startingText = [text retain];
+        _post = nil;
         _thread = nil;
     }
     return self;
 }
 
-/*
-// Implement loadView to create a view hierarchy programmatically, without using a nib.
-- (void)loadView {
+- (void)dealloc 
+{
+    [_replyTextView release];
+    [_startingText release];
+    [_thread release];
+    [_post release];
+    [super dealloc];
 }
-*/
-
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    UIImage *button_back = [UIImage imageNamed:@"btn_template_bg.png"];
-    UIImage *stretch_back = [button_back stretchableImageWithLeftCapWidth:17 topCapHeight:17];
-    [sendButton setBackgroundImage:stretch_back forState:UIControlStateNormal];
-    [clearButton setBackgroundImage:stretch_back forState:UIControlStateNormal];
-    [cancelButton setBackgroundImage:stretch_back forState:UIControlStateNormal];
-    
-    replyTextView.text = startingText;
-    [replyTextView becomeFirstResponder];
+    self.replyTextView.text = self.startingText;
+    [self.replyTextView becomeFirstResponder];
 }
 
-
+- (void)viewDidUnload {
+    [super viewDidUnload];
+    // Release any retained subviews of the main view.
+    // e.g. self.myOutlet = nil;
+    self.sendButton = nil;
+    self.replyTextView = nil;
+}
 
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -85,12 +77,7 @@
 
 -(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
-    if(UIInterfaceOrientationIsPortrait(fromInterfaceOrientation) && UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
-        /*[UIView animateWithDuration:0.2 animations:^(void){
-            self.view.transform = CGAffineTransformScale(self.view.transform, 1.0, 0.9);
-        }];*/
-        
-    }
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -98,29 +85,6 @@
     [super didReceiveMemoryWarning];
     
     // Release any cached data, images, etc. that aren't in use.
-}
-
-- (void)viewDidUnload {
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-    self.buttonGroup = nil;
-    self.sendButton = nil;
-    self.replyTextView = nil;
-    self.clearButton = nil;
-    self.cancelButton = nil;
-}
-
-
-- (void)dealloc {
-    [buttonGroup release];
-    [sendButton release];
-    [replyTextView release];
-    [clearButton release];
-    [cancelButton release];
-    [startingText release];
-    [_thread release];
-    [super dealloc];
 }
 
 -(IBAction)clearReply
@@ -136,23 +100,21 @@
 {
     if(buttonIndex == 1) {
         if(alertView.tag == CLEAR_BUTTON) {
-            replyTextView.text = @"";
+            self.replyTextView.text = @"";
         } else if(alertView.tag == SEND_BUTTON) {    
-            AwfulNavController *nav = getnav();
             
             ASIHTTPRequest *req = nil;
             
             if(self.thread != nil) {
-                req = [[AwfulReplyRequest alloc] initWithReply:replyTextView.text forThread:self.thread];
-            } else if(post != nil) {
-                req = [[AwfulEditRequest alloc] initWithAwfulPost:post withText:replyTextView.text];
+                req = [[AwfulReplyRequest alloc] initWithReply:self.replyTextView.text forThread:self.thread];
+            } else if(self.post != nil) {
+                req = [[AwfulEditRequest alloc] initWithAwfulPost:self.post withText:self.replyTextView.text];
             }
             
             NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:self, @"waitCallback", nil];
             
             req.userInfo = dict;
-            
-            [nav loadRequestAndWait:req];
+            loadRequestAndWait(req);
             [req release];
         }
     }
@@ -160,9 +122,10 @@
 
 -(void)hideReply
 {
-    [replyTextView resignFirstResponder];
-    AwfulNavController *nav = getnav();
-    [nav dismissModalViewControllerAnimated:YES];
+    [self.replyTextView resignFirstResponder];
+    
+    UIViewController *vc = getRootController();
+    [vc dismissModalViewControllerAnimated:YES];
 }
 
 -(void)setThread:(AwfulThread *)thread 
@@ -172,23 +135,28 @@
         _thread = [thread retain];
         
         if(_thread != nil) {
-            post = nil;
-            [sendButton setTitle:@"Send" forState:UIControlStateNormal];
+            self.post = nil;
+            [self.sendButton setTitle:@"Reply"];
         }
     }
 }
 
--(void)setEditBox : (AwfulPost *)in_post
+-(void)setPost : (AwfulPost *)post
 {
-    self.thread = nil;
-    post = in_post;
-    
-    [sendButton setTitle:@"Save" forState:UIControlStateNormal];
+    if(post != _post) {
+        [_post release];
+        _post = [post retain];
+        
+        if(_post != nil) {
+            self.thread = nil;
+            [self.sendButton setTitle:@"Edit"];
+        }
+    }
 }
 
 -(void)hitSend
 {
-    NSString *send_title = [sendButton titleForState:UIControlStateNormal];
+    NSString *send_title = [self.sendButton title];
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Are you sure?" message:[NSString stringWithFormat:@"Confirm you want to %@.", send_title] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:send_title, nil];
     alert.delegate = self;
     alert.tag = SEND_BUTTON;
@@ -198,23 +166,10 @@
 
 -(void)addText : (NSString *)in_text
 {
-    if(replyTextView.text == nil) {
-        replyTextView.text = @"";
+    if(self.replyTextView.text == nil) {
+        self.replyTextView.text = @"";
     }
-    replyTextView.text = [replyTextView.text stringByAppendingString:in_text];
-}
-
-#pragma mark WaitRequestCallback
-
--(void)success
-{
-    replyTextView.text = @"";
-    [self hideReply];
-}
-
--(void)failed
-{
-    
+    self.replyTextView.text = [self.replyTextView.text stringByAppendingString:in_text];
 }
 
 @end

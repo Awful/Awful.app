@@ -68,7 +68,7 @@
         [_actions show];
     }
 }
-
+/*
 -(void)setPageNav:(AwfulPageNavController *)pageNav
 {
     if(_pageNav != pageNav) {
@@ -77,11 +77,10 @@
         _pageNav = [pageNav retain];
         
         if(_pageNav != nil) {
-            AwfulAppDelegate *del = [[UIApplication sharedApplication] delegate];
-            [del.navigationController.view addSubview:_pageNav.view];
+            
         }
     }
-}
+}*/
 
 #pragma mark - View lifecycle
 
@@ -194,14 +193,6 @@
     
     self.view = [self.contentVC getView];
     [self.contentVC refresh];
-    
-    UITapGestureRecognizer *gest = [[UITapGestureRecognizer alloc] 
-                                    initWithTarget:self 
-                                    action:@selector(tappedThreeTimes:)];
-    gest.numberOfTapsRequired = 3;
-    gest.delegate = self;
-    [self.view addGestureRecognizer:gest];
-    [gest release];
 }
 
 #pragma mark Gestures
@@ -221,7 +212,7 @@
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
     if(viewController == self) {
-        //self.view = [self.contentVC getView];
+        self.view = [self.contentVC getView];
     }
 }
 

@@ -230,6 +230,7 @@
 
 -(void)refresh
 {        
+    [self.delegate swapToStopButton];
     AwfulForumRefreshRequest *ref_req = [[AwfulForumRefreshRequest alloc] initWithAwfulThreadList:self];
     loadRequest(ref_req);
     [ref_req release];
@@ -238,9 +239,6 @@
 -(void)stop
 {
     self.view.userInteractionEnabled = YES;
-    /*[UIView animateWithDuration:0.25 animations:^{
-        self.view.alpha = 1.0;
-    }];*/
 }
 
 -(void)acceptThreads : (NSMutableArray *)in_threads
