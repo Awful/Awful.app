@@ -24,3 +24,6 @@
 +(void)saveThreadList : (NSMutableArray *)list forForumId : (NSString *)forum_id;
 
 @end
+
+int getPostsPerPage();
+NSString *getUsername();

@@ -28,6 +28,8 @@
 #import "FMDatabaseAdditions.h"
 #import "FMResultSet.h"
 #import "AwfulAppDelegate.h"
+#import "AwfulNavigator.h"
+#import "AwfulUser.h"
 
 @implementation AwfulUtil
 
@@ -107,3 +109,20 @@
 }
 
 @end
+
+int getPostsPerPage()
+{
+    AwfulNavigator *nav = getNavigator();
+    AwfulUser *user = nav.user;
+    if(user == nil) {
+        return 40;
+    }
+    return user.postsPerPage;
+}
+
+NSString *getUsername()
+{
+    AwfulNavigator *nav = getNavigator();
+    AwfulUser *user = nav.user;
+    return [user userName];
+}

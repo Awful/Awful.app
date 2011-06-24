@@ -7,9 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "AwfulNavController.h"
-
-@class AwfulNavController;
 
 @interface AwfulLoginController : UIViewController <UIWebViewDelegate> {
     UIWebView *_web;

@@ -171,6 +171,7 @@
 {
     AwfulBookmarksController *books = [[AwfulBookmarksController alloc] init];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:books];
+    nav.navigationBar.barStyle = UIBarStyleBlackOpaque;
     
     [self presentModalViewController:nav animated:YES];
     [nav release];

@@ -20,4 +20,7 @@
 -(void)startTimer;
 -(void)endTimer;
 
+-(void)swapToRefreshButton;
+-(void)swapToStopButton;
+
 @end

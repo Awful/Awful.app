@@ -10,11 +10,11 @@
 #import "XPathQuery.h"
 #import "AwfulThread.h"
 #import "AwfulPage.h"
-#import "AwfulNavController.h"
 #import "AwfulConfig.h"
 #import "AwfulPost.h"
 #import "TFHpple.h"
 #import "AwfulPageCount.h"
+#import "AwfulUtil.h"
 
 @implementation AwfulParse
 
@@ -166,18 +166,40 @@
     return parsed_posts;
 }
 
-+(NSString *)constructPageHTMLFromPosts : (NSMutableArray *)posts
++(NSString *)constructPageHTMLFromPosts : (NSMutableArray *)posts pagesLeft : (int)pages_left numOldPosts : (int)num_above
 {
     NSString *combined = @"";
     for(AwfulPost *post in posts) {
         combined = [combined stringByAppendingString:post.formattedHTML];
     }
     
+    NSString *pages_left_str = @"";
+    if(pages_left > 1) {
+        pages_left_str = [NSString stringWithFormat:@"%d pages left.", pages_left];
+    } else if(pages_left == 1) {
+        pages_left_str = @"1 page left.";
+    } else {
+        pages_left_str = @"End of the thread.";
+    }
+    
+    NSString *top = @"";
+    if(num_above > 0) {
+        NSString *above_str = @"";
+        if(num_above == 1) {
+            above_str = @"1 post above.";
+        } else {
+            above_str = [NSString stringWithFormat:@"%d posts above.", num_above];
+        }
+        top = [NSString stringWithFormat:@"<table class='olderposts'><tr><td onclick=tappedOlderPosts()>%@</td></tr></table>", above_str];
+    }
+        
+    NSString *bottom = [NSString stringWithFormat:@"<table class='pagesleft'><tr><td onclick=tappedBottom()>%@</td></tr></table>", pages_left_str];
+    
     NSString *css = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"post" ofType:@"css"] encoding:NSUTF8StringEncoding error:nil];
     
     NSString *js = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"jquery" ofType:@"txt"] encoding:NSUTF8StringEncoding error:nil];
     
-    NSString *html = [NSString stringWithFormat:@"<html><head><script>%@</script><style type='text/css'>%@</style></head><body>%@</body></html>", js, css, combined];
+    NSString *html = [NSString stringWithFormat:@"<html><head><script>%@</script><style type='text/css'>%@</style></head><body>%@%@%@</body></html>", js, css, top, combined, bottom];
     
     return html;
 }

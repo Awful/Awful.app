@@ -14,6 +14,7 @@
 #import "AwfulHistory.h"
 #import "PullRefreshTableViewController.h"
 #import "AwfulNavigator.h"
+#import "JSBridgeWebView.h"
 
 typedef enum {
     AwfulPageDestinationTypeFirst,
@@ -24,7 +25,7 @@ typedef enum {
 
 @class AwfulPageCount;
 
-@interface AwfulPage : UIViewController <AwfulNavigatorContent, UIWebViewDelegate, AwfulHistoryRecorder, UIGestureRecognizerDelegate> {
+@interface AwfulPage : UIViewController <AwfulNavigatorContent, UIWebViewDelegate, AwfulHistoryRecorder, UIGestureRecognizerDelegate, JSBridgeWebViewDelegate> {
     AwfulThread *_thread;
     NSString *_url;
     
@@ -41,7 +42,7 @@ typedef enum {
     UILabel *_pagesLabel;
     UILabel *_threadTitleLabel;
     
-    UIWebView *_webView;
+    JSBridgeWebView *_webView;
 }
 
 @property (nonatomic, retain) AwfulThread *thread;
@@ -61,7 +62,7 @@ typedef enum {
 @property (nonatomic, retain) UILabel *pagesLabel;
 @property (nonatomic, retain) UILabel *threadTitleLabel;
 
-@property (nonatomic, retain) UIWebView *webView;
+@property (nonatomic, retain) JSBridgeWebView *webView;
 
 
 -(id)initWithAwfulThread : (AwfulThread *)thread startAt : (AwfulPageDestinationType)thread_pos;
@@ -74,6 +75,7 @@ typedef enum {
 -(void)hardRefresh;
 -(void)setThreadTitle : (NSString *)in_title;
 
+-(void)loadOlderPosts;
 -(void)nextPage;
 -(void)prevPage;
 

@@ -16,10 +16,9 @@
 
 }
 
-+(NSString *)constructPostHTML : (AwfulPost *)post withBody : (NSString *)post_body alt : (NSString *)alt;
++(NSString *)constructPageHTMLFromPosts : (NSMutableArray *)posts pagesLeft : (int)pages_left numOldPosts : (int)num_above;
 
 +(NSMutableArray *)newPostsFromThread : (TFHpple *)hpple isFYAD : (BOOL)is_fyad;
-+(NSString *)constructPageHTMLFromPosts : (NSMutableArray *)posts;
 
 +(NSString *)parseThumbnails : (NSString *)body_html;
 +(NSString *)parseYouTubes : (NSString *)html;

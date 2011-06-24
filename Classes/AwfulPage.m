@@ -131,7 +131,7 @@ float getWidth()
     [super dealloc];
 }
 
--(void)setWebView:(UIWebView *)webView
+-(void)setWebView:(JSBridgeWebView *)webView;
 {
     if(webView != _webView) {
         [_webView release];
@@ -204,6 +204,10 @@ float getWidth()
     [ref_req release];
 }
 
+-(void)stop
+{
+}
+
 -(AwfulPost *)getNewestPost
 {
     int index = self.newPostIndex - 1;
@@ -214,8 +218,17 @@ float getWidth()
     return nil;
 }
 
--(void)stop
+-(void)loadOlderPosts
 {
+    int pages_left = self.pages.totalPages - self.pages.currentPage;
+    NSString *html = [AwfulParse constructPageHTMLFromPosts:self.allRawPosts pagesLeft:pages_left numOldPosts:0];
+    
+    AwfulNavigator *nav = getNavigator();
+    JSBridgeWebView *web = [[JSBridgeWebView alloc] initWithFrame:nav.view.frame];
+    [web loadHTMLString:html baseURL:[NSURL URLWithString:@""]];
+    self.webView = web;
+    [web release];
+    nav.view = self.webView;
 }
 
 -(void)acceptPosts : (NSMutableArray *)posts
@@ -224,91 +237,9 @@ float getWidth()
     self.allRawPosts = posts;
 }
 
-#pragma mark Gesture Delegate
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
-{
-    return YES;
-}
-
-#pragma mark Web View Delegate
-
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
-{    
-
-    if(navigationType == UIWebViewNavigationTypeLinkClicked) {
-            
-        if([[request.URL host] isEqualToString:@"forums.somethingawful.com"] &&
-            [[request.URL lastPathComponent] isEqualToString:@"showthread.php"]) {
-            
-            NSString *thread_id = nil;
-            NSString *page_number = nil;
-            
-            NSArray *query_elements = [[request.URL query] componentsSeparatedByString:@"&"];
-            for(NSString *element in query_elements) {
-                NSArray *key_and_val = [element componentsSeparatedByString:@"="];
-                if([[key_and_val objectAtIndex:0] isEqualToString:@"threadid"]) {
-                    thread_id = [key_and_val lastObject];
-                } else if([[key_and_val objectAtIndex:0] isEqualToString:@"pagenumber"]) {
-                    page_number = [key_and_val lastObject];
-                }
-            }
-            
-            if(thread_id != nil) {
-                AwfulThread *intra = [[AwfulThread alloc] init];
-                intra.threadID = thread_id;
-                
-                AwfulPage *page = nil;
-                
-                if(page_number == nil) {
-                    page = [[AwfulPage alloc] initWithAwfulThread:intra startAt:AwfulPageDestinationTypeFirst];
-                } else {
-                    page = [[AwfulPage alloc] initWithAwfulThread:intra startAt:AwfulPageDestinationTypeSpecific pageNum:[page_number intValue]];
-                    int pti = [AwfulParse getNewPostNumFromURL:request.URL];
-                    page.url = [NSString stringWithFormat:@"showthread.php?threadid=%@&pagenumber=%@#pti%d", thread_id, page_number, pti];
-                }
-                
-                [intra release];
-                
-                if(page != nil) {
-                    loadContentVC(page);
-                    [page release];
-                    return NO;
-                }
-            }
-        } else if([[request.URL host] isEqualToString:@"itunes.apple.com"] || [[request.URL host] isEqualToString:@"phobos.apple.com"])  {
-            [[UIApplication sharedApplication] openURL:request.URL];
-            return NO;
-        }
-        
-        OtherWebController *other = [[OtherWebController alloc] initWithURL:request.URL];
-        UINavigationController *other_nav = [[UINavigationController alloc] initWithRootViewController:other];
-        other_nav.navigationBar.barStyle = UIBarStyleBlack;
-        [other_nav setToolbarHidden:NO];
-        other_nav.toolbar.barStyle = UIBarStyleBlack;
-        [other release];
-        
-        AwfulNavigator *nav = getNavigator();
-        [nav presentModalViewController:other_nav animated:YES];
-        [other_nav release];
-        
-        return NO;
-    }
-    return YES;
-}
-
--(void)webViewDidFinishLoad:(UIWebView *)sender
-{
-}
-
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
-{
-    NSLog(@"failed: %@", error);
-}
-
 -(void)nextPage
 {
-    if(self.pages.currentPage < self.pages.totalPages) {
+    if(![self.pages onLastPage]) {
         AwfulPage *next_page = [[AwfulPage alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeSpecific pageNum:self.pages.currentPage+1];
         loadContentVC(next_page);
         [next_page release];
@@ -385,7 +316,7 @@ float getWidth()
 
 -(void)chosePostOption : (int)option
 {    
-    int actual_option = option;
+    /*int actual_option = option;
     if(!self.highlightedPost.canEdit) {
         actual_option++;
     }
@@ -418,7 +349,7 @@ float getWidth()
             [alert show];
             [alert release];
         }
-    }   
+    }   */
     self.highlightedPost = nil;
 }
 
@@ -524,6 +455,107 @@ float getWidth()
 -(AwfulActions *)getActions
 {
     return [[[AwfulThreadActions alloc] initWithAwfulPage:self] autorelease];
+}
+
+#pragma mark JSBBridgeWebDelegate
+
+- (void)webView:(UIWebView*) webview didReceiveJSNotificationWithDictionary:(NSDictionary*) dictionary
+{
+    NSString *action = [dictionary objectForKey:@"action"];
+    if(action != nil) {
+        if([action isEqualToString:@"nextPage"]) {
+            [self nextPage];
+        } else if([action isEqualToString:@"loadOlderPosts"]) {
+            [self loadOlderPosts];
+        }
+    }
+}
+
+#pragma mark Gesture Delegate
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return YES;
+}
+
+#pragma mark Web View Delegate
+
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+{    
+    
+    if(navigationType == UIWebViewNavigationTypeLinkClicked) {
+        
+        if([[request.URL host] isEqualToString:@"forums.somethingawful.com"] &&
+           [[request.URL lastPathComponent] isEqualToString:@"showthread.php"]) {
+            
+            NSString *thread_id = nil;
+            NSString *page_number = nil;
+            
+            NSArray *query_elements = [[request.URL query] componentsSeparatedByString:@"&"];
+            for(NSString *element in query_elements) {
+                NSArray *key_and_val = [element componentsSeparatedByString:@"="];
+                if([[key_and_val objectAtIndex:0] isEqualToString:@"threadid"]) {
+                    thread_id = [key_and_val lastObject];
+                } else if([[key_and_val objectAtIndex:0] isEqualToString:@"pagenumber"]) {
+                    page_number = [key_and_val lastObject];
+                }
+            }
+            
+            if(thread_id != nil) {
+                AwfulThread *intra = [[AwfulThread alloc] init];
+                intra.threadID = thread_id;
+                
+                AwfulPage *page = nil;
+                
+                if(page_number == nil) {
+                    page = [[AwfulPage alloc] initWithAwfulThread:intra startAt:AwfulPageDestinationTypeFirst];
+                } else {
+                    page = [[AwfulPage alloc] initWithAwfulThread:intra startAt:AwfulPageDestinationTypeSpecific pageNum:[page_number intValue]];
+                    int pti = [AwfulParse getNewPostNumFromURL:request.URL];
+                    page.url = [NSString stringWithFormat:@"showthread.php?threadid=%@&pagenumber=%@#pti%d", thread_id, page_number, pti];
+                }
+                
+                [intra release];
+                
+                if(page != nil) {
+                    loadContentVC(page);
+                    [page release];
+                    return NO;
+                }
+            }
+        } else if([[request.URL host] isEqualToString:@"itunes.apple.com"] || [[request.URL host] isEqualToString:@"phobos.apple.com"])  {
+            [[UIApplication sharedApplication] openURL:request.URL];
+            return NO;
+        }
+        
+        OtherWebController *other = [[OtherWebController alloc] initWithURL:request.URL];
+        UINavigationController *other_nav = [[UINavigationController alloc] initWithRootViewController:other];
+        other_nav.navigationBar.barStyle = UIBarStyleBlack;
+        [other_nav setToolbarHidden:NO];
+        other_nav.toolbar.barStyle = UIBarStyleBlack;
+        [other release];
+        
+        AwfulNavigator *nav = getNavigator();
+        [nav presentModalViewController:other_nav animated:YES];
+        [other_nav release];
+        
+        return NO;
+    }
+    return YES;
+}
+
+-(void)webViewDidFinishLoad:(UIWebView *)sender
+{
+}
+
+- (void)webViewDidStartLoad:(UIWebView *)webView
+{
+    
+}
+
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
+{
+    NSLog(@"failed: %@", error);
 }
 
 @end

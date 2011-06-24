@@ -66,6 +66,26 @@ img.avatar {
     padding-bottom:5px;
 }
 
+.pagesleft {
+    width:100%;
+    padding:5px;
+    text-align:center;
+    background-color:white;
+    height:60px;
+    font-family:Helvetica;
+    font-size:20px;
+}
+
+.olderposts {
+    width:100%;
+    padding:5px;
+    text-align:center;
+    background-color:white;
+    height:60px;
+    font-family:Helvetica;
+    font-size:20px;
+}
+
 div.complete_shit {
     margin:5px;
     padding-bottom:10px;

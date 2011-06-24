@@ -19,6 +19,7 @@
 #import "AwfulLoginController.h"
 #import "AwfulNavigator.h"
 #import "AwfulNavigatorLabels.h"
+#import "AwfulUtil.h"
 
 #define THREAD_HEIGHT 72
 

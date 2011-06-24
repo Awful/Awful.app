@@ -8,9 +8,11 @@
 
 #import "AwfulPageRefreshRequest.h"
 #import "AwfulParse.h"
-#import "AwfulNavController.h"
 #import "AwfulPageCount.h"
 #import "AwfulNavigator.h"
+#import "AwfulConfig.h"
+#import "AwfulForum.h"
+#import "JSBridgeWebView.h"
 
 @implementation AwfulPageRefreshRequest
 
@@ -31,7 +33,7 @@
     [_page release];
     [super dealloc];
 }
-    
+
 -(void)requestFinished
 {
     [super requestFinished];
@@ -71,31 +73,35 @@
     
     AwfulPost *newest_post = [self.page getNewestPost];
     
-    NSString *html = [AwfulParse constructPageHTMLFromPosts:parsed_posts];
+    int goal_posts_above = [AwfulConfig numReadPostsAbove];
+    
+    NSUInteger posts_above = [self.page.allRawPosts indexOfObject:newest_post];
+    NSMutableArray *visible_posts = [NSMutableArray arrayWithArray:parsed_posts];
+    int remove_num_posts = 0;
+    
+    if(posts_above != NSNotFound) {
+        remove_num_posts = MAX(0, posts_above - goal_posts_above);
+        for(int i = 0; i < remove_num_posts; i++) {
+            [visible_posts removeObjectAtIndex:0];
+        }
+    }
+    
+    int pages_left = self.page.pages.totalPages - self.page.pages.currentPage;
+    NSString *html = [AwfulParse constructPageHTMLFromPosts:visible_posts pagesLeft:pages_left numOldPosts:remove_num_posts];
     
     if(self.page.newPostIndex > 0) {
         html = [html stringByAppendingFormat:@"<script>$(window).bind('load', function() {$.scrollTo('#%@', 200);});</script>", newest_post.postID];
     }
     
     AwfulNavigator *nav = getNavigator();
-    UIWebView *web = [[UIWebView alloc] initWithFrame:nav.view.frame];
+    JSBridgeWebView *web = [[JSBridgeWebView alloc] initWithFrame:nav.view.frame];
     [web loadHTMLString:html baseURL:[NSURL URLWithString:@""]];
     self.page.webView = web;
     [web release];
 
-    
     [parsed_posts release];
     
     [page_data release];
-}
-
--(void)failWithError : (NSError *)err
-{
-    [self setError:err];
-    AwfulNavController *nav = getnav();
-    [nav requestFailed:self];
-
-    [self.page stop];
 }
     
 @end

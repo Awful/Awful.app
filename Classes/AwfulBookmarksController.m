@@ -93,11 +93,16 @@
 {
     [self endTimer];
     self.view.userInteractionEnabled = NO;
-    /*[UIView animateWithDuration:0.25 animations:^{
-        self.view.alpha = 0.3;
-    }];*/
     self.refreshed = YES;
+    [self swapToStopButton];
     [super refresh];
+}
+
+-(void)stop
+{
+    self.refreshed = YES;
+    [self endTimer];
+    [self swapToRefreshButton];
 }
 
 -(void)prevPage
@@ -199,6 +204,28 @@
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
     }   
+}
+
+#pragma mark Refresh Button Swapping
+
+-(void)acceptThreads : (NSMutableArray *)in_threads
+{
+    [super acceptThreads:in_threads];
+    [self swapToRefreshButton];
+}
+
+-(void)swapToRefreshButton
+{
+    UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refresh)];
+    self.navigationItem.leftBarButtonItem = refresh;
+    [refresh release];
+}
+
+-(void)swapToStopButton
+{
+    UIBarButtonItem *stop = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop)];
+    self.navigationItem.leftBarButtonItem = stop;
+    [stop release];
 }
 
 @end

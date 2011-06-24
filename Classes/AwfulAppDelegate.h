@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "CrashReportSender.h"
-#import "AwfulNavController.h"
 
 @class AwfulNavigator;
 

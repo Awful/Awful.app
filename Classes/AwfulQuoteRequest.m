@@ -7,9 +7,9 @@
 //
 
 #import "AwfulQuoteRequest.h"
-#import "AwfulNavController.h"
 #import "AwfulPage.h"
 #import "AwfulPost.h"
+#import "AwfulAppDelegate.h"
 
 @implementation AwfulQuoteRequest
 
@@ -45,8 +45,8 @@
     AwfulPostBoxController *post_box = [[AwfulPostBoxController alloc] initWithText:[NSString stringWithFormat:@"%@\n", [quote_el content]]];
     [post_box setThread:self.page.thread];
     
-    AwfulNavController *nav = getnav();
-    [nav presentModalViewController:post_box animated:YES];
+    UIViewController *vc = getRootController();
+    [vc presentModalViewController:post_box animated:YES];
     [post_box release];
 
     [base release];
