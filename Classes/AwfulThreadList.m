@@ -570,18 +570,13 @@
     AwfulHistory *hist = [[AwfulHistory alloc] init];
     hist.pageNum = self.pages.currentPage;
     hist.modelObj = self.forum;
-    hist.historyType = AWFUL_HISTORY_THREADLIST;
+    hist.historyType = AwfulHistoryTypeThreadlist;
     return hist;
 }
 
 -(id)initWithAwfulHistory : (AwfulHistory *)history
 {
     return [self initWithAwfulForum:history.modelObj atPageNum:history.pageNum];
-}
-
--(void)setRecorder : (AwfulHistory *)history
-{
-    
 }
 
 #pragma mark -

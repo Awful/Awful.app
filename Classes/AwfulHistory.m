@@ -18,7 +18,7 @@
 
 -(id)init
 {
-    _historyType = AWFUL_HISTORY_UNKNOWN;
+    _historyType = AwfulHistoryTypeUnknown;
     _pageNum = -1;
     _modelObj = nil;
     return self;
@@ -27,21 +27,20 @@
 -(void)dealloc
 {
     [_modelObj release];
-    _modelObj = nil;
     [super dealloc];
 }
 
 -(id)newThreadObj
 {
-    if(self.historyType == AWFUL_HISTORY_UNKNOWN) {
+    if(self.historyType == AwfulHistoryTypeUnknown) {
         return nil;
     }
     
     id<AwfulHistoryRecorder> winner = nil;
     
-    if(self.historyType == AWFUL_HISTORY_PAGE) {
+    if(self.historyType == AwfulHistoryTypePage) {
         winner = [[AwfulPage alloc] initWithAwfulHistory:self];
-    } else if(self.historyType == AWFUL_HISTORY_THREADLIST) {
+    } else if(self.historyType == AwfulHistoryTypeThreadlist) {
         winner = [[AwfulThreadList alloc] initWithAwfulHistory:self];
     }
     

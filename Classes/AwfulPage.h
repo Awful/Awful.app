@@ -79,7 +79,6 @@ typedef enum {
 
 -(void)heldPost:(UILongPressGestureRecognizer *)gestureRecognizer;
 -(void)chosePostOption : (int)option;
--(void)choseThreadOption : (int)option;
 
 -(AwfulPost *)getNewestPost;
 

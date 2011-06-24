@@ -6,21 +6,23 @@
 //  Copyright 2011 Regular Berry Software LLC. All rights reserved.
 //
 
-enum {
-    AWFUL_HISTORY_UNKNOWN,
-    AWFUL_HISTORY_PAGE,
-    AWFUL_HISTORY_THREADLIST
-};
+typedef enum {
+    AwfulHistoryTypeUnknown,
+    AwfulHistoryTypePage,
+    AwfulHistoryTypeThreadlist
+} AwfulHistoryType;
+
+@class AwfulPageCount;
 
 @protocol AwfulHistoryRecorder;
 
 @interface AwfulHistory : NSObject {
-    int _historyType;
+    AwfulHistoryType _historyType;
     int _pageNum;
     id _modelObj;
 }
 
-@property (nonatomic, assign) int historyType;
+@property (nonatomic, assign) AwfulHistoryType historyType;
 @property (nonatomic, assign) int pageNum;
 @property (nonatomic, retain) id modelObj;
 
@@ -32,6 +34,5 @@ enum {
 
 -(id)newRecordedHistory;
 -(id)initWithAwfulHistory : (AwfulHistory *)history;
--(void)setRecorder : (AwfulHistory *)history;
                              
 @end

@@ -26,6 +26,8 @@
 #import "AwfulNavigator.h"
 #import "AwfulNavigatorLabels.h"
 #import "AwfulThreadActions.h"
+#import "AwfulHistoryManager.h"
+#import "AwfulHistory.h"
 
 float getWidth()
 {
@@ -167,7 +169,11 @@ float getWidth()
         [_pages release];
         _pages = [pages retain];
         self.pagesLabel.text = [pages description];
-        [self.pageHistory setPageNum:pages.currentPage];
+        
+        // lame workaround - history doesn't know my pageNum right away
+        AwfulNavigator *nav = getNavigator();
+        AwfulHistory *my_history = [nav.historyManager.recordedHistory lastObject];
+        my_history.pageNum = _pages.currentPage;
     }
 }
 
@@ -416,31 +422,6 @@ float getWidth()
     self.highlightedPost = nil;
 }
 
--(void)choseThreadOption : (int)option
-{    
-    /*AwfulNavController *nav = getnav();
-    
-    if(option == 0) {
-        [nav showPageNumberNav:self];
-    } else if(option == 1) {
-        [nav showVoteOptions:self];
-    } else if(option == 2) {
-        AwfulPostBoxController *post_box = [[AwfulPostBoxController alloc] initWithText:@""];
-        [post_box setReplyBox:self.thread];
-        AwfulNavController *nav = getnav();
-        [nav presentModalViewController:post_box animated:YES];
-        [post_box release];
-    } else if(option == 3) {
-        if(self.isBookmarked) {
-            [self removeBookmark];
-        } else {
-            [self addBookmark];
-        }
-    } else if(option == 4) {
-        [self nextPage];
-    }*/
-}
-
 /*
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -523,19 +504,13 @@ float getWidth()
     AwfulHistory *hist = [[AwfulHistory alloc] init];
     hist.pageNum = self.pages.currentPage;
     hist.modelObj = self.thread;
-    hist.historyType = AWFUL_HISTORY_PAGE;
-    [self setRecorder:hist];
+    hist.historyType = AwfulHistoryTypePage;
     return hist;
 }
 
 -(id)initWithAwfulHistory : (AwfulHistory *)history
 {
-    return [self initWithAwfulThread:history.modelObj startAt:AwfulPageDestinationTypeSpecific pageNum:history.pageNum];
-}
-
--(void)setRecorder : (AwfulHistory *)history
-{
-    self.pageHistory = history;
+    return [self initWithAwfulThread:history.modelObj pageNum:history.pageNum];
 }
 
 #pragma mark -

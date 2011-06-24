@@ -590,6 +590,7 @@
 		118591EF13B3CEBA0036E607 /* AwfulThreadActions.m in Sources */ = {isa = PBXBuildFile; fileRef = 118591EE13B3CEBA0036E607 /* AwfulThreadActions.m */; };
 		118591F413B3F1D30036E607 /* jquery.txt in Resources */ = {isa = PBXBuildFile; fileRef = 118591F313B3F1D30036E607 /* jquery.txt */; };
 		118591F713B424DC0036E607 /* AwfulVoteActions.m in Sources */ = {isa = PBXBuildFile; fileRef = 118591F613B424DC0036E607 /* AwfulVoteActions.m */; };
+		118591FA13B42B650036E607 /* AwfulHistoryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 118591F913B42B640036E607 /* AwfulHistoryManager.m */; };
 		11884DED1358D68700ADDA45 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 11884DEB1358D68700ADDA45 /* NSString+HTML.m */; };
 		11884DF01358D73000ADDA45 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 11884DEF1358D73000ADDA45 /* GTMNSString+HTML.m */; };
 		1199D7CF13AA9C4200264DE9 /* tiny_arrow_right.png in Resources */ = {isa = PBXBuildFile; fileRef = 1199D7CE13AA9C4200264DE9 /* tiny_arrow_right.png */; };
@@ -1253,6 +1254,8 @@
 		118591F313B3F1D30036E607 /* jquery.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = jquery.txt; sourceTree = "<group>"; };
 		118591F513B424DC0036E607 /* AwfulVoteActions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulVoteActions.h; sourceTree = "<group>"; };
 		118591F613B424DC0036E607 /* AwfulVoteActions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulVoteActions.m; sourceTree = "<group>"; };
+		118591F813B42B640036E607 /* AwfulHistoryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulHistoryManager.h; sourceTree = "<group>"; };
+		118591F913B42B640036E607 /* AwfulHistoryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulHistoryManager.m; sourceTree = "<group>"; };
 		11884DEA1358D68700ADDA45 /* NSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+HTML.h"; sourceTree = "<group>"; };
 		11884DEB1358D68700ADDA45 /* NSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+HTML.m"; sourceTree = "<group>"; };
 		11884DEE1358D73000ADDA45 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
@@ -1300,6 +1303,7 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				118591FB13B42CD10036E607 /* History */,
 				1162234013B3C9100035320A /* Actions */,
 				11A6CE8513B160FF00AADE7B /* Login */,
 				1165DBBC13B1259800AA8010 /* Extras */,
@@ -1402,8 +1406,6 @@
 				10BC5BC412A308D500F5EF96 /* VoteDelegate.m */,
 				10913CFF12CFF3A1007583AC /* AwfulConfig.h */,
 				10913D0012CFF3A1007583AC /* AwfulConfig.m */,
-				111386C61343A64000C33617 /* AwfulHistory.h */,
-				111386C71343A64000C33617 /* AwfulHistory.m */,
 			);
 			name = Util;
 			sourceTree = "<group>";
@@ -2100,6 +2102,17 @@
 				1165DBAD13B01D0000AA8010 /* AwfulForumRefreshButton.xib */,
 			);
 			name = AwfulForumList;
+			sourceTree = "<group>";
+		};
+		118591FB13B42CD10036E607 /* History */ = {
+			isa = PBXGroup;
+			children = (
+				118591F813B42B640036E607 /* AwfulHistoryManager.h */,
+				118591F913B42B640036E607 /* AwfulHistoryManager.m */,
+				111386C61343A64000C33617 /* AwfulHistory.h */,
+				111386C71343A64000C33617 /* AwfulHistory.m */,
+			);
+			name = History;
 			sourceTree = "<group>";
 		};
 		11884DE81358D68600ADDA45 /* mwaterfall-MWFeedParser-ea43013 */ = {
@@ -2848,6 +2861,7 @@
 				1162234313B3C92F0035320A /* AwfulActions.m in Sources */,
 				118591EF13B3CEBA0036E607 /* AwfulThreadActions.m in Sources */,
 				118591F713B424DC0036E607 /* AwfulVoteActions.m in Sources */,
+				118591FA13B42B650036E607 /* AwfulHistoryManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

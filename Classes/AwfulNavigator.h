@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AwfulHistory.h"
 
 @class AwfulContentViewController;
 @class ASIHTTPRequest;
@@ -15,9 +16,9 @@
 @class AwfulUser;
 @class AwfulNavigator;
 @class AwfulActions;
-@class AwfulPageNavController;
+@class AwfulHistoryManager;
 
-@protocol AwfulNavigatorContent <NSObject>
+@protocol AwfulNavigatorContent <NSObject, AwfulHistoryRecorder>
 
 -(UIView *)getView;
 -(void)setDelegate : (AwfulNavigator *)delegate;
@@ -33,7 +34,9 @@
     AwfulRequestHandler *_requestHandler;
     AwfulUser *_user;
     AwfulActions *_actions;
-    AwfulPageNavController *_pageNav;
+    AwfulHistoryManager *_historyManager;
+    UIBarButtonItem *_backButton;
+    UIBarButtonItem *_forwardButton;
 }
 
 @property (nonatomic, retain) IBOutlet UIToolbar *toolbar;
@@ -41,7 +44,9 @@
 @property (nonatomic, retain) AwfulRequestHandler *requestHandler;
 @property (nonatomic, retain) AwfulUser *user;
 @property (nonatomic, retain) AwfulActions *actions;
-@property (nonatomic, retain) AwfulPageNavController *pageNav;
+@property (nonatomic, retain) AwfulHistoryManager *historyManager;
+@property (nonatomic, retain) IBOutlet UIBarButtonItem *backButton;
+@property (nonatomic, retain) IBOutlet UIBarButtonItem *forwardButton;
 
 -(void)loadContentVC : (id<AwfulNavigatorContent>)content;
 
@@ -49,7 +54,9 @@
 -(void)stop;
 -(void)swapToRefreshButton;
 -(void)swapToStopButton;
+-(void)updateHistoryButtons;
 -(IBAction)tappedBack;
+-(IBAction)tappedForward;
 -(IBAction)tappedForumsList;
 -(IBAction)tappedAction;
 -(IBAction)tappedBookmarks;

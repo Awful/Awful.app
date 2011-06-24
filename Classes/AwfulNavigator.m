@@ -16,7 +16,7 @@
 #import "AwfulBookmarksController.h"
 #import "AwfulUser.h"
 #import "AwfulActions.h"
-#import "AwfulPageNavController.h"
+#import "AwfulHistoryManager.h"
 
 @implementation AwfulNavigator
 
@@ -25,7 +25,9 @@
 @synthesize requestHandler = _requestHandler;
 @synthesize user = _user;
 @synthesize actions = _actions;
-@synthesize pageNav = _pageNav;
+@synthesize historyManager = _historyManager;
+@synthesize backButton = _backButton;
+@synthesize forwardButton = _forwardButton;
 
 -(id)initWithCoder:(NSCoder *)aDecoder
 {
@@ -33,7 +35,7 @@
         _requestHandler = [[AwfulRequestHandler alloc] init];
         _contentVC = nil;
         _actions = nil;
-        _pageNav = nil;
+        _historyManager = [[AwfulHistoryManager alloc] init];
         _user = [[AwfulUser alloc] init];
         [_user loadUser];
     }
@@ -47,7 +49,9 @@
     [_requestHandler release];
     [_user release];
     [_actions release];
-    [_pageNav release];
+    [_historyManager release];
+    [_backButton release];
+    [_forwardButton release];
     [super dealloc];
 }
 
@@ -68,25 +72,14 @@
         [_actions show];
     }
 }
-/*
--(void)setPageNav:(AwfulPageNavController *)pageNav
-{
-    if(_pageNav != pageNav) {
-        [_pageNav.view removeFromSuperview];
-        [_pageNav release];
-        _pageNav = [pageNav retain];
-        
-        if(_pageNav != nil) {
-            
-        }
-    }
-}*/
 
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [self updateHistoryButtons];
     
     UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refresh)];
     self.navigationItem.leftBarButtonItem = refresh;
@@ -138,9 +131,22 @@
     [stop release];
 }
 
+-(void)updateHistoryButtons
+{
+    self.backButton.enabled = [self.historyManager isBackEnabled];
+    self.forwardButton.enabled = [self.historyManager isForwardEnabled];
+}
+
 -(IBAction)tappedBack
 {
-    
+    [self.historyManager goBack];
+    [self updateHistoryButtons];
+}
+
+-(IBAction)tappedForward
+{
+    [self.historyManager goForward];
+    [self updateHistoryButtons];
 }
 
 -(IBAction)tappedForumsList
@@ -187,6 +193,9 @@
 -(void)loadContentVC : (id<AwfulNavigatorContent>)content
 {
     [self dismissModalViewControllerAnimated:YES];
+    
+    [self.historyManager addHistory:content];
+    [self updateHistoryButtons];
     
     self.contentVC = content;
     [self.contentVC setDelegate:self];
