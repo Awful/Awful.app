@@ -55,7 +55,7 @@
 								<string key="NSFrame">{{10, 5}, {300, 168}}</string>
 								<reference key="NSSuperview" ref="673181764"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView" ref="83440208"/>
+								<reference key="NSNextKeyView" ref="273190360"/>
 								<object class="NSColor" key="IBUIBackgroundColor">
 									<int key="NSColorSpace">1</int>
 									<bytes key="NSRGB">MSAxIDEAA</bytes>
@@ -69,7 +69,7 @@
 									<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								</object>
 							</object>
-							<object class="IBUIToolbar" id="83440208">
+							<object class="IBUIToolbar" id="273190360">
 								<reference key="NSNextResponder" ref="673181764"/>
 								<int key="NSvFlags">266</int>
 								<string key="NSFrame">{{0, 179}, {320, 44}}</string>
@@ -82,28 +82,28 @@
 								<int key="IBUIBarStyle">1</int>
 								<object class="NSMutableArray" key="IBUIItems">
 									<bool key="EncodedWithXMLCoder">YES</bool>
-									<object class="IBUIBarButtonItem" id="120617476">
+									<object class="IBUIBarButtonItem" id="1032051788">
 										<string key="IBUITitle">Cancel</string>
 										<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 										<int key="IBUIStyle">1</int>
-										<reference key="IBUIToolbar" ref="83440208"/>
+										<reference key="IBUIToolbar" ref="273190360"/>
 									</object>
-									<object class="IBUIBarButtonItem" id="295349274">
+									<object class="IBUIBarButtonItem" id="51723586">
 										<string key="IBUITitle">Clear</string>
 										<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 										<int key="IBUIStyle">1</int>
-										<reference key="IBUIToolbar" ref="83440208"/>
+										<reference key="IBUIToolbar" ref="273190360"/>
 									</object>
-									<object class="IBUIBarButtonItem" id="1043160447">
+									<object class="IBUIBarButtonItem" id="702631247">
 										<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-										<reference key="IBUIToolbar" ref="83440208"/>
+										<reference key="IBUIToolbar" ref="273190360"/>
 										<int key="IBUISystemItemIdentifier">5</int>
 									</object>
-									<object class="IBUIBarButtonItem" id="515026336">
+									<object class="IBUIBarButtonItem" id="1026597363">
 										<string key="IBUITitle">Send</string>
 										<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 										<int key="IBUIStyle">2</int>
-										<reference key="IBUIToolbar" ref="83440208"/>
+										<reference key="IBUIToolbar" ref="273190360"/>
 									</object>
 								</object>
 							</object>
@@ -161,7 +161,7 @@
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
 						<string key="label">hideReply</string>
-						<reference key="source" ref="120617476"/>
+						<reference key="source" ref="1032051788"/>
 						<reference key="destination" ref="372490531"/>
 					</object>
 					<int key="connectionID">31</int>
@@ -169,7 +169,7 @@
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
 						<string key="label">clearReply</string>
-						<reference key="source" ref="295349274"/>
+						<reference key="source" ref="51723586"/>
 						<reference key="destination" ref="372490531"/>
 					</object>
 					<int key="connectionID">32</int>
@@ -177,10 +177,18 @@
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
 						<string key="label">hitSend</string>
-						<reference key="source" ref="515026336"/>
+						<reference key="source" ref="1026597363"/>
 						<reference key="destination" ref="372490531"/>
 					</object>
 					<int key="connectionID">33</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">sendButton</string>
+						<reference key="source" ref="372490531"/>
+						<reference key="destination" ref="1026597363"/>
+					</object>
+					<int key="connectionID">34</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -218,7 +226,7 @@
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="908657703"/>
-							<reference ref="83440208"/>
+							<reference ref="273190360"/>
 						</object>
 						<reference key="parent" ref="191373211"/>
 						<string key="objectName">base</string>
@@ -230,35 +238,35 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">26</int>
-						<reference key="object" ref="83440208"/>
+						<reference key="object" ref="273190360"/>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="515026336"/>
-							<reference ref="1043160447"/>
-							<reference ref="295349274"/>
-							<reference ref="120617476"/>
+							<reference ref="1026597363"/>
+							<reference ref="702631247"/>
+							<reference ref="51723586"/>
+							<reference ref="1032051788"/>
 						</object>
 						<reference key="parent" ref="673181764"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">30</int>
-						<reference key="object" ref="515026336"/>
-						<reference key="parent" ref="83440208"/>
+						<reference key="object" ref="1026597363"/>
+						<reference key="parent" ref="273190360"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">29</int>
-						<reference key="object" ref="1043160447"/>
-						<reference key="parent" ref="83440208"/>
+						<reference key="object" ref="702631247"/>
+						<reference key="parent" ref="273190360"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">28</int>
-						<reference key="object" ref="295349274"/>
-						<reference key="parent" ref="83440208"/>
+						<reference key="object" ref="51723586"/>
+						<reference key="parent" ref="273190360"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">27</int>
-						<reference key="object" ref="120617476"/>
-						<reference key="parent" ref="83440208"/>
+						<reference key="object" ref="1032051788"/>
+						<reference key="parent" ref="273190360"/>
 					</object>
 				</object>
 			</object>
@@ -313,7 +321,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">33</int>
+			<int key="maxID">34</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -364,52 +372,31 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>buttonGroup</string>
-							<string>cancelButton</string>
-							<string>clearButton</string>
 							<string>replyTextView</string>
 							<string>sendButton</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>UIView</string>
-							<string>UIButton</string>
-							<string>UIButton</string>
 							<string>UITextView</string>
-							<string>UIButton</string>
+							<string>UIBarButtonItem</string>
 						</object>
 					</object>
 					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>buttonGroup</string>
-							<string>cancelButton</string>
-							<string>clearButton</string>
 							<string>replyTextView</string>
 							<string>sendButton</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<object class="IBToOneOutletInfo">
-								<string key="name">buttonGroup</string>
-								<string key="candidateClassName">UIView</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">cancelButton</string>
-								<string key="candidateClassName">UIButton</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">clearButton</string>
-								<string key="candidateClassName">UIButton</string>
-							</object>
-							<object class="IBToOneOutletInfo">
 								<string key="name">replyTextView</string>
 								<string key="candidateClassName">UITextView</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">sendButton</string>
-								<string key="candidateClassName">UIButton</string>
+								<string key="candidateClassName">UIBarButtonItem</string>
 							</object>
 						</object>
 					</object>

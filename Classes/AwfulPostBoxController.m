@@ -50,6 +50,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    if(self.post != nil) {
+        [self.sendButton setTitle:@"Edit"];
+    } else if(self.thread != nil) {
+        [self.sendButton setTitle:@"Reply"];
+    }
+    
     self.replyTextView.text = self.startingText;
     [self.replyTextView becomeFirstResponder];
 }
@@ -156,7 +162,7 @@
 
 -(void)hitSend
 {
-    NSString *send_title = [self.sendButton title];
+    NSString *send_title = self.sendButton.title;
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Are you sure?" message:[NSString stringWithFormat:@"Confirm you want to %@.", send_title] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:send_title, nil];
     alert.delegate = self;
     alert.tag = SEND_BUTTON;

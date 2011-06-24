@@ -57,7 +57,7 @@ typedef enum {
         if(action == AwfulPostActionTypeEdit) {
             
             AwfulEditContentRequest *edit = [[AwfulEditContentRequest alloc] initWithAwfulPost:self.post];
-            loadRequestAndWait(edit);
+            loadRequest(edit);
             [edit release];
             [self.delegate setActions:nil];
             return;
@@ -69,7 +69,7 @@ typedef enum {
     if(action == AwfulPostActionTypeQuote) {
         
         AwfulQuoteRequest *quote = [[AwfulQuoteRequest alloc] initWithPost:self.post fromPage:self.page];
-        loadRequestAndWait(quote);
+        loadRequest(quote);
         [quote release];
         
     } else if(action == AwfulPostActionTypeMarkRead) {
