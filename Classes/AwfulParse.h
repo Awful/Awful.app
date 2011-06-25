@@ -20,7 +20,6 @@
 
 +(NSMutableArray *)newPostsFromThread : (TFHpple *)hpple isFYAD : (BOOL)is_fyad;
 
-+(NSString *)parseThumbnails : (NSString *)body_html;
 +(NSString *)parseYouTubes : (NSString *)html;
 
 +(NSMutableArray *)newThreadsFromForum : (TFHpple *)hpple;

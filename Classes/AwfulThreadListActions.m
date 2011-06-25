@@ -11,6 +11,7 @@
 #import "AwfulNavigator.h"
 #import "AwfulPage.h"
 #import "ASIFormDataRequest.h"
+#import "AwfulAppDelegate.h"
 
 typedef enum {
     AwfulThreadListActionsTypeFirstPage = 0,
@@ -28,7 +29,12 @@ typedef enum {
         _thread = [thread retain];
         [self.titles addObject:@"First Page"];
         [self.titles addObject:@"Last Page"];
-        [self.titles addObject:@"Mark as Unread"];
+        
+        // no mark unread for bookmarks
+        UIViewController *vc = getRootController();
+        if(vc.modalViewController == nil) {
+            [self.titles addObject:@"Mark as Unread"];
+        }
     }
     return self;
 }
@@ -58,7 +64,7 @@ typedef enum {
         loadContentVC(thread_detail);
         [thread_detail release];
         
-    } else if(buttonIndex == AwfulThreadListActionsTypeUnread) {
+    } else if(buttonIndex == AwfulThreadListActionsTypeUnread && [self.titles count] > 2) {
         NSURL *url = [NSURL URLWithString:@"http://forums.somethingawful.com/showthread.php"];
         ASIFormDataRequest *form = [ASIFormDataRequest requestWithURL:url];
         [form setPostValue:self.thread.threadID forKey:@"threadid"];

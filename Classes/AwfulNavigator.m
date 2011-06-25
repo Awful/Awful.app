@@ -192,7 +192,15 @@
 
 -(void)callBookmarksRefresh
 {
-    
+    if(self.modalViewController != nil) {
+        if([self.modalViewController isKindOfClass:[UINavigationController class]]) {
+            UINavigationController *nav = (UINavigationController *)self.modalViewController;
+            if([nav.visibleViewController isMemberOfClass:[AwfulBookmarksController class]]) {
+                AwfulBookmarksController *book = (AwfulBookmarksController *)nav.visibleViewController;
+                [book refresh];
+            }
+        }
+    }
 }
 
 #pragma mark Awful Content Navigation

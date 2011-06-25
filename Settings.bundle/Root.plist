@@ -14,45 +14,9 @@
 			<key>DefaultValue</key>
 			<true/>
 			<key>Key</key>
-			<string>images_inline</string>
-			<key>Title</key>
-			<string>Load Images Inline</string>
-			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
-		</dict>
-		<dict>
-			<key>DefaultValue</key>
-			<true/>
-			<key>Key</key>
 			<string>show_avatars</string>
 			<key>Title</key>
 			<string>Load Avatars</string>
-			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
-		</dict>
-		<dict>
-			<key>Title</key>
-			<string>Orientation Lock</string>
-			<key>Type</key>
-			<string>PSGroupSpecifier</string>
-		</dict>
-		<dict>
-			<key>DefaultValue</key>
-			<true/>
-			<key>Key</key>
-			<string>lock_portrait</string>
-			<key>Title</key>
-			<string>Lock Portrait</string>
-			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
-		</dict>
-		<dict>
-			<key>DefaultValue</key>
-			<false/>
-			<key>Key</key>
-			<string>lock_landscape</string>
-			<key>Title</key>
-			<string>Lock Landscape</string>
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 		</dict>

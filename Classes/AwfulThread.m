@@ -60,6 +60,8 @@
         self.lastPostAuthorName = [decoder decodeObjectForKey:@"lastPostAuthorName"];
         self.totalUnreadPosts = [decoder decodeIntForKey:@"totalUnreadPosts"];
         self.totalReplies = [decoder decodeIntForKey:@"totalReplies"];
+        self.starCategory = [decoder decodeIntForKey:@"starCategory"];
+        self.isStickied = [decoder decodeBoolForKey:@"isStickied"];
         
         //NSString *forum_id = [decoder decodeObjectForKey:@"forumID"];
         
@@ -76,6 +78,8 @@
     [encoder encodeObject:self.lastPostAuthorName forKey:@"lastPostAuthorName"];
     [encoder encodeInt:self.totalUnreadPosts forKey:@"totalUnreadPosts"];
     [encoder encodeInt:self.totalReplies forKey:@"totalReplies"];
+    [encoder encodeInt:self.starCategory forKey:@"starCategory"];
+    [encoder encodeBool:self.isStickied forKey:@"isStickied"];
     
     // TODO save forum id
 }

@@ -277,10 +277,6 @@
     self.tableView.backgroundColor = [UIColor colorWithRed:offwhite green:offwhite blue:offwhite alpha:1.0];
     [self.tableView reloadData];
     self.view.userInteractionEnabled = YES;
-    
-    [UIView animateWithDuration:0.25 animations:^{
-        self.view.alpha = 1.0;
-    }];
 }
 
 #pragma mark -

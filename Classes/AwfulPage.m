@@ -29,6 +29,8 @@
 #import "AwfulHistoryManager.h"
 #import "AwfulHistory.h"
 #import "AwfulPostActions.h"
+#import "MWPhoto.h"
+#import "MWPhotoBrowser.h"
 
 float getWidth()
 {
@@ -255,37 +257,38 @@ float getWidth()
 
 -(void)heldPost:(UILongPressGestureRecognizer *)gestureRecognizer
 {    
+    CGPoint p = [gestureRecognizer locationInView:self.webView];
+    NSString *offset_str = [self.webView stringByEvaluatingJavaScriptFromString:@"scrollY"];
+    float offset = [offset_str intValue];
     
-}
-
--(void)imageGesture : (UITapGestureRecognizer *)sender
-{
-    /*UIWebView *web = (UIWebView *)sender.view;
-    
-    NSUInteger post_index = [self.renderedPosts indexOfObject:web];
-    
-    CGPoint p = [sender locationInView:web];
-    NSString *js_tag_name = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).tagName", p.x, p.y];
-    NSString *tag_name = [web stringByEvaluatingJavaScriptFromString:js_tag_name];
+    NSString *js_tag_name = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).tagName", p.x, p.y+offset];
+    NSString *tag_name = [self.webView stringByEvaluatingJavaScriptFromString:js_tag_name];
     if([tag_name isEqualToString:@"IMG"]) {
-        NSString *js_src = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).src", p.x, p.y];
-        NSString *src = [web stringByEvaluatingJavaScriptFromString:js_src];
+        NSString *js_src = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).src", p.x, p.y+offset];
+        NSString *src = [self.webView stringByEvaluatingJavaScriptFromString:js_src];
         
         BOOL proceed = YES;
-        if(post_index != NSNotFound && post_index < [self.unreadPosts count]) {
-            if(post_index < [self.unreadPosts count])  {
-                AwfulPost *post = [self.unreadPosts objectAtIndex:post_index];
-                if([[post.avatarURL absoluteString] isEqualToString:src]) {
-                    proceed = NO;
-                }
+        for(AwfulPost *post in self.allRawPosts) {
+            if([[post.avatarURL absoluteString] isEqualToString:src]) {
+                proceed = NO;
             }
         }
         
         if(proceed) {
-            //AwfulNavController *nav = getnav();
-            //[nav showImage:src];
+            NSMutableArray *photos = [[NSMutableArray alloc] init];
+            [photos addObject:[MWPhoto photoWithURL:[NSURL URLWithString:src]]];
+            
+            MWPhotoBrowser *browser = [[MWPhotoBrowser alloc] initWithPhotos:photos];
+            
+            UIViewController *vc = getRootController();
+            UINavigationController *navi = [[UINavigationController alloc] initWithRootViewController:browser];
+            [vc presentModalViewController:navi animated:YES];
+            [navi release];
+            
+            [browser release];
+            [photos release];
         }
-    }*/
+    }
 }
 
 /*

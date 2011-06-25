@@ -15,12 +15,7 @@
 
 +(id)getConfigObj : (NSString *)key;
 +(BOOL)showAvatars;
-+(BOOL)imagesInline;
 +(float)bookmarksDelay;
 +(int)numReadPostsAbove;
-+(BOOL)isPortraitLock;
-+(BOOL)isColorSchemeBlack;
-+(BOOL)isLandscapeLock;
-+(BOOL)allowRotation : (UIInterfaceOrientation)orient;
 
 @end

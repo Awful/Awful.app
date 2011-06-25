@@ -48,15 +48,6 @@
     return [ava boolValue];
 }
 
-+(BOOL)imagesInline
-{
-    NSNumber *im = [AwfulConfig getConfigObj:@"images_inline"];
-    if(im == nil) {
-        return YES;
-    }
-    return [im boolValue];
-}
-
 +(float)bookmarksDelay
 {
     NSString *delay = [AwfulConfig getConfigObj:@"bookmarks_delay"];
@@ -73,52 +64,6 @@
         return 1;
     }
     return [above intValue];
-}
-
-+(BOOL)isPortraitLock
-{
-    NSNumber *port = [AwfulConfig getConfigObj:@"lock_portrait"];
-    if(port == nil) {
-        return YES;
-    }
-    return [port boolValue];
-}
-
-+(BOOL)isLandscapeLock
-{
-    NSNumber *land = [AwfulConfig getConfigObj:@"lock_landscape"];
-    if(land == nil) {
-        return NO;
-    }
-    return [land boolValue];
-}
-
-+(BOOL)isColorSchemeBlack
-{
-    NSString *color = [AwfulConfig getConfigObj:@"color_scheme"];
-    if(color == nil) {
-        return YES;
-    }
-    return YES;
-}
-
-+(BOOL)allowRotation : (UIInterfaceOrientation)orient
-{
-    BOOL ill_allow_it = NO;
-    
-    if([AwfulConfig isPortraitLock]) {
-        if(UIInterfaceOrientationIsPortrait(orient)) {
-            ill_allow_it = YES;
-        }
-    } else if([AwfulConfig isLandscapeLock]) {
-        if(!UIInterfaceOrientationIsPortrait(orient)) {
-            ill_allow_it = YES;
-        }
-    } else {
-        ill_allow_it = YES;
-    }
-    
-    return ill_allow_it;
 }
 
 @end

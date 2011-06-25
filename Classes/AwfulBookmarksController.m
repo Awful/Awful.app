@@ -38,7 +38,7 @@
         _refreshed = NO;
         
         _refreshTimer = nil;
-        //[self startTimer];
+        [self startTimer];
     }
     
     return self;
@@ -60,6 +60,8 @@
     self.forumLabel.text = @"Bookmarks";
     self.navigationItem.titleView = self.forumLabel;
     
+    [self swapToRefreshButton];
+    
     UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(hitDone)];
     self.navigationItem.rightBarButtonItem = done;
     [done release];
@@ -67,7 +69,7 @@
 
 -(BOOL)shouldReloadOnViewLoad
 {
-    return YES;
+    return NO;
 }
 
 -(void)startTimer
@@ -92,7 +94,6 @@
 -(void)refresh
 {
     [self endTimer];
-    self.view.userInteractionEnabled = NO;
     self.refreshed = YES;
     [self swapToStopButton];
     [super refresh];
