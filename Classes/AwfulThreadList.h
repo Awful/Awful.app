@@ -21,15 +21,18 @@
     UILabel *_pagesLabel;
     UIButton *_unreadButton;
     UIImageView *_sticky;
+    AwfulThread *_thread;
 }
 
 @property (nonatomic, retain) IBOutlet UILabel *threadTitleLabel;
 @property (nonatomic, retain) IBOutlet UILabel *pagesLabel;
 @property (nonatomic, retain) IBOutlet UIButton *unreadButton;
 @property (nonatomic, retain) IBOutlet UIImageView *sticky;
+@property (nonatomic, retain) AwfulThread *thread;
 
 -(void)configureForThread : (AwfulThread *)thread;
 -(UIColor *)getBackgroundColorForThread : (AwfulThread *)thread;
+-(void)openThreadlistOptions;
 
 @end
 
@@ -85,8 +88,6 @@ typedef enum {
 -(void)loadList;
 -(BOOL)shouldReloadOnViewLoad;
 
--(void)firstPage;
--(void)lastPage;
 -(IBAction)nextPage;
 -(IBAction)prevPage;
 

@@ -28,6 +28,7 @@
 @synthesize historyManager = _historyManager;
 @synthesize backButton = _backButton;
 @synthesize forwardButton = _forwardButton;
+@synthesize actionButton = _actionButton;
 
 -(id)initWithCoder:(NSCoder *)aDecoder
 {
@@ -52,6 +53,7 @@
     [_historyManager release];
     [_backButton release];
     [_forwardButton release];
+    [_actionButton release];
     [super dealloc];
 }
 
@@ -94,6 +96,9 @@
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
     self.toolbar = nil;
+    self.backButton = nil;
+    self.forwardButton = nil;
+    self.actionButton = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -204,6 +209,13 @@
     
     self.view = [self.contentVC getView];
     [self.contentVC refresh];
+    
+    AwfulActions *actions = [self.contentVC getActions];
+    if(actions == nil) {
+        self.actionButton.enabled = NO;
+    } else {
+        self.actionButton.enabled = YES;
+    }
 }
 
 #pragma mark Gestures

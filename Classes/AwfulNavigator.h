@@ -37,6 +37,7 @@
     AwfulHistoryManager *_historyManager;
     UIBarButtonItem *_backButton;
     UIBarButtonItem *_forwardButton;
+    UIBarButtonItem *_actionButton;
 }
 
 @property (nonatomic, retain) IBOutlet UIToolbar *toolbar;
@@ -47,6 +48,7 @@
 @property (nonatomic, retain) AwfulHistoryManager *historyManager;
 @property (nonatomic, retain) IBOutlet UIBarButtonItem *backButton;
 @property (nonatomic, retain) IBOutlet UIBarButtonItem *forwardButton;
+@property (nonatomic, retain) IBOutlet UIBarButtonItem *actionButton;
 
 -(void)loadContentVC : (id<AwfulNavigatorContent>)content;
 

@@ -20,6 +20,7 @@
 #import "AwfulNavigator.h"
 #import "AwfulNavigatorLabels.h"
 #import "AwfulUtil.h"
+#import "AwfulThreadListActions.h"
 
 #define THREAD_HEIGHT 72
 
@@ -29,12 +30,25 @@
 @synthesize pagesLabel = _pagesLabel;
 @synthesize unreadButton = _unreadButton;
 @synthesize sticky = _sticky;
+@synthesize thread = _thread;
+
+-(id)initWithCoder:(NSCoder *)aDecoder
+{
+    if((self=[super initWithCoder:aDecoder])) {
+        UILongPressGestureRecognizer *press = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(openThreadlistOptions)];
+        [self addGestureRecognizer:press];
+        [press release];
+    }
+    return self;
+}
 
 -(void)dealloc
 {
     [_threadTitleLabel release];
     [_pagesLabel release];
     [_unreadButton release];
+    [_thread release];
+    [_sticky release];
     [super dealloc];
 }
 
@@ -51,6 +65,7 @@
 
 -(void)configureForThread:(AwfulThread *)thread
 {
+    self.thread = thread;
     self.contentView.backgroundColor = [self getBackgroundColorForThread:thread];
     
     if(thread.isLocked) {
@@ -117,6 +132,16 @@
     }
     
     return back_color;
+}
+
+-(void)openThreadlistOptions
+{
+    AwfulNavigator *nav = getNavigator();
+    if(nav.actions == nil) {
+        AwfulThreadListActions *actions = [[AwfulThreadListActions alloc] initWithAwfulThread:self.thread];
+        [nav setActions:actions];
+        [actions release];
+    }
 }
 
 @end
@@ -418,7 +443,6 @@
             cell = self.pageNavCell;
         } else {
             cell = self.threadCell;
-            
         }
         self.threadCell = nil;
         self.pageNavCell = nil;
@@ -500,41 +524,6 @@
             [thread_detail release];  
         }
     }
-}
-
--(void)firstPage
-{/*
-    int spot = swipedRow;
-    
-    if(spot >= [awfulThreads count]) {
-        return;
-    }
-    
-    AwfulThread *thread = [awfulThreads objectAtIndex:spot];
-    if(thread.threadID != nil) {
-    
-        AwfulNavController *nav = getnav();
-        AwfulPage *thread_detail = [[AwfulPage alloc] initWithAwfulThread:thread startAt:THREAD_POS_FIRST];
-        [nav loadPage:thread_detail];
-        [thread_detail release];
-    }*/
-}
-
--(void)lastPage
-{/*
-    int spot = swipedRow;
-
-    if(spot >= [awfulThreads count]) {
-        return;
-    }
-    
-    AwfulThread *thread = [awfulThreads objectAtIndex:spot];
-    if(thread.threadID != nil) {
-        
-        AwfulPage *thread_detail = [[AwfulPage alloc] initWithAwfulThread:thread startAt:THREAD_POS_LAST];
-        loadContentVC(thread_detail);
-        [thread_detail release];
-    }*/
 }
 
 -(IBAction)prevPage

@@ -10,6 +10,7 @@
 #import "ASINetworkQueue.h"
 #import "MBProgressHUD.h"
 #import "AwfulAppDelegate.h"
+#import "AwfulNavigator.h"
 
 @implementation AwfulRequestHandler
 
@@ -91,6 +92,11 @@
         } else {
             [self hideHud];
         }
+    }
+    NSString *ref = [request.userInfo objectForKey:@"refresh"];
+    if(ref != nil) {
+        AwfulNavigator *nav = getNavigator();
+        [nav refresh];
     }
 }
 
