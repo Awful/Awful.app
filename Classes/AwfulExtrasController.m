@@ -52,6 +52,7 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
     if((self=[super initWithStyle:UITableViewStyleGrouped])) {
         AwfulNavigator *nav = getNavigator();
         [nav.user addObserver:self forKeyPath:@"userName" options:NSKeyValueObservingOptionNew context:nil];
+        self.title = @"Awful App";
     }
     return self;
 }

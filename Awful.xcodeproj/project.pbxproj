@@ -16,9 +16,6 @@
 		107CF98F11FF6DDB007C16F4 /* AwfulForumsList.m in Sources */ = {isa = PBXBuildFile; fileRef = 107CF98E11FF6DDB007C16F4 /* AwfulForumsList.m */; };
 		107CF9A311FF7776007C16F4 /* libxml2.2.7.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 107CF9A211FF7776007C16F4 /* libxml2.2.7.3.dylib */; };
 		107CF9E111FF79D5007C16F4 /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 107CF9E011FF79D5007C16F4 /* libsqlite3.0.dylib */; };
-		107CF9EF11FF7D4E007C16F4 /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 107CF9EA11FF7D4E007C16F4 /* FMDatabase.m */; };
-		107CF9F011FF7D4E007C16F4 /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 107CF9EC11FF7D4E007C16F4 /* FMDatabaseAdditions.m */; };
-		107CF9F111FF7D4E007C16F4 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 107CF9EE11FF7D4E007C16F4 /* FMResultSet.m */; };
 		107CF9F611FF7E3C007C16F4 /* AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 107CF9F511FF7E3C007C16F4 /* AwfulForum.m */; };
 		107CFA5211FF90A8007C16F4 /* AwfulThreadList.m in Sources */ = {isa = PBXBuildFile; fileRef = 107CFA5111FF90A8007C16F4 /* AwfulThreadList.m */; };
 		107CFB581201DAE2007C16F4 /* AwfulPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 107CFB571201DAE2007C16F4 /* AwfulPage.m */; };
@@ -38,7 +35,6 @@
 		109A20C712A06880006DB267 /* AwfulPageNavController.m in Sources */ = {isa = PBXBuildFile; fileRef = 109A20C612A06880006DB267 /* AwfulPageNavController.m */; };
 		109CD6AC1204A1AB00A778B5 /* AwfulPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 109CD6AB1204A1AB00A778B5 /* AwfulPost.m */; };
 		109CD8181204F21700A778B5 /* post.css in Resources */ = {isa = PBXBuildFile; fileRef = 109CD8171204F21700A778B5 /* post.css */; };
-		10A6BE0E12936A0800F86EC6 /* Stylin.m in Sources */ = {isa = PBXBuildFile; fileRef = 10A6BE0D12936A0800F86EC6 /* Stylin.m */; };
 		10AF71DF123D9EFD0098078E /* OtherWebController.m in Sources */ = {isa = PBXBuildFile; fileRef = 10AF71DE123D9EFD0098078E /* OtherWebController.m */; };
 		10D34F97128F40920026C7C2 /* ASIAuthenticationDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = 10D34F80128F40920026C7C2 /* ASIAuthenticationDialog.m */; };
 		10D34F98128F40920026C7C2 /* ASIDataCompressor.m in Sources */ = {isa = PBXBuildFile; fileRef = 10D34F83128F40920026C7C2 /* ASIDataCompressor.m */; };
@@ -633,12 +629,6 @@
 		107CF98E11FF6DDB007C16F4 /* AwfulForumsList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumsList.m; sourceTree = "<group>"; };
 		107CF9A211FF7776007C16F4 /* libxml2.2.7.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.2.7.3.dylib; path = usr/lib/libxml2.2.7.3.dylib; sourceTree = SDKROOT; };
 		107CF9E011FF79D5007C16F4 /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
-		107CF9E911FF7D4E007C16F4 /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDatabase.h; path = fmdb/FMDatabase.h; sourceTree = "<group>"; };
-		107CF9EA11FF7D4E007C16F4 /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMDatabase.m; path = fmdb/FMDatabase.m; sourceTree = "<group>"; };
-		107CF9EB11FF7D4E007C16F4 /* FMDatabaseAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDatabaseAdditions.h; path = fmdb/FMDatabaseAdditions.h; sourceTree = "<group>"; };
-		107CF9EC11FF7D4E007C16F4 /* FMDatabaseAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMDatabaseAdditions.m; path = fmdb/FMDatabaseAdditions.m; sourceTree = "<group>"; };
-		107CF9ED11FF7D4E007C16F4 /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMResultSet.h; path = fmdb/FMResultSet.h; sourceTree = "<group>"; };
-		107CF9EE11FF7D4E007C16F4 /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMResultSet.m; path = fmdb/FMResultSet.m; sourceTree = "<group>"; };
 		107CF9F411FF7E3C007C16F4 /* AwfulForum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForum.h; sourceTree = "<group>"; };
 		107CF9F511FF7E3C007C16F4 /* AwfulForum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForum.m; sourceTree = "<group>"; };
 		107CFA5011FF90A8007C16F4 /* AwfulThreadList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadList.h; sourceTree = "<group>"; };
@@ -666,8 +656,6 @@
 		109CD6AA1204A1AB00A778B5 /* AwfulPost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPost.h; sourceTree = "<group>"; };
 		109CD6AB1204A1AB00A778B5 /* AwfulPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPost.m; sourceTree = "<group>"; };
 		109CD8171204F21700A778B5 /* post.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = post.css; sourceTree = "<group>"; };
-		10A6BE0C12936A0800F86EC6 /* Stylin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Stylin.h; sourceTree = "<group>"; };
-		10A6BE0D12936A0800F86EC6 /* Stylin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Stylin.m; sourceTree = "<group>"; };
 		10AF71DD123D9EFD0098078E /* OtherWebController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OtherWebController.h; sourceTree = "<group>"; };
 		10AF71DE123D9EFD0098078E /* OtherWebController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OtherWebController.m; sourceTree = "<group>"; };
 		10D34F7F128F40920026C7C2 /* ASIAuthenticationDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ASIAuthenticationDialog.h; path = ASIHTTP/ASIAuthenticationDialog.h; sourceTree = "<group>"; };
@@ -1372,19 +1360,6 @@
 			name = parser;
 			sourceTree = "<group>";
 		};
-		107CF9E711FF7D25007C16F4 /* sqlite-wrapper */ = {
-			isa = PBXGroup;
-			children = (
-				107CF9E911FF7D4E007C16F4 /* FMDatabase.h */,
-				107CF9EA11FF7D4E007C16F4 /* FMDatabase.m */,
-				107CF9EB11FF7D4E007C16F4 /* FMDatabaseAdditions.h */,
-				107CF9EC11FF7D4E007C16F4 /* FMDatabaseAdditions.m */,
-				107CF9ED11FF7D4E007C16F4 /* FMResultSet.h */,
-				107CF9EE11FF7D4E007C16F4 /* FMResultSet.m */,
-			);
-			name = "sqlite-wrapper";
-			sourceTree = "<group>";
-		};
 		107CFB5B1201DD32007C16F4 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -1438,8 +1413,6 @@
 				107CFE60120340DD007C16F4 /* AwfulUtil.m */,
 				10F0DE5D120B65AC00D943E3 /* SmilieGrabber.h */,
 				10F0DE5E120B65AC00D943E3 /* SmilieGrabber.m */,
-				10A6BE0C12936A0800F86EC6 /* Stylin.h */,
-				10A6BE0D12936A0800F86EC6 /* Stylin.m */,
 				10913CFF12CFF3A1007583AC /* AwfulConfig.h */,
 				10913D0012CFF3A1007583AC /* AwfulConfig.m */,
 			);
@@ -2245,7 +2218,6 @@
 				10E38D7412C27FFF002DBA3F /* CrashReportSender.h */,
 				10E38D7512C27FFF002DBA3F /* CrashReportSender.m */,
 				116B299B139C3D7200984955 /* FlurryAPI.h */,
-				107CF9E711FF7D25007C16F4 /* sqlite-wrapper */,
 				107CF8C611FF54FE007C16F4 /* parser */,
 				28A0AB4B0D9B1048005BE974 /* Awful_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
@@ -2878,9 +2850,6 @@
 				107CF8CF11FF550A007C16F4 /* XPathQuery.m in Sources */,
 				107CF93C11FF5EDC007C16F4 /* AwfulThread.m in Sources */,
 				107CF98F11FF6DDB007C16F4 /* AwfulForumsList.m in Sources */,
-				107CF9EF11FF7D4E007C16F4 /* FMDatabase.m in Sources */,
-				107CF9F011FF7D4E007C16F4 /* FMDatabaseAdditions.m in Sources */,
-				107CF9F111FF7D4E007C16F4 /* FMResultSet.m in Sources */,
 				107CF9F611FF7E3C007C16F4 /* AwfulForum.m in Sources */,
 				107CFA5211FF90A8007C16F4 /* AwfulThreadList.m in Sources */,
 				107CFB581201DAE2007C16F4 /* AwfulPage.m in Sources */,
@@ -2898,7 +2867,6 @@
 				10D34F9E128F40920026C7C2 /* ASINetworkQueue.m in Sources */,
 				10D34F9F128F40920026C7C2 /* ASIWebPageRequest.m in Sources */,
 				10D34FA0128F40920026C7C2 /* Reachability.m in Sources */,
-				10A6BE0E12936A0800F86EC6 /* Stylin.m in Sources */,
 				10D494F61299B918008EF8C0 /* AwfulUser.m in Sources */,
 				10D49881129A1407008EF8C0 /* AwfulPostBoxController.m in Sources */,
 				109A20C712A06880006DB267 /* AwfulPageNavController.m in Sources */,

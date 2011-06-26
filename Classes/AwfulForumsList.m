@@ -7,14 +7,12 @@
 //
 
 #import "AwfulForumsList.h"
-#import "FMDatabase.h"
 #import "AwfulForum.h"
 #import "AwfulThreadList.h"
 #import "AwfulNavigator.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulNavigator.h"
 #import "AwfulUtil.h"
-#import "Stylin.h"
 #import "AwfulConfig.h"
 #import "AwfulForumListRefreshRequest.h"
 #import "AwfulForumCell.h"
@@ -43,13 +41,14 @@
 +(AwfulForumSection *)sectionWithForum : (AwfulForum *)forum
 {
     AwfulForumSection *sec = [[AwfulForumSection alloc] init];
-    [sec setForum:forum];
+    sec.forum = forum;
     return [sec autorelease];
 }
 
 -(void)dealloc
 {
     [_children release];
+    [_forum release];
     [super dealloc];
 }
 
@@ -331,8 +330,6 @@
     return NO;
 }
 
-
-
 // Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
@@ -451,7 +448,9 @@
         [_forums release];
         _forums = [forums retain];
         
-        [self.forumSections removeAllObjects];
+        self.forumSections = nil;
+        self.forumSections = [[[NSMutableArray alloc] init] autorelease];
+        //[self.forumSections removeAllObjects];
         for(AwfulForum *forum in _forums) {
             [self addForumToSectionTree:forum];
         }
@@ -469,7 +468,7 @@
         if([data count] == 0) {
             [self grabFreshList];
         } else {
-            [self setForums:data];
+            self.forums = data;
         }
     } else {
         NSString *bundle_path = [[NSBundle mainBundle] pathForResource:@"forumslist" ofType:@""];
@@ -509,7 +508,7 @@
 -(void)addForumToSectionTree : (AwfulForum *)forum
 {
     AwfulForumSection *section = [[AwfulForumSection alloc] init];
-    [section setForum:forum];
+    section.forum = forum;
 
     if(forum.parentForumID == nil) {
         [section setExpanded:YES];

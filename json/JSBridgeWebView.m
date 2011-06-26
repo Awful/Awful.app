@@ -215,6 +215,7 @@
 		NSDictionary* jsonDic = [jsonObj objectWithString:jsonStr];
 		NSDictionary* dicTranslated = [self translateDictionary:jsonDic];
 		
+        [jsonObj release];
 		
 		// Calls the delegate method with the notified object.
 		if(bridgeDelegate)

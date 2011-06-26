@@ -49,7 +49,6 @@ float getWidth()
 @synthesize thread = _thread;
 @synthesize url = _url;
 @synthesize isBookmarked = _isBookmarked;
-@synthesize highlightedPost = _highlightedPost;
 @synthesize allRawPosts = _allRawPosts;
 @synthesize newPostIndex = _newPostIndex;
 @synthesize webView = _webView;
@@ -57,6 +56,7 @@ float getWidth()
 @synthesize threadTitleLabel = _threadTitleLabel;
 @synthesize pages = _pages;
 @synthesize delegate = _delegate;
+@synthesize forumButton = _forumButton;
 
 #pragma mark -
 #pragma mark Initialization
@@ -79,7 +79,6 @@ float getWidth()
         
         _allRawPosts = [[NSMutableArray alloc] init];
         
-        _highlightedPost = nil;
         _newPostIndex = -1;
         
         _webView = nil;
@@ -120,12 +119,11 @@ float getWidth()
 - (void)dealloc {
     [_url release];
     [_thread release];
-    [_highlightedPost release];
-    
     [_allRawPosts release];
     [_webView release];
     [_pagesLabel release];
     [_threadTitleLabel release];
+    [_forumButton release];
     [_pages release];
     
     [super dealloc];
@@ -181,6 +179,26 @@ float getWidth()
 {
     [self.thread setTitle:in_title];
     [self.threadTitleLabel setText:in_title];
+}
+-(void)tappedTitle : (UITapGestureRecognizer *)tapper
+{
+    if(self.forumButton == nil) {
+        UIButton *forum_button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        forum_button.frame = CGRectMake(0, 0, 200, 50);
+        [forum_button setTitle:self.thread.forum.name forState:UIControlStateNormal];
+        forum_button.center = CGPointMake(160, 50);
+        [forum_button addTarget:self action:@selector(tappedForumButton) forControlEvents:UIControlEventTouchUpInside];
+        self.forumButton = forum_button;
+        [self.webView addSubview:forum_button];
+    } else {
+        [self.forumButton removeFromSuperview];
+        self.forumButton = nil;
+    }
+}
+
+-(void)tappedForumButton
+{
+    
 }
 
 -(void)hardRefresh
@@ -349,9 +367,19 @@ float getWidth()
     self.threadTitleLabel = labels.threadTitleLabel;
     [labels release];
     
+    UIView *label_container = [[UIView alloc] initWithFrame:self.threadTitleLabel.frame];
+    [label_container setBackgroundColor:[UIColor clearColor]];
+    [label_container addSubview:self.threadTitleLabel];
+    self.threadTitleLabel.frame = CGRectMake(0, 0, self.threadTitleLabel.bounds.size.width, self.threadTitleLabel.bounds.size.height);
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedTitle:)];
+    [label_container addGestureRecognizer:tap];
+    [tap release];
+    
     self.pagesLabel.text = [self.pages description];
     self.threadTitleLabel.text = self.thread.title;
-    self.delegate.navigationItem.titleView = self.threadTitleLabel;
+    self.delegate.navigationItem.titleView = label_container;
+    [label_container release];
     
     UIBarButtonItem *cust = [[UIBarButtonItem alloc] initWithCustomView:self.pagesLabel];
     self.delegate.navigationItem.rightBarButtonItem = cust;
@@ -363,6 +391,7 @@ float getWidth()
     // For example: self.myOutlet = nil;
     self.pagesLabel = nil;
     self.threadTitleLabel = nil;
+    self.forumButton = nil;
 }
 
 #pragma mark -

@@ -25,8 +25,6 @@
  */
 
 #import "AwfulUtil.h"
-#import "FMDatabaseAdditions.h"
-#import "FMResultSet.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulNavigator.h"
 #import "AwfulUser.h"
@@ -37,52 +35,6 @@
 {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     return [paths objectAtIndex:0];
-}
-
-+(FMDatabase *)getDB
-{
-    return [FMDatabase databaseWithPath:[[AwfulUtil getDocsDir] stringByAppendingPathComponent:@"forums.sqlite"]];
-}
-
-+(void)initializeDatabase
-{
-    NSFileManager *me = [[NSFileManager alloc] init];
-    NSString *db_path = [[AwfulUtil getDocsDir] stringByAppendingPathComponent:@"forums.sqlite"];
-    BOOL success = [me fileExistsAtPath:db_path];
-    if(!success) {
-        NSString *current_db_path = [[NSBundle mainBundle] pathForResource:@"forums" ofType:@"sqlite"];
-        
-        NSError *err = nil;
-        success = [me copyItemAtPath:current_db_path toPath:db_path error:&err];
-        if(!success) {
-            NSLog(@"failed to copy db");
-        }
-    }
-    
-    [me release];
-}
-
-+(NSMutableArray *)newChosenForums
-{
-    NSString *forums_path = [[AwfulUtil getDocsDir] stringByAppendingPathComponent:@"chosenForums"];
-    if([[NSFileManager defaultManager] fileExistsAtPath:forums_path]) {
-        NSMutableArray *forums = [NSKeyedUnarchiver unarchiveObjectWithFile:forums_path];
-        [forums retain];
-        return forums;
-    } else {
-        NSMutableArray *empty = [[NSMutableArray alloc] init];
-        return empty;
-    }
-    return nil;
-}
-
-+(void)saveChosenForums : (NSMutableArray *)forums
-{
-    NSString *forums_path = [[AwfulUtil getDocsDir] stringByAppendingPathComponent:@"chosenForums"];
-    BOOL saved = [NSKeyedArchiver archiveRootObject:forums toFile:forums_path];
-    if(!saved) {
-        NSLog(@"failed to save");
-    }
 }
 
 +(NSMutableArray *)newThreadListForForumId : (NSString *)forum_id

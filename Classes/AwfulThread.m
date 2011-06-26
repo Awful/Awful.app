@@ -62,10 +62,7 @@
         self.totalReplies = [decoder decodeIntForKey:@"totalReplies"];
         self.starCategory = [decoder decodeIntForKey:@"starCategory"];
         self.isStickied = [decoder decodeBoolForKey:@"isStickied"];
-        
-        //NSString *forum_id = [decoder decodeObjectForKey:@"forumID"];
-        
-        // TODO grab forum from forum_id
+        self.forum = [decoder decodeObjectForKey:@"forum"];
 	}
 	return self;
 }
@@ -80,8 +77,7 @@
     [encoder encodeInt:self.totalReplies forKey:@"totalReplies"];
     [encoder encodeInt:self.starCategory forKey:@"starCategory"];
     [encoder encodeBool:self.isStickied forKey:@"isStickied"];
-    
-    // TODO save forum id
+    [encoder encodeObject:self.forum forKey:@"forum"];
 }
 
 @end

@@ -25,28 +25,14 @@
         
     // Override point for customization after application launch.
 
-    //cache = nil;
-    
-    //[AwfulUtil initializeDatabase];
-            
-    
     [self.window addSubview:self.navigationController.view];
     [self.window makeKeyAndVisible];
-
-    //[self enableCache];
     
     [FlurryAPI startSession:@"EU3TLVQM9U8T8QKNI9ID"];
     
-    // I don't want to see your crash reports!
     NSURL *crash_url = [NSURL URLWithString:@"http://www.regularberry.com/crash/crash_v200.php"];
     [[CrashReportSender sharedCrashReportSender] sendCrashReportToURL:crash_url delegate:self activateFeedback:NO];
     //[Appirater appLaunched:YES];
-    
-    /*if([AwfulConfig isColorSchemeBlack]) {
-        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque];
-    } else {
-        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
-    }*/
     
     return YES;
 }
@@ -110,24 +96,6 @@
     /*
      Free up as much memory as possible by purging cached data objects that can be recreated (or reloaded from disk) later.
      */
-}
-
-
--(void)enableCache
-{
-    /*if(cache == nil) {
-        //NSString *path = [[NSBundle mainBundle] pathForResource:@"awfulcache" ofType:nil];
-        //cache = [[AwfulWebCache alloc] initWithMemoryCapacity:512*1024 diskCapacity:10*1024*1024 diskPath:path];
-    }
-    //NSLog(@"cache enabled");
-    
-    //[NSURLCache setSharedURLCache:cache];*/
-}
-
--(void)disableCache
-{
-    //NSLog(@"cache disabled");
-    //[NSURLCache setSharedURLCache:nil];
 }
 
 @end

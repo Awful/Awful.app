@@ -30,8 +30,6 @@ typedef enum {
     NSString *_url;
     
     NSMutableArray *_allRawPosts;
-  
-    AwfulPost *_highlightedPost;
     
     BOOL _isBookmarked;
     int _newPostIndex;
@@ -40,6 +38,7 @@ typedef enum {
     AwfulPageCount *_pages;
     UILabel *_pagesLabel;
     UILabel *_threadTitleLabel;
+    UIButton *_forumButton;
     
     JSBridgeWebView *_webView;
 }
@@ -49,8 +48,6 @@ typedef enum {
 
 @property (nonatomic, retain) NSMutableArray *allRawPosts;
 
-@property (nonatomic, retain) AwfulPost *highlightedPost;
-
 @property BOOL isBookmarked;
 @property int newPostIndex;
 
@@ -58,9 +55,9 @@ typedef enum {
 @property (nonatomic, retain) AwfulPageCount *pages;
 @property (nonatomic, retain) UILabel *pagesLabel;
 @property (nonatomic, retain) UILabel *threadTitleLabel;
+@property (nonatomic, retain) UIButton *forumButton;
 
 @property (nonatomic, retain) JSBridgeWebView *webView;
-
 
 -(id)initWithAwfulThread : (AwfulThread *)thread startAt : (AwfulPageDestinationType)thread_pos;
 -(id)initWithAwfulThread : (AwfulThread *)thread pageNum : (int)page_num;
@@ -71,6 +68,8 @@ typedef enum {
 
 -(void)hardRefresh;
 -(void)setThreadTitle : (NSString *)in_title;
+-(void)tappedTitle : (UITapGestureRecognizer *)tapper;
+-(void)tappedForumButton;
 
 -(void)loadOlderPosts;
 -(void)nextPage;

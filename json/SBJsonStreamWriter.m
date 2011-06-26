@@ -33,7 +33,7 @@
 #import "SBJsonStreamWriter.h"
 #import "SBJsonStreamWriterState.h"
 
-static NSNumber *kNotANumber;
+static NSDecimalNumber *kNotANumber;
 static NSNumber *kTrue;
 static NSNumber *kFalse;
 static NSNumber *kPositiveInfinity;
@@ -81,6 +81,13 @@ static id kStaticStringCache;
         state = [SBJsonStreamWriterStateStart sharedInstance];
     }
 	return self;
+}
+
+- (void)dealloc {
+	self.error = nil;
+    self.state = nil;
+    [stateStack release];
+	[super dealloc];
 }
 
 #pragma mark Methods

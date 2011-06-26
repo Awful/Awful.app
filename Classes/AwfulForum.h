@@ -8,8 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-@class AwfulForum;
-
 @interface AwfulForum : NSObject <NSCoding> {
     NSString *_forumID;
     NSString *_name;

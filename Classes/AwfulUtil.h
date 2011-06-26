@@ -7,18 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "FMDatabase.h"
 #import "AwfulPage.h"
 
 @interface AwfulUtil : NSObject {
 
 }
 
-+(void)initializeDatabase;
-+(FMDatabase *)getDB;
 +(NSString *)getDocsDir;
-+(NSMutableArray *)newChosenForums;
-+(void)saveChosenForums : (NSMutableArray *)forums;
 
 +(NSMutableArray *)newThreadListForForumId : (NSString *)forum_id;
 +(void)saveThreadList : (NSMutableArray *)list forForumId : (NSString *)forum_id;

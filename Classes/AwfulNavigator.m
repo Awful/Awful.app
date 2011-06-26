@@ -83,9 +83,7 @@
     
     [self updateHistoryButtons];
     
-    UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refresh)];
-    self.navigationItem.leftBarButtonItem = refresh;
-    [refresh release];
+    [self swapToRefreshButton];
     
     [self setToolbarItems:[self.toolbar items] animated:YES];
 }

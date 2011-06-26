@@ -54,6 +54,7 @@
     [_title release];
     [_star release];
     [_arrow release];
+    [_section release];
     [super dealloc];
 }
 
