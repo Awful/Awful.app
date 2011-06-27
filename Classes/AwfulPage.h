@@ -55,7 +55,7 @@ typedef enum {
 @property (nonatomic, retain) AwfulPageCount *pages;
 @property (nonatomic, retain) UILabel *pagesLabel;
 @property (nonatomic, retain) UILabel *threadTitleLabel;
-@property (nonatomic, retain) UIButton *forumButton;
+@property (nonatomic, retain) IBOutlet UIButton *forumButton;
 
 @property (nonatomic, retain) JSBridgeWebView *webView;
 
@@ -69,7 +69,7 @@ typedef enum {
 -(void)hardRefresh;
 -(void)setThreadTitle : (NSString *)in_title;
 -(void)tappedTitle : (UITapGestureRecognizer *)tapper;
--(void)tappedForumButton;
+-(IBAction)tappedForumButton;
 
 -(void)loadOlderPosts;
 -(void)nextPage;

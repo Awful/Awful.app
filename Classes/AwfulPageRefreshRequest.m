@@ -52,14 +52,20 @@
         }
     }
     
-    if(self.page.thread.forum.name == nil) {
-        NSArray *breadcrumb_strings = [page_data rawSearch:@"//div[@class='breadcrumbs']"];
-        if([breadcrumb_strings count] > 0) {
-            NSString *bread = [breadcrumb_strings objectAtIndex:0];
-            NSRange bread_range = [bread rangeOfString:@"FYAD"];
-            if(bread_range.location != NSNotFound) {
-                self.page.thread.forum.name = @"FYAD";
+    if(self.page.thread.forum == nil) {
+        NSArray *breadcrumbs = [page_data search:@"//div[@class='breadcrumbs']//a"];
+        NSString *last_forum_id = nil;
+        for(TFHppleElement *element in breadcrumbs) {
+            NSString *src = [element objectForKey:@"href"];
+            NSRange range = [src rangeOfString:@"forumdisplay.php"];
+            if(range.location != NSNotFound) {
+                NSArray *split = [src componentsSeparatedByString:@"="];
+                last_forum_id = [split lastObject];
             }
+        }
+        if(last_forum_id != nil) {
+            AwfulForum *forum = [AwfulForum awfulForumFromID:last_forum_id];
+            self.page.thread.forum = forum;
         }
     }
     

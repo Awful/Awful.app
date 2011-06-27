@@ -17,6 +17,7 @@
 }
 
 +(NSString *)constructPageHTMLFromPosts : (NSMutableArray *)posts pagesLeft : (int)pages_left numOldPosts : (int)num_above;
++(NSString *)getPostActionHTML;
 
 +(NSMutableArray *)newPostsFromThread : (TFHpple *)hpple isFYAD : (BOOL)is_fyad;
 

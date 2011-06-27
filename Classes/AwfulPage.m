@@ -182,23 +182,33 @@ float getWidth()
 }
 -(void)tappedTitle : (UITapGestureRecognizer *)tapper
 {
+    float x = self.view.frame.size.width/2;
+    
     if(self.forumButton == nil) {
-        UIButton *forum_button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        forum_button.frame = CGRectMake(0, 0, 200, 50);
-        [forum_button setTitle:self.thread.forum.name forState:UIControlStateNormal];
-        forum_button.center = CGPointMake(160, 50);
-        [forum_button addTarget:self action:@selector(tappedForumButton) forControlEvents:UIControlEventTouchUpInside];
-        self.forumButton = forum_button;
-        [self.webView addSubview:forum_button];
+        [[NSBundle mainBundle] loadNibNamed:@"AwfulForumButton" owner:self options:nil];
+        [self.forumButton setTitle:self.thread.forum.name forState:UIControlStateNormal];
+        self.forumButton.center = CGPointMake(x, -self.forumButton.frame.size.height/2);
+        [self.webView addSubview:self.forumButton];
+        [UIView animateWithDuration:0.5 animations:^(){
+            self.forumButton.center = CGPointMake(x, self.forumButton.frame.size.height/2);
+        }];
     } else {
-        [self.forumButton removeFromSuperview];
-        self.forumButton = nil;
+        [UIView animateWithDuration:0.5 animations:^(){
+            self.forumButton.center = CGPointMake(x, -self.forumButton.frame.size.height/2);
+        } completion:^(BOOL finished){
+            [self.forumButton removeFromSuperview];
+            self.forumButton = nil;
+        }];
     }
 }
 
--(void)tappedForumButton
+-(IBAction)tappedForumButton
 {
-    
+    if(self.thread.forum != nil) {
+        AwfulThreadList *list = [[AwfulThreadList alloc] initWithAwfulForum:self.thread.forum];
+        loadContentVC(list);
+        [list release];
+    }
 }
 
 -(void)hardRefresh

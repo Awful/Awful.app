@@ -61,9 +61,9 @@ img.avatar {
 }
 
 .quotebutton {
-    width:75px;
-    height:40px;
-    background-color:black;
+    width:45px;
+    height:45px;
+    padding-right:10px;
 }
 
 .postbodymain {

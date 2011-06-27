@@ -450,7 +450,6 @@
         
         self.forumSections = nil;
         self.forumSections = [[[NSMutableArray alloc] init] autorelease];
-        //[self.forumSections removeAllObjects];
         for(AwfulForum *forum in _forums) {
             [self addForumToSectionTree:forum];
         }

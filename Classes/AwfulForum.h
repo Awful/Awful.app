@@ -20,4 +20,7 @@
 @property (nonatomic, retain) NSString *parentForumID;
 @property (nonatomic, retain) NSString *acronym;
 
++(id)awfulForumFromID : (NSString *)forum_id;
++(NSMutableArray *)getForumsList;
+
 @end
