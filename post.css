@@ -6,7 +6,7 @@ html {
 body {
     word-wrap:break-word;
     font-family: Helvetica, Arial, sans-serif;
-    font-size:15px;
+    font-size:14px;
     margin:0px;
     padding:0px;
 }
@@ -39,8 +39,9 @@ img {
 
 .name_date_box {
     padding:7px;
+    padding-right:0px;
     color:white;
-    width:270px;
+    width:200px;
 }
 
 span.username {
@@ -61,18 +62,25 @@ img.avatar {
 }
 
 .quotebutton {
-    width:45px;
-    height:45px;
     padding-right:10px;
+    width:45px;
 }
 
 .postbodymain {
     width:100%;
+    font-size:15px;
+}
+
+.postbodysub {
     padding:5px;
-    padding-bottom:5px;
+}
+
+a {
+    word-wrap:break-word;
 }
 
 .pagesleft {
+    border-top:1px solid black;
     width:100%;
     padding:5px;
     text-align:center;
@@ -90,6 +98,7 @@ img.avatar {
     height:60px;
     font-family:Helvetica;
     font-size:20px;
+    border-bottom:1px solid black;
 }
 
 div.complete_shit {

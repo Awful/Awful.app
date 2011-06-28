@@ -237,6 +237,13 @@
     }
 }
 
+-(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    if([self.navigationController isToolbarHidden] && UIInterfaceOrientationIsPortrait(fromInterfaceOrientation)) {
+        [self tappedThreeTimes:nil];
+    }
+}
+
 #pragma Navigation Controller Delegate
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated
 {

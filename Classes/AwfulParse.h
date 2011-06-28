@@ -18,6 +18,8 @@
 
 +(NSString *)constructPageHTMLFromPosts : (NSMutableArray *)posts pagesLeft : (int)pages_left numOldPosts : (int)num_above;
 +(NSString *)getPostActionHTML;
++(NSString *)getModImgHTML;
++(NSString *)getAdminImgHTML;
 
 +(NSMutableArray *)newPostsFromThread : (TFHpple *)hpple isFYAD : (BOOL)is_fyad;
 
