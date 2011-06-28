@@ -72,7 +72,7 @@
     [self.page setPages:pager];
     [pager release];
     
-    BOOL fyad = [self.page.thread.forum.name isEqualToString:@"FYAD"];
+    BOOL fyad = [self.page.thread.forum.forumID isEqualToString:@"26"];
     NSMutableArray *parsed_posts = [AwfulParse newPostsFromThread:page_data isFYAD:fyad];
     [self.page acceptPosts:parsed_posts];
     

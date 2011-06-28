@@ -67,6 +67,11 @@
     [done release];
 }
 
+-(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
+{
+    return YES;
+}
+
 -(BOOL)shouldReloadOnViewLoad
 {
     return NO;

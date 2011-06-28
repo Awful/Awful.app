@@ -103,7 +103,6 @@
 {
     // Return YES for supported orientations
     return YES;
-    //return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 #pragma mark - Toolbar Items
@@ -240,13 +239,6 @@
     } else {
         [self.navigationController setToolbarHidden:YES animated:YES];
         [self.navigationController setNavigationBarHidden:YES animated:YES];
-    }
-}
-
--(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
-{
-    if([self.navigationController isToolbarHidden] && UIInterfaceOrientationIsPortrait(fromInterfaceOrientation)) {
-        [self tappedThreeTimes:nil];
     }
 }
 

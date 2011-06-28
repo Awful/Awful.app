@@ -22,7 +22,7 @@
 {
     self = [super initWithNibName:@"AwfulPageNav" bundle:[NSBundle mainBundle]];
     if(self) {
-        _page = page;
+        _page = [page retain];
     }
     return self;
 }

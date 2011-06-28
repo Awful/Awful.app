@@ -49,7 +49,7 @@
 						<string key="NSFrame">{{60, 0}, {200, 45}}</string>
 						<reference key="NSSuperview" ref="880232455"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
+						<reference key="NSNextKeyView" ref="22408186"/>
 						<object class="NSColor" key="IBUIBackgroundColor" id="556122690">
 							<int key="NSColorSpace">3</int>
 							<bytes key="NSWhite">MCAwAA</bytes>
@@ -130,6 +130,32 @@
 						<int key="IBUINumberOfLines">2</int>
 						<int key="IBUITextAlignment">1</int>
 					</object>
+					<object class="IBUIButton" id="22408186">
+						<reference key="NSNextResponder" ref="880232455"/>
+						<int key="NSvFlags">292</int>
+						<string key="NSFrame">{{55, -1}, {200, 45}}</string>
+						<reference key="NSSuperview" ref="880232455"/>
+						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView" ref="4386380"/>
+						<bool key="IBUIOpaque">NO</bool>
+						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+						<int key="IBUIContentHorizontalAlignment">0</int>
+						<int key="IBUIContentVerticalAlignment">0</int>
+						<object class="NSFont" key="IBUIFont">
+							<string key="NSName">Helvetica-Bold</string>
+							<double key="NSSize">15</double>
+							<int key="NSfFlags">16</int>
+						</object>
+						<reference key="IBUIHighlightedTitleColor" ref="304150649"/>
+						<object class="NSColor" key="IBUINormalTitleColor">
+							<int key="NSColorSpace">1</int>
+							<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
+						</object>
+						<object class="NSColor" key="IBUINormalTitleShadowColor">
+							<int key="NSColorSpace">3</int>
+							<bytes key="NSWhite">MC41AA</bytes>
+						</object>
+					</object>
 				</object>
 				<string key="NSFrameSize">{320, 44}</string>
 				<reference key="NSSuperview"/>
@@ -140,31 +166,6 @@
 					<bytes key="NSWhite">MAA</bytes>
 				</object>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-			</object>
-			<object class="IBUIButton" id="494192039">
-				<reference key="NSNextResponder"/>
-				<int key="NSvFlags">292</int>
-				<string key="NSFrameSize">{72, 37}</string>
-				<reference key="NSSuperview"/>
-				<bool key="IBUIOpaque">NO</bool>
-				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-				<int key="IBUIContentHorizontalAlignment">0</int>
-				<int key="IBUIContentVerticalAlignment">0</int>
-				<object class="NSFont" key="IBUIFont">
-					<string key="NSName">Helvetica-Bold</string>
-					<double key="NSSize">15</double>
-					<int key="NSfFlags">16</int>
-				</object>
-				<int key="IBUIButtonType">1</int>
-				<reference key="IBUIHighlightedTitleColor" ref="304150649"/>
-				<object class="NSColor" key="IBUINormalTitleColor">
-					<int key="NSColorSpace">1</int>
-					<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
-				</object>
-				<object class="NSColor" key="IBUINormalTitleShadowColor">
-					<int key="NSColorSpace">3</int>
-					<bytes key="NSWhite">MC41AA</bytes>
-				</object>
 			</object>
 		</object>
 		<object class="IBObjectContainer" key="IBDocument.Objects">
@@ -231,6 +232,7 @@
 							<reference ref="383434312"/>
 							<reference ref="4386380"/>
 							<reference ref="850258668"/>
+							<reference ref="22408186"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -251,9 +253,9 @@
 						<reference key="parent" ref="880232455"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">23</int>
-						<reference key="object" ref="494192039"/>
-						<reference key="parent" ref="0"/>
+						<int key="objectID">24</int>
+						<reference key="object" ref="22408186"/>
+						<reference key="parent" ref="880232455"/>
 					</object>
 				</object>
 			</object>
@@ -265,7 +267,7 @@
 					<string>-2.CustomClassName</string>
 					<string>11.IBPluginDependency</string>
 					<string>17.IBPluginDependency</string>
-					<string>23.IBPluginDependency</string>
+					<string>24.IBPluginDependency</string>
 					<string>3.IBPluginDependency</string>
 					<string>7.IBPluginDependency</string>
 				</object>

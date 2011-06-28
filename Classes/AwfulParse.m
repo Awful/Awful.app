@@ -109,7 +109,7 @@
             }
         }
         
-        TFHppleElement *post_id = [post_base searchForSingle:@"//table[@class='post']"];
+        TFHppleElement *post_id = [post_base searchForSingle:@"//table[@class='post']|//table[@class='post ignored']"];
         if(post_id != nil) {
             NSString *post_id_str = [post_id objectForKey:@"id"];
             post.postID = [post_id_str substringFromIndex:4];
@@ -207,13 +207,15 @@
         top = [NSString stringWithFormat:@"<table class='olderposts'><tr><td onclick=tappedOlderPosts()>%@</td></tr></table>", above_str];
     }
         
-    NSString *bottom = [NSString stringWithFormat:@"<table class='pagesleft'><tr><td onclick=tappedBottom()>%@</td></tr></table>", pages_left_str];
+    NSString *bottom = [NSString stringWithFormat:@"<div class='pagesleft' onclick=tappedBottom()>%@</div>", pages_left_str];
     
     NSString *css = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"post" ofType:@"css"] encoding:NSUTF8StringEncoding error:nil];
     
     NSString *js = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"jquery" ofType:@"txt"] encoding:NSUTF8StringEncoding error:nil];
     
-    NSString *html = [NSString stringWithFormat:@"<html><head><script>%@</script><style type='text/css'>%@</style></head><body>%@%@%@</body></html>", js, css, top, combined, bottom];
+    NSString *meta = @"<meta name='viewport' content='width=device-width, minimum-scale=1.0, maximum-scale=1.0'>";
+    
+    NSString *html = [NSString stringWithFormat:@"<html><head>%@<script>%@</script><style type='text/css'>%@</style></head><body>%@%@%@</body></html>", meta, js, css, top, combined, bottom];
     
     return html;
 }

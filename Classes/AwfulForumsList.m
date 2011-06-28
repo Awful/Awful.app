@@ -134,17 +134,10 @@
 }
 */
 
-// Override to allow orientations other than the default portrait orientation.
-/*- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    // Return YES for supported orientations
-    
-    if([AwfulConfig allowRotation:interfaceOrientation]) {
-        AwfulNavController *nav = getnav();
-        [self setToolbarItems:[nav getToolbarItemsForOrientation:interfaceOrientation]];
-        return YES;
-    }
-    return NO;
-}*/
+-(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
+{
+    return YES;
+}
 
 #pragma mark -
 #pragma mark Favorites
