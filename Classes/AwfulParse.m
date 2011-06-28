@@ -42,9 +42,6 @@
         username_info = [NSString stringWithFormat:@"%@&nbsp;%@", [self getModImgHTML], post.authorName];
     }
     
-    NSString *action_img_src = [[NSBundle mainBundle] pathForResource:@"post-action-icon" ofType:@"png"];
-    action_img_src = [action_img_src stringByReplacingOccurrencesOfString:@"/" withString:@"//"];
-    
     NSString *name_avatar_box = [NSString stringWithFormat:@"<table id='%@' class='%@'><tr>%@<td class='name_date_box'><span class='%@'>%@</span><br/><span class='post_date'>Posted on %@</span></td><td></td><td class='quotebutton' onclick=tappedPost('%@')>%@</td></tr></table>", post.postID, userbox_str, avatar_str, user_str, username_info, post.postDate, post.postID, [AwfulParse getPostActionHTML]];
     NSString *parsed_post_body = [AwfulParse parseYouTubes:post_body];
 
@@ -70,7 +67,7 @@
 
 +(NSMutableArray *)newPostsFromThread : (TFHpple *)hpple isFYAD : (BOOL)is_fyad
 {
-    NSArray *post_strings = PerformRawHTMLXPathQuery(hpple.data, @"//table[@class='post']");
+    NSArray *post_strings = PerformRawHTMLXPathQuery(hpple.data, @"//table[@class='post']|//table[@class='post ignored']");
     
     NSMutableArray *parsed_posts = [[NSMutableArray alloc] init];
     NSString *username = getUsername();

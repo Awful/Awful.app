@@ -20,10 +20,11 @@
 
 -(id)initWithAwfulPage : (AwfulPage *)page
 {
-    _page = [page retain];
+    NSString *url_str = [@"http://forums.somethingawful.com/" stringByAppendingString:[page getURLSuffix]];
     
-    NSString *url_str = [@"http://forums.somethingawful.com/" stringByAppendingString:[_page getURLSuffix]];
-    self = [super initWithURL:[NSURL URLWithString:url_str]];
+    if((self = [super initWithURL:[NSURL URLWithString:url_str]])) {
+        _page = [page retain];
+    }
     
     return self;
 }
@@ -104,8 +105,8 @@
     
     AwfulNavigator *nav = getNavigator();
     JSBridgeWebView *web = [[JSBridgeWebView alloc] initWithFrame:nav.view.frame];
+    [self.page setWebView:web];
     [web loadHTMLString:html baseURL:[NSURL URLWithString:@""]];
-    self.page.webView = web;
     [web release];
 
     [parsed_posts release];

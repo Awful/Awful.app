@@ -54,6 +54,12 @@ typedef enum {
     return self;
 }
 
+-(void)dealloc
+{
+    [_page release];
+    [super dealloc];
+}
+
 -(NSString *)getOverallTitle
 {
     return @"Thread Actions";

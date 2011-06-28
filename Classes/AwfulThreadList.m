@@ -517,7 +517,7 @@
             
             AwfulPage *thread_detail = [[AwfulPage alloc] initWithAwfulThread:thread startAt:start];
             loadContentVC(thread_detail);
-            [thread_detail release];  
+            [thread_detail release];
         }
     }
 }

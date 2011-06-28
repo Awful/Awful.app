@@ -35,6 +35,7 @@
     [_postID release];
     [_postDate release];
     [_authorName release];
+    [_avatarURL release];
     [_editedStr release];
     [_formattedHTML release];
     [_rawContent release];

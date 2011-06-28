@@ -41,7 +41,7 @@ typedef enum {
     UILabel *_threadTitleLabel;
     UIButton *_forumButton;
     
-    JSBridgeWebView *_webView;
+    //JSBridgeWebView *_webView;
 }
 
 @property (nonatomic, retain) AwfulThread *thread;
@@ -59,7 +59,7 @@ typedef enum {
 @property (nonatomic, retain) UILabel *threadTitleLabel;
 @property (nonatomic, retain) IBOutlet UIButton *forumButton;
 
-@property (nonatomic, retain) JSBridgeWebView *webView;
+//@property (nonatomic, retain) JSBridgeWebView *webView;
 
 -(id)initWithAwfulThread : (AwfulThread *)thread startAt : (AwfulPageDestinationType)thread_pos;
 -(id)initWithAwfulThread : (AwfulThread *)thread pageNum : (int)page_num;
@@ -75,6 +75,7 @@ typedef enum {
 
 -(void)scrollToSpecifiedPost;
 
+-(void)setWebView : (JSBridgeWebView *)webView;
 -(void)loadOlderPosts;
 -(void)nextPage;
 -(void)prevPage;

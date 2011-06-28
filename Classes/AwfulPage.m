@@ -50,7 +50,7 @@ float getWidth()
 @synthesize url = _url;
 @synthesize isBookmarked = _isBookmarked;
 @synthesize allRawPosts = _allRawPosts;
-@synthesize webView = _webView;
+//@synthesize webView = _webView;
 @synthesize pagesLabel = _pagesLabel;
 @synthesize threadTitleLabel = _threadTitleLabel;
 @synthesize pages = _pages;
@@ -81,8 +81,6 @@ float getWidth()
         _scrollToPostID = nil;
         
         _allRawPosts = [[NSMutableArray alloc] init];
-
-        _webView = nil;
         
         NSString *append;
         switch(thread_pos) {
@@ -122,7 +120,7 @@ float getWidth()
     [_url release];
     [_thread release];
     [_allRawPosts release];
-    [_webView release];
+    //[_webView release];
     [_pagesLabel release];
     [_threadTitleLabel release];
     [_forumButton release];
@@ -134,26 +132,22 @@ float getWidth()
 
 -(void)setWebView:(JSBridgeWebView *)webView;
 {
-    if(webView != _webView) {
-        [_webView release];
-        _webView = [webView retain];
-        
-        UILongPressGestureRecognizer *press = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(heldPost:)];
-        press.delegate = self;
-        press.minimumPressDuration = 0.3;
-        [_webView addGestureRecognizer:press];
-        [press release];
-        
-        AwfulNavigator *nav = getNavigator();
-        UITapGestureRecognizer *three_times = [[UITapGestureRecognizer alloc] initWithTarget:nav action:@selector(tappedThreeTimes:)];
-        three_times.numberOfTapsRequired = 3;
-        three_times.delegate = self;
-        [_webView addGestureRecognizer:three_times];
-        [three_times release];
-        
-        _webView.delegate = self;
-        self.view = _webView;
-    }
+    UILongPressGestureRecognizer *press = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(heldPost:)];
+    press.delegate = self;
+    press.minimumPressDuration = 0.3;
+    [webView addGestureRecognizer:press];
+    [press release];
+    
+    AwfulNavigator *nav = getNavigator();
+    UITapGestureRecognizer *three_times = [[UITapGestureRecognizer alloc] initWithTarget:nav action:@selector(tappedThreeTimes:)];
+    three_times.numberOfTapsRequired = 3;
+    three_times.delegate = self;
+    [webView addGestureRecognizer:three_times];
+    [three_times release];
+    
+    webView.delegate = self;
+    self.view = webView;
+    nav.view = self.view;
 }
 
 -(NSString *)getURLSuffix
@@ -191,7 +185,7 @@ float getWidth()
         [[NSBundle mainBundle] loadNibNamed:@"AwfulForumButton" owner:self options:nil];
         [self.forumButton setTitle:self.thread.forum.name forState:UIControlStateNormal];
         self.forumButton.center = CGPointMake(x, -self.forumButton.frame.size.height/2);
-        [self.webView addSubview:self.forumButton];
+        [self.view addSubview:self.forumButton];
         [UIView animateWithDuration:0.5 animations:^(){
             self.forumButton.center = CGPointMake(x, self.forumButton.frame.size.height/2);
         }];
@@ -246,9 +240,9 @@ float getWidth()
     AwfulNavigator *nav = getNavigator();
     JSBridgeWebView *web = [[JSBridgeWebView alloc] initWithFrame:nav.view.frame];
     [web loadHTMLString:html baseURL:[NSURL URLWithString:@""]];
-    self.webView = web;
+    self.view = web;
     [web release];
-    nav.view = self.webView;
+    nav.view = self.view;
 }
 
 -(void)acceptPosts : (NSMutableArray *)posts
@@ -277,15 +271,15 @@ float getWidth()
 
 -(void)heldPost:(UILongPressGestureRecognizer *)gestureRecognizer
 {    
-    CGPoint p = [gestureRecognizer locationInView:self.webView];
-    NSString *offset_str = [self.webView stringByEvaluatingJavaScriptFromString:@"scrollY"];
+    CGPoint p = [gestureRecognizer locationInView:self.view];
+    NSString *offset_str = [(UIWebView *)self.view stringByEvaluatingJavaScriptFromString:@"scrollY"];
     float offset = [offset_str intValue];
     
     NSString *js_tag_name = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).tagName", p.x, p.y+offset];
-    NSString *tag_name = [self.webView stringByEvaluatingJavaScriptFromString:js_tag_name];
+    NSString *tag_name = [(UIWebView *)self.view stringByEvaluatingJavaScriptFromString:js_tag_name];
     if([tag_name isEqualToString:@"IMG"]) {
         NSString *js_src = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).src", p.x, p.y+offset];
-        NSString *src = [self.webView stringByEvaluatingJavaScriptFromString:js_src];
+        NSString *src = [(UIWebView *)self.view stringByEvaluatingJavaScriptFromString:js_src];
         
         BOOL proceed = YES;
         for(AwfulPost *post in self.allRawPosts) {
@@ -315,7 +309,7 @@ float getWidth()
 {
     if(post_id != nil) {
         NSString *scrolling = [NSString stringWithFormat:@"scrollToID(%@)", post_id];
-        [self.webView stringByEvaluatingJavaScriptFromString:scrolling];
+        [(UIWebView *)self.view stringByEvaluatingJavaScriptFromString:scrolling];
     }
 }
 
@@ -436,7 +430,7 @@ float getWidth()
 
 -(void)scrollToBottom
 {
-    [self.webView stringByEvaluatingJavaScriptFromString:@"window.scrollTo(0, document.body.scrollHeight);"];
+    [(UIWebView *)self.view stringByEvaluatingJavaScriptFromString:@"window.scrollTo(0, document.body.scrollHeight);"];
 }
 
 -(void)scrollToSpecifiedPost
@@ -484,7 +478,10 @@ float getWidth()
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {    
     
+    
     if(navigationType == UIWebViewNavigationTypeLinkClicked) {
+        
+        NSURL *open_url = request.URL;
         
         if([[request.URL host] isEqualToString:@"forums.somethingawful.com"] &&
            [[request.URL lastPathComponent] isEqualToString:@"showthread.php"]) {
@@ -524,12 +521,16 @@ float getWidth()
                     return NO;
                 }
             }
+            
+            
         } else if([[request.URL host] isEqualToString:@"itunes.apple.com"] || [[request.URL host] isEqualToString:@"phobos.apple.com"])  {
             [[UIApplication sharedApplication] openURL:request.URL];
             return NO;
+        } else if([request.URL host] == nil && [[request.URL lastPathComponent] isEqualToString:@"showthread.php"]) {
+            open_url = [NSURL URLWithString:[NSString stringWithFormat:@"http://forums.somethingawful.com/%@", request.URL]];
         }
         
-        OtherWebController *other = [[OtherWebController alloc] initWithURL:request.URL];
+        OtherWebController *other = [[OtherWebController alloc] initWithURL:open_url];
         UINavigationController *other_nav = [[UINavigationController alloc] initWithRootViewController:other];
         other_nav.navigationBar.barStyle = UIBarStyleBlack;
         [other_nav setToolbarHidden:NO];

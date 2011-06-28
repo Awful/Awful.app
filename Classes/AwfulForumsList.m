@@ -383,9 +383,9 @@
 	 */
     
     AwfulForum *forum = [self getForumAtIndexPath:indexPath];
-    AwfulThreadList *detail = [[AwfulThreadList alloc] initWithAwfulForum:forum];
+    AwfulThreadList *detail = [[[AwfulThreadList alloc] initWithAwfulForum:forum] autorelease];
     loadContentVC(detail);
-    [detail release];
+    //[detail release];
 }
 
 #pragma mark -

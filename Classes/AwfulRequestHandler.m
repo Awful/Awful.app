@@ -106,19 +106,6 @@
     NSString *scroll = [request.userInfo objectForKey:@"scrollToBottom"];
     if(scroll != nil) {
         [nav.contentVC scrollToBottom];
-    } else {
-        NSString *scroll_post = [request.userInfo objectForKey:@"scrollToPost"];
-        
-        if(scroll_post != nil) {
-            if([nav.contentVC isMemberOfClass:[AwfulPage class]]) {
-                AwfulPage *page = (AwfulPage *)nav.contentVC;
-                
-                AwfulPageRefreshRequest *ref = [[AwfulPageRefreshRequest alloc] initWithAwfulPage:page];
-                [ref setScrollPostID:scroll_post];
-                loadRequest(ref);
-                [ref release];
-            }
-        }
     }
 }
 
