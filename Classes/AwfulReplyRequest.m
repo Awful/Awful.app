@@ -9,10 +9,23 @@
 #import "AwfulReplyRequest.h"
 #import "AwfulThread.h"
 #import "AwfulNavigator.h"
+#import "AwfulPost.h"
+#import "AwfulPage.h"
+#import "AwfulPageCount.h"
 #import "TFHpple.h"
 #import "NSString+HTML.h"
 
 @implementation CloserFormRequest
+
+@synthesize thread = _thread;
+@synthesize post = _post;
+
+-(void)dealloc
+{
+    [_thread release];
+    [_post release];
+    [super dealloc];
+}
 
 -(void)requestFinished
 {
@@ -20,6 +33,21 @@
     
     AwfulNavigator *nav = getNavigator();
     [nav dismissModalViewControllerAnimated:YES];
+    
+    if(self.thread != nil) {
+        AwfulPage *page = [[AwfulPage alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeNewpost];
+        loadContentVC(page);
+        [page release];
+    } else if(self.post != nil) {
+        AwfulNavigator *nav = getNavigator();
+        if([nav.contentVC isMemberOfClass:[AwfulPage class]]) {
+            AwfulPage *current_page = (AwfulPage *)nav.contentVC;
+            AwfulPage *fresh_page = [[AwfulPage alloc] initWithAwfulThread:current_page.thread pageNum:current_page.pages.currentPage];
+            [fresh_page setScrollToPostID:self.post.postID];
+            loadContentVC(fresh_page);
+            [fresh_page release];
+        }
+    }
 }
 
 @end
@@ -59,6 +87,8 @@
     
     CloserFormRequest *req = [CloserFormRequest requestWithURL:[NSURL URLWithString:@"http://forums.somethingawful.com/newreply.php"]];
     
+    req.thread = self.thread;
+    
     TFHppleElement *formkey_element = [page_data searchForSingle:@"//input[@name='formkey']"];
     TFHppleElement *formcookie_element = [page_data searchForSingle:@"//input[@name='form_cookie']"];
     
@@ -78,11 +108,6 @@
     [req addPostValue:[self.reply stringByEscapingUnicode] forKey:@"message"];
     [req addPostValue:@"yes" forKey:@"parseurl"];
     [req addPostValue:@"Submit Reply" forKey:@"submit"];
-    
-    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:self.userInfo];
-    [dict setObject:[NSNumber numberWithBool:YES] forKey:@"refresh"];
-    
-    req.userInfo = dict;
     
     loadRequestAndWait(req);
 }

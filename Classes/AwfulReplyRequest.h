@@ -10,10 +10,15 @@
 #import "ASIFormDataRequest.h"
 
 @class AwfulThread;
+@class AwfulPost;
 
 @interface CloserFormRequest : ASIFormDataRequest {
-    
+    AwfulThread *_thread;
+    AwfulPost *_post;
 }
+
+@property (nonatomic, retain) AwfulThread *thread;
+@property (nonatomic, retain) AwfulPost *post;
 
 @end
 

@@ -40,8 +40,6 @@
     NSString *raw_s = [[NSString alloc] initWithData:[self responseData] encoding:NSASCIIStringEncoding];
     NSData *converted = [raw_s dataUsingEncoding:NSUTF8StringEncoding];
     
-    self.page.newPostIndex = [AwfulParse getNewPostNumFromURL:[self url]];
-    
     TFHpple *page_data = [[TFHpple alloc] initWithHTMLData:converted];
     [raw_s release];
     
@@ -77,27 +75,32 @@
     NSMutableArray *parsed_posts = [AwfulParse newPostsFromThread:page_data isFYAD:fyad];
     [self.page acceptPosts:parsed_posts];
     
-    AwfulPost *newest_post = [self.page getNewestPost];
+    int new_post_index = [AwfulParse getNewPostNumFromURL:[self url]] - 1;
+    
+    AwfulPost *newest_post = nil;
+    
+    if(new_post_index < [parsed_posts count] && new_post_index >= 0) {
+        newest_post = [parsed_posts objectAtIndex:new_post_index];
+        self.page.scrollToPostID = newest_post.postID;
+    }
     
     int goal_posts_above = [AwfulConfig numReadPostsAbove];
-    
-    NSUInteger posts_above = [self.page.allRawPosts indexOfObject:newest_post];
-    NSMutableArray *visible_posts = [NSMutableArray arrayWithArray:parsed_posts];
     int remove_num_posts = 0;
+    NSMutableArray *visible_posts = [NSMutableArray arrayWithArray:parsed_posts];
     
-    if(posts_above != NSNotFound) {
-        remove_num_posts = MAX(0, posts_above - goal_posts_above);
-        for(int i = 0; i < remove_num_posts; i++) {
-            [visible_posts removeObjectAtIndex:0];
+    if(newest_post != nil) {
+        NSUInteger posts_above = [self.page.allRawPosts indexOfObject:newest_post];
+       
+        if(posts_above != NSNotFound) {
+            remove_num_posts = MAX(0, posts_above - goal_posts_above);
+            for(int i = 0; i < remove_num_posts; i++) {
+                [visible_posts removeObjectAtIndex:0];
+            }
         }
     }
     
     int pages_left = self.page.pages.totalPages - self.page.pages.currentPage;
     NSString *html = [AwfulParse constructPageHTMLFromPosts:visible_posts pagesLeft:pages_left numOldPosts:remove_num_posts];
-    
-    if(self.page.newPostIndex > 0) {
-        html = [html stringByAppendingFormat:@"<script>$(window).bind('load', function() {$.scrollTo('#%@', 200);});</script>", newest_post.postID];
-    }
     
     AwfulNavigator *nav = getNavigator();
     JSBridgeWebView *web = [[JSBridgeWebView alloc] initWithFrame:nav.view.frame];

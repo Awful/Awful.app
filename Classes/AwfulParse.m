@@ -45,7 +45,7 @@
     NSString *action_img_src = [[NSBundle mainBundle] pathForResource:@"post-action-icon" ofType:@"png"];
     action_img_src = [action_img_src stringByReplacingOccurrencesOfString:@"/" withString:@"//"];
     
-    NSString *name_avatar_box = [NSString stringWithFormat:@"<table class='%@'><tr>%@<td class='name_date_box'><span class='%@'>%@</span><br/><span class='post_date'>Posted on %@</span></td><td></td><td class='quotebutton' onclick=tappedPost('%@')>%@</td></tr></table>", userbox_str, avatar_str, user_str, username_info, post.postDate, post.postID, [AwfulParse getPostActionHTML]];
+    NSString *name_avatar_box = [NSString stringWithFormat:@"<table id='%@' class='%@'><tr>%@<td class='name_date_box'><span class='%@'>%@</span><br/><span class='post_date'>Posted on %@</span></td><td></td><td class='quotebutton' onclick=tappedPost('%@')>%@</td></tr></table>", post.postID, userbox_str, avatar_str, user_str, username_info, post.postDate, post.postID, [AwfulParse getPostActionHTML]];
     NSString *parsed_post_body = [AwfulParse parseYouTubes:post_body];
 
     NSString *html = [NSString stringWithFormat:@"%@<div class='postbodymain %@'><div class='postbodysub'>%@</div></div>", name_avatar_box, alt, parsed_post_body];

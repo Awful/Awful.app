@@ -43,6 +43,8 @@
     NSURL *edit_url = [NSURL URLWithString:@"http://forums.somethingawful.com/editpost.php"];
     CloserFormRequest *form = [CloserFormRequest requestWithURL:edit_url];
     
+    form.post = self.post;
+    
     NSString *raw_s = [[NSString alloc] initWithData:[self responseData] encoding:NSASCIIStringEncoding];
     NSData *converted = [raw_s dataUsingEncoding:NSUTF8StringEncoding];
     
@@ -59,10 +61,6 @@
     [form addPostValue:@"Save Changes" forKey:@"submit"];
     [form addPostValue:self.post.postID forKey:@"postid"];
     [form addPostValue:[self.text stringByEscapingUnicode] forKey:@"message"];
-    
-    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:self.userInfo];
-    
-    form.userInfo = dict;
     
     loadRequestAndWait(form);
 }

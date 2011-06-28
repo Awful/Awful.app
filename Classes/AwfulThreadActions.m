@@ -18,11 +18,12 @@
 #import "AwfulVoteActions.h"
 
 typedef enum {
+    AwfulThreadActionScrollToBottom,
     AwfulThreadActionSpecificPage,
     AwfulThreadActionVote,
     AwfulThreadActionReply,
     AwfulThreadActionBookmarks,
-    AwfulThreadActionNextPage,
+    AwfulThreadActionNextPage
 } AwfulThreadAction;
 
 @implementation AwfulThreadActions
@@ -34,6 +35,7 @@ typedef enum {
     if((self=[super init])) {
         _page = [page retain];
         
+        [self.titles addObject:@"Scroll To Bottom"];
         [self.titles addObject:@"Specific Page"];
         [self.titles addObject:@"Vote"];
         [self.titles addObject:@"Reply"];
@@ -63,7 +65,11 @@ typedef enum {
         return;
     }
     
-    if(buttonIndex == AwfulThreadActionSpecificPage) {
+    if(buttonIndex == AwfulThreadActionScrollToBottom) {
+        
+        [self.page scrollToBottom];
+        
+    } else if(buttonIndex == AwfulThreadActionSpecificPage) {
         
         AwfulPageNavController *page_nav = [[AwfulPageNavController alloc] initWithAwfulPage:self.page];
         UIViewController *vc = getRootController();

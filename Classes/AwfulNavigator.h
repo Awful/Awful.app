@@ -25,6 +25,7 @@
 -(void)refresh;
 -(void)stop;
 -(AwfulActions *)getActions;
+-(void)scrollToBottom;
 
 @end
 

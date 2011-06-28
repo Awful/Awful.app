@@ -111,7 +111,13 @@
 -(void)refresh
 {
     [self swapToStopButton];
-    [self.contentVC refresh];
+    
+    if([self.contentVC isMemberOfClass:[AwfulPage class]]) {
+        AwfulPage *page = (AwfulPage *)self.contentVC;
+        [page hardRefresh];
+    } else {
+        [self.contentVC refresh];
+    }
 }
 
 -(void)stop
@@ -230,7 +236,7 @@
 {
     if([self.navigationController isToolbarHidden]) {
         [self.navigationController setToolbarHidden:NO animated:YES];
-        [self.navigationController setNavigationBarHidden:NO animated:NO];
+        [self.navigationController setNavigationBarHidden:NO animated:YES];
     } else {
         [self.navigationController setToolbarHidden:YES animated:YES];
         [self.navigationController setNavigationBarHidden:YES animated:YES];

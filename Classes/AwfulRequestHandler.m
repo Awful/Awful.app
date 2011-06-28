@@ -11,6 +11,8 @@
 #import "MBProgressHUD.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulNavigator.h"
+#import "AwfulPageRefreshRequest.h"
+#import "AwfulPage.h"
 
 @implementation AwfulRequestHandler
 
@@ -93,10 +95,30 @@
             [self hideHud];
         }
     }
+    
+    AwfulNavigator *nav = getNavigator();
+    
     NSString *ref = [request.userInfo objectForKey:@"refresh"];
     if(ref != nil) {
-        AwfulNavigator *nav = getNavigator();
         [nav refresh];
+    }
+    
+    NSString *scroll = [request.userInfo objectForKey:@"scrollToBottom"];
+    if(scroll != nil) {
+        [nav.contentVC scrollToBottom];
+    } else {
+        NSString *scroll_post = [request.userInfo objectForKey:@"scrollToPost"];
+        
+        if(scroll_post != nil) {
+            if([nav.contentVC isMemberOfClass:[AwfulPage class]]) {
+                AwfulPage *page = (AwfulPage *)nav.contentVC;
+                
+                AwfulPageRefreshRequest *ref = [[AwfulPageRefreshRequest alloc] initWithAwfulPage:page];
+                [ref setScrollPostID:scroll_post];
+                loadRequest(ref);
+                [ref release];
+            }
+        }
     }
 }
 

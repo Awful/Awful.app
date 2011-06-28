@@ -48,10 +48,6 @@
     
     NSMutableArray *threads = [AwfulParse newThreadsFromForum:forum_data];
     [forum_data release];
-    for(AwfulThread *t in threads) {
-        // TODO set forum from forumid
-        //t.forumTitle = threadList.forum.name;
-    }
     
     [AwfulUtil saveThreadList:threads forForumId:[threadList getSaveID]];
     

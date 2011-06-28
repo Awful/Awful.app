@@ -578,5 +578,10 @@
     return nil;
 }
 
+-(void)scrollToBottom
+{
+    
+}
+
 @end
 

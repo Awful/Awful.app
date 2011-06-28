@@ -50,13 +50,14 @@ float getWidth()
 @synthesize url = _url;
 @synthesize isBookmarked = _isBookmarked;
 @synthesize allRawPosts = _allRawPosts;
-@synthesize newPostIndex = _newPostIndex;
 @synthesize webView = _webView;
 @synthesize pagesLabel = _pagesLabel;
 @synthesize threadTitleLabel = _threadTitleLabel;
 @synthesize pages = _pages;
 @synthesize delegate = _delegate;
 @synthesize forumButton = _forumButton;
+@synthesize shouldScrollToBottom = _shouldScrollToBottom;
+@synthesize scrollToPostID = _scrollToPostID;
 
 #pragma mark -
 #pragma mark Initialization
@@ -76,11 +77,11 @@ float getWidth()
     if((self = [super initWithNibName:nil bundle:nil])) {
         _thread = [thread retain];
         _pages = nil;
+        _shouldScrollToBottom = NO;
+        _scrollToPostID = nil;
         
         _allRawPosts = [[NSMutableArray alloc] init];
-        
-        _newPostIndex = -1;
-        
+
         _webView = nil;
         
         NSString *append;
@@ -90,6 +91,7 @@ float getWidth()
                 break;
             case AwfulPageDestinationTypeLast:
                 append = @"&goto=lastpost";
+                _shouldScrollToBottom = YES;
                 break;
             case AwfulPageDestinationTypeNewpost:
                 append = @"&goto=newpost";
@@ -125,6 +127,7 @@ float getWidth()
     [_threadTitleLabel release];
     [_forumButton release];
     [_pages release];
+    [_scrollToPostID release];
     
     [super dealloc];
 }
@@ -212,21 +215,20 @@ float getWidth()
 }
 
 -(void)hardRefresh
-{
-    [self.delegate swapToStopButton];
+{    
+    AwfulPageDestinationType dest = AwfulPageDestinationTypeNewpost;
     
-    self.newPostIndex = -1;
-    [self.allRawPosts removeAllObjects];
+    if([self.pages onLastPage]) {
+        dest = AwfulPageDestinationTypeLast;
+    }
     
-    AwfulPageRefreshRequest *ref_req = [[AwfulPageRefreshRequest alloc] initWithAwfulPage:self];
-    loadRequest(ref_req);
-    [ref_req release];
+    AwfulPage *fresh_page = [[AwfulPage alloc] initWithAwfulThread:self.thread startAt:dest];
+    loadContentVC(fresh_page);
+    [fresh_page release];
 }
 
 -(void)refresh
 {    
-    self.newPostIndex = -1;
-    
     AwfulPageRefreshRequest *ref_req = [[AwfulPageRefreshRequest alloc] initWithAwfulPage:self];
     loadRequestAndWait(ref_req);
     [ref_req release];
@@ -234,16 +236,6 @@ float getWidth()
 
 -(void)stop
 {
-}
-
--(AwfulPost *)getNewestPost
-{
-    int index = self.newPostIndex - 1;
-    if(index >= 0 && index < [self.allRawPosts count]) {
-        AwfulPost *post = [self.allRawPosts objectAtIndex:index];
-        return post;
-    }
-    return nil;
 }
 
 -(void)loadOlderPosts
@@ -316,6 +308,14 @@ float getWidth()
             [browser release];
             [photos release];
         }
+    }
+}
+
+-(void)scrollToPost : (NSString *)post_id
+{
+    if(post_id != nil) {
+        NSString *scrolling = [NSString stringWithFormat:@"scrollToID(%@)", post_id];
+        [self.webView stringByEvaluatingJavaScriptFromString:scrolling];
     }
 }
 
@@ -434,6 +434,16 @@ float getWidth()
     return [[[AwfulThreadActions alloc] initWithAwfulPage:self] autorelease];
 }
 
+-(void)scrollToBottom
+{
+    [self.webView stringByEvaluatingJavaScriptFromString:@"window.scrollTo(0, document.body.scrollHeight);"];
+}
+
+-(void)scrollToSpecifiedPost
+{
+    [self scrollToPost:self.scrollToPostID];
+}
+
 #pragma mark JSBBridgeWebDelegate
 
 - (void)webView:(UIWebView*) webview didReceiveJSNotificationWithDictionary:(NSDictionary*) dictionary
@@ -537,6 +547,11 @@ float getWidth()
 
 -(void)webViewDidFinishLoad:(UIWebView *)sender
 {
+    if(self.scrollToPostID != nil) {
+        [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(scrollToSpecifiedPost) userInfo:nil repeats:NO];
+    } else if(self.shouldScrollToBottom) {
+        [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(scrollToBottom) userInfo:nil repeats:NO];
+    }
 }
 
 - (void)webViewDidStartLoad:(UIWebView *)webView

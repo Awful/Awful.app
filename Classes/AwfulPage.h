@@ -32,7 +32,8 @@ typedef enum {
     NSMutableArray *_allRawPosts;
     
     BOOL _isBookmarked;
-    int _newPostIndex;
+    BOOL _shouldScrollToBottom;
+    NSString *_scrollToPostID;
     
     AwfulNavigator *_delegate;
     AwfulPageCount *_pages;
@@ -49,7 +50,8 @@ typedef enum {
 @property (nonatomic, retain) NSMutableArray *allRawPosts;
 
 @property BOOL isBookmarked;
-@property int newPostIndex;
+@property BOOL shouldScrollToBottom;
+@property (nonatomic, retain) NSString *scrollToPostID;
 
 @property (nonatomic, assign) AwfulNavigator *delegate;
 @property (nonatomic, retain) AwfulPageCount *pages;
@@ -71,13 +73,14 @@ typedef enum {
 -(void)tappedTitle : (UITapGestureRecognizer *)tapper;
 -(IBAction)tappedForumButton;
 
+-(void)scrollToSpecifiedPost;
+
 -(void)loadOlderPosts;
 -(void)nextPage;
 -(void)prevPage;
 
 -(void)heldPost:(UILongPressGestureRecognizer *)gestureRecognizer;
-
--(AwfulPost *)getNewestPost;
+-(void)scrollToPost : (NSString *)post_id;
 
 @end
 

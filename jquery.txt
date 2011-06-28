@@ -444,3 +444,8 @@ function tappedPost(postid)
     obj.addObject("postid", postid);
     obj.sendBridgeObject();
 }
+
+function scrollToID(postid)
+{   
+    $.scrollTo($("#"+postid), 200);
+}
