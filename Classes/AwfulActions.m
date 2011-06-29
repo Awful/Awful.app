@@ -42,8 +42,9 @@
     [sheet addButtonWithTitle:@"Cancel"];
     sheet.cancelButtonIndex = [self.titles count];
     
-    AwfulAppDelegate *del = (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
-    [sheet showInView:del.navigationController.view];
+    AwfulNavigator *nav = getNavigator();
+    [nav forceShow];
+    [sheet showFromToolbar:nav.navigationController.toolbar];
     [sheet release];
 }
 

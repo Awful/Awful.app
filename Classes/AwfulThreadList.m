@@ -314,6 +314,11 @@
     return YES;
 }
 
+-(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
+{
+    return YES;
+}
+
 /*
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];

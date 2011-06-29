@@ -68,6 +68,7 @@ typedef enum {
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {    
     if([self isCancelled:buttonIndex]) {
+        [self.delegate setActions:nil];
         return;
     }
     

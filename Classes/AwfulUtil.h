@@ -22,3 +22,4 @@
 
 int getPostsPerPage();
 NSString *getUsername();
+float getWidth();

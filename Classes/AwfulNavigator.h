@@ -68,6 +68,7 @@
 -(IBAction)tappedMore;
 
 -(void)tappedThreeTimes : (UITapGestureRecognizer *)gesture;
+-(void)forceShow;
 
 -(void)callBookmarksRefresh;
 

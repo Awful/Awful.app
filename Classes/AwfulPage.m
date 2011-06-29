@@ -174,11 +174,11 @@
         [self.forumButton setTitle:self.thread.forum.name forState:UIControlStateNormal];
         self.forumButton.center = CGPointMake(x, -self.forumButton.frame.size.height/2);
         [self.view addSubview:self.forumButton];
-        [UIView animateWithDuration:0.5 animations:^(){
+        [UIView animateWithDuration:0.25 animations:^(){
             self.forumButton.center = CGPointMake(x, self.forumButton.frame.size.height/2);
         }];
     } else {
-        [UIView animateWithDuration:0.5 animations:^(){
+        [UIView animateWithDuration:0.25 animations:^(){
             self.forumButton.center = CGPointMake(x, -self.forumButton.frame.size.height/2);
         } completion:^(BOOL finished){
             [self.forumButton removeFromSuperview];
@@ -228,6 +228,7 @@
     AwfulNavigator *nav = getNavigator();
     JSBridgeWebView *web = [[JSBridgeWebView alloc] initWithFrame:nav.view.frame];
     [web loadHTMLString:html baseURL:[NSURL URLWithString:@""]];
+    web.delegate = self;
     self.view = web;
     [web release];
     nav.view = self.view;
@@ -358,11 +359,12 @@
     self.pagesLabel = labels.pagesLabel;
     self.threadTitleLabel = labels.threadTitleLabel;
     [labels release];
-    
-    UIView *label_container = [[UIView alloc] initWithFrame:self.threadTitleLabel.frame];
+        
+    UIView *label_container = [[UIView alloc] initWithFrame:CGRectMake(0, 0, getWidth()-100, 44)];
     [label_container setBackgroundColor:[UIColor clearColor]];
     [label_container addSubview:self.threadTitleLabel];
-    self.threadTitleLabel.frame = CGRectMake(0, 0, self.threadTitleLabel.bounds.size.width, self.threadTitleLabel.bounds.size.height);
+    label_container.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    self.threadTitleLabel.frame = CGRectMake(0, 0, label_container.frame.size.width, label_container.frame.size.height);
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedTitle:)];
     [label_container addGestureRecognizer:tap];

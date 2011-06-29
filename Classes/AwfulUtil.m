@@ -78,3 +78,15 @@ NSString *getUsername()
     AwfulUser *user = nav.user;
     return [user userName];
 }
+
+float getWidth()
+{
+    UIInterfaceOrientation orient = [[UIApplication sharedApplication] statusBarOrientation];
+    float width;
+    if(UIInterfaceOrientationIsPortrait(orient)) {
+        width = 320;
+    } else {
+        width = 480;
+    }
+    return width;
+}

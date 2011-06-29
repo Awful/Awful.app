@@ -268,6 +268,12 @@
     }
 }
 
+-(void)forceShow
+{
+    [self.navigationController setToolbarHidden:NO animated:YES];
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+}
+
 #pragma Navigation Controller Delegate
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
