@@ -607,6 +607,7 @@
 		11C1E97213B2891C008A0BE9 /* AwfulThreadListCells.xib in Resources */ = {isa = PBXBuildFile; fileRef = 11C1E97113B2891C008A0BE9 /* AwfulThreadListCells.xib */; };
 		11DC83BD13BAC6BF00B73903 /* AwfulHelpController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 11DC83BC13BAC6BF00B73903 /* AwfulHelpController.xib */; };
 		11DC83C113BAC8C200B73903 /* AwfulHelpController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DC83C013BAC8C200B73903 /* AwfulHelpController.m */; };
+		11DC83C413BACD7D00B73903 /* AwfulAppThreadRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DC83C313BACD7D00B73903 /* AwfulAppThreadRequest.m */; };
 		1D3623260D0F684500981E51 /* AwfulAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* AwfulAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -1296,6 +1297,8 @@
 		11DC83BC13BAC6BF00B73903 /* AwfulHelpController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AwfulHelpController.xib; sourceTree = "<group>"; };
 		11DC83BF13BAC8C200B73903 /* AwfulHelpController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulHelpController.h; sourceTree = "<group>"; };
 		11DC83C013BAC8C200B73903 /* AwfulHelpController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulHelpController.m; sourceTree = "<group>"; };
+		11DC83C213BACD7D00B73903 /* AwfulAppThreadRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAppThreadRequest.h; sourceTree = "<group>"; };
+		11DC83C313BACD7D00B73903 /* AwfulAppThreadRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAppThreadRequest.m; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* AwfulAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* AwfulAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAppDelegate.m; sourceTree = "<group>"; };
@@ -2048,6 +2051,8 @@
 				10E38BD912BEC0FF002DBA3F /* AwfulUserInfoRequest.m */,
 				1185088113A8533F00FCACF8 /* AwfulForumListRefreshRequest.h */,
 				1185088213A8533F00FCACF8 /* AwfulForumListRefreshRequest.m */,
+				11DC83C213BACD7D00B73903 /* AwfulAppThreadRequest.h */,
+				11DC83C313BACD7D00B73903 /* AwfulAppThreadRequest.m */,
 			);
 			name = AwfulRequests;
 			sourceTree = "<group>";
@@ -2906,6 +2911,7 @@
 				1185922713B528370036E607 /* AwfulPostActions.m in Sources */,
 				1185922A13B554F70036E607 /* AwfulThreadListActions.m in Sources */,
 				11DC83C113BAC8C200B73903 /* AwfulHelpController.m in Sources */,
+				11DC83C413BACD7D00B73903 /* AwfulAppThreadRequest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -41,6 +41,7 @@
 -(void)tappedLogin;
 -(void)tappedLogout;
 -(void)tappedHelp;
+-(void)tappedAwfulAppThread;
 -(void)reloadUserName;
 
 @end

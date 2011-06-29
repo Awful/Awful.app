@@ -11,6 +11,7 @@
 #import "AwfulUser.h"
 #import "AwfulNavigator.h"
 #import "AwfulHelpController.h"
+#import "AwfulAppThreadRequest.h"
 
 static NSString *CELL_IDENT_BUTTON = @"ButtonCell";
 static NSString *CELL_IDENT_LABEL = @"LabelCell";
@@ -127,7 +128,7 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-    return 2;
+    return 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -136,7 +137,7 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
     if(isLoggedIn() && section == 0) {
         return 2;
     }
-    if(section == 1) {
+    if(section == 1 || section == 2) {
         return 1;
     }
     return 1;
@@ -174,10 +175,10 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
             }
         } else if(indexPath.section == 1) {
             [button_cell setSelector:@selector(tappedHelp) withText:@"Quick FAQ"];
+        } else if(indexPath.section == 2) {
+            [button_cell setSelector:@selector(tappedAwfulAppThread) withText:@"Awful App Thread"];
         }
     }
-    
-    // Configure the cell...
     
     return cell;
 }
@@ -279,6 +280,13 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
     [help release];
 }
 
+-(void)tappedAwfulAppThread
+{
+    AwfulAppThreadRequest *app = [[AwfulAppThreadRequest alloc] initCustom];
+    loadRequestAndWait(app);
+    [app release];
+}
+
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if(buttonIndex == 1) {
@@ -331,7 +339,7 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
         return CELL_IDENT_BUTTON;
     }
     
-    if(indexPath.section == 1) {
+    if(indexPath.section == 1 || indexPath.section == 2) {
         return CELL_IDENT_BUTTON;
     }
     
