@@ -165,10 +165,7 @@
         [self addSubview:self.prevButton];
     }
     
-    [self.nextButton removeFromSuperview];
-    if(count == 40) {
-        [self addSubview:self.nextButton];
-    }
+    [self addSubview:self.nextButton];
 }
 
 @end
