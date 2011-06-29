@@ -32,25 +32,12 @@
 #import "MWPhoto.h"
 #import "MWPhotoBrowser.h"
 
-float getWidth()
-{
-    UIInterfaceOrientation orient = [[UIApplication sharedApplication] statusBarOrientation];
-    float post_width;
-    if(UIInterfaceOrientationIsPortrait(orient)) {
-        post_width = 320;
-    } else {
-        post_width = 480;
-    }
-    return post_width;
-}
-
 @implementation AwfulPage
 
 @synthesize thread = _thread;
 @synthesize url = _url;
 @synthesize isBookmarked = _isBookmarked;
 @synthesize allRawPosts = _allRawPosts;
-//@synthesize webView = _webView;
 @synthesize pagesLabel = _pagesLabel;
 @synthesize threadTitleLabel = _threadTitleLabel;
 @synthesize pages = _pages;
@@ -58,6 +45,7 @@ float getWidth()
 @synthesize forumButton = _forumButton;
 @synthesize shouldScrollToBottom = _shouldScrollToBottom;
 @synthesize scrollToPostID = _scrollToPostID;
+@synthesize adHTML = _adHTML;
 
 #pragma mark -
 #pragma mark Initialization
@@ -120,12 +108,12 @@ float getWidth()
     [_url release];
     [_thread release];
     [_allRawPosts release];
-    //[_webView release];
     [_pagesLabel release];
     [_threadTitleLabel release];
     [_forumButton release];
     [_pages release];
     [_scrollToPostID release];
+    [_adHTML release];
     
     [super dealloc];
 }
@@ -235,7 +223,7 @@ float getWidth()
 -(void)loadOlderPosts
 {
     int pages_left = self.pages.totalPages - self.pages.currentPage;
-    NSString *html = [AwfulParse constructPageHTMLFromPosts:self.allRawPosts pagesLeft:pages_left numOldPosts:0];
+    NSString *html = [AwfulParse constructPageHTMLFromPosts:self.allRawPosts pagesLeft:pages_left numOldPosts:0 adHTML:self.adHTML];
     
     AwfulNavigator *nav = getNavigator();
     JSBridgeWebView *web = [[JSBridgeWebView alloc] initWithFrame:nav.view.frame];

@@ -79,6 +79,10 @@ a {
     word-wrap:break-word;
 }
 
+.ad {
+    text-align:center;
+}
+
 .pagesleft {
     border-top:1px solid black;
     text-align:center;

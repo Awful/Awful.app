@@ -180,7 +180,7 @@
     return parsed_posts;
 }
 
-+(NSString *)constructPageHTMLFromPosts : (NSMutableArray *)posts pagesLeft : (int)pages_left numOldPosts : (int)num_above
++(NSString *)constructPageHTMLFromPosts : (NSMutableArray *)posts pagesLeft : (int)pages_left numOldPosts : (int)num_above adHTML : (NSString *)adHTML
 {
     NSString *combined = @"";
     for(AwfulPost *post in posts) {
@@ -215,7 +215,7 @@
     
     NSString *meta = @"<meta name='viewport' content='width=device-width, minimum-scale=1.0, maximum-scale=1.0'>";
     
-    NSString *html = [NSString stringWithFormat:@"<html><head>%@<script>%@</script><style type='text/css'>%@</style></head><body>%@%@%@</body></html>", meta, js, css, top, combined, bottom];
+    NSString *html = [NSString stringWithFormat:@"<html><head>%@<script>%@</script><style type='text/css'>%@</style></head><body>%@%@%@%@</body></html>", meta, js, css, top, combined, adHTML, bottom];
     
     return html;
 }
@@ -450,11 +450,7 @@
         return nil;
     }
     
-    NSMutableString *web_str = [[NSMutableString alloc] initWithFormat:@"<body style='margin:0px;padding:0px;'>%@</body>", [raws objectAtIndex:0]];
-    [web_str replaceOccurrencesOfString:@"width=\"468\"" withString:@"width=\"100%\"" options:0 range:NSMakeRange(0, [web_str length])];
-    [web_str replaceOccurrencesOfString:@"height=\"60\"" withString:@"height=\"100%\"" options:0 range:NSMakeRange(0, [web_str length])];
-    
-    return [web_str autorelease];
+    return [NSString stringWithFormat:@"<div class='ad'>%@</div>", [raws objectAtIndex:0]];
 }
 
 +(int)getNewPostNumFromURL : (NSURL *)url

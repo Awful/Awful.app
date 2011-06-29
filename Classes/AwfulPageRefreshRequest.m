@@ -100,8 +100,10 @@
         }
     }
     
+    self.page.adHTML = [AwfulParse getAdHTMLFromData:page_data];
+    
     int pages_left = self.page.pages.totalPages - self.page.pages.currentPage;
-    NSString *html = [AwfulParse constructPageHTMLFromPosts:visible_posts pagesLeft:pages_left numOldPosts:remove_num_posts];
+    NSString *html = [AwfulParse constructPageHTMLFromPosts:visible_posts pagesLeft:pages_left numOldPosts:remove_num_posts adHTML:self.page.adHTML];
     
     AwfulNavigator *nav = getNavigator();
     JSBridgeWebView *web = [[JSBridgeWebView alloc] initWithFrame:nav.view.frame];

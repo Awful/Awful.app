@@ -93,19 +93,15 @@
         self.unreadButton.alpha = 0.5;
     }
     
-    // size and positioning of labels
-    float title_width = getWidth() - 100;
-    if(thread.totalUnreadPosts == -1) {
-        title_width = getWidth() - 40;
-    }
-    
-    CGSize title_size = [thread.title sizeWithFont:self.threadTitleLabel.font constrainedToSize:CGSizeMake(title_width, 60)];
-    self.threadTitleLabel.frame = CGRectMake(20, 0, title_width, 60);
+    // size and positioning of labels    
+    CGSize title_size = [thread.title sizeWithFont:self.threadTitleLabel.font constrainedToSize:CGSizeMake(self.frame.size.width-100, 60)];
+    //self.threadTitleLabel.frame = CGRectMake(20, 0, title_width, 60);
     
     CGSize unread_size = [unread_str sizeWithFont:self.unreadButton.titleLabel.font];
-    self.unreadButton.frame = CGRectMake(getWidth()-30-unread_size.width, THREAD_HEIGHT/2 - 10, unread_size.width+20, 20);
+    float unread_x = self.frame.size.width-30-unread_size.width;
+    self.unreadButton.frame = CGRectMake(unread_x, THREAD_HEIGHT/2 - 10, unread_size.width+20, 20);
     
-    self.pagesLabel.frame = CGRectMake(20, (THREAD_HEIGHT-title_size.height)/2 + title_size.height - 4, 100, 10);
+    //self.pagesLabel.frame = CGRectMake(20, (THREAD_HEIGHT-title_size.height)/2 + title_size.height-4, 100, 10);
     
     // Stickied?
     [self.sticky removeFromSuperview];

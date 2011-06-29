@@ -16,7 +16,7 @@
 
 }
 
-+(NSString *)constructPageHTMLFromPosts : (NSMutableArray *)posts pagesLeft : (int)pages_left numOldPosts : (int)num_above;
++(NSString *)constructPageHTMLFromPosts : (NSMutableArray *)posts pagesLeft : (int)pages_left numOldPosts : (int)num_above adHTML : (NSString *)adHTML;
 +(NSString *)getPostActionHTML;
 +(NSString *)getModImgHTML;
 +(NSString *)getAdminImgHTML;
