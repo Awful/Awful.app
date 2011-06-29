@@ -62,7 +62,6 @@
 @synthesize favorites = _favorites;
 @synthesize forums = _forums;
 @synthesize forumSections = _forumSections;
-@synthesize goldmine = _goldmine;
 @synthesize forumCell = _forumCell;
 @synthesize headerView = _headerView;
 @synthesize refreshCell = _refreshCell;
@@ -170,6 +169,10 @@
 
 -(void)toggleFavoriteForForumSection : (AwfulForumSection *)section
 {    
+    if(!isLoggedIn()) {
+        return;
+    }
+    
     if([self isAwfulForumSectionFavorited:section]) {
         NSUInteger fav_index = NSNotFound;
         for(AwfulForum *forum in self.favorites) {
@@ -223,7 +226,7 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 
     if(!isLoggedIn()) {
-        return 1;
+        return 2;
     }
     
     // Return the number of sections.
@@ -235,6 +238,10 @@
     if(section == 0) {
         return [self.favorites count];
     } else if([self isRefreshSection:[NSIndexPath indexPathForRow:0 inSection:section]]) {
+        return 1;
+    }
+    
+    if(!isLoggedIn()) {
         return 1;
     }
     
@@ -561,6 +568,18 @@
     } else if(path.section == [self.forumSections count] + 1) {
         // refresh button
         return nil;
+    }
+    
+    if(!isLoggedIn()) {
+        if(path.section == 1) {
+            AwfulForum *goldmine = [[AwfulForum alloc] init];
+            goldmine.forumID = @"21";
+            goldmine.name = @"Comedy Goldmine";
+            AwfulForumSection *goldmine_section = [[AwfulForumSection alloc] init];
+            goldmine_section.forum = goldmine;
+            [goldmine release];
+            return [goldmine_section autorelease];
+        }
     }
     
     AwfulForumSection *big_section = [self getForumSectionAtSection:path.section];

@@ -35,7 +35,6 @@
     NSMutableArray *_favorites;
     NSMutableArray *_forums;
     NSMutableArray *_forumSections;
-    AwfulForum *_goldmine;
     AwfulForumCell *_forumCell;
     AwfulForumHeader *_headerView;
     UITableViewCell *_refreshCell;
@@ -44,7 +43,6 @@
 @property (nonatomic, retain) NSMutableArray *favorites;
 @property (nonatomic, retain) NSMutableArray *forums;
 @property (nonatomic, retain) NSMutableArray *forumSections;
-@property (nonatomic, retain) AwfulForum *goldmine;
 @property (nonatomic, retain) IBOutlet AwfulForumCell *forumCell;
 @property (nonatomic, retain) IBOutlet AwfulForumHeader *headerView;
 @property (nonatomic, retain) IBOutlet UITableViewCell *refreshCell;

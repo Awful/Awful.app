@@ -46,10 +46,6 @@
             
             AwfulNavigator *nav = getNavigator();
             [nav.requestHandler loadAllWithMessage:@"Loading Username..." forRequests:name_req, settings_req, nil];
-            //[nav.requestHandler.queue addOperation:name_req];
-            //loadRequestAndWait(settings_req);
-            //[nav.requestHandler.queue addOperation:settings_req];
-            //[nav.requestHandler.queue go];
             [name_req release];
             [settings_req release];
         }

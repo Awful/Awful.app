@@ -10,12 +10,12 @@
 #import "AwfulUser.h"
 
 @interface AwfulUserNameRequest : ASIHTTPRequest {
-    AwfulUser *user;
+    AwfulUser *_user;
 }
 
 @property (nonatomic, retain) AwfulUser *user;
 
--(id)initWithAwfulUser : (AwfulUser *)in_user;
+-(id)initWithAwfulUser : (AwfulUser *)user;
 
 @end
 

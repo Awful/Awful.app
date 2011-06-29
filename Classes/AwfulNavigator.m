@@ -29,6 +29,7 @@
 @synthesize backButton = _backButton;
 @synthesize forwardButton = _forwardButton;
 @synthesize actionButton = _actionButton;
+@synthesize welcomeMessage = _welcomeMessage;
 
 -(id)initWithCoder:(NSCoder *)aDecoder
 {
@@ -82,10 +83,17 @@
     [super viewDidLoad];
     
     [self updateHistoryButtons];
-    
     [self swapToRefreshButton];
     
     [self setToolbarItems:[self.toolbar items] animated:YES];
+    
+    if(isLoggedIn()) {
+        self.welcomeMessage.text = @"";
+        [self tappedBookmarks];
+    } else {
+        self.welcomeMessage.text = @"Tap '...' below to log in.";
+        [self tappedMore];
+    }
 }
 
 - (void)viewDidUnload
@@ -97,6 +105,14 @@
     self.backButton = nil;
     self.forwardButton = nil;
     self.actionButton = nil;
+    self.welcomeMessage = nil;
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    if(isLoggedIn()) {
+        self.welcomeMessage.text = @"";
+    }
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -143,6 +159,10 @@
 {
     self.backButton.enabled = [self.historyManager isBackEnabled];
     self.forwardButton.enabled = [self.historyManager isForwardEnabled];
+    
+    if(self.contentVC == nil) {
+        self.actionButton.enabled = NO;
+    }
 }
 
 -(IBAction)tappedBack
@@ -245,8 +265,10 @@
 #pragma Navigation Controller Delegate
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
-    if(viewController == self) {
-        self.view = [self.contentVC getView];
+    if(viewController == self && self.contentVC != nil) {
+        if([self.navigationController.viewControllers count] == 1) {
+            self.view = [self.contentVC getView];
+        }
     }
 }
 

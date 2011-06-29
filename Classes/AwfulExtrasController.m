@@ -50,8 +50,6 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
 - (id)init
 {
     if((self=[super initWithStyle:UITableViewStyleGrouped])) {
-        AwfulNavigator *nav = getNavigator();
-        [nav.user addObserver:self forKeyPath:@"userName" options:NSKeyValueObservingOptionNew context:nil];
         self.title = @"Awful App";
     }
     return self;
@@ -217,24 +215,22 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
 
 #pragma mark - User Name Loading
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+-(void)reloadUserName
 {
-    if([keyPath isEqualToString:@"userName"]) {
-        NSIndexPath *login_path = [self getIndexPathForLoggedInCell];
-        NSIndexPath *logout_path = [NSIndexPath indexPathForRow:1 inSection:0];
-        
-        [self.tableView beginUpdates];
-        
-        [self.tableView 
-         reloadRowsAtIndexPaths:[NSArray arrayWithObject:login_path] 
-         withRowAnimation:UITableViewRowAnimationFade];
-        
-        [self.tableView
-         insertRowsAtIndexPaths:[NSArray arrayWithObject:logout_path] 
-         withRowAnimation:UITableViewRowAnimationTop];
-        
-        [self.tableView endUpdates];
-    }
+    NSIndexPath *login_path = [self getIndexPathForLoggedInCell];
+    NSIndexPath *logout_path = [NSIndexPath indexPathForRow:1 inSection:0];
+    
+    [self.tableView beginUpdates];
+    
+    [self.tableView 
+     reloadRowsAtIndexPaths:[NSArray arrayWithObject:login_path] 
+     withRowAnimation:UITableViewRowAnimationFade];
+    
+    [self.tableView
+     insertRowsAtIndexPaths:[NSArray arrayWithObject:logout_path] 
+     withRowAnimation:UITableViewRowAnimationTop];
+    
+    [self.tableView endUpdates];
 }
 
 #pragma mark - Table view delegate

@@ -39,6 +39,7 @@
     UIBarButtonItem *_backButton;
     UIBarButtonItem *_forwardButton;
     UIBarButtonItem *_actionButton;
+    UILabel *_welcomeMessage;
 }
 
 @property (nonatomic, retain) IBOutlet UIToolbar *toolbar;
@@ -50,6 +51,7 @@
 @property (nonatomic, retain) IBOutlet UIBarButtonItem *backButton;
 @property (nonatomic, retain) IBOutlet UIBarButtonItem *forwardButton;
 @property (nonatomic, retain) IBOutlet UIBarButtonItem *actionButton;
+@property (nonatomic, retain) IBOutlet UILabel *welcomeMessage;
 
 -(void)loadContentVC : (id<AwfulNavigatorContent>)content;
 
