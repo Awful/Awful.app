@@ -605,6 +605,8 @@
 		11A6CE8313B1489C00AADE7B /* AwfulNavigatorLabels.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A6CE8213B1489C00AADE7B /* AwfulNavigatorLabels.m */; };
 		11C1E95E13B26657008A0BE9 /* AwfulNavigatorLabels.xib in Resources */ = {isa = PBXBuildFile; fileRef = 11C1E95D13B26657008A0BE9 /* AwfulNavigatorLabels.xib */; };
 		11C1E97213B2891C008A0BE9 /* AwfulThreadListCells.xib in Resources */ = {isa = PBXBuildFile; fileRef = 11C1E97113B2891C008A0BE9 /* AwfulThreadListCells.xib */; };
+		11DC83BD13BAC6BF00B73903 /* AwfulHelpController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 11DC83BC13BAC6BF00B73903 /* AwfulHelpController.xib */; };
+		11DC83C113BAC8C200B73903 /* AwfulHelpController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DC83C013BAC8C200B73903 /* AwfulHelpController.m */; };
 		1D3623260D0F684500981E51 /* AwfulAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* AwfulAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -1291,6 +1293,9 @@
 		11A6CE8213B1489C00AADE7B /* AwfulNavigatorLabels.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNavigatorLabels.m; sourceTree = "<group>"; };
 		11C1E95D13B26657008A0BE9 /* AwfulNavigatorLabels.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AwfulNavigatorLabels.xib; sourceTree = "<group>"; };
 		11C1E97113B2891C008A0BE9 /* AwfulThreadListCells.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AwfulThreadListCells.xib; sourceTree = "<group>"; };
+		11DC83BC13BAC6BF00B73903 /* AwfulHelpController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AwfulHelpController.xib; sourceTree = "<group>"; };
+		11DC83BF13BAC8C200B73903 /* AwfulHelpController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulHelpController.h; sourceTree = "<group>"; };
+		11DC83C013BAC8C200B73903 /* AwfulHelpController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulHelpController.m; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* AwfulAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* AwfulAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAppDelegate.m; sourceTree = "<group>"; };
@@ -2080,6 +2085,9 @@
 				1165DBB613B11EF900AA8010 /* AwfulExtrasController.h */,
 				1165DBB713B11EF900AA8010 /* AwfulExtrasController.m */,
 				1165DBB913B11FC600AA8010 /* AwfulExtrasCells.xib */,
+				11DC83BF13BAC8C200B73903 /* AwfulHelpController.h */,
+				11DC83C013BAC8C200B73903 /* AwfulHelpController.m */,
+				11DC83BC13BAC6BF00B73903 /* AwfulHelpController.xib */,
 			);
 			name = Extras;
 			sourceTree = "<group>";
@@ -2811,6 +2819,7 @@
 				1185923613B93F3B0036E607 /* post-action-icon.png in Resources */,
 				1185923913B9425C0036E607 /* star_admin.gif in Resources */,
 				1185923A13B9425C0036E607 /* star_moderator.gif in Resources */,
+				11DC83BD13BAC6BF00B73903 /* AwfulHelpController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2896,6 +2905,7 @@
 				1185922413B51F360036E607 /* JSBridgeWebView.m in Sources */,
 				1185922713B528370036E607 /* AwfulPostActions.m in Sources */,
 				1185922A13B554F70036E607 /* AwfulThreadListActions.m in Sources */,
+				11DC83C113BAC8C200B73903 /* AwfulHelpController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

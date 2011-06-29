@@ -101,7 +101,7 @@
     float unread_x = self.frame.size.width-30-unread_size.width;
     self.unreadButton.frame = CGRectMake(unread_x, THREAD_HEIGHT/2 - 10, unread_size.width+20, 20);
     
-    //self.pagesLabel.frame = CGRectMake(20, (THREAD_HEIGHT-title_size.height)/2 + title_size.height-4, 100, 10);
+    self.pagesLabel.frame = CGRectMake(20, (THREAD_HEIGHT-title_size.height)/2 + title_size.height-4, 100, 10);
     
     // Stickied?
     [self.sticky removeFromSuperview];

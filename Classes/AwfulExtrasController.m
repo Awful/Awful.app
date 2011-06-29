@@ -10,6 +10,7 @@
 #import "AwfulLoginController.h"
 #import "AwfulUser.h"
 #import "AwfulNavigator.h"
+#import "AwfulHelpController.h"
 
 static NSString *CELL_IDENT_BUTTON = @"ButtonCell";
 static NSString *CELL_IDENT_LABEL = @"LabelCell";
@@ -126,14 +127,17 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-    return 1;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    if(isLoggedIn()) {
+    if(isLoggedIn() && section == 0) {
         return 2;
+    }
+    if(section == 1) {
+        return 1;
     }
     return 1;
 }
@@ -162,10 +166,14 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
     
     if(ident == CELL_IDENT_BUTTON) {
         AwfulButtonCell *button_cell = (AwfulButtonCell *)cell;
-        if(indexPath.row == 0) {
-            [button_cell setSelector:@selector(tappedLogin) withText:@"Login"];
-        } else if(indexPath.row == 1) {
-            [button_cell setSelector:@selector(tappedLogout) withText:@"Logout"];
+        if(indexPath.section == 0) {
+            if(indexPath.row == 0) {
+                [button_cell setSelector:@selector(tappedLogin) withText:@"Login"];
+            } else if(indexPath.row == 1) {
+                [button_cell setSelector:@selector(tappedLogout) withText:@"Logout"];
+            }
+        } else if(indexPath.section == 1) {
+            [button_cell setSelector:@selector(tappedHelp) withText:@"Quick FAQ"];
         }
     }
     
@@ -264,6 +272,13 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
     [alert release];
 }
 
+-(void)tappedHelp
+{
+    AwfulHelpController *help = [[AwfulHelpController alloc] init];
+    [self.navigationController pushViewController:help animated:YES];
+    [help release];
+}
+
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if(buttonIndex == 1) {
@@ -315,6 +330,11 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
     if(indexPath.section == 0 && indexPath.row == 1) {
         return CELL_IDENT_BUTTON;
     }
+    
+    if(indexPath.section == 1) {
+        return CELL_IDENT_BUTTON;
+    }
+    
     return nil;
 }
 

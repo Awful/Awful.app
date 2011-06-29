@@ -40,6 +40,7 @@
 -(NSString *)cellIdentifierForIndexPath : (NSIndexPath *)indexPath;
 -(void)tappedLogin;
 -(void)tappedLogout;
+-(void)tappedHelp;
 -(void)reloadUserName;
 
 @end
