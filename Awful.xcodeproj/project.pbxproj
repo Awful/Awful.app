@@ -555,10 +555,7 @@
 		11099033134A5EDF0013444C /* UIImageViewTap.m in Sources */ = {isa = PBXBuildFile; fileRef = 1109902B134A5EDF0013444C /* UIImageViewTap.m */; };
 		11099034134A5EDF0013444C /* UIViewTap.m in Sources */ = {isa = PBXBuildFile; fileRef = 1109902D134A5EDF0013444C /* UIViewTap.m */; };
 		11099035134A5EDF0013444C /* ZoomingScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1109902F134A5EDF0013444C /* ZoomingScrollView.m */; };
-		11099065134B86850013444C /* PullRefreshTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11099063134B86850013444C /* PullRefreshTableViewController.m */; };
 		11099067134B86FD0013444C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11099066134B86FC0013444C /* QuartzCore.framework */; };
-		1109906A134B8C370013444C /* grayArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 11099068134B8C370013444C /* grayArrow.png */; };
-		1109906B134B8C370013444C /* grayArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11099069134B8C370013444C /* grayArrow@2x.png */; };
 		11099077134BA6860013444C /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 11099076134BA6860013444C /* MBProgressHUD.m */; };
 		11099079134BAC190013444C /* 37x-Checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 11099078134BAC190013444C /* 37x-Checkmark.png */; };
 		111386C81343A64000C33617 /* AwfulHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = 111386C71343A64000C33617 /* AwfulHistory.m */; };
@@ -1211,11 +1208,7 @@
 		1109902D134A5EDF0013444C /* UIViewTap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UIViewTap.m; path = MWPhotoBrowser/UIViewTap.m; sourceTree = "<group>"; };
 		1109902E134A5EDF0013444C /* ZoomingScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZoomingScrollView.h; path = MWPhotoBrowser/ZoomingScrollView.h; sourceTree = "<group>"; };
 		1109902F134A5EDF0013444C /* ZoomingScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ZoomingScrollView.m; path = MWPhotoBrowser/ZoomingScrollView.m; sourceTree = "<group>"; };
-		11099062134B86850013444C /* PullRefreshTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PullRefreshTableViewController.h; sourceTree = "<group>"; };
-		11099063134B86850013444C /* PullRefreshTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PullRefreshTableViewController.m; sourceTree = "<group>"; };
 		11099066134B86FC0013444C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		11099068134B8C370013444C /* grayArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grayArrow.png; sourceTree = "<group>"; };
-		11099069134B8C370013444C /* grayArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "grayArrow@2x.png"; sourceTree = "<group>"; };
 		11099075134BA6860013444C /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		11099076134BA6860013444C /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		11099078134BAC190013444C /* 37x-Checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "37x-Checkmark.png"; sourceTree = "<group>"; };
@@ -1470,13 +1463,6 @@
 				10D34F96128F40920026C7C2 /* Reachability.m */,
 			);
 			name = Classes;
-			sourceTree = "<group>";
-		};
-		10E38BC212BEC0B3002DBA3F /* xibs */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = xibs;
 			sourceTree = "<group>";
 		};
 		10E38EED12C2CAE0002DBA3F /* English.lproj */ = {
@@ -2013,17 +1999,6 @@
 			name = MWPhotoBrowser;
 			sourceTree = "<group>";
 		};
-		11099060134B86850013444C /* PullToRefresh */ = {
-			isa = PBXGroup;
-			children = (
-				11099068134B8C370013444C /* grayArrow.png */,
-				11099069134B8C370013444C /* grayArrow@2x.png */,
-				11099062134B86850013444C /* PullRefreshTableViewController.h */,
-				11099063134B86850013444C /* PullRefreshTableViewController.m */,
-			);
-			path = PullToRefresh;
-			sourceTree = "<group>";
-		};
 		11099074134BA6860013444C /* MBProgressHUD */ = {
 			isa = PBXGroup;
 			children = (
@@ -2217,14 +2192,13 @@
 				10D34F7E128F405C0026C7C2 /* ASIHTTP */,
 				11884DE81358D68600ADDA45 /* mwaterfall-MWFeedParser-ea43013 */,
 				11099074134BA6860013444C /* MBProgressHUD */,
-				11099060134B86850013444C /* PullToRefresh */,
 				11099023134A5E760013444C /* MWPhotoBrowser */,
 				10913D6812D004A4007583AC /* arashpayan-appirater-776ce19 */,
 				10E38EED12C2CAE0002DBA3F /* English.lproj */,
+				107CF8C611FF54FE007C16F4 /* parser */,
 				10E38D7412C27FFF002DBA3F /* CrashReportSender.h */,
 				10E38D7512C27FFF002DBA3F /* CrashReportSender.m */,
 				116B299B139C3D7200984955 /* FlurryAPI.h */,
-				107CF8C611FF54FE007C16F4 /* parser */,
 				28A0AB4B0D9B1048005BE974 /* Awful_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 				109CD8171204F21700A778B5 /* post.css */,
@@ -2238,7 +2212,6 @@
 			children = (
 				1165DBAB13B0196000AA8010 /* forumslist */,
 				116B29A0139C3F0600984955 /* README */,
-				10E38BC212BEC0B3002DBA3F /* xibs */,
 				10F5BB2E124998B6006C5ED0 /* icon_57.png */,
 				10F5BC58124BE14D006C5ED0 /* icon_114.png */,
 				10F5BB3212499953006C5ED0 /* Default@2x.png */,
@@ -2822,8 +2795,6 @@
 				10913D0612CFF44A007583AC /* Settings.bundle in Resources */,
 				115A05DA134814B6004FDCE5 /* arrowright.png in Resources */,
 				115A05DF13490D39004FDCE5 /* dotdotdot.png in Resources */,
-				1109906A134B8C370013444C /* grayArrow.png in Resources */,
-				1109906B134B8C370013444C /* grayArrow@2x.png in Resources */,
 				11099079134BAC190013444C /* 37x-Checkmark.png in Resources */,
 				116B29A1139C3F0600984955 /* README in Resources */,
 				1185088913AA90EE00FCACF8 /* AwfulForumCell.xib in Resources */,
@@ -2896,7 +2867,6 @@
 				11099033134A5EDF0013444C /* UIImageViewTap.m in Sources */,
 				11099034134A5EDF0013444C /* UIViewTap.m in Sources */,
 				11099035134A5EDF0013444C /* ZoomingScrollView.m in Sources */,
-				11099065134B86850013444C /* PullRefreshTableViewController.m in Sources */,
 				11099077134BA6860013444C /* MBProgressHUD.m in Sources */,
 				11884DED1358D68700ADDA45 /* NSString+HTML.m in Sources */,
 				11884DF01358D73000ADDA45 /* GTMNSString+HTML.m in Sources */,

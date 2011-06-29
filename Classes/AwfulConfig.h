@@ -8,6 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+typedef enum {
+    AwfulDefaultLoadTypeNone,
+    AwfulDefaultLoadTypeBookmarks,
+    AwfulDefaultLoadTypeForums
+} AwfulDefaultLoadType;
+
 
 @interface AwfulConfig : UIView {
 
@@ -17,5 +23,6 @@
 +(BOOL)showAvatars;
 +(float)bookmarksDelay;
 +(int)numReadPostsAbove;
++(AwfulDefaultLoadType)getDefaultLoadType;
 
 @end

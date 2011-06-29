@@ -16,6 +16,7 @@
 #import "AwfulBookmarksController.h"
 #import "AwfulUser.h"
 #import "AwfulActions.h"
+#import "AwfulConfig.h"
 #import "AwfulHistoryManager.h"
 
 @implementation AwfulNavigator
@@ -89,7 +90,12 @@
     
     if(isLoggedIn()) {
         self.welcomeMessage.text = @"";
-        [self tappedBookmarks];
+        AwfulDefaultLoadType load_type = [AwfulConfig getDefaultLoadType];
+        if(load_type == AwfulDefaultLoadTypeBookmarks) {
+            [self tappedBookmarks];
+        } else if(load_type == AwfulDefaultLoadTypeForums) {
+            [self tappedForumsList];
+        }
     } else {
         self.welcomeMessage.text = @"Tap '...' below to log in.";
         [self tappedMore];

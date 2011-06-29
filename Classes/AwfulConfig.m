@@ -66,4 +66,17 @@
     return [above intValue];
 }
 
++(AwfulDefaultLoadType)getDefaultLoadType
+{
+    NSString *type = [AwfulConfig getConfigObj:@"default_load"];
+    if([type isEqualToString:@"none"]) {
+        return AwfulDefaultLoadTypeNone;
+    } else if([type isEqualToString:@"bookmarks"]) {
+        return AwfulDefaultLoadTypeBookmarks;
+    } else if([type isEqualToString:@"forumslist"]) {
+        return AwfulDefaultLoadTypeForums;
+    }
+    return AwfulDefaultLoadTypeBookmarks;
+}
+
 @end

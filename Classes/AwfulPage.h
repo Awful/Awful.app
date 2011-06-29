@@ -12,7 +12,6 @@
 #import "TFHpple.h"
 #import "AwfulPostBoxController.h"
 #import "AwfulHistory.h"
-#import "PullRefreshTableViewController.h"
 #import "AwfulNavigator.h"
 #import "JSBridgeWebView.h"
 

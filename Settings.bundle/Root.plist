@@ -84,6 +84,30 @@
 				<string>9001</string>
 			</array>
 		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<string>1</string>
+			<key>Key</key>
+			<string>default_load</string>
+			<key>KeyboardType</key>
+			<string>NumbersAndPunctuation</string>
+			<key>Title</key>
+			<string>Default Display</string>
+			<key>Titles</key>
+			<array>
+				<string>None</string>
+				<string>Bookmarks</string>
+				<string>Forums List</string>
+			</array>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<string>none</string>
+				<string>bookmarks</string>
+				<string>forumslist</string>
+			</array>
+		</dict>
 	</array>
 	<key>StringsTable</key>
 	<string>Root</string>
