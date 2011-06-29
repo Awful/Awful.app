@@ -608,6 +608,7 @@
 		11DC83BD13BAC6BF00B73903 /* AwfulHelpController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 11DC83BC13BAC6BF00B73903 /* AwfulHelpController.xib */; };
 		11DC83C113BAC8C200B73903 /* AwfulHelpController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DC83C013BAC8C200B73903 /* AwfulHelpController.m */; };
 		11DC83C413BACD7D00B73903 /* AwfulAppThreadRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DC83C313BACD7D00B73903 /* AwfulAppThreadRequest.m */; };
+		11DC83C613BBC84700B73903 /* AwfulHelpBox.xib in Resources */ = {isa = PBXBuildFile; fileRef = 11DC83C513BBC84700B73903 /* AwfulHelpBox.xib */; };
 		1D3623260D0F684500981E51 /* AwfulAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* AwfulAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -1299,6 +1300,7 @@
 		11DC83C013BAC8C200B73903 /* AwfulHelpController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulHelpController.m; sourceTree = "<group>"; };
 		11DC83C213BACD7D00B73903 /* AwfulAppThreadRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAppThreadRequest.h; sourceTree = "<group>"; };
 		11DC83C313BACD7D00B73903 /* AwfulAppThreadRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAppThreadRequest.m; sourceTree = "<group>"; };
+		11DC83C513BBC84700B73903 /* AwfulHelpBox.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AwfulHelpBox.xib; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* AwfulAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* AwfulAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAppDelegate.m; sourceTree = "<group>"; };
@@ -2093,6 +2095,7 @@
 				11DC83BF13BAC8C200B73903 /* AwfulHelpController.h */,
 				11DC83C013BAC8C200B73903 /* AwfulHelpController.m */,
 				11DC83BC13BAC6BF00B73903 /* AwfulHelpController.xib */,
+				11DC83C513BBC84700B73903 /* AwfulHelpBox.xib */,
 			);
 			name = Extras;
 			sourceTree = "<group>";
@@ -2825,6 +2828,7 @@
 				1185923913B9425C0036E607 /* star_admin.gif in Resources */,
 				1185923A13B9425C0036E607 /* star_moderator.gif in Resources */,
 				11DC83BD13BAC6BF00B73903 /* AwfulHelpController.xib in Resources */,
+				11DC83C613BBC84700B73903 /* AwfulHelpBox.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
