@@ -20,6 +20,12 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
 
 @synthesize label = _label;
 
+-(void)dealloc
+{
+    [_label release];
+    [super dealloc];
+}
+
 @end
 
 @implementation AwfulButtonCell
@@ -42,6 +48,12 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
     [self.button setTitle:text forState:UIControlStateNormal];
 }
 
+-(void)dealloc
+{
+    [_button release];
+    [super dealloc];
+}
+
 @end
 
 @implementation AwfulExtrasController
@@ -59,6 +71,8 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
 
 - (void)dealloc
 {
+    [_buttonCell release];
+    [_labelCell release];
     [super dealloc];
 }
 

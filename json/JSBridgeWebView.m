@@ -202,7 +202,7 @@
 - (BOOL)webView:(UIWebView *)p_WebView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
 	BOOL result = TRUE;
-	
+    	
 	// Checks if it is a JS notification. It returns the ID ob the JSON object in the JS code. Returns nil if it is not.
 	NSString* jsNotId = [self getJSNotificationId:[request URL]];
 	if(jsNotId)
@@ -210,13 +210,11 @@
 		// Reads the JSON object to be communicated.
 		NSString* jsonStr = [p_WebView stringByEvaluatingJavaScriptFromString:[NSString  stringWithFormat:@"JSBridge_getJsonStringForObjectWithId(%@)", jsNotId]];
 		
-		SBJsonParser* jsonObj = [[SBJsonParser alloc] init];
-		
+		SBJsonParser* jsonObj = [[[SBJsonParser alloc] init] autorelease];
+        		
 		NSDictionary* jsonDic = [jsonObj objectWithString:jsonStr];
 		NSDictionary* dicTranslated = [self translateDictionary:jsonDic];
-		
-        [jsonObj release];
-		
+				
 		// Calls the delegate method with the notified object.
 		if(bridgeDelegate)
 		{

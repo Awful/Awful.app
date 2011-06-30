@@ -59,15 +59,19 @@
     }
 
 	SBJsonStreamParserAccumulator *accumulator = [[[SBJsonStreamParserAccumulator alloc] init] autorelease];
-    
+        
+    // and something on these two lines
     SBJsonStreamParserAdapter *adapter = [[[SBJsonStreamParserAdapter alloc] init] autorelease];
     adapter.delegate = accumulator;
-	
+	    
+    // definitely something leaking in these 3 lines
 	SBJsonStreamParser *parser = [[[SBJsonStreamParser alloc] init] autorelease];
 	parser.maxDepth = self.maxDepth;
 	parser.delegate = adapter;
+    
+    SBJsonStreamParserStatus result = [parser parse:data];
 	
-	switch ([parser parse:data]) {
+	switch (result) {
 		case SBJsonStreamParserComplete:
             return accumulator.value;
 			break;

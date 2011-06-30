@@ -69,6 +69,9 @@
         AwfulQA *thread_jump = [AwfulQA withQuestion:@"Do thread actions?" answer:@"Long press on the thread in the thread list to bring up 'First Page', 'Last Page', and 'Mark Unread'"];
         [_content addObject:thread_jump];
         
+        AwfulQA *full = [AwfulQA withQuestion:@"View fullscreen?" answer:@"Triple-tap on the page."];
+        [_content addObject:full];
+        
         AwfulQA *page = [AwfulQA withQuestion:@"Reply, Vote, etc?" answer:@"Tap the action button in the toolbar while reading a thread."];
         [_content addObject:page];
         
