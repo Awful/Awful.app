@@ -18,6 +18,7 @@
 #import "AwfulPageCount.h"
 #import "AwfulLoginController.h"
 #import "AwfulNavigator.h"
+#import "AwfulRequestHandler.h"
 #import "AwfulNavigatorLabels.h"
 #import "AwfulUtil.h"
 #import "AwfulThreadListActions.h"
@@ -254,16 +255,27 @@
     AwfulForumRefreshRequest *ref_req = [[AwfulForumRefreshRequest alloc] initWithAwfulThreadList:self];
     loadRequest(ref_req);
     [ref_req release];
+    [UIView animateWithDuration:0.2 animations:^(void){
+        self.view.alpha = 0.5;
+    }];
 }
 
 -(void)stop
 {
     self.view.userInteractionEnabled = YES;
+    [UIView animateWithDuration:0.2 animations:^(void){
+        self.view.alpha = 1.0;
+    }];
+    AwfulNavigator *nav = getNavigator();
+    [nav.requestHandler cancelAllRequests];    
 }
 
 -(void)acceptThreads : (NSMutableArray *)in_threads
 {
     [self.delegate swapToRefreshButton];
+    [UIView animateWithDuration:0.2 animations:^(void){
+        self.view.alpha = 1.0;
+    }];
     
     self.awfulThreads = in_threads;
     

@@ -33,6 +33,11 @@
     [super dealloc];
 }
 
+-(void)cancelAllRequests
+{
+    [self.queue cancelAllOperations];
+}
+
 -(void)loadRequest : (ASIHTTPRequest *)req
 {   
     [self.queue addOperation:req];

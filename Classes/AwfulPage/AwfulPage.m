@@ -221,6 +221,7 @@
 
 -(void)stop
 {
+    [(UIWebView *)self.view stopLoading];
 }
 
 -(void)loadOlderPosts

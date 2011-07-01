@@ -11,6 +11,7 @@
 #import "AwfulConfig.h"
 #import "AwfulForumRefreshRequest.h"
 #import "AwfulNavigator.h"
+#import "AwfulRequestHandler.h"
 #import "AwfulPageCount.h"
 #import "ASIFormDataRequest.h"
 
@@ -109,6 +110,7 @@
     self.refreshed = YES;
     [self endTimer];
     [self swapToRefreshButton];
+    [super stop];
 }
 
 -(void)prevPage

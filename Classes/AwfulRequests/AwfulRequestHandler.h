@@ -21,6 +21,7 @@
 @property (nonatomic, retain) MBProgressHUD *hud;
 
 -(void)hideHud;
+-(void)cancelAllRequests;
 -(void)loadRequest : (ASIHTTPRequest *)req;
 -(void)loadRequestAndWait : (ASIHTTPRequest *)req;
 -(void)loadAllWithMessage : (NSString *)msg forRequests : (id) first, ... NS_REQUIRES_NIL_TERMINATION;
