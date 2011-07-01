@@ -11,7 +11,7 @@
 
 @class AwfulNavigator;
 
-@interface AwfulAppDelegate : NSObject <UIApplicationDelegate, UIWebViewDelegate, CrashReportSenderDelegate> {
+@interface AwfulAppDelegate : NSObject <UIApplicationDelegate> {
     UIWindow *_window;
     UINavigationController *_navigationController;
     AwfulNavigator *_navigator;

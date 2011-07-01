@@ -447,7 +447,7 @@
 {
     NSArray *raws = [hpple rawSearch:@"//div[@id='ad_banner_user']/a"];
     if([raws count] == 0) {
-        return nil;
+        return @"";
     }
     
     return [NSString stringWithFormat:@"<div class='ad'>%@</div>", [raws objectAtIndex:0]];

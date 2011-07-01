@@ -447,5 +447,5 @@ function tappedPost(postid)
 
 function scrollToID(postid)
 {   
-    $.scrollTo($("#"+postid), 200);
+    $.scrollTo($("#"+postid), 0);
 }

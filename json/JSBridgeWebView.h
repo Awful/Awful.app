@@ -39,6 +39,7 @@
  */
 @protocol JSBridgeWebViewDelegate <UIWebViewDelegate>
 - (void)webView:(UIWebView*) webview didReceiveJSNotificationWithDictionary:(NSDictionary*) dictionary;
+-(void)didScroll;
 @end
 
 /*

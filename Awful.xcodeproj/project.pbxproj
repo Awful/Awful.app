@@ -601,6 +601,8 @@
 		1185923A13B9425C0036E607 /* star_moderator.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1185923813B9425B0036E607 /* star_moderator.gif */; };
 		11884DED1358D68700ADDA45 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 11884DEB1358D68700ADDA45 /* NSString+HTML.m */; };
 		11884DF01358D73000ADDA45 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 11884DEF1358D73000ADDA45 /* GTMNSString+HTML.m */; };
+		1190F6CA13BE3F3300B9D271 /* AwfulSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6C813BE3F3300B9D271 /* AwfulSplitViewController.m */; };
+		1190F6CB13BE3F3300B9D271 /* AwfulSplitViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1190F6C913BE3F3300B9D271 /* AwfulSplitViewController.xib */; };
 		1199D7CF13AA9C4200264DE9 /* tiny_arrow_right.png in Resources */ = {isa = PBXBuildFile; fileRef = 1199D7CE13AA9C4200264DE9 /* tiny_arrow_right.png */; };
 		11A6CE8313B1489C00AADE7B /* AwfulNavigatorLabels.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A6CE8213B1489C00AADE7B /* AwfulNavigatorLabels.m */; };
 		11C1E95E13B26657008A0BE9 /* AwfulNavigatorLabels.xib in Resources */ = {isa = PBXBuildFile; fileRef = 11C1E95D13B26657008A0BE9 /* AwfulNavigatorLabels.xib */; };
@@ -1290,6 +1292,9 @@
 		11884DEE1358D73000ADDA45 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
 		11884DEF1358D73000ADDA45 /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
 		11884DF11358D74800ADDA45 /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMDefines.h; sourceTree = "<group>"; };
+		1190F6C713BE3F3300B9D271 /* AwfulSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSplitViewController.h; sourceTree = "<group>"; };
+		1190F6C813BE3F3300B9D271 /* AwfulSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSplitViewController.m; sourceTree = "<group>"; };
+		1190F6C913BE3F3300B9D271 /* AwfulSplitViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AwfulSplitViewController.xib; sourceTree = "<group>"; };
 		1199D7CE13AA9C4200264DE9 /* tiny_arrow_right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tiny_arrow_right.png; path = images/tiny_arrow_right.png; sourceTree = "<group>"; };
 		11A6CE8113B1489C00AADE7B /* AwfulNavigatorLabels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNavigatorLabels.h; sourceTree = "<group>"; };
 		11A6CE8213B1489C00AADE7B /* AwfulNavigatorLabels.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNavigatorLabels.m; sourceTree = "<group>"; };
@@ -1338,6 +1343,7 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				1190F6C513BE3ECC00B9D271 /* iPad */,
 				118591FB13B42CD10036E607 /* History */,
 				1162234013B3C9100035320A /* Actions */,
 				11A6CE8513B160FF00AADE7B /* Login */,
@@ -2171,6 +2177,16 @@
 			path = "mwaterfall-MWFeedParser-ea43013";
 			sourceTree = "<group>";
 		};
+		1190F6C513BE3ECC00B9D271 /* iPad */ = {
+			isa = PBXGroup;
+			children = (
+				1190F6C713BE3F3300B9D271 /* AwfulSplitViewController.h */,
+				1190F6C813BE3F3300B9D271 /* AwfulSplitViewController.m */,
+				1190F6C913BE3F3300B9D271 /* AwfulSplitViewController.xib */,
+			);
+			name = iPad;
+			sourceTree = "<group>";
+		};
 		11A6CE8513B160FF00AADE7B /* Login */ = {
 			isa = PBXGroup;
 			children = (
@@ -2829,6 +2845,7 @@
 				1185923A13B9425C0036E607 /* star_moderator.gif in Resources */,
 				11DC83BD13BAC6BF00B73903 /* AwfulHelpController.xib in Resources */,
 				11DC83C613BBC84700B73903 /* AwfulHelpBox.xib in Resources */,
+				1190F6CB13BE3F3300B9D271 /* AwfulSplitViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2916,6 +2933,7 @@
 				1185922A13B554F70036E607 /* AwfulThreadListActions.m in Sources */,
 				11DC83C113BAC8C200B73903 /* AwfulHelpController.m in Sources */,
 				11DC83C413BACD7D00B73903 /* AwfulAppThreadRequest.m in Sources */,
+				1190F6CA13BE3F3300B9D271 /* AwfulSplitViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2934,7 +2952,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PREBINDING = NO;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "2350A962-2E33-4569-9E09-0028963A8791";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "CDD9694B-870A-47E6-9171-C4D8342EE3D6";
 				SDKROOT = iphoneos4.3;
 			};
 			name = AdHoc;
@@ -3037,7 +3055,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PREBINDING = NO;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "D731A0E8-E7C1-43A8-B71D-43BDAC474CBC";
 				SDKROOT = iphoneos;
 			};
 			name = Release;

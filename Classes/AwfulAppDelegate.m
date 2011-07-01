@@ -31,7 +31,7 @@
     [FlurryAPI startSession:@"EU3TLVQM9U8T8QKNI9ID"];
     
     NSURL *crash_url = [NSURL URLWithString:@"http://www.regularberry.com/crash/crash_v200.php"];
-    [[CrashReportSender sharedCrashReportSender] sendCrashReportToURL:crash_url delegate:self activateFeedback:NO];
+    [[CrashReportSender sharedCrashReportSender] sendCrashReportToURL:crash_url delegate:nil activateFeedback:NO];
     [Appirater appLaunched:YES];
     
     return YES;
@@ -69,16 +69,8 @@
 
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-    /*
-     Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-     */
-     /*if([self.navController.modalViewController isMemberOfClass:[UINavigationController class]]) {
-        UINavigationController *nav = (UINavigationController *)self.navController.modalViewController;
-        if([nav.topViewController isMemberOfClass:[BookmarksController class]]) {
-            BookmarksController *book = (BookmarksController *)nav.topViewController;
-            [book refresh];
-        }
-     }*/
+    AwfulNavigator *nav = getNavigator();
+    [nav callBookmarksRefresh];
 }
 
 

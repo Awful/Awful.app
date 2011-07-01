@@ -45,6 +45,7 @@
 @synthesize forumButton = _forumButton;
 @synthesize shouldScrollToBottom = _shouldScrollToBottom;
 @synthesize scrollToPostID = _scrollToPostID;
+@synthesize touchedPage = _touchedPage;
 @synthesize adHTML = _adHTML;
 
 #pragma mark -
@@ -67,6 +68,7 @@
         _pages = nil;
         _shouldScrollToBottom = NO;
         _scrollToPostID = nil;
+        _touchedPage = NO;
         
         _allRawPosts = [[NSMutableArray alloc] init];
         
@@ -174,11 +176,11 @@
         [self.forumButton setTitle:self.thread.forum.name forState:UIControlStateNormal];
         self.forumButton.center = CGPointMake(x, -self.forumButton.frame.size.height/2);
         [self.view addSubview:self.forumButton];
-        [UIView animateWithDuration:0.25 animations:^(){
+        [UIView animateWithDuration:0.25 animations:^(void){
             self.forumButton.center = CGPointMake(x, self.forumButton.frame.size.height/2);
         }];
     } else {
-        [UIView animateWithDuration:0.25 animations:^(){
+        [UIView animateWithDuration:0.25 animations:^(void){
             self.forumButton.center = CGPointMake(x, -self.forumButton.frame.size.height/2);
         } completion:^(BOOL finished){
             [self.forumButton removeFromSuperview];
@@ -211,6 +213,7 @@
 
 -(void)refresh
 {    
+    [self.delegate swapToStopButton];
     AwfulPageRefreshRequest *ref_req = [[AwfulPageRefreshRequest alloc] initWithAwfulPage:self];
     loadRequestAndWait(ref_req);
     [ref_req release];
@@ -236,7 +239,6 @@
 
 -(void)acceptPosts : (NSMutableArray *)posts
 {    
-    [self.delegate swapToRefreshButton];
     self.allRawPosts = posts;
 }
 
@@ -456,6 +458,11 @@
     }
 }
 
+-(void)didScroll
+{
+    self.touchedPage = YES;
+}
+
 #pragma mark Gesture Delegate
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
@@ -538,10 +545,13 @@
 
 -(void)webViewDidFinishLoad:(UIWebView *)sender
 {
-    if(self.scrollToPostID != nil) {
-        [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(scrollToSpecifiedPost) userInfo:nil repeats:NO];
-    } else if(self.shouldScrollToBottom) {
-        [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(scrollToBottom) userInfo:nil repeats:NO];
+    [self.delegate swapToRefreshButton];
+    if(!self.touchedPage) {
+        if(self.scrollToPostID != nil) {
+            [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(scrollToSpecifiedPost) userInfo:nil repeats:NO];
+        } else if(self.shouldScrollToBottom) {
+            [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(scrollToBottom) userInfo:nil repeats:NO];
+        }
     }
 }
 

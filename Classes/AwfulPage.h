@@ -33,6 +33,7 @@ typedef enum {
     BOOL _isBookmarked;
     BOOL _shouldScrollToBottom;
     NSString *_scrollToPostID;
+    BOOL _touchedPage;
     
     AwfulNavigator *_delegate;
     AwfulPageCount *_pages;
@@ -51,6 +52,7 @@ typedef enum {
 @property BOOL isBookmarked;
 @property BOOL shouldScrollToBottom;
 @property (nonatomic, retain) NSString *scrollToPostID;
+@property BOOL touchedPage;
 
 @property (nonatomic, assign) AwfulNavigator *delegate;
 @property (nonatomic, retain) AwfulPageCount *pages;

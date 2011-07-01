@@ -63,6 +63,7 @@
         self.starCategory = [decoder decodeIntForKey:@"starCategory"];
         self.isStickied = [decoder decodeBoolForKey:@"isStickied"];
         self.forum = [decoder decodeObjectForKey:@"forum"];
+        self.seen = [decoder decodeBoolForKey:@"seen"];
 	}
 	return self;
 }
@@ -78,6 +79,7 @@
     [encoder encodeInt:self.starCategory forKey:@"starCategory"];
     [encoder encodeBool:self.isStickied forKey:@"isStickied"];
     [encoder encodeObject:self.forum forKey:@"forum"];
+    [encoder encodeBool:self.seen forKey:@"seen"];
 }
 
 @end

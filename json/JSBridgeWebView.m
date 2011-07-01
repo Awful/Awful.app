@@ -66,6 +66,8 @@
 	{
 		super.delegate = self;
 		bridgeDelegate = nil;
+        /*[self _setDrawInWebThread:YES];
+        [self _setDrawsCheckeredPattern:YES];*/
 	}
 	
 	return self;
@@ -335,5 +337,9 @@
 	return [NSData dataWithBytesNoCopy:bytes length:length];
 }
 
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    [bridgeDelegate didScroll];
+}
 
 @end
