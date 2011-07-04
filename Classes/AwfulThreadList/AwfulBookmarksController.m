@@ -70,7 +70,7 @@
 
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
-    return YES;
+    return (toInterfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
 -(BOOL)shouldReloadOnViewLoad

@@ -231,7 +231,7 @@
     
     AwfulNavigator *nav = getNavigator();
     JSBridgeWebView *web = [[JSBridgeWebView alloc] initWithFrame:nav.view.frame];
-    [web loadHTMLString:html baseURL:[NSURL URLWithString:@""]];
+    [web loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
     web.delegate = self;
     self.view = web;
     [web release];
@@ -272,11 +272,20 @@
     if([tag_name isEqualToString:@"IMG"]) {
         NSString *js_src = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).src", p.x, p.y+offset];
         NSString *src = [(UIWebView *)self.view stringByEvaluatingJavaScriptFromString:js_src];
+        NSString *js_class = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).className", p.x, p.y+offset];
+        NSString *class = [(UIWebView *)self.view stringByEvaluatingJavaScriptFromString:js_class];
         
         BOOL proceed = YES;
-        for(AwfulPost *post in self.allRawPosts) {
-            if([[post.avatarURL absoluteString] isEqualToString:src]) {
-                proceed = NO;
+        
+        if([class isEqualToString:@"postaction"]) {
+            proceed = NO;
+        }
+        
+        if(proceed) {
+            for(AwfulPost *post in self.allRawPosts) {
+                if([[post.avatarURL absoluteString] isEqualToString:src]) {
+                    proceed = NO;
+                }
             }
         }
         

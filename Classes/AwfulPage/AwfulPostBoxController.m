@@ -24,6 +24,8 @@
 @synthesize post = _post;
 @synthesize startingText = _startingText;
 @synthesize sendButton = _sendButton;
+@synthesize toolbar = _toolbar;
+@synthesize base = _base;
 
 // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 
@@ -33,6 +35,8 @@
         _startingText = [text retain];
         _post = nil;
         _thread = nil;
+        NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+        [nc addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     }
     return self;
 }
@@ -43,6 +47,8 @@
     [_startingText release];
     [_thread release];
     [_post release];
+    [_toolbar release];
+    [_base release];
     [super dealloc];
 }
 
@@ -56,6 +62,7 @@
         [self.sendButton setTitle:@"Reply"];
     }
     
+    self.replyTextView.inputAccessoryView = self.toolbar;
     self.replyTextView.text = self.startingText;
     [self.replyTextView becomeFirstResponder];
 }
@@ -66,12 +73,14 @@
     // e.g. self.myOutlet = nil;
     self.sendButton = nil;
     self.replyTextView = nil;
+    self.toolbar = nil;
+    self.base = nil;
 }
 
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Return YES for supported orientations.
-    return YES;
+    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
 
@@ -91,6 +100,26 @@
     [super didReceiveMemoryWarning];
     
     // Release any cached data, images, etc. that aren't in use.
+}
+
+-(void)keyboardWillShow:(NSNotification *)notification
+{
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationCurve:[[[notification userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey] intValue]];
+    [UIView setAnimationDuration:[[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue]];
+    
+    CGRect keyboard_rect = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGRect helpful_rect = [self.view convertRect:keyboard_rect toView:nil];
+    CGRect my_rect = [self.view convertRect:self.view.frame toView:nil];
+    
+    float my_height = MIN(self.view.frame.size.height, my_rect.size.height);
+    float best_height = my_height - helpful_rect.size.height;
+    
+    CGRect frame = self.base.frame;
+    frame.size.height = best_height;
+    self.base.frame = frame;
+    
+    [UIView commitAnimations];
 }
 
 -(IBAction)clearReply

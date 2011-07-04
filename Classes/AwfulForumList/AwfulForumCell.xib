@@ -2,9 +2,9 @@
 <archive type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1056</int>
-		<string key="IBDocument.SystemVersion">10J4138</string>
+		<string key="IBDocument.SystemVersion">10K540</string>
 		<string key="IBDocument.InterfaceBuilderVersion">1306</string>
-		<string key="IBDocument.AppKitVersion">1038.35</string>
+		<string key="IBDocument.AppKitVersion">1038.36</string>
 		<string key="IBDocument.HIToolboxVersion">461.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -51,7 +51,7 @@
 							<object class="IBUILabel" id="1019876079">
 								<reference key="NSNextResponder" ref="111998930"/>
 								<int key="NSvFlags">294</int>
-								<string key="NSFrame">{{44, 0}, {224, 44}}</string>
+								<string key="NSFrame">{{44, 0}, {210, 44}}</string>
 								<reference key="NSSuperview" ref="111998930"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="1050362341"/>
@@ -81,6 +81,7 @@
 								<string key="NSFrame">{{252, -3}, {50, 50}}</string>
 								<reference key="NSSuperview" ref="111998930"/>
 								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<int key="IBUIContentHorizontalAlignment">0</int>
@@ -113,6 +114,7 @@
 								<string key="NSFrame">{{-6, -4}, {52, 52}}</string>
 								<reference key="NSSuperview" ref="111998930"/>
 								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView" ref="1019876079"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<int key="IBUIContentHorizontalAlignment">0</int>
@@ -479,7 +481,7 @@
 			<object class="NSMutableArray" key="dict.values">
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<string>{28, 26}</string>
-				<string>{11, 11}</string>
+				<string>{15, 15}</string>
 			</object>
 		</object>
 		<string key="IBCocoaTouchPluginVersion">301</string>

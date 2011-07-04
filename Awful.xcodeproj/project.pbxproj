@@ -609,6 +609,8 @@
 		1190F7FE13BE4F2900B9D271 /* CrashReporter.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1190F7F713BE4F2900B9D271 /* CrashReporter.strings */; };
 		1190F7FF13BE4F2900B9D271 /* CrashReportSender.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7F913BE4F2900B9D271 /* CrashReportSender.m */; };
 		1190F80013BE4F2900B9D271 /* libFlurry.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1190F7FC13BE4F2900B9D271 /* libFlurry.a */; };
+		1190F80413BE58BB00B9D271 /* jquery.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1190F80213BE58BB00B9D271 /* jquery.txt */; };
+		1190F80513BE58BB00B9D271 /* post.css in Resources */ = {isa = PBXBuildFile; fileRef = 1190F80313BE58BB00B9D271 /* post.css */; };
 		1199D7CF13AA9C4200264DE9 /* tiny_arrow_right.png in Resources */ = {isa = PBXBuildFile; fileRef = 1199D7CE13AA9C4200264DE9 /* tiny_arrow_right.png */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
@@ -1302,6 +1304,8 @@
 		1190F7F913BE4F2900B9D271 /* CrashReportSender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CrashReportSender.m; sourceTree = "<group>"; };
 		1190F7FB13BE4F2900B9D271 /* FlurryAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlurryAPI.h; sourceTree = "<group>"; };
 		1190F7FC13BE4F2900B9D271 /* libFlurry.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry.a; sourceTree = "<group>"; };
+		1190F80213BE58BB00B9D271 /* jquery.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = jquery.txt; sourceTree = "<group>"; };
+		1190F80313BE58BB00B9D271 /* post.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = post.css; sourceTree = "<group>"; };
 		1199D7CE13AA9C4200264DE9 /* tiny_arrow_right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tiny_arrow_right.png; path = images/tiny_arrow_right.png; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* Awful.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Awful.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1908,15 +1912,15 @@
 		1190F6E813BE4EA900B9D271 /* AwfulPage */ = {
 			isa = PBXGroup;
 			children = (
-				1190F6E913BE4EA900B9D271 /* AwfulForumButton.xib */,
 				1190F6EA13BE4EA900B9D271 /* AwfulPage.h */,
 				1190F6EB13BE4EA900B9D271 /* AwfulPage.m */,
 				1190F6EC13BE4EA900B9D271 /* AwfulPageNav.xib */,
+				1190F6E913BE4EA900B9D271 /* AwfulForumButton.xib */,
 				1190F6ED13BE4EA900B9D271 /* AwfulPageNavController.h */,
 				1190F6EE13BE4EA900B9D271 /* AwfulPageNavController.m */,
-				1190F6EF13BE4EA900B9D271 /* AwfulPostBox.xib */,
 				1190F6F013BE4EA900B9D271 /* AwfulPostBoxController.h */,
 				1190F6F113BE4EA900B9D271 /* AwfulPostBoxController.m */,
+				1190F6EF13BE4EA900B9D271 /* AwfulPostBox.xib */,
 			);
 			path = AwfulPage;
 			sourceTree = "<group>";
@@ -2200,6 +2204,15 @@
 			path = Flurry;
 			sourceTree = "<group>";
 		};
+		1190F80113BE58BB00B9D271 /* web resources */ = {
+			isa = PBXGroup;
+			children = (
+				1190F80213BE58BB00B9D271 /* jquery.txt */,
+				1190F80313BE58BB00B9D271 /* post.css */,
+			);
+			path = "web resources";
+			sourceTree = "<group>";
+		};
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -2233,6 +2246,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				1190F80113BE58BB00B9D271 /* web resources */,
 				1165DBAB13B0196000AA8010 /* forumslist */,
 				116B29A0139C3F0600984955 /* README */,
 				10F5BB2E124998B6006C5ED0 /* icon_57.png */,
@@ -2833,6 +2847,8 @@
 				1190F7E313BE4ECB00B9D271 /* 37x-Checkmark.png in Resources */,
 				1190F7ED13BE4ECB00B9D271 /* LICENSE.txt in Resources */,
 				1190F7FE13BE4F2900B9D271 /* CrashReporter.strings in Resources */,
+				1190F80413BE58BB00B9D271 /* jquery.txt in Resources */,
+				1190F80513BE58BB00B9D271 /* post.css in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

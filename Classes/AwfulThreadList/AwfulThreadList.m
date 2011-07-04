@@ -87,15 +87,18 @@
     self.unreadButton.hidden = NO;
     self.unreadButton.alpha = 1.0;
     
+    float goal_width = self.frame.size.width-100;
+    
     if(thread.totalUnreadPosts == -1) {
         self.unreadButton.hidden = YES;
+        goal_width += 60;
     } else if(thread.totalUnreadPosts == 0) {
         [self.unreadButton setTitle:@"0" forState:UIControlStateNormal];
         self.unreadButton.alpha = 0.5;
     }
     
     // size and positioning of labels    
-    CGSize title_size = [thread.title sizeWithFont:self.threadTitleLabel.font constrainedToSize:CGSizeMake(self.frame.size.width-100, 60)];
+    CGSize title_size = [thread.title sizeWithFont:self.threadTitleLabel.font constrainedToSize:CGSizeMake(goal_width, 60)];
     
     float y_pos = (THREAD_HEIGHT - title_size.height)/2 - 4;
     self.threadTitleLabel.frame = CGRectMake(20, y_pos, title_size.width, title_size.height);
@@ -329,7 +332,7 @@
 
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
-    return YES;
+    return (toInterfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
 -(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation

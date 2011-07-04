@@ -108,7 +108,7 @@
     AwfulNavigator *nav = getNavigator();
     JSBridgeWebView *web = [[JSBridgeWebView alloc] initWithFrame:nav.view.frame];
     [self.page setWebView:web];
-    [web loadHTMLString:html baseURL:[NSURL URLWithString:@""]];
+    [web loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
     [web release];
 
     [parsed_posts release];

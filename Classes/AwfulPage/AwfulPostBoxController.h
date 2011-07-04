@@ -14,6 +14,8 @@
 @interface AwfulPostBoxController : UIViewController <UIAlertViewDelegate> {
     UITextView *_replyTextView;
     UIBarButtonItem *_sendButton;
+    UIToolbar *_toolbar;
+    UIView *_base;
     
     AwfulThread *_thread;
     AwfulPost *_post;
@@ -22,6 +24,8 @@
 
 @property (nonatomic, retain) IBOutlet UIBarButtonItem *sendButton;
 @property (nonatomic, retain) IBOutlet UITextView *replyTextView;
+@property (nonatomic, retain) IBOutlet UIToolbar *toolbar;
+@property (nonatomic, retain) IBOutlet UIView *base;
 
 @property (nonatomic, retain) AwfulThread *thread;
 @property (nonatomic, retain) AwfulPost *post;
