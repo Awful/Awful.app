@@ -66,7 +66,7 @@
         self.title = @"How do I...";
         _content = [[NSMutableArray alloc] init];
         
-        AwfulQA *thread_jump = [AwfulQA withQuestion:@"Do thread actions?" answer:@"Long press on the thread in the thread list to bring up 'First Page', 'Last Page', and 'Mark Unread'"];
+        AwfulQA *thread_jump = [AwfulQA withQuestion:@"Do thread actions?" answer:@"Long press on the thread in the thread list to bring up 'First Page', 'Last Page', and 'Mark Unread'."];
         [_content addObject:thread_jump];
         
         AwfulQA *full = [AwfulQA withQuestion:@"View fullscreen?" answer:@"Triple-tap on the page."];
@@ -77,6 +77,9 @@
         
         AwfulQA *cust = [AwfulQA withQuestion:@"Tweak settings?" answer:@"Open up Settings.app on your device."];
         [_content addObject:cust];
+        
+        AwfulQA *image = [AwfulQA withQuestion:@"View image detail?" answer:@"Long-press on the image."];
+        [_content addObject:image];
         
         _helpBoxes = nil;
         

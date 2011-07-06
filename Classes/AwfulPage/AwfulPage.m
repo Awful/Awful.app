@@ -233,7 +233,7 @@
     JSBridgeWebView *web = [[JSBridgeWebView alloc] initWithFrame:nav.view.frame];
     [web loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
     web.delegate = self;
-    self.view = web;
+    [self setWebView:web];
     [web release];
     nav.view = self.view;
 }

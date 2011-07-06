@@ -20,8 +20,8 @@
 typedef enum {
     AwfulThreadActionScrollToBottom,
     AwfulThreadActionSpecificPage,
-    AwfulThreadActionVote,
     AwfulThreadActionReply,
+    AwfulThreadActionVote,
     AwfulThreadActionBookmarks,
     AwfulThreadActionNextPage
 } AwfulThreadAction;
@@ -37,8 +37,8 @@ typedef enum {
         
         [self.titles addObject:@"Scroll To Bottom"];
         [self.titles addObject:@"Specific Page"];
-        [self.titles addObject:@"Vote"];
         [self.titles addObject:@"Reply"];
+        [self.titles addObject:@"Vote"];
         
         if(_page.isBookmarked) {
             [self.titles addObject:@"Remove From Bookmarks"];
