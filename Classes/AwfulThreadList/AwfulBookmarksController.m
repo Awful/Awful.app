@@ -34,6 +34,12 @@
         self.awfulThreads = old_bookmarks;
         [old_bookmarks release];
         
+        if(![[NSUserDefaults standardUserDefaults] boolForKey:@"killbookmarks"]) {
+            self.awfulThreads = [NSMutableArray array];
+            [AwfulUtil saveThreadList:self.awfulThreads forForumId:[self getSaveID]];
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"killbookmarks"];
+        }
+        
         self.tableView.delegate = self;
         
         _refreshed = NO;

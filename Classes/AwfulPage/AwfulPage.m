@@ -221,7 +221,9 @@
 
 -(void)stop
 {
-    [(UIWebView *)self.view stopLoading];
+    if([self.view isMemberOfClass:[UIWebView class]]) {
+        [(UIWebView *)self.view stopLoading];
+    }
 }
 
 -(void)loadOlderPosts

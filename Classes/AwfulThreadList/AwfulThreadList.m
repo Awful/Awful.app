@@ -74,7 +74,7 @@
     } else {
         self.contentView.alpha = 1.0;
     }
-        
+    
     // Content
     int total_pages = ((thread.totalReplies-1)/getPostsPerPage()) + 1;
     self.pagesLabel.text = [NSString stringWithFormat:@"Pages: %d", total_pages];
@@ -97,7 +97,7 @@
         self.unreadButton.alpha = 0.5;
     }
     
-    // size and positioning of labels    
+    // size and positioning of labels   
     CGSize title_size = [thread.title sizeWithFont:self.threadTitleLabel.font constrainedToSize:CGSizeMake(goal_width, 60)];
     
     float y_pos = (THREAD_HEIGHT - title_size.height)/2 - 4;
@@ -270,7 +270,7 @@
         self.view.alpha = 1.0;
     }];
     AwfulNavigator *nav = getNavigator();
-    [nav.requestHandler cancelAllRequests];    
+    [nav.requestHandler cancelAllRequests];
 }
 
 -(void)acceptThreads : (NSMutableArray *)in_threads
@@ -585,7 +585,7 @@
 }
 
 #pragma mark -
-#pragma mark Navigator Contnet
+#pragma mark Navigator Content
 
 -(UIView *)getView
 {

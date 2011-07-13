@@ -55,6 +55,9 @@
 	if ((self=[super init])) {
 		self.threadID = [decoder decodeObjectForKey:@"threadID"];
 		self.title = [decoder decodeObjectForKey:@"title"];
+        if(self.title == nil) {
+            self.title = @"";
+        }
         self.totalUnreadPosts = [decoder decodeIntForKey:@"totalUnreadPosts"];
         self.totalReplies = [decoder decodeIntForKey:@"totalReplies"];
         self.threadRating = [decoder decodeIntForKey:@"threadRating"];
@@ -90,5 +93,6 @@
     
     [encoder encodeObject:self.forum forKey:@"forum"];
 }
+
 
 @end

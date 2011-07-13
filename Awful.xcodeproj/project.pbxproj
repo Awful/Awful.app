@@ -1346,8 +1346,8 @@
 				1190F6D713BE4EA900B9D271 /* AwfulForumList */,
 				1190F6DF13BE4EA900B9D271 /* AwfulNavigation */,
 				1190F6E813BE4EA900B9D271 /* AwfulPage */,
-				1190F6F213BE4EA900B9D271 /* AwfulRequests */,
 				1190F70513BE4EA900B9D271 /* AwfulThreadList */,
+				1190F6F213BE4EA900B9D271 /* AwfulRequests */,
 				1190F70B13BE4EA900B9D271 /* Extras */,
 				1190F71313BE4EA900B9D271 /* History */,
 				1190F71813BE4EA900B9D271 /* Login */,
@@ -2959,7 +2959,7 @@
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PREBINDING = NO;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "CDD9694B-870A-47E6-9171-C4D8342EE3D6";
-				SDKROOT = iphoneos4.3;
+				SDKROOT = iphoneos;
 			};
 			name = AdHoc;
 		};
@@ -3046,7 +3046,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Sean Berry (9HL8QUW4RH)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Sean Berry (9HL8QUW4RH)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -3056,7 +3056,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "E6F3F14E-E6D2-4D5D-8EE6-3B26F48F427E";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -3065,7 +3065,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Regular Berry Software LLC";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -3073,7 +3073,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PREBINDING = NO;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "CDD2EE87-025E-4D48-ADB8-0F40A88D82DB";
 				SDKROOT = iphoneos;
 			};
 			name = Release;
