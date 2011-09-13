@@ -104,11 +104,12 @@
     
     int pages_left = self.page.pages.totalPages - self.page.pages.currentPage;
     NSString *html = [AwfulParse constructPageHTMLFromPosts:visible_posts pagesLeft:pages_left numOldPosts:remove_num_posts adHTML:self.page.adHTML];
-    
+        
     AwfulNavigator *nav = getNavigator();
     JSBridgeWebView *web = [[JSBridgeWebView alloc] initWithFrame:nav.view.frame];
     [self.page setWebView:web];
     [web loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
+    [web stringByEvaluatingJavaScriptFromString:@"$(document).ready(function() { new SALR({ highlightOwnUsername: 'true', highlightUserQuote: 'true', username: 'Ferg', highlightSelfColor: '#A2CD5A', userQuote: '#a2cd5a' }); });"];
     [web release];
 
     [parsed_posts release];

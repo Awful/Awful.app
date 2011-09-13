@@ -230,7 +230,7 @@
 {
     int pages_left = self.pages.totalPages - self.pages.currentPage;
     NSString *html = [AwfulParse constructPageHTMLFromPosts:self.allRawPosts pagesLeft:pages_left numOldPosts:0 adHTML:self.adHTML];
-    
+        
     AwfulNavigator *nav = getNavigator();
     JSBridgeWebView *web = [[JSBridgeWebView alloc] initWithFrame:nav.view.frame];
     [web loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
@@ -446,6 +446,7 @@
 
 - (void)webView:(UIWebView*) webview didReceiveJSNotificationWithDictionary:(NSDictionary*) dictionary
 {
+    NSLog(@"%@", dictionary);
     NSString *action = [dictionary objectForKey:@"action"];
     if(action != nil) {
         if([action isEqualToString:@"nextPage"]) {
