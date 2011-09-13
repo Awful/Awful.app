@@ -24,49 +24,55 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-function salr(preferences) {
-    if (preferences.highlightUsername == "true") {
-        highlightOwnUsername(preferences);
+function SALR(preferences) {
+    this.preferences = preferences;
+
+    this.init();
+};
+
+SALR.prototype.init = function() {
+    if (this.preferences.highlightUsername == "true") {
+        this.highlightOwnUsername();
     }
 
-    if (preferences.highlightUserQuote == "true") {
-        highlightOwnQuotes(preferences);
+    if (this.preferences.highlightUserQuote == "true") {
+        this.highlightOwnQuotes();
     }
     
-	if (preferences.imagesEnabled == "false") {
-        replaceImagesWithLinks(preferences);
+	if (this.preferences.imagesEnabled == "false") {
+        this.replaceImagesWithLinks();
 	}
 
-	// modifyImages();
-    // inlineYoutubes();
-    // highlightFriendPosts();    
-    // highlightOPPosts();    
-    // highlightOwnPosts();
-    // highlightModAdminShowThread();
-}
+	// this.modifyImages();
+    // this.inlineYoutubes();
+    // this.highlightFriendPosts();    
+    // this.highlightOPPosts();    
+    // this.highlightOwnPosts();
+    // this.highlightModAdminShowThread();
+};
 
-function modifyImages(preferences) {
+SALR.prototype.modifyImages = function() {
 	// fix timg, because it's broken
-	if(preferences.fixTimg == 'true') fixTimg(preferences.forceTimg == 'true');
+	if(this.preferences.fixTimg == 'true') this.fixTimg(this.preferences.forceTimg == 'true');
 	
 	// Replace Links with Images
-	if (preferences.replaceLinksWithImages == 'true') {
+	if (this.preferences.replaceLinksWithImages == 'true') {
 
 		var subset = $('.postbody a');
 
 		//NWS/NMS links
-		if(preferences.dontReplaceLinkNWS == 'true')
+		if(this.preferences.dontReplaceLinkNWS == 'true')
 		{
 			subset = subset.not(".postbody:has(img[title=':nws:']) a").not(".postbody:has(img[title=':nms:']) a");
 		}
 
 		// spoiler'd links
-		if(preferences.dontReplaceLinkSpoiler == 'true') {
+		if(this.preferences.dontReplaceLinkSpoiler == 'true') {
 			subset = subset.not('.bbc-spoiler a');	
 		}
 
 		// seen posts
-		if(preferences.dontReplaceLinkRead == 'true') {
+		if(this.preferences.dontReplaceLinkRead == 'true') {
 			subset = subset.not('.seen1 a').not('.seen2 a');
 		}
 
@@ -80,7 +86,7 @@ function modifyImages(preferences) {
 		});
 	}
 
-	if (preferences.restrictImageSize == 'true') {
+	if (this.preferences.restrictImageSize == 'true') {
 		$('.postbody img').each(function() {
             var width = $(this).width();
             var height = $(this).height();
@@ -103,9 +109,9 @@ function modifyImages(preferences) {
             }
         });
 	}
-}
+};
 
-function replaceImagesWithLinks(preferences) {
+SALR.prototype.replaceImagesWithLinks = function() {
     var subset = $('.post-content img');
     
     subset = subset.not('img[src*=http://i.somethingawful.com/forumsystem/emoticons/]');
@@ -116,14 +122,14 @@ function replaceImagesWithLinks(preferences) {
         $(this).after("<a href='" + source + "'>" + source + "</a>");
         $(this).remove();
     });
-}
+};
 
-function inlineYoutubes() {
+SALR.prototype.inlineYoutubes = function() {
     var that = this;
 
 	//sort out youtube links
 	$('.postbody a[href*="youtube.com"]').each(function() {
-			$(this).css("background-color", preferences.youtubeHighlight).addClass("salr-video");
+			$(this).css("background-color", that.preferences.youtubeHighlight).addClass("salr-video");
 	});
 	
 	$(".salr-video").toggle(function(){ 
@@ -145,13 +151,16 @@ function inlineYoutubes() {
 			$(this).next().remove();
 		}
 	);
-}
+};
 
-function highlightFriendPosts() {
+/**
+ * Highlight the posts of friends
+ */
+SALR.prototype.highlightFriendPosts = function() {
     var that = this;
-    if (!preferences.friendsList)
+    if (!this.preferences.friendsList)
         return;
-    var friends = JSON.parse(preferences.friendsList);
+    var friends = JSON.parse(this.preferences.friendsList);
     var selector = '';
 
     if (friends == 0) {
@@ -168,18 +177,21 @@ function highlightFriendPosts() {
     $('table.post:has('+selector+') td').each(function () {
         $(this).css({
             'border-collapse' : 'collapse',
-            'background-color' : preferences.highlightFriendsColor
+            'background-color' : that.preferences.highlightFriendsColor
         });
     });
-}
+};
 
-function highlightOPPosts() {
+/**
+ * Highlight the posts by the OP
+ */
+SALR.prototype.highlightOPPosts = function() {
     var that = this;
 
     $('table.post:has(dt.author.op) td').each(function () {
         $(this).css({
             'border-collapse' : 'collapse',
-            'background-color' : preferences.highlightOPColor
+            'background-color' : that.preferences.highlightOPColor
         });
     });
     $('dt.author.op').each(function() {
@@ -187,26 +199,33 @@ function highlightOPPosts() {
             '<dd style="color: #07A; font-weight: bold; ">Thread Poster</dd>'
         );
     });
-}
+};
 
-function highlightOwnPosts() {
+/**
+ * Highlight the posts by one self
+ */
+SALR.prototype.highlightOwnPosts = function() {
     var that = this;
 
-    $("table.post:has(dt.author:econtains('"+preferences.username+"')) td").each(function () {
+    $("table.post:has(dt.author:econtains('"+that.preferences.username+"')) td").each(function () {
         $(this).css({
             'border-collapse' : 'collapse',
-            'background-color' : preferences.highlightSelfColor
+            'background-color' : that.preferences.highlightSelfColor
         });
     });
-}
+};
 
-function highlightModAdminWhoPosted() {
+/**
+ * Highlight the posts by moderators and admins
+ * on the who posted page
+ */
+SALR.prototype.highlightModAdminWhoPosted = function() {
     var that = this;
 
-    if (preferences.modList == null)
+    if (this.preferences.modList == null)
         return;
 
-    var modList = JSON.parse(preferences.modList);
+    var modList = JSON.parse(this.preferences.modList);
 
     $('a[href*=member.php]').each(function() {
         var userid = $(this).attr('href').split('userid=')[1];
@@ -214,19 +233,22 @@ function highlightModAdminWhoPosted() {
             var color;
             switch (modList[userid].mod) {
                 case 'M':
-                    color = preferences.highlightModeratorColor;
+                    color = that.preferences.highlightModeratorColor;
                     break;
                 case 'A':
-                    color = preferences.highlightAdminColor;
+                    color = that.preferences.highlightAdminColor;
                     break;
             }
             $(this).css('color', color);
             $(this).css('font-weight', 'bold');
         }
     });
-}
+};
 
-function highlightOwnUsername(preferences) {
+/**
+ * Highlight the user's username in posts
+ */
+SALR.prototype.highlightOwnUsername = function() {
     function getTextNodesIn(node) {
         var textNodes = [];
 
@@ -246,29 +268,32 @@ function highlightOwnUsername(preferences) {
 
     var that = this;
 
-    var selector = 'div.post-content:contains("' + preferences.username + '")';
+    var selector = 'div.post-content:contains("' + this.preferences.username + '")';
     
-    var re = new RegExp(preferences.username, 'g');
-    var styled = '<span class="usernameHighlight" style="font-weight: bold; color: ' + preferences.usernameHighlight + ';">' + preferences.username + '</span>';
+    var re = new RegExp(this.preferences.username, 'g');
+    var styled = '<span class="usernameHighlight" style="font-weight: bold; color: ' + that.preferences.usernameHighlight + ';">' + that.preferences.username + '</span>';
     $(selector).each(function() {
         getTextNodesIn(this).forEach(function(node) {
             if(node.wholeText.match(re)) {
                 newNode = node.ownerDocument.createElement("span");
-                $(newNode).html(node.wholeText.replace(re, '<span class="usernameHighlight" style="font-weight: bold; color: ' + preferences.usernameHighlight + ';">' + preferences.username + '</span>'));
+                $(newNode).html(node.wholeText.replace(re, '<span class="usernameHighlight" style="font-weight: bold; color: ' + that.preferences.usernameHighlight + ';">' + that.preferences.username + '</span>'));
                 node.parentNode.replaceChild(newNode, node);
             }
         });
     });
-}
+};
 
-function highlightOwnQuotes(preferences) {
+/**
+ * Highlight the quotes of the user themselves.
+ */
+SALR.prototype.highlightOwnQuotes = function() {
     var that = this;
 
-    var usernameQuoteMatch = preferences.username + ' posted:';
+    var usernameQuoteMatch = that.preferences.username + ' posted:';
     $('.bbc-block h4:contains(' + usernameQuoteMatch + ')').each(function() {
         if ($(this).text() != usernameQuoteMatch)
             return;
-        $(this).parent().css("background-color", preferences.userQuote);
+        $(this).parent().css("background-color", that.preferences.userQuote);
 
         // Replace the styling from username highlighting
         var previous = $(this);
@@ -276,4 +301,4 @@ function highlightOwnQuotes(preferences) {
             $(this).css('color', '#555');
         });
     });
-}
+};

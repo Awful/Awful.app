@@ -214,13 +214,11 @@
     NSString *js = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"jquery" ofType:@"js"] encoding:NSUTF8StringEncoding error:nil];
     
     NSString *salr = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"salr" ofType:@"js"] encoding:NSUTF8StringEncoding error:nil];
-
-    NSString *salrOpts = @"$(document).ready(function() { salr({ highlightOwnUsername: 'true', highlightUserQuote: 'true', username: 'Ferg', highlightSelfColor: '#A2CD5A', userQuote: '#a2cd5a' }); });";
     
     NSString *meta = @"<meta name='viewport' content='width=device-width, minimum-scale=1.0, maximum-scale=1.0'>";
     
-    NSString *html = [NSString stringWithFormat:@"<html><head>%@<script type='text/javascript'>%@</script><script type='text/javascript'>%@</script><style type='text/css'>%@</style></head><body><script type='text/javascript'>%@</script>%@%@%@%@</body></html>", 
-                    meta, js, salr, css, salrOpts, top, combined, adHTML, bottom];
+    NSString *html = [NSString stringWithFormat:@"<html><head>%@<script type='text/javascript'>%@</script><script type='text/javascript'>%@</script><style type='text/css'>%@</style></head><body>%@%@%@%@</body></html>", 
+                    meta, js, salr, css, top, combined, adHTML, bottom];
     
     return html;
 }

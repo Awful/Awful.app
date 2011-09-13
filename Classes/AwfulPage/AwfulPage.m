@@ -566,6 +566,9 @@
             [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(scrollToBottom) userInfo:nil repeats:NO];
         }
     }
+    
+    // Kickoff SALR parsing
+    [sender stringByEvaluatingJavaScriptFromString:@"new SALR({ highlightOwnUsername: 'true', highlightUserQuote: 'true', username: 'Ferg', highlightSelfColor: '#A2CD5A', userQuote: '#a2cd5a' });"];
 }
 
 - (void)webViewDidStartLoad:(UIWebView *)webView
