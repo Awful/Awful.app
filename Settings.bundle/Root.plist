@@ -4,7 +4,7 @@
 <dict>
 	<key>PreferenceSpecifiers</key>
 	<array>
-		<dict>
+        <dict>
 			<key>Title</key>
 			<string>Images</string>
 			<key>Type</key>
@@ -107,6 +107,40 @@
 				<string>bookmarks</string>
 				<string>forumslist</string>
 			</array>
+		</dict>
+        <dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>SALR</string>
+		</dict>
+        <dict>
+			<key>Type</key>
+			<string>PSTextFieldSpecifier</string>
+			<key>Title</key>
+			<string>Username</string>
+			<key>Key</key>
+			<string>username</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Highlight mentions</string>
+			<key>Key</key>
+			<string>highlight_own_mentions</string>
+			<key>DefaultValue</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Highlight own quotes</string>
+			<key>Key</key>
+			<string>highlight_own_quotes</string>
+			<key>DefaultValue</key>
+			<true/>
 		</dict>
 	</array>
 	<key>StringsTable</key>

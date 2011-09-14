@@ -15,6 +15,7 @@
 #import "TFHpple.h"
 #import "AwfulPageCount.h"
 #import "AwfulUtil.h"
+#import "SALR.h"
 
 @implementation AwfulParse
 
@@ -44,7 +45,7 @@
     
     NSString *name_avatar_box = [NSString stringWithFormat:@"<table id='%@' class='%@'><tr>%@<td class='name_date_box'><span class='%@'>%@</span><br/><span class='post_date'>Posted on %@</span></td><td></td><td class='quotebutton' onclick=tappedPost('%@')>%@</td></tr></table>", post.postID, userbox_str, avatar_str, user_str, username_info, post.postDate, post.postID, [AwfulParse getPostActionHTML]];
     NSString *parsed_post_body = [AwfulParse parseYouTubes:post_body];
-
+    
     NSString *html = [NSString stringWithFormat:@"%@<div class='postbodymain %@'><div class='postbodysub'>%@</div></div>", name_avatar_box, alt, parsed_post_body];
     
     return html;
@@ -210,12 +211,19 @@
     NSString *bottom = [NSString stringWithFormat:@"<div class='pagesleft' onclick=tappedBottom()>%@</div>", pages_left_str];
     
     NSString *css = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"post" ofType:@"css"] encoding:NSUTF8StringEncoding error:nil];
+        
+    NSString *js = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"jquery" ofType:@"js"] encoding:NSUTF8StringEncoding error:nil];
     
-    NSString *js = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"jquery" ofType:@"txt"] encoding:NSUTF8StringEncoding error:nil];
+    NSString *salr = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"salr" ofType:@"js"] encoding:NSUTF8StringEncoding error:nil];
     
     NSString *meta = @"<meta name='viewport' content='width=device-width, minimum-scale=1.0, maximum-scale=1.0'>";
     
-    NSString *html = [NSString stringWithFormat:@"<html><head>%@<script>%@</script><style type='text/css'>%@</style></head><body>%@%@%@%@</body></html>", meta, js, css, top, combined, adHTML, bottom];
+    NSLog(@"%@", [SALR config]);
+    
+    // Fire off SALR
+    NSString *salrOpts = [NSString stringWithFormat:@"$(document).ready(function() { new SALR(%@); });", [SALR config]];
+    NSString *html = [NSString stringWithFormat:@"<html><head>%@<script type='text/javascript'>%@</script><script type='text/javascript'>%@</script><style type='text/css'>%@</style></head><body><script type='text/javascript'>%@</script>%@%@%@%@</body></html>", 
+                    meta, js, salr, css, salrOpts, top, combined, adHTML, bottom];
     
     return html;
 }

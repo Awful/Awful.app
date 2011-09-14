@@ -79,4 +79,38 @@
     return AwfulDefaultLoadTypeBookmarks;
 }
 
++(NSString *)username {
+    NSString *result = [AwfulConfig getConfigObj:@"username"];
+    
+    if (result == nil) {
+        return [NSString stringWithString:@""];
+    }
+    
+    return result;
+}
+
++(NSString *)highlightOwnQuotes {
+    NSNumber *result = [AwfulConfig getConfigObj:@"highlight_own_quotes"];
+    
+    // Return strings here because javascript doesn't understand boolean values
+    // after they get serialized
+    if (result == nil) {
+        return [NSString stringWithString:@"true"];
+    }
+    
+    return [result boolValue] ? [NSString stringWithString:@"true"] : [NSString stringWithString:@"false"];
+}
+
++(NSString *)highlightOwnMentions {
+    NSNumber *result = [AwfulConfig getConfigObj:@"highlight_own_mentions"];
+    
+    // Return strings here because javascript doesn't understand boolean values
+    // after they get serialized
+    if (result == nil) {
+        return [NSString stringWithString:@"true"];
+    }
+    
+    return [result boolValue] ? [NSString stringWithString:@"true"] : [NSString stringWithString:@"false"];
+}
+
 @end
