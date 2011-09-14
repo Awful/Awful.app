@@ -15,6 +15,7 @@
 #import "TFHpple.h"
 #import "AwfulPageCount.h"
 #import "AwfulUtil.h"
+#import "SALR.h"
 
 @implementation AwfulParse
 
@@ -217,8 +218,12 @@
     
     NSString *meta = @"<meta name='viewport' content='width=device-width, minimum-scale=1.0, maximum-scale=1.0'>";
     
-    NSString *html = [NSString stringWithFormat:@"<html><head>%@<script type='text/javascript'>%@</script><script type='text/javascript'>%@</script><style type='text/css'>%@</style></head><body>%@%@%@%@</body></html>", 
-                    meta, js, salr, css, top, combined, adHTML, bottom];
+    NSLog(@"%@", [SALR config]);
+    
+    // Fire off SALR
+    NSString *salrOpts = [NSString stringWithFormat:@"$(document).ready(function() { new SALR(%@); });", [SALR config]];
+    NSString *html = [NSString stringWithFormat:@"<html><head>%@<script type='text/javascript'>%@</script><script type='text/javascript'>%@</script><style type='text/css'>%@</style></head><body><script type='text/javascript'>%@</script>%@%@%@%@</body></html>", 
+                    meta, js, salr, css, salrOpts, top, combined, adHTML, bottom];
     
     return html;
 }

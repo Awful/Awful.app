@@ -13,6 +13,7 @@
 #import "AwfulConfig.h"
 #import "AwfulForum.h"
 #import "JSBridgeWebView.h"
+#import "SALR.h"
 
 @implementation AwfulPageRefreshRequest
 
@@ -109,7 +110,7 @@
     JSBridgeWebView *web = [[JSBridgeWebView alloc] initWithFrame:nav.view.frame];
     [self.page setWebView:web];
     [web loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
-    [web stringByEvaluatingJavaScriptFromString:@"$(document).ready(function() { new SALR({ highlightOwnUsername: 'true', highlightUserQuote: 'true', username: 'Ferg', highlightSelfColor: '#A2CD5A', userQuote: '#a2cd5a' }); });"];
+    
     [web release];
 
     [parsed_posts release];

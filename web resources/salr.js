@@ -268,7 +268,7 @@ SALR.prototype.highlightOwnUsername = function() {
 
     var that = this;
 
-    var selector = 'div.post-content:contains("' + this.preferences.username + '")';
+    var selector = 'div.postbodysub:contains("' + this.preferences.username + '")';
     
     var re = new RegExp(this.preferences.username, 'g');
     var styled = '<span class="usernameHighlight" style="font-weight: bold; color: ' + that.preferences.usernameHighlight + ';">' + that.preferences.username + '</span>';
@@ -288,7 +288,7 @@ SALR.prototype.highlightOwnUsername = function() {
  */
 SALR.prototype.highlightOwnQuotes = function() {
     var that = this;
-
+    
     var usernameQuoteMatch = that.preferences.username + ' posted:';
     $('.bbc-block h4:contains(' + usernameQuoteMatch + ')').each(function() {
         if ($(this).text() != usernameQuoteMatch)
