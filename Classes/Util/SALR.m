@@ -19,7 +19,7 @@
     [config setObject:[AwfulConfig highlightOwnMentions] forKey:@"highlightUsername"];
     [config setObject:[AwfulConfig highlightOwnQuotes] forKey:@"highlightUserQuote"];
     [config setObject:@"#a2cd5a" forKey:@"userQuote"];
-    [config setObject:@"#9933ff" forKey:@"highlightSelfColor"];
+    [config setObject:@"#9933ff" forKey:@"usernameHighlight"];
 
     SBJsonWriter *jsonWriter = [SBJsonWriter new];
     NSString *result = [jsonWriter stringWithObject:config];
