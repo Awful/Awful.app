@@ -257,6 +257,7 @@
 		self.graceTime = 0.0;
 		self.minShowTime = 0.0;
 		self.removeFromSuperViewOnHide = NO;
+        self.userInteractionEnabled = NO;
 		
 		self.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
 		

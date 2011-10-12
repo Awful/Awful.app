@@ -9,13 +9,17 @@
 #import "AwfulConfig.h"
 #import "SALR.h"
 #import "SBJson.h"
+#import "AwfulNavigator.h"
+#import "AwfulUser.h"
 
 @implementation SALR
 
 + (NSString *)config {
     NSMutableDictionary *config = [[NSMutableDictionary alloc] init];
     
-    [config setObject:[AwfulConfig username] forKey:@"username"];
+    AwfulNavigator *nav = getNavigator();
+    
+    [config setObject:nav.user.userName forKey:@"username"];
     [config setObject:[AwfulConfig highlightOwnMentions] forKey:@"highlightUsername"];
     [config setObject:[AwfulConfig highlightOwnQuotes] forKey:@"highlightUserQuote"];
     [config setObject:@"#a2cd5a" forKey:@"userQuote"];

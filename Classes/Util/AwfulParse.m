@@ -217,9 +217,7 @@
     NSString *salr = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"salr" ofType:@"js"] encoding:NSUTF8StringEncoding error:nil];
     
     NSString *meta = @"<meta name='viewport' content='width=device-width, minimum-scale=1.0, maximum-scale=1.0'>";
-    
-    NSLog(@"%@", [SALR config]);
-    
+        
     // Fire off SALR
     NSString *salrOpts = [NSString stringWithFormat:@"$(document).ready(function() { new SALR(%@); });", [SALR config]];
     NSString *html = [NSString stringWithFormat:@"<html><head>%@<script type='text/javascript'>%@</script><script type='text/javascript'>%@</script><style type='text/css'>%@</style></head><body><script type='text/javascript'>%@</script>%@%@%@%@</body></html>", 

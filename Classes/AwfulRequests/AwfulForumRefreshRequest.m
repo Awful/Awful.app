@@ -55,4 +55,10 @@
     [threads release];
 }
 
+- (void)failWithError:(NSError *)theError
+{
+    [super failWithError:theError];
+    [self.threadList stop];
+}
+
 @end

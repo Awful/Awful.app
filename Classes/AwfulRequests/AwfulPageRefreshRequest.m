@@ -117,5 +117,11 @@
     
     [page_data release];
 }
+
+-(void)failWithError:(NSError *)theError
+{
+    [super failWithError:theError];
+    [self.page.delegate swapToRefreshButton];
+}
     
 @end

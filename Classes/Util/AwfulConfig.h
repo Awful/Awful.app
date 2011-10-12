@@ -24,7 +24,6 @@ typedef enum {
 +(float)bookmarksDelay;
 +(int)numReadPostsAbove;
 +(AwfulDefaultLoadType)getDefaultLoadType;
-+(NSString *)username;
 +(NSString *)highlightOwnQuotes;
 +(NSString *)highlightOwnMentions;
 

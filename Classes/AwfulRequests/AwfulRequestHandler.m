@@ -18,11 +18,15 @@
 
 @synthesize queue = _queue;
 @synthesize hud = _hud;
+@synthesize requests = _requests;
 
 -(id)init
 {
-    _queue = [[ASINetworkQueue alloc] init];
-    _hud = nil;
+    if((self=[super init])) {
+        _queue = [[ASINetworkQueue alloc] init];
+        _hud = nil;
+        _requests = [[NSMutableArray alloc] init];
+    }
     return self;
 }
 
@@ -30,16 +34,22 @@
 {
     [_queue release];
     [_hud release];
+    [_requests release];
     [super dealloc];
 }
 
 -(void)cancelAllRequests
 {
+    for(ASIHTTPRequest *req in self.requests) {
+        [req setDelegate:nil];
+    }
     [self.queue cancelAllOperations];
+    [self hideHud];
 }
 
 -(void)loadRequest : (ASIHTTPRequest *)req
 {   
+    [self.requests addObject:req];
     [self.queue addOperation:req];
     [req setDelegate:self];
     [self.queue go];
@@ -47,16 +57,13 @@
 
 -(void)loadRequestAndWait : (ASIHTTPRequest *)req
 {
-    AwfulAppDelegate *del = (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
-    
-    self.hud = [[[MBProgressHUD alloc] initWithView:del.window] autorelease];
-    [del.window addSubview:self.hud];
-    self.hud.delegate = self;
+    [self showHud];
     self.hud.mode = MBProgressHUDModeIndeterminate;
     self.hud.labelText = @"Loading...";
-    [self.hud show:YES];
-    [[self queue] addOperation:req];
+    
+    [self.requests addObject:req];
     [req setDelegate:self];
+    [self.queue addOperation:req];
     [self.queue go];
 }
 
@@ -71,24 +78,29 @@
     }
     va_end(args);
     
-
-    AwfulAppDelegate *del = (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
-    
-    self.hud = [[[MBProgressHUD alloc] initWithView:del.window] autorelease];
-    [del.window addSubview:self.hud];
-    self.hud.delegate = self;
+    [self showHud];
     self.hud.mode = MBProgressHUDModeIndeterminate;
     self.hud.labelText = msg;
-    [self.hud show:YES];
     [self.queue addOperations:requests waitUntilFinished:NO];
     [[requests lastObject] setDelegate:self];
     [self.queue go];
+}
+
+-(void)showHud
+{
+    AwfulAppDelegate *del = (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
+    self.hud = [[[MBProgressHUD alloc] initWithView:del.window] autorelease];
+    [del.window addSubview:self.hud];
+    self.hud.delegate = self;
+    [self.hud show:YES];
 }
 
 #pragma mark ASIHTTPRequest Delegate
 
 -(void)requestFinished : (ASIHTTPRequest *)request
 {
+    [self.requests removeObject:request];
+    
     if(self.hud != nil) {
         NSString *msg = [request.userInfo objectForKey:@"completionMsg"];
         if(msg != nil) {
@@ -116,11 +128,11 @@
 
 -(void)requestFailed : (ASIHTTPRequest *)request
 {
-    if(self.hud != nil) {
-        self.hud.mode = MBProgressHUDModeCustomView;
-        self.hud.labelText = @"Failed";
-        [NSTimer scheduledTimerWithTimeInterval:1.25 target:self selector:@selector(hideHud) userInfo:nil repeats:NO];
-    }
+    [self.requests removeObject:request];
+    [self hideHud];
+    
+    UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:@"Request Failed" message:request.error.localizedDescription delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil] autorelease];
+    [alert show];
 }
 
 #pragma mark MBProgressHUD Delegate

@@ -29,6 +29,7 @@
 #import "AwfulHistoryManager.h"
 #import "AwfulHistory.h"
 #import "AwfulPostActions.h"
+#import "AwfulRequestHandler.h"
 #import "MWPhoto.h"
 #import "MWPhotoBrowser.h"
 
@@ -221,6 +222,9 @@
 
 -(void)stop
 {
+    AwfulNavigator *nav = getNavigator();
+    [nav.requestHandler cancelAllRequests];
+    
     if([self.view isMemberOfClass:[UIWebView class]]) {
         [(UIWebView *)self.view stopLoading];
     }

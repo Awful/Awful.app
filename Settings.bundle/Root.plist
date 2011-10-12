@@ -4,7 +4,7 @@
 <dict>
 	<key>PreferenceSpecifiers</key>
 	<array>
-        <dict>
+		<dict>
 			<key>Title</key>
 			<string>Images</string>
 			<key>Type</key>
@@ -108,19 +108,11 @@
 				<string>forumslist</string>
 			</array>
 		</dict>
-        <dict>
+		<dict>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 			<key>Title</key>
 			<string>SALR</string>
-		</dict>
-        <dict>
-			<key>Type</key>
-			<string>PSTextFieldSpecifier</string>
-			<key>Title</key>
-			<string>Username</string>
-			<key>Key</key>
-			<string>username</string>
 		</dict>
 		<dict>
 			<key>Type</key>
