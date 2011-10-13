@@ -17,8 +17,10 @@
 
 -(id)init
 {
-    _titles = [[NSMutableArray alloc] init];
-    _delegate = nil;
+    if((self=[super init])) {
+        _titles = [[NSMutableArray alloc] init];
+        _delegate = nil;
+    }
     return self;
 }
 

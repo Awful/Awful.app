@@ -59,7 +59,13 @@
 {
     [self showHud];
     self.hud.mode = MBProgressHUDModeIndeterminate;
-    self.hud.labelText = @"Loading...";
+    
+    NSString *msg = [req.userInfo objectForKey:@"loadingMsg"];
+    if(msg == nil) {
+        msg = @"Loading...";
+    }
+    
+    self.hud.labelText = msg;
     
     [self.requests addObject:req];
     [req setDelegate:self];

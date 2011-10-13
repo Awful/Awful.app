@@ -42,6 +42,7 @@
     TFHpple *base = [[TFHpple alloc] initWithHTMLData:converted];
     TFHppleElement *quote_el = [base searchForSingle:@"//textarea[@name='message']"];
     
+    [AwfulPostBoxController clearStoredPost];
     AwfulPostBoxController *post_box = [[AwfulPostBoxController alloc] initWithText:[NSString stringWithFormat:@"%@\n", [quote_el content]]];
     [post_box setThread:self.page.thread];
     

@@ -222,7 +222,6 @@
     NSString *salrOpts = [NSString stringWithFormat:@"$(document).ready(function() { new SALR(%@); });", [SALR config]];
     NSString *html = [NSString stringWithFormat:@"<html><head>%@<script type='text/javascript'>%@</script><script type='text/javascript'>%@</script><style type='text/css'>%@</style></head><body><script type='text/javascript'>%@</script>%@%@%@%@</body></html>", 
                     meta, js, salr, css, salrOpts, top, combined, adHTML, bottom];
-    
     return html;
 }
 

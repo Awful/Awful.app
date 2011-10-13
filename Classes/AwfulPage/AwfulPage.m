@@ -450,7 +450,7 @@
 
 - (void)webView:(UIWebView*) webview didReceiveJSNotificationWithDictionary:(NSDictionary*) dictionary
 {
-    NSLog(@"%@", dictionary);
+    //NSLog(@"%@", dictionary);
     NSString *action = [dictionary objectForKey:@"action"];
     if(action != nil) {
         if([action isEqualToString:@"nextPage"]) {

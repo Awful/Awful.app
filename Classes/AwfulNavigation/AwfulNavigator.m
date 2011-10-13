@@ -149,16 +149,21 @@
 
 -(void)swapToRefreshButton
 {
-    UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refresh)];
-    self.navigationItem.leftBarButtonItem = refresh;
-    [refresh release];
+    // check if already display 'refresh', prevents a crash when multiple threads are telling it to go to 'refresh'
+    if(self.navigationItem.leftBarButtonItem.action != @selector(refresh)) {
+        UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refresh)];
+        self.navigationItem.leftBarButtonItem = refresh;
+        [refresh release];
+    }
 }
 
 -(void)swapToStopButton
 {
-    UIBarButtonItem *stop = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop)];
-    self.navigationItem.leftBarButtonItem = stop;
-    [stop release];
+    if(self.navigationItem.leftBarButtonItem.action != @selector(stop)) {
+        UIBarButtonItem *stop = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop)];
+        self.navigationItem.leftBarButtonItem = stop;
+        [stop release];
+    }
 }
 
 -(void)updateHistoryButtons

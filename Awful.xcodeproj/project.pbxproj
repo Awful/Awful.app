@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -1940,8 +1940,6 @@
 				1190F70213BE4EA900B9D271 /* AwfulRequestHandler.m */,
 				1190F6F313BE4EA900B9D271 /* AwfulAppThreadRequest.h */,
 				1190F6F413BE4EA900B9D271 /* AwfulAppThreadRequest.m */,
-				1190F6F513BE4EA900B9D271 /* AwfulEditRequest.h */,
-				1190F6F613BE4EA900B9D271 /* AwfulEditRequest.m */,
 				1190F6F713BE4EA900B9D271 /* AwfulForumListRefreshRequest.h */,
 				1190F6F813BE4EA900B9D271 /* AwfulForumListRefreshRequest.m */,
 				1190F6F913BE4EA900B9D271 /* AwfulForumRefreshRequest.h */,
@@ -1950,6 +1948,8 @@
 				1190F6FC13BE4EA900B9D271 /* AwfulPageRefreshRequest.m */,
 				1190F6FD13BE4EA900B9D271 /* AwfulQuoteRequest.h */,
 				1190F6FE13BE4EA900B9D271 /* AwfulQuoteRequest.m */,
+				1190F6F513BE4EA900B9D271 /* AwfulEditRequest.h */,
+				1190F6F613BE4EA900B9D271 /* AwfulEditRequest.m */,
 				1190F6FF13BE4EA900B9D271 /* AwfulReplyRequest.h */,
 				1190F70013BE4EA900B9D271 /* AwfulReplyRequest.m */,
 				1190F70313BE4EA900B9D271 /* AwfulUserInfoRequest.h */,
@@ -2315,10 +2315,11 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastUpgradeCheck = 0420;
 				ORGANIZATIONNAME = "Regular Berry Software LLC";
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Awful" */;
-			compatibilityVersion = "Xcode 3.1";
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
@@ -2967,7 +2968,6 @@
 				HEADER_SEARCH_PATHS = "${SDKROOT}/usr/include/libxml2";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PREBINDING = NO;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "CDD9694B-870A-47E6-9171-C4D8342EE3D6";
 				SDKROOT = iphoneos;
 			};
@@ -3065,7 +3065,6 @@
 				HEADER_SEARCH_PATHS = "${SDKROOT}/usr/include/libxml2";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_LDFLAGS = "";
-				PREBINDING = NO;
 				PROVISIONING_PROFILE = "E6F3F14E-E6D2-4D5D-8EE6-3B26F48F427E";
 				SDKROOT = iphoneos;
 			};
@@ -3082,7 +3081,6 @@
 				HEADER_SEARCH_PATHS = "${SDKROOT}/usr/include/libxml2";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PREBINDING = NO;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "CDD2EE87-025E-4D48-ADB8-0F40A88D82DB";
 				SDKROOT = iphoneos;
 			};

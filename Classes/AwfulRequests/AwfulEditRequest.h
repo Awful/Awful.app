@@ -10,6 +10,7 @@
 
 @class AwfulPost;
 @class AwfulPage;
+@class AwfulPostBoxController;
 
 @interface AwfulEditRequest : ASIHTTPRequest {
     AwfulPost *_post;

@@ -23,6 +23,7 @@
 {
     NSURL *edit_url = [NSURL URLWithString:[NSString stringWithFormat:@"http://forums.somethingawful.com/editpost.php?action=editpost&postid=%@", post.postID]];
     self = [super initWithURL:edit_url];
+    self.userInfo = [NSDictionary dictionaryWithObject:@"Editing..." forKey:@"loadingMsg"];
     
     _post = [post retain];
     _text = [post_text retain];
@@ -41,9 +42,10 @@
     [super requestFinished];
     
     NSURL *edit_url = [NSURL URLWithString:@"http://forums.somethingawful.com/editpost.php"];
-    CloserFormRequest *form = [CloserFormRequest requestWithURL:edit_url];
     
+    CloserFormRequest *form = [CloserFormRequest requestWithURL:edit_url];
     form.post = self.post;
+    form.userInfo = [NSDictionary dictionaryWithObject:@"Editing..." forKey:@"loadingMsg"];
     
     NSString *raw_s = [[NSString alloc] initWithData:[self responseData] encoding:NSASCIIStringEncoding];
     NSData *converted = [raw_s dataUsingEncoding:NSUTF8StringEncoding];
@@ -63,6 +65,11 @@
     [form addPostValue:[self.text stringByEscapingUnicode] forKey:@"message"];
     
     loadRequestAndWait(form);
+}
+
+-(void)failWithError:(NSError *)theError
+{
+    [super failWithError:theError];
 }
 
 @end
@@ -96,6 +103,7 @@
     TFHpple *base = [[TFHpple alloc] initWithHTMLData:converted];
     TFHppleElement *quote_el = [base searchForSingle:@"//textarea[@name='message']"];
     
+    [AwfulPostBoxController clearStoredPost];
     AwfulPostBoxController *post_box = [[AwfulPostBoxController alloc] initWithText:[NSString stringWithFormat:@"%@\n", [quote_el content]]];
     post_box.post = self.post;
     

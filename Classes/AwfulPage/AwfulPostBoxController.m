@@ -1,4 +1,4 @@
-    //
+//
 //  AwfulPostBoxController.m
 //  Awful
 //
@@ -13,8 +13,9 @@
 #import "AwfulPage.h"
 #import "AwfulThread.h"
 #import "AwfulAppDelegate.h"
+#import "AwfulRequestHandler.h"
 
-#define CLEAR_BUTTON 1
+#define CANCEL_BUTTON 1
 #define SEND_BUTTON 2
 
 @implementation AwfulPostBoxController
@@ -32,7 +33,8 @@
 -(id)initWithText : (NSString *)text
 {
     if((self = [super initWithNibName:@"AwfulPostBox" bundle:[NSBundle mainBundle]])) {
-        _startingText = [text retain];
+        NSString *old = [AwfulPostBoxController retrievePost];
+        _startingText = [[old stringByAppendingString:text] retain];
         _post = nil;
         _thread = nil;
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
@@ -62,7 +64,6 @@
         [self.sendButton setTitle:@"Reply"];
     }
     
-    self.replyTextView.inputAccessoryView = self.toolbar;
     self.replyTextView.text = self.startingText;
     [self.replyTextView becomeFirstResponder];
 }
@@ -88,7 +89,6 @@
 {
 
 }
-
 
 -(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
@@ -122,43 +122,43 @@
     [UIView commitAnimations];
 }
 
--(IBAction)clearReply
-{
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Clear?" message:@"Every post is precious." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Clear Post", nil];
-    alert.delegate = self;
-    alert.tag = CLEAR_BUTTON;
-    [alert show];
-    [alert release];
-}
-
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if(buttonIndex == 1) {
-        if(alertView.tag == CLEAR_BUTTON) {
-            self.replyTextView.text = @"";
+        if(alertView.tag == CANCEL_BUTTON) {
+            
         } else if(alertView.tag == SEND_BUTTON) {    
             
-            ASIHTTPRequest *req = nil;
+            [AwfulPostBoxController savePost:self.replyTextView.text];
             
+            ASIHTTPRequest *req = nil;
             if(self.thread != nil) {
                 req = [[AwfulReplyRequest alloc] initWithReply:self.replyTextView.text forThread:self.thread];
             } else if(self.post != nil) {
                 req = [[AwfulEditRequest alloc] initWithAwfulPost:self.post withText:self.replyTextView.text];
             }
             
-            NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:self, @"waitCallback", nil];
-            
+            NSMutableDictionary *dict;
+            if(req.userInfo != nil) {
+                dict = [NSMutableDictionary dictionaryWithDictionary:req.userInfo];
+                [dict setObject:self forKey:@"waitCallback"];
+            } else {
+                dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:self, @"waitCallback", nil];
+            }
             req.userInfo = dict;
             loadRequestAndWait(req);
             [req release];
+            [self.replyTextView resignFirstResponder];
         }
     }
 }
 
 -(void)hideReply
 {
+    AwfulNavigator *nav = getNavigator();
+    [nav.requestHandler cancelAllRequests];
+    [AwfulPostBoxController savePost:self.replyTextView.text];
     [self.replyTextView resignFirstResponder];
-    
     UIViewController *vc = getRootController();
     [vc dismissModalViewControllerAnimated:YES];
 }
@@ -205,6 +205,25 @@
         self.replyTextView.text = @"";
     }
     self.replyTextView.text = [self.replyTextView.text stringByAppendingString:in_text];
+}
+
++(void)savePost : (NSString *)text
+{
+    [[NSUserDefaults standardUserDefaults] setObject:text forKey:@"storedPost"];
+}
+
++(NSString *)retrievePost
+{
+    NSString *post = [[NSUserDefaults standardUserDefaults] objectForKey:@"storedPost"];
+    if(post == nil) {
+        return @"";
+    }
+    return post;
+}
+
++(void)clearStoredPost
+{
+    [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"storedPost"];
 }
 
 @end

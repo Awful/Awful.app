@@ -12,6 +12,7 @@
 #import "AwfulPost.h"
 #import "AwfulPage.h"
 #import "AwfulPageCount.h"
+#import "AwfulPostBoxController.h"
 #import "TFHpple.h"
 #import "NSString+HTML.h"
 
@@ -30,6 +31,8 @@
 -(void)requestFinished
 {
     [super requestFinished];
+    
+    [AwfulPostBoxController clearStoredPost];
     
     AwfulNavigator *nav = getNavigator();
     [nav dismissModalViewControllerAnimated:YES];
@@ -50,6 +53,11 @@
     }
 }
 
+-(void)failWithError:(NSError *)theError
+{
+    [super failWithError:theError];
+}
+
 @end
 
 @implementation AwfulReplyRequest
@@ -61,6 +69,7 @@
 {
     NSString *url_str = [NSString stringWithFormat:@"http://forums.somethingawful.com/newreply.php?s=&action=newreply&threadid=%@", thread.threadID];
     self = [super initWithURL:[NSURL URLWithString:url_str]];
+    self.userInfo = [NSDictionary dictionaryWithObject:@"Posting..." forKey:@"loadingMsg"];
 
     _reply = [reply retain];
     _thread = [thread retain];
@@ -88,6 +97,7 @@
     CloserFormRequest *req = [CloserFormRequest requestWithURL:[NSURL URLWithString:@"http://forums.somethingawful.com/newreply.php"]];
     
     req.thread = self.thread;
+    req.userInfo = [NSDictionary dictionaryWithObject:@"Posting..." forKey:@"loadingMsg"];
     
     TFHppleElement *formkey_element = [page_data searchForSingle:@"//input[@name='formkey']"];
     TFHppleElement *formcookie_element = [page_data searchForSingle:@"//input[@name='form_cookie']"];
@@ -110,6 +120,11 @@
     [req addPostValue:@"Submit Reply" forKey:@"submit"];
     
     loadRequestAndWait(req);
+}
+
+-(void)failWithError:(NSError *)theError
+{
+    [super failWithError:theError];
 }
 
 @end

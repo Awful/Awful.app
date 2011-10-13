@@ -32,11 +32,12 @@
 @property (nonatomic, retain) NSString *startingText;
 
 -(id)initWithText : (NSString *)text;
-
 -(IBAction)hideReply;
--(IBAction)clearReply;
 -(IBAction)hitSend;
-
 -(void)addText : (NSString *)in_text;
+
++(void)savePost : (NSString *)text;
++(NSString *)retrievePost;
++(void)clearStoredPost;
 
 @end
