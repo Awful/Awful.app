@@ -269,9 +269,15 @@
 
 -(void)heldPost:(UILongPressGestureRecognizer *)gestureRecognizer
 {    
+    UIWebView *web = (UIWebView *)self.view;
     CGPoint p = [gestureRecognizer locationInView:self.view];
     NSString *offset_str = [(UIWebView *)self.view stringByEvaluatingJavaScriptFromString:@"scrollY"];
     float offset = [offset_str intValue];
+    
+    // if iOS 5.0, I don't need the offset
+    if([web respondsToSelector:@selector(scrollView)]) {
+        offset = 0.0;
+    }
     
     NSString *js_tag_name = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).tagName", p.x, p.y+offset];
     NSString *tag_name = [(UIWebView *)self.view stringByEvaluatingJavaScriptFromString:js_tag_name];
