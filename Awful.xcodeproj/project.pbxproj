@@ -3003,6 +3003,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3022,6 +3023,7 @@
 					"\"$(SRCROOT)/3rd Party Sources/Flurry\"",
 				);
 				PRODUCT_NAME = Awful;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -3066,6 +3068,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_LDFLAGS = "";
 				PROVISIONING_PROFILE = "E6F3F14E-E6D2-4D5D-8EE6-3B26F48F427E";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "8BE93C5C-25DC-4F70-9264-70CAD6155B30";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;

@@ -26,7 +26,7 @@
     if(post.avatarURL == nil) {
         avatar_str = @"";
     } else {
-        avatar_str = [NSString stringWithFormat:@"<td class='avatar'><img class='avatar' src='%@'/></td>", post.avatarURL];
+        avatar_str = [NSString stringWithFormat:@"<td class='avatar_td'><img class='avatar_img' src='%@'/></td>", post.avatarURL];
     }
     
     NSString *userbox_str = @"userbox";

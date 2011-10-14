@@ -9,7 +9,7 @@ body {
     font-size:14px;
     margin:0px;
     padding:0px;
-    -webkit-text-size-adjust: none; 
+    -webkit-text-size-adjust: none;
 }
 
 img {
@@ -30,12 +30,16 @@ img {
     -webkit-user-select:none;
 }
 
-.avatar {
+.avatar_img {
     max-width:50px;
     height:45px;
     padding-left: 5px;
     padding-top: 2px;
     padding-bottom: 2px;
+}
+
+.avatar_td {
+    width:50px;
 }
 
 .name_date_box {
