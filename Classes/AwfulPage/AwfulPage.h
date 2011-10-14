@@ -40,6 +40,7 @@ typedef enum {
     UILabel *_pagesLabel;
     UILabel *_threadTitleLabel;
     UIButton *_forumButton;
+    UIButton *_pagesButton;
     
     NSString *_adHTML;
 }
@@ -59,6 +60,7 @@ typedef enum {
 @property (nonatomic, retain) UILabel *pagesLabel;
 @property (nonatomic, retain) UILabel *threadTitleLabel;
 @property (nonatomic, retain) IBOutlet UIButton *forumButton;
+@property (nonatomic, retain) UIButton *pagesButton;
 
 @property (nonatomic, retain) NSString *adHTML;
 
@@ -73,6 +75,7 @@ typedef enum {
 -(void)setThreadTitle : (NSString *)in_title;
 -(void)tappedTitle : (UITapGestureRecognizer *)tapper;
 -(IBAction)tappedForumButton;
+-(void)tappedPageNav : (id)sender;
 
 -(void)scrollToSpecifiedPost;
 

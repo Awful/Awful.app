@@ -13,6 +13,7 @@
 @synthesize pagesLabel = _pagesLabel;
 @synthesize forumLabel = _forumLabel;
 @synthesize threadTitleLabel = _threadTitleLabel;
+@synthesize pagesButton = _pagesButton;
 
 -(id)init 
 {
@@ -29,6 +30,7 @@
     [_pagesLabel release];
     [_forumLabel release];
     [_threadTitleLabel release];
+    [_pagesButton release];
     [super dealloc];
 }
 
@@ -45,6 +47,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.pagesButton.titleLabel.lineBreakMode = UILineBreakModeWordWrap;
 }
 
 - (void)viewDidUnload
@@ -56,6 +60,7 @@
     self.pagesLabel = nil;
     self.forumLabel = nil;
     self.threadTitleLabel = nil;
+    self.pagesButton = nil;
 }
 
 - (void)viewWillAppear:(BOOL)animated

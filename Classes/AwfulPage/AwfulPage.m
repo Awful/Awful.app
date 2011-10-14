@@ -41,6 +41,7 @@
 @synthesize allRawPosts = _allRawPosts;
 @synthesize pagesLabel = _pagesLabel;
 @synthesize threadTitleLabel = _threadTitleLabel;
+@synthesize pagesButton = _pagesButton;
 @synthesize pages = _pages;
 @synthesize delegate = _delegate;
 @synthesize forumButton = _forumButton;
@@ -113,6 +114,7 @@
     [_allRawPosts release];
     [_pagesLabel release];
     [_threadTitleLabel release];
+    [_pagesButton release];
     [_forumButton release];
     [_pages release];
     [_scrollToPostID release];
@@ -155,6 +157,8 @@
         [_pages release];
         _pages = [pages retain];
         self.pagesLabel.text = [pages description];
+        [self.pagesButton setTitle:[self.pages description] forState:UIControlStateNormal];
+        [self.pagesButton setTitle:[self.pages description] forState:UIControlStateSelected];
         
         // lame workaround - history doesn't know my pageNum right away
         AwfulNavigator *nav = getNavigator();
@@ -197,6 +201,14 @@
         loadContentVC(list);
         [list release];
     }
+}
+
+-(void)tappedPageNav : (id)sender
+{
+    AwfulPageNavController *page_nav = [[AwfulPageNavController alloc] initWithAwfulPage:self];
+    UIViewController *vc = getRootController();
+    [vc presentModalViewController:page_nav animated:YES];
+    [page_nav release];
 }
 
 -(void)hardRefresh
@@ -382,6 +394,7 @@
     AwfulNavigatorLabels *labels = [[AwfulNavigatorLabels alloc] init];
     self.pagesLabel = labels.pagesLabel;
     self.threadTitleLabel = labels.threadTitleLabel;
+    self.pagesButton = labels.pagesButton;  
     [labels release];
         
     UIView *label_container = [[UIView alloc] initWithFrame:CGRectMake(0, 0, getWidth()-100, 44)];
@@ -399,7 +412,11 @@
     self.delegate.navigationItem.titleView = label_container;
     [label_container release];
     
-    UIBarButtonItem *cust = [[UIBarButtonItem alloc] initWithCustomView:self.pagesLabel];
+    [self.pagesButton setTitle:[self.pages description] forState:UIControlStateNormal];
+    [self.pagesButton setTitle:[self.pages description] forState:UIControlStateSelected];
+    [self.pagesButton addTarget:self action:@selector(tappedPageNav:) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIBarButtonItem *cust = [[UIBarButtonItem alloc] initWithCustomView:self.pagesButton];
     self.delegate.navigationItem.rightBarButtonItem = cust;
     [cust release];
 }
@@ -410,6 +427,7 @@
     self.pagesLabel = nil;
     self.threadTitleLabel = nil;
     self.forumButton = nil;
+    self.pagesButton = nil;
 }
 
 #pragma mark -
