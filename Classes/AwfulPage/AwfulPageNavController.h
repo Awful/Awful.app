@@ -47,5 +47,6 @@
 -(IBAction)hitFirst : (id)sender;
 -(IBAction)hitLast : (id)sender;
 -(IBAction)hitForum : (id)sender;
+-(IBAction)tappedOutside : (UITapGestureRecognizer *)tap;
 
 @end

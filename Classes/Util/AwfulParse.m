@@ -46,6 +46,10 @@
     NSString *name_avatar_box = [NSString stringWithFormat:@"<table id='%@' class='%@'><tr>%@<td class='name_date_box'><span class='%@'>%@</span><br/><span class='post_date'>Posted on %@</span></td><td></td><td class='quotebutton' onclick=tappedPost('%@')>%@</td></tr></table>", post.postID, userbox_str, avatar_str, user_str, username_info, post.postDate, post.postID, [AwfulParse getPostActionHTML]];
     NSString *parsed_post_body = [AwfulParse parseYouTubes:post_body];
     
+    if(![AwfulConfig showImages]) {
+        parsed_post_body = [AwfulParse parseOutImages:parsed_post_body];
+    }
+    
     NSString *html = [NSString stringWithFormat:@"%@<div class='postbodymain %@'><div class='postbodysub'>%@</div></div>", name_avatar_box, alt, parsed_post_body];
         
     return html;
@@ -258,6 +262,25 @@
                 parsed = [parsed stringByReplacingOccurrencesOfString:[object_strs objectAtIndex:i] withString:reformed_vimeo];
             }
         }
+    }
+    [base release];
+    
+    return parsed;
+}
+
++(NSString *)parseOutImages : (NSString *)html
+{
+    TFHpple *base = [[TFHpple alloc] initWithHTMLData:[html dataUsingEncoding:NSUTF8StringEncoding]];
+    NSString *parsed = html;
+    
+    NSArray *objects = [base search:@"//img"];
+    NSArray *object_strs = [base rawSearch:@"//img"];
+    
+    for(int i = 0; i < [objects count]; i++) {
+        TFHppleElement *el = [objects objectAtIndex:i];
+        NSString *src = [el objectForKey:@"src"];
+        NSString *reformed = [NSString stringWithFormat:@"<a href='%@'>IMG LINK</a>", src];
+        parsed = [parsed stringByReplacingOccurrencesOfString:[object_strs objectAtIndex:i] withString:reformed];
     }
     [base release];
     

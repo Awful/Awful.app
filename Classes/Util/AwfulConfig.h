@@ -21,6 +21,7 @@ typedef enum {
 
 +(id)getConfigObj : (NSString *)key;
 +(BOOL)showAvatars;
++(BOOL)showImages;
 +(float)bookmarksDelay;
 +(int)numReadPostsAbove;
 +(AwfulDefaultLoadType)getDefaultLoadType;

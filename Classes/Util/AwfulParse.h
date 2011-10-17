@@ -24,6 +24,7 @@
 +(NSMutableArray *)newPostsFromThread : (TFHpple *)hpple isFYAD : (BOOL)is_fyad;
 
 +(NSString *)parseYouTubes : (NSString *)html;
++(NSString *)parseOutImages : (NSString *)html;
 
 +(NSMutableArray *)newThreadsFromForum : (TFHpple *)hpple;
 +(NSString *)getAdHTMLFromData : (TFHpple *)hpple;

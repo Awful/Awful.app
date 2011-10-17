@@ -177,4 +177,9 @@
     }
 }
 
+-(IBAction)tappedOutside : (UITapGestureRecognizer *)tap
+{
+    [self.pageTextField resignFirstResponder];
+}
+
 @end

@@ -40,6 +40,15 @@
     return [ava boolValue];
 }
 
++(BOOL)showImages
+{
+    NSNumber *img = [AwfulConfig getConfigObj:@"show_images"];
+    if(img == nil) {
+        return YES;
+    }
+    return [img boolValue];
+}
+
 +(float)bookmarksDelay
 {
     NSString *delay = [AwfulConfig getConfigObj:@"bookmarks_delay"];
