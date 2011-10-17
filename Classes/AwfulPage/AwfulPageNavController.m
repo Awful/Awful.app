@@ -68,6 +68,11 @@
         [self.nextButton removeFromSuperview];
         [self.lastButton removeFromSuperview];
     }
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedOutside:)];
+    tap.cancelsTouchesInView = NO;
+    [self.view addGestureRecognizer:tap];
+    [tap release];
 }
 
 -(void)viewDidUnload
@@ -113,7 +118,7 @@
     //int chosen_page = [self.picker selectedRowInComponent:0] + 1;
     int chosen_page = [self.pageTextField.text intValue];
     if(self.page != nil) {
-        if(chosen_page >= 1 && chosen_page <= self.page.pages.totalPages) {
+        if(chosen_page >= 1 && chosen_page <= self.page.pages.totalPages && chosen_page != self.page.pages.currentPage) {
             AwfulPage *req_page = [[AwfulPage alloc] initWithAwfulThread:self.page.thread pageNum:chosen_page];
             loadContentVC(req_page);
             [req_page release];
