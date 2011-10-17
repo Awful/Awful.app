@@ -18,12 +18,10 @@
 #import "AwfulVoteActions.h"
 
 typedef enum {
-    AwfulThreadActionScrollToBottom,
-    AwfulThreadActionSpecificPage,
     AwfulThreadActionReply,
     AwfulThreadActionVote,
     AwfulThreadActionBookmarks,
-    AwfulThreadActionNextPage
+    AwfulThreadActionScrollToBottom,
 } AwfulThreadAction;
 
 @implementation AwfulThreadActions
@@ -35,8 +33,6 @@ typedef enum {
     if((self=[super init])) {
         _page = [page retain];
         
-        [self.titles addObject:@"Scroll To Bottom"];
-        [self.titles addObject:@"Specific Page"];
         [self.titles addObject:@"Reply"];
         [self.titles addObject:@"Vote"];
         
@@ -46,9 +42,7 @@ typedef enum {
             [self.titles addObject:@"Add To Bookmarks"];
         }
         
-        if(![_page.pages onLastPage]) {
-            [self.titles addObject:@"Next Page"];
-        }
+        [self.titles addObject:@"Scroll To Bottom"];
 
     }
     return self;
@@ -76,13 +70,6 @@ typedef enum {
         
         [self.page scrollToBottom];
         
-    } else if(buttonIndex == AwfulThreadActionSpecificPage) {
-        
-        AwfulPageNavController *page_nav = [[AwfulPageNavController alloc] initWithAwfulPage:self.page];
-        UIViewController *vc = getRootController();
-        [vc presentModalViewController:page_nav animated:YES];
-        [page_nav release];
-        
     } else if(buttonIndex == AwfulThreadActionVote) {
         
         AwfulVoteActions *vote = [[AwfulVoteActions alloc] initWithAwfulThread:self.page.thread];
@@ -105,10 +92,7 @@ typedef enum {
             [self addBookmark];
         }
         
-    } else if(buttonIndex == AwfulThreadActionNextPage) {
-        [self.page nextPage];
     }
-    
     if(buttonIndex != AwfulThreadActionVote) {
         [self.delegate setActions:nil];
     }

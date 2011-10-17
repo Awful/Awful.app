@@ -84,6 +84,8 @@
     if(new_post_index < [parsed_posts count] && new_post_index >= 0) {
         newest_post = [parsed_posts objectAtIndex:new_post_index];
         self.page.scrollToPostID = newest_post.postID;
+    } else if(new_post_index == [parsed_posts count] && self.page.destinationType == AwfulPageDestinationTypeNewpost) {
+        self.page.shouldScrollToBottom = YES;
     }
     
     int goal_posts_above = [AwfulConfig numReadPostsAbove];

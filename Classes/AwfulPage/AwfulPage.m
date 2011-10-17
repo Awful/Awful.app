@@ -32,11 +32,14 @@
 #import "AwfulRequestHandler.h"
 #import "MWPhoto.h"
 #import "MWPhotoBrowser.h"
+#import <QuartzCore/QuartzCore.h>
+#import "AwfulUser.h"
 
 @implementation AwfulPage
 
 @synthesize thread = _thread;
 @synthesize url = _url;
+@synthesize destinationType = _destinationType;
 @synthesize isBookmarked = _isBookmarked;
 @synthesize allRawPosts = _allRawPosts;
 @synthesize pagesLabel = _pagesLabel;
@@ -71,6 +74,7 @@
         _shouldScrollToBottom = NO;
         _scrollToPostID = nil;
         _touchedPage = NO;
+        _destinationType = thread_pos;
         
         _allRawPosts = [[NSMutableArray alloc] init];
         
@@ -172,36 +176,6 @@
     [self.thread setTitle:in_title];
     [self.threadTitleLabel setText:in_title];
 }
--(void)tappedTitle : (UITapGestureRecognizer *)tapper
-{
-    float x = self.view.frame.size.width/2;
-    
-    if(self.forumButton == nil) {
-        [[NSBundle mainBundle] loadNibNamed:@"AwfulForumButton" owner:self options:nil];
-        [self.forumButton setTitle:self.thread.forum.name forState:UIControlStateNormal];
-        self.forumButton.center = CGPointMake(x, -self.forumButton.frame.size.height/2);
-        [self.view addSubview:self.forumButton];
-        [UIView animateWithDuration:0.25 animations:^(void){
-            self.forumButton.center = CGPointMake(x, self.forumButton.frame.size.height/2);
-        }];
-    } else {
-        [UIView animateWithDuration:0.25 animations:^(void){
-            self.forumButton.center = CGPointMake(x, -self.forumButton.frame.size.height/2);
-        } completion:^(BOOL finished){
-            [self.forumButton removeFromSuperview];
-            self.forumButton = nil;
-        }];
-    }
-}
-
--(IBAction)tappedForumButton
-{
-    if(self.thread.forum != nil) {
-        AwfulThreadList *list = [[AwfulThreadList alloc] initWithAwfulForum:self.thread.forum];
-        loadContentVC(list);
-        [list release];
-    }
-}
 
 -(void)tappedPageNav : (id)sender
 {
@@ -213,15 +187,20 @@
 
 -(void)hardRefresh
 {    
-    AwfulPageDestinationType dest = AwfulPageDestinationTypeNewpost;
+    int posts_per_page = getPostsPerPage();
+    if([self.pages onLastPage] && [self.allRawPosts count] == posts_per_page) {
+        
+        AwfulPage *current_page = [[AwfulPage alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeSpecific pageNum:self.pages.currentPage];
+        current_page.shouldScrollToBottom = YES;
+        loadContentVC(current_page);
+        [current_page release];
+        
+    } else {
     
-    if([self.pages onLastPage]) {
-        dest = AwfulPageDestinationTypeLast;
+        AwfulPage *fresh_page = [[AwfulPage alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeNewpost];
+        loadContentVC(fresh_page);
+        [fresh_page release];
     }
-    
-    AwfulPage *fresh_page = [[AwfulPage alloc] initWithAwfulThread:self.thread startAt:dest];
-    loadContentVC(fresh_page);
-    [fresh_page release];
 }
 
 -(void)refresh
@@ -392,9 +371,7 @@
     [super viewDidLoad];
     
     AwfulNavigatorLabels *labels = [[AwfulNavigatorLabels alloc] init];
-    self.pagesLabel = labels.pagesLabel;
     self.threadTitleLabel = labels.threadTitleLabel;
-    self.pagesButton = labels.pagesButton;  
     [labels release];
         
     UIView *label_container = [[UIView alloc] initWithFrame:CGRectMake(0, 0, getWidth()-100, 44)];
@@ -403,18 +380,24 @@
     label_container.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     self.threadTitleLabel.frame = CGRectMake(0, 0, label_container.frame.size.width, label_container.frame.size.height);
     
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedTitle:)];
-    [label_container addGestureRecognizer:tap];
-    [tap release];
-    
-    self.pagesLabel.text = [self.pages description];
     self.threadTitleLabel.text = self.thread.title;
     self.delegate.navigationItem.titleView = label_container;
     [label_container release];
     
+    
+    self.pagesButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.pagesButton.titleLabel.lineBreakMode = UILineBreakModeWordWrap;
+    [self.pagesButton addTarget:self action:@selector(tappedPageNav:) forControlEvents:UIControlEventTouchUpInside];
+    [self.pagesButton setBackgroundImage:[UIImage imageNamed:@"grey-gradient.png"] forState:UIControlStateNormal];
+    self.pagesButton.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0f];
+    [self.pagesButton.layer setCornerRadius:4.0f];
+    [self.pagesButton.layer setMasksToBounds:YES];
+    [self.pagesButton.layer setBorderWidth:1.0f];
+    [self.pagesButton.layer setBorderColor: [[UIColor colorWithWhite:0.2 alpha:1.0] CGColor]];
+    self.pagesButton.frame = CGRectMake(0.0, 0.0, 44.0, 34.0);
     [self.pagesButton setTitle:[self.pages description] forState:UIControlStateNormal];
     [self.pagesButton setTitle:[self.pages description] forState:UIControlStateSelected];
-    [self.pagesButton addTarget:self action:@selector(tappedPageNav:) forControlEvents:UIControlEventTouchUpInside];
+
     
     UIBarButtonItem *cust = [[UIBarButtonItem alloc] initWithCustomView:self.pagesButton];
     self.delegate.navigationItem.rightBarButtonItem = cust;

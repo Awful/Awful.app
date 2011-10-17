@@ -296,8 +296,8 @@
     [super viewDidLoad];
     
     AwfulNavigatorLabels *labels = [[AwfulNavigatorLabels alloc] init];
-    self.pagesLabel = labels.pagesLabel;
     self.forumLabel = labels.forumLabel;
+    self.pagesLabel = labels.pagesLabel;
     [labels release];
     
     self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];

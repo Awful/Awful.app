@@ -12,12 +12,10 @@
     UILabel *_pagesLabel;
     UILabel *_forumLabel;
     UILabel *_threadTitleLabel;
-    UIButton *_pagesButton;
 }
 
 @property (nonatomic, retain) IBOutlet UILabel *pagesLabel;
 @property (nonatomic, retain) IBOutlet UILabel *forumLabel;
 @property (nonatomic, retain) IBOutlet UILabel *threadTitleLabel;
-@property (nonatomic, retain) IBOutlet UIButton *pagesButton;
 
 @end

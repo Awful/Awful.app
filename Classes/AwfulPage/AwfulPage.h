@@ -27,6 +27,7 @@ typedef enum {
 @interface AwfulPage : UIViewController <AwfulNavigatorContent, UIWebViewDelegate, AwfulHistoryRecorder, UIGestureRecognizerDelegate, JSBridgeWebViewDelegate> {
     AwfulThread *_thread;
     NSString *_url;
+    AwfulPageDestinationType _destinationType;
     
     NSMutableArray *_allRawPosts;
     
@@ -47,6 +48,7 @@ typedef enum {
 
 @property (nonatomic, retain) AwfulThread *thread;
 @property (nonatomic, retain) NSString *url;
+@property AwfulPageDestinationType destinationType;
 
 @property (nonatomic, retain) NSMutableArray *allRawPosts;
 
@@ -73,8 +75,6 @@ typedef enum {
 
 -(void)hardRefresh;
 -(void)setThreadTitle : (NSString *)in_title;
--(void)tappedTitle : (UITapGestureRecognizer *)tapper;
--(IBAction)tappedForumButton;
 -(void)tappedPageNav : (id)sender;
 
 -(void)scrollToSpecifiedPost;

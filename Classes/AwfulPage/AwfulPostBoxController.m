@@ -72,6 +72,9 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+    
+    [AwfulPostBoxController savePost:self.replyTextView.text];
+    
     self.sendButton = nil;
     self.replyTextView = nil;
     self.toolbar = nil;
@@ -99,6 +102,7 @@
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
     
+    [AwfulPostBoxController savePost:self.replyTextView.text];
     // Release any cached data, images, etc. that aren't in use.
 }
 
