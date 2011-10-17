@@ -31,6 +31,7 @@
 @synthesize forwardButton = _forwardButton;
 @synthesize actionButton = _actionButton;
 @synthesize welcomeMessage = _welcomeMessage;
+@synthesize fullScreenButton = _fullScreenButton;
 
 -(id)initWithCoder:(NSCoder *)aDecoder
 {
@@ -56,6 +57,7 @@
     [_backButton release];
     [_forwardButton release];
     [_actionButton release];
+    [_fullScreenButton release];
     [super dealloc];
 }
 
@@ -82,6 +84,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self.fullScreenButton removeFromSuperview];
     
     [self updateHistoryButtons];
     [self swapToRefreshButton];
@@ -112,6 +115,7 @@
     self.forwardButton = nil;
     self.actionButton = nil;
     self.welcomeMessage = nil;
+    self.fullScreenButton = nil;
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -250,6 +254,10 @@
     [self.contentVC setDelegate:self];
     
     self.view = [self.contentVC getView];
+    if([self isFullscreen]) {
+        self.fullScreenButton.center = CGPointMake(self.view.frame.size.width-25, self.view.frame.size.height-25);
+        [self.view addSubview:self.fullScreenButton];
+    }
     [self.contentVC refresh];
     
     AwfulActions *actions = [self.contentVC getActions];
@@ -262,15 +270,34 @@
 
 #pragma mark Gestures
 
--(void)tappedThreeTimes : (UITapGestureRecognizer *)gesture
+-(void)didFullscreenGesture : (UIGestureRecognizer *)gesture
 {
-    if([self.navigationController isToolbarHidden]) {
+    if([gesture isMemberOfClass:[UIPinchGestureRecognizer class]]) {
+        if([gesture state] != UIGestureRecognizerStateBegan) {
+            return;
+        }
+    }
+    
+    if([self isFullscreen]) {
         [self.navigationController setToolbarHidden:NO animated:YES];
         [self.navigationController setNavigationBarHidden:NO animated:YES];
+        [self.fullScreenButton removeFromSuperview];
     } else {
         [self.navigationController setToolbarHidden:YES animated:YES];
         [self.navigationController setNavigationBarHidden:YES animated:YES];
+        self.fullScreenButton.center = CGPointMake(self.view.frame.size.width-25, self.view.frame.size.height-25);
+        [self.view addSubview:self.fullScreenButton];
     }
+}
+
+-(IBAction)tappedFullscreen : (id)sender
+{
+    [self didFullscreenGesture:nil];
+}
+
+-(BOOL)isFullscreen
+{
+    return [self.navigationController isToolbarHidden];
 }
 
 -(void)forceShow

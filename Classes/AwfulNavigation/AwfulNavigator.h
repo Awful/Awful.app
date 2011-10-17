@@ -40,6 +40,7 @@
     UIBarButtonItem *_forwardButton;
     UIBarButtonItem *_actionButton;
     UILabel *_welcomeMessage;
+    UIButton *_fullScreenButton;
 }
 
 @property (nonatomic, retain) IBOutlet UIToolbar *toolbar;
@@ -52,6 +53,7 @@
 @property (nonatomic, retain) IBOutlet UIBarButtonItem *forwardButton;
 @property (nonatomic, retain) IBOutlet UIBarButtonItem *actionButton;
 @property (nonatomic, retain) IBOutlet UILabel *welcomeMessage;
+@property (nonatomic, retain) IBOutlet UIButton *fullScreenButton;
 
 -(void)loadContentVC : (id<AwfulNavigatorContent>)content;
 
@@ -67,8 +69,10 @@
 -(IBAction)tappedBookmarks;
 -(IBAction)tappedMore;
 
--(void)tappedThreeTimes : (UITapGestureRecognizer *)gesture;
+-(void)didFullscreenGesture : (UIGestureRecognizer *)gesture;
+-(IBAction)tappedFullscreen : (id)sender;
 -(void)forceShow;
+-(BOOL)isFullscreen;
 
 -(void)callBookmarksRefresh;
 

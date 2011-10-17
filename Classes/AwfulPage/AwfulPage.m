@@ -136,11 +136,16 @@
     [press release];
     
     AwfulNavigator *nav = getNavigator();
-    UITapGestureRecognizer *three_times = [[UITapGestureRecognizer alloc] initWithTarget:nav action:@selector(tappedThreeTimes:)];
+    UITapGestureRecognizer *three_times = [[UITapGestureRecognizer alloc] initWithTarget:nav action:@selector(didFullscreenGesture:)];
     three_times.numberOfTapsRequired = 3;
     three_times.delegate = self;
     [webView addGestureRecognizer:three_times];
     [three_times release];
+    
+    UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:nav action:@selector(didFullscreenGesture:)];
+    [webView addGestureRecognizer:pinch];
+    pinch.delegate = self;
+    [pinch release];
     
     webView.delegate = self;
     self.view = webView;
@@ -384,7 +389,6 @@
     self.delegate.navigationItem.titleView = label_container;
     [label_container release];
     
-    
     self.pagesButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.pagesButton.titleLabel.lineBreakMode = UILineBreakModeWordWrap;
     [self.pagesButton addTarget:self action:@selector(tappedPageNav:) forControlEvents:UIControlEventTouchUpInside];
@@ -394,7 +398,13 @@
     [self.pagesButton.layer setMasksToBounds:YES];
     [self.pagesButton.layer setBorderWidth:1.0f];
     [self.pagesButton.layer setBorderColor: [[UIColor colorWithWhite:0.2 alpha:1.0] CGColor]];
-    self.pagesButton.frame = CGRectMake(0.0, 0.0, 44.0, 34.0);
+    
+    float pages_button_height = 40.0;
+    if(UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
+        pages_button_height = 28.0;
+    }
+    self.pagesButton.frame = CGRectMake(0.0, 0.0, 44.0, pages_button_height);
+    self.pagesButton.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     [self.pagesButton setTitle:[self.pages description] forState:UIControlStateNormal];
     [self.pagesButton setTitle:[self.pages description] forState:UIControlStateSelected];
 

@@ -11,11 +11,9 @@
 @class AwfulPage;
 
 @interface AwfulPageNavController : UIViewController <UIPickerViewDelegate, UIPickerViewDataSource> {
-    UILabel *_pageLabel;
-    UILabel *_threadLabel;
+    UIBarButtonItem *_barTitle;
     UIButton *_forumButton;
     UITextField *_pageTextField;
-    //UIPickerView *_picker;
     AwfulPage *_page;
     UIToolbar *_toolbar;
     
@@ -28,11 +26,9 @@
 -(id)initWithAwfulPage : (AwfulPage *)page;
 
 @property (nonatomic, retain) AwfulPage *page;
-@property (nonatomic, retain) IBOutlet UILabel *pageLabel;
-@property (nonatomic, retain) IBOutlet UILabel *threadLabel;
+@property (nonatomic, retain) IBOutlet UIBarButtonItem *barTitle;
 @property (nonatomic, retain) IBOutlet UIButton *forumButton;
 @property (nonatomic, retain) IBOutlet UITextField *pageTextField;
-//@property (nonatomic, retain) IBOutlet UIPickerView *picker;
 @property (nonatomic, retain) IBOutlet UIToolbar *toolbar;
 
 @property (nonatomic, retain) IBOutlet UIButton *nextButton;

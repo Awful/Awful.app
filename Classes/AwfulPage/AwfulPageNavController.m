@@ -16,11 +16,9 @@
 
 @implementation AwfulPageNavController
 
-//@synthesize picker = _picker;
 @synthesize page = _page;
-@synthesize pageLabel = _pageLabel;
 @synthesize toolbar = _toolbar;
-@synthesize threadLabel = _threadLabel;
+@synthesize barTitle = _barTitle;
 @synthesize forumButton = _forumButton;
 @synthesize pageTextField = _pageTextField;
 
@@ -41,10 +39,7 @@
 -(void)dealloc
 {
     [_page release];
-    [_pageLabel release];
-    //[_picker release];
     [_toolbar release];
-    [_threadLabel release];
     [_forumButton release];
     [_pageTextField release];
     
@@ -58,11 +53,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    //[self.view bringSubviewToFront:self.picker];
     [self.view bringSubviewToFront:self.toolbar];
     
-    self.pageLabel.text = [NSString stringWithFormat:@"On Page %d of %d", self.page.pages.currentPage, self.page.pages.totalPages];
-    self.threadLabel.text = self.page.thread.title;
+    [self.barTitle setTitle:[NSString stringWithFormat:@"Page %d of %d", self.page.pages.currentPage, self.page.pages.totalPages]];
     [self.forumButton setTitle:self.page.thread.forum.name forState:UIControlStateNormal];
     [self.pageTextField setText:[NSString stringWithFormat:@"%d", self.page.pages.currentPage]];
     
@@ -75,21 +68,13 @@
         [self.nextButton removeFromSuperview];
         [self.lastButton removeFromSuperview];
     }
-    
-    /*[self.picker reloadAllComponents];
-    if(self.page != nil) {
-        [self.picker selectRow:self.page.pages.currentPage-1 inComponent:0 animated:NO];
-        self.pageLabel.title = [NSString stringWithFormat:@"Current Page: %d", self.page.pages.currentPage];
-    }*/
 }
 
 -(void)viewDidUnload
 {
     [super viewDidUnload];
-    //self.picker = nil;
-    self.pageLabel = nil;
+    self.barTitle = nil;
     self.toolbar = nil;
-    self.threadLabel = nil;
     self.forumButton = nil;
     self.pageTextField = nil;
     
