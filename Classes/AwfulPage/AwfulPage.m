@@ -18,7 +18,6 @@
 #import "ASIFormDataRequest.h"
 #import "AwfulQuoteRequest.h"
 #import "AwfulReplyRequest.h"
-#import "AwfulPageNavController.h"
 #import "AwfulEditRequest.h"
 #import "Appirater.h"
 #import "AwfulPageCount.h"
@@ -34,6 +33,7 @@
 #import "MWPhotoBrowser.h"
 #import <QuartzCore/QuartzCore.h>
 #import "AwfulUser.h"
+#import "AwfulSmallPageController.h"
 
 @implementation AwfulPage
 
@@ -52,6 +52,7 @@
 @synthesize scrollToPostID = _scrollToPostID;
 @synthesize touchedPage = _touchedPage;
 @synthesize adHTML = _adHTML;
+@synthesize pageController = _pageController;
 
 #pragma mark -
 #pragma mark Initialization
@@ -123,6 +124,7 @@
     [_pages release];
     [_scrollToPostID release];
     [_adHTML release];
+    [_pageController release];
     
     [super dealloc];
 }
@@ -184,10 +186,24 @@
 
 -(void)tappedPageNav : (id)sender
 {
-    AwfulPageNavController *page_nav = [[AwfulPageNavController alloc] initWithAwfulPage:self];
-    UIViewController *vc = getRootController();
-    [vc presentModalViewController:page_nav animated:YES];
-    [page_nav release];
+    if(self.pageController != nil && !self.pageController.hiding) {
+        self.pageController.hiding = YES;
+        [UIView animateWithDuration:0.5 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^(void) {
+            self.pageController.view.frame = CGRectOffset(self.pageController.view.frame, 0, -self.pageController.view.frame.size.height);
+        } completion:^(BOOL finished) {
+            [self.pageController.view removeFromSuperview];
+            self.pageController = nil;
+        }];
+    } else if(self.pageController == nil) {
+        self.pageController = [[[AwfulSmallPageController alloc] initWithAwfulPage:self] autorelease];
+        
+        float width_diff = self.view.frame.size.width - self.pageController.view.frame.size.width;
+        self.pageController.view.center = CGPointMake(self.view.center.x + width_diff/2, -self.pageController.view.frame.size.height/2);
+        [self.view addSubview:self.pageController.view];
+        [UIView animateWithDuration:0.5 animations:^(void) {
+            self.pageController.view.frame = CGRectOffset(self.pageController.view.frame, 0, self.pageController.view.frame.size.height);
+        }];
+    }
 }
 
 -(void)hardRefresh
@@ -399,7 +415,7 @@
     [self.pagesButton.layer setBorderWidth:1.0f];
     [self.pagesButton.layer setBorderColor: [[UIColor colorWithWhite:0.2 alpha:1.0] CGColor]];
     
-    float pages_button_height = 40.0;
+    float pages_button_height = 38.0;
     if(UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
         pages_button_height = 28.0;
     }

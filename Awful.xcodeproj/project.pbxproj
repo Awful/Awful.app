@@ -509,6 +509,8 @@
 		112DB4BB14211F24005A98CB /* SALR.m in Sources */ = {isa = PBXBuildFile; fileRef = 112DB4BA14211F24005A98CB /* SALR.m */; };
 		112DB4C21421208A005A98CB /* jquery.js in Resources */ = {isa = PBXBuildFile; fileRef = 112DB4BD14211F54005A98CB /* jquery.js */; };
 		112DB4C31421208A005A98CB /* salr.js in Resources */ = {isa = PBXBuildFile; fileRef = 112DB4BE14211F54005A98CB /* salr.js */; };
+		1153D0D6144E5BA6007602E8 /* AwfulSmallPageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1153D0D4144E5BA6007602E8 /* AwfulSmallPageController.m */; };
+		1153D0D7144E5BA6007602E8 /* AwfulSmallPageController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1153D0D5144E5BA6007602E8 /* AwfulSmallPageController.xib */; };
 		1156F004144B985000C0455B /* grey-gradient.png in Resources */ = {isa = PBXBuildFile; fileRef = 1156F003144B985000C0455B /* grey-gradient.png */; };
 		115A05DA134814B6004FDCE5 /* arrowright.png in Resources */ = {isa = PBXBuildFile; fileRef = 115A05D9134814B6004FDCE5 /* arrowright.png */; };
 		115A05DF13490D39004FDCE5 /* dotdotdot.png in Resources */ = {isa = PBXBuildFile; fileRef = 115A05DE13490D39004FDCE5 /* dotdotdot.png */; };
@@ -534,8 +536,6 @@
 		1190F74213BE4EA900B9D271 /* OtherWebController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6E713BE4EA900B9D271 /* OtherWebController.m */; };
 		1190F74313BE4EA900B9D271 /* AwfulForumButton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1190F6E913BE4EA900B9D271 /* AwfulForumButton.xib */; };
 		1190F74413BE4EA900B9D271 /* AwfulPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6EB13BE4EA900B9D271 /* AwfulPage.m */; };
-		1190F74513BE4EA900B9D271 /* AwfulPageNav.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1190F6EC13BE4EA900B9D271 /* AwfulPageNav.xib */; };
-		1190F74613BE4EA900B9D271 /* AwfulPageNavController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6EE13BE4EA900B9D271 /* AwfulPageNavController.m */; };
 		1190F74713BE4EA900B9D271 /* AwfulPostBox.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1190F6EF13BE4EA900B9D271 /* AwfulPostBox.xib */; };
 		1190F74813BE4EA900B9D271 /* AwfulPostBoxController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6F113BE4EA900B9D271 /* AwfulPostBoxController.m */; };
 		1190F74913BE4EA900B9D271 /* AwfulAppThreadRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6F413BE4EA900B9D271 /* AwfulAppThreadRequest.m */; };
@@ -1125,6 +1125,9 @@
 		112DB4BA14211F24005A98CB /* SALR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SALR.m; sourceTree = "<group>"; };
 		112DB4BD14211F54005A98CB /* jquery.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = jquery.js; sourceTree = "<group>"; };
 		112DB4BE14211F54005A98CB /* salr.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = salr.js; sourceTree = "<group>"; };
+		1153D0D3144E5BA6007602E8 /* AwfulSmallPageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSmallPageController.h; sourceTree = "<group>"; };
+		1153D0D4144E5BA6007602E8 /* AwfulSmallPageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSmallPageController.m; sourceTree = "<group>"; };
+		1153D0D5144E5BA6007602E8 /* AwfulSmallPageController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AwfulSmallPageController.xib; sourceTree = "<group>"; };
 		1156F003144B985000C0455B /* grey-gradient.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "grey-gradient.png"; path = "images/grey-gradient.png"; sourceTree = "<group>"; };
 		115A05D9134814B6004FDCE5 /* arrowright.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = arrowright.png; path = images/arrowright.png; sourceTree = "<group>"; };
 		115A05DE13490D39004FDCE5 /* dotdotdot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dotdotdot.png; path = images/dotdotdot.png; sourceTree = "<group>"; };
@@ -1161,9 +1164,6 @@
 		1190F6E913BE4EA900B9D271 /* AwfulForumButton.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AwfulForumButton.xib; sourceTree = "<group>"; };
 		1190F6EA13BE4EA900B9D271 /* AwfulPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPage.h; sourceTree = "<group>"; };
 		1190F6EB13BE4EA900B9D271 /* AwfulPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPage.m; sourceTree = "<group>"; };
-		1190F6EC13BE4EA900B9D271 /* AwfulPageNav.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AwfulPageNav.xib; sourceTree = "<group>"; };
-		1190F6ED13BE4EA900B9D271 /* AwfulPageNavController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPageNavController.h; sourceTree = "<group>"; };
-		1190F6EE13BE4EA900B9D271 /* AwfulPageNavController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPageNavController.m; sourceTree = "<group>"; };
 		1190F6EF13BE4EA900B9D271 /* AwfulPostBox.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AwfulPostBox.xib; sourceTree = "<group>"; };
 		1190F6F013BE4EA900B9D271 /* AwfulPostBoxController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostBoxController.h; sourceTree = "<group>"; };
 		1190F6F113BE4EA900B9D271 /* AwfulPostBoxController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostBoxController.m; sourceTree = "<group>"; };
@@ -1926,12 +1926,12 @@
 				1190F6EA13BE4EA900B9D271 /* AwfulPage.h */,
 				1190F6EB13BE4EA900B9D271 /* AwfulPage.m */,
 				1190F6E913BE4EA900B9D271 /* AwfulForumButton.xib */,
-				1190F6ED13BE4EA900B9D271 /* AwfulPageNavController.h */,
-				1190F6EE13BE4EA900B9D271 /* AwfulPageNavController.m */,
-				1190F6EC13BE4EA900B9D271 /* AwfulPageNav.xib */,
 				1190F6F013BE4EA900B9D271 /* AwfulPostBoxController.h */,
 				1190F6F113BE4EA900B9D271 /* AwfulPostBoxController.m */,
 				1190F6EF13BE4EA900B9D271 /* AwfulPostBox.xib */,
+				1153D0D3144E5BA6007602E8 /* AwfulSmallPageController.h */,
+				1153D0D4144E5BA6007602E8 /* AwfulSmallPageController.m */,
+				1153D0D5144E5BA6007602E8 /* AwfulSmallPageController.xib */,
 			);
 			path = AwfulPage;
 			sourceTree = "<group>";
@@ -2853,7 +2853,6 @@
 				1190F73F13BE4EA900B9D271 /* AwfulNavigator.xib in Resources */,
 				1190F74113BE4EA900B9D271 /* AwfulNavigatorLabels.xib in Resources */,
 				1190F74313BE4EA900B9D271 /* AwfulForumButton.xib in Resources */,
-				1190F74513BE4EA900B9D271 /* AwfulPageNav.xib in Resources */,
 				1190F74713BE4EA900B9D271 /* AwfulPostBox.xib in Resources */,
 				1190F75413BE4EA900B9D271 /* AwfulThreadListCells.xib in Resources */,
 				1190F75513BE4EA900B9D271 /* AwfulExtrasCells.xib in Resources */,
@@ -2867,6 +2866,7 @@
 				1190F80513BE58BB00B9D271 /* post.css in Resources */,
 				11D31C5013C40FDF0018C6E0 /* tiny_arrow_right@2x.png in Resources */,
 				1156F004144B985000C0455B /* grey-gradient.png in Resources */,
+				1153D0D7144E5BA6007602E8 /* AwfulSmallPageController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2888,7 +2888,6 @@
 				1190F74013BE4EA900B9D271 /* AwfulNavigatorLabels.m in Sources */,
 				1190F74213BE4EA900B9D271 /* OtherWebController.m in Sources */,
 				1190F74413BE4EA900B9D271 /* AwfulPage.m in Sources */,
-				1190F74613BE4EA900B9D271 /* AwfulPageNavController.m in Sources */,
 				1190F74813BE4EA900B9D271 /* AwfulPostBoxController.m in Sources */,
 				1190F74913BE4EA900B9D271 /* AwfulAppThreadRequest.m in Sources */,
 				1190F74A13BE4EA900B9D271 /* AwfulEditRequest.m in Sources */,
@@ -2955,6 +2954,7 @@
 				1190F7F313BE4EDA00B9D271 /* main.m in Sources */,
 				1190F7FF13BE4F2900B9D271 /* CrashReportSender.m in Sources */,
 				112DB4BB14211F24005A98CB /* SALR.m in Sources */,
+				1153D0D6144E5BA6007602E8 /* AwfulSmallPageController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2973,8 +2973,7 @@
 				HEADER_SEARCH_PATHS = "${SDKROOT}/usr/include/libxml2";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PROVISIONING_PROFILE = "CDD9694B-870A-47E6-9171-C4D8342EE3D6";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "CDD9694B-870A-47E6-9171-C4D8342EE3D6";
+				PROVISIONING_PROFILE = "E24CCB6A-BA71-4DA4-A3CC-7AC010899281";
 				SDKROOT = iphoneos;
 			};
 			name = AdHoc;
@@ -3001,7 +3000,6 @@
 					"\"$(SRCROOT)/3rd Party Sources/Flurry\"",
 				);
 				PRODUCT_NAME = Awful;
-				PROVISIONING_PROFILE = "CDD9694B-870A-47E6-9171-C4D8342EE3D6";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -3066,7 +3064,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Sean Berry (9HL8QUW4RH)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Regular Berry Software LLC";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Sean Berry (9HL8QUW4RH)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -3075,7 +3073,7 @@
 				HEADER_SEARCH_PATHS = "${SDKROOT}/usr/include/libxml2";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_LDFLAGS = "";
-				PROVISIONING_PROFILE = "E6F3F14E-E6D2-4D5D-8EE6-3B26F48F427E";
+				PROVISIONING_PROFILE = "E24CCB6A-BA71-4DA4-A3CC-7AC010899281";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "8BE93C5C-25DC-4F70-9264-70CAD6155B30";
 				SDKROOT = iphoneos;
 			};
@@ -3085,6 +3083,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Regular Berry Software LLC";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -3092,7 +3091,8 @@
 				HEADER_SEARCH_PATHS = "${SDKROOT}/usr/include/libxml2";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "CDD2EE87-025E-4D48-ADB8-0F40A88D82DB";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "E24CCB6A-BA71-4DA4-A3CC-7AC010899281";
 				SDKROOT = iphoneos;
 			};
 			name = Release;

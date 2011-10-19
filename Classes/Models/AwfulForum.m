@@ -65,6 +65,7 @@
     NSMutableArray *forums = nil;
     if([[NSFileManager defaultManager] fileExistsAtPath:path]) {
         forums = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
+        [NSKeyedArchiver archiveRootObject:forums toFile:[[AwfulUtil getDocsDir] stringByAppendingPathComponent:@"forumslist"]];
     } 
     
     if(forums == nil || [forums count] == 0) {
