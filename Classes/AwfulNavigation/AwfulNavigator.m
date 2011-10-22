@@ -86,6 +86,10 @@
 {
     [super viewDidLoad];
     [self.fullScreenButton removeFromSuperview];
+    if([self isFullscreen]) {
+        self.fullScreenButton.center = CGPointMake(self.view.frame.size.width-25, self.view.frame.size.height-25);
+        [self.view addSubview:self.fullScreenButton];
+    }
     
     [self updateHistoryButtons];
     [self swapToRefreshButton];

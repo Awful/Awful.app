@@ -154,6 +154,10 @@
     webView.delegate = self;
     self.view = webView;
     nav.view = self.view;
+    if([nav isFullscreen]) {
+        nav.fullScreenButton.center = CGPointMake(nav.view.frame.size.width-25, nav.view.frame.size.height-25);
+        [nav.view addSubview:nav.fullScreenButton];
+    }
 }
 
 -(NSString *)getURLSuffix
@@ -190,7 +194,7 @@
 {
     if(self.pageController != nil && !self.pageController.hiding) {
         self.pageController.hiding = YES;
-        [UIView animateWithDuration:0.5 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^(void) {
+        [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^(void) {
             self.pageController.view.frame = CGRectOffset(self.pageController.view.frame, 0, -self.pageController.view.frame.size.height);
         } completion:^(BOOL finished) {
             [self.pageController.view removeFromSuperview];
@@ -202,7 +206,7 @@
         float width_diff = self.view.frame.size.width - self.pageController.view.frame.size.width;
         self.pageController.view.center = CGPointMake(self.view.center.x + width_diff/2, -self.pageController.view.frame.size.height/2);
         [self.view addSubview:self.pageController.view];
-        [UIView animateWithDuration:0.5 animations:^(void) {
+        [UIView animateWithDuration:0.3 animations:^(void) {
             self.pageController.view.frame = CGRectOffset(self.pageController.view.frame, 0, self.pageController.view.frame.size.height);
         }];
     }
@@ -414,7 +418,7 @@
     self.pagesButton.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0f];
     [self.pagesButton.layer setCornerRadius:4.0f];
     [self.pagesButton.layer setMasksToBounds:YES];
-    [self.pagesButton.layer setBorderWidth:1.5f];
+    [self.pagesButton.layer setBorderWidth:1.2f];
     [self.pagesButton.layer setBorderColor: [[UIColor colorWithWhite:0.2 alpha:1.0] CGColor]];
     
     float pages_button_height = 38.0;
@@ -664,7 +668,6 @@
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
 {
-    NSLog(@"failed: %@", error);
 }
 
 @end
