@@ -15,6 +15,7 @@
 
 @class AwfulPageCount;
 @class AwfulThread;
+@class AwfulSplitViewController;
 
 @interface AwfulThreadCell : UITableViewCell {
     UILabel *_threadTitleLabel;
@@ -98,5 +99,12 @@ typedef enum {
 
 -(void)choseForumOption : (int)option;
 -(AwfulThreadCellType)getTypeAtIndexPath : (NSIndexPath *)path;
+
+@end
+
+@interface AwfulThreadListIpad : AwfulThreadList
+
+-(void)swapToRefreshButton;
+-(void)swapToStopButton;
 
 @end

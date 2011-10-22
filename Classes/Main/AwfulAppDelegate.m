@@ -10,13 +10,15 @@
 #import "AwfulNavigator.h"
 #import "FlurryAPI.h"
 #import "Appirater.h"
+#import "AwfulSplitViewController.h"
 
 @implementation AwfulAppDelegate
 
 @synthesize window = _window;
 @synthesize navigationController = _navigationController;
 @synthesize navigator = _navigator;
-
+@synthesize navigatorIpad = _navigatorIpad;
+@synthesize splitController = _splitController;
 
 #pragma mark -
 #pragma mark Application lifecycle
@@ -25,7 +27,11 @@
         
     // Override point for customization after application launch.
 
-    [self.window addSubview:self.navigationController.view];
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [self.window addSubview:self.splitController.view];
+    } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        [self.window addSubview:self.navigationController.view];
+    }
     [self.window makeKeyAndVisible];
     
     [FlurryAPI startSession:@"EU3TLVQM9U8T8QKNI9ID"];
@@ -38,8 +44,10 @@
 }
 
 - (void)dealloc {
+    [_splitController release];
     [_navigationController release];
     [_navigator release];
+    [_navigatorIpad release];
     [_window release];
     [super dealloc];
 }

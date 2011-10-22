@@ -78,6 +78,10 @@
 
 @end
 
+@interface AwfulNavigatorIpad : AwfulNavigator
+
+@end
+
 AwfulNavigator *getNavigator();
 void loadContentVC(id<AwfulNavigatorContent> content);
 void loadRequest(ASIHTTPRequest *req);

@@ -220,7 +220,11 @@
     
     NSString *salr = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"salr" ofType:@"js"] encoding:NSUTF8StringEncoding error:nil];
     
-    NSString *meta = @"<meta name='viewport' content='width=device-width, minimum-scale=1.0, maximum-scale=1.0'>";
+    NSString *width = @"device-width";
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        width = @"700";
+    }
+    NSString *meta = [NSString stringWithFormat:@"<meta name='viewport' content='width=%@, minimum-scale=1.0, maximum-scale=1.0'>", width];
         
     // Fire off SALR
     NSString *salrOpts = [NSString stringWithFormat:@"$(document).ready(function() { new SALR(%@); });", [SALR config]];

@@ -244,3 +244,28 @@
 
 @end
 
+@implementation AwfulBookmarksControllerIpad
+
+-(void)viewDidLoad {
+    [super viewDidLoad];
+    self.navigationItem.titleView = nil;
+    self.title = @"Bookmarks";
+    [self swapToRefreshButton];
+}
+
+-(void)swapToRefreshButton
+{
+    UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refresh)];
+    self.navigationItem.rightBarButtonItem = refresh;
+    [refresh release];
+}
+
+-(void)swapToStopButton
+{
+    UIBarButtonItem *stop = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop)];
+    self.navigationItem.rightBarButtonItem = stop;
+    [stop release];
+}
+
+@end
+

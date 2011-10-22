@@ -34,6 +34,8 @@
 #import <QuartzCore/QuartzCore.h>
 #import "AwfulUser.h"
 #import "AwfulSmallPageController.h"
+#import "AwfulExtrasController.h"
+#import "AwfulSplitViewController.h"
 
 @implementation AwfulPage
 
@@ -412,7 +414,7 @@
     self.pagesButton.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0f];
     [self.pagesButton.layer setCornerRadius:4.0f];
     [self.pagesButton.layer setMasksToBounds:YES];
-    [self.pagesButton.layer setBorderWidth:1.0f];
+    [self.pagesButton.layer setBorderWidth:1.5f];
     [self.pagesButton.layer setBorderColor: [[UIColor colorWithWhite:0.2 alpha:1.0] CGColor]];
     
     float pages_button_height = 38.0;
@@ -428,6 +430,12 @@
     UIBarButtonItem *cust = [[UIBarButtonItem alloc] initWithCustomView:self.pagesButton];
     self.delegate.navigationItem.rightBarButtonItem = cust;
     [cust release];
+    
+    self.title = self.thread.title;
+    
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [self makeCustomToolbar];
+    }
 }
 
 - (void)viewDidUnload {
@@ -437,6 +445,50 @@
     self.threadTitleLabel = nil;
     self.forumButton = nil;
     self.pagesButton = nil;
+}
+
+#pragma mark -
+#pragma mark iPad Specific
+                                 
+-(void)makeCustomToolbar
+{
+    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 140, 40)];
+    NSMutableArray *items = [NSMutableArray array];
+    
+    UIBarButtonItem *pages_cust = [[UIBarButtonItem alloc] initWithCustomView:self.pagesButton];
+    UIBarButtonItem *act = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(hitActions)];
+    UIBarButtonItem *more = [[UIBarButtonItem alloc] initWithTitle:@"..." style:UIBarButtonItemStylePlain target:self action:@selector(hitMore)];
+    UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    
+    [items addObject:act];
+    [items addObject:space];
+    [items addObject:pages_cust];
+    [items addObject:space];
+    [items addObject:more];
+    
+    [toolbar setItems:items];
+    
+    [pages_cust release];
+    [act release];
+    [more release];
+    
+    UIBarButtonItem *toolbar_cust = [[UIBarButtonItem alloc] initWithCustomView:toolbar];
+    [toolbar release];
+    self.navigationItem.rightBarButtonItem = toolbar_cust;
+    [toolbar_cust release];
+}
+
+-(void)hitActions
+{
+    
+}
+
+-(void)hitMore
+{
+    AwfulExtrasController *extras = [[AwfulExtrasController alloc] init];
+    AwfulAppDelegate *del = (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
+    [del.splitController.pageController pushViewController:extras animated:YES];
+    [extras release];
 }
 
 #pragma mark -

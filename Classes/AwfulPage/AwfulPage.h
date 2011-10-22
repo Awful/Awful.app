@@ -75,6 +75,7 @@ typedef enum {
 -(id)initWithAwfulThread : (AwfulThread *)thread pageNum : (int)page_num;
 -(id)initWithAwfulThread : (AwfulThread *)thread startAt : (AwfulPageDestinationType)thread_pos pageNum : (int)page_num;
 -(void)acceptPosts : (NSMutableArray *)posts;
+-(void)makeCustomToolbar;
 
 -(NSString *)getURLSuffix;
 
@@ -91,5 +92,8 @@ typedef enum {
 
 -(void)heldPost:(UILongPressGestureRecognizer *)gestureRecognizer;
 -(void)scrollToPost : (NSString *)post_id;
+
+-(void)hitActions;
+-(void)hitMore;
 
 @end

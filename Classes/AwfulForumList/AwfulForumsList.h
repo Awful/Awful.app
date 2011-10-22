@@ -11,6 +11,7 @@
 @class AwfulForum;
 @class AwfulForumCell;
 @class AwfulForumHeader;
+@class AwfulSplitViewController;
 
 @interface AwfulForumSection : NSObject
 {
@@ -70,5 +71,11 @@
 -(AwfulForumSection *)getForumSectionFromID : (NSString *)forum_id;
 -(AwfulForumSection *)getForumSectionFromID : (NSString *)forum_id lookInForumSection : (AwfulForumSection *)section;
 -(AwfulForumSection *)getRootSectionForSection : (AwfulForumSection *)section;
+
+@end
+
+@interface AwfulForumsListIpad : AwfulForumsList
+
+-(void)hitBookmarks;
 
 @end

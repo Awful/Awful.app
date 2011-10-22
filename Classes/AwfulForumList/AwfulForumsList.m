@@ -17,6 +17,7 @@
 #import "AwfulForumListRefreshRequest.h"
 #import "AwfulForumCell.h"
 #import "AwfulLoginController.h"
+#import "AwfulBookmarksController.h"
 
 #define SECTION_INDEX_OFFSET 1
 
@@ -30,11 +31,13 @@
 
 -(id)init
 {
-    _forum = nil;
-    _children = [[NSMutableArray alloc] init];
-    _expanded = NO;
-    _rowIndex = NSNotFound;
-    _totalAncestors = 0;
+    if((self=[super init])) {
+        _forum = nil;
+        _children = [[NSMutableArray alloc] init];
+        _expanded = NO;
+        _rowIndex = NSNotFound;
+        _totalAncestors = 0;
+    }
     return self;
 }
 
@@ -79,6 +82,11 @@
         [self loadForums];
     }
     return self;
+}
+
+-(id)initWithCoder:(NSCoder *)aDecoder
+{
+    return [self init];
 }
 
 - (void)dealloc {
@@ -135,6 +143,7 @@
 
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
+    return YES;
     return (toInterfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
@@ -663,3 +672,29 @@
 
 @end
 
+@implementation AwfulForumsListIpad
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    UIBarButtonItem *book = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemBookmarks target:self action:@selector(hitBookmarks)];
+    self.navigationItem.rightBarButtonItem = book;
+    [book release];
+}
+
+-(void)hitBookmarks
+{
+    AwfulBookmarksControllerIpad *bookmarks = [[AwfulBookmarksControllerIpad alloc] init];
+    [self.navigationController pushViewController:bookmarks animated:YES];
+    [bookmarks release];
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    AwfulForum *forum = [self getForumAtIndexPath:indexPath];
+    
+    AwfulThreadListIpad *detail = [[AwfulThreadListIpad alloc] initWithAwfulForum:forum];
+    [self.navigationController pushViewController:detail animated:YES];
+    [detail release];
+}
+
+@end

@@ -10,16 +10,22 @@
 #import "CrashReportSender.h"
 
 @class AwfulNavigator;
+@class AwfulNavigatorIpad;
+@class AwfulSplitViewController;
 
 @interface AwfulAppDelegate : NSObject <UIApplicationDelegate> {
     UIWindow *_window;
     UINavigationController *_navigationController;
     AwfulNavigator *_navigator;
+    AwfulNavigatorIpad *_navigatorIpad;
+    AwfulSplitViewController *_splitController;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, retain) IBOutlet UINavigationController *navigationController;
 @property (nonatomic, retain) IBOutlet AwfulNavigator *navigator;
+@property (nonatomic, retain) IBOutlet AwfulNavigatorIpad *navigatorIpad;
+@property (nonatomic, retain) IBOutlet AwfulSplitViewController *splitController;
 
 @end
 

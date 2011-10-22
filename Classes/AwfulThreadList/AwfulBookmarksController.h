@@ -24,3 +24,9 @@
 -(void)swapToStopButton;
 
 @end
+
+@interface AwfulBookmarksControllerIpad : AwfulBookmarksController {
+    
+}
+
+@end

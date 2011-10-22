@@ -9,6 +9,10 @@
 #import "AwfulSmallPageController.h"
 #import "AwfulPage.h"
 #import "AwfulPageCount.h"
+#import "AwfulThread.h"
+#import "AwfulForum.h"
+#import "AwfulThreadList.h"
+#import <QuartzCore/QuartzCore.h>
 
 @implementation AwfulSmallPageController
 
@@ -16,6 +20,7 @@
 @synthesize submitting = _submitting;
 @synthesize page = _page;
 @synthesize segment = _segment;
+@synthesize forumButton = _forumButton;
 
 -(id)initWithAwfulPage : (AwfulPage *)page
 {
@@ -30,6 +35,8 @@
 -(void)dealloc
 {
     [_page release];
+    [_forumButton release];
+    [_segment release];
     [super dealloc];
 }
 
@@ -57,6 +64,13 @@
         [self.segment setEnabled:NO forSegmentAtIndex:0];
         [self.segment setEnabled:NO forSegmentAtIndex:1];
     }
+    
+    self.forumButton.titleLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:11.0f];
+    [self.forumButton.layer setCornerRadius:4.0f];
+    [self.forumButton.layer setMasksToBounds:YES];
+    [self.forumButton.layer setBorderWidth:1.0f];
+    [self.forumButton.layer setBorderColor: [[UIColor colorWithWhite:0.2 alpha:1.0] CGColor]];
+    [self.forumButton setTitle:self.page.thread.forum.name forState:UIControlStateNormal];
 }
 
 - (void)viewDidUnload
@@ -66,6 +80,7 @@
     // e.g. self.myOutlet = nil;
     
     self.segment = nil;
+    self.forumButton = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -114,6 +129,15 @@
         AwfulPage *last_page = [[AwfulPage alloc] initWithAwfulThread:self.page.thread startAt:AwfulPageDestinationTypeLast];
         loadContentVC(last_page);
         [last_page release];
+    }
+}
+
+-(IBAction)hitForum : (id)sender
+{
+    if(self.page.thread.forum != nil) {
+        AwfulThreadList *list = [[AwfulThreadList alloc] initWithAwfulForum:self.page.thread.forum];
+        loadContentVC(list);
+        [list release];
     }
 }
 

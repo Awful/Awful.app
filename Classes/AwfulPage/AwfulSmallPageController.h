@@ -13,12 +13,14 @@
 @interface AwfulSmallPageController : UIViewController {
     AwfulPage *_page;
     UISegmentedControl *_segment;
+    UIButton *_forumButton;
     BOOL _hiding;
     BOOL _submitting;
 }
 
 @property (nonatomic, retain) AwfulPage *page;
 @property (nonatomic, retain) IBOutlet UISegmentedControl *segment;
+@property (nonatomic, retain) IBOutlet UIButton *forumButton;
 @property BOOL hiding;
 @property BOOL submitting;
 
@@ -29,5 +31,6 @@
 -(IBAction)hitPrev;
 -(IBAction)hitFirst;
 -(IBAction)hitLast;
+-(IBAction)hitForum : (id)sender;
 
 @end

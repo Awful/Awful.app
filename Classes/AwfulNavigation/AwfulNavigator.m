@@ -18,6 +18,7 @@
 #import "AwfulActions.h"
 #import "AwfulConfig.h"
 #import "AwfulHistoryManager.h"
+#import "AwfulSplitViewController.h"
 
 @implementation AwfulNavigator
 
@@ -325,9 +326,37 @@
 
 @end
 
+@implementation AwfulNavigatorIpad
+
+-(void)loadContentVC : (id<AwfulNavigatorContent>)content
+{
+    [self dismissModalViewControllerAnimated:YES];
+    
+    if([content isMemberOfClass:[AwfulPage class]]) {
+        AwfulAppDelegate *del = (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
+        [del.splitController showAwfulPage:(AwfulPage *)content];
+    }
+    
+    self.contentVC = content;
+    [self.contentVC setDelegate:self];
+    [self.contentVC refresh];
+}
+
+-(void)setActions:(AwfulActions *)actions
+{
+    
+}
+
+@end
+
 AwfulNavigator *getNavigator()
 {
     AwfulAppDelegate *del = (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
+    
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        return del.navigatorIpad;
+    }
+    
     return del.navigator;
 }
 
