@@ -10,7 +10,7 @@
 
 @class AwfulNavigator;
 
-@interface AwfulActions : NSObject <UIActionSheetDelegate> {
+@interface AwfulActions : NSObject <UIActionSheetDelegate, UIAlertViewDelegate> {
     NSMutableArray *_titles;
     AwfulNavigator *_delegate;
 }

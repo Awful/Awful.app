@@ -10,16 +10,29 @@
 #import "AwfulForumsList.h"
 #import "AwfulPage.h"
 #import "AwfulExtrasController.h"
+#import "AwfulAppDelegate.h"
 
 @implementation AwfulSplitViewController
 
 @synthesize pageController = _pageController;
 @synthesize listController = _listController;
+@synthesize popController = _popController;
+@synthesize popOverButton = _popOverButton;
+
+-(id)initWithCoder:(NSCoder *)aDecoder
+{
+    if((self=[super initWithCoder:aDecoder])) {
+        self.delegate = self;
+    }
+    return self;
+}
 
 -(void)dealloc
 {
     [_pageController release];
     [_listController release];
+    [_popController release];
+    [_popOverButton release];
     [super dealloc];
 }
 
@@ -78,6 +91,29 @@
 -(void)showAwfulPage : (AwfulPage *)page
 {
     self.pageController.viewControllers = [NSArray arrayWithObject:page];
+}
+
+#pragma mark -
+#pragma mark UISplitViewControllerDelegate
+
+
+- (BOOL)splitViewController:(UISplitViewController *)svc shouldHideViewController:(UIViewController *)vc inOrientation:(UIInterfaceOrientation)orientation
+{
+    return NO;
+}
+
+- (void)splitViewController:(UISplitViewController *)svc willHideViewController:(UIViewController *)aViewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)pc
+{
+    self.popController = pc;
+    barButtonItem.title = @"Awful";
+    self.popOverButton = barButtonItem;
+    
+    UINavigationController *nav = (UINavigationController *)self.pageController;
+    
+    
+    NSMutableArray *items = [NSMutableArray arrayWithArray:nav.toolbarItems];
+    [items insertObject:barButtonItem atIndex:0];
+    [nav setToolbarItems:items animated:YES];
 }
 
 @end

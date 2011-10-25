@@ -103,6 +103,14 @@
 UIViewController *getRootController()
 {
     AwfulAppDelegate *del = [[UIApplication sharedApplication] delegate];
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        return del.splitController;
+    }
     return del.navigationController;
+}
+
+BOOL isLandscape()
+{
+    return UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]);
 }
 

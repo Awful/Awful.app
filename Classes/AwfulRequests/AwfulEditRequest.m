@@ -13,6 +13,7 @@
 #import "NSString+HTML.h"
 #import "AwfulReplyRequest.h"
 #import "AwfulNavigator.h"
+#import "AwfulAppDelegate.h"
 
 @implementation AwfulEditRequest
 
@@ -107,8 +108,8 @@
     AwfulPostBoxController *post_box = [[AwfulPostBoxController alloc] initWithText:[NSString stringWithFormat:@"%@\n", [quote_el content]]];
     post_box.post = self.post;
     
-    AwfulNavigator *nav = getNavigator();
-    [nav presentModalViewController:post_box animated:YES];
+    UIViewController *vc = getRootController();
+    [vc presentModalViewController:post_box animated:YES];
     [post_box release];
     
     [base release];

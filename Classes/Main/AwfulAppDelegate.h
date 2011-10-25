@@ -30,3 +30,4 @@
 @end
 
 UIViewController *getRootController();
+BOOL isLandscape();

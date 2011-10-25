@@ -15,6 +15,7 @@
 #import "AwfulPostBoxController.h"
 #import "TFHpple.h"
 #import "NSString+HTML.h"
+#import "AwfulAppDelegate.h"
 
 @implementation CloserFormRequest
 
@@ -34,8 +35,8 @@
     
     [AwfulPostBoxController clearStoredPost];
     
-    AwfulNavigator *nav = getNavigator();
-    [nav dismissModalViewControllerAnimated:YES];
+    UIViewController *vc = getRootController();
+    [vc dismissModalViewControllerAnimated:YES];
     
     if(self.thread != nil) {
         AwfulPage *page = [[AwfulPage alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeNewpost];

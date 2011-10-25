@@ -10,6 +10,9 @@
 #import "TFHpple.h"
 #import "AwfulNavigator.h"
 #import "AwfulExtrasController.h"
+#import "AwfulSplitViewController.h"
+#import "AwfulAppDelegate.h"
+#import "AwfulForumsList.h"
 
 @implementation AwfulUserNameRequest
 
@@ -39,9 +42,26 @@
         [self.user setUserName:name_el.content];
         
         AwfulNavigator *nav = getNavigator();
-        if([[nav.navigationController visibleViewController] isMemberOfClass:[AwfulExtrasController class]]) {
-            AwfulExtrasController *extras = (AwfulExtrasController *)nav.navigationController.visibleViewController;
-            [extras reloadUserName];
+        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            if([[nav.navigationController visibleViewController] isMemberOfClass:[AwfulExtrasController class]]) {
+                AwfulExtrasController *extras = (AwfulExtrasController *)nav.navigationController.visibleViewController;
+                [extras reloadUserName];
+            }
+        } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            AwfulAppDelegate *del = [[UIApplication sharedApplication] delegate];
+            if([[del.splitController.pageController visibleViewController] isMemberOfClass:[AwfulExtrasController class]]) {
+                AwfulExtrasController *ipad_extras = (AwfulExtrasController *)nav.navigationController.visibleViewController;
+                [ipad_extras reloadUserName];
+            }
+            AwfulForumsListIpad *list = [[AwfulForumsListIpad alloc] init];
+            del.splitController.listController = [[[UINavigationController alloc] initWithRootViewController:list] autorelease];
+            [list release];
+            
+            AwfulExtrasController *ipad_extras = [[AwfulExtrasController alloc] init];
+            del.splitController.pageController = [[[UINavigationController alloc] initWithRootViewController:ipad_extras] autorelease];
+            [ipad_extras release];
+            
+            del.splitController.viewControllers = [NSArray arrayWithObjects:del.splitController.listController, del.splitController.pageController, nil];
         }
     }
     [page_data release];

@@ -480,11 +480,16 @@
     [toolbar release];
     self.navigationItem.rightBarButtonItem = toolbar_cust;
     [toolbar_cust release];
+        
+    UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(hardRefresh)];
+    self.navigationItem.leftBarButtonItem = refresh;
+    [refresh release];
 }
 
 -(void)hitActions
 {
-    
+    AwfulNavigator *nav = getNavigator();
+    [nav tappedAction];
 }
 
 -(void)hitMore
@@ -640,8 +645,8 @@
         other_nav.toolbar.barStyle = UIBarStyleBlack;
         [other release];
         
-        AwfulNavigator *nav = getNavigator();
-        [nav presentModalViewController:other_nav animated:YES];
+        UIViewController *vc = getRootController();
+        [vc presentModalViewController:other_nav animated:YES];
         [other_nav release];
         
         return NO;

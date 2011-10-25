@@ -37,26 +37,40 @@
 
 -(void)show
 {
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[self getOverallTitle] delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-    for(NSString *title in self.titles) {
-        [sheet addButtonWithTitle:title];
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[self getOverallTitle] delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        for(NSString *title in self.titles) {
+            [sheet addButtonWithTitle:title];
+        }
+        [sheet addButtonWithTitle:@"Cancel"];
+        sheet.cancelButtonIndex = [self.titles count];
+        
+        AwfulNavigator *nav = getNavigator();
+        [nav forceShow];
+        [sheet showFromToolbar:nav.navigationController.toolbar];
+        [sheet release];
+    } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[self getOverallTitle] message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:nil];
+        for(NSString *title in self.titles) {
+            [alert addButtonWithTitle:title];
+        }
+        [alert show];
+        [alert release];
     }
-    [sheet addButtonWithTitle:@"Cancel"];
-    sheet.cancelButtonIndex = [self.titles count];
-    
-    AwfulNavigator *nav = getNavigator();
-    [nav forceShow];
-    [sheet showFromToolbar:nav.navigationController.toolbar];
-    [sheet release];
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
 }
 
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    [self actionSheet:nil clickedButtonAtIndex:buttonIndex-1];
+}
+
 -(BOOL)isCancelled : (int)index
 {
-    return index == [self.titles count];
+    return index == [self.titles count] || index == -1;
 }
 
 @end

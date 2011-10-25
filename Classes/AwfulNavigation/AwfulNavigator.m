@@ -235,13 +235,19 @@
 
 -(void)callBookmarksRefresh
 {
-    if(self.modalViewController != nil) {
+    if(self.modalViewController != nil && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         if([self.modalViewController isKindOfClass:[UINavigationController class]]) {
             UINavigationController *nav = (UINavigationController *)self.modalViewController;
             if([nav.visibleViewController isMemberOfClass:[AwfulBookmarksController class]]) {
                 AwfulBookmarksController *book = (AwfulBookmarksController *)nav.visibleViewController;
                 [book refresh];
             }
+        }
+    } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        AwfulAppDelegate *del = [[UIApplication sharedApplication] delegate];
+        if([del.splitController.listController.visibleViewController isMemberOfClass:[AwfulBookmarksControllerIpad class]]) {
+            AwfulBookmarksControllerIpad *book_ipad = (AwfulBookmarksControllerIpad *)del.splitController.listController.visibleViewController;
+            [book_ipad refresh];
         }
     }
 }
@@ -346,9 +352,9 @@
     [self.contentVC refresh];
 }
 
--(void)setActions:(AwfulActions *)actions
+-(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
-    
+    return YES;
 }
 
 @end

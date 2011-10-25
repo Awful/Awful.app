@@ -334,6 +334,9 @@
 
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        return YES;
+    }
     return (toInterfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
@@ -637,7 +640,7 @@
 -(void)viewDidLoad
 {
     [super viewDidLoad];
-    [self swapToRefreshButton];
+    [self swapToStopButton];
 }
 
 -(void)swapToRefreshButton

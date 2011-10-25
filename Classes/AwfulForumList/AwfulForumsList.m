@@ -144,7 +144,6 @@
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
     return YES;
-    return (toInterfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
 #pragma mark -

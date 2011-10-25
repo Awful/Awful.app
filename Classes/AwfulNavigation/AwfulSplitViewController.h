@@ -11,13 +11,17 @@
 @class AwfulNavigator;
 @class AwfulPage;
 
-@interface AwfulSplitViewController : UISplitViewController {
+@interface AwfulSplitViewController : UISplitViewController <UISplitViewControllerDelegate> {
     UINavigationController *_pageController;
     UINavigationController *_listController;
+    UIPopoverController *_popController;
+    UIBarButtonItem *_popOverButton;
 }
 
 @property (nonatomic, retain) UINavigationController *pageController;
 @property (nonatomic, retain) UINavigationController *listController;
+@property (nonatomic, retain) UIPopoverController *popController;
+@property (nonatomic, retain) UIBarButtonItem *popOverButton;
 
 -(void)showAwfulPage : (AwfulPage *)page;
 
