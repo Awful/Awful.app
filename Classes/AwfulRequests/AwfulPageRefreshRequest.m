@@ -40,7 +40,8 @@
 {
     [super requestFinished];
     NSString *raw_s = [[NSString alloc] initWithData:[self responseData] encoding:NSASCIIStringEncoding];
-    NSData *converted = [raw_s dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *filtered_raw = [raw_s stringByReplacingOccurrencesOfString:@"<size:" withString:@"<"];
+    NSData *converted = [filtered_raw dataUsingEncoding:NSUTF8StringEncoding];
     
     TFHpple *page_data = [[TFHpple alloc] initWithHTMLData:converted];
     [raw_s release];

@@ -512,9 +512,6 @@
 		1153D0D6144E5BA6007602E8 /* AwfulSmallPageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1153D0D4144E5BA6007602E8 /* AwfulSmallPageController.m */; };
 		1153D0D7144E5BA6007602E8 /* AwfulSmallPageController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1153D0D5144E5BA6007602E8 /* AwfulSmallPageController.xib */; };
 		1153D105144E7218007602E8 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1153D104144E7218007602E8 /* MainWindow-iPad.xib */; };
-		1153D114144E76BC007602E8 /* APNavigationControllerForSplitController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1153D10D144E76BC007602E8 /* APNavigationControllerForSplitController.m */; };
-		1153D115144E76BC007602E8 /* APSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1153D10F144E76BC007602E8 /* APSplitViewController.m */; };
-		1153D117144E76BC007602E8 /* split-divider.png in Resources */ = {isa = PBXBuildFile; fileRef = 1153D113144E76BC007602E8 /* split-divider.png */; };
 		1153D11A144E7729007602E8 /* AwfulSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1153D119144E7729007602E8 /* AwfulSplitViewController.m */; };
 		1156F004144B985000C0455B /* grey-gradient.png in Resources */ = {isa = PBXBuildFile; fileRef = 1156F003144B985000C0455B /* grey-gradient.png */; };
 		115A05DA134814B6004FDCE5 /* arrowright.png in Resources */ = {isa = PBXBuildFile; fileRef = 115A05D9134814B6004FDCE5 /* arrowright.png */; };
@@ -1134,11 +1131,6 @@
 		1153D0D4144E5BA6007602E8 /* AwfulSmallPageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSmallPageController.m; sourceTree = "<group>"; };
 		1153D0D5144E5BA6007602E8 /* AwfulSmallPageController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AwfulSmallPageController.xib; sourceTree = "<group>"; };
 		1153D104144E7218007602E8 /* MainWindow-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "MainWindow-iPad.xib"; path = "Classes/Main/iPad/MainWindow-iPad.xib"; sourceTree = "<group>"; };
-		1153D10C144E76BC007602E8 /* APNavigationControllerForSplitController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APNavigationControllerForSplitController.h; sourceTree = "<group>"; };
-		1153D10D144E76BC007602E8 /* APNavigationControllerForSplitController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APNavigationControllerForSplitController.m; sourceTree = "<group>"; };
-		1153D10E144E76BC007602E8 /* APSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APSplitViewController.h; sourceTree = "<group>"; };
-		1153D10F144E76BC007602E8 /* APSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APSplitViewController.m; sourceTree = "<group>"; };
-		1153D113144E76BC007602E8 /* split-divider.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "split-divider.png"; sourceTree = "<group>"; };
 		1153D118144E7729007602E8 /* AwfulSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AwfulSplitViewController.h; path = Classes/AwfulNavigation/AwfulSplitViewController.h; sourceTree = "<group>"; };
 		1153D119144E7729007602E8 /* AwfulSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AwfulSplitViewController.m; path = Classes/AwfulNavigation/AwfulSplitViewController.m; sourceTree = "<group>"; };
 		1156F003144B985000C0455B /* grey-gradient.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "grey-gradient.png"; path = "images/grey-gradient.png"; sourceTree = "<group>"; };
@@ -1897,34 +1889,6 @@
 			name = iPad;
 			sourceTree = "<group>";
 		};
-		1153D10A144E76BC007602E8 /* SlavaBushtruk-APSplitViewController-6b375e9 */ = {
-			isa = PBXGroup;
-			children = (
-				1153D10B144E76BC007602E8 /* Split */,
-			);
-			path = "SlavaBushtruk-APSplitViewController-6b375e9";
-			sourceTree = "<group>";
-		};
-		1153D10B144E76BC007602E8 /* Split */ = {
-			isa = PBXGroup;
-			children = (
-				1153D10C144E76BC007602E8 /* APNavigationControllerForSplitController.h */,
-				1153D10D144E76BC007602E8 /* APNavigationControllerForSplitController.m */,
-				1153D10E144E76BC007602E8 /* APSplitViewController.h */,
-				1153D10F144E76BC007602E8 /* APSplitViewController.m */,
-				1153D112144E76BC007602E8 /* Resources */,
-			);
-			path = Split;
-			sourceTree = "<group>";
-		};
-		1153D112144E76BC007602E8 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				1153D113144E76BC007602E8 /* split-divider.png */,
-			);
-			path = Resources;
-			sourceTree = "<group>";
-		};
 		1190F6CC13BE4EA900B9D271 /* Actions */ = {
 			isa = PBXGroup;
 			children = (
@@ -2106,7 +2070,6 @@
 		1190F76913BE4ECB00B9D271 /* 3rd Party Sources */ = {
 			isa = PBXGroup;
 			children = (
-				1153D10A144E76BC007602E8 /* SlavaBushtruk-APSplitViewController-6b375e9 */,
 				1190F7F513BE4F2900B9D271 /* CrashReporter */,
 				1190F7FA13BE4F2900B9D271 /* Flurry */,
 				1190F76A13BE4ECB00B9D271 /* arashpayan-appirater-776ce19 */,
@@ -2922,7 +2885,6 @@
 				1156F004144B985000C0455B /* grey-gradient.png in Resources */,
 				1153D0D7144E5BA6007602E8 /* AwfulSmallPageController.xib in Resources */,
 				1153D105144E7218007602E8 /* MainWindow-iPad.xib in Resources */,
-				1153D117144E76BC007602E8 /* split-divider.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3011,8 +2973,6 @@
 				1190F7FF13BE4F2900B9D271 /* CrashReportSender.m in Sources */,
 				112DB4BB14211F24005A98CB /* SALR.m in Sources */,
 				1153D0D6144E5BA6007602E8 /* AwfulSmallPageController.m in Sources */,
-				1153D114144E76BC007602E8 /* APNavigationControllerForSplitController.m in Sources */,
-				1153D115144E76BC007602E8 /* APSplitViewController.m in Sources */,
 				1153D11A144E7729007602E8 /* AwfulSplitViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3032,7 +2992,7 @@
 				HEADER_SEARCH_PATHS = "${SDKROOT}/usr/include/libxml2";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PROVISIONING_PROFILE = "E24CCB6A-BA71-4DA4-A3CC-7AC010899281";
+				PROVISIONING_PROFILE = "922B35D9-7B6E-46DB-B761-40B828E98E95";
 				SDKROOT = iphoneos;
 			};
 			name = AdHoc;
@@ -3052,7 +3012,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Awful_Prefix.pch;
 				INFOPLIST_FILE = "Awful-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -3061,7 +3021,7 @@
 				);
 				PRODUCT_NAME = Awful;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = AdHoc;
@@ -3083,7 +3043,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Awful_Prefix.pch;
 				INFOPLIST_FILE = "Awful-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -3093,7 +3053,7 @@
 				PRODUCT_NAME = Awful;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -3111,7 +3071,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Awful_Prefix.pch;
 				INFOPLIST_FILE = "Awful-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -3120,7 +3080,7 @@
 				);
 				PRODUCT_NAME = Awful;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -3148,7 +3108,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Regular Berry Software LLC";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Regular Berry Software LLC";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -3156,8 +3116,8 @@
 				HEADER_SEARCH_PATHS = "${SDKROOT}/usr/include/libxml2";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "E24CCB6A-BA71-4DA4-A3CC-7AC010899281";
+				PROVISIONING_PROFILE = "CDD2EE87-025E-4D48-ADB8-0F40A88D82DB";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "CDD2EE87-025E-4D48-ADB8-0F40A88D82DB";
 				SDKROOT = iphoneos;
 			};
 			name = Release;

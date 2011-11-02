@@ -16,8 +16,10 @@
 
 -(id)init
 {
-    _recordedHistory = [[NSMutableArray alloc] init];
-    _recordedForward = [[NSMutableArray alloc] init];
+    if((self=[super init])) {
+        _recordedHistory = [[NSMutableArray alloc] init];
+        _recordedForward = [[NSMutableArray alloc] init];
+    }
     
     return self;
 }

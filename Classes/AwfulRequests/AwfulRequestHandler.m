@@ -94,6 +94,7 @@
 
 -(void)showHud
 {
+    [self hideHud];
     AwfulAppDelegate *del = (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
     self.hud = [[[MBProgressHUD alloc] initWithView:del.window] autorelease];
     [del.window addSubview:self.hud];

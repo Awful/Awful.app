@@ -475,6 +475,7 @@
     [pages_cust release];
     [act release];
     [more release];
+    [space release];
     
     UIBarButtonItem *toolbar_cust = [[UIBarButtonItem alloc] initWithCustomView:toolbar];
     [toolbar release];

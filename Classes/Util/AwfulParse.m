@@ -78,9 +78,9 @@
     NSString *username = getUsername();
     
     BOOL show_avatars = [AwfulConfig showAvatars];
-
-    for(NSString *post_html in post_strings) {
     
+    for(NSString *post_html in post_strings) {
+            
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
         TFHpple *post_base = [[TFHpple alloc] initWithHTMLData:[post_html dataUsingEncoding:NSUTF8StringEncoding]];
@@ -227,7 +227,11 @@
     NSString *meta = [NSString stringWithFormat:@"<meta name='viewport' content='%@minimum-scale=1.0, maximum-scale=1.0'>", width];
         
     // Fire off SALR
-    NSString *salrOpts = [NSString stringWithFormat:@"$(document).ready(function() { new SALR(%@); });", [SALR config]];
+    NSString *salr_config = [SALR config];
+    NSString *salrOpts = @"";
+    if(![salr_config isEqualToString:@""]) {
+        salrOpts = [NSString stringWithFormat:@"$(document).ready(function() { new SALR(%@); });", salr_config];
+    }
     NSString *html = [NSString stringWithFormat:@"<html><head>%@<script type='text/javascript'>%@</script><script type='text/javascript'>%@</script><style type='text/css'>%@</style></head><body><script type='text/javascript'>%@</script>%@%@%@%@</body></html>", 
                     meta, js, salr, css, salrOpts, top, combined, adHTML, bottom];
     

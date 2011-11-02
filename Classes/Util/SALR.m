@@ -18,8 +18,12 @@
     NSMutableDictionary *config = [[NSMutableDictionary alloc] init];
     
     AwfulNavigator *nav = getNavigator();
-    
-    [config setObject:nav.user.userName forKey:@"username"];
+    if(nav.user.userName != nil) {
+        [config setObject:nav.user.userName forKey:@"username"];
+    } else {
+        [config release];
+        return @"";
+    }
     [config setObject:[AwfulConfig highlightOwnMentions] forKey:@"highlightUsername"];
     [config setObject:[AwfulConfig highlightOwnQuotes] forKey:@"highlightUserQuote"];
     [config setObject:@"#a2cd5a" forKey:@"userQuote"];
@@ -27,6 +31,7 @@
 
     SBJsonWriter *jsonWriter = [SBJsonWriter new];
     NSString *result = [jsonWriter stringWithObject:config];
+    [jsonWriter release];
     
     [config release];
     

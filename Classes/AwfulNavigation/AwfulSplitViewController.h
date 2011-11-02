@@ -6,8 +6,6 @@
 //  Copyright (c) 2011 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "APSplitViewController.h"
-
 @class AwfulNavigator;
 @class AwfulPage;
 
