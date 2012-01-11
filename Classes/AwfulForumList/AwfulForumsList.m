@@ -108,7 +108,8 @@
     self.navigationItem.rightBarButtonItem = done;
     [done release];
     
-    self.navigationItem.leftBarButtonItem = self.editButtonItem;
+    if (self.favorites.count > 0)
+        self.navigationItem.leftBarButtonItem = self.editButtonItem;
         
     self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
     self.tableView.backgroundColor = [UIColor colorWithRed:0 green:0.4 blue:0.6 alpha:1.0];
@@ -154,6 +155,9 @@
     NSData *arc = [[NSUserDefaults standardUserDefaults] valueForKey:@"favorites"];
     if(arc != nil) {
         self.favorites = [NSKeyedUnarchiver unarchiveObjectWithData:arc];
+        if (self.favorites.count > 0)
+            self.navigationItem.leftBarButtonItem = self.editButtonItem;
+
     }
 }
 
@@ -226,6 +230,10 @@
         [self.tableView endUpdates];
     }
     [self saveFavorites];
+    if (self.favorites.count > 0)
+        self.navigationItem.leftBarButtonItem = self.editButtonItem;
+    else
+        self.navigationItem.leftBarButtonItem = nil;
 }
 
 #pragma mark -
