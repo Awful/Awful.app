@@ -678,3 +678,7 @@
 
 @end
 
+
+@implementation AwfulPageIpad : AwfulPage
+
+@end

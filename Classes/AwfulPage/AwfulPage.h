@@ -97,3 +97,8 @@ typedef enum {
 -(void)hitMore;
 
 @end
+
+
+@interface AwfulPageIpad : AwfulPage 
+
+@end

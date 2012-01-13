@@ -681,6 +681,14 @@
 
 @implementation AwfulForumsListIpad
 
+- (id) init {
+    self = [super init];
+    
+    [self.navigationItem setTitle:@"Forum List"];
+
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     

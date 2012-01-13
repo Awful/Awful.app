@@ -342,7 +342,7 @@
 {
     [self dismissModalViewControllerAnimated:YES];
     
-    if([content isMemberOfClass:[AwfulPage class]]) {
+    if([content isKindOfClass:[AwfulPage class]]) {
         AwfulAppDelegate *del = (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
         [del.splitController showAwfulPage:(AwfulPage *)content];
     }
