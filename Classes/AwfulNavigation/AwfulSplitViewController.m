@@ -11,6 +11,7 @@
 #import "AwfulPage.h"
 #import "AwfulExtrasController.h"
 #import "AwfulAppDelegate.h"
+#import <QuartzCore/QuartzCore.h>
 
 @implementation AwfulSplitViewController
 
@@ -18,6 +19,7 @@
 @synthesize listController = _listController;
 @synthesize popController = _popController;
 @synthesize popOverButton = _popOverButton;
+@synthesize masterIsVisible = _masterIsVisible;
 
 -(id)initWithCoder:(NSCoder *)aDecoder
 {
@@ -90,12 +92,82 @@
 
 -(void)showAwfulPage : (AwfulPageIpad *)page
 {
-    if (self.popController)
-        [self.popController dismissPopoverAnimated:YES];
+    if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation))
+        [self hideMasterView];
     
     self.pageController.viewControllers = [NSArray arrayWithObject:page];
 }
 
+- (void)addBorderToMasterView
+{
+    UIView *masterView = self.listController.view;
+
+    masterView.layer.masksToBounds = NO;
+    masterView.layer.borderWidth = 1.0f;
+    masterView.layer.cornerRadius = 5.0f;
+    
+    masterView.layer.backgroundColor = [UIColor blueColor].CGColor;
+    masterView.layer.shadowOffset = CGSizeMake(0, 3);
+    masterView.layer.shadowRadius = 5.0;
+    masterView.layer.shadowColor = [UIColor blackColor].CGColor;
+    masterView.layer.shadowOpacity = 0.5;
+    
+}
+
+- (void)removeBorderToMasterView
+{
+    UIView *masterView = self.listController.view;
+    masterView.layer.masksToBounds = YES;
+    masterView.layer.borderWidth = 0.0f;
+    masterView.layer.cornerRadius = 0.0f;
+//    masterView.layer.shadowOpacity = 0.0f;
+//    masterView.layer.shadowOffset = CGSizeMake(0, 0);
+}
+- (void)showMasterView
+{
+    
+    if (!self.masterIsVisible)
+    {
+        
+        self.masterIsVisible = YES;
+        
+        UIView *masterView = self.listController.view;
+        
+        CGRect masterFrame = masterView.frame;
+        masterFrame.origin.x = 0;
+        [self addBorderToMasterView];
+
+        [UIView beginAnimations:@"showView" context:NULL];
+        masterView.frame = masterFrame;
+        [UIView commitAnimations];
+        
+        
+    }
+    
+}
+
+- (void)hideMasterView
+{
+    
+    if (self.masterIsVisible)
+    {
+        
+        self.masterIsVisible = NO;
+        [self removeBorderToMasterView];
+        
+        UIView *masterView = self.listController.view;
+        
+        CGRect masterFrame = masterView.frame;
+        masterFrame.origin.x = -masterFrame.size.width;
+        
+        
+        [UIView beginAnimations:@"showView" context:NULL];
+        masterView.frame = masterFrame;
+        [UIView commitAnimations];
+        
+    }
+    
+}
 #pragma mark -
 #pragma mark UISplitViewControllerDelegate
 
@@ -111,7 +183,10 @@
     self.popController = pc;
     //    pc.delegate = self;
     barButtonItem.title = @"Threads";
-    self.popOverButton = barButtonItem;
+    self.popOverButton = [[UIBarButtonItem alloc] initWithTitle:@"Threads"
+                                                          style:UIBarButtonItemStyleBordered
+                                                         target:self
+                                                         action:@selector(showMasterView)];
     
     UINavigationItem *nav = (UINavigationItem *)self.pageController.topViewController.navigationItem;
     if (nav)
@@ -129,6 +204,7 @@
         
         [nav setLeftBarButtonItems:items animated:YES];
     }
+    self.masterIsVisible = false;
 }
 
 - (void) splitViewController:(UISplitViewController *)svc willShowViewController:(UIViewController *)aViewController invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem
@@ -143,7 +219,10 @@
             [nav setLeftBarButtonItems:items animated:YES];
         
         self.popOverButton = nil;
+        [self removeBorderToMasterView];
     }
+
+    self.masterIsVisible = true;
 }
 
 @end
