@@ -105,7 +105,7 @@
 - (void)addBorderToMasterView
 {
     UIView *masterView = self.listController.view;
-
+    
     masterView.layer.masksToBounds = NO;
     masterView.layer.borderWidth = 1.0f;
     masterView.layer.cornerRadius = 5.0f;
@@ -124,8 +124,8 @@
     masterView.layer.masksToBounds = YES;
     masterView.layer.borderWidth = 0.0f;
     masterView.layer.cornerRadius = 0.0f;
-//    masterView.layer.shadowOpacity = 0.0f;
-//    masterView.layer.shadowOffset = CGSizeMake(0, 0);
+    //    masterView.layer.shadowOpacity = 0.0f;
+    //    masterView.layer.shadowOffset = CGSizeMake(0, 0);
 }
 - (void)showMasterView
 {
@@ -140,7 +140,7 @@
         CGRect masterFrame = masterView.frame;
         masterFrame.origin.x = 0;
         [self addBorderToMasterView];
-
+        
         [UIView beginAnimations:@"showView" context:NULL];
         masterView.frame = masterFrame;
         [UIView commitAnimations];
@@ -199,7 +199,7 @@
                                                          target:self
                                                          action:@selector(showMasterView)];
     
-
+    
     UINavigationItem *nav = vc.navigationItem;
     if (nav)
     {
@@ -234,19 +234,21 @@
     {
         UINavigationItem *nav = (UINavigationItem *)self.pageController.topViewController.navigationItem;
         
-        NSMutableArray *items = [NSMutableArray arrayWithObject:nav.leftBarButtonItems];
-        [items removeObjectAtIndex:0];
-
+        if (nav.leftBarButtonItems)
+        {
+            NSMutableArray *items = [NSMutableArray arrayWithArray:nav.leftBarButtonItems];
+            [items removeObjectAtIndex:0];
+            
             [nav setLeftBarButtonItems:items animated:YES];
-        
+        }
         self.popOverButton = nil;
         [self removeBorderToMasterView];
     }
-
+    
     if (self.masterIsVisible)
         self.pageController.view.userInteractionEnabled = YES;
-
-        
+    
+    
     self.masterIsVisible = true;
 }
 
