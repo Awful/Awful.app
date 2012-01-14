@@ -334,9 +334,6 @@
 
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        return YES;
-    }
     return (toInterfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
@@ -612,6 +609,7 @@
 
 @implementation AwfulThreadListIpad
 
+//Copied to AwfulBookmarksControllerIpad
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     AwfulThreadCellType type = [self getTypeAtIndexPath:indexPath];
@@ -637,6 +635,13 @@
     }
 }
 
+
+-(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
+{
+
+        return YES;
+}
+    
 -(void)viewDidLoad
 {
     [super viewDidLoad];

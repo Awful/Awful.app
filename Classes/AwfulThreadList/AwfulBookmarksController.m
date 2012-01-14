@@ -246,6 +246,7 @@
 
 @implementation AwfulBookmarksControllerIpad
 
+//Copied from AwfulThreadListIpad
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     AwfulThreadCellType type = [self getTypeAtIndexPath:indexPath];
@@ -269,6 +270,12 @@
             [thread_detail release];
         }
     }
+}
+
+-(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
+{
+    
+    return YES;
 }
 
 -(void)viewDidLoad {
