@@ -436,10 +436,6 @@
     [cust release];
     
     self.title = self.thread.title;
-    
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [self makeCustomToolbar];
-    }
 }
 
 - (void)viewDidUnload {
@@ -450,57 +446,7 @@
     self.forumButton = nil;
     self.pagesButton = nil;
 }
-
-#pragma mark -
-#pragma mark iPad Specific
-                                 
--(void)makeCustomToolbar
-{
-    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 140, 40)];
-    NSMutableArray *items = [NSMutableArray array];
-    
-    UIBarButtonItem *pages_cust = [[UIBarButtonItem alloc] initWithCustomView:self.pagesButton];
-    UIBarButtonItem *act = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(hitActions)];
-    UIBarButtonItem *more = [[UIBarButtonItem alloc] initWithTitle:@"..." style:UIBarButtonItemStylePlain target:self action:@selector(hitMore)];
-    UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    
-    [items addObject:act];
-    [items addObject:space];
-    [items addObject:pages_cust];
-    [items addObject:space];
-    [items addObject:more];
-    
-    [toolbar setItems:items];
-    
-    [pages_cust release];
-    [act release];
-    [more release];
-    [space release];
-    
-    UIBarButtonItem *toolbar_cust = [[UIBarButtonItem alloc] initWithCustomView:toolbar];
-    [toolbar release];
-    self.navigationItem.rightBarButtonItem = toolbar_cust;
-    [toolbar_cust release];
-        
-    UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(hardRefresh)];
-    self.navigationItem.leftBarButtonItem = refresh;
-    [refresh release];
-}
-
--(void)hitActions
-{
-    AwfulNavigator *nav = getNavigator();
-    [nav tappedAction];
-}
-
--(void)hitMore
-{
-    AwfulExtrasController *extras = [[AwfulExtrasController alloc] init];
-    AwfulAppDelegate *del = (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
-    [del.splitController.pageController pushViewController:extras animated:YES];
-    [extras release];
-}
-
+  
 #pragma mark -
 #pragma mark AwfulHistoryRecorder
 
@@ -680,5 +626,67 @@
 
 
 @implementation AwfulPageIpad : AwfulPage
+- (void) viewDidLoad
+{
+    [super viewDidLoad];
+    [self makeCustomToolbar];
+}
+
+-(void)makeCustomToolbar
+{
+    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 140, 40)];
+    NSMutableArray *items = [NSMutableArray array];
+    
+    UIBarButtonItem *pages_cust = [[UIBarButtonItem alloc] initWithCustomView:self.pagesButton];
+    UIBarButtonItem *act = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(hitActions)];
+    UIBarButtonItem *more = [[UIBarButtonItem alloc] initWithTitle:@"..." style:UIBarButtonItemStylePlain target:self action:@selector(hitMore)];
+    UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    
+    [items addObject:act];
+    [items addObject:space];
+    [items addObject:pages_cust];
+    [items addObject:space];
+    [items addObject:more];
+    
+    [toolbar setItems:items];
+    
+    [pages_cust release];
+    [act release];
+    [more release];
+    [space release];
+    
+    UIBarButtonItem *toolbar_cust = [[UIBarButtonItem alloc] initWithCustomView:toolbar];
+    [toolbar release];
+    self.navigationItem.rightBarButtonItem = toolbar_cust;
+    [toolbar_cust release];
+    
+    UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(hardRefresh)];
+    if (self.navigationItem.leftBarButtonItems)
+    {
+        NSMutableArray *array = [NSMutableArray arrayWithArray:self.navigationItem.leftBarButtonItems];
+        [array addObject:refresh];
+        self.navigationItem.leftBarButtonItems = array;
+    }
+    else
+    {
+        self.navigationItem.leftBarButtonItem = refresh;
+    }
+    [refresh release];
+}
+
+-(void)hitActions
+{
+    AwfulNavigator *nav = getNavigator();
+    [nav tappedAction];
+}
+
+-(void)hitMore
+{
+    AwfulExtrasController *extras = [[AwfulExtrasController alloc] init];
+    AwfulAppDelegate *del = (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
+    [del.splitController.pageController pushViewController:extras animated:YES];
+    [extras release];
+}
+
 
 @end

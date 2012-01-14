@@ -630,7 +630,7 @@
                 // therefore I'm setting it to last page here
             }
             
-            AwfulPage *thread_detail = [[AwfulPageIpad alloc] initWithAwfulThread:thread startAt:start];
+            AwfulPageIpad *thread_detail = [[AwfulPageIpad alloc] initWithAwfulThread:thread startAt:start];
             loadContentVC(thread_detail);
             [thread_detail release];
         }

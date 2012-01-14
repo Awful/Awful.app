@@ -25,6 +25,7 @@
 @property (nonatomic, assign) BOOL masterIsVisible;
 
 -(void)showAwfulPage : (AwfulPage *)page;
+-(void)addMasterButtonToController: (UIViewController *)vc;
 -(void)showMasterView;
 -(void)hideMasterView;
 @end

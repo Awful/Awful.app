@@ -92,10 +92,14 @@
 
 -(void)showAwfulPage : (AwfulPageIpad *)page
 {
-    if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation))
-        [self hideMasterView];
     
     self.pageController.viewControllers = [NSArray arrayWithObject:page];
+    
+    if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation))
+    {
+        [self hideMasterView];
+        [self addMasterButtonToController:page];
+    }
 }
 
 - (void)addBorderToMasterView
@@ -141,7 +145,7 @@
         masterView.frame = masterFrame;
         [UIView commitAnimations];
         
-        
+        self.pageController.view.userInteractionEnabled = NO;
     }
     
 }
@@ -165,9 +169,19 @@
         masterView.frame = masterFrame;
         [UIView commitAnimations];
         
+        
+        self.pageController.view.userInteractionEnabled = YES;
+        
     }
     
 }
+
+-(void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation))
+        [self hideMasterView];
+}
+
 #pragma mark -
 #pragma mark UISplitViewControllerDelegate
 
@@ -178,17 +192,15 @@
  }
  */
 
-- (void)splitViewController:(UISplitViewController *)svc willHideViewController:(UIViewController *)aViewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)pc
+- (void) addMasterButtonToController:(UIViewController *)vc
 {
-    self.popController = pc;
-    //    pc.delegate = self;
-    barButtonItem.title = @"Threads";
     self.popOverButton = [[UIBarButtonItem alloc] initWithTitle:@"Threads"
                                                           style:UIBarButtonItemStyleBordered
                                                          target:self
                                                          action:@selector(showMasterView)];
     
-    UINavigationItem *nav = (UINavigationItem *)self.pageController.topViewController.navigationItem;
+
+    UINavigationItem *nav = vc.navigationItem;
     if (nav)
     {
         NSMutableArray *items;
@@ -207,6 +219,15 @@
     self.masterIsVisible = false;
 }
 
+- (void)splitViewController:(UISplitViewController *)svc willHideViewController:(UIViewController *)aViewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)pc
+{
+    UIViewController *vc = self.pageController.topViewController;
+    if ([vc isKindOfClass:[UINavigationController class]])
+        [self addMasterButtonToController:[(UINavigationController *)vc topViewController]];
+    else
+        [self addMasterButtonToController:vc];
+}
+
 - (void) splitViewController:(UISplitViewController *)svc willShowViewController:(UIViewController *)aViewController invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem
 {
     if (self.popOverButton)
@@ -222,6 +243,10 @@
         [self removeBorderToMasterView];
     }
 
+    if (self.masterIsVisible)
+        self.pageController.view.userInteractionEnabled = YES;
+
+        
     self.masterIsVisible = true;
 }
 
