@@ -102,7 +102,7 @@
         }
         
         _url = [[NSString alloc] initWithFormat:@"showthread.php?threadid=%@%@", _thread.threadID, append];
-                
+        
         _isBookmarked = NO;
         NSMutableArray *bookmarked_threads = [AwfulUtil newThreadListForForumId:@"bookmarks"];
         for(AwfulThread *thread in bookmarked_threads) {
@@ -223,7 +223,7 @@
         [current_page release];
         
     } else {
-    
+        
         AwfulPage *fresh_page = [[AwfulPage alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeNewpost];
         loadContentVC(fresh_page);
         [fresh_page release];
@@ -252,7 +252,7 @@
 {
     int pages_left = self.pages.totalPages - self.pages.currentPage;
     NSString *html = [AwfulParse constructPageHTMLFromPosts:self.allRawPosts pagesLeft:pages_left numOldPosts:0 adHTML:self.adHTML];
-        
+    
     AwfulNavigator *nav = getNavigator();
     JSBridgeWebView *web = [[JSBridgeWebView alloc] initWithFrame:nav.view.frame];
     [web loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
@@ -345,44 +345,44 @@
 }
 
 /*
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-}
-*/
+ - (void)viewWillAppear:(BOOL)animated {
+ [super viewWillAppear:animated];
+ }
+ */
 /*
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-}
-*/
+ - (void)viewDidAppear:(BOOL)animated {
+ [super viewDidAppear:animated];
+ }
+ */
 /*
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-}
-*/
+ - (void)viewWillDisappear:(BOOL)animated {
+ [super viewWillDisappear:animated];
+ }
+ */
 /*
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-}
-*/
+ - (void)viewDidDisappear:(BOOL)animated {
+ [super viewDidDisappear:animated];
+ }
+ */
 /*
-// Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-*/
+ // Override to allow orientations other than the default portrait orientation.
+ - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+ // Return YES for supported orientations
+ return (interfaceOrientation == UIInterfaceOrientationPortrait);
+ }
+ */
 
 /*
--(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
-{
-
-}*/
+ -(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+ {
+ 
+ }*/
 
 /*
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
-{
-
-}*/
+ - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+ {
+ 
+ }*/
 
 #pragma mark -
 #pragma mark Memory management
@@ -400,7 +400,7 @@
     AwfulNavigatorLabels *labels = [[AwfulNavigatorLabels alloc] init];
     self.threadTitleLabel = labels.threadTitleLabel;
     [labels release];
-        
+    
     UIView *label_container = [[UIView alloc] initWithFrame:CGRectMake(0, 0, getWidth()-100, 44)];
     [label_container setBackgroundColor:[UIColor clearColor]];
     [label_container addSubview:self.threadTitleLabel];
@@ -429,7 +429,7 @@
     self.pagesButton.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     [self.pagesButton setTitle:[self.pages description] forState:UIControlStateNormal];
     [self.pagesButton setTitle:[self.pages description] forState:UIControlStateSelected];
-
+    
     
     UIBarButtonItem *cust = [[UIBarButtonItem alloc] initWithCustomView:self.pagesButton];
     self.delegate.navigationItem.rightBarButtonItem = cust;
@@ -446,7 +446,7 @@
     self.forumButton = nil;
     self.pagesButton = nil;
 }
-  
+
 #pragma mark -
 #pragma mark AwfulHistoryRecorder
 
@@ -626,31 +626,30 @@
 
 
 @implementation AwfulPageIpad : AwfulPage
+@synthesize pageButton = _pageButton;
+@synthesize popController = _popController;
+@synthesize pagePicker = _pagePicker;
+
 - (void) viewDidLoad
 {
     [super viewDidLoad];
-    [self makeCustomToolbar];
+    [self makeCustomToolbars];
 }
-
--(void)makeCustomToolbar
+-(void)makeCustomToolbars
 {
     UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 140, 40)];
     NSMutableArray *items = [NSMutableArray array];
     
-    UIBarButtonItem *pages_cust = [[UIBarButtonItem alloc] initWithCustomView:self.pagesButton];
     UIBarButtonItem *act = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(hitActions)];
     UIBarButtonItem *more = [[UIBarButtonItem alloc] initWithTitle:@"..." style:UIBarButtonItemStylePlain target:self action:@selector(hitMore)];
     UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    
+
+    [items addObject:space];    
     [items addObject:act];
-    [items addObject:space];
-    [items addObject:pages_cust];
-    [items addObject:space];
     [items addObject:more];
     
     [toolbar setItems:items];
     
-    [pages_cust release];
     [act release];
     [more release];
     [space release];
@@ -660,18 +659,54 @@
     self.navigationItem.rightBarButtonItem = toolbar_cust;
     [toolbar_cust release];
     
+    items = [NSMutableArray array];
+    
     UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(hardRefresh)];
-    if (self.navigationItem.leftBarButtonItems)
-    {
-        NSMutableArray *array = [NSMutableArray arrayWithArray:self.navigationItem.leftBarButtonItems];
-        [array addObject:refresh];
-        self.navigationItem.leftBarButtonItems = array;
-    }
-    else
-    {
-        self.navigationItem.leftBarButtonItem = refresh;
-    }
+    [items addObject:refresh];
     [refresh release];
+    
+    
+    space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    [items addObject:space];
+    [space release];
+    
+    UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithTitle:@"<< First" style:UIBarButtonItemStyleBordered target:self action:@selector(hitFirst)];
+    [items addObject:button];
+    [button release];
+    
+    button = [[UIBarButtonItem alloc] initWithTitle:@"< Prev" style:UIBarButtonItemStyleBordered target:self action:@selector(prevPage)];
+    if (self.pages.currentPage > 1)
+        button.enabled = NO;
+    [items addObject:button];
+    [button release];
+    
+    
+    NSString *pagesTitle = @"Loading...";
+    if (self.pages.description)
+        pagesTitle = self.pages.description;
+    
+    button = [[UIBarButtonItem alloc] initWithTitle:pagesTitle style:UIBarButtonItemStyleBordered target:self action:@selector(pageSelection)];
+    [pagesTitle release];
+    [items addObject:button];
+    self.pageButton = button;
+    [button release];
+    
+    button = [[UIBarButtonItem alloc] initWithTitle:@"Next >" style:UIBarButtonItemStyleBordered target:self action:@selector(nextPage)];
+    if([self.pages onLastPage]) {
+        button.enabled = NO;
+    }
+    [items addObject:button];
+    [button release];
+    
+    button = [[UIBarButtonItem alloc] initWithTitle:@"Last >>" style:UIBarButtonItemStyleBordered target:self action:@selector(hitLast)];
+    if([self.pages onLastPage]) {
+        button.enabled = NO;
+    }
+    [items addObject:button];
+    [button release];
+    
+    [self setToolbarItems:items];
+    [self.navigationController setToolbarHidden:NO animated:YES];
 }
 
 -(void)hitActions
@@ -679,6 +714,34 @@
     AwfulNavigator *nav = getNavigator();
     [nav tappedAction];
 }
+
+#pragma mark -
+#pragma mark UIPickerViewDataSource
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)thePickerView {
+    return 1;
+}
+
+- (NSInteger)pickerView:(UIPickerView *)thePickerView numberOfRowsInComponent:(NSInteger)component {
+    
+    return self.pages.totalPages;
+}
+
+- (NSString *)pickerView:(UIPickerView *)thePickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+    int page = row;
+    page++;
+    return [NSString stringWithFormat:@"%d", page];
+}
+
+- (void) gotoPageClicked
+{
+    int pageSelected = [self.pagePicker selectedRowInComponent:0] + 1;
+    AwfulPageIpad *page = [[AwfulPageIpad alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeSpecific pageNum:pageSelected];
+    loadContentVC(page);
+    [page release];
+    [self.popController dismissPopoverAnimated:YES];
+}
+#pragma mark -
+#pragma mark Page Navigation
 
 -(void)hitMore
 {
@@ -688,5 +751,87 @@
     [extras release];
 }
 
+-(void)hitFirst
+{
+    AwfulPageIpad *first_page = [[AwfulPageIpad alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeFirst];
+    loadContentVC(first_page);
+    [first_page release];
+}
+
+-(void)nextPage
+{
+    if(![self.pages onLastPage]) {
+        AwfulPageIpad *next_page = [[AwfulPageIpad alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeSpecific pageNum:self.pages.currentPage+1];
+        loadContentVC(next_page);
+        [next_page release];
+    }
+}
+
+-(void)prevPage
+{
+    if(self.pages.currentPage > 1) {
+        AwfulPageIpad *prev_page = [[AwfulPageIpad alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeSpecific pageNum:self.pages.currentPage-1];
+        loadContentVC(prev_page);
+        [prev_page release];
+    }
+}
+-(void)hitLast
+{
+    if(![self.pages onLastPage]) {
+        AwfulPageIpad *last_page = [[AwfulPageIpad alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeLast];
+        loadContentVC(last_page);
+        [last_page release];
+    }
+}
+
+- (void)pageSelection
+{   
+    if(self.popController)
+    {
+        [self.popController dismissPopoverAnimated:YES];
+        self.popController = nil;
+    }
+        
+    self.pagePicker = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 0, 320, 216)];
+    self.pagePicker.dataSource = self;
+    self.pagePicker.delegate = self;
+    [self.pagePicker selectRow:[_pages currentPage]-1
+              inComponent:0
+                 animated:NO];
+
+    self.pagePicker.showsSelectionIndicator = YES;
+    
+    UIButton *goButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [goButton addTarget:self action:@selector(gotoPageClicked) forControlEvents:UIControlEventTouchUpInside];
+    goButton.frame = CGRectMake(0, self.pagePicker.frame.size.height, 320, 40);
+    
+    [goButton setTitle:@"Goto Page" forState:UIControlStateNormal];
+    
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, self.pagePicker.frame.size.height + 40)];
+    
+    [view addSubview:self.pagePicker]; 
+    
+    [view addSubview:goButton];
+    
+    
+    UIViewController *vc = [[UIViewController alloc] init];
+    vc.view = view;
+    [view release];
+    self.popController = [[UIPopoverController alloc] initWithContentViewController:vc];
+    
+    [self.popController setPopoverContentSize:view.frame.size animated:YES];
+    [self.popController presentPopoverFromBarButtonItem:self.pageButton 
+                 permittedArrowDirections:UIPopoverArrowDirectionAny
+                                 animated:YES];
+    
+    
+}
+
+
+-(void)setPages:(AwfulPageCount *)pages
+{
+    [super setPages:pages];
+    [self.pageButton setTitle:pages.description];
+}
 
 @end

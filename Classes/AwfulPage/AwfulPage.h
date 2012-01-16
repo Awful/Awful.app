@@ -97,8 +97,18 @@ typedef enum {
 @end
 
 
-@interface AwfulPageIpad : AwfulPage 
--(void)makeCustomToolbar;
+@interface AwfulPageIpad : AwfulPage <UIActionSheetDelegate, UIPickerViewDataSource, UIPickerViewDelegate> {
+    UIBarButtonItem *_pageButton;
+    UIPopoverController *_popController;
+    UIPickerView *_pagePicker;
+}
+@property (nonatomic, retain) UIBarButtonItem *pageButton;
+@property (nonatomic, retain) UIPopoverController *popController;
+@property (nonatomic, retain) UIPickerView *pagePicker;
+
+-(void)makeCustomToolbars;
 -(void)hitActions;
 -(void)hitMore;
+-(void)pageSelection;
+-(void)gotoPageClicked;
 @end
