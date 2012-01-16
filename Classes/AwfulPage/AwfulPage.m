@@ -643,7 +643,7 @@
     UIBarButtonItem *act = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(hitActions)];
     UIBarButtonItem *more = [[UIBarButtonItem alloc] initWithTitle:@"..." style:UIBarButtonItemStylePlain target:self action:@selector(hitMore)];
     UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-
+    
     [items addObject:space];    
     [items addObject:act];
     [items addObject:more];
@@ -662,50 +662,53 @@
     items = [NSMutableArray array];
     
     UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(hardRefresh)];
-    [items addObject:refresh];
-    [refresh release];
-    
     
     space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [items addObject:space];
-    [space release];
     
-    UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithTitle:@"<< First" style:UIBarButtonItemStyleBordered target:self action:@selector(hitFirst)];
-    [items addObject:button];
-    [button release];
-    
-    button = [[UIBarButtonItem alloc] initWithTitle:@"< Prev" style:UIBarButtonItemStyleBordered target:self action:@selector(prevPage)];
+    UIBarButtonItem *first = [[UIBarButtonItem alloc] initWithTitle:@"<< First" style:UIBarButtonItemStyleBordered target:self action:@selector(hitFirst)];
     if (self.pages.currentPage > 1)
-        button.enabled = NO;
-    [items addObject:button];
-    [button release];
+        first.enabled = NO;
+    
+    UIBarButtonItem *prev = [[UIBarButtonItem alloc] initWithTitle:@"< Prev" style:UIBarButtonItemStyleBordered target:self action:@selector(prevPage)];
+    if (self.pages.currentPage > 1)
+        prev.enabled = NO;
     
     
     NSString *pagesTitle = @"Loading...";
     if (self.pages.description)
         pagesTitle = self.pages.description;
     
-    button = [[UIBarButtonItem alloc] initWithTitle:pagesTitle style:UIBarButtonItemStyleBordered target:self action:@selector(pageSelection)];
+    UIBarButtonItem *pages = [[UIBarButtonItem alloc] initWithTitle:pagesTitle style:UIBarButtonItemStyleBordered target:self action:@selector(pageSelection)];
     [pagesTitle release];
-    [items addObject:button];
-    self.pageButton = button;
-    [button release];
     
-    button = [[UIBarButtonItem alloc] initWithTitle:@"Next >" style:UIBarButtonItemStyleBordered target:self action:@selector(nextPage)];
-    if([self.pages onLastPage]) {
-        button.enabled = NO;
-    }
-    [items addObject:button];
-    [button release];
+    self.pageButton = pages;
     
-    button = [[UIBarButtonItem alloc] initWithTitle:@"Last >>" style:UIBarButtonItemStyleBordered target:self action:@selector(hitLast)];
-    if([self.pages onLastPage]) {
-        button.enabled = NO;
-    }
-    [items addObject:button];
-    [button release];
+    UIBarButtonItem *next = [[UIBarButtonItem alloc] initWithTitle:@"Next >" style:UIBarButtonItemStyleBordered target:self action:@selector(nextPage)];
+    if([self.pages onLastPage])
+        next.enabled = NO;
+    
+    UIBarButtonItem *last = [[UIBarButtonItem alloc] initWithTitle:@"Last >>" style:UIBarButtonItemStyleBordered target:self action:@selector(hitLast)];
+    if([self.pages onLastPage])
+        last.enabled = NO;
+    
+    [items addObject:refresh];
+    [items addObject:space];
+    [items addObject:first];
+    [items addObject:prev];
+    [items addObject:pages];
+    [items addObject:next];
+    [items addObject:last];
     
     [self setToolbarItems:items];
+    
+    [refresh release];
+    [space release];
+    [first release];
+    [prev release];
+    [pages release];
+    [next release];
+    [last release];
+    
     [self.navigationController setToolbarHidden:NO animated:YES];
 }
 
@@ -791,14 +794,14 @@
         [self.popController dismissPopoverAnimated:YES];
         self.popController = nil;
     }
-        
+    
     self.pagePicker = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 0, 320, 216)];
     self.pagePicker.dataSource = self;
     self.pagePicker.delegate = self;
     [self.pagePicker selectRow:[_pages currentPage]-1
-              inComponent:0
-                 animated:NO];
-
+                   inComponent:0
+                      animated:NO];
+    
     self.pagePicker.showsSelectionIndicator = YES;
     
     UIButton *goButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -821,8 +824,8 @@
     
     [self.popController setPopoverContentSize:view.frame.size animated:YES];
     [self.popController presentPopoverFromBarButtonItem:self.pageButton 
-                 permittedArrowDirections:UIPopoverArrowDirectionAny
-                                 animated:YES];
+                               permittedArrowDirections:UIPopoverArrowDirectionAny
+                                               animated:YES];
     
     
 }
