@@ -334,14 +334,21 @@
 {
     [self dismissModalViewControllerAnimated:YES];
     
+    AwfulAppDelegate *del = (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
     if([content isKindOfClass:[AwfulPage class]]) {
-        AwfulAppDelegate *del = (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
+        
         [del.splitController showAwfulPage:(AwfulPage *)content];
+
+        self.contentVC = content;
+        [self.contentVC setDelegate:self];
+        [self.contentVC refresh];
+    }
+    else if([content isKindOfClass:[AwfulThreadList class]])
+    {
+        [del.splitController showTheadList:(AwfulThreadList *)content];
     }
     
-    self.contentVC = content;
-    [self.contentVC setDelegate:self];
-    [self.contentVC refresh];
+    
 }
 
 -(void)callBookmarksRefresh

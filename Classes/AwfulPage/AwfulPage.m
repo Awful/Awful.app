@@ -625,6 +625,8 @@
 @end
 
 
+#pragma mark -
+#pragma mark AwfulPageIpad
 @implementation AwfulPageIpad : AwfulPage
 @synthesize pageButton = _pageButton;
 @synthesize popController = _popController;
@@ -634,7 +636,9 @@
 {
     [super viewDidLoad];
     [self makeCustomToolbars];
+    [self setThreadTitle:self.thread.title];
 }
+
 -(void)makeCustomToolbars
 {
     UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 140, 40)];
@@ -653,7 +657,6 @@
     [act release];
     [more release];
     [space release];
-    
     UIBarButtonItem *toolbar_cust = [[UIBarButtonItem alloc] initWithCustomView:toolbar];
     [toolbar release];
     self.navigationItem.rightBarButtonItem = toolbar_cust;
@@ -743,6 +746,7 @@
     [page release];
     [self.popController dismissPopoverAnimated:YES];
 }
+
 #pragma mark -
 #pragma mark Page Navigation
 
@@ -830,11 +834,40 @@
     
 }
 
+-(IBAction)hitForum : (id)sender
+{
+    if(self.thread.forum != nil) {
+        AwfulThreadListIpad *list = [[AwfulThreadListIpad alloc] initWithAwfulForum:self.thread.forum];
+        loadContentVC(list);
+        [list release];
+    }
+}
+
+#pragma mark -
+#pragma mark Handle Updates
 
 -(void)setPages:(AwfulPageCount *)pages
 {
     [super setPages:pages];
     [self.pageButton setTitle:pages.description];
+}
+
+-(void)setThreadTitle : (NSString *)in_title
+{
+    [super setThreadTitle:in_title];
+    UIButton *titleButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [titleButton setTitle:in_title forState:UIControlStateNormal];
+    [titleButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [titleButton setTitleColor:[UIColor blackColor] forState:UIControlStateHighlighted];
+    [titleButton setTitleColor:[UIColor blackColor] forState:UIControlStateSelected];
+    [titleButton setTitleColor:[UIColor blackColor] forState:UIControlStateDisabled];
+
+    [titleButton addTarget:self action:@selector(hitForum:) forControlEvents:UIControlEventTouchUpInside];
+
+    titleButton.frame = CGRectMake(0, 0, getWidth()-50, 44);
+    
+    self.navigationItem.titleView = titleButton;
+    
 }
 
 @end

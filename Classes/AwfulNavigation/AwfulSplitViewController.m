@@ -8,6 +8,7 @@
 
 #import "AwfulSplitViewController.h"
 #import "AwfulForumsList.h"
+#import "AwfulThreadList.h"
 #import "AwfulPage.h"
 #import "AwfulExtrasController.h"
 #import "AwfulAppDelegate.h"
@@ -100,6 +101,14 @@
         [self hideMasterView];
         [self addMasterButtonToController:page];
     }
+}
+
+-(void)showTheadList : (AwfulThreadList *)list
+{
+    [self showMasterView];
+    [self.listController popToRootViewControllerAnimated:NO];
+    [self.listController pushViewController:list animated:NO];
+    
 }
 
 - (void)addBorderToMasterView

@@ -8,6 +8,7 @@
 
 @class AwfulNavigator;
 @class AwfulPage;
+@class AwfulThreadList;
 
 @interface AwfulSplitViewController : UISplitViewController <UISplitViewControllerDelegate> {
     UINavigationController *_pageController;
@@ -25,6 +26,7 @@
 @property (nonatomic, assign) BOOL masterIsVisible;
 
 -(void)showAwfulPage : (AwfulPage *)page;
+-(void)showTheadList : (AwfulThreadList *)list;
 -(void)addMasterButtonToController: (UIViewController *)vc;
 -(void)showMasterView;
 -(void)hideMasterView;
