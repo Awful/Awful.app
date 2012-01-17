@@ -36,6 +36,7 @@
 #import "AwfulSmallPageController.h"
 #import "AwfulExtrasController.h"
 #import "AwfulSplitViewController.h"
+#import "AwfulLoginController.h"
 
 @implementation AwfulPage
 
@@ -649,7 +650,10 @@
     UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     
     [items addObject:space];    
-    [items addObject:act];
+    if (isLoggedIn())
+    {
+        [items addObject:act];
+    }
     [items addObject:more];
     
     [toolbar setItems:items];
