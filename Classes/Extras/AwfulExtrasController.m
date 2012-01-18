@@ -114,6 +114,7 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    [self.tableView reloadData];
 }
 
 - (void)viewDidAppear:(BOOL)animated

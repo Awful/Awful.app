@@ -74,6 +74,7 @@
 
 -(void)killUser
 {
+    self.userName = nil;
     NSError *err;
     BOOL woot = [[NSFileManager defaultManager] removeItemAtPath:[self getPath] error:&err];
     if(!woot) {
