@@ -76,7 +76,6 @@ typedef enum {
 -(id)initWithAwfulThread : (AwfulThread *)thread startAt : (AwfulPageDestinationType)thread_pos pageNum : (int)page_num;
 -(void)acceptPosts : (NSMutableArray *)posts;
 
-
 -(NSString *)getURLSuffix;
 
 -(void)hardRefresh;
@@ -84,7 +83,6 @@ typedef enum {
 -(void)tappedPageNav : (id)sender;
 
 -(void)scrollToSpecifiedPost;
-
 -(void)setWebView : (JSBridgeWebView *)webView;
 -(void)loadOlderPosts;
 -(void)nextPage;
@@ -111,4 +109,5 @@ typedef enum {
 -(void)hitMore;
 -(void)pageSelection;
 -(void)gotoPageClicked;
+-(void)hitForum;
 @end

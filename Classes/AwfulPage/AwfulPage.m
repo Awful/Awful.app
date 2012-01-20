@@ -218,14 +218,14 @@
     int posts_per_page = getPostsPerPage();
     if([self.pages onLastPage] && [self.allRawPosts count] == posts_per_page) {
         
-        AwfulPage *current_page = [[AwfulPage alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeSpecific pageNum:self.pages.currentPage];
+        AwfulPage *current_page = [[[self class] alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeSpecific pageNum:self.pages.currentPage];
         current_page.shouldScrollToBottom = YES;
         loadContentVC(current_page);
         [current_page release];
         
     } else {
         
-        AwfulPage *fresh_page = [[AwfulPage alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeNewpost];
+        AwfulPage *fresh_page = [[[self class] alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeNewpost];
         loadContentVC(fresh_page);
         [fresh_page release];
     }
@@ -271,7 +271,7 @@
 -(void)nextPage
 {
     if(![self.pages onLastPage]) {
-        AwfulPage *next_page = [[AwfulPage alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeSpecific pageNum:self.pages.currentPage+1];
+        AwfulPage *next_page = [[[self class] alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeSpecific pageNum:self.pages.currentPage+1];
         loadContentVC(next_page);
         [next_page release];
     }
@@ -280,7 +280,7 @@
 -(void)prevPage
 {
     if(self.pages.currentPage > 1) {
-        AwfulPage *prev_page = [[AwfulPage alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeSpecific pageNum:self.pages.currentPage-1];
+        AwfulPage *prev_page = [[[self class] alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeSpecific pageNum:self.pages.currentPage-1];
         loadContentVC(prev_page);
         [prev_page release];
     }
@@ -562,9 +562,9 @@
                 AwfulPage *page = nil;
                 
                 if(page_number == nil) {
-                    page = [[AwfulPage alloc] initWithAwfulThread:intra startAt:AwfulPageDestinationTypeFirst];
+                    page = [[[self class] alloc] initWithAwfulThread:intra startAt:AwfulPageDestinationTypeFirst];
                 } else {
-                    page = [[AwfulPage alloc] initWithAwfulThread:intra startAt:AwfulPageDestinationTypeSpecific pageNum:[page_number intValue]];
+                    page = [[[self class] alloc] initWithAwfulThread:intra startAt:AwfulPageDestinationTypeSpecific pageNum:[page_number intValue]];
                     int pti = [AwfulParse getNewPostNumFromURL:request.URL];
                     page.url = [NSString stringWithFormat:@"showthread.php?threadid=%@&pagenumber=%@#pti%d", thread_id, page_number, pti];
                 }
@@ -745,7 +745,7 @@
 - (void) gotoPageClicked
 {
     int pageSelected = [self.pagePicker selectedRowInComponent:0] + 1;
-    AwfulPageIpad *page = [[AwfulPageIpad alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeSpecific pageNum:pageSelected];
+    AwfulPage *page = [[[self class] alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeSpecific pageNum:pageSelected];
     loadContentVC(page);
     [page release];
     [self.popController dismissPopoverAnimated:YES];
@@ -764,32 +764,16 @@
 
 -(void)hitFirst
 {
-    AwfulPageIpad *first_page = [[AwfulPageIpad alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeFirst];
+    AwfulPage *first_page = [[[self class] alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeFirst];
     loadContentVC(first_page);
     [first_page release];
 }
 
--(void)nextPage
-{
-    if(![self.pages onLastPage]) {
-        AwfulPageIpad *next_page = [[AwfulPageIpad alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeSpecific pageNum:self.pages.currentPage+1];
-        loadContentVC(next_page);
-        [next_page release];
-    }
-}
 
--(void)prevPage
-{
-    if(self.pages.currentPage > 1) {
-        AwfulPageIpad *prev_page = [[AwfulPageIpad alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeSpecific pageNum:self.pages.currentPage-1];
-        loadContentVC(prev_page);
-        [prev_page release];
-    }
-}
 -(void)hitLast
 {
     if(![self.pages onLastPage]) {
-        AwfulPageIpad *last_page = [[AwfulPageIpad alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeLast];
+        AwfulPage *last_page = [[[self class] alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeLast];
         loadContentVC(last_page);
         [last_page release];
     }
@@ -838,7 +822,7 @@
     
 }
 
--(IBAction)hitForum : (id)sender
+-(void)hitForum
 {
     if(self.thread.forum != nil) {
         AwfulThreadListIpad *list = [[AwfulThreadListIpad alloc] initWithAwfulForum:self.thread.forum];
@@ -866,7 +850,7 @@
     [titleButton setTitleColor:[UIColor blackColor] forState:UIControlStateSelected];
     [titleButton setTitleColor:[UIColor blackColor] forState:UIControlStateDisabled];
 
-    [titleButton addTarget:self action:@selector(hitForum:) forControlEvents:UIControlEventTouchUpInside];
+    [titleButton addTarget:self action:@selector(hitForum) forControlEvents:UIControlEventTouchUpInside];
 
     titleButton.frame = CGRectMake(0, 0, getWidth()-50, 44);
     
