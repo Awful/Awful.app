@@ -11,10 +11,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
-
+ 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
-
+ 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -83,10 +83,22 @@ float getWidth()
 {
     UIInterfaceOrientation orient = [[UIApplication sharedApplication] statusBarOrientation];
     float width;
-    if(UIInterfaceOrientationIsPortrait(orient)) {
-        width = 320;
-    } else {
-        width = 480;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        if(UIInterfaceOrientationIsPortrait(orient)) {
+            width = 768;
+        } else {
+            width = 1024;
+        }
+        
+    }
+    else
+    {
+        if(UIInterfaceOrientationIsPortrait(orient)) {
+            width = 320;
+        } else {
+            width = 480;
+        }
     }
     return width;
 }

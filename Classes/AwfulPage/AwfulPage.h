@@ -75,7 +75,6 @@ typedef enum {
 -(id)initWithAwfulThread : (AwfulThread *)thread pageNum : (int)page_num;
 -(id)initWithAwfulThread : (AwfulThread *)thread startAt : (AwfulPageDestinationType)thread_pos pageNum : (int)page_num;
 -(void)acceptPosts : (NSMutableArray *)posts;
--(void)makeCustomToolbar;
 
 -(NSString *)getURLSuffix;
 
@@ -84,7 +83,6 @@ typedef enum {
 -(void)tappedPageNav : (id)sender;
 
 -(void)scrollToSpecifiedPost;
-
 -(void)setWebView : (JSBridgeWebView *)webView;
 -(void)loadOlderPosts;
 -(void)nextPage;
@@ -93,7 +91,23 @@ typedef enum {
 -(void)heldPost:(UILongPressGestureRecognizer *)gestureRecognizer;
 -(void)scrollToPost : (NSString *)post_id;
 
+
+@end
+
+
+@interface AwfulPageIpad : AwfulPage <UIActionSheetDelegate, UIPickerViewDataSource, UIPickerViewDelegate> {
+    UIBarButtonItem *_pageButton;
+    UIPopoverController *_popController;
+    UIPickerView *_pagePicker;
+}
+@property (nonatomic, retain) UIBarButtonItem *pageButton;
+@property (nonatomic, retain) UIPopoverController *popController;
+@property (nonatomic, retain) UIPickerView *pagePicker;
+
+-(void)makeCustomToolbars;
 -(void)hitActions;
 -(void)hitMore;
-
+-(void)pageSelection;
+-(void)gotoPageClicked;
+-(void)hitForum;
 @end
