@@ -65,6 +65,8 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
 {
     if((self=[super initWithStyle:UITableViewStyleGrouped])) {
         self.title = @"Awful App";
+        self.tabBarItem.image = [UIImage imageNamed:@"dotdotdot-clear.png"];
+        self.tabBarItem.title = @"More";
     }
     return self;
 }

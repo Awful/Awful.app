@@ -9,6 +9,7 @@
 #import "AwfulSplitViewController.h"
 #import "AwfulForumsList.h"
 #import "AwfulThreadList.h"
+#import "AwfulBookmarksController.h"
 #import "AwfulPage.h"
 #import "AwfulExtrasController.h"
 #import "AwfulAppDelegate.h"
@@ -18,6 +19,7 @@
 
 @synthesize pageController = _pageController;
 @synthesize listController = _listController;
+@synthesize masterController = _masterController;
 @synthesize popController = _popController;
 @synthesize popOverButton = _popOverButton;
 @synthesize masterIsVisible = _masterIsVisible;
@@ -60,20 +62,37 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad
 {
+
     [super viewDidLoad];
     
     AwfulForumsListIpad *forums = [[AwfulForumsListIpad alloc] init];
     self.listController = [[[UINavigationController alloc] initWithRootViewController:forums] autorelease];
-    [forums release];
     
     AwfulExtrasController *extras = [[AwfulExtrasController alloc] init];
-    self.pageController = [[[UINavigationController alloc] initWithRootViewController:extras] autorelease];
-    self.pageController.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+
+    
+    AwfulBookmarksControllerIpad *bookmarks = [[AwfulBookmarksControllerIpad alloc] init];
+
+    
+    UITabBarController *master = [[UITabBarController alloc] init];
+    self.masterController.viewControllers = [NSArray arrayWithObjects:self.listController, 
+                              [[[UINavigationController alloc] initWithRootViewController:bookmarks] autorelease], 
+                              [[[UINavigationController alloc] initWithRootViewController:extras] autorelease], 
+                              nil];
+    
+
+    [master release];
+    [forums release];
+    [extras release];
+    [bookmarks release];
+    
+    extras = [[AwfulExtrasController alloc] init];
+    self.pageController.viewControllers = [NSArray arrayWithObject:extras];
     [extras release];
     
-    self.viewControllers = [NSArray arrayWithObjects:self.listController, self.pageController, nil];
+    self.viewControllers = [NSArray arrayWithObjects:self.masterController, self.pageController, nil];
+     
 }
-
 
 - (void)viewDidUnload
 {
@@ -106,6 +125,7 @@
 -(void)showTheadList : (AwfulThreadList *)list
 {
     [self showMasterView];
+    [self.masterController setSelectedViewController:self.listController];
     [self.listController popToRootViewControllerAnimated:NO];
     [self.listController pushViewController:list animated:NO];
     

@@ -9,18 +9,21 @@
 @class AwfulNavigator;
 @class AwfulPage;
 @class AwfulThreadList;
+@class AwfulIpadMasterController;
 
-@interface AwfulSplitViewController : UISplitViewController <UISplitViewControllerDelegate> {
+@interface AwfulSplitViewController : UISplitViewController <UISplitViewControllerDelegate, UITabBarControllerDelegate> {
     UINavigationController *_pageController;
     UINavigationController *_listController;
+    UITabBarController *_masterController;
     UIPopoverController *_popController;
     UIBarButtonItem *_popOverButton;
     BOOL _masterIsVisible;
     CALayer *shadowLayer;
 }
 
-@property (nonatomic, retain) UINavigationController *pageController;
-@property (nonatomic, retain) UINavigationController *listController;
+@property (nonatomic, retain) IBOutlet UINavigationController *pageController;
+@property (nonatomic, retain) IBOutlet UINavigationController *listController;
+@property (nonatomic, retain) IBOutlet UITabBarController *masterController;
 @property (nonatomic, retain) UIPopoverController *popController;
 @property (nonatomic, retain) UIBarButtonItem *popOverButton;
 @property (nonatomic, assign) BOOL masterIsVisible;
