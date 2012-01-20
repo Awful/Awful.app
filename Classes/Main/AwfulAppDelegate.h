@@ -27,7 +27,12 @@
 @property (nonatomic, retain) IBOutlet AwfulNavigatorIpad *navigatorIpad;
 @property (nonatomic, retain) IBOutlet AwfulSplitViewController *splitController;
 
+- (void) setupSubview;
+- (UIViewController *)getRootController;
+
 @end
 
+@interface AwfulAppDelegateIpad : AwfulAppDelegate
+@end;
 UIViewController *getRootController();
 BOOL isLandscape();

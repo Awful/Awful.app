@@ -18,6 +18,7 @@
 #import "AwfulForumCell.h"
 #import "AwfulLoginController.h"
 #import "AwfulBookmarksController.h"
+#import "AwfulUser.h"
 
 #define SECTION_INDEX_OFFSET 1
 
@@ -252,7 +253,12 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
     if(section == 0) {
+        if(!isLoggedIn()) {
+            return 0;
+        }
+        
         return [self.favorites count];
+        
     } else if([self isRefreshSection:[NSIndexPath indexPathForRow:0 inSection:section]]) {
         return 1;
     }
@@ -681,6 +687,15 @@
 
 @implementation AwfulForumsListIpad
 
+- (id) init {
+    self = [super init];
+    
+    [self.navigationItem setTitle:@"Forum List"];
+    AwfulNavigator *nav = getNavigator();
+    [nav.user addObserver:self forKeyPath:@"userName" options:NSKeyValueObservingOptionNew context:NULL];
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -702,6 +717,11 @@
     AwfulThreadListIpad *detail = [[AwfulThreadListIpad alloc] initWithAwfulForum:forum];
     [self.navigationController pushViewController:detail animated:YES];
     [detail release];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    [self.tableView reloadData];
 }
 
 @end

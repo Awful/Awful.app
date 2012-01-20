@@ -22,16 +22,16 @@
 
 #pragma mark -
 #pragma mark Application lifecycle
+- (void) setupSubview
+{
+    [self.window addSubview:self.navigationController.view];
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
         
     // Override point for customization after application launch.
 
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [self.window addSubview:self.splitController.view];
-    } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        [self.window addSubview:self.navigationController.view];
-    }
+    [self setupSubview];
     [self.window makeKeyAndVisible];
     
     [FlurryAPI startSession:@"EU3TLVQM9U8T8QKNI9ID"];
@@ -98,19 +98,33 @@
      */
 }
 
+- (UIViewController *)getRootController
+{
+    return self.navigationController;
+}
+@end
+
+@implementation AwfulAppDelegateIpad
+- (void) setupSubview
+{
+    [self.window addSubview:self.splitController.view];
+}
+
+- (UIViewController *)getRootController
+{
+    return self.splitController;
+}
 @end
 
 UIViewController *getRootController()
 {
     AwfulAppDelegate *del = [[UIApplication sharedApplication] delegate];
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        return del.splitController;
-    }
-    return del.navigationController;
+    return [del getRootController];
 }
 
 BOOL isLandscape()
 {
     return UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]);
 }
+
 

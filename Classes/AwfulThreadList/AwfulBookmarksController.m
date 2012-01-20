@@ -246,6 +246,38 @@
 
 @implementation AwfulBookmarksControllerIpad
 
+//Copied from AwfulThreadListIpad
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    AwfulThreadCellType type = [self getTypeAtIndexPath:indexPath];
+    
+    if(type == AwfulThreadCellTypeThread) {
+        
+        AwfulThread *thread = [self getThreadAtIndexPath:indexPath];
+        
+        if(thread.threadID != nil) {
+            int start = AwfulPageDestinationTypeNewpost;
+            if(thread.totalUnreadPosts == -1) {
+                start = AwfulPageDestinationTypeFirst;
+            } else if(thread.totalUnreadPosts == 0) {
+                start = AwfulPageDestinationTypeLast;
+                // if the last page is full, it won't work if you go for &goto=newpost
+                // therefore I'm setting it to last page here
+            }
+            
+            AwfulPageIpad *thread_detail = [[AwfulPageIpad alloc] initWithAwfulThread:thread startAt:start];
+            loadContentVC(thread_detail);
+            [thread_detail release];
+        }
+    }
+}
+
+-(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
+{
+    
+    return YES;
+}
+
 -(void)viewDidLoad {
     [super viewDidLoad];
     self.navigationItem.titleView = nil;

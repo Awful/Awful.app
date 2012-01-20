@@ -334,9 +334,6 @@
 
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        return YES;
-    }
     return (toInterfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
@@ -612,6 +609,7 @@
 
 @implementation AwfulThreadListIpad
 
+//Copied to AwfulBookmarksControllerIpad
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     AwfulThreadCellType type = [self getTypeAtIndexPath:indexPath];
@@ -630,13 +628,20 @@
                 // therefore I'm setting it to last page here
             }
             
-            AwfulPage *thread_detail = [[AwfulPage alloc] initWithAwfulThread:thread startAt:start];
+            AwfulPageIpad *thread_detail = [[AwfulPageIpad alloc] initWithAwfulThread:thread startAt:start];
             loadContentVC(thread_detail);
             [thread_detail release];
         }
     }
 }
 
+
+-(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
+{
+
+        return YES;
+}
+    
 -(void)viewDidLoad
 {
     [super viewDidLoad];
