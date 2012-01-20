@@ -372,10 +372,6 @@ AwfulNavigator *getNavigator()
 {
     AwfulAppDelegate *del = (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
     
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        return del.navigatorIpad;
-    }
-    
     return del.navigator;
 }
 
