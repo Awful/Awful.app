@@ -45,3 +45,6 @@
 -(void)reloadUserName;
 
 @end
+
+@interface AwfulExtrasControllerIpad : AwfulExtrasController
+@end

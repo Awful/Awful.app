@@ -28,9 +28,11 @@
 @property (nonatomic, retain) UIBarButtonItem *popOverButton;
 @property (nonatomic, assign) BOOL masterIsVisible;
 
+-(void)setupMasterView;
 -(void)showAwfulPage : (AwfulPage *)page;
 -(void)showTheadList : (AwfulThreadList *)list;
 -(void)addMasterButtonToController: (UIViewController *)vc;
 -(void)showMasterView;
 -(void)hideMasterView;
+-(void) showLoginView;
 @end
