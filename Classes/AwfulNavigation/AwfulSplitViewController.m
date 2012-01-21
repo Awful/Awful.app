@@ -76,7 +76,7 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
-    
+    self.masterController = nil;
     self.listController = nil;
     self.pageController = nil;
 }
@@ -88,8 +88,6 @@
 }
 -(void)setupMasterView
 {
-    UITabBarController *master = [[UITabBarController alloc] init];
-    self.masterController = master;
     AwfulForumsListIpad *forums = [[AwfulForumsListIpad alloc] init];
     self.listController = [[[UINavigationController alloc] initWithRootViewController:forums] autorelease];
     
@@ -111,9 +109,9 @@
     }
     
     [array addObject:[[[UINavigationController alloc] initWithRootViewController:extras] autorelease]]; 
-
+    [self.masterController setViewControllers:[NSArray array]];
     [self.masterController setViewControllers:array animated:YES];
-    [master release];
+
     [forums release];
     [extras release];
     [bookmarks release];
@@ -121,8 +119,7 @@
     extras = [[AwfulExtrasControllerIpad alloc] init];
     self.pageController.viewControllers = [NSArray arrayWithObject:extras];
     [extras release];
-    
-    self.viewControllers = [NSArray arrayWithObjects:self.masterController, self.pageController, nil];   
+    //self.viewControllers = [NSArray arrayWithObjects:self.masterController, self.pageController, nil];   
 }
 
 -(void)showAwfulPage : (AwfulPageIpad *)page
@@ -203,13 +200,14 @@
         self.masterIsVisible = NO;
         [self removeBorderToMasterView];
         
+        
         UIView *masterView = self.masterController.view;
         
         CGRect masterFrame = masterView.frame;
         masterFrame.origin.x = -masterFrame.size.width;
         
         
-        [UIView beginAnimations:@"showView" context:NULL];
+        [UIView beginAnimations:@"hideView" context:NULL];
         masterView.frame = masterFrame;
         [UIView commitAnimations];
         
