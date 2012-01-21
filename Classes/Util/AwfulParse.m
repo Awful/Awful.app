@@ -63,9 +63,8 @@
         html = [NSString stringWithFormat:@"%@<div class='postbodymain %@'><div class='postbodysub'>%@</div></div>", name_avatar_box, alt, parsed_post_body];
         
     } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        html = [NSString stringWithFormat:@"<div class='postbodymain %@' style='padding:10px'><table><tr><td valign='top' width=100px rowspan=3>%@</td><td><span class='%@'>%@</span></td></tr><tr>%@</tr><tr><td><span class='post_date'>Posted On %@</span></td></tr></table></div>", 
-                alt, avatar_str, user_str, username_info, parsed_post_body, post.postDate];
-        NSLog(@"%@", html);
+        html = [NSString stringWithFormat:@"<div class='postbodymain %@' style='padding:10px'><table id='%@'><tr><td valign='top' width=100px rowspan=3>%@</td><td valign='top'><span class='%@'>%@</span></td><td class='quotebutton' onclick=tappedPost('%@')>%@</td></tr><tr>%@</tr><tr><td><span class='post_date'>Posted On %@</span></td></tr></table></div>", 
+                alt, post.postID, avatar_str, user_str, username_info, post.postID, [AwfulParse getPostActionHTML], parsed_post_body, post.postDate];
     }
         
     return html;
