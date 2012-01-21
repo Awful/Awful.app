@@ -164,7 +164,7 @@
         
         self.masterIsVisible = YES;
         
-        UIView *masterView = self.listController.view;
+        UIView *masterView = self.masterController.view;
         
         CGRect masterFrame = masterView.frame;
         masterFrame.origin.x = 0;
@@ -188,7 +188,7 @@
         self.masterIsVisible = NO;
         [self removeBorderToMasterView];
         
-        UIView *masterView = self.listController.view;
+        UIView *masterView = self.masterController.view;
         
         CGRect masterFrame = masterView.frame;
         masterFrame.origin.x = -masterFrame.size.width;
