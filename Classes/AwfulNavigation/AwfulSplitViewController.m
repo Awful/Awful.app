@@ -13,6 +13,7 @@
 #import "AwfulPage.h"
 #import "AwfulExtrasController.h"
 #import "AwfulAppDelegate.h"
+#import "AwfulLoginController.h"
 #import <QuartzCore/QuartzCore.h>
 
 @implementation AwfulSplitViewController
@@ -62,36 +63,12 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad
 {
-
+    
     [super viewDidLoad];
+    [self setupMasterView];
+    AwfulNavigator *nav = getNavigator();
+    [nav.user addObserver:self forKeyPath:@"userName" options:NSKeyValueObservingOptionNew context:NULL];
     
-    AwfulForumsListIpad *forums = [[AwfulForumsListIpad alloc] init];
-    self.listController = [[[UINavigationController alloc] initWithRootViewController:forums] autorelease];
-    
-    AwfulExtrasController *extras = [[AwfulExtrasController alloc] init];
-
-    
-    AwfulBookmarksControllerIpad *bookmarks = [[AwfulBookmarksControllerIpad alloc] init];
-
-    
-    UITabBarController *master = [[UITabBarController alloc] init];
-    self.masterController.viewControllers = [NSArray arrayWithObjects:self.listController, 
-                              [[[UINavigationController alloc] initWithRootViewController:bookmarks] autorelease], 
-                              [[[UINavigationController alloc] initWithRootViewController:extras] autorelease], 
-                              nil];
-    
-
-    [master release];
-    [forums release];
-    [extras release];
-    [bookmarks release];
-    
-    extras = [[AwfulExtrasController alloc] init];
-    self.pageController.viewControllers = [NSArray arrayWithObject:extras];
-    [extras release];
-    
-    self.viewControllers = [NSArray arrayWithObjects:self.masterController, self.pageController, nil];
-     
 }
 
 - (void)viewDidUnload
@@ -107,7 +84,46 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
-	return YES;
+    return YES;
+}
+-(void)setupMasterView
+{
+    AwfulForumsListIpad *forums = [[AwfulForumsListIpad alloc] init];
+    self.listController = [[[UINavigationController alloc] initWithRootViewController:forums] autorelease];
+    
+    AwfulExtrasControllerIpad *extras = [[AwfulExtrasControllerIpad alloc] init];
+    
+    
+    AwfulBookmarksControllerIpad *bookmarks = [[AwfulBookmarksControllerIpad alloc] init];
+    
+    
+    UITabBarController *master = [[UITabBarController alloc] init];
+    
+    NSMutableArray *array = [NSMutableArray array];
+    
+    [array addObject:self.listController];
+    
+    [array addObject:self.listController];
+    if (isLoggedIn())
+    {
+        [array addObject:[[[UINavigationController alloc] initWithRootViewController:bookmarks] autorelease]];
+    }
+    
+    [array addObject:[[[UINavigationController alloc] initWithRootViewController:extras] autorelease]]; 
+
+    [self.masterController setViewControllers:array animated:YES];
+    
+    
+    [master release];
+    [forums release];
+    [extras release];
+    [bookmarks release];
+    
+    extras = [[AwfulExtrasControllerIpad alloc] init];
+    self.pageController.viewControllers = [NSArray arrayWithObject:extras];
+    [extras release];
+    
+    //self.viewControllers = [NSArray arrayWithObjects:self.masterController, self.pageController, nil];   
 }
 
 -(void)showAwfulPage : (AwfulPageIpad *)page
@@ -133,7 +149,7 @@
 
 - (void)addBorderToMasterView
 {
-    UIView *masterView = self.listController.view;
+    UIView *masterView = self.masterController.view;
     
     masterView.layer.masksToBounds = NO;
     masterView.layer.borderWidth = 1.0f;
@@ -149,7 +165,7 @@
 
 - (void)removeBorderToMasterView
 {
-    UIView *masterView = self.listController.view;
+    UIView *masterView = self.masterController.view;
     masterView.layer.masksToBounds = YES;
     masterView.layer.borderWidth = 0.0f;
     masterView.layer.cornerRadius = 0.0f;
@@ -164,7 +180,7 @@
         
         self.masterIsVisible = YES;
         
-        UIView *masterView = self.listController.view;
+        UIView *masterView = self.masterController.view;
         
         CGRect masterFrame = masterView.frame;
         masterFrame.origin.x = 0;
@@ -188,7 +204,7 @@
         self.masterIsVisible = NO;
         [self removeBorderToMasterView];
         
-        UIView *masterView = self.listController.view;
+        UIView *masterView = self.masterController.view;
         
         CGRect masterFrame = masterView.frame;
         masterFrame.origin.x = -masterFrame.size.width;
@@ -279,6 +295,19 @@
     
     
     self.masterIsVisible = true;
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    [self setupMasterView];
+    [self.masterController setSelectedViewController:self.listController];
+}
+
+- (void) showLoginView
+{
+    AwfulLoginController *login = [[AwfulLoginController alloc] init];
+    [self.pageController pushViewController:login animated:YES];
+    [login release];
 }
 
 @end

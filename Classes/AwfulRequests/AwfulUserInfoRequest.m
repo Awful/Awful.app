@@ -53,15 +53,6 @@
                 AwfulExtrasController *ipad_extras = (AwfulExtrasController *)nav.navigationController.visibleViewController;
                 [ipad_extras reloadUserName];
             }
-            AwfulForumsListIpad *list = [[AwfulForumsListIpad alloc] init];
-            del.splitController.listController = [[[UINavigationController alloc] initWithRootViewController:list] autorelease];
-            [list release];
-            
-            AwfulExtrasController *ipad_extras = [[AwfulExtrasController alloc] init];
-            del.splitController.pageController = [[[UINavigationController alloc] initWithRootViewController:ipad_extras] autorelease];
-            [ipad_extras release];
-            
-            del.splitController.viewControllers = [NSArray arrayWithObjects:del.splitController.listController, del.splitController.pageController, nil];
         }
     }
     [page_data release];

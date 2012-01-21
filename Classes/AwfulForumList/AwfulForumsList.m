@@ -691,9 +691,7 @@
     self = [super init];
     
     [self.navigationItem setTitle:@"Forum List"];
-    AwfulNavigator *nav = getNavigator();
-    [nav.user addObserver:self forKeyPath:@"userName" options:NSKeyValueObservingOptionNew context:NULL];
-    
+
     self.tabBarItem.image = [UIImage imageNamed:@"list_icon.png"];
     self.tabBarItem.title = @"Forums";
     
@@ -719,11 +717,6 @@
     AwfulThreadListIpad *detail = [[AwfulThreadListIpad alloc] initWithAwfulForum:forum];
     [self.navigationController pushViewController:detail animated:YES];
     [detail release];
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-    [self.tableView reloadData];
 }
 
 @end
