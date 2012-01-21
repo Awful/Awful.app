@@ -17,7 +17,6 @@
 @synthesize window = _window;
 @synthesize navigationController = _navigationController;
 @synthesize navigator = _navigator;
-@synthesize navigatorIpad = _navigatorIpad;
 @synthesize splitController = _splitController;
 
 #pragma mark -
@@ -47,7 +46,6 @@
     [_splitController release];
     [_navigationController release];
     [_navigator release];
-    [_navigatorIpad release];
     [_window release];
     [super dealloc];
 }

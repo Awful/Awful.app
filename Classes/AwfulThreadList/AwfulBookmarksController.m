@@ -245,7 +245,17 @@
 @end
 
 @implementation AwfulBookmarksControllerIpad
+- (id) init
+{
+    self = [super init];
+    if (self)
+    {
+        
+        self.tabBarItem = [[self tabBarItem] initWithTabBarSystemItem:UITabBarSystemItemBookmarks tag:self.tabBarItem.tag];
+    }
+    return self;
 
+}
 //Copied from AwfulThreadListIpad
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     

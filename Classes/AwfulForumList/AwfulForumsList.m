@@ -693,15 +693,17 @@
     [self.navigationItem setTitle:@"Forum List"];
     AwfulNavigator *nav = getNavigator();
     [nav.user addObserver:self forKeyPath:@"userName" options:NSKeyValueObservingOptionNew context:NULL];
+    
+    self.tabBarItem.image = [UIImage imageNamed:@"list_icon.png"];
+    self.tabBarItem.title = @"Forums";
+    
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    UIBarButtonItem *book = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemBookmarks target:self action:@selector(hitBookmarks)];
-    self.navigationItem.rightBarButtonItem = book;
-    [book release];
+    self.navigationItem.rightBarButtonItem = nil;
 }
 
 -(void)hitBookmarks
