@@ -646,7 +646,6 @@
     NSMutableArray *items = [NSMutableArray array];
     
     UIBarButtonItem *act = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(hitActions)];
-    UIBarButtonItem *more = [[UIBarButtonItem alloc] initWithTitle:@"..." style:UIBarButtonItemStylePlain target:self action:@selector(hitMore)];
     UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     
     [items addObject:space];    
@@ -654,12 +653,11 @@
     {
         [items addObject:act];
     }
-    [items addObject:more];
     
     [toolbar setItems:items];
     
     [act release];
-    [more release];
+
     [space release];
     UIBarButtonItem *toolbar_cust = [[UIBarButtonItem alloc] initWithCustomView:toolbar];
     [toolbar release];

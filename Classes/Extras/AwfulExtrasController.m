@@ -12,6 +12,8 @@
 #import "AwfulNavigator.h"
 #import "AwfulHelpController.h"
 #import "AwfulAppThreadRequest.h"
+#import "AwfulAppDelegate.h"
+#import "AwfulSplitViewController.h"
 
 static NSString *CELL_IDENT_BUTTON = @"ButtonCell";
 static NSString *CELL_IDENT_LABEL = @"LabelCell";
@@ -366,4 +368,13 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
     return nil;
 }
 
+@end
+
+@implementation AwfulExtrasControllerIpad
+
+-(void)tappedLogin
+{
+    AwfulAppDelegateIpad *del = (AwfulAppDelegateIpad *) (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
+    [del.splitController showLoginView];
+}
 @end
