@@ -88,16 +88,17 @@
 }
 -(void)setupMasterView
 {
+    UITabBarController *master = [[UITabBarController alloc] init];
+    self.masterController = master;
     AwfulForumsListIpad *forums = [[AwfulForumsListIpad alloc] init];
     self.listController = [[[UINavigationController alloc] initWithRootViewController:forums] autorelease];
     
     AwfulExtrasControllerIpad *extras = [[AwfulExtrasControllerIpad alloc] init];
     
-    
     AwfulBookmarksControllerIpad *bookmarks = [[AwfulBookmarksControllerIpad alloc] init];
     
     
-    UITabBarController *master = [[UITabBarController alloc] init];
+
     
     NSMutableArray *array = [NSMutableArray array];
     
@@ -112,8 +113,6 @@
     [array addObject:[[[UINavigationController alloc] initWithRootViewController:extras] autorelease]]; 
 
     [self.masterController setViewControllers:array animated:YES];
-    
-    
     [master release];
     [forums release];
     [extras release];
@@ -123,7 +122,7 @@
     self.pageController.viewControllers = [NSArray arrayWithObject:extras];
     [extras release];
     
-    //self.viewControllers = [NSArray arrayWithObjects:self.masterController, self.pageController, nil];   
+    self.viewControllers = [NSArray arrayWithObjects:self.masterController, self.pageController, nil];   
 }
 
 -(void)showAwfulPage : (AwfulPageIpad *)page
