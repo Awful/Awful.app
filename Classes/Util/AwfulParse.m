@@ -26,7 +26,11 @@
     if(post.avatarURL == nil) {
         avatar_str = @"";
     } else {
-        avatar_str = [NSString stringWithFormat:@"<td class='avatar_td'><img class='avatar_img' src='%@'/></td>", post.avatarURL];
+        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            avatar_str = [NSString stringWithFormat:@"<td class='avatar_td'><img class='avatar_img' src='%@'/></td>", post.avatarURL];
+        } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            avatar_str = [NSString stringWithFormat:@"<img src='%@' style='max-width:80px;margin:auto'/>", post.avatarURL];
+        }
     }
     
     NSString *userbox_str = @"userbox";
@@ -43,14 +47,26 @@
         username_info = [NSString stringWithFormat:@"%@&nbsp;%@", [self getModImgHTML], post.authorName];
     }
     
-    NSString *name_avatar_box = [NSString stringWithFormat:@"<table id='%@' class='%@'><tr>%@<td class='name_date_box'><span class='%@'>%@</span><br/><span class='post_date'>Posted on %@</span></td><td></td><td class='quotebutton' onclick=tappedPost('%@')>%@</td></tr></table>", post.postID, userbox_str, avatar_str, user_str, username_info, post.postDate, post.postID, [AwfulParse getPostActionHTML]];
     NSString *parsed_post_body = [AwfulParse parseYouTubes:post_body];
     
     if(![AwfulConfig showImages]) {
         parsed_post_body = [AwfulParse parseOutImages:parsed_post_body];
     }
+    parsed_post_body = [parsed_post_body stringByReplacingOccurrencesOfString:@"&#13;" withString:@""];
     
-    NSString *html = [NSString stringWithFormat:@"%@<div class='postbodymain %@'><div class='postbodysub'>%@</div></div>", name_avatar_box, alt, parsed_post_body];
+    NSString *html = nil;
+    
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        
+        NSString *name_avatar_box = [NSString stringWithFormat:@"<table id='%@' class='%@'><tr>%@<td class='name_date_box'><span class='%@'>%@</span><br/><span class='post_date'>Posted on %@</span></td><td></td><td class='quotebutton' onclick=tappedPost('%@')>%@</td></tr></table>", post.postID, userbox_str, avatar_str, user_str, username_info, post.postDate, post.postID, [AwfulParse getPostActionHTML]];
+        
+        html = [NSString stringWithFormat:@"%@<div class='postbodymain %@'><div class='postbodysub'>%@</div></div>", name_avatar_box, alt, parsed_post_body];
+        
+    } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        html = [NSString stringWithFormat:@"<div class='postbodymain %@' style='padding:10px'><table><tr><td valign='top' width=100px rowspan=3>%@</td><td><span class='%@'>%@</span></td></tr><tr>%@</tr><tr><td><span class='post_date'>Posted On %@</span></td></tr></table></div>", 
+                alt, avatar_str, user_str, username_info, parsed_post_body, post.postDate];
+        NSLog(@"%@", html);
+    }
         
     return html;
 }
