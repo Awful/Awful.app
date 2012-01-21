@@ -13,6 +13,7 @@
 #import "AwfulNavigator.h"
 #import "AwfulPageRefreshRequest.h"
 #import "AwfulPage.h"
+#import "AwfulSplitViewController.h"
 
 @implementation AwfulRequestHandler
 
@@ -96,8 +97,18 @@
 {
     [self hideHud];
     AwfulAppDelegate *del = (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
-    self.hud = [[[MBProgressHUD alloc] initWithView:del.window] autorelease];
-    [del.window addSubview:self.hud];
+    UIView *view;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        
+        view = ((AwfulAppDelegateIpad *)del).splitController.pageController.view;
+    }
+    else
+    {
+        view = del.window;
+    }
+    self.hud = [[[MBProgressHUD alloc] initWithView:view] autorelease];
+    [view addSubview:self.hud];
     self.hud.delegate = self;
     [self.hud show:YES];
 }
