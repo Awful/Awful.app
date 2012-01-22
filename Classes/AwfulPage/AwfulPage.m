@@ -446,6 +446,7 @@
     self.threadTitleLabel = nil;
     self.forumButton = nil;
     self.pagesButton = nil;
+    [super viewDidUnload];
 }
 
 #pragma mark -
@@ -488,6 +489,22 @@
     [self scrollToPost:self.scrollToPostID];
 }
 
+-(void) showActions:(NSString *)post_id
+{
+    AwfulNavigator *nav = getNavigator();
+    
+    if(![post_id isEqualToString:@""] && nav.actions == nil) {
+        for(AwfulPost *post in self.allRawPosts) {
+            if([post.postID isEqualToString:post_id]) {
+                AwfulPostActions *actions = [[AwfulPostActions alloc] initWithAwfulPost:post page:self];
+                [nav setActions:actions];
+                [actions release];
+            }
+        }
+    }
+
+}
+
 #pragma mark JSBBridgeWebDelegate
 
 - (void)webView:(UIWebView*) webview didReceiveJSNotificationWithDictionary:(NSDictionary*) dictionary
@@ -501,18 +518,8 @@
             [self loadOlderPosts];
         } else if([action isEqualToString:@"postOptions"]) {
             
-            AwfulNavigator *nav = getNavigator();
             NSString *post_id = [dictionary objectForKey:@"postid"];
-            
-            if(![post_id isEqualToString:@""] && nav.actions == nil) {
-                for(AwfulPost *post in self.allRawPosts) {
-                    if([post.postID isEqualToString:post_id]) {
-                        AwfulPostActions *actions = [[AwfulPostActions alloc] initWithAwfulPost:post page:self];
-                        [nav setActions:actions];
-                        [actions release];
-                    }
-                }
-            }
+            [self showActions:post_id];
         }
     }
 }
@@ -632,6 +639,7 @@
 @synthesize pageButton = _pageButton;
 @synthesize popController = _popController;
 @synthesize pagePicker = _pagePicker;
+@synthesize actions = _actions;
 
 - (void) viewDidLoad
 {
@@ -640,6 +648,16 @@
     [self setThreadTitle:self.thread.title];
 }
 
+- (void) viewDidUnload
+{
+    
+    self.pageButton = nil;
+    self.popController = nil;
+    self.pagePicker = nil;
+    self.actions = nil;
+    
+    [super viewDidUnload];
+}
 -(void)makeCustomToolbars
 {
     UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 140, 40)];
@@ -721,6 +739,34 @@
 {
     AwfulNavigator *nav = getNavigator();
     [nav tappedAction];
+}
+
+-(void) showActions:(NSString *)post_id
+{
+
+    if(![post_id isEqualToString:@""]) {
+        for(AwfulPost *post in self.allRawPosts) {
+            if([post.postID isEqualToString:post_id]) {
+
+                AwfulPostActions *actions = [[AwfulPostActions alloc] initWithAwfulPost:post page:self];
+                self.actions = actions;
+                
+                UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"Post Actions" 
+                                                                   delegate:actions
+                                                          cancelButtonTitle:nil
+                                                     destructiveButtonTitle:nil
+                                                          otherButtonTitles:nil];
+                for (NSString *title in actions.titles) {
+                    [sheet addButtonWithTitle:title];
+                }
+                CGRect frame = CGRectMake(_lastTouch.x, _lastTouch.y, 0, 0);
+                [sheet showFromRect:frame inView:self.view animated:YES];
+                [sheet release];
+                [actions release];
+            }
+        }
+    }
+    
 }
 
 #pragma mark -
@@ -856,4 +902,22 @@
     
 }
 
+-(void)setWebView:(JSBridgeWebView *)webView
+{
+    [super setWebView:webView];
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
+    tap.delegate = self;
+    [webView addGestureRecognizer:tap];
+    [tap release];
+    
+}
+
+- (void)handleTap:(UITapGestureRecognizer *)sender 
+{     
+    if (sender.state == UIGestureRecognizerStateEnded)     
+    {         // handling code     
+        _lastTouch = [sender locationInView:self.view];
+    } 
+}
 @end
