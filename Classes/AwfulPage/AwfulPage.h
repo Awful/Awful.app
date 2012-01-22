@@ -83,6 +83,7 @@ typedef enum {
 -(void)tappedPageNav : (id)sender;
 
 -(void)scrollToSpecifiedPost;
+-(void) showActions:(NSString *)post_id;
 -(void)setWebView : (JSBridgeWebView *)webView;
 -(void)loadOlderPosts;
 -(void)nextPage;
@@ -99,10 +100,13 @@ typedef enum {
     UIBarButtonItem *_pageButton;
     UIPopoverController *_popController;
     UIPickerView *_pagePicker;
+    CGPoint _lastTouch;
+    AwfulActions *_actions;
 }
 @property (nonatomic, retain) UIBarButtonItem *pageButton;
 @property (nonatomic, retain) UIPopoverController *popController;
 @property (nonatomic, retain) UIPickerView *pagePicker;
+@property (nonatomic, retain) AwfulActions *actions;
 
 -(void)makeCustomToolbars;
 -(void)hitActions;
@@ -110,4 +114,6 @@ typedef enum {
 -(void)pageSelection;
 -(void)gotoPageClicked;
 -(void)hitForum;
+-(void)handleTap:(UITapGestureRecognizer *)sender;
+
 @end
