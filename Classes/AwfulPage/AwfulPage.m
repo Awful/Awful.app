@@ -37,7 +37,7 @@
 #import "AwfulExtrasController.h"
 #import "AwfulSplitViewController.h"
 #import "AwfulLoginController.h"
-
+#import "AwfulVoteActions.h"
 @implementation AwfulPage
 
 @synthesize thread = _thread;
@@ -502,7 +502,7 @@
             }
         }
     }
-
+    
 }
 
 #pragma mark JSBBridgeWebDelegate
@@ -660,31 +660,57 @@
 }
 -(void)makeCustomToolbars
 {
-    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 140, 40)];
     NSMutableArray *items = [NSMutableArray array];
+    UIBarButtonItem *space;
     
-    UIBarButtonItem *act = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(hitActions)];
-    UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    
-    [items addObject:space];    
     if (isLoggedIn())
     {
-        [items addObject:act];
+        UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 140, 40)];
+        
+        
+        UIImage *starImage;
+        if (_isBookmarked)
+            starImage = [UIImage imageNamed:@"star_on.png"];
+        else
+            starImage = [UIImage imageNamed:@"star_off.png"];
+        
+        UIBarButtonItem *bookmark = [[UIBarButtonItem alloc] initWithImage:starImage 
+                                                                     style:UIBarButtonItemStylePlain
+                                                                    target:self 
+                                                                    action:@selector(bookmarkThread:)];
+        UIBarButtonItem *reply = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(reply)];
+        space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+        
+        [items addObject:space]; 
+        [items addObject:bookmark];
+        
+        [items addObject:reply];
+        
+        
+        [toolbar setItems:items];
+        [bookmark release];
+        [reply release];
+        
+        [space release];
+        UIBarButtonItem *toolbar_cust = [[UIBarButtonItem alloc] initWithCustomView:toolbar];
+        [toolbar release];
+        self.navigationItem.rightBarButtonItem = toolbar_cust;
+        [toolbar_cust release];
     }
-    
-    [toolbar setItems:items];
-    
-    [act release];
-
-    [space release];
-    UIBarButtonItem *toolbar_cust = [[UIBarButtonItem alloc] initWithCustomView:toolbar];
-    [toolbar release];
-    self.navigationItem.rightBarButtonItem = toolbar_cust;
-    [toolbar_cust release];
     
     items = [NSMutableArray array];
     
+    
     UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(hardRefresh)];
+    
+    
+    NSString *ratingTitle = @"Rating: ?";
+    if (self.thread.threadRating < 6)
+        ratingTitle = [NSString stringWithFormat:@"Rating: %d", self.thread.threadRating];
+    
+    UIBarButtonItem *rating= [[UIBarButtonItem alloc] initWithTitle:ratingTitle
+                                                              style:UIBarButtonItemStyleBordered target:self 
+                                                             action:@selector(rateThread:)];
     
     space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     
@@ -715,6 +741,7 @@
         last.enabled = NO;
     
     [items addObject:refresh];
+    [items addObject:rating];
     [items addObject:space];
     [items addObject:first];
     [items addObject:prev];
@@ -725,6 +752,7 @@
     [self setToolbarItems:items];
     
     [refresh release];
+    [rating release];
     [space release];
     [first release];
     [prev release];
@@ -743,11 +771,11 @@
 
 -(void) showActions:(NSString *)post_id
 {
-
+    
     if(![post_id isEqualToString:@""]) {
         for(AwfulPost *post in self.allRawPosts) {
             if([post.postID isEqualToString:post_id]) {
-
+                
                 AwfulPostActions *actions = [[AwfulPostActions alloc] initWithAwfulPost:post page:self];
                 self.actions = actions;
                 
@@ -887,15 +915,16 @@
 -(void)setThreadTitle : (NSString *)in_title
 {
     [super setThreadTitle:in_title];
+    [self makeCustomToolbars];
     UIButton *titleButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [titleButton setTitle:in_title forState:UIControlStateNormal];
     [titleButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [titleButton setTitleColor:[UIColor blackColor] forState:UIControlStateHighlighted];
     [titleButton setTitleColor:[UIColor blackColor] forState:UIControlStateSelected];
     [titleButton setTitleColor:[UIColor blackColor] forState:UIControlStateDisabled];
-
+    
     [titleButton addTarget:self action:@selector(hitForum) forControlEvents:UIControlEventTouchUpInside];
-
+    
     titleButton.frame = CGRectMake(0, 0, getWidth()-50, 44);
     
     self.navigationItem.titleView = titleButton;
@@ -919,5 +948,51 @@
     {         // handling code     
         _lastTouch = [sender locationInView:self.view];
     } 
+}
+
+-(void)rateThread:(id)sender
+{
+    AwfulVoteActions *actions = [[AwfulVoteActions alloc] initWithAwfulThread:self.thread];
+    self.actions = actions;
+    
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"Post Actions" 
+                                                       delegate:actions
+                                              cancelButtonTitle:nil
+                                         destructiveButtonTitle:nil
+                                              otherButtonTitles:nil];
+    for (NSString *title in actions.titles) {
+        [sheet addButtonWithTitle:title];
+    }
+    [sheet showFromBarButtonItem:sender animated:YES];
+    [sheet release];
+    [actions release];
+    
+}
+
+-(void)bookmarkThread:(id)sender;
+{
+    AwfulThreadActions *actions = [[AwfulThreadActions alloc] initWithAwfulPage:self];
+    UIBarButtonItem *button = (UIBarButtonItem *) sender;
+    
+    if (_isBookmarked)
+    {
+        button.image = [UIImage imageNamed:@"star_off.png"];
+        [actions removeBookmark];
+    }
+    else
+    {
+        button.image = [UIImage imageNamed:@"star_on.png"];
+        [actions addBookmark];
+    }
+    [actions release];
+}
+
+-(void)reply
+{
+    AwfulPostBoxController *post_box = [[AwfulPostBoxController alloc] initWithText:@""];
+    [post_box setThread:self.thread];
+    UIViewController *vc = getRootController();
+    [vc presentModalViewController:post_box animated:YES];
+    [post_box release];
 }
 @end

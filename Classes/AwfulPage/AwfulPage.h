@@ -115,5 +115,8 @@ typedef enum {
 -(void)gotoPageClicked;
 -(void)hitForum;
 -(void)handleTap:(UITapGestureRecognizer *)sender;
+-(void)rateThread:(id)sender;
+-(void)bookmarkThread:(id)sender;
+-(void)reply;
 
 @end
