@@ -327,4 +327,15 @@
     [login release];
 }
 
+#pragma mark -
+#pragma mark UITabbarDelegate
+- (void) tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
+{
+    UIViewController *vc = ((UINavigationController *)viewController).topViewController;
+    if ([vc isKindOfClass:[AwfulThreadList class]])
+    {
+        [((AwfulThreadList *)vc) refresh];
+    }
+}
+
 @end
