@@ -720,6 +720,10 @@
     
     UIBarButtonItem *backNav = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrowleft-ipad.png"] style:UIBarButtonItemStylePlain target:self action:@selector(backPage)];
     
+    AwfulNavigator *nav = getNavigator();
+    if (![nav.historyManager isBackEnabled])
+        backNav.enabled = NO;
+    
     UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(hardRefresh)];
     
     space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
