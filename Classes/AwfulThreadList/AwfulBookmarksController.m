@@ -99,8 +99,15 @@
 {
     if([self.refreshTimer isValid]) {
         [self.refreshTimer invalidate];
-        self.refreshTimer = nil;
     }
+    self.refreshTimer = nil;
+}
+
+-(void) newlyVisible
+{
+    [self endTimer];
+    self.refreshed = NO;
+    [self startTimer];
 }
 
 -(void)refresh

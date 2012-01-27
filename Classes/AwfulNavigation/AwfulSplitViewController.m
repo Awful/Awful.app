@@ -180,7 +180,7 @@
         UIViewController *vc = selectedVC.topViewController;
         if ([vc isKindOfClass:[AwfulThreadList class]])
         {
-            [((AwfulThreadList *)vc) refresh];
+            [((AwfulThreadList *)vc) newlyVisible];
         }
         
         UIView *masterView = self.masterController.view;
@@ -306,7 +306,7 @@
         UIViewController *vc = selectedVC.topViewController;
         if ([vc isKindOfClass:[AwfulThreadList class]])
         {
-            [((AwfulThreadList *)vc) refresh];
+            [((AwfulThreadList *)vc) newlyVisible];
         }
     }
     
@@ -334,7 +334,7 @@
     UIViewController *vc = ((UINavigationController *)viewController).topViewController;
     if ([vc isKindOfClass:[AwfulThreadList class]])
     {
-        [((AwfulThreadList *)vc) refresh];
+        [((AwfulThreadList *)vc) newlyVisible];
     }
 }
 

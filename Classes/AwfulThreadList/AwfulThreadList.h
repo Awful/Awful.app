@@ -96,13 +96,23 @@ typedef enum {
 -(NSString *)getURLSuffix;
 
 -(void)refresh;
+-(void)newlyVisible;
 
 -(void)choseForumOption : (int)option;
 -(AwfulThreadCellType)getTypeAtIndexPath : (NSIndexPath *)path;
 
 @end
 
-@interface AwfulThreadListIpad : AwfulThreadList
+@interface AwfulThreadListIpad : AwfulThreadList {
+    NSTimer *_refreshTimer;
+    BOOL _refreshed;
+}
+
+@property (nonatomic, retain) NSTimer *refreshTimer;
+@property (nonatomic, assign) BOOL refreshed;
+
+-(void)startTimer;
+-(void)endTimer;
 
 -(void)swapToRefreshButton;
 -(void)swapToStopButton;

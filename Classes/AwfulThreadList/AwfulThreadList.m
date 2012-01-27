@@ -255,7 +255,7 @@
 }
 
 -(void)refresh
-{        
+{   
     [self.delegate swapToStopButton];
     AwfulForumRefreshRequest *ref_req = [[AwfulForumRefreshRequest alloc] initWithAwfulThreadList:self];
     loadRequest(ref_req);
@@ -263,6 +263,11 @@
     [UIView animateWithDuration:0.2 animations:^(void){
         self.view.alpha = 0.5;
     }];
+}
+
+-(void)newlyVisible
+{
+    //For subclassing
 }
 
 -(void)stop
@@ -608,6 +613,8 @@
 
 
 @implementation AwfulThreadListIpad
+@synthesize refreshTimer = _refreshTimer;
+@synthesize refreshed = _refreshed;
 
 //Copied to AwfulBookmarksControllerIpad
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -664,8 +671,43 @@
 
 -(void)refresh
 {
+    
+    [self endTimer];
     [super refresh];
     [self swapToStopButton];
+}
+
+-(void)stop
+{
+    
+    [self endTimer];
+    [super stop];
+}
+
+-(void) newlyVisible
+{
+    [self endTimer];
+    self.refreshed = NO;
+    [self startTimer];
+}
+
+-(void)startTimer
+{
+    if(self.refreshed || self.refreshTimer != nil) {
+        return;
+    }
+    
+    AwfulNavigator *nav = getNavigator();
+    float delay = [AwfulConfig forumsDelay];
+    self.refreshTimer = [NSTimer scheduledTimerWithTimeInterval:delay target:nav selector:@selector(callForumsRefresh) userInfo:nil repeats:NO];
+}
+
+-(void)endTimer
+{
+    if([self.refreshTimer isValid]) {
+        [self.refreshTimer invalidate];
+    }    
+    self.refreshTimer = nil;
 }
 
 -(void)acceptThreads:(NSMutableArray *)in_threads

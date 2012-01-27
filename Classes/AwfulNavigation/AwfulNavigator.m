@@ -355,12 +355,30 @@
 
 -(void)callBookmarksRefresh
 {
-    AwfulAppDelegate *del = [[UIApplication sharedApplication] delegate];
-    if([del.splitController.listController.visibleViewController isMemberOfClass:[AwfulBookmarksControllerIpad class]]) {
-        AwfulBookmarksControllerIpad *book_ipad = (AwfulBookmarksControllerIpad *)del.splitController.listController.visibleViewController;
-        [book_ipad refresh];
-    }
     
+    AwfulAppDelegate *del = [[UIApplication sharedApplication] delegate];
+    UINavigationController *nav = (UINavigationController *) del.splitController.masterController.selectedViewController;
+    
+    UIViewController *vc = nav.topViewController;
+    
+    if ([vc isKindOfClass:[AwfulBookmarksController class]])
+    {
+        [((AwfulThreadList *)vc) refresh];
+    }    
+}
+-(void) callForumsRefresh
+{
+    
+    AwfulAppDelegate *del = [[UIApplication sharedApplication] delegate];
+    
+    UINavigationController *nav = (UINavigationController *) del.splitController.masterController.selectedViewController;
+    
+    UIViewController *vc = nav.topViewController;
+    
+    if ([vc isKindOfClass:[AwfulThreadListIpad class]])
+    {
+        [((AwfulThreadList *)vc) refresh];
+    }
 }
 
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
