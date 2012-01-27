@@ -334,6 +334,8 @@
 {
     [self dismissModalViewControllerAnimated:YES];
     
+    [self.historyManager addHistory:content];
+    
     AwfulAppDelegate *del = (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
     if([content isKindOfClass:[AwfulPage class]]) {
         

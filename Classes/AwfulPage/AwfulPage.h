@@ -96,14 +96,16 @@ typedef enum {
 @end
 
 
-@interface AwfulPageIpad : AwfulPage <UIActionSheetDelegate, UIPickerViewDataSource, UIPickerViewDelegate> {
+@interface AwfulPageIpad : AwfulPage <UIPickerViewDataSource, UIPickerViewDelegate> {
     UIBarButtonItem *_pageButton;
+    UIBarButtonItem *_ratingButton;
     UIPopoverController *_popController;
     UIPickerView *_pagePicker;
     CGPoint _lastTouch;
     AwfulActions *_actions;
 }
 @property (nonatomic, retain) UIBarButtonItem *pageButton;
+@property (nonatomic, retain) UIBarButtonItem *ratingButton;
 @property (nonatomic, retain) UIPopoverController *popController;
 @property (nonatomic, retain) UIPickerView *pagePicker;
 @property (nonatomic, retain) AwfulActions *actions;
@@ -118,5 +120,6 @@ typedef enum {
 -(void)rateThread:(id)sender;
 -(void)bookmarkThread:(id)sender;
 -(void)reply;
+-(void)backPage;
 
 @end

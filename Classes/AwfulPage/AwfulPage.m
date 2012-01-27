@@ -640,6 +640,7 @@
 @synthesize popController = _popController;
 @synthesize pagePicker = _pagePicker;
 @synthesize actions = _actions;
+@synthesize ratingButton = _ratingButton;
 
 - (void) viewDidLoad
 {
@@ -652,6 +653,7 @@
 {
     
     self.pageButton = nil;
+    self.ratingButton = nil;
     self.popController = nil;
     self.pagePicker = nil;
     self.actions = nil;
@@ -678,12 +680,28 @@
                                                                      style:UIBarButtonItemStylePlain
                                                                     target:self 
                                                                     action:@selector(bookmarkThread:)];
-        UIBarButtonItem *reply = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(reply)];
+        
+        UIImage *ratingImage;
+        if (self.thread.threadRating < 6)
+            ratingImage = [UIImage imageNamed:[NSString stringWithFormat:@"%dstars.gif", self.thread.threadRating]];
+        else
+            ratingImage = [UIImage imageNamed:@"0stars.gif"];
+
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+        [button setBackgroundImage:ratingImage forState:UIControlStateNormal];
+        button.frame = CGRectMake(0,0,ratingImage.size.width, ratingImage.size.height);
+        [button addTarget:self action:@selector(rateThread:) forControlEvents:UIControlEventTouchUpInside];
+        self.ratingButton = [[UIBarButtonItem alloc] initWithCustomView:button];
+        [button release];
+        
+
+        UIBarButtonItem *reply = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(reply)];
         space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
         
-        [items addObject:space]; 
+
+        [items addObject:space];
         [items addObject:bookmark];
-        
+        [items addObject:self.ratingButton];
         [items addObject:reply];
         
         
@@ -700,25 +718,22 @@
     
     items = [NSMutableArray array];
     
+    UIBarButtonItem *backNav = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrowleft-ipad.png"] style:UIBarButtonItemStylePlain target:self action:@selector(backPage)];
     
     UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(hardRefresh)];
     
-    
-    NSString *ratingTitle = @"Rating: ?";
-    if (self.thread.threadRating < 6)
-        ratingTitle = [NSString stringWithFormat:@"Rating: %d", self.thread.threadRating];
-    
-    UIBarButtonItem *rating= [[UIBarButtonItem alloc] initWithTitle:ratingTitle
-                                                              style:UIBarButtonItemStyleBordered target:self 
-                                                             action:@selector(rateThread:)];
-    
     space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     
-    UIBarButtonItem *first = [[UIBarButtonItem alloc] initWithTitle:@"<< First" style:UIBarButtonItemStyleBordered target:self action:@selector(hitFirst)];
+    UIBarButtonItem *first = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRewind target:self action:@selector(hitFirst)];
+    
     if (self.pages.currentPage > 1)
         first.enabled = NO;
     
-    UIBarButtonItem *prev = [[UIBarButtonItem alloc] initWithTitle:@"< Prev" style:UIBarButtonItemStyleBordered target:self action:@selector(prevPage)];
+    UIBarButtonItem *prev = [[UIBarButtonItem alloc] 
+                             initWithImage:[UIImage imageNamed:@"back.png"] 
+                                                             style:UIBarButtonItemStylePlain 
+                                                            target:self 
+                                                            action:@selector(prevPage)];
     if (self.pages.currentPage > 1)
         prev.enabled = NO;
     
@@ -732,16 +747,16 @@
     
     self.pageButton = pages;
     
-    UIBarButtonItem *next = [[UIBarButtonItem alloc] initWithTitle:@"Next >" style:UIBarButtonItemStyleBordered target:self action:@selector(nextPage)];
+    UIBarButtonItem *next = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:self action:@selector(nextPage)];
     if([self.pages onLastPage])
         next.enabled = NO;
     
-    UIBarButtonItem *last = [[UIBarButtonItem alloc] initWithTitle:@"Last >>" style:UIBarButtonItemStyleBordered target:self action:@selector(hitLast)];
+    UIBarButtonItem *last = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFastForward target:self action:@selector(hitLast)];
     if([self.pages onLastPage])
         last.enabled = NO;
     
+    [items addObject:backNav];
     [items addObject:refresh];
-    [items addObject:rating];
     [items addObject:space];
     [items addObject:first];
     [items addObject:prev];
@@ -751,8 +766,8 @@
     
     [self setToolbarItems:items];
     
+    [backNav release];
     [refresh release];
-    [rating release];
     [space release];
     [first release];
     [prev release];
@@ -903,6 +918,12 @@
     }
 }
 
+-(void)backPage
+{
+    AwfulNavigator *nav = getNavigator();
+    [nav tappedBack];
+    
+}
 #pragma mark -
 #pragma mark Handle Updates
 
@@ -952,10 +973,18 @@
 
 -(void)rateThread:(id)sender
 {
+    
+    if(self.popController)
+    {
+        [self.popController dismissPopoverAnimated:YES];
+        self.popController = nil;
+    }
+
+    
     AwfulVoteActions *actions = [[AwfulVoteActions alloc] initWithAwfulThread:self.thread];
     self.actions = actions;
     
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"Post Actions" 
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil
                                                        delegate:actions
                                               cancelButtonTitle:nil
                                          destructiveButtonTitle:nil
@@ -963,7 +992,7 @@
     for (NSString *title in actions.titles) {
         [sheet addButtonWithTitle:title];
     }
-    [sheet showFromBarButtonItem:sender animated:YES];
+    [sheet showFromBarButtonItem:self.ratingButton animated:YES];
     [sheet release];
     [actions release];
     
@@ -995,4 +1024,5 @@
     [vc presentModalViewController:post_box animated:YES];
     [post_box release];
 }
+
 @end
