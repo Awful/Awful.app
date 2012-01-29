@@ -142,7 +142,7 @@
 {
     [self swapToStopButton];
     
-    if([self.contentVC isMemberOfClass:[AwfulPage class]]) {
+    if([self.contentVC isKindOfClass:[AwfulPage class]]) {
         AwfulPage *page = (AwfulPage *)self.contentVC;
         [page hardRefresh];
     } else {

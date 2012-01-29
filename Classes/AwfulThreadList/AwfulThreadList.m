@@ -551,7 +551,7 @@
 -(IBAction)prevPage
 {
     if(self.pages.currentPage > 1) {
-        AwfulThreadList *prev_list = [[AwfulThreadList alloc] initWithAwfulForum:self.forum atPageNum:self.pages.currentPage-1];
+        AwfulThreadList *prev_list = [[[self class] alloc] initWithAwfulForum:self.forum atPageNum:self.pages.currentPage-1];
         loadContentVC(prev_list);
         [prev_list release];
     }
@@ -559,7 +559,7 @@
 
 -(IBAction)nextPage
 {
-    AwfulThreadList *next_list = [[AwfulThreadList alloc] initWithAwfulForum:self.forum atPageNum:self.pages.currentPage+1];
+    AwfulThreadList *next_list = [[[self class] alloc] initWithAwfulForum:self.forum atPageNum:self.pages.currentPage+1];
     loadContentVC(next_list);
     [next_list release];
 }
