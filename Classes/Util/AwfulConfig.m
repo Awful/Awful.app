@@ -58,6 +58,16 @@
     return [delay floatValue];
 }
 
++(float)forumsDelay
+{
+    NSString *delay = [AwfulConfig getConfigObj:@"forums_delay"];
+    if(delay == nil) {
+        return 3;
+    }
+    return [delay floatValue];
+}
+
+
 +(int)numReadPostsAbove
 {
     NSString *above = [AwfulConfig getConfigObj:@"posts_above"];

@@ -39,7 +39,10 @@
     id<AwfulHistoryRecorder> winner = nil;
     
     if(self.historyType == AwfulHistoryTypePage) {
-        winner = [[AwfulPage alloc] initWithAwfulHistory:self];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+            winner = [[AwfulPageIpad alloc] initWithAwfulHistory:self];
+        else
+            winner = [[AwfulPage alloc] initWithAwfulHistory:self];
     } else if(self.historyType == AwfulHistoryTypeThreadlist) {
         winner = [[AwfulThreadList alloc] initWithAwfulHistory:self];
     }
