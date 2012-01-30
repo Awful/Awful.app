@@ -96,7 +96,7 @@
     AwfulBookmarksControllerIpad *bookmarks = [[AwfulBookmarksControllerIpad alloc] init];
     
     
-
+    
     
     NSMutableArray *array = [NSMutableArray array];
     
@@ -111,7 +111,7 @@
     [array addObject:[[[UINavigationController alloc] initWithRootViewController:extras] autorelease]]; 
     [self.masterController setViewControllers:[NSArray array]];
     [self.masterController setViewControllers:array animated:YES];
-
+    
     [forums release];
     [extras release];
     [bookmarks release];
@@ -175,6 +175,13 @@
     {
         
         self.masterIsVisible = YES;
+        UINavigationController *selectedVC = (UINavigationController *) self.masterController.selectedViewController;
+        
+        UIViewController *vc = selectedVC.topViewController;
+        if ([vc isKindOfClass:[AwfulThreadList class]])
+        {
+            [((AwfulThreadList *)vc) newlyVisible];
+        }
         
         UIView *masterView = self.masterController.view;
         
@@ -288,7 +295,20 @@
     }
     
     if (self.masterIsVisible)
+    {
         self.pageController.view.userInteractionEnabled = YES;
+    }
+    else
+    {
+        
+        UINavigationController *selectedVC = (UINavigationController *) self.masterController.selectedViewController;
+        
+        UIViewController *vc = selectedVC.topViewController;
+        if ([vc isKindOfClass:[AwfulThreadList class]])
+        {
+            [((AwfulThreadList *)vc) newlyVisible];
+        }
+    }
     
     
     self.masterIsVisible = true;
@@ -305,6 +325,17 @@
     AwfulLoginController *login = [[AwfulLoginController alloc] init];
     [self.pageController pushViewController:login animated:YES];
     [login release];
+}
+
+#pragma mark -
+#pragma mark UITabbarDelegate
+- (void) tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
+{
+    UIViewController *vc = ((UINavigationController *)viewController).topViewController;
+    if ([vc isKindOfClass:[AwfulThreadList class]])
+    {
+        [((AwfulThreadList *)vc) newlyVisible];
+    }
 }
 
 @end

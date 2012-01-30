@@ -37,7 +37,7 @@
 #import "AwfulExtrasController.h"
 #import "AwfulSplitViewController.h"
 #import "AwfulLoginController.h"
-
+#import "AwfulVoteActions.h"
 @implementation AwfulPage
 
 @synthesize thread = _thread;
@@ -502,7 +502,7 @@
             }
         }
     }
-
+    
 }
 
 #pragma mark JSBBridgeWebDelegate
@@ -640,6 +640,7 @@
 @synthesize popController = _popController;
 @synthesize pagePicker = _pagePicker;
 @synthesize actions = _actions;
+@synthesize ratingButton = _ratingButton;
 
 - (void) viewDidLoad
 {
@@ -652,6 +653,7 @@
 {
     
     self.pageButton = nil;
+    self.ratingButton = nil;
     self.popController = nil;
     self.pagePicker = nil;
     self.actions = nil;
@@ -660,39 +662,82 @@
 }
 -(void)makeCustomToolbars
 {
-    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 140, 40)];
     NSMutableArray *items = [NSMutableArray array];
+    UIBarButtonItem *space;
     
-    UIBarButtonItem *act = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(hitActions)];
-    UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    
-    [items addObject:space];    
     if (isLoggedIn())
     {
-        [items addObject:act];
+        UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 140, 40)];
+        
+        
+        UIImage *starImage;
+        if (_isBookmarked)
+            starImage = [UIImage imageNamed:@"star_on.png"];
+        else
+            starImage = [UIImage imageNamed:@"star_off.png"];
+        
+        UIBarButtonItem *bookmark = [[UIBarButtonItem alloc] initWithImage:starImage 
+                                                                     style:UIBarButtonItemStylePlain
+                                                                    target:self 
+                                                                    action:@selector(bookmarkThread:)];
+        
+        UIImage *ratingImage;
+        if (self.thread.threadRating < 6)
+            ratingImage = [UIImage imageNamed:[NSString stringWithFormat:@"%dstars.gif", self.thread.threadRating]];
+        else
+            ratingImage = [UIImage imageNamed:@"0stars.gif"];
+
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+        [button setBackgroundImage:ratingImage forState:UIControlStateNormal];
+        button.frame = CGRectMake(0,0,ratingImage.size.width, ratingImage.size.height);
+        [button addTarget:self action:@selector(rateThread:) forControlEvents:UIControlEventTouchUpInside];
+        self.ratingButton = [[UIBarButtonItem alloc] initWithCustomView:button];
+        [button release];
+        
+
+        UIBarButtonItem *reply = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(reply)];
+        space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+        
+
+        [items addObject:space];
+        [items addObject:bookmark];
+        [items addObject:self.ratingButton];
+        [items addObject:reply];
+        
+        
+        [toolbar setItems:items];
+        [bookmark release];
+        [reply release];
+        
+        [space release];
+        UIBarButtonItem *toolbar_cust = [[UIBarButtonItem alloc] initWithCustomView:toolbar];
+        [toolbar release];
+        self.navigationItem.rightBarButtonItem = toolbar_cust;
+        [toolbar_cust release];
     }
     
-    [toolbar setItems:items];
-    
-    [act release];
-
-    [space release];
-    UIBarButtonItem *toolbar_cust = [[UIBarButtonItem alloc] initWithCustomView:toolbar];
-    [toolbar release];
-    self.navigationItem.rightBarButtonItem = toolbar_cust;
-    [toolbar_cust release];
-    
     items = [NSMutableArray array];
+    
+    UIBarButtonItem *backNav = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrowleft-ipad.png"] style:UIBarButtonItemStylePlain target:self action:@selector(backPage)];
+    
+    AwfulNavigator *nav = getNavigator();
+    if (![nav.historyManager isBackEnabled])
+        backNav.enabled = NO;
     
     UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(hardRefresh)];
     
     space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     
-    UIBarButtonItem *first = [[UIBarButtonItem alloc] initWithTitle:@"<< First" style:UIBarButtonItemStyleBordered target:self action:@selector(hitFirst)];
+    UIBarButtonItem *first = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRewind target:self action:@selector(hitFirst)];
+    
     if (self.pages.currentPage > 1)
         first.enabled = NO;
     
-    UIBarButtonItem *prev = [[UIBarButtonItem alloc] initWithTitle:@"< Prev" style:UIBarButtonItemStyleBordered target:self action:@selector(prevPage)];
+    UIBarButtonItem *prev = [[UIBarButtonItem alloc] 
+                             initWithImage:[UIImage imageNamed:@"back.png"] 
+                                                             style:UIBarButtonItemStylePlain 
+                                                            target:self 
+                                                            action:@selector(prevPage)];
     if (self.pages.currentPage > 1)
         prev.enabled = NO;
     
@@ -706,14 +751,15 @@
     
     self.pageButton = pages;
     
-    UIBarButtonItem *next = [[UIBarButtonItem alloc] initWithTitle:@"Next >" style:UIBarButtonItemStyleBordered target:self action:@selector(nextPage)];
+    UIBarButtonItem *next = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:self action:@selector(nextPage)];
     if([self.pages onLastPage])
         next.enabled = NO;
     
-    UIBarButtonItem *last = [[UIBarButtonItem alloc] initWithTitle:@"Last >>" style:UIBarButtonItemStyleBordered target:self action:@selector(hitLast)];
+    UIBarButtonItem *last = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFastForward target:self action:@selector(hitLast)];
     if([self.pages onLastPage])
         last.enabled = NO;
     
+    [items addObject:backNav];
     [items addObject:refresh];
     [items addObject:space];
     [items addObject:first];
@@ -724,6 +770,7 @@
     
     [self setToolbarItems:items];
     
+    [backNav release];
     [refresh release];
     [space release];
     [first release];
@@ -743,11 +790,11 @@
 
 -(void) showActions:(NSString *)post_id
 {
-
+    
     if(![post_id isEqualToString:@""]) {
         for(AwfulPost *post in self.allRawPosts) {
             if([post.postID isEqualToString:post_id]) {
-
+                
                 AwfulPostActions *actions = [[AwfulPostActions alloc] initWithAwfulPost:post page:self];
                 self.actions = actions;
                 
@@ -875,6 +922,12 @@
     }
 }
 
+-(void)backPage
+{
+    AwfulNavigator *nav = getNavigator();
+    [nav tappedBack];
+    
+}
 #pragma mark -
 #pragma mark Handle Updates
 
@@ -887,15 +940,16 @@
 -(void)setThreadTitle : (NSString *)in_title
 {
     [super setThreadTitle:in_title];
+    [self makeCustomToolbars];
     UIButton *titleButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [titleButton setTitle:in_title forState:UIControlStateNormal];
     [titleButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [titleButton setTitleColor:[UIColor blackColor] forState:UIControlStateHighlighted];
     [titleButton setTitleColor:[UIColor blackColor] forState:UIControlStateSelected];
     [titleButton setTitleColor:[UIColor blackColor] forState:UIControlStateDisabled];
-
+    
     [titleButton addTarget:self action:@selector(hitForum) forControlEvents:UIControlEventTouchUpInside];
-
+    
     titleButton.frame = CGRectMake(0, 0, getWidth()-50, 44);
     
     self.navigationItem.titleView = titleButton;
@@ -920,4 +974,59 @@
         _lastTouch = [sender locationInView:self.view];
     } 
 }
+
+-(void)rateThread:(id)sender
+{
+    
+    if(self.popController)
+    {
+        [self.popController dismissPopoverAnimated:YES];
+        self.popController = nil;
+    }
+
+    
+    AwfulVoteActions *actions = [[AwfulVoteActions alloc] initWithAwfulThread:self.thread];
+    self.actions = actions;
+    
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                       delegate:actions
+                                              cancelButtonTitle:nil
+                                         destructiveButtonTitle:nil
+                                              otherButtonTitles:nil];
+    for (NSString *title in actions.titles) {
+        [sheet addButtonWithTitle:title];
+    }
+    [sheet showFromBarButtonItem:self.ratingButton animated:YES];
+    [sheet release];
+    [actions release];
+    
+}
+
+-(void)bookmarkThread:(id)sender;
+{
+    AwfulThreadActions *actions = [[AwfulThreadActions alloc] initWithAwfulPage:self];
+    UIBarButtonItem *button = (UIBarButtonItem *) sender;
+    
+    if (_isBookmarked)
+    {
+        button.image = [UIImage imageNamed:@"star_off.png"];
+        [actions removeBookmark];
+    }
+    else
+    {
+        button.image = [UIImage imageNamed:@"star_on.png"];
+        [actions addBookmark];
+    }
+    [actions release];
+}
+
+-(void)reply
+{
+    AwfulPostBoxController *post_box = [[AwfulPostBoxController alloc] initWithText:@""];
+    [post_box setThread:self.thread];
+    UIViewController *vc = getRootController();
+    [vc presentModalViewController:post_box animated:YES];
+    [post_box release];
+}
+
 @end

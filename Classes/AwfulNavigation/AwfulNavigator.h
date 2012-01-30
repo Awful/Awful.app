@@ -80,6 +80,8 @@
 
 @interface AwfulNavigatorIpad : AwfulNavigator
 
+-(void) callForumsRefresh;
+
 @end
 
 AwfulNavigator *getNavigator();

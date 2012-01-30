@@ -142,7 +142,7 @@
 {
     [self swapToStopButton];
     
-    if([self.contentVC isMemberOfClass:[AwfulPage class]]) {
+    if([self.contentVC isKindOfClass:[AwfulPage class]]) {
         AwfulPage *page = (AwfulPage *)self.contentVC;
         [page hardRefresh];
     } else {
@@ -334,6 +334,8 @@
 {
     [self dismissModalViewControllerAnimated:YES];
     
+    [self.historyManager addHistory:content];
+    
     AwfulAppDelegate *del = (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
     if([content isKindOfClass:[AwfulPage class]]) {
         
@@ -353,12 +355,30 @@
 
 -(void)callBookmarksRefresh
 {
-    AwfulAppDelegate *del = [[UIApplication sharedApplication] delegate];
-    if([del.splitController.listController.visibleViewController isMemberOfClass:[AwfulBookmarksControllerIpad class]]) {
-        AwfulBookmarksControllerIpad *book_ipad = (AwfulBookmarksControllerIpad *)del.splitController.listController.visibleViewController;
-        [book_ipad refresh];
-    }
     
+    AwfulAppDelegate *del = [[UIApplication sharedApplication] delegate];
+    UINavigationController *nav = (UINavigationController *) del.splitController.masterController.selectedViewController;
+    
+    UIViewController *vc = nav.topViewController;
+    
+    if ([vc isKindOfClass:[AwfulBookmarksController class]])
+    {
+        [((AwfulThreadList *)vc) refresh];
+    }    
+}
+-(void) callForumsRefresh
+{
+    
+    AwfulAppDelegate *del = [[UIApplication sharedApplication] delegate];
+    
+    UINavigationController *nav = (UINavigationController *) del.splitController.masterController.selectedViewController;
+    
+    UIViewController *vc = nav.topViewController;
+    
+    if ([vc isKindOfClass:[AwfulThreadListIpad class]])
+    {
+        [((AwfulThreadList *)vc) refresh];
+    }
 }
 
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
