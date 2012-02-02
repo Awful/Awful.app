@@ -10,20 +10,18 @@
 
 @implementation AwfulNavigatorLabels
 
-@synthesize pagesLabel = _pagesLabel;
-@synthesize forumLabel = _forumLabel;
-@synthesize threadTitleLabel = _threadTitleLabel;
+@synthesize pagesLabel, forumLabel, threadTitleLabel;
 
 -(id)init 
 {
     if((self=[super initWithNibName:@"AwfulNavigatorLabels" bundle:[NSBundle mainBundle]])) {
+        // gross hack. TODO: separate this into two xibs
         if(self.view) {
             
         }
     }
     return self;
 }
-
 
 - (void)didReceiveMemoryWarning
 {
@@ -38,7 +36,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
 }
 
 - (void)viewDidUnload

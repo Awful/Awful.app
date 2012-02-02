@@ -8,11 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AwfulNavigatorLabels : UIViewController {
-    UILabel *_pagesLabel;
-    UILabel *_forumLabel;
-    UILabel *_threadTitleLabel;
-}
+@interface AwfulNavigatorLabels : UIViewController
 
 @property (nonatomic, strong) IBOutlet UILabel *pagesLabel;
 @property (nonatomic, strong) IBOutlet UILabel *forumLabel;

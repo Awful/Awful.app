@@ -29,19 +29,7 @@
 
 @end
 
-@interface AwfulNavigator : UIViewController <UINavigationControllerDelegate, UIGestureRecognizerDelegate> {
-    UIToolbar *_toolbar;
-    id<AwfulNavigatorContent> _contentVC;
-    AwfulRequestHandler *_requestHandler;
-    AwfulUser *_user;
-    AwfulActions *_actions;
-    AwfulHistoryManager *_historyManager;
-    UIBarButtonItem *_backButton;
-    UIBarButtonItem *_forwardButton;
-    UIBarButtonItem *_actionButton;
-    UILabel *_welcomeMessage;
-    UIButton *_fullScreenButton;
-}
+@interface AwfulNavigator : UIViewController <UINavigationControllerDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) IBOutlet UIToolbar *toolbar;
 @property (nonatomic, strong) id<AwfulNavigatorContent> contentVC;
@@ -80,7 +68,7 @@
 
 @interface AwfulNavigatorIpad : AwfulNavigator
 
--(void) callForumsRefresh;
+-(void)callForumsRefresh;
 
 @end
 

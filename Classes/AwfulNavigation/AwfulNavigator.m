@@ -22,31 +22,23 @@
 
 @implementation AwfulNavigator
 
-@synthesize toolbar = _toolbar;
-@synthesize contentVC = _contentVC;
-@synthesize requestHandler = _requestHandler;
-@synthesize user = _user;
-@synthesize actions = _actions;
-@synthesize historyManager = _historyManager;
-@synthesize backButton = _backButton;
-@synthesize forwardButton = _forwardButton;
-@synthesize actionButton = _actionButton;
-@synthesize welcomeMessage = _welcomeMessage;
-@synthesize fullScreenButton = _fullScreenButton;
+@synthesize toolbar, contentVC, requestHandler;
+@synthesize user, actions, historyManager;
+@synthesize backButton, forwardButton, actionButton;
+@synthesize welcomeMessage, fullScreenButton;
 
 -(id)initWithCoder:(NSCoder *)aDecoder
 {
     if((self = [super initWithCoder:aDecoder])) {
-        _requestHandler = [[AwfulRequestHandler alloc] init];
-        _contentVC = nil;
-        _actions = nil;
-        _historyManager = [[AwfulHistoryManager alloc] init];
-        _user = [[AwfulUser alloc] init];
-        [_user loadUser];
+        self.requestHandler = [[AwfulRequestHandler alloc] init];
+        self.contentVC = nil;
+        self.actions = nil;
+        self.historyManager = [[AwfulHistoryManager alloc] init];
+        self.user = [[AwfulUser alloc] init];
+        [self.user loadUser];
     }
     return self;
 }
-
 
 - (void)didReceiveMemoryWarning
 {
@@ -56,12 +48,12 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
--(void)setActions:(AwfulActions *)actions
+-(void)setActions:(AwfulActions *)in_actions
 {
-    if(actions != _actions) {
-        _actions = actions;
-        _actions.navigator = self;
-        [_actions show];
+    if(self.actions != in_actions) {
+        actions = in_actions;
+        self.actions.navigator = self;
+        [self.actions show];
     }
 }
 
@@ -190,9 +182,9 @@
 
 -(IBAction)tappedAction
 {
-    AwfulActions *actions = [self.contentVC getActions];
-    if(actions != nil) {
-        [self setActions:actions];
+    AwfulActions *content_actions = [self.contentVC getActions];
+    if(content_actions != nil) {
+        self.actions = content_actions;
     }
 }
 
@@ -241,8 +233,8 @@
     }
     [self.contentVC refresh];
     
-    AwfulActions *actions = [self.contentVC getActions];
-    if(actions == nil) {
+    AwfulActions *content_actions = [self.contentVC getActions];
+    if(content_actions == nil) {
         self.actionButton.enabled = NO;
     } else {
         self.actionButton.enabled = YES;
@@ -322,25 +314,20 @@
         self.contentVC = content;
         [self.contentVC setDelegate:self];
         [self.contentVC refresh];
-    }
-    else if([content isKindOfClass:[AwfulThreadList class]])
+    } else if([content isKindOfClass:[AwfulThreadList class]])
     {
         [del.splitController showTheadList:(AwfulThreadList *)content];
     }
-    
-    
 }
 
 -(void)callBookmarksRefresh
 {
-    
     AwfulAppDelegate *del = [[UIApplication sharedApplication] delegate];
-    UINavigationController *nav = (UINavigationController *) del.splitController.masterController.selectedViewController;
+    UINavigationController *nav = (UINavigationController *)del.splitController.masterController.selectedViewController;
     
     UIViewController *vc = nav.topViewController;
     
-    if ([vc isKindOfClass:[AwfulBookmarksController class]])
-    {
+    if ([vc isKindOfClass:[AwfulBookmarksController class]]) {
         [((AwfulThreadList *)vc) refresh];
     }    
 }
@@ -349,12 +336,11 @@
     
     AwfulAppDelegate *del = [[UIApplication sharedApplication] delegate];
     
-    UINavigationController *nav = (UINavigationController *) del.splitController.masterController.selectedViewController;
+    UINavigationController *nav = (UINavigationController *)del.splitController.masterController.selectedViewController;
     
     UIViewController *vc = nav.topViewController;
     
-    if ([vc isKindOfClass:[AwfulThreadListIpad class]])
-    {
+    if ([vc isKindOfClass:[AwfulThreadListIpad class]]) {
         [((AwfulThreadList *)vc) refresh];
     }
 }
@@ -369,7 +355,6 @@
 AwfulNavigator *getNavigator()
 {
     AwfulAppDelegate *del = (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
-    
     return del.navigator;
 }
 

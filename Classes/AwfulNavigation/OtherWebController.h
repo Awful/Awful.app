@@ -9,17 +9,16 @@
 #import <UIKit/UIKit.h>
 
 
-@interface OtherWebController : UIViewController <UIWebViewDelegate> {
-    NSURL *url;
-    UIBarButtonItem *activity;
-    UIWebView *web;
-    
-    UIBarButtonItem *back;
-    UIBarButtonItem *forward;
-    BOOL sprung;
-}
+@interface OtherWebController : UIViewController <UIWebViewDelegate>
 
--(id)initWithURL : (NSURL *)in_url;
+@property (nonatomic, strong) NSURL *url;
+@property (nonatomic, strong) UIBarButtonItem *activity;
+@property (nonatomic, strong) UIWebView *web;
+@property (nonatomic, strong) UIBarButtonItem *backButton;
+@property (nonatomic, strong) UIBarButtonItem *forwardButton;
+@property BOOL openedApp;
+
+-(id)initWithURL : (NSURL *)aUrl;
 -(void)loadToolbar;
 
 -(void)goBack;
@@ -27,7 +26,4 @@
 -(void)refreshPage;
 -(void)openInSafari;
 -(void)hitDone;
-
-@property (nonatomic, strong) NSURL *url;
-
 @end
