@@ -60,7 +60,7 @@
 {
     if(actions != _actions) {
         _actions = actions;
-        _actions.delegate = self;
+        _actions.navigator = self;
         [_actions show];
     }
 }

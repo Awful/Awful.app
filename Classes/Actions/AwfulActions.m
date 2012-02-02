@@ -12,13 +12,13 @@
 
 @implementation AwfulActions
 
-@synthesize titles, delegate;
+@synthesize titles, navigator;
 
 -(id)init
 {
     if((self=[super init])) {
         self.titles = [[NSMutableArray alloc] init];
-        self.delegate = nil;
+        self.navigator = nil;
     }
     return self;
 }

@@ -506,6 +506,7 @@
 		10F5BB3312499953006C5ED0 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 10F5BB3212499953006C5ED0 /* Default@2x.png */; };
 		10F5BC59124BE14D006C5ED0 /* icon_114.png in Resources */ = {isa = PBXBuildFile; fileRef = 10F5BC58124BE14D006C5ED0 /* icon_114.png */; };
 		11099067134B86FD0013444C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11099066134B86FC0013444C /* QuartzCore.framework */; };
+		112764ED14DB44E7003ACE76 /* AwfulForumHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 112764EC14DB44E6003ACE76 /* AwfulForumHeader.m */; };
 		112DB4BB14211F24005A98CB /* SALR.m in Sources */ = {isa = PBXBuildFile; fileRef = 112DB4BA14211F24005A98CB /* SALR.m */; };
 		112DB4C21421208A005A98CB /* jquery.js in Resources */ = {isa = PBXBuildFile; fileRef = 112DB4BD14211F54005A98CB /* jquery.js */; };
 		112DB4C31421208A005A98CB /* salr.js in Resources */ = {isa = PBXBuildFile; fileRef = 112DB4BE14211F54005A98CB /* salr.js */; };
@@ -1132,6 +1133,8 @@
 		10F5BB3212499953006C5ED0 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		10F5BC58124BE14D006C5ED0 /* icon_114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_114.png; sourceTree = "<group>"; };
 		11099066134B86FC0013444C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		112764EB14DB44E6003ACE76 /* AwfulForumHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumHeader.h; sourceTree = "<group>"; };
+		112764EC14DB44E6003ACE76 /* AwfulForumHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumHeader.m; sourceTree = "<group>"; };
 		112DB4B914211F24005A98CB /* SALR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SALR.h; sourceTree = "<group>"; };
 		112DB4BA14211F24005A98CB /* SALR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SALR.m; sourceTree = "<group>"; };
 		112DB4BD14211F54005A98CB /* jquery.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = jquery.js; sourceTree = "<group>"; };
@@ -1937,13 +1940,15 @@
 		1190F6D713BE4EA900B9D271 /* AwfulForumList */ = {
 			isa = PBXGroup;
 			children = (
+				1190F6DD13BE4EA900B9D271 /* AwfulForumsList.h */,
+				1190F6DE13BE4EA900B9D271 /* AwfulForumsList.m */,
 				1190F6D813BE4EA900B9D271 /* AwfulForumCell.h */,
 				1190F6D913BE4EA900B9D271 /* AwfulForumCell.m */,
 				1190F6DA13BE4EA900B9D271 /* AwfulForumCell.xib */,
-				1190F6DB13BE4EA900B9D271 /* AwfulForumHeaderView.xib */,
 				1190F6DC13BE4EA900B9D271 /* AwfulForumRefreshButton.xib */,
-				1190F6DD13BE4EA900B9D271 /* AwfulForumsList.h */,
-				1190F6DE13BE4EA900B9D271 /* AwfulForumsList.m */,
+				112764EB14DB44E6003ACE76 /* AwfulForumHeader.h */,
+				112764EC14DB44E6003ACE76 /* AwfulForumHeader.m */,
+				1190F6DB13BE4EA900B9D271 /* AwfulForumHeaderView.xib */,
 			);
 			path = AwfulForumList;
 			sourceTree = "<group>";
@@ -3004,6 +3009,7 @@
 				1153D11A144E7729007602E8 /* AwfulSplitViewController.m in Sources */,
 				11A941E214DA3E3C00ECC070 /* AwfulParser.m in Sources */,
 				11A941E614DA409600ECC070 /* AwfulPageParser.m in Sources */,
+				112764ED14DB44E7003ACE76 /* AwfulForumHeader.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

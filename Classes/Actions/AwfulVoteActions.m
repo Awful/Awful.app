@@ -62,7 +62,7 @@
         
         loadRequestAndWait(form);
     }
-    [self.delegate setActions:nil];
+    [self.navigator setActions:nil];
 }
 
 @end

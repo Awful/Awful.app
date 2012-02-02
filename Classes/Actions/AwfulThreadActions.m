@@ -56,7 +56,7 @@ typedef enum {
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {    
     if([self isCancelled:buttonIndex]) {
-        [self.delegate setActions:nil];
+        [self.navigator setActions:nil];
         return;
     }
     
@@ -67,7 +67,7 @@ typedef enum {
     } else if(buttonIndex == AwfulThreadActionVote) {
         
         AwfulVoteActions *vote = [[AwfulVoteActions alloc] initWithAwfulThread:self.page.thread];
-        [self.delegate setActions:vote];
+        [self.navigator setActions:vote];
         
     } else if(buttonIndex == AwfulThreadActionReply) {
         
@@ -86,7 +86,7 @@ typedef enum {
         
     }
     if(buttonIndex != AwfulThreadActionVote) {
-        [self.delegate setActions:nil];
+        [self.navigator setActions:nil];
     }
 }
 

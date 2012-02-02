@@ -11,29 +11,11 @@
 #import "AwfulForum.h"
 
 #define LINE_SPACE 10
-
-@implementation AwfulForumHeader
-
-@synthesize title = _title;
-
--(id)initWithCoder:(NSCoder *)aDecoder
-{
-    if((self=[super initWithCoder:aDecoder])) {
-        
-    }
-    return self;
-}
-
-
-@end
+#define PI_OVER_2 (3.14159f / 2.0f)
 
 @implementation AwfulForumCell
 
-@synthesize title = _title;
-@synthesize star = _star;
-@synthesize arrow = _arrow;
-@synthesize section = _section;
-@synthesize delegate = _delegate;
+@synthesize title, star, arrow, section, forumsList;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
@@ -44,7 +26,6 @@
     return self;
 }
 
-
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
     [super setSelected:selected animated:animated];
@@ -52,15 +33,13 @@
     // Configure the view for the selected state
 }
 
--(void)setSection:(AwfulForumSection *)section
+-(void)setSection:(AwfulForumSection *)aSection
 {
-    if(section != _section) {
-        _section = section;
-    }
+    section = aSection;
     
-    if(section != nil) {
+    if(self.section != nil) {
         
-        self.title.text = section.forum.name;
+        self.title.text = self.section.forum.name;
         
         if([section.children count] == 0) {
             [self.arrow removeFromSuperview];
@@ -69,7 +48,7 @@
         }
         
         if(section.expanded) {
-            self.arrow.transform = CGAffineTransformMakeRotation(3.14159/2);
+            self.arrow.transform = CGAffineTransformMakeRotation(PI_OVER_2);
         } else {
             self.arrow.transform = CGAffineTransformIdentity;
         }
@@ -80,7 +59,7 @@
             self.arrow.center = CGPointMake(LINE_SPACE*2, self.arrow.center.y);
         }
         
-        if([self.delegate isAwfulForumSectionFavorited:section]) {
+        if([self.forumsList isAwfulForumSectionFavorited:section]) {
             [self.star setImage:[UIImage imageNamed:@"star_on.png"] forState:UIControlStateNormal];
         } else {
             [self.star setImage:[UIImage imageNamed:@"star_off.png"] forState:UIControlStateNormal];
@@ -90,12 +69,12 @@
 
 -(IBAction)tappedArrow : (id)sender
 {
-    [self.delegate toggleExpandForForumSection:self.section];
+    [self.forumsList toggleExpandForForumSection:self.section];
 }
 
 -(IBAction)tappedStar : (id)sender
 {
-    [self.delegate toggleFavoriteForForumSection:self.section];
+    [self.forumsList toggleFavoriteForForumSection:self.section];
 }
 
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated

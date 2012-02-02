@@ -65,7 +65,7 @@ typedef enum {
         form.userInfo = [NSDictionary dictionaryWithObjectsAndKeys:@"Unread", @"completionMsg", @"1", @"refresh", nil];
         loadRequestAndWait(form);
     }
-    [self.delegate setActions:nil];
+    [self.navigator setActions:nil];
 }
 
 @end

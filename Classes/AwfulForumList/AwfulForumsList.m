@@ -19,25 +19,22 @@
 #import "AwfulLoginController.h"
 #import "AwfulBookmarksController.h"
 #import "AwfulUser.h"
+#import "AwfulForumHeader.h"
 
 #define SECTION_INDEX_OFFSET 1
 
 @implementation AwfulForumSection
 
-@synthesize forum = _forum;
-@synthesize children = _children;
-@synthesize expanded = _expanded;
-@synthesize rowIndex = _rowIndex;
-@synthesize totalAncestors = _totalAncestors;
+@synthesize forum, children, expanded, rowIndex, totalAncestors;
 
 -(id)init
 {
     if((self=[super init])) {
-        _forum = nil;
-        _children = [[NSMutableArray alloc] init];
-        _expanded = NO;
-        _rowIndex = NSNotFound;
-        _totalAncestors = 0;
+        self.forum = nil;
+        self.children = [[NSMutableArray alloc] init];
+        self.expanded = NO;
+        self.rowIndex = NSNotFound;
+        self.totalAncestors = 0;
     }
     return self;
 }
@@ -49,7 +46,6 @@
     return sec;
 }
 
-
 @end
 
 @implementation AwfulForumsList
@@ -57,20 +53,15 @@
 #pragma mark -
 #pragma mark Initialization
 
-@synthesize favorites = _favorites;
-@synthesize forums = _forums;
-@synthesize forumSections = _forumSections;
-@synthesize forumCell = _forumCell;
-@synthesize headerView = _headerView;
-@synthesize refreshCell = _refreshCell;
-
+@synthesize favorites, forums, forumSections;
+@synthesize forumCell, headerView, refreshCell;
 
 -(id)init
 {
     if((self=[super initWithStyle:UITableViewStyleGrouped])) {
-        _favorites = [[NSMutableArray alloc] init];
-        _forums = [[NSMutableArray alloc] init];
-        _forumSections = [[NSMutableArray alloc] init];
+        self.favorites = [[NSMutableArray alloc] init];
+        self.forums = [[NSMutableArray alloc] init];
+        self.forumSections = [[NSMutableArray alloc] init];
         
         [self.navigationItem setTitle:@"Awful"];
         [self loadFavorites];
@@ -83,7 +74,6 @@
 {
     return [self init];
 }
-
 
 #pragma mark -
 #pragma mark View lifecycle
@@ -276,8 +266,8 @@
     if (cell == nil) {
         if(ident == CellIdentifier) {
             [[NSBundle mainBundle] loadNibNamed:@"AwfulForumCell" owner:self options:nil];
+            self.forumCell.forumsList = self;
             cell = self.forumCell;
-            [(AwfulForumCell *)cell setDelegate:self];
             self.forumCell = nil;
         } else if(ident == refreshIdentifier) {
             [[NSBundle mainBundle] loadNibNamed:@"AwfulForumRefreshButton" owner:self options:nil];
@@ -316,7 +306,7 @@
     [[NSBundle mainBundle] loadNibNamed:@"AwfulForumHeaderView" owner:self options:nil];
     header = self.headerView;
     self.headerView = nil;
-    [header.title setText:str];
+    [header.titleLabel setText:str];
     return header;
 }
 
@@ -447,20 +437,17 @@
     loadRequestAndWait(req);
 }
 
--(void)setForums:(NSMutableArray *)forums
+-(void)setForums:(NSMutableArray *)in_forums
 {
-    if(forums != _forums) {
-        _forums = forums;
-        
-        self.forumSections = nil;
-        self.forumSections = [[NSMutableArray alloc] init];
-        for(AwfulForum *forum in _forums) {
-            [self addForumToSectionTree:forum];
-        }
-        [self saveForums];
-        
-        [self.tableView reloadData];
+    forums = in_forums;
+    self.forumSections = nil;
+    self.forumSections = [[NSMutableArray alloc] init];
+    for(AwfulForum *forum in self.forums) {
+        [self addForumToSectionTree:forum];
     }
+    [self saveForums];
+    
+    [self.tableView reloadData];
 }
 
 -(void)loadForums

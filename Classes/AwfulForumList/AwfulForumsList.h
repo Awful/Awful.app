@@ -14,13 +14,6 @@
 @class AwfulSplitViewController;
 
 @interface AwfulForumSection : NSObject
-{
-    AwfulForum *_forum;
-    NSMutableArray *_children;
-    BOOL _expanded;
-    NSUInteger _rowIndex;
-    NSUInteger _totalAncestors;
-}
 
 @property (nonatomic, strong) AwfulForum *forum;
 @property (nonatomic, strong) NSMutableArray *children;
@@ -32,14 +25,7 @@
 
 @end
 
-@interface AwfulForumsList : UITableViewController <UIAlertViewDelegate> {
-    NSMutableArray *_favorites;
-    NSMutableArray *_forums;
-    NSMutableArray *_forumSections;
-    AwfulForumCell *_forumCell;
-    AwfulForumHeader *_headerView;
-    UITableViewCell *_refreshCell;
-}
+@interface AwfulForumsList : UITableViewController <UIAlertViewDelegate>
 
 @property (nonatomic, strong) NSMutableArray *favorites;
 @property (nonatomic, strong) NSMutableArray *forums;

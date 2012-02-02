@@ -49,7 +49,7 @@ typedef enum {
         if(action == AwfulPostActionTypeEdit) {
             AwfulEditContentRequest *edit = [[AwfulEditContentRequest alloc] initWithAwfulPost:self.post];
             loadRequest(edit);
-            [self.delegate setActions:nil];
+            [self.navigator setActions:nil];
             return;
         }
     } else {
@@ -74,7 +74,7 @@ typedef enum {
         }
     }
     
-    [self.delegate setActions:nil];
+    [self.navigator setActions:nil];
 }
 
 @end
