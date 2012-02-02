@@ -18,22 +18,7 @@ typedef enum {
     AwfulStarCategoryNone
 } AwfulStarCategory;
 
-@interface AwfulThread : NSObject <NSCoding> {
-    NSString *_threadID;
-    NSString *_title;
-    int _totalUnreadPosts;
-    int _totalReplies;
-    NSUInteger _threadRating;
-    AwfulStarCategory _starCategory;
-    NSURL *_iconURL;
-    NSString *_authorName;
-    NSString *_lastPostAuthorName;
-    BOOL _seen;
-    BOOL _isStickied;
-    BOOL _isLocked;
-    
-    AwfulForum *_forum;
-}
+@interface AwfulThread : NSObject <NSCoding>
 
 @property (nonatomic, strong) NSString *threadID;
 @property (nonatomic, strong) NSString *title;
@@ -41,7 +26,7 @@ typedef enum {
 @property int totalReplies;
 @property NSUInteger threadRating;
 @property AwfulStarCategory starCategory;
-@property (nonatomic, strong) NSURL *iconURL;
+@property (nonatomic, strong) NSURL *threadIconImageURL;
 @property (nonatomic, strong) NSString *authorName;
 @property (nonatomic, strong) NSString *lastPostAuthorName;
 @property BOOL seen;

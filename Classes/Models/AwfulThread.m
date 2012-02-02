@@ -13,32 +13,24 @@
 
 @implementation AwfulThread
 
-@synthesize threadID = _threadID;
-@synthesize title = _title;
-@synthesize totalUnreadPosts = _totalUnreadPosts;
-@synthesize totalReplies = _totalReplies;
-@synthesize threadRating = _threadRating;
-@synthesize starCategory = _starCategory;
-@synthesize iconURL = _iconURL;
-@synthesize authorName = _authorName;
-@synthesize lastPostAuthorName = _lastPostAuthorName;
-@synthesize seen = _seen;
-@synthesize isStickied = _isStickied;
-@synthesize isLocked = _isLocked;
-@synthesize forum = _forum;
+@synthesize threadID, title;
+@synthesize totalUnreadPosts, totalReplies, threadRating;
+@synthesize starCategory, threadIconImageURL, authorName, lastPostAuthorName;
+@synthesize seen, isStickied, isLocked, forum;
 
 -(id)init
 {
-    _threadRating = NSNotFound;
-    _starCategory = AwfulStarCategoryNone;
-    _seen = NO;
-    _isStickied = NO;
-    _isLocked = NO;
-    _totalUnreadPosts = -1;
+    if((self=[super init])) {
+        self.threadRating = NSNotFound;
+        self.starCategory = AwfulStarCategoryNone;
+        self.seen = NO;
+        self.isStickied = NO;
+        self.isLocked = NO;
+        self.totalUnreadPosts = -1;
+    }
     
     return self;
 }
-
 
 - (id)initWithCoder:(NSCoder *)decoder 
 {
@@ -53,7 +45,7 @@
         self.threadRating = [decoder decodeIntForKey:@"threadRating"];
         self.starCategory = [decoder decodeIntForKey:@"starCategory"];
         
-		self.iconURL = [decoder decodeObjectForKey:@"iconURL"];
+		self.threadIconImageURL = [decoder decodeObjectForKey:@"threadIconImageURL"];
         self.authorName = [decoder decodeObjectForKey:@"authorName"];
         self.lastPostAuthorName = [decoder decodeObjectForKey:@"lastPostAuthorName"];
         
@@ -73,7 +65,7 @@
     [encoder encodeInt:self.threadRating forKey:@"threadRating"];
     [encoder encodeInt:self.starCategory forKey:@"starCategory"];
     
-    [encoder encodeObject:self.iconURL forKey:@"iconURL"];
+    [encoder encodeObject:self.threadIconImageURL forKey:@"threadIconImageURL"];
     [encoder encodeObject:self.authorName forKey:@"authorName"];
     [encoder encodeObject:self.lastPostAuthorName forKey:@"lastPostAuthorName"];
     

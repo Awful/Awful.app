@@ -351,7 +351,7 @@
             TFHppleElement *icon = [thread_base searchForSingle:@"//td[@class='icon']/img"];
             if(icon != nil) {
                 NSString *icon_str = [icon objectForKey:@"src"];
-                thread.iconURL = [NSURL URLWithString:icon_str];
+                thread.threadIconImageURL = [NSURL URLWithString:icon_str];
             }
             
             TFHppleElement *author = [thread_base searchForSingle:@"//td[@class='author']/a"];

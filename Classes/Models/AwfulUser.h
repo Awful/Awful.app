@@ -8,10 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface AwfulUser : NSObject {
-    NSString *_userName;
-    int _postsPerPage;
-}
+@interface AwfulUser : NSObject
 
 @property (nonatomic, strong) NSString *userName;
 @property (nonatomic, assign) int postsPerPage;
