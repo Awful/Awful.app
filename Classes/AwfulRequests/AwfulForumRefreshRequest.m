@@ -16,16 +16,15 @@
 
 @synthesize threadList;
 
--(id)initWithAwfulThreadList : (AwfulThreadList *)in_list;
-{
-    threadList = in_list;
-    
-    NSString *url_str = [NSString stringWithFormat:@"http://forums.somethingawful.com/%@", [threadList getURLSuffix]];
-    self = [super initWithURL:[NSURL URLWithString:url_str]];
+-(id)initWithAwfulThreadList : (AwfulThreadList *)aThreadList;
+{    
+    NSString *url_str = [NSString stringWithFormat:@"http://forums.somethingawful.com/%@", [aThreadList getURLSuffix]];
+    if((self = [super initWithURL:[NSURL URLWithString:url_str]])) {
+        self.threadList = aThreadList;
+    }
     
     return self;
 }
-
 
 -(void)requestStarted
 {

@@ -9,12 +9,10 @@
 #import "ASIHTTPRequest.h"
 #import "AwfulThreadList.h"
 
-@interface AwfulForumRefreshRequest : ASIHTTPRequest {
-    AwfulThreadList *threadList;
-}
+@interface AwfulForumRefreshRequest : ASIHTTPRequest
 
 @property (nonatomic, strong) AwfulThreadList *threadList;
 
--(id)initWithAwfulThreadList : (AwfulThreadList *)in_list;
+-(id)initWithAwfulThreadList : (AwfulThreadList *)aThreadList;
 
 @end

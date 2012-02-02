@@ -12,24 +12,18 @@
 @class AwfulThread;
 @class AwfulPost;
 
-@interface CloserFormRequest : ASIFormDataRequest {
-    AwfulThread *_thread;
-    AwfulPost *_post;
-}
+@interface CloserFormRequest : ASIFormDataRequest
 
 @property (nonatomic, strong) AwfulThread *thread;
 @property (nonatomic, strong) AwfulPost *post;
 
 @end
 
-@interface AwfulReplyRequest : ASIHTTPRequest {
-    NSString *_reply;
-    AwfulThread *_thread;
-}
+@interface AwfulReplyRequest : ASIHTTPRequest
 
 @property (nonatomic, strong) NSString *reply;
 @property (nonatomic, strong) AwfulThread *thread;
 
--(id)initWithReply : (NSString *)reply forThread : (AwfulThread *)thread;
+-(id)initWithReply : (NSString *)aReply forThread : (AwfulThread *)aThread;
 
 @end

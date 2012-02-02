@@ -17,16 +17,14 @@
 
 @implementation AwfulRequestHandler
 
-@synthesize queue = _queue;
-@synthesize hud = _hud;
-@synthesize requests = _requests;
+@synthesize queue, hud, requests;
 
 -(id)init
 {
     if((self=[super init])) {
-        _queue = [[ASINetworkQueue alloc] init];
-        _hud = nil;
-        _requests = [[NSMutableArray alloc] init];
+        self.queue = [[ASINetworkQueue alloc] init];
+        self.hud = nil;
+        self.requests = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -69,20 +67,20 @@
 
 -(void)loadAllWithMessage : (NSString *)msg forRequests : (id)first, ...
 {
-    NSMutableArray *requests = [NSMutableArray array];
+    NSMutableArray *reqs = [NSMutableArray array];
     
     va_list args;
     va_start(args, first);
     for(ASIHTTPRequest *req = first; req != nil; req = va_arg(args, ASIHTTPRequest *)) {
-        [requests addObject:req];
+        [reqs addObject:req];
     }
     va_end(args);
     
     [self showHud];
     self.hud.mode = MBProgressHUDModeIndeterminate;
     self.hud.labelText = msg;
-    [self.queue addOperations:requests waitUntilFinished:NO];
-    [[requests lastObject] setDelegate:self];
+    [self.queue addOperations:reqs waitUntilFinished:NO];
+    [[reqs lastObject] setDelegate:self];
     [self.queue go];
 }
 
@@ -93,7 +91,6 @@
     UIView *view;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
     {
-        
         view = ((AwfulAppDelegateIpad *)del).splitController.pageController.view;
     }
     else

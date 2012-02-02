@@ -12,11 +12,7 @@
 
 @class ASINetworkQueue;
 
-@interface AwfulRequestHandler : NSObject <ASIHTTPRequestDelegate, MBProgressHUDDelegate> {
-    ASINetworkQueue *_queue;
-    MBProgressHUD *_hud;
-    NSMutableArray *_requests;
-}
+@interface AwfulRequestHandler : NSObject <ASIHTTPRequestDelegate, MBProgressHUDDelegate>
 
 @property (nonatomic, strong) ASINetworkQueue *queue;
 @property (nonatomic, strong) MBProgressHUD *hud;

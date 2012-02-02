@@ -11,12 +11,10 @@
 @class AwfulPost;
 @class AwfulPage;
 
-@interface AwfulQuoteRequest : ASIHTTPRequest {
-    AwfulPage *_page;
-}
+@interface AwfulQuoteRequest : ASIHTTPRequest
 
 @property (nonatomic, strong) AwfulPage *page;
 
--(id)initWithPost : (AwfulPost *)post fromPage : (AwfulPage *)page;
+-(id)initWithPost : (AwfulPost *)aPost fromPage : (AwfulPage *)aPage;
 
 @end

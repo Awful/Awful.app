@@ -12,25 +12,21 @@
 @class AwfulPage;
 @class AwfulPostBoxController;
 
-@interface AwfulEditRequest : ASIHTTPRequest {
-    AwfulPost *_post;
-    NSString *_text;
-}
-
--(id)initWithAwfulPost : (AwfulPost *)post withText : (NSString *)post_text;
+@interface AwfulEditRequest : ASIHTTPRequest
 
 @property (nonatomic, strong) AwfulPost *post;
 @property (nonatomic, strong) NSString *text;
 
+-(id)initWithAwfulPost : (AwfulPost *)aPost withText : (NSString *)post_text;
+
 @end
 
 
-@interface AwfulEditContentRequest : ASIHTTPRequest {
-    AwfulPost *_post;
-}
-
--(id)initWithAwfulPost : (AwfulPost *)post;
+@interface AwfulEditContentRequest : ASIHTTPRequest
 
 @property (nonatomic, strong) AwfulPost *post;
+
+-(id)initWithAwfulPost : (AwfulPost *)aPost;
+
 
 @end

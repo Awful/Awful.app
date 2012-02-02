@@ -31,10 +31,11 @@
         thread.threadID = threadid;
         AwfulPage *page;
         
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             page = [[AwfulPageIpad alloc] initWithAwfulThread:thread startAt:AwfulPageDestinationTypeFirst];
-        else
+        } else {
             page = [[AwfulPage alloc] initWithAwfulThread:thread startAt:AwfulPageDestinationTypeFirst];
+        }
         
         loadContentVC(page);
         

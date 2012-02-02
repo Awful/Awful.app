@@ -11,9 +11,7 @@
 
 @class AwfulForumsList;
 
-@interface AwfulForumListRefreshRequest : ASIHTTPRequest {
-    AwfulForumsList *_forumsList;
-}
+@interface AwfulForumListRefreshRequest : ASIHTTPRequest
 
 @property (nonatomic, strong) AwfulForumsList *forumsList;
 

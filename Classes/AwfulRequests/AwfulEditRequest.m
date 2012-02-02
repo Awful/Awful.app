@@ -17,20 +17,18 @@
 
 @implementation AwfulEditRequest
 
-@synthesize post = _post;
-@synthesize text = _text;
+@synthesize post, text;
 
--(id)initWithAwfulPost : (AwfulPost *)post withText : (NSString *)post_text
+-(id)initWithAwfulPost : (AwfulPost *)aPost withText : (NSString *)post_text
 {
-    NSURL *edit_url = [NSURL URLWithString:[NSString stringWithFormat:@"http://forums.somethingawful.com/editpost.php?action=editpost&postid=%@", post.postID]];
-    self = [super initWithURL:edit_url];
-    self.userInfo = [NSDictionary dictionaryWithObject:@"Editing..." forKey:@"loadingMsg"];
-    
-    _post = post;
-    _text = post_text;
+    NSURL *edit_url = [NSURL URLWithString:[NSString stringWithFormat:@"http://forums.somethingawful.com/editpost.php?action=editpost&postid=%@", aPost.postID]];
+    if((self = [super initWithURL:edit_url])) {
+        self.userInfo = [NSDictionary dictionaryWithObject:@"Editing..." forKey:@"loadingMsg"];
+        self.post = aPost;
+        self.text = post_text;
+    }
     return self;
 }
-
 
 -(void)requestFinished
 {
@@ -69,18 +67,17 @@
 
 @implementation AwfulEditContentRequest
 
-@synthesize post = _post;
+@synthesize post;
 
--(id)initWithAwfulPost : (AwfulPost *)post
+-(id)initWithAwfulPost : (AwfulPost *)aPost
 {
-    NSURL *edit_url = [NSURL URLWithString:[NSString stringWithFormat:@"http://forums.somethingawful.com/editpost.php?action=editpost&postid=%@", post.postID]];
-    self = [super initWithURL:edit_url];
-    
-    _post = post;
+    NSURL *edit_url = [NSURL URLWithString:[NSString stringWithFormat:@"http://forums.somethingawful.com/editpost.php?action=editpost&postid=%@", aPost.postID]];
+    if((self = [super initWithURL:edit_url])) {
+        self.post = aPost;
+    }
     
     return self;
 }
-
 
 -(void)requestFinished
 {

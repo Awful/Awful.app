@@ -17,14 +17,14 @@
 
 @implementation AwfulPageRefreshRequest
 
-@synthesize page = _page;
+@synthesize page;
 
--(id)initWithAwfulPage : (AwfulPage *)page
+-(id)initWithAwfulPage : (AwfulPage *)aPage
 {
-    NSString *url_str = [@"http://forums.somethingawful.com/" stringByAppendingString:[page getURLSuffix]];
+    NSString *url_str = [@"http://forums.somethingawful.com/" stringByAppendingString:[aPage getURLSuffix]];
     
     if((self = [super initWithURL:[NSURL URLWithString:url_str]])) {
-        _page = page;
+        self.page = aPage;
     }
     
     return self;

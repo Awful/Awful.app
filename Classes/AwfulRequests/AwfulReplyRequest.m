@@ -19,9 +19,7 @@
 
 @implementation CloserFormRequest
 
-@synthesize thread = _thread;
-@synthesize post = _post;
-
+@synthesize thread, post;
 
 -(void)requestFinished
 {
@@ -66,21 +64,19 @@
 
 @implementation AwfulReplyRequest
 
-@synthesize reply = _reply;
-@synthesize thread = _thread;
+@synthesize reply, thread;
 
--(id)initWithReply : (NSString *)reply forThread : (AwfulThread *)thread
+-(id)initWithReply : (NSString *)aReply forThread : (AwfulThread *)aThread
 {
-    NSString *url_str = [NSString stringWithFormat:@"http://forums.somethingawful.com/newreply.php?s=&action=newreply&threadid=%@", thread.threadID];
-    self = [super initWithURL:[NSURL URLWithString:url_str]];
-    self.userInfo = [NSDictionary dictionaryWithObject:@"Posting..." forKey:@"loadingMsg"];
-
-    _reply = reply;
-    _thread = thread;
+    NSString *url_str = [NSString stringWithFormat:@"http://forums.somethingawful.com/newreply.php?s=&action=newreply&threadid=%@", aThread.threadID];
+    if((self = [super initWithURL:[NSURL URLWithString:url_str]])) {
+        self.userInfo = [NSDictionary dictionaryWithObject:@"Posting..." forKey:@"loadingMsg"];
+        self.reply = aReply;
+        self.thread = aThread;
+    }
     
     return self;
 }
-
 
 -(void)requestFinished
 {

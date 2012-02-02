@@ -13,18 +13,18 @@
 
 @implementation AwfulForumListRefreshRequest
 
-@synthesize forumsList = _forumsList;
+@synthesize forumsList;
 
 -(id)initWithForumsList : (AwfulForumsList *)list
 {
     // grabs forum list from the dropdown at the bottom of a forumdisplay page
-    self = [super initWithURL:[NSURL URLWithString:@"http://forums.somethingawful.com/forumdisplay.php?forumid=1"]];
-    self.userInfo = [NSDictionary dictionaryWithObject:@"Got forums..." forKey:@"completionMsg"];
-    _forumsList = list;
+    if((self = [super initWithURL:[NSURL URLWithString:@"http://forums.somethingawful.com/forumdisplay.php?forumid=1"]])) {
+        self.userInfo = [NSDictionary dictionaryWithObject:@"Got forums..." forKey:@"completionMsg"];
+        self.forumsList = list;
+    }
     
     return self;
 }
-
 
 -(void)requestFinished
 {

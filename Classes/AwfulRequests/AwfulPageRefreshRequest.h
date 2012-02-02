@@ -9,12 +9,10 @@
 #import "ASIHTTPRequest.h"
 #import "AwfulPage.h"
 
-@interface AwfulPageRefreshRequest : ASIHTTPRequest {
-    AwfulPage *_page;
-}
+@interface AwfulPageRefreshRequest : ASIHTTPRequest
 
 @property (nonatomic, strong) AwfulPage *page;
 
--(id)initWithAwfulPage : (AwfulPage *)page;
+-(id)initWithAwfulPage : (AwfulPage *)aPage;
 
 @end

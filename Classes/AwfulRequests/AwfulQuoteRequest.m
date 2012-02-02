@@ -13,15 +13,15 @@
 
 @implementation AwfulQuoteRequest
 
-@synthesize page = _page;
+@synthesize page;
 
--(id)initWithPost : (AwfulPost *)post fromPage : (AwfulPage *)page
-{
-    _page = page;
+-(id)initWithPost : (AwfulPost *)aPost fromPage : (AwfulPage *)aPage
+{    
+    NSString *url_str = [NSString stringWithFormat:@"http://forums.somethingawful.com/newreply.php?action=newreply&postid=%@", aPost.postID];
     
-    NSString *url_str = [NSString stringWithFormat:@"http://forums.somethingawful.com/newreply.php?action=newreply&postid=%@", post.postID];
-    
-    self = [super initWithURL:[NSURL URLWithString:url_str]];
+    if((self = [super initWithURL:[NSURL URLWithString:url_str]])) {
+        self.page = aPage;
+    }
     
     return self;
 }

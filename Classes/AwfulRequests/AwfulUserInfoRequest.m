@@ -16,17 +16,16 @@
 
 @implementation AwfulUserNameRequest
 
-@synthesize user = _user;
+@synthesize user;
 
--(id)initWithAwfulUser : (AwfulUser *)user
+-(id)initWithAwfulUser : (AwfulUser *)aUser
 {
     if((self = [super initWithURL:[NSURL URLWithString:@"http://forums.somethingawful.com/index.php"]])) {
-        _user = user;
+        self.user = aUser;
     }
     
     return self;
 }
-
 
 -(void)requestFinished
 {
@@ -57,10 +56,10 @@
 
 @implementation AwfulUserSettingsRequest
 
--(id)initWithAwfulUser : (AwfulUser *)user
+-(id)initWithAwfulUser : (AwfulUser *)aUser
 {    
     if((self = [super initWithURL:[NSURL URLWithString:@"http://forums.somethingawful.com/member.php?action=editoptions"]])) {
-        _user = user;
+        self.user = aUser;
     }
     
     return self;

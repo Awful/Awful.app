@@ -9,17 +9,14 @@
 #import "ASIHTTPRequest.h"
 #import "AwfulUser.h"
 
-@interface AwfulUserNameRequest : ASIHTTPRequest {
-    AwfulUser *_user;
-}
+@interface AwfulUserNameRequest : ASIHTTPRequest
 
 @property (nonatomic, strong) AwfulUser *user;
 
--(id)initWithAwfulUser : (AwfulUser *)user;
+-(id)initWithAwfulUser : (AwfulUser *)aUser;
 
 @end
 
-@interface AwfulUserSettingsRequest : AwfulUserNameRequest {
-}
+@interface AwfulUserSettingsRequest : AwfulUserNameRequest
 
 @end
