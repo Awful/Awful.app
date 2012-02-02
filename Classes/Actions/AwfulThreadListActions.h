@@ -10,12 +10,10 @@
 
 @class AwfulThread;
 
-@interface AwfulThreadListActions : AwfulActions {
-    AwfulThread *_thread;
-}
+@interface AwfulThreadListActions : AwfulActions
 
 @property (nonatomic, strong) AwfulThread *thread;
 
--(id)initWithAwfulThread : (AwfulThread *)thread;
+-(id)initWithAwfulThread : (AwfulThread *)aThread;
 
 @end

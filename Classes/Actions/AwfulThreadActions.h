@@ -10,13 +10,11 @@
 
 @class AwfulPage;
 
-@interface AwfulThreadActions : AwfulActions {
-    AwfulPage *_page;
-}
+@interface AwfulThreadActions : AwfulActions
 
 @property (nonatomic, strong) AwfulPage *page;
 
--(id)initWithAwfulPage : (AwfulPage *)page;
+-(id)initWithAwfulPage : (AwfulPage *)aPage;
 -(void)addBookmark;
 -(void)removeBookmark;
 

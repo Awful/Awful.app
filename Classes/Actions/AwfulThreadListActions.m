@@ -21,12 +21,12 @@ typedef enum {
 
 @implementation AwfulThreadListActions
 
-@synthesize thread = _thread;
+@synthesize thread;
 
--(id)initWithAwfulThread : (AwfulThread *)thread
+-(id)initWithAwfulThread : (AwfulThread *)aThread
 {
     if((self=[super init])) {
-        _thread = thread;
+        self.thread = aThread;
         [self.titles addObject:@"First Page"];
         [self.titles addObject:@"Last Page"];
         
@@ -38,7 +38,6 @@ typedef enum {
     }
     return self;
 }
-
 
 -(NSString *)getOverallTitle
 {

@@ -11,14 +11,11 @@
 @class AwfulPost;
 @class AwfulPage;
 
-@interface AwfulPostActions : AwfulActions {
-    AwfulPost *_post;
-    AwfulPage *_page;
-}
+@interface AwfulPostActions : AwfulActions
 
 @property (nonatomic, strong) AwfulPost *post;
 @property (nonatomic, strong) AwfulPage *page;
 
--(id)initWithAwfulPost : (AwfulPost *)post page : (AwfulPage *)page;
+-(id)initWithAwfulPost : (AwfulPost *)aPost page : (AwfulPage *)aPage;
 
 @end

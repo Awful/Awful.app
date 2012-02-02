@@ -25,17 +25,17 @@ typedef enum {
 
 @implementation AwfulThreadActions
 
-@synthesize page = _page;
+@synthesize page;
 
--(id)initWithAwfulPage:(AwfulPage *)page
+-(id)initWithAwfulPage:(AwfulPage *)aPage
 {
     if((self=[super init])) {
-        _page = page;
+        self.page = aPage;
         
         [self.titles addObject:@"Reply"];
         [self.titles addObject:@"Vote"];
         
-        if(_page.isBookmarked) {
+        if(self.page.isBookmarked) {
             [self.titles addObject:@"Remove From Bookmarks"];
         } else {
             [self.titles addObject:@"Add To Bookmarks"];

@@ -13,17 +13,16 @@
 
 @implementation AwfulVoteActions
 
-@synthesize thread = _thread;
+@synthesize thread;
 
--(id)initWithAwfulThread : (AwfulThread *)thread
+-(id)initWithAwfulThread : (AwfulThread *)aThread
 {
     if((self=[super init])) {
-        _thread = thread;
+        self.thread = aThread;
         [self.titles addObjectsFromArray:[NSArray arrayWithObjects:@"5", @"4", @"3", @"2", @"1", nil]];
     }
     return self;
 }
-
 
 -(NSString *)getOverallTitle
 {

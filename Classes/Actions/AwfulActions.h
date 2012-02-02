@@ -10,10 +10,7 @@
 
 @class AwfulNavigator;
 
-@interface AwfulActions : NSObject <UIActionSheetDelegate, UIAlertViewDelegate> {
-    NSMutableArray *_titles;
-    AwfulNavigator *__weak _delegate;
-}
+@interface AwfulActions : NSObject <UIActionSheetDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, strong) NSMutableArray *titles;
 @property (nonatomic, weak) AwfulNavigator *delegate;

@@ -21,15 +21,14 @@ typedef enum {
 
 @implementation AwfulPostActions
 
-@synthesize post = _post;
-@synthesize page = _page;
+@synthesize post, page;
 
--(id)initWithAwfulPost : (AwfulPost *)post page : (AwfulPage *)page
+-(id)initWithAwfulPost : (AwfulPost *)aPost page : (AwfulPage *)aPage
 {
     if((self=[super init])) {
-        _post = post;
-        _page = page;
-        if(_post.canEdit) {
+        self.post = aPost;
+        self.page = aPage;
+        if(self.post.canEdit) {
             [self.titles addObject:@"Edit"];
         }
         [self.titles addObject:@"Quote"];
@@ -37,7 +36,6 @@ typedef enum {
     }
     return self;
 }
-
 
 -(NSString *)getOverallTitle
 {
@@ -49,7 +47,6 @@ typedef enum {
     AwfulPostActionType action = buttonIndex;
     if(self.post.canEdit) {
         if(action == AwfulPostActionTypeEdit) {
-            
             AwfulEditContentRequest *edit = [[AwfulEditContentRequest alloc] initWithAwfulPost:self.post];
             loadRequest(edit);
             [self.delegate setActions:nil];

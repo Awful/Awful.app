@@ -12,18 +12,16 @@
 
 @implementation AwfulActions
 
-@synthesize titles = _titles;
-@synthesize delegate = _delegate;
+@synthesize titles, delegate;
 
 -(id)init
 {
     if((self=[super init])) {
-        _titles = [[NSMutableArray alloc] init];
-        _delegate = nil;
+        self.titles = [[NSMutableArray alloc] init];
+        self.delegate = nil;
     }
     return self;
 }
-
 
 -(NSString *)getOverallTitle
 {
