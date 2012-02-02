@@ -9,10 +9,6 @@
 #import <Foundation/Foundation.h>
 
 @interface AwfulPageCount : NSObject
-{
-    int _currentPage;
-    int _totalPages;
-}
 
 @property int currentPage;
 @property int totalPages;

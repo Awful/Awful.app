@@ -41,7 +41,7 @@ typedef enum {
 
 -(NSString *)getOverallTitle
 {
-    return [NSString stringWithFormat:@"Actions on %@'s post", self.post.authorName];
+    return [NSString stringWithFormat:@"Actions on %@'s post", self.post.posterName];
 }
 
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex

@@ -10,23 +10,18 @@
 
 @implementation AwfulPost
 
-@synthesize postID = _postID;
-@synthesize postDate = _postDate;
-@synthesize authorName = _authorName;
-@synthesize authorType = _authorType;
-@synthesize avatarURL = _avatarURL;
-@synthesize editedStr = _editedStr;
-@synthesize formattedHTML = _formattedHTML;
-@synthesize rawContent = _rawContent;
-@synthesize markSeenLink = _markSeenLink;
-@synthesize isOP = _isOP;
-@synthesize canEdit = _canEdit;
+@synthesize postID, postDate, posterName;
+@synthesize posterType, avatarURL, editedStr;
+@synthesize formattedHTML, rawContent, markSeenLink;
+@synthesize isOP, canEdit;
 
 -(id)init
 {
-    _authorType = AwfulUserTypeNormal;
-    _isOP = NO;
-    _canEdit = NO;
+    if((self=[super init])) {
+        self.posterType = AwfulUserTypeNormal;
+        self.isOP = NO;
+        self.canEdit = NO;
+    }
     return self;
 }
 

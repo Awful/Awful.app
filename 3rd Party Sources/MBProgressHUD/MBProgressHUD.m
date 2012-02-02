@@ -459,8 +459,9 @@
 - (void)launchExecution {
     @autoreleasepool {
 	
+        NSAssert(nil, @"Commenting this out, shouldn't use this");
     // Start executing the requested task
-        [targetForExecution performSelector:methodForExecution withObject:objectForExecution];
+        //[targetForExecution performSelector:methodForExecution withObject:objectForExecution];
 	
         // Task completed, update view in main thread (note: view operations should
         // be done only in the main thread)
@@ -586,7 +587,7 @@
 }
 
 - (void)setTransformForCurrentOrientation:(BOOL)animated {
-	UIDeviceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+	UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
 	NSInteger degrees = 0;
 	
 	if (UIInterfaceOrientationIsLandscape(orientation)) {

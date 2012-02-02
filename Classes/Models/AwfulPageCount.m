@@ -10,13 +10,14 @@
 
 @implementation AwfulPageCount
 
-@synthesize currentPage = _currentPage;
-@synthesize totalPages = _totalPages;
+@synthesize currentPage, totalPages;
 
 -(id)init
 {
-    _currentPage = -1;
-    _totalPages = -1;
+    if((self=[super init])) {
+        self.currentPage = -1;
+        self.totalPages = -1;
+    }
     return self;
 }
 

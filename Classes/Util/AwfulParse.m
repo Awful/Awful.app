@@ -40,11 +40,11 @@
         userbox_str = @"userbox_op";
     }
 
-    NSString *username_info = post.authorName;
-    if(post.authorType == AwfulUserTypeAdmin) {
-        username_info = [NSString stringWithFormat:@"%@&nbsp;%@", [self getAdminImgHTML], post.authorName];
-    } else if(post.authorType == AwfulUserTypeMod) {
-        username_info = [NSString stringWithFormat:@"%@&nbsp;%@", [self getModImgHTML], post.authorName];
+    NSString *username_info = post.posterName;
+    if(post.posterType == AwfulUserTypeAdmin) {
+        username_info = [NSString stringWithFormat:@"%@&nbsp;%@", [self getAdminImgHTML], post.posterName];
+    } else if(post.posterType == AwfulUserTypeMod) {
+        username_info = [NSString stringWithFormat:@"%@&nbsp;%@", [self getModImgHTML], post.posterName];
     }
     
     NSString *parsed_post_body = [AwfulParse parseYouTubes:post_body];
@@ -107,7 +107,7 @@
             
             TFHppleElement *author = [post_base searchForSingle:username_search];
             if(author != nil) {
-                post.authorName = [author content];
+                post.posterName = [author content];
                 if([[author objectForKey:@"class"] isEqualToString:@"author op"] || [[author objectForKey:@"class"] isEqualToString:@"author role-admin op"] || [[author objectForKey:@"class"] isEqualToString:@"author role-mod op"]) {
                     post.isOP = YES;
                 } else {
@@ -116,15 +116,15 @@
                 
                 TFHppleElement *mod = [post_base searchForSingle:@"//dt[@class='author role-mod']|//dt[@class='author role-mod op']"];
                 if(mod != nil) {
-                    post.authorType = AwfulUserTypeMod;
+                    post.posterType = AwfulUserTypeMod;
                 }
                 
                 TFHppleElement *admin = [post_base searchForSingle:@"//dt[@class='author role-admin']|//dt[@class='author role-admin op']"];
                 if(admin != nil) {
-                    post.authorType = AwfulUserTypeAdmin;
+                    post.posterType = AwfulUserTypeAdmin;
                 }
                 
-                if([post.authorName isEqualToString:username]) {
+                if([post.posterName isEqualToString:username]) {
                     post.canEdit = YES;
                 }
             }

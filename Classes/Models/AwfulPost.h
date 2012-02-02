@@ -14,25 +14,12 @@ typedef enum {
     AwfulUserTypeAdmin
 } AwfulUserType;
 
-@interface AwfulPost : NSObject {
-    NSString *_postID;
-    NSString *_postDate;
-    NSString *_authorName;
-    AwfulUserType _authorType;
-    NSURL *_avatarURL;
-    NSString *_editedStr;
-    NSString *_formattedHTML;
-    
-    NSString *_rawContent;
-    NSString *_markSeenLink;
-    BOOL _isOP;
-    BOOL _canEdit;
-}
+@interface AwfulPost : NSObject
 
 @property (nonatomic, strong) NSString *postID;
 @property (nonatomic, strong) NSString *postDate;
-@property (nonatomic, strong) NSString *authorName;
-@property AwfulUserType authorType;
+@property (nonatomic, strong) NSString *posterName;
+@property AwfulUserType posterType;
 @property (nonatomic, strong) NSURL *avatarURL;
 @property (nonatomic, strong) NSString *editedStr;
 @property (nonatomic, strong) NSString *formattedHTML;

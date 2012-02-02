@@ -8,12 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface AwfulForum : NSObject <NSCoding> {
-    NSString *_forumID;
-    NSString *_name;
-    NSString *_parentForumID;
-    NSString *_acronym;
-}
+@interface AwfulForum : NSObject <NSCoding>
 
 @property (nonatomic, strong) NSString *forumID;
 @property (nonatomic, strong) NSString *name;

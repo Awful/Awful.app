@@ -11,11 +11,7 @@
 
 @implementation AwfulForum
 
-@synthesize forumID = _forumID;
-@synthesize name = _name;
-@synthesize parentForumID = _parentForumID;
-@synthesize acronym = _acronym;
-
+@synthesize forumID, name, parentForumID, acronym;
 
 - (id)initWithCoder:(NSCoder *)decoder 
 {
@@ -45,10 +41,7 @@
         }
     }
     
-    if(found_forum != nil) {
-        return found_forum;
-    }
-    return nil;
+    return found_forum;
 }
 
 +(NSMutableArray *)getForumsList
