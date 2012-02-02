@@ -16,18 +16,14 @@
 
 @implementation AwfulSmallPageController
 
-@synthesize hiding = _hiding;
-@synthesize submitting = _submitting;
-@synthesize page = _page;
-@synthesize segment = _segment;
-@synthesize forumButton = _forumButton;
+@synthesize hiding, submitting, page, segment, forumButton;
 
--(id)initWithAwfulPage : (AwfulPage *)page
+-(id)initWithAwfulPage : (AwfulPage *)aPage
 {
     if((self=[super initWithNibName:@"AwfulSmallPageController" bundle:[NSBundle mainBundle]])) {
-        _hiding = NO;
-        _page = page;
-        _submitting = NO;
+        self.hiding = NO;
+        self.page = aPage;
+        self.submitting = NO;
     }
     return self;
 }

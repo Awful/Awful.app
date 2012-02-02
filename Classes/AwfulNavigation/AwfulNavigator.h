@@ -21,7 +21,7 @@
 @protocol AwfulNavigatorContent <NSObject, AwfulHistoryRecorder>
 
 -(UIView *)getView;
--(void)setDelegate : (AwfulNavigator *)delegate;
+-(void)setNavigator : (AwfulNavigator *)aNavigator;
 -(void)refresh;
 -(void)stop;
 -(AwfulActions *)getActions;

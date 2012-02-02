@@ -11,16 +11,7 @@
 
 @class AwfulThread;
 
-@interface AwfulPostBoxController : UIViewController <UIAlertViewDelegate> {
-    UITextView *_replyTextView;
-    UIBarButtonItem *_sendButton;
-    UIToolbar *_toolbar;
-    UIView *_base;
-    
-    AwfulThread *_thread;
-    AwfulPost *_post;
-    NSString *_startingText;
-}
+@interface AwfulPostBoxController : UIViewController <UIAlertViewDelegate>
 
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *sendButton;
 @property (nonatomic, strong) IBOutlet UITextView *replyTextView;

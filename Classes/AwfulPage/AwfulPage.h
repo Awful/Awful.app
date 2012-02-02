@@ -25,29 +25,7 @@ typedef enum {
 @class AwfulPageCount;
 @class AwfulSmallPageController;
 
-@interface AwfulPage : UIViewController <AwfulNavigatorContent, UIWebViewDelegate, AwfulHistoryRecorder, UIGestureRecognizerDelegate, JSBridgeWebViewDelegate> {
-    AwfulThread *_thread;
-    NSString *_url;
-    AwfulPageDestinationType _destinationType;
-    
-    NSMutableArray *_allRawPosts;
-    
-    BOOL _isBookmarked;
-    BOOL _shouldScrollToBottom;
-    NSString *_scrollToPostID;
-    BOOL _touchedPage;
-    
-    AwfulNavigator *__weak _delegate;
-    AwfulPageCount *_pages;
-    UILabel *_pagesLabel;
-    UILabel *_threadTitleLabel;
-    UIButton *_forumButton;
-    UIButton *_pagesButton;
-    
-    NSString *_adHTML;
-    
-    AwfulSmallPageController *_pageController;
-}
+@interface AwfulPage : UIViewController <AwfulNavigatorContent, UIWebViewDelegate, AwfulHistoryRecorder, UIGestureRecognizerDelegate, JSBridgeWebViewDelegate>
 
 @property (nonatomic, strong) AwfulThread *thread;
 @property (nonatomic, strong) NSString *url;
@@ -57,10 +35,10 @@ typedef enum {
 
 @property BOOL isBookmarked;
 @property BOOL shouldScrollToBottom;
-@property (nonatomic, strong) NSString *scrollToPostID;
+@property (nonatomic, strong) NSString *postIDScrollDestination;
 @property BOOL touchedPage;
 
-@property (nonatomic, weak) AwfulNavigator *delegate;
+@property (nonatomic, weak) AwfulNavigator *navigator;
 @property (nonatomic, strong) AwfulPageCount *pages;
 @property (nonatomic, strong) UILabel *pagesLabel;
 @property (nonatomic, strong) UILabel *threadTitleLabel;
@@ -68,12 +46,11 @@ typedef enum {
 @property (nonatomic, strong) UIButton *pagesButton;
 
 @property (nonatomic, strong) NSString *adHTML;
-
 @property (nonatomic, strong) AwfulSmallPageController *pageController;
 
--(id)initWithAwfulThread : (AwfulThread *)thread startAt : (AwfulPageDestinationType)thread_pos;
--(id)initWithAwfulThread : (AwfulThread *)thread pageNum : (int)page_num;
--(id)initWithAwfulThread : (AwfulThread *)thread startAt : (AwfulPageDestinationType)thread_pos pageNum : (int)page_num;
+-(id)initWithAwfulThread : (AwfulThread *)aThread startAt : (AwfulPageDestinationType)thread_pos;
+-(id)initWithAwfulThread : (AwfulThread *)aThread pageNum : (int)page_num;
+-(id)initWithAwfulThread : (AwfulThread *)aThread startAt : (AwfulPageDestinationType)thread_pos pageNum : (int)page_num;
 -(void)acceptPosts : (NSMutableArray *)posts;
 
 -(NSString *)getURLSuffix;
@@ -92,22 +69,16 @@ typedef enum {
 -(void)heldPost:(UILongPressGestureRecognizer *)gestureRecognizer;
 -(void)scrollToPost : (NSString *)post_id;
 
-
 @end
 
 
-@interface AwfulPageIpad : AwfulPage <UIPickerViewDataSource, UIPickerViewDelegate> {
-    UIBarButtonItem *_pageButton;
-    UIBarButtonItem *_ratingButton;
-    UIPopoverController *_popController;
-    UIPickerView *_pagePicker;
-    CGPoint _lastTouch;
-    AwfulActions *_actions;
-}
+@interface AwfulPageIpad : AwfulPage <UIPickerViewDataSource, UIPickerViewDelegate>
+
 @property (nonatomic, strong) UIBarButtonItem *pageButton;
 @property (nonatomic, strong) UIBarButtonItem *ratingButton;
 @property (nonatomic, strong) UIPopoverController *popController;
 @property (nonatomic, strong) UIPickerView *pagePicker;
+@property CGPoint lastTouch;
 @property (nonatomic, strong) AwfulActions *actions;
 
 -(void)makeCustomToolbars;

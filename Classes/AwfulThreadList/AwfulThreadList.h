@@ -61,7 +61,6 @@ typedef enum {
     NSMutableArray *_awfulThreads;
     AwfulForum *_forum;
     AwfulPageCount *_pages;
-    AwfulNavigator *__weak _delegate;
     
     AwfulThreadCell *_threadCell;
     AwfulPageNavCell *_pageNavCell;
@@ -75,7 +74,7 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet AwfulThreadCell *threadCell;
 @property (nonatomic, strong) IBOutlet AwfulPageNavCell *pageNavCell;
 @property (nonatomic, strong) AwfulPageCount *pages;
-@property (nonatomic, weak) AwfulNavigator *delegate;
+@property (nonatomic, weak) AwfulNavigator *navigator;
 @property (nonatomic, strong) UILabel *pagesLabel;
 @property (nonatomic, strong) UILabel *forumLabel;
 

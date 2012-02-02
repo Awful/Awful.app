@@ -38,49 +38,39 @@
 #import "AwfulSplitViewController.h"
 #import "AwfulLoginController.h"
 #import "AwfulVoteActions.h"
+
 @implementation AwfulPage
 
-@synthesize thread = _thread;
-@synthesize url = _url;
-@synthesize destinationType = _destinationType;
-@synthesize isBookmarked = _isBookmarked;
-@synthesize allRawPosts = _allRawPosts;
-@synthesize pagesLabel = _pagesLabel;
-@synthesize threadTitleLabel = _threadTitleLabel;
-@synthesize pagesButton = _pagesButton;
-@synthesize pages = _pages;
-@synthesize delegate = _delegate;
-@synthesize forumButton = _forumButton;
-@synthesize shouldScrollToBottom = _shouldScrollToBottom;
-@synthesize scrollToPostID = _scrollToPostID;
-@synthesize touchedPage = _touchedPage;
-@synthesize adHTML = _adHTML;
-@synthesize pageController = _pageController;
+@synthesize thread, url, destinationType, isBookmarked;
+@synthesize allRawPosts, pagesLabel, threadTitleLabel;
+@synthesize pagesButton, pages, navigator, forumButton;
+@synthesize shouldScrollToBottom, postIDScrollDestination, touchedPage;
+@synthesize adHTML, pageController;
 
 #pragma mark -
 #pragma mark Initialization
 
--(id)initWithAwfulThread : (AwfulThread *)thread startAt : (AwfulPageDestinationType)thread_pos
+-(id)initWithAwfulThread : (AwfulThread *)aThread startAt : (AwfulPageDestinationType)thread_pos
 {
-    return [self initWithAwfulThread:thread startAt:thread_pos pageNum:-1];
+    return [self initWithAwfulThread:aThread startAt:thread_pos pageNum:-1];
 }
 
--(id)initWithAwfulThread : (AwfulThread *)thread pageNum : (int)page_num
+-(id)initWithAwfulThread : (AwfulThread *)aThread pageNum : (int)page_num
 {
-    return [self initWithAwfulThread:thread startAt:AwfulPageDestinationTypeSpecific pageNum:page_num];
+    return [self initWithAwfulThread:aThread startAt:AwfulPageDestinationTypeSpecific pageNum:page_num];
 }
 
--(id)initWithAwfulThread : (AwfulThread *)thread startAt : (AwfulPageDestinationType)thread_pos pageNum : (int)page_num
+-(id)initWithAwfulThread : (AwfulThread *)aThread startAt : (AwfulPageDestinationType)thread_pos pageNum : (int)page_num
 {
     if((self = [super initWithNibName:nil bundle:nil])) {
-        _thread = thread;
-        _pages = nil;
-        _shouldScrollToBottom = NO;
-        _scrollToPostID = nil;
-        _touchedPage = NO;
-        _destinationType = thread_pos;
+        self.thread = aThread;
+        self.pages = nil;
+        self.shouldScrollToBottom = NO;
+        self.postIDScrollDestination = nil;
+        self.touchedPage = NO;
+        self.destinationType = thread_pos;
         
-        _allRawPosts = [[NSMutableArray alloc] init];
+        self.allRawPosts = [[NSMutableArray alloc] init];
         
         NSString *append;
         switch(thread_pos) {
@@ -89,7 +79,7 @@
                 break;
             case AwfulPageDestinationTypeLast:
                 append = @"&goto=lastpost";
-                _shouldScrollToBottom = YES;
+                self.shouldScrollToBottom = YES;
                 break;
             case AwfulPageDestinationTypeNewpost:
                 append = @"&goto=newpost";
@@ -102,19 +92,18 @@
                 break;
         }
         
-        _url = [[NSString alloc] initWithFormat:@"showthread.php?threadid=%@%@", _thread.threadID, append];
+        self.url = [[NSString alloc] initWithFormat:@"showthread.php?threadid=%@%@", self.thread.threadID, append];
         
-        _isBookmarked = NO;
+        self.isBookmarked = NO;
         NSMutableArray *bookmarked_threads = [AwfulUtil newThreadListForForumId:@"bookmarks"];
-        for(AwfulThread *thread in bookmarked_threads) {
-            if([thread.threadID isEqualToString:_thread.threadID]) {
-                _isBookmarked = YES;
+        for(AwfulThread *bookmarked_thread in bookmarked_threads) {
+            if([self.thread.threadID isEqualToString:bookmarked_thread.threadID]) {
+                self.isBookmarked = YES;
             }
         }
     }
     return self;
 }
-
 
 -(void)setWebView:(JSBridgeWebView *)webView;
 {
@@ -150,18 +139,18 @@
     return [NSString stringWithFormat:@"showthread.php?threadid=%@&pagenumber=%d", self.thread.threadID, self.pages.currentPage];
 }
 
--(void)setPages:(AwfulPageCount *)pages
+-(void)setPages:(AwfulPageCount *)in_pages
 {
-    if(_pages != pages) {
-        _pages = pages;
-        self.pagesLabel.text = [pages description];
+    if(pages != in_pages) {
+        pages = in_pages;
+        self.pagesLabel.text = [self.pages description];
         [self.pagesButton setTitle:[self.pages description] forState:UIControlStateNormal];
         [self.pagesButton setTitle:[self.pages description] forState:UIControlStateSelected];
         
         // lame workaround - history doesn't know my pageNum right away
         AwfulNavigator *nav = getNavigator();
         AwfulHistory *my_history = [nav.historyManager.recordedHistory lastObject];
-        my_history.pageNum = _pages.currentPage;
+        my_history.pageNum = self.pages.currentPage;
     }
 }
 
@@ -211,7 +200,7 @@
 
 -(void)refresh
 {    
-    [self.delegate swapToStopButton];
+    [self.navigator swapToStopButton];
     AwfulPageRefreshRequest *ref_req = [[AwfulPageRefreshRequest alloc] initWithAwfulPage:self];
     loadRequestAndWait(ref_req);
 }
@@ -379,7 +368,7 @@
     self.threadTitleLabel.frame = CGRectMake(0, 0, label_container.frame.size.width, label_container.frame.size.height);
     
     self.threadTitleLabel.text = self.thread.title;
-    self.delegate.navigationItem.titleView = label_container;
+    self.navigator.navigationItem.titleView = label_container;
     
     self.pagesButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.pagesButton.titleLabel.lineBreakMode = UILineBreakModeWordWrap;
@@ -402,7 +391,7 @@
     
     
     UIBarButtonItem *cust = [[UIBarButtonItem alloc] initWithCustomView:self.pagesButton];
-    self.delegate.navigationItem.rightBarButtonItem = cust;
+    self.navigator.navigationItem.rightBarButtonItem = cust;
     
     self.title = self.thread.title;
 }
@@ -454,7 +443,7 @@
 
 -(void)scrollToSpecifiedPost
 {
-    [self scrollToPost:self.scrollToPostID];
+    [self scrollToPost:self.postIDScrollDestination];
 }
 
 -(void) showActions:(NSString *)post_id
@@ -574,9 +563,9 @@
 
 -(void)webViewDidFinishLoad:(UIWebView *)sender
 {
-    [self.delegate swapToRefreshButton];
+    [self.navigator swapToRefreshButton];
     if(!self.touchedPage) {
-        if(self.scrollToPostID != nil) {
+        if(self.postIDScrollDestination != nil) {
             [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(scrollToSpecifiedPost) userInfo:nil repeats:NO];
         } else if(self.shouldScrollToBottom) {
             [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(scrollToBottom) userInfo:nil repeats:NO];
@@ -598,12 +587,11 @@
 
 #pragma mark -
 #pragma mark AwfulPageIpad
+
 @implementation AwfulPageIpad : AwfulPage
-@synthesize pageButton = _pageButton;
-@synthesize popController = _popController;
-@synthesize pagePicker = _pagePicker;
-@synthesize actions = _actions;
-@synthesize ratingButton = _ratingButton;
+
+@synthesize pageButton, popController, pagePicker;
+@synthesize actions, lastTouch, ratingButton;
 
 - (void) viewDidLoad
 {
@@ -614,7 +602,6 @@
 
 - (void) viewDidUnload
 {
-    
     self.pageButton = nil;
     self.ratingButton = nil;
     self.popController = nil;
@@ -623,21 +610,22 @@
     
     [super viewDidUnload];
 }
+
 -(void)makeCustomToolbars
 {
     NSMutableArray *items = [NSMutableArray array];
     UIBarButtonItem *space;
     
-    if (isLoggedIn())
-    {
+    if (isLoggedIn()) {
         UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 140, 40)];
         
         
         UIImage *starImage;
-        if (_isBookmarked)
+        if (self.isBookmarked) {
             starImage = [UIImage imageNamed:@"star_on.png"];
-        else
+        } else {
             starImage = [UIImage imageNamed:@"star_off.png"];
+        }
         
         UIBarButtonItem *bookmark = [[UIBarButtonItem alloc] initWithImage:starImage 
                                                                      style:UIBarButtonItemStylePlain
@@ -678,8 +666,9 @@
     UIBarButtonItem *backNav = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrowleft-ipad.png"] style:UIBarButtonItemStylePlain target:self action:@selector(backPage)];
     
     AwfulNavigator *nav = getNavigator();
-    if (![nav.historyManager isBackEnabled])
+    if (![nav.historyManager isBackEnabled]) {
         backNav.enabled = NO;
+    }
     
     UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(hardRefresh)];
     
@@ -687,33 +676,37 @@
     
     UIBarButtonItem *first = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRewind target:self action:@selector(hitFirst)];
     
-    if (self.pages.currentPage > 1)
+    if (self.pages.currentPage > 1) {
         first.enabled = NO;
+    }
     
     UIBarButtonItem *prev = [[UIBarButtonItem alloc] 
                              initWithImage:[UIImage imageNamed:@"back.png"] 
                                                              style:UIBarButtonItemStylePlain 
                                                             target:self 
                                                             action:@selector(prevPage)];
-    if (self.pages.currentPage > 1)
+    if (self.pages.currentPage > 1) {
         prev.enabled = NO;
-    
+    }
     
     NSString *pagesTitle = @"Loading...";
-    if (self.pages.description)
+    if (self.pages.description) {
         pagesTitle = self.pages.description;
+    }
     
     UIBarButtonItem *pages = [[UIBarButtonItem alloc] initWithTitle:pagesTitle style:UIBarButtonItemStyleBordered target:self action:@selector(pageSelection)];
     
     self.pageButton = pages;
     
     UIBarButtonItem *next = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:self action:@selector(nextPage)];
-    if([self.pages onLastPage])
+    if([self.pages onLastPage]) {
         next.enabled = NO;
+    }
     
     UIBarButtonItem *last = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFastForward target:self action:@selector(hitLast)];
-    if([self.pages onLastPage])
+    if([self.pages onLastPage]) {
         last.enabled = NO;
+    }
     
     [items addObject:backNav];
     [items addObject:refresh];
@@ -725,7 +718,6 @@
     [items addObject:last];
     
     [self setToolbarItems:items];
-    
     
     [self.navigationController setToolbarHidden:NO animated:YES];
 }
@@ -743,18 +735,18 @@
         for(AwfulPost *post in self.allRawPosts) {
             if([post.postID isEqualToString:post_id]) {
                 
-                AwfulPostActions *actions = [[AwfulPostActions alloc] initWithAwfulPost:post page:self];
-                self.actions = actions;
+                AwfulPostActions *post_actions = [[AwfulPostActions alloc] initWithAwfulPost:post page:self];
+                self.actions = post_actions;
                 
                 UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"Post Actions" 
-                                                                   delegate:actions
+                                                                   delegate:self.actions
                                                           cancelButtonTitle:nil
                                                      destructiveButtonTitle:nil
                                                           otherButtonTitles:nil];
                 for (NSString *title in actions.titles) {
                     [sheet addButtonWithTitle:title];
                 }
-                CGRect frame = CGRectMake(_lastTouch.x, _lastTouch.y, 0, 0);
+                CGRect frame = CGRectMake(self.lastTouch.x, self.lastTouch.y, 0, 0);
                 [sheet showFromRect:frame inView:self.view animated:YES];
             }
         }
@@ -814,8 +806,7 @@
 
 - (void)pageSelection
 {   
-    if(self.popController)
-    {
+    if(self.popController) {
         [self.popController dismissPopoverAnimated:YES];
         self.popController = nil;
     }
@@ -823,7 +814,7 @@
     self.pagePicker = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 0, 320, 216)];
     self.pagePicker.dataSource = self;
     self.pagePicker.delegate = self;
-    [self.pagePicker selectRow:[_pages currentPage]-1
+    [self.pagePicker selectRow:[self.pages currentPage]-1
                    inComponent:0
                       animated:NO];
     
@@ -850,8 +841,6 @@
     [self.popController presentPopoverFromBarButtonItem:self.pageButton 
                                permittedArrowDirections:UIPopoverArrowDirectionAny
                                                animated:YES];
-    
-    
 }
 
 -(void)hitForum
@@ -893,7 +882,6 @@
     titleButton.frame = CGRectMake(0, 0, getWidth()-50, 44);
     
     self.navigationItem.titleView = titleButton;
-    
 }
 
 -(void)setWebView:(JSBridgeWebView *)webView
@@ -908,31 +896,28 @@
 
 - (void)handleTap:(UITapGestureRecognizer *)sender 
 {     
-    if (sender.state == UIGestureRecognizerStateEnded)     
-    {         // handling code     
-        _lastTouch = [sender locationInView:self.view];
+    if (sender.state == UIGestureRecognizerStateEnded) {    
+        self.lastTouch = [sender locationInView:self.view];
     } 
 }
 
 -(void)rateThread:(id)sender
 {
     
-    if(self.popController)
-    {
+    if(self.popController) {
         [self.popController dismissPopoverAnimated:YES];
         self.popController = nil;
     }
 
-    
-    AwfulVoteActions *actions = [[AwfulVoteActions alloc] initWithAwfulThread:self.thread];
-    self.actions = actions;
+    AwfulVoteActions *vote_actions = [[AwfulVoteActions alloc] initWithAwfulThread:self.thread];
+    self.actions = vote_actions;
     
     UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil
-                                                       delegate:actions
+                                                       delegate:self.actions
                                               cancelButtonTitle:nil
                                          destructiveButtonTitle:nil
                                               otherButtonTitles:nil];
-    for (NSString *title in actions.titles) {
+    for (NSString *title in self.actions.titles) {
         [sheet addButtonWithTitle:title];
     }
     [sheet showFromBarButtonItem:self.ratingButton animated:YES];
@@ -941,18 +926,15 @@
 
 -(void)bookmarkThread:(id)sender;
 {
-    AwfulThreadActions *actions = [[AwfulThreadActions alloc] initWithAwfulPage:self];
+    AwfulThreadActions *thread_actions = [[AwfulThreadActions alloc] initWithAwfulPage:self];
     UIBarButtonItem *button = (UIBarButtonItem *) sender;
     
-    if (_isBookmarked)
-    {
+    if (self.isBookmarked) {
         button.image = [UIImage imageNamed:@"star_off.png"];
-        [actions removeBookmark];
-    }
-    else
-    {
+        [thread_actions removeBookmark];
+    } else {
         button.image = [UIImage imageNamed:@"star_on.png"];
-        [actions addBookmark];
+        [thread_actions addBookmark];
     }
 }
 

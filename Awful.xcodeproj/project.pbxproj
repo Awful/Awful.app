@@ -537,7 +537,6 @@
 		1190F74013BE4EA900B9D271 /* AwfulNavigatorLabels.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6E413BE4EA900B9D271 /* AwfulNavigatorLabels.m */; };
 		1190F74113BE4EA900B9D271 /* AwfulNavigatorLabels.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1190F6E513BE4EA900B9D271 /* AwfulNavigatorLabels.xib */; };
 		1190F74213BE4EA900B9D271 /* OtherWebController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6E713BE4EA900B9D271 /* OtherWebController.m */; };
-		1190F74313BE4EA900B9D271 /* AwfulForumButton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1190F6E913BE4EA900B9D271 /* AwfulForumButton.xib */; };
 		1190F74413BE4EA900B9D271 /* AwfulPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6EB13BE4EA900B9D271 /* AwfulPage.m */; };
 		1190F74713BE4EA900B9D271 /* AwfulPostBox.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1190F6EF13BE4EA900B9D271 /* AwfulPostBox.xib */; };
 		1190F74813BE4EA900B9D271 /* AwfulPostBoxController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6F113BE4EA900B9D271 /* AwfulPostBoxController.m */; };
@@ -1178,7 +1177,6 @@
 		1190F6E513BE4EA900B9D271 /* AwfulNavigatorLabels.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AwfulNavigatorLabels.xib; sourceTree = "<group>"; };
 		1190F6E613BE4EA900B9D271 /* OtherWebController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OtherWebController.h; sourceTree = "<group>"; };
 		1190F6E713BE4EA900B9D271 /* OtherWebController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OtherWebController.m; sourceTree = "<group>"; };
-		1190F6E913BE4EA900B9D271 /* AwfulForumButton.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AwfulForumButton.xib; sourceTree = "<group>"; };
 		1190F6EA13BE4EA900B9D271 /* AwfulPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPage.h; sourceTree = "<group>"; };
 		1190F6EB13BE4EA900B9D271 /* AwfulPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPage.m; sourceTree = "<group>"; };
 		1190F6EF13BE4EA900B9D271 /* AwfulPostBox.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AwfulPostBox.xib; sourceTree = "<group>"; };
@@ -1973,7 +1971,6 @@
 			children = (
 				1190F6EA13BE4EA900B9D271 /* AwfulPage.h */,
 				1190F6EB13BE4EA900B9D271 /* AwfulPage.m */,
-				1190F6E913BE4EA900B9D271 /* AwfulForumButton.xib */,
 				1190F6F013BE4EA900B9D271 /* AwfulPostBoxController.h */,
 				1190F6F113BE4EA900B9D271 /* AwfulPostBoxController.m */,
 				1190F6EF13BE4EA900B9D271 /* AwfulPostBox.xib */,
@@ -2894,7 +2891,6 @@
 				1190F73C13BE4EA900B9D271 /* AwfulForumRefreshButton.xib in Resources */,
 				1190F73F13BE4EA900B9D271 /* AwfulNavigator.xib in Resources */,
 				1190F74113BE4EA900B9D271 /* AwfulNavigatorLabels.xib in Resources */,
-				1190F74313BE4EA900B9D271 /* AwfulForumButton.xib in Resources */,
 				1190F74713BE4EA900B9D271 /* AwfulPostBox.xib in Resources */,
 				1190F75413BE4EA900B9D271 /* AwfulThreadListCells.xib in Resources */,
 				1190F75513BE4EA900B9D271 /* AwfulExtrasCells.xib in Resources */,

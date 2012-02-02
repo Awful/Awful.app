@@ -10,13 +10,7 @@
 
 @class AwfulPage;
 
-@interface AwfulSmallPageController : UIViewController {
-    AwfulPage *_page;
-    UISegmentedControl *_segment;
-    UIButton *_forumButton;
-    BOOL _hiding;
-    BOOL _submitting;
-}
+@interface AwfulSmallPageController : UIViewController
 
 @property (nonatomic, strong) AwfulPage *page;
 @property (nonatomic, strong) IBOutlet UISegmentedControl *segment;
@@ -24,7 +18,7 @@
 @property BOOL hiding;
 @property BOOL submitting;
 
--(id)initWithAwfulPage : (AwfulPage *)page;
+-(id)initWithAwfulPage : (AwfulPage *)aPage;
 
 -(IBAction)selected : (UISegmentedControl *)sender;
 -(IBAction)hitNext;

@@ -168,7 +168,7 @@
 @synthesize threadCell = _threadCell;
 @synthesize pageNavCell = _pageNavCell;
 @synthesize pages = _pages;
-@synthesize delegate = _delegate;
+@synthesize navigator;
 @synthesize pagesLabel = _pagesLabel;
 @synthesize forumLabel = _forumLabel;
 
@@ -176,7 +176,7 @@
 {
     if ((self = [super initWithStyle:UITableViewStylePlain])) {
         _awfulThreads = [[NSMutableArray alloc] init];
-        _delegate = nil;
+        self.navigator = nil;
         _pages = [[AwfulPageCount alloc] init];
         _pages.currentPage = page_num;
         self.title = str;
@@ -228,7 +228,7 @@
 
 -(void)refresh
 {   
-    [self.delegate swapToStopButton];
+    [self.navigator swapToStopButton];
     AwfulForumRefreshRequest *ref_req = [[AwfulForumRefreshRequest alloc] initWithAwfulThreadList:self];
     loadRequest(ref_req);
     [UIView animateWithDuration:0.2 animations:^(void){
@@ -253,7 +253,7 @@
 
 -(void)acceptThreads : (NSMutableArray *)in_threads
 {
-    [self.delegate swapToRefreshButton];
+    [self.navigator swapToRefreshButton];
     [UIView animateWithDuration:0.2 animations:^(void){
         self.view.alpha = 1.0;
     }];
@@ -281,10 +281,10 @@
     
     [self.forumLabel setText:self.forum.name];
     [self.pagesLabel setText:[self.pages description]];
-    self.delegate.navigationItem.titleView = self.forumLabel;
+    self.navigator.navigationItem.titleView = self.forumLabel;
     
     UIBarButtonItem *cust = [[UIBarButtonItem alloc] initWithCustomView:self.pagesLabel];
-    self.delegate.navigationItem.rightBarButtonItem = cust;
+    self.navigator.navigationItem.rightBarButtonItem = cust;
         
     if([self shouldReloadOnViewLoad]) {
         [self refresh];

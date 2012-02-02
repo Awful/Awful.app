@@ -224,7 +224,7 @@
     [self updateHistoryButtons];
     
     self.contentVC = content;
-    [self.contentVC setDelegate:self];
+    [self.contentVC setNavigator:self];
     
     self.view = [self.contentVC getView];
     if([self isFullscreen]) {
@@ -312,7 +312,7 @@
         [del.splitController showAwfulPage:(AwfulPage *)content];
 
         self.contentVC = content;
-        [self.contentVC setDelegate:self];
+        [self.contentVC setNavigator:self];
         [self.contentVC refresh];
     } else if([content isKindOfClass:[AwfulThreadList class]])
     {

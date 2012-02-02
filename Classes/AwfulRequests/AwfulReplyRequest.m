@@ -51,7 +51,7 @@
             else
                 fresh_page = [[AwfulPageIpad alloc] initWithAwfulThread:current_page.thread pageNum:current_page.pages.currentPage];
             
-            [fresh_page setScrollToPostID:self.post.postID];
+            fresh_page.postIDScrollDestination = self.post.postID;
             loadContentVC(fresh_page);
         }
     }

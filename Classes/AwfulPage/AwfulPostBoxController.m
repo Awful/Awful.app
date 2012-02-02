@@ -20,13 +20,8 @@
 
 @implementation AwfulPostBoxController
 
-@synthesize replyTextView = _replyTextView;
-@synthesize thread = _thread;
-@synthesize post = _post;
-@synthesize startingText = _startingText;
-@synthesize sendButton = _sendButton;
-@synthesize toolbar = _toolbar;
-@synthesize base = _base;
+@synthesize replyTextView, thread, post, startingText;
+@synthesize sendButton, toolbar, base;
 
 // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 
@@ -34,15 +29,14 @@
 {
     if((self = [super initWithNibName:@"AwfulPostBox" bundle:[NSBundle mainBundle]])) {
         NSString *old = [AwfulPostBoxController retrievePost];
-        _startingText = [old stringByAppendingString:text];
-        _post = nil;
-        _thread = nil;
+        self.startingText = [old stringByAppendingString:text];
+        self.post = nil;
+        self.thread = nil;
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
         [nc addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     }
     return self;
 }
-
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
@@ -159,24 +153,24 @@
     [vc dismissModalViewControllerAnimated:YES];
 }
 
--(void)setThread:(AwfulThread *)thread 
+-(void)setThread:(AwfulThread *)aThread 
 {
-    if(thread != _thread) {
-        _thread = thread;
+    if(thread != aThread) {
+        thread = aThread;
         
-        if(_thread != nil) {
+        if(self.thread != nil) {
             self.post = nil;
             [self.sendButton setTitle:@"Reply"];
         }
     }
 }
 
--(void)setPost : (AwfulPost *)post
+-(void)setPost : (AwfulPost *)aPost
 {
-    if(post != _post) {
-        _post = post;
+    if(post != aPost) {
+        post = aPost;
         
-        if(_post != nil) {
+        if(self.post != nil) {
             self.thread = nil;
             [self.sendButton setTitle:@"Edit"];
         }
