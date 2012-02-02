@@ -21,18 +21,16 @@
 #pragma mark -
 #pragma mark Initialization
 
-@synthesize refreshTimer = _refreshTimer;
-@synthesize refreshed = _refreshed;
+@synthesize refreshTimer, refreshed;
 
 -(id)init
-{
-    self = [super initWithString:@"Bookmarks" atPageNum:1];
-    
-    if(self) {
+{    
+    if((self=[super initWithString:@"Bookmarks" atPageNum:1])) {
                 
         NSMutableArray *old_bookmarks = [AwfulUtil newThreadListForForumId:[self getSaveID]];
         self.awfulThreads = old_bookmarks;
         
+        // crash fix from one version to another
         if(![[NSUserDefaults standardUserDefaults] boolForKey:@"killbookmarks"]) {
             self.awfulThreads = [NSMutableArray array];
             [AwfulUtil saveThreadList:self.awfulThreads forForumId:[self getSaveID]];
@@ -41,9 +39,9 @@
         
         self.tableView.delegate = self;
         
-        _refreshed = NO;
+        self.refreshed = NO;
         
-        _refreshTimer = nil;
+        self.refreshTimer = nil;
         [self startTimer];
     }
     
@@ -280,7 +278,6 @@
 
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
-    
     return YES;
 }
 

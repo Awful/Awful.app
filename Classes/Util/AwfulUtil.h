@@ -14,7 +14,7 @@
 }
 
 +(NSString *)getDocsDir;
-
++(float)getThreadCellHeight;
 +(NSMutableArray *)newThreadListForForumId : (NSString *)forum_id;
 +(void)saveThreadList : (NSMutableArray *)list forForumId : (NSString *)forum_id;
 

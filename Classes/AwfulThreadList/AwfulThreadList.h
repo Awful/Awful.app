@@ -16,40 +16,8 @@
 @class AwfulPageCount;
 @class AwfulThread;
 @class AwfulSplitViewController;
-
-@interface AwfulThreadCell : UITableViewCell {
-    UILabel *_threadTitleLabel;
-    UILabel *_pagesLabel;
-    UIButton *_unreadButton;
-    UIImageView *_sticky;
-    AwfulThread *_thread;
-}
-
-@property (nonatomic, strong) IBOutlet UILabel *threadTitleLabel;
-@property (nonatomic, strong) IBOutlet UILabel *pagesLabel;
-@property (nonatomic, strong) IBOutlet UIButton *unreadButton;
-@property (nonatomic, strong) IBOutlet UIImageView *sticky;
-@property (nonatomic, strong) AwfulThread *thread;
-
--(void)configureForThread : (AwfulThread *)thread;
--(UIColor *)getBackgroundColorForThread : (AwfulThread *)thread;
--(void)openThreadlistOptions;
-
-@end
-
-@interface AwfulPageNavCell : UITableViewCell {
-    UIButton *_nextButton;
-    UIButton *_prevButton;
-    UILabel *_pageLabel;
-}
-
-@property (nonatomic, strong) IBOutlet UIButton *nextButton;
-@property (nonatomic, strong) IBOutlet UIButton *prevButton;
-@property (nonatomic, strong) IBOutlet UILabel *pageLabel;
-
--(void)configureForPageCount : (AwfulPageCount *)pages thread_count : (int)count;
-
-@end
+@class AwfulThreadCell;
+@class AwfulPageNavCell;
 
 typedef enum {
     AwfulThreadCellTypeUnknown,

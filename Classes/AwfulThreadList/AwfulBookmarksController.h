@@ -9,10 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "AwfulThreadList.h"
 
-@interface AwfulBookmarksController : AwfulThreadList <UIScrollViewDelegate> {
-    NSTimer *_refreshTimer;
-    BOOL _refreshed;
-}
+@interface AwfulBookmarksController : AwfulThreadList <UIScrollViewDelegate>
 
 @property (nonatomic, strong) NSTimer *refreshTimer;
 @property (nonatomic, assign) BOOL refreshed;

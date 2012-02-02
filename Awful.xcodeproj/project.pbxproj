@@ -507,6 +507,8 @@
 		10F5BC59124BE14D006C5ED0 /* icon_114.png in Resources */ = {isa = PBXBuildFile; fileRef = 10F5BC58124BE14D006C5ED0 /* icon_114.png */; };
 		11099067134B86FD0013444C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11099066134B86FC0013444C /* QuartzCore.framework */; };
 		112764ED14DB44E7003ACE76 /* AwfulForumHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 112764EC14DB44E6003ACE76 /* AwfulForumHeader.m */; };
+		112764F114DB4F6A003ACE76 /* AwfulThreadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 112764F014DB4F6A003ACE76 /* AwfulThreadCell.m */; };
+		112764F414DB50E6003ACE76 /* AwfulPageNavCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 112764F314DB50E6003ACE76 /* AwfulPageNavCell.m */; };
 		112DB4BB14211F24005A98CB /* SALR.m in Sources */ = {isa = PBXBuildFile; fileRef = 112DB4BA14211F24005A98CB /* SALR.m */; };
 		112DB4C21421208A005A98CB /* jquery.js in Resources */ = {isa = PBXBuildFile; fileRef = 112DB4BD14211F54005A98CB /* jquery.js */; };
 		112DB4C31421208A005A98CB /* salr.js in Resources */ = {isa = PBXBuildFile; fileRef = 112DB4BE14211F54005A98CB /* salr.js */; };
@@ -1134,6 +1136,10 @@
 		11099066134B86FC0013444C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		112764EB14DB44E6003ACE76 /* AwfulForumHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumHeader.h; sourceTree = "<group>"; };
 		112764EC14DB44E6003ACE76 /* AwfulForumHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumHeader.m; sourceTree = "<group>"; };
+		112764EF14DB4F6A003ACE76 /* AwfulThreadCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadCell.h; sourceTree = "<group>"; };
+		112764F014DB4F6A003ACE76 /* AwfulThreadCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadCell.m; sourceTree = "<group>"; };
+		112764F214DB50E6003ACE76 /* AwfulPageNavCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPageNavCell.h; sourceTree = "<group>"; };
+		112764F314DB50E6003ACE76 /* AwfulPageNavCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPageNavCell.m; sourceTree = "<group>"; };
 		112DB4B914211F24005A98CB /* SALR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SALR.h; sourceTree = "<group>"; };
 		112DB4BA14211F24005A98CB /* SALR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SALR.m; sourceTree = "<group>"; };
 		112DB4BD14211F54005A98CB /* jquery.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = jquery.js; sourceTree = "<group>"; };
@@ -2013,6 +2019,10 @@
 				1190F70713BE4EA900B9D271 /* AwfulBookmarksController.m */,
 				1190F70813BE4EA900B9D271 /* AwfulThreadList.h */,
 				1190F70913BE4EA900B9D271 /* AwfulThreadList.m */,
+				112764EF14DB4F6A003ACE76 /* AwfulThreadCell.h */,
+				112764F014DB4F6A003ACE76 /* AwfulThreadCell.m */,
+				112764F214DB50E6003ACE76 /* AwfulPageNavCell.h */,
+				112764F314DB50E6003ACE76 /* AwfulPageNavCell.m */,
 				1190F70A13BE4EA900B9D271 /* AwfulThreadListCells.xib */,
 			);
 			path = AwfulThreadList;
@@ -3006,6 +3016,8 @@
 				11A941E214DA3E3C00ECC070 /* AwfulParser.m in Sources */,
 				11A941E614DA409600ECC070 /* AwfulPageParser.m in Sources */,
 				112764ED14DB44E7003ACE76 /* AwfulForumHeader.m in Sources */,
+				112764F114DB4F6A003ACE76 /* AwfulThreadCell.m in Sources */,
+				112764F414DB50E6003ACE76 /* AwfulPageNavCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

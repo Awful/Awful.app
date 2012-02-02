@@ -37,6 +37,11 @@
     return [paths objectAtIndex:0];
 }
 
++(float)getThreadCellHeight
+{
+    return 72;
+}
+
 +(NSMutableArray *)newThreadListForForumId : (NSString *)forum_id
 {
     NSString *path = [[AwfulUtil getDocsDir] stringByAppendingPathComponent:forum_id];
