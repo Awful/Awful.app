@@ -22,12 +22,6 @@
 @synthesize thread = _thread;
 @synthesize post = _post;
 
--(void)dealloc
-{
-    [_thread release];
-    [_post release];
-    [super dealloc];
-}
 
 -(void)requestFinished
 {
@@ -46,7 +40,6 @@
             page = [[AwfulPageIpad alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeNewpost];
         
         loadContentVC(page);
-        [page release];
     } else if(self.post != nil) {
         AwfulNavigator *nav = getNavigator();
         if([nav.contentVC isMemberOfClass:[AwfulPage class]]) {
@@ -60,7 +53,6 @@
             
             [fresh_page setScrollToPostID:self.post.postID];
             loadContentVC(fresh_page);
-            [fresh_page release];
         }
     }
 }
@@ -83,18 +75,12 @@
     self = [super initWithURL:[NSURL URLWithString:url_str]];
     self.userInfo = [NSDictionary dictionaryWithObject:@"Posting..." forKey:@"loadingMsg"];
 
-    _reply = [reply retain];
-    _thread = [thread retain];
+    _reply = reply;
+    _thread = thread;
     
     return self;
 }
 
--(void)dealloc
-{
-    [_reply release];
-    [_thread release];
-    [super dealloc];
-}
 
 -(void)requestFinished
 {
@@ -104,7 +90,6 @@
     NSData *converted = [raw_s dataUsingEncoding:NSUTF8StringEncoding];
     
     TFHpple *page_data = [[TFHpple alloc] initWithHTMLData:converted];
-    [raw_s release];
     
     CloserFormRequest *req = [CloserFormRequest requestWithURL:[NSURL URLWithString:@"http://forums.somethingawful.com/newreply.php"]];
     
@@ -121,7 +106,6 @@
         NSString *bookmark = [bookmark_element objectForKey:@"value"];
         [req addPostValue:bookmark forKey:@"bookmark"];
     }
-    [page_data release];
     
     [req addPostValue:self.thread.threadID forKey:@"threadid"];
     [req addPostValue:formkey forKey:@"formkey"];

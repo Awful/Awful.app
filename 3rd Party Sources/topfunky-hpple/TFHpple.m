@@ -36,11 +36,6 @@
 
 @synthesize data;
 
-- (void) dealloc
-{
-  [data release];
-  [super dealloc];
-}
 
 - (id) initWithData:(NSData *)theData isXML:(BOOL)isDataXML
 {
@@ -77,7 +72,6 @@
   for (id node in detailNodes) {
     TFHppleElement * e = [[TFHppleElement alloc] initWithNode:node];
     [hppleElements addObject:e];
-    [e release];
   }
   return hppleElements;
 }

@@ -25,11 +25,6 @@
     return self;
 }
 
--(void)dealloc
-{
-    [_userName release];
-    [super dealloc];
-}
 
 -(void)loadUser
 {
@@ -46,8 +41,6 @@
             
             AwfulNavigator *nav = getNavigator();
             [nav.requestHandler loadAllWithMessage:@"Loading Username..." forRequests:name_req, settings_req, nil];
-            [name_req release];
-            [settings_req release];
         }
     }
 }
@@ -55,8 +48,7 @@
 -(void)setUserName:(NSString *)user_name
 {
     if(user_name != _userName) {
-        [_userName release];
-        _userName = [user_name retain];
+        _userName = user_name;
         [self saveUser];
     }
 }

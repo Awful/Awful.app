@@ -24,17 +24,12 @@
     NSString *url_str = [@"http://forums.somethingawful.com/" stringByAppendingString:[page getURLSuffix]];
     
     if((self = [super initWithURL:[NSURL URLWithString:url_str]])) {
-        _page = [page retain];
+        _page = page;
     }
     
     return self;
 }
 
--(void)dealloc
-{
-    [_page release];
-    [super dealloc];
-}
 
 -(void)requestFinished
 {
@@ -44,7 +39,6 @@
     NSData *converted = [filtered_raw dataUsingEncoding:NSUTF8StringEncoding];
     
     TFHpple *page_data = [[TFHpple alloc] initWithHTMLData:converted];
-    [raw_s release];
     
     if(self.page.thread.title == nil) {
         TFHppleElement *thread_title = [page_data searchForSingle:@"//a[@class='bclast']"];
@@ -72,7 +66,6 @@
     
     AwfulPageCount *pager = [AwfulParse newPageCount:page_data];
     [self.page setPages:pager];
-    [pager release];
     
     BOOL fyad = [self.page.thread.forum.forumID isEqualToString:@"26"];
     NSMutableArray *parsed_posts = [AwfulParse newPostsFromThread:page_data isFYAD:fyad];
@@ -114,11 +107,8 @@
     [self.page setWebView:web];
     [web loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
     
-    [web release];
 
-    [parsed_posts release];
     
-    [page_data release];
 }
 
 -(void)failWithError:(NSError *)theError

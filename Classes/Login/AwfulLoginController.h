@@ -13,8 +13,8 @@
     UIActivityIndicatorView *_act;
 }
 
-@property (nonatomic, retain) IBOutlet UIWebView *web;
-@property (nonatomic, retain) UIActivityIndicatorView *act;
+@property (nonatomic, strong) IBOutlet UIWebView *web;
+@property (nonatomic, strong) UIActivityIndicatorView *act;
 
 @end
 

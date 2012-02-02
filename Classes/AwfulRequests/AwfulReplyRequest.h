@@ -17,8 +17,8 @@
     AwfulPost *_post;
 }
 
-@property (nonatomic, retain) AwfulThread *thread;
-@property (nonatomic, retain) AwfulPost *post;
+@property (nonatomic, strong) AwfulThread *thread;
+@property (nonatomic, strong) AwfulPost *post;
 
 @end
 
@@ -27,8 +27,8 @@
     AwfulThread *_thread;
 }
 
-@property (nonatomic, retain) NSString *reply;
-@property (nonatomic, retain) AwfulThread *thread;
+@property (nonatomic, strong) NSString *reply;
+@property (nonatomic, strong) AwfulThread *thread;
 
 -(id)initWithReply : (NSString *)reply forThread : (AwfulThread *)thread;
 

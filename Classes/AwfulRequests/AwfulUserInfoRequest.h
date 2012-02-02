@@ -13,7 +13,7 @@
     AwfulUser *_user;
 }
 
-@property (nonatomic, retain) AwfulUser *user;
+@property (nonatomic, strong) AwfulUser *user;
 
 -(id)initWithAwfulUser : (AwfulUser *)user;
 

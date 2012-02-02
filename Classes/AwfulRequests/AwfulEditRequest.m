@@ -26,17 +26,11 @@
     self = [super initWithURL:edit_url];
     self.userInfo = [NSDictionary dictionaryWithObject:@"Editing..." forKey:@"loadingMsg"];
     
-    _post = [post retain];
-    _text = [post_text retain];
+    _post = post;
+    _text = post_text;
     return self;
 }
 
--(void)dealloc
-{
-    [_post release];
-    [_text release];
-    [super dealloc];
-}
 
 -(void)requestFinished
 {
@@ -52,13 +46,11 @@
     NSData *converted = [raw_s dataUsingEncoding:NSUTF8StringEncoding];
     
     TFHpple *page_data = [[TFHpple alloc] initWithHTMLData:converted];
-    [raw_s release];
     TFHppleElement *bookmark_element = [page_data searchForSingle:@"//input[@name='bookmark' and @checked='checked']"];
     if(bookmark_element != nil) {
         NSString *bookmark = [bookmark_element objectForKey:@"value"];
         [form addPostValue:bookmark forKey:@"bookmark"];
     }
-    [page_data release];
     
     [form addPostValue:@"updatepost" forKey:@"action"];
     [form addPostValue:@"Save Changes" forKey:@"submit"];
@@ -84,22 +76,16 @@
     NSURL *edit_url = [NSURL URLWithString:[NSString stringWithFormat:@"http://forums.somethingawful.com/editpost.php?action=editpost&postid=%@", post.postID]];
     self = [super initWithURL:edit_url];
     
-    _post = [post retain];
+    _post = post;
     
     return self;
 }
 
--(void)dealloc
-{
-    [_post release];
-    [super dealloc];
-}
 
 -(void)requestFinished
 {
     NSString *raw_s = [[NSString alloc] initWithData:[self responseData] encoding:NSASCIIStringEncoding];
     NSData *converted = [raw_s dataUsingEncoding:NSUTF8StringEncoding];
-    [raw_s release];
 
     TFHpple *base = [[TFHpple alloc] initWithHTMLData:converted];
     TFHppleElement *quote_el = [base searchForSingle:@"//textarea[@name='message']"];
@@ -110,9 +96,7 @@
     
     UIViewController *vc = getRootController();
     [vc presentModalViewController:post_box animated:YES];
-    [post_box release];
     
-    [base release];
 }
 
 @end

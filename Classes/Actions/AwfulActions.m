@@ -24,11 +24,6 @@
     return self;
 }
 
--(void)dealloc
-{
-    [_titles release];
-    [super dealloc];
-}
 
 -(NSString *)getOverallTitle
 {
@@ -48,14 +43,12 @@
         AwfulNavigator *nav = getNavigator();
         [nav forceShow];
         [sheet showFromToolbar:nav.navigationController.toolbar];
-        [sheet release];
     } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[self getOverallTitle] message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:nil];
         for(NSString *title in self.titles) {
             [alert addButtonWithTitle:title];
         }
         [alert show];
-        [alert release];
     }
 }
 

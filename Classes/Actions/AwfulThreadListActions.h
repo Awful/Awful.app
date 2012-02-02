@@ -14,7 +14,7 @@
     AwfulThread *_thread;
 }
 
-@property (nonatomic, retain) AwfulThread *thread;
+@property (nonatomic, strong) AwfulThread *thread;
 
 -(id)initWithAwfulThread : (AwfulThread *)thread;
 

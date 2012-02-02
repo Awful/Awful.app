@@ -29,15 +29,15 @@ typedef enum {
     BOOL _canEdit;
 }
 
-@property (nonatomic, retain) NSString *postID;
-@property (nonatomic, retain) NSString *postDate;
-@property (nonatomic, retain) NSString *authorName;
+@property (nonatomic, strong) NSString *postID;
+@property (nonatomic, strong) NSString *postDate;
+@property (nonatomic, strong) NSString *authorName;
 @property AwfulUserType authorType;
-@property (nonatomic, retain) NSURL *avatarURL;
-@property (nonatomic, retain) NSString *editedStr;
-@property (nonatomic, retain) NSString *formattedHTML;
-@property (nonatomic, retain) NSString *rawContent;
-@property (nonatomic, retain) NSString *markSeenLink;
+@property (nonatomic, strong) NSURL *avatarURL;
+@property (nonatomic, strong) NSString *editedStr;
+@property (nonatomic, strong) NSString *formattedHTML;
+@property (nonatomic, strong) NSString *rawContent;
+@property (nonatomic, strong) NSString *markSeenLink;
 @property BOOL isOP;
 @property BOOL canEdit;
 

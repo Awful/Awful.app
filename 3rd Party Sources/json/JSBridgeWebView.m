@@ -212,7 +212,7 @@
 		// Reads the JSON object to be communicated.
 		NSString* jsonStr = [p_WebView stringByEvaluatingJavaScriptFromString:[NSString  stringWithFormat:@"JSBridge_getJsonStringForObjectWithId(%@)", jsNotId]];
 		
-		SBJsonParser* jsonObj = [[[SBJsonParser alloc] init] autorelease];
+		SBJsonParser* jsonObj = [[SBJsonParser alloc] init];
         		
 		NSDictionary* jsonDic = [jsonObj objectWithString:jsonStr];
 		NSDictionary* dicTranslated = [self translateDictionary:jsonDic];

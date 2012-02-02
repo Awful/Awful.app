@@ -37,7 +37,7 @@ typedef enum {
     NSString *_scrollToPostID;
     BOOL _touchedPage;
     
-    AwfulNavigator *_delegate;
+    AwfulNavigator *__weak _delegate;
     AwfulPageCount *_pages;
     UILabel *_pagesLabel;
     UILabel *_threadTitleLabel;
@@ -49,27 +49,27 @@ typedef enum {
     AwfulSmallPageController *_pageController;
 }
 
-@property (nonatomic, retain) AwfulThread *thread;
-@property (nonatomic, retain) NSString *url;
+@property (nonatomic, strong) AwfulThread *thread;
+@property (nonatomic, strong) NSString *url;
 @property AwfulPageDestinationType destinationType;
 
-@property (nonatomic, retain) NSMutableArray *allRawPosts;
+@property (nonatomic, strong) NSMutableArray *allRawPosts;
 
 @property BOOL isBookmarked;
 @property BOOL shouldScrollToBottom;
-@property (nonatomic, retain) NSString *scrollToPostID;
+@property (nonatomic, strong) NSString *scrollToPostID;
 @property BOOL touchedPage;
 
-@property (nonatomic, assign) AwfulNavigator *delegate;
-@property (nonatomic, retain) AwfulPageCount *pages;
-@property (nonatomic, retain) UILabel *pagesLabel;
-@property (nonatomic, retain) UILabel *threadTitleLabel;
-@property (nonatomic, retain) IBOutlet UIButton *forumButton;
-@property (nonatomic, retain) UIButton *pagesButton;
+@property (nonatomic, weak) AwfulNavigator *delegate;
+@property (nonatomic, strong) AwfulPageCount *pages;
+@property (nonatomic, strong) UILabel *pagesLabel;
+@property (nonatomic, strong) UILabel *threadTitleLabel;
+@property (nonatomic, strong) IBOutlet UIButton *forumButton;
+@property (nonatomic, strong) UIButton *pagesButton;
 
-@property (nonatomic, retain) NSString *adHTML;
+@property (nonatomic, strong) NSString *adHTML;
 
-@property (nonatomic, retain) AwfulSmallPageController *pageController;
+@property (nonatomic, strong) AwfulSmallPageController *pageController;
 
 -(id)initWithAwfulThread : (AwfulThread *)thread startAt : (AwfulPageDestinationType)thread_pos;
 -(id)initWithAwfulThread : (AwfulThread *)thread pageNum : (int)page_num;
@@ -104,11 +104,11 @@ typedef enum {
     CGPoint _lastTouch;
     AwfulActions *_actions;
 }
-@property (nonatomic, retain) UIBarButtonItem *pageButton;
-@property (nonatomic, retain) UIBarButtonItem *ratingButton;
-@property (nonatomic, retain) UIPopoverController *popController;
-@property (nonatomic, retain) UIPickerView *pagePicker;
-@property (nonatomic, retain) AwfulActions *actions;
+@property (nonatomic, strong) UIBarButtonItem *pageButton;
+@property (nonatomic, strong) UIBarButtonItem *ratingButton;
+@property (nonatomic, strong) UIPopoverController *popController;
+@property (nonatomic, strong) UIPickerView *pagePicker;
+@property (nonatomic, strong) AwfulActions *actions;
 
 -(void)makeCustomToolbars;
 -(void)hitActions;

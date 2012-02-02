@@ -19,8 +19,8 @@
 
 -(id)initWithAwfulPost : (AwfulPost *)post withText : (NSString *)post_text;
 
-@property (nonatomic, retain) AwfulPost *post;
-@property (nonatomic, retain) NSString *text;
+@property (nonatomic, strong) AwfulPost *post;
+@property (nonatomic, strong) NSString *text;
 
 @end
 
@@ -31,6 +31,6 @@
 
 -(id)initWithAwfulPost : (AwfulPost *)post;
 
-@property (nonatomic, retain) AwfulPost *post;
+@property (nonatomic, strong) AwfulPost *post;
 
 @end

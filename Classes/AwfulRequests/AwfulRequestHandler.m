@@ -31,13 +31,6 @@
     return self;
 }
 
--(void)dealloc
-{
-    [_queue release];
-    [_hud release];
-    [_requests release];
-    [super dealloc];
-}
 
 -(void)cancelAllRequests
 {
@@ -107,7 +100,7 @@
     {
         view = del.window;
     }
-    self.hud = [[[MBProgressHUD alloc] initWithView:view] autorelease];
+    self.hud = [[MBProgressHUD alloc] initWithView:view];
     [view addSubview:self.hud];
     self.hud.delegate = self;
     [self.hud show:YES];
@@ -122,7 +115,7 @@
     if(self.hud != nil) {
         NSString *msg = [request.userInfo objectForKey:@"completionMsg"];
         if(msg != nil) {
-            self.hud.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"37x-Checkmark.png"]] autorelease];
+            self.hud.customView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"37x-Checkmark.png"]];
             self.hud.mode = MBProgressHUDModeCustomView;
             self.hud.labelText = msg;
             [NSTimer scheduledTimerWithTimeInterval:1.25 target:self selector:@selector(hideHud) userInfo:nil repeats:NO];
@@ -149,7 +142,7 @@
     [self.requests removeObject:request];
     [self hideHud];
     
-    UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:@"Request Failed" message:request.error.localizedDescription delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil] autorelease];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Request Failed" message:request.error.localizedDescription delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];
 }
 

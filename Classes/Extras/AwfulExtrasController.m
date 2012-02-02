@@ -22,11 +22,6 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
 
 @synthesize label = _label;
 
--(void)dealloc
-{
-    [_label release];
-    [super dealloc];
-}
 
 @end
 
@@ -50,11 +45,6 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
     [self.button setTitle:text forState:UIControlStateNormal];
 }
 
--(void)dealloc
-{
-    [_button release];
-    [super dealloc];
-}
 
 @end
 
@@ -73,12 +63,6 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
     return self;
 }
 
-- (void)dealloc
-{
-    [_buttonCell release];
-    [_labelCell release];
-    [super dealloc];
-}
 
 - (void)didReceiveMemoryWarning
 {
@@ -284,7 +268,6 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
 {
     AwfulLoginController *login = [[AwfulLoginController alloc] init];
     [self.navigationController pushViewController:login animated:YES];
-    [login release];
 }
 
 -(void)tappedLogout
@@ -292,21 +275,18 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log Out Confirm" message:@"Log Out? Are you sure?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Log Out", nil];
     alert.delegate = self;
     [alert show];
-    [alert release];
 }
 
 -(void)tappedHelp
 {
     AwfulHelpController *help = [[AwfulHelpController alloc] init];
     [self.navigationController pushViewController:help animated:YES];
-    [help release];
 }
 
 -(void)tappedAwfulAppThread
 {
     AwfulAppThreadRequest *app = [[AwfulAppThreadRequest alloc] initCustom];
     loadRequestAndWait(app);
-    [app release];
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex

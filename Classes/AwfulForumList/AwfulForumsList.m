@@ -46,15 +46,9 @@
 {
     AwfulForumSection *sec = [[AwfulForumSection alloc] init];
     sec.forum = forum;
-    return [sec autorelease];
+    return sec;
 }
 
--(void)dealloc
-{
-    [_children release];
-    [_forum release];
-    [super dealloc];
-}
 
 @end
 
@@ -90,14 +84,6 @@
     return [self init];
 }
 
-- (void)dealloc {
-    [_favorites release];
-    [_forums release];
-    [_forumSections release];
-    [_forumCell release];
-    [_headerView release];
-    [super dealloc];
-}
 
 #pragma mark -
 #pragma mark View lifecycle
@@ -107,7 +93,6 @@
     
     UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(hitDone)];
     self.navigationItem.rightBarButtonItem = done;
-    [done release];
     
     if (self.favorites.count > 0)
         self.navigationItem.leftBarButtonItem = self.editButtonItem;
@@ -373,10 +358,9 @@
     NSUInteger old_row = fromIndexPath.row;
     NSUInteger to_row = toIndexPath.row;
     
-    AwfulForum *fav = [[self.favorites objectAtIndex:old_row] retain];
+    AwfulForum *fav = [self.favorites objectAtIndex:old_row];
     [self.favorites removeObject:fav];
     [self.favorites insertObject:fav atIndex:to_row];
-    [fav release];
     [self saveFavorites];
 }
 
@@ -405,7 +389,7 @@
 	 */
     
     AwfulForum *forum = [self getForumAtIndexPath:indexPath];
-    AwfulThreadList *detail = [[[AwfulThreadList alloc] initWithAwfulForum:forum] autorelease];
+    AwfulThreadList *detail = [[AwfulThreadList alloc] initWithAwfulForum:forum];
     loadContentVC(detail);
     //[detail release];
 }
@@ -461,17 +445,15 @@
 {
     AwfulForumListRefreshRequest *req = [[AwfulForumListRefreshRequest alloc] initWithForumsList:self];
     loadRequestAndWait(req);
-    [req release];
 }
 
 -(void)setForums:(NSMutableArray *)forums
 {
     if(forums != _forums) {
-        [_forums release];
-        _forums = [forums retain];
+        _forums = forums;
         
         self.forumSections = nil;
-        self.forumSections = [[[NSMutableArray alloc] init] autorelease];
+        self.forumSections = [[NSMutableArray alloc] init];
         for(AwfulForum *forum in _forums) {
             [self addForumToSectionTree:forum];
         }
@@ -550,7 +532,6 @@
         }
         [section setTotalAncestors:ancestors_count];
     }
-    [section release];
 }
 
 -(AwfulForumSection *)getForumSectionAtSection : (NSUInteger)section_index
@@ -599,8 +580,7 @@
             goldmine.name = @"Comedy Goldmine";
             AwfulForumSection *goldmine_section = [[AwfulForumSection alloc] init];
             goldmine_section.forum = goldmine;
-            [goldmine release];
-            return [goldmine_section autorelease];
+            return goldmine_section;
         }
     }
     
@@ -708,7 +688,6 @@
 {
     AwfulBookmarksControllerIpad *bookmarks = [[AwfulBookmarksControllerIpad alloc] init];
     [self.navigationController pushViewController:bookmarks animated:YES];
-    [bookmarks release];
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -716,7 +695,6 @@
     
     AwfulThreadListIpad *detail = [[AwfulThreadListIpad alloc] initWithAwfulForum:forum];
     [self.navigationController pushViewController:detail animated:YES];
-    [detail release];
 }
 
 @end

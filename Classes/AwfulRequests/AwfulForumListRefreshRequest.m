@@ -20,16 +20,11 @@
     // grabs forum list from the dropdown at the bottom of a forumdisplay page
     self = [super initWithURL:[NSURL URLWithString:@"http://forums.somethingawful.com/forumdisplay.php?forumid=1"]];
     self.userInfo = [NSDictionary dictionaryWithObject:@"Got forums..." forKey:@"completionMsg"];
-    _forumsList = [list retain];
+    _forumsList = list;
     
     return self;
 }
 
--(void)dealloc
-{
-    [_forumsList release];
-    [super dealloc];
-}
 
 -(void)requestFinished
 {
@@ -85,11 +80,9 @@
             last_dashes_count = num_dashes;
             
             [forums addObject:forum];
-            [forum release];
         }
     }
     [self.forumsList setForums:forums];
-    [page_data release];
 }
 
 @end

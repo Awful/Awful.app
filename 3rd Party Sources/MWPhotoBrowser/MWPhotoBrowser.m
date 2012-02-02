@@ -23,7 +23,7 @@
 	if ((self = [super init])) {
 		
 		// Store photos
-		photos = [photosArray retain];
+		photos = photosArray;
 		
         // Defaults
 		self.wantsFullScreenLayout = YES;
@@ -55,24 +55,8 @@
 // Release any retained subviews of the main view.
 - (void)viewDidUnload {
 	currentPageIndex = 0;
-	[pagingScrollView release];
-	[visiblePages release];
-	[recycledPages release];
-	[toolbar release];
-	[previousButton release];
-	[nextButton release];
 }
 
-- (void)dealloc {
-	[photos release];
-	[pagingScrollView release];
-	[visiblePages release];
-	[recycledPages release];
-	[toolbar release];
-	[previousButton release];
-	[nextButton release];
-    [super dealloc];
-}
 
 #pragma mark -
 #pragma mark View
@@ -107,7 +91,6 @@
     
     UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(hitDone)];
     self.navigationItem.rightBarButtonItem = done;
-    [done release];
 	
 	// Toolbar
 	toolbar = [[UIToolbar alloc] initWithFrame:[self frameForToolbarAtOrientation:self.interfaceOrientation]];
@@ -126,8 +109,6 @@
 	if (photos.count > 1) [items addObject:nextButton];
 	[items addObject:space];
 	[toolbar setItems:items];
-	[items release];
-	[space release];
 
 	// Super
     [super viewDidLoad];
@@ -284,7 +265,7 @@
 		if (![self isDisplayingPageForIndex:index]) {
 			ZoomingScrollView *page = [self dequeueRecycledPage];
 			if (!page) {
-				page = [[[ZoomingScrollView alloc] init] autorelease];
+				page = [[ZoomingScrollView alloc] init];
 				page.photoBrowser = self;
 			}
 			[self configurePage:page forIndex:index];
@@ -320,7 +301,7 @@
 - (ZoomingScrollView *)dequeueRecycledPage {
 	ZoomingScrollView *page = [recycledPages anyObject];
 	if (page) {
-		[[page retain] autorelease];
+		//[[page retain] autorelease];
 		[recycledPages removeObject:page];
 	}
 	return page;
@@ -500,7 +481,6 @@
 	// If a timer exists then cancel and release
 	if (controlVisibilityTimer) {
 		[controlVisibilityTimer invalidate];
-		[controlVisibilityTimer release];
 		controlVisibilityTimer = nil;
 	}
 }
@@ -509,7 +489,7 @@
 - (void)hideControlsAfterDelay {
 	[self cancelControlHiding];
 	if (![UIApplication sharedApplication].isStatusBarHidden) {
-		controlVisibilityTimer = [[NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(hideControls) userInfo:nil repeats:NO] retain];
+		controlVisibilityTimer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(hideControls) userInfo:nil repeats:NO];
 	}
 }
 

@@ -37,19 +37,12 @@ NSString * const TFHppleNodeAttributeNameKey     = @"attributeName";
 
 @implementation TFHppleElement
 
-- (void) dealloc
-{
-  [node release];
-
-  [super dealloc];
-}
 
 - (id) initWithNode:(NSDictionary *) theNode
 {
   if (!(self = [super init]))
     return nil;
 
-  [theNode retain];
   node = theNode;
 
   return self;

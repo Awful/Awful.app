@@ -13,7 +13,7 @@
 @interface MWPhoto ()
 
 // Properties
-@property (retain) UIImage *photoImage;
+@property (strong) UIImage *photoImage;
 @property () BOOL workingInBackground;
 
 // Private Methods
@@ -31,15 +31,15 @@
 #pragma mark Class Methods
 
 + (MWPhoto *)photoWithImage:(UIImage *)image {
-	return [[[MWPhoto alloc] initWithImage:image] autorelease];
+	return [[MWPhoto alloc] initWithImage:image];
 }
 
 + (MWPhoto *)photoWithFilePath:(NSString *)path {
-	return [[[MWPhoto alloc] initWithFilePath:path] autorelease];
+	return [[MWPhoto alloc] initWithFilePath:path];
 }
 
 + (MWPhoto *)photoWithURL:(NSURL *)url {
-	return [[[MWPhoto alloc] initWithURL:url] autorelease];
+	return [[MWPhoto alloc] initWithURL:url];
 }
 
 #pragma mark NSObject
@@ -65,12 +65,6 @@
 	return self;
 }
 
-- (void)dealloc {
-	[photoPath release];
-	[photoURL release];
-	[photoImage release];
-	[super dealloc];
-}
 
 #pragma mark Photo
 
@@ -110,7 +104,6 @@
 			NSError *error = nil;
 			NSURLResponse *response = nil;
 			NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-			[request release];
 			if (data) {
 				img = [[UIImage alloc] initWithData:data];
 			} else {
@@ -124,10 +117,9 @@
 		
 		// Store
 		self.photoImage = img;
-		[img release];
 		
 	}
-	return [[self.photoImage retain] autorelease];
+	return self.photoImage;
 }
 
 // Release if we can get it again from path or url
@@ -147,22 +139,22 @@
 // Run on background thread
 // Download image and notify delegate
 - (void)doBackgroundWork:(id <MWPhotoDelegate>)delegate {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	@autoreleasepool {
 
 	// Load image
-	UIImage *img = [self obtainImage];
-	
-	// Notify delegate of success or fail
-	if (img) {
-		[(NSObject *)delegate performSelectorOnMainThread:@selector(photoDidFinishLoading:) withObject:self waitUntilDone:NO];
-	} else {
-		[(NSObject *)delegate performSelectorOnMainThread:@selector(photoDidFailToLoad:) withObject:self waitUntilDone:NO];		
-	}
+		UIImage *img = [self obtainImage];
+		
+		// Notify delegate of success or fail
+		if (img) {
+			[(NSObject *)delegate performSelectorOnMainThread:@selector(photoDidFinishLoading:) withObject:self waitUntilDone:NO];
+		} else {
+			[(NSObject *)delegate performSelectorOnMainThread:@selector(photoDidFailToLoad:) withObject:self waitUntilDone:NO];		
+		}
 
-	// Finish
-	self.workingInBackground = NO;
+		// Finish
+		self.workingInBackground = NO;
 	
-	[pool release];
+	}
 }
 
 @end

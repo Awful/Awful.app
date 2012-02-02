@@ -30,18 +30,6 @@
     return self;
 }
 
--(void)dealloc
-{
-    [_postID release];
-    [_postDate release];
-    [_authorName release];
-    [_avatarURL release];
-    [_editedStr release];
-    [_formattedHTML release];
-    [_rawContent release];
-    [_markSeenLink release];
-    [super dealloc];
-}
 
 @end
 

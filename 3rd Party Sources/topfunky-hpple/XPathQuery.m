@@ -139,7 +139,6 @@ NSArray *PerformXPathQuery(xmlDocPtr doc, NSString *query, BOOL raw)
                 if(st != nil) {
                     [resultNodes addObject:st];
                 }
-                [st release];
             }
             xmlBufferFree(buf);
         } else {

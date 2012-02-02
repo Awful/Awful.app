@@ -10,10 +10,10 @@
 
 @protocol UIImageViewTapDelegate;
 
-@interface UIImageViewTap : UIImageView {
-	id <UIImageViewTapDelegate> tapDelegate;
-}
-@property (nonatomic, assign) id <UIImageViewTapDelegate> tapDelegate;
+@interface UIImageViewTap : UIImageView
+
+@property (nonatomic, unsafe_unretained) id <UIImageViewTapDelegate> tapDelegate;
+
 - (void)handleSingleTap:(UITouch *)touch;
 - (void)handleDoubleTap:(UITouch *)touch;
 - (void)handleTripleTap:(UITouch *)touch;

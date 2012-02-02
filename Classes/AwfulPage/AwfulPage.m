@@ -73,7 +73,7 @@
 -(id)initWithAwfulThread : (AwfulThread *)thread startAt : (AwfulPageDestinationType)thread_pos pageNum : (int)page_num
 {
     if((self = [super initWithNibName:nil bundle:nil])) {
-        _thread = [thread retain];
+        _thread = thread;
         _pages = nil;
         _shouldScrollToBottom = NO;
         _scrollToPostID = nil;
@@ -111,26 +111,10 @@
                 _isBookmarked = YES;
             }
         }
-        [bookmarked_threads release];
     }
     return self;
 }
 
-- (void)dealloc {
-    [_url release];
-    [_thread release];
-    [_allRawPosts release];
-    [_pagesLabel release];
-    [_threadTitleLabel release];
-    [_pagesButton release];
-    [_forumButton release];
-    [_pages release];
-    [_scrollToPostID release];
-    [_adHTML release];
-    [_pageController release];
-    
-    [super dealloc];
-}
 
 -(void)setWebView:(JSBridgeWebView *)webView;
 {
@@ -138,19 +122,16 @@
     press.delegate = self;
     press.minimumPressDuration = 0.3;
     [webView addGestureRecognizer:press];
-    [press release];
     
     AwfulNavigator *nav = getNavigator();
     UITapGestureRecognizer *three_times = [[UITapGestureRecognizer alloc] initWithTarget:nav action:@selector(didFullscreenGesture:)];
     three_times.numberOfTapsRequired = 3;
     three_times.delegate = self;
     [webView addGestureRecognizer:three_times];
-    [three_times release];
     
     UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:nav action:@selector(didFullscreenGesture:)];
     [webView addGestureRecognizer:pinch];
     pinch.delegate = self;
-    [pinch release];
     
     webView.delegate = self;
     self.view = webView;
@@ -172,8 +153,7 @@
 -(void)setPages:(AwfulPageCount *)pages
 {
     if(_pages != pages) {
-        [_pages release];
-        _pages = [pages retain];
+        _pages = pages;
         self.pagesLabel.text = [pages description];
         [self.pagesButton setTitle:[self.pages description] forState:UIControlStateNormal];
         [self.pagesButton setTitle:[self.pages description] forState:UIControlStateSelected];
@@ -202,7 +182,7 @@
             self.pageController = nil;
         }];
     } else if(self.pageController == nil) {
-        self.pageController = [[[AwfulSmallPageController alloc] initWithAwfulPage:self] autorelease];
+        self.pageController = [[AwfulSmallPageController alloc] initWithAwfulPage:self];
         
         float width_diff = self.view.frame.size.width - self.pageController.view.frame.size.width;
         self.pageController.view.center = CGPointMake(self.view.center.x + width_diff/2, -self.pageController.view.frame.size.height/2);
@@ -221,13 +201,11 @@
         AwfulPage *current_page = [[[self class] alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeSpecific pageNum:self.pages.currentPage];
         current_page.shouldScrollToBottom = YES;
         loadContentVC(current_page);
-        [current_page release];
         
     } else {
         
         AwfulPage *fresh_page = [[[self class] alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeNewpost];
         loadContentVC(fresh_page);
-        [fresh_page release];
     }
 }
 
@@ -236,7 +214,6 @@
     [self.delegate swapToStopButton];
     AwfulPageRefreshRequest *ref_req = [[AwfulPageRefreshRequest alloc] initWithAwfulPage:self];
     loadRequestAndWait(ref_req);
-    [ref_req release];
 }
 
 -(void)stop
@@ -259,7 +236,6 @@
     [web loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
     web.delegate = self;
     [self setWebView:web];
-    [web release];
     nav.view = self.view;
 }
 
@@ -273,7 +249,6 @@
     if(![self.pages onLastPage]) {
         AwfulPage *next_page = [[[self class] alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeSpecific pageNum:self.pages.currentPage+1];
         loadContentVC(next_page);
-        [next_page release];
     }
 }
 
@@ -282,7 +257,6 @@
     if(self.pages.currentPage > 1) {
         AwfulPage *prev_page = [[[self class] alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeSpecific pageNum:self.pages.currentPage-1];
         loadContentVC(prev_page);
-        [prev_page release];
     }
 }
 
@@ -329,10 +303,7 @@
             UIViewController *vc = getRootController();
             UINavigationController *navi = [[UINavigationController alloc] initWithRootViewController:browser];
             [vc presentModalViewController:navi animated:YES];
-            [navi release];
             
-            [browser release];
-            [photos release];
         }
     }
 }
@@ -400,7 +371,6 @@
     
     AwfulNavigatorLabels *labels = [[AwfulNavigatorLabels alloc] init];
     self.threadTitleLabel = labels.threadTitleLabel;
-    [labels release];
     
     UIView *label_container = [[UIView alloc] initWithFrame:CGRectMake(0, 0, getWidth()-100, 44)];
     [label_container setBackgroundColor:[UIColor clearColor]];
@@ -410,7 +380,6 @@
     
     self.threadTitleLabel.text = self.thread.title;
     self.delegate.navigationItem.titleView = label_container;
-    [label_container release];
     
     self.pagesButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.pagesButton.titleLabel.lineBreakMode = UILineBreakModeWordWrap;
@@ -434,7 +403,6 @@
     
     UIBarButtonItem *cust = [[UIBarButtonItem alloc] initWithCustomView:self.pagesButton];
     self.delegate.navigationItem.rightBarButtonItem = cust;
-    [cust release];
     
     self.title = self.thread.title;
 }
@@ -476,7 +444,7 @@
 
 -(AwfulActions *)getActions
 {
-    return [[[AwfulThreadActions alloc] initWithAwfulPage:self] autorelease];
+    return [[AwfulThreadActions alloc] initWithAwfulPage:self];
 }
 
 -(void)scrollToBottom
@@ -498,7 +466,6 @@
             if([post.postID isEqualToString:post_id]) {
                 AwfulPostActions *actions = [[AwfulPostActions alloc] initWithAwfulPost:post page:self];
                 [nav setActions:actions];
-                [actions release];
             }
         }
     }
@@ -576,11 +543,9 @@
                     page.url = [NSString stringWithFormat:@"showthread.php?threadid=%@&pagenumber=%@#pti%d", thread_id, page_number, pti];
                 }
                 
-                [intra release];
                 
                 if(page != nil) {
                     loadContentVC(page);
-                    [page release];
                     return NO;
                 }
             }
@@ -598,11 +563,9 @@
         other_nav.navigationBar.barStyle = UIBarStyleBlack;
         [other_nav setToolbarHidden:NO];
         other_nav.toolbar.barStyle = UIBarStyleBlack;
-        [other release];
         
         UIViewController *vc = getRootController();
         [vc presentModalViewController:other_nav animated:YES];
-        [other_nav release];
         
         return NO;
     }
@@ -692,7 +655,6 @@
         button.frame = CGRectMake(0,0,ratingImage.size.width, ratingImage.size.height);
         [button addTarget:self action:@selector(rateThread:) forControlEvents:UIControlEventTouchUpInside];
         self.ratingButton = [[UIBarButtonItem alloc] initWithCustomView:button];
-        [button release];
         
 
         UIBarButtonItem *reply = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(reply)];
@@ -706,14 +668,9 @@
         
         
         [toolbar setItems:items];
-        [bookmark release];
-        [reply release];
         
-        [space release];
         UIBarButtonItem *toolbar_cust = [[UIBarButtonItem alloc] initWithCustomView:toolbar];
-        [toolbar release];
         self.navigationItem.rightBarButtonItem = toolbar_cust;
-        [toolbar_cust release];
     }
     
     items = [NSMutableArray array];
@@ -747,7 +704,6 @@
         pagesTitle = self.pages.description;
     
     UIBarButtonItem *pages = [[UIBarButtonItem alloc] initWithTitle:pagesTitle style:UIBarButtonItemStyleBordered target:self action:@selector(pageSelection)];
-    [pagesTitle release];
     
     self.pageButton = pages;
     
@@ -770,14 +726,6 @@
     
     [self setToolbarItems:items];
     
-    [backNav release];
-    [refresh release];
-    [space release];
-    [first release];
-    [prev release];
-    [pages release];
-    [next release];
-    [last release];
     
     [self.navigationController setToolbarHidden:NO animated:YES];
 }
@@ -808,8 +756,6 @@
                 }
                 CGRect frame = CGRectMake(_lastTouch.x, _lastTouch.y, 0, 0);
                 [sheet showFromRect:frame inView:self.view animated:YES];
-                [sheet release];
-                [actions release];
             }
         }
     }
@@ -838,7 +784,6 @@
     int pageSelected = [self.pagePicker selectedRowInComponent:0] + 1;
     AwfulPage *page = [[[self class] alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeSpecific pageNum:pageSelected];
     loadContentVC(page);
-    [page release];
     [self.popController dismissPopoverAnimated:YES];
 }
 
@@ -850,14 +795,12 @@
     AwfulExtrasController *extras = [[AwfulExtrasController alloc] init];
     AwfulAppDelegate *del = (AwfulAppDelegate *)[[UIApplication sharedApplication] delegate];
     [del.splitController.pageController pushViewController:extras animated:YES];
-    [extras release];
 }
 
 -(void)hitFirst
 {
     AwfulPage *first_page = [[[self class] alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeFirst];
     loadContentVC(first_page);
-    [first_page release];
 }
 
 
@@ -866,7 +809,6 @@
     if(![self.pages onLastPage]) {
         AwfulPage *last_page = [[[self class] alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeLast];
         loadContentVC(last_page);
-        [last_page release];
     }
 }
 
@@ -902,7 +844,6 @@
     
     UIViewController *vc = [[UIViewController alloc] init];
     vc.view = view;
-    [view release];
     self.popController = [[UIPopoverController alloc] initWithContentViewController:vc];
     
     [self.popController setPopoverContentSize:view.frame.size animated:YES];
@@ -918,7 +859,6 @@
     if(self.thread.forum != nil) {
         AwfulThreadListIpad *list = [[AwfulThreadListIpad alloc] initWithAwfulForum:self.thread.forum];
         loadContentVC(list);
-        [list release];
     }
 }
 
@@ -963,7 +903,6 @@
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
     tap.delegate = self;
     [webView addGestureRecognizer:tap];
-    [tap release];
     
 }
 
@@ -997,8 +936,6 @@
         [sheet addButtonWithTitle:title];
     }
     [sheet showFromBarButtonItem:self.ratingButton animated:YES];
-    [sheet release];
-    [actions release];
     
 }
 
@@ -1017,7 +954,6 @@
         button.image = [UIImage imageNamed:@"star_on.png"];
         [actions addBookmark];
     }
-    [actions release];
 }
 
 -(void)reply
@@ -1026,7 +962,6 @@
     [post_box setThread:self.thread];
     UIViewController *vc = getRootController();
     [vc presentModalViewController:post_box animated:YES];
-    [post_box release];
 }
 
 @end

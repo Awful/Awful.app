@@ -24,11 +24,6 @@
     return self;
 }
 
--(void)dealloc
-{
-    [_modelObj release];
-    [super dealloc];
-}
 
 -(id)newThreadObj
 {

@@ -13,7 +13,7 @@
     AwfulThreadList *threadList;
 }
 
-@property (nonatomic, retain) AwfulThreadList *threadList;
+@property (nonatomic, strong) AwfulThreadList *threadList;
 
 -(id)initWithAwfulThreadList : (AwfulThreadList *)in_list;
 

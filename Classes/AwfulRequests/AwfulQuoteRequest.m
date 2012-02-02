@@ -17,7 +17,7 @@
 
 -(id)initWithPost : (AwfulPost *)post fromPage : (AwfulPage *)page
 {
-    _page = [page retain];
+    _page = page;
     
     NSString *url_str = [NSString stringWithFormat:@"http://forums.somethingawful.com/newreply.php?action=newreply&postid=%@", post.postID];
     
@@ -26,18 +26,12 @@
     return self;
 }
 
--(void)dealloc
-{
-    [_page release];
-    [super dealloc];
-}
 
 -(void)requestFinished
 {
     [super requestFinished];
     NSString *raw_s = [[NSString alloc] initWithData:[self responseData] encoding:NSASCIIStringEncoding];
     NSData *converted = [raw_s dataUsingEncoding:NSUTF8StringEncoding];
-    [raw_s release];
 
     TFHpple *base = [[TFHpple alloc] initWithHTMLData:converted];
     TFHppleElement *quote_el = [base searchForSingle:@"//textarea[@name='message']"];
@@ -48,9 +42,7 @@
     
     UIViewController *vc = getRootController();
     [vc presentModalViewController:post_box animated:YES];
-    [post_box release];
 
-    [base release];
 }
 
 @end

@@ -28,6 +28,6 @@
 -(void)openInSafari;
 -(void)hitDone;
 
-@property (nonatomic, retain) NSURL *url;
+@property (nonatomic, strong) NSURL *url;
 
 @end

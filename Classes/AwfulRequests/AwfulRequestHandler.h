@@ -18,9 +18,9 @@
     NSMutableArray *_requests;
 }
 
-@property (nonatomic, retain) ASINetworkQueue *queue;
-@property (nonatomic, retain) MBProgressHUD *hud;
-@property (nonatomic, retain) NSMutableArray *requests;
+@property (nonatomic, strong) ASINetworkQueue *queue;
+@property (nonatomic, strong) MBProgressHUD *hud;
+@property (nonatomic, strong) NSMutableArray *requests;
 
 -(void)showHud;
 -(void)hideHud;

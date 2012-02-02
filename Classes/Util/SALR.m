@@ -21,7 +21,6 @@
     if(nav.user.userName != nil) {
         [config setObject:nav.user.userName forKey:@"username"];
     } else {
-        [config release];
         return @"";
     }
     [config setObject:[AwfulConfig highlightOwnMentions] forKey:@"highlightUsername"];
@@ -31,9 +30,7 @@
 
     SBJsonWriter *jsonWriter = [SBJsonWriter new];
     NSString *result = [jsonWriter stringWithObject:config];
-    [jsonWriter release];
     
-    [config release];
     
     return result;
 }

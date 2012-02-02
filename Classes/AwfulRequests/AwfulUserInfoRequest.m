@@ -21,17 +21,12 @@
 -(id)initWithAwfulUser : (AwfulUser *)user
 {
     if((self = [super initWithURL:[NSURL URLWithString:@"http://forums.somethingawful.com/index.php"]])) {
-        _user = [user retain];
+        _user = user;
     }
     
     return self;
 }
 
--(void)dealloc
-{
-    [_user release];
-    [super dealloc];
-}
 
 -(void)requestFinished
 {
@@ -55,7 +50,6 @@
             }
         }
     }
-    [page_data release];
 }
 
 @end
@@ -66,7 +60,7 @@
 -(id)initWithAwfulUser : (AwfulUser *)user
 {    
     if((self = [super initWithURL:[NSURL URLWithString:@"http://forums.somethingawful.com/member.php?action=editoptions"]])) {
-        _user = [user retain];
+        _user = user;
     }
     
     return self;
@@ -85,7 +79,6 @@
         }
     }
     
-    [page_data release];
 }
 
 @end

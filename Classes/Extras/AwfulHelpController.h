@@ -13,8 +13,8 @@
     UILabel *_answer;
 }
 
-@property (nonatomic, retain) IBOutlet UILabel *title;
-@property (nonatomic, retain) IBOutlet UILabel *answer;
+@property (nonatomic, strong) IBOutlet UILabel *title;
+@property (nonatomic, strong) IBOutlet UILabel *answer;
 
 @end
 
@@ -23,8 +23,8 @@
     NSString *_answer;
 }
 
-@property (nonatomic, retain) NSString *question;
-@property (nonatomic, retain) NSString *answer;
+@property (nonatomic, strong) NSString *question;
+@property (nonatomic, strong) NSString *answer;
 
 -(id)initWithQuestion : (NSString *)question answer : (NSString *)answer;
 +(id)withQuestion : (NSString *)question answer : (NSString *)answer;
@@ -39,10 +39,10 @@
     NSMutableArray *_helpBoxes;
 }
 
-@property (nonatomic, retain) IBOutlet AwfulHelpBox *helpBox;
-@property (nonatomic, retain) IBOutlet AwfulHelpBox *firstBox;
-@property (nonatomic, retain) IBOutlet UIScrollView *scroller;
-@property (nonatomic, retain) NSMutableArray *content;
-@property (nonatomic, retain) NSMutableArray *helpBoxes;
+@property (nonatomic, strong) IBOutlet AwfulHelpBox *helpBox;
+@property (nonatomic, strong) IBOutlet AwfulHelpBox *firstBox;
+@property (nonatomic, strong) IBOutlet UIScrollView *scroller;
+@property (nonatomic, strong) NSMutableArray *content;
+@property (nonatomic, strong) NSMutableArray *helpBoxes;
 
 @end

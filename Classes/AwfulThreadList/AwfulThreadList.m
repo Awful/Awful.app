@@ -39,26 +39,15 @@
     if((self=[super initWithCoder:aDecoder])) {
         UILongPressGestureRecognizer *press = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(openThreadlistOptions)];
         [self addGestureRecognizer:press];
-        [press release];
     }
     return self;
 }
 
--(void)dealloc
-{
-    [_threadTitleLabel release];
-    [_pagesLabel release];
-    [_unreadButton release];
-    [_thread release];
-    [_sticky release];
-    [super dealloc];
-}
 
 -(void)setUnreadButton:(UIButton *)unreadButton
 {
     if(unreadButton != _unreadButton) {
-        [_unreadButton release];
-        _unreadButton = [unreadButton retain];
+        _unreadButton = unreadButton;
         UIImage *number_back = [UIImage imageNamed:@"number-background.png"];
         UIImage *stretch_back = [number_back stretchableImageWithLeftCapWidth:15.5 topCapHeight:9.5];
         [_unreadButton setBackgroundImage:stretch_back forState:UIControlStateDisabled];
@@ -142,7 +131,6 @@
     if(nav.actions == nil) {
         AwfulThreadListActions *actions = [[AwfulThreadListActions alloc] initWithAwfulThread:self.thread];
         [nav setActions:actions];
-        [actions release];
     }
 }
 
@@ -154,13 +142,6 @@
 @synthesize prevButton = _prevButton;
 @synthesize pageLabel = _pageLabel;
 
--(void)dealloc
-{
-    [_nextButton release];
-    [_prevButton release];
-    [_pageLabel release];
-    [super dealloc];
-}
 
 -(void)configureForPageCount : (AwfulPageCount *)pages thread_count : (int)count
 {
@@ -206,7 +187,7 @@
 
 -(id)initWithAwfulForum : (AwfulForum *)in_forum atPageNum : (int)page_num
 {
-    _forum = [in_forum retain];
+    _forum = in_forum;
     self = [self initWithString:_forum.name atPageNum:page_num];
     return self;
 }
@@ -217,14 +198,6 @@
     return self;
 }
 
-- (void)dealloc {
-    [_awfulThreads release];
-    [_forum release];
-    [_pages release];
-    [_pagesLabel release];
-    [_forumLabel release];
-    [super dealloc];
-}
 
 -(void)choseForumOption : (int)option
 {
@@ -251,7 +224,6 @@
 {
     NSMutableArray *threads = [AwfulUtil newThreadListForForumId:[self getSaveID]];
     self.awfulThreads = threads;
-    [threads release];
 }
 
 -(void)refresh
@@ -259,7 +231,6 @@
     [self.delegate swapToStopButton];
     AwfulForumRefreshRequest *ref_req = [[AwfulForumRefreshRequest alloc] initWithAwfulThreadList:self];
     loadRequest(ref_req);
-    [ref_req release];
     [UIView animateWithDuration:0.2 animations:^(void){
         self.view.alpha = 0.5;
     }];
@@ -305,7 +276,6 @@
     AwfulNavigatorLabels *labels = [[AwfulNavigatorLabels alloc] init];
     self.forumLabel = labels.forumLabel;
     self.pagesLabel = labels.pagesLabel;
-    [labels release];
     
     self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
     
@@ -315,7 +285,6 @@
     
     UIBarButtonItem *cust = [[UIBarButtonItem alloc] initWithCustomView:self.pagesLabel];
     self.delegate.navigationItem.rightBarButtonItem = cust;
-    [cust release];
         
     if([self shouldReloadOnViewLoad]) {
         [self refresh];
@@ -371,8 +340,7 @@
 -(void)setPages:(AwfulPageCount *)pages
 {
     if(pages != _pages) {
-        [_pages release];
-        _pages = [pages retain];
+        _pages = pages;
         [self.pagesLabel setText:[_pages description]];
     }
 }
@@ -543,7 +511,6 @@
             
             AwfulPage *thread_detail = [[AwfulPage alloc] initWithAwfulThread:thread startAt:start];
             loadContentVC(thread_detail);
-            [thread_detail release];
         }
     }
 }
@@ -553,7 +520,6 @@
     if(self.pages.currentPage > 1) {
         AwfulThreadList *prev_list = [[[self class] alloc] initWithAwfulForum:self.forum atPageNum:self.pages.currentPage-1];
         loadContentVC(prev_list);
-        [prev_list release];
     }
 }
 
@@ -561,7 +527,6 @@
 {
     AwfulThreadList *next_list = [[[self class] alloc] initWithAwfulForum:self.forum atPageNum:self.pages.currentPage+1];
     loadContentVC(next_list);
-    [next_list release];
 }
 
 #pragma mark -
@@ -637,7 +602,6 @@
             
             AwfulPageIpad *thread_detail = [[AwfulPageIpad alloc] initWithAwfulThread:thread startAt:start];
             loadContentVC(thread_detail);
-            [thread_detail release];
         }
     }
 }
@@ -659,14 +623,12 @@
 {
     UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refresh)];
     self.navigationItem.rightBarButtonItem = refresh;
-    [refresh release];
 }
 
 -(void)swapToStopButton
 {
     UIBarButtonItem *stop = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop)];
     self.navigationItem.rightBarButtonItem = stop;
-    [stop release];
 }
 
 -(void)refresh

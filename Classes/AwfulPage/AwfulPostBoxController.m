@@ -34,7 +34,7 @@
 {
     if((self = [super initWithNibName:@"AwfulPostBox" bundle:[NSBundle mainBundle]])) {
         NSString *old = [AwfulPostBoxController retrievePost];
-        _startingText = [[old stringByAppendingString:text] retain];
+        _startingText = [old stringByAppendingString:text];
         _post = nil;
         _thread = nil;
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
@@ -43,16 +43,6 @@
     return self;
 }
 
-- (void)dealloc 
-{
-    [_replyTextView release];
-    [_startingText release];
-    [_thread release];
-    [_post release];
-    [_toolbar release];
-    [_base release];
-    [super dealloc];
-}
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
@@ -154,7 +144,6 @@
             }
             req.userInfo = dict;
             loadRequestAndWait(req);
-            [req release];
             [self.replyTextView resignFirstResponder];
         }
     }
@@ -173,8 +162,7 @@
 -(void)setThread:(AwfulThread *)thread 
 {
     if(thread != _thread) {
-        [_thread release];
-        _thread = [thread retain];
+        _thread = thread;
         
         if(_thread != nil) {
             self.post = nil;
@@ -186,8 +174,7 @@
 -(void)setPost : (AwfulPost *)post
 {
     if(post != _post) {
-        [_post release];
-        _post = [post retain];
+        _post = post;
         
         if(_post != nil) {
             self.thread = nil;
@@ -203,7 +190,6 @@
     alert.delegate = self;
     alert.tag = SEND_BUTTON;
     [alert show];
-    [alert release];
 }
 
 -(void)addText : (NSString *)in_text

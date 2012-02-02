@@ -26,18 +26,10 @@
 {
     if((self=[super initWithNibName:@"AwfulSmallPageController" bundle:[NSBundle mainBundle]])) {
         _hiding = NO;
-        _page = [page retain];
+        _page = page;
         _submitting = NO;
     }
     return self;
-}
-
--(void)dealloc
-{
-    [_page release];
-    [_forumButton release];
-    [_segment release];
-    [super dealloc];
 }
 
 - (void)didReceiveMemoryWarning
@@ -123,7 +115,6 @@
 {
     AwfulPage *first_page = [[AwfulPage alloc] initWithAwfulThread:self.page.thread startAt:AwfulPageDestinationTypeFirst];
     loadContentVC(first_page);
-    [first_page release];
 }
 
 -(IBAction)hitLast
@@ -131,7 +122,6 @@
     if(![self.page.pages onLastPage]) {
         AwfulPage *last_page = [[AwfulPage alloc] initWithAwfulThread:self.page.thread startAt:AwfulPageDestinationTypeLast];
         loadContentVC(last_page);
-        [last_page release];
     }
 }
 
@@ -140,7 +130,6 @@
     if(self.page.thread.forum != nil) {
         AwfulThreadList *list = [[AwfulThreadList alloc] initWithAwfulForum:self.page.thread.forum];
         loadContentVC(list);
-        [list release];
     }
 }
 

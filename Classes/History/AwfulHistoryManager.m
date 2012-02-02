@@ -24,18 +24,11 @@
     return self;
 }
 
--(void)dealloc
-{
-    [_recordedHistory release];
-    [_recordedForward release];
-    [super dealloc];
-}
 
 -(void)addHistory : (id<AwfulHistoryRecorder>)hist
 {
     AwfulHistory *record = [hist newRecordedHistory];
     [self.recordedHistory addObject:record];
-    [record release];
 
     if([self.recordedHistory count] > 20) {
         [self.recordedHistory removeObjectAtIndex:0];
@@ -54,13 +47,11 @@
     
     [self.recordedHistory removeLastObject];
     
-    AwfulHistory *record = [[self.recordedHistory lastObject] retain];
+    AwfulHistory *record = [self.recordedHistory lastObject];
     [self.recordedHistory removeLastObject];
     
     id<AwfulHistoryRecorder> content = [record newThreadObj];
-    [record release];
     loadContentVC((id<AwfulNavigatorContent>)content);
-    [content release];
     
     self.recordedForward = old_forward;
 }
@@ -71,15 +62,13 @@
         return;
     }
     
-    AwfulHistory *record = [[self.recordedForward lastObject] retain];
+    AwfulHistory *record = [self.recordedForward lastObject];
     [self.recordedForward removeLastObject];
     
     NSMutableArray *old_forward = [NSMutableArray arrayWithArray:self.recordedForward];
     
     id<AwfulHistoryRecorder> content = [record newThreadObj];
-    [record release];
     loadContentVC((id<AwfulNavigatorContent>)content);
-    [content release];
     
     self.recordedForward = old_forward;
 }

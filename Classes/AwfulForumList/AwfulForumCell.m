@@ -24,11 +24,6 @@
     return self;
 }
 
--(void)dealloc
-{
-    [_title release];
-    [super dealloc];
-}
 
 @end
 
@@ -49,14 +44,6 @@
     return self;
 }
 
-- (void)dealloc
-{
-    [_title release];
-    [_star release];
-    [_arrow release];
-    [_section release];
-    [super dealloc];
-}
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
@@ -68,8 +55,7 @@
 -(void)setSection:(AwfulForumSection *)section
 {
     if(section != _section) {
-        [_section release];
-        _section = [section retain];
+        _section = section;
     }
     
     if(section != nil) {

@@ -18,17 +18,12 @@
 -(id)initWithAwfulThread : (AwfulThread *)thread
 {
     if((self=[super init])) {
-        _thread = [thread retain];
+        _thread = thread;
         [self.titles addObjectsFromArray:[NSArray arrayWithObjects:@"5", @"4", @"3", @"2", @"1", nil]];
     }
     return self;
 }
 
--(void)dealloc
-{
-    [_thread release];
-    [super dealloc];
-}
 
 -(NSString *)getOverallTitle
 {

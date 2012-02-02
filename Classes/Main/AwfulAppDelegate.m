@@ -35,20 +35,11 @@
     
     [FlurryAPI startSession:@"EU3TLVQM9U8T8QKNI9ID"];
     
-    NSURL *crash_url = [NSURL URLWithString:@"http://www.regularberry.com/crash/crash_v200.php"];
-    [[CrashReportSender sharedCrashReportSender] sendCrashReportToURL:crash_url delegate:nil activateFeedback:NO];
     [Appirater appLaunched:YES];
     
     return YES;
 }
 
-- (void)dealloc {
-    [_splitController release];
-    [_navigationController release];
-    [_navigator release];
-    [_window release];
-    [super dealloc];
-}
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     /*

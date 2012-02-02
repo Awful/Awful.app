@@ -22,14 +22,14 @@
     NSString *_startingText;
 }
 
-@property (nonatomic, retain) IBOutlet UIBarButtonItem *sendButton;
-@property (nonatomic, retain) IBOutlet UITextView *replyTextView;
-@property (nonatomic, retain) IBOutlet UIToolbar *toolbar;
-@property (nonatomic, retain) IBOutlet UIView *base;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem *sendButton;
+@property (nonatomic, strong) IBOutlet UITextView *replyTextView;
+@property (nonatomic, strong) IBOutlet UIToolbar *toolbar;
+@property (nonatomic, strong) IBOutlet UIView *base;
 
-@property (nonatomic, retain) AwfulThread *thread;
-@property (nonatomic, retain) AwfulPost *post;
-@property (nonatomic, retain) NSString *startingText;
+@property (nonatomic, strong) AwfulThread *thread;
+@property (nonatomic, strong) AwfulPost *post;
+@property (nonatomic, strong) NSString *startingText;
 
 -(id)initWithText : (NSString *)text;
 -(IBAction)hideReply;

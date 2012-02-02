@@ -14,7 +14,7 @@
     BOOL _refreshed;
 }
 
-@property (nonatomic, retain) NSTimer *refreshTimer;
+@property (nonatomic, strong) NSTimer *refreshTimer;
 @property (nonatomic, assign) BOOL refreshed;
 
 -(void)startTimer;

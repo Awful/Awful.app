@@ -15,7 +15,7 @@
     AwfulPage *_page;
 }
 
-@property (nonatomic, retain) AwfulPage *page;
+@property (nonatomic, strong) AwfulPage *page;
 
 -(id)initWithPost : (AwfulPost *)post fromPage : (AwfulPage *)page;
 

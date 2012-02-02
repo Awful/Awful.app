@@ -35,18 +35,18 @@ typedef enum {
     AwfulForum *_forum;
 }
 
-@property (nonatomic, retain) NSString *threadID;
-@property (nonatomic, retain) NSString *title;
+@property (nonatomic, strong) NSString *threadID;
+@property (nonatomic, strong) NSString *title;
 @property int totalUnreadPosts;
 @property int totalReplies;
 @property NSUInteger threadRating;
 @property AwfulStarCategory starCategory;
-@property (nonatomic, retain) NSURL *iconURL;
-@property (nonatomic, retain) NSString *authorName;
-@property (nonatomic, retain) NSString *lastPostAuthorName;
+@property (nonatomic, strong) NSURL *iconURL;
+@property (nonatomic, strong) NSString *authorName;
+@property (nonatomic, strong) NSString *lastPostAuthorName;
 @property BOOL seen;
 @property BOOL isStickied;
 @property BOOL isLocked;
-@property (nonatomic, retain) AwfulForum *forum;
+@property (nonatomic, strong) AwfulForum *forum;
 
 @end

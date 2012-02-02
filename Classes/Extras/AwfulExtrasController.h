@@ -12,19 +12,19 @@
     UILabel *_label;
 }
 
-@property (nonatomic, retain) IBOutlet UILabel *label;
+@property (nonatomic, strong) IBOutlet UILabel *label;
 
 @end
 
 @interface AwfulButtonCell : UITableViewCell {
     UIButton *_button;
-    id _buttonTarget;
+    id __unsafe_unretained _buttonTarget;
 }
 
 -(void)setSelector : (SEL)selector withText : (NSString *)text;
 
-@property (nonatomic, retain) IBOutlet UIButton *button;
-@property (nonatomic, assign) id buttonTarget;
+@property (nonatomic, strong) IBOutlet UIButton *button;
+@property (nonatomic, unsafe_unretained) id buttonTarget;
 
 @end
 
@@ -33,8 +33,8 @@
     AwfulLabelCell *_userInfoCell;
 }
 
-@property (nonatomic, retain) IBOutlet AwfulButtonCell *buttonCell;
-@property (nonatomic, retain) IBOutlet AwfulLabelCell *labelCell;
+@property (nonatomic, strong) IBOutlet AwfulButtonCell *buttonCell;
+@property (nonatomic, strong) IBOutlet AwfulLabelCell *labelCell;
 
 -(NSIndexPath *)getIndexPathForLoggedInCell;
 -(NSString *)cellIdentifierForIndexPath : (NSIndexPath *)indexPath;

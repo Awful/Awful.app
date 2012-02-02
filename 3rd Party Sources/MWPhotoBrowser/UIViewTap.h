@@ -11,9 +11,9 @@
 @protocol UIViewTapDelegate;
 
 @interface UIViewTap : UIView {
-	id <UIViewTapDelegate> tapDelegate;
+	id <UIViewTapDelegate> __unsafe_unretained tapDelegate;
 }
-@property (nonatomic, assign) id <UIViewTapDelegate> tapDelegate;
+@property (nonatomic, unsafe_unretained) id <UIViewTapDelegate> tapDelegate;
 - (void)handleSingleTap:(UITouch *)touch;
 - (void)handleDoubleTap:(UITouch *)touch;
 - (void)handleTripleTap:(UITouch *)touch;

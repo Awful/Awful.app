@@ -24,7 +24,7 @@ typedef enum {
 
 @property (nonatomic, assign) AwfulHistoryType historyType;
 @property (nonatomic, assign) int pageNum;
-@property (nonatomic, retain) id modelObj;
+@property (nonatomic, strong) id modelObj;
 
 -(id)newThreadObj;
 

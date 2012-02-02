@@ -15,6 +15,7 @@
 #import "AwfulAppDelegate.h"
 #import "AwfulLoginController.h"
 #import <QuartzCore/QuartzCore.h>
+#import "AwfulUser.h"
 
 @implementation AwfulSplitViewController
 
@@ -31,15 +32,6 @@
         self.delegate = self;
     }
     return self;
-}
-
--(void)dealloc
-{
-    [_pageController release];
-    [_listController release];
-    [_popController release];
-    [_popOverButton release];
-    [super dealloc];
 }
 
 - (void)didReceiveMemoryWarning
@@ -89,7 +81,7 @@
 -(void)setupMasterView
 {
     AwfulForumsListIpad *forums = [[AwfulForumsListIpad alloc] init];
-    self.listController = [[[UINavigationController alloc] initWithRootViewController:forums] autorelease];
+    self.listController = [[UINavigationController alloc] initWithRootViewController:forums];
     
     AwfulExtrasControllerIpad *extras = [[AwfulExtrasControllerIpad alloc] init];
     
@@ -105,20 +97,16 @@
     [array addObject:self.listController];
     if (isLoggedIn())
     {
-        [array addObject:[[[UINavigationController alloc] initWithRootViewController:bookmarks] autorelease]];
+        [array addObject:[[UINavigationController alloc] initWithRootViewController:bookmarks]];
     }
     
-    [array addObject:[[[UINavigationController alloc] initWithRootViewController:extras] autorelease]]; 
+    [array addObject:[[UINavigationController alloc] initWithRootViewController:extras]]; 
     [self.masterController setViewControllers:[NSArray array]];
     [self.masterController setViewControllers:array animated:YES];
     
-    [forums release];
-    [extras release];
-    [bookmarks release];
     
     extras = [[AwfulExtrasControllerIpad alloc] init];
     self.pageController.viewControllers = [NSArray arrayWithObject:extras];
-    [extras release];
     //self.viewControllers = [NSArray arrayWithObjects:self.masterController, self.pageController, nil];   
 }
 
@@ -324,7 +312,6 @@
 {
     AwfulLoginController *login = [[AwfulLoginController alloc] init];
     [self.pageController pushViewController:login animated:YES];
-    [login release];
 }
 
 #pragma mark -

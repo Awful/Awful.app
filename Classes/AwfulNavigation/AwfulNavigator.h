@@ -43,17 +43,17 @@
     UIButton *_fullScreenButton;
 }
 
-@property (nonatomic, retain) IBOutlet UIToolbar *toolbar;
-@property (nonatomic, retain) id<AwfulNavigatorContent> contentVC;
-@property (nonatomic, retain) AwfulRequestHandler *requestHandler;
-@property (nonatomic, retain) AwfulUser *user;
-@property (nonatomic, retain) AwfulActions *actions;
-@property (nonatomic, retain) AwfulHistoryManager *historyManager;
-@property (nonatomic, retain) IBOutlet UIBarButtonItem *backButton;
-@property (nonatomic, retain) IBOutlet UIBarButtonItem *forwardButton;
-@property (nonatomic, retain) IBOutlet UIBarButtonItem *actionButton;
-@property (nonatomic, retain) IBOutlet UILabel *welcomeMessage;
-@property (nonatomic, retain) IBOutlet UIButton *fullScreenButton;
+@property (nonatomic, strong) IBOutlet UIToolbar *toolbar;
+@property (nonatomic, strong) id<AwfulNavigatorContent> contentVC;
+@property (nonatomic, strong) AwfulRequestHandler *requestHandler;
+@property (nonatomic, strong) AwfulUser *user;
+@property (nonatomic, strong) AwfulActions *actions;
+@property (nonatomic, strong) AwfulHistoryManager *historyManager;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem *backButton;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem *forwardButton;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem *actionButton;
+@property (nonatomic, strong) IBOutlet UILabel *welcomeMessage;
+@property (nonatomic, strong) IBOutlet UIButton *fullScreenButton;
 
 -(void)loadContentVC : (id<AwfulNavigatorContent>)content;
 

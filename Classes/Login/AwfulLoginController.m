@@ -24,11 +24,6 @@
     return self;
 }
 
-- (void)dealloc {
-    [_web release];
-    [_act release];
-    [super dealloc];
-}
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
@@ -42,7 +37,7 @@
     self.web.delegate = self;
     [self.web loadRequest:req];
     
-    self.act = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray] autorelease];
+    self.act = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     self.act.center = CGPointMake(160, 100);
     [self.act startAnimating];
     [self.web addSubview:self.act];

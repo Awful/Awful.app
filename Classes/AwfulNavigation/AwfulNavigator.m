@@ -47,20 +47,6 @@
     return self;
 }
 
-- (void)dealloc
-{
-    [_toolbar release];
-    [_contentVC release];
-    [_requestHandler release];
-    [_user release];
-    [_actions release];
-    [_historyManager release];
-    [_backButton release];
-    [_forwardButton release];
-    [_actionButton release];
-    [_fullScreenButton release];
-    [super dealloc];
-}
 
 - (void)didReceiveMemoryWarning
 {
@@ -73,8 +59,7 @@
 -(void)setActions:(AwfulActions *)actions
 {
     if(actions != _actions) {
-        [_actions release];
-        _actions = [actions retain];
+        _actions = actions;
         _actions.delegate = self;
         [_actions show];
     }
@@ -162,7 +147,6 @@
     if(self.navigationItem.leftBarButtonItem.action != @selector(refresh)) {
         UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refresh)];
         self.navigationItem.leftBarButtonItem = refresh;
-        [refresh release];
     }
 }
 
@@ -171,7 +155,6 @@
     if(self.navigationItem.leftBarButtonItem.action != @selector(stop)) {
         UIBarButtonItem *stop = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop)];
         self.navigationItem.leftBarButtonItem = stop;
-        [stop release];
     }
 }
 
@@ -203,8 +186,6 @@
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:forums];
     nav.navigationBar.barStyle = UIBarStyleBlackOpaque;
     [self presentModalViewController:nav animated:YES];
-    [nav release];
-    [forums release];
 }
 
 -(IBAction)tappedAction
@@ -222,15 +203,12 @@
     nav.navigationBar.barStyle = UIBarStyleBlackOpaque;
     
     [self presentModalViewController:nav animated:YES];
-    [nav release];
-    [books release];
 }
 
 -(IBAction)tappedMore
 {
     AwfulExtrasController *extras = [[AwfulExtrasController alloc] init];
     [self.navigationController pushViewController:extras animated:YES];
-    [extras release];
 }
 
 -(void)callBookmarksRefresh

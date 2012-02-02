@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CrashReportSender.h"
 
 @class AwfulNavigator;
 @class AwfulNavigatorIpad;
@@ -21,10 +20,10 @@
     AwfulSplitViewController *_splitController;
 }
 
-@property (nonatomic, retain) IBOutlet UIWindow *window;
-@property (nonatomic, retain) IBOutlet UINavigationController *navigationController;
-@property (nonatomic, retain) IBOutlet AwfulNavigator *navigator;
-@property (nonatomic, retain) IBOutlet AwfulSplitViewController *splitController;
+@property (nonatomic, strong) IBOutlet UIWindow *window;
+@property (nonatomic, strong) IBOutlet UINavigationController *navigationController;
+@property (nonatomic, strong) IBOutlet AwfulNavigator *navigator;
+@property (nonatomic, strong) IBOutlet AwfulSplitViewController *splitController;
 
 - (void) setupSubview;
 - (UIViewController *)getRootController;

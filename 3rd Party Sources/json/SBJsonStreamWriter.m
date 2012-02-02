@@ -84,10 +84,7 @@ static id kStaticStringCache;
 }
 
 - (void)dealloc {
-	self.error = nil;
     self.state = nil;
-    [stateStack release];
-	[super dealloc];
 }
 
 #pragma mark Methods

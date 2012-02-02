@@ -22,8 +22,8 @@
     NSUInteger _totalAncestors;
 }
 
-@property (nonatomic, retain) AwfulForum *forum;
-@property (nonatomic, retain) NSMutableArray *children;
+@property (nonatomic, strong) AwfulForum *forum;
+@property (nonatomic, strong) NSMutableArray *children;
 @property BOOL expanded;
 @property NSUInteger rowIndex;
 @property NSUInteger totalAncestors;
@@ -41,12 +41,12 @@
     UITableViewCell *_refreshCell;
 }
 
-@property (nonatomic, retain) NSMutableArray *favorites;
-@property (nonatomic, retain) NSMutableArray *forums;
-@property (nonatomic, retain) NSMutableArray *forumSections;
-@property (nonatomic, retain) IBOutlet AwfulForumCell *forumCell;
-@property (nonatomic, retain) IBOutlet AwfulForumHeader *headerView;
-@property (nonatomic, retain) IBOutlet UITableViewCell *refreshCell;
+@property (nonatomic, strong) NSMutableArray *favorites;
+@property (nonatomic, strong) NSMutableArray *forums;
+@property (nonatomic, strong) NSMutableArray *forumSections;
+@property (nonatomic, strong) IBOutlet AwfulForumCell *forumCell;
+@property (nonatomic, strong) IBOutlet AwfulForumHeader *headerView;
+@property (nonatomic, strong) IBOutlet UITableViewCell *refreshCell;
 
 -(void)loadFavorites;
 -(void)saveFavorites;

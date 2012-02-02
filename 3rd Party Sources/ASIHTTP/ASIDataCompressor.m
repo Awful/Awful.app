@@ -101,7 +101,7 @@
 				*err = [[self class] deflateErrorWithCode:status];
 			}
 			[self closeStream];
-			return NO;
+			return nil;
 		}
 	}
 

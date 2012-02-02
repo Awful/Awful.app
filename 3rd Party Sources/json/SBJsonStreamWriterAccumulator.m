@@ -42,11 +42,6 @@
     return self;
 }
 
-- (void)dealloc {
-    [data release];
-    [super dealloc];
-}
-
 #pragma mark SBJsonStreamWriterDelegate
 
 - (void)writer:(SBJsonStreamWriter *)writer appendBytes:(const void *)bytes length:(NSUInteger)length {

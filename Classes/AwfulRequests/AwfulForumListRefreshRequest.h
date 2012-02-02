@@ -15,7 +15,7 @@
     AwfulForumsList *_forumsList;
 }
 
-@property (nonatomic, retain) AwfulForumsList *forumsList;
+@property (nonatomic, strong) AwfulForumsList *forumsList;
 
 -(id)initWithForumsList : (AwfulForumsList *)list;
 

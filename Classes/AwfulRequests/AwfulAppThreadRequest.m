@@ -36,9 +36,7 @@
         else
             page = [[AwfulPage alloc] initWithAwfulThread:thread startAt:AwfulPageDestinationTypeFirst];
         
-        [thread release];
         loadContentVC(page);
-        [page release];
         
         AwfulNavigator *nav = getNavigator();
         [nav.navigationController popViewControllerAnimated:YES];

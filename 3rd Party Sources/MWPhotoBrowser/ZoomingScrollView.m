@@ -48,12 +48,6 @@
 	return self;
 }
 
-- (void)dealloc {
-	[tapView release];
-	[photoImageView release];
-	[spinner release];
-	[super dealloc];
-}
 
 - (void)setIndex:(int)value {
 	if (value == NSNotFound) {

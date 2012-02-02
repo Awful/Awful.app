@@ -14,8 +14,8 @@
     UILabel *_threadTitleLabel;
 }
 
-@property (nonatomic, retain) IBOutlet UILabel *pagesLabel;
-@property (nonatomic, retain) IBOutlet UILabel *forumLabel;
-@property (nonatomic, retain) IBOutlet UILabel *threadTitleLabel;
+@property (nonatomic, strong) IBOutlet UILabel *pagesLabel;
+@property (nonatomic, strong) IBOutlet UILabel *forumLabel;
+@property (nonatomic, strong) IBOutlet UILabel *threadTitleLabel;
 
 @end

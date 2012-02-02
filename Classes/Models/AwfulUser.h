@@ -13,7 +13,7 @@
     int _postsPerPage;
 }
 
-@property (nonatomic, retain) NSString *userName;
+@property (nonatomic, strong) NSString *userName;
 @property (nonatomic, assign) int postsPerPage;
 
 -(void)loadUser;

@@ -26,7 +26,7 @@ typedef enum {
 -(id)initWithAwfulThread : (AwfulThread *)thread
 {
     if((self=[super init])) {
-        _thread = [thread retain];
+        _thread = thread;
         [self.titles addObject:@"First Page"];
         [self.titles addObject:@"Last Page"];
         
@@ -39,11 +39,6 @@ typedef enum {
     return self;
 }
 
--(void)dealloc
-{
-    [_thread release];
-    [super dealloc];
-}
 
 -(NSString *)getOverallTitle
 {
@@ -56,13 +51,11 @@ typedef enum {
         
         AwfulPage *thread_detail = [[AwfulPage alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeFirst];
         loadContentVC(thread_detail);
-        [thread_detail release];
         
     } else if(buttonIndex == AwfulThreadListActionsTypeLastPage) {
         
         AwfulPage *thread_detail = [[AwfulPage alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeLast];
         loadContentVC(thread_detail);
-        [thread_detail release];
         
     } else if(buttonIndex == AwfulThreadListActionsTypeUnread && [self.titles count] > 2) {
         NSURL *url = [NSURL URLWithString:@"http://forums.somethingawful.com/showthread.php"];

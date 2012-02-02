@@ -34,14 +34,6 @@
 @interface NSString (HTML)
 
 // Instance Methods
-- (NSString *)stringByConvertingHTMLToPlainText;
-- (NSString *)stringByDecodingHTMLEntities;
-- (NSString *)stringByEncodingHTMLEntities;
 - (NSString *)stringByEscapingUnicode;
-- (NSString *)stringWithNewLinesAsBRs;
-- (NSString *)stringByRemovingNewLinesAndWhitespace;
-
-// DEPRECIATED - Please use NSString stringByConvertingHTMLToPlainText
-- (NSString *)stringByStrippingTags; 
 
 @end

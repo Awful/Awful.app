@@ -30,7 +30,7 @@ typedef enum {
 -(id)initWithAwfulPage:(AwfulPage *)page
 {
     if((self=[super init])) {
-        _page = [page retain];
+        _page = page;
         
         [self.titles addObject:@"Reply"];
         [self.titles addObject:@"Vote"];
@@ -47,11 +47,6 @@ typedef enum {
     return self;
 }
 
--(void)dealloc
-{
-    [_page release];
-    [super dealloc];
-}
 
 -(NSString *)getOverallTitle
 {
@@ -73,7 +68,6 @@ typedef enum {
         
         AwfulVoteActions *vote = [[AwfulVoteActions alloc] initWithAwfulThread:self.page.thread];
         [self.delegate setActions:vote];
-        [vote release];
         
     } else if(buttonIndex == AwfulThreadActionReply) {
         
@@ -81,7 +75,6 @@ typedef enum {
         [post_box setThread:self.page.thread];
         UIViewController *vc = getRootController();
         [vc presentModalViewController:post_box animated:YES];
-        [post_box release];
         
     } else if(buttonIndex == AwfulThreadActionBookmarks) {
         
@@ -110,7 +103,6 @@ typedef enum {
     NSMutableArray *bookmarked_threads = [AwfulUtil newThreadListForForumId:@"bookmarks"];
     [bookmarked_threads addObject:self.page.thread];
     [AwfulUtil saveThreadList:bookmarked_threads forForumId:@"bookmarks"];
-    [bookmarked_threads release];
     
     loadRequestAndWait(req);
 }
@@ -134,7 +126,6 @@ typedef enum {
     }
     [bookmarked_threads removeObject:found];
     [AwfulUtil saveThreadList:bookmarked_threads forForumId:@"bookmarks"];
-    [bookmarked_threads release];
     
     loadRequestAndWait(req);
 }

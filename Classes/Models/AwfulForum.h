@@ -15,10 +15,10 @@
     NSString *_acronym;
 }
 
-@property (nonatomic, retain) NSString *forumID;
-@property (nonatomic, retain) NSString *name;
-@property (nonatomic, retain) NSString *parentForumID;
-@property (nonatomic, retain) NSString *acronym;
+@property (nonatomic, strong) NSString *forumID;
+@property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) NSString *parentForumID;
+@property (nonatomic, strong) NSString *acronym;
 
 +(id)awfulForumFromID : (NSString *)forum_id;
 +(NSMutableArray *)getForumsList;

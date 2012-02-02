@@ -13,12 +13,6 @@
 @synthesize title = _title;
 @synthesize answer = _answer;
 
--(void)dealloc
-{
-    [_title release];
-    [_answer release];
-    [super dealloc];
-}
 
 @end
 
@@ -30,23 +24,17 @@
 -(id)initWithQuestion : (NSString *)question answer : (NSString *)answer
 {
     if((self = [super init])) {
-        _question = [question retain];
-        _answer = [answer retain];
+        _question = question;
+        _answer = answer;
     }
     return self;
 }
 
 +(id)withQuestion : (NSString *)question answer : (NSString *)answer
 {
-    return [[[AwfulQA alloc] initWithQuestion:question answer:answer] autorelease];
+    return [[AwfulQA alloc] initWithQuestion:question answer:answer];
 }
 
--(void)dealloc
-{
-    [_question release];
-    [_answer release];
-    [super dealloc];
-}
 
 @end
 
@@ -92,15 +80,6 @@
     return [self initWithNibName:@"AwfulHelpController" bundle:[NSBundle mainBundle]];
 }
 
-- (void)dealloc
-{
-    [_scroller release];
-    [_helpBox release];
-    [_firstBox release];
-    [_content release];
-    [_helpBoxes release];
-    [super dealloc];
-}
 
 - (void)didReceiveMemoryWarning
 {
@@ -123,7 +102,7 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad
 {
-    self.helpBoxes = [[[NSMutableArray alloc] init] autorelease];
+    self.helpBoxes = [[NSMutableArray alloc] init];
     float center_y = self.firstBox.center.y;
     for(AwfulQA *qa in self.content) {
         [[NSBundle mainBundle] loadNibNamed:@"AwfulHelpBox" owner:self options:nil];

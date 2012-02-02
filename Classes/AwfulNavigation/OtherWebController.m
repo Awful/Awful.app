@@ -39,19 +39,10 @@
     return self;
 }
 
-- (void)dealloc {
-    [url release];
-    [activity release];
-    [web release];
-    [back release];
-    [forward release];
-    [super dealloc];
-}
 
 
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView {
-    [web release];
     web = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, 420)];
     web.scalesPageToFit = YES;
     web.delegate = self;
@@ -78,15 +69,10 @@
     
     UIActivityIndicatorView *act = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
     activity = [[UIBarButtonItem alloc] initWithCustomView:act];
-    [act release];
 
     NSArray *items = [NSArray arrayWithObjects:back, fixed, forward, flex, activity, fixed, refresh, fixed, safari, nil];
     [self setToolbarItems:items];
     
-    [flex release];
-    [refresh release];
-    [safari release];
-    [fixed release];
 }
 
 -(BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
@@ -166,7 +152,6 @@
 {
     UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(hitDone)];
     self.navigationItem.rightBarButtonItem = done;
-    [done release];
     
     [self loadToolbar];
 }

@@ -12,11 +12,11 @@
 
 @interface AwfulActions : NSObject <UIActionSheetDelegate, UIAlertViewDelegate> {
     NSMutableArray *_titles;
-    AwfulNavigator *_delegate;
+    AwfulNavigator *__weak _delegate;
 }
 
-@property (nonatomic, retain) NSMutableArray *titles;
-@property (nonatomic, assign) AwfulNavigator *delegate;
+@property (nonatomic, strong) NSMutableArray *titles;
+@property (nonatomic, weak) AwfulNavigator *delegate;
 
 -(void)show;
 -(NSString *)getOverallTitle;

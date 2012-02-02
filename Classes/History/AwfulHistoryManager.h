@@ -14,8 +14,8 @@
     NSMutableArray *_recordedForward;
 }
 
-@property (nonatomic, retain) NSMutableArray *recordedHistory;
-@property (nonatomic, retain) NSMutableArray *recordedForward;
+@property (nonatomic, strong) NSMutableArray *recordedHistory;
+@property (nonatomic, strong) NSMutableArray *recordedForward;
 
 -(void)addHistory : (id<AwfulHistoryRecorder>)hist;
 -(void)goBack;

@@ -10,7 +10,7 @@
 
 @interface AwfulPageParser : NSObject
 
-@property (nonatomic, retain) NSMutableArray *posts;
-@property (nonatomic, retain) NSString *html;
+@property (nonatomic, strong) NSMutableArray *posts;
+@property (nonatomic, strong) NSString *html;
 
 @end

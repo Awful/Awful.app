@@ -21,11 +21,11 @@
     CALayer *shadowLayer;
 }
 
-@property (nonatomic, retain) IBOutlet UINavigationController *pageController;
-@property (nonatomic, retain) IBOutlet UINavigationController *listController;
-@property (nonatomic, retain) IBOutlet UITabBarController *masterController;
-@property (nonatomic, retain) UIPopoverController *popController;
-@property (nonatomic, retain) UIBarButtonItem *popOverButton;
+@property (nonatomic, strong) IBOutlet UINavigationController *pageController;
+@property (nonatomic, strong) IBOutlet UINavigationController *listController;
+@property (nonatomic, strong) IBOutlet UITabBarController *masterController;
+@property (nonatomic, strong) UIPopoverController *popController;
+@property (nonatomic, strong) UIBarButtonItem *popOverButton;
 @property (nonatomic, assign) BOOL masterIsVisible;
 
 -(void)setupMasterView;

@@ -39,16 +39,6 @@
     return self;
 }
 
--(void)dealloc
-{
-    [_threadID release];
-    [_title release];
-    [_iconURL release];
-    [_authorName release];
-    [_lastPostAuthorName release];
-    [_forum release];
-    [super dealloc];
-}
 
 - (id)initWithCoder:(NSCoder *)decoder 
 {

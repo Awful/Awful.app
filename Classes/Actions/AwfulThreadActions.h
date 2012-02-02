@@ -14,7 +14,7 @@
     AwfulPage *_page;
 }
 
-@property (nonatomic, retain) AwfulPage *page;
+@property (nonatomic, strong) AwfulPage *page;
 
 -(id)initWithAwfulPage : (AwfulPage *)page;
 -(void)addBookmark;

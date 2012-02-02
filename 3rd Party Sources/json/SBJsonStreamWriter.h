@@ -84,14 +84,14 @@
 
 @interface SBJsonStreamWriter : NSObject
 
-@property (nonatomic, assign) SBJsonStreamWriterState *state; // Internal
-@property (nonatomic, readonly, retain) NSMutableArray *stateStack; // Internal 
+@property (nonatomic, weak) SBJsonStreamWriterState *state; // Internal
+@property (nonatomic, readonly, strong) NSMutableArray *stateStack; // Internal 
 
 /**
  @brief delegate to receive JSON output
  Delegate that will receive messages with output.
  */
-@property (assign) id<SBJsonStreamWriterDelegate> delegate;
+@property (unsafe_unretained) id<SBJsonStreamWriterDelegate> delegate;
 
 /**
  @brief The maximum recursing depth.

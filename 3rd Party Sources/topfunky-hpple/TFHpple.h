@@ -46,6 +46,6 @@
 -(TFHppleElement *) at:(NSString *)xPathOrCSS;
 -(TFHppleElement *)searchForSingle : (NSString *)query;
 
-@property (retain) NSData * data;
+@property (strong) NSData * data;
 
 @end

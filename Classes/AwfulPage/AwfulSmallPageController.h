@@ -18,9 +18,9 @@
     BOOL _submitting;
 }
 
-@property (nonatomic, retain) AwfulPage *page;
-@property (nonatomic, retain) IBOutlet UISegmentedControl *segment;
-@property (nonatomic, retain) IBOutlet UIButton *forumButton;
+@property (nonatomic, strong) AwfulPage *page;
+@property (nonatomic, strong) IBOutlet UISegmentedControl *segment;
+@property (nonatomic, strong) IBOutlet UIButton *forumButton;
 @property BOOL hiding;
 @property BOOL submitting;
 

@@ -24,13 +24,6 @@
     return self;
 }
 
-- (void)dealloc
-{
-    [_pagesLabel release];
-    [_forumLabel release];
-    [_threadTitleLabel release];
-    [super dealloc];
-}
 
 - (void)didReceiveMemoryWarning
 {

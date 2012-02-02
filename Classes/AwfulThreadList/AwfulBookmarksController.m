@@ -32,7 +32,6 @@
                 
         NSMutableArray *old_bookmarks = [AwfulUtil newThreadListForForumId:[self getSaveID]];
         self.awfulThreads = old_bookmarks;
-        [old_bookmarks release];
         
         if(![[NSUserDefaults standardUserDefaults] boolForKey:@"killbookmarks"]) {
             self.awfulThreads = [NSMutableArray array];
@@ -51,11 +50,6 @@
     return self;
 }
 
--(void)dealloc
-{
-    [_refreshTimer release];
-    [super dealloc];
-}
 
 #pragma mark -
 #pragma mark View lifecycle
@@ -71,7 +65,6 @@
     
     UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(hitDone)];
     self.navigationItem.rightBarButtonItem = done;
-    [done release];
 }
 
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
@@ -204,7 +197,7 @@
     
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
-        AwfulThread *thread = [[self.awfulThreads objectAtIndex:indexPath.row] retain];
+        AwfulThread *thread = [self.awfulThreads objectAtIndex:indexPath.row];
         [self.awfulThreads removeObjectAtIndex:indexPath.row];
         [AwfulUtil saveThreadList:self.awfulThreads forForumId:[self getSaveID]];       
         [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
@@ -219,7 +212,6 @@
         
         loadRequestAndWait(req);
         
-        [thread release];
 
     }   
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
@@ -239,14 +231,12 @@
 {
     UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refresh)];
     self.navigationItem.leftBarButtonItem = refresh;
-    [refresh release];
 }
 
 -(void)swapToStopButton
 {
     UIBarButtonItem *stop = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop)];
     self.navigationItem.leftBarButtonItem = stop;
-    [stop release];
 }
 
 @end
@@ -284,7 +274,6 @@
             
             AwfulPageIpad *thread_detail = [[AwfulPageIpad alloc] initWithAwfulThread:thread startAt:start];
             loadContentVC(thread_detail);
-            [thread_detail release];
         }
     }
 }
@@ -306,14 +295,12 @@
 {
     UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refresh)];
     self.navigationItem.rightBarButtonItem = refresh;
-    [refresh release];
 }
 
 -(void)swapToStopButton
 {
     UIBarButtonItem *stop = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop)];
     self.navigationItem.rightBarButtonItem = stop;
-    [stop release];
 }
 
 @end

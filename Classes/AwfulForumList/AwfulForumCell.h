@@ -15,7 +15,7 @@
     UILabel *_title;
 }
 
-@property (nonatomic, retain) IBOutlet UILabel *title;
+@property (nonatomic, strong) IBOutlet UILabel *title;
 
 @end
 
@@ -24,14 +24,14 @@
     UIButton *_star;
     UIButton *_arrow;
     AwfulForumSection *_section;
-    AwfulForumsList *_delegate;
+    AwfulForumsList *__weak _delegate;
 }
 
-@property (nonatomic, retain) IBOutlet UILabel *title;
-@property (nonatomic, retain) IBOutlet UIButton *star;
-@property (nonatomic, retain) IBOutlet UIButton *arrow;
-@property (nonatomic, retain) AwfulForumSection *section;
-@property (nonatomic, assign) AwfulForumsList *delegate;
+@property (nonatomic, strong) IBOutlet UILabel *title;
+@property (nonatomic, strong) IBOutlet UIButton *star;
+@property (nonatomic, strong) IBOutlet UIButton *arrow;
+@property (nonatomic, strong) AwfulForumSection *section;
+@property (nonatomic, weak) AwfulForumsList *delegate;
 
 -(IBAction)tappedArrow : (id)sender;
 -(IBAction)tappedStar : (id)sender;

@@ -96,105 +96,103 @@
     
     for(NSString *post_html in post_strings) {
             
-        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        @autoreleasepool {
     
-        TFHpple *post_base = [[TFHpple alloc] initWithHTMLData:[post_html dataUsingEncoding:NSUTF8StringEncoding]];
-        
-        AwfulPost *post = [[AwfulPost alloc] init];
-        post.rawContent = post_html;
-        
-        NSString *username_search = @"//dt[@class='author']|//dt[@class='author op']|//dt[@class='author role-mod']|//dt[@class='author role-admin']|//dt[@class='author role-mod op']|//dt[@class='author role-admin op']";
-        
-        TFHppleElement *author = [post_base searchForSingle:username_search];
-        if(author != nil) {
-            post.authorName = [author content];
-            if([[author objectForKey:@"class"] isEqualToString:@"author op"] || [[author objectForKey:@"class"] isEqualToString:@"author role-admin op"] || [[author objectForKey:@"class"] isEqualToString:@"author role-mod op"]) {
-                post.isOP = YES;
-            } else {
-                post.isOP = NO;
-            }
+            TFHpple *post_base = [[TFHpple alloc] initWithHTMLData:[post_html dataUsingEncoding:NSUTF8StringEncoding]];
             
-            TFHppleElement *mod = [post_base searchForSingle:@"//dt[@class='author role-mod']|//dt[@class='author role-mod op']"];
-            if(mod != nil) {
-                post.authorType = AwfulUserTypeMod;
-            }
+            AwfulPost *post = [[AwfulPost alloc] init];
+            post.rawContent = post_html;
             
-            TFHppleElement *admin = [post_base searchForSingle:@"//dt[@class='author role-admin']|//dt[@class='author role-admin op']"];
-            if(admin != nil) {
-                post.authorType = AwfulUserTypeAdmin;
-            }
+            NSString *username_search = @"//dt[@class='author']|//dt[@class='author op']|//dt[@class='author role-mod']|//dt[@class='author role-admin']|//dt[@class='author role-mod op']|//dt[@class='author role-admin op']";
             
-            if([post.authorName isEqualToString:username]) {
-                post.canEdit = YES;
-            }
-        }
-        
-        TFHppleElement *post_id = [post_base searchForSingle:@"//table[@class='post']|//table[@class='post ignored']"];
-        if(post_id != nil) {
-            NSString *post_id_str = [post_id objectForKey:@"id"];
-            post.postID = [post_id_str substringFromIndex:4];
-        }
-        
-        TFHppleElement *post_date = [post_base searchForSingle:@"//td[@class='postdate']"];
-        if(post_date != nil) {
-            post.postDate = [post_date content];
-        }
-        
-        TFHppleElement *seen_link = [post_base searchForSingle:@"//td[@class='postdate']//a[@title='Mark thread seen up to this post']"];
-        if(seen_link != nil) {
-            post.markSeenLink = [seen_link objectForKey:@"href"];
-        }
-        
-        TFHppleElement *avatar = [post_base searchForSingle:@"//dd[@class='title']//img"];
-        if(avatar != nil && show_avatars) {
-            post.avatarURL = [NSURL URLWithString:[avatar objectForKey:@"src"]];
-        }
-        
-        TFHppleElement *edited = [post_base searchForSingle:@"//p[@class='editedby']/span"];
-        if(edited != nil) {
-            post.editedStr = [[edited content] stringByReplacingOccurrencesOfString:@"fucked around with this message" withString:@"edited"];
-        }
-        
-        NSString *body_search_str = nil;
-        if(is_fyad) {
-            body_search_str = @"//div[@class='complete_shit funbox']";
-        } else {
-            body_search_str = @"//td[@class='postbody']";
-        }
-        
-        NSArray *body_strings = [post_base rawSearch:body_search_str];
-        
-        if([body_strings count] == 1) {
-            NSString *post_body = [body_strings objectAtIndex:0];
-                        
-            TFHppleElement *seen = [post_base searchForSingle:@"//tr[@class='seen1']|//tr[@class='seen2']"];
-            
-            NSString *alt;
-            if([post_strings indexOfObject:post_html] % 2 == 0) {
-                if(seen == nil) {
-                    alt = @"altcolor2";                
+            TFHppleElement *author = [post_base searchForSingle:username_search];
+            if(author != nil) {
+                post.authorName = [author content];
+                if([[author objectForKey:@"class"] isEqualToString:@"author op"] || [[author objectForKey:@"class"] isEqualToString:@"author role-admin op"] || [[author objectForKey:@"class"] isEqualToString:@"author role-mod op"]) {
+                    post.isOP = YES;
                 } else {
-                    alt = @"seen2";
+                    post.isOP = NO;
                 }
-            } else {
-                if(seen == nil) {
-                    alt = @"altcolor1";
-                } else {
-                    alt = @"seen1";
+                
+                TFHppleElement *mod = [post_base searchForSingle:@"//dt[@class='author role-mod']|//dt[@class='author role-mod op']"];
+                if(mod != nil) {
+                    post.authorType = AwfulUserTypeMod;
+                }
+                
+                TFHppleElement *admin = [post_base searchForSingle:@"//dt[@class='author role-admin']|//dt[@class='author role-admin op']"];
+                if(admin != nil) {
+                    post.authorType = AwfulUserTypeAdmin;
+                }
+                
+                if([post.authorName isEqualToString:username]) {
+                    post.canEdit = YES;
                 }
             }
             
-            NSAutoreleasePool *body_pool = [[NSAutoreleasePool alloc] init];
-            post.formattedHTML = [AwfulParse constructPostHTML:post withBody:post_body alt:alt];
-            [body_pool release];
+            TFHppleElement *post_id = [post_base searchForSingle:@"//table[@class='post']|//table[@class='post ignored']"];
+            if(post_id != nil) {
+                NSString *post_id_str = [post_id objectForKey:@"id"];
+                post.postID = [post_id_str substringFromIndex:4];
+            }
+            
+            TFHppleElement *post_date = [post_base searchForSingle:@"//td[@class='postdate']"];
+            if(post_date != nil) {
+                post.postDate = [post_date content];
+            }
+            
+            TFHppleElement *seen_link = [post_base searchForSingle:@"//td[@class='postdate']//a[@title='Mark thread seen up to this post']"];
+            if(seen_link != nil) {
+                post.markSeenLink = [seen_link objectForKey:@"href"];
+            }
+            
+            TFHppleElement *avatar = [post_base searchForSingle:@"//dd[@class='title']//img"];
+            if(avatar != nil && show_avatars) {
+                post.avatarURL = [NSURL URLWithString:[avatar objectForKey:@"src"]];
+            }
+            
+            TFHppleElement *edited = [post_base searchForSingle:@"//p[@class='editedby']/span"];
+            if(edited != nil) {
+                post.editedStr = [[edited content] stringByReplacingOccurrencesOfString:@"fucked around with this message" withString:@"edited"];
+            }
+            
+            NSString *body_search_str = nil;
+            if(is_fyad) {
+                body_search_str = @"//div[@class='complete_shit funbox']";
+            } else {
+                body_search_str = @"//td[@class='postbody']";
+            }
+            
+            NSArray *body_strings = [post_base rawSearch:body_search_str];
+            
+            if([body_strings count] == 1) {
+                NSString *post_body = [body_strings objectAtIndex:0];
+                            
+                TFHppleElement *seen = [post_base searchForSingle:@"//tr[@class='seen1']|//tr[@class='seen2']"];
+                
+                NSString *alt;
+                if([post_strings indexOfObject:post_html] % 2 == 0) {
+                    if(seen == nil) {
+                        alt = @"altcolor2";                
+                    } else {
+                        alt = @"seen2";
+                    }
+                } else {
+                    if(seen == nil) {
+                        alt = @"altcolor1";
+                    } else {
+                        alt = @"seen1";
+                    }
+                }
+                
+                @autoreleasepool {
+                    post.formattedHTML = [AwfulParse constructPostHTML:post withBody:post_body alt:alt];
+                }
+            }
+            
+            [parsed_posts addObject:post];
+            
+        
         }
-        
-        [parsed_posts addObject:post];
-        
-        [post release];
-        [post_base release];
-        
-        [pool release];
     }
 
     return parsed_posts;
@@ -286,7 +284,6 @@
             }
         }
     }
-    [base release];
     
     return parsed;
 }
@@ -305,7 +302,6 @@
         NSString *reformed = [NSString stringWithFormat:@"<a href='%@'>IMG LINK</a>", src];
         parsed = [parsed stringByReplacingOccurrencesOfString:[object_strs objectAtIndex:i] withString:reformed];
     }
-    [base release];
     
     return parsed;
 }
@@ -335,128 +331,124 @@
     
     for(NSString *thread_html in post_strings) {
     
-        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        @autoreleasepool {
     
-        TFHpple *thread_base = [[TFHpple alloc] initWithHTMLData:[thread_html dataUsingEncoding:NSUTF8StringEncoding]];
-        
-        AwfulThread *thread = [[AwfulThread alloc] init];
-        // i can't get the userid easily so scratch that
-        
-        TFHppleElement *title = [thread_base searchForSingle:@"//a[@class='thread_title']"];
-        if(title != nil) {
-            thread.title = [title content];
-        }
-        
-        TFHppleElement *sticky = [thread_base searchForSingle:@"//td[@class='title title_sticky']"];
-        if(sticky != nil) {
-            thread.isStickied = YES;
-        }
-        
-        TFHppleElement *icon = [thread_base searchForSingle:@"//td[@class='icon']/img"];
-        if(icon != nil) {
-            NSString *icon_str = [icon objectForKey:@"src"];
-            thread.iconURL = [NSURL URLWithString:icon_str];
-        }
-        
-        TFHppleElement *author = [thread_base searchForSingle:@"//td[@class='author']/a"];
-        if(author != nil) {
-            thread.authorName = [author content];
-        }
-        
-        TFHppleElement *tid = [thread_base searchForSingle:big_str];
-        if(tid != nil) {
-            NSString *tid_str = [tid objectForKey:@"id"];
-            if(tid_str == nil) {
-                // announcements don't have thread_ids, they get linked to announcement.php
-                // gonna disregard announcements for now
-                [thread release];
-                [thread_base release];
-                continue;
-            } else {
-                thread.threadID = [tid_str substringFromIndex:6];
+            TFHpple *thread_base = [[TFHpple alloc] initWithHTMLData:[thread_html dataUsingEncoding:NSUTF8StringEncoding]];
+            
+            AwfulThread *thread = [[AwfulThread alloc] init];
+            // i can't get the userid easily so scratch that
+            
+            TFHppleElement *title = [thread_base searchForSingle:@"//a[@class='thread_title']"];
+            if(title != nil) {
+                thread.title = [title content];
             }
-        }
-        
-        TFHppleElement *seen = [thread_base searchForSingle:seen_str];
-        if(seen != nil) {
-            thread.seen = YES;
-        }
-        
-        TFHppleElement *locked = [thread_base searchForSingle:closed_str];
-        if(locked != nil) {
-            thread.isLocked = YES;
-        }
-        
-        TFHppleElement *cat_zero = [thread_base searchForSingle:category_zero];
-        if(cat_zero != nil) {
-            thread.starCategory = AwfulStarCategoryBlue;
-        }
-        
-        TFHppleElement *cat_one = [thread_base searchForSingle:category_one];
-        if(cat_one != nil) {
-            thread.starCategory = AwfulStarCategoryRed;
-        }
-        
-        TFHppleElement *cat_two = [thread_base searchForSingle:category_two];
-        if(cat_two != nil) {
-            thread.starCategory = AwfulStarCategoryYellow;
-        }
-        
-        TFHppleElement *unread = [thread_base searchForSingle:@"//a[@class='count']/b"];
-        if(unread != nil) {
-            NSString *unread_str = [unread content];
-            thread.totalUnreadPosts = [unread_str intValue];
-        } else {
-            unread = [thread_base searchForSingle:@"//a[@class='x']"];
+            
+            TFHppleElement *sticky = [thread_base searchForSingle:@"//td[@class='title title_sticky']"];
+            if(sticky != nil) {
+                thread.isStickied = YES;
+            }
+            
+            TFHppleElement *icon = [thread_base searchForSingle:@"//td[@class='icon']/img"];
+            if(icon != nil) {
+                NSString *icon_str = [icon objectForKey:@"src"];
+                thread.iconURL = [NSURL URLWithString:icon_str];
+            }
+            
+            TFHppleElement *author = [thread_base searchForSingle:@"//td[@class='author']/a"];
+            if(author != nil) {
+                thread.authorName = [author content];
+            }
+            
+            TFHppleElement *tid = [thread_base searchForSingle:big_str];
+            if(tid != nil) {
+                NSString *tid_str = [tid objectForKey:@"id"];
+                if(tid_str == nil) {
+                    // announcements don't have thread_ids, they get linked to announcement.php
+                    // gonna disregard announcements for now
+                    continue;
+                } else {
+                    thread.threadID = [tid_str substringFromIndex:6];
+                }
+            }
+            
+            TFHppleElement *seen = [thread_base searchForSingle:seen_str];
+            if(seen != nil) {
+                thread.seen = YES;
+            }
+            
+            TFHppleElement *locked = [thread_base searchForSingle:closed_str];
+            if(locked != nil) {
+                thread.isLocked = YES;
+            }
+            
+            TFHppleElement *cat_zero = [thread_base searchForSingle:category_zero];
+            if(cat_zero != nil) {
+                thread.starCategory = AwfulStarCategoryBlue;
+            }
+            
+            TFHppleElement *cat_one = [thread_base searchForSingle:category_one];
+            if(cat_one != nil) {
+                thread.starCategory = AwfulStarCategoryRed;
+            }
+            
+            TFHppleElement *cat_two = [thread_base searchForSingle:category_two];
+            if(cat_two != nil) {
+                thread.starCategory = AwfulStarCategoryYellow;
+            }
+            
+            TFHppleElement *unread = [thread_base searchForSingle:@"//a[@class='count']/b"];
             if(unread != nil) {
-                // they've read it all
-                thread.totalUnreadPosts = 0;
+                NSString *unread_str = [unread content];
+                thread.totalUnreadPosts = [unread_str intValue];
+            } else {
+                unread = [thread_base searchForSingle:@"//a[@class='x']"];
+                if(unread != nil) {
+                    // they've read it all
+                    thread.totalUnreadPosts = 0;
+                }
             }
-        }
-        
-        TFHppleElement *total = [thread_base searchForSingle:@"//td[@class='replies']/a"];
-        if(total != nil) {
-            thread.totalReplies = [[total content] intValue];
-        } else {
-            total = [thread_base searchForSingle:@"//td[@class='replies']"];
+            
+            TFHppleElement *total = [thread_base searchForSingle:@"//td[@class='replies']/a"];
             if(total != nil) {
                 thread.totalReplies = [[total content] intValue];
+            } else {
+                total = [thread_base searchForSingle:@"//td[@class='replies']"];
+                if(total != nil) {
+                    thread.totalReplies = [[total content] intValue];
+                }
             }
-        }
-        
-        TFHppleElement *rating = [thread_base searchForSingle:@"//td[@class='rating']/img"];
-        if(rating != nil) {
-            NSString *rating_str = [rating objectForKey:@"src"];
-            NSURL *rating_url = [NSURL URLWithString:rating_str];
-            NSString *last = [rating_url lastPathComponent];
-            if([last isEqualToString:@"5stars.gif"]) {
-                thread.threadRating = 5;
-            } else if([last isEqualToString:@"4stars.gif"]) {
-                thread.threadRating = 4;
-            } else if([last isEqualToString:@"3stars.gif"]) {
-                thread.threadRating = 3;
-            } else if([last isEqualToString:@"2stars.gif"]) {
-                thread.threadRating = 2;
-            } else if([last isEqualToString:@"1stars.gif"]) {
-                thread.threadRating = 1;
-            } else if([last isEqualToString:@"0stars.gif"]) {
-                thread.threadRating = 0;
+            
+            TFHppleElement *rating = [thread_base searchForSingle:@"//td[@class='rating']/img"];
+            if(rating != nil) {
+                NSString *rating_str = [rating objectForKey:@"src"];
+                NSURL *rating_url = [NSURL URLWithString:rating_str];
+                NSString *last = [rating_url lastPathComponent];
+                if([last isEqualToString:@"5stars.gif"]) {
+                    thread.threadRating = 5;
+                } else if([last isEqualToString:@"4stars.gif"]) {
+                    thread.threadRating = 4;
+                } else if([last isEqualToString:@"3stars.gif"]) {
+                    thread.threadRating = 3;
+                } else if([last isEqualToString:@"2stars.gif"]) {
+                    thread.threadRating = 2;
+                } else if([last isEqualToString:@"1stars.gif"]) {
+                    thread.threadRating = 1;
+                } else if([last isEqualToString:@"0stars.gif"]) {
+                    thread.threadRating = 0;
+                }
             }
+            
+            TFHppleElement *date = [thread_base searchForSingle:@"//td[@class='lastpost']//div[@class='date']"];
+            TFHppleElement *last_author = [thread_base searchForSingle:@"//td[@class='lastpost']//a[@class='author']"];
+            
+            if(date != nil && last_author != nil) {
+                thread.lastPostAuthorName = [NSString stringWithFormat:@"%@", [last_author content]];
+            }
+            
+            [parsed_threads addObject:thread];
+            
+        
         }
-        
-        TFHppleElement *date = [thread_base searchForSingle:@"//td[@class='lastpost']//div[@class='date']"];
-        TFHppleElement *last_author = [thread_base searchForSingle:@"//td[@class='lastpost']//a[@class='author']"];
-        
-        if(date != nil && last_author != nil) {
-            thread.lastPostAuthorName = [NSString stringWithFormat:@"%@", [last_author content]];
-        }
-        
-        [parsed_threads addObject:thread];
-        
-        [thread release];
-        [thread_base release];
-        
-        [pool release];
     }
 
     return parsed_threads;
@@ -485,7 +477,6 @@
             if(curpage != nil) {
                 pages.currentPage = [[curpage content] intValue];
             }
-            [base release];
         } else {
             pages.totalPages = 1;
             pages.currentPage = 1;

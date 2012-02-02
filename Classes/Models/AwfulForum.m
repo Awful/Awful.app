@@ -16,14 +16,6 @@
 @synthesize parentForumID = _parentForumID;
 @synthesize acronym = _acronym;
 
--(void)dealloc
-{
-    [_forumID release];
-    [_name release];
-    [_parentForumID release];
-    [_acronym release];
-    [super dealloc];
-}
 
 - (id)initWithCoder:(NSCoder *)decoder 
 {
@@ -54,7 +46,7 @@
     }
     
     if(found_forum != nil) {
-        return [[found_forum retain] autorelease];
+        return found_forum;
     }
     return nil;
 }

@@ -21,9 +21,6 @@
     return self;
 }
 
-- (void)dealloc {
-    [super dealloc];
-}
 
 +(id)getConfigObj : (NSString *)key
 {
