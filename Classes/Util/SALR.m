@@ -31,7 +31,6 @@
     SBJsonWriter *jsonWriter = [SBJsonWriter new];
     NSString *result = [jsonWriter stringWithObject:config];
     
-    
     return result;
 }
 

@@ -9,9 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "AwfulPage.h"
 
-@interface AwfulUtil : NSObject {
-
-}
+@interface AwfulUtil : NSObject
 
 +(NSString *)getDocsDir;
 +(float)getThreadCellHeight;

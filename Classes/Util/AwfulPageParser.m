@@ -10,6 +10,6 @@
 
 @implementation AwfulPageParser
 
-@synthesize posts, html;
+@synthesize posts = _posts, html = _html;
 
 @end

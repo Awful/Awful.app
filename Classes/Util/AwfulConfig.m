@@ -12,16 +12,6 @@
 @implementation AwfulConfig
 
 
-- (id)initWithFrame:(CGRect)frame {
-    
-    self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code.
-    }
-    return self;
-}
-
-
 +(id)getConfigObj : (NSString *)key
 {
     NSUserDefaults *def = [NSUserDefaults standardUserDefaults];

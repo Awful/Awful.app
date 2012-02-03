@@ -15,9 +15,7 @@ typedef enum {
 } AwfulDefaultLoadType;
 
 
-@interface AwfulConfig : UIView {
-
-}
+@interface AwfulConfig : NSObject
 
 +(id)getConfigObj : (NSString *)key;
 +(BOOL)showAvatars;

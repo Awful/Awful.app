@@ -12,9 +12,7 @@
 @class AwfulPost;
 @class TFHpple;
 
-@interface AwfulParse : NSObject {
-
-}
+@interface AwfulParse : NSObject
 
 +(NSString *)constructPageHTMLFromPosts : (NSMutableArray *)posts pagesLeft : (int)pages_left numOldPosts : (int)num_above adHTML : (NSString *)adHTML;
 +(NSString *)getPostActionHTML;
