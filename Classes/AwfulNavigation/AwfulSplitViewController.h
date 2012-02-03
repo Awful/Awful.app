@@ -11,15 +11,7 @@
 @class AwfulThreadList;
 @class AwfulIpadMasterController;
 
-@interface AwfulSplitViewController : UISplitViewController <UISplitViewControllerDelegate, UITabBarControllerDelegate> {
-    UINavigationController *_pageController;
-    UINavigationController *_listController;
-    UITabBarController *_masterController;
-    UIPopoverController *_popController;
-    UIBarButtonItem *_popOverButton;
-    BOOL _masterIsVisible;
-    CALayer *shadowLayer;
-}
+@interface AwfulSplitViewController : UISplitViewController <UISplitViewControllerDelegate, UITabBarControllerDelegate>
 
 @property (nonatomic, strong) IBOutlet UINavigationController *pageController;
 @property (nonatomic, strong) IBOutlet UINavigationController *listController;
@@ -34,5 +26,5 @@
 -(void)addMasterButtonToController: (UIViewController *)vc;
 -(void)showMasterView;
 -(void)hideMasterView;
--(void) showLoginView;
+-(void)showLoginView;
 @end

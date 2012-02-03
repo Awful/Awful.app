@@ -78,6 +78,7 @@
     // Return YES for supported orientations
     return YES;
 }
+
 -(void)setupMasterView
 {
     AwfulForumsListIpad *forums = [[AwfulForumsListIpad alloc] init];
@@ -86,9 +87,6 @@
     AwfulExtrasControllerIpad *extras = [[AwfulExtrasControllerIpad alloc] init];
     
     AwfulBookmarksControllerIpad *bookmarks = [[AwfulBookmarksControllerIpad alloc] init];
-    
-    
-    
     
     NSMutableArray *array = [NSMutableArray array];
     
@@ -112,7 +110,6 @@
 
 -(void)showAwfulPage : (AwfulPageIpad *)page
 {
-    
     self.pageController.viewControllers = [NSArray arrayWithObject:page];
     
     if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation))
@@ -144,7 +141,6 @@
     masterView.layer.shadowRadius = 5.0;
     masterView.layer.shadowColor = [UIColor blackColor].CGColor;
     masterView.layer.shadowOpacity = 0.5;
-    
 }
 
 - (void)removeBorderToMasterView
@@ -158,9 +154,7 @@
 }
 - (void)showMasterView
 {
-    
-    if (!self.masterIsVisible)
-    {
+    if (!self.masterIsVisible) {
         
         self.masterIsVisible = YES;
         UINavigationController *selectedVC = (UINavigationController *) self.masterController.selectedViewController;
@@ -183,15 +177,13 @@
         
         self.pageController.view.userInteractionEnabled = NO;
     }
-    
 }
 
 - (void)hideMasterView
 {
     
-    if (self.masterIsVisible)
-    {
-        
+    if (self.masterIsVisible) {
+
         self.masterIsVisible = NO;
         [self removeBorderToMasterView];
         
@@ -208,15 +200,14 @@
         
         
         self.pageController.view.userInteractionEnabled = YES;
-        
     }
-    
 }
 
--(void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation))
+    if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
         [self hideMasterView];
+    }
 }
 
 #pragma mark -
@@ -229,7 +220,7 @@
  }
  */
 
-- (void) addMasterButtonToController:(UIViewController *)vc
+- (void)addMasterButtonToController:(UIViewController *)vc
 {
     self.popOverButton = [[UIBarButtonItem alloc] initWithTitle:@"Threads"
                                                           style:UIBarButtonItemStyleBordered
@@ -238,8 +229,7 @@
     
     
     UINavigationItem *nav = vc.navigationItem;
-    if (nav)
-    {
+    if (nav) {
         NSMutableArray *items;
         if (nav.leftBarButtonItems)
         {
@@ -253,7 +243,7 @@
         
         [nav setLeftBarButtonItems:items animated:YES];
     }
-    self.masterIsVisible = false;
+    self.masterIsVisible = NO;
 }
 
 - (void)splitViewController:(UISplitViewController *)svc willHideViewController:(UIViewController *)aViewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)pc
@@ -265,14 +255,12 @@
         [self addMasterButtonToController:vc];
 }
 
-- (void) splitViewController:(UISplitViewController *)svc willShowViewController:(UIViewController *)aViewController invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem
+- (void)splitViewController:(UISplitViewController *)svc willShowViewController:(UIViewController *)aViewController invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem
 {
-    if (self.popOverButton)
-    {
+    if (self.popOverButton) {
         UINavigationItem *nav = (UINavigationItem *)self.pageController.topViewController.navigationItem;
         
-        if (nav.leftBarButtonItems)
-        {
+        if (nav.leftBarButtonItems) {
             NSMutableArray *items = [NSMutableArray arrayWithArray:nav.leftBarButtonItems];
             [items removeObjectAtIndex:0];
             
@@ -282,22 +270,16 @@
         [self removeBorderToMasterView];
     }
     
-    if (self.masterIsVisible)
-    {
+    if (self.masterIsVisible) {
         self.pageController.view.userInteractionEnabled = YES;
-    }
-    else
-    {
-        
+    } else {
         UINavigationController *selectedVC = (UINavigationController *) self.masterController.selectedViewController;
         
         UIViewController *vc = selectedVC.topViewController;
-        if ([vc isKindOfClass:[AwfulThreadList class]])
-        {
+        if ([vc isKindOfClass:[AwfulThreadList class]]) {
             [((AwfulThreadList *)vc) newlyVisible];
         }
     }
-    
     
     self.masterIsVisible = true;
 }
@@ -316,11 +298,10 @@
 
 #pragma mark -
 #pragma mark UITabbarDelegate
-- (void) tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
+- (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
 {
     UIViewController *vc = ((UINavigationController *)viewController).topViewController;
-    if ([vc isKindOfClass:[AwfulThreadList class]])
-    {
+    if ([vc isKindOfClass:[AwfulThreadList class]]) {
         [((AwfulThreadList *)vc) newlyVisible];
     }
 }
