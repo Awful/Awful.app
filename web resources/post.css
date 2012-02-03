@@ -23,11 +23,8 @@ img {
     -webkit-user-select:none;
 }
 
-.userbox_op {
-    width:100%;
-    height:50px;
+.userbox.op {
     background-color:#199ed7;
-    -webkit-user-select:none;
 }
 
 .avatar_img {
