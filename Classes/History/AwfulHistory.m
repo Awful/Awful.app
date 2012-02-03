@@ -18,12 +18,13 @@
 
 -(id)init
 {
-    _historyType = AwfulHistoryTypeUnknown;
-    _pageNum = -1;
-    _modelObj = nil;
+    if((self=[super init])) {
+        _historyType = AwfulHistoryTypeUnknown;
+        _pageNum = -1;
+        _modelObj = nil;
+    }
     return self;
 }
-
 
 -(id)newThreadObj
 {

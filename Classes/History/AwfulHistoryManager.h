@@ -9,10 +9,7 @@
 #import "AwfulHistory.h"
 
 
-@interface AwfulHistoryManager : NSObject {
-    NSMutableArray *_recordedHistory;
-    NSMutableArray *_recordedForward;
-}
+@interface AwfulHistoryManager : NSObject
 
 @property (nonatomic, strong) NSMutableArray *recordedHistory;
 @property (nonatomic, strong) NSMutableArray *recordedForward;

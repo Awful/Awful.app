@@ -24,7 +24,6 @@
     return self;
 }
 
-
 -(void)addHistory : (id<AwfulHistoryRecorder>)hist
 {
     AwfulHistory *record = [hist newRecordedHistory];

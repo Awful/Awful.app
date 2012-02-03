@@ -16,11 +16,7 @@ typedef enum {
 
 @protocol AwfulHistoryRecorder;
 
-@interface AwfulHistory : NSObject {
-    AwfulHistoryType _historyType;
-    int _pageNum;
-    id _modelObj;
-}
+@interface AwfulHistory : NSObject
 
 @property (nonatomic, assign) AwfulHistoryType historyType;
 @property (nonatomic, assign) int pageNum;
