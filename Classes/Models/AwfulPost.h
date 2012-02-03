@@ -22,10 +22,13 @@ typedef enum {
 @property AwfulUserType posterType;
 @property (nonatomic, strong) NSURL *avatarURL;
 @property (nonatomic, strong) NSString *editedStr;
-@property (nonatomic, strong) NSString *formattedHTML;
 @property (nonatomic, strong) NSString *rawContent;
 @property (nonatomic, strong) NSString *markSeenLink;
+@property (nonatomic, strong) NSString *altCSSClass;
+@property (nonatomic, strong) NSString *postBody;
 @property BOOL isOP;
 @property BOOL canEdit;
+@property BOOL seen;
+@property (nonatomic, assign) NSUInteger postIndex;
 
 @end

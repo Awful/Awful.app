@@ -14,5 +14,6 @@
 @property int totalPages;
 
 -(BOOL)onLastPage;
+-(NSUInteger)getPagesLeft;
 
 @end

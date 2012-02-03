@@ -34,4 +34,9 @@
     return self.currentPage == self.totalPages;
 }
 
+-(NSUInteger)getPagesLeft
+{
+    return self.totalPages - self.currentPage;
+}
+
 @end

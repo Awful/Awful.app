@@ -456,32 +456,7 @@
 
 +(AwfulPageCount *)newPageCount : (TFHpple *)hpple
 {
-    AwfulPageCount *pages = [[AwfulPageCount alloc] init];
     
-    NSArray *strings = PerformRawHTMLXPathQuery(hpple.data, @"//div[@class='pages top']");
-    if(strings != nil && [strings count] > 0) {
-        // this is going to get me in trouble one day
-        NSString *page_info = [strings objectAtIndex:0];
-        NSRange first_paren = [page_info rangeOfString:@"("];
-        
-        if(first_paren.location != NSNotFound) {
-            NSRange last_paren = [page_info rangeOfString:@")"];
-            NSRange combined;
-            combined.location = first_paren.location + 1;
-            combined.length = last_paren.location - first_paren.location - 1;
-            NSString *total_pages_str = [page_info substringWithRange:combined];
-            pages.totalPages = [total_pages_str intValue];
-            
-            TFHpple *base = [[TFHpple alloc] initWithHTMLData:[page_info dataUsingEncoding:NSUTF8StringEncoding]];
-            TFHppleElement *curpage = [base searchForSingle:@"//span[@class='curpage']"];
-            if(curpage != nil) {
-                pages.currentPage = [[curpage content] intValue];
-            }
-        } else {
-            pages.totalPages = 1;
-            pages.currentPage = 1;
-        }
-    }
     
     return pages;
 }

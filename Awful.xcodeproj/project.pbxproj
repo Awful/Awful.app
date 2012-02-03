@@ -619,6 +619,7 @@
 		11A941E214DA3E3C00ECC070 /* AwfulParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A941E114DA3E3C00ECC070 /* AwfulParser.m */; };
 		11A941E614DA409600ECC070 /* AwfulPageParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A941E514DA409600ECC070 /* AwfulPageParser.m */; };
 		11D31C5013C40FDF0018C6E0 /* tiny_arrow_right@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D31C4F13C40FDF0018C6E0 /* tiny_arrow_right@2x.png */; };
+		11D5E85814DC5FA000C1002D /* AwfulPageDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11D5E85714DC5FA000C1002D /* AwfulPageDataController.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765080DF74369002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765070DF74369002DB57D /* CoreGraphics.framework */; };
@@ -1337,6 +1338,8 @@
 		11A941E414DA409600ECC070 /* AwfulPageParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPageParser.h; sourceTree = "<group>"; };
 		11A941E514DA409600ECC070 /* AwfulPageParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPageParser.m; sourceTree = "<group>"; };
 		11D31C4F13C40FDF0018C6E0 /* tiny_arrow_right@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "tiny_arrow_right@2x.png"; path = "images/tiny_arrow_right@2x.png"; sourceTree = "<group>"; };
+		11D5E85614DC5FA000C1002D /* AwfulPageDataController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPageDataController.h; sourceTree = "<group>"; };
+		11D5E85714DC5FA000C1002D /* AwfulPageDataController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPageDataController.m; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* Awful.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Awful.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -1983,6 +1986,8 @@
 				1153D0D3144E5BA6007602E8 /* AwfulSmallPageController.h */,
 				1153D0D4144E5BA6007602E8 /* AwfulSmallPageController.m */,
 				1153D0D5144E5BA6007602E8 /* AwfulSmallPageController.xib */,
+				11D5E85614DC5FA000C1002D /* AwfulPageDataController.h */,
+				11D5E85714DC5FA000C1002D /* AwfulPageDataController.m */,
 			);
 			path = AwfulPage;
 			sourceTree = "<group>";
@@ -3018,6 +3023,7 @@
 				112764ED14DB44E7003ACE76 /* AwfulForumHeader.m in Sources */,
 				112764F114DB4F6A003ACE76 /* AwfulThreadCell.m in Sources */,
 				112764F414DB50E6003ACE76 /* AwfulPageNavCell.m in Sources */,
+				11D5E85814DC5FA000C1002D /* AwfulPageDataController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

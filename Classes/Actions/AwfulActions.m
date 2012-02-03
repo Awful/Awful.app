@@ -12,13 +12,13 @@
 
 @implementation AwfulActions
 
-@synthesize titles, navigator;
+@synthesize titles = _titles, navigator = _navigator;
 
 -(id)init
 {
     if((self=[super init])) {
-        self.titles = [[NSMutableArray alloc] init];
-        self.navigator = nil;
+        _titles = [[NSMutableArray alloc] init];
+        _navigator = nil;
     }
     return self;
 }

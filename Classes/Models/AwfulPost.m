@@ -12,8 +12,9 @@
 
 @synthesize postID, postDate, posterName;
 @synthesize posterType, avatarURL, editedStr;
-@synthesize formattedHTML, rawContent, markSeenLink;
-@synthesize isOP, canEdit;
+@synthesize rawContent, markSeenLink, seen;
+@synthesize isOP, canEdit, altCSSClass, postBody;
+@synthesize postIndex = _postIndex;
 
 -(id)init
 {
@@ -21,10 +22,29 @@
         self.posterType = AwfulUserTypeNormal;
         self.isOP = NO;
         self.canEdit = NO;
+        self.seen = NO;
+        self.postIndex = NSNotFound;
     }
     return self;
 }
 
+-(void)setPostIndex : (NSUInteger)postIndex
+{
+    if(_postIndex != postIndex) {
+        _postIndex = postIndex;
+        
+        NSString *base = @"altcolor";
+        if(self.seen) {
+            base = @"seen";
+        }
+        
+        int suffix = 1;
+        if(postIndex % 2 == 0) {
+            suffix = 2;
+        }
+        self.altCSSClass = [base stringByAppendingFormat:@"%d", suffix];
+    }
+}
 
 @end
 
