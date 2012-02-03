@@ -22,7 +22,6 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
 
 @synthesize label = _label;
 
-
 @end
 
 @implementation AwfulButtonCell
@@ -45,7 +44,6 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
     [self.button setTitle:text forState:UIControlStateNormal];
 }
 
-
 @end
 
 @implementation AwfulExtrasController
@@ -62,7 +60,6 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
     }
     return self;
 }
-
 
 - (void)didReceiveMemoryWarning
 {

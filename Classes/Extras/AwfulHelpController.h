@@ -8,20 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AwfulHelpBox : UIView {
-    UILabel *_title;
-    UILabel *_answer;
-}
+@interface AwfulHelpBox : UIView
 
 @property (nonatomic, strong) IBOutlet UILabel *title;
 @property (nonatomic, strong) IBOutlet UILabel *answer;
 
 @end
 
-@interface AwfulQA : NSObject {
-    NSString *_question;
-    NSString *_answer;
-}
+@interface AwfulQA : NSObject
 
 @property (nonatomic, strong) NSString *question;
 @property (nonatomic, strong) NSString *answer;
@@ -31,13 +25,7 @@
 
 @end
 
-@interface AwfulHelpController : UIViewController {
-    AwfulHelpBox *_helpBox;
-    AwfulHelpBox *_firstBox;
-    UIScrollView *_scroller;
-    NSMutableArray *_content;
-    NSMutableArray *_helpBoxes;
-}
+@interface AwfulHelpController : UIViewController
 
 @property (nonatomic, strong) IBOutlet AwfulHelpBox *helpBox;
 @property (nonatomic, strong) IBOutlet AwfulHelpBox *firstBox;

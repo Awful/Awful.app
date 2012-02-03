@@ -8,30 +8,22 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AwfulLabelCell : UITableViewCell {
-    UILabel *_label;
-}
+@interface AwfulLabelCell : UITableViewCell
 
 @property (nonatomic, strong) IBOutlet UILabel *label;
 
 @end
 
-@interface AwfulButtonCell : UITableViewCell {
-    UIButton *_button;
-    id __unsafe_unretained _buttonTarget;
-}
+@interface AwfulButtonCell : UITableViewCell
+
+@property (nonatomic, strong) IBOutlet UIButton *button;
+@property (nonatomic, weak) id buttonTarget;
 
 -(void)setSelector : (SEL)selector withText : (NSString *)text;
 
-@property (nonatomic, strong) IBOutlet UIButton *button;
-@property (nonatomic, unsafe_unretained) id buttonTarget;
-
 @end
 
-@interface AwfulExtrasController : UITableViewController {
-    AwfulButtonCell *_buttonCell;
-    AwfulLabelCell *_userInfoCell;
-}
+@interface AwfulExtrasController : UITableViewController
 
 @property (nonatomic, strong) IBOutlet AwfulButtonCell *buttonCell;
 @property (nonatomic, strong) IBOutlet AwfulLabelCell *labelCell;

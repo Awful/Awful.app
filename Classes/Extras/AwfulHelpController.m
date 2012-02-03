@@ -13,7 +13,6 @@
 @synthesize title = _title;
 @synthesize answer = _answer;
 
-
 @end
 
 @implementation AwfulQA
@@ -34,7 +33,6 @@
 {
     return [[AwfulQA alloc] initWithQuestion:question answer:answer];
 }
-
 
 @end
 
@@ -79,7 +77,6 @@
 {
     return [self initWithNibName:@"AwfulHelpController" bundle:[NSBundle mainBundle]];
 }
-
 
 - (void)didReceiveMemoryWarning
 {
