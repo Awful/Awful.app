@@ -8,10 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AwfulLoginController : UIViewController <UIWebViewDelegate> {
-    UIWebView *_web;
-    UIActivityIndicatorView *_act;
-}
+@interface AwfulLoginController : UIViewController <UIWebViewDelegate>
 
 @property (nonatomic, strong) IBOutlet UIWebView *web;
 @property (nonatomic, strong) UIActivityIndicatorView *act;
