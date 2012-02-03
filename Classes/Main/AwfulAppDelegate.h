@@ -12,13 +12,7 @@
 @class AwfulNavigatorIpad;
 @class AwfulSplitViewController;
 
-@interface AwfulAppDelegate : NSObject <UIApplicationDelegate> {
-    UIWindow *_window;
-    UINavigationController *_navigationController;
-    AwfulNavigator *_navigator;
-
-    AwfulSplitViewController *_splitController;
-}
+@interface AwfulAppDelegate : NSObject <UIApplicationDelegate>
 
 @property (nonatomic, strong) IBOutlet UIWindow *window;
 @property (nonatomic, strong) IBOutlet UINavigationController *navigationController;
