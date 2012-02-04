@@ -15,11 +15,8 @@
 @interface AwfulParse : NSObject
 
 +(NSString *)constructPageHTMLFromPosts : (NSMutableArray *)posts pagesLeft : (int)pages_left numOldPosts : (int)num_above adHTML : (NSString *)adHTML;
-+(NSString *)getPostActionHTML;
-+(NSString *)getModImgHTML;
-+(NSString *)getAdminImgHTML;
 
-+(NSMutableArray *)newPostsFromThread : (TFHpple *)hpple isFYAD : (BOOL)is_fyad;
+//+(NSMutableArray *)newPostsFromThread : (TFHpple *)hpple isFYAD : (BOOL)is_fyad;
 
 +(NSString *)parseYouTubes : (NSString *)html;
 +(NSString *)parseOutImages : (NSString *)html;

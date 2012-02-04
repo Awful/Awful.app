@@ -21,7 +21,7 @@
 
 +(NSString *)constructPostHTML : (AwfulPost *)post withBody : (NSString *)post_body alt : (NSString *)alt
 {
-    NSString *avatar_str;
+   /* NSString *avatar_str;
     
     if(post.avatarURL == nil) {
         avatar_str = @"";
@@ -67,7 +67,8 @@
                 alt, post.postID, avatar_str, user_str, username_info, post.postID, [AwfulParse getPostActionHTML], parsed_post_body, post.postDate];
     }
         
-    return html;
+    return html;*/
+    return @"";
 }
 
 +(NSString *)constructPageHTMLFromPosts : (NSMutableArray *)posts pagesLeft : (int)pages_left numOldPosts : (int)num_above adHTML : (NSString *)adHTML
