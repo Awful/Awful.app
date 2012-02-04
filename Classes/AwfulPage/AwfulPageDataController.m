@@ -47,7 +47,7 @@
         _forum = [self parseForum:page_parser];
         _pageCount = [self parsePageCount:page_parser];
         _posts = [self parsePosts:page_parser];
-        //_newestPostIndex = [self parseNewPostIndex:pageURL];
+        _newestPostIndex = [self parseNewPostIndex:pageURL];
         _userAd = [self parseUserAdHTML:page_parser];
     }
     return self;
@@ -217,7 +217,7 @@
         NSRange r = [frag rangeOfString:@"pti"];
         if(r.location == 0) {
             NSString *new_post = [frag stringByReplacingOccurrencesOfString:@"pti" withString:@""];
-            return [new_post integerValue];
+            return [new_post integerValue]-1;
         }
     }
     return 0;
@@ -237,6 +237,20 @@
 {
     AwfulPageTemplate *template = [[AwfulPageTemplate alloc] init];
     return [template constructHTMLFromPageDataController:self];
+}
+
+-(NSString *)calculatePostIDScrollDestination
+{    
+    if(self.newestPostIndex < [self.posts count]) {
+        AwfulPost *post = [self.posts objectAtIndex:self.newestPostIndex];
+        return post.postID;
+    }
+    return nil;
+}
+
+-(BOOL)shouldScrollToBottom
+{
+    return self.newestPostIndex == [self.posts count];
 }
 
 @end

@@ -113,6 +113,12 @@
         self.pages = dataController.pageCount;
         [self setThreadTitle:dataController.threadTitle];
         
+        self.postIDScrollDestination = [dataController calculatePostIDScrollDestination];
+        self.shouldScrollToBottom = [dataController shouldScrollToBottom];
+        if(self.destinationType != AwfulPageDestinationTypeNewpost) {
+            self.shouldScrollToBottom = NO;
+        }
+        
         NSString *html = [dataController constructedPageHTML];
         AwfulNavigator *nav = getNavigator();
         JSBridgeWebView *web = [[JSBridgeWebView alloc] initWithFrame:nav.view.frame];

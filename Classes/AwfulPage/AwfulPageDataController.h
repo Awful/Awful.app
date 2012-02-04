@@ -22,5 +22,7 @@
 
 -(id)initWithResponseData : (NSData *)responseData pageURL : (NSURL *)pageURL;
 -(NSString *)constructedPageHTML;
+-(NSString *)calculatePostIDScrollDestination;
+-(BOOL)shouldScrollToBottom;
 
 @end
