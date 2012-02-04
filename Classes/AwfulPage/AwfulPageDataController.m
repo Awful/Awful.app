@@ -15,6 +15,7 @@
 #import "AwfulPost.h"
 #import "AwfulConfig.h"
 #import "AwfulUtil.h"
+#import "AwfulPageTemplate.h"
 
 @interface AwfulPageDataController ()
 
@@ -32,7 +33,7 @@
 
 @synthesize threadTitle = _threadTitle, forum = _forum;
 @synthesize pageCount = _pageCount, posts = _posts;
-@synthesize newestPostIndex = _newestPostIndex, userAdHTML = _userAdHTML;
+@synthesize newestPostIndex = _newestPostIndex, userAd = _userAd;
 
 -(id)initWithResponseData : (NSData *)responseData pageURL : (NSURL *)pageURL
 {
@@ -46,8 +47,8 @@
         _forum = [self parseForum:page_parser];
         _pageCount = [self parsePageCount:page_parser];
         _posts = [self parsePosts:page_parser];
-        _newestPostIndex = [self parseNewPostIndex:pageURL];
-        _userAdHTML = [self parseUserAdHTML:page_parser];
+        //_newestPostIndex = [self parseNewPostIndex:pageURL];
+        _userAd = [self parseUserAdHTML:page_parser];
     }
     return self;
 }
@@ -225,16 +226,17 @@
 -(NSString *)parseUserAdHTML:(TFHpple *)parser
 {
     NSArray *raws = [parser rawSearch:@"//div[@id='ad_banner_user']/a"];
-    if([raws count] == 0) {
-        return @"";
+    if([raws count] > 0) {
+        return [raws objectAtIndex:0];
     }
     
-    return [NSString stringWithFormat:@"<div class='ad'>%@</div>", [raws objectAtIndex:0]];
+    return @"";
 }
 
 -(NSString *)constructedPageHTML
 {
-    return @"";
+    AwfulPageTemplate *template = [[AwfulPageTemplate alloc] init];
+    return [template constructHTMLFromPageDataController:self];
 }
 
 @end

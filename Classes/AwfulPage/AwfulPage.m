@@ -38,6 +38,7 @@
 #import "AwfulSplitViewController.h"
 #import "AwfulLoginController.h"
 #import "AwfulVoteActions.h"
+#import "AwfulPageDataController.h"
 
 @implementation AwfulPage
 
@@ -45,7 +46,7 @@
 @synthesize allRawPosts, pagesLabel, threadTitleLabel;
 @synthesize pagesButton, pages, navigator, forumButton;
 @synthesize shouldScrollToBottom, postIDScrollDestination, touchedPage;
-@synthesize adHTML, pageController;
+@synthesize pageController, dataController = _dataController;
 
 #pragma mark -
 #pragma mark Initialization
@@ -103,6 +104,21 @@
         }
     }
     return self;
+}
+
+-(void)setDataController:(AwfulPageDataController *)dataController
+{
+    if(_dataController != dataController) {
+        _dataController = dataController;
+        self.pages = dataController.pageCount;
+        [self setThreadTitle:dataController.threadTitle];
+        
+        NSString *html = [dataController constructedPageHTML];
+        AwfulNavigator *nav = getNavigator();
+        JSBridgeWebView *web = [[JSBridgeWebView alloc] initWithFrame:nav.view.frame];
+        [self setWebView:web];
+        [web loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
+    }
 }
 
 -(void)setWebView:(JSBridgeWebView *)webView;
@@ -217,8 +233,10 @@
 
 -(void)loadOlderPosts
 {
-    int pages_left = self.pages.totalPages - self.pages.currentPage;
-    NSString *html = [AwfulParse constructPageHTMLFromPosts:self.allRawPosts pagesLeft:pages_left numOldPosts:0 adHTML:self.adHTML];
+    //int pages_left = self.pages.totalPages - self.pages.currentPage;
+    //NSString *html = [AwfulParse constructPageHTMLFromPosts:self.allRawPosts pagesLeft:pages_left numOldPosts:0 adHTML:self.adHTML];
+    
+    NSString *html = [self.dataController constructedPageHTML];
     
     AwfulNavigator *nav = getNavigator();
     JSBridgeWebView *web = [[JSBridgeWebView alloc] initWithFrame:nav.view.frame];

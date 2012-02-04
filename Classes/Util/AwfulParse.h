@@ -26,8 +26,6 @@
 
 +(NSMutableArray *)newThreadsFromForum : (TFHpple *)hpple;
 +(NSString *)getAdHTMLFromData : (TFHpple *)hpple;
-
-+(AwfulPageCount *)newPageCount : (TFHpple *)hpple;
 +(int)getNewPostNumFromURL : (NSURL *)url;
 
 @end

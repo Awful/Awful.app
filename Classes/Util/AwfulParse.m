@@ -70,136 +70,9 @@
     return html;
 }
 
-+(NSString *)getPostActionHTML
-{
-    return @"<img class='postaction' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFYAAABMCAYAAAD3G0AKAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyBpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBXaW5kb3dzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjAxRkZBRTk2QTZDMDExRTA4OTk3QjUzMDNGM0VGNTQ3IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjAxRkZBRTk3QTZDMDExRTA4OTk3QjUzMDNGM0VGNTQ3Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6MDFGRkFFOTRBNkMwMTFFMDg5OTdCNTMwM0YzRUY1NDciIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6MDFGRkFFOTVBNkMwMTFFMDg5OTdCNTMwM0YzRUY1NDciLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5ksT9ZAAAETElEQVR42uycz2vUQBTHZ7JZd9utVYvSHjxYsYKngnvx2Jugf29PIigi9tJDLwUVBH+BhW5X7Wq7bHfjvHSCZZuZZLN5703SefDYtilJ5rPfvB+TSULx+FlXeCvdAo8Ax8LkBzkeeRolWBQopFJ6xfpQ4MF682ApkleqqSAcyUb86e1ihoqEjMbxZyHFeqgZgptHsTHg3e3d+Nfu86st1N1toTl0swTnY6xPXh6sNw/Wg/VgvXmwRJ2XbwQKNQqX/+YVSzVX4BVbQLI+FJCFAg07RDtmRW71RI1mLZLXI+VLTAz/KN/HV6zAVazBAOoDJrCf6py8jhiv+p/uJC/LDHlB6zOCPSRJXppZhmJRwI6VN6hzFJ1io6kGQaZ4ZQaY+wstn6uBWSCIyaJckmwhSBq5cTQIHIrFSZqmuYKIZ66gVxuwDjUIYL+VnxHW0BO0q8TCjCPGRsRlV1/DJYqx02CB/rTXIxzghQELM65pwyNixQo8xboTY6k7sB6qYg1lARdYSGAwr9hEPg40Bb9owfIlL8pw0Mfoy2dMXtRcScDiJkkLM857XhSVAfKX5+Y9r37lwVpaWk6wA+VD5S2k/UN3d0wO1oHkha3aHm7iMjGTrJ1XYoeVDjW5Oi+edQXYihVcoYB7JUyv0op1eCXMifJT5e2S9ztCT1y5kxdPjMUqiWhmz1KZSSeqAiwIRLNnZmYuLIqrtmINYdcFsNVVbK6qQLKtQYbu66/yxZL3RwA2cLbzwlAY4W0fvnUFayLfss0yLxfYV54VjTBX8YMgFKT8U9gS4mx4/lCu2b4pPzBsgzWpT5QvEKp/TXtWuHhh2b6q/O4ljhcf0gY2RSdh5NKt8x3YDU5gxbANivRXumB3xeB2zWtLA7GSBnVacDGbwuVWeE3Im6vmA5wORDSIw+M9Yb6/BIsl3ijfEvxP6cBs11tLHL6hx6LAKb7tAovPZZ7OK8sXricHh93dV94xHA5CxY4DaoX3Lnw3bOvoMch4TDC2IkzKahDk8u3zSc/TQZI03uv+f9o+65PfZIIKzx98NGxr63MPACqMad6JmSC7dMh2uXxHiFYn+aIeCvNtbdvgMA2+1D3DtqY+5xDGEI9lDhb5JmFm8DgWtxaTE92IGs3Qcjl+JYR6aApD+hw34nNW5x6PYU4O/2WK99JIKLU+yPFoYqhGtnRZg2nHuqwapkANtFI7GAfGzNJwwutqAGnBe6IrBcxFyENdVqVBhXNax4IaKzaa4cmYWd5ilPPJRGgcniI0EFD6vczT3s7yZGLyFiNuxeaxE4QGIqtWJTEXHqtPGoiyFgfbatUrBTZpIN6J+dcBcJVzzoIF+6LVhlGrXmmwQqttv6Did1waiIuvLtnT6uOK0bUFK7T6DpiqilqDzdNAjDTUExcH4PJbjBJwA6bOrbZgL17qw4KhwoO12LHu+ccFkxuLhaIa1tNt6poo+4U5SPZPgAEAV87x0PpJeFMAAAAASUVORK5CYII=' />";
-}
-
-+(NSString *)getModImgHTML
-{
-    return @"<img src='data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAANCAYAAACZ3F9/AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6ODREMjNDREYwQkUyMTFFMEFCOTFFMkI4RjAwQ0Q1NkYiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6ODREMjNDRTAwQkUyMTFFMEFCOTFFMkI4RjAwQ0Q1NkYiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo4NEQyM0NERDBCRTIxMUUwQUI5MUUyQjhGMDBDRDU2RiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo4NEQyM0NERTBCRTIxMUUwQUI5MUUyQjhGMDBDRDU2RiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PpAokVwAAAE7SURBVHjaYvj//z8DOgYCISDuxSYHV4ND43wGMQUQw4xojUDgyiCj+Z/BIR7EOYxLIxMDEmBkZOQBUjMZtOwZGNSsGBhUzGyAYlEMWAALVIMikAIpCGHQd1NkUDCEyIIMYGBYCpRPBtK7gXgT0LZrYD2gQGDgFSkCms7AoGTEwCAsy7Aw0YEhfv4BhPHPbjAwPLnOwHBhx18gzweoeQfIqWUMn990M/z8ysDAJwZWd/HxO1R3MTLBNEWDNIGFoAECcm4Xg3lwKdCpqJr+/2NgmJ0J07QSJowcOBcY3j7GDIVrB0HkdGRN6BofMXyBOhFkwMVdDAy/fwJVgMOPDcNApPiTZuAW+M+g5wLinAfiLiD+xmDqD+Kvw5kAgIAZiH+CUw0DAyfcMAaGOUB8DG/KAQI/HElQAl0MIMAA4HIEOndFux8AAAAASUVORK5CYII=' />";
-}
-
-+(NSString *)getAdminImgHTML
-{
-    return @"<img src='data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAANCAYAAACZ3F9/AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6ODREMjNDREIwQkUyMTFFMEFCOTFFMkI4RjAwQ0Q1NkYiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6ODREMjNDREMwQkUyMTFFMEFCOTFFMkI4RjAwQ0Q1NkYiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo4NEQyM0NEOTBCRTIxMUUwQUI5MUUyQjhGMDBDRDU2RiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo4NEQyM0NEQTBCRTIxMUUwQUI5MUUyQjhGMDBDRDU2RiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PmE3J4AAAAE7SURBVHjaYvj//z8DOgYCISDuxSYHV4ND43wFBhYQw4xojUDgqsnA+j+egRvEOUyURiDgAeJ7GQw8/2cyCP03Y2ADCUZh08gCUs3IyKgIUgDEIW4MHIqGDGwgYQZ7Bg4QtRQonwykdwPxJqCma2A9oEAQYWAqMmNgZzACapBlYGZwWDiN4UB8FgMM3GD4zXAdiHcw/PgL5PoANe9gAjLK3jD86/7K8I9BjIEJrPDdxSsMyIAJaD5UUzRIE9hGqN9Azu0KZuAqdYM4Dw7+AXEmwzuYppUIwxDgwmOGPwzo4CDDDxA1HVkTusZH78DmMzA8ZvjLsAuo4ScDKPRAwQANLWSAFBXSAgxM/10YOECc80DcBcTf/Bk4Qfx1OOMRCJiB+Cco1QAxJ8wwIJ4DxMcIJQA/HElQAl0MIMAAlOkdzj3Sg58AAAAASUVORK5CYII=' />";
-}
-
-+(NSMutableArray *)newPostsFromThread : (TFHpple *)hpple isFYAD : (BOOL)is_fyad
-{
-    NSArray *post_strings = PerformRawHTMLXPathQuery(hpple.data, @"//table[@class='post']|//table[@class='post ignored']");
-    
-    NSMutableArray *parsed_posts = [[NSMutableArray alloc] init];
-    NSString *username = getUsername();
-    
-    BOOL show_avatars = [AwfulConfig showAvatars];
-    
-    for(NSString *post_html in post_strings) {
-            
-        @autoreleasepool {
-    
-            TFHpple *post_base = [[TFHpple alloc] initWithHTMLData:[post_html dataUsingEncoding:NSUTF8StringEncoding]];
-            
-            AwfulPost *post = [[AwfulPost alloc] init];
-            post.rawContent = post_html;
-            
-            NSString *username_search = @"//dt[@class='author']|//dt[@class='author op']|//dt[@class='author role-mod']|//dt[@class='author role-admin']|//dt[@class='author role-mod op']|//dt[@class='author role-admin op']";
-            
-            TFHppleElement *author = [post_base searchForSingle:username_search];
-            if(author != nil) {
-                post.posterName = [author content];
-                if([[author objectForKey:@"class"] isEqualToString:@"author op"] || [[author objectForKey:@"class"] isEqualToString:@"author role-admin op"] || [[author objectForKey:@"class"] isEqualToString:@"author role-mod op"]) {
-                    post.isOP = YES;
-                } else {
-                    post.isOP = NO;
-                }
-                
-                TFHppleElement *mod = [post_base searchForSingle:@"//dt[@class='author role-mod']|//dt[@class='author role-mod op']"];
-                if(mod != nil) {
-                    post.posterType = AwfulUserTypeMod;
-                }
-                
-                TFHppleElement *admin = [post_base searchForSingle:@"//dt[@class='author role-admin']|//dt[@class='author role-admin op']"];
-                if(admin != nil) {
-                    post.posterType = AwfulUserTypeAdmin;
-                }
-                
-                if([post.posterName isEqualToString:username]) {
-                    post.canEdit = YES;
-                }
-            }
-            
-            TFHppleElement *post_id = [post_base searchForSingle:@"//table[@class='post']|//table[@class='post ignored']"];
-            if(post_id != nil) {
-                NSString *post_id_str = [post_id objectForKey:@"id"];
-                post.postID = [post_id_str substringFromIndex:4];
-            }
-            
-            TFHppleElement *post_date = [post_base searchForSingle:@"//td[@class='postdate']"];
-            if(post_date != nil) {
-                post.postDate = [post_date content];
-            }
-            
-            TFHppleElement *seen_link = [post_base searchForSingle:@"//td[@class='postdate']//a[@title='Mark thread seen up to this post']"];
-            if(seen_link != nil) {
-                post.markSeenLink = [seen_link objectForKey:@"href"];
-            }
-            
-            TFHppleElement *avatar = [post_base searchForSingle:@"//dd[@class='title']//img"];
-            if(avatar != nil && show_avatars) {
-                post.avatarURL = [NSURL URLWithString:[avatar objectForKey:@"src"]];
-            }
-            
-            TFHppleElement *edited = [post_base searchForSingle:@"//p[@class='editedby']/span"];
-            if(edited != nil) {
-                post.editedStr = [[edited content] stringByReplacingOccurrencesOfString:@"fucked around with this message" withString:@"edited"];
-            }
-            
-            NSString *body_search_str = nil;
-            if(is_fyad) {
-                body_search_str = @"//div[@class='complete_shit funbox']";
-            } else {
-                body_search_str = @"//td[@class='postbody']";
-            }
-            
-            NSArray *body_strings = [post_base rawSearch:body_search_str];
-            
-            if([body_strings count] == 1) {
-                NSString *post_body = [body_strings objectAtIndex:0];
-                            
-                TFHppleElement *seen = [post_base searchForSingle:@"//tr[@class='seen1']|//tr[@class='seen2']"];
-                
-                NSString *alt;
-                if([post_strings indexOfObject:post_html] % 2 == 0) {
-                    if(seen == nil) {
-                        alt = @"altcolor2";                
-                    } else {
-                        alt = @"seen2";
-                    }
-                } else {
-                    if(seen == nil) {
-                        alt = @"altcolor1";
-                    } else {
-                        alt = @"seen1";
-                    }
-                }
-                
-                @autoreleasepool {
-                    post.formattedHTML = [AwfulParse constructPostHTML:post withBody:post_body alt:alt];
-                }
-            }
-            
-            [parsed_posts addObject:post];
-            
-        
-        }
-    }
-
-    return parsed_posts;
-}
-
 +(NSString *)constructPageHTMLFromPosts : (NSMutableArray *)posts pagesLeft : (int)pages_left numOldPosts : (int)num_above adHTML : (NSString *)adHTML
 {
+    /*
     NSString *combined = @"";
     for(AwfulPost *post in posts) {
         combined = [combined stringByAppendingString:post.formattedHTML];
@@ -248,7 +121,8 @@
     NSString *html = [NSString stringWithFormat:@"<html><head>%@<script type='text/javascript'>%@</script><script type='text/javascript'>%@</script><style type='text/css'>%@</style></head><body><script type='text/javascript'>%@</script>%@%@%@%@</body></html>", 
                     meta, js, salr, css, salrOpts, top, combined, adHTML, bottom];
     
-    return html;
+    return html;*/
+    return @"";
 }
 
 +(NSString *)parseYouTubes : (NSString *)html
@@ -452,13 +326,6 @@
     }
 
     return parsed_threads;
-}
-
-+(AwfulPageCount *)newPageCount : (TFHpple *)hpple
-{
-    
-    
-    return pages;
 }
 
 +(NSString *)getAdHTMLFromData : (TFHpple *)hpple

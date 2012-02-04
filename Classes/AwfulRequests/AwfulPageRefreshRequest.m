@@ -14,6 +14,7 @@
 #import "AwfulForum.h"
 #import "JSBridgeWebView.h"
 #import "SALR.h"
+#import "AwfulPageDataController.h"
 
 @implementation AwfulPageRefreshRequest
 
@@ -34,6 +35,12 @@
 -(void)requestFinished
 {
     [super requestFinished];
+    
+    AwfulPageDataController *data_controller = [[AwfulPageDataController alloc] initWithResponseData:[self responseData] pageURL:[self url]];
+    self.page.dataController = data_controller;
+    
+    /*
+    
     NSString *raw_s = [[NSString alloc] initWithData:[self responseData] encoding:NSASCIIStringEncoding];
     NSString *filtered_raw = [raw_s stringByReplacingOccurrencesOfString:@"<size:" withString:@"<"];
     NSData *converted = [filtered_raw dataUsingEncoding:NSUTF8StringEncoding];
@@ -105,7 +112,7 @@
     AwfulNavigator *nav = getNavigator();
     JSBridgeWebView *web = [[JSBridgeWebView alloc] initWithFrame:nav.view.frame];
     [self.page setWebView:web];
-    [web loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
+    [web loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];*/
 }
 
 -(void)failWithError:(NSError *)theError

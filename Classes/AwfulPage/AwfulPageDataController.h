@@ -18,7 +18,7 @@
 @property (nonatomic, strong) AwfulPageCount *pageCount;
 @property (nonatomic, strong) NSMutableArray *posts;
 @property (nonatomic, assign) NSUInteger newestPostIndex;
-@property (nonatomic, strong) NSString *userAdHTML;
+@property (nonatomic, strong) NSString *userAd;
 
 -(id)initWithResponseData : (NSData *)responseData pageURL : (NSURL *)pageURL;
 -(NSString *)constructedPageHTML;

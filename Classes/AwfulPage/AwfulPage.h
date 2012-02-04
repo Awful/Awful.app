@@ -24,6 +24,7 @@ typedef enum {
 
 @class AwfulPageCount;
 @class AwfulSmallPageController;
+@class AwfulPageDataController;
 
 @interface AwfulPage : UIViewController <AwfulNavigatorContent, UIWebViewDelegate, AwfulHistoryRecorder, UIGestureRecognizerDelegate, JSBridgeWebViewDelegate>
 
@@ -45,7 +46,7 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet UIButton *forumButton;
 @property (nonatomic, strong) UIButton *pagesButton;
 
-@property (nonatomic, strong) NSString *adHTML;
+@property (nonatomic, strong) AwfulPageDataController *dataController;
 @property (nonatomic, strong) AwfulSmallPageController *pageController;
 
 -(id)initWithAwfulThread : (AwfulThread *)aThread startAt : (AwfulPageDestinationType)thread_pos;
