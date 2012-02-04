@@ -464,26 +464,25 @@
     [self scrollToPost:self.postIDScrollDestination];
 }
 
--(void) showActions:(NSString *)post_id
+-(void)showActions:(NSString *)post_id
 {
     AwfulNavigator *nav = getNavigator();
     
     if(![post_id isEqualToString:@""] && nav.actions == nil) {
-        for(AwfulPost *post in self.allRawPosts) {
+        for(AwfulPost *post in self.dataController.posts) {
             if([post.postID isEqualToString:post_id]) {
                 AwfulPostActions *actions = [[AwfulPostActions alloc] initWithAwfulPost:post page:self];
                 [nav setActions:actions];
             }
         }
     }
-    
 }
 
 #pragma mark JSBBridgeWebDelegate
 
 - (void)webView:(UIWebView*) webview didReceiveJSNotificationWithDictionary:(NSDictionary*) dictionary
 {
-    //NSLog(@"%@", dictionary);
+    NSLog(@"%@", dictionary);
     NSString *action = [dictionary objectForKey:@"action"];
     if(action != nil) {
         if([action isEqualToString:@"nextPage"]) {
@@ -514,8 +513,6 @@
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {    
-    
-    
     if(navigationType == UIWebViewNavigationTypeLinkClicked) {
         
         NSURL *open_url = request.URL;
