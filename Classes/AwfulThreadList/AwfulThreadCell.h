@@ -13,14 +13,16 @@
 
 @interface AwfulThreadCell : UITableViewCell
 
+@property (nonatomic, strong) AwfulThread *thread;
 @property (nonatomic, strong) IBOutlet UILabel *threadTitleLabel;
 @property (nonatomic, strong) IBOutlet UILabel *pagesLabel;
 @property (nonatomic, strong) IBOutlet UIButton *unreadButton;
 @property (nonatomic, strong) IBOutlet UIImageView *sticky;
-@property (nonatomic, strong) AwfulThread *thread;
+@property (nonatomic, strong) IBOutlet UIImageView *tagImage;
+@property (nonatomic, strong) IBOutlet UIImageView *ratingImage;
 
--(void)configureForThread : (AwfulThread *)aThread;
--(UIColor *)getBackgroundColorForThread : (AwfulThread *)aThread;
+-(void)configureForThread : (AwfulThread *)thread;
+-(UIColor *)getBackgroundColorForThread : (AwfulThread *)thread;
 -(void)openThreadlistOptions;
 
 @end

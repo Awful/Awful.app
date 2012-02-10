@@ -11,11 +11,7 @@
 
 @class AwfulPageCount;
 
-@interface AwfulPageNavCell : UITableViewCell {
-    UIButton *_nextButton;
-    UIButton *_prevButton;
-    UILabel *_pageLabel;
-}
+@interface AwfulPageNavCell : UITableViewCell
 
 @property (nonatomic, strong) IBOutlet UIButton *nextButton;
 @property (nonatomic, strong) IBOutlet UIButton *prevButton;

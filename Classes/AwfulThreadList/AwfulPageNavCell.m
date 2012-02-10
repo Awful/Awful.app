@@ -11,7 +11,9 @@
 
 @implementation AwfulPageNavCell
 
-@synthesize nextButton, prevButton, pageLabel;
+@synthesize nextButton = _nextButton;
+@synthesize prevButton = _prevButton;
+@synthesize pageLabel = _pageLabel;
 
 -(void)configureForPageCount : (AwfulPageCount *)pages thread_count : (int)count
 {

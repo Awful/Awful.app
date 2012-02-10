@@ -556,6 +556,9 @@
 		1185923613B93F3B0036E607 /* post-action-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1185923513B93F3B0036E607 /* post-action-icon.png */; };
 		1185923913B9425C0036E607 /* star_admin.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1185923713B9425B0036E607 /* star_admin.gif */; };
 		1185923A13B9425C0036E607 /* star_moderator.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1185923813B9425B0036E607 /* star_moderator.gif */; };
+		118E615B14E5A17500F0CE0A /* AwfulThreadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 112764F014DB4F6A003ACE76 /* AwfulThreadCell.m */; };
+		118E615C14E5A17500F0CE0A /* AwfulPageNavCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 112764F314DB50E6003ACE76 /* AwfulPageNavCell.m */; };
+		118E615F14E5A1F100F0CE0A /* AwfulForumHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 112764EC14DB44E6003ACE76 /* AwfulForumHeader.m */; };
 		1190F73413BE4EA900B9D271 /* AwfulActions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6CE13BE4EA900B9D271 /* AwfulActions.m */; };
 		1190F73513BE4EA900B9D271 /* AwfulPostActions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6D013BE4EA900B9D271 /* AwfulPostActions.m */; };
 		1190F73613BE4EA900B9D271 /* AwfulThreadActions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6D213BE4EA900B9D271 /* AwfulThreadActions.m */; };
@@ -1167,13 +1170,13 @@
 		10F5BB3212499953006C5ED0 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		10F5BC58124BE14D006C5ED0 /* icon_114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_114.png; sourceTree = "<group>"; };
 		11099066134B86FC0013444C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		11243F7214D7187C00B06470 /* shsc-apple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shsc-apple.png"; sourceTree = "<group>"; };
 		112764EB14DB44E6003ACE76 /* AwfulForumHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumHeader.h; sourceTree = "<group>"; };
 		112764EC14DB44E6003ACE76 /* AwfulForumHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumHeader.m; sourceTree = "<group>"; };
 		112764EF14DB4F6A003ACE76 /* AwfulThreadCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadCell.h; sourceTree = "<group>"; };
 		112764F014DB4F6A003ACE76 /* AwfulThreadCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadCell.m; sourceTree = "<group>"; };
 		112764F214DB50E6003ACE76 /* AwfulPageNavCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPageNavCell.h; sourceTree = "<group>"; };
 		112764F314DB50E6003ACE76 /* AwfulPageNavCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPageNavCell.m; sourceTree = "<group>"; };
-		11243F7214D7187C00B06470 /* shsc-apple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shsc-apple.png"; sourceTree = "<group>"; };
 		112DB4B914211F24005A98CB /* SALR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SALR.h; sourceTree = "<group>"; };
 		112DB4BA14211F24005A98CB /* SALR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SALR.m; sourceTree = "<group>"; };
 		112DB4BD14211F54005A98CB /* jquery.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = jquery.js; sourceTree = "<group>"; };
@@ -3085,7 +3088,6 @@
 				112ECF5114D7100A007EE7B6 /* video.png in Resources */,
 				112ECF5214D7100A007EE7B6 /* weird.png in Resources */,
 				112ECF5314D7100A007EE7B6 /* whine.png in Resources */,
-				11243F7314D7187C00B06470 /* shsc-apple.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3096,6 +3098,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				118E615F14E5A1F100F0CE0A /* AwfulForumHeader.m in Sources */,
+				118E615B14E5A17500F0CE0A /* AwfulThreadCell.m in Sources */,
+				118E615C14E5A17500F0CE0A /* AwfulPageNavCell.m in Sources */,
 				1190F73413BE4EA900B9D271 /* AwfulActions.m in Sources */,
 				1190F73513BE4EA900B9D271 /* AwfulPostActions.m in Sources */,
 				1190F73613BE4EA900B9D271 /* AwfulThreadActions.m in Sources */,
@@ -3174,9 +3179,6 @@
 				112DB4BB14211F24005A98CB /* SALR.m in Sources */,
 				1153D0D6144E5BA6007602E8 /* AwfulSmallPageController.m in Sources */,
 				1153D11A144E7729007602E8 /* AwfulSplitViewController.m in Sources */,
-				112764ED14DB44E7003ACE76 /* AwfulForumHeader.m in Sources */,
-				112764F114DB4F6A003ACE76 /* AwfulThreadCell.m in Sources */,
-				112764F414DB50E6003ACE76 /* AwfulPageNavCell.m in Sources */,
 				11D5E85814DC5FA000C1002D /* AwfulPageDataController.m in Sources */,
 				11D5E85D14DC6D5C00C1002D /* AwfulPageTemplate.m in Sources */,
 			);
