@@ -11,6 +11,7 @@
 #import "AwfulUtil.h"
 #import "AwfulNavigator.h"
 #import "AwfulThreadListActions.h"
+#import "AwfulThread.h"
 
 @implementation AwfulThreadCell
 

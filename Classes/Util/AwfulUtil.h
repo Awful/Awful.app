@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "AwfulPage.h"
 
 @interface AwfulUtil : NSObject
 

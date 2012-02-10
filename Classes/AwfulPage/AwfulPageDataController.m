@@ -13,7 +13,6 @@
 #import "TFHppleElement.h"
 #import "XPathQuery.h"
 #import "AwfulPost.h"
-#import "AwfulConfig.h"
 #import "AwfulUtil.h"
 #import "AwfulPageTemplate.h"
 
@@ -133,7 +132,6 @@
 -(AwfulPost *)parsePost : (TFHpple *)parser
 {
     NSString *username = getUsername();
-    BOOL show_avatars = [AwfulConfig showAvatars];
     
     AwfulPost *post = [[AwfulPost alloc] init];
     
@@ -181,7 +179,7 @@
     }
     
     TFHppleElement *avatar = [parser searchForSingle:@"//dd[@class='title']//img"];
-    if(avatar != nil && show_avatars) {
+    if(avatar != nil) {
         post.avatarURL = [NSURL URLWithString:[avatar objectForKey:@"src"]];
     }
     
@@ -235,7 +233,11 @@
 
 -(NSString *)constructedPageHTML
 {
-    AwfulPageTemplate *template = [[AwfulPageTemplate alloc] init];
+    NSString *filename = @"phone-template";
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        filename = @"pad-template";
+    }
+    AwfulPageTemplate *template = [[AwfulPageTemplate alloc] initWithTemplateName:filename];
     return [template constructHTMLFromPageDataController:self];
 }
 
