@@ -1230,6 +1230,7 @@
 		1185923513B93F3B0036E607 /* post-action-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "post-action-icon.png"; path = "images/post-action-icon.png"; sourceTree = "<group>"; };
 		1185923713B9425B0036E607 /* star_admin.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = star_admin.gif; path = images/star_admin.gif; sourceTree = "<group>"; };
 		1185923813B9425B0036E607 /* star_moderator.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = star_moderator.gif; path = images/star_moderator.gif; sourceTree = "<group>"; };
+		118E616014E5A56C00F0CE0A /* Awful.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Awful.entitlements; sourceTree = "<group>"; };
 		1190F6CD13BE4EA900B9D271 /* AwfulActions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulActions.h; sourceTree = "<group>"; };
 		1190F6CE13BE4EA900B9D271 /* AwfulActions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulActions.m; sourceTree = "<group>"; };
 		1190F6CF13BE4EA900B9D271 /* AwfulPostActions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostActions.h; sourceTree = "<group>"; };
@@ -2412,6 +2413,7 @@
 		29B97314FDCFA39411CA2CEA /* Awful */ = {
 			isa = PBXGroup;
 			children = (
+				118E616014E5A56C00F0CE0A /* Awful.entitlements */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				1153D103144E7217007602E8 /* iPad */,
 				1190F76913BE4ECB00B9D271 /* 3rd Party Sources */,
@@ -3191,7 +3193,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Regular Berry Software LLC";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -3199,7 +3201,7 @@
 				HEADER_SEARCH_PATHS = "${SDKROOT}/usr/include/libxml2";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PROVISIONING_PROFILE = "F51B9C9E-CE9E-453E-ACD3-5D1265950E09";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 			};
 			name = AdHoc;
@@ -3209,7 +3211,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Regular Berry Software LLC";
+				CODE_SIGN_ENTITLEMENTS = Awful.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Sean Berry (9HL8QUW4RH)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Regular Berry Software LLC";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -3229,8 +3232,7 @@
 					"\"$(SRCROOT)/3rd Party Sources/Flurry\"",
 				);
 				PRODUCT_NAME = Awful;
-				PROVISIONING_PROFILE = "23E7B56C-B683-4D8B-8C7C-ED4BCB4A5067";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "23E7B56C-B683-4D8B-8C7C-ED4BCB4A5067";
+				PROVISIONING_PROFILE = "415F86FC-D08E-4A2B-B3B0-4714F2EB9214";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -3242,7 +3244,9 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_ENTITLEMENTS = Awful.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Sean Berry (9HL8QUW4RH)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Sean Berry (9HL8QUW4RH)";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3263,7 +3267,8 @@
 					"\"$(SRCROOT)/3rd Party Sources/Flurry\"",
 				);
 				PRODUCT_NAME = Awful;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				PROVISIONING_PROFILE = "6EFDC73F-12EB-4BC4-8167-5AB5CA71BCE4";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "6EFDC73F-12EB-4BC4-8167-5AB5CA71BCE4";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -3274,7 +3279,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Regular Berry Software LLC";
+				CODE_SIGN_ENTITLEMENTS = Awful.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Sean Berry (9HL8QUW4RH)";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3293,6 +3299,7 @@
 					"\"$(SRCROOT)/3rd Party Sources/Flurry\"",
 				);
 				PRODUCT_NAME = Awful;
+				PROVISIONING_PROFILE = "415F86FC-D08E-4A2B-B3B0-4714F2EB9214";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -3303,7 +3310,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Sean Berry (9HL8QUW4RH)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Sean Berry (9HL8QUW4RH)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -3312,8 +3319,8 @@
 				HEADER_SEARCH_PATHS = "${SDKROOT}/usr/include/libxml2";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_LDFLAGS = "";
-				PROVISIONING_PROFILE = "F51B9C9E-CE9E-453E-ACD3-5D1265950E09";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "8BE93C5C-25DC-4F70-9264-70CAD6155B30";
+				PROVISIONING_PROFILE = "6EFDC73F-12EB-4BC4-8167-5AB5CA71BCE4";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "6EFDC73F-12EB-4BC4-8167-5AB5CA71BCE4";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;

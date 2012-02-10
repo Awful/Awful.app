@@ -21,6 +21,8 @@
 
 - (void) setupSubview;
 - (UIViewController *)getRootController;
+- (void)initializeiCloudAccess;
+-(void)iCloudKeyChanged : (NSNotification *)aNotification;
 
 @end
 

@@ -32,6 +32,7 @@
 -(NSString *)cellIdentifierForIndexPath : (NSIndexPath *)indexPath;
 -(void)tappedLogin;
 -(void)tappedLogout;
+-(void)tappediCloudRefresh;
 -(void)tappedHelp;
 -(void)tappedAwfulAppThread;
 -(void)reloadUserName;

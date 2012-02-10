@@ -131,7 +131,7 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-    return 3;
+    return 4;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -180,6 +180,8 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
             [button_cell setSelector:@selector(tappedHelp) withText:@"Quick FAQ"];
         } else if(indexPath.section == 2) {
             [button_cell setSelector:@selector(tappedAwfulAppThread) withText:@"Awful App Thread"];
+        } else if(indexPath.section == 3) {
+            [button_cell setSelector:@selector(tappediCloudRefresh) withText:@"iCloud Sync"];
         }
     }
     
@@ -280,6 +282,12 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
     [self.navigationController pushViewController:help animated:YES];
 }
 
+-(void)tappediCloudRefresh
+{
+    NSUbiquitousKeyValueStore *store = [NSUbiquitousKeyValueStore defaultStore];
+    [store synchronize];
+}
+
 -(void)tappedAwfulAppThread
 {
     AwfulAppThreadRequest *app = [[AwfulAppThreadRequest alloc] initCustom];
@@ -338,7 +346,7 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
         return CELL_IDENT_BUTTON;
     }
     
-    if(indexPath.section == 1 || indexPath.section == 2) {
+    if(indexPath.section >= 1) {
         return CELL_IDENT_BUTTON;
     }
     

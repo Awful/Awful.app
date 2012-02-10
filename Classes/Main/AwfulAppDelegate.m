@@ -36,10 +36,39 @@
     [FlurryAPI startSession:@"EU3TLVQM9U8T8QKNI9ID"];
     
     [Appirater appLaunched:YES];
+    [self initializeiCloudAccess];
     
     return YES;
 }
 
+- (void)initializeiCloudAccess {
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        if ([[NSFileManager defaultManager] URLForUbiquityContainerIdentifier:nil] != nil) {            
+            NSUbiquitousKeyValueStore *store = [NSUbiquitousKeyValueStore defaultStore];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(iCloudKeyChanged:) name:NSUbiquitousKeyValueStoreDidChangeExternallyNotification object:store];
+            [store synchronize];
+        } else {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"iCloud Not Enabled" message:@"You won't be able to use custom stylesheets." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+            [alert show];
+        }
+    });
+}
+
+-(void)iCloudKeyChanged : (NSNotification *)aNotification
+{
+    NSDictionary *userInfo = [aNotification userInfo];
+    NSNumber *reason = [userInfo objectForKey:NSUbiquitousKeyValueStoreChangeReasonKey];
+    if(!reason) {
+        return;
+    }
+    
+    NSInteger reason_value = [reason integerValue];
+    if(reason_value == NSUbiquitousKeyValueStoreServerChange) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Template Loaded" message:@"Got new template from iCloud" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        [alert show];
+    }
+}
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     /*

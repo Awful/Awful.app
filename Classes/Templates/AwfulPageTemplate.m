@@ -20,12 +20,10 @@
 @synthesize mainHTML = _mainHTML;
 @synthesize postHTML = _postHTML;
 
--(id)initWithTemplateName : (NSString *)name
+-(id)initWithTemplateString : (NSString *)html
 {
     if((self=[super init])) {
-        if(name != nil) {
-            _mainHTML = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:name ofType:@"html"] encoding:NSUTF8StringEncoding error:nil];
-        }
+        _mainHTML = html;
     }
     return self;
 }

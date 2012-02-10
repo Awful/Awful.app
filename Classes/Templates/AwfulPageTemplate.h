@@ -16,7 +16,7 @@
 @property (nonatomic, strong) NSString *mainHTML;
 @property (nonatomic, strong) NSString *postHTML;
 
--(id)initWithTemplateName : (NSString *)name;
+-(id)initWithTemplateString : (NSString *)html;
 -(NSString *)parseOutImages : (NSString *)html;
 -(NSString *)parseEmbeddedVideos : (NSString *)html;
 -(NSString *)constructHTMLForPost : (AwfulPost *)post withPostTemplate : (NSString *)postTemplate;
