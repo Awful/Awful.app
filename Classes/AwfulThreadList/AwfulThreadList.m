@@ -25,6 +25,9 @@
 #import "AwfulSplitViewController.h"
 #import "AwfulThreadCell.h"
 #import "AwfulPageNavCell.h"
+#import <QuartzCore/QuartzCore.h>
+
+#define THREAD_HEIGHT 72
 
 @implementation AwfulThreadList
 

@@ -6,6 +6,7 @@
 	<string>English</string>
 	<key>CFBundleDisplayName</key>
 	<string>Awful</string>
+	<string>AwfulDev</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFiles</key>
@@ -15,6 +16,7 @@
 	</array>
 	<key>CFBundleIdentifier</key>
 	<string>com.regularberry.awfulapp</string>
+	<string>com.regularberry.awfuldev</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
