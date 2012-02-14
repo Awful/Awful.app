@@ -15,7 +15,7 @@
 
 -(id)initCustom
 {
-    if((self=[super initWithURL:[NSURL URLWithString:@"http://www.seaneseor.com/awful/awfulappthreadid.txt"]])) {
+    if((self=[super initWithURL:[NSURL URLWithString:@"http://www.regularberry.com/awful/awfulappthreadid.txt"]])) {
         
     }
     return self;

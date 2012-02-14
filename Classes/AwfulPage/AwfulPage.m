@@ -488,7 +488,6 @@
 
 - (void)webView:(UIWebView*) webview didReceiveJSNotificationWithDictionary:(NSDictionary*) dictionary
 {
-    NSLog(@"%@", dictionary);
     NSString *action = [dictionary objectForKey:@"action"];
     if(action != nil) {
         if([action isEqualToString:@"nextPage"]) {
@@ -753,7 +752,7 @@
 {
     
     if(![post_id isEqualToString:@""]) {
-        for(AwfulPost *post in self.allRawPosts) {
+        for(AwfulPost *post in self.dataController.posts) {
             if([post.postID isEqualToString:post_id]) {
                 
                 AwfulPostActions *post_actions = [[AwfulPostActions alloc] initWithAwfulPost:post page:self];

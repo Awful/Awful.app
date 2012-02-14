@@ -3213,7 +3213,7 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = Awful.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Sean Berry (9HL8QUW4RH)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Regular Berry Software LLC";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Sean Berry (9HL8QUW4RH)";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3232,7 +3232,8 @@
 					"\"$(SRCROOT)/3rd Party Sources/Flurry\"",
 				);
 				PRODUCT_NAME = Awful;
-				PROVISIONING_PROFILE = "415F86FC-D08E-4A2B-B3B0-4714F2EB9214";
+				PROVISIONING_PROFILE = "6EFDC73F-12EB-4BC4-8167-5AB5CA71BCE4";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "6EFDC73F-12EB-4BC4-8167-5AB5CA71BCE4";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;

@@ -233,26 +233,30 @@
 @end
 
 
-/* Notes. An element needs the %POST_ID% so it knows where to scroll down to for the 'newest post'.
+/* Notes:
+ 
+ One element needs an id of {%POST_ID%} so the app knows where to scroll down to for the 'newest post'.
 
- If the post if made by the OP, %OP% will insert the value, otherwise it will just leave it blank
- %AVATAR_URL% puts in the full url
- %MOD_IMAGE% inserts the html for ModImage, or nothing if they're not a mod. Same with %ADMIN_IMAGE%
- personal note, put in &nbsp; after the mod image to have a space in my template
+ If the post if made by the OP, {%OP%} will insert 'op' (without the ''), otherwise it will just leave it blank
+ {%MOD_BEGIN%} --- {%MOD_END%} will insert that html if the poster is a mod, same with {%ADMIN_BEGIN%} -- {%ADMIN_END%]
+ Same with {%AVATAR_BEGIN%} etc... nothing will be put in if they don't have an avatar or if they have avatars turned off in settings.
+ {%AVATAR_URL%} puts in the full url
 
-%POSTER_NAME%, %POST_DATE%, %POST_BODY% are self explanatory
+{%POSTER_NAME%}, {%POST_DATE%}, {%POST_BODY%} are self explanatory
  
- %AVATAR_HTML% gets put in what you specified for the avatar html, unless they don't have an avatar, then nothing gets put in. Use %AVATAR_URL% inside your %AVATAR_HTML% specification.
+tappedPost('{%POST_ID%}') is some javascript that will show the post actions in the app. E.g. 'Quote', 'Mark up to here', etc...
  
-tappedPost('%POST_ID') is some javascript that will call the post actions in the app.
+{%ALT_CLASS%} inserts either 'altcolor1', 'altcolor2', 'seen1', or 'seen2' depending on the post index (even/odd)
  
-for the _IMAGE ones... get to specify the image and the css class. it will convert it to base64 and proper <img thing when saving>
+{%PAGES_LEFT_MESSAGE%} is either 'x pages left.' '1 page left.' or 'End of the thread.'
+
+the tappedBottom() javascript triggers a 'next page' call if there are pages left
  
-%POST_IMAGE% is the html that puts in the 
+{%JAVASCRIPT%} inserts those functions I need
+{%SALR_EXECUTION%} is for SALR
  
-%ALT_CLASS% inserts either 'altcolor1', 'altcolor2', 'seen1', or 'seen2' depending on the post index (even/odd) and also if they're seen it or not. The default is blue for seen.
+ {%POSTS_BEGIN%} - {%POSTS_END%} will iterate over all of the posts using the template specified between POSTS_BEGIN/POSTS_END
  
- %PAGES_LEFT_MESSAGE% is either 'x pages left.' '1 page left.' or 'End of the thread.'
- the tappedBottom() javascript triggers a 'next page' call if there are pages left
+{%USER_AD%} inserts the user ad image
 
 */
