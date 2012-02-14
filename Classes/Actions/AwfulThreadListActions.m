@@ -48,12 +48,12 @@ typedef enum {
 {
     if(buttonIndex == AwfulThreadListActionsTypeFirstPage) {
         
-        AwfulPage *thread_detail = [[AwfulPage alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeFirst];
+        AwfulPage *thread_detail = [AwfulPage pageWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeFirst];
         loadContentVC(thread_detail);
         
     } else if(buttonIndex == AwfulThreadListActionsTypeLastPage) {
         
-        AwfulPage *thread_detail = [[AwfulPage alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeLast];
+        AwfulPage *thread_detail = [AwfulPage pageWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeLast];
         loadContentVC(thread_detail);
         
     } else if(buttonIndex == AwfulThreadListActionsTypeUnread && [self.titles count] > 2) {

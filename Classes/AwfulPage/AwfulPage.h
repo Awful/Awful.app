@@ -49,6 +49,11 @@ typedef enum {
 @property (nonatomic, strong) AwfulPageDataController *dataController;
 @property (nonatomic, strong) AwfulSmallPageController *pageController;
 
++(id)pageWithAwfulThread : (AwfulThread *)aThread startAt : (AwfulPageDestinationType)thread_pos;
++(id)pageWithAwfulThread : (AwfulThread *)aThread pageNum : (int)page_num;
++(id)pageWithAwfulThread : (AwfulThread *)aThread startAt : (AwfulPageDestinationType)thread_pos pageNum : (int)page_num;
++(id)pageWithAwfulHistory : (AwfulHistory *)history;
+
 -(id)initWithAwfulThread : (AwfulThread *)aThread startAt : (AwfulPageDestinationType)thread_pos;
 -(id)initWithAwfulThread : (AwfulThread *)aThread pageNum : (int)page_num;
 -(id)initWithAwfulThread : (AwfulThread *)aThread startAt : (AwfulPageDestinationType)thread_pos pageNum : (int)page_num;

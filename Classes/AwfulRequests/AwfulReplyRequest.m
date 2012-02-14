@@ -31,24 +31,14 @@
     [vc dismissModalViewControllerAnimated:YES];
     
     if(self.thread != nil) {
-        AwfulPage *page;
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
-            page = [[AwfulPage alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeNewpost];
-        else
-            page = [[AwfulPageIpad alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeNewpost];
+        AwfulPage *page = [AwfulPage pageWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeNewpost];
         
         loadContentVC(page);
     } else if(self.post != nil) {
         AwfulNavigator *nav = getNavigator();
         if([nav.contentVC isMemberOfClass:[AwfulPage class]]) {
             AwfulPage *current_page = (AwfulPage *)nav.contentVC;
-            AwfulPage *fresh_page;
-            
-            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
-                fresh_page = [[AwfulPage alloc] initWithAwfulThread:current_page.thread pageNum:current_page.pages.currentPage];
-            else
-                fresh_page = [[AwfulPageIpad alloc] initWithAwfulThread:current_page.thread pageNum:current_page.pages.currentPage];
-            
+            AwfulPage *fresh_page = [AwfulPage pageWithAwfulThread:current_page.thread pageNum:current_page.pages.currentPage];
             fresh_page.postIDScrollDestination = self.post.postID;
             loadContentVC(fresh_page);
         }

@@ -109,14 +109,14 @@
 
 -(IBAction)hitFirst
 {
-    AwfulPage *first_page = [[AwfulPage alloc] initWithAwfulThread:self.page.thread startAt:AwfulPageDestinationTypeFirst];
+    AwfulPage *first_page = [AwfulPage pageWithAwfulThread:self.page.thread startAt:AwfulPageDestinationTypeFirst];
     loadContentVC(first_page);
 }
 
 -(IBAction)hitLast
 {
     if(![self.page.pages onLastPage]) {
-        AwfulPage *last_page = [[AwfulPage alloc] initWithAwfulThread:self.page.thread startAt:AwfulPageDestinationTypeLast];
+        AwfulPage *last_page = [AwfulPage pageWithAwfulThread:self.page.thread startAt:AwfulPageDestinationTypeLast];
         loadContentVC(last_page);
     }
 }

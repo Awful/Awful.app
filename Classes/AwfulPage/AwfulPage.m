@@ -51,6 +51,36 @@
 #pragma mark -
 #pragma mark Initialization
 
++(id)pageWithAwfulThread : (AwfulThread *)aThread startAt : (AwfulPageDestinationType)thread_pos
+{
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        return [[AwfulPage alloc] initWithAwfulThread:aThread startAt:thread_pos];
+    } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        return [[AwfulPageIpad alloc] initWithAwfulThread:aThread startAt:thread_pos];
+    }
+    return nil;
+}
+
++(id)pageWithAwfulThread : (AwfulThread *)aThread pageNum : (int)page_num
+{
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        return [[AwfulPage alloc] initWithAwfulThread:aThread pageNum:page_num];
+    } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        return [[AwfulPageIpad alloc] initWithAwfulThread:aThread pageNum:page_num];
+    }
+    return nil;
+}
+
++(id)pageWithAwfulThread : (AwfulThread *)aThread startAt : (AwfulPageDestinationType)thread_pos pageNum : (int)page_num
+{
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        return [[AwfulPage alloc] initWithAwfulThread:aThread startAt:thread_pos pageNum:page_num];
+    } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        return [[AwfulPageIpad alloc] initWithAwfulThread:aThread startAt:thread_pos pageNum:page_num];
+    }
+    return nil;
+}
+
 -(id)initWithAwfulThread : (AwfulThread *)aThread startAt : (AwfulPageDestinationType)thread_pos
 {
     return [self initWithAwfulThread:aThread startAt:thread_pos pageNum:-1];
@@ -440,6 +470,16 @@
     hist.modelObj = self.thread;
     hist.historyType = AwfulHistoryTypePage;
     return hist;
+}
+
++(id)pageWithAwfulHistory : (AwfulHistory *)history
+{
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        return [[AwfulPage alloc] initWithAwfulHistory:history];
+    } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        return [[AwfulPageIpad alloc] initWithAwfulHistory:history];
+    }
+    return nil;
 }
 
 -(id)initWithAwfulHistory : (AwfulHistory *)history

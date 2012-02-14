@@ -29,13 +29,7 @@
         AwfulThread *thread = [[AwfulThread alloc] init];
         thread.title = @"Awful iPhone App";
         thread.threadID = threadid;
-        AwfulPage *page;
-        
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            page = [[AwfulPageIpad alloc] initWithAwfulThread:thread startAt:AwfulPageDestinationTypeFirst];
-        } else {
-            page = [[AwfulPage alloc] initWithAwfulThread:thread startAt:AwfulPageDestinationTypeFirst];
-        }
+        AwfulPage *page = [AwfulPage pageWithAwfulThread:thread pageNum:AwfulPageDestinationTypeFirst];
         
         loadContentVC(page);
         

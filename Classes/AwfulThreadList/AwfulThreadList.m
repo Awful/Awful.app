@@ -379,7 +379,7 @@
                 // therefore I'm setting it to last page here
             }
             
-            AwfulPage *thread_detail = [[AwfulPage alloc] initWithAwfulThread:thread startAt:start];
+            AwfulPage *thread_detail = [AwfulPage pageWithAwfulThread:thread startAt:start];
             loadContentVC(thread_detail);
         }
     }
