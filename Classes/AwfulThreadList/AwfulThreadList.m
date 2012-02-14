@@ -58,17 +58,16 @@
 
 -(id)initWithAwfulForum : (AwfulForum *)in_forum atPageNum : (int)page_num
 {
-    _forum = in_forum;
-    self = [self initWithString:_forum.name atPageNum:page_num];
+    if((self=[self initWithString:in_forum.name atPageNum:page_num])) {
+        _forum = in_forum;
+    }
     return self;
 }
 
 -(id)initWithAwfulForum : (AwfulForum *)in_forum
 {
-    self = [self initWithAwfulForum:in_forum atPageNum:1];
-    return self;
+    return [self initWithAwfulForum:in_forum atPageNum:1];
 }
-
 
 -(void)choseForumOption : (int)option
 {

@@ -49,8 +49,8 @@
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(iCloudKeyChanged:) name:NSUbiquitousKeyValueStoreDidChangeExternallyNotification object:store];
             [store synchronize];
         } else {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"iCloud Not Enabled" message:@"You won't be able to use custom stylesheets." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-            [alert show];
+            //UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"iCloud Not Enabled" message:@"You won't be able to use custom stylesheets." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+            //[alert show];
         }
     });
 }
