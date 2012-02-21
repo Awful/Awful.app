@@ -21,16 +21,13 @@
 
 #pragma mark -
 #pragma mark Application lifecycle
-- (void) setupSubview
-{
-    [self.window addSubview:self.navigationController.view];
-}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
         
     // Override point for customization after application launch.
-
-    [self setupSubview];
+    UITabBarController *tab_controller = (UITabBarController *)self.window.rootViewController;
+    tab_controller.moreNavigationController.navigationBar.barStyle = UIBarStyleBlack;
+    
     [self.window makeKeyAndVisible];
     
     [FlurryAPI startSession:@"EU3TLVQM9U8T8QKNI9ID"];
@@ -125,6 +122,14 @@
 @end
 
 @implementation AwfulAppDelegateIpad
+
+-(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
+    [super application:application didFinishLaunchingWithOptions:launchOptions];
+    [self.window addSubview:self.splitController.view];
+    return YES;
+}
+
 - (void) setupSubview
 {
     [self.window addSubview:self.splitController.view];

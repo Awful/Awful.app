@@ -19,7 +19,7 @@
 @property (nonatomic, strong) IBOutlet AwfulNavigator *navigator;
 @property (nonatomic, strong) IBOutlet AwfulSplitViewController *splitController;
 
-- (void) setupSubview;
+
 - (UIViewController *)getRootController;
 - (void)initializeiCloudAccess;
 -(void)iCloudKeyChanged : (NSNotification *)aNotification;
@@ -27,6 +27,8 @@
 @end
 
 @interface AwfulAppDelegateIpad : AwfulAppDelegate
-@end;
+- (void)setupSubview;
+@end
+
 UIViewController *getRootController();
 BOOL isLandscape();

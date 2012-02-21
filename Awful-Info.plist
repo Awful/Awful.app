@@ -29,14 +29,14 @@
 	<string>1.4.5</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSMainNibFile</key>
-	<string>MainWindow</string>
 	<key>NSMainNibFile~ipad</key>
 	<string>MainWindow-iPad</string>
 	<key>UIInterfaceOrientation</key>
 	<string>UIInterfaceOrientationPortrait</string>
 	<key>UIInterfaceOrientation~ipad</key>
 	<string>UIInterfaceOrientationLandscape</string>
+	<key>UIMainStoryboardFile</key>
+	<string>MainStoryboard</string>
 	<key>UIPrerenderedIcon</key>
 	<false/>
 	<key>UIStatusBarStyle</key>

@@ -296,7 +296,7 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ident];
     
-    if (cell == nil) {
+    /*if (cell == nil) {
         [[NSBundle mainBundle] loadNibNamed:@"AwfulThreadListCells" owner:self options:nil];
         
         if(ident == pageNav) {
@@ -306,7 +306,7 @@
         }
         self.threadCell = nil;
         self.pageNavCell = nil;
-    }
+    }*/
     
     // Configure the cell...
     if(type == AwfulThreadCellTypeThread) {

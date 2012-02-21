@@ -13,13 +13,11 @@
 
 @interface AwfulForumCell : UITableViewCell
 
-@property (nonatomic, strong) IBOutlet UILabel *title;
-@property (nonatomic, strong) IBOutlet UIButton *star;
+@property (nonatomic, strong) IBOutlet UILabel *titleLabel;
 @property (nonatomic, strong) IBOutlet UIButton *arrow;
 @property (nonatomic, strong) AwfulForumSection *section;
 @property (nonatomic, weak) AwfulForumsList *forumsList;
 
 -(IBAction)tappedArrow : (id)sender;
--(IBAction)tappedStar : (id)sender;
 
 @end

@@ -56,36 +56,42 @@
 @synthesize favorites, forums, forumSections;
 @synthesize forumCell, headerView, refreshCell;
 
--(id)init
-{
-    if((self=[super initWithStyle:UITableViewStyleGrouped])) {
-        self.favorites = [[NSMutableArray alloc] init];
-        self.forums = [[NSMutableArray alloc] init];
-        self.forumSections = [[NSMutableArray alloc] init];
-        
-        [self.navigationItem setTitle:@"Awful"];
-        [self loadFavorites];
-        [self loadForums];
-    }
-    return self;
-}
-
+/*
 -(id)initWithCoder:(NSCoder *)aDecoder
 {
     return [self init];
-}
+}*/
 
 #pragma mark -
 #pragma mark View lifecycle
 
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if([[segue identifier] isEqualToString:@"ThreadList"]) {
+        NSIndexPath *selected = [self.tableView indexPathForSelectedRow];
+        AwfulForum *forum = [self getForumAtIndexPath:selected];
+        AwfulThreadList *list = (AwfulThreadList *)segue.destinationViewController;
+        list.forum = forum;
+        loadContentVC(list);
+    }
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(hitDone)];
-    self.navigationItem.rightBarButtonItem = done;
+    self.favorites = [[NSMutableArray alloc] init];
+    self.forums = [[NSMutableArray alloc] init];
+    self.forumSections = [[NSMutableArray alloc] init];
     
-    if (self.favorites.count > 0)
+    [self loadFavorites];
+    [self loadForums];
+    
+    //UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(hitDone)];
+    //self.navigationItem.rightBarButtonItem = done;
+    
+    if (self.favorites.count > 0) {
         self.navigationItem.leftBarButtonItem = self.editButtonItem;
+    }
         
     self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
     self.tableView.backgroundColor = [UIColor colorWithRed:0 green:0.4 blue:0.6 alpha:1.0];
@@ -222,7 +228,7 @@
     }
     
     // Return the number of sections.
-    return [self.forumSections count] + SECTION_INDEX_OFFSET + 1;
+    return [self.forumSections count] + SECTION_INDEX_OFFSET;// + 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -263,7 +269,7 @@
     }
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ident];
-    if (cell == nil) {
+    /*if (cell == nil) {
         if(ident == CellIdentifier) {
             [[NSBundle mainBundle] loadNibNamed:@"AwfulForumCell" owner:self options:nil];
             self.forumCell.forumsList = self;
@@ -274,12 +280,14 @@
             cell = self.refreshCell;
             self.refreshCell = nil;
         }
-    }
+    }*/
     
     if(ident == CellIdentifier) {
+        AwfulForumCell *forum_cell = (AwfulForumCell *)cell;
+        forum_cell.forumsList = self;
         AwfulForumSection *section = [self getForumSectionAtIndexPath:indexPath];
         if(section != nil) {
-            [(AwfulForumCell *)cell setSection:section];
+            [forum_cell setSection:section];
         }
     }
     return cell;

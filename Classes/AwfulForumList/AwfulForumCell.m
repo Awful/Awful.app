@@ -15,7 +15,10 @@
 
 @implementation AwfulForumCell
 
-@synthesize title, star, arrow, section, forumsList;
+@synthesize titleLabel = _titleLabel;
+@synthesize arrow = _arrow;
+@synthesize section = _section;
+@synthesize forumsList = _forumsList;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
@@ -35,34 +38,28 @@
 
 -(void)setSection:(AwfulForumSection *)aSection
 {
-    section = aSection;
+    _section = aSection;
     
-    if(self.section != nil) {
+    if(_section != nil) {
         
-        self.title.text = self.section.forum.name;
+        self.titleLabel.text = self.section.forum.name;
         
-        if([section.children count] == 0) {
+        if([_section.children count] == 0) {
             [self.arrow removeFromSuperview];
         } else {
             [self addSubview:self.arrow];
         }
         
-        if(section.expanded) {
+        if(_section.expanded) {
             self.arrow.transform = CGAffineTransformMakeRotation(PI_OVER_2);
         } else {
             self.arrow.transform = CGAffineTransformIdentity;
         }
         
-        if(section.totalAncestors > 1) {
+        if(_section.totalAncestors > 1) {
             self.arrow.center = CGPointMake(LINE_SPACE*3, self.arrow.center.y);
         } else {
             self.arrow.center = CGPointMake(LINE_SPACE*2, self.arrow.center.y);
-        }
-        
-        if([self.forumsList isAwfulForumSectionFavorited:section]) {
-            [self.star setImage:[UIImage imageNamed:@"star_on.png"] forState:UIControlStateNormal];
-        } else {
-            [self.star setImage:[UIImage imageNamed:@"star_off.png"] forState:UIControlStateNormal];
         }
     }
 }
@@ -75,16 +72,6 @@
 -(IBAction)tappedStar : (id)sender
 {
     [self.forumsList toggleFavoriteForForumSection:self.section];
-}
-
-- (void)setEditing:(BOOL)editing animated:(BOOL)animated
-{
-    [super setEditing:editing animated:animated];
-    if(editing) {
-        [self.star removeFromSuperview];
-    } else {
-        [self addSubview:self.star];
-    }
 }
 
 @end

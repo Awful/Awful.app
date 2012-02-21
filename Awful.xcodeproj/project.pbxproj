@@ -565,7 +565,6 @@
 		1190F73713BE4EA900B9D271 /* AwfulThreadListActions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6D413BE4EA900B9D271 /* AwfulThreadListActions.m */; };
 		1190F73813BE4EA900B9D271 /* AwfulVoteActions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6D613BE4EA900B9D271 /* AwfulVoteActions.m */; };
 		1190F73913BE4EA900B9D271 /* AwfulForumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6D913BE4EA900B9D271 /* AwfulForumCell.m */; };
-		1190F73A13BE4EA900B9D271 /* AwfulForumCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1190F6DA13BE4EA900B9D271 /* AwfulForumCell.xib */; };
 		1190F73B13BE4EA900B9D271 /* AwfulForumHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1190F6DB13BE4EA900B9D271 /* AwfulForumHeaderView.xib */; };
 		1190F73C13BE4EA900B9D271 /* AwfulForumRefreshButton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1190F6DC13BE4EA900B9D271 /* AwfulForumRefreshButton.xib */; };
 		1190F73D13BE4EA900B9D271 /* AwfulForumsList.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6DE13BE4EA900B9D271 /* AwfulForumsList.m */; };
@@ -660,6 +659,8 @@
 		11D7CB9414EA0867000DA96A /* photoshop.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D7CB8F14EA0867000DA96A /* photoshop.png */; };
 		11D7CB9514EA0867000DA96A /* repeat.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D7CB9014EA0867000DA96A /* repeat.png */; };
 		11D7CB9614EA0867000DA96A /* school.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D7CB9114EA0867000DA96A /* school.png */; };
+		11D7CB9814EA0CED000DA96A /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 11D7CB9714EA0CED000DA96A /* MainStoryboard.storyboard */; };
+		11D7CB9D14EA1AE8000DA96A /* AwfulTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11D7CB9C14EA1AE8000DA96A /* AwfulTabBarController.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765080DF74369002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765070DF74369002DB57D /* CoreGraphics.framework */; };
@@ -1248,7 +1249,6 @@
 		1190F6D613BE4EA900B9D271 /* AwfulVoteActions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulVoteActions.m; sourceTree = "<group>"; };
 		1190F6D813BE4EA900B9D271 /* AwfulForumCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumCell.h; sourceTree = "<group>"; };
 		1190F6D913BE4EA900B9D271 /* AwfulForumCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumCell.m; sourceTree = "<group>"; };
-		1190F6DA13BE4EA900B9D271 /* AwfulForumCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AwfulForumCell.xib; sourceTree = "<group>"; };
 		1190F6DB13BE4EA900B9D271 /* AwfulForumHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AwfulForumHeaderView.xib; sourceTree = "<group>"; };
 		1190F6DC13BE4EA900B9D271 /* AwfulForumRefreshButton.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AwfulForumRefreshButton.xib; sourceTree = "<group>"; };
 		1190F6DD13BE4EA900B9D271 /* AwfulForumsList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumsList.h; sourceTree = "<group>"; };
@@ -1421,6 +1421,9 @@
 		11D7CB8F14EA0867000DA96A /* photoshop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = photoshop.png; sourceTree = "<group>"; };
 		11D7CB9014EA0867000DA96A /* repeat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = repeat.png; sourceTree = "<group>"; };
 		11D7CB9114EA0867000DA96A /* school.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = school.png; sourceTree = "<group>"; };
+		11D7CB9714EA0CED000DA96A /* MainStoryboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MainStoryboard.storyboard; sourceTree = SOURCE_ROOT; };
+		11D7CB9B14EA1AE7000DA96A /* AwfulTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTabBarController.h; sourceTree = "<group>"; };
+		11D7CB9C14EA1AE8000DA96A /* AwfulTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTabBarController.m; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* Awful.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Awful.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -1466,9 +1469,9 @@
 				11D5E85A14DC6D3E00C1002D /* Templates */,
 				1190F6CC13BE4EA900B9D271 /* Actions */,
 				1190F6D713BE4EA900B9D271 /* AwfulForumList */,
+				1190F70513BE4EA900B9D271 /* AwfulThreadList */,
 				1190F6DF13BE4EA900B9D271 /* AwfulNavigation */,
 				1190F6E813BE4EA900B9D271 /* AwfulPage */,
-				1190F70513BE4EA900B9D271 /* AwfulThreadList */,
 				1190F6F213BE4EA900B9D271 /* AwfulRequests */,
 				1190F70B13BE4EA900B9D271 /* Extras */,
 				1190F71313BE4EA900B9D271 /* History */,
@@ -2082,7 +2085,6 @@
 				1190F6DE13BE4EA900B9D271 /* AwfulForumsList.m */,
 				1190F6D813BE4EA900B9D271 /* AwfulForumCell.h */,
 				1190F6D913BE4EA900B9D271 /* AwfulForumCell.m */,
-				1190F6DA13BE4EA900B9D271 /* AwfulForumCell.xib */,
 				1190F6DC13BE4EA900B9D271 /* AwfulForumRefreshButton.xib */,
 				112764EB14DB44E6003ACE76 /* AwfulForumHeader.h */,
 				112764EC14DB44E6003ACE76 /* AwfulForumHeader.m */,
@@ -2205,6 +2207,9 @@
 				1190F71D13BE4EA900B9D271 /* AwfulAppDelegate.h */,
 				1190F71E13BE4EA900B9D271 /* AwfulAppDelegate.m */,
 				1190F71F13BE4EA900B9D271 /* MainWindow.xib */,
+				11D7CB9714EA0CED000DA96A /* MainStoryboard.storyboard */,
+				11D7CB9B14EA1AE7000DA96A /* AwfulTabBarController.h */,
+				11D7CB9C14EA1AE8000DA96A /* AwfulTabBarController.m */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -3040,7 +3045,6 @@
 				1185923613B93F3B0036E607 /* post-action-icon.png in Resources */,
 				1185923913B9425C0036E607 /* star_admin.gif in Resources */,
 				1185923A13B9425C0036E607 /* star_moderator.gif in Resources */,
-				1190F73A13BE4EA900B9D271 /* AwfulForumCell.xib in Resources */,
 				1190F73B13BE4EA900B9D271 /* AwfulForumHeaderView.xib in Resources */,
 				1190F73C13BE4EA900B9D271 /* AwfulForumRefreshButton.xib in Resources */,
 				1190F73F13BE4EA900B9D271 /* AwfulNavigator.xib in Resources */,
@@ -3110,6 +3114,7 @@
 				11D7CB9414EA0867000DA96A /* photoshop.png in Resources */,
 				11D7CB9514EA0867000DA96A /* repeat.png in Resources */,
 				11D7CB9614EA0867000DA96A /* school.png in Resources */,
+				11D7CB9814EA0CED000DA96A /* MainStoryboard.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3203,6 +3208,7 @@
 				1153D11A144E7729007602E8 /* AwfulSplitViewController.m in Sources */,
 				11D5E85814DC5FA000C1002D /* AwfulPageDataController.m in Sources */,
 				11D5E85D14DC6D5C00C1002D /* AwfulPageTemplate.m in Sources */,
+				11D7CB9D14EA1AE8000DA96A /* AwfulTabBarController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
