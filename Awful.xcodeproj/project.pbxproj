@@ -562,6 +562,7 @@
 		1172A62A14F5D9C70026CDA8 /* MKNetworkOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1172A61F14F5D9C70026CDA8 /* MKNetworkOperation.m */; };
 		1172A62B14F5D9C70026CDA8 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 1172A62214F5D9C70026CDA8 /* Reachability.m */; };
 		1172A62E14F5DB160026CDA8 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1172A62D14F5DB160026CDA8 /* Security.framework */; };
+		1172A63214F5DE8B0026CDA8 /* AwfulNetworkEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 1172A63114F5DE8B0026CDA8 /* AwfulNetworkEngine.m */; };
 		1185923613B93F3B0036E607 /* post-action-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1185923513B93F3B0036E607 /* post-action-icon.png */; };
 		1185923913B9425C0036E607 /* star_admin.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1185923713B9425B0036E607 /* star_admin.gif */; };
 		1185923A13B9425C0036E607 /* star_moderator.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1185923813B9425B0036E607 /* star_moderator.gif */; };
@@ -1241,6 +1242,8 @@
 		1172A62114F5D9C70026CDA8 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		1172A62214F5D9C70026CDA8 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		1172A62D14F5DB160026CDA8 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		1172A63014F5DE8B0026CDA8 /* AwfulNetworkEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AwfulNetworkEngine.h; path = AwfulNetworking/AwfulNetworkEngine.h; sourceTree = "<group>"; };
+		1172A63114F5DE8B0026CDA8 /* AwfulNetworkEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AwfulNetworkEngine.m; path = AwfulNetworking/AwfulNetworkEngine.m; sourceTree = "<group>"; };
 		1185923513B93F3B0036E607 /* post-action-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "post-action-icon.png"; path = "images/post-action-icon.png"; sourceTree = "<group>"; };
 		1185923713B9425B0036E607 /* star_admin.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = star_admin.gif; path = images/star_admin.gif; sourceTree = "<group>"; };
 		1185923813B9425B0036E607 /* star_moderator.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = star_moderator.gif; path = images/star_moderator.gif; sourceTree = "<group>"; };
@@ -1437,8 +1440,9 @@
 				1190F6CC13BE4EA900B9D271 /* Actions */,
 				1190F6D713BE4EA900B9D271 /* AwfulForumList */,
 				1190F70513BE4EA900B9D271 /* AwfulThreadList */,
-				1190F6DF13BE4EA900B9D271 /* AwfulNavigation */,
 				1190F6E813BE4EA900B9D271 /* AwfulPage */,
+				1190F6DF13BE4EA900B9D271 /* AwfulNavigation */,
+				1172A62F14F5DE500026CDA8 /* AwfulNetworking */,
 				1190F70B13BE4EA900B9D271 /* Extras */,
 				1190F71313BE4EA900B9D271 /* History */,
 				1190F71813BE4EA900B9D271 /* Login */,
@@ -2066,6 +2070,15 @@
 				1172A62214F5D9C70026CDA8 /* Reachability.m */,
 			);
 			path = Reachability;
+			sourceTree = "<group>";
+		};
+		1172A62F14F5DE500026CDA8 /* AwfulNetworking */ = {
+			isa = PBXGroup;
+			children = (
+				1172A63014F5DE8B0026CDA8 /* AwfulNetworkEngine.h */,
+				1172A63114F5DE8B0026CDA8 /* AwfulNetworkEngine.m */,
+			);
+			name = AwfulNetworking;
 			sourceTree = "<group>";
 		};
 		1190F6CC13BE4EA900B9D271 /* Actions */ = {
@@ -3150,6 +3163,7 @@
 				1172A62914F5D9C70026CDA8 /* MKNetworkEngine.m in Sources */,
 				1172A62A14F5D9C70026CDA8 /* MKNetworkOperation.m in Sources */,
 				1172A62B14F5D9C70026CDA8 /* Reachability.m in Sources */,
+				1172A63214F5DE8B0026CDA8 /* AwfulNetworkEngine.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

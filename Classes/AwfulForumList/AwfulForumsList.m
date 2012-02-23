@@ -20,6 +20,7 @@
 #import "AwfulBookmarksController.h"
 #import "AwfulUser.h"
 #import "AwfulForumHeader.h"
+#import "AwfulNetworkEngine.h"
 
 #define SECTION_INDEX_OFFSET 1
 
@@ -72,7 +73,6 @@
         AwfulForum *forum = [self getForumAtIndexPath:selected];
         AwfulThreadList *list = (AwfulThreadList *)segue.destinationViewController;
         list.forum = forum;
-        loadContentVC(list);
     }
 }
 

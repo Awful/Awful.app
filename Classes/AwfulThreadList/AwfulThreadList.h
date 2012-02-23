@@ -62,7 +62,7 @@ typedef enum {
 -(NSString *)getSaveID;
 -(NSString *)getURLSuffix;
 
--(void)refresh;
+-(IBAction)refresh;
 -(void)newlyVisible;
 
 -(void)choseForumOption : (int)option;

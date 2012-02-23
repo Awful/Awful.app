@@ -11,6 +11,9 @@
 @class AwfulNavigator;
 @class AwfulNavigatorIpad;
 @class AwfulSplitViewController;
+@class AwfulNetworkEngine;
+
+#define ApplicationDelegate ((AwfulAppDelegate *)[UIApplication sharedApplication].delegate)
 
 @interface AwfulAppDelegate : NSObject <UIApplicationDelegate>
 
@@ -18,7 +21,7 @@
 @property (nonatomic, strong) IBOutlet UINavigationController *navigationController;
 @property (nonatomic, strong) IBOutlet AwfulNavigator *navigator;
 @property (nonatomic, strong) IBOutlet AwfulSplitViewController *splitController;
-
+@property (nonatomic, strong) AwfulNetworkEngine *awfulNetworkEngine;
 
 - (UIViewController *)getRootController;
 - (void)initializeiCloudAccess;

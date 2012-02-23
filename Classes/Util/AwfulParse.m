@@ -181,8 +181,12 @@
     return parsed;
 }
 
-+(NSMutableArray *)newThreadsFromForum : (TFHpple *)hpple
++(NSMutableArray *)parseThreadsFromForumData : (NSData *)data
 {
+    NSString *raw_str = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+    NSData *converted = [raw_str dataUsingEncoding:NSUTF8StringEncoding];
+    TFHpple *hpple = [[TFHpple alloc] initWithHTMLData:converted];
+    
     NSMutableArray *parsed_threads = [[NSMutableArray alloc] init];
 
     NSString *reg_str = @"//tr[@class='thread']";
@@ -322,7 +326,6 @@
             
             [parsed_threads addObject:thread];
             
-        
         }
     }
 

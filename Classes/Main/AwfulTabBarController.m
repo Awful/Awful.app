@@ -7,14 +7,19 @@
 //
 
 #import "AwfulTabBarController.h"
+#import "AwfulForumsList.h"
 
 @implementation AwfulTabBarController
+
+@synthesize awfulNetworkEngine = _awfulNetworkEngine;
+@synthesize awfulForumsList = _awfulForumsList;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        
     }
     return self;
 }
@@ -25,6 +30,11 @@
     [super didReceiveMemoryWarning];
     
     // Release any cached data, images, etc that aren't in use.
+}
+
+-(void)awakeFromNib
+{
+    self.moreNavigationController.navigationBar.barStyle = UIBarStyleBlack;
 }
 
 #pragma mark - View lifecycle
@@ -56,5 +66,7 @@
     // Return YES for supported orientations
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
+
+#pragma mark - UITabBarControllerDelegate
 
 @end

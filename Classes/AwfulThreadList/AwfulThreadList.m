@@ -25,6 +25,7 @@
 #import "AwfulSplitViewController.h"
 #import "AwfulThreadCell.h"
 #import "AwfulPageNavCell.h"
+#import "AwfulNetworkEngine.h"
 #import <QuartzCore/QuartzCore.h>
 
 #define THREAD_HEIGHT 72
@@ -103,6 +104,12 @@
     loadRequest(ref_req);*/
     [UIView animateWithDuration:0.2 animations:^(void){
         self.view.alpha = 0.5;
+    }];
+    
+    [ApplicationDelegate.awfulNetworkEngine threadListForForum:self.forum pageNum:self.pages.currentPage onCompletion:^(NSMutableArray *threads) {
+        [self acceptThreads:threads];
+    } onError:^(NSError *error) {
+        
     }];
 }
 
@@ -259,7 +266,7 @@
     
     // bottom page-nav cell
     if([self.awfulThreads count] > 0) {
-        total++;
+        //total++;
     }
     
     return total;

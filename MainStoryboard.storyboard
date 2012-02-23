@@ -158,7 +158,13 @@
                             <outlet property="delegate" destination="Osj-d3-UMd" id="Pmz-dZ-kKP"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="4Sh-WL-LEZ"/>
+                    <navigationItem key="navigationItem" id="4Sh-WL-LEZ">
+                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="msn-5w-Uxc">
+                            <connections>
+                                <action selector="refresh" destination="Osj-d3-UMd" id="T6A-Ue-e1H"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
             </objects>
             <point key="canvasLocation" x="1685" y="-846"/>
@@ -253,13 +259,13 @@
             </objects>
             <point key="canvasLocation" x="734" y="426"/>
         </scene>
-        <!--Tab Bar Controller - Awful-->
+        <!--Awful Tab Bar Controller - Awful-->
         <scene sceneID="yyp-pu-Zwu">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RSD-CM-ak4" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tabBarController definesPresentationContext="YES" id="Vst-Rk-SSD" sceneMemberID="viewController">
+                <tabBarController definesPresentationContext="YES" id="Vst-Rk-SSD" customClass="AwfulTabBarController" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" title="Awful" id="K7k-72-lPP"/>
-                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="wo8-Wr-u0T">
                         <rect key="frame" x="129" y="330" width="163" height="49"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
@@ -320,6 +326,9 @@
                 <relationship kind="outlet" name="prevButton" candidateClass="UIButton"/>
             </relationships>
         </class>
+        <class className="AwfulTabBarController" superclassName="UITabBarController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulTabBarController.h"/>
+        </class>
         <class className="AwfulThreadCell" superclassName="UITableViewCell">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulThreadCell.h"/>
             <relationships>
@@ -336,6 +345,7 @@
             <relationships>
                 <relationship kind="action" name="nextPage"/>
                 <relationship kind="action" name="prevPage"/>
+                <relationship kind="action" name="refresh"/>
                 <relationship kind="outlet" name="pageNavCell" candidateClass="AwfulPageNavCell"/>
                 <relationship kind="outlet" name="threadCell" candidateClass="AwfulThreadCell"/>
             </relationships>

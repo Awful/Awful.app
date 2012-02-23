@@ -21,7 +21,7 @@
 +(NSString *)parseYouTubes : (NSString *)html;
 +(NSString *)parseOutImages : (NSString *)html;
 
-+(NSMutableArray *)newThreadsFromForum : (TFHpple *)hpple;
++(NSMutableArray *)parseThreadsFromForumData : (NSData *)data;
 +(NSString *)getAdHTMLFromData : (TFHpple *)hpple;
 +(int)getNewPostNumFromURL : (NSURL *)url;
 

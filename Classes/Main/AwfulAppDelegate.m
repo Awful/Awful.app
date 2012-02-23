@@ -11,6 +11,8 @@
 #import "FlurryAPI.h"
 #import "Appirater.h"
 #import "AwfulSplitViewController.h"
+#import "AwfulNetworkEngine.h"
+#import "AwfulTabBarController.h"
 
 @implementation AwfulAppDelegate
 
@@ -18,6 +20,7 @@
 @synthesize navigationController = _navigationController;
 @synthesize navigator = _navigator;
 @synthesize splitController = _splitController;
+@synthesize awfulNetworkEngine = _awfulNetworkEngine;
 
 #pragma mark -
 #pragma mark Application lifecycle
@@ -25,15 +28,15 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
         
     // Override point for customization after application launch.
-    UITabBarController *tab_controller = (UITabBarController *)self.window.rootViewController;
-    tab_controller.moreNavigationController.navigationBar.barStyle = UIBarStyleBlack;
+    
+    self.awfulNetworkEngine = [[AwfulNetworkEngine alloc] initWithHostName:@"forums.somethingawful.com" customHeaderFields:nil];
     
     [self.window makeKeyAndVisible];
     
     [FlurryAPI startSession:@"EU3TLVQM9U8T8QKNI9ID"];
     
     [Appirater appLaunched:YES];
-    [self initializeiCloudAccess];
+    //[self initializeiCloudAccess];
     
     return YES;
 }

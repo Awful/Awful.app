@@ -8,6 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AwfulTabBarController : UITabBarController
+@class AwfulNetworkEngine;
+@class AwfulForumsList;
+
+@interface AwfulTabBarController : UITabBarController <UITabBarControllerDelegate>
+
+@property (nonatomic, strong) AwfulNetworkEngine *awfulNetworkEngine;
+@property (nonatomic, strong) AwfulForumsList *awfulForumsList;
 
 @end
