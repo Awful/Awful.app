@@ -11,7 +11,7 @@
 #import "AwfulExtrasController.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulForumsList.h"
-#import "AwfulRequestHandler.h"
+//#import "AwfulRequestHandler.h"
 #import "AwfulPageCount.h"
 #import "AwfulBookmarksController.h"
 #import "AwfulUser.h"
@@ -30,7 +30,7 @@
 -(id)initWithCoder:(NSCoder *)aDecoder
 {
     if((self = [super initWithCoder:aDecoder])) {
-        self.requestHandler = [[AwfulRequestHandler alloc] init];
+        //self.requestHandler = [[AwfulRequestHandler alloc] init];
         self.contentVC = nil;
         self.actions = nil;
         self.historyManager = [[AwfulHistoryManager alloc] init];
@@ -363,7 +363,7 @@ void loadContentVC(id<AwfulNavigatorContent> content)
     AwfulNavigator *nav = getNavigator();
     [nav loadContentVC:content];
 }
-
+/*
 void loadRequest(ASIHTTPRequest *req)
 {
     AwfulNavigator *nav = getNavigator();
@@ -374,4 +374,4 @@ void loadRequestAndWait(ASIHTTPRequest *req)
 {
     AwfulNavigator *nav = getNavigator();
     [nav.requestHandler loadRequestAndWait:req];
-}
+}*/

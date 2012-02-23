@@ -11,7 +11,7 @@
 #import "AwfulUser.h"
 #import "AwfulNavigator.h"
 #import "AwfulHelpController.h"
-#import "AwfulAppThreadRequest.h"
+//#import "AwfulAppThreadRequest.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulSplitViewController.h"
 
@@ -288,8 +288,8 @@ static NSString *CELL_IDENT_LABEL = @"LabelCell";
 
 -(void)tappedAwfulAppThread
 {
-    AwfulAppThreadRequest *app = [[AwfulAppThreadRequest alloc] initCustom];
-    loadRequestAndWait(app);
+    /*AwfulAppThreadRequest *app = [[AwfulAppThreadRequest alloc] initCustom];
+    loadRequestAndWait(app);*/
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex

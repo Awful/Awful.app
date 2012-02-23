@@ -13,12 +13,12 @@
 #import "AwfulUtil.h"
 #import "TFHpple.h"
 #import "AwfulParse.h"
-#import "AwfulForumRefreshRequest.h"
+//#import "AwfulForumRefreshRequest.h"
 #import "AwfulConfig.h"
 #import "AwfulPageCount.h"
 #import "AwfulLoginController.h"
 #import "AwfulNavigator.h"
-#import "AwfulRequestHandler.h"
+//#import "AwfulRequestHandler.h"
 #import "AwfulNavigatorLabels.h"
 #import "AwfulUtil.h"
 #import "AwfulThreadListActions.h"
@@ -99,8 +99,8 @@
 -(void)refresh
 {   
     [self.navigator swapToStopButton];
-    AwfulForumRefreshRequest *ref_req = [[AwfulForumRefreshRequest alloc] initWithAwfulThreadList:self];
-    loadRequest(ref_req);
+    /*AwfulForumRefreshRequest *ref_req = [[AwfulForumRefreshRequest alloc] initWithAwfulThreadList:self];
+    loadRequest(ref_req);*/
     [UIView animateWithDuration:0.2 animations:^(void){
         self.view.alpha = 0.5;
     }];
@@ -117,8 +117,8 @@
     [UIView animateWithDuration:0.2 animations:^(void){
         self.view.alpha = 1.0;
     }];
-    AwfulNavigator *nav = getNavigator();
-    [nav.requestHandler cancelAllRequests];
+    //AwfulNavigator *nav = getNavigator();
+    //[nav.requestHandler cancelAllRequests];
 }
 
 -(void)acceptThreads : (NSMutableArray *)in_threads

@@ -9,8 +9,8 @@
 #import "AwfulPostActions.h"
 #import "AwfulPost.h"
 #import "AwfulNavigator.h"
-#import "AwfulEditRequest.h"
-#import "AwfulQuoteRequest.h"
+//#import "AwfulEditRequest.h"
+//#import "AwfulQuoteRequest.h"
 #import "AwfulPage.h"
 
 typedef enum {
@@ -47,9 +47,9 @@ typedef enum {
     AwfulPostActionType action = buttonIndex;
     if(self.post.canEdit) {
         if(action == AwfulPostActionTypeEdit) {
-            AwfulEditContentRequest *edit = [[AwfulEditContentRequest alloc] initWithAwfulPost:self.post];
+            /*AwfulEditContentRequest *edit = [[AwfulEditContentRequest alloc] initWithAwfulPost:self.post];
             loadRequest(edit);
-            [self.navigator setActions:nil];
+            [self.navigator setActions:nil];*/
             return;
         }
     } else {
@@ -58,8 +58,8 @@ typedef enum {
     
     if(action == AwfulPostActionTypeQuote) {
         
-        AwfulQuoteRequest *quote = [[AwfulQuoteRequest alloc] initWithPost:self.post fromPage:self.page];
-        loadRequest(quote);
+        /*AwfulQuoteRequest *quote = [[AwfulQuoteRequest alloc] initWithPost:self.post fromPage:self.page];
+        loadRequest(quote);*/
         
     } else if(action == AwfulPostActionTypeMarkRead) {
         
@@ -67,10 +67,10 @@ typedef enum {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Not available" message:@"That feature requires you set 'Show an icon next to each post indicating if it has been seen or not' in your forum options" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
             [alert show];
         } else {
-            NSURL *seen_url = [NSURL URLWithString:[@"http://forums.somethingawful.com/" stringByAppendingString:self.post.markSeenLink]];
+            /*NSURL *seen_url = [NSURL URLWithString:[@"http://forums.somethingawful.com/" stringByAppendingString:self.post.markSeenLink]];
             ASIHTTPRequest *seen_req = [ASIHTTPRequest requestWithURL:seen_url];
             seen_req.userInfo = [NSDictionary dictionaryWithObjectsAndKeys:@"Marked up to there.", @"completionMsg", nil];
-            loadRequestAndWait(seen_req);
+            loadRequestAndWait(seen_req);*/
         }
     }
     

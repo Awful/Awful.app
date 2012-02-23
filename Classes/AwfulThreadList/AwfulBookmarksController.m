@@ -9,11 +9,11 @@
 #import "AwfulBookmarksController.h"
 #import "AwfulUtil.h"
 #import "AwfulConfig.h"
-#import "AwfulForumRefreshRequest.h"
+//#import "AwfulForumRefreshRequest.h"
 #import "AwfulNavigator.h"
-#import "AwfulRequestHandler.h"
+//#import "AwfulRequestHandler.h"
 #import "AwfulPageCount.h"
-#import "ASIFormDataRequest.h"
+//#import "ASIFormDataRequest.h"
 
 @implementation AwfulBookmarksController
 
@@ -195,20 +195,20 @@
     
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
-        AwfulThread *thread = [self.awfulThreads objectAtIndex:indexPath.row];
+        //AwfulThread *thread = [self.awfulThreads objectAtIndex:indexPath.row];
         [self.awfulThreads removeObjectAtIndex:indexPath.row];
         [AwfulUtil saveThreadList:self.awfulThreads forForumId:[self getSaveID]];       
         [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
         
 
-        ASIFormDataRequest *req = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"http://forums.somethingawful.com/bookmarkthreads.php"]];
+        /*ASIFormDataRequest *req = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"http://forums.somethingawful.com/bookmarkthreads.php"]];
         req.userInfo = [NSDictionary dictionaryWithObject:@"Removed from bookmarks." forKey:@"completionMsg"];
         
         [req setPostValue:@"1" forKey:@"json"];
         [req setPostValue:@"remove" forKey:@"action"];
         [req setPostValue:thread.threadID forKey:@"threadid"];
         
-        loadRequestAndWait(req);
+        loadRequestAndWait(req);*/
         
 
     }   

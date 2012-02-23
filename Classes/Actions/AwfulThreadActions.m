@@ -12,7 +12,7 @@
 #import "AwfulPageCount.h"
 #import "AwfulPostBoxController.h"
 #import "AwfulAppDelegate.h"
-#import "ASIFormDataRequest.h"
+//#import "ASIFormDataRequest.h"
 #import "AwfulUtil.h"
 #import "AwfulVoteActions.h"
 
@@ -91,7 +91,7 @@ typedef enum {
 }
 
 -(void)addBookmark
-{
+{/*
     ASIFormDataRequest *req = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"http://forums.somethingawful.com/bookmarkthreads.php"]];
     req.userInfo = [NSDictionary dictionaryWithObject:@"Added to bookmarks." forKey:@"completionMsg"];
     
@@ -104,11 +104,11 @@ typedef enum {
     [bookmarked_threads addObject:self.page.thread];
     [AwfulUtil saveThreadList:bookmarked_threads forForumId:@"bookmarks"];
     
-    loadRequestAndWait(req);
+    loadRequestAndWait(req);*/
 }
 
 -(void)removeBookmark
-{
+{/*
     ASIFormDataRequest *req = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"http://forums.somethingawful.com/bookmarkthreads.php"]];
     req.userInfo = [NSDictionary dictionaryWithObject:@"Removed from bookmarks." forKey:@"completionMsg"];
     
@@ -127,7 +127,7 @@ typedef enum {
     [bookmarked_threads removeObject:found];
     [AwfulUtil saveThreadList:bookmarked_threads forForumId:@"bookmarks"];
     
-    loadRequestAndWait(req);
+    loadRequestAndWait(req);*/
 }
 
 @end

@@ -8,12 +8,12 @@
 
 #import "AwfulPostBoxController.h"
 #import "AwfulNavigator.h"
-#import "AwfulReplyRequest.h"
-#import "AwfulEditRequest.h"
+//#import "AwfulReplyRequest.h"
+//#import "AwfulEditRequest.h"
 #import "AwfulPage.h"
 #import "AwfulThread.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulRequestHandler.h"
+//#import "AwfulRequestHandler.h"
 
 #define CANCEL_BUTTON 1
 #define SEND_BUTTON 2
@@ -122,7 +122,7 @@
             
             [AwfulPostBoxController savePost:self.replyTextView.text];
             
-            ASIHTTPRequest *req = nil;
+           /* ASIHTTPRequest *req = nil;
             if(self.thread != nil) {
                 req = [[AwfulReplyRequest alloc] initWithReply:self.replyTextView.text forThread:self.thread];
             } else if(self.post != nil) {
@@ -137,7 +137,7 @@
                 dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:self, @"waitCallback", nil];
             }
             req.userInfo = dict;
-            loadRequestAndWait(req);
+            loadRequestAndWait(req);*/
             [self.replyTextView resignFirstResponder];
         }
     }
@@ -145,10 +145,10 @@
 
 -(void)hideReply
 {
-    AwfulNavigator *nav = getNavigator();
+    /*AwfulNavigator *nav = getNavigator();
     [nav.requestHandler cancelAllRequests];
     [AwfulPostBoxController savePost:self.replyTextView.text];
-    [self.replyTextView resignFirstResponder];
+    [self.replyTextView resignFirstResponder];*/
     UIViewController *vc = getRootController();
     [vc dismissModalViewControllerAnimated:YES];
 }

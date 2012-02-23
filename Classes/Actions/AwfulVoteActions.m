@@ -9,7 +9,7 @@
 #import "AwfulVoteActions.h"
 #import "AwfulThread.h"
 #import "AwfulNavigator.h"
-#import "ASIFormDataRequest.h"
+//#import "ASIFormDataRequest.h"
 
 @implementation AwfulVoteActions
 
@@ -54,13 +54,13 @@
     }
     
     if(vote_num != -1) {
-        NSURL *url = [NSURL URLWithString:@"http://forums.somethingawful.com/threadrate.php"];
+        /*NSURL *url = [NSURL URLWithString:@"http://forums.somethingawful.com/threadrate.php"];
         ASIFormDataRequest *form = [ASIFormDataRequest requestWithURL:url];
         [form addPostValue:[[NSNumber numberWithInt:vote_num] stringValue] forKey:@"vote"];
         [form addPostValue:self.thread.threadID forKey:@"threadid"];
         form.userInfo = [NSDictionary dictionaryWithObject:@"Great Job!" forKey:@"completionMsg"];
         
-        loadRequestAndWait(form);
+        loadRequestAndWait(form);*/
     }
     [self.navigator setActions:nil];
 }

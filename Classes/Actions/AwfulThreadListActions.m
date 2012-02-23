@@ -10,7 +10,7 @@
 #import "AwfulThread.h"
 #import "AwfulNavigator.h"
 #import "AwfulPage.h"
-#import "ASIFormDataRequest.h"
+//#import "ASIFormDataRequest.h"
 #import "AwfulAppDelegate.h"
 
 typedef enum {
@@ -57,13 +57,13 @@ typedef enum {
         loadContentVC(thread_detail);
         
     } else if(buttonIndex == AwfulThreadListActionsTypeUnread && [self.titles count] > 2) {
-        NSURL *url = [NSURL URLWithString:@"http://forums.somethingawful.com/showthread.php"];
+        /*NSURL *url = [NSURL URLWithString:@"http://forums.somethingawful.com/showthread.php"];
         ASIFormDataRequest *form = [ASIFormDataRequest requestWithURL:url];
         [form setPostValue:self.thread.threadID forKey:@"threadid"];
         [form setPostValue:@"resetseen" forKey:@"action"];
         [form setPostValue:@"1" forKey:@"json"];
         form.userInfo = [NSDictionary dictionaryWithObjectsAndKeys:@"Unread", @"completionMsg", @"1", @"refresh", nil];
-        loadRequestAndWait(form);
+        loadRequestAndWait(form);*/
     }
     [self.navigator setActions:nil];
 }

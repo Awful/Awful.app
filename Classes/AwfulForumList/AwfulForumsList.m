@@ -14,7 +14,7 @@
 #import "AwfulNavigator.h"
 #import "AwfulUtil.h"
 #import "AwfulConfig.h"
-#import "AwfulForumListRefreshRequest.h"
+//#import "AwfulForumListRefreshRequest.h"
 #import "AwfulForumCell.h"
 #import "AwfulLoginController.h"
 #import "AwfulBookmarksController.h"
@@ -441,8 +441,8 @@
 
 -(IBAction)grabFreshList
 {
-    AwfulForumListRefreshRequest *req = [[AwfulForumListRefreshRequest alloc] initWithForumsList:self];
-    loadRequestAndWait(req);
+    /*AwfulForumListRefreshRequest *req = [[AwfulForumListRefreshRequest alloc] initWithForumsList:self];
+    loadRequestAndWait(req);*/
 }
 
 -(void)setForums:(NSMutableArray *)in_forums

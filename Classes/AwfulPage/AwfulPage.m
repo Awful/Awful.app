@@ -14,11 +14,11 @@
 #import "AwfulUtil.h"
 #import "OtherWebController.h"
 #import "AwfulParse.h"
-#import "AwfulPageRefreshRequest.h"
+/*#import "AwfulPageRefreshRequest.h"
 #import "ASIFormDataRequest.h"
 #import "AwfulQuoteRequest.h"
 #import "AwfulReplyRequest.h"
-#import "AwfulEditRequest.h"
+#import "AwfulEditRequest.h"*/
 #import "Appirater.h"
 #import "AwfulPageCount.h"
 #import "AwfulConfig.h"
@@ -28,7 +28,7 @@
 #import "AwfulHistoryManager.h"
 #import "AwfulHistory.h"
 #import "AwfulPostActions.h"
-#import "AwfulRequestHandler.h"
+//#import "AwfulRequestHandler.h"
 #import "MWPhoto.h"
 #import "MWPhotoBrowser.h"
 #import <QuartzCore/QuartzCore.h>
@@ -253,14 +253,14 @@
 -(void)refresh
 {    
     [self.navigator swapToStopButton];
-    AwfulPageRefreshRequest *ref_req = [[AwfulPageRefreshRequest alloc] initWithAwfulPage:self];
-    loadRequestAndWait(ref_req);
+    /*AwfulPageRefreshRequest *ref_req = [[AwfulPageRefreshRequest alloc] initWithAwfulPage:self];
+    loadRequestAndWait(ref_req);*/
 }
 
 -(void)stop
 {
-    AwfulNavigator *nav = getNavigator();
-    [nav.requestHandler cancelAllRequests];
+    /*AwfulNavigator *nav = getNavigator();
+    [nav.requestHandler cancelAllRequests];*/
     
     if([self.view isMemberOfClass:[UIWebView class]]) {
         [(UIWebView *)self.view stopLoading];

@@ -8,10 +8,10 @@
 
 #import "AwfulUser.h"
 #import "AwfulLoginController.h"
-#import "AwfulUserInfoRequest.h"
+//#import "AwfulUserInfoRequest.h"
 #import "AwfulNavigator.h"
-#import "AwfulRequestHandler.h"
-#import "ASINetworkQueue.h"
+//#import "AwfulRequestHandler.h"
+//#import "ASINetworkQueue.h"
 #import "AwfulUtil.h"
 
 @implementation AwfulUser
@@ -37,11 +37,12 @@
         self.postsPerPage = [[dict objectForKey:@"postsPerPage"] intValue];
     } else {
         if(isLoggedIn()) {
-            AwfulUserNameRequest *name_req = [[AwfulUserNameRequest alloc] initWithAwfulUser:self];
+            /*AwfulUserNameRequest *name_req = [[AwfulUserNameRequest alloc] initWithAwfulUser:self];
             AwfulUserSettingsRequest *settings_req = [[AwfulUserSettingsRequest alloc] initWithAwfulUser:self];
             
             AwfulNavigator *nav = getNavigator();
             [nav.requestHandler loadAllWithMessage:@"Loading Username..." forRequests:name_req, settings_req, nil];
+             */
         }
     }
 }
