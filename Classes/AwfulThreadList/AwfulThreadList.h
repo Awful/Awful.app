@@ -25,17 +25,7 @@ typedef enum {
     AwfulThreadCellTypePageNav
 } AwfulThreadCellType;
 
-@interface AwfulThreadList : UITableViewController <AwfulNavigatorContent, AwfulHistoryRecorder> {
-    NSMutableArray *_awfulThreads;
-    AwfulForum *_forum;
-    AwfulPageCount *_pages;
-    
-    AwfulThreadCell *_threadCell;
-    AwfulPageNavCell *_pageNavCell;
-    
-    UILabel *_pagesLabel;
-    UILabel *_forumLabel;
-}
+@interface AwfulThreadList : UITableViewController <AwfulNavigatorContent, AwfulHistoryRecorder>
 
 @property (nonatomic, strong) AwfulForum *forum;
 @property (nonatomic, strong) NSMutableArray *awfulThreads;
@@ -45,6 +35,7 @@ typedef enum {
 @property (nonatomic, weak) AwfulNavigator *navigator;
 @property (nonatomic, strong) UILabel *pagesLabel;
 @property (nonatomic, strong) UILabel *forumLabel;
+@property (nonatomic, strong) MKNetworkOperation *networkOperation;
 
 -(id)initWithString : (NSString *)str atPageNum : (int)page_num;
 -(id)initWithAwfulForum : (AwfulForum *)in_forum atPageNum : (int)page_num;
@@ -55,6 +46,8 @@ typedef enum {
 -(void)acceptThreads : (NSMutableArray *)in_threads;
 -(void)loadList;
 -(BOOL)shouldReloadOnViewLoad;
+-(void)swapToRefreshButton;
+-(void)swapToStopButton;
 
 -(IBAction)nextPage;
 -(IBAction)prevPage;
@@ -80,8 +73,5 @@ typedef enum {
 
 -(void)startTimer;
 -(void)endTimer;
-
--(void)swapToRefreshButton;
--(void)swapToStopButton;
 
 @end

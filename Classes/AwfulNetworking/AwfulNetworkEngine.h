@@ -7,12 +7,19 @@
 //
 
 #import "MKNetworkEngine.h"
+#import "AwfulPage.h"
 
 @class AwfulForum;
+@class AwfulThread;
+@class AwfulPageDataController;
 
 @interface AwfulNetworkEngine : MKNetworkEngine
 
 typedef void (^ThreadListResponseBlock)(NSMutableArray *threads);
--(void)threadListForForum:(AwfulForum *)forum pageNum:(NSUInteger)pageNum onCompletion:(ThreadListResponseBlock)threadListResponseBlock onError:(MKNKErrorBlock) errorBlock;
+typedef void (^PageResponseBlock)(AwfulPageDataController *dataController);
+
+-(MKNetworkOperation *)threadListForForum:(AwfulForum *)forum pageNum:(NSUInteger)pageNum onCompletion:(ThreadListResponseBlock)threadListResponseBlock onError:(MKNKErrorBlock) errorBlock;
+
+-(MKNetworkOperation *)pageDataForThread : (AwfulThread *)thread destinationType : (AwfulPageDestinationType)destinationType pageNum : (NSUInteger)pageNum onCompletion:(PageResponseBlock)pageResponseBlock onError:(MKNKErrorBlock)errorBlock;
 
 @end

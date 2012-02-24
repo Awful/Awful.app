@@ -14,11 +14,6 @@
 #import "AwfulUtil.h"
 #import "OtherWebController.h"
 #import "AwfulParse.h"
-/*#import "AwfulPageRefreshRequest.h"
-#import "ASIFormDataRequest.h"
-#import "AwfulQuoteRequest.h"
-#import "AwfulReplyRequest.h"
-#import "AwfulEditRequest.h"*/
 #import "Appirater.h"
 #import "AwfulPageCount.h"
 #import "AwfulConfig.h"
@@ -28,7 +23,6 @@
 #import "AwfulHistoryManager.h"
 #import "AwfulHistory.h"
 #import "AwfulPostActions.h"
-//#import "AwfulRequestHandler.h"
 #import "MWPhoto.h"
 #import "MWPhotoBrowser.h"
 #import <QuartzCore/QuartzCore.h>
@@ -39,14 +33,17 @@
 #import "AwfulLoginController.h"
 #import "AwfulVoteActions.h"
 #import "AwfulPageDataController.h"
+#import "AwfulNetworkEngine.h"
 
 @implementation AwfulPage
 
-@synthesize thread, url, destinationType, isBookmarked;
+@synthesize destinationType = _destinationType;
+@synthesize thread, url, isBookmarked;
 @synthesize allRawPosts, pagesLabel, threadTitleLabel;
 @synthesize pagesButton, pages, navigator, forumButton;
 @synthesize shouldScrollToBottom, postIDScrollDestination, touchedPage;
 @synthesize pageController, dataController = _dataController;
+@synthesize networkOperation = _networkOperation;
 
 #pragma mark -
 #pragma mark Initialization
@@ -136,6 +133,17 @@
     return self;
 }
 
+-(void)awakeFromNib
+{
+    self.allRawPosts = [[NSMutableArray alloc] init];
+}
+
+-(void)setDestinationType:(AwfulPageDestinationType)destinationType
+{
+    _destinationType = destinationType;
+    self.shouldScrollToBottom = (_destinationType == AwfulPageDestinationTypeLast);
+}
+
 -(void)setDataController:(AwfulPageDataController *)dataController
 {
     if(_dataController != dataController) {
@@ -209,7 +217,9 @@
 -(void)setThreadTitle : (NSString *)in_title
 {
     [self.thread setTitle:in_title];
-    [self.threadTitleLabel setText:in_title];
+    //[self.threadTitleLabel setText:in_title];
+    UILabel *lab = (UILabel *)self.navigationItem.titleView;
+    lab.text = in_title;
 }
 
 -(void)tappedPageNav : (id)sender
@@ -251,10 +261,13 @@
 }
 
 -(void)refresh
-{    
-    [self.navigator swapToStopButton];
-    /*AwfulPageRefreshRequest *ref_req = [[AwfulPageRefreshRequest alloc] initWithAwfulPage:self];
-    loadRequestAndWait(ref_req);*/
+{        
+    [self.networkOperation cancel];
+    self.networkOperation = [ApplicationDelegate.awfulNetworkEngine pageDataForThread:self.thread destinationType:self.destinationType pageNum:self.pages.currentPage onCompletion:^(AwfulPageDataController *dataController) {
+        self.dataController = dataController;
+    } onError:^(NSError *error) {
+        
+    }];
 }
 
 -(void)stop

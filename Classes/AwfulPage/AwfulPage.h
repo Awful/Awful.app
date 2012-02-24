@@ -30,7 +30,7 @@ typedef enum {
 
 @property (nonatomic, strong) AwfulThread *thread;
 @property (nonatomic, strong) NSString *url;
-@property AwfulPageDestinationType destinationType;
+@property (nonatomic, assign) AwfulPageDestinationType destinationType;
 
 @property (nonatomic, strong) NSMutableArray *allRawPosts;
 
@@ -48,6 +48,7 @@ typedef enum {
 
 @property (nonatomic, strong) AwfulPageDataController *dataController;
 @property (nonatomic, strong) AwfulSmallPageController *pageController;
+@property (nonatomic, strong) MKNetworkOperation *networkOperation;
 
 +(id)pageWithAwfulThread : (AwfulThread *)aThread startAt : (AwfulPageDestinationType)thread_pos;
 +(id)pageWithAwfulThread : (AwfulThread *)aThread pageNum : (int)page_num;

@@ -34,19 +34,21 @@
 @synthesize pageCount = _pageCount, posts = _posts;
 @synthesize newestPostIndex = _newestPostIndex, userAd = _userAd;
 
--(id)initWithResponseData : (NSData *)responseData pageURL : (NSURL *)pageURL
+-(id)initWithResponseData : (NSData *)responseData pagePath : (NSString *)pagePath
 {
     if((self=[super init])) {
         NSString *raw_s = [[NSString alloc] initWithData:responseData encoding:NSASCIIStringEncoding];
         NSString *filtered_raw = [raw_s stringByReplacingOccurrencesOfString:@"<size:" withString:@"<"];
         NSData *converted = [filtered_raw dataUsingEncoding:NSUTF8StringEncoding];
         
+        NSURL *url = [NSURL URLWithString:[@"http://forums.somethingawful.com/" stringByAppendingString:pagePath]];
+        
         TFHpple *page_parser = [[TFHpple alloc] initWithHTMLData:converted];
         _threadTitle = [self parseThreadTitle:page_parser];
         _forum = [self parseForum:page_parser];
         _pageCount = [self parsePageCount:page_parser];
         _posts = [self parsePosts:page_parser];
-        _newestPostIndex = [self parseNewPostIndex:pageURL];
+        _newestPostIndex = [self parseNewPostIndex:url];
         _userAd = [self parseUserAdHTML:page_parser];
     }
     return self;

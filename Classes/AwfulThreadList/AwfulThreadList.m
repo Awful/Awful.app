@@ -13,12 +13,10 @@
 #import "AwfulUtil.h"
 #import "TFHpple.h"
 #import "AwfulParse.h"
-//#import "AwfulForumRefreshRequest.h"
 #import "AwfulConfig.h"
 #import "AwfulPageCount.h"
 #import "AwfulLoginController.h"
 #import "AwfulNavigator.h"
-//#import "AwfulRequestHandler.h"
 #import "AwfulNavigatorLabels.h"
 #import "AwfulUtil.h"
 #import "AwfulThreadListActions.h"
@@ -40,18 +38,20 @@
 @synthesize threadCell = _threadCell;
 @synthesize pageNavCell = _pageNavCell;
 @synthesize pages = _pages;
-@synthesize navigator;
+@synthesize navigator = _navigator;
 @synthesize pagesLabel = _pagesLabel;
 @synthesize forumLabel = _forumLabel;
+@synthesize networkOperation = _networkOperation;
 
 -(id)initWithString : (NSString *)str atPageNum : (int)page_num
 {
     if ((self = [super initWithStyle:UITableViewStylePlain])) {
-        _awfulThreads = [[NSMutableArray alloc] init];
+        self.awfulThreads = [[NSMutableArray alloc] init];
         self.navigator = nil;
-        _pages = [[AwfulPageCount alloc] init];
-        _pages.currentPage = page_num;
+        self.pages = [[AwfulPageCount alloc] init];
+        self.pages.currentPage = page_num;
         self.title = str;
+        self.networkOperation = nil;
     }
     
     return self;
@@ -60,7 +60,7 @@
 -(id)initWithAwfulForum : (AwfulForum *)in_forum atPageNum : (int)page_num
 {
     if((self=[self initWithString:in_forum.name atPageNum:page_num])) {
-        _forum = in_forum;
+        self.forum = in_forum;
     }
     return self;
 }
@@ -68,6 +68,26 @@
 -(id)initWithAwfulForum : (AwfulForum *)in_forum
 {
     return [self initWithAwfulForum:in_forum atPageNum:1];
+}
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if([[segue identifier] isEqualToString:@"AwfulPage"]) {
+        NSIndexPath *selected = [self.tableView indexPathForSelectedRow];
+        AwfulThread *thread = [self getThreadAtIndexPath:selected];
+        AwfulPage *page = (AwfulPage *)segue.destinationViewController;
+        page.thread = thread;
+        page.destinationType = AwfulPageDestinationTypeFirst;
+        [page refresh];
+    }
+}
+
+-(void)setForum:(AwfulForum *)forum
+{
+    if(_forum != forum) {
+        _forum = forum;
+        self.title = _forum.name;
+    }
 }
 
 -(void)choseForumOption : (int)option
@@ -97,35 +117,46 @@
     self.awfulThreads = threads;
 }
 
+-(void)swapToRefreshButton
+{
+    UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refresh)];
+    self.navigationItem.rightBarButtonItem = refresh;
+}
+
+-(void)swapToStopButton
+{
+    UIBarButtonItem *stop = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop)];
+    self.navigationItem.rightBarButtonItem = stop;
+}
+
 -(void)refresh
 {   
-    [self.navigator swapToStopButton];
-    /*AwfulForumRefreshRequest *ref_req = [[AwfulForumRefreshRequest alloc] initWithAwfulThreadList:self];
-    loadRequest(ref_req);*/
+    [self swapToStopButton];
     [UIView animateWithDuration:0.2 animations:^(void){
         self.view.alpha = 0.5;
     }];
     
-    [ApplicationDelegate.awfulNetworkEngine threadListForForum:self.forum pageNum:self.pages.currentPage onCompletion:^(NSMutableArray *threads) {
+    [self.networkOperation cancel];
+    self.networkOperation = [ApplicationDelegate.awfulNetworkEngine threadListForForum:self.forum pageNum:self.pages.currentPage onCompletion:^(NSMutableArray *threads) {
         [self acceptThreads:threads];
     } onError:^(NSError *error) {
         
     }];
 }
 
--(void)newlyVisible
-{
-    //For subclassing
-}
-
 -(void)stop
 {
+    [self.networkOperation cancel];
+    [self swapToRefreshButton];
     self.view.userInteractionEnabled = YES;
     [UIView animateWithDuration:0.2 animations:^(void){
         self.view.alpha = 1.0;
     }];
-    //AwfulNavigator *nav = getNavigator();
-    //[nav.requestHandler cancelAllRequests];
+}
+
+-(void)newlyVisible
+{
+    //For subclassing
 }
 
 -(void)acceptThreads : (NSMutableArray *)in_threads
@@ -146,13 +177,16 @@
 #pragma mark -
 #pragma mark View lifecycle
 
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     AwfulNavigatorLabels *labels = [[AwfulNavigatorLabels alloc] init];
     self.forumLabel = labels.forumLabel;
     self.pagesLabel = labels.pagesLabel;
+    UILabel *lab = (UILabel *)self.navigationItem.titleView;
+    lab.numberOfLines = 2;
+    lab.text = self.forum.name;
+    self.title = @"GBS";
     
     self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
     
@@ -203,11 +237,12 @@
     [super viewDidAppear:animated];
 }*/
 
-/*
+
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    [self.networkOperation cancel];
 }
-*/
+
 /*
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
@@ -494,18 +529,6 @@
 {
     [super viewDidLoad];
     [self swapToStopButton];
-}
-
--(void)swapToRefreshButton
-{
-    UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refresh)];
-    self.navigationItem.rightBarButtonItem = refresh;
-}
-
--(void)swapToStopButton
-{
-    UIBarButtonItem *stop = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop)];
-    self.navigationItem.rightBarButtonItem = stop;
 }
 
 -(void)refresh

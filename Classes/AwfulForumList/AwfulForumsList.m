@@ -14,7 +14,6 @@
 #import "AwfulNavigator.h"
 #import "AwfulUtil.h"
 #import "AwfulConfig.h"
-//#import "AwfulForumListRefreshRequest.h"
 #import "AwfulForumCell.h"
 #import "AwfulLoginController.h"
 #import "AwfulBookmarksController.h"
