@@ -32,8 +32,6 @@ typedef enum {
 @property (nonatomic, strong) NSString *url;
 @property (nonatomic, assign) AwfulPageDestinationType destinationType;
 
-@property (nonatomic, strong) NSMutableArray *allRawPosts;
-
 @property BOOL isBookmarked;
 @property BOOL shouldScrollToBottom;
 @property (nonatomic, strong) NSString *postIDScrollDestination;
@@ -62,12 +60,12 @@ typedef enum {
 
 -(NSString *)getURLSuffix;
 
--(void)hardRefresh;
+-(IBAction)hardRefresh;
 -(void)setThreadTitle : (NSString *)in_title;
 -(void)tappedPageNav : (id)sender;
 
 -(void)scrollToSpecifiedPost;
--(void) showActions:(NSString *)post_id;
+-(void)showActions:(NSString *)post_id;
 -(void)setWebView : (JSBridgeWebView *)webView;
 -(void)loadOlderPosts;
 -(void)nextPage;
@@ -75,6 +73,8 @@ typedef enum {
 
 -(void)heldPost:(UILongPressGestureRecognizer *)gestureRecognizer;
 -(void)scrollToPost : (NSString *)post_id;
+-(void)swapToStopButton;
+-(void)swapToRefreshButton;
 
 @end
 

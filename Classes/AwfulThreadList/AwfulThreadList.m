@@ -161,7 +161,7 @@
 
 -(void)acceptThreads : (NSMutableArray *)in_threads
 {
-    [self.navigator swapToRefreshButton];
+    [self swapToRefreshButton];
     [UIView animateWithDuration:0.2 animations:^(void){
         self.view.alpha = 1.0;
     }];
@@ -190,13 +190,17 @@
     
     self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
     
+    [self.navigationController setToolbarHidden:NO];
+    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"Item" style:UIBarButtonItemStyleBordered target:nil action:nil];
+    [self setToolbarItems:[NSArray arrayWithObject:item]];
+    
     [self.forumLabel setText:self.forum.name];
     [self.pagesLabel setText:[self.pages description]];
     self.navigator.navigationItem.titleView = self.forumLabel;
     
     UIBarButtonItem *cust = [[UIBarButtonItem alloc] initWithCustomView:self.pagesLabel];
     self.navigator.navigationItem.rightBarButtonItem = cust;
-        
+    
     if([self shouldReloadOnViewLoad]) {
         [self refresh];
     }

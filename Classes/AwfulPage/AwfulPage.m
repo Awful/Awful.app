@@ -39,7 +39,7 @@
 
 @synthesize destinationType = _destinationType;
 @synthesize thread, url, isBookmarked;
-@synthesize allRawPosts, pagesLabel, threadTitleLabel;
+@synthesize pagesLabel, threadTitleLabel;
 @synthesize pagesButton, pages, navigator, forumButton;
 @synthesize shouldScrollToBottom, postIDScrollDestination, touchedPage;
 @synthesize pageController, dataController = _dataController;
@@ -97,9 +97,7 @@
         self.postIDScrollDestination = nil;
         self.touchedPage = NO;
         self.destinationType = thread_pos;
-        
-        self.allRawPosts = [[NSMutableArray alloc] init];
-        
+                
         NSString *append;
         switch(thread_pos) {
             case AwfulPageDestinationTypeFirst:
@@ -135,7 +133,6 @@
 
 -(void)awakeFromNib
 {
-    self.allRawPosts = [[NSMutableArray alloc] init];
 }
 
 -(void)setDestinationType:(AwfulPageDestinationType)destinationType
@@ -244,25 +241,22 @@
     }
 }
 
--(void)hardRefresh
+-(IBAction)hardRefresh
 {    
     int posts_per_page = getPostsPerPage();
-    if([self.pages onLastPage] && [self.allRawPosts count] == posts_per_page) {
-        
-        AwfulPage *current_page = [[[self class] alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeSpecific pageNum:self.pages.currentPage];
-        current_page.shouldScrollToBottom = YES;
-        loadContentVC(current_page);
-        
+    if([self.pages onLastPage] && [self.dataController.posts count] == posts_per_page) {
+        self.destinationType = AwfulPageDestinationTypeSpecific;
+        [self refresh];
     } else {
-        
-        AwfulPage *fresh_page = [[[self class] alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeNewpost];
-        loadContentVC(fresh_page);
+        self.destinationType = AwfulPageDestinationTypeNewpost;
+        [self refresh];
     }
 }
 
 -(void)refresh
 {        
     [self.networkOperation cancel];
+    [self swapToStopButton];
     self.networkOperation = [ApplicationDelegate.awfulNetworkEngine pageDataForThread:self.thread destinationType:self.destinationType pageNum:self.pages.currentPage onCompletion:^(AwfulPageDataController *dataController) {
         self.dataController = dataController;
     } onError:^(NSError *error) {
@@ -297,7 +291,6 @@
 
 -(void)acceptPosts : (NSMutableArray *)posts
 {    
-    self.allRawPosts = posts;
 }
 
 -(void)nextPage
@@ -340,14 +333,6 @@
         
         if([class isEqualToString:@"postaction"]) {
             proceed = NO;
-        }
-        
-        if(proceed) {
-            for(AwfulPost *post in self.allRawPosts) {
-                if([[post.avatarURL absoluteString] isEqualToString:src]) {
-                    proceed = NO;
-                }
-            }
         }
         
         if(proceed) {
@@ -636,7 +621,7 @@
 
 -(void)webViewDidFinishLoad:(UIWebView *)sender
 {
-    [self.navigator swapToRefreshButton];
+    [self swapToRefreshButton];
     if(!self.touchedPage) {
         if(self.postIDScrollDestination != nil) {
             [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(scrollToSpecifiedPost) userInfo:nil repeats:NO];
@@ -653,6 +638,18 @@
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
 {
+}
+
+-(void)swapToRefreshButton
+{
+    UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(hardRefresh)];
+    self.navigationItem.rightBarButtonItem = refresh;
+}
+
+-(void)swapToStopButton
+{
+    UIBarButtonItem *stop = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop)];
+    self.navigationItem.rightBarButtonItem = stop;
 }
 
 @end

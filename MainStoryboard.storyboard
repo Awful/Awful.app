@@ -9,13 +9,18 @@
         <scene sceneID="Xw8-et-rCh">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zdh-pF-1ZM" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <navigationController title="Forums" definesPresentationContext="YES" id="cT9-jh-kRp" sceneMemberID="viewController">
+                <navigationController title="Forums" definesPresentationContext="YES" toolbarHidden="NO" id="cT9-jh-kRp" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Forums" image="list_icon.png" id="vpG-em-xHU"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics" barStyle="blackOpaque"/>
                     <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="blackOpaque" id="pEE-h4-pDZ">
                         <rect key="frame" x="0.0" y="-44" width="0.0" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
+                    <toolbar key="toolbar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" barStyle="blackOpaque" id="V47-ir-D5j">
+                        <rect key="frame" x="0.0" y="436" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="Cko-3x-oc7" kind="relationship" relationship="rootViewController" id="inh-1T-Jn4"/>
                     </connections>
@@ -29,7 +34,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Jn6-dl-9gI" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController title="Forums" id="Cko-3x-oc7" customClass="AwfulForumsList" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="qEa-va-Pfv">
-                        <rect key="frame" x="0.0" y="64" width="320" height="367"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="372"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <color key="separatorColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -88,28 +93,28 @@
         <scene sceneID="R44-bE-NMl">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="te1-UI-oXs" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tableViewController id="Osj-d3-UMd" customClass="AwfulThreadList" sceneMemberID="viewController">
+                <tableViewController hidesBottomBarWhenPushed="YES" id="Osj-d3-UMd" customClass="AwfulThreadList" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="Yrm-c6-SW3">
-                        <rect key="frame" x="0.0" y="64" width="320" height="367"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="372"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="ThreadCell" rowHeight="72" id="OzR-Ce-DhW" userLabel="thread cell" customClass="AwfulThreadCell">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="ThreadCell" rowHeight="72" id="OzR-Ce-DhW" userLabel="thread cell" customClass="AwfulThreadCell">
                                 <rect key="frame" x="0.0" y="22" width="320" height="72"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="300" height="71"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="71"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Thread Title Blah blah blah" lineBreakMode="tailTruncation" numberOfLines="3" minimumFontSize="10" id="NFX-eX-7xG" userLabel="thread title">
-                                            <rect key="frame" x="60" y="0.0" width="166" height="60"/>
+                                            <rect key="frame" x="60" y="0.0" width="179" height="60"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="14"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="0uD-hy-G9f">
-                                            <rect key="frame" x="249" y="26" width="32" height="20"/>
+                                            <rect key="frame" x="267" y="26" width="32" height="20"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="17"/>
                                             <state key="normal" title="10" backgroundImage="number-background.png">
@@ -159,11 +164,15 @@
                             <outlet property="delegate" destination="Osj-d3-UMd" id="Pmz-dZ-kKP"/>
                         </connections>
                     </tableView>
+                    <toolbarItems>
+                        <barButtonItem title="Item" id="88y-vl-Bf2"/>
+                    </toolbarItems>
                     <navigationItem key="navigationItem" title="Title" id="Oal-jR-ZLk">
                         <connections>
                             <outlet property="titleView" destination="Q3w-Oz-BUj" id="3dL-Yp-Ffv"/>
                         </connections>
                     </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics" barStyle="blackOpaque"/>
                 </tableViewController>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Forums Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" minimumFontSize="10" id="Q3w-Oz-BUj">
                     <rect key="frame" x="85" y="0.0" width="150" height="44"/>
@@ -180,17 +189,33 @@
         <scene sceneID="99c-Ru-F9w">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FTr-u6-ZV9" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <viewController id="uMb-el-Ve5" customClass="AwfulPage" sceneMemberID="viewController">
+                <viewController hidesBottomBarWhenPushed="YES" id="uMb-el-Ve5" customClass="AwfulPage" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="M3n-So-zb3">
-                        <rect key="frame" x="0.0" y="64" width="320" height="367"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="372"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
+                    <toolbarItems>
+                        <barButtonItem style="plain" systemItem="compose" id="jCb-MV-Nd9"/>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="PMb-rX-sU3"/>
+                        <barButtonItem image="28-star.png" style="plain" id="Z2A-is-rRK"/>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="SWK-gY-422"/>
+                        <barButtonItem image="39-circle-check.png" style="plain" id="U4o-o0-3kz"/>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="gmB-iZ-3DY"/>
+                        <barButtonItem title="999/1000" id="0Yn-hX-hPo"/>
+                        <barButtonItem image="01-arrow-east.png" id="SkB-yt-lkF"/>
+                    </toolbarItems>
                     <navigationItem key="navigationItem" id="4gr-Fi-99a">
+                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="vbO-Kw-paI">
+                            <connections>
+                                <action selector="hardRefresh" destination="uMb-el-Ve5" id="aXJ-WD-4iB"/>
+                            </connections>
+                        </barButtonItem>
                         <connections>
                             <outlet property="titleView" destination="yR7-8b-xAm" id="vk2-iY-zht"/>
                         </connections>
                     </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics" barStyle="blackOpaque"/>
                 </viewController>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="thread title label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" minimumFontSize="10" id="yR7-8b-xAm">
                     <rect key="frame" x="31.5" y="0.0" width="150" height="44"/>
@@ -288,7 +313,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Messages" image="folder.png" id="kY7-KU-29n"/>
+                    <tabBarItem key="tabBarItem" title="Messages" image="40-inbox.png" id="kY7-KU-29n"/>
                 </viewController>
             </objects>
             <point key="canvasLocation" x="734" y="426"/>
@@ -297,7 +322,7 @@
         <scene sceneID="yyp-pu-Zwu">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RSD-CM-ak4" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tabBarController definesPresentationContext="YES" id="Vst-Rk-SSD" customClass="AwfulTabBarController" sceneMemberID="viewController">
+                <tabBarController definesPresentationContext="YES" hidesBottomBarWhenPushed="YES" id="Vst-Rk-SSD" customClass="AwfulTabBarController" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" title="Awful" id="K7k-72-lPP"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="wo8-Wr-u0T">
@@ -319,7 +344,10 @@
         </scene>
     </scenes>
     <resources>
-        <image name="folder.png" width="26" height="26"/>
+        <image name="01-arrow-east.png" width="19" height="16"/>
+        <image name="28-star.png" width="26" height="26"/>
+        <image name="39-circle-check.png" width="28" height="28"/>
+        <image name="40-inbox.png" width="24" height="24"/>
         <image name="list_icon.png" width="20" height="18"/>
         <image name="number-background.png" width="32" height="20"/>
         <image name="preferences.png" width="26" height="26"/>
@@ -355,6 +383,7 @@
         <class className="AwfulPage" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPage.h"/>
             <relationships>
+                <relationship kind="action" name="hardRefresh"/>
                 <relationship kind="outlet" name="forumButton" candidateClass="UIButton"/>
             </relationships>
         </class>

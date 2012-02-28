@@ -82,9 +82,11 @@
     self.forums = [[NSMutableArray alloc] init];
     self.forumSections = [[NSMutableArray alloc] init];
     
+    [self.navigationController setToolbarHidden:YES];
+    
     [self loadFavorites];
     [self loadForums];
-    
+        
     //UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(hitDone)];
     //self.navigationItem.rightBarButtonItem = done;
     
