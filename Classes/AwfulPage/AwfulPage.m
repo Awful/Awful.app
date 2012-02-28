@@ -45,6 +45,9 @@
 @synthesize pageController, dataController = _dataController;
 @synthesize networkOperation = _networkOperation;
 @synthesize actions = _actions;
+@synthesize pagesBarButtonItem = _pagesBarButtonItem;
+@synthesize nextPageBarButtonItem = _nextPageBarButtonItem;
+@synthesize bookmarksBarButtonItem = _bookmarksBarButtonItem;
 
 #pragma mark -
 #pragma mark Initialization
@@ -220,28 +223,6 @@
     lab.text = in_title;
 }
 
--(void)tappedPageNav : (id)sender
-{
-    if(self.pageController != nil && !self.pageController.hiding) {
-        self.pageController.hiding = YES;
-        [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^(void) {
-            self.pageController.view.frame = CGRectOffset(self.pageController.view.frame, 0, -self.pageController.view.frame.size.height);
-        } completion:^(BOOL finished) {
-            [self.pageController.view removeFromSuperview];
-            self.pageController = nil;
-        }];
-    } else if(self.pageController == nil) {
-        self.pageController = [[AwfulSmallPageController alloc] initWithAwfulPage:self];
-        
-        float width_diff = self.view.frame.size.width - self.pageController.view.frame.size.width;
-        self.pageController.view.center = CGPointMake(self.view.center.x + width_diff/2, -self.pageController.view.frame.size.height/2);
-        [self.view addSubview:self.pageController.view];
-        [UIView animateWithDuration:0.3 animations:^(void) {
-            self.pageController.view.frame = CGRectOffset(self.pageController.view.frame, 0, self.pageController.view.frame.size.height);
-        }];
-    }
-}
-
 -(IBAction)hardRefresh
 {    
     int posts_per_page = getPostsPerPage();
@@ -297,16 +278,18 @@
 -(void)nextPage
 {
     if(![self.pages onLastPage]) {
-        AwfulPage *next_page = [[[self class] alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeSpecific pageNum:self.pages.currentPage+1];
-        loadContentVC(next_page);
+        self.destinationType = AwfulPageDestinationTypeSpecific;
+        self.pages.currentPage++;
+        [self refresh];
     }
 }
 
 -(void)prevPage
 {
     if(self.pages.currentPage > 1) {
-        AwfulPage *prev_page = [[[self class] alloc] initWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeSpecific pageNum:self.pages.currentPage-1];
-        loadContentVC(prev_page);
+        self.destinationType = AwfulPageDestinationTypeSpecific;
+        self.pages.currentPage--;
+        [self refresh];
     }
 }
 
@@ -466,6 +449,50 @@
     self.forumButton = nil;
     self.pagesButton = nil;
     [super viewDidUnload];
+}
+
+#pragma mark - BarButtonItem Actions
+
+-(IBAction)tappedBookmarks : (id)sender
+{
+    
+}
+
+-(IBAction)tappedVote : (id)sender
+{
+    
+}
+
+-(IBAction)tappedCompose : (id)sender
+{
+    
+}
+
+-(IBAction)tappedNextPage : (id)sender
+{
+    [self nextPage];
+}
+
+-(void)tappedPageNav : (id)sender
+{
+    if(self.pageController != nil && !self.pageController.hiding) {
+        self.pageController.hiding = YES;
+        [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^(void) {
+            self.pageController.view.frame = CGRectOffset(self.pageController.view.frame, 0, -self.pageController.view.frame.size.height);
+        } completion:^(BOOL finished) {
+            [self.pageController.view removeFromSuperview];
+            self.pageController = nil;
+        }];
+    } else if(self.pageController == nil) {
+        self.pageController = [[AwfulSmallPageController alloc] initWithAwfulPage:self];
+        
+        float width_diff = self.view.frame.size.width - self.pageController.view.frame.size.width;
+        self.pageController.view.center = CGPointMake(self.view.center.x + width_diff/2, -self.pageController.view.frame.size.height/2);
+        [self.view addSubview:self.pageController.view];
+        [UIView animateWithDuration:0.3 animations:^(void) {
+            self.pageController.view.frame = CGRectOffset(self.pageController.view.frame, 0, self.pageController.view.frame.size.height);
+        }];
+    }
 }
 
 #pragma mark -

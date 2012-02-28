@@ -200,14 +200,34 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <toolbarItems>
-                        <barButtonItem style="plain" systemItem="compose" id="jCb-MV-Nd9"/>
+                        <barButtonItem style="plain" systemItem="compose" id="jCb-MV-Nd9">
+                            <connections>
+                                <action selector="tappedCompose:" destination="uMb-el-Ve5" id="jlk-rT-3X9"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="PMb-rX-sU3"/>
-                        <barButtonItem image="28-star.png" style="plain" id="Z2A-is-rRK"/>
+                        <barButtonItem image="28-star.png" style="plain" id="Z2A-is-rRK">
+                            <connections>
+                                <action selector="tappedBookmarks:" destination="uMb-el-Ve5" id="mAl-fA-Ly7"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="SWK-gY-422"/>
-                        <barButtonItem image="39-circle-check.png" style="plain" id="U4o-o0-3kz"/>
+                        <barButtonItem image="39-circle-check.png" style="plain" id="U4o-o0-3kz">
+                            <connections>
+                                <action selector="tappedVote:" destination="uMb-el-Ve5" id="1MK-so-HS3"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="gmB-iZ-3DY"/>
-                        <barButtonItem title="999/1000" id="0Yn-hX-hPo"/>
-                        <barButtonItem image="01-arrow-east.png" id="SkB-yt-lkF"/>
+                        <barButtonItem title="999/1000" id="0Yn-hX-hPo">
+                            <connections>
+                                <action selector="tappedPageNav:" destination="uMb-el-Ve5" id="qYc-lH-1Ox"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem image="01-arrow-east.png" id="SkB-yt-lkF">
+                            <connections>
+                                <action selector="tappedNextPage:" destination="uMb-el-Ve5" id="NA3-Gd-Sgs"/>
+                            </connections>
+                        </barButtonItem>
                     </toolbarItems>
                     <navigationItem key="navigationItem" id="4gr-Fi-99a">
                         <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="vbO-Kw-paI">
@@ -220,6 +240,11 @@
                         </connections>
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics" barStyle="blackOpaque"/>
+                    <connections>
+                        <outlet property="bookmarksBarButtonItem" destination="Z2A-is-rRK" id="IOW-9X-Va0"/>
+                        <outlet property="nextPageBarButtonItem" destination="SkB-yt-lkF" id="hDw-wg-KNG"/>
+                        <outlet property="pagesBarButtonItem" destination="0Yn-hX-hPo" id="N87-mW-V9V"/>
+                    </connections>
                 </viewController>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="thread title label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" minimumFontSize="10" id="yR7-8b-xAm">
                     <rect key="frame" x="31.5" y="0.0" width="150" height="44"/>
@@ -389,7 +414,15 @@
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPage.h"/>
             <relationships>
                 <relationship kind="action" name="hardRefresh"/>
+                <relationship kind="action" name="tappedBookmarks:"/>
+                <relationship kind="action" name="tappedCompose:"/>
+                <relationship kind="action" name="tappedNextPage:"/>
+                <relationship kind="action" name="tappedPageNav:"/>
+                <relationship kind="action" name="tappedVote:"/>
+                <relationship kind="outlet" name="bookmarksBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="forumButton" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="nextPageBarButtonItem" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="pagesBarButtonItem" candidateClass="UIBarButtonItem"/>
             </relationships>
         </class>
         <class className="AwfulPageNavCell" superclassName="UITableViewCell">

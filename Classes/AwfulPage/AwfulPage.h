@@ -50,6 +50,10 @@ typedef enum {
 @property (nonatomic, strong) AwfulSmallPageController *pageController;
 @property (nonatomic, strong) MKNetworkOperation *networkOperation;
 
+@property (nonatomic, strong) IBOutlet UIBarButtonItem *pagesBarButtonItem;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem *nextPageBarButtonItem;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem *bookmarksBarButtonItem;
+
 +(id)pageWithAwfulThread : (AwfulThread *)aThread startAt : (AwfulPageDestinationType)thread_pos;
 +(id)pageWithAwfulThread : (AwfulThread *)aThread pageNum : (int)page_num;
 +(id)pageWithAwfulThread : (AwfulThread *)aThread startAt : (AwfulPageDestinationType)thread_pos pageNum : (int)page_num;
@@ -64,7 +68,13 @@ typedef enum {
 
 -(IBAction)hardRefresh;
 -(void)setThreadTitle : (NSString *)in_title;
--(void)tappedPageNav : (id)sender;
+
+
+-(IBAction)tappedPageNav : (id)sender;
+-(IBAction)tappedBookmarks : (id)sender;
+-(IBAction)tappedVote : (id)sender;
+-(IBAction)tappedCompose : (id)sender;
+-(IBAction)tappedNextPage : (id)sender;
 
 -(void)scrollToSpecifiedPost;
 -(void)showActions:(NSString *)post_id;
