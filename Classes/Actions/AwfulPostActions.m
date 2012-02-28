@@ -21,7 +21,8 @@ typedef enum {
 
 @implementation AwfulPostActions
 
-@synthesize post, page;
+@synthesize post = _post;
+@synthesize page = _page;
 
 -(id)initWithAwfulPost : (AwfulPost *)aPost page : (AwfulPage *)aPage
 {
@@ -74,7 +75,7 @@ typedef enum {
         }
     }
     
-    [self.navigator setActions:nil];
+    //[self.navigator setActions:nil];
 }
 
 @end

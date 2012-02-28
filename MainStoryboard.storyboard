@@ -165,7 +165,11 @@
                         </connections>
                     </tableView>
                     <toolbarItems>
-                        <barButtonItem title="Item" id="88y-vl-Bf2"/>
+                        <barButtonItem title="Filter" id="88y-vl-Bf2"/>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="4lq-vs-d6i"/>
+                        <barButtonItem image="05-arrow-west.png" id="HaJ-51-RiX"/>
+                        <barButtonItem title="Page 1" style="plain" id="6hw-eH-VsZ"/>
+                        <barButtonItem image="01-arrow-east.png" id="qIo-cI-vSF"/>
                     </toolbarItems>
                     <navigationItem key="navigationItem" title="Title" id="Oal-jR-ZLk">
                         <connections>
@@ -345,6 +349,7 @@
     </scenes>
     <resources>
         <image name="01-arrow-east.png" width="19" height="16"/>
+        <image name="05-arrow-west.png" width="19" height="16"/>
         <image name="28-star.png" width="26" height="26"/>
         <image name="39-circle-check.png" width="28" height="28"/>
         <image name="40-inbox.png" width="24" height="24"/>

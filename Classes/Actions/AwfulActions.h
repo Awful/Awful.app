@@ -14,6 +14,7 @@
 
 @property (nonatomic, strong) NSMutableArray *titles;
 @property (nonatomic, weak) AwfulNavigator *navigator;
+@property (nonatomic, weak) UIViewController *viewController;
 
 -(void)show;
 -(NSString *)getOverallTitle;

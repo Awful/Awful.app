@@ -13,12 +13,12 @@
 @implementation AwfulActions
 
 @synthesize titles = _titles, navigator = _navigator;
+@synthesize viewController = _viewController;
 
 -(id)init
 {
     if((self=[super init])) {
         _titles = [[NSMutableArray alloc] init];
-        _navigator = nil;
     }
     return self;
 }
@@ -38,9 +38,9 @@
         [sheet addButtonWithTitle:@"Cancel"];
         sheet.cancelButtonIndex = [self.titles count];
         
-        AwfulNavigator *nav = getNavigator();
-        [nav forceShow];
-        [sheet showFromToolbar:nav.navigationController.toolbar];
+        //AwfulNavigator *nav = getNavigator();
+        //[nav forceShow];
+        [sheet showFromToolbar:self.viewController.navigationController.toolbar];
     } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[self getOverallTitle] message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:nil];
         for(NSString *title in self.titles) {

@@ -25,6 +25,7 @@ typedef enum {
 @class AwfulPageCount;
 @class AwfulSmallPageController;
 @class AwfulPageDataController;
+@class AwfulActions;
 
 @interface AwfulPage : UIViewController <AwfulNavigatorContent, UIWebViewDelegate, AwfulHistoryRecorder, UIGestureRecognizerDelegate, JSBridgeWebViewDelegate>
 
@@ -37,6 +38,7 @@ typedef enum {
 @property (nonatomic, strong) NSString *postIDScrollDestination;
 @property BOOL touchedPage;
 
+@property (nonatomic, strong) AwfulActions *actions;
 @property (nonatomic, weak) AwfulNavigator *navigator;
 @property (nonatomic, strong) AwfulPageCount *pages;
 @property (nonatomic, strong) UILabel *pagesLabel;

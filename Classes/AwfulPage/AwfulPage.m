@@ -44,6 +44,7 @@
 @synthesize shouldScrollToBottom, postIDScrollDestination, touchedPage;
 @synthesize pageController, dataController = _dataController;
 @synthesize networkOperation = _networkOperation;
+@synthesize actions = _actions;
 
 #pragma mark -
 #pragma mark Initialization
@@ -266,8 +267,8 @@
 
 -(void)stop
 {
-    /*AwfulNavigator *nav = getNavigator();
-    [nav.requestHandler cancelAllRequests];*/
+    [self.networkOperation cancel];
+    [self swapToRefreshButton];
     
     if([self.view isMemberOfClass:[UIWebView class]]) {
         [(UIWebView *)self.view stopLoading];
@@ -397,6 +398,15 @@
  
  }*/
 
+-(void)setActions:(AwfulPostActions *)actions
+{
+    if(actions != _actions) {
+        _actions = actions;
+        _actions.viewController = self;
+        [_actions show];
+    }
+}
+
 #pragma mark -
 #pragma mark Memory management
 
@@ -509,14 +519,18 @@
 }
 
 -(void)showActions:(NSString *)post_id
-{
-    AwfulNavigator *nav = getNavigator();
-    
-    if(![post_id isEqualToString:@""] && nav.actions == nil) {
+{    
+    if(![post_id isEqualToString:@""]) {
         for(AwfulPost *post in self.dataController.posts) {
             if([post.postID isEqualToString:post_id]) {
+                /*if(self.actions != nil && [self.actions isMemberOfClass:[AwfulPostActions class]]) {
+                    AwfulPostActions *post_actions = (AwfulPostActions *)self.actions;
+                    if(post_actions.post == post) {
+                    
+                    }
+                }*/
                 AwfulPostActions *actions = [[AwfulPostActions alloc] initWithAwfulPost:post page:self];
-                [nav setActions:actions];
+                self.actions = actions;
             }
         }
     }
