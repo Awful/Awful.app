@@ -104,11 +104,12 @@
     [nav dismissModalViewControllerAnimated:YES];
 }
 
-/*
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    [self.navigationController setToolbarHidden:YES];
 }
-*/
+
 /*
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
@@ -377,6 +378,7 @@
 #pragma mark -
 #pragma mark Table view delegate
 
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     // Navigation logic may go here. Create and push another view controller.
 	/*
@@ -386,11 +388,6 @@
 	 [self.navigationController pushViewController:detailViewController animated:YES];
 	 [detailViewController release];
 	 */
-    
-    AwfulForum *forum = [self getForumAtIndexPath:indexPath];
-    AwfulThreadList *detail = [[AwfulThreadList alloc] initWithAwfulForum:forum];
-    loadContentVC(detail);
-    //[detail release];
 }
 
 #pragma mark -
@@ -687,10 +684,10 @@
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    AwfulForum *forum = [self getForumAtIndexPath:indexPath];
+    //AwfulForum *forum = [self getForumAtIndexPath:indexPath];
     
-    AwfulThreadListIpad *detail = [[AwfulThreadListIpad alloc] initWithAwfulForum:forum];
-    [self.navigationController pushViewController:detail animated:YES];
+    //AwfulThreadListIpad *detail = [[AwfulThreadListIpad alloc] initWithAwfulForum:forum];
+    //[self.navigationController pushViewController:detail animated:YES];
 }
 
 @end

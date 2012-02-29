@@ -37,7 +37,7 @@
     if(self.historyType == AwfulHistoryTypePage) {
         winner = [AwfulPage pageWithAwfulHistory:self];
     } else if(self.historyType == AwfulHistoryTypeThreadlist) {
-        winner = [[AwfulThreadList alloc] initWithAwfulHistory:self];
+        //winner = [[AwfulThreadList alloc] initWithAwfulHistory:self];
     }
     
     return winner;

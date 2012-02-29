@@ -24,7 +24,7 @@
 @synthesize refreshTimer, refreshed;
 
 -(id)init
-{    
+{    /*
     if((self=[super initWithString:@"Bookmarks" atPageNum:1])) {
                 
         NSMutableArray *old_bookmarks = [AwfulUtil newThreadListForForumId:[self getSaveID]];
@@ -43,7 +43,7 @@
         
         self.refreshTimer = nil;
         [self startTimer];
-    }
+    }*/
     
     return self;
 }
@@ -55,9 +55,6 @@
 
 -(void)viewDidLoad {
     [super viewDidLoad];
-    
-    self.forumLabel.text = @"Bookmarks";
-    self.navigationItem.titleView = self.forumLabel;
     
     [self swapToRefreshButton];
     
@@ -215,6 +212,16 @@
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
     }   
+}
+
+-(AwfulThreadCellType)getTypeAtIndexPath : (NSIndexPath *)indexPath
+{
+    if(indexPath.row < [self.awfulThreads count]) {
+        return AwfulThreadCellTypeThread;
+    } else if(indexPath.row == [self.awfulThreads count]) {
+        return AwfulThreadCellTypePageNav;
+    }
+    return AwfulThreadCellTypeUnknown;
 }
 
 #pragma mark Refresh Button Swapping

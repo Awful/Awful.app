@@ -957,8 +957,8 @@
 -(void)hitForum
 {
     if(self.thread.forum != nil) {
-        AwfulThreadListIpad *list = [[AwfulThreadListIpad alloc] initWithAwfulForum:self.thread.forum];
-        loadContentVC(list);
+        /*AwfulThreadListIpad *list = [[AwfulThreadListIpad alloc] initWithAwfulForum:self.thread.forum];
+        loadContentVC(list);*/
     }
 }
 

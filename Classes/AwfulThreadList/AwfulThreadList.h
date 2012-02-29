@@ -17,49 +17,37 @@
 @class AwfulThread;
 @class AwfulSplitViewController;
 @class AwfulThreadCell;
-@class AwfulPageNavCell;
 
-typedef enum {
-    AwfulThreadCellTypeUnknown,
-    AwfulThreadCellTypeThread,
-    AwfulThreadCellTypePageNav
-} AwfulThreadCellType;
-
-@interface AwfulThreadList : UITableViewController <AwfulNavigatorContent, AwfulHistoryRecorder>
+@interface AwfulThreadList : UITableViewController
 
 @property (nonatomic, strong) AwfulForum *forum;
 @property (nonatomic, strong) NSMutableArray *awfulThreads;
-@property (nonatomic, strong) IBOutlet AwfulThreadCell *threadCell;
-@property (nonatomic, strong) IBOutlet AwfulPageNavCell *pageNavCell;
 @property (nonatomic, strong) AwfulPageCount *pages;
-@property (nonatomic, weak) AwfulNavigator *navigator;
-@property (nonatomic, strong) UILabel *pagesLabel;
-@property (nonatomic, strong) UILabel *forumLabel;
 @property (nonatomic, strong) MKNetworkOperation *networkOperation;
 
--(id)initWithString : (NSString *)str atPageNum : (int)page_num;
--(id)initWithAwfulForum : (AwfulForum *)in_forum atPageNum : (int)page_num;
--(id)initWithAwfulForum : (AwfulForum *)in_forum;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem *prevPageBarButtonItem;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem *pageLabelBarButtonItem;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem *nextPageBarButtonItem;
 
 -(AwfulThread *)getThreadAtIndexPath : (NSIndexPath *)path;
 
 -(void)acceptThreads : (NSMutableArray *)in_threads;
--(void)loadList;
 -(BOOL)shouldReloadOnViewLoad;
+
 -(void)swapToRefreshButton;
 -(void)swapToStopButton;
 
 -(IBAction)nextPage;
 -(IBAction)prevPage;
-
--(NSString *)getSaveID;
--(NSString *)getURLSuffix;
+-(void)updatePagesLabel;
 
 -(IBAction)refresh;
+-(IBAction)stop;
+-(void)loadPageNum : (NSUInteger)pageNum;
+
 -(void)newlyVisible;
 
 -(void)choseForumOption : (int)option;
--(AwfulThreadCellType)getTypeAtIndexPath : (NSIndexPath *)path;
 
 @end
 

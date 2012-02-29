@@ -167,9 +167,17 @@
                     <toolbarItems>
                         <barButtonItem title="Filter" id="88y-vl-Bf2"/>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="4lq-vs-d6i"/>
-                        <barButtonItem image="05-arrow-west.png" id="HaJ-51-RiX"/>
+                        <barButtonItem image="05-arrow-west.png" id="HaJ-51-RiX">
+                            <connections>
+                                <action selector="prevPage" destination="Osj-d3-UMd" id="fzb-vz-dpM"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem title="Page 1" style="plain" id="6hw-eH-VsZ"/>
-                        <barButtonItem image="01-arrow-east.png" id="qIo-cI-vSF"/>
+                        <barButtonItem image="01-arrow-east.png" id="qIo-cI-vSF">
+                            <connections>
+                                <action selector="nextPage" destination="Osj-d3-UMd" id="Oyy-na-9Zn"/>
+                            </connections>
+                        </barButtonItem>
                     </toolbarItems>
                     <navigationItem key="navigationItem" title="Title" id="Oal-jR-ZLk">
                         <connections>
@@ -177,6 +185,11 @@
                         </connections>
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics" barStyle="blackOpaque"/>
+                    <connections>
+                        <outlet property="nextPageBarButtonItem" destination="qIo-cI-vSF" id="gdd-L7-UCx"/>
+                        <outlet property="pageLabelBarButtonItem" destination="6hw-eH-VsZ" id="Srn-Bi-bI9"/>
+                        <outlet property="prevPageBarButtonItem" destination="HaJ-51-RiX" id="Pdx-bF-Vqz"/>
+                    </connections>
                 </tableViewController>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Forums Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" minimumFontSize="10" id="Q3w-Oz-BUj">
                     <rect key="frame" x="85" y="0.0" width="150" height="44"/>
@@ -425,14 +438,6 @@
                 <relationship kind="outlet" name="pagesBarButtonItem" candidateClass="UIBarButtonItem"/>
             </relationships>
         </class>
-        <class className="AwfulPageNavCell" superclassName="UITableViewCell">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPageNavCell.h"/>
-            <relationships>
-                <relationship kind="outlet" name="nextButton" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="pageLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="prevButton" candidateClass="UIButton"/>
-            </relationships>
-        </class>
         <class className="AwfulTabBarController" superclassName="UITabBarController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulTabBarController.h"/>
         </class>
@@ -453,8 +458,10 @@
                 <relationship kind="action" name="nextPage"/>
                 <relationship kind="action" name="prevPage"/>
                 <relationship kind="action" name="refresh"/>
-                <relationship kind="outlet" name="pageNavCell" candidateClass="AwfulPageNavCell"/>
-                <relationship kind="outlet" name="threadCell" candidateClass="AwfulThreadCell"/>
+                <relationship kind="action" name="stop"/>
+                <relationship kind="outlet" name="nextPageBarButtonItem" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="pageLabelBarButtonItem" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="prevPageBarButtonItem" candidateClass="UIBarButtonItem"/>
             </relationships>
         </class>
     </classes>

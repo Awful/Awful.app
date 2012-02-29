@@ -567,7 +567,6 @@
 		1185923913B9425C0036E607 /* star_admin.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1185923713B9425B0036E607 /* star_admin.gif */; };
 		1185923A13B9425C0036E607 /* star_moderator.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1185923813B9425B0036E607 /* star_moderator.gif */; };
 		118E615B14E5A17500F0CE0A /* AwfulThreadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 112764F014DB4F6A003ACE76 /* AwfulThreadCell.m */; };
-		118E615C14E5A17500F0CE0A /* AwfulPageNavCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 112764F314DB50E6003ACE76 /* AwfulPageNavCell.m */; };
 		118E615F14E5A1F100F0CE0A /* AwfulForumHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 112764EC14DB44E6003ACE76 /* AwfulForumHeader.m */; };
 		1190F73413BE4EA900B9D271 /* AwfulActions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6CE13BE4EA900B9D271 /* AwfulActions.m */; };
 		1190F73513BE4EA900B9D271 /* AwfulPostActions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6D013BE4EA900B9D271 /* AwfulPostActions.m */; };
@@ -588,7 +587,6 @@
 		1190F74813BE4EA900B9D271 /* AwfulPostBoxController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6F113BE4EA900B9D271 /* AwfulPostBoxController.m */; };
 		1190F75213BE4EA900B9D271 /* AwfulBookmarksController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F70713BE4EA900B9D271 /* AwfulBookmarksController.m */; };
 		1190F75313BE4EA900B9D271 /* AwfulThreadList.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F70913BE4EA900B9D271 /* AwfulThreadList.m */; };
-		1190F75413BE4EA900B9D271 /* AwfulThreadListCells.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1190F70A13BE4EA900B9D271 /* AwfulThreadListCells.xib */; };
 		1190F75513BE4EA900B9D271 /* AwfulExtrasCells.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1190F70C13BE4EA900B9D271 /* AwfulExtrasCells.xib */; };
 		1190F75613BE4EA900B9D271 /* AwfulExtrasController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F70E13BE4EA900B9D271 /* AwfulExtrasController.m */; };
 		1190F75713BE4EA900B9D271 /* AwfulHelpBox.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1190F70F13BE4EA900B9D271 /* AwfulHelpBox.xib */; };
@@ -1182,8 +1180,6 @@
 		112764EC14DB44E6003ACE76 /* AwfulForumHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumHeader.m; sourceTree = "<group>"; };
 		112764EF14DB4F6A003ACE76 /* AwfulThreadCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadCell.h; sourceTree = "<group>"; };
 		112764F014DB4F6A003ACE76 /* AwfulThreadCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadCell.m; sourceTree = "<group>"; };
-		112764F214DB50E6003ACE76 /* AwfulPageNavCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPageNavCell.h; sourceTree = "<group>"; };
-		112764F314DB50E6003ACE76 /* AwfulPageNavCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPageNavCell.m; sourceTree = "<group>"; };
 		112DB4B914211F24005A98CB /* SALR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SALR.h; sourceTree = "<group>"; };
 		112DB4BA14211F24005A98CB /* SALR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SALR.m; sourceTree = "<group>"; };
 		112DB4BD14211F54005A98CB /* jquery.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = jquery.js; sourceTree = "<group>"; };
@@ -1291,7 +1287,6 @@
 		1190F70713BE4EA900B9D271 /* AwfulBookmarksController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulBookmarksController.m; sourceTree = "<group>"; };
 		1190F70813BE4EA900B9D271 /* AwfulThreadList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadList.h; sourceTree = "<group>"; };
 		1190F70913BE4EA900B9D271 /* AwfulThreadList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadList.m; sourceTree = "<group>"; };
-		1190F70A13BE4EA900B9D271 /* AwfulThreadListCells.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AwfulThreadListCells.xib; sourceTree = "<group>"; };
 		1190F70C13BE4EA900B9D271 /* AwfulExtrasCells.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AwfulExtrasCells.xib; sourceTree = "<group>"; };
 		1190F70D13BE4EA900B9D271 /* AwfulExtrasController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulExtrasController.h; sourceTree = "<group>"; };
 		1190F70E13BE4EA900B9D271 /* AwfulExtrasController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulExtrasController.m; sourceTree = "<group>"; };
@@ -2184,9 +2179,6 @@
 				1190F70913BE4EA900B9D271 /* AwfulThreadList.m */,
 				112764EF14DB4F6A003ACE76 /* AwfulThreadCell.h */,
 				112764F014DB4F6A003ACE76 /* AwfulThreadCell.m */,
-				112764F214DB50E6003ACE76 /* AwfulPageNavCell.h */,
-				112764F314DB50E6003ACE76 /* AwfulPageNavCell.m */,
-				1190F70A13BE4EA900B9D271 /* AwfulThreadListCells.xib */,
 			);
 			path = AwfulThreadList;
 			sourceTree = "<group>";
@@ -3045,7 +3037,6 @@
 				1190F73F13BE4EA900B9D271 /* AwfulNavigator.xib in Resources */,
 				1190F74113BE4EA900B9D271 /* AwfulNavigatorLabels.xib in Resources */,
 				1190F74713BE4EA900B9D271 /* AwfulPostBox.xib in Resources */,
-				1190F75413BE4EA900B9D271 /* AwfulThreadListCells.xib in Resources */,
 				1190F75513BE4EA900B9D271 /* AwfulExtrasCells.xib in Resources */,
 				1190F75713BE4EA900B9D271 /* AwfulHelpBox.xib in Resources */,
 				1190F75913BE4EA900B9D271 /* AwfulHelpController.xib in Resources */,
@@ -3132,7 +3123,6 @@
 			files = (
 				118E615F14E5A1F100F0CE0A /* AwfulForumHeader.m in Sources */,
 				118E615B14E5A17500F0CE0A /* AwfulThreadCell.m in Sources */,
-				118E615C14E5A17500F0CE0A /* AwfulPageNavCell.m in Sources */,
 				1190F73413BE4EA900B9D271 /* AwfulActions.m in Sources */,
 				1190F73513BE4EA900B9D271 /* AwfulPostActions.m in Sources */,
 				1190F73613BE4EA900B9D271 /* AwfulThreadActions.m in Sources */,

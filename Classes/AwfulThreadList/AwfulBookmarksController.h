@@ -9,6 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "AwfulThreadList.h"
 
+typedef enum {
+    AwfulThreadCellTypeUnknown,
+    AwfulThreadCellTypeThread,
+    AwfulThreadCellTypePageNav
+} AwfulThreadCellType;
+
 @interface AwfulBookmarksController : AwfulThreadList <UIScrollViewDelegate>
 
 @property (nonatomic, strong) NSTimer *refreshTimer;
@@ -19,6 +25,8 @@
 
 -(void)swapToRefreshButton;
 -(void)swapToStopButton;
+
+-(AwfulThreadCellType)getTypeAtIndexPath : (NSIndexPath *)indexPath;
 
 @end
 

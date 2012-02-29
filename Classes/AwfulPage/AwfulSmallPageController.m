@@ -124,8 +124,8 @@
 -(IBAction)hitForum : (id)sender
 {
     if(self.page.thread.forum != nil) {
-        AwfulThreadList *list = [[AwfulThreadList alloc] initWithAwfulForum:self.page.thread.forum];
-        loadContentVC(list);
+        /*AwfulThreadList *list = [[AwfulThreadList alloc] initWithAwfulForum:self.page.thread.forum];
+        loadContentVC(list);*/
     }
 }
 
