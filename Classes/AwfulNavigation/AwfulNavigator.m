@@ -19,6 +19,7 @@
 #import "AwfulConfig.h"
 #import "AwfulHistoryManager.h"
 #import "AwfulSplitViewController.h"
+#import "AwfulPage.h"
 
 @implementation AwfulNavigator
 

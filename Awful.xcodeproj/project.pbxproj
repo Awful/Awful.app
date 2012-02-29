@@ -2173,10 +2173,10 @@
 		1190F70513BE4EA900B9D271 /* AwfulThreadList */ = {
 			isa = PBXGroup;
 			children = (
-				1190F70613BE4EA900B9D271 /* AwfulBookmarksController.h */,
-				1190F70713BE4EA900B9D271 /* AwfulBookmarksController.m */,
 				1190F70813BE4EA900B9D271 /* AwfulThreadList.h */,
 				1190F70913BE4EA900B9D271 /* AwfulThreadList.m */,
+				1190F70613BE4EA900B9D271 /* AwfulBookmarksController.h */,
+				1190F70713BE4EA900B9D271 /* AwfulBookmarksController.m */,
 				112764EF14DB4F6A003ACE76 /* AwfulThreadCell.h */,
 				112764F014DB4F6A003ACE76 /* AwfulThreadCell.m */,
 			);

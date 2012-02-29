@@ -9,57 +9,51 @@
 #import "AwfulBookmarksController.h"
 #import "AwfulUtil.h"
 #import "AwfulConfig.h"
-//#import "AwfulForumRefreshRequest.h"
 #import "AwfulNavigator.h"
-//#import "AwfulRequestHandler.h"
 #import "AwfulPageCount.h"
-//#import "ASIFormDataRequest.h"
+#import "AwfulThread.h"
+#import "AwfulPage.h"
+#import "AwfulNetworkEngine.h"
 
 @implementation AwfulBookmarksController
 
+@synthesize refreshTimer = _refreshTimer;
+@synthesize refreshed = _refreshed;
 
-#pragma mark -
-#pragma mark Initialization
-
-@synthesize refreshTimer, refreshed;
-
--(id)init
-{    /*
-    if((self=[super initWithString:@"Bookmarks" atPageNum:1])) {
-                
-        NSMutableArray *old_bookmarks = [AwfulUtil newThreadListForForumId:[self getSaveID]];
-        self.awfulThreads = old_bookmarks;
-        
-        // crash fix from one version to another
-        if(![[NSUserDefaults standardUserDefaults] boolForKey:@"killbookmarks"]) {
-            self.awfulThreads = [NSMutableArray array];
-            [AwfulUtil saveThreadList:self.awfulThreads forForumId:[self getSaveID]];
-            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"killbookmarks"];
-        }
-        
-        self.tableView.delegate = self;
-        
-        self.refreshed = NO;
-        
-        self.refreshTimer = nil;
-        [self startTimer];
-    }*/
+-(void)awakeFromNib
+{
+    NSMutableArray *old_bookmarks = [AwfulUtil newThreadListForForumId:[self getSaveID]];
+    self.awfulThreads = old_bookmarks;
     
-    return self;
+    // crash fix from one version to another
+    if(![[NSUserDefaults standardUserDefaults] boolForKey:@"killbookmarks"]) {
+        self.awfulThreads = [NSMutableArray array];
+        [AwfulUtil saveThreadList:self.awfulThreads forForumId:[self getSaveID]];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"killbookmarks"];
+    }
+    
+    self.tableView.delegate = self;
+    self.title = @"Bookmarks";
 }
-
 
 #pragma mark -
 #pragma mark View lifecycle
-
 
 -(void)viewDidLoad {
     [super viewDidLoad];
     
     [self swapToRefreshButton];
+    self.refreshed = NO;
+    self.refreshTimer = nil;
+    [self startTimer];
     
-    UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(hitDone)];
-    self.navigationItem.rightBarButtonItem = done;
+    [self.navigationController setToolbarHidden:YES];
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [self.refreshTimer invalidate];
+    self.refreshTimer = nil;
 }
 
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
@@ -91,7 +85,7 @@
     self.refreshTimer = nil;
 }
 
--(void) newlyVisible
+-(void)newlyVisible
 {
     [self endTimer];
     self.refreshed = NO;
@@ -102,15 +96,28 @@
 {
     [self endTimer];
     self.refreshed = YES;
-    [self swapToStopButton];
     [super refresh];
+}
+
+-(void)loadPageNum : (NSUInteger)pageNum
+{
+    [self swapToStopButton];
+    [UIView animateWithDuration:0.2 animations:^(void){
+        self.view.alpha = 0.5;
+    }];
+    
+    [self.networkOperation cancel];
+    self.networkOperation = [ApplicationDelegate.awfulNetworkEngine threadListForBookmarksAtPageNum:1 onCompletion:^(NSMutableArray *threads) {
+        [self acceptThreads:threads];
+    } onError:^(NSError *error) {
+        
+    }];
 }
 
 -(void)stop
 {
     self.refreshed = YES;
     [self endTimer];
-    [self swapToRefreshButton];
     [super stop];
 }
 
@@ -224,26 +231,6 @@
     return AwfulThreadCellTypeUnknown;
 }
 
-#pragma mark Refresh Button Swapping
-
--(void)acceptThreads : (NSMutableArray *)in_threads
-{
-    [super acceptThreads:in_threads];
-    [self swapToRefreshButton];
-}
-
--(void)swapToRefreshButton
-{
-    UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refresh)];
-    self.navigationItem.leftBarButtonItem = refresh;
-}
-
--(void)swapToStopButton
-{
-    UIBarButtonItem *stop = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop)];
-    self.navigationItem.leftBarButtonItem = stop;
-}
-
 @end
 
 @implementation AwfulBookmarksControllerIpad
@@ -268,7 +255,7 @@
         AwfulThread *thread = [self getThreadAtIndexPath:indexPath];
         
         if(thread.threadID != nil) {
-            int start = AwfulPageDestinationTypeNewpost;
+            AwfulPageDestinationType start = AwfulPageDestinationTypeNewpost;
             if(thread.totalUnreadPosts == -1) {
                 start = AwfulPageDestinationTypeFirst;
             } else if(thread.totalUnreadPosts == 0) {

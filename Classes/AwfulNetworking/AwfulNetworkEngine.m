@@ -36,6 +36,27 @@
     return op;
 }
 
+
+-(MKNetworkOperation *)threadListForBookmarksAtPageNum:(NSUInteger)pageNum onCompletion:(ThreadListResponseBlock)threadListResponseBlock onError:(MKNKErrorBlock) errorBlock
+{
+    NSString *path = [NSString stringWithFormat:@"bookmarkthreads.php?pagenumber=%u", pageNum];
+    MKNetworkOperation *op = [self operationWithPath:path];
+    
+    [op onCompletion:^(MKNetworkOperation *completedOperation) {
+        
+        NSData *responseData = [completedOperation responseData];
+        NSMutableArray *threads = [AwfulParse parseThreadsFromForumData:responseData];
+        threadListResponseBlock(threads);
+        
+    } onError:^(NSError *error) {
+        
+        errorBlock(error);
+    }];
+    
+    [self enqueueOperation:op];
+    return op;
+}
+
 -(MKNetworkOperation *)pageDataForThread : (AwfulThread *)thread destinationType : (AwfulPageDestinationType)destinationType pageNum : (NSUInteger)pageNum onCompletion:(PageResponseBlock)pageResponseBlock onError:(MKNKErrorBlock)errorBlock
 {
     NSString *append = @"";

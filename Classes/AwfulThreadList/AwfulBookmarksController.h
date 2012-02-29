@@ -6,7 +6,6 @@
 //  Copyright 2010 Regular Berry Software LLC. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #import "AwfulThreadList.h"
 
 typedef enum {
@@ -22,9 +21,6 @@ typedef enum {
 
 -(void)startTimer;
 -(void)endTimer;
-
--(void)swapToRefreshButton;
--(void)swapToStopButton;
 
 -(AwfulThreadCellType)getTypeAtIndexPath : (NSIndexPath *)indexPath;
 

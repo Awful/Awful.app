@@ -6,14 +6,8 @@
 //  Copyright 2010 Regular Berry Software LLC. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-#import "AwfulForum.h"
-#import "AwfulPost.h"
-#import "AwfulPage.h"
-#import "AwfulHistory.h"
-#import "AwfulNavigator.h"
-
 @class AwfulPageCount;
+@class AwfulForum;
 @class AwfulThread;
 @class AwfulSplitViewController;
 @class AwfulThreadCell;
@@ -46,8 +40,6 @@
 -(void)loadPageNum : (NSUInteger)pageNum;
 
 -(void)newlyVisible;
-
--(void)choseForumOption : (int)option;
 
 @end
 
