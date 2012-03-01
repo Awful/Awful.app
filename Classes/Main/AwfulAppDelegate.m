@@ -96,7 +96,6 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     AwfulNavigator *nav = getNavigator();
-    [nav callBookmarksRefresh];
     if ([nav isKindOfClass:[AwfulNavigatorIpad class]])
         [((AwfulNavigatorIpad *) nav) callForumsRefresh];
 }

@@ -241,6 +241,7 @@
     [self swapToStopButton];
     self.networkOperation = [ApplicationDelegate.awfulNetworkEngine pageDataForThread:self.thread destinationType:self.destinationType pageNum:self.pages.currentPage onCompletion:^(AwfulPageDataController *dataController) {
         self.dataController = dataController;
+        [self updatePagesLabel];
     } onError:^(NSError *error) {
         
     }];
@@ -433,12 +434,6 @@
     self.pagesButton.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     [self.pagesButton setTitle:[self.pages description] forState:UIControlStateNormal];
     [self.pagesButton setTitle:[self.pages description] forState:UIControlStateSelected];
-    
-    
-    UIBarButtonItem *cust = [[UIBarButtonItem alloc] initWithCustomView:self.pagesButton];
-    self.navigator.navigationItem.rightBarButtonItem = cust;
-    
-    self.title = self.thread.title;
 }
 
 - (void)viewDidUnload {
@@ -451,7 +446,28 @@
     [super viewDidUnload];
 }
 
+-(void)viewWillAppear:(BOOL)animated
+{
+    [self.navigationController setToolbarHidden:NO];
+    self.navigationController.toolbar.barStyle = UIBarStyleBlack;
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    
+}
+
 #pragma mark - BarButtonItem Actions
+
+-(void)updatePagesLabel
+{
+    self.pagesBarButtonItem.title = [NSString stringWithFormat:@"%d/%d", self.pages.currentPage, self.pages.totalPages];
+    if(self.pages.currentPage == self.pages.totalPages) {
+        self.nextPageBarButtonItem.enabled = NO;
+    } else {
+        self.nextPageBarButtonItem.enabled = YES;
+    }
+}
 
 -(IBAction)tappedBookmarks : (id)sender
 {

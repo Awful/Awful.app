@@ -14,15 +14,14 @@
 #import "AwfulThread.h"
 #import "AwfulPage.h"
 #import "AwfulNetworkEngine.h"
+#import "AwfulTableViewController.h"
 
 @implementation AwfulBookmarksController
 
-@synthesize refreshTimer = _refreshTimer;
-@synthesize refreshed = _refreshed;
-
 -(void)awakeFromNib
 {
-    NSMutableArray *old_bookmarks = [AwfulUtil newThreadListForForumId:[self getSaveID]];
+    [super awakeFromNib];
+    /*NSMutableArray *old_bookmarks = [AwfulUtil newThreadListForForumId:[self getSaveID]];
     self.awfulThreads = old_bookmarks;
     
     // crash fix from one version to another
@@ -30,7 +29,7 @@
         self.awfulThreads = [NSMutableArray array];
         [AwfulUtil saveThreadList:self.awfulThreads forForumId:[self getSaveID]];
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"killbookmarks"];
-    }
+    }*/
     
     self.tableView.delegate = self;
     self.title = @"Bookmarks";
@@ -41,24 +40,17 @@
 
 -(void)viewDidLoad {
     [super viewDidLoad];
-    
-    [self swapToRefreshButton];
-    self.refreshed = NO;
-    self.refreshTimer = nil;
-    [self startTimer];
-    
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
     [self.navigationController setToolbarHidden:YES];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
 {
-    [self.refreshTimer invalidate];
-    self.refreshTimer = nil;
-}
-
--(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
-{
-    return (toInterfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+    [super viewWillDisappear:animated];
 }
 
 -(BOOL)shouldReloadOnViewLoad
@@ -66,59 +58,23 @@
     return NO;
 }
 
--(void)startTimer
-{
-    if(self.refreshed || self.refreshTimer != nil) {
-        return;
-    }
-    
-    AwfulNavigator *nav = getNavigator();
-    float delay = [AwfulConfig bookmarksDelay];
-    self.refreshTimer = [NSTimer scheduledTimerWithTimeInterval:delay target:nav selector:@selector(callBookmarksRefresh) userInfo:nil repeats:NO];
-}
-
--(void)endTimer
-{
-    if([self.refreshTimer isValid]) {
-        [self.refreshTimer invalidate];
-    }
-    self.refreshTimer = nil;
-}
-
 -(void)newlyVisible
 {
-    [self endTimer];
-    self.refreshed = NO;
-    [self startTimer];
-}
-
--(void)refresh
-{
-    [self endTimer];
-    self.refreshed = YES;
-    [super refresh];
+    //[self endTimer];
+    //self.refreshed = NO;
+    //[self startTimer];
 }
 
 -(void)loadPageNum : (NSUInteger)pageNum
-{
-    [self swapToStopButton];
-    [UIView animateWithDuration:0.2 animations:^(void){
-        self.view.alpha = 0.5;
-    }];
-    
+{   
     [self.networkOperation cancel];
     self.networkOperation = [ApplicationDelegate.awfulNetworkEngine threadListForBookmarksAtPageNum:1 onCompletion:^(NSMutableArray *threads) {
+        
         [self acceptThreads:threads];
+        
     } onError:^(NSError *error) {
         
     }];
-}
-
--(void)stop
-{
-    self.refreshed = YES;
-    [self endTimer];
-    [super stop];
 }
 
 -(void)prevPage
@@ -139,6 +95,7 @@
     [self refresh];
 }
 
+/*
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     [self endTimer];
@@ -154,24 +111,7 @@
     if(!decelerate) {
         [self startTimer];
     }
-}
-
--(void)hitDone
-{
-    [self endTimer];
-    AwfulNavigator *nav = getNavigator();
-    [nav dismissModalViewControllerAnimated:YES];
-}
-
--(NSString *)getSaveID
-{
-    return @"bookmarks";
-}
-
--(NSString *)getURLSuffix
-{
-    return [NSString stringWithFormat:@"bookmarkthreads.php?pagenumber=%d", self.pages.currentPage];
-}
+}*/
 
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -201,7 +141,7 @@
         // Delete the row from the data source
         //AwfulThread *thread = [self.awfulThreads objectAtIndex:indexPath.row];
         [self.awfulThreads removeObjectAtIndex:indexPath.row];
-        [AwfulUtil saveThreadList:self.awfulThreads forForumId:[self getSaveID]];       
+        //[AwfulUtil saveThreadList:self.awfulThreads forForumId:[self getSaveID]];       
         [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
         
 

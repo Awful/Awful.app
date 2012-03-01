@@ -252,7 +252,7 @@
                             </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="gmB-iZ-3DY"/>
-                        <barButtonItem title="999/1000" id="0Yn-hX-hPo">
+                        <barButtonItem id="0Yn-hX-hPo">
                             <connections>
                                 <action selector="tappedPageNav:" destination="uMb-el-Ve5" id="qYc-lH-1Ox"/>
                             </connections>
@@ -357,7 +357,27 @@
                                     <outlet property="tagImage" destination="tAQ-bk-L9A" id="vz5-0s-p2H"/>
                                     <outlet property="threadTitleLabel" destination="9vx-WL-dqh" id="17Y-xI-yGj"/>
                                     <outlet property="unreadButton" destination="OCg-fQ-9BT" id="lti-oV-ltI"/>
+                                    <segue destination="uMb-el-Ve5" kind="push" identifier="AwfulPage" id="cCN-MQ-zQu"/>
                                 </connections>
+                            </tableViewCell>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="LoadMoreCell" rowHeight="72" id="Yny-KW-n6H" userLabel="thread cell" customClass="AwfulThreadCell">
+                                <rect key="frame" x="0.0" y="94" width="320" height="72"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="71"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Load Next Page" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="eRZ-IS-YpU">
+                                            <rect key="frame" x="20" y="16" width="280" height="39"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </label>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -523,6 +543,13 @@
         <class className="AwfulTabBarController" superclassName="UITabBarController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulTabBarController.h"/>
         </class>
+        <class className="AwfulTableViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulTableViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="refresh"/>
+                <relationship kind="action" name="stop"/>
+            </relationships>
+        </class>
         <class className="AwfulThreadCell" superclassName="UITableViewCell">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulThreadCell.h"/>
             <relationships>
@@ -534,13 +561,11 @@
                 <relationship kind="outlet" name="unreadButton" candidateClass="UIButton"/>
             </relationships>
         </class>
-        <class className="AwfulThreadList" superclassName="UITableViewController">
+        <class className="AwfulThreadList" superclassName="AwfulTableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulThreadList.h"/>
             <relationships>
                 <relationship kind="action" name="nextPage"/>
                 <relationship kind="action" name="prevPage"/>
-                <relationship kind="action" name="refresh"/>
-                <relationship kind="action" name="stop"/>
                 <relationship kind="outlet" name="nextPageBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="pageLabelBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="prevPageBarButtonItem" candidateClass="UIBarButtonItem"/>
@@ -552,4 +577,7 @@
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
+    <inferredMetricsTieBreakers>
+        <segue reference="cCN-MQ-zQu"/>
+    </inferredMetricsTieBreakers>
 </document>

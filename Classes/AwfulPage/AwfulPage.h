@@ -69,6 +69,7 @@ typedef enum {
 -(IBAction)hardRefresh;
 -(void)setThreadTitle : (NSString *)in_title;
 
+-(void)updatePagesLabel;
 
 -(IBAction)tappedPageNav : (id)sender;
 -(IBAction)tappedBookmarks : (id)sender;

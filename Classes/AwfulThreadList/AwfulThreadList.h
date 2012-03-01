@@ -6,13 +6,15 @@
 //  Copyright 2010 Regular Berry Software LLC. All rights reserved.
 //
 
+#import "AwfulTableViewController.h"
+
 @class AwfulPageCount;
 @class AwfulForum;
 @class AwfulThread;
 @class AwfulSplitViewController;
 @class AwfulThreadCell;
 
-@interface AwfulThreadList : UITableViewController
+@interface AwfulThreadList : AwfulTableViewController
 
 @property (nonatomic, strong) AwfulForum *forum;
 @property (nonatomic, strong) NSMutableArray *awfulThreads;
@@ -28,15 +30,9 @@
 -(void)acceptThreads : (NSMutableArray *)in_threads;
 -(BOOL)shouldReloadOnViewLoad;
 
--(void)swapToRefreshButton;
--(void)swapToStopButton;
-
 -(IBAction)nextPage;
 -(IBAction)prevPage;
 -(void)updatePagesLabel;
-
--(IBAction)refresh;
--(IBAction)stop;
 -(void)loadPageNum : (NSUInteger)pageNum;
 
 -(void)newlyVisible;

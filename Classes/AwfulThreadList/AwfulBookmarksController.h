@@ -16,12 +16,6 @@ typedef enum {
 
 @interface AwfulBookmarksController : AwfulThreadList <UIScrollViewDelegate>
 
-@property (nonatomic, strong) NSTimer *refreshTimer;
-@property (nonatomic, assign) BOOL refreshed;
-
--(void)startTimer;
--(void)endTimer;
-
 -(AwfulThreadCellType)getTypeAtIndexPath : (NSIndexPath *)indexPath;
 
 @end

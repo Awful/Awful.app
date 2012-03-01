@@ -45,10 +45,13 @@
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if([[segue identifier] isEqualToString:@"AwfulPage"]) {
+        [self.networkOperation cancel];
+        
         NSIndexPath *selected = [self.tableView indexPathForSelectedRow];
         AwfulThread *thread = [self getThreadAtIndexPath:selected];
         AwfulPage *page = (AwfulPage *)segue.destinationViewController;
         page.thread = thread;
+        page.title = thread.title;
         
         AwfulPageDestinationType destination = AwfulPageDestinationTypeNewpost;
         if(thread.totalUnreadPosts == -1) {
@@ -82,30 +85,14 @@
     }
 }
 
--(void)swapToRefreshButton
-{
-    UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refresh)];
-    self.navigationItem.rightBarButtonItem = refresh;
-}
-
--(void)swapToStopButton
-{
-    UIBarButtonItem *stop = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop)];
-    self.navigationItem.rightBarButtonItem = stop;
-}
-
 -(void)refresh
 {   
+    [super refresh];
     [self loadPageNum:self.pages.currentPage];
 }
 
 -(void)loadPageNum : (NSUInteger)pageNum
-{
-    [self swapToStopButton];
-    [UIView animateWithDuration:0.2 animations:^(void){
-        self.view.alpha = 0.5;
-    }];
-    
+{    
     [self.networkOperation cancel];
     self.networkOperation = [ApplicationDelegate.awfulNetworkEngine threadListForForum:self.forum pageNum:pageNum onCompletion:^(NSMutableArray *threads) {
         [self acceptThreads:threads];
@@ -118,12 +105,8 @@
 
 -(void)stop
 {
+    [super stop];
     [self.networkOperation cancel];
-    [self swapToRefreshButton];
-    self.view.userInteractionEnabled = YES;
-    [UIView animateWithDuration:0.2 animations:^(void){
-        self.view.alpha = 1.0;
-    }];
 }
 
 -(IBAction)prevPage
@@ -173,9 +156,7 @@
     self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
     [self.navigationController setToolbarHidden:NO];
     
-    if([self shouldReloadOnViewLoad]) {
-        [self refresh];
-    }
+    [self swapToRefreshButton];
 }
 
 - (void)viewDidUnload
@@ -187,7 +168,7 @@
 
 -(BOOL)shouldReloadOnViewLoad
 {
-    return YES;
+    return NO;
 }
 
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
