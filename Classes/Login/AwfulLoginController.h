@@ -11,7 +11,9 @@
 @interface AwfulLoginController : UIViewController <UIWebViewDelegate>
 
 @property (nonatomic, strong) IBOutlet UIWebView *web;
-@property (nonatomic, strong) UIActivityIndicatorView *act;
+@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *act;
+
+-(IBAction)hitCancel : (id)sender;
 
 @end
 

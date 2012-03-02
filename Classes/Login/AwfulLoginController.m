@@ -16,15 +16,6 @@
 @synthesize web = _web;
 @synthesize act = _act;
 
--(id)init 
-{
-    if((self=[super initWithNibName:@"AwfulLoginController" bundle:[NSBundle mainBundle]])) {
-        
-    }
-    return self;
-}
-
-
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -36,11 +27,7 @@
     self.web.scalesPageToFit = YES;
     self.web.delegate = self;
     [self.web loadRequest:req];
-    
-    self.act = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    self.act.center = CGPointMake(160, 100);
     [self.act startAnimating];
-    [self.web addSubview:self.act];
 }
 
 - (void)viewDidUnload {
@@ -68,7 +55,6 @@
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
-
 #pragma mark Web View delegate
 
 - (void)webViewDidStartLoad:(UIWebView *)webView
@@ -76,16 +62,18 @@
     NSURLRequest *req = webView.request;
     if([[req.URL relativePath] isEqualToString:@"/index.php"]) {
         self.web.delegate = nil;
-        [self.navigationController popViewControllerAnimated:YES];
-        AwfulNavigator *nav = getNavigator();
-        [nav.user loadUser];
+        [self hitCancel:nil];
     }
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
-    [self.act removeFromSuperview];
     [self.act stopAnimating];
+}
+
+-(IBAction)hitCancel : (id)sender
+{
+    [self.navigationController.presentingViewController dismissModalViewControllerAnimated:YES];
 }
 
 @end

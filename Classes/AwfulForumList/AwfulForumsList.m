@@ -242,8 +242,6 @@
         
         return [self.favorites count];
         
-    } else if([self isRefreshSection:[NSIndexPath indexPathForRow:0 inSection:section]]) {
-        return 1;
     }
     
     if(!isLoggedIn()) {
@@ -262,36 +260,15 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *CellIdentifier = @"ForumCell";
-    static NSString *refreshIdentifier = @"RefreshCell";
     
-    NSString *ident = CellIdentifier;
-    
-    if([self isRefreshSection:indexPath]) {
-        ident = refreshIdentifier;
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    AwfulForumCell *forum_cell = (AwfulForumCell *)cell;
+    forum_cell.forumsList = self;
+    AwfulForumSection *section = [self getForumSectionAtIndexPath:indexPath];
+    if(section != nil) {
+        [forum_cell setSection:section];
     }
-    
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ident];
-    /*if (cell == nil) {
-        if(ident == CellIdentifier) {
-            [[NSBundle mainBundle] loadNibNamed:@"AwfulForumCell" owner:self options:nil];
-            self.forumCell.forumsList = self;
-            cell = self.forumCell;
-            self.forumCell = nil;
-        } else if(ident == refreshIdentifier) {
-            [[NSBundle mainBundle] loadNibNamed:@"AwfulForumRefreshButton" owner:self options:nil];
-            cell = self.refreshCell;
-            self.refreshCell = nil;
-        }
-    }*/
-    
-    if(ident == CellIdentifier) {
-        AwfulForumCell *forum_cell = (AwfulForumCell *)cell;
-        forum_cell.forumsList = self;
-        AwfulForumSection *section = [self getForumSectionAtIndexPath:indexPath];
-        if(section != nil) {
-            [forum_cell setSection:section];
-        }
-    }
+
     return cell;
 }
 
@@ -348,8 +325,6 @@
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
     }   
 }
-
-
 
 
 // Override to support rearranging the table view.
@@ -488,14 +463,6 @@
     if(!success) {
         NSLog(@"failed to save forums");
     }
-}
-
--(BOOL)isRefreshSection : (NSIndexPath *)indexPath
-{
-    if(indexPath.section == [self.forumSections count] + 1) {
-        return YES;
-    }
-    return NO;
 }
 
 #pragma mark -

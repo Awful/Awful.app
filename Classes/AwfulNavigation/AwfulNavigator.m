@@ -11,7 +11,6 @@
 #import "AwfulExtrasController.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulForumsList.h"
-//#import "AwfulRequestHandler.h"
 #import "AwfulPageCount.h"
 #import "AwfulBookmarksController.h"
 #import "AwfulUser.h"

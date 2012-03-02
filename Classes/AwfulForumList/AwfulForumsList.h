@@ -45,7 +45,6 @@
 -(void)saveForums;
 -(void)loadForums;
 -(void)toggleExpandForForumSection : (AwfulForumSection *)section;
--(BOOL)isRefreshSection : (NSIndexPath *)indexPath;
 
 -(void)addForumToSectionTree : (AwfulForum *)forum;
 -(AwfulForumSection *)getForumSectionAtSection : (NSUInteger)section_index;

@@ -22,6 +22,7 @@
 {
     if((self=[super init])) {
         self.postsPerPage = 40;
+        [self loadUser];
     }
     return self;
 }
