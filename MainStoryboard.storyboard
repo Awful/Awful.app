@@ -623,100 +623,12 @@
         <image name="threadrating.png" width="45" height="13"/>
         <image name="tiny_arrow_right.png" width="8" height="8"/>
     </resources>
-    <classes>
-        <class className="AwfulAccountViewController" superclassName="AwfulTableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulAccountViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="usernameLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="AwfulBookmarksController" superclassName="AwfulThreadList">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulBookmarksController.h"/>
-        </class>
-        <class className="AwfulForumCell" superclassName="UITableViewCell">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumCell.h"/>
-            <relationships>
-                <relationship kind="action" name="tappedArrow:"/>
-                <relationship kind="outlet" name="arrow" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="titleLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="AwfulForumHeader" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumHeader.h"/>
-            <relationships>
-                <relationship kind="outlet" name="titleLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="AwfulForumsList" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumsList.h"/>
-            <relationships>
-                <relationship kind="action" name="grabFreshList"/>
-                <relationship kind="outlet" name="forumCell" candidateClass="AwfulForumCell"/>
-                <relationship kind="outlet" name="headerView" candidateClass="AwfulForumHeader"/>
-                <relationship kind="outlet" name="refreshCell" candidateClass="UITableViewCell"/>
-            </relationships>
-        </class>
-        <class className="AwfulLoginController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulLoginController.h"/>
-            <relationships>
-                <relationship kind="action" name="hitCancel:"/>
-                <relationship kind="outlet" name="act" candidateClass="UIActivityIndicatorView"/>
-                <relationship kind="outlet" name="web" candidateClass="UIWebView"/>
-            </relationships>
-        </class>
-        <class className="AwfulPage" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPage.h"/>
-            <relationships>
-                <relationship kind="action" name="hardRefresh"/>
-                <relationship kind="action" name="tappedBookmarks:"/>
-                <relationship kind="action" name="tappedCompose:"/>
-                <relationship kind="action" name="tappedNextPage:"/>
-                <relationship kind="action" name="tappedPageNav:"/>
-                <relationship kind="action" name="tappedVote:"/>
-                <relationship kind="outlet" name="bookmarksBarButtonItem" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="forumButton" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="nextPageBarButtonItem" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="pagesBarButtonItem" candidateClass="UIBarButtonItem"/>
-            </relationships>
-        </class>
-        <class className="AwfulTabBarController" superclassName="UITabBarController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulTabBarController.h"/>
-        </class>
-        <class className="AwfulTableViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulTableViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="refresh"/>
-                <relationship kind="action" name="stop"/>
-            </relationships>
-        </class>
-        <class className="AwfulThreadCell" superclassName="UITableViewCell">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulThreadCell.h"/>
-            <relationships>
-                <relationship kind="outlet" name="pagesLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="ratingImage" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="sticky" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="tagImage" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="threadTitleLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="unreadButton" candidateClass="UIButton"/>
-            </relationships>
-        </class>
-        <class className="AwfulThreadList" superclassName="AwfulTableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulThreadList.h"/>
-            <relationships>
-                <relationship kind="action" name="nextPage"/>
-                <relationship kind="action" name="prevPage"/>
-                <relationship kind="outlet" name="nextPageBarButtonItem" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="pageLabelBarButtonItem" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="prevPageBarButtonItem" candidateClass="UIBarButtonItem"/>
-            </relationships>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar" statusBarStyle="blackTranslucent"/>
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="zj0-5D-mco"/>
+        <segue reference="cCN-MQ-zQu"/>
     </inferredMetricsTieBreakers>
 </document>

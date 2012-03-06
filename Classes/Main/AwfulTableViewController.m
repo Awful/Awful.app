@@ -13,6 +13,7 @@
 
 @synthesize refreshTimer = _refreshTimer;
 @synthesize networkOperation = _networkOperation;
+@synthesize refreshed = _refreshed;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -46,7 +47,18 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self startTimer];
+    
+    if(!self.refreshed) {
+        [self startTimer];
+    }
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [self endTimer];
+    [self stop];
+    self.refreshed = NO;
 }
 
 #pragma mark - Refresh
@@ -79,6 +91,7 @@
 
 -(void)endTimer
 {
+    self.refreshed = YES;
     if([self.refreshTimer isValid]) {
         [self.refreshTimer invalidate];
     }

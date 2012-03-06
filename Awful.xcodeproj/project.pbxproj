@@ -506,6 +506,7 @@
 		10F5BB3312499953006C5ED0 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 10F5BB3212499953006C5ED0 /* Default@2x.png */; };
 		10F5BC59124BE14D006C5ED0 /* icon_114.png in Resources */ = {isa = PBXBuildFile; fileRef = 10F5BC58124BE14D006C5ED0 /* icon_114.png */; };
 		11099067134B86FD0013444C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11099066134B86FC0013444C /* QuartzCore.framework */; };
+		110EE32C1506D41300F2DC91 /* shsc-apple.png in Resources */ = {isa = PBXBuildFile; fileRef = 11243F7214D7187C00B06470 /* shsc-apple.png */; };
 		112DB4BB14211F24005A98CB /* SALR.m in Sources */ = {isa = PBXBuildFile; fileRef = 112DB4BA14211F24005A98CB /* SALR.m */; };
 		112DB4C21421208A005A98CB /* jquery.js in Resources */ = {isa = PBXBuildFile; fileRef = 112DB4BD14211F54005A98CB /* jquery.js */; };
 		112DB4C31421208A005A98CB /* salr.js in Resources */ = {isa = PBXBuildFile; fileRef = 112DB4BE14211F54005A98CB /* salr.js */; };
@@ -2534,6 +2535,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				110EE32C1506D41300F2DC91 /* shsc-apple.png in Resources */,
 				112DB4C21421208A005A98CB /* jquery.js in Resources */,
 				112DB4C31421208A005A98CB /* salr.js in Resources */,
 				10F0DE24120B4EEA00D943E3 /* emot-fuckoff.gif in Resources */,

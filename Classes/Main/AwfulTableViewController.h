@@ -11,11 +11,14 @@
 @interface AwfulTableViewController : UITableViewController
 
 @property (nonatomic, strong) NSTimer *refreshTimer;
+@property BOOL refreshed;
 @property (nonatomic, strong) MKNetworkOperation *networkOperation;
 
 -(IBAction)refresh;
 -(IBAction)stop;
 -(void)swapToRefreshButton;
 -(void)swapToStopButton;
+-(void)startTimer;
+-(void)endTimer;
 
 @end

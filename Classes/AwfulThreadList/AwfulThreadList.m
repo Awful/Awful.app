@@ -38,6 +38,7 @@
     self.pages = [[AwfulPageCount alloc] init];
     self.pages.currentPage = 1;
     self.title = self.forum.name;
+    self.awfulThreads = [[NSMutableArray alloc] init];
     [self updatePagesLabel];
 }
 
@@ -152,6 +153,10 @@
     [self.navigationController setToolbarHidden:NO];
     
     [self swapToRefreshButton];
+    
+    if([self.awfulThreads count] == 0) {
+        [self refresh];
+    }
 }
 
 - (void)viewDidUnload

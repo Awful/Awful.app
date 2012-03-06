@@ -30,7 +30,7 @@
         [AwfulUtil saveThreadList:self.awfulThreads forForumId:[self getSaveID]];
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"killbookmarks"];
     }*/
-    
+        
     self.tableView.delegate = self;
     self.title = @"Bookmarks";
 }
@@ -40,12 +40,21 @@
 
 -(void)viewDidLoad {
     [super viewDidLoad];
+    
+    // moving the auto refresh to viewWillAppear, because bookmarks get loaded right away because of the tabbarcontroller, even if the user isn't looking at them
+    [self stop];
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self.navigationController setToolbarHidden:YES];
+    
+    if([self.awfulThreads count] == 0) {
+        [self refresh];
+    } else {
+        [self startTimer];
+    }
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -77,24 +86,6 @@
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
         [alert show];
     }];
-}
-
--(void)prevPage
-{
-    if(self.pages.currentPage > 1) {
-        [self.awfulThreads removeAllObjects];
-        [self.tableView reloadData];
-        self.pages.currentPage--;
-        [self refresh];
-    }
-}
-
--(void)nextPage
-{
-    [self.awfulThreads removeAllObjects];
-    [self.tableView reloadData];
-    self.pages.currentPage++;
-    [self refresh];
 }
 
 /*
