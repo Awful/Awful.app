@@ -9,6 +9,8 @@
 #import "AwfulAccountViewController.h"
 #import "AwfulUser.h"
 #import "AwfulUtil.h"
+#import "AwfulLoginController.h"
+#import "AwfulNetworkEngine.h"
 
 @implementation AwfulAccountViewController
 
@@ -27,6 +29,11 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
+    
+    AwfulUser *user = [AwfulUser currentUser];
+    if(user.userName == nil) {
+        [self refresh];
+    }
 }
 
 - (void)viewDidUnload
@@ -40,22 +47,84 @@
 {
     [super viewWillAppear:animated];
     
-    AwfulUser *user = [[AwfulUser alloc] init];
-    [user loadUser];
+    AwfulUser *user = [AwfulUser currentUser];
     self.usernameLabel.text = user.userName;
+}
+
+-(void)refresh
+{
+    [super refresh];
+    [self.networkOperation cancel];
+    self.networkOperation = [ApplicationDelegate.awfulNetworkEngine userInfoRequestOnCompletion:^(AwfulUser *user) {
+        self.usernameLabel.text = user.userName;
+        [self swapToRefreshButton];
+    } onError:^(NSError *error) {
+        [self swapToRefreshButton];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        [alert show];
+    }];
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView 
+{
+    if(isLoggedIn()) {
+        return 2;
+    }
+    return 1;
+} 
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    if(isLoggedIn()) {
+        if(section == 0) {
+            return 2;
+        }
+    } else {
+        return 1;
+    }
+    return 0;
+}
+
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *infoIdent = @"Information";
+    static NSString *buttonIdent = @"Button";
+    if(isLoggedIn()) {
+        if(indexPath.row == 0) {
+            UITableViewCell *login_name = [tableView dequeueReusableCellWithIdentifier:infoIdent];
+            login_name.textLabel.text = @"Logged in as:";
+            AwfulUser *user = [AwfulUser currentUser];
+            login_name.detailTextLabel.text = user.userName;
+            return login_name;
+        } else if(indexPath.row == 1) {
+            UITableViewCell *logout = [tableView dequeueReusableCellWithIdentifier:buttonIdent];
+            logout.textLabel.text = @"Logout";
+            return logout;
+        }
+    } else {
+        UITableViewCell *login = [tableView dequeueReusableCellWithIdentifier:buttonIdent];
+        login.textLabel.text = @"Login";
+        return login;
+    }
+    return nil;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if(indexPath.section == 0 && indexPath.row == 1) {
-        
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log Out Confirm" message:@"Log Out? Are you sure?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Log Out", nil];
-        alert.delegate = self;
-        [alert show];
-        
-        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-    } else if(indexPath.section == 1 && indexPath.row == 0) {
-        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    if(isLoggedIn()) {
+        if(indexPath.section == 0 && indexPath.row == 1) {
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log Out Confirm" message:@"Log Out? Are you sure?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Log Out", nil];
+            alert.delegate = self;
+            [alert show];
+            
+            [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+        }
+    } else {
+        if(indexPath.section == 0 && indexPath.row == 0) {
+            [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+            [self performSegueWithIdentifier:@"Login" sender:self];
+        }
     }
 }
 
@@ -69,7 +138,7 @@
             [[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteCookie:cookie];
         }
         
-        AwfulUser *user = [[AwfulUser alloc] init];
+        AwfulUser *user = [AwfulUser currentUser];
         [user killUser];
         
         /*

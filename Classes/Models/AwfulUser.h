@@ -12,6 +12,9 @@
 
 @property (nonatomic, strong) NSString *userName;
 @property (nonatomic, assign) int postsPerPage;
+@property (nonatomic, strong) NSNumber *userID;
+
++(AwfulUser *)currentUser;
 
 -(void)loadUser;
 -(void)saveUser;

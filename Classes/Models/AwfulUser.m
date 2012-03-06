@@ -16,17 +16,24 @@
 
 @implementation AwfulUser
 
-@synthesize userName, postsPerPage;
+@synthesize userName = _userName;
+@synthesize postsPerPage = _postsPerPage;
+@synthesize userID = _userID;
 
 -(id)init
 {
     if((self=[super init])) {
         self.postsPerPage = 40;
-        [self loadUser];
     }
     return self;
 }
 
++(AwfulUser *)currentUser
+{
+    AwfulUser *user = [[AwfulUser alloc] init];
+    [user loadUser];
+    return user;
+}
 
 -(void)loadUser
 {
@@ -50,13 +57,13 @@
 
 -(void)setUserName:(NSString *)user_name
 {
-    userName = user_name;
+    _userName = user_name;
     [self saveUser];
 }
 
 -(void)setPostsPerPage:(int)in_posts
 {
-    postsPerPage = in_posts;
+    _postsPerPage = in_posts;
     [self saveUser];
 }
 

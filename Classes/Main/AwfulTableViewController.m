@@ -12,6 +12,7 @@
 @implementation AwfulTableViewController
 
 @synthesize refreshTimer = _refreshTimer;
+@synthesize networkOperation = _networkOperation;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -66,6 +67,7 @@
         self.view.alpha = 1.0;
     }];*/
     [self swapToRefreshButton];
+    [self.networkOperation cancel];
 }
 
 -(void)startTimer

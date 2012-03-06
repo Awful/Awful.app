@@ -34,7 +34,7 @@
         self.contentVC = nil;
         self.actions = nil;
         self.historyManager = [[AwfulHistoryManager alloc] init];
-        self.user = [[AwfulUser alloc] init];
+        self.user = [AwfulUser currentUser];
         [self.user loadUser];
     }
     return self;

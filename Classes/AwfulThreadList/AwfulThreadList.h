@@ -19,7 +19,6 @@
 @property (nonatomic, strong) AwfulForum *forum;
 @property (nonatomic, strong) NSMutableArray *awfulThreads;
 @property (nonatomic, strong) AwfulPageCount *pages;
-@property (nonatomic, strong) MKNetworkOperation *networkOperation;
 
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *prevPageBarButtonItem;
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *pageLabelBarButtonItem;

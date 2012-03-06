@@ -13,6 +13,7 @@
 #import "AwfulThread.h"
 #import "AwfulPage.h"
 #import "AwfulPageDataController.h"
+#import "AwfulUser.h"
 
 @implementation AwfulNetworkEngine
 
@@ -88,6 +89,70 @@
         
     } onError:^(NSError *error) {
         
+        errorBlock(error);
+    }];
+    
+    [self enqueueOperation:op];
+    return op;
+}
+
+-(MKNetworkOperation *)userInfoRequestOnCompletion : (UserResponseBlock)userResponseBlock onError : (MKNKErrorBlock)errorBlock
+{
+    NSString *path = @"member.php?action=editprofile";
+    MKNetworkOperation *op = [self operationWithPath:path];
+    
+    [op onCompletion:^(MKNetworkOperation *completedOperation) {
+        
+        /*TFHpple *page_data = [[TFHpple alloc] initWithHTMLData:[completedOperation responseData]];
+        NSArray *options_elements = [page_data search:@"//select[@name='umaxposts']//option"];
+        
+        for(TFHppleElement *el in options_elements) {
+            if([el objectForKey:@"selected"] != nil) {
+                NSString *val = [el objectForKey:@"value"];
+                int ppp = [val intValue];
+                if(ppp != 0) {
+                    [[AwfulUser currentUser] setPostsPerPage:ppp];
+                }
+            }
+        }*/
+        
+        AwfulUser *user = [[AwfulUser alloc] init];
+        NSString *html_str = [completedOperation responseString];
+        
+        NSError *regex_error = nil;
+        NSRegularExpression *userid_regex = [NSRegularExpression regularExpressionWithPattern:@"userid=(\\d+)" options:NSRegularExpressionCaseInsensitive error:&regex_error];
+        
+        if(regex_error != nil) {
+            NSLog(@"%@", [regex_error localizedDescription]);
+        }
+       
+        NSTextCheckingResult *userid_result = [userid_regex firstMatchInString:html_str options:0 range:NSMakeRange(0, [html_str length])];
+        NSRange userid_range = [userid_result rangeAtIndex:1];
+        if(userid_range.location != NSNotFound) {
+            NSString *user_id = [html_str substringWithRange:userid_range];
+            int user_id_int = [user_id intValue];
+            if(user_id_int != 0) {
+                [user setUserID:[NSNumber numberWithInt:user_id_int]];
+            }
+        }
+        
+        NSRegularExpression *username_regex = [NSRegularExpression regularExpressionWithPattern:@"Edit Profile - (.*?)<" options:NSRegularExpressionCaseInsensitive error:&regex_error];
+        
+        if(regex_error != nil) {
+            NSLog(@"%@", [regex_error localizedDescription]);
+        }
+        
+        NSTextCheckingResult *username_result = [username_regex firstMatchInString:html_str options:0 range:NSMakeRange(0, [html_str length])];
+        NSRange username_range = [username_result rangeAtIndex:1];
+        if(username_range.location != NSNotFound) {
+            NSString *username = [html_str substringWithRange:username_range];
+            username = [username stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+            [user setUserName:username];
+        }
+        
+        userResponseBlock(user);
+        
+    } onError:^(NSError *error) {
         errorBlock(error);
     }];
     

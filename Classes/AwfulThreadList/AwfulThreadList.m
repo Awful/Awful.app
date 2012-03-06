@@ -29,7 +29,6 @@
 @synthesize forum = _forum;
 @synthesize awfulThreads = _awfulThreads;
 @synthesize pages = _pages;
-@synthesize networkOperation = _networkOperation;
 @synthesize pageLabelBarButtonItem = _pageLabelBarButtonItem;
 @synthesize nextPageBarButtonItem = _nextPageBarButtonItem;
 @synthesize prevPageBarButtonItem = _prevPageBarButtonItem;
@@ -99,14 +98,10 @@
         self.pages.currentPage = pageNum;
         [self updatePagesLabel];
     } onError:^(NSError *error) {
-        
+        [self swapToRefreshButton];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        [alert show];
     }];
-}
-
--(void)stop
-{
-    [super stop];
-    [self.networkOperation cancel];
 }
 
 -(IBAction)prevPage
@@ -380,7 +375,6 @@
 
 -(void)refresh
 {
-    
     [self endTimer];
     [super refresh];
     [self swapToStopButton];
@@ -388,7 +382,6 @@
 
 -(void)stop
 {
-    
     [self endTimer];
     [super stop];
 }

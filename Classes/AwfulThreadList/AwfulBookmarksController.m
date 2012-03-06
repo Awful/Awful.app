@@ -73,7 +73,9 @@
         [self acceptThreads:threads];
         
     } onError:^(NSError *error) {
-        
+        [self swapToRefreshButton];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        [alert show];
     }];
 }
 
