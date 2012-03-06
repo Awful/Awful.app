@@ -47,8 +47,14 @@
 {
     [super viewWillAppear:animated];
     
+    [self.tableView reloadData];
+    
     AwfulUser *user = [AwfulUser currentUser];
-    self.usernameLabel.text = user.userName;
+    if(user.userName == nil) {
+        [self refresh];
+    } else {
+        self.usernameLabel.text = user.userName;
+    }
 }
 
 -(void)refresh
@@ -56,7 +62,10 @@
     [super refresh];
     [self.networkOperation cancel];
     self.networkOperation = [ApplicationDelegate.awfulNetworkEngine userInfoRequestOnCompletion:^(AwfulUser *user) {
-        self.usernameLabel.text = user.userName;
+        if(![user.userName isEqualToString:self.usernameLabel.text]) {
+            self.usernameLabel.text = user.userName;
+            [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+        }
         [self swapToRefreshButton];
     } onError:^(NSError *error) {
         [self swapToRefreshButton];

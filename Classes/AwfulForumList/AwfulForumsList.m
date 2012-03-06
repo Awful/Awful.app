@@ -108,6 +108,10 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.navigationController setToolbarHidden:YES];
+    
+    if([self.tableView numberOfSections] == 2 && isLoggedIn()) {
+        [self.tableView reloadData];
+    }
 }
 
 /*
