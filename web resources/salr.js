@@ -302,3 +302,33 @@ SALR.prototype.highlightOwnQuotes = function() {
         });
     });
 };
+
+function tappedBottom()
+{
+    var obj = new JSBridgeObj();
+    obj.addObject("action", "nextPage");
+    obj.sendBridgeObject();
+}
+
+function tappedOlderPosts()
+{
+    var obj = new JSBridgeObj();
+    obj.addObject("action", "loadOlderPosts");
+    obj.sendBridgeObject();
+}
+
+function tappedPost(postid)
+{
+    var obj = new JSBridgeObj();
+    obj.addObject("action", "postOptions");
+    obj.addObject("postid", postid);
+    obj.sendBridgeObject();
+}
+
+function scrollToID(postid)
+{   
+    var obj = document.getElementById(postid);
+    document.getElementById(postid).scrollIntoView();
+}
+
+

@@ -84,7 +84,7 @@
     
     [op onCompletion:^(MKNetworkOperation *completedOperation) {
         
-        AwfulPageDataController *data_controller = [[AwfulPageDataController alloc] initWithResponseData:[completedOperation responseData] pagePath:path];
+        AwfulPageDataController *data_controller = [[AwfulPageDataController alloc] initWithResponseData:[completedOperation responseData] pagePath:[completedOperation redirectedURL]];
         pageResponseBlock(data_controller);
         
     } onError:^(NSError *error) {

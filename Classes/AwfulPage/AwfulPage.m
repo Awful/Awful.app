@@ -336,14 +336,6 @@
     }
 }
 
--(void)scrollToPost : (NSString *)post_id
-{
-    if(post_id != nil) {
-        NSString *scrolling = [NSString stringWithFormat:@"scrollToID(%@)", post_id];
-        [(UIWebView *)self.view stringByEvaluatingJavaScriptFromString:scrolling];
-    }
-}
-
 /*
  - (void)viewWillAppear:(BOOL)animated {
  [super viewWillAppear:animated];
@@ -563,6 +555,14 @@
     [self scrollToPost:self.postIDScrollDestination];
 }
 
+-(void)scrollToPost : (NSString *)post_id
+{
+    if(post_id != nil) {
+        NSString *scrolling = [NSString stringWithFormat:@"scrollToID(%@)", post_id];
+        [(UIWebView *)self.view stringByEvaluatingJavaScriptFromString:scrolling];
+    }
+}
+
 -(void)showActions:(NSString *)post_id
 {    
     if(![post_id isEqualToString:@""]) {
@@ -683,9 +683,9 @@
     [self swapToRefreshButton];
     if(!self.touchedPage) {
         if(self.postIDScrollDestination != nil) {
-            [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(scrollToSpecifiedPost) userInfo:nil repeats:NO];
+            [self scrollToSpecifiedPost];
         } else if(self.shouldScrollToBottom) {
-            [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(scrollToBottom) userInfo:nil repeats:NO];
+            [self scrollToBottom];
         }
     }
 }
