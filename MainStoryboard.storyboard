@@ -279,6 +279,49 @@
             </objects>
             <point key="canvasLocation" x="2138" y="-846"/>
         </scene>
+        <!--Awful Specific Page View Controller-->
+        <scene sceneID="GiF-gX-JIJ">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="POS-hM-bDs" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <viewController storyboardIdentifier="AwfulSpecificPageController" id="gFz-91-xJX" customClass="AwfulSpecificPageViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Fss-fq-qMc">
+                        <rect key="frame" x="0.0" y="20" width="320" height="460"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" id="8IU-cQ-mLt">
+                                <rect key="frame" x="0.0" y="200" width="320" height="260"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <subviews>
+                                    <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="blackOpaque" id="AGE-FQ-XZM">
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                        <items>
+                                            <barButtonItem style="plain" systemItem="flexibleSpace" id="tTU-24-8Op"/>
+                                            <barButtonItem title="Jump to Page" style="done" id="WUT-4F-7Il"/>
+                                        </items>
+                                    </toolbar>
+                                    <pickerView contentMode="scaleToFill" id="Pyx-EV-Dw0">
+                                        <rect key="frame" x="0.0" y="44" width="320" height="216"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                        <connections>
+                                            <outlet property="dataSource" destination="gFz-91-xJX" id="Sg2-KV-BsJ"/>
+                                            <outlet property="delegate" destination="gFz-91-xJX" id="XPU-Sk-Vnk"/>
+                                        </connections>
+                                    </pickerView>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
+                    </view>
+                    <connections>
+                        <outlet property="containerView" destination="8IU-cQ-mLt" id="RFW-qA-b2Z"/>
+                        <outlet property="pickerView" destination="Pyx-EV-Dw0" id="sEf-qi-wuo"/>
+                    </connections>
+                </viewController>
+            </objects>
+            <point key="canvasLocation" x="2582" y="-846"/>
+        </scene>
         <!--Awful Bookmarks Controller - Bookmarks-->
         <scene sceneID="I1y-NV-zDB">
             <objects>
@@ -660,9 +703,15 @@
                 <relationship kind="action" name="tappedNextPage:"/>
                 <relationship kind="action" name="tappedPageNav:"/>
                 <relationship kind="action" name="tappedVote:"/>
-                <relationship kind="outlet" name="forumButton" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="nextPageBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="pagesBarButtonItem" candidateClass="UIBarButtonItem"/>
+            </relationships>
+        </class>
+        <class className="AwfulSpecificPageViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulSpecificPageViewController.h"/>
+            <relationships>
+                <relationship kind="outlet" name="containerView" candidateClass="UIView"/>
+                <relationship kind="outlet" name="pickerView" candidateClass="UIPickerView"/>
             </relationships>
         </class>
         <class className="AwfulTabBarController" superclassName="UITabBarController">

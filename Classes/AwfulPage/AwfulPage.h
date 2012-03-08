@@ -21,7 +21,7 @@ typedef enum {
 } AwfulPageDestinationType;
 
 @class AwfulPageCount;
-@class AwfulSmallPageController;
+@class AwfulSpecificPageViewController;
 @class AwfulPageDataController;
 @class AwfulActions;
 
@@ -40,7 +40,7 @@ typedef enum {
 @property (nonatomic, strong) AwfulPageCount *pages;
 
 @property (nonatomic, strong) AwfulPageDataController *dataController;
-@property (nonatomic, strong) AwfulSmallPageController *pageController;
+@property (nonatomic, strong) AwfulSpecificPageViewController *specificPageController;
 @property (nonatomic, strong) MKNetworkOperation *networkOperation;
 
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *pagesBarButtonItem;

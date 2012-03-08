@@ -23,7 +23,7 @@
 #import "MWPhotoBrowser.h"
 #import <QuartzCore/QuartzCore.h>
 #import "AwfulUser.h"
-#import "AwfulSmallPageController.h"
+#import "AwfulSpecificPageViewController.h"
 #import "AwfulSplitViewController.h"
 #import "AwfulLoginController.h"
 #import "AwfulVoteActions.h"
@@ -40,7 +40,7 @@
 @synthesize shouldScrollToBottom = _shouldScrollToBottom;
 @synthesize postIDScrollDestination = _postIDScrollDestination;
 @synthesize touchedPage = _touchedPage;
-@synthesize pageController = _pageController;
+@synthesize specificPageController = _specificPageController;
 @synthesize dataController = _dataController;
 @synthesize networkOperation = _networkOperation;
 @synthesize actions = _actions;
@@ -362,23 +362,33 @@
 
 -(void)tappedPageNav : (id)sender
 {
-    if(self.pageController != nil && !self.pageController.hiding) {
-        self.pageController.hiding = YES;
-        [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^(void) {
-            self.pageController.view.frame = CGRectOffset(self.pageController.view.frame, 0, -self.pageController.view.frame.size.height);
-        } completion:^(BOOL finished) {
-            [self.pageController.view removeFromSuperview];
-            self.pageController = nil;
-        }];
-    } else if(self.pageController == nil) {
-        self.pageController = [[AwfulSmallPageController alloc] initWithAwfulPage:self];
+    UIView *sp_view = self.specificPageController.containerView;
+    
+    if(self.specificPageController != nil && !self.specificPageController.hiding) {
         
-        float width_diff = self.view.frame.size.width - self.pageController.view.frame.size.width;
-        self.pageController.view.center = CGPointMake(self.view.center.x + width_diff/2, -self.pageController.view.frame.size.height/2);
-        [self.view addSubview:self.pageController.view];
-        [UIView animateWithDuration:0.3 animations:^(void) {
-            self.pageController.view.frame = CGRectOffset(self.pageController.view.frame, 0, self.pageController.view.frame.size.height);
+        self.specificPageController.hiding = YES;
+        [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^(void) {
+            sp_view.frame = CGRectOffset(sp_view.frame, 0, sp_view.frame.size.height);
+        } completion:^(BOOL finished) {
+            [sp_view removeFromSuperview];
+            self.specificPageController = nil;
         }];
+        
+    } else if(self.specificPageController == nil) {
+        
+        self.specificPageController = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil] instantiateViewControllerWithIdentifier:@"AwfulSpecificPageController"];
+        self.specificPageController.page = self;
+        [self.specificPageController loadView];
+        sp_view = self.specificPageController.containerView;
+        [self.specificPageController.pickerView selectRow:self.pages.currentPage-1 inComponent:0 animated:NO];
+        
+        float width_diff = self.view.frame.size.width - sp_view.frame.size.width;
+        sp_view.center = CGPointMake(self.view.center.x + width_diff/2, self.view.frame.size.height+sp_view.frame.size.height/2);
+        [self.view addSubview:sp_view];
+        [UIView animateWithDuration:0.3 animations:^(void) {
+            sp_view.frame = CGRectOffset(sp_view.frame, 0, -sp_view.frame.size.height);
+        }];
+        
     }
 }
 
