@@ -9,7 +9,6 @@
 #import "AwfulConfig.h"
 #import "SALR.h"
 #import "SBJson.h"
-#import "AwfulNavigator.h"
 #import "AwfulUser.h"
 
 @implementation SALR
@@ -17,9 +16,9 @@
 + (NSString *)config {
     NSMutableDictionary *config = [[NSMutableDictionary alloc] init];
     
-    AwfulNavigator *nav = getNavigator();
-    if(nav.user.userName != nil) {
-        [config setObject:nav.user.userName forKey:@"username"];
+    AwfulUser *user = [AwfulUser currentUser];
+    if(user.userName != nil) {
+        [config setObject:user.userName forKey:@"username"];
     } else {
         return @"";
     }

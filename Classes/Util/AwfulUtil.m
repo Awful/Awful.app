@@ -26,7 +26,6 @@
 
 #import "AwfulUtil.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulNavigator.h"
 #import "AwfulUser.h"
 
 @implementation AwfulUtil
@@ -69,8 +68,7 @@
 
 int getPostsPerPage()
 {
-    AwfulNavigator *nav = getNavigator();
-    AwfulUser *user = nav.user;
+    AwfulUser *user = [AwfulUser currentUser];
     if(user == nil) {
         return 40;
     }
@@ -79,8 +77,7 @@ int getPostsPerPage()
 
 NSString *getUsername()
 {
-    AwfulNavigator *nav = getNavigator();
-    AwfulUser *user = nav.user;
+    AwfulUser *user = [AwfulUser currentUser];
     return [user userName];
 }
 

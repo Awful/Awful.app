@@ -51,7 +51,6 @@
         AwfulThread *thread = [self getThreadAtIndexPath:selected];
         AwfulPage *page = (AwfulPage *)segue.destinationViewController;
         page.thread = thread;
-        page.title = thread.title;
         
         AwfulPageDestinationType destination = AwfulPageDestinationTypeNewpost;
         if(thread.totalUnreadPosts == -1) {
@@ -304,47 +303,10 @@
     // Relinquish ownership any cached data, images, etc that aren't in use.
 }
 
-#pragma mark -
-#pragma AwfulHistoryRecorder
-
--(id)newRecordedHistory
-{
-    AwfulHistory *hist = [[AwfulHistory alloc] init];
-    hist.pageNum = self.pages.currentPage;
-    hist.modelObj = self.forum;
-    hist.historyType = AwfulHistoryTypeThreadlist;
-    return hist;
-}
-
--(id)initWithAwfulHistory : (AwfulHistory *)history
-{
-    return nil;//return [self initWithAwfulForum:history.modelObj atPageNum:history.pageNum];
-}
-
-#pragma mark -
-#pragma mark Navigator Content
-
--(UIView *)getView
-{
-    return self.view;
-}
-
--(AwfulActions *)getActions
-{
-    return nil;
-}
-
--(void)scrollToBottom
-{
-    
-}
-
 @end
 
 
 @implementation AwfulThreadListIpad
-@synthesize refreshTimer = _refreshTimer;
-@synthesize refreshed = _refreshed;
 
 //Copied to AwfulBookmarksControllerIpad
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -361,8 +323,8 @@
             // therefore I'm setting it to last page here
         }
         
-        AwfulPageIpad *thread_detail = [[AwfulPageIpad alloc] initWithAwfulThread:thread startAt:start];
-        loadContentVC(thread_detail);
+        //AwfulPageIpad *thread_detail = [[AwfulPageIpad alloc] initWithAwfulThread:thread startAt:start];
+        //loadContentVC(thread_detail);
     }
 }
 
@@ -378,43 +340,11 @@
     [self swapToStopButton];
 }
 
--(void)refresh
-{
-    [self endTimer];
-    [super refresh];
-    [self swapToStopButton];
-}
-
--(void)stop
-{
-    [self endTimer];
-    [super stop];
-}
-
--(void) newlyVisible
+-(void)newlyVisible
 {
     [self endTimer];
     self.refreshed = NO;
     [self startTimer];
-}
-
--(void)startTimer
-{
-    if(self.refreshed || self.refreshTimer != nil) {
-        return;
-    }
-    
-    AwfulNavigator *nav = getNavigator();
-    float delay = [AwfulConfig forumsDelay];
-    self.refreshTimer = [NSTimer scheduledTimerWithTimeInterval:delay target:nav selector:@selector(callForumsRefresh) userInfo:nil repeats:NO];
-}
-
--(void)endTimer
-{
-    if([self.refreshTimer isValid]) {
-        [self.refreshTimer invalidate];
-    }    
-    self.refreshTimer = nil;
 }
 
 -(void)acceptThreads:(NSMutableArray *)in_threads

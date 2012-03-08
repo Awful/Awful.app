@@ -8,7 +8,6 @@
 
 #import "AwfulLoginController.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulNavigator.h"
 #import "AwfulUser.h"
 
 @implementation AwfulLoginController

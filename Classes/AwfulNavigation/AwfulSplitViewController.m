@@ -11,7 +11,6 @@
 #import "AwfulThreadList.h"
 #import "AwfulBookmarksController.h"
 #import "AwfulPage.h"
-#import "AwfulExtrasController.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulLoginController.h"
 #import <QuartzCore/QuartzCore.h>
@@ -57,10 +56,7 @@
 {
     
     [super viewDidLoad];
-    [self setupMasterView];
-    AwfulNavigator *nav = getNavigator();
-    [nav.user addObserver:self forKeyPath:@"userName" options:NSKeyValueObservingOptionNew context:NULL];
-    
+    [self setupMasterView];    
 }
 
 - (void)viewDidUnload
@@ -81,6 +77,7 @@
 
 -(void)setupMasterView
 {
+    /*
     AwfulForumsListIpad *forums = [[AwfulForumsListIpad alloc] init];
     self.listController = [[UINavigationController alloc] initWithRootViewController:forums];
     
@@ -104,7 +101,7 @@
     
     
     extras = [[AwfulExtrasControllerIpad alloc] init];
-    self.pageController.viewControllers = [NSArray arrayWithObject:extras];
+    self.pageController.viewControllers = [NSArray arrayWithObject:extras];*/
     //self.viewControllers = [NSArray arrayWithObjects:self.masterController, self.pageController, nil];   
 }
 

@@ -7,7 +7,6 @@
 //
 
 #import "AwfulAppDelegate.h"
-#import "AwfulNavigator.h"
 #import "FlurryAPI.h"
 #import "Appirater.h"
 #import "AwfulSplitViewController.h"
@@ -95,9 +94,9 @@
 
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-    AwfulNavigator *nav = getNavigator();
+    /*AwfulNavigator *nav = getNavigator();
     if ([nav isKindOfClass:[AwfulNavigatorIpad class]])
-        [((AwfulNavigatorIpad *) nav) callForumsRefresh];
+        [((AwfulNavigatorIpad *) nav) callForumsRefresh];*/
 }
 
 

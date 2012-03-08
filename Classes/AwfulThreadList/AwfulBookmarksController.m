@@ -9,7 +9,6 @@
 #import "AwfulBookmarksController.h"
 #import "AwfulUtil.h"
 #import "AwfulConfig.h"
-#import "AwfulNavigator.h"
 #import "AwfulPageCount.h"
 #import "AwfulThread.h"
 #import "AwfulPage.h"
@@ -21,15 +20,6 @@
 -(void)awakeFromNib
 {
     [super awakeFromNib];
-    /*NSMutableArray *old_bookmarks = [AwfulUtil newThreadListForForumId:[self getSaveID]];
-    self.awfulThreads = old_bookmarks;
-    
-    // crash fix from one version to another
-    if(![[NSUserDefaults standardUserDefaults] boolForKey:@"killbookmarks"]) {
-        self.awfulThreads = [NSMutableArray array];
-        [AwfulUtil saveThreadList:self.awfulThreads forForumId:[self getSaveID]];
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"killbookmarks"];
-    }*/
         
     self.tableView.delegate = self;
     self.title = @"Bookmarks";
@@ -197,8 +187,8 @@
                 // therefore I'm setting it to last page here
             }
             
-            AwfulPageIpad *thread_detail = [[AwfulPageIpad alloc] initWithAwfulThread:thread startAt:start];
-            loadContentVC(thread_detail);
+            //AwfulPageIpad *thread_detail = [[AwfulPageIpad alloc] initWithAwfulThread:thread startAt:start];
+            //loadContentVC(thread_detail);
         }
     }
 }

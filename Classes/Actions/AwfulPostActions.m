@@ -8,7 +8,6 @@
 
 #import "AwfulPostActions.h"
 #import "AwfulPost.h"
-#import "AwfulNavigator.h"
 //#import "AwfulEditRequest.h"
 //#import "AwfulQuoteRequest.h"
 #import "AwfulPage.h"

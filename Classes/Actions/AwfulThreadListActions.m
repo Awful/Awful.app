@@ -8,7 +8,6 @@
 
 #import "AwfulThreadListActions.h"
 #import "AwfulThread.h"
-#import "AwfulNavigator.h"
 #import "AwfulPage.h"
 //#import "ASIFormDataRequest.h"
 #import "AwfulAppDelegate.h"
@@ -48,13 +47,13 @@ typedef enum {
 {
     if(buttonIndex == AwfulThreadListActionsTypeFirstPage) {
         
-        AwfulPage *thread_detail = [AwfulPage pageWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeFirst];
-        loadContentVC(thread_detail);
+        //AwfulPage *thread_detail = [AwfulPage pageWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeFirst];
+        //loadContentVC(thread_detail);
         
     } else if(buttonIndex == AwfulThreadListActionsTypeLastPage) {
         
-        AwfulPage *thread_detail = [AwfulPage pageWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeLast];
-        loadContentVC(thread_detail);
+        //AwfulPage *thread_detail = [AwfulPage pageWithAwfulThread:self.thread startAt:AwfulPageDestinationTypeLast];
+        //loadContentVC(thread_detail);
         
     } else if(buttonIndex == AwfulThreadListActionsTypeUnread && [self.titles count] > 2) {
         /*NSURL *url = [NSURL URLWithString:@"http://forums.somethingawful.com/showthread.php"];
@@ -65,7 +64,7 @@ typedef enum {
         form.userInfo = [NSDictionary dictionaryWithObjectsAndKeys:@"Unread", @"completionMsg", @"1", @"refresh", nil];
         loadRequestAndWait(form);*/
     }
-    [self.navigator setActions:nil];
+    //[self.navigator setActions:nil];
 }
 
 @end

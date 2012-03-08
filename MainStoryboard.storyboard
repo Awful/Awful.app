@@ -234,29 +234,18 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <toolbarItems>
-                        <barButtonItem style="plain" systemItem="compose" id="jCb-MV-Nd9">
+                        <barButtonItem systemItem="action" id="Z2A-is-rRK">
                             <connections>
-                                <action selector="tappedCompose:" destination="uMb-el-Ve5" id="jlk-rT-3X9"/>
+                                <action selector="tappedActions:" destination="uMb-el-Ve5" id="g5x-X8-Jn2"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="PMb-rX-sU3"/>
-                        <barButtonItem image="28-star.png" style="plain" id="Z2A-is-rRK">
-                            <connections>
-                                <action selector="tappedBookmarks:" destination="uMb-el-Ve5" id="mAl-fA-Ly7"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="SWK-gY-422"/>
-                        <barButtonItem image="39-circle-check.png" style="plain" id="U4o-o0-3kz">
-                            <connections>
-                                <action selector="tappedVote:" destination="uMb-el-Ve5" id="1MK-so-HS3"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="gmB-iZ-3DY"/>
-                        <barButtonItem id="0Yn-hX-hPo">
+                        <barButtonItem title="Page 1 of 2" id="0Yn-hX-hPo">
                             <connections>
                                 <action selector="tappedPageNav:" destination="uMb-el-Ve5" id="qYc-lH-1Ox"/>
                             </connections>
                         </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="cxY-hd-Ij4"/>
                         <barButtonItem image="01-arrow-east.png" id="SkB-yt-lkF">
                             <connections>
                                 <action selector="tappedNextPage:" destination="uMb-el-Ve5" id="NA3-Gd-Sgs"/>
@@ -275,7 +264,6 @@
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics" barStyle="blackOpaque"/>
                     <connections>
-                        <outlet property="bookmarksBarButtonItem" destination="Z2A-is-rRK" id="IOW-9X-Va0"/>
                         <outlet property="nextPageBarButtonItem" destination="SkB-yt-lkF" id="hDw-wg-KNG"/>
                         <outlet property="pagesBarButtonItem" destination="0Yn-hX-hPo" id="N87-mW-V9V"/>
                     </connections>
@@ -612,8 +600,6 @@
     <resources>
         <image name="01-arrow-east.png" width="19" height="16"/>
         <image name="05-arrow-west.png" width="19" height="16"/>
-        <image name="28-star.png" width="26" height="26"/>
-        <image name="39-circle-check.png" width="28" height="28"/>
         <image name="40-inbox.png" width="24" height="24"/>
         <image name="list_icon.png" width="20" height="18"/>
         <image name="number-background.png" width="32" height="20"/>
@@ -623,6 +609,94 @@
         <image name="threadrating.png" width="45" height="13"/>
         <image name="tiny_arrow_right.png" width="8" height="8"/>
     </resources>
+    <classes>
+        <class className="AwfulAccountViewController" superclassName="AwfulTableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulAccountViewController.h"/>
+            <relationships>
+                <relationship kind="outlet" name="usernameLabel" candidateClass="UILabel"/>
+            </relationships>
+        </class>
+        <class className="AwfulBookmarksController" superclassName="AwfulThreadList">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulBookmarksController.h"/>
+        </class>
+        <class className="AwfulForumCell" superclassName="UITableViewCell">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumCell.h"/>
+            <relationships>
+                <relationship kind="action" name="tappedArrow:"/>
+                <relationship kind="outlet" name="arrow" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="titleLabel" candidateClass="UILabel"/>
+            </relationships>
+        </class>
+        <class className="AwfulForumHeader" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumHeader.h"/>
+            <relationships>
+                <relationship kind="outlet" name="titleLabel" candidateClass="UILabel"/>
+            </relationships>
+        </class>
+        <class className="AwfulForumsList" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumsList.h"/>
+            <relationships>
+                <relationship kind="action" name="grabFreshList"/>
+                <relationship kind="outlet" name="forumCell" candidateClass="AwfulForumCell"/>
+                <relationship kind="outlet" name="headerView" candidateClass="AwfulForumHeader"/>
+                <relationship kind="outlet" name="refreshCell" candidateClass="UITableViewCell"/>
+            </relationships>
+        </class>
+        <class className="AwfulLoginController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulLoginController.h"/>
+            <relationships>
+                <relationship kind="action" name="hitCancel:"/>
+                <relationship kind="outlet" name="act" candidateClass="UIActivityIndicatorView"/>
+                <relationship kind="outlet" name="web" candidateClass="UIWebView"/>
+            </relationships>
+        </class>
+        <class className="AwfulPage" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPage.h"/>
+            <relationships>
+                <relationship kind="action" name="hardRefresh"/>
+                <relationship kind="action" name="tappedActions:"/>
+                <relationship kind="action" name="tappedBookmarks:"/>
+                <relationship kind="action" name="tappedCompose:"/>
+                <relationship kind="action" name="tappedNextPage:"/>
+                <relationship kind="action" name="tappedPageNav:"/>
+                <relationship kind="action" name="tappedVote:"/>
+                <relationship kind="outlet" name="forumButton" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="nextPageBarButtonItem" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="pagesBarButtonItem" candidateClass="UIBarButtonItem"/>
+            </relationships>
+        </class>
+        <class className="AwfulTabBarController" superclassName="UITabBarController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulTabBarController.h"/>
+        </class>
+        <class className="AwfulTableViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulTableViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="refresh"/>
+                <relationship kind="action" name="stop"/>
+            </relationships>
+        </class>
+        <class className="AwfulThreadCell" superclassName="UITableViewCell">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulThreadCell.h"/>
+            <relationships>
+                <relationship kind="outlet" name="pagesLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="ratingImage" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="sticky" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="tagImage" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="threadTitleLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="unreadButton" candidateClass="UIButton"/>
+            </relationships>
+        </class>
+        <class className="AwfulThreadList" superclassName="AwfulTableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulThreadList.h"/>
+            <relationships>
+                <relationship kind="action" name="nextPage"/>
+                <relationship kind="action" name="prevPage"/>
+                <relationship kind="outlet" name="nextPageBarButtonItem" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="pageLabelBarButtonItem" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="prevPageBarButtonItem" candidateClass="UIBarButtonItem"/>
+            </relationships>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar" statusBarStyle="blackTranslucent"/>
         <simulatedOrientationMetrics key="orientation"/>

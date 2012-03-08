@@ -7,7 +7,6 @@
 //
 
 #import "AwfulPostBoxController.h"
-#import "AwfulNavigator.h"
 //#import "AwfulReplyRequest.h"
 //#import "AwfulEditRequest.h"
 #import "AwfulPage.h"

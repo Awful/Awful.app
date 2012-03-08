@@ -7,7 +7,6 @@
 //
 
 #import "AwfulThreadActions.h"
-#import "AwfulNavigator.h"
 #import "AwfulPage.h"
 #import "AwfulPageCount.h"
 #import "AwfulPostBoxController.h"
@@ -55,16 +54,12 @@ typedef enum {
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {    
-    if([self isCancelled:buttonIndex]) {
+    /*if([self isCancelled:buttonIndex]) {
         [self.navigator setActions:nil];
         return;
     }
     
-    if(buttonIndex == AwfulThreadActionScrollToBottom) {
-        
-        [self.page scrollToBottom];
-        
-    } else if(buttonIndex == AwfulThreadActionVote) {
+    if(buttonIndex == AwfulThreadActionVote) {
         
         AwfulVoteActions *vote = [[AwfulVoteActions alloc] initWithAwfulThread:self.page.thread];
         [self.navigator setActions:vote];
@@ -87,7 +82,7 @@ typedef enum {
     }
     if(buttonIndex != AwfulThreadActionVote) {
         [self.navigator setActions:nil];
-    }
+    }*/
 }
 
 -(void)addBookmark

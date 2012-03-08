@@ -10,7 +10,6 @@
 #import "AwfulThreadCell.h"
 #import "AwfulForum.h"
 #import "AwfulUtil.h"
-#import "AwfulNavigator.h"
 #import "AwfulThreadListActions.h"
 #import "AwfulThread.h"
 
@@ -130,11 +129,11 @@
 
 -(void)openThreadlistOptions
 {
-    AwfulNavigator *nav = getNavigator();
+    /*AwfulNavigator *nav = getNavigator();
     if(nav.actions == nil) {
         AwfulThreadListActions *actions = [[AwfulThreadListActions alloc] initWithAwfulThread:self.thread];
         [nav setActions:actions];
-    }
+    }*/
 }
 
 @end

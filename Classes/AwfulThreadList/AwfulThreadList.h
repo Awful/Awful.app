@@ -38,15 +38,6 @@
 
 @end
 
-@interface AwfulThreadListIpad : AwfulThreadList {
-    NSTimer *_refreshTimer;
-    BOOL _refreshed;
-}
-
-@property (nonatomic, strong) NSTimer *refreshTimer;
-@property (nonatomic, assign) BOOL refreshed;
-
--(void)startTimer;
--(void)endTimer;
+@interface AwfulThreadListIpad : AwfulThreadList
 
 @end

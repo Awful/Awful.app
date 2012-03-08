@@ -8,7 +8,6 @@
 
 #import "AwfulVoteActions.h"
 #import "AwfulThread.h"
-#import "AwfulNavigator.h"
 //#import "ASIFormDataRequest.h"
 
 @implementation AwfulVoteActions
@@ -62,7 +61,7 @@
         
         loadRequestAndWait(form);*/
     }
-    [self.navigator setActions:nil];
+    //[self.navigator setActions:nil];
 }
 
 @end

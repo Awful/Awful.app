@@ -12,6 +12,7 @@
 @class AwfulForum;
 @class AwfulThread;
 @class AwfulPageDataController;
+@class AwfulUser;
 
 @interface AwfulNetworkEngine : MKNetworkEngine
 

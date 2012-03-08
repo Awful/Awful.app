@@ -9,9 +9,7 @@
 #import "AwfulForumsList.h"
 #import "AwfulForum.h"
 #import "AwfulThreadList.h"
-#import "AwfulNavigator.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulNavigator.h"
 #import "AwfulUtil.h"
 #import "AwfulConfig.h"
 #import "AwfulForumCell.h"
@@ -100,8 +98,8 @@
 
 -(void)hitDone
 {
-    AwfulNavigator *nav = getNavigator();
-    [nav dismissModalViewControllerAnimated:YES];
+    //AwfulNavigator *nav = getNavigator();
+    //[nav dismissModalViewControllerAnimated:YES];
 }
 
 

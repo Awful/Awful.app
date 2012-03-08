@@ -7,7 +7,6 @@
 //
 
 #import "AwfulActions.h"
-#import "AwfulNavigator.h"
 #import "AwfulAppDelegate.h"
 
 @implementation AwfulActions

@@ -9,7 +9,6 @@
 #import "AwfulUser.h"
 #import "AwfulLoginController.h"
 //#import "AwfulUserInfoRequest.h"
-#import "AwfulNavigator.h"
 //#import "AwfulRequestHandler.h"
 //#import "ASINetworkQueue.h"
 #import "AwfulUtil.h"
