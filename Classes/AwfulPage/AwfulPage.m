@@ -157,7 +157,7 @@
 {    
     [self.networkOperation cancel];
     [self swapToStopButton];
-    self.networkOperation = [ApplicationDelegate.awfulNetworkEngine pageDataForThread:self.thread destinationType:self.destinationType pageNum:self.pages.currentPage onCompletion:^(AwfulPageDataController *dataController) {
+    self.networkOperation = [ApplicationDelegate.awfulNetworkEngine pageDataForThread:self.thread destinationType:self.destinationType pageNum:pageNum onCompletion:^(AwfulPageDataController *dataController) {
         self.dataController = dataController;
         if(self.destinationType == AwfulPageDestinationTypeSpecific) {
             self.pages.currentPage = pageNum;
@@ -192,22 +192,6 @@
     [web loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
     web.delegate = self;
     [self setWebView:web];
-}
-
--(void)nextPage
-{
-    if(![self.pages onLastPage]) {
-        self.destinationType = AwfulPageDestinationTypeSpecific;
-        [self loadPageNum:self.pages.currentPage+1];
-    }
-}
-
--(void)prevPage
-{
-    if(self.pages.currentPage > 1) {
-        self.destinationType = AwfulPageDestinationTypeSpecific;
-        [self loadPageNum:self.pages.currentPage-1];
-    }
 }
 
 -(void)heldPost:(UILongPressGestureRecognizer *)gestureRecognizer
@@ -360,6 +344,22 @@
 -(IBAction)tappedNextPage : (id)sender
 {
     [self nextPage];
+}
+
+-(void)nextPage
+{
+    if(![self.pages onLastPage]) {
+        self.destinationType = AwfulPageDestinationTypeSpecific;
+        [self loadPageNum:self.pages.currentPage+1];
+    }
+}
+
+-(void)prevPage
+{
+    if(self.pages.currentPage > 1) {
+        self.destinationType = AwfulPageDestinationTypeSpecific;
+        [self loadPageNum:self.pages.currentPage-1];
+    }
 }
 
 -(IBAction)tappedActions:(id)sender

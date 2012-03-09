@@ -114,9 +114,9 @@
         <scene sceneID="R44-bE-NMl">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="te1-UI-oXs" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tableViewController hidesBottomBarWhenPushed="YES" id="Osj-d3-UMd" customClass="AwfulThreadList" sceneMemberID="viewController">
+                <tableViewController id="Osj-d3-UMd" customClass="AwfulThreadList" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="Yrm-c6-SW3">
-                        <rect key="frame" x="0.0" y="64" width="320" height="372"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="416"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -176,8 +176,26 @@
                                     <outlet property="tagImage" destination="o66-ME-gJ9" id="HiO-je-8IO"/>
                                     <outlet property="threadTitleLabel" destination="NFX-eX-7xG" id="v4d-9J-1AW"/>
                                     <outlet property="unreadButton" destination="0uD-hy-G9f" id="jnK-rX-agM"/>
-                                    <segue destination="uMb-el-Ve5" kind="push" identifier="AwfulPage" id="zj0-5D-mco"/>
                                 </connections>
+                            </tableViewCell>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="LoadMoreCell" rowHeight="72" id="e5X-Sj-kCb" userLabel="thread cell" customClass="AwfulThreadCell">
+                                <rect key="frame" x="0.0" y="94" width="320" height="72"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="71"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Load Next Page" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="IY8-EO-v90">
+                                            <rect key="frame" x="20" y="16" width="280" height="39"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </label>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -205,11 +223,12 @@
                             <outlet property="titleView" destination="Q3w-Oz-BUj" id="3dL-Yp-Ffv"/>
                         </connections>
                     </navigationItem>
-                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics" barStyle="blackOpaque"/>
+                    <nil key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="nextPageBarButtonItem" destination="qIo-cI-vSF" id="gdd-L7-UCx"/>
                         <outlet property="pageLabelBarButtonItem" destination="6hw-eH-VsZ" id="Srn-Bi-bI9"/>
                         <outlet property="prevPageBarButtonItem" destination="HaJ-51-RiX" id="Pdx-bF-Vqz"/>
+                        <segue destination="uMb-el-Ve5" kind="push" identifier="AwfulPage" id="JzC-6r-kye"/>
                     </connections>
                 </tableViewController>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Forums Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" minimumFontSize="10" id="Q3w-Oz-BUj">
@@ -745,8 +764,6 @@
         <class className="AwfulThreadList" superclassName="AwfulTableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulThreadList.h"/>
             <relationships>
-                <relationship kind="action" name="nextPage"/>
-                <relationship kind="action" name="prevPage"/>
                 <relationship kind="outlet" name="nextPageBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="pageLabelBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="prevPageBarButtonItem" candidateClass="UIBarButtonItem"/>
@@ -759,6 +776,6 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="kfD-K3-mBe"/>
+        <segue reference="JzC-6r-kye"/>
     </inferredMetricsTieBreakers>
 </document>

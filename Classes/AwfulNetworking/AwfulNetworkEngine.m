@@ -19,7 +19,7 @@
 
 -(MKNetworkOperation *)threadListForForum:(AwfulForum *)forum pageNum:(NSUInteger)pageNum onCompletion:(ThreadListResponseBlock)threadListResponseBlock onError:(MKNKErrorBlock) errorBlock
 {
-    NSString *path = [NSString stringWithFormat:@"forumdisplay.php?forumid=%@&pagenumber=%u", forum.forumID, pageNum];
+    NSString *path = [NSString stringWithFormat:@"forumdisplay.php?forumid=%@&perpage=40&pagenumber=%u", forum.forumID, pageNum];
     MKNetworkOperation *op = [self operationWithPath:path];
     
     [op onCompletion:^(MKNetworkOperation *completedOperation) {

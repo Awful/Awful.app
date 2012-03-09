@@ -14,6 +14,12 @@
 @class AwfulSplitViewController;
 @class AwfulThreadCell;
 
+typedef enum {
+    AwfulThreadCellTypeUnknown,
+    AwfulThreadCellTypeThread,
+    AwfulThreadCellTypeLoadMore
+} AwfulThreadCellType;
+
 @interface AwfulThreadList : AwfulTableViewController
 
 @property (nonatomic, strong) AwfulForum *forum;
@@ -29,10 +35,10 @@
 -(void)acceptThreads : (NSMutableArray *)in_threads;
 -(BOOL)shouldReloadOnViewLoad;
 
--(IBAction)nextPage;
--(IBAction)prevPage;
--(void)updatePagesLabel;
 -(void)loadPageNum : (NSUInteger)pageNum;
+
+-(AwfulThreadCellType)getTypeAtIndexPath : (NSIndexPath *)indexPath;
+-(BOOL)moreThreads;
 
 -(void)newlyVisible;
 

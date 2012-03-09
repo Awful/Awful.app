@@ -39,7 +39,6 @@
     self.pages.currentPage = 1;
     self.title = self.forum.name;
     self.awfulThreads = [[NSMutableArray alloc] init];
-    [self updatePagesLabel];
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -73,19 +72,9 @@
     }
 }
 
--(void)choseForumOption : (int)option
-{
-    if(option == 0 && self.pages.currentPage > 1) {
-        [self prevPage];
-    } else if(option == 0 && self.pages.currentPage == 1) {
-        [self nextPage];
-    } else if(option == 1 && self.pages.currentPage > 1) {
-        [self nextPage];
-    }
-}
-
 -(void)refresh
 {   
+    self.pages.currentPage = 1;
     [super refresh];
     [self loadPageNum:self.pages.currentPage];
 }
@@ -94,28 +83,17 @@
 {    
     [self.networkOperation cancel];
     self.networkOperation = [ApplicationDelegate.awfulNetworkEngine threadListForForum:self.forum pageNum:pageNum onCompletion:^(NSMutableArray *threads) {
-        [self acceptThreads:threads];
         self.pages.currentPage = pageNum;
-        [self updatePagesLabel];
+        if(pageNum == 1) {
+            [self.awfulThreads removeAllObjects];
+        }
+        [self acceptThreads:threads];
         [self swapToRefreshButton];
     } onError:^(NSError *error) {
         [self swapToRefreshButton];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
         [alert show];
     }];
-}
-
--(IBAction)prevPage
-{
-    if(self.pages.currentPage > 1) {
-        [self loadPageNum:self.pages.currentPage-1];
-    }
-}
-
--(IBAction)nextPage
-{
-    [self loadPageNum:self.pages.currentPage+1];
-    // is there a limit to the number of pages in a forum? whatever, like some asshole is going to go that far back
 }
 
 -(void)newlyVisible
@@ -129,7 +107,7 @@
         self.view.alpha = 1.0;
     }];
     
-    self.awfulThreads = in_threads;
+    [self.awfulThreads addObjectsFromArray:in_threads];
     
     float offwhite = 241.0/255;
     self.tableView.backgroundColor = [UIColor colorWithRed:offwhite green:offwhite blue:offwhite alpha:1.0];
@@ -146,10 +124,9 @@
     UILabel *lab = (UILabel *)self.navigationItem.titleView;
     lab.numberOfLines = 2;
     lab.text = self.forum.name;
-    self.title = @"GBS";
+    //self.title = @"GBS";
     
     self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
-    [self.navigationController setToolbarHidden:NO];
     
     [self swapToRefreshButton];
     
@@ -180,10 +157,11 @@
     [self.tableView reloadData];
 }
 
-/*
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-}*/
+    [self.navigationController setToolbarHidden:YES];
+}
 
 /*
 - (void)viewDidAppear:(BOOL)animated {
@@ -201,16 +179,6 @@
     [super viewDidDisappear:animated];
 }
 */
-
--(void)updatePagesLabel
-{
-    self.pageLabelBarButtonItem.title = [NSString stringWithFormat:@"Page %d", self.pages.currentPage];
-    if(self.pages.currentPage <= 1) {
-        self.prevPageBarButtonItem.enabled = NO;
-    } else {
-        self.prevPageBarButtonItem.enabled = YES;
-    }
-}
 
 -(AwfulThread *)getThreadAtIndexPath : (NSIndexPath *)path
 {    
@@ -235,7 +203,14 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    return [self.awfulThreads count];
+    int total = [self.awfulThreads count];
+    
+    // bottom page-nav cell
+    if([self moreThreads]) {
+        total++;
+    }
+    
+    return total;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -247,14 +222,21 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *threadCell = @"ThreadCell";
+    static NSString *moreCell = @"LoadMoreCell";
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:threadCell];
     
-    AwfulThread *thread = [self getThreadAtIndexPath:indexPath];
-    AwfulThreadCell *thread_cell = (AwfulThreadCell *)cell;
-    [thread_cell configureForThread:thread];
+    AwfulThreadCellType type = [self getTypeAtIndexPath:indexPath];
+    if(type == AwfulThreadCellTypeThread) {
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:threadCell];
+        AwfulThread *thread = [self getThreadAtIndexPath:indexPath];
+        AwfulThreadCell *thread_cell = (AwfulThreadCell *)cell;
+        [thread_cell configureForThread:thread];
+        return cell;
+    } else if(type == AwfulThreadCellTypeLoadMore) {
+        return [tableView dequeueReusableCellWithIdentifier:moreCell];
+    }
     
-    return cell;
+    return nil;
 }
 
 // Override to support conditional editing of the table view.
@@ -293,6 +275,16 @@
 }
 */
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
+{
+    if(indexPath.row == [self.awfulThreads count]) {
+        [self loadPageNum:self.pages.currentPage+1];
+        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    } else {
+        [self performSegueWithIdentifier:@"AwfulPage" sender:nil];
+    }
+}
+
 #pragma mark -
 #pragma mark Memory management
 
@@ -301,6 +293,24 @@
     [super didReceiveMemoryWarning];
     
     // Relinquish ownership any cached data, images, etc that aren't in use.
+}
+
+-(AwfulThreadCellType)getTypeAtIndexPath : (NSIndexPath *)indexPath
+{
+    if(indexPath.row < [self.awfulThreads count]) {
+        return AwfulThreadCellTypeThread;
+    } else if(indexPath.row == [self.awfulThreads count]) {
+        return AwfulThreadCellTypeLoadMore;
+    }
+    return AwfulThreadCellTypeUnknown;
+}
+
+-(BOOL)moreThreads
+{
+    if([self.awfulThreads count] % 40 == 0 && [self.awfulThreads count] > 0) {
+        return YES;
+    }
+    return NO;
 }
 
 @end

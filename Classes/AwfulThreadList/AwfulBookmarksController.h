@@ -8,16 +8,7 @@
 
 #import "AwfulThreadList.h"
 
-typedef enum {
-    AwfulThreadCellTypeUnknown,
-    AwfulThreadCellTypeThread,
-    AwfulThreadCellTypeLoadMore
-} AwfulThreadCellType;
-
 @interface AwfulBookmarksController : AwfulThreadList <UIScrollViewDelegate>
-
--(AwfulThreadCellType)getTypeAtIndexPath : (NSIndexPath *)indexPath;
--(BOOL)moreBookmarkedThreads;
 
 @end
 
