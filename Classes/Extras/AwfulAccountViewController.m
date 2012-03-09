@@ -29,10 +29,12 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-    
+        
     AwfulUser *user = [AwfulUser currentUser];
-    if(user.userName == nil) {
+    if(user.userName == nil && isLoggedIn()) {
         [self refresh];
+    } else {
+        self.usernameLabel.text = user.userName;
     }
 }
 
@@ -46,14 +48,15 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
-    [self.tableView reloadData];
-    
-    AwfulUser *user = [AwfulUser currentUser];
-    if(user.userName == nil) {
-        [self refresh];
-    } else {
-        self.usernameLabel.text = user.userName;
+    self.refreshed = YES;
+}
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if([[segue identifier] isEqualToString:@"Login"]) {
+        UINavigationController *nav = (UINavigationController *)segue.destinationViewController;
+        AwfulLoginController *login = (AwfulLoginController *)nav.topViewController;
+        login.accountViewController = self;
     }
 }
 
@@ -64,7 +67,7 @@
     self.networkOperation = [ApplicationDelegate.awfulNetworkEngine userInfoRequestOnCompletion:^(AwfulUser *user) {
         if(![user.userName isEqualToString:self.usernameLabel.text]) {
             self.usernameLabel.text = user.userName;
-            [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView reloadData];
         }
         [self swapToRefreshButton];
     } onError:^(NSError *error) {
@@ -149,21 +152,7 @@
         
         AwfulUser *user = [AwfulUser currentUser];
         [user killUser];
-        
-        /*
-        NSIndexPath *login_row = [self getIndexPathForLoggedInCell];
-        NSIndexPath *logout_row = [NSIndexPath indexPathForRow:1 inSection:0];
-        
-        [self.tableView beginUpdates];
-        [self.tableView
-         reloadRowsAtIndexPaths:[NSArray arrayWithObject:login_row] 
-         withRowAnimation:UITableViewRowAnimationNone];
-        
-        [self.tableView 
-         deleteRowsAtIndexPaths:[NSArray arrayWithObject:logout_row] 
-         withRowAnimation:UITableViewRowAnimationBottom];
-        
-        [self.tableView endUpdates];*/
+        [self.tableView reloadData];
     }
 }
 

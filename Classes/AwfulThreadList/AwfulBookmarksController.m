@@ -70,6 +70,7 @@
     self.networkOperation = [ApplicationDelegate.awfulNetworkEngine threadListForBookmarksAtPageNum:1 onCompletion:^(NSMutableArray *threads) {
         
         [self acceptThreads:threads];
+        [self swapToRefreshButton];
         
     } onError:^(NSError *error) {
         [self swapToRefreshButton];

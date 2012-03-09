@@ -8,10 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
+@class AwfulAccountViewController;
+
 @interface AwfulLoginController : UIViewController <UIWebViewDelegate>
 
 @property (nonatomic, strong) IBOutlet UIWebView *web;
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *act;
+@property (nonatomic, weak) AwfulAccountViewController *accountViewController;
 
 -(IBAction)hitCancel : (id)sender;
 

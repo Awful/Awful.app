@@ -1354,8 +1354,8 @@
 		1190F80313BE58BB00B9D271 /* post.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = post.css; sourceTree = "<group>"; };
 		1195D59014C4CB4400CA3A48 /* threadrating.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = threadrating.png; path = images/threadrating.png; sourceTree = "<group>"; };
 		1199D7CE13AA9C4200264DE9 /* tiny_arrow_right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tiny_arrow_right.png; path = images/tiny_arrow_right.png; sourceTree = "<group>"; };
-		11A4EE561500504500C35C4D /* AwfulAccountViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAccountViewController.h; sourceTree = "<group>"; };
-		11A4EE571500504500C35C4D /* AwfulAccountViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAccountViewController.m; sourceTree = "<group>"; };
+		11A4EE561500504500C35C4D /* AwfulAccountViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AwfulAccountViewController.h; path = ../Extras/AwfulAccountViewController.h; sourceTree = "<group>"; };
+		11A4EE571500504500C35C4D /* AwfulAccountViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AwfulAccountViewController.m; path = ../Extras/AwfulAccountViewController.m; sourceTree = "<group>"; };
 		11C1FFA014FC789E00B0250B /* 01-arrow-east.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "01-arrow-east.png"; path = "images/01-arrow-east.png"; sourceTree = "<group>"; };
 		11C1FFA114FC789E00B0250B /* 01-arrow-east@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "01-arrow-east@2x.png"; path = "images/01-arrow-east@2x.png"; sourceTree = "<group>"; };
 		11C1FFA514FC78D500B0250B /* 28-star.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "28-star.png"; path = "images/28-star.png"; sourceTree = "<group>"; };
@@ -2142,8 +2142,6 @@
 			children = (
 				1190F6E613BE4EA900B9D271 /* OtherWebController.h */,
 				1190F6E713BE4EA900B9D271 /* OtherWebController.m */,
-				11A4EE561500504500C35C4D /* AwfulAccountViewController.h */,
-				11A4EE571500504500C35C4D /* AwfulAccountViewController.m */,
 			);
 			path = Extras;
 			sourceTree = "<group>";
@@ -2153,6 +2151,8 @@
 			children = (
 				1190F71913BE4EA900B9D271 /* AwfulLoginController.h */,
 				1190F71A13BE4EA900B9D271 /* AwfulLoginController.m */,
+				11A4EE561500504500C35C4D /* AwfulAccountViewController.h */,
+				11A4EE571500504500C35C4D /* AwfulAccountViewController.m */,
 			);
 			path = Login;
 			sourceTree = "<group>";

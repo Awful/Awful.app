@@ -9,11 +9,13 @@
 #import "AwfulLoginController.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulUser.h"
+#import "AwfulAccountViewController.h"
 
 @implementation AwfulLoginController
 
 @synthesize web = _web;
 @synthesize act = _act;
+@synthesize accountViewController = _accountViewController;
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
@@ -26,6 +28,7 @@
     self.web.scalesPageToFit = YES;
     self.web.delegate = self;
     [self.web loadRequest:req];
+    [self.web addSubview:self.act];
     [self.act startAnimating];
 }
 
@@ -73,6 +76,7 @@
 -(IBAction)hitCancel : (id)sender
 {
     [self.navigationController.presentingViewController dismissModalViewControllerAnimated:YES];
+    [self.accountViewController refresh];
 }
 
 @end
