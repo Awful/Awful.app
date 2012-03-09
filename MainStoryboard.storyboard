@@ -392,7 +392,6 @@
                                     <outlet property="tagImage" destination="tAQ-bk-L9A" id="vz5-0s-p2H"/>
                                     <outlet property="threadTitleLabel" destination="9vx-WL-dqh" id="17Y-xI-yGj"/>
                                     <outlet property="unreadButton" destination="OCg-fQ-9BT" id="lti-oV-ltI"/>
-                                    <segue destination="uMb-el-Ve5" kind="push" identifier="AwfulPage" id="cCN-MQ-zQu"/>
                                 </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="LoadMoreCell" rowHeight="72" id="Yny-KW-n6H" userLabel="thread cell" customClass="AwfulThreadCell">
@@ -430,6 +429,9 @@
                         </barButtonItem>
                     </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
+                    <connections>
+                        <segue destination="uMb-el-Ve5" kind="push" identifier="AwfulPage" id="kfD-K3-mBe"/>
+                    </connections>
                 </tableViewController>
             </objects>
             <point key="canvasLocation" x="1219" y="-199"/>
@@ -757,6 +759,6 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="cCN-MQ-zQu"/>
+        <segue reference="kfD-K3-mBe"/>
     </inferredMetricsTieBreakers>
 </document>

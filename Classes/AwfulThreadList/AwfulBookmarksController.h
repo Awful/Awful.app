@@ -11,12 +11,13 @@
 typedef enum {
     AwfulThreadCellTypeUnknown,
     AwfulThreadCellTypeThread,
-    AwfulThreadCellTypePageNav
+    AwfulThreadCellTypeLoadMore
 } AwfulThreadCellType;
 
 @interface AwfulBookmarksController : AwfulThreadList <UIScrollViewDelegate>
 
 -(AwfulThreadCellType)getTypeAtIndexPath : (NSIndexPath *)indexPath;
+-(BOOL)moreBookmarkedThreads;
 
 @end
 

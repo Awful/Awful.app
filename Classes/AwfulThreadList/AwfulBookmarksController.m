@@ -14,6 +14,7 @@
 #import "AwfulPage.h"
 #import "AwfulNetworkEngine.h"
 #import "AwfulTableViewController.h"
+#import "AwfulThreadCell.h"
 
 @implementation AwfulBookmarksController
 
@@ -64,11 +65,27 @@
     //[self startTimer];
 }
 
+-(void)acceptThreads:(NSMutableArray *)in_threads
+{
+    NSMutableArray *threads = [NSMutableArray arrayWithArray:self.awfulThreads];
+    [threads addObjectsFromArray:in_threads];
+    [super acceptThreads:threads];
+}
+
+-(void)refresh
+{
+    self.pages.currentPage = 1;
+    [super refresh];
+}
+
 -(void)loadPageNum : (NSUInteger)pageNum
 {   
     [self.networkOperation cancel];
-    self.networkOperation = [ApplicationDelegate.awfulNetworkEngine threadListForBookmarksAtPageNum:1 onCompletion:^(NSMutableArray *threads) {
-        
+    self.networkOperation = [ApplicationDelegate.awfulNetworkEngine threadListForBookmarksAtPageNum:pageNum onCompletion:^(NSMutableArray *threads) {
+        self.pages.currentPage = pageNum;
+        if(pageNum == 1) {
+            [self.awfulThreads removeAllObjects];
+        }
         [self acceptThreads:threads];
         [self swapToRefreshButton];
         
@@ -111,11 +128,31 @@
     int total = [self.awfulThreads count];
     
     // bottom page-nav cell
-    if(self.pages.currentPage > 1 || ([self.awfulThreads count] > 0)) {
+    if([self moreBookmarkedThreads]) {
         total++;
     }
     
     return total;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    static NSString *threadCell = @"ThreadCell";
+    static NSString *moreCell = @"LoadMoreCell";
+    
+    
+    AwfulThreadCellType type = [self getTypeAtIndexPath:indexPath];
+    if(type == AwfulThreadCellTypeThread) {
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:threadCell];
+        AwfulThread *thread = [self getThreadAtIndexPath:indexPath];
+        AwfulThreadCell *thread_cell = (AwfulThreadCell *)cell;
+        [thread_cell configureForThread:thread];
+        return cell;
+    } else if(type == AwfulThreadCellTypeLoadMore) {
+        return [tableView dequeueReusableCellWithIdentifier:moreCell];
+    }
+    
+    return nil;
 }
 
 // Override to support editing the table view.
@@ -145,14 +182,32 @@
     }   
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
+{
+    if(indexPath.row == [self.awfulThreads count]) {
+        [self loadPageNum:self.pages.currentPage+1];
+        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    } else {
+        [self performSegueWithIdentifier:@"AwfulPage" sender:nil];
+    }
+}
+
 -(AwfulThreadCellType)getTypeAtIndexPath : (NSIndexPath *)indexPath
 {
     if(indexPath.row < [self.awfulThreads count]) {
         return AwfulThreadCellTypeThread;
     } else if(indexPath.row == [self.awfulThreads count]) {
-        return AwfulThreadCellTypePageNav;
+        return AwfulThreadCellTypeLoadMore;
     }
     return AwfulThreadCellTypeUnknown;
+}
+
+-(BOOL)moreBookmarkedThreads
+{
+    if([self.awfulThreads count] % 40 == 0 && [self.awfulThreads count] > 0) {
+        return YES;
+    }
+    return NO;
 }
 
 @end

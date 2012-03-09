@@ -40,7 +40,7 @@
 
 -(MKNetworkOperation *)threadListForBookmarksAtPageNum:(NSUInteger)pageNum onCompletion:(ThreadListResponseBlock)threadListResponseBlock onError:(MKNKErrorBlock) errorBlock
 {
-    NSString *path = [NSString stringWithFormat:@"bookmarkthreads.php?pagenumber=%u", pageNum];
+    NSString *path = [NSString stringWithFormat:@"bookmarkthreads.php?action=view&perpage=40&pagenumber=%d", pageNum];
     MKNetworkOperation *op = [self operationWithPath:path];
     
     [op onCompletion:^(MKNetworkOperation *completedOperation) {
