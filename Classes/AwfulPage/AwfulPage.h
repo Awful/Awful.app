@@ -59,6 +59,7 @@ typedef enum {
 -(IBAction)tappedNextPage : (id)sender;
 
 -(void)refresh;
+-(void)loadPageNum : (NSUInteger)pageNum;
 -(void)stop;
 
 -(void)scrollToSpecifiedPost;

@@ -240,7 +240,7 @@
                             </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="PMb-rX-sU3"/>
-                        <barButtonItem title="Page 1 of 2" id="0Yn-hX-hPo">
+                        <barButtonItem title="Page 0 of 0" id="0Yn-hX-hPo">
                             <connections>
                                 <action selector="tappedPageNav:" destination="uMb-el-Ve5" id="qYc-lH-1Ox"/>
                             </connections>

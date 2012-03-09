@@ -31,22 +31,16 @@
 
 - (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
 {
-    return 2;
+    return 1;
 }
 
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
-    if(component == 0) {
-        return 1;
-    }
     return self.page.pages.totalPages;
 }
 
 - (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
 {
-    if(component == 0) {
-        return @"Page:";
-    }
     return [NSString stringWithFormat:@"%d", row+1];
 }
 
@@ -55,7 +49,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
 }
 
 - (void)viewDidUnload

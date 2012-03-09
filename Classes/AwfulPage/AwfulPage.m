@@ -150,11 +150,20 @@
 
 -(void)refresh
 {        
+    [self loadPageNum:self.pages.currentPage];
+}
+
+-(void)loadPageNum : (NSUInteger)pageNum
+{    
     [self.networkOperation cancel];
     [self swapToStopButton];
     self.networkOperation = [ApplicationDelegate.awfulNetworkEngine pageDataForThread:self.thread destinationType:self.destinationType pageNum:self.pages.currentPage onCompletion:^(AwfulPageDataController *dataController) {
         self.dataController = dataController;
+        if(self.destinationType == AwfulPageDestinationTypeSpecific) {
+            self.pages.currentPage = pageNum;
+        }
         [self updatePagesLabel];
+        [self swapToRefreshButton];
     } onError:^(NSError *error) {
         [self swapToRefreshButton];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
@@ -189,8 +198,7 @@
 {
     if(![self.pages onLastPage]) {
         self.destinationType = AwfulPageDestinationTypeSpecific;
-        self.pages.currentPage++;
-        [self refresh];
+        [self loadPageNum:self.pages.currentPage+1];
     }
 }
 
@@ -198,8 +206,7 @@
 {
     if(self.pages.currentPage > 1) {
         self.destinationType = AwfulPageDestinationTypeSpecific;
-        self.pages.currentPage--;
-        [self refresh];
+        [self loadPageNum:self.pages.currentPage-1];
     }
 }
 
@@ -380,7 +387,6 @@
         self.specificPageController.page = self;
         [self.specificPageController loadView];
         sp_view = self.specificPageController.containerView;
-        [self.specificPageController.pickerView selectRow:self.pages.currentPage-1 inComponent:0 animated:NO];
         
         float width_diff = self.view.frame.size.width - sp_view.frame.size.width;
         sp_view.center = CGPointMake(self.view.center.x + width_diff/2, self.view.frame.size.height+sp_view.frame.size.height/2);
@@ -389,6 +395,7 @@
             sp_view.frame = CGRectOffset(sp_view.frame, 0, -sp_view.frame.size.height);
         }];
         
+        [self.specificPageController.pickerView selectRow:self.pages.currentPage-1 inComponent:0 animated:NO];
     }
 }
 

@@ -97,6 +97,7 @@
         [self acceptThreads:threads];
         self.pages.currentPage = pageNum;
         [self updatePagesLabel];
+        [self swapToRefreshButton];
     } onError:^(NSError *error) {
         [self swapToRefreshButton];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
@@ -124,7 +125,6 @@
 
 -(void)acceptThreads : (NSMutableArray *)in_threads
 {
-    [self swapToRefreshButton];
     [UIView animateWithDuration:0.2 animations:^(void){
         self.view.alpha = 1.0;
     }];
