@@ -16,5 +16,6 @@
 @property BOOL hiding;
 @property (nonatomic, strong) IBOutlet UIView *containerView;
 @property (nonatomic, strong) IBOutlet UIPickerView *pickerView;
+- (IBAction)hitJumpToPage:(id)sender;
 
 @end

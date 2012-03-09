@@ -364,7 +364,8 @@
 
 -(IBAction)tappedActions:(id)sender
 {
-    
+    AwfulThreadActions *actions = [[AwfulThreadActions alloc] initWithAwfulPage:self];
+    self.actions = actions;
 }
 
 -(void)tappedPageNav : (id)sender
@@ -435,12 +436,6 @@
     if(![post_id isEqualToString:@""]) {
         for(AwfulPost *post in self.dataController.posts) {
             if([post.postID isEqualToString:post_id]) {
-                /*if(self.actions != nil && [self.actions isMemberOfClass:[AwfulPostActions class]]) {
-                    AwfulPostActions *post_actions = (AwfulPostActions *)self.actions;
-                    if(post_actions.post == post) {
-                    
-                    }
-                }*/
                 AwfulPostActions *actions = [[AwfulPostActions alloc] initWithAwfulPost:post page:self];
                 self.actions = actions;
             }

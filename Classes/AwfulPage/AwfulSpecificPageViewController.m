@@ -67,4 +67,11 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+- (IBAction)hitJumpToPage:(id)sender 
+{
+    self.page.destinationType = AwfulPageDestinationTypeSpecific;
+    [self.page loadPageNum:[self.pickerView selectedRowInComponent:0]+1];
+    [self.page tappedPageNav:nil];
+}
+
 @end
