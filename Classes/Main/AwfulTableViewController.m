@@ -11,9 +11,7 @@
 
 @implementation AwfulTableViewController
 
-@synthesize refreshTimer = _refreshTimer;
 @synthesize networkOperation = _networkOperation;
-@synthesize refreshed = _refreshed;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -47,25 +45,18 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
-    if(!self.refreshed) {
-        [self startTimer];
-    }
 }
 
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    [self endTimer];
     [self stop];
-    self.refreshed = NO;
 }
 
 #pragma mark - Refresh
 
 -(void)refresh
 {
-    [self endTimer];
     /*[UIView animateWithDuration:0.2 animations:^(void){
         self.view.alpha = 0.5;
     }];*/
@@ -80,22 +71,6 @@
     }];*/
     [self swapToRefreshButton];
     [self.networkOperation cancel];
-}
-
--(void)startTimer
-{
-    [self endTimer];
-    float delay = [AwfulConfig bookmarksDelay];
-    self.refreshTimer = [NSTimer scheduledTimerWithTimeInterval:delay target:self selector:@selector(refresh) userInfo:nil repeats:NO];
-}
-
--(void)endTimer
-{
-    self.refreshed = YES;
-    if([self.refreshTimer isValid]) {
-        [self.refreshTimer invalidate];
-    }
-    self.refreshTimer = nil;
 }
 
 -(void)swapToRefreshButton

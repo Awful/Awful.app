@@ -157,7 +157,6 @@
     [self.tableView reloadData];
 }
 
-
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.navigationController setToolbarHidden:YES];
@@ -307,7 +306,7 @@
 
 -(BOOL)moreThreads
 {
-    return YES;
+    return [self.awfulThreads count] > 0;
 }
 
 @end
@@ -349,9 +348,9 @@
 
 -(void)newlyVisible
 {
-    [self endTimer];
+    /*[self endTimer];
     self.refreshed = NO;
-    [self startTimer];
+    [self startTimer];*/
 }
 
 -(void)acceptThreads:(NSMutableArray *)in_threads

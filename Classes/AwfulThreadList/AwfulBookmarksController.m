@@ -46,8 +46,6 @@
     
     if([self.awfulThreads count] == 0) {
         [self refresh];
-    } else {
-        [self startTimer];
     }
 }
 
