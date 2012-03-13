@@ -19,6 +19,7 @@
 typedef void (^ThreadListResponseBlock)(NSMutableArray *threads);
 typedef void (^PageResponseBlock)(AwfulPageDataController *dataController);
 typedef void (^UserResponseBlock)(AwfulUser *user);
+typedef void (^CompletionBlock)(void);
 
 -(MKNetworkOperation *)threadListForForum:(AwfulForum *)forum pageNum:(NSUInteger)pageNum onCompletion:(ThreadListResponseBlock)threadListResponseBlock onError:(MKNKErrorBlock)errorBlock;
 
@@ -27,5 +28,7 @@ typedef void (^UserResponseBlock)(AwfulUser *user);
 -(MKNetworkOperation *)pageDataForThread : (AwfulThread *)thread destinationType : (AwfulPageDestinationType)destinationType pageNum : (NSUInteger)pageNum onCompletion:(PageResponseBlock)pageResponseBlock onError:(MKNKErrorBlock)errorBlock;
 
 -(MKNetworkOperation *)userInfoRequestOnCompletion : (UserResponseBlock)userResponseBlock onError : (MKNKErrorBlock)errorBlock;
+
+-(MKNetworkOperation *)removeBookmarkedThread : (AwfulThread *)thread onCompletion : (CompletionBlock)completionBlock onError : (MKNKErrorBlock)errorBlock;
 
 @end

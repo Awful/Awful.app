@@ -307,10 +307,7 @@
 
 -(BOOL)moreThreads
 {
-    if([self.awfulThreads count] % 40 == 0 && [self.awfulThreads count] > 0) {
-        return YES;
-    }
-    return NO;
+    return YES;
 }
 
 @end

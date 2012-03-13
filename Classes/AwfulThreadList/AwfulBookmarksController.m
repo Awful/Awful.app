@@ -18,6 +18,8 @@
 
 @implementation AwfulBookmarksController
 
+@synthesize threadCount = _threadCount;
+
 -(void)awakeFromNib
 {
     [super awakeFromNib];
@@ -34,6 +36,7 @@
     
     // moving the auto refresh to viewWillAppear, because bookmarks get loaded right away because of the tabbarcontroller, even if the user isn't looking at them
     [self stop];
+    self.navigationItem.leftBarButtonItem = self.editButtonItem;
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -56,6 +59,12 @@
 -(BOOL)shouldReloadOnViewLoad
 {
     return NO;
+}
+
+-(void)acceptThreads:(NSMutableArray *)in_threads
+{
+    self.threadCount = [self.awfulThreads count] + [in_threads count]; // this needs to be before the super call
+    [super acceptThreads:in_threads];
 }
 
 -(void)newlyVisible
@@ -81,6 +90,14 @@
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
         [alert show];
     }];
+}
+
+-(BOOL)moreThreads
+{
+    if(self.threadCount % 40 == 0 && [self.awfulThreads count] > 0) {
+        return YES;
+    }
+    return NO;
 }
 
 /*
@@ -114,23 +131,17 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        //AwfulThread *thread = [self.awfulThreads objectAtIndex:indexPath.row];
-        [self.awfulThreads removeObjectAtIndex:indexPath.row];
-        //[AwfulUtil saveThreadList:self.awfulThreads forForumId:[self getSaveID]];       
+        
+        AwfulThread *thread = [self.awfulThreads objectAtIndex:indexPath.row];
+        [self.awfulThreads removeObject:thread];   
         [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
         
-
-        /*ASIFormDataRequest *req = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"http://forums.somethingawful.com/bookmarkthreads.php"]];
-        req.userInfo = [NSDictionary dictionaryWithObject:@"Removed from bookmarks." forKey:@"completionMsg"];
-        
-        [req setPostValue:@"1" forKey:@"json"];
-        [req setPostValue:@"remove" forKey:@"action"];
-        [req setPostValue:thread.threadID forKey:@"threadid"];
-        
-        loadRequestAndWait(req);*/
-        
-
+        self.networkOperation = [ApplicationDelegate.awfulNetworkEngine removeBookmarkedThread:thread onCompletion:^(void) {
+            
+        } onError:^(NSError *error) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+            [alert show];
+        }];
     }   
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view

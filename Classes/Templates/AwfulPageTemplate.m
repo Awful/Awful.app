@@ -230,6 +230,11 @@
     return @"";
 }
 
+-(NSData *)data
+{
+    return [self dataUsingEncoding:NSUTF8StringEncoding];
+}
+
 @end
 
 

@@ -52,12 +52,12 @@
     NSString *minus_extension = [[self.thread.threadIconImageURL lastPathComponent] stringByDeletingPathExtension];
     NSURL *tag_url = [[NSBundle mainBundle] URLForResource:minus_extension withExtension:@"png"];
     if(tag_url != nil) {
-        [self addSubview:self.tagImage];
+        self.tagImage.hidden = NO;
         [self.tagImage setImage:[UIImage imageNamed:[tag_url lastPathComponent]]];
         [self.tagImage.layer setBorderColor:[[UIColor blackColor] CGColor]];
         [self.tagImage.layer setBorderWidth:1.0];
     } else {
-        [self.tagImage removeFromSuperview];
+        self.tagImage.hidden = YES;
     }
     
     if(thread.isLocked) {

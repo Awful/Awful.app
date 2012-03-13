@@ -14,6 +14,7 @@
 #import "AwfulPage.h"
 #import "AwfulPageDataController.h"
 #import "AwfulUser.h"
+#import "AwfulPageTemplate.h"
 
 @implementation AwfulNetworkEngine
 
@@ -152,6 +153,25 @@
         
         userResponseBlock(user);
         
+    } onError:^(NSError *error) {
+        errorBlock(error);
+    }];
+    
+    [self enqueueOperation:op];
+    return op;
+}
+
+-(MKNetworkOperation *)removeBookmarkedThread : (AwfulThread *)thread onCompletion : (CompletionBlock)completionBlock onError : (MKNKErrorBlock)errorBlock
+{    
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    [dict setObject:@"1" forKey:@"json"];
+    [dict setObject:@"remove" forKey:@"action"];
+    [dict setObject:thread.threadID forKey:@"threadid"];
+    
+    MKNetworkOperation *op = [self operationWithPath:@"bookmarkthreads.php" params:dict httpMethod:@"POST"];
+    
+    [op onCompletion:^(MKNetworkOperation *completedOperation) {
+        completionBlock();
     } onError:^(NSError *error) {
         errorBlock(error);
     }];
