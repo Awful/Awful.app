@@ -16,8 +16,6 @@
 @implementation AwfulAppDelegate
 
 @synthesize window = _window;
-@synthesize navigationController = _navigationController;
-@synthesize navigator = _navigator;
 @synthesize splitController = _splitController;
 @synthesize awfulNetworkEngine = _awfulNetworkEngine;
 
@@ -29,6 +27,10 @@
     // Override point for customization after application launch.
     
     self.awfulNetworkEngine = [[AwfulNetworkEngine alloc] initWithHostName:@"forums.somethingawful.com" customHeaderFields:nil];
+    
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        self.splitController = (AwfulSplitViewController *)self.window.rootViewController;
+    }
     
     [self.window makeKeyAndVisible];
     
@@ -118,35 +120,12 @@
 
 - (UIViewController *)getRootController
 {
-    return self.navigationController;
+    return self.window.rootViewController;
 }
+
 @end
 
-@implementation AwfulAppDelegateIpad
 
--(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
-    [super application:application didFinishLaunchingWithOptions:launchOptions];
-    [self.window addSubview:self.splitController.view];
-    return YES;
-}
-
-- (void) setupSubview
-{
-    [self.window addSubview:self.splitController.view];
-}
-
-- (UIViewController *)getRootController
-{
-    return self.splitController;
-}
-@end
-
-UIViewController *getRootController()
-{
-    AwfulAppDelegate *del = [[UIApplication sharedApplication] delegate];
-    return [del getRootController];
-}
 
 BOOL isLandscape()
 {

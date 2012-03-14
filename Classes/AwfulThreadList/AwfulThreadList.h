@@ -43,7 +43,3 @@ typedef enum {
 -(void)newlyVisible;
 
 @end
-
-@interface AwfulThreadListIpad : AwfulThreadList
-
-@end

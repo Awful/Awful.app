@@ -544,8 +544,6 @@
 		112ECF5214D7100A007EE7B6 /* weird.png in Resources */ = {isa = PBXBuildFile; fileRef = 112ECF3014D7100A007EE7B6 /* weird.png */; };
 		112ECF5314D7100A007EE7B6 /* whine.png in Resources */ = {isa = PBXBuildFile; fileRef = 112ECF3114D7100A007EE7B6 /* whine.png */; };
 		1153D0D6144E5BA6007602E8 /* AwfulSpecificPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1153D0D4144E5BA6007602E8 /* AwfulSpecificPageViewController.m */; };
-		1153D105144E7218007602E8 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1153D104144E7218007602E8 /* MainWindow-iPad.xib */; };
-		1153D11A144E7729007602E8 /* AwfulSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1153D119144E7729007602E8 /* AwfulSplitViewController.m */; };
 		1156F004144B985000C0455B /* grey-gradient.png in Resources */ = {isa = PBXBuildFile; fileRef = 1156F003144B985000C0455B /* grey-gradient.png */; };
 		115A05DA134814B6004FDCE5 /* arrowright.png in Resources */ = {isa = PBXBuildFile; fileRef = 115A05D9134814B6004FDCE5 /* arrowright.png */; };
 		115A05DF13490D39004FDCE5 /* dotdotdot.png in Resources */ = {isa = PBXBuildFile; fileRef = 115A05DE13490D39004FDCE5 /* dotdotdot.png */; };
@@ -576,7 +574,6 @@
 		1190F73913BE4EA900B9D271 /* AwfulForumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6D913BE4EA900B9D271 /* AwfulForumCell.m */; };
 		1190F73B13BE4EA900B9D271 /* AwfulForumHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1190F6DB13BE4EA900B9D271 /* AwfulForumHeaderView.xib */; };
 		1190F73D13BE4EA900B9D271 /* AwfulForumsList.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6DE13BE4EA900B9D271 /* AwfulForumsList.m */; };
-		1190F74213BE4EA900B9D271 /* OtherWebController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6E713BE4EA900B9D271 /* OtherWebController.m */; };
 		1190F74413BE4EA900B9D271 /* AwfulPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6EB13BE4EA900B9D271 /* AwfulPage.m */; };
 		1190F74713BE4EA900B9D271 /* AwfulPostBox.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1190F6EF13BE4EA900B9D271 /* AwfulPostBox.xib */; };
 		1190F74813BE4EA900B9D271 /* AwfulPostBoxController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6F113BE4EA900B9D271 /* AwfulPostBoxController.m */; };
@@ -627,7 +624,6 @@
 		1190F80513BE58BB00B9D271 /* post.css in Resources */ = {isa = PBXBuildFile; fileRef = 1190F80313BE58BB00B9D271 /* post.css */; };
 		1195D59414C4CB4400CA3A48 /* threadrating.png in Resources */ = {isa = PBXBuildFile; fileRef = 1195D59014C4CB4400CA3A48 /* threadrating.png */; };
 		1199D7CF13AA9C4200264DE9 /* tiny_arrow_right.png in Resources */ = {isa = PBXBuildFile; fileRef = 1199D7CE13AA9C4200264DE9 /* tiny_arrow_right.png */; };
-		11A4EE581500504500C35C4D /* AwfulAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A4EE571500504500C35C4D /* AwfulAccountViewController.m */; };
 		11C1FFA214FC789E00B0250B /* 01-arrow-east.png in Resources */ = {isa = PBXBuildFile; fileRef = 11C1FFA014FC789E00B0250B /* 01-arrow-east.png */; };
 		11C1FFA314FC789E00B0250B /* 01-arrow-east@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11C1FFA114FC789E00B0250B /* 01-arrow-east@2x.png */; };
 		11C1FFA714FC78D500B0250B /* 28-star.png in Resources */ = {isa = PBXBuildFile; fileRef = 11C1FFA514FC78D500B0250B /* 28-star.png */; };
@@ -649,6 +645,12 @@
 		11D7CB9814EA0CED000DA96A /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 11D7CB9714EA0CED000DA96A /* MainStoryboard.storyboard */; };
 		11D7CB9D14EA1AE8000DA96A /* AwfulTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11D7CB9C14EA1AE8000DA96A /* AwfulTabBarController.m */; };
 		11DFB44214FF1CBB0001A34C /* AwfulTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DFB44114FF1CBB0001A34C /* AwfulTableViewController.m */; };
+		11FDA28F151017490014FDCD /* AwfulPageIpad.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA28D151017490014FDCD /* AwfulPageIpad.m */; };
+		11FDA290151017490014FDCD /* MainStoryboardiPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 11FDA28E151017490014FDCD /* MainStoryboardiPad.storyboard */; };
+		11FDA293151018080014FDCD /* AwfulThreadListIpad.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA292151018080014FDCD /* AwfulThreadListIpad.m */; };
+		11FDA296151018600014FDCD /* AwfulAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA295151018600014FDCD /* AwfulAccountViewController.m */; };
+		11FDA299151018740014FDCD /* OtherWebController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA298151018740014FDCD /* OtherWebController.m */; };
+		11FDA29C1510187F0014FDCD /* AwfulSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA29B1510187F0014FDCD /* AwfulSplitViewController.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765080DF74369002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765070DF74369002DB57D /* CoreGraphics.framework */; };
@@ -1208,9 +1210,6 @@
 		112ECF3114D7100A007EE7B6 /* whine.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whine.png; sourceTree = "<group>"; };
 		1153D0D3144E5BA6007602E8 /* AwfulSpecificPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSpecificPageViewController.h; sourceTree = "<group>"; };
 		1153D0D4144E5BA6007602E8 /* AwfulSpecificPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSpecificPageViewController.m; sourceTree = "<group>"; };
-		1153D104144E7218007602E8 /* MainWindow-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "MainWindow-iPad.xib"; path = "Classes/Main/iPad/MainWindow-iPad.xib"; sourceTree = "<group>"; };
-		1153D118144E7729007602E8 /* AwfulSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AwfulSplitViewController.h; path = Classes/AwfulNavigation/AwfulSplitViewController.h; sourceTree = "<group>"; };
-		1153D119144E7729007602E8 /* AwfulSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AwfulSplitViewController.m; path = Classes/AwfulNavigation/AwfulSplitViewController.m; sourceTree = "<group>"; };
 		1156F003144B985000C0455B /* grey-gradient.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "grey-gradient.png"; path = "images/grey-gradient.png"; sourceTree = "<group>"; };
 		115A05D9134814B6004FDCE5 /* arrowright.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = arrowright.png; path = images/arrowright.png; sourceTree = "<group>"; };
 		115A05DE13490D39004FDCE5 /* dotdotdot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dotdotdot.png; path = images/dotdotdot.png; sourceTree = "<group>"; };
@@ -1257,8 +1256,6 @@
 		1190F6DB13BE4EA900B9D271 /* AwfulForumHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AwfulForumHeaderView.xib; sourceTree = "<group>"; };
 		1190F6DD13BE4EA900B9D271 /* AwfulForumsList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumsList.h; sourceTree = "<group>"; };
 		1190F6DE13BE4EA900B9D271 /* AwfulForumsList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumsList.m; sourceTree = "<group>"; };
-		1190F6E613BE4EA900B9D271 /* OtherWebController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OtherWebController.h; path = ../AwfulNavigation/OtherWebController.h; sourceTree = "<group>"; };
-		1190F6E713BE4EA900B9D271 /* OtherWebController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OtherWebController.m; path = ../AwfulNavigation/OtherWebController.m; sourceTree = "<group>"; };
 		1190F6EA13BE4EA900B9D271 /* AwfulPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPage.h; sourceTree = "<group>"; };
 		1190F6EB13BE4EA900B9D271 /* AwfulPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPage.m; sourceTree = "<group>"; };
 		1190F6EF13BE4EA900B9D271 /* AwfulPostBox.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AwfulPostBox.xib; sourceTree = "<group>"; };
@@ -1354,8 +1351,6 @@
 		1190F80313BE58BB00B9D271 /* post.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = post.css; sourceTree = "<group>"; };
 		1195D59014C4CB4400CA3A48 /* threadrating.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = threadrating.png; path = images/threadrating.png; sourceTree = "<group>"; };
 		1199D7CE13AA9C4200264DE9 /* tiny_arrow_right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tiny_arrow_right.png; path = images/tiny_arrow_right.png; sourceTree = "<group>"; };
-		11A4EE561500504500C35C4D /* AwfulAccountViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AwfulAccountViewController.h; path = ../Extras/AwfulAccountViewController.h; sourceTree = "<group>"; };
-		11A4EE571500504500C35C4D /* AwfulAccountViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AwfulAccountViewController.m; path = ../Extras/AwfulAccountViewController.m; sourceTree = "<group>"; };
 		11C1FFA014FC789E00B0250B /* 01-arrow-east.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "01-arrow-east.png"; path = "images/01-arrow-east.png"; sourceTree = "<group>"; };
 		11C1FFA114FC789E00B0250B /* 01-arrow-east@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "01-arrow-east@2x.png"; path = "images/01-arrow-east@2x.png"; sourceTree = "<group>"; };
 		11C1FFA514FC78D500B0250B /* 28-star.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "28-star.png"; path = "images/28-star.png"; sourceTree = "<group>"; };
@@ -1381,6 +1376,17 @@
 		11D7CB9C14EA1AE8000DA96A /* AwfulTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTabBarController.m; sourceTree = "<group>"; };
 		11DFB44014FF1CBB0001A34C /* AwfulTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTableViewController.h; sourceTree = "<group>"; };
 		11DFB44114FF1CBB0001A34C /* AwfulTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTableViewController.m; sourceTree = "<group>"; };
+		11FDA28C151017490014FDCD /* AwfulPageIpad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AwfulPageIpad.h; path = iPad/AwfulPageIpad.h; sourceTree = "<group>"; };
+		11FDA28D151017490014FDCD /* AwfulPageIpad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AwfulPageIpad.m; path = iPad/AwfulPageIpad.m; sourceTree = "<group>"; };
+		11FDA28E151017490014FDCD /* MainStoryboardiPad.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = MainStoryboardiPad.storyboard; path = iPad/MainStoryboardiPad.storyboard; sourceTree = "<group>"; };
+		11FDA291151018080014FDCD /* AwfulThreadListIpad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AwfulThreadListIpad.h; path = iPad/AwfulThreadListIpad.h; sourceTree = "<group>"; };
+		11FDA292151018080014FDCD /* AwfulThreadListIpad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AwfulThreadListIpad.m; path = iPad/AwfulThreadListIpad.m; sourceTree = "<group>"; };
+		11FDA294151018600014FDCD /* AwfulAccountViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAccountViewController.h; sourceTree = "<group>"; };
+		11FDA295151018600014FDCD /* AwfulAccountViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAccountViewController.m; sourceTree = "<group>"; };
+		11FDA297151018740014FDCD /* OtherWebController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OtherWebController.h; sourceTree = "<group>"; };
+		11FDA298151018740014FDCD /* OtherWebController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OtherWebController.m; sourceTree = "<group>"; };
+		11FDA29A1510187F0014FDCD /* AwfulSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AwfulSplitViewController.h; path = iPad/AwfulSplitViewController.h; sourceTree = "<group>"; };
+		11FDA29B1510187F0014FDCD /* AwfulSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AwfulSplitViewController.m; path = iPad/AwfulSplitViewController.m; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* Awful.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Awful.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -2020,9 +2026,13 @@
 		1153D103144E7217007602E8 /* iPad */ = {
 			isa = PBXGroup;
 			children = (
-				1153D104144E7218007602E8 /* MainWindow-iPad.xib */,
-				1153D118144E7729007602E8 /* AwfulSplitViewController.h */,
-				1153D119144E7729007602E8 /* AwfulSplitViewController.m */,
+				11FDA28E151017490014FDCD /* MainStoryboardiPad.storyboard */,
+				11FDA29A1510187F0014FDCD /* AwfulSplitViewController.h */,
+				11FDA29B1510187F0014FDCD /* AwfulSplitViewController.m */,
+				11FDA28C151017490014FDCD /* AwfulPageIpad.h */,
+				11FDA28D151017490014FDCD /* AwfulPageIpad.m */,
+				11FDA291151018080014FDCD /* AwfulThreadListIpad.h */,
+				11FDA292151018080014FDCD /* AwfulThreadListIpad.m */,
 			);
 			name = iPad;
 			sourceTree = "<group>";
@@ -2140,8 +2150,8 @@
 		1190F70B13BE4EA900B9D271 /* Extras */ = {
 			isa = PBXGroup;
 			children = (
-				1190F6E613BE4EA900B9D271 /* OtherWebController.h */,
-				1190F6E713BE4EA900B9D271 /* OtherWebController.m */,
+				11FDA297151018740014FDCD /* OtherWebController.h */,
+				11FDA298151018740014FDCD /* OtherWebController.m */,
 			);
 			path = Extras;
 			sourceTree = "<group>";
@@ -2149,10 +2159,10 @@
 		1190F71813BE4EA900B9D271 /* Login */ = {
 			isa = PBXGroup;
 			children = (
+				11FDA294151018600014FDCD /* AwfulAccountViewController.h */,
+				11FDA295151018600014FDCD /* AwfulAccountViewController.m */,
 				1190F71913BE4EA900B9D271 /* AwfulLoginController.h */,
 				1190F71A13BE4EA900B9D271 /* AwfulLoginController.m */,
-				11A4EE561500504500C35C4D /* AwfulAccountViewController.h */,
-				11A4EE571500504500C35C4D /* AwfulAccountViewController.m */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -2982,7 +2992,6 @@
 				1190F80513BE58BB00B9D271 /* post.css in Resources */,
 				11D31C5013C40FDF0018C6E0 /* tiny_arrow_right@2x.png in Resources */,
 				1156F004144B985000C0455B /* grey-gradient.png in Resources */,
-				1153D105144E7218007602E8 /* MainWindow-iPad.xib in Resources */,
 				50574ECD14CA187D00FD1F92 /* dotdotdot-clear.png in Resources */,
 				5040D23E14D0BC5D009E73F7 /* back.png in Resources */,
 				5040D23F14D0BC5D009E73F7 /* back@2x.png in Resources */,
@@ -3045,6 +3054,7 @@
 				11C1FFB014FC797800B0250B /* 40-inbox@2x.png in Resources */,
 				11C1FFB314FC821300B0250B /* 05-arrow-west.png in Resources */,
 				11C1FFB414FC821300B0250B /* 05-arrow-west@2x.png in Resources */,
+				11FDA290151017490014FDCD /* MainStoryboardiPad.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3064,7 +3074,6 @@
 				1190F73813BE4EA900B9D271 /* AwfulVoteActions.m in Sources */,
 				1190F73913BE4EA900B9D271 /* AwfulForumCell.m in Sources */,
 				1190F73D13BE4EA900B9D271 /* AwfulForumsList.m in Sources */,
-				1190F74213BE4EA900B9D271 /* OtherWebController.m in Sources */,
 				1190F74413BE4EA900B9D271 /* AwfulPage.m in Sources */,
 				1190F74813BE4EA900B9D271 /* AwfulPostBoxController.m in Sources */,
 				1190F75213BE4EA900B9D271 /* AwfulBookmarksController.m in Sources */,
@@ -3109,7 +3118,6 @@
 				1190F7F313BE4EDA00B9D271 /* main.m in Sources */,
 				112DB4BB14211F24005A98CB /* SALR.m in Sources */,
 				1153D0D6144E5BA6007602E8 /* AwfulSpecificPageViewController.m in Sources */,
-				1153D11A144E7729007602E8 /* AwfulSplitViewController.m in Sources */,
 				11D5E85814DC5FA000C1002D /* AwfulPageDataController.m in Sources */,
 				11D5E85D14DC6D5C00C1002D /* AwfulPageTemplate.m in Sources */,
 				11D7CB9D14EA1AE8000DA96A /* AwfulTabBarController.m in Sources */,
@@ -3123,7 +3131,11 @@
 				1172A62B14F5D9C70026CDA8 /* Reachability.m in Sources */,
 				1172A63214F5DE8B0026CDA8 /* AwfulNetworkEngine.m in Sources */,
 				11DFB44214FF1CBB0001A34C /* AwfulTableViewController.m in Sources */,
-				11A4EE581500504500C35C4D /* AwfulAccountViewController.m in Sources */,
+				11FDA28F151017490014FDCD /* AwfulPageIpad.m in Sources */,
+				11FDA293151018080014FDCD /* AwfulThreadListIpad.m in Sources */,
+				11FDA296151018600014FDCD /* AwfulAccountViewController.m in Sources */,
+				11FDA299151018740014FDCD /* OtherWebController.m in Sources */,
+				11FDA29C1510187F0014FDCD /* AwfulSplitViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

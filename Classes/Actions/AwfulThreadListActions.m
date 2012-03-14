@@ -30,7 +30,7 @@ typedef enum {
         [self.titles addObject:@"Last Page"];
         
         // no mark unread for bookmarks
-        UIViewController *vc = getRootController();
+        UIViewController *vc = [ApplicationDelegate getRootController];
         if(vc.modalViewController == nil) {
             [self.titles addObject:@"Mark as Unread"];
         }

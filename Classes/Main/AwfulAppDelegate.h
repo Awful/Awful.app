@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@class AwfulNavigator;
-@class AwfulNavigatorIpad;
 @class AwfulSplitViewController;
 @class AwfulNetworkEngine;
 
@@ -18,20 +16,13 @@
 @interface AwfulAppDelegate : NSObject <UIApplicationDelegate>
 
 @property (nonatomic, strong) IBOutlet UIWindow *window;
-@property (nonatomic, strong) IBOutlet UINavigationController *navigationController;
-@property (nonatomic, strong) IBOutlet AwfulNavigator *navigator;
 @property (nonatomic, strong) IBOutlet AwfulSplitViewController *splitController;
 @property (nonatomic, strong) AwfulNetworkEngine *awfulNetworkEngine;
 
-- (UIViewController *)getRootController;
-- (void)initializeiCloudAccess;
+-(UIViewController *)getRootController;
+-(void)initializeiCloudAccess;
 -(void)iCloudKeyChanged : (NSNotification *)aNotification;
 
 @end
 
-@interface AwfulAppDelegateIpad : AwfulAppDelegate
-- (void)setupSubview;
-@end
-
-UIViewController *getRootController();
 BOOL isLandscape();

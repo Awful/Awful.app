@@ -11,9 +11,6 @@
 
 @implementation AwfulTabBarController
 
-@synthesize awfulNetworkEngine = _awfulNetworkEngine;
-@synthesize awfulForumsList = _awfulForumsList;
-
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];

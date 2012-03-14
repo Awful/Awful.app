@@ -75,27 +75,3 @@ typedef enum {
 -(void)swapToRefreshButton;
 
 @end
-
-
-@interface AwfulPageIpad : AwfulPage <UIPickerViewDataSource, UIPickerViewDelegate>
-
-@property (nonatomic, strong) UIBarButtonItem *pageButton;
-@property (nonatomic, strong) UIBarButtonItem *ratingButton;
-@property (nonatomic, strong) UIPopoverController *popController;
-@property (nonatomic, strong) UIPickerView *pagePicker;
-@property CGPoint lastTouch;
-@property (nonatomic, strong) AwfulActions *actions;
-
--(void)makeCustomToolbars;
--(void)hitActions;
--(void)hitMore;
--(void)pageSelection;
--(void)gotoPageClicked;
--(void)hitForum;
--(void)handleTap:(UITapGestureRecognizer *)sender;
--(void)rateThread:(id)sender;
--(void)bookmarkThread:(id)sender;
--(void)reply;
--(void)backPage;
-
-@end

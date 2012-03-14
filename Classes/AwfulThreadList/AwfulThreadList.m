@@ -50,16 +50,6 @@
         AwfulThread *thread = [self getThreadAtIndexPath:selected];
         AwfulPage *page = (AwfulPage *)segue.destinationViewController;
         page.thread = thread;
-        
-        AwfulPageDestinationType destination = AwfulPageDestinationTypeNewpost;
-        if(thread.totalUnreadPosts == -1) {
-            destination = AwfulPageDestinationTypeFirst;
-        } else if(thread.totalUnreadPosts == 0) {
-            destination = AwfulPageDestinationTypeLast;
-            // if the last page is full, it won't work if you go for &goto=newpost, that's why I'm setting this to last page
-        }
-        
-        page.destinationType = destination;
         [page refresh];
     }
 }
@@ -307,56 +297,6 @@
 -(BOOL)moreThreads
 {
     return [self.awfulThreads count] > 0;
-}
-
-@end
-
-
-@implementation AwfulThreadListIpad
-
-//Copied to AwfulBookmarksControllerIpad
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    AwfulThread *thread = [self getThreadAtIndexPath:indexPath];
-    
-    if(thread.threadID != nil) {
-        int start = AwfulPageDestinationTypeNewpost;
-        if(thread.totalUnreadPosts == -1) {
-            start = AwfulPageDestinationTypeFirst;
-        } else if(thread.totalUnreadPosts == 0) {
-            start = AwfulPageDestinationTypeLast;
-            // if the last page is full, it won't work if you go for &goto=newpost
-            // therefore I'm setting it to last page here
-        }
-        
-        //AwfulPageIpad *thread_detail = [[AwfulPageIpad alloc] initWithAwfulThread:thread startAt:start];
-        //loadContentVC(thread_detail);
-    }
-}
-
-
--(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
-{
-    return YES;
-}
-    
--(void)viewDidLoad
-{
-    [super viewDidLoad];
-    [self swapToStopButton];
-}
-
--(void)newlyVisible
-{
-    /*[self endTimer];
-    self.refreshed = NO;
-    [self startTimer];*/
-}
-
--(void)acceptThreads:(NSMutableArray *)in_threads
-{
-    [super acceptThreads:in_threads];
-    [self swapToRefreshButton];
 }
 
 @end

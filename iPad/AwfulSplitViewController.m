@@ -15,6 +15,7 @@
 #import "AwfulLoginController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "AwfulUser.h"
+#import "AwfulPageIpad.h"
 
 @implementation AwfulSplitViewController
 

@@ -148,7 +148,7 @@
     [nav.requestHandler cancelAllRequests];
     [AwfulPostBoxController savePost:self.replyTextView.text];
     [self.replyTextView resignFirstResponder];*/
-    UIViewController *vc = getRootController();
+    UIViewController *vc = [ApplicationDelegate getRootController];
     [vc dismissModalViewControllerAnimated:YES];
 }
 
