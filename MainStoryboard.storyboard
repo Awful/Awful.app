@@ -247,27 +247,18 @@
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FTr-u6-ZV9" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController hidesBottomBarWhenPushed="YES" id="uMb-el-Ve5" customClass="AwfulPage" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="M3n-So-zb3">
-                        <rect key="frame" x="0.0" y="64" width="320" height="372"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                    </view>
                     <toolbarItems>
-                        <barButtonItem systemItem="action" id="Z2A-is-rRK">
-                            <connections>
-                                <action selector="tappedActions:" destination="uMb-el-Ve5" id="g5x-X8-Jn2"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="PMb-rX-sU3"/>
+                        <barButtonItem systemItem="refresh" id="gzd-PM-eZH"/>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="PT8-6F-t2w"/>
                         <barButtonItem title="Page 0 of 0" id="0Yn-hX-hPo">
                             <connections>
                                 <action selector="tappedPageNav:" destination="uMb-el-Ve5" id="qYc-lH-1Ox"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="cxY-hd-Ij4"/>
-                        <barButtonItem image="01-arrow-east.png" id="SkB-yt-lkF">
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="9w3-9E-T6s"/>
+                        <barButtonItem systemItem="action" id="Z2A-is-rRK">
                             <connections>
-                                <action selector="tappedNextPage:" destination="uMb-el-Ve5" id="NA3-Gd-Sgs"/>
+                                <action selector="tappedActions:" destination="uMb-el-Ve5" id="g5x-X8-Jn2"/>
                             </connections>
                         </barButtonItem>
                     </toolbarItems>
@@ -278,7 +269,6 @@
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics" barStyle="blackOpaque"/>
                     <connections>
-                        <outlet property="nextPageBarButtonItem" destination="SkB-yt-lkF" id="hDw-wg-KNG"/>
                         <outlet property="pagesBarButtonItem" destination="0Yn-hX-hPo" id="N87-mW-V9V"/>
                     </connections>
                 </viewController>
@@ -310,8 +300,18 @@
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                         <items>
+                                            <barButtonItem title=" First " id="WQD-e3-mxf">
+                                                <connections>
+                                                    <action selector="hitFirst:" destination="gFz-91-xJX" id="zvE-dk-SNb"/>
+                                                </connections>
+                                            </barButtonItem>
+                                            <barButtonItem title=" Last " id="3Oi-B7-JJO">
+                                                <connections>
+                                                    <action selector="hitLast:" destination="gFz-91-xJX" id="rAb-bQ-DJv"/>
+                                                </connections>
+                                            </barButtonItem>
                                             <barButtonItem style="plain" systemItem="flexibleSpace" id="tTU-24-8Op"/>
-                                            <barButtonItem title="Jump to Page" style="done" id="WUT-4F-7Il">
+                                            <barButtonItem title="Jump to Page" id="WUT-4F-7Il">
                                                 <connections>
                                                     <action selector="hitJumpToPage:" destination="gFz-91-xJX" id="JK5-a8-jfg"/>
                                                 </connections>
@@ -691,7 +691,7 @@
                 <relationship kind="outlet" name="titleLabel" candidateClass="UILabel"/>
             </relationships>
         </class>
-        <class className="AwfulForumsList" superclassName="UITableViewController">
+        <class className="AwfulForumsList" superclassName="AwfulTableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumsList.h"/>
             <relationships>
                 <relationship kind="action" name="grabFreshList"/>
@@ -725,7 +725,9 @@
         <class className="AwfulSpecificPageViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulSpecificPageViewController.h"/>
             <relationships>
+                <relationship kind="action" name="hitFirst:"/>
                 <relationship kind="action" name="hitJumpToPage:"/>
+                <relationship kind="action" name="hitLast:"/>
                 <relationship kind="outlet" name="containerView" candidateClass="UIView"/>
                 <relationship kind="outlet" name="pickerView" candidateClass="UIPickerView"/>
             </relationships>
@@ -737,7 +739,6 @@
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulTableViewController.h"/>
             <relationships>
                 <relationship kind="action" name="refresh"/>
-                <relationship kind="action" name="stop"/>
             </relationships>
         </class>
         <class className="AwfulThreadCell" superclassName="UITableViewCell">

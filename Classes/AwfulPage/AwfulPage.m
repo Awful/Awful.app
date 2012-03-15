@@ -573,15 +573,20 @@
 
 -(void)swapToRefreshButton
 {
-    //UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(hardRefresh)];
-    //self.navigationItem.rightBarButtonItem = refresh;
-    self.navigationItem.rightBarButtonItem = nil;
+    UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(hardRefresh)];
+    refresh.style = UIBarButtonItemStyleBordered;
+    NSMutableArray *items = [NSMutableArray arrayWithArray:self.toolbarItems];
+    [items replaceObjectAtIndex:0 withObject:refresh];
+    [self setToolbarItems:items];
 }
 
 -(void)swapToStopButton
 {
-    //UIBarButtonItem *stop = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop)];
-    //self.navigationItem.rightBarButtonItem = stop;
+    UIBarButtonItem *stop = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop)];
+    stop.style = UIBarButtonItemStyleBordered;
+    NSMutableArray *items = [NSMutableArray arrayWithArray:self.toolbarItems];
+    [items replaceObjectAtIndex:0 withObject:stop];
+    [self setToolbarItems:items];
 }
 
 @end

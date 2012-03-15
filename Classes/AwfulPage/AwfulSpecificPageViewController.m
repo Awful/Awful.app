@@ -74,4 +74,18 @@
     [self.page tappedPageNav:nil];
 }
 
+-(IBAction)hitFirst : (id)sender
+{
+    self.page.destinationType = AwfulPageDestinationTypeSpecific;
+    [self.page loadPageNum:1];
+    [self.page tappedPageNav:nil];
+}
+
+-(IBAction)hitLast : (id)sender
+{
+    self.page.destinationType = AwfulPageDestinationTypeSpecific;
+    [self.page loadPageNum:self.page.pages.totalPages];
+    [self.page tappedPageNav:nil];
+}
+
 @end
