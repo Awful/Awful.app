@@ -7,14 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "EGORefreshTableHeaderView.h"
 
-@interface AwfulTableViewController : UITableViewController
+@interface AwfulTableViewController : UITableViewController <EGORefreshTableHeaderDelegate>
 
 @property (nonatomic, strong) MKNetworkOperation *networkOperation;
+@property (nonatomic, strong) EGORefreshTableHeaderView *refreshHeaderView;
+@property (nonatomic, assign) BOOL reloading;
 
 -(IBAction)refresh;
--(IBAction)stop;
--(void)swapToRefreshButton;
--(void)swapToStopButton;
+-(void)finishedRefreshing;
 
 @end

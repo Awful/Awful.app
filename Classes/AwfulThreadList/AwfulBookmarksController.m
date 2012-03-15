@@ -35,7 +35,6 @@
     [super viewDidLoad];
     
     // moving the auto refresh to viewWillAppear, because bookmarks get loaded right away because of the tabbarcontroller, even if the user isn't looking at them
-    [self stop];
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
 }
 
@@ -82,10 +81,10 @@
             [self.awfulThreads removeAllObjects];
         }
         [self acceptThreads:threads];
-        [self swapToRefreshButton];
+        [self finishedRefreshing];
         
     } onError:^(NSError *error) {
-        [self swapToRefreshButton];
+        [self finishedRefreshing];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
         [alert show];
     }];

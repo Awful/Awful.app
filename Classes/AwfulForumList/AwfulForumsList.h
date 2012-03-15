@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AwfulTableViewController.h"
 
 @class AwfulForum;
 @class AwfulForumCell;
@@ -25,7 +26,7 @@
 
 @end
 
-@interface AwfulForumsList : UITableViewController <UIAlertViewDelegate>
+@interface AwfulForumsList : AwfulTableViewController <UIAlertViewDelegate>
 
 @property (nonatomic, strong) NSMutableArray *favorites;
 @property (nonatomic, strong) NSMutableArray *forums;

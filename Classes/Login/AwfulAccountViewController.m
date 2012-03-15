@@ -68,9 +68,9 @@
             self.usernameLabel.text = user.userName;
             [self.tableView reloadData];
         }
-        [self swapToRefreshButton];
+        [self finishedRefreshing];
     } onError:^(NSError *error) {
-        [self swapToRefreshButton];
+        [self finishedRefreshing];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
         [alert show];
     }];

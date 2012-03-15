@@ -134,6 +134,12 @@
     return YES;
 }
 
+-(void)refresh
+{
+    [super refresh];
+    [self performSelector:@selector(finishedRefreshing) withObject:nil afterDelay:0.5];
+}
+
 #pragma mark -
 #pragma mark Favorites
 

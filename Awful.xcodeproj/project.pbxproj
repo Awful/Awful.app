@@ -653,6 +653,15 @@
 		11FDA29C1510187F0014FDCD /* AwfulSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA29B1510187F0014FDCD /* AwfulSplitViewController.m */; };
 		11FDA2B7151170A20014FDCD /* navbargradient.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FDA2B6151170A20014FDCD /* navbargradient.png */; };
 		11FDA2BA151174F60014FDCD /* navbargradient@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FDA2B9151174F60014FDCD /* navbargradient@2x.png */; };
+		11FDA2CD15129CAF0014FDCD /* EGORefreshTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA2C315129CAF0014FDCD /* EGORefreshTableHeaderView.m */; };
+		11FDA2CE15129CAF0014FDCD /* blackArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FDA2C515129CAF0014FDCD /* blackArrow.png */; };
+		11FDA2CF15129CAF0014FDCD /* blackArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FDA2C615129CAF0014FDCD /* blackArrow@2x.png */; };
+		11FDA2D015129CAF0014FDCD /* blueArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FDA2C715129CAF0014FDCD /* blueArrow.png */; };
+		11FDA2D115129CAF0014FDCD /* blueArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FDA2C815129CAF0014FDCD /* blueArrow@2x.png */; };
+		11FDA2D215129CAF0014FDCD /* grayArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FDA2C915129CAF0014FDCD /* grayArrow.png */; };
+		11FDA2D315129CAF0014FDCD /* grayArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FDA2CA15129CAF0014FDCD /* grayArrow@2x.png */; };
+		11FDA2D415129CAF0014FDCD /* whiteArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FDA2CB15129CAF0014FDCD /* whiteArrow.png */; };
+		11FDA2D515129CAF0014FDCD /* whiteArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FDA2CC15129CAF0014FDCD /* whiteArrow@2x.png */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765080DF74369002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765070DF74369002DB57D /* CoreGraphics.framework */; };
@@ -1391,6 +1400,16 @@
 		11FDA29B1510187F0014FDCD /* AwfulSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AwfulSplitViewController.m; path = iPad/AwfulSplitViewController.m; sourceTree = "<group>"; };
 		11FDA2B6151170A20014FDCD /* navbargradient.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = navbargradient.png; path = images/navbargradient.png; sourceTree = "<group>"; };
 		11FDA2B9151174F60014FDCD /* navbargradient@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navbargradient@2x.png"; path = "images/navbargradient@2x.png"; sourceTree = "<group>"; };
+		11FDA2C215129CAF0014FDCD /* EGORefreshTableHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EGORefreshTableHeaderView.h; sourceTree = "<group>"; };
+		11FDA2C315129CAF0014FDCD /* EGORefreshTableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EGORefreshTableHeaderView.m; sourceTree = "<group>"; };
+		11FDA2C515129CAF0014FDCD /* blackArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blackArrow.png; sourceTree = "<group>"; };
+		11FDA2C615129CAF0014FDCD /* blackArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blackArrow@2x.png"; sourceTree = "<group>"; };
+		11FDA2C715129CAF0014FDCD /* blueArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blueArrow.png; sourceTree = "<group>"; };
+		11FDA2C815129CAF0014FDCD /* blueArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blueArrow@2x.png"; sourceTree = "<group>"; };
+		11FDA2C915129CAF0014FDCD /* grayArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grayArrow.png; sourceTree = "<group>"; };
+		11FDA2CA15129CAF0014FDCD /* grayArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "grayArrow@2x.png"; sourceTree = "<group>"; };
+		11FDA2CB15129CAF0014FDCD /* whiteArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whiteArrow.png; sourceTree = "<group>"; };
+		11FDA2CC15129CAF0014FDCD /* whiteArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "whiteArrow@2x.png"; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* Awful.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Awful.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -2225,6 +2244,7 @@
 		1190F76913BE4ECB00B9D271 /* 3rd Party Sources */ = {
 			isa = PBXGroup;
 			children = (
+				11FDA2BF15129CAF0014FDCD /* EGOTableViewPullRefresh */,
 				1172A60D14F5D9C70026CDA8 /* MKNetworkKit */,
 				1190F7FA13BE4F2900B9D271 /* Flurry */,
 				1190F76A13BE4ECB00B9D271 /* arashpayan-appirater-776ce19 */,
@@ -2363,6 +2383,47 @@
 				116D3A6214DDD71C0002129F /* pad-template.html */,
 			);
 			name = Templates;
+			sourceTree = "<group>";
+		};
+		11FDA2BF15129CAF0014FDCD /* EGOTableViewPullRefresh */ = {
+			isa = PBXGroup;
+			children = (
+				11FDA2C015129CAF0014FDCD /* Classes */,
+				11FDA2C415129CAF0014FDCD /* Resources */,
+			);
+			path = EGOTableViewPullRefresh;
+			sourceTree = "<group>";
+		};
+		11FDA2C015129CAF0014FDCD /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				11FDA2C115129CAF0014FDCD /* View */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		11FDA2C115129CAF0014FDCD /* View */ = {
+			isa = PBXGroup;
+			children = (
+				11FDA2C215129CAF0014FDCD /* EGORefreshTableHeaderView.h */,
+				11FDA2C315129CAF0014FDCD /* EGORefreshTableHeaderView.m */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		11FDA2C415129CAF0014FDCD /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				11FDA2C515129CAF0014FDCD /* blackArrow.png */,
+				11FDA2C615129CAF0014FDCD /* blackArrow@2x.png */,
+				11FDA2C715129CAF0014FDCD /* blueArrow.png */,
+				11FDA2C815129CAF0014FDCD /* blueArrow@2x.png */,
+				11FDA2C915129CAF0014FDCD /* grayArrow.png */,
+				11FDA2CA15129CAF0014FDCD /* grayArrow@2x.png */,
+				11FDA2CB15129CAF0014FDCD /* whiteArrow.png */,
+				11FDA2CC15129CAF0014FDCD /* whiteArrow@2x.png */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
@@ -3063,6 +3124,14 @@
 				11FDA290151017490014FDCD /* MainStoryboardiPad.storyboard in Resources */,
 				11FDA2B7151170A20014FDCD /* navbargradient.png in Resources */,
 				11FDA2BA151174F60014FDCD /* navbargradient@2x.png in Resources */,
+				11FDA2CE15129CAF0014FDCD /* blackArrow.png in Resources */,
+				11FDA2CF15129CAF0014FDCD /* blackArrow@2x.png in Resources */,
+				11FDA2D015129CAF0014FDCD /* blueArrow.png in Resources */,
+				11FDA2D115129CAF0014FDCD /* blueArrow@2x.png in Resources */,
+				11FDA2D215129CAF0014FDCD /* grayArrow.png in Resources */,
+				11FDA2D315129CAF0014FDCD /* grayArrow@2x.png in Resources */,
+				11FDA2D415129CAF0014FDCD /* whiteArrow.png in Resources */,
+				11FDA2D515129CAF0014FDCD /* whiteArrow@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3144,6 +3213,7 @@
 				11FDA296151018600014FDCD /* AwfulAccountViewController.m in Sources */,
 				11FDA299151018740014FDCD /* OtherWebController.m in Sources */,
 				11FDA29C1510187F0014FDCD /* AwfulSplitViewController.m in Sources */,
+				11FDA2CD15129CAF0014FDCD /* EGORefreshTableHeaderView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

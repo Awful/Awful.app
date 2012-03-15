@@ -78,9 +78,9 @@
             [self.awfulThreads removeAllObjects];
         }
         [self acceptThreads:threads];
-        [self swapToRefreshButton];
+        [self finishedRefreshing];
     } onError:^(NSError *error) {
-        [self swapToRefreshButton];
+        [self finishedRefreshing];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
         [alert show];
     }];
@@ -117,9 +117,7 @@
     //self.title = @"GBS";
     
     self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
-    
-    [self swapToRefreshButton];
-    
+        
     if([self.awfulThreads count] == 0) {
         [self refresh];
     }
@@ -160,7 +158,6 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self.networkOperation cancel];
 }
 
 /*

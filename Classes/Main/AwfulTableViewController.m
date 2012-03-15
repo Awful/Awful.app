@@ -12,6 +12,8 @@
 @implementation AwfulTableViewController
 
 @synthesize networkOperation = _networkOperation;
+@synthesize refreshHeaderView = _refreshHeaderView;
+@synthesize reloading = _reloading;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -28,11 +30,12 @@
 {
     [super viewDidLoad];
 
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
- 
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    [self.refreshHeaderView removeFromSuperview];
+    self.refreshHeaderView = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - self.tableView.bounds.size.height, self.view.frame.size.width, self.tableView.bounds.size.height)];
+    self.refreshHeaderView.delegate = self;
+    [self.tableView addSubview:self.refreshHeaderView];
+    [self.refreshHeaderView refreshLastUpdatedDate];
+    self.reloading = NO;
 }
 
 - (void)viewDidUnload
@@ -50,39 +53,52 @@
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    [self stop];
+    [self.networkOperation cancel];
+}
+
+#pragma mark -
+#pragma mark UIScrollViewDelegate Methods
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{	
+	[self.refreshHeaderView egoRefreshScrollViewDidScroll:scrollView];
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+	[self.refreshHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
+}
+
+
+#pragma mark -
+#pragma mark EGORefreshTableHeaderDelegate Methods
+
+- (void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view
+{
+	[self refresh];
+}
+
+- (BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view{
+	return self.reloading; // should return if data source model is reloading
+}
+
+- (NSDate*)egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView*)view{
+	
+	return [NSDate date]; // should return date data source was last changed
+	
 }
 
 #pragma mark - Refresh
 
 -(void)refresh
 {
-    /*[UIView animateWithDuration:0.2 animations:^(void){
-        self.view.alpha = 0.5;
-    }];*/
-    [self swapToStopButton];
+    self.reloading = YES;
 }
 
--(void)stop
+-(void)finishedRefreshing
 {
-    /*self.view.userInteractionEnabled = YES;
-    [UIView animateWithDuration:0.2 animations:^(void){
-        self.view.alpha = 1.0;
-    }];*/
-    [self swapToRefreshButton];
-    [self.networkOperation cancel];
-}
-
--(void)swapToRefreshButton
-{
-    UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refresh)];
-    //self.navigationItem.rightBarButtonItem = refresh;
-}
-
--(void)swapToStopButton
-{
-    UIBarButtonItem *stop = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop)];
-    //self.navigationItem.rightBarButtonItem = stop;
+    self.reloading = NO;
+	[self.refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
