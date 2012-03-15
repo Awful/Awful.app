@@ -19,7 +19,7 @@
 #import "AwfulForumHeader.h"
 #import "AwfulNetworkEngine.h"
 
-#define SECTION_INDEX_OFFSET 1
+#define SECTION_INDEX_OFFSET 0
 
 @implementation AwfulForumSection
 
@@ -93,7 +93,7 @@
     }
         
     self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
-    self.tableView.backgroundColor = [UIColor colorWithRed:0 green:0.4 blue:0.6 alpha:1.0];
+    //self.tableView.backgroundColor = [UIColor colorWithRed:0 green:0.4 blue:0.6 alpha:1.0];
 }
 
 -(void)hitDone
@@ -102,10 +102,11 @@
     //[nav dismissModalViewControllerAnimated:YES];
 }
 
-
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.navigationController setToolbarHidden:YES];
+    
+    [self.navigationItem.leftBarButtonItem setTintColor:[UIColor colorWithRed:46.0/255 green:146.0/255 blue:190.0/255 alpha:1.0]];
     
     if([self.tableView numberOfSections] == 2 && isLoggedIn()) {
         [self.tableView reloadData];
@@ -237,7 +238,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    if(section == 0) {
+    if(section == 0 && SECTION_INDEX_OFFSET > 0) {
         if(!isLoggedIn()) {
             return 0;
         }
@@ -278,7 +279,7 @@
 {
     NSString *str = nil;
 
-    if(section == 0) {
+    if(section == 0 && SECTION_INDEX_OFFSET > 0) {
         str = @"Favorites";
     } else if(section == [self.forumSections count] + 1) {
         str = @"";
@@ -516,7 +517,7 @@
 
 -(AwfulForum *)getForumAtIndexPath : (NSIndexPath *)path
 {
-    if(path.section == 0) {
+    if(path.section == 0 && SECTION_INDEX_OFFSET > 0) {
         return [self.favorites objectAtIndex:path.row];
     } else {
         AwfulForumSection *section = [self getForumSectionAtIndexPath:path];
@@ -527,12 +528,9 @@
 
 -(AwfulForumSection *)getForumSectionAtIndexPath : (NSIndexPath *)path
 {
-    if(path.section == 0) {
+    if(path.section == 0 && SECTION_INDEX_OFFSET > 0) {
         AwfulForum *forum = [self.favorites objectAtIndex:path.row];
         return [AwfulForumSection sectionWithForum:forum];
-    } else if(path.section == [self.forumSections count] + 1) {
-        // refresh button
-        return nil;
     }
     
     if(!isLoggedIn()) {

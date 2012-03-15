@@ -43,6 +43,7 @@
 {
     [super viewWillAppear:animated];
     [self.navigationController setToolbarHidden:YES];
+    [[self.navigationController navigationBar] setTintColor:[UIColor colorWithRed:0 green:91.0/255 blue:135.0/255 alpha:1.0]];
     
     if([self.awfulThreads count] == 0) {
         [self refresh];

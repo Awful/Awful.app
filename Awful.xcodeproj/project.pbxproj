@@ -651,6 +651,8 @@
 		11FDA296151018600014FDCD /* AwfulAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA295151018600014FDCD /* AwfulAccountViewController.m */; };
 		11FDA299151018740014FDCD /* OtherWebController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA298151018740014FDCD /* OtherWebController.m */; };
 		11FDA29C1510187F0014FDCD /* AwfulSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA29B1510187F0014FDCD /* AwfulSplitViewController.m */; };
+		11FDA2B7151170A20014FDCD /* navbargradient.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FDA2B6151170A20014FDCD /* navbargradient.png */; };
+		11FDA2BA151174F60014FDCD /* navbargradient@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FDA2B9151174F60014FDCD /* navbargradient@2x.png */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765080DF74369002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765070DF74369002DB57D /* CoreGraphics.framework */; };
@@ -1387,6 +1389,8 @@
 		11FDA298151018740014FDCD /* OtherWebController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OtherWebController.m; sourceTree = "<group>"; };
 		11FDA29A1510187F0014FDCD /* AwfulSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AwfulSplitViewController.h; path = iPad/AwfulSplitViewController.h; sourceTree = "<group>"; };
 		11FDA29B1510187F0014FDCD /* AwfulSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AwfulSplitViewController.m; path = iPad/AwfulSplitViewController.m; sourceTree = "<group>"; };
+		11FDA2B6151170A20014FDCD /* navbargradient.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = navbargradient.png; path = images/navbargradient.png; sourceTree = "<group>"; };
+		11FDA2B9151174F60014FDCD /* navbargradient@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navbargradient@2x.png"; path = "images/navbargradient@2x.png"; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* Awful.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Awful.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -1448,6 +1452,8 @@
 		10E93EB9121DC70E00CCBF6D /* images */ = {
 			isa = PBXGroup;
 			children = (
+				11FDA2B9151174F60014FDCD /* navbargradient@2x.png */,
+				11FDA2B6151170A20014FDCD /* navbargradient.png */,
 				11C1FFB114FC821300B0250B /* 05-arrow-west.png */,
 				11C1FFB214FC821300B0250B /* 05-arrow-west@2x.png */,
 				11C1FFA914FC797800B0250B /* 39-circle-check.png */,
@@ -3055,6 +3061,8 @@
 				11C1FFB314FC821300B0250B /* 05-arrow-west.png in Resources */,
 				11C1FFB414FC821300B0250B /* 05-arrow-west@2x.png in Resources */,
 				11FDA290151017490014FDCD /* MainStoryboardiPad.storyboard in Resources */,
+				11FDA2B7151170A20014FDCD /* navbargradient.png in Resources */,
+				11FDA2BA151174F60014FDCD /* navbargradient@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

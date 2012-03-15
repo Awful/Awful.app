@@ -32,6 +32,11 @@
         self.splitController = (AwfulSplitViewController *)self.window.rootViewController;
     }
     
+    UIImage *img = [[UIImage imageNamed:@"navbargradient"] resizableImageWithCapInsets:UIEdgeInsetsMake(42, 0, 0, 0)];
+    [[UINavigationBar appearance] setBackgroundImage:img forBarMetrics:UIBarMetricsDefault];
+    [[UIBarButtonItem appearance] setTintColor:[UIColor colorWithRed:46.0/255 green:146.0/255 blue:190.0/255 alpha:1.0]];
+    [[UIToolbar appearance] setBackgroundImage:img forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
+    
     [self.window makeKeyAndVisible];
     
     [FlurryAPI startSession:@"EU3TLVQM9U8T8QKNI9ID"];

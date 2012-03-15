@@ -574,13 +574,14 @@
 -(void)swapToRefreshButton
 {
     UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(hardRefresh)];
-    self.navigationItem.rightBarButtonItem = refresh;
+    //self.navigationItem.rightBarButtonItem = refresh;
+    self.navigationItem.rightBarButtonItem = nil;
 }
 
 -(void)swapToStopButton
 {
     UIBarButtonItem *stop = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop)];
-    self.navigationItem.rightBarButtonItem = stop;
+    //self.navigationItem.rightBarButtonItem = stop;
 }
 
 @end
