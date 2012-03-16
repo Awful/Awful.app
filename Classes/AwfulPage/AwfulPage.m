@@ -35,6 +35,9 @@
 @synthesize destinationType = _destinationType;
 @synthesize thread = _thread;
 @synthesize url = _url;
+@synthesize webView = _webView;
+@synthesize bottomView = _bottomView;
+@synthesize toolbar = _toolbar;
 @synthesize isBookmarked = _isBookmarked;
 @synthesize pages = _pages;
 @synthesize shouldScrollToBottom = _shouldScrollToBottom;
@@ -46,13 +49,13 @@
 @synthesize actions = _actions;
 @synthesize pagesBarButtonItem = _pagesBarButtonItem;
 @synthesize nextPageBarButtonItem = _nextPageBarButtonItem;
+@synthesize draggingUp = _draggingUp;
 
 #pragma mark -
 #pragma mark Initialization
 
 -(void)awakeFromNib
-{
-    
+{    
 }
 
 -(void)setThread:(AwfulThread *)newThread
@@ -95,12 +98,12 @@
         }
         
         NSString *html = [dataController constructedPageHTML];
-        JSBridgeWebView *web = [[JSBridgeWebView alloc] initWithFrame:self.parentViewController.view.frame];
-        [self setWebView:web];
-        [web loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
+        [self.webView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
     }
 }
 
+
+/*
 -(void)setWebView:(JSBridgeWebView *)webView;
 {
     UILongPressGestureRecognizer *press = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(heldPost:)];
@@ -108,7 +111,7 @@
     press.minimumPressDuration = 0.3;
     [webView addGestureRecognizer:press];
     
-    /*
+    
     AwfulNavigator *nav = getNavigator();
     UITapGestureRecognizer *three_times = [[UITapGestureRecognizer alloc] initWithTarget:nav action:@selector(didFullscreenGesture:)];
     three_times.numberOfTapsRequired = 3;
@@ -117,18 +120,15 @@
     
     UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:nav action:@selector(didFullscreenGesture:)];
     [webView addGestureRecognizer:pinch];
-    pinch.delegate = self;*/
+    pinch.delegate = self;
     
-    webView.delegate = self;
-    self.view = webView;
     
-    /*
     nav.view = self.view;
     if([nav isFullscreen]) {
         nav.fullScreenButton.center = CGPointMake(nav.view.frame.size.width-25, nav.view.frame.size.height-25);
         [nav.view addSubview:nav.fullScreenButton];
-    }*/
-}
+    }
+}*/
 
 -(void)setPages:(AwfulPageCount *)in_pages
 {
@@ -196,32 +196,20 @@
     //NSString *html = [AwfulParse constructPageHTMLFromPosts:self.allRawPosts pagesLeft:pages_left numOldPosts:0 adHTML:self.adHTML];
     
     NSString *html = [self.dataController constructedPageHTML];
-    
-    JSBridgeWebView *web = [[JSBridgeWebView alloc] initWithFrame:self.navigationController.view.frame];
-    [web loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
-    web.delegate = self;
-    [self setWebView:web];
+    [self.webView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
 }
 
 -(void)heldPost:(UILongPressGestureRecognizer *)gestureRecognizer
 {    
-    UIWebView *web = (UIWebView *)self.view;
-    CGPoint p = [gestureRecognizer locationInView:self.view];
-    NSString *offset_str = [(UIWebView *)self.view stringByEvaluatingJavaScriptFromString:@"scrollY"];
-    float offset = [offset_str intValue];
+    CGPoint p = [gestureRecognizer locationInView:self.webView];
     
-    // if iOS 5.0, I don't need the offset
-    if([web respondsToSelector:@selector(scrollView)]) {
-        offset = 0.0;
-    }
-    
-    NSString *js_tag_name = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).tagName", p.x, p.y+offset];
-    NSString *tag_name = [(UIWebView *)self.view stringByEvaluatingJavaScriptFromString:js_tag_name];
+    NSString *js_tag_name = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).tagName", p.x, p.y];
+    NSString *tag_name = [self.webView stringByEvaluatingJavaScriptFromString:js_tag_name];
     if([tag_name isEqualToString:@"IMG"]) {
-        NSString *js_src = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).src", p.x, p.y+offset];
-        NSString *src = [(UIWebView *)self.view stringByEvaluatingJavaScriptFromString:js_src];
-        NSString *js_class = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).className", p.x, p.y+offset];
-        NSString *class = [(UIWebView *)self.view stringByEvaluatingJavaScriptFromString:js_class];
+        NSString *js_src = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).src", p.x, p.y];
+        NSString *src = [self.webView stringByEvaluatingJavaScriptFromString:js_src];
+        NSString *js_class = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).className", p.x, p.y];
+        NSString *class = [self.webView stringByEvaluatingJavaScriptFromString:js_class];
         
         BOOL proceed = YES;
         
@@ -242,46 +230,6 @@
         }
     }
 }
-
-/*
- - (void)viewWillAppear:(BOOL)animated {
- [super viewWillAppear:animated];
- }
- */
-/*
- - (void)viewDidAppear:(BOOL)animated {
- [super viewDidAppear:animated];
- }
- */
-/*
- - (void)viewWillDisappear:(BOOL)animated {
- [super viewWillDisappear:animated];
- }
- */
-/*
- - (void)viewDidDisappear:(BOOL)animated {
- [super viewDidDisappear:animated];
- }
- */
-/*
- // Override to allow orientations other than the default portrait orientation.
- - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
- // Return YES for supported orientations
- return (interfaceOrientation == UIInterfaceOrientationPortrait);
- }
- */
-
-/*
- -(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
- {
- 
- }*/
-
-/*
- - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
- {
- 
- }*/
 
 -(void)setActions:(AwfulPostActions *)actions
 {
@@ -304,6 +252,19 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    UILongPressGestureRecognizer *press = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(heldPost:)];
+    press.delegate = self;
+    press.minimumPressDuration = 0.3;
+    [self.webView addGestureRecognizer:press];
+    
+    [self.nextPageBarButtonItem setTintColor:[UIColor whiteColor]];
+    NSDictionary *attr = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:UITextAttributeTextColor];
+    [self.pagesBarButtonItem setTitleTextAttributes:attr forState:UIControlStateDisabled];
+    
+    
+    UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swiped:)];
+    [self.bottomView addGestureRecognizer:swipe];
 }
 
 - (void)viewDidUnload {
@@ -314,7 +275,7 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    [self.navigationController setToolbarHidden:NO];
+    [self.navigationController setToolbarHidden:YES];
     self.navigationController.toolbar.barStyle = UIBarStyleBlack;
 }
 
@@ -325,6 +286,87 @@
 
 #pragma mark - BarButtonItem Actions
 
+-(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    UITouch *touch = [touches anyObject];
+    CGPoint loc = [touch locationInView:self.view];
+    CGRect frame = self.bottomView.frame;
+    CGFloat potential_y = loc.y-22;
+    potential_y = MIN(self.view.frame.size.height-44, potential_y);
+    potential_y = MAX(self.view.frame.size.height-self.bottomView.frame.size.height, potential_y);
+    frame.origin.y = potential_y;
+    [self.bottomView setFrame:frame];
+    
+    CGPoint last_loc = [touch previousLocationInView:self.view];
+    if(last_loc.y > loc.y) {
+        self.draggingUp = YES;
+    } else {
+        self.draggingUp = NO;
+    }
+}
+
+-(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    if(self.draggingUp) {
+        if(self.bottomView.frame.origin.y != [self getRevealedBottomViewY]) {
+            [self revealBottomView:nil];
+        }
+    } else {
+        if(self.bottomView.frame.origin.y != [self getHiddenBottomViewY]) {
+            [self hideBottomView:nil];
+        }
+    }
+}
+
+-(void)swiped : (UISwipeGestureRecognizer *)swiper
+{
+    if(swiper.state == UIGestureRecognizerStateEnded) {
+        if(swiper.direction == UISwipeGestureRecognizerDirectionDown) {
+            [self hideBottomView:nil];
+        } else if(swiper.direction == UISwipeGestureRecognizerDirectionUp) {
+            [self revealBottomView:nil];
+        }
+    }
+}
+       
+-(CGFloat)getHiddenBottomViewY
+{
+    return self.view.frame.size.height-44;
+}
+
+-(CGFloat)getRevealedBottomViewY
+{
+    return self.view.frame.size.height-self.bottomView.frame.size.height;
+}
+
+-(IBAction)revealBottomView : (id)sender
+{
+    [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationCurveEaseInOut animations:^(void){
+        
+        CGFloat y = [self getRevealedBottomViewY];
+        CGRect frame = self.bottomView.frame;
+        frame.origin.y = y;
+        self.bottomView.frame = frame;
+        
+    } completion:^(BOOL finished) {
+        
+    }];
+}
+
+-(IBAction)hideBottomView : (id)sender
+{
+    [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationCurveEaseInOut animations:^(void){
+        
+        CGFloat y = [self getHiddenBottomViewY];
+        CGRect frame = self.bottomView.frame;
+        frame.origin.y = y;
+        self.bottomView.frame = frame;
+        
+    } completion:^(BOOL finished) {
+        
+    }];
+}
+
 -(void)updatePagesLabel
 {
     self.pagesBarButtonItem.title = [NSString stringWithFormat:@"Page %d of %d", self.pages.currentPage, self.pages.totalPages];
@@ -333,6 +375,8 @@
     } else {
         self.nextPageBarButtonItem.enabled = YES;
     }
+    NSDictionary *attr = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:UITextAttributeTextColor];
+    [self.pagesBarButtonItem setTitleTextAttributes:attr forState:UIControlStateDisabled];
 }
 
 -(IBAction)tappedBookmarks : (id)sender
@@ -574,19 +618,25 @@
 -(void)swapToRefreshButton
 {
     UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(hardRefresh)];
-    refresh.style = UIBarButtonItemStyleBordered;
-    NSMutableArray *items = [NSMutableArray arrayWithArray:self.toolbarItems];
-    [items replaceObjectAtIndex:0 withObject:refresh];
-    [self setToolbarItems:items];
+    refresh.style = UIBarButtonItemStylePlain;
+    [refresh setTintColor:[UIColor whiteColor]];
+    NSMutableArray *items = [NSMutableArray arrayWithArray:self.toolbar.items];
+    if([items count] > 0) {
+        [items replaceObjectAtIndex:0 withObject:refresh];
+        [self.toolbar setItems:items animated:NO];
+    }
 }
 
 -(void)swapToStopButton
 {
     UIBarButtonItem *stop = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop)];
-    stop.style = UIBarButtonItemStyleBordered;
-    NSMutableArray *items = [NSMutableArray arrayWithArray:self.toolbarItems];
-    [items replaceObjectAtIndex:0 withObject:stop];
-    [self setToolbarItems:items];
+    stop.style = UIBarButtonItemStylePlain;
+    [stop setTintColor:[UIColor whiteColor]];
+    NSMutableArray *items = [NSMutableArray arrayWithArray:self.toolbar.items];
+    if([items count] > 0) {
+        [items replaceObjectAtIndex:0 withObject:stop];
+        [self.toolbar setItems:items animated:NO];
+    }
 }
 
 @end

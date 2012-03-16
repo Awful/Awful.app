@@ -3342,7 +3342,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Sean Berry (9HL8QUW4RH)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Sean Berry (9HL8QUW4RH)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -3351,7 +3351,7 @@
 				HEADER_SEARCH_PATHS = "${SDKROOT}/usr/include/libxml2";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_LDFLAGS = "";
-				PROVISIONING_PROFILE = "6EFDC73F-12EB-4BC4-8167-5AB5CA71BCE4";
+				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "6EFDC73F-12EB-4BC4-8167-5AB5CA71BCE4";
 				SDKROOT = iphoneos;
 			};

@@ -35,7 +35,7 @@
     [super viewDidLoad];
     
     // moving the auto refresh to viewWillAppear, because bookmarks get loaded right away because of the tabbarcontroller, even if the user isn't looking at them
-    self.navigationItem.leftBarButtonItem = self.editButtonItem;
+    self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 -(void)viewWillAppear:(BOOL)animated

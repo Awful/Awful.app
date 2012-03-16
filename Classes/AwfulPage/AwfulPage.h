@@ -30,6 +30,9 @@ typedef enum {
 @property (nonatomic, strong) AwfulThread *thread;
 @property (nonatomic, strong) NSString *url;
 @property (nonatomic, assign) AwfulPageDestinationType destinationType;
+@property (nonatomic, strong) IBOutlet JSBridgeWebView *webView;
+@property (nonatomic, strong) IBOutlet UIView *bottomView;
+@property (nonatomic, strong) IBOutlet UIToolbar *toolbar;
 
 @property BOOL isBookmarked;
 @property BOOL shouldScrollToBottom;
@@ -46,6 +49,8 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *pagesBarButtonItem;
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *nextPageBarButtonItem;
 
+@property (nonatomic, assign) BOOL draggingUp;
+
 -(IBAction)hardRefresh;
 -(void)setThreadTitle : (NSString *)in_title;
 
@@ -57,6 +62,12 @@ typedef enum {
 -(IBAction)tappedVote : (id)sender;
 -(IBAction)tappedCompose : (id)sender;
 -(IBAction)tappedNextPage : (id)sender;
+
+-(void)swiped : (UISwipeGestureRecognizer *)swiper;
+-(CGFloat)getHiddenBottomViewY;
+-(CGFloat)getRevealedBottomViewY;
+-(IBAction)revealBottomView : (id)sender;
+-(IBAction)hideBottomView : (id)sender;
 
 -(void)refresh;
 -(void)loadPageNum : (NSUInteger)pageNum;

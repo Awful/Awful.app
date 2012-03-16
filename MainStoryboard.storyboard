@@ -247,29 +247,166 @@
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FTr-u6-ZV9" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController hidesBottomBarWhenPushed="YES" id="uMb-el-Ve5" customClass="AwfulPage" sceneMemberID="viewController">
-                    <toolbarItems>
-                        <barButtonItem systemItem="refresh" id="gzd-PM-eZH"/>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="PT8-6F-t2w"/>
-                        <barButtonItem title="Page 0 of 0" id="0Yn-hX-hPo">
-                            <connections>
-                                <action selector="tappedPageNav:" destination="uMb-el-Ve5" id="qYc-lH-1Ox"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="9w3-9E-T6s"/>
-                        <barButtonItem systemItem="action" id="Z2A-is-rRK">
-                            <connections>
-                                <action selector="tappedActions:" destination="uMb-el-Ve5" id="g5x-X8-Jn2"/>
-                            </connections>
-                        </barButtonItem>
-                    </toolbarItems>
+                    <view key="view" contentMode="scaleToFill" id="3ZN-vW-tgX">
+                        <rect key="frame" x="0.0" y="64" width="320" height="416"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <webView contentMode="scaleToFill" id="bj6-uZ-iIF" customClass="JSBridgeWebView">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="374"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <outlet property="delegate" destination="uMb-el-Ve5" id="NO9-jw-SuS"/>
+                                </connections>
+                            </webView>
+                            <view contentMode="scaleToFill" id="5SU-wj-UVg">
+                                <rect key="frame" x="0.0" y="374" width="320" height="350"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <subviews>
+                                    <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="blackOpaque" id="HcX-5w-xPq">
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                        <items>
+                                            <barButtonItem style="plain" systemItem="refresh" id="WDs-CR-Qgk"/>
+                                            <barButtonItem style="plain" systemItem="flexibleSpace" id="UNd-V7-KBb"/>
+                                            <barButtonItem enabled="NO" title="Item" style="plain" id="vdv-Ie-BgE">
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            </barButtonItem>
+                                            <barButtonItem style="plain" systemItem="flexibleSpace" id="CtN-YI-XxS"/>
+                                            <barButtonItem image="01-arrow-east.png" width="44" style="plain" id="aZv-nN-odj"/>
+                                        </items>
+                                    </toolbar>
+                                    <switch opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="n5L-rQ-hbY">
+                                        <rect key="frame" x="132" y="68" width="79" height="27"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </switch>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Bookmarked" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="LKz-8Q-8M1">
+                                        <rect key="frame" x="12" y="71" width="98" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Vote:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="gFW-8q-5tK">
+                                        <rect key="frame" x="13" y="126" width="42" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="pHt-YS-fce">
+                                        <rect key="frame" x="235" y="260" width="72" height="37"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="Reply">
+                                            <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="bLa-o3-6J7">
+                                        <rect key="frame" x="60" y="119" width="50" height="37"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="1">
+                                            <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="eap-pv-Xzv">
+                                        <rect key="frame" x="111" y="119" width="50" height="37"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="2">
+                                            <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="4kd-aL-wNP">
+                                        <rect key="frame" x="161" y="119" width="50" height="37"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="3">
+                                            <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="a3H-Oq-IWl">
+                                        <rect key="frame" x="211" y="119" width="50" height="37"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="4">
+                                            <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Q60-cz-gjJ">
+                                        <rect key="frame" x="262" y="119" width="50" height="37"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="5">
+                                            <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="ksQ-A9-er4">
+                                        <rect key="frame" x="12" y="236" width="64" height="31"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <stepper opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" id="mxK-aY-4jv">
+                                        <rect key="frame" x="96" y="236" width="94" height="27"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    </stepper>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="1Bd-Vn-0xH">
+                                        <rect key="frame" x="20" y="294" width="132" height="37"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="Jump To Page">
+                                            <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <toolbarItems/>
                     <navigationItem key="navigationItem" id="4gr-Fi-99a">
                         <connections>
                             <outlet property="titleView" destination="yR7-8b-xAm" id="vk2-iY-zht"/>
                         </connections>
                     </navigationItem>
-                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics" barStyle="blackOpaque"/>
+                    <nil key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="pagesBarButtonItem" destination="0Yn-hX-hPo" id="N87-mW-V9V"/>
+                        <outlet property="bottomView" destination="5SU-wj-UVg" id="oTV-pD-LgS"/>
+                        <outlet property="nextPageBarButtonItem" destination="aZv-nN-odj" id="JNc-Hk-FTR"/>
+                        <outlet property="pagesBarButtonItem" destination="vdv-Ie-BgE" id="4c2-nn-Tfn"/>
+                        <outlet property="toolbar" destination="HcX-5w-xPq" id="LPf-5T-Lb8"/>
+                        <outlet property="webView" destination="bj6-uZ-iIF" id="GhU-3b-BeT"/>
                     </connections>
                 </viewController>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="thread title label" lineBreakMode="tailTruncation" numberOfLines="3" minimumFontSize="10" id="yR7-8b-xAm">
@@ -434,9 +571,7 @@
                         </connections>
                     </tableView>
                     <tabBarItem key="tabBarItem" systemItem="bookmarks" id="lpi-BS-KYz"/>
-                    <navigationItem key="navigationItem" title="Bookmarks" id="t3k-Pb-mph">
-                        <barButtonItem key="leftBarButtonItem" systemItem="edit" id="IQ6-vk-dRo"/>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Bookmarks" id="t3k-Pb-mph"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
                     <connections>
                         <segue destination="uMb-el-Ve5" kind="push" identifier="AwfulPage" id="kfD-K3-mBe"/>
@@ -718,8 +853,11 @@
                 <relationship kind="action" name="tappedNextPage:"/>
                 <relationship kind="action" name="tappedPageNav:"/>
                 <relationship kind="action" name="tappedVote:"/>
+                <relationship kind="outlet" name="bottomView" candidateClass="UIView"/>
                 <relationship kind="outlet" name="nextPageBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="pagesBarButtonItem" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="toolbar" candidateClass="UIToolbar"/>
+                <relationship kind="outlet" name="webView" candidateClass="JSBridgeWebView"/>
             </relationships>
         </class>
         <class className="AwfulSpecificPageViewController" superclassName="UIViewController">
@@ -759,6 +897,9 @@
                 <relationship kind="outlet" name="pageLabelBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="prevPageBarButtonItem" candidateClass="UIBarButtonItem"/>
             </relationships>
+        </class>
+        <class className="JSBridgeWebView" superclassName="UIWebView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/JSBridgeWebView.h"/>
         </class>
     </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
