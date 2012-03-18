@@ -281,6 +281,21 @@
     return cell;
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // need to set background color here to make it work on the disclosure indicator
+    AwfulForumSection *section = [self getForumSectionAtIndexPath:indexPath];
+    AwfulForumCell *forum_cell = (AwfulForumCell *)cell;
+    if(section.totalAncestors > 1) {
+        UIColor *gray = [UIColor colorWithRed:235.0/255 green:235.0/255 blue:236.0/255 alpha:1.0];
+        cell.backgroundColor = gray;
+        forum_cell.titleLabel.backgroundColor = gray;
+    } else {
+        cell.backgroundColor = [UIColor whiteColor];
+        forum_cell.titleLabel.backgroundColor = [UIColor whiteColor];
+    }
+}
+
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     NSString *str = nil;

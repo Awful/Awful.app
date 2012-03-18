@@ -51,9 +51,9 @@
         }
         
         if(_section.expanded) {
-            self.arrow.transform = CGAffineTransformMakeRotation(PI_OVER_2);
+            [self.arrow setImage:[UIImage imageNamed:@"forum-arrow-down.png"] forState:UIControlStateNormal];
         } else {
-            self.arrow.transform = CGAffineTransformIdentity;
+            [self.arrow setImage:[UIImage imageNamed:@"forum-arrow-right.png"] forState:UIControlStateNormal];
         }
         
         if(_section.totalAncestors > 1) {
