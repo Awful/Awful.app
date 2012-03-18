@@ -288,7 +288,11 @@
                                                 <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             </barButtonItem>
                                             <barButtonItem style="plain" systemItem="flexibleSpace" id="CtN-YI-XxS"/>
-                                            <barButtonItem image="01-arrow-east.png" width="44" style="plain" id="aZv-nN-odj"/>
+                                            <barButtonItem image="01-arrow-east.png" width="44" style="plain" id="aZv-nN-odj">
+                                                <connections>
+                                                    <action selector="tappedNextPage:" destination="uMb-el-Ve5" id="Q6n-9t-wd9"/>
+                                                </connections>
+                                            </barButtonItem>
                                         </items>
                                     </toolbar>
                                     <switch opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="n5L-rQ-hbY">

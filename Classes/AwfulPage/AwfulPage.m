@@ -65,6 +65,7 @@
         if(_thread.title != nil) {
             UILabel *lab = (UILabel *)self.navigationItem.titleView;
             lab.text = self.thread.title;
+            NSLog(@"title width %f", self.navigationItem.titleView.frame.size.width);
         }
         
         if(_thread.totalUnreadPosts == -1) {
@@ -143,6 +144,7 @@
     [self.thread setTitle:title];
     UILabel *lab = (UILabel *)self.navigationItem.titleView;
     lab.text = title;
+    NSLog(@"title width %f", self.navigationItem.titleView.frame.size.width);
 }
 
 -(IBAction)hardRefresh
