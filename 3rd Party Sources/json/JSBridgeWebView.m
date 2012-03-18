@@ -97,6 +97,7 @@
  */
 -(void) setDelegate:(id <UIWebViewDelegate>) newDelegate
 {
+    [super setDelegate:newDelegate];
 	if([newDelegate conformsToProtocol:@protocol(JSBridgeWebViewDelegate)])
 	{
 		bridgeDelegate  = (id<JSBridgeWebViewDelegate>) newDelegate;

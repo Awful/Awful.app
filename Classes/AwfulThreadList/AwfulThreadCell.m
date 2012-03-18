@@ -60,6 +60,25 @@
         self.tagImage.hidden = YES;
     }
     
+    if(thread.threadRating == NSNotFound) {
+        self.ratingImage.hidden = YES;
+    } else {
+        self.ratingImage.hidden = NO;
+        if(thread.threadRating <= 5) {
+            [self.ratingImage setImage:[UIImage imageNamed:[NSString stringWithFormat:@"rating%d.png", thread.threadRating]]];
+        } else {
+            self.ratingImage.hidden = YES;
+        }
+    }
+    
+    if(self.ratingImage.hidden) {
+        self.tagImage.center = CGPointMake(self.tagImage.center.x, self.contentView.center.y);
+    } else {
+        CGRect frame = self.tagImage.frame;
+        frame.origin.y = 5;
+        self.tagImage.frame = frame;
+    }
+    
     if(thread.isLocked) {
         self.contentView.alpha = 0.5;
     } else {
@@ -68,7 +87,7 @@
     
     // Content
     int total_pages = ((thread.totalReplies-1)/getPostsPerPage()) + 1;
-    self.pagesLabel.text = [NSString stringWithFormat:@"Pages: %d", total_pages];
+    self.pagesLabel.text = [NSString stringWithFormat:@"Pages: %d, Killed by %@", total_pages, thread.lastPostAuthorName];
     
     NSString *unread_str = [NSString stringWithFormat:@"%d", thread.totalUnreadPosts];
     [self.unreadButton setTitle:unread_str forState:UIControlStateNormal];
@@ -99,7 +118,7 @@
     float unread_x = self.frame.size.width-30-unread_size.width;
     self.unreadButton.frame = CGRectMake(unread_x, THREAD_HEIGHT/2 - 10, unread_size.width+20, 20);
     
-    self.pagesLabel.frame = CGRectMake(title_xpos, CGRectGetMaxY(self.threadTitleLabel.frame)+2, 100, 10);
+    self.pagesLabel.frame = CGRectMake(title_xpos, CGRectGetMaxY(self.threadTitleLabel.frame)+2, self.pagesLabel.frame.size.width, 10);
     
     // Stickied?
     [self.sticky removeFromSuperview];

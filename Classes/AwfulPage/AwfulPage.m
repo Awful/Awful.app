@@ -185,9 +185,7 @@
     [self.networkOperation cancel];
     [self swapToRefreshButton];
     
-    if([self.view isMemberOfClass:[UIWebView class]]) {
-        [(UIWebView *)self.view stopLoading];
-    }
+    [self.webView stopLoading];
 }
 
 -(void)loadOlderPosts
@@ -257,6 +255,7 @@
     press.delegate = self;
     press.minimumPressDuration = 0.3;
     [self.webView addGestureRecognizer:press];
+    self.webView.delegate = self;
     
     [self.nextPageBarButtonItem setTintColor:[UIColor whiteColor]];
     NSDictionary *attr = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:UITextAttributeTextColor];
@@ -456,11 +455,6 @@
 #pragma mark -
 #pragma mark Navigator Contnet
 
--(UIView *)getView
-{
-    return self.view;
-}
-
 -(AwfulActions *)getActions
 {
     return [[AwfulThreadActions alloc] initWithAwfulPage:self];
@@ -468,7 +462,7 @@
 
 -(void)scrollToBottom
 {
-    [(UIWebView *)self.view stringByEvaluatingJavaScriptFromString:@"window.scrollTo(0, document.body.scrollHeight);"];
+    [self.webView stringByEvaluatingJavaScriptFromString:@"window.scrollTo(0, document.body.scrollHeight);"];
 }
 
 -(void)scrollToSpecifiedPost
@@ -480,7 +474,7 @@
 {
     if(post_id != nil) {
         NSString *scrolling = [NSString stringWithFormat:@"scrollToID(%@)", post_id];
-        [(UIWebView *)self.view stringByEvaluatingJavaScriptFromString:scrolling];
+        [self.webView stringByEvaluatingJavaScriptFromString:scrolling];
     }
 }
 
