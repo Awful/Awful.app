@@ -56,56 +56,7 @@
 
 @implementation JSBridgeWebView
 
-/*
-	Init the JSBridgeWebView object. It sets the regular UIWebview delegate to self,
-	since the object will be listening to JS notifications.
-*/
--(id) initWithFrame:(CGRect)frame
-{
-	if ([super initWithFrame:frame]) 
-	{
-		super.delegate = self;
-		bridgeDelegate = nil;
-        /*[self _setDrawInWebThread:YES];
-        [self _setDrawsCheckeredPattern:YES];*/
-	}
-	
-	return self;
-}
-
-/*
-	Init the JSBridgeWebView object. It sets the regular UIWebview delegate to self,
-	since the object will be listening to JS notifications.
- */
--(id) init
-{
-	
-	if ([super init]) 
-	{
-		super.delegate = self;
-		bridgeDelegate = nil;
-	}
-	
-	return self;
-}
-
-/*
-	This is the reimplementation of the superclass setter method for the delegate property.
-	This reimplementation hides the internal functionality of the class.
- 
-	It checks if the newDelegate object conforms to the JSBridgeWebViewDelegate.
- */
--(void) setDelegate:(id <UIWebViewDelegate>) newDelegate
-{
-    [super setDelegate:newDelegate];
-	if([newDelegate conformsToProtocol:@protocol(JSBridgeWebViewDelegate)])
-	{
-		bridgeDelegate  = (id<JSBridgeWebViewDelegate>) newDelegate;
-	} else 
-	{
-		assert(@"The delegate should comforms to the JSBridgeWebViewDelegate protocol.");
-	}
-}
+@synthesize bridgeDelegate = _bridgeDelegate;
 
 /*
 	This is the reimplementation of the superclass getter method for the delegate property.
@@ -115,7 +66,7 @@
  */
 -(id) delegate
 {
-	return bridgeDelegate;
+	return self.bridgeDelegate;
 }
 
 /*
@@ -219,16 +170,16 @@
 		NSDictionary* dicTranslated = [self translateDictionary:jsonDic];
 				
 		// Calls the delegate method with the notified object.
-		if(bridgeDelegate)
+		if(self.bridgeDelegate)
 		{
-			[bridgeDelegate webView:p_WebView didReceiveJSNotificationWithDictionary: dicTranslated];
+			[self.bridgeDelegate webView:p_WebView didReceiveJSNotificationWithDictionary: dicTranslated];
 		}
 		
 		// Returns FALSE, indicating it should not load the page. It is not an actual page to load.
 		result = FALSE;
-	} else if(bridgeDelegate) {
+	} else if(self.bridgeDelegate) {
 		// If it is not a JS notification, pass it to the delegate.
-		result = [bridgeDelegate webView:p_WebView shouldStartLoadWithRequest:request navigationType:navigationType];
+		result = [self.bridgeDelegate webView:p_WebView shouldStartLoadWithRequest:request navigationType:navigationType];
 	}
 	
 	return result;
@@ -239,9 +190,9 @@
  */
 - (void)webViewDidFinishLoad:(UIWebView *)p_WebView
 {
-	if(bridgeDelegate)
+	if(self.bridgeDelegate)
 	{
-		[bridgeDelegate webViewDidFinishLoad:p_WebView];
+		[self.bridgeDelegate webViewDidFinishLoad:p_WebView];
 	}
 }
 
@@ -250,9 +201,9 @@
  */
 - (void)webViewDidStartLoad:(UIWebView *)p_WebView
 {
-	if(bridgeDelegate)
+	if(self.bridgeDelegate)
 	{
-		[bridgeDelegate webViewDidStartLoad:p_WebView];
+		[self.bridgeDelegate webViewDidStartLoad:p_WebView];
 	}
 }
 
@@ -261,8 +212,8 @@
  */
 - (void)webView:(UIWebView *)p_WebView didFailLoadWithError:(NSError *)error
 {
-	if (bridgeDelegate) {
-		[bridgeDelegate webView: p_WebView didFailLoadWithError:error];
+	if (self.bridgeDelegate) {
+		[self.bridgeDelegate webView: p_WebView didFailLoadWithError:error];
 	}
 }
 
@@ -340,7 +291,7 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    [bridgeDelegate didScroll];
+    [self.bridgeDelegate didScroll];
 }
 
 @end

@@ -54,7 +54,8 @@
 		from javascript. The JSBridge API user does not need to worry about
 		the bridgeDelegate.
 	 */
-	id<JSBridgeWebViewDelegate> bridgeDelegate;
 }
+
+@property (nonatomic, weak) id<JSBridgeWebViewDelegate> bridgeDelegate;
 
 @end

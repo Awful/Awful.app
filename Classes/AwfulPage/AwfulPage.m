@@ -65,7 +65,7 @@
         if(_thread.title != nil) {
             UILabel *lab = (UILabel *)self.navigationItem.titleView;
             lab.text = self.thread.title;
-            NSLog(@"title width %f", self.navigationItem.titleView.frame.size.width);
+            //NSLog(@"title width %f", self.navigationItem.titleView.frame.size.width);
         }
         
         if(_thread.totalUnreadPosts == -1) {
@@ -144,7 +144,7 @@
     [self.thread setTitle:title];
     UILabel *lab = (UILabel *)self.navigationItem.titleView;
     lab.text = title;
-    NSLog(@"title width %f", self.navigationItem.titleView.frame.size.width);
+    //NSLog(@"title width %f", self.navigationItem.titleView.frame.size.width);
 }
 
 -(IBAction)hardRefresh
@@ -257,15 +257,17 @@
     press.delegate = self;
     press.minimumPressDuration = 0.3;
     [self.webView addGestureRecognizer:press];
-    self.webView.delegate = self;
+    self.webView.delegate = self.webView;
+    self.webView.bridgeDelegate = self;
+    self.webView.delegate = self.webView;
     
     [self.nextPageBarButtonItem setTintColor:[UIColor whiteColor]];
     NSDictionary *attr = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:UITextAttributeTextColor];
     [self.pagesBarButtonItem setTitleTextAttributes:attr forState:UIControlStateDisabled];
     
     
-    UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swiped:)];
-    [self.bottomView addGestureRecognizer:swipe];
+    //UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swiped:)];
+    //[self.bottomView addGestureRecognizer:swipe];
 }
 
 - (void)viewDidUnload {
@@ -446,6 +448,7 @@
         float width_diff = self.view.frame.size.width - sp_view.frame.size.width;
         sp_view.center = CGPointMake(self.view.center.x + width_diff/2, self.view.frame.size.height+sp_view.frame.size.height/2);
         [self.view addSubview:sp_view];
+        [self.view addSubview:self.bottomView];
         [UIView animateWithDuration:0.3 animations:^(void) {
             sp_view.frame = CGRectOffset(sp_view.frame, 0, -sp_view.frame.size.height);
         }];
@@ -615,7 +618,7 @@
 {
     UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(hardRefresh)];
     refresh.style = UIBarButtonItemStylePlain;
-    [refresh setTintColor:[UIColor whiteColor]];
+    //[refresh setTintColor:[UIColor whiteColor]];
     NSMutableArray *items = [NSMutableArray arrayWithArray:self.toolbar.items];
     if([items count] > 0) {
         [items replaceObjectAtIndex:0 withObject:refresh];
@@ -627,7 +630,7 @@
 {
     UIBarButtonItem *stop = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop)];
     stop.style = UIBarButtonItemStylePlain;
-    [stop setTintColor:[UIColor whiteColor]];
+    //[stop setTintColor:[UIColor whiteColor]];
     NSMutableArray *items = [NSMutableArray arrayWithArray:self.toolbar.items];
     if([items count] > 0) {
         [items replaceObjectAtIndex:0 withObject:stop];
