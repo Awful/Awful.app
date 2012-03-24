@@ -49,6 +49,9 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *pagesBarButtonItem;
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *nextPageBarButtonItem;
 
+@property (nonatomic, strong) IBOutlet UISegmentedControl *pagesSegmentedControl;
+@property (nonatomic, strong) IBOutlet UISegmentedControl *actionsSegmentedControl;
+
 @property (nonatomic, assign) BOOL draggingUp;
 
 -(IBAction)hardRefresh;

@@ -31,7 +31,7 @@ typedef enum {
     if((self=[super init])) {
         self.page = aPage;
         
-        [self.titles addObject:@"Reply"];
+        //[self.titles addObject:@"Reply"];
         [self.titles addObject:@"Vote"];
         
         if(self.page.isBookmarked) {

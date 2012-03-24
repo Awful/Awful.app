@@ -50,6 +50,8 @@
 @synthesize pagesBarButtonItem = _pagesBarButtonItem;
 @synthesize nextPageBarButtonItem = _nextPageBarButtonItem;
 @synthesize draggingUp = _draggingUp;
+@synthesize pagesSegmentedControl = _pagesSegmentedControl;
+@synthesize actionsSegmentedControl = _actionsSegmentedControl;
 
 #pragma mark -
 #pragma mark Initialization
@@ -261,9 +263,7 @@
     self.webView.bridgeDelegate = self;
     self.webView.delegate = self.webView;
     
-    [self.nextPageBarButtonItem setTintColor:[UIColor whiteColor]];
-    NSDictionary *attr = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:UITextAttributeTextColor];
-    [self.pagesBarButtonItem setTitleTextAttributes:attr forState:UIControlStateDisabled];
+    [self.pagesBarButtonItem setTintColor:[UIColor darkGrayColor]];
     
     
     //UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swiped:)];
@@ -374,12 +374,33 @@
 {
     self.pagesBarButtonItem.title = [NSString stringWithFormat:@"Page %d of %d", self.pages.currentPage, self.pages.totalPages];
     if(self.pages.currentPage == self.pages.totalPages) {
-        self.nextPageBarButtonItem.enabled = NO;
+        [self.pagesSegmentedControl setEnabled:NO forSegmentAtIndex:1];
     } else {
-        self.nextPageBarButtonItem.enabled = YES;
+        [self.pagesSegmentedControl setEnabled:YES forSegmentAtIndex:1];
     }
-    NSDictionary *attr = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:UITextAttributeTextColor];
-    [self.pagesBarButtonItem setTitleTextAttributes:attr forState:UIControlStateDisabled];
+    if(self.pages.currentPage == 1) {
+        [self.pagesSegmentedControl setEnabled:NO forSegmentAtIndex:0];
+    } else {
+        [self.pagesSegmentedControl setEnabled:YES forSegmentAtIndex:0];
+    }
+}
+
+-(IBAction)tappedPagesSegment : (id)sender
+{
+    if(self.pagesSegmentedControl.selectedSegmentIndex == 0) {
+        [self prevPage];
+    } else if(self.pagesSegmentedControl.selectedSegmentIndex == 1) {
+        [self nextPage];
+    }
+    self.pagesSegmentedControl.selectedSegmentIndex = -1;
+}
+
+-(IBAction)tappedActionsSegment : (id)sender
+{
+    if(self.actionsSegmentedControl.selectedSegmentIndex == 0) {
+        [self tappedActions:nil];
+        self.actionsSegmentedControl.selectedSegmentIndex = -1;
+    }
 }
 
 -(IBAction)tappedBookmarks : (id)sender
@@ -617,7 +638,9 @@
 -(void)swapToRefreshButton
 {
     UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(hardRefresh)];
-    refresh.style = UIBarButtonItemStylePlain;
+    refresh.style = UIBarButtonItemStyleBordered;
+    self.navigationItem.rightBarButtonItem = refresh;
+    return;
     //[refresh setTintColor:[UIColor whiteColor]];
     NSMutableArray *items = [NSMutableArray arrayWithArray:self.toolbar.items];
     if([items count] > 0) {
@@ -629,7 +652,9 @@
 -(void)swapToStopButton
 {
     UIBarButtonItem *stop = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop)];
-    stop.style = UIBarButtonItemStylePlain;
+    stop.style = UIBarButtonItemStyleBordered;
+    self.navigationItem.rightBarButtonItem = stop;
+    return;
     //[stop setTintColor:[UIColor whiteColor]];
     NSMutableArray *items = [NSMutableArray arrayWithArray:self.toolbar.items];
     if([items count] > 0) {

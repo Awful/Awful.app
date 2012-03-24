@@ -282,19 +282,42 @@
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                         <items>
-                                            <barButtonItem style="plain" systemItem="refresh" id="WDs-CR-Qgk"/>
-                                            <barButtonItem style="plain" systemItem="flexibleSpace" id="ZUi-ym-5uU"/>
-                                            <barButtonItem image="39-circle-check.png" style="plain" id="mxs-sB-tjX"/>
-                                            <barButtonItem style="plain" systemItem="flexibleSpace" id="UNd-V7-KBb"/>
+                                            <barButtonItem style="plain" id="Tye-gJ-oSt">
+                                                <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" id="flJ-3f-HNO">
+                                                    <rect key="frame" x="6" y="8" width="85" height="30"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <segments>
+                                                        <segment title="" image="arrowleft.png"/>
+                                                        <segment title="" image="arrowright.png"/>
+                                                    </segments>
+                                                    <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <connections>
+                                                        <action selector="tappedPagesSegment:" destination="uMb-el-Ve5" eventType="valueChanged" id="qrm-0P-jxl"/>
+                                                    </connections>
+                                                </segmentedControl>
+                                            </barButtonItem>
+                                            <barButtonItem style="plain" systemItem="flexibleSpace" id="1Q5-sv-H9b"/>
                                             <barButtonItem title="Page 0 of 0" id="ohk-rN-oFJ">
+                                                <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                 <connections>
                                                     <action selector="tappedPageNav:" destination="uMb-el-Ve5" id="XR9-gZ-Idc"/>
                                                 </connections>
                                             </barButtonItem>
-                                            <barButtonItem style="plain" systemItem="flexibleSpace" id="CtN-YI-XxS"/>
-                                            <barButtonItem image="28-star.png" style="plain" id="UE6-ym-NqU"/>
-                                            <barButtonItem style="plain" systemItem="flexibleSpace" id="3gg-g8-GTs"/>
-                                            <barButtonItem style="plain" systemItem="compose" id="Yvf-58-NWR"/>
+                                            <barButtonItem style="plain" systemItem="flexibleSpace" id="u9f-sW-6nQ"/>
+                                            <barButtonItem style="plain" id="Ki9-7Y-6aO">
+                                                <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" id="ZeO-Ul-J5a">
+                                                    <rect key="frame" x="229" y="8" width="85" height="30"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <segments>
+                                                        <segment title="" image="cog.png"/>
+                                                        <segment title="" image="compose.png"/>
+                                                    </segments>
+                                                    <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <connections>
+                                                        <action selector="tappedActionsSegment:" destination="uMb-el-Ve5" eventType="valueChanged" id="Z30-Wq-HFC"/>
+                                                    </connections>
+                                                </segmentedControl>
+                                            </barButtonItem>
                                         </items>
                                     </toolbar>
                                 </subviews>
@@ -311,13 +334,15 @@
                     </navigationItem>
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="actionsSegmentedControl" destination="ZeO-Ul-J5a" id="gwZ-FY-KGh"/>
                         <outlet property="bottomView" destination="5SU-wj-UVg" id="oTV-pD-LgS"/>
                         <outlet property="pagesBarButtonItem" destination="ohk-rN-oFJ" id="fgS-d0-tkE"/>
+                        <outlet property="pagesSegmentedControl" destination="flJ-3f-HNO" id="hBA-hv-ECK"/>
                         <outlet property="toolbar" destination="HcX-5w-xPq" id="LPf-5T-Lb8"/>
                         <outlet property="webView" destination="bj6-uZ-iIF" id="GhU-3b-BeT"/>
                     </connections>
                 </viewController>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="thread title label" lineBreakMode="tailTruncation" numberOfLines="3" minimumFontSize="10" id="yR7-8b-xAm">
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="thread title label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" minimumFontSize="10" id="yR7-8b-xAm">
                     <rect key="frame" x="31.5" y="0.0" width="320" height="44"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -345,15 +370,19 @@
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                         <items>
-                                            <barButtonItem title=" First " id="WQD-e3-mxf">
-                                                <connections>
-                                                    <action selector="hitFirst:" destination="gFz-91-xJX" id="zvE-dk-SNb"/>
-                                                </connections>
-                                            </barButtonItem>
-                                            <barButtonItem title=" Last " id="3Oi-B7-JJO">
-                                                <connections>
-                                                    <action selector="hitLast:" destination="gFz-91-xJX" id="rAb-bQ-DJv"/>
-                                                </connections>
+                                            <barButtonItem style="plain" id="yiu-as-meE">
+                                                <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" id="k8W-92-hou">
+                                                    <rect key="frame" x="6" y="8" width="115" height="30"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <segments>
+                                                        <segment title="First"/>
+                                                        <segment title="Last"/>
+                                                    </segments>
+                                                    <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <connections>
+                                                        <action selector="hitFirstLastSegment:" destination="gFz-91-xJX" eventType="valueChanged" id="yCE-N9-GZz"/>
+                                                    </connections>
+                                                </segmentedControl>
                                             </barButtonItem>
                                             <barButtonItem style="plain" systemItem="flexibleSpace" id="tTU-24-8Op"/>
                                             <barButtonItem title="Jump to Page" id="WUT-4F-7Il">
@@ -379,6 +408,8 @@
                     </view>
                     <connections>
                         <outlet property="containerView" destination="8IU-cQ-mLt" id="RFW-qA-b2Z"/>
+                        <outlet property="firstLastSegmentedControl" destination="k8W-92-hou" id="Gdd-JI-skQ"/>
+                        <outlet property="jumpToPageBarButtonItem" destination="WUT-4F-7Il" id="roL-d3-i1h"/>
                         <outlet property="pickerView" destination="Pyx-EV-Dw0" id="sEf-qi-wuo"/>
                     </connections>
                 </viewController>
@@ -701,9 +732,11 @@
     <resources>
         <image name="01-arrow-east.png" width="19" height="16"/>
         <image name="05-arrow-west.png" width="19" height="16"/>
-        <image name="28-star.png" width="26" height="26"/>
-        <image name="39-circle-check.png" width="28" height="28"/>
         <image name="40-inbox.png" width="24" height="24"/>
+        <image name="arrowleft.png" width="23" height="18"/>
+        <image name="arrowright.png" width="23" height="18"/>
+        <image name="cog.png" width="19" height="20"/>
+        <image name="compose.png" width="22" height="18"/>
         <image name="forum-arrow-right.png" width="44" height="38"/>
         <image name="list_icon.png" width="20" height="18"/>
         <image name="number-background.png" width="32" height="20"/>
@@ -765,9 +798,11 @@
                 <relationship kind="action" name="tappedNextPage:"/>
                 <relationship kind="action" name="tappedPageNav:"/>
                 <relationship kind="action" name="tappedVote:"/>
+                <relationship kind="outlet" name="actionsSegmentedControl" candidateClass="UISegmentedControl"/>
                 <relationship kind="outlet" name="bottomView" candidateClass="UIView"/>
                 <relationship kind="outlet" name="nextPageBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="pagesBarButtonItem" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="pagesSegmentedControl" candidateClass="UISegmentedControl"/>
                 <relationship kind="outlet" name="toolbar" candidateClass="UIToolbar"/>
                 <relationship kind="outlet" name="webView" candidateClass="JSBridgeWebView"/>
             </relationships>
@@ -776,9 +811,12 @@
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulSpecificPageViewController.h"/>
             <relationships>
                 <relationship kind="action" name="hitFirst:"/>
+                <relationship kind="action" name="hitFirstLastSegment:"/>
                 <relationship kind="action" name="hitJumpToPage:"/>
                 <relationship kind="action" name="hitLast:"/>
                 <relationship kind="outlet" name="containerView" candidateClass="UIView"/>
+                <relationship kind="outlet" name="firstLastSegmentedControl" candidateClass="UISegmentedControl"/>
+                <relationship kind="outlet" name="jumpToPageBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="pickerView" candidateClass="UIPickerView"/>
             </relationships>
         </class>

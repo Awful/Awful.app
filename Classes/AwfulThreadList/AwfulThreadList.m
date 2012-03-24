@@ -116,6 +116,9 @@
     lab.text = self.forum.name;
     //self.title = @"GBS";
     
+    UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon_arrow_left.png"] style:UIBarButtonItemStyleBordered target:nil action:nil];
+    //self.navigationItem.backBarButtonItem = back;
+    
     self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
         
     if([self.awfulThreads count] == 0) {

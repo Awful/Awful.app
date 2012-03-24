@@ -20,6 +20,8 @@
 @synthesize page = _page;
 @synthesize containerView = _containerView;
 @synthesize pickerView = _pickerView;
+@synthesize jumpToPageBarButtonItem = _jumpToPageBarButtonItem;
+@synthesize firstLastSegmentedControl = _firstLastSegmentedControl;
 
 - (void)didReceiveMemoryWarning
 {
@@ -46,9 +48,15 @@
 
 #pragma mark - View lifecycle
 
+-(void)awakeFromNib
+{
+    [self.jumpToPageBarButtonItem setTintColor:[UIColor darkGrayColor]];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
 }
 
 - (void)viewDidUnload
@@ -65,6 +73,16 @@
         return YES;
     }
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+-(IBAction)hitFirstLastSegment : (id)sender
+{
+    if(self.firstLastSegmentedControl.selectedSegmentIndex == 0) {
+        [self hitFirst:nil];
+    } else if(self.firstLastSegmentedControl.selectedSegmentIndex == 1) {
+        [self hitLast:nil];
+    }
+    self.firstLastSegmentedControl.selectedSegmentIndex = -1;
 }
 
 - (IBAction)hitJumpToPage:(id)sender 

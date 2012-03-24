@@ -17,8 +17,12 @@
 @property (nonatomic, strong) IBOutlet UIView *containerView;
 @property (nonatomic, strong) IBOutlet UIPickerView *pickerView;
 
+@property (nonatomic, strong) IBOutlet UIBarButtonItem *jumpToPageBarButtonItem;
+@property (nonatomic, strong) IBOutlet UISegmentedControl *firstLastSegmentedControl;
+
 -(IBAction)hitJumpToPage:(id)sender;
 -(IBAction)hitFirst : (id)sender;
 -(IBAction)hitLast : (id)sender;
+-(IBAction)hitFirstLastSegment : (id)sender;
 
 @end
