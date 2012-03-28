@@ -29,6 +29,7 @@
 #import "AwfulVoteActions.h"
 #import "AwfulPageDataController.h"
 #import "AwfulNetworkEngine.h"
+#import "ButtonSegmentedControl.h"
 
 @implementation AwfulPage
 
@@ -58,6 +59,8 @@
 
 -(void)awakeFromNib
 {    
+    self.actionsSegmentedControl.action = @selector(tappedActionsSegment:);
+    self.pagesSegmentedControl.action = @selector(tappedPagesSegment:);
 }
 
 -(void)setThread:(AwfulThread *)newThread
@@ -278,7 +281,7 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    [self.navigationController setToolbarHidden:YES];
+    [self.navigationController setToolbarHidden:NO];
     self.navigationController.toolbar.barStyle = UIBarStyleBlack;
 }
 
@@ -382,6 +385,15 @@
         [self.pagesSegmentedControl setEnabled:NO forSegmentAtIndex:0];
     } else {
         [self.pagesSegmentedControl setEnabled:YES forSegmentAtIndex:0];
+    }
+}
+
+-(IBAction)segmentedGotTapped : (id)sender
+{
+    if(sender == self.actionsSegmentedControl) {
+        [self tappedActionsSegment:nil];
+    } else if(sender == self.pagesSegmentedControl) {
+        [self tappedPagesSegment:nil];
     }
 }
 

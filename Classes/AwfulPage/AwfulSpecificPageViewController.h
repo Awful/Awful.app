@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @class AwfulPage;
+@class ButtonSegmentedControl;
 
 @interface AwfulSpecificPageViewController : UIViewController <UIPickerViewDataSource, UIPickerViewDelegate>
 
@@ -18,7 +19,7 @@
 @property (nonatomic, strong) IBOutlet UIPickerView *pickerView;
 
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *jumpToPageBarButtonItem;
-@property (nonatomic, strong) IBOutlet UISegmentedControl *firstLastSegmentedControl;
+@property (nonatomic, strong) IBOutlet ButtonSegmentedControl *firstLastSegmentedControl;
 
 -(IBAction)hitJumpToPage:(id)sender;
 -(IBAction)hitFirst : (id)sender;

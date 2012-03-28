@@ -24,6 +24,7 @@ typedef enum {
 @class AwfulSpecificPageViewController;
 @class AwfulPageDataController;
 @class AwfulActions;
+@class ButtonSegmentedControl;
 
 @interface AwfulPage : UIViewController <UIWebViewDelegate, UIGestureRecognizerDelegate, JSBridgeWebViewDelegate>
 
@@ -49,8 +50,8 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *pagesBarButtonItem;
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *nextPageBarButtonItem;
 
-@property (nonatomic, strong) IBOutlet UISegmentedControl *pagesSegmentedControl;
-@property (nonatomic, strong) IBOutlet UISegmentedControl *actionsSegmentedControl;
+@property (nonatomic, strong) IBOutlet ButtonSegmentedControl *pagesSegmentedControl;
+@property (nonatomic, strong) IBOutlet ButtonSegmentedControl *actionsSegmentedControl;
 
 @property (nonatomic, assign) BOOL draggingUp;
 
@@ -65,6 +66,10 @@ typedef enum {
 -(IBAction)tappedVote : (id)sender;
 -(IBAction)tappedCompose : (id)sender;
 -(IBAction)tappedNextPage : (id)sender;
+
+-(IBAction)segmentedGotTapped : (id)sender;
+-(IBAction)tappedPagesSegment : (id)sender;
+-(IBAction)tappedActionsSegment : (id)sender;
 
 -(void)swiped : (UISwipeGestureRecognizer *)swiper;
 -(CGFloat)getHiddenBottomViewY;

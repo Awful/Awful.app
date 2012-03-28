@@ -12,6 +12,7 @@
 #import "AwfulThread.h"
 #import "AwfulForum.h"
 #import "AwfulThreadList.h"
+#import "ButtonSegmentedControl.h"
 #import <QuartzCore/QuartzCore.h>
 
 @implementation AwfulSpecificPageViewController
@@ -50,13 +51,19 @@
 
 -(void)awakeFromNib
 {
+    
+}
+
+-(void)loadView
+{
+    [super loadView];
     [self.jumpToPageBarButtonItem setTintColor:[UIColor darkGrayColor]];
+    self.firstLastSegmentedControl.action = @selector(hitFirstLastSegment:);
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
 }
 
 - (void)viewDidUnload

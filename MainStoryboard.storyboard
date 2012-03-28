@@ -263,87 +263,73 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FTr-u6-ZV9" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController hidesBottomBarWhenPushed="YES" id="uMb-el-Ve5" customClass="AwfulPage" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="3ZN-vW-tgX">
-                        <rect key="frame" x="0.0" y="64" width="320" height="416"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="372"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <webView contentMode="scaleToFill" id="bj6-uZ-iIF" customClass="JSBridgeWebView">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="374"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="372"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <connections>
                                     <outlet property="delegate" destination="uMb-el-Ve5" id="NO9-jw-SuS"/>
                                 </connections>
                             </webView>
-                            <view contentMode="scaleToFill" id="5SU-wj-UVg">
-                                <rect key="frame" x="0.0" y="374" width="320" height="350"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                <subviews>
-                                    <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="blackOpaque" id="HcX-5w-xPq">
-                                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                        <items>
-                                            <barButtonItem style="plain" id="Tye-gJ-oSt">
-                                                <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" id="flJ-3f-HNO">
-                                                    <rect key="frame" x="6" y="8" width="85" height="30"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <segments>
-                                                        <segment title="" image="arrowleft.png"/>
-                                                        <segment title="" image="arrowright.png"/>
-                                                    </segments>
-                                                    <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <connections>
-                                                        <action selector="tappedPagesSegment:" destination="uMb-el-Ve5" eventType="valueChanged" id="qrm-0P-jxl"/>
-                                                    </connections>
-                                                </segmentedControl>
-                                            </barButtonItem>
-                                            <barButtonItem style="plain" systemItem="flexibleSpace" id="1Q5-sv-H9b"/>
-                                            <barButtonItem title="Page 0 of 0" id="ohk-rN-oFJ">
-                                                <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                                <connections>
-                                                    <action selector="tappedPageNav:" destination="uMb-el-Ve5" id="XR9-gZ-Idc"/>
-                                                </connections>
-                                            </barButtonItem>
-                                            <barButtonItem style="plain" systemItem="flexibleSpace" id="u9f-sW-6nQ"/>
-                                            <barButtonItem style="plain" id="Ki9-7Y-6aO">
-                                                <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" id="ZeO-Ul-J5a">
-                                                    <rect key="frame" x="229" y="8" width="85" height="30"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <segments>
-                                                        <segment title="" image="cog.png"/>
-                                                        <segment title="" image="compose.png"/>
-                                                    </segments>
-                                                    <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <connections>
-                                                        <action selector="tappedActionsSegment:" destination="uMb-el-Ve5" eventType="valueChanged" id="Z30-Wq-HFC"/>
-                                                    </connections>
-                                                </segmentedControl>
-                                            </barButtonItem>
-                                        </items>
-                                    </toolbar>
-                                </subviews>
-                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
-                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <toolbarItems/>
+                    <toolbarItems>
+                        <barButtonItem style="plain" id="tYJ-Wh-btL">
+                            <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" id="uw2-UZ-4Xh" customClass="ButtonSegmentedControl">
+                                <rect key="frame" x="6" y="8" width="85" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <segments>
+                                    <segment title="" image="arrowleft.png"/>
+                                    <segment title="" image="arrowright.png"/>
+                                </segments>
+                                <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="target" destination="uMb-el-Ve5" id="OEh-4Z-Vmg"/>
+                                </connections>
+                            </segmentedControl>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="vhO-m0-x8H"/>
+                        <barButtonItem title="Page 0 of 0" id="O5A-zY-NnN">
+                            <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                            <connections>
+                                <action selector="tappedPageNav:" destination="uMb-el-Ve5" id="WVV-L3-QA2"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="GW4-VR-wle"/>
+                        <barButtonItem style="plain" id="oqN-JJ-rkS">
+                            <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" id="zgI-uQ-C9O" customClass="ButtonSegmentedControl">
+                                <rect key="frame" x="229" y="8" width="85" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <segments>
+                                    <segment title="" image="action.png"/>
+                                    <segment title="" image="reply.png"/>
+                                </segments>
+                                <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="target" destination="uMb-el-Ve5" id="8Xa-jo-cjd"/>
+                                </connections>
+                            </segmentedControl>
+                        </barButtonItem>
+                    </toolbarItems>
                     <navigationItem key="navigationItem" id="4gr-Fi-99a">
                         <connections>
                             <outlet property="titleView" destination="yR7-8b-xAm" id="vk2-iY-zht"/>
                         </connections>
                     </navigationItem>
-                    <nil key="simulatedBottomBarMetrics"/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics" barStyle="blackOpaque"/>
                     <connections>
-                        <outlet property="actionsSegmentedControl" destination="ZeO-Ul-J5a" id="gwZ-FY-KGh"/>
-                        <outlet property="bottomView" destination="5SU-wj-UVg" id="oTV-pD-LgS"/>
-                        <outlet property="pagesBarButtonItem" destination="ohk-rN-oFJ" id="fgS-d0-tkE"/>
-                        <outlet property="pagesSegmentedControl" destination="flJ-3f-HNO" id="hBA-hv-ECK"/>
-                        <outlet property="toolbar" destination="HcX-5w-xPq" id="LPf-5T-Lb8"/>
+                        <outlet property="actionsSegmentedControl" destination="zgI-uQ-C9O" id="qmD-bp-sdu"/>
+                        <outlet property="pagesBarButtonItem" destination="O5A-zY-NnN" id="YN2-cI-84S"/>
+                        <outlet property="pagesSegmentedControl" destination="uw2-UZ-4Xh" id="QYr-EJ-ppO"/>
                         <outlet property="webView" destination="bj6-uZ-iIF" id="GhU-3b-BeT"/>
                     </connections>
                 </viewController>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="thread title label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" minimumFontSize="10" id="yR7-8b-xAm">
-                    <rect key="frame" x="31.5" y="0.0" width="320" height="44"/>
+                    <rect key="frame" x="31.5" y="0.0" width="250" height="44"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="11"/>
@@ -371,7 +357,7 @@
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                         <items>
                                             <barButtonItem style="plain" id="yiu-as-meE">
-                                                <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" id="k8W-92-hou">
+                                                <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" id="k8W-92-hou" customClass="ButtonSegmentedControl">
                                                     <rect key="frame" x="6" y="8" width="115" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <segments>
@@ -380,7 +366,7 @@
                                                     </segments>
                                                     <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <connections>
-                                                        <action selector="hitFirstLastSegment:" destination="gFz-91-xJX" eventType="valueChanged" id="yCE-N9-GZz"/>
+                                                        <outlet property="target" destination="gFz-91-xJX" id="lD7-iR-9fk"/>
                                                     </connections>
                                                 </segmentedControl>
                                             </barButtonItem>
@@ -408,7 +394,7 @@
                     </view>
                     <connections>
                         <outlet property="containerView" destination="8IU-cQ-mLt" id="RFW-qA-b2Z"/>
-                        <outlet property="firstLastSegmentedControl" destination="k8W-92-hou" id="Gdd-JI-skQ"/>
+                        <outlet property="firstLastSegmentedControl" destination="k8W-92-hou" id="bSy-pf-DmB"/>
                         <outlet property="jumpToPageBarButtonItem" destination="WUT-4F-7Il" id="roL-d3-i1h"/>
                         <outlet property="pickerView" destination="Pyx-EV-Dw0" id="sEf-qi-wuo"/>
                     </connections>
@@ -733,14 +719,14 @@
         <image name="01-arrow-east.png" width="19" height="16"/>
         <image name="05-arrow-west.png" width="19" height="16"/>
         <image name="40-inbox.png" width="24" height="24"/>
+        <image name="action.png" width="23" height="18"/>
         <image name="arrowleft.png" width="23" height="18"/>
         <image name="arrowright.png" width="23" height="18"/>
-        <image name="cog.png" width="19" height="20"/>
-        <image name="compose.png" width="22" height="18"/>
         <image name="forum-arrow-right.png" width="44" height="38"/>
         <image name="list_icon.png" width="20" height="18"/>
         <image name="number-background.png" width="32" height="20"/>
         <image name="preferences.png" width="26" height="26"/>
+        <image name="reply.png" width="25" height="20"/>
         <image name="shsc-apple.png" width="90" height="90"/>
         <image name="sticky.png" width="12" height="12"/>
         <image name="threadrating.png" width="45" height="13"/>
@@ -792,17 +778,20 @@
                 <relationship kind="action" name="hardRefresh"/>
                 <relationship kind="action" name="hideBottomView:"/>
                 <relationship kind="action" name="revealBottomView:"/>
+                <relationship kind="action" name="segmentedGotTapped:"/>
                 <relationship kind="action" name="tappedActions:"/>
+                <relationship kind="action" name="tappedActionsSegment:"/>
                 <relationship kind="action" name="tappedBookmarks:"/>
                 <relationship kind="action" name="tappedCompose:"/>
                 <relationship kind="action" name="tappedNextPage:"/>
                 <relationship kind="action" name="tappedPageNav:"/>
+                <relationship kind="action" name="tappedPagesSegment:"/>
                 <relationship kind="action" name="tappedVote:"/>
-                <relationship kind="outlet" name="actionsSegmentedControl" candidateClass="UISegmentedControl"/>
+                <relationship kind="outlet" name="actionsSegmentedControl" candidateClass="ButtonSegmentedControl"/>
                 <relationship kind="outlet" name="bottomView" candidateClass="UIView"/>
                 <relationship kind="outlet" name="nextPageBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="pagesBarButtonItem" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="pagesSegmentedControl" candidateClass="UISegmentedControl"/>
+                <relationship kind="outlet" name="pagesSegmentedControl" candidateClass="ButtonSegmentedControl"/>
                 <relationship kind="outlet" name="toolbar" candidateClass="UIToolbar"/>
                 <relationship kind="outlet" name="webView" candidateClass="JSBridgeWebView"/>
             </relationships>
@@ -815,7 +804,7 @@
                 <relationship kind="action" name="hitJumpToPage:"/>
                 <relationship kind="action" name="hitLast:"/>
                 <relationship kind="outlet" name="containerView" candidateClass="UIView"/>
-                <relationship kind="outlet" name="firstLastSegmentedControl" candidateClass="UISegmentedControl"/>
+                <relationship kind="outlet" name="firstLastSegmentedControl" candidateClass="ButtonSegmentedControl"/>
                 <relationship kind="outlet" name="jumpToPageBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="pickerView" candidateClass="UIPickerView"/>
             </relationships>
@@ -846,6 +835,12 @@
                 <relationship kind="outlet" name="nextPageBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="pageLabelBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="prevPageBarButtonItem" candidateClass="UIBarButtonItem"/>
+            </relationships>
+        </class>
+        <class className="ButtonSegmentedControl" superclassName="UISegmentedControl">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ButtonSegmentedControl.h"/>
+            <relationships>
+                <relationship kind="outlet" name="target"/>
             </relationships>
         </class>
         <class className="JSBridgeWebView" superclassName="UIWebView">
