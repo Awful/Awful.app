@@ -2,20 +2,20 @@
 //  AwfulForum.h
 //  Awful
 //
-//  Created by Sean Berry on 7/27/10.
-//  Copyright 2010 Regular Berry Software LLC. All rights reserved.
+//  Created by Sean Berry on 3/28/12.
+//  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
 
-@interface AwfulForum : NSObject <NSCoding>
+@class AwfulForum;
 
-@property (nonatomic, strong) NSString *forumID;
-@property (nonatomic, strong) NSString *name;
-@property (nonatomic, strong) NSString *parentForumID;
-@property (nonatomic, strong) NSString *acronym;
+@interface AwfulForum : NSManagedObject
 
-+(id)awfulForumFromID : (NSString *)forum_id;
-+(NSMutableArray *)getForumsList;
+@property (nonatomic, retain) NSString * forumID;
+@property (nonatomic, retain) NSString * name;
+@property (nonatomic, retain) NSNumber * index;
+@property (nonatomic, retain) AwfulForum *parentForum;
 
 @end

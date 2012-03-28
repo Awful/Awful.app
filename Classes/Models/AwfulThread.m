@@ -10,6 +10,7 @@
 #import "AwfulForum.h"
 #import "TFHpple.h"
 #import "XPathQuery.h"
+#import "AwfulUtil.h"
 
 @implementation AwfulThread
 

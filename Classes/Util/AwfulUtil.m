@@ -30,6 +30,12 @@
 
 @implementation AwfulUtil
 
++(void)requestFailed:(NSError *)error
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+    [alert show];
+}
+
 +(NSString *)getDocsDir
 {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);

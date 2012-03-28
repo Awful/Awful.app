@@ -11,13 +11,6 @@
 #define AwfulThreadRatingIsGold(rating) ((rating) >= 4)
 #define AwfulThreadRatingIsShit(rating) ((rating) < 3)
 
-typedef enum {
-    AwfulStarCategoryBlue = 0,
-    AwfulStarCategoryRed,
-    AwfulStarCategoryYellow,
-    AwfulStarCategoryNone
-} AwfulStarCategory;
-
 @interface AwfulThread : NSObject <NSCoding>
 
 @property (nonatomic, strong) NSString *threadID;
@@ -25,7 +18,7 @@ typedef enum {
 @property int totalUnreadPosts;
 @property int totalReplies;
 @property NSUInteger threadRating;
-@property AwfulStarCategory starCategory;
+@property int starCategory;
 @property (nonatomic, strong) NSURL *threadIconImageURL;
 @property (nonatomic, strong) NSString *authorName;
 @property (nonatomic, strong) NSString *lastPostAuthorName;

@@ -8,6 +8,7 @@
 
 #import "AwfulNetworkEngine.h"
 #import "AwfulForum.h"
+#import "AwfulForum+AwfulMethods.h"
 #import "TFHpple.h"
 #import "AwfulParse.h"
 #import "AwfulThread.h"
@@ -172,6 +173,23 @@
     
     [op onCompletion:^(MKNetworkOperation *completedOperation) {
         completionBlock();
+    } onError:^(NSError *error) {
+        errorBlock(error);
+    }];
+    
+    [self enqueueOperation:op];
+    return op;
+}
+
+-(MKNetworkOperation *)forumsListOnCompletion : (ForumsListResponseBlock)forumsListResponseBlock onError : (MKNKErrorBlock)errorBlock
+{
+    MKNetworkOperation *op = [self operationWithPath:@"forumdisplay.php?forumid=1"];
+    
+    [op onCompletion:^(MKNetworkOperation *completedOperation) {
+        
+        NSMutableArray *forums = [AwfulForum parseForums:[completedOperation responseData]];
+        forumsListResponseBlock(forums);
+        
     } onError:^(NSError *error) {
         errorBlock(error);
     }];

@@ -11,6 +11,7 @@
 #import "AwfulThread.h"
 #import "AwfulPage.h"
 #import "AwfulConfig.h"
+#import "AwfulForum.h"
 #import "AwfulPost.h"
 #import "TFHpple.h"
 #import "AwfulPageCount.h"

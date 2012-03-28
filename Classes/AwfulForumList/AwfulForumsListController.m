@@ -137,7 +137,37 @@
 -(void)refresh
 {
     [super refresh];
-    [self performSelector:@selector(finishedRefreshing) withObject:nil afterDelay:0.5];
+    [self.networkOperation cancel];
+    self.networkOperation = [ApplicationDelegate.awfulNetworkEngine forumsListOnCompletion:^(NSMutableArray *forums) {
+        
+        // create the fetch request to get all Employees matching the IDs
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+        [fetchRequest setEntity:[NSEntityDescription entityForName:@"AwfulForum" inManagedObjectContext:ApplicationDelegate.managedObjectContext]];
+        
+        NSError *error = nil;
+        NSArray *existing_forums = [ApplicationDelegate.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+        
+        for(AwfulForum *newForum in forums) {
+            AwfulForum *found = nil;
+            for(AwfulForum *existing in existing_forums) {
+                if([existing.forumID isEqualToString:newForum.forumID]) {
+                    found = existing;
+                    break;
+                }
+            }
+            
+            if(found != nil) {
+                // update
+                [found setName:newForum.name];
+            } else {
+                // insert
+            }
+        }
+        
+    } onError:^(NSError *error) {
+        [self finishedRefreshing];
+        [AwfulUtil requestFailed:error];
+    }];
 }
 
 #pragma mark -

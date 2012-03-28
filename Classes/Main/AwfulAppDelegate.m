@@ -31,6 +31,8 @@
     
     self.awfulNetworkEngine = [[AwfulNetworkEngine alloc] initWithHostName:@"forums.somethingawful.com" customHeaderFields:nil];
     
+    NSManagedObjectContext *context = [self managedObjectContext];
+    
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         self.splitController = (AwfulSplitViewController *)self.window.rootViewController;
     }
@@ -41,7 +43,7 @@
     
     [self.window makeKeyAndVisible];
     
-    [FlurryAPI startSession:@"EU3TLVQM9U8T8QKNI9ID"];
+    //[FlurryAPI startSession:@"EU3TLVQM9U8T8QKNI9ID"];
     
     [Appirater appLaunched:YES];
     //[self initializeiCloudAccess];
@@ -186,6 +188,7 @@
     if (coordinator != nil) {
         __managedObjectContext = [[NSManagedObjectContext alloc] init];
         [__managedObjectContext setPersistentStoreCoordinator:coordinator];
+        [__managedObjectContext setUndoManager:nil];
     }
     return __managedObjectContext;
 }

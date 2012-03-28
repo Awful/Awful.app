@@ -81,8 +81,7 @@
         [self finishedRefreshing];
     } onError:^(NSError *error) {
         [self finishedRefreshing];
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-        [alert show];
+        [AwfulUtil requestFailed:error];
     }];
 }
 

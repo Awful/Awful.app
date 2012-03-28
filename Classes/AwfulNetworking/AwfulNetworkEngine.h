@@ -20,6 +20,7 @@ typedef void (^ThreadListResponseBlock)(NSMutableArray *threads);
 typedef void (^PageResponseBlock)(AwfulPageDataController *dataController);
 typedef void (^UserResponseBlock)(AwfulUser *user);
 typedef void (^CompletionBlock)(void);
+typedef void (^ForumsListResponseBlock)(NSMutableArray *forums);
 
 -(MKNetworkOperation *)threadListForForum:(AwfulForum *)forum pageNum:(NSUInteger)pageNum onCompletion:(ThreadListResponseBlock)threadListResponseBlock onError:(MKNKErrorBlock)errorBlock;
 
@@ -30,5 +31,7 @@ typedef void (^CompletionBlock)(void);
 -(MKNetworkOperation *)userInfoRequestOnCompletion : (UserResponseBlock)userResponseBlock onError : (MKNKErrorBlock)errorBlock;
 
 -(MKNetworkOperation *)removeBookmarkedThread : (AwfulThread *)thread onCompletion : (CompletionBlock)completionBlock onError : (MKNKErrorBlock)errorBlock;
+
+-(MKNetworkOperation *)forumsListOnCompletion : (ForumsListResponseBlock)forumsListResponseBlock onError : (MKNKErrorBlock)errorBlock;
 
 @end

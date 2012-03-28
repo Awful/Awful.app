@@ -8,8 +8,16 @@
 
 #import <Foundation/Foundation.h>
 
+typedef enum {
+    AwfulStarCategoryBlue = 0,
+    AwfulStarCategoryRed,
+    AwfulStarCategoryYellow,
+    AwfulStarCategoryNone
+} AwfulStarCategory;
+
 @interface AwfulUtil : NSObject
 
++(void)requestFailed : (NSError *)error;
 +(NSString *)getDocsDir;
 +(float)getThreadCellHeight;
 +(NSMutableArray *)newThreadListForForumId : (NSString *)forum_id;

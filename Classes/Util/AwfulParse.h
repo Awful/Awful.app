@@ -11,6 +11,7 @@
 @class AwfulPageCount;
 @class AwfulPost;
 @class TFHpple;
+@class AwfulForum;
 
 @interface AwfulParse : NSObject
 
