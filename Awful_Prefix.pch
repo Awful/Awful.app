@@ -7,4 +7,6 @@
     #import <UIKit/UIKit.h>
     #import "MKNetworkKit.h"
     #import "AwfulAppDelegate.h"
+    #import <CoreData/CoreData.h>
+
 #endif

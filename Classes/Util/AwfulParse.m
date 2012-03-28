@@ -322,6 +322,18 @@
             
             if(date != nil && last_author != nil) {
                 thread.lastPostAuthorName = [NSString stringWithFormat:@"%@", [last_author content]];
+                
+                static NSDateFormatter *df = nil;
+                if(df == nil) {
+                    df = [[NSDateFormatter alloc] init];
+                    [df setTimeZone:[NSTimeZone localTimeZone]];
+                    [df setDateFormat:@"HH:mm MMM d, yyyy"];
+                }
+                
+                NSDate *myDate = [df dateFromString:[date content]];
+                if(myDate != nil) {
+                    thread.lastPostDate = myDate;
+                }
             }
             
             [parsed_threads addObject:thread];

@@ -17,6 +17,7 @@
 @synthesize totalUnreadPosts, totalReplies, threadRating;
 @synthesize starCategory, threadIconImageURL, authorName, lastPostAuthorName;
 @synthesize seen, isStickied, isLocked, forum;
+@synthesize lastPostDate = _lastPostDate;
 
 -(id)init
 {

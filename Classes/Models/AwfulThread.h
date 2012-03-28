@@ -29,6 +29,7 @@ typedef enum {
 @property (nonatomic, strong) NSURL *threadIconImageURL;
 @property (nonatomic, strong) NSString *authorName;
 @property (nonatomic, strong) NSString *lastPostAuthorName;
+@property (nonatomic, strong) NSDate *lastPostDate;
 @property BOOL seen;
 @property BOOL isStickied;
 @property BOOL isLocked;
