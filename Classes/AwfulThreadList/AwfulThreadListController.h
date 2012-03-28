@@ -20,7 +20,7 @@ typedef enum {
     AwfulThreadCellTypeLoadMore
 } AwfulThreadCellType;
 
-@interface AwfulThreadList : AwfulTableViewController
+@interface AwfulThreadListController : AwfulTableViewController
 
 @property (nonatomic, strong) AwfulForum *forum;
 @property (nonatomic, strong) NSMutableArray *awfulThreads;

@@ -6,8 +6,8 @@
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulThreadList.h"
+#import "AwfulThreadListController.h"
 
-@interface AwfulThreadListIpad : AwfulThreadList
+@interface AwfulThreadListIpad : AwfulThreadListController
 
 @end

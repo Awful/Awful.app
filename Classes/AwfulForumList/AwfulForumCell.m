@@ -7,7 +7,7 @@
 //
 
 #import "AwfulForumCell.h"
-#import "AwfulForumsList.h"
+#import "AwfulForumsListController.h"
 #import "AwfulForum.h"
 
 #define LINE_SPACE 10

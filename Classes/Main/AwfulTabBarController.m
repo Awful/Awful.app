@@ -7,7 +7,7 @@
 //
 
 #import "AwfulTabBarController.h"
-#import "AwfulForumsList.h"
+#import "AwfulForumsListController.h"
 
 @implementation AwfulTabBarController
 

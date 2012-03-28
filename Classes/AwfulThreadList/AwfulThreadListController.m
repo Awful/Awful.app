@@ -6,7 +6,7 @@
 //  Copyright 2010 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulThreadList.h"
+#import "AwfulThreadListController.h"
 #import "AwfulThread.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulPage.h"
@@ -21,7 +21,7 @@
 
 #define THREAD_HEIGHT 72
 
-@implementation AwfulThreadList
+@implementation AwfulThreadListController
 
 #pragma mark -
 #pragma mark Initialization

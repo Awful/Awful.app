@@ -71,11 +71,11 @@
             </objects>
             <point key="canvasLocation" x="-1229" y="-738"/>
         </scene>
-        <!--Awful Forums List - Forums-->
+        <!--Awful Forums List Controller - Forums-->
         <scene sceneID="1z1-lM-q2t">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bkp-MY-C4s" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tableViewController title="Forums" id="09P-9C-av6" customClass="AwfulForumsList" sceneMemberID="viewController">
+                <tableViewController title="Forums" id="09P-9C-av6" customClass="AwfulForumsListController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="aMj-vH-oNy">
                         <rect key="frame" x="0.0" y="64" width="320" height="788"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -286,21 +286,6 @@
                 <relationship kind="action" name="tappedArrow:"/>
                 <relationship kind="outlet" name="arrow" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="titleLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="AwfulForumHeader" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumHeader.h"/>
-            <relationships>
-                <relationship kind="outlet" name="titleLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="AwfulForumsList" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumsList.h"/>
-            <relationships>
-                <relationship kind="action" name="grabFreshList"/>
-                <relationship kind="outlet" name="forumCell" candidateClass="AwfulForumCell"/>
-                <relationship kind="outlet" name="headerView" candidateClass="AwfulForumHeader"/>
-                <relationship kind="outlet" name="refreshCell" candidateClass="UITableViewCell"/>
             </relationships>
         </class>
         <class className="AwfulPage" superclassName="UIViewController">

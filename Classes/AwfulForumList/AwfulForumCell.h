@@ -9,14 +9,14 @@
 #import <UIKit/UIKit.h>
 
 @class AwfulForumSection;
-@class AwfulForumsList;
+@class AwfulForumsListController;
 
 @interface AwfulForumCell : UITableViewCell
 
 @property (nonatomic, strong) IBOutlet UILabel *titleLabel;
 @property (nonatomic, strong) IBOutlet UIButton *arrow;
 @property (nonatomic, strong) AwfulForumSection *section;
-@property (nonatomic, weak) AwfulForumsList *forumsList;
+@property (nonatomic, weak) AwfulForumsListController *forumsList;
 
 -(IBAction)tappedArrow : (id)sender;
 

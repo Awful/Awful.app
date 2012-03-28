@@ -6,9 +6,9 @@
 //  Copyright 2010 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulForumsList.h"
+#import "AwfulForumsListController.h"
 #import "AwfulForum.h"
-#import "AwfulThreadList.h"
+#import "AwfulThreadListController.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulUtil.h"
 #import "AwfulConfig.h"
@@ -46,7 +46,7 @@
 
 @end
 
-@implementation AwfulForumsList
+@implementation AwfulForumsListController
 
 #pragma mark -
 #pragma mark Initialization
@@ -68,7 +68,7 @@
     if([[segue identifier] isEqualToString:@"ThreadList"]) {
         NSIndexPath *selected = [self.tableView indexPathForSelectedRow];
         AwfulForum *forum = [self getForumAtIndexPath:selected];
-        AwfulThreadList *list = (AwfulThreadList *)segue.destinationViewController;
+        AwfulThreadListController *list = (AwfulThreadListController *)segue.destinationViewController;
         list.forum = forum;
     }
 }

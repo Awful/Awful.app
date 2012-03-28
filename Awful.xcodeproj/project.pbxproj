@@ -572,12 +572,12 @@
 		1190F73813BE4EA900B9D271 /* AwfulVoteActions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6D613BE4EA900B9D271 /* AwfulVoteActions.m */; };
 		1190F73913BE4EA900B9D271 /* AwfulForumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6D913BE4EA900B9D271 /* AwfulForumCell.m */; };
 		1190F73B13BE4EA900B9D271 /* AwfulForumHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1190F6DB13BE4EA900B9D271 /* AwfulForumHeaderView.xib */; };
-		1190F73D13BE4EA900B9D271 /* AwfulForumsList.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6DE13BE4EA900B9D271 /* AwfulForumsList.m */; };
+		1190F73D13BE4EA900B9D271 /* AwfulForumsListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6DE13BE4EA900B9D271 /* AwfulForumsListController.m */; };
 		1190F74413BE4EA900B9D271 /* AwfulPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6EB13BE4EA900B9D271 /* AwfulPage.m */; };
 		1190F74713BE4EA900B9D271 /* AwfulPostBox.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1190F6EF13BE4EA900B9D271 /* AwfulPostBox.xib */; };
 		1190F74813BE4EA900B9D271 /* AwfulPostBoxController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6F113BE4EA900B9D271 /* AwfulPostBoxController.m */; };
 		1190F75213BE4EA900B9D271 /* AwfulBookmarksController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F70713BE4EA900B9D271 /* AwfulBookmarksController.m */; };
-		1190F75313BE4EA900B9D271 /* AwfulThreadList.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F70913BE4EA900B9D271 /* AwfulThreadList.m */; };
+		1190F75313BE4EA900B9D271 /* AwfulThreadListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F70913BE4EA900B9D271 /* AwfulThreadListController.m */; };
 		1190F75C13BE4EA900B9D271 /* AwfulLoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F71A13BE4EA900B9D271 /* AwfulLoginController.m */; };
 		1190F75E13BE4EA900B9D271 /* AwfulAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F71E13BE4EA900B9D271 /* AwfulAppDelegate.m */; };
 		1190F75F13BE4EA900B9D271 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1190F71F13BE4EA900B9D271 /* MainWindow.xib */; };
@@ -1272,8 +1272,8 @@
 		1190F6D813BE4EA900B9D271 /* AwfulForumCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumCell.h; sourceTree = "<group>"; };
 		1190F6D913BE4EA900B9D271 /* AwfulForumCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumCell.m; sourceTree = "<group>"; };
 		1190F6DB13BE4EA900B9D271 /* AwfulForumHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AwfulForumHeaderView.xib; sourceTree = "<group>"; };
-		1190F6DD13BE4EA900B9D271 /* AwfulForumsList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumsList.h; sourceTree = "<group>"; };
-		1190F6DE13BE4EA900B9D271 /* AwfulForumsList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumsList.m; sourceTree = "<group>"; };
+		1190F6DD13BE4EA900B9D271 /* AwfulForumsListController.h */ = {isa = PBXFileReference; fileEncoding = 4; path = AwfulForumsListController.h; sourceTree = "<group>"; };
+		1190F6DE13BE4EA900B9D271 /* AwfulForumsListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumsListController.m; sourceTree = "<group>"; };
 		1190F6EA13BE4EA900B9D271 /* AwfulPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPage.h; sourceTree = "<group>"; };
 		1190F6EB13BE4EA900B9D271 /* AwfulPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPage.m; sourceTree = "<group>"; };
 		1190F6EF13BE4EA900B9D271 /* AwfulPostBox.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AwfulPostBox.xib; sourceTree = "<group>"; };
@@ -1281,8 +1281,8 @@
 		1190F6F113BE4EA900B9D271 /* AwfulPostBoxController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostBoxController.m; sourceTree = "<group>"; };
 		1190F70613BE4EA900B9D271 /* AwfulBookmarksController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulBookmarksController.h; sourceTree = "<group>"; };
 		1190F70713BE4EA900B9D271 /* AwfulBookmarksController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulBookmarksController.m; sourceTree = "<group>"; };
-		1190F70813BE4EA900B9D271 /* AwfulThreadList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadList.h; sourceTree = "<group>"; };
-		1190F70913BE4EA900B9D271 /* AwfulThreadList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadList.m; sourceTree = "<group>"; };
+		1190F70813BE4EA900B9D271 /* AwfulThreadListController.h */ = {isa = PBXFileReference; fileEncoding = 4; path = AwfulThreadListController.h; sourceTree = "<group>"; };
+		1190F70913BE4EA900B9D271 /* AwfulThreadListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadListController.m; sourceTree = "<group>"; };
 		1190F71913BE4EA900B9D271 /* AwfulLoginController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLoginController.h; sourceTree = "<group>"; };
 		1190F71A13BE4EA900B9D271 /* AwfulLoginController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLoginController.m; sourceTree = "<group>"; };
 		1190F71D13BE4EA900B9D271 /* AwfulAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAppDelegate.h; sourceTree = "<group>"; };
@@ -2158,8 +2158,8 @@
 		1190F6D713BE4EA900B9D271 /* AwfulForumList */ = {
 			isa = PBXGroup;
 			children = (
-				1190F6DD13BE4EA900B9D271 /* AwfulForumsList.h */,
-				1190F6DE13BE4EA900B9D271 /* AwfulForumsList.m */,
+				1190F6DD13BE4EA900B9D271 /* AwfulForumsListController.h */,
+				1190F6DE13BE4EA900B9D271 /* AwfulForumsListController.m */,
 				1190F6D813BE4EA900B9D271 /* AwfulForumCell.h */,
 				1190F6D913BE4EA900B9D271 /* AwfulForumCell.m */,
 				112764EB14DB44E6003ACE76 /* AwfulForumHeader.h */,
@@ -2188,8 +2188,8 @@
 		1190F70513BE4EA900B9D271 /* AwfulThreadList */ = {
 			isa = PBXGroup;
 			children = (
-				1190F70813BE4EA900B9D271 /* AwfulThreadList.h */,
-				1190F70913BE4EA900B9D271 /* AwfulThreadList.m */,
+				1190F70813BE4EA900B9D271 /* AwfulThreadListController.h */,
+				1190F70913BE4EA900B9D271 /* AwfulThreadListController.m */,
 				1190F70613BE4EA900B9D271 /* AwfulBookmarksController.h */,
 				1190F70713BE4EA900B9D271 /* AwfulBookmarksController.m */,
 				112764EF14DB4F6A003ACE76 /* AwfulThreadCell.h */,
@@ -3185,11 +3185,11 @@
 				1190F73713BE4EA900B9D271 /* AwfulThreadListActions.m in Sources */,
 				1190F73813BE4EA900B9D271 /* AwfulVoteActions.m in Sources */,
 				1190F73913BE4EA900B9D271 /* AwfulForumCell.m in Sources */,
-				1190F73D13BE4EA900B9D271 /* AwfulForumsList.m in Sources */,
+				1190F73D13BE4EA900B9D271 /* AwfulForumsListController.m in Sources */,
 				1190F74413BE4EA900B9D271 /* AwfulPage.m in Sources */,
 				1190F74813BE4EA900B9D271 /* AwfulPostBoxController.m in Sources */,
 				1190F75213BE4EA900B9D271 /* AwfulBookmarksController.m in Sources */,
-				1190F75313BE4EA900B9D271 /* AwfulThreadList.m in Sources */,
+				1190F75313BE4EA900B9D271 /* AwfulThreadListController.m in Sources */,
 				1190F75C13BE4EA900B9D271 /* AwfulLoginController.m in Sources */,
 				1190F75E13BE4EA900B9D271 /* AwfulAppDelegate.m in Sources */,
 				1190F76013BE4EA900B9D271 /* AwfulForum.m in Sources */,

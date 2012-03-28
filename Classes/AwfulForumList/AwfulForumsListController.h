@@ -26,7 +26,7 @@
 
 @end
 
-@interface AwfulForumsList : AwfulTableViewController <UIAlertViewDelegate>
+@interface AwfulForumsListController : AwfulTableViewController <UIAlertViewDelegate>
 
 @property (nonatomic, strong) NSMutableArray *favorites;
 @property (nonatomic, strong) NSMutableArray *forums;
@@ -60,7 +60,7 @@
 
 @end
 
-@interface AwfulForumsListIpad : AwfulForumsList
+@interface AwfulForumsListIpad : AwfulForumsListController
 
 -(void)hitBookmarks;
 

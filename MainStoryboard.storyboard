@@ -29,11 +29,11 @@
             </objects>
             <point key="canvasLocation" x="734" y="-846"/>
         </scene>
-        <!--Awful Forums List - Forums-->
+        <!--Awful Forums List Controller - Forums-->
         <scene sceneID="b1h-YA-b4T">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Jn6-dl-9gI" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tableViewController title="Forums" id="Cko-3x-oc7" customClass="AwfulForumsList" sceneMemberID="viewController">
+                <tableViewController title="Forums" id="Cko-3x-oc7" customClass="AwfulForumsListController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="50" sectionHeaderHeight="22" sectionFooterHeight="22" id="qEa-va-Pfv">
                         <rect key="frame" x="0.0" y="64" width="320" height="372"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -124,11 +124,11 @@
             </objects>
             <point key="canvasLocation" x="742" y="-199"/>
         </scene>
-        <!--Awful Thread List - Title-->
+        <!--Awful Thread List Controller - Title-->
         <scene sceneID="R44-bE-NMl">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="te1-UI-oXs" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tableViewController id="Osj-d3-UMd" customClass="AwfulThreadList" sceneMemberID="viewController">
+                <tableViewController id="Osj-d3-UMd" customClass="AwfulThreadListController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="Yrm-c6-SW3">
                         <rect key="frame" x="0.0" y="64" width="320" height="416"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -747,21 +747,6 @@
                 <relationship kind="action" name="tappedArrow:"/>
                 <relationship kind="outlet" name="arrow" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="titleLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="AwfulForumHeader" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumHeader.h"/>
-            <relationships>
-                <relationship kind="outlet" name="titleLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="AwfulForumsList" superclassName="AwfulTableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumsList.h"/>
-            <relationships>
-                <relationship kind="action" name="grabFreshList"/>
-                <relationship kind="outlet" name="forumCell" candidateClass="AwfulForumCell"/>
-                <relationship kind="outlet" name="headerView" candidateClass="AwfulForumHeader"/>
-                <relationship kind="outlet" name="refreshCell" candidateClass="UITableViewCell"/>
             </relationships>
         </class>
         <class className="AwfulLoginController" superclassName="UIViewController">

@@ -11,7 +11,7 @@
 #import "AwfulPageCount.h"
 #import "AwfulThread.h"
 #import "AwfulForum.h"
-#import "AwfulThreadList.h"
+#import "AwfulThreadListController.h"
 #import "ButtonSegmentedControl.h"
 #import <QuartzCore/QuartzCore.h>
 

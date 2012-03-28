@@ -8,7 +8,7 @@
 
 @class AwfulNavigator;
 @class AwfulPage;
-@class AwfulThreadList;
+@class AwfulThreadListController;
 @class AwfulIpadMasterController;
 
 @interface AwfulSplitViewController : UISplitViewController <UISplitViewControllerDelegate, UITabBarControllerDelegate>
@@ -22,7 +22,7 @@
 
 -(void)setupMasterView;
 -(void)showAwfulPage : (AwfulPage *)page;
--(void)showTheadList : (AwfulThreadList *)list;
+-(void)showTheadList : (AwfulThreadListController *)list;
 -(void)addMasterButtonToController: (UIViewController *)vc;
 -(void)showMasterView;
 -(void)hideMasterView;

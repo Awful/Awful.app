@@ -6,7 +6,7 @@
 //  Copyright 2010 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulThreadList.h"
+#import "AwfulThreadListController.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulPage.h"
 #import "TFHpple.h"

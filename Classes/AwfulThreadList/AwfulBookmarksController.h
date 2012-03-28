@@ -6,9 +6,9 @@
 //  Copyright 2010 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulThreadList.h"
+#import "AwfulThreadListController.h"
 
-@interface AwfulBookmarksController : AwfulThreadList <UIScrollViewDelegate>
+@interface AwfulBookmarksController : AwfulThreadListController <UIScrollViewDelegate>
 
 /* 
  Used for checking if there is a second page of bookmarks. Multiples of 40 means yeah sure.

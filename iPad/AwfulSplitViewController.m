@@ -7,8 +7,8 @@
 //
 
 #import "AwfulSplitViewController.h"
-#import "AwfulForumsList.h"
-#import "AwfulThreadList.h"
+#import "AwfulForumsListController.h"
+#import "AwfulThreadListController.h"
 #import "AwfulBookmarksController.h"
 #import "AwfulPage.h"
 #import "AwfulAppDelegate.h"
@@ -117,7 +117,7 @@
     }
 }
 
--(void)showTheadList : (AwfulThreadList *)list
+-(void)showTheadList : (AwfulThreadListController *)list
 {
     [self showMasterView];
     [self.masterController setSelectedViewController:self.listController];
@@ -158,9 +158,9 @@
         UINavigationController *selectedVC = (UINavigationController *) self.masterController.selectedViewController;
         
         UIViewController *vc = selectedVC.topViewController;
-        if ([vc isKindOfClass:[AwfulThreadList class]])
+        if ([vc isKindOfClass:[AwfulThreadListController class]])
         {
-            [((AwfulThreadList *)vc) newlyVisible];
+            [((AwfulThreadListController *)vc) newlyVisible];
         }
         
         UIView *masterView = self.masterController.view;
@@ -274,8 +274,8 @@
         UINavigationController *selectedVC = (UINavigationController *) self.masterController.selectedViewController;
         
         UIViewController *vc = selectedVC.topViewController;
-        if ([vc isKindOfClass:[AwfulThreadList class]]) {
-            [((AwfulThreadList *)vc) newlyVisible];
+        if ([vc isKindOfClass:[AwfulThreadListController class]]) {
+            [((AwfulThreadListController *)vc) newlyVisible];
         }
     }
     
@@ -299,8 +299,8 @@
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
 {
     UIViewController *vc = ((UINavigationController *)viewController).topViewController;
-    if ([vc isKindOfClass:[AwfulThreadList class]]) {
-        [((AwfulThreadList *)vc) newlyVisible];
+    if ([vc isKindOfClass:[AwfulThreadListController class]]) {
+        [((AwfulThreadListController *)vc) newlyVisible];
     }
 }
 
