@@ -30,6 +30,8 @@
 #import "AwfulPageDataController.h"
 #import "AwfulNetworkEngine.h"
 #import "ButtonSegmentedControl.h"
+#import "AwfulUser+AwfulMethods.h"
+#import "AwfulUser.h"
 
 @implementation AwfulPage
 
@@ -154,7 +156,7 @@
 
 -(IBAction)hardRefresh
 {    
-    int posts_per_page = getPostsPerPage();
+    int posts_per_page = [[[AwfulUser currentUser] postsPerPage] intValue];
     if([self.pages onLastPage] && [self.dataController.posts count] == posts_per_page) {
         self.destinationType = AwfulPageDestinationTypeSpecific;
         [self refresh];

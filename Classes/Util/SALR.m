@@ -10,6 +10,7 @@
 #import "SALR.h"
 #import "SBJson.h"
 #import "AwfulUser.h"
+#import "AwfulUser+AwfulMethods.h"
 
 @implementation SALR
 

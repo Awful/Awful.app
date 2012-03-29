@@ -262,16 +262,24 @@
         return;
     }
     
-    NSURL *localStore = [[NSBundle mainBundle] URLForResource:@"AwfulData" withExtension:@"sqlite"];
-    [[NSFileManager defaultManager] moveItemAtURL:localStore toURL:storeURL error:&err];
-    if(err != nil) {
-        NSLog(@"failed to move data store %@", [err localizedDescription]);
-    }
+    [self copyDefaultDataStoreToDocuments];
 
     __persistentStoreCoordinator = nil;
     __managedObjectModel = nil;
     __managedObjectContext = nil;
     [self managedObjectContext];
+}
+
+-(void)copyDefaultDataStoreToDocuments
+{
+    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"AwfulData.sqlite"];
+    NSURL *localStore = [[NSBundle mainBundle] URLForResource:@"AwfulData" withExtension:@"sqlite"];
+    
+    NSError *err = nil;
+    [[NSFileManager defaultManager] moveItemAtURL:localStore toURL:storeURL error:&err];
+    if(err != nil) {
+        NSLog(@"failed to move data store %@", [err localizedDescription]);
+    }
 }
 
 #pragma mark - Application's Documents directory

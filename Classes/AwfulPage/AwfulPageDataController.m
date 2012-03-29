@@ -14,6 +14,8 @@
 #import "XPathQuery.h"
 #import "AwfulPost.h"
 #import "AwfulUtil.h"
+#import "AwfulUser+AwfulMethods.h"
+#import "AwfulUser.h"
 #import "AwfulPageTemplate.h"
 
 @interface AwfulPageDataController ()
@@ -146,7 +148,7 @@
 
 -(AwfulPost *)parsePost : (TFHpple *)parser
 {
-    NSString *username = getUsername();
+    NSString *username = [[AwfulUser currentUser] userName];
     
     AwfulPost *post = [[AwfulPost alloc] init];
     

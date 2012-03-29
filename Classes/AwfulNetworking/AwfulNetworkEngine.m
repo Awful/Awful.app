@@ -16,6 +16,7 @@
 #import "AwfulPage.h"
 #import "AwfulPageDataController.h"
 #import "AwfulUser.h"
+#import "AwfulUser+AwfulMethods.h"
 #import "AwfulPageTemplate.h"
 
 @implementation AwfulNetworkEngine
@@ -132,7 +133,12 @@
             }
         }*/
         
-        AwfulUser *user = [[AwfulUser alloc] init];
+        AwfulUser *user = [AwfulUser currentUser];
+        
+        if(user == nil) {
+            errorBlock(nil);
+        }
+        
         NSString *html_str = [completedOperation responseString];
         
         NSError *regex_error = nil;
@@ -148,7 +154,7 @@
             NSString *user_id = [html_str substringWithRange:userid_range];
             int user_id_int = [user_id intValue];
             if(user_id_int != 0) {
-                [user setUserID:[NSNumber numberWithInt:user_id_int]];
+                [user setUserID:user_id];
             }
         }
         
@@ -166,6 +172,7 @@
             [user setUserName:username];
         }
         
+        [ApplicationDelegate saveContext];
         userResponseBlock(user);
         
     } onError:^(NSError *error) {

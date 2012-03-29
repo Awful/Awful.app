@@ -72,21 +72,6 @@
 
 @end
 
-int getPostsPerPage()
-{
-    AwfulUser *user = [AwfulUser currentUser];
-    if(user == nil) {
-        return 40;
-    }
-    return user.postsPerPage;
-}
-
-NSString *getUsername()
-{
-    AwfulUser *user = [AwfulUser currentUser];
-    return [user userName];
-}
-
 float getWidth()
 {
     UIInterfaceOrientation orient = [[UIApplication sharedApplication] statusBarOrientation];

@@ -25,8 +25,14 @@
         <attribute name="totalUnreadPosts" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="forum" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="threads" inverseEntity="AwfulForum" syncable="YES"/>
     </entity>
+    <entity name="AwfulUser" representedClassName="AwfulUser" syncable="YES">
+        <attribute name="postsPerPage" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="userID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="userName" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
     <elements>
         <element name="AwfulForum" positionX="160" positionY="192" width="128" height="105"/>
         <element name="AwfulThread" positionX="160" positionY="192" width="128" height="270"/>
+        <element name="AwfulUser" positionX="160" positionY="192" width="128" height="90"/>
     </elements>
 </model>

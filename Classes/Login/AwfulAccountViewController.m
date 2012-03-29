@@ -8,6 +8,7 @@
 
 #import "AwfulAccountViewController.h"
 #import "AwfulUser.h"
+#import "AwfulUser+AwfulMethods.h"
 #import "AwfulUtil.h"
 #import "AwfulLoginController.h"
 #import "AwfulNetworkEngine.h"
@@ -150,7 +151,8 @@
         }
         
         AwfulUser *user = [AwfulUser currentUser];
-        [user killUser];
+        [ApplicationDelegate.managedObjectContext deleteObject:user];
+        [ApplicationDelegate saveContext];
         [self.tableView reloadData];
     }
 }

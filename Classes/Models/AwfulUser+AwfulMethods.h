@@ -1,5 +1,5 @@
 //
-//  AwfulUser.m
+//  AwfulUser+AwfulMethods.h
 //  Awful
 //
 //  Created by Sean Berry on 3/29/12.
@@ -8,11 +8,8 @@
 
 #import "AwfulUser.h"
 
+@interface AwfulUser (AwfulMethods)
 
-@implementation AwfulUser
-
-@dynamic userName;
-@dynamic userID;
-@dynamic postsPerPage;
++(AwfulUser *)currentUser;
 
 @end

@@ -2,23 +2,18 @@
 //  AwfulUser.h
 //  Awful
 //
-//  Created by Sean Berry on 11/21/10.
-//  Copyright 2010 Regular Berry Software LLC. All rights reserved.
+//  Created by Sean Berry on 3/29/12.
+//  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
 
-@interface AwfulUser : NSObject
 
-@property (nonatomic, strong) NSString *userName;
-@property (nonatomic, assign) int postsPerPage;
-@property (nonatomic, strong) NSNumber *userID;
+@interface AwfulUser : NSManagedObject
 
-+(AwfulUser *)currentUser;
-
--(void)loadUser;
--(void)saveUser;
--(void)killUser;
--(NSString *)getPath;
+@property (nonatomic, retain) NSString * userName;
+@property (nonatomic, retain) NSString * userID;
+@property (nonatomic, retain) NSNumber * postsPerPage;
 
 @end

@@ -25,6 +25,4 @@ typedef enum {
 
 @end
 
-int getPostsPerPage();
-NSString *getUsername();
 float getWidth();

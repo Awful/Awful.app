@@ -12,6 +12,8 @@
 #import "AwfulUtil.h"
 #import "AwfulThreadListActions.h"
 #import "AwfulThread.h"
+#import "AwfulUser+AwfulMethods.h"
+#import "AwfulUser.h"
 
 #define THREAD_HEIGHT 72
 
@@ -86,7 +88,8 @@
     }
     
     // Content
-    int total_pages = (([thread.totalReplies intValue]-1)/getPostsPerPage()) + 1;
+    int posts_per_page = [[[AwfulUser currentUser] postsPerPage] intValue];
+    int total_pages = (([thread.totalReplies intValue]-1)/posts_per_page) + 1;
     self.pagesLabel.text = [NSString stringWithFormat:@"Pages: %d, Killed by %@", total_pages, thread.lastPostAuthorName];
     
     NSString *unread_str = [NSString stringWithFormat:@"%@", thread.totalUnreadPosts];
