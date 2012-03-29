@@ -261,6 +261,13 @@
         NSLog(@"failed to delete data store %@", [err localizedDescription]);
         return;
     }
+    
+    NSURL *localStore = [[NSBundle mainBundle] URLForResource:@"AwfulData" withExtension:@"sqlite"];
+    [[NSFileManager defaultManager] moveItemAtURL:localStore toURL:storeURL error:&err];
+    if(err != nil) {
+        NSLog(@"failed to move data store %@", [err localizedDescription]);
+    }
+
     __persistentStoreCoordinator = nil;
     __managedObjectModel = nil;
     __managedObjectContext = nil;
