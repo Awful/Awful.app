@@ -2,7 +2,7 @@
 //  AwfulThread.m
 //  Awful
 //
-//  Created by Sean Berry on 3/28/12.
+//  Created by Sean Berry on 3/29/12.
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
@@ -12,20 +12,20 @@
 
 @implementation AwfulThread
 
-@dynamic threadID;
-@dynamic title;
-@dynamic totalUnreadPosts;
-@dynamic totalReplies;
-@dynamic threadRating;
-@dynamic starCategory;
-@dynamic threadIconImageURL;
 @dynamic authorName;
+@dynamic isBookmarked;
+@dynamic isLocked;
+@dynamic stickyIndex;
 @dynamic lastPostAuthorName;
 @dynamic lastPostDate;
 @dynamic seen;
-@dynamic isStickied;
-@dynamic isLocked;
-@dynamic isBookmarked;
+@dynamic starCategory;
+@dynamic threadIconImageURL;
+@dynamic threadID;
+@dynamic threadRating;
+@dynamic title;
+@dynamic totalReplies;
+@dynamic totalUnreadPosts;
 @dynamic forum;
 
 @end

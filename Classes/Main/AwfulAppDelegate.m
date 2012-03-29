@@ -29,6 +29,7 @@
         
     // Override point for customization after application launch.
     
+    [self resetDataStore];
     self.awfulNetworkEngine = [[AwfulNetworkEngine alloc] initWithHostName:@"forums.somethingawful.com" customHeaderFields:nil];
     
     NSManagedObjectContext *context = [self managedObjectContext];
@@ -249,6 +250,21 @@
     }    
     
     return __persistentStoreCoordinator;
+}
+
+-(void)resetDataStore
+{
+    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"AwfulData.sqlite"];
+    NSError *err = nil;
+    [[NSFileManager defaultManager] removeItemAtURL:storeURL error:&err];
+    if(err != nil) {
+        NSLog(@"failed to delete data store %@", [err localizedDescription]);
+        return;
+    }
+    __persistentStoreCoordinator = nil;
+    __managedObjectModel = nil;
+    __managedObjectContext = nil;
+    [self managedObjectContext];
 }
 
 #pragma mark - Application's Documents directory

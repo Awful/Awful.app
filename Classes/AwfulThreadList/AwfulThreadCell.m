@@ -79,7 +79,7 @@
         self.tagImage.frame = frame;
     }
     
-    if(thread.isLocked) {
+    if([thread.isLocked boolValue]) {
         self.contentView.alpha = 0.5;
     } else {
         self.contentView.alpha = 1.0;
@@ -122,7 +122,7 @@
     
     // Stickied?
     [self.sticky removeFromSuperview];
-    if(thread.isStickied) {            
+    if([[thread stickyIndex] integerValue] != NSNotFound) {            
         self.sticky.frame = CGRectMake(CGRectGetMinX(self.threadTitleLabel.frame)-16, (THREAD_HEIGHT-title_size.height)/2 - 3, 12, 12);
         [self.contentView addSubview:self.sticky];
     }
@@ -140,7 +140,7 @@
         back_color = [UIColor colorWithRed:242.0/255 green:220.0/255 blue:220.0/255 alpha:1.0];
     } else if(star == AwfulStarCategoryYellow) {
         back_color = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:220.0/255 alpha:1.0];
-    } else if(thread.seen) {
+    } else if([thread.seen boolValue]) {
         back_color = [UIColor colorWithRed:219.0/255 green:232.0/255 blue:245.0/255 alpha:1.0];
     }
     

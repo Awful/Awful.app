@@ -155,4 +155,9 @@
     }
 }
 
+- (IBAction)hitResetData:(id)sender 
+{
+    [ApplicationDelegate resetDataStore];
+}
+
 @end

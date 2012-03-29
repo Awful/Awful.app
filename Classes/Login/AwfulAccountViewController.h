@@ -11,5 +11,6 @@
 @interface AwfulAccountViewController : AwfulTableViewController <UIAlertViewDelegate>
 
 @property (strong, nonatomic) IBOutlet UILabel *usernameLabel;
+- (IBAction)hitResetData:(id)sender;
 
 @end

@@ -27,12 +27,13 @@
     
     [op onCompletion:^(MKNetworkOperation *completedOperation) {
         
-        if(pageNum == 1) {
+        if(pageNum == 1 && NO) {
             [AwfulThread removeOldThreadsForForum:forum];
+            [ApplicationDelegate saveContext];
         }
         
         NSData *responseData = [completedOperation responseData];
-        NSMutableArray *threads = [AwfulThread parseThreadsFromForumData:responseData forForum:forum];
+        NSMutableArray *threads = [AwfulThread parseThreadsWithData:responseData forForum:forum];
         [ApplicationDelegate saveContext];
         threadListResponseBlock(threads);
         
@@ -53,12 +54,14 @@
     
     [op onCompletion:^(MKNetworkOperation *completedOperation) {
         
+        threadListResponseBlock([NSMutableArray array]);
+        
         if(pageNum == 1) {
             [AwfulThread removeBookmarkedThreads];
         }
         
         NSData *responseData = [completedOperation responseData];
-        NSMutableArray *threads = [AwfulThread parseThreadsForBookmarksWithData:responseData];
+        NSMutableArray *threads = [AwfulThread parseBookmarkedThreadsWithData:responseData];
         [ApplicationDelegate saveContext];
         threadListResponseBlock(threads);
         

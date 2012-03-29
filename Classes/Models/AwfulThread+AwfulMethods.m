@@ -17,9 +17,10 @@
 +(NSArray *)threadsForForum : (AwfulForum *)forum
 {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"AwfulThread"];
-    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:YES];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"forum=%@", forum];
-    [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
+    NSSortDescriptor *stickySort = [NSSortDescriptor sortDescriptorWithKey:@"stickyIndex" ascending:YES];
+    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(forum=%@) AND (isBookmarked==NO)", forum];
+    [fetchRequest setSortDescriptors:[NSArray arrayWithObjects:stickySort, sort, nil]];
     [fetchRequest setPredicate:predicate];
     
     NSError *err = nil;
@@ -45,7 +46,7 @@
 {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"AwfulThread"];
     NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:YES];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isBookmarked=YES"];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isBookmarked==YES"];
     [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
     [fetchRequest setPredicate:predicate];
     
@@ -83,25 +84,72 @@
     return big_str;
 }
 
-+(NSMutableArray *)parseThreadsForBookmarksWithData : (NSData *)data
-{
-    NSMutableArray *existing_threads = [NSMutableArray arrayWithArray:[AwfulThread bookmarkedThreads]];
-    return [AwfulThread parseThreadsWithData:data existingThreads:existing_threads forum:nil];
-}
-
-+(NSMutableArray *)parseThreadsFromForumData : (NSData *)data forForum : (AwfulForum *)forum
-{
-    NSMutableArray *existing_threads = [NSMutableArray arrayWithArray:[AwfulThread threadsForForum:forum]];
-    return [AwfulThread parseThreadsWithData:data existingThreads:existing_threads forum:forum];
-}
-
-+(NSMutableArray *)parseThreadsWithData : (NSData *)data existingThreads : (NSMutableArray *)existing_threads forum : (AwfulForum *)forum
++(NSMutableArray *)parseBookmarkedThreadsWithData : (NSData *)data
 {
     NSString *raw_str = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
     NSData *converted = [raw_str dataUsingEncoding:NSUTF8StringEncoding];
     TFHpple *hpple = [[TFHpple alloc] initWithHTMLData:converted];
     
     NSMutableArray *threads = [[NSMutableArray alloc] init];
+    NSMutableArray *existing_threads = [NSMutableArray arrayWithArray:[AwfulThread bookmarkedThreads]];
+    
+    NSString *big_str = [AwfulThread buildThreadParseString];
+    NSArray *post_strings = PerformRawHTMLXPathQuery(hpple.data, big_str);
+    
+    for(NSString *thread_html in post_strings) {
+        
+        @autoreleasepool {
+            
+            TFHpple *thread_base = [[TFHpple alloc] initWithHTMLData:[thread_html dataUsingEncoding:NSUTF8StringEncoding]];
+            
+            TFHppleElement *tid_element = [thread_base searchForSingle:big_str];
+            NSString *tid = nil;
+            if(tid_element != nil) {
+                NSString *tid_str = [tid_element objectForKey:@"id"];
+                if(tid_str == nil) {
+                    // announcements don't have thread_ids, they get linked to announcement.php
+                    // gonna disregard announcements for now
+                    continue;
+                } else {
+                    tid = [tid_str substringFromIndex:6];
+                }
+            }
+            
+            if(tid != nil) {
+                AwfulThread *thread = nil;
+                for(AwfulThread *existing_thread in existing_threads) {
+                    if([existing_thread.threadID isEqualToString:tid]) {
+                        thread = existing_thread;
+                        break;
+                    }
+                }
+                
+                [existing_threads removeObjectsInArray:threads];
+                
+                if(thread == nil) {
+                    thread = [NSEntityDescription insertNewObjectForEntityForName:@"AwfulThread" inManagedObjectContext:ApplicationDelegate.managedObjectContext];
+                }
+                
+                [thread setThreadID:tid];
+                [thread setIsBookmarked:[NSNumber numberWithBool:YES]];
+                
+                [AwfulThread populateAwfulThread:thread fromBase:thread_base];
+                [threads addObject:thread];
+            }
+        }
+    }
+    
+    return threads;
+}
+
++(NSMutableArray *)parseThreadsWithData : (NSData *)data forForum : (AwfulForum *)forum
+{
+    NSString *raw_str = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+    NSData *converted = [raw_str dataUsingEncoding:NSUTF8StringEncoding];
+    TFHpple *hpple = [[TFHpple alloc] initWithHTMLData:converted];
+    
+    NSMutableArray *threads = [[NSMutableArray alloc] init];
+    NSMutableArray *existing_threads = [NSMutableArray arrayWithArray:[AwfulThread threadsForForum:forum]];
     
     NSString *big_str = [AwfulThread buildThreadParseString];
     NSArray *post_strings = PerformRawHTMLXPathQuery(hpple.data, big_str);
@@ -126,27 +174,29 @@
             }
             
             if(tid != nil) {
-                
-                BOOL found = NO;
+                AwfulThread *thread = nil;
                 for(AwfulThread *existing_thread in existing_threads) {
                     if([existing_thread.threadID isEqualToString:tid]) {
-                        [AwfulThread populateAwfulThread:existing_thread fromBase:thread_base];
-                        [existing_thread setForum:forum];
-                        [threads addObject:existing_thread];
-                        found = YES;
+                        thread = existing_thread;
                         break;
                     }
                 }
                 
                 [existing_threads removeObjectsInArray:threads];
                 
-                if(!found) {
-                    AwfulThread *newThread = [NSEntityDescription insertNewObjectForEntityForName:@"AwfulThread" inManagedObjectContext:ApplicationDelegate.managedObjectContext];
-                    [newThread setForum:forum];
-                    [newThread setThreadID:tid];
-                    [AwfulThread populateAwfulThread:newThread fromBase:thread_base];
-                    [threads addObject:newThread];
+                if(thread == nil) {
+                    thread = [NSEntityDescription insertNewObjectForEntityForName:@"AwfulThread" inManagedObjectContext:ApplicationDelegate.managedObjectContext];
                 }
+                
+                [thread setForum:forum];
+                [thread setThreadID:tid];
+                [thread setIsBookmarked:[NSNumber numberWithBool:NO]];
+                
+                // will override this with NSNotFound if not stickied from inside 'populateAwfulThread'
+                [thread setStickyIndex:[NSNumber numberWithInt:[threads count]]]; 
+                
+                [AwfulThread populateAwfulThread:thread fromBase:thread_base];
+                [threads addObject:thread];
             }
         }
     }
@@ -172,8 +222,8 @@
     }
     
     TFHppleElement *sticky = [thread_base searchForSingle:@"//td[@class='title title_sticky']"];
-    if(sticky != nil) {
-        thread.isStickied = [NSNumber numberWithBool:YES];
+    if(sticky == nil) {
+        [thread setStickyIndex:[NSNumber numberWithInt:NSNotFound]];
     }
     
     TFHppleElement *icon = [thread_base searchForSingle:@"//td[@class='icon']/img"];
@@ -187,6 +237,7 @@
         thread.authorName = [author content];
     }
     
+    [thread setSeen:[NSNumber numberWithBool:NO]];
     TFHppleElement *seen = [thread_base searchForSingle:seen_str];
     if(seen != nil) {
         thread.seen = [NSNumber numberWithBool:YES];

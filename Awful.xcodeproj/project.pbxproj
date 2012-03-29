@@ -91,7 +91,7 @@
 		116EF3DC1523A86C0018580D /* AwfulForum+AwfulMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = 116EF3DB1523A86C0018580D /* AwfulForum+AwfulMethods.m */; };
 		116EF3F51523E17F0018580D /* AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 116EF3F41523E17F0018580D /* AwfulForum.m */; };
 		116EF3F81523E5510018580D /* AwfulThread+AwfulMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = 116EF3F71523E5500018580D /* AwfulThread+AwfulMethods.m */; };
-		116EF3FB1523EB6F0018580D /* AwfulThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 116EF3FA1523EB6F0018580D /* AwfulThread.m */; };
+		116EF40A1524EA670018580D /* AwfulThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 116EF4091524EA670018580D /* AwfulThread.m */; };
 		1172A62414F5D9C70026CDA8 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 1172A61214F5D9C70026CDA8 /* NSData+Base64.m */; };
 		1172A62514F5D9C70026CDA8 /* NSDate+RFC1123.m in Sources */ = {isa = PBXBuildFile; fileRef = 1172A61414F5D9C70026CDA8 /* NSDate+RFC1123.m */; };
 		1172A62614F5D9C70026CDA8 /* NSDictionary+RequestEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 1172A61614F5D9C70026CDA8 /* NSDictionary+RequestEncoding.m */; };
@@ -322,8 +322,8 @@
 		116EF3F41523E17F0018580D /* AwfulForum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForum.m; sourceTree = "<group>"; };
 		116EF3F61523E5500018580D /* AwfulThread+AwfulMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AwfulThread+AwfulMethods.h"; sourceTree = "<group>"; };
 		116EF3F71523E5500018580D /* AwfulThread+AwfulMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AwfulThread+AwfulMethods.m"; sourceTree = "<group>"; };
-		116EF3F91523EB6F0018580D /* AwfulThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThread.h; sourceTree = "<group>"; };
-		116EF3FA1523EB6F0018580D /* AwfulThread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThread.m; sourceTree = "<group>"; };
+		116EF4081524EA670018580D /* AwfulThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThread.h; sourceTree = "<group>"; };
+		116EF4091524EA670018580D /* AwfulThread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThread.m; sourceTree = "<group>"; };
 		1172A61114F5D9C70026CDA8 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
 		1172A61214F5D9C70026CDA8 /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
 		1172A61314F5D9C70026CDA8 /* NSDate+RFC1123.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+RFC1123.h"; sourceTree = "<group>"; };
@@ -861,8 +861,8 @@
 				116EF3F41523E17F0018580D /* AwfulForum.m */,
 				116EF3DA1523A86C0018580D /* AwfulForum+AwfulMethods.h */,
 				116EF3DB1523A86C0018580D /* AwfulForum+AwfulMethods.m */,
-				116EF3F91523EB6F0018580D /* AwfulThread.h */,
-				116EF3FA1523EB6F0018580D /* AwfulThread.m */,
+				116EF4081524EA670018580D /* AwfulThread.h */,
+				116EF4091524EA670018580D /* AwfulThread.m */,
 				116EF3F61523E5500018580D /* AwfulThread+AwfulMethods.h */,
 				116EF3F71523E5500018580D /* AwfulThread+AwfulMethods.m */,
 				1190F72313BE4EA900B9D271 /* AwfulPageCount.h */,
@@ -1413,7 +1413,7 @@
 				116EF3DC1523A86C0018580D /* AwfulForum+AwfulMethods.m in Sources */,
 				116EF3F51523E17F0018580D /* AwfulForum.m in Sources */,
 				116EF3F81523E5510018580D /* AwfulThread+AwfulMethods.m in Sources */,
-				116EF3FB1523EB6F0018580D /* AwfulThread.m in Sources */,
+				116EF40A1524EA670018580D /* AwfulThread.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -17,9 +17,8 @@
 +(NSArray *)bookmarkedThreads;
 +(void)removeBookmarkedThreads;
 
-+(NSMutableArray *)parseThreadsFromForumData : (NSData *)data forForum : (AwfulForum *)forum;
-+(NSMutableArray *)parseThreadsForBookmarksWithData : (NSData *)data;
-+(NSMutableArray *)parseThreadsWithData : (NSData *)data existingThreads : (NSMutableArray *)existing_threads forum : (AwfulForum *)forum;
++(NSMutableArray *)parseThreadsWithData : (NSData *)data forForum : (AwfulForum *)forum;
++(NSMutableArray *)parseBookmarkedThreadsWithData : (NSData *)data;
 
 +(void)populateAwfulThread : (AwfulThread *)thread fromBase : (TFHpple *)thread_base;
 +(NSString *)buildThreadParseString;

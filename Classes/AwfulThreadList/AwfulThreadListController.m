@@ -66,7 +66,7 @@
 -(void)refresh
 {   
     [super refresh];
-    [self loadPageNum:self.pages.currentPage];
+    [self loadPageNum:1];
 }
 
 -(void)loadPageNum : (NSUInteger)pageNum

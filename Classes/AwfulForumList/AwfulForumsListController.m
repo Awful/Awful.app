@@ -278,7 +278,7 @@
     }
     
     if(!isLoggedIn()) {
-        return 1;
+        return 0;
     }
     
     AwfulForumSection *root_section = [self getForumSectionAtSection:section];
