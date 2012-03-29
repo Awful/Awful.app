@@ -86,16 +86,16 @@
 +(NSMutableArray *)parseThreadsForBookmarksWithData : (NSData *)data
 {
     NSMutableArray *existing_threads = [NSMutableArray arrayWithArray:[AwfulThread bookmarkedThreads]];
-    return [AwfulThread parseThreadsWithData:data existingThreads:existing_threads];
+    return [AwfulThread parseThreadsWithData:data existingThreads:existing_threads forum:nil];
 }
 
 +(NSMutableArray *)parseThreadsFromForumData : (NSData *)data forForum : (AwfulForum *)forum
 {
     NSMutableArray *existing_threads = [NSMutableArray arrayWithArray:[AwfulThread threadsForForum:forum]];
-    return [AwfulThread parseThreadsWithData:data existingThreads:existing_threads];
+    return [AwfulThread parseThreadsWithData:data existingThreads:existing_threads forum:forum];
 }
 
-+(NSMutableArray *)parseThreadsWithData : (NSData *)data existingThreads : (NSMutableArray *)existing_threads
++(NSMutableArray *)parseThreadsWithData : (NSData *)data existingThreads : (NSMutableArray *)existing_threads forum : (AwfulForum *)forum
 {
     NSString *raw_str = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
     NSData *converted = [raw_str dataUsingEncoding:NSUTF8StringEncoding];
@@ -131,6 +131,7 @@
                 for(AwfulThread *existing_thread in existing_threads) {
                     if([existing_thread.threadID isEqualToString:tid]) {
                         [AwfulThread populateAwfulThread:existing_thread fromBase:thread_base];
+                        [existing_thread setForum:forum];
                         [threads addObject:existing_thread];
                         found = YES;
                         break;
@@ -141,6 +142,8 @@
                 
                 if(!found) {
                     AwfulThread *newThread = [NSEntityDescription insertNewObjectForEntityForName:@"AwfulThread" inManagedObjectContext:ApplicationDelegate.managedObjectContext];
+                    [newThread setForum:forum];
+                    [newThread setThreadID:tid];
                     [AwfulThread populateAwfulThread:newThread fromBase:thread_base];
                     [threads addObject:newThread];
                 }
@@ -233,6 +236,7 @@
         }
     }
     
+    thread.threadRating = [NSNumber numberWithInteger:NSNotFound];
     TFHppleElement *rating = [thread_base searchForSingle:@"//td[@class='rating']/img"];
     if(rating != nil) {
         NSString *rating_str = [rating objectForKey:@"src"];

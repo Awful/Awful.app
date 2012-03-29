@@ -65,7 +65,7 @@
     } else {
         self.ratingImage.hidden = NO;
         if([thread.threadRating integerValue] <= 5) {
-            [self.ratingImage setImage:[UIImage imageNamed:[NSString stringWithFormat:@"rating%d.png", thread.threadRating]]];
+            [self.ratingImage setImage:[UIImage imageNamed:[NSString stringWithFormat:@"rating%@.png", thread.threadRating]]];
         } else {
             self.ratingImage.hidden = YES;
         }

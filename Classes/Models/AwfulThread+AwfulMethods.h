@@ -19,7 +19,7 @@
 
 +(NSMutableArray *)parseThreadsFromForumData : (NSData *)data forForum : (AwfulForum *)forum;
 +(NSMutableArray *)parseThreadsForBookmarksWithData : (NSData *)data;
-+(NSMutableArray *)parseThreadsWithData : (NSData *)data existingThreads : (NSMutableArray *)existing_threads;
++(NSMutableArray *)parseThreadsWithData : (NSData *)data existingThreads : (NSMutableArray *)existing_threads forum : (AwfulForum *)forum;
 
 +(void)populateAwfulThread : (AwfulThread *)thread fromBase : (TFHpple *)thread_base;
 +(NSString *)buildThreadParseString;

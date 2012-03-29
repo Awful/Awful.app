@@ -63,12 +63,6 @@
     }
 }
 
--(void)loadThreads
-{
-    NSArray *threads = [AwfulThread threadsForForum:self.forum];
-    [self acceptThreads:[NSMutableArray arrayWithArray:threads]];
-}
-
 -(void)refresh
 {   
     [super refresh];
@@ -108,6 +102,12 @@
     self.tableView.backgroundColor = [UIColor colorWithRed:offwhite green:offwhite blue:offwhite alpha:1.0];
     [self.tableView reloadData];
     self.view.userInteractionEnabled = YES;
+}
+
+-(void)loadThreads
+{
+    NSArray *threads = [AwfulThread threadsForForum:self.forum];
+    [self acceptThreads:[NSMutableArray arrayWithArray:threads]];
 }
 
 #pragma mark -
