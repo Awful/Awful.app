@@ -8,13 +8,16 @@
 
 #import "AwfulForum.h"
 #import "AwfulForum.h"
+#import "AwfulThread.h"
 
 
 @implementation AwfulForum
 
 @dynamic forumID;
-@dynamic name;
 @dynamic index;
+@dynamic name;
+@dynamic children;
 @dynamic parentForum;
+@dynamic threads;
 
 @end

@@ -60,11 +60,11 @@
         self.tagImage.hidden = YES;
     }
     
-    if(thread.threadRating == NSNotFound) {
+    if([thread.threadRating integerValue] == NSNotFound) {
         self.ratingImage.hidden = YES;
     } else {
         self.ratingImage.hidden = NO;
-        if(thread.threadRating <= 5) {
+        if([thread.threadRating integerValue] <= 5) {
             [self.ratingImage setImage:[UIImage imageNamed:[NSString stringWithFormat:@"rating%d.png", thread.threadRating]]];
         } else {
             self.ratingImage.hidden = YES;
@@ -86,10 +86,10 @@
     }
     
     // Content
-    int total_pages = ((thread.totalReplies-1)/getPostsPerPage()) + 1;
+    int total_pages = (([thread.totalReplies intValue]-1)/getPostsPerPage()) + 1;
     self.pagesLabel.text = [NSString stringWithFormat:@"Pages: %d, Killed by %@", total_pages, thread.lastPostAuthorName];
     
-    NSString *unread_str = [NSString stringWithFormat:@"%d", thread.totalUnreadPosts];
+    NSString *unread_str = [NSString stringWithFormat:@"%@", thread.totalUnreadPosts];
     [self.unreadButton setTitle:unread_str forState:UIControlStateNormal];
     
     self.threadTitleLabel.text = thread.title;
@@ -100,10 +100,10 @@
     float goal_width = self.frame.size.width-130;
     float title_xpos = 60;
     
-    if(thread.totalUnreadPosts == -1) {
+    if([thread.totalUnreadPosts intValue] == -1) {
         self.unreadButton.hidden = YES;
         goal_width += 60;
-    } else if(thread.totalUnreadPosts == 0) {
+    } else if([thread.totalUnreadPosts intValue] == 0) {
         [self.unreadButton setTitle:@"0" forState:UIControlStateNormal];
         self.unreadButton.alpha = 0.5;
     }
@@ -133,11 +133,12 @@
     float offwhite = 241.0/255;
     UIColor *back_color = [UIColor colorWithRed:offwhite green:offwhite blue:offwhite alpha:1.0];
     
-    if(thread.starCategory == AwfulStarCategoryBlue) {
+    AwfulStarCategory star = [thread.starCategory intValue];
+    if(star == AwfulStarCategoryBlue) {
         back_color = [UIColor colorWithRed:219.0/255 green:232.0/255 blue:245.0/255 alpha:1.0];
-    } else if(thread.starCategory == AwfulStarCategoryRed) {
+    } else if(star == AwfulStarCategoryRed) {
         back_color = [UIColor colorWithRed:242.0/255 green:220.0/255 blue:220.0/255 alpha:1.0];
-    } else if(thread.starCategory == AwfulStarCategoryYellow) {
+    } else if(star == AwfulStarCategoryYellow) {
         back_color = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:220.0/255 alpha:1.0];
     } else if(thread.seen) {
         back_color = [UIColor colorWithRed:219.0/255 green:232.0/255 blue:245.0/255 alpha:1.0];

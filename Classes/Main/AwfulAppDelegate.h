@@ -26,6 +26,9 @@
 -(void)initializeiCloudAccess;
 -(void)iCloudKeyChanged : (NSNotification *)aNotification;
 
+- (void)saveContext;
+- (NSURL *)applicationDocumentsDirectory;
+
 @end
 
 BOOL isLandscape();

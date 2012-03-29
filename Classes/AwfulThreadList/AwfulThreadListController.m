@@ -8,6 +8,7 @@
 
 #import "AwfulThreadListController.h"
 #import "AwfulThread.h"
+#import "AwfulThread+AwfulMethods.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulPage.h"
 #import "AwfulPageCount.h"
@@ -62,9 +63,14 @@
     }
 }
 
+-(void)loadThreads
+{
+    NSArray *threads = [AwfulThread threadsForForum:self.forum];
+    [self acceptThreads:[NSMutableArray arrayWithArray:threads]];
+}
+
 -(void)refresh
 {   
-    self.pages.currentPage = 1;
     [super refresh];
     [self loadPageNum:self.pages.currentPage];
 }
@@ -118,7 +124,8 @@
     self.navigationItem.backBarButtonItem = back;
     
     self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
-        
+    
+    [self loadThreads];
     if([self.awfulThreads count] == 0) {
         [self refresh];
     }

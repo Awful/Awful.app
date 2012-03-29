@@ -12,7 +12,7 @@
 
 @implementation AwfulForum (AwfulMethods)
 
-+(AwfulForum *)getForumWithID : (NSString *)forumID fromCurrentList : (NSMutableArray *)currentList
++(AwfulForum *)getForumWithID : (NSString *)forumID fromCurrentList : (NSArray *)currentList
 {
     for(AwfulForum *existing in currentList) {
         if([existing.forumID isEqualToString:forumID]) {
@@ -25,7 +25,7 @@
     return newForum;
 }
 
-+(NSArray *)parseForums : (NSData *)data
++(NSMutableArray *)parseForums : (NSData *)data
 {
     TFHpple *page_data = [[TFHpple alloc] initWithHTMLData:data];
     NSArray *forum_elements = [page_data search:@"//select[@name='forumid']/option"];
@@ -64,12 +64,10 @@
             }
             NSString *actual_forum_name = [forum_name substringFromIndex:substring_index];
             
-            //AwfulForum *forum = [AwfulParse getForumWithID:<#(NSString *)#> fromCurrentList:<#(NSMutableArray *)#>
+            AwfulForum *forum = [AwfulForum getForumWithID:forum_id fromCurrentList:existing_forums];
                                  
-             AwfulForum *forum = [[AwfulForum alloc] init];
-             [forum setName:actual_forum_name];
-             [forum setForumID:forum_id];
-             [forum setIndex:[NSNumber numberWithInt:index]];
+            [forum setName:actual_forum_name];
+            [forum setIndex:[NSNumber numberWithInt:index]];
              
              if(num_dashes > last_dashes_count && [forums count] > 0) {
                  [parents addObject:[forums lastObject]];
@@ -83,6 +81,7 @@
              if([parents count] > 0) {
                  AwfulForum *parent = [parents lastObject];
                  [forum setParentForum:parent];
+                 //[forum setParentForum:parent];
              }
              
              last_dashes_count = num_dashes;
@@ -91,6 +90,8 @@
              index++;
         }
     }
+    [ApplicationDelegate saveContext];
+    return forums;
 }
 
 @end

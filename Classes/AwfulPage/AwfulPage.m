@@ -73,7 +73,7 @@
             //NSLog(@"title width %f", self.navigationItem.titleView.frame.size.width);
         }
         
-        if(_thread.totalUnreadPosts == -1) {
+        if([_thread.totalUnreadPosts intValue] == -1) {
             self.destinationType = AwfulPageDestinationTypeFirst;
         } else if(_thread.totalUnreadPosts == 0) {
             self.destinationType = AwfulPageDestinationTypeLast;

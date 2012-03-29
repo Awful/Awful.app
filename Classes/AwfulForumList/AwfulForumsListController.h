@@ -31,20 +31,15 @@
 @property (nonatomic, strong) NSMutableArray *favorites;
 @property (nonatomic, strong) NSMutableArray *forums;
 @property (nonatomic, strong) NSMutableArray *forumSections;
-@property (nonatomic, strong) IBOutlet AwfulForumCell *forumCell;
 @property (nonatomic, strong) IBOutlet AwfulForumHeader *headerView;
-@property (nonatomic, strong) IBOutlet UITableViewCell *refreshCell;
 
 -(void)loadFavorites;
 -(void)saveFavorites;
 -(BOOL)isAwfulForumSectionFavorited : (AwfulForumSection *)section;
 -(void)toggleFavoriteForForumSection : (AwfulForumSection *)section;
 
--(void)hitDone;
-
--(IBAction)grabFreshList;
--(void)saveForums;
 -(void)loadForums;
+-(void)hitDone;
 -(void)toggleExpandForForumSection : (AwfulForumSection *)section;
 
 -(void)addForumToSectionTree : (AwfulForum *)forum;

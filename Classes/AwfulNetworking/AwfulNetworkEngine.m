@@ -12,6 +12,7 @@
 #import "TFHpple.h"
 #import "AwfulParse.h"
 #import "AwfulThread.h"
+#import "AwfulThread+AwfulMethods.h"
 #import "AwfulPage.h"
 #import "AwfulPageDataController.h"
 #import "AwfulUser.h"
@@ -26,8 +27,13 @@
     
     [op onCompletion:^(MKNetworkOperation *completedOperation) {
         
+        if(pageNum == 1) {
+            [AwfulThread removeOldThreadsForForum:forum];
+        }
+        
         NSData *responseData = [completedOperation responseData];
-        NSMutableArray *threads = [AwfulParse parseThreadsFromForumData:responseData];
+        NSMutableArray *threads = [AwfulThread parseThreadsFromForumData:responseData forForum:forum];
+        [ApplicationDelegate saveContext];
         threadListResponseBlock(threads);
         
     } onError:^(NSError *error) {
@@ -47,8 +53,13 @@
     
     [op onCompletion:^(MKNetworkOperation *completedOperation) {
         
+        if(pageNum == 1) {
+            [AwfulThread removeBookmarkedThreads];
+        }
+        
         NSData *responseData = [completedOperation responseData];
-        NSMutableArray *threads = [AwfulParse parseThreadsFromForumData:responseData];
+        NSMutableArray *threads = [AwfulThread parseThreadsForBookmarksWithData:responseData];
+        [ApplicationDelegate saveContext];
         threadListResponseBlock(threads);
         
     } onError:^(NSError *error) {

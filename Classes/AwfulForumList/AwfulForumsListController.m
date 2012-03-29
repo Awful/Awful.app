@@ -8,6 +8,7 @@
 
 #import "AwfulForumsListController.h"
 #import "AwfulForum.h"
+#import "AwfulForum+AwfulMethods.h"
 #import "AwfulThreadListController.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulUtil.h"
@@ -23,7 +24,11 @@
 
 @implementation AwfulForumSection
 
-@synthesize forum, children, expanded, rowIndex, totalAncestors;
+@synthesize forum = _forum;
+@synthesize children = _children;
+@synthesize expanded = _expanded;
+@synthesize rowIndex = _rowIndex;
+@synthesize totalAncestors = _totalAncestors;
 
 -(id)init
 {
@@ -51,14 +56,11 @@
 #pragma mark -
 #pragma mark Initialization
 
-@synthesize favorites, forums, forumSections;
-@synthesize forumCell, headerView, refreshCell;
+@synthesize favorites = _favorites;
+@synthesize forums = _forums;
+@synthesize forumSections = _forumSections;
+@synthesize headerView = _headerView;
 
-/*
--(id)initWithCoder:(NSCoder *)aDecoder
-{
-    return [self init];
-}*/
 
 #pragma mark -
 #pragma mark View lifecycle
@@ -93,7 +95,20 @@
     }
         
     self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
-    //self.tableView.backgroundColor = [UIColor colorWithRed:0 green:0.4 blue:0.6 alpha:1.0];
+}
+
+-(void)loadForums
+{
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"AwfulForum"];
+    NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES];
+    [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
+    
+    NSError *err = nil;
+    NSArray *forums = [ApplicationDelegate.managedObjectContext executeFetchRequest:fetchRequest error:&err];
+    if(err != nil) {
+        NSLog(@"failed to load forums %@", [err localizedDescription]);
+    }
+    self.forums = [NSMutableArray arrayWithArray:forums];
 }
 
 -(void)hitDone
@@ -140,29 +155,8 @@
     [self.networkOperation cancel];
     self.networkOperation = [ApplicationDelegate.awfulNetworkEngine forumsListOnCompletion:^(NSMutableArray *forums) {
         
-        // create the fetch request to get all Employees matching the IDs
-        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-        [fetchRequest setEntity:[NSEntityDescription entityForName:@"AwfulForum" inManagedObjectContext:ApplicationDelegate.managedObjectContext]];
-        
-        NSError *error = nil;
-        NSArray *existing_forums = [ApplicationDelegate.managedObjectContext executeFetchRequest:fetchRequest error:&error];
-        
-        for(AwfulForum *newForum in forums) {
-            AwfulForum *found = nil;
-            for(AwfulForum *existing in existing_forums) {
-                if([existing.forumID isEqualToString:newForum.forumID]) {
-                    found = existing;
-                    break;
-                }
-            }
-            
-            if(found != nil) {
-                // update
-                [found setName:newForum.name];
-            } else {
-                // insert
-            }
-        }
+        self.forums = forums;
+        [self finishedRefreshing];
         
     } onError:^(NSError *error) {
         [self finishedRefreshing];
@@ -472,50 +466,18 @@
     loadRequestAndWait(req);*/
 }
 
--(void)setForums:(NSMutableArray *)in_forums
+-(void)setForums:(NSMutableArray *)forums
 {
-    forums = in_forums;
-    self.forumSections = nil;
-    self.forumSections = [[NSMutableArray alloc] init];
-    for(AwfulForum *forum in self.forums) {
-        [self addForumToSectionTree:forum];
-    }
-    [self saveForums];
-    
-    [self.tableView reloadData];
-}
-
--(void)loadForums
-{
-    NSString *path = [[AwfulUtil getDocsDir] stringByAppendingPathComponent:@"forumslist"];
-    if([[NSFileManager defaultManager] fileExistsAtPath:path]) {
-        NSMutableArray *data = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
-        if([data count] == 0) {
-            [self grabFreshList];
-        } else {
-            self.forums = data;
+    if(forums != _forums) {
+        _forums = forums;
+        
+        self.forumSections = nil;
+        self.forumSections = [[NSMutableArray alloc] init];
+        for(AwfulForum *forum in self.forums) {
+            [self addForumToSectionTree:forum];
         }
-    } else {
-        NSString *bundle_path = [[NSBundle mainBundle] pathForResource:@"forumslist" ofType:@""];
-        BOOL success = [[NSFileManager defaultManager] copyItemAtPath:bundle_path toPath:path error:nil];
-        if(success) {
-            [self loadForums];
-        } else {
-            [self grabFreshList];
-        }
-    }
-}
-
--(void)saveForums
-{
-    if(self.forums == nil || [self.forums count] == 0) {
-        return;
-    }
-    
-    NSString *path = [[AwfulUtil getDocsDir] stringByAppendingPathComponent:@"forumslist"];
-    BOOL success = [NSKeyedArchiver archiveRootObject:self.forums toFile:path];
-    if(!success) {
-        NSLog(@"failed to save forums");
+        
+        [self.tableView reloadData];
     }
 }
 
@@ -527,11 +489,11 @@
     AwfulForumSection *section = [[AwfulForumSection alloc] init];
     section.forum = forum;
 
-    if(forum.parentForumID == nil) {
+    if(forum.parentForum == nil) {
         [section setExpanded:YES];
         [self.forumSections addObject:section];
     } else {
-        AwfulForumSection *parent_section = [self getForumSectionFromID:forum.parentForumID];
+        AwfulForumSection *parent_section = [self getForumSectionFromID:forum.parentForum.forumID];
         if(parent_section.rowIndex != NSNotFound) {
             [section setRowIndex:parent_section.rowIndex + [parent_section.children count]];
         } else {
@@ -542,7 +504,7 @@
         int ancestors_count = 0;
         while(parent_section != nil) {
             ancestors_count++;
-            parent_section = [self getForumSectionFromID:parent_section.forum.parentForumID];
+            parent_section = [self getForumSectionFromID:parent_section.forum.parentForum.forumID];
         }
         [section setTotalAncestors:ancestors_count];
     }
@@ -586,9 +548,19 @@
     
     if(!isLoggedIn()) {
         if(path.section == 1) {
-            AwfulForum *goldmine = [[AwfulForum alloc] init];
-            goldmine.forumID = @"21";
-            goldmine.name = @"Comedy Goldmine";
+            NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"AwfulForum"];
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"forumID=21"];
+            [fetchRequest setPredicate:predicate];
+            NSError *err = nil;
+            NSArray *results = [ApplicationDelegate.managedObjectContext executeFetchRequest:fetchRequest error:&err];
+
+            if(err != nil) {
+                NSLog(@"failed to find goldmine %@", [err localizedDescription]);
+                return nil;
+            }
+            
+            AwfulForum *goldmine = [AwfulForum getForumWithID:@"21" fromCurrentList:results];
+            [goldmine setName:@"Comedy Goldmine"];
             AwfulForumSection *goldmine_section = [[AwfulForumSection alloc] init];
             goldmine_section.forum = goldmine;
             return goldmine_section;
@@ -620,7 +592,7 @@
 
 -(NSIndexPath *)getIndexPathForSection : (AwfulForumSection *)section
 {
-    if(section.forum.parentForumID == nil) {
+    if(section.forum.parentForum == nil) {
         return [NSIndexPath indexPathForRow:NSNotFound inSection:NSNotFound];
     }
     
@@ -668,10 +640,10 @@
 
 -(AwfulForumSection *)getRootSectionForSection : (AwfulForumSection *)section
 {
-    if(section.forum.parentForumID == nil) {
+    if(section.forum.parentForum == nil) {
         return section;
     }
-    return [self getRootSectionForSection:[self getForumSectionFromID:section.forum.parentForumID]];
+    return [self getRootSectionForSection:[self getForumSectionFromID:section.forum.parentForum.forumID]];
 }
 
 @end

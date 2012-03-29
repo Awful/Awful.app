@@ -173,9 +173,9 @@
         
         if(thread.threadID != nil) {
             AwfulPageDestinationType start = AwfulPageDestinationTypeNewpost;
-            if(thread.totalUnreadPosts == -1) {
+            if([thread.totalUnreadPosts intValue] == -1) {
                 start = AwfulPageDestinationTypeFirst;
-            } else if(thread.totalUnreadPosts == 0) {
+            } else if([thread.totalUnreadPosts intValue] == 0) {
                 start = AwfulPageDestinationTypeLast;
                 // if the last page is full, it won't work if you go for &goto=newpost
                 // therefore I'm setting it to last page here

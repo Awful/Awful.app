@@ -77,8 +77,21 @@
     }
     
     if(last_forum_id != nil) {
-        AwfulForum *forum = [AwfulForum awfulForumFromID:last_forum_id];
-        return forum;
+        
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"AwfulForum"];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"forumID=%@", last_forum_id];
+        [fetchRequest setPredicate:predicate];
+        
+        NSError *err = nil;
+        NSArray *results = [ApplicationDelegate.managedObjectContext executeFetchRequest:fetchRequest error:&err];
+        if(err != nil) {
+            NSLog(@"couldn't fetch forum from forumid %@", [err localizedDescription]);
+            return nil;
+        }
+        
+        if([results count] == 1) {
+            return [results lastObject];
+        }
     }
     return nil;
 }

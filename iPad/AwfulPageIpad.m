@@ -73,7 +73,7 @@
                                                                     action:@selector(bookmarkThread:)];
         
         UIImage *ratingImage;
-        if (self.thread.threadRating < 6)
+        if ([self.thread.threadRating intValue] < 6)
             ratingImage = [UIImage imageNamed:[NSString stringWithFormat:@"%dstars.gif", self.thread.threadRating]];
         else
             ratingImage = [UIImage imageNamed:@"0stars.gif"];
