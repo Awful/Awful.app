@@ -232,6 +232,12 @@
         thread.threadIconImageURL = [NSURL URLWithString:icon_str];
     }
     
+    TFHppleElement *icon2 = [thread_base searchForSingle:@"//td[@class='icon2']/img"];
+    if(icon2 != nil) {
+        NSString *icon2_str = [icon2 objectForKey:@"src"];
+        thread.threadIconImageURL2 = [NSURL URLWithString:icon2_str];
+    }
+    
     TFHppleElement *author = [thread_base searchForSingle:@"//td[@class='author']/a"];
     if(author != nil) {
         thread.authorName = [author content];
@@ -326,6 +332,29 @@
             thread.lastPostDate = myDate;
         }
     }
+}
+
+-(NSURL *)firstIconURL
+{
+    if(self.threadIconImageURL == nil) {
+        return nil;
+    }
+    
+    NSString *minus_extension = [[self.threadIconImageURL lastPathComponent] stringByDeletingPathExtension];
+    NSURL *tag_url = [[NSBundle mainBundle] URLForResource:minus_extension withExtension:@"png"];
+    return tag_url;
+}
+
+-(NSURL *)secondIconURL
+{
+    if(self.threadIconImageURL2 == nil) {
+        return nil;
+    }
+    
+    NSString *minus_extension = [[self.threadIconImageURL2 lastPathComponent] stringByDeletingPathExtension];
+    NSURL *tag_url = [[NSBundle mainBundle] URLForResource:minus_extension withExtension:@"png"];
+    NSLog(@"tag url %@", tag_url);
+    return tag_url;
 }
 
 @end

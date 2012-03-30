@@ -19,6 +19,7 @@
 @property (nonatomic, strong) IBOutlet UIButton *unreadButton;
 @property (nonatomic, strong) IBOutlet UIImageView *sticky;
 @property (nonatomic, strong) IBOutlet UIImageView *tagImage;
+@property (nonatomic, strong) IBOutlet UIImageView *secondTagImage;
 @property (nonatomic, strong) IBOutlet UIImageView *ratingImage;
 
 -(void)configureForThread : (AwfulThread *)thread;

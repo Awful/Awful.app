@@ -90,10 +90,16 @@
 		116EF3DC1523A86C0018580D /* AwfulForum+AwfulMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = 116EF3DB1523A86C0018580D /* AwfulForum+AwfulMethods.m */; };
 		116EF3F51523E17F0018580D /* AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 116EF3F41523E17F0018580D /* AwfulForum.m */; };
 		116EF3F81523E5510018580D /* AwfulThread+AwfulMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = 116EF3F71523E5500018580D /* AwfulThread+AwfulMethods.m */; };
-		116EF40A1524EA670018580D /* AwfulThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 116EF4091524EA670018580D /* AwfulThread.m */; };
 		116EF41915251C5D0018580D /* AwfulUser+AwfulMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = 116EF41815251C5D0018580D /* AwfulUser+AwfulMethods.m */; };
 		116EF41C15251CDB0018580D /* AwfulUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 116EF41B15251CDB0018580D /* AwfulUser.m */; };
 		116EF41E1525210C0018580D /* AwfulData.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 116EF41D1525210C0018580D /* AwfulData.sqlite */; };
+		116EF42D1526588C0018580D /* AwfulThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 116EF42C1526588C0018580D /* AwfulThread.m */; };
+		116EF44015265D390018580D /* ama.png in Resources */ = {isa = PBXBuildFile; fileRef = 116EF43A15265D390018580D /* ama.png */; };
+		116EF44115265D390018580D /* icon-37-selling.png in Resources */ = {isa = PBXBuildFile; fileRef = 116EF43B15265D390018580D /* icon-37-selling.png */; };
+		116EF44215265D390018580D /* icon-38-buying.png in Resources */ = {isa = PBXBuildFile; fileRef = 116EF43C15265D390018580D /* icon-38-buying.png */; };
+		116EF44315265D390018580D /* icon-46-trading.png in Resources */ = {isa = PBXBuildFile; fileRef = 116EF43D15265D390018580D /* icon-46-trading.png */; };
+		116EF44415265D390018580D /* icon-52-trading.png in Resources */ = {isa = PBXBuildFile; fileRef = 116EF43E15265D390018580D /* icon-52-trading.png */; };
+		116EF44515265D390018580D /* tma.png in Resources */ = {isa = PBXBuildFile; fileRef = 116EF43F15265D390018580D /* tma.png */; };
 		1172A62414F5D9C70026CDA8 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 1172A61214F5D9C70026CDA8 /* NSData+Base64.m */; };
 		1172A62514F5D9C70026CDA8 /* NSDate+RFC1123.m in Sources */ = {isa = PBXBuildFile; fileRef = 1172A61414F5D9C70026CDA8 /* NSDate+RFC1123.m */; };
 		1172A62614F5D9C70026CDA8 /* NSDictionary+RequestEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 1172A61614F5D9C70026CDA8 /* NSDictionary+RequestEncoding.m */; };
@@ -322,13 +328,19 @@
 		116EF3F41523E17F0018580D /* AwfulForum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForum.m; sourceTree = "<group>"; };
 		116EF3F61523E5500018580D /* AwfulThread+AwfulMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AwfulThread+AwfulMethods.h"; sourceTree = "<group>"; };
 		116EF3F71523E5500018580D /* AwfulThread+AwfulMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AwfulThread+AwfulMethods.m"; sourceTree = "<group>"; };
-		116EF4081524EA670018580D /* AwfulThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThread.h; sourceTree = "<group>"; };
-		116EF4091524EA670018580D /* AwfulThread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThread.m; sourceTree = "<group>"; };
 		116EF41715251C5D0018580D /* AwfulUser+AwfulMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AwfulUser+AwfulMethods.h"; sourceTree = "<group>"; };
 		116EF41815251C5D0018580D /* AwfulUser+AwfulMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AwfulUser+AwfulMethods.m"; sourceTree = "<group>"; };
 		116EF41A15251CDB0018580D /* AwfulUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulUser.h; sourceTree = "<group>"; };
 		116EF41B15251CDB0018580D /* AwfulUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulUser.m; sourceTree = "<group>"; };
 		116EF41D1525210C0018580D /* AwfulData.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = AwfulData.sqlite; sourceTree = SOURCE_ROOT; };
+		116EF42B1526588C0018580D /* AwfulThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThread.h; sourceTree = "<group>"; };
+		116EF42C1526588C0018580D /* AwfulThread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThread.m; sourceTree = "<group>"; };
+		116EF43A15265D390018580D /* ama.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ama.png; sourceTree = "<group>"; };
+		116EF43B15265D390018580D /* icon-37-selling.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-37-selling.png"; sourceTree = "<group>"; };
+		116EF43C15265D390018580D /* icon-38-buying.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-38-buying.png"; sourceTree = "<group>"; };
+		116EF43D15265D390018580D /* icon-46-trading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-46-trading.png"; sourceTree = "<group>"; };
+		116EF43E15265D390018580D /* icon-52-trading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-52-trading.png"; sourceTree = "<group>"; };
+		116EF43F15265D390018580D /* tma.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tma.png; sourceTree = "<group>"; };
 		1172A61114F5D9C70026CDA8 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
 		1172A61214F5D9C70026CDA8 /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
 		1172A61314F5D9C70026CDA8 /* NSDate+RFC1123.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+RFC1123.h"; sourceTree = "<group>"; };
@@ -651,6 +663,12 @@
 		112ECF0F14D7100A007EE7B6 /* threadtags */ = {
 			isa = PBXGroup;
 			children = (
+				116EF43A15265D390018580D /* ama.png */,
+				116EF43B15265D390018580D /* icon-37-selling.png */,
+				116EF43C15265D390018580D /* icon-38-buying.png */,
+				116EF43D15265D390018580D /* icon-46-trading.png */,
+				116EF43E15265D390018580D /* icon-52-trading.png */,
+				116EF43F15265D390018580D /* tma.png */,
 				11D7CB8D14EA0867000DA96A /* icon23-banme.png */,
 				11D7CB8E14EA0867000DA96A /* link.png */,
 				11D7CB8F14EA0867000DA96A /* photoshop.png */,
@@ -865,8 +883,8 @@
 				116EF3F41523E17F0018580D /* AwfulForum.m */,
 				116EF3DA1523A86C0018580D /* AwfulForum+AwfulMethods.h */,
 				116EF3DB1523A86C0018580D /* AwfulForum+AwfulMethods.m */,
-				116EF4081524EA670018580D /* AwfulThread.h */,
-				116EF4091524EA670018580D /* AwfulThread.m */,
+				116EF42B1526588C0018580D /* AwfulThread.h */,
+				116EF42C1526588C0018580D /* AwfulThread.m */,
 				116EF3F61523E5500018580D /* AwfulThread+AwfulMethods.h */,
 				116EF3F71523E5500018580D /* AwfulThread+AwfulMethods.m */,
 				1190F72313BE4EA900B9D271 /* AwfulPageCount.h */,
@@ -1333,6 +1351,12 @@
 				11CED26715228E5300E95EE1 /* action.png in Resources */,
 				11CED26815228E5300E95EE1 /* action@2x.png in Resources */,
 				116EF41E1525210C0018580D /* AwfulData.sqlite in Resources */,
+				116EF44015265D390018580D /* ama.png in Resources */,
+				116EF44115265D390018580D /* icon-37-selling.png in Resources */,
+				116EF44215265D390018580D /* icon-38-buying.png in Resources */,
+				116EF44315265D390018580D /* icon-46-trading.png in Resources */,
+				116EF44415265D390018580D /* icon-52-trading.png in Resources */,
+				116EF44515265D390018580D /* tma.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1417,9 +1441,9 @@
 				116EF3DC1523A86C0018580D /* AwfulForum+AwfulMethods.m in Sources */,
 				116EF3F51523E17F0018580D /* AwfulForum.m in Sources */,
 				116EF3F81523E5510018580D /* AwfulThread+AwfulMethods.m in Sources */,
-				116EF40A1524EA670018580D /* AwfulThread.m in Sources */,
 				116EF41915251C5D0018580D /* AwfulUser+AwfulMethods.m in Sources */,
 				116EF41C15251CDB0018580D /* AwfulUser.m in Sources */,
+				116EF42D1526588C0018580D /* AwfulThread.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

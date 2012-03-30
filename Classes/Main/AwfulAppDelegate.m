@@ -21,6 +21,7 @@
 @synthesize managedObjectContext = __managedObjectContext;
 @synthesize managedObjectModel = __managedObjectModel;
 @synthesize persistentStoreCoordinator = __persistentStoreCoordinator;
+@synthesize dataStoreReset = _dataStoreReset;
 
 #pragma mark -
 #pragma mark Application lifecycle
@@ -29,7 +30,6 @@
         
     // Override point for customization after application launch.
     
-    [self resetDataStore];
     self.awfulNetworkEngine = [[AwfulNetworkEngine alloc] initWithHostName:@"forums.somethingawful.com" customHeaderFields:nil];
     
     NSManagedObjectContext *context = [self managedObjectContext];
@@ -184,6 +184,9 @@
 // If the context doesn't already exist, it is created and bound to the persistent store coordinator for the application.
 - (NSManagedObjectContext *)managedObjectContext
 {
+    if(!self.dataStoreReset) {
+        [self resetDataStore];
+    }
     if (__managedObjectContext != nil) {
         return __managedObjectContext;
     }
@@ -259,9 +262,9 @@
     [[NSFileManager defaultManager] removeItemAtURL:storeURL error:&err];
     if(err != nil) {
         NSLog(@"failed to delete data store %@", [err localizedDescription]);
-        return;
     }
     
+    self.dataStoreReset = YES;
     [self copyDefaultDataStoreToDocuments];
 
     __persistentStoreCoordinator = nil;

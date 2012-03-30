@@ -12,6 +12,7 @@
 #import "AwfulUtil.h"
 #import "AwfulThreadListActions.h"
 #import "AwfulThread.h"
+#import "AwfulThread+AwfulMethods.h"
 #import "AwfulUser+AwfulMethods.h"
 #import "AwfulUser.h"
 
@@ -25,6 +26,7 @@
 @synthesize unreadButton = _unreadButton;
 @synthesize sticky = _sticky;
 @synthesize tagImage = _tagImage;
+@synthesize secondTagImage = _secondTagImage;
 @synthesize ratingImage = _ratingImage;
 
 -(id)initWithCoder:(NSCoder *)aDecoder
@@ -51,8 +53,7 @@
     self.thread = thread;
     self.contentView.backgroundColor = [self getBackgroundColorForThread:thread];
     
-    NSString *minus_extension = [[self.thread.threadIconImageURL lastPathComponent] stringByDeletingPathExtension];
-    NSURL *tag_url = [[NSBundle mainBundle] URLForResource:minus_extension withExtension:@"png"];
+    NSURL *tag_url = [self.thread firstIconURL];
     if(tag_url != nil) {
         self.tagImage.hidden = NO;
         [self.tagImage setImage:[UIImage imageNamed:[tag_url lastPathComponent]]];
@@ -60,6 +61,15 @@
         [self.tagImage.layer setBorderWidth:1.0];
     } else {
         self.tagImage.hidden = YES;
+    }
+    
+    self.secondTagImage.hidden = YES;
+    if(self.tagImage.hidden == NO) {
+        NSURL *second_url = [self.thread secondIconURL];
+        if(second_url != nil) {
+            self.secondTagImage.hidden = NO;
+            [self.secondTagImage setImage:[UIImage imageNamed:[second_url lastPathComponent]]];
+        }
     }
     
     if([thread.threadRating integerValue] == NSNotFound) {

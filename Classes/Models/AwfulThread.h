@@ -2,7 +2,7 @@
 //  AwfulThread.h
 //  Awful
 //
-//  Created by Sean Berry on 3/29/12.
+//  Created by Sean Berry on 3/30/12.
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
@@ -16,12 +16,13 @@
 @property (nonatomic, retain) NSString * authorName;
 @property (nonatomic, retain) NSNumber * isBookmarked;
 @property (nonatomic, retain) NSNumber * isLocked;
-@property (nonatomic, retain) NSNumber * stickyIndex;
 @property (nonatomic, retain) NSString * lastPostAuthorName;
 @property (nonatomic, retain) NSDate * lastPostDate;
 @property (nonatomic, retain) NSNumber * seen;
 @property (nonatomic, retain) NSNumber * starCategory;
-@property (nonatomic, retain) id threadIconImageURL;
+@property (nonatomic, retain) NSNumber * stickyIndex;
+@property (nonatomic, retain) NSURL * threadIconImageURL;
+@property (nonatomic, retain) NSURL * threadIconImageURL2;
 @property (nonatomic, retain) NSString * threadID;
 @property (nonatomic, retain) NSNumber * threadRating;
 @property (nonatomic, retain) NSString * title;
