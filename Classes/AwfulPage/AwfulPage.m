@@ -465,6 +465,7 @@
     
     if(self.specificPageController != nil && !self.specificPageController.hiding) {
         
+        [self.pagesBarButtonItem setTintColor:[UIColor darkGrayColor]];
         self.specificPageController.hiding = YES;
         [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^(void) {
             sp_view.frame = CGRectOffset(sp_view.frame, 0, sp_view.frame.size.height);
@@ -475,6 +476,7 @@
         
     } else if(self.specificPageController == nil) {
         
+        [self.pagesBarButtonItem setTintColor:[UIColor blackColor]];
         self.specificPageController = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil] instantiateViewControllerWithIdentifier:@"AwfulSpecificPageController"];
         self.specificPageController.page = self;
         [self.specificPageController loadView];

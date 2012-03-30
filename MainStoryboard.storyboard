@@ -175,7 +175,7 @@
                                             <rect key="frame" x="5" y="5" width="45" height="45"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         </imageView>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="ask.png" id="X4V-9Y-bSW">
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="ama.png" id="X4V-9Y-bSW">
                                             <rect key="frame" x="5" y="5" width="22" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         </imageView>
@@ -311,7 +311,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <segments>
                                     <segment title="" image="action.png"/>
-                                    <segment title="" image="reply.png"/>
+                                    <segment title="" image="compose.png"/>
                                 </segments>
                                 <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
@@ -458,6 +458,10 @@
                                             <rect key="frame" x="5" y="5" width="45" height="45"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         </imageView>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="ama.png" id="NKV-Bh-gpj">
+                                            <rect key="frame" x="5" y="5" width="22" height="22"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        </imageView>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="threadrating.png" id="NkH-kE-2yN">
                                             <rect key="frame" x="5" y="54" width="45" height="13"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -469,6 +473,7 @@
                                 <connections>
                                     <outlet property="pagesLabel" destination="0Aq-dl-ID9" id="ef1-2x-Z4d"/>
                                     <outlet property="ratingImage" destination="NkH-kE-2yN" id="WAp-mH-2IU"/>
+                                    <outlet property="secondTagImage" destination="NKV-Bh-gpj" id="QTj-IT-xoJ"/>
                                     <outlet property="sticky" destination="DeK-yZ-hqN" id="Avs-s3-Ncz"/>
                                     <outlet property="tagImage" destination="tAQ-bk-L9A" id="vz5-0s-p2H"/>
                                     <outlet property="threadTitleLabel" destination="9vx-WL-dqh" id="17Y-xI-yGj"/>
@@ -730,14 +735,14 @@
         <image name="05-arrow-west.png" width="19" height="16"/>
         <image name="40-inbox.png" width="24" height="24"/>
         <image name="action.png" width="23" height="18"/>
+        <image name="ama.png" width="45" height="45"/>
         <image name="arrowleft.png" width="23" height="18"/>
         <image name="arrowright.png" width="23" height="18"/>
-        <image name="ask.png" width="45" height="45"/>
+        <image name="compose.png" width="22" height="18"/>
         <image name="forum-arrow-right.png" width="44" height="38"/>
         <image name="list_icon.png" width="20" height="18"/>
         <image name="number-background.png" width="32" height="20"/>
         <image name="preferences.png" width="26" height="26"/>
-        <image name="reply.png" width="25" height="20"/>
         <image name="shsc-apple.png" width="90" height="90"/>
         <image name="sticky.png" width="12" height="12"/>
         <image name="threadrating.png" width="45" height="13"/>
@@ -863,6 +868,6 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="JzC-6r-kye"/>
+        <segue reference="kfD-K3-mBe"/>
     </inferredMetricsTieBreakers>
 </document>
