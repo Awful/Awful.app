@@ -49,7 +49,15 @@
         
         NSIndexPath *selected = [self.tableView indexPathForSelectedRow];
         AwfulThread *thread = [self getThreadAtIndexPath:selected];
-        AwfulPage *page = (AwfulPage *)segue.destinationViewController;
+        
+        AwfulPage *page = nil;
+        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            page = (AwfulPage *)segue.destinationViewController;
+        } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            UINavigationController *nav = (UINavigationController *)segue.destinationViewController;
+            page = (AwfulPage *)nav.topViewController;
+        }
+        
         page.thread = thread;
         [page refresh];
     }

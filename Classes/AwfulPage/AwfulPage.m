@@ -269,10 +269,6 @@
     self.webView.delegate = self.webView;
     
     [self.pagesBarButtonItem setTintColor:[UIColor darkGrayColor]];
-    
-    
-    //UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swiped:)];
-    //[self.bottomView addGestureRecognizer:swipe];
 }
 
 - (void)viewDidUnload {
@@ -461,6 +457,10 @@
 
 -(void)tappedPageNav : (id)sender
 {
+    if(self.pages == nil) {
+        return;
+    }
+    
     UIView *sp_view = self.specificPageController.containerView;
     
     if(self.specificPageController != nil && !self.specificPageController.hiding) {
@@ -481,9 +481,10 @@
         self.specificPageController.page = self;
         [self.specificPageController loadView];
         sp_view = self.specificPageController.containerView;
+        sp_view.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, sp_view.frame.size.height);
         
         float width_diff = self.view.frame.size.width - sp_view.frame.size.width;
-        sp_view.center = CGPointMake(self.view.center.x + width_diff/2, self.view.frame.size.height+sp_view.frame.size.height/2);
+        //sp_view.center = CGPointMake(self.view.center.x + width_diff/2, self.view.frame.size.height+sp_view.frame.size.height/2);
         [self.view addSubview:sp_view];
         [self.view addSubview:self.bottomView];
         [UIView animateWithDuration:0.3 animations:^(void) {
