@@ -648,36 +648,3 @@
 
 @end
 
-@implementation AwfulForumsListIpad
-
-- (id) init {
-    self = [super init];
-    
-    [self.navigationItem setTitle:@"Forum List"];
-
-    self.tabBarItem.image = [UIImage imageNamed:@"list_icon.png"];
-    self.tabBarItem.title = @"Forums";
-    
-    return self;
-}
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    
-    self.navigationItem.rightBarButtonItem = nil;
-}
-
--(void)hitBookmarks
-{
-    AwfulBookmarksControllerIpad *bookmarks = [[AwfulBookmarksControllerIpad alloc] init];
-    [self.navigationController pushViewController:bookmarks animated:YES];
-}
-
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    //AwfulForum *forum = [self getForumAtIndexPath:indexPath];
-    
-    //AwfulThreadListIpad *detail = [[AwfulThreadListIpad alloc] initWithAwfulForum:forum];
-    //[self.navigationController pushViewController:detail animated:YES];
-}
-
-@end

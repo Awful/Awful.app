@@ -353,7 +353,6 @@
     
     NSString *minus_extension = [[self.threadIconImageURL2 lastPathComponent] stringByDeletingPathExtension];
     NSURL *tag_url = [[NSBundle mainBundle] URLForResource:minus_extension withExtension:@"png"];
-    NSLog(@"tag url %@", tag_url);
     return tag_url;
 }
 

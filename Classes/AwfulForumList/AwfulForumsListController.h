@@ -55,8 +55,3 @@
 
 @end
 
-@interface AwfulForumsListIpad : AwfulForumsListController
-
--(void)hitBookmarks;
-
-@end

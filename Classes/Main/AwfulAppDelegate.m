@@ -259,9 +259,11 @@
 {
     NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"AwfulData.sqlite"];
     NSError *err = nil;
-    [[NSFileManager defaultManager] removeItemAtURL:storeURL error:&err];
-    if(err != nil) {
-        NSLog(@"failed to delete data store %@", [err localizedDescription]);
+    if([storeURL checkResourceIsReachableAndReturnError:&err]) {
+        [[NSFileManager defaultManager] removeItemAtURL:storeURL error:&err];
+        if(err != nil) {
+            NSLog(@"failed to delete data store %@", [err localizedDescription]);
+        }
     }
     
     self.dataStoreReset = YES;
@@ -279,7 +281,7 @@
     NSURL *localStore = [[NSBundle mainBundle] URLForResource:@"AwfulData" withExtension:@"sqlite"];
     
     NSError *err = nil;
-    [[NSFileManager defaultManager] moveItemAtURL:localStore toURL:storeURL error:&err];
+    [[NSFileManager defaultManager] copyItemAtURL:localStore toURL:storeURL error:&err];
     if(err != nil) {
         NSLog(@"failed to move data store %@", [err localizedDescription]);
     }

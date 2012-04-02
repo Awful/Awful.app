@@ -22,9 +22,12 @@ img {
 }
 
 .userbox {
-    width:100%;
+	font-weight: bold;
+    width:500px;
     height:50px;
+    vertical-align: top;
     -webkit-user-select:none;
+    text-shadow: 0 1px #fafafa;
 }
 
 .userbox.op {
@@ -52,30 +55,40 @@ img {
 
 span.username {
     font-weight:bold;
+    width: 100%;
 }
 
 span.username_op {
     font-weight:bold;
 }
 
-span.post_date {
+.post_date {
+	color: #999999;
     font-size:0.75em;
+    font-style: italic;
 }
 
 img.avatar {
-    max-height:45px;
-    max-width:45px;
+	display: inline;
+    max-width:75px;
+    margin-right:10px
 }
-
 .quotebutton {
+	float:right;
     padding-right:10px;
-    width:45px;
+    width:30px;
 }
-
+img.postaction {
+	height:30px;
+	}
 .postbodymain {
     font-size:15px;
+    border-bottom: 1px solid #c1c1c1;
+    
 }
-
+.postbodymain > table {
+	width: 100%;
+	}
 .postbodysub {
     padding:5px;
 }
@@ -89,8 +102,8 @@ a {
 }
 
 .ad img {
-    width:100%;
-    height:auto;
+    width:468px;
+    height:60px;
 }
 
 .pagesleft {
@@ -132,12 +145,16 @@ p.editedby {
     font-size:0.5em;
     font-style:italic;
 }
-
-.bbc-block, .bbc-block h5 { border-bottom:1px #999 solid;}
+br {
+	height: 0;
+	}
+.bbc-block, .bbc-block h5 { max-width: 100%; }
 .bbc-block h4, .bbc-block h5 { display:block; color:#555; margin:0; padding:0; }
-.bbc-block h4 { padding:1px 0 2px 0; border-top:1px #999 solid; font-size:13px; font-style:italic; }
+.bbc-block h4 { padding:1px 0 2px 0; font-size:13px; font-style:italic; }
 .bbc-block h5 { font-size:12px; }
-.bbc-block blockquote {font-size:12px; padding:5px; margin:0px;}
+.bbc-block blockquote {font-size: .85em; padding:0 .5em 0 1em; margin: .5em; border-left:1px #999 solid;}
+.bbc-block pre {font-size: .85em; padding:0 .5em 0 1em; margin:0 0 0 .25em; border-left:1px #999 solid; max-width: 500px}
+
 
 blockquote img {
     max-width:160px;
@@ -156,26 +173,26 @@ blockquote img {
 <div class='postbodymain {%ALT_CLASS%}' style='padding:10px'>
     <table id='{%POST_ID%}'>
         <tr>
-            <td valign='top' width=100px rowspan=3>{%AVATAR_BEGIN%}<img src='{%AVATAR_URL%}' style='max-width:80px;margin:auto'/>{%AVATAR_END%}
+            <td valign='top' rowspan=3>{%AVATAR_BEGIN%}<img src='{%AVATAR_URL%}' class="avatar" />{%AVATAR_END%}
             </td>
-            <td valign='top'>
+            <td valign='top' width='823'>
+            <div style="float:right;" class='quotebutton' onclick=tappedPost('{%POST_ID%}')>
+                <img class='postaction' src='http://www.regularberry.com/awful/post-action-icon.png'/>
+            </div>
                 <span class='userbox {%OP%}'>
                 {%MOD_BEGIN%}<img src='http://www.regularberry.com/awful/star_moderator.gif'/>&nbsp;{%MOD_END%}
                 {%ADMIN_BEGIN%}<img src='http://www.regularberry.com/awful/star_admin.gif'/>&nbsp;{%ADMIN_END%}
                 {%POSTER_NAME%}
                 </span>
-            </td>
-            <td class='quotebutton' onclick=tappedPost('{%POST_ID%}')>
-                <img class='postaction' src='http://www.regularberry.com/awful/post-action-icon.png'/>
+                <div class='post_date'>Posted On {%POST_DATE%}</div>
             </td>
         </tr>
-        <tr>{%POST_BODY%}</tr>
-        <tr><td><span class='post_date'>Posted On {%POST_DATE%}</span></td></tr>
+        <tr class="postText">{%POST_BODY%}</tr>
     </table>
 </div>
-{%POSTS_END%}
-                
+{%POSTS_END%}           
 <div class='ad'>{%USER_AD%}</div>
-<div class='pagesleft' onclick=tappedBottom()>{%PAGES_LEFT_MESSAGE%}</div>
+<!--<div class='pagesleft' onclick=tappedBottom()>{%PAGES_LEFT_MESSAGE%}</div>-->
 </body>
+
 </html>
