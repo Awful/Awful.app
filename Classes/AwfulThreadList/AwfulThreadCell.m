@@ -72,7 +72,7 @@
         }
     }
     
-    if([thread.threadRating integerValue] == NSNotFound) {
+    if([thread.threadRating integerValue] == NSNotFound || [thread.threadRating intValue] == -1) {
         self.ratingImage.hidden = YES;
     } else {
         self.ratingImage.hidden = NO;
@@ -85,11 +85,13 @@
     
     if(self.ratingImage.hidden) {
         self.tagImage.center = CGPointMake(self.tagImage.center.x, self.contentView.center.y);
+        
     } else {
         CGRect frame = self.tagImage.frame;
         frame.origin.y = 5;
         self.tagImage.frame = frame;
     }
+    self.secondTagImage.frame = CGRectMake(self.tagImage.frame.origin.x-1, self.tagImage.frame.origin.y-1, self.secondTagImage.frame.size.width, self.secondTagImage.frame.size.height);
     
     if([thread.isLocked boolValue]) {
         self.contentView.alpha = 0.5;
@@ -133,11 +135,14 @@
     
     self.pagesLabel.frame = CGRectMake(title_xpos, CGRectGetMaxY(self.threadTitleLabel.frame)+2, self.pagesLabel.frame.size.width, 10);
     
-    // Stickied?
     [self.sticky removeFromSuperview];
-    if([[thread stickyIndex] integerValue] != NSNotFound) {            
-        self.sticky.frame = CGRectMake(CGRectGetMinX(self.threadTitleLabel.frame)-16, (THREAD_HEIGHT-title_size.height)/2 - 3, 12, 12);
-        [self.contentView addSubview:self.sticky];
+    if([[thread stickyIndex] integerValue] != NSNotFound) {  
+        if(self.tagImage.hidden == NO) {
+            float x = self.tagImage.frame.origin.x + self.tagImage.frame.size.width - self.sticky.frame.size.width;
+            float y = self.tagImage.frame.origin.y + self.tagImage.frame.size.height - self.sticky.frame.size.height;
+            self.sticky.frame = CGRectMake(x, y, self.sticky.frame.size.width, self.sticky.frame.size.height);
+            [self.contentView addSubview:self.sticky];
+        }
     }
 }
 

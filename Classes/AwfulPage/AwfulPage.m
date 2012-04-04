@@ -483,8 +483,6 @@
         sp_view = self.specificPageController.containerView;
         sp_view.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, sp_view.frame.size.height);
         
-        float width_diff = self.view.frame.size.width - sp_view.frame.size.width;
-        //sp_view.center = CGPointMake(self.view.center.x + width_diff/2, self.view.frame.size.height+sp_view.frame.size.height/2);
         [self.view addSubview:sp_view];
         [self.view addSubview:self.bottomView];
         [UIView animateWithDuration:0.3 animations:^(void) {
