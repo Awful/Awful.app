@@ -2,7 +2,7 @@
 //  AwfulForum.m
 //  Awful
 //
-//  Created by Sean Berry on 3/28/12.
+//  Created by Sean Berry on 4/3/12.
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
@@ -16,6 +16,7 @@
 @dynamic forumID;
 @dynamic index;
 @dynamic name;
+@dynamic favorited;
 @dynamic children;
 @dynamic parentForum;
 @dynamic threads;

@@ -2,7 +2,7 @@
 //  AwfulForum.h
 //  Awful
 //
-//  Created by Sean Berry on 3/28/12.
+//  Created by Sean Berry on 4/3/12.
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
@@ -16,6 +16,7 @@
 @property (nonatomic, retain) NSString * forumID;
 @property (nonatomic, retain) NSNumber * index;
 @property (nonatomic, retain) NSString * name;
+@property (nonatomic, retain) NSNumber * favorited;
 @property (nonatomic, retain) NSOrderedSet *children;
 @property (nonatomic, retain) AwfulForum *parentForum;
 @property (nonatomic, retain) NSSet *threads;

@@ -32,10 +32,10 @@
 @property (nonatomic, strong) NSMutableArray *forums;
 @property (nonatomic, strong) NSMutableArray *forumSections;
 @property (nonatomic, strong) IBOutlet AwfulForumHeader *headerView;
+@property (nonatomic, strong) IBOutlet UISegmentedControl *segmentedControl;
+@property BOOL displayingFullList;
 
 -(void)loadFavorites;
--(void)saveFavorites;
--(BOOL)isAwfulForumSectionFavorited : (AwfulForumSection *)section;
 -(void)toggleFavoriteForForumSection : (AwfulForumSection *)section;
 
 -(void)loadForums;
@@ -52,6 +52,8 @@
 -(AwfulForumSection *)getForumSectionFromID : (NSString *)forum_id;
 -(AwfulForumSection *)getForumSectionFromID : (NSString *)forum_id lookInForumSection : (AwfulForumSection *)section;
 -(AwfulForumSection *)getRootSectionForSection : (AwfulForumSection *)section;
+
+-(IBAction)segmentedControlChanged:(id)sender;
 
 @end
 

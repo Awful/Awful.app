@@ -20,8 +20,6 @@
 #import "AwfulForumHeader.h"
 #import "AwfulNetworkEngine.h"
 
-#define SECTION_INDEX_OFFSET 0
-
 @implementation AwfulForumSection
 
 @synthesize forum = _forum;
@@ -60,7 +58,8 @@
 @synthesize forums = _forums;
 @synthesize forumSections = _forumSections;
 @synthesize headerView = _headerView;
-
+@synthesize displayingFullList = _displayingFullList;
+@synthesize segmentedControl = _segmentedControl;
 
 #pragma mark -
 #pragma mark View lifecycle
@@ -81,6 +80,7 @@
     self.favorites = [[NSMutableArray alloc] init];
     self.forums = [[NSMutableArray alloc] init];
     self.forumSections = [[NSMutableArray alloc] init];
+    self.displayingFullList = YES;
     
     [self.navigationController setToolbarHidden:YES];
     
@@ -169,31 +169,17 @@
 
 -(void)loadFavorites
 {
-    NSData *arc = [[NSUserDefaults standardUserDefaults] valueForKey:@"favorites"];
-    if(arc != nil) {
-        self.favorites = [NSKeyedUnarchiver unarchiveObjectWithData:arc];
-        if (self.favorites.count > 0)
-            self.navigationItem.leftBarButtonItem = self.editButtonItem;
-
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"AwfulForum"];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"favorited==YES"];
+    [fetchRequest setPredicate:predicate];
+    
+    NSError *err = nil;
+    NSArray *results = [ApplicationDelegate.managedObjectContext executeFetchRequest:fetchRequest error:&err];
+    if(err != nil) {
+        NSLog(@"failed to get favorite forums: %@", [err localizedDescription]);
+        return;
     }
-}
-
--(void)saveFavorites
-{
-    if(self.favorites != nil) {
-        NSData *arc = [NSKeyedArchiver archivedDataWithRootObject:self.favorites];
-        [[NSUserDefaults standardUserDefaults] setValue:arc forKey:@"favorites"];
-    }
-}
-
--(BOOL)isAwfulForumSectionFavorited : (AwfulForumSection *)section
-{
-    for(AwfulForum *forum in self.favorites) {
-        if([forum.forumID isEqualToString:section.forum.forumID]) {
-            return YES;
-        }
-    }
-    return NO;
+    self.favorites = [NSMutableArray arrayWithArray:results];
 }
 
 -(void)toggleFavoriteForForumSection : (AwfulForumSection *)section
@@ -202,55 +188,13 @@
         return;
     }
     
-    if([self isAwfulForumSectionFavorited:section]) {
-        NSUInteger fav_index = NSNotFound;
-        for(AwfulForum *forum in self.favorites) {
-            if([forum.forumID isEqualToString:section.forum.forumID]) {
-                fav_index = [self.favorites indexOfObject:forum];
-            }
-        }
-        
-        if(fav_index == NSNotFound) {
-            NSLog(@"couldn't find index of favorited section to remove");
-            return;
-        }
-        
-        AwfulForumSection *bottom_section = [self getForumSectionFromID:section.forum.forumID];
-        NSIndexPath *bottom_path = [self getIndexPathForSection:bottom_section];
-        
-        [self.favorites removeObjectAtIndex:fav_index];
-        
-        NSArray *remove = [NSArray arrayWithObject:[NSIndexPath indexPathForRow:fav_index inSection:0]];
-        [self.tableView beginUpdates];
-        
-        // they may have favorited it but it might not be visible below
-        if(bottom_path != nil) {
-            [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:bottom_path] 
-                              withRowAnimation:UITableViewRowAnimationNone];
-        }
-        
-        [self.tableView deleteRowsAtIndexPaths:remove withRowAnimation:UITableViewRowAnimationBottom];
-        [self.tableView endUpdates];
-        
+    AwfulForum *forum = section.forum;
+    if([forum.favorited boolValue]) {
+        forum.favorited = [NSNumber numberWithBool:NO];
     } else {
-        [self.favorites addObject:section.forum];
-        
-        NSIndexPath *reload_path = [self getIndexPathForSection:section];
-        NSArray *reload = [NSArray arrayWithObject:reload_path];
-        
-        NSIndexPath *add_path = [NSIndexPath indexPathForRow:[self.favorites count]-1 inSection:0];
-        NSArray *add = [NSArray arrayWithObject:add_path];
-        
-        [self.tableView beginUpdates];
-        [self.tableView insertRowsAtIndexPaths:add withRowAnimation:UITableViewRowAnimationTop];
-        [self.tableView reloadRowsAtIndexPaths:reload withRowAnimation:UITableViewRowAnimationNone];
-        [self.tableView endUpdates];
+        forum.favorited = [NSNumber numberWithBool:YES];
     }
-    [self saveFavorites];
-    if (self.favorites.count > 0)
-        self.navigationItem.leftBarButtonItem = self.editButtonItem;
-    else
-        self.navigationItem.leftBarButtonItem = nil;
+    [ApplicationDelegate saveContext];
 }
 
 #pragma mark -
@@ -262,47 +206,64 @@
         return 0;
     }
     
-    // Return the number of sections.
-    return [self.forumSections count] + SECTION_INDEX_OFFSET;// + 1;
+    if(self.displayingFullList) {
+        return [self.forumSections count];
+    } else {
+        return 1;
+    }
+    
+    return 0;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    // Return the number of rows in the section.
-    if(section == 0 && SECTION_INDEX_OFFSET > 0) {
-        if(!isLoggedIn()) {
-            return 0;
-        }
-        
-        return [self.favorites count];
-        
-    }
     
     if(!isLoggedIn()) {
         return 0;
     }
     
-    AwfulForumSection *root_section = [self getForumSectionAtSection:section];
-    if(root_section.expanded) {
-        NSMutableArray *descendants = [self getVisibleDescendantsListForForumSection:root_section];
-        return [descendants count];
+    if(self.displayingFullList) {
+        AwfulForumSection *root_section = [self getForumSectionAtSection:section];
+        if(root_section.expanded) {
+            NSMutableArray *descendants = [self getVisibleDescendantsListForForumSection:root_section];
+            return [descendants count];
+        }
+    } else {
+        return [self.favorites count] + 1;
     }
+    
     return 0;
 }
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    static NSString *CellIdentifier = @"ForumCell";
-    
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    AwfulForumCell *forum_cell = (AwfulForumCell *)cell;
-    forum_cell.forumsList = self;
-    AwfulForumSection *section = [self getForumSectionAtIndexPath:indexPath];
-    if(section != nil) {
-        [forum_cell setSection:section];
-    }
+    if(self.displayingFullList || indexPath.row < [self.favorites count]) {
+        static NSString *CellIdentifier = @"ForumCell";
+        
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        AwfulForumCell *forum_cell = (AwfulForumCell *)cell;
+        forum_cell.forumsList = self;
+        
+        if(self.displayingFullList) {
+            AwfulForumSection *section = [self getForumSectionAtIndexPath:indexPath];
+            if(section != nil) {
+                [forum_cell setSection:section];
+            }
+        } else {
+            AwfulForum *forum = [self.favorites objectAtIndex:indexPath.row];
+            AwfulForumSection *section = [AwfulForumSection sectionWithForum:forum];
+            if(section != nil && forum != nil) {
+                [forum_cell setSection:section];
+            }
+        }
 
-    return cell;
+        return cell;
+    } else if(!self.displayingFullList && indexPath.row == [self.favorites count]) {
+        static NSString *ident = @"AddFavoritesCell";
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ident];
+        return cell;
+    }
+    return nil;
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
@@ -323,18 +284,16 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     NSString *str = nil;
-
-    if(section == 0 && SECTION_INDEX_OFFSET > 0) {
-        str = @"Favorites";
-    } else if(section == [self.forumSections count] + 1) {
-        str = @"";
-    } else {
+    
+    if(self.displayingFullList) {
         AwfulForumSection *forum_section = [self getForumSectionAtSection:section];
         if(forum_section != nil) {
             str = forum_section.forum.name;
         } else {
             str = @"Unknown";
         }
+    } else {
+        str = @"Favorites";
     }
     
     AwfulForumHeader *header = nil;
@@ -355,8 +314,10 @@
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     // Return NO if you do not want the specified item to be editable.
     
-    if(indexPath.section == 0) {
+    if(self.displayingFullList) {
         return YES;
+    } else {
+        return NO;
     }
     
     return NO;
@@ -384,7 +345,6 @@
     AwfulForum *fav = [self.favorites objectAtIndex:old_row];
     [self.favorites removeObject:fav];
     [self.favorites insertObject:fav atIndex:to_row];
-    [self saveFavorites];
 }
 
 
@@ -512,10 +472,10 @@
 
 -(AwfulForumSection *)getForumSectionAtSection : (NSUInteger)section_index
 {
-    if(section_index < SECTION_INDEX_OFFSET || section_index - SECTION_INDEX_OFFSET >= [self.forumSections count]) {
+    if(section_index >= [self.forumSections count]) {
         return nil;
     }
-    return [self.forumSections objectAtIndex:section_index-SECTION_INDEX_OFFSET];
+    return [self.forumSections objectAtIndex:section_index];
 }
 
 -(NSUInteger)getSectionForForumSection : (AwfulForumSection *)forum_section
@@ -523,29 +483,19 @@
     AwfulForumSection *root_section = [self getRootSectionForSection:forum_section];
     NSUInteger index = [self.forumSections indexOfObject:root_section];
     if(index != NSNotFound) {
-        return index + SECTION_INDEX_OFFSET;
+        return index;
     }
     return NSNotFound;
 }
 
 -(AwfulForum *)getForumAtIndexPath : (NSIndexPath *)path
 {
-    if(path.section == 0 && SECTION_INDEX_OFFSET > 0) {
-        return [self.favorites objectAtIndex:path.row];
-    } else {
-        AwfulForumSection *section = [self getForumSectionAtIndexPath:path];
-        return section.forum;
-    }
-    return nil;
+    AwfulForumSection *section = [self getForumSectionAtIndexPath:path];
+    return section.forum;
 }
 
 -(AwfulForumSection *)getForumSectionAtIndexPath : (NSIndexPath *)path
 {
-    if(path.section == 0 && SECTION_INDEX_OFFSET > 0) {
-        AwfulForum *forum = [self.favorites objectAtIndex:path.row];
-        return [AwfulForumSection sectionWithForum:forum];
-    }
-    
     if(!isLoggedIn()) {
         if(path.section == 1) {
             NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"AwfulForum"];
@@ -644,6 +594,12 @@
         return section;
     }
     return [self getRootSectionForSection:[self getForumSectionFromID:section.forum.parentForum.forumID]];
+}
+
+-(IBAction)segmentedControlChanged:(id)sender
+{
+    self.displayingFullList = (self.segmentedControl.selectedSegmentIndex == 0);
+    [self.tableView reloadData];
 }
 
 @end
