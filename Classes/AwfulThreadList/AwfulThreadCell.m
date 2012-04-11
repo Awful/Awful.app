@@ -138,8 +138,8 @@
     [self.sticky removeFromSuperview];
     if([[thread stickyIndex] integerValue] != NSNotFound) {  
         if(self.tagImage.hidden == NO) {
-            float x = self.tagImage.frame.origin.x + self.tagImage.frame.size.width - self.sticky.frame.size.width;
-            float y = self.tagImage.frame.origin.y + self.tagImage.frame.size.height - self.sticky.frame.size.height;
+            float x = self.tagImage.frame.origin.x + self.tagImage.frame.size.width - self.sticky.frame.size.width + 1;
+            float y = self.tagImage.frame.origin.y + self.tagImage.frame.size.height - self.sticky.frame.size.height + 1;
             self.sticky.frame = CGRectMake(x, y, self.sticky.frame.size.width, self.sticky.frame.size.height);
             [self.contentView addSubview:self.sticky];
         }

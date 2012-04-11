@@ -19,6 +19,7 @@
 #import "AwfulUser.h"
 #import "AwfulForumHeader.h"
 #import "AwfulNetworkEngine.h"
+#import "AwfulAddForumsViewController.h"
 
 @implementation AwfulForumSection
 
@@ -47,6 +48,14 @@
     return sec;
 }
 
+-(void)setAllExpanded
+{
+    self.expanded = YES;
+    for(AwfulForumSection *section in self.children) {
+        [section setAllExpanded];
+    }
+}
+
 @end
 
 @implementation AwfulForumsListController
@@ -68,9 +77,19 @@
 {
     if([[segue identifier] isEqualToString:@"ThreadList"]) {
         NSIndexPath *selected = [self.tableView indexPathForSelectedRow];
-        AwfulForum *forum = [self getForumAtIndexPath:selected];
+        
+        AwfulForum *forum = nil;
+        if(self.displayingFullList) {
+            forum = [self getForumAtIndexPath:selected];
+        } else {
+            forum = [self.favorites objectAtIndex:selected.row];
+        }
         AwfulThreadListController *list = (AwfulThreadListController *)segue.destinationViewController;
         list.forum = forum;
+    } else if([[segue identifier] isEqualToString:@"AddForums"]) {
+        UINavigationController *nav = (UINavigationController *)segue.destinationViewController;
+        AwfulAddForumsViewController *addForums = (AwfulAddForumsViewController *)nav.topViewController;
+        addForums.delegate = self;
     }
 }
 
@@ -182,13 +201,12 @@
     self.favorites = [NSMutableArray arrayWithArray:results];
 }
 
--(void)toggleFavoriteForForumSection : (AwfulForumSection *)section
+-(void)toggleFavoriteForForum : (AwfulForum *)forum
 {    
     if(!isLoggedIn()) {
         return;
     }
     
-    AwfulForum *forum = section.forum;
     if([forum.favorited boolValue]) {
         forum.favorited = [NSNumber numberWithBool:NO];
     } else {
@@ -328,7 +346,7 @@
     
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
-        [self toggleFavoriteForForumSection:[self getForumSectionAtIndexPath:indexPath]];
+        [self toggleFavoriteForForum:[self getForumAtIndexPath:indexPath]];
     }   
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
@@ -363,14 +381,9 @@
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Navigation logic may go here. Create and push another view controller.
-	/*
-	 <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-	 [self.navigationController pushViewController:detailViewController animated:YES];
-	 [detailViewController release];
-	 */
+    if(!self.displayingFullList && indexPath.row == [self.favorites count]) {
+        [self performSegueWithIdentifier:@"AddForums" sender:nil];
+    }
 }
 
 #pragma mark -

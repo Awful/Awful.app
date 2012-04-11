@@ -111,8 +111,22 @@
                             <outlet property="delegate" destination="itn-NS-72L" id="5Lj-3N-8ZT"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Forums" id="gwa-EN-laH"/>
+                    <navigationItem key="navigationItem" id="kkm-Nf-hjN">
+                        <nil key="title"/>
+                        <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="nw5-DB-cw3">
+                            <rect key="frame" x="85" y="7" width="150" height="30"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <segments>
+                                <segment title="Full List"/>
+                                <segment title="Favorites"/>
+                            </segments>
+                            <color key="tintColor" red="0.18039215689999999" green="0.57254901960000004" blue="0.74509803919999995" alpha="1" colorSpace="deviceRGB"/>
+                        </segmentedControl>
+                    </navigationItem>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackTranslucent"/>
+                    <connections>
+                        <outlet property="segmentedControl" destination="nw5-DB-cw3" id="Lto-RW-ZNk"/>
+                    </connections>
                 </tableViewController>
             </objects>
             <point key="canvasLocation" x="766" y="-1875"/>
@@ -273,7 +287,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Bar-Lf-3un" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tabBarController definesPresentationContext="YES" id="6qG-xq-Bw4" sceneMemberID="viewController">
                     <value key="contentSizeForViewInPopover" type="size" width="320" height="783"/>
-                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="VNm-Wz-fER">
                         <rect key="frame" x="129" y="330" width="163" height="49"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
@@ -669,6 +683,110 @@
         <image name="sticky.png" width="12" height="12"/>
         <image name="threadrating.png" width="45" height="13"/>
     </resources>
+    <classes>
+        <class className="AwfulAccountViewController" superclassName="AwfulTableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulAccountViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="hitResetData:"/>
+                <relationship kind="outlet" name="usernameLabel" candidateClass="UILabel"/>
+            </relationships>
+        </class>
+        <class className="AwfulBookmarksController" superclassName="AwfulThreadListController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulBookmarksController.h"/>
+        </class>
+        <class className="AwfulForumCell" superclassName="UITableViewCell">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumCell.h"/>
+            <relationships>
+                <relationship kind="action" name="tappedArrow:"/>
+                <relationship kind="outlet" name="arrow" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="titleLabel" candidateClass="UILabel"/>
+            </relationships>
+        </class>
+        <class className="AwfulForumHeader" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumHeader.h"/>
+            <relationships>
+                <relationship kind="outlet" name="titleLabel" candidateClass="UILabel"/>
+            </relationships>
+        </class>
+        <class className="AwfulForumsListController" superclassName="AwfulTableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumsListController.h"/>
+            <relationships>
+                <relationship kind="action" name="segmentedControlChanged:"/>
+                <relationship kind="outlet" name="headerView" candidateClass="AwfulForumHeader"/>
+                <relationship kind="outlet" name="segmentedControl" candidateClass="UISegmentedControl"/>
+            </relationships>
+        </class>
+        <class className="AwfulLoginController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulLoginController.h"/>
+            <relationships>
+                <relationship kind="action" name="hitCancel:"/>
+                <relationship kind="outlet" name="act" candidateClass="UIActivityIndicatorView"/>
+                <relationship kind="outlet" name="web" candidateClass="UIWebView"/>
+            </relationships>
+        </class>
+        <class className="AwfulPage" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPage.h"/>
+            <relationships>
+                <relationship kind="action" name="hardRefresh"/>
+                <relationship kind="action" name="hideBottomView:"/>
+                <relationship kind="action" name="revealBottomView:"/>
+                <relationship kind="action" name="segmentedGotTapped:"/>
+                <relationship kind="action" name="tappedActions:"/>
+                <relationship kind="action" name="tappedActionsSegment:"/>
+                <relationship kind="action" name="tappedBookmarks:"/>
+                <relationship kind="action" name="tappedCompose:"/>
+                <relationship kind="action" name="tappedNextPage:"/>
+                <relationship kind="action" name="tappedPageNav:"/>
+                <relationship kind="action" name="tappedPagesSegment:"/>
+                <relationship kind="action" name="tappedVote:"/>
+                <relationship kind="outlet" name="actionsSegmentedControl" candidateClass="ButtonSegmentedControl"/>
+                <relationship kind="outlet" name="bottomView" candidateClass="UIView"/>
+                <relationship kind="outlet" name="nextPageBarButtonItem" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="pagesBarButtonItem" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="pagesSegmentedControl" candidateClass="ButtonSegmentedControl"/>
+                <relationship kind="outlet" name="toolbar" candidateClass="UIToolbar"/>
+                <relationship kind="outlet" name="webView" candidateClass="JSBridgeWebView"/>
+            </relationships>
+        </class>
+        <class className="AwfulSplitViewController" superclassName="UISplitViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulSplitViewController.h"/>
+        </class>
+        <class className="AwfulTableViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulTableViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="refresh"/>
+            </relationships>
+        </class>
+        <class className="AwfulThreadCell" superclassName="UITableViewCell">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulThreadCell.h"/>
+            <relationships>
+                <relationship kind="outlet" name="pagesLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="ratingImage" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="secondTagImage" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="sticky" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="tagImage" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="threadTitleLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="unreadButton" candidateClass="UIButton"/>
+            </relationships>
+        </class>
+        <class className="AwfulThreadListController" superclassName="AwfulTableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulThreadListController.h"/>
+            <relationships>
+                <relationship kind="outlet" name="nextPageBarButtonItem" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="pageLabelBarButtonItem" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="prevPageBarButtonItem" candidateClass="UIBarButtonItem"/>
+            </relationships>
+        </class>
+        <class className="ButtonSegmentedControl" superclassName="UISegmentedControl">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ButtonSegmentedControl.h"/>
+            <relationships>
+                <relationship kind="outlet" name="target"/>
+            </relationships>
+        </class>
+        <class className="JSBridgeWebView" superclassName="UIWebView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/JSBridgeWebView.h"/>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar" statusBarStyle="blackTranslucent"/>
         <simulatedOrientationMetrics key="orientation"/>

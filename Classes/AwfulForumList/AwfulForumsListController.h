@@ -23,6 +23,7 @@
 @property NSUInteger totalAncestors;
 
 +(AwfulForumSection *)sectionWithForum : (AwfulForum *)forum;
+-(void)setAllExpanded;
 
 @end
 
@@ -36,7 +37,7 @@
 @property BOOL displayingFullList;
 
 -(void)loadFavorites;
--(void)toggleFavoriteForForumSection : (AwfulForumSection *)section;
+-(void)toggleFavoriteForForum : (AwfulForum *)forum;
 
 -(void)loadForums;
 -(void)hitDone;

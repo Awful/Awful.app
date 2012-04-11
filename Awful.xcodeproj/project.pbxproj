@@ -84,6 +84,53 @@
 		1156F004144B985000C0455B /* grey-gradient.png in Resources */ = {isa = PBXBuildFile; fileRef = 1156F003144B985000C0455B /* grey-gradient.png */; };
 		115A05DA134814B6004FDCE5 /* arrowright.png in Resources */ = {isa = PBXBuildFile; fileRef = 115A05D9134814B6004FDCE5 /* arrowright.png */; };
 		115A05DF13490D39004FDCE5 /* dotdotdot.png in Resources */ = {isa = PBXBuildFile; fileRef = 115A05DE13490D39004FDCE5 /* dotdotdot.png */; };
+		11682AED1536348700D6B9B7 /* attention.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682ABE1536348700D6B9B7 /* attention.png */; };
+		11682AEE1536348700D6B9B7 /* cd_classic.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682ABF1536348700D6B9B7 /* cd_classic.png */; };
+		11682AEF1536348700D6B9B7 /* cd_comedy.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AC01536348700D6B9B7 /* cd_comedy.png */; };
+		11682AF01536348700D6B9B7 /* computers.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AC11536348700D6B9B7 /* computers.png */; };
+		11682AF11536348700D6B9B7 /* diy-advice.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AC21536348700D6B9B7 /* diy-advice.png */; };
+		11682AF21536348700D6B9B7 /* flame.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AC31536348700D6B9B7 /* flame.png */; };
+		11682AF31536348700D6B9B7 /* fruity.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AC41536348700D6B9B7 /* fruity.png */; };
+		11682AF41536348700D6B9B7 /* games-3ds.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AC51536348700D6B9B7 /* games-3ds.png */; };
+		11682AF51536348700D6B9B7 /* games-360.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AC61536348700D6B9B7 /* games-360.png */; };
+		11682AF61536348700D6B9B7 /* games-360ps3tag.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AC71536348700D6B9B7 /* games-360ps3tag.png */; };
+		11682AF71536348700D6B9B7 /* games-ds.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AC81536348700D6B9B7 /* games-ds.png */; };
+		11682AF81536348700D6B9B7 /* games-letsplay.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AC91536348700D6B9B7 /* games-letsplay.png */; };
+		11682AF91536348700D6B9B7 /* games-ps3.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682ACA1536348700D6B9B7 /* games-ps3.png */; };
+		11682AFA1536348700D6B9B7 /* games-psp.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682ACB1536348700D6B9B7 /* games-psp.png */; };
+		11682AFB1536348700D6B9B7 /* Games-vita.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682ACC1536348700D6B9B7 /* Games-vita.png */; };
+		11682AFC1536348700D6B9B7 /* games-wii.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682ACD1536348700D6B9B7 /* games-wii.png */; };
+		11682AFD1536348700D6B9B7 /* goonmeet.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682ACE1536348700D6B9B7 /* goonmeet.png */; };
+		11682AFE1536348700D6B9B7 /* hell-fuckthis.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682ACF1536348700D6B9B7 /* hell-fuckthis.png */; };
+		11682AFF1536348700D6B9B7 /* hell-hive.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AD01536348700D6B9B7 /* hell-hive.png */; };
+		11682B001536348700D6B9B7 /* hell-stfu.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AD11536348700D6B9B7 /* hell-stfu.png */; };
+		11682B011536348700D6B9B7 /* hell-whore.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AD21536348700D6B9B7 /* hell-whore.png */; };
+		11682B021536348700D6B9B7 /* icon-41-game-xbox.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AD31536348700D6B9B7 /* icon-41-game-xbox.png */; };
+		11682B031536348700D6B9B7 /* icon-42-game-ps2.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AD41536348700D6B9B7 /* icon-42-game-ps2.png */; };
+		11682B041536348700D6B9B7 /* icon-43-game-gamecube.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AD51536348700D6B9B7 /* icon-43-game-gamecube.png */; };
+		11682B051536348700D6B9B7 /* icon-44-game-gba.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AD61536348700D6B9B7 /* icon-44-game-gba.png */; };
+		11682B061536348700D6B9B7 /* icon-45-game-pc.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AD71536348700D6B9B7 /* icon-45-game-pc.png */; };
+		11682B071536348700D6B9B7 /* icon-dear_richard.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AD81536348700D6B9B7 /* icon-dear_richard.png */; };
+		11682B081536348700D6B9B7 /* lf-fff.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AD91536348700D6B9B7 /* lf-fff.png */; };
+		11682B091536348700D6B9B7 /* lf-fuckit3.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682ADA1536348700D6B9B7 /* lf-fuckit3.png */; };
+		11682B0A1536348700D6B9B7 /* lf-hansen2.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682ADB1536348700D6B9B7 /* lf-hansen2.png */; };
+		11682B0B1536348700D6B9B7 /* science.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682ADC1536348700D6B9B7 /* science.png */; };
+		11682B0C1536348700D6B9B7 /* serious.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682ADD1536348700D6B9B7 /* serious.png */; };
+		11682B0D1536348700D6B9B7 /* sex.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682ADE1536348700D6B9B7 /* sex.png */; };
+		11682B0E1536348700D6B9B7 /* shsc-win.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682ADF1536348700D6B9B7 /* shsc-win.png */; };
+		11682B0F1536348700D6B9B7 /* sports-golf.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AE01536348700D6B9B7 /* sports-golf.png */; };
+		11682B101536348700D6B9B7 /* sports-ncaa.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AE11536348700D6B9B7 /* sports-ncaa.png */; };
+		11682B111536348700D6B9B7 /* sports-nfl.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AE21536348700D6B9B7 /* sports-nfl.png */; };
+		11682B121536348700D6B9B7 /* sports-soccer.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AE31536348700D6B9B7 /* sports-soccer.png */; };
+		11682B131536348700D6B9B7 /* sports-wwe.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AE41536348700D6B9B7 /* sports-wwe.png */; };
+		11682B141536348700D6B9B7 /* sports.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AE51536348700D6B9B7 /* sports.png */; };
+		11682B151536348700D6B9B7 /* tech.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AE61536348700D6B9B7 /* tech.png */; };
+		11682B161536348700D6B9B7 /* wrestlehut-ecw.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AE71536348700D6B9B7 /* wrestlehut-ecw.png */; };
+		11682B171536348700D6B9B7 /* wrestlehut-thunder.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AE81536348700D6B9B7 /* wrestlehut-thunder.png */; };
+		11682B181536348700D6B9B7 /* wrestlehut-tna.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AE91536348700D6B9B7 /* wrestlehut-tna.png */; };
+		11682B191536348700D6B9B7 /* wrestling-raw.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AEA1536348700D6B9B7 /* wrestling-raw.png */; };
+		11682B1A1536348700D6B9B7 /* wrestling-roh.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AEB1536348700D6B9B7 /* wrestling-roh.png */; };
+		11682B1B1536348700D6B9B7 /* wrestling-sd.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AEC1536348700D6B9B7 /* wrestling-sd.png */; };
 		116B29A1139C3F0600984955 /* README in Resources */ = {isa = PBXBuildFile; fileRef = 116B29A0139C3F0600984955 /* README */; };
 		116D3A6014DDC9E40002129F /* phone-template.html in Resources */ = {isa = PBXBuildFile; fileRef = 116D3A5F14DDC9E40002129F /* phone-template.html */; };
 		116D3A6314DDD71C0002129F /* pad-template.html in Resources */ = {isa = PBXBuildFile; fileRef = 116D3A6214DDD71C0002129F /* pad-template.html */; };
@@ -115,6 +162,7 @@
 		1185923913B9425C0036E607 /* star_admin.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1185923713B9425B0036E607 /* star_admin.gif */; };
 		1185923A13B9425C0036E607 /* star_moderator.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1185923813B9425B0036E607 /* star_moderator.gif */; };
 		118CF798152C05BA00126AAC /* AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CF797152C05BA00126AAC /* AwfulForum.m */; };
+		118CF809152D281600126AAC /* AwfulAddForumsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CF808152D281600126AAC /* AwfulAddForumsViewController.m */; };
 		118E615B14E5A17500F0CE0A /* AwfulThreadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 112764F014DB4F6A003ACE76 /* AwfulThreadCell.m */; };
 		118E615F14E5A1F100F0CE0A /* AwfulForumHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 112764EC14DB44E6003ACE76 /* AwfulForumHeader.m */; };
 		1190F73413BE4EA900B9D271 /* AwfulActions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6CE13BE4EA900B9D271 /* AwfulActions.m */; };
@@ -318,6 +366,53 @@
 		1156F003144B985000C0455B /* grey-gradient.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "grey-gradient.png"; path = "images/grey-gradient.png"; sourceTree = "<group>"; };
 		115A05D9134814B6004FDCE5 /* arrowright.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = arrowright.png; path = images/arrowright.png; sourceTree = "<group>"; };
 		115A05DE13490D39004FDCE5 /* dotdotdot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dotdotdot.png; path = images/dotdotdot.png; sourceTree = "<group>"; };
+		11682ABE1536348700D6B9B7 /* attention.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = attention.png; sourceTree = "<group>"; };
+		11682ABF1536348700D6B9B7 /* cd_classic.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cd_classic.png; sourceTree = "<group>"; };
+		11682AC01536348700D6B9B7 /* cd_comedy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cd_comedy.png; sourceTree = "<group>"; };
+		11682AC11536348700D6B9B7 /* computers.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = computers.png; sourceTree = "<group>"; };
+		11682AC21536348700D6B9B7 /* diy-advice.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "diy-advice.png"; sourceTree = "<group>"; };
+		11682AC31536348700D6B9B7 /* flame.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = flame.png; sourceTree = "<group>"; };
+		11682AC41536348700D6B9B7 /* fruity.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fruity.png; sourceTree = "<group>"; };
+		11682AC51536348700D6B9B7 /* games-3ds.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "games-3ds.png"; sourceTree = "<group>"; };
+		11682AC61536348700D6B9B7 /* games-360.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "games-360.png"; sourceTree = "<group>"; };
+		11682AC71536348700D6B9B7 /* games-360ps3tag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "games-360ps3tag.png"; sourceTree = "<group>"; };
+		11682AC81536348700D6B9B7 /* games-ds.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "games-ds.png"; sourceTree = "<group>"; };
+		11682AC91536348700D6B9B7 /* games-letsplay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "games-letsplay.png"; sourceTree = "<group>"; };
+		11682ACA1536348700D6B9B7 /* games-ps3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "games-ps3.png"; sourceTree = "<group>"; };
+		11682ACB1536348700D6B9B7 /* games-psp.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "games-psp.png"; sourceTree = "<group>"; };
+		11682ACC1536348700D6B9B7 /* Games-vita.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Games-vita.png"; sourceTree = "<group>"; };
+		11682ACD1536348700D6B9B7 /* games-wii.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "games-wii.png"; sourceTree = "<group>"; };
+		11682ACE1536348700D6B9B7 /* goonmeet.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = goonmeet.png; sourceTree = "<group>"; };
+		11682ACF1536348700D6B9B7 /* hell-fuckthis.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hell-fuckthis.png"; sourceTree = "<group>"; };
+		11682AD01536348700D6B9B7 /* hell-hive.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hell-hive.png"; sourceTree = "<group>"; };
+		11682AD11536348700D6B9B7 /* hell-stfu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hell-stfu.png"; sourceTree = "<group>"; };
+		11682AD21536348700D6B9B7 /* hell-whore.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hell-whore.png"; sourceTree = "<group>"; };
+		11682AD31536348700D6B9B7 /* icon-41-game-xbox.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-41-game-xbox.png"; sourceTree = "<group>"; };
+		11682AD41536348700D6B9B7 /* icon-42-game-ps2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-42-game-ps2.png"; sourceTree = "<group>"; };
+		11682AD51536348700D6B9B7 /* icon-43-game-gamecube.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-43-game-gamecube.png"; sourceTree = "<group>"; };
+		11682AD61536348700D6B9B7 /* icon-44-game-gba.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-44-game-gba.png"; sourceTree = "<group>"; };
+		11682AD71536348700D6B9B7 /* icon-45-game-pc.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-45-game-pc.png"; sourceTree = "<group>"; };
+		11682AD81536348700D6B9B7 /* icon-dear_richard.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-dear_richard.png"; sourceTree = "<group>"; };
+		11682AD91536348700D6B9B7 /* lf-fff.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lf-fff.png"; sourceTree = "<group>"; };
+		11682ADA1536348700D6B9B7 /* lf-fuckit3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lf-fuckit3.png"; sourceTree = "<group>"; };
+		11682ADB1536348700D6B9B7 /* lf-hansen2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lf-hansen2.png"; sourceTree = "<group>"; };
+		11682ADC1536348700D6B9B7 /* science.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = science.png; sourceTree = "<group>"; };
+		11682ADD1536348700D6B9B7 /* serious.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = serious.png; sourceTree = "<group>"; };
+		11682ADE1536348700D6B9B7 /* sex.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sex.png; sourceTree = "<group>"; };
+		11682ADF1536348700D6B9B7 /* shsc-win.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shsc-win.png"; sourceTree = "<group>"; };
+		11682AE01536348700D6B9B7 /* sports-golf.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sports-golf.png"; sourceTree = "<group>"; };
+		11682AE11536348700D6B9B7 /* sports-ncaa.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sports-ncaa.png"; sourceTree = "<group>"; };
+		11682AE21536348700D6B9B7 /* sports-nfl.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sports-nfl.png"; sourceTree = "<group>"; };
+		11682AE31536348700D6B9B7 /* sports-soccer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sports-soccer.png"; sourceTree = "<group>"; };
+		11682AE41536348700D6B9B7 /* sports-wwe.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sports-wwe.png"; sourceTree = "<group>"; };
+		11682AE51536348700D6B9B7 /* sports.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sports.png; sourceTree = "<group>"; };
+		11682AE61536348700D6B9B7 /* tech.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tech.png; sourceTree = "<group>"; };
+		11682AE71536348700D6B9B7 /* wrestlehut-ecw.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "wrestlehut-ecw.png"; sourceTree = "<group>"; };
+		11682AE81536348700D6B9B7 /* wrestlehut-thunder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "wrestlehut-thunder.png"; sourceTree = "<group>"; };
+		11682AE91536348700D6B9B7 /* wrestlehut-tna.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "wrestlehut-tna.png"; sourceTree = "<group>"; };
+		11682AEA1536348700D6B9B7 /* wrestling-raw.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "wrestling-raw.png"; sourceTree = "<group>"; };
+		11682AEB1536348700D6B9B7 /* wrestling-roh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "wrestling-roh.png"; sourceTree = "<group>"; };
+		11682AEC1536348700D6B9B7 /* wrestling-sd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "wrestling-sd.png"; sourceTree = "<group>"; };
 		116B29A0139C3F0600984955 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		116D3A5F14DDC9E40002129F /* phone-template.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = "phone-template.html"; path = "../web resources/phone-template.html"; sourceTree = "<group>"; };
 		116D3A6214DDD71C0002129F /* pad-template.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = "pad-template.html"; path = "web resources/pad-template.html"; sourceTree = SOURCE_ROOT; };
@@ -365,6 +460,8 @@
 		1185923813B9425B0036E607 /* star_moderator.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = star_moderator.gif; path = images/star_moderator.gif; sourceTree = "<group>"; };
 		118CF796152C05BA00126AAC /* AwfulForum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForum.h; sourceTree = "<group>"; };
 		118CF797152C05BA00126AAC /* AwfulForum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForum.m; sourceTree = "<group>"; };
+		118CF807152D281600126AAC /* AwfulAddForumsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAddForumsViewController.h; sourceTree = "<group>"; };
+		118CF808152D281600126AAC /* AwfulAddForumsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAddForumsViewController.m; sourceTree = "<group>"; };
 		1190F6CD13BE4EA900B9D271 /* AwfulActions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulActions.h; sourceTree = "<group>"; };
 		1190F6CE13BE4EA900B9D271 /* AwfulActions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulActions.m; sourceTree = "<group>"; };
 		1190F6CF13BE4EA900B9D271 /* AwfulPostActions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostActions.h; sourceTree = "<group>"; };
@@ -660,6 +757,53 @@
 		112ECF0F14D7100A007EE7B6 /* threadtags */ = {
 			isa = PBXGroup;
 			children = (
+				11682ABE1536348700D6B9B7 /* attention.png */,
+				11682ABF1536348700D6B9B7 /* cd_classic.png */,
+				11682AC01536348700D6B9B7 /* cd_comedy.png */,
+				11682AC11536348700D6B9B7 /* computers.png */,
+				11682AC21536348700D6B9B7 /* diy-advice.png */,
+				11682AC31536348700D6B9B7 /* flame.png */,
+				11682AC41536348700D6B9B7 /* fruity.png */,
+				11682AC51536348700D6B9B7 /* games-3ds.png */,
+				11682AC61536348700D6B9B7 /* games-360.png */,
+				11682AC71536348700D6B9B7 /* games-360ps3tag.png */,
+				11682AC81536348700D6B9B7 /* games-ds.png */,
+				11682AC91536348700D6B9B7 /* games-letsplay.png */,
+				11682ACA1536348700D6B9B7 /* games-ps3.png */,
+				11682ACB1536348700D6B9B7 /* games-psp.png */,
+				11682ACC1536348700D6B9B7 /* Games-vita.png */,
+				11682ACD1536348700D6B9B7 /* games-wii.png */,
+				11682ACE1536348700D6B9B7 /* goonmeet.png */,
+				11682ACF1536348700D6B9B7 /* hell-fuckthis.png */,
+				11682AD01536348700D6B9B7 /* hell-hive.png */,
+				11682AD11536348700D6B9B7 /* hell-stfu.png */,
+				11682AD21536348700D6B9B7 /* hell-whore.png */,
+				11682AD31536348700D6B9B7 /* icon-41-game-xbox.png */,
+				11682AD41536348700D6B9B7 /* icon-42-game-ps2.png */,
+				11682AD51536348700D6B9B7 /* icon-43-game-gamecube.png */,
+				11682AD61536348700D6B9B7 /* icon-44-game-gba.png */,
+				11682AD71536348700D6B9B7 /* icon-45-game-pc.png */,
+				11682AD81536348700D6B9B7 /* icon-dear_richard.png */,
+				11682AD91536348700D6B9B7 /* lf-fff.png */,
+				11682ADA1536348700D6B9B7 /* lf-fuckit3.png */,
+				11682ADB1536348700D6B9B7 /* lf-hansen2.png */,
+				11682ADC1536348700D6B9B7 /* science.png */,
+				11682ADD1536348700D6B9B7 /* serious.png */,
+				11682ADE1536348700D6B9B7 /* sex.png */,
+				11682ADF1536348700D6B9B7 /* shsc-win.png */,
+				11682AE01536348700D6B9B7 /* sports-golf.png */,
+				11682AE11536348700D6B9B7 /* sports-ncaa.png */,
+				11682AE21536348700D6B9B7 /* sports-nfl.png */,
+				11682AE31536348700D6B9B7 /* sports-soccer.png */,
+				11682AE41536348700D6B9B7 /* sports-wwe.png */,
+				11682AE51536348700D6B9B7 /* sports.png */,
+				11682AE61536348700D6B9B7 /* tech.png */,
+				11682AE71536348700D6B9B7 /* wrestlehut-ecw.png */,
+				11682AE81536348700D6B9B7 /* wrestlehut-thunder.png */,
+				11682AE91536348700D6B9B7 /* wrestlehut-tna.png */,
+				11682AEA1536348700D6B9B7 /* wrestling-raw.png */,
+				11682AEB1536348700D6B9B7 /* wrestling-roh.png */,
+				11682AEC1536348700D6B9B7 /* wrestling-sd.png */,
 				116EF43A15265D390018580D /* ama.png */,
 				116EF43B15265D390018580D /* icon-37-selling.png */,
 				116EF43C15265D390018580D /* icon-38-buying.png */,
@@ -799,6 +943,8 @@
 				112764EB14DB44E6003ACE76 /* AwfulForumHeader.h */,
 				112764EC14DB44E6003ACE76 /* AwfulForumHeader.m */,
 				1190F6DB13BE4EA900B9D271 /* AwfulForumHeaderView.xib */,
+				118CF807152D281600126AAC /* AwfulAddForumsViewController.h */,
+				118CF808152D281600126AAC /* AwfulAddForumsViewController.m */,
 			);
 			path = AwfulForumList;
 			sourceTree = "<group>";
@@ -1352,6 +1498,53 @@
 				116EF44315265D390018580D /* icon-46-trading.png in Resources */,
 				116EF44415265D390018580D /* icon-52-trading.png in Resources */,
 				116EF44515265D390018580D /* tma.png in Resources */,
+				11682AED1536348700D6B9B7 /* attention.png in Resources */,
+				11682AEE1536348700D6B9B7 /* cd_classic.png in Resources */,
+				11682AEF1536348700D6B9B7 /* cd_comedy.png in Resources */,
+				11682AF01536348700D6B9B7 /* computers.png in Resources */,
+				11682AF11536348700D6B9B7 /* diy-advice.png in Resources */,
+				11682AF21536348700D6B9B7 /* flame.png in Resources */,
+				11682AF31536348700D6B9B7 /* fruity.png in Resources */,
+				11682AF41536348700D6B9B7 /* games-3ds.png in Resources */,
+				11682AF51536348700D6B9B7 /* games-360.png in Resources */,
+				11682AF61536348700D6B9B7 /* games-360ps3tag.png in Resources */,
+				11682AF71536348700D6B9B7 /* games-ds.png in Resources */,
+				11682AF81536348700D6B9B7 /* games-letsplay.png in Resources */,
+				11682AF91536348700D6B9B7 /* games-ps3.png in Resources */,
+				11682AFA1536348700D6B9B7 /* games-psp.png in Resources */,
+				11682AFB1536348700D6B9B7 /* Games-vita.png in Resources */,
+				11682AFC1536348700D6B9B7 /* games-wii.png in Resources */,
+				11682AFD1536348700D6B9B7 /* goonmeet.png in Resources */,
+				11682AFE1536348700D6B9B7 /* hell-fuckthis.png in Resources */,
+				11682AFF1536348700D6B9B7 /* hell-hive.png in Resources */,
+				11682B001536348700D6B9B7 /* hell-stfu.png in Resources */,
+				11682B011536348700D6B9B7 /* hell-whore.png in Resources */,
+				11682B021536348700D6B9B7 /* icon-41-game-xbox.png in Resources */,
+				11682B031536348700D6B9B7 /* icon-42-game-ps2.png in Resources */,
+				11682B041536348700D6B9B7 /* icon-43-game-gamecube.png in Resources */,
+				11682B051536348700D6B9B7 /* icon-44-game-gba.png in Resources */,
+				11682B061536348700D6B9B7 /* icon-45-game-pc.png in Resources */,
+				11682B071536348700D6B9B7 /* icon-dear_richard.png in Resources */,
+				11682B081536348700D6B9B7 /* lf-fff.png in Resources */,
+				11682B091536348700D6B9B7 /* lf-fuckit3.png in Resources */,
+				11682B0A1536348700D6B9B7 /* lf-hansen2.png in Resources */,
+				11682B0B1536348700D6B9B7 /* science.png in Resources */,
+				11682B0C1536348700D6B9B7 /* serious.png in Resources */,
+				11682B0D1536348700D6B9B7 /* sex.png in Resources */,
+				11682B0E1536348700D6B9B7 /* shsc-win.png in Resources */,
+				11682B0F1536348700D6B9B7 /* sports-golf.png in Resources */,
+				11682B101536348700D6B9B7 /* sports-ncaa.png in Resources */,
+				11682B111536348700D6B9B7 /* sports-nfl.png in Resources */,
+				11682B121536348700D6B9B7 /* sports-soccer.png in Resources */,
+				11682B131536348700D6B9B7 /* sports-wwe.png in Resources */,
+				11682B141536348700D6B9B7 /* sports.png in Resources */,
+				11682B151536348700D6B9B7 /* tech.png in Resources */,
+				11682B161536348700D6B9B7 /* wrestlehut-ecw.png in Resources */,
+				11682B171536348700D6B9B7 /* wrestlehut-thunder.png in Resources */,
+				11682B181536348700D6B9B7 /* wrestlehut-tna.png in Resources */,
+				11682B191536348700D6B9B7 /* wrestling-raw.png in Resources */,
+				11682B1A1536348700D6B9B7 /* wrestling-roh.png in Resources */,
+				11682B1B1536348700D6B9B7 /* wrestling-sd.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1438,6 +1631,7 @@
 				116EF41C15251CDB0018580D /* AwfulUser.m in Sources */,
 				116EF42D1526588C0018580D /* AwfulThread.m in Sources */,
 				118CF798152C05BA00126AAC /* AwfulForum.m in Sources */,
+				118CF809152D281600126AAC /* AwfulAddForumsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

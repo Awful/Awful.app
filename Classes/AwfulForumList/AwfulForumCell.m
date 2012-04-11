@@ -69,9 +69,4 @@
     [self.forumsList toggleExpandForForumSection:self.section];
 }
 
--(IBAction)tappedStar : (id)sender
-{
-    [self.forumsList toggleFavoriteForForumSection:self.section];
-}
-
 @end
