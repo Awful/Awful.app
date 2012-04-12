@@ -1667,7 +1667,6 @@
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/3rd Party Sources\"",
-					"\"$(SRCROOT)/3rd Party Sources/CrashReporter\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Awful_Prefix.pch;
@@ -1700,7 +1699,6 @@
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/3rd Party Sources\"",
-					"\"$(SRCROOT)/3rd Party Sources/CrashReporter\"",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1733,7 +1731,6 @@
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/3rd Party Sources\"",
-					"\"$(SRCROOT)/3rd Party Sources/CrashReporter\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Awful_Prefix.pch;

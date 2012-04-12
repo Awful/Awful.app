@@ -20,7 +20,7 @@
 @property (nonatomic, assign) NSUInteger newestPostIndex;
 @property (nonatomic, strong) NSString *userAd;
 
--(id)initWithResponseData : (NSData *)responseData pagePath : (NSString *)pagePath;
+-(id)initWithResponseData : (NSData *)responseData pageURL : (NSURL *)pageURL;
 -(NSString *)constructedPageHTML;
 -(NSString *)calculatePostIDScrollDestination;
 -(BOOL)shouldScrollToBottom;
