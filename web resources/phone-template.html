@@ -1,7 +1,14 @@
 <html>
 <head>
 <meta name='viewport' content='width=device-width, minimum-scale=1.0, maximum-scale=1.0'>
-<script type='text/javascript'>{%JAVASCRIPT%}</script>
+{{#javascripts}}
+<script type='text/javascript'>{{{.}}}</script>
+{{/javascripts}}
+<script type='text/javascript'>
+$(document).ready(function() {
+  new SALR({{{salrConfig}}});
+});
+</script>
 <style type='text/css'>
 html {
     margin:0px;
@@ -151,32 +158,39 @@ blockquote img {
 </style>
 </head>
 <body>
-<script type='text/javascript'>{%SALR_EXECUTION%}</script>
     
-{%POSTS_BEGIN%}
-<table id='{%POST_ID%}' class='userbox {%OP%}'>
+{{#posts}}
+<table id='{{postID}}' class='userbox {{#isOP}}op{{/isOP}}'>
     <tr>
-        {%AVATAR_BEGIN%}<td class='avatar_td'><img class='avatar_img' src='{%AVATAR_URL%}'/></td>{%AVATAR_END%}
+        {{#avatarURL}}
+        <td class='avatar_td'>
+            <img class='avatar_img' src='{{avatarURL}}'/>
+        </td>
+        {{/avatarURL}}
         <td class='name_date_box'>
-            <span class='username {%OP%}'>
-                {%MOD_BEGIN%}<img src='http://www.regularberry.com/awful/star_moderator.gif'/>&nbsp;{%MOD_END%}
-                {%ADMIN_BEGIN%}<img src='http://www.regularberry.com/awful/star_admin.gif'/>&nbsp;{%ADMIN_END%}
-                {%POSTER_NAME%}
+            <span class='username {{#isOP}}op{{/isOP}}'>
+                {{#isMod}}
+                <img src="http://www.regularberry.com/awful/star_moderator.gif"/>&nbsp;
+                {{/isMod}}
+                {{#isAdmin}}
+                <img src="http://www.regularberry.com/awful/star_admin.gif"/>&nbsp;
+                {{/isAdmin}}
+                {{posterName}}
             </span><br/>
-            <span class='post_date'>Posted on {%POST_DATE%}</span>
+            <span class='post_date'>Posted on {{postDate}}</span>
         </td>
         <td></td>
-        <td class='quotebutton' onclick=tappedPost('{%POST_ID%}')>
-            <img class='postaction' src='http://www.regularberry.com/awful/post-action-icon.png'/>
+        <td class='quotebutton' onclick=tappedPost('{{postID}}')>
+            <img class='postaction' src="http://www.regularberry.com/awful/post-action-icon.png"/>
         </td>
     </tr>
 </table>
-<div class='postbodymain {%ALT_CLASS%}'>
-    <div class='postbodysub'>{%POST_BODY%}</div>
+<div class='postbodymain {{altCSSClass}}'>
+    <div class='postbodysub'>{{{postBody}}}</div>
 </div>
-{%POSTS_END%}
+{{/posts}}
                     
-<div class='ad'>{%USER_AD%}</div>
-<div class='pagesleft' onclick=tappedBottom()>{%PAGES_LEFT_MESSAGE%}</div>
+<div class='ad'>{{{userAd}}}</div>
+<div class='pagesleft' onclick=tappedBottom()>{{pagesLeftNotice}}</div>
 </body>
 </html>

@@ -14,41 +14,90 @@
 #import "AwfulPageDataController.h"
 #import "AwfulPageCount.h"
 #import "SALR.h"
+#import "GRMustacheTemplate.h"
 
-@implementation AwfulPageTemplate
+@interface PostContext : NSObject
 
-@synthesize mainHTML = _mainHTML;
-@synthesize postHTML = _postHTML;
+// Designated initializer.
+- (id)initWithPost:(AwfulPost *)post;
 
--(id)initWithTemplateString : (NSString *)html
+@property (strong) NSString *postID;
+@property (assign) BOOL isOP;
+@property (strong) NSString *avatarURL;
+@property (assign) BOOL isMod;
+@property (assign) BOOL isAdmin;
+@property (strong) NSString *posterName;
+@property (strong) NSString *postDate;
+
+// either 'altcolor1', 'altcolor2', 'seen1', or 'seen2' depending on the post index (even/odd)
+@property (strong) NSString *altCSSClass;
+
+@property (strong) NSString *postBody;
+
+@end
+
+@implementation PostContext
+
+static NSString *AwfulifiedPostBody(NSString *body);
+
+- (id)initWithPost:(AwfulPost *)post
 {
-    if((self=[super init])) {
-        _mainHTML = html;
+    self = [super init];
+    if (self)
+    {
+        _postID = post.postID;
+        _isOP = post.isOP;
+        _avatarURL = [AwfulConfig showAvatars] ? [post.avatarURL absoluteString] : nil;
+        _isMod = post.posterType == AwfulUserTypeMod;
+        _isAdmin = post.posterType == AwfulUserTypeAdmin;
+        _posterName = post.posterName;
+        _postDate = post.postDate;
+        _altCSSClass = post.altCSSClass;
+        _postBody = AwfulifiedPostBody(post.postBody);
     }
     return self;
 }
--(NSString *)parseEmbeddedVideos : (NSString *)html
+
+static NSString *AwfulifiedPostBody(NSString *body)
 {
-    TFHpple *base = [[TFHpple alloc] initWithHTMLData:[html dataUsingEncoding:NSUTF8StringEncoding]];
-    NSString *parsed = html;
+    TFHpple *base = [[TFHpple alloc] initWithHTMLData:[body dataUsingEncoding:NSUTF8StringEncoding]];
+    NSMutableString *awfulified = [body mutableCopy];
     
+    // Replace images with links if so desired.
+    if (![AwfulConfig showImages]) {
+        NSArray *objects = [base search:@"//img"];
+        NSArray *object_strs = [base rawSearch:@"//img"];
+        for(int i = 0; i < [objects count]; i++) {
+            TFHppleElement *el = [objects objectAtIndex:i];
+            NSString *src = [el objectForKey:@"src"];
+            NSString *reformed = [NSString stringWithFormat:@"<a href='%@'>IMG LINK</a>", src];
+            [awfulified replaceOccurrencesOfString:[object_strs objectAtIndex:i]
+                                        withString:reformed
+                                           options:0
+                                             range:NSMakeRange(0, awfulified.length)];
+        }
+    }
+    
+    // Replace embedded youtube/vimeo with links.
     NSArray *objects = [base search:@"//object/param[@name='movie']"];
     NSArray *object_strs = [base rawSearch:@"//object"];
     
-    for(int i = 0; i < [objects count]; i++) {
+    for (int i = 0; i < [objects count]; i++) {
         TFHppleElement *el = [objects objectAtIndex:i];
         NSRange r = [[el objectForKey:@"value"] rangeOfString:@"youtube"];
-        if(r.location != NSNotFound) {
+        if (r.location != NSNotFound) {
             NSURL *youtube_url = [NSURL URLWithString:[el objectForKey:@"value"]];
-            
             NSString *youtube_str = [NSString stringWithFormat:@"http://www.youtube.com/watch?v=%@", [youtube_url lastPathComponent]];
             NSString *reformed_youtube = [NSString stringWithFormat:@"<a href='%@'>Embedded YouTube</a>", youtube_str];
-            if(i < [object_strs count]) {
-                parsed = [parsed stringByReplacingOccurrencesOfString:[object_strs objectAtIndex:i] withString:reformed_youtube];
+            if (i < [object_strs count]) {
+                [awfulified replaceOccurrencesOfString:[object_strs objectAtIndex:i]
+                                            withString:reformed_youtube
+                                               options:0
+                                                 range:NSMakeRange(0, awfulified.length)];
             }
         } else {
             r = [[el objectForKey:@"value"] rangeOfString:@"vimeo"];
-            if(r.location != NSNotFound) {
+            if (r.location != NSNotFound) {
                 NSRange clip = [[el objectForKey:@"value"] rangeOfString:@"clip_id="];
                 NSRange and = [[el objectForKey:@"value"] rangeOfString:@"&"];
                 NSRange clip_range;
@@ -56,142 +105,104 @@
                 clip_range.length = and.location - clip.location - 8;
                 NSString *clip_id = [[el objectForKey:@"value"] substringWithRange:clip_range];
                 NSString *reformed_vimeo = [NSString stringWithFormat:@"<a href='http://www.vimeo.com/m/#/%@'>Embedded Vimeo</a>", clip_id];
-                parsed = [parsed stringByReplacingOccurrencesOfString:[object_strs objectAtIndex:i] withString:reformed_vimeo];
+                [awfulified replaceOccurrencesOfString:[object_strs objectAtIndex:i]
+                                            withString:reformed_vimeo
+                                               options:0
+                                                 range:NSMakeRange(0, awfulified.length)];
             }
         }
     }
     
-    return parsed;
+    // TODO what's going on here?
+    [awfulified replaceOccurrencesOfString:@"&#13;"
+                                withString:@""
+                                   options:0
+                                     range:NSMakeRange(0, awfulified.length)];
+    
+    return awfulified;
 }
 
--(NSString *)parseOutImages : (NSString *)html
-{
-    TFHpple *base = [[TFHpple alloc] initWithHTMLData:[html dataUsingEncoding:NSUTF8StringEncoding]];
-    NSString *parsed = html;
-    
-    NSArray *objects = [base search:@"//img"];
-    NSArray *object_strs = [base rawSearch:@"//img"];
-    
-    for(int i = 0; i < [objects count]; i++) {
-        TFHppleElement *el = [objects objectAtIndex:i];
-        NSString *src = [el objectForKey:@"src"];
-        NSString *reformed = [NSString stringWithFormat:@"<a href='%@'>IMG LINK</a>", src];
-        parsed = [parsed stringByReplacingOccurrencesOfString:[object_strs objectAtIndex:i] withString:reformed];
-    }
-    
-    return parsed;
-}
+@synthesize postID = _postID;
+@synthesize isOP = _isOP;
+@synthesize avatarURL = _avatarURL;
+@synthesize isMod = _isMod;
+@synthesize isAdmin = _isAdmin;
+@synthesize posterName = _posterName;
+@synthesize postDate = _postDate;
+@synthesize altCSSClass = _altCSSClass;
+@synthesize postBody = _postBody;
 
--(NSString *)getPostActionImageHTML
-{
-    return @"<img class='postaction' src='http://www.regularberry.com/awful/post-action-icon.png'/>";
-}
+@end
 
--(NSString *)getModImageHTML
-{
-    return @"<img src='http://www.regularberry.com/awful/star_moderator.gif'/>&nbsp;";
-}
+@interface AwfulPageTemplate ()
 
--(NSString *)getAdminImageHTML
-{
-    return @"<img src='http://www.regularberry.com/awful/star_admin.gif'/>&nbsp;";
-}
+@property (readonly, nonatomic) NSArray *javascripts;
+@property (readonly, nonatomic) NSString *salrConfig;
+@property (strong) NSArray *posts;
+@property (strong) NSString *pagesLeftNotice;
+@property (strong) NSString *userAd;
+@property (assign) BOOL showAvatars;
 
--(NSString *)constructHTMLForPost : (AwfulPost *)post withPostTemplate : (NSString *)postTemplate
-{    
-    NSString *parsed_post_body = post.postBody;
-    
-    if(![AwfulConfig showImages]) {
-        parsed_post_body = [self parseOutImages:parsed_post_body];
-    }
-    parsed_post_body = [self parseEmbeddedVideos:parsed_post_body];
-    parsed_post_body = [parsed_post_body stringByReplacingOccurrencesOfString:@"&#13;" withString:@""];
-    
-    NSString *html = [postTemplate stringByReplacingOccurrencesOfString:@"{%POST_ID%}" withString:post.postID];
-        
-    if(post.avatarURL == nil || ![AwfulConfig showAvatars]) {
-        html = [html stringByTrimmingBetweenBeginString:@"{%AVATAR_BEGIN%}" endString:@"{%AVATAR_END%}"];
-    } else {
-        html = [html stringByRemovingStrings:@"{%AVATAR_BEGIN%}", @"{%AVATAR_END%}", nil];
-        html = [html stringByReplacingOccurrencesOfString:@"{%AVATAR_URL%}" withString:[post.avatarURL absoluteString]];
-    }
-    
-    html = [html stringByReplacingOccurrencesOfString:@"{%POST_DATE%}" withString:post.postDate];
-    html = [html stringByReplacingOccurrencesOfString:@"{%ALT_CLASS%}" withString:post.altCSSClass];
-    
-    if(post.isOP) {
-        html = [html stringByReplacingOccurrencesOfString:@"{%OP%}" withString:@"op"];
-    } else {
-        html = [html stringByReplacingOccurrencesOfString:@"{%OP%}" withString:@""];
-    }
-    
-    if(post.posterType == AwfulUserTypeMod) {
-        html = [html stringByRemovingStrings:@"{%MOD_BEGIN%}", @"{%MOD_END%}", nil];
-    } else {
-        html = [html stringByTrimmingBetweenBeginString:@"{%MOD_BEGIN%}" endString:@"{%MOD_END%}"];
-    }
-    
-    if(post.posterType == AwfulUserTypeAdmin) {
-        html = [html stringByRemovingStrings:@"{%ADMIN_BEGIN%}", @"{%ADMIN_END%}", nil];
-    } else {
-        html = [html stringByTrimmingBetweenBeginString:@"{%ADMIN_BEGIN%}" endString:@"{%ADMIN_END%}"];
-    }
-        
-    /* prevent someone from naming themselves %POST_BODY% and messing up the format
-    // the alternative was to let users put %POSTER_NAME% in their post body and have it sub in their name
-    // this way only a guy named %POST_BODY% will have a slightly altered name */
-    NSString *parsed_name = [post.posterName stringByReplacingOccurrencesOfString:@"{%POST_BODY%}" withString:@"POST_BODY"];
-    html = [html stringByReplacingOccurrencesOfString:@"{%POSTER_NAME%}" withString:parsed_name];
-    html = [html stringByReplacingOccurrencesOfString:@"{%POST_BODY%}" withString:parsed_post_body];
-   
-    return html;
-}
+@end
+
+@implementation AwfulPageTemplate
 
 -(NSString *)constructHTMLFromPageDataController : (AwfulPageDataController *)dataController
 {
-    NSString *pages_left_str = @"";
+    self.userAd = dataController.userAd;
+    
     NSUInteger pages_left = [dataController.pageCount getPagesLeft];
     if(pages_left > 1) {
-        pages_left_str = [NSString stringWithFormat:@"%d pages left.", pages_left];
+        self.pagesLeftNotice = [NSString stringWithFormat:@"%d pages left.", pages_left];
     } else if(pages_left == 1) {
-        pages_left_str = @"1 page left.";
+        self.pagesLeftNotice = @"1 page left.";
     } else {
-        pages_left_str = @"End of the thread.";
+        self.pagesLeftNotice = @"End of the thread.";
     }
     
-    NSString *js = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"jquery" ofType:@"js"] encoding:NSUTF8StringEncoding error:nil];
-    
-    NSString *salr = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"salr" ofType:@"js"] encoding:NSUTF8StringEncoding error:nil];
-    
-    js = [js stringByAppendingString:salr];
-        
-    // Fire off SALR
-    NSString *salr_config = [SALR config];
-    NSString *salrOpts = @"";
-    if(![salr_config isEqualToString:@""]) {
-        salrOpts = [NSString stringWithFormat:@"$(document).ready(function() { new SALR(%@); });", salr_config];
-    }
-    
-    NSString *post_template = [self.mainHTML substringBetweenBeginString:@"{%POSTS_BEGIN%}" endString:@"{%POSTS_END%}"];
-    
-    NSString *combined = @"";
+    NSMutableArray *posts = [NSMutableArray array];
     for(AwfulPost *post in dataController.posts) {
-        combined = [combined stringByAppendingString:[self constructHTMLForPost:post withPostTemplate:post_template]];
+        [posts addObject:[[PostContext alloc] initWithPost:post]];
     }
+    self.posts = posts;
     
-    NSString *html = [self.mainHTML stringByReplacingOccurrencesOfString:@"{%JAVASCRIPT%}" withString:js];
-    html = [html stringByReplacingOccurrencesOfString:@"{%SALR_EXECUTION%}" withString:salrOpts];
-    html = [html stringByReplacingOccurrencesOfString:@"{%PAGES_LEFT_MESSAGE%}" withString:pages_left_str];
-    html = [html stringByReplacingOccurrencesOfString:@"{%USER_AD%}" withString:dataController.userAd];
-    
-    NSRange posts_begin = [html rangeOfString:@"{%POSTS_BEGIN%}"];
-    html = [html stringByTrimmingBetweenBeginString:@"{%POSTS_BEGIN%}" endString:@"{%POSTS_END%}"];
-    NSString *before = [html substringToIndex:posts_begin.location];
-    NSString *after = [html substringFromIndex:posts_begin.location];
-    html = [NSString stringWithFormat:@"%@%@%@", before, combined, after];
-    
-    return html;
+    NSString *resource = @"phone-template";
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+        resource = @"pad-template";
+    NSError *mustacheError;
+    return [GRMustacheTemplate renderObject:self
+                               fromResource:resource
+                              withExtension:@"html"
+                                     bundle:nil
+                                      error:&mustacheError];
 }
+
+@synthesize javascripts = _javascripts;
+
+- (NSArray *)javascripts
+{
+    if (!_javascripts)
+    {
+        _javascripts = [NSArray arrayWithObjects:
+                        [NSString awful_stringResource:@"jquery" withExtension:@"js"],
+                        [NSString awful_stringResource:@"salr" withExtension:@"js"],
+                        nil];
+    }
+    return _javascripts;
+}
+
+- (NSString *)salrConfig
+{
+    return [SALR config];
+}
+
+@synthesize posts = _posts;
+
+@synthesize pagesLeftNotice = _pagesLeftNotice;
+
+@synthesize userAd = _userAd;
+
+@synthesize showAvatars = _showAvatars;
 
 @end
 
@@ -230,33 +241,25 @@
     return @"";
 }
 
++ (NSString *)awful_stringResource:(NSString *)name withExtension:(NSString *)extension
+{
+    NSURL *url = [[NSBundle mainBundle] URLForResource:name withExtension:extension];
+    if (!url)
+        return nil;
+    NSError *error;
+    NSString *string = [[NSString alloc] initWithContentsOfURL:url
+                                                      encoding:NSUTF8StringEncoding
+                                                         error:&error];
+    if (!string)
+        NSLog(@"error fetching string from file %@.%@: %@", name, extension, error);
+    return string;
+}
+
 @end
 
-
-/* Notes:
- 
- One element needs an id of {%POST_ID%} so the app knows where to scroll down to for the 'newest post'.
-
- If the post if made by the OP, {%OP%} will insert 'op' (without the ''), otherwise it will just leave it blank
- {%MOD_BEGIN%} --- {%MOD_END%} will insert that html if the poster is a mod, same with {%ADMIN_BEGIN%} -- {%ADMIN_END%]
- Same with {%AVATAR_BEGIN%} etc... nothing will be put in if they don't have an avatar or if they have avatars turned off in settings.
- {%AVATAR_URL%} puts in the full url
-
-{%POSTER_NAME%}, {%POST_DATE%}, {%POST_BODY%} are self explanatory
- 
-tappedPost('{%POST_ID%}') is some javascript that will show the post actions in the app. E.g. 'Quote', 'Mark up to here', etc...
- 
-{%ALT_CLASS%} inserts either 'altcolor1', 'altcolor2', 'seen1', or 'seen2' depending on the post index (even/odd)
- 
-{%PAGES_LEFT_MESSAGE%} is either 'x pages left.' '1 page left.' or 'End of the thread.'
-
-the tappedBottom() javascript triggers a 'next page' call if there are pages left
- 
-{%JAVASCRIPT%} inserts those functions I need
-{%SALR_EXECUTION%} is for SALR
- 
- {%POSTS_BEGIN%} - {%POSTS_END%} will iterate over all of the posts using the template specified between POSTS_BEGIN/POSTS_END
- 
-{%USER_AD%} inserts the user ad image
-
+/*
+Notes:
+  - One element needs an id of {%POST_ID%} so the app knows where to scroll down to for the 'newest post'.
+  - tappedPost('{%POST_ID%}') is some javascript that will show the post actions in the app. E.g. 'Quote', 'Mark up to here', etc...
+  - the tappedBottom() javascript triggers a 'next page' call if there are pages left
 */

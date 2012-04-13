@@ -13,13 +13,6 @@
 
 @interface AwfulPageTemplate : NSObject
 
-@property (nonatomic, strong) NSString *mainHTML;
-@property (nonatomic, strong) NSString *postHTML;
-
--(id)initWithTemplateString : (NSString *)html;
--(NSString *)parseOutImages : (NSString *)html;
--(NSString *)parseEmbeddedVideos : (NSString *)html;
--(NSString *)constructHTMLForPost : (AwfulPost *)post withPostTemplate : (NSString *)postTemplate;
 -(NSString *)constructHTMLFromPageDataController : (AwfulPageDataController *)dataController;
 
 @end
@@ -29,5 +22,6 @@
 -(NSString *)stringByTrimmingBetweenBeginString : (NSString *)beginString endString : (NSString *)endString;
 -(NSString *)stringByRemovingStrings : (NSString *)first, ... NS_REQUIRES_NIL_TERMINATION;
 -(NSString *)substringBetweenBeginString : (NSString *)beginString endString : (NSString *)endString;
++ (NSString *)awful_stringResource:(NSString *)name withExtension:(NSString *)extension;
 
 @end

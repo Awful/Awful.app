@@ -248,8 +248,6 @@
 
 -(NSString *)constructedPageHTML
 {
-    NSString *html = nil;
-    
     /*NSUbiquitousKeyValueStore *keyStore = [NSUbiquitousKeyValueStore defaultStore];
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone && [keyStore objectForKey:@"phone-template"]) {
         html = [keyStore objectForKey:@"phone-template"];
@@ -257,17 +255,7 @@
         html = [keyStore objectForKey:@"pad-template"];
     }*/
     
-    if(html == nil) {
-        NSString *filename = @"phone-template";
-        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            filename = @"pad-template";
-        }
-    
-        html = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:filename ofType:@"html"] encoding:NSUTF8StringEncoding error:nil];
-    }
-    
-
-    AwfulPageTemplate *template = [[AwfulPageTemplate alloc] initWithTemplateString:html];
+    AwfulPageTemplate *template = [[AwfulPageTemplate alloc] init];
     return [template constructHTMLFromPageDataController:self];
 }
 
