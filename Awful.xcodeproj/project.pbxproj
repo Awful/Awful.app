@@ -729,7 +729,6 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				11D5E85A14DC6D3E00C1002D /* Templates */,
 				1190F6CC13BE4EA900B9D271 /* Actions */,
 				1190F6D713BE4EA900B9D271 /* AwfulForumList */,
 				1190F70513BE4EA900B9D271 /* AwfulThreadList */,
@@ -739,6 +738,7 @@
 				1190F71813BE4EA900B9D271 /* Login */,
 				1190F71C13BE4EA900B9D271 /* Main */,
 				1190F72013BE4EA900B9D271 /* Models */,
+				11D5E85A14DC6D3E00C1002D /* Templates */,
 				1190F72B13BE4EA900B9D271 /* Util */,
 			);
 			path = Classes;
