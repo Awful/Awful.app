@@ -290,6 +290,7 @@
 		1CDF7A4B1537C157008EFAE4 /* GRMustacheTokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A241537C157008EFAE4 /* GRMustacheTokenizer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		1CDF7A4C1537C157008EFAE4 /* GRMustacheVariableElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A261537C157008EFAE4 /* GRMustacheVariableElement.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		1CDF7A5A1537C157008EFAE4 /* JRSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A3C1537C157008EFAE4 /* JRSwizzle.m */; };
+		1CDF7A5E1537DD2D008EFAE4 /* PostContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A5D1537DD2D008EFAE4 /* PostContext.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765080DF74369002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765070DF74369002DB57D /* CoreGraphics.framework */; };
@@ -689,6 +690,8 @@
 		1CDF7A281537C157008EFAE4 /* GRMustacheVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustacheVersion.h; sourceTree = "<group>"; };
 		1CDF7A3B1537C157008EFAE4 /* JRSwizzle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRSwizzle.h; sourceTree = "<group>"; };
 		1CDF7A3C1537C157008EFAE4 /* JRSwizzle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRSwizzle.m; sourceTree = "<group>"; };
+		1CDF7A5C1537DD2D008EFAE4 /* PostContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PostContext.h; path = Templates/PostContext.h; sourceTree = "<group>"; };
+		1CDF7A5D1537DD2D008EFAE4 /* PostContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PostContext.m; path = Templates/PostContext.m; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* Awful.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Awful.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -1259,6 +1262,8 @@
 			children = (
 				11D5E85B14DC6D5C00C1002D /* AwfulPageTemplate.h */,
 				11D5E85C14DC6D5C00C1002D /* AwfulPageTemplate.m */,
+				1CDF7A5C1537DD2D008EFAE4 /* PostContext.h */,
+				1CDF7A5D1537DD2D008EFAE4 /* PostContext.m */,
 				116D3A5F14DDC9E40002129F /* phone-template.html */,
 				116D3A6214DDD71C0002129F /* pad-template.html */,
 			);
@@ -1786,6 +1791,7 @@
 				1CDF7A4B1537C157008EFAE4 /* GRMustacheTokenizer.m in Sources */,
 				1CDF7A4C1537C157008EFAE4 /* GRMustacheVariableElement.m in Sources */,
 				1CDF7A5A1537C157008EFAE4 /* JRSwizzle.m in Sources */,
+				1CDF7A5E1537DD2D008EFAE4 /* PostContext.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,20 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-@class AwfulPost;
 @class AwfulPageDataController;
 
 @interface AwfulPageTemplate : NSObject
 
--(NSString *)constructHTMLFromPageDataController : (AwfulPageDataController *)dataController;
-
-@end
-
-@interface NSString (AwfulAdditions)
-
--(NSString *)stringByTrimmingBetweenBeginString : (NSString *)beginString endString : (NSString *)endString;
--(NSString *)stringByRemovingStrings : (NSString *)first, ... NS_REQUIRES_NIL_TERMINATION;
--(NSString *)substringBetweenBeginString : (NSString *)beginString endString : (NSString *)endString;
-+ (NSString *)awful_stringResource:(NSString *)name withExtension:(NSString *)extension;
+- (NSString *)renderWithPageDataController:(AwfulPageDataController *)dataController;
 
 @end

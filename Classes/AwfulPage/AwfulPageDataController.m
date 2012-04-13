@@ -28,6 +28,8 @@
 -(NSUInteger)parseNewPostIndex : (NSURL *)pageURL;
 -(NSString *)parseUserAdHTML : (TFHpple *)parser;
 
+@property (readonly, nonatomic) AwfulPageTemplate *template;
+
 @end
 
 @implementation AwfulPageDataController
@@ -246,6 +248,16 @@
     return @"";
 }
 
+@synthesize template = _template;
+
+- (AwfulPageTemplate *)template
+{
+    if (!_template) {
+        _template = [[AwfulPageTemplate alloc] init];
+    }
+    return _template;
+}
+
 -(NSString *)constructedPageHTML
 {
     /*NSUbiquitousKeyValueStore *keyStore = [NSUbiquitousKeyValueStore defaultStore];
@@ -255,8 +267,7 @@
         html = [keyStore objectForKey:@"pad-template"];
     }*/
     
-    AwfulPageTemplate *template = [[AwfulPageTemplate alloc] init];
-    return [template constructHTMLFromPageDataController:self];
+    return [self.template renderWithPageDataController:self];
 }
 
 -(NSString *)calculatePostIDScrollDestination
