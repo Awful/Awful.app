@@ -28,6 +28,8 @@
 -(NSUInteger)parseNewPostIndex : (NSURL *)pageURL;
 -(NSString *)parseUserAdHTML : (TFHpple *)parser;
 
+@property (readonly, nonatomic) AwfulPageTemplate *template;
+
 @end
 
 @implementation AwfulPageDataController
@@ -246,10 +248,18 @@
     return @"";
 }
 
+@synthesize template = _template;
+
+- (AwfulPageTemplate *)template
+{
+    if (!_template) {
+        _template = [[AwfulPageTemplate alloc] init];
+    }
+    return _template;
+}
+
 -(NSString *)constructedPageHTML
 {
-    NSString *html = nil;
-    
     /*NSUbiquitousKeyValueStore *keyStore = [NSUbiquitousKeyValueStore defaultStore];
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone && [keyStore objectForKey:@"phone-template"]) {
         html = [keyStore objectForKey:@"phone-template"];
@@ -257,18 +267,7 @@
         html = [keyStore objectForKey:@"pad-template"];
     }*/
     
-    if(html == nil) {
-        NSString *filename = @"phone-template";
-        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            filename = @"pad-template";
-        }
-    
-        html = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:filename ofType:@"html"] encoding:NSUTF8StringEncoding error:nil];
-    }
-    
-
-    AwfulPageTemplate *template = [[AwfulPageTemplate alloc] initWithTemplateString:html];
-    return [template constructHTMLFromPageDataController:self];
+    return [self.template renderWithPageDataController:self];
 }
 
 -(NSString *)calculatePostIDScrollDestination
