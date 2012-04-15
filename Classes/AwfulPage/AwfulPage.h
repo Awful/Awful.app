@@ -32,7 +32,6 @@ typedef enum {
 @property (nonatomic, strong) NSString *url;
 @property (nonatomic, assign) AwfulPageDestinationType destinationType;
 @property (nonatomic, strong) IBOutlet JSBridgeWebView *webView;
-@property (nonatomic, strong) IBOutlet UIView *bottomView;
 @property (nonatomic, strong) IBOutlet UIToolbar *toolbar;
 
 @property BOOL isBookmarked;
@@ -70,12 +69,6 @@ typedef enum {
 -(IBAction)segmentedGotTapped : (id)sender;
 -(IBAction)tappedPagesSegment : (id)sender;
 -(IBAction)tappedActionsSegment : (id)sender;
-
--(void)swiped : (UISwipeGestureRecognizer *)swiper;
--(CGFloat)getHiddenBottomViewY;
--(CGFloat)getRevealedBottomViewY;
--(IBAction)revealBottomView : (id)sender;
--(IBAction)hideBottomView : (id)sender;
 
 -(void)refresh;
 -(void)loadPageNum : (NSUInteger)pageNum;

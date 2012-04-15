@@ -39,7 +39,6 @@
 @synthesize thread = _thread;
 @synthesize url = _url;
 @synthesize webView = _webView;
-@synthesize bottomView = _bottomView;
 @synthesize toolbar = _toolbar;
 @synthesize isBookmarked = _isBookmarked;
 @synthesize pages = _pages;
@@ -291,87 +290,6 @@
 
 #pragma mark - BarButtonItem Actions
 
--(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    UITouch *touch = [touches anyObject];
-    CGPoint loc = [touch locationInView:self.view];
-    CGRect frame = self.bottomView.frame;
-    CGFloat potential_y = loc.y-22;
-    potential_y = MIN(self.view.frame.size.height-44, potential_y);
-    potential_y = MAX(self.view.frame.size.height-self.bottomView.frame.size.height, potential_y);
-    frame.origin.y = potential_y;
-    [self.bottomView setFrame:frame];
-    
-    CGPoint last_loc = [touch previousLocationInView:self.view];
-    if(last_loc.y > loc.y) {
-        self.draggingUp = YES;
-    } else {
-        self.draggingUp = NO;
-    }
-}
-
--(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    if(self.draggingUp) {
-        if(self.bottomView.frame.origin.y != [self getRevealedBottomViewY]) {
-            [self revealBottomView:nil];
-        }
-    } else {
-        if(self.bottomView.frame.origin.y != [self getHiddenBottomViewY]) {
-            [self hideBottomView:nil];
-        }
-    }
-}
-
--(void)swiped : (UISwipeGestureRecognizer *)swiper
-{
-    if(swiper.state == UIGestureRecognizerStateEnded) {
-        if(swiper.direction == UISwipeGestureRecognizerDirectionDown) {
-            [self hideBottomView:nil];
-        } else if(swiper.direction == UISwipeGestureRecognizerDirectionUp) {
-            [self revealBottomView:nil];
-        }
-    }
-}
-       
--(CGFloat)getHiddenBottomViewY
-{
-    return self.view.frame.size.height-44;
-}
-
--(CGFloat)getRevealedBottomViewY
-{
-    return self.view.frame.size.height-self.bottomView.frame.size.height;
-}
-
--(IBAction)revealBottomView : (id)sender
-{
-    [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationCurveEaseInOut animations:^(void){
-        
-        CGFloat y = [self getRevealedBottomViewY];
-        CGRect frame = self.bottomView.frame;
-        frame.origin.y = y;
-        self.bottomView.frame = frame;
-        
-    } completion:^(BOOL finished) {
-        
-    }];
-}
-
--(IBAction)hideBottomView : (id)sender
-{
-    [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationCurveEaseInOut animations:^(void){
-        
-        CGFloat y = [self getHiddenBottomViewY];
-        CGRect frame = self.bottomView.frame;
-        frame.origin.y = y;
-        self.bottomView.frame = frame;
-        
-    } completion:^(BOOL finished) {
-        
-    }];
-}
-
 -(void)updatePagesLabel
 {
     self.pagesBarButtonItem.title = [NSString stringWithFormat:@"Page %d of %d", self.pages.currentPage, self.pages.totalPages];
@@ -485,7 +403,6 @@
         sp_view.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, sp_view.frame.size.height);
         
         [self.view addSubview:sp_view];
-        [self.view addSubview:self.bottomView];
         [UIView animateWithDuration:0.3 animations:^(void) {
             sp_view.frame = CGRectOffset(sp_view.frame, 0, -sp_view.frame.size.height);
         }];
