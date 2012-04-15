@@ -20,7 +20,7 @@ Please, if you put your own app derived from Awful on the App Store, abide by th
 Build
 -----
 
-1. Grab code: `git clone https://nolanw@github.com/regularberry/Awful.git`
+1. Grab code: `git clone https://github.com/regularberry/Awful.git`
 2. Grab submodules: `cd Awful && git submodule update --init`
 3. Open Xcode project and build away: `open Awful.xcodeproj`
 
