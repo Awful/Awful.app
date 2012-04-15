@@ -8,14 +8,12 @@
 
 #import "AwfulActions.h"
 
-@class AwfulPage;
+@class AwfulThread;
 
 @interface AwfulThreadActions : AwfulActions
 
-@property (nonatomic, strong) AwfulPage *page;
+@property (readonly, strong) AwfulThread *thread;
 
--(id)initWithAwfulPage : (AwfulPage *)aPage;
--(void)addBookmark;
--(void)removeBookmark;
+-(id)initWithThread : (AwfulThread *)thread;
 
 @end

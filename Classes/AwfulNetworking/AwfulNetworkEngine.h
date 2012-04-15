@@ -30,6 +30,8 @@ typedef void (^ForumsListResponseBlock)(NSMutableArray *forums);
 
 -(MKNetworkOperation *)userInfoRequestOnCompletion : (UserResponseBlock)userResponseBlock onError : (MKNKErrorBlock)errorBlock;
 
+-(MKNetworkOperation *)addBookmarkedThread : (AwfulThread *)thread onCompletion : (CompletionBlock)completionBlock onError : (MKNKErrorBlock)errorBlock;
+
 -(MKNetworkOperation *)removeBookmarkedThread : (AwfulThread *)thread onCompletion : (CompletionBlock)completionBlock onError : (MKNKErrorBlock)errorBlock;
 
 -(MKNetworkOperation *)forumsListOnCompletion : (ForumsListResponseBlock)forumsListResponseBlock onError : (MKNKErrorBlock)errorBlock;
