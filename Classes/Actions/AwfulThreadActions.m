@@ -7,7 +7,7 @@
 //
 
 #import "AwfulThreadActions.h"
-#import "AwfulPage.h"
+#import "AwfulThread.h"
 #import "AwfulPageCount.h"
 #import "AwfulPostBoxController.h"
 #import "AwfulAppDelegate.h"
@@ -21,29 +21,28 @@ typedef enum {
     AwfulThreadActionScrollToBottom,
 } AwfulThreadAction;
 
+@interface AwfulThreadActions ()
+
+@property (strong) AwfulThread *thread;
+
+@end
+
 @implementation AwfulThreadActions
 
-@synthesize page;
-
--(id)initWithAwfulPage:(AwfulPage *)aPage
+-(id)initWithThread:(AwfulThread *)thread
 {
-    if((self=[super init])) {
-        self.page = aPage;
-        
-        [self.titles addObject:@"Vote"];
-        
-        if(self.page.isBookmarked) {
-            [self.titles addObject:@"Remove From Bookmarks"];
-        } else {
-            [self.titles addObject:@"Add To Bookmarks"];
-        }
-        
-        [self.titles addObject:@"Scroll To Bottom"];
-
+    self = [super init];
+    if (self) {
+        self.thread = thread;
+        self.titles = [NSArray arrayWithObjects:@"Vote",
+                       [thread.isBookmarked boolValue] ? @"Remove From Bookmarks" : @"Add To Bookmarks",
+                       @"Scroll To Bottom",
+                       nil];
     }
     return self;
 }
 
+@synthesize thread = _thread;
 
 -(NSString *)getOverallTitle
 {
@@ -56,26 +55,16 @@ typedef enum {
         // TODO show vote selector
     } else if (buttonIndex == AwfulThreadActionBookmarks) {
         CompletionBlock completion = ^{
-            // TODO Right now, changes to bookmarks aren't persisted, presumably because we're
-            // changing how that persistence happens. If AwfulThread implements NSCoding once more,
-            // uncomment this; otherwise, delete it and do the needful.
-            /*
-            NSMutableArray *bookmarks = [AwfulUtil newThreadListForForumId:@"bookmarks"];
-            if (self.page.isBookmarked) {
-                NSPredicate *filter = [NSPredicate predicateWithFormat:@"threadID != %@",
-                                       self.page.thread.threadID];
-                [bookmarks filterUsingPredicate:filter];
-            } else {
-                [bookmarks addObject:self.page.thread];
-            }
-            [AwfulUtil saveThreadList:bookmarks forForumId:@"bookmarks"];
-             */
-            self.page.isBookmarked = !self.page.isBookmarked;
+            self.thread.isBookmarked = [NSNumber numberWithBool:![self.thread.isBookmarked boolValue]];
+            NSError *error;
+            BOOL success = [[ApplicationDelegate managedObjectContext] save:&error];
+            if (!success)
+                NSLog(@"error saving isBookmarked: %@", error);
         };
-        if (self.page.isBookmarked) {
-            [[ApplicationDelegate awfulNetworkEngine] removeBookmarkedThread:self.page.thread onCompletion:completion onError:nil];
+        if (self.thread.isBookmarked) {
+            [[ApplicationDelegate awfulNetworkEngine] removeBookmarkedThread:self.thread onCompletion:completion onError:nil];
         } else {
-            [[ApplicationDelegate awfulNetworkEngine] addBookmarkedThread:self.page.thread onCompletion:completion onError:nil];
+            [[ApplicationDelegate awfulNetworkEngine] addBookmarkedThread:self.thread onCompletion:completion onError:nil];
         }
     } else if (buttonIndex == AwfulThreadActionScrollToBottom) {
         // TODO scroll down
