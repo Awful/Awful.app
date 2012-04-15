@@ -104,7 +104,6 @@
         }
         
         NSString *html = [dataController constructedPageHTML];
-        NSLog(@"html:\n%@", html);
         [self.webView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
     }
 }
@@ -328,21 +327,6 @@
         [self tappedActions:nil];
         self.actionsSegmentedControl.selectedSegmentIndex = -1;
     }
-}
-
--(IBAction)tappedBookmarks : (id)sender
-{
-    
-}
-
--(IBAction)tappedVote : (id)sender
-{
-    
-}
-
--(IBAction)tappedCompose : (id)sender
-{
-    
 }
 
 -(IBAction)tappedNextPage : (id)sender
