@@ -55,8 +55,7 @@
 @synthesize pagesSegmentedControl = _pagesSegmentedControl;
 @synthesize actionsSegmentedControl = _actionsSegmentedControl;
 
-#pragma mark -
-#pragma mark Initialization
+#pragma mark - Initialization
 
 -(void)awakeFromNib
 {    
@@ -247,8 +246,7 @@
     }
 }
 
-#pragma mark -
-#pragma mark Memory management
+#pragma mark - Memory management
 
 - (void)didReceiveMemoryWarning {
     // Releases the view if it doesn't have a superview.
@@ -411,8 +409,7 @@
     }
 }
 
-#pragma mark -
-#pragma mark Navigator Contnet
+#pragma mark - Navigator Content
 
 -(AwfulActions *)getActions
 {
@@ -449,7 +446,7 @@
     }
 }
 
-#pragma mark JSBBridgeWebDelegate
+#pragma mark - JSBBridgeWebDelegate
 
 - (void)webView:(UIWebView*) webview didReceiveJSNotificationWithDictionary:(NSDictionary*) dictionary
 {
@@ -472,14 +469,14 @@
     self.touchedPage = YES;
 }
 
-#pragma mark Gesture Delegate
+#pragma mark - Gesture Delegate
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
 {
     return YES;
 }
 
-#pragma mark Web View Delegate
+#pragma mark - Web View Delegate
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {    
