@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="1.1" toolsVersion="2182" systemVersion="11D50b" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="D7m-b9-f1Z">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="1.1" toolsVersion="2182" systemVersion="11D50" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="D7m-b9-f1Z">
     <dependencies>
         <deployment defaultVersion="1296" identifier="iOS"/>
         <development defaultVersion="4200" identifier="xcode"/>
@@ -256,13 +256,7 @@
                             <outlet property="delegate" destination="b0I-zs-CAw" id="oaK-ub-a3l"/>
                         </connections>
                     </tableView>
-                    <toolbarItems>
-                        <barButtonItem title="Filter" id="Yf4-Bx-Xat"/>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="ISh-mB-jpd"/>
-                        <barButtonItem image="05-arrow-west.png" id="y1l-7Z-4Oe"/>
-                        <barButtonItem title="Page 1" style="plain" id="eUJ-KM-xhm"/>
-                        <barButtonItem image="01-arrow-east.png" id="CxA-Fe-5gF"/>
-                    </toolbarItems>
+                    <toolbarItems/>
                     <navigationItem key="navigationItem" title="Title" id="chi-4k-Gyt">
                         <barButtonItem key="rightBarButtonItem" title="Filter" id="u9b-2z-3sJ"/>
                         <connections>
@@ -272,9 +266,6 @@
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackTranslucent"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="nextPageBarButtonItem" destination="CxA-Fe-5gF" id="ySA-BS-vQs"/>
-                        <outlet property="pageLabelBarButtonItem" destination="eUJ-KM-xhm" id="rtt-Jg-ynK"/>
-                        <outlet property="prevPageBarButtonItem" destination="y1l-7Z-4Oe" id="70X-yC-Dq1"/>
                         <segue destination="oRp-8t-Jy6" kind="replace" identifier="AwfulPage" splitViewControllerTargetIndex="1" id="hhi-LS-YNv"/>
                     </connections>
                 </tableViewController>
@@ -793,8 +784,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="01-arrow-east.png" width="19" height="16"/>
-        <image name="05-arrow-west.png" width="19" height="16"/>
         <image name="action.png" width="23" height="18"/>
         <image name="ama.png" width="45" height="45"/>
         <image name="arrowleft.png" width="23" height="18"/>
@@ -859,8 +848,6 @@
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPage.h"/>
             <relationships>
                 <relationship kind="action" name="hardRefresh"/>
-                <relationship kind="action" name="hideBottomView:"/>
-                <relationship kind="action" name="revealBottomView:"/>
                 <relationship kind="action" name="segmentedGotTapped:"/>
                 <relationship kind="action" name="tappedActions:"/>
                 <relationship kind="action" name="tappedActionsSegment:"/>
@@ -871,7 +858,6 @@
                 <relationship kind="action" name="tappedPagesSegment:"/>
                 <relationship kind="action" name="tappedVote:"/>
                 <relationship kind="outlet" name="actionsSegmentedControl" candidateClass="ButtonSegmentedControl"/>
-                <relationship kind="outlet" name="bottomView" candidateClass="UIView"/>
                 <relationship kind="outlet" name="nextPageBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="pagesBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="pagesSegmentedControl" candidateClass="ButtonSegmentedControl"/>
