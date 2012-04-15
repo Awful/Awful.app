@@ -15,7 +15,5 @@
 @property (nonatomic, strong) AwfulPage *page;
 
 -(id)initWithAwfulPage : (AwfulPage *)aPage;
--(void)addBookmark;
--(void)removeBookmark;
 
 @end

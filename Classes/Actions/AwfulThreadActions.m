@@ -11,12 +11,11 @@
 #import "AwfulPageCount.h"
 #import "AwfulPostBoxController.h"
 #import "AwfulAppDelegate.h"
-//#import "ASIFormDataRequest.h"
+#import "AwfulNetworkEngine.h"
 #import "AwfulUtil.h"
 #import "AwfulVoteActions.h"
 
 typedef enum {
-    AwfulThreadActionReply,
     AwfulThreadActionVote,
     AwfulThreadActionBookmarks,
     AwfulThreadActionScrollToBottom,
@@ -31,7 +30,6 @@ typedef enum {
     if((self=[super init])) {
         self.page = aPage;
         
-        //[self.titles addObject:@"Reply"];
         [self.titles addObject:@"Vote"];
         
         if(self.page.isBookmarked) {
@@ -53,76 +51,35 @@ typedef enum {
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{    
-    /*if([self isCancelled:buttonIndex]) {
-        [self.navigator setActions:nil];
-        return;
-    }
-    
-    if(buttonIndex == AwfulThreadActionVote) {
-        
-        AwfulVoteActions *vote = [[AwfulVoteActions alloc] initWithAwfulThread:self.page.thread];
-        [self.navigator setActions:vote];
-        
-    } else if(buttonIndex == AwfulThreadActionReply) {
-        
-        AwfulPostBoxController *post_box = [[AwfulPostBoxController alloc] initWithText:@""];
-        [post_box setThread:self.page.thread];
-        UIViewController *vc = getRootController();
-        [vc presentModalViewController:post_box animated:YES];
-        
-    } else if(buttonIndex == AwfulThreadActionBookmarks) {
-        
-        if(self.page.isBookmarked) {
-            [self removeBookmark];
+{
+    if (buttonIndex == AwfulThreadActionVote) {
+        // TODO show vote selector
+    } else if (buttonIndex == AwfulThreadActionBookmarks) {
+        CompletionBlock completion = ^{
+            // TODO Right now, changes to bookmarks aren't persisted, presumably because we're
+            // changing how that persistence happens. If AwfulThread implements NSCoding once more,
+            // uncomment this; otherwise, delete it and do the needful.
+            /*
+            NSMutableArray *bookmarks = [AwfulUtil newThreadListForForumId:@"bookmarks"];
+            if (self.page.isBookmarked) {
+                NSPredicate *filter = [NSPredicate predicateWithFormat:@"threadID != %@",
+                                       self.page.thread.threadID];
+                [bookmarks filterUsingPredicate:filter];
+            } else {
+                [bookmarks addObject:self.page.thread];
+            }
+            [AwfulUtil saveThreadList:bookmarks forForumId:@"bookmarks"];
+             */
+            self.page.isBookmarked = !self.page.isBookmarked;
+        };
+        if (self.page.isBookmarked) {
+            [[ApplicationDelegate awfulNetworkEngine] removeBookmarkedThread:self.page.thread onCompletion:completion onError:nil];
         } else {
-            [self addBookmark];
+            [[ApplicationDelegate awfulNetworkEngine] addBookmarkedThread:self.page.thread onCompletion:completion onError:nil];
         }
-        
+    } else if (buttonIndex == AwfulThreadActionScrollToBottom) {
+        // TODO scroll down
     }
-    if(buttonIndex != AwfulThreadActionVote) {
-        [self.navigator setActions:nil];
-    }*/
-}
-
--(void)addBookmark
-{/*
-    ASIFormDataRequest *req = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"http://forums.somethingawful.com/bookmarkthreads.php"]];
-    req.userInfo = [NSDictionary dictionaryWithObject:@"Added to bookmarks." forKey:@"completionMsg"];
-    
-    [req setPostValue:@"1" forKey:@"json"];
-    [req setPostValue:@"add" forKey:@"action"];
-    [req setPostValue:self.page.thread.threadID forKey:@"threadid"];
-    self.page.isBookmarked = YES;
-    
-    NSMutableArray *bookmarked_threads = [AwfulUtil newThreadListForForumId:@"bookmarks"];
-    [bookmarked_threads addObject:self.page.thread];
-    [AwfulUtil saveThreadList:bookmarked_threads forForumId:@"bookmarks"];
-    
-    loadRequestAndWait(req);*/
-}
-
--(void)removeBookmark
-{/*
-    ASIFormDataRequest *req = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"http://forums.somethingawful.com/bookmarkthreads.php"]];
-    req.userInfo = [NSDictionary dictionaryWithObject:@"Removed from bookmarks." forKey:@"completionMsg"];
-    
-    [req setPostValue:@"1" forKey:@"json"];
-    [req setPostValue:@"remove" forKey:@"action"];
-    [req setPostValue:self.page.thread.threadID forKey:@"threadid"];
-    self.page.isBookmarked = NO;
-    
-    NSMutableArray *bookmarked_threads = [AwfulUtil newThreadListForForumId:@"bookmarks"];
-    AwfulThread *found = nil;
-    for(AwfulThread *thread in bookmarked_threads) {
-        if([thread.threadID isEqualToString:self.page.thread.threadID]) {
-            found = thread;
-        }
-    }
-    [bookmarked_threads removeObject:found];
-    [AwfulUtil saveThreadList:bookmarked_threads forForumId:@"bookmarks"];
-    
-    loadRequestAndWait(req);*/
 }
 
 @end
