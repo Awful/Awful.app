@@ -6,14 +6,25 @@ Awful is an iOS app for browsing the [Something Awful Forums][forums] on your iP
 [forums]: http://forums.somethingawful.com
 [thread]: http://forums.somethingawful.com/showthread.php?threadid=3381510
 
+TODO
+-------
+* Voting
+* Landscape
+* "X Posts above" back in AwfulPage
+* Sane intro to the app, take user to login screen
+* Save Images
+* copy thread/post URL
+* fix bold issue (currently example in awfulapp thread)
+* FYAD
+* Smarter iPad interface
+* Private Messages
+* Search
+* use the app a bunch because I probably forgot a bunch of stuff
+
 An unofficial app
 -----------------
 
-An official SA Forums app is in the works, and that official app is not this one. Awful is tolerated so long as
-
-* we don't charge for it
-* we remove the app from the App Store as soon as an official one arrives
-* nobody complains to SA Forums staff when the app breaks, or their account breaks because of the app.
+This app is unofficial and is not endorsed by Lowtax. Use at your own risk.
 
 Please, if you put your own app derived from Awful on the App Store, abide by these same terms. Pretend we are lawyers and have written an iron-clad license requiring this.
 
@@ -21,8 +32,7 @@ Build
 -----
 
 1. Grab code: `git clone https://github.com/regularberry/Awful.git`
-2. Grab submodules: `cd Awful && git submodule update --init`
-3. Open Xcode project and build away: `open Awful.xcodeproj`
+2. Open Xcode project and build away: `open Awful.xcodeproj`
 
 Contribute
 ----------

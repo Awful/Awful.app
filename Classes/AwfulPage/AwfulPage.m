@@ -149,7 +149,31 @@
     [self.thread setTitle:title];
     UILabel *lab = (UILabel *)self.navigationItem.titleView;
     lab.text = title;
-    //NSLog(@"title width %f", self.navigationItem.titleView.frame.size.width);
+}
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if([[segue identifier] isEqualToString:@"ReplyBox"]) {
+        AwfulPostBoxController *postBox = (AwfulPostBoxController *)segue.destinationViewController;
+        postBox.thread = self.thread;
+        postBox.page = self;
+    } else if([[segue identifier] isEqualToString:@"EditPost"]) {
+        if([sender isMemberOfClass:[AwfulPostActions class]]) {
+            AwfulPostActions *actions = (AwfulPostActions *)sender;
+            AwfulPostBoxController *editBox = (AwfulPostBoxController *)segue.destinationViewController;
+            editBox.post = actions.post;
+            editBox.startingText = actions.postContents;
+            editBox.page = self;
+        }
+    } else if([[segue identifier] isEqualToString:@"QuoteBox"]) {
+        if([sender isMemberOfClass:[AwfulPostActions class]]) {
+            AwfulPostActions *actions = (AwfulPostActions *)sender;
+            AwfulPostBoxController *quoteBox = (AwfulPostBoxController *)segue.destinationViewController;
+            quoteBox.thread = self.thread;
+            quoteBox.startingText = actions.postContents;
+            quoteBox.page = self;
+        }
+    }
 }
 
 -(IBAction)hardRefresh
@@ -325,8 +349,10 @@
 {
     if(self.actionsSegmentedControl.selectedSegmentIndex == 0) {
         [self tappedActions:nil];
-        self.actionsSegmentedControl.selectedSegmentIndex = -1;
+    } else if(self.actionsSegmentedControl.selectedSegmentIndex == 1) {
+        [self tappedCompose:nil];
     }
+    self.actionsSegmentedControl.selectedSegmentIndex = -1;
 }
 
 -(IBAction)tappedNextPage : (id)sender
@@ -352,7 +378,7 @@
 
 -(IBAction)tappedActions:(id)sender
 {
-    AwfulThreadActions *actions = [[AwfulThreadActions alloc] initWithAwfulPage:self];
+    AwfulThreadActions *actions = [[AwfulThreadActions alloc] initWithThread:self.thread];
     self.actions = actions;
 }
 
@@ -393,12 +419,12 @@
     }
 }
 
-#pragma mark - Navigator Content
-
--(AwfulActions *)getActions
+-(IBAction)tappedCompose : (id)sender
 {
-    return [[AwfulThreadActions alloc] initWithAwfulPage:self];
+    [self performSegueWithIdentifier:@"ReplyBox" sender:self];
 }
+
+#pragma mark - Navigator Content
 
 -(void)scrollToBottom
 {

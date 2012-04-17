@@ -8,9 +8,9 @@
 
 #import "AwfulPostActions.h"
 #import "AwfulPost.h"
-//#import "AwfulEditRequest.h"
-//#import "AwfulQuoteRequest.h"
+#import "AwfulNetworkEngine.h"
 #import "AwfulPage.h"
+#import "AwfulUtil.h"
 
 typedef enum {
     AwfulPostActionTypeEdit,
@@ -22,6 +22,7 @@ typedef enum {
 
 @synthesize post = _post;
 @synthesize page = _page;
+@synthesize postContents = _postContents;
 
 -(id)initWithAwfulPost : (AwfulPost *)aPost page : (AwfulPage *)aPage
 {
@@ -47,9 +48,12 @@ typedef enum {
     AwfulPostActionType action = buttonIndex;
     if(self.post.canEdit) {
         if(action == AwfulPostActionTypeEdit) {
-            /*AwfulEditContentRequest *edit = [[AwfulEditContentRequest alloc] initWithAwfulPost:self.post];
-            loadRequest(edit);
-            [self.navigator setActions:nil];*/
+            [[ApplicationDelegate awfulNetworkEngine] editContentsForPost:self.post onCompletion:^(NSString *contents) {
+                self.postContents = contents;
+                [self.viewController performSegueWithIdentifier:@"EditPost" sender:self];
+            } onError:^(NSError *error) {
+                [AwfulUtil requestFailed:error];
+            }];
             return;
         }
     } else {
@@ -58,8 +62,13 @@ typedef enum {
     
     if(action == AwfulPostActionTypeQuote) {
         
-        /*AwfulQuoteRequest *quote = [[AwfulQuoteRequest alloc] initWithPost:self.post fromPage:self.page];
-        loadRequest(quote);*/
+        [[ApplicationDelegate awfulNetworkEngine] quoteContentsForPost:self.post onCompletion:^(NSString *contents) {
+            self.postContents = [contents stringByAppendingString:@"\n"];
+            [self.viewController performSegueWithIdentifier:@"QuoteBox" sender:self];
+        } onError:^(NSError *error) {
+            [AwfulUtil requestFailed:error];
+        }];
+        return;
         
     } else if(action == AwfulPostActionTypeMarkRead) {
         
