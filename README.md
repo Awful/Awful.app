@@ -16,6 +16,7 @@ TODO
 * Save Images
 * copy thread/post URL
 * fix bold issue (currently example in awfulapp thread)
+* FYAD
 * Smarter iPad interface
 * Private Messages
 * Search
