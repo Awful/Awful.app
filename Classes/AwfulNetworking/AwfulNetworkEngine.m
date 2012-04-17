@@ -184,23 +184,32 @@
     return op;
 }
 
--(MKNetworkOperation *)removeBookmarkedThread : (AwfulThread *)thread onCompletion : (CompletionBlock)completionBlock onError : (MKNKErrorBlock)errorBlock
-{    
+typedef enum BookmarkAction {
+    AddBookmark,
+    RemoveBookmark,
+} BookmarkAction;
+
+- (MKNetworkOperation *)modifyBookmark:(BookmarkAction)action withThread:(AwfulThread *)thread onCompletion:(CompletionBlock)completionBlock onError:(MKNKErrorBlock)errorBlock
+{
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     [dict setObject:@"1" forKey:@"json"];
-    [dict setObject:@"remove" forKey:@"action"];
+    [dict setObject:(action == AddBookmark ? @"add" : @"remove") forKey:@"action"];
     [dict setObject:thread.threadID forKey:@"threadid"];
-    
     MKNetworkOperation *op = [self operationWithPath:@"bookmarkthreads.php" params:dict httpMethod:@"POST"];
-    
-    [op onCompletion:^(MKNetworkOperation *completedOperation) {
-        completionBlock();
-    } onError:^(NSError *error) {
-        errorBlock(error);
-    }];
-    
+    [op onCompletion:^(MKNetworkOperation *_) { if (completionBlock) completionBlock(); }
+             onError:^(NSError *error)        { if (errorBlock) errorBlock(error); }];
     [self enqueueOperation:op];
     return op;
+}
+
+-(MKNetworkOperation *)addBookmarkedThread : (AwfulThread *)thread onCompletion : (CompletionBlock)completionBlock onError : (MKNKErrorBlock)errorBlock
+{
+    return [self modifyBookmark:AddBookmark withThread:thread onCompletion:completionBlock onError:errorBlock];
+}
+
+-(MKNetworkOperation *)removeBookmarkedThread : (AwfulThread *)thread onCompletion : (CompletionBlock)completionBlock onError : (MKNKErrorBlock)errorBlock
+{    
+    return [self modifyBookmark:RemoveBookmark withThread:thread onCompletion:completionBlock onError:errorBlock];
 }
 
 -(MKNetworkOperation *)forumsListOnCompletion : (ForumsListResponseBlock)forumsListResponseBlock onError : (MKNKErrorBlock)errorBlock

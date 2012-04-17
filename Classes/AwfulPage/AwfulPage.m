@@ -149,7 +149,6 @@
     [self.thread setTitle:title];
     UILabel *lab = (UILabel *)self.navigationItem.titleView;
     lab.text = title;
-    //NSLog(@"title width %f", self.navigationItem.titleView.frame.size.width);
 }
 
 -(IBAction)hardRefresh
@@ -352,7 +351,7 @@
 
 -(IBAction)tappedActions:(id)sender
 {
-    AwfulThreadActions *actions = [[AwfulThreadActions alloc] initWithAwfulPage:self];
+    AwfulThreadActions *actions = [[AwfulThreadActions alloc] initWithThread:self.thread];
     self.actions = actions;
 }
 
@@ -393,12 +392,12 @@
     }
 }
 
-#pragma mark - Navigator Content
-
--(AwfulActions *)getActions
+-(IBAction)tappedCompose : (id)sender
 {
-    return [[AwfulThreadActions alloc] initWithAwfulPage:self];
+    
 }
+
+#pragma mark - Navigator Content
 
 -(void)scrollToBottom
 {

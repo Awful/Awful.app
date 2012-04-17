@@ -46,10 +46,7 @@
     [super viewWillAppear:animated];
     [self.navigationController setToolbarHidden:YES];
     [[self.navigationController navigationBar] setTintColor:[UIColor colorWithRed:0 green:91.0/255 blue:135.0/255 alpha:1.0]];
-    
-    if([self.awfulThreads count] == 0) {
-        [self refresh];
-    }
+    [self refresh];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -66,13 +63,6 @@
 {
     self.threadCount = [self.awfulThreads count] + [in_threads count]; // this needs to be before the super call
     [super acceptThreads:in_threads];
-}
-
--(void)newlyVisible
-{
-    //[self endTimer];
-    //self.refreshed = NO;
-    //[self startTimer];
 }
 
 -(void)loadPageNum : (NSUInteger)pageNum
@@ -100,34 +90,13 @@
     return NO;
 }
 
-/*
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-    [self endTimer];
-}
-
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-{
-    [self startTimer];
-}
-
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-{
-    if(!decelerate) {
-        [self startTimer];
-    }
-}*/
-
-// Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
     if(indexPath.row == [self.awfulThreads count]) {
         return NO;
     }
     return YES;
 }
 
-// Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (editingStyle == UITableViewCellEditingStyleDelete) {
