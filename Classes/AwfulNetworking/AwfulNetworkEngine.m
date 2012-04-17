@@ -273,4 +273,79 @@ typedef enum BookmarkAction {
     return op;
 }
 
+typedef enum PostContentType {
+EditPostContent,
+QuotePostContent,
+} PostContentType;
+
+-(MKNetworkOperation *)contentsForPost : (AwfulPost *)post postType : (PostContentType)postType onCompletion:(PostContentResponseBlock)postContentResponseBlock onError:(MKNKErrorBlock)errorBlock
+{
+    NSString *path;
+    if(postType == EditPostContent) {
+        path = [NSString stringWithFormat:@"editpost.php?action=editpost&postid=%@", post.postID];
+    } else if(postType == QuotePostContent) {
+        path = [NSString stringWithFormat:@"newreply.php?action=newreply&postid=%@", post.postID];
+    } else {
+        return nil;
+    }
+    
+    MKNetworkOperation *op = [self operationWithPath:path];
+    [op onCompletion:^(MKNetworkOperation *completedOperation) {
+        
+        NSString *rawString = [[NSString alloc] initWithData:[completedOperation responseData] encoding:NSASCIIStringEncoding];
+        NSData *converted = [rawString dataUsingEncoding:NSUTF8StringEncoding];
+        TFHpple *base = [[TFHpple alloc] initWithHTMLData:converted];
+        
+        TFHppleElement *quoteElement = [base searchForSingle:@"//textarea[@name='message']"];
+        postContentResponseBlock([quoteElement content]);
+        
+    } onError:^(NSError *error) {
+        errorBlock(error);
+    }];
+    [self enqueueOperation:op];
+    return op;
+}
+
+-(MKNetworkOperation *)editContentsForPost:(AwfulPost *)post onCompletion:(PostContentResponseBlock)postContentResponseBlock onError:(MKNKErrorBlock)errorBlock
+{
+    return [self contentsForPost:post postType:EditPostContent onCompletion:postContentResponseBlock onError:errorBlock];
+}
+
+-(MKNetworkOperation *)quoteContentsForPost : (AwfulPost *)post onCompletion:(PostContentResponseBlock)postContentResponseBlock onError:(MKNKErrorBlock)errorBlock
+{
+    return [self contentsForPost:post postType:QuotePostContent onCompletion:postContentResponseBlock onError:errorBlock];
+}
+
+-(MKNetworkOperation *)editPost : (AwfulPost *)post withContents : (NSString *)contents onCompletion : (CompletionBlock)completionBlock onError:(MKNKErrorBlock)errorBlock
+{    
+    MKNetworkOperation *op = [self operationWithPath:[NSString stringWithFormat:@"editpost.php?action=editpost&postid=%@", post.postID]];
+    [op onCompletion:^(MKNetworkOperation *completedOperation) {
+        
+        NSString *rawString = [[NSString alloc] initWithData:[completedOperation responseData] encoding:NSASCIIStringEncoding];
+        NSData *converted = [rawString dataUsingEncoding:NSUTF8StringEncoding];
+        TFHpple *pageData = [[TFHpple alloc] initWithHTMLData:converted];
+        
+        NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+        
+        TFHppleElement *bookmarkElement = [pageData searchForSingle:@"//input[@name='bookmark' and @checked='checked']"];
+        if(bookmarkElement != nil) {
+            NSString *bookmark = [bookmarkElement objectForKey:@"value"];
+            [dict setValue:bookmark forKey:@"bookmark"];
+        }
+        
+        [dict setValue:@"updatepost" forKey:@"action"];
+        [dict setValue:@"Save Changes" forKey:@"submit"];
+        [dict setValue:post.postID forKey:@"postid"];
+        [dict setValue:[contents stringByEscapingUnicode] forKey:@"message"];
+        
+        MKNetworkOperation *finalOp = [self operationWithPath:@"editpost.php" params:dict httpMethod:@"POST"];
+        [finalOp onCompletion:^(MKNetworkOperation *completedOperation) { if (completionBlock) completionBlock(); }
+                      onError:^(NSError *error)        { if (errorBlock) errorBlock(error); }];
+        [self enqueueOperation:finalOp];
+        
+    } onError:^(NSError *error)        { if (errorBlock) errorBlock(error); }];
+    [self enqueueOperation:op];
+    return op;
+}
+
 @end

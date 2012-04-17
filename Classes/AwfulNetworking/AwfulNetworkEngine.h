@@ -21,6 +21,7 @@ typedef void (^PageResponseBlock)(AwfulPageDataController *dataController);
 typedef void (^UserResponseBlock)(AwfulUser *user);
 typedef void (^CompletionBlock)(void);
 typedef void (^ForumsListResponseBlock)(NSMutableArray *forums);
+typedef void (^PostContentResponseBlock)(NSString *postContent);
 
 -(MKNetworkOperation *)threadListForForum:(AwfulForum *)forum pageNum:(NSUInteger)pageNum onCompletion:(ThreadListResponseBlock)threadListResponseBlock onError:(MKNKErrorBlock)errorBlock;
 
@@ -37,5 +38,11 @@ typedef void (^ForumsListResponseBlock)(NSMutableArray *forums);
 -(MKNetworkOperation *)forumsListOnCompletion : (ForumsListResponseBlock)forumsListResponseBlock onError : (MKNKErrorBlock)errorBlock;
 
 -(MKNetworkOperation *)replyToThread : (AwfulThread *)thread withText : (NSString *)text onCompletion : (CompletionBlock)completionBlock onError : (MKNKErrorBlock)errorBlock;
+
+-(MKNetworkOperation *)editContentsForPost : (AwfulPost *)post onCompletion:(PostContentResponseBlock)postContentResponseBlock onError:(MKNKErrorBlock)errorBlock;
+
+-(MKNetworkOperation *)quoteContentsForPost : (AwfulPost *)post onCompletion:(PostContentResponseBlock)postContentResponseBlock onError:(MKNKErrorBlock)errorBlock;
+
+-(MKNetworkOperation *)editPost : (AwfulPost *)post withContents : (NSString *)contents onCompletion : (CompletionBlock)completionBlock onError:(MKNKErrorBlock)errorBlock;
 
 @end

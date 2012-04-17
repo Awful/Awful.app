@@ -15,6 +15,7 @@
 
 @property (nonatomic, strong) AwfulPost *post;
 @property (nonatomic, strong) AwfulPage *page;
+@property (nonatomic, strong) NSString *postContents;
 
 -(id)initWithAwfulPost : (AwfulPost *)aPost page : (AwfulPage *)aPage;
 

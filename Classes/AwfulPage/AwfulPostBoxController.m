@@ -82,17 +82,31 @@
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if(buttonIndex == 1) {
-        
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
-        hud.labelText = @"Replying...";
-        self.networkOperation = [[ApplicationDelegate awfulNetworkEngine] replyToThread:self.thread withText:self.replyTextView.text onCompletion:^{
-            [MBProgressHUD hideHUDForView:self.view animated:NO];
-            [self.presentingViewController dismissModalViewControllerAnimated:YES];
-            [self.page refresh];
-        } onError:^(NSError *error) {
-            [MBProgressHUD hideHUDForView:self.view animated:NO];
-            [AwfulUtil requestFailed:error];
-        }];
+        [self.networkOperation cancel];
+        if(self.thread != nil) {
+            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
+            hud.labelText = @"Replying...";
+            self.networkOperation = [[ApplicationDelegate awfulNetworkEngine] replyToThread:self.thread withText:self.replyTextView.text onCompletion:^{
+                [MBProgressHUD hideHUDForView:self.view animated:NO];
+                [self.presentingViewController dismissModalViewControllerAnimated:YES];
+                [self.page refresh];
+            } onError:^(NSError *error) {
+                [MBProgressHUD hideHUDForView:self.view animated:NO];
+                [AwfulUtil requestFailed:error];
+            }];
+        } else if(self.post != nil) {
+            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
+            hud.labelText = @"Editing...";
+            self.networkOperation = [[ApplicationDelegate awfulNetworkEngine] editPost:self.post withContents:self.replyTextView.text onCompletion:^{
+                [MBProgressHUD hideHUDForView:self.view animated:NO];
+                [self.presentingViewController dismissModalViewControllerAnimated:YES];
+                [self.page hardRefresh];
+            } onError:^(NSError *error) {
+                [MBProgressHUD hideHUDForView:self.view animated:NO];
+                [AwfulUtil requestFailed:error];
+            }];
+        }
+            
         [self.replyTextView resignFirstResponder];
     }
 }

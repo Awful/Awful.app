@@ -454,6 +454,8 @@
                         <outlet property="pagesSegmentedControl" destination="uw2-UZ-4Xh" id="QYr-EJ-ppO"/>
                         <outlet property="webView" destination="bj6-uZ-iIF" id="GhU-3b-BeT"/>
                         <segue destination="gcK-tO-FtL" kind="modal" identifier="ReplyBox" id="FMo-n3-M4q"/>
+                        <segue destination="gcK-tO-FtL" kind="modal" identifier="EditPost" id="rWs-UE-gSC"/>
+                        <segue destination="gcK-tO-FtL" kind="modal" identifier="QuoteBox" id="WQ4-KV-8Qh"/>
                     </connections>
                 </viewController>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="thread title label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" minimumFontSize="10" id="yR7-8b-xAm">
@@ -1049,5 +1051,6 @@
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="JzC-6r-kye"/>
+        <segue reference="WQ4-KV-8Qh"/>
     </inferredMetricsTieBreakers>
 </document>
