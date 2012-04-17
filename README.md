@@ -13,6 +13,9 @@ TODO
 * Landscape
 * "X Posts above" back in AwfulPage
 * Sane intro to the app, take user to login screen
+* Save Images
+* copy thread/post URL
+* fix bold issue (currently example in awfulapp thread)
 * Smarter iPad interface
 * Private Messages
 * Search
