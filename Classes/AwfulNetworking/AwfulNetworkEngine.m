@@ -18,6 +18,7 @@
 #import "AwfulUser.h"
 #import "AwfulUser+AwfulMethods.h"
 #import "AwfulPageTemplate.h"
+#import "NSString+HTML.h"
 
 @implementation AwfulNetworkEngine
 
@@ -225,6 +226,49 @@ typedef enum BookmarkAction {
         errorBlock(error);
     }];
     
+    [self enqueueOperation:op];
+    return op;
+}
+
+-(MKNetworkOperation *)replyToThread : (AwfulThread *)thread withText : (NSString *)text onCompletion : (CompletionBlock)completionBlock onError : (MKNKErrorBlock)errorBlock
+{
+    NSString *path = [NSString stringWithFormat:@"newreply.php?s=&action=newreply&threadid=%@", thread.threadID];
+    
+    MKNetworkOperation *op = [self operationWithPath:path];
+    [op onCompletion:^(MKNetworkOperation *completedOperation) {
+        
+        NSString *rawString = [[NSString alloc] initWithData:[completedOperation responseData] encoding:NSASCIIStringEncoding];
+        NSData *converted = [rawString dataUsingEncoding:NSUTF8StringEncoding];
+        TFHpple *pageData = [[TFHpple alloc] initWithHTMLData:converted];
+                
+        TFHppleElement *formkeyElement = [pageData searchForSingle:@"//input[@name='formkey']"];
+        TFHppleElement *formcookieElement = [pageData searchForSingle:@"//input[@name='form_cookie']"];
+        
+        NSString *formkey = [formkeyElement objectForKey:@"value"];
+        NSString *formcookie = [formcookieElement objectForKey:@"value"];
+        TFHppleElement *bookmarkElement = [pageData searchForSingle:@"//input[@name='bookmark' and @checked='checked']"];
+        
+        NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+        
+        if(bookmarkElement != nil) {
+            NSString *bookmark = [bookmarkElement objectForKey:@"value"];
+            [dict setValue:bookmark forKey:@"bookmark"];
+        }
+        
+        [dict setValue:thread.threadID forKey:@"threadid"];
+        [dict setValue:formkey forKey:@"formkey"];
+        [dict setValue:formcookie forKey:@"form_cookie"];
+        [dict setValue:@"postreply" forKey:@"action"];
+        [dict setValue:[text stringByEscapingUnicode] forKey:@"message"];
+        [dict setValue:@"yes" forKey:@"parseurl"];
+        [dict setValue:@"Submit Reply" forKey:@"submit"];
+        
+        MKNetworkOperation *finalOp = [self operationWithPath:@"newreply.php" params:dict httpMethod:@"POST"];
+        [finalOp onCompletion:^(MKNetworkOperation *completedOperation) { if (completionBlock) completionBlock(); }
+                 onError:^(NSError *error)        { if (errorBlock) errorBlock(error); }];
+        [self enqueueOperation:finalOp];
+        
+    } onError:^(NSError *error)        { if (errorBlock) errorBlock(error); }];
     [self enqueueOperation:op];
     return op;
 }

@@ -36,4 +36,6 @@ typedef void (^ForumsListResponseBlock)(NSMutableArray *forums);
 
 -(MKNetworkOperation *)forumsListOnCompletion : (ForumsListResponseBlock)forumsListResponseBlock onError : (MKNKErrorBlock)errorBlock;
 
+-(MKNetworkOperation *)replyToThread : (AwfulThread *)thread withText : (NSString *)text onCompletion : (CompletionBlock)completionBlock onError : (MKNKErrorBlock)errorBlock;
+
 @end

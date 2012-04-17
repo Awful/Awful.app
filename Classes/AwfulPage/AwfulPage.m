@@ -151,6 +151,15 @@
     lab.text = title;
 }
 
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if([[segue identifier] isEqualToString:@"ReplyBox"]) {
+        AwfulPostBoxController *postBox = (AwfulPostBoxController *)segue.destinationViewController;
+        postBox.thread = self.thread;
+        postBox.page = self;
+    }
+}
+
 -(IBAction)hardRefresh
 {    
     int posts_per_page = [[[AwfulUser currentUser] postsPerPage] intValue];
@@ -324,8 +333,10 @@
 {
     if(self.actionsSegmentedControl.selectedSegmentIndex == 0) {
         [self tappedActions:nil];
-        self.actionsSegmentedControl.selectedSegmentIndex = -1;
+    } else if(self.actionsSegmentedControl.selectedSegmentIndex == 1) {
+        [self tappedCompose:nil];
     }
+    self.actionsSegmentedControl.selectedSegmentIndex = -1;
 }
 
 -(IBAction)tappedNextPage : (id)sender
@@ -394,7 +405,7 @@
 
 -(IBAction)tappedCompose : (id)sender
 {
-    
+    [self performSegueWithIdentifier:@"ReplyBox" sender:self];
 }
 
 #pragma mark - Navigator Content

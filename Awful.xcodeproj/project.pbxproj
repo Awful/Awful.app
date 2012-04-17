@@ -165,7 +165,6 @@
 		1190F73B13BE4EA900B9D271 /* AwfulForumHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1190F6DB13BE4EA900B9D271 /* AwfulForumHeaderView.xib */; };
 		1190F73D13BE4EA900B9D271 /* AwfulForumsListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6DE13BE4EA900B9D271 /* AwfulForumsListController.m */; };
 		1190F74413BE4EA900B9D271 /* AwfulPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6EB13BE4EA900B9D271 /* AwfulPage.m */; };
-		1190F74713BE4EA900B9D271 /* AwfulPostBox.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1190F6EF13BE4EA900B9D271 /* AwfulPostBox.xib */; };
 		1190F74813BE4EA900B9D271 /* AwfulPostBoxController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6F113BE4EA900B9D271 /* AwfulPostBoxController.m */; };
 		1190F75213BE4EA900B9D271 /* AwfulBookmarksController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F70713BE4EA900B9D271 /* AwfulBookmarksController.m */; };
 		1190F75313BE4EA900B9D271 /* AwfulThreadListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F70913BE4EA900B9D271 /* AwfulThreadListController.m */; };
@@ -477,7 +476,6 @@
 		1190F6DE13BE4EA900B9D271 /* AwfulForumsListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumsListController.m; sourceTree = "<group>"; };
 		1190F6EA13BE4EA900B9D271 /* AwfulPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPage.h; sourceTree = "<group>"; };
 		1190F6EB13BE4EA900B9D271 /* AwfulPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPage.m; sourceTree = "<group>"; };
-		1190F6EF13BE4EA900B9D271 /* AwfulPostBox.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AwfulPostBox.xib; sourceTree = "<group>"; };
 		1190F6F013BE4EA900B9D271 /* AwfulPostBoxController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostBoxController.h; sourceTree = "<group>"; };
 		1190F6F113BE4EA900B9D271 /* AwfulPostBoxController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostBoxController.m; sourceTree = "<group>"; };
 		1190F70613BE4EA900B9D271 /* AwfulBookmarksController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulBookmarksController.h; sourceTree = "<group>"; };
@@ -926,14 +924,6 @@
 			name = iPad;
 			sourceTree = "<group>";
 		};
-		1172A60D14F5D9C70026CDA8 /* MKNetworkKit */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = MKNetworkKit;
-			path = External/MKNetworkKit/MKNetworkKit;
-			sourceTree = SOURCE_ROOT;
-		};
 		1172A62F14F5DE500026CDA8 /* AwfulNetworking */ = {
 			isa = PBXGroup;
 			children = (
@@ -983,7 +973,6 @@
 				1190F6EB13BE4EA900B9D271 /* AwfulPage.m */,
 				1190F6F013BE4EA900B9D271 /* AwfulPostBoxController.h */,
 				1190F6F113BE4EA900B9D271 /* AwfulPostBoxController.m */,
-				1190F6EF13BE4EA900B9D271 /* AwfulPostBox.xib */,
 				1153D0D3144E5BA6007602E8 /* AwfulSpecificPageViewController.h */,
 				1153D0D4144E5BA6007602E8 /* AwfulSpecificPageViewController.m */,
 				11D5E85614DC5FA000C1002D /* AwfulPageDataController.h */,
@@ -1094,7 +1083,6 @@
 				1CDF79FE1537C157008EFAE4 /* GRMustache */,
 				1190F7BF13BE4ECB00B9D271 /* Hpple */,
 				1190F7A813BE4ECB00B9D271 /* MBProgressHUD */,
-				1172A60D14F5D9C70026CDA8 /* MKNetworkKit */,
 				1190F7AC13BE4ECB00B9D271 /* MWFeedParser */,
 				1190F7B213BE4ECB00B9D271 /* MWPhotoBrowser */,
 				1190F78B13BE4ECB00B9D271 /* SBJson */,
@@ -1549,7 +1537,6 @@
 				1185923913B9425C0036E607 /* star_admin.gif in Resources */,
 				1185923A13B9425C0036E607 /* star_moderator.gif in Resources */,
 				1190F73B13BE4EA900B9D271 /* AwfulForumHeaderView.xib in Resources */,
-				1190F74713BE4EA900B9D271 /* AwfulPostBox.xib in Resources */,
 				1190F75F13BE4EA900B9D271 /* MainWindow.xib in Resources */,
 				1190F7E313BE4ECB00B9D271 /* 37x-Checkmark.png in Resources */,
 				1190F7ED13BE4ECB00B9D271 /* LICENSE.txt in Resources */,
