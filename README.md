@@ -8,15 +8,15 @@ Awful is an iOS app for browsing the [Something Awful Forums][forums] on your iP
 
 TODO
 -------
-*Replying/Editing/Quoting - OHIO is currently on this
-*Voting
-*Landscape
-*"X Posts above" back in AwfulPage
-*Sane intro to the app, take user to login screen
-*Smarter iPad interface
-*Private Messages
-*Search
-*use the app a bunch because I probably forgot a bunch of stuff
+* Replying/Editing/Quoting - OHIO is currently on this
+* Voting
+* Landscape
+* "X Posts above" back in AwfulPage
+* Sane intro to the app, take user to login screen
+* Smarter iPad interface
+* Private Messages
+* Search
+* use the app a bunch because I probably forgot a bunch of stuff
 
 An unofficial app
 -----------------
