@@ -61,9 +61,6 @@ typedef enum {
 
 -(IBAction)tappedActions:(id)sender;
 -(IBAction)tappedPageNav : (id)sender;
--(IBAction)tappedBookmarks : (id)sender;
--(IBAction)tappedVote : (id)sender;
--(IBAction)tappedCompose : (id)sender;
 -(IBAction)tappedNextPage : (id)sender;
 
 -(IBAction)segmentedGotTapped : (id)sender;
