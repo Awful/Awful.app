@@ -8,7 +8,6 @@ Awful is an iOS app for browsing the [Something Awful Forums][forums] on your iP
 
 TODO
 -------
-* Replying/Editing/Quoting - OHIO is currently on this
 * Voting
 * Landscape
 * "X Posts above" back in AwfulPage
