@@ -84,3 +84,11 @@ typedef enum {
 -(void)swapToRefreshButton;
 
 @end
+
+@interface AwfulPageIpad: AwfulPage
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *refreshStopButton;
+
+-(IBAction)tappedFirstPage : (id)sender;
+-(IBAction)tappedPrevPage : (id)sender;
+-(IBAction)tappedLastPage : (id)sender;
+@end
