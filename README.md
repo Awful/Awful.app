@@ -9,7 +9,6 @@ Awful is an iOS app for browsing the [Something Awful Forums][forums] on your iP
 TODO
 -------
 * Voting
-* Landscape
 * Sane intro to the app, take user to login screen
 * Save Images
 * copy thread/post URL
