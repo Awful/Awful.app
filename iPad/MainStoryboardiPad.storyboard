@@ -623,7 +623,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <toolbarItems>
-                        <barButtonItem style="plain" id="lFl-9U-jES">
+                        <barButtonItem id="lFl-9U-jES">
                             <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" id="bJd-qz-tCR" customClass="ButtonSegmentedControl">
                                 <rect key="frame" x="7" y="8" width="85" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -673,7 +673,7 @@
                         </barButtonItem>
                     </toolbarItems>
                     <navigationItem key="navigationItem" id="qo2-8W-zzZ">
-                        <barButtonItem key="rightBarButtonItem" style="plain" id="Ovc-Zi-2lK">
+                        <barButtonItem key="rightBarButtonItem" id="Ovc-Zi-2lK">
                             <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" id="8iC-oY-std" customClass="ButtonSegmentedControl">
                                 <rect key="frame" x="676" y="7" width="85" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>

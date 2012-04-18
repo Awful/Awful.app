@@ -52,7 +52,7 @@
 @synthesize pagesBarButtonItem = _pagesBarButtonItem;
 @synthesize nextPageBarButtonItem = _nextPageBarButtonItem;
 @synthesize draggingUp = _draggingUp;
-@synthesize     ntedControl = _pagesSegmentedControl;
+@synthesize pagesSegmentedControl = _pagesSegmentedControl;
 @synthesize actionsSegmentedControl = _actionsSegmentedControl;
 
 #pragma mark - Initialization
