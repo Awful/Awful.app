@@ -136,34 +136,6 @@
     return self.window.rootViewController;
 }
 
--(void)initializeData
-{
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"SleepingCat" inManagedObjectContext:self.managedObjectContext];
-    [request setEntity:entity];
-    
-    NSError *error = nil;
-    NSMutableArray *results = [[self.managedObjectContext executeFetchRequest:request error:&error] mutableCopy];
-    if(results == nil) {
-        NSLog(@"couldn't load any forums");
-        return;
-    }
-    if([results count] == 0) {
-        // insert mine
-        /*NSDictionary *dict = [NSDictionary dictionaryWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"NoodleVids" withExtension:@"plist"]];
-        NSArray *vids = [dict objectForKey:@"noodles"];
-        for(NSString *vid_name in vids) {
-            //SleepingCat *cat = (SleepingCat *)[NSEntityDescription insertNewObjectForEntityForName:@"SleepingCat" inManagedObjectContext:self.managedObjectContext];
-            
-            NSError *save_error = nil;
-            if(![ApplicationDelegate.managedObjectContext save:&save_error]) {
-                // fail?
-            }
-            
-        }*/
-    }
-}
-
 - (void)saveContext
 {
     NSError *error = nil;
@@ -267,7 +239,7 @@
     }
     
     self.dataStoreReset = YES;
-    [self copyDefaultDataStoreToDocuments];
+    //[self copyDefaultDataStoreToDocuments];
 
     __persistentStoreCoordinator = nil;
     __managedObjectModel = nil;
