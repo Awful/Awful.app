@@ -10,6 +10,7 @@
 #import "AwfulPageDataController.h"
 #import "AwfulPageCount.h"
 #import "AwfulPost.h"
+#import "AwfulConfig.h"
 #import "PostContext.h"
 #import "SALR.h"
 #import "GRMustacheTemplate.h"
@@ -31,6 +32,7 @@
 @property (readonly, nonatomic) NSString *salrConfig;
 @property (strong) NSArray *posts;
 @property (strong) NSString *pagesLeftNotice;
+@property (strong) NSString *postsAboveNotice;
 @property (strong) NSString *userAd;
 @property (assign) BOOL showAvatars;
 
@@ -116,10 +118,15 @@
             self.pagesLeftNotice = @"End of the thread.";
         }
         NSMutableArray *posts = [NSMutableArray array];
+        NSUInteger currentIndex = 0;
         for(AwfulPost *post in dataController.posts) {
-            [posts addObject:[[PostContext alloc] initWithPost:post]];
+            if(currentIndex >= dataController.newestPostIndex || YES) {
+                [posts addObject:[[PostContext alloc] initWithPost:post]];
+            }
+            currentIndex++;
         }
         self.posts = posts;
+        self.postsAboveNotice = @"No Posts Above";
     }
     return self;
 }
@@ -146,6 +153,8 @@
 @synthesize posts = _posts;
 
 @synthesize pagesLeftNotice = _pagesLeftNotice;
+
+@synthesize postsAboveNotice = _postsAboveNotice;
 
 @synthesize userAd = _userAd;
 

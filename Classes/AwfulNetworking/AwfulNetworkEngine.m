@@ -102,8 +102,7 @@
     
     [op onCompletion:^(MKNetworkOperation *completedOperation) {
         
-        // TODO Changed the pagePath to the completed operation's URL, but I've no idea if that makes sense.
-        AwfulPageDataController *data_controller = [[AwfulPageDataController alloc] initWithResponseData:[completedOperation responseData] pageURL:[NSURL URLWithString:[completedOperation url]]];
+        AwfulPageDataController *data_controller = [[AwfulPageDataController alloc] initWithResponseData:[completedOperation responseData] pageURL:[NSURL URLWithString:[completedOperation redirectedURL]]];
         pageResponseBlock(data_controller);
         
     } onError:^(NSError *error) {
