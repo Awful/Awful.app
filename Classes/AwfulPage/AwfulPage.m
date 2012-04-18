@@ -221,10 +221,7 @@
 
 -(void)loadOlderPosts
 {
-    //int pages_left = self.pages.totalPages - self.pages.currentPage;
-    //NSString *html = [AwfulParse constructPageHTMLFromPosts:self.allRawPosts pagesLeft:pages_left numOldPosts:0 adHTML:self.adHTML];
-    
-    NSString *html = [self.dataController constructedPageHTML];
+    NSString *html = [self.dataController constructedPageHTMLWithAllPosts];
     [self.webView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
 }
 

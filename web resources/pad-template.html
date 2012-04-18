@@ -127,6 +127,7 @@ a {
 .olderposts {
     width:100%;
     padding:5px;
+    padding-top:20px;
     text-align:center;
     background-color:white;
     height:60px;
@@ -175,7 +176,9 @@ blockquote img {
 </style>
     </head>
 <body>
-
+{{#postsAboveNotice}}
+<div class='olderposts' onclick=tappedOlderPosts()>{{postsAboveNotice}}</div>
+{{/postsAboveNotice}}
 {{#posts}}
 <div class='postbodymain {{altCSSClass}}' style='padding:10px'>
     <table id='{{postID}}'>

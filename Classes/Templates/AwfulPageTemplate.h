@@ -13,5 +13,6 @@
 @interface AwfulPageTemplate : NSObject
 
 - (NSString *)renderWithPageDataController:(AwfulPageDataController *)dataController;
+- (NSString *)renderWithPageDataController:(AwfulPageDataController *)dataController displayAllPosts : (BOOL)displayAllPosts;
 
 @end

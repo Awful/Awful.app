@@ -26,7 +26,7 @@
 @interface TemplateContext : NSObject
 
 // Designated initializer.
-- (id)initWithPageDataController:(AwfulPageDataController *)dataController;
+- (id)initWithPageDataController:(AwfulPageDataController *)dataController overridePostRemover : (BOOL)overridePostRemover;
 
 @property (readonly, nonatomic) NSArray *javascripts;
 @property (readonly, nonatomic) NSString *salrConfig;
@@ -67,10 +67,15 @@
     return _template;
 }
 
+- (NSString *)renderWithPageDataController:(AwfulPageDataController *)dataController displayAllPosts : (BOOL)displayAllPosts
+{
+    TemplateContext *context = [[TemplateContext alloc] initWithPageDataController:dataController overridePostRemover:displayAllPosts];
+    return [self.template renderObject:context];
+}
+
 - (NSString *)renderWithPageDataController:(AwfulPageDataController *)dataController
 {
-    TemplateContext *context = [[TemplateContext alloc] initWithPageDataController:dataController];
-    return [self.template renderObject:context];
+    return [self renderWithPageDataController:dataController displayAllPosts:NO];
 }
 
 @end
@@ -103,7 +108,7 @@
 
 @implementation TemplateContext
 
-- (id)initWithPageDataController:(AwfulPageDataController *)dataController
+- (id)initWithPageDataController:(AwfulPageDataController *)dataController overridePostRemover : (BOOL)overridePostRemover
 {
     self = [super init];
     if (self)
@@ -118,15 +123,26 @@
             self.pagesLeftNotice = @"End of the thread.";
         }
         NSMutableArray *posts = [NSMutableArray array];
-        NSUInteger currentIndex = 0;
+        int currentIndex = 0;
+        int numPostsAbove = [AwfulConfig numReadPostsAbove];
+        int firstPostIndex = MAX(dataController.newestPostIndex - numPostsAbove, 0);
+        int numHiddenPosts = 0;
         for(AwfulPost *post in dataController.posts) {
-            if(currentIndex >= dataController.newestPostIndex || YES) {
+            if(currentIndex >= firstPostIndex || overridePostRemover) {
                 [posts addObject:[[PostContext alloc] initWithPost:post]];
+            } else {
+                numHiddenPosts++;
             }
             currentIndex++;
         }
+        if(numHiddenPosts > 0) {
+            if(numHiddenPosts == 1) {
+                self.postsAboveNotice = @"1 Post Above";
+            } else {
+                self.postsAboveNotice = [NSString stringWithFormat:@"%d Posts Above", numHiddenPosts];
+            }
+        }
         self.posts = posts;
-        self.postsAboveNotice = @"No Posts Above";
     }
     return self;
 }

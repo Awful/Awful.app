@@ -270,6 +270,11 @@
     return [self.template renderWithPageDataController:self];
 }
 
+-(NSString *)constructedPageHTMLWithAllPosts
+{
+    return [self.template renderWithPageDataController:self displayAllPosts:YES];
+}
+
 -(NSString *)calculatePostIDScrollDestination
 {    
     if(self.newestPostIndex < [self.posts count]) {
