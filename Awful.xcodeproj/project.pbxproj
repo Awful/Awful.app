@@ -84,6 +84,15 @@
 		1156F004144B985000C0455B /* grey-gradient.png in Resources */ = {isa = PBXBuildFile; fileRef = 1156F003144B985000C0455B /* grey-gradient.png */; };
 		115A05DA134814B6004FDCE5 /* arrowright.png in Resources */ = {isa = PBXBuildFile; fileRef = 115A05D9134814B6004FDCE5 /* arrowright.png */; };
 		115A05DF13490D39004FDCE5 /* dotdotdot.png in Resources */ = {isa = PBXBuildFile; fileRef = 115A05DE13490D39004FDCE5 /* dotdotdot.png */; };
+		1160385D153F673000DCC448 /* byob-grouch.png in Resources */ = {isa = PBXBuildFile; fileRef = 11603854153F673000DCC448 /* byob-grouch.png */; };
+		1160385F153F673000DCC448 /* cd_hype.png in Resources */ = {isa = PBXBuildFile; fileRef = 11603856153F673000DCC448 /* cd_hype.png */; };
+		11603860153F673000DCC448 /* lf-gotmine.png in Resources */ = {isa = PBXBuildFile; fileRef = 11603857153F673000DCC448 /* lf-gotmine.png */; };
+		11603861153F673000DCC448 /* tava-cables.png in Resources */ = {isa = PBXBuildFile; fileRef = 11603858153F673000DCC448 /* tava-cables.png */; };
+		11603862153F673000DCC448 /* tava-headphones.png in Resources */ = {isa = PBXBuildFile; fileRef = 11603859153F673000DCC448 /* tava-headphones.png */; };
+		11603863153F673000DCC448 /* tava-mp3.png in Resources */ = {isa = PBXBuildFile; fileRef = 1160385A153F673000DCC448 /* tava-mp3.png */; };
+		11603864153F673000DCC448 /* tava-vintage.png in Resources */ = {isa = PBXBuildFile; fileRef = 1160385B153F673000DCC448 /* tava-vintage.png */; };
+		11603865153F673000DCC448 /* tcc-addiction.png in Resources */ = {isa = PBXBuildFile; fileRef = 1160385C153F673000DCC448 /* tcc-addiction.png */; };
+		11603868153F684400DCC448 /* cc-design.png in Resources */ = {isa = PBXBuildFile; fileRef = 11603867153F684400DCC448 /* cc-design.png */; };
 		11682AED1536348700D6B9B7 /* attention.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682ABE1536348700D6B9B7 /* attention.png */; };
 		11682AEE1536348700D6B9B7 /* cd_classic.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682ABF1536348700D6B9B7 /* cd_classic.png */; };
 		11682AEF1536348700D6B9B7 /* cd_comedy.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AC01536348700D6B9B7 /* cd_comedy.png */; };
@@ -380,6 +389,15 @@
 		1156F003144B985000C0455B /* grey-gradient.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "grey-gradient.png"; path = "images/grey-gradient.png"; sourceTree = "<group>"; };
 		115A05D9134814B6004FDCE5 /* arrowright.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = arrowright.png; path = images/arrowright.png; sourceTree = "<group>"; };
 		115A05DE13490D39004FDCE5 /* dotdotdot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dotdotdot.png; path = images/dotdotdot.png; sourceTree = "<group>"; };
+		11603854153F673000DCC448 /* byob-grouch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "byob-grouch.png"; sourceTree = "<group>"; };
+		11603856153F673000DCC448 /* cd_hype.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cd_hype.png; sourceTree = "<group>"; };
+		11603857153F673000DCC448 /* lf-gotmine.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lf-gotmine.png"; sourceTree = "<group>"; };
+		11603858153F673000DCC448 /* tava-cables.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tava-cables.png"; sourceTree = "<group>"; };
+		11603859153F673000DCC448 /* tava-headphones.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tava-headphones.png"; sourceTree = "<group>"; };
+		1160385A153F673000DCC448 /* tava-mp3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tava-mp3.png"; sourceTree = "<group>"; };
+		1160385B153F673000DCC448 /* tava-vintage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tava-vintage.png"; sourceTree = "<group>"; };
+		1160385C153F673000DCC448 /* tcc-addiction.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tcc-addiction.png"; sourceTree = "<group>"; };
+		11603867153F684400DCC448 /* cc-design.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cc-design.png"; sourceTree = "<group>"; };
 		11682ABE1536348700D6B9B7 /* attention.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = attention.png; sourceTree = "<group>"; };
 		11682ABF1536348700D6B9B7 /* cd_classic.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cd_classic.png; sourceTree = "<group>"; };
 		11682AC01536348700D6B9B7 /* cd_comedy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cd_comedy.png; sourceTree = "<group>"; };
@@ -812,6 +830,15 @@
 		112ECF0F14D7100A007EE7B6 /* threadtags */ = {
 			isa = PBXGroup;
 			children = (
+				11603867153F684400DCC448 /* cc-design.png */,
+				11603854153F673000DCC448 /* byob-grouch.png */,
+				11603856153F673000DCC448 /* cd_hype.png */,
+				11603857153F673000DCC448 /* lf-gotmine.png */,
+				11603858153F673000DCC448 /* tava-cables.png */,
+				11603859153F673000DCC448 /* tava-headphones.png */,
+				1160385A153F673000DCC448 /* tava-mp3.png */,
+				1160385B153F673000DCC448 /* tava-vintage.png */,
+				1160385C153F673000DCC448 /* tcc-addiction.png */,
 				11682ABE1536348700D6B9B7 /* attention.png */,
 				11682ABF1536348700D6B9B7 /* cd_classic.png */,
 				11682AC01536348700D6B9B7 /* cd_comedy.png */,
@@ -1674,6 +1701,15 @@
 				11682B191536348700D6B9B7 /* wrestling-raw.png in Resources */,
 				11682B1A1536348700D6B9B7 /* wrestling-roh.png in Resources */,
 				11682B1B1536348700D6B9B7 /* wrestling-sd.png in Resources */,
+				1160385D153F673000DCC448 /* byob-grouch.png in Resources */,
+				1160385F153F673000DCC448 /* cd_hype.png in Resources */,
+				11603860153F673000DCC448 /* lf-gotmine.png in Resources */,
+				11603861153F673000DCC448 /* tava-cables.png in Resources */,
+				11603862153F673000DCC448 /* tava-headphones.png in Resources */,
+				11603863153F673000DCC448 /* tava-mp3.png in Resources */,
+				11603864153F673000DCC448 /* tava-vintage.png in Resources */,
+				11603865153F673000DCC448 /* tcc-addiction.png in Resources */,
+				11603868153F684400DCC448 /* cc-design.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
