@@ -52,9 +52,8 @@
     self.replyTextView = nil;
 }
 
-// Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    // Return YES for supported orientations.
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         return YES;
     }
@@ -72,10 +71,10 @@
 {
     double duration = [[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
     CGRect keyboardRect = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    UIEdgeInsets insets = self.replyTextView.contentInset;
-    insets.bottom += keyboardRect.size.height;
+    CGRect keyboardBounds = [self.view convertRect:keyboardRect fromView:nil];
+    
     [UIView animateWithDuration:duration animations:^{
-        self.replyTextView.contentInset = insets;
+        self.replyTextView.frame = CGRectMake(5, 44, self.replyTextView.bounds.size.width, self.view.bounds.size.height-44-keyboardBounds.size.height);
     }];
 }
 

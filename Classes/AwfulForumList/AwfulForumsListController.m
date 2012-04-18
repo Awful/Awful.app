@@ -163,11 +163,6 @@
 }
 */
 
--(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
-{
-    return YES;
-}
-
 -(void)refresh
 {
     [super refresh];
