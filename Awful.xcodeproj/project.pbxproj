@@ -250,7 +250,7 @@
 		11E5366B151E8B4C00EA74EA /* bookmarks.png in Resources */ = {isa = PBXBuildFile; fileRef = 11E53669151E8B4C00EA74EA /* bookmarks.png */; };
 		11E5366C151E8B4C00EA74EA /* bookmarks@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11E5366A151E8B4C00EA74EA /* bookmarks@2x.png */; };
 		11FDA290151017490014FDCD /* MainStoryboardiPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 11FDA28E151017490014FDCD /* MainStoryboardiPad.storyboard */; };
-		11FDA296151018600014FDCD /* AwfulAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA295151018600014FDCD /* AwfulAccountViewController.m */; };
+		11FDA296151018600014FDCD /* AwfulSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA295151018600014FDCD /* AwfulSettingsViewController.m */; };
 		11FDA299151018740014FDCD /* OtherWebController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA298151018740014FDCD /* OtherWebController.m */; };
 		11FDA29C1510187F0014FDCD /* AwfulSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA29B1510187F0014FDCD /* AwfulSplitViewController.m */; };
 		11FDA2B7151170A20014FDCD /* navbargradient.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FDA2B6151170A20014FDCD /* navbargradient.png */; };
@@ -615,8 +615,8 @@
 		11E53669151E8B4C00EA74EA /* bookmarks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bookmarks.png; path = images/bookmarks.png; sourceTree = "<group>"; };
 		11E5366A151E8B4C00EA74EA /* bookmarks@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bookmarks@2x.png"; path = "images/bookmarks@2x.png"; sourceTree = "<group>"; };
 		11FDA28E151017490014FDCD /* MainStoryboardiPad.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = MainStoryboardiPad.storyboard; path = iPad/MainStoryboardiPad.storyboard; sourceTree = "<group>"; };
-		11FDA294151018600014FDCD /* AwfulAccountViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAccountViewController.h; sourceTree = "<group>"; };
-		11FDA295151018600014FDCD /* AwfulAccountViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAccountViewController.m; sourceTree = "<group>"; };
+		11FDA294151018600014FDCD /* AwfulSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettingsViewController.h; sourceTree = "<group>"; };
+		11FDA295151018600014FDCD /* AwfulSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettingsViewController.m; sourceTree = "<group>"; };
 		11FDA297151018740014FDCD /* OtherWebController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OtherWebController.h; sourceTree = "<group>"; };
 		11FDA298151018740014FDCD /* OtherWebController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OtherWebController.m; sourceTree = "<group>"; };
 		11FDA29A1510187F0014FDCD /* AwfulSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AwfulSplitViewController.h; path = iPad/AwfulSplitViewController.h; sourceTree = "<group>"; };
@@ -1030,8 +1030,8 @@
 		1190F71813BE4EA900B9D271 /* Login */ = {
 			isa = PBXGroup;
 			children = (
-				11FDA294151018600014FDCD /* AwfulAccountViewController.h */,
-				11FDA295151018600014FDCD /* AwfulAccountViewController.m */,
+				11FDA294151018600014FDCD /* AwfulSettingsViewController.h */,
+				11FDA295151018600014FDCD /* AwfulSettingsViewController.m */,
 				1190F71913BE4EA900B9D271 /* AwfulLoginController.h */,
 				1190F71A13BE4EA900B9D271 /* AwfulLoginController.m */,
 			);
@@ -1775,7 +1775,7 @@
 				11D7CB9D14EA1AE8000DA96A /* AwfulTabBarController.m in Sources */,
 				1172A63214F5DE8B0026CDA8 /* AwfulNetworkEngine.m in Sources */,
 				11DFB44214FF1CBB0001A34C /* AwfulTableViewController.m in Sources */,
-				11FDA296151018600014FDCD /* AwfulAccountViewController.m in Sources */,
+				11FDA296151018600014FDCD /* AwfulSettingsViewController.m in Sources */,
 				11FDA299151018740014FDCD /* OtherWebController.m in Sources */,
 				11FDA29C1510187F0014FDCD /* AwfulSplitViewController.m in Sources */,
 				11FDA2CD15129CAF0014FDCD /* EGORefreshTableHeaderView.m in Sources */,

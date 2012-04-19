@@ -1,5 +1,5 @@
 //
-//  AwfulAccountViewController.h
+//  AwfulSettingsViewController.h
 //  Awful
 //
 //  Created by Sean Berry on 3/1/12.
@@ -8,9 +8,10 @@
 
 #import "AwfulTableViewController.h"
 
-@interface AwfulAccountViewController : AwfulTableViewController <UIAlertViewDelegate>
+@interface AwfulSettingsViewController : AwfulTableViewController <UIAlertViewDelegate>
 
 @property (strong, nonatomic) IBOutlet UILabel *usernameLabel;
-- (IBAction)hitResetData:(id)sender;
+
+- (IBAction)resetData:(id)sender;
 
 @end

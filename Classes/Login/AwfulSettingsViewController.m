@@ -1,36 +1,25 @@
 //
-//  AwfulAccountViewController.m
+//  AwfulSettingsViewController.m
 //  Awful
 //
 //  Created by Sean Berry on 3/1/12.
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulAccountViewController.h"
+#import "AwfulSettingsViewController.h"
 #import "AwfulUser.h"
 #import "AwfulUser+AwfulMethods.h"
 #import "AwfulUtil.h"
 #import "AwfulLoginController.h"
 #import "AwfulNetworkEngine.h"
 
-@implementation AwfulAccountViewController
+@implementation AwfulSettingsViewController
 
 @synthesize usernameLabel = _usernameLabel;
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
-        
     AwfulUser *user = [AwfulUser currentUser];
     if(user.userName == nil && isLoggedIn()) {
         [self refresh];
@@ -41,17 +30,17 @@
 
 - (void)viewDidUnload
 {
-    [self setUsernameLabel:nil];
+    self.usernameLabel = nil;
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
 
--(void)viewWillAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
 }
 
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if([[segue identifier] isEqualToString:@"Login"]) {
         UINavigationController *nav = (UINavigationController *)segue.destinationViewController;
@@ -60,7 +49,7 @@
     }
 }
 
--(void)refresh
+- (void)refresh
 {
     [super refresh];
     [self.networkOperation cancel];
@@ -97,7 +86,8 @@
     return 0;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *infoIdent = @"Information";
     static NSString *buttonIdent = @"Button";
@@ -157,7 +147,7 @@
     }
 }
 
-- (IBAction)hitResetData:(id)sender 
+- (IBAction)resetData:(id)sender 
 {
     [ApplicationDelegate resetDataStore];
 }

@@ -9,7 +9,7 @@
 #import "AwfulLoginController.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulUser.h"
-#import "AwfulAccountViewController.h"
+#import "AwfulSettingsViewController.h"
 
 @implementation AwfulLoginController
 
