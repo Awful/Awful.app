@@ -6,23 +6,27 @@ Awful is an iOS app for browsing the [Something Awful Forums][forums] on your iP
 [forums]: http://forums.somethingawful.com
 [thread]: http://forums.somethingawful.com/showthread.php?threadid=3381510
 
-TODO
--------
-* Voting
+For this release
+----------------
+* Fix bold issue (currently example in awfulapp thread)
 * Sane intro to the app, take user to login screen
-* Save Images
-* copy thread/post URL
-* fix bold issue (currently example in awfulapp thread)
-* FYAD
+* Save images
+* Copy thread/post URL
 * Smarter iPad interface
-* use the app a bunch because I probably forgot a bunch of stuff
+* Pick and include a license.
+* Turn the code loose once more.
+
+For some later release
+----------------------
+* Voting
+* Private messages
+* Search
+* FYAD
 
 An unofficial app
 -----------------
 
 This app is unofficial and is not endorsed by Lowtax. Use at your own risk.
-
-Please, if you put your own app derived from Awful on the App Store, abide by these same terms. Pretend we are lawyers and have written an iron-clad license requiring this.
 
 Build
 -----
@@ -38,7 +42,7 @@ We welcome any feedback, issues, or pull requests. Thanks!
 License
 -------
 
-To be determined; something like BSD 2-clause with pleadings not to sell on the App Store?
+GPLv2. If this license does not work for you, we can make arrangements.
 
 Credit
 ------
