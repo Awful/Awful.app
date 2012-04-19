@@ -20,4 +20,4 @@
 
 @end
 
-BOOL isLoggedIn();
+extern BOOL IsLoggedIn();

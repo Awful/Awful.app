@@ -142,7 +142,7 @@
     
     [self.navigationItem.leftBarButtonItem setTintColor:[UIColor colorWithRed:46.0/255 green:146.0/255 blue:190.0/255 alpha:1.0]];
     
-    if([self.tableView numberOfSections] == 0 && isLoggedIn()) {
+    if([self.tableView numberOfSections] == 0 && IsLoggedIn()) {
         [self.tableView reloadData];
     }
 }
@@ -198,7 +198,7 @@
 
 -(void)toggleFavoriteForForum : (AwfulForum *)forum
 {    
-    if(!isLoggedIn()) {
+    if(!IsLoggedIn()) {
         return;
     }
     
@@ -215,7 +215,7 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 
-    if(!isLoggedIn()) {
+    if(!IsLoggedIn()) {
         return 0;
     }
     
@@ -230,7 +230,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    if(!isLoggedIn()) {
+    if(!IsLoggedIn()) {
         return 0;
     }
     
@@ -504,7 +504,7 @@
 
 -(AwfulForumSection *)getForumSectionAtIndexPath : (NSIndexPath *)path
 {
-    if(!isLoggedIn()) {
+    if(!IsLoggedIn()) {
         if(path.section == 1) {
             NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"AwfulForum"];
             NSPredicate *predicate = [NSPredicate predicateWithFormat:@"forumID=21"];

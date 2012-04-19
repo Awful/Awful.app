@@ -17,7 +17,6 @@
 		10913AAF12CBF13A007583AC /* stop@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 10913AAA12CBF13A007583AC /* stop@2x.png */; };
 		10913AE712CBF871007583AC /* number-background.png in Resources */ = {isa = PBXBuildFile; fileRef = 10913AE612CBF871007583AC /* number-background.png */; };
 		10913B6412CC03F3007583AC /* number-background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 10913B6312CC03F3007583AC /* number-background@2x.png */; };
-		10913D0612CFF44A007583AC /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 10913D0512CFF44A007583AC /* Settings.bundle */; };
 		10D34FA9128F41160026C7C2 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10D34FA8128F41160026C7C2 /* CFNetwork.framework */; };
 		10D34FAF128F413C0026C7C2 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10D34FAE128F413C0026C7C2 /* MobileCoreServices.framework */; };
 		10D34FB1128F413C0026C7C2 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10D34FB0128F413C0026C7C2 /* SystemConfiguration.framework */; };
@@ -316,7 +315,6 @@
 		10913AAA12CBF13A007583AC /* stop@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "stop@2x.png"; path = "images/stop@2x.png"; sourceTree = "<group>"; };
 		10913AE612CBF871007583AC /* number-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "number-background.png"; path = "images/number-background.png"; sourceTree = "<group>"; };
 		10913B6312CC03F3007583AC /* number-background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "number-background@2x.png"; path = "images/number-background@2x.png"; sourceTree = "<group>"; };
-		10913D0512CFF44A007583AC /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		10D34FA8128F41160026C7C2 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		10D34FAE128F413C0026C7C2 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		10D34FB0128F413C0026C7C2 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -1442,7 +1440,6 @@
 				10F5BB3212499953006C5ED0 /* Default@2x.png */,
 				10241B771247DF7F00EE71CA /* Default.png */,
 				8D1107310486CEB800E47090 /* Awful-Info.plist */,
-				10913D0512CFF44A007583AC /* Settings.bundle */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1551,7 +1548,6 @@
 				10913AAF12CBF13A007583AC /* stop@2x.png in Resources */,
 				10913AE712CBF871007583AC /* number-background.png in Resources */,
 				10913B6412CC03F3007583AC /* number-background@2x.png in Resources */,
-				10913D0612CFF44A007583AC /* Settings.bundle in Resources */,
 				115A05DA134814B6004FDCE5 /* arrowright.png in Resources */,
 				115A05DF13490D39004FDCE5 /* dotdotdot.png in Resources */,
 				1199D7CF13AA9C4200264DE9 /* tiny_arrow_right.png in Resources */,

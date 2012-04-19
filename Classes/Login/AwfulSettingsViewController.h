@@ -10,8 +10,4 @@
 
 @interface AwfulSettingsViewController : AwfulTableViewController <UIAlertViewDelegate>
 
-@property (strong, nonatomic) IBOutlet UILabel *usernameLabel;
-
-- (IBAction)resetData:(id)sender;
-
 @end
