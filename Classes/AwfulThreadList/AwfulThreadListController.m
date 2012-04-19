@@ -64,6 +64,11 @@
         
         page.thread = thread;
         [page refresh];
+        
+        if ([self splitViewController])
+        {
+            [self.splitViewController prepareForSegue:segue sender:sender];
+        }
     }
 }
 

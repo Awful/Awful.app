@@ -85,7 +85,9 @@ typedef enum {
 
 @end
 
-@interface AwfulPageIpad: AwfulPage
+#import "AwfulSplitViewController.h"
+
+@interface AwfulPageIpad: AwfulPage <SubstitutableDetailViewController>
 @property (nonatomic, strong) UIPopoverController *popController;
 
 @end

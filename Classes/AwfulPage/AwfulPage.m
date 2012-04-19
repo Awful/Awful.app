@@ -635,4 +635,17 @@
     
     
 }
+
+
+- (void)showRootPopoverButtonItem:(UIBarButtonItem *)barButtonItem {
+
+    [self.navigationItem setLeftBarButtonItem:barButtonItem animated:YES];
+}
+
+
+- (void)invalidateRootPopoverButtonItem:(UIBarButtonItem *)barButtonItem {
+    
+    [self.navigationItem setLeftBarButtonItem:nil animated:YES];
+}
+
 @end
