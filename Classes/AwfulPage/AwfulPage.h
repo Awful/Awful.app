@@ -86,5 +86,6 @@ typedef enum {
 @end
 
 @interface AwfulPageIpad: AwfulPage
+@property (nonatomic, strong) UIPopoverController *popController;
 
 @end

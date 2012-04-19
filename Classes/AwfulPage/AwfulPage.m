@@ -1,10 +1,10 @@
-//
-//  AwfulPage.m
-//  Awful
-//
-//  Created by Sean Berry on 7/29/10.
-//  Copyright 2010 Regular Berry Software LLC. All rights reserved.
-//
+    //
+    //  AwfulPage.m
+    //  Awful
+    //
+    //  Created by Sean Berry on 7/29/10.
+    //  Copyright 2010 Regular Berry Software LLC. All rights reserved.
+    //
 
 #import "AwfulThreadListController.h"
 #import "AwfulAppDelegate.h"
@@ -70,14 +70,14 @@
         if(_thread.title != nil) {
             UILabel *lab = (UILabel *)self.navigationItem.titleView;
             lab.text = self.thread.title;
-            //NSLog(@"title width %f", self.navigationItem.titleView.frame.size.width);
+                //NSLog(@"title width %f", self.navigationItem.titleView.frame.size.width);
         }
         
         if([_thread.totalUnreadPosts intValue] == -1) {
             self.destinationType = AwfulPageDestinationTypeFirst;
         } else if(_thread.totalUnreadPosts == 0) {
             self.destinationType = AwfulPageDestinationTypeLast;
-            // if the last page is full, it won't work if you go for &goto=newpost, that's why I'm setting this to last page
+                // if the last page is full, it won't work if you go for &goto=newpost, that's why I'm setting this to last page
         } else {
             self.destinationType = AwfulPageDestinationTypeNewpost;
         }
@@ -110,31 +110,31 @@
 
 
 /*
--(void)setWebView:(JSBridgeWebView *)webView;
-{
-    UILongPressGestureRecognizer *press = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(heldPost:)];
-    press.delegate = self;
-    press.minimumPressDuration = 0.3;
-    [webView addGestureRecognizer:press];
-    
-    
-    AwfulNavigator *nav = getNavigator();
-    UITapGestureRecognizer *three_times = [[UITapGestureRecognizer alloc] initWithTarget:nav action:@selector(didFullscreenGesture:)];
-    three_times.numberOfTapsRequired = 3;
-    three_times.delegate = self;
-    [webView addGestureRecognizer:three_times];
-    
-    UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:nav action:@selector(didFullscreenGesture:)];
-    [webView addGestureRecognizer:pinch];
-    pinch.delegate = self;
-    
-    
-    nav.view = self.view;
-    if([nav isFullscreen]) {
-        nav.fullScreenButton.center = CGPointMake(nav.view.frame.size.width-25, nav.view.frame.size.height-25);
-        [nav.view addSubview:nav.fullScreenButton];
-    }
-}*/
+ -(void)setWebView:(JSBridgeWebView *)webView;
+ {
+ UILongPressGestureRecognizer *press = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(heldPost:)];
+ press.delegate = self;
+ press.minimumPressDuration = 0.3;
+ [webView addGestureRecognizer:press];
+ 
+ 
+ AwfulNavigator *nav = getNavigator();
+ UITapGestureRecognizer *three_times = [[UITapGestureRecognizer alloc] initWithTarget:nav action:@selector(didFullscreenGesture:)];
+ three_times.numberOfTapsRequired = 3;
+ three_times.delegate = self;
+ [webView addGestureRecognizer:three_times];
+ 
+ UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:nav action:@selector(didFullscreenGesture:)];
+ [webView addGestureRecognizer:pinch];
+ pinch.delegate = self;
+ 
+ 
+ nav.view = self.view;
+ if([nav isFullscreen]) {
+ nav.fullScreenButton.center = CGPointMake(nav.view.frame.size.width-25, nav.view.frame.size.height-25);
+ [nav.view addSubview:nav.fullScreenButton];
+ }
+ }*/
 
 -(void)setPages:(AwfulPageCount *)in_pages
 {
@@ -269,10 +269,10 @@
 #pragma mark - Memory management
 
 - (void)didReceiveMemoryWarning {
-    // Releases the view if it doesn't have a superview.
+        // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
     
-    // Relinquish ownership any cached data, images, etc that aren't in use.
+        // Relinquish ownership any cached data, images, etc that aren't in use.
 }
 
 - (void)viewDidLoad {
@@ -290,8 +290,8 @@
 }
 
 - (void)viewDidUnload {
-    // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
-    // For example: self.myOutlet = nil;
+        // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
+        // For example: self.myOutlet = nil;
     [super viewDidUnload];
 }
 
@@ -511,22 +511,22 @@
                 AwfulThread *intra = [[AwfulThread alloc] init];
                 intra.threadID = thread_id;
                 
-                //AwfulPage *page = nil;
+                    //AwfulPage *page = nil;
                 
                 /*
-                if(page_number == nil) {
-                    page = [[[self class] alloc] initWithAwfulThread:intra startAt:AwfulPageDestinationTypeFirst];
-                } else {
-                    page = [[[self class] alloc] initWithAwfulThread:intra startAt:AwfulPageDestinationTypeSpecific pageNum:[page_number intValue]];
-                    int pti = [AwfulParse getNewPostNumFromURL:request.URL];
-                    page.url = [NSString stringWithFormat:@"showthread.php?threadid=%@&pagenumber=%@#pti%d", thread_id, page_number, pti];
-                }
-                
-                
-                if(page != nil) {
-                    loadContentVC(page);
-                    return NO;
-                }*/
+                 if(page_number == nil) {
+                 page = [[[self class] alloc] initWithAwfulThread:intra startAt:AwfulPageDestinationTypeFirst];
+                 } else {
+                 page = [[[self class] alloc] initWithAwfulThread:intra startAt:AwfulPageDestinationTypeSpecific pageNum:[page_number intValue]];
+                 int pti = [AwfulParse getNewPostNumFromURL:request.URL];
+                 page.url = [NSString stringWithFormat:@"showthread.php?threadid=%@&pagenumber=%@#pti%d", thread_id, page_number, pti];
+                 }
+                 
+                 
+                 if(page != nil) {
+                 loadContentVC(page);
+                 return NO;
+                 }*/
             }
             
             
@@ -589,4 +589,50 @@
 @end
 
 @implementation AwfulPageIpad
+@synthesize popController = _popController;
+
+-(IBAction)tappedPageNav : (id)sender
+{
+    if(self.popController)
+    {
+        [self.popController dismissPopoverAnimated:YES];
+        self.popController = nil;
+    }
+    
+    if(self.pages == nil)
+    {
+        return;
+    }
+    
+    UIView *sp_view = self.specificPageController.containerView;
+    
+    self.specificPageController.hiding = !self.specificPageController.hiding;
+    
+    if(self.specificPageController == nil) {
+        
+        [self.pagesBarButtonItem setTintColor:[UIColor blackColor]];
+        self.specificPageController = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil] instantiateViewControllerWithIdentifier:@"AwfulSpecificPageController"];
+        self.specificPageController.page = self;
+        [self.specificPageController loadView];
+        sp_view = self.specificPageController.containerView;
+        
+        [self.specificPageController.pickerView selectRow:self.pages.currentPage-1 inComponent:0 animated:NO];
+        
+    }
+
+    if (!self.specificPageController.hiding)
+    {
+        
+    UIViewController *vc = self.specificPageController;
+
+    self.popController = [[UIPopoverController alloc] initWithContentViewController:vc];
+    
+    [self.popController setPopoverContentSize:CGSizeMake(260,sp_view.frame.size.height) animated:YES];
+    [self.popController presentPopoverFromBarButtonItem:self.pagesBarButtonItem 
+                               permittedArrowDirections:UIPopoverArrowDirectionAny
+                                               animated:YES];
+    }
+    
+    
+}
 @end
