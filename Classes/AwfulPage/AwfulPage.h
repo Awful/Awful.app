@@ -87,7 +87,7 @@ typedef enum {
 -(void)swapToStopButton;
 -(void)swapToRefreshButton;
 
--(void)showVoteCompleteMessage;
+-(void)showCompletionMessage : (NSString *)message;
 
 @end
 

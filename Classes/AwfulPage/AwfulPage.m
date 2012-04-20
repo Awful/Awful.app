@@ -587,16 +587,15 @@
     self.navigationItem.rightBarButtonItem = stop;
 }
 
--(void)showVoteCompleteMessage
+-(void)showCompletionMessage : (NSString *)message
 {
     dispatch_async(dispatch_get_main_queue(), ^(){
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
-        hud.labelText = @"Great Job!";
+        hud.labelText = message;
         hud.customView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"37x-Checkmark"]];
         hud.mode = MBProgressHUDModeCustomView;
-        [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionAutoreverse|UIViewAnimationOptionRepeat animations:^(void){
-            [UIView setAnimationRepeatCount:5];
-            hud.alpha = 0.95;
+        [UIView animateWithDuration:0.5 delay:2.0 options:UIViewAnimationOptionCurveEaseIn animations:^(void){
+            hud.alpha = 0.0;
         } completion:^(BOOL finished) {
             [MBProgressHUD hideHUDForView:self.view animated:NO];
         }];

@@ -361,4 +361,13 @@ QuotePostContent,
     return op;
 }
 
+-(MKNetworkOperation *)processMarkSeenLink : (NSString *)markSeenLink onCompletion : (CompletionBlock)completionBlock onError:(MKNKErrorBlock)errorBlock
+{
+    MKNetworkOperation *op = [self operationWithPath:markSeenLink];
+    [op onCompletion:^(MKNetworkOperation *_) { if (completionBlock) completionBlock(); }
+             onError:^(NSError *error)        { if (errorBlock) errorBlock(error); }];
+    [self enqueueOperation:op];
+    return op;
+}
+
 @end

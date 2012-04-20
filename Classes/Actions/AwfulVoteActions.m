@@ -58,7 +58,7 @@
         [ApplicationDelegate.awfulNetworkEngine submitVote:vote_num forThread:self.thread onCompletion:^(void) {
             if([self.viewController isKindOfClass:[AwfulPage class]]) {
                 AwfulPage *page = (AwfulPage *)self.viewController;
-                [page showVoteCompleteMessage];
+                [page showCompletionMessage:@"Great Job!"];
             }
         } onError:^(NSError *error) {
             [AwfulUtil requestFailed:error];
