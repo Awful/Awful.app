@@ -27,6 +27,10 @@ typedef enum {
 @class ButtonSegmentedControl;
 
 @interface AwfulPage : UIViewController <UIWebViewDelegate, UIGestureRecognizerDelegate, JSBridgeWebViewDelegate>
+{
+@protected
+    AwfulActions *_actions;
+}
 
 @property (nonatomic, strong) AwfulThread *thread;
 @property (nonatomic, strong) NSString *url;

@@ -17,6 +17,7 @@
 @property (nonatomic, weak) UIViewController *viewController;
 
 -(void)show;
+- (UIActionSheet *) getActionSheet;
 -(NSString *)getOverallTitle;
 -(BOOL)isCancelled : (int)index;
 

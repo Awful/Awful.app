@@ -648,4 +648,25 @@
     [self.navigationItem setLeftBarButtonItem:nil animated:YES];
 }
 
+
+-(void)setActions:(AwfulPostActions *)actions
+{
+    
+    if(self.popController)
+    {
+        [self.popController dismissPopoverAnimated:YES];
+        self.popController = nil;
+    }
+    
+    if(actions != _actions) {
+        _actions = actions;
+        UIActionSheet *sheet = [actions getActionSheet];
+        CGRect buttonRect = self.actionsSegmentedControl.frame;
+        buttonRect.origin.y += self.view.frame.size.height;  //Add the height of the view to the button y
+        buttonRect.size.width = buttonRect.size.width / 2;   //Action is the first button, so the width is really only half
+        
+        [sheet showFromRect:buttonRect inView:self.view animated:YES];
+    }
+}
+
 @end
