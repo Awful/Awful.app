@@ -18,7 +18,6 @@ For this release
 
 For some later release
 ----------------------
-* Voting
 * Private messages
 * Search
 * FYAD
