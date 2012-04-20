@@ -102,6 +102,7 @@ a {
 }
 
 .pagesleft {
+	display: none;
     border-top:1px solid black;
     text-align:center;
     background-color:white;
@@ -113,14 +114,14 @@ a {
 
 .olderposts {
     width:100%;
-    padding:5px;
-    padding-top:20px;
+    padding:0;
+    padding-top:6px;
     text-align:center;
-    background-color:white;
-    height:40px;
+    background-color: #003d67;
+    color:#dbe8f5;
+    height:26px;
     font-family:Helvetica;
-    font-size:20px;
-    border-bottom:1px solid black;
+    font-size:16px;
 }
 
 .altcolor1 {
@@ -160,7 +161,7 @@ blockquote img {
 </head>
 <body>
 {{#postsAboveNotice}}
-<div class='olderposts' onclick=tappedOlderPosts()>{{postsAboveNotice}}</div>
+<div class='olderposts' onclick=tappedOlderPosts()>Load {{postsAboveNotice}}</div>
 {{/postsAboveNotice}}
 {{#posts}}
 <table id='{{postID}}' class='userbox {{#isOP}}op{{/isOP}}'>

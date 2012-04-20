@@ -18,7 +18,6 @@
 typedef enum {
     AwfulThreadActionVote,
     AwfulThreadActionBookmarks,
-    AwfulThreadActionScrollToBottom,
 } AwfulThreadAction;
 
 @interface AwfulThreadActions ()
@@ -36,7 +35,6 @@ typedef enum {
         self.thread = thread;
         self.titles = [NSArray arrayWithObjects:@"Vote",
                        [thread.isBookmarked boolValue] ? @"Remove From Bookmarks" : @"Add To Bookmarks",
-                       @"Scroll To Bottom",
                        nil];
     }
     return self;
@@ -66,8 +64,6 @@ typedef enum {
         } else {
             [[ApplicationDelegate awfulNetworkEngine] addBookmarkedThread:self.thread onCompletion:completion onError:nil];
         }
-    } else if (buttonIndex == AwfulThreadActionScrollToBottom) {
-        // TODO scroll down
     }
 }
 
