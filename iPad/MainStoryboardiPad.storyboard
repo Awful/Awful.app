@@ -31,13 +31,14 @@
                 <splitViewController id="D7m-b9-f1Z" customClass="AwfulSplitViewController" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Item" id="bfo-a6-Z7S"/>
                     <toolbarItems/>
+                    <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <connections>
                         <segue destination="6qG-xq-Bw4" kind="relationship" relationship="masterViewController" id="g6b-JR-NhK"/>
-                        <segue destination="oRp-8t-Jy6" kind="relationship" relationship="detailViewController" id="NNX-so-YBm"/>
+                        <segue destination="jeX-ok-kre" kind="relationship" relationship="detailViewController" id="vzh-w9-gyH"/>
                     </connections>
                 </splitViewController>
             </objects>
-            <point key="canvasLocation" x="-1229" y="-738"/>
+            <point key="canvasLocation" x="-2687" y="-1455"/>
         </scene>
         <!--Awful Forums List Controller - Forums-->
         <scene sceneID="2zq-Y4-odR">
@@ -45,9 +46,10 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iBx-lO-NDB" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController title="Forums" id="itn-NS-72L" customClass="AwfulForumsListController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="50" sectionHeaderHeight="22" sectionFooterHeight="22" id="kek-Ws-iPl">
-                        <rect key="frame" x="0.0" y="64" width="320" height="739"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="655"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                         <color key="separatorColor" red="0.74901960779999999" green="0.74901960779999999" blue="0.74901960779999999" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ForumCell" id="AQq-gp-FsI" customClass="AwfulForumCell">
@@ -164,9 +166,10 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="e3Q-4i-yok" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController id="b0I-zs-CAw" customClass="AwfulThreadListController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="0IP-LX-ayf">
-                        <rect key="frame" x="0.0" y="64" width="320" height="788"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="704"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="ThreadCell" rowHeight="72" id="28S-OD-2Rg" userLabel="thread cell" customClass="AwfulThreadCell">
                                 <rect key="frame" x="0.0" y="22" width="320" height="72"/>
@@ -326,9 +329,10 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2VA-w8-sO3" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController id="BZz-jf-x9i" customClass="AwfulAccountViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="singleLineEtched" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="8WJ-rJ-ayg">
-                        <rect key="frame" x="0.0" y="64" width="320" height="739"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="655"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Information" textLabel="WOr-TP-8SP" detailTextLabel="UC3-fj-ZDa" style="IBUITableViewCellStyleValue1" id="eJ4-uH-GcG">
                                 <rect key="frame" x="0.0" y="34" width="320" height="45"/>
@@ -424,9 +428,10 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9wO-v5-qhG" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController id="1Fp-2s-3Kf" customClass="AwfulLoginController" sceneMemberID="viewController">
                     <webView key="view" contentMode="scaleToFill" id="cQa-sD-PJG">
-                        <rect key="frame" x="0.0" y="64" width="768" height="960"/>
+                        <rect key="frame" x="0.0" y="64" width="1024" height="704"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </webView>
                     <navigationItem key="navigationItem" title="Login" id="S7x-lb-fGl">
                         <barButtonItem key="leftBarButtonItem" style="done" systemItem="cancel" id="hpz-df-s61">
@@ -475,9 +480,10 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LPG-ll-xrC" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController title="Bookmarks" id="3lt-fd-sto" customClass="AwfulBookmarksController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="23Q-Go-LtT">
-                        <rect key="frame" x="0.0" y="64" width="320" height="739"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="655"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="ThreadCell" rowHeight="72" id="Ubd-DS-nal" userLabel="thread cell" customClass="AwfulThreadCell">
                                 <rect key="frame" x="0.0" y="22" width="320" height="72"/>
@@ -600,7 +606,7 @@
                     </connections>
                 </navigationController>
             </objects>
-            <point key="canvasLocation" x="-1483" y="740"/>
+            <point key="canvasLocation" x="-1515" y="726"/>
         </scene>
         <!--Awful Page Ipad-->
         <scene sceneID="I5P-Jg-hyP">
@@ -608,11 +614,11 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dQa-7P-so9" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController hidesBottomBarWhenPushed="YES" id="5o1-8Y-fsn" customClass="AwfulPageIpad" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Auw-iH-8xK">
-                        <rect key="frame" x="0.0" y="64" width="768" height="916"/>
+                        <rect key="frame" x="0.0" y="64" width="703" height="660"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <webView contentMode="scaleToFill" id="uom-YB-cRl" customClass="JSBridgeWebView">
-                                <rect key="frame" x="0.0" y="0.0" width="768" height="916"/>
+                                <rect key="frame" x="0.0" y="0.0" width="703" height="660"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <connections>
@@ -620,7 +626,7 @@
                                 </connections>
                             </webView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <toolbarItems>
                         <barButtonItem style="plain" id="lFl-9U-jES">
@@ -647,7 +653,7 @@
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="JH9-rJ-Pf2"/>
                         <barButtonItem style="plain" id="Ovc-Zi-2lK">
                             <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" id="8iC-oY-std" customClass="ButtonSegmentedControl">
-                                <rect key="frame" x="676" y="8" width="85" height="30"/>
+                                <rect key="frame" x="611" y="8" width="85" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <segments>
                                     <segment title="" image="action.png"/>
@@ -686,7 +692,7 @@
                     <nil key="highlightedColor"/>
                 </label>
             </objects>
-            <point key="canvasLocation" x="-562" y="746"/>
+            <point key="canvasLocation" x="-568" y="748"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="dhD-uB-3lv">
@@ -709,9 +715,10 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jWI-GD-sU9" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController id="ffn-sD-mkh" customClass="AwfulAddForumsViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="6tM-SB-ev1">
-                        <rect key="frame" x="0.0" y="64" width="768" height="960"/>
+                        <rect key="frame" x="0.0" y="64" width="1024" height="704"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="checkmark" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ForumCell" rowHeight="50" id="YoL-kc-ybd" customClass="AwfulForumCell">
                                 <rect key="frame" x="0.0" y="22" width="1024" height="50"/>
@@ -832,8 +839,110 @@
             </objects>
             <point key="canvasLocation" x="-562" y="1933"/>
         </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="vEl-Ha-B4p">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="lfN-6F-z3E" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <navigationController definesPresentationContext="YES" providesPresentationContextTransitionStyle="YES" id="jeX-ok-kre" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="7jS-vX-h8O">
+                        <barButtonItem key="leftBarButtonItem" image="list_icon.png" id="NUb-Kz-aic"/>
+                    </navigationItem>
+                    <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="sHB-Vg-NLV">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="bie-UO-tTR" kind="relationship" relationship="rootViewController" id="Cl7-Lp-HMY"/>
+                    </connections>
+                </navigationController>
+            </objects>
+            <point key="canvasLocation" x="-2459" y="1894"/>
+        </scene>
+        <!--Awful Page Ipad-->
+        <scene sceneID="eeH-El-Rh0">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="C99-UB-8TE" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <viewController hidesBottomBarWhenPushed="YES" id="bie-UO-tTR" customClass="AwfulPageIpad" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="7LG-0k-3Ej">
+                        <rect key="frame" x="0.0" y="64" width="768" height="916"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="MasterViewButton.png" id="cp1-S1-7eq">
+                                <rect key="frame" x="20" y="-98" width="288" height="381"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" image="singlePageMovement.png" id="q8c-S4-NsX">
+                                <rect key="frame" x="43" y="665" width="240" height="251"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" image="multiPageMovement.png" id="53N-NK-ouE">
+                                <rect key="frame" x="106" y="762" width="251" height="175"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" image="ReplyButton.png" id="yWI-U5-wIu">
+                                <rect key="frame" x="444" y="577" width="376" height="339"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" image="ThreadActions.png" id="YlL-YF-Z2O">
+                                <rect key="frame" x="410" y="707" width="288" height="242"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <toolbarItems>
+                        <barButtonItem style="plain" id="oBT-5V-hiq">
+                            <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" id="g6s-V8-8i1" customClass="ButtonSegmentedControl">
+                                <rect key="frame" x="7" y="8" width="85" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <segments>
+                                    <segment title="" image="arrowleft.png"/>
+                                    <segment title="" image="arrowright.png"/>
+                                </segments>
+                                <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                            </segmentedControl>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="1KX-6u-uQV"/>
+                        <barButtonItem title="Page 0 of 0" id="8l0-ib-JyV">
+                            <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="zJV-cM-fOs"/>
+                        <barButtonItem style="plain" id="Vol-Ps-7R8">
+                            <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" id="456-tE-J9r" customClass="ButtonSegmentedControl">
+                                <rect key="frame" x="676" y="8" width="85" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <segments>
+                                    <segment title="" image="action.png"/>
+                                    <segment title="" image="compose.png"/>
+                                </segments>
+                                <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                            </segmentedControl>
+                        </barButtonItem>
+                    </toolbarItems>
+                    <navigationItem key="navigationItem" id="0A7-ZN-x05">
+                        <connections>
+                            <outlet property="titleView" destination="UQv-an-WKH" id="OxC-4g-690"/>
+                        </connections>
+                    </navigationItem>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackTranslucent"/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics" barStyle="blackOpaque"/>
+                    <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
+                </viewController>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="thread title label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" minimumFontSize="10" id="gls-9u-bpW">
+                    <rect key="frame" x="0.0" y="0.0" width="250" height="44"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="11"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </objects>
+            <point key="canvasLocation" x="-1598" y="1840"/>
+        </scene>
     </scenes>
     <resources>
+        <image name="MasterViewButton.png" width="583" height="370"/>
+        <image name="ReplyButton.png" width="395" height="599"/>
+        <image name="ThreadActions.png" width="519" height="311"/>
         <image name="action.png" width="23" height="18"/>
         <image name="ama.png" width="45" height="45"/>
         <image name="arrowleft.png" width="23" height="18"/>
@@ -841,8 +950,10 @@
         <image name="compose.png" width="22" height="18"/>
         <image name="forum-arrow-right.png" width="44" height="38"/>
         <image name="list_icon.png" width="20" height="18"/>
+        <image name="multiPageMovement.png" width="487" height="266"/>
         <image name="number-background.png" width="32" height="20"/>
         <image name="shsc-apple.png" width="90" height="90"/>
+        <image name="singlePageMovement.png" width="419" height="429"/>
         <image name="sticky.png" width="12" height="12"/>
         <image name="threadrating.png" width="45" height="13"/>
     </resources>
@@ -968,4 +1079,9 @@
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
+    <inferredMetricsTieBreakers>
+        <segue reference="g6b-JR-NhK"/>
+        <segue reference="hhi-LS-YNv"/>
+        <segue reference="iHc-lm-dh8"/>
+    </inferredMetricsTieBreakers>
 </document>

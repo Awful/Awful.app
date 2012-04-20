@@ -303,6 +303,11 @@
 		5040D23E14D0BC5D009E73F7 /* back.png in Resources */ = {isa = PBXBuildFile; fileRef = 5040D23C14D0BC59009E73F7 /* back.png */; };
 		5040D23F14D0BC5D009E73F7 /* back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5040D23D14D0BC5B009E73F7 /* back@2x.png */; };
 		50574ECD14CA187D00FD1F92 /* dotdotdot-clear.png in Resources */ = {isa = PBXBuildFile; fileRef = 50574ECC14CA187D00FD1F92 /* dotdotdot-clear.png */; };
+		50A8B96D1541D57E0065F3D9 /* MasterViewButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A8B9681541D57E0065F3D9 /* MasterViewButton.png */; };
+		50A8B96E1541D57E0065F3D9 /* multiPageMovement.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A8B9691541D57E0065F3D9 /* multiPageMovement.png */; };
+		50A8B96F1541D57E0065F3D9 /* ReplyButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A8B96A1541D57E0065F3D9 /* ReplyButton.png */; };
+		50A8B9701541D57E0065F3D9 /* singlePageMovement.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A8B96B1541D57E0065F3D9 /* singlePageMovement.png */; };
+		50A8B9711541D57E0065F3D9 /* ThreadActions.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A8B96C1541D57E0065F3D9 /* ThreadActions.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -710,6 +715,11 @@
 		5040D23C14D0BC59009E73F7 /* back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = back.png; path = images/back.png; sourceTree = "<group>"; };
 		5040D23D14D0BC5B009E73F7 /* back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "back@2x.png"; path = "images/back@2x.png"; sourceTree = "<group>"; };
 		50574ECC14CA187D00FD1F92 /* dotdotdot-clear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "dotdotdot-clear.png"; path = "images/dotdotdot-clear.png"; sourceTree = "<group>"; };
+		50A8B9681541D57E0065F3D9 /* MasterViewButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = MasterViewButton.png; path = images/help/MasterViewButton.png; sourceTree = "<group>"; };
+		50A8B9691541D57E0065F3D9 /* multiPageMovement.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = multiPageMovement.png; path = images/help/multiPageMovement.png; sourceTree = "<group>"; };
+		50A8B96A1541D57E0065F3D9 /* ReplyButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ReplyButton.png; path = images/help/ReplyButton.png; sourceTree = "<group>"; };
+		50A8B96B1541D57E0065F3D9 /* singlePageMovement.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = singlePageMovement.png; path = images/help/singlePageMovement.png; sourceTree = "<group>"; };
+		50A8B96C1541D57E0065F3D9 /* ThreadActions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ThreadActions.png; path = images/help/ThreadActions.png; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Awful-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Awful-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -758,6 +768,7 @@
 		10E93EB9121DC70E00CCBF6D /* images */ = {
 			isa = PBXGroup;
 			children = (
+				50A8B9671541D52D0065F3D9 /* help */,
 				112ECF0F14D7100A007EE7B6 /* threadtags */,
 				11CED26515228E5300E95EE1 /* action.png */,
 				11CED26615228E5300E95EE1 /* action@2x.png */,
@@ -1466,6 +1477,18 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		50A8B9671541D52D0065F3D9 /* help */ = {
+			isa = PBXGroup;
+			children = (
+				50A8B9681541D57E0065F3D9 /* MasterViewButton.png */,
+				50A8B9691541D57E0065F3D9 /* multiPageMovement.png */,
+				50A8B96A1541D57E0065F3D9 /* ReplyButton.png */,
+				50A8B96B1541D57E0065F3D9 /* singlePageMovement.png */,
+				50A8B96C1541D57E0065F3D9 /* ThreadActions.png */,
+			);
+			name = help;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1710,6 +1733,11 @@
 				11603864153F673000DCC448 /* tava-vintage.png in Resources */,
 				11603865153F673000DCC448 /* tcc-addiction.png in Resources */,
 				11603868153F684400DCC448 /* cc-design.png in Resources */,
+				50A8B96D1541D57E0065F3D9 /* MasterViewButton.png in Resources */,
+				50A8B96E1541D57E0065F3D9 /* multiPageMovement.png in Resources */,
+				50A8B96F1541D57E0065F3D9 /* ReplyButton.png in Resources */,
+				50A8B9701541D57E0065F3D9 /* singlePageMovement.png in Resources */,
+				50A8B9711541D57E0065F3D9 /* ThreadActions.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
