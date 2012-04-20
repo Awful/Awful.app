@@ -694,4 +694,31 @@
     }
 }
 
+
+-(void)loadPageNum : (NSUInteger)pageNum
+{
+    
+        //Hide any popovers if the page changes
+    if(self.popController)
+    {
+        [self.popController dismissPopoverAnimated:YES];
+        self.popController = nil;
+    }
+    
+    [super loadPageNum:pageNum];
+    
+}
+
+-(IBAction)tappedCompose : (id)sender
+{
+        //Hide any popovers if composed pressed
+    if(self.popController)
+    {
+        [self.popController dismissPopoverAnimated:YES];
+        self.popController = nil;
+    }
+    
+    [super tappedCompose:sender];
+}
+
 @end
