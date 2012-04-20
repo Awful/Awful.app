@@ -678,6 +678,7 @@
     
     if(actions != _actions) {
         _actions = actions;
+        actions.viewController = self;
         UIActionSheet *sheet = [actions getActionSheet];
         CGRect buttonRect = CGRectMake(_lastTouch.x, _lastTouch.y, 1, 1);
         if ([actions isKindOfClass:[AwfulThreadActions class]])
