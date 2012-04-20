@@ -91,7 +91,12 @@ typedef enum {
 
 #import "AwfulSplitViewController.h"
 
-@interface AwfulPageIpad: AwfulPage <SubstitutableDetailViewController>
+@interface AwfulPageIpad: AwfulPage <SubstitutableDetailViewController, UIGestureRecognizerDelegate>
+{
+    CGPoint _lastTouch;
+}
+
 @property (nonatomic, strong) UIPopoverController *popController;
 
+- (void)handleTap:(UITapGestureRecognizer *)sender;
 @end

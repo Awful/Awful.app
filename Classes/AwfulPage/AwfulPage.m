@@ -257,7 +257,7 @@
     }
 }
 
--(void)setActions:(AwfulPostActions *)actions
+-(void)setActions:(AwfulActions *)actions
 {
     if(actions != _actions) {
         _actions = actions;
@@ -591,6 +591,16 @@
 @implementation AwfulPageIpad
 @synthesize popController = _popController;
 
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
+    tap.delegate = self;
+    [self.webView addGestureRecognizer:tap];
+}
+
+
 -(IBAction)tappedPageNav : (id)sender
 {
     if(self.popController)
@@ -648,8 +658,16 @@
     [self.navigationItem setLeftBarButtonItem:nil animated:YES];
 }
 
+- (void)handleTap:(UITapGestureRecognizer *)sender 
+{     
+    if (sender.state == UIGestureRecognizerStateEnded)     
+    {         // handling code     
+        _lastTouch = [sender locationInView:self.view];
+    } 
+}
 
--(void)setActions:(AwfulPostActions *)actions
+
+-(void)setActions:(AwfulActions *)actions
 {
     
     if(self.popController)
@@ -661,11 +679,17 @@
     if(actions != _actions) {
         _actions = actions;
         UIActionSheet *sheet = [actions getActionSheet];
-        CGRect buttonRect = self.actionsSegmentedControl.frame;
-        buttonRect.origin.y += self.view.frame.size.height;  //Add the height of the view to the button y
-        buttonRect.size.width = buttonRect.size.width / 2;   //Action is the first button, so the width is really only half
+        CGRect buttonRect = CGRectMake(_lastTouch.x, _lastTouch.y, 1, 1);
+        if ([actions isKindOfClass:[AwfulThreadActions class]])
+        {
+            buttonRect = self.actionsSegmentedControl.frame;
+            buttonRect.origin.y += self.view.frame.size.height;  //Add the height of the view to the button y
+            buttonRect.size.width = buttonRect.size.width / 2;   //Action is the first button, so the width is really only half
         
+        }
         [sheet showFromRect:buttonRect inView:self.view animated:YES];
+        
+
     }
 }
 
