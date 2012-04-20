@@ -49,8 +49,13 @@ typedef enum {
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if (buttonIndex == AwfulThreadActionVote) {
-        // TODO show vote selector
+    if (buttonIndex == AwfulThreadActionVote) {        
+        AwfulVoteActions *voteActions = [[AwfulVoteActions alloc] initWithAwfulThread:self.thread];
+        if([self.viewController isKindOfClass:[AwfulPage class]]) {
+            AwfulPage *page = (AwfulPage *)self.viewController;
+            page.actions = voteActions;
+        }
+        
     } else if (buttonIndex == AwfulThreadActionBookmarks) {
         CompletionBlock completion = ^{
             self.thread.isBookmarked = [NSNumber numberWithBool:![self.thread.isBookmarked boolValue]];

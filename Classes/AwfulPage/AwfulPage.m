@@ -32,6 +32,7 @@
 #import "ButtonSegmentedControl.h"
 #import "AwfulUser+AwfulMethods.h"
 #import "AwfulUser.h"
+#import "MBProgressHUD.h"
 
 @implementation AwfulPage
 
@@ -586,6 +587,22 @@
     self.navigationItem.rightBarButtonItem = stop;
 }
 
+-(void)showVoteCompleteMessage
+{
+    dispatch_async(dispatch_get_main_queue(), ^(){
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
+        hud.labelText = @"Great Job!";
+        hud.customView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"37x-Checkmark"]];
+        hud.mode = MBProgressHUDModeCustomView;
+        [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionAutoreverse|UIViewAnimationOptionRepeat animations:^(void){
+            [UIView setAnimationRepeatCount:5];
+            hud.alpha = 0.95;
+        } completion:^(BOOL finished) {
+            [MBProgressHUD hideHUDForView:self.view animated:NO];
+        }];
+    });
+}
+
 @end
 
 @implementation AwfulPageIpad
@@ -669,7 +686,6 @@
 
 -(void)setActions:(AwfulActions *)actions
 {
-    
     if(self.popController)
     {
         [self.popController dismissPopoverAnimated:YES];
@@ -681,7 +697,7 @@
         actions.viewController = self;
         UIActionSheet *sheet = [actions getActionSheet];
         CGRect buttonRect = CGRectMake(_lastTouch.x, _lastTouch.y, 1, 1);
-        if ([actions isKindOfClass:[AwfulThreadActions class]])
+        if ([actions isKindOfClass:[AwfulThreadActions class]] || [actions isKindOfClass:[AwfulVoteActions class]])
         {
             buttonRect = self.actionsSegmentedControl.frame;
             buttonRect.origin.y += self.view.frame.size.height;  //Add the height of the view to the button y
@@ -689,8 +705,6 @@
         
         }
         [sheet showFromRect:buttonRect inView:self.view animated:YES];
-        
-
     }
 }
 

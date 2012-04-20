@@ -11,7 +11,7 @@
 
 @implementation AwfulActions
 
-@synthesize titles = _titles, navigator = _navigator;
+@synthesize titles = _titles;
 @synthesize viewController = _viewController;
 
 -(id)init

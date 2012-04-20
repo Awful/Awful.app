@@ -45,4 +45,6 @@ typedef void (^PostContentResponseBlock)(NSString *postContent);
 
 -(MKNetworkOperation *)editPost : (AwfulPost *)post withContents : (NSString *)contents onCompletion : (CompletionBlock)completionBlock onError:(MKNKErrorBlock)errorBlock;
 
+-(MKNetworkOperation *)submitVote : (int)value forThread : (AwfulThread *)thread onCompletion : (CompletionBlock)completionBlock onError:(MKNKErrorBlock)errorBlock;
+
 @end

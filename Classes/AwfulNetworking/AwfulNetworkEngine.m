@@ -347,4 +347,18 @@ QuotePostContent,
     return op;
 }
 
+-(MKNetworkOperation *)submitVote : (int)voteNum forThread : (AwfulThread *)thread onCompletion : (CompletionBlock)completionBlock onError:(MKNKErrorBlock)errorBlock
+{
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    int voteValue = MAX(5, MIN(1, voteNum));
+    [dict setValue:[NSNumber numberWithInt:voteValue] forKey:@"vote"];
+    [dict setValue:thread.threadID forKey:@"threadid"];
+    
+    MKNetworkOperation *op = [self operationWithPath:@"threadrate.php" params:dict httpMethod:@"POST"];
+    [op onCompletion:^(MKNetworkOperation *_) { if (completionBlock) completionBlock(); }
+             onError:^(NSError *error)        { if (errorBlock) errorBlock(error); }];
+    [self enqueueOperation:op];
+    return op;
+}
+
 @end

@@ -87,6 +87,8 @@ typedef enum {
 -(void)swapToStopButton;
 -(void)swapToRefreshButton;
 
+-(void)showVoteCompleteMessage;
+
 @end
 
 #import "AwfulSplitViewController.h"
