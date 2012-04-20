@@ -10,6 +10,8 @@ For this release
 ----------------
 * Fix bold issue (currently example in awfulapp thread)
 * Sane intro to the app, take user to login screen
+* Default data set with current forums
+* rearrange favorite forums
 * Save images
 * Copy thread/post URL
 * Smarter iPad interface
