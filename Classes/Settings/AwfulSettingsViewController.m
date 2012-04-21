@@ -7,6 +7,7 @@
 //
 
 #import "AwfulSettingsViewController.h"
+#import "AwfulSettings.h"
 #import "AwfulUser.h"
 #import "AwfulUser+AwfulMethods.h"
 #import "AwfulUtil.h"
@@ -15,109 +16,22 @@
 
 @interface AwfulSettingsViewController ()
 
+@property (strong) NSArray *sections;
+
 @property (strong) AwfulUser *user;
 
 @end
 
 @implementation AwfulSettingsViewController
 
-typedef enum SettingsSection
-{
-    LogInLogOutSection,
-    ResetDataSection,
-    LoadSection,
-    StartingTabSection,
-    RefreshBookmarksSection,
-    SALRSection,
-    NumLoggedInSections
-} SettingsSection;
-
-static const int NumLoggedOutSections = ResetDataSection + 1;
-
-typedef enum LoggedInRows
-{
-    UsernameRow,
-    LogOutRow,
-    NumLoggedInRows
-} LoggedInRows;
-
-typedef enum LoggedOutRows
-{
-    LogInRow,
-    NumLoggedOutRows
-} LoggedOutRows;
-
-typedef enum ResetDataRows
-{
-    ResetDataRow,
-    NumResetDataRows
-} ResetDataRows;
-
-typedef enum LoadRows
-{
-    LoadAvatarsRow,
-    LoadImagesRow,
-    LoadReadPostsRow,
-    NumLoadRows
-} LoadRows;
-
-typedef enum StartingTabRows
-{
-    StartingTabRow,
-    NumStartingTabRows
-} StartingTabRows;
-
-typedef enum RefreshBookmarksRows
-{
-    RefreshBookmarksRow,
-    NumRefreshBookmarksRows
-} RefreshBookmarksRows;
-
-typedef enum SALRRows
-{
-    HighlightMentionsRow,
-    HighlightOwnQuotesRow,
-    NumSALRRows
-} SALRRows;
-
-// TODO can we macro this?
-static const int MostRowsInSection = 3;
-
-typedef enum CellType
-{
-    InformationCellType,
-    SwitchCellType,
-    ChoiceCellType,
-    ButtonCellType
-} CellType;
-
-typedef struct SectionCellType
-{
-    int section;
-    int cellType[MostRowsInSection];
-} SectionCellType;
-
-static const SectionCellType LoggedInCellTypes[] =
-{
-    { LogInLogOutSection,      { InformationCellType, ButtonCellType }, },
-    { ResetDataSection,        { ButtonCellType }, },
-    { LoadSection,             { SwitchCellType, SwitchCellType, ChoiceCellType }, },
-    { StartingTabSection,      { ChoiceCellType }, },
-    { RefreshBookmarksSection, { ChoiceCellType }, },
-    { SALRSection,             { SwitchCellType, SwitchCellType }, },
-};
-
-static const SectionCellType LoggedOutCellTypes[] =
-{
-    { LogInLogOutSection, { ButtonCellType }, },
-    { ResetDataSection,   { ButtonCellType }, },
-};
+@synthesize sections = _sections;
 
 @synthesize user = _user;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.sections = [[AwfulSettings settings] sections];
     self.user = [AwfulUser currentUser];
     if (self.user.userName == nil && IsLoggedIn()) {
         [self refresh];
@@ -154,97 +68,37 @@ static const SectionCellType LoggedOutCellTypes[] =
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView 
 {
-    return IsLoggedIn() ? NumLoggedInSections : NumLoggedOutSections;
+    // TODO hide appropriate sections when logged in/out
+    return self.sections.count;
 } 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (IsLoggedIn()) {
-        switch (section) {
-            case LogInLogOutSection:      return NumLoggedInRows;
-            case ResetDataSection:        return NumResetDataRows;
-            case LoadSection:             return NumLoadRows;
-            case StartingTabSection:      return NumStartingTabRows;
-            case RefreshBookmarksSection: return NumRefreshBookmarksRows;
-            case SALRSection:             return NumSALRRows;
-        }
-    } else {
-        switch (section) {
-            case LogInLogOutSection: return NumLoggedOutRows;
-            case ResetDataSection:   return NumResetDataRows;
-        }
-    }
-    return 0;
+    // TODO deal with hidden sections
+    NSDictionary *settingSection = [self.sections objectAtIndex:section];
+    return [[settingSection objectForKey:@"Settings"] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString * const Cells[] = { @"Information", @"Switch", @"Choice", @"Button" };
-    const SectionCellType *CellTypes = IsLoggedIn() ? LoggedInCellTypes : LoggedOutCellTypes;
-    NSString *cellIdentifier = Cells[CellTypes[indexPath.section].cellType[indexPath.row]];
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-    UILabel *cellLabel = (UILabel *)[cell viewWithTag:0];
-    UISwitch *cellSwitch = (UISwitch *)[cell viewWithTag:1];
-    
-    if (IsLoggedIn()) {
-        switch (indexPath.section) {
-            case LogInLogOutSection: switch (indexPath.row) {
-                case UsernameRow:
-                    cell.textLabel.text = @"Logged in";
-                    cell.detailTextLabel.text = self.user.userName;
-                    break;
-                case LogOutRow: cell.textLabel.text = @"Log Out"; break;
-            } break;
-                
-            case ResetDataSection: switch (indexPath.row) {
-                case ResetDataRow: cell.textLabel.text = @"Reset Data"; break;
-            } break;
-            
-            case LoadSection: switch (indexPath.row) {
-                case LoadAvatarsRow: cellLabel.text = @"Show avatars"; break;
-                case LoadImagesRow: cellLabel.text = @"Show images"; break;
-                case LoadReadPostsRow:
-                    cell.textLabel.text = @"Load read posts";
-                    cell.detailTextLabel.text = @"None";
-                    break;
-            } break;
-                
-            case StartingTabSection: switch (indexPath.row) {
-                case StartingTabRow:
-                    cell.textLabel.text = @"Starting tab";
-                    cell.detailTextLabel.text = @"Forums";
-                    break;
-            } break;
-                
-            case RefreshBookmarksSection: switch (indexPath.row) {
-                case RefreshBookmarksRow:
-                    cell.textLabel.text = @"Refresh bookmarks";
-                    cell.detailTextLabel.text = @"Immediately";
-                    break;
-            } break;
-                
-            case SALRSection: switch (indexPath.row) {
-                case HighlightMentionsRow: cellLabel.text = @"Highlight mentions"; break;
-                case HighlightOwnQuotesRow: cellLabel.text = @"Highlight own quotes"; break;
-            } break;
-        }
-    } else {
-        switch (indexPath.section) {
-            case LogInLogOutSection: switch (indexPath.row) {
-                case LogInRow: cell.textLabel.text = @"Log In"; break;  
-            } break;
-            
-            case ResetDataSection: switch (indexPath.row) {
-                case ResetDataRow: cell.textLabel.text = @"Reset Data"; break;
-            } break;
-        }
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
+    if (!cell)
+    {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
+                                      reuseIdentifier:@"cell"];
     }
+    
+    NSDictionary *settingSection = [self.sections objectAtIndex:indexPath.section];
+    NSDictionary *setting = [[settingSection objectForKey:@"Settings"] objectAtIndex:indexPath.row];
+    cell.textLabel.text = [setting objectForKey:@"Title"];
+    
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    /*
     if (IsLoggedIn()) {
         switch (indexPath.section) {
             case LogInLogOutSection: switch (indexPath.row) {
@@ -277,13 +131,16 @@ static const SectionCellType LoggedOutCellTypes[] =
         }
     }
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+     */
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
 {
+    /*
     if (section == ResetDataSection) {
         return @"Resetting data clears all cached forums, threads, and posts.";
     }
+     */
     return nil;
 }
 

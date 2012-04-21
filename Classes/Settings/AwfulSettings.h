@@ -15,4 +15,6 @@
 
 - (void)registerDefaults;
 
+@property (readonly, strong) NSArray *sections;
+
 @end

@@ -40,7 +40,7 @@
 
 - (void)registerDefaults
 {
-    NSArray *listOfSettings = [self.sections valueForKeyPath:@"Settings.@unionOfArrays"];
+    NSArray *listOfSettings = [self.sections valueForKeyPath:@"@unionOfArrays.Settings"];
     NSMutableDictionary *defaults = [NSMutableDictionary new];
     for (NSDictionary *setting in listOfSettings) {
         NSString *key = [setting objectForKey:@"Key"];
