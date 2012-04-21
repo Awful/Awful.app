@@ -14,6 +14,7 @@ For this release
 * rearrange favorite forums
 * press-hold on threadlist to jump to first/last page of a thread from threadlist
 * Copy thread/post URL
+* Maintain page position on orientation change
 * Smarter iPad interface
 * Pick and include a license.
 * Turn the code loose once more.
