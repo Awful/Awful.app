@@ -54,6 +54,8 @@
 		<dict>
 			<key>Title</key>
 			<string>Automatic Loading</string>
+			<key>Explanation</key>
+			<string>Whatever doesn&apos;t load automatically can be loaded manually.</string>
 			<key>Settings</key>
 			<array>
 				<dict>
@@ -83,19 +85,19 @@
 					<array>
 						<dict>
 							<key>Title</key>
-							<string>Never</string>
+							<string>None</string>
 							<key>Value</key>
 							<integer>0</integer>
 						</dict>
 						<dict>
 							<key>Title</key>
-							<string>Last read</string>
+							<string>One post</string>
 							<key>Value</key>
 							<integer>1</integer>
 						</dict>
 						<dict>
 							<key>Title</key>
-							<string>Last two read</string>
+							<string>Two posts</string>
 							<key>Value</key>
 							<integer>2</integer>
 						</dict>
