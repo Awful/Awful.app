@@ -13,7 +13,6 @@ For this release
 * Default data set with current forums
 * rearrange favorite forums
 * press-hold on threadlist to jump to first/last page of a thread from threadlist
-* Save images
 * Copy thread/post URL
 * Smarter iPad interface
 * Pick and include a license.
