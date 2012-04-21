@@ -36,10 +36,13 @@ typedef enum {
 -(BOOL)shouldReloadOnViewLoad;
 
 -(void)loadPageNum : (NSUInteger)pageNum;
+-(void)stop;
 
 -(AwfulThreadCellType)getTypeAtIndexPath : (NSIndexPath *)indexPath;
 -(BOOL)moreThreads;
 
 -(void)newlyVisible;
+-(void)swapToRefreshButton;
+-(void)swapToStopButton;
 
 @end

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="1.1" toolsVersion="2182" systemVersion="11D50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="Vst-Rk-SSD">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="1.1" toolsVersion="2182" systemVersion="11D50b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="Vst-Rk-SSD">
     <dependencies>
         <deployment defaultVersion="1296" identifier="iOS"/>
         <development defaultVersion="4200" identifier="xcode"/>
@@ -363,7 +363,11 @@
                     </tableView>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" title="Title" id="Oal-jR-ZLk">
-                        <barButtonItem key="rightBarButtonItem" title="Filter" id="t2t-lQ-aBv"/>
+                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="eBL-kR-BLe">
+                            <connections>
+                                <action selector="refresh" destination="Osj-d3-UMd" id="Gca-bH-LRo"/>
+                            </connections>
+                        </barButtonItem>
                         <connections>
                             <outlet property="titleView" destination="Q3w-Oz-BUj" id="3dL-Yp-Ffv"/>
                         </connections>
@@ -677,7 +681,13 @@
                         </connections>
                     </tableView>
                     <tabBarItem key="tabBarItem" systemItem="bookmarks" id="lpi-BS-KYz"/>
-                    <navigationItem key="navigationItem" title="Bookmarks" id="t3k-Pb-mph"/>
+                    <navigationItem key="navigationItem" title="Bookmarks" id="t3k-Pb-mph">
+                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="twp-Vf-atc">
+                            <connections>
+                                <action selector="refresh" destination="9vP-Hg-1iS" id="SuD-LO-M2w"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
                     <connections>
                         <segue destination="uMb-el-Ve5" kind="push" identifier="AwfulPage" id="kfD-K3-mBe"/>
@@ -946,7 +956,7 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="JzC-6r-kye"/>
+        <segue reference="kfD-K3-mBe"/>
         <segue reference="WQ4-KV-8Qh"/>
     </inferredMetricsTieBreakers>
 </document>

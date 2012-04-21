@@ -83,7 +83,20 @@
 -(void)refresh
 {   
     [super refresh];
+    [self swapToStopButton];
     [self loadPageNum:1];
+}
+
+-(void)stop
+{
+    [self.networkOperation cancel];
+    [self finishedRefreshing];
+}
+
+-(void)finishedRefreshing
+{
+    [super finishedRefreshing];
+    [self swapToRefreshButton];
 }
 
 -(void)loadPageNum : (NSUInteger)pageNum
@@ -291,6 +304,18 @@
 -(BOOL)moreThreads
 {
     return [self.awfulThreads count] > 0;
+}
+
+-(void)swapToRefreshButton
+{
+    UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refresh)];
+    self.navigationItem.rightBarButtonItem = refresh;
+}
+
+-(void)swapToStopButton
+{
+    UIBarButtonItem *stop = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop)];
+    self.navigationItem.rightBarButtonItem = stop;
 }
 
 @end
