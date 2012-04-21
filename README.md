@@ -12,6 +12,7 @@ For this release
 * Sane intro to the app, take user to login screen
 * Default data set with current forums
 * rearrange favorite forums
+* press-hold on threadlist to jump to first/last page of a thread from threadlist
 * Save images
 * Copy thread/post URL
 * Smarter iPad interface
