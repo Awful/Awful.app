@@ -1051,8 +1051,6 @@
 		1190F71813BE4EA900B9D271 /* Login */ = {
 			isa = PBXGroup;
 			children = (
-				11FDA294151018600014FDCD /* AwfulSettingsViewController.h */,
-				11FDA295151018600014FDCD /* AwfulSettingsViewController.m */,
 				1190F71913BE4EA900B9D271 /* AwfulLoginController.h */,
 				1190F71A13BE4EA900B9D271 /* AwfulLoginController.m */,
 			);
@@ -1361,6 +1359,8 @@
 			children = (
 				1CDD5197154294D400326C7B /* AwfulSettings.h */,
 				1CDD5198154294D400326C7B /* AwfulSettings.m */,
+				11FDA294151018600014FDCD /* AwfulSettingsViewController.h */,
+				11FDA295151018600014FDCD /* AwfulSettingsViewController.m */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
