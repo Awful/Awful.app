@@ -53,16 +53,35 @@
 {
     if (!_template)
     {
-        NSString *resource = @"phone-template";
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-            resource = @"pad-template";
-        NSError *error;
-        _template = [GRMustacheTemplate templateFromResource:resource
-                                               withExtension:@"html"
-                                                      bundle:nil
-                                                       error:&error];
-        if (!_template)
-            NSLog(@"error parsing template %@: %@", resource, error);
+        // check docs folder first, if not in there use templates supplied by default
+        
+        NSURL *phoneTemplateURL = [[ApplicationDelegate applicationDocumentsDirectory] URLByAppendingPathComponent:@"phone-template.html"];
+        NSURL *padTemplateURL = [[ApplicationDelegate applicationDocumentsDirectory] URLByAppendingPathComponent:@"pad-template.html"];
+        
+        NSError *err = nil;
+        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            if([padTemplateURL checkResourceIsReachableAndReturnError:nil]) {
+                _template = [GRMustacheTemplate templateFromContentsOfURL:padTemplateURL error:&err];
+            } else {
+                _template = [GRMustacheTemplate templateFromResource:@"pad-template"
+                                                       withExtension:@"html"
+                                                              bundle:nil
+                                                               error:&err];
+            }
+        } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            if([phoneTemplateURL checkResourceIsReachableAndReturnError:nil]) {
+                _template = [GRMustacheTemplate templateFromContentsOfURL:phoneTemplateURL error:&err];
+            } else {
+                _template = [GRMustacheTemplate templateFromResource:@"phone-template"
+                                                       withExtension:@"html"
+                                                              bundle:nil
+                                                               error:&err];
+            }
+        }
+        
+        if (!_template) {
+            NSLog(@"error parsing template %@", [err localizedDescription]);
+        }
     }
     return _template;
 }

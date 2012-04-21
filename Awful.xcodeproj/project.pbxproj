@@ -156,6 +156,19 @@
 		116EF44515265D390018580D /* tma.png in Resources */ = {isa = PBXBuildFile; fileRef = 116EF43F15265D390018580D /* tma.png */; };
 		1172A62E14F5DB160026CDA8 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1172A62D14F5DB160026CDA8 /* Security.framework */; };
 		1172A63214F5DE8B0026CDA8 /* AwfulNetworkEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 1172A63114F5DE8B0026CDA8 /* AwfulNetworkEngine.m */; };
+		117CE6E915433504005DD47B /* asktell-lifestyle.png in Resources */ = {isa = PBXBuildFile; fileRef = 117CE6DC15433504005DD47B /* asktell-lifestyle.png */; };
+		117CE6EA15433504005DD47B /* asktell-travel.png in Resources */ = {isa = PBXBuildFile; fileRef = 117CE6DD15433504005DD47B /* asktell-travel.png */; };
+		117CE6EB15433504005DD47B /* bb-fantasy.png in Resources */ = {isa = PBXBuildFile; fileRef = 117CE6DE15433504005DD47B /* bb-fantasy.png */; };
+		117CE6EC15433504005DD47B /* cc_design.png in Resources */ = {isa = PBXBuildFile; fileRef = 117CE6DF15433504005DD47B /* cc_design.png */; };
+		117CE6ED15433504005DD47B /* cc-film.png in Resources */ = {isa = PBXBuildFile; fileRef = 117CE6E015433504005DD47B /* cc-film.png */; };
+		117CE6EE15433504005DD47B /* coc-c.png in Resources */ = {isa = PBXBuildFile; fileRef = 117CE6E115433504005DD47B /* coc-c.png */; };
+		117CE6EF15433504005DD47B /* coc-web.png in Resources */ = {isa = PBXBuildFile; fileRef = 117CE6E215433504005DD47B /* coc-web.png */; };
+		117CE6F015433504005DD47B /* cps-android.png in Resources */ = {isa = PBXBuildFile; fileRef = 117CE6E315433504005DD47B /* cps-android.png */; };
+		117CE6F115433504005DD47B /* dd-gotcha.png in Resources */ = {isa = PBXBuildFile; fileRef = 117CE6E415433504005DD47B /* dd-gotcha.png */; };
+		117CE6F215433504005DD47B /* dd-notracist.png in Resources */ = {isa = PBXBuildFile; fileRef = 117CE6E515433504005DD47B /* dd-notracist.png */; };
+		117CE6F315433504005DD47B /* dd-philosophy.png in Resources */ = {isa = PBXBuildFile; fileRef = 117CE6E615433504005DD47B /* dd-philosophy.png */; };
+		117CE6F415433504005DD47B /* yospos-netscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 117CE6E715433504005DD47B /* yospos-netscape.png */; };
+		117CE6F515433504005DD47B /* yp-bsod.png in Resources */ = {isa = PBXBuildFile; fileRef = 117CE6E815433504005DD47B /* yp-bsod.png */; };
 		117DBE3B1522A39A007125EF /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 117DBE3A1522A39A007125EF /* CoreData.framework */; };
 		117DBE431522AA2D007125EF /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 117DBE411522AA2D007125EF /* Model.xcdatamodeld */; };
 		1185923613B93F3B0036E607 /* post-action-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1185923513B93F3B0036E607 /* post-action-icon.png */; };
@@ -474,6 +487,19 @@
 		1172A62D14F5DB160026CDA8 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		1172A63014F5DE8B0026CDA8 /* AwfulNetworkEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AwfulNetworkEngine.h; path = AwfulNetworking/AwfulNetworkEngine.h; sourceTree = "<group>"; };
 		1172A63114F5DE8B0026CDA8 /* AwfulNetworkEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AwfulNetworkEngine.m; path = AwfulNetworking/AwfulNetworkEngine.m; sourceTree = "<group>"; };
+		117CE6DC15433504005DD47B /* asktell-lifestyle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "asktell-lifestyle.png"; sourceTree = "<group>"; };
+		117CE6DD15433504005DD47B /* asktell-travel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "asktell-travel.png"; sourceTree = "<group>"; };
+		117CE6DE15433504005DD47B /* bb-fantasy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bb-fantasy.png"; sourceTree = "<group>"; };
+		117CE6DF15433504005DD47B /* cc_design.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cc_design.png; sourceTree = "<group>"; };
+		117CE6E015433504005DD47B /* cc-film.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cc-film.png"; sourceTree = "<group>"; };
+		117CE6E115433504005DD47B /* coc-c.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "coc-c.png"; sourceTree = "<group>"; };
+		117CE6E215433504005DD47B /* coc-web.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "coc-web.png"; sourceTree = "<group>"; };
+		117CE6E315433504005DD47B /* cps-android.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cps-android.png"; sourceTree = "<group>"; };
+		117CE6E415433504005DD47B /* dd-gotcha.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dd-gotcha.png"; sourceTree = "<group>"; };
+		117CE6E515433504005DD47B /* dd-notracist.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dd-notracist.png"; sourceTree = "<group>"; };
+		117CE6E615433504005DD47B /* dd-philosophy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dd-philosophy.png"; sourceTree = "<group>"; };
+		117CE6E715433504005DD47B /* yospos-netscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yospos-netscape.png"; sourceTree = "<group>"; };
+		117CE6E815433504005DD47B /* yp-bsod.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yp-bsod.png"; sourceTree = "<group>"; };
 		117DBE3A1522A39A007125EF /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		117DBE421522AA2D007125EF /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		1185923513B93F3B0036E607 /* post-action-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "post-action-icon.png"; path = "images/post-action-icon.png"; sourceTree = "<group>"; };
@@ -847,6 +873,19 @@
 		112ECF0F14D7100A007EE7B6 /* threadtags */ = {
 			isa = PBXGroup;
 			children = (
+				117CE6DC15433504005DD47B /* asktell-lifestyle.png */,
+				117CE6DD15433504005DD47B /* asktell-travel.png */,
+				117CE6DE15433504005DD47B /* bb-fantasy.png */,
+				117CE6DF15433504005DD47B /* cc_design.png */,
+				117CE6E015433504005DD47B /* cc-film.png */,
+				117CE6E115433504005DD47B /* coc-c.png */,
+				117CE6E215433504005DD47B /* coc-web.png */,
+				117CE6E315433504005DD47B /* cps-android.png */,
+				117CE6E415433504005DD47B /* dd-gotcha.png */,
+				117CE6E515433504005DD47B /* dd-notracist.png */,
+				117CE6E615433504005DD47B /* dd-philosophy.png */,
+				117CE6E715433504005DD47B /* yospos-netscape.png */,
+				117CE6E815433504005DD47B /* yp-bsod.png */,
 				11603867153F684400DCC448 /* cc-design.png */,
 				11603854153F673000DCC448 /* byob-grouch.png */,
 				11603856153F673000DCC448 /* cd_hype.png */,
@@ -1746,6 +1785,19 @@
 				50A8B9711541D57E0065F3D9 /* ThreadActions.png in Resources */,
 				11D3F0D41542318500FE955D /* navbargradient-landscape.png in Resources */,
 				11D3F0D51542318500FE955D /* navbargradient-landscape@2x.png in Resources */,
+				117CE6E915433504005DD47B /* asktell-lifestyle.png in Resources */,
+				117CE6EA15433504005DD47B /* asktell-travel.png in Resources */,
+				117CE6EB15433504005DD47B /* bb-fantasy.png in Resources */,
+				117CE6EC15433504005DD47B /* cc_design.png in Resources */,
+				117CE6ED15433504005DD47B /* cc-film.png in Resources */,
+				117CE6EE15433504005DD47B /* coc-c.png in Resources */,
+				117CE6EF15433504005DD47B /* coc-web.png in Resources */,
+				117CE6F015433504005DD47B /* cps-android.png in Resources */,
+				117CE6F115433504005DD47B /* dd-gotcha.png in Resources */,
+				117CE6F215433504005DD47B /* dd-notracist.png in Resources */,
+				117CE6F315433504005DD47B /* dd-philosophy.png in Resources */,
+				117CE6F415433504005DD47B /* yospos-netscape.png in Resources */,
+				117CE6F515433504005DD47B /* yp-bsod.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

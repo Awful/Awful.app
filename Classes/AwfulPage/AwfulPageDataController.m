@@ -260,13 +260,6 @@
 
 -(NSString *)constructedPageHTML
 {
-    /*NSUbiquitousKeyValueStore *keyStore = [NSUbiquitousKeyValueStore defaultStore];
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone && [keyStore objectForKey:@"phone-template"]) {
-        html = [keyStore objectForKey:@"phone-template"];
-    } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && [keyStore objectForKey:@"pad-template"]) {
-        html = [keyStore objectForKey:@"pad-template"];
-    }*/
-    
     return [self.template renderWithPageDataController:self];
 }
 
