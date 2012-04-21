@@ -21,7 +21,6 @@ typedef enum {
 +(BOOL)showAvatars;
 +(BOOL)showImages;
 +(float)bookmarksDelay;
-+(float)forumsDelay;
 +(int)numReadPostsAbove;
 +(AwfulDefaultLoadType)getDefaultLoadType;
 +(NSString *)highlightOwnQuotes;

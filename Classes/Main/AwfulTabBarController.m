@@ -9,7 +9,7 @@
 #import "AwfulTabBarController.h"
 #import "AwfulForumsListController.h"
 #import "AwfulLoginController.h"
-#import "AwfulAccountViewController.h"
+#import "AwfulSettingsViewController.h"
 
 @implementation AwfulTabBarController
 
@@ -51,7 +51,7 @@
 {
     [super viewDidLoad];
     
-    if(!isLoggedIn()) {
+    if(!IsLoggedIn()) {
         if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
             if([self.viewControllers count] >= 6) {
                 self.selectedViewController = [self.viewControllers objectAtIndex:5];

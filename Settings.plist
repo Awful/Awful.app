@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Sections</key>
+	<array>
+		<dict>
+			<key>Identifier</key>
+			<string>LogInSection</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Log In</string>
+					<key>Action</key>
+					<string>LogIn</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Identifier</key>
+			<string>LogOutSection</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Logged in as</string>
+					<key>ValueIdentifier</key>
+					<string>Username</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Log Out</string>
+					<key>Action</key>
+					<string>LogOut</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Identifier</key>
+			<string>ResetDataSection</string>
+			<key>Explanation</key>
+			<string>Resetting data erases all cached forums, threads, and posts.</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Reset Data</string>
+					<key>Action</key>
+					<string>ResetData</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>Automatic Loading</string>
+			<key>Explanation</key>
+			<string>Whatever doesn&apos;t load automatically can be loaded manually.</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Load Avatars</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>show_avatars</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Load Images</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>show_images</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Load Read Posts</string>
+					<key>Choices</key>
+					<array>
+						<dict>
+							<key>Title</key>
+							<string>None</string>
+							<key>Value</key>
+							<integer>0</integer>
+						</dict>
+						<dict>
+							<key>Title</key>
+							<string>One post</string>
+							<key>Value</key>
+							<integer>1</integer>
+						</dict>
+						<dict>
+							<key>Title</key>
+							<string>Two posts</string>
+							<key>Value</key>
+							<integer>2</integer>
+						</dict>
+					</array>
+					<key>Default</key>
+					<integer>1</integer>
+					<key>Key</key>
+					<string>posts_above</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>First Tab</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>First Visible Tab</string>
+					<key>Choices</key>
+					<array>
+						<dict>
+							<key>Title</key>
+							<string>Forums</string>
+							<key>Value</key>
+							<string>forumslist</string>
+						</dict>
+						<dict>
+							<key>Title</key>
+							<string>Favorites</string>
+							<key>Value</key>
+							<string>favorites</string>
+						</dict>
+						<dict>
+							<key>Title</key>
+							<string>Bookmarks</string>
+							<key>Value</key>
+							<string>bookmarks</string>
+						</dict>
+					</array>
+					<key>Default</key>
+					<string>forumslist</string>
+					<key>Key</key>
+					<string>default_load</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>SALR</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Highlight Mentions</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>highlight_own_mentions</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Highlight Own Quotes</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>highlight_own_quotes</string>
+				</dict>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>
