@@ -7,19 +7,19 @@
 //
 
 #import "AwfulForumsListController.h"
-#import "AwfulForum.h"
-#import "AwfulForum+AwfulMethods.h"
+#import "AwfulAddForumsViewController.h"
 #import "AwfulThreadListController.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulUtil.h"
-#import "AwfulConfig.h"
-#import "AwfulForumCell.h"
-#import "AwfulLoginController.h"
 #import "AwfulBookmarksController.h"
-#import "AwfulUser.h"
+#import "AwfulForum.h"
+#import "AwfulForum+AwfulMethods.h"
+#import "AwfulForumCell.h"
 #import "AwfulForumHeader.h"
+#import "AwfulLoginController.h"
 #import "AwfulNetworkEngine.h"
-#import "AwfulAddForumsViewController.h"
+#import "AwfulSettings.h"
+#import "AwfulUser.h"
+#import "AwfulUtil.h"
 
 @implementation AwfulForumSection
 

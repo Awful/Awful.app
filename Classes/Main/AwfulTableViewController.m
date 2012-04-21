@@ -7,7 +7,7 @@
 //
 
 #import "AwfulTableViewController.h"
-#import "AwfulConfig.h"
+#import "AwfulSettings.h"
 
 @implementation AwfulTableViewController
 

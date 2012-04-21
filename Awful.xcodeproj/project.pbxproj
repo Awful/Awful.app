@@ -181,7 +181,6 @@
 		1190F75F13BE4EA900B9D271 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1190F71F13BE4EA900B9D271 /* MainWindow.xib */; };
 		1190F76113BE4EA900B9D271 /* AwfulPageCount.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F72413BE4EA900B9D271 /* AwfulPageCount.m */; };
 		1190F76213BE4EA900B9D271 /* AwfulPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F72613BE4EA900B9D271 /* AwfulPost.m */; };
-		1190F76513BE4EA900B9D271 /* AwfulConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F72D13BE4EA900B9D271 /* AwfulConfig.m */; };
 		1190F76613BE4EA900B9D271 /* AwfulParse.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F72F13BE4EA900B9D271 /* AwfulParse.m */; };
 		1190F76713BE4EA900B9D271 /* AwfulUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F73113BE4EA900B9D271 /* AwfulUtil.m */; };
 		1190F76813BE4EA900B9D271 /* SmilieGrabber.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F73313BE4EA900B9D271 /* SmilieGrabber.m */; };
@@ -516,8 +515,6 @@
 		1190F72413BE4EA900B9D271 /* AwfulPageCount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPageCount.m; sourceTree = "<group>"; };
 		1190F72513BE4EA900B9D271 /* AwfulPost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPost.h; sourceTree = "<group>"; };
 		1190F72613BE4EA900B9D271 /* AwfulPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPost.m; sourceTree = "<group>"; };
-		1190F72C13BE4EA900B9D271 /* AwfulConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulConfig.h; sourceTree = "<group>"; };
-		1190F72D13BE4EA900B9D271 /* AwfulConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulConfig.m; sourceTree = "<group>"; };
 		1190F72E13BE4EA900B9D271 /* AwfulParse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulParse.h; sourceTree = "<group>"; };
 		1190F72F13BE4EA900B9D271 /* AwfulParse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulParse.m; sourceTree = "<group>"; };
 		1190F73013BE4EA900B9D271 /* AwfulUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulUtil.h; sourceTree = "<group>"; };
@@ -1105,8 +1102,6 @@
 			children = (
 				112DB4B914211F24005A98CB /* SALR.h */,
 				112DB4BA14211F24005A98CB /* SALR.m */,
-				1190F72C13BE4EA900B9D271 /* AwfulConfig.h */,
-				1190F72D13BE4EA900B9D271 /* AwfulConfig.m */,
 				1190F72E13BE4EA900B9D271 /* AwfulParse.h */,
 				1190F72F13BE4EA900B9D271 /* AwfulParse.m */,
 				1190F73013BE4EA900B9D271 /* AwfulUtil.h */,
@@ -1791,7 +1786,6 @@
 				1190F75E13BE4EA900B9D271 /* AwfulAppDelegate.m in Sources */,
 				1190F76113BE4EA900B9D271 /* AwfulPageCount.m in Sources */,
 				1190F76213BE4EA900B9D271 /* AwfulPost.m in Sources */,
-				1190F76513BE4EA900B9D271 /* AwfulConfig.m in Sources */,
 				1190F76613BE4EA900B9D271 /* AwfulParse.m in Sources */,
 				1190F76713BE4EA900B9D271 /* AwfulUtil.m in Sources */,
 				1190F76813BE4EA900B9D271 /* SmilieGrabber.m in Sources */,

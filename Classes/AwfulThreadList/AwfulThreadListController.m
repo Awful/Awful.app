@@ -7,18 +7,17 @@
 //
 
 #import "AwfulThreadListController.h"
-#import "AwfulThread.h"
-#import "AwfulThread+AwfulMethods.h"
+#import <QuartzCore/QuartzCore.h>
 #import "AwfulAppDelegate.h"
+#import "AwfulForum.h"
+#import "AwfulNetworkEngine.h"
 #import "AwfulPage.h"
 #import "AwfulPageCount.h"
-#import "AwfulConfig.h"
-#import "AwfulUtil.h"
-#import "AwfulSplitViewController.h"
+#import "AwfulSettings.h"
+#import "AwfulThread.h"
+#import "AwfulThread+AwfulMethods.h"
 #import "AwfulThreadCell.h"
-#import "AwfulNetworkEngine.h"
-#import "AwfulForum.h"
-#import <QuartzCore/QuartzCore.h>
+#import "AwfulUtil.h"
 
 #define THREAD_HEIGHT 72
 

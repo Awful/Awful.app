@@ -6,11 +6,11 @@
 //  Copyright (c) 2011 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulConfig.h"
 #import "SALR.h"
-#import "SBJson.h"
+#import "AwfulSettings.h"
 #import "AwfulUser.h"
 #import "AwfulUser+AwfulMethods.h"
+#import "SBJson.h"
 
 @implementation SALR
 
@@ -23,8 +23,10 @@
     } else {
         return @"";
     }
-    [config setObject:[AwfulConfig highlightOwnMentions] forKey:@"highlightUsername"];
-    [config setObject:[AwfulConfig highlightOwnQuotes] forKey:@"highlightUserQuote"];
+    [config setObject:[[AwfulSettings settings] highlightOwnMentions] ? @"true" : @"false"
+               forKey:@"highlightUsername"];
+    [config setObject:[[AwfulSettings settings] highlightOwnQuotes] ? @"true" : @"false"
+               forKey:@"highlightUserQuote"];
     [config setObject:@"#a2cd5a" forKey:@"userQuote"];
     [config setObject:@"#9933ff" forKey:@"usernameHighlight"];
 

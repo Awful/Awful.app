@@ -7,16 +7,16 @@
 //
 
 #import "AwfulParse.h"
-#import "XPathQuery.h"
-#import "AwfulThread.h"
-#import "AwfulPage.h"
-#import "AwfulConfig.h"
 #import "AwfulForum.h"
-#import "AwfulPost.h"
-#import "TFHpple.h"
+#import "AwfulPage.h"
 #import "AwfulPageCount.h"
+#import "AwfulPost.h"
+#import "AwfulSettings.h"
+#import "AwfulThread.h"
 #import "AwfulUtil.h"
 #import "SALR.h"
+#import "TFHpple.h"
+#import "XPathQuery.h"
 
 @implementation AwfulParse
 

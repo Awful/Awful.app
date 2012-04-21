@@ -1,38 +1,33 @@
-    //
-    //  AwfulPage.m
-    //  Awful
-    //
-    //  Created by Sean Berry on 7/29/10.
-    //  Copyright 2010 Regular Berry Software LLC. All rights reserved.
-    //
+//
+//  AwfulPage.m
+//  Awful
+//
+//  Created by Sean Berry on 7/29/10.
+//  Copyright 2010 Regular Berry Software LLC. All rights reserved.
+//
 
 #import "AwfulThreadListController.h"
+#import <QuartzCore/QuartzCore.h>
 #import "AwfulAppDelegate.h"
-#import "AwfulPage.h"
-#import "TFHpple.h"
-#import "AwfulPost.h"
-#import "AwfulUtil.h"
-#import "OtherWebController.h"
-#import "AwfulParse.h"
-#import "Appirater.h"
+#import "AwfulLoginController.h"
+#import "AwfulNetworkEngine.h"
 #import "AwfulPageCount.h"
-#import "AwfulConfig.h"
-#import "AwfulThreadActions.h"
+#import "AwfulPageDataController.h"
+#import "AwfulPost.h"
 #import "AwfulPostActions.h"
+#import "AwfulSettings.h"
+#import "AwfulSpecificPageViewController.h"
+#import "AwfulThreadActions.h"
+#import "AwfulUser.h"
+#import "AwfulUser+AwfulMethods.h"
+#import "AwfulVoteActions.h"
+#import "Appirater.h"
+#import "ButtonSegmentedControl.h"
+#import "MBProgressHUD.h"
 #import "MWPhoto.h"
 #import "MWPhotoBrowser.h"
-#import <QuartzCore/QuartzCore.h>
-#import "AwfulUser.h"
-#import "AwfulSpecificPageViewController.h"
-#import "AwfulSplitViewController.h"
-#import "AwfulLoginController.h"
-#import "AwfulVoteActions.h"
-#import "AwfulPageDataController.h"
-#import "AwfulNetworkEngine.h"
-#import "ButtonSegmentedControl.h"
-#import "AwfulUser+AwfulMethods.h"
-#import "AwfulUser.h"
-#import "MBProgressHUD.h"
+#import "OtherWebController.h"
+#import "TFHpple.h"
 
 @implementation AwfulPage
 
