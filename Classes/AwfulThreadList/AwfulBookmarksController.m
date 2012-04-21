@@ -15,6 +15,7 @@
 #import "AwfulNetworkEngine.h"
 #import "AwfulTableViewController.h"
 #import "AwfulThreadCell.h"
+#import "AwfulThread+AwfulMethods.h"
 
 @implementation AwfulBookmarksController
 
@@ -55,6 +56,15 @@
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+}
+
+- (void)contextDidSave:(NSNotification *)note
+{
+    // TODO this gets called a bunch. Get rid of it in favour of something like
+    // NSFetchedResultsController.
+    NSArray *newThreads = [AwfulThread bookmarkedThreads];
+    [self.awfulThreads removeAllObjects];
+    [self acceptThreads:[newThreads mutableCopy]];
 }
 
 -(BOOL)shouldReloadOnViewLoad

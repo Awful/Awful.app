@@ -106,18 +106,7 @@
 {
     // TODO this gets called a bunch. Get rid of it in favour of something like
     // NSFetchedResultsController.
-    NSArray *threadIDs = [self.awfulThreads valueForKey:@"threadID"];
-    NSFetchRequest *fetch = [[NSFetchRequest alloc] initWithEntityName:@"AwfulThread"];
-    fetch.predicate = [NSPredicate predicateWithFormat:@"threadID IN %@", threadIDs];
-    fetch.sortDescriptors = [NSArray arrayWithObjects:
-                             [NSSortDescriptor sortDescriptorWithKey:@"stickyIndex" ascending:NO],
-                             [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO],
-                             nil];
-    NSError *error;
-    NSArray *newThreads = [[ApplicationDelegate managedObjectContext] executeFetchRequest:fetch
-                                                                                    error:&error];
-    if (!newThreads)
-        NSLog(@"error reloading threads %@: %@", threadIDs, error);
+    NSArray *newThreads = [AwfulThread threadsForForum:self.forum];
     [self.awfulThreads removeAllObjects];
     [self acceptThreads:[newThreads mutableCopy]];
 }

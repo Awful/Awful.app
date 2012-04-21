@@ -25,5 +25,6 @@
 -(NSString *)constructedPageHTMLWithAllPosts;
 -(NSString *)calculatePostIDScrollDestination;
 -(BOOL)shouldScrollToBottom;
+-(int)numNewPostsLoaded;
 
 @end

@@ -45,7 +45,7 @@
 +(NSArray *)bookmarkedThreads
 {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"AwfulThread"];
-    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:YES];
+    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isBookmarked==YES"];
     [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
     [fetchRequest setPredicate:predicate];

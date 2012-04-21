@@ -104,6 +104,15 @@
             self.shouldScrollToBottom = NO;
         }
         
+        int numNewPosts = [_dataController numNewPostsLoaded];
+        if(numNewPosts > 0) {
+            int unreadPosts = [self.thread.totalUnreadPosts intValue];
+            if(unreadPosts != -1) {
+                self.thread.totalUnreadPosts = [NSNumber numberWithInt:unreadPosts - numNewPosts];
+                [ApplicationDelegate saveContext];
+            }
+        }
+        
         NSString *html = [dataController constructedPageHTML];
         [self.webView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
     }

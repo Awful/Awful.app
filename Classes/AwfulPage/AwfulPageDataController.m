@@ -282,4 +282,9 @@
     return self.newestPostIndex == [self.posts count];
 }
 
+-(int)numNewPostsLoaded
+{
+    return MAX(0, [self.posts count] - self.newestPostIndex);
+}
+
 @end
