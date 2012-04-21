@@ -281,6 +281,7 @@
 		11FE9E3E153CFC70002EE2B5 /* MKNetworkEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FE9E31153CFC6F002EE2B5 /* MKNetworkEngine.m */; };
 		11FE9E3F153CFC70002EE2B5 /* MKNetworkOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FE9E34153CFC6F002EE2B5 /* MKNetworkOperation.m */; };
 		11FE9E40153CFC70002EE2B5 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FE9E37153CFC6F002EE2B5 /* Reachability.m */; };
+		1C6A170715428F1D00410DB4 /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1C6A170615428F1D00410DB4 /* Settings.plist */; };
 		1CDF7A3E1537C157008EFAE4 /* GRMustache.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A011537C157008EFAE4 /* GRMustache.m */; };
 		1CDF7A3F1537C157008EFAE4 /* GRMustacheContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A051537C157008EFAE4 /* GRMustacheContext.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		1CDF7A401537C157008EFAE4 /* GRMustacheError.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A081537C157008EFAE4 /* GRMustacheError.m */; };
@@ -665,6 +666,7 @@
 		11FE9E34153CFC6F002EE2B5 /* MKNetworkOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKNetworkOperation.m; sourceTree = "<group>"; };
 		11FE9E36153CFC6F002EE2B5 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		11FE9E37153CFC6F002EE2B5 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		1C6A170615428F1D00410DB4 /* Settings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Settings.plist; sourceTree = "<group>"; };
 		1CDF7A001537C157008EFAE4 /* GRMustache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustache.h; sourceTree = "<group>"; };
 		1CDF7A011537C157008EFAE4 /* GRMustache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GRMustache.m; sourceTree = "<group>"; };
 		1CDF7A021537C157008EFAE4 /* GRMustache_private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustache_private.h; sourceTree = "<group>"; };
@@ -1457,6 +1459,7 @@
 				10F5BB3212499953006C5ED0 /* Default@2x.png */,
 				10241B771247DF7F00EE71CA /* Default.png */,
 				8D1107310486CEB800E47090 /* Awful-Info.plist */,
+				1C6A170615428F1D00410DB4 /* Settings.plist */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1742,6 +1745,7 @@
 				50A8B9711541D57E0065F3D9 /* ThreadActions.png in Resources */,
 				11D3F0D41542318500FE955D /* navbargradient-landscape.png in Resources */,
 				11D3F0D51542318500FE955D /* navbargradient-landscape@2x.png in Resources */,
+				1C6A170715428F1D00410DB4 /* Settings.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Sections</key>
+	<array>
+		<dict>
+			<key>Identifier</key>
+			<string>LogInSection</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Log In</string>
+					<key>Action</key>
+					<string>LogIn</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Identifier</key>
+			<string>LogOutSection</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Logged in as</string>
+					<key>ValueIdentifier</key>
+					<string>Username</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Log Out</string>
+					<key>Action</key>
+					<string>LogOut</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Identifier</key>
+			<string>ResetDataSection</string>
+			<key>Explanation</key>
+			<string>Resetting data erases all cached forums, threads, and posts.</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Reset Data</string>
+					<key>Action</key>
+					<string>ResetData</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>Automatic Loading</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Load Avatars</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>LoadAvatars</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Load Images</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>LoadImages</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Load Read Posts</string>
+					<key>Choices</key>
+					<array>
+						<string>Never</string>
+						<string>Last read</string>
+						<string>Last two read</string>
+					</array>
+					<key>Key</key>
+					<string>LoadReadPosts</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>SALR</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Highlight Mentions</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>HighlightMentions</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Highlight Own Quotes</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>HighlightOwnQuotes</string>
+				</dict>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>
