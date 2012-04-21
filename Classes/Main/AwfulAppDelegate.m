@@ -43,6 +43,10 @@
     
     UIImage *img = [[UIImage imageNamed:@"navbargradient"] resizableImageWithCapInsets:UIEdgeInsetsMake(42, 0, 0, 0)];
     [[UINavigationBar appearance] setBackgroundImage:img forBarMetrics:UIBarMetricsDefault];
+    
+    UIImage *landscapeImg = [[UIImage imageNamed:@"navbargradient-landscape"] resizableImageWithCapInsets:UIEdgeInsetsMake(32, 0, 0, 0)];
+    [[UINavigationBar appearance] setBackgroundImage:landscapeImg forBarMetrics:UIBarMetricsLandscapePhone];
+    
     [[UIBarButtonItem appearance] setTintColor:[UIColor colorWithRed:46.0/255 green:146.0/255 blue:190.0/255 alpha:1.0]];
     
     [self.window makeKeyAndVisible];
