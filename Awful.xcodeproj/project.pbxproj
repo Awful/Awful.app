@@ -17,7 +17,6 @@
 		10913AAF12CBF13A007583AC /* stop@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 10913AAA12CBF13A007583AC /* stop@2x.png */; };
 		10913AE712CBF871007583AC /* number-background.png in Resources */ = {isa = PBXBuildFile; fileRef = 10913AE612CBF871007583AC /* number-background.png */; };
 		10913B6412CC03F3007583AC /* number-background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 10913B6312CC03F3007583AC /* number-background@2x.png */; };
-		10913D0612CFF44A007583AC /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 10913D0512CFF44A007583AC /* Settings.bundle */; };
 		10D34FA9128F41160026C7C2 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10D34FA8128F41160026C7C2 /* CFNetwork.framework */; };
 		10D34FAF128F413C0026C7C2 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10D34FAE128F413C0026C7C2 /* MobileCoreServices.framework */; };
 		10D34FB1128F413C0026C7C2 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10D34FB0128F413C0026C7C2 /* SystemConfiguration.framework */; };
@@ -260,12 +259,15 @@
 		11D7CB9814EA0CED000DA96A /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 11D7CB9714EA0CED000DA96A /* MainStoryboard.storyboard */; };
 		11D7CB9D14EA1AE8000DA96A /* AwfulTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11D7CB9C14EA1AE8000DA96A /* AwfulTabBarController.m */; };
 		11DFB44214FF1CBB0001A34C /* AwfulTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DFB44114FF1CBB0001A34C /* AwfulTableViewController.m */; };
+		11E4556C15435F4A006C36A3 /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 11E4556B15435F4A006C36A3 /* Settings.plist */; };
+		11E4557515435F78006C36A3 /* AwfulSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 11E4557015435F78006C36A3 /* AwfulSettings.m */; };
+		11E4557615435F78006C36A3 /* AwfulSettingsChoiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11E4557215435F78006C36A3 /* AwfulSettingsChoiceViewController.m */; };
+		11E4557715435F78006C36A3 /* AwfulSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11E4557415435F78006C36A3 /* AwfulSettingsViewController.m */; };
 		11E53666151E8AB600EA74EA /* reply.png in Resources */ = {isa = PBXBuildFile; fileRef = 11E53664151E8AB600EA74EA /* reply.png */; };
 		11E53667151E8AB600EA74EA /* reply@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11E53665151E8AB600EA74EA /* reply@2x.png */; };
 		11E5366B151E8B4C00EA74EA /* bookmarks.png in Resources */ = {isa = PBXBuildFile; fileRef = 11E53669151E8B4C00EA74EA /* bookmarks.png */; };
 		11E5366C151E8B4C00EA74EA /* bookmarks@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11E5366A151E8B4C00EA74EA /* bookmarks@2x.png */; };
 		11FDA290151017490014FDCD /* MainStoryboardiPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 11FDA28E151017490014FDCD /* MainStoryboardiPad.storyboard */; };
-		11FDA296151018600014FDCD /* AwfulAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA295151018600014FDCD /* AwfulAccountViewController.m */; };
 		11FDA299151018740014FDCD /* OtherWebController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA298151018740014FDCD /* OtherWebController.m */; };
 		11FDA29C1510187F0014FDCD /* AwfulSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA29B1510187F0014FDCD /* AwfulSplitViewController.m */; };
 		11FDA2B7151170A20014FDCD /* navbargradient.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FDA2B6151170A20014FDCD /* navbargradient.png */; };
@@ -336,7 +338,6 @@
 		10913AAA12CBF13A007583AC /* stop@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "stop@2x.png"; path = "images/stop@2x.png"; sourceTree = "<group>"; };
 		10913AE612CBF871007583AC /* number-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "number-background.png"; path = "images/number-background.png"; sourceTree = "<group>"; };
 		10913B6312CC03F3007583AC /* number-background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "number-background@2x.png"; path = "images/number-background@2x.png"; sourceTree = "<group>"; };
-		10913D0512CFF44A007583AC /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		10D34FA8128F41160026C7C2 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		10D34FAE128F413C0026C7C2 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		10D34FB0128F413C0026C7C2 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -645,13 +646,18 @@
 		11D7CB9C14EA1AE8000DA96A /* AwfulTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTabBarController.m; sourceTree = "<group>"; };
 		11DFB44014FF1CBB0001A34C /* AwfulTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTableViewController.h; sourceTree = "<group>"; };
 		11DFB44114FF1CBB0001A34C /* AwfulTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTableViewController.m; sourceTree = "<group>"; };
+		11E4556B15435F4A006C36A3 /* Settings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Settings.plist; sourceTree = "<group>"; };
+		11E4556F15435F78006C36A3 /* AwfulSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettings.h; sourceTree = "<group>"; };
+		11E4557015435F78006C36A3 /* AwfulSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettings.m; sourceTree = "<group>"; };
+		11E4557115435F78006C36A3 /* AwfulSettingsChoiceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettingsChoiceViewController.h; sourceTree = "<group>"; };
+		11E4557215435F78006C36A3 /* AwfulSettingsChoiceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettingsChoiceViewController.m; sourceTree = "<group>"; };
+		11E4557315435F78006C36A3 /* AwfulSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettingsViewController.h; sourceTree = "<group>"; };
+		11E4557415435F78006C36A3 /* AwfulSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettingsViewController.m; sourceTree = "<group>"; };
 		11E53664151E8AB600EA74EA /* reply.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = reply.png; path = images/reply.png; sourceTree = "<group>"; };
 		11E53665151E8AB600EA74EA /* reply@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "reply@2x.png"; path = "images/reply@2x.png"; sourceTree = "<group>"; };
 		11E53669151E8B4C00EA74EA /* bookmarks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bookmarks.png; path = images/bookmarks.png; sourceTree = "<group>"; };
 		11E5366A151E8B4C00EA74EA /* bookmarks@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bookmarks@2x.png"; path = "images/bookmarks@2x.png"; sourceTree = "<group>"; };
 		11FDA28E151017490014FDCD /* MainStoryboardiPad.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = MainStoryboardiPad.storyboard; path = iPad/MainStoryboardiPad.storyboard; sourceTree = "<group>"; };
-		11FDA294151018600014FDCD /* AwfulAccountViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAccountViewController.h; sourceTree = "<group>"; };
-		11FDA295151018600014FDCD /* AwfulAccountViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAccountViewController.m; sourceTree = "<group>"; };
 		11FDA297151018740014FDCD /* OtherWebController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OtherWebController.h; sourceTree = "<group>"; };
 		11FDA298151018740014FDCD /* OtherWebController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OtherWebController.m; sourceTree = "<group>"; };
 		11FDA29A1510187F0014FDCD /* AwfulSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AwfulSplitViewController.h; path = iPad/AwfulSplitViewController.h; sourceTree = "<group>"; };
@@ -789,6 +795,7 @@
 				1190F71813BE4EA900B9D271 /* Login */,
 				1190F71C13BE4EA900B9D271 /* Main */,
 				1190F72013BE4EA900B9D271 /* Models */,
+				11E4556E15435F78006C36A3 /* Settings */,
 				11D5E85A14DC6D3E00C1002D /* Templates */,
 				1190F72B13BE4EA900B9D271 /* Util */,
 			);
@@ -1086,8 +1093,6 @@
 		1190F71813BE4EA900B9D271 /* Login */ = {
 			isa = PBXGroup;
 			children = (
-				11FDA294151018600014FDCD /* AwfulAccountViewController.h */,
-				11FDA295151018600014FDCD /* AwfulAccountViewController.m */,
 				1190F71913BE4EA900B9D271 /* AwfulLoginController.h */,
 				1190F71A13BE4EA900B9D271 /* AwfulLoginController.m */,
 			);
@@ -1302,6 +1307,19 @@
 			name = Templates;
 			sourceTree = "<group>";
 		};
+		11E4556E15435F78006C36A3 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				11E4556F15435F78006C36A3 /* AwfulSettings.h */,
+				11E4557015435F78006C36A3 /* AwfulSettings.m */,
+				11E4557115435F78006C36A3 /* AwfulSettingsChoiceViewController.h */,
+				11E4557215435F78006C36A3 /* AwfulSettingsChoiceViewController.m */,
+				11E4557315435F78006C36A3 /* AwfulSettingsViewController.h */,
+				11E4557415435F78006C36A3 /* AwfulSettingsViewController.m */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
 		11FDA2BF15129CAF0014FDCD /* EGOTableViewPullRefresh */ = {
 			isa = PBXGroup;
 			children = (
@@ -1491,6 +1509,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				11E4556B15435F4A006C36A3 /* Settings.plist */,
 				1190F80113BE58BB00B9D271 /* web resources */,
 				10E93EB9121DC70E00CCBF6D /* images */,
 				10F5BB2E124998B6006C5ED0 /* icon_57.png */,
@@ -1498,7 +1517,6 @@
 				10F5BB3212499953006C5ED0 /* Default@2x.png */,
 				10241B771247DF7F00EE71CA /* Default.png */,
 				8D1107310486CEB800E47090 /* Awful-Info.plist */,
-				10913D0512CFF44A007583AC /* Settings.bundle */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1619,7 +1637,6 @@
 				10913AAF12CBF13A007583AC /* stop@2x.png in Resources */,
 				10913AE712CBF871007583AC /* number-background.png in Resources */,
 				10913B6412CC03F3007583AC /* number-background@2x.png in Resources */,
-				10913D0612CFF44A007583AC /* Settings.bundle in Resources */,
 				115A05DA134814B6004FDCE5 /* arrowright.png in Resources */,
 				115A05DF13490D39004FDCE5 /* dotdotdot.png in Resources */,
 				1199D7CF13AA9C4200264DE9 /* tiny_arrow_right.png in Resources */,
@@ -1798,6 +1815,7 @@
 				117CE6F315433504005DD47B /* dd-philosophy.png in Resources */,
 				117CE6F415433504005DD47B /* yospos-netscape.png in Resources */,
 				117CE6F515433504005DD47B /* yp-bsod.png in Resources */,
+				11E4556C15435F4A006C36A3 /* Settings.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1863,7 +1881,6 @@
 				11D7CB9D14EA1AE8000DA96A /* AwfulTabBarController.m in Sources */,
 				1172A63214F5DE8B0026CDA8 /* AwfulNetworkEngine.m in Sources */,
 				11DFB44214FF1CBB0001A34C /* AwfulTableViewController.m in Sources */,
-				11FDA296151018600014FDCD /* AwfulAccountViewController.m in Sources */,
 				11FDA299151018740014FDCD /* OtherWebController.m in Sources */,
 				11FDA29C1510187F0014FDCD /* AwfulSplitViewController.m in Sources */,
 				11FDA2CD15129CAF0014FDCD /* EGORefreshTableHeaderView.m in Sources */,
@@ -1901,6 +1918,9 @@
 				11FE9E3E153CFC70002EE2B5 /* MKNetworkEngine.m in Sources */,
 				11FE9E3F153CFC70002EE2B5 /* MKNetworkOperation.m in Sources */,
 				11FE9E40153CFC70002EE2B5 /* Reachability.m in Sources */,
+				11E4557515435F78006C36A3 /* AwfulSettings.m in Sources */,
+				11E4557615435F78006C36A3 /* AwfulSettingsChoiceViewController.m in Sources */,
+				11E4557715435F78006C36A3 /* AwfulSettingsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
