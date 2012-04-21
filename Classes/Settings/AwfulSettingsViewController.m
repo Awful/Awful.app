@@ -73,13 +73,16 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView 
 {
-    // TODO hide appropriate sections when logged in/out
-    return self.sections.count;
+    if (IsLoggedIn()) {
+        return self.sections.count - 1;
+    } else {
+        return 2;
+    }
 } 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    // TODO deal with hidden sections
+    section = [self fudgedSectionForSection:section];
     NSDictionary *settingSection = [self.sections objectAtIndex:section];
     return [[settingSection objectForKey:@"Settings"] count];
 }
@@ -95,8 +98,11 @@ typedef enum SettingType
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSDictionary *settingSection = [self.sections objectAtIndex:indexPath.section];
-    NSDictionary *setting = [[settingSection objectForKey:@"Settings"] objectAtIndex:indexPath.row];
+    indexPath = [self fudgedIndexPathForIndexPath:indexPath];
+    
+    // Grab the cell we need.
+    
+    NSDictionary *setting = [self settingForIndexPath:indexPath];
     SettingType settingType = ImmutableSetting;
     if ([[setting objectForKey:@"Type"] isEqual:@"Switch"]) {
         settingType = OnOffSetting;
@@ -111,13 +117,16 @@ typedef enum SettingType
         identifier = @"Default";
         style = UITableViewCellStyleDefault;
     }
-    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     if (!cell)
     {
         cell = [[UITableViewCell alloc] initWithStyle:style 
                                       reuseIdentifier:identifier];
     }
+    
+    // Set it up as we like it.
+    
+    cell.textLabel.text = [setting objectForKey:@"Title"];
     
     if (settingType == ImmutableSetting) {
         // This only works because there's one immutable setting here.
@@ -168,66 +177,64 @@ typedef enum SettingType
         cell.textLabel.textAlignment = UITextAlignmentLeft;
     }
     
-    cell.textLabel.text = [setting objectForKey:@"Title"];
-    
     return cell;
 }
 
 - (void)hitSwitch:(UISwitch *)switchView
 {
     NSIndexPath *indexPath = [self.switches objectAtIndex:switchView.tag];
-    NSDictionary *settingSection = [self.sections objectAtIndex:indexPath.section];
-    NSDictionary *setting = [[settingSection objectForKey:@"Settings"] objectAtIndex:indexPath.row];
+    NSDictionary *setting = [self settingForIndexPath:indexPath];
     NSString *key = [setting objectForKey:@"Key"];
     [[NSUserDefaults standardUserDefaults] setBool:switchView.on forKey:key];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    /*
-    if (IsLoggedIn()) {
-        switch (indexPath.section) {
-            case LogInLogOutSection: switch (indexPath.row) {
-                case LogOutRow: {
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log Out"
-                                                                    message:@"Are you sure you want to log out?"
-                                                                   delegate:self
-                                                          cancelButtonTitle:@"Cancel"
-                                                          otherButtonTitles:@"Log Out", nil];
-                    alert.delegate = self;
-                    [alert show];
-                } break;
-            } break;
-                
-            case ResetDataSection: switch (indexPath.row) {
-                case ResetDataRow: [ApplicationDelegate resetDataStore]; break;
-            }
-        }
-    } else {
-        switch (indexPath.section) {
-            case LogInLogOutSection: switch (indexPath.row) {
-                case LogInRow:
-                    [self performSegueWithIdentifier:@"Login" sender:self];
-                    break;
-            } break;
-                
-            case ResetDataSection: switch (indexPath.row) {
-                case ResetDataRow: [ApplicationDelegate resetDataStore]; break;
-            } break;
-        }
+    indexPath = [self fudgedIndexPathForIndexPath:indexPath];
+    NSDictionary *setting = [self settingForIndexPath:indexPath];
+    NSString *action = [setting objectForKey:@"Action"];
+    if ([action isEqualToString:@"LogOut"]) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log Out"
+                                                        message:@"Are you sure you want to log out?"
+                                                       delegate:self
+                                              cancelButtonTitle:@"Cancel"
+                                              otherButtonTitles:@"Log Out", nil];
+        alert.delegate = self;
+        [alert show];
+    } else if ([action isEqualToString:@"LogIn"]) {
+        [self performSegueWithIdentifier:@"Login" sender:self];
+    } else if ([action isEqualToString:@"ResetData"]) {
+        [ApplicationDelegate resetDataStore];
     }
-    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-     */
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (NSIndexPath *)fudgedIndexPathForIndexPath:(NSIndexPath *)indexPath
+{
+    return [NSIndexPath indexPathForRow:indexPath.row
+                              inSection:[self fudgedSectionForSection:indexPath.section]];
+}
+
+- (NSInteger)fudgedSectionForSection:(NSInteger)section
+{
+    // Skip either LogInSection or LogOutSection as needed.
+    if (IsLoggedIn() || section > 0) {
+        return section + 1;
+    } else {
+        return section;
+    }
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
+    section = [self fudgedSectionForSection:section];
     NSDictionary *settingSection = [self.sections objectAtIndex:section];
     return [settingSection objectForKey:@"Title"];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
 {
+    section = [self fudgedSectionForSection:section];
     NSDictionary *settingSection = [self.sections objectAtIndex:section];
     return [settingSection objectForKey:@"Explanation"];
 }
@@ -250,9 +257,12 @@ typedef enum SettingType
     [self.tableView reloadData];
 }
 
-- (IBAction)resetData:(id)sender 
+- (NSDictionary *)settingForIndexPath:(NSIndexPath *)indexPath
 {
-    [ApplicationDelegate resetDataStore];
+    NSDictionary *settingSection = [self.sections objectAtIndex:indexPath.section];
+    NSArray *listOfSettings = [settingSection objectForKey:@"Settings"];
+    return [listOfSettings objectAtIndex:indexPath.row];
+
 }
 
 @end
