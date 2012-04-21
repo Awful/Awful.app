@@ -8,6 +8,10 @@
 
 #import "AwfulTableViewController.h"
 
+@class AwfulSettingsChoiceViewController;
+
 @interface AwfulSettingsViewController : AwfulTableViewController <UIAlertViewDelegate>
+
+- (void)didMakeChoice:(AwfulSettingsChoiceViewController *)choiceViewController;
 
 @end

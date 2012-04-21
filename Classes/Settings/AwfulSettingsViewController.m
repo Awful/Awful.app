@@ -13,6 +13,7 @@
 #import "AwfulUtil.h"
 #import "AwfulLoginController.h"
 #import "AwfulNetworkEngine.h"
+#import "AwfulSettingsChoiceViewController.h"
 
 @interface AwfulSettingsViewController ()
 
@@ -205,8 +206,22 @@ typedef enum SettingType
         [self performSegueWithIdentifier:@"Login" sender:self];
     } else if ([action isEqualToString:@"ResetData"]) {
         [ApplicationDelegate resetDataStore];
+    } else {
+        NSString *key = [setting objectForKey:@"Key"];
+        id selectedValue = [[NSUserDefaults standardUserDefaults] objectForKey:key];
+        AwfulSettingsChoiceViewController *choiceViewController = [[AwfulSettingsChoiceViewController alloc] initWithSetting:setting selectedValue:selectedValue];
+        choiceViewController.settingsViewController = self;
+        [self.navigationController pushViewController:choiceViewController animated:YES];
     }
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (void)didMakeChoice:(AwfulSettingsChoiceViewController *)choiceViewController
+{
+    NSString *key = [choiceViewController.setting objectForKey:@"Key"];
+    [[NSUserDefaults standardUserDefaults] setObject:choiceViewController.selectedValue
+                                              forKey:key];
+    [self.tableView reloadData];
 }
 
 - (NSIndexPath *)fudgedIndexPathForIndexPath:(NSIndexPath *)indexPath
