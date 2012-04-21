@@ -127,6 +127,12 @@
         int numPostsAbove = [AwfulConfig numReadPostsAbove];
         int firstPostIndex = MAX(dataController.newestPostIndex - numPostsAbove, 0);
         int numHiddenPosts = 0;
+        
+        // no new posts on a page, show them all!
+        if([dataController.posts count] == dataController.newestPostIndex) { 
+            firstPostIndex = 0;
+        }
+        
         for(AwfulPost *post in dataController.posts) {
             if(currentIndex >= firstPostIndex || overridePostRemover) {
                 [posts addObject:[[PostContext alloc] initWithPost:post]];

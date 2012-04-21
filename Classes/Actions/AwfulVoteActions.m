@@ -8,7 +8,9 @@
 
 #import "AwfulVoteActions.h"
 #import "AwfulThread.h"
-//#import "ASIFormDataRequest.h"
+#import "AwfulNetworkEngine.h"
+#import "AwfulUtil.h"
+#import "AwfulPage.h"
 
 @implementation AwfulVoteActions
 
@@ -53,15 +55,15 @@
     }
     
     if(vote_num != -1) {
-        /*NSURL *url = [NSURL URLWithString:@"http://forums.somethingawful.com/threadrate.php"];
-        ASIFormDataRequest *form = [ASIFormDataRequest requestWithURL:url];
-        [form addPostValue:[[NSNumber numberWithInt:vote_num] stringValue] forKey:@"vote"];
-        [form addPostValue:self.thread.threadID forKey:@"threadid"];
-        form.userInfo = [NSDictionary dictionaryWithObject:@"Great Job!" forKey:@"completionMsg"];
-        
-        loadRequestAndWait(form);*/
+        [ApplicationDelegate.awfulNetworkEngine submitVote:vote_num forThread:self.thread onCompletion:^(void) {
+            if([self.viewController isKindOfClass:[AwfulPage class]]) {
+                AwfulPage *page = (AwfulPage *)self.viewController;
+                [page showCompletionMessage:@"Great Job!"];
+            }
+        } onError:^(NSError *error) {
+            [AwfulUtil requestFailed:error];
+        }];
     }
-    //[self.navigator setActions:nil];
 }
 
 @end

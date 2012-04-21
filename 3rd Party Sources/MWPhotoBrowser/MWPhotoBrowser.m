@@ -8,6 +8,8 @@
 
 #import "MWPhotoBrowser.h"
 #import "ZoomingScrollView.h"
+#import "MBProgressHUD.h"
+#import "AwfulUtil.h"
 
 #define PADDING 10
 
@@ -91,6 +93,9 @@
     
     UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(hitDone)];
     self.navigationItem.rightBarButtonItem = done;
+    
+    UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] initWithTitle:@"Save to Photos" style:UIBarButtonItemStyleBordered target:self action:@selector(hitSave)];
+    self.navigationItem.leftBarButtonItem = saveButton;
 	
 	// Toolbar
 	toolbar = [[UIToolbar alloc] initWithFrame:[self frameForToolbarAtOrientation:self.interfaceOrientation]];
@@ -118,6 +123,31 @@
 -(void)hitDone
 {
     [self.navigationController dismissModalViewControllerAnimated:YES];
+}
+
+- (void) image: (UIImage *) image didFinishSavingWithError: (NSError *) error contextInfo: (void *) contextInfo
+{
+    dispatch_async(dispatch_get_main_queue(), ^(void) {
+        
+        [MBProgressHUD hideHUDForView:self.view animated:NO];
+        
+        if(error != nil) {
+            [AwfulUtil requestFailed:error];
+        }
+    });
+}
+
+-(void)hitSave
+{
+    if([photos count] > 0) {
+        MWPhoto *photo = [photos objectAtIndex:0];
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.labelText = @"Saving Image...";
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+            UIImageWriteToSavedPhotosAlbum(photo.photoImage, self, @selector(image:didFinishSavingWithError:contextInfo:), NULL);
+        });
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {

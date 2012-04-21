@@ -76,14 +76,16 @@ typedef enum {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Not available" message:@"That feature requires you set 'Show an icon next to each post indicating if it has been seen or not' in your forum options" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
             [alert show];
         } else {
-            /*NSURL *seen_url = [NSURL URLWithString:[@"http://forums.somethingawful.com/" stringByAppendingString:self.post.markSeenLink]];
-            ASIHTTPRequest *seen_req = [ASIHTTPRequest requestWithURL:seen_url];
-            seen_req.userInfo = [NSDictionary dictionaryWithObjectsAndKeys:@"Marked up to there.", @"completionMsg", nil];
-            loadRequestAndWait(seen_req);*/
+            [[ApplicationDelegate awfulNetworkEngine] processMarkSeenLink:self.post.markSeenLink onCompletion:^(void){
+                if([self.viewController isKindOfClass:[AwfulPage class]]) {
+                    AwfulPage *page = (AwfulPage *)self.viewController;
+                    [page showCompletionMessage:@"Marked up to there."];
+                }
+            } onError:^(NSError *error){
+                [AwfulUtil requestFailed:error];
+            }];
         }
     }
-    
-    //[self.navigator setActions:nil];
 }
 
 @end

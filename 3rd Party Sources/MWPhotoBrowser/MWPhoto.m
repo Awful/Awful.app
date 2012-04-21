@@ -8,12 +8,12 @@
 
 #import "MWPhoto.h"
 #import "UIImage+Decompress.h"
+#import "MBProgressHUD.h"
 
 // Private
 @interface MWPhoto ()
 
 // Properties
-@property (strong) UIImage *photoImage;
 @property () BOOL workingInBackground;
 
 // Private Methods
@@ -26,7 +26,7 @@
 @implementation MWPhoto
 
 // Properties
-@synthesize photoImage, workingInBackground;
+@synthesize photoImage = _photoImage, workingInBackground;
 
 #pragma mark Class Methods
 
@@ -157,4 +157,13 @@
 	}
 }
 
+-(void)finishedSaving
+{
+    
+}
+
+-(void)saveToPhotoGallery
+{
+    
+}
 @end

@@ -65,7 +65,8 @@
 - (void)gotoPreviousPage;
 - (void)gotoNextPage;
 -(void)hitDone;
-
+-(void)hitSave;
+- (void) image: (UIImage *) image didFinishSavingWithError: (NSError *) error contextInfo: (void *) contextInfo;
 // Controls
 - (void)cancelControlHiding;
 - (void)hideControlsAfterDelay;

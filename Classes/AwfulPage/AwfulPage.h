@@ -27,6 +27,10 @@ typedef enum {
 @class ButtonSegmentedControl;
 
 @interface AwfulPage : UIViewController <UIWebViewDelegate, UIGestureRecognizerDelegate, JSBridgeWebViewDelegate>
+{
+@protected
+    AwfulActions *_actions;
+}
 
 @property (nonatomic, strong) AwfulThread *thread;
 @property (nonatomic, strong) NSString *url;
@@ -83,8 +87,18 @@ typedef enum {
 -(void)swapToStopButton;
 -(void)swapToRefreshButton;
 
+-(void)showCompletionMessage : (NSString *)message;
+
 @end
 
-@interface AwfulPageIpad: AwfulPage
+#import "AwfulSplitViewController.h"
 
+@interface AwfulPageIpad: AwfulPage <SubstitutableDetailViewController, UIGestureRecognizerDelegate>
+{
+    CGPoint _lastTouch;
+}
+
+@property (nonatomic, strong) UIPopoverController *popController;
+
+- (void)handleTap:(UITapGestureRecognizer *)sender;
 @end

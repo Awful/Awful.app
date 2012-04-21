@@ -1,10 +1,10 @@
-//
-//  AwfulPage.m
-//  Awful
-//
-//  Created by Sean Berry on 7/29/10.
-//  Copyright 2010 Regular Berry Software LLC. All rights reserved.
-//
+    //
+    //  AwfulPage.m
+    //  Awful
+    //
+    //  Created by Sean Berry on 7/29/10.
+    //  Copyright 2010 Regular Berry Software LLC. All rights reserved.
+    //
 
 #import "AwfulThreadListController.h"
 #import "AwfulAppDelegate.h"
@@ -32,6 +32,7 @@
 #import "ButtonSegmentedControl.h"
 #import "AwfulUser+AwfulMethods.h"
 #import "AwfulUser.h"
+#import "MBProgressHUD.h"
 
 @implementation AwfulPage
 
@@ -70,14 +71,14 @@
         if(_thread.title != nil) {
             UILabel *lab = (UILabel *)self.navigationItem.titleView;
             lab.text = self.thread.title;
-            //NSLog(@"title width %f", self.navigationItem.titleView.frame.size.width);
+                //NSLog(@"title width %f", self.navigationItem.titleView.frame.size.width);
         }
         
         if([_thread.totalUnreadPosts intValue] == -1) {
             self.destinationType = AwfulPageDestinationTypeFirst;
         } else if(_thread.totalUnreadPosts == 0) {
             self.destinationType = AwfulPageDestinationTypeLast;
-            // if the last page is full, it won't work if you go for &goto=newpost, that's why I'm setting this to last page
+                // if the last page is full, it won't work if you go for &goto=newpost, that's why I'm setting this to last page
         } else {
             self.destinationType = AwfulPageDestinationTypeNewpost;
         }
@@ -110,31 +111,31 @@
 
 
 /*
--(void)setWebView:(JSBridgeWebView *)webView;
-{
-    UILongPressGestureRecognizer *press = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(heldPost:)];
-    press.delegate = self;
-    press.minimumPressDuration = 0.3;
-    [webView addGestureRecognizer:press];
-    
-    
-    AwfulNavigator *nav = getNavigator();
-    UITapGestureRecognizer *three_times = [[UITapGestureRecognizer alloc] initWithTarget:nav action:@selector(didFullscreenGesture:)];
-    three_times.numberOfTapsRequired = 3;
-    three_times.delegate = self;
-    [webView addGestureRecognizer:three_times];
-    
-    UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:nav action:@selector(didFullscreenGesture:)];
-    [webView addGestureRecognizer:pinch];
-    pinch.delegate = self;
-    
-    
-    nav.view = self.view;
-    if([nav isFullscreen]) {
-        nav.fullScreenButton.center = CGPointMake(nav.view.frame.size.width-25, nav.view.frame.size.height-25);
-        [nav.view addSubview:nav.fullScreenButton];
-    }
-}*/
+ -(void)setWebView:(JSBridgeWebView *)webView;
+ {
+ UILongPressGestureRecognizer *press = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(heldPost:)];
+ press.delegate = self;
+ press.minimumPressDuration = 0.3;
+ [webView addGestureRecognizer:press];
+ 
+ 
+ AwfulNavigator *nav = getNavigator();
+ UITapGestureRecognizer *three_times = [[UITapGestureRecognizer alloc] initWithTarget:nav action:@selector(didFullscreenGesture:)];
+ three_times.numberOfTapsRequired = 3;
+ three_times.delegate = self;
+ [webView addGestureRecognizer:three_times];
+ 
+ UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:nav action:@selector(didFullscreenGesture:)];
+ [webView addGestureRecognizer:pinch];
+ pinch.delegate = self;
+ 
+ 
+ nav.view = self.view;
+ if([nav isFullscreen]) {
+ nav.fullScreenButton.center = CGPointMake(nav.view.frame.size.width-25, nav.view.frame.size.height-25);
+ [nav.view addSubview:nav.fullScreenButton];
+ }
+ }*/
 
 -(void)setPages:(AwfulPageCount *)in_pages
 {
@@ -257,7 +258,7 @@
     }
 }
 
--(void)setActions:(AwfulPostActions *)actions
+-(void)setActions:(AwfulActions *)actions
 {
     if(actions != _actions) {
         _actions = actions;
@@ -269,10 +270,10 @@
 #pragma mark - Memory management
 
 - (void)didReceiveMemoryWarning {
-    // Releases the view if it doesn't have a superview.
+        // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
     
-    // Relinquish ownership any cached data, images, etc that aren't in use.
+        // Relinquish ownership any cached data, images, etc that aren't in use.
 }
 
 - (void)viewDidLoad {
@@ -290,8 +291,8 @@
 }
 
 - (void)viewDidUnload {
-    // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
-    // For example: self.myOutlet = nil;
+        // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
+        // For example: self.myOutlet = nil;
     [super viewDidUnload];
 }
 
@@ -511,22 +512,22 @@
                 AwfulThread *intra = [[AwfulThread alloc] init];
                 intra.threadID = thread_id;
                 
-                //AwfulPage *page = nil;
+                    //AwfulPage *page = nil;
                 
                 /*
-                if(page_number == nil) {
-                    page = [[[self class] alloc] initWithAwfulThread:intra startAt:AwfulPageDestinationTypeFirst];
-                } else {
-                    page = [[[self class] alloc] initWithAwfulThread:intra startAt:AwfulPageDestinationTypeSpecific pageNum:[page_number intValue]];
-                    int pti = [AwfulParse getNewPostNumFromURL:request.URL];
-                    page.url = [NSString stringWithFormat:@"showthread.php?threadid=%@&pagenumber=%@#pti%d", thread_id, page_number, pti];
-                }
-                
-                
-                if(page != nil) {
-                    loadContentVC(page);
-                    return NO;
-                }*/
+                 if(page_number == nil) {
+                 page = [[[self class] alloc] initWithAwfulThread:intra startAt:AwfulPageDestinationTypeFirst];
+                 } else {
+                 page = [[[self class] alloc] initWithAwfulThread:intra startAt:AwfulPageDestinationTypeSpecific pageNum:[page_number intValue]];
+                 int pti = [AwfulParse getNewPostNumFromURL:request.URL];
+                 page.url = [NSString stringWithFormat:@"showthread.php?threadid=%@&pagenumber=%@#pti%d", thread_id, page_number, pti];
+                 }
+                 
+                 
+                 if(page != nil) {
+                 loadContentVC(page);
+                 return NO;
+                 }*/
             }
             
             
@@ -586,7 +587,151 @@
     self.navigationItem.rightBarButtonItem = stop;
 }
 
+-(void)showCompletionMessage : (NSString *)message
+{
+    dispatch_async(dispatch_get_main_queue(), ^(){
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
+        hud.labelText = message;
+        hud.customView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"37x-Checkmark"]];
+        hud.mode = MBProgressHUDModeCustomView;
+        [UIView animateWithDuration:0.5 delay:2.0 options:UIViewAnimationOptionCurveEaseIn animations:^(void){
+            hud.alpha = 0.0;
+        } completion:^(BOOL finished) {
+            [MBProgressHUD hideHUDForView:self.view animated:NO];
+        }];
+    });
+}
+
 @end
 
 @implementation AwfulPageIpad
+@synthesize popController = _popController;
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
+    tap.delegate = self;
+    [self.webView addGestureRecognizer:tap];
+}
+
+
+-(IBAction)tappedPageNav : (id)sender
+{
+    if(self.popController)
+    {
+        [self.popController dismissPopoverAnimated:YES];
+        self.popController = nil;
+    }
+    
+    if(self.pages == nil)
+    {
+        return;
+    }
+    
+    UIView *sp_view = self.specificPageController.containerView;
+    
+    self.specificPageController.hiding = !self.specificPageController.hiding;
+    
+    if(self.specificPageController == nil) {
+        
+        [self.pagesBarButtonItem setTintColor:[UIColor blackColor]];
+        self.specificPageController = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil] instantiateViewControllerWithIdentifier:@"AwfulSpecificPageController"];
+        self.specificPageController.page = self;
+        [self.specificPageController loadView];
+        sp_view = self.specificPageController.containerView;
+        
+        [self.specificPageController.pickerView selectRow:self.pages.currentPage-1 inComponent:0 animated:NO];
+        
+    }
+
+    if (!self.specificPageController.hiding)
+    {
+        
+    UIViewController *vc = self.specificPageController;
+
+    self.popController = [[UIPopoverController alloc] initWithContentViewController:vc];
+    
+    [self.popController setPopoverContentSize:CGSizeMake(260,sp_view.frame.size.height) animated:YES];
+    [self.popController presentPopoverFromBarButtonItem:self.pagesBarButtonItem 
+                               permittedArrowDirections:UIPopoverArrowDirectionAny
+                                               animated:YES];
+    }
+    
+    
+}
+
+
+- (void)showRootPopoverButtonItem:(UIBarButtonItem *)barButtonItem {
+
+    [self.navigationItem setLeftBarButtonItem:barButtonItem animated:YES];
+}
+
+
+- (void)invalidateRootPopoverButtonItem:(UIBarButtonItem *)barButtonItem {
+    
+    [self.navigationItem setLeftBarButtonItem:nil animated:YES];
+}
+
+- (void)handleTap:(UITapGestureRecognizer *)sender 
+{     
+    if (sender.state == UIGestureRecognizerStateEnded)     
+    {         // handling code     
+        _lastTouch = [sender locationInView:self.view];
+    } 
+}
+
+
+-(void)setActions:(AwfulActions *)actions
+{
+    if(self.popController)
+    {
+        [self.popController dismissPopoverAnimated:YES];
+        self.popController = nil;
+    }
+    
+    if(actions != _actions) {
+        _actions = actions;
+        actions.viewController = self;
+        UIActionSheet *sheet = [actions getActionSheet];
+        CGRect buttonRect = CGRectMake(_lastTouch.x, _lastTouch.y, 1, 1);
+        if ([actions isKindOfClass:[AwfulThreadActions class]] || [actions isKindOfClass:[AwfulVoteActions class]])
+        {
+            buttonRect = self.actionsSegmentedControl.frame;
+            buttonRect.origin.y += self.view.frame.size.height;  //Add the height of the view to the button y
+            buttonRect.size.width = buttonRect.size.width / 2;   //Action is the first button, so the width is really only half
+        
+        }
+        [sheet showFromRect:buttonRect inView:self.view animated:YES];
+    }
+}
+
+
+-(void)loadPageNum : (NSUInteger)pageNum
+{
+    
+        //Hide any popovers if the page changes
+    if(self.popController)
+    {
+        [self.popController dismissPopoverAnimated:YES];
+        self.popController = nil;
+    }
+    
+    [super loadPageNum:pageNum];
+    
+}
+
+-(IBAction)tappedCompose : (id)sender
+{
+        //Hide any popovers if composed pressed
+    if(self.popController)
+    {
+        [self.popController dismissPopoverAnimated:YES];
+        self.popController = nil;
+    }
+    
+    [super tappedCompose:sender];
+}
+
 @end

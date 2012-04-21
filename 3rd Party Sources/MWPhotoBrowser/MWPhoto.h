@@ -30,6 +30,8 @@
 	
 }
 
+@property (nonatomic, strong) UIImage *photoImage;
+
 // Class
 + (MWPhoto *)photoWithImage:(UIImage *)image;
 + (MWPhoto *)photoWithFilePath:(NSString *)path;

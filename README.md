@@ -10,7 +10,9 @@ For this release
 ----------------
 * Fix bold issue (currently example in awfulapp thread)
 * Sane intro to the app, take user to login screen
-* Save images
+* Default data set with current forums
+* rearrange favorite forums
+* press-hold on threadlist to jump to first/last page of a thread from threadlist
 * Copy thread/post URL
 * Smarter iPad interface
 * Pick and include a license.
@@ -18,7 +20,6 @@ For this release
 
 For some later release
 ----------------------
-* Voting
 * Private messages
 * Search
 * FYAD
