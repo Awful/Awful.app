@@ -625,7 +625,6 @@
     [self.webView addGestureRecognizer:tap];
 }
 
-
 -(IBAction)tappedPageNav : (id)sender
 {
     if(self.popController)
@@ -640,12 +639,10 @@
     }
     
     UIView *sp_view = self.specificPageController.containerView;
-    
-    self.specificPageController.hiding = !self.specificPageController.hiding;
-    
+        
     if(self.specificPageController == nil) {
         
-        [self.pagesBarButtonItem setTintColor:[UIColor blackColor]];
+        //[self.pagesBarButtonItem setTintColor:[UIColor blackColor]];
         self.specificPageController = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil] instantiateViewControllerWithIdentifier:@"AwfulSpecificPageController"];
         self.specificPageController.page = self;
         [self.specificPageController loadView];
@@ -655,9 +652,6 @@
         
     }
 
-    if (!self.specificPageController.hiding)
-    {
-        
     UIViewController *vc = self.specificPageController;
 
     self.popController = [[UIPopoverController alloc] initWithContentViewController:vc];
@@ -666,9 +660,6 @@
     [self.popController presentPopoverFromBarButtonItem:self.pagesBarButtonItem 
                                permittedArrowDirections:UIPopoverArrowDirectionAny
                                                animated:YES];
-    }
-    
-    
 }
 
 
@@ -719,7 +710,6 @@
 
 -(void)loadPageNum : (NSUInteger)pageNum
 {
-    
         //Hide any popovers if the page changes
     if(self.popController)
     {
