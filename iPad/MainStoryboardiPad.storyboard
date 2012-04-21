@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="1.1" toolsVersion="2182" systemVersion="11D50b" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="D7m-b9-f1Z">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="1.1" toolsVersion="2182" systemVersion="11D50" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="D7m-b9-f1Z">
     <dependencies>
         <deployment defaultVersion="1296" identifier="iOS"/>
         <development defaultVersion="4200" identifier="xcode"/>
@@ -283,12 +283,12 @@
             </objects>
             <point key="canvasLocation" x="1250" y="-1883"/>
         </scene>
-        <!--Navigation Controller - Account-->
+        <!--Navigation Controller - Settings-->
         <scene sceneID="3En-8f-fIU">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ygr-Ik-0FG" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController definesPresentationContext="YES" id="eNs-ia-gzc" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Account" id="tH1-Xb-Nte"/>
+                    <tabBarItem key="tabBarItem" title="Settings" image="cog.png" id="tH1-Xb-Nte"/>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackTranslucent"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
                     <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="blackOpaque" id="vUe-IY-tpX">
@@ -323,68 +323,23 @@
             </objects>
             <point key="canvasLocation" x="-297" y="-1455"/>
         </scene>
-        <!--Awful Account View Controller - Account-->
+        <!--Awful Settings View Controller - Settings-->
         <scene sceneID="Ifr-Rg-ncU">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2VA-w8-sO3" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tableViewController id="BZz-jf-x9i" customClass="AwfulAccountViewController" sceneMemberID="viewController">
+                <tableViewController id="BZz-jf-x9i" customClass="AwfulSettingsViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="singleLineEtched" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="8WJ-rJ-ayg">
                         <rect key="frame" x="0.0" y="64" width="320" height="655"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
-                        <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Information" textLabel="WOr-TP-8SP" detailTextLabel="UC3-fj-ZDa" style="IBUITableViewCellStyleValue1" id="eJ4-uH-GcG">
-                                <rect key="frame" x="0.0" y="34" width="320" height="45"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="10" y="1" width="300" height="43"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Logged in as:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" id="WOr-TP-8SP">
-                                            <rect key="frame" x="10" y="11" width="111" height="21"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                            <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                        </label>
-                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Detail" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" id="UC3-fj-ZDa">
-                                            <rect key="frame" x="246" y="11" width="44" height="21"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <color key="textColor" red="0.21960784310000001" green="0.3294117647" blue="0.52941176469999995" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                        </label>
-                                    </subviews>
-                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                </view>
-                            </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Button" textLabel="NbS-3o-tz5" style="IBUITableViewCellStyleDefault" id="eBe-ca-QFh">
-                                <rect key="frame" x="0.0" y="79" width="320" height="45"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="10" y="0.0" width="300" height="43"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Logout" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" id="NbS-3o-tz5">
-                                            <rect key="frame" x="10" y="0.0" width="280" height="43"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                            <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                        </label>
-                                    </subviews>
-                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                </view>
-                            </tableViewCell>
-                        </prototypes>
                         <sections/>
                         <connections>
                             <outlet property="dataSource" destination="BZz-jf-x9i" id="mEe-wz-fQb"/>
                             <outlet property="delegate" destination="BZz-jf-x9i" id="dFw-AW-Lz9"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Account" id="1YP-no-M20">
+                    <navigationItem key="navigationItem" title="Settings" id="1YP-no-M20">
                         <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="3Oc-Fj-z5H">
                             <connections>
                                 <action selector="refresh" destination="BZz-jf-x9i" id="kmf-PP-vbG"/>
@@ -942,6 +897,7 @@
         <image name="ama.png" width="45" height="45"/>
         <image name="arrowleft.png" width="23" height="18"/>
         <image name="arrowright.png" width="23" height="18"/>
+        <image name="cog.png" width="19" height="20"/>
         <image name="compose.png" width="22" height="18"/>
         <image name="forum-arrow-right.png" width="44" height="38"/>
         <image name="list_icon.png" width="20" height="18"/>
@@ -952,6 +908,119 @@
         <image name="sticky.png" width="12" height="12"/>
         <image name="threadrating.png" width="45" height="13"/>
     </resources>
+    <classes>
+        <class className="AwfulAddForumsViewController" superclassName="AwfulForumsListController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulAddForumsViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="hitDone:"/>
+                <relationship kind="outlet" name="delegate" candidateClass="AwfulForumsListController"/>
+            </relationships>
+        </class>
+        <class className="AwfulBookmarksController" superclassName="AwfulThreadListController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulBookmarksController.h"/>
+        </class>
+        <class className="AwfulForumCell" superclassName="UITableViewCell">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumCell.h"/>
+            <relationships>
+                <relationship kind="action" name="tappedArrow:"/>
+                <relationship kind="outlet" name="arrow" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="titleLabel" candidateClass="UILabel"/>
+            </relationships>
+        </class>
+        <class className="AwfulForumHeader" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumHeader.h"/>
+            <relationships>
+                <relationship kind="outlet" name="titleLabel" candidateClass="UILabel"/>
+            </relationships>
+        </class>
+        <class className="AwfulForumsListController" superclassName="AwfulTableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumsListController.h"/>
+            <relationships>
+                <relationship kind="action" name="segmentedControlChanged:"/>
+                <relationship kind="outlet" name="headerView" candidateClass="AwfulForumHeader"/>
+                <relationship kind="outlet" name="segmentedControl" candidateClass="UISegmentedControl"/>
+            </relationships>
+        </class>
+        <class className="AwfulLoginController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulLoginController.h"/>
+            <relationships>
+                <relationship kind="action" name="hitCancel:"/>
+                <relationship kind="outlet" name="act" candidateClass="UIActivityIndicatorView"/>
+                <relationship kind="outlet" name="web" candidateClass="UIWebView"/>
+            </relationships>
+        </class>
+        <class className="AwfulPage" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPage.h"/>
+            <relationships>
+                <relationship kind="action" name="hardRefresh"/>
+                <relationship kind="action" name="segmentedGotTapped:"/>
+                <relationship kind="action" name="tappedActions:"/>
+                <relationship kind="action" name="tappedActionsSegment:"/>
+                <relationship kind="action" name="tappedNextPage:"/>
+                <relationship kind="action" name="tappedPageNav:"/>
+                <relationship kind="action" name="tappedPagesSegment:"/>
+                <relationship kind="outlet" name="actionsSegmentedControl" candidateClass="ButtonSegmentedControl"/>
+                <relationship kind="outlet" name="nextPageBarButtonItem" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="pagesBarButtonItem" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="pagesSegmentedControl" candidateClass="ButtonSegmentedControl"/>
+                <relationship kind="outlet" name="toolbar" candidateClass="UIToolbar"/>
+                <relationship kind="outlet" name="webView" candidateClass="JSBridgeWebView"/>
+            </relationships>
+        </class>
+        <class className="AwfulPageIpad" superclassName="AwfulPage">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPageIpad.h"/>
+        </class>
+        <class className="AwfulPostBoxController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPostBoxController.h"/>
+            <relationships>
+                <relationship kind="action" name="hideReply"/>
+                <relationship kind="action" name="hitSend"/>
+                <relationship kind="outlet" name="replyTextView" candidateClass="UITextView"/>
+                <relationship kind="outlet" name="sendButton" candidateClass="UIBarButtonItem"/>
+            </relationships>
+        </class>
+        <class className="AwfulSettingsViewController" superclassName="AwfulTableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulSettingsViewController.h"/>
+        </class>
+        <class className="AwfulSplitViewController" superclassName="UISplitViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulSplitViewController.h"/>
+        </class>
+        <class className="AwfulTableViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulTableViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="refresh"/>
+            </relationships>
+        </class>
+        <class className="AwfulThreadCell" superclassName="UITableViewCell">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulThreadCell.h"/>
+            <relationships>
+                <relationship kind="outlet" name="pagesLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="ratingImage" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="secondTagImage" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="sticky" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="tagImage" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="threadTitleLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="unreadButton" candidateClass="UIButton"/>
+            </relationships>
+        </class>
+        <class className="AwfulThreadListController" superclassName="AwfulTableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulThreadListController.h"/>
+            <relationships>
+                <relationship kind="outlet" name="nextPageBarButtonItem" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="pageLabelBarButtonItem" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="prevPageBarButtonItem" candidateClass="UIBarButtonItem"/>
+            </relationships>
+        </class>
+        <class className="ButtonSegmentedControl" superclassName="UISegmentedControl">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ButtonSegmentedControl.h"/>
+            <relationships>
+                <relationship kind="outlet" name="target"/>
+            </relationships>
+        </class>
+        <class className="JSBridgeWebView" superclassName="UIWebView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/JSBridgeWebView.h"/>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar" statusBarStyle="blackTranslucent"/>
         <simulatedOrientationMetrics key="orientation"/>

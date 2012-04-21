@@ -9,7 +9,7 @@
 #import "AwfulLoginController.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulUser.h"
-#import "AwfulAccountViewController.h"
+#import "AwfulSettingsViewController.h"
 
 @implementation AwfulLoginController
 
@@ -17,7 +17,6 @@
 @synthesize act = _act;
 @synthesize accountViewController = _accountViewController;
 
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -33,24 +32,14 @@
 }
 
 - (void)viewDidUnload {
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
     self.web = nil;
     self.act = nil;
+    [super viewDidUnload];
 }
-
-- (void)didReceiveMemoryWarning {
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc that aren't in use.
-}
-
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         return YES;
     }
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
@@ -61,7 +50,7 @@
 - (void)webViewDidStartLoad:(UIWebView *)webView
 {
     NSURLRequest *req = webView.request;
-    if([[req.URL relativePath] isEqualToString:@"/index.php"]) {
+    if ([[req.URL relativePath] isEqualToString:@"/index.php"]) {
         self.web.delegate = nil;
         [self hitCancel:nil];
     }
@@ -80,17 +69,14 @@
 
 @end
 
-BOOL isLoggedIn()
+BOOL IsLoggedIn()
 {
     NSURL *awful_url = [NSURL URLWithString:@"http://forums.somethingawful.com"];
     NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:awful_url];
-    
-    BOOL logged_in = NO;
-    
-    for(NSHTTPCookie *cookie in cookies) {
-        if([cookie.name isEqualToString:@"bbuserid"]) {
-            logged_in = YES;
+    for (NSHTTPCookie *cookie in cookies) {
+        if ([cookie.name isEqualToString:@"bbuserid"]) {
+            return YES;
         }
     }
-    return logged_in;
+    return NO;
 }

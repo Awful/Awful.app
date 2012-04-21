@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="1.1" toolsVersion="2182" systemVersion="11D50b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="Vst-Rk-SSD">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="1.1" toolsVersion="2182" systemVersion="11D50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="Vst-Rk-SSD">
     <dependencies>
         <deployment defaultVersion="1296" identifier="iOS"/>
         <development defaultVersion="4200" identifier="xcode"/>
@@ -467,7 +467,7 @@
                     <nil key="highlightedColor"/>
                 </label>
             </objects>
-            <point key="canvasLocation" x="2138" y="-846"/>
+            <point key="canvasLocation" x="2112" y="-199"/>
         </scene>
         <!--Awful Post Box Controller-->
         <scene sceneID="ImM-lh-86n">
@@ -513,7 +513,7 @@
                     </connections>
                 </viewController>
             </objects>
-            <point key="canvasLocation" x="2138" y="-153"/>
+            <point key="canvasLocation" x="2558" y="-199"/>
         </scene>
         <!--Awful Specific Page View Controller-->
         <scene sceneID="GiF-gX-JIJ">
@@ -576,7 +576,7 @@
                     </connections>
                 </viewController>
             </objects>
-            <point key="canvasLocation" x="2582" y="-846"/>
+            <point key="canvasLocation" x="2558" y="-846"/>
         </scene>
         <!--Awful Bookmarks Controller - Bookmarks-->
         <scene sceneID="I1y-NV-zDB">
@@ -686,27 +686,12 @@
             </objects>
             <point key="canvasLocation" x="1219" y="-199"/>
         </scene>
-        <!--View Controller-->
-        <scene sceneID="MCD-tX-wY7">
-            <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Mlf-Um-XEj" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <viewController id="Eki-1m-lYR" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="1p3-hD-AeW">
-                        <rect key="frame" x="0.0" y="20" width="320" height="411"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                    </view>
-                    <tabBarItem key="tabBarItem" systemItem="search" id="0WA-7D-unZ"/>
-                </viewController>
-            </objects>
-            <point key="canvasLocation" x="734" y="1079"/>
-        </scene>
-        <!--Navigation Controller - Account-->
+        <!--Navigation Controller - Settings-->
         <scene sceneID="CB8-2v-pYB">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="H1A-1Z-Gq5" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController definesPresentationContext="YES" id="QUE-gO-xsl" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Account" id="pG9-iK-eka"/>
+                    <tabBarItem key="tabBarItem" title="Settings" image="cog.png" id="pG9-iK-eka"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
                     <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="blackOpaque" id="Z97-mr-MpA">
                         <rect key="frame" x="0.0" y="-44" width="0.0" height="44"/>
@@ -717,69 +702,24 @@
                     </connections>
                 </navigationController>
             </objects>
-            <point key="canvasLocation" x="742" y="1682"/>
+            <point key="canvasLocation" x="742" y="386"/>
         </scene>
-        <!--Awful Account View Controller - Account-->
+        <!--Awful Settings View Controller - Settings-->
         <scene sceneID="VUg-Fj-OO6">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fQH-Ro-AKw" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tableViewController id="laB-BL-3ba" customClass="AwfulAccountViewController" sceneMemberID="viewController">
+                <tableViewController id="laB-BL-3ba" customClass="AwfulSettingsViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="singleLineEtched" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="NVH-uk-9Yq">
                         <rect key="frame" x="0.0" y="64" width="320" height="367"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
-                        <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Information" textLabel="71m-n6-o4N" detailTextLabel="gkx-Gi-8YV" style="IBUITableViewCellStyleValue1" id="iRR-PE-x9J">
-                                <rect key="frame" x="0.0" y="46" width="320" height="45"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="10" y="1" width="300" height="43"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Logged in as:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" id="71m-n6-o4N">
-                                            <rect key="frame" x="10" y="11" width="111" height="21"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                            <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                        </label>
-                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Detail" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" id="gkx-Gi-8YV">
-                                            <rect key="frame" x="246" y="11" width="44" height="21"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <color key="textColor" red="0.2196078431372549" green="0.32941176470588235" blue="0.52941176470588236" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                        </label>
-                                    </subviews>
-                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                </view>
-                            </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Button" textLabel="CVb-3p-DSc" style="IBUITableViewCellStyleDefault" id="juv-Ts-Toc">
-                                <rect key="frame" x="0.0" y="91" width="320" height="45"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="10" y="0.0" width="300" height="43"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Logout" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" id="CVb-3p-DSc">
-                                            <rect key="frame" x="10" y="0.0" width="280" height="43"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                            <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                        </label>
-                                    </subviews>
-                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                </view>
-                            </tableViewCell>
-                        </prototypes>
                         <sections/>
                         <connections>
                             <outlet property="dataSource" destination="laB-BL-3ba" id="Sy7-my-xMl"/>
                             <outlet property="delegate" destination="laB-BL-3ba" id="JlB-Eu-Lsd"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Account" id="3Ko-bV-9vA">
+                    <navigationItem key="navigationItem" title="Settings" id="3Ko-bV-9vA">
                         <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="ntf-bR-w4n">
                             <connections>
                                 <action selector="refresh" destination="laB-BL-3ba" id="GiH-Zb-2AL"/>
@@ -791,7 +731,7 @@
                     </connections>
                 </tableViewController>
             </objects>
-            <point key="canvasLocation" x="1195" y="1682"/>
+            <point key="canvasLocation" x="1219" y="386"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="qqa-vM-QeD">
@@ -808,7 +748,7 @@
                     </connections>
                 </navigationController>
             </objects>
-            <point key="canvasLocation" x="1655" y="1682"/>
+            <point key="canvasLocation" x="1655" y="386"/>
         </scene>
         <!--Awful Login Controller - Login-->
         <scene sceneID="Ymi-Yf-IpQ">
@@ -839,37 +779,7 @@
                     <color key="color" cocoaTouchSystemColor="darkTextColor"/>
                 </activityIndicatorView>
             </objects>
-            <point key="canvasLocation" x="2070" y="1682"/>
-        </scene>
-        <!--View Controller - Settings-->
-        <scene sceneID="ccL-u2-EHN">
-            <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="moR-ef-GBW" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <viewController id="gt0-iq-Piq" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="3sS-tx-FYe">
-                        <rect key="frame" x="0.0" y="20" width="320" height="411"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                    </view>
-                    <tabBarItem key="tabBarItem" title="Settings" image="preferences.png" id="8lh-zw-r9D"/>
-                </viewController>
-            </objects>
-            <point key="canvasLocation" x="734" y="2362"/>
-        </scene>
-        <!--View Controller - Test-->
-        <scene sceneID="bLp-8R-x7P">
-            <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="UmL-k5-eSB" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <viewController title="Test" id="cmz-7p-Ekm" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="4zn-YC-U4E">
-                        <rect key="frame" x="0.0" y="20" width="320" height="411"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                    </view>
-                    <tabBarItem key="tabBarItem" title="Messages" image="40-inbox.png" id="kY7-KU-29n"/>
-                </viewController>
-            </objects>
-            <point key="canvasLocation" x="734" y="426"/>
+            <point key="canvasLocation" x="2112" y="386"/>
         </scene>
         <!--Awful Tab Bar Controller - Awful-->
         <scene sceneID="yyp-pu-Zwu">
@@ -886,39 +796,28 @@
                     <connections>
                         <segue destination="cT9-jh-kRp" kind="relationship" relationship="viewControllers" id="19A-Qc-Atw"/>
                         <segue destination="xo0-VB-ciI" kind="relationship" relationship="viewControllers" id="IQK-Js-qTB"/>
-                        <segue destination="cmz-7p-Ekm" kind="relationship" relationship="viewControllers" id="GUd-qK-ryB"/>
-                        <segue destination="Eki-1m-lYR" kind="relationship" relationship="viewControllers" id="MzU-uH-air"/>
-                        <segue destination="gt0-iq-Piq" kind="relationship" relationship="viewControllers" id="Zmn-TW-vN3"/>
                         <segue destination="QUE-gO-xsl" kind="relationship" relationship="viewControllers" id="Bk5-fP-fmp"/>
                     </connections>
                 </tabBarController>
             </objects>
-            <point key="canvasLocation" x="198" y="18"/>
+            <point key="canvasLocation" x="170" y="-199"/>
         </scene>
     </scenes>
     <resources>
-        <image name="40-inbox.png" width="24" height="24"/>
         <image name="action.png" width="23" height="18"/>
         <image name="ama.png" width="45" height="45"/>
         <image name="arrowleft.png" width="23" height="18"/>
         <image name="arrowright.png" width="23" height="18"/>
+        <image name="cog.png" width="19" height="20"/>
         <image name="compose.png" width="22" height="18"/>
         <image name="forum-arrow-right.png" width="44" height="38"/>
         <image name="list_icon.png" width="20" height="18"/>
         <image name="number-background.png" width="32" height="20"/>
-        <image name="preferences.png" width="26" height="26"/>
         <image name="shsc-apple.png" width="90" height="90"/>
         <image name="sticky.png" width="12" height="12"/>
         <image name="threadrating.png" width="45" height="13"/>
     </resources>
     <classes>
-        <class className="AwfulAccountViewController" superclassName="AwfulTableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulAccountViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="hitResetData:"/>
-                <relationship kind="outlet" name="usernameLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
         <class className="AwfulAddForumsViewController" superclassName="AwfulForumsListController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulAddForumsViewController.h"/>
             <relationships>
@@ -985,6 +884,9 @@
                 <relationship kind="outlet" name="replyTextView" candidateClass="UITextView"/>
                 <relationship kind="outlet" name="sendButton" candidateClass="UIBarButtonItem"/>
             </relationships>
+        </class>
+        <class className="AwfulSettingsViewController" superclassName="AwfulTableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulSettingsViewController.h"/>
         </class>
         <class className="AwfulSpecificPageViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulSpecificPageViewController.h"/>

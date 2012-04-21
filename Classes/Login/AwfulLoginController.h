@@ -8,16 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
-@class AwfulAccountViewController;
+@class AwfulSettingsViewController;
 
 @interface AwfulLoginController : UIViewController <UIWebViewDelegate>
 
 @property (nonatomic, strong) IBOutlet UIWebView *web;
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *act;
-@property (nonatomic, weak) AwfulAccountViewController *accountViewController;
+@property (nonatomic, weak) AwfulSettingsViewController *accountViewController;
 
 -(IBAction)hitCancel : (id)sender;
 
 @end
 
-BOOL isLoggedIn();
+extern BOOL IsLoggedIn();

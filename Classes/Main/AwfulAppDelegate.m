@@ -11,6 +11,7 @@
 #import "Appirater.h"
 #import "AwfulSplitViewController.h"
 #import "AwfulNetworkEngine.h"
+#import "AwfulSettings.h"
 #import "AwfulTabBarController.h"
 
 @implementation AwfulAppDelegate
@@ -23,21 +24,20 @@
 @synthesize persistentStoreCoordinator = __persistentStoreCoordinator;
 @synthesize dataStoreReset = _dataStoreReset;
 
-#pragma mark -
-#pragma mark Application lifecycle
+#pragma mark - Application lifecycle
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
-        
-    // Override point for customization after application launch.
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
+    [[AwfulSettings settings] registerDefaults];
     
     self.awfulNetworkEngine = [[AwfulNetworkEngine alloc] initWithHostName:@"forums.somethingawful.com" customHeaderFields:nil];
     
     NSManagedObjectContext *context = [self managedObjectContext];
-    if(context == nil) {
+    if (context == nil) {
         NSLog(@"no managed object context loaded");
     }
     
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         self.splitController = (AwfulSplitViewController *)self.window.rootViewController;
     }
     
