@@ -7,15 +7,15 @@
 //
 
 #import "AwfulBookmarksController.h"
-#import "AwfulUtil.h"
-#import "AwfulConfig.h"
-#import "AwfulPageCount.h"
-#import "AwfulThread.h"
-#import "AwfulPage.h"
 #import "AwfulNetworkEngine.h"
+#import "AwfulPage.h"
+#import "AwfulPageCount.h"
+#import "AwfulSettings.h"
 #import "AwfulTableViewController.h"
+#import "AwfulThread.h"
 #import "AwfulThreadCell.h"
 #import "AwfulThread+AwfulMethods.h"
+#import "AwfulUtil.h"
 
 @implementation AwfulBookmarksController
 

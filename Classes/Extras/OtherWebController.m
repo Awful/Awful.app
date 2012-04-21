@@ -1,4 +1,4 @@
-    //
+//
 //  OtherWebController.m
 //  Awful
 //
@@ -8,21 +8,11 @@
 
 #import "OtherWebController.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulConfig.h"
+#import "AwfulSettings.h"
 
 @implementation OtherWebController
 
 @synthesize url, activity, web, backButton, forwardButton, openedApp;
-
-/*
- // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-    if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
-        // Custom initialization
-    }
-    return self;
-}
-*/
 
 -(id)initWithURL : (NSURL *)aUrl
 {
