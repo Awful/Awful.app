@@ -79,18 +79,83 @@
     return [[settingSection objectForKey:@"Settings"] count];
 }
 
+typedef enum SettingType
+{
+    ImmutableSetting,
+    OnOffSetting,
+    ChoiceSetting,
+    ButtonSetting,
+} SettingType;
+
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
-    if (!cell)
-    {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
-                                      reuseIdentifier:@"cell"];
-    }
-    
     NSDictionary *settingSection = [self.sections objectAtIndex:indexPath.section];
     NSDictionary *setting = [[settingSection objectForKey:@"Settings"] objectAtIndex:indexPath.row];
+    SettingType settingType = ImmutableSetting;
+    if ([[setting objectForKey:@"Type"] isEqual:@"Switch"]) {
+        settingType = OnOffSetting;
+    } else if ([setting objectForKey:@"Choices"]) {
+        settingType = ChoiceSetting;
+    } else if ([setting objectForKey:@"Action"]) {
+        settingType = ButtonSetting;
+    }
+    NSString *identifier = @"Value1";
+    UITableViewCellStyle style = UITableViewCellStyleValue1;
+    if (settingType == OnOffSetting || settingType == ButtonSetting) {
+        identifier = @"Default";
+        style = UITableViewCellStyleDefault;
+    }
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    if (!cell)
+    {
+        cell = [[UITableViewCell alloc] initWithStyle:style 
+                                      reuseIdentifier:identifier];
+    }
+    
+    if (settingType == ImmutableSetting) {
+        // This only works because there's one immutable setting here.
+        // TODO ask delegate!
+        cell.detailTextLabel.text = self.user.userName;
+    }
+    
+    NSString *key = [setting objectForKey:@"Key"];
+    id valueForSetting = key ? [[NSUserDefaults standardUserDefaults] objectForKey:key] : nil;
+    
+    if (settingType == OnOffSetting) {
+        // TODO hook up switch action
+        UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
+        switchView.on = [valueForSetting boolValue];
+        cell.accessoryView = switchView;
+    } else {
+        cell.accessoryView = nil;
+    }
+    
+    if (settingType == ChoiceSetting) {
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        for (NSDictionary *choice in [setting objectForKey:@"Choices"]) {
+            if ([[choice objectForKey:@"Value"] isEqual:valueForSetting]) {
+                cell.detailTextLabel.text = [choice objectForKey:@"Title"];
+                break;
+            }
+        }
+    } else {
+        cell.accessoryType = UITableViewCellAccessoryNone;
+    }
+    
+    if (settingType == ChoiceSetting || settingType == ButtonSetting) {
+         cell.selectionStyle = UITableViewCellSelectionStyleBlue;   
+    } else {
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    
+    if (settingType == ButtonSetting) {
+        cell.textLabel.textAlignment = UITextAlignmentCenter;
+    } else {
+        cell.textLabel.textAlignment = UITextAlignmentLeft;
+    }
+    
     cell.textLabel.text = [setting objectForKey:@"Title"];
     
     return cell;
@@ -134,14 +199,16 @@
      */
 }
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    NSDictionary *settingSection = [self.sections objectAtIndex:section];
+    return [settingSection objectForKey:@"Title"];
+}
+
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
 {
-    /*
-    if (section == ResetDataSection) {
-        return @"Resetting data clears all cached forums, threads, and posts.";
-    }
-     */
-    return nil;
+    NSDictionary *settingSection = [self.sections objectAtIndex:section];
+    return [settingSection objectForKey:@"Explanation"];
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
