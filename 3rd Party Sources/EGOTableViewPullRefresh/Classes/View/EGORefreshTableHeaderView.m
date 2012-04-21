@@ -56,7 +56,7 @@
 		//[self addSubview:label];
 		self.lastUpdatedLabel=label;
 		
-		UILabel *status_label = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, frame.size.height - 40, self.frame.size.width, 20.0f)];
+		UILabel *status_label = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, frame.size.height - 39, self.frame.size.width, 20.0f)];
 		status_label.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		status_label.font = [UIFont boldSystemFontOfSize:13.0f];
 		status_label.textColor = textColor;

@@ -73,9 +73,15 @@
     CGRect keyboardRect = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     CGRect keyboardBounds = [self.view convertRect:keyboardRect fromView:nil];
     
-    [UIView animateWithDuration:duration animations:^{
-        self.replyTextView.frame = CGRectMake(5, 44, self.replyTextView.bounds.size.width, self.view.bounds.size.height-44-keyboardBounds.size.height);
-    }];
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        // using form sheet the keyboard doesn't overlap
+        float height = self.view.bounds.size.height;
+        self.replyTextView.frame = CGRectMake(5, 44, self.replyTextView.bounds.size.width, height - 44 - (height - keyboardBounds.origin.y));
+    } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        [UIView animateWithDuration:duration animations:^{
+            self.replyTextView.frame = CGRectMake(5, 44, self.replyTextView.bounds.size.width, self.view.bounds.size.height-44-keyboardBounds.size.height);
+        }];
+    }
 }
 
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex

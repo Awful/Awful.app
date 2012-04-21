@@ -8,6 +8,8 @@
 
 #import "AwfulTabBarController.h"
 #import "AwfulForumsListController.h"
+#import "AwfulLoginController.h"
+#import "AwfulAccountViewController.h"
 
 @implementation AwfulTabBarController
 
@@ -43,13 +45,21 @@
 }
 */
 
-/*
+
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    if(!isLoggedIn()) {
+        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            if([self.viewControllers count] >= 6) {
+                self.selectedViewController = [self.viewControllers objectAtIndex:5];
+            }
+        }
+    }
 }
-*/
+
 
 - (void)viewDidUnload
 {
