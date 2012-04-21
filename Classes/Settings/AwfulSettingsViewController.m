@@ -20,6 +20,8 @@
 
 @property (strong) AwfulUser *user;
 
+@property (strong) NSMutableArray *switches;
+
 @end
 
 @implementation AwfulSettingsViewController
@@ -28,9 +30,12 @@
 
 @synthesize user = _user;
 
+@synthesize switches = _switches;
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.switches = [NSMutableArray new];
     self.sections = [[AwfulSettings settings] sections];
     self.user = [AwfulUser currentUser];
     if (self.user.userName == nil && IsLoggedIn()) {
@@ -116,7 +121,6 @@ typedef enum SettingType
     
     if (settingType == ImmutableSetting) {
         // This only works because there's one immutable setting here.
-        // TODO ask delegate!
         cell.detailTextLabel.text = self.user.userName;
     }
     
@@ -124,9 +128,17 @@ typedef enum SettingType
     id valueForSetting = key ? [[NSUserDefaults standardUserDefaults] objectForKey:key] : nil;
     
     if (settingType == OnOffSetting) {
-        // TODO hook up switch action
+        NSUInteger tag = [self.switches indexOfObject:indexPath];
+        if (tag == NSNotFound) {
+            tag = self.switches.count;
+            [self.switches addObject:indexPath];
+        }
         UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
         switchView.on = [valueForSetting boolValue];
+        [switchView addTarget:self
+                       action:@selector(hitSwitch:)
+             forControlEvents:UIControlEventValueChanged];
+        switchView.tag = tag;
         cell.accessoryView = switchView;
     } else {
         cell.accessoryView = nil;
@@ -159,6 +171,15 @@ typedef enum SettingType
     cell.textLabel.text = [setting objectForKey:@"Title"];
     
     return cell;
+}
+
+- (void)hitSwitch:(UISwitch *)switchView
+{
+    NSIndexPath *indexPath = [self.switches objectAtIndex:switchView.tag];
+    NSDictionary *settingSection = [self.sections objectAtIndex:indexPath.section];
+    NSDictionary *setting = [[settingSection objectForKey:@"Settings"] objectAtIndex:indexPath.row];
+    NSString *key = [setting objectForKey:@"Key"];
+    [[NSUserDefaults standardUserDefaults] setBool:switchView.on forKey:key];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
