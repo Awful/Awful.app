@@ -7,8 +7,8 @@
 //
 
 #import "PostContext.h"
-#import "AwfulConfig.h"
 #import "AwfulPost.h"
+#import "AwfulSettings.h"
 #import "TFHpple.h"
 #import "TFHppleElement.h"
 
@@ -23,7 +23,7 @@ static NSString *AwfulifiedPostBody(NSString *body);
     {
         _postID = post.postID;
         _isOP = post.isOP;
-        _avatarURL = [AwfulConfig showAvatars] ? [post.avatarURL absoluteString] : nil;
+        _avatarURL = [[AwfulSettings settings] showAvatars] ? [post.avatarURL absoluteString] : nil;
         _isMod = post.posterType == AwfulUserTypeMod;
         _isAdmin = post.posterType == AwfulUserTypeAdmin;
         _posterName = post.posterName;
@@ -40,7 +40,7 @@ static NSString *AwfulifiedPostBody(NSString *body)
     NSMutableString *awfulified = [body mutableCopy];
     
     // Replace images with links if so desired.
-    if (![AwfulConfig showImages]) {
+    if (![[AwfulSettings settings] showImages]) {
         NSArray *objects = [base search:@"//img"];
         NSArray *object_strs = [base rawSearch:@"//img"];
         for(int i = 0; i < [objects count]; i++) {

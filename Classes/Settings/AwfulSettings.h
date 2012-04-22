@@ -17,4 +17,23 @@
 
 @property (readonly, strong) NSArray *sections;
 
+@property (assign, nonatomic) BOOL showAvatars;
+
+@property (assign, nonatomic) BOOL showImages;
+
+@property (assign, nonatomic) NSInteger loadReadPosts;
+
+typedef enum
+{
+    AwfulFirstTabForums,
+    AwfulFirstTabFavorites,
+    AwfulFirstTabBookmarks,
+} AwfulFirstTab;
+
+@property (assign, nonatomic) AwfulFirstTab firstTab;
+
+@property (assign, nonatomic) BOOL highlightOwnQuotes;
+
+@property (assign, nonatomic) BOOL highlightOwnMentions;
+
 @end

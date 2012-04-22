@@ -10,10 +10,10 @@
 #import "AwfulPageDataController.h"
 #import "AwfulPageCount.h"
 #import "AwfulPost.h"
-#import "AwfulConfig.h"
+#import "AwfulSettings.h"
+#import "GRMustacheTemplate.h"
 #import "PostContext.h"
 #import "SALR.h"
-#import "GRMustacheTemplate.h"
 
 /*
  Notes:
@@ -143,7 +143,7 @@
         }
         NSMutableArray *posts = [NSMutableArray array];
         int currentIndex = 0;
-        int numPostsAbove = [AwfulConfig numReadPostsAbove];
+        int numPostsAbove = [[AwfulSettings settings] loadReadPosts];
         int firstPostIndex = MAX(dataController.newestPostIndex - numPostsAbove, 0);
         int numHiddenPosts = 0;
         
