@@ -21,6 +21,12 @@
 
 #define THREAD_HEIGHT 72
 
+typedef enum {
+    AwfulThreadListActionsTypeFirstPage = 0,
+    AwfulThreadListActionsTypeLastPage,
+    AwfulThreadListActionsTypeUnread
+} AwfulThreadListActionsType;
+
 @implementation AwfulThreadListController
 
 #pragma mark -
@@ -32,6 +38,7 @@
 @synthesize pageLabelBarButtonItem = _pageLabelBarButtonItem;
 @synthesize nextPageBarButtonItem = _nextPageBarButtonItem;
 @synthesize prevPageBarButtonItem = _prevPageBarButtonItem;
+@synthesize heldThread = _heldThread;
 
 -(void)awakeFromNib
 {
@@ -188,6 +195,50 @@
     return NO;
 }
 
+-(void)showThreadActionsForThread : (AwfulThread *)thread
+{
+    self.heldThread = thread;
+    NSArray *titles = [NSArray arrayWithObjects:@"First Page", @"Last Page", @"Mark as Unread", nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"Thread Actions" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+    for(NSString *title in titles) {
+        [sheet addButtonWithTitle:title];
+    }
+    [sheet addButtonWithTitle:@"Cancel"];
+    sheet.cancelButtonIndex = [titles count];
+    [sheet showFromTabBar:self.tabBarController.tabBar];
+}
+
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if(buttonIndex == AwfulThreadListActionsTypeFirstPage) {
+        
+        UIStoryboard *story = [AwfulUtil getStoryboard];
+        AwfulPage *page = [story instantiateViewControllerWithIdentifier:@"AwfulPage"];
+        page.thread = self.heldThread;
+        page.destinationType = AwfulPageDestinationTypeFirst;
+        [self.navigationController pushViewController:page animated:YES];
+        [page loadPageNum:1];
+        
+    } else if(buttonIndex == AwfulThreadListActionsTypeLastPage) {
+        
+        UIStoryboard *story = [AwfulUtil getStoryboard];
+        AwfulPage *page = [story instantiateViewControllerWithIdentifier:@"AwfulPage"];
+        page.thread = self.heldThread;
+        page.destinationType = AwfulPageDestinationTypeLast;
+        [self.navigationController pushViewController:page animated:YES];
+        [page loadPageNum:0];
+        
+    } else if(buttonIndex == AwfulThreadListActionsTypeUnread) {
+        [ApplicationDelegate.awfulNetworkEngine markThreadUnseen:self.heldThread onCompletion:^(void) {
+            self.heldThread.totalUnreadPosts = [NSNumber numberWithInt:-1];
+            [ApplicationDelegate saveContext];
+            
+        } onError:^(NSError *error) {
+            [AwfulUtil requestFailed:error];
+        }];
+    }
+}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -258,6 +309,7 @@
         AwfulThread *thread = [self getThreadAtIndexPath:indexPath];
         AwfulThreadCell *thread_cell = (AwfulThreadCell *)cell;
         [thread_cell configureForThread:thread];
+        thread_cell.threadListController = self;
         return cell;
     } else if(type == AwfulThreadCellTypeLoadMore) {
         return [tableView dequeueReusableCellWithIdentifier:moreCell];

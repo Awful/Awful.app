@@ -10,6 +10,7 @@
 #import <UIKit/UIKit.h>
 
 @class AwfulThread;
+@class AwfulThreadListController;
 
 @interface AwfulThreadCell : UITableViewCell
 
@@ -21,9 +22,10 @@
 @property (nonatomic, strong) IBOutlet UIImageView *tagImage;
 @property (nonatomic, strong) IBOutlet UIImageView *secondTagImage;
 @property (nonatomic, strong) IBOutlet UIImageView *ratingImage;
+@property (nonatomic, weak) AwfulThreadListController *threadListController;
 
 -(void)configureForThread : (AwfulThread *)thread;
 -(UIColor *)getBackgroundColorForThread : (AwfulThread *)thread;
--(void)openThreadlistOptions;
+-(void)openThreadlistOptions : (UIGestureRecognizer *)gesture;
 
 @end

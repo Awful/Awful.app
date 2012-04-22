@@ -72,6 +72,7 @@ typedef enum {
 
 -(void)refresh;
 -(void)loadPageNum : (NSUInteger)pageNum;
+-(void)loadLastPage;
 -(void)stop;
 
 -(void)scrollToSpecifiedPost;

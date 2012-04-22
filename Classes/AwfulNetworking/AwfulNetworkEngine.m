@@ -370,4 +370,18 @@ QuotePostContent,
     return op;
 }
 
+-(MKNetworkOperation *)markThreadUnseen : (AwfulThread *)thread onCompletion : (CompletionBlock)completionBlock onError:(MKNKErrorBlock)errorBlock
+{
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    [dict setValue:thread.threadID forKey:@"threadid"];
+    [dict setValue:@"resetseen" forKey:@"action"];
+    [dict setValue:@"1" forKey:@"json"];
+    
+    MKNetworkOperation *op = [self operationWithPath:@"showthread.php" params:dict httpMethod:@"POST"];
+    [op onCompletion:^(MKNetworkOperation *_) { if (completionBlock) completionBlock(); }
+             onError:^(NSError *error)        { if (errorBlock) errorBlock(error); }];
+    [self enqueueOperation:op];
+    return op;
+}
+
 @end

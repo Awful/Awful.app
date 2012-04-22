@@ -27,6 +27,7 @@
 #import "MWPhoto.h"
 #import "MWPhotoBrowser.h"
 #import "OtherWebController.h"
+#import "AwfulUtil.h"
 
 @implementation AwfulPage
 
@@ -99,12 +100,15 @@
         }
         
         int numNewPosts = [_dataController numNewPostsLoaded];
-        if(numNewPosts > 0) {
+        if(numNewPosts > 0 && self.destinationType == AwfulPageDestinationTypeNewpost) {
             int unreadPosts = [self.thread.totalUnreadPosts intValue];
             if(unreadPosts != -1) {
                 self.thread.totalUnreadPosts = [NSNumber numberWithInt:unreadPosts - numNewPosts];
                 [ApplicationDelegate saveContext];
             }
+        } else if(self.destinationType == AwfulPageDestinationTypeLast) {
+            self.thread.totalUnreadPosts = [NSNumber numberWithInt:0];
+            [ApplicationDelegate saveContext];
         }
         
         NSString *html = [dataController constructedPageHTML];
@@ -206,6 +210,21 @@
         if(self.destinationType == AwfulPageDestinationTypeSpecific) {
             self.pages.currentPage = pageNum;
         }
+        [self updatePagesLabel];
+        [self swapToRefreshButton];
+    } onError:^(NSError *error) {
+        [self swapToRefreshButton];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        [alert show];
+    }];
+}
+
+-(void)loadLastPage
+{
+    [self.networkOperation cancel];
+    [self swapToStopButton];
+    self.networkOperation = [ApplicationDelegate.awfulNetworkEngine pageDataForThread:self.thread destinationType:AwfulPageDestinationTypeLast pageNum:0 onCompletion:^(AwfulPageDataController *dataController) {
+        self.dataController = dataController;
         [self updatePagesLabel];
         [self swapToRefreshButton];
     } onError:^(NSError *error) {
@@ -515,12 +534,7 @@
                 AwfulThread *intra = [NSEntityDescription insertNewObjectForEntityForName:@"AwfulThread" inManagedObjectContext:ApplicationDelegate.throwawayObjectContext];
                 [intra setThreadID:thread_id];
                 
-                UIStoryboard *story = nil;
-                if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-                    story = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:[NSBundle mainBundle]];
-                } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-                    story = [UIStoryboard storyboardWithName:@"MainStoryboardiPad" bundle:[NSBundle mainBundle]];
-                }
+                UIStoryboard *story = [AwfulUtil getStoryboard];
                 
                 AwfulPage *page = [story instantiateViewControllerWithIdentifier:@"AwfulPage"];
                 page.thread = intra;

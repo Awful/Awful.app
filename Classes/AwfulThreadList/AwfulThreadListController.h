@@ -20,7 +20,7 @@ typedef enum {
     AwfulThreadCellTypeLoadMore
 } AwfulThreadCellType;
 
-@interface AwfulThreadListController : AwfulTableViewController
+@interface AwfulThreadListController : AwfulTableViewController <UIActionSheetDelegate>
 
 @property (nonatomic, strong) AwfulForum *forum;
 @property (nonatomic, strong) NSMutableArray *awfulThreads;
@@ -30,10 +30,13 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *pageLabelBarButtonItem;
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *nextPageBarButtonItem;
 
+@property (nonatomic, strong) AwfulThread *heldThread;
+
 -(AwfulThread *)getThreadAtIndexPath : (NSIndexPath *)path;
 
 -(void)acceptThreads : (NSMutableArray *)in_threads;
 -(BOOL)shouldReloadOnViewLoad;
+-(void)showThreadActionsForThread : (AwfulThread *)thread;
 
 -(void)loadPageNum : (NSUInteger)pageNum;
 -(void)stop;

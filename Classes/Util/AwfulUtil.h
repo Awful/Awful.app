@@ -22,6 +22,7 @@ typedef enum {
 +(float)getThreadCellHeight;
 +(NSMutableArray *)newThreadListForForumId : (NSString *)forum_id;
 +(void)saveThreadList : (NSMutableArray *)list forForumId : (NSString *)forum_id;
++(UIStoryboard *)getStoryboard;
 
 @end
 

@@ -15,6 +15,7 @@
 #import "AwfulThread+AwfulMethods.h"
 #import "AwfulUser+AwfulMethods.h"
 #import "AwfulUser.h"
+#import "AwfulThreadListController.h"
 
 #define THREAD_HEIGHT 72
 
@@ -28,11 +29,12 @@
 @synthesize tagImage = _tagImage;
 @synthesize secondTagImage = _secondTagImage;
 @synthesize ratingImage = _ratingImage;
+@synthesize threadListController = _threadListController;
 
 -(id)initWithCoder:(NSCoder *)aDecoder
 {
     if((self=[super initWithCoder:aDecoder])) {
-        UILongPressGestureRecognizer *press = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(openThreadlistOptions)];
+        UILongPressGestureRecognizer *press = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(openThreadlistOptions:)];
         [self addGestureRecognizer:press];
     }
     return self;
@@ -165,13 +167,11 @@
     return back_color;
 }
 
--(void)openThreadlistOptions
+-(void)openThreadlistOptions : (UIGestureRecognizer *)gesture
 {
-    /*AwfulNavigator *nav = getNavigator();
-    if(nav.actions == nil) {
-        AwfulThreadListActions *actions = [[AwfulThreadListActions alloc] initWithAwfulThread:self.thread];
-        [nav setActions:actions];
-    }*/
+    if([gesture state] == UIGestureRecognizerStateBegan) {
+        [self.threadListController showThreadActionsForThread:self.thread];
+    }
 }
 
 @end
