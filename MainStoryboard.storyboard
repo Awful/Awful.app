@@ -369,7 +369,7 @@
         <scene sceneID="99c-Ru-F9w">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FTr-u6-ZV9" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <viewController hidesBottomBarWhenPushed="YES" id="uMb-el-Ve5" customClass="AwfulPage" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AwfulPage" hidesBottomBarWhenPushed="YES" id="uMb-el-Ve5" customClass="AwfulPage" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="3ZN-vW-tgX">
                         <rect key="frame" x="0.0" y="64" width="320" height="372"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -491,7 +491,7 @@
                                             <action selector="hitTextBarButtonItem:" destination="gcK-tO-FtL" id="8D1-wB-TPp"/>
                                         </connections>
                                     </barButtonItem>
-                                    <barButtonItem title=":" width="35" id="5Tn-5t-s81">
+                                    <barButtonItem title="=" width="35" id="5Tn-5t-s81">
                                         <connections>
                                             <action selector="hitTextBarButtonItem:" destination="gcK-tO-FtL" id="e6v-ph-VZN"/>
                                         </connections>

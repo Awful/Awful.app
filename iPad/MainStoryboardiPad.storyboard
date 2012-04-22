@@ -564,7 +564,7 @@
         <scene sceneID="I5P-Jg-hyP">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dQa-7P-so9" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <viewController hidesBottomBarWhenPushed="YES" id="5o1-8Y-fsn" customClass="AwfulPageIpad" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AwfulPage" hidesBottomBarWhenPushed="YES" id="5o1-8Y-fsn" customClass="AwfulPageIpad" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Auw-iH-8xK">
                         <rect key="frame" x="0.0" y="64" width="703" height="660"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -818,7 +818,7 @@
         <scene sceneID="eeH-El-Rh0">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="C99-UB-8TE" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <viewController hidesBottomBarWhenPushed="YES" id="bie-UO-tTR" customClass="AwfulPageIpad" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="" hidesBottomBarWhenPushed="YES" id="bie-UO-tTR" customClass="AwfulPageIpad" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="7LG-0k-3Ej">
                         <rect key="frame" x="0.0" y="64" width="768" height="916"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>

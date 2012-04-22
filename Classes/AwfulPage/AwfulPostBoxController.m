@@ -159,7 +159,16 @@
     if([sender isMemberOfClass:[UIBarButtonItem class]]) {
         UIBarButtonItem *item = (UIBarButtonItem *)sender;
         NSString *str = item.title;
-        self.replyTextView.text = [self.replyTextView.text stringByAppendingString:str];
+        NSMutableString *replyString = [[NSMutableString alloc] initWithString:[self.replyTextView text]];
+        
+        NSRange cursorPosition = [self.replyTextView selectedRange];
+        if(cursorPosition.length == 0) {
+            [replyString insertString:str atIndex:cursorPosition.location];
+        } else  {
+            [replyString replaceCharactersInRange:cursorPosition withString:str];
+        }
+        self.replyTextView.text = replyString;
+        self.replyTextView.selectedRange = NSMakeRange(cursorPosition.location+1, cursorPosition.length);
     }
 }
 

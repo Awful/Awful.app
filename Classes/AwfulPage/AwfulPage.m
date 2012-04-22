@@ -512,25 +512,25 @@
             }
             
             if(thread_id != nil) {
-                AwfulThread *intra = [[AwfulThread alloc] init];
-                intra.threadID = thread_id;
+                AwfulThread *intra = [NSEntityDescription insertNewObjectForEntityForName:@"AwfulThread" inManagedObjectContext:ApplicationDelegate.managedObjectContext];
+                [intra setThreadID:thread_id];
                 
-                    //AwfulPage *page = nil;
+                UIStoryboard *story = nil;
+                if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+                    story = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:[NSBundle mainBundle]];
+                } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+                    story = [UIStoryboard storyboardWithName:@"MainStoryboardiPad" bundle:[NSBundle mainBundle]];
+                }
                 
-                /*
-                 if(page_number == nil) {
-                 page = [[[self class] alloc] initWithAwfulThread:intra startAt:AwfulPageDestinationTypeFirst];
-                 } else {
-                 page = [[[self class] alloc] initWithAwfulThread:intra startAt:AwfulPageDestinationTypeSpecific pageNum:[page_number intValue]];
-                 int pti = [AwfulParse getNewPostNumFromURL:request.URL];
-                 page.url = [NSString stringWithFormat:@"showthread.php?threadid=%@&pagenumber=%@#pti%d", thread_id, page_number, pti];
-                 }
-                 
-                 
-                 if(page != nil) {
-                 loadContentVC(page);
-                 return NO;
-                 }*/
+                AwfulPage *page = [story instantiateViewControllerWithIdentifier:@"AwfulPage"];
+                page.thread = intra;
+                [self.navigationController pushViewController:page animated:YES];
+                if(page_number != nil) {
+                    [page loadPageNum:[page_number integerValue]];
+                } else {
+                    [page refresh];
+                }
+                return NO;
             }
             
             
