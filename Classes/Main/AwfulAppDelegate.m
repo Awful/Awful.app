@@ -23,6 +23,7 @@
 @synthesize managedObjectModel = __managedObjectModel;
 @synthesize persistentStoreCoordinator = __persistentStoreCoordinator;
 @synthesize dataStoreReset = _dataStoreReset;
+@synthesize throwawayObjectContext = _throwawayObjectContext;
 
 #pragma mark - Application lifecycle
 
@@ -173,6 +174,17 @@
         [__managedObjectContext setPersistentStoreCoordinator:coordinator];
         [__managedObjectContext setUndoManager:nil];
     }
+    return __managedObjectContext;
+}
+
+- (NSManagedObjectContext *)throwawayObjectContext
+{
+    if (_throwawayObjectContext != nil) {
+        return _throwawayObjectContext;
+    }
+    _throwawayObjectContext = [[NSManagedObjectContext alloc] init];
+    [_throwawayObjectContext setPersistentStoreCoordinator:nil];
+    [_throwawayObjectContext setUndoManager:nil];
     return __managedObjectContext;
 }
 

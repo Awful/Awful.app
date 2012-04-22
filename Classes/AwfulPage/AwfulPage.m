@@ -512,7 +512,7 @@
             }
             
             if(thread_id != nil) {
-                AwfulThread *intra = [NSEntityDescription insertNewObjectForEntityForName:@"AwfulThread" inManagedObjectContext:ApplicationDelegate.managedObjectContext];
+                AwfulThread *intra = [NSEntityDescription insertNewObjectForEntityForName:@"AwfulThread" inManagedObjectContext:ApplicationDelegate.throwawayObjectContext];
                 [intra setThreadID:thread_id];
                 
                 UIStoryboard *story = nil;
