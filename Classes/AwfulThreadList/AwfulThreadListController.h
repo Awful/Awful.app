@@ -13,6 +13,7 @@
 @class AwfulThread;
 @class AwfulSplitViewController;
 @class AwfulThreadCell;
+@class AwfulPage;
 
 typedef enum {
     AwfulThreadCellTypeUnknown,
@@ -38,6 +39,7 @@ typedef enum {
 -(BOOL)shouldReloadOnViewLoad;
 -(void)showThreadActionsForThread : (AwfulThread *)thread;
 
+-(void)displayPage : (AwfulPage *)page;
 -(void)loadPageNum : (NSUInteger)pageNum;
 -(void)stop;
 

@@ -205,7 +205,16 @@ typedef enum {
     }
     [sheet addButtonWithTitle:@"Cancel"];
     sheet.cancelButtonIndex = [titles count];
-    [sheet showFromTabBar:self.tabBarController.tabBar];
+    
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        [sheet showFromTabBar:self.tabBarController.tabBar];
+    } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        NSUInteger index = [self.awfulThreads indexOfObject:thread];
+        if(index != NSNotFound) {
+            UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+            [sheet showFromRect:cell.frame inView:self.tableView animated:YES];
+        }
+    }
 }
 
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -216,7 +225,7 @@ typedef enum {
         AwfulPage *page = [story instantiateViewControllerWithIdentifier:@"AwfulPage"];
         page.thread = self.heldThread;
         page.destinationType = AwfulPageDestinationTypeFirst;
-        [self.navigationController pushViewController:page animated:YES];
+        [self displayPage:page];
         [page loadPageNum:1];
         
     } else if(buttonIndex == AwfulThreadListActionsTypeLastPage) {
@@ -225,7 +234,7 @@ typedef enum {
         AwfulPage *page = [story instantiateViewControllerWithIdentifier:@"AwfulPage"];
         page.thread = self.heldThread;
         page.destinationType = AwfulPageDestinationTypeLast;
-        [self.navigationController pushViewController:page animated:YES];
+        [self displayPage:page];
         [page loadPageNum:0];
         
     } else if(buttonIndex == AwfulThreadListActionsTypeUnread) {
@@ -236,6 +245,20 @@ typedef enum {
         } onError:^(NSError *error) {
             [AwfulUtil requestFailed:error];
         }];
+    }
+}
+
+-(void)displayPage : (AwfulPage *)page
+{
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        [self.navigationController pushViewController:page animated:YES];
+    } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        NSMutableArray *vcs = [NSMutableArray arrayWithArray:self.splitViewController.viewControllers];
+        [vcs removeLastObject];
+        
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:page];
+        [vcs addObject:nav];
+        self.splitViewController.viewControllers = vcs;
     }
 }
 
