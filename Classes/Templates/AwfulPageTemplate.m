@@ -36,8 +36,8 @@
 @property (strong) NSString *userAd;
 @property (assign) BOOL showAvatars;
 
-- (BOOL)isPhoneDevice;
-- (BOOL)isPadDevice;
+@property (assign, getter = isPhoneDevice) BOOL phoneDevice;
+@property (assign, getter = isPadDevice) BOOL padDevice;
 
 @end
 
@@ -77,9 +77,11 @@
     return _template;
 }
 
-- (NSString *)renderWithPageDataController:(AwfulPageDataController *)dataController displayAllPosts : (BOOL)displayAllPosts
+- (NSString *)renderWithPageDataController:(AwfulPageDataController *)dataController
+                           displayAllPosts:(BOOL)displayAllPosts
 {
-    TemplateContext *context = [[TemplateContext alloc] initWithPageDataController:dataController overridePostRemover:displayAllPosts];
+    TemplateContext *context = [[TemplateContext alloc] initWithPageDataController:dataController
+                                                               overridePostRemover:displayAllPosts];
     return [self.template renderObject:context];
 }
 
@@ -159,6 +161,9 @@
             }
         }
         self.posts = posts;
+        UIDevice *device = [UIDevice currentDevice];
+        self.phoneDevice = device.userInterfaceIdiom == UIUserInterfaceIdiomPhone;
+        self.padDevice = device.userInterfaceIdiom == UIUserInterfaceIdiomPad;
     }
     return self;
 }
@@ -192,14 +197,8 @@
 
 @synthesize showAvatars = _showAvatars;
 
-- (BOOL)isPhoneDevice
-{
-    return UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone;
-}
+@synthesize phoneDevice = _phoneDevice;
 
-- (BOOL)isPadDevice
-{
-    return UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
-}
+@synthesize padDevice = _padDevice;
 
 @end
