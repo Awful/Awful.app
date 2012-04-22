@@ -148,8 +148,6 @@
 
 -(AwfulPost *)parsePost : (TFHpple *)parser
 {
-    NSString *username = [[AwfulUser currentUser] userName];
-    
     AwfulPost *post = [[AwfulPost alloc] init];
     
     NSString *username_search = @"//dt[@class='author']|//dt[@class='author op']|//dt[@class='author role-mod']|//dt[@class='author role-admin']|//dt[@class='author role-mod op']|//dt[@class='author role-admin op']";
@@ -174,7 +172,7 @@
             post.posterType = AwfulUserTypeAdmin;
         }
         
-        if([post.posterName isEqualToString:username]) {
+        if([parser searchForSingle:@"//img[@alt='Edit']"]) {
             post.canEdit = YES;
         }
     }
