@@ -60,6 +60,7 @@
         {{#isPhoneDevice}}
         background-color:#199ed7;
         {{/isPhoneDevice}}
+		
         {{#isPadDevice}}
         color:#199ed7;
         {{/isPadDevice}}
@@ -86,6 +87,7 @@
 
     span.username {
         font-weight:bold;
+		
         {{#isPadDevice}}
         width: 100%;
         {{/isPadDevice}}
@@ -97,6 +99,7 @@
 
     .post_date {
         font-size:0.75em;
+		
         {{#isPadDevice}}
         color: #999999;
         font-style: italic;
@@ -138,6 +141,7 @@
 
     .postbodymain {
         font-size:15px;
+		
         {{#isPadDevice}}
         border-bottom: 1px solid #c1c1c1;
         {{/isPadDevice}}
@@ -253,8 +257,9 @@
 {{#postsAboveNotice}}
 <div class='olderposts' onclick=tappedOlderPosts()>Load {{postsAboveNotice}}</div>
 {{/postsAboveNotice}}
-{{#posts}}
+
 {{#isPhoneDevice}}
+{{#posts}}
 <table id='{{postID}}' class='userbox {{#isOP}}op{{/isOP}}'>
     <tr>
         {{#avatarURL}}
@@ -283,9 +288,11 @@
 <div class='postbodymain {{altCSSClass}}'>
     <div class='postbodysub'>{{{postBody}}}</div>
 </div>
+{{/posts}}
 {{/isPhoneDevice}}
     
 {{#isPadDevice}}
+{{#posts}}
 <div class='postbodymain {{altCSSClass}}' style='padding:10px'>
     <table id='{{postID}}'>
         <tr>
@@ -313,8 +320,8 @@
         <tr class="postText">{{{postBody}}}</tr>
     </table>
 </div>
-{{/isPadDevice}}
 {{/posts}}
+{{/isPadDevice}}
                     
 <div class='ad'>{{{userAd}}}</div>
 {{#isPhoneDevice}}
