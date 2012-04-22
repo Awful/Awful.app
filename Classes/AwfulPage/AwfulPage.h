@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "AwfulThread.h"
 #import "AwfulPost.h"
-#import "TFHpple.h"
 #import "AwfulPostBoxController.h"
 #import "JSBridgeWebView.h"
 

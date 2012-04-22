@@ -27,7 +27,6 @@
 #import "MWPhoto.h"
 #import "MWPhotoBrowser.h"
 #import "OtherWebController.h"
-#import "TFHpple.h"
 
 @implementation AwfulPage
 
