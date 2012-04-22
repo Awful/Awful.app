@@ -14,7 +14,7 @@
 
 @synthesize delegate = _delegate;
 
--(void)loadForums
+- (void)loadForums
 {
     [super loadForums];
     for(AwfulForumSection *section in self.forumSections) {
@@ -23,11 +23,9 @@
     [self.tableView reloadData];
 }
 
--(IBAction)hitDone:(id)sender
+- (IBAction)hitDone:(id)sender
 {
-    [self.delegate loadFavorites];
-    [self.delegate.tableView reloadData];
-    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    [self dismissModalViewControllerAnimated:YES];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -35,16 +33,22 @@
     return 50;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
     AwfulForum *forum = [self getForumAtIndexPath:indexPath];
-    [self toggleFavoriteForForum:forum];
-    [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationMiddle];
+    if (![forum valueForKey:@"favorite"]) {
+        NSManagedObject *favorite = [NSEntityDescription insertNewObjectForEntityForName:@"Favorite" 
+                                                                  inManagedObjectContext:ApplicationDelegate.managedObjectContext];
+        [favorite setValue:forum forKey:@"forum"];
+        [ApplicationDelegate saveContext];
+    }
+    [self dismissModalViewControllerAnimated:YES];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    static NSString *CellIdentifier = @"ForumCell";
-    
+- (UITableViewCell *)tableView:(UITableView *)tableView
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString * const CellIdentifier = @"ForumCell";   
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     AwfulForumCell *forum_cell = (AwfulForumCell *)cell;
     forum_cell.forumsList = self;

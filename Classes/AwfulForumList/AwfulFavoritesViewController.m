@@ -7,12 +7,16 @@
 //
 
 #import "AwfulFavoritesViewController.h"
+#import "AwfulAddForumsViewController.h"
 #import "AwfulForumCell.h"
 #import "AwfulForumsListController.h"
+#import "AwfulThreadListController.h"
 
 @interface AwfulFavoritesViewController () <NSFetchedResultsControllerDelegate>
 
 @property (strong) NSFetchedResultsController *resultsController;
+
+@property (readonly, strong, nonatomic) UIBarButtonItem *addButtonItem;
 
 @end
 
@@ -41,6 +45,7 @@
     BOOL ok = [self.resultsController performFetch:&error];
     NSAssert(ok, @"error fetching favorites: %@", error);
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    self.navigationItem.leftBarButtonItem = self.addButtonItem;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -49,18 +54,40 @@
     [self.navigationController setToolbarHidden:YES];
 }
 
-- (void)viewDidUnload
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
+    if ([segue.identifier isEqualToString:@"ThreadList"]) {
+        NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
+        NSManagedObject *favorite = [self.resultsController objectAtIndexPath:indexPath];
+        AwfulForum *forum = [favorite valueForKey:@"forum"];
+        AwfulThreadListController *list = (AwfulThreadListController *)segue.destinationViewController;
+        list.forum = forum;
+    }
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    return YES;
 }
 
 @synthesize resultsController = _resultsController;
+
+@synthesize addButtonItem = _addButtonItem;
+
+- (UIBarButtonItem *)addButtonItem
+{
+    if (!_addButtonItem) {
+        _addButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd 
+                                                                       target:self
+                                                                       action:@selector(addFavorite)];
+    }
+    return _addButtonItem;
+}
+
+- (void)addFavorite
+{
+    [self performSegueWithIdentifier:@"AddFavorite" sender:self];
+}
 
 #pragma mark - Table view data source
 
@@ -88,6 +115,25 @@
 {
     NSManagedObject *favorite = [self.resultsController objectAtIndexPath:indexPath];
     cell.section = [AwfulForumSection sectionWithForum:[favorite valueForKey:@"Forum"]];
+}
+
+- (void)tableView:(UITableView *)tableView
+    commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
+    forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        NSManagedObject *favorite = [self.resultsController objectAtIndexPath:indexPath];
+        [ApplicationDelegate.managedObjectContext deleteObject:favorite];
+        [ApplicationDelegate saveContext];
+    }
+}
+
+#pragma mark - Table view delegate
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView
+           editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return UITableViewCellEditingStyleDelete;
 }
 
 #pragma mark - Fetched results controller delegate

@@ -44,9 +44,9 @@
                     </connections>
                 </navigationController>
             </objects>
-            <point key="canvasLocation" x="1009" y="-1566"/>
+            <point key="canvasLocation" x="1685" y="-266"/>
         </scene>
-        <!--Awful Add Forums View Controller-->
+        <!--Awful Add Forums View Controller - Add Favorite-->
         <scene sceneID="ajj-oc-TJs">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UGB-w7-hyp" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -116,7 +116,7 @@
                             <outlet property="delegate" destination="FXl-3U-dPW" id="zSq-Qa-rip"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="6X7-Rv-wuv">
+                    <navigationItem key="navigationItem" title="Add Favorite" id="6X7-Rv-wuv">
                         <barButtonItem key="rightBarButtonItem" title="Done" style="done" id="kL8-U3-qXL">
                             <connections>
                                 <action selector="hitDone:" destination="FXl-3U-dPW" id="2Dx-fO-cej"/>
@@ -125,7 +125,7 @@
                     </navigationItem>
                 </tableViewController>
             </objects>
-            <point key="canvasLocation" x="1455" y="-1566"/>
+            <point key="canvasLocation" x="2203" y="-266"/>
         </scene>
         <!--Awful Forums List Controller - Forums-->
         <scene sceneID="b1h-YA-b4T">
@@ -200,9 +200,6 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Forums" id="dpP-rw-MvK"/>
-                    <connections>
-                        <segue destination="OsU-0N-VpQ" kind="modal" identifier="AddForums" id="hEn-3v-A49"/>
-                    </connections>
                 </tableViewController>
             </objects>
             <point key="canvasLocation" x="1219" y="-846"/>
@@ -433,7 +430,7 @@
                     <nil key="highlightedColor"/>
                 </label>
             </objects>
-            <point key="canvasLocation" x="2104" y="323"/>
+            <point key="canvasLocation" x="2041" y="323"/>
         </scene>
         <!--Awful Post Box Controller-->
         <scene sceneID="ImM-lh-86n">
@@ -860,6 +857,7 @@
                                 <connections>
                                     <outlet property="arrow" destination="UzJ-Ta-IFY" id="pXd-cW-3uZ"/>
                                     <outlet property="titleLabel" destination="EGd-oQ-WTu" id="dNp-Sn-cgL"/>
+                                    <segue destination="Osj-d3-UMd" kind="push" identifier="ThreadList" id="MjC-LO-k8J"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -869,6 +867,9 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Favorites" id="hP7-cI-33F"/>
+                    <connections>
+                        <segue destination="OsU-0N-VpQ" kind="modal" identifier="AddFavorite" id="anO-6h-ZhH"/>
+                    </connections>
                 </tableViewController>
             </objects>
             <point key="canvasLocation" x="1219" y="-266"/>
@@ -1017,7 +1018,8 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="kfD-K3-mBe"/>
+        <segue reference="MjC-LO-k8J"/>
+        <segue reference="JzC-6r-kye"/>
         <segue reference="FMo-n3-M4q"/>
     </inferredMetricsTieBreakers>
 </document>
