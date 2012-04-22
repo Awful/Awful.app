@@ -14,8 +14,10 @@
 #import "AwfulNetworkEngine.h"
 #import "AwfulUtil.h"
 #import "AwfulVoteActions.h"
+#import <MobileCoreServices/UTCoreTypes.h>
 
 typedef enum {
+    AwfulThreadActionCopyURL,
     AwfulThreadActionVote,
     AwfulThreadActionBookmarks,
 } AwfulThreadAction;
@@ -33,7 +35,9 @@ typedef enum {
     self = [super init];
     if (self) {
         self.thread = thread;
-        self.titles = [NSArray arrayWithObjects:@"Vote",
+        self.titles = [NSArray arrayWithObjects:
+                       @"Copy Thread URL",
+                       @"Vote",
                        [thread.isBookmarked boolValue] ? @"Remove From Bookmarks" : @"Add To Bookmarks",
                        nil];
     }
@@ -49,12 +53,20 @@ typedef enum {
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if (buttonIndex == AwfulThreadActionVote) {        
-        AwfulVoteActions *voteActions = [[AwfulVoteActions alloc] initWithAwfulThread:self.thread];
-        if([self.viewController isKindOfClass:[AwfulPage class]]) {
-            AwfulPage *page = (AwfulPage *)self.viewController;
-            page.actions = voteActions;
+    if(buttonIndex == AwfulThreadActionCopyURL) {
+        AwfulPage *page = [self getPage];
+        NSString *path = nil;
+        if(page != nil) {
+            path = [NSString stringWithFormat:@"http://forums.somethingawful.com/showthread.php?threadid=%@&pagenumber=%u", self.thread.threadID, page.pages.currentPage];
+        } else {
+            path = [NSString stringWithFormat:@"http://forums.somethingawful.com/showthread.php?threadid=%@", self.thread.threadID];
         }
+        [[UIPasteboard generalPasteboard] setValue:path forPasteboardType:(NSString *)kUTTypeText];
+        
+    } else if (buttonIndex == AwfulThreadActionVote) {        
+        AwfulVoteActions *voteActions = [[AwfulVoteActions alloc] initWithAwfulThread:self.thread];
+        AwfulPage *page = [self getPage];
+        [page setActions:voteActions];
         
     } else if (buttonIndex == AwfulThreadActionBookmarks) {
         CompletionBlock completion = ^{
@@ -70,6 +82,14 @@ typedef enum {
             [[ApplicationDelegate awfulNetworkEngine] addBookmarkedThread:self.thread onCompletion:completion onError:nil];
         }
     }
+}
+
+-(AwfulPage *)getPage
+{
+    if([self.viewController isKindOfClass:[AwfulPage class]]) {
+        return (AwfulPage *)self.viewController;
+    }
+    return nil;
 }
 
 @end

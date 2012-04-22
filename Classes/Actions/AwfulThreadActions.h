@@ -9,11 +9,13 @@
 #import "AwfulActions.h"
 
 @class AwfulThread;
+@class AwfulPage;
 
 @interface AwfulThreadActions : AwfulActions
 
 @property (readonly, strong) AwfulThread *thread;
 
 -(id)initWithThread : (AwfulThread *)thread;
+-(AwfulPage *)getPage;
 
 @end
