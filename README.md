@@ -8,8 +8,6 @@ Awful is an iOS app for browsing the [Something Awful Forums][forums] on your iP
 
 For this release
 ----------------
-**HEY THIS IS SEAN**
-I'm going to work on copying thread url, intra-forum links, press/hold to go first/last page, bar button items for reply box, and the bold issue. Then I'm going to take a look at your branches and hook that shit up
 
 * Populate forums list and bookmarks immediately from local cache. Update when fetch/parse is complete.
 * Don't try to fetch bookmarks when not logged in.
@@ -17,8 +15,7 @@ I'm going to work on copying thread url, intra-forum links, press/hold to go fir
 * Sane intro to the app, take user to login screen
 * Default data set with current forums (why do we need this? it's not much data)
 * rearrange favorite forums
-* press-hold on threadlist to jump to first/last page of a thread from threadlist
-* Copy thread/post URL
+* Copy post URL
 * Maintain page position on orientation change
 * Smarter iPad interface
 * Pick and include a license.
