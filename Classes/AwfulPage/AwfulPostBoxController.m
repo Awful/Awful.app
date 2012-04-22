@@ -154,4 +154,13 @@
     [alert show];
 }
 
+-(IBAction)hitTextBarButtonItem : (id)sender
+{
+    if([sender isMemberOfClass:[UIBarButtonItem class]]) {
+        UIBarButtonItem *item = (UIBarButtonItem *)sender;
+        NSString *str = item.title;
+        self.replyTextView.text = [self.replyTextView.text stringByAppendingString:str];
+    }
+}
+
 @end

@@ -27,5 +27,6 @@
 
 -(IBAction)hideReply;
 -(IBAction)hitSend;
+-(IBAction)hitTextBarButtonItem : (id)sender;
 
 @end
