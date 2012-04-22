@@ -9,6 +9,7 @@ Awful is an iOS app for browsing the [Something Awful Forums][forums] on your iP
 For this release
 ----------------
 * Populate forums list and bookmarks immediately from local cache. Update when fetch/parse is complete.
+* Don't try to fetch bookmarks when not logged in.
 * Fix bold issue (currently example in awfulapp thread)
 * Sane intro to the app, take user to login screen
 * Default data set with current forums (why do we need this? it's not much data)
