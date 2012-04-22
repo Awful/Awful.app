@@ -29,30 +29,13 @@
             </objects>
             <point key="canvasLocation" x="734" y="-846"/>
         </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="ljP-eD-SbU">
-            <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="BO5-Ib-Oc8" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <navigationController definesPresentationContext="YES" id="OsU-0N-VpQ" sceneMemberID="viewController">
-                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
-                    <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="blackOpaque" id="For-on-qpg">
-                        <rect key="frame" x="0.0" y="-44" width="0.0" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <connections>
-                        <segue destination="FXl-3U-dPW" kind="relationship" relationship="rootViewController" id="89D-Qc-3NQ"/>
-                    </connections>
-                </navigationController>
-            </objects>
-            <point key="canvasLocation" x="1009" y="-1566"/>
-        </scene>
-        <!--Awful Add Forums View Controller-->
+        <!--Awful Add Forums View Controller - Tap to Add/Remove-->
         <scene sceneID="ajj-oc-TJs">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UGB-w7-hyp" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tableViewController id="FXl-3U-dPW" customClass="AwfulAddForumsViewController" sceneMemberID="viewController">
+                <tableViewController title="Tap to Add/Remove" id="FXl-3U-dPW" customClass="AwfulAddForumsViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="7iN-YA-SFn">
-                        <rect key="frame" x="0.0" y="64" width="320" height="416"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="372"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -116,13 +99,7 @@
                             <outlet property="delegate" destination="FXl-3U-dPW" id="zSq-Qa-rip"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="6X7-Rv-wuv">
-                        <barButtonItem key="rightBarButtonItem" title="Done" style="done" id="kL8-U3-qXL">
-                            <connections>
-                                <action selector="hitDone:" destination="FXl-3U-dPW" id="2Dx-fO-cej"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Choose Favorites" id="6X7-Rv-wuv"/>
                 </tableViewController>
             </objects>
             <point key="canvasLocation" x="1455" y="-1566"/>
@@ -193,11 +170,11 @@
                                     <segue destination="Osj-d3-UMd" kind="push" identifier="ThreadList" id="sg8-uA-AaF"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="AddFavoritesCell" id="Yqh-lm-vZP" customClass="AwfulForumCell">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="AddFavoritesCell" id="Yqh-lm-vZP" customClass="AwfulForumCell">
                                 <rect key="frame" x="0.0" y="72" width="320" height="50"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="300" height="49"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Add Favorites..." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="10" id="BDL-rP-g4s">
@@ -214,6 +191,7 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
                                     <outlet property="titleLabel" destination="BDL-rP-g4s" id="ByT-Dz-ZpC"/>
+                                    <segue destination="FXl-3U-dPW" kind="push" identifier="r" id="Qvz-nE-rB0"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -239,7 +217,6 @@
                     </navigationItem>
                     <connections>
                         <outlet property="segmentedControl" destination="QG3-uZ-j6T" id="IfJ-rf-1uf"/>
-                        <segue destination="OsU-0N-VpQ" kind="modal" identifier="AddForums" id="hEn-3v-A49"/>
                     </connections>
                 </tableViewController>
             </objects>

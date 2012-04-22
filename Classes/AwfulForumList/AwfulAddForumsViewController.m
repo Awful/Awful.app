@@ -23,11 +23,11 @@
     [self.tableView reloadData];
 }
 
--(IBAction)hitDone:(id)sender
+-(void)viewWillDisappear:(BOOL)animated
 {
+    [super viewWillDisappear:animated];
     [self.delegate loadFavorites];
     [self.delegate.tableView reloadData];
-    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath

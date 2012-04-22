@@ -87,8 +87,7 @@
         AwfulThreadListController *list = (AwfulThreadListController *)segue.destinationViewController;
         list.forum = forum;
     } else if([[segue identifier] isEqualToString:@"AddForums"]) {
-        UINavigationController *nav = (UINavigationController *)segue.destinationViewController;
-        AwfulAddForumsViewController *addForums = (AwfulAddForumsViewController *)nav.topViewController;
+        AwfulAddForumsViewController *addForums = (AwfulAddForumsViewController *)segue.destinationViewController;
         addForums.delegate = self;
     }
 }
@@ -241,7 +240,7 @@
             return [descendants count];
         }
     } else {
-        return [self.favorites count] + 1;
+        return [self.favorites count];
     }
     
     return 0;
@@ -270,10 +269,6 @@
             }
         }
 
-        return cell;
-    } else if(!self.displayingFullList && indexPath.row == [self.favorites count]) {
-        static NSString *ident = @"AddFavoritesCell";
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ident];
         return cell;
     }
     return nil;
@@ -322,7 +317,6 @@
     return 50;
 }
 
-
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     // Return NO if you do not want the specified item to be editable.
@@ -360,8 +354,6 @@
     [self.favorites insertObject:fav atIndex:to_row];
 }
 
-
-
 /*
 // Override to support conditional rearranging of the table view.
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -373,13 +365,6 @@
 
 #pragma mark -
 #pragma mark Table view delegate
-
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if(!self.displayingFullList && indexPath.row == [self.favorites count]) {
-        [self performSegueWithIdentifier:@"AddForums" sender:nil];
-    }
-}
 
 #pragma mark -
 #pragma mark Memory management
@@ -608,6 +593,18 @@
 {
     self.displayingFullList = (self.segmentedControl.selectedSegmentIndex == 0);
     [self.tableView reloadData];
+    if(self.displayingFullList) {
+        self.navigationItem.leftBarButtonItem = nil;
+        self.navigationItem.rightBarButtonItem = nil;
+    } else {
+        self.navigationItem.leftBarButtonItem = self.editButtonItem;
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(hitAdd:)];
+    }
+}
+
+-(IBAction)hitAdd : (id)sender
+{
+    [self performSegueWithIdentifier:@"AddForums" sender:self];
 }
 
 @end
