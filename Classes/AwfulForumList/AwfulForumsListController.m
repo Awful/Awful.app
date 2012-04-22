@@ -86,7 +86,7 @@
         }
         AwfulThreadListController *list = (AwfulThreadListController *)segue.destinationViewController;
         list.forum = forum;
-    } else if([[segue identifier] isEqualToString:@"AddForums"]) {
+    } else if([[segue identifier] isEqualToString:@"AddFavorites"]) {
         AwfulAddForumsViewController *addForums = (AwfulAddForumsViewController *)segue.destinationViewController;
         addForums.delegate = self;
     }
@@ -604,7 +604,7 @@
 
 -(IBAction)hitAdd : (id)sender
 {
-    [self performSegueWithIdentifier:@"AddForums" sender:self];
+    [self performSegueWithIdentifier:@"AddFavorites" sender:self];
 }
 
 @end

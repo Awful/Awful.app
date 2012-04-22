@@ -107,30 +107,6 @@
                                     <segue destination="b0I-zs-CAw" kind="push" identifier="ThreadList" id="RTg-xg-9wG"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="AddFavoritesCell" id="Fl4-Wi-zVj" customClass="AwfulForumCell">
-                                <rect key="frame" x="0.0" y="72" width="320" height="50"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="300" height="49"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Add Favorites..." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="10" id="qmd-ny-yZE">
-                                            <rect key="frame" x="44" y="3" width="225" height="44"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                            <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        </label>
-                                    </subviews>
-                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                </view>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <connections>
-                                    <outlet property="titleLabel" destination="qmd-ny-yZE" id="WcO-m3-0zR"/>
-                                    <segue destination="ffn-sD-mkh" kind="push" identifier="AddForums" id="TCl-RI-za1"/>
-                                </connections>
-                            </tableViewCell>
                         </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="itn-NS-72L" id="0fr-6a-yFF"/>
@@ -155,6 +131,7 @@
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackTranslucent"/>
                     <connections>
                         <outlet property="segmentedControl" destination="nw5-DB-cw3" id="Lto-RW-ZNk"/>
+                        <segue destination="ffn-sD-mkh" kind="push" identifier="AddFavorites" id="yRT-rw-wal"/>
                     </connections>
                 </tableViewController>
             </objects>
@@ -1036,7 +1013,7 @@
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="g6b-JR-NhK"/>
-        <segue reference="hhi-LS-YNv"/>
+        <segue reference="Oqh-Ug-Ror"/>
         <segue reference="Kgw-hp-QCk"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -170,30 +170,6 @@
                                     <segue destination="Osj-d3-UMd" kind="push" identifier="ThreadList" id="sg8-uA-AaF"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="AddFavoritesCell" id="Yqh-lm-vZP" customClass="AwfulForumCell">
-                                <rect key="frame" x="0.0" y="72" width="320" height="50"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="300" height="49"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Add Favorites..." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="10" id="BDL-rP-g4s">
-                                            <rect key="frame" x="44" y="3" width="225" height="44"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                            <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        </label>
-                                    </subviews>
-                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                </view>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <connections>
-                                    <outlet property="titleLabel" destination="BDL-rP-g4s" id="ByT-Dz-ZpC"/>
-                                    <segue destination="FXl-3U-dPW" kind="push" identifier="r" id="Qvz-nE-rB0"/>
-                                </connections>
-                            </tableViewCell>
                         </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="Cko-3x-oc7" id="6ND-OV-xoS"/>
@@ -217,6 +193,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="segmentedControl" destination="QG3-uZ-j6T" id="IfJ-rf-1uf"/>
+                        <segue destination="FXl-3U-dPW" kind="push" identifier="AddFavorites" id="cOB-Ds-OwL"/>
                     </connections>
                 </tableViewController>
             </objects>
