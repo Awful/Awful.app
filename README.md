@@ -16,6 +16,8 @@ For this release
 * Default data set with current forums (why do we need this? it's not much data)
 * rearrange favorite forums
 * Copy post URL
+* recognize a direct post link and display it
+* full screen, navigation gestures
 * Maintain page position on orientation change
 * Smarter iPad interface
 * Pick and include a license.
