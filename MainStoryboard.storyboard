@@ -11,9 +11,9 @@
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zdh-pF-1ZM" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController title="Forums" definesPresentationContext="YES" toolbarHidden="NO" id="cT9-jh-kRp" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Forums" image="list_icon.png" id="vpG-em-xHU"/>
+                    <tabBarItem key="tabBarItem" title="Forums" image="list_icon.png" id="t1j-gI-8yT"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
-                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics" barStyle="blackOpaque"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="blackOpaque" id="pEE-h4-pDZ">
                         <rect key="frame" x="0.0" y="-44" width="0.0" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -133,7 +133,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Jn6-dl-9gI" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController title="Forums" id="Cko-3x-oc7" customClass="AwfulForumsListController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="50" sectionHeaderHeight="22" sectionFooterHeight="22" id="qEa-va-Pfv">
-                        <rect key="frame" x="0.0" y="64" width="320" height="372"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="367"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <color key="separatorColor" red="0.74901960784313726" green="0.74901960784313726" blue="0.74901960784313726" alpha="1" colorSpace="calibratedRGB"/>
@@ -193,52 +193,14 @@
                                     <segue destination="Osj-d3-UMd" kind="push" identifier="ThreadList" id="sg8-uA-AaF"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="AddFavoritesCell" id="Yqh-lm-vZP" customClass="AwfulForumCell">
-                                <rect key="frame" x="0.0" y="72" width="320" height="50"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Add Favorites..." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="10" id="BDL-rP-g4s">
-                                            <rect key="frame" x="44" y="3" width="225" height="44"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                            <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        </label>
-                                    </subviews>
-                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                </view>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <connections>
-                                    <outlet property="titleLabel" destination="BDL-rP-g4s" id="ByT-Dz-ZpC"/>
-                                </connections>
-                            </tableViewCell>
                         </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="Cko-3x-oc7" id="6ND-OV-xoS"/>
                             <outlet property="delegate" destination="Cko-3x-oc7" id="NO4-vh-f2X"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="dpP-rw-MvK">
-                        <nil key="title"/>
-                        <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="QG3-uZ-j6T">
-                            <rect key="frame" x="85" y="7" width="150" height="30"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <segments>
-                                <segment title="Full List"/>
-                                <segment title="Favorites"/>
-                            </segments>
-                            <color key="tintColor" red="0.1803921568627451" green="0.5725490196078431" blue="0.74509803921568629" alpha="1" colorSpace="deviceRGB"/>
-                            <connections>
-                                <action selector="segmentedControlChanged:" destination="Cko-3x-oc7" eventType="valueChanged" id="RFH-Je-k5w"/>
-                            </connections>
-                        </segmentedControl>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Forums" id="dpP-rw-MvK"/>
                     <connections>
-                        <outlet property="segmentedControl" destination="QG3-uZ-j6T" id="IfJ-rf-1uf"/>
                         <segue destination="OsU-0N-VpQ" kind="modal" identifier="AddForums" id="hEn-3v-A49"/>
                     </connections>
                 </tableViewController>
@@ -261,7 +223,7 @@
                     </connections>
                 </navigationController>
             </objects>
-            <point key="canvasLocation" x="742" y="-199"/>
+            <point key="canvasLocation" x="734" y="323"/>
         </scene>
         <!--Awful Thread List Controller - Title-->
         <scene sceneID="R44-bE-NMl">
@@ -471,7 +433,7 @@
                     <nil key="highlightedColor"/>
                 </label>
             </objects>
-            <point key="canvasLocation" x="2112" y="-199"/>
+            <point key="canvasLocation" x="2104" y="323"/>
         </scene>
         <!--Awful Post Box Controller-->
         <scene sceneID="ImM-lh-86n">
@@ -517,7 +479,7 @@
                     </connections>
                 </viewController>
             </objects>
-            <point key="canvasLocation" x="2558" y="-199"/>
+            <point key="canvasLocation" x="2550" y="323"/>
         </scene>
         <!--Awful Specific Page View Controller-->
         <scene sceneID="GiF-gX-JIJ">
@@ -680,7 +642,6 @@
                             <outlet property="delegate" destination="9vP-Hg-1iS" id="Eva-t8-bfu"/>
                         </connections>
                     </tableView>
-                    <tabBarItem key="tabBarItem" systemItem="bookmarks" id="lpi-BS-KYz"/>
                     <navigationItem key="navigationItem" title="Bookmarks" id="t3k-Pb-mph">
                         <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="twp-Vf-atc">
                             <connections>
@@ -694,7 +655,7 @@
                     </connections>
                 </tableViewController>
             </objects>
-            <point key="canvasLocation" x="1219" y="-199"/>
+            <point key="canvasLocation" x="1211" y="323"/>
         </scene>
         <!--Navigation Controller - Settings-->
         <scene sceneID="CB8-2v-pYB">
@@ -712,7 +673,7 @@
                     </connections>
                 </navigationController>
             </objects>
-            <point key="canvasLocation" x="742" y="386"/>
+            <point key="canvasLocation" x="734" y="908"/>
         </scene>
         <!--Awful Settings View Controller - Settings-->
         <scene sceneID="VUg-Fj-OO6">
@@ -741,7 +702,7 @@
                     </connections>
                 </tableViewController>
             </objects>
-            <point key="canvasLocation" x="1219" y="386"/>
+            <point key="canvasLocation" x="1211" y="908"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="qqa-vM-QeD">
@@ -758,7 +719,7 @@
                     </connections>
                 </navigationController>
             </objects>
-            <point key="canvasLocation" x="1655" y="386"/>
+            <point key="canvasLocation" x="1647" y="908"/>
         </scene>
         <!--Awful Login Controller - Login-->
         <scene sceneID="Ymi-Yf-IpQ">
@@ -789,13 +750,13 @@
                     <color key="color" cocoaTouchSystemColor="darkTextColor"/>
                 </activityIndicatorView>
             </objects>
-            <point key="canvasLocation" x="2112" y="386"/>
+            <point key="canvasLocation" x="2104" y="908"/>
         </scene>
-        <!--Awful Tab Bar Controller - Awful-->
+        <!--Tab Bar Controller - Main tab bar-->
         <scene sceneID="yyp-pu-Zwu">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RSD-CM-ak4" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tabBarController definesPresentationContext="YES" hidesBottomBarWhenPushed="YES" id="Vst-Rk-SSD" customClass="AwfulTabBarController" sceneMemberID="viewController">
+                <tabBarController title="Main tab bar" definesPresentationContext="YES" hidesBottomBarWhenPushed="YES" id="Vst-Rk-SSD" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" title="Awful" id="K7k-72-lPP"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="wo8-Wr-u0T">
@@ -805,12 +766,112 @@
                     </tabBar>
                     <connections>
                         <segue destination="cT9-jh-kRp" kind="relationship" relationship="viewControllers" id="19A-Qc-Atw"/>
+                        <segue destination="Knl-gi-j7J" kind="relationship" relationship="viewControllers" id="E0g-yC-2qn"/>
                         <segue destination="xo0-VB-ciI" kind="relationship" relationship="viewControllers" id="IQK-Js-qTB"/>
                         <segue destination="QUE-gO-xsl" kind="relationship" relationship="viewControllers" id="Bk5-fP-fmp"/>
                     </connections>
                 </tabBarController>
             </objects>
             <point key="canvasLocation" x="170" y="-199"/>
+        </scene>
+        <!--Navigation Controller - Favorites-->
+        <scene sceneID="CmU-tC-hwP">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="p9m-Pc-isp" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <navigationController title="Favorites" definesPresentationContext="YES" toolbarHidden="NO" id="Knl-gi-j7J" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" systemItem="favorites" id="Aib-QG-ydo"/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="blackOpaque" id="J7K-53-qKT">
+                        <rect key="frame" x="0.0" y="-44" width="0.0" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <toolbar key="toolbar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" barStyle="blackOpaque" id="SHQ-W8-o8I">
+                        <rect key="frame" x="0.0" y="436" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
+                    <connections>
+                        <segue destination="nz9-Nl-GVG" kind="relationship" relationship="rootViewController" id="tkq-NJ-Ssd"/>
+                    </connections>
+                </navigationController>
+            </objects>
+            <point key="canvasLocation" x="734" y="-266"/>
+        </scene>
+        <!--Awful Favorites View Controller - Forums-->
+        <scene sceneID="XSe-DF-kDG">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dzE-VT-who" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tableViewController title="Forums" id="nz9-Nl-GVG" customClass="AwfulFavoritesViewController" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="50" sectionHeaderHeight="22" sectionFooterHeight="22" id="4cr-uT-RRU">
+                        <rect key="frame" x="0.0" y="64" width="320" height="367"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="separatorColor" red="0.74901960779999999" green="0.74901960779999999" blue="0.74901960779999999" alpha="1" colorSpace="calibratedRGB"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ForumCell" rowHeight="50" id="10K-d7-eAe" customClass="AwfulForumCell">
+                                <rect key="frame" x="0.0" y="22" width="320" height="50"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="300" height="49"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Questions? Comments? Suggestions? This is" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="10" id="EGd-oQ-WTu">
+                                            <rect key="frame" x="44" y="3" width="225" height="44"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </label>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="WyX-zY-Z6p">
+                                            <rect key="frame" x="0.0" y="3" width="44" height="44"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                            <state key="normal">
+                                                <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                            <state key="highlighted">
+                                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                            <connections>
+                                                <action selector="tappedArrow:" destination="10K-d7-eAe" eventType="touchUpInside" id="nD4-jT-lcQ"/>
+                                            </connections>
+                                        </button>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="UzJ-Ta-IFY" userLabel="arrow button">
+                                            <rect key="frame" x="11" y="16" width="22" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                            <state key="normal" image="forum-arrow-right.png">
+                                                <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                            <state key="highlighted">
+                                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                            <connections>
+                                                <action selector="tappedArrow:" destination="10K-d7-eAe" eventType="touchDown" id="egs-hj-2Yz"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="arrow" destination="UzJ-Ta-IFY" id="pXd-cW-3uZ"/>
+                                    <outlet property="titleLabel" destination="EGd-oQ-WTu" id="dNp-Sn-cgL"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="nz9-Nl-GVG" id="vNJ-ML-IJt"/>
+                            <outlet property="delegate" destination="nz9-Nl-GVG" id="p9e-Vr-4Zw"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Favorites" id="hP7-cI-33F"/>
+                </tableViewController>
+            </objects>
+            <point key="canvasLocation" x="1219" y="-266"/>
         </scene>
     </scenes>
     <resources>
@@ -837,6 +898,9 @@
         </class>
         <class className="AwfulBookmarksController" superclassName="AwfulThreadListController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulBookmarksController.h"/>
+        </class>
+        <class className="AwfulFavoritesViewController" superclassName="AwfulTableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulFavoritesViewController.h"/>
         </class>
         <class className="AwfulForumCell" superclassName="UITableViewCell">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumCell.h"/>
@@ -911,9 +975,6 @@
                 <relationship kind="outlet" name="pickerView" candidateClass="UIPickerView"/>
             </relationships>
         </class>
-        <class className="AwfulTabBarController" superclassName="UITabBarController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulTabBarController.h"/>
-        </class>
         <class className="AwfulTableViewController" superclassName="UITableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulTableViewController.h"/>
             <relationships>
@@ -957,6 +1018,6 @@
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="kfD-K3-mBe"/>
-        <segue reference="WQ4-KV-8Qh"/>
+        <segue reference="FMo-n3-M4q"/>
     </inferredMetricsTieBreakers>
 </document>
