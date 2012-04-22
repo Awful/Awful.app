@@ -36,6 +36,9 @@
 @property (strong) NSString *userAd;
 @property (assign) BOOL showAvatars;
 
+- (BOOL)isPhoneDevice;
+- (BOOL)isPadDevice;
+
 @end
 
 
@@ -55,28 +58,16 @@
     {
         // check docs folder first, if not in there use templates supplied by default
         
-        NSURL *phoneTemplateURL = [[ApplicationDelegate applicationDocumentsDirectory] URLByAppendingPathComponent:@"phone-template.html"];
-        NSURL *padTemplateURL = [[ApplicationDelegate applicationDocumentsDirectory] URLByAppendingPathComponent:@"pad-template.html"];
+        NSURL *templateURL = [[ApplicationDelegate applicationDocumentsDirectory] URLByAppendingPathComponent:@"template.html"];
         
         NSError *err = nil;
-        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            if([padTemplateURL checkResourceIsReachableAndReturnError:nil]) {
-                _template = [GRMustacheTemplate templateFromContentsOfURL:padTemplateURL error:&err];
-            } else {
-                _template = [GRMustacheTemplate templateFromResource:@"pad-template"
-                                                       withExtension:@"html"
-                                                              bundle:nil
-                                                               error:&err];
-            }
-        } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-            if([phoneTemplateURL checkResourceIsReachableAndReturnError:nil]) {
-                _template = [GRMustacheTemplate templateFromContentsOfURL:phoneTemplateURL error:&err];
-            } else {
-                _template = [GRMustacheTemplate templateFromResource:@"phone-template"
-                                                       withExtension:@"html"
-                                                              bundle:nil
-                                                               error:&err];
-            }
+        if([templateURL checkResourceIsReachableAndReturnError:nil]) {
+            _template = [GRMustacheTemplate templateFromContentsOfURL:templateURL error:&err];
+        } else {
+            _template = [GRMustacheTemplate templateFromResource:@"template"
+                                                   withExtension:@"html"
+                                                          bundle:nil
+                                                           error:&err];
         }
         
         if (!_template) {
@@ -200,5 +191,15 @@
 @synthesize userAd = _userAd;
 
 @synthesize showAvatars = _showAvatars;
+
+- (BOOL)isPhoneDevice
+{
+    return UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone;
+}
+
+- (BOOL)isPadDevice
+{
+    return UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+}
 
 @end
