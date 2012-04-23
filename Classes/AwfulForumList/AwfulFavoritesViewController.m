@@ -56,7 +56,15 @@
     [self.navigationController setToolbarHidden:YES];
 }
 
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    if (self.resultsController.fetchedObjects.count == 0) {
+        [self addFavorites];
+    }
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([segue.identifier isEqualToString:@"ThreadList"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
@@ -86,7 +94,7 @@
     return _addButtonItem;
 }
 
-- (void)addFavorite
+- (void)addFavorites
 {
     [self performSegueWithIdentifier:@"AddFavorite" sender:self];
 }
