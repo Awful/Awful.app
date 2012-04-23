@@ -86,13 +86,8 @@
     self.forums = [NSMutableArray arrayWithArray:forums];
 }
 
--(void)hitDone
+- (void)viewWillAppear:(BOOL)animated
 {
-    //AwfulNavigator *nav = getNavigator();
-    //[nav dismissModalViewControllerAnimated:YES];
-}
-
-- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.navigationController setToolbarHidden:YES];
     
@@ -103,23 +98,7 @@
     }
 }
 
-/*
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-}
-*/
-/*
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-}
-*/
-/*
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-}
-*/
-
--(void)refresh
+- (void)refresh
 {
     [super refresh];
     [self.networkOperation cancel];
@@ -205,7 +184,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 #pragma mark - Forums
 
--(void)toggleExpandForForumSection:(AwfulForumSection *)section
+- (void)toggleExpandForForumSection:(AwfulForumSection *)section
 {
     BOOL expanded = section.expanded;
     
@@ -228,7 +207,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [self.tableView endUpdates];
 }
 
--(void)setForums:(NSMutableArray *)forums
+- (void)setForums:(NSMutableArray *)forums
 {
     if(forums != _forums) {
         _forums = forums;
@@ -243,62 +222,58 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     }
 }
 
-#pragma mark -
-#pragma mark Tree Model Methods
+#pragma mark - Tree Model Methods
 
--(void)addForumToSectionTree : (AwfulForum *)forum
+-(void)addForumToSectionTree:(AwfulForum *)forum
 {
     AwfulForumSection *section = [[AwfulForumSection alloc] init];
     section.forum = forum;
 
-    if(forum.parentForum == nil) {
+    if (forum.parentForum == nil) {
         [section setExpanded:YES];
         [self.forumSections addObject:section];
     } else {
-        AwfulForumSection *parent_section = [self getForumSectionFromID:forum.parentForum.forumID];
-        if(parent_section.rowIndex != NSNotFound) {
-            [section setRowIndex:parent_section.rowIndex + [parent_section.children count]];
+        AwfulForumSection *parentSection = [self getForumSectionFromID:forum.parentForum.forumID];
+        if (parentSection.rowIndex != NSNotFound) {
+            [section setRowIndex:parentSection.rowIndex + [parentSection.children count]];
         } else {
-            [section setRowIndex:[parent_section.children count]];
+            [section setRowIndex:[parentSection.children count]];
         }
-        [parent_section.children addObject:section];
+        [parentSection.children addObject:section];
         
         int ancestors_count = 0;
-        while(parent_section != nil) {
+        while (parentSection != nil) {
             ancestors_count++;
-            parent_section = [self getForumSectionFromID:parent_section.forum.parentForum.forumID];
+            parentSection = [self getForumSectionFromID:parentSection.forum.parentForum.forumID];
         }
         [section setTotalAncestors:ancestors_count];
     }
 }
 
--(AwfulForumSection *)getForumSectionAtSection : (NSUInteger)section_index
+- (AwfulForumSection *)getForumSectionAtSection:(NSUInteger)sectionIndex
 {
-    if(section_index >= [self.forumSections count]) {
+    if (sectionIndex >= [self.forumSections count]) {
         return nil;
     }
-    return [self.forumSections objectAtIndex:section_index];
+    return [self.forumSections objectAtIndex:sectionIndex];
 }
 
--(NSUInteger)getSectionForForumSection : (AwfulForumSection *)forum_section
+- (NSUInteger)getSectionForForumSection:(AwfulForumSection *)forumSection
 {
-    AwfulForumSection *root_section = [self getRootSectionForSection:forum_section];
-    NSUInteger index = [self.forumSections indexOfObject:root_section];
-    if(index != NSNotFound) {
-        return index;
-    }
-    return NSNotFound;
+    AwfulForumSection *rootSection = [self getRootSectionForSection:forumSection];
+    return [self.forumSections indexOfObject:rootSection];
 }
 
--(AwfulForum *)getForumAtIndexPath : (NSIndexPath *)path
+- (AwfulForum *)getForumAtIndexPath:(NSIndexPath *)path
 {
     AwfulForumSection *section = [self getForumSectionAtIndexPath:path];
     return section.forum;
 }
 
--(AwfulForumSection *)getForumSectionAtIndexPath : (NSIndexPath *)path
+- (AwfulForumSection *)getForumSectionAtIndexPath:(NSIndexPath *)path
 {
-    if(!IsLoggedIn()) {
+    // TODO this goldmine stuff should not be here. Move it somewhere useful.
+    if (!IsLoggedIn()) {
         if(path.section == 1) {
             NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"AwfulForum"];
             NSPredicate *predicate = [NSPredicate predicateWithFormat:@"forumID=21"];
@@ -321,21 +296,21 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     
     AwfulForumSection *big_section = [self getForumSectionAtSection:path.section];
     NSMutableArray *visible_descendants = [self getVisibleDescendantsListForForumSection:big_section];
-    if(path.row < [visible_descendants count]) {
+    if (path.row < [visible_descendants count]) {
         return [visible_descendants objectAtIndex:path.row];
     }
     return nil;
 }
 
--(NSMutableArray *)getVisibleDescendantsListForForumSection : (AwfulForumSection *)section
+- (NSMutableArray *)getVisibleDescendantsListForForumSection:(AwfulForumSection *)section
 {
-    if([section.children count] == 0 || !section.expanded) {
+    if ([section.children count] == 0 || !section.expanded) {
         return [NSMutableArray array];
     }
     
     NSMutableArray *list = [NSMutableArray array];
     
-    for(AwfulForumSection *child in section.children) {
+    for (AwfulForumSection *child in section.children) {
         if (child.forum) {
             [list addObject:child];
         }
@@ -344,47 +319,46 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     return list;
 }
 
--(NSIndexPath *)getIndexPathForSection : (AwfulForumSection *)section
+- (NSIndexPath *)getIndexPathForSection:(AwfulForumSection *)section
 {
-    if(section.forum.parentForum == nil) {
+    if (section.forum.parentForum == nil) {
         return [NSIndexPath indexPathForRow:NSNotFound inSection:NSNotFound];
     }
     
-    AwfulForumSection *root_section = [self getRootSectionForSection:section];
-    NSMutableArray *visible_descendants = [self getVisibleDescendantsListForForumSection:root_section];
+    AwfulForumSection *rootSection = [self getRootSectionForSection:section];
+    NSMutableArray *visibleDescendants = [self getVisibleDescendantsListForForumSection:rootSection];
     
-    NSUInteger row = [visible_descendants indexOfObject:section];
-    NSUInteger section_index = [self getSectionForForumSection:root_section];
-    if(row != NSNotFound && section_index != NSNotFound) {
-        return [NSIndexPath indexPathForRow:row inSection:section_index];
+    NSUInteger row = [visibleDescendants indexOfObject:section];
+    NSUInteger sectionIndex = [self getSectionForForumSection:rootSection];
+    if (row != NSNotFound && sectionIndex != NSNotFound) {
+        return [NSIndexPath indexPathForRow:row inSection:sectionIndex];
     } else {
         NSLog(@"asking for index path of non-visible section");
         return nil;
     }
-    
-    return nil;
 }
 
--(AwfulForumSection *)getForumSectionFromID : (NSString *)forum_id
+- (AwfulForumSection *)getForumSectionFromID:(NSString *)forumID
 {
-    AwfulForumSection *winner = nil;
-    for(AwfulForumSection *section in self.forumSections) {
-        winner = [self getForumSectionFromID:forum_id lookInForumSection:section];
-        if(winner != nil) {
+    for (AwfulForumSection *section in self.forumSections) {
+        AwfulForumSection *winner = [self getForumSectionFromID:forumID lookInForumSection:section];
+        if (winner != nil) {
             return winner;
         }
     }
-    return winner;
+    return nil;
 }
 
--(AwfulForumSection *)getForumSectionFromID : (NSString *)forum_id lookInForumSection : (AwfulForumSection *)section
+- (AwfulForumSection *)getForumSectionFromID:(NSString *)forumID
+                          lookInForumSection:(AwfulForumSection *)section
 {
-    if([forum_id isEqualToString:section.forum.forumID]) {
+    if ([forumID isEqualToString:section.forum.forumID]) {
         return section;
     } else {
-        for(AwfulForumSection *child in section.children) {
-            AwfulForumSection *winner = [self getForumSectionFromID:forum_id lookInForumSection:child];
-            if(winner != nil) {
+        for (AwfulForumSection *child in section.children) {
+            AwfulForumSection *winner = [self getForumSectionFromID:forumID
+                                                 lookInForumSection:child];
+            if (winner != nil) {
                 return winner;
             }
         }
@@ -392,9 +366,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     return nil;
 }
 
--(AwfulForumSection *)getRootSectionForSection : (AwfulForumSection *)section
+- (AwfulForumSection *)getRootSectionForSection:(AwfulForumSection *)section
 {
-    if(section.forum.parentForum == nil) {
+    if (section.forum.parentForum == nil) {
         return section;
     }
     return [self getRootSectionForSection:[self getForumSectionFromID:section.forum.parentForum.forumID]];
