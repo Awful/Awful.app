@@ -46,12 +46,12 @@
             </objects>
             <point key="canvasLocation" x="1685" y="-266"/>
         </scene>
-        <!--Awful Add Favorite View Controller - Add Favorite-->
+        <!--Awful Add Favorite View Controller - Add Favorites-->
         <scene sceneID="ajj-oc-TJs">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UGB-w7-hyp" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController id="FXl-3U-dPW" customClass="AwfulAddFavoriteViewController" sceneMemberID="viewController">
-                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="7iN-YA-SFn">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" allowsSelectionDuringEditing="YES" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="7iN-YA-SFn">
                         <rect key="frame" x="0.0" y="64" width="320" height="416"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -116,7 +116,7 @@
                             <outlet property="delegate" destination="FXl-3U-dPW" id="zSq-Qa-rip"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Add Favorite" id="6X7-Rv-wuv">
+                    <navigationItem key="navigationItem" title="Add Favorites" id="6X7-Rv-wuv">
                         <barButtonItem key="rightBarButtonItem" title="Done" style="done" id="kL8-U3-qXL">
                             <connections>
                                 <action selector="done" destination="FXl-3U-dPW" id="DPf-K9-atz"/>
@@ -916,9 +916,7 @@
         <class className="AwfulForumsListController" superclassName="AwfulTableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumsListController.h"/>
             <relationships>
-                <relationship kind="action" name="segmentedControlChanged:"/>
                 <relationship kind="outlet" name="headerView" candidateClass="AwfulForumHeader"/>
-                <relationship kind="outlet" name="segmentedControl" candidateClass="UISegmentedControl"/>
             </relationships>
         </class>
         <class className="AwfulLoginController" superclassName="UIViewController">

@@ -13,6 +13,12 @@
 
 @implementation AwfulAddFavoriteViewController
 
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    self.tableView.editing = YES;
+}
+
 - (NSPredicate *)forumsPredicate
 {
     return [NSPredicate predicateWithFormat:@"favorite == nil"];
@@ -21,9 +27,14 @@
 - (void)loadForums
 {
     [super loadForums];
-    for (AwfulForumSection *section in self.forumSections) {
-        [section setAllExpanded];
-    }
+    [self.forumSections makeObjectsPerformSelector:@selector(setAllExpanded)];
+    [self.tableView reloadData];
+}
+
+- (void)finishedRefreshing
+{
+    [super finishedRefreshing];
+    [self.forumSections makeObjectsPerformSelector:@selector(setAllExpanded)];
     [self.tableView reloadData];
 }
 
@@ -32,9 +43,17 @@
     [self dismissModalViewControllerAnimated:YES];
 }
 
+#pragma mark - Table View Delegate
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 50;
+}
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView
+           editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return UITableViewCellEditingStyleInsert;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -46,27 +65,23 @@
         [favorite setValue:forum forKey:@"forum"];
         [ApplicationDelegate saveContext];
     }
-    [self dismissModalViewControllerAnimated:YES];
+    AwfulForumSection *section = [self getForumSectionAtIndexPath:indexPath];
+    section.forum = nil;
+    [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+                     withRowAnimation:UITableViewRowAnimationFade];
 }
+
+#pragma mark - Table view data source
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString * const CellIdentifier = @"ForumCell";   
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    AwfulForumCell *forum_cell = (AwfulForumCell *)cell;
-    forum_cell.forumsList = self;
-    
-    AwfulForumSection *section = [self getForumSectionAtIndexPath:indexPath];
-    if(section != nil) {
-        [forum_cell setSection:section];
-        if([section.forum.favorited boolValue]) {
-            cell.accessoryType = UITableViewCellAccessoryCheckmark;
-        } else {
-            cell.accessoryType = UITableViewCellAccessoryNone;
-        }
-    }
-    [forum_cell.arrow removeFromSuperview];
+    AwfulForumCell *forumCell = (AwfulForumCell *)cell;
+    forumCell.forumsList = self;
+    forumCell.section = [self getForumSectionAtIndexPath:indexPath];
+    [forumCell.arrow removeFromSuperview];
     return cell;
 }
 

@@ -336,7 +336,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     NSMutableArray *list = [NSMutableArray array];
     
     for(AwfulForumSection *child in section.children) {
-        [list addObject:child];
+        if (child.forum) {
+            [list addObject:child];
+        }
         [list addObjectsFromArray:[self getVisibleDescendantsListForForumSection:child]];
     }
     return list;
