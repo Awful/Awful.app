@@ -7,7 +7,7 @@
 //
 
 #import "AwfulForumsListController.h"
-#import "AwfulAddForumsViewController.h"
+#import "AwfulForumsListControllerSubclass.h"
 #import "AwfulThreadListController.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulBookmarksController.h"
@@ -21,102 +21,52 @@
 #import "AwfulUser.h"
 #import "AwfulUtil.h"
 
-@implementation AwfulForumSection
 
-@synthesize forum = _forum;
-@synthesize children = _children;
-@synthesize expanded = _expanded;
-@synthesize rowIndex = _rowIndex;
-@synthesize totalAncestors = _totalAncestors;
 
--(id)init
-{
-    if((self=[super init])) {
-        self.forum = nil;
-        self.children = [[NSMutableArray alloc] init];
-        self.expanded = NO;
-        self.rowIndex = NSNotFound;
-        self.totalAncestors = 0;
-    }
-    return self;
-}
+@interface AwfulForumsListController ()
 
-+(AwfulForumSection *)sectionWithForum : (AwfulForum *)forum
-{
-    AwfulForumSection *sec = [[AwfulForumSection alloc] init];
-    sec.forum = forum;
-    return sec;
-}
+@property (nonatomic, strong) NSMutableArray *forums;
 
--(void)setAllExpanded
-{
-    self.expanded = YES;
-    for(AwfulForumSection *section in self.children) {
-        [section setAllExpanded];
-    }
-}
+@property (nonatomic, strong) IBOutlet AwfulForumHeader *headerView;
 
 @end
 
 @implementation AwfulForumsListController
 
-#pragma mark -
-#pragma mark Initialization
+#pragma mark - Initialization
 
-@synthesize favorites = _favorites;
 @synthesize forums = _forums;
 @synthesize forumSections = _forumSections;
 @synthesize headerView = _headerView;
-@synthesize displayingFullList = _displayingFullList;
-@synthesize segmentedControl = _segmentedControl;
 
-#pragma mark -
-#pragma mark View lifecycle
+#pragma mark - View lifecycle
 
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if([[segue identifier] isEqualToString:@"ThreadList"]) {
+    if ([[segue identifier] isEqualToString:@"ThreadList"]) {
         NSIndexPath *selected = [self.tableView indexPathForSelectedRow];
         
-        AwfulForum *forum = nil;
-        if(self.displayingFullList) {
-            forum = [self getForumAtIndexPath:selected];
-        } else {
-            forum = [self.favorites objectAtIndex:selected.row];
-        }
+        AwfulForum *forum = [self getForumAtIndexPath:selected];
         AwfulThreadListController *list = (AwfulThreadListController *)segue.destinationViewController;
         list.forum = forum;
-    } else if([[segue identifier] isEqualToString:@"AddForums"]) {
-        UINavigationController *nav = (UINavigationController *)segue.destinationViewController;
-        AwfulAddForumsViewController *addForums = (AwfulAddForumsViewController *)nav.topViewController;
-        addForums.delegate = self;
     }
 }
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
     
-    self.favorites = [[NSMutableArray alloc] init];
     self.forums = [[NSMutableArray alloc] init];
     self.forumSections = [[NSMutableArray alloc] init];
-    self.displayingFullList = YES;
     
     [self.navigationController setToolbarHidden:YES];
     
-    [self loadFavorites];
     [self loadForums];
-        
-    //UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(hitDone)];
-    //self.navigationItem.rightBarButtonItem = done;
-    
-    if (self.favorites.count > 0) {
-        self.navigationItem.leftBarButtonItem = self.editButtonItem;
-    }
         
     self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
 }
 
--(void)loadForums
+- (void)loadForums
 {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"AwfulForum"];
     NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES];
@@ -178,142 +128,67 @@
     }];
 }
 
-#pragma mark -
-#pragma mark Favorites
+#pragma mark - Table view data source
 
--(void)loadFavorites
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"AwfulForum"];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"favorited==YES"];
-    [fetchRequest setPredicate:predicate];
-    
-    NSError *err = nil;
-    NSArray *results = [ApplicationDelegate.managedObjectContext executeFetchRequest:fetchRequest error:&err];
-    if(err != nil) {
-        NSLog(@"failed to get favorite forums: %@", [err localizedDescription]);
-        return;
-    }
-    self.favorites = [NSMutableArray arrayWithArray:results];
+    return IsLoggedIn() ? [self.forumSections count] : 0;
 }
 
--(void)toggleFavoriteForForum : (AwfulForum *)forum
-{    
-    if(!IsLoggedIn()) {
-        return;
-    }
-    
-    if([forum.favorited boolValue]) {
-        forum.favorited = [NSNumber numberWithBool:NO];
-    } else {
-        forum.favorited = [NSNumber numberWithBool:YES];
-    }
-    [ApplicationDelegate saveContext];
-}
-
-#pragma mark -
-#pragma mark Table view data source
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-
-    if(!IsLoggedIn()) {
-        return 0;
-    }
-    
-    if(self.displayingFullList) {
-        return [self.forumSections count];
-    } else {
-        return 1;
-    }
-    
-    return 0;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
     
     if(!IsLoggedIn()) {
         return 0;
     }
     
-    if(self.displayingFullList) {
-        AwfulForumSection *root_section = [self getForumSectionAtSection:section];
-        if(root_section.expanded) {
-            NSMutableArray *descendants = [self getVisibleDescendantsListForForumSection:root_section];
-            return [descendants count];
-        }
-    } else {
-        return [self.favorites count] + 1;
+    AwfulForumSection *rootSection = [self getForumSectionAtSection:section];
+    if (rootSection.expanded) {
+        NSMutableArray *descendants = [self getVisibleDescendantsListForForumSection:rootSection];
+        return [descendants count];
     }
     
     return 0;
 }
 
-// Customize the appearance of table view cells.
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    if(self.displayingFullList || indexPath.row < [self.favorites count]) {
-        static NSString *CellIdentifier = @"ForumCell";
-        
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-        AwfulForumCell *forum_cell = (AwfulForumCell *)cell;
-        forum_cell.forumsList = self;
-        
-        if(self.displayingFullList) {
-            AwfulForumSection *section = [self getForumSectionAtIndexPath:indexPath];
-            if(section != nil) {
-                [forum_cell setSection:section];
-            }
-        } else {
-            AwfulForum *forum = [self.favorites objectAtIndex:indexPath.row];
-            AwfulForumSection *section = [AwfulForumSection sectionWithForum:forum];
-            if(section != nil && forum != nil) {
-                [forum_cell setSection:section];
-            }
-        }
-
-        return cell;
-    } else if(!self.displayingFullList && indexPath.row == [self.favorites count]) {
-        static NSString *ident = @"AddFavoritesCell";
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ident];
-        return cell;
+- (UITableViewCell *)tableView:(UITableView *)tableView
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *CellIdentifier = @"ForumCell";
+    AwfulForumCell *cell = (AwfulForumCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    cell.forumsList = self;
+    AwfulForumSection *section = [self getForumSectionAtIndexPath:indexPath];
+    if (section) {
+        cell.section = section;
     }
-    return nil;
+    return cell;
 }
 
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView
+  willDisplayCell:(UITableViewCell *)cell
+forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // need to set background color here to make it work on the disclosure indicator
     AwfulForumSection *section = [self getForumSectionAtIndexPath:indexPath];
-    AwfulForumCell *forum_cell = (AwfulForumCell *)cell;
-    if(section.totalAncestors > 1) {
+    AwfulForumCell *forumCell = (AwfulForumCell *)cell;
+    if (section.totalAncestors > 1) {
         UIColor *gray = [UIColor colorWithRed:235.0/255 green:235.0/255 blue:236.0/255 alpha:1.0];
         cell.backgroundColor = gray;
-        forum_cell.titleLabel.backgroundColor = gray;
+        forumCell.titleLabel.backgroundColor = gray;
     } else {
         cell.backgroundColor = [UIColor whiteColor];
-        forum_cell.titleLabel.backgroundColor = [UIColor whiteColor];
+        forumCell.titleLabel.backgroundColor = [UIColor whiteColor];
     }
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    NSString *str = nil;
-    
-    if(self.displayingFullList) {
-        AwfulForumSection *forum_section = [self getForumSectionAtSection:section];
-        if(forum_section != nil) {
-            str = forum_section.forum.name;
-        } else {
-            str = @"Unknown";
-        }
-    } else {
-        str = @"Favorites";
-    }
-    
-    AwfulForumHeader *header = nil;
     [[NSBundle mainBundle] loadNibNamed:@"AwfulForumHeaderView" owner:self options:nil];
-    header = self.headerView;
+    AwfulForumHeader *header = self.headerView;
     self.headerView = nil;
-    [header.titleLabel setText:str];
+    
+    AwfulForumSection *forumSection = [self getForumSectionAtSection:section];
+    header.titleLabel.text = forumSection ? forumSection.forum.name : @"Unknown";
     return header;
 }
 
@@ -322,116 +197,29 @@
     return 50;
 }
 
+#pragma mark - Forums
 
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    
-    if(self.displayingFullList) {
-        return YES;
-    } else {
-        return NO;
-    }
-    
-    return NO;
-}
-
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [self toggleFavoriteForForum:[self getForumAtIndexPath:indexPath]];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-
-
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-    
-    NSUInteger old_row = fromIndexPath.row;
-    NSUInteger to_row = toIndexPath.row;
-    
-    AwfulForum *fav = [self.favorites objectAtIndex:old_row];
-    [self.favorites removeObject:fav];
-    [self.favorites insertObject:fav atIndex:to_row];
-}
-
-
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-
-#pragma mark -
-#pragma mark Table view delegate
-
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if(!self.displayingFullList && indexPath.row == [self.favorites count]) {
-        [self performSegueWithIdentifier:@"AddForums" sender:nil];
-    }
-}
-
-#pragma mark -
-#pragma mark Memory management
-
-- (void)didReceiveMemoryWarning {
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Relinquish ownership any cached data, images, etc that aren't in use.
-}
-
-- (void)viewDidUnload {
-    // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
-    // For example: self.myOutlet = nil;
-}
-
-#pragma mark -
-#pragma mark Forums
-
--(void)toggleExpandForForumSection : (AwfulForumSection *)section
+-(void)toggleExpandForForumSection:(AwfulForumSection *)section
 {
-    NSArray *update = [NSArray arrayWithObject:[self getIndexPathForSection:section]];
     BOOL expanded = section.expanded;
     
     // need to set expanded to grab index list
     [section setExpanded:YES];
-    NSMutableArray *child_rows = [NSMutableArray array];
-    NSMutableArray *visible_descendants = [self getVisibleDescendantsListForForumSection:section];
-    for(AwfulForumSection *child in visible_descendants) {
-        NSIndexPath *child_path = [self getIndexPathForSection:child];
-        [child_rows addObject:child_path];
+    NSMutableArray *childRows = [NSMutableArray array];
+    for (AwfulForumSection *child in [self getVisibleDescendantsListForForumSection:section]) {
+        [childRows addObject:[self getIndexPathForSection:child]];
     }
     
-    if(expanded) {        
-        [section setExpanded:NO];
-        [self.tableView beginUpdates];
-        [self.tableView deleteRowsAtIndexPaths:child_rows withRowAnimation:UITableViewRowAnimationBottom];
-        [self.tableView reloadRowsAtIndexPaths:update withRowAnimation:UITableViewRowAnimationNone];
-        [self.tableView endUpdates];
+    section.expanded = !expanded;
+    [self.tableView beginUpdates];
+    if (expanded) {        
+        [self.tableView deleteRowsAtIndexPaths:childRows withRowAnimation:UITableViewRowAnimationBottom];
     } else {
-        [section setExpanded:YES];
-        [self.tableView beginUpdates];
-        [self.tableView insertRowsAtIndexPaths:child_rows withRowAnimation:UITableViewRowAnimationMiddle];
-        [self.tableView reloadRowsAtIndexPaths:update withRowAnimation:UITableViewRowAnimationNone];
-        [self.tableView endUpdates];
+        [self.tableView insertRowsAtIndexPaths:childRows withRowAnimation:UITableViewRowAnimationMiddle];
     }
-}
-
--(IBAction)grabFreshList
-{
-    /*AwfulForumListRefreshRequest *req = [[AwfulForumListRefreshRequest alloc] initWithForumsList:self];
-    loadRequestAndWait(req);*/
+    NSArray *update = [NSArray arrayWithObject:[self getIndexPathForSection:section]];
+    [self.tableView reloadRowsAtIndexPaths:update withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView endUpdates];
 }
 
 -(void)setForums:(NSMutableArray *)forums
@@ -602,12 +390,6 @@
         return section;
     }
     return [self getRootSectionForSection:[self getForumSectionFromID:section.forum.parentForum.forumID]];
-}
-
--(IBAction)segmentedControlChanged:(id)sender
-{
-    self.displayingFullList = (self.segmentedControl.selectedSegmentIndex == 0);
-    [self.tableView reloadData];
 }
 
 @end

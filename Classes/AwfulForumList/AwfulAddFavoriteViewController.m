@@ -1,29 +1,28 @@
 //
-//  AwfulAddForumsViewController.m
+//  AwfulAddFavoriteViewController.m
 //  Awful
 //
 //  Created by Sean Berry on 4/4/12.
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulAddForumsViewController.h"
+#import "AwfulAddFavoriteViewController.h"
+#import "AwfulForumsListControllerSubclass.h"
 #import "AwfulForumCell.h"
 #import "AwfulForum.h"
 
-@implementation AwfulAddForumsViewController
-
-@synthesize delegate = _delegate;
+@implementation AwfulAddFavoriteViewController
 
 - (void)loadForums
 {
     [super loadForums];
-    for(AwfulForumSection *section in self.forumSections) {
+    for (AwfulForumSection *section in self.forumSections) {
         [section setAllExpanded];
     }
     [self.tableView reloadData];
 }
 
-- (IBAction)hitDone:(id)sender
+- (IBAction)done
 {
     [self dismissModalViewControllerAnimated:YES];
 }

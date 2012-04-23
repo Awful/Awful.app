@@ -46,11 +46,11 @@
             </objects>
             <point key="canvasLocation" x="1685" y="-266"/>
         </scene>
-        <!--Awful Add Forums View Controller - Add Favorite-->
+        <!--Awful Add Favorite View Controller - Add Favorite-->
         <scene sceneID="ajj-oc-TJs">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UGB-w7-hyp" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tableViewController id="FXl-3U-dPW" customClass="AwfulAddForumsViewController" sceneMemberID="viewController">
+                <tableViewController id="FXl-3U-dPW" customClass="AwfulAddFavoriteViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="7iN-YA-SFn">
                         <rect key="frame" x="0.0" y="64" width="320" height="416"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -119,7 +119,7 @@
                     <navigationItem key="navigationItem" title="Add Favorite" id="6X7-Rv-wuv">
                         <barButtonItem key="rightBarButtonItem" title="Done" style="done" id="kL8-U3-qXL">
                             <connections>
-                                <action selector="hitDone:" destination="FXl-3U-dPW" id="2Dx-fO-cej"/>
+                                <action selector="done" destination="FXl-3U-dPW" id="DPf-K9-atz"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -890,12 +890,8 @@
         <image name="threadrating.png" width="45" height="13"/>
     </resources>
     <classes>
-        <class className="AwfulAddForumsViewController" superclassName="AwfulForumsListController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulAddForumsViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="hitDone:"/>
-                <relationship kind="outlet" name="delegate" candidateClass="AwfulForumsListController"/>
-            </relationships>
+        <class className="AwfulAddFavoriteViewController" superclassName="AwfulForumsListController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulAddFavoriteViewController.h"/>
         </class>
         <class className="AwfulBookmarksController" superclassName="AwfulThreadListController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulBookmarksController.h"/>

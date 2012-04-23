@@ -7,8 +7,8 @@
 //
 
 #import "AwfulForumCell.h"
-#import "AwfulForumsListController.h"
 #import "AwfulForum.h"
+#import "AwfulForumsListControllerSubclass.h"
 
 #define LINE_SPACE 10
 #define PI_OVER_2 (3.14159f / 2.0f)
@@ -64,7 +64,7 @@
     }
 }
 
--(IBAction)tappedArrow : (id)sender
+- (IBAction)tappedArrow:(id)sender
 {
     [self.forumsList toggleExpandForForumSection:self.section];
 }

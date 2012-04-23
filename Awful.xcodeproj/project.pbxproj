@@ -174,7 +174,7 @@
 		1185923913B9425C0036E607 /* star_admin.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1185923713B9425B0036E607 /* star_admin.gif */; };
 		1185923A13B9425C0036E607 /* star_moderator.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1185923813B9425B0036E607 /* star_moderator.gif */; };
 		118CF798152C05BA00126AAC /* AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CF797152C05BA00126AAC /* AwfulForum.m */; };
-		118CF809152D281600126AAC /* AwfulAddForumsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CF808152D281600126AAC /* AwfulAddForumsViewController.m */; };
+		118CF809152D281600126AAC /* AwfulAddFavoriteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CF808152D281600126AAC /* AwfulAddFavoriteViewController.m */; };
 		118E615B14E5A17500F0CE0A /* AwfulThreadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 112764F014DB4F6A003ACE76 /* AwfulThreadCell.m */; };
 		118E615F14E5A1F100F0CE0A /* AwfulForumHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 112764EC14DB44E6003ACE76 /* AwfulForumHeader.m */; };
 		1190F73413BE4EA900B9D271 /* AwfulActions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6CE13BE4EA900B9D271 /* AwfulActions.m */; };
@@ -294,6 +294,7 @@
 		11FE9E40153CFC70002EE2B5 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FE9E37153CFC6F002EE2B5 /* Reachability.m */; };
 		1C277CA51543554700CD2CCE /* AwfulSettingsChoiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C277CA41543554700CD2CCE /* AwfulSettingsChoiceViewController.m */; };
 		1C6A170715428F1D00410DB4 /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1C6A170615428F1D00410DB4 /* Settings.plist */; };
+		1C7B87201544D83D00891D41 /* AwfulForumSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B871F1544D83D00891D41 /* AwfulForumSection.m */; };
 		1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD5198154294D400326C7B /* AwfulSettings.m */; };
 		1CDF7A3E1537C157008EFAE4 /* GRMustache.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A011537C157008EFAE4 /* GRMustache.m */; };
 		1CDF7A3F1537C157008EFAE4 /* GRMustacheContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A051537C157008EFAE4 /* GRMustacheContext.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -507,8 +508,8 @@
 		1185923813B9425B0036E607 /* star_moderator.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = star_moderator.gif; path = images/star_moderator.gif; sourceTree = "<group>"; };
 		118CF796152C05BA00126AAC /* AwfulForum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForum.h; sourceTree = "<group>"; };
 		118CF797152C05BA00126AAC /* AwfulForum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForum.m; sourceTree = "<group>"; };
-		118CF807152D281600126AAC /* AwfulAddForumsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAddForumsViewController.h; sourceTree = "<group>"; };
-		118CF808152D281600126AAC /* AwfulAddForumsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAddForumsViewController.m; sourceTree = "<group>"; };
+		118CF807152D281600126AAC /* AwfulAddFavoriteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAddFavoriteViewController.h; sourceTree = "<group>"; };
+		118CF808152D281600126AAC /* AwfulAddFavoriteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAddFavoriteViewController.m; sourceTree = "<group>"; };
 		1190F6CD13BE4EA900B9D271 /* AwfulActions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulActions.h; sourceTree = "<group>"; };
 		1190F6CE13BE4EA900B9D271 /* AwfulActions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulActions.m; sourceTree = "<group>"; };
 		1190F6CF13BE4EA900B9D271 /* AwfulPostActions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostActions.h; sourceTree = "<group>"; };
@@ -693,6 +694,9 @@
 		1C277CA31543554700CD2CCE /* AwfulSettingsChoiceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettingsChoiceViewController.h; sourceTree = "<group>"; };
 		1C277CA41543554700CD2CCE /* AwfulSettingsChoiceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettingsChoiceViewController.m; sourceTree = "<group>"; };
 		1C6A170615428F1D00410DB4 /* Settings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Settings.plist; sourceTree = "<group>"; };
+		1C7B871B1544D73100891D41 /* AwfulForumsListControllerSubclass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumsListControllerSubclass.h; sourceTree = "<group>"; };
+		1C7B871E1544D83C00891D41 /* AwfulForumSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumSection.h; sourceTree = "<group>"; };
+		1C7B871F1544D83D00891D41 /* AwfulForumSection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumSection.m; sourceTree = "<group>"; };
 		1CDD5197154294D400326C7B /* AwfulSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettings.h; sourceTree = "<group>"; };
 		1CDD5198154294D400326C7B /* AwfulSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettings.m; sourceTree = "<group>"; };
 		1CDF7A001537C157008EFAE4 /* GRMustache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustache.h; sourceTree = "<group>"; };
@@ -1038,6 +1042,9 @@
 			children = (
 				1190F6DD13BE4EA900B9D271 /* AwfulForumsListController.h */,
 				1190F6DE13BE4EA900B9D271 /* AwfulForumsListController.m */,
+				1C7B871B1544D73100891D41 /* AwfulForumsListControllerSubclass.h */,
+				1C7B871E1544D83C00891D41 /* AwfulForumSection.h */,
+				1C7B871F1544D83D00891D41 /* AwfulForumSection.m */,
 				1CF2C5041543B51200E327F5 /* AwfulFavoritesViewController.h */,
 				1CF2C5051543B51200E327F5 /* AwfulFavoritesViewController.m */,
 				1190F6D813BE4EA900B9D271 /* AwfulForumCell.h */,
@@ -1045,8 +1052,8 @@
 				112764EB14DB44E6003ACE76 /* AwfulForumHeader.h */,
 				112764EC14DB44E6003ACE76 /* AwfulForumHeader.m */,
 				1190F6DB13BE4EA900B9D271 /* AwfulForumHeaderView.xib */,
-				118CF807152D281600126AAC /* AwfulAddForumsViewController.h */,
-				118CF808152D281600126AAC /* AwfulAddForumsViewController.m */,
+				118CF807152D281600126AAC /* AwfulAddFavoriteViewController.h */,
+				118CF808152D281600126AAC /* AwfulAddFavoriteViewController.m */,
 			);
 			path = AwfulForumList;
 			sourceTree = "<group>";
@@ -1888,7 +1895,7 @@
 				116EF41C15251CDB0018580D /* AwfulUser.m in Sources */,
 				116EF42D1526588C0018580D /* AwfulThread.m in Sources */,
 				118CF798152C05BA00126AAC /* AwfulForum.m in Sources */,
-				118CF809152D281600126AAC /* AwfulAddForumsViewController.m in Sources */,
+				118CF809152D281600126AAC /* AwfulAddFavoriteViewController.m in Sources */,
 				1CDF7A3E1537C157008EFAE4 /* GRMustache.m in Sources */,
 				1CDF7A3F1537C157008EFAE4 /* GRMustacheContext.m in Sources */,
 				1CDF7A401537C157008EFAE4 /* GRMustacheError.m in Sources */,
@@ -1917,6 +1924,7 @@
 				1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */,
 				1C277CA51543554700CD2CCE /* AwfulSettingsChoiceViewController.m in Sources */,
 				1CF2C5061543B51200E327F5 /* AwfulFavoritesViewController.m in Sources */,
+				1C7B87201544D83D00891D41 /* AwfulForumSection.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

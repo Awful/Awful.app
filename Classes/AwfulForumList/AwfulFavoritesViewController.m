@@ -7,8 +7,8 @@
 //
 
 #import "AwfulFavoritesViewController.h"
-#import "AwfulAddForumsViewController.h"
 #import "AwfulForumCell.h"
+#import "AwfulForumSection.h"
 #import "AwfulForumsListController.h"
 #import "AwfulThreadListController.h"
 
