@@ -13,6 +13,7 @@ For this release
 * Don't try to fetch bookmarks when not logged in.
 * Fix bold issue (currently example in awfulapp thread)
 * Sane intro to the app, take user to login screen
+* refresh a page shouldn't load a new page
 * Default data set with current forums (why do we need this? it's not much data)
 * rearrange favorite forums
 * Copy post URL

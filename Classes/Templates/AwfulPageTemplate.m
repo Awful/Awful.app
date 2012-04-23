@@ -42,7 +42,7 @@
 
 @interface AwfulPageTemplate ()
 
-@property (readonly, nonatomic) GRMustacheTemplate *template;
+@property (strong, nonatomic) GRMustacheTemplate *template;
 
 @end
 
@@ -50,46 +50,41 @@
 
 @synthesize template = _template;
 
-- (GRMustacheTemplate *)template
+-(NSURL *)getTemplateURLFromForum : (AwfulForum *)forum
 {
-    if (!_template)
-    {
-        // check docs folder first, if not in there use templates supplied by default
-        
-        NSURL *phoneTemplateURL = [[ApplicationDelegate applicationDocumentsDirectory] URLByAppendingPathComponent:@"phone-template.html"];
-        NSURL *padTemplateURL = [[ApplicationDelegate applicationDocumentsDirectory] URLByAppendingPathComponent:@"pad-template.html"];
-        
-        NSError *err = nil;
+    if(forum != nil) {
+        NSString *name = [NSString stringWithFormat:@"%@.html", forum.forumID];
         if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            if([padTemplateURL checkResourceIsReachableAndReturnError:nil]) {
-                _template = [GRMustacheTemplate templateFromContentsOfURL:padTemplateURL error:&err];
-            } else {
-                _template = [GRMustacheTemplate templateFromResource:@"pad-template"
-                                                       withExtension:@"html"
-                                                              bundle:nil
-                                                               error:&err];
-            }
-        } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-            if([phoneTemplateURL checkResourceIsReachableAndReturnError:nil]) {
-                _template = [GRMustacheTemplate templateFromContentsOfURL:phoneTemplateURL error:&err];
-            } else {
-                _template = [GRMustacheTemplate templateFromResource:@"phone-template"
-                                                       withExtension:@"html"
-                                                              bundle:nil
-                                                               error:&err];
-            }
+            name = [NSString stringWithFormat:@"%@-pad.html", forum.forumID];
         }
-        
-        if (!_template) {
-            NSLog(@"error parsing template %@", [err localizedDescription]);
+        NSURL *url = [[ApplicationDelegate applicationDocumentsDirectory] URLByAppendingPathComponent:name];
+        if([url checkResourceIsReachableAndReturnError:nil]) {
+            return url;
         }
     }
-    return _template;
+    
+    NSString *defaultName = @"phone-template.html";
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        defaultName = @"pad-template.html";
+    }
+    
+    NSURL *defaultURL = [[ApplicationDelegate applicationDocumentsDirectory] URLByAppendingPathComponent:defaultName];
+    if([defaultURL checkResourceIsReachableAndReturnError:nil]) {
+        return defaultURL;
+    }
+    
+    return [[NSBundle mainBundle] URLForResource:defaultName withExtension:nil];
 }
 
 - (NSString *)renderWithPageDataController:(AwfulPageDataController *)dataController displayAllPosts : (BOOL)displayAllPosts
 {
     TemplateContext *context = [[TemplateContext alloc] initWithPageDataController:dataController overridePostRemover:displayAllPosts];
+    NSURL *url = [self getTemplateURLFromForum:dataController.forum];
+    NSError *err = nil;
+    self.template = [GRMustacheTemplate templateFromContentsOfURL:url error:&err];
+    if(err != nil) {
+        NSLog(@"failed to load template %@: %@", url, [err localizedDescription]);
+    }
     return [self.template renderObject:context];
 }
 
