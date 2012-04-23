@@ -7,6 +7,7 @@
 //
 
 #import "AwfulSplitViewController.h"
+#import "AwfulLoginController.h"
 
 @implementation AwfulSplitViewController
 @synthesize popoverController, rootPopoverButtonItem;
@@ -14,6 +15,12 @@
 -(void)awakeFromNib
 {
     self.delegate = self;
+    
+    UITabBarController *tbc =  [self.viewControllers objectAtIndex:0];
+    if (IsLoggedIn())
+        tbc.selectedIndex = 1;
+    else
+        tbc.selectedIndex = 2; 
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
