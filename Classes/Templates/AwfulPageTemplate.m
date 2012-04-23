@@ -14,6 +14,7 @@
 #import "GRMustacheTemplate.h"
 #import "PostContext.h"
 #import "SALR.h"
+#import "AwfulForum.h"
 
 /*
  Notes:

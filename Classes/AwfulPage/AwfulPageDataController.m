@@ -204,11 +204,9 @@
     }
     
     NSString *body_search_str = @"//td[@class='postbody']";
-    /*if(is_fyad) {
-     body_search_str = @"//div[@class='complete_shit funbox']";
-     } else {
-     body_search_str = @"//td[@class='postbody']";
-     }*/
+    if([self.forum.forumID isEqualToString:@"26"]) {
+        body_search_str = @"//div[@class='complete_shit funbox']";
+    }
     
     NSArray *body_strings = [parser rawSearch:body_search_str];
     
