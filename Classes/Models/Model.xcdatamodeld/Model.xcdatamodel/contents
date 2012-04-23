@@ -33,11 +33,11 @@
         <attribute name="userName" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="Favorite" syncable="YES">
-        <attribute name="displayOrder" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="displayOrder" optional="YES" attributeType="Integer 32" defaultValueString="-1" syncable="YES"/>
         <relationship name="forum" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="favorite" inverseEntity="AwfulForum" syncable="YES"/>
     </entity>
     <elements>
-        <element name="AwfulForum" positionX="160" positionY="192" width="128" height="150"/>
+        <element name="AwfulForum" positionX="160" positionY="192" width="128" height="165"/>
         <element name="AwfulThread" positionX="160" positionY="192" width="128" height="285"/>
         <element name="AwfulUser" positionX="160" positionY="192" width="128" height="90"/>
         <element name="Favorite" positionX="171" positionY="324" width="128" height="75"/>

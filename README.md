@@ -12,7 +12,6 @@ For this release
 * Fix bold issue (currently example in awfulapp thread)
 * Sane intro to the app, take user to login screen
 * Default data set with current forums (why do we need this? it's not much data)
-* rearrange favorite forums
 * press-hold on threadlist to jump to first/last page of a thread from threadlist
 * Copy thread/post URL
 * Maintain page position on orientation change

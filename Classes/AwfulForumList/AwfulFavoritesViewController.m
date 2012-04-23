@@ -18,6 +18,8 @@
 
 @property (readonly, strong, nonatomic) UIBarButtonItem *addButtonItem;
 
+@property (assign, getter = isReordering) BOOL reordering;
+
 @end
 
 @implementation AwfulFavoritesViewController
@@ -94,6 +96,8 @@
     return _addButtonItem;
 }
 
+@synthesize reordering = _reordering;
+
 - (void)addFavorites
 {
     [self performSegueWithIdentifier:@"AddFavorite" sender:self];
@@ -145,6 +149,30 @@
     }
 }
 
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView
+    moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
+      toIndexPath:(NSIndexPath *)destinationIndexPath
+{
+    self.reordering = YES;
+    NSMutableArray *reorder = [self.resultsController.fetchedObjects mutableCopy];
+    NSManagedObject *whatever = [reorder objectAtIndex:sourceIndexPath.row];
+    [reorder removeObjectAtIndex:sourceIndexPath.row];
+    [reorder insertObject:whatever atIndex:destinationIndexPath.row];
+    for (NSInteger i = 0; i < reorder.count; i += 1) {
+        [[reorder objectAtIndex:i] setValue:[NSNumber numberWithInteger:i]
+                                     forKey:@"displayOrder"];
+    }
+    NSError *error;
+    BOOL ok = [whatever.managedObjectContext save:&error];
+    NSAssert(ok, @"error saving favorite order: %@", error);
+    self.reordering = NO;
+}
+
 #pragma mark - Table view delegate
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView
@@ -157,6 +185,9 @@
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
+    if (self.reordering) {
+        return;
+    }
     [self.tableView beginUpdates];
 }
 
@@ -180,6 +211,9 @@
      forChangeType:(NSFetchedResultsChangeType)type
       newIndexPath:(NSIndexPath *)newIndexPath
 {
+    if (self.reordering) {
+        return;
+    }
     if (type == NSFetchedResultsChangeInsert) {
         [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
                               withRowAnimation:UITableViewRowAnimationFade];
@@ -199,6 +233,9 @@
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
+    if (self.reordering) {
+        return;
+    }
     [self.tableView endUpdates];
 }
 
