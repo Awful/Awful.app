@@ -15,6 +15,8 @@
 
 @property (nonatomic, strong) NSMutableArray *forumSections;
 
+@property (nonatomic, readonly) NSPredicate *forumsPredicate;
+
 - (void)loadForums;
 - (void)toggleExpandForForumSection:(AwfulForumSection *)section;
 

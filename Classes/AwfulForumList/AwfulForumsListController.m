@@ -39,6 +39,11 @@
 @synthesize forumSections = _forumSections;
 @synthesize headerView = _headerView;
 
+- (NSPredicate *)forumsPredicate
+{
+    return nil;
+}
+
 #pragma mark - View lifecycle
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -71,6 +76,7 @@
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"AwfulForum"];
     NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES];
     [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
+    fetchRequest.predicate = self.forumsPredicate;
     
     NSError *err = nil;
     NSArray *forums = [ApplicationDelegate.managedObjectContext executeFetchRequest:fetchRequest error:&err];

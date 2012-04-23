@@ -25,9 +25,11 @@
 - (void)setUpResultsController
 {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"Favorite"];
-    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"displayOrder"
-                                                                     ascending:YES];
-    fetchRequest.sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
+    NSSortDescriptor *orderDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"displayOrder"
+                                                                      ascending:YES];
+    NSSortDescriptor *forumDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"forum.index"
+                                                                      ascending:YES];
+    fetchRequest.sortDescriptors = [NSArray arrayWithObjects:orderDescriptor, forumDescriptor, nil];
     self.resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest 
                                                                  managedObjectContext:ApplicationDelegate.managedObjectContext
                                                                    sectionNameKeyPath:nil

@@ -13,6 +13,11 @@
 
 @implementation AwfulAddFavoriteViewController
 
+- (NSPredicate *)forumsPredicate
+{
+    return [NSPredicate predicateWithFormat:@"favorite == nil"];
+}
+
 - (void)loadForums
 {
     [super loadForums];
