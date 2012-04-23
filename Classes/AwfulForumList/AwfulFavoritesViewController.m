@@ -20,6 +20,8 @@
 
 @property (assign, getter = isReordering) BOOL reordering;
 
+@property (assign) BOOL hasModalViewController;
+
 @end
 
 @implementation AwfulFavoritesViewController
@@ -56,12 +58,13 @@
 {
     [super viewWillAppear:animated];
     [self.navigationController setToolbarHidden:YES];
+    self.hasModalViewController = self.modalViewController != nil;
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    if (self.resultsController.fetchedObjects.count == 0) {
+    if (!self.hasModalViewController && self.resultsController.fetchedObjects.count == 0) {
         [self addFavorites];
     }
 }
@@ -97,6 +100,8 @@
 }
 
 @synthesize reordering = _reordering;
+
+@synthesize hasModalViewController = _hasModalViewController;
 
 - (void)addFavorites
 {
