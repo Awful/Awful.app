@@ -139,8 +139,7 @@
 		11682B191536348700D6B9B7 /* wrestling-raw.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AEA1536348700D6B9B7 /* wrestling-raw.png */; };
 		11682B1A1536348700D6B9B7 /* wrestling-roh.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AEB1536348700D6B9B7 /* wrestling-roh.png */; };
 		11682B1B1536348700D6B9B7 /* wrestling-sd.png in Resources */ = {isa = PBXBuildFile; fileRef = 11682AEC1536348700D6B9B7 /* wrestling-sd.png */; };
-		116D3A6014DDC9E40002129F /* phone-template.html in Resources */ = {isa = PBXBuildFile; fileRef = 116D3A5F14DDC9E40002129F /* phone-template.html */; };
-		116D3A6314DDD71C0002129F /* pad-template.html in Resources */ = {isa = PBXBuildFile; fileRef = 116D3A6214DDD71C0002129F /* pad-template.html */; };
+		116D3A6014DDC9E40002129F /* template.html in Resources */ = {isa = PBXBuildFile; fileRef = 116D3A5F14DDC9E40002129F /* template.html */; };
 		116EF3DC1523A86C0018580D /* AwfulForum+AwfulMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = 116EF3DB1523A86C0018580D /* AwfulForum+AwfulMethods.m */; };
 		116EF3F81523E5510018580D /* AwfulThread+AwfulMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = 116EF3F71523E5500018580D /* AwfulThread+AwfulMethods.m */; };
 		116EF41915251C5D0018580D /* AwfulUser+AwfulMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = 116EF41815251C5D0018580D /* AwfulUser+AwfulMethods.m */; };
@@ -465,8 +464,7 @@
 		11682AEA1536348700D6B9B7 /* wrestling-raw.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "wrestling-raw.png"; sourceTree = "<group>"; };
 		11682AEB1536348700D6B9B7 /* wrestling-roh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "wrestling-roh.png"; sourceTree = "<group>"; };
 		11682AEC1536348700D6B9B7 /* wrestling-sd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "wrestling-sd.png"; sourceTree = "<group>"; };
-		116D3A5F14DDC9E40002129F /* phone-template.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = "phone-template.html"; path = "../web resources/phone-template.html"; sourceTree = "<group>"; };
-		116D3A6214DDD71C0002129F /* pad-template.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = "pad-template.html"; path = "web resources/pad-template.html"; sourceTree = SOURCE_ROOT; };
+		116D3A5F14DDC9E40002129F /* template.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = template.html; path = "../web resources/template.html"; sourceTree = "<group>"; };
 		116EF3DA1523A86C0018580D /* AwfulForum+AwfulMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AwfulForum+AwfulMethods.h"; sourceTree = "<group>"; };
 		116EF3DB1523A86C0018580D /* AwfulForum+AwfulMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AwfulForum+AwfulMethods.m"; sourceTree = "<group>"; };
 		116EF3F61523E5500018580D /* AwfulThread+AwfulMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AwfulThread+AwfulMethods.h"; sourceTree = "<group>"; };
@@ -1297,8 +1295,7 @@
 				11D5E85C14DC6D5C00C1002D /* AwfulPageTemplate.m */,
 				1CDF7A5C1537DD2D008EFAE4 /* PostContext.h */,
 				1CDF7A5D1537DD2D008EFAE4 /* PostContext.m */,
-				116D3A5F14DDC9E40002129F /* phone-template.html */,
-				116D3A6214DDD71C0002129F /* pad-template.html */,
+				116D3A5F14DDC9E40002129F /* template.html */,
 			);
 			name = Templates;
 			sourceTree = "<group>";
@@ -1650,8 +1647,7 @@
 				50574ECD14CA187D00FD1F92 /* dotdotdot-clear.png in Resources */,
 				5040D23E14D0BC5D009E73F7 /* back.png in Resources */,
 				5040D23F14D0BC5D009E73F7 /* back@2x.png in Resources */,
-				116D3A6014DDC9E40002129F /* phone-template.html in Resources */,
-				116D3A6314DDD71C0002129F /* pad-template.html in Resources */,
+				116D3A6014DDC9E40002129F /* template.html in Resources */,
 				1195D59414C4CB4400CA3A48 /* threadrating.png in Resources */,
 				112ECF3214D7100A007EE7B6 /* art.png in Resources */,
 				112ECF3314D7100A007EE7B6 /* audio.png in Resources */,

@@ -1,0 +1,331 @@
+<html>
+<head>
+
+{{#isPhoneDevice}}
+    <meta name='viewport' content='width=device-width, minimum-scale=1.0, maximum-scale=1.0'>
+{{/isPhoneDevice}}
+
+{{#isPadDevice}}
+    <meta name='viewport' content='width=80%, minimum-scale=1.0, maximum-scale=1.0'>
+{{/isPadDevice}}
+
+{{#javascripts}}
+    <script type='text/javascript'>{{{.}}}</script>
+{{/javascripts}}
+
+    <script type='text/javascript'>
+    $(document).ready(function() {
+        new SALR({{{salrConfig}}});
+    });
+    </script>
+
+    <style type='text/css'>
+    html {
+        margin:0px;
+        padding:0px;
+    }
+
+    body {
+        word-wrap:break-word;
+        font-family: Helvetica, Arial, sans-serif;
+        font-size:14px;
+        margin:0px;
+        padding:0px;
+        -webkit-text-size-adjust: none;
+    }
+
+    img {
+        max-width:100%;
+    }
+
+    .userbox {
+        -webkit-user-select:none;
+        
+        {{#isPhoneDevice}}
+        width:100%;
+        height:50px;
+        background-color:#006698;
+        {{/isPhoneDevice}}
+        
+        {{#isPadDevice}}
+        font-weight: bold;
+        width: 500px;
+        height: 50px;
+        vertical-align: top;
+        text-shadow: 0 1px #fafafa;
+        {{/isPadDevice}}
+    }
+
+    .userbox.op {
+        {{#isPhoneDevice}}
+        background-color:#199ed7;
+        {{/isPhoneDevice}}
+		
+        {{#isPadDevice}}
+        color:#199ed7;
+        {{/isPadDevice}}
+    }
+
+    .avatar_img {
+        max-width:50px;
+        height:45px;
+        padding-left: 5px;
+        padding-top: 2px;
+        padding-bottom: 2px;
+    }
+
+    .avatar_td {
+        width:50px;
+    }
+
+    .name_date_box {
+        padding:7px;
+        padding-right:0px;
+        color:white;
+        width:200px;
+    }
+
+    span.username {
+        font-weight:bold;
+		
+        {{#isPadDevice}}
+        width: 100%;
+        {{/isPadDevice}}
+    }
+
+    span.username_op {
+        font-weight:bold;
+    }
+
+    .post_date {
+        font-size:0.75em;
+		
+        {{#isPadDevice}}
+        color: #999999;
+        font-style: italic;
+        {{/isPadDevice}}
+    }
+
+    img.avatar {
+        {{#isPhoneDevice}}
+        max-height: 45px;
+        max-width:  45px;
+        {{/isPhoneDevice}}
+        
+        {{#isPadDevice}}
+        display: inline;
+        max-width: 75px;
+        margin-right: 10px
+        {{/isPadDevice}}
+    }
+
+    .quotebutton {
+        padding-right:10px;
+        
+        {{#isPhoneDevice}}
+        width:45px;
+        {{/isPhoneDevice}}
+        
+        {{#isPadDevice}}
+        float:right;
+        padding-right:10px;
+        width:30px;
+        {{/isPadDevice}}
+    }
+    
+    {{#isPadDevice}}
+    img.postaction {
+        height:30px;
+    }
+    {{/isPadDevice}}
+
+    .postbodymain {
+        font-size:15px;
+		
+        {{#isPadDevice}}
+        border-bottom: 1px solid #c1c1c1;
+        {{/isPadDevice}}
+    }
+        
+    {{#isPadDevice}}
+    .postbodymain > table {
+        width: 100%;
+    }
+    {{/isPadDevice}}
+
+    .postbodysub {
+        padding:5px;
+    }
+
+    a {
+        word-wrap:break-word;
+    }
+
+    .ad {
+        text-align:center;
+    }
+
+    .ad img {
+        {{#isPhoneDevice}}
+        width:100%;
+        height:auto;
+        {{/isPhoneDevice}}
+        
+        {{#isPadDevice}}
+        width:468px;
+        height:60px;
+        {{/isPadDevice}}
+    }
+
+    .pagesleft {
+        display: none;
+        border-top:1px solid black;
+        text-align:center;
+        background-color:white;
+        height:40px;
+        font-family:Helvetica;
+        font-size:20px;
+        padding-top:10px;
+    }
+
+    .olderposts {
+        width:100%;
+        padding:0;
+        padding-top:6px;
+        text-align:center;
+        background-color: #003d67;
+        color:#dbe8f5;
+        height:26px;
+        font-family:Helvetica;
+        font-size:16px;
+    }
+
+    .altcolor1 {
+        background-color:#f4f4f4;
+    }
+    .altcolor2 {
+        background-color:#e8e8e8;
+    }
+
+    .seen1 { background-color:#dbe8f5; }
+    .seen2 { background-color:#e7eff5; }
+
+    hr {
+        margin:0px;
+    }
+
+    p.editedby {
+        font-size:0.5em;
+        font-style:italic;
+    }
+        
+    {{#isPadDevice}}
+    br {
+        height: 0;
+    }
+    {{/isPadDevice}}
+
+    {{#isPhoneDevice}}
+    .bbc-block, .bbc-block h5 { border-bottom:1px #999 solid;}
+    .bbc-block h4, .bbc-block h5 { display:block; color:#555; margin:0; padding:0; }
+    .bbc-block h4 { padding:1px 0 2px 0; border-top:1px #999 solid; font-size:13px; font-style:italic; }
+    .bbc-block h5 { font-size:12px; }
+    .bbc-block blockquote {font-size:12px; padding:5px; margin:0px;}
+    {{/isPhoneDevice}}
+        
+    {{#isPadDevice}}
+    .bbc-block, .bbc-block h5 { max-width: 100%; }
+    .bbc-block h4, .bbc-block h5 { display:block; color:#555; margin:0; padding:0; }
+    .bbc-block h4 { padding:1px 0 2px 0; font-size:13px; font-style:italic; }
+    .bbc-block h5 { font-size:12px; }
+    .bbc-block blockquote {font-size: .85em; padding:0 .5em 0 1em; margin: .5em; border-left:1px #999 solid;}
+    .bbc-block pre {font-size: .85em; padding:0 .5em 0 1em; margin:0 0 0 .25em; border-left:1px #999 solid; max-width: 500px}
+    {{/isPadDevice}}
+
+    blockquote img {
+        max-width:160px;
+        max-height:100px;
+    }
+
+    .bbc-spoiler, .bbc-spoiler li { background:#000; }
+    .bbc-spoiler a:link, .bbc-spoiler a:visited, .bbc-spoiler a:active, .bbc-spoiler a:link { color:#000; }
+    .bbc-spoiler:hover a:link, .bbc-spoiler:hover a:visited, .bbc-spoiler:hover a:active, .bbc-spoiler:hover a:link { color:#80c0ff; }    
+</style>
+</head>
+
+<body>
+{{#postsAboveNotice}}
+<div class='olderposts' onclick=tappedOlderPosts()>Load {{postsAboveNotice}}</div>
+{{/postsAboveNotice}}
+
+{{#isPhoneDevice}}
+{{#posts}}
+<table id='{{postID}}' class='userbox {{#isOP}}op{{/isOP}}'>
+    <tr>
+        {{#avatarURL}}
+        <td class='avatar_td'>
+            <img class='avatar_img' src='{{avatarURL}}'/>
+        </td>
+        {{/avatarURL}}
+        <td class='name_date_box'>
+            <span class='username {{#isOP}}op{{/isOP}}'>
+                {{#isMod}}
+                <img src="http://www.regularberry.com/awful/star_moderator.gif"/>&nbsp;
+                {{/isMod}}
+                {{#isAdmin}}
+                <img src="http://www.regularberry.com/awful/star_admin.gif"/>&nbsp;
+                {{/isAdmin}}
+                {{posterName}}
+            </span><br/>
+            <span class='post_date'>Posted on {{postDate}}</span>
+        </td>
+        <td></td>
+        <td class='quotebutton' onclick=tappedPost('{{postID}}')>
+            <img class='postaction' src="http://www.regularberry.com/awful/post-action-icon.png"/>
+        </td>
+    </tr>
+</table>
+<div class='postbodymain {{altCSSClass}}'>
+    <div class='postbodysub'>{{{postBody}}}</div>
+</div>
+{{/posts}}
+{{/isPhoneDevice}}
+    
+{{#isPadDevice}}
+{{#posts}}
+<div class='postbodymain {{altCSSClass}}' style='padding:10px'>
+    <table id='{{postID}}'>
+        <tr>
+            <td valign='top' rowspan=3>
+                {{#avatarURL}}
+                <img src='{{avatarURL}}' class="avatar" />
+                {{/avatarURL}}
+            </td>
+            <td valign='top' width='823'>
+                <div style="float:right;" class='quotebutton' onclick=tappedPost('{{postID}}')>
+                    <img class='postaction' src="http://www.regularberry.com/awful/post-action-icon.png"/>
+                </div>
+                <span class='userbox {{#isOP}}op{{/isOP}}'>
+                    {{#isMod}}
+                    <img src="http://www.regularberry.com/awful/star_moderator.gif"/>&nbsp;
+                    {{/isMod}}
+                    {{#isAdmin}}
+                    <img src="http://www.regularberry.com/awful/star_admin.gif"/>&nbsp;
+                    {{/isAdmin}}
+                    {{posterName}}
+                </span>
+                <div class='post_date'>Posted On {{postDate}}</div>
+            </td>
+        </tr>
+        <tr class="postText">{{{postBody}}}</tr>
+    </table>
+</div>
+{{/posts}}
+{{/isPadDevice}}
+                    
+<div class='ad'>{{{userAd}}}</div>
+{{#isPhoneDevice}}
+<div class='pagesleft' onclick=tappedBottom()>{{pagesLeftNotice}}</div>
+{{/isPhoneDevice}}
+</body>
+</html>

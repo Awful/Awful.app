@@ -37,6 +37,9 @@
 @property (strong) NSString *userAd;
 @property (assign) BOOL showAvatars;
 
+@property (assign, getter = isPhoneDevice) BOOL phoneDevice;
+@property (assign, getter = isPadDevice) BOOL padDevice;
+
 @end
 
 
@@ -56,28 +59,16 @@
     {
         // check docs folder first, if not in there use templates supplied by default
         
-        NSURL *phoneTemplateURL = [[ApplicationDelegate applicationDocumentsDirectory] URLByAppendingPathComponent:@"phone-template.html"];
-        NSURL *padTemplateURL = [[ApplicationDelegate applicationDocumentsDirectory] URLByAppendingPathComponent:@"pad-template.html"];
+        NSURL *templateURL = [[ApplicationDelegate applicationDocumentsDirectory] URLByAppendingPathComponent:@"template.html"];
         
         NSError *err = nil;
-        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            if([padTemplateURL checkResourceIsReachableAndReturnError:nil]) {
-                _template = [GRMustacheTemplate templateFromContentsOfURL:padTemplateURL error:&err];
-            } else {
-                _template = [GRMustacheTemplate templateFromResource:@"pad-template"
-                                                       withExtension:@"html"
-                                                              bundle:nil
-                                                               error:&err];
-            }
-        } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-            if([phoneTemplateURL checkResourceIsReachableAndReturnError:nil]) {
-                _template = [GRMustacheTemplate templateFromContentsOfURL:phoneTemplateURL error:&err];
-            } else {
-                _template = [GRMustacheTemplate templateFromResource:@"phone-template"
-                                                       withExtension:@"html"
-                                                              bundle:nil
-                                                               error:&err];
-            }
+        if([templateURL checkResourceIsReachableAndReturnError:nil]) {
+            _template = [GRMustacheTemplate templateFromContentsOfURL:templateURL error:&err];
+        } else {
+            _template = [GRMustacheTemplate templateFromResource:@"template"
+                                                   withExtension:@"html"
+                                                          bundle:nil
+                                                           error:&err];
         }
         
         if (!_template) {
@@ -87,9 +78,11 @@
     return _template;
 }
 
-- (NSString *)renderWithPageDataController:(AwfulPageDataController *)dataController displayAllPosts : (BOOL)displayAllPosts
+- (NSString *)renderWithPageDataController:(AwfulPageDataController *)dataController
+                           displayAllPosts:(BOOL)displayAllPosts
 {
-    TemplateContext *context = [[TemplateContext alloc] initWithPageDataController:dataController overridePostRemover:displayAllPosts];
+    TemplateContext *context = [[TemplateContext alloc] initWithPageDataController:dataController
+                                                               overridePostRemover:displayAllPosts];
     return [self.template renderObject:context];
 }
 
@@ -169,6 +162,9 @@
             }
         }
         self.posts = posts;
+        UIDevice *device = [UIDevice currentDevice];
+        self.phoneDevice = device.userInterfaceIdiom == UIUserInterfaceIdiomPhone;
+        self.padDevice = device.userInterfaceIdiom == UIUserInterfaceIdiomPad;
     }
     return self;
 }
@@ -201,5 +197,9 @@
 @synthesize userAd = _userAd;
 
 @synthesize showAvatars = _showAvatars;
+
+@synthesize phoneDevice = _phoneDevice;
+
+@synthesize padDevice = _padDevice;
 
 @end
