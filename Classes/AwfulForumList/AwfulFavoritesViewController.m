@@ -99,6 +99,13 @@
     [self performSegueWithIdentifier:@"AddFavorite" sender:self];
 }
 
+#pragma mark - Awful table view
+
+- (BOOL)canPullToRefresh
+{
+    return NO;
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
