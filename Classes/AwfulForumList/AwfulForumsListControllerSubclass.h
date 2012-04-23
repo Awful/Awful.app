@@ -22,6 +22,7 @@
 
 - (AwfulForum *)getForumAtIndexPath:(NSIndexPath *)path;
 - (AwfulForumSection *)getForumSectionAtIndexPath:(NSIndexPath *)path;
+- (AwfulForumSection *)getRootSectionForSection:(AwfulForumSection *)section;
 
 @end
 

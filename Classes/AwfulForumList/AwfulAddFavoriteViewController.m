@@ -67,8 +67,15 @@
     }
     AwfulForumSection *section = [self getForumSectionAtIndexPath:indexPath];
     section.forum = nil;
+    [tableView beginUpdates];
     [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
                      withRowAnimation:UITableViewRowAnimationFade];
+    if ([tableView.dataSource tableView:tableView numberOfRowsInSection:indexPath.section] == 0) {
+        [self.forumSections removeObjectAtIndex:indexPath.section];
+        [tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section]
+                 withRowAnimation:UITableViewRowAnimationFade];
+    }
+    [tableView endUpdates];
 }
 
 #pragma mark - Table view data source
