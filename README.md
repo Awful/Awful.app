@@ -27,7 +27,6 @@ For some later release
 ----------------------
 * Private messages
 * Search
-* FYAD
 
 An unofficial app
 -----------------
