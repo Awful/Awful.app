@@ -458,15 +458,16 @@
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="r5B-y3-u9R"/>
-                                    <barButtonItem style="plain" id="ouP-eR-lJq">
+                                    <barButtonItem width="180" style="plain" id="ouP-eR-lJq">
                                         <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" id="Vqh-P3-nJ1" customClass="ButtonSegmentedControl">
-                                            <rect key="frame" x="89" y="8" width="142" height="30"/>
+                                            <rect key="frame" x="75" y="8" width="180" height="30"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <segments>
                                                 <segment title="["/>
                                                 <segment title="]"/>
-                                                <segment title="\"/>
+                                                <segment title="/"/>
                                                 <segment title="="/>
+                                                <segment title=":"/>
                                             </segments>
                                             <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                             <connections>
@@ -1006,6 +1007,7 @@
                 <relationship kind="outlet" name="secondTagImage" candidateClass="UIImageView"/>
                 <relationship kind="outlet" name="sticky" candidateClass="UIImageView"/>
                 <relationship kind="outlet" name="tagImage" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="tagLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="threadTitleLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="unreadButton" candidateClass="UIButton"/>
             </relationships>
