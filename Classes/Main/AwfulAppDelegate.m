@@ -7,7 +7,7 @@
 //
 
 #import "AwfulAppDelegate.h"
-#import "FlurryAPI.h"
+#import "TestFlight.h"
 #import "Appirater.h"
 #import "AwfulSplitViewController.h"
 #import "AwfulNetworkEngine.h"
@@ -29,6 +29,8 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [[AwfulSettings settings] registerDefaults];
+    
+    [TestFlight takeOff:@"a9e8d8810060d13a12051820b14a3368_MTIyNTAyMDEyLTAxLTE5IDEwOjAxOjU3LjYwODczNQ"];
     
     self.awfulNetworkEngine = [[AwfulNetworkEngine alloc] initWithHostName:@"forums.somethingawful.com" customHeaderFields:nil];
     

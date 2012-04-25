@@ -224,7 +224,6 @@
 		1190F7EF13BE4ECB00B9D271 /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7C413BE4ECB00B9D271 /* TFHppleElement.m */; };
 		1190F7F013BE4ECB00B9D271 /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7C613BE4ECB00B9D271 /* XPathQuery.m */; };
 		1190F7F313BE4EDA00B9D271 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7F213BE4EDA00B9D271 /* main.m */; };
-		1190F80013BE4F2900B9D271 /* libFlurry.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1190F7FC13BE4F2900B9D271 /* libFlurry.a */; };
 		1190F80513BE58BB00B9D271 /* post.css in Resources */ = {isa = PBXBuildFile; fileRef = 1190F80313BE58BB00B9D271 /* post.css */; };
 		1195D59414C4CB4400CA3A48 /* threadrating.png in Resources */ = {isa = PBXBuildFile; fileRef = 1195D59014C4CB4400CA3A48 /* threadrating.png */; };
 		1199D7CF13AA9C4200264DE9 /* tiny_arrow_right.png in Resources */ = {isa = PBXBuildFile; fileRef = 1199D7CE13AA9C4200264DE9 /* tiny_arrow_right.png */; };
@@ -290,6 +289,7 @@
 		11D4700E154793B8004D800B /* tviv-dvd.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D46FE2154793B8004D800B /* tviv-dvd.png */; };
 		11D4700F154793B8004D800B /* tviv-on-demand.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D46FE3154793B8004D800B /* tviv-on-demand.png */; };
 		11D47010154793B8004D800B /* tviv-spoilers.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D46FE4154793B8004D800B /* tviv-spoilers.png */; };
+		11D470161547A97A004D800B /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 11D470121547A97A004D800B /* libTestFlight.a */; };
 		11D5E85814DC5FA000C1002D /* AwfulPageDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11D5E85714DC5FA000C1002D /* AwfulPageDataController.m */; };
 		11D5E85D14DC6D5C00C1002D /* AwfulPageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 11D5E85C14DC6D5C00C1002D /* AwfulPageTemplate.m */; };
 		11D7CB9214EA0867000DA96A /* icon23-banme.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D7CB8D14EA0867000DA96A /* icon23-banme.png */; };
@@ -645,8 +645,6 @@
 		1190F7C613BE4ECB00B9D271 /* XPathQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XPathQuery.m; sourceTree = "<group>"; };
 		1190F7F113BE4EDA00B9D271 /* Awful_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Awful_Prefix.pch; sourceTree = "<group>"; };
 		1190F7F213BE4EDA00B9D271 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		1190F7FB13BE4F2900B9D271 /* FlurryAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlurryAPI.h; sourceTree = "<group>"; };
-		1190F7FC13BE4F2900B9D271 /* libFlurry.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry.a; sourceTree = "<group>"; };
 		1190F80313BE58BB00B9D271 /* post.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = post.css; sourceTree = "<group>"; };
 		1195D59014C4CB4400CA3A48 /* threadrating.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = threadrating.png; path = images/threadrating.png; sourceTree = "<group>"; };
 		1199D7CE13AA9C4200264DE9 /* tiny_arrow_right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tiny_arrow_right.png; path = images/tiny_arrow_right.png; sourceTree = "<group>"; };
@@ -713,6 +711,8 @@
 		11D46FE2154793B8004D800B /* tviv-dvd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tviv-dvd.png"; sourceTree = "<group>"; };
 		11D46FE3154793B8004D800B /* tviv-on-demand.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tviv-on-demand.png"; sourceTree = "<group>"; };
 		11D46FE4154793B8004D800B /* tviv-spoilers.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tviv-spoilers.png"; sourceTree = "<group>"; };
+		11D470121547A97A004D800B /* libTestFlight.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libTestFlight.a; sourceTree = "<group>"; };
+		11D470151547A97A004D800B /* TestFlight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestFlight.h; sourceTree = "<group>"; };
 		11D5E85614DC5FA000C1002D /* AwfulPageDataController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPageDataController.h; sourceTree = "<group>"; };
 		11D5E85714DC5FA000C1002D /* AwfulPageDataController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPageDataController.m; sourceTree = "<group>"; };
 		11D5E85B14DC6D5C00C1002D /* AwfulPageTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AwfulPageTemplate.h; path = Templates/AwfulPageTemplate.h; sourceTree = "<group>"; };
@@ -861,7 +861,7 @@
 				10D34FAF128F413C0026C7C2 /* MobileCoreServices.framework in Frameworks */,
 				10D34FB1128F413C0026C7C2 /* SystemConfiguration.framework in Frameworks */,
 				10D34FB7128F414E0026C7C2 /* libz.dylib in Frameworks */,
-				1190F80013BE4F2900B9D271 /* libFlurry.a in Frameworks */,
+				11D470161547A97A004D800B /* libTestFlight.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1286,10 +1286,10 @@
 		1190F76913BE4ECB00B9D271 /* 3rd Party Sources */ = {
 			isa = PBXGroup;
 			children = (
+				11D470111547A97A004D800B /* TestFlightSDK1 */,
 				11FE9E22153CFC6F002EE2B5 /* MKNetworkKit */,
 				1190F76A13BE4ECB00B9D271 /* Appirater */,
 				11FDA2BF15129CAF0014FDCD /* EGOTableViewPullRefresh */,
-				1190F7FA13BE4F2900B9D271 /* Flurry */,
 				1CDF79FE1537C157008EFAE4 /* GRMustache */,
 				1190F7BF13BE4ECB00B9D271 /* Hpple */,
 				1190F7A813BE4ECB00B9D271 /* MBProgressHUD */,
@@ -1402,15 +1402,6 @@
 			path = "topfunky-hpple";
 			sourceTree = "<group>";
 		};
-		1190F7FA13BE4F2900B9D271 /* Flurry */ = {
-			isa = PBXGroup;
-			children = (
-				1190F7FB13BE4F2900B9D271 /* FlurryAPI.h */,
-				1190F7FC13BE4F2900B9D271 /* libFlurry.a */,
-			);
-			path = Flurry;
-			sourceTree = "<group>";
-		};
 		1190F80113BE58BB00B9D271 /* web resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -1419,6 +1410,15 @@
 				1190F80313BE58BB00B9D271 /* post.css */,
 			);
 			path = "web resources";
+			sourceTree = "<group>";
+		};
+		11D470111547A97A004D800B /* TestFlightSDK1 */ = {
+			isa = PBXGroup;
+			children = (
+				11D470121547A97A004D800B /* libTestFlight.a */,
+				11D470151547A97A004D800B /* TestFlight.h */,
+			);
+			path = TestFlightSDK1;
 			sourceTree = "<group>";
 		};
 		11D5E85A14DC6D3E00C1002D /* Templates */ = {
@@ -2121,7 +2121,7 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Sean Berry (9HL8QUW4RH)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Sean Berry (9HL8QUW4RH)";
-				COPY_PHASE_STRIP = YES;
+				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -2135,7 +2135,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/3rd Party Sources\"",
-					"\"$(SRCROOT)/3rd Party Sources/Flurry\"",
+					"\"$(SRCROOT)/3rd Party Sources/TestFlightSDK1\"",
 				);
 				PRODUCT_NAME = Awful;
 				PROVISIONING_PROFILE = "D6A50463-945F-4597-B90C-CE24F2173CC3";
@@ -2169,7 +2169,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/3rd Party Sources\"",
-					"\"$(SRCROOT)/3rd Party Sources/Flurry\"",
+					"\"$(SRCROOT)/3rd Party Sources/TestFlightSDK1\"",
 				);
 				PRODUCT_NAME = Awful;
 				PROVISIONING_PROFILE = "";
@@ -2185,7 +2185,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Sean Berry (9HL8QUW4RH)";
-				COPY_PHASE_STRIP = YES;
+				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -2199,7 +2199,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/3rd Party Sources\"",
-					"\"$(SRCROOT)/3rd Party Sources/Flurry\"",
+					"\"$(SRCROOT)/3rd Party Sources/TestFlightSDK1\"",
 				);
 				PRODUCT_NAME = Awful;
 				PROVISIONING_PROFILE = "415F86FC-D08E-4A2B-B3B0-4714F2EB9214";
