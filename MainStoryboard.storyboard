@@ -468,6 +468,7 @@
                                                 <segment title="\"/>
                                                 <segment title="="/>
                                             </segments>
+                                            <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                             <connections>
                                                 <outlet property="target" destination="gcK-tO-FtL" id="1KR-HU-CcZ"/>
                                             </connections>
