@@ -24,10 +24,6 @@
 @property (readonly, strong, nonatomic) NSManagedObjectContext *throwawayObjectContext;
 @property BOOL dataStoreReset;
 
--(UIViewController *)getRootController;
--(void)initializeiCloudAccess;
--(void)iCloudKeyChanged : (NSNotification *)aNotification;
-
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
 -(void)resetDataStore;

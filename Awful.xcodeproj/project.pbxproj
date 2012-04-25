@@ -180,7 +180,6 @@
 		1190F73413BE4EA900B9D271 /* AwfulActions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6CE13BE4EA900B9D271 /* AwfulActions.m */; };
 		1190F73513BE4EA900B9D271 /* AwfulPostActions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6D013BE4EA900B9D271 /* AwfulPostActions.m */; };
 		1190F73613BE4EA900B9D271 /* AwfulThreadActions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6D213BE4EA900B9D271 /* AwfulThreadActions.m */; };
-		1190F73713BE4EA900B9D271 /* AwfulThreadListActions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6D413BE4EA900B9D271 /* AwfulThreadListActions.m */; };
 		1190F73813BE4EA900B9D271 /* AwfulVoteActions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6D613BE4EA900B9D271 /* AwfulVoteActions.m */; };
 		1190F73913BE4EA900B9D271 /* AwfulForumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6D913BE4EA900B9D271 /* AwfulForumCell.m */; };
 		1190F73B13BE4EA900B9D271 /* AwfulForumHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1190F6DB13BE4EA900B9D271 /* AwfulForumHeaderView.xib */; };
@@ -516,8 +515,6 @@
 		1190F6D013BE4EA900B9D271 /* AwfulPostActions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostActions.m; sourceTree = "<group>"; };
 		1190F6D113BE4EA900B9D271 /* AwfulThreadActions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadActions.h; sourceTree = "<group>"; };
 		1190F6D213BE4EA900B9D271 /* AwfulThreadActions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadActions.m; sourceTree = "<group>"; };
-		1190F6D313BE4EA900B9D271 /* AwfulThreadListActions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadListActions.h; sourceTree = "<group>"; };
-		1190F6D413BE4EA900B9D271 /* AwfulThreadListActions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadListActions.m; sourceTree = "<group>"; };
 		1190F6D513BE4EA900B9D271 /* AwfulVoteActions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulVoteActions.h; sourceTree = "<group>"; };
 		1190F6D613BE4EA900B9D271 /* AwfulVoteActions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulVoteActions.m; sourceTree = "<group>"; };
 		1190F6D813BE4EA900B9D271 /* AwfulForumCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumCell.h; sourceTree = "<group>"; };
@@ -1029,8 +1026,6 @@
 				1190F6D013BE4EA900B9D271 /* AwfulPostActions.m */,
 				1190F6D113BE4EA900B9D271 /* AwfulThreadActions.h */,
 				1190F6D213BE4EA900B9D271 /* AwfulThreadActions.m */,
-				1190F6D313BE4EA900B9D271 /* AwfulThreadListActions.h */,
-				1190F6D413BE4EA900B9D271 /* AwfulThreadListActions.m */,
 				1190F6D513BE4EA900B9D271 /* AwfulVoteActions.h */,
 				1190F6D613BE4EA900B9D271 /* AwfulVoteActions.m */,
 			);
@@ -1835,7 +1830,6 @@
 				1190F73413BE4EA900B9D271 /* AwfulActions.m in Sources */,
 				1190F73513BE4EA900B9D271 /* AwfulPostActions.m in Sources */,
 				1190F73613BE4EA900B9D271 /* AwfulThreadActions.m in Sources */,
-				1190F73713BE4EA900B9D271 /* AwfulThreadListActions.m in Sources */,
 				1190F73813BE4EA900B9D271 /* AwfulVoteActions.m in Sources */,
 				1190F73913BE4EA900B9D271 /* AwfulForumCell.m in Sources */,
 				1190F73D13BE4EA900B9D271 /* AwfulForumsListController.m in Sources */,

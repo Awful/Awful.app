@@ -10,7 +10,6 @@
 #import "AwfulThreadCell.h"
 #import "AwfulForum.h"
 #import "AwfulUtil.h"
-#import "AwfulThreadListActions.h"
 #import "AwfulThread.h"
 #import "AwfulThread+AwfulMethods.h"
 #import "AwfulUser+AwfulMethods.h"

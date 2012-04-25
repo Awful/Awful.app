@@ -272,7 +272,7 @@
             
             MWPhotoBrowser *browser = [[MWPhotoBrowser alloc] initWithPhotos:photos];
             
-            UIViewController *vc = [ApplicationDelegate getRootController];
+            UIViewController *vc = ApplicationDelegate.window.rootViewController;
             UINavigationController *navi = [[UINavigationController alloc] initWithRootViewController:browser];
             [vc presentModalViewController:navi animated:YES];
             
@@ -561,7 +561,7 @@
         [other_nav setToolbarHidden:NO];
         other_nav.toolbar.barStyle = UIBarStyleBlack;
         
-        UIViewController *vc = [ApplicationDelegate getRootController];
+        UIViewController *vc = ApplicationDelegate.window.rootViewController;
         [vc presentModalViewController:other_nav animated:YES];
         
         return NO;
