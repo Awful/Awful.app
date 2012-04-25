@@ -6,12 +6,12 @@ Awful is an iOS app for browsing the [Something Awful Forums][forums] on your iP
 [forums]: http://forums.somethingawful.com
 [thread]: http://forums.somethingawful.com/showthread.php?threadid=3381510
 
-For this release
+Next Version
 ----------------
 * load bookmarks/forum threads from local cache
 * refresh a page shouldn't load a new page
 
-For some later release
+Ideal Version
 ----------------------
 * Private messages
 * Search
