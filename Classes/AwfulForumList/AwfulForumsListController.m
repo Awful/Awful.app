@@ -94,7 +94,7 @@
     
     [self.navigationItem.leftBarButtonItem setTintColor:[UIColor colorWithRed:46.0/255 green:146.0/255 blue:190.0/255 alpha:1.0]];
     
-    if(IsLoggedIn && [self.forums count] == 0) {
+    if(IsLoggedIn() && [self.forums count] == 0) {
         [self refresh];
     } else if([self.tableView numberOfSections] == 0 && IsLoggedIn()) {
         [self.tableView reloadData];

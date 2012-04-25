@@ -198,8 +198,8 @@ typedef enum SettingType
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    indexPath = [self fudgedIndexPathForIndexPath:indexPath];
-    NSDictionary *setting = [self settingForIndexPath:indexPath];
+    NSIndexPath *fudgedIndexPath = [self fudgedIndexPathForIndexPath:indexPath];
+    NSDictionary *setting = [self settingForIndexPath:fudgedIndexPath];
     NSString *action = [setting objectForKey:@"Action"];
     if ([action isEqualToString:@"LogOut"]) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log Out"
@@ -220,7 +220,7 @@ typedef enum SettingType
         choiceViewController.settingsViewController = self;
         [self.navigationController pushViewController:choiceViewController animated:YES];
     }
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (void)didMakeChoice:(AwfulSettingsChoiceViewController *)choiceViewController
