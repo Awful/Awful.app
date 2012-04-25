@@ -8,6 +8,7 @@ Awful is an iOS app for browsing the [Something Awful Forums][forums] on your iP
 
 For this release
 ----------------
+* load bookmarks/forum threads from local cache
 * Fix bold issue (currently example in awfulapp thread)
 * refresh a page shouldn't load a new page
 * full screen, navigation gestures
