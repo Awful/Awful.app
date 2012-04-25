@@ -20,7 +20,7 @@
 #import "AwfulUtil.h"
 #import "AwfulLoginController.h"
 
-#define THREAD_HEIGHT 72
+#define THREAD_HEIGHT 76
 
 typedef enum {
     AwfulThreadListActionsTypeFirstPage = 0,

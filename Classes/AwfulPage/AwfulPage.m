@@ -103,7 +103,8 @@
         if(numNewPosts > 0 && self.destinationType == AwfulPageDestinationTypeNewpost) {
             int unreadPosts = [self.thread.totalUnreadPosts intValue];
             if(unreadPosts != -1) {
-                self.thread.totalUnreadPosts = [NSNumber numberWithInt:unreadPosts - numNewPosts];
+                unreadPosts -= numNewPosts;
+                self.thread.totalUnreadPosts = [NSNumber numberWithInt:MAX(unreadPosts, 0)];
                 [ApplicationDelegate saveContext];
             }
         } else if(self.destinationType == AwfulPageDestinationTypeLast) {

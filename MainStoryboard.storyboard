@@ -570,11 +570,11 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="ThreadCell" rowHeight="72" id="wAd-Mc-LaF" userLabel="thread cell" customClass="AwfulThreadCell">
-                                <rect key="frame" x="0.0" y="22" width="320" height="72"/>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="ThreadCell" rowHeight="76" id="wAd-Mc-LaF" userLabel="thread cell" customClass="AwfulThreadCell">
+                                <rect key="frame" x="0.0" y="22" width="320" height="76"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="71"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="75"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Thread Title Blah blah blah" lineBreakMode="tailTruncation" numberOfLines="3" minimumFontSize="10" id="9vx-WL-dqh" userLabel="thread title">
@@ -597,7 +597,7 @@
                                             </state>
                                         </button>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Pages: 2" lineBreakMode="tailTruncation" minimumFontSize="10" id="0Aq-dl-ID9">
-                                            <rect key="frame" x="70" y="56" width="200" height="10"/>
+                                            <rect key="frame" x="70" y="60" width="200" height="10"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="10"/>
                                             <color key="textColor" red="0.49803921569999998" green="0.49803921569999998" blue="0.49803921569999998" alpha="1" colorSpace="calibratedRGB"/>
@@ -634,7 +634,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="LoadMoreCell" rowHeight="72" id="Yny-KW-n6H" userLabel="thread cell" customClass="AwfulThreadCell">
-                                <rect key="frame" x="0.0" y="94" width="320" height="72"/>
+                                <rect key="frame" x="0.0" y="98" width="320" height="72"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="71"/>
@@ -1035,7 +1035,7 @@
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="MjC-LO-k8J"/>
-        <segue reference="JzC-6r-kye"/>
+        <segue reference="kfD-K3-mBe"/>
         <segue reference="FMo-n3-M4q"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -44,7 +44,7 @@
 
 +(float)getThreadCellHeight
 {
-    return 72;
+    return 76;
 }
 
 +(NSMutableArray *)newThreadListForForumId : (NSString *)forum_id
