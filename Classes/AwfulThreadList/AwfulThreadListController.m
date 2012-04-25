@@ -18,6 +18,7 @@
 #import "AwfulThread+AwfulMethods.h"
 #import "AwfulThreadCell.h"
 #import "AwfulUtil.h"
+#import "AwfulLoginController.h"
 
 #define THREAD_HEIGHT 72
 
@@ -171,7 +172,7 @@ typedef enum {
     self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
     
     [self loadThreads];
-    if([self.awfulThreads count] == 0) {
+    if([self.awfulThreads count] == 0 && IsLoggedIn()) {
         [self refresh];
     }
 }

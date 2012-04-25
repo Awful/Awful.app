@@ -16,6 +16,7 @@
 #import "AwfulThreadCell.h"
 #import "AwfulThread+AwfulMethods.h"
 #import "AwfulUtil.h"
+#import "AwfulLoginController.h"
 
 @implementation AwfulBookmarksController
 
@@ -48,7 +49,7 @@
     [self.navigationController setToolbarHidden:YES];
     [[self.navigationController navigationBar] setTintColor:[UIColor colorWithRed:0 green:91.0/255 blue:135.0/255 alpha:1.0]];
     
-    if([self.awfulThreads count] == 0 || UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    if(IsLoggedIn() && ([self.awfulThreads count] == 0 || UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ) {
         [self refresh];
     }
 }
@@ -131,50 +132,3 @@
 }
 
 @end
-
-@implementation AwfulBookmarksControllerIpad
-- (id) init
-{
-    self = [super init];
-    if (self)
-    {
-        
-        self.tabBarItem = [[self tabBarItem] initWithTabBarSystemItem:UITabBarSystemItemBookmarks tag:self.tabBarItem.tag];
-    }
-    return self;
-
-}
-//Copied from AwfulThreadListIpad
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    AwfulThreadCellType type = [self getTypeAtIndexPath:indexPath];
-    
-    if(type == AwfulThreadCellTypeThread) {
-        
-        AwfulThread *thread = [self getThreadAtIndexPath:indexPath];
-        
-        if(thread.threadID != nil) {
-            AwfulPageDestinationType start = AwfulPageDestinationTypeNewpost;
-            if([thread.totalUnreadPosts intValue] == -1) {
-                start = AwfulPageDestinationTypeFirst;
-            } else if([thread.totalUnreadPosts intValue] == 0) {
-                start = AwfulPageDestinationTypeLast;
-                // if the last page is full, it won't work if you go for &goto=newpost
-                // therefore I'm setting it to last page here
-            }
-            
-            //AwfulPageIpad *thread_detail = [[AwfulPageIpad alloc] initWithAwfulThread:thread startAt:start];
-            //loadContentVC(thread_detail);
-        }
-    }
-}
-
--(void)viewDidLoad {
-    [super viewDidLoad];
-    self.navigationItem.titleView = nil;
-    self.title = @"Bookmarks";
-    [self swapToRefreshButton];
-}
-
-@end
-

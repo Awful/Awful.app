@@ -21,7 +21,6 @@
 @synthesize managedObjectContext = __managedObjectContext;
 @synthesize managedObjectModel = __managedObjectModel;
 @synthesize persistentStoreCoordinator = __persistentStoreCoordinator;
-@synthesize dataStoreReset = _dataStoreReset;
 @synthesize throwawayObjectContext = _throwawayObjectContext;
 
 #pragma mark - Application lifecycle
@@ -121,9 +120,6 @@
 // If the context doesn't already exist, it is created and bound to the persistent store coordinator for the application.
 - (NSManagedObjectContext *)managedObjectContext
 {
-    if(!self.dataStoreReset) {
-        [self resetDataStore];
-    }
     if (__managedObjectContext != nil) {
         return __managedObjectContext;
     }
@@ -221,25 +217,11 @@
             NSLog(@"failed to delete data store %@", [err localizedDescription]);
         }
     }
-    
-    self.dataStoreReset = YES;
 
     __persistentStoreCoordinator = nil;
     __managedObjectModel = nil;
     __managedObjectContext = nil;
     [self managedObjectContext];
-}
-
--(void)copyDefaultDataStoreToDocuments
-{
-    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"AwfulData.sqlite"];
-    NSURL *localStore = [[NSBundle mainBundle] URLForResource:@"AwfulData" withExtension:@"sqlite"];
-    
-    NSError *err = nil;
-    [[NSFileManager defaultManager] copyItemAtURL:localStore toURL:storeURL error:&err];
-    if(err != nil) {
-        NSLog(@"failed to move data store %@", [err localizedDescription]);
-    }
 }
 
 #pragma mark - Application's Documents directory

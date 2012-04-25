@@ -17,9 +17,3 @@
 @property NSUInteger threadCount; 
 
 @end
-
-@interface AwfulBookmarksControllerIpad : AwfulBookmarksController {
-    
-}
-
-@end

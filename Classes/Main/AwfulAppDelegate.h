@@ -22,12 +22,10 @@
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (readonly, strong, nonatomic) NSManagedObjectContext *throwawayObjectContext;
-@property BOOL dataStoreReset;
 
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
 -(void)resetDataStore;
--(void)copyDefaultDataStoreToDocuments;
 
 @end
 

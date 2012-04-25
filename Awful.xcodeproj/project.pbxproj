@@ -145,7 +145,6 @@
 		116EF3F81523E5510018580D /* AwfulThread+AwfulMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = 116EF3F71523E5500018580D /* AwfulThread+AwfulMethods.m */; };
 		116EF41915251C5D0018580D /* AwfulUser+AwfulMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = 116EF41815251C5D0018580D /* AwfulUser+AwfulMethods.m */; };
 		116EF41C15251CDB0018580D /* AwfulUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 116EF41B15251CDB0018580D /* AwfulUser.m */; };
-		116EF41E1525210C0018580D /* AwfulData.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 116EF41D1525210C0018580D /* AwfulData.sqlite */; };
 		116EF42D1526588C0018580D /* AwfulThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 116EF42C1526588C0018580D /* AwfulThread.m */; };
 		116EF44015265D390018580D /* ama.png in Resources */ = {isa = PBXBuildFile; fileRef = 116EF43A15265D390018580D /* ama.png */; };
 		116EF44115265D390018580D /* icon-37-selling.png in Resources */ = {isa = PBXBuildFile; fileRef = 116EF43B15265D390018580D /* icon-37-selling.png */; };
@@ -475,7 +474,6 @@
 		116EF41815251C5D0018580D /* AwfulUser+AwfulMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AwfulUser+AwfulMethods.m"; sourceTree = "<group>"; };
 		116EF41A15251CDB0018580D /* AwfulUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulUser.h; sourceTree = "<group>"; };
 		116EF41B15251CDB0018580D /* AwfulUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulUser.m; sourceTree = "<group>"; };
-		116EF41D1525210C0018580D /* AwfulData.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = AwfulData.sqlite; sourceTree = SOURCE_ROOT; };
 		116EF42B1526588C0018580D /* AwfulThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThread.h; sourceTree = "<group>"; };
 		116EF42C1526588C0018580D /* AwfulThread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThread.m; sourceTree = "<group>"; };
 		116EF43A15265D390018580D /* ama.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ama.png; sourceTree = "<group>"; };
@@ -1117,7 +1115,6 @@
 		1190F72013BE4EA900B9D271 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				116EF41D1525210C0018580D /* AwfulData.sqlite */,
 				117DBE411522AA2D007125EF /* Model.xcdatamodeld */,
 				118CF796152C05BA00126AAC /* AwfulForum.h */,
 				118CF797152C05BA00126AAC /* AwfulForum.m */,
@@ -1731,7 +1728,6 @@
 				11E5366C151E8B4C00EA74EA /* bookmarks@2x.png in Resources */,
 				11CED26715228E5300E95EE1 /* action.png in Resources */,
 				11CED26815228E5300E95EE1 /* action@2x.png in Resources */,
-				116EF41E1525210C0018580D /* AwfulData.sqlite in Resources */,
 				116EF44015265D390018580D /* ama.png in Resources */,
 				116EF44115265D390018580D /* icon-37-selling.png in Resources */,
 				116EF44215265D390018580D /* icon-38-buying.png in Resources */,
