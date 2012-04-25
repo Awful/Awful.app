@@ -17,7 +17,12 @@
 {
     [super viewDidLoad];
     self.tableView.editing = YES;
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done)];
+    // TODO something nicer than checking the device
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done)];
+    } else {
+        self.navigationItem.rightBarButtonItem = nil;
+    }
 }
 
 - (NSPredicate *)forumsPredicate
