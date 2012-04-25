@@ -10,7 +10,7 @@
         <scene sceneID="7Ed-Hc-PrQ">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UJy-SE-XNe" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <navigationController storyboardIdentifier="RootNavigationController" id="ogw-4I-ZR3" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="" id="ogw-4I-ZR3" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Forums" image="list_icon.png" id="ccA-Kf-XDD"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
                     <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="blackOpaque" id="x44-U7-K6K">
@@ -22,7 +22,7 @@
                     </connections>
                 </navigationController>
             </objects>
-            <point key="canvasLocation" x="286" y="-1875"/>
+            <point key="canvasLocation" x="324" y="-2631"/>
         </scene>
         <!--Awful Split View Controller - Item-->
         <scene sceneID="h6S-1A-jhG">
@@ -113,29 +113,11 @@
                             <outlet property="delegate" destination="itn-NS-72L" id="5Lj-3N-8ZT"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="kkm-Nf-hjN">
-                        <nil key="title"/>
-                        <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="nw5-DB-cw3">
-                            <rect key="frame" x="85" y="7" width="150" height="30"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <segments>
-                                <segment title="Full List"/>
-                                <segment title="Favorites"/>
-                            </segments>
-                            <color key="tintColor" red="0.18039215689999999" green="0.57254901960000004" blue="0.74509803919999995" alpha="1" colorSpace="deviceRGB"/>
-                            <connections>
-                                <action selector="segmentedControlChanged:" destination="itn-NS-72L" eventType="valueChanged" id="PU1-eW-5SI"/>
-                            </connections>
-                        </segmentedControl>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Forums" id="kkm-Nf-hjN"/>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackTranslucent"/>
-                    <connections>
-                        <outlet property="segmentedControl" destination="nw5-DB-cw3" id="Lto-RW-ZNk"/>
-                        <segue destination="ffn-sD-mkh" kind="push" identifier="AddFavorites" id="yRT-rw-wal"/>
-                    </connections>
                 </tableViewController>
             </objects>
-            <point key="canvasLocation" x="766" y="-1875"/>
+            <point key="canvasLocation" x="783" y="-2631"/>
         </scene>
         <!--Awful Thread List Controller - Title-->
         <scene sceneID="Gla-T9-53W">
@@ -258,7 +240,7 @@
                     <nil key="highlightedColor"/>
                 </label>
             </objects>
-            <point key="canvasLocation" x="1250" y="-1883"/>
+            <point key="canvasLocation" x="1360" y="-2155"/>
         </scene>
         <!--Navigation Controller - Settings-->
         <scene sceneID="3En-8f-fIU">
@@ -293,6 +275,7 @@
                     </tabBar>
                     <connections>
                         <segue destination="ogw-4I-ZR3" kind="relationship" relationship="viewControllers" id="Wol-nr-JGZ"/>
+                        <segue destination="wlS-xD-QGL" kind="relationship" relationship="viewControllers" id="OeB-pz-WfV"/>
                         <segue destination="yxf-ta-Zqb" kind="relationship" relationship="viewControllers" id="n5P-Yh-qxZ"/>
                         <segue destination="eNs-ia-gzc" kind="relationship" relationship="viewControllers" id="SmE-vb-9CD"/>
                     </connections>
@@ -623,22 +606,37 @@
             </objects>
             <point key="canvasLocation" x="-568" y="748"/>
         </scene>
-        <!--Awful Add Forums View Controller - Choose Favorites-->
+        <!--Navigation Controller-->
+        <scene sceneID="dhD-uB-3lv">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="uWm-oD-ueK" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <navigationController definesPresentationContext="YES" id="3lM-XX-ehY" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="Xd7-uA-cSV">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="ffn-sD-mkh" kind="relationship" relationship="rootViewController" id="ZZ7-e6-Ysd"/>
+                    </connections>
+                </navigationController>
+            </objects>
+            <point key="canvasLocation" x="1" y="-3516"/>
+        </scene>
+        <!--Awful Add Favorite View Controller - Choose Favorites-->
         <scene sceneID="3wc-G6-sgU">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jWI-GD-sU9" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tableViewController id="ffn-sD-mkh" customClass="AwfulAddForumsViewController" sceneMemberID="viewController">
+                <tableViewController id="ffn-sD-mkh" customClass="AwfulAddFavoriteViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="6tM-SB-ev1">
-                        <rect key="frame" x="0.0" y="64" width="320" height="655"/>
+                        <rect key="frame" x="0.0" y="64" width="1024" height="704"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="checkmark" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ForumCell" rowHeight="50" id="YoL-kc-ybd" customClass="AwfulForumCell">
-                                <rect key="frame" x="0.0" y="22" width="320" height="50"/>
+                                <rect key="frame" x="0.0" y="22" width="1024" height="50"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="300" height="49"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="1004" height="49"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Questions? Comments? Suggestions? This is" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="10" id="ioP-EE-GFU">
@@ -698,7 +696,7 @@
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackTranslucent"/>
                 </tableViewController>
             </objects>
-            <point key="canvasLocation" x="915" y="-3066"/>
+            <point key="canvasLocation" x="1183" y="-3516"/>
         </scene>
         <!--Awful Post Box Controller-->
         <scene sceneID="mna-8K-D6o">
@@ -872,6 +870,106 @@
             </objects>
             <point key="canvasLocation" x="-1598" y="1840"/>
         </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="RpD-5M-nCo">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="83A-Kz-j4h" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <navigationController storyboardIdentifier="RootNavigationController" id="wlS-xD-QGL" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" systemItem="favorites" id="DkE-Q2-kgS"/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
+                    <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="blackOpaque" id="JNm-bn-HI6">
+                        <rect key="frame" x="0.0" y="-44" width="0.0" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="uad-aZ-DOT" kind="relationship" relationship="rootViewController" id="YPY-qU-rw7"/>
+                    </connections>
+                </navigationController>
+            </objects>
+            <point key="canvasLocation" x="324" y="-1751"/>
+        </scene>
+        <!--Awful Favorites View Controller - Forums-->
+        <scene sceneID="5vY-92-oTk">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="zFw-Vv-g7v" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tableViewController title="Forums" id="uad-aZ-DOT" customClass="AwfulFavoritesViewController" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="50" sectionHeaderHeight="22" sectionFooterHeight="22" id="lD2-0F-D2L">
+                        <rect key="frame" x="0.0" y="64" width="320" height="655"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
+                        <color key="separatorColor" red="0.74901960779999999" green="0.74901960779999999" blue="0.74901960779999999" alpha="1" colorSpace="calibratedRGB"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ForumCell" id="96p-sh-3Qq" customClass="AwfulForumCell">
+                                <rect key="frame" x="0.0" y="22" width="320" height="50"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="300" height="49"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Questions? Comments? Suggestions? This is" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="10" id="RuY-Ed-FQB">
+                                            <rect key="frame" x="44" y="3" width="225" height="44"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </label>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="jmB-Bn-Rxu">
+                                            <rect key="frame" x="0.0" y="3" width="44" height="44"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                            <state key="normal">
+                                                <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                            <state key="highlighted">
+                                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                            <connections>
+                                                <action selector="tappedArrow:" destination="96p-sh-3Qq" eventType="touchUpInside" id="S2A-2b-7Pz"/>
+                                            </connections>
+                                        </button>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Y0T-PH-Mnw" userLabel="arrow button">
+                                            <rect key="frame" x="11" y="16" width="22" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                            <state key="normal" image="forum-arrow-right.png">
+                                                <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                            <state key="highlighted">
+                                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                            <connections>
+                                                <action selector="tappedArrow:" destination="96p-sh-3Qq" eventType="touchDown" id="hIO-0E-gtW"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="arrow" destination="Y0T-PH-Mnw" id="hMw-oX-fnE"/>
+                                    <outlet property="titleLabel" destination="RuY-Ed-FQB" id="gap-27-pem"/>
+                                    <segue destination="b0I-zs-CAw" kind="push" identifier="ThreadList" id="gCu-q9-SZ9"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="uad-aZ-DOT" id="ekN-1Y-4Th"/>
+                            <outlet property="delegate" destination="uad-aZ-DOT" id="Izs-bf-aBA"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Favorites" id="0VN-AR-3dG"/>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackTranslucent"/>
+                    <connections>
+                        <segue destination="3lM-XX-ehY" kind="modal" identifier="AddFavorite" id="6l0-HR-NCe"/>
+                    </connections>
+                </tableViewController>
+            </objects>
+            <point key="canvasLocation" x="783" y="-1751"/>
+        </scene>
     </scenes>
     <resources>
         <image name="MasterViewButton.png" width="583" height="370"/>
@@ -893,15 +991,14 @@
         <image name="threadrating.png" width="45" height="13"/>
     </resources>
     <classes>
-        <class className="AwfulAddForumsViewController" superclassName="AwfulForumsListController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulAddForumsViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="hitDone:"/>
-                <relationship kind="outlet" name="delegate" candidateClass="AwfulForumsListController"/>
-            </relationships>
+        <class className="AwfulAddFavoriteViewController" superclassName="AwfulForumsListController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulAddFavoriteViewController.h"/>
         </class>
         <class className="AwfulBookmarksController" superclassName="AwfulThreadListController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulBookmarksController.h"/>
+        </class>
+        <class className="AwfulFavoritesViewController" superclassName="AwfulTableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulFavoritesViewController.h"/>
         </class>
         <class className="AwfulForumCell" superclassName="UITableViewCell">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumCell.h"/>
@@ -920,9 +1017,7 @@
         <class className="AwfulForumsListController" superclassName="AwfulTableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumsListController.h"/>
             <relationships>
-                <relationship kind="action" name="segmentedControlChanged:"/>
                 <relationship kind="outlet" name="headerView" candidateClass="AwfulForumHeader"/>
-                <relationship kind="outlet" name="segmentedControl" candidateClass="UISegmentedControl"/>
             </relationships>
         </class>
         <class className="AwfulLoginController" superclassName="UIViewController">
@@ -1013,7 +1108,8 @@
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="g6b-JR-NhK"/>
-        <segue reference="Oqh-Ug-Ror"/>
+        <segue reference="gCu-q9-SZ9"/>
+        <segue reference="hhi-LS-YNv"/>
         <segue reference="Kgw-hp-QCk"/>
     </inferredMetricsTieBreakers>
 </document>

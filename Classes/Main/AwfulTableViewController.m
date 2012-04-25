@@ -15,15 +15,6 @@
 @synthesize refreshHeaderView = _refreshHeaderView;
 @synthesize reloading = _reloading;
 
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
 #pragma mark - View Cycle
 
 - (void)viewDidLoad
@@ -31,47 +22,38 @@
     [super viewDidLoad];
 
     [self.refreshHeaderView removeFromSuperview];
-    self.refreshHeaderView = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - self.tableView.bounds.size.height, self.view.frame.size.width, self.tableView.bounds.size.height)];
-    self.refreshHeaderView.delegate = self;
-    [self.tableView addSubview:self.refreshHeaderView];
-    [self.refreshHeaderView refreshLastUpdatedDate];
+    if ([self canPullToRefresh]) {
+        self.refreshHeaderView = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - self.tableView.bounds.size.height, self.view.frame.size.width, self.tableView.bounds.size.height)];
+        self.refreshHeaderView.delegate = self;
+        [self.tableView addSubview:self.refreshHeaderView];
+        [self.refreshHeaderView refreshLastUpdatedDate];
+    }
     self.reloading = NO;
 }
 
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
-
--(void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-}
-
--(void)viewWillDisappear:(BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
     [self.networkOperation cancel];
 }
 
-#pragma mark -
-#pragma mark UIScrollViewDelegate Methods
+#pragma mark - UIScrollViewDelegate Methods
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {	
-	[self.refreshHeaderView egoRefreshScrollViewDidScroll:scrollView];
+    if ([self canPullToRefresh]) {
+        [self.refreshHeaderView egoRefreshScrollViewDidScroll:scrollView];
+    }
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
-	[self.refreshHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
+    if ([self canPullToRefresh]) {
+        [self.refreshHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
+    }
 }
 
-
-#pragma mark -
-#pragma mark EGORefreshTableHeaderDelegate Methods
+#pragma mark - EGORefreshTableHeaderDelegate Methods
 
 - (void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view
 {
@@ -90,12 +72,12 @@
 
 #pragma mark - Refresh
 
--(void)refresh
+- (void)refresh
 {
     self.reloading = YES;
 }
 
--(void)finishedRefreshing
+- (void)finishedRefreshing
 {
     self.reloading = NO;
 	[self.refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
@@ -107,6 +89,11 @@
         return YES;
     }
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+}
+
+- (BOOL)canPullToRefresh
+{
+    return YES;
 }
 
 @end

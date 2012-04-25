@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1171" systemVersion="11D50b" minimumToolsVersion="Xcode 4.1" macOSVersion="Automatic" iOSVersion="Automatic">
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1171" systemVersion="11D50" minimumToolsVersion="Xcode 4.1" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="AwfulForum" representedClassName="AwfulForum" syncable="YES">
-        <attribute name="favorited" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="forumID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="index" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="children" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="AwfulForum" inverseName="parentForum" inverseEntity="AwfulForum" syncable="YES"/>
+        <relationship name="favorite" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Favorite" inverseName="forum" inverseEntity="Favorite" syncable="YES"/>
         <relationship name="parentForum" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="children" inverseEntity="AwfulForum" syncable="YES"/>
         <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="forum" inverseEntity="AwfulThread" syncable="YES"/>
     </entity>
@@ -32,9 +32,14 @@
         <attribute name="userID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="userName" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
+    <entity name="Favorite" syncable="YES">
+        <attribute name="displayOrder" optional="YES" attributeType="Integer 32" defaultValueString="-1" syncable="YES"/>
+        <relationship name="forum" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="favorite" inverseEntity="AwfulForum" syncable="YES"/>
+    </entity>
     <elements>
-        <element name="AwfulForum" positionX="160" positionY="192" width="128" height="150"/>
+        <element name="AwfulForum" positionX="160" positionY="192" width="128" height="165"/>
         <element name="AwfulThread" positionX="160" positionY="192" width="128" height="285"/>
         <element name="AwfulUser" positionX="160" positionY="192" width="128" height="90"/>
+        <element name="Favorite" positionX="171" positionY="324" width="128" height="75"/>
     </elements>
 </model>

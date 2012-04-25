@@ -15,7 +15,6 @@ For this release
 * Sane intro to the app, take user to login screen
 * refresh a page shouldn't load a new page
 * Default data set with current forums (why do we need this? it's not much data)
-* rearrange favorite forums
 * Copy post URL
 * recognize a direct post link and display it
 * full screen, navigation gestures
