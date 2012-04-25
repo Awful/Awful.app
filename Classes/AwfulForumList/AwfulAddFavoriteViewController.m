@@ -37,11 +37,9 @@
     [self.tableView reloadData];
 }
 
-- (void)finishedRefreshing
+- (BOOL)canPullToRefresh
 {
-    [super finishedRefreshing];
-    [self.forumSections makeObjectsPerformSelector:@selector(setAllExpanded)];
-    [self.tableView reloadData];
+    return NO;
 }
 
 - (IBAction)done
