@@ -619,6 +619,14 @@
     });
 }
 
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        return YES;
+    }
+    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+}
+
 @end
 
 @implementation AwfulPageIpad
@@ -718,7 +726,7 @@
 
 -(void)loadPageNum : (NSUInteger)pageNum
 {
-        //Hide any popovers if the page changes
+    //Hide any popovers if the page changes
     if(self.popController)
     {
         [self.popController dismissPopoverAnimated:YES];
@@ -739,14 +747,6 @@
     }
     
     [super tappedCompose:sender];
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        return YES;
-    }
-    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
 @end
