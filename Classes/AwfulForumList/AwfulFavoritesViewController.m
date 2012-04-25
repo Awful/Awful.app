@@ -20,7 +20,7 @@
 
 @property (assign, getter = isReordering) BOOL reordering;
 
-@property (assign) BOOL hasModalViewController;
+@property (assign) BOOL automaticallyAdded;
 
 @end
 
@@ -58,15 +58,15 @@
 {
     [super viewWillAppear:animated];
     [self.navigationController setToolbarHidden:YES];
-    self.hasModalViewController = self.modalViewController != nil;
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    /*if (!self.hasModalViewController && self.resultsController.fetchedObjects.count == 0) {
+    if (!self.automaticallyAdded && self.resultsController.fetchedObjects.count == 0) {
         [self addFavorites];
-    }*/
+        self.automaticallyAdded = YES;
+    }
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -101,7 +101,7 @@
 
 @synthesize reordering = _reordering;
 
-@synthesize hasModalViewController = _hasModalViewController;
+@synthesize automaticallyAdded = _automaticallyAdded;
 
 - (void)addFavorites
 {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="1.1" toolsVersion="2182" systemVersion="11D50b" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="D7m-b9-f1Z">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="1.1" toolsVersion="2182" systemVersion="11D50" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="D7m-b9-f1Z">
     <dependencies>
         <deployment defaultVersion="1296" identifier="iOS"/>
         <development defaultVersion="4200" identifier="xcode"/>
@@ -606,39 +606,22 @@
             </objects>
             <point key="canvasLocation" x="-568" y="748"/>
         </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="dhD-uB-3lv">
-            <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="uWm-oD-ueK" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <navigationController definesPresentationContext="YES" id="3lM-XX-ehY" sceneMemberID="viewController">
-                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
-                    <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="blackOpaque" id="Xd7-uA-cSV">
-                        <rect key="frame" x="0.0" y="-44" width="0.0" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <connections>
-                        <segue destination="ffn-sD-mkh" kind="relationship" relationship="rootViewController" id="ZZ7-e6-Ysd"/>
-                    </connections>
-                </navigationController>
-            </objects>
-            <point key="canvasLocation" x="1" y="-3516"/>
-        </scene>
-        <!--Awful Add Favorite View Controller - Choose Favorites-->
+        <!--Awful Add Favorite View Controller - Add Favorites-->
         <scene sceneID="3wc-G6-sgU">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jWI-GD-sU9" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController id="ffn-sD-mkh" customClass="AwfulAddFavoriteViewController" sceneMemberID="viewController">
-                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="6tM-SB-ev1">
-                        <rect key="frame" x="0.0" y="64" width="1024" height="704"/>
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" allowsSelectionDuringEditing="YES" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="6tM-SB-ev1">
+                        <rect key="frame" x="0.0" y="64" width="320" height="655"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="checkmark" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ForumCell" rowHeight="50" id="YoL-kc-ybd" customClass="AwfulForumCell">
-                                <rect key="frame" x="0.0" y="22" width="1024" height="50"/>
+                                <rect key="frame" x="0.0" y="22" width="320" height="50"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="1004" height="49"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="300" height="49"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Questions? Comments? Suggestions? This is" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="10" id="ioP-EE-GFU">
@@ -694,7 +677,7 @@
                             <outlet property="delegate" destination="ffn-sD-mkh" id="biG-z2-JX2"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Choose Favorites" id="8f6-GZ-DVo">
+                    <navigationItem key="navigationItem" title="Add Favorites" id="8f6-GZ-DVo">
                         <barButtonItem key="rightBarButtonItem" title="Done" style="done" id="B4W-jX-3WQ">
                             <connections>
                                 <action selector="done" destination="ffn-sD-mkh" id="x6C-Ts-Qjs"/>
@@ -965,7 +948,7 @@
                     <navigationItem key="navigationItem" title="Favorites" id="0VN-AR-3dG"/>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackTranslucent"/>
                     <connections>
-                        <segue destination="3lM-XX-ehY" kind="modal" identifier="AddFavorite" id="6l0-HR-NCe"/>
+                        <segue destination="ffn-sD-mkh" kind="push" identifier="AddFavorite" id="Dvn-yd-Dni"/>
                     </connections>
                 </tableViewController>
             </objects>

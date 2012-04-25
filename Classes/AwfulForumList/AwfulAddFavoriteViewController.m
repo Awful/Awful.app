@@ -17,7 +17,12 @@
 {
     [super viewDidLoad];
     self.tableView.editing = YES;
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done)];
+    // TODO something nicer than checking the device
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done)];
+    } else {
+        self.navigationItem.rightBarButtonItem = nil;
+    }
 }
 
 - (NSPredicate *)forumsPredicate
@@ -59,6 +64,11 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [self addFavoriteForForumAtIndexPath:indexPath];
+}
+
+- (void)addFavoriteForForumAtIndexPath:(NSIndexPath *)indexPath
+{
     AwfulForum *forum = [self getForumAtIndexPath:indexPath];
     if (![forum valueForKey:@"favorite"]) {
         NSManagedObject *favorite = [NSEntityDescription insertNewObjectForEntityForName:@"Favorite" 
@@ -68,15 +78,16 @@
     }
     AwfulForumSection *section = [self getForumSectionAtIndexPath:indexPath];
     section.forum = nil;
-    [tableView beginUpdates];
-    [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-                     withRowAnimation:UITableViewRowAnimationFade];
-    if ([tableView.dataSource tableView:tableView numberOfRowsInSection:indexPath.section] == 0) {
+    [self.tableView beginUpdates];
+    [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+                          withRowAnimation:UITableViewRowAnimationFade];
+    if ([self.tableView.dataSource tableView:self.tableView
+                       numberOfRowsInSection:indexPath.section] == 0) {
         [self.forumSections removeObjectAtIndex:indexPath.section];
-        [tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section]
-                 withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section]
+                      withRowAnimation:UITableViewRowAnimationFade];
     }
-    [tableView endUpdates];
+    [self.tableView endUpdates];
 }
 
 #pragma mark - Table view data source
@@ -91,6 +102,15 @@
     forumCell.section = [self getForumSectionAtIndexPath:indexPath];
     [forumCell.arrow removeFromSuperview];
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView
+commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
+forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleInsert) {
+        [self addFavoriteForForumAtIndexPath:indexPath];
+    }
 }
 
 @end
