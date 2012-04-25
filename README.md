@@ -8,13 +8,9 @@ Awful is an iOS app for browsing the [Something Awful Forums][forums] on your iP
 
 For this release
 ----------------
-
 * Fix bold issue (currently example in awfulapp thread)
 * refresh a page shouldn't load a new page
-* Copy post URL
-* recognize a direct post link and display it
 * full screen, navigation gestures
-* Maintain page position on orientation change
 * Pick and include a license.
 * Turn the code loose once more.
 
@@ -22,7 +18,9 @@ For some later release
 ----------------------
 * Private messages
 * Search
-
+* recognize a direct post link and display it
+* Copy post URL
+* Maintain page position on orientation change
 An unofficial app
 -----------------
 
