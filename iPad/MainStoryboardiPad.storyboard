@@ -611,7 +611,9 @@
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uWm-oD-ueK" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController definesPresentationContext="YES" id="3lM-XX-ehY" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="Xd7-uA-cSV">
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
+                    <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="blackOpaque" id="Xd7-uA-cSV">
+                        <rect key="frame" x="0.0" y="-44" width="0.0" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
@@ -692,7 +694,13 @@
                             <outlet property="delegate" destination="ffn-sD-mkh" id="biG-z2-JX2"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Choose Favorites" id="8f6-GZ-DVo"/>
+                    <navigationItem key="navigationItem" title="Choose Favorites" id="8f6-GZ-DVo">
+                        <barButtonItem key="rightBarButtonItem" title="Done" style="done" id="B4W-jX-3WQ">
+                            <connections>
+                                <action selector="done" destination="ffn-sD-mkh" id="x6C-Ts-Qjs"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackTranslucent"/>
                 </tableViewController>
             </objects>
