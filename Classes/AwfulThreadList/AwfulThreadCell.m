@@ -29,6 +29,7 @@
 @synthesize secondTagImage = _secondTagImage;
 @synthesize ratingImage = _ratingImage;
 @synthesize threadListController = _threadListController;
+@synthesize tagLabel = _tagLabel;
 
 -(id)initWithCoder:(NSCoder *)aDecoder
 {
@@ -54,15 +55,27 @@
     self.thread = thread;
     self.contentView.backgroundColor = [self getBackgroundColorForThread:thread];
     
+    [self.tagLabel removeFromSuperview];
+    
     NSURL *tag_url = [self.thread firstIconURL];
     if(tag_url != nil) {
-        self.tagImage.hidden = NO;
         [self.tagImage setImage:[UIImage imageNamed:[tag_url lastPathComponent]]];
-        [self.tagImage.layer setBorderColor:[[UIColor blackColor] CGColor]];
-        [self.tagImage.layer setBorderWidth:1.0];
     } else {
-        self.tagImage.hidden = YES;
+        [self.tagImage setImage:nil];
+        
+        NSString *str = [[self.thread.threadIconImageURL lastPathComponent] stringByDeletingPathExtension];
+        self.tagLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 45, 45)];
+        self.tagLabel.text = str;
+        self.tagLabel.textAlignment = UITextAlignmentCenter;
+        self.tagLabel.numberOfLines = 2;
+        self.tagLabel.lineBreakMode = UILineBreakModeCharacterWrap;
+        self.tagLabel.textColor = [UIColor blackColor];
+        self.tagLabel.font = [UIFont systemFontOfSize:8.0];
+        [self.tagImage addSubview:self.tagLabel];
     }
+    
+    [self.tagImage.layer setBorderColor:[[UIColor blackColor] CGColor]];
+    [self.tagImage.layer setBorderWidth:1.0];
     
     self.secondTagImage.hidden = YES;
     if(self.tagImage.hidden == NO) {
