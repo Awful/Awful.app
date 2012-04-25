@@ -43,4 +43,4 @@ License
 Credit
 ------
 
-Awful is developed by (Sean Berry)[https://github.com/regularberry], (enigmatic)[https://github.com/enigmatic], (pokeyman)[https://github.com/nolanw] , The Dave, and Diabolik900.
+Awful is developed by [Sean Berry](https://github.com/regularberry), [enigmatic](https://github.com/enigmatic), [pokeyman](https://github.com/nolanw), The Dave, and Diabolik900.
