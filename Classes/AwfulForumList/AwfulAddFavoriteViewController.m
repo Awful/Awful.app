@@ -17,6 +17,7 @@
 {
     [super viewDidLoad];
     self.tableView.editing = YES;
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done)];
 }
 
 - (NSPredicate *)forumsPredicate

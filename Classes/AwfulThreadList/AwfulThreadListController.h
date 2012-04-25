@@ -47,7 +47,5 @@ typedef enum {
 -(BOOL)moreThreads;
 
 -(void)newlyVisible;
--(void)swapToRefreshButton;
--(void)swapToStopButton;
 
 @end

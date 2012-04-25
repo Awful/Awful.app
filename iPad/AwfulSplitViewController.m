@@ -17,10 +17,9 @@
     self.delegate = self;
     
     UITabBarController *tbc =  [self.viewControllers objectAtIndex:0];
-    if (IsLoggedIn())
-        tbc.selectedIndex = 1;
-    else
-        tbc.selectedIndex = 2; 
+    if (!IsLoggedIn()) {
+        tbc.selectedIndex = 3;
+    }
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

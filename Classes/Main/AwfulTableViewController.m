@@ -96,4 +96,16 @@
     return YES;
 }
 
+-(void)swapToRefreshButton
+{
+    UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refresh)];
+    self.navigationItem.rightBarButtonItem = refresh;
+}
+
+-(void)swapToStopButton
+{
+    UIBarButtonItem *stop = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop)];
+    self.navigationItem.rightBarButtonItem = stop;
+}
+
 @end

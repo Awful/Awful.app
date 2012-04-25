@@ -50,8 +50,8 @@
     NSError *error;
     BOOL ok = [self.resultsController performFetch:&error];
     NSAssert(ok, @"error fetching favorites: %@", error);
-    self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    self.navigationItem.leftBarButtonItem = self.addButtonItem;
+    self.navigationItem.leftBarButtonItem = self.editButtonItem;
+    self.navigationItem.rightBarButtonItem = self.addButtonItem;
 }
 
 - (void)viewWillAppear:(BOOL)animated

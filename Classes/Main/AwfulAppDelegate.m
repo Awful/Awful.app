@@ -12,6 +12,7 @@
 #import "AwfulSplitViewController.h"
 #import "AwfulNetworkEngine.h"
 #import "AwfulSettings.h"
+#import "AwfulLoginController.h"
 
 @implementation AwfulAppDelegate
 
@@ -38,6 +39,11 @@
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         self.splitController = (AwfulSplitViewController *)self.window.rootViewController;
+    } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        UITabBarController *tabBar = (UITabBarController *)self.window.rootViewController;
+        if(!IsLoggedIn()) {
+            tabBar.selectedIndex = 3;
+        }
     }
     
     UIImage *img = [[UIImage imageNamed:@"navbargradient"] resizableImageWithCapInsets:UIEdgeInsetsMake(42, 0, 0, 0)];

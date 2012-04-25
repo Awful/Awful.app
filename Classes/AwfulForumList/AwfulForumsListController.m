@@ -60,6 +60,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self swapToRefreshButton];
     
     self.forums = [[NSMutableArray alloc] init];
     self.forumSections = [[NSMutableArray alloc] init];
@@ -100,9 +101,16 @@
     }
 }
 
+-(void)finishedRefreshing
+{
+    [super finishedRefreshing];
+    [self swapToRefreshButton];
+}
+
 - (void)refresh
 {
     [super refresh];
+    [self swapToStopButton];
     [self.networkOperation cancel];
     self.networkOperation = [ApplicationDelegate.awfulNetworkEngine forumsListOnCompletion:^(NSMutableArray *forums) {
         
