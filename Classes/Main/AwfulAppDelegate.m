@@ -7,7 +7,6 @@
 //
 
 #import "AwfulAppDelegate.h"
-#import "FlurryAPI.h"
 #import "Appirater.h"
 #import "AwfulSplitViewController.h"
 #import "AwfulNetworkEngine.h"
