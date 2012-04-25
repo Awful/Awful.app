@@ -211,7 +211,19 @@
     NSArray *body_strings = [parser rawSearch:body_search_str];
     
     if([body_strings count] == 1) {
-        NSString *post_body = [body_strings objectAtIndex:0];
+        NSMutableString *post_body = [[body_strings objectAtIndex:0] mutableCopy];
+        
+        // Fix some bullshit from libxml and WebKit teaming up to wreck our day.
+        // libxml sees '<b></b>' and shits out '<b/>', which UIWebView interprets as '<b>', turning
+        // everything bold. Ditto for italic or whatever else we feel like messing with.
+        [post_body replaceOccurrencesOfString:@"<b/>"
+                                   withString:@"<b></b>"
+                                      options:NSCaseInsensitiveSearch
+                                        range:NSMakeRange(0, post_body.length)];
+        [post_body replaceOccurrencesOfString:@"<i/>"
+                                   withString:@"<i></i>"
+                                      options:NSCaseInsensitiveSearch
+                                        range:NSMakeRange(0, post_body.length)];
         post.postBody = post_body;
         
         TFHppleElement *seen = [parser searchForSingle:@"//tr[@class='seen1']|//tr[@class='seen2']"];
