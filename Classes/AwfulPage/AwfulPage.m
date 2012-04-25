@@ -50,6 +50,7 @@
 @synthesize draggingUp = _draggingUp;
 @synthesize pagesSegmentedControl = _pagesSegmentedControl;
 @synthesize actionsSegmentedControl = _actionsSegmentedControl;
+@synthesize isFullScreen = _isFullScreen;
 
 #pragma mark - Initialization
 
@@ -116,34 +117,6 @@
         [self.webView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
     }
 }
-
-
-/*
- -(void)setWebView:(JSBridgeWebView *)webView;
- {
- UILongPressGestureRecognizer *press = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(heldPost:)];
- press.delegate = self;
- press.minimumPressDuration = 0.3;
- [webView addGestureRecognizer:press];
- 
- 
- AwfulNavigator *nav = getNavigator();
- UITapGestureRecognizer *three_times = [[UITapGestureRecognizer alloc] initWithTarget:nav action:@selector(didFullscreenGesture:)];
- three_times.numberOfTapsRequired = 3;
- three_times.delegate = self;
- [webView addGestureRecognizer:three_times];
- 
- UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:nav action:@selector(didFullscreenGesture:)];
- [webView addGestureRecognizer:pinch];
- pinch.delegate = self;
- 
- 
- nav.view = self.view;
- if([nav isFullscreen]) {
- nav.fullScreenButton.center = CGPointMake(nav.view.frame.size.width-25, nav.view.frame.size.height-25);
- [nav.view addSubview:nav.fullScreenButton];
- }
- }*/
 
 -(void)setPages:(AwfulPageCount *)in_pages
 {
@@ -281,6 +254,21 @@
     }
 }
 
+-(void)didFullscreenGesture : (UIGestureRecognizer *)gesture
+{
+    if([gesture state] == UIGestureRecognizerStateRecognized) {
+        self.isFullScreen = !self.isFullScreen;
+        
+        if(self.isFullScreen) {
+            [self.navigationController setNavigationBarHidden:YES animated:YES];
+            [self.navigationController setToolbarHidden:YES animated:YES];
+        } else {
+            [self.navigationController setNavigationBarHidden:NO animated:YES];
+            [self.navigationController setToolbarHidden:NO animated:YES];
+        }
+    }
+}
+
 -(void)setActions:(AwfulActions *)actions
 {
     if(actions != _actions) {
@@ -302,6 +290,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.isFullScreen = NO;
+    
     UILongPressGestureRecognizer *press = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(heldPost:)];
     press.delegate = self;
     press.minimumPressDuration = 0.3;
@@ -309,6 +299,12 @@
     self.webView.delegate = self.webView;
     self.webView.bridgeDelegate = self;
     self.webView.delegate = self.webView;
+    
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(didFullscreenGesture:)];
+        [self.webView addGestureRecognizer:pinch];
+        pinch.delegate = self;
+    }
     
     [self.pagesBarButtonItem setTintColor:[UIColor darkGrayColor]];
 }

@@ -10,7 +10,6 @@ For this release
 ----------------
 * load bookmarks/forum threads from local cache
 * refresh a page shouldn't load a new page
-* full screen, navigation gestures
 * Pick and include a license.
 * Turn the code loose once more.
 

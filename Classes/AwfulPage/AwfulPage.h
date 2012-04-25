@@ -56,6 +56,7 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet ButtonSegmentedControl *actionsSegmentedControl;
 
 @property (nonatomic, assign) BOOL draggingUp;
+@property (nonatomic, assign) BOOL isFullScreen;
 
 -(IBAction)hardRefresh;
 -(void)setThreadTitle : (NSString *)in_title;
@@ -83,6 +84,7 @@ typedef enum {
 -(void)prevPage;
 
 -(void)heldPost:(UILongPressGestureRecognizer *)gestureRecognizer;
+-(void)didFullscreenGesture : (UIGestureRecognizer *)gesture;
 -(void)scrollToPost : (NSString *)post_id;
 -(void)swapToStopButton;
 -(void)swapToRefreshButton;
