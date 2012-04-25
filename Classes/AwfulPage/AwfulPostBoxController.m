@@ -15,6 +15,7 @@
 #import "AwfulPage.h"
 #import "MBProgressHUD.h"
 #import "AwfulNetworkEngine.h"
+#import "ButtonSegmentedControl.h"
 
 @implementation AwfulPostBoxController
 
@@ -25,10 +26,12 @@
 @synthesize startingText = _startingText;
 @synthesize networkOperation = _networkOperation;
 @synthesize page = _page;
+@synthesize segmentedControl = _segmentedControl;
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.segmentedControl.action = @selector(tappedSegment:);
     
     if(self.post != nil) {
         [self.sendButton setTitle:@"Edit"];
@@ -65,6 +68,12 @@
     [super didReceiveMemoryWarning];
     
     // Release any cached data, images, etc. that aren't in use.
+}
+
+-(void)tappedSegment : (id)sender
+{
+    NSString *str = [self.segmentedControl titleForSegmentAtIndex:self.segmentedControl.selectedSegmentIndex];
+    [self hitTextBarButtonItem:str];
 }
 
 -(void)keyboardWillShow:(NSNotification *)notification
@@ -154,22 +163,19 @@
     [alert show];
 }
 
--(IBAction)hitTextBarButtonItem : (id)sender
+-(IBAction)hitTextBarButtonItem : (NSString *)str
 {
-    if([sender isMemberOfClass:[UIBarButtonItem class]]) {
-        UIBarButtonItem *item = (UIBarButtonItem *)sender;
-        NSString *str = item.title;
-        NSMutableString *replyString = [[NSMutableString alloc] initWithString:[self.replyTextView text]];
-        
-        NSRange cursorPosition = [self.replyTextView selectedRange];
-        if(cursorPosition.length == 0) {
-            [replyString insertString:str atIndex:cursorPosition.location];
-        } else  {
-            [replyString replaceCharactersInRange:cursorPosition withString:str];
-        }
-        self.replyTextView.text = replyString;
-        self.replyTextView.selectedRange = NSMakeRange(cursorPosition.location+1, cursorPosition.length);
+    NSMutableString *replyString = [[NSMutableString alloc] initWithString:[self.replyTextView text]];
+    
+    NSRange cursorPosition = [self.replyTextView selectedRange];
+    if(cursorPosition.length == 0) {
+        [replyString insertString:str atIndex:cursorPosition.location];
+    } else  {
+        [replyString replaceCharactersInRange:cursorPosition withString:str];
     }
+    self.replyTextView.text = replyString;
+    self.replyTextView.selectedRange = NSMakeRange(cursorPosition.location+1, cursorPosition.length);
+    self.segmentedControl.selectedSegmentIndex = -1;
 }
 
 @end
