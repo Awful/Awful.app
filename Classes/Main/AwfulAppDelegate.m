@@ -8,7 +8,6 @@
 
 #import "AwfulAppDelegate.h"
 #import "TestFlight.h"
-#import "Appirater.h"
 #import "AwfulSplitViewController.h"
 #import "AwfulNetworkEngine.h"
 #import "AwfulSettings.h"
@@ -81,7 +80,6 @@
     /*
      Called as part of  transition from the background to the inactive state: here you can undo many of the changes made on entering the background.
      */
-    [Appirater appEnteredForeground:YES];
 }
 
 

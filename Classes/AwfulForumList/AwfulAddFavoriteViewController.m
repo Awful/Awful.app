@@ -34,14 +34,20 @@
 {
     [super loadForums];
     [self.forumSections makeObjectsPerformSelector:@selector(setAllExpanded)];
+    NSInteger i = 0;
+    while (i < self.forumSections.count) {
+        if ([self.tableView.dataSource tableView:self.tableView numberOfRowsInSection:i] == 0) {
+            [self.forumSections removeObjectAtIndex:i];
+        } else {
+            i += 1;
+        }
+    }
     [self.tableView reloadData];
 }
 
-- (void)finishedRefreshing
+- (BOOL)canPullToRefresh
 {
-    [super finishedRefreshing];
-    [self.forumSections makeObjectsPerformSelector:@selector(setAllExpanded)];
-    [self.tableView reloadData];
+    return NO;
 }
 
 - (IBAction)done

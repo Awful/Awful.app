@@ -849,19 +849,19 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				117DBE3B1522A39A007125EF /* CoreData.framework in Frameworks */,
-				1172A62E14F5DB160026CDA8 /* Security.framework in Frameworks */,
-				11099067134B86FD0013444C /* QuartzCore.framework in Frameworks */,
-				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
-				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
-				288765080DF74369002DB57D /* CoreGraphics.framework in Frameworks */,
-				107CF9A311FF7776007C16F4 /* libxml2.2.7.3.dylib in Frameworks */,
-				107CF9E111FF79D5007C16F4 /* libsqlite3.0.dylib in Frameworks */,
 				10D34FA9128F41160026C7C2 /* CFNetwork.framework in Frameworks */,
-				10D34FAF128F413C0026C7C2 /* MobileCoreServices.framework in Frameworks */,
-				10D34FB1128F413C0026C7C2 /* SystemConfiguration.framework in Frameworks */,
+				117DBE3B1522A39A007125EF /* CoreData.framework in Frameworks */,
+				288765080DF74369002DB57D /* CoreGraphics.framework in Frameworks */,
+				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
+				107CF9E111FF79D5007C16F4 /* libsqlite3.0.dylib in Frameworks */,
+				107CF9A311FF7776007C16F4 /* libxml2.2.7.3.dylib in Frameworks */,
 				10D34FB7128F414E0026C7C2 /* libz.dylib in Frameworks */,
+				10D34FAF128F413C0026C7C2 /* MobileCoreServices.framework in Frameworks */,
+				11099067134B86FD0013444C /* QuartzCore.framework in Frameworks */,
+				1172A62E14F5DB160026CDA8 /* Security.framework in Frameworks */,
+				10D34FB1128F413C0026C7C2 /* SystemConfiguration.framework in Frameworks */,
 				11D470161547A97A004D800B /* libTestFlight.a in Frameworks */,
+				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

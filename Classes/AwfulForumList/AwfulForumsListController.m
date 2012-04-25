@@ -60,7 +60,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self swapToRefreshButton];
+    if([self canPullToRefresh]) {
+        [self swapToRefreshButton];
+    }
     
     self.forums = [[NSMutableArray alloc] init];
     self.forumSections = [[NSMutableArray alloc] init];
