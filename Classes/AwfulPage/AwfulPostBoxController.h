@@ -12,11 +12,13 @@
 @class AwfulPost;
 @class AwfulPage;
 @class MKNetworkOperation;
+@class ButtonSegmentedControl;
 
 @interface AwfulPostBoxController : UIViewController <UIAlertViewDelegate>
 
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *sendButton;
 @property (nonatomic, strong) IBOutlet UITextView *replyTextView;
+@property (nonatomic, strong) IBOutlet ButtonSegmentedControl *segmentedControl;
 
 @property (nonatomic, strong) AwfulThread *thread;
 @property (nonatomic, strong) AwfulPost *post;
@@ -27,6 +29,7 @@
 
 -(IBAction)hideReply;
 -(IBAction)hitSend;
--(IBAction)hitTextBarButtonItem : (id)sender;
+-(IBAction)hitTextBarButtonItem : (NSString *)str;
+-(void)tappedSegment : (id)sender;
 
 @end
