@@ -10,8 +10,6 @@ For this release
 ----------------
 * load bookmarks/forum threads from local cache
 * refresh a page shouldn't load a new page
-* Pick and include a license.
-* Turn the code loose once more.
 
 For some later release
 ----------------------
@@ -40,11 +38,9 @@ We welcome any feedback, issues, or pull requests. Thanks!
 License
 -------
 
-GPLv2. If this license does not work for you, we can make arrangements.
+[Creative Commons Attribution-NonCommercial-ShareAlike 3.0 United States License](http://creativecommons.org/licenses/by-nc-sa/3.0/us/)
 
 Credit
 ------
 
-Awful is developed by [Sean Berry][regularberry] with some help from his friends.
-
-[regularberry]: https://github.com/regularberry
+Awful is developed by (Sean Berry)[https://github.com/regularberry], (enigmatic)[https://github.com/enigmatic], (pokeyman)[https://github.com/nolanw] , The Dave, and Diabolik900.
