@@ -161,7 +161,7 @@
 -(IBAction)hardRefresh
 {    
     int posts_per_page = [[[AwfulUser currentUser] postsPerPage] intValue];
-    if([self.pages onLastPage] && [self.dataController.posts count] == posts_per_page) {
+    if([self.dataController.posts count] == posts_per_page) {
         self.destinationType = AwfulPageDestinationTypeSpecific;
         [self refresh];
     } else {
