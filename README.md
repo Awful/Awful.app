@@ -8,8 +8,8 @@ Awful is an iOS app for browsing the [Something Awful Forums][forums] on your iP
 
 Next Version
 ----------------
-* load bookmarks/forum threads from local cache
 * refresh a page shouldn't load a new page
+* when loading new page give a indication it's doing a request
 
 Ideal Version
 ----------------------
