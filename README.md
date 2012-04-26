@@ -16,9 +16,11 @@ Ideal Version
 ----------------------
 * Private messages
 * Search
-* recognize a direct post link and display it
+* Intercept relevant SA links (to posts, threads, forums) and display them directly instead of loading in Safari.
 * Copy post URL
 * Maintain page position on orientation change
+* Post editor with tag insertion (bold/italic/spoiler/fixed/code) and emoticon insertion
+* Post new threads
 
 An unofficial app
 -----------------
