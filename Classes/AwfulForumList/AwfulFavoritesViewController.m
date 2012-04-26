@@ -49,7 +49,9 @@
     }
     NSError *error;
     BOOL ok = [self.resultsController performFetch:&error];
-    NSAssert(ok, @"error fetching favorites: %@", error);
+    if(!ok) {
+        NSLog(@"error fetching favorites: %@", error);
+    }
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
     self.navigationItem.rightBarButtonItem = self.addButtonItem;
 }
@@ -174,7 +176,9 @@
     }
     NSError *error;
     BOOL ok = [whatever.managedObjectContext save:&error];
-    NSAssert(ok, @"error saving favorite order: %@", error);
+    if(!ok) {
+        NSLog(@"error saving favorite order: %@", error);
+    }
     self.reordering = NO;
 }
 

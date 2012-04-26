@@ -68,6 +68,12 @@
     [self acceptThreads:[newThreads mutableCopy]];
 }
 
+-(void)loadThreads
+{
+    NSArray *threads = [AwfulThread bookmarkedThreads];
+    [self acceptThreads:[NSMutableArray arrayWithArray:threads]];
+}
+
 -(BOOL)shouldReloadOnViewLoad
 {
     return NO;
