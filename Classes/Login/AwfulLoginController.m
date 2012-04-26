@@ -8,8 +8,16 @@
 
 #import "AwfulLoginController.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulUser.h"
+#import "AwfulNetworkEngine.h"
 #import "AwfulSettingsViewController.h"
+#import "AwfulUser.h"
+
+@interface AwfulLoginController ()
+
+@property (nonatomic, strong) IBOutlet UIWebView *web;
+@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *act;
+
+@end
 
 @implementation AwfulLoginController
 
@@ -45,6 +53,19 @@
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
+- (IBAction)cancel
+{
+    [self.navigationController.presentingViewController dismissModalViewControllerAnimated:YES];
+    [self.accountViewController refresh];
+}
+
+- (void)didLogIn
+{
+    [self.navigationController.presentingViewController dismissModalViewControllerAnimated:YES];
+    [self.accountViewController refresh];
+    [ApplicationDelegate.awfulNetworkEngine forumsListOnCompletion:nil onError:nil];
+}
+
 #pragma mark Web View delegate
 
 - (void)webViewDidStartLoad:(UIWebView *)webView
@@ -52,19 +73,13 @@
     NSURLRequest *req = webView.request;
     if ([[req.URL relativePath] isEqualToString:@"/index.php"]) {
         self.web.delegate = nil;
-        [self hitCancel:nil];
+        [self didLogIn];
     }
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
     [self.act stopAnimating];
-}
-
--(IBAction)hitCancel : (id)sender
-{
-    [self.navigationController.presentingViewController dismissModalViewControllerAnimated:YES];
-    [self.accountViewController refresh];
 }
 
 @end

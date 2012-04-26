@@ -219,10 +219,14 @@ typedef enum BookmarkAction {
     [op onCompletion:^(MKNetworkOperation *completedOperation) {
         
         NSMutableArray *forums = [AwfulForum parseForums:[completedOperation responseData]];
-        forumsListResponseBlock(forums);
+        if (forumsListResponseBlock) {
+            forumsListResponseBlock(forums);
+        }
         
     } onError:^(NSError *error) {
-        errorBlock(error);
+        if (errorBlock) {
+            errorBlock(error);
+        }
     }];
     
     [self enqueueOperation:op];

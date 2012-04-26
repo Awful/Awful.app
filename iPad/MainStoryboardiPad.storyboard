@@ -346,7 +346,7 @@
                     <navigationItem key="navigationItem" title="Login" id="S7x-lb-fGl">
                         <barButtonItem key="leftBarButtonItem" style="done" systemItem="cancel" id="hpz-df-s61">
                             <connections>
-                                <action selector="hitCancel:" destination="1Fp-2s-3Kf" id="ewo-Hh-xw7"/>
+                                <action selector="cancel" destination="1Fp-2s-3Kf" id="ejl-nP-yId"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -1007,7 +1007,6 @@
         <class className="AwfulLoginController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulLoginController.h"/>
             <relationships>
-                <relationship kind="action" name="hitCancel:"/>
                 <relationship kind="outlet" name="act" candidateClass="UIActivityIndicatorView"/>
                 <relationship kind="outlet" name="web" candidateClass="UIWebView"/>
             </relationships>
@@ -1064,6 +1063,7 @@
                 <relationship kind="outlet" name="secondTagImage" candidateClass="UIImageView"/>
                 <relationship kind="outlet" name="sticky" candidateClass="UIImageView"/>
                 <relationship kind="outlet" name="tagImage" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="tagLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="threadTitleLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="unreadButton" candidateClass="UIButton"/>
             </relationships>
