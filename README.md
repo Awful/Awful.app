@@ -21,6 +21,8 @@ Ideal Version
 * Maintain page position on orientation change
 * Post editor with tag insertion (bold/italic/spoiler/fixed/code) and emoticon insertion
 * Post new threads
+* Set a few key SA settings in-app (e.g. 'show seen icon next to each post')
+* Populate initial app settings with SA settings counterparts (e.g. 'show avatars')
 
 An unofficial app
 -----------------
