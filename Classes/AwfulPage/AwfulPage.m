@@ -101,7 +101,7 @@
         }
         
         int numNewPosts = [_dataController numNewPostsLoaded];
-        if(numNewPosts > 0 && self.destinationType == AwfulPageDestinationTypeNewpost) {
+        if(numNewPosts > 0 && (self.destinationType == AwfulPageDestinationTypeNewpost || [self.pages onLastPage])) {
             int unreadPosts = [self.thread.totalUnreadPosts intValue];
             if(unreadPosts != -1) {
                 unreadPosts -= numNewPosts;

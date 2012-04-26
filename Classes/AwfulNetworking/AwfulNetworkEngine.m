@@ -29,7 +29,7 @@
     
     [op onCompletion:^(MKNetworkOperation *completedOperation) {
         
-        if(pageNum == 1 && NO) {
+        if(pageNum == 1) {
             [AwfulThread removeOldThreadsForForum:forum];
             [ApplicationDelegate saveContext];
         }
