@@ -11,6 +11,8 @@ Next Version
 * test test test
 * move from 'contextDidSave' notif to a custom 'AwfulThreadChanged' notif
 * refresh forums list on login
+* edit forum_arrow_right.png and forum_arrow_down.png to have clear mask instead of white edges
+* get higher rez version of settings icon
 
 Ideal Version
 ----------------------
