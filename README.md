@@ -9,6 +9,7 @@ Awful is an iOS app for browsing the [Something Awful Forums][forums] on your iP
 Next Version
 ----------------
 * test test test
+* refresh forums list on login
 
 Ideal Version
 ----------------------
