@@ -236,7 +236,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 #pragma mark - Tree Model Methods
 
--(void)addForumToSectionTree:(AwfulForum *)forum
+- (void)addForumToSectionTree:(AwfulForum *)forum
 {
     AwfulForumSection *section = [[AwfulForumSection alloc] init];
     section.forum = forum;

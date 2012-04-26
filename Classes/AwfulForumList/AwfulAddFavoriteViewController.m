@@ -25,11 +25,6 @@
     }
 }
 
-- (NSPredicate *)forumsPredicate
-{
-    return [NSPredicate predicateWithFormat:@"favorite == nil"];
-}
-
 - (void)loadForums
 {
     [super loadForums];
@@ -65,7 +60,18 @@
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView
            editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return UITableViewCellEditingStyleInsert;
+    AwfulForum *forum = [self getForumAtIndexPath:indexPath];
+    if ([forum valueForKey:@"favorite"])
+        return UITableViewCellEditingStyleNone;
+    else
+        return UITableViewCellEditingStyleInsert;
+}
+
+- (NSIndexPath *)tableView:(UITableView *)tableView
+  willSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    AwfulForum *forum = [self getForumAtIndexPath:indexPath];
+    return [forum valueForKey:@"favorite"] ? nil : indexPath;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -107,6 +113,11 @@
     forumCell.forumsList = self;
     forumCell.section = [self getForumSectionAtIndexPath:indexPath];
     [forumCell.arrow removeFromSuperview];
+    if ([forumCell.section.forum valueForKey:@"favorite"]) {
+        forumCell.selectionStyle = UITableViewCellSelectionStyleNone;
+    } else {
+        forumCell.selectionStyle = UITableViewCellSelectionStyleBlue;
+    }
     return cell;
 }
 
