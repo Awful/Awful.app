@@ -179,6 +179,12 @@
 {    
     [self.networkOperation cancel];
     [self swapToStopButton];
+    [self hidePageNavigation];
+    if(pageNum != 0) {
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
+        hud.labelText = [NSString stringWithFormat:@"Loading Page %d", pageNum];
+    }
+        
     self.networkOperation = [ApplicationDelegate.awfulNetworkEngine pageDataForThread:self.thread destinationType:self.destinationType pageNum:pageNum onCompletion:^(AwfulPageDataController *dataController) {
         self.dataController = dataController;
         if(self.destinationType == AwfulPageDestinationTypeSpecific) {
@@ -186,10 +192,12 @@
         }
         [self updatePagesLabel];
         [self swapToRefreshButton];
+        [MBProgressHUD hideHUDForView:self.view animated:NO];
     } onError:^(NSError *error) {
         [self swapToRefreshButton];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
         [alert show];
+        [MBProgressHUD hideHUDForView:self.view animated:NO];
     }];
 }
 
@@ -212,7 +220,7 @@
 {
     [self.networkOperation cancel];
     [self swapToRefreshButton];
-    
+    [MBProgressHUD hideHUDForView:self.view animated:NO];
     [self.webView stopLoading];
 }
 
@@ -433,6 +441,13 @@
         }];
         
         [self.specificPageController.pickerView selectRow:self.pages.currentPage-1 inComponent:0 animated:NO];
+    }
+}
+       
+-(void)hidePageNavigation
+{
+    if(self.specificPageController != nil) {
+        [self tappedPageNav:nil];
     }
 }
 
@@ -720,20 +735,6 @@
     }
 }
 
-
--(void)loadPageNum : (NSUInteger)pageNum
-{
-    //Hide any popovers if the page changes
-    if(self.popController)
-    {
-        [self.popController dismissPopoverAnimated:YES];
-        self.popController = nil;
-    }
-    
-    [super loadPageNum:pageNum];
-    
-}
-
 -(IBAction)tappedCompose : (id)sender
 {
         //Hide any popovers if composed pressed
@@ -745,5 +746,14 @@
     
     [super tappedCompose:sender];
 }
+
+-(void)hidePageNavigation
+{
+    if(self.popController) {
+        [self.popController dismissPopoverAnimated:YES];
+        self.popController = nil;
+    }
+}
+
 
 @end

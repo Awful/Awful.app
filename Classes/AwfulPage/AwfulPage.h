@@ -90,6 +90,7 @@ typedef enum {
 -(void)swapToRefreshButton;
 
 -(void)showCompletionMessage : (NSString *)message;
+-(void)hidePageNavigation;
 
 @end
 
