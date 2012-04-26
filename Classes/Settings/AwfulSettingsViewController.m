@@ -196,6 +196,17 @@ typedef enum SettingType
     [[NSUserDefaults standardUserDefaults] setBool:switchView.on forKey:key];
 }
 
+- (NSIndexPath *)tableView:(UITableView *)tableView
+  willSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSIndexPath *fudgedIndexPath = [self fudgedIndexPathForIndexPath:indexPath];
+    NSDictionary *setting = [self settingForIndexPath:fudgedIndexPath];
+    if ([setting objectForKey:@"Action"] || [setting objectForKey:@"Choices"]) {
+        return indexPath;
+    }
+    return nil;
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSIndexPath *fudgedIndexPath = [self fudgedIndexPathForIndexPath:indexPath];
