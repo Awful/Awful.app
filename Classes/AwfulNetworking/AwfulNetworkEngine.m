@@ -10,7 +10,6 @@
 #import "AwfulForum.h"
 #import "AwfulForum+AwfulMethods.h"
 #import "TFHpple.h"
-#import "AwfulParse.h"
 #import "AwfulThread.h"
 #import "AwfulThread+AwfulMethods.h"
 #import "AwfulPage.h"

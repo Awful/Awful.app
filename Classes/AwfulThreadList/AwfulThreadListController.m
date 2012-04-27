@@ -179,6 +179,7 @@ typedef enum {
 
 - (void)viewDidUnload
 {
+    [self.networkOperation cancel];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
