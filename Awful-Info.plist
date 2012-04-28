@@ -10,8 +10,14 @@
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFiles</key>
 	<array>
-		<string>icon_57.png</string>
-		<string>icon_114.png</string>
+		<string>Icon-72@2x.png</string>
+		<string>Icon-Small-50@2x.png</string>
+		<string>Icon@2x.png</string>
+		<string>Icon.png</string>
+		<string>Icon-Small.png</string>
+		<string>Icon-Small@2x.png</string>
+		<string>Icon-72.png</string>
+		<string>Icon-Small-50.png</string>
 	</array>
 	<key>CFBundleIdentifier</key>
 	<string>com.regularberry.awfuldev</string>
@@ -40,7 +46,7 @@
 	<key>UIMainStoryboardFile~ipad</key>
 	<string>MainStoryboardiPad</string>
 	<key>UIPrerenderedIcon</key>
-	<false/>
+	<true/>
 	<key>UIStatusBarStyle</key>
 	<string>UIStatusBarStyleBlackOpaque</string>
 	<key>UISupportedInterfaceOrientations</key>

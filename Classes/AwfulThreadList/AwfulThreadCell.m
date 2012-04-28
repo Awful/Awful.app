@@ -187,3 +187,19 @@
 }
 
 @end
+
+@implementation AwfulLoadingThreadCell
+
+@synthesize activity = _activity;
+
+-(void)setActivityViewVisible : (BOOL)visible
+{
+    self.activity.hidden = !visible;
+    if(visible) {
+        [self.activity startAnimating];
+    } else {
+        [self.activity stopAnimating];
+    }
+}
+
+@end

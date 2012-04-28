@@ -40,6 +40,7 @@ typedef enum {
 @synthesize nextPageBarButtonItem = _nextPageBarButtonItem;
 @synthesize prevPageBarButtonItem = _prevPageBarButtonItem;
 @synthesize heldThread = _heldThread;
+@synthesize isLoading = _isLoading;
 
 -(void)awakeFromNib
 {
@@ -104,11 +105,13 @@ typedef enum {
 {
     [super finishedRefreshing];
     [self swapToRefreshButton];
+    self.isLoading = NO;
 }
 
 -(void)loadPageNum : (NSUInteger)pageNum
 {    
     [self.networkOperation cancel];
+    self.isLoading = YES;
     self.networkOperation = [ApplicationDelegate.awfulNetworkEngine threadListForForum:self.forum pageNum:pageNum onCompletion:^(NSMutableArray *threads) {
         self.pages.currentPage = pageNum;
         if(pageNum == 1) {
@@ -342,7 +345,9 @@ typedef enum {
         thread_cell.threadListController = self;
         return cell;
     } else if(type == AwfulThreadCellTypeLoadMore) {
-        return [tableView dequeueReusableCellWithIdentifier:moreCell];
+        AwfulLoadingThreadCell *loadingCell = [tableView dequeueReusableCellWithIdentifier:moreCell];
+        [loadingCell setActivityViewVisible:self.isLoading];
+        return loadingCell;
     }
     
     return nil;
@@ -357,6 +362,7 @@ typedef enum {
     if(indexPath.row == [self.awfulThreads count]) {
         [self loadPageNum:self.pages.currentPage+1];
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
     } else {
         [self performSegueWithIdentifier:@"AwfulPage" sender:nil];
     }

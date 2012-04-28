@@ -30,3 +30,11 @@
 -(void)openThreadlistOptions : (UIGestureRecognizer *)gesture;
 
 @end
+
+@interface AwfulLoadingThreadCell : UITableViewCell
+
+@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activity;
+
+-(void)setActivityViewVisible : (BOOL)visible;
+
+@end
