@@ -77,6 +77,11 @@
     self.reloading = YES;
 }
 
+-(void)stop
+{
+    
+}
+
 - (void)finishedRefreshing
 {
     self.reloading = NO;

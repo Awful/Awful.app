@@ -125,6 +125,13 @@
     }];
 }
 
+-(void)stop
+{
+    [self swapToRefreshButton];
+    [self.networkOperation cancel];
+    [self finishedRefreshing];
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView

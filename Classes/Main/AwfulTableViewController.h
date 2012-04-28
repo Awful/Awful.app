@@ -16,6 +16,7 @@
 @property (nonatomic, assign) BOOL reloading;
 
 -(IBAction)refresh;
+-(void)stop;
 -(void)finishedRefreshing;
 
 // Subclasses can implement to override the default behaviour of YES.
