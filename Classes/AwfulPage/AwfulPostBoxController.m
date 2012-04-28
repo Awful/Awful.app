@@ -53,6 +53,7 @@
 
     self.sendButton = nil;
     self.replyTextView = nil;
+    self.segmentedControl = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -85,7 +86,9 @@
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         // using form sheet the keyboard doesn't overlap
         float height = self.view.bounds.size.height;
-        self.replyTextView.frame = CGRectMake(5, 44, self.replyTextView.bounds.size.width, height - 44 - (height - keyboardBounds.origin.y));
+        float replyBoxHeight = (height - 44 - (height - keyboardBounds.origin.y));
+        replyBoxHeight = MAX(350, replyBoxHeight); // someone bugged out the height one time so I'm hacking in a minimum
+        self.replyTextView.frame = CGRectMake(5, 44, self.replyTextView.bounds.size.width, replyBoxHeight);
     } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         [UIView animateWithDuration:duration animations:^{
             self.replyTextView.frame = CGRectMake(5, 44, self.replyTextView.bounds.size.width, self.view.bounds.size.height-44-keyboardBounds.size.height);
