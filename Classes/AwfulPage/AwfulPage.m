@@ -441,7 +441,7 @@
         
         [self.view addSubview:sp_view];
         [UIView animateWithDuration:0.3 animations:^(void) {
-            sp_view.frame = CGRectOffset(sp_view.frame, 0, -sp_view.frame.size.height);
+            sp_view.frame = CGRectOffset(sp_view.frame, 0, -sp_view.frame.size.height+40);
         }];
         
         [self.specificPageController.pickerView selectRow:self.pages.currentPage-1 inComponent:0 animated:NO];

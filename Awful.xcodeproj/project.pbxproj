@@ -2181,8 +2181,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Sean Berry (9HL8QUW4RH)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Sean Berry (9HL8QUW4RH)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Regular Berry Software LLC";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Regular Berry Software LLC";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2200,8 +2200,8 @@
 					"\"$(SRCROOT)/3rd Party Sources/TestFlightSDK1\"",
 				);
 				PRODUCT_NAME = Awful;
-				PROVISIONING_PROFILE = "D6A50463-945F-4597-B90C-CE24F2173CC3";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "D6A50463-945F-4597-B90C-CE24F2173CC3";
+				PROVISIONING_PROFILE = "48222E58-EBEA-4E2F-9E7B-12E37657DCCA";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "48222E58-EBEA-4E2F-9E7B-12E37657DCCA";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;

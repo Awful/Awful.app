@@ -558,6 +558,7 @@
                         </subviews>
                         <color key="backgroundColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
                     </view>
+                    <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
                     <connections>
                         <outlet property="containerView" destination="8IU-cQ-mLt" id="RFW-qA-b2Z"/>
                         <outlet property="firstLastSegmentedControl" destination="k8W-92-hou" id="bSy-pf-DmB"/>
