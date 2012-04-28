@@ -172,6 +172,23 @@
 				</dict>
 			</array>
 		</dict>
+		<dict>
+			<key>Title</key>
+			<string>Dark Theme</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Dark Theme for iPhone</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<false/>
+					<key>Key</key>
+					<string>dark_theme</string>
+				</dict>
+			</array>
+		</dict>
 	</array>
 </dict>
 </plist>

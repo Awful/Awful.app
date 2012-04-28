@@ -52,6 +52,14 @@
 
 -(NSURL *)getTemplateURLFromForum : (AwfulForum *)forum
 {
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone && [[AwfulSettings settings] darkTheme]) {
+        NSURL *defaultDarkURL = [[ApplicationDelegate applicationDocumentsDirectory] URLByAppendingPathComponent:@"phone-template-dark.html"];
+        if([defaultDarkURL checkResourceIsReachableAndReturnError:nil]) {
+            return defaultDarkURL;
+        }
+        return [[NSBundle mainBundle] URLForResource:@"phone-template-dark" withExtension:@"html"];
+    }
+    
     if(forum != nil) {
         NSString *name = [NSString stringWithFormat:@"%@.html", forum.forumID];
         if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {

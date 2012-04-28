@@ -308,6 +308,9 @@
 		11D4700F154793B8004D800B /* tviv-on-demand.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D46FE3154793B8004D800B /* tviv-on-demand.png */; };
 		11D47010154793B8004D800B /* tviv-spoilers.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D46FE4154793B8004D800B /* tviv-spoilers.png */; };
 		11D470161547A97A004D800B /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 11D470121547A97A004D800B /* libTestFlight.a */; };
+		11D53B7D154CAD8500D4EA82 /* quote-block-off.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D53B7B154CAD8500D4EA82 /* quote-block-off.png */; };
+		11D53B7E154CAD8500D4EA82 /* quote-block-on.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D53B7C154CAD8500D4EA82 /* quote-block-on.png */; };
+		11D53B81154CAFEF00D4EA82 /* phone-template-dark.html in Resources */ = {isa = PBXBuildFile; fileRef = 11D53B80154CAFEF00D4EA82 /* phone-template-dark.html */; };
 		11D5E85814DC5FA000C1002D /* AwfulPageDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11D5E85714DC5FA000C1002D /* AwfulPageDataController.m */; };
 		11D5E85D14DC6D5C00C1002D /* AwfulPageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 11D5E85C14DC6D5C00C1002D /* AwfulPageTemplate.m */; };
 		11D7CB9214EA0867000DA96A /* icon23-banme.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D7CB8D14EA0867000DA96A /* icon23-banme.png */; };
@@ -759,6 +762,9 @@
 		11D46FE4154793B8004D800B /* tviv-spoilers.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tviv-spoilers.png"; sourceTree = "<group>"; };
 		11D470121547A97A004D800B /* libTestFlight.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libTestFlight.a; sourceTree = "<group>"; };
 		11D470151547A97A004D800B /* TestFlight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestFlight.h; sourceTree = "<group>"; };
+		11D53B7B154CAD8500D4EA82 /* quote-block-off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "quote-block-off.png"; sourceTree = "<group>"; };
+		11D53B7C154CAD8500D4EA82 /* quote-block-on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "quote-block-on.png"; sourceTree = "<group>"; };
+		11D53B80154CAFEF00D4EA82 /* phone-template-dark.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = "phone-template-dark.html"; path = "web resources/phone-template-dark.html"; sourceTree = SOURCE_ROOT; };
 		11D5E85614DC5FA000C1002D /* AwfulPageDataController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPageDataController.h; sourceTree = "<group>"; };
 		11D5E85714DC5FA000C1002D /* AwfulPageDataController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPageDataController.m; sourceTree = "<group>"; };
 		11D5E85B14DC6D5C00C1002D /* AwfulPageTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AwfulPageTemplate.h; path = Templates/AwfulPageTemplate.h; sourceTree = "<group>"; };
@@ -1482,6 +1488,8 @@
 		1190F80113BE58BB00B9D271 /* web resources */ = {
 			isa = PBXGroup;
 			children = (
+				11D53B7B154CAD8500D4EA82 /* quote-block-off.png */,
+				11D53B7C154CAD8500D4EA82 /* quote-block-on.png */,
 				112DB4BD14211F54005A98CB /* jquery.js */,
 				112DB4BE14211F54005A98CB /* salr.js */,
 				1190F80313BE58BB00B9D271 /* post.css */,
@@ -1506,6 +1514,7 @@
 				1CDF7A5C1537DD2D008EFAE4 /* PostContext.h */,
 				1CDF7A5D1537DD2D008EFAE4 /* PostContext.m */,
 				116D3A5F14DDC9E40002129F /* phone-template.html */,
+				11D53B80154CAFEF00D4EA82 /* phone-template-dark.html */,
 				116D3A6214DDD71C0002129F /* pad-template.html */,
 			);
 			name = Templates;
@@ -2106,6 +2115,9 @@
 				113666AA154C5B5800D74F9A /* sports-mlb.png in Resources */,
 				113666AB154C5B5800D74F9A /* sports-nba.png in Resources */,
 				113666AC154C5B5800D74F9A /* tfr-box.png in Resources */,
+				11D53B7D154CAD8500D4EA82 /* quote-block-off.png in Resources */,
+				11D53B7E154CAD8500D4EA82 /* quote-block-on.png in Resources */,
+				11D53B81154CAFEF00D4EA82 /* phone-template-dark.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -36,4 +36,6 @@ typedef enum
 
 @property (assign, nonatomic) BOOL highlightOwnMentions;
 
+@property (assign, nonatomic) BOOL darkTheme;
+
 @end
