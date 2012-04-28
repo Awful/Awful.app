@@ -674,7 +674,6 @@
         
     if(self.specificPageController == nil) {
         
-        //[self.pagesBarButtonItem setTintColor:[UIColor blackColor]];
         self.specificPageController = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil] instantiateViewControllerWithIdentifier:@"AwfulSpecificPageController"];
         self.specificPageController.page = self;
         [self.specificPageController loadView];
