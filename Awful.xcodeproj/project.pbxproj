@@ -73,6 +73,20 @@
 		112ECF5114D7100A007EE7B6 /* video.png in Resources */ = {isa = PBXBuildFile; fileRef = 112ECF2F14D7100A007EE7B6 /* video.png */; };
 		112ECF5214D7100A007EE7B6 /* weird.png in Resources */ = {isa = PBXBuildFile; fileRef = 112ECF3014D7100A007EE7B6 /* weird.png */; };
 		112ECF5314D7100A007EE7B6 /* whine.png in Resources */ = {isa = PBXBuildFile; fileRef = 112ECF3114D7100A007EE7B6 /* whine.png */; };
+		1136669F154C5B5800D74F9A /* coupon-coupon.png in Resources */ = {isa = PBXBuildFile; fileRef = 11366691154C5B5800D74F9A /* coupon-coupon.png */; };
+		113666A0154C5B5800D74F9A /* coupon-free.png in Resources */ = {isa = PBXBuildFile; fileRef = 11366692154C5B5800D74F9A /* coupon-free.png */; };
+		113666A1154C5B5800D74F9A /* coupon-instore.png in Resources */ = {isa = PBXBuildFile; fileRef = 11366693154C5B5800D74F9A /* coupon-instore.png */; };
+		113666A2154C5B5800D74F9A /* coupon-nonus.png in Resources */ = {isa = PBXBuildFile; fileRef = 11366694154C5B5800D74F9A /* coupon-nonus.png */; };
+		113666A3154C5B5800D74F9A /* icon-59-lobster.png in Resources */ = {isa = PBXBuildFile; fileRef = 11366695154C5B5800D74F9A /* icon-59-lobster.png */; };
+		113666A4154C5B5800D74F9A /* icon-61-comics.png in Resources */ = {isa = PBXBuildFile; fileRef = 11366696154C5B5800D74F9A /* icon-61-comics.png */; };
+		113666A5154C5B5800D74F9A /* lan-europe.png in Resources */ = {isa = PBXBuildFile; fileRef = 11366697154C5B5800D74F9A /* lan-europe.png */; };
+		113666A6154C5B5800D74F9A /* lf-eurabia.png in Resources */ = {isa = PBXBuildFile; fileRef = 11366698154C5B5800D74F9A /* lf-eurabia.png */; };
+		113666A7154C5B5800D74F9A /* lf-race2.png in Resources */ = {isa = PBXBuildFile; fileRef = 11366699154C5B5800D74F9A /* lf-race2.png */; };
+		113666A8154C5B5800D74F9A /* nmd-rock.png in Resources */ = {isa = PBXBuildFile; fileRef = 1136669A154C5B5800D74F9A /* nmd-rock.png */; };
+		113666A9154C5B5800D74F9A /* nmd-tour.png in Resources */ = {isa = PBXBuildFile; fileRef = 1136669B154C5B5800D74F9A /* nmd-tour.png */; };
+		113666AA154C5B5800D74F9A /* sports-mlb.png in Resources */ = {isa = PBXBuildFile; fileRef = 1136669C154C5B5800D74F9A /* sports-mlb.png */; };
+		113666AB154C5B5800D74F9A /* sports-nba.png in Resources */ = {isa = PBXBuildFile; fileRef = 1136669D154C5B5800D74F9A /* sports-nba.png */; };
+		113666AC154C5B5800D74F9A /* tfr-box.png in Resources */ = {isa = PBXBuildFile; fileRef = 1136669E154C5B5800D74F9A /* tfr-box.png */; };
 		1153D0D6144E5BA6007602E8 /* AwfulSpecificPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1153D0D4144E5BA6007602E8 /* AwfulSpecificPageViewController.m */; };
 		1156F004144B985000C0455B /* grey-gradient.png in Resources */ = {isa = PBXBuildFile; fileRef = 1156F003144B985000C0455B /* grey-gradient.png */; };
 		115A05DA134814B6004FDCE5 /* arrowright.png in Resources */ = {isa = PBXBuildFile; fileRef = 115A05D9134814B6004FDCE5 /* arrowright.png */; };
@@ -456,6 +470,20 @@
 		112ECF2F14D7100A007EE7B6 /* video.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = video.png; sourceTree = "<group>"; };
 		112ECF3014D7100A007EE7B6 /* weird.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = weird.png; sourceTree = "<group>"; };
 		112ECF3114D7100A007EE7B6 /* whine.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whine.png; sourceTree = "<group>"; };
+		11366691154C5B5800D74F9A /* coupon-coupon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "coupon-coupon.png"; sourceTree = "<group>"; };
+		11366692154C5B5800D74F9A /* coupon-free.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "coupon-free.png"; sourceTree = "<group>"; };
+		11366693154C5B5800D74F9A /* coupon-instore.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "coupon-instore.png"; sourceTree = "<group>"; };
+		11366694154C5B5800D74F9A /* coupon-nonus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "coupon-nonus.png"; sourceTree = "<group>"; };
+		11366695154C5B5800D74F9A /* icon-59-lobster.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-59-lobster.png"; sourceTree = "<group>"; };
+		11366696154C5B5800D74F9A /* icon-61-comics.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-61-comics.png"; sourceTree = "<group>"; };
+		11366697154C5B5800D74F9A /* lan-europe.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lan-europe.png"; sourceTree = "<group>"; };
+		11366698154C5B5800D74F9A /* lf-eurabia.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lf-eurabia.png"; sourceTree = "<group>"; };
+		11366699154C5B5800D74F9A /* lf-race2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lf-race2.png"; sourceTree = "<group>"; };
+		1136669A154C5B5800D74F9A /* nmd-rock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nmd-rock.png"; sourceTree = "<group>"; };
+		1136669B154C5B5800D74F9A /* nmd-tour.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nmd-tour.png"; sourceTree = "<group>"; };
+		1136669C154C5B5800D74F9A /* sports-mlb.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sports-mlb.png"; sourceTree = "<group>"; };
+		1136669D154C5B5800D74F9A /* sports-nba.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sports-nba.png"; sourceTree = "<group>"; };
+		1136669E154C5B5800D74F9A /* tfr-box.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tfr-box.png"; sourceTree = "<group>"; };
 		1153D0D3144E5BA6007602E8 /* AwfulSpecificPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSpecificPageViewController.h; sourceTree = "<group>"; };
 		1153D0D4144E5BA6007602E8 /* AwfulSpecificPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSpecificPageViewController.m; sourceTree = "<group>"; };
 		1156F003144B985000C0455B /* grey-gradient.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "grey-gradient.png"; path = "images/grey-gradient.png"; sourceTree = "<group>"; };
@@ -991,6 +1019,20 @@
 		112ECF0F14D7100A007EE7B6 /* threadtags */ = {
 			isa = PBXGroup;
 			children = (
+				11366691154C5B5800D74F9A /* coupon-coupon.png */,
+				11366692154C5B5800D74F9A /* coupon-free.png */,
+				11366693154C5B5800D74F9A /* coupon-instore.png */,
+				11366694154C5B5800D74F9A /* coupon-nonus.png */,
+				11366695154C5B5800D74F9A /* icon-59-lobster.png */,
+				11366696154C5B5800D74F9A /* icon-61-comics.png */,
+				11366697154C5B5800D74F9A /* lan-europe.png */,
+				11366698154C5B5800D74F9A /* lf-eurabia.png */,
+				11366699154C5B5800D74F9A /* lf-race2.png */,
+				1136669A154C5B5800D74F9A /* nmd-rock.png */,
+				1136669B154C5B5800D74F9A /* nmd-tour.png */,
+				1136669C154C5B5800D74F9A /* sports-mlb.png */,
+				1136669D154C5B5800D74F9A /* sports-nba.png */,
+				1136669E154C5B5800D74F9A /* tfr-box.png */,
 				11C3A25A154B9FB800720A20 /* pi-cats.png */,
 				11C3A25B154B9FB800720A20 /* pi-dogs.png */,
 				11C3A25C154B9FB800720A20 /* tcc-shrooms.png */,
@@ -2050,6 +2092,20 @@
 				11C3A26F154B9FB800720A20 /* yp-c64.png in Resources */,
 				11C3A270154B9FB800720A20 /* yp-snowcrash971.png in Resources */,
 				11C3A271154B9FB800720A20 /* yp-tubes296.png in Resources */,
+				1136669F154C5B5800D74F9A /* coupon-coupon.png in Resources */,
+				113666A0154C5B5800D74F9A /* coupon-free.png in Resources */,
+				113666A1154C5B5800D74F9A /* coupon-instore.png in Resources */,
+				113666A2154C5B5800D74F9A /* coupon-nonus.png in Resources */,
+				113666A3154C5B5800D74F9A /* icon-59-lobster.png in Resources */,
+				113666A4154C5B5800D74F9A /* icon-61-comics.png in Resources */,
+				113666A5154C5B5800D74F9A /* lan-europe.png in Resources */,
+				113666A6154C5B5800D74F9A /* lf-eurabia.png in Resources */,
+				113666A7154C5B5800D74F9A /* lf-race2.png in Resources */,
+				113666A8154C5B5800D74F9A /* nmd-rock.png in Resources */,
+				113666A9154C5B5800D74F9A /* nmd-tour.png in Resources */,
+				113666AA154C5B5800D74F9A /* sports-mlb.png in Resources */,
+				113666AB154C5B5800D74F9A /* sports-nba.png in Resources */,
+				113666AC154C5B5800D74F9A /* tfr-box.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
