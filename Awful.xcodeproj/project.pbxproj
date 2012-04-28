@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		10241B781247DF7F00EE71CA /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 10241B771247DF7F00EE71CA /* Default.png */; };
 		10913AAB12CBF13A007583AC /* list_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 10913AA612CBF13A007583AC /* list_icon.png */; };
 		10913AAC12CBF13A007583AC /* list_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 10913AA712CBF13A007583AC /* list_icon@2x.png */; };
 		10913AAD12CBF13A007583AC /* reload@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 10913AA812CBF13A007583AC /* reload@2x.png */; };
@@ -36,7 +35,6 @@
 		10E38C1D12BEC14F002DBA3F /* star_on.png in Resources */ = {isa = PBXBuildFile; fileRef = 10E38C0912BEC14F002DBA3F /* star_on.png */; };
 		10E38C1E12BEC14F002DBA3F /* star_on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 10E38C0A12BEC14F002DBA3F /* star_on@2x.png */; };
 		10E38C1F12BEC14F002DBA3F /* sticky.png in Resources */ = {isa = PBXBuildFile; fileRef = 10E38C0B12BEC14F002DBA3F /* sticky.png */; };
-		10F5BB3312499953006C5ED0 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 10F5BB3212499953006C5ED0 /* Default@2x.png */; };
 		11099067134B86FD0013444C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11099066134B86FC0013444C /* QuartzCore.framework */; };
 		110EE32C1506D41300F2DC91 /* shsc-apple.png in Resources */ = {isa = PBXBuildFile; fileRef = 11243F7214D7187C00B06470 /* shsc-apple.png */; };
 		112DB4BB14211F24005A98CB /* SALR.m in Sources */ = {isa = PBXBuildFile; fileRef = 112DB4BA14211F24005A98CB /* SALR.m */; };
@@ -386,7 +384,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		10241B771247DF7F00EE71CA /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		107CF9A211FF7776007C16F4 /* libxml2.2.7.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.2.7.3.dylib; path = usr/lib/libxml2.2.7.3.dylib; sourceTree = SDKROOT; };
 		107CF9E011FF79D5007C16F4 /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
 		10913AA612CBF13A007583AC /* list_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = list_icon.png; path = images/list_icon.png; sourceTree = "<group>"; };
@@ -417,7 +414,6 @@
 		10E38C0912BEC14F002DBA3F /* star_on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = star_on.png; path = images/star_on.png; sourceTree = "<group>"; };
 		10E38C0A12BEC14F002DBA3F /* star_on@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "star_on@2x.png"; path = "images/star_on@2x.png"; sourceTree = "<group>"; };
 		10E38C0B12BEC14F002DBA3F /* sticky.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = sticky.png; path = images/sticky.png; sourceTree = "<group>"; };
-		10F5BB3212499953006C5ED0 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		11099066134B86FC0013444C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		11243F7214D7187C00B06470 /* shsc-apple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shsc-apple.png"; sourceTree = "<group>"; };
 		112764EB14DB44E6003ACE76 /* AwfulForumHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumHeader.h; sourceTree = "<group>"; };
@@ -1697,8 +1693,6 @@
 				11E4556B15435F4A006C36A3 /* Settings.plist */,
 				1190F80113BE58BB00B9D271 /* web resources */,
 				10E93EB9121DC70E00CCBF6D /* images */,
-				10F5BB3212499953006C5ED0 /* Default@2x.png */,
-				10241B771247DF7F00EE71CA /* Default.png */,
 				8D1107310486CEB800E47090 /* Awful-Info.plist */,
 				1C6A170615428F1D00410DB4 /* Settings.plist */,
 			);
@@ -1794,8 +1788,6 @@
 				110EE32C1506D41300F2DC91 /* shsc-apple.png in Resources */,
 				112DB4C21421208A005A98CB /* jquery.js in Resources */,
 				112DB4C31421208A005A98CB /* salr.js in Resources */,
-				10241B781247DF7F00EE71CA /* Default.png in Resources */,
-				10F5BB3312499953006C5ED0 /* Default@2x.png in Resources */,
 				10E38C0D12BEC14F002DBA3F /* arrowleft.png in Resources */,
 				10E38C0E12BEC14F002DBA3F /* btn_template_bg.png in Resources */,
 				10E38C1012BEC14F002DBA3F /* folder.png in Resources */,
