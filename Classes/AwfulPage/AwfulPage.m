@@ -556,6 +556,7 @@
                 page.thread = intra;
                 [self.navigationController pushViewController:page animated:YES];
                 if(page_number != nil) {
+                    page.destinationType = AwfulPageDestinationTypeSpecific;
                     [page loadPageNum:[page_number integerValue]];
                 } else {
                     [page refresh];

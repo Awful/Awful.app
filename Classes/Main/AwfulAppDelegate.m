@@ -145,7 +145,8 @@
         return _throwawayObjectContext;
     }
     _throwawayObjectContext = [[NSManagedObjectContext alloc] init];
-    [_throwawayObjectContext setPersistentStoreCoordinator:nil];
+    NSPersistentStoreCoordinator *store = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
+    [_throwawayObjectContext setPersistentStoreCoordinator:store];
     [_throwawayObjectContext setUndoManager:nil];
     return __managedObjectContext;
 }
