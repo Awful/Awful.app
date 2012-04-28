@@ -9,8 +9,6 @@ Awful is an iOS app for browsing the [Something Awful Forums][forums] on your iP
 Next Version
 ----------------
 * test test test
-* move from 'contextDidSave' notif to a custom 'AwfulThreadChanged' notif
-* get higher rez version of settings icon
 
 Ideal Version
 ----------------------
