@@ -96,6 +96,7 @@
 -(void)loadPageNum : (NSUInteger)pageNum
 {   
     [self.networkOperation cancel];
+    self.isLoading = YES;
     self.networkOperation = [ApplicationDelegate.awfulNetworkEngine threadListForBookmarksAtPageNum:pageNum onCompletion:^(NSMutableArray *threads) {
         self.pages.currentPage = pageNum;
         if(pageNum == 1) {
