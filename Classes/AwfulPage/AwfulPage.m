@@ -72,7 +72,7 @@
         
         if([_thread.totalUnreadPosts intValue] == -1) {
             self.destinationType = AwfulPageDestinationTypeFirst;
-        } else if(_thread.totalUnreadPosts == 0) {
+        } else if([_thread.totalUnreadPosts intValue] == 0) {
             self.destinationType = AwfulPageDestinationTypeLast;
                 // if the last page is full, it won't work if you go for &goto=newpost, that's why I'm setting this to last page
         } else {
@@ -412,7 +412,7 @@
 
 -(void)tappedPageNav : (id)sender
 {
-    if(self.pages == nil) {
+    if(self.pages == nil || self.pages.totalPages <= 0 || self.pages.currentPage < 0) {
         return;
     }
     
@@ -665,7 +665,7 @@
         self.popController = nil;
     }
     
-    if(self.pages == nil)
+    if(self.pages == nil || self.pages.totalPages <= 0 || self.pages.currentPage < 0)
     {
         return;
     }
