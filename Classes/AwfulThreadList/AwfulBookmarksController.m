@@ -59,13 +59,21 @@
     [super viewWillDisappear:animated];
 }
 
-- (void)contextDidSave:(NSNotification *)note
+-(void)awfulThreadUpdated : (NSNotification *)notif
 {
-    // TODO this gets called a bunch. Get rid of it in favour of something like
-    // NSFetchedResultsController.
-    NSArray *newThreads = [AwfulThread bookmarkedThreads];
-    [self.awfulThreads removeAllObjects];
-    [self acceptThreads:[newThreads mutableCopy]];
+    [super awfulThreadUpdated:notif];
+    
+    AwfulThread *changedThread = [notif object];
+    NSIndexPath *path = nil;
+    for(AwfulThread *thread in self.awfulThreads) {
+        if(thread == changedThread && ![thread.isBookmarked boolValue]) {
+            path = [NSIndexPath indexPathForRow:[self.awfulThreads indexOfObject:thread] inSection:0];
+        }
+    }
+    if(path != nil) {
+        [self.awfulThreads removeObject:changedThread];
+        [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:path] withRowAnimation:UITableViewRowAnimationFade];
+    }
 }
 
 -(void)loadThreads

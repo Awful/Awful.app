@@ -48,9 +48,9 @@ typedef enum {
     self.title = self.forum.name;
     self.awfulThreads = [[NSMutableArray alloc] init];
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(contextDidSave:)
-                                                 name:NSManagedObjectContextDidSaveNotification
-                                               object:[ApplicationDelegate managedObjectContext]];
+                                             selector:@selector(awfulThreadUpdated:)
+                                                 name:AwfulNotifThreadUpdated
+                                               object:nil];
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -122,13 +122,18 @@ typedef enum {
     }];
 }
 
-- (void)contextDidSave:(NSNotification *)note
+-(void)awfulThreadUpdated : (NSNotification *)notif
 {
-    // TODO this gets called a bunch. Get rid of it in favour of something like
-    // NSFetchedResultsController.
-    NSArray *newThreads = [AwfulThread threadsForForum:self.forum];
-    [self.awfulThreads removeAllObjects];
-    [self acceptThreads:[newThreads mutableCopy]];
+    AwfulThread *changedThread = [notif object];
+    NSIndexPath *path = nil;
+    for(AwfulThread *thread in self.awfulThreads) {
+        if(thread == changedThread) {
+            path = [NSIndexPath indexPathForRow:[self.awfulThreads indexOfObject:thread] inSection:0];
+        }
+    }
+    if(path != nil) {
+        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:path] withRowAnimation:UITableViewRowAnimationFade];
+    }
 }
 
 -(void)newlyVisible
@@ -188,8 +193,8 @@ typedef enum {
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:NSManagedObjectContextDidSaveNotification
-                                                  object:[ApplicationDelegate managedObjectContext]];
+                                                    name:AwfulNotifThreadUpdated
+                                                  object:nil];
 }
 
 -(BOOL)shouldReloadOnViewLoad

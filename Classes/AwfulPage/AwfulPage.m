@@ -107,10 +107,12 @@
                 unreadPosts -= numNewPosts;
                 self.thread.totalUnreadPosts = [NSNumber numberWithInt:MAX(unreadPosts, 0)];
                 [ApplicationDelegate saveContext];
+                [[NSNotificationCenter defaultCenter] postNotificationName:AwfulNotifThreadUpdated object:self.thread];
             }
         } else if(self.destinationType == AwfulPageDestinationTypeLast) {
             self.thread.totalUnreadPosts = [NSNumber numberWithInt:0];
             [ApplicationDelegate saveContext];
+            [[NSNotificationCenter defaultCenter] postNotificationName:AwfulNotifThreadUpdated object:self.thread];
         }
         
         NSString *html = [dataController constructedPageHTML];

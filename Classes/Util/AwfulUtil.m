@@ -30,6 +30,9 @@
 
 @implementation AwfulUtil
 
+// object is an AwfulThread
+NSString * const AwfulNotifThreadUpdated = @"AwfulNotifThreadUpdated";
+
 +(void)requestFailed:(NSError *)error
 {
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];

@@ -24,6 +24,8 @@ typedef enum {
 +(void)saveThreadList : (NSMutableArray *)list forForumId : (NSString *)forum_id;
 +(UIStoryboard *)getStoryboard;
 
+extern NSString * const AwfulNotifThreadUpdated;
+
 @end
 
 float getWidth();

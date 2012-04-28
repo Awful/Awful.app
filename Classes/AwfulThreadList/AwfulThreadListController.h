@@ -43,6 +43,8 @@ typedef enum {
 -(void)loadPageNum : (NSUInteger)pageNum;
 -(void)stop;
 
+-(void)awfulThreadUpdated : (NSNotification *)notif;
+
 -(AwfulThreadCellType)getTypeAtIndexPath : (NSIndexPath *)indexPath;
 -(BOOL)moreThreads;
 
