@@ -370,7 +370,7 @@
                     <color key="color" cocoaTouchSystemColor="darkTextColor"/>
                 </activityIndicatorView>
             </objects>
-            <point key="canvasLocation" x="2282" y="34"/>
+            <point key="canvasLocation" x="2466" y="84"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Jfk-Do-hy8">
