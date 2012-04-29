@@ -21,6 +21,7 @@ Ideal Version
 * Post new threads
 * Set a few key SA settings in-app (e.g. 'show seen icon next to each post')
 * Populate initial app settings with SA settings counterparts (e.g. 'show avatars')
+* Note 'show avatars' only works if it's also enabled in SA user control panel.
 
 An unofficial app
 -----------------
