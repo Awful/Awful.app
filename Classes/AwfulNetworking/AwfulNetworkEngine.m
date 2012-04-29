@@ -55,8 +55,6 @@
     
     [op onCompletion:^(MKNetworkOperation *completedOperation) {
         
-        threadListResponseBlock([NSMutableArray array]);
-        
         if(pageNum == 1) {
             [AwfulThread removeBookmarkedThreads];
         }
