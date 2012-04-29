@@ -35,6 +35,7 @@
 {
     [super viewWillDisappear:animated];
     [self.networkOperation cancel];
+    [self finishedRefreshing];
 }
 
 #pragma mark - UIScrollViewDelegate Methods
