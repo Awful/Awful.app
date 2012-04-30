@@ -325,6 +325,8 @@
 		11D6EFE9154DE705005801AC /* cd_scifi.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D6EFE4154DE705005801AC /* cd_scifi.png */; };
 		11D6EFEA154DE705005801AC /* dd-law.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D6EFE5154DE705005801AC /* dd-law.png */; };
 		11D6EFEB154DE705005801AC /* fyad-falconry.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D6EFE6154DE705005801AC /* fyad-falconry.png */; };
+		11D6EFF7154F1C6B005801AC /* quote-dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D6EFF6154F1C6B005801AC /* quote-dark.png */; };
+		11D6EFFD154F1EE3005801AC /* shitpost.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D6EFFC154F1EE3005801AC /* shitpost.png */; };
 		11D7CB9214EA0867000DA96A /* icon23-banme.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D7CB8D14EA0867000DA96A /* icon23-banme.png */; };
 		11D7CB9314EA0867000DA96A /* link.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D7CB8E14EA0867000DA96A /* link.png */; };
 		11D7CB9414EA0867000DA96A /* photoshop.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D7CB8F14EA0867000DA96A /* photoshop.png */; };
@@ -376,7 +378,6 @@
 		11FE9E3F153CFC70002EE2B5 /* MKNetworkOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FE9E34153CFC6F002EE2B5 /* MKNetworkOperation.m */; };
 		11FE9E40153CFC70002EE2B5 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FE9E37153CFC6F002EE2B5 /* Reachability.m */; };
 		1C277CA51543554700CD2CCE /* AwfulSettingsChoiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C277CA41543554700CD2CCE /* AwfulSettingsChoiceViewController.m */; };
-		1C6A170715428F1D00410DB4 /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1C6A170615428F1D00410DB4 /* Settings.plist */; };
 		1C7B87201544D83D00891D41 /* AwfulForumSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B871F1544D83D00891D41 /* AwfulForumSection.m */; };
 		1CAB36B11548F0FE00A4A362 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
 		1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD5198154294D400326C7B /* AwfulSettings.m */; };
@@ -793,6 +794,8 @@
 		11D6EFE4154DE705005801AC /* cd_scifi.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cd_scifi.png; sourceTree = "<group>"; };
 		11D6EFE5154DE705005801AC /* dd-law.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dd-law.png"; sourceTree = "<group>"; };
 		11D6EFE6154DE705005801AC /* fyad-falconry.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-falconry.png"; sourceTree = "<group>"; };
+		11D6EFF6154F1C6B005801AC /* quote-dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "quote-dark.png"; path = "images/quote-dark.png"; sourceTree = SOURCE_ROOT; };
+		11D6EFFC154F1EE3005801AC /* shitpost.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shitpost.png; sourceTree = "<group>"; };
 		11D7CB8D14EA0867000DA96A /* icon23-banme.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon23-banme.png"; sourceTree = "<group>"; };
 		11D7CB8E14EA0867000DA96A /* link.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = link.png; sourceTree = "<group>"; };
 		11D7CB8F14EA0867000DA96A /* photoshop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = photoshop.png; sourceTree = "<group>"; };
@@ -860,7 +863,6 @@
 		11FE9E37153CFC6F002EE2B5 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		1C277CA31543554700CD2CCE /* AwfulSettingsChoiceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettingsChoiceViewController.h; sourceTree = "<group>"; };
 		1C277CA41543554700CD2CCE /* AwfulSettingsChoiceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettingsChoiceViewController.m; sourceTree = "<group>"; };
-		1C6A170615428F1D00410DB4 /* Settings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Settings.plist; sourceTree = "<group>"; };
 		1C7B871B1544D73100891D41 /* AwfulForumsListControllerSubclass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumsListControllerSubclass.h; sourceTree = "<group>"; };
 		1C7B871E1544D83C00891D41 /* AwfulForumSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumSection.h; sourceTree = "<group>"; };
 		1C7B871F1544D83D00891D41 /* AwfulForumSection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumSection.m; sourceTree = "<group>"; };
@@ -1049,6 +1051,7 @@
 		112ECF0F14D7100A007EE7B6 /* threadtags */ = {
 			isa = PBXGroup;
 			children = (
+				11D6EFFC154F1EE3005801AC /* shitpost.png */,
 				11D6EFE2154DE705005801AC /* bss-discussion.png */,
 				11D6EFE3154DE705005801AC /* cc-fiction.png */,
 				11D6EFE4154DE705005801AC /* cd_scifi.png */,
@@ -1522,6 +1525,7 @@
 		1190F80113BE58BB00B9D271 /* web resources */ = {
 			isa = PBXGroup;
 			children = (
+				11D6EFF6154F1C6B005801AC /* quote-dark.png */,
 				11D53B7B154CAD8500D4EA82 /* quote-block-off.png */,
 				11D53B7C154CAD8500D4EA82 /* quote-block-on.png */,
 				112DB4BD14211F54005A98CB /* jquery.js */,
@@ -1771,14 +1775,13 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				11D6EFE0154DE4D3005801AC /* Default.png */,
-				11D6EFDE154DE405005801AC /* Default@2x.png */,
 				11E9F956154B9AF100E8543E /* Icons */,
 				1190F80113BE58BB00B9D271 /* web resources */,
 				10E93EB9121DC70E00CCBF6D /* images */,
 				8D1107310486CEB800E47090 /* Awful-Info.plist */,
+				11D6EFE0154DE4D3005801AC /* Default.png */,
+				11D6EFDE154DE405005801AC /* Default@2x.png */,
 				11E4556B15435F4A006C36A3 /* Settings.plist */,
-				1C6A170615428F1D00410DB4 /* Settings.plist */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -2072,7 +2075,6 @@
 				117CE6F315433504005DD47B /* dd-philosophy.png in Resources */,
 				117CE6F415433504005DD47B /* yospos-netscape.png in Resources */,
 				117CE6F515433504005DD47B /* yp-bsod.png in Resources */,
-				1C6A170715428F1D00410DB4 /* Settings.plist in Resources */,
 				11D46FE5154793B8004D800B /* ai-cycles.png in Resources */,
 				11D46FE6154793B8004D800B /* bb-nonfiction.png in Resources */,
 				11D46FE7154793B8004D800B /* byob-explosion.png in Resources */,
@@ -2166,6 +2168,8 @@
 				11D6EFE9154DE705005801AC /* cd_scifi.png in Resources */,
 				11D6EFEA154DE705005801AC /* dd-law.png in Resources */,
 				11D6EFEB154DE705005801AC /* fyad-falconry.png in Resources */,
+				11D6EFF7154F1C6B005801AC /* quote-dark.png in Resources */,
+				11D6EFFD154F1EE3005801AC /* shitpost.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
