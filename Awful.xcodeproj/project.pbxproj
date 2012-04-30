@@ -327,6 +327,8 @@
 		11D6EFEB154DE705005801AC /* fyad-falconry.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D6EFE6154DE705005801AC /* fyad-falconry.png */; };
 		11D6EFF7154F1C6B005801AC /* quote-dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D6EFF6154F1C6B005801AC /* quote-dark.png */; };
 		11D6EFFD154F1EE3005801AC /* shitpost.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D6EFFC154F1EE3005801AC /* shitpost.png */; };
+		11D6F003154F2532005801AC /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 11D6F002154F2532005801AC /* Settings.plist */; };
+		11D6F005154F28BA005801AC /* icon_114.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D6F004154F28BA005801AC /* icon_114.png */; };
 		11D7CB9214EA0867000DA96A /* icon23-banme.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D7CB8D14EA0867000DA96A /* icon23-banme.png */; };
 		11D7CB9314EA0867000DA96A /* link.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D7CB8E14EA0867000DA96A /* link.png */; };
 		11D7CB9414EA0867000DA96A /* photoshop.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D7CB8F14EA0867000DA96A /* photoshop.png */; };
@@ -344,8 +346,7 @@
 		11E9F964154B9AFC00E8543E /* Icon-Small-50@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11E9F95A154B9AFC00E8543E /* Icon-Small-50@2x.png */; };
 		11E9F965154B9AFC00E8543E /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = 11E9F95B154B9AFC00E8543E /* Icon-Small.png */; };
 		11E9F966154B9AFC00E8543E /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11E9F95C154B9AFC00E8543E /* Icon-Small@2x.png */; };
-		11E9F967154B9AFC00E8543E /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 11E9F95D154B9AFC00E8543E /* Icon.png */; };
-		11E9F968154B9AFC00E8543E /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11E9F95E154B9AFC00E8543E /* Icon@2x.png */; };
+		11E9F967154B9AFC00E8543E /* icon_57.png in Resources */ = {isa = PBXBuildFile; fileRef = 11E9F95D154B9AFC00E8543E /* icon_57.png */; };
 		11FDA290151017490014FDCD /* MainStoryboardiPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 11FDA28E151017490014FDCD /* MainStoryboardiPad.storyboard */; };
 		11FDA296151018600014FDCD /* AwfulSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA295151018600014FDCD /* AwfulSettingsViewController.m */; };
 		11FDA299151018740014FDCD /* OtherWebController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA298151018740014FDCD /* OtherWebController.m */; };
@@ -796,6 +797,8 @@
 		11D6EFE6154DE705005801AC /* fyad-falconry.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-falconry.png"; sourceTree = "<group>"; };
 		11D6EFF6154F1C6B005801AC /* quote-dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "quote-dark.png"; path = "images/quote-dark.png"; sourceTree = SOURCE_ROOT; };
 		11D6EFFC154F1EE3005801AC /* shitpost.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shitpost.png; sourceTree = "<group>"; };
+		11D6F002154F2532005801AC /* Settings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Settings.plist; sourceTree = "<group>"; };
+		11D6F004154F28BA005801AC /* icon_114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon_114.png; path = Icons/icon_114.png; sourceTree = "<group>"; };
 		11D7CB8D14EA0867000DA96A /* icon23-banme.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon23-banme.png"; sourceTree = "<group>"; };
 		11D7CB8E14EA0867000DA96A /* link.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = link.png; sourceTree = "<group>"; };
 		11D7CB8F14EA0867000DA96A /* photoshop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = photoshop.png; sourceTree = "<group>"; };
@@ -804,7 +807,6 @@
 		11D7CB9714EA0CED000DA96A /* MainStoryboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MainStoryboard.storyboard; sourceTree = SOURCE_ROOT; };
 		11DFB44014FF1CBB0001A34C /* AwfulTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTableViewController.h; sourceTree = "<group>"; };
 		11DFB44114FF1CBB0001A34C /* AwfulTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTableViewController.m; sourceTree = "<group>"; };
-		11E4556B15435F4A006C36A3 /* Settings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Settings.plist; sourceTree = "<group>"; };
 		11E53664151E8AB600EA74EA /* reply.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = reply.png; path = images/reply.png; sourceTree = "<group>"; };
 		11E53665151E8AB600EA74EA /* reply@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "reply@2x.png"; path = "images/reply@2x.png"; sourceTree = "<group>"; };
 		11E53669151E8B4C00EA74EA /* bookmarks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bookmarks.png; path = images/bookmarks.png; sourceTree = "<group>"; };
@@ -815,8 +817,7 @@
 		11E9F95A154B9AFC00E8543E /* Icon-Small-50@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small-50@2x.png"; path = "Icons/Icon-Small-50@2x.png"; sourceTree = "<group>"; };
 		11E9F95B154B9AFC00E8543E /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small.png"; path = "Icons/Icon-Small.png"; sourceTree = "<group>"; };
 		11E9F95C154B9AFC00E8543E /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small@2x.png"; path = "Icons/Icon-Small@2x.png"; sourceTree = "<group>"; };
-		11E9F95D154B9AFC00E8543E /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = Icons/Icon.png; sourceTree = "<group>"; };
-		11E9F95E154B9AFC00E8543E /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "Icons/Icon@2x.png"; sourceTree = "<group>"; };
+		11E9F95D154B9AFC00E8543E /* icon_57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon_57.png; path = Icons/icon_57.png; sourceTree = "<group>"; };
 		11FDA28E151017490014FDCD /* MainStoryboardiPad.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = MainStoryboardiPad.storyboard; path = iPad/MainStoryboardiPad.storyboard; sourceTree = "<group>"; };
 		11FDA294151018600014FDCD /* AwfulSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettingsViewController.h; sourceTree = "<group>"; };
 		11FDA295151018600014FDCD /* AwfulSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettingsViewController.m; sourceTree = "<group>"; };
@@ -1567,8 +1568,8 @@
 				11E9F95A154B9AFC00E8543E /* Icon-Small-50@2x.png */,
 				11E9F95B154B9AFC00E8543E /* Icon-Small.png */,
 				11E9F95C154B9AFC00E8543E /* Icon-Small@2x.png */,
-				11E9F95D154B9AFC00E8543E /* Icon.png */,
-				11E9F95E154B9AFC00E8543E /* Icon@2x.png */,
+				11E9F95D154B9AFC00E8543E /* icon_57.png */,
+				11D6F004154F28BA005801AC /* icon_114.png */,
 			);
 			name = Icons;
 			sourceTree = "<group>";
@@ -1781,7 +1782,7 @@
 				8D1107310486CEB800E47090 /* Awful-Info.plist */,
 				11D6EFE0154DE4D3005801AC /* Default.png */,
 				11D6EFDE154DE405005801AC /* Default@2x.png */,
-				11E4556B15435F4A006C36A3 /* Settings.plist */,
+				11D6F002154F2532005801AC /* Settings.plist */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -2125,8 +2126,7 @@
 				11E9F964154B9AFC00E8543E /* Icon-Small-50@2x.png in Resources */,
 				11E9F965154B9AFC00E8543E /* Icon-Small.png in Resources */,
 				11E9F966154B9AFC00E8543E /* Icon-Small@2x.png in Resources */,
-				11E9F967154B9AFC00E8543E /* Icon.png in Resources */,
-				11E9F968154B9AFC00E8543E /* Icon@2x.png in Resources */,
+				11E9F967154B9AFC00E8543E /* icon_57.png in Resources */,
 				11C3A266154B9FB800720A20 /* pi-cats.png in Resources */,
 				11C3A267154B9FB800720A20 /* pi-dogs.png in Resources */,
 				11C3A268154B9FB800720A20 /* tcc-shrooms.png in Resources */,
@@ -2170,6 +2170,8 @@
 				11D6EFEB154DE705005801AC /* fyad-falconry.png in Resources */,
 				11D6EFF7154F1C6B005801AC /* quote-dark.png in Resources */,
 				11D6EFFD154F1EE3005801AC /* shitpost.png in Resources */,
+				11D6F003154F2532005801AC /* Settings.plist in Resources */,
+				11D6F005154F28BA005801AC /* icon_114.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
