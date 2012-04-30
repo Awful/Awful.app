@@ -558,6 +558,7 @@
                     page.destinationType = AwfulPageDestinationTypeSpecific;
                     [page loadPageNum:[page_number integerValue]];
                 } else {
+                    page.destinationType = AwfulPageDestinationTypeFirst;
                     [page refresh];
                 }
                 return NO;
