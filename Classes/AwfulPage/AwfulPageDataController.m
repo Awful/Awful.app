@@ -42,6 +42,7 @@
 {
     if((self=[super init])) {
         NSString *raw_s = [[NSString alloc] initWithData:responseData encoding:NSASCIIStringEncoding];
+        
         NSString *filtered_raw = [raw_s stringByReplacingOccurrencesOfString:@"<size:" withString:@"<"];
         NSData *converted = [filtered_raw dataUsingEncoding:NSUTF8StringEncoding];
         
@@ -224,6 +225,7 @@
                                    withString:@"<i></i>"
                                       options:NSCaseInsensitiveSearch
                                         range:NSMakeRange(0, post_body.length)];
+        
         post.postBody = post_body;
         
         TFHppleElement *seen = [parser searchForSingle:@"//tr[@class='seen1']|//tr[@class='seen2']"];

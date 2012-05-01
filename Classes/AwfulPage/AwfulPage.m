@@ -714,6 +714,16 @@
     } 
 }
 
+// hack for embedded youtube controls to work
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+    if([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
+        CGPoint loc = [touch locationInView:self.view];
+        _lastTouch = loc;
+        return NO;
+    }
+    return YES;
+}
 
 -(void)setActions:(AwfulActions *)actions
 {

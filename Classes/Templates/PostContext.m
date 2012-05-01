@@ -54,39 +54,23 @@ static NSString *AwfulifiedPostBody(NSString *body)
         }
     }
     
-    // Replace embedded youtube/vimeo with links.
-    NSArray *objects = [base search:@"//object/param[@name='movie']"];
-    NSArray *object_strs = [base rawSearch:@"//object"];
-    
-    for (int i = 0; i < [objects count]; i++) {
+    NSArray *objects = [base search:@"//iframe"];
+    NSArray *object_strs = [base rawSearch:@"//iframe"];
+    for(int i = 0; i < [objects count]; i++) {
         TFHppleElement *el = [objects objectAtIndex:i];
-        NSRange r = [[el objectForKey:@"value"] rangeOfString:@"youtube"];
-        if (r.location != NSNotFound) {
-            NSURL *youtube_url = [NSURL URLWithString:[el objectForKey:@"value"]];
-            NSString *youtube_str = [NSString stringWithFormat:@"http://www.youtube.com/watch?v=%@", [youtube_url lastPathComponent]];
-            NSString *reformed_youtube = [NSString stringWithFormat:@"<a href='%@'>Embedded YouTube</a>", youtube_str];
-            if (i < [object_strs count]) {
-                [awfulified replaceOccurrencesOfString:[object_strs objectAtIndex:i]
-                                            withString:reformed_youtube
-                                               options:0
-                                                 range:NSMakeRange(0, awfulified.length)];
-            }
-        } else {
-            r = [[el objectForKey:@"value"] rangeOfString:@"vimeo"];
-            if (r.location != NSNotFound) {
-                NSRange clip = [[el objectForKey:@"value"] rangeOfString:@"clip_id="];
-                NSRange and = [[el objectForKey:@"value"] rangeOfString:@"&"];
-                NSRange clip_range;
-                clip_range.location = clip.location + 8;
-                clip_range.length = and.location - clip.location - 8;
-                NSString *clip_id = [[el objectForKey:@"value"] substringWithRange:clip_range];
-                NSString *reformed_vimeo = [NSString stringWithFormat:@"<a href='http://www.vimeo.com/m/#/%@'>Embedded Vimeo</a>", clip_id];
-                [awfulified replaceOccurrencesOfString:[object_strs objectAtIndex:i]
-                                            withString:reformed_vimeo
-                                               options:0
-                                                 range:NSMakeRange(0, awfulified.length)];
-            }
+        NSString *str = [object_strs objectAtIndex:i];
+        
+        NSString *size = @"";
+        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            size = @"width='496' height='279'";
         }
+        
+        NSString *src = [el objectForKey:@"src"];
+        NSString *reformed = [NSString stringWithFormat:@"<iframe type='text/html' src='%@&showinfo=0' frameborder='0' %@ allowfullscreen></iframe>", src, size];
+        [awfulified replaceOccurrencesOfString:str
+                                    withString:reformed
+                                       options:0
+                                         range:NSMakeRange(0, awfulified.length)];
     }
     
     // TODO what's going on here?

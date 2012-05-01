@@ -61,6 +61,11 @@
     [self swapToRefreshButton];
 }
 
+-(BOOL)canPullToRefresh
+{
+    return NO;
+}
+
 - (void)refresh
 {
     [super refresh];
