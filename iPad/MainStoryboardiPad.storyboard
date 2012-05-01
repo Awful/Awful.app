@@ -515,15 +515,7 @@
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vIR-GK-69E" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController definesPresentationContext="YES" providesPresentationContextTransitionStyle="YES" id="oRp-8t-Jy6" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="ArT-BQ-4gm">
-                        <barButtonItem key="leftBarButtonItem" image="list_icon.png" id="fEf-1Z-8ul">
-                            <connections>
-                                <segue destination="6qG-xq-Bw4" kind="popover" popoverAnchorBarButtonItem="fEf-1Z-8ul" id="d4Z-5R-DJg">
-                                    <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
-                                </segue>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="ArT-BQ-4gm"/>
                     <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="sWc-eP-x6d">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -774,9 +766,7 @@
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lfN-6F-z3E" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController definesPresentationContext="YES" providesPresentationContextTransitionStyle="YES" id="jeX-ok-kre" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="7jS-vX-h8O">
-                        <barButtonItem key="leftBarButtonItem" image="list_icon.png" id="NUb-Kz-aic"/>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="7jS-vX-h8O"/>
                     <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="sHB-Vg-NLV">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -979,7 +969,7 @@
         <image name="ReplyButton.png" width="395" height="599"/>
         <image name="ThreadActions.png" width="519" height="311"/>
         <image name="action.png" width="23" height="18"/>
-        <image name="ama.png" width="45" height="45"/>
+        <image name="ama.png" width="16" height="16"/>
         <image name="arrowleft.png" width="23" height="18"/>
         <image name="arrowright.png" width="23" height="18"/>
         <image name="cog.png" width="19" height="20"/>
@@ -1117,9 +1107,8 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="g6b-JR-NhK"/>
+        <segue reference="gCu-q9-SZ9"/>
         <segue reference="Oqh-Ug-Ror"/>
         <segue reference="Kgw-hp-QCk"/>
-        <segue reference="gCu-q9-SZ9"/>
     </inferredMetricsTieBreakers>
 </document>

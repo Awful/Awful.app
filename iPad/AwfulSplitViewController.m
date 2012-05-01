@@ -58,5 +58,6 @@
     
     if (popoverController != nil) {
         [popoverController dismissPopoverAnimated:YES];
-    }}
+    }
+}
 @end
