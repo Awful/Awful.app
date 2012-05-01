@@ -171,7 +171,7 @@
                                             <rect key="frame" x="5" y="5" width="45" height="45"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         </imageView>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="ama.png" id="z6J-O1-yTn">
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="ama-secondary.png" id="z6J-O1-yTn">
                                             <rect key="frame" x="4" y="4" width="22" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         </imageView>
@@ -443,7 +443,7 @@
                                             <rect key="frame" x="5" y="5" width="45" height="45"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         </imageView>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="ama.png" id="2fa-Xd-VNA">
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="ama-secondary.png" id="2fa-Xd-VNA">
                                             <rect key="frame" x="4" y="4" width="22" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         </imageView>
@@ -969,7 +969,7 @@
         <image name="ReplyButton.png" width="395" height="599"/>
         <image name="ThreadActions.png" width="519" height="311"/>
         <image name="action.png" width="23" height="18"/>
-        <image name="ama.png" width="16" height="16"/>
+        <image name="ama-secondary.png" width="45" height="45"/>
         <image name="arrowleft.png" width="23" height="18"/>
         <image name="arrowright.png" width="23" height="18"/>
         <image name="cog.png" width="19" height="20"/>
@@ -1108,7 +1108,7 @@
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="gCu-q9-SZ9"/>
-        <segue reference="Oqh-Ug-Ror"/>
+        <segue reference="hhi-LS-YNv"/>
         <segue reference="Kgw-hp-QCk"/>
     </inferredMetricsTieBreakers>
 </document>

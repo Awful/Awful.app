@@ -273,7 +273,7 @@
                                             <rect key="frame" x="5" y="5" width="45" height="45"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         </imageView>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="ama.png" id="X4V-9Y-bSW">
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="ama-secondary.png" id="X4V-9Y-bSW">
                                             <rect key="frame" x="4" y="4" width="22" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         </imageView>
@@ -620,7 +620,7 @@
                                             <rect key="frame" x="5" y="5" width="45" height="45"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         </imageView>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="ama.png" id="NKV-Bh-gpj">
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="ama-secondary.png" id="NKV-Bh-gpj">
                                             <rect key="frame" x="4" y="4" width="22" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         </imageView>
@@ -913,7 +913,7 @@
     </scenes>
     <resources>
         <image name="action.png" width="23" height="18"/>
-        <image name="ama.png" width="45" height="45"/>
+        <image name="ama-secondary.png" width="45" height="45"/>
         <image name="arrowleft.png" width="23" height="18"/>
         <image name="arrowright.png" width="23" height="18"/>
         <image name="cog.png" width="19" height="20"/>
@@ -1056,8 +1056,8 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
+        <segue reference="MjC-LO-k8J"/>
         <segue reference="kfD-K3-mBe"/>
         <segue reference="FMo-n3-M4q"/>
-        <segue reference="MjC-LO-k8J"/>
     </inferredMetricsTieBreakers>
 </document>
