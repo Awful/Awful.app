@@ -82,7 +82,9 @@
         NSURL *second_url = [self.thread secondIconURL];
         if(second_url != nil) {
             self.secondTagImage.hidden = NO;
-            [self.secondTagImage setImage:[UIImage imageNamed:[second_url lastPathComponent]]];
+            NSString *secondName = [[second_url lastPathComponent] stringByDeletingPathExtension];
+            secondName = [secondName stringByAppendingString:@"-secondary.png"];
+            [self.secondTagImage setImage:[UIImage imageNamed:secondName]];
         }
     }
     
