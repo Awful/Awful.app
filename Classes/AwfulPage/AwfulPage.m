@@ -220,8 +220,6 @@
         [alert show];
         [MBProgressHUD hideHUDForView:self.view animated:NO];
     }];
-    
-    NSLog(@"Request out");
 }
 
 -(void)loadLastPage
