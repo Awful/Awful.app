@@ -33,6 +33,7 @@
 
 @synthesize destinationType = _destinationType;
 @synthesize thread = _thread;
+@synthesize threadID = _threadID;
 @synthesize url = _url;
 @synthesize webView = _webView;
 @synthesize toolbar = _toolbar;
@@ -60,10 +61,25 @@
     self.pagesSegmentedControl.action = @selector(tappedPagesSegment:);
 }
 
+- (AwfulThread *) thread
+{
+    if ([_thread isFault])
+    {
+        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"AwfulThread"];
+        [request setPredicate:[NSPredicate predicateWithFormat:@"threadID like %@", self.threadID]];
+        NSArray *results = [ApplicationDelegate.managedObjectContext executeFetchRequest:request error:nil];
+        
+        _thread = (AwfulThread *) [results objectAtIndex:0];
+    }
+    return _thread;
+}
+
 -(void)setThread:(AwfulThread *)newThread
 {
+
     if(_thread != newThread) {
         _thread = newThread;
+        self.threadID = _thread.threadID;
         if(_thread.title != nil) {
             UILabel *lab = (UILabel *)self.navigationItem.titleView;
             lab.text = self.thread.title;
@@ -80,6 +96,7 @@
         }
     }
 }
+
 
 -(void)setDestinationType:(AwfulPageDestinationType)destinationType
 {
@@ -129,7 +146,8 @@
 
 -(void)setThreadTitle : (NSString *)title
 {
-    [self.thread setTitle:title];
+    AwfulThread *mythread = self.thread;
+    [mythread setTitle:title];
     UILabel *lab = (UILabel *)self.navigationItem.titleView;
     lab.text = title;
 }
@@ -185,8 +203,10 @@
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
         hud.labelText = [NSString stringWithFormat:@"Loading Page %d", pageNum];
     }
-        
-    self.networkOperation = [ApplicationDelegate.awfulNetworkEngine pageDataForThread:self.thread destinationType:self.destinationType pageNum:pageNum onCompletion:^(AwfulPageDataController *dataController) {
+    
+    AwfulThread *myThread = self.thread;
+    AwfulPageDestinationType destType = self.destinationType;
+    self.networkOperation = [ApplicationDelegate.awfulNetworkEngine pageDataForThread:myThread destinationType:destType pageNum:pageNum onCompletion:^(AwfulPageDataController *dataController) {
         self.dataController = dataController;
         if(self.destinationType == AwfulPageDestinationTypeSpecific) {
             self.pages.currentPage = pageNum;
@@ -200,6 +220,8 @@
         [alert show];
         [MBProgressHUD hideHUDForView:self.view animated:NO];
     }];
+    
+    NSLog(@"Request out");
 }
 
 -(void)loadLastPage

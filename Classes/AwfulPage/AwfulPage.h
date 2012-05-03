@@ -32,6 +32,7 @@ typedef enum {
 }
 
 @property (nonatomic, strong) AwfulThread *thread;
+@property (nonatomic, strong) NSString *threadID;
 @property (nonatomic, strong) NSString *url;
 @property (nonatomic, assign) AwfulPageDestinationType destinationType;
 @property (nonatomic, strong) IBOutlet JSBridgeWebView *webView;
