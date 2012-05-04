@@ -6,23 +6,6 @@ Awful is an iOS app for browsing the [Something Awful Forums][forums] on your iP
 [forums]: http://forums.somethingawful.com
 [thread]: http://forums.somethingawful.com/showthread.php?threadid=3381510
 
-Next Version
-----------------
-* test test test
-
-Ideal Version
-----------------------
-* Private messages
-* Search
-* Intercept relevant SA links (to posts, threads, forums) and display them directly instead of loading in Safari.
-* Copy post URL
-* Maintain page position on orientation change
-* Post editor with tag insertion (bold/italic/spoiler/fixed/code) and emoticon insertion
-* Post new threads
-* Set a few key SA settings in-app (e.g. 'show seen icon next to each post')
-* Populate initial app settings with SA settings counterparts (e.g. 'show avatars')
-* Note 'show avatars' only works if it's also enabled in SA user control panel.
-
 An unofficial app
 -----------------
 
