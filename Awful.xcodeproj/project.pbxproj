@@ -385,6 +385,7 @@
 		1C277CA51543554700CD2CCE /* AwfulSettingsChoiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C277CA41543554700CD2CCE /* AwfulSettingsChoiceViewController.m */; };
 		1C7B87201544D83D00891D41 /* AwfulForumSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B871F1544D83D00891D41 /* AwfulForumSection.m */; };
 		1CAB36B11548F0FE00A4A362 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
+		1CBF78F5155373C20067EF27 /* AwfulClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBF78F4155373C20067EF27 /* AwfulClient.m */; };
 		1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD5198154294D400326C7B /* AwfulSettings.m */; };
 		1CDF7A3E1537C157008EFAE4 /* GRMustache.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A011537C157008EFAE4 /* GRMustache.m */; };
 		1CDF7A3F1537C157008EFAE4 /* GRMustacheContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A051537C157008EFAE4 /* GRMustacheContext.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -876,6 +877,8 @@
 		1C7B871E1544D83C00891D41 /* AwfulForumSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumSection.h; sourceTree = "<group>"; };
 		1C7B871F1544D83D00891D41 /* AwfulForumSection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumSection.m; sourceTree = "<group>"; };
 		1CAB36B01548F0FE00A4A362 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
+		1CBF78F3155373C20067EF27 /* AwfulClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulClient.h; sourceTree = "<group>"; };
+		1CBF78F4155373C20067EF27 /* AwfulClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulClient.m; sourceTree = "<group>"; };
 		1CDD5197154294D400326C7B /* AwfulSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettings.h; sourceTree = "<group>"; };
 		1CDD5198154294D400326C7B /* AwfulSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettings.m; sourceTree = "<group>"; };
 		1CDF7A001537C157008EFAE4 /* GRMustache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustache.h; sourceTree = "<group>"; };
@@ -967,6 +970,7 @@
 			isa = PBXGroup;
 			children = (
 				1190F6CC13BE4EA900B9D271 /* Actions */,
+				1CBF78F1155373130067EF27 /* AwfulClient */,
 				1190F6D713BE4EA900B9D271 /* AwfulForumList */,
 				1190F70513BE4EA900B9D271 /* AwfulThreadList */,
 				1190F6E813BE4EA900B9D271 /* AwfulPage */,
@@ -1675,6 +1679,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		1CBF78F1155373130067EF27 /* AwfulClient */ = {
+			isa = PBXGroup;
+			children = (
+				1CBF78F3155373C20067EF27 /* AwfulClient.h */,
+				1CBF78F4155373C20067EF27 /* AwfulClient.m */,
+			);
+			path = AwfulClient;
+			sourceTree = "<group>";
+		};
 		1CDD51951542949600326C7B /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -2291,6 +2304,7 @@
 				1C277CA51543554700CD2CCE /* AwfulSettingsChoiceViewController.m in Sources */,
 				1CF2C5061543B51200E327F5 /* AwfulFavoritesViewController.m in Sources */,
 				1C7B87201544D83D00891D41 /* AwfulForumSection.m in Sources */,
+				1CBF78F5155373C20067EF27 /* AwfulClient.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
