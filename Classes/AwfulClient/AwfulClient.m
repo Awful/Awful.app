@@ -7,7 +7,189 @@
 //
 
 #import "AwfulClient.h"
+#import "AwfulHTTPOperation.h"
+#import "AwfulScrapeOperation.h"
+#import "AwfulPersistOperation.h"
+
+@interface AwfulClient ()
+
+@property (strong) NSManagedObjectContext *managedObjectContext;
+
+@property (strong) NSOperationQueue *httpQueue;
+@property (strong) NSOperationQueue *scrapeQueue;
+@property (strong) NSOperationQueue *persistQueue;
+
+@end
 
 @implementation AwfulClient
+
++ (AwfulClient *)sharedClient
+{
+    static AwfulClient *client;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSManagedObjectContext *context = ApplicationDelegate.managedObjectContext;
+        client = [[AwfulClient alloc] initWithManagedObjectContext:context];
+    });
+    return client;
+}
+
+// Designated initializer.
+- (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
+{
+    self = [super init];
+    if (self)
+    {
+        self.managedObjectContext = managedObjectContext;
+        self.httpQueue = [NSOperationQueue new];
+        self.scrapeQueue = [NSOperationQueue new];
+        self.persistQueue = [NSOperationQueue new];
+    }
+    return self;
+}
+
+@synthesize managedObjectContext = _managedObjectContext;
+
+@synthesize httpQueue = _httpQueue;
+@synthesize scrapeQueue = _scrapeQueue;
+@synthesize persistQueue = _persistQueue;
+
+#pragma mark - Log in, log out, and user info
+
+- (void)logInAsUsername:(NSString *)username
+           withPassword:(NSString *)password
+                andThen:(void (^)(NSError *error, NSString *username))callback
+{
+    
+}
+
+- (void)logOutAndThen:(void (^)(NSError *error))callback
+{
+    
+}
+
+@synthesize loggedIn = _loggedIn;
+
+- (void)fetchLoggedInUserThen:(void (^)(NSError *error, AwfulUser *user))callback
+{
+    
+}
+
+#pragma mark - Forums
+
+- (void)fetchForumsListAndThen:(void (^)(NSError *error, NSArray *forums))callback
+{
+    // Example usage:
+    
+    // Make an HTTP operation.
+    NSURL *url = [NSURL URLWithString:@"http://forums.somethingawful.com/forumdisplay.php?forumid=1"];
+    AwfulHTTPOperation *httpOperation = [[AwfulHTTPOperation alloc] initWithURL:url];
+    
+    // Make a scrape operation dependent on the HTTP operation.
+    AwfulScrapeOperation *scrapeOperation = [AwfulScrapeOperation new];
+    [scrapeOperation addDependency:httpOperation];
+    
+    // Make a persist operation dependent on the scrape operation.
+    AwfulPersistOperation *persistOperation = [[AwfulPersistOperation alloc] initWithManagedObjectContext:self.managedObjectContext];
+    [persistOperation addDependency:scrapeOperation];
+    
+    // By setting dependencies, each operation can get the data it needs from its dependencies.
+    // They'll also propagate errors/cancellations
+    
+    [self.httpQueue addOperation:httpOperation];
+    [self.scrapeQueue addOperation:scrapeOperation];
+    [self.persistQueue addOperation:persistOperation];
+    
+    if (!callback)
+        return;
+    
+    dispatch_queue_t callbackQueue = dispatch_get_current_queue();
+    __weak AwfulPersistOperation *blockPersist = persistOperation;
+    persistOperation.completionBlock = ^{
+        if ([blockPersist isCancelled] || blockPersist.error)
+        {
+            NSError *error = blockPersist.error;
+            if (!error)
+            {
+                // TODO make cancelled error
+            }
+            dispatch_async(callbackQueue, ^{ callback(error, nil); });
+        }
+        else
+        {
+            dispatch_async(callbackQueue, ^{
+                // TODO update logged-in user info if present (nearly every page has it)
+                callback(nil, nil /* TODO some array */);
+            });
+        }
+    };
+}
+
+#pragma mark - Threads
+
+- (void)fetchThreadsInForum:(AwfulForum *)forum
+                     onPage:(NSInteger)pageNumber
+                    andThen:(void (^)(NSError *error, NSArray *threads))callback
+{
+    
+}
+
+- (void)fetchBookmarksOnPage:(NSInteger)pageNumber
+                     andThen:(void (^)(NSError *error, NSArray *bookmarks))callback
+{
+    
+}
+
+- (void)bookmarkThread:(AwfulThread *)thread andThen:(void (^)(NSError *error))callback
+{
+    
+}
+
+- (void)removeBookmark:(AwfulThread *)thread andThen:(void (^)(NSError *error))callback
+{
+    
+}
+
+- (void)vote:(NSInteger)vote
+    onThread:(AwfulThread *)thread
+     andThen:(void (^)(NSError *error))callback
+{
+    
+}
+
+// TODO mark thread seen
+
+- (void)markThreadUnseen:(AwfulThread *)thread andThen:(void (^)(NSError *error))callback
+{
+    
+}
+
+#pragma mark - Posts
+
+- (void)fetchPostsInThread:(AwfulThread *)thread
+                    onPage:(NSInteger)pageNumber
+                   andThen:(void (^)(NSError *error, NSArray *posts))callback
+{
+    
+}
+
+- (void)post:(NSString *)post
+    inThread:(AwfulThread *)thread
+     andThen:(void (^)(NSError *error))callback
+{
+    
+}
+
+- (void)editPost:(AwfulPost *)post
+        withPost:(NSString *)emendedPost
+         andThen:(void (^)(NSError *error))callback
+{
+    
+}
+
+- (void)quotePost:(AwfulPost *)post andThen:(void (^)(NSError *error, NSString *quote))callback
+{
+    
+}
 
 @end

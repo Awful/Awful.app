@@ -387,6 +387,9 @@
 		1CAB36B11548F0FE00A4A362 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
 		1CBF78F5155373C20067EF27 /* AwfulClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBF78F4155373C20067EF27 /* AwfulClient.m */; };
 		1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD5198154294D400326C7B /* AwfulSettings.m */; };
+		1CDF528C1555991D007489BE /* AwfulHTTPOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF528B1555991D007489BE /* AwfulHTTPOperation.m */; };
+		1CDF529015559924007489BE /* AwfulScrapeOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF528F15559924007489BE /* AwfulScrapeOperation.m */; };
+		1CDF52931555992D007489BE /* AwfulPersistOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF52921555992C007489BE /* AwfulPersistOperation.m */; };
 		1CDF7A3E1537C157008EFAE4 /* GRMustache.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A011537C157008EFAE4 /* GRMustache.m */; };
 		1CDF7A3F1537C157008EFAE4 /* GRMustacheContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A051537C157008EFAE4 /* GRMustacheContext.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		1CDF7A401537C157008EFAE4 /* GRMustacheError.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A081537C157008EFAE4 /* GRMustacheError.m */; };
@@ -881,6 +884,12 @@
 		1CBF78F4155373C20067EF27 /* AwfulClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulClient.m; sourceTree = "<group>"; };
 		1CDD5197154294D400326C7B /* AwfulSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettings.h; sourceTree = "<group>"; };
 		1CDD5198154294D400326C7B /* AwfulSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettings.m; sourceTree = "<group>"; };
+		1CDF528A1555991D007489BE /* AwfulHTTPOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulHTTPOperation.h; sourceTree = "<group>"; };
+		1CDF528B1555991D007489BE /* AwfulHTTPOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulHTTPOperation.m; sourceTree = "<group>"; };
+		1CDF528E15559924007489BE /* AwfulScrapeOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScrapeOperation.h; sourceTree = "<group>"; };
+		1CDF528F15559924007489BE /* AwfulScrapeOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScrapeOperation.m; sourceTree = "<group>"; };
+		1CDF52911555992C007489BE /* AwfulPersistOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPersistOperation.h; sourceTree = "<group>"; };
+		1CDF52921555992C007489BE /* AwfulPersistOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPersistOperation.m; sourceTree = "<group>"; };
 		1CDF7A001537C157008EFAE4 /* GRMustache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustache.h; sourceTree = "<group>"; };
 		1CDF7A011537C157008EFAE4 /* GRMustache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GRMustache.m; sourceTree = "<group>"; };
 		1CDF7A021537C157008EFAE4 /* GRMustache_private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustache_private.h; sourceTree = "<group>"; };
@@ -1684,6 +1693,12 @@
 			children = (
 				1CBF78F3155373C20067EF27 /* AwfulClient.h */,
 				1CBF78F4155373C20067EF27 /* AwfulClient.m */,
+				1CDF528A1555991D007489BE /* AwfulHTTPOperation.h */,
+				1CDF528B1555991D007489BE /* AwfulHTTPOperation.m */,
+				1CDF528E15559924007489BE /* AwfulScrapeOperation.h */,
+				1CDF528F15559924007489BE /* AwfulScrapeOperation.m */,
+				1CDF52911555992C007489BE /* AwfulPersistOperation.h */,
+				1CDF52921555992C007489BE /* AwfulPersistOperation.m */,
 			);
 			path = AwfulClient;
 			sourceTree = "<group>";
@@ -2305,6 +2320,9 @@
 				1CF2C5061543B51200E327F5 /* AwfulFavoritesViewController.m in Sources */,
 				1C7B87201544D83D00891D41 /* AwfulForumSection.m in Sources */,
 				1CBF78F5155373C20067EF27 /* AwfulClient.m in Sources */,
+				1CDF528C1555991D007489BE /* AwfulHTTPOperation.m in Sources */,
+				1CDF529015559924007489BE /* AwfulScrapeOperation.m in Sources */,
+				1CDF52931555992D007489BE /* AwfulPersistOperation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

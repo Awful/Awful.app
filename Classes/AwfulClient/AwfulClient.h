@@ -15,8 +15,15 @@
 
 @interface AwfulClient : NSObject
 
++ (AwfulClient *)sharedClient;
+
+// Designated initializer.
+- (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
+
 // For each callback, if the error parameter is nil then the operation was successful.
 // All errors will be in the AwfulClientErrorDomain and will have one of the error codes listed.
+
+// Callbacks are run on the same queue that called into AwfulClient.
 
 #pragma mark - Log in, log out, and user info
 
