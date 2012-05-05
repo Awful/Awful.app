@@ -35,7 +35,7 @@
 
 @property (readonly, getter = isLoggedIn) BOOL loggedIn;
 
-- (void)fetchLoggedInUserThen:(void (^)(NSError *error, AwfulUser *user))callback;
+- (void)fetchLoggedInUserAndThen:(void (^)(NSError *error, AwfulUser *user))callback;
 
 #pragma mark - Forums
 
@@ -84,7 +84,7 @@
 
 extern NSString * const AwfulClientErrorDomain;
 
-typedef struct
+const struct AwfulClientErrorCodes
 {
-    // ...
+    const NSInteger Cancelled;
 } AwfulClientErrorCodes;

@@ -70,7 +70,7 @@
 
 @synthesize loggedIn = _loggedIn;
 
-- (void)fetchLoggedInUserThen:(void (^)(NSError *error, AwfulUser *user))callback
+- (void)fetchLoggedInUserAndThen:(void (^)(NSError *error, AwfulUser *user))callback
 {
     
 }
@@ -86,7 +86,7 @@
     AwfulHTTPOperation *httpOperation = [[AwfulHTTPOperation alloc] initWithURL:url];
     
     // Make a scrape operation dependent on the HTTP operation.
-    AwfulScrapeOperation *scrapeOperation = [AwfulScrapeOperation new];
+    AwfulForumListScrapeOperation *scrapeOperation = [AwfulForumListScrapeOperation new];
     [scrapeOperation addDependency:httpOperation];
     
     // Make a persist operation dependent on the scrape operation.
@@ -111,7 +111,9 @@
             NSError *error = blockPersist.error;
             if (!error)
             {
-                // TODO make cancelled error
+                error = [NSError errorWithDomain:AwfulClientErrorDomain
+                                            code:AwfulClientErrorCodes.Cancelled
+                                        userInfo:nil];
             }
             dispatch_async(callbackQueue, ^{ callback(error, nil); });
         }
@@ -193,3 +195,12 @@
 }
 
 @end
+
+#pragma mark - Errors
+
+NSString * const AwfulClientErrorDomain = @"AwfulClient error domain";
+
+const struct AwfulClientErrorCodes AwfulClientErrorCodes =
+{
+    .Cancelled = 1,
+};

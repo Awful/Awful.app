@@ -60,6 +60,7 @@
     __block BOOL ok;
     __block NSError *error;
     [context performBlockAndWait:^{
+        // TODO go through scrapeOperation.scrapings and update/insert whatever we find.
         ok = [context save:&error];
     }];
     if (!ok)

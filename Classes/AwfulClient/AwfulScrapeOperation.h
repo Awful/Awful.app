@@ -12,4 +12,16 @@
 
 @property (readonly, strong) NSError *error;
 
+@property (readonly, strong) NSDictionary *scrapings;
+
+// For use without depending on an HTTP operation.
+- (id)initWithResponseData:(NSData *)data;
+
 @end
+
+extern const struct AwfulScrapingsKeys
+{
+    __unsafe_unretained NSString * const Forums;
+} AwfulScrapingsKeys;
+
+@interface AwfulForumListScrapeOperation : AwfulScrapeOperation @end
