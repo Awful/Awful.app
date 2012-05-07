@@ -16,10 +16,12 @@
 #import "MBProgressHUD.h"
 #import "AwfulNetworkEngine.h"
 #import "ButtonSegmentedControl.h"
+#import "AwfulPostComposerView.h"
 
 @implementation AwfulPostBoxController
 
 @synthesize replyTextView = _replyTextView;
+@synthesize replyWebView = _replyWebView;
 @synthesize sendButton = _sendButton;
 @synthesize thread = _thread;
 @synthesize post = _post;
@@ -31,6 +33,7 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
+
     self.segmentedControl.action = @selector(tappedSegment:);
     
     if(self.post != nil) {
@@ -42,8 +45,33 @@
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     [nc addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     
-    self.replyTextView.text = self.startingText;
-    [self.replyTextView becomeFirstResponder];
+    [self setMenuControllerItems];
+    
+
+    //[self.replyTextView becomeFirstResponder];
+    
+}
+
+-(void) setMenuControllerItems {
+    NSArray *array = [NSArray arrayWithObjects:
+                      [[UIMenuItem alloc] initWithTitle:@"Bold" action:@selector(bold)],
+                      [[UIMenuItem alloc] initWithTitle:@"Italic" action:@selector(italic)],
+                      [[UIMenuItem alloc] initWithTitle:@"Underline" action:@selector(underline)],
+                      
+                      nil];
+    [[UIMenuController sharedMenuController] setMenuItems:array];
+}
+
+- (void)bold {
+    [self.replyWebView bold];
+}
+
+- (void)italic {
+    [self.replyWebView italic];
+}
+
+- (void)underline {
+    [self.replyWebView underline];
 }
 
 - (void)viewDidUnload {
@@ -53,6 +81,7 @@
 
     self.sendButton = nil;
     self.replyTextView = nil;
+    //self.replyWebView = nil;
     self.segmentedControl = nil;
 }
 
@@ -73,8 +102,21 @@
 
 -(void)tappedSegment : (id)sender
 {
-    NSString *str = [self.segmentedControl titleForSegmentAtIndex:self.segmentedControl.selectedSegmentIndex];
-    [self hitTextBarButtonItem:str];
+
+    //NSString *str = [self.segmentedControl titleForSegmentAtIndex:self.segmentedControl.selectedSegmentIndex];
+    //[self hitTextBarButtonItem:str];
+    if (self.segmentedControl.selectedSegmentIndex == 0) {
+        //[self performSegueWithIdentifier: @"emotePopOver" sender: self];
+        /*
+        pop = [[UIPopoverController alloc] initWithContentViewController:[UIViewController new]];
+                                    
+        [pop presentPopoverFromRect:[[self.segmentedControl.subviews objectAtIndex:0] frame]
+                             inView:self.view 
+           permittedArrowDirections:(UIPopoverArrowDirectionUp) 
+                           animated:YES];
+        */
+    }
+    
 }
 
 -(void)keyboardWillShow:(NSNotification *)notification
@@ -88,22 +130,23 @@
         float height = self.view.bounds.size.height;
         float replyBoxHeight = (height - 44 - (height - keyboardBounds.origin.y));
         replyBoxHeight = MAX(350, replyBoxHeight); // someone bugged out the height one time so I'm hacking in a minimum
-        self.replyTextView.frame = CGRectMake(5, 44, self.replyTextView.bounds.size.width, replyBoxHeight);
+        self.replyWebView.frame = CGRectMake(5, 44, self.replyWebView.bounds.size.width, replyBoxHeight);
     } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         [UIView animateWithDuration:duration animations:^{
-            self.replyTextView.frame = CGRectMake(5, 44, self.replyTextView.bounds.size.width, self.view.bounds.size.height-44-keyboardBounds.size.height);
+            self.replyWebView.frame = CGRectMake(5, 44, self.replyWebView.bounds.size.width, self.view.bounds.size.height-44-keyboardBounds.size.height);
         }];
     }
 }
 
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
+    /*
     if(buttonIndex == 1) {
         [self.networkOperation cancel];
         if(self.thread != nil) {
             MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
             hud.labelText = @"Replying...";
-            self.networkOperation = [[ApplicationDelegate awfulNetworkEngine] replyToThread:self.thread withText:self.replyTextView.text onCompletion:^{
+            self.networkOperation = [[ApplicationDelegate awfulNetworkEngine] replyToThread:self.thread withText:self.replyWebView.text onCompletion:^{
                 [MBProgressHUD hideHUDForView:self.view animated:NO];
                 [self.presentingViewController dismissModalViewControllerAnimated:YES];
                 [self.page refresh];
@@ -126,6 +169,7 @@
             
         [self.replyTextView resignFirstResponder];
     }
+     */
 }
 
 -(void)hideReply
@@ -168,6 +212,7 @@
 
 -(IBAction)hitTextBarButtonItem : (NSString *)str
 {
+    /*
     NSMutableString *replyString = [[NSMutableString alloc] initWithString:[self.replyTextView text]];
     
     NSRange cursorPosition = [self.replyTextView selectedRange];
@@ -179,6 +224,8 @@
     self.replyTextView.text = replyString;
     self.replyTextView.selectedRange = NSMakeRange(cursorPosition.location+1, cursorPosition.length);
     self.segmentedControl.selectedSegmentIndex = -1;
+*/
 }
+
 
 @end
