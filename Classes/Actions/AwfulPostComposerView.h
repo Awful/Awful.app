@@ -14,4 +14,7 @@
 -(void) italic;
 -(void) underline;
 
+@property (nonatomic, readonly) NSString* html;
+@property (nonatomic, readonly) NSString* bbcode;
+
 @end

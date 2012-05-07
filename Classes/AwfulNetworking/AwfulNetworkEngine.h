@@ -51,4 +51,6 @@ typedef void (^PostContentResponseBlock)(NSString *postContent);
 
 -(MKNetworkOperation *)markThreadUnseen : (AwfulThread *)thread onCompletion : (CompletionBlock)completionBlock onError:(MKNKErrorBlock)errorBlock;
 
+
+-(MKNetworkOperation *)refreshEmotesOnCompletion : (CompletionBlock)completionBlock onError:(MKNKErrorBlock)errorBlock;
 @end

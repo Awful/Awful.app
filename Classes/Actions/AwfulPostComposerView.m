@@ -18,7 +18,6 @@
         NSURL *indexFileURL = [bundle URLForResource:@"editor" withExtension:@"html"];
         [self loadRequest:[NSURLRequest requestWithURL:indexFileURL]];
         
-    
 }
 
 -(void) bold {
@@ -32,4 +31,24 @@
 -(void) underline {
     [self stringByEvaluatingJavaScriptFromString:@"document.execCommand(\"Underline\")"];
 }
+
+-(NSString*) html {
+    return [self stringByEvaluatingJavaScriptFromString:@"document.getElementById('content').innerHTML"];
+}
+
+-(NSString*) bbcode {
+    NSMutableString *html = [NSMutableString stringWithString:self.html];
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"<(/?)([bui])>" 
+                                                                           options:0 
+                                                                             error:nil];
+    
+    int matches = [regex replaceMatchesInString:html
+                          options:0
+                            range:NSMakeRange(0, html.length)
+                     withTemplate:@"[$1$2]"];
+    //NSLog(@"%d matches", matches);
+    
+    return html;
+}
+
 @end

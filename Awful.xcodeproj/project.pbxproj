@@ -423,6 +423,8 @@
 		8C70A410155720600009B3D1 /* AwfulTableViewCellEmoticonMultiple.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C70A40E155720600009B3D1 /* AwfulTableViewCellEmoticonMultiple.m */; };
 		8C7CAC8B1558298D00CF6792 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C7CAC8A1558298D00CF6792 /* CoreText.framework */; };
 		8C7CAC8E15582E1400CF6792 /* AwfulPostComposerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7CAC8D15582E1400CF6792 /* AwfulPostComposerView.m */; };
+		8C7CAC911558634100CF6792 /* AwfulEmote+AwfulMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7CAC901558634100CF6792 /* AwfulEmote+AwfulMethods.m */; };
+		8C7CAC941558696D00CF6792 /* AwfulFetchedTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7CAC931558696D00CF6792 /* AwfulFetchedTableViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -947,7 +949,7 @@
 		50A8B96C1541D57E0065F3D9 /* ThreadActions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ThreadActions.png; path = images/help/ThreadActions.png; sourceTree = "<group>"; };
 		8C70A3F51556BD440009B3D1 /* AwfulEmote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulEmote.h; sourceTree = "<group>"; };
 		8C70A3F61556BD440009B3D1 /* AwfulEmote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulEmote.m; sourceTree = "<group>"; };
-		8C70A3F81556BE300009B3D1 /* Model 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 2.xcdatamodel"; sourceTree = "<group>"; };
+		8C70A3F81556BE300009B3D1 /* Model v2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model v2.xcdatamodel"; sourceTree = "<group>"; };
 		8C70A3F91556BE700009B3D1 /* AwfulCachedImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCachedImage.h; sourceTree = "<group>"; };
 		8C70A3FA1556BE700009B3D1 /* AwfulCachedImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCachedImage.m; sourceTree = "<group>"; };
 		8C70A3FE1556C14A0009B3D1 /* editor.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = editor.html; sourceTree = "<group>"; };
@@ -959,6 +961,10 @@
 		8C7CAC8A1558298D00CF6792 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		8C7CAC8C15582E1400CF6792 /* AwfulPostComposerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostComposerView.h; sourceTree = "<group>"; };
 		8C7CAC8D15582E1400CF6792 /* AwfulPostComposerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostComposerView.m; sourceTree = "<group>"; };
+		8C7CAC8F1558634100CF6792 /* AwfulEmote+AwfulMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AwfulEmote+AwfulMethods.h"; sourceTree = "<group>"; };
+		8C7CAC901558634100CF6792 /* AwfulEmote+AwfulMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AwfulEmote+AwfulMethods.m"; sourceTree = "<group>"; };
+		8C7CAC921558696D00CF6792 /* AwfulFetchedTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFetchedTableViewController.h; sourceTree = "<group>"; };
+		8C7CAC931558696D00CF6792 /* AwfulFetchedTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulFetchedTableViewController.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Awful-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Awful-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1400,6 +1406,8 @@
 				1190F71E13BE4EA900B9D271 /* AwfulAppDelegate.m */,
 				11DFB44014FF1CBB0001A34C /* AwfulTableViewController.h */,
 				11DFB44114FF1CBB0001A34C /* AwfulTableViewController.m */,
+				8C7CAC921558696D00CF6792 /* AwfulFetchedTableViewController.h */,
+				8C7CAC931558696D00CF6792 /* AwfulFetchedTableViewController.m */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -1428,6 +1436,8 @@
 				116EF41B15251CDB0018580D /* AwfulUser.m */,
 				116EF41715251C5D0018580D /* AwfulUser+AwfulMethods.h */,
 				116EF41815251C5D0018580D /* AwfulUser+AwfulMethods.m */,
+				8C7CAC8F1558634100CF6792 /* AwfulEmote+AwfulMethods.h */,
+				8C7CAC901558634100CF6792 /* AwfulEmote+AwfulMethods.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -2342,6 +2352,8 @@
 				8C70A4041556D0130009B3D1 /* AwfulEmoteChooser.m in Sources */,
 				8C70A410155720600009B3D1 /* AwfulTableViewCellEmoticonMultiple.m in Sources */,
 				8C7CAC8E15582E1400CF6792 /* AwfulPostComposerView.m in Sources */,
+				8C7CAC911558634100CF6792 /* AwfulEmote+AwfulMethods.m in Sources */,
+				8C7CAC941558696D00CF6792 /* AwfulFetchedTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2544,10 +2556,10 @@
 		117DBE411522AA2D007125EF /* Model.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				8C70A3F81556BE300009B3D1 /* Model 2.xcdatamodel */,
+				8C70A3F81556BE300009B3D1 /* Model v2.xcdatamodel */,
 				117DBE421522AA2D007125EF /* Model.xcdatamodel */,
 			);
-			currentVersion = 117DBE421522AA2D007125EF /* Model.xcdatamodel */;
+			currentVersion = 8C70A3F81556BE300009B3D1 /* Model v2.xcdatamodel */;
 			path = Model.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

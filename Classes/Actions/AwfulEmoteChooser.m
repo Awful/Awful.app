@@ -9,6 +9,7 @@
 #import "AwfulEmoteChooser.h"
 #import "AwfulTableViewCellEmoticonMultiple.h"
 #import "AwfulEmote.h"
+#import "AwfulNetworkEngine.h"
 
 @interface AwfulEmoteChooser ()
 
@@ -16,6 +17,19 @@
 
 @implementation AwfulEmoteChooser
 
+-(void) awakeFromNib {
+    _entity = @"AwfulEmote";
+    _request = [NSFetchRequest new];
+    NSEntityDescription *entityDesc = [NSEntityDescription entityForName:_entity 
+                                                  inManagedObjectContext:ApplicationDelegate.managedObjectContext];
+    [_request setEntity:entityDesc];
+
+            [_request setSortDescriptors:
+             [NSArray arrayWithObject:
+              [NSSortDescriptor sortDescriptorWithKey:@"code" ascending:YES]
+              ]
+             ];
+}
 
 - (void)viewDidLoad
 {
@@ -30,40 +44,31 @@
 }
 
 
--(int) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 20;
+-(void) configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath*)indexPath {
+    AwfulEmote* emote = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    
+    cell.textLabel.text = emote.code;
+    cell.detailTextLabel.text = emote.urlString;
 }
 
--(NSInteger) numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
-}
- 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell;
-    //NSManagedObject *obj = [_fetchedResultsController objectAtIndexPath:indexPath];
 
-
-    //cell = [tableView dequeueReusableCellWithIdentifier:obj.entity.managedObjectClassName];
-
-    if (cell == nil)
-        cell = [[AwfulTableViewCellEmoticonMultiple alloc] initWithStyle:UITableViewCellStyleDefault 
-                                                 reuseIdentifier:@"emoteCell"];
-
-    //NSMutableArray *emotes = [NSMutableArray new];
-
-    //for(int x = indexPath.row * _numIconsPerRow; x< (indexPath.row * _numIconsPerRow) + (_numIconsPerRow); x++) {
-        //AwfulEmote *emote = [_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:x 
-        //                                                                                       inSection:0]];
-        //[emotes addObject:emote];
-        
-    //}
-
-    //[gridCell setContent:emotes];
-return cell;
-}
-
--(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-NSLog(@"prepare...");
+-(void) refresh {
+    [self.networkOperation cancel];
+    self.reloading = YES;
+    self.networkOperation = [ApplicationDelegate.awfulNetworkEngine refreshEmotesOnCompletion:nil onError:nil];
+    /*
+                             onCompletion:^(NSMutableArray *threads) {
+        self.pages.currentPage = pageNum;
+        if(pageNum == 1) {
+            [self.awfulThreads removeAllObjects];
+        }
+        [self acceptThreads:threads];
+        [self finishedRefreshing];
+    } onError:^(NSError *error) {
+        [self finishedRefreshing];
+        [AwfulUtil requestFailed:error];
+    }];
+     */
 }
 
 @end

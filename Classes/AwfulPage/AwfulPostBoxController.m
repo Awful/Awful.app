@@ -102,10 +102,10 @@
 
 -(void)tappedSegment : (id)sender
 {
-
+    NSLog(@"input: %@", self.replyWebView.bbcode);
     //NSString *str = [self.segmentedControl titleForSegmentAtIndex:self.segmentedControl.selectedSegmentIndex];
     //[self hitTextBarButtonItem:str];
-    if (self.segmentedControl.selectedSegmentIndex == 0) {
+    //if (self.segmentedControl.selectedSegmentIndex == 0) {
         //[self performSegueWithIdentifier: @"emotePopOver" sender: self];
         /*
         pop = [[UIPopoverController alloc] initWithContentViewController:[UIViewController new]];
@@ -115,7 +115,7 @@
            permittedArrowDirections:(UIPopoverArrowDirectionUp) 
                            animated:YES];
         */
-    }
+    //}
     
 }
 
@@ -140,6 +140,8 @@
 
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
+    NSLog(@"Posting: %@", self.replyWebView.bbcode);
+    
     /*
     if(buttonIndex == 1) {
         [self.networkOperation cancel];

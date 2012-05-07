@@ -6,8 +6,8 @@
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulTableViewController.h"
+#import "AwfulFetchedTableViewController.h"
 
-@interface AwfulEmoteChooser : AwfulTableViewController
+@interface AwfulEmoteChooser : AwfulFetchedTableViewController
 
 @end

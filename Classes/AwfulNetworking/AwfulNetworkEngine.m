@@ -17,6 +17,8 @@
 #import "AwfulUser.h"
 #import "AwfulUser+AwfulMethods.h"
 #import "AwfulPageTemplate.h"
+#import "AwfulEmote.h"
+#import "AwfulEmote+AwfulMethods.h"
 #import "NSString+HTML.h"
 
 @implementation AwfulNetworkEngine
@@ -385,4 +387,23 @@ QuotePostContent,
     return op;
 }
 
+-(MKNetworkOperation *)refreshEmotesOnCompletion : (CompletionBlock)completionBlock onError:(MKNKErrorBlock)errorBlock;
+{
+    NSString *path = [NSString stringWithFormat:@"misc.php?action=showsmilies"];
+    MKNetworkOperation *op = [self operationWithPath:path];
+    
+    [op onCompletion:^(MKNetworkOperation *completedOperation) {
+        NSData *responseData = [completedOperation responseData];
+        [AwfulEmote parseEmotesWithData:responseData];
+        [ApplicationDelegate saveContext];
+        //threadListResponseBlock(threads);
+        
+    } onError:^(NSError *error) {
+        
+        errorBlock(error);
+    }];
+    
+    [self enqueueOperation:op];
+    return op;
+}
 @end

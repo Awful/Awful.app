@@ -230,7 +230,6 @@ typedef enum {
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if(buttonIndex == AwfulThreadListActionsTypeFirstPage) {
-        
         UIStoryboard *story = [AwfulUtil getStoryboard];
         AwfulPage *page = [story instantiateViewControllerWithIdentifier:@"AwfulPage"];
         page.thread = self.heldThread;
