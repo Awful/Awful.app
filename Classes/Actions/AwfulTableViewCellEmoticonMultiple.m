@@ -32,15 +32,14 @@
 
 -(void) layoutSubviews {
     [super layoutSubviews];
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
     [self.textLabel removeFromSuperview];
     [self.detailTextLabel removeFromSuperview];
     
     int i = 0;
-    //for(UIView* v in _emoteViews) {
-    for(int j=0; j<5; j++) {
-        UILabel *v = [UILabel new];
-        v.text = [NSString stringWithFormat:@"%i",i];
-        v.frame = CGRectMake((100*j), 1, 100, 42);
+    self.backgroundColor = [UIColor colorWithWhite:.88 alpha:1];
+    for(UIView* v in _emoteViews) {
+        v.frame = CGRectMake((101*i), 1, 100, 44);
         [self addSubview:v];
         //v.foX = v.foX + (150*i);
         i++;
@@ -49,26 +48,30 @@
 
 -(UIView*) setupSubviewForEmoticon:(AwfulEmote*)emote {
     UIView *v = [UIView new];
-    
+
     UILabel *l = [UILabel new];
-    l.frame = CGRectMake(0,30,150,14);
+    l.frame = CGRectMake(0,27,100,17);
     l.text = emote.code;
     l.textAlignment = UITextAlignmentCenter;
+    l.adjustsFontSizeToFitWidth = YES;
+    
     
     [v addSubview:l];
     
     UIImageView *iv = [UIImageView new];
+    iv.backgroundColor = [UIColor whiteColor];
     
     
     if (emote.imageData != nil) {
         iv.image = [UIImage imageWithData:emote.imageData];
     }
     
-    iv.frame = CGRectMake(1,1,150,30);
+    iv.frame = CGRectMake(0,1,100,26);
     iv.contentMode = UIViewContentModeCenter;
     
     [v addSubview:iv];
-    v.layer.borderWidth = 1.0f;
+    //v.layer.borderWidth = 1.0f;
+    //v.layer.borderColor = [[UIColor colorWithWhite:.88 alpha:1] CGColor];
     
     return v;
 }

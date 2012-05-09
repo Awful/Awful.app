@@ -11,6 +11,8 @@
 #import "AwfulEmote.h"
 #import "AwfulNetworkEngine.h"
 
+#define MAX_EMOTE_WIDTH 100.0f
+
 @interface AwfulEmoteChooser ()
 
 @end
@@ -29,6 +31,7 @@
               [NSSortDescriptor sortDescriptorWithKey:@"code" ascending:YES]
               ]
              ];
+    
 }
 
 - (void)viewDidLoad
@@ -43,13 +46,46 @@
     // Release any retained subviews of the main view.
 }
 
-
--(void) configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath*)indexPath {
-    AwfulEmote* emote = [self.fetchedResultsController objectAtIndexPath:indexPath];
+-(NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    CGFloat width = tableView.frame.size.width;
+    _numIconsPerRow = width/MAX_EMOTE_WIDTH;
     
-    cell.textLabel.text = emote.code;
-    cell.detailTextLabel.text = emote.urlString;
+    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:section];
+    NSLog(@"row count: %i", [sectionInfo numberOfObjects]/_numIconsPerRow);
+    return [sectionInfo numberOfObjects]/_numIconsPerRow;
 }
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    UITableViewCell *cell;
+    NSManagedObject *obj = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    
+    
+    cell = [tableView dequeueReusableCellWithIdentifier:obj.entity.managedObjectClassName];
+    
+    if (cell == nil)
+        cell = [[AwfulTableViewCellEmoticonMultiple alloc] initWithStyle:UITableViewCellStyleDefault 
+                                                         reuseIdentifier:obj.entity.managedObjectClassName];
+    
+    [self configureCell:cell atIndexPath:indexPath];
+    return cell;
+}
+
+- (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath {
+    AwfulTableViewCellEmoticonMultiple *gridCell = (AwfulTableViewCellEmoticonMultiple*)cell;
+    
+    NSMutableArray *emotes = [NSMutableArray new];
+    
+    for(int x = indexPath.row * _numIconsPerRow; x< (indexPath.row * _numIconsPerRow) + (_numIconsPerRow); x++) {
+        AwfulEmote *emote = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:x 
+                                                                                                inSection:0]];
+        [emotes addObject:emote];
+    }
+    
+    [gridCell setContent:emotes];
+}
+
 
 
 -(void) refresh {

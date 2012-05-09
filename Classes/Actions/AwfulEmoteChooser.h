@@ -8,6 +8,8 @@
 
 #import "AwfulFetchedTableViewController.h"
 
-@interface AwfulEmoteChooser : AwfulFetchedTableViewController
+@interface AwfulEmoteChooser : AwfulFetchedTableViewController {
+    int _numIconsPerRow;
+}
 
 @end

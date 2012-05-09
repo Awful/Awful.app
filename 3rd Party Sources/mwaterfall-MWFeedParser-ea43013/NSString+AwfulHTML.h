@@ -1,5 +1,5 @@
 //
-//  NSString+HTML.m
+//  NSString+HTML.h
 //  MWFeedParser
 //
 //  Copyright (c) 2010 Michael Waterfall
@@ -27,19 +27,13 @@
 //  THE SOFTWARE.
 //
 
-#import "NSString+HTML.h"
-#import "GTMNSString+HTML.h"
+#import <Foundation/Foundation.h>
 
-@implementation NSString (HTML)
+// Dependant upon GTMNSString+HTML
 
-#pragma mark -
-#pragma mark Class Methods
+@interface NSString (AwfulHTML)
 
-#pragma mark -
-#pragma mark Instance Methods
-
-- (NSString *)stringByEscapingUnicode {
-    return [NSString stringWithString:[self gtm_stringByEscapingUnicode]];
-}
+// Instance Methods
+- (NSString *)stringByEscapingUnicode;
 
 @end

@@ -19,7 +19,7 @@
 #import "AwfulPageTemplate.h"
 #import "AwfulEmote.h"
 #import "AwfulEmote+AwfulMethods.h"
-#import "NSString+HTML.h"
+#import "NSString+AwfulHTML.h"
 
 @implementation AwfulNetworkEngine
 

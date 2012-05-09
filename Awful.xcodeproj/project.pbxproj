@@ -222,7 +222,7 @@
 		1190F7E313BE4ECB00B9D271 /* 37x-Checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 1190F7A913BE4ECB00B9D271 /* 37x-Checkmark.png */; };
 		1190F7E413BE4ECB00B9D271 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7AB13BE4ECB00B9D271 /* MBProgressHUD.m */; };
 		1190F7E513BE4ECB00B9D271 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7AF13BE4ECB00B9D271 /* GTMNSString+HTML.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		1190F7E613BE4ECB00B9D271 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7B113BE4ECB00B9D271 /* NSString+HTML.m */; };
+		1190F7E613BE4ECB00B9D271 /* NSString+AwfulHTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7B113BE4ECB00B9D271 /* NSString+AwfulHTML.m */; };
 		1190F7E713BE4ECB00B9D271 /* MWPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7B413BE4ECB00B9D271 /* MWPhoto.m */; };
 		1190F7E813BE4ECB00B9D271 /* MWPhotoBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7B613BE4ECB00B9D271 /* MWPhotoBrowser.m */; };
 		1190F7E913BE4ECB00B9D271 /* UIImage+Decompress.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7B813BE4ECB00B9D271 /* UIImage+Decompress.m */; };
@@ -425,6 +425,9 @@
 		8C7CAC8E15582E1400CF6792 /* AwfulPostComposerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7CAC8D15582E1400CF6792 /* AwfulPostComposerView.m */; };
 		8C7CAC911558634100CF6792 /* AwfulEmote+AwfulMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7CAC901558634100CF6792 /* AwfulEmote+AwfulMethods.m */; };
 		8C7CAC941558696D00CF6792 /* AwfulFetchedTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7CAC931558696D00CF6792 /* AwfulFetchedTableViewController.m */; };
+		8C7CAC99155AE48F00CF6792 /* emot-f5.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C7CAC97155AE48F00CF6792 /* emot-f5.gif */; };
+		8C7CAC9A155AE48F00CF6792 /* emot-flashfap.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C7CAC98155AE48F00CF6792 /* emot-flashfap.gif */; };
+		8C7CADA9155AFA5500CF6792 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C7CADA8155AFA5500CF6792 /* ImageIO.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -691,8 +694,8 @@
 		1190F7AD13BE4ECB00B9D271 /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMDefines.h; sourceTree = "<group>"; };
 		1190F7AE13BE4ECB00B9D271 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
 		1190F7AF13BE4ECB00B9D271 /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
-		1190F7B013BE4ECB00B9D271 /* NSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+HTML.h"; sourceTree = "<group>"; };
-		1190F7B113BE4ECB00B9D271 /* NSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+HTML.m"; sourceTree = "<group>"; };
+		1190F7B013BE4ECB00B9D271 /* NSString+AwfulHTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+AwfulHTML.h"; sourceTree = "<group>"; };
+		1190F7B113BE4ECB00B9D271 /* NSString+AwfulHTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+AwfulHTML.m"; sourceTree = "<group>"; };
 		1190F7B313BE4ECB00B9D271 /* MWPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWPhoto.h; sourceTree = "<group>"; };
 		1190F7B413BE4ECB00B9D271 /* MWPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MWPhoto.m; sourceTree = "<group>"; };
 		1190F7B513BE4ECB00B9D271 /* MWPhotoBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWPhotoBrowser.h; sourceTree = "<group>"; };
@@ -965,6 +968,9 @@
 		8C7CAC901558634100CF6792 /* AwfulEmote+AwfulMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AwfulEmote+AwfulMethods.m"; sourceTree = "<group>"; };
 		8C7CAC921558696D00CF6792 /* AwfulFetchedTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFetchedTableViewController.h; sourceTree = "<group>"; };
 		8C7CAC931558696D00CF6792 /* AwfulFetchedTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulFetchedTableViewController.m; sourceTree = "<group>"; };
+		8C7CAC97155AE48F00CF6792 /* emot-f5.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "emot-f5.gif"; sourceTree = "<group>"; };
+		8C7CAC98155AE48F00CF6792 /* emot-flashfap.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "emot-flashfap.gif"; sourceTree = "<group>"; };
+		8C7CADA8155AFA5500CF6792 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		8D1107310486CEB800E47090 /* Awful-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Awful-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -973,6 +979,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8C7CADA9155AFA5500CF6792 /* ImageIO.framework in Frameworks */,
 				8C7CAC8B1558298D00CF6792 /* CoreText.framework in Frameworks */,
 				10D34FA9128F41160026C7C2 /* CFNetwork.framework in Frameworks */,
 				117DBE3B1522A39A007125EF /* CoreData.framework in Frameworks */,
@@ -1014,6 +1021,8 @@
 		10E93EB9121DC70E00CCBF6D /* images */ = {
 			isa = PBXGroup;
 			children = (
+				8C7CAC97155AE48F00CF6792 /* emot-f5.gif */,
+				8C7CAC98155AE48F00CF6792 /* emot-flashfap.gif */,
 				8C70A4001556CCB50009B3D1 /* smile.gif */,
 				50A8B9671541D52D0065F3D9 /* help */,
 				112ECF0F14D7100A007EE7B6 /* threadtags */,
@@ -1533,8 +1542,8 @@
 				1190F7AD13BE4ECB00B9D271 /* GTMDefines.h */,
 				1190F7AE13BE4ECB00B9D271 /* GTMNSString+HTML.h */,
 				1190F7AF13BE4ECB00B9D271 /* GTMNSString+HTML.m */,
-				1190F7B013BE4ECB00B9D271 /* NSString+HTML.h */,
-				1190F7B113BE4ECB00B9D271 /* NSString+HTML.m */,
+				1190F7B013BE4ECB00B9D271 /* NSString+AwfulHTML.h */,
+				1190F7B113BE4ECB00B9D271 /* NSString+AwfulHTML.m */,
 			);
 			name = MWFeedParser;
 			path = "mwaterfall-MWFeedParser-ea43013";
@@ -1805,6 +1814,7 @@
 		29B97314FDCFA39411CA2CEA /* Awful */ = {
 			isa = PBXGroup;
 			children = (
+				8C7CADA8155AFA5500CF6792 /* ImageIO.framework */,
 				8C7CAC8A1558298D00CF6792 /* CoreText.framework */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				1153D103144E7217007602E8 /* iPad */,
@@ -2244,6 +2254,8 @@
 				1182A3BF15509167005BBBF9 /* tma-secondary.png in Resources */,
 				8C70A3FF1556C14A0009B3D1 /* editor.html in Resources */,
 				8C70A4011556CCB60009B3D1 /* smile.gif in Resources */,
+				8C7CAC99155AE48F00CF6792 /* emot-f5.gif in Resources */,
+				8C7CAC9A155AE48F00CF6792 /* emot-flashfap.gif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2288,7 +2300,7 @@
 				1190F7E113BE4ECB00B9D271 /* SBJsonWriter.m in Sources */,
 				1190F7E413BE4ECB00B9D271 /* MBProgressHUD.m in Sources */,
 				1190F7E513BE4ECB00B9D271 /* GTMNSString+HTML.m in Sources */,
-				1190F7E613BE4ECB00B9D271 /* NSString+HTML.m in Sources */,
+				1190F7E613BE4ECB00B9D271 /* NSString+AwfulHTML.m in Sources */,
 				1190F7E713BE4ECB00B9D271 /* MWPhoto.m in Sources */,
 				1190F7E813BE4ECB00B9D271 /* MWPhotoBrowser.m in Sources */,
 				1190F7E913BE4ECB00B9D271 /* UIImage+Decompress.m in Sources */,
@@ -2410,7 +2422,7 @@
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "AF675681-BFFF-4C7B-9F71-5C93FF5B17EE";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/3rd Party Sources/EGOTextView/**\"";
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/3rd Party Sources/DTCoreText\"/**";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = AdHoc;
@@ -2450,7 +2462,7 @@
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/3rd Party Sources/EGOTextView/**\"";
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/3rd Party Sources/DTCoreText\"/**";
 			};
 			name = Debug;
 		};
@@ -2485,7 +2497,7 @@
 				PROVISIONING_PROFILE = "CDD2EE87-025E-4D48-ADB8-0F40A88D82DB";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/3rd Party Sources/EGOTextView/**\"";
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/3rd Party Sources/DTCoreText\"/**";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
