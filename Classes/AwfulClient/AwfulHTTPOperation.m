@@ -39,17 +39,19 @@
 
 - (void)main
 {
-    if ([self isCancelled])
-        return;
-    NSURLResponse *response;
-    NSError *error;
-    // TODO check http response code
-    self.responseData = [NSURLConnection sendSynchronousRequest:self.request
-                                              returningResponse:&response
-                                                          error:&error];
-    self.response = response;
-    if (!self.responseData)
-        self.error = error;
+    @autoreleasepool {
+        if ([self isCancelled])
+            return;
+        NSURLResponse *response;
+        NSError *error;
+        // TODO check http response code
+        self.responseData = [NSURLConnection sendSynchronousRequest:self.request
+                                                  returningResponse:&response
+                                                              error:&error];
+        self.response = response;
+        if (!self.responseData)
+            self.error = error;
+    }
 }
 
 @end

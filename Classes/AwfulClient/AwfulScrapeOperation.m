@@ -49,22 +49,24 @@
 
 - (void)main
 {
-    if ([self isCancelled])
-        return;
-    if ([self.httpOperation isCancelled])
-    {
-        [self cancel];
-        return;
+    @autoreleasepool {
+        if ([self isCancelled])
+            return;
+        if ([self.httpOperation isCancelled])
+        {
+            [self cancel];
+            return;
+        }
+        if (self.httpOperation.error)
+        {
+            self.error = self.httpOperation.error;
+            return;
+        }
+        NSData *data = self.responseData;
+        if (!data)
+            data = self.httpOperation.responseData;
+        self.scrapings = [self scrapeData:data];
     }
-    if (self.httpOperation.error)
-    {
-        self.error = self.httpOperation.error;
-        return;
-    }
-    NSData *data = self.responseData;
-    if (!data)
-        data = self.httpOperation.responseData;
-    self.scrapings = [self scrapeData:data];
 }
 
 - (NSDictionary *)scrapeData:(NSData *)data
@@ -121,6 +123,7 @@ const struct AwfulScrapingsKeys AwfulScrapingsKeys =
         NSString *actualForumName = [forumName substringFromIndex:substringIndex];
         
         NSMutableDictionary *forum = [NSMutableDictionary new];
+        [forum setObject:forumID forKey:@"forumID"];
         [forum setObject:actualForumName forKey:@"name"];
         [forum setObject:[NSNumber numberWithInt:index] forKey:@"index"];
         

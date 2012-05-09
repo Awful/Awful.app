@@ -15,10 +15,8 @@
 
 - (void)testForumList
 {
-    NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
-    NSData *data = [NSData dataWithContentsOfURL:[thisBundle URLForResource:@"gbs"
-                                                              withExtension:@"html"]];
-    AwfulForumListScrapeOperation *op = [[AwfulForumListScrapeOperation alloc] initWithResponseData:data];
+    AwfulForumListScrapeOperation *op = [[AwfulForumListScrapeOperation alloc] initWithResponseData:
+                                         BundleData(@"gbs.html")];
     [op start];
     
     NSArray *forums = [op.scrapings objectForKey:AwfulScrapingsKeys.Forums];

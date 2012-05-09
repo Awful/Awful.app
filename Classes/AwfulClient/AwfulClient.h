@@ -39,7 +39,7 @@
 
 #pragma mark - Forums
 
-- (void)fetchForumsListAndThen:(void (^)(NSError *error, NSArray *forums))callback;
+- (void)fetchForumsListAndThen:(void (^)(NSError *error, NSArray *forumObjectIDs))callback;
 
 #pragma mark - Threads
 

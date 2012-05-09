@@ -388,6 +388,12 @@
 		1C84A6C31555DF01008A6DA6 /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7C413BE4ECB00B9D271 /* TFHppleElement.m */; };
 		1C84A6C41555DF01008A6DA6 /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7C613BE4ECB00B9D271 /* XPathQuery.m */; };
 		1C84A6C51555DF14008A6DA6 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
+		1C84A6C8155A2DC5008A6DA6 /* IntegrationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C84A6C7155A2DC5008A6DA6 /* IntegrationTest.m */; };
+		1C84A6CB155A2E63008A6DA6 /* TestHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C84A6CA155A2E63008A6DA6 /* TestHelpers.m */; };
+		1C84A6CC155A319F008A6DA6 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 117DBE3A1522A39A007125EF /* CoreData.framework */; };
+		1C84A6CD155A31AA008A6DA6 /* AwfulPersistOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF52921555992C007489BE /* AwfulPersistOperation.m */; };
+		1C84A6CE155A3209008A6DA6 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 117DBE411522AA2D007125EF /* Model.xcdatamodeld */; };
+		1C84A6EF155A4E07008A6DA6 /* AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CF797152C05BA00126AAC /* AwfulForum.m */; };
 		1CAB36B11548F0FE00A4A362 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
 		1CBF78F5155373C20067EF27 /* AwfulClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBF78F4155373C20067EF27 /* AwfulClient.m */; };
 		1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD5198154294D400326C7B /* AwfulSettings.m */; };
@@ -891,6 +897,9 @@
 		1C7B871B1544D73100891D41 /* AwfulForumsListControllerSubclass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumsListControllerSubclass.h; sourceTree = "<group>"; };
 		1C7B871E1544D83C00891D41 /* AwfulForumSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumSection.h; sourceTree = "<group>"; };
 		1C7B871F1544D83D00891D41 /* AwfulForumSection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumSection.m; sourceTree = "<group>"; };
+		1C84A6C7155A2DC5008A6DA6 /* IntegrationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IntegrationTest.m; sourceTree = "<group>"; };
+		1C84A6C9155A2E63008A6DA6 /* TestHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestHelpers.h; sourceTree = "<group>"; };
+		1C84A6CA155A2E63008A6DA6 /* TestHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestHelpers.m; sourceTree = "<group>"; };
 		1CAB36B01548F0FE00A4A362 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		1CBF78F3155373C20067EF27 /* AwfulClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulClient.h; sourceTree = "<group>"; };
 		1CBF78F4155373C20067EF27 /* AwfulClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulClient.m; sourceTree = "<group>"; };
@@ -902,9 +911,9 @@
 		1CDF528F15559924007489BE /* AwfulScrapeOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScrapeOperation.m; sourceTree = "<group>"; };
 		1CDF52911555992C007489BE /* AwfulPersistOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPersistOperation.h; sourceTree = "<group>"; };
 		1CDF52921555992C007489BE /* AwfulPersistOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPersistOperation.m; sourceTree = "<group>"; };
-		1CDF52B21555DA64007489BE /* Scrape Tests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Scrape Tests.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		1CDF52B91555DA64007489BE /* Scrape Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Scrape Tests-Info.plist"; sourceTree = "<group>"; };
-		1CDF52BF1555DA64007489BE /* Scrape Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Scrape Tests-Prefix.pch"; sourceTree = "<group>"; };
+		1CDF52B21555DA64007489BE /* Client Tests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Client Tests.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1CDF52B91555DA64007489BE /* Client Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Client Tests-Info.plist"; sourceTree = "<group>"; };
+		1CDF52BF1555DA64007489BE /* Client Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Client Tests-Prefix.pch"; sourceTree = "<group>"; };
 		1CDF52C71555DB4B007489BE /* GHUnitIOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GHUnitIOS.framework; path = "3rd Party Sources/GHUnitIOS.framework"; sourceTree = "<group>"; };
 		1CDF52C91555DBE0007489BE /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		1CDF52CC1555DCA3007489BE /* gbs.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = gbs.html; sourceTree = "<group>"; };
@@ -976,6 +985,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C84A6CC155A319F008A6DA6 /* CoreData.framework in Frameworks */,
 				1CDF52B61555DA64007489BE /* CoreGraphics.framework in Frameworks */,
 				1CDF52B51555DA64007489BE /* Foundation.framework in Frameworks */,
 				1CDF52C81555DB4B007489BE /* GHUnitIOS.framework in Frameworks */,
@@ -1715,7 +1725,7 @@
 			isa = PBXGroup;
 			children = (
 				1D6058910D05DD3D006BFB54 /* Awful.app */,
-				1CDF52B21555DA64007489BE /* Scrape Tests.app */,
+				1CDF52B21555DA64007489BE /* Client Tests.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1748,22 +1758,25 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
-		1CDF52B71555DA64007489BE /* Scrape Tests */ = {
+		1CDF52B71555DA64007489BE /* Client Tests */ = {
 			isa = PBXGroup;
 			children = (
+				1C84A6C7155A2DC5008A6DA6 /* IntegrationTest.m */,
 				1CDF52CF1555DCCA007489BE /* ScrapeTest.m */,
 				1CDF52CB1555DCA3007489BE /* HTML */,
 				1CDF52B81555DA64007489BE /* Supporting Files */,
 			);
-			path = "Scrape Tests";
+			path = "Client Tests";
 			sourceTree = "<group>";
 		};
 		1CDF52B81555DA64007489BE /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				1CDF52B91555DA64007489BE /* Scrape Tests-Info.plist */,
-				1CDF52BF1555DA64007489BE /* Scrape Tests-Prefix.pch */,
+				1CDF52B91555DA64007489BE /* Client Tests-Info.plist */,
+				1CDF52BF1555DA64007489BE /* Client Tests-Prefix.pch */,
 				1CDF52C91555DBE0007489BE /* main.m */,
+				1C84A6C9155A2E63008A6DA6 /* TestHelpers.h */,
+				1C84A6CA155A2E63008A6DA6 /* TestHelpers.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1858,7 +1871,7 @@
 				1190F76913BE4ECB00B9D271 /* 3rd Party Sources */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
-				1CDF52B71555DA64007489BE /* Scrape Tests */,
+				1CDF52B71555DA64007489BE /* Client Tests */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
@@ -1924,9 +1937,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1CDF52B11555DA64007489BE /* Scrape Tests */ = {
+		1CDF52B11555DA64007489BE /* Client Tests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1CDF52C31555DA64007489BE /* Build configuration list for PBXNativeTarget "Scrape Tests" */;
+			buildConfigurationList = 1CDF52C31555DA64007489BE /* Build configuration list for PBXNativeTarget "Client Tests" */;
 			buildPhases = (
 				1CDF52AE1555DA64007489BE /* Sources */,
 				1CDF52AF1555DA64007489BE /* Frameworks */,
@@ -1936,9 +1949,9 @@
 			);
 			dependencies = (
 			);
-			name = "Scrape Tests";
+			name = "Client Tests";
 			productName = "Scrape Tests";
-			productReference = 1CDF52B21555DA64007489BE /* Scrape Tests.app */;
+			productReference = 1CDF52B21555DA64007489BE /* Client Tests.app */;
 			productType = "com.apple.product-type.application";
 		};
 		1D6058900D05DD3D006BFB54 /* Awful */ = {
@@ -1983,7 +1996,7 @@
 			projectRoot = "";
 			targets = (
 				1D6058900D05DD3D006BFB54 /* Awful */,
-				1CDF52B11555DA64007489BE /* Scrape Tests */,
+				1CDF52B11555DA64007489BE /* Client Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -2320,6 +2333,11 @@
 				1C84A6C11555DEFE008A6DA6 /* TFHpple.m in Sources */,
 				1C84A6C31555DF01008A6DA6 /* TFHppleElement.m in Sources */,
 				1C84A6C41555DF01008A6DA6 /* XPathQuery.m in Sources */,
+				1C84A6C8155A2DC5008A6DA6 /* IntegrationTest.m in Sources */,
+				1C84A6CB155A2E63008A6DA6 /* TestHelpers.m in Sources */,
+				1C84A6CD155A31AA008A6DA6 /* AwfulPersistOperation.m in Sources */,
+				1C84A6CE155A3209008A6DA6 /* Model.xcdatamodeld in Sources */,
+				1C84A6EF155A4E07008A6DA6 /* AwfulForum.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2493,14 +2511,14 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Scrape Tests/Scrape Tests-Prefix.pch";
+				GCC_PREFIX_HEADER = "Client Tests/Client Tests-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				INFOPLIST_FILE = "Scrape Tests/Scrape Tests-Info.plist";
+				INFOPLIST_FILE = "Client Tests/Client Tests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2520,10 +2538,10 @@
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Scrape Tests/Scrape Tests-Prefix.pch";
+				GCC_PREFIX_HEADER = "Client Tests/Client Tests-Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				INFOPLIST_FILE = "Scrape Tests/Scrape Tests-Info.plist";
+				INFOPLIST_FILE = "Client Tests/Client Tests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2544,10 +2562,10 @@
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Scrape Tests/Scrape Tests-Prefix.pch";
+				GCC_PREFIX_HEADER = "Client Tests/Client Tests-Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				INFOPLIST_FILE = "Scrape Tests/Scrape Tests-Info.plist";
+				INFOPLIST_FILE = "Client Tests/Client Tests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2659,7 +2677,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1CDF52C31555DA64007489BE /* Build configuration list for PBXNativeTarget "Scrape Tests" */ = {
+		1CDF52C31555DA64007489BE /* Build configuration list for PBXNativeTarget "Client Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1CDF52C41555DA64007489BE /* Debug */,

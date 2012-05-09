@@ -44,6 +44,8 @@
         self.httpQueue = [NSOperationQueue new];
         self.scrapeQueue = [NSOperationQueue new];
         self.persistQueue = [NSOperationQueue new];
+        // Minimize merge conflicts
+        self.persistQueue.maxConcurrentOperationCount = 1;
     }
     return self;
 }
@@ -77,7 +79,7 @@
 
 #pragma mark - Forums
 
-- (void)fetchForumsListAndThen:(void (^)(NSError *error, NSArray *forums))callback
+- (void)fetchForumsListAndThen:(void (^)(NSError *error, NSArray *forumObjectIDs))callback
 {
     // Example usage:
     

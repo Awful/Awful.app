@@ -16,4 +16,7 @@
 
 @property (readonly, strong) NSError *error;
 
+// Object IDs for any forums updated or created.
+@property (readonly, strong) NSArray *forumObjectIDs;
+
 @end
