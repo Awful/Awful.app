@@ -13,6 +13,7 @@
 @class AwfulThread;
 @class AwfulPageDataController;
 @class AwfulUser;
+@class AwfulCachedImage;
 
 @interface AwfulNetworkEngine : MKNetworkEngine
 
@@ -53,4 +54,5 @@ typedef void (^PostContentResponseBlock)(NSString *postContent);
 
 
 -(MKNetworkOperation *)refreshEmotesOnCompletion : (CompletionBlock)completionBlock onError:(MKNKErrorBlock)errorBlock;
+-(MKNetworkOperation*) cacheImage:(AwfulCachedImage*)image onCompletion:(CompletionBlock)completionBlock onError:(MKNKErrorBlock)errorBlock;
 @end

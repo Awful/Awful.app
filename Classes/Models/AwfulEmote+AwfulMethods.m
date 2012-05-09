@@ -39,4 +39,8 @@
     [ApplicationDelegate saveContext];
 }
 
+-(BOOL) cached {
+    return (self.imageData.length > 0) ;
+}
+
 @end

@@ -9,6 +9,7 @@
 #import "AwfulEmoteChooser.h"
 #import "AwfulTableViewCellEmoticonMultiple.h"
 #import "AwfulEmote.h"
+#import "AwfulEmote+AwfulMethods.h"
 #import "AwfulNetworkEngine.h"
 
 #define MAX_EMOTE_WIDTH 100.0f
@@ -81,6 +82,19 @@
         AwfulEmote *emote = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:x 
                                                                                                 inSection:0]];
         [emotes addObject:emote];
+        
+        if (!emote.cached) {
+            NSLog(@"loading emote %@", emote.code);
+            
+            [ApplicationDelegate.awfulNetworkEngine cacheImage:emote 
+                                                  onCompletion:^{
+                                                      [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] 
+                                                                            withRowAnimation:(UITableViewRowAnimationFade)];
+                                                  } 
+                                                       onError:nil];
+             
+        }
+        
     }
     
     [gridCell setContent:emotes];

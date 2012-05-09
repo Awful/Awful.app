@@ -50,7 +50,7 @@
     UIView *v = [UIView new];
 
     UILabel *l = [UILabel new];
-    l.frame = CGRectMake(0,27,100,17);
+    l.frame = CGRectMake(0,26,100,18);
     l.text = emote.code;
     l.textAlignment = UITextAlignmentCenter;
     l.adjustsFontSizeToFitWidth = YES;

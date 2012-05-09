@@ -11,4 +11,6 @@
 @interface AwfulEmote (AwfulMethods)
 
 +(void)parseEmotesWithData : (NSData *)data;
+
+@property (readonly) BOOL cached;
 @end

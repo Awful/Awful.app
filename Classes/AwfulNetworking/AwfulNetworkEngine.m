@@ -19,6 +19,7 @@
 #import "AwfulPageTemplate.h"
 #import "AwfulEmote.h"
 #import "AwfulEmote+AwfulMethods.h"
+#import "AwfulCachedImage.h"
 #import "NSString+AwfulHTML.h"
 
 @implementation AwfulNetworkEngine
@@ -406,4 +407,25 @@ QuotePostContent,
     [self enqueueOperation:op];
     return op;
 }
+
+-(MKNetworkOperation*) cacheImage:(AwfulCachedImage*)image onCompletion:(CompletionBlock)completionBlock onError:(MKNKErrorBlock)errorBlock {
+    
+    NSString *path = image.urlString;
+    MKNetworkOperation *op = [self operationWithURLString:path];
+    
+    [op onCompletion:^(MKNetworkOperation *completedOperation) {
+        NSData *responseData = [completedOperation responseData];
+        image.imageData = responseData;
+        [ApplicationDelegate saveContext];
+        completionBlock();
+        
+    } onError:^(NSError *error) {
+        
+        errorBlock(error);
+    }];
+    
+    [self enqueueOperation:op];
+    return op;
+}
+
 @end
