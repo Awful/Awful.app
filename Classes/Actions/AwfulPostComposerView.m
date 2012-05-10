@@ -7,6 +7,7 @@
 //
 
 #import "AwfulPostComposerView.h"
+#import "AwfulEmote.h"
 
 @implementation AwfulPostComposerView
 
@@ -18,6 +19,8 @@
         NSURL *indexFileURL = [bundle URLForResource:@"editor" withExtension:@"html"];
         [self loadRequest:[NSURLRequest requestWithURL:indexFileURL]];
         
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(emoteChosen:) name:NOTIFY_EMOTE_SELECTED object:nil];
 }
 
 -(void) bold {
@@ -42,13 +45,22 @@
                                                                            options:0 
                                                                              error:nil];
     
-    int matches = [regex replaceMatchesInString:html
+    [regex replaceMatchesInString:html
                           options:0
                             range:NSMakeRange(0, html.length)
                      withTemplate:@"[$1$2]"];
     //NSLog(@"%d matches", matches);
     
     return html;
+}
+
+-(void) emoteChosen:(NSNotification*)notification {
+    AwfulEmote *emote = notification.object;
+    NSString *tag = [NSString stringWithFormat:@"<img alt=\"%@\" src=\"data:image/gif;base64,%@\" />", emote.code, emote.imageData.base64EncodedString];
+    tag = [tag stringByReplacingOccurrencesOfString:@"\r\n" withString:@""];
+    
+    NSString *script = [NSString stringWithFormat:@"document.getElementById('content').innerHTML += '%@'", tag];
+    [self stringByEvaluatingJavaScriptFromString:script];
 }
 
 @end

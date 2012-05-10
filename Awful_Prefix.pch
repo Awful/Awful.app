@@ -9,4 +9,8 @@
     #import "AwfulAppDelegate.h"
     #import <CoreData/CoreData.h>
     #import "TestFlight.h"
+
+
+#define MAX_EMOTE_WIDTH 100.0f
+#define NOTIFY_EMOTE_SELECTED @"NOTIFY_EMOTE_SELECTED"
 #endif

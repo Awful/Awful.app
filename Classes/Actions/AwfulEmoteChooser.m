@@ -12,8 +12,6 @@
 #import "AwfulEmote+AwfulMethods.h"
 #import "AwfulNetworkEngine.h"
 
-#define MAX_EMOTE_WIDTH 100.0f
-
 @interface AwfulEmoteChooser ()
 
 @end
@@ -133,6 +131,8 @@
     
     AwfulEmote *selected = (AwfulEmote*)[self.fetchedResultsController objectAtIndexPath:emotePath];
     NSLog(@"emote: %@", selected.code);
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFY_EMOTE_SELECTED object:selected];
 }
 
 @end
