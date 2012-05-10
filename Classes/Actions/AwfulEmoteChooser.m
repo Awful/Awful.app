@@ -32,7 +32,6 @@
               [NSSortDescriptor sortDescriptorWithKey:@"code" ascending:YES]
               ]
              ];
-    
 }
 
 - (void)viewDidLoad
@@ -70,6 +69,9 @@
                                                          reuseIdentifier:obj.entity.managedObjectClassName];
     
     [self configureCell:cell atIndexPath:indexPath];
+    
+    UIGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedCell:)];
+    [cell addGestureRecognizer:tap];
     return cell;
 }
 
@@ -101,7 +103,6 @@
 }
 
 
-
 -(void) refresh {
     [self.networkOperation cancel];
     self.reloading = YES;
@@ -119,6 +120,19 @@
         [AwfulUtil requestFailed:error];
     }];
      */
+}
+
+-(void) tappedCell:(UITapGestureRecognizer *)sender  {
+    AwfulTableViewCellEmoticonMultiple *cell = sender.view;
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+    CGPoint location = [sender locationInView:sender.view];
+    
+    int emoteIndex = location.x / MAX_EMOTE_WIDTH;
+    NSIndexPath *emotePath = [NSIndexPath indexPathForRow:(indexPath.row*_numIconsPerRow + emoteIndex)
+                                                inSection:0];
+    
+    AwfulEmote *selected = (AwfulEmote*)[self.fetchedResultsController objectAtIndexPath:emotePath];
+    NSLog(@"emote: %@", selected.code);
 }
 
 @end
