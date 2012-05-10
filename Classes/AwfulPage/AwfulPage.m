@@ -28,6 +28,7 @@
 #import "MWPhotoBrowser.h"
 #import "OtherWebController.h"
 #import "AwfulUtil.h"
+#import "AwfulPullToNavigateView.h"
 
 @implementation AwfulPage
 
@@ -51,6 +52,7 @@
 @synthesize pagesSegmentedControl = _pagesSegmentedControl;
 @synthesize actionsSegmentedControl = _actionsSegmentedControl;
 @synthesize isFullScreen = _isFullScreen;
+@synthesize pullToNavigateView = _pullToNavigateView;
 
 #pragma mark - Initialization
 
@@ -58,6 +60,7 @@
 {    
     self.actionsSegmentedControl.action = @selector(tappedActionsSegment:);
     self.pagesSegmentedControl.action = @selector(tappedPagesSegment:);
+    self.webView.scrollView.delegate = self;
 }
 
 -(void)setThread:(AwfulThread *)newThread
@@ -72,6 +75,7 @@
         
         if([_thread.totalUnreadPosts intValue] == -1) {
             self.destinationType = AwfulPageDestinationTypeFirst;
+            
         } else if([_thread.totalUnreadPosts intValue] == 0) {
             self.destinationType = AwfulPageDestinationTypeLast;
                 // if the last page is full, it won't work if you go for &goto=newpost, that's why I'm setting this to last page
@@ -588,6 +592,7 @@
 
 -(void)webViewDidFinishLoad:(UIWebView *)sender
 {
+    [self.webView.scrollView setContentOffset:CGPointMake(0, 0) animated:NO];
     [self swapToRefreshButton];
     if(!self.touchedPage) {
         if(self.postIDScrollDestination != nil) {
@@ -596,6 +601,19 @@
             [self scrollToBottom];
         }
     }
+    
+    if (!self.pullToNavigateView) {
+        self.pullToNavigateView = [[AwfulPullToNavigateView alloc] initWithFrame:CGRectMake(0, self.webView.scrollView.contentSize.height, self.view.frame.size.width, 65.0f)];
+        
+        self.pullToNavigateView.backgroundColor = [UIColor cyanColor];
+        [self.webView.scrollView addSubview:self.pullToNavigateView];
+        self.webView.scrollView.delegate = self;
+        self.pullToNavigateView.delegate = self;
+    }
+}
+
+-(void) awfulFooterDidTriggerLoad:(AwfulPullToNavigateView*)pullToNavigate {
+    [self tappedNextPage:nil];
 }
 
 -(void)webViewDidStartLoad:(UIWebView *)webView
@@ -642,6 +660,18 @@
         return YES;
     }
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+}
+
+#pragma mark scrollview delegate
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{	
+    [self.pullToNavigateView egoRefreshScrollViewDidScroll:scrollView];
+
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    [self.pullToNavigateView egoRefreshScrollViewDidEndDragging:scrollView];
 }
 
 @end

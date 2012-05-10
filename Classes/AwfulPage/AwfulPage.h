@@ -24,8 +24,9 @@ typedef enum {
 @class AwfulPageDataController;
 @class AwfulActions;
 @class ButtonSegmentedControl;
+@class AwfulPullToNavigateView;
 
-@interface AwfulPage : UIViewController <UIWebViewDelegate, UIGestureRecognizerDelegate, JSBridgeWebViewDelegate>
+@interface AwfulPage : UIViewController <UIWebViewDelegate, UIGestureRecognizerDelegate, JSBridgeWebViewDelegate, UIScrollViewDelegate>
 {
 @protected
     AwfulActions *_actions;
@@ -57,6 +58,8 @@ typedef enum {
 
 @property (nonatomic, assign) BOOL draggingUp;
 @property (nonatomic, assign) BOOL isFullScreen;
+
+@property (nonatomic, strong) AwfulPullToNavigateView* pullToNavigateView;
 
 -(IBAction)hardRefresh;
 -(void)setThreadTitle : (NSString *)in_title;
@@ -91,6 +94,9 @@ typedef enum {
 
 -(void)showCompletionMessage : (NSString *)message;
 -(void)hidePageNavigation;
+
+
+-(void) awfulFooterDidTriggerLoad:(AwfulPullToNavigateView*)pullToNavigate;
 
 @end
 
