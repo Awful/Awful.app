@@ -1,7 +1,0 @@
-//
-// Prefix header for all source files of the 'EGOTextViewLib' target in the 'EGOTextViewLib' project
-//
-
-#ifdef __OBJC__
-    #import <Foundation/Foundation.h>
-#endif
