@@ -24,7 +24,7 @@ typedef enum {
 @class AwfulPageDataController;
 @class AwfulActions;
 @class ButtonSegmentedControl;
-@class AwfulPullToNavigateView;
+@class AwfulLoadingFooterView;
 
 @interface AwfulPage : UIViewController <UIWebViewDelegate, UIGestureRecognizerDelegate, JSBridgeWebViewDelegate, UIScrollViewDelegate>
 {
@@ -37,6 +37,7 @@ typedef enum {
 @property (nonatomic, strong) NSString *url;
 @property (nonatomic, assign) AwfulPageDestinationType destinationType;
 @property (nonatomic, strong) IBOutlet JSBridgeWebView *webView;
+@property (nonatomic, strong) JSBridgeWebView *nextPageWebView;
 @property (nonatomic, strong) IBOutlet UIToolbar *toolbar;
 
 @property BOOL isBookmarked;
@@ -60,7 +61,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL draggingUp;
 @property (nonatomic, assign) BOOL isFullScreen;
 
-@property (nonatomic, strong) AwfulPullToNavigateView* pullToNavigateView;
+@property (nonatomic, strong) AwfulLoadingFooterView* pullToNavigateView;
 
 -(IBAction)hardRefresh;
 -(void)setThreadTitle : (NSString *)in_title;
@@ -97,7 +98,7 @@ typedef enum {
 -(void)hidePageNavigation;
 
 
--(void) awfulFooterDidTriggerLoad:(AwfulPullToNavigateView*)pullToNavigate;
+-(void) awfulFooterDidTriggerLoad:(AwfulLoadingFooterView*)pullToNavigate;
 
 @end
 

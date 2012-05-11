@@ -28,7 +28,7 @@
 #import "MWPhotoBrowser.h"
 #import "OtherWebController.h"
 #import "AwfulUtil.h"
-#import "AwfulPullToNavigateView.h"
+#import "AwfulLoadingFooterView.h"
 
 @implementation AwfulPage
 
@@ -37,6 +37,7 @@
 @synthesize threadID = _threadID;
 @synthesize url = _url;
 @synthesize webView = _webView;
+@synthesize nextPageWebView = _nextPageWebView;
 @synthesize toolbar = _toolbar;
 @synthesize isBookmarked = _isBookmarked;
 @synthesize pages = _pages;
@@ -62,6 +63,18 @@
     self.actionsSegmentedControl.action = @selector(tappedActionsSegment:);
     self.pagesSegmentedControl.action = @selector(tappedPagesSegment:);
     self.webView.scrollView.delegate = self;
+    self.view.backgroundColor = [UIColor underPageBackgroundColor];
+    
+    if (!self.pullToNavigateView) {
+        self.pullToNavigateView = [AwfulLoadingFooterView new];
+    }
+    self.pullToNavigateView.delegate = self;
+    [self.pullToNavigateView setupInView:self.webView.scrollView];
+    
+    CGRect frame = self.webView.frame;
+    frame.origin.y = frame.size.height;
+    self.nextPageWebView = [JSBridgeWebView new];
+    self.nextPageWebView.frame = frame;
 }
 
 - (AwfulThread *) thread
@@ -136,7 +149,7 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:AwfulNotifThreadUpdated object:self.thread];
         
         NSString *html = [dataController constructedPageHTML];
-        [self.webView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
+        [self.nextPageWebView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
     }
 }
 
@@ -204,8 +217,10 @@
     [self swapToStopButton];
     [self hidePageNavigation];
     if(pageNum != 0) {
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
-        hud.labelText = [NSString stringWithFormat:@"Loading Page %d", pageNum];
+        //MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
+        //hud.labelText = [NSString stringWithFormat:@"Loading Page %d", pageNum];
+        self.pullToNavigateView.state = EGOOPullRefreshLoading;
+        //self.pullToNavigateView.statusLabel = [NSString stringWithFormat:@"Loading Page %d", pageNum];
     }
     
     AwfulThread *myThread = self.thread;
@@ -217,7 +232,27 @@
         }
         [self updatePagesLabel];
         [self swapToRefreshButton];
-        [MBProgressHUD hideHUDForView:self.view animated:NO];
+        //[MBProgressHUD hideHUDForView:self.view animated:NO];
+        
+        
+        [self.view addSubview:self.nextPageWebView];
+        [UIView animateWithDuration:.5 
+                              delay:0 
+                            options:(UIViewAnimationOptionCurveEaseIn) 
+                         animations:^{
+                             self.nextPageWebView.frame = self.webView.frame;
+                             self.webView.foY = -self.webView.fsH;
+                         }
+                          completion:^(BOOL finished) {
+                              self.webView = self.nextPageWebView;
+                              [self.pullToNavigateView setupInView:self.webView.scrollView];
+                              
+                              self.nextPageWebView = [JSBridgeWebView new];
+                              self.nextPageWebView.frame = self.webView.frame;
+                              self.nextPageWebView.foY = self.nextPageWebView.fsH;
+                         }
+         ];
+        
     } onError:^(NSError *error) {
         [self swapToRefreshButton];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
@@ -622,17 +657,12 @@
         }
     }
     
-    if (!self.pullToNavigateView) {
-        self.pullToNavigateView = [[AwfulPullToNavigateView alloc] initWithFrame:CGRectMake(0, self.webView.scrollView.contentSize.height, self.view.frame.size.width, 65.0f)];
-        
-        self.pullToNavigateView.backgroundColor = [UIColor cyanColor];
-        [self.webView.scrollView addSubview:self.pullToNavigateView];
-        self.webView.scrollView.delegate = self;
-        self.pullToNavigateView.delegate = self;
-    }
+    [self.pullToNavigateView setupInView:self.webView.scrollView];
+
+    
 }
 
--(void) awfulFooterDidTriggerLoad:(AwfulPullToNavigateView*)pullToNavigate {
+-(void) awfulFooterDidTriggerLoad:(AwfulLoadingFooterView*)pullToNavigate {
     [self tappedNextPage:nil];
 }
 

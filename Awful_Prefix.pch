@@ -9,4 +9,5 @@
     #import "AwfulAppDelegate.h"
     #import <CoreData/CoreData.h>
     #import "TestFlight.h"
+#import "UIView+Lazy.h"
 #endif
