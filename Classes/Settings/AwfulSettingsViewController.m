@@ -55,12 +55,6 @@
     }
 }
 
--(void)finishedRefreshing
-{
-    [super finishedRefreshing];
-    [self swapToRefreshButton];
-}
-
 -(BOOL)canPullToRefresh
 {
     return NO;
@@ -69,7 +63,6 @@
 - (void)refresh
 {
     [super refresh];
-    [self swapToStopButton];
     [self.networkOperation cancel];
     self.networkOperation = [ApplicationDelegate.awfulNetworkEngine userInfoRequestOnCompletion:^(AwfulUser *user) {
         self.user = user;

@@ -306,13 +306,7 @@
                             <outlet property="delegate" destination="BZz-jf-x9i" id="dFw-AW-Lz9"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Settings" id="1YP-no-M20">
-                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="3Oc-Fj-z5H">
-                            <connections>
-                                <action selector="refresh" destination="BZz-jf-x9i" id="kmf-PP-vbG"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Settings" id="1YP-no-M20"/>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackTranslucent"/>
                     <connections>
                         <segue destination="COB-dx-4ZV" kind="modal" identifier="Login" id="aZH-ZJ-dej"/>

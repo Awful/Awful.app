@@ -722,13 +722,7 @@
                             <outlet property="delegate" destination="laB-BL-3ba" id="JlB-Eu-Lsd"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Settings" id="3Ko-bV-9vA">
-                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="ntf-bR-w4n">
-                            <connections>
-                                <action selector="refresh" destination="laB-BL-3ba" id="GiH-Zb-2AL"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Settings" id="3Ko-bV-9vA"/>
                     <connections>
                         <segue destination="pJp-wL-ZkG" kind="modal" identifier="Login" id="qQ5-kQ-un6"/>
                     </connections>
