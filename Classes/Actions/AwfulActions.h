@@ -12,10 +12,12 @@
 
 @property (nonatomic, strong) NSMutableArray *titles;
 @property (nonatomic, weak) UIViewController *viewController;
+@property (readonly, strong, nonatomic) UIActionSheet *actionSheet;
+@property (readonly, nonatomic) NSString *overallTitle;
 
--(void)show;
-- (UIActionSheet *) getActionSheet;
--(NSString *)getOverallTitle;
--(BOOL)isCancelled : (int)index;
+- (void)showFromToolbar:(UIToolbar *)toolbar;
+- (void)showFromRect:(CGRect)rect inView:(UIView *)view animated:(BOOL)animated;
+
+- (BOOL)isCancelled : (int)index;
 
 @end

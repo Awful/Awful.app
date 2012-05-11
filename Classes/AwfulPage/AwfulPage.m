@@ -36,7 +36,6 @@
 @synthesize threadID = _threadID;
 @synthesize url = _url;
 @synthesize webView = _webView;
-@synthesize toolbar = _toolbar;
 @synthesize isBookmarked = _isBookmarked;
 @synthesize pages = _pages;
 @synthesize shouldScrollToBottom = _shouldScrollToBottom;
@@ -417,8 +416,8 @@
 
 -(IBAction)tappedActions:(id)sender
 {
-    AwfulThreadActions *actions = [[AwfulThreadActions alloc] initWithThread:self.thread];
-    self.actions = actions;
+    self.actions = [[AwfulThreadActions alloc] initWithThread:self.thread];
+    [self.actions showFromToolbar:self.navigationController.toolbar];
 }
 
 -(void)tappedPageNav : (id)sender
@@ -503,7 +502,7 @@
         }
     }
     self.actions.viewController = self;
-    [self.actions show];
+    [self.actions showFromToolbar:self.navigationController.toolbar];
 }
 
 #pragma mark - JSBBridgeWebDelegate
@@ -762,7 +761,7 @@
     if (!self.actions)
         return;
     self.actions.viewController = self;
-    UIActionSheet *sheet = [self.actions getActionSheet];
+    UIActionSheet *sheet = self.actions.actionSheet;
     CGRect buttonRect = rect;
     if ([self.actions isKindOfClass:[AwfulThreadActions class]] || [self.actions isKindOfClass:[AwfulVoteActions class]])
     {

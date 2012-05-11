@@ -36,7 +36,6 @@ typedef enum {
 @property (nonatomic, strong) NSString *url;
 @property (nonatomic, assign) AwfulPageDestinationType destinationType;
 @property (nonatomic, strong) IBOutlet JSBridgeWebView *webView;
-@property (nonatomic, strong) IBOutlet UIToolbar *toolbar;
 
 @property BOOL isBookmarked;
 @property BOOL shouldScrollToBottom;
