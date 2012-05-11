@@ -33,6 +33,7 @@
              ];
     
     self.tableView.tableHeaderView = self.searchBar;
+    imagesToCache = [NSMutableArray new];
 }
 
 - (void)viewDidLoad
@@ -57,7 +58,7 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+    NSLog(@"get cell %d", indexPath.row);
     UITableViewCell *cell;
     NSManagedObject *obj = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
@@ -85,19 +86,19 @@
                                                                                                 inSection:0]];
         [emotes addObject:emote];
         
-        /*
-        if (!emote.cached) {
+        
+        if (!emote.cached && [imagesToCache indexOfObject:emote] == NSNotFound) {
             NSLog(@"loading emote %@", emote.code);
-            
+            [imagesToCache addObject:emote];
             [ApplicationDelegate.awfulNetworkEngine cacheImage:emote 
                                                   onCompletion:^{
-                                                      [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] 
-                                                                            withRowAnimation:(UITableViewRowAnimationFade)];
+                                                      //[self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] 
+                                                        //                    withRowAnimation:(UITableViewRowAnimationFade)];
                                                   } 
                                                        onError:nil];
              
         }
-        */
+        
     }
     
     [gridCell setContent:emotes];

@@ -10,7 +10,7 @@
 
 #import "AwfulTableViewCellEmoticonMultiple.h"
 #import "AwfulEmote.h"
-//#import "AnimatedGif.h"
+#import "UIImageView+AnimatedGif.h"
 
 @implementation AwfulTableViewCellEmoticonMultiple
 @synthesize showCodes = _showCodes;
@@ -75,7 +75,7 @@
     
     
     if (emote.imageData != nil) {
-        iv.image = [UIImage imageWithData:emote.imageData];
+        iv.awfulImage = emote;
     }
     
     iv.frame = self.showCodes? CGRectMake(0,1,100,26) : CGRectMake(0,1,100,42) ;

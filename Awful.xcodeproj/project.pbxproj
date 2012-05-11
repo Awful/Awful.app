@@ -428,6 +428,8 @@
 		8C7CAC99155AE48F00CF6792 /* emot-f5.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C7CAC97155AE48F00CF6792 /* emot-f5.gif */; };
 		8C7CAC9A155AE48F00CF6792 /* emot-flashfap.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C7CAC98155AE48F00CF6792 /* emot-flashfap.gif */; };
 		8C7CADA9155AFA5500CF6792 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C7CADA8155AFA5500CF6792 /* ImageIO.framework */; };
+		8C9BEE96155DBFCA00B64CAE /* AnimatedGif.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C9BEE95155DBFCA00B64CAE /* AnimatedGif.m */; };
+		8C9BEE9A155DC0DC00B64CAE /* UIImageView+AnimatedGif.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C9BEE99155DC0DC00B64CAE /* UIImageView+AnimatedGif.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -971,6 +973,10 @@
 		8C7CAC97155AE48F00CF6792 /* emot-f5.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "emot-f5.gif"; sourceTree = "<group>"; };
 		8C7CAC98155AE48F00CF6792 /* emot-flashfap.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "emot-flashfap.gif"; sourceTree = "<group>"; };
 		8C7CADA8155AFA5500CF6792 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		8C9BEE94155DBFCA00B64CAE /* AnimatedGif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimatedGif.h; sourceTree = "<group>"; };
+		8C9BEE95155DBFCA00B64CAE /* AnimatedGif.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnimatedGif.m; sourceTree = "<group>"; };
+		8C9BEE98155DC0DC00B64CAE /* UIImageView+AnimatedGif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+AnimatedGif.h"; sourceTree = "<group>"; };
+		8C9BEE99155DC0DC00B64CAE /* UIImageView+AnimatedGif.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+AnimatedGif.m"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Awful-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Awful-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1390,6 +1396,8 @@
 		1190F70B13BE4EA900B9D271 /* Extras */ = {
 			isa = PBXGroup;
 			children = (
+				8C9BEE98155DC0DC00B64CAE /* UIImageView+AnimatedGif.h */,
+				8C9BEE99155DC0DC00B64CAE /* UIImageView+AnimatedGif.m */,
 				11FDA297151018740014FDCD /* OtherWebController.h */,
 				11FDA298151018740014FDCD /* OtherWebController.m */,
 				11CED26A1522901100E95EE1 /* ButtonSegmentedControl.h */,
@@ -1467,6 +1475,7 @@
 		1190F76913BE4ECB00B9D271 /* 3rd Party Sources */ = {
 			isa = PBXGroup;
 			children = (
+				8C9BEE93155DBFCA00B64CAE /* AnimatedGif */,
 				11D470111547A97A004D800B /* TestFlightSDK1 */,
 				11FE9E22153CFC6F002EE2B5 /* MKNetworkKit */,
 				1190F76A13BE4ECB00B9D271 /* Appirater */,
@@ -1893,6 +1902,15 @@
 				8C7CAC8D15582E1400CF6792 /* AwfulPostComposerView.m */,
 			);
 			name = Compose;
+			sourceTree = "<group>";
+		};
+		8C9BEE93155DBFCA00B64CAE /* AnimatedGif */ = {
+			isa = PBXGroup;
+			children = (
+				8C9BEE94155DBFCA00B64CAE /* AnimatedGif.h */,
+				8C9BEE95155DBFCA00B64CAE /* AnimatedGif.m */,
+			);
+			path = AnimatedGif;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2366,6 +2384,8 @@
 				8C7CAC8E15582E1400CF6792 /* AwfulPostComposerView.m in Sources */,
 				8C7CAC911558634100CF6792 /* AwfulEmote+AwfulMethods.m in Sources */,
 				8C7CAC941558696D00CF6792 /* AwfulFetchedTableViewController.m in Sources */,
+				8C9BEE96155DBFCA00B64CAE /* AnimatedGif.m in Sources */,
+				8C9BEE9A155DC0DC00B64CAE /* UIImageView+AnimatedGif.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -10,11 +10,10 @@
 
 @interface AwfulEmoteChooser : AwfulFetchedTableViewController <UISearchBarDelegate> {
     int _numIconsPerRow;
+    NSMutableArray* imagesToCache;
 }
 
 @property (nonatomic, strong) IBOutlet UISearchBar* searchBar;
 
-
-- (NSFetchedResultsController *)fetchedResultsControllerForTableView:(UITableView *)tableView;
 
 @end
