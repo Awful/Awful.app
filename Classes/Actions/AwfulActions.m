@@ -22,30 +22,43 @@
     return self;
 }
 
--(NSString *)getOverallTitle
+-(NSString *)overallTitle
 {
     return @"Actions";
 }
 
--(void)show
+- (void)showFromToolbar:(UIToolbar *)toolbar
 {
-    [[self getActionSheet] showFromToolbar:self.viewController.navigationController.toolbar];
+    [self.actionSheet showFromToolbar:toolbar];
 }
 
-- (UIActionSheet *) getActionSheet
+- (void)showFromRect:(CGRect)rect inView:(UIView *)view animated:(BOOL)animated
 {
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[self getOverallTitle] delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-    for(NSString *title in self.titles) {
-        [sheet addButtonWithTitle:title];
+    [self.actionSheet showFromRect:rect inView:view animated:animated];
+}
+
+@synthesize actionSheet = _actionSheet;
+
+- (UIActionSheet *)actionSheet
+{
+    if (_actionSheet)
+        return _actionSheet;
+    _actionSheet = [[UIActionSheet alloc] initWithTitle:self.overallTitle
+                                               delegate:self
+                                      cancelButtonTitle:nil
+                                 destructiveButtonTitle:nil
+                                      otherButtonTitles:nil];
+    for (NSString *title in self.titles) {
+        [_actionSheet addButtonWithTitle:title];
     }
-    [sheet addButtonWithTitle:@"Cancel"];
-    sheet.cancelButtonIndex = [self.titles count];
-    
-    return sheet;
+    [_actionSheet addButtonWithTitle:@"Cancel"];
+    _actionSheet.cancelButtonIndex = [self.titles count];
+    return _actionSheet;
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
+    
 }
 
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex

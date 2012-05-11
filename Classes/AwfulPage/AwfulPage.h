@@ -32,10 +32,10 @@ typedef enum {
 }
 
 @property (nonatomic, strong) AwfulThread *thread;
+@property (nonatomic, strong) NSString *threadID;
 @property (nonatomic, strong) NSString *url;
 @property (nonatomic, assign) AwfulPageDestinationType destinationType;
 @property (nonatomic, strong) IBOutlet JSBridgeWebView *webView;
-@property (nonatomic, strong) IBOutlet UIToolbar *toolbar;
 
 @property BOOL isBookmarked;
 @property BOOL shouldScrollToBottom;
@@ -77,7 +77,7 @@ typedef enum {
 -(void)stop;
 
 -(void)scrollToSpecifiedPost;
--(void)showActions:(NSString *)post_id;
+- (void)showActions:(NSString *)post_id fromRect:(CGRect)rect;
 -(void)setWebView : (JSBridgeWebView *)webView;
 -(void)loadOlderPosts;
 -(void)nextPage;

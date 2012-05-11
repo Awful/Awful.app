@@ -30,16 +30,18 @@
     self.title = @"Bookmarks";
 }
 
-#pragma mark -
-#pragma mark View lifecycle
+#pragma mark - View lifecycle
 
--(void)viewDidLoad {
+-(void)viewDidLoad
+{
     [super viewDidLoad];
     
-    // moving the auto refresh to viewWillAppear, because bookmarks get loaded right away because of the tabbarcontroller, even if the user isn't looking at them
-    self.navigationItem.leftBarButtonItem = self.editButtonItem;
+    self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
-    UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"bookmarks.png"] style:UIBarButtonItemStyleBordered target:nil action:nil];
+    UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"bookmarks.png"]
+                                                             style:UIBarButtonItemStyleBordered
+                                                            target:nil
+                                                            action:nil];
     self.navigationItem.backBarButtonItem = back;
 }
 
@@ -59,7 +61,7 @@
     [super viewWillDisappear:animated];
 }
 
--(void)awfulThreadUpdated : (NSNotification *)notif
+-(void)awfulThreadUpdated:(NSNotification *)notif
 {
     [super awfulThreadUpdated:notif];
     
