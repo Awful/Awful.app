@@ -27,6 +27,7 @@
 -(AwfulPost *)parsePost : (TFHpple *)parser;
 -(NSUInteger)parseNewPostIndex : (NSURL *)pageURL;
 -(NSString *)parseUserAdHTML : (TFHpple *)parser;
+- (BOOL)parseBookmarked:(TFHpple *)parser;
 
 @property (readonly, nonatomic) AwfulPageTemplate *template;
 
@@ -37,6 +38,7 @@
 @synthesize threadTitle = _threadTitle, forum = _forum;
 @synthesize pageCount = _pageCount, posts = _posts;
 @synthesize newestPostIndex = _newestPostIndex, userAd = _userAd;
+@synthesize bookmarked = _bookmarked;
 
 -(id)initWithResponseData : (NSData *)responseData pageURL : (NSURL *)pageURL
 {
@@ -53,6 +55,7 @@
         _posts = [self parsePosts:page_parser];
         _newestPostIndex = [self parseNewPostIndex:pageURL];
         _userAd = [self parseUserAdHTML:page_parser];
+        _bookmarked = [self parseBookmarked:page_parser];
     }
     return self;
 }
@@ -256,6 +259,12 @@
     }
     
     return @"";
+}
+
+- (BOOL)parseBookmarked:(TFHpple *)parser
+{
+    TFHppleElement *markButton = [parser searchForSingle:@"//img[@id='button_bookmark']"];
+    return [[markButton.attributes objectForKey:@"class"] isEqualToString:@"unbookmark"];
 }
 
 @synthesize template = _template;

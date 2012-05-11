@@ -211,6 +211,7 @@
             self.pages.currentPage = pageNum;
         }
         [self updatePagesLabel];
+        [self updateBookmarked];
         [self swapToRefreshButton];
         [MBProgressHUD hideHUDForView:self.view animated:NO];
     } onError:^(NSError *error) {
@@ -228,6 +229,7 @@
     self.networkOperation = [ApplicationDelegate.awfulNetworkEngine pageDataForThread:self.thread destinationType:AwfulPageDestinationTypeLast pageNum:0 onCompletion:^(AwfulPageDataController *dataController) {
         self.dataController = dataController;
         [self updatePagesLabel];
+        [self updateBookmarked];
         [self swapToRefreshButton];
     } onError:^(NSError *error) {
         [self swapToRefreshButton];
@@ -362,6 +364,11 @@
     } else {
         [self.pagesSegmentedControl setEnabled:YES forSegmentAtIndex:0];
     }
+}
+
+- (void)updateBookmarked
+{
+    [self.thread setIsBookmarked:[NSNumber numberWithBool:self.dataController.bookmarked]];
 }
 
 -(IBAction)segmentedGotTapped : (id)sender
