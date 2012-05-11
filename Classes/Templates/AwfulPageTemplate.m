@@ -185,6 +185,8 @@
         _javascripts = [NSArray arrayWithObjects:
                         [NSString awful_stringResource:@"jquery" withExtension:@"js"],
                         [NSString awful_stringResource:@"salr" withExtension:@"js"],
+                        [NSString awful_stringResource:@"ObjCBridge" withExtension:@"js"],
+                        [NSString awful_stringResource:@"awful" withExtension:@"js"],
                         nil];
     }
     return _javascripts;
