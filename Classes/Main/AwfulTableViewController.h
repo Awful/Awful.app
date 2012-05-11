@@ -21,7 +21,5 @@
 
 // Subclasses can implement to override the default behaviour of YES.
 - (BOOL)canPullToRefresh;
--(void)swapToRefreshButton;
--(void)swapToStopButton;
 
 @end
