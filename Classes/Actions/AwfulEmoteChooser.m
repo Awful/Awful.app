@@ -58,7 +58,6 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"get cell %d", indexPath.row);
     UITableViewCell *cell;
     NSManagedObject *obj = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
@@ -78,17 +77,20 @@
 
 - (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath {
     AwfulTableViewCellEmoticonMultiple *gridCell = (AwfulTableViewCellEmoticonMultiple*)cell;
+    //NSLog(@"config cell %d", indexPath.row);
     
     NSMutableArray *emotes = [NSMutableArray new];
     
     for(int x = indexPath.row * _numIconsPerRow; x< (indexPath.row * _numIconsPerRow) + (_numIconsPerRow); x++) {
+        //NSLog(@"load index %d", x);
         AwfulEmote *emote = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:x 
                                                                                                 inSection:0]];
+        
         [emotes addObject:emote];
         
         
         if (!emote.cached && [imagesToCache indexOfObject:emote] == NSNotFound) {
-            NSLog(@"loading emote %@", emote.code);
+            //NSLog(@"loading emote %@", emote.code);
             [imagesToCache addObject:emote];
             [ApplicationDelegate.awfulNetworkEngine cacheImage:emote 
                                                   onCompletion:^{
@@ -151,6 +153,16 @@
     
     [self.fetchedResultsController performFetch:nil];
     [self.tableView reloadData];
+}
+
+#pragma mark fetchedresultscontroller
+//got to override this because there's multiple emotes per row
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+    
+    NSIndexPath* calculatedPath = [NSIndexPath indexPathForRow:(indexPath.row/_numIconsPerRow) inSection:0];
+    
+    [super controller:controller didChangeObject:anObject atIndexPath:calculatedPath forChangeType:type newIndexPath:calculatedPath];
 }
 
 
