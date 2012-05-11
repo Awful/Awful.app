@@ -317,11 +317,19 @@ function tappedOlderPosts()
     obj.sendBridgeObject();
 }
 
-function tappedPost(postid)
+function tappedPost(postid, el)
 {
     var obj = new JSBridgeObj();
     obj.addObject("action", "postOptions");
     obj.addObject("postid", postid);
+    if (el) {
+        var offset = $(el).offset();
+        var scroll = { left: $(window).scrollLeft(), top: $(window).scrollTop() };
+        var position = { left: offset.left - scroll.left, top: offset.top - scroll.top };
+        var origin = "{" + position.left + "," + position.top + "}";
+        var size = "{" + $(el).width() + "," + $(el).height() + "}";
+        obj.addObject("rect", "{" + origin + "," + size + "}");
+    }
     obj.sendBridgeObject();
 }
 

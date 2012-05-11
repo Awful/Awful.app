@@ -44,6 +44,9 @@
         UITabBarController *tabBar = (UITabBarController *)self.window.rootViewController;
         if(!IsLoggedIn()) {
             tabBar.selectedIndex = 3;
+        } else {
+            AwfulFirstTab tab = [[AwfulSettings settings] firstTab];
+            tabBar.selectedIndex = tab;
         }
     }
     

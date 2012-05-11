@@ -91,7 +91,6 @@ typedef enum {
 -(void)refresh
 {   
     [super refresh];
-    [self swapToStopButton];
     [self loadPageNum:1];
 }
 
@@ -104,7 +103,6 @@ typedef enum {
 -(void)finishedRefreshing
 {
     [super finishedRefreshing];
-    [self swapToRefreshButton];
     self.isLoading = NO;
 }
 

@@ -52,8 +52,8 @@
     if(!ok) {
         NSLog(@"error fetching favorites: %@", error);
     }
-    self.navigationItem.leftBarButtonItem = self.editButtonItem;
-    self.navigationItem.rightBarButtonItem = self.addButtonItem;
+    self.navigationItem.leftBarButtonItem = self.addButtonItem;
+    self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)viewWillAppear:(BOOL)animated

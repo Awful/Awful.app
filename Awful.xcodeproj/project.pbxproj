@@ -339,6 +339,10 @@
 		11D7CB9514EA0867000DA96A /* repeat.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D7CB9014EA0867000DA96A /* repeat.png */; };
 		11D7CB9614EA0867000DA96A /* school.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D7CB9114EA0867000DA96A /* school.png */; };
 		11D7CB9814EA0CED000DA96A /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 11D7CB9714EA0CED000DA96A /* MainStoryboard.storyboard */; };
+		11DA5611155C9E980058C8BD /* coc-db.png in Resources */ = {isa = PBXBuildFile; fileRef = 11DA560D155C9E980058C8BD /* coc-db.png */; };
+		11DA5612155C9E980058C8BD /* icon-60-pig.png in Resources */ = {isa = PBXBuildFile; fileRef = 11DA560E155C9E980058C8BD /* icon-60-pig.png */; };
+		11DA5613155C9E980058C8BD /* LF-fuckshitdamntag2.png in Resources */ = {isa = PBXBuildFile; fileRef = 11DA560F155C9E980058C8BD /* LF-fuckshitdamntag2.png */; };
+		11DA5614155C9E980058C8BD /* yospos-janitor.png in Resources */ = {isa = PBXBuildFile; fileRef = 11DA5610155C9E980058C8BD /* yospos-janitor.png */; };
 		11DFB44214FF1CBB0001A34C /* AwfulTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DFB44114FF1CBB0001A34C /* AwfulTableViewController.m */; };
 		11E53666151E8AB600EA74EA /* reply.png in Resources */ = {isa = PBXBuildFile; fileRef = 11E53664151E8AB600EA74EA /* reply.png */; };
 		11E53667151E8AB600EA74EA /* reply@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11E53665151E8AB600EA74EA /* reply@2x.png */; };
@@ -828,6 +832,10 @@
 		11D7CB9014EA0867000DA96A /* repeat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = repeat.png; sourceTree = "<group>"; };
 		11D7CB9114EA0867000DA96A /* school.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = school.png; sourceTree = "<group>"; };
 		11D7CB9714EA0CED000DA96A /* MainStoryboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MainStoryboard.storyboard; sourceTree = SOURCE_ROOT; };
+		11DA560D155C9E980058C8BD /* coc-db.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "coc-db.png"; sourceTree = "<group>"; };
+		11DA560E155C9E980058C8BD /* icon-60-pig.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-60-pig.png"; sourceTree = "<group>"; };
+		11DA560F155C9E980058C8BD /* LF-fuckshitdamntag2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LF-fuckshitdamntag2.png"; sourceTree = "<group>"; };
+		11DA5610155C9E980058C8BD /* yospos-janitor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yospos-janitor.png"; sourceTree = "<group>"; };
 		11DFB44014FF1CBB0001A34C /* AwfulTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTableViewController.h; sourceTree = "<group>"; };
 		11DFB44114FF1CBB0001A34C /* AwfulTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTableViewController.m; sourceTree = "<group>"; };
 		11E53664151E8AB600EA74EA /* reply.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = reply.png; path = images/reply.png; sourceTree = "<group>"; };
@@ -1105,6 +1113,10 @@
 		112ECF0F14D7100A007EE7B6 /* threadtags */ = {
 			isa = PBXGroup;
 			children = (
+				11DA560D155C9E980058C8BD /* coc-db.png */,
+				11DA560E155C9E980058C8BD /* icon-60-pig.png */,
+				11DA560F155C9E980058C8BD /* LF-fuckshitdamntag2.png */,
+				11DA5610155C9E980058C8BD /* yospos-janitor.png */,
 				1182A3BC15509167005BBBF9 /* ama-secondary.png */,
 				1182A3BD15509167005BBBF9 /* tma-secondary.png */,
 				1182A3B415509060005BBBF9 /* icon-37-selling-secondary.png */,
@@ -2274,6 +2286,10 @@
 				8C70A4011556CCB60009B3D1 /* smile.gif in Resources */,
 				8C7CAC99155AE48F00CF6792 /* emot-f5.gif in Resources */,
 				8C7CAC9A155AE48F00CF6792 /* emot-flashfap.gif in Resources */,
+				11DA5611155C9E980058C8BD /* coc-db.png in Resources */,
+				11DA5612155C9E980058C8BD /* icon-60-pig.png in Resources */,
+				11DA5613155C9E980058C8BD /* LF-fuckshitdamntag2.png in Resources */,
+				11DA5614155C9E980058C8BD /* yospos-janitor.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

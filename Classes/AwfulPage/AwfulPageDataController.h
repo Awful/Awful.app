@@ -19,6 +19,7 @@
 @property (nonatomic, strong) NSMutableArray *posts;
 @property (nonatomic, assign) NSUInteger newestPostIndex;
 @property (nonatomic, strong) NSString *userAd;
+@property (assign, getter = isBookmarked) BOOL bookmarked;
 
 -(id)initWithResponseData : (NSData *)responseData pageURL : (NSURL *)pageURL;
 -(NSString *)constructedPageHTML;

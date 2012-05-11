@@ -8,6 +8,7 @@
 
 #import "AwfulSplitViewController.h"
 #import "AwfulLoginController.h"
+#import "AwfulSettings.h"
 
 @implementation AwfulSplitViewController
 @synthesize popoverController, rootPopoverButtonItem;
@@ -19,6 +20,9 @@
     UITabBarController *tbc =  [self.viewControllers objectAtIndex:0];
     if (!IsLoggedIn()) {
         tbc.selectedIndex = 3;
+    } else {
+        AwfulFirstTab tab = [[AwfulSettings settings] firstTab];
+        tbc.selectedIndex = tab;
     }
 }
 
