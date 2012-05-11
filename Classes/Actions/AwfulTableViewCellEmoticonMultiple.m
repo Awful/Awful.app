@@ -13,6 +13,7 @@
 //#import "AnimatedGif.h"
 
 @implementation AwfulTableViewCellEmoticonMultiple
+@synthesize showCodes = _showCodes;
 
 -(void) setContent:(NSArray*)emotes {
     for(UIView* v in _emoteViews) {
@@ -41,6 +42,16 @@
     for(UIView* v in _emoteViews) {
         v.frame = CGRectMake((101*i), 1, 100, 44);
         [self addSubview:v];
+        
+        for (UIView* sub in v.subviews) {
+            if (sub.tag == 1) { //label
+                sub.hidden = !self.showCodes;
+            }
+            else { //image
+                sub.frame = self.showCodes? CGRectMake(0,1,100,26) : CGRectMake(0,1,100,42) ;
+            }
+        }
+        
         //v.foX = v.foX + (150*i);
         i++;
     }
@@ -54,11 +65,12 @@
     l.text = emote.code;
     l.textAlignment = UITextAlignmentCenter;
     l.adjustsFontSizeToFitWidth = YES;
-    
+    l.tag = 1;
     
     [v addSubview:l];
     
     UIImageView *iv = [UIImageView new];
+    iv.tag = 2;
     iv.backgroundColor = [UIColor whiteColor];
     
     
@@ -66,7 +78,7 @@
         iv.image = [UIImage imageWithData:emote.imageData];
     }
     
-    iv.frame = CGRectMake(0,1,100,26);
+    iv.frame = self.showCodes? CGRectMake(0,1,100,26) : CGRectMake(0,1,100,42) ;
     iv.contentMode = UIViewContentModeCenter;
     
     [v addSubview:iv];

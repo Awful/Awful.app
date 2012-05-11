@@ -12,5 +12,7 @@
     NSMutableArray *_emoteViews;
 }
 
+@property (nonatomic) BOOL showCodes;
+
 -(void) setContent:(NSArray*)emotes;
 @end

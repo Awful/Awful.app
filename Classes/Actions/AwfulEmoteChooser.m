@@ -85,6 +85,7 @@
                                                                                                 inSection:0]];
         [emotes addObject:emote];
         
+        /*
         if (!emote.cached) {
             NSLog(@"loading emote %@", emote.code);
             
@@ -96,10 +97,11 @@
                                                        onError:nil];
              
         }
-        
+        */
     }
     
     [gridCell setContent:emotes];
+    gridCell.showCodes = (self.searchBar.text.length > 0);
 }
 
 
