@@ -78,7 +78,7 @@ typedef enum {
 -(void)stop;
 
 -(void)scrollToSpecifiedPost;
--(void)showActions:(NSString *)post_id;
+- (void)showActions:(NSString *)post_id fromRect:(CGRect)rect;
 -(void)setWebView : (JSBridgeWebView *)webView;
 -(void)loadOlderPosts;
 -(void)nextPage;
