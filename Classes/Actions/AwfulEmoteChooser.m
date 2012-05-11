@@ -53,7 +53,9 @@
     _numIconsPerRow = width/MAX_EMOTE_WIDTH;
     
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:section];
-    return [sectionInfo numberOfObjects]/_numIconsPerRow;
+    
+    int rows = [sectionInfo numberOfObjects]/_numIconsPerRow + 1;
+    return rows;
 }
 
 
@@ -83,6 +85,7 @@
     
     for(int x = indexPath.row * _numIconsPerRow; x< (indexPath.row * _numIconsPerRow) + (_numIconsPerRow); x++) {
         //NSLog(@"load index %d", x);
+        if (x >= self.fetchedResultsController.fetchedObjects.count) continue;
         AwfulEmote *emote = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:x 
                                                                                                 inSection:0]];
         
@@ -152,6 +155,7 @@
     }
     
     [self.fetchedResultsController performFetch:nil];
+    //NSLog(@"Filtering, got %d rows", self.fetchedResultsController.fetchedObjects.count);
     [self.tableView reloadData];
 }
 
