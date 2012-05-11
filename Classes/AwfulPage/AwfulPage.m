@@ -48,7 +48,6 @@
 @synthesize pages = _pages;
 @synthesize shouldScrollToBottom = _shouldScrollToBottom;
 @synthesize postIDScrollDestination = _postIDScrollDestination;
-@synthesize touchedPage = _touchedPage;
 @synthesize specificPageController = _specificPageController;
 @synthesize dataController = _dataController;
 @synthesize networkOperation = _networkOperation;
@@ -530,11 +529,6 @@ pageDidRequestAction:(NSString *)action
     }
 }
 
--(void)didScroll
-{
-    self.touchedPage = YES;
-}
-
 #pragma mark - Gesture Delegate
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
@@ -613,12 +607,10 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 -(void)webViewDidFinishLoad:(UIWebView *)sender
 {
     [self swapToRefreshButton];
-    if(!self.touchedPage) {
-        if(self.postIDScrollDestination != nil) {
-            [self scrollToSpecifiedPost];
-        } else if(self.shouldScrollToBottom) {
-            [self scrollToBottom];
-        }
+    if(self.postIDScrollDestination != nil) {
+        [self scrollToSpecifiedPost];
+    } else if(self.shouldScrollToBottom) {
+        [self scrollToBottom];
     }
 }
 

@@ -39,7 +39,6 @@ typedef enum {
 @property BOOL isBookmarked;
 @property BOOL shouldScrollToBottom;
 @property (nonatomic, strong) NSString *postIDScrollDestination;
-@property BOOL touchedPage;
 
 @property (nonatomic, strong) AwfulActions *actions;
 @property (nonatomic, strong) AwfulPageCount *pages;
