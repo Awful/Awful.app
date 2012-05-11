@@ -10,5 +10,8 @@
 
 @interface AwfulLoadingFooterView : EGORefreshTableHeaderView <UIScrollViewDelegate>
 
--(void) setupInView:(UIScrollView*)scrollView;
+@property (nonatomic,readwrite) BOOL onLastPage;
+@property (nonatomic,strong) UISwitch* autoF5;
+@property (nonatomic,strong) UIScrollView* scrollView;
+
 @end

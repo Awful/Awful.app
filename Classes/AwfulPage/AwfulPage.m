@@ -69,7 +69,7 @@
         self.pullToNavigateView = [AwfulLoadingFooterView new];
     }
     self.pullToNavigateView.delegate = self;
-    [self.pullToNavigateView setupInView:self.webView.scrollView];
+    self.pullToNavigateView.scrollView = self.webView.scrollView;
     
     CGRect frame = self.webView.frame;
     frame.origin.y = frame.size.height;
@@ -246,7 +246,8 @@
                          }
                           completion:^(BOOL finished) {
                               self.webView = self.nextPageWebView;
-                              [self.pullToNavigateView setupInView:self.webView.scrollView];
+                              self.pullToNavigateView.scrollView = self.webView.scrollView;
+                              self.pullToNavigateView.onLastPage = YES;
                               
                               self.nextPageWebView = [JSBridgeWebView new];
                               self.nextPageWebView.frame = self.webView.frame;
@@ -661,7 +662,7 @@
         }
     }
     
-    [self.pullToNavigateView setupInView:self.webView.scrollView];
+    self.pullToNavigateView.scrollView = self.webView.scrollView;
 
     
 }

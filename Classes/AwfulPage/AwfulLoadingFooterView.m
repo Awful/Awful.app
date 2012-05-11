@@ -13,24 +13,65 @@
 
 @implementation AwfulLoadingFooterView
 @synthesize state = _state;
+@synthesize onLastPage = _onLastPage;
+@synthesize scrollView = _scrollView;
+@synthesize autoF5 = _autoF5;
 
 -(id) init {
-    self = [super initWithFrame:CGRectZero];
+    self = [super initWithFrame:CGRectMake(0, 0, 200, 65)];
+    self.autoF5 = [[UISwitch alloc] initWithFrame:CGRectMake(self.fsW - 100,0 , 0, 0)];
+    self.autoF5.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|
+                                    UIViewAutoresizingFlexibleTopMargin|
+                                    UIViewAutoresizingFlexibleBottomMargin;
+    [self addSubview:self.autoF5];
+    
+    self.onLastPage = YES;
     return self;
 }
 
+-(void) setOnLastPage:(BOOL)onLastPage {
+    _onLastPage = onLastPage;
+    
+    if (onLastPage) {
+        self.autoF5.hidden = NO;
+        self.scrollView.contentInset = UIEdgeInsetsMake(0, 0, 65.0f, 0);
+        self.scrollView.delegate = self;
+    }
+    
+    else {
+        self.autoF5.hidden = YES;
+        self.scrollView.contentInset = UIEdgeInsetsZero;
+        self.scrollView.delegate = nil;
+        
+    }
+    
+    
+}
+
+
 #pragma mark ScrollView Methods
 
--(void) setupInView:(UIScrollView *)scrollView {
-    
-    self.backgroundColor = [UIColor cyanColor];
+-(void) setScrollView:(UIScrollView *)scrollView {
+    _scrollView = scrollView;
+    self.backgroundColor = [UIColor lightGrayColor];
+    [self removeFromSuperview];
     [scrollView addSubview:self];
-    scrollView.delegate = self; 
+    
+    scrollView.delegate = self.onLastPage? nil : self; 
     
     self.frame = CGRectMake(0, scrollView.contentSize.height, scrollView.contentSize.width, 65.0f);
+    [self egoRefreshScrollViewDataSourceDidFinishedLoading:scrollView];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    if (self.foY != scrollView.contentSize.height) {
+        //quick position check and reset, it got positioned wrong a few times in testing
+        self.foY = scrollView.contentSize.height;
+    }
+    
+    if (self.onLastPage) return;
+    
     
     CGFloat scrollAmount = scrollView.contentOffset.y + scrollView.frame.size.height;
     CGFloat threshhold = scrollView.contentSize.height + 65.0f;
@@ -39,9 +80,7 @@
     
 	if (self.state == EGOOPullRefreshLoading) {
 		//fixme
-		//CGFloat offset = MAX(scrollView.contentOffset.y, scrollView.contentSize.height);
-		//offset = MIN(offset, 60);
-		//scrollView.contentInset = UIEdgeInsetsMake(offset, 0.0f, 0.0f, 0.0f);
+		scrollView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 65.0f, 0.0f);
 		
 	} else if (scrollView.isDragging) {
 		
@@ -57,7 +96,7 @@
 		}
 		
 		if (scrollView.contentInset.bottom != 0) {
-			scrollView.contentInset = UIEdgeInsetsZero;
+			scrollView.contentInset = self.onLastPage? UIEdgeInsetsMake(0, 0, 65, 0) : UIEdgeInsetsZero;
 		}
 		
 	}
@@ -67,6 +106,7 @@
 -(void) scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate 
 {
 	
+    if (self.onLastPage) return;
 	BOOL _loading = NO;
 	if ([self.delegate respondsToSelector:@selector(egoRefreshTableHeaderDataSourceIsLoading:)]) {
 		_loading = [self.delegate egoRefreshTableHeaderDataSourceIsLoading:self];
@@ -112,24 +152,30 @@
 			
 			break;
 		case EGOOPullRefreshNormal:
-			
-			if (self.state == EGOOPullRefreshPulling) {
-				[CATransaction begin];
-				[CATransaction setAnimationDuration:FLIP_ANIMATION_DURATION];
-				self.arrowImage.transform = CATransform3DIdentity;
-				[CATransaction commit];
-			}
-			
-			self.statusLabel.text = (@"Pull up for next page...");
-			[self.activityView stopAnimating];
-			[CATransaction begin];
-			[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions]; 
-			self.arrowImage.hidden = NO;
-			self.arrowImage.transform = CATransform3DIdentity;
-			[CATransaction commit];
-			
-			[self refreshLastUpdatedDate];
-			
+            if (!self.onLastPage) {
+                if (self.state == EGOOPullRefreshPulling) {
+                    [CATransaction begin];
+                    [CATransaction setAnimationDuration:FLIP_ANIMATION_DURATION];
+                    self.arrowImage.transform = CATransform3DIdentity;
+                    [CATransaction commit];
+                }
+                
+                self.statusLabel.text = (@"Pull up for next page...");
+                [self.activityView stopAnimating];
+                [CATransaction begin];
+                [CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions]; 
+                self.arrowImage.hidden = NO;
+                self.arrowImage.transform = CATransform3DIdentity;
+                [CATransaction commit];
+                
+                [self refreshLastUpdatedDate];
+            }
+            else {
+                self.statusLabel.text = @"End of the Thread";
+                self.autoF5.hidden = NO;
+            }
+            
+            
 			break;
 		case EGOOPullRefreshLoading:
 			
@@ -144,6 +190,7 @@
 		default:
 			break;
 	}
+    
 }
 
 @end
