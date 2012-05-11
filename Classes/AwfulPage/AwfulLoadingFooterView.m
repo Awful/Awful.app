@@ -38,10 +38,10 @@
 	NSLog(@"Scrollview offset:%f vs contentsize:%f", scrollAmount, threshhold);
     
 	if (self.state == EGOOPullRefreshLoading) {
-		
-		CGFloat offset = MAX(scrollView.contentOffset.y, scrollView.contentSize.height);
+		//fixme
+		//CGFloat offset = MAX(scrollView.contentOffset.y, scrollView.contentSize.height);
 		//offset = MIN(offset, 60);
-		scrollView.contentInset = UIEdgeInsetsMake(offset, 0.0f, 0.0f, 0.0f);
+		//scrollView.contentInset = UIEdgeInsetsMake(offset, 0.0f, 0.0f, 0.0f);
 		
 	} else if (scrollView.isDragging) {
 		
