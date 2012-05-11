@@ -8,8 +8,13 @@
 
 #import "AwfulFetchedTableViewController.h"
 
-@interface AwfulEmoteChooser : AwfulFetchedTableViewController {
+@interface AwfulEmoteChooser : AwfulFetchedTableViewController <UISearchBarDelegate> {
     int _numIconsPerRow;
 }
+
+@property (nonatomic, strong) IBOutlet UISearchBar* searchBar;
+
+
+- (NSFetchedResultsController *)fetchedResultsControllerForTableView:(UITableView *)tableView;
 
 @end

@@ -17,6 +17,7 @@
 @end
 
 @implementation AwfulEmoteChooser
+@synthesize searchBar = _searchBar;
 
 -(void) awakeFromNib {
     _entity = @"AwfulEmote";
@@ -30,6 +31,8 @@
               [NSSortDescriptor sortDescriptorWithKey:@"code" ascending:YES]
               ]
              ];
+    
+    self.tableView.tableHeaderView = self.searchBar;
 }
 
 - (void)viewDidLoad
@@ -49,7 +52,6 @@
     _numIconsPerRow = width/MAX_EMOTE_WIDTH;
     
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:section];
-    NSLog(@"row count: %i", [sectionInfo numberOfObjects]/_numIconsPerRow);
     return [sectionInfo numberOfObjects]/_numIconsPerRow;
 }
 
@@ -121,7 +123,7 @@
 }
 
 -(void) tappedCell:(UITapGestureRecognizer *)sender  {
-    AwfulTableViewCellEmoticonMultiple *cell = sender.view;
+    AwfulTableViewCellEmoticonMultiple *cell = (AwfulTableViewCellEmoticonMultiple*)sender.view;
     NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
     CGPoint location = [sender locationInView:sender.view];
     
@@ -134,5 +136,19 @@
     
     [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFY_EMOTE_SELECTED object:selected];
 }
+
+#pragma mark Search Delegate
+-(void) searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    if (searchText.length > 0) {
+        self.fetchedResultsController.fetchRequest.predicate = [NSPredicate predicateWithFormat:@"code contains[cd] %@", searchText];
+    }
+    else {
+        self.fetchedResultsController.fetchRequest.predicate = nil;
+    }
+    
+    [self.fetchedResultsController performFetch:nil];
+    [self.tableView reloadData];
+}
+
 
 @end
