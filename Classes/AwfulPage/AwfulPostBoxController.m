@@ -28,29 +28,28 @@
 @synthesize page = _page;
 @synthesize segmentedControl = _segmentedControl;
 
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
     self.segmentedControl.action = @selector(tappedSegment:);
     
-    if(self.post != nil) {
-        [self.sendButton setTitle:@"Edit"];
-    } else if(self.thread != nil) {
-        [self.sendButton setTitle:@"Reply"];
-    }
-    
-    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-    [nc addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
     self.replyTextView.text = self.startingText;
     [self.replyTextView becomeFirstResponder];
 }
 
-- (void)viewDidUnload {
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    self.sendButton.title = self.post ? @"Save" : @"Reply";
+}
 
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
     self.sendButton = nil;
     self.replyTextView = nil;
     self.segmentedControl = nil;
@@ -64,14 +63,7 @@
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
-- (void)didReceiveMemoryWarning {
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc. that aren't in use.
-}
-
--(void)tappedSegment : (id)sender
+-(void)tappedSegment:(id)sender
 {
     NSString *str = [self.segmentedControl titleForSegmentAtIndex:self.segmentedControl.selectedSegmentIndex];
     [self hitTextBarButtonItem:str];
@@ -132,30 +124,6 @@
 {
     [MBProgressHUD hideHUDForView:self.view animated:NO];
     [self.presentingViewController dismissModalViewControllerAnimated:YES];
-}
-
--(void)setThread:(AwfulThread *)aThread 
-{
-    if(_thread != aThread) {
-        _thread = aThread;
-        
-        if(_thread != nil) {
-            self.post = nil;
-            [self.sendButton setTitle:@"Reply"];
-        }
-    }
-}
-
--(void)setPost : (AwfulPost *)aPost
-{
-    if(_post != aPost) {
-        _post = aPost;
-        
-        if(_post != nil) {
-            self.thread = nil;
-            [self.sendButton setTitle:@"Edit"];
-        }
-    }
 }
 
 -(void)hitSend

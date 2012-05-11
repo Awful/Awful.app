@@ -231,6 +231,7 @@
             self.pages.currentPage = pageNum;
         }
         [self updatePagesLabel];
+        [self updateBookmarked];
         [self swapToRefreshButton];
         //[MBProgressHUD hideHUDForView:self.view animated:NO];
         
@@ -268,6 +269,7 @@
     self.networkOperation = [ApplicationDelegate.awfulNetworkEngine pageDataForThread:self.thread destinationType:AwfulPageDestinationTypeLast pageNum:0 onCompletion:^(AwfulPageDataController *dataController) {
         self.dataController = dataController;
         [self updatePagesLabel];
+        [self updateBookmarked];
         [self swapToRefreshButton];
     } onError:^(NSError *error) {
         [self swapToRefreshButton];
@@ -334,15 +336,6 @@
             [self.navigationController setNavigationBarHidden:NO animated:YES];
             [self.navigationController setToolbarHidden:NO animated:YES];
         }
-    }
-}
-
--(void)setActions:(AwfulActions *)actions
-{
-    if(actions != _actions) {
-        _actions = actions;
-        _actions.viewController = self;
-        [_actions show];
     }
 }
 
@@ -413,6 +406,11 @@
     }
 }
 
+- (void)updateBookmarked
+{
+    [self.thread setIsBookmarked:[NSNumber numberWithBool:self.dataController.bookmarked]];
+}
+
 -(IBAction)segmentedGotTapped : (id)sender
 {
     if(sender == self.actionsSegmentedControl) {
@@ -465,8 +463,8 @@
 
 -(IBAction)tappedActions:(id)sender
 {
-    AwfulThreadActions *actions = [[AwfulThreadActions alloc] initWithThread:self.thread];
-    self.actions = actions;
+    self.actions = [[AwfulThreadActions alloc] initWithThread:self.thread];
+    [self.actions showFromToolbar:self.navigationController.toolbar];
 }
 
 -(void)tappedPageNav : (id)sender
@@ -538,16 +536,20 @@
     }
 }
 
--(void)showActions:(NSString *)post_id
-{    
-    if(![post_id isEqualToString:@""]) {
-        for(AwfulPost *post in self.dataController.posts) {
-            if([post.postID isEqualToString:post_id]) {
-                AwfulPostActions *actions = [[AwfulPostActions alloc] initWithAwfulPost:post page:self];
-                self.actions = actions;
-            }
+-(void)showActions:(NSString *)post_id fromRect:(CGRect)rect
+{
+    self.actions = nil;
+    if (!post_id || post_id.length == 0)
+        return;
+    for (AwfulPost *post in self.dataController.posts) {
+        if([post.postID isEqualToString:post_id]) {
+            self.actions = [[AwfulPostActions alloc] initWithAwfulPost:post
+                                                                  page:self];
+            break;
         }
     }
+    self.actions.viewController = self;
+    [self.actions showFromToolbar:self.navigationController.toolbar];
 }
 
 #pragma mark - JSBBridgeWebDelegate
@@ -561,9 +563,11 @@
         } else if([action isEqualToString:@"loadOlderPosts"]) {
             [self loadOlderPosts];
         } else if([action isEqualToString:@"postOptions"]) {
-            
             NSString *post_id = [dictionary objectForKey:@"postid"];
-            [self showActions:post_id];
+            CGRect rect = CGRectZero;
+            if ([dictionary objectForKey:@"rect"])
+                rect = CGRectFromString([dictionary objectForKey:@"rect"]);
+            [self showActions:post_id fromRect:rect];
         }
     }
 }
@@ -805,28 +809,35 @@
     return YES;
 }
 
--(void)setActions:(AwfulActions *)actions
+- (void)showActions:(NSString *)post_id fromRect:(CGRect)rect
 {
+    self.actions = nil;
+    if (!post_id || post_id.length == 0)
+        return;
+    for (AwfulPost *post in self.dataController.posts) {
+        if([post.postID isEqualToString:post_id]) {
+            self.actions = [[AwfulPostActions alloc] initWithAwfulPost:post
+                                                                  page:self];
+            break;
+        }
+    }
     if(self.popController)
     {
         [self.popController dismissPopoverAnimated:YES];
         self.popController = nil;
     }
-    
-    if(actions != _actions) {
-        _actions = actions;
-        actions.viewController = self;
-        UIActionSheet *sheet = [actions getActionSheet];
-        CGRect buttonRect = CGRectMake(_lastTouch.x, _lastTouch.y, 1, 1);
-        if ([actions isKindOfClass:[AwfulThreadActions class]] || [actions isKindOfClass:[AwfulVoteActions class]])
-        {
-            buttonRect = self.actionsSegmentedControl.frame;
-            buttonRect.origin.y += self.view.frame.size.height;  //Add the height of the view to the button y
-            buttonRect.size.width = buttonRect.size.width / 2;   //Action is the first button, so the width is really only half
-        
-        }
-        [sheet showFromRect:buttonRect inView:self.view animated:YES];
+    if (!self.actions)
+        return;
+    self.actions.viewController = self;
+    UIActionSheet *sheet = self.actions.actionSheet;
+    CGRect buttonRect = rect;
+    if ([self.actions isKindOfClass:[AwfulThreadActions class]] || [self.actions isKindOfClass:[AwfulVoteActions class]])
+    {
+        buttonRect = self.actionsSegmentedControl.frame;
+        buttonRect.origin.y += self.view.frame.size.height;  //Add the height of the view to the button y
+        buttonRect.size.width = buttonRect.size.width / 2;   //Action is the first button, so the width is really only half
     }
+    [sheet showFromRect:buttonRect inView:self.view animated:YES];
 }
 
 -(IBAction)tappedCompose : (id)sender
