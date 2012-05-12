@@ -142,6 +142,8 @@
     AwfulEmote *selected = (AwfulEmote*)[self.fetchedResultsController objectAtIndexPath:emotePath];
     NSLog(@"emote: %@", selected.code);
     
+    [self dismissModalViewControllerAnimated:YES];
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFY_EMOTE_SELECTED object:selected];
 }
 
@@ -157,6 +159,12 @@
     [self.fetchedResultsController performFetch:nil];
     //NSLog(@"Filtering, got %d rows", self.fetchedResultsController.fetchedObjects.count);
     [self.tableView reloadData];
+
+    if (self.fetchedResultsController.fetchedObjects.count < 5) {
+        //notify parent to resize the popover
+        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFY_EMOTE_FILTERED 
+                                                            object:[NSNumber numberWithInt:self.fetchedResultsController.fetchedObjects.count]];
+    }
 }
 
 #pragma mark fetchedresultscontroller
