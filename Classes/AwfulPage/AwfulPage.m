@@ -71,10 +71,11 @@
     self.pullToNavigateView.delegate = self;
     self.pullToNavigateView.scrollView = self.webView.scrollView;
     
-    CGRect frame = self.webView.frame;
-    frame.origin.y = frame.size.height;
-    self.nextPageWebView = [JSBridgeWebView new];
-    self.nextPageWebView.frame = frame;
+    //CGRect frame = self.webView.frame;
+    //frame.origin.y = frame.size.height;
+    
+    //self.nextPageWebView = [JSBridgeWebView new];
+    //self.nextPageWebView.frame = frame;
 }
 
 - (AwfulThread *) thread
@@ -149,8 +150,13 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:AwfulNotifThreadUpdated object:self.thread];
         
         NSString *html = [dataController constructedPageHTML];
-        [self.nextPageWebView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
+        
+        if (self.nextPageWebView)
+            [self.nextPageWebView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
+        else
+            [self.webView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
     }
+    
 }
 
 -(void)setPages:(AwfulPageCount *)in_pages
@@ -235,7 +241,7 @@
         [self swapToRefreshButton];
         //[MBProgressHUD hideHUDForView:self.view animated:NO];
         
-        
+        if (self.nextPageWebView) {
         [self.view addSubview:self.nextPageWebView];
         [UIView animateWithDuration:.5 
                               delay:0 
@@ -254,6 +260,14 @@
                               self.nextPageWebView.foY = self.nextPageWebView.fsH;
                          }
          ];
+            
+        }
+        else {
+            self.nextPageWebView = [JSBridgeWebView new];
+            self.nextPageWebView.delegate = self;
+            self.nextPageWebView.frame = self.webView.frame;
+            self.nextPageWebView.foY = self.nextPageWebView.fsH;
+        }
         
     } onError:^(NSError *error) {
         [self swapToRefreshButton];

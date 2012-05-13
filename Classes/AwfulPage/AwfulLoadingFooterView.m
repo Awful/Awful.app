@@ -25,7 +25,7 @@
                                     UIViewAutoresizingFlexibleBottomMargin;
     [self addSubview:self.autoF5];
     
-    self.onLastPage = YES;
+    //self.onLastPage = YES;
     return self;
 }
 
