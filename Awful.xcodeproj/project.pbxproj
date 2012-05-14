@@ -420,6 +420,8 @@
 		50A8B96F1541D57E0065F3D9 /* ReplyButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A8B96A1541D57E0065F3D9 /* ReplyButton.png */; };
 		50A8B9701541D57E0065F3D9 /* singlePageMovement.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A8B96B1541D57E0065F3D9 /* singlePageMovement.png */; };
 		50A8B9711541D57E0065F3D9 /* ThreadActions.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A8B96C1541D57E0065F3D9 /* ThreadActions.png */; };
+		8C90518C155BEEB40098266A /* AwfulLoadingFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C90518B155BEEB40098266A /* AwfulLoadingFooterView.m */; };
+		8C905197155D6CAD0098266A /* UIView+Lazy.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C905196155D6CAD0098266A /* UIView+Lazy.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -947,6 +949,10 @@
 		50A8B96A1541D57E0065F3D9 /* ReplyButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ReplyButton.png; path = images/help/ReplyButton.png; sourceTree = "<group>"; };
 		50A8B96B1541D57E0065F3D9 /* singlePageMovement.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = singlePageMovement.png; path = images/help/singlePageMovement.png; sourceTree = "<group>"; };
 		50A8B96C1541D57E0065F3D9 /* ThreadActions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ThreadActions.png; path = images/help/ThreadActions.png; sourceTree = "<group>"; };
+		8C90518A155BEEB40098266A /* AwfulLoadingFooterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLoadingFooterView.h; sourceTree = "<group>"; };
+		8C90518B155BEEB40098266A /* AwfulLoadingFooterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLoadingFooterView.m; sourceTree = "<group>"; };
+		8C905195155D6CAD0098266A /* UIView+Lazy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Lazy.h"; sourceTree = "<group>"; };
+		8C905196155D6CAD0098266A /* UIView+Lazy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Lazy.m"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Awful-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Awful-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1344,6 +1350,8 @@
 				1153D0D4144E5BA6007602E8 /* AwfulSpecificPageViewController.m */,
 				11D5E85614DC5FA000C1002D /* AwfulPageDataController.h */,
 				11D5E85714DC5FA000C1002D /* AwfulPageDataController.m */,
+				8C90518A155BEEB40098266A /* AwfulLoadingFooterView.h */,
+				8C90518B155BEEB40098266A /* AwfulLoadingFooterView.m */,
 			);
 			path = AwfulPage;
 			sourceTree = "<group>";
@@ -1364,6 +1372,8 @@
 		1190F70B13BE4EA900B9D271 /* Extras */ = {
 			isa = PBXGroup;
 			children = (
+				8C905195155D6CAD0098266A /* UIView+Lazy.h */,
+				8C905196155D6CAD0098266A /* UIView+Lazy.m */,
 				11FDA297151018740014FDCD /* OtherWebController.h */,
 				11FDA298151018740014FDCD /* OtherWebController.m */,
 				11CED26A1522901100E95EE1 /* ButtonSegmentedControl.h */,
@@ -2311,6 +2321,8 @@
 				1C277CA51543554700CD2CCE /* AwfulSettingsChoiceViewController.m in Sources */,
 				1CF2C5061543B51200E327F5 /* AwfulFavoritesViewController.m in Sources */,
 				1C7B87201544D83D00891D41 /* AwfulForumSection.m in Sources */,
+				8C90518C155BEEB40098266A /* AwfulLoadingFooterView.m in Sources */,
+				8C905197155D6CAD0098266A /* UIView+Lazy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

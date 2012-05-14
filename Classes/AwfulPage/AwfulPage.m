@@ -28,6 +28,7 @@
 #import "MWPhotoBrowser.h"
 #import "OtherWebController.h"
 #import "AwfulUtil.h"
+#import "AwfulLoadingFooterView.h"
 
 @implementation AwfulPage
 
@@ -36,6 +37,8 @@
 @synthesize threadID = _threadID;
 @synthesize url = _url;
 @synthesize webView = _webView;
+@synthesize nextPageWebView = _nextPageWebView;
+@synthesize toolbar = _toolbar;
 @synthesize isBookmarked = _isBookmarked;
 @synthesize pages = _pages;
 @synthesize shouldScrollToBottom = _shouldScrollToBottom;
@@ -51,6 +54,7 @@
 @synthesize pagesSegmentedControl = _pagesSegmentedControl;
 @synthesize actionsSegmentedControl = _actionsSegmentedControl;
 @synthesize isFullScreen = _isFullScreen;
+@synthesize pullToNavigateView = _pullToNavigateView;
 
 #pragma mark - Initialization
 
@@ -58,6 +62,20 @@
 {    
     self.actionsSegmentedControl.action = @selector(tappedActionsSegment:);
     self.pagesSegmentedControl.action = @selector(tappedPagesSegment:);
+    self.webView.scrollView.delegate = self;
+    self.view.backgroundColor = [UIColor underPageBackgroundColor];
+    
+    if (!self.pullToNavigateView) {
+        self.pullToNavigateView = [AwfulLoadingFooterView new];
+    }
+    self.pullToNavigateView.delegate = self;
+    self.pullToNavigateView.scrollView = self.webView.scrollView;
+    
+    //CGRect frame = self.webView.frame;
+    //frame.origin.y = frame.size.height;
+    
+    //self.nextPageWebView = [JSBridgeWebView new];
+    //self.nextPageWebView.frame = frame;
 }
 
 - (AwfulThread *) thread
@@ -87,6 +105,7 @@
         
         if([_thread.totalUnreadPosts intValue] == -1) {
             self.destinationType = AwfulPageDestinationTypeFirst;
+            
         } else if([_thread.totalUnreadPosts intValue] == 0) {
             self.destinationType = AwfulPageDestinationTypeLast;
                 // if the last page is full, it won't work if you go for &goto=newpost, that's why I'm setting this to last page
@@ -131,8 +150,13 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:AwfulNotifThreadUpdated object:self.thread];
         
         NSString *html = [dataController constructedPageHTML];
-        [self.webView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
+        
+        if (self.nextPageWebView)
+            [self.nextPageWebView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
+        else
+            [self.webView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
     }
+    
 }
 
 -(void)setPages:(AwfulPageCount *)in_pages
@@ -199,8 +223,10 @@
     [self swapToStopButton];
     [self hidePageNavigation];
     if(pageNum != 0) {
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
-        hud.labelText = [NSString stringWithFormat:@"Loading Page %d", pageNum];
+        //MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
+        //hud.labelText = [NSString stringWithFormat:@"Loading Page %d", pageNum];
+        self.pullToNavigateView.state = EGOOPullRefreshLoading;
+        //self.pullToNavigateView.statusLabel = [NSString stringWithFormat:@"Loading Page %d", pageNum];
     }
     
     AwfulThread *myThread = self.thread;
@@ -213,7 +239,36 @@
         [self updatePagesLabel];
         [self updateBookmarked];
         [self swapToRefreshButton];
-        [MBProgressHUD hideHUDForView:self.view animated:NO];
+        //[MBProgressHUD hideHUDForView:self.view animated:NO];
+        
+        if (self.nextPageWebView) {
+        [self.view addSubview:self.nextPageWebView];
+        [UIView animateWithDuration:.5 
+                              delay:0 
+                            options:(UIViewAnimationOptionCurveEaseIn) 
+                         animations:^{
+                             self.nextPageWebView.frame = self.webView.frame;
+                             self.webView.foY = -self.webView.fsH;
+                         }
+                          completion:^(BOOL finished) {
+                              self.webView = self.nextPageWebView;
+                              self.pullToNavigateView.scrollView = self.webView.scrollView;
+                              self.pullToNavigateView.onLastPage = YES;
+                              
+                              self.nextPageWebView = [JSBridgeWebView new];
+                              self.nextPageWebView.frame = self.webView.frame;
+                              self.nextPageWebView.foY = self.nextPageWebView.fsH;
+                         }
+         ];
+            
+        }
+        else {
+            self.nextPageWebView = [JSBridgeWebView new];
+            self.nextPageWebView.delegate = self;
+            self.nextPageWebView.frame = self.webView.frame;
+            self.nextPageWebView.foY = self.nextPageWebView.fsH;
+        }
+        
     } onError:^(NSError *error) {
         [self swapToRefreshButton];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
@@ -231,6 +286,7 @@
         [self updatePagesLabel];
         [self updateBookmarked];
         [self swapToRefreshButton];
+        self.pullToNavigateView.onLastPage = YES;
     } onError:^(NSError *error) {
         [self swapToRefreshButton];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
@@ -611,6 +667,7 @@
 
 -(void)webViewDidFinishLoad:(UIWebView *)sender
 {
+    [self.webView.scrollView setContentOffset:CGPointMake(0, 0) animated:NO];
     [self swapToRefreshButton];
     if(!self.touchedPage) {
         if(self.postIDScrollDestination != nil) {
@@ -619,6 +676,14 @@
             [self scrollToBottom];
         }
     }
+    
+    self.pullToNavigateView.scrollView = self.webView.scrollView;
+
+    
+}
+
+-(void) awfulFooterDidTriggerLoad:(AwfulLoadingFooterView*)pullToNavigate {
+    [self tappedNextPage:nil];
 }
 
 -(void)webViewDidStartLoad:(UIWebView *)webView
@@ -665,6 +730,18 @@
         return YES;
     }
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+}
+
+#pragma mark scrollview delegate
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{	
+    [self.pullToNavigateView egoRefreshScrollViewDidScroll:scrollView];
+
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    [self.pullToNavigateView egoRefreshScrollViewDidEndDragging:scrollView];
 }
 
 @end
