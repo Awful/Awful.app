@@ -23,9 +23,9 @@
     self.autoF5.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|
                                     UIViewAutoresizingFlexibleTopMargin|
                                     UIViewAutoresizingFlexibleBottomMargin;
-    [self addSubview:self.autoF5];
+    //[self addSubview:self.autoF5];
     
-    //self.onLastPage = YES;
+    self.onLastPage = YES;
     return self;
 }
 

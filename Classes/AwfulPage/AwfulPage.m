@@ -286,6 +286,7 @@
         [self updatePagesLabel];
         [self updateBookmarked];
         [self swapToRefreshButton];
+        self.pullToNavigateView.onLastPage = YES;
     } onError:^(NSError *error) {
         [self swapToRefreshButton];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
