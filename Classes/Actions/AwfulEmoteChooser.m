@@ -54,6 +54,7 @@
     
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:section];
     
+    if ([sectionInfo numberOfObjects] == 0) return 0;
     int rows = [sectionInfo numberOfObjects]/_numIconsPerRow + 1;
     return rows;
 }
