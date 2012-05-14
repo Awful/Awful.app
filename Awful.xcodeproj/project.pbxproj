@@ -389,8 +389,30 @@
 		11FE9E40153CFC70002EE2B5 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FE9E37153CFC6F002EE2B5 /* Reachability.m */; };
 		1C277CA51543554700CD2CCE /* AwfulSettingsChoiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C277CA41543554700CD2CCE /* AwfulSettingsChoiceViewController.m */; };
 		1C7B87201544D83D00891D41 /* AwfulForumSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B871F1544D83D00891D41 /* AwfulForumSection.m */; };
+		1C84A6C11555DEFE008A6DA6 /* TFHpple.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7C213BE4ECB00B9D271 /* TFHpple.m */; };
+		1C84A6C31555DF01008A6DA6 /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7C413BE4ECB00B9D271 /* TFHppleElement.m */; };
+		1C84A6C41555DF01008A6DA6 /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7C613BE4ECB00B9D271 /* XPathQuery.m */; };
+		1C84A6C51555DF14008A6DA6 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
+		1C84A6C8155A2DC5008A6DA6 /* IntegrationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C84A6C7155A2DC5008A6DA6 /* IntegrationTest.m */; };
+		1C84A6CB155A2E63008A6DA6 /* TestHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C84A6CA155A2E63008A6DA6 /* TestHelpers.m */; };
+		1C84A6CC155A319F008A6DA6 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 117DBE3A1522A39A007125EF /* CoreData.framework */; };
+		1C84A6CD155A31AA008A6DA6 /* AwfulPersistOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF52921555992C007489BE /* AwfulPersistOperation.m */; };
+		1C84A6CE155A3209008A6DA6 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 117DBE411522AA2D007125EF /* Model.xcdatamodeld */; };
+		1C84A6EF155A4E07008A6DA6 /* AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CF797152C05BA00126AAC /* AwfulForum.m */; };
 		1CAB36B11548F0FE00A4A362 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
+		1CBF78F5155373C20067EF27 /* AwfulClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBF78F4155373C20067EF27 /* AwfulClient.m */; };
 		1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD5198154294D400326C7B /* AwfulSettings.m */; };
+		1CDF528C1555991D007489BE /* AwfulHTTPOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF528B1555991D007489BE /* AwfulHTTPOperation.m */; };
+		1CDF529015559924007489BE /* AwfulScrapeOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF528F15559924007489BE /* AwfulScrapeOperation.m */; };
+		1CDF52931555992D007489BE /* AwfulPersistOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF52921555992C007489BE /* AwfulPersistOperation.m */; };
+		1CDF52B41555DA64007489BE /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
+		1CDF52B51555DA64007489BE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
+		1CDF52B61555DA64007489BE /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765070DF74369002DB57D /* CoreGraphics.framework */; };
+		1CDF52C81555DB4B007489BE /* GHUnitIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CDF52C71555DB4B007489BE /* GHUnitIOS.framework */; };
+		1CDF52CA1555DBE0007489BE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF52C91555DBE0007489BE /* main.m */; };
+		1CDF52CD1555DCA3007489BE /* gbs.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CDF52CC1555DCA3007489BE /* gbs.html */; };
+		1CDF52D01555DCCA007489BE /* ScrapeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF52CF1555DCCA007489BE /* ScrapeTest.m */; };
+		1CDF52D11555DECF007489BE /* AwfulScrapeOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF528F15559924007489BE /* AwfulScrapeOperation.m */; };
 		1CDF7A3E1537C157008EFAE4 /* GRMustache.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A011537C157008EFAE4 /* GRMustache.m */; };
 		1CDF7A3F1537C157008EFAE4 /* GRMustacheContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A051537C157008EFAE4 /* GRMustacheContext.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		1CDF7A401537C157008EFAE4 /* GRMustacheError.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A081537C157008EFAE4 /* GRMustacheError.m */; };
@@ -885,9 +907,27 @@
 		1C7B871B1544D73100891D41 /* AwfulForumsListControllerSubclass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumsListControllerSubclass.h; sourceTree = "<group>"; };
 		1C7B871E1544D83C00891D41 /* AwfulForumSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumSection.h; sourceTree = "<group>"; };
 		1C7B871F1544D83D00891D41 /* AwfulForumSection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumSection.m; sourceTree = "<group>"; };
+		1C84A6C7155A2DC5008A6DA6 /* IntegrationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IntegrationTest.m; sourceTree = "<group>"; };
+		1C84A6C9155A2E63008A6DA6 /* TestHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestHelpers.h; sourceTree = "<group>"; };
+		1C84A6CA155A2E63008A6DA6 /* TestHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestHelpers.m; sourceTree = "<group>"; };
 		1CAB36B01548F0FE00A4A362 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
+		1CBF78F3155373C20067EF27 /* AwfulClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulClient.h; sourceTree = "<group>"; };
+		1CBF78F4155373C20067EF27 /* AwfulClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulClient.m; sourceTree = "<group>"; };
 		1CDD5197154294D400326C7B /* AwfulSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettings.h; sourceTree = "<group>"; };
 		1CDD5198154294D400326C7B /* AwfulSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettings.m; sourceTree = "<group>"; };
+		1CDF528A1555991D007489BE /* AwfulHTTPOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulHTTPOperation.h; sourceTree = "<group>"; };
+		1CDF528B1555991D007489BE /* AwfulHTTPOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulHTTPOperation.m; sourceTree = "<group>"; };
+		1CDF528E15559924007489BE /* AwfulScrapeOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScrapeOperation.h; sourceTree = "<group>"; };
+		1CDF528F15559924007489BE /* AwfulScrapeOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScrapeOperation.m; sourceTree = "<group>"; };
+		1CDF52911555992C007489BE /* AwfulPersistOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPersistOperation.h; sourceTree = "<group>"; };
+		1CDF52921555992C007489BE /* AwfulPersistOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPersistOperation.m; sourceTree = "<group>"; };
+		1CDF52B21555DA64007489BE /* Client Tests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Client Tests.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1CDF52B91555DA64007489BE /* Client Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Client Tests-Info.plist"; sourceTree = "<group>"; };
+		1CDF52BF1555DA64007489BE /* Client Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Client Tests-Prefix.pch"; sourceTree = "<group>"; };
+		1CDF52C71555DB4B007489BE /* GHUnitIOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GHUnitIOS.framework; path = "3rd Party Sources/GHUnitIOS.framework"; sourceTree = "<group>"; };
+		1CDF52C91555DBE0007489BE /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		1CDF52CC1555DCA3007489BE /* gbs.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = gbs.html; sourceTree = "<group>"; };
+		1CDF52CF1555DCCA007489BE /* ScrapeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScrapeTest.m; sourceTree = "<group>"; };
 		1CDF7A001537C157008EFAE4 /* GRMustache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustache.h; sourceTree = "<group>"; };
 		1CDF7A011537C157008EFAE4 /* GRMustache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GRMustache.m; sourceTree = "<group>"; };
 		1CDF7A021537C157008EFAE4 /* GRMustache_private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustache_private.h; sourceTree = "<group>"; };
@@ -951,6 +991,19 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		1CDF52AF1555DA64007489BE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C84A6CC155A319F008A6DA6 /* CoreData.framework in Frameworks */,
+				1CDF52B61555DA64007489BE /* CoreGraphics.framework in Frameworks */,
+				1CDF52B51555DA64007489BE /* Foundation.framework in Frameworks */,
+				1CDF52C81555DB4B007489BE /* GHUnitIOS.framework in Frameworks */,
+				1CDF52B41555DA64007489BE /* UIKit.framework in Frameworks */,
+				1C84A6C51555DF14008A6DA6 /* libxml2.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1D60588F0D05DD3D006BFB54 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -977,6 +1030,7 @@
 			isa = PBXGroup;
 			children = (
 				1190F6CC13BE4EA900B9D271 /* Actions */,
+				1CBF78F1155373130067EF27 /* AwfulClient */,
 				1190F6D713BE4EA900B9D271 /* AwfulForumList */,
 				1190F70513BE4EA900B9D271 /* AwfulThreadList */,
 				1190F6E813BE4EA900B9D271 /* AwfulPage */,
@@ -1686,8 +1740,24 @@
 			isa = PBXGroup;
 			children = (
 				1D6058910D05DD3D006BFB54 /* Awful.app */,
+				1CDF52B21555DA64007489BE /* Client Tests.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		1CBF78F1155373130067EF27 /* AwfulClient */ = {
+			isa = PBXGroup;
+			children = (
+				1CBF78F3155373C20067EF27 /* AwfulClient.h */,
+				1CBF78F4155373C20067EF27 /* AwfulClient.m */,
+				1CDF528A1555991D007489BE /* AwfulHTTPOperation.h */,
+				1CDF528B1555991D007489BE /* AwfulHTTPOperation.m */,
+				1CDF528E15559924007489BE /* AwfulScrapeOperation.h */,
+				1CDF528F15559924007489BE /* AwfulScrapeOperation.m */,
+				1CDF52911555992C007489BE /* AwfulPersistOperation.h */,
+				1CDF52921555992C007489BE /* AwfulPersistOperation.m */,
+			);
+			path = AwfulClient;
 			sourceTree = "<group>";
 		};
 		1CDD51951542949600326C7B /* Settings */ = {
@@ -1701,6 +1771,37 @@
 				1C277CA41543554700CD2CCE /* AwfulSettingsChoiceViewController.m */,
 			);
 			path = Settings;
+			sourceTree = "<group>";
+		};
+		1CDF52B71555DA64007489BE /* Client Tests */ = {
+			isa = PBXGroup;
+			children = (
+				1C84A6C7155A2DC5008A6DA6 /* IntegrationTest.m */,
+				1CDF52CF1555DCCA007489BE /* ScrapeTest.m */,
+				1CDF52CB1555DCA3007489BE /* HTML */,
+				1CDF52B81555DA64007489BE /* Supporting Files */,
+			);
+			path = "Client Tests";
+			sourceTree = "<group>";
+		};
+		1CDF52B81555DA64007489BE /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				1CDF52B91555DA64007489BE /* Client Tests-Info.plist */,
+				1CDF52BF1555DA64007489BE /* Client Tests-Prefix.pch */,
+				1CDF52C91555DBE0007489BE /* main.m */,
+				1C84A6C9155A2E63008A6DA6 /* TestHelpers.h */,
+				1C84A6CA155A2E63008A6DA6 /* TestHelpers.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		1CDF52CB1555DCA3007489BE /* HTML */ = {
+			isa = PBXGroup;
+			children = (
+				1CDF52CC1555DCA3007489BE /* gbs.html */,
+			);
+			path = HTML;
 			sourceTree = "<group>";
 		};
 		1CDF79FE1537C157008EFAE4 /* GRMustache */ = {
@@ -1785,6 +1886,7 @@
 				1190F76913BE4ECB00B9D271 /* 3rd Party Sources */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
+				1CDF52B71555DA64007489BE /* Client Tests */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
@@ -1818,6 +1920,7 @@
 			isa = PBXGroup;
 			children = (
 				117DBE3A1522A39A007125EF /* CoreData.framework */,
+				1CDF52C71555DB4B007489BE /* GHUnitIOS.framework */,
 				1172A62D14F5DB160026CDA8 /* Security.framework */,
 				11099066134B86FC0013444C /* QuartzCore.framework */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
@@ -1849,6 +1952,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		1CDF52B11555DA64007489BE /* Client Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1CDF52C31555DA64007489BE /* Build configuration list for PBXNativeTarget "Client Tests" */;
+			buildPhases = (
+				1CDF52AE1555DA64007489BE /* Sources */,
+				1CDF52AF1555DA64007489BE /* Frameworks */,
+				1CDF52B01555DA64007489BE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Client Tests";
+			productName = "Scrape Tests";
+			productReference = 1CDF52B21555DA64007489BE /* Client Tests.app */;
+			productType = "com.apple.product-type.application";
+		};
 		1D6058900D05DD3D006BFB54 /* Awful */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Awful" */;
@@ -1891,11 +2011,20 @@
 			projectRoot = "";
 			targets = (
 				1D6058900D05DD3D006BFB54 /* Awful */,
+				1CDF52B11555DA64007489BE /* Client Tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		1CDF52B01555DA64007489BE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1CDF52CD1555DCA3007489BE /* gbs.html in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1D60588D0D05DD3D006BFB54 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2214,6 +2343,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		1CDF52AE1555DA64007489BE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1CDF52CA1555DBE0007489BE /* main.m in Sources */,
+				1CDF52D01555DCCA007489BE /* ScrapeTest.m in Sources */,
+				1CDF52D11555DECF007489BE /* AwfulScrapeOperation.m in Sources */,
+				1C84A6C11555DEFE008A6DA6 /* TFHpple.m in Sources */,
+				1C84A6C31555DF01008A6DA6 /* TFHppleElement.m in Sources */,
+				1C84A6C41555DF01008A6DA6 /* XPathQuery.m in Sources */,
+				1C84A6C8155A2DC5008A6DA6 /* IntegrationTest.m in Sources */,
+				1C84A6CB155A2E63008A6DA6 /* TestHelpers.m in Sources */,
+				1C84A6CD155A31AA008A6DA6 /* AwfulPersistOperation.m in Sources */,
+				1C84A6CE155A3209008A6DA6 /* Model.xcdatamodeld in Sources */,
+				1C84A6EF155A4E07008A6DA6 /* AwfulForum.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1D60588E0D05DD3D006BFB54 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2311,6 +2458,10 @@
 				1C277CA51543554700CD2CCE /* AwfulSettingsChoiceViewController.m in Sources */,
 				1CF2C5061543B51200E327F5 /* AwfulFavoritesViewController.m in Sources */,
 				1C7B87201544D83D00891D41 /* AwfulForumSection.m in Sources */,
+				1CBF78F5155373C20067EF27 /* AwfulClient.m in Sources */,
+				1CDF528C1555991D007489BE /* AwfulHTTPOperation.m in Sources */,
+				1CDF529015559924007489BE /* AwfulScrapeOperation.m in Sources */,
+				1CDF52931555992D007489BE /* AwfulPersistOperation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2363,6 +2514,83 @@
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+			};
+			name = AdHoc;
+		};
+		1CDF52C41555DA64007489BE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/3rd Party Sources\"",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Client Tests/Client Tests-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				INFOPLIST_FILE = "Client Tests/Client Tests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		1CDF52C51555DA64007489BE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/3rd Party Sources\"",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Client Tests/Client Tests-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				INFOPLIST_FILE = "Client Tests/Client Tests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		1CDF52C61555DA64007489BE /* AdHoc */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/3rd Party Sources\"",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Client Tests/Client Tests-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				INFOPLIST_FILE = "Client Tests/Client Tests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = app;
 			};
 			name = AdHoc;
 		};
@@ -2469,6 +2697,16 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1CDF52C31555DA64007489BE /* Build configuration list for PBXNativeTarget "Client Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1CDF52C41555DA64007489BE /* Debug */,
+				1CDF52C51555DA64007489BE /* Release */,
+				1CDF52C61555DA64007489BE /* AdHoc */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Awful" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
