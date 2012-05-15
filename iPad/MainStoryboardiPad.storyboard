@@ -526,13 +526,10 @@
                         <rect key="frame" x="0.0" y="64" width="703" height="660"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <webView contentMode="scaleToFill" id="uom-YB-cRl" customClass="JSBridgeWebView">
+                            <webView contentMode="scaleToFill" id="uom-YB-cRl">
                                 <rect key="frame" x="0.0" y="0.0" width="703" height="660"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                <connections>
-                                    <outlet property="delegate" destination="5o1-8Y-fsn" id="UC6-Ob-25H"/>
-                                </connections>
                             </webView>
                         </subviews>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
@@ -1016,8 +1013,7 @@
                 <relationship kind="outlet" name="nextPageBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="pagesBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="pagesSegmentedControl" candidateClass="ButtonSegmentedControl"/>
-                <relationship kind="outlet" name="toolbar" candidateClass="UIToolbar"/>
-                <relationship kind="outlet" name="webView" candidateClass="JSBridgeWebView"/>
+                <relationship kind="outlet" name="webView" candidateClass="UIWebView"/>
             </relationships>
         </class>
         <class className="AwfulPageIpad" superclassName="AwfulPage">
@@ -1072,9 +1068,6 @@
             <relationships>
                 <relationship kind="outlet" name="target"/>
             </relationships>
-        </class>
-        <class className="JSBridgeWebView" superclassName="UIWebView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/JSBridgeWebView.h"/>
         </class>
     </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
