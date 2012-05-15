@@ -25,7 +25,6 @@
 -(void) setHeaderView:(UIView<AwfulPullForActionViewDelegate> *)headerView {
     _headerView = headerView;
     headerView.frame = CGRectMake(0, -headerView.fsH, self.scrollView.fsW, headerView.fsH);
-    
     [self.scrollView addSubview:headerView];
 }
 
@@ -36,9 +35,34 @@
     [self.scrollView addSubview:footerView];
 }
 
+-(void) setScrollView:(UIScrollView *)scrollView {
+    if (scrollView == nil) return;
+    _scrollView = scrollView;
+    if (self.headerView) {
+        if (self.headerView.superview != scrollView) {
+            [self.headerView removeFromSuperview];
+            [self.scrollView addSubview:self.headerView];
+        }
+        self.headerView.frame = CGRectMake(0, -self.headerView.fsH, self.scrollView.fsW, self.headerView.fsH);
+    }
+    
+    if (self.footerView) {
+        if (self.footerView.superview != scrollView) {
+            [self.footerView removeFromSuperview];
+            [self.scrollView addSubview:self.footerView];
+        }
+        self.footerView.frame = CGRectMake(0, self.scrollView.contentSize.height, self.scrollView.fsW, self.footerView.fsH);
+    }
+    
+}
+
 
 #pragma mark UIScrollView Delegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (self.headerView.state == AwfulPullForActionStateLoading || 
+        self.footerView.state == AwfulPullForActionStateLoading)
+        return;
+    
     CGFloat scrollAmount = scrollView.contentOffset.y;
     
     CGFloat headerThreshhold = -self.headerView.fsH - 5.0f;
@@ -93,7 +117,8 @@
         return;
     }
     
-    [self.delegate scrollViewDidScroll:scrollView];
+    if ([self.delegate respondsToSelector:@selector(scrollViewDidScroll:)])
+        [self.delegate scrollViewDidScroll:scrollView];
 }
 
 -(void) scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate 
@@ -101,7 +126,7 @@
     CGFloat scrollAmount = scrollView.contentOffset.y;
     
     CGFloat headerThreshhold = -self.headerView.fsH - 5.0f;
-    CGFloat footerThreshhold = self.scrollView.contentSize.height - self.scrollView.fsH + self.footerView.fsH + 5.0f;
+    CGFloat footerThreshhold = scrollView.contentSize.height - scrollView.fsH + self.footerView.fsH + 5.0f;
     
     UIEdgeInsets inset;
     if (scrollAmount < headerThreshhold) {
@@ -115,13 +140,16 @@
 		inset = UIEdgeInsetsMake(0.0f, 0.0f, self.footerView.fsH, 0.0f);
         [self.delegate didPullFooter];
     }
+    else 
+        return;
     
     [UIView animateWithDuration:.2 animations:^{
 		self.scrollView.contentInset = inset;
     }
      ];
 
-	[self.delegate scrollViewDidEndDragging:scrollView willDecelerate:decelerate];
+    if ([self.delegate respondsToSelector:@selector(scrollViewDidEndDragging:willDecelerate:)])
+        [self.delegate scrollViewDidEndDragging:scrollView willDecelerate:decelerate];
 }
 
 

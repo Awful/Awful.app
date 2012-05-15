@@ -64,7 +64,7 @@
 {    
     self.actionsSegmentedControl.action = @selector(tappedActionsSegment:);
     self.pagesSegmentedControl.action = @selector(tappedPagesSegment:);
-    self.webView.scrollView.delegate = self;
+    //self.webView.scrollView.delegate = self;
     self.view.backgroundColor = [UIColor underPageBackgroundColor];
     //if (!self.pullToNavigateView) {
     //    self.pullToNavigateView = [AwfulLoadingFooterView new];
@@ -79,6 +79,17 @@
     //self.nextPageWebView.frame = frame;
     
 
+    
+
+    self.pullForActionController = [[AwfulPullForActionController alloc] initWithScrollView:self.webView.scrollView];
+    self.pullForActionController.headerView = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0, 0, 100, 60)]; 
+    self.pullForActionController.delegate = self;
+    
+    AwfulLoadingFooterView *footer = [AwfulLoadingFooterView new];
+    [footer.autoF5 addTarget:self action:@selector(didSwitchAutoF5:) forControlEvents:UIControlEventValueChanged];
+    self.pullForActionController.footerView = footer;
+
+    
 }
 
 - (AwfulThread *) thread
@@ -154,10 +165,17 @@
         
         NSString *html = [dataController constructedPageHTML];
         
+        //if nextPageWebView is null, then it's the initial load
         if (self.nextPageWebView)
             [self.nextPageWebView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
-        else
+        else {
             [self.webView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
+            
+            self.nextPageWebView = [JSBridgeWebView new];
+            self.nextPageWebView.delegate = self;
+            self.nextPageWebView.frame = self.webView.frame;
+            self.nextPageWebView.foY = self.nextPageWebView.fsH;
+        }
     }
     
 }
@@ -205,6 +223,7 @@
 
 -(IBAction)hardRefresh
 {    
+    self.nextPageWebView = nil;
     int posts_per_page = [[[AwfulUser currentUser] postsPerPage] intValue];
     if([self.dataController.posts count] == posts_per_page) {
         self.destinationType = AwfulPageDestinationTypeSpecific;
@@ -217,6 +236,7 @@
 
 -(void)refresh
 {        
+    self.nextPageWebView = nil;
     [self loadPageNum:self.pages.currentPage];
 }
 
@@ -228,7 +248,8 @@
     if(pageNum != 0) {
         //MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
         //hud.labelText = [NSString stringWithFormat:@"Loading Page %d", pageNum];
-        //self.pullToNavigateView.state = EGOOPullRefreshLoading;
+        
+        self.pullToNavigateView.state = AwfulPullForActionStateLoading;
         //self.pullToNavigateView.statusLabel = [NSString stringWithFormat:@"Loading Page %d", pageNum];
     }
     
@@ -244,33 +265,7 @@
         [self swapToRefreshButton];
         //[MBProgressHUD hideHUDForView:self.view animated:NO];
         
-        if (self.nextPageWebView) {
-        [self.view addSubview:self.nextPageWebView];
-        [UIView animateWithDuration:.5 
-                              delay:0 
-                            options:(UIViewAnimationOptionCurveEaseIn) 
-                         animations:^{
-                             self.nextPageWebView.frame = self.webView.frame;
-                             self.webView.foY = -self.webView.fsH;
-                         }
-                          completion:^(BOOL finished) {
-                              self.webView = self.nextPageWebView;
-                              //self.pullToNavigateView.scrollView = self.webView.scrollView;
-                              //self.pullToNavigateView.onLastPage = YES;
-                              
-                              self.nextPageWebView = [JSBridgeWebView new];
-                              self.nextPageWebView.frame = self.webView.frame;
-                              self.nextPageWebView.foY = self.nextPageWebView.fsH;
-                         }
-         ];
-            
-        }
-        else {
-            self.nextPageWebView = [JSBridgeWebView new];
-            self.nextPageWebView.delegate = self;
-            self.nextPageWebView.frame = self.webView.frame;
-            self.nextPageWebView.foY = self.nextPageWebView.fsH;
-        }
+
         
     } onError:^(NSError *error) {
         [self swapToRefreshButton];
@@ -680,16 +675,36 @@
         }
     }
     
-    //self.pullToNavigateView.scrollView = self.webView.scrollView;
-    self.pullForActionController = [[AwfulPullForActionController alloc] initWithScrollView:self.webView.scrollView];
-    self.pullForActionController.headerView = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0, 0, 100, 60)]; 
-    self.pullForActionController.delegate = self;
-    
-    
-    AwfulLoadingFooterView *footer = [AwfulLoadingFooterView new];
-    [footer.autoF5 addTarget:self action:@selector(didSwitchAutoF5:) forControlEvents:UIControlEventValueChanged];
-    self.pullForActionController.footerView = footer;
-    
+    //animate old page up and offscreen, new page in from the bottom
+    if (sender == self.nextPageWebView) {
+        [UIView animateWithDuration:.5 
+                              delay:0 
+                            options:(UIViewAnimationOptionCurveEaseIn) 
+                         animations:^{
+                             self.nextPageWebView.frame = self.webView.frame;
+                             self.webView.foY = -self.webView.fsH;
+                         }
+                         completion:^(BOOL finished) {
+                             //animation done, next page becomes current page
+                             self.webView = self.nextPageWebView;
+                             self.pullForActionController.scrollView = self.webView.scrollView;
+                             //self.pullToNavigateView.onLastPage = YES;
+                             self.pullForActionController.scrollView = self.webView.scrollView;
+                             
+                             self.nextPageWebView = [JSBridgeWebView new];
+                             self.nextPageWebView.frame = self.webView.frame;
+                             self.nextPageWebView.foY = self.nextPageWebView.fsH;
+                         }
+         ];
+        
+    }
+    else {
+        [UIView animateWithDuration:.5 animations:^{
+            self.pullForActionController.headerView.state = AwfulPullForActionStateNormal;
+            self.webView.scrollView.contentInset = UIEdgeInsetsZero;
+        }
+         ];
+    }
 }
 /*
 -(void) awfulFooterDidTriggerLoad:(AwfulLoadingFooterView*)pullToNavigate {
@@ -744,7 +759,7 @@
 
 -(void) didSwitchAutoF5:(UISwitch *)switchObj {
     if (switchObj.on) {
-        self.autoRefreshTimer = [NSTimer scheduledTimerWithTimeInterval:5 
+        self.autoRefreshTimer = [NSTimer scheduledTimerWithTimeInterval:20 
                                                                  target:self
                                                                selector:@selector(timerDidFire:)
                                                                userInfo:nil
@@ -758,18 +773,19 @@
 
 -(void) timerDidFire:(NSTimer*)timer {
     NSLog(@"timer fired");
-}
-#pragma mark scrollview delegate
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{	
-    //[self.pullToNavigateView egoRefreshScrollViewDidScroll:scrollView];
-    
+    [self refresh];
+    //check if we're still on the last page
+    //if there's a new page invalidate timer, set footer as not on last page
 }
 
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-{
-    //[self.pullToNavigateView egoRefreshScrollViewDidEndDragging:scrollView];
+-(void) didPullHeader {
+    [self refresh];
 }
+
+-(void) didPullFooter {
+    [self tappedNextPage:nil];
+}
+
 @end
 
 @implementation AwfulPageIpad
@@ -900,13 +916,5 @@
         [self.popController dismissPopoverAnimated:YES];
         self.popController = nil;
     }
-}
-
--(void) didPullHeader {
-    [self refresh];
-}
-
--(void) didPullFooter {
-    [self tappedNextPage:nil];
 }
 @end

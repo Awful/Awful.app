@@ -123,8 +123,7 @@
 {
 	_state = aState;
 	switch (aState) {
-		case EGOOPullRefreshPulling:
-			
+        case 3:
 			self.statusLabel.text = NSLocalizedString(@"Release to refresh...", @"Release to refresh status");
 			[CATransaction begin];
 			[CATransaction setAnimationDuration:FLIP_ANIMATION_DURATION];
@@ -133,6 +132,8 @@
 			
 			break;
 		case EGOOPullRefreshNormal:
+		case EGOOPullRefreshPulling:
+			
 			
 			if (self.state == EGOOPullRefreshPulling) {
 				[CATransaction begin];
