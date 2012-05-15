@@ -242,7 +242,7 @@
 
 -(void)refresh
 {        
-    self.nextPageWebView = nil;
+    //self.nextPageWebView = nil;
     [self loadPageNum:self.pages.currentPage];
 }
 
