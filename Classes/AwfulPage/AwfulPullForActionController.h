@@ -11,7 +11,8 @@
 typedef enum {
     AwfulPullForActionStatePulling,
     AwfulPullForActionStateNormal,
-    AwfulPullForActionStateLoading
+    AwfulPullForActionStateLoading,
+    AwfulPullForActionStateRelease
 } AwfulPullForActionState;
 
 @protocol AwfulPullForActionDelegate <NSObject>

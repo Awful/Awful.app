@@ -65,6 +65,8 @@ typedef enum {
 @property (nonatomic, strong) AwfulLoadingFooterView* pullToNavigateView;
 @property (nonatomic, strong) AwfulPullForActionController* pullForActionController;
 
+@property (nonatomic,strong) NSTimer* autoRefreshTimer;
+
 
 -(IBAction)hardRefresh;
 -(void)setThreadTitle : (NSString *)in_title;
@@ -101,7 +103,7 @@ typedef enum {
 -(void)hidePageNavigation;
 
 
--(void) awfulFooterDidTriggerLoad:(AwfulLoadingFooterView*)pullToNavigate;
+-(void) didSwitchAutoF5:(UISwitch*)switchObj;
 
 @end
 

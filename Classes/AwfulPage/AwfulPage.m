@@ -56,6 +56,7 @@
 @synthesize isFullScreen = _isFullScreen;
 @synthesize pullToNavigateView = _pullToNavigateView;
 @synthesize pullForActionController = _pullForActionController;
+@synthesize autoRefreshTimer = _autoRefreshTimer;
 
 #pragma mark - Initialization
 
@@ -65,7 +66,6 @@
     self.pagesSegmentedControl.action = @selector(tappedPagesSegment:);
     self.webView.scrollView.delegate = self;
     self.view.backgroundColor = [UIColor underPageBackgroundColor];
-    
     //if (!self.pullToNavigateView) {
     //    self.pullToNavigateView = [AwfulLoadingFooterView new];
     //}
@@ -289,7 +289,7 @@
         [self updatePagesLabel];
         [self updateBookmarked];
         [self swapToRefreshButton];
-        self.pullToNavigateView.onLastPage = YES;
+        //self.pullToNavigateView.onLastPage = YES;
     } onError:^(NSError *error) {
         [self swapToRefreshButton];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
@@ -683,15 +683,19 @@
     //self.pullToNavigateView.scrollView = self.webView.scrollView;
     self.pullForActionController = [[AwfulPullForActionController alloc] initWithScrollView:self.webView.scrollView];
     self.pullForActionController.headerView = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0, 0, 100, 60)]; 
-    self.pullForActionController.footerView = [[AwfulLoadingFooterView alloc] initWithFrame:CGRectMake(0, 0, 100, 60)];
     self.pullForActionController.delegate = self;
     
+    
+    AwfulLoadingFooterView *footer = [AwfulLoadingFooterView new];
+    [footer.autoF5 addTarget:self action:@selector(didSwitchAutoF5:) forControlEvents:UIControlEventValueChanged];
+    self.pullForActionController.footerView = footer;
+    
 }
-
+/*
 -(void) awfulFooterDidTriggerLoad:(AwfulLoadingFooterView*)pullToNavigate {
     [self tappedNextPage:nil];
 }
-
+*/
 -(void)webViewDidStartLoad:(UIWebView *)webView
 {
     
@@ -738,18 +742,34 @@
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
+-(void) didSwitchAutoF5:(UISwitch *)switchObj {
+    if (switchObj.on) {
+        self.autoRefreshTimer = [NSTimer scheduledTimerWithTimeInterval:5 
+                                                                 target:self
+                                                               selector:@selector(timerDidFire:)
+                                                               userInfo:nil
+                                                                repeats:YES];
+    }   
+    else {
+        [self.autoRefreshTimer invalidate];
+        self.autoRefreshTimer = nil;
+    }
+}
+
+-(void) timerDidFire:(NSTimer*)timer {
+    NSLog(@"timer fired");
+}
 #pragma mark scrollview delegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {	
     //[self.pullToNavigateView egoRefreshScrollViewDidScroll:scrollView];
-
+    
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
     //[self.pullToNavigateView egoRefreshScrollViewDidEndDragging:scrollView];
 }
-
 @end
 
 @implementation AwfulPageIpad

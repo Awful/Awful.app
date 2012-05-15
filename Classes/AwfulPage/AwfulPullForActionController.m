@@ -44,7 +44,12 @@
     CGFloat headerThreshhold = -self.headerView.fsH - 5.0f;
     CGFloat footerThreshhold = self.scrollView.contentSize.height - self.scrollView.fsH + self.footerView.fsH + 5.0f;
     
-	//NSLog(@"Scrollview offset:%f vs contentsize:%f", scrollAmount, threshhold);
+    //check footer positioning, it got misplaced sometimes for some reason
+    if (self.footerView.foY != scrollView.contentSize.height) {
+        self.footerView.foY = scrollView.contentSize.height;
+    }
+    
+    
     
     //Normal State
     if (scrollAmount >= 0 && scrollAmount <= scrollView.contentSize.height - scrollView.fsH) {
@@ -74,18 +79,17 @@
     
     //Header Loading
     if (scrollAmount < headerThreshhold) {
-        NSLog(@"header load");
-        self.headerView.state = AwfulPullForActionStateLoading;
+        NSLog(@"header release");
+        self.headerView.state = AwfulPullForActionStateRelease;
         return;
     }
     
     
     //Footer Loading
     if (scrollAmount > footerThreshhold) {
-        NSLog(@"footer load");
-        self.footerView.state = AwfulPullForActionStateLoading;
-		scrollView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, self.footerView.fsH, 0.0f);
-        [self.delegate didPullFooter];
+        NSLog(@"footer release");
+        self.footerView.state = AwfulPullForActionStateRelease;
+
         return;
     }
     
@@ -97,7 +101,7 @@
     CGFloat scrollAmount = scrollView.contentOffset.y;
     
     CGFloat headerThreshhold = -self.headerView.fsH - 5.0f;
-    CGFloat footerThreshhold = self.scrollView.contentSize.height + self.footerView.fsH + 5.0f;
+    CGFloat footerThreshhold = self.scrollView.contentSize.height - self.scrollView.fsH + self.footerView.fsH + 5.0f;
     
     UIEdgeInsets inset;
     if (scrollAmount < headerThreshhold) {
@@ -113,7 +117,7 @@
     }
     
     [UIView animateWithDuration:.2 animations:^{
-		self.scrollView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 60.0f, 0.0f);
+		self.scrollView.contentInset = inset;
     }
      ];
 

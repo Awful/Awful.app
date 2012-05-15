@@ -6,6 +6,8 @@
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
+#import <QuartzCore/QuartzCore.h>
+
 #import "AwfulLoadingFooterView.h"
 #import "AwfulPage.h"
 
@@ -18,14 +20,22 @@
 @synthesize autoF5 = _autoF5;
 
 -(id) init {
-    self = [super initWithFrame:CGRectMake(0, 0, 200, 65)];
+    self = [super initWithFrame:CGRectMake(0, 0, 768, 65)];
     self.autoF5 = [[UISwitch alloc] initWithFrame:CGRectMake(self.fsW - 100,0 , 0, 0)];
     self.autoF5.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|
                                     UIViewAutoresizingFlexibleTopMargin|
                                     UIViewAutoresizingFlexibleBottomMargin;
-    //[self addSubview:self.autoF5];
+    [self addSubview:self.autoF5];
     
     self.onLastPage = YES;
+    self.backgroundColor = [UIColor clearColor];
+    CAGradientLayer *gradient = [CAGradientLayer layer];
+    gradient.frame = self.bounds;
+    gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor blackColor] CGColor], 
+                       (id)[[UIColor colorWithRed:.09 green:.24 blue:.40 alpha:1] CGColor], 
+                       nil];
+    [self.layer insertSublayer:gradient atIndex:0];
+    
     return self;
 }
 
@@ -34,14 +44,10 @@
     
     if (onLastPage) {
         self.autoF5.hidden = NO;
-        self.scrollView.contentInset = UIEdgeInsetsMake(0, 0, 65.0f, 0);
-        self.scrollView.delegate = self;
     }
     
     else {
-        self.autoF5.hidden = YES;
-        self.scrollView.contentInset = UIEdgeInsetsZero;
-        self.scrollView.delegate = nil;
+        //self.autoF5.hidden = YES;
         
     }
     
@@ -49,100 +55,12 @@
 }
 
 
-#pragma mark ScrollView Methods
 
--(void) setScrollView:(UIScrollView *)scrollView {
-    _scrollView = scrollView;
-    self.backgroundColor = [UIColor lightGrayColor];
-    [self removeFromSuperview];
-    [scrollView addSubview:self];
-    
-    scrollView.delegate = self.onLastPage? nil : self; 
-    
-    self.frame = CGRectMake(0, scrollView.contentSize.height, scrollView.contentSize.width, 65.0f);
-    [self egoRefreshScrollViewDataSourceDidFinishedLoading:scrollView];
-}
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
-    if (self.foY != scrollView.contentSize.height) {
-        //quick position check and reset, it got positioned wrong a few times in testing
-        self.foY = scrollView.contentSize.height;
-    }
-    
-    if (self.onLastPage) return;
-    
-    
-    CGFloat scrollAmount = scrollView.contentOffset.y + scrollView.frame.size.height;
-    CGFloat threshhold = scrollView.contentSize.height + 65.0f;
-    
-	NSLog(@"Scrollview offset:%f vs contentsize:%f", scrollAmount, threshhold);
-    
-	if (self.state == EGOOPullRefreshLoading) {
-		//fixme
-		scrollView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 65.0f, 0.0f);
-		
-	} else if (scrollView.isDragging) {
-		
-		BOOL _loading = NO;
-		if ([self.delegate respondsToSelector:@selector(egoRefreshTableHeaderDataSourceIsLoading:)]) {
-			_loading = [self.delegate egoRefreshTableHeaderDataSourceIsLoading:self];
-		}
-		
-		if (self.state == EGOOPullRefreshPulling && scrollAmount < threshhold && scrollAmount > scrollView.contentSize.height && !_loading) {
-			[self setState:EGOOPullRefreshNormal];
-		} else if (self.state == EGOOPullRefreshNormal && scrollAmount > threshhold && !_loading) {
-			[self setState:EGOOPullRefreshPulling];
-		}
-		
-		if (scrollView.contentInset.bottom != 0) {
-			scrollView.contentInset = self.onLastPage? UIEdgeInsetsMake(0, 0, 65, 0) : UIEdgeInsetsZero;
-		}
-		
-	}
-
-}
-
--(void) scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate 
-{
-	
-    if (self.onLastPage) return;
-	BOOL _loading = NO;
-	if ([self.delegate respondsToSelector:@selector(egoRefreshTableHeaderDataSourceIsLoading:)]) {
-		_loading = [self.delegate egoRefreshTableHeaderDataSourceIsLoading:self];
-	}
-	
-	if (scrollView.contentOffset.y + scrollView.frame.size.height >= scrollView.contentSize.height + 65.0f && !_loading) {
-		
-		if ([self.delegate respondsToSelector:@selector(awfulFooterDidTriggerLoad:)]) {
-			[(AwfulPage*)self.delegate awfulFooterDidTriggerLoad:self];
-		}
-		
-		[self setState:EGOOPullRefreshLoading];
-		[UIView beginAnimations:nil context:NULL];
-		[UIView setAnimationDuration:0.2];
-		scrollView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 60.0f, 0.0f);
-		[UIView commitAnimations];
-		
-	}
-	
-}
-
-- (void)egoRefreshScrollViewDataSourceDidFinishedLoading:(UIScrollView *)scrollView 
-{		
-	[UIView beginAnimations:nil context:NULL];
-	[UIView setAnimationDuration:.3];
-	[scrollView setContentInset:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f)];
-	[UIView commitAnimations];
-	
-	[self setState:EGOOPullRefreshNormal];
-}
-
-- (void)setState:(EGOPullRefreshState)aState
+- (void)setState:(AwfulPullForActionState)aState
 {
 	_state = aState;
 	switch (aState) {
-		case EGOOPullRefreshPulling:
+		case AwfulPullForActionStateRelease:
 			
 			self.statusLabel.text = @"Release for next page...";
 			[CATransaction begin];
@@ -151,7 +69,8 @@
 			[CATransaction commit];
 			
 			break;
-		case EGOOPullRefreshNormal:
+		case AwfulPullForActionStateNormal:
+        case AwfulPullForActionStatePulling:
             if (!self.onLastPage) {
                 if (self.state == EGOOPullRefreshPulling) {
                     [CATransaction begin];
@@ -177,7 +96,7 @@
             
             
 			break;
-		case EGOOPullRefreshLoading:
+		case AwfulPullForActionStateLoading:
 			
 			self.statusLabel.text = @"Loading...";
 			[self.activityView startAnimating];
