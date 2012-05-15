@@ -30,6 +30,8 @@
 #import "AwfulUtil.h"
 #import "AwfulLoadingFooterView.h"
 
+#import "AwfulPage+Transitions.h"
+
 @implementation AwfulPage
 
 @synthesize destinationType = _destinationType;
@@ -54,7 +56,7 @@
 @synthesize pagesSegmentedControl = _pagesSegmentedControl;
 @synthesize actionsSegmentedControl = _actionsSegmentedControl;
 @synthesize isFullScreen = _isFullScreen;
-@synthesize pullToNavigateView = _pullToNavigateView;
+@synthesize loadingFooterView = _loadingFooterView;
 @synthesize pullForActionController = _pullForActionController;
 @synthesize autoRefreshTimer = _autoRefreshTimer;
 
@@ -85,11 +87,11 @@
     self.pullForActionController.headerView = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0, 0, 100, 60)]; 
     self.pullForActionController.delegate = self;
     
-    AwfulLoadingFooterView *footer = [AwfulLoadingFooterView new];
-    [footer.autoF5 addTarget:self action:@selector(didSwitchAutoF5:) forControlEvents:UIControlEventValueChanged];
-    self.pullForActionController.footerView = footer;
-
-    
+    self.loadingFooterView = [AwfulLoadingFooterView new];
+    [self.loadingFooterView.autoF5 addTarget:self 
+                                      action:@selector(didSwitchAutoF5:) 
+                            forControlEvents:UIControlEventValueChanged];
+    self.pullForActionController.footerView = self.loadingFooterView;
 }
 
 - (AwfulThread *) thread
@@ -166,15 +168,19 @@
         NSString *html = [dataController constructedPageHTML];
         
         //if nextPageWebView is null, then it's the initial load
-        if (self.nextPageWebView)
+        if (self.nextPageWebView) {
             [self.nextPageWebView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
+            self.nextPageWebView.tag = self.pages.currentPage;
+        }
         else {
             [self.webView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
+            self.webView.tag = self.pages.currentPage;
             
             self.nextPageWebView = [JSBridgeWebView new];
             self.nextPageWebView.delegate = self;
             self.nextPageWebView.frame = self.webView.frame;
             self.nextPageWebView.foY = self.nextPageWebView.fsH;
+            [self.view addSubview:self.nextPageWebView];
         }
     }
     
@@ -249,7 +255,7 @@
         //MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
         //hud.labelText = [NSString stringWithFormat:@"Loading Page %d", pageNum];
         
-        self.pullToNavigateView.state = AwfulPullForActionStateLoading;
+        //self.pullToNavigateView.state = AwfulPullForActionStateLoading;
         //self.pullToNavigateView.statusLabel = [NSString stringWithFormat:@"Loading Page %d", pageNum];
     }
     
@@ -265,6 +271,7 @@
         [self swapToRefreshButton];
         //[MBProgressHUD hideHUDForView:self.view animated:NO];
         
+        self.loadingFooterView.onLastPage = self.pages.onLastPage;
 
         
     } onError:^(NSError *error) {
@@ -677,25 +684,7 @@
     
     //animate old page up and offscreen, new page in from the bottom
     if (sender == self.nextPageWebView) {
-        [UIView animateWithDuration:.5 
-                              delay:0 
-                            options:(UIViewAnimationOptionCurveEaseIn) 
-                         animations:^{
-                             self.nextPageWebView.frame = self.webView.frame;
-                             self.webView.foY = -self.webView.fsH;
-                         }
-                         completion:^(BOOL finished) {
-                             //animation done, next page becomes current page
-                             self.webView = self.nextPageWebView;
-                             self.pullForActionController.scrollView = self.webView.scrollView;
-                             //self.pullToNavigateView.onLastPage = YES;
-                             self.pullForActionController.scrollView = self.webView.scrollView;
-                             
-                             self.nextPageWebView = [JSBridgeWebView new];
-                             self.nextPageWebView.frame = self.webView.frame;
-                             self.nextPageWebView.foY = self.nextPageWebView.fsH;
-                         }
-         ];
+        [self doPageTransition];
         
     }
     else {

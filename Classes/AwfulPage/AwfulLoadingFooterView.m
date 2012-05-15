@@ -27,7 +27,7 @@
                                     UIViewAutoresizingFlexibleBottomMargin;
     [self addSubview:self.autoF5];
     
-    self.onLastPage = YES;
+    self.onLastPage = NO;
     self.backgroundColor = [UIColor clearColor];
     CAGradientLayer *gradient = [CAGradientLayer layer];
     gradient.frame = self.bounds;
@@ -47,7 +47,7 @@
     }
     
     else {
-        //self.autoF5.hidden = YES;
+        self.autoF5.hidden = YES;
         
     }
     

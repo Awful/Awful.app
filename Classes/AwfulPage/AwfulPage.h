@@ -62,7 +62,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL draggingUp;
 @property (nonatomic, assign) BOOL isFullScreen;
 
-@property (nonatomic, strong) AwfulLoadingFooterView* pullToNavigateView;
+@property (nonatomic, strong) AwfulLoadingFooterView* loadingFooterView;
 @property (nonatomic, strong) AwfulPullForActionController* pullForActionController;
 
 @property (nonatomic,strong) NSTimer* autoRefreshTimer;
