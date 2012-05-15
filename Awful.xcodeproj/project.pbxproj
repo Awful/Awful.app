@@ -419,6 +419,8 @@
 		50A8B96F1541D57E0065F3D9 /* ReplyButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A8B96A1541D57E0065F3D9 /* ReplyButton.png */; };
 		50A8B9701541D57E0065F3D9 /* singlePageMovement.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A8B96B1541D57E0065F3D9 /* singlePageMovement.png */; };
 		50A8B9711541D57E0065F3D9 /* ThreadActions.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A8B96C1541D57E0065F3D9 /* ThreadActions.png */; };
+		8C79D4331561CA33006FEE48 /* PullToNav.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8C79D4321561CA33006FEE48 /* PullToNav.xib */; };
+		8C79D4371561CE44006FEE48 /* AwfulPullForActionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C79D4361561CE44006FEE48 /* AwfulPullForActionController.m */; };
 		8C90518C155BEEB40098266A /* AwfulLoadingFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C90518B155BEEB40098266A /* AwfulLoadingFooterView.m */; };
 		8C905197155D6CAD0098266A /* UIView+Lazy.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C905196155D6CAD0098266A /* UIView+Lazy.m */; };
 /* End PBXBuildFile section */
@@ -947,6 +949,9 @@
 		50A8B96A1541D57E0065F3D9 /* ReplyButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ReplyButton.png; path = images/help/ReplyButton.png; sourceTree = "<group>"; };
 		50A8B96B1541D57E0065F3D9 /* singlePageMovement.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = singlePageMovement.png; path = images/help/singlePageMovement.png; sourceTree = "<group>"; };
 		50A8B96C1541D57E0065F3D9 /* ThreadActions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ThreadActions.png; path = images/help/ThreadActions.png; sourceTree = "<group>"; };
+		8C79D4321561CA33006FEE48 /* PullToNav.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PullToNav.xib; sourceTree = "<group>"; };
+		8C79D4351561CE44006FEE48 /* AwfulPullForActionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPullForActionController.h; sourceTree = "<group>"; };
+		8C79D4361561CE44006FEE48 /* AwfulPullForActionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPullForActionController.m; sourceTree = "<group>"; };
 		8C90518A155BEEB40098266A /* AwfulLoadingFooterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLoadingFooterView.h; sourceTree = "<group>"; };
 		8C90518B155BEEB40098266A /* AwfulLoadingFooterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLoadingFooterView.m; sourceTree = "<group>"; };
 		8C905195155D6CAD0098266A /* UIView+Lazy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Lazy.h"; sourceTree = "<group>"; };
@@ -1350,6 +1355,9 @@
 				11D5E85714DC5FA000C1002D /* AwfulPageDataController.m */,
 				8C90518A155BEEB40098266A /* AwfulLoadingFooterView.h */,
 				8C90518B155BEEB40098266A /* AwfulLoadingFooterView.m */,
+				8C79D4321561CA33006FEE48 /* PullToNav.xib */,
+				8C79D4351561CE44006FEE48 /* AwfulPullForActionController.h */,
+				8C79D4361561CE44006FEE48 /* AwfulPullForActionController.m */,
 			);
 			path = AwfulPage;
 			sourceTree = "<group>";
@@ -2214,6 +2222,7 @@
 				11DA5612155C9E980058C8BD /* icon-60-pig.png in Resources */,
 				11DA5613155C9E980058C8BD /* LF-fuckshitdamntag2.png in Resources */,
 				11DA5614155C9E980058C8BD /* yospos-janitor.png in Resources */,
+				8C79D4331561CA33006FEE48 /* PullToNav.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2319,6 +2328,7 @@
 				1C7B87201544D83D00891D41 /* AwfulForumSection.m in Sources */,
 				8C90518C155BEEB40098266A /* AwfulLoadingFooterView.m in Sources */,
 				8C905197155D6CAD0098266A /* UIView+Lazy.m in Sources */,
+				8C79D4371561CE44006FEE48 /* AwfulPullForActionController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

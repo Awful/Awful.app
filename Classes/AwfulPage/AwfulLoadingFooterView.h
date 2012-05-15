@@ -11,7 +11,11 @@
 @interface AwfulLoadingFooterView : EGORefreshTableHeaderView <UIScrollViewDelegate>
 
 @property (nonatomic,readwrite) BOOL onLastPage;
-@property (nonatomic,strong) UISwitch* autoF5;
+@property (nonatomic,strong) IBOutlet UISwitch* autoF5;
 @property (nonatomic,strong) UIScrollView* scrollView;
+
+@property (readonly) IBOutlet UILabel* mainLabel;
+@property (readonly) IBOutlet UILabel* subLabel;
+
 
 @end

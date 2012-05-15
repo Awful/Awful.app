@@ -55,6 +55,7 @@
 @synthesize actionsSegmentedControl = _actionsSegmentedControl;
 @synthesize isFullScreen = _isFullScreen;
 @synthesize pullToNavigateView = _pullToNavigateView;
+@synthesize pullForActionController = _pullForActionController;
 
 #pragma mark - Initialization
 
@@ -65,17 +66,19 @@
     self.webView.scrollView.delegate = self;
     self.view.backgroundColor = [UIColor underPageBackgroundColor];
     
-    if (!self.pullToNavigateView) {
-        self.pullToNavigateView = [AwfulLoadingFooterView new];
-    }
-    self.pullToNavigateView.delegate = self;
-    self.pullToNavigateView.scrollView = self.webView.scrollView;
+    //if (!self.pullToNavigateView) {
+    //    self.pullToNavigateView = [AwfulLoadingFooterView new];
+    //}
+    //self.pullToNavigateView.delegate = self;
+    //self.pullToNavigateView.scrollView = self.webView.scrollView;
     
     //CGRect frame = self.webView.frame;
     //frame.origin.y = frame.size.height;
     
     //self.nextPageWebView = [JSBridgeWebView new];
     //self.nextPageWebView.frame = frame;
+    
+
 }
 
 - (AwfulThread *) thread
@@ -225,7 +228,7 @@
     if(pageNum != 0) {
         //MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
         //hud.labelText = [NSString stringWithFormat:@"Loading Page %d", pageNum];
-        self.pullToNavigateView.state = EGOOPullRefreshLoading;
+        //self.pullToNavigateView.state = EGOOPullRefreshLoading;
         //self.pullToNavigateView.statusLabel = [NSString stringWithFormat:@"Loading Page %d", pageNum];
     }
     
@@ -252,8 +255,8 @@
                          }
                           completion:^(BOOL finished) {
                               self.webView = self.nextPageWebView;
-                              self.pullToNavigateView.scrollView = self.webView.scrollView;
-                              self.pullToNavigateView.onLastPage = YES;
+                              //self.pullToNavigateView.scrollView = self.webView.scrollView;
+                              //self.pullToNavigateView.onLastPage = YES;
                               
                               self.nextPageWebView = [JSBridgeWebView new];
                               self.nextPageWebView.frame = self.webView.frame;
@@ -677,8 +680,11 @@
         }
     }
     
-    self.pullToNavigateView.scrollView = self.webView.scrollView;
-
+    //self.pullToNavigateView.scrollView = self.webView.scrollView;
+    self.pullForActionController = [[AwfulPullForActionController alloc] initWithScrollView:self.webView.scrollView];
+    self.pullForActionController.headerView = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0, 0, 100, 60)]; 
+    self.pullForActionController.footerView = [[AwfulLoadingFooterView alloc] initWithFrame:CGRectMake(0, 0, 100, 60)];
+    self.pullForActionController.delegate = self;
     
 }
 
@@ -735,13 +741,13 @@
 #pragma mark scrollview delegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {	
-    [self.pullToNavigateView egoRefreshScrollViewDidScroll:scrollView];
+    //[self.pullToNavigateView egoRefreshScrollViewDidScroll:scrollView];
 
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
-    [self.pullToNavigateView egoRefreshScrollViewDidEndDragging:scrollView];
+    //[self.pullToNavigateView egoRefreshScrollViewDidEndDragging:scrollView];
 }
 
 @end
@@ -876,5 +882,11 @@
     }
 }
 
+-(void) didPullHeader {
+    [self refresh];
+}
 
+-(void) didPullFooter {
+    [self tappedNextPage:nil];
+}
 @end

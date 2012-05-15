@@ -11,6 +11,7 @@
 #import "AwfulPost.h"
 #import "AwfulPostBoxController.h"
 #import "JSBridgeWebView.h"
+#import "AwfulPullForActionController.h"
 
 typedef enum {
     AwfulPageDestinationTypeFirst,
@@ -26,7 +27,7 @@ typedef enum {
 @class ButtonSegmentedControl;
 @class AwfulLoadingFooterView;
 
-@interface AwfulPage : UIViewController <UIWebViewDelegate, UIGestureRecognizerDelegate, JSBridgeWebViewDelegate, UIScrollViewDelegate>
+@interface AwfulPage : UIViewController <UIWebViewDelegate, UIGestureRecognizerDelegate, JSBridgeWebViewDelegate, UIScrollViewDelegate,AwfulPullForActionDelegate>
 {
 @protected
     AwfulActions *_actions;
@@ -62,6 +63,8 @@ typedef enum {
 @property (nonatomic, assign) BOOL isFullScreen;
 
 @property (nonatomic, strong) AwfulLoadingFooterView* pullToNavigateView;
+@property (nonatomic, strong) AwfulPullForActionController* pullForActionController;
+
 
 -(IBAction)hardRefresh;
 -(void)setThreadTitle : (NSString *)in_title;
