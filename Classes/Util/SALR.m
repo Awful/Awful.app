@@ -10,13 +10,12 @@
 #import "AwfulSettings.h"
 #import "AwfulUser.h"
 #import "AwfulUser+AwfulMethods.h"
-#import "SBJson.h"
 
 @implementation SALR
 
-+ (NSString *)config {
++ (NSString *)config
+{
     NSMutableDictionary *config = [[NSMutableDictionary alloc] init];
-    
     AwfulUser *user = [AwfulUser currentUser];
     if(user.userName != nil) {
         [config setObject:user.userName forKey:@"username"];
@@ -29,11 +28,15 @@
                forKey:@"highlightUserQuote"];
     [config setObject:@"#a2cd5a" forKey:@"userQuote"];
     [config setObject:@"#9933ff" forKey:@"usernameHighlight"];
-
-    SBJsonWriter *jsonWriter = [SBJsonWriter new];
-    NSString *result = [jsonWriter stringWithObject:config];
     
-    return result;
+    NSError *error;
+    NSData *data = [NSJSONSerialization dataWithJSONObject:config options:0 error:&error];
+    if (!data)
+    {
+        NSLog(@"error serializing SALR config %@ (error %@)", config, error);
+        return @"";
+    }
+    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 }
 
 @end
