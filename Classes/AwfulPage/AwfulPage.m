@@ -505,7 +505,7 @@
         }
     }
     self.actions.viewController = self;
-    [self.actions showFromRect:rect inView:self.view animated:YES];
+    [self.actions showFromRect:rect inView:[self.view superview] animated:YES];
 }
 
 #pragma mark - AwfulWebViewDelegate
