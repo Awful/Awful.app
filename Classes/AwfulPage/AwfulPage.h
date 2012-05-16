@@ -76,6 +76,7 @@ typedef enum {
 
 -(void)scrollToSpecifiedPost;
 - (void)showActions:(NSString *)post_id fromRect:(CGRect)rect;
+-(void)showActions;
 -(void)loadOlderPosts;
 -(void)nextPage;
 -(void)prevPage;

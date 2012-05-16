@@ -420,6 +420,7 @@
 -(IBAction)tappedActions:(id)sender
 {
     self.actions = [[AwfulThreadActions alloc] initWithThread:self.thread];
+    self.actions.viewController = self;
     [self.actions showFromToolbar:self.navigationController.toolbar];
 }
 
@@ -506,6 +507,12 @@
     }
     self.actions.viewController = self;
     [self.actions showFromRect:rect inView:[self.view superview] animated:YES];
+}
+
+-(void)showActions
+{
+    self.actions.viewController = self;
+    [self.actions showFromToolbar:self.navigationController.toolbar];
 }
 
 #pragma mark - AwfulWebViewDelegate
@@ -730,6 +737,29 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         return NO;
     }
     return YES;
+}
+
+-(IBAction)tappedActions:(id)sender
+{
+    self.actions = [[AwfulThreadActions alloc] initWithThread:self.thread];
+    [self showActions];
+}
+
+-(void)showActions
+{    
+    self.actions.viewController = self;
+    UIActionSheet *sheet = self.actions.actionSheet;
+    CGRect buttonRect;
+    if ([self.actions isKindOfClass:[AwfulThreadActions class]] || [self.actions isKindOfClass:[AwfulVoteActions class]])
+    {
+        buttonRect = self.actionsSegmentedControl.frame;
+        buttonRect.origin.y += self.view.frame.size.height;  //Add the height of the view to the button y
+        buttonRect.size.width = buttonRect.size.width / 2;   //Action is the first button, so the width is really only half
+    } else {
+        NSLog(@"only thread actions and vote actions are supported by this 'showActions' method");
+        return;
+    }
+    [sheet showFromRect:buttonRect inView:self.view animated:YES];
 }
 
 - (void)showActions:(NSString *)post_id fromRect:(CGRect)rect
