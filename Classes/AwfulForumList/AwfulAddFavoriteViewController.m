@@ -8,6 +8,7 @@
 
 #import "AwfulAddFavoriteViewController.h"
 #import "AwfulForumsListControllerSubclass.h"
+#import "AwfulFavorite.h"
 #import "AwfulForumCell.h"
 #import "AwfulForum.h"
 
@@ -61,7 +62,7 @@
            editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     AwfulForum *forum = [self getForumAtIndexPath:indexPath];
-    if ([forum valueForKey:@"favorite"])
+    if (forum.favorite)
         return UITableViewCellEditingStyleNone;
     else
         return UITableViewCellEditingStyleInsert;
@@ -71,7 +72,7 @@
   willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     AwfulForum *forum = [self getForumAtIndexPath:indexPath];
-    return [forum valueForKey:@"favorite"] ? nil : indexPath;
+    return forum.favorite ? nil : indexPath;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -82,10 +83,10 @@
 - (void)addFavoriteForForumAtIndexPath:(NSIndexPath *)indexPath
 {
     AwfulForum *forum = [self getForumAtIndexPath:indexPath];
-    if (![forum valueForKey:@"favorite"]) {
-        NSManagedObject *favorite = [NSEntityDescription insertNewObjectForEntityForName:@"Favorite" 
-                                                                  inManagedObjectContext:ApplicationDelegate.managedObjectContext];
-        [favorite setValue:forum forKey:@"forum"];
+    if (!forum.favorite) {
+        NSManagedObjectContext *moc = ApplicationDelegate.managedObjectContext;
+        AwfulFavorite *favorite = [AwfulFavorite insertInManagedObjectContext:moc];
+        favorite.forum = forum;
         [ApplicationDelegate saveContext];
     }
     AwfulForumSection *section = [self getForumSectionAtIndexPath:indexPath];

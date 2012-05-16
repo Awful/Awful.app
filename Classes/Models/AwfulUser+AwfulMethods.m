@@ -12,7 +12,7 @@
 
 +(AwfulUser *)currentUser
 {
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"AwfulUser"];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[AwfulUser entityName]];
     NSError *err = nil;
     NSArray *results = [ApplicationDelegate.managedObjectContext executeFetchRequest:fetchRequest error:&err];
     if(err != nil) {
@@ -23,8 +23,8 @@
     if([results count] > 0) {
         user = [results objectAtIndex:0];
     } else {
-        user = [NSEntityDescription insertNewObjectForEntityForName:@"AwfulUser" inManagedObjectContext:ApplicationDelegate.managedObjectContext];
-        [user setPostsPerPage:[NSNumber numberWithInt:40]];
+        user = [AwfulUser insertInManagedObjectContext:ApplicationDelegate.managedObjectContext];
+        user.postsPerPageValue = 40;
     }
     return user;
 }

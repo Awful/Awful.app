@@ -20,8 +20,9 @@
         }
     }
     
-    AwfulForum *newForum = [NSEntityDescription insertNewObjectForEntityForName:@"AwfulForum" inManagedObjectContext:ApplicationDelegate.managedObjectContext];
-    [newForum setForumID:forumID];
+    NSManagedObjectContext *moc = ApplicationDelegate.managedObjectContext;
+    AwfulForum *newForum = [AwfulForum insertInManagedObjectContext:moc];
+    newForum.forumID = forumID;
     return newForum;
 }
 
@@ -65,9 +66,8 @@
             NSString *actual_forum_name = [forum_name substringFromIndex:substring_index];
             
             AwfulForum *forum = [AwfulForum getForumWithID:forum_id fromCurrentList:existing_forums];
-                                 
-            [forum setName:actual_forum_name];
-            [forum setIndex:[NSNumber numberWithInt:index]];
+            forum.name = actual_forum_name;
+            forum.indexValue = index;
              
              if(num_dashes > last_dashes_count && [forums count] > 0) {
                  [parents addObject:[forums lastObject]];
@@ -80,8 +80,7 @@
              
              if([parents count] > 0) {
                  AwfulForum *parent = [parents lastObject];
-                 [forum setParentForum:parent];
-                 //[forum setParentForum:parent];
+                 forum.parentForum = parent;
              }
              
              last_dashes_count = num_dashes;
