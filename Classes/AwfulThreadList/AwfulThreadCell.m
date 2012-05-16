@@ -30,6 +30,7 @@
 @synthesize ratingImage = _ratingImage;
 @synthesize threadListController = _threadListController;
 @synthesize tagLabel = _tagLabel;
+@synthesize tagContainerView = _tagContainerView;
 
 -(id)initWithCoder:(NSCoder *)aDecoder
 {
@@ -74,8 +75,8 @@
         [self.tagImage addSubview:self.tagLabel];
     }
     
-    [self.tagImage.layer setBorderColor:[[UIColor blackColor] CGColor]];
-    [self.tagImage.layer setBorderWidth:1.0];
+    [self.tagContainerView.layer setBorderColor:[[UIColor blackColor] CGColor]];
+    [self.tagContainerView.layer setBorderWidth:1.0];
     
     self.secondTagImage.hidden = YES;
     if(self.tagImage.hidden == NO) {
@@ -98,14 +99,14 @@
     }
     
     if(self.ratingImage.hidden) {
-        self.tagImage.center = CGPointMake(self.tagImage.center.x, self.contentView.center.y);
+        self.tagContainerView.center = CGPointMake(self.tagContainerView.center.x, self.contentView.center.y);
         
     } else {
-        CGRect frame = self.tagImage.frame;
+        CGRect frame = self.tagContainerView.frame;
         frame.origin.y = 5;
-        self.tagImage.frame = frame;
+        self.tagContainerView.frame = frame;
     }
-    self.secondTagImage.frame = CGRectMake(self.tagImage.frame.origin.x-1, self.tagImage.frame.origin.y-1, self.secondTagImage.frame.size.width, self.secondTagImage.frame.size.height);
+    //self.secondTagImage.frame = CGRectMake(self.tagImage.frame.origin.x-1, self.tagImage.frame.origin.y-1, self.secondTagImage.frame.size.width, self.secondTagImage.frame.size.height);
     
     if([thread.isLocked boolValue]) {
         self.contentView.alpha = 0.5;
@@ -151,9 +152,10 @@
     
     [self.sticky removeFromSuperview];
     if([[thread stickyIndex] integerValue] != NSNotFound) {  
+        CGRect refRect = self.tagContainerView.frame;
         if(self.tagImage.hidden == NO) {
-            float x = self.tagImage.frame.origin.x + self.tagImage.frame.size.width - self.sticky.frame.size.width + 1;
-            float y = self.tagImage.frame.origin.y + self.tagImage.frame.size.height - self.sticky.frame.size.height + 1;
+            float x = refRect.origin.x + refRect.size.width - self.sticky.frame.size.width + 1;
+            float y = refRect.origin.y + refRect.size.height - self.sticky.frame.size.height + 1;
             self.sticky.frame = CGRectMake(x, y, self.sticky.frame.size.width, self.sticky.frame.size.height);
             [self.contentView addSubview:self.sticky];
         }
