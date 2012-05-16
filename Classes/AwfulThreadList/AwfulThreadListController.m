@@ -305,8 +305,7 @@ typedef enum {
     return thread;
 }
 
-#pragma mark -
-#pragma mark Table view data source
+#pragma mark - Table view data source and delegate
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
@@ -366,15 +365,14 @@ typedef enum {
     }
 }
 
-#pragma mark -
-#pragma mark Memory management
-
-- (void)didReceiveMemoryWarning {
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Relinquish ownership any cached data, images, etc that aren't in use.
+- (void)tableView:(UITableView *)tableView
+  willDisplayCell:(UITableViewCell *)cell
+forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    cell.backgroundColor = cell.contentView.backgroundColor;
 }
+
+#pragma mark - Memory management
 
 -(AwfulThreadCellType)getTypeAtIndexPath : (NSIndexPath *)indexPath
 {
