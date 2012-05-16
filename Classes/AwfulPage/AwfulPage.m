@@ -505,7 +505,7 @@
         }
     }
     self.actions.viewController = self;
-    [self.actions showFromToolbar:self.navigationController.toolbar];
+    [self.actions showFromRect:rect inView:self.view animated:YES];
 }
 
 #pragma mark - AwfulWebViewDelegate
