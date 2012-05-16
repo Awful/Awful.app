@@ -343,6 +343,20 @@
 		11E9F965154B9AFC00E8543E /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = 11E9F95B154B9AFC00E8543E /* Icon-Small.png */; };
 		11E9F966154B9AFC00E8543E /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11E9F95C154B9AFC00E8543E /* Icon-Small@2x.png */; };
 		11E9F967154B9AFC00E8543E /* icon_57.png in Resources */ = {isa = PBXBuildFile; fileRef = 11E9F95D154B9AFC00E8543E /* icon_57.png */; };
+		11FBF8A615633A1200734FAC /* asktell-jobs.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FBF89815633A1200734FAC /* asktell-jobs.png */; };
+		11FBF8A715633A1200734FAC /* coc-binbash.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FBF89915633A1200734FAC /* coc-binbash.png */; };
+		11FBF8A815633A1200734FAC /* coc-java.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FBF89A15633A1200734FAC /* coc-java.png */; };
+		11FBF8A915633A1200734FAC /* coc-theory.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FBF89B15633A1200734FAC /* coc-theory.png */; };
+		11FBF8AA15633A1200734FAC /* dd-asia.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FBF89C15633A1200734FAC /* dd-asia.png */; };
+		11FBF8AB15633A1200734FAC /* hell-boot.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FBF89D15633A1200734FAC /* hell-boot.png */; };
+		11FBF8AC15633A1200734FAC /* hell-glomp.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FBF89E15633A1200734FAC /* hell-glomp.png */; };
+		11FBF8AD15633A1200734FAC /* icon-honk.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FBF89F15633A1200734FAC /* icon-honk.png */; };
+		11FBF8AE15633A1200734FAC /* LF-purestrain2.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FBF8A015633A1200734FAC /* LF-purestrain2.png */; };
+		11FBF8AF15633A1200734FAC /* shsc-hardware.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FBF8A115633A1200734FAC /* shsc-hardware.png */; };
+		11FBF8B015633A1200734FAC /* yospos-hackersafe.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FBF8A215633A1200734FAC /* yospos-hackersafe.png */; };
+		11FBF8B115633A1200734FAC /* yospos-web20.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FBF8A315633A1200734FAC /* yospos-web20.png */; };
+		11FBF8B215633A1200734FAC /* yp-amiga859.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FBF8A415633A1200734FAC /* yp-amiga859.png */; };
+		11FBF8B315633A1200734FAC /* yp-apple.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FBF8A515633A1200734FAC /* yp-apple.png */; };
 		11FDA290151017490014FDCD /* MainStoryboardiPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 11FDA28E151017490014FDCD /* MainStoryboardiPad.storyboard */; };
 		11FDA296151018600014FDCD /* AwfulSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA295151018600014FDCD /* AwfulSettingsViewController.m */; };
 		11FDA299151018740014FDCD /* OtherWebController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA298151018740014FDCD /* OtherWebController.m */; };
@@ -799,6 +813,20 @@
 		11E9F95B154B9AFC00E8543E /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small.png"; path = "Icons/Icon-Small.png"; sourceTree = "<group>"; };
 		11E9F95C154B9AFC00E8543E /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small@2x.png"; path = "Icons/Icon-Small@2x.png"; sourceTree = "<group>"; };
 		11E9F95D154B9AFC00E8543E /* icon_57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon_57.png; path = Icons/icon_57.png; sourceTree = "<group>"; };
+		11FBF89815633A1200734FAC /* asktell-jobs.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "asktell-jobs.png"; sourceTree = "<group>"; };
+		11FBF89915633A1200734FAC /* coc-binbash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "coc-binbash.png"; sourceTree = "<group>"; };
+		11FBF89A15633A1200734FAC /* coc-java.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "coc-java.png"; sourceTree = "<group>"; };
+		11FBF89B15633A1200734FAC /* coc-theory.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "coc-theory.png"; sourceTree = "<group>"; };
+		11FBF89C15633A1200734FAC /* dd-asia.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dd-asia.png"; sourceTree = "<group>"; };
+		11FBF89D15633A1200734FAC /* hell-boot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hell-boot.png"; sourceTree = "<group>"; };
+		11FBF89E15633A1200734FAC /* hell-glomp.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hell-glomp.png"; sourceTree = "<group>"; };
+		11FBF89F15633A1200734FAC /* icon-honk.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-honk.png"; sourceTree = "<group>"; };
+		11FBF8A015633A1200734FAC /* LF-purestrain2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LF-purestrain2.png"; sourceTree = "<group>"; };
+		11FBF8A115633A1200734FAC /* shsc-hardware.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shsc-hardware.png"; sourceTree = "<group>"; };
+		11FBF8A215633A1200734FAC /* yospos-hackersafe.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yospos-hackersafe.png"; sourceTree = "<group>"; };
+		11FBF8A315633A1200734FAC /* yospos-web20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yospos-web20.png"; sourceTree = "<group>"; };
+		11FBF8A415633A1200734FAC /* yp-amiga859.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yp-amiga859.png"; sourceTree = "<group>"; };
+		11FBF8A515633A1200734FAC /* yp-apple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yp-apple.png"; sourceTree = "<group>"; };
 		11FDA28E151017490014FDCD /* MainStoryboardiPad.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = MainStoryboardiPad.storyboard; path = iPad/MainStoryboardiPad.storyboard; sourceTree = "<group>"; };
 		11FDA294151018600014FDCD /* AwfulSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettingsViewController.h; sourceTree = "<group>"; };
 		11FDA295151018600014FDCD /* AwfulSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettingsViewController.m; sourceTree = "<group>"; };
@@ -1038,6 +1066,20 @@
 		112ECF0F14D7100A007EE7B6 /* threadtags */ = {
 			isa = PBXGroup;
 			children = (
+				11FBF89815633A1200734FAC /* asktell-jobs.png */,
+				11FBF89915633A1200734FAC /* coc-binbash.png */,
+				11FBF89A15633A1200734FAC /* coc-java.png */,
+				11FBF89B15633A1200734FAC /* coc-theory.png */,
+				11FBF89C15633A1200734FAC /* dd-asia.png */,
+				11FBF89D15633A1200734FAC /* hell-boot.png */,
+				11FBF89E15633A1200734FAC /* hell-glomp.png */,
+				11FBF89F15633A1200734FAC /* icon-honk.png */,
+				11FBF8A015633A1200734FAC /* LF-purestrain2.png */,
+				11FBF8A115633A1200734FAC /* shsc-hardware.png */,
+				11FBF8A215633A1200734FAC /* yospos-hackersafe.png */,
+				11FBF8A315633A1200734FAC /* yospos-web20.png */,
+				11FBF8A415633A1200734FAC /* yp-amiga859.png */,
+				11FBF8A515633A1200734FAC /* yp-apple.png */,
 				11DA560D155C9E980058C8BD /* coc-db.png */,
 				11DA560E155C9E980058C8BD /* icon-60-pig.png */,
 				11DA560F155C9E980058C8BD /* LF-fuckshitdamntag2.png */,
@@ -2153,6 +2195,20 @@
 				11DA5613155C9E980058C8BD /* LF-fuckshitdamntag2.png in Resources */,
 				11DA5614155C9E980058C8BD /* yospos-janitor.png in Resources */,
 				11A0E7161560888E0035597C /* pad-template-dark.html in Resources */,
+				11FBF8A615633A1200734FAC /* asktell-jobs.png in Resources */,
+				11FBF8A715633A1200734FAC /* coc-binbash.png in Resources */,
+				11FBF8A815633A1200734FAC /* coc-java.png in Resources */,
+				11FBF8A915633A1200734FAC /* coc-theory.png in Resources */,
+				11FBF8AA15633A1200734FAC /* dd-asia.png in Resources */,
+				11FBF8AB15633A1200734FAC /* hell-boot.png in Resources */,
+				11FBF8AC15633A1200734FAC /* hell-glomp.png in Resources */,
+				11FBF8AD15633A1200734FAC /* icon-honk.png in Resources */,
+				11FBF8AE15633A1200734FAC /* LF-purestrain2.png in Resources */,
+				11FBF8AF15633A1200734FAC /* shsc-hardware.png in Resources */,
+				11FBF8B015633A1200734FAC /* yospos-hackersafe.png in Resources */,
+				11FBF8B115633A1200734FAC /* yospos-web20.png in Resources */,
+				11FBF8B215633A1200734FAC /* yp-amiga859.png in Resources */,
+				11FBF8B315633A1200734FAC /* yp-apple.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
