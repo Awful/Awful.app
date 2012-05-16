@@ -357,6 +357,16 @@
 		11FBF8B115633A1200734FAC /* yospos-web20.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FBF8A315633A1200734FAC /* yospos-web20.png */; };
 		11FBF8B215633A1200734FAC /* yp-amiga859.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FBF8A415633A1200734FAC /* yp-amiga859.png */; };
 		11FBF8B315633A1200734FAC /* yp-apple.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FBF8A515633A1200734FAC /* yp-apple.png */; };
+		11FBF8BF1564174200734FAC /* cc-critique.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FBF8B51564174000734FAC /* cc-critique.png */; };
+		11FBF8C01564174200734FAC /* fyad-archery.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FBF8B61564174000734FAC /* fyad-archery.png */; };
+		11FBF8C11564174200734FAC /* fyad-nilbog.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FBF8B71564174100734FAC /* fyad-nilbog.png */; };
+		11FBF8C21564174200734FAC /* lan-asia.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FBF8B81564174100734FAC /* lan-asia.png */; };
+		11FBF8C31564174200734FAC /* nmd-country.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FBF8B91564174100734FAC /* nmd-country.png */; };
+		11FBF8C41564174200734FAC /* nmd-hiphop.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FBF8BA1564174100734FAC /* nmd-hiphop.png */; };
+		11FBF8C51564174200734FAC /* nmd-metal.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FBF8BB1564174200734FAC /* nmd-metal.png */; };
+		11FBF8C61564174200734FAC /* nmd-us.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FBF8BC1564174200734FAC /* nmd-us.png */; };
+		11FBF8C71564174200734FAC /* nmd-world.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FBF8BD1564174200734FAC /* nmd-world.png */; };
+		11FBF8C81564174200734FAC /* yp-gnugpl.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FBF8BE1564174200734FAC /* yp-gnugpl.png */; };
 		11FDA290151017490014FDCD /* MainStoryboardiPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 11FDA28E151017490014FDCD /* MainStoryboardiPad.storyboard */; };
 		11FDA296151018600014FDCD /* AwfulSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA295151018600014FDCD /* AwfulSettingsViewController.m */; };
 		11FDA299151018740014FDCD /* OtherWebController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA298151018740014FDCD /* OtherWebController.m */; };
@@ -827,6 +837,16 @@
 		11FBF8A315633A1200734FAC /* yospos-web20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yospos-web20.png"; sourceTree = "<group>"; };
 		11FBF8A415633A1200734FAC /* yp-amiga859.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yp-amiga859.png"; sourceTree = "<group>"; };
 		11FBF8A515633A1200734FAC /* yp-apple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yp-apple.png"; sourceTree = "<group>"; };
+		11FBF8B51564174000734FAC /* cc-critique.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cc-critique.png"; sourceTree = "<group>"; };
+		11FBF8B61564174000734FAC /* fyad-archery.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-archery.png"; sourceTree = "<group>"; };
+		11FBF8B71564174100734FAC /* fyad-nilbog.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-nilbog.png"; sourceTree = "<group>"; };
+		11FBF8B81564174100734FAC /* lan-asia.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lan-asia.png"; sourceTree = "<group>"; };
+		11FBF8B91564174100734FAC /* nmd-country.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nmd-country.png"; sourceTree = "<group>"; };
+		11FBF8BA1564174100734FAC /* nmd-hiphop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nmd-hiphop.png"; sourceTree = "<group>"; };
+		11FBF8BB1564174200734FAC /* nmd-metal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nmd-metal.png"; sourceTree = "<group>"; };
+		11FBF8BC1564174200734FAC /* nmd-us.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nmd-us.png"; sourceTree = "<group>"; };
+		11FBF8BD1564174200734FAC /* nmd-world.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nmd-world.png"; sourceTree = "<group>"; };
+		11FBF8BE1564174200734FAC /* yp-gnugpl.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yp-gnugpl.png"; sourceTree = "<group>"; };
 		11FDA28E151017490014FDCD /* MainStoryboardiPad.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = MainStoryboardiPad.storyboard; path = iPad/MainStoryboardiPad.storyboard; sourceTree = "<group>"; };
 		11FDA294151018600014FDCD /* AwfulSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettingsViewController.h; sourceTree = "<group>"; };
 		11FDA295151018600014FDCD /* AwfulSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettingsViewController.m; sourceTree = "<group>"; };
@@ -1066,6 +1086,16 @@
 		112ECF0F14D7100A007EE7B6 /* threadtags */ = {
 			isa = PBXGroup;
 			children = (
+				11FBF8B51564174000734FAC /* cc-critique.png */,
+				11FBF8B61564174000734FAC /* fyad-archery.png */,
+				11FBF8B71564174100734FAC /* fyad-nilbog.png */,
+				11FBF8B81564174100734FAC /* lan-asia.png */,
+				11FBF8B91564174100734FAC /* nmd-country.png */,
+				11FBF8BA1564174100734FAC /* nmd-hiphop.png */,
+				11FBF8BB1564174200734FAC /* nmd-metal.png */,
+				11FBF8BC1564174200734FAC /* nmd-us.png */,
+				11FBF8BD1564174200734FAC /* nmd-world.png */,
+				11FBF8BE1564174200734FAC /* yp-gnugpl.png */,
 				11FBF89815633A1200734FAC /* asktell-jobs.png */,
 				11FBF89915633A1200734FAC /* coc-binbash.png */,
 				11FBF89A15633A1200734FAC /* coc-java.png */,
@@ -2209,6 +2239,16 @@
 				11FBF8B115633A1200734FAC /* yospos-web20.png in Resources */,
 				11FBF8B215633A1200734FAC /* yp-amiga859.png in Resources */,
 				11FBF8B315633A1200734FAC /* yp-apple.png in Resources */,
+				11FBF8BF1564174200734FAC /* cc-critique.png in Resources */,
+				11FBF8C01564174200734FAC /* fyad-archery.png in Resources */,
+				11FBF8C11564174200734FAC /* fyad-nilbog.png in Resources */,
+				11FBF8C21564174200734FAC /* lan-asia.png in Resources */,
+				11FBF8C31564174200734FAC /* nmd-country.png in Resources */,
+				11FBF8C41564174200734FAC /* nmd-hiphop.png in Resources */,
+				11FBF8C51564174200734FAC /* nmd-metal.png in Resources */,
+				11FBF8C61564174200734FAC /* nmd-us.png in Resources */,
+				11FBF8C71564174200734FAC /* nmd-world.png in Resources */,
+				11FBF8C81564174200734FAC /* yp-gnugpl.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
