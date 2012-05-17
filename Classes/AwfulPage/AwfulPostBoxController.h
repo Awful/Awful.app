@@ -16,7 +16,15 @@
 @class EGOTextView;
 @class AwfulPostComposerView;
 
-@interface AwfulPostBoxController : UIViewController <UIAlertViewDelegate> {
+typedef enum {
+    PostEditorSegmentEmote,
+    PostEditorSegmentImage,
+    PostEditorSegmentFormat
+
+} PostEditorSegment;
+
+
+@interface AwfulPostBoxController : UIViewController <UIAlertViewDelegate, UIActionSheetDelegate> {
     UIPopoverController *pop;
 }
 

@@ -13,6 +13,7 @@
 -(void) bold;
 -(void) italic;
 -(void) underline;
+-(void) format:(NSString*)format;
 
 @property (nonatomic, readonly) NSString* html;
 @property (nonatomic, readonly) NSString* bbcode;

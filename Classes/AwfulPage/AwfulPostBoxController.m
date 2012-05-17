@@ -104,7 +104,20 @@
 
 -(void)tappedSegment:(id)sender
 {
-    NSLog(@"input: %@", self.replyWebView.bbcode);
+    switch (self.segmentedControl.selectedSegmentIndex) {
+        case PostEditorSegmentEmote:
+            
+            break;
+            
+        case PostEditorSegmentImage:
+            break;
+            
+        case PostEditorSegmentFormat:
+            [self presentFormatActionSheet];
+            
+        default:
+            break;
+    }
     //NSString *str = [self.segmentedControl titleForSegmentAtIndex:self.segmentedControl.selectedSegmentIndex];
     //[self hitTextBarButtonItem:str];
     //if (self.segmentedControl.selectedSegmentIndex == 0) {
@@ -228,6 +241,35 @@
     else
         [self.popoverController dismissPopoverAnimated:YES];
     
+    
+}
+
+-(void) presentFormatActionSheet {
+        UIActionSheet *action = [[UIActionSheet alloc] initWithTitle:@"Formatting" 
+                                                            delegate:self 
+                                                   cancelButtonTitle:@"Cancel"
+                                              destructiveButtonTitle:nil 
+                                                   otherButtonTitles:@"Bold",
+                                 @"Italic", 
+                                 @"Underline", 
+                                 @"Strikethrough", 
+                                 @"Super", 
+                                 @"Sub", 
+                                 nil];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+
+            [action showFromRect:[[self.segmentedControl.subviews objectAtIndex:PostEditorSegmentFormat] frame]
+                          inView:[self.segmentedControl.subviews objectAtIndex:PostEditorSegmentFormat] 
+                        animated:YES];
+    }
+        else
+            [action showInView:self.view];
+}
+
+-(void) actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    NSArray *formats = [NSArray arrayWithObjects:@"Bold", @"Italic", @"Underline", @"Strikethrough", @"Super", @"Sub", nil];
+    if (buttonIndex >= formats.count) return;
+    [self.replyWebView format:[formats objectAtIndex:buttonIndex]];
     
 }
 

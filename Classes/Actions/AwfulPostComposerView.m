@@ -24,19 +24,23 @@
 }
 
 -(void) bold {
-    [self stringByEvaluatingJavaScriptFromString:@"document.execCommand(\"Bold\")"];
+    [self format:@"Bold"];
 }
 
 -(void) italic {
-    [self stringByEvaluatingJavaScriptFromString:@"document.execCommand(\"Italic\")"];
+    [self format:@"Italic"];
 }
 
 -(void) underline {
-    [self stringByEvaluatingJavaScriptFromString:@"document.execCommand(\"Underline\")"];
+    [self format:@"Underline"];
 }
 
 -(NSString*) html {
     return [self stringByEvaluatingJavaScriptFromString:@"document.getElementById('content').innerHTML"];
+}
+
+-(void)format:(NSString *)format {
+    [self stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"document.execCommand(\"%@\")", format]];
 }
 
 -(NSString*) bbcode {
