@@ -434,6 +434,9 @@
 		50A8B96F1541D57E0065F3D9 /* ReplyButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A8B96A1541D57E0065F3D9 /* ReplyButton.png */; };
 		50A8B9701541D57E0065F3D9 /* singlePageMovement.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A8B96B1541D57E0065F3D9 /* singlePageMovement.png */; };
 		50A8B9711541D57E0065F3D9 /* ThreadActions.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A8B96C1541D57E0065F3D9 /* ThreadActions.png */; };
+		8C79D45A15658D8F006FEE48 /* AwfulFYADThreadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C79D45915658D8F006FEE48 /* AwfulFYADThreadCell.m */; };
+		8C79D45D15658DB1006FEE48 /* AwfulYOSPOSThreadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C79D45C15658DB1006FEE48 /* AwfulYOSPOSThreadCell.m */; };
+		8C79D4601565997E006FEE48 /* AwfulCustomForums.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C79D45F1565997E006FEE48 /* AwfulCustomForums.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -962,6 +965,12 @@
 		50A8B96A1541D57E0065F3D9 /* ReplyButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ReplyButton.png; path = images/help/ReplyButton.png; sourceTree = "<group>"; };
 		50A8B96B1541D57E0065F3D9 /* singlePageMovement.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = singlePageMovement.png; path = images/help/singlePageMovement.png; sourceTree = "<group>"; };
 		50A8B96C1541D57E0065F3D9 /* ThreadActions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ThreadActions.png; path = images/help/ThreadActions.png; sourceTree = "<group>"; };
+		8C79D45815658D8F006FEE48 /* AwfulFYADThreadCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFYADThreadCell.h; sourceTree = "<group>"; };
+		8C79D45915658D8F006FEE48 /* AwfulFYADThreadCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulFYADThreadCell.m; sourceTree = "<group>"; };
+		8C79D45B15658DB1006FEE48 /* AwfulYOSPOSThreadCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulYOSPOSThreadCell.h; sourceTree = "<group>"; };
+		8C79D45C15658DB1006FEE48 /* AwfulYOSPOSThreadCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulYOSPOSThreadCell.m; sourceTree = "<group>"; };
+		8C79D45E1565997E006FEE48 /* AwfulCustomForums.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCustomForums.h; sourceTree = "<group>"; };
+		8C79D45F1565997E006FEE48 /* AwfulCustomForums.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCustomForums.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Awful-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Awful-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1391,6 +1400,7 @@
 		1190F70513BE4EA900B9D271 /* AwfulThreadList */ = {
 			isa = PBXGroup;
 			children = (
+				8C79D45715658C9D006FEE48 /* Custom Forums */,
 				1190F70813BE4EA900B9D271 /* AwfulThreadListController.h */,
 				1190F70913BE4EA900B9D271 /* AwfulThreadListController.m */,
 				1190F70613BE4EA900B9D271 /* AwfulBookmarksController.h */,
@@ -1859,6 +1869,19 @@
 				50A8B96C1541D57E0065F3D9 /* ThreadActions.png */,
 			);
 			name = help;
+			sourceTree = "<group>";
+		};
+		8C79D45715658C9D006FEE48 /* Custom Forums */ = {
+			isa = PBXGroup;
+			children = (
+				8C79D45815658D8F006FEE48 /* AwfulFYADThreadCell.h */,
+				8C79D45915658D8F006FEE48 /* AwfulFYADThreadCell.m */,
+				8C79D45B15658DB1006FEE48 /* AwfulYOSPOSThreadCell.h */,
+				8C79D45C15658DB1006FEE48 /* AwfulYOSPOSThreadCell.m */,
+				8C79D45E1565997E006FEE48 /* AwfulCustomForums.h */,
+				8C79D45F1565997E006FEE48 /* AwfulCustomForums.m */,
+			);
+			name = "Custom Forums";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2340,6 +2363,9 @@
 				1CF2C5061543B51200E327F5 /* AwfulFavoritesViewController.m in Sources */,
 				1C7B87201544D83D00891D41 /* AwfulForumSection.m in Sources */,
 				1C5D59C0155CDDB200D00DBB /* AwfulWebViewDelegate.m in Sources */,
+				8C79D45A15658D8F006FEE48 /* AwfulFYADThreadCell.m in Sources */,
+				8C79D45D15658DB1006FEE48 /* AwfulYOSPOSThreadCell.m in Sources */,
+				8C79D4601565997E006FEE48 /* AwfulCustomForums.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

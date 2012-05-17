@@ -19,6 +19,7 @@
 #import "AwfulThreadCell.h"
 #import "AwfulUtil.h"
 #import "AwfulLoginController.h"
+#import "AwfulCustomForums.h"
 
 #define THREAD_HEIGHT 76
 
@@ -329,14 +330,14 @@ typedef enum {
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    static NSString *threadCell = @"ThreadCell";
     static NSString *moreCell = @"LoadMoreCell";
     
     
     AwfulThreadCellType type = [self getTypeAtIndexPath:indexPath];
     if(type == AwfulThreadCellTypeThread) {
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:threadCell];
         AwfulThread *thread = [self getThreadAtIndexPath:indexPath];
+        NSString *threadCell = [AwfulCustomForums cellIdentifierForForum:thread.forum];
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:threadCell];
         AwfulThreadCell *thread_cell = (AwfulThreadCell *)cell;
         [thread_cell configureForThread:thread];
         thread_cell.threadListController = self;
