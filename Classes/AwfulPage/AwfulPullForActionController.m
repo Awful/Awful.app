@@ -38,6 +38,7 @@
 -(void) setScrollView:(UIScrollView *)scrollView {
     if (scrollView == nil) return;
     _scrollView = scrollView;
+    scrollView.delegate = self;
     if (self.headerView) {
         if (self.headerView.superview != scrollView) {
             [self.headerView removeFromSuperview];

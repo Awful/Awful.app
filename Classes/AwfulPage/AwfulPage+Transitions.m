@@ -35,16 +35,18 @@
     
     self.nextPageWebView.frame = self.webView.frame;
     self.nextPageWebView.scrollView.contentOffset = self.webView.scrollView.contentOffset;
-    [self.webView removeFromSuperview];
+    //[self.webView removeFromSuperview];
     
     [self didFinishPageTransition];
     
-    CGPoint offset = self.webView.scrollView.contentOffset;
-    offset.y = MIN(offset.y + 350, self.webView.scrollView.contentSize.height);
+    //CGPoint offset = self.webView.scrollView.contentOffset;
+    //offset.y = MIN(offset.y + 350, self.webView.scrollView.contentSize.height);
     
     
-    [self.webView.scrollView setContentOffset:offset
-                                             animated:YES];    
+    //[self.webView.scrollView setContentOffset:offset
+    //                                         animated:YES];    
+    
+    //self.pullForActionController.scrollView = self.webView.scrollView;
 }
 
 -(void) pageForwardTransition {
