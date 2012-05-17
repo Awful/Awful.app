@@ -104,6 +104,11 @@
 
 -(void)tappedSegment:(id)sender
 {
+    if (self.popoverController.isPopoverVisible) {
+        [self.popoverController dismissPopoverAnimated:YES];
+        self.popoverController = nil;
+    }
+    
     switch (self.segmentedControl.selectedSegmentIndex) {
         case PostEditorSegmentEmote:
             [self performSegueWithIdentifier:@"emoteChooserSegue" sender:self];
@@ -226,7 +231,7 @@
 
 -(void) didChooseEmote:(NSNotification*)emoteSelectedNotification {
     //close popover on ipad or dismiss modal on iphone
-    if (self.popoverController && self.popoverController.isPopoverVisible)
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
         [self.popoverController dismissPopoverAnimated:YES];
     
     else {
@@ -239,10 +244,7 @@
 -(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) return;
     
-    [self.popoverController dismissPopoverAnimated:YES];
-    
-    if (!self.popoverController)
-        self.popoverController = [(UIStoryboardPopoverSegue*)segue popoverController];
+    self.popoverController = [(UIStoryboardPopoverSegue*)segue popoverController];
     
     
     
@@ -281,8 +283,7 @@
     picker.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        if (!self.popoverController)
-            self.popoverController = [[UIPopoverController alloc] initWithContentViewController:picker];
+        self.popoverController = [[UIPopoverController alloc] initWithContentViewController:picker];
         
         [self.popoverController presentPopoverFromRect:[[self.segmentedControl.subviews objectAtIndex:PostEditorSegmentImage] frame]
                                                 inView:self.segmentedControl

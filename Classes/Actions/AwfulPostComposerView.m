@@ -60,11 +60,20 @@
     regex = [NSRegularExpression regularExpressionWithPattern:@"<img class=\"emote\" alt=\"(.*)\" src=.*?>" 
                                                       options:0 
                                                         error:nil];
-    int matches = [regex replaceMatchesInString:html
+    [regex replaceMatchesInString:html
                           options:0
                             range:NSMakeRange(0, html.length)
                      withTemplate:@"$1"];
-    NSLog(@"%d matches", matches);
+    
+    //non-emote image replacement
+    //for plat users attaching an image, skip in bbcode, upload via http
+    
+    //for inline images:
+        //image picker provides local url.  editor will show that
+        //after choosing, image uploaded to host of choice
+        //when successful, need to store the returned url somewhere, maybe in the img tag
+        //disable send button until all image uploads are done
+        //convert to bbcode using the host url
     
     return html;
 }
