@@ -695,11 +695,8 @@
                                             <rect key="frame" x="140" y="7" width="260" height="30"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <segments>
-                                                <segment title="" image="smile.gif"/>
-                                                <segment title="]"/>
-                                                <segment title="/"/>
-                                                <segment title="="/>
-                                                <segment title=":"/>
+                                                <segment title="" image="emot-v.gif"/>
+                                                <segment title="(blank)"/>
                                             </segments>
                                             <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                             <connections>
@@ -981,13 +978,13 @@
         <image name="arrowright.png" width="23" height="18"/>
         <image name="cog.png" width="19" height="20"/>
         <image name="compose.png" width="22" height="18"/>
+        <image name="emot-v.gif" width="15" height="15"/>
         <image name="forum-arrow-right.png" width="44" height="38"/>
         <image name="list_icon.png" width="20" height="18"/>
         <image name="multiPageMovement.png" width="487" height="266"/>
         <image name="number-background.png" width="32" height="20"/>
         <image name="shsc-apple.png" width="90" height="90"/>
         <image name="singlePageMovement.png" width="419" height="429"/>
-        <image name="smile.gif" width="15" height="15"/>
         <image name="sticky.png" width="12" height="12"/>
         <image name="threadrating.png" width="45" height="13"/>
     </resources>

@@ -425,6 +425,7 @@
 		8C70A4011556CCB60009B3D1 /* smile.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C70A4001556CCB50009B3D1 /* smile.gif */; };
 		8C70A4041556D0130009B3D1 /* AwfulEmoteChooser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C70A4031556D0130009B3D1 /* AwfulEmoteChooser.m */; };
 		8C70A410155720600009B3D1 /* AwfulTableViewCellEmoticonMultiple.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C70A40E155720600009B3D1 /* AwfulTableViewCellEmoticonMultiple.m */; };
+		8C79D44515653BF7006FEE48 /* emot-v.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C79D44415653BF7006FEE48 /* emot-v.gif */; };
 		8C7CAC8B1558298D00CF6792 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C7CAC8A1558298D00CF6792 /* CoreText.framework */; };
 		8C7CAC8E15582E1400CF6792 /* AwfulPostComposerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7CAC8D15582E1400CF6792 /* AwfulPostComposerView.m */; };
 		8C7CAC911558634100CF6792 /* AwfulEmote+AwfulMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7CAC901558634100CF6792 /* AwfulEmote+AwfulMethods.m */; };
@@ -971,6 +972,7 @@
 		8C70A4031556D0130009B3D1 /* AwfulEmoteChooser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulEmoteChooser.m; sourceTree = "<group>"; };
 		8C70A40D155720600009B3D1 /* AwfulTableViewCellEmoticonMultiple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTableViewCellEmoticonMultiple.h; sourceTree = "<group>"; };
 		8C70A40E155720600009B3D1 /* AwfulTableViewCellEmoticonMultiple.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTableViewCellEmoticonMultiple.m; sourceTree = "<group>"; };
+		8C79D44415653BF7006FEE48 /* emot-v.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "emot-v.gif"; sourceTree = "<group>"; };
 		8C7CAC8A1558298D00CF6792 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		8C7CAC8C15582E1400CF6792 /* AwfulPostComposerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostComposerView.h; sourceTree = "<group>"; };
 		8C7CAC8D15582E1400CF6792 /* AwfulPostComposerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostComposerView.m; sourceTree = "<group>"; };
@@ -1035,6 +1037,7 @@
 		10E93EB9121DC70E00CCBF6D /* images */ = {
 			isa = PBXGroup;
 			children = (
+				8C79D44415653BF7006FEE48 /* emot-v.gif */,
 				8C7CAC97155AE48F00CF6792 /* emot-f5.gif */,
 				8C7CAC98155AE48F00CF6792 /* emot-flashfap.gif */,
 				8C70A4001556CCB50009B3D1 /* smile.gif */,
@@ -2290,6 +2293,7 @@
 				11DA5612155C9E980058C8BD /* icon-60-pig.png in Resources */,
 				11DA5613155C9E980058C8BD /* LF-fuckshitdamntag2.png in Resources */,
 				11DA5614155C9E980058C8BD /* yospos-janitor.png in Resources */,
+				8C79D44515653BF7006FEE48 /* emot-v.gif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

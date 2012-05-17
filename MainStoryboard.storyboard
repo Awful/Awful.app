@@ -443,11 +443,8 @@
                                             <rect key="frame" x="75" y="8" width="180" height="30"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <segments>
-                                                <segment title="["/>
-                                                <segment title="]"/>
-                                                <segment title="/"/>
-                                                <segment title="="/>
-                                                <segment title=":"/>
+                                                <segment title="" image="emot-v.gif"/>
+                                                <segment title="(blank)"/>
                                             </segments>
                                             <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                             <connections>
@@ -917,6 +914,7 @@
         <image name="arrowright.png" width="23" height="18"/>
         <image name="cog.png" width="19" height="20"/>
         <image name="compose.png" width="22" height="18"/>
+        <image name="emot-v.gif" width="15" height="15"/>
         <image name="forum-arrow-right.png" width="44" height="38"/>
         <image name="list_icon.png" width="20" height="18"/>
         <image name="number-background.png" width="32" height="20"/>
