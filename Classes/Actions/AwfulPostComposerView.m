@@ -41,7 +41,7 @@
 
 -(NSString*) bbcode {
     NSMutableString *html = [NSMutableString stringWithString:self.html];
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"<(/?)([bui])>" 
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"<(/?)([buis])>" 
                                                                            options:0 
                                                                              error:nil];
     
@@ -58,9 +58,8 @@
     AwfulEmote *emote = notification.object;
     NSString *tag = [NSString stringWithFormat:@"<img alt=\"%@\" src=\"data:image/gif;base64,%@\" />", emote.code, emote.imageData.base64EncodedString];
     tag = [tag stringByReplacingOccurrencesOfString:@"\r\n" withString:@""];
-    
-    NSString *script = [NSString stringWithFormat:@"document.getElementById('content').innerHTML += '%@'", tag];
-    [self stringByEvaluatingJavaScriptFromString:script];
+    NSString *script = [NSString stringWithFormat:@"document.execCommand('insertHTML', false, '%@')",tag];
+    NSLog(@"execCommand:%@", [self stringByEvaluatingJavaScriptFromString:script]);
 }
 
 @end

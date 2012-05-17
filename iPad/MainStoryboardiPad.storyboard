@@ -696,7 +696,8 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <segments>
                                                 <segment title="" image="emot-v.gif"/>
-                                                <segment title="(blank)"/>
+                                                <segment title="Image"/>
+                                                <segment title="Formatting"/>
                                             </segments>
                                             <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                             <connections>

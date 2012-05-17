@@ -82,6 +82,7 @@
 {
     [super viewWillAppear:animated];
     self.sendButton.title = self.post ? @"Save" : @"Reply";
+    [self.replyWebView becomeFirstResponder];
 }
 
 - (void)viewDidUnload
@@ -183,10 +184,13 @@
 
 -(void)hitSend
 {
+    NSLog(@"post: %@", self.replyWebView.bbcode);
+    /*
     NSString *send_title = self.sendButton.title;
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Are you sure?" message:[NSString stringWithFormat:@"Confirm you want to %@.", send_title] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:send_title, nil];
     alert.delegate = self;
     [alert show];
+     */
 }
 
 -(IBAction)hitTextBarButtonItem : (NSString *)str
