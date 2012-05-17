@@ -235,16 +235,20 @@
     
     
 }
-/*
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:@"emoteChooserPopover"]) 
+
+-(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) return;
+    
+    [self.popoverController dismissPopoverAnimated:YES];
+    
+    if (!self.popoverController)
         self.popoverController = [(UIStoryboardPopoverSegue*)segue popoverController];
-    else
-        [self.popoverController dismissPopoverAnimated:YES];
+    
+    
     
     
 }
-*/
+
 -(void) presentFormatActionSheet {
         UIActionSheet *action = [[UIActionSheet alloc] initWithTitle:@"Formatting" 
                                                             delegate:self 

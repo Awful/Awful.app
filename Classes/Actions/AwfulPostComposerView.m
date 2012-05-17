@@ -45,22 +45,33 @@
 
 -(NSString*) bbcode {
     NSMutableString *html = [NSMutableString stringWithString:self.html];
+    
+    //replace html formatting
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"<(/?)([buis])>" 
                                                                            options:0 
                                                                              error:nil];
-    
     [regex replaceMatchesInString:html
                           options:0
                             range:NSMakeRange(0, html.length)
                      withTemplate:@"[$1$2]"];
-    //NSLog(@"%d matches", matches);
+    
+    
+    //replace emotes
+    regex = [NSRegularExpression regularExpressionWithPattern:@"<img class=\"emote\" alt=\"(.*)\" src=.*?>" 
+                                                      options:0 
+                                                        error:nil];
+    int matches = [regex replaceMatchesInString:html
+                          options:0
+                            range:NSMakeRange(0, html.length)
+                     withTemplate:@"$1"];
+    NSLog(@"%d matches", matches);
     
     return html;
 }
 
 -(void) emoteChosen:(NSNotification*)notification {
     AwfulEmote *emote = notification.object;
-    NSString *tag = [NSString stringWithFormat:@"<img alt=\"%@\" src=\"data:image/gif;base64,%@\" />", emote.code, emote.imageData.base64EncodedString];
+    NSString *tag = [NSString stringWithFormat:@"<img class=\"emote\" alt=\"%@\" src=\"data:image/gif;base64,%@\" />", emote.code, emote.imageData.base64EncodedString];
     tag = [tag stringByReplacingOccurrencesOfString:@"\r\n" withString:@""];
     NSString *script = [NSString stringWithFormat:@"document.execCommand('insertHTML', false, '%@')",tag];
     NSLog(@"execCommand:%@", [self stringByEvaluatingJavaScriptFromString:script]);
