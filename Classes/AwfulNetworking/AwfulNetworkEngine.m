@@ -138,9 +138,15 @@
         
         if(user == nil) {
             errorBlock(nil);
+            return;
         }
         
         NSString *html_str = [completedOperation responseString];
+        if(html_str == nil) {
+            // attempt to avoid some crashes
+            errorBlock(nil);
+            return;
+        }
         
         NSError *regex_error = nil;
         NSRegularExpression *userid_regex = [NSRegularExpression regularExpressionWithPattern:@"userid=(\\d+)" options:NSRegularExpressionCaseInsensitive error:&regex_error];

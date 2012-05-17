@@ -254,14 +254,21 @@
                                             <rect key="frame" x="62" y="6" width="12" height="12"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         </imageView>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="shsc-apple.png" id="o66-ME-gJ9">
-                                            <rect key="frame" x="5" y="5" width="45" height="45"/>
+                                        <view contentMode="scaleToFill" id="gPT-b6-Yhm">
+                                            <rect key="frame" x="4" y="4" width="47" height="47"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        </imageView>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="ama-secondary.png" id="X4V-9Y-bSW">
-                                            <rect key="frame" x="4" y="4" width="22" height="22"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        </imageView>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="shsc-apple.png" id="rwT-Fk-lpx">
+                                                    <rect key="frame" x="1" y="1" width="45" height="45"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </imageView>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="ama-secondary.png" id="ERb-WT-6Sg">
+                                                    <rect key="frame" x="0.0" y="0.0" width="22" height="22"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </imageView>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="threadrating.png" id="aCe-9I-1Ld">
                                             <rect key="frame" x="5" y="54" width="45" height="13"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -273,9 +280,10 @@
                                 <connections>
                                     <outlet property="pagesLabel" destination="jun-kC-HKv" id="bIy-ZK-OP3"/>
                                     <outlet property="ratingImage" destination="aCe-9I-1Ld" id="0Iw-bP-ROc"/>
-                                    <outlet property="secondTagImage" destination="X4V-9Y-bSW" id="K4n-U8-bf8"/>
+                                    <outlet property="secondTagImage" destination="ERb-WT-6Sg" id="7Ok-0t-nNv"/>
                                     <outlet property="sticky" destination="zgn-oW-S0W" id="h2d-Vd-hMK"/>
-                                    <outlet property="tagImage" destination="o66-ME-gJ9" id="HiO-je-8IO"/>
+                                    <outlet property="tagContainerView" destination="gPT-b6-Yhm" id="FwK-3F-ls3"/>
+                                    <outlet property="tagImage" destination="rwT-Fk-lpx" id="yDf-UO-Wmu"/>
                                     <outlet property="threadTitleLabel" destination="NFX-eX-7xG" id="v4d-9J-1AW"/>
                                     <outlet property="unreadButton" destination="0uD-hy-G9f" id="jnK-rX-agM"/>
                                 </connections>
@@ -343,13 +351,10 @@
                         <rect key="frame" x="0.0" y="64" width="320" height="372"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <webView contentMode="scaleToFill" id="bj6-uZ-iIF" customClass="JSBridgeWebView">
+                            <webView contentMode="scaleToFill" id="bj6-uZ-iIF">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="372"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                <connections>
-                                    <outlet property="delegate" destination="uMb-el-Ve5" id="NO9-jw-SuS"/>
-                                </connections>
                             </webView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -593,14 +598,21 @@
                                             <rect key="frame" x="62" y="6" width="12" height="12"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         </imageView>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="shsc-apple.png" id="tAQ-bk-L9A">
-                                            <rect key="frame" x="5" y="5" width="45" height="45"/>
+                                        <view contentMode="scaleToFill" id="RMF-cs-lMo">
+                                            <rect key="frame" x="4" y="4" width="47" height="47"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        </imageView>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="ama-secondary.png" id="NKV-Bh-gpj">
-                                            <rect key="frame" x="4" y="4" width="22" height="22"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        </imageView>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="shsc-apple.png" id="tAQ-bk-L9A">
+                                                    <rect key="frame" x="1" y="1" width="45" height="45"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </imageView>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="ama-secondary.png" id="NKV-Bh-gpj">
+                                                    <rect key="frame" x="0.0" y="0.0" width="22" height="22"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </imageView>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="threadrating.png" id="NkH-kE-2yN">
                                             <rect key="frame" x="5" y="54" width="45" height="13"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -614,6 +626,7 @@
                                     <outlet property="ratingImage" destination="NkH-kE-2yN" id="WAp-mH-2IU"/>
                                     <outlet property="secondTagImage" destination="NKV-Bh-gpj" id="QTj-IT-xoJ"/>
                                     <outlet property="sticky" destination="DeK-yZ-hqN" id="Avs-s3-Ncz"/>
+                                    <outlet property="tagContainerView" destination="RMF-cs-lMo" id="mPl-cX-KDS"/>
                                     <outlet property="tagImage" destination="tAQ-bk-L9A" id="vz5-0s-p2H"/>
                                     <outlet property="threadTitleLabel" destination="9vx-WL-dqh" id="17Y-xI-yGj"/>
                                     <outlet property="unreadButton" destination="OCg-fQ-9BT" id="lti-oV-ltI"/>
@@ -989,7 +1002,7 @@
                 <relationship kind="outlet" name="nextPageBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="pagesBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="pagesSegmentedControl" candidateClass="ButtonSegmentedControl"/>
-                <relationship kind="outlet" name="webView" candidateClass="JSBridgeWebView"/>
+                <relationship kind="outlet" name="webView" candidateClass="UIWebView"/>
             </relationships>
         </class>
         <class className="AwfulPostBoxController" superclassName="UIViewController">
@@ -1036,6 +1049,7 @@
                 <relationship kind="outlet" name="ratingImage" candidateClass="UIImageView"/>
                 <relationship kind="outlet" name="secondTagImage" candidateClass="UIImageView"/>
                 <relationship kind="outlet" name="sticky" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="tagContainerView" candidateClass="UIView"/>
                 <relationship kind="outlet" name="tagImage" candidateClass="UIImageView"/>
                 <relationship kind="outlet" name="tagLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="threadTitleLabel" candidateClass="UILabel"/>
@@ -1055,9 +1069,6 @@
             <relationships>
                 <relationship kind="outlet" name="target"/>
             </relationships>
-        </class>
-        <class className="JSBridgeWebView" superclassName="UIWebView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/JSBridgeWebView.h"/>
         </class>
     </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

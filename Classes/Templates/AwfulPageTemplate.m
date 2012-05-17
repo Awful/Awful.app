@@ -52,12 +52,16 @@
 
 -(NSURL *)getTemplateURLFromForum : (AwfulForum *)forum
 {
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone && [[AwfulSettings settings] darkTheme]) {
-        NSURL *defaultDarkURL = [[ApplicationDelegate applicationDocumentsDirectory] URLByAppendingPathComponent:@"phone-template-dark.html"];
+    if([[AwfulSettings settings] darkTheme]) {
+        NSString *darkName = @"phone-template-dark.html";
+        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            darkName = @"pad-template-dark.html";
+        }
+        NSURL *defaultDarkURL = [[ApplicationDelegate applicationDocumentsDirectory] URLByAppendingPathComponent:darkName];
         if([defaultDarkURL checkResourceIsReachableAndReturnError:nil]) {
             return defaultDarkURL;
         }
-        return [[NSBundle mainBundle] URLForResource:@"phone-template-dark" withExtension:@"html"];
+        return [[NSBundle mainBundle] URLForResource:darkName withExtension:nil];
     }
     
     if(forum != nil) {
@@ -185,6 +189,8 @@
         _javascripts = [NSArray arrayWithObjects:
                         [NSString awful_stringResource:@"jquery" withExtension:@"js"],
                         [NSString awful_stringResource:@"salr" withExtension:@"js"],
+                        [NSString awful_stringResource:@"ObjCBridge" withExtension:@"js"],
+                        [NSString awful_stringResource:@"awful" withExtension:@"js"],
                         nil];
     }
     return _javascripts;

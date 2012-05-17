@@ -24,6 +24,7 @@
 @property (nonatomic, strong) IBOutlet UIImageView *ratingImage;
 @property (nonatomic, weak) AwfulThreadListController *threadListController;
 @property (nonatomic, strong) IBOutlet UILabel *tagLabel;
+@property (nonatomic, strong) IBOutlet UIView *tagContainerView;
 
 -(void)configureForThread : (AwfulThread *)thread;
 -(UIColor *)getBackgroundColorForThread : (AwfulThread *)thread;

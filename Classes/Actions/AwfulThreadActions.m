@@ -67,6 +67,7 @@ typedef enum {
         AwfulVoteActions *voteActions = [[AwfulVoteActions alloc] initWithAwfulThread:self.thread];
         AwfulPage *page = [self getPage];
         [page setActions:voteActions];
+        [page showActions];
         
     } else if (buttonIndex == AwfulThreadActionBookmarks) {
         CompletionBlock completion = ^{

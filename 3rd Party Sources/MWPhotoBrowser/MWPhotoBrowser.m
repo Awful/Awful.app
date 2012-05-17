@@ -92,10 +92,10 @@
 	self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
     
     UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(hitDone)];
-    self.navigationItem.rightBarButtonItem = done;
+    self.navigationItem.leftBarButtonItem = done;
     
     UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] initWithTitle:@"Save to Photos" style:UIBarButtonItemStyleBordered target:self action:@selector(hitSave)];
-    self.navigationItem.leftBarButtonItem = saveButton;
+    self.navigationItem.rightBarButtonItem = saveButton;
 	
 	// Toolbar
 	toolbar = [[UIToolbar alloc] initWithFrame:[self frameForToolbarAtOrientation:self.interfaceOrientation]];

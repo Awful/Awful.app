@@ -82,10 +82,6 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView 
 {
     if (IsLoggedIn()) {
-        // dumb hack to put in dark theme at the last minute, iPhone only
-        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            return self.sections.count - 2;
-        }
         return self.sections.count - 1;
     } else {
         return 2;
