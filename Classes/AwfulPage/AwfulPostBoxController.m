@@ -17,6 +17,7 @@
 #import "AwfulNetworkEngine.h"
 #import "ButtonSegmentedControl.h"
 #import "AwfulPostComposerView.h"
+#import "AwfulEmote.h"
 
 @implementation AwfulPostBoxController
 
@@ -29,6 +30,7 @@
 @synthesize networkOperation = _networkOperation;
 @synthesize page = _page;
 @synthesize segmentedControl = _segmentedControl;
+@synthesize popoverController = __popoverController;
 
 - (void)viewDidLoad
 {
@@ -44,6 +46,8 @@
     
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     [nc addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    
+    [nc addObserver:self selector:@selector(didChooseEmote:) name:NOTIFY_EMOTE_SELECTED object:nil];
     
     [self setMenuControllerItems];
     
@@ -202,5 +206,25 @@
 */
 }
 
+-(void) didChooseEmote:(NSNotification*)emoteSelectedNotification {
+    //close popover on ipad or dismiss modal on iphone
+    if (self.popoverController && self.popoverController.isPopoverVisible)
+        [self.popoverController dismissPopoverAnimated:YES];
+    
+    else {
+        [self dismissModalViewControllerAnimated:YES];
+    }
+    
+    
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:@"emoteChooserPopover"]) 
+        self.popoverController = [(UIStoryboardPopoverSegue*)segue popoverController];
+    else
+        [self.popoverController dismissPopoverAnimated:YES];
+    
+    
+}
 
 @end

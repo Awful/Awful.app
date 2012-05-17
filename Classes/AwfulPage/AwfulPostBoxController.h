@@ -24,6 +24,7 @@
 @property (nonatomic, strong) IBOutlet EGOTextView *replyTextView;
 @property (nonatomic, strong) IBOutlet AwfulPostComposerView *replyWebView;
 @property (nonatomic, strong) IBOutlet ButtonSegmentedControl *segmentedControl;
+@property (nonatomic,strong) UIPopoverController *popoverController;
 
 @property (nonatomic, strong) AwfulThread *thread;
 @property (nonatomic, strong) AwfulPost *post;
@@ -36,5 +37,7 @@
 -(IBAction)hitSend;
 -(IBAction)hitTextBarButtonItem : (NSString *)str;
 -(void)tappedSegment : (id)sender;
+
+-(void) didChooseEmote:(NSNotification*)emoteSelectedNotification;
 
 @end

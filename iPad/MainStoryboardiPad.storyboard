@@ -704,7 +704,7 @@
                                             <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                             <connections>
                                                 <outlet property="target" destination="yxI-Ea-lFb" id="SQg-Q0-Kur"/>
-                                                <segue destination="Bnj-bX-wt1" kind="popover" popoverAnchorView="oRj-In-H1X" id="ufR-1L-9wD">
+                                                <segue destination="Bnj-bX-wt1" kind="popover" identifier="emoteChooserPopover" popoverAnchorView="oRj-In-H1X" id="ufR-1L-9wD">
                                                     <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
                                                 </segue>
                                             </connections>
@@ -1057,7 +1057,6 @@
                 <relationship kind="outlet" name="nextPageBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="pagesBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="pagesSegmentedControl" candidateClass="ButtonSegmentedControl"/>
-                <relationship kind="outlet" name="toolbar" candidateClass="UIToolbar"/>
                 <relationship kind="outlet" name="webView" candidateClass="JSBridgeWebView"/>
             </relationships>
         </class>

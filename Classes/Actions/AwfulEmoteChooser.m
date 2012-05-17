@@ -142,8 +142,7 @@
     
     AwfulEmote *selected = (AwfulEmote*)[self.fetchedResultsController objectAtIndexPath:emotePath];
     NSLog(@"emote: %@", selected.code);
-    
-    [self dismissModalViewControllerAnimated:YES];
+
     
     [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFY_EMOTE_SELECTED object:selected];
 }
