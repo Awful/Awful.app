@@ -702,9 +702,6 @@
                                             <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                             <connections>
                                                 <outlet property="target" destination="yxI-Ea-lFb" id="SQg-Q0-Kur"/>
-                                                <segue destination="Bnj-bX-wt1" kind="popover" identifier="emoteChooserPopover" popoverAnchorView="oRj-In-H1X" id="ufR-1L-9wD">
-                                                    <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
-                                                </segue>
                                             </connections>
                                         </segmentedControl>
                                     </barButtonItem>
@@ -731,6 +728,9 @@
                         <outlet property="replyWebView" destination="hbu-Jc-1qK" id="GVr-jd-Tcx"/>
                         <outlet property="segmentedControl" destination="oRj-In-H1X" id="836-tM-l16"/>
                         <outlet property="sendButton" destination="fuv-Av-aEq" id="GMG-JD-VJ8"/>
+                        <segue destination="Bnj-bX-wt1" kind="popover" identifier="emoteChooserSegue" popoverAnchorView="oRj-In-H1X" id="g4e-Ac-g5Y">
+                            <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
+                        </segue>
                     </connections>
                 </viewController>
             </objects>

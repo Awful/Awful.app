@@ -450,7 +450,6 @@
                                             <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                             <connections>
                                                 <outlet property="target" destination="gcK-tO-FtL" id="1KR-HU-CcZ"/>
-                                                <segue destination="Eoi-Jd-BWd" kind="modal" id="qr3-BV-YJL"/>
                                             </connections>
                                         </segmentedControl>
                                         <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -477,6 +476,7 @@
                         <outlet property="replyWebView" destination="MtS-dZ-aZH" id="q6c-Aw-s66"/>
                         <outlet property="segmentedControl" destination="Vqh-P3-nJ1" id="rLK-6o-dRE"/>
                         <outlet property="sendButton" destination="7FQ-e0-dlz" id="znj-ps-AyT"/>
+                        <segue destination="Eoi-Jd-BWd" kind="modal" identifier="emoteChooserSegue" modalTransitionStyle="flipHorizontal" id="CBh-bX-6Cu"/>
                     </connections>
                 </viewController>
             </objects>

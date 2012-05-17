@@ -106,10 +106,11 @@
 {
     switch (self.segmentedControl.selectedSegmentIndex) {
         case PostEditorSegmentEmote:
-            
+            [self performSegueWithIdentifier:@"emoteChooserSegue" sender:self];
             break;
             
         case PostEditorSegmentImage:
+            [self presentImagePicker];
             break;
             
         case PostEditorSegmentFormat:
@@ -234,7 +235,7 @@
     
     
 }
-
+/*
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"emoteChooserPopover"]) 
         self.popoverController = [(UIStoryboardPopoverSegue*)segue popoverController];
@@ -243,7 +244,7 @@
     
     
 }
-
+*/
 -(void) presentFormatActionSheet {
         UIActionSheet *action = [[UIActionSheet alloc] initWithTitle:@"Formatting" 
                                                             delegate:self 
@@ -253,8 +254,6 @@
                                  @"Italic", 
                                  @"Underline", 
                                  @"Strikethrough", 
-                                 @"Super", 
-                                 @"Sub", 
                                  nil];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
 
@@ -267,9 +266,29 @@
 }
 
 -(void) actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    NSArray *formats = [NSArray arrayWithObjects:@"Bold", @"Italic", @"Underline", @"Strikethrough", @"Super", @"Sub", nil];
+    NSArray *formats = [NSArray arrayWithObjects:@"Bold", @"Italic", @"Underline", @"Strikethrough", nil];
     if (buttonIndex >= formats.count) return;
     [self.replyWebView format:[formats objectAtIndex:buttonIndex]];
+    
+}
+
+-(void) presentImagePicker {
+    UIImagePickerController* picker = [UIImagePickerController new];
+    picker.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        if (!self.popoverController)
+            self.popoverController = [[UIPopoverController alloc] initWithContentViewController:picker];
+        
+        [self.popoverController presentPopoverFromRect:[[self.segmentedControl.subviews objectAtIndex:PostEditorSegmentImage] frame]
+                                                inView:self.segmentedControl
+                              permittedArrowDirections:(UIPopoverArrowDirectionUp)  
+                                                       animated:YES];
+    }
+    else {
+        picker.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+        [self presentModalViewController:picker animated:YES];
+    }
     
 }
 
