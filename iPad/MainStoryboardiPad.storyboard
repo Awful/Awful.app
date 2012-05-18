@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="1.1" toolsVersion="2182" systemVersion="11D50" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="D7m-b9-f1Z">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="1.1" toolsVersion="2182" systemVersion="11D50b" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="D7m-b9-f1Z">
     <dependencies>
         <deployment defaultVersion="1296" identifier="iOS"/>
         <development defaultVersion="4200" identifier="xcode"/>
@@ -167,14 +167,21 @@
                                             <rect key="frame" x="62" y="6" width="12" height="12"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         </imageView>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="shsc-apple.png" id="TSO-2F-8ug">
-                                            <rect key="frame" x="5" y="5" width="45" height="45"/>
+                                        <view contentMode="scaleToFill" id="qko-Yd-iag">
+                                            <rect key="frame" x="4" y="4" width="47" height="47"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        </imageView>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="ama-secondary.png" id="z6J-O1-yTn">
-                                            <rect key="frame" x="4" y="4" width="22" height="22"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        </imageView>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="shsc-apple.png" id="dLf-bU-EKo">
+                                                    <rect key="frame" x="1" y="1" width="45" height="45"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </imageView>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="ama-secondary.png" id="Tor-t8-99t">
+                                                    <rect key="frame" x="0.0" y="0.0" width="22" height="22"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </imageView>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="threadrating.png" id="0bb-Jb-Vxt">
                                             <rect key="frame" x="5" y="54" width="45" height="13"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -186,9 +193,10 @@
                                 <connections>
                                     <outlet property="pagesLabel" destination="dck-Gw-xuX" id="wkc-uW-63b"/>
                                     <outlet property="ratingImage" destination="0bb-Jb-Vxt" id="Y8w-tS-F5s"/>
-                                    <outlet property="secondTagImage" destination="z6J-O1-yTn" id="gbH-5n-opS"/>
+                                    <outlet property="secondTagImage" destination="Tor-t8-99t" id="mwH-pc-Kag"/>
                                     <outlet property="sticky" destination="N3o-v1-c9o" id="22i-dz-RT9"/>
-                                    <outlet property="tagImage" destination="TSO-2F-8ug" id="2h8-wx-aXw"/>
+                                    <outlet property="tagContainerView" destination="qko-Yd-iag" id="ovd-C9-HQk"/>
+                                    <outlet property="tagImage" destination="dLf-bU-EKo" id="wqX-0g-Gdq"/>
                                     <outlet property="threadTitleLabel" destination="uOi-hq-Ypy" id="N7b-q3-s2Q"/>
                                     <outlet property="unreadButton" destination="cJ2-hY-Neq" id="oEA-pg-759"/>
                                 </connections>
@@ -432,14 +440,21 @@
                                             <rect key="frame" x="62" y="6" width="12" height="12"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         </imageView>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="shsc-apple.png" id="e2L-8F-ZpA">
-                                            <rect key="frame" x="5" y="5" width="45" height="45"/>
+                                        <view contentMode="scaleToFill" id="D9c-Gg-DuK">
+                                            <rect key="frame" x="4" y="4" width="47" height="47"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        </imageView>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="ama-secondary.png" id="2fa-Xd-VNA">
-                                            <rect key="frame" x="4" y="4" width="22" height="22"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        </imageView>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="shsc-apple.png" id="yGO-Qd-Ez7">
+                                                    <rect key="frame" x="1" y="1" width="45" height="45"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </imageView>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="ama-secondary.png" id="4Tw-pC-LJK">
+                                                    <rect key="frame" x="0.0" y="0.0" width="22" height="22"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </imageView>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="threadrating.png" id="ujq-dv-74X">
                                             <rect key="frame" x="5" y="54" width="45" height="13"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -451,9 +466,10 @@
                                 <connections>
                                     <outlet property="pagesLabel" destination="x8T-Ng-VZs" id="ub4-3L-pN9"/>
                                     <outlet property="ratingImage" destination="ujq-dv-74X" id="uAn-PH-nqj"/>
-                                    <outlet property="secondTagImage" destination="2fa-Xd-VNA" id="ZxZ-sb-oet"/>
+                                    <outlet property="secondTagImage" destination="4Tw-pC-LJK" id="3bg-ni-anC"/>
                                     <outlet property="sticky" destination="eff-ae-wg9" id="EO4-v3-y3W"/>
-                                    <outlet property="tagImage" destination="e2L-8F-ZpA" id="scA-Ro-acx"/>
+                                    <outlet property="tagContainerView" destination="D9c-Gg-DuK" id="pBl-rp-wKt"/>
+                                    <outlet property="tagImage" destination="yGO-Qd-Ez7" id="lnG-M0-cuU"/>
                                     <outlet property="threadTitleLabel" destination="ADR-To-RGk" id="i6f-Ga-Nms"/>
                                     <outlet property="unreadButton" destination="D1Y-vW-RJv" id="bhf-bD-bKi"/>
                                 </connections>
@@ -526,13 +542,10 @@
                         <rect key="frame" x="0.0" y="64" width="703" height="660"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <webView contentMode="scaleToFill" id="uom-YB-cRl" customClass="JSBridgeWebView">
+                            <webView contentMode="scaleToFill" id="uom-YB-cRl">
                                 <rect key="frame" x="0.0" y="0.0" width="703" height="660"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                <connections>
-                                    <outlet property="delegate" destination="5o1-8Y-fsn" id="UC6-Ob-25H"/>
-                                </connections>
                             </webView>
                         </subviews>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
@@ -1016,8 +1029,7 @@
                 <relationship kind="outlet" name="nextPageBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="pagesBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="pagesSegmentedControl" candidateClass="ButtonSegmentedControl"/>
-                <relationship kind="outlet" name="toolbar" candidateClass="UIToolbar"/>
-                <relationship kind="outlet" name="webView" candidateClass="JSBridgeWebView"/>
+                <relationship kind="outlet" name="webView" candidateClass="UIWebView"/>
             </relationships>
         </class>
         <class className="AwfulPageIpad" superclassName="AwfulPage">
@@ -1053,6 +1065,7 @@
                 <relationship kind="outlet" name="ratingImage" candidateClass="UIImageView"/>
                 <relationship kind="outlet" name="secondTagImage" candidateClass="UIImageView"/>
                 <relationship kind="outlet" name="sticky" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="tagContainerView" candidateClass="UIView"/>
                 <relationship kind="outlet" name="tagImage" candidateClass="UIImageView"/>
                 <relationship kind="outlet" name="tagLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="threadTitleLabel" candidateClass="UILabel"/>
@@ -1072,9 +1085,6 @@
             <relationships>
                 <relationship kind="outlet" name="target"/>
             </relationships>
-        </class>
-        <class className="JSBridgeWebView" superclassName="UIWebView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/JSBridgeWebView.h"/>
         </class>
     </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

@@ -29,8 +29,15 @@
 #import "OtherWebController.h"
 #import "AwfulUtil.h"
 #import "AwfulLoadingFooterView.h"
-
 #import "AwfulPage+Transitions.h"
+#import "AwfulWebViewDelegate.h"
+
+@interface AwfulPage () <AwfulWebViewDelegate, UIGestureRecognizerDelegate>
+
+//@property (nonatomic, strong) IBOutlet UIWebView *webView;
+@property (strong) AwfulWebViewDelegateWrapper *webViewDelegateWrapper;
+
+@end
 
 @implementation AwfulPage
 
@@ -45,7 +52,6 @@
 @synthesize pages = _pages;
 @synthesize shouldScrollToBottom = _shouldScrollToBottom;
 @synthesize postIDScrollDestination = _postIDScrollDestination;
-@synthesize touchedPage = _touchedPage;
 @synthesize specificPageController = _specificPageController;
 @synthesize dataController = _dataController;
 @synthesize networkOperation = _networkOperation;
@@ -176,7 +182,7 @@
             [self.webView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
             self.webView.tag = self.pages.currentPage;
             
-            self.nextPageWebView = [JSBridgeWebView new];
+            self.nextPageWebView = [UIWebView new];
             self.nextPageWebView.delegate = self;
             self.nextPageWebView.frame = self.webView.frame;
             self.nextPageWebView.foY = self.nextPageWebView.fsH;
@@ -360,16 +366,10 @@
     }
 }
 
-#pragma mark - Memory management
+#pragma mark - View lifecycle
 
-- (void)didReceiveMemoryWarning {
-        // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-        // Relinquish ownership any cached data, images, etc that aren't in use.
-}
-
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
     
     self.isFullScreen = NO;
@@ -378,10 +378,8 @@
     press.delegate = self;
     press.minimumPressDuration = 0.3;
     [self.webView addGestureRecognizer:press];
-    self.webView.delegate = self.webView;
-    self.webView.bridgeDelegate = self;
-    self.webView.delegate = self.webView;
-    
+    self.webViewDelegateWrapper = [AwfulWebViewDelegateWrapper delegateWrappingDelegate:self];
+    self.webView.delegate = self.webViewDelegateWrapper;
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(didFullscreenGesture:)];
         [self.webView addGestureRecognizer:pinch];
@@ -391,9 +389,10 @@
     [self.pagesBarButtonItem setTintColor:[UIColor darkGrayColor]];
 }
 
-- (void)viewDidUnload {
-        // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
-        // For example: self.myOutlet = nil;
+@synthesize webViewDelegateWrapper = _webViewDelegateWrapper;
+
+- (void)viewDidUnload
+{
     [self.networkOperation cancel];
     [self.webView stopLoading];
     [super viewDidUnload];
@@ -401,13 +400,9 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
     [self.navigationController setToolbarHidden:NO];
     self.navigationController.toolbar.barStyle = UIBarStyleBlack;
-}
-
--(void)viewDidAppear:(BOOL)animated
-{
-    
 }
 
 #pragma mark - BarButtonItem Actions
@@ -485,6 +480,7 @@
 -(IBAction)tappedActions:(id)sender
 {
     self.actions = [[AwfulThreadActions alloc] initWithThread:self.thread];
+    self.actions.viewController = self;
     [self.actions showFromToolbar:self.navigationController.toolbar];
 }
 
@@ -552,7 +548,7 @@
 -(void)scrollToPost : (NSString *)post_id
 {
     if(post_id != nil) {
-        NSString *scrolling = [NSString stringWithFormat:@"scrollToID(%@)", post_id];
+        NSString *scrolling = [NSString stringWithFormat:@"scrollToID('%@')", post_id];
         [self.webView stringByEvaluatingJavaScriptFromString:scrolling];
     }
 }
@@ -570,44 +566,49 @@
         }
     }
     self.actions.viewController = self;
+    [self.actions showFromRect:rect inView:[self.view superview] animated:YES];
+}
+
+-(void)showActions
+{
+    self.actions.viewController = self;
     [self.actions showFromToolbar:self.navigationController.toolbar];
 }
 
-#pragma mark - JSBBridgeWebDelegate
+#pragma mark - AwfulWebViewDelegate
 
-- (void)webView:(UIWebView*) webview didReceiveJSNotificationWithDictionary:(NSDictionary*) dictionary
+- (void)webView:(UIWebView *)webView
+pageDidRequestAction:(NSString *)action
+ infoDictionary:(NSDictionary *)infoDictionary
 {
-    NSString *action = [dictionary objectForKey:@"action"];
-    if(action != nil) {
-        if([action isEqualToString:@"nextPage"]) {
-            [self nextPage];
-        } else if([action isEqualToString:@"loadOlderPosts"]) {
-            [self loadOlderPosts];
-        } else if([action isEqualToString:@"postOptions"]) {
-            NSString *post_id = [dictionary objectForKey:@"postid"];
-            CGRect rect = CGRectZero;
-            if ([dictionary objectForKey:@"rect"])
-                rect = CGRectFromString([dictionary objectForKey:@"rect"]);
-            [self showActions:post_id fromRect:rect];
-        }
+    if ([action isEqualToString:@"nextPage"]) {
+        return [self nextPage];
     }
-}
-
--(void)didScroll
-{
-    self.touchedPage = YES;
+    if ([action isEqualToString:@"loadOlderPosts"]) {
+        return [self loadOlderPosts];
+    }
+    if ([action isEqualToString:@"postOptions"]) {
+        NSString *postID = [infoDictionary objectForKey:@"postID"];
+        CGRect rect = CGRectZero;
+        if ([infoDictionary objectForKey:@"rect"])
+            rect = CGRectFromString([infoDictionary objectForKey:@"rect"]);
+        return [self showActions:postID fromRect:rect];
+    }
 }
 
 #pragma mark - Gesture Delegate
 
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
+shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
 {
     return YES;
 }
 
 #pragma mark - Web View Delegate
 
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+- (BOOL)webView:(UIWebView *)webView
+shouldStartLoadWithRequest:(NSURLRequest *)request
+ navigationType:(UIWebViewNavigationType)navigationType
 {    
     if(navigationType == UIWebViewNavigationTypeLinkClicked) {
         
@@ -674,12 +675,10 @@
 {
     [self.webView.scrollView setContentOffset:CGPointMake(0, 0) animated:NO];
     [self swapToRefreshButton];
-    if(!self.touchedPage) {
-        if(self.postIDScrollDestination != nil) {
-            [self scrollToSpecifiedPost];
-        } else if(self.shouldScrollToBottom) {
-            [self scrollToBottom];
-        }
+    if(self.postIDScrollDestination != nil) {
+        [self scrollToSpecifiedPost];
+    } else if(self.shouldScrollToBottom) {
+        [self scrollToBottom];
     }
     
     //animate old page up and offscreen, new page in from the bottom
@@ -854,6 +853,29 @@
         return NO;
     }
     return YES;
+}
+
+-(IBAction)tappedActions:(id)sender
+{
+    self.actions = [[AwfulThreadActions alloc] initWithThread:self.thread];
+    [self showActions];
+}
+
+-(void)showActions
+{    
+    self.actions.viewController = self;
+    UIActionSheet *sheet = self.actions.actionSheet;
+    CGRect buttonRect;
+    if ([self.actions isKindOfClass:[AwfulThreadActions class]] || [self.actions isKindOfClass:[AwfulVoteActions class]])
+    {
+        buttonRect = self.actionsSegmentedControl.frame;
+        buttonRect.origin.y += self.view.frame.size.height;  //Add the height of the view to the button y
+        buttonRect.size.width = buttonRect.size.width / 2;   //Action is the first button, so the width is really only half
+    } else {
+        NSLog(@"only thread actions and vote actions are supported by this 'showActions' method");
+        return;
+    }
+    [sheet showFromRect:buttonRect inView:self.view animated:YES];
 }
 
 - (void)showActions:(NSString *)post_id fromRect:(CGRect)rect

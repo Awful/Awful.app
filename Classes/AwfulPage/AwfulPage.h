@@ -10,8 +10,8 @@
 #import "AwfulThread.h"
 #import "AwfulPost.h"
 #import "AwfulPostBoxController.h"
-#import "JSBridgeWebView.h"
 #import "AwfulPullForActionController.h"
+#import "AwfulWebViewDelegate.h"
 
 typedef enum {
     AwfulPageDestinationTypeFirst,
@@ -27,7 +27,7 @@ typedef enum {
 @class ButtonSegmentedControl;
 @class AwfulLoadingFooterView;
 
-@interface AwfulPage : UIViewController <UIWebViewDelegate, UIGestureRecognizerDelegate, JSBridgeWebViewDelegate, UIScrollViewDelegate,AwfulPullForActionDelegate>
+@interface AwfulPage : UIViewController <AwfulWebViewDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate,AwfulPullForActionDelegate>
 {
 @protected
     AwfulActions *_actions;
@@ -37,14 +37,13 @@ typedef enum {
 @property (nonatomic, strong) NSString *threadID;
 @property (nonatomic, strong) NSString *url;
 @property (nonatomic, assign) AwfulPageDestinationType destinationType;
-@property (nonatomic, strong) IBOutlet JSBridgeWebView *webView;
-@property (nonatomic, strong) JSBridgeWebView *nextPageWebView;
+@property (nonatomic, strong) IBOutlet UIWebView *webView;
+@property (nonatomic, strong) UIWebView *nextPageWebView;
 @property (nonatomic, strong) IBOutlet UIToolbar *toolbar;
 
 @property BOOL isBookmarked;
 @property BOOL shouldScrollToBottom;
 @property (nonatomic, strong) NSString *postIDScrollDestination;
-@property BOOL touchedPage;
 
 @property (nonatomic, strong) AwfulActions *actions;
 @property (nonatomic, strong) AwfulPageCount *pages;
@@ -88,7 +87,7 @@ typedef enum {
 
 -(void)scrollToSpecifiedPost;
 - (void)showActions:(NSString *)post_id fromRect:(CGRect)rect;
--(void)setWebView : (JSBridgeWebView *)webView;
+-(void)showActions;
 -(void)loadOlderPosts;
 -(void)nextPage;
 -(void)prevPage;

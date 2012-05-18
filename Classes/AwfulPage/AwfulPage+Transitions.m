@@ -97,7 +97,7 @@
     //self.pullToNavigateView.onLastPage = YES;
     self.pullForActionController.scrollView = self.webView.scrollView;
     
-    self.nextPageWebView = [JSBridgeWebView new];
+    self.nextPageWebView = [UIWebView new];
     self.nextPageWebView.frame = self.webView.frame;
     self.nextPageWebView.foY = self.nextPageWebView.fsH;
     self.nextPageWebView.delegate = self;
