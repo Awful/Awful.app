@@ -34,7 +34,7 @@
     autoF5Label.shadowColor = [UIColor blackColor];
     autoF5Label.backgroundColor = [UIColor clearColor];
     autoF5Label.font = [UIFont systemFontOfSize:11];
-    autoF5Label.frame = CGRectMake(0, 45, accessory.fsW, 15);
+    autoF5Label.frame = CGRectMake(0, 45, self.autoF5.fsW, 15);
     autoF5Label.textAlignment = UITextAlignmentCenter;
     
     [accessory addSubview:self.autoF5];
@@ -67,6 +67,7 @@
 -(void) layoutSubviews {
     [super layoutSubviews];
     self.activityView.frame = self.imageView.frame;
+    
     CAGradientLayer *gradient = [CAGradientLayer layer];
     gradient.frame = self.bounds;
     gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor blackColor] CGColor], 

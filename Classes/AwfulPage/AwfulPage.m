@@ -280,6 +280,10 @@
         //[MBProgressHUD hideHUDForView:self.view animated:NO];
         
         self.loadingFooterView.onLastPage = self.pages.onLastPage;
+        
+        self.webView.scrollView.contentInset = self.loadingFooterView.onLastPage?
+            UIEdgeInsetsMake(0, 0, self.pullForActionController.footerView.fsH, 0) :
+            UIEdgeInsetsZero;
 
         
     } onError:^(NSError *error) {

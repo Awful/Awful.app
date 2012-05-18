@@ -86,7 +86,7 @@
         NSLog(@"normal");
         self.headerView.state = AwfulPullForActionStateNormal;
         self.footerView.state = AwfulPullForActionStateNormal;
-		scrollView.contentInset = UIEdgeInsetsZero;
+		//scrollView.contentInset = UIEdgeInsetsZero;
         return;
     }
     
