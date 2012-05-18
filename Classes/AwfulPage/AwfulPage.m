@@ -683,6 +683,9 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         [self scrollToBottom];
     }
     
+    self.pullForActionController.headerView.state = AwfulPullForActionStateNormal;
+    self.pullForActionController.footerView.state = AwfulPullForActionStateNormal;
+    
     //animate old page up and offscreen, new page in from the bottom
     if (sender == self.nextPageWebView) {
         [self doPageTransition];
@@ -690,7 +693,6 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     }
     else {
         [UIView animateWithDuration:.5 animations:^{
-            self.pullForActionController.headerView.state = AwfulPullForActionStateNormal;
             self.webView.scrollView.contentInset = UIEdgeInsetsZero;
         }
          ];

@@ -19,8 +19,5 @@ typedef enum {
 @property (nonatomic,strong) IBOutlet UISwitch* autoF5;
 @property (nonatomic,strong) UIScrollView* scrollView;
 
-@property (readonly) IBOutlet UILabel* mainLabel;
-@property (readonly) IBOutlet UILabel* subLabel;
-
 
 @end

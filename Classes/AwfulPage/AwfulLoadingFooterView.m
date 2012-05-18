@@ -112,9 +112,6 @@
 			
 			break;
             
-		case AwfulPullForActionStateNormal:
-            return;
-            break;
                         
 		case AwfulPullForActionStateLoading:
 			self.textLabel.text = @"Loading...";
@@ -124,10 +121,12 @@
 			return;
 			break;
             
+		case AwfulPullForActionStateNormal:
         case AwfulPullForActionStatePulling:
-                self.textLabel.text = (@"Pull up for next page...");
-                self.detailTextLabel.text = @"Go to page X of Y";
-                [self.activityView stopAnimating];
+            self.textLabel.text = (@"Pull up for next page...");
+            self.detailTextLabel.text = @"Go to page X of Y";
+            [self.activityView stopAnimating];
+            self.imageView.hidden = NO;
                 //this animation caused a crash when case ...Loading: was after it
                 //dont know wtf
                 //[UIView animateWithDuration:.3
@@ -174,7 +173,7 @@
             break;
 
 	}
-    
+    [self setNeedsLayout];
 }
 
 @end
