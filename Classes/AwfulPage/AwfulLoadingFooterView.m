@@ -58,6 +58,7 @@
     
     
     self.activityView = [UIActivityIndicatorView new];
+    self.activityView.hidesWhenStopped = YES;
     [self addSubview:self.activityView];
     
     return self;
@@ -96,11 +97,13 @@
 - (void)setState:(AwfulPullForActionState)aState
 {
 	_state = aState;
-	switch (aState) {
+    int onLastPage = self.onLastPage? AwfulPullForActionOnLastPage : 0;
+    
+	switch (aState + onLastPage) {
 		case AwfulPullForActionStateRelease:
 			
 			self.textLabel.text = @"Release for next page...";
-            
+            self.detailTextLabel.text = @"Pull down to cancel";
             //[UIView animateWithDuration:.3
             //                 animations:^{
                                  self.imageView.transform = CGAffineTransformMakeRotation(0);
@@ -112,39 +115,64 @@
 		case AwfulPullForActionStateNormal:
             return;
             break;
-            
-        case AwfulPullForActionStatePulling:
-            if (!self.onLastPage) {
-                self.textLabel.text = (@"Pull up for next page...");
-                //[self.activityView stopAnimating];
-                [UIView animateWithDuration:.3
-                                 animations:^{
-                                     self.imageView.transform = CGAffineTransformMakeRotation(M_PI);
-                                 }
-                 ];
-                
-                
-                //[self refreshLastUpdatedDate];
-            }
-            else {
-                self.textLabel.text = @"End of the Thread";
-                self.autoF5.hidden = NO;
-            }
-            
-            
-			break;
+                        
 		case AwfulPullForActionStateLoading:
-			
 			self.textLabel.text = @"Loading...";
+            self.detailTextLabel.text = nil;
             self.imageView.hidden = YES;
 			[self.activityView startAnimating];
-			[CATransaction begin];
-			[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions]; 
-			[CATransaction commit];
-			
+			return;
 			break;
-		default:
+            
+        case AwfulPullForActionStatePulling:
+                self.textLabel.text = (@"Pull up for next page...");
+                self.detailTextLabel.text = @"Go to page X of Y";
+                [self.activityView stopAnimating];
+                //this animation caused a crash when case ...Loading: was after it
+                //dont know wtf
+                //[UIView animateWithDuration:.3
+                 //                animations:^{
+                 //                    self.imageView.transform = CGAffineTransformMakeRotation(M_PI);
+                 //                }
+                // ];            
 			break;
+
+            
+        /*Customize for last page */    
+        case AwfulPullForActionStateNormal + AwfulPullForActionOnLastPage:
+            self.textLabel.text = @"End of the Thread";
+            self.detailTextLabel.text = @"Pull up to refresh...";
+            self.accessoryView.hidden = NO;
+            [self.activityView stopAnimating];
+            break;
+            
+        case AwfulPullForActionStateLoading + AwfulPullForActionOnLastPage:
+            self.textLabel.text = @"Loading...";
+            self.detailTextLabel.text = nil;
+            self.accessoryView.hidden = YES;
+            [self.activityView startAnimating];
+            self.imageView.hidden = YES;
+            break;
+            
+            
+            
+        case AwfulPullForActionStateRelease + AwfulPullForActionOnLastPage:
+            self.textLabel.text = @"Release to refresh...";
+            self.detailTextLabel.text = @"Pull down to cancel";
+            self.accessoryView.hidden = YES;
+            [self.activityView stopAnimating];
+            self.imageView.hidden = NO;
+            break;
+            
+            
+        case AwfulPullForActionStatePulling + AwfulPullForActionOnLastPage:
+            self.textLabel.text = @"Pull up to refresh";
+            self.detailTextLabel.text = nil;
+            self.accessoryView.hidden = NO;
+            [self.activityView stopAnimating];
+            self.imageView.hidden = NO;
+            break;
+
 	}
     
 }

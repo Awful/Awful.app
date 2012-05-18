@@ -9,6 +9,10 @@
 #import "EGORefreshTableHeaderView.h"
 #import "AwfulPullForActionController.h"
 
+typedef enum {
+    AwfulPullForActionOnLastPage = 5
+} AwfulPullForActionPageState;
+
 @interface AwfulLoadingFooterView : UITableViewCell <AwfulPullForActionViewDelegate>
 
 @property (nonatomic,readwrite) BOOL onLastPage;

@@ -207,6 +207,7 @@
     [mythread setTitle:title];
     UILabel *lab = (UILabel *)self.navigationItem.titleView;
     lab.text = title;
+    lab.adjustsFontSizeToFitWidth = YES;
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender

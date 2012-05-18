@@ -15,6 +15,7 @@
 @synthesize headerView = _headerView;
 @synthesize footerView = _footerView;
 @synthesize delegate = _delegate;
+@synthesize userScrolling = _userScrolling;
 
 -(id) initWithScrollView:(UIScrollView*)scrollView {
     self = [super init];
@@ -62,6 +63,8 @@
 
 #pragma mark UIScrollView Delegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (!self.userScrolling) return;
+    
     if (self.headerView.state == AwfulPullForActionStateLoading || 
         self.footerView.state == AwfulPullForActionStateLoading)
         return;
@@ -124,8 +127,13 @@
         [self.delegate scrollViewDidScroll:scrollView];
 }
 
+-(void) scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    self.userScrolling = YES;
+}
+
 -(void) scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate 
 {
+    self.userScrolling = NO;
     CGFloat scrollAmount = scrollView.contentOffset.y;
     
     CGFloat headerThreshhold = -2*self.headerView.fsH - EXTRA_PULL_THRESHHOLD;

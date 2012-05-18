@@ -36,6 +36,7 @@ typedef enum {
 @property (nonatomic,strong) UIView<AwfulPullForActionViewDelegate>* headerView;
 @property (nonatomic,strong) UIView<AwfulPullForActionViewDelegate>* footerView;
 @property (nonatomic,strong) UIViewController<AwfulPullForActionDelegate,UIScrollViewDelegate>* delegate;
+@property (nonatomic) BOOL userScrolling;
 
 
 @end
