@@ -175,6 +175,17 @@
 		117CE6F515433504005DD47B /* yp-bsod.png in Resources */ = {isa = PBXBuildFile; fileRef = 117CE6E815433504005DD47B /* yp-bsod.png */; };
 		117DBE3B1522A39A007125EF /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 117DBE3A1522A39A007125EF /* CoreData.framework */; };
 		117DBE431522AA2D007125EF /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 117DBE411522AA2D007125EF /* Model.xcdatamodeld */; };
+		11817E1F1565E5E7000E765A /* bss-indie.png in Resources */ = {isa = PBXBuildFile; fileRef = 11817E141565E5E7000E765A /* bss-indie.png */; };
+		11817E201565E5E7000E765A /* cd_drama.png in Resources */ = {isa = PBXBuildFile; fileRef = 11817E151565E5E7000E765A /* cd_drama.png */; };
+		11817E211565E5E7000E765A /* cell-gsm.png in Resources */ = {isa = PBXBuildFile; fileRef = 11817E161565E5E7000E765A /* cell-gsm.png */; };
+		11817E221565E5E7000E765A /* diy-homeimprove.png in Resources */ = {isa = PBXBuildFile; fileRef = 11817E171565E5E7000E765A /* diy-homeimprove.png */; };
+		11817E231565E5E7000E765A /* shsc-bsd.png in Resources */ = {isa = PBXBuildFile; fileRef = 11817E181565E5E7000E765A /* shsc-bsd.png */; };
+		11817E241565E5E7000E765A /* shsc-laptop.png in Resources */ = {isa = PBXBuildFile; fileRef = 11817E191565E5E7000E765A /* shsc-laptop.png */; };
+		11817E251565E5E7000E765A /* shsc-networking.png in Resources */ = {isa = PBXBuildFile; fileRef = 11817E1A1565E5E7000E765A /* shsc-networking.png */; };
+		11817E261565E5E7000E765A /* shsc-sysadmin.png in Resources */ = {isa = PBXBuildFile; fileRef = 11817E1B1565E5E7000E765A /* shsc-sysadmin.png */; };
+		11817E271565E5E7000E765A /* tava-analog.png in Resources */ = {isa = PBXBuildFile; fileRef = 11817E1C1565E5E7000E765A /* tava-analog.png */; };
+		11817E281565E5E7000E765A /* tava-speakers.png in Resources */ = {isa = PBXBuildFile; fileRef = 11817E1D1565E5E7000E765A /* tava-speakers.png */; };
+		11817E291565E5E7000E765A /* tg-gurps.png in Resources */ = {isa = PBXBuildFile; fileRef = 11817E1E1565E5E7000E765A /* tg-gurps.png */; };
 		1182A3B815509060005BBBF9 /* icon-37-selling-secondary.png in Resources */ = {isa = PBXBuildFile; fileRef = 1182A3B415509060005BBBF9 /* icon-37-selling-secondary.png */; };
 		1182A3B915509060005BBBF9 /* icon-38-buying-secondary.png in Resources */ = {isa = PBXBuildFile; fileRef = 1182A3B515509060005BBBF9 /* icon-38-buying-secondary.png */; };
 		1182A3BA15509060005BBBF9 /* icon-46-trading-secondary.png in Resources */ = {isa = PBXBuildFile; fileRef = 1182A3B615509060005BBBF9 /* icon-46-trading-secondary.png */; };
@@ -619,6 +630,17 @@
 		117CE6E815433504005DD47B /* yp-bsod.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yp-bsod.png"; sourceTree = "<group>"; };
 		117DBE3A1522A39A007125EF /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		117DBE421522AA2D007125EF /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		11817E141565E5E7000E765A /* bss-indie.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bss-indie.png"; sourceTree = "<group>"; };
+		11817E151565E5E7000E765A /* cd_drama.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cd_drama.png; sourceTree = "<group>"; };
+		11817E161565E5E7000E765A /* cell-gsm.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cell-gsm.png"; sourceTree = "<group>"; };
+		11817E171565E5E7000E765A /* diy-homeimprove.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "diy-homeimprove.png"; sourceTree = "<group>"; };
+		11817E181565E5E7000E765A /* shsc-bsd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shsc-bsd.png"; sourceTree = "<group>"; };
+		11817E191565E5E7000E765A /* shsc-laptop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shsc-laptop.png"; sourceTree = "<group>"; };
+		11817E1A1565E5E7000E765A /* shsc-networking.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shsc-networking.png"; sourceTree = "<group>"; };
+		11817E1B1565E5E7000E765A /* shsc-sysadmin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shsc-sysadmin.png"; sourceTree = "<group>"; };
+		11817E1C1565E5E7000E765A /* tava-analog.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tava-analog.png"; sourceTree = "<group>"; };
+		11817E1D1565E5E7000E765A /* tava-speakers.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tava-speakers.png"; sourceTree = "<group>"; };
+		11817E1E1565E5E7000E765A /* tg-gurps.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tg-gurps.png"; sourceTree = "<group>"; };
 		1182A3B415509060005BBBF9 /* icon-37-selling-secondary.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-37-selling-secondary.png"; sourceTree = "<group>"; };
 		1182A3B515509060005BBBF9 /* icon-38-buying-secondary.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-38-buying-secondary.png"; sourceTree = "<group>"; };
 		1182A3B615509060005BBBF9 /* icon-46-trading-secondary.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-46-trading-secondary.png"; sourceTree = "<group>"; };
@@ -1086,6 +1108,17 @@
 		112ECF0F14D7100A007EE7B6 /* threadtags */ = {
 			isa = PBXGroup;
 			children = (
+				11817E141565E5E7000E765A /* bss-indie.png */,
+				11817E151565E5E7000E765A /* cd_drama.png */,
+				11817E161565E5E7000E765A /* cell-gsm.png */,
+				11817E171565E5E7000E765A /* diy-homeimprove.png */,
+				11817E181565E5E7000E765A /* shsc-bsd.png */,
+				11817E191565E5E7000E765A /* shsc-laptop.png */,
+				11817E1A1565E5E7000E765A /* shsc-networking.png */,
+				11817E1B1565E5E7000E765A /* shsc-sysadmin.png */,
+				11817E1C1565E5E7000E765A /* tava-analog.png */,
+				11817E1D1565E5E7000E765A /* tava-speakers.png */,
+				11817E1E1565E5E7000E765A /* tg-gurps.png */,
 				11FBF8B51564174000734FAC /* cc-critique.png */,
 				11FBF8B61564174000734FAC /* fyad-archery.png */,
 				11FBF8B71564174100734FAC /* fyad-nilbog.png */,
@@ -2249,6 +2282,17 @@
 				11FBF8C61564174200734FAC /* nmd-us.png in Resources */,
 				11FBF8C71564174200734FAC /* nmd-world.png in Resources */,
 				11FBF8C81564174200734FAC /* yp-gnugpl.png in Resources */,
+				11817E1F1565E5E7000E765A /* bss-indie.png in Resources */,
+				11817E201565E5E7000E765A /* cd_drama.png in Resources */,
+				11817E211565E5E7000E765A /* cell-gsm.png in Resources */,
+				11817E221565E5E7000E765A /* diy-homeimprove.png in Resources */,
+				11817E231565E5E7000E765A /* shsc-bsd.png in Resources */,
+				11817E241565E5E7000E765A /* shsc-laptop.png in Resources */,
+				11817E251565E5E7000E765A /* shsc-networking.png in Resources */,
+				11817E261565E5E7000E765A /* shsc-sysadmin.png in Resources */,
+				11817E271565E5E7000E765A /* tava-analog.png in Resources */,
+				11817E281565E5E7000E765A /* tava-speakers.png in Resources */,
+				11817E291565E5E7000E765A /* tg-gurps.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
