@@ -32,7 +32,7 @@
         <attribute name="userID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="userName" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
-    <entity name="Favorite" syncable="YES">
+    <entity name="Favorite" representedClassName="AwfulFavorite" syncable="YES">
         <attribute name="displayOrder" optional="YES" attributeType="Integer 32" defaultValueString="-1" syncable="YES"/>
         <relationship name="forum" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="favorite" inverseEntity="AwfulForum" syncable="YES"/>
     </entity>

@@ -115,7 +115,7 @@
     }
     
     // Content
-    int posts_per_page = [[[AwfulUser currentUser] postsPerPage] intValue];
+    int posts_per_page = [AwfulUser currentUser].postsPerPageValue;
     int total_pages = (([thread.totalReplies intValue]-1)/posts_per_page) + 1;
     self.pagesLabel.text = [NSString stringWithFormat:@"Pages: %d, Killed by %@", total_pages, thread.lastPostAuthorName];
     

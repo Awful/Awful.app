@@ -60,7 +60,6 @@ typedef enum {
         [self.networkOperation cancel];
         
         NSIndexPath *selected = [self.tableView indexPathForSelectedRow];
-        AwfulThread *thread = [self getThreadAtIndexPath:selected];
         
         AwfulPage *page = nil;
         if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
@@ -70,7 +69,7 @@ typedef enum {
             page = (AwfulPage *)nav.topViewController;
         }
         
-        page.thread = thread;
+        page.thread = [self getThreadAtIndexPath:selected];
         [page refresh];
         
         if ([self splitViewController])
