@@ -18,17 +18,54 @@
 @synthesize onLastPage = _onLastPage;
 @synthesize scrollView = _scrollView;
 @synthesize autoF5 = _autoF5;
+@synthesize activityView = _activityView;
 
 -(id) init {
-    self = [super initWithFrame:CGRectMake(0, 0, 768, 65)];
-    self.autoF5 = [[UISwitch alloc] initWithFrame:CGRectMake(self.fsW - 100,0 , 0, 0)];
-    self.autoF5.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|
-                                    UIViewAutoresizingFlexibleTopMargin|
-                                    UIViewAutoresizingFlexibleBottomMargin;
-    [self addSubview:self.autoF5];
+    //self = [super initWithFrame:CGRectMake(0, 0, 768, 65)];
+    self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"PullToNavCell"];
+    self.frame = CGRectMake(0, 0, 300, 60);
+    
+    UIView *accessory = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 60)];
+    self.autoF5 = [[UISwitch alloc] initWithFrame:CGRectMake(0, 15, 100, 0)];
+    self.autoF5.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+    UILabel *autoF5Label = [UILabel new];
+    autoF5Label.text = @"Auto-Refresh";
+    autoF5Label.textColor = [UIColor lightGrayColor];
+    autoF5Label.shadowColor = [UIColor blackColor];
+    autoF5Label.backgroundColor = [UIColor clearColor];
+    autoF5Label.font = [UIFont systemFontOfSize:11];
+    autoF5Label.frame = CGRectMake(0, 45, accessory.fsW, 15);
+    autoF5Label.textAlignment = UITextAlignmentCenter;
+    
+    [accessory addSubview:self.autoF5];
+    [accessory addSubview:autoF5Label];
+    self.accessoryView = accessory;
+    
+    self.imageView.image = [UIImage imageNamed:@"whiteArrow.png"];
+    self.imageView.contentMode = UIViewContentModeCenter;
     
     self.onLastPage = NO;
     self.backgroundColor = [UIColor clearColor];
+        
+    self.textLabel.text = @"Release for next page...";
+    self.textLabel.textColor = [UIColor whiteColor];
+    self.textLabel.shadowColor = [UIColor blackColor];
+    
+    self.detailTextLabel.text = @"Go to page X of Y";
+    self.detailTextLabel.textColor = [UIColor whiteColor];
+    
+    self.indentationLevel = 2;
+    
+    
+    self.activityView = [UIActivityIndicatorView new];
+    [self addSubview:self.activityView];
+    
+    return self;
+}
+
+-(void) layoutSubviews {
+    [super layoutSubviews];
+    self.activityView.frame = self.imageView.frame;
     CAGradientLayer *gradient = [CAGradientLayer layer];
     gradient.frame = self.bounds;
     gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor blackColor] CGColor], 
@@ -36,18 +73,18 @@
                        nil];
     [self.layer insertSublayer:gradient atIndex:0];
     
-    return self;
+
 }
 
 -(void) setOnLastPage:(BOOL)onLastPage {
     _onLastPage = onLastPage;
     
     if (onLastPage) {
-        self.autoF5.hidden = NO;
+        self.accessoryView.hidden = NO;
     }
     
     else {
-        self.autoF5.hidden = YES;
+        self.accessoryView.hidden = YES;
         
     }
     
@@ -62,35 +99,35 @@
 	switch (aState) {
 		case AwfulPullForActionStateRelease:
 			
-			self.statusLabel.text = @"Release for next page...";
-			[CATransaction begin];
-			[CATransaction setAnimationDuration:FLIP_ANIMATION_DURATION];
-			self.arrowImage.transform = CATransform3DMakeRotation((M_PI / 180.0) * 180.0f, 0.0f, 0.0f, 1.0f);
-			[CATransaction commit];
+			self.textLabel.text = @"Release for next page...";
+            
+            //[UIView animateWithDuration:.3
+            //                 animations:^{
+                                 self.imageView.transform = CGAffineTransformMakeRotation(0);
+             //                }
+             //];
 			
 			break;
+            
 		case AwfulPullForActionStateNormal:
+            return;
+            break;
+            
         case AwfulPullForActionStatePulling:
             if (!self.onLastPage) {
-                if (self.state == EGOOPullRefreshPulling) {
-                    [CATransaction begin];
-                    [CATransaction setAnimationDuration:FLIP_ANIMATION_DURATION];
-                    self.arrowImage.transform = CATransform3DIdentity;
-                    [CATransaction commit];
-                }
+                self.textLabel.text = (@"Pull up for next page...");
+                //[self.activityView stopAnimating];
+                [UIView animateWithDuration:.3
+                                 animations:^{
+                                     self.imageView.transform = CGAffineTransformMakeRotation(M_PI);
+                                 }
+                 ];
                 
-                self.statusLabel.text = (@"Pull up for next page...");
-                [self.activityView stopAnimating];
-                [CATransaction begin];
-                [CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions]; 
-                self.arrowImage.hidden = NO;
-                self.arrowImage.transform = CATransform3DIdentity;
-                [CATransaction commit];
                 
-                [self refreshLastUpdatedDate];
+                //[self refreshLastUpdatedDate];
             }
             else {
-                self.statusLabel.text = @"End of the Thread";
+                self.textLabel.text = @"End of the Thread";
                 self.autoF5.hidden = NO;
             }
             
@@ -98,11 +135,11 @@
 			break;
 		case AwfulPullForActionStateLoading:
 			
-			self.statusLabel.text = @"Loading...";
+			self.textLabel.text = @"Loading...";
+            self.imageView.hidden = YES;
 			[self.activityView startAnimating];
 			[CATransaction begin];
 			[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions]; 
-			self.arrowImage.hidden = YES;
 			[CATransaction commit];
 			
 			break;

@@ -9,7 +9,7 @@
 #import "EGORefreshTableHeaderView.h"
 #import "AwfulPullForActionController.h"
 
-@interface AwfulLoadingFooterView : EGORefreshTableHeaderView <AwfulPullForActionViewDelegate>
+@interface AwfulLoadingFooterView : UITableViewCell <AwfulPullForActionViewDelegate>
 
 @property (nonatomic,readwrite) BOOL onLastPage;
 @property (nonatomic,strong) IBOutlet UISwitch* autoF5;

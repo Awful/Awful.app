@@ -25,6 +25,7 @@ typedef enum {
 @protocol AwfulPullForActionViewDelegate <NSObject>
 
 @property (nonatomic) AwfulPullForActionState state;
+@property (nonatomic,strong) UIActivityIndicatorView* activityView;
 
 @end
 

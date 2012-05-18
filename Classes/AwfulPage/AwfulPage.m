@@ -74,6 +74,7 @@
     self.pagesSegmentedControl.action = @selector(tappedPagesSegment:);
     //self.webView.scrollView.delegate = self;
     self.view.backgroundColor = [UIColor underPageBackgroundColor];
+    self.webView.backgroundColor = [UIColor scrollViewTexturedBackgroundColor];
     //if (!self.pullToNavigateView) {
     //    self.pullToNavigateView = [AwfulLoadingFooterView new];
     //}
@@ -673,7 +674,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 
 -(void)webViewDidFinishLoad:(UIWebView *)sender
 {
-    [self.webView.scrollView setContentOffset:CGPointMake(0, 0) animated:NO];
+    //[self.webView.scrollView setContentOffset:CGPointMake(0, 0) animated:NO];
     [self swapToRefreshButton];
     if(self.postIDScrollDestination != nil) {
         [self scrollToSpecifiedPost];

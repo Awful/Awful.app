@@ -8,6 +8,8 @@
 
 #import "AwfulPullForActionController.h"
 
+#define EXTRA_PULL_THRESHHOLD 5
+
 @implementation AwfulPullForActionController
 @synthesize scrollView = _scrollView;
 @synthesize headerView = _headerView;
@@ -66,8 +68,8 @@
     
     CGFloat scrollAmount = scrollView.contentOffset.y;
     
-    CGFloat headerThreshhold = -self.headerView.fsH - 5.0f;
-    CGFloat footerThreshhold = self.scrollView.contentSize.height - self.scrollView.fsH + self.footerView.fsH + 5.0f;
+    CGFloat headerThreshhold = -2*self.headerView.fsH - EXTRA_PULL_THRESHHOLD;
+    CGFloat footerThreshhold = self.scrollView.contentSize.height - self.scrollView.fsH + 2*self.footerView.fsH + EXTRA_PULL_THRESHHOLD;
     
     //check footer positioning, it got misplaced sometimes for some reason
     if (self.footerView.foY != scrollView.contentSize.height) {
@@ -126,8 +128,8 @@
 {
     CGFloat scrollAmount = scrollView.contentOffset.y;
     
-    CGFloat headerThreshhold = -self.headerView.fsH - 5.0f;
-    CGFloat footerThreshhold = scrollView.contentSize.height - scrollView.fsH + self.footerView.fsH + 5.0f;
+    CGFloat headerThreshhold = -2*self.headerView.fsH - EXTRA_PULL_THRESHHOLD;
+    CGFloat footerThreshhold = scrollView.contentSize.height - scrollView.fsH + 2*self.footerView.fsH + EXTRA_PULL_THRESHHOLD;
     
     UIEdgeInsets inset;
     if (scrollAmount < headerThreshhold) {

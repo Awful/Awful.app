@@ -55,10 +55,14 @@
     
     self.nextPageWebView.frame = self.webView.frame;
     self.nextPageWebView.foY = self.nextPageWebView.fsH;
+    //self.nextPageWebView.hidden = YES;
+    
+    CGPoint bottomOffset = CGPointMake(0, self.webView.scrollView.contentSize.height - self.webView.scrollView.bounds.size.height + self.pullForActionController.footerView.fsH);
+    [self.webView.scrollView setContentOffset:bottomOffset animated:YES];
     
     [UIView animateWithDuration:.5 
                           delay:0 
-                        options:(UIViewAnimationOptionCurveEaseIn) 
+                        options:(UIViewAnimationOptionCurveEaseInOut) 
                      animations:^{
                          self.nextPageWebView.frame = self.webView.frame;
                          self.webView.foY = -self.webView.fsH;
@@ -79,7 +83,7 @@
     
     [UIView animateWithDuration:.5 
                           delay:0 
-                        options:(UIViewAnimationOptionCurveEaseIn) 
+                        options:(UIViewAnimationOptionCurveEaseInOut) 
                      animations:^{
                          self.nextPageWebView.frame = self.webView.frame;
                          self.webView.foY = self.webView.fsH;
