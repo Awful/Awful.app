@@ -216,7 +216,6 @@
 		1190F76213BE4EA900B9D271 /* AwfulPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F72613BE4EA900B9D271 /* AwfulPost.m */; };
 		1190F76713BE4EA900B9D271 /* AwfulUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F73113BE4EA900B9D271 /* AwfulUtil.m */; };
 		1190F76813BE4EA900B9D271 /* SmilieGrabber.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F73313BE4EA900B9D271 /* SmilieGrabber.m */; };
-		1190F7C713BE4ECB00B9D271 /* Appirater.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F76C13BE4ECB00B9D271 /* Appirater.m */; };
 		1190F7E313BE4ECB00B9D271 /* 37x-Checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 1190F7A913BE4ECB00B9D271 /* 37x-Checkmark.png */; };
 		1190F7E413BE4ECB00B9D271 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7AB13BE4ECB00B9D271 /* MBProgressHUD.m */; };
 		1190F7E613BE4ECB00B9D271 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7B113BE4ECB00B9D271 /* NSString+HTML.m */; };
@@ -686,8 +685,6 @@
 		1190F73113BE4EA900B9D271 /* AwfulUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulUtil.m; sourceTree = "<group>"; };
 		1190F73213BE4EA900B9D271 /* SmilieGrabber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieGrabber.h; sourceTree = "<group>"; };
 		1190F73313BE4EA900B9D271 /* SmilieGrabber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieGrabber.m; sourceTree = "<group>"; };
-		1190F76B13BE4ECB00B9D271 /* Appirater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Appirater.h; sourceTree = "<group>"; };
-		1190F76C13BE4ECB00B9D271 /* Appirater.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Appirater.m; sourceTree = "<group>"; };
 		1190F7A913BE4ECB00B9D271 /* 37x-Checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "37x-Checkmark.png"; sourceTree = "<group>"; };
 		1190F7AA13BE4ECB00B9D271 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		1190F7AB13BE4ECB00B9D271 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
@@ -1502,28 +1499,17 @@
 		1190F76913BE4ECB00B9D271 /* 3rd Party Sources */ = {
 			isa = PBXGroup;
 			children = (
-				11D470111547A97A004D800B /* TestFlightSDK1 */,
-				11FE9E22153CFC6F002EE2B5 /* MKNetworkKit */,
-				1190F76A13BE4ECB00B9D271 /* Appirater */,
 				11FDA2BF15129CAF0014FDCD /* EGOTableViewPullRefresh */,
 				1CDF79FE1537C157008EFAE4 /* GRMustache */,
 				1190F7BF13BE4ECB00B9D271 /* Hpple */,
 				1190F7A813BE4ECB00B9D271 /* MBProgressHUD */,
+				11FE9E22153CFC6F002EE2B5 /* MKNetworkKit */,
+				1190F7B213BE4ECB00B9D271 /* MWPhotoBrowser */,
 				1190F7B013BE4ECB00B9D271 /* NSString+HTML.h */,
 				1190F7B113BE4ECB00B9D271 /* NSString+HTML.m */,
-				1190F7B213BE4ECB00B9D271 /* MWPhotoBrowser */,
+				11D470111547A97A004D800B /* TestFlightSDK1 */,
 			);
 			path = "3rd Party Sources";
-			sourceTree = "<group>";
-		};
-		1190F76A13BE4ECB00B9D271 /* Appirater */ = {
-			isa = PBXGroup;
-			children = (
-				1190F76B13BE4ECB00B9D271 /* Appirater.h */,
-				1190F76C13BE4ECB00B9D271 /* Appirater.m */,
-			);
-			name = Appirater;
-			path = "arashpayan-appirater-776ce19";
 			sourceTree = "<group>";
 		};
 		1190F7A813BE4ECB00B9D271 /* MBProgressHUD */ = {
@@ -2305,7 +2291,6 @@
 				1190F76213BE4EA900B9D271 /* AwfulPost.m in Sources */,
 				1190F76713BE4EA900B9D271 /* AwfulUtil.m in Sources */,
 				1190F76813BE4EA900B9D271 /* SmilieGrabber.m in Sources */,
-				1190F7C713BE4ECB00B9D271 /* Appirater.m in Sources */,
 				1190F7E413BE4ECB00B9D271 /* MBProgressHUD.m in Sources */,
 				1190F7E613BE4ECB00B9D271 /* NSString+HTML.m in Sources */,
 				1190F7E713BE4ECB00B9D271 /* MWPhoto.m in Sources */,
