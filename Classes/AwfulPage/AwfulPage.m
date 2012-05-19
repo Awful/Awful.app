@@ -21,7 +21,6 @@
 #import "AwfulUser.h"
 #import "AwfulUser+AwfulMethods.h"
 #import "AwfulVoteActions.h"
-#import "Appirater.h"
 #import "ButtonSegmentedControl.h"
 #import "MBProgressHUD.h"
 #import "MWPhoto.h"
