@@ -1,5 +1,5 @@
 //
-//  NSString+HTML.h
+//  NSString+HTML.m
 //  MWFeedParser
 //
 //  Copyright (c) 2010 Michael Waterfall
@@ -27,13 +27,60 @@
 //  THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
+#import "NSString+HTML.h"
 
-// Dependant upon GTMNSString+HTML
+@implementation NSString (HTML)
 
-@interface NSString (HTML)
-
-// Instance Methods
-- (NSString *)stringByEscapingUnicode;
+- (NSString *)stringByEscapingUnicode
+{
+	if (!self.length) {
+		return self;
+	}
+	
+	NSMutableString *finalString = [NSMutableString string];
+	NSMutableData *data2 = [NSMutableData dataWithCapacity:sizeof(unichar) * self.length];
+	
+	const unichar *buffer = CFStringGetCharactersPtr((__bridge CFStringRef)self);
+	if (!buffer) {
+		// We want this buffer to be autoreleased.
+		NSMutableData *data = [NSMutableData dataWithLength:self.length * sizeof(UniChar)];
+		if (!data) {
+			NSLog(@"couldn't alloc buffer");
+			return nil;
+		}
+		[self getCharacters:[data mutableBytes]];
+		buffer = [data bytes];
+	}
+	
+	if (!buffer || !data2) {
+		NSLog(@"Unable to allocate buffer or data2");
+		return nil;
+	}
+	
+	unichar *buffer2 = (unichar *)[data2 mutableBytes];
+	
+	NSUInteger buffer2Length = 0;
+	
+	for (NSUInteger i = 0; i < self.length; ++i) {
+		if (buffer[i] > 127) {
+			if (buffer2Length) {
+				CFStringAppendCharacters((__bridge CFMutableStringRef)finalString, 
+										 buffer2, 
+										 buffer2Length);
+				buffer2Length = 0;
+			}
+            [finalString appendFormat:@"&#%d;", buffer[i]];
+		} else {
+			buffer2[buffer2Length] = buffer[i];
+			buffer2Length += 1;
+		}
+	}
+	if (buffer2Length) {
+		CFStringAppendCharacters((__bridge CFMutableStringRef)finalString, 
+								 buffer2, 
+								 buffer2Length);
+	}
+	return finalString;
+}
 
 @end

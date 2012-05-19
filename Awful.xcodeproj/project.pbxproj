@@ -219,7 +219,6 @@
 		1190F7C713BE4ECB00B9D271 /* Appirater.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F76C13BE4ECB00B9D271 /* Appirater.m */; };
 		1190F7E313BE4ECB00B9D271 /* 37x-Checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 1190F7A913BE4ECB00B9D271 /* 37x-Checkmark.png */; };
 		1190F7E413BE4ECB00B9D271 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7AB13BE4ECB00B9D271 /* MBProgressHUD.m */; };
-		1190F7E513BE4ECB00B9D271 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7AF13BE4ECB00B9D271 /* GTMNSString+HTML.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		1190F7E613BE4ECB00B9D271 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7B113BE4ECB00B9D271 /* NSString+HTML.m */; };
 		1190F7E713BE4ECB00B9D271 /* MWPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7B413BE4ECB00B9D271 /* MWPhoto.m */; };
 		1190F7E813BE4ECB00B9D271 /* MWPhotoBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7B613BE4ECB00B9D271 /* MWPhotoBrowser.m */; };
@@ -692,9 +691,6 @@
 		1190F7A913BE4ECB00B9D271 /* 37x-Checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "37x-Checkmark.png"; sourceTree = "<group>"; };
 		1190F7AA13BE4ECB00B9D271 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		1190F7AB13BE4ECB00B9D271 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
-		1190F7AD13BE4ECB00B9D271 /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMDefines.h; sourceTree = "<group>"; };
-		1190F7AE13BE4ECB00B9D271 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
-		1190F7AF13BE4ECB00B9D271 /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
 		1190F7B013BE4ECB00B9D271 /* NSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+HTML.h"; sourceTree = "<group>"; };
 		1190F7B113BE4ECB00B9D271 /* NSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+HTML.m"; sourceTree = "<group>"; };
 		1190F7B313BE4ECB00B9D271 /* MWPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWPhoto.h; sourceTree = "<group>"; };
@@ -1513,7 +1509,8 @@
 				1CDF79FE1537C157008EFAE4 /* GRMustache */,
 				1190F7BF13BE4ECB00B9D271 /* Hpple */,
 				1190F7A813BE4ECB00B9D271 /* MBProgressHUD */,
-				1190F7AC13BE4ECB00B9D271 /* MWFeedParser */,
+				1190F7B013BE4ECB00B9D271 /* NSString+HTML.h */,
+				1190F7B113BE4ECB00B9D271 /* NSString+HTML.m */,
 				1190F7B213BE4ECB00B9D271 /* MWPhotoBrowser */,
 			);
 			path = "3rd Party Sources";
@@ -1537,19 +1534,6 @@
 				1190F7AB13BE4ECB00B9D271 /* MBProgressHUD.m */,
 			);
 			path = MBProgressHUD;
-			sourceTree = "<group>";
-		};
-		1190F7AC13BE4ECB00B9D271 /* MWFeedParser */ = {
-			isa = PBXGroup;
-			children = (
-				1190F7AD13BE4ECB00B9D271 /* GTMDefines.h */,
-				1190F7AE13BE4ECB00B9D271 /* GTMNSString+HTML.h */,
-				1190F7AF13BE4ECB00B9D271 /* GTMNSString+HTML.m */,
-				1190F7B013BE4ECB00B9D271 /* NSString+HTML.h */,
-				1190F7B113BE4ECB00B9D271 /* NSString+HTML.m */,
-			);
-			name = MWFeedParser;
-			path = "mwaterfall-MWFeedParser-ea43013";
 			sourceTree = "<group>";
 		};
 		1190F7B213BE4ECB00B9D271 /* MWPhotoBrowser */ = {
@@ -2323,7 +2307,6 @@
 				1190F76813BE4EA900B9D271 /* SmilieGrabber.m in Sources */,
 				1190F7C713BE4ECB00B9D271 /* Appirater.m in Sources */,
 				1190F7E413BE4ECB00B9D271 /* MBProgressHUD.m in Sources */,
-				1190F7E513BE4ECB00B9D271 /* GTMNSString+HTML.m in Sources */,
 				1190F7E613BE4ECB00B9D271 /* NSString+HTML.m in Sources */,
 				1190F7E713BE4ECB00B9D271 /* MWPhoto.m in Sources */,
 				1190F7E813BE4ECB00B9D271 /* MWPhotoBrowser.m in Sources */,
