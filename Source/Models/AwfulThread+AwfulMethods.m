@@ -191,7 +191,7 @@
                 }
                 
                 thread.forum = forum;
-                thread.tid = tid;
+                thread.threadID = tid;
                 thread.isBookmarkedValue = NO;
                 
                 // will override this with NSNotFound if not stickied from inside 'populateAwfulThread'
