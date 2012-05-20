@@ -16,7 +16,7 @@
 
 +(NSArray *)threadsForForum : (AwfulForum *)forum
 {
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"AwfulThread"];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[AwfulThread entityName]];
     NSSortDescriptor *stickySort = [NSSortDescriptor sortDescriptorWithKey:@"stickyIndex" ascending:YES];
     NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(forum=%@) AND (isBookmarked==NO)", forum];
@@ -36,7 +36,7 @@
 {
     NSArray *threads = [AwfulThread threadsForForum:forum];
     for(AwfulThread *thread in threads) {
-        if(![[thread isBookmarked] boolValue]) {
+        if(!thread.isBookmarkedValue) {
             [ApplicationDelegate.managedObjectContext deleteObject:thread];
         }
     }
@@ -44,7 +44,7 @@
 
 +(NSArray *)bookmarkedThreads
 {
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"AwfulThread"];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[AwfulThread entityName]];
     NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isBookmarked==YES"];
     [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
@@ -127,11 +127,12 @@
                 [existing_threads removeObjectsInArray:threads];
                 
                 if(thread == nil) {
-                    thread = [NSEntityDescription insertNewObjectForEntityForName:@"AwfulThread" inManagedObjectContext:ApplicationDelegate.managedObjectContext];
+                    NSManagedObjectContext *moc = ApplicationDelegate.managedObjectContext;
+                    thread = [AwfulThread insertInManagedObjectContext:moc];
                 }
                 
-                [thread setThreadID:tid];
-                [thread setIsBookmarked:[NSNumber numberWithBool:YES]];
+                thread.threadID = tid;
+                thread.isBookmarkedValue = YES;
                 
                 [AwfulThread populateAwfulThread:thread fromBase:thread_base];
                 [threads addObject:thread];
@@ -185,12 +186,13 @@
                 [existing_threads removeObjectsInArray:threads];
                 
                 if(thread == nil) {
-                    thread = [NSEntityDescription insertNewObjectForEntityForName:@"AwfulThread" inManagedObjectContext:ApplicationDelegate.managedObjectContext];
+                    NSManagedObjectContext *moc = ApplicationDelegate.managedObjectContext;
+                    thread = [AwfulThread insertInManagedObjectContext:moc];
                 }
                 
-                [thread setForum:forum];
-                [thread setThreadID:tid];
-                [thread setIsBookmarked:[NSNumber numberWithBool:NO]];
+                thread.forum = forum;
+                thread.tid = tid;
+                thread.isBookmarkedValue = NO;
                 
                 // will override this with NSNotFound if not stickied from inside 'populateAwfulThread'
                 [thread setStickyIndex:[NSNumber numberWithInt:[threads count]]]; 
@@ -223,7 +225,7 @@
     
     TFHppleElement *sticky = [thread_base searchForSingle:@"//td[@class='title title_sticky']"];
     if(sticky == nil) {
-        [thread setStickyIndex:[NSNumber numberWithInt:NSNotFound]];
+        thread.stickyIndexValue = NSNotFound;
     }
     
     TFHppleElement *icon = [thread_base searchForSingle:@"//td[@class='icon']/img"];
@@ -246,71 +248,71 @@
     [thread setSeen:[NSNumber numberWithBool:NO]];
     TFHppleElement *seen = [thread_base searchForSingle:seen_str];
     if(seen != nil) {
-        thread.seen = [NSNumber numberWithBool:YES];
+        thread.seenValue = YES;
     }
     
     TFHppleElement *locked = [thread_base searchForSingle:closed_str];
     if(locked != nil) {
-        thread.isLocked = [NSNumber numberWithBool:YES];
+        thread.isLockedValue = YES;
     }
     
     thread.starCategory = [NSNumber numberWithInt:AwfulStarCategoryNone];
     TFHppleElement *cat_zero = [thread_base searchForSingle:category_zero];
     if(cat_zero != nil) {
-        thread.starCategory = AwfulStarCategoryBlue;
+        thread.starCategoryValue = AwfulStarCategoryBlue;
     }
     
     TFHppleElement *cat_one = [thread_base searchForSingle:category_one];
     if(cat_one != nil) {
-        thread.starCategory = [NSNumber numberWithInt:AwfulStarCategoryRed];
+        thread.starCategoryValue = AwfulStarCategoryRed;
     }
     
     TFHppleElement *cat_two = [thread_base searchForSingle:category_two];
     if(cat_two != nil) {
-        thread.starCategory = [NSNumber numberWithInt:AwfulStarCategoryYellow];
+        thread.starCategoryValue = AwfulStarCategoryYellow;
     }
     
     thread.totalUnreadPosts = [NSNumber numberWithInt:-1];
     TFHppleElement *unread = [thread_base searchForSingle:@"//a[@class='count']/b"];
     if(unread != nil) {
         NSString *unread_str = [unread content];
-        thread.totalUnreadPosts = [NSNumber numberWithInt:[unread_str intValue]];
+        thread.totalUnreadPostsValue = [unread_str intValue];
     } else {
         unread = [thread_base searchForSingle:@"//a[@class='x']"];
         if(unread != nil) {
             // they've read it all
-            thread.totalUnreadPosts = [NSNumber numberWithInt:0];
+            thread.totalUnreadPostsValue = 0;
         }
     }
     
     TFHppleElement *total = [thread_base searchForSingle:@"//td[@class='replies']/a"];
     if(total != nil) {
-        thread.totalReplies = [NSNumber numberWithInt:[[total content] intValue]];
+        thread.totalRepliesValue = [[total content] intValue];
     } else {
         total = [thread_base searchForSingle:@"//td[@class='replies']"];
         if(total != nil) {
-            thread.totalReplies = [NSNumber numberWithInt:[[total content] intValue]];
+            thread.totalRepliesValue = [[total content] intValue];
         }
     }
     
-    thread.threadRating = [NSNumber numberWithInteger:NSNotFound];
+    thread.threadRatingValue = NSNotFound;
     TFHppleElement *rating = [thread_base searchForSingle:@"//td[@class='rating']/img"];
     if(rating != nil) {
         NSString *rating_str = [rating objectForKey:@"src"];
         NSURL *rating_url = [NSURL URLWithString:rating_str];
         NSString *last = [rating_url lastPathComponent];
         if([last isEqualToString:@"5stars.gif"]) {
-            thread.threadRating = [NSNumber numberWithInt:5];
+            thread.threadRatingValue = 5;
         } else if([last isEqualToString:@"4stars.gif"]) {
-            thread.threadRating = [NSNumber numberWithInt:4];
+            thread.threadRatingValue = 4;
         } else if([last isEqualToString:@"3stars.gif"]) {
-            thread.threadRating = [NSNumber numberWithInt:3];
+            thread.threadRatingValue = 3;
         } else if([last isEqualToString:@"2stars.gif"]) {
-            thread.threadRating = [NSNumber numberWithInt:2];
+            thread.threadRatingValue = 2;
         } else if([last isEqualToString:@"1stars.gif"]) {
-            thread.threadRating = [NSNumber numberWithInt:1];
+            thread.threadRatingValue = 1;
         } else if([last isEqualToString:@"0stars.gif"]) {
-            thread.threadRating = [NSNumber numberWithInt:0];
+            thread.threadRatingValue = 0;
         }
     }
     

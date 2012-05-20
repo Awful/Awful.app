@@ -70,11 +70,11 @@
 {
     if ([_thread isFault])
     {
-        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"AwfulThread"];
+        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulThread entityName]];
         [request setPredicate:[NSPredicate predicateWithFormat:@"threadID like %@", self.threadID]];
         NSArray *results = [ApplicationDelegate.managedObjectContext executeFetchRequest:request error:nil];
         
-        _thread = (AwfulThread *) [results objectAtIndex:0];
+        _thread = [results objectAtIndex:0];
     }
     return _thread;
 }
@@ -152,7 +152,7 @@
 -(void)setThreadTitle : (NSString *)title
 {
     AwfulThread *mythread = self.thread;
-    [mythread setTitle:title];
+    mythread.title = title;
     UILabel *lab = (UILabel *)self.navigationItem.titleView;
     lab.text = title;
 }
@@ -184,7 +184,7 @@
 
 -(IBAction)hardRefresh
 {    
-    int posts_per_page = [[[AwfulUser currentUser] postsPerPage] intValue];
+    int posts_per_page = [AwfulUser currentUser].postsPerPageValue;
     if([self.dataController.posts count] == posts_per_page) {
         self.destinationType = AwfulPageDestinationTypeSpecific;
         [self refresh];
@@ -570,8 +570,9 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
             }
             
             if(thread_id != nil) {
-                AwfulThread *intra = [NSEntityDescription insertNewObjectForEntityForName:@"AwfulThread" inManagedObjectContext:ApplicationDelegate.throwawayObjectContext];
-                [intra setThreadID:thread_id];
+                NSManagedObjectContext *moc = ApplicationDelegate.throwawayObjectContext;
+                AwfulThread *intra = [AwfulThread insertInManagedObjectContext:moc];
+                intra.threadID = thread_id;
                 
                 UIStoryboard *story = [AwfulUtil getStoryboard];
                 

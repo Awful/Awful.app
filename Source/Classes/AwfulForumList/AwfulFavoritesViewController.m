@@ -75,10 +75,9 @@
 {
     if ([segue.identifier isEqualToString:@"ThreadList"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        NSManagedObject *favorite = [self.resultsController objectAtIndexPath:indexPath];
-        AwfulForum *forum = [favorite valueForKey:@"forum"];
+        AwfulFavorite *favorite = [self.resultsController objectAtIndexPath:indexPath];
         AwfulThreadListController *list = (AwfulThreadListController *)segue.destinationViewController;
-        list.forum = forum;
+        list.forum = favorite.forum;
     }
 }
 
@@ -141,8 +140,8 @@
 
 - (void)configureCell:(AwfulForumCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
-    NSManagedObject *favorite = [self.resultsController objectAtIndexPath:indexPath];
-    cell.section = [AwfulForumSection sectionWithForum:[favorite valueForKey:@"Forum"]];
+    AwfulFavorite *favorite = [self.resultsController objectAtIndexPath:indexPath];
+    cell.section = [AwfulForumSection sectionWithForum:favorite.forum];
 }
 
 - (void)tableView:(UITableView *)tableView
@@ -150,7 +149,7 @@
     forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        NSManagedObject *favorite = [self.resultsController objectAtIndexPath:indexPath];
+        AwfulFavorite *favorite = [self.resultsController objectAtIndexPath:indexPath];
         [ApplicationDelegate.managedObjectContext deleteObject:favorite];
         [ApplicationDelegate saveContext];
     }

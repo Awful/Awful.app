@@ -50,10 +50,8 @@
 {
     if ([[segue identifier] isEqualToString:@"ThreadList"]) {
         NSIndexPath *selected = [self.tableView indexPathForSelectedRow];
-        
-        AwfulForum *forum = [self getForumAtIndexPath:selected];
         AwfulThreadListController *list = (AwfulThreadListController *)segue.destinationViewController;
-        list.forum = forum;
+        list.forum = [self getForumAtIndexPath:selected];
     }
 }
 
@@ -73,7 +71,7 @@
 
 - (void)loadForums
 {
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"AwfulForum"];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[AwfulForum entityName]];
     NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES];
     [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
     fetchRequest.predicate = self.forumsPredicate;
