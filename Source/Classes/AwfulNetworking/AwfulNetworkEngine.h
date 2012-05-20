@@ -13,8 +13,12 @@
 @class AwfulThread;
 @class AwfulPageDataController;
 @class AwfulUser;
+@class DDFileLogger;
 
 @interface AwfulNetworkEngine : MKNetworkEngine
+
+// Logger that only saves network logs.
++ (DDFileLogger *)logger;
 
 typedef void (^ThreadListResponseBlock)(NSMutableArray *threads);
 typedef void (^PageResponseBlock)(AwfulPageDataController *dataController);

@@ -8,5 +8,6 @@
     #import "MKNetworkKit.h"
     #import "AwfulAppDelegate.h"
     #import <CoreData/CoreData.h>
+    #import "DDLog.h"
     #import "TestFlight.h"
 #endif

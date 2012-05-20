@@ -18,16 +18,36 @@
 #import "AwfulUser+AwfulMethods.h"
 #import "AwfulPageTemplate.h"
 #import "NSString+HTML.h"
+#import "NetworkingFileLogger.h"
+
+static const int NetworkLogLevel = LOG_LEVEL_VERBOSE;
 
 @implementation AwfulNetworkEngine
 
++ (void)initialize
+{
+    [self logger];
+}
+
++ (DDFileLogger *)logger
+{
+    static DDFileLogger *logger = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        logger = [[NetworkingFileLogger alloc] init];
+        [DDLog addLogger:logger];
+    });
+    return logger;
+}
+
 -(MKNetworkOperation *)threadListForForum:(AwfulForum *)forum pageNum:(NSUInteger)pageNum onCompletion:(ThreadListResponseBlock)threadListResponseBlock onError:(MKNKErrorBlock) errorBlock
 {
+    NetworkLogInfo(@"%@", THIS_METHOD);
     NSString *path = [NSString stringWithFormat:@"forumdisplay.php?forumid=%@&perpage=40&pagenumber=%u", forum.forumID, pageNum];
     MKNetworkOperation *op = [self operationWithPath:path];
     
     [op onCompletion:^(MKNetworkOperation *completedOperation) {
-        
+        NetworkLogInfo(@"completed %@", THIS_METHOD);
         if(pageNum == 1) {
             [AwfulThread removeOldThreadsForForum:forum];
             [ApplicationDelegate saveContext];
@@ -39,7 +59,7 @@
         threadListResponseBlock(threads);
         
     } onError:^(NSError *error) {
-        
+        NetworkLogInfo(@"erred %@", THIS_METHOD);
         errorBlock(error);
     }];
     
@@ -50,11 +70,12 @@
 
 -(MKNetworkOperation *)threadListForBookmarksAtPageNum:(NSUInteger)pageNum onCompletion:(ThreadListResponseBlock)threadListResponseBlock onError:(MKNKErrorBlock) errorBlock
 {
+    NetworkLogInfo(@"%@", THIS_METHOD);
     NSString *path = [NSString stringWithFormat:@"bookmarkthreads.php?action=view&perpage=40&pagenumber=%d", pageNum];
     MKNetworkOperation *op = [self operationWithPath:path];
     
     [op onCompletion:^(MKNetworkOperation *completedOperation) {
-        
+        NetworkLogInfo(@"completed %@", THIS_METHOD);
         if(pageNum == 1) {
             [AwfulThread removeBookmarkedThreads];
         }
@@ -65,7 +86,7 @@
         threadListResponseBlock(threads);
         
     } onError:^(NSError *error) {
-        
+        NetworkLogInfo(@"erred %@", THIS_METHOD);
         errorBlock(error);
     }];
     
@@ -75,6 +96,7 @@
 
 -(MKNetworkOperation *)pageDataForThread : (AwfulThread *)thread destinationType : (AwfulPageDestinationType)destinationType pageNum : (NSUInteger)pageNum onCompletion:(PageResponseBlock)pageResponseBlock onError:(MKNKErrorBlock)errorBlock
 {
+    NetworkLogInfo(@"%@", THIS_METHOD);
     NSString *append = @"";
     switch(destinationType) {
         case AwfulPageDestinationTypeFirst:
@@ -98,12 +120,12 @@
     MKNetworkOperation *op = [self operationWithPath:path];
     
     [op onCompletion:^(MKNetworkOperation *completedOperation) {
-        
+        NetworkLogInfo(@"completed %@", THIS_METHOD);
         AwfulPageDataController *data_controller = [[AwfulPageDataController alloc] initWithResponseData:[completedOperation responseData] pageURL:[NSURL URLWithString:[completedOperation redirectedURL]]];
         pageResponseBlock(data_controller);
         
     } onError:^(NSError *error) {
-        
+        NetworkLogInfo(@"erred %@", THIS_METHOD);
         errorBlock(error);
     }];
     
@@ -113,11 +135,12 @@
 
 -(MKNetworkOperation *)userInfoRequestOnCompletion : (UserResponseBlock)userResponseBlock onError : (MKNKErrorBlock)errorBlock
 {
+    NetworkLogInfo(@"%@", THIS_METHOD);
     NSString *path = @"member.php?action=editprofile";
     MKNetworkOperation *op = [self operationWithPath:path];
     
     [op onCompletion:^(MKNetworkOperation *completedOperation) {
-        
+        NetworkLogInfo(@"completed %@", THIS_METHOD);
         /*TFHpple *page_data = [[TFHpple alloc] initWithHTMLData:[completedOperation responseData]];
         NSArray *options_elements = [page_data search:@"//select[@name='umaxposts']//option"];
         
@@ -180,6 +203,7 @@
         userResponseBlock(user);
         
     } onError:^(NSError *error) {
+        NetworkLogInfo(@"erred %@", THIS_METHOD);
         errorBlock(error);
     }];
     
@@ -194,13 +218,19 @@ typedef enum BookmarkAction {
 
 - (MKNetworkOperation *)modifyBookmark:(BookmarkAction)action withThread:(AwfulThread *)thread onCompletion:(CompletionBlock)completionBlock onError:(MKNKErrorBlock)errorBlock
 {
+    NetworkLogInfo(@"%@", THIS_METHOD);
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     [dict setObject:@"1" forKey:@"json"];
     [dict setObject:(action == AddBookmark ? @"add" : @"remove") forKey:@"action"];
     [dict setObject:thread.threadID forKey:@"threadid"];
     MKNetworkOperation *op = [self operationWithPath:@"bookmarkthreads.php" params:dict httpMethod:@"POST"];
-    [op onCompletion:^(MKNetworkOperation *_) { if (completionBlock) completionBlock(); }
-             onError:^(NSError *error)        { if (errorBlock) errorBlock(error); }];
+    [op onCompletion:^(MKNetworkOperation *_) {
+        NetworkLogInfo(@"completed %@", THIS_METHOD);
+        if (completionBlock) completionBlock();
+    } onError:^(NSError *error) {
+        NetworkLogInfo(@"erred %@", THIS_METHOD);
+        if (errorBlock) errorBlock(error);
+    }];
     [self enqueueOperation:op];
     return op;
 }
@@ -217,16 +247,18 @@ typedef enum BookmarkAction {
 
 -(MKNetworkOperation *)forumsListOnCompletion : (ForumsListResponseBlock)forumsListResponseBlock onError : (MKNKErrorBlock)errorBlock
 {
+    NetworkLogInfo(@"%@", THIS_METHOD);
     MKNetworkOperation *op = [self operationWithPath:@"forumdisplay.php?forumid=1"];
     
     [op onCompletion:^(MKNetworkOperation *completedOperation) {
-        
+        NetworkLogInfo(@"completed %@", THIS_METHOD);
         NSMutableArray *forums = [AwfulForum parseForums:[completedOperation responseData]];
         if (forumsListResponseBlock) {
             forumsListResponseBlock(forums);
         }
         
     } onError:^(NSError *error) {
+        NetworkLogInfo(@"erred %@", THIS_METHOD);
         if (errorBlock) {
             errorBlock(error);
         }
@@ -238,11 +270,12 @@ typedef enum BookmarkAction {
 
 -(MKNetworkOperation *)replyToThread : (AwfulThread *)thread withText : (NSString *)text onCompletion : (CompletionBlock)completionBlock onError : (MKNKErrorBlock)errorBlock
 {
+    NetworkLogInfo(@"%@", THIS_METHOD);
     NSString *path = [NSString stringWithFormat:@"newreply.php?s=&action=newreply&threadid=%@", thread.threadID];
     
     MKNetworkOperation *op = [self operationWithPath:path];
     [op onCompletion:^(MKNetworkOperation *completedOperation) {
-        
+        NetworkLogInfo(@"completed %@", THIS_METHOD);
         NSString *rawString = [[NSString alloc] initWithData:[completedOperation responseData] encoding:NSASCIIStringEncoding];
         NSData *converted = [rawString dataUsingEncoding:NSUTF8StringEncoding];
         TFHpple *pageData = [[TFHpple alloc] initWithHTMLData:converted];
@@ -274,7 +307,10 @@ typedef enum BookmarkAction {
                  onError:^(NSError *error)        { if (errorBlock) errorBlock(error); }];
         [self enqueueOperation:finalOp];
         
-    } onError:^(NSError *error)        { if (errorBlock) errorBlock(error); }];
+    } onError:^(NSError *error) {
+        NetworkLogInfo(@"erred %@", THIS_METHOD);
+        if (errorBlock) errorBlock(error);
+    }];
     [self enqueueOperation:op];
     return op;
 }
@@ -286,6 +322,7 @@ QuotePostContent,
 
 -(MKNetworkOperation *)contentsForPost : (AwfulPost *)post postType : (PostContentType)postType onCompletion:(PostContentResponseBlock)postContentResponseBlock onError:(MKNKErrorBlock)errorBlock
 {
+    NetworkLogInfo(@"%@", THIS_METHOD);
     NSString *path;
     if(postType == EditPostContent) {
         path = [NSString stringWithFormat:@"editpost.php?action=editpost&postid=%@", post.postID];
@@ -297,7 +334,7 @@ QuotePostContent,
     
     MKNetworkOperation *op = [self operationWithPath:path];
     [op onCompletion:^(MKNetworkOperation *completedOperation) {
-        
+        NetworkLogInfo(@"completed %@", THIS_METHOD);
         NSString *rawString = [[NSString alloc] initWithData:[completedOperation responseData] encoding:NSASCIIStringEncoding];
         NSData *converted = [rawString dataUsingEncoding:NSUTF8StringEncoding];
         TFHpple *base = [[TFHpple alloc] initWithHTMLData:converted];
@@ -306,6 +343,7 @@ QuotePostContent,
         postContentResponseBlock([quoteElement content]);
         
     } onError:^(NSError *error) {
+        NetworkLogInfo(@"erred %@", THIS_METHOD);
         errorBlock(error);
     }];
     [self enqueueOperation:op];
@@ -323,10 +361,11 @@ QuotePostContent,
 }
 
 -(MKNetworkOperation *)editPost : (AwfulPost *)post withContents : (NSString *)contents onCompletion : (CompletionBlock)completionBlock onError:(MKNKErrorBlock)errorBlock
-{    
+{
+    NetworkLogInfo(@"%@", THIS_METHOD);
     MKNetworkOperation *op = [self operationWithPath:[NSString stringWithFormat:@"editpost.php?action=editpost&postid=%@", post.postID]];
     [op onCompletion:^(MKNetworkOperation *completedOperation) {
-        
+        NetworkLogInfo(@"completed %@", THIS_METHOD);
         NSString *rawString = [[NSString alloc] initWithData:[completedOperation responseData] encoding:NSASCIIStringEncoding];
         NSData *converted = [rawString dataUsingEncoding:NSUTF8StringEncoding];
         TFHpple *pageData = [[TFHpple alloc] initWithHTMLData:converted];
@@ -349,44 +388,65 @@ QuotePostContent,
                       onError:^(NSError *error)        { if (errorBlock) errorBlock(error); }];
         [self enqueueOperation:finalOp];
         
-    } onError:^(NSError *error)        { if (errorBlock) errorBlock(error); }];
+    } onError:^(NSError *error) {
+        NetworkLogInfo(@"erred %@", THIS_METHOD);
+        if (errorBlock) errorBlock(error);
+    }];
     [self enqueueOperation:op];
     return op;
 }
 
 -(MKNetworkOperation *)submitVote : (int)voteNum forThread : (AwfulThread *)thread onCompletion : (CompletionBlock)completionBlock onError:(MKNKErrorBlock)errorBlock
 {
+    NetworkLogInfo(@"%@", THIS_METHOD);
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     int voteValue = MAX(5, MIN(1, voteNum));
     [dict setValue:[NSNumber numberWithInt:voteValue] forKey:@"vote"];
     [dict setValue:thread.threadID forKey:@"threadid"];
     
     MKNetworkOperation *op = [self operationWithPath:@"threadrate.php" params:dict httpMethod:@"POST"];
-    [op onCompletion:^(MKNetworkOperation *_) { if (completionBlock) completionBlock(); }
-             onError:^(NSError *error)        { if (errorBlock) errorBlock(error); }];
+    [op onCompletion:^(MKNetworkOperation *_) {
+        NetworkLogInfo(@"completed %@", THIS_METHOD);
+        if (completionBlock) completionBlock();
+    } onError:^(NSError *error) {
+        NetworkLogInfo(@"erred %@", THIS_METHOD);
+        if (errorBlock) errorBlock(error);
+    }];
     [self enqueueOperation:op];
     return op;
 }
 
 -(MKNetworkOperation *)processMarkSeenLink : (NSString *)markSeenLink onCompletion : (CompletionBlock)completionBlock onError:(MKNKErrorBlock)errorBlock
 {
+    NetworkLogInfo(@"%@", THIS_METHOD);
     MKNetworkOperation *op = [self operationWithPath:markSeenLink];
-    [op onCompletion:^(MKNetworkOperation *_) { if (completionBlock) completionBlock(); }
-             onError:^(NSError *error)        { if (errorBlock) errorBlock(error); }];
+    [op onCompletion:^(MKNetworkOperation *_) {
+        NetworkLogInfo(@"completed %@", THIS_METHOD);
+        if (completionBlock) completionBlock();
+    } onError:^(NSError *error) {
+        NetworkLogInfo(@"erred %@", THIS_METHOD);
+        if (errorBlock) errorBlock(error);
+    }];
     [self enqueueOperation:op];
     return op;
 }
 
 -(MKNetworkOperation *)markThreadUnseen : (AwfulThread *)thread onCompletion : (CompletionBlock)completionBlock onError:(MKNKErrorBlock)errorBlock
 {
+    NetworkLogInfo(@"%@", THIS_METHOD);
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     [dict setValue:thread.threadID forKey:@"threadid"];
     [dict setValue:@"resetseen" forKey:@"action"];
     [dict setValue:@"1" forKey:@"json"];
     
     MKNetworkOperation *op = [self operationWithPath:@"showthread.php" params:dict httpMethod:@"POST"];
-    [op onCompletion:^(MKNetworkOperation *_) { if (completionBlock) completionBlock(); }
-             onError:^(NSError *error)        { if (errorBlock) errorBlock(error); }];
+    [op onCompletion:^(MKNetworkOperation *_) {
+        NetworkLogInfo(@"completed %@", THIS_METHOD);
+        if (completionBlock) completionBlock();
+    } onError:^(NSError *error) {
+        NetworkLogInfo(@"erred %@", THIS_METHOD);
+        if (errorBlock) errorBlock(error);
+    }];
     [self enqueueOperation:op];
     return op;
 }

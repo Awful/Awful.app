@@ -12,6 +12,8 @@
 #import "AwfulNetworkEngine.h"
 #import "AwfulSettings.h"
 #import "AwfulLoginController.h"
+#import "DDLog.h"
+#import "DDTTYLogger.h"
 
 @implementation AwfulAppDelegate
 
@@ -26,7 +28,8 @@
 #pragma mark - Application lifecycle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{   
+{
+    [DDLog addLogger:[DDTTYLogger sharedInstance]];
     [[AwfulSettings settings] registerDefaults];
     
     [TestFlight takeOff:@"a9e8d8810060d13a12051820b14a3368_MTIyNTAyMDEyLTAxLTE5IDEwOjAxOjU3LjYwODczNQ"];
