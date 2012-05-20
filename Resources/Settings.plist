@@ -38,6 +38,21 @@
 		</dict>
 		<dict>
 			<key>Identifier</key>
+			<string>SendNetworkLogSection</string>
+			<key>Explanation</key>
+			<string>If you get the weird endless loading bug, send us some logs.</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Send Network Logs</string>
+					<key>Action</key>
+					<string>SendNetworkLogs</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Identifier</key>
 			<string>ResetDataSection</string>
 			<key>Explanation</key>
 			<string>Resetting data erases all cached forums, threads, and posts.</string>

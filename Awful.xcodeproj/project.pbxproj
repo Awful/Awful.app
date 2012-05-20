@@ -439,6 +439,7 @@
 		1CDF7A5A1537C157008EFAE4 /* JRSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A3C1537C157008EFAE4 /* JRSwizzle.m */; };
 		1CDF7A5E1537DD2D008EFAE4 /* PostContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A5D1537DD2D008EFAE4 /* PostContext.m */; };
 		1CE304FA1568D0FE006A4AB6 /* NetworkingFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE304F91568D0FE006A4AB6 /* NetworkingFileLogger.m */; };
+		1CE304FD1568D67A006A4AB6 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CE304FC1568D67A006A4AB6 /* MessageUI.framework */; };
 		1CF2C5061543B51200E327F5 /* AwfulFavoritesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF2C5051543B51200E327F5 /* AwfulFavoritesViewController.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
@@ -987,6 +988,7 @@
 		1CDF7A5D1537DD2D008EFAE4 /* PostContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PostContext.m; path = Templates/PostContext.m; sourceTree = "<group>"; };
 		1CE304F81568D0FE006A4AB6 /* NetworkingFileLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NetworkingFileLogger.h; path = AwfulNetworking/NetworkingFileLogger.h; sourceTree = "<group>"; };
 		1CE304F91568D0FE006A4AB6 /* NetworkingFileLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NetworkingFileLogger.m; path = AwfulNetworking/NetworkingFileLogger.m; sourceTree = "<group>"; };
+		1CE304FC1568D67A006A4AB6 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		1CF2C5041543B51200E327F5 /* AwfulFavoritesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFavoritesViewController.h; sourceTree = "<group>"; };
 		1CF2C5051543B51200E327F5 /* AwfulFavoritesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulFavoritesViewController.m; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -1013,6 +1015,7 @@
 				117DBE3B1522A39A007125EF /* CoreData.framework in Frameworks */,
 				288765080DF74369002DB57D /* CoreGraphics.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
+				1CE304FD1568D67A006A4AB6 /* MessageUI.framework in Frameworks */,
 				10D34FAF128F413C0026C7C2 /* MobileCoreServices.framework in Frameworks */,
 				11099067134B86FD0013444C /* QuartzCore.framework in Frameworks */,
 				1172A62E14F5DB160026CDA8 /* Security.framework in Frameworks */,
@@ -1884,6 +1887,7 @@
 			isa = PBXGroup;
 			children = (
 				117DBE3A1522A39A007125EF /* CoreData.framework */,
+				1CE304FC1568D67A006A4AB6 /* MessageUI.framework */,
 				1172A62D14F5DB160026CDA8 /* Security.framework */,
 				11099066134B86FC0013444C /* QuartzCore.framework */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
