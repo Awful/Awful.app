@@ -1,0 +1,14 @@
+//
+// Prefix header for all source files of the 'Awful' target in the 'Awful' project
+//
+
+#ifdef __OBJC__
+    #import <Foundation/Foundation.h>
+    #import <UIKit/UIKit.h>
+    #import "MKNetworkKit.h"
+    #import "AwfulAppDelegate.h"
+    #import <CoreData/CoreData.h>
+    #import "TestFlight.h"
+    #import "UIView+Lazy.h"
+    #import "AwfulModels.h"
+#endif
