@@ -7,7 +7,6 @@
 //
 
 #import "AwfulThread+AwfulMethods.h"
-#import "AwfulUtil.h"
 #import "TFHpple.h"
 #import "TFHppleElement.h"
 #import "XPathQuery.h"

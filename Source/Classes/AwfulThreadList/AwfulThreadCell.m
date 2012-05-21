@@ -9,7 +9,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import "AwfulThreadCell.h"
 #import "AwfulForum.h"
-#import "AwfulUtil.h"
 #import "AwfulThread.h"
 #import "AwfulThread+AwfulMethods.h"
 #import "AwfulUser+AwfulMethods.h"

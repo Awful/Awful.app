@@ -25,7 +25,9 @@
 
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
--(void)resetDataStore;
+- (void)resetDataStore;
+
+- (void)requestFailed:(NSError *)error;
 
 @end
 

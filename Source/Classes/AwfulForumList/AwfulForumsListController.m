@@ -19,9 +19,6 @@
 #import "AwfulNetworkEngine.h"
 #import "AwfulSettings.h"
 #import "AwfulUser.h"
-#import "AwfulUtil.h"
-
-
 
 @interface AwfulForumsListController ()
 
@@ -114,7 +111,7 @@
         
     } onError:^(NSError *error) {
         [self finishedRefreshing];
-        [AwfulUtil requestFailed:error];
+        [ApplicationDelegate requestFailed:error];
     }];
 }
 

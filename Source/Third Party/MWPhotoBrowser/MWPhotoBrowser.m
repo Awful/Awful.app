@@ -9,7 +9,7 @@
 #import "MWPhotoBrowser.h"
 #import "ZoomingScrollView.h"
 #import "MBProgressHUD.h"
-#import "AwfulUtil.h"
+#import "AwfulAppDelegate.h"
 
 #define PADDING 10
 
@@ -132,7 +132,7 @@
         [MBProgressHUD hideHUDForView:self.view animated:NO];
         
         if(error != nil) {
-            [AwfulUtil requestFailed:error];
+            [ApplicationDelegate requestFailed:error];
         }
     });
 }

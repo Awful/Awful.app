@@ -9,7 +9,6 @@
 #import "AwfulVoteActions.h"
 #import "AwfulThread.h"
 #import "AwfulNetworkEngine.h"
-#import "AwfulUtil.h"
 #import "AwfulPage.h"
 
 @implementation AwfulVoteActions
@@ -61,7 +60,7 @@
                 [page showCompletionMessage:@"Great Job!"];
             }
         } onError:^(NSError *error) {
-            [AwfulUtil requestFailed:error];
+            [ApplicationDelegate requestFailed:error];
         }];
     }
 }

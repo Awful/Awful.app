@@ -12,7 +12,6 @@
 #import "AwfulPostBoxController.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulNetworkEngine.h"
-#import "AwfulUtil.h"
 #import "AwfulVoteActions.h"
 #import <MobileCoreServices/UTCoreTypes.h>
 
@@ -72,7 +71,7 @@ typedef enum {
     } else if (buttonIndex == AwfulThreadActionBookmarks) {
         CompletionBlock completion = ^{
             self.thread.isBookmarked = [NSNumber numberWithBool:![self.thread.isBookmarked boolValue]];
-            [[NSNotificationCenter defaultCenter] postNotificationName:AwfulNotifThreadUpdated object:self.thread];
+            [[NSNotificationCenter defaultCenter] postNotificationName:AwfulThreadDidUpdateNotification object:self.thread];
             NSError *error;
             BOOL success = [[ApplicationDelegate managedObjectContext] save:&error];
             if (!success) {

@@ -13,7 +13,6 @@
 #import "TFHppleElement.h"
 #import "XPathQuery.h"
 #import "AwfulPost.h"
-#import "AwfulUtil.h"
 #import "AwfulUser+AwfulMethods.h"
 #import "AwfulUser.h"
 #import "AwfulPageTemplate.h"

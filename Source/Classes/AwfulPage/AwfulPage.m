@@ -26,7 +26,6 @@
 #import "MWPhoto.h"
 #import "MWPhotoBrowser.h"
 #import "OtherWebController.h"
-#import "AwfulUtil.h"
 #import "AwfulWebViewDelegate.h"
 
 @interface AwfulPage () <AwfulWebViewDelegate, UIGestureRecognizerDelegate>
@@ -134,7 +133,7 @@
             self.thread.totalUnreadPosts = [NSNumber numberWithInt:0];
             [ApplicationDelegate saveContext];
         }
-        [[NSNotificationCenter defaultCenter] postNotificationName:AwfulNotifThreadUpdated object:self.thread];
+        [[NSNotificationCenter defaultCenter] postNotificationName:AwfulThreadDidUpdateNotification object:self.thread];
         
         NSString *html = [dataController constructedPageHTML];
         [self.webView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
@@ -574,9 +573,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
                 AwfulThread *intra = [AwfulThread insertInManagedObjectContext:moc];
                 intra.threadID = thread_id;
                 
-                UIStoryboard *story = [AwfulUtil getStoryboard];
-                
-                AwfulPage *page = [story instantiateViewControllerWithIdentifier:@"AwfulPage"];
+                AwfulPage *page = [self.storyboard instantiateViewControllerWithIdentifier:@"AwfulPage"];
                 page.thread = intra;
                 [self.navigationController pushViewController:page animated:YES];
                 if(page_number != nil) {

@@ -27,3 +27,10 @@
 -(NSURL *)secondIconURL;
 
 @end
+
+typedef enum {
+    AwfulStarCategoryBlue = 0,
+    AwfulStarCategoryRed,
+    AwfulStarCategoryYellow,
+    AwfulStarCategoryNone
+} AwfulStarCategory;

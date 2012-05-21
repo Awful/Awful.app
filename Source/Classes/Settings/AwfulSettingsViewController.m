@@ -10,7 +10,6 @@
 #import "AwfulSettings.h"
 #import "AwfulUser.h"
 #import "AwfulUser+AwfulMethods.h"
-#import "AwfulUtil.h"
 #import "AwfulLoginController.h"
 #import "AwfulNetworkEngine.h"
 #import "AwfulSettingsChoiceViewController.h"

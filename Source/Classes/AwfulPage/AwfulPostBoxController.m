@@ -11,7 +11,6 @@
 #import "AwfulThread.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulPost.h"
-#import "AwfulUtil.h"
 #import "AwfulPage.h"
 #import "MBProgressHUD.h"
 #import "AwfulNetworkEngine.h"
@@ -101,7 +100,7 @@
                 [self.page refresh];
             } onError:^(NSError *error) {
                 [MBProgressHUD hideHUDForView:self.view animated:NO];
-                [AwfulUtil requestFailed:error];
+                [ApplicationDelegate requestFailed:error];
             }];
         } else if(self.post != nil) {
             MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
@@ -112,7 +111,7 @@
                 [self.page hardRefresh];
             } onError:^(NSError *error) {
                 [MBProgressHUD hideHUDForView:self.view animated:NO];
-                [AwfulUtil requestFailed:error];
+                [ApplicationDelegate requestFailed:error];
             }];
         }
             

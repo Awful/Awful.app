@@ -17,7 +17,6 @@
 #import "AwfulThread.h"
 #import "AwfulThread+AwfulMethods.h"
 #import "AwfulThreadCell.h"
-#import "AwfulUtil.h"
 #import "AwfulLoginController.h"
 
 #define THREAD_HEIGHT 76
@@ -50,7 +49,7 @@ typedef enum {
     self.awfulThreads = [[NSMutableArray alloc] init];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(awfulThreadUpdated:)
-                                                 name:AwfulNotifThreadUpdated
+                                                 name:AwfulThreadDidUpdateNotification
                                                object:nil];
 }
 
@@ -118,7 +117,7 @@ typedef enum {
         [self finishedRefreshing];
     } onError:^(NSError *error) {
         [self finishedRefreshing];
-        [AwfulUtil requestFailed:error];
+        [ApplicationDelegate requestFailed:error];
     }];
 }
 
@@ -193,7 +192,7 @@ typedef enum {
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:AwfulNotifThreadUpdated
+                                                    name:AwfulThreadDidUpdateNotification
                                                   object:nil];
 }
 
@@ -226,19 +225,15 @@ typedef enum {
 
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if(buttonIndex == AwfulThreadListActionsTypeFirstPage) {
-        
-        UIStoryboard *story = [AwfulUtil getStoryboard];
-        AwfulPage *page = [story instantiateViewControllerWithIdentifier:@"AwfulPage"];
+    if (buttonIndex == AwfulThreadListActionsTypeFirstPage) {
+        AwfulPage *page = [self.storyboard instantiateViewControllerWithIdentifier:@"AwfulPage"];
         page.thread = self.heldThread;
         page.destinationType = AwfulPageDestinationTypeFirst;
         [self displayPage:page];
         [page loadPageNum:1];
         
     } else if(buttonIndex == AwfulThreadListActionsTypeLastPage) {
-        
-        UIStoryboard *story = [AwfulUtil getStoryboard];
-        AwfulPage *page = [story instantiateViewControllerWithIdentifier:@"AwfulPage"];
+        AwfulPage *page = [self.storyboard instantiateViewControllerWithIdentifier:@"AwfulPage"];
         page.thread = self.heldThread;
         page.destinationType = AwfulPageDestinationTypeLast;
         [self displayPage:page];
@@ -250,7 +245,7 @@ typedef enum {
             [ApplicationDelegate saveContext];
             
         } onError:^(NSError *error) {
-            [AwfulUtil requestFailed:error];
+            [ApplicationDelegate requestFailed:error];
         }];
     }
 }
@@ -323,7 +318,7 @@ typedef enum {
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [AwfulUtil getThreadCellHeight];
+    return 76;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

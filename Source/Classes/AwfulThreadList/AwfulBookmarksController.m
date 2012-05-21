@@ -15,7 +15,6 @@
 #import "AwfulThread.h"
 #import "AwfulThreadCell.h"
 #import "AwfulThread+AwfulMethods.h"
-#import "AwfulUtil.h"
 #import "AwfulLoginController.h"
 
 @implementation AwfulBookmarksController
@@ -109,7 +108,7 @@
         
     } onError:^(NSError *error) {
         [self finishedRefreshing];
-        [AwfulUtil requestFailed:error];
+        [ApplicationDelegate requestFailed:error];
     }];
 }
 
