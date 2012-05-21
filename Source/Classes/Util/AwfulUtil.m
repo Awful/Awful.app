@@ -75,13 +75,9 @@ NSString * const AwfulNotifThreadUpdated = @"AwfulNotifThreadUpdated";
 
 +(UIStoryboard *)getStoryboard
 {
-    UIStoryboard *story = nil;;
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        story = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:[NSBundle mainBundle]];
-    } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        story = [UIStoryboard storyboardWithName:@"MainStoryboardiPad" bundle:[NSBundle mainBundle]];
-    }
-    return story;
+    NSBundle *bundle = [NSBundle mainBundle];
+    NSString *name = [bundle objectForInfoDictionaryKey:@"UIMainStoryboardFile"];
+    return [UIStoryboard storyboardWithName:name bundle:bundle];
 }
 
 @end
