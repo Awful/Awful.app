@@ -24,6 +24,11 @@
 //  THE SOFTWARE.
 
 #import "MKNetworkKit.h"
+#import "AwfulNetworkEngine.h"
+#import "NetworkingFileLogger.h"
+
+static const int NetworkLogLevel = LOG_LEVEL_VERBOSE;
+
 #define kFreezableOperationExtension @"mknetworkkitfrozenoperation"
 
 #ifdef __OBJC_GC__
@@ -177,6 +182,15 @@ static NSOperationQueue *_sharedNetworkQueue;
 
 -(void) reachabilityChanged:(NSNotification*) notification
 {
+    NSString *reachable = @"unknown";
+    if ([self.reachability currentReachabilityStatus] == ReachableViaWiFi)
+        reachable = @"wi-fi";
+    if ([self.reachability currentReachabilityStatus] == ReachableViaWWAN)
+        reachable = @"wwan";
+    else if ([self.reachability currentReachabilityStatus] == NotReachable)
+        reachable = @"unreachable";
+    NetworkLogInfo(@"-[%@ %@] is now %@", [self class], THIS_METHOD, reachable);
+    
   if([self.reachability currentReachabilityStatus] == ReachableViaWiFi)
   {
     DLog(@"Server [%@] is reachable via Wifi", self.hostName);
@@ -205,6 +219,8 @@ static NSOperationQueue *_sharedNetworkQueue;
 -(void) freezeOperations {
   
   if(![self isCacheEnabled]) return;
+    
+    NetworkLogInfo(@"-[%@ %@]", [self class], THIS_METHOD);
   
   for(MKNetworkOperation *operation in _sharedNetworkQueue.operations) {
     
@@ -227,6 +243,8 @@ static NSOperationQueue *_sharedNetworkQueue;
 -(void) checkAndRestoreFrozenOperations {
   
   if(![self isCacheEnabled]) return;
+    
+    NetworkLogInfo(@"-[%@ %@]", [self class], THIS_METHOD);
   
   NSError *error = nil;
   NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[self cacheDirectoryName] error:&error];
