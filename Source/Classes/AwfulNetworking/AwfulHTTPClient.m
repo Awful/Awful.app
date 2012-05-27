@@ -204,40 +204,41 @@ static const int NetworkLogLevel = LOG_LEVEL_VERBOSE;
     return (NSOperation *)op;
 }
 
--(NSOperation *)addBookmarkedThread : (AwfulThread *)thread onCompletion : (CompletionBlock)completionBlock onError : (AwfulErrorBlock)errorBlock
+typedef enum BookmarkAction {
+    AddBookmark,
+    RemoveBookmark,
+} BookmarkAction;
+
+- (NSOperation *)modifyBookmark:(BookmarkAction)action withThread:(AwfulThread *)thread onCompletion:(CompletionBlock)completionBlock onError:(AwfulErrorBlock)errorBlock
 {
     NetworkLogInfo(@"%@", THIS_METHOD);
-    NSString *path = @"";
-    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    [dict setObject:@"1" forKey:@"json"];
+    [dict setObject:(action == AddBookmark ? @"add" : @"remove") forKey:@"action"];
+    [dict setObject:thread.threadID forKey:@"threadid"];
+    NSString *path = @"bookmarkthreads.php";
+    NSURLRequest *urlRequest = [self requestWithMethod:@"POST" path:path parameters:dict];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
        success:^(AFHTTPRequestOperation *operation, id response) {
            NetworkLogInfo(@"completed %@", THIS_METHOD);
-           errorBlock(nil);
+           if (completionBlock) completionBlock();
        } 
        failure:^(AFHTTPRequestOperation *operation, NSError *error) {
            NetworkLogInfo(@"erred %@", THIS_METHOD);
-           errorBlock(error);
+           if (errorBlock) errorBlock(error);
        }];
     [self enqueueHTTPRequestOperation:op];
     return (NSOperation *)op;
 }
 
+-(NSOperation *)addBookmarkedThread : (AwfulThread *)thread onCompletion : (CompletionBlock)completionBlock onError : (AwfulErrorBlock)errorBlock
+{
+    return [self modifyBookmark:AddBookmark withThread:thread onCompletion:completionBlock onError:errorBlock];
+}
+
 -(NSOperation *)removeBookmarkedThread : (AwfulThread *)thread onCompletion : (CompletionBlock)completionBlock onError : (AwfulErrorBlock)errorBlock
 {
-    NetworkLogInfo(@"%@", THIS_METHOD);
-    NSString *path = @"";
-    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
-    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
-       success:^(AFHTTPRequestOperation *operation, id response) {
-           NetworkLogInfo(@"completed %@", THIS_METHOD);
-           errorBlock(nil);
-       } 
-       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-           NetworkLogInfo(@"erred %@", THIS_METHOD);
-           errorBlock(error);
-       }];
-    [self enqueueHTTPRequestOperation:op];
-    return (NSOperation *)op;
+    return [self modifyBookmark:RemoveBookmark withThread:thread onCompletion:completionBlock onError:errorBlock];
 }
 
 -(NSOperation *)forumsListOnCompletion : (ForumsListResponseBlock)forumsListResponseBlock onError : (AwfulErrorBlock)errorBlock
@@ -267,12 +268,86 @@ static const int NetworkLogLevel = LOG_LEVEL_VERBOSE;
 -(NSOperation *)replyToThread : (AwfulThread *)thread withText : (NSString *)text onCompletion : (CompletionBlock)completionBlock onError : (AwfulErrorBlock)errorBlock
 {
     NetworkLogInfo(@"%@", THIS_METHOD);
-    NSString *path = @"";
+    NSString *path = [NSString stringWithFormat:@"newreply.php?s=&action=newreply&threadid=%@", thread.threadID];
     NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
        success:^(AFHTTPRequestOperation *operation, id response) {
            NetworkLogInfo(@"completed %@", THIS_METHOD);
-           errorBlock(nil);
+           NSData *data = (NSData *)response;
+           NSString *rawString = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+           NSData *converted = [rawString dataUsingEncoding:NSUTF8StringEncoding];
+           TFHpple *pageData = [[TFHpple alloc] initWithHTMLData:converted];
+           
+           TFHppleElement *formkeyElement = [pageData searchForSingle:@"//input[@name='formkey']"];
+           TFHppleElement *formcookieElement = [pageData searchForSingle:@"//input[@name='form_cookie']"];
+           
+           NSString *formkey = [formkeyElement objectForKey:@"value"];
+           NSString *formcookie = [formcookieElement objectForKey:@"value"];
+           TFHppleElement *bookmarkElement = [pageData searchForSingle:@"//input[@name='bookmark' and @checked='checked']"];
+           
+           NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+           
+           if(bookmarkElement != nil) {
+               NSString *bookmark = [bookmarkElement objectForKey:@"value"];
+               [dict setValue:bookmark forKey:@"bookmark"];
+           }
+           
+           [dict setValue:thread.threadID forKey:@"threadid"];
+           [dict setValue:formkey forKey:@"formkey"];
+           [dict setValue:formcookie forKey:@"form_cookie"];
+           [dict setValue:@"postreply" forKey:@"action"];
+           [dict setValue:[text stringByEscapingUnicode] forKey:@"message"];
+           [dict setValue:@"yes" forKey:@"parseurl"];
+           [dict setValue:@"Submit Reply" forKey:@"submit"];
+           
+           NSURLRequest *postRequest = [self requestWithMethod:@"POST" path:@"newreply.php" parameters:dict];
+           AFHTTPRequestOperation *finalOp = [self HTTPRequestOperationWithRequest:postRequest 
+                success:^(AFHTTPRequestOperation *operation, id response) {
+                    if (completionBlock) completionBlock();
+                } 
+                failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                    if (errorBlock) errorBlock(error);
+                }];
+           
+           [self enqueueHTTPRequestOperation:finalOp];
+       } 
+       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+           NetworkLogInfo(@"erred %@", THIS_METHOD);
+           errorBlock(error);
+       }];
+    
+    [self enqueueHTTPRequestOperation:op];
+    return (NSOperation *)op;
+}
+
+typedef enum PostContentType {
+EditPostContent,
+QuotePostContent,
+} PostContentType;
+
+-(NSOperation *)contentsForPost : (AwfulPost *)post postType : (PostContentType)postType onCompletion:(PostContentResponseBlock)postContentResponseBlock onError:(AwfulErrorBlock)errorBlock
+{
+    NetworkLogInfo(@"%@", THIS_METHOD);
+    NSString *path;
+    if(postType == EditPostContent) {
+        path = [NSString stringWithFormat:@"editpost.php?action=editpost&postid=%@", post.postID];
+    } else if(postType == QuotePostContent) {
+        path = [NSString stringWithFormat:@"newreply.php?action=newreply&postid=%@", post.postID];
+    } else {
+        return nil;
+    }
+    
+    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
+    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
+       success:^(AFHTTPRequestOperation *operation, id response) {
+           NetworkLogInfo(@"completed %@", THIS_METHOD);
+           NSData *data = (NSData *)response;
+           NSString *rawString = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+           NSData *converted = [rawString dataUsingEncoding:NSUTF8StringEncoding];
+           TFHpple *base = [[TFHpple alloc] initWithHTMLData:converted];
+           
+           TFHppleElement *quoteElement = [base searchForSingle:@"//textarea[@name='message']"];
+           postContentResponseBlock([quoteElement content]);
        } 
        failure:^(AFHTTPRequestOperation *operation, NSError *error) {
            NetworkLogInfo(@"erred %@", THIS_METHOD);
@@ -284,49 +359,51 @@ static const int NetworkLogLevel = LOG_LEVEL_VERBOSE;
 
 -(NSOperation *)editContentsForPost : (AwfulPost *)post onCompletion:(PostContentResponseBlock)postContentResponseBlock onError:(AwfulErrorBlock)errorBlock
 {
-    NetworkLogInfo(@"%@", THIS_METHOD);
-    NSString *path = @"";
-    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
-    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
-       success:^(AFHTTPRequestOperation *operation, id response) {
-           NetworkLogInfo(@"completed %@", THIS_METHOD);
-           errorBlock(nil);
-       } 
-       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-           NetworkLogInfo(@"erred %@", THIS_METHOD);
-           errorBlock(error);
-       }];
-    [self enqueueHTTPRequestOperation:op];
-    return (NSOperation *)op;
+    return [self contentsForPost:post postType:EditPostContent onCompletion:postContentResponseBlock onError:errorBlock];
 }
 
 -(NSOperation *)quoteContentsForPost : (AwfulPost *)post onCompletion:(PostContentResponseBlock)postContentResponseBlock onError:(AwfulErrorBlock)errorBlock
 {
-    NetworkLogInfo(@"%@", THIS_METHOD);
-    NSString *path = @"";
-    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
-    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
-       success:^(AFHTTPRequestOperation *operation, id response) {
-           NetworkLogInfo(@"completed %@", THIS_METHOD);
-           errorBlock(nil);
-       } 
-       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-           NetworkLogInfo(@"erred %@", THIS_METHOD);
-           errorBlock(error);
-       }];
-    [self enqueueHTTPRequestOperation:op];
-    return (NSOperation *)op;
+    return [self contentsForPost:post postType:QuotePostContent onCompletion:postContentResponseBlock onError:errorBlock];
 }
 
 -(NSOperation *)editPost : (AwfulPost *)post withContents : (NSString *)contents onCompletion : (CompletionBlock)completionBlock onError:(AwfulErrorBlock)errorBlock
 {
     NetworkLogInfo(@"%@", THIS_METHOD);
-    NSString *path = @"";
+    NSString *path = [NSString stringWithFormat:@"editpost.php?action=editpost&postid=%@", post.postID];
     NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
        success:^(AFHTTPRequestOperation *operation, id response) {
            NetworkLogInfo(@"completed %@", THIS_METHOD);
-           errorBlock(nil);
+           NSData *data = (NSData *)response;
+           NSString *rawString = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+           NSData *converted = [rawString dataUsingEncoding:NSUTF8StringEncoding];
+           TFHpple *pageData = [[TFHpple alloc] initWithHTMLData:converted];
+           
+           NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+           
+           TFHppleElement *bookmarkElement = [pageData searchForSingle:@"//input[@name='bookmark' and @checked='checked']"];
+           if(bookmarkElement != nil) {
+               NSString *bookmark = [bookmarkElement objectForKey:@"value"];
+               [dict setValue:bookmark forKey:@"bookmark"];
+           }
+           
+           [dict setValue:@"updatepost" forKey:@"action"];
+           [dict setValue:@"Save Changes" forKey:@"submit"];
+           [dict setValue:post.postID forKey:@"postid"];
+           [dict setValue:[contents stringByEscapingUnicode] forKey:@"message"];
+           
+           NSURLRequest *postRequest = [self requestWithMethod:@"POST" path:@"editpost.php" parameters:dict];
+           AFHTTPRequestOperation *finalOp = [self HTTPRequestOperationWithRequest:postRequest 
+               success:^(AFHTTPRequestOperation *operation, id response) {
+                   if (completionBlock) completionBlock();
+               } 
+               failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                   if (errorBlock) errorBlock(error);
+               }];
+           
+           [self enqueueHTTPRequestOperation:finalOp];
+
        } 
        failure:^(AFHTTPRequestOperation *operation, NSError *error) {
            NetworkLogInfo(@"erred %@", THIS_METHOD);
@@ -339,17 +416,21 @@ static const int NetworkLogLevel = LOG_LEVEL_VERBOSE;
 -(NSOperation *)submitVote : (int)value forThread : (AwfulThread *)thread onCompletion : (CompletionBlock)completionBlock onError:(AwfulErrorBlock)errorBlock
 {
     NetworkLogInfo(@"%@", THIS_METHOD);
-    NSString *path = @"";
-    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    int voteValue = MAX(5, MIN(1, value));
+    [dict setValue:[NSNumber numberWithInt:voteValue] forKey:@"vote"];
+    [dict setValue:thread.threadID forKey:@"threadid"];
+    
+    NSURLRequest *urlRequest = [self requestWithMethod:@"POST" path:@"threadrate.php" parameters:dict];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
-                                                               success:^(AFHTTPRequestOperation *operation, id response) {
-                                                                   NetworkLogInfo(@"completed %@", THIS_METHOD);
-                                                                   errorBlock(nil);
-                                                               } 
-                                                               failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                                                   NetworkLogInfo(@"erred %@", THIS_METHOD);
-                                                                   errorBlock(error);
-                                                               }];
+       success:^(AFHTTPRequestOperation *operation, id response) {
+           NetworkLogInfo(@"completed %@", THIS_METHOD);
+           if (completionBlock) completionBlock();
+       } 
+       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+           NetworkLogInfo(@"erred %@", THIS_METHOD);
+           if (errorBlock) errorBlock(error);
+       }];
     [self enqueueHTTPRequestOperation:op];
     return (NSOperation *)op;
 }
@@ -357,17 +438,17 @@ static const int NetworkLogLevel = LOG_LEVEL_VERBOSE;
 -(NSOperation *)processMarkSeenLink : (NSString *)markSeenLink onCompletion : (CompletionBlock)completionBlock onError:(AwfulErrorBlock)errorBlock
 {
     NetworkLogInfo(@"%@", THIS_METHOD);
-    NSString *path = @"";
+    NSString *path = markSeenLink;
     NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
-                                                               success:^(AFHTTPRequestOperation *operation, id response) {
-                                                                   NetworkLogInfo(@"completed %@", THIS_METHOD);
-                                                                   errorBlock(nil);
-                                                               } 
-                                                               failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                                                   NetworkLogInfo(@"erred %@", THIS_METHOD);
-                                                                   errorBlock(error);
-                                                               }];
+       success:^(AFHTTPRequestOperation *operation, id response) {
+           NetworkLogInfo(@"completed %@", THIS_METHOD);
+           if (completionBlock) completionBlock();
+       } 
+       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+           NetworkLogInfo(@"erred %@", THIS_METHOD);
+           if (errorBlock) errorBlock(error);
+       }];
     [self enqueueHTTPRequestOperation:op];
     return (NSOperation *)op;
 }
@@ -375,17 +456,22 @@ static const int NetworkLogLevel = LOG_LEVEL_VERBOSE;
 -(NSOperation *)markThreadUnseen : (AwfulThread *)thread onCompletion : (CompletionBlock)completionBlock onError:(AwfulErrorBlock)errorBlock
 {
     NetworkLogInfo(@"%@", THIS_METHOD);
-    NSString *path = @"";
-    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    [dict setValue:thread.threadID forKey:@"threadid"];
+    [dict setValue:@"resetseen" forKey:@"action"];
+    [dict setValue:@"1" forKey:@"json"];
+    
+    NSString *path = @"showthread.php";
+    NSURLRequest *urlRequest = [self requestWithMethod:@"POST" path:path parameters:nil];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
-                                                               success:^(AFHTTPRequestOperation *operation, id response) {
-                                                                   NetworkLogInfo(@"completed %@", THIS_METHOD);
-                                                                   errorBlock(nil);
-                                                               } 
-                                                               failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                                                   NetworkLogInfo(@"erred %@", THIS_METHOD);
-                                                                   errorBlock(error);
-                                                               }];
+       success:^(AFHTTPRequestOperation *operation, id response) {
+           NetworkLogInfo(@"completed %@", THIS_METHOD);
+           if (completionBlock) completionBlock();
+       } 
+       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+           NetworkLogInfo(@"erred %@", THIS_METHOD);
+           if (errorBlock) errorBlock(error);
+       }];
     [self enqueueHTTPRequestOperation:op];
     return (NSOperation *)op;
 }
