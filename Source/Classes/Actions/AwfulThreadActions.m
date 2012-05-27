@@ -80,9 +80,9 @@ typedef enum {
             }
         };
         if ([self.thread.isBookmarked boolValue]) {
-            [[ApplicationDelegate awfulNetworkEngine] removeBookmarkedThread:self.thread onCompletion:completion onError:nil];
+            [[AwfulHTTPClient sharedClient] removeBookmarkedThread:self.thread onCompletion:completion onError:nil];
         } else {
-            [[ApplicationDelegate awfulNetworkEngine] addBookmarkedThread:self.thread onCompletion:completion onError:nil];
+            [[AwfulHTTPClient sharedClient] addBookmarkedThread:self.thread onCompletion:completion onError:nil];
         }
     }
 }

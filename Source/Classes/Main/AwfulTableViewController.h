@@ -11,7 +11,7 @@
 
 @interface AwfulTableViewController : UITableViewController <EGORefreshTableHeaderDelegate>
 
-@property (nonatomic, strong) MKNetworkOperation *networkOperation;
+@property (nonatomic, strong) NSOperation *networkOperation;
 @property (nonatomic, strong) EGORefreshTableHeaderView *refreshHeaderView;
 @property (nonatomic, assign) BOOL reloading;
 

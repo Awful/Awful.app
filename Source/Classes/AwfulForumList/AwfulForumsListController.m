@@ -109,7 +109,7 @@
 {
     [super refresh];
     [self.networkOperation cancel];
-    self.networkOperation = [ApplicationDelegate.awfulNetworkEngine forumsListOnCompletion:^(NSMutableArray *forums) {
+    self.networkOperation = [[AwfulHTTPClient sharedClient] forumsListOnCompletion:^(NSMutableArray *forums) {
         
         self.forums = forums;
         [self finishedRefreshing];

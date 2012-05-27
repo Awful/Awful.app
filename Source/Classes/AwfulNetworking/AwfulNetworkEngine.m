@@ -5,7 +5,7 @@
 //  Created by Sean Berry on 2/22/12.
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
-
+/*
 #import "AwfulNetworkEngine.h"
 #import "AwfulForum.h"
 #import "AwfulForum+AwfulMethods.h"
@@ -141,18 +141,6 @@ static const int NetworkLogLevel = LOG_LEVEL_VERBOSE;
     
     [op onCompletion:^(MKNetworkOperation *completedOperation) {
         NetworkLogInfo(@"completed %@", THIS_METHOD);
-        /*TFHpple *page_data = [[TFHpple alloc] initWithHTMLData:[completedOperation responseData]];
-        NSArray *options_elements = [page_data search:@"//select[@name='umaxposts']//option"];
-        
-        for(TFHppleElement *el in options_elements) {
-            if([el objectForKey:@"selected"] != nil) {
-                NSString *val = [el objectForKey:@"value"];
-                int ppp = [val intValue];
-                if(ppp != 0) {
-                    [[AwfulUser currentUser] setPostsPerPage:ppp];
-                }
-            }
-        }*/
         
         AwfulUser *user = [AwfulUser currentUser];
         
@@ -451,4 +439,4 @@ QuotePostContent,
     return op;
 }
 
-@end
+@end*/

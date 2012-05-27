@@ -99,7 +99,7 @@
 {   
     [self.networkOperation cancel];
     self.isLoading = YES;
-    self.networkOperation = [ApplicationDelegate.awfulNetworkEngine threadListForBookmarksAtPageNum:pageNum onCompletion:^(NSMutableArray *threads) {
+    self.networkOperation = [[AwfulHTTPClient sharedClient] threadListForBookmarksAtPageNum:pageNum onCompletion:^(NSMutableArray *threads) {
         self.pages.currentPage = pageNum;
         if(pageNum == 1) {
             [self.awfulThreads removeAllObjects];
@@ -136,7 +136,7 @@
         [self.awfulThreads removeObject:thread];   
         [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
         
-        self.networkOperation = [ApplicationDelegate.awfulNetworkEngine removeBookmarkedThread:thread onCompletion:^(void) {
+        self.networkOperation = [[AwfulHTTPClient sharedClient] removeBookmarkedThread:thread onCompletion:^(void) {
             
         } onError:^(NSError *error) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];

@@ -66,7 +66,7 @@
 {
     [super refresh];
     [self.networkOperation cancel];
-    self.networkOperation = [ApplicationDelegate.awfulNetworkEngine userInfoRequestOnCompletion:^(AwfulUser *user) {
+    self.networkOperation = [[AwfulHTTPClient sharedClient] userInfoRequestOnCompletion:^(AwfulUser *user) {
         self.user = user;
         [self.tableView reloadData];
         [self finishedRefreshing];
@@ -310,7 +310,7 @@ typedef enum SettingType
     composer.mailComposeDelegate = self;
     composer.subject = @"Awful endless loading problem";
     composer.toRecipients = [NSArray arrayWithObject:@"sean@regularberry.com"];
-    id <DDLogFileManager> manager = [AwfulNetworkEngine logger].logFileManager;
+    id <DDLogFileManager> manager = [AwfulHTTPClient logger].logFileManager;
     NSString *logFilePath = [manager.sortedLogFilePaths lastObject];
     NSData *data = [NSData dataWithContentsOfFile:logFilePath];
     [composer addAttachmentData:data mimeType:@"text/plain" fileName:@"AwfulNetworkLog"];
@@ -326,7 +326,7 @@ typedef enum SettingType
                         error:(NSError *)error
 {
     if (result == MFMailComposeResultSent)
-        [[AwfulNetworkEngine logger] rollLogFile];
+        [[AwfulHTTPClient logger] rollLogFile];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

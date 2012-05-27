@@ -48,7 +48,7 @@ typedef enum {
     AwfulPostActionType action = buttonIndex;
     if(self.post.canEdit) {
         if(action == AwfulPostActionTypeEdit) {
-            [[ApplicationDelegate awfulNetworkEngine] editContentsForPost:self.post onCompletion:^(NSString *contents) {
+            [[AwfulHTTPClient sharedClient] editContentsForPost:self.post onCompletion:^(NSString *contents) {
                 self.postContents = contents;
                 [self.viewController performSegueWithIdentifier:@"EditPost" sender:self];
             } onError:^(NSError *error) {
@@ -62,7 +62,7 @@ typedef enum {
     
     if(action == AwfulPostActionTypeQuote) {
         
-        [[ApplicationDelegate awfulNetworkEngine] quoteContentsForPost:self.post onCompletion:^(NSString *contents) {
+        [[AwfulHTTPClient sharedClient] quoteContentsForPost:self.post onCompletion:^(NSString *contents) {
             self.postContents = [contents stringByAppendingString:@"\n"];
             [self.viewController performSegueWithIdentifier:@"QuoteBox" sender:self];
         } onError:^(NSError *error) {
@@ -76,7 +76,7 @@ typedef enum {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Not available" message:@"That feature requires you set 'Show an icon next to each post indicating if it has been seen or not' in your forum options" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
             [alert show];
         } else {
-            [[ApplicationDelegate awfulNetworkEngine] processMarkSeenLink:self.post.markSeenLink onCompletion:^(void){
+            [[AwfulHTTPClient sharedClient] processMarkSeenLink:self.post.markSeenLink onCompletion:^(void){
                 if([self.viewController isKindOfClass:[AwfulPage class]]) {
                     AwfulPage *page = (AwfulPage *)self.viewController;
                     [page showCompletionMessage:@"Marked up to there."];
