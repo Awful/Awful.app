@@ -19,6 +19,7 @@
 #import "AwfulPageTemplate.h"
 #import "NSString+HTML.h"
 #import "NetworkingFileLogger.h"
+#import "AFNetworkActivityIndicatorManager.h"
 
 static const int NetworkLogLevel = LOG_LEVEL_VERBOSE;
 
@@ -30,6 +31,7 @@ static const int NetworkLogLevel = LOG_LEVEL_VERBOSE;
     dispatch_once(&onceToken, ^{
         __sharedClient = [[AwfulHTTPClient alloc] initWithBaseURL:
                             [NSURL URLWithString:@"http://forums.somethingawful.com/"]];
+        [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
     });
     
     return __sharedClient;
