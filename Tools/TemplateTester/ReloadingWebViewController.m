@@ -15,24 +15,30 @@
 
 @property (strong, nonatomic) NSURL *template;
 
+@property (strong, nonatomic) NSDate *lastModified;
+
+@property (strong, nonatomic) NSTimer *timer;
+
+@property (readonly, strong, nonatomic) NSDictionary *context;
+
 @end
 
 @implementation ReloadingWebViewController
-{
-    NSDictionary *_context;
-}
-
-@synthesize template = _template;
 
 - (id)initWithTemplate:(NSURL *)template
 {
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         self.template = template;
-        self.title = @"Test Fixture Thread";
+        self.title = @"Test Thread";
     }
     return self;
 }
+
+@synthesize template = _template;
+@synthesize lastModified = _lastModified;
+@synthesize timer = _timer;
+@synthesize context = _context;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -48,11 +54,45 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self loadTemplateIntoWebView];
+}
+
+- (void)loadTemplateIntoWebView
+{
     UIWebView *webView = (UIWebView *)self.view;
     NSString *render = [GRMustacheTemplate renderObject:self.context
                                       fromContentsOfURL:self.template
                                                   error:NULL];
     [webView loadHTMLString:render baseURL:nil];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:.33
+                                                  target:self
+                                                selector:@selector(reloadIfNeeded:)
+                                                userInfo:nil
+                                                 repeats:YES];
+}
+
+- (void)reloadIfNeeded:(NSTimer *)timer
+{
+    NSDate *lastModified;
+    [self.template getResourceValue:&lastModified
+                             forKey:NSURLContentModificationDateKey
+                              error:NULL];
+    if (self.lastModified && [lastModified compare:self.lastModified] == NSOrderedDescending) {
+        [self loadTemplateIntoWebView];
+    }
+    self.lastModified = lastModified;
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [self.timer invalidate];
+    self.timer = nil;
+    [super viewWillDisappear:animated];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

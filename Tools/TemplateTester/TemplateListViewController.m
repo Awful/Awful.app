@@ -25,7 +25,7 @@
     if (self) {
         self.folder = folder;
         _templates = [NSMutableArray new];
-        self.title = @"Template Tester";
+        self.title = @"Awful Template Tester";
     }
     return self;
 }
@@ -47,7 +47,7 @@
                                                                             target:nil
                                                                             action:NULL];
 
-    NSFileManager *fileManager = [NSFileManager new];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
     NSArray *keys = [NSArray arrayWithObject:NSURLNameKey];
     NSArray *contents = [fileManager contentsOfDirectoryAtURL:self.folder
                                    includingPropertiesForKeys:keys
