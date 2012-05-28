@@ -415,7 +415,31 @@
 		1C6474D11569989800C72657 /* _AwfulUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474C21569989800C72657 /* _AwfulUser.m */; };
 		1C6474D21569989800C72657 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474C31569989800C72657 /* Model.xcdatamodeld */; };
 		1C7B87201544D83D00891D41 /* AwfulForumSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B871F1544D83D00891D41 /* AwfulForumSection.m */; };
+		1C92258515719D8300559312 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
+		1C92258615719D8300559312 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
+		1C92258715719D8300559312 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765070DF74369002DB57D /* CoreGraphics.framework */; };
+		1C92258D15719D8300559312 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1C92258B15719D8300559312 /* InfoPlist.strings */; };
+		1C92258F15719D8300559312 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C92258E15719D8300559312 /* main.m */; };
+		1C92259315719D8300559312 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C92259215719D8300559312 /* AppDelegate.m */; };
+		1C9225A815719EE700559312 /* ReloadingWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9225A715719EE700559312 /* ReloadingWebViewController.m */; };
+		1C9225B31571A48D00559312 /* GRMustache.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A011537C157008EFAE4 /* GRMustache.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		1C9225B41571A48D00559312 /* GRMustacheContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A051537C157008EFAE4 /* GRMustacheContext.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		1C9225B51571A48D00559312 /* GRMustacheError.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A081537C157008EFAE4 /* GRMustacheError.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		1C9225B61571A48D00559312 /* GRMustacheHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A0A1537C157008EFAE4 /* GRMustacheHelper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		1C9225B71571A48D00559312 /* GRMustacheInvocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A0D1537C157008EFAE4 /* GRMustacheInvocation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		1C9225B81571A48D00559312 /* GRMustacheNSUndefinedKeyExceptionGuard.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A0F1537C157008EFAE4 /* GRMustacheNSUndefinedKeyExceptionGuard.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		1C9225B91571A48D00559312 /* GRMustacheProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A111537C157008EFAE4 /* GRMustacheProperty.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		1C9225BA1571A48D00559312 /* GRMustacheSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A151537C157008EFAE4 /* GRMustacheSection.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		1C9225BB1571A48D00559312 /* GRMustacheTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A181537C157008EFAE4 /* GRMustacheTemplate.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		1C9225BC1571A48D00559312 /* GRMustacheTemplateParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A1B1537C157008EFAE4 /* GRMustacheTemplateParser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		1C9225BD1571A48D00559312 /* GRMustacheTemplateRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A1E1537C157008EFAE4 /* GRMustacheTemplateRepository.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		1C9225BE1571A53700559312 /* GRMustacheTextElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A201537C157008EFAE4 /* GRMustacheTextElement.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		1C9225BF1571A53700559312 /* GRMustacheToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A221537C157008EFAE4 /* GRMustacheToken.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		1C9225C01571A53700559312 /* GRMustacheTokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A241537C157008EFAE4 /* GRMustacheTokenizer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		1C9225C11571A53700559312 /* GRMustacheVariableElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A261537C157008EFAE4 /* GRMustacheVariableElement.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		1CAB36B11548F0FE00A4A362 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
+		1CD59CDC1571A9C3008F8E2F /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
+		1CD59CDF1572F862008F8E2F /* fixture.json in Resources */ = {isa = PBXBuildFile; fileRef = 1CD59CDE1572F862008F8E2F /* fixture.json */; };
 		1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD5198154294D400326C7B /* AwfulSettings.m */; };
 		1CDF7A3E1537C157008EFAE4 /* GRMustache.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A011537C157008EFAE4 /* GRMustache.m */; };
 		1CDF7A3F1537C157008EFAE4 /* GRMustacheContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A051537C157008EFAE4 /* GRMustacheContext.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -925,8 +949,18 @@
 		1C7B871B1544D73100891D41 /* AwfulForumsListControllerSubclass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumsListControllerSubclass.h; sourceTree = "<group>"; };
 		1C7B871E1544D83C00891D41 /* AwfulForumSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumSection.h; sourceTree = "<group>"; };
 		1C7B871F1544D83D00891D41 /* AwfulForumSection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumSection.m; sourceTree = "<group>"; };
+		1C92258315719D8300559312 /* AwfulTemplateTester.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AwfulTemplateTester.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1C92258A15719D8300559312 /* AwfulTemplateTester-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AwfulTemplateTester-Info.plist"; sourceTree = "<group>"; };
+		1C92258C15719D8300559312 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1C92258E15719D8300559312 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		1C92259015719D8300559312 /* AwfulTemplateTester-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AwfulTemplateTester-Prefix.pch"; sourceTree = "<group>"; };
+		1C92259115719D8300559312 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		1C92259215719D8300559312 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		1C9225A615719EE700559312 /* ReloadingWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReloadingWebViewController.h; sourceTree = "<group>"; };
+		1C9225A715719EE700559312 /* ReloadingWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReloadingWebViewController.m; sourceTree = "<group>"; };
 		1C9C16451569994C0047C06E /* _AwfulFavorite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _AwfulFavorite.h; sourceTree = "<group>"; };
 		1CAB36B01548F0FE00A4A362 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
+		1CD59CDE1572F862008F8E2F /* fixture.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = fixture.json; sourceTree = "<group>"; };
 		1CDD5197154294D400326C7B /* AwfulSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettings.h; sourceTree = "<group>"; };
 		1CDD5198154294D400326C7B /* AwfulSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettings.m; sourceTree = "<group>"; };
 		1CDF7A001537C157008EFAE4 /* GRMustache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustache.h; sourceTree = "<group>"; };
@@ -992,6 +1026,17 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		1C92258015719D8300559312 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1CD59CDC1571A9C3008F8E2F /* libxml2.dylib in Frameworks */,
+				1C92258515719D8300559312 /* UIKit.framework in Frameworks */,
+				1C92258615719D8300559312 /* Foundation.framework in Frameworks */,
+				1C92258715719D8300559312 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1D60588F0D05DD3D006BFB54 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1661,6 +1706,7 @@
 			isa = PBXGroup;
 			children = (
 				1D6058910D05DD3D006BFB54 /* Awful.app */,
+				1C92258315719D8300559312 /* AwfulTemplateTester.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1730,6 +1776,38 @@
 				1C6474C21569989800C72657 /* _AwfulUser.m */,
 			);
 			path = Generated;
+			sourceTree = "<group>";
+		};
+		1C92258815719D8300559312 /* TemplateTester */ = {
+			isa = PBXGroup;
+			children = (
+				1C92259115719D8300559312 /* AppDelegate.h */,
+				1C92259215719D8300559312 /* AppDelegate.m */,
+				1C9225A615719EE700559312 /* ReloadingWebViewController.h */,
+				1C9225A715719EE700559312 /* ReloadingWebViewController.m */,
+				1CD59CDE1572F862008F8E2F /* fixture.json */,
+				1C92258915719D8300559312 /* Supporting Files */,
+			);
+			path = TemplateTester;
+			sourceTree = "<group>";
+		};
+		1C92258915719D8300559312 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				1C92258A15719D8300559312 /* AwfulTemplateTester-Info.plist */,
+				1C92258B15719D8300559312 /* InfoPlist.strings */,
+				1C92258E15719D8300559312 /* main.m */,
+				1C92259015719D8300559312 /* AwfulTemplateTester-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		1CD59CD61571A64D008F8E2F /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				1C92258815719D8300559312 /* TemplateTester */,
+			);
+			path = Tools;
 			sourceTree = "<group>";
 		};
 		1CDD51951542949600326C7B /* Settings */ = {
@@ -1826,6 +1904,7 @@
 				11FDA28E151017490014FDCD /* MainiPad.storyboard */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				1C3857A115675AFE0078AF95 /* Source */,
+				1CD59CD61571A64D008F8E2F /* Tools */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
@@ -1886,6 +1965,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		1C92258215719D8300559312 /* AwfulTemplateTester */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1C9225A015719D8300559312 /* Build configuration list for PBXNativeTarget "AwfulTemplateTester" */;
+			buildPhases = (
+				1C92257F15719D8300559312 /* Sources */,
+				1C92258015719D8300559312 /* Frameworks */,
+				1C92258115719D8300559312 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AwfulTemplateTester;
+			productName = AwfulTemplateTester;
+			productReference = 1C92258315719D8300559312 /* AwfulTemplateTester.app */;
+			productType = "com.apple.product-type.application";
+		};
 		1D6058900D05DD3D006BFB54 /* Awful */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Awful" */;
@@ -1929,11 +2025,21 @@
 			projectRoot = "";
 			targets = (
 				1D6058900D05DD3D006BFB54 /* Awful */,
+				1C92258215719D8300559312 /* AwfulTemplateTester */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		1C92258115719D8300559312 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C92258D15719D8300559312 /* InfoPlist.strings in Resources */,
+				1CD59CDF1572F862008F8E2F /* fixture.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1D60588D0D05DD3D006BFB54 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2305,6 +2411,31 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		1C92257F15719D8300559312 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C92258F15719D8300559312 /* main.m in Sources */,
+				1C92259315719D8300559312 /* AppDelegate.m in Sources */,
+				1C9225A815719EE700559312 /* ReloadingWebViewController.m in Sources */,
+				1C9225B31571A48D00559312 /* GRMustache.m in Sources */,
+				1C9225B41571A48D00559312 /* GRMustacheContext.m in Sources */,
+				1C9225B51571A48D00559312 /* GRMustacheError.m in Sources */,
+				1C9225B61571A48D00559312 /* GRMustacheHelper.m in Sources */,
+				1C9225B71571A48D00559312 /* GRMustacheInvocation.m in Sources */,
+				1C9225B81571A48D00559312 /* GRMustacheNSUndefinedKeyExceptionGuard.m in Sources */,
+				1C9225B91571A48D00559312 /* GRMustacheProperty.m in Sources */,
+				1C9225BA1571A48D00559312 /* GRMustacheSection.m in Sources */,
+				1C9225BB1571A48D00559312 /* GRMustacheTemplate.m in Sources */,
+				1C9225BC1571A48D00559312 /* GRMustacheTemplateParser.m in Sources */,
+				1C9225BD1571A48D00559312 /* GRMustacheTemplateRepository.m in Sources */,
+				1C9225BE1571A53700559312 /* GRMustacheTextElement.m in Sources */,
+				1C9225BF1571A53700559312 /* GRMustacheToken.m in Sources */,
+				1C9225C01571A53700559312 /* GRMustacheTokenizer.m in Sources */,
+				1C9225C11571A53700559312 /* GRMustacheVariableElement.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1D60588E0D05DD3D006BFB54 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2397,6 +2528,17 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXVariantGroup section */
+		1C92258B15719D8300559312 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1C92258C15719D8300559312 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
 		10B648A412A9DB160007CAE3 /* AdHoc */ = {
 			isa = XCBuildConfiguration;
@@ -2437,6 +2579,74 @@
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+			};
+			name = AdHoc;
+		};
+		1C92259D15719D8300559312 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Tools/TemplateTester/AwfulTemplateTester-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				INFOPLIST_FILE = "Tools/TemplateTester/AwfulTemplateTester-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		1C92259E15719D8300559312 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Tools/TemplateTester/AwfulTemplateTester-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				INFOPLIST_FILE = "Tools/TemplateTester/AwfulTemplateTester-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		1C92259F15719D8300559312 /* AdHoc */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Tools/TemplateTester/AwfulTemplateTester-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				INFOPLIST_FILE = "Tools/TemplateTester/AwfulTemplateTester-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = app;
 			};
 			name = AdHoc;
 		};
@@ -2529,6 +2739,16 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1C9225A015719D8300559312 /* Build configuration list for PBXNativeTarget "AwfulTemplateTester" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1C92259D15719D8300559312 /* Debug */,
+				1C92259E15719D8300559312 /* Release */,
+				1C92259F15719D8300559312 /* AdHoc */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Awful" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
