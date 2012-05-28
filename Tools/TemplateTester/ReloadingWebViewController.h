@@ -10,8 +10,9 @@
 
 @interface ReloadingWebViewController : UIViewController
 
-- (id)initWithFolderPath:(NSString *)folderPath;
+// Designated initializer.
+- (id)initWithTemplate:(NSURL *)template;
 
-@property (readonly, copy, nonatomic) NSString *folderPath;
+@property (readonly, strong, nonatomic) NSURL *template;
 
 @end

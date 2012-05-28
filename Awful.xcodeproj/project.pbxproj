@@ -440,6 +440,7 @@
 		1CAB36B11548F0FE00A4A362 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
 		1CD59CDC1571A9C3008F8E2F /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
 		1CD59CDF1572F862008F8E2F /* fixture.json in Resources */ = {isa = PBXBuildFile; fileRef = 1CD59CDE1572F862008F8E2F /* fixture.json */; };
+		1CD59CF51573186B008F8E2F /* TemplateListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD59CF41573186B008F8E2F /* TemplateListViewController.m */; };
 		1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD5198154294D400326C7B /* AwfulSettings.m */; };
 		1CDF7A3E1537C157008EFAE4 /* GRMustache.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A011537C157008EFAE4 /* GRMustache.m */; };
 		1CDF7A3F1537C157008EFAE4 /* GRMustacheContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A051537C157008EFAE4 /* GRMustacheContext.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -961,6 +962,8 @@
 		1C9C16451569994C0047C06E /* _AwfulFavorite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _AwfulFavorite.h; sourceTree = "<group>"; };
 		1CAB36B01548F0FE00A4A362 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		1CD59CDE1572F862008F8E2F /* fixture.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = fixture.json; sourceTree = "<group>"; };
+		1CD59CF31573186B008F8E2F /* TemplateListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TemplateListViewController.h; sourceTree = "<group>"; };
+		1CD59CF41573186B008F8E2F /* TemplateListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TemplateListViewController.m; sourceTree = "<group>"; };
 		1CDD5197154294D400326C7B /* AwfulSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettings.h; sourceTree = "<group>"; };
 		1CDD5198154294D400326C7B /* AwfulSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettings.m; sourceTree = "<group>"; };
 		1CDF7A001537C157008EFAE4 /* GRMustache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustache.h; sourceTree = "<group>"; };
@@ -1783,6 +1786,8 @@
 			children = (
 				1C92259115719D8300559312 /* AppDelegate.h */,
 				1C92259215719D8300559312 /* AppDelegate.m */,
+				1CD59CF31573186B008F8E2F /* TemplateListViewController.h */,
+				1CD59CF41573186B008F8E2F /* TemplateListViewController.m */,
 				1C9225A615719EE700559312 /* ReloadingWebViewController.h */,
 				1C9225A715719EE700559312 /* ReloadingWebViewController.m */,
 				1CD59CDE1572F862008F8E2F /* fixture.json */,
@@ -2433,6 +2438,7 @@
 				1C9225BF1571A53700559312 /* GRMustacheToken.m in Sources */,
 				1C9225C01571A53700559312 /* GRMustacheTokenizer.m in Sources */,
 				1C9225C11571A53700559312 /* GRMustacheVariableElement.m in Sources */,
+				1CD59CF51573186B008F8E2F /* TemplateListViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

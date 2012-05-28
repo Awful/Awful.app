@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "ReloadingWebViewController.h"
+#import "TemplateListViewController.h"
 
 @implementation AppDelegate
 
@@ -16,10 +16,12 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    NSString *folderPath = [NSString stringWithFormat:@"%s/../../../Resources/web resources", __FILE__];
-    folderPath = [folderPath stringByStandardizingPath];
-    ReloadingWebViewController *webView = [[ReloadingWebViewController alloc] initWithFolderPath:folderPath];
-    self.window.rootViewController = webView;
+    NSString *relativePath = [[NSString stringWithFormat:@"%s/../../../Resources/web resources",
+                              __FILE__] stringByStandardizingPath];
+    NSURL *folder = [NSURL fileURLWithPath:relativePath];
+    TemplateListViewController *list = [[TemplateListViewController alloc] initWithFolder:folder];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:list];
+    self.window.rootViewController = nav;
     [self.window makeKeyAndVisible];
     return YES;
 }

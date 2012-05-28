@@ -13,7 +13,7 @@
 
 @interface ReloadingWebViewController ()
 
-@property (copy, nonatomic) NSString *folderPath;
+@property (strong, nonatomic) NSURL *template;
 
 @end
 
@@ -22,20 +22,22 @@
     NSDictionary *_context;
 }
 
-@synthesize folderPath = _folderPath;
+@synthesize template = _template;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    return [self init];
-}
-
-- (id)initWithFolderPath:(NSString *)folderPath
+- (id)initWithTemplate:(NSURL *)template
 {
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
-        self.folderPath = folderPath;
+        self.template = template;
+        self.title = @"Test Fixture Thread";
     }
     return self;
+}
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    NSAssert(NO, @"need a template");
+    return nil;
 }
 
 - (void)loadView
@@ -47,26 +49,15 @@
 {
     [super viewDidLoad];
     UIWebView *webView = (UIWebView *)self.view;
-    NSString *templateName = @"phone-template.html";
-    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
-        templateName = @"pad-template.html";
-    }
-    NSString *path = [self.folderPath stringByAppendingPathComponent:templateName];
     NSString *render = [GRMustacheTemplate renderObject:self.context
-                                     fromContentsOfFile:path
+                                      fromContentsOfURL:self.template
                                                   error:NULL];
     [webView loadHTMLString:render baseURL:nil];
 }
 
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-}
-
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    return YES;
 }
 
 - (NSDictionary *)context
