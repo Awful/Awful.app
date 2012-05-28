@@ -47,7 +47,11 @@
 {
     [super viewDidLoad];
     UIWebView *webView = (UIWebView *)self.view;
-    NSString *path = [self.folderPath stringByAppendingPathComponent:@"phone-template.html"];
+    NSString *templateName = @"phone-template.html";
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+        templateName = @"pad-template.html";
+    }
+    NSString *path = [self.folderPath stringByAppendingPathComponent:templateName];
     NSString *render = [GRMustacheTemplate renderObject:self.context
                                      fromContentsOfFile:path
                                                   error:NULL];
