@@ -13,7 +13,7 @@
 
 @property (strong, nonatomic) NSURL *folder;
 
-@property (readonly, strong) NSMutableArray *templates;
+@property (strong) NSArray *templates;
 
 @end
 
@@ -24,7 +24,6 @@
     self = [super initWithStyle:UITableViewStylePlain];
     if (self) {
         self.folder = folder;
-        _templates = [NSMutableArray new];
         self.title = @"Awful Template Tester";
     }
     return self;
@@ -46,7 +45,12 @@
                                                                              style:0
                                                                             target:nil
                                                                             action:NULL];
+}
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSArray *keys = [NSArray arrayWithObject:NSURLNameKey];
     NSArray *contents = [fileManager contentsOfDirectoryAtURL:self.folder
@@ -59,7 +63,9 @@
     };
     NSIndexSet *cssFileIndexes = [contents indexesOfObjectsPassingTest:justCSS];
     NSArray *cssContents = [contents objectsAtIndexes:cssFileIndexes];
-    [self.templates addObjectsFromArray:[cssContents valueForKey:@"lastPathComponent"]];
+    
+    self.templates = [cssContents valueForKey:@"lastPathComponent"];
+    [self.tableView reloadData];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
