@@ -31,6 +31,8 @@
 
 @property (readonly, nonatomic) NSArray *javascripts;
 @property (readonly, nonatomic) NSString *salrConfig;
+@property (strong) NSURL *cssURL;
+@property (readonly, nonatomic) NSString *css;
 @property (readonly, nonatomic) NSString *device;
 @property (strong) NSArray *posts;
 @property (strong) NSString *pagesLeftNotice;
@@ -51,13 +53,24 @@
 
 @synthesize template = _template;
 
+- (GRMustacheTemplate *)template
+{
+    if (_template) {
+        return _template;
+    }
+    NSURL *url = [[NSBundle mainBundle] URLForResource:@"posts" withExtension:@"html"];
+    NSError *error;
+    _template = [GRMustacheTemplate templateFromContentsOfURL:url error:&error];
+    if (!_template) {
+        NSLog(@"error compiling posts template: %@", error);
+    }
+    return _template;
+}
+
 -(NSURL *)getTemplateURLFromForum : (AwfulForum *)forum
 {
     if([[AwfulSettings settings] darkTheme]) {
-        NSString *darkName = @"phone-template-dark.html";
-        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            darkName = @"pad-template-dark.html";
-        }
+        NSString *darkName = @"dark.css";
         NSURL *defaultDarkURL = [[ApplicationDelegate applicationDocumentsDirectory] URLByAppendingPathComponent:darkName];
         if([defaultDarkURL checkResourceIsReachableAndReturnError:nil]) {
             return defaultDarkURL;
@@ -66,21 +79,14 @@
     }
     
     if(forum != nil) {
-        NSString *name = [NSString stringWithFormat:@"%@.html", forum.forumID];
-        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            name = [NSString stringWithFormat:@"%@-pad.html", forum.forumID];
-        }
+        NSString *name = [NSString stringWithFormat:@"%@.css", forum.forumID];
         NSURL *url = [[ApplicationDelegate applicationDocumentsDirectory] URLByAppendingPathComponent:name];
         if([url checkResourceIsReachableAndReturnError:nil]) {
             return url;
         }
     }
     
-    NSString *defaultName = @"phone-template.html";
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        defaultName = @"pad-template.html";
-    }
-    
+    NSString *defaultName = @"default.css";    
     NSURL *defaultURL = [[ApplicationDelegate applicationDocumentsDirectory] URLByAppendingPathComponent:defaultName];
     if([defaultURL checkResourceIsReachableAndReturnError:nil]) {
         return defaultURL;
@@ -92,12 +98,7 @@
 - (NSString *)renderWithPageDataController:(AwfulPageDataController *)dataController displayAllPosts : (BOOL)displayAllPosts
 {
     TemplateContext *context = [[TemplateContext alloc] initWithPageDataController:dataController overridePostRemover:displayAllPosts];
-    NSURL *url = [self getTemplateURLFromForum:dataController.forum];
-    NSError *err = nil;
-    self.template = [GRMustacheTemplate templateFromContentsOfURL:url error:&err];
-    if(err != nil) {
-        NSLog(@"failed to load template %@: %@", url, [err localizedDescription]);
-    }
+    context.cssURL = [self getTemplateURLFromForum:dataController.forum];
     return [self.template renderObject:context];
 }
 
@@ -195,6 +196,23 @@
                         nil];
     }
     return _javascripts;
+}
+
+@synthesize cssURL = _cssURL;
+@synthesize css = _css;
+
+- (NSString *)css
+{
+    if (!_css) {
+        NSError *error;
+        _css = [NSString stringWithContentsOfURL:self.cssURL
+                                        encoding:NSUTF8StringEncoding
+                                           error:&error];
+        if (!_css) {
+            NSLog(@"error loading css from %@: %@", self.cssURL, error);
+        }
+    }
+    return _css;
 }
 
 - (NSString *)salrConfig
