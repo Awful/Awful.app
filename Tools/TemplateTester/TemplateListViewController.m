@@ -53,12 +53,13 @@
                                    includingPropertiesForKeys:keys
                                                       options:NSDirectoryEnumerationSkipsHiddenFiles
                                                         error:NULL];
-    id justHTML = ^(NSURL *url, NSUInteger _, BOOL *__) {
-        return [url.pathExtension compare:@"html" options:NSCaseInsensitiveSearch] == NSOrderedSame;
+    id justCSS = ^(NSURL *url, NSUInteger _, BOOL *__) {
+        return [url.pathExtension compare:@"css"
+                                  options:NSCaseInsensitiveSearch] == NSOrderedSame;
     };
-    NSIndexSet *htmlFileIndexes = [contents indexesOfObjectsPassingTest:justHTML];
-    NSArray *htmlContents = [contents objectsAtIndexes:htmlFileIndexes];
-    [self.templates addObjectsFromArray:[htmlContents valueForKey:@"lastPathComponent"]];
+    NSIndexSet *cssFileIndexes = [contents indexesOfObjectsPassingTest:justCSS];
+    NSArray *cssContents = [contents objectsAtIndexes:cssFileIndexes];
+    [self.templates addObjectsFromArray:[cssContents valueForKey:@"lastPathComponent"]];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

@@ -15,11 +15,13 @@
 
 @property (strong, nonatomic) NSURL *template;
 
+@property (readonly, nonatomic) NSURL *htmlFile;
+
 @property (strong, nonatomic) NSDate *lastModified;
 
 @property (strong, nonatomic) NSTimer *timer;
 
-@property (readonly, strong, nonatomic) NSDictionary *context;
+@property (readonly, strong, nonatomic) NSMutableDictionary *context;
 
 @end
 
@@ -60,10 +62,19 @@
 - (void)loadTemplateIntoWebView
 {
     UIWebView *webView = (UIWebView *)self.view;
+    NSString *css = [NSString stringWithContentsOfURL:self.template
+                                             encoding:NSUTF8StringEncoding
+                                                error:NULL];
+    [self.context setObject:css forKey:@"css"];
     NSString *render = [GRMustacheTemplate renderObject:self.context
-                                      fromContentsOfURL:self.template
+                                      fromContentsOfURL:self.htmlFile
                                                   error:NULL];
     [webView loadHTMLString:render baseURL:nil];
+}
+
+- (NSURL *)htmlFile {
+    NSURL *folder = [self.template URLByDeletingLastPathComponent];
+    return [folder URLByAppendingPathComponent:@"posts.html"];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -107,15 +118,12 @@
                                                           withExtension:@"json"];
     NSData *data = [NSData dataWithContentsOfURL:url];
     NSUInteger options = NSJSONReadingMutableContainers;
-    NSMutableDictionary *context = [NSJSONSerialization JSONObjectWithData:data
-                                                                   options:options
-                                                                     error:NULL];
+    _context = [NSJSONSerialization JSONObjectWithData:data options:options error:NULL];
     NSString *device = @"iphone";
     if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
         device = @"ipad";
     }
-    [context setObject:device forKey:@"device"];
-    _context = context;
+    [_context setObject:device forKey:@"device"];
     return _context;
 }
 
