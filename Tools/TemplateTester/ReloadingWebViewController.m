@@ -75,7 +75,16 @@
     NSURL *url = [[NSBundle bundleForClass:[self class]] URLForResource:@"fixture"
                                                           withExtension:@"json"];
     NSData *data = [NSData dataWithContentsOfURL:url];
-    _context = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
+    NSUInteger options = NSJSONReadingMutableContainers;
+    NSMutableDictionary *context = [NSJSONSerialization JSONObjectWithData:data
+                                                                   options:options
+                                                                     error:NULL];
+    NSString *device = @"iphone";
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+        device = @"ipad";
+    }
+    [context setObject:device forKey:@"device"];
+    _context = context;
     return _context;
 }
 

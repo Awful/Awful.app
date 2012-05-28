@@ -31,6 +31,7 @@
 
 @property (readonly, nonatomic) NSArray *javascripts;
 @property (readonly, nonatomic) NSString *salrConfig;
+@property (readonly, nonatomic) NSString *device;
 @property (strong) NSArray *posts;
 @property (strong) NSString *pagesLeftNotice;
 @property (strong) NSString *postsAboveNotice;
@@ -199,6 +200,14 @@
 - (NSString *)salrConfig
 {
     return [SALR config];
+}
+
+- (NSString *)device
+{
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+        return @"ipad";
+    }
+    return @"iphone";
 }
 
 @synthesize posts = _posts;
