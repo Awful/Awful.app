@@ -69,18 +69,22 @@ typedef enum {
         
     } else if (buttonIndex == AwfulThreadActionBookmarks) {
         CompletionBlock completion = ^{
-            self.thread.isBookmarked = [NSNumber numberWithBool:![self.thread.isBookmarked boolValue]];
-            [[NSNotificationCenter defaultCenter] postNotificationName:AwfulThreadDidUpdateNotification object:self.thread];
+            self.thread.isBookmarkedValue = !self.thread.isBookmarkedValue;
             NSError *error;
             BOOL success = [[ApplicationDelegate managedObjectContext] save:&error];
             if (!success) {
                 NSLog(@"error saving isBookmarked: %@", error);
             }
+            [[NSNotificationCenter defaultCenter] postNotificationName:AwfulThreadDidUpdateNotification object:self.thread];
         };
-        if ([self.thread.isBookmarked boolValue]) {
-            [[AwfulHTTPClient sharedClient] removeBookmarkedThread:self.thread onCompletion:completion onError:nil];
+        if (self.thread.isBookmarkedValue) {
+            [[AwfulHTTPClient sharedClient] removeBookmarkedThread:self.thread
+                                                      onCompletion:completion
+                                                           onError:nil];
         } else {
-            [[AwfulHTTPClient sharedClient] addBookmarkedThread:self.thread onCompletion:completion onError:nil];
+            [[AwfulHTTPClient sharedClient] addBookmarkedThread:self.thread
+                                                   onCompletion:completion
+                                                        onError:nil];
         }
     }
 }
