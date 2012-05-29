@@ -107,6 +107,11 @@ body.ipad article header {
     padding-left: 95px;
     padding-right: 95px;
 }
+
+body.ipad article.op header {
+    color: #199ed7;
+}
+
 body.ipad article.noAvatar header{
     padding-left: 13px;
 }
@@ -249,7 +254,7 @@ body.ipad article section .bbc-block blockquote {
     font-size: 0.85em;
     padding-right: 0.5em;
     padding-left: 1em;
-    margin: 0.5em;
+    margin: 0.5em 1em;
     border-left: 1px solid #999;
 }
 
@@ -258,7 +263,7 @@ body.ipad article section .bbc-block pre {
     font-size: 0.85em;
     padding-right: 0.5em;
     padding-left: 1em;
-    margin-left: 0.25em;
+    margin: 0.5em 1em;
     border-left: 1px solid #999;
 }
 
