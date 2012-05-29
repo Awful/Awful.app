@@ -20,6 +20,7 @@
 #import "NSString+HTML.h"
 #import "NetworkingFileLogger.h"
 #import "AFNetworkActivityIndicatorManager.h"
+#import "AFHTTPRequestOperation.h"
 
 static const int NetworkLogLevel = LOG_LEVEL_VERBOSE;
 
@@ -126,8 +127,10 @@ static const int NetworkLogLevel = LOG_LEVEL_VERBOSE;
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
        success:^(AFHTTPRequestOperation *operation, id response) {
            NetworkLogInfo(@"completed %@", THIS_METHOD);
+           NSURLResponse *urlResponse = [operation response];
+           NSURL *lastURL = [urlResponse URL];
            NSData *data = (NSData *)response;
-           AwfulPageDataController *data_controller = [[AwfulPageDataController alloc] initWithResponseData:data pageURL:[urlRequest URL]];
+           AwfulPageDataController *data_controller = [[AwfulPageDataController alloc] initWithResponseData:data pageURL:lastURL];
            pageResponseBlock(data_controller);
        } 
        failure:^(AFHTTPRequestOperation *operation, NSError *error) {
