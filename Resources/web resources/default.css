@@ -1,10 +1,10 @@
 /*
-  default.css
-  Awful
-
-  Created by Nolan Waite on 10-05-27.
-  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
-*/
+ default.css
+ Awful
+ 
+ Created by Nolan Waite on 10-05-27.
+ Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
+ */
 
 
 /* General */
@@ -25,12 +25,16 @@ img {
 }
 
 a {
-    word-wrap: break-word;
+    color: #003366;
+    word-wrap:break-word;
+}
+a.quote_link {
+    text-decoration: none;
 }
 
-/* iPhone - Front matter */
+/* All - Front matter */
 
-body.iphone header.older-posts {
+body header.older-posts {
     width: 100%;
     height: 26px;
     font-size: 16px;
@@ -61,7 +65,6 @@ body.iphone article header img.avatar {
     max-width: 45px;
     max-height: 45px;
 }
-
 body.iphone article header h1 {
     font-size: 1em;
     padding-top: 8px;
@@ -76,6 +79,9 @@ body.iphone article header h1, body.iphone article header p {
     padding-right: 60px;
     display: inline-block;
     vertical-align: middle;
+}
+body.iphone article.noAvatar header h1, body.iphone article.noAvatar header p {
+    padding-left: 5px;
 }
 
 body.iphone article header input[name="post-action"] {
@@ -101,9 +107,13 @@ body.ipad article header {
     padding-left: 95px;
     padding-right: 95px;
 }
+body.ipad article.noAvatar header{
+    padding-left: 13px;
+}
 
 body.ipad article header img.avatar {
     max-width: 75px;
+    max-height: 75px;
     position: absolute;
     top: 13px;
     left: 13px;
@@ -147,6 +157,7 @@ article.seen2 {
 article section p.editedby {
     font-size: 0.75em;
     font-style: italic;
+    margin-top: 5px;
 }
 
 article section .bbc-spoiler, article section .bbc-spoiler li {
@@ -208,7 +219,10 @@ body.ipad article {
 
 body.ipad article section {
     margin-left: 95px;
-    margin-right: 95px;
+    margin-right: 13px;
+}
+body.ipad article.noAvatar section {
+    margin-left: 13px;
 }
 
 body.ipad article section .bbc-block, body.ipad article section .bbc-block h5 {
@@ -250,7 +264,7 @@ body.ipad article section .bbc-block pre {
 
 /* iPhone - Back matter */
 
-body.iphone div.ad {
+body div.ad {
     text-align: center;
 }
 
@@ -259,7 +273,7 @@ body.iphone div.ad img {
     height: auto;
 }
 
-body.iphone div.pages-left {
+body div.pages-left {
     border-top: 1px solid black;
     text-align: center;
     background-color: white;

@@ -27,3 +27,13 @@ function scrollToID(postid)
     var obj = document.getElementById(postid);
     document.getElementById(postid).scrollIntoView();
 }
+
+function addAvatarClass()
+{
+    $('article').each(function(){
+      var avatarSrc = $(this).find('.avatar').attr('src');
+      if(avatarSrc == null) {
+         $(this).addClass('noAvatar');
+      }
+    });
+}
