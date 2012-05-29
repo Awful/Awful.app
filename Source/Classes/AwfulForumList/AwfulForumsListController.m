@@ -16,7 +16,6 @@
 #import "AwfulForumCell.h"
 #import "AwfulForumHeader.h"
 #import "AwfulLoginController.h"
-#import "AwfulNetworkEngine.h"
 #import "AwfulSettings.h"
 #import "AwfulUser.h"
 
@@ -104,7 +103,7 @@
 {
     [super refresh];
     [self.networkOperation cancel];
-    self.networkOperation = [ApplicationDelegate.awfulNetworkEngine forumsListOnCompletion:^(NSMutableArray *forums) {
+    self.networkOperation = [[AwfulHTTPClient sharedClient] forumsListOnCompletion:^(NSMutableArray *forums) {
         
         self.forums = forums;
         [self finishedRefreshing];

@@ -10,7 +10,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import "AwfulAppDelegate.h"
 #import "AwfulForum.h"
-#import "AwfulNetworkEngine.h"
 #import "AwfulPage.h"
 #import "AwfulPageCount.h"
 #import "AwfulSettings.h"
@@ -108,7 +107,7 @@ typedef enum {
 {    
     [self.networkOperation cancel];
     self.isLoading = YES;
-    self.networkOperation = [ApplicationDelegate.awfulNetworkEngine threadListForForum:self.forum pageNum:pageNum onCompletion:^(NSMutableArray *threads) {
+    self.networkOperation = [[AwfulHTTPClient sharedClient] threadListForForum:self.forum pageNum:pageNum onCompletion:^(NSMutableArray *threads) {
         self.pages.currentPage = pageNum;
         if(pageNum == 1) {
             [self.awfulThreads removeAllObjects];
@@ -240,7 +239,7 @@ typedef enum {
         [page loadPageNum:0];
         
     } else if(buttonIndex == AwfulThreadListActionsTypeUnread) {
-        [ApplicationDelegate.awfulNetworkEngine markThreadUnseen:self.heldThread onCompletion:^(void) {
+        [[AwfulHTTPClient sharedClient] markThreadUnseen:self.heldThread onCompletion:^(void) {
             self.heldThread.totalUnreadPosts = [NSNumber numberWithInt:-1];
             [ApplicationDelegate saveContext];
             

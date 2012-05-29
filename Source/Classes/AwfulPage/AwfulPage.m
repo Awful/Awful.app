@@ -10,7 +10,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import "AwfulAppDelegate.h"
 #import "AwfulLoginController.h"
-#import "AwfulNetworkEngine.h"
 #import "AwfulPageCount.h"
 #import "AwfulPageDataController.h"
 #import "AwfulPost.h"
@@ -210,7 +209,7 @@
     
     AwfulThread *myThread = self.thread;
     AwfulPageDestinationType destType = self.destinationType;
-    self.networkOperation = [ApplicationDelegate.awfulNetworkEngine pageDataForThread:myThread destinationType:destType pageNum:pageNum onCompletion:^(AwfulPageDataController *dataController) {
+    self.networkOperation = [[AwfulHTTPClient sharedClient] pageDataForThread:myThread destinationType:destType pageNum:pageNum onCompletion:^(AwfulPageDataController *dataController) {
         self.dataController = dataController;
         if(self.destinationType == AwfulPageDestinationTypeSpecific) {
             self.pages.currentPage = pageNum;
@@ -231,7 +230,7 @@
 {
     [self.networkOperation cancel];
     [self swapToStopButton];
-    self.networkOperation = [ApplicationDelegate.awfulNetworkEngine pageDataForThread:self.thread destinationType:AwfulPageDestinationTypeLast pageNum:0 onCompletion:^(AwfulPageDataController *dataController) {
+    self.networkOperation = [[AwfulHTTPClient sharedClient] pageDataForThread:self.thread destinationType:AwfulPageDestinationTypeLast pageNum:0 onCompletion:^(AwfulPageDataController *dataController) {
         self.dataController = dataController;
         [self updatePagesLabel];
         [self updateBookmarked];
@@ -444,7 +443,7 @@
     } else if(self.specificPageController == nil) {
         
         [self.pagesBarButtonItem setTintColor:[UIColor blackColor]];
-        self.specificPageController = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil] instantiateViewControllerWithIdentifier:@"AwfulSpecificPageController"];
+        self.specificPageController = [self.storyboard instantiateViewControllerWithIdentifier:@"AwfulSpecificPageController"];
         self.specificPageController.page = self;
         [self.specificPageController loadView];
         sp_view = self.specificPageController.containerView;
@@ -686,7 +685,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         
     if(self.specificPageController == nil) {
         
-        self.specificPageController = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil] instantiateViewControllerWithIdentifier:@"AwfulSpecificPageController"];
+        self.specificPageController = [[UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]] instantiateViewControllerWithIdentifier:@"AwfulSpecificPageController"];
         self.specificPageController.page = self;
         [self.specificPageController loadView];
         sp_view = self.specificPageController.containerView;

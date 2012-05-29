@@ -11,7 +11,6 @@
 #import "AwfulPageCount.h"
 #import "AwfulPostBoxController.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulNetworkEngine.h"
 #import "AwfulVoteActions.h"
 #import <MobileCoreServices/UTCoreTypes.h>
 
@@ -79,9 +78,9 @@ typedef enum {
             }
         };
         if ([self.thread.isBookmarked boolValue]) {
-            [[ApplicationDelegate awfulNetworkEngine] removeBookmarkedThread:self.thread onCompletion:completion onError:nil];
+            [[AwfulHTTPClient sharedClient] removeBookmarkedThread:self.thread onCompletion:completion onError:nil];
         } else {
-            [[ApplicationDelegate awfulNetworkEngine] addBookmarkedThread:self.thread onCompletion:completion onError:nil];
+            [[AwfulHTTPClient sharedClient] addBookmarkedThread:self.thread onCompletion:completion onError:nil];
         }
     }
 }

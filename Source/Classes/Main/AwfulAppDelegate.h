@@ -17,7 +17,6 @@
 
 @property (nonatomic, strong) IBOutlet UIWindow *window;
 @property (nonatomic, strong) IBOutlet AwfulSplitViewController *splitController;
-@property (nonatomic, strong) AwfulNetworkEngine *awfulNetworkEngine;
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
@@ -26,7 +25,6 @@
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
 - (void)resetDataStore;
-
 - (void)requestFailed:(NSError *)error;
 
 @end
