@@ -5,9 +5,10 @@
 #ifdef __OBJC__
     #import <Foundation/Foundation.h>
     #import <UIKit/UIKit.h>
-    #import "MKNetworkKit.h"
     #import "AwfulAppDelegate.h"
+    #import "AwfulHTTPClient.h"
     #import <CoreData/CoreData.h>
+    #import "DDLog.h"
     #import "TestFlight.h"
     #import "AwfulModels.h"
 #endif
