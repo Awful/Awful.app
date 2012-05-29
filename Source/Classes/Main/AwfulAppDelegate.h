@@ -25,8 +25,8 @@
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
 - (void)resetDataStore;
-
 - (void)requestFailed:(NSError *)error;
+- (UIStoryboard *)storyboard;
 
 @end
 

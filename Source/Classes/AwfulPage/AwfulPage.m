@@ -443,7 +443,7 @@
     } else if(self.specificPageController == nil) {
         
         [self.pagesBarButtonItem setTintColor:[UIColor blackColor]];
-        self.specificPageController = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil] instantiateViewControllerWithIdentifier:@"AwfulSpecificPageController"];
+        self.specificPageController = [[UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]] instantiateViewControllerWithIdentifier:@"AwfulSpecificPageController"];
         self.specificPageController.page = self;
         [self.specificPageController loadView];
         sp_view = self.specificPageController.containerView;
@@ -685,7 +685,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         
     if(self.specificPageController == nil) {
         
-        self.specificPageController = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil] instantiateViewControllerWithIdentifier:@"AwfulSpecificPageController"];
+        self.specificPageController = [[UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]] instantiateViewControllerWithIdentifier:@"AwfulSpecificPageController"];
         self.specificPageController.page = self;
         [self.specificPageController loadView];
         sp_view = self.specificPageController.containerView;
