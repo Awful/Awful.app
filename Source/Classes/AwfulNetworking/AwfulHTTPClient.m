@@ -24,6 +24,8 @@
 
 static const int NetworkLogLevel = LOG_LEVEL_VERBOSE;
 
+static const NSTimeInterval NetworkTimeoutInterval = 5.0;
+
 @implementation AwfulHTTPClient
 
 + (id)sharedClient {
@@ -53,7 +55,8 @@ static const int NetworkLogLevel = LOG_LEVEL_VERBOSE;
 {
     NetworkLogInfo(@"%@", THIS_METHOD);
     NSString *path = [NSString stringWithFormat:@"forumdisplay.php?forumid=%@&perpage=40&pagenumber=%u", forum.forumID, pageNum];
-    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
+    NSMutableURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
+    urlRequest.timeoutInterval = NetworkTimeoutInterval;
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
         success:^(AFHTTPRequestOperation *operation, id response) {
             NetworkLogInfo(@"completed %@", THIS_METHOD);
