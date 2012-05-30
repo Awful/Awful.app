@@ -7,7 +7,6 @@
 //
 
 #import "AwfulAppDelegate.h"
-#import "TestFlight.h"
 #import "AwfulSplitViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulLoginController.h"
@@ -29,9 +28,7 @@
 {
     [DDLog addLogger:[DDTTYLogger sharedInstance]];
     [[AwfulSettings settings] registerDefaults];
-    
-    [TestFlight takeOff:@"a9e8d8810060d13a12051820b14a3368_MTIyNTAyMDEyLTAxLTE5IDEwOjAxOjU3LjYwODczNQ"];
-        
+            
     NSManagedObjectContext *context = [self managedObjectContext];
     if (context == nil) {
         NSLog(@"no managed object context loaded");
