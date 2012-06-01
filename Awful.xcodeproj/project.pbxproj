@@ -56,7 +56,6 @@
 		110FABFF15745C5C00ECF535 /* DDTTYLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 110FABF415745C5C00ECF535 /* DDTTYLogger.m */; };
 		110FAC0015745C5C00ECF535 /* ContextFilterLogFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 110FABF715745C5C00ECF535 /* ContextFilterLogFormatter.m */; };
 		110FAC0115745C5C00ECF535 /* DispatchQueueLogFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 110FABF915745C5C00ECF535 /* DispatchQueueLogFormatter.m */; };
-		110FAC0215745C5C00ECF535 /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 110FABFA15745C5C00ECF535 /* README.txt */; };
 		110FAC0415745CE700ECF535 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 110FAC0315745CE700ECF535 /* MessageUI.framework */; };
 		112DB4BB14211F24005A98CB /* SALR.m in Sources */ = {isa = PBXBuildFile; fileRef = 112DB4BA14211F24005A98CB /* SALR.m */; };
 		112DB4C21421208A005A98CB /* jquery.js in Resources */ = {isa = PBXBuildFile; fileRef = 112DB4BD14211F54005A98CB /* jquery.js */; };
@@ -314,7 +313,6 @@
 		11D4700E154793B8004D800B /* tviv-dvd.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D46FE2154793B8004D800B /* tviv-dvd.png */; };
 		11D4700F154793B8004D800B /* tviv-on-demand.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D46FE3154793B8004D800B /* tviv-on-demand.png */; };
 		11D47010154793B8004D800B /* tviv-spoilers.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D46FE4154793B8004D800B /* tviv-spoilers.png */; };
-		11D470161547A97A004D800B /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 11D470121547A97A004D800B /* libTestFlight.a */; };
 		11D53B7D154CAD8500D4EA82 /* quote-block-off.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D53B7B154CAD8500D4EA82 /* quote-block-off.png */; };
 		11D53B7E154CAD8500D4EA82 /* quote-block-on.png in Resources */ = {isa = PBXBuildFile; fileRef = 11D53B7C154CAD8500D4EA82 /* quote-block-on.png */; };
 		11D5E85814DC5FA000C1002D /* AwfulPageDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11D5E85714DC5FA000C1002D /* AwfulPageDataController.m */; };
@@ -844,8 +842,6 @@
 		11D46FE2154793B8004D800B /* tviv-dvd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tviv-dvd.png"; sourceTree = "<group>"; };
 		11D46FE3154793B8004D800B /* tviv-on-demand.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tviv-on-demand.png"; sourceTree = "<group>"; };
 		11D46FE4154793B8004D800B /* tviv-spoilers.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tviv-spoilers.png"; sourceTree = "<group>"; };
-		11D470121547A97A004D800B /* libTestFlight.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libTestFlight.a; sourceTree = "<group>"; };
-		11D470151547A97A004D800B /* TestFlight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestFlight.h; sourceTree = "<group>"; };
 		11D53B7B154CAD8500D4EA82 /* quote-block-off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "quote-block-off.png"; sourceTree = "<group>"; };
 		11D53B7C154CAD8500D4EA82 /* quote-block-on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "quote-block-on.png"; sourceTree = "<group>"; };
 		11D5E85614DC5FA000C1002D /* AwfulPageDataController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPageDataController.h; sourceTree = "<group>"; };
@@ -1083,7 +1079,6 @@
 				11099067134B86FD0013444C /* QuartzCore.framework in Frameworks */,
 				1172A62E14F5DB160026CDA8 /* Security.framework in Frameworks */,
 				10D34FB1128F413C0026C7C2 /* SystemConfiguration.framework in Frameworks */,
-				11D470161547A97A004D800B /* libTestFlight.a in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				1CAB36B11548F0FE00A4A362 /* libxml2.dylib in Frameworks */,
 				10D34FB7128F414E0026C7C2 /* libz.dylib in Frameworks */,
@@ -1615,7 +1610,6 @@
 				1190F7B213BE4ECB00B9D271 /* MWPhotoBrowser */,
 				1190F7B013BE4ECB00B9D271 /* NSString+HTML.h */,
 				1190F7B113BE4ECB00B9D271 /* NSString+HTML.m */,
-				11D470111547A97A004D800B /* TestFlightSDK1 */,
 			);
 			path = "Third Party";
 			sourceTree = "<group>";
@@ -1677,15 +1671,6 @@
 				1CD59CF015731479008F8E2F /* posts.html */,
 			);
 			path = "web resources";
-			sourceTree = "<group>";
-		};
-		11D470111547A97A004D800B /* TestFlightSDK1 */ = {
-			isa = PBXGroup;
-			children = (
-				11D470121547A97A004D800B /* libTestFlight.a */,
-				11D470151547A97A004D800B /* TestFlight.h */,
-			);
-			path = TestFlightSDK1;
 			sourceTree = "<group>";
 		};
 		11D5E85A14DC6D3E00C1002D /* Templates */ = {
@@ -2634,13 +2619,10 @@
 				GCC_PREFIX_HEADER = Source/Awful_Prefix.pch;
 				INFOPLIST_FILE = "Resources/Awful-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/Source/Third Party/TestFlightSDK1\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = Awful;
-				PROVISIONING_PROFILE = "AF675681-BFFF-4C7B-9F71-5C93FF5B17EE";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "AF675681-BFFF-4C7B-9F71-5C93FF5B17EE";
+				PROVISIONING_PROFILE = "B502242D-8B5D-4299-8C96-32D4DC5CF6AA";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "B502242D-8B5D-4299-8C96-32D4DC5CF6AA";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -2729,10 +2711,7 @@
 				GCC_PREFIX_HEADER = Source/Awful_Prefix.pch;
 				INFOPLIST_FILE = "Resources/Awful-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/Source/Third Party/TestFlightSDK1\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = Awful;
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -2752,10 +2731,7 @@
 				GCC_PREFIX_HEADER = Source/Awful_Prefix.pch;
 				INFOPLIST_FILE = "Resources/Awful-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/Source/Third Party/TestFlightSDK1\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = Awful;
 				PROVISIONING_PROFILE = "CDD2EE87-025E-4D48-ADB8-0F40A88D82DB";
 				SDKROOT = iphoneos;

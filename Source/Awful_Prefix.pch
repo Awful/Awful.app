@@ -9,6 +9,5 @@
     #import "AwfulHTTPClient.h"
     #import <CoreData/CoreData.h>
     #import "DDLog.h"
-    #import "TestFlight.h"
     #import "AwfulModels.h"
 #endif
