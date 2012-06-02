@@ -21,6 +21,7 @@ body {
     color: white;
     background-color: black;
     -webkit-text-size-adjust: none;
+    word-wrap:break-word;
 }
 
 img {
