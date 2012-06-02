@@ -22,7 +22,7 @@
 #import "AFNetworkActivityIndicatorManager.h"
 #import "AFHTTPRequestOperation.h"
 
-static const int NetworkLogLevel = LOG_LEVEL_VERBOSE;
+static const int NetworkLogLevel = LOG_LEVEL_OFF;
 
 static const NSTimeInterval NetworkTimeoutInterval = 5.0;
 
