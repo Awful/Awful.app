@@ -302,7 +302,7 @@ typedef enum BookmarkAction {
            [dict setValue:formkey forKey:@"formkey"];
            [dict setValue:formcookie forKey:@"form_cookie"];
            [dict setValue:@"postreply" forKey:@"action"];
-           [dict setValue:[text stringByEscapingUnicode] forKey:@"message"];
+           [dict setValue:text forKey:@"message"];
            [dict setValue:@"yes" forKey:@"parseurl"];
            [dict setValue:@"Submit Reply" forKey:@"submit"];
            
@@ -383,6 +383,7 @@ QuotePostContent,
            NetworkLogInfo(@"completed %@", THIS_METHOD);
            NSData *data = (NSData *)response;
            NSString *rawString = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+           NSLog(@"raw %@", rawString);
            NSData *converted = [rawString dataUsingEncoding:NSUTF8StringEncoding];
            TFHpple *pageData = [[TFHpple alloc] initWithHTMLData:converted];
            
@@ -397,7 +398,7 @@ QuotePostContent,
            [dict setValue:@"updatepost" forKey:@"action"];
            [dict setValue:@"Save Changes" forKey:@"submit"];
            [dict setValue:post.postID forKey:@"postid"];
-           [dict setValue:[contents stringByEscapingUnicode] forKey:@"message"];
+           [dict setValue:contents forKey:@"message"];
            
            NSURLRequest *postRequest = [self requestWithMethod:@"POST" path:@"editpost.php" parameters:dict];
            AFHTTPRequestOperation *finalOp = [self HTTPRequestOperationWithRequest:postRequest 
