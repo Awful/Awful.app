@@ -76,6 +76,11 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     return YES;
 }
 
+-(void)webViewDidFinishLoad:(UIWebView *)webView
+{
+    [self.delegate webViewDidFinishLoad:webView];
+}
+
 #pragma mark - Forwarding to delegate
 
 - (id)forwardingTargetForSelector:(SEL)selector
