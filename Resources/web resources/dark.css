@@ -20,6 +20,7 @@ body {
     font-size: 14px;
     color: white;
     background-color: black;
+    -webkit-text-size-adjust: none;
 }
 
 img {
