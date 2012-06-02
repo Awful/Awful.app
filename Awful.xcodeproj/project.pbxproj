@@ -239,6 +239,7 @@
 		1190F7F313BE4EDA00B9D271 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7F213BE4EDA00B9D271 /* main.m */; };
 		1195D59414C4CB4400CA3A48 /* threadrating.png in Resources */ = {isa = PBXBuildFile; fileRef = 1195D59014C4CB4400CA3A48 /* threadrating.png */; };
 		1199D7CF13AA9C4200264DE9 /* tiny_arrow_right.png in Resources */ = {isa = PBXBuildFile; fileRef = 1199D7CE13AA9C4200264DE9 /* tiny_arrow_right.png */; };
+		11BBD68715799C190070C793 /* tava-cellphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 11BBD68615799C190070C793 /* tava-cellphone.png */; };
 		11C1FFA714FC78D500B0250B /* 28-star.png in Resources */ = {isa = PBXBuildFile; fileRef = 11C1FFA514FC78D500B0250B /* 28-star.png */; };
 		11C1FFA814FC78D500B0250B /* 28-star@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11C1FFA614FC78D500B0250B /* 28-star@2x.png */; };
 		11C1FFAD14FC797800B0250B /* 39-circle-check.png in Resources */ = {isa = PBXBuildFile; fileRef = 11C1FFA914FC797800B0250B /* 39-circle-check.png */; };
@@ -767,6 +768,7 @@
 		1190F7F213BE4EDA00B9D271 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		1195D59014C4CB4400CA3A48 /* threadrating.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = threadrating.png; path = images/threadrating.png; sourceTree = "<group>"; };
 		1199D7CE13AA9C4200264DE9 /* tiny_arrow_right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tiny_arrow_right.png; path = images/tiny_arrow_right.png; sourceTree = "<group>"; };
+		11BBD68615799C190070C793 /* tava-cellphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tava-cellphone.png"; sourceTree = "<group>"; };
 		11C1FFA514FC78D500B0250B /* 28-star.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "28-star.png"; path = "images/28-star.png"; sourceTree = "<group>"; };
 		11C1FFA614FC78D500B0250B /* 28-star@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "28-star@2x.png"; path = "images/28-star@2x.png"; sourceTree = "<group>"; };
 		11C1FFA914FC797800B0250B /* 39-circle-check.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "39-circle-check.png"; path = "images/39-circle-check.png"; sourceTree = "<group>"; };
@@ -1243,6 +1245,7 @@
 		112ECF0F14D7100A007EE7B6 /* threadtags */ = {
 			isa = PBXGroup;
 			children = (
+				11BBD68615799C190070C793 /* tava-cellphone.png */,
 				11817E141565E5E7000E765A /* bss-indie.png */,
 				11817E151565E5E7000E765A /* cd_drama.png */,
 				11817E161565E5E7000E765A /* cell-gsm.png */,
@@ -2427,6 +2430,7 @@
 				1CD59CF11573147A008F8E2F /* posts.html in Resources */,
 				1CD59CF7157336F5008F8E2F /* default.css in Resources */,
 				1CD59CF9157338FC008F8E2F /* dark.css in Resources */,
+				11BBD68715799C190070C793 /* tava-cellphone.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
