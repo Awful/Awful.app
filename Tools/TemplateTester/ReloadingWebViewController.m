@@ -120,10 +120,13 @@
     NSUInteger options = NSJSONReadingMutableContainers;
     _context = [NSJSONSerialization JSONObjectWithData:data options:options error:NULL];
     NSString *device = @"iphone";
+    NSString *deviceWidth = @"device-width";
     if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
         device = @"ipad";
+        deviceWidth = @"80%";
     }
     [_context setObject:device forKey:@"device"];
+    [_context setObject:deviceWidth forKey:@"device-width"];
     return _context;
 }
 
