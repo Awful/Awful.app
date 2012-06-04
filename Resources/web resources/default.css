@@ -93,9 +93,8 @@ body.iphone article header input[name="post-action"] {
     width: 45px;
 }
 
-body.iphone span.poster-name {
+body.iphone p.post-date {
     display: block;
-    width: 200px;
 }
 
 /* iPad - Post header */
