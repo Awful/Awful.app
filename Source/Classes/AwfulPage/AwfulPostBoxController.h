@@ -39,7 +39,7 @@ typedef enum {
 @property (nonatomic, strong) NSString *startingText;
 @property (nonatomic, weak) AwfulPage *page;
 
-@property (nonatomic, strong) MKNetworkOperation *networkOperation;
+@property (nonatomic, strong) NSOperation *networkOperation;
 
 -(IBAction)hideReply;
 -(IBAction)hitSend;

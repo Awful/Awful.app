@@ -8,7 +8,6 @@
 
 #import "AwfulLoginController.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulNetworkEngine.h"
 #import "AwfulSettingsViewController.h"
 #import "AwfulUser.h"
 
@@ -63,7 +62,7 @@
 {
     [self.navigationController.presentingViewController dismissModalViewControllerAnimated:YES];
     [self.accountViewController refresh];
-    [ApplicationDelegate.awfulNetworkEngine forumsListOnCompletion:nil onError:nil];
+    [[AwfulHTTPClient sharedClient] forumsListOnCompletion:nil onError:nil];
 }
 
 #pragma mark Web View delegate

@@ -10,7 +10,7 @@
 #import "AwfulTableViewCellEmoticonMultiple.h"
 #import "AwfulEmote.h"
 #import "AwfulEmote+AwfulMethods.h"
-#import "AwfulNetworkEngine.h"
+//#import "AwfulNetworkEngine.h"
 
 @interface AwfulEmoteChooser ()
 
@@ -96,7 +96,7 @@
         if (!emote.cached && [imagesToCache indexOfObject:emote] == NSNotFound) {
             //NSLog(@"loading emote %@", emote.code);
             [imagesToCache addObject:emote];
-            [ApplicationDelegate.awfulNetworkEngine cacheImage:emote 
+            [[AwfulHTTPClient sharedClient] cacheImage:emote 
                                                   onCompletion:^{
                                                       //[self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] 
                                                         //                    withRowAnimation:(UITableViewRowAnimationFade)];
@@ -115,7 +115,7 @@
 -(void) refresh {
     [self.networkOperation cancel];
     self.reloading = YES;
-    self.networkOperation = [ApplicationDelegate.awfulNetworkEngine refreshEmotesOnCompletion:nil onError:nil];
+    self.networkOperation = [[AwfulHTTPClient sharedClient] refreshEmotesOnCompletion:nil onError:nil];
     /*
                              onCompletion:^(NSMutableArray *threads) {
         self.pages.currentPage = pageNum;

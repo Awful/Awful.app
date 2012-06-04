@@ -129,7 +129,7 @@
 -(void)viewDidLoad
 {
     UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(hitDone)];
-    self.navigationItem.rightBarButtonItem = done;
+    self.navigationItem.leftBarButtonItem = done;
     
     [self loadToolbar];
 }

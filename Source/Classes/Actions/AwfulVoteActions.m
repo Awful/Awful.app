@@ -8,7 +8,6 @@
 
 #import "AwfulVoteActions.h"
 #import "AwfulThread.h"
-#import "AwfulNetworkEngine.h"
 #import "AwfulPage.h"
 
 @implementation AwfulVoteActions
@@ -54,7 +53,7 @@
     }
     
     if(vote_num != -1) {
-        [ApplicationDelegate.awfulNetworkEngine submitVote:vote_num forThread:self.thread onCompletion:^(void) {
+        [[AwfulHTTPClient sharedClient] submitVote:vote_num forThread:self.thread onCompletion:^(void) {
             if([self.viewController isKindOfClass:[AwfulPage class]]) {
                 AwfulPage *page = (AwfulPage *)self.viewController;
                 [page showCompletionMessage:@"Great Job!"];

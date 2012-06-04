@@ -8,6 +8,7 @@
 
 #import "AwfulPostComposerView.h"
 #import "AwfulEmote.h"
+#import "NSData+Base64.h"
 
 @implementation AwfulPostComposerView
 
