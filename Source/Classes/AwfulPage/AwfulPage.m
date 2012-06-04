@@ -467,6 +467,10 @@
 
 -(void)nextPage
 {
+    self.pullForActionController.footerView.state = AwfulPullForActionStateLoading;
+    
+    [self.webView.scrollView setContentOffset:CGPointMake(0,self.webView.scrollView.contentSize.height-self.webView.fsH+self.pullForActionController.footerView.fsH) animated:YES];
+    
     if(![self.pages onLastPage]) {
         self.destinationType = AwfulPageDestinationTypeSpecific;
         [self loadPageNum:self.pages.currentPage+1];
