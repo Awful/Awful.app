@@ -96,6 +96,11 @@ body.iphone article header input[name="post-action"] {
     width: 45px;
 }
 
+body.iphone span.poster-name {
+    display: block;
+    width: 200px;
+}
+
 /* iPad - Post header */
 
 body.ipad article {
@@ -289,11 +294,10 @@ body.iphone div.ad img {
 }
 
 body div.pages-left {
-    border-top: 1px solid black;
     text-align: center;
     background-color: black;
     color: #fff;
-    height: 40px;
+    height: 60px;
     font-size: 20px;
-    padding-top: 10px;
+    padding-top: 16px;
 }
