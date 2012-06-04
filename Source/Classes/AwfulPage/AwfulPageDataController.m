@@ -227,6 +227,10 @@
                                    withString:@"<i></i>"
                                       options:NSCaseInsensitiveSearch
                                         range:NSMakeRange(0, post_body.length)];
+        [post_body replaceOccurrencesOfString:@"<s/>"
+                                   withString:@"<s></s>"
+                                      options:NSCaseInsensitiveSearch
+                                        range:NSMakeRange(0, post_body.length)];
         
         post.postBody = post_body;
         

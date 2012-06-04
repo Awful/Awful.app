@@ -13,7 +13,6 @@
 #import "AwfulPost.h"
 #import "AwfulPage.h"
 #import "MBProgressHUD.h"
-#import "AwfulNetworkEngine.h"
 #import "ButtonSegmentedControl.h"
 
 @implementation AwfulPostBoxController
@@ -94,7 +93,7 @@
         if(self.thread != nil) {
             MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
             hud.labelText = @"Replying...";
-            self.networkOperation = [[ApplicationDelegate awfulNetworkEngine] replyToThread:self.thread withText:self.replyTextView.text onCompletion:^{
+            self.networkOperation = [[AwfulHTTPClient sharedClient] replyToThread:self.thread withText:self.replyTextView.text onCompletion:^{
                 [MBProgressHUD hideHUDForView:self.view animated:NO];
                 [self.presentingViewController dismissModalViewControllerAnimated:YES];
                 [self.page refresh];
@@ -105,7 +104,7 @@
         } else if(self.post != nil) {
             MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
             hud.labelText = @"Editing...";
-            self.networkOperation = [[ApplicationDelegate awfulNetworkEngine] editPost:self.post withContents:self.replyTextView.text onCompletion:^{
+            self.networkOperation = [[AwfulHTTPClient sharedClient] editPost:self.post withContents:self.replyTextView.text onCompletion:^{
                 [MBProgressHUD hideHUDForView:self.view animated:NO];
                 [self.presentingViewController dismissModalViewControllerAnimated:YES];
                 [self.page hardRefresh];

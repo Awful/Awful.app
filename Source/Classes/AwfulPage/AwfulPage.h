@@ -50,7 +50,7 @@ typedef enum {
 
 @property (nonatomic, strong) AwfulPageDataController *dataController;
 @property (nonatomic, strong) AwfulSpecificPageViewController *specificPageController;
-@property (nonatomic, strong) MKNetworkOperation *networkOperation;
+@property (nonatomic, strong) NSOperation *networkOperation;
 
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *pagesBarButtonItem;
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *nextPageBarButtonItem;

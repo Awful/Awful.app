@@ -15,6 +15,8 @@
 pageDidRequestAction:(NSString *)action
  infoDictionary:(NSDictionary *)infoDictionary;
 
+-(void)webViewDidFinishLoad:(UIWebView *)sender;
+
 @end
 
 // Redirects script calls into the bridge, and otherwise passes everything through.
