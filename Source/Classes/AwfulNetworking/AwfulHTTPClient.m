@@ -469,7 +469,7 @@ QuotePostContent,
     [dict setValue:@"1" forKey:@"json"];
     
     NSString *path = @"showthread.php";
-    NSURLRequest *urlRequest = [self requestWithMethod:@"POST" path:path parameters:nil];
+    NSURLRequest *urlRequest = [self requestWithMethod:@"POST" path:path parameters:dict];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
        success:^(AFHTTPRequestOperation *operation, id response) {
            NetworkLogInfo(@"completed %@", THIS_METHOD);
