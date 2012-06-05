@@ -383,7 +383,6 @@ QuotePostContent,
            NetworkLogInfo(@"completed %@", THIS_METHOD);
            NSData *data = (NSData *)response;
            NSString *rawString = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
-           NSLog(@"raw %@", rawString);
            NSData *converted = [rawString dataUsingEncoding:NSUTF8StringEncoding];
            TFHpple *pageData = [[TFHpple alloc] initWithHTMLData:converted];
            
