@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="1.1" toolsVersion="2182" systemVersion="11D50b" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="D7m-b9-f1Z">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="1.1" toolsVersion="2182" systemVersion="11E53" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="D7m-b9-f1Z">
     <dependencies>
         <deployment defaultVersion="1296" identifier="iOS"/>
         <development defaultVersion="4200" identifier="xcode"/>
@@ -693,13 +693,6 @@
                         <rect key="frame" x="0.0" y="20" width="540" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="XxK-kk-S5y">
-                                <rect key="frame" x="5" y="44" width="530" height="551"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                            </textView>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="blackOpaque" id="21X-FL-ZAr">
                                 <rect key="frame" x="0.0" y="0.0" width="540" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
@@ -715,11 +708,9 @@
                                             <rect key="frame" x="140" y="7" width="260" height="30"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <segments>
-                                                <segment title="["/>
-                                                <segment title="]"/>
-                                                <segment title="/"/>
-                                                <segment title="="/>
-                                                <segment title=":"/>
+                                                <segment title="" image="emot-v.gif"/>
+                                                <segment title="Image"/>
+                                                <segment title="Formatting"/>
                                             </segments>
                                             <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                             <connections>
@@ -735,6 +726,11 @@
                                     </barButtonItem>
                                 </items>
                             </toolbar>
+                            <view contentMode="scaleToFill" id="hbu-Jc-1qK" customClass="AwfulPostComposerView">
+                                <rect key="frame" x="0.0" y="44" width="540" height="556"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.40000003579999999" blue="0.60000002379999995" alpha="1" colorSpace="deviceRGB"/>
                         <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
@@ -742,13 +738,46 @@
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackTranslucent"/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
                     <connections>
-                        <outlet property="replyTextView" destination="XxK-kk-S5y" id="6HL-Uj-H9Y"/>
+                        <outlet property="replyWebView" destination="hbu-Jc-1qK" id="GVr-jd-Tcx"/>
                         <outlet property="segmentedControl" destination="oRj-In-H1X" id="836-tM-l16"/>
                         <outlet property="sendButton" destination="fuv-Av-aEq" id="GMG-JD-VJ8"/>
+                        <segue destination="Bnj-bX-wt1" kind="popover" identifier="emoteChooserSegue" popoverAnchorView="oRj-In-H1X" id="g4e-Ac-g5Y">
+                            <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
+                        </segue>
                     </connections>
                 </viewController>
             </objects>
             <point key="canvasLocation" x="-562" y="1933"/>
+        </scene>
+        <!--Awful Emote Chooser-->
+        <scene sceneID="ays-Yx-moa">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="K72-ih-eiq" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tableViewController id="Bnj-bX-wt1" customClass="AwfulEmoteChooser" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="awl-PQ-5Na">
+                        <rect key="frame" x="0.0" y="0.0" width="540" height="620"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <connections>
+                            <outlet property="dataSource" destination="Bnj-bX-wt1" id="4QK-1j-JH6"/>
+                            <outlet property="delegate" destination="Bnj-bX-wt1" id="Ixx-DC-Lya"/>
+                        </connections>
+                    </tableView>
+                    <modalFormSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <connections>
+                        <outlet property="searchBar" destination="g9O-aO-fBy" id="F3N-3A-csf"/>
+                    </connections>
+                </tableViewController>
+                <searchBar contentMode="redraw" barStyle="blackTranslucent" id="g9O-aO-fBy">
+                    <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                    <textInputTraits key="textInputTraits"/>
+                    <connections>
+                        <outlet property="delegate" destination="Bnj-bX-wt1" id="laE-jO-Ldq"/>
+                    </connections>
+                </searchBar>
+            </objects>
+            <point key="canvasLocation" x="121" y="1665"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="vEl-Ha-B4p">
@@ -963,6 +992,7 @@
         <image name="arrowright.png" width="23" height="18"/>
         <image name="cog.png" width="19" height="20"/>
         <image name="compose.png" width="22" height="18"/>
+        <image name="emot-v.gif" width="15" height="15"/>
         <image name="forum-arrow-right.png" width="44" height="38"/>
         <image name="list_icon.png" width="20" height="18"/>
         <image name="multiPageMovement.png" width="487" height="266"/>
@@ -979,8 +1009,17 @@
         <class className="AwfulBookmarksController" superclassName="AwfulThreadListController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulBookmarksController.h"/>
         </class>
+        <class className="AwfulEmoteChooser" superclassName="AwfulFetchedTableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulEmoteChooser.h"/>
+            <relationships>
+                <relationship kind="outlet" name="searchBar" candidateClass="UISearchBar"/>
+            </relationships>
+        </class>
         <class className="AwfulFavoritesViewController" superclassName="AwfulTableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulFavoritesViewController.h"/>
+        </class>
+        <class className="AwfulFetchedTableViewController" superclassName="AwfulTableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulFetchedTableViewController.h"/>
         </class>
         <class className="AwfulForumCell" superclassName="UITableViewCell">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumCell.h"/>
@@ -1041,10 +1080,14 @@
                 <relationship kind="action" name="hideReply"/>
                 <relationship kind="action" name="hitSend"/>
                 <relationship kind="action" name="hitTextBarButtonItem:" candidateClass="NSString"/>
-                <relationship kind="outlet" name="replyTextView" candidateClass="UITextView"/>
+                <relationship kind="outlet" name="replyTextView" candidateClass="EGOTextView"/>
+                <relationship kind="outlet" name="replyWebView" candidateClass="AwfulPostComposerView"/>
                 <relationship kind="outlet" name="segmentedControl" candidateClass="ButtonSegmentedControl"/>
                 <relationship kind="outlet" name="sendButton" candidateClass="UIBarButtonItem"/>
             </relationships>
+        </class>
+        <class className="AwfulPostComposerView" superclassName="UIWebView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPostComposerView.h"/>
         </class>
         <class className="AwfulSettingsViewController" superclassName="AwfulTableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulSettingsViewController.h"/>
@@ -1095,6 +1138,6 @@
     <inferredMetricsTieBreakers>
         <segue reference="gCu-q9-SZ9"/>
         <segue reference="hhi-LS-YNv"/>
-        <segue reference="Kgw-hp-QCk"/>
+        <segue reference="iHc-lm-dh8"/>
     </inferredMetricsTieBreakers>
 </document>

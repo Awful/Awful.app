@@ -21,7 +21,7 @@ extern const struct AwfulForumFetchedProperties {
 } AwfulForumFetchedProperties;
 
 @class AwfulForum;
-@class AwfulFavorite;
+@class NSManagedObject;
 @class AwfulForum;
 @class AwfulThread;
 
@@ -77,7 +77,7 @@ extern const struct AwfulForumFetchedProperties {
 
 
 
-@property (nonatomic, strong) AwfulFavorite* favorite;
+@property (nonatomic, strong) NSManagedObject* favorite;
 
 //- (BOOL)validateFavorite:(id*)value_ error:(NSError**)error_;
 
@@ -145,8 +145,8 @@ extern const struct AwfulForumFetchedProperties {
 
 
 
-- (AwfulFavorite*)primitiveFavorite;
-- (void)setPrimitiveFavorite:(AwfulFavorite*)value;
+- (NSManagedObject*)primitiveFavorite;
+- (void)setPrimitiveFavorite:(NSManagedObject*)value;
 
 
 

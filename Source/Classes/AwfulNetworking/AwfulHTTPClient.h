@@ -13,6 +13,7 @@
 @class AwfulThread;
 @class AwfulPageDataController;
 @class AwfulUser;
+@class AwfulCachedImage;
 @class DDFileLogger;
 
 typedef void (^AwfulErrorBlock)(NSError* error);
@@ -58,5 +59,9 @@ typedef void (^PostContentResponseBlock)(NSString *postContent);
 -(NSOperation *)processMarkSeenLink : (NSString *)markSeenLink onCompletion : (CompletionBlock)completionBlock onError:(AwfulErrorBlock)errorBlock;
 
 -(NSOperation *)markThreadUnseen : (AwfulThread *)thread onCompletion : (CompletionBlock)completionBlock onError:(AwfulErrorBlock)errorBlock;
+
+-(NSOperation*) cacheImage:(AwfulCachedImage*)image onCompletion:(CompletionBlock)completionBlock onError:(AwfulErrorBlock)errorBlock;
+
+-(NSOperation *)refreshEmotesOnCompletion : (CompletionBlock)completionBlock onError:(AwfulErrorBlock)errorBlock;
 
 @end

@@ -5,9 +5,18 @@
 #ifdef __OBJC__
     #import <Foundation/Foundation.h>
     #import <UIKit/UIKit.h>
+    #import <CoreData/CoreData.h>
     #import "AwfulAppDelegate.h"
     #import "AwfulHTTPClient.h"
     #import <CoreData/CoreData.h>
     #import "DDLog.h"
     #import "AwfulModels.h"
+
+    //#import "MKNetworkKit.h"
+    //#import "TestFlight.h"
+
+#define MAX_EMOTE_WIDTH 100.0f
+#define NOTIFY_EMOTE_SELECTED @"NOTIFY_EMOTE_SELECTED"
+#define NOTIFY_EMOTE_FILTERED @"NOTIFY_EMOTE_FILTERED"
+
 #endif

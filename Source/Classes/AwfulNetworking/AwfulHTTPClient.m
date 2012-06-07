@@ -16,6 +16,7 @@
 #import "AwfulPageDataController.h"
 #import "AwfulUser.h"
 #import "AwfulUser+AwfulMethods.h"
+#import "AwfulEmote+AwfulMethods.h"
 #import "AwfulPageTemplate.h"
 #import "NSString+HTML.h"
 #import "NetworkingFileLogger.h"
@@ -480,6 +481,48 @@ QuotePostContent,
        }];
     [self enqueueHTTPRequestOperation:op];
     return (NSOperation *)op;
+}
+
+-(NSOperation*) cacheImage:(AwfulCachedImage*)image onCompletion:(CompletionBlock)completionBlock onError:(AwfulErrorBlock)errorBlock {
+    
+    NSString *path = image.urlString;
+    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
+    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
+                                                               success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                                                   NSData *responseData = responseObject;
+                                                                   image.imageData = responseData;
+                                                                   [ApplicationDelegate saveContext];
+                                                                   completionBlock();
+                                                               } 
+                                                               failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                                                   errorBlock(error);
+                                                               }
+                                  ];
+    
+
+    [self enqueueHTTPRequestOperation:op];
+    return op;
+}
+
+-(NSOperation *)refreshEmotesOnCompletion : (CompletionBlock)completionBlock onError:(AwfulErrorBlock)errorBlock;
+{
+    NSString *path = [NSString stringWithFormat:@"misc.php?action=showsmilies"];
+    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
+    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
+                                                               success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                                                   NSData *responseData = responseObject;
+                                                                   [AwfulEmote parseEmotesWithData:responseData];
+                                                                   [ApplicationDelegate saveContext];
+
+                                                               } 
+                                                               failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                                                   errorBlock(error);
+                                                               }
+                                  
+                                  ];
+
+    [self enqueueHTTPRequestOperation:op];
+    return op;
 }
 
 @end

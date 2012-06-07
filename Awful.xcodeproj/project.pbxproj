@@ -225,7 +225,6 @@
 		1190F76813BE4EA900B9D271 /* SmilieGrabber.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F73313BE4EA900B9D271 /* SmilieGrabber.m */; };
 		1190F7E313BE4ECB00B9D271 /* 37x-Checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 1190F7A913BE4ECB00B9D271 /* 37x-Checkmark.png */; };
 		1190F7E413BE4ECB00B9D271 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7AB13BE4ECB00B9D271 /* MBProgressHUD.m */; };
-		1190F7E613BE4ECB00B9D271 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7B113BE4ECB00B9D271 /* NSString+HTML.m */; };
 		1190F7E713BE4ECB00B9D271 /* MWPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7B413BE4ECB00B9D271 /* MWPhoto.m */; };
 		1190F7E813BE4ECB00B9D271 /* MWPhotoBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7B613BE4ECB00B9D271 /* MWPhotoBrowser.m */; };
 		1190F7E913BE4ECB00B9D271 /* UIImage+Decompress.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7B813BE4ECB00B9D271 /* UIImage+Decompress.m */; };
@@ -480,6 +479,22 @@
 		50A8B96F1541D57E0065F3D9 /* ReplyButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A8B96A1541D57E0065F3D9 /* ReplyButton.png */; };
 		50A8B9701541D57E0065F3D9 /* singlePageMovement.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A8B96B1541D57E0065F3D9 /* singlePageMovement.png */; };
 		50A8B9711541D57E0065F3D9 /* ThreadActions.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A8B96C1541D57E0065F3D9 /* ThreadActions.png */; };
+		8C173069156A76FD006ED0E8 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7B113BE4ECB00B9D271 /* NSString+HTML.m */; };
+		8C17306C156A7761006ED0E8 /* editor.html in Resources */ = {isa = PBXBuildFile; fileRef = 8C17306B156A7761006ED0E8 /* editor.html */; };
+		8C173074156A7B44006ED0E8 /* AwfulEmoteChooser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C17306F156A7B44006ED0E8 /* AwfulEmoteChooser.m */; };
+		8C173075156A7B44006ED0E8 /* AwfulPostComposerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C173071156A7B44006ED0E8 /* AwfulPostComposerView.m */; };
+		8C173076156A7B44006ED0E8 /* AwfulTableViewCellEmoticonMultiple.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C173073156A7B44006ED0E8 /* AwfulTableViewCellEmoticonMultiple.m */; };
+		8C17307B156A7F3D006ED0E8 /* _AwfulCachedImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C173078156A7F3D006ED0E8 /* _AwfulCachedImage.m */; };
+		8C17307C156A7F3D006ED0E8 /* _AwfulEmote.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C17307A156A7F3D006ED0E8 /* _AwfulEmote.m */; };
+		8C173083156A7F63006ED0E8 /* AwfulCachedImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C17307E156A7F63006ED0E8 /* AwfulCachedImage.m */; };
+		8C173084156A7F63006ED0E8 /* AwfulEmote.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C173080156A7F63006ED0E8 /* AwfulEmote.m */; };
+		8C173085156A7F63006ED0E8 /* AwfulEmote+AwfulMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C173082156A7F63006ED0E8 /* AwfulEmote+AwfulMethods.m */; };
+		8C173088156A825D006ED0E8 /* UIImageView+AnimatedGif.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C173087156A825D006ED0E8 /* UIImageView+AnimatedGif.m */; };
+		8C7CAC8B1558298D00CF6792 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C7CAC8A1558298D00CF6792 /* CoreText.framework */; };
+		8C7CADA9155AFA5500CF6792 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C7CADA8155AFA5500CF6792 /* ImageIO.framework */; };
+		8C958300156A84E900FBFC77 /* AwfulFetchedTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7CAC931558696D00CF6792 /* AwfulFetchedTableViewController.m */; };
+		8C9BEE96155DBFCA00B64CAE /* AnimatedGif.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C9BEE95155DBFCA00B64CAE /* AnimatedGif.m */; };
+		8CFC2282157D24EB00B26904 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFC2281157D24EB00B26904 /* NSData+Base64.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -971,7 +986,6 @@
 		1C6474C01569989800C72657 /* _AwfulThread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulThread.m; sourceTree = "<group>"; };
 		1C6474C11569989800C72657 /* _AwfulUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _AwfulUser.h; sourceTree = "<group>"; };
 		1C6474C21569989800C72657 /* _AwfulUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulUser.m; sourceTree = "<group>"; };
-		1C6474C41569989800C72657 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		1C7B871B1544D73100891D41 /* AwfulForumsListControllerSubclass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumsListControllerSubclass.h; sourceTree = "<group>"; };
 		1C7B871E1544D83C00891D41 /* AwfulForumSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumSection.h; sourceTree = "<group>"; };
 		1C7B871F1544D83D00891D41 /* AwfulForumSection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumSection.m; sourceTree = "<group>"; };
@@ -1053,6 +1067,40 @@
 		50A8B96A1541D57E0065F3D9 /* ReplyButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ReplyButton.png; path = images/help/ReplyButton.png; sourceTree = "<group>"; };
 		50A8B96B1541D57E0065F3D9 /* singlePageMovement.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = singlePageMovement.png; path = images/help/singlePageMovement.png; sourceTree = "<group>"; };
 		50A8B96C1541D57E0065F3D9 /* ThreadActions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ThreadActions.png; path = images/help/ThreadActions.png; sourceTree = "<group>"; };
+		8C17306B156A7761006ED0E8 /* editor.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = editor.html; sourceTree = "<group>"; };
+		8C17306E156A7B44006ED0E8 /* AwfulEmoteChooser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulEmoteChooser.h; sourceTree = "<group>"; };
+		8C17306F156A7B44006ED0E8 /* AwfulEmoteChooser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulEmoteChooser.m; sourceTree = "<group>"; };
+		8C173070156A7B44006ED0E8 /* AwfulPostComposerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostComposerView.h; sourceTree = "<group>"; };
+		8C173071156A7B44006ED0E8 /* AwfulPostComposerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostComposerView.m; sourceTree = "<group>"; };
+		8C173072156A7B44006ED0E8 /* AwfulTableViewCellEmoticonMultiple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTableViewCellEmoticonMultiple.h; sourceTree = "<group>"; };
+		8C173073156A7B44006ED0E8 /* AwfulTableViewCellEmoticonMultiple.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTableViewCellEmoticonMultiple.m; sourceTree = "<group>"; };
+		8C173077156A7F3D006ED0E8 /* _AwfulCachedImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _AwfulCachedImage.h; sourceTree = "<group>"; };
+		8C173078156A7F3D006ED0E8 /* _AwfulCachedImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulCachedImage.m; sourceTree = "<group>"; };
+		8C173079156A7F3D006ED0E8 /* _AwfulEmote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _AwfulEmote.h; sourceTree = "<group>"; };
+		8C17307A156A7F3D006ED0E8 /* _AwfulEmote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulEmote.m; sourceTree = "<group>"; };
+		8C17307D156A7F63006ED0E8 /* AwfulCachedImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCachedImage.h; sourceTree = "<group>"; };
+		8C17307E156A7F63006ED0E8 /* AwfulCachedImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCachedImage.m; sourceTree = "<group>"; };
+		8C17307F156A7F63006ED0E8 /* AwfulEmote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulEmote.h; sourceTree = "<group>"; };
+		8C173080156A7F63006ED0E8 /* AwfulEmote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulEmote.m; sourceTree = "<group>"; };
+		8C173081156A7F63006ED0E8 /* AwfulEmote+AwfulMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AwfulEmote+AwfulMethods.h"; sourceTree = "<group>"; };
+		8C173082156A7F63006ED0E8 /* AwfulEmote+AwfulMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AwfulEmote+AwfulMethods.m"; sourceTree = "<group>"; };
+		8C173086156A825D006ED0E8 /* UIImageView+AnimatedGif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+AnimatedGif.h"; sourceTree = "<group>"; };
+		8C173087156A825D006ED0E8 /* UIImageView+AnimatedGif.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+AnimatedGif.m"; sourceTree = "<group>"; };
+		8C70A3F81556BE300009B3D1 /* Model v2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model v2.xcdatamodel"; sourceTree = "<group>"; };
+		8C70A4001556CCB50009B3D1 /* smile.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = smile.gif; sourceTree = "<group>"; };
+		8C79D44415653BF7006FEE48 /* emot-v.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "emot-v.gif"; sourceTree = "<group>"; };
+		8C7CAC8A1558298D00CF6792 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		8C7CAC921558696D00CF6792 /* AwfulFetchedTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFetchedTableViewController.h; sourceTree = "<group>"; };
+		8C7CAC931558696D00CF6792 /* AwfulFetchedTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulFetchedTableViewController.m; sourceTree = "<group>"; };
+		8C7CAC97155AE48F00CF6792 /* emot-f5.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "emot-f5.gif"; sourceTree = "<group>"; };
+		8C7CAC98155AE48F00CF6792 /* emot-flashfap.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "emot-flashfap.gif"; sourceTree = "<group>"; };
+		8C7CADA8155AFA5500CF6792 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		8C9BEE94155DBFCA00B64CAE /* AnimatedGif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimatedGif.h; sourceTree = "<group>"; };
+		8C9BEE95155DBFCA00B64CAE /* AnimatedGif.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnimatedGif.m; sourceTree = "<group>"; };
+		8C9BEE98155DC0DC00B64CAE /* UIImageView+AnimatedGif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+AnimatedGif.h"; sourceTree = "<group>"; };
+		8C9BEE99155DC0DC00B64CAE /* UIImageView+AnimatedGif.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+AnimatedGif.m"; sourceTree = "<group>"; };
+		8CFC2280157D24EB00B26904 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
+		8CFC2281157D24EB00B26904 /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Awful-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Awful-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1072,6 +1120,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8C7CADA9155AFA5500CF6792 /* ImageIO.framework in Frameworks */,
+				8C7CAC8B1558298D00CF6792 /* CoreText.framework in Frameworks */,
 				110FAC0415745CE700ECF535 /* MessageUI.framework in Frameworks */,
 				10D34FA9128F41160026C7C2 /* CFNetwork.framework in Frameworks */,
 				117DBE3B1522A39A007125EF /* CoreData.framework in Frameworks */,
@@ -1112,6 +1162,10 @@
 		10E93EB9121DC70E00CCBF6D /* images */ = {
 			isa = PBXGroup;
 			children = (
+				8C79D44415653BF7006FEE48 /* emot-v.gif */,
+				8C7CAC97155AE48F00CF6792 /* emot-f5.gif */,
+				8C7CAC98155AE48F00CF6792 /* emot-flashfap.gif */,
+				8C70A4001556CCB50009B3D1 /* smile.gif */,
 				50A8B9671541D52D0065F3D9 /* help */,
 				112ECF0F14D7100A007EE7B6 /* threadtags */,
 				11CED26515228E5300E95EE1 /* action.png */,
@@ -1498,6 +1552,7 @@
 		1190F6CC13BE4EA900B9D271 /* Actions */ = {
 			isa = PBXGroup;
 			children = (
+				8C17306D156A7B44006ED0E8 /* Compose */,
 				1190F6CD13BE4EA900B9D271 /* AwfulActions.h */,
 				1190F6CE13BE4EA900B9D271 /* AwfulActions.m */,
 				1190F6CF13BE4EA900B9D271 /* AwfulPostActions.h */,
@@ -1562,6 +1617,8 @@
 		1190F70B13BE4EA900B9D271 /* Extras */ = {
 			isa = PBXGroup;
 			children = (
+				8C9BEE98155DC0DC00B64CAE /* UIImageView+AnimatedGif.h */,
+				8C9BEE99155DC0DC00B64CAE /* UIImageView+AnimatedGif.m */,
 				11FDA297151018740014FDCD /* OtherWebController.h */,
 				11FDA298151018740014FDCD /* OtherWebController.m */,
 				11CED26A1522901100E95EE1 /* ButtonSegmentedControl.h */,
@@ -1586,6 +1643,8 @@
 				1190F71E13BE4EA900B9D271 /* AwfulAppDelegate.m */,
 				11DFB44014FF1CBB0001A34C /* AwfulTableViewController.h */,
 				11DFB44114FF1CBB0001A34C /* AwfulTableViewController.m */,
+				8C7CAC921558696D00CF6792 /* AwfulFetchedTableViewController.h */,
+				8C7CAC931558696D00CF6792 /* AwfulFetchedTableViewController.m */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -1604,6 +1663,9 @@
 		1190F76913BE4ECB00B9D271 /* Third Party */ = {
 			isa = PBXGroup;
 			children = (
+				8CFC2280157D24EB00B26904 /* NSData+Base64.h */,
+				8CFC2281157D24EB00B26904 /* NSData+Base64.m */,
+				8C9BEE93155DBFCA00B64CAE /* AnimatedGif */,
 				110FABEA15745C5C00ECF535 /* CocoaLumberjack */,
 				110FABC415745C1E00ECF535 /* AFNetworking */,
 				11FDA2BF15129CAF0014FDCD /* EGOTableViewPullRefresh */,
@@ -1664,6 +1726,7 @@
 		1190F80113BE58BB00B9D271 /* web resources */ = {
 			isa = PBXGroup;
 			children = (
+				8C17306B156A7761006ED0E8 /* editor.html */,
 				11D53B7B154CAD8500D4EA82 /* quote-block-off.png */,
 				11D53B7C154CAD8500D4EA82 /* quote-block-on.png */,
 				1C5D59C4155CFEB200D00DBB /* awful.js */,
@@ -1779,6 +1842,12 @@
 		1C6474A61569989800C72657 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				8C17307D156A7F63006ED0E8 /* AwfulCachedImage.h */,
+				8C17307E156A7F63006ED0E8 /* AwfulCachedImage.m */,
+				8C17307F156A7F63006ED0E8 /* AwfulEmote.h */,
+				8C173080156A7F63006ED0E8 /* AwfulEmote.m */,
+				8C173081156A7F63006ED0E8 /* AwfulEmote+AwfulMethods.h */,
+				8C173082156A7F63006ED0E8 /* AwfulEmote+AwfulMethods.m */,
 				1C6474A71569989800C72657 /* AwfulFavorite.h */,
 				1C6474A81569989800C72657 /* AwfulFavorite.m */,
 				1C6474A91569989800C72657 /* AwfulForum+AwfulMethods.h */,
@@ -1807,6 +1876,10 @@
 		1C6474BA1569989800C72657 /* Generated */ = {
 			isa = PBXGroup;
 			children = (
+				8C173077156A7F3D006ED0E8 /* _AwfulCachedImage.h */,
+				8C173078156A7F3D006ED0E8 /* _AwfulCachedImage.m */,
+				8C173079156A7F3D006ED0E8 /* _AwfulEmote.h */,
+				8C17307A156A7F3D006ED0E8 /* _AwfulEmote.m */,
 				1C9C16451569994C0047C06E /* _AwfulFavorite.h */,
 				1C6474BC1569989800C72657 /* _AwfulFavorite.m */,
 				1C6474BD1569989800C72657 /* _AwfulForum.h */,
@@ -2004,6 +2077,30 @@
 				50A8B96C1541D57E0065F3D9 /* ThreadActions.png */,
 			);
 			name = help;
+			sourceTree = "<group>";
+		};
+		8C17306D156A7B44006ED0E8 /* Compose */ = {
+			isa = PBXGroup;
+			children = (
+				8C173086156A825D006ED0E8 /* UIImageView+AnimatedGif.h */,
+				8C173087156A825D006ED0E8 /* UIImageView+AnimatedGif.m */,
+				8C17306E156A7B44006ED0E8 /* AwfulEmoteChooser.h */,
+				8C17306F156A7B44006ED0E8 /* AwfulEmoteChooser.m */,
+				8C173070156A7B44006ED0E8 /* AwfulPostComposerView.h */,
+				8C173071156A7B44006ED0E8 /* AwfulPostComposerView.m */,
+				8C173072156A7B44006ED0E8 /* AwfulTableViewCellEmoticonMultiple.h */,
+				8C173073156A7B44006ED0E8 /* AwfulTableViewCellEmoticonMultiple.m */,
+			);
+			path = Compose;
+			sourceTree = "<group>";
+		};
+		8C9BEE93155DBFCA00B64CAE /* AnimatedGif */ = {
+			isa = PBXGroup;
+			children = (
+				8C9BEE94155DBFCA00B64CAE /* AnimatedGif.h */,
+				8C9BEE95155DBFCA00B64CAE /* AnimatedGif.m */,
+			);
+			path = AnimatedGif;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2427,6 +2524,7 @@
 				11817E271565E5E7000E765A /* tava-analog.png in Resources */,
 				11817E281565E5E7000E765A /* tava-speakers.png in Resources */,
 				11817E291565E5E7000E765A /* tg-gurps.png in Resources */,
+				8C17306C156A7761006ED0E8 /* editor.html in Resources */,
 				1CD59CF11573147A008F8E2F /* posts.html in Resources */,
 				1CD59CF7157336F5008F8E2F /* default.css in Resources */,
 				1CD59CF9157338FC008F8E2F /* dark.css in Resources */,
@@ -2449,7 +2547,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "PATH=/usr/local/bin:$PATH\ncommand -v mogenerator >/dev/null 2>&1 || { echo >&2 \"Please install mogenerator! brew install mogenerator\"; exit 0; }\nMODELS=\"$PROJECT_DIR/Source/Models\"\nmogenerator --model \"$MODELS/Model.xcdatamodeld/Model.xcdatamodel\" --output-dir \"$MODELS\" --machine-dir \"$MODELS/Generated\" --template-var arc=true\n";
+			shellScript = "PATH=/usr/local/bin:$PATH\ncommand -v mogenerator >/dev/null 2>&1 || { echo >&2 \"Please install mogenerator! brew install mogenerator\"; exit 0; }\nMODELS=\"$PROJECT_DIR/Source/Models\"\nmogenerator --model \"$MODELS/Model.xcdatamodeld/Model v2.xcdatamodel\" --output-dir \"$MODELS\" --machine-dir \"$MODELS/Generated\" --template-var arc=true\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -2484,6 +2582,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8C958300156A84E900FBFC77 /* AwfulFetchedTableViewController.m in Sources */,
 				118E615F14E5A1F100F0CE0A /* AwfulForumHeader.m in Sources */,
 				118E615B14E5A17500F0CE0A /* AwfulThreadCell.m in Sources */,
 				1190F73413BE4EA900B9D271 /* AwfulActions.m in Sources */,
@@ -2500,7 +2599,7 @@
 				1190F75E13BE4EA900B9D271 /* AwfulAppDelegate.m in Sources */,
 				1190F76813BE4EA900B9D271 /* SmilieGrabber.m in Sources */,
 				1190F7E413BE4ECB00B9D271 /* MBProgressHUD.m in Sources */,
-				1190F7E613BE4ECB00B9D271 /* NSString+HTML.m in Sources */,
+				8C173069156A76FD006ED0E8 /* NSString+HTML.m in Sources */,
 				1190F7E713BE4ECB00B9D271 /* MWPhoto.m in Sources */,
 				1190F7E813BE4ECB00B9D271 /* MWPhotoBrowser.m in Sources */,
 				1190F7E913BE4ECB00B9D271 /* UIImage+Decompress.m in Sources */,
@@ -2543,6 +2642,7 @@
 				1C277CA51543554700CD2CCE /* AwfulSettingsChoiceViewController.m in Sources */,
 				1CF2C5061543B51200E327F5 /* AwfulFavoritesViewController.m in Sources */,
 				1C7B87201544D83D00891D41 /* AwfulForumSection.m in Sources */,
+				8C9BEE96155DBFCA00B64CAE /* AnimatedGif.m in Sources */,
 				1C5D59C0155CDDB200D00DBB /* AwfulWebViewDelegate.m in Sources */,
 				1C6474C51569989800C72657 /* AwfulFavorite.m in Sources */,
 				1C6474C61569989800C72657 /* AwfulForum+AwfulMethods.m in Sources */,
@@ -2558,6 +2658,15 @@
 				1C6474D01569989800C72657 /* _AwfulThread.m in Sources */,
 				1C6474D11569989800C72657 /* _AwfulUser.m in Sources */,
 				1C6474D21569989800C72657 /* Model.xcdatamodeld in Sources */,
+				8C173074156A7B44006ED0E8 /* AwfulEmoteChooser.m in Sources */,
+				8C173075156A7B44006ED0E8 /* AwfulPostComposerView.m in Sources */,
+				8C173076156A7B44006ED0E8 /* AwfulTableViewCellEmoticonMultiple.m in Sources */,
+				8C17307B156A7F3D006ED0E8 /* _AwfulCachedImage.m in Sources */,
+				8C17307C156A7F3D006ED0E8 /* _AwfulEmote.m in Sources */,
+				8C173083156A7F63006ED0E8 /* AwfulCachedImage.m in Sources */,
+				8C173084156A7F63006ED0E8 /* AwfulEmote.m in Sources */,
+				8C173085156A7F63006ED0E8 /* AwfulEmote+AwfulMethods.m in Sources */,
+				8C173088156A825D006ED0E8 /* UIImageView+AnimatedGif.m in Sources */,
 				110FABDA15745C1E00ECF535 /* AFHTTPClient.m in Sources */,
 				110FABDB15745C1E00ECF535 /* AFHTTPRequestOperation.m in Sources */,
 				110FABDC15745C1E00ECF535 /* AFImageRequestOperation.m in Sources */,
@@ -2577,6 +2686,7 @@
 				110FABFF15745C5C00ECF535 /* DDTTYLogger.m in Sources */,
 				110FAC0015745C5C00ECF535 /* ContextFilterLogFormatter.m in Sources */,
 				110FAC0115745C5C00ECF535 /* DispatchQueueLogFormatter.m in Sources */,
+				8CFC2282157D24EB00B26904 /* NSData+Base64.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2614,7 +2724,7 @@
 		10B648A512A9DB160007CAE3 /* AdHoc */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Regular Berry Software LLC";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Regular Berry Software LLC";
@@ -2624,11 +2734,16 @@
 				INFOPLIST_FILE = "Resources/Awful-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				OTHER_LDFLAGS = (
+					"-all_load",
+					"-ObjC",
+				);
 				PRODUCT_NAME = Awful;
 				PROVISIONING_PROFILE = "B502242D-8B5D-4299-8C96-32D4DC5CF6AA";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "B502242D-8B5D-4299-8C96-32D4DC5CF6AA";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/3rd Party Sources/DTCoreText\"/**";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = AdHoc;
@@ -2704,7 +2819,7 @@
 		1D6058940D05DD3E006BFB54 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -2716,18 +2831,23 @@
 				INFOPLIST_FILE = "Resources/Awful-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				OTHER_LDFLAGS = (
+					"-all_load",
+					"-ObjC",
+				);
 				PRODUCT_NAME = Awful;
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/3rd Party Sources/DTCoreText\"/**";
 			};
 			name = Debug;
 		};
 		1D6058950D05DD3E006BFB54 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Regular Berry Software LLC";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Regular Berry Software LLC";
@@ -2737,11 +2857,16 @@
 				INFOPLIST_FILE = "Resources/Awful-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				OTHER_LDFLAGS = (
+					"-all_load",
+					"-ObjC",
+				);
 				PRODUCT_NAME = Awful;
 				PROVISIONING_PROFILE = "318609EA-152D-4B7B-BF3C-0BB5F86CDB69";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "318609EA-152D-4B7B-BF3C-0BB5F86CDB69";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/3rd Party Sources/DTCoreText\"/**";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -2822,9 +2947,9 @@
 		1C6474C31569989800C72657 /* Model.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				1C6474C41569989800C72657 /* Model.xcdatamodel */,
+				8C70A3F81556BE300009B3D1 /* Model v2.xcdatamodel */,
 			);
-			currentVersion = 1C6474C41569989800C72657 /* Model.xcdatamodel */;
+			currentVersion = 8C70A3F81556BE300009B3D1 /* Model v2.xcdatamodel */;
 			path = Model.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
