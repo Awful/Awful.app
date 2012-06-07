@@ -1,10 +1,11 @@
 Awful
 =====
 
-Awful is an iOS app for browsing the [Something Awful Forums][forums] on your iPhone or iPad. Some of its story can be found in its [thread][].
+Awful is an iOS app for browsing the [Something Awful Forums][forums] on your iPhone or iPad. Some of its story can be found in its [thread][] or its [other thread][thread2].
 
 [forums]: http://forums.somethingawful.com
 [thread]: http://forums.somethingawful.com/showthread.php?threadid=3381510
+[thread2]: http://forums.somethingawful.com/showthread.php?threadid=3483760
 
 An unofficial app
 -----------------
