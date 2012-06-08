@@ -480,6 +480,7 @@
 		50A8B96F1541D57E0065F3D9 /* ReplyButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A8B96A1541D57E0065F3D9 /* ReplyButton.png */; };
 		50A8B9701541D57E0065F3D9 /* singlePageMovement.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A8B96B1541D57E0065F3D9 /* singlePageMovement.png */; };
 		50A8B9711541D57E0065F3D9 /* ThreadActions.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A8B96C1541D57E0065F3D9 /* ThreadActions.png */; };
+		8C9A1B361582718D00BD28BB /* TDBadgedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C9A1B351582718D00BD28BB /* TDBadgedCell.m */; };
 		8CFC22AB15813EC900B26904 /* AwfulCustomForums.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFC22A615813EC900B26904 /* AwfulCustomForums.m */; };
 		8CFC22AC15813EC900B26904 /* AwfulFYADThreadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFC22A815813EC900B26904 /* AwfulFYADThreadCell.m */; };
 		8CFC22AD15813EC900B26904 /* AwfulYOSPOSThreadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFC22AA15813EC900B26904 /* AwfulYOSPOSThreadCell.m */; };
@@ -1069,6 +1070,8 @@
 		50A8B96A1541D57E0065F3D9 /* ReplyButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ReplyButton.png; path = images/help/ReplyButton.png; sourceTree = "<group>"; };
 		50A8B96B1541D57E0065F3D9 /* singlePageMovement.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = singlePageMovement.png; path = images/help/singlePageMovement.png; sourceTree = "<group>"; };
 		50A8B96C1541D57E0065F3D9 /* ThreadActions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ThreadActions.png; path = images/help/ThreadActions.png; sourceTree = "<group>"; };
+		8C9A1B341582718D00BD28BB /* TDBadgedCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDBadgedCell.h; sourceTree = "<group>"; };
+		8C9A1B351582718D00BD28BB /* TDBadgedCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDBadgedCell.m; sourceTree = "<group>"; };
 		8CFC22A515813EC900B26904 /* AwfulCustomForums.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCustomForums.h; sourceTree = "<group>"; };
 		8CFC22A615813EC900B26904 /* AwfulCustomForums.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCustomForums.m; sourceTree = "<group>"; };
 		8CFC22A715813EC900B26904 /* AwfulFYADThreadCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFYADThreadCell.h; sourceTree = "<group>"; };
@@ -1652,6 +1655,7 @@
 				1190F7B213BE4ECB00B9D271 /* MWPhotoBrowser */,
 				1190F7B013BE4ECB00B9D271 /* NSString+HTML.h */,
 				1190F7B113BE4ECB00B9D271 /* NSString+HTML.m */,
+				8C9A1B331582718D00BD28BB /* TDBadgedCell */,
 			);
 			path = "Third Party";
 			sourceTree = "<group>";
@@ -2043,6 +2047,15 @@
 				50A8B96C1541D57E0065F3D9 /* ThreadActions.png */,
 			);
 			name = help;
+			sourceTree = "<group>";
+		};
+		8C9A1B331582718D00BD28BB /* TDBadgedCell */ = {
+			isa = PBXGroup;
+			children = (
+				8C9A1B341582718D00BD28BB /* TDBadgedCell.h */,
+				8C9A1B351582718D00BD28BB /* TDBadgedCell.m */,
+			);
+			path = TDBadgedCell;
 			sourceTree = "<group>";
 		};
 		8CFC22A415813EC900B26904 /* Custom */ = {
@@ -2668,6 +2681,7 @@
 				8CFC22AD15813EC900B26904 /* AwfulYOSPOSThreadCell.m in Sources */,
 				8CFC22B01581403C00B26904 /* AwfulFilmDumpThreadCell.m in Sources */,
 				8CFC22B31581404E00B26904 /* AwfulAskTellThreadCell.m in Sources */,
+				8C9A1B361582718D00BD28BB /* TDBadgedCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

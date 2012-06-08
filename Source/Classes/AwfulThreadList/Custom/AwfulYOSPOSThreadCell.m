@@ -28,11 +28,10 @@
     self.pagesLabel.font = [UIFont fontWithName:@"Courier" size:14];
     self.pagesLabel.backgroundColor = [UIColor clearColor];
     
-    [self.unreadButton setTitleColor:[UIColor blackColor] forState:(UIControlStateNormal)];
-    self.unreadButton.titleLabel.font = [UIFont fontWithName:@"Courier" size:14];
-    [self.unreadButton setBackgroundImage:nil forState:UIControlStateNormal];
-    self.unreadButton.titleLabel.backgroundColor = textColor;
-    [self.unreadButton setBackgroundColor:[UIColor YOSPOSGreenColor]];
+    self.badgeColor = [UIColor blackColor];
+    self.badge.backgroundColor = [UIColor YOSPOSGreenColor];
+    self.badge.layer.borderWidth = 1;
+    self.badge.layer.borderColor = [[UIColor YOSPOSGreenColor] CGColor];
     
     self.selectionStyle = UITableViewCellSelectionStyleNone;
 }

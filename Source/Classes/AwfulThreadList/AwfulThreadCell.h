@@ -9,10 +9,12 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+#import "TDBadgedCell.h"
+
 @class AwfulThread;
 @class AwfulThreadListController;
 
-@interface AwfulThreadCell : UITableViewCell
+@interface AwfulThreadCell : TDBadgedCell
 
 @property (nonatomic, strong) AwfulThread *thread;
 @property (nonatomic, strong) IBOutlet UILabel *threadTitleLabel;

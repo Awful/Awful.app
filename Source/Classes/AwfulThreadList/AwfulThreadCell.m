@@ -93,33 +93,23 @@
     self.pagesLabel.text = [NSString stringWithFormat:@"Pages: %d, Killed by %@", total_pages, thread.lastPostAuthorName];
     
     NSString *unread_str = [NSString stringWithFormat:@"%@", thread.totalUnreadPosts];
-    [self.unreadButton setTitle:unread_str forState:UIControlStateNormal];
     
+    if (thread.totalUnreadPosts.intValue >= 0) {
+        self.badgeString = unread_str;
+        self.badgeColor = [UIColor colorWithRed:0 green:.4 blue:.6 alpha:1];
+    }
+
     self.threadTitleLabel.text = thread.title;
-    
-    self.unreadButton.hidden = NO;
-    self.unreadButton.alpha = 1.0;
     
     float goal_width = self.frame.size.width-130;
     float title_xpos = 60;
     
-    if([thread.totalUnreadPosts intValue] == -1) {
-        self.unreadButton.hidden = YES;
-        goal_width += 60;
-    } else if([thread.totalUnreadPosts intValue] == 0) {
-        [self.unreadButton setTitle:@"0" forState:UIControlStateNormal];
-        self.unreadButton.alpha = 0.5;
-    }
-    
+
     // size and positioning of labels   
     CGSize title_size = [thread.title sizeWithFont:self.threadTitleLabel.font constrainedToSize:CGSizeMake(goal_width, 60)];
     
     float y_pos = (THREAD_HEIGHT - title_size.height)/2 - 4;
     self.threadTitleLabel.frame = CGRectMake(title_xpos, y_pos, title_size.width, title_size.height);
-    
-    CGSize unread_size = [unread_str sizeWithFont:self.unreadButton.titleLabel.font];
-    float unread_x = self.frame.size.width-30-unread_size.width;
-    self.unreadButton.frame = CGRectMake(unread_x, THREAD_HEIGHT/2 - 10, unread_size.width+20, 20);
     
     self.pagesLabel.frame = CGRectMake(title_xpos, CGRectGetMaxY(self.threadTitleLabel.frame)+2, self.pagesLabel.frame.size.width, 10);
     
@@ -133,6 +123,7 @@
             [self.contentView addSubview:self.sticky];
         }
     }
+    [self.unreadButton removeFromSuperview];
 }
 
 -(void) configureTagImage {
