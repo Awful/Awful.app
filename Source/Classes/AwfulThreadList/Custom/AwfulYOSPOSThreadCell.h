@@ -11,3 +11,7 @@
 @interface AwfulYOSPOSThreadCell : AwfulThreadCell
 
 @end
+
+@interface UIColor (YOSPOS)
++(UIColor*) YOSPOSGreenColor;
+@end

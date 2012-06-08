@@ -17,8 +17,11 @@ typedef enum {
 } AwfulCustomForum;
 
 @class AwfulForum;
+@class AwfulThreadCell;
+@class AwfulThread;
 
 @interface AwfulCustomForums : NSObject
 
 +(NSString*) cellIdentifierForForum:(AwfulForum*)forum;
++(AwfulThreadCell*) cellForThread:(AwfulThread*)thread;
 @end

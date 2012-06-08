@@ -8,6 +8,13 @@
 
 #import "AwfulCustomForums.h"
 #import "AwfulForum.h"
+#import "AwfulThreadCell.h"
+#import "AwfulThread+AwfulMethods.h"
+
+#import "AwfulYOSPOSThreadCell.h"
+#import "AwfulFYADThreadCell.h"
+#import "AwfulAskTellThreadCell.h"
+#import "AwfulFilmDumpThreadCell.h"
 
 
 @implementation AwfulCustomForums
@@ -38,6 +45,33 @@
     }
     
     return threadCell;
+}
+
++(AwfulThreadCell*) cellForThread:(AwfulThread*)thread {
+    AwfulThreadCell *cell;
+    switch (thread.forum.forumID.intValue) {
+            
+        case AwfulCustomForumYOSPOS:
+            cell = [AwfulYOSPOSThreadCell new];
+            break;
+            
+        case AwfulCustomForumFYAD:
+            cell = [AwfulYOSPOSThreadCell new];
+            break;
+            
+        case AwfulCustomForumAskTell:
+            cell = [AwfulYOSPOSThreadCell new];
+            break;
+            
+        case AwfulCustomForumFilmDump:
+            cell = [AwfulYOSPOSThreadCell new];
+            break;
+            
+        default:
+            cell = [AwfulThreadCell new];
+    }
+    return cell;
+    
 }
 
 @end

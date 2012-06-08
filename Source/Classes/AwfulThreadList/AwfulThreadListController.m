@@ -131,7 +131,7 @@ typedef enum {
         }
     }
     if(path != nil) {
-        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:path] withRowAnimation:UITableViewRowAnimationFade];
+        //[self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:path] withRowAnimation:UITableViewRowAnimationFade];
     }
 }
 
@@ -330,10 +330,13 @@ typedef enum {
     if(type == AwfulThreadCellTypeThread) {
         AwfulThread *thread = [self getThreadAtIndexPath:indexPath];
         NSString *threadCell = [AwfulCustomForums cellIdentifierForForum:thread.forum];
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:threadCell];
-        AwfulThreadCell *thread_cell = (AwfulThreadCell *)cell;
-        [thread_cell configureForThread:thread];
-        thread_cell.threadListController = self;
+        AwfulThreadCell *cell = (AwfulThreadCell*)[tableView dequeueReusableCellWithIdentifier:threadCell];
+        if (cell == nil)
+            cell = [AwfulCustomForums cellForThread:thread];
+        
+        //AwfulThreadCell *thread_cell = (AwfulThreadCell *)cell;
+        [cell configureForThread:thread];
+        cell.threadListController = self;
         return cell;
     } else if(type == AwfulThreadCellTypeLoadMore) {
         AwfulLoadingThreadCell *loadingCell = [tableView dequeueReusableCellWithIdentifier:moreCell];
@@ -352,7 +355,7 @@ typedef enum {
 {
     if(indexPath.row == [self.awfulThreads count]) {
         [self loadPageNum:self.pages.currentPage+1];
-        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+        //[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
         [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
     } else {
         [self performSegueWithIdentifier:@"AwfulPage" sender:nil];

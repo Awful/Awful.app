@@ -31,6 +31,7 @@
 @synthesize tagLabel = _tagLabel;
 @synthesize tagContainerView = _tagContainerView;
 
+
 -(id)initWithCoder:(NSCoder *)aDecoder
 {
     if((self=[super initWithCoder:aDecoder])) {
