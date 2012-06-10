@@ -203,8 +203,12 @@
 }
 
 -(void)loadPageNum : (NSUInteger)pageNum
-{    
+{
+    // I guess the error callback doesn't necessarily get called when a network operation is 
+    // cancelled, so clear the HUD when we cancel the network operation.
+    [MBProgressHUD hideHUDForView:self.view animated:NO];
     [self.networkOperation cancel];
+    
     [self swapToStopButton];
     [self hidePageNavigation];
     if(pageNum != 0) {
