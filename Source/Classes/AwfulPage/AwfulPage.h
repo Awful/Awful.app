@@ -19,7 +19,6 @@ typedef enum {
     AwfulPageDestinationTypeSpecific
 } AwfulPageDestinationType;
 
-@class AwfulPageCount;
 @class AwfulSpecificPageViewController;
 @class AwfulPageDataController;
 @class AwfulActions;
@@ -41,7 +40,8 @@ typedef enum {
 @property (nonatomic, strong) NSString *postIDScrollDestination;
 
 @property (nonatomic, strong) AwfulActions *actions;
-@property (nonatomic, strong) AwfulPageCount *pages;
+@property (nonatomic, assign) NSInteger currentPage;
+@property (nonatomic, assign) NSInteger numberOfPages;
 
 @property (nonatomic, strong) AwfulPageDataController *dataController;
 @property (nonatomic, strong) AwfulSpecificPageViewController *specificPageController;

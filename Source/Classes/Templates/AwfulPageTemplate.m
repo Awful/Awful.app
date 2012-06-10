@@ -8,7 +8,6 @@
 
 #import "AwfulPageTemplate.h"
 #import "AwfulPageDataController.h"
-#import "AwfulPageCount.h"
 #import "AwfulPost.h"
 #import "AwfulSettings.h"
 #import "GRMustacheTemplate.h"
@@ -143,10 +142,10 @@
     if (self)
     {
         self.userAd = dataController.userAd;
-        NSUInteger pages_left = [dataController.pageCount getPagesLeft];
-        if(pages_left > 1) {
-            self.pagesLeftNotice = [NSString stringWithFormat:@"%d pages left.", pages_left];
-        } else if(pages_left == 1) {
+        NSInteger pagesLeft = dataController.numberOfPages - dataController.currentPage;
+        if (pagesLeft > 1) {
+            self.pagesLeftNotice = [NSString stringWithFormat:@"%d pages left.", pagesLeft];
+        } else if (pagesLeft == 1) {
             self.pagesLeftNotice = @"1 page left.";
         } else {
             self.pagesLeftNotice = @"End of the thread.";

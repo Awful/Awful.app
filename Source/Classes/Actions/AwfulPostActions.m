@@ -9,7 +9,6 @@
 #import "AwfulPostActions.h"
 #import "AwfulPost.h"
 #import "AwfulPage.h"
-#import "AwfulPageCount.h"
 
 typedef enum {
     AwfulPostActionTypeEdit,
@@ -73,7 +72,7 @@ typedef enum {
         
     } else if (action == AwfulPostActionTypeCopyPostURL) {
         // TODO there's probably a better place to put this URL
-        NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/showthread.php?threadid=%@&pagenumber=%d#post%@", self.page.threadID, self.page.pages.currentPage, self.post.postID];
+        NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/showthread.php?threadid=%@&pagenumber=%d#post%@", self.page.threadID, self.page.currentPage, self.post.postID];
         [UIPasteboard generalPasteboard].URL = [NSURL URLWithString:url];
     } else if(action == AwfulPostActionTypeMarkRead) {
         

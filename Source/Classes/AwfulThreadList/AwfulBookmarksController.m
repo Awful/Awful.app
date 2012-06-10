@@ -8,7 +8,6 @@
 
 #import "AwfulBookmarksController.h"
 #import "AwfulPage.h"
-#import "AwfulPageCount.h"
 #import "AwfulSettings.h"
 #import "AwfulTableViewController.h"
 #import "AwfulThread.h"
@@ -98,7 +97,7 @@
     [self.networkOperation cancel];
     self.isLoading = YES;
     self.networkOperation = [[AwfulHTTPClient sharedClient] threadListForBookmarksAtPageNum:pageNum onCompletion:^(NSMutableArray *threads) {
-        self.pages.currentPage = pageNum;
+        self.currentPage = pageNum;
         if(pageNum == 1) {
             [self.awfulThreads removeAllObjects];
         }
