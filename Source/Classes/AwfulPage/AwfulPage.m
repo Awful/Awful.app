@@ -342,6 +342,13 @@
     self.navigationController.toolbar.barStyle = UIBarStyleBlack;
 }
 
+- (void)viewDidDisappear:(BOOL)animated
+{
+    NSURL *blank = [NSURL URLWithString:@"about:blank"];
+    [self.webView loadRequest:[NSURLRequest requestWithURL:blank]];
+    [super viewDidDisappear:animated];
+}
+
 #pragma mark - BarButtonItem Actions
 
 -(void)updatePagesLabel
