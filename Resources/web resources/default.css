@@ -188,6 +188,10 @@ article section blockquote img {
     max-height: 100px;
 }
 
+article section ul, article section ol {
+    padding-left: 20px;
+}
+
 /* iPhone - Post body */
 
 body.iphone article section {
