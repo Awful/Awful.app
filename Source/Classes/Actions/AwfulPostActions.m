@@ -9,10 +9,12 @@
 #import "AwfulPostActions.h"
 #import "AwfulPost.h"
 #import "AwfulPage.h"
+#import "AwfulPageCount.h"
 
 typedef enum {
     AwfulPostActionTypeEdit,
     AwfulPostActionTypeQuote,
+    AwfulPostActionTypeCopyPostURL,
     AwfulPostActionTypeMarkRead,
 } AwfulPostActionType;
 
@@ -31,6 +33,7 @@ typedef enum {
             [self.titles addObject:@"Edit"];
         }
         [self.titles addObject:@"Quote"];
+        [self.titles addObject:@"Copy post URL"];
         [self.titles addObject:@"Mark read up to here"];
     }
     return self;
@@ -68,6 +71,10 @@ typedef enum {
         }];
         return;
         
+    } else if (action == AwfulPostActionTypeCopyPostURL) {
+        // TODO there's probably a better place to put this URL
+        NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/showthread.php?threadid=%@&pagenumber=%d#post%@", self.page.threadID, self.page.pages.currentPage, self.post.postID];
+        [UIPasteboard generalPasteboard].URL = [NSURL URLWithString:url];
     } else if(action == AwfulPostActionTypeMarkRead) {
         
         if(self.post.markSeenLink == nil) {
