@@ -8,7 +8,6 @@
 
 #import "AwfulPageDataController.h"
 #import "AwfulForum.h"
-#import "AwfulPageCount.h"
 #import "TFHpple.h"
 #import "TFHppleElement.h"
 #import "XPathQuery.h"
@@ -19,137 +18,124 @@
 
 @interface AwfulPageDataController ()
 
--(NSString *)parseThreadTitle : (TFHpple *)parser;
--(AwfulForum *)parseForum : (TFHpple *)parser;
--(AwfulPageCount *)parsePageCount : (TFHpple *)parser;
--(NSMutableArray *)parsePosts : (TFHpple *)parser;
--(AwfulPost *)parsePost : (TFHpple *)parser;
--(NSUInteger)parseNewPostIndex : (NSURL *)pageURL;
--(NSString *)parseUserAdHTML : (TFHpple *)parser;
-- (BOOL)parseBookmarked:(TFHpple *)parser;
-
 @property (readonly, nonatomic) AwfulPageTemplate *template;
 
 @end
 
 @implementation AwfulPageDataController
 
-@synthesize threadTitle = _threadTitle, forum = _forum;
-@synthesize pageCount = _pageCount, posts = _posts;
-@synthesize newestPostIndex = _newestPostIndex, userAd = _userAd;
+@synthesize threadTitle = _threadTitle;
+@synthesize forum = _forum;
+@synthesize currentPage = _currentPage;
+@synthesize numberOfPages = _numberOfPages;
+@synthesize posts = _posts;
+@synthesize newestPostIndex = _newestPostIndex;
+@synthesize userAd = _userAd;
 @synthesize bookmarked = _bookmarked;
 
--(id)initWithResponseData : (NSData *)responseData pageURL : (NSURL *)pageURL
+- (id)initWithResponseData:(NSData *)responseData pageURL:(NSURL *)pageURL
 {
-    if((self=[super init])) {
-        NSString *raw_s = [[NSString alloc] initWithData:responseData encoding:NSASCIIStringEncoding];
-        
-        NSString *filtered_raw = [raw_s stringByReplacingOccurrencesOfString:@"<size:" withString:@"<"];
-        NSData *converted = [filtered_raw dataUsingEncoding:NSUTF8StringEncoding];
-        
-        TFHpple *page_parser = [[TFHpple alloc] initWithHTMLData:converted];
-        _threadTitle = [self parseThreadTitle:page_parser];
-        _forum = [self parseForum:page_parser];
-        _pageCount = [self parsePageCount:page_parser];
-        _posts = [self parsePosts:page_parser];
-        _newestPostIndex = [self parseNewPostIndex:pageURL];
-        _userAd = [self parseUserAdHTML:page_parser];
-        _bookmarked = [self parseBookmarked:page_parser];
+    self = [super init];
+    if (self) {
+        NSString *raw = [[NSString alloc] initWithData:responseData encoding:NSWindowsCP1252StringEncoding];
+        NSString *filtered = [raw stringByReplacingOccurrencesOfString:@"<size:" withString:@"<"];
+        NSData *converted = [filtered dataUsingEncoding:NSUTF8StringEncoding];
+        TFHpple *pageParser = [[TFHpple alloc] initWithHTMLData:converted];
+        _threadTitle = ParseThreadTitle(pageParser);
+        _forum = ParseForum(pageParser);
+        _numberOfPages = ParsePageCount(pageParser, &_currentPage);
+        _posts = ParsePosts(pageParser, _forum.forumID);
+        _newestPostIndex = ParseNewPostIndex(pageURL);
+        _userAd = ParseUserAdHTML(pageParser);
+        _bookmarked = ParseBookmarked(pageParser);
     }
     return self;
 }
 
--(NSString *)parseThreadTitle : (TFHpple *)parser
+static NSString *ParseThreadTitle(TFHpple *parser)
 {
-    TFHppleElement *thread_title = [parser searchForSingle:@"//a[@class='bclast']"];
-    if(thread_title != nil) {
-        return [thread_title content];
-    }
-    return @"Title Not Found";
+    TFHppleElement *title = [parser searchForSingle:@"//a[@class='bclast']"];
+    return title ? [title content] : @"Title Not Found";
 }
 
--(AwfulForum *)parseForum : (TFHpple *)parser
+static AwfulForum *ParseForum(TFHpple *parser)
 {
     NSArray *breadcrumbs = [parser search:@"//div[@class='breadcrumbs']//a"];
-    NSString *last_forum_id = nil;
-    for(TFHppleElement *element in breadcrumbs) {
+    NSString *lastForumID = nil;
+    for (TFHppleElement *element in breadcrumbs) {
         NSString *src = [element objectForKey:@"href"];
         NSRange range = [src rangeOfString:@"forumdisplay.php"];
-        if(range.location != NSNotFound) {
+        if (range.location != NSNotFound) {
             NSArray *split = [src componentsSeparatedByString:@"="];
-            last_forum_id = [split lastObject];
+            lastForumID = [split lastObject];
         }
     }
     
-    if(last_forum_id != nil) {
-        
-        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"AwfulForum"];
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"forumID=%@", last_forum_id];
-        [fetchRequest setPredicate:predicate];
-        
-        NSError *err = nil;
-        NSArray *results = [ApplicationDelegate.managedObjectContext executeFetchRequest:fetchRequest error:&err];
-        if(err != nil) {
-            NSLog(@"couldn't fetch forum from forumid %@", [err localizedDescription]);
-            return nil;
-        }
-        
-        if([results count] == 1) {
-            return [results lastObject];
-        }
+    if (!lastForumID) {
+        return nil;
     }
-    return nil;
+    
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"AwfulForum"];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"forumID=%@", lastForumID];
+    [fetchRequest setPredicate:predicate];
+    
+    NSError *err = nil;
+    NSArray *results = [ApplicationDelegate.managedObjectContext executeFetchRequest:fetchRequest
+                                                                               error:&err];
+    if (!results) {
+        NSLog(@"couldn't fetch forum from forumid %@", [err localizedDescription]);
+        return nil;
+    }
+    
+    return [results count] > 0 ? [results lastObject] : nil;
 }
 
--(AwfulPageCount *)parsePageCount : (TFHpple *)parser
+static NSInteger ParsePageCount(TFHpple *parser, NSInteger *currentPage)
 {
-    AwfulPageCount *pages = [[AwfulPageCount alloc] init];
-    
     NSArray *strings = PerformRawHTMLXPathQuery(parser.data, @"//div[@class='pages top']");
-    if(strings != nil && [strings count] > 0) {
-        // this is going to get me in trouble one day
-        NSString *page_info = [strings objectAtIndex:0];
-        NSRange first_paren = [page_info rangeOfString:@"("];
-        
-        if(first_paren.location != NSNotFound) {
-            NSRange last_paren = [page_info rangeOfString:@")"];
-            NSRange combined;
-            combined.location = first_paren.location + 1;
-            combined.length = last_paren.location - first_paren.location - 1;
-            NSString *total_pages_str = [page_info substringWithRange:combined];
-            pages.totalPages = [total_pages_str intValue];
-            
-            TFHpple *base = [[TFHpple alloc] initWithHTMLData:[page_info dataUsingEncoding:NSUTF8StringEncoding]];
-            TFHppleElement *curpage = [base searchForSingle:@"//span[@class='curpage']"];
-            if(curpage != nil) {
-                pages.currentPage = [[curpage content] intValue];
-            }
-        } else {
-            pages.totalPages = 1;
-            pages.currentPage = 1;
-        }
+    if ([strings count] == 0) {
+        *currentPage = 1;
+        return 1;
     }
-    return pages;
+    
+    // this is going to get me in trouble one day
+    NSString *pageInfo = [strings objectAtIndex:0];
+    NSRange firstParen = [pageInfo rangeOfString:@"("];
+    if (firstParen.location == NSNotFound) {
+        *currentPage = 1;
+        return 1;
+    }
+    
+    NSRange last_paren = [pageInfo rangeOfString:@")"];
+    NSRange combined;
+    combined.location = firstParen.location + 1;
+    combined.length = last_paren.location - firstParen.location - 1;
+    NSString *totalPagesString = [pageInfo substringWithRange:combined];
+    
+    TFHpple *base = [[TFHpple alloc] initWithHTMLData:[pageInfo dataUsingEncoding:NSUTF8StringEncoding]];
+    TFHppleElement *curpage = [base searchForSingle:@"//span[@class='curpage']"];
+    if (curpage) {
+        *currentPage = [[curpage content] intValue];
+    }
+    return [totalPagesString intValue];
 }
 
--(NSMutableArray *)parsePosts : (TFHpple *)parser
+static AwfulPost *ParsePost(TFHpple *parser, NSString *forumID);
+
+static NSMutableArray *ParsePosts(TFHpple *parser, NSString *forumID)
 {
-    NSArray *post_strings = PerformRawHTMLXPathQuery(parser.data, @"//table[@class='post']|//table[@class='post ignored']");
-    
-    NSMutableArray *parsed_posts = [[NSMutableArray alloc] init];
-    
-    for(NSString *post_html in post_strings) {
-        @autoreleasepool {
-            TFHpple *post_base = [[TFHpple alloc] initWithHTMLData:[post_html dataUsingEncoding:NSUTF8StringEncoding]];
-            AwfulPost *post = [self parsePost:post_base];
-            post.postIndex = [post_strings indexOfObject:post_html];
-            [parsed_posts addObject:post];
-        }
+    NSArray *postStrings = PerformRawHTMLXPathQuery(parser.data, @"//table[@class='post']|//table[@class='post ignored']");
+    NSMutableArray *parsedPosts = [[NSMutableArray alloc] init];
+    for (NSString *postHTML in postStrings) @autoreleasepool {
+        TFHpple *postBase = [[TFHpple alloc] initWithHTMLData:[postHTML dataUsingEncoding:NSUTF8StringEncoding]];
+        AwfulPost *post = ParsePost(postBase, forumID);
+        post.postIndex = [postStrings indexOfObject:postHTML];
+        [parsedPosts addObject:post];
     }
-    return parsed_posts;
+    return parsedPosts;
 }
 
--(AwfulPost *)parsePost : (TFHpple *)parser
+static AwfulPost *ParsePost(TFHpple *parser, NSString *forumID)
 {
     AwfulPost *post = [[AwfulPost alloc] init];
     
@@ -207,7 +193,7 @@
     }
     
     NSString *body_search_str = @"//td[@class='postbody']";
-    if([self.forum.forumID isEqualToString:@"26"]) {
+    if([forumID isEqualToString:@"26"]) {
         body_search_str = @"//div[@class='complete_shit funbox']";
     }
     
@@ -241,30 +227,27 @@
     return post;
 }
 
--(NSUInteger)parseNewPostIndex:(NSURL *)pageURL
+static NSUInteger ParseNewPostIndex(NSURL *pageURL)
 {
     NSString *frag = [pageURL fragment];
-    if(frag != nil) {
-        NSRange r = [frag rangeOfString:@"pti"];
-        if(r.location == 0) {
-            NSString *new_post = [frag stringByReplacingOccurrencesOfString:@"pti" withString:@""];
-            return [new_post integerValue]-1;
-        }
+    if (!frag) {
+        return 0;
     }
-    return 0;
+    NSRange r = [frag rangeOfString:@"pti"];
+    if (r.location != 0) {
+        return 0;
+    }
+    NSString *new_post = [frag stringByReplacingOccurrencesOfString:@"pti" withString:@""];
+    return [new_post integerValue] - 1;
 }
 
--(NSString *)parseUserAdHTML:(TFHpple *)parser
+static NSString *ParseUserAdHTML(TFHpple *parser)
 {
     NSArray *raws = [parser rawSearch:@"//div[@id='ad_banner_user']/a"];
-    if([raws count] > 0) {
-        return [raws objectAtIndex:0];
-    }
-    
-    return @"";
+    return [raws count] > 0 ? [raws objectAtIndex:0] : @"";
 }
 
-- (BOOL)parseBookmarked:(TFHpple *)parser
+static BOOL ParseBookmarked(TFHpple *parser)
 {
     TFHppleElement *markButton = [parser searchForSingle:@"//img[@id='button_bookmark']"];
     return [[markButton.attributes objectForKey:@"class"] isEqualToString:@"unbookmark"];

@@ -11,7 +11,6 @@
 #import "AwfulAppDelegate.h"
 #import "AwfulForum.h"
 #import "AwfulPage.h"
-#import "AwfulPageCount.h"
 #import "AwfulSettings.h"
 #import "AwfulThread.h"
 #import "AwfulThread+AwfulMethods.h"
@@ -34,7 +33,8 @@ typedef enum {
 
 @synthesize forum = _forum;
 @synthesize awfulThreads = _awfulThreads;
-@synthesize pages = _pages;
+@synthesize currentPage = _currentPage;
+@synthesize numberOfPages = _numberOfPages;
 @synthesize pageLabelBarButtonItem = _pageLabelBarButtonItem;
 @synthesize nextPageBarButtonItem = _nextPageBarButtonItem;
 @synthesize prevPageBarButtonItem = _prevPageBarButtonItem;
@@ -43,8 +43,7 @@ typedef enum {
 
 -(void)awakeFromNib
 {
-    self.pages = [[AwfulPageCount alloc] init];
-    self.pages.currentPage = 1;
+    self.currentPage = 1;
     self.title = self.forum.name;
     self.awfulThreads = [[NSMutableArray alloc] init];
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -109,7 +108,7 @@ typedef enum {
     [self.networkOperation cancel];
     self.isLoading = YES;
     self.networkOperation = [[AwfulHTTPClient sharedClient] threadListForForum:self.forum pageNum:pageNum onCompletion:^(NSMutableArray *threads) {
-        self.pages.currentPage = pageNum;
+        self.currentPage = pageNum;
         if(pageNum == 1) {
             [self.awfulThreads removeAllObjects];
         }
@@ -354,7 +353,7 @@ typedef enum {
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {
     if(indexPath.row == [self.awfulThreads count]) {
-        [self loadPageNum:self.pages.currentPage+1];
+        [self loadPageNum:self.currentPage + 1];
         //[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
         [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
     } else {

@@ -8,7 +8,6 @@
 
 #import "AwfulThreadActions.h"
 #import "AwfulThread.h"
-#import "AwfulPageCount.h"
 #import "AwfulPostBoxController.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulVoteActions.h"
@@ -55,7 +54,7 @@ typedef enum {
         AwfulPage *page = [self getPage];
         NSString *path = nil;
         if(page != nil) {
-            path = [NSString stringWithFormat:@"http://forums.somethingawful.com/showthread.php?threadid=%@&pagenumber=%u", self.thread.threadID, page.pages.currentPage];
+            path = [NSString stringWithFormat:@"http://forums.somethingawful.com/showthread.php?threadid=%@&pagenumber=%u", self.thread.threadID, page.currentPage];
         } else {
             path = [NSString stringWithFormat:@"http://forums.somethingawful.com/showthread.php?threadid=%@", self.thread.threadID];
         }
