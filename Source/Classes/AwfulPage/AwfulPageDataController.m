@@ -37,7 +37,7 @@
 {
     self = [super init];
     if (self) {
-        NSString *raw = [[NSString alloc] initWithData:responseData encoding:NSASCIIStringEncoding];
+        NSString *raw = [[NSString alloc] initWithData:responseData encoding:NSWindowsCP1252StringEncoding];
         NSString *filtered = [raw stringByReplacingOccurrencesOfString:@"<size:" withString:@"<"];
         NSData *converted = [filtered dataUsingEncoding:NSUTF8StringEncoding];
         TFHpple *pageParser = [[TFHpple alloc] initWithHTMLData:converted];
