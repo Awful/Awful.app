@@ -7,25 +7,22 @@
 //
 
 #import "AwfulAskTellThreadCell.h"
+#import "AwfulThread+AwfulMethods.h"
 
 @implementation AwfulAskTellThreadCell
 
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code
-    }
-    return self;
+-(void) configureForThread:(AwfulThread *)thread {
+    [super configureForThread:thread];
+    self.secondTagImage.frame = CGRectMake(self.tagImage.frame.origin.x-1, self.tagImage.frame.origin.y-1, self.secondTagImage.frame.size.width, self.secondTagImage.frame.size.height);
 }
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
+-(void) configureTagImage {
+    [super configureTagImage];
+    NSURL *second_url = [self.thread secondIconURL];
+    if(second_url != nil) {
+        self.secondTagImage.hidden = NO;
+        [self.secondTagImage setImage:[UIImage imageNamed:[second_url lastPathComponent]]];
+    }
 }
-*/
 
 @end

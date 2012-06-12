@@ -79,7 +79,7 @@
         frame.origin.y = 5;
         self.tagContainerView.frame = frame;
     }
-    //self.secondTagImage.frame = CGRectMake(self.tagImage.frame.origin.x-1, self.tagImage.frame.origin.y-1, self.secondTagImage.frame.size.width, self.secondTagImage.frame.size.height);
+
     
     if([thread.isLocked boolValue]) {
         self.contentView.alpha = 0.5;
@@ -124,6 +124,7 @@
         }
     }
     [self.unreadButton removeFromSuperview];
+
 }
 
 -(void) configureTagImage {
@@ -148,14 +149,6 @@
     [self.tagContainerView.layer setBorderWidth:1.0];
     
     self.secondTagImage.hidden = YES;
-    if(self.tagImage.hidden == NO) {
-        NSURL *second_url = [self.thread secondIconURL];
-        if(second_url != nil) {
-            self.secondTagImage.hidden = NO;
-            [self.secondTagImage setImage:[UIImage imageNamed:[second_url lastPathComponent]]];
-        }
-    }
-
 }
 
 -(UIColor *)getBackgroundColorForThread : (AwfulThread *)thread
