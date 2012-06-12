@@ -498,6 +498,7 @@
 
 -(IBAction)tappedCompose : (id)sender
 {
+    self.skipBlankingWebViewOnce = YES;
     [self performSegueWithIdentifier:@"ReplyBox" sender:self];
 }
 
