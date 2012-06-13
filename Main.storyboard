@@ -456,7 +456,7 @@
                                     <outlet property="unreadButton" destination="eCe-Bb-bJj" id="NAM-aO-y6n"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="AskTellThreadCell" rowHeight="72" id="eZM-O6-elU" userLabel="thread cell" customClass="AwfulFilmDumpThreadCell">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="AskTellThreadCell" rowHeight="72" id="eZM-O6-elU" userLabel="thread cell" customClass="AwfulAskTellThreadCell">
                                 <rect key="frame" x="0.0" y="310" width="320" height="72"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -527,7 +527,7 @@
                                     <outlet property="unreadButton" destination="HO7-sI-mmb" id="cXE-fN-fiE"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="FilmDumpThreadCell" rowHeight="72" id="b5k-kf-vYP" userLabel="thread cell" customClass="AwfulAskTellThreadCell">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="FilmDumpThreadCell" rowHeight="72" id="b5k-kf-vYP" userLabel="thread cell" customClass="AwfulFilmDumpThreadCell">
                                 <rect key="frame" x="0.0" y="382" width="320" height="72"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -1292,7 +1292,7 @@
                 <relationship kind="action" name="refresh"/>
             </relationships>
         </class>
-        <class className="AwfulThreadCell" superclassName="UITableViewCell">
+        <class className="AwfulThreadCell" superclassName="TDBadgedCell">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulThreadCell.h"/>
             <relationships>
                 <relationship kind="outlet" name="pagesLabel" candidateClass="UILabel"/>
@@ -1322,6 +1322,9 @@
             <relationships>
                 <relationship kind="outlet" name="target"/>
             </relationships>
+        </class>
+        <class className="TDBadgedCell" superclassName="UITableViewCell">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/TDBadgedCell.h"/>
         </class>
     </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
