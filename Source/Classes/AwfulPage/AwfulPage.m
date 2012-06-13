@@ -10,7 +10,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import "AwfulAppDelegate.h"
 #import "AwfulLoginController.h"
-#import "AwfulPageCount.h"
 #import "AwfulPageDataController.h"
 #import "AwfulPost.h"
 #import "AwfulPostActions.h"
@@ -34,6 +33,7 @@
 
 //@property (nonatomic, strong) IBOutlet UIWebView *webView;
 @property (strong) AwfulWebViewDelegateWrapper *webViewDelegateWrapper;
+@property (assign, nonatomic) BOOL skipBlankingWebViewOnce;
 
 @end
 
@@ -47,7 +47,8 @@
 @synthesize nextPageWebView = _nextPageWebView;
 @synthesize toolbar = _toolbar;
 @synthesize isBookmarked = _isBookmarked;
-@synthesize pages = _pages;
+@synthesize currentPage = _currentPage;
+@synthesize numberOfPages = _numberOfPages;
 @synthesize shouldScrollToBottom = _shouldScrollToBottom;
 @synthesize postIDScrollDestination = _postIDScrollDestination;
 @synthesize specificPageController = _specificPageController;
@@ -63,6 +64,16 @@
 @synthesize loadingFooterView = _loadingFooterView;
 @synthesize pullForActionController = _pullForActionController;
 @synthesize autoRefreshTimer = _autoRefreshTimer;
+@synthesize skipBlankingWebViewOnce = _skipBlankingWebViewOnce;
+
+- (BOOL)skipBlankingWebViewOnce
+{
+    if (!_skipBlankingWebViewOnce) {
+        return NO;
+    }
+    _skipBlankingWebViewOnce = NO;
+    return YES;
+}
 
 #pragma mark - Initialization
 
@@ -147,7 +158,8 @@
 {
     if(_dataController != dataController) {
         _dataController = dataController;
-        self.pages = dataController.pageCount;
+        self.currentPage = dataController.currentPage;
+        self.numberOfPages = dataController.numberOfPages;
         [self setThreadTitle:dataController.threadTitle];
         
         self.postIDScrollDestination = [dataController calculatePostIDScrollDestination];
@@ -157,7 +169,7 @@
         }
         
         int numNewPosts = [_dataController numNewPostsLoaded];
-        if(numNewPosts > 0 && (self.destinationType == AwfulPageDestinationTypeNewpost || [self.pages onLastPage])) {
+        if(numNewPosts > 0 && (self.destinationType == AwfulPageDestinationTypeNewpost || self.currentPage == self.numberOfPages)) {
             int unreadPosts = [self.thread.totalUnreadPosts intValue];
             if(unreadPosts != -1) {
                 unreadPosts -= numNewPosts;
@@ -175,11 +187,11 @@
         //if nextPageWebView is null, then it's the initial load
         if (self.nextPageWebView) {
             [self.nextPageWebView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
-            self.nextPageWebView.tag = self.pages.currentPage;
+            self.nextPageWebView.tag = self.currentPage;
         }
         else {
             [self.webView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
-            self.webView.tag = self.pages.currentPage;
+            self.webView.tag = self.currentPage;
             
             self.nextPageWebView = [UIWebView new];
             self.nextPageWebView.delegate = self;
@@ -191,12 +203,16 @@
     
 }
 
--(void)setPages:(AwfulPageCount *)in_pages
+- (void)setCurrentPage:(NSInteger)currentPage
 {
-    if(_pages != in_pages) {
-        _pages = in_pages;
-        [self updatePagesLabel];
-    }
+    _currentPage = currentPage;
+    [self updatePagesLabel];
+}
+
+- (void)setNumberOfPages:(NSInteger)numberOfPages
+{
+    _numberOfPages = numberOfPages;
+    [self updatePagesLabel];
 }
 
 -(void)setThreadTitle : (NSString *)title
@@ -249,12 +265,16 @@
 -(void)refresh
 {        
     //self.nextPageWebView = nil;
-    [self loadPageNum:self.pages.currentPage];
+    [self loadPageNum:self.currentPage];
 }
 
 -(void)loadPageNum : (NSUInteger)pageNum
-{    
+{
+    // I guess the error callback doesn't necessarily get called when a network operation is 
+    // cancelled, so clear the HUD when we cancel the network operation.
+    [MBProgressHUD hideHUDForView:self.view animated:NO];
     [self.networkOperation cancel];
+    
     [self swapToStopButton];
     [self hidePageNavigation];
     if(pageNum != 0) {
@@ -270,14 +290,14 @@
     self.networkOperation = [[AwfulHTTPClient sharedClient] pageDataForThread:myThread destinationType:destType pageNum:pageNum onCompletion:^(AwfulPageDataController *dataController) {
         self.dataController = dataController;
         if(self.destinationType == AwfulPageDestinationTypeSpecific) {
-            self.pages.currentPage = pageNum;
+            self.currentPage = pageNum;
         }
         [self updatePagesLabel];
         [self updateBookmarked];
         [self swapToRefreshButton];
         //[MBProgressHUD hideHUDForView:self.view animated:NO];
         
-        self.loadingFooterView.onLastPage = self.pages.onLastPage;
+        self.loadingFooterView.onLastPage = (self.currentPage == self.numberOfPages);
         
         self.webView.scrollView.contentInset = self.loadingFooterView.onLastPage?
             UIEdgeInsetsMake(0, 0, self.pullForActionController.footerView.fsH, 0) :
@@ -409,17 +429,26 @@
     self.navigationController.toolbar.barStyle = UIBarStyleBlack;
 }
 
+- (void)viewDidDisappear:(BOOL)animated
+{
+    if (!self.skipBlankingWebViewOnce) {
+        NSURL *blank = [NSURL URLWithString:@"about:blank"];
+        [self.webView loadRequest:[NSURLRequest requestWithURL:blank]];
+    }
+    [super viewDidDisappear:animated];
+}
+
 #pragma mark - BarButtonItem Actions
 
 -(void)updatePagesLabel
 {
-    self.pagesBarButtonItem.title = [NSString stringWithFormat:@"Page %d of %d", self.pages.currentPage, self.pages.totalPages];
-    if(self.pages.currentPage == self.pages.totalPages) {
+    self.pagesBarButtonItem.title = [NSString stringWithFormat:@"Page %d of %d", self.currentPage, self.numberOfPages];
+    if(self.currentPage == self.numberOfPages) {
         [self.pagesSegmentedControl setEnabled:NO forSegmentAtIndex:1];
     } else {
         [self.pagesSegmentedControl setEnabled:YES forSegmentAtIndex:1];
     }
-    if(self.pages.currentPage == 1) {
+    if(self.currentPage == 1) {
         [self.pagesSegmentedControl setEnabled:NO forSegmentAtIndex:0];
     } else {
         [self.pagesSegmentedControl setEnabled:YES forSegmentAtIndex:0];
@@ -471,17 +500,17 @@
     
     [self.webView.scrollView setContentOffset:CGPointMake(0,self.webView.scrollView.contentSize.height-self.webView.fsH+self.pullForActionController.footerView.fsH) animated:YES];
     
-    if(![self.pages onLastPage]) {
+    if(self.currentPage < self.numberOfPages) {
         self.destinationType = AwfulPageDestinationTypeSpecific;
-        [self loadPageNum:self.pages.currentPage+1];
+        [self loadPageNum:self.currentPage + 1];
     }
 }
 
 -(void)prevPage
 {
-    if(self.pages.currentPage > 1) {
+    if(self.currentPage > 1) {
         self.destinationType = AwfulPageDestinationTypeSpecific;
-        [self loadPageNum:self.pages.currentPage-1];
+        [self loadPageNum:self.currentPage - 1];
     }
 }
 
@@ -494,7 +523,7 @@
 
 -(void)tappedPageNav : (id)sender
 {
-    if(self.pages == nil || self.pages.totalPages <= 0 || self.pages.currentPage < 0) {
+    if(self.numberOfPages <= 0 || self.currentPage <= 0) {
         return;
     }
     
@@ -525,7 +554,9 @@
             sp_view.frame = CGRectOffset(sp_view.frame, 0, -sp_view.frame.size.height+40);
         }];
         
-        [self.specificPageController.pickerView selectRow:self.pages.currentPage-1 inComponent:0 animated:NO];
+        [self.specificPageController.pickerView selectRow:self.currentPage - 1
+                                              inComponent:0
+                                                 animated:NO];
     }
 }
        
@@ -538,6 +569,7 @@
 
 -(IBAction)tappedCompose : (id)sender
 {
+    self.skipBlankingWebViewOnce = YES;
     [self performSegueWithIdentifier:@"ReplyBox" sender:self];
 }
 
@@ -669,6 +701,8 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         other_nav.navigationBar.barStyle = UIBarStyleBlack;
         [other_nav setToolbarHidden:NO];
         other_nav.toolbar.barStyle = UIBarStyleBlack;
+        
+        self.skipBlankingWebViewOnce = YES;
         
         UIViewController *vc = ApplicationDelegate.window.rootViewController;
         [vc presentModalViewController:other_nav animated:YES];
@@ -805,7 +839,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         self.popController = nil;
     }
     
-    if(self.pages == nil || self.pages.totalPages <= 0 || self.pages.currentPage < 0)
+    if(self.numberOfPages <= 0 || self.currentPage <= 0)
     {
         return;
     }
@@ -819,8 +853,9 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         [self.specificPageController loadView];
         sp_view = self.specificPageController.containerView;
         
-        [self.specificPageController.pickerView selectRow:self.pages.currentPage-1 inComponent:0 animated:NO];
-        
+        [self.specificPageController.pickerView selectRow:self.currentPage - 1
+                                              inComponent:0
+                                                 animated:NO];
     }
 
     UIViewController *vc = self.specificPageController;

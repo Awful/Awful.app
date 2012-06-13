@@ -40,6 +40,15 @@ static const NSTimeInterval NetworkTimeoutInterval = 5.0;
     return __sharedClient;
 }
 
+- (id)initWithBaseURL:(NSURL *)url
+{
+    self = [super initWithBaseURL:url];
+    if (self) {
+        self.stringEncoding = NSWindowsCP1252StringEncoding;
+    }
+    return self;
+}
+
 + (DDFileLogger *)logger
 {
     static DDFileLogger *logger = nil;
@@ -161,7 +170,7 @@ static const NSTimeInterval NetworkTimeoutInterval = 5.0;
            }
            
            NSData *data = (NSData *)response;
-           NSString *html_str = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+           NSString *html_str = [[NSString alloc] initWithData:data encoding:NSWindowsCP1252StringEncoding];
            if(html_str == nil) {
                // attempt to avoid some crashes
                errorBlock(nil);
@@ -280,7 +289,7 @@ typedef enum BookmarkAction {
        success:^(AFHTTPRequestOperation *operation, id response) {
            NetworkLogInfo(@"completed %@", THIS_METHOD);
            NSData *data = (NSData *)response;
-           NSString *rawString = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+           NSString *rawString = [[NSString alloc] initWithData:data encoding:NSWindowsCP1252StringEncoding];
            NSData *converted = [rawString dataUsingEncoding:NSUTF8StringEncoding];
            TFHpple *pageData = [[TFHpple alloc] initWithHTMLData:converted];
            
@@ -348,7 +357,7 @@ QuotePostContent,
        success:^(AFHTTPRequestOperation *operation, id response) {
            NetworkLogInfo(@"completed %@", THIS_METHOD);
            NSData *data = (NSData *)response;
-           NSString *rawString = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+           NSString *rawString = [[NSString alloc] initWithData:data encoding:NSWindowsCP1252StringEncoding];
            NSData *converted = [rawString dataUsingEncoding:NSUTF8StringEncoding];
            TFHpple *base = [[TFHpple alloc] initWithHTMLData:converted];
            
@@ -382,8 +391,7 @@ QuotePostContent,
        success:^(AFHTTPRequestOperation *operation, id response) {
            NetworkLogInfo(@"completed %@", THIS_METHOD);
            NSData *data = (NSData *)response;
-           NSString *rawString = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
-           NSLog(@"raw %@", rawString);
+           NSString *rawString = [[NSString alloc] initWithData:data encoding:NSWindowsCP1252StringEncoding];
            NSData *converted = [rawString dataUsingEncoding:NSUTF8StringEncoding];
            TFHpple *pageData = [[TFHpple alloc] initWithHTMLData:converted];
            
@@ -469,7 +477,7 @@ QuotePostContent,
     [dict setValue:@"1" forKey:@"json"];
     
     NSString *path = @"showthread.php";
-    NSURLRequest *urlRequest = [self requestWithMethod:@"POST" path:path parameters:nil];
+    NSURLRequest *urlRequest = [self requestWithMethod:@"POST" path:path parameters:dict];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
        success:^(AFHTTPRequestOperation *operation, id response) {
            NetworkLogInfo(@"completed %@", THIS_METHOD);

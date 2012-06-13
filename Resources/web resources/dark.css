@@ -96,9 +96,8 @@ body.iphone article header input[name="post-action"] {
     width: 45px;
 }
 
-body.iphone span.poster-name {
+body.iphone p.post-date {
     display: block;
-    width: 200px;
 }
 
 /* iPad - Post header */
@@ -195,6 +194,10 @@ article section .bbc-spoiler:hover {
 article section blockquote img {
     max-width: 160px;
     max-height: 100px;
+}
+
+article section ul, article section ol {
+    padding-left: 20px;
 }
 
 /* iPhone - Post body */

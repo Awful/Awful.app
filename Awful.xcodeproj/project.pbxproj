@@ -409,7 +409,6 @@
 		1C6474C51569989800C72657 /* AwfulFavorite.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474A81569989800C72657 /* AwfulFavorite.m */; };
 		1C6474C61569989800C72657 /* AwfulForum+AwfulMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474AA1569989800C72657 /* AwfulForum+AwfulMethods.m */; };
 		1C6474C71569989800C72657 /* AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474AC1569989800C72657 /* AwfulForum.m */; };
-		1C6474C81569989800C72657 /* AwfulPageCount.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474AF1569989800C72657 /* AwfulPageCount.m */; };
 		1C6474C91569989800C72657 /* AwfulPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474B11569989800C72657 /* AwfulPost.m */; };
 		1C6474CA1569989800C72657 /* AwfulThread+AwfulMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474B31569989800C72657 /* AwfulThread+AwfulMethods.m */; };
 		1C6474CB1569989800C72657 /* AwfulThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474B51569989800C72657 /* AwfulThread.m */; };
@@ -957,8 +956,6 @@
 		1C6474AB1569989800C72657 /* AwfulForum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForum.h; sourceTree = "<group>"; };
 		1C6474AC1569989800C72657 /* AwfulForum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForum.m; sourceTree = "<group>"; };
 		1C6474AD1569989800C72657 /* AwfulModels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulModels.h; sourceTree = "<group>"; };
-		1C6474AE1569989800C72657 /* AwfulPageCount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPageCount.h; sourceTree = "<group>"; };
-		1C6474AF1569989800C72657 /* AwfulPageCount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPageCount.m; sourceTree = "<group>"; };
 		1C6474B01569989800C72657 /* AwfulPost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPost.h; sourceTree = "<group>"; };
 		1C6474B11569989800C72657 /* AwfulPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPost.m; sourceTree = "<group>"; };
 		1C6474B21569989800C72657 /* AwfulThread+AwfulMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AwfulThread+AwfulMethods.h"; sourceTree = "<group>"; };
@@ -1810,8 +1807,6 @@
 				1C6474AB1569989800C72657 /* AwfulForum.h */,
 				1C6474AC1569989800C72657 /* AwfulForum.m */,
 				1C6474AD1569989800C72657 /* AwfulModels.h */,
-				1C6474AE1569989800C72657 /* AwfulPageCount.h */,
-				1C6474AF1569989800C72657 /* AwfulPageCount.m */,
 				1C6474B01569989800C72657 /* AwfulPost.h */,
 				1C6474B11569989800C72657 /* AwfulPost.m */,
 				1C6474B21569989800C72657 /* AwfulThread+AwfulMethods.h */,
@@ -2584,7 +2579,6 @@
 				1C6474C51569989800C72657 /* AwfulFavorite.m in Sources */,
 				1C6474C61569989800C72657 /* AwfulForum+AwfulMethods.m in Sources */,
 				1C6474C71569989800C72657 /* AwfulForum.m in Sources */,
-				1C6474C81569989800C72657 /* AwfulPageCount.m in Sources */,
 				1C6474C91569989800C72657 /* AwfulPost.m in Sources */,
 				1C6474CA1569989800C72657 /* AwfulThread+AwfulMethods.m in Sources */,
 				1C6474CB1569989800C72657 /* AwfulThread.m in Sources */,
@@ -2768,6 +2762,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Regular Berry Software LLC";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Regular Berry Software LLC";
 				COPY_PHASE_STRIP = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Awful_Prefix.pch;
@@ -2775,7 +2770,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = Awful;
-				PROVISIONING_PROFILE = "CDD2EE87-025E-4D48-ADB8-0F40A88D82DB";
+				PROVISIONING_PROFILE = "318609EA-152D-4B7B-BF3C-0BB5F86CDB69";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "318609EA-152D-4B7B-BF3C-0BB5F86CDB69";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;

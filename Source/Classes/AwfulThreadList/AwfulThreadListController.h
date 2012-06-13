@@ -8,7 +8,6 @@
 
 #import "AwfulTableViewController.h"
 
-@class AwfulPageCount;
 @class AwfulForum;
 @class AwfulThread;
 @class AwfulSplitViewController;
@@ -25,7 +24,8 @@ typedef enum {
 
 @property (nonatomic, strong) AwfulForum *forum;
 @property (nonatomic, strong) NSMutableArray *awfulThreads;
-@property (nonatomic, strong) AwfulPageCount *pages;
+@property (nonatomic, assign) NSInteger currentPage;
+@property (nonatomic, assign) NSInteger numberOfPages;
 
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *prevPageBarButtonItem;
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *pageLabelBarButtonItem;

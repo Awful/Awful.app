@@ -9,13 +9,13 @@
 #import <Foundation/Foundation.h>
 
 @class AwfulForum;
-@class AwfulPageCount;
 
 @interface AwfulPageDataController : NSObject
 
 @property (nonatomic, strong) NSString *threadTitle;
 @property (nonatomic, strong) AwfulForum *forum;
-@property (nonatomic, strong) AwfulPageCount *pageCount;
+@property (nonatomic, assign) NSInteger currentPage;
+@property (nonatomic, assign) NSInteger numberOfPages;
 @property (nonatomic, strong) NSMutableArray *posts;
 @property (nonatomic, assign) NSUInteger newestPostIndex;
 @property (nonatomic, strong) NSString *userAd;

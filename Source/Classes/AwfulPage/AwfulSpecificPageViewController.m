@@ -8,7 +8,6 @@
 
 #import "AwfulSpecificPageViewController.h"
 #import "AwfulPage.h"
-#import "AwfulPageCount.h"
 #import "AwfulThread.h"
 #import "AwfulForum.h"
 #import "AwfulThreadListController.h"
@@ -39,7 +38,7 @@
 
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
-    return self.page.pages.totalPages;
+    return self.page.numberOfPages;
 }
 
 - (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
@@ -106,7 +105,7 @@
 -(IBAction)hitLast : (id)sender
 {
     self.page.destinationType = AwfulPageDestinationTypeSpecific;
-    [self.page loadPageNum:self.page.pages.totalPages];
+    [self.page loadPageNum:self.page.numberOfPages];
 }
 
 @end
