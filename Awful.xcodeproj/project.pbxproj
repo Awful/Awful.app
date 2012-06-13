@@ -1069,6 +1069,7 @@
 		50A8B96C1541D57E0065F3D9 /* ThreadActions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ThreadActions.png; path = images/help/ThreadActions.png; sourceTree = "<group>"; };
 		8C9A1B341582718D00BD28BB /* TDBadgedCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDBadgedCell.h; sourceTree = "<group>"; };
 		8C9A1B351582718D00BD28BB /* TDBadgedCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDBadgedCell.m; sourceTree = "<group>"; };
+		8CD02CF01588176000C5D69C /* Model 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 2.xcdatamodel"; sourceTree = "<group>"; };
 		8CFC22A515813EC900B26904 /* AwfulCustomForums.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCustomForums.h; sourceTree = "<group>"; };
 		8CFC22A615813EC900B26904 /* AwfulCustomForums.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCustomForums.m; sourceTree = "<group>"; };
 		8CFC22A715813EC900B26904 /* AwfulFYADThreadCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFYADThreadCell.h; sourceTree = "<group>"; };
@@ -2543,7 +2544,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "PATH=/usr/local/bin:$PATH\ncommand -v mogenerator >/dev/null 2>&1 || { echo >&2 \"Please install mogenerator! brew install mogenerator\"; exit 0; }\nMODELS=\"$PROJECT_DIR/Source/Models\"\nmogenerator --model \"$MODELS/Model.xcdatamodeld/Model.xcdatamodel\" --output-dir \"$MODELS\" --machine-dir \"$MODELS/Generated\" --template-var arc=true\n";
+			shellScript = "PATH=/usr/local/bin:$PATH\ncommand -v mogenerator >/dev/null 2>&1 || { echo >&2 \"Please install mogenerator! brew install mogenerator\"; exit 0; }\nMODELS=\"$PROJECT_DIR/Source/Models\"\nmogenerator --model \"$MODELS/Model.xcdatamodeld/Model 2.xcdatamodel\" --output-dir \"$MODELS\" --machine-dir \"$MODELS/Generated\" --template-var arc=true\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -2921,9 +2922,10 @@
 		1C6474C31569989800C72657 /* Model.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				8CD02CF01588176000C5D69C /* Model 2.xcdatamodel */,
 				1C6474C41569989800C72657 /* Model.xcdatamodel */,
 			);
-			currentVersion = 1C6474C41569989800C72657 /* Model.xcdatamodel */;
+			currentVersion = 8CD02CF01588176000C5D69C /* Model 2.xcdatamodel */;
 			path = Model.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
