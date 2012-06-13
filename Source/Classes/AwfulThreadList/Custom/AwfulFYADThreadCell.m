@@ -21,13 +21,11 @@
     self.contentView.backgroundColor = bgColor;
     
     self.threadTitleLabel.textColor = textColor;
-    self.threadTitleLabel.font = [UIFont fontWithName:@"Courier" size:16];
     self.threadTitleLabel.backgroundColor = bgColor;
     
     self.pagesLabel.textColor = textColor;
-    self.pagesLabel.font = [UIFont fontWithName:@"Courier" size:14];
     self.pagesLabel.backgroundColor = bgColor;
     
-    self.unreadButton.titleLabel.textColor = textColor;
+    self.badgeColor = [UIColor purpleColor];
 }
 @end
