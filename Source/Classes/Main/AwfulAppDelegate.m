@@ -250,12 +250,3 @@
 }
 
 @end
-
-
-
-BOOL isLandscape()
-{
-    return UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]);
-}
-
-

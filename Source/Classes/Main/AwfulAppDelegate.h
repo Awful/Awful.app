@@ -28,5 +28,3 @@
 - (void)requestFailed:(NSError *)error;
 
 @end
-
-BOOL isLandscape();
