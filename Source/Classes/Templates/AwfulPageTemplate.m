@@ -22,6 +22,13 @@
  - the tappedBottom() javascript triggers a 'next page' call if there are pages left
  */
 
+static NSString * const DefaultCSSFilename = @"default.css";
+
+static NSURL *DefaultCSSURL()
+{
+    return [[NSBundle mainBundle] URLForResource:DefaultCSSFilename withExtension:nil];
+}
+
 
 @interface TemplateContext : NSObject
 
@@ -85,13 +92,12 @@
         }
     }
     
-    NSString *defaultName = @"default.css";    
-    NSURL *defaultURL = [[ApplicationDelegate applicationDocumentsDirectory] URLByAppendingPathComponent:defaultName];
+    NSURL *defaultURL = [[ApplicationDelegate applicationDocumentsDirectory] URLByAppendingPathComponent:DefaultCSSFilename];
     if([defaultURL checkResourceIsReachableAndReturnError:nil]) {
         return defaultURL;
     }
     
-    return [[NSBundle mainBundle] URLForResource:defaultName withExtension:nil];
+    return DefaultCSSURL();
 }
 
 - (NSString *)renderWithPageDataController:(AwfulPageDataController *)dataController displayAllPosts : (BOOL)displayAllPosts
@@ -209,6 +215,15 @@
                                            error:&error];
         if (!_css) {
             NSLog(@"error loading css from %@: %@", self.cssURL, error);
+        }
+        if (![self.cssURL isEqual:DefaultCSSURL()]) {
+            NSString *default = [NSString stringWithContentsOfURL:DefaultCSSURL()
+                                                         encoding:NSUTF8StringEncoding
+                                                            error:&error];
+            if (!default) {
+                NSLog(@"error loading default css from %@: %@", DefaultCSSURL(), error);
+            }
+            _css = [default stringByAppendingString:_css];
         }
     }
     return _css;

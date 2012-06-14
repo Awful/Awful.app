@@ -62,9 +62,15 @@
 - (void)loadTemplateIntoWebView
 {
     UIWebView *webView = (UIWebView *)self.view;
-    NSString *css = [NSString stringWithContentsOfURL:self.template
-                                             encoding:NSUTF8StringEncoding
-                                                error:NULL];
+    NSURL *bedURL = [[self.template URLByDeletingLastPathComponent]
+                     URLByAppendingPathComponent:@"default.css"];
+    NSString *cssBed = [NSString stringWithContentsOfURL:bedURL
+                                                encoding:NSUTF8StringEncoding
+                                                   error:NULL];
+    NSString *restOfCSS = [NSString stringWithContentsOfURL:self.template
+                                                   encoding:NSUTF8StringEncoding
+                                                      error:NULL];
+    NSString *css = [cssBed stringByAppendingString:restOfCSS];
     [self.context setObject:css forKey:@"css"];
     NSString *render = [GRMustacheTemplate renderObject:self.context
                                       fromContentsOfURL:self.htmlFile

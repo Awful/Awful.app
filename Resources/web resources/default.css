@@ -41,7 +41,7 @@ a.quote_link {
 
 /* All - Front matter */
 
-body header.older-posts {
+header.older-posts {
     width: 100%;
     height: 26px;
     font-size: 16px;
@@ -111,6 +111,10 @@ body.ipad article {
     min-height: 100px;
 }
 
+body.ipad article.op header {
+    background-color: #199ed7;
+}
+
 body.ipad article header {
     width: 100%;
     height: 50px;
@@ -119,10 +123,6 @@ body.ipad article header {
     padding-top: 10px;
     padding-left: 95px;
     padding-right: 95px;
-}
-
-body.ipad article.op header {
-    color: #199ed7;
 }
 
 body.ipad article.noAvatar header{
@@ -207,13 +207,17 @@ body.iphone article section {
 }
 
 body.iphone article section .bbc-block, body.iphone article section .bbc-block h5 {
-    border-bottom: 1px solid #999;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: #999;
 }
 
 body.iphone article section .bbc-block h4 {
     padding-top: 1px;
     padding-bottom: 2px;
-    border-top: 1px solid #999;
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-top-color: #999;
     font-size: 13px;
     font-style: italic;
 }
@@ -236,13 +240,16 @@ body.iphone article section .bbc-block blockquote {
 
 body.ipad article {
     padding-bottom: 5px;
-    border-bottom: 1px solid #c1c1c1;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: #c1c1c1;
 }
 
 body.ipad article section {
     margin-left: 95px;
     margin-right: 13px;
 }
+
 body.ipad article.noAvatar section {
     margin-left: 13px;
 }
@@ -272,7 +279,9 @@ body.ipad article section .bbc-block blockquote {
     padding-right: 0.5em;
     padding-left: 1em;
     margin: 0.5em 1em;
-    border-left: 1px solid #999;
+    border-left-width: 1px;
+    border-left-style: solid;
+    border-left-color: #999;
 }
 
 body.ipad article section .bbc-block pre {
@@ -281,7 +290,9 @@ body.ipad article section .bbc-block pre {
     padding-right: 0.5em;
     padding-left: 1em;
     margin: 0.5em 1em;
-    border-left: 1px solid #999;
+    border-left-width: 1px;
+    border-left-style: solid;
+    border-left-width: #999;
 }
 
 /* iPhone - Back matter */

@@ -7,31 +7,24 @@
  */
 
 
+/*
+ default.css is always included before this or any other template.
+ That is, you can easily override anything in default.css by specifying something here.
+ But if you get confused about how some style gets set, it might be in default.css.
+ */
+
+
 /* General */
 
-* {
-    font-family: Helvetica, sans-serif;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 body {
-    font-size: 14px;
     color: white;
     background-color: black;
-    -webkit-text-size-adjust: none;
-    word-wrap:break-word;
-}
-
-img {
-    max-width: 100%;
 }
 
 a {
     color: #93daff;
-    word-wrap:break-word;
 }
+
 a.quote_link {
     text-decoration: none;
 }
@@ -39,11 +32,6 @@ a.quote_link {
 /* All - Front matter */
 
 body header.older-posts {
-    width: 100%;
-    height: 26px;
-    font-size: 16px;
-    padding-top: 6px;
-    text-align: center;
     color: #dbe8f5;
     background-color: #003d67;
 }
@@ -51,104 +39,26 @@ body header.older-posts {
 /* iPhone - Post header */
 
 body.iphone article header {
-    width: 100%;
-    height: 54px;
     background-color: black;
-    color: white;
-    position: relative;
 }
 
 body.iphone article.op header {
-    background-color: #199ed7;
-}
-
-body.iphone article header img.avatar {
-    position: absolute;
-    top: 4px;
-    left: 5px;
-    max-width: 45px;
-    max-height: 45px;
-}
-
-body.iphone article header h1 {
-    font-size: 1em;
-    padding-top: 8px;
-}
-
-body.iphone article header p {
-    font-size: 0.85em;
-}
-
-body.iphone article header h1, body.iphone article header p {
-    padding-left: 60px;
-    padding-right: 60px;
-    display: inline-block;
-    vertical-align: middle;
-}
-body.iphone article.noAvatar header h1, body.iphone article.noAvatar header p {
-    padding-left: 5px;
-}
-
-body.iphone article header input[name="post-action"] {
-    position: absolute;
-    top: 8px;
-    right: 5px;
-    width: 45px;
-}
-
-body.iphone p.post-date {
-    display: block;
+    background-color: #0c506d;
 }
 
 /* iPad - Post header */
 
-body.ipad article {
-    clear: both;
-    min-height: 100px;
-}
-
 body.ipad article header {
-    width: 100%;
-    height: 50px;
     color: #fafafa;
     text-shadow: 0 1px black;
-    position: relative;
-    padding-top: 10px;
-    padding-left: 95px;
-    padding-right: 95px;
 }
 
 body.ipad article.op header {
-    color: #199ed7;
-}
-
-body.ipad article.noAvatar header{
-    padding-left: 13px;
-}
-
-body.ipad article header img.avatar {
-    max-width: 75px;
-    max-height: 75px;
-    position: absolute;
-    top: 13px;
-    left: 13px;
-}
-
-body.ipad article header h1 {
-    font-size: 1em;
+    background-color: #0c506d;
 }
 
 body.ipad article header p {
-    font-size: 0.85em;
-    font-style: italic;
     color: white;
-}
-
-body.ipad article header input[name="post-action"] {
-    position: absolute;
-    top: 13px;
-    right: 13px;
-    width: 30px;
 }
 
 /* All devices - post body */
@@ -173,12 +83,6 @@ article section {
     color: white;
 }
 
-article section p.editedby {
-    font-size: 0.75em;
-    font-style: italic;
-    margin-top: 5px;
-}
-
 article section .bbc-spoiler, article section .bbc-spoiler li {
     background: white;
 }
@@ -191,116 +95,41 @@ article section .bbc-spoiler:hover {
     background: black;
 }
 
-article section blockquote img {
-    max-width: 160px;
-    max-height: 100px;
-}
-
-article section ul, article section ol {
-    padding-left: 20px;
-}
-
 /* iPhone - Post body */
 
-body.iphone article section {
-    font-size: 15px;
-    padding: 5px;
-}
-
 body.iphone article section .bbc-block, body.iphone article section .bbc-block h5 {
-    border-bottom: 1px solid #555;
+    border-bottom-color: #555;
 }
 
 body.iphone article section .bbc-block h4 {
-    padding-top: 1px;
-    padding-bottom: 2px;
-    border-top: 1px solid #555;
-    font-size: 13px;
-    font-style: italic;
-}
-
-body.iphone article section .bbc-block h5 {
-    font-size: 12px;
+    border-top-color: #555;
 }
 
 body.iphone article section .bbc-block h4, body.iphone article section .bbc-block h5 {
-    display: block;
     color: #999;
-}
-
-body.iphone article section .bbc-block blockquote {
-    font-size: 12px;
-    padding: 5px;
 }
 
 /* iPad - Post body */
 
 body.ipad article {
-    padding-bottom: 5px;
-    border-bottom: 1px solid #555;
-}
-
-body.ipad article section {
-    margin-left: 95px;
-    margin-right: 13px;
-}
-body.ipad article.noAvatar section {
-    margin-left: 13px;
-}
-
-body.ipad article section .bbc-block, body.ipad article section .bbc-block h5 {
-    max-width: 100%;
+    border-bottom-color: #555;
 }
 
 body.ipad article section .bbc-block h4, body.ipad article section .bbc-block h5 {
-    display: block;
     color: #999;
 }
 
-body.ipad article section .bbc-block h4 {
-    padding-top: 1px;
-    padding-bottom: 2px;
-    font-size: 13px;
-    font-style: italic;
-}
-
-body.ipad article section .bbc-block h5 {
-    font-size: 12px;
-}
-
 body.ipad article section .bbc-block blockquote {
-    font-size: 0.85em;
-    padding-right: 0.5em;
-    padding-left: 1em;
-    margin: 0.5em 1em;
-    border-left: 1px solid #555;
+    border-left-color: #555;
 }
 
 body.ipad article section .bbc-block pre {
-    max-width: 500px;
-    font-size: 0.85em;
-    padding-right: 0.5em;
-    padding-left: 1em;
-    margin: 0.5em 1em;
-    border-left: 1px solid #555;
+    border-left-color: #555;
 }
 
 /* iPhone - Back matter */
 
-body div.ad {
-    text-align: center;
-}
-
-body.iphone div.ad img {
-    width: 100%;
-    height: auto;
-}
-
 body div.pages-left {
-    text-align: center;
     background-color: black;
     color: #fff;
-    height: 60px;
-    font-size: 20px;
-    padding-top: 16px;
 }
