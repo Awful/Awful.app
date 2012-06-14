@@ -217,13 +217,13 @@ static NSURL *DefaultCSSURL()
             NSLog(@"error loading css from %@: %@", self.cssURL, error);
         }
         if (![self.cssURL isEqual:DefaultCSSURL()]) {
-            NSString *default = [NSString stringWithContentsOfURL:DefaultCSSURL()
-                                                         encoding:NSUTF8StringEncoding
-                                                            error:&error];
-            if (!default) {
+            NSString *cssBed = [NSString stringWithContentsOfURL:DefaultCSSURL()
+                                                        encoding:NSUTF8StringEncoding
+                                                           error:&error];
+            if (!cssBed) {
                 NSLog(@"error loading default css from %@: %@", DefaultCSSURL(), error);
             }
-            _css = [default stringByAppendingString:_css];
+            _css = [cssBed stringByAppendingString:_css];
         }
     }
     return _css;
