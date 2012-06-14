@@ -46,63 +46,71 @@
         }
     }
     
-    UIImage *img = [[UIImage imageNamed:@"navbargradient"] resizableImageWithCapInsets:UIEdgeInsetsMake(42, 0, 0, 0)];
-    [[UINavigationBar appearance] setBackgroundImage:img forBarMetrics:UIBarMetricsDefault];
+    // TODO move this out into default.css.
+    static CGFloat colors[] = {
+        0.294, 0.647, 0.867, 1, // bright light blue; 1px top border, below status bar
+        0.153, 0.459, 0.745, 1, // medium blue; top of top half of gradient
+        0.098, 0.294, 0.498, 1, // darker medium blue; bottom of top half of gradient
+        0.090, 0.251, 0.427, 1, // dark blue; top of bottom half of gradient
+        0.078, 0.216, 0.380, 1, // darker blue; bottom of bottom half of gradient
+    };
     
-    UIImage *landscapeImg = [[UIImage imageNamed:@"navbargradient-landscape"] resizableImageWithCapInsets:UIEdgeInsetsMake(32, 0, 0, 0)];
-    [[UINavigationBar appearance] setBackgroundImage:landscapeImg forBarMetrics:UIBarMetricsLandscapePhone];
+    UIImage *portrait = NavigationBarImage(UIBarMetricsDefault, colors);
+    [[UINavigationBar appearance] setBackgroundImage:portrait forBarMetrics:UIBarMetricsDefault];
+    UIImage *landscape = NavigationBarImage(UIBarMetricsLandscapePhone, colors);
+    [[UINavigationBar appearance] setBackgroundImage:landscape
+                                       forBarMetrics:UIBarMetricsLandscapePhone];
     
-    [[UIBarButtonItem appearance] setTintColor:[UIColor colorWithRed:46.0/255 green:146.0/255 blue:190.0/255 alpha:1.0]];
+    UIColor *barButton = [UIColor colorWithRed:46.0/255 green:146.0/255 blue:190.0/255 alpha:1];
+    [[UIBarButtonItem appearance] setTintColor:barButton];
     
     [self.window makeKeyAndVisible];
     
     return YES;
 }
 
-- (void)applicationWillResignActive:(UIApplication *)application {
-    /*
-     Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-     Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-     */
-}
+// TODO move NavigationBarImage() out into some new class for dealing with templates.
 
-
-- (void)applicationDidEnterBackground:(UIApplication *)application {
-    /*
-     Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
-     If your application supports background execution, called instead of applicationWillTerminate: when the user quits.
-     */
-}
-
-
-- (void)applicationWillEnterForeground:(UIApplication *)application {
-    /*
-     Called as part of  transition from the background to the inactive state: here you can undo many of the changes made on entering the background.
-     */
-}
-
-
-- (void)applicationDidBecomeActive:(UIApplication *)application {
-    /*AwfulNavigator *nav = getNavigator();
-    if ([nav isKindOfClass:[AwfulNavigatorIpad class]])
-        [((AwfulNavigatorIpad *) nav) callForumsRefresh];*/
-}
-
-
-- (void)applicationWillTerminate:(UIApplication *)application {
-    /*
-     Called when the application is about to terminate.
-     See also applicationDidEnterBackground:.
-     */
+// Draw a background image for a navigation bar.
+//
+// metrics - Whether this image is for a default bar or for a phone bar in landscape.
+// colors  - Five sets of four RGBA color components. The first set is used as a 1px border at 
+//           the top. The next two sets define the top half gradient. The remaining two sets
+//           define the bottom half gradient.
+//
+// Returns a resizable image.
+static UIImage *NavigationBarImage(UIBarMetrics metrics, CGFloat colors[])
+{
+    CGFloat height = metrics == UIBarMetricsDefault ? 42 : 32;
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(1, height), YES, 0);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGColorSpaceRef rgb = CGColorSpaceCreateDeviceRGB();
+    CGContextSetFillColorSpace(context, rgb);
+    
+    // 1px top border, below status bar.
+    CGContextSaveGState(context);
+    CGContextMoveToPoint(context, 0, 0);
+    CGContextAddRect(context, CGRectMake(0, 0, 1, 1));
+    CGContextSetFillColor(context, colors); // bright light blue
+    CGContextFillPath(context);
+    CGContextRestoreGState(context);
+    
+    // Fake two-tone gradient.
+    CGContextSaveGState(context);
+    CGFloat locations[] = { 0, 0.5, 0.5, 1.0 };
+    CGGradientRef gradient = CGGradientCreateWithColorComponents(rgb, colors + 4, locations, 4);
+    // y-values are so the middle of the gradient lines up with bar button items.
+    CGContextDrawLinearGradient(context, gradient, CGPointMake(0, 1), CGPointMake(1, height + 1), 0);
+    CGGradientRelease(gradient);
+    CGContextRestoreGState(context);
+    
+    CGColorSpaceRelease(rgb);
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return [image resizableImageWithCapInsets:UIEdgeInsetsMake(height, 0, 0, 0)];
 }
 
 #pragma mark - Memory management
-
-- (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
-    /*
-     Free up as much memory as possible by purging cached data objects that can be recreated (or reloaded from disk) later.
-     */
-}
 
 - (void)saveContext
 {
