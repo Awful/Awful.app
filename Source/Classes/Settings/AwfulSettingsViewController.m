@@ -194,6 +194,9 @@ typedef enum SettingType
     NSDictionary *setting = [self settingForIndexPath:indexPath];
     NSString *key = [setting objectForKey:@"Key"];
     [[NSUserDefaults standardUserDefaults] setBool:switchView.on forKey:key];
+    if ([key isEqualToString:@"dark_theme"]) {
+        [ApplicationDelegate configureAppearance];
+    }
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView

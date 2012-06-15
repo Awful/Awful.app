@@ -12,6 +12,7 @@
 #import "AwfulLoginController.h"
 #import "DDLog.h"
 #import "DDTTYLogger.h"
+#import "AwfulCSSTemplate.h"
 
 @implementation AwfulAppDelegate
 
@@ -46,68 +47,26 @@
         }
     }
     
-    // TODO move this out into default.css.
-    static CGFloat colors[] = {
-        0.294, 0.647, 0.867, 1, // bright light blue; 1px top border, below status bar
-        0.153, 0.459, 0.745, 1, // medium blue; top of top half of gradient
-        0.098, 0.294, 0.498, 1, // darker medium blue; bottom of top half of gradient
-        0.090, 0.251, 0.427, 1, // dark blue; top of bottom half of gradient
-        0.078, 0.216, 0.380, 1, // darker blue; bottom of bottom half of gradient
-    };
-    
-    UIImage *portrait = NavigationBarImage(UIBarMetricsDefault, colors);
-    [[UINavigationBar appearance] setBackgroundImage:portrait forBarMetrics:UIBarMetricsDefault];
-    UIImage *landscape = NavigationBarImage(UIBarMetricsLandscapePhone, colors);
-    [[UINavigationBar appearance] setBackgroundImage:landscape
-                                       forBarMetrics:UIBarMetricsLandscapePhone];
-    
-    UIColor *barButton = [UIColor colorWithRed:46.0/255 green:146.0/255 blue:190.0/255 alpha:1];
-    [[UIBarButtonItem appearance] setTintColor:barButton];
+    [self configureAppearance];
     
     [self.window makeKeyAndVisible];
     
     return YES;
 }
 
-// TODO move NavigationBarImage() out into some new class for dealing with templates.
-
-// Draw a background image for a navigation bar.
-//
-// metrics - Whether this image is for a default bar or for a phone bar in landscape.
-// colors  - Five sets of four RGBA color components. The first set is used as a 1px border at 
-//           the top. The next two sets define the top half gradient. The remaining two sets
-//           define the bottom half gradient.
-//
-// Returns a resizable image.
-static UIImage *NavigationBarImage(UIBarMetrics metrics, CGFloat colors[])
+- (void)configureAppearance
 {
-    CGFloat height = metrics == UIBarMetricsDefault ? 42 : 32;
-    UIGraphicsBeginImageContextWithOptions(CGSizeMake(1, height), YES, 0);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGColorSpaceRef rgb = CGColorSpaceCreateDeviceRGB();
-    CGContextSetFillColorSpace(context, rgb);
+    NSString *darkOrDefault = [[AwfulSettings settings] darkTheme] ? @"dark" : @"default";
+    NSURL *url = [[NSBundle mainBundle] URLForResource:darkOrDefault withExtension:@"css"];
+    AwfulCSSTemplate *css = [[AwfulCSSTemplate alloc] initWithURL:url error:NULL];
+    UIImage *portrait = [css navigationBarImageForMetrics:UIBarMetricsDefault];
+    [[UINavigationBar appearance] setBackgroundImage:portrait forBarMetrics:UIBarMetricsDefault];
+    UIImage *landscape = [css navigationBarImageForMetrics:UIBarMetricsLandscapePhone];
+    [[UINavigationBar appearance] setBackgroundImage:landscape
+                                       forBarMetrics:UIBarMetricsLandscapePhone];
     
-    // 1px top border, below status bar.
-    CGContextSaveGState(context);
-    CGContextMoveToPoint(context, 0, 0);
-    CGContextAddRect(context, CGRectMake(0, 0, 1, 1));
-    CGContextSetFillColor(context, colors); // bright light blue
-    CGContextFillPath(context);
-    CGContextRestoreGState(context);
-    
-    // Fake two-tone gradient.
-    CGContextSaveGState(context);
-    CGFloat locations[] = { 0, 0.5, 0.5, 1.0 };
-    CGGradientRef gradient = CGGradientCreateWithColorComponents(rgb, colors + 4, locations, 4);
-    // y-values are so the middle of the gradient lines up with bar button items.
-    CGContextDrawLinearGradient(context, gradient, CGPointMake(0, 1), CGPointMake(1, height + 1), 0);
-    CGGradientRelease(gradient);
-    CGContextRestoreGState(context);
-    
-    CGColorSpaceRelease(rgb);
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return [image resizableImageWithCapInsets:UIEdgeInsetsMake(height, 0, 0, 0)];
+    UIColor *barButton = [UIColor colorWithRed:46.0/255 green:146.0/255 blue:190.0/255 alpha:1];
+    [[UIBarButtonItem appearance] setTintColor:barButton];
 }
 
 #pragma mark - Memory management

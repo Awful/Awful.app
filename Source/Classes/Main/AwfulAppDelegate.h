@@ -22,6 +22,7 @@
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (readonly, strong, nonatomic) NSManagedObjectContext *throwawayObjectContext;
 
+- (void)configureAppearance;
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
 - (void)resetDataStore;

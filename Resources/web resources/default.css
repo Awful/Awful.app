@@ -7,6 +7,13 @@
  */
 
 
+/* Awful uses the #navbar selector to set the navigation bar colors. */
+#navbar {
+	border-top-color: #4ba5dd;
+	gradient-top: #2775be #194b7f;
+	gradient-bottom: #17406d #143761;
+}
+
 /* General */
 
 * {

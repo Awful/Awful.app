@@ -397,6 +397,7 @@
 		11FDA32815156E020014FDCD /* forum-arrow-down.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FDA32615156E010014FDCD /* forum-arrow-down.png */; };
 		11FDA32915156E020014FDCD /* forum-arrow-right.png in Resources */ = {isa = PBXBuildFile; fileRef = 11FDA32715156E010014FDCD /* forum-arrow-right.png */; };
 		1C277CA51543554700CD2CCE /* AwfulSettingsChoiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C277CA41543554700CD2CCE /* AwfulSettingsChoiceViewController.m */; };
+		1C2BFA25158AB59800692D85 /* AwfulCSSTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C2BFA24158AB59800692D85 /* AwfulCSSTemplate.m */; };
 		1C5D59C0155CDDB200D00DBB /* AwfulWebViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5D59BF155CDDB200D00DBB /* AwfulWebViewDelegate.m */; };
 		1C5D59C3155CFE9900D00DBB /* ObjCBridge.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C5D59C1155CF85D00D00DBB /* ObjCBridge.js */; };
 		1C5D59C6155CFF8100D00DBB /* awful.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C5D59C4155CFEB200D00DBB /* awful.js */; };
@@ -928,6 +929,8 @@
 		11FDA32715156E010014FDCD /* forum-arrow-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "forum-arrow-right.png"; path = "images/forum-arrow-right.png"; sourceTree = "<group>"; };
 		1C277CA31543554700CD2CCE /* AwfulSettingsChoiceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettingsChoiceViewController.h; sourceTree = "<group>"; };
 		1C277CA41543554700CD2CCE /* AwfulSettingsChoiceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettingsChoiceViewController.m; sourceTree = "<group>"; };
+		1C2BFA23158AB59800692D85 /* AwfulCSSTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AwfulCSSTemplate.h; path = Templates/AwfulCSSTemplate.h; sourceTree = "<group>"; };
+		1C2BFA24158AB59800692D85 /* AwfulCSSTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AwfulCSSTemplate.m; path = Templates/AwfulCSSTemplate.m; sourceTree = "<group>"; };
 		1C5D59BE155CDDB200D00DBB /* AwfulWebViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulWebViewDelegate.h; sourceTree = "<group>"; };
 		1C5D59BF155CDDB200D00DBB /* AwfulWebViewDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulWebViewDelegate.m; sourceTree = "<group>"; };
 		1C5D59C1155CF85D00D00DBB /* ObjCBridge.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = ObjCBridge.js; sourceTree = "<group>"; };
@@ -1658,6 +1661,8 @@
 		11D5E85A14DC6D3E00C1002D /* Templates */ = {
 			isa = PBXGroup;
 			children = (
+				1C2BFA23158AB59800692D85 /* AwfulCSSTemplate.h */,
+				1C2BFA24158AB59800692D85 /* AwfulCSSTemplate.m */,
 				11D5E85B14DC6D5C00C1002D /* AwfulPageTemplate.h */,
 				11D5E85C14DC6D5C00C1002D /* AwfulPageTemplate.m */,
 				1CDF7A5C1537DD2D008EFAE4 /* PostContext.h */,
@@ -2547,6 +2552,7 @@
 				110FABFF15745C5C00ECF535 /* DDTTYLogger.m in Sources */,
 				110FAC0015745C5C00ECF535 /* ContextFilterLogFormatter.m in Sources */,
 				110FAC0115745C5C00ECF535 /* DispatchQueueLogFormatter.m in Sources */,
+				1C2BFA25158AB59800692D85 /* AwfulCSSTemplate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
