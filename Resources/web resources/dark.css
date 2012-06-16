@@ -59,8 +59,8 @@ body.ipad article header {
     text-shadow: 0 1px black;
 }
 
-body.ipad article.op header {
-    background-color: #0c506d;
+body.ipad article.op header span.poster-name {
+    color: #0c506d;
 }
 
 body.ipad article header p {

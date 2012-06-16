@@ -118,10 +118,6 @@ body.ipad article {
     min-height: 100px;
 }
 
-body.ipad article.op header {
-    background-color: #199ed7;
-}
-
 body.ipad article header {
     width: 100%;
     height: 50px;
@@ -146,6 +142,10 @@ body.ipad article header img.avatar {
 
 body.ipad article header h1 {
     font-size: 1em;
+}
+
+body.ipad article.op header span.poster-name {
+    color: #199ed7;
 }
 
 body.ipad article header p {
