@@ -14,4 +14,11 @@
 
 @interface UIColor (YOSPOS)
 +(UIColor*) YOSPOSGreenColor;
++(UIColor*) YOSPOSAmberColor;
+@end
+
+@interface UIImage (YOSPOS)
+-(UIImage*) grayscaleVersion;
+-(UIImage*) greenVersion;
+-(UIImage*) amberVersion;
 @end

@@ -474,6 +474,7 @@
 		50A8B96F1541D57E0065F3D9 /* ReplyButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A8B96A1541D57E0065F3D9 /* ReplyButton.png */; };
 		50A8B9701541D57E0065F3D9 /* singlePageMovement.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A8B96B1541D57E0065F3D9 /* singlePageMovement.png */; };
 		50A8B9711541D57E0065F3D9 /* ThreadActions.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A8B96C1541D57E0065F3D9 /* ThreadActions.png */; };
+		8C8B224315935AC4003C50AB /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C8B224215935AC4003C50AB /* CoreImage.framework */; };
 		8C9A1B361582718D00BD28BB /* TDBadgedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C9A1B351582718D00BD28BB /* TDBadgedCell.m */; };
 		8CFC22AB15813EC900B26904 /* AwfulCustomForums.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFC22A615813EC900B26904 /* AwfulCustomForums.m */; };
 		8CFC22AC15813EC900B26904 /* AwfulFYADThreadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFC22A815813EC900B26904 /* AwfulFYADThreadCell.m */; };
@@ -1058,6 +1059,7 @@
 		50A8B96A1541D57E0065F3D9 /* ReplyButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ReplyButton.png; path = images/help/ReplyButton.png; sourceTree = "<group>"; };
 		50A8B96B1541D57E0065F3D9 /* singlePageMovement.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = singlePageMovement.png; path = images/help/singlePageMovement.png; sourceTree = "<group>"; };
 		50A8B96C1541D57E0065F3D9 /* ThreadActions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ThreadActions.png; path = images/help/ThreadActions.png; sourceTree = "<group>"; };
+		8C8B224215935AC4003C50AB /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
 		8C9A1B341582718D00BD28BB /* TDBadgedCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDBadgedCell.h; sourceTree = "<group>"; };
 		8C9A1B351582718D00BD28BB /* TDBadgedCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDBadgedCell.m; sourceTree = "<group>"; };
 		8CD02CF01588176000C5D69C /* Model 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 2.xcdatamodel"; sourceTree = "<group>"; };
@@ -1101,6 +1103,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8C8B224315935AC4003C50AB /* CoreImage.framework in Frameworks */,
 				110FAC0415745CE700ECF535 /* MessageUI.framework in Frameworks */,
 				10D34FA9128F41160026C7C2 /* CFNetwork.framework in Frameworks */,
 				117DBE3B1522A39A007125EF /* CoreData.framework in Frameworks */,
@@ -2002,6 +2005,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8C8B224215935AC4003C50AB /* CoreImage.framework */,
 				110FAC0315745CE700ECF535 /* MessageUI.framework */,
 				117DBE3A1522A39A007125EF /* CoreData.framework */,
 				1172A62D14F5DB160026CDA8 /* Security.framework */,
