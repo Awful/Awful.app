@@ -30,7 +30,6 @@
 
 @property (nonatomic, strong) IBOutlet UIWebView *webView;
 @property (strong) AwfulWebViewDelegateWrapper *webViewDelegateWrapper;
-@property (assign, nonatomic) BOOL skipBlankingWebViewOnce;
 
 @end
 
@@ -56,16 +55,6 @@
 @synthesize pagesSegmentedControl = _pagesSegmentedControl;
 @synthesize actionsSegmentedControl = _actionsSegmentedControl;
 @synthesize isFullScreen = _isFullScreen;
-@synthesize skipBlankingWebViewOnce = _skipBlankingWebViewOnce;
-
-- (BOOL)skipBlankingWebViewOnce
-{
-    if (!_skipBlankingWebViewOnce) {
-        return NO;
-    }
-    _skipBlankingWebViewOnce = NO;
-    return YES;
-}
 
 #pragma mark - Initialization
 
@@ -364,7 +353,9 @@
 
 - (void)viewDidDisappear:(BOOL)animated
 {
-    if (!self.skipBlankingWebViewOnce) {
+    // Blank the web view if we're leaving for good. Otherwise we get weirdness like videos
+    // continuing to play their sound after the user switches to a different thread.
+    if (!self.navigationController) {
         NSURL *blank = [NSURL URLWithString:@"about:blank"];
         [self.webView loadRequest:[NSURLRequest requestWithURL:blank]];
     }
@@ -498,7 +489,6 @@
 
 -(IBAction)tappedCompose : (id)sender
 {
-    self.skipBlankingWebViewOnce = YES;
     [self performSegueWithIdentifier:@"ReplyBox" sender:self];
 }
 
@@ -630,8 +620,6 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         other_nav.navigationBar.barStyle = UIBarStyleBlack;
         [other_nav setToolbarHidden:NO];
         other_nav.toolbar.barStyle = UIBarStyleBlack;
-        
-        self.skipBlankingWebViewOnce = YES;
         
         UIViewController *vc = ApplicationDelegate.window.rootViewController;
         [vc presentModalViewController:other_nav animated:YES];

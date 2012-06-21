@@ -7,6 +7,13 @@
  */
 
 
+/* Awful uses the #navbar selector to set the navigation bar colors. */
+#navbar {
+	border-top-color: #4ba5dd;
+	gradient-top: #2775be #194b7f;
+	gradient-bottom: #17406d #143761;
+}
+
 /* General */
 
 * {
@@ -26,17 +33,22 @@ img {
     max-width: 100%;
 }
 
+code {
+    font-family: monospace;
+}
+
 a {
     color: #003366;
     word-wrap:break-word;
 }
+
 a.quote_link {
     text-decoration: none;
 }
 
 /* All - Front matter */
 
-body header.older-posts {
+header.older-posts {
     width: 100%;
     height: 26px;
     font-size: 16px;
@@ -67,6 +79,7 @@ body.iphone article header img.avatar {
     max-width: 45px;
     max-height: 45px;
 }
+
 body.iphone article header h1 {
     font-size: 1em;
     padding-top: 8px;
@@ -82,6 +95,7 @@ body.iphone article header h1, body.iphone article header p {
     display: inline-block;
     vertical-align: middle;
 }
+
 body.iphone article.noAvatar header h1, body.iphone article.noAvatar header p {
     padding-left: 5px;
 }
@@ -114,10 +128,6 @@ body.ipad article header {
     padding-right: 95px;
 }
 
-body.ipad article.op header {
-    color: #199ed7;
-}
-
 body.ipad article.noAvatar header{
     padding-left: 13px;
 }
@@ -132,6 +142,10 @@ body.ipad article header img.avatar {
 
 body.ipad article header h1 {
     font-size: 1em;
+}
+
+body.ipad article.op header span.poster-name {
+    color: #199ed7;
 }
 
 body.ipad article header p {
@@ -200,13 +214,17 @@ body.iphone article section {
 }
 
 body.iphone article section .bbc-block, body.iphone article section .bbc-block h5 {
-    border-bottom: 1px solid #999;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: #999;
 }
 
 body.iphone article section .bbc-block h4 {
     padding-top: 1px;
     padding-bottom: 2px;
-    border-top: 1px solid #999;
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-top-color: #999;
     font-size: 13px;
     font-style: italic;
 }
@@ -229,13 +247,16 @@ body.iphone article section .bbc-block blockquote {
 
 body.ipad article {
     padding-bottom: 5px;
-    border-bottom: 1px solid #c1c1c1;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: #c1c1c1;
 }
 
 body.ipad article section {
     margin-left: 95px;
     margin-right: 13px;
 }
+
 body.ipad article.noAvatar section {
     margin-left: 13px;
 }
@@ -265,7 +286,9 @@ body.ipad article section .bbc-block blockquote {
     padding-right: 0.5em;
     padding-left: 1em;
     margin: 0.5em 1em;
-    border-left: 1px solid #999;
+    border-left-width: 1px;
+    border-left-style: solid;
+    border-left-color: #999;
 }
 
 body.ipad article section .bbc-block pre {
@@ -274,7 +297,9 @@ body.ipad article section .bbc-block pre {
     padding-right: 0.5em;
     padding-left: 1em;
     margin: 0.5em 1em;
-    border-left: 1px solid #999;
+    border-left-width: 1px;
+    border-left-style: solid;
+    border-left-width: #999;
 }
 
 /* iPhone - Back matter */

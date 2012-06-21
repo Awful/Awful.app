@@ -12,6 +12,7 @@
 #import "AwfulLoginController.h"
 #import "DDLog.h"
 #import "DDTTYLogger.h"
+#import "AwfulCSSTemplate.h"
 
 @implementation AwfulAppDelegate
 
@@ -46,63 +47,29 @@
         }
     }
     
-    UIImage *img = [[UIImage imageNamed:@"navbargradient"] resizableImageWithCapInsets:UIEdgeInsetsMake(42, 0, 0, 0)];
-    [[UINavigationBar appearance] setBackgroundImage:img forBarMetrics:UIBarMetricsDefault];
-    
-    UIImage *landscapeImg = [[UIImage imageNamed:@"navbargradient-landscape"] resizableImageWithCapInsets:UIEdgeInsetsMake(32, 0, 0, 0)];
-    [[UINavigationBar appearance] setBackgroundImage:landscapeImg forBarMetrics:UIBarMetricsLandscapePhone];
-    
-    [[UIBarButtonItem appearance] setTintColor:[UIColor colorWithRed:46.0/255 green:146.0/255 blue:190.0/255 alpha:1.0]];
+    [self configureAppearance];
     
     [self.window makeKeyAndVisible];
     
     return YES;
 }
 
-- (void)applicationWillResignActive:(UIApplication *)application {
-    /*
-     Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-     Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-     */
-}
-
-
-- (void)applicationDidEnterBackground:(UIApplication *)application {
-    /*
-     Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
-     If your application supports background execution, called instead of applicationWillTerminate: when the user quits.
-     */
-}
-
-
-- (void)applicationWillEnterForeground:(UIApplication *)application {
-    /*
-     Called as part of  transition from the background to the inactive state: here you can undo many of the changes made on entering the background.
-     */
-}
-
-
-- (void)applicationDidBecomeActive:(UIApplication *)application {
-    /*AwfulNavigator *nav = getNavigator();
-    if ([nav isKindOfClass:[AwfulNavigatorIpad class]])
-        [((AwfulNavigatorIpad *) nav) callForumsRefresh];*/
-}
-
-
-- (void)applicationWillTerminate:(UIApplication *)application {
-    /*
-     Called when the application is about to terminate.
-     See also applicationDidEnterBackground:.
-     */
+- (void)configureAppearance
+{
+    NSString *darkOrDefault = [[AwfulSettings settings] darkTheme] ? @"dark" : @"default";
+    NSURL *url = [[NSBundle mainBundle] URLForResource:darkOrDefault withExtension:@"css"];
+    AwfulCSSTemplate *css = [[AwfulCSSTemplate alloc] initWithURL:url error:NULL];
+    UIImage *portrait = [css navigationBarImageForMetrics:UIBarMetricsDefault];
+    [[UINavigationBar appearance] setBackgroundImage:portrait forBarMetrics:UIBarMetricsDefault];
+    UIImage *landscape = [css navigationBarImageForMetrics:UIBarMetricsLandscapePhone];
+    [[UINavigationBar appearance] setBackgroundImage:landscape
+                                       forBarMetrics:UIBarMetricsLandscapePhone];
+    
+    UIColor *barButton = [UIColor colorWithRed:46.0/255 green:146.0/255 blue:190.0/255 alpha:1];
+    [[UIBarButtonItem appearance] setTintColor:barButton];
 }
 
 #pragma mark - Memory management
-
-- (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
-    /*
-     Free up as much memory as possible by purging cached data objects that can be recreated (or reloaded from disk) later.
-     */
-}
 
 - (void)saveContext
 {
@@ -250,12 +217,3 @@
 }
 
 @end
-
-
-
-BOOL isLandscape()
-{
-    return UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]);
-}
-
-
