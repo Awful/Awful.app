@@ -22,9 +22,11 @@
     
     self.threadTitleLabel.textColor = textColor;
     self.threadTitleLabel.backgroundColor = bgColor;
+    self.threadTitleLabel.font = [UIFont fontWithName:@"MarkerFelt-Wide" size:18];
     
     self.pagesLabel.textColor = textColor;
     self.pagesLabel.backgroundColor = bgColor;
+    self.pagesLabel.font = [UIFont fontWithName:@"Marker Felt" size:12];
     
     self.badgeColor = [UIColor purpleColor];
 }
