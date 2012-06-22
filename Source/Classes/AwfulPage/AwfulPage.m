@@ -26,6 +26,7 @@
 #import "OtherWebController.h"
 //#import "AwfulUtil.h"
 #import "AwfulLoadingFooterView.h"
+#import "AwfulLoadingHeaderView.h"
 #import "AwfulPage+Transitions.h"
 #import "AwfulWebViewDelegate.h"
 
@@ -99,7 +100,7 @@
     
 
     self.pullForActionController = [[AwfulPullForActionController alloc] initWithScrollView:self.webView.scrollView];
-    self.pullForActionController.headerView = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0, 0, 100, 60)]; 
+    self.pullForActionController.headerView = [[AwfulLoadingHeaderView alloc] initWithFrame:CGRectMake(0, 0, 100, 60)]; 
     self.pullForActionController.delegate = self;
     
     self.loadingFooterView = [AwfulLoadingFooterView new];
@@ -497,10 +498,9 @@
 
 -(void)nextPage
 {
-    self.pullForActionController.footerView.state = AwfulPullForActionStateLoading;
+    self.pullForActionController.footerState = AwfulPullForActionStateLoading;
     
-    [self.webView.scrollView setContentOffset:CGPointMake(0,self.webView.scrollView.contentSize.height-self.webView.fsH+self.pullForActionController.footerView.fsH) animated:YES];
-    
+    return;
     if(self.currentPage < self.numberOfPages) {
         self.destinationType = AwfulPageDestinationTypeSpecific;
         [self loadPageNum:self.currentPage + 1];
@@ -720,8 +720,8 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         [self scrollToBottom];
     }
     
-    self.pullForActionController.headerView.state = AwfulPullForActionStateNormal;
-    self.pullForActionController.footerView.state = AwfulPullForActionStateNormal;
+    self.pullForActionController.headerState = AwfulPullForActionStateNormal;
+    self.pullForActionController.footerState = AwfulPullForActionStateNormal;
     
     //animate old page up and offscreen, new page in from the bottom
     if (sender == self.nextPageWebView) {
@@ -807,12 +807,19 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     //if there's a new page invalidate timer, set footer as not on last page
 }
 
--(void) didPullHeader {
+#pragma mark Pull For Action
+-(void) didPullHeader:(UIView<AwfulPullForActionViewDelegate>*)header {
     [self refresh];
 }
 
--(void) didPullFooter {
+-(void) didPullFooter:(UIView<AwfulPullForActionViewDelegate>*)footer {
     [self tappedNextPage:nil];
+}
+
+-(void) didCancelPullForAction:(AwfulPullForActionController *)pullForActionController {
+    [self stop];
+    pullForActionController.headerState ^= AwfulPullForActionStateLoading;
+    pullForActionController.footerState ^= AwfulPullForActionStateLoading;
 }
 
 @end

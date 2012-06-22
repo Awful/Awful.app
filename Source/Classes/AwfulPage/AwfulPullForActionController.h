@@ -15,12 +15,7 @@ typedef enum {
     AwfulPullForActionStateRelease
 } AwfulPullForActionState;
 
-@protocol AwfulPullForActionDelegate <NSObject>
-
--(void) didPullHeader;
--(void) didPullFooter;
-
-@end
+@class AwfulPullForActionController;
 
 @protocol AwfulPullForActionViewDelegate <NSObject>
 
@@ -29,12 +24,24 @@ typedef enum {
 
 @end
 
+@protocol AwfulPullForActionDelegate <NSObject>
+
+@required
+-(void) didPullHeader:(UIView<AwfulPullForActionViewDelegate>*)header;
+-(void) didPullFooter:(UIView<AwfulPullForActionViewDelegate>*)footer;
+-(void) didCancelPullForAction:(AwfulPullForActionController*)pullForActionController;
+
+@end
+
+
 
 @interface AwfulPullForActionController : NSObject <UIScrollViewDelegate>
 -(id) initWithScrollView:(UIScrollView*)scrollView;
 @property (nonatomic,strong) IBOutlet UIScrollView* scrollView;
 @property (nonatomic,strong) UIView<AwfulPullForActionViewDelegate>* headerView;
 @property (nonatomic,strong) UIView<AwfulPullForActionViewDelegate>* footerView;
+@property (nonatomic) AwfulPullForActionState headerState;
+@property (nonatomic) AwfulPullForActionState footerState;
 @property (nonatomic,strong) UIViewController<AwfulPullForActionDelegate,UIScrollViewDelegate>* delegate;
 @property (nonatomic) BOOL userScrolling;
 

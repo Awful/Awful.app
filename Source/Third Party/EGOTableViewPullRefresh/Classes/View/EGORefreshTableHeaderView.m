@@ -53,7 +53,7 @@
 		label.shadowOffset = CGSizeMake(0.0f, 1.0f);
 		label.backgroundColor = [UIColor clearColor];
 		label.textAlignment = UITextAlignmentCenter;
-		//[self addSubview:label];
+		[self addSubview:label];
 		self.lastUpdatedLabel=label;
 		
 		UILabel *status_label = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, frame.size.height - 39, self.frame.size.width, 20.0f)];

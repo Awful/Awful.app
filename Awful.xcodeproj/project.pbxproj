@@ -476,6 +476,7 @@
 		50A8B9711541D57E0065F3D9 /* ThreadActions.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A8B96C1541D57E0065F3D9 /* ThreadActions.png */; };
 		8C79D4371561CE44006FEE48 /* AwfulPullForActionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C79D4361561CE44006FEE48 /* AwfulPullForActionController.m */; };
 		8C79D43B1562E79E006FEE48 /* AwfulPage+Transitions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C79D43A1562E79E006FEE48 /* AwfulPage+Transitions.m */; };
+		8C8B227A1594AE9D003C50AB /* AwfulLoadingHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C8B22791594AE9C003C50AB /* AwfulLoadingHeaderView.m */; };
 		8C90518C155BEEB40098266A /* AwfulLoadingFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C90518B155BEEB40098266A /* AwfulLoadingFooterView.m */; };
 		8C905197155D6CAD0098266A /* UIView+Lazy.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C905196155D6CAD0098266A /* UIView+Lazy.m */; };
 		8CFC2295157D282800B26904 /* AwfulPullToNavigateView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFC2291157D282800B26904 /* AwfulPullToNavigateView.m */; };
@@ -1050,6 +1051,8 @@
 		8C79D4361561CE44006FEE48 /* AwfulPullForActionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPullForActionController.m; sourceTree = "<group>"; };
 		8C79D4391562E79E006FEE48 /* AwfulPage+Transitions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AwfulPage+Transitions.h"; sourceTree = "<group>"; };
 		8C79D43A1562E79E006FEE48 /* AwfulPage+Transitions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AwfulPage+Transitions.m"; sourceTree = "<group>"; };
+		8C8B22781594AE9B003C50AB /* AwfulLoadingHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLoadingHeaderView.h; sourceTree = "<group>"; };
+		8C8B22791594AE9C003C50AB /* AwfulLoadingHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLoadingHeaderView.m; sourceTree = "<group>"; };
 		8C90518A155BEEB40098266A /* AwfulLoadingFooterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLoadingFooterView.h; sourceTree = "<group>"; };
 		8C90518B155BEEB40098266A /* AwfulLoadingFooterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLoadingFooterView.m; sourceTree = "<group>"; };
 		8C905195155D6CAD0098266A /* UIView+Lazy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Lazy.h"; sourceTree = "<group>"; };
@@ -1546,6 +1549,8 @@
 				8C90518B155BEEB40098266A /* AwfulLoadingFooterView.m */,
 				8C79D4351561CE44006FEE48 /* AwfulPullForActionController.h */,
 				8C79D4361561CE44006FEE48 /* AwfulPullForActionController.m */,
+				8C8B22781594AE9B003C50AB /* AwfulLoadingHeaderView.h */,
+				8C8B22791594AE9C003C50AB /* AwfulLoadingHeaderView.m */,
 			);
 			path = AwfulPage;
 			sourceTree = "<group>";
@@ -2591,6 +2596,7 @@
 				110FAC0115745C5C00ECF535 /* DispatchQueueLogFormatter.m in Sources */,
 				8CFC2295157D282800B26904 /* AwfulPullToNavigateView.m in Sources */,
 				1C2BFA25158AB59800692D85 /* AwfulCSSTemplate.m in Sources */,
+				8C8B227A1594AE9D003C50AB /* AwfulLoadingHeaderView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

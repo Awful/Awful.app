@@ -100,6 +100,9 @@
 	_state = aState;
     int onLastPage = self.onLastPage? AwfulPullForActionOnLastPage : 0;
     
+    if (self.gestureRecognizers.count > 0 && aState != AwfulPullForActionStateLoading)
+        [self removeGestureRecognizer:[self.gestureRecognizers objectAtIndex:0]];
+    
 	switch (aState + onLastPage) {
 		case AwfulPullForActionStateRelease:
 			
@@ -116,7 +119,7 @@
                         
 		case AwfulPullForActionStateLoading:
 			self.textLabel.text = @"Loading...";
-            self.detailTextLabel.text = nil;
+            self.detailTextLabel.text = @"Swipe left to cancel";
             self.imageView.hidden = YES;
 			[self.activityView startAnimating];
 			return;
@@ -148,7 +151,7 @@
             
         case AwfulPullForActionStateLoading + AwfulPullForActionOnLastPage:
             self.textLabel.text = @"Loading...";
-            self.detailTextLabel.text = nil;
+            self.detailTextLabel.text = @"Swipe left to cancel";
             self.accessoryView.hidden = YES;
             [self.activityView startAnimating];
             self.imageView.hidden = YES;

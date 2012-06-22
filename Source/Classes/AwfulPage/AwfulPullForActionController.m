@@ -65,8 +65,8 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (!self.userScrolling) return;
     
-    if (self.headerView.state == AwfulPullForActionStateLoading || 
-        self.footerView.state == AwfulPullForActionStateLoading)
+    if (self.headerState == AwfulPullForActionStateLoading || 
+        self.footerState == AwfulPullForActionStateLoading)
         return;
     
     CGFloat scrollAmount = scrollView.contentOffset.y;
@@ -84,8 +84,8 @@
     //Normal State
     if (scrollAmount >= 0 && scrollAmount <= scrollView.contentSize.height - scrollView.fsH) {
         NSLog(@"normal");
-        self.headerView.state = AwfulPullForActionStateNormal;
-        self.footerView.state = AwfulPullForActionStateNormal;
+        self.headerState = AwfulPullForActionStateNormal;
+        self.footerState = AwfulPullForActionStateNormal;
 		//scrollView.contentInset = UIEdgeInsetsZero;
         return;
     }
@@ -93,7 +93,7 @@
     //Header Pulling
     if (scrollAmount < 0 && scrollAmount >= headerThreshhold) {
         NSLog(@"header pull");
-        self.headerView.state = AwfulPullForActionStatePulling;
+        self.headerState = AwfulPullForActionStatePulling;
         return;
     }
     
@@ -101,7 +101,7 @@
     //Footer Pulling
     if (scrollAmount > self.scrollView.contentSize.height - self.scrollView.fsH && scrollAmount <= footerThreshhold) {
         NSLog(@"footer pull");
-        self.footerView.state = AwfulPullForActionStatePulling;
+        self.footerState = AwfulPullForActionStatePulling;
         return;
     }
     
@@ -110,7 +110,7 @@
     //Header Loading
     if (scrollAmount < headerThreshhold) {
         NSLog(@"header release");
-        self.headerView.state = AwfulPullForActionStateRelease;
+        self.headerState = AwfulPullForActionStateRelease;
         return;
     }
     
@@ -118,7 +118,7 @@
     //Footer Loading
     if (scrollAmount > footerThreshhold) {
         NSLog(@"footer release");
-        self.footerView.state = AwfulPullForActionStateRelease;
+        self.footerState = AwfulPullForActionStateRelease;
 
         return;
     }
@@ -141,15 +141,17 @@
     
     UIEdgeInsets inset;
     if (scrollAmount < headerThreshhold) {
-        self.headerView.state = AwfulPullForActionStateLoading;
+        self.headerState = AwfulPullForActionStateLoading;
+        [self setSwipeCanCancel:self.headerView];
 		inset = UIEdgeInsetsMake(self.headerView.fsH, 0.0f, 0.0f, 0.0f);
-        [self.delegate didPullHeader];
+        [self.delegate didPullHeader:self.headerView];
     }
     
     else if (scrollAmount > footerThreshhold) {
-        self.footerView.state = AwfulPullForActionStateLoading;
+        self.footerState = AwfulPullForActionStateLoading;
+        [self setSwipeCanCancel:self.footerView];
 		inset = UIEdgeInsetsMake(0.0f, 0.0f, self.footerView.fsH, 0.0f);
-        [self.delegate didPullFooter];
+        [self.delegate didPullFooter:self.footerView];
     }
     else 
         return;
@@ -163,7 +165,60 @@
         [self.delegate scrollViewDidEndDragging:scrollView willDecelerate:decelerate];
 }
 
+-(void) setSwipeCanCancel:(UIView<AwfulPullForActionViewDelegate>*)view {
+        UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self
+                                                                                    action:@selector(didSwipeToCancel:)
+                                           ];
+        
+        swipe.numberOfTouchesRequired = 1;
+        swipe.direction = (UISwipeGestureRecognizerDirectionLeft);
+        [view addGestureRecognizer:swipe];
+}
+    
+-(void) didSwipeToCancel:(UISwipeGestureRecognizer*)swipe {
+    //NSLog(@"cancel");
+    [swipe.view removeGestureRecognizer:swipe];
+    [self.delegate didCancelPullForAction:self];
+    
+    //remove inset, scroll if necessary
+    [UIView animateWithDuration:.2
+                     animations:^{
+                         self.scrollView.contentInset = UIEdgeInsetsZero;
+                     }
+     ];
+}
 
+-(void) setFooterState:(AwfulPullForActionState)state {
+    self.footerView.state = state;
+    
+    //if loading, set inset and scroll
+    if (state == AwfulPullForActionStateLoading)
+        [self.scrollView setContentOffset:CGPointMake(0,self.scrollView.contentSize.height-
+                                                      self.scrollView.fsH+
+                                                      self.footerView.fsH) 
+                                 animated:YES];
+    
+    //otherwise remove inset, maybe scroll?
+    //might not be necessary since webview is getting replaced
+}
 
+-(void) setHeaderState:(AwfulPullForActionState)state {
+    self.headerView.state = state;
+    
+    //set inset, scroll to top to show
+    if (self.headerState == AwfulPullForActionStateLoading)
+        [self.scrollView setContentOffset:CGPointMake(0,-self.footerView.fsH) 
+                                 animated:YES];
+    
+    //clear inset
+}
+
+-(AwfulPullForActionState) footerState {
+    return self.footerView.state;
+}
+
+-(AwfulPullForActionState) headerState {
+    return self.headerView.state;
+}
 
 @end
