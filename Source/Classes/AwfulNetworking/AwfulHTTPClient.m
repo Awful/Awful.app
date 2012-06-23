@@ -44,7 +44,7 @@ static const NSTimeInterval NetworkTimeoutInterval = 5.0;
 {
     self = [super initWithBaseURL:url];
     if (self) {
-        self.stringEncoding = NSWindowsCP1252StringEncoding;
+        self.stringEncoding = NSISOLatin1StringEncoding;
     }
     return self;
 }
@@ -170,7 +170,7 @@ static const NSTimeInterval NetworkTimeoutInterval = 5.0;
            }
            
            NSData *data = (NSData *)response;
-           NSString *html_str = [[NSString alloc] initWithData:data encoding:NSWindowsCP1252StringEncoding];
+           NSString *html_str = [[NSString alloc] initWithData:data encoding:NSISOLatin1StringEncoding];
            if(html_str == nil) {
                // attempt to avoid some crashes
                errorBlock(nil);
@@ -289,7 +289,7 @@ typedef enum BookmarkAction {
        success:^(AFHTTPRequestOperation *operation, id response) {
            NetworkLogInfo(@"completed %@", THIS_METHOD);
            NSData *data = (NSData *)response;
-           NSString *rawString = [[NSString alloc] initWithData:data encoding:NSWindowsCP1252StringEncoding];
+           NSString *rawString = [[NSString alloc] initWithData:data encoding:NSISOLatin1StringEncoding];
            NSData *converted = [rawString dataUsingEncoding:NSUTF8StringEncoding];
            TFHpple *pageData = [[TFHpple alloc] initWithHTMLData:converted];
            
@@ -357,7 +357,7 @@ QuotePostContent,
        success:^(AFHTTPRequestOperation *operation, id response) {
            NetworkLogInfo(@"completed %@", THIS_METHOD);
            NSData *data = (NSData *)response;
-           NSString *rawString = [[NSString alloc] initWithData:data encoding:NSWindowsCP1252StringEncoding];
+           NSString *rawString = [[NSString alloc] initWithData:data encoding:NSISOLatin1StringEncoding];
            NSData *converted = [rawString dataUsingEncoding:NSUTF8StringEncoding];
            TFHpple *base = [[TFHpple alloc] initWithHTMLData:converted];
            
@@ -391,7 +391,7 @@ QuotePostContent,
        success:^(AFHTTPRequestOperation *operation, id response) {
            NetworkLogInfo(@"completed %@", THIS_METHOD);
            NSData *data = (NSData *)response;
-           NSString *rawString = [[NSString alloc] initWithData:data encoding:NSWindowsCP1252StringEncoding];
+           NSString *rawString = [[NSString alloc] initWithData:data encoding:NSISOLatin1StringEncoding];
            NSData *converted = [rawString dataUsingEncoding:NSUTF8StringEncoding];
            TFHpple *pageData = [[TFHpple alloc] initWithHTMLData:converted];
            
