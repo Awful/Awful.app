@@ -104,7 +104,7 @@
         [self removeGestureRecognizer:[self.gestureRecognizers objectAtIndex:0]];
     
 	switch (aState + onLastPage) {
-		case AwfulPullForActionStateRelease:
+		/*case AwfulPullForActionStateRelease:
 			
 			self.textLabel.text = @"Release for next page...";
             self.detailTextLabel.text = @"Pull down to cancel";
@@ -115,7 +115,7 @@
              //];
 			
 			break;
-            
+         */   
                         
 		case AwfulPullForActionStateLoading:
 			self.textLabel.text = @"Loading...";
@@ -159,14 +159,14 @@
             
             
             
-        case AwfulPullForActionStateRelease + AwfulPullForActionOnLastPage:
+        /*case AwfulPullForActionStateRelease + AwfulPullForActionOnLastPage:
             self.textLabel.text = @"Release to refresh...";
             self.detailTextLabel.text = @"Pull down to cancel";
             self.accessoryView.hidden = YES;
             [self.activityView stopAnimating];
             self.imageView.hidden = NO;
             break;
-            
+         */
             
         case AwfulPullForActionStatePulling + AwfulPullForActionOnLastPage:
             self.textLabel.text = @"Pull up to refresh";

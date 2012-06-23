@@ -109,16 +109,34 @@
     
     //Header Loading
     if (scrollAmount < headerThreshhold) {
-        NSLog(@"header release");
-        self.headerState = AwfulPullForActionStateRelease;
+        NSLog(@"header load");
+        self.headerState = AwfulPullForActionStateLoading;
+        [self setSwipeCanCancel:self.headerView];
+		UIEdgeInsets inset = UIEdgeInsetsMake(self.headerView.fsH, 0.0f, 0.0f, 0.0f);
+        
+        [UIView animateWithDuration:.2 animations:^{
+            self.scrollView.contentInset = inset;
+        }
+         ];
+        
+        [self.delegate didPullHeader:self.headerView];
         return;
     }
     
     
     //Footer Loading
     if (scrollAmount > footerThreshhold) {
-        NSLog(@"footer release");
-        self.footerState = AwfulPullForActionStateRelease;
+        NSLog(@"footer load");
+        self.footerState = AwfulPullForActionStateLoading;
+        [self setSwipeCanCancel:self.footerView];
+		UIEdgeInsets inset = UIEdgeInsetsMake(0.0f, 0.0f, self.footerView.fsH, 0.0f);
+        
+        [UIView animateWithDuration:.2 animations:^{
+            self.scrollView.contentInset = inset;
+        }
+         ];
+        
+        [self.delegate didPullFooter:self.footerView];
 
         return;
     }
@@ -130,7 +148,7 @@
 -(void) scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     self.userScrolling = YES;
 }
-
+/*
 -(void) scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate 
 {
     self.userScrolling = NO;
@@ -164,6 +182,7 @@
     if ([self.delegate respondsToSelector:@selector(scrollViewDidEndDragging:willDecelerate:)])
         [self.delegate scrollViewDidEndDragging:scrollView willDecelerate:decelerate];
 }
+ */
 
 -(void) setSwipeCanCancel:(UIView<AwfulPullForActionViewDelegate>*)view {
         UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self

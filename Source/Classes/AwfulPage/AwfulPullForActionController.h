@@ -12,7 +12,7 @@ typedef enum {
     AwfulPullForActionStatePulling,
     AwfulPullForActionStateNormal,
     AwfulPullForActionStateLoading,
-    AwfulPullForActionStateRelease
+    //AwfulPullForActionStateRelease
 } AwfulPullForActionState;
 
 @class AwfulPullForActionController;

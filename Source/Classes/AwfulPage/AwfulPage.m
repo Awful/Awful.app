@@ -500,7 +500,7 @@
 {
     self.pullForActionController.footerState = AwfulPullForActionStateLoading;
     
-    return;
+    //return;
     if(self.currentPage < self.numberOfPages) {
         self.destinationType = AwfulPageDestinationTypeSpecific;
         [self loadPageNum:self.currentPage + 1];
