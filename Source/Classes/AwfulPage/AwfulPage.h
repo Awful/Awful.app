@@ -66,8 +66,6 @@ typedef enum {
 @property (nonatomic, strong) AwfulLoadingHeaderView* loadingHeaderView;
 @property (nonatomic, strong) AwfulPullForActionController* pullForActionController;
 
-@property (nonatomic,strong) NSTimer* autoRefreshTimer;
-
 -(IBAction)hardRefresh;
 -(void)setThreadTitle : (NSString *)in_title;
 

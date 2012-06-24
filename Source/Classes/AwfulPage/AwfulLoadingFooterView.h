@@ -10,14 +10,17 @@
 #import "AwfulPullForActionController.h"
 
 typedef enum {
-    AwfulPullForActionOnLastPage = 5
+    AwfulPullForActionOnLastPage = 5,
+    AwfulPullForActionAutoF5 = 50
 } AwfulPullForActionPageState;
 
 @interface AwfulLoadingFooterView : UITableViewCell <AwfulPullForActionViewDelegate>
 
 @property (nonatomic,readwrite) BOOL onLastPage;
-@property (nonatomic,strong) IBOutlet UISwitch* autoF5;
-@property (nonatomic,strong) UIScrollView* scrollView;
+@property (nonatomic,weak) IBOutlet UISwitch* autoF5;
+//@property (nonatomic,strong) UIScrollView* scrollView;
+@property (nonatomic,strong) NSDate* loadedDate;
+@property (readonly) NSString* stringTimeIntervalSinceLoad;
 
 
 @end

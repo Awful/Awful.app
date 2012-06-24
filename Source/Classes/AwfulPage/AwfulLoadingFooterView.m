@@ -16,9 +16,10 @@
 @implementation AwfulLoadingFooterView
 @synthesize state = _state;
 @synthesize onLastPage = _onLastPage;
-@synthesize scrollView = _scrollView;
+//@synthesize scrollView = _scrollView;
 @synthesize autoF5 = _autoF5;
 @synthesize activityView = _activityView;
+@synthesize loadedDate = _loadedDate;
 
 -(id) init {
     //self = [super initWithFrame:CGRectMake(0, 0, 768, 65)];
@@ -61,6 +62,10 @@
     self.activityView.hidesWhenStopped = YES;
     [self addSubview:self.activityView];
     
+    [self.autoF5 addTarget:self 
+                          action:@selector(didSwitchAutoF5:) 
+                forControlEvents:UIControlEventValueChanged];
+    
     return self;
 }
 
@@ -89,8 +94,6 @@
         self.accessoryView.hidden = YES;
         
     }
-    
-    
 }
 
 
@@ -101,11 +104,12 @@
     
 	_state = aState;
     int onLastPage = self.onLastPage? AwfulPullForActionOnLastPage : 0;
+    int autoF5enabled = self.autoF5.on? AwfulPullForActionAutoF5 : 0;
     
     if (self.gestureRecognizers.count > 0 && aState != AwfulPullForActionStateLoading)
         [self removeGestureRecognizer:[self.gestureRecognizers objectAtIndex:0]];
     
-	switch (aState + onLastPage) {
+	switch (aState + onLastPage + autoF5enabled) {
 		/*case AwfulPullForActionStateRelease:
 			
 			self.textLabel.text = @"Release for next page...";
@@ -149,6 +153,8 @@
             self.detailTextLabel.text = @"Pull up to refresh...";
             self.accessoryView.hidden = NO;
             [self.activityView stopAnimating];
+            self.imageView.image = [UIImage imageNamed:@"sad.gif"];
+            self.imageView.hidden = NO;
             break;
             
         case AwfulPullForActionStateLoading + AwfulPullForActionOnLastPage:
@@ -159,18 +165,33 @@
             self.imageView.hidden = YES;
             break;
             
-            
-            
-        /*case AwfulPullForActionStateRelease + AwfulPullForActionOnLastPage:
-            self.textLabel.text = @"Release to refresh...";
-            self.detailTextLabel.text = @"Pull down to cancel";
-            self.accessoryView.hidden = YES;
+        case AwfulPullForActionStatePulling + AwfulPullForActionOnLastPage:
+            self.textLabel.text = @"Pull up to refresh";
+            self.detailTextLabel.text = nil;
+            self.accessoryView.hidden = NO;
             [self.activityView stopAnimating];
             self.imageView.hidden = NO;
             break;
-         */
             
-        case AwfulPullForActionStatePulling + AwfulPullForActionOnLastPage:
+            /*Customize for last page */    
+        case AwfulPullForActionStateNormal + AwfulPullForActionOnLastPage + AwfulPullForActionAutoF5:
+            self.textLabel.text = @"Auto-refreshing in [x]";
+            self.detailTextLabel.text = @"Pull up to force refresh...";
+            self.accessoryView.hidden = NO;
+            [self.activityView stopAnimating];
+            self.imageView.hidden = NO;
+            self.imageView.image = [UIImage imageNamed:@"emot-f5.gif"];
+            break;
+            
+        case AwfulPullForActionStateLoading + AwfulPullForActionOnLastPage + AwfulPullForActionAutoF5:
+            self.textLabel.text = @"Loading...";
+            self.detailTextLabel.text = @"Swipe left to cancel";
+            self.accessoryView.hidden = NO;
+            [self.activityView startAnimating];
+            self.imageView.hidden = YES;
+            break;
+            
+        case AwfulPullForActionStatePulling + AwfulPullForActionOnLastPage + AwfulPullForActionAutoF5:
             self.textLabel.text = @"Pull up to refresh";
             self.detailTextLabel.text = nil;
             self.accessoryView.hidden = NO;
@@ -180,6 +201,25 @@
 
 	}
     [self setNeedsLayout];
+}
+
+-(NSString*) stringTimeIntervalSinceLoad {
+    NSTimeInterval s = [[NSDate date] timeIntervalSinceDate:self.loadedDate];
+    int m = (int)s/60;
+    if (m == 0)
+        return @"less than a minute ago";
+    else if (m < 50)
+        return [NSString stringWithFormat:@"%i minute%@ ago", m, (m==1)? @"" : @"s"];
+    else if (m >= 50 && m <= 70)
+        return @"about an hour ago";
+    else
+        return @"over an hour ago";
+    
+    return @"???";
+}
+
+-(void) didSwitchAutoF5:(UISwitch *)switchObj {
+
 }
 
 @end

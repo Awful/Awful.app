@@ -7,6 +7,7 @@
 //
 
 #import "AwfulPullForActionController.h"
+#import "AwfulLoadingHeaderView.h"
 
 #define EXTRA_PULL_THRESHHOLD 5
 
@@ -16,6 +17,7 @@
 @synthesize footerView = _footerView;
 @synthesize delegate = _delegate;
 @synthesize userScrolling = _userScrolling;
+@synthesize autoRefreshTimer = _autoRefreshTimer;
 
 #pragma mark Setup
 -(id) initWithScrollView:(UIScrollView*)scrollView {
@@ -37,6 +39,11 @@
     footerView.frame = CGRectMake(0, self.scrollView.contentSize.height, self.scrollView.fsW, self.footerView.fsH);
     
     [self.scrollView addSubview:footerView];
+    
+    if ([footerView respondsToSelector:@selector(autoF5)])
+        [footerView.autoF5 addTarget:self 
+                        action:@selector(didSwitchAutoF5:) 
+              forControlEvents:UIControlEventValueChanged];
 }
 
 -(void) setScrollView:(UIScrollView *)scrollView {
@@ -73,7 +80,9 @@
     CGFloat scrollAmount = scrollView.contentOffset.y;
     
     CGFloat headerThreshhold = -2*self.headerView.fsH - EXTRA_PULL_THRESHHOLD;
-    CGFloat footerThreshhold = self.scrollView.contentSize.height - self.scrollView.fsH + 2*self.footerView.fsH + EXTRA_PULL_THRESHHOLD;
+    
+    int lastPageChange = self.delegate.isOnLastPage? self.footerView.fsH : 0;
+    CGFloat footerThreshhold = self.scrollView.contentSize.height - self.scrollView.fsH + 2*self.footerView.fsH + EXTRA_PULL_THRESHHOLD + lastPageChange;
     
     //check footer positioning, it got misplaced sometimes for some reason
     if (self.footerView.foY != scrollView.contentSize.height) {
@@ -100,7 +109,10 @@
     
     
     //Footer Pulling
-    if (scrollAmount > self.scrollView.contentSize.height - self.scrollView.fsH && scrollAmount <= footerThreshhold) {
+    if (scrollAmount > self.scrollView.contentSize.height - 
+        self.scrollView.fsH + 
+        (self.delegate.isOnLastPage? self.footerView.fsH : 0 )
+        && scrollAmount <= footerThreshhold) {
         //NSLog(@"footer pull");
         self.footerState = AwfulPullForActionStatePulling;
         return;
@@ -178,6 +190,29 @@
     [swipe.view removeGestureRecognizer:swipe];
 }
 
+#pragma mark auto reload
+-(void) didSwitchAutoF5:(UISwitch *)switchObj {
+    if (switchObj.on) {
+        self.autoRefreshTimer = [NSTimer scheduledTimerWithTimeInterval:20 
+                                                                 target:self
+                                                               selector:@selector(timerDidFire:)
+                                                               userInfo:nil
+                                                                repeats:YES];
+    }   
+    else {
+        [self.autoRefreshTimer invalidate];
+        self.autoRefreshTimer = nil;
+    }
+}
+
+
+-(void) timerDidFire:(NSTimer*)timer {
+    NSLog(@"timer fired");
+    [(AwfulPage*)self.delegate refresh];
+    //check if we're still on the last page
+    //if there's a new page invalidate timer, set footer as not on last page
+}
+
 #pragma mark Properties
 -(void) setFooterState:(AwfulPullForActionState)state {
     if (self.footerView.state == state) return;
@@ -189,6 +224,11 @@
         UIEdgeInsets inset = UIEdgeInsetsMake(0.0f, 0.0f, self.footerView.fsH, 0.0f);
         self.scrollViewInset = inset;
         [self.delegate didPullFooter:self.footerView];
+    }
+    
+    if (self.delegate.isOnLastPage) {
+        UIEdgeInsets inset = UIEdgeInsetsMake(0.0f, 0.0f, self.footerView.fsH, 0.0f);
+        self.scrollViewInset = inset;
     }
 }
 

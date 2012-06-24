@@ -18,10 +18,12 @@ typedef enum {
 @class AwfulPullForActionController;
 
 @protocol AwfulPullForActionViewDelegate <NSObject>
-
+@required
 @property (nonatomic) AwfulPullForActionState state;
 @property (nonatomic,strong) UIActivityIndicatorView* activityView;
 
+@optional
+@property (nonatomic, weak) UISwitch* autoF5;
 @end
 
 @protocol AwfulPullForActionDelegate <NSObject>
@@ -30,7 +32,7 @@ typedef enum {
 -(void) didPullHeader:(UIView<AwfulPullForActionViewDelegate>*)header;
 -(void) didPullFooter:(UIView<AwfulPullForActionViewDelegate>*)footer;
 -(void) didCancelPullForAction:(AwfulPullForActionController*)pullForActionController;
-
+@property (readonly) BOOL isOnLastPage;
 @end
 
 
@@ -44,6 +46,6 @@ typedef enum {
 @property (nonatomic) AwfulPullForActionState footerState;
 @property (nonatomic,strong) UIViewController<AwfulPullForActionDelegate,UIScrollViewDelegate>* delegate;
 @property (nonatomic) BOOL userScrolling;
-
+@property (nonatomic,strong) NSTimer* autoRefreshTimer;
 
 @end

@@ -64,7 +64,6 @@
 @synthesize loadingFooterView = _loadingFooterView;
 @synthesize loadingHeaderView = _loadingHeaderView;
 @synthesize pullForActionController = _pullForActionController;
-@synthesize autoRefreshTimer = _autoRefreshTimer;
 //@synthesize skipBlankingWebViewOnce = _skipBlankingWebViewOnce;
 /*
 - (BOOL)skipBlankingWebViewOnce
@@ -105,10 +104,6 @@
     
     self.loadingHeaderView = [[AwfulLoadingHeaderView alloc] initWithFrame:CGRectMake(0, 0, 100, 60)]; 
     self.loadingFooterView = [AwfulLoadingFooterView new];
-    
-    [self.loadingFooterView.autoF5 addTarget:self 
-                                      action:@selector(didSwitchAutoF5:) 
-                            forControlEvents:UIControlEventValueChanged];
     
     self.pullForActionController.headerView = self.loadingHeaderView;
     self.pullForActionController.footerView = self.loadingFooterView;
@@ -792,26 +787,6 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
--(void) didSwitchAutoF5:(UISwitch *)switchObj {
-    if (switchObj.on) {
-        self.autoRefreshTimer = [NSTimer scheduledTimerWithTimeInterval:20 
-                                                                 target:self
-                                                               selector:@selector(timerDidFire:)
-                                                               userInfo:nil
-                                                                repeats:YES];
-    }   
-    else {
-        [self.autoRefreshTimer invalidate];
-        self.autoRefreshTimer = nil;
-    }
-}
-
--(void) timerDidFire:(NSTimer*)timer {
-    NSLog(@"timer fired");
-    [self refresh];
-    //check if we're still on the last page
-    //if there's a new page invalidate timer, set footer as not on last page
-}
 
 #pragma mark Pull For Action
 -(void) didPullHeader:(UIView<AwfulPullForActionViewDelegate>*)header {
@@ -826,6 +801,10 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     [self stop];
     pullForActionController.headerState ^= AwfulPullForActionStateLoading;
     pullForActionController.footerState ^= AwfulPullForActionStateLoading;
+}
+
+-(BOOL) isOnLastPage {
+    return (self.currentPage == self.numberOfPages);
 }
 
 @end
