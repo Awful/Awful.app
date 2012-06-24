@@ -62,6 +62,7 @@
 @synthesize actionsSegmentedControl = _actionsSegmentedControl;
 @synthesize isFullScreen = _isFullScreen;
 @synthesize loadingFooterView = _loadingFooterView;
+@synthesize loadingHeaderView = _loadingHeaderView;
 @synthesize pullForActionController = _pullForActionController;
 @synthesize autoRefreshTimer = _autoRefreshTimer;
 //@synthesize skipBlankingWebViewOnce = _skipBlankingWebViewOnce;
@@ -100,13 +101,16 @@
     
 
     self.pullForActionController = [[AwfulPullForActionController alloc] initWithScrollView:self.webView.scrollView];
-    self.pullForActionController.headerView = [[AwfulLoadingHeaderView alloc] initWithFrame:CGRectMake(0, 0, 100, 60)]; 
     self.pullForActionController.delegate = self;
     
+    self.loadingHeaderView = [[AwfulLoadingHeaderView alloc] initWithFrame:CGRectMake(0, 0, 100, 60)]; 
     self.loadingFooterView = [AwfulLoadingFooterView new];
+    
     [self.loadingFooterView.autoF5 addTarget:self 
                                       action:@selector(didSwitchAutoF5:) 
                             forControlEvents:UIControlEventValueChanged];
+    
+    self.pullForActionController.headerView = self.loadingHeaderView;
     self.pullForActionController.footerView = self.loadingFooterView;
 }
 
@@ -199,6 +203,9 @@
             self.nextPageWebView.foY = self.nextPageWebView.fsH;
             [self.view addSubview:self.nextPageWebView];
         }
+        
+        self.loadingHeaderView.loadedDate = [NSDate date];
+        NSLog(@"loadedDate set to %@", self.loadingHeaderView.loadedDate);
     }
     
 }
@@ -500,7 +507,7 @@
 {
     self.pullForActionController.footerState = AwfulPullForActionStateLoading;
     
-    //return;
+    return;
     if(self.currentPage < self.numberOfPages) {
         self.destinationType = AwfulPageDestinationTypeSpecific;
         [self loadPageNum:self.currentPage + 1];

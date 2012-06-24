@@ -9,17 +9,24 @@
 #import "AwfulLoadingHeaderView.h"
 
 @implementation AwfulLoadingHeaderView
+@synthesize loadedDate = _loadedDate;
+
 -(void) setState:(AwfulPullForActionState)state {
     [super setState:state];
     
     switch (state) {
         case AwfulPullForActionStateLoading:
-            self.lastUpdatedLabel.text = @"Swipe to cancel";
+            self.lastUpdatedLabel.text = @"Swipe left to cancel";
             break;
             
         default:
-            self.lastUpdatedLabel.text = @"Updated: [date]";
+            self.lastUpdatedLabel.text = [NSString stringWithFormat:@"Updated: %@", self.loadedDate];
     }
     
+}
+
+-(void) setLoadedDate:(NSDate *)loadedDate {
+    _loadedDate = loadedDate;
+    self.lastUpdatedLabel.text = [NSString stringWithFormat:@"Updated: %@", self.loadedDate];
 }
 @end

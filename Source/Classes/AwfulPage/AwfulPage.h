@@ -25,6 +25,7 @@ typedef enum {
 @class AwfulActions;
 @class ButtonSegmentedControl;
 @class AwfulLoadingFooterView;
+@class AwfulLoadingHeaderView;
 
 @interface AwfulPage : UIViewController <AwfulWebViewDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate,AwfulPullForActionDelegate>
 {
@@ -62,10 +63,10 @@ typedef enum {
 @property (nonatomic, assign) BOOL isFullScreen;
 
 @property (nonatomic, strong) AwfulLoadingFooterView* loadingFooterView;
+@property (nonatomic, strong) AwfulLoadingHeaderView* loadingHeaderView;
 @property (nonatomic, strong) AwfulPullForActionController* pullForActionController;
 
 @property (nonatomic,strong) NSTimer* autoRefreshTimer;
-
 
 -(IBAction)hardRefresh;
 -(void)setThreadTitle : (NSString *)in_title;

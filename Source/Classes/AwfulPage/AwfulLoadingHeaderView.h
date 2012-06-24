@@ -11,4 +11,6 @@
 
 @interface AwfulLoadingHeaderView : EGORefreshTableHeaderView <AwfulPullForActionViewDelegate>
 
+@property (nonatomic,strong) NSDate* loadedDate;
+
 @end

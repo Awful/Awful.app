@@ -17,6 +17,7 @@
 @synthesize delegate = _delegate;
 @synthesize userScrolling = _userScrolling;
 
+#pragma mark Setup
 -(id) initWithScrollView:(UIScrollView*)scrollView {
     self = [super init];
     self.scrollView = scrollView;
@@ -83,7 +84,7 @@
     
     //Normal State
     if (scrollAmount >= 0 && scrollAmount <= scrollView.contentSize.height - scrollView.fsH) {
-        NSLog(@"normal");
+        //NSLog(@"normal");
         self.headerState = AwfulPullForActionStateNormal;
         self.footerState = AwfulPullForActionStateNormal;
 		//scrollView.contentInset = UIEdgeInsetsZero;
@@ -92,7 +93,7 @@
     
     //Header Pulling
     if (scrollAmount < 0 && scrollAmount >= headerThreshhold) {
-        NSLog(@"header pull");
+        //NSLog(@"header pull");
         self.headerState = AwfulPullForActionStatePulling;
         return;
     }
@@ -100,7 +101,7 @@
     
     //Footer Pulling
     if (scrollAmount > self.scrollView.contentSize.height - self.scrollView.fsH && scrollAmount <= footerThreshhold) {
-        NSLog(@"footer pull");
+        //NSLog(@"footer pull");
         self.footerState = AwfulPullForActionStatePulling;
         return;
     }
@@ -109,35 +110,16 @@
     
     //Header Loading
     if (scrollAmount < headerThreshhold) {
-        NSLog(@"header load");
+        //NSLog(@"header load");
         self.headerState = AwfulPullForActionStateLoading;
-        [self setSwipeCanCancel:self.headerView];
-		UIEdgeInsets inset = UIEdgeInsetsMake(self.headerView.fsH, 0.0f, 0.0f, 0.0f);
-        
-        [UIView animateWithDuration:.2 animations:^{
-            self.scrollView.contentInset = inset;
-        }
-         ];
-        
-        [self.delegate didPullHeader:self.headerView];
         return;
     }
     
     
     //Footer Loading
     if (scrollAmount > footerThreshhold) {
-        NSLog(@"footer load");
+        //NSLog(@"footer load");
         self.footerState = AwfulPullForActionStateLoading;
-        [self setSwipeCanCancel:self.footerView];
-		UIEdgeInsets inset = UIEdgeInsetsMake(0.0f, 0.0f, self.footerView.fsH, 0.0f);
-        
-        [UIView animateWithDuration:.2 animations:^{
-            self.scrollView.contentInset = inset;
-        }
-         ];
-        
-        [self.delegate didPullFooter:self.footerView];
-
         return;
     }
     
@@ -148,88 +130,90 @@
 -(void) scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     self.userScrolling = YES;
 }
-/*
+
 -(void) scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate 
 {
     self.userScrolling = NO;
-    CGFloat scrollAmount = scrollView.contentOffset.y;
-    
-    CGFloat headerThreshhold = -2*self.headerView.fsH - EXTRA_PULL_THRESHHOLD;
-    CGFloat footerThreshhold = scrollView.contentSize.height - scrollView.fsH + 2*self.footerView.fsH + EXTRA_PULL_THRESHHOLD;
-    
-    UIEdgeInsets inset;
-    if (scrollAmount < headerThreshhold) {
-        self.headerState = AwfulPullForActionStateLoading;
-        [self setSwipeCanCancel:self.headerView];
-		inset = UIEdgeInsetsMake(self.headerView.fsH, 0.0f, 0.0f, 0.0f);
-        [self.delegate didPullHeader:self.headerView];
-    }
-    
-    else if (scrollAmount > footerThreshhold) {
-        self.footerState = AwfulPullForActionStateLoading;
-        [self setSwipeCanCancel:self.footerView];
-		inset = UIEdgeInsetsMake(0.0f, 0.0f, self.footerView.fsH, 0.0f);
-        [self.delegate didPullFooter:self.footerView];
-    }
-    else 
-        return;
-    
-    [UIView animateWithDuration:.2 animations:^{
-		self.scrollView.contentInset = inset;
-    }
-     ];
 
     if ([self.delegate respondsToSelector:@selector(scrollViewDidEndDragging:willDecelerate:)])
         [self.delegate scrollViewDidEndDragging:scrollView willDecelerate:decelerate];
 }
- */
 
+#pragma mark Swipe to Cancel
 -(void) setSwipeCanCancel:(UIView<AwfulPullForActionViewDelegate>*)view {
-        UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self
-                                                                                    action:@selector(didSwipeToCancel:)
-                                           ];
-        
-        swipe.numberOfTouchesRequired = 1;
-        swipe.direction = (UISwipeGestureRecognizerDirectionLeft);
-        [view addGestureRecognizer:swipe];
+    UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self
+                                                                                action:@selector(didSwipeToCancel:)
+                                       ];
+    
+    swipe.numberOfTouchesRequired = 1;
+    swipe.direction = (UISwipeGestureRecognizerDirectionLeft);
+    [view addGestureRecognizer:swipe];
+    //NSLog(@"added swipe %@ to view %@", swipe, view);
 }
+
     
 -(void) didSwipeToCancel:(UISwipeGestureRecognizer*)swipe {
-    //NSLog(@"cancel");
-    [swipe.view removeGestureRecognizer:swipe];
-    [self.delegate didCancelPullForAction:self];
+    //NSLog(@"swipe cancel %@, view %@", swipe, swipe.view);
     
-    //remove inset, scroll if necessary
+    UIView<AwfulPullForActionViewDelegate>* view = (UIView<AwfulPullForActionViewDelegate>*)(swipe.view);
+    
+    [self.delegate didCancelPullForAction:self];
+    //animate view off screen to the left, following swipe direction
     [UIView animateWithDuration:.2
                      animations:^{
-                         self.scrollView.contentInset = UIEdgeInsetsZero;
+                         view.foX -= view.fsW;
+                     } 
+                     completion:^(BOOL finished) {
+                         [UIView animateWithDuration:.2
+                                          animations:^{
+                                              self.scrollView.contentInset = UIEdgeInsetsZero;
+                                          }
+                          completion:^(BOOL finished) {
+                              view.foX = 0;
+                          }
+                          ];
                      }
+         
      ];
+    [swipe.view removeGestureRecognizer:swipe];
 }
 
+#pragma mark Properties
 -(void) setFooterState:(AwfulPullForActionState)state {
     self.footerView.state = state;
     
     //if loading, set inset and scroll
-    if (state == AwfulPullForActionStateLoading)
-        [self.scrollView setContentOffset:CGPointMake(0,self.scrollView.contentSize.height-
-                                                      self.scrollView.fsH+
-                                                      self.footerView.fsH) 
-                                 animated:YES];
-    
-    //otherwise remove inset, maybe scroll?
-    //might not be necessary since webview is getting replaced
+    if (state == AwfulPullForActionStateLoading) {
+        [self setSwipeCanCancel:self.footerView];
+        UIEdgeInsets inset = UIEdgeInsetsMake(0.0f, 0.0f, self.footerView.fsH, 0.0f);
+        self.scrollViewInset = inset;
+        //[self.delegate didPullFooter:self.footerView];
+    }
 }
 
 -(void) setHeaderState:(AwfulPullForActionState)state {
     self.headerView.state = state;
     
-    //set inset, scroll to top to show
-    if (self.headerState == AwfulPullForActionStateLoading)
-        [self.scrollView setContentOffset:CGPointMake(0,-self.footerView.fsH) 
-                                 animated:YES];
+    if (self.headerState == AwfulPullForActionStateLoading) {
+        [self setSwipeCanCancel:self.headerView];
+        UIEdgeInsets inset = UIEdgeInsetsMake(self.headerView.fsH, 0.0f, 0.0f, 0.0f);
+        self.scrollViewInset = inset;
+        //[self.delegate didPullHeader:self.headerView];
+    }
+}
+
+-(void) setScrollViewInset:(UIEdgeInsets)inset {
     
-    //clear inset
+    self.scrollView.userInteractionEnabled = NO;
+    [UIView animateWithDuration:.2 
+                     animations:^{
+                         self.scrollView.contentInset = inset;
+                     }
+                     completion:^(BOOL finished) {
+                         self.scrollView.userInteractionEnabled = YES;
+                     }
+     ];
+
 }
 
 -(AwfulPullForActionState) footerState {
