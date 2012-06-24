@@ -180,6 +180,7 @@
 
 #pragma mark Properties
 -(void) setFooterState:(AwfulPullForActionState)state {
+    if (self.footerView.state == state) return;
     self.footerView.state = state;
     
     //if loading, set inset and scroll
@@ -187,7 +188,7 @@
         [self setSwipeCanCancel:self.footerView];
         UIEdgeInsets inset = UIEdgeInsetsMake(0.0f, 0.0f, self.footerView.fsH, 0.0f);
         self.scrollViewInset = inset;
-        //[self.delegate didPullFooter:self.footerView];
+        [self.delegate didPullFooter:self.footerView];
     }
 }
 
@@ -198,7 +199,7 @@
         [self setSwipeCanCancel:self.headerView];
         UIEdgeInsets inset = UIEdgeInsetsMake(self.headerView.fsH, 0.0f, 0.0f, 0.0f);
         self.scrollViewInset = inset;
-        //[self.delegate didPullHeader:self.headerView];
+        [self.delegate didPullHeader:self.headerView];
     }
 }
 

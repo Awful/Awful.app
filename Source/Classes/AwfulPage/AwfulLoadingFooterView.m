@@ -97,6 +97,8 @@
 
 - (void)setState:(AwfulPullForActionState)aState
 {
+    if (_state == aState) return;
+    
 	_state = aState;
     int onLastPage = self.onLastPage? AwfulPullForActionOnLastPage : 0;
     
