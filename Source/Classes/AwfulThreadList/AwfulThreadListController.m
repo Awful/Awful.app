@@ -74,17 +74,9 @@ typedef enum {
             [self.splitViewController prepareForSegue:segue sender:sender];
         }
         
-    AwfulThreadCell *cell = (AwfulThreadCell*)sender;
-    UIActivityIndicatorView *act = [[UIActivityIndicatorView alloc] 
-                                    initWithActivityIndicatorStyle:(UIActivityIndicatorViewStyleGray)
-                                    ];
-    cell.accessoryView = act;
-    [act startAnimating];
+        [[NSNotificationCenter defaultCenter] postNotificationName:AwfulPageWillLoadNotification
+                                                            object:[self getThreadAtIndexPath:selected]];
 
-    [[NSNotificationCenter defaultCenter] addObserver:cell
-                                             selector:@selector(didLoadThreadPage)
-                                                 name:AwfulPageDidLoadNotification 
-                                               object:page];
         
     }
 }

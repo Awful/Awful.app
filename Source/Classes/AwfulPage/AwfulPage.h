@@ -13,7 +13,8 @@
 #import "AwfulPullForActionController.h"
 #import "AwfulWebViewDelegate.h"
 
-static NSString * const AwfulPageDidLoadNotification = @"com.regularberry.awful.notification.pageLoad";
+static NSString * const AwfulPageWillLoadNotification = @"com.regularberry.awful.notification.pageWillLoad";
+static NSString * const AwfulPageDidLoadNotification = @"com.regularberry.awful.notification.pageDidLoad";
 
 typedef enum {
     AwfulPageDestinationTypeFirst,

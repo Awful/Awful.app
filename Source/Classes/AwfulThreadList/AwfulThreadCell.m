@@ -159,6 +159,16 @@
             [self.contentView addSubview:self.sticky];
         }
     }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(willLoadThreadPage:)
+                                                 name:AwfulPageWillLoadNotification 
+                                               object:thread];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didLoadThreadPage:)
+                                                 name:AwfulPageDidLoadNotification 
+                                               object:thread];
 }
 
 -(UIColor *)getBackgroundColorForThread : (AwfulThread *)thread
@@ -187,7 +197,19 @@
     }
 }
 
--(void) didLoadThreadPage {
+-(void) willLoadThreadPage:(NSNotification*)notification {
+    AwfulThread *thread = notification.object;
+    if (thread.threadID.intValue != self.thread.threadID.intValue) return;
+    UIActivityIndicatorView *act = [[UIActivityIndicatorView alloc] 
+                                    initWithActivityIndicatorStyle:(UIActivityIndicatorViewStyleGray)
+                                    ];
+    self.accessoryView = act;
+    [act startAnimating];
+}
+
+-(void) didLoadThreadPage:(NSNotification*)notification {
+    AwfulThread *thread = notification.object;
+    if (thread.threadID.intValue != self.thread.threadID.intValue) return;
     self.accessoryView = nil;
 }
 

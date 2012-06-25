@@ -206,7 +206,7 @@
         
         
         [[NSNotificationCenter defaultCenter] postNotificationName:AwfulPageDidLoadNotification
-                                                            object:self];
+                                                            object:self.thread];
     }
     
 }
