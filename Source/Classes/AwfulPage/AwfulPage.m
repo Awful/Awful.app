@@ -29,6 +29,7 @@
 #import "AwfulLoadingHeaderView.h"
 #import "AwfulPage+Transitions.h"
 #import "AwfulWebViewDelegate.h"
+#import "AwfulThreadTitleView.h"
 
 @interface AwfulPage () <AwfulWebViewDelegate, UIGestureRecognizerDelegate>
 
@@ -107,6 +108,7 @@
     
     self.pullForActionController.headerView = self.loadingHeaderView;
     self.pullForActionController.footerView = self.loadingFooterView;
+    
 }
 
 - (AwfulThread *) thread
@@ -131,7 +133,7 @@
         if(_thread.title != nil) {
             UILabel *lab = (UILabel *)self.navigationItem.titleView;
             lab.text = self.thread.title;
-                //NSLog(@"title width %f", self.navigationItem.titleView.frame.size.width);
+           //self.navigationItem.titleView = [AwfulThreadTitleView threadTitleViewWithPage:self];
         }
         
         if([_thread.totalUnreadPosts intValue] == -1) {
@@ -201,6 +203,10 @@
         
         self.loadingHeaderView.loadedDate = [NSDate date];
         NSLog(@"loadedDate set to %@", self.loadingHeaderView.loadedDate);
+        
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:AwfulPageDidLoadNotification
+                                                            object:self];
     }
     
 }
@@ -221,6 +227,8 @@
 {
     AwfulThread *mythread = self.thread;
     mythread.title = title;
+    
+    //self.navigationItem.titleView = [AwfulThreadTitleView threadTitleViewWithPage:self];
     UILabel *lab = (UILabel *)self.navigationItem.titleView;
     lab.text = title;
     lab.adjustsFontSizeToFitWidth = YES;

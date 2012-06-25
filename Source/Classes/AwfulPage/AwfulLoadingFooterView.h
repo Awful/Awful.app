@@ -17,10 +17,9 @@ typedef enum {
 @interface AwfulLoadingFooterView : UITableViewCell <AwfulPullForActionViewDelegate>
 
 @property (nonatomic,readwrite) BOOL onLastPage;
-@property (nonatomic,weak) IBOutlet UISwitch* autoF5;
+@property (nonatomic,strong) UISwitch* autoF5;
 //@property (nonatomic,strong) UIScrollView* scrollView;
 @property (nonatomic,strong) NSDate* loadedDate;
 @property (readonly) NSString* stringTimeIntervalSinceLoad;
-
 
 @end

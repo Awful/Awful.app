@@ -23,7 +23,7 @@ typedef enum {
 @property (nonatomic,strong) UIActivityIndicatorView* activityView;
 
 @optional
-@property (nonatomic, weak) UISwitch* autoF5;
+@property (nonatomic, strong) UISwitch* autoF5;
 @end
 
 @protocol AwfulPullForActionDelegate <NSObject>

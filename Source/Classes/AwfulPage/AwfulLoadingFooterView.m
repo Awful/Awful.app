@@ -61,11 +61,11 @@
     self.activityView = [UIActivityIndicatorView new];
     self.activityView.hidesWhenStopped = YES;
     [self addSubview:self.activityView];
-    
+    /*
     [self.autoF5 addTarget:self 
                           action:@selector(didSwitchAutoF5:) 
                 forControlEvents:UIControlEventValueChanged];
-    
+    */
     return self;
 }
 
@@ -85,7 +85,7 @@
 
 -(void) setOnLastPage:(BOOL)onLastPage {
     _onLastPage = onLastPage;
-    
+
     if (onLastPage) {
         self.accessoryView.hidden = NO;
     }
@@ -110,19 +110,14 @@
         [self removeGestureRecognizer:[self.gestureRecognizers objectAtIndex:0]];
     
 	switch (aState + onLastPage + autoF5enabled) {
-		/*case AwfulPullForActionStateRelease:
-			
-			self.textLabel.text = @"Release for next page...";
-            self.detailTextLabel.text = @"Pull down to cancel";
-            //[UIView animateWithDuration:.3
-            //                 animations:^{
-                                 self.imageView.transform = CGAffineTransformMakeRotation(0);
-             //                }
-             //];
-			
+		case AwfulPullForActionStateNormal:
+        case AwfulPullForActionStatePulling:
+            self.textLabel.text = (@"Pull up for next page...");
+            self.detailTextLabel.text = @"Go to page X of Y";
+            [self.activityView stopAnimating];
+            self.imageView.hidden = NO;          
 			break;
-         */   
-                        
+            
 		case AwfulPullForActionStateLoading:
 			self.textLabel.text = @"Loading...";
             self.detailTextLabel.text = @"Swipe left to cancel";
@@ -130,37 +125,23 @@
 			[self.activityView startAnimating];
 			return;
 			break;
-            
-		case AwfulPullForActionStateNormal:
-        case AwfulPullForActionStatePulling:
-            self.textLabel.text = (@"Pull up for next page...");
-            self.detailTextLabel.text = @"Go to page X of Y";
-            [self.activityView stopAnimating];
-            self.imageView.hidden = NO;
-                //this animation caused a crash when case ...Loading: was after it
-                //dont know wtf
-                //[UIView animateWithDuration:.3
-                 //                animations:^{
-                 //                    self.imageView.transform = CGAffineTransformMakeRotation(M_PI);
-                 //                }
-                // ];            
-			break;
 
             
         /*Customize for last page */    
         case AwfulPullForActionStateNormal + AwfulPullForActionOnLastPage:
             self.textLabel.text = @"End of the Thread";
             self.detailTextLabel.text = @"Pull up to refresh...";
+            NSLog(@"%@",self.accessoryView);
             self.accessoryView.hidden = NO;
             [self.activityView stopAnimating];
-            self.imageView.image = [UIImage imageNamed:@"sad.gif"];
+            self.imageView.image = [UIImage imageNamed:@"frown.gif"];
             self.imageView.hidden = NO;
             break;
             
         case AwfulPullForActionStateLoading + AwfulPullForActionOnLastPage:
             self.textLabel.text = @"Loading...";
             self.detailTextLabel.text = @"Swipe left to cancel";
-            self.accessoryView.hidden = YES;
+            self.accessoryView.hidden = NO;
             [self.activityView startAnimating];
             self.imageView.hidden = YES;
             break;
@@ -173,9 +154,10 @@
             self.imageView.hidden = NO;
             break;
             
-            /*Customize for last page */    
+            /*Customize for last page and autorefreshing */    
         case AwfulPullForActionStateNormal + AwfulPullForActionOnLastPage + AwfulPullForActionAutoF5:
-            self.textLabel.text = @"Auto-refreshing in [x]";
+        case AwfulPullForActionStatePulling + AwfulPullForActionOnLastPage + AwfulPullForActionAutoF5:
+            self.textLabel.text = @"Auto-refreshing every minute";
             self.detailTextLabel.text = @"Pull up to force refresh...";
             self.accessoryView.hidden = NO;
             [self.activityView stopAnimating];
@@ -190,15 +172,6 @@
             [self.activityView startAnimating];
             self.imageView.hidden = YES;
             break;
-            
-        case AwfulPullForActionStatePulling + AwfulPullForActionOnLastPage + AwfulPullForActionAutoF5:
-            self.textLabel.text = @"Pull up to refresh";
-            self.detailTextLabel.text = nil;
-            self.accessoryView.hidden = NO;
-            [self.activityView stopAnimating];
-            self.imageView.hidden = NO;
-            break;
-
 	}
     [self setNeedsLayout];
 }

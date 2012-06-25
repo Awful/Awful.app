@@ -209,8 +209,6 @@
 -(void) timerDidFire:(NSTimer*)timer {
     NSLog(@"timer fired");
     [(AwfulPage*)self.delegate refresh];
-    //check if we're still on the last page
-    //if there's a new page invalidate timer, set footer as not on last page
 }
 
 #pragma mark Properties

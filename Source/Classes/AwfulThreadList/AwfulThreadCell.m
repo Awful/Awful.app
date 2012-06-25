@@ -187,6 +187,10 @@
     }
 }
 
+-(void) didLoadThreadPage {
+    self.accessoryView = nil;
+}
+
 @end
 
 @implementation AwfulLoadingThreadCell

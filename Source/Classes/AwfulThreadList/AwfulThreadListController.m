@@ -73,6 +73,19 @@ typedef enum {
         {
             [self.splitViewController prepareForSegue:segue sender:sender];
         }
+        
+    AwfulThreadCell *cell = (AwfulThreadCell*)sender;
+    UIActivityIndicatorView *act = [[UIActivityIndicatorView alloc] 
+                                    initWithActivityIndicatorStyle:(UIActivityIndicatorViewStyleGray)
+                                    ];
+    cell.accessoryView = act;
+    [act startAnimating];
+
+    [[NSNotificationCenter defaultCenter] addObserver:cell
+                                             selector:@selector(didLoadThreadPage)
+                                                 name:AwfulPageDidLoadNotification 
+                                               object:page];
+        
     }
 }
 
@@ -353,7 +366,8 @@ typedef enum {
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
         [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
     } else {
-        [self performSegueWithIdentifier:@"AwfulPage" sender:nil];
+        [self performSegueWithIdentifier:@"AwfulPage" 
+                                  sender:[self.tableView cellForRowAtIndexPath:indexPath]];
     }
 }
 
