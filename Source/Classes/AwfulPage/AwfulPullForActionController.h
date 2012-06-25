@@ -16,6 +16,7 @@ typedef enum {
 } AwfulPullForActionState;
 
 @class AwfulPullForActionController;
+@class SRRefreshView;
 
 @protocol AwfulPullForActionViewDelegate <NSObject>
 @required
@@ -47,5 +48,6 @@ typedef enum {
 @property (nonatomic,strong) UIViewController<AwfulPullForActionDelegate,UIScrollViewDelegate>* delegate;
 @property (nonatomic) BOOL userScrolling;
 @property (nonatomic,strong) NSTimer* autoRefreshTimer;
+@property (nonatomic,strong) SRRefreshView* test;
 
 @end

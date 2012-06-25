@@ -8,6 +8,7 @@
 
 #import "AwfulPullForActionController.h"
 #import "AwfulLoadingHeaderView.h"
+#import "SRRefreshView.h"
 
 #define EXTRA_PULL_THRESHHOLD 5
 
@@ -18,6 +19,7 @@
 @synthesize delegate = _delegate;
 @synthesize userScrolling = _userScrolling;
 @synthesize autoRefreshTimer = _autoRefreshTimer;
+@synthesize test = _test;
 
 #pragma mark Setup
 -(id) initWithScrollView:(UIScrollView*)scrollView {
@@ -29,9 +31,14 @@
 }
 
 -(void) setHeaderView:(UIView<AwfulPullForActionViewDelegate> *)headerView {
+    self.test = [[SRRefreshView alloc] initWithFrame:CGRectMake(0, 0, 320, 100)];
+    self.test.delegate = self;
+    self.test.scrollView = _scrollView;
+    [_scrollView addSubview:self.test];
     _headerView = headerView;
+    
     headerView.frame = CGRectMake(0, -headerView.fsH, self.scrollView.fsW, headerView.fsH);
-    [self.scrollView addSubview:headerView];
+    //[self.scrollView addSubview:headerView];
 }
 
 -(void) setFooterView:(UIView<AwfulPullForActionViewDelegate> *)footerView {
@@ -76,6 +83,8 @@
     if (self.headerState == AwfulPullForActionStateLoading || 
         self.footerState == AwfulPullForActionStateLoading)
         return;
+    
+    [self.test scrollViewDidScroll];
     
     CGFloat scrollAmount = scrollView.contentOffset.y;
     
@@ -146,6 +155,8 @@
 -(void) scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate 
 {
     self.userScrolling = NO;
+    
+    [self.test scrollViewDidEndDraging];
 
     if ([self.delegate respondsToSelector:@selector(scrollViewDidEndDragging:willDecelerate:)])
         [self.delegate scrollViewDidEndDragging:scrollView willDecelerate:decelerate];
