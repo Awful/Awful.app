@@ -31,6 +31,7 @@
 @synthesize tagLabel = _tagLabel;
 @synthesize tagContainerView = _tagContainerView;
 
+
 -(id)initWithCoder:(NSCoder *)aDecoder
 {
     if((self=[super initWithCoder:aDecoder])) {
@@ -50,6 +51,43 @@
     }
 }
 
+-(void) layoutSubviews {
+    [super layoutSubviews];
+    if(self.ratingImage.hidden) {
+        self.tagContainerView.center = CGPointMake(self.tagContainerView.center.x, self.contentView.center.y);
+        
+    } else {
+        CGRect frame = self.tagContainerView.frame;
+        frame.origin.y = 5;
+        self.tagContainerView.frame = frame;
+    } 
+    
+    float goal_width = self.frame.size.width-130;
+    float title_xpos = 60;
+    
+    
+    // size and positioning of labels   
+    CGSize title_size = [self.thread.title sizeWithFont:self.threadTitleLabel.font constrainedToSize:CGSizeMake(goal_width, 60)];
+    
+    float y_pos = (THREAD_HEIGHT - title_size.height)/2 - 4;
+    self.threadTitleLabel.frame = CGRectMake(title_xpos, y_pos, title_size.width, title_size.height);
+    
+    self.pagesLabel.frame = CGRectMake(title_xpos, CGRectGetMaxY(self.threadTitleLabel.frame)+2, self.pagesLabel.frame.size.width, 10);
+    
+    [self.unreadButton removeFromSuperview];
+    
+    [self.sticky removeFromSuperview];
+    if(self.thread.stickyIndex.integerValue != NSNotFound) {  
+        CGRect refRect = self.tagContainerView.frame;
+        if(self.tagImage.hidden == NO) {
+            float x = refRect.origin.x + refRect.size.width - self.sticky.frame.size.width + 1;
+            float y = refRect.origin.y + refRect.size.height - self.sticky.frame.size.height + 1;
+            self.sticky.frame = CGRectMake(x, y, self.sticky.frame.size.width, self.sticky.frame.size.height);
+            [self.contentView addSubview:self.sticky];
+        }
+    }
+}
+
 -(void)configureForThread:(AwfulThread *)thread
 {
     self.thread = thread;
@@ -57,6 +95,74 @@
     
     [self.tagLabel removeFromSuperview];
     
+    [self configureTagImage];
+        
+    
+    double rating = self.thread.threadRating.doubleValue;
+    
+    if (rating > 0) {
+        int ratingImageNum;
+        if (rating < 1.5)
+            ratingImageNum = 1;
+        
+        else if (rating < 2.5)
+            ratingImageNum = 2;
+        
+        else if (rating < 3.5)
+            ratingImageNum = 3;
+        
+        else if (rating < 4.5)
+            ratingImageNum = 4;
+        
+        else 
+            ratingImageNum = 5;
+        
+        
+        self.ratingImage.hidden = NO;
+        self.ratingImage.image = [UIImage imageNamed:[NSString stringWithFormat:@"rating%i.png", ratingImageNum]];
+    }
+    else 
+        self.ratingImage.hidden = YES;
+    
+    if([thread.threadRating integerValue] == NSNotFound || [thread.threadRating intValue] == -1) {
+        self.ratingImage.hidden = YES;
+    } else {
+        if([thread.threadRating integerValue] <= 5) {
+            
+        } else {
+            self.ratingImage.hidden = YES;
+        }
+    }
+
+
+    
+    if([thread.isLocked boolValue]) {
+        self.contentView.alpha = 0.5;
+    } else {
+        self.contentView.alpha = 1.0;
+    }
+    
+    // Content
+    int posts_per_page = [AwfulUser currentUser].postsPerPageValue;
+    int total_pages = (([thread.totalReplies intValue]-1)/posts_per_page) + 1;
+    self.pagesLabel.text = [NSString stringWithFormat:@"Pages: %d, Killed by %@", total_pages, thread.lastPostAuthorName];
+    
+    NSString *unread_str = [NSString stringWithFormat:@"%@", thread.totalUnreadPosts];
+    
+    if (thread.totalUnreadPosts.intValue >= 0) {
+        self.badgeString = unread_str;
+        self.badgeColor = [UIColor colorWithRed:0 green:.4 blue:.6 alpha:1];
+    }
+
+    self.threadTitleLabel.text = thread.title;
+    
+
+    
+
+
+}
+
+-(void) configureTagImage {
     NSURL *tag_url = [self.thread firstIconURL];
     if(tag_url != nil) {
         [self.tagImage setImage:[UIImage imageNamed:[tag_url lastPathComponent]]];
@@ -78,87 +184,6 @@
     [self.tagContainerView.layer setBorderWidth:1.0];
     
     self.secondTagImage.hidden = YES;
-    if(self.tagImage.hidden == NO) {
-        NSURL *second_url = [self.thread secondIconURL];
-        if(second_url != nil) {
-            self.secondTagImage.hidden = NO;
-            [self.secondTagImage setImage:[UIImage imageNamed:[second_url lastPathComponent]]];
-        }
-    }
-    
-    if([thread.threadRating integerValue] == NSNotFound || [thread.threadRating intValue] == -1) {
-        self.ratingImage.hidden = YES;
-    } else {
-        self.ratingImage.hidden = NO;
-        if([thread.threadRating integerValue] <= 5) {
-            [self.ratingImage setImage:[UIImage imageNamed:[NSString stringWithFormat:@"rating%@.png", thread.threadRating]]];
-        } else {
-            self.ratingImage.hidden = YES;
-        }
-    }
-    
-    if(self.ratingImage.hidden) {
-        self.tagContainerView.center = CGPointMake(self.tagContainerView.center.x, self.contentView.center.y);
-        
-    } else {
-        CGRect frame = self.tagContainerView.frame;
-        frame.origin.y = 5;
-        self.tagContainerView.frame = frame;
-    }
-    //self.secondTagImage.frame = CGRectMake(self.tagImage.frame.origin.x-1, self.tagImage.frame.origin.y-1, self.secondTagImage.frame.size.width, self.secondTagImage.frame.size.height);
-    
-    if([thread.isLocked boolValue]) {
-        self.contentView.alpha = 0.5;
-    } else {
-        self.contentView.alpha = 1.0;
-    }
-    
-    // Content
-    int posts_per_page = [AwfulUser currentUser].postsPerPageValue;
-    int total_pages = (([thread.totalReplies intValue]-1)/posts_per_page) + 1;
-    self.pagesLabel.text = [NSString stringWithFormat:@"Pages: %d, Killed by %@", total_pages, thread.lastPostAuthorName];
-    
-    NSString *unread_str = [NSString stringWithFormat:@"%@", thread.totalUnreadPosts];
-    [self.unreadButton setTitle:unread_str forState:UIControlStateNormal];
-    
-    self.threadTitleLabel.text = thread.title;
-    
-    self.unreadButton.hidden = NO;
-    self.unreadButton.alpha = 1.0;
-    
-    float goal_width = self.frame.size.width-130;
-    float title_xpos = 60;
-    
-    if([thread.totalUnreadPosts intValue] == -1) {
-        self.unreadButton.hidden = YES;
-        goal_width += 60;
-    } else if([thread.totalUnreadPosts intValue] == 0) {
-        [self.unreadButton setTitle:@"0" forState:UIControlStateNormal];
-        self.unreadButton.alpha = 0.5;
-    }
-    
-    // size and positioning of labels   
-    CGSize title_size = [thread.title sizeWithFont:self.threadTitleLabel.font constrainedToSize:CGSizeMake(goal_width, 60)];
-    
-    float y_pos = (THREAD_HEIGHT - title_size.height)/2 - 4;
-    self.threadTitleLabel.frame = CGRectMake(title_xpos, y_pos, title_size.width, title_size.height);
-    
-    CGSize unread_size = [unread_str sizeWithFont:self.unreadButton.titleLabel.font];
-    float unread_x = self.frame.size.width-30-unread_size.width;
-    self.unreadButton.frame = CGRectMake(unread_x, THREAD_HEIGHT/2 - 10, unread_size.width+20, 20);
-    
-    self.pagesLabel.frame = CGRectMake(title_xpos, CGRectGetMaxY(self.threadTitleLabel.frame)+2, self.pagesLabel.frame.size.width, 10);
-    
-    [self.sticky removeFromSuperview];
-    if([[thread stickyIndex] integerValue] != NSNotFound) {  
-        CGRect refRect = self.tagContainerView.frame;
-        if(self.tagImage.hidden == NO) {
-            float x = refRect.origin.x + refRect.size.width - self.sticky.frame.size.width + 1;
-            float y = refRect.origin.y + refRect.size.height - self.sticky.frame.size.height + 1;
-            self.sticky.frame = CGRectMake(x, y, self.sticky.frame.size.width, self.sticky.frame.size.height);
-            [self.contentView addSubview:self.sticky];
-        }
-    }
 }
 
 -(UIColor *)getBackgroundColorForThread : (AwfulThread *)thread

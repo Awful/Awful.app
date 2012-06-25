@@ -474,6 +474,24 @@
 		50A8B96F1541D57E0065F3D9 /* ReplyButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A8B96A1541D57E0065F3D9 /* ReplyButton.png */; };
 		50A8B9701541D57E0065F3D9 /* singlePageMovement.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A8B96B1541D57E0065F3D9 /* singlePageMovement.png */; };
 		50A8B9711541D57E0065F3D9 /* ThreadActions.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A8B96C1541D57E0065F3D9 /* ThreadActions.png */; };
+		8C8B224315935AC4003C50AB /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C8B224215935AC4003C50AB /* CoreImage.framework */; };
+		8C9A1B361582718D00BD28BB /* TDBadgedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C9A1B351582718D00BD28BB /* TDBadgedCell.m */; };
+		8CFC22AB15813EC900B26904 /* AwfulCustomForums.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFC22A615813EC900B26904 /* AwfulCustomForums.m */; };
+		8CFC22AC15813EC900B26904 /* AwfulFYADThreadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFC22A815813EC900B26904 /* AwfulFYADThreadCell.m */; };
+		8CFC22AD15813EC900B26904 /* AwfulYOSPOSThreadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFC22AA15813EC900B26904 /* AwfulYOSPOSThreadCell.m */; };
+		8CFC22B01581403C00B26904 /* AwfulFilmDumpThreadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFC22AF1581403B00B26904 /* AwfulFilmDumpThreadCell.m */; };
+		8CFC22B31581404E00B26904 /* AwfulAskTellThreadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFC22B21581404E00B26904 /* AwfulAskTellThreadCell.m */; };
+		8CFC22C01581414500B26904 /* 0.0stars.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CFC22B51581414500B26904 /* 0.0stars.png */; };
+		8CFC22C11581414500B26904 /* 0.5stars.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CFC22B61581414500B26904 /* 0.5stars.png */; };
+		8CFC22C21581414500B26904 /* 1.0stars.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CFC22B71581414500B26904 /* 1.0stars.png */; };
+		8CFC22C31581414500B26904 /* 1.5stars.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CFC22B81581414500B26904 /* 1.5stars.png */; };
+		8CFC22C41581414500B26904 /* 2.0stars.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CFC22B91581414500B26904 /* 2.0stars.png */; };
+		8CFC22C51581414500B26904 /* 2.5stars.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CFC22BA1581414500B26904 /* 2.5stars.png */; };
+		8CFC22C61581414500B26904 /* 3.0stars.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CFC22BB1581414500B26904 /* 3.0stars.png */; };
+		8CFC22C71581414500B26904 /* 3.5stars.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CFC22BC1581414500B26904 /* 3.5stars.png */; };
+		8CFC22C81581414500B26904 /* 4.0stars.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CFC22BD1581414500B26904 /* 4.0stars.png */; };
+		8CFC22C91581414500B26904 /* 4.5stars.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CFC22BE1581414500B26904 /* 4.5stars.png */; };
+		8CFC22CA1581414500B26904 /* 5.0stars.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CFC22BF1581414500B26904 /* 5.0stars.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -1041,6 +1059,31 @@
 		50A8B96A1541D57E0065F3D9 /* ReplyButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ReplyButton.png; path = images/help/ReplyButton.png; sourceTree = "<group>"; };
 		50A8B96B1541D57E0065F3D9 /* singlePageMovement.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = singlePageMovement.png; path = images/help/singlePageMovement.png; sourceTree = "<group>"; };
 		50A8B96C1541D57E0065F3D9 /* ThreadActions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ThreadActions.png; path = images/help/ThreadActions.png; sourceTree = "<group>"; };
+		8C8B224215935AC4003C50AB /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
+		8C9A1B341582718D00BD28BB /* TDBadgedCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDBadgedCell.h; sourceTree = "<group>"; };
+		8C9A1B351582718D00BD28BB /* TDBadgedCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDBadgedCell.m; sourceTree = "<group>"; };
+		8CD02CF01588176000C5D69C /* Model 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 2.xcdatamodel"; sourceTree = "<group>"; };
+		8CFC22A515813EC900B26904 /* AwfulCustomForums.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCustomForums.h; sourceTree = "<group>"; };
+		8CFC22A615813EC900B26904 /* AwfulCustomForums.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCustomForums.m; sourceTree = "<group>"; };
+		8CFC22A715813EC900B26904 /* AwfulFYADThreadCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFYADThreadCell.h; sourceTree = "<group>"; };
+		8CFC22A815813EC900B26904 /* AwfulFYADThreadCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulFYADThreadCell.m; sourceTree = "<group>"; };
+		8CFC22A915813EC900B26904 /* AwfulYOSPOSThreadCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulYOSPOSThreadCell.h; sourceTree = "<group>"; };
+		8CFC22AA15813EC900B26904 /* AwfulYOSPOSThreadCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulYOSPOSThreadCell.m; sourceTree = "<group>"; };
+		8CFC22AE1581403B00B26904 /* AwfulFilmDumpThreadCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFilmDumpThreadCell.h; sourceTree = "<group>"; };
+		8CFC22AF1581403B00B26904 /* AwfulFilmDumpThreadCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulFilmDumpThreadCell.m; sourceTree = "<group>"; };
+		8CFC22B11581404D00B26904 /* AwfulAskTellThreadCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAskTellThreadCell.h; sourceTree = "<group>"; };
+		8CFC22B21581404E00B26904 /* AwfulAskTellThreadCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAskTellThreadCell.m; sourceTree = "<group>"; };
+		8CFC22B51581414500B26904 /* 0.0stars.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0.0stars.png; sourceTree = "<group>"; };
+		8CFC22B61581414500B26904 /* 0.5stars.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0.5stars.png; sourceTree = "<group>"; };
+		8CFC22B71581414500B26904 /* 1.0stars.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1.0stars.png; sourceTree = "<group>"; };
+		8CFC22B81581414500B26904 /* 1.5stars.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1.5stars.png; sourceTree = "<group>"; };
+		8CFC22B91581414500B26904 /* 2.0stars.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 2.0stars.png; sourceTree = "<group>"; };
+		8CFC22BA1581414500B26904 /* 2.5stars.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 2.5stars.png; sourceTree = "<group>"; };
+		8CFC22BB1581414500B26904 /* 3.0stars.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 3.0stars.png; sourceTree = "<group>"; };
+		8CFC22BC1581414500B26904 /* 3.5stars.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 3.5stars.png; sourceTree = "<group>"; };
+		8CFC22BD1581414500B26904 /* 4.0stars.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 4.0stars.png; sourceTree = "<group>"; };
+		8CFC22BE1581414500B26904 /* 4.5stars.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 4.5stars.png; sourceTree = "<group>"; };
+		8CFC22BF1581414500B26904 /* 5.0stars.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 5.0stars.png; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Awful-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Awful-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1060,6 +1103,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8C8B224315935AC4003C50AB /* CoreImage.framework in Frameworks */,
 				110FAC0415745CE700ECF535 /* MessageUI.framework in Frameworks */,
 				10D34FA9128F41160026C7C2 /* CFNetwork.framework in Frameworks */,
 				117DBE3B1522A39A007125EF /* CoreData.framework in Frameworks */,
@@ -1100,6 +1144,7 @@
 		10E93EB9121DC70E00CCBF6D /* images */ = {
 			isa = PBXGroup;
 			children = (
+				8CFC22B41581414500B26904 /* stars */,
 				50A8B9671541D52D0065F3D9 /* help */,
 				112ECF0F14D7100A007EE7B6 /* threadtags */,
 				11CED26515228E5300E95EE1 /* action.png */,
@@ -1531,6 +1576,7 @@
 		1190F70513BE4EA900B9D271 /* AwfulThreadList */ = {
 			isa = PBXGroup;
 			children = (
+				8CFC22A415813EC900B26904 /* Custom */,
 				1190F70813BE4EA900B9D271 /* AwfulThreadListController.h */,
 				1190F70913BE4EA900B9D271 /* AwfulThreadListController.m */,
 				1190F70613BE4EA900B9D271 /* AwfulBookmarksController.h */,
@@ -1595,6 +1641,7 @@
 				1190F7B213BE4ECB00B9D271 /* MWPhotoBrowser */,
 				1190F7B013BE4ECB00B9D271 /* NSString+HTML.h */,
 				1190F7B113BE4ECB00B9D271 /* NSString+HTML.m */,
+				8C9A1B331582718D00BD28BB /* TDBadgedCell */,
 			);
 			path = "Third Party";
 			sourceTree = "<group>";
@@ -1958,6 +2005,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8C8B224215935AC4003C50AB /* CoreImage.framework */,
 				110FAC0315745CE700ECF535 /* MessageUI.framework */,
 				117DBE3A1522A39A007125EF /* CoreData.framework */,
 				1172A62D14F5DB160026CDA8 /* Security.framework */,
@@ -1986,6 +2034,51 @@
 				50A8B96C1541D57E0065F3D9 /* ThreadActions.png */,
 			);
 			name = help;
+			sourceTree = "<group>";
+		};
+		8C9A1B331582718D00BD28BB /* TDBadgedCell */ = {
+			isa = PBXGroup;
+			children = (
+				8C9A1B341582718D00BD28BB /* TDBadgedCell.h */,
+				8C9A1B351582718D00BD28BB /* TDBadgedCell.m */,
+			);
+			path = TDBadgedCell;
+			sourceTree = "<group>";
+		};
+		8CFC22A415813EC900B26904 /* Custom */ = {
+			isa = PBXGroup;
+			children = (
+				8CFC22A515813EC900B26904 /* AwfulCustomForums.h */,
+				8CFC22A615813EC900B26904 /* AwfulCustomForums.m */,
+				8CFC22A715813EC900B26904 /* AwfulFYADThreadCell.h */,
+				8CFC22A815813EC900B26904 /* AwfulFYADThreadCell.m */,
+				8CFC22A915813EC900B26904 /* AwfulYOSPOSThreadCell.h */,
+				8CFC22AA15813EC900B26904 /* AwfulYOSPOSThreadCell.m */,
+				8CFC22AE1581403B00B26904 /* AwfulFilmDumpThreadCell.h */,
+				8CFC22AF1581403B00B26904 /* AwfulFilmDumpThreadCell.m */,
+				8CFC22B11581404D00B26904 /* AwfulAskTellThreadCell.h */,
+				8CFC22B21581404E00B26904 /* AwfulAskTellThreadCell.m */,
+			);
+			path = Custom;
+			sourceTree = "<group>";
+		};
+		8CFC22B41581414500B26904 /* stars */ = {
+			isa = PBXGroup;
+			children = (
+				8CFC22B51581414500B26904 /* 0.0stars.png */,
+				8CFC22B61581414500B26904 /* 0.5stars.png */,
+				8CFC22B71581414500B26904 /* 1.0stars.png */,
+				8CFC22B81581414500B26904 /* 1.5stars.png */,
+				8CFC22B91581414500B26904 /* 2.0stars.png */,
+				8CFC22BA1581414500B26904 /* 2.5stars.png */,
+				8CFC22BB1581414500B26904 /* 3.0stars.png */,
+				8CFC22BC1581414500B26904 /* 3.5stars.png */,
+				8CFC22BD1581414500B26904 /* 4.0stars.png */,
+				8CFC22BE1581414500B26904 /* 4.5stars.png */,
+				8CFC22BF1581414500B26904 /* 5.0stars.png */,
+			);
+			name = stars;
+			path = images/stars;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2407,6 +2500,17 @@
 				1CD59CF7157336F5008F8E2F /* default.css in Resources */,
 				1CD59CF9157338FC008F8E2F /* dark.css in Resources */,
 				11BBD68715799C190070C793 /* tava-cellphone.png in Resources */,
+				8CFC22C01581414500B26904 /* 0.0stars.png in Resources */,
+				8CFC22C11581414500B26904 /* 0.5stars.png in Resources */,
+				8CFC22C21581414500B26904 /* 1.0stars.png in Resources */,
+				8CFC22C31581414500B26904 /* 1.5stars.png in Resources */,
+				8CFC22C41581414500B26904 /* 2.0stars.png in Resources */,
+				8CFC22C51581414500B26904 /* 2.5stars.png in Resources */,
+				8CFC22C61581414500B26904 /* 3.0stars.png in Resources */,
+				8CFC22C71581414500B26904 /* 3.5stars.png in Resources */,
+				8CFC22C81581414500B26904 /* 4.0stars.png in Resources */,
+				8CFC22C91581414500B26904 /* 4.5stars.png in Resources */,
+				8CFC22CA1581414500B26904 /* 5.0stars.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2425,7 +2529,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "PATH=/usr/local/bin:$PATH\ncommand -v mogenerator >/dev/null 2>&1 || { echo >&2 \"Please install mogenerator! brew install mogenerator\"; exit 0; }\nMODELS=\"$PROJECT_DIR/Source/Models\"\nmogenerator --model \"$MODELS/Model.xcdatamodeld/Model.xcdatamodel\" --output-dir \"$MODELS\" --machine-dir \"$MODELS/Generated\" --template-var arc=true\n";
+			shellScript = "PATH=/usr/local/bin:$PATH\ncommand -v mogenerator >/dev/null 2>&1 || { echo >&2 \"Please install mogenerator! brew install mogenerator\"; exit 0; }\nMODELS=\"$PROJECT_DIR/Source/Models\"\nmogenerator --model \"$MODELS/Model.xcdatamodeld/Model 2.xcdatamodel\" --output-dir \"$MODELS\" --machine-dir \"$MODELS/Generated\" --template-var arc=true\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -2552,6 +2656,12 @@
 				110FABFF15745C5C00ECF535 /* DDTTYLogger.m in Sources */,
 				110FAC0015745C5C00ECF535 /* ContextFilterLogFormatter.m in Sources */,
 				110FAC0115745C5C00ECF535 /* DispatchQueueLogFormatter.m in Sources */,
+				8CFC22AB15813EC900B26904 /* AwfulCustomForums.m in Sources */,
+				8CFC22AC15813EC900B26904 /* AwfulFYADThreadCell.m in Sources */,
+				8CFC22AD15813EC900B26904 /* AwfulYOSPOSThreadCell.m in Sources */,
+				8CFC22B01581403C00B26904 /* AwfulFilmDumpThreadCell.m in Sources */,
+				8CFC22B31581404E00B26904 /* AwfulAskTellThreadCell.m in Sources */,
+				8C9A1B361582718D00BD28BB /* TDBadgedCell.m in Sources */,
 				1C2BFA25158AB59800692D85 /* AwfulCSSTemplate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2798,9 +2908,10 @@
 		1C6474C31569989800C72657 /* Model.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				8CD02CF01588176000C5D69C /* Model 2.xcdatamodel */,
 				1C6474C41569989800C72657 /* Model.xcdatamodel */,
 			);
-			currentVersion = 1C6474C41569989800C72657 /* Model.xcdatamodel */;
+			currentVersion = 8CD02CF01588176000C5D69C /* Model 2.xcdatamodel */;
 			path = Model.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

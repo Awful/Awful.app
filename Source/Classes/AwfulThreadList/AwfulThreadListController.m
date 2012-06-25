@@ -16,6 +16,7 @@
 #import "AwfulThread+AwfulMethods.h"
 #import "AwfulThreadCell.h"
 #import "AwfulLoginController.h"
+#import "AwfulCustomForums.h"
 
 #define THREAD_HEIGHT 76
 
@@ -129,7 +130,7 @@ typedef enum {
         }
     }
     if(path != nil) {
-        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:path] withRowAnimation:UITableViewRowAnimationFade];
+        //[self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:path] withRowAnimation:UITableViewRowAnimationFade];
     }
 }
 
@@ -321,17 +322,20 @@ typedef enum {
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    static NSString *threadCell = @"ThreadCell";
     static NSString *moreCell = @"LoadMoreCell";
     
     
     AwfulThreadCellType type = [self getTypeAtIndexPath:indexPath];
     if(type == AwfulThreadCellTypeThread) {
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:threadCell];
         AwfulThread *thread = [self getThreadAtIndexPath:indexPath];
-        AwfulThreadCell *thread_cell = (AwfulThreadCell *)cell;
-        [thread_cell configureForThread:thread];
-        thread_cell.threadListController = self;
+        NSString *threadCell = [AwfulCustomForums cellIdentifierForForum:thread.forum];
+        AwfulThreadCell *cell = (AwfulThreadCell*)[tableView dequeueReusableCellWithIdentifier:threadCell];
+        if (cell == nil)
+            cell = [AwfulCustomForums cellForThread:thread];
+        
+        //AwfulThreadCell *thread_cell = (AwfulThreadCell *)cell;
+        [cell configureForThread:thread];
+        cell.threadListController = self;
         return cell;
     } else if(type == AwfulThreadCellTypeLoadMore) {
         AwfulLoadingThreadCell *loadingCell = [tableView dequeueReusableCellWithIdentifier:moreCell];
@@ -350,7 +354,7 @@ typedef enum {
 {
     if(indexPath.row == [self.awfulThreads count]) {
         [self loadPageNum:self.currentPage + 1];
-        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+        //[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
         [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
     } else {
         [self performSegueWithIdentifier:@"AwfulPage" sender:nil];

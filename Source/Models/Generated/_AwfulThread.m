@@ -16,6 +16,7 @@ const struct AwfulThreadAttributes AwfulThreadAttributes = {
 	.threadIconImageURL = @"threadIconImageURL",
 	.threadIconImageURL2 = @"threadIconImageURL2",
 	.threadRating = @"threadRating",
+	.threadVotes = @"threadVotes",
 	.title = @"title",
 	.totalReplies = @"totalReplies",
 	.totalUnreadPosts = @"totalUnreadPosts",
@@ -74,8 +75,8 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 		NSSet *affectingKey = [NSSet setWithObject:@"stickyIndex"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 	}
-	if ([key isEqualToString:@"threadRatingValue"]) {
-		NSSet *affectingKey = [NSSet setWithObject:@"threadRating"];
+	if ([key isEqualToString:@"threadVotesValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"threadVotes"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 	}
 	if ([key isEqualToString:@"totalRepliesValue"]) {
@@ -269,22 +270,29 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 
 
 
-- (int16_t)threadRatingValue {
-	NSNumber *result = [self threadRating];
+
+
+
+@dynamic threadVotes;
+
+
+
+- (int16_t)threadVotesValue {
+	NSNumber *result = [self threadVotes];
 	return [result shortValue];
 }
 
-- (void)setThreadRatingValue:(int16_t)value_ {
-	[self setThreadRating:[NSNumber numberWithShort:value_]];
+- (void)setThreadVotesValue:(int16_t)value_ {
+	[self setThreadVotes:[NSNumber numberWithShort:value_]];
 }
 
-- (int16_t)primitiveThreadRatingValue {
-	NSNumber *result = [self primitiveThreadRating];
+- (int16_t)primitiveThreadVotesValue {
+	NSNumber *result = [self primitiveThreadVotes];
 	return [result shortValue];
 }
 
-- (void)setPrimitiveThreadRatingValue:(int16_t)value_ {
-	[self setPrimitiveThreadRating:[NSNumber numberWithShort:value_]];
+- (void)setPrimitiveThreadVotesValue:(int16_t)value_ {
+	[self setPrimitiveThreadVotes:[NSNumber numberWithShort:value_]];
 }
 
 
