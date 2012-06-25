@@ -78,6 +78,58 @@
     
     
 }
+-(void) willLoadThreadPage:(NSNotification*)notification {
+    AwfulThread *thread = notification.object;
+    if (thread.threadID.intValue != self.thread.threadID.intValue) return;
+    /*
+     UIActivityIndicatorView *act = [[UIActivityIndicatorView alloc] 
+     initWithActivityIndicatorStyle:(UIActivityIndicatorViewStyleGray)
+     ];
+     self.accessoryView = act;
+     [act startAnimating];
+     */
+    
+    UILabel *lbl = [UILabel new];
+    lbl.font = [UIFont fontWithName:@"Courier" size:16];
+    lbl.textColor = [UIColor YOSPOSGreenColor];
+    lbl.backgroundColor = [UIColor clearColor];
+    
+    lbl.text = @"--";
+    lbl.tag = 0;
+    lbl.textAlignment = UITextAlignmentCenter;
+    [lbl sizeToFit];
+    self.accessoryView = lbl;
+    
+    NSTimer *loadingTimer = [NSTimer scheduledTimerWithTimeInterval:.219                                                          target:self 
+                                                           selector:@selector(activityTimer) 
+                                                           userInfo:nil 
+                                                            repeats:YES
+                             ];
+}
+
+-(void) activityTimer {
+    UILabel *lbl = (UILabel*)self.accessoryView;
+    lbl.tag++;
+    switch (lbl.tag % 4) {
+        case 0:
+            lbl.text = @"--";
+            return;
+            
+        case 1:
+            lbl.text = @"\\";
+            return;
+        case 2:
+            lbl.text = @"|";
+            return;
+        case 3:
+            lbl.text = @"/";
+            return;
+            
+            
+        default:
+            break;
+    }
+}
 
 @end
 
