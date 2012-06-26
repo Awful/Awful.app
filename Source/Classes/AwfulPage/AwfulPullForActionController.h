@@ -22,6 +22,9 @@ typedef enum {
 @required
 @property (nonatomic) AwfulPullForActionState state;
 @property (nonatomic,strong) UIActivityIndicatorView* activityView;
+@optional
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView;
+-(void)scrollViewDidEndDragging:(UIScrollView *)scrollView;
 
 @optional
 @property (nonatomic, strong) UISwitch* autoF5;
@@ -48,6 +51,5 @@ typedef enum {
 @property (nonatomic,strong) UIViewController<AwfulPullForActionDelegate,UIScrollViewDelegate>* delegate;
 @property (nonatomic) BOOL userScrolling;
 @property (nonatomic,strong) NSTimer* autoRefreshTimer;
-@property (nonatomic,strong) SRRefreshView* test;
 
 @end

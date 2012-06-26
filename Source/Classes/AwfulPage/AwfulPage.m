@@ -733,7 +733,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     self.pullForActionController.footerState = AwfulPullForActionStateNormal;
     
     //animate old page up and offscreen, new page in from the bottom
-    if (sender == self.nextPageWebView) {
+    if (sender == self.nextPageWebView && self.nextPageWebView.foY > 0) {
         [self doPageTransition];
         
     }
@@ -798,10 +798,12 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 
 #pragma mark Pull For Action
 -(void) didPullHeader:(UIView<AwfulPullForActionViewDelegate>*)header {
+    NSLog(@"header pull");
     [self refresh];
 }
 
 -(void) didPullFooter:(UIView<AwfulPullForActionViewDelegate>*)footer {
+    NSLog(@"footer pull");
     [self tappedNextPage:nil];
 }
 

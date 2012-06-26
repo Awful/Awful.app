@@ -2005,7 +2005,6 @@
 		8C9AB60F1597C8C60084B608 /* wink.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = wink.gif; sourceTree = "<group>"; };
 		8CCEC5861598DF9B00DEBFE8 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		8CCEC58B1598DF9B00DEBFE8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		8CCEC58C1598DF9B00DEBFE8 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8CCEC58E1598DF9B00DEBFE8 /* License.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = License.txt; sourceTree = "<group>"; };
 		8CCEC58F1598DF9B00DEBFE8 /* sr_refresh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sr_refresh.png; sourceTree = "<group>"; };
 		8CCEC5901598DF9B00DEBFE8 /* sr_refresh@2X.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sr_refresh@2X.png"; sourceTree = "<group>"; };
@@ -3481,7 +3480,6 @@
 			isa = PBXGroup;
 			children = (
 				8CCEC58A1598DF9B00DEBFE8 /* InfoPlist.strings */,
-				8CCEC58C1598DF9B00DEBFE8 /* main.m */,
 				8CCEC58D1598DF9B00DEBFE8 /* SlimeRefresh */,
 				8CCEC5961598DF9B00DEBFE8 /* SlimeRefresh-Info.plist */,
 				8CCEC5971598DF9B00DEBFE8 /* SlimeRefresh-Prefix.pch */,

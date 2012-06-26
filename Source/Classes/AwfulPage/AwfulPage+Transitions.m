@@ -11,6 +11,7 @@
 @implementation AwfulPage (Transitions)
 
 -(void) doPageTransition {
+    NSLog(@"do page transition");
     //page number stored in webview tags
     //compare numbers, determine animation
     int diff = self.nextPageWebView.tag - self.webView.tag;
@@ -64,7 +65,7 @@
                           delay:0 
                         options:(UIViewAnimationOptionCurveEaseInOut) 
                      animations:^{
-                         self.nextPageWebView.frame = self.webView.frame;
+                         self.nextPageWebView.foY = 0;
                          self.webView.foY = -self.webView.fsH;
                      }
                      completion:^(BOOL finished) {
@@ -95,11 +96,14 @@
 }
 
 -(void) didFinishPageTransition {
+    if(self.webView.foY == 0  && self.nextPageWebView.foY != 0) {
+        NSLog(@"BUG: tried to remove visible webview");
+        return;
+    }
     [self.webView removeFromSuperview];
     self.webView = self.nextPageWebView;
     self.pullForActionController.scrollView = self.webView.scrollView;
-    //self.pullToNavigateView.onLastPage = YES;
-    self.pullForActionController.scrollView = self.webView.scrollView;
+
     
     self.nextPageWebView = [UIWebView new];
     self.nextPageWebView.frame = self.webView.frame;

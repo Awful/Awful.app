@@ -19,7 +19,6 @@
 @synthesize delegate = _delegate;
 @synthesize userScrolling = _userScrolling;
 @synthesize autoRefreshTimer = _autoRefreshTimer;
-@synthesize test = _test;
 
 #pragma mark Setup
 -(id) initWithScrollView:(UIScrollView*)scrollView {
@@ -31,14 +30,10 @@
 }
 
 -(void) setHeaderView:(UIView<AwfulPullForActionViewDelegate> *)headerView {
-    self.test = [[SRRefreshView alloc] initWithFrame:CGRectMake(0, 0, 320, 100)];
-    self.test.delegate = self;
-    self.test.scrollView = _scrollView;
-    [_scrollView addSubview:self.test];
     _headerView = headerView;
     
     headerView.frame = CGRectMake(0, -headerView.fsH, self.scrollView.fsW, headerView.fsH);
-    //[self.scrollView addSubview:headerView];
+    [self.scrollView addSubview:headerView];
 }
 
 -(void) setFooterView:(UIView<AwfulPullForActionViewDelegate> *)footerView {
@@ -84,7 +79,6 @@
         self.footerState == AwfulPullForActionStateLoading)
         return;
     
-    [self.test scrollViewDidScroll];
     
     CGFloat scrollAmount = scrollView.contentOffset.y;
     
@@ -93,11 +87,15 @@
     int lastPageChange = self.delegate.isOnLastPage? self.footerView.fsH : 0;
     CGFloat footerThreshhold = self.scrollView.contentSize.height - self.scrollView.fsH + 2*self.footerView.fsH + EXTRA_PULL_THRESHHOLD + lastPageChange;
     
-    //check footer positioning, it got misplaced sometimes for some reason
     if (self.footerView.foY != scrollView.contentSize.height) {
         self.footerView.foY = scrollView.contentSize.height;
     }
     
+    if ([self.footerView respondsToSelector:@selector(scrollViewDidScroll:)])
+        [self.footerView scrollViewDidScroll:self.scrollView];
+    
+    if ([self.headerView respondsToSelector:@selector(scrollViewDidScroll:)])
+        [self.headerView scrollViewDidScroll:self.scrollView];
     
     
     //Normal State
@@ -155,8 +153,6 @@
 -(void) scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate 
 {
     self.userScrolling = NO;
-    
-    [self.test scrollViewDidEndDraging];
 
     if ([self.delegate respondsToSelector:@selector(scrollViewDidEndDragging:willDecelerate:)])
         [self.delegate scrollViewDidEndDragging:scrollView willDecelerate:decelerate];

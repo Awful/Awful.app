@@ -13,4 +13,5 @@
 
 @property (nonatomic,strong) NSDate* loadedDate;
 @property (readonly) NSString* stringTimeIntervalSinceLoad;
+@property (nonatomic,strong) SRRefreshView* test;
 @end

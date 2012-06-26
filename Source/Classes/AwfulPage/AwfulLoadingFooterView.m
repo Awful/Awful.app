@@ -96,8 +96,6 @@
     }
 }
 
-
-
 - (void)setState:(AwfulPullForActionState)aState
 {
     if (_state == aState) return;
@@ -113,7 +111,7 @@
 		case AwfulPullForActionStateNormal:
         case AwfulPullForActionStatePulling:
             self.textLabel.text = (@"Pull up for next page...");
-            self.detailTextLabel.text = @"Go to page X of Y";
+            //self.detailTextLabel.text = [NSString stringWithFormat:@"Go to page X of Y", ;
             [self.activityView stopAnimating];
             self.imageView.hidden = NO;          
 			break;
@@ -195,4 +193,15 @@
 
 }
 
+/*
+-(void) scrollViewDidScroll:(UIScrollView*)scrollView {
+    //UIScrollView *scrollView = ((AwfulPullForActionController*)msg.object).scrollView;
+    
+    
+}
+
+-(void) scrollViewDidEndDragging:(UIScrollView*)scrollView {
+    
+}
+*/
 @end
