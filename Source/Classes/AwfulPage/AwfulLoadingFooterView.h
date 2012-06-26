@@ -6,7 +6,6 @@
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "EGORefreshTableHeaderView.h"
 #import "AwfulPullForActionController.h"
 
 typedef enum {

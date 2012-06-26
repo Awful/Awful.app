@@ -8,11 +8,13 @@
 
 #import "AwfulTableViewController.h"
 #import "AwfulSettings.h"
+#import "AwfulRefreshControl.h"
 
 @implementation AwfulTableViewController
 
 @synthesize networkOperation = _networkOperation;
-@synthesize refreshHeaderView = _refreshHeaderView;
+//@synthesize refreshHeaderView = _refreshHeaderView;
+@synthesize refreshControl = _refreshControl;
 @synthesize reloading = _reloading;
 
 #pragma mark - View Cycle
@@ -21,12 +23,13 @@
 {
     [super viewDidLoad];
 
-    [self.refreshHeaderView removeFromSuperview];
     if ([self canPullToRefresh]) {
-        self.refreshHeaderView = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - self.tableView.bounds.size.height, self.view.frame.size.width, self.tableView.bounds.size.height)];
-        self.refreshHeaderView.delegate = self;
-        [self.tableView addSubview:self.refreshHeaderView];
-        [self.refreshHeaderView refreshLastUpdatedDate];
+        self.refreshControl = [[AwfulRefreshControl alloc] initWithFrame:CGRectMake(0, -50, self.tableView.fsW, 50)];
+        self.refreshControl.loadedDate = [NSDate date];
+        [self.tableView addSubview:self.refreshControl];
+        //[self.refreshHeaderView refreshLastUpdatedDate];
+        
+        [self.refreshControl addTarget:self action:@selector(refreshControlChanged:) forControlEvents:(UIControlEventValueChanged)];
     }
     self.reloading = NO;
 }
@@ -42,20 +45,20 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {	
-    if ([self canPullToRefresh]) {
-        [self.refreshHeaderView egoRefreshScrollViewDidScroll:scrollView];
+    if (self.canPullToRefresh) {
+        [self.refreshControl didScrollInScrollView:scrollView];
     }
 }
-
+/*
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
     if ([self canPullToRefresh]) {
         [self.refreshHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
     }
 }
-
+*/
 #pragma mark - EGORefreshTableHeaderDelegate Methods
-
+/*
 - (void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view
 {
 	[self refresh];
@@ -70,6 +73,7 @@
 	return [NSDate date]; // should return date data source was last changed
 	
 }
+*/
 
 #pragma mark - Refresh
 
@@ -86,7 +90,8 @@
 - (void)finishedRefreshing
 {
     self.reloading = NO;
-	[self.refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
+	//[self.refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
+    self.refreshControl.loadedDate = [NSDate date];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -100,6 +105,15 @@
 - (BOOL)canPullToRefresh
 {
     return YES;
+}
+
+-(BOOL) isOnLastPage {
+    return NO;
+}
+
+-(void) refreshControlChanged:(AwfulRefreshControl*)refreshControl {
+    if (refreshControl.state == AwfulRefreshControlStateLoading)
+        [self refresh];
 }
 
 @end

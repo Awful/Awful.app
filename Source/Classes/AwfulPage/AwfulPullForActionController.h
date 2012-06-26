@@ -32,7 +32,7 @@ typedef enum {
 
 @protocol AwfulPullForActionDelegate <NSObject>
 
-@required
+@optional
 -(void) didPullHeader:(UIView<AwfulPullForActionViewDelegate>*)header;
 -(void) didPullFooter:(UIView<AwfulPullForActionViewDelegate>*)footer;
 -(void) didCancelPullForAction:(AwfulPullForActionController*)pullForActionController;

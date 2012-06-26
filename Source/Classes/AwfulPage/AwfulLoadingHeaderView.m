@@ -20,12 +20,12 @@
     
     switch (state) {
         case AwfulPullForActionStateLoading:
-            self.lastUpdatedLabel.text = @"Swipe left to cancel";
+            //self.lastUpdatedLabel.text = @"Swipe left to cancel";
             break;
             
-        default:
-            self.lastUpdatedLabel.text = [NSString stringWithFormat:@"Updated %@", 
-                                          self.stringTimeIntervalSinceLoad];
+        //default:
+            //self.lastUpdatedLabel.text = [NSString stringWithFormat:@"Updated %@", 
+             //                             self.stringTimeIntervalSinceLoad];
     }
     
     if (!self.test) {

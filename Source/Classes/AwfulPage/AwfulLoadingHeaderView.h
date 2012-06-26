@@ -6,10 +6,10 @@
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "EGORefreshTableHeaderView.h"
 #import "AwfulPullForActionController.h"
+#import "AwfulLoadingFooterView.h"
 
-@interface AwfulLoadingHeaderView : EGORefreshTableHeaderView <AwfulPullForActionViewDelegate>
+@interface AwfulLoadingHeaderView : AwfulLoadingFooterView <AwfulPullForActionViewDelegate>
 
 @property (nonatomic,strong) NSDate* loadedDate;
 @property (readonly) NSString* stringTimeIntervalSinceLoad;
