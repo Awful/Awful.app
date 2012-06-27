@@ -173,6 +173,7 @@
 }
 
 -(void) didSwipeToCancel:(UISwipeGestureRecognizer*)swipe {
+    [self sendActionsForControlEvents:UIControlEventTouchCancel];
     [UIView animateWithDuration:.3 
                      animations:^{
                          self.foX = -self.fsW;

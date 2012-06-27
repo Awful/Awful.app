@@ -34,14 +34,20 @@
     if ([self canPullToRefresh]) {
         self.refreshControl = [[AwfulRefreshControl alloc] initWithFrame:CGRectMake(0, -50, self.tableView.fsW, 50)];
         self.refreshControl.loadedDate = [NSDate date];
+        [self.refreshControl addTarget:self action:@selector(refreshControlChanged:) forControlEvents:(UIControlEventValueChanged)];
+        [self.refreshControl addTarget:self action:@selector(refreshControlCancel:) forControlEvents:(UIControlEventTouchCancel)];
+        [self.tableView addSubview:self.refreshControl];
+        
+        
         
         self.loadNextControl = [[AwfulLoadNextControl alloc] initWithFrame:CGRectMake(0, self.tableView.contentSize.height, self.tableView.fsW, 50)];
-        [self.tableView addSubview:self.refreshControl];
+        [self.loadNextControl addTarget:self
+                                 action:@selector(loadNextControlChanged:) 
+                       forControlEvents:(UIControlEventValueChanged)];
+        [self.loadNextControl addTarget:self 
+                                 action:@selector(refreshControlCancel:) 
+                       forControlEvents:(UIControlEventTouchCancel)];
         [self.tableView addSubview:self.loadNextControl];
-        //[self.refreshHeaderView refreshLastUpdatedDate];
-        
-        [self.refreshControl addTarget:self action:@selector(refreshControlChanged:) forControlEvents:(UIControlEventValueChanged)];
-        [self.loadNextControl addTarget:self action:@selector(loadNextControlChanged:) forControlEvents:(UIControlEventValueChanged)];
     }
     self.reloading = NO;
 }
@@ -128,6 +134,10 @@
 -(void) loadNextControlChanged:(AwfulRefreshControl*)refreshControl {
     //if (refreshControl.state == AwfulRefreshControlStateLoading)
     //    [self refresh];
+}
+
+-(void) refreshControlCancel:(AwfulRefreshControl*)refreshControl {
+    [self stop];
 }
 
 @end
