@@ -124,6 +124,11 @@ typedef enum {
     }];
 }
 
+
+-(void) loadNextControlChanged:(AwfulRefreshControl*)refreshControl {
+    [self loadPageNum:self.currentPage+1];
+}
+
 -(void)awfulThreadUpdated : (NSNotification *)notif
 {
     AwfulThread *changedThread = [notif object];
@@ -201,6 +206,7 @@ typedef enum {
 
 -(BOOL)shouldReloadOnViewLoad
 {
+    //check date on last thread we've got, if older than 10? min reload
     return NO;
 }
 
@@ -243,14 +249,19 @@ typedef enum {
         [page loadPageNum:0];
         
     } else if(buttonIndex == AwfulThreadListActionsTypeUnread) {
-        [[AwfulHTTPClient sharedClient] markThreadUnseen:self.heldThread onCompletion:^(void) {
-            self.heldThread.totalUnreadPosts = [NSNumber numberWithInt:-1];
-            [ApplicationDelegate saveContext];
-            
-        } onError:^(NSError *error) {
-            [ApplicationDelegate requestFailed:error];
-        }];
+        [self markThreadUnseen:self.heldThread];
+
     }
+}
+
+-(void) markThreadUnseen:(AwfulThread*)thread {
+    [[AwfulHTTPClient sharedClient] markThreadUnseen:thread onCompletion:^(void) {
+        thread.totalUnreadPosts = [NSNumber numberWithInt:-1];
+        [ApplicationDelegate saveContext];
+        
+    } onError:^(NSError *error) {
+        [ApplicationDelegate requestFailed:error];
+    }];
 }
 
 -(void)displayPage : (AwfulPage *)page
@@ -309,14 +320,15 @@ typedef enum {
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    int total = [self.awfulThreads count];
-    
+    return [self.awfulThreads count];
+    /*
     // bottom page-nav cell
     if([self moreThreads]) {
         total++;
     }
     
     return total;
+     */
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -325,36 +337,23 @@ typedef enum {
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
     static NSString *threadCell = @"ThreadCell";
-    static NSString *moreCell = @"LoadMoreCell";
     
+    AwfulThreadCell *cell = [tableView dequeueReusableCellWithIdentifier:threadCell];
+    AwfulThread *thread = [self getThreadAtIndexPath:indexPath];
+    [cell configureForThread:thread];
+    cell.threadListController = self;
     
-    AwfulThreadCellType type = [self getTypeAtIndexPath:indexPath];
-    if(type == AwfulThreadCellTypeThread) {
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:threadCell];
-        AwfulThread *thread = [self getThreadAtIndexPath:indexPath];
-        AwfulThreadCell *thread_cell = (AwfulThreadCell *)cell;
-        [thread_cell configureForThread:thread];
-        thread_cell.threadListController = self;
-        return cell;
-    } else if(type == AwfulThreadCellTypeLoadMore) {
-        AwfulLoadingThreadCell *loadingCell = [tableView dequeueReusableCellWithIdentifier:moreCell];
-        [loadingCell setActivityViewVisible:self.isLoading];
-        return loadingCell;
-    }
+    return cell;
     
-    return nil;
 }
+
+#pragma mark table editing to mark cells unread
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     AwfulThread *thread = [self getThreadAtIndexPath:indexPath];
     //NSLog(@"setting canEdit:%i for %@",thread.totalUnreadPostsValue >= 0, thread.title );
     return (thread.totalUnreadPostsValue >= 0);
-}
-
--(void) tableView:(UITableView *)tableView willBeginEditingRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"begin edit");
 }
 
 -(NSString*) tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -366,46 +365,16 @@ typedef enum {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         
         AwfulThread *thread = [self getThreadAtIndexPath:indexPath];
-        thread.totalUnreadPostsValue = -1;
-        [ApplicationDelegate saveContext];
+        [self markThreadUnseen:thread];
     }   
   
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {
-    if(indexPath.row == [self.awfulThreads count]) {
-        [self loadPageNum:self.currentPage + 1];
-        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
-    } else {
-        [self performSegueWithIdentifier:@"AwfulPage" 
-                                  sender:[self.tableView cellForRowAtIndexPath:indexPath]];
-    }
-}
+    [self performSegueWithIdentifier:@"AwfulPage" 
+                              sender:[self.tableView cellForRowAtIndexPath:indexPath]];
 
-- (void)tableView:(UITableView *)tableView
-  willDisplayCell:(UITableViewCell *)cell
-forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    cell.backgroundColor = cell.contentView.backgroundColor;
-}
-
-#pragma mark - Memory management
-
--(AwfulThreadCellType)getTypeAtIndexPath : (NSIndexPath *)indexPath
-{
-    if(indexPath.row < [self.awfulThreads count]) {
-        return AwfulThreadCellTypeThread;
-    } else if(indexPath.row == [self.awfulThreads count]) {
-        return AwfulThreadCellTypeLoadMore;
-    }
-    return AwfulThreadCellTypeUnknown;
-}
-
--(BOOL)moreThreads
-{
-    return [self.awfulThreads count] > 0;
 }
 
 @end

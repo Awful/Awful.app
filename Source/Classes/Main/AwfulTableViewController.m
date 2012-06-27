@@ -132,8 +132,7 @@
 }
 
 -(void) loadNextControlChanged:(AwfulRefreshControl*)refreshControl {
-    //if (refreshControl.state == AwfulRefreshControlStateLoading)
-    //    [self refresh];
+
 }
 
 -(void) refreshControlCancel:(AwfulRefreshControl*)refreshControl {
