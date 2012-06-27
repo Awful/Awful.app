@@ -466,6 +466,7 @@
 		50A8B9701541D57E0065F3D9 /* singlePageMovement.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A8B96B1541D57E0065F3D9 /* singlePageMovement.png */; };
 		50A8B9711541D57E0065F3D9 /* ThreadActions.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A8B96C1541D57E0065F3D9 /* ThreadActions.png */; };
 		8C48E9FE159A1B2B00A59691 /* AwfulRefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48E9FD159A1B2B00A59691 /* AwfulRefreshControl.m */; };
+		8C48EA01159A353400A59691 /* AwfulLoadNextControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48EA00159A353400A59691 /* AwfulLoadNextControl.m */; };
 		8C79D4371561CE44006FEE48 /* AwfulPullForActionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C79D4361561CE44006FEE48 /* AwfulPullForActionController.m */; };
 		8C79D43B1562E79E006FEE48 /* AwfulPage+Transitions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C79D43A1562E79E006FEE48 /* AwfulPage+Transitions.m */; };
 		8C8B227A1594AE9D003C50AB /* AwfulLoadingHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C8B22791594AE9C003C50AB /* AwfulLoadingHeaderView.m */; };
@@ -1512,6 +1513,8 @@
 		50A8B96C1541D57E0065F3D9 /* ThreadActions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ThreadActions.png; path = images/help/ThreadActions.png; sourceTree = "<group>"; };
 		8C48E9FC159A1B2B00A59691 /* AwfulRefreshControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulRefreshControl.h; sourceTree = "<group>"; };
 		8C48E9FD159A1B2B00A59691 /* AwfulRefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulRefreshControl.m; sourceTree = "<group>"; };
+		8C48E9FF159A353400A59691 /* AwfulLoadNextControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLoadNextControl.h; sourceTree = "<group>"; };
+		8C48EA00159A353400A59691 /* AwfulLoadNextControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLoadNextControl.m; sourceTree = "<group>"; };
 		8C79D4351561CE44006FEE48 /* AwfulPullForActionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPullForActionController.h; sourceTree = "<group>"; };
 		8C79D4361561CE44006FEE48 /* AwfulPullForActionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPullForActionController.m; sourceTree = "<group>"; };
 		8C79D4391562E79E006FEE48 /* AwfulPage+Transitions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AwfulPage+Transitions.h"; sourceTree = "<group>"; };
@@ -2928,6 +2931,8 @@
 			children = (
 				8C48E9FC159A1B2B00A59691 /* AwfulRefreshControl.h */,
 				8C48E9FD159A1B2B00A59691 /* AwfulRefreshControl.m */,
+				8C48E9FF159A353400A59691 /* AwfulLoadNextControl.h */,
+				8C48EA00159A353400A59691 /* AwfulLoadNextControl.m */,
 			);
 			name = "pull for action";
 			sourceTree = "<group>";
@@ -4508,6 +4513,7 @@
 				8C8B227A1594AE9D003C50AB /* AwfulLoadingHeaderView.m in Sources */,
 				8CCFBD251598B9AF00336F55 /* AwfulThreadTitleView.m in Sources */,
 				8C48E9FE159A1B2B00A59691 /* AwfulRefreshControl.m in Sources */,
+				8C48EA01159A353400A59691 /* AwfulLoadNextControl.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

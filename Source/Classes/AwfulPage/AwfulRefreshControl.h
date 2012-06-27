@@ -18,6 +18,7 @@ typedef enum {
 - (void)beginRefreshing;
 - (void)endRefreshing;
 - (void)didScrollInScrollView:(UIScrollView*)scrollView;
+-(NSString*) stringTimeIntervalSinceLoad;
 
 @property (nonatomic,readonly) UILabel* title;
 @property (nonatomic,readonly) UILabel* subtitle;
@@ -26,7 +27,7 @@ typedef enum {
 
 @property (nonatomic,readwrite) CGFloat scrollAmount;
 @property (nonatomic,strong) UIScrollView* scrollView;
-@property (nonatomic,readonly) AwfulRefreshControlState state;
+@property (nonatomic,readwrite) AwfulRefreshControlState state;
 @property (nonatomic,strong) NSDate* loadedDate;
 
 @property (nonatomic, readonly, getter=isRefreshing) BOOL refreshing;

@@ -9,10 +9,6 @@
 #import "AwfulRefreshControl.h"
 #import <QuartzCore/QuartzCore.h>
 
-@interface AwfulRefreshControl ()
-@property (nonatomic) AwfulRefreshControlState state;
-@end
-
 @implementation AwfulRefreshControl
 @synthesize refreshing = _refreshing;
 @synthesize scrollAmount = _scrollAmount;
@@ -85,6 +81,7 @@
     //Header Loading
     if (scrollAmount < threshhold) {
         self.state = AwfulRefreshControlStateLoading;
+        //[scrollView setContentOffset:CGPointMake(0, -self.fsH) animated:YES];
         return;
     }
 }
