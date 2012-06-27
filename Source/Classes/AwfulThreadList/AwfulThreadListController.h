@@ -6,7 +6,7 @@
 //  Copyright 2010 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulTableViewController.h"
+#import "AwfulFetchedTableViewController.h"
 
 @class AwfulForum;
 @class AwfulThread;
@@ -20,7 +20,7 @@ typedef enum {
     AwfulThreadCellTypeLoadMore
 } AwfulThreadCellType;
 
-@interface AwfulThreadListController : AwfulTableViewController <UIActionSheetDelegate>
+@interface AwfulThreadListController : AwfulFetchedTableViewController <UIActionSheetDelegate>
 
 @property (nonatomic, strong) AwfulForum *forum;
 @property (nonatomic, strong) NSMutableArray *awfulThreads;

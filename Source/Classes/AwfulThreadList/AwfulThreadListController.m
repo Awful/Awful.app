@@ -49,6 +49,18 @@ typedef enum {
                                              selector:@selector(awfulThreadUpdated:)
                                                  name:AwfulThreadDidUpdateNotification
                                                object:nil];
+    
+    
+    [self setEntityName:@"AwfulThread"
+              predicate:[NSPredicate predicateWithFormat:@"forum = %@", self.forum]
+                   sort:[NSArray arrayWithObjects:
+                         [NSSortDescriptor sortDescriptorWithKey:@"stickyIndex" ascending:NO], 
+                         [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO],
+                         nil
+                         ]
+             sectionKey:nil
+     ];
+    
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -86,6 +98,16 @@ typedef enum {
     if(_forum != forum) {
         _forum = forum;
         self.title = _forum.name;
+        
+        [self setEntityName:@"AwfulThread"
+                  predicate:[NSPredicate predicateWithFormat:@"forum = %@", self.forum]
+                       sort:[NSArray arrayWithObjects:
+                             [NSSortDescriptor sortDescriptorWithKey:@"stickyIndex" ascending:YES], 
+                             [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO],
+                             nil
+                             ]
+                 sectionKey:nil
+         ];
     }
 }
 
@@ -114,9 +136,9 @@ typedef enum {
     self.networkOperation = [[AwfulHTTPClient sharedClient] threadListForForum:self.forum pageNum:pageNum onCompletion:^(NSMutableArray *threads) {
         self.currentPage = pageNum;
         if(pageNum == 1) {
-            [self.awfulThreads removeAllObjects];
+            //[self.awfulThreads removeAllObjects];
         }
-        [self acceptThreads:threads];
+        //[self acceptThreads:threads];
         [self finishedRefreshing];
     } onError:^(NSError *error) {
         [self finishedRefreshing];
@@ -278,19 +300,6 @@ typedef enum {
     }
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        return YES;
-    }
-    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
-}
-
--(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
-{
-    [self.tableView reloadData];
-}
-
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.navigationController setToolbarHidden:YES];
@@ -302,34 +311,10 @@ typedef enum {
 
 -(AwfulThread *)getThreadAtIndexPath : (NSIndexPath *)path
 {    
-    AwfulThread *thread = nil;
-    
-    if(path.row < [self.awfulThreads count]) {
-        thread = [self.awfulThreads objectAtIndex:path.row];
-    } else {
-        NSLog(@"thread out of bounds");
-    }
-    
-    return thread;
+    return [self.fetchedResultsController objectAtIndexPath:path];
 }
 
 #pragma mark - Table view data source and delegate
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.awfulThreads count];
-    /*
-    // bottom page-nav cell
-    if([self moreThreads]) {
-        total++;
-    }
-    
-    return total;
-     */
-}
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -340,12 +325,16 @@ typedef enum {
     static NSString *threadCell = @"ThreadCell";
     
     AwfulThreadCell *cell = [tableView dequeueReusableCellWithIdentifier:threadCell];
-    AwfulThread *thread = [self getThreadAtIndexPath:indexPath];
-    [cell configureForThread:thread];
+    //AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    [self configureCell:cell atIndexPath:indexPath];
     cell.threadListController = self;
     
     return cell;
-    
+}
+
+- (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath {
+    AwfulThread *thread = [self getThreadAtIndexPath:indexPath];
+    [(AwfulThreadCell*)cell configureForThread:thread];
 }
 
 #pragma mark table editing to mark cells unread
