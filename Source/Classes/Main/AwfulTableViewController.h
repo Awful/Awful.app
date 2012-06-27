@@ -10,7 +10,7 @@
 
 @class AwfulRefreshControl;
 
-@interface AwfulTableViewController : UITableViewController <AwfulPullForActionDelegate>
+@interface AwfulTableViewController : UITableViewController
 
 @property (nonatomic, strong) NSOperation *networkOperation;
 @property (nonatomic, strong) AwfulRefreshControl *refreshControl;

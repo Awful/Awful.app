@@ -106,7 +106,7 @@
             self.subtitle.text = @"Swipe left to cancel";
             self.imageView.hidden = YES;
             [self.activityView startAnimating];
-            self.scrollViewInset = self.fsH;
+            self.changeInsetToShow = YES;
             break;
             
         case AwfulRefreshControlStatePulling:
@@ -114,6 +114,7 @@
             self.subtitle.text = self.stringTimeIntervalSinceLoad;
             self.imageView.hidden = NO;
             [self.activityView stopAnimating];
+            self.changeInsetToShow = NO;
             break;
             
         case AwfulRefreshControlStateNormal:
@@ -121,10 +122,11 @@
             self.subtitle.text = self.stringTimeIntervalSinceLoad;
             self.imageView.hidden = NO;
             [self.activityView stopAnimating];
+            self.changeInsetToShow = NO;
             break;
     }
     
-    //[self sendActionsForControlEvents:UIControlEventValueChanged];
+    [self sendActionsForControlEvents:UIControlEventValueChanged];
                                        
 }
 
@@ -143,16 +145,26 @@
     return @"???";
 }
 
--(CGFloat) scrollViewInset {
-    UIScrollView* scrollView = (UIScrollView*)self.superview;
-    return scrollView.contentInset.top;
-}
-
--(void) setScrollViewInset:(CGFloat)inset {
+-(void) setChangeInsetToShow:(BOOL)show {
+    CGFloat inset = show? self.fsH : 0;
+    
     UIScrollView* scrollView = (UIScrollView*)self.superview;
     UIEdgeInsets insets = scrollView.contentInset;
+    if (inset == insets.top) return;
     insets.top = inset;
-    scrollView.contentInset = insets;
+    
+    if (show) {
+        scrollView.userInteractionEnabled = NO;
+        [UIView animateWithDuration:.3
+                         animations:^{
+                             
+                             scrollView.contentInset = insets;
+                         }
+                         completion:^(BOOL finished) {
+                             scrollView.userInteractionEnabled = YES;
+                         }
+         ];
+    }
 }
 
 -(void) setCanSwipeToCancel:(BOOL)canSwipeToCancel {
@@ -177,7 +189,7 @@
     [UIView animateWithDuration:.3 
                      animations:^{
                          self.foX = -self.fsW;
-                         self.scrollViewInset = 0;
+                         self.changeInsetToShow = NO;
                      }
                      completion:^(BOOL finished) {
                          self.state = AwfulRefreshControlStateNormal;

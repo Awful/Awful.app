@@ -32,6 +32,6 @@ typedef enum {
 
 @property (nonatomic, readonly, getter=isRefreshing) BOOL refreshing;
 @property (nonatomic, readwrite) BOOL userScrolling;
-@property (nonatomic, readwrite) CGFloat scrollViewInset;
+@property (nonatomic, readwrite) BOOL changeInsetToShow;
 @property (nonatomic, readwrite) BOOL canSwipeToCancel;
 @end

@@ -7,6 +7,8 @@
 //
 
 #import "AwfulPage+Transitions.h"
+#import "AwfulRefreshControl.h"
+#import "AwfulLoadNextControl.h"
 
 @implementation AwfulPage (Transitions)
 
@@ -58,7 +60,7 @@
     self.nextPageWebView.foY = self.nextPageWebView.fsH;
     //self.nextPageWebView.hidden = YES;
     
-    CGPoint bottomOffset = CGPointMake(0, self.webView.scrollView.contentSize.height - self.webView.scrollView.bounds.size.height + self.pullForActionController.footerView.fsH);
+    CGPoint bottomOffset = CGPointMake(0, self.webView.scrollView.contentSize.height - self.webView.scrollView.bounds.size.height + self.loadNextPageControl.fsH);
     [self.webView.scrollView setContentOffset:bottomOffset animated:YES];
     
     [UIView animateWithDuration:.5 
@@ -102,7 +104,13 @@
     }
     [self.webView removeFromSuperview];
     self.webView = self.nextPageWebView;
-    self.pullForActionController.scrollView = self.webView.scrollView;
+    
+    [self.refreshControl removeFromSuperview];
+    [self.webView.scrollView addSubview:self.refreshControl];
+    
+    [self.loadNextPageControl removeFromSuperview];
+    [self.webView.scrollView addSubview:self.loadNextPageControl];
+    
 
     
     self.nextPageWebView = [UIWebView new];

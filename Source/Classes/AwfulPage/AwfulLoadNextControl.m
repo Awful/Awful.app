@@ -9,6 +9,7 @@
 #import "AwfulLoadNextControl.h"
 
 @implementation AwfulLoadNextControl
+@synthesize state = _state;
 
 -(id) initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -57,6 +58,7 @@
         [[NSDate date] timeIntervalSinceDate:self.loadedDate] < 60)
         return;
     
+    _state = state;
     
     switch (state) {
         case AwfulRefreshControlStateLoading:
@@ -64,12 +66,14 @@
             self.subtitle.text = @"Swipe left to cancel";
             self.imageView.hidden = YES;
             [self.activityView startAnimating];
+            self.changeInsetToShow = YES;
             break;
             
         case AwfulRefreshControlStatePulling:
             self.title.text = @"Keep pulling for next page";
             self.subtitle.text = nil;
             self.imageView.hidden = NO;
+            self.changeInsetToShow = NO;
             [self.activityView stopAnimating];
             break;
             
@@ -77,6 +81,7 @@
             self.title.text = @"Pull for next page...";
             self.subtitle.text = nil;
             self.imageView.hidden = NO;
+            self.changeInsetToShow = NO;
             [self.activityView stopAnimating];
             break;
     }
@@ -85,5 +90,27 @@
     
 }
 
+
+-(void) setChangeInsetToShow:(BOOL)show {
+    CGFloat inset = show? self.fsH : 0;
+    
+    UIScrollView* scrollView = (UIScrollView*)self.superview;
+    UIEdgeInsets insets = scrollView.contentInset;
+    if (inset == insets.bottom) return;
+    insets.bottom = inset;
+    
+    if (show) {
+        scrollView.userInteractionEnabled = NO;
+        [UIView animateWithDuration:.3
+                         animations:^{
+                             
+                             scrollView.contentInset = insets;
+                         }
+                         completion:^(BOOL finished) {
+                             scrollView.userInteractionEnabled = YES;
+                         }
+         ];
+    }
+}
 
 @end

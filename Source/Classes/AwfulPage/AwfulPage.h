@@ -27,10 +27,10 @@ typedef enum {
 @class AwfulPageDataController;
 @class AwfulActions;
 @class ButtonSegmentedControl;
-@class AwfulLoadingFooterView;
-@class AwfulLoadingHeaderView;
+@class AwfulRefreshControl;
+@class AwfulLoadNextControl;
 
-@interface AwfulPage : UIViewController <AwfulWebViewDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate,AwfulPullForActionDelegate>
+@interface AwfulPage : UIViewController <AwfulWebViewDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate>
 {
 @protected
     AwfulActions *_actions;
@@ -65,9 +65,9 @@ typedef enum {
 @property (nonatomic, assign) BOOL draggingUp;
 @property (nonatomic, assign) BOOL isFullScreen;
 
-@property (nonatomic, strong) AwfulLoadingFooterView* loadingFooterView;
-@property (nonatomic, strong) AwfulLoadingHeaderView* loadingHeaderView;
-@property (nonatomic, strong) AwfulPullForActionController* pullForActionController;
+
+@property (nonatomic, strong) AwfulRefreshControl *refreshControl;
+@property (nonatomic, strong) AwfulLoadNextControl *loadNextPageControl;
 
 -(IBAction)hardRefresh;
 -(void)setThreadTitle : (NSString *)in_title;

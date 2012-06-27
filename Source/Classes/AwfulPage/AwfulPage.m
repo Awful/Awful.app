@@ -24,9 +24,8 @@
 #import "MWPhoto.h"
 #import "MWPhotoBrowser.h"
 #import "OtherWebController.h"
-//#import "AwfulUtil.h"
-#import "AwfulLoadingFooterView.h"
-#import "AwfulLoadingHeaderView.h"
+#import "AwfulRefreshControl.h"
+#import "AwfulLoadNextControl.h"
 #import "AwfulPage+Transitions.h"
 #import "AwfulWebViewDelegate.h"
 #import "AwfulThreadTitleView.h"
@@ -62,9 +61,9 @@
 @synthesize pagesSegmentedControl = _pagesSegmentedControl;
 @synthesize actionsSegmentedControl = _actionsSegmentedControl;
 @synthesize isFullScreen = _isFullScreen;
-@synthesize loadingFooterView = _loadingFooterView;
-@synthesize loadingHeaderView = _loadingHeaderView;
-@synthesize pullForActionController = _pullForActionController;
+
+@synthesize refreshControl = _refreshControl;
+@synthesize loadNextPageControl = _loadNextPageControl;
 //@synthesize skipBlankingWebViewOnce = _skipBlankingWebViewOnce;
 /*
 - (BOOL)skipBlankingWebViewOnce
@@ -96,19 +95,6 @@
     
     //self.nextPageWebView = [JSBridgeWebView new];
     //self.nextPageWebView.frame = frame;
-    
-
-    
-
-    self.pullForActionController = [[AwfulPullForActionController alloc] initWithScrollView:self.webView.scrollView];
-    self.pullForActionController.delegate = self;
-    
-    self.loadingHeaderView = [[AwfulLoadingHeaderView alloc] initWithFrame:CGRectMake(0, 0, 100, 60)]; 
-    self.loadingFooterView = [AwfulLoadingFooterView new];
-    
-    self.pullForActionController.headerView = self.loadingHeaderView;
-    self.pullForActionController.footerView = self.loadingFooterView;
-    
 }
 
 - (AwfulThread *) thread
@@ -199,10 +185,32 @@
             self.nextPageWebView.frame = self.webView.frame;
             self.nextPageWebView.foY = self.nextPageWebView.fsH;
             [self.view addSubview:self.nextPageWebView];
+            
+            
+            self.refreshControl = [[AwfulRefreshControl alloc] initWithFrame:CGRectMake(0, -50, self.view.fsW, 50)];
+            [self.webView.scrollView addSubview:self.refreshControl];
+            
+            [self.refreshControl addTarget:self
+                                     action:@selector(refreshControlChanged:) 
+                           forControlEvents:(UIControlEventValueChanged)];
+            [self.refreshControl addTarget:self 
+                                     action:@selector(refreshControlCancel:) 
+                           forControlEvents:(UIControlEventTouchCancel)];
+            
+            self.loadNextPageControl = [[AwfulLoadNextControl alloc] initWithFrame:CGRectMake(0, self.webView.scrollView.contentSize.height, self.view.fsW, 50)];
+            [self.webView.scrollView addSubview:self.loadNextPageControl];
+            
+            
+            [self.loadNextPageControl addTarget:self
+                                     action:@selector(loadNextControlChanged:) 
+                           forControlEvents:(UIControlEventValueChanged)];
+            [self.loadNextPageControl addTarget:self 
+                                     action:@selector(refreshControlCancel:) 
+                           forControlEvents:(UIControlEventTouchCancel)];
         }
         
-        self.loadingHeaderView.loadedDate = [NSDate date];
-        NSLog(@"loadedDate set to %@", self.loadingHeaderView.loadedDate);
+        self.refreshControl.loadedDate = [NSDate date];
+        NSLog(@"loadedDate set to %@", self.refreshControl.loadedDate);
         
         
         [[NSNotificationCenter defaultCenter] postNotificationName:AwfulPageDidLoadNotification
@@ -307,12 +315,20 @@
         [self swapToRefreshButton];
         //[MBProgressHUD hideHUDForView:self.view animated:NO];
         
+        /*
         self.loadingFooterView.onLastPage = (self.currentPage == self.numberOfPages);
         
         self.webView.scrollView.contentInset = self.loadingFooterView.onLastPage?
             UIEdgeInsetsMake(0, 0, self.pullForActionController.footerView.fsH, 0) :
             UIEdgeInsetsZero;
-
+        
+        if (self.currentPage == self.numberOfPages) {
+            [self.loadingFooterView removeFromSuperview];
+         self.loadingFooterView = [AwfulLastPageControl new];
+         ....etc...
+            
+        }
+         */
         
     } onError:^(NSError *error) {
         [self swapToRefreshButton];
@@ -508,7 +524,8 @@
 
 -(void)nextPage
 {
-    self.pullForActionController.footerState = AwfulPullForActionStateLoading;
+    if (self.loadNextPageControl.state != AwfulRefreshControlStateLoading)
+        self.loadNextPageControl.state = AwfulRefreshControlStateLoading;
     
     if(self.currentPage < self.numberOfPages) {
         self.destinationType = AwfulPageDestinationTypeSpecific;
@@ -722,6 +739,8 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 -(void)webViewDidFinishLoad:(UIWebView *)sender
 {
     //[self.webView.scrollView setContentOffset:CGPointMake(0, 0) animated:NO];
+    sender.scrollView.delegate = self;
+    
     [self swapToRefreshButton];
     if(self.postIDScrollDestination != nil) {
         [self scrollToSpecifiedPost];
@@ -729,8 +748,8 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         [self scrollToBottom];
     }
     
-    self.pullForActionController.headerState = AwfulPullForActionStateNormal;
-    self.pullForActionController.footerState = AwfulPullForActionStateNormal;
+    //self.pullForActionController.headerState = AwfulPullForActionStateNormal;
+    //self.pullForActionController.footerState = AwfulPullForActionStateNormal;
     
     //animate old page up and offscreen, new page in from the bottom
     if (sender == self.nextPageWebView && self.nextPageWebView.foY > 0) {
@@ -738,6 +757,8 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         
     }
     else {
+
+        
         [UIView animateWithDuration:.5 animations:^{
             self.webView.scrollView.contentInset = UIEdgeInsetsZero;
         }
@@ -797,20 +818,48 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 
 
 #pragma mark Pull For Action
--(void) didPullHeader:(UIView<AwfulPullForActionViewDelegate>*)header {
-    NSLog(@"header pull");
-    [self refresh];
+-(void) scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    if (self.refreshControl) {
+        self.refreshControl.userScrolling = YES;
+    }
+    
+    if (self.loadNextPageControl)
+        self.loadNextPageControl.userScrolling = YES;
 }
 
--(void) didPullFooter:(UIView<AwfulPullForActionViewDelegate>*)footer {
-    NSLog(@"footer pull");
-    [self tappedNextPage:nil];
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{	
+    if (self.refreshControl && self.refreshControl.userScrolling) {
+        [self.refreshControl didScrollInScrollView:scrollView];
+    }
+    
+    if (self.loadNextPageControl && self.loadNextPageControl.userScrolling)
+        [self.loadNextPageControl didScrollInScrollView:scrollView];
 }
 
--(void) didCancelPullForAction:(AwfulPullForActionController *)pullForActionController {
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    if (self.refreshControl) {
+        self.refreshControl.userScrolling = NO;
+    }
+    
+    if (self.loadNextPageControl)
+        self.loadNextPageControl.userScrolling = NO;
+}
+
+-(void) refreshControlChanged:(AwfulRefreshControl*)refreshControl {
+    if (refreshControl.state == AwfulRefreshControlStateLoading)
+        [self refresh];
+}
+
+-(void) loadNextControlChanged:(AwfulLoadNextControl*)loadNextControl {
+    if (loadNextControl.state == AwfulRefreshControlStateLoading)
+        [self tappedNextPage:nil];
+}
+
+-(void) refreshControlCancel:(AwfulRefreshControl*)refreshControl {
     [self stop];
-    pullForActionController.headerState ^= AwfulPullForActionStateLoading;
-    pullForActionController.footerState ^= AwfulPullForActionStateLoading;
+    refreshControl.state = AwfulPullForActionStateNormal;
 }
 
 -(BOOL) isOnLastPage {
