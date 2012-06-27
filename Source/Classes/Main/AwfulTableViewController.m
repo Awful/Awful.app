@@ -54,41 +54,35 @@
 }
 
 #pragma mark - UIScrollViewDelegate Methods
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{	
+-(void) scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     if (self.refreshControl) {
-        [self.refreshControl didScrollInScrollView:scrollView];
+        self.refreshControl.userScrolling = YES;
     }
     
     if (self.loadNextControl)
+        self.loadNextControl.userScrolling = YES;
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{	
+    if (self.refreshControl && self.refreshControl.userScrolling) {
+        [self.refreshControl didScrollInScrollView:scrollView];
+    }
+    
+    if (self.loadNextControl && self.loadNextControl.userScrolling)
         [self.loadNextControl didScrollInScrollView:scrollView];
 }
-/*
+
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
-    if ([self canPullToRefresh]) {
-        [self.refreshHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
+    if (self.refreshControl) {
+        self.refreshControl.userScrolling = NO;
     }
-}
-*/
-#pragma mark - EGORefreshTableHeaderDelegate Methods
-/*
-- (void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view
-{
-	[self refresh];
+    
+    if (self.loadNextControl)
+        self.loadNextControl.userScrolling = NO;
 }
 
-- (BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view{
-	return self.reloading; // should return if data source model is reloading
-}
-
-- (NSDate*)egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView*)view{
-	
-	return [NSDate date]; // should return date data source was last changed
-	
-}
-*/
 
 #pragma mark - Refresh
 

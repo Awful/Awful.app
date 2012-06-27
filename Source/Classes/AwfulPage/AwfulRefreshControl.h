@@ -31,4 +31,7 @@ typedef enum {
 @property (nonatomic,strong) NSDate* loadedDate;
 
 @property (nonatomic, readonly, getter=isRefreshing) BOOL refreshing;
+@property (nonatomic, readwrite) BOOL userScrolling;
+@property (nonatomic, readwrite) CGFloat scrollViewInset;
+@property (nonatomic, readwrite) BOOL canSwipeToCancel;
 @end

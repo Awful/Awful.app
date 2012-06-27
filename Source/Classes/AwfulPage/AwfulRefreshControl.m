@@ -19,6 +19,8 @@
 @synthesize activityView = _activityView;
 @synthesize state = _state;
 @synthesize loadedDate = _loadedDate;
+@synthesize userScrolling = _userScrolling;
+@synthesize canSwipeToCancel = _canSwipeToCancel;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -34,6 +36,7 @@
         _activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
         [self addSubview:self.activityView];
         
+        self.canSwipeToCancel = YES;
         self.state = AwfulRefreshControlStateNormal;
         
         cell.frame = CGRectMake(0, 0, self.fsW, self.fsH);
@@ -60,6 +63,8 @@
 }
 
 -(void) didScrollInScrollView:(UIScrollView *)scrollView {
+    if (!self.userScrolling) return;
+    
     CGFloat scrollAmount = scrollView.contentOffset.y;
     if (scrollAmount > 0 && self.state == AwfulRefreshControlStateNormal) return;
     
@@ -101,6 +106,7 @@
             self.subtitle.text = @"Swipe left to cancel";
             self.imageView.hidden = YES;
             [self.activityView startAnimating];
+            self.scrollViewInset = self.fsH;
             break;
             
         case AwfulRefreshControlStatePulling:
@@ -118,7 +124,7 @@
             break;
     }
     
-    [self sendActionsForControlEvents:UIControlEventValueChanged];
+    //[self sendActionsForControlEvents:UIControlEventValueChanged];
                                        
 }
 
@@ -136,5 +142,49 @@
     
     return @"???";
 }
+
+-(CGFloat) scrollViewInset {
+    UIScrollView* scrollView = (UIScrollView*)self.superview;
+    return scrollView.contentInset.top;
+}
+
+-(void) setScrollViewInset:(CGFloat)inset {
+    UIScrollView* scrollView = (UIScrollView*)self.superview;
+    UIEdgeInsets insets = scrollView.contentInset;
+    insets.top = inset;
+    scrollView.contentInset = insets;
+}
+
+-(void) setCanSwipeToCancel:(BOOL)canSwipeToCancel {
+    _canSwipeToCancel = canSwipeToCancel;
+    if (canSwipeToCancel) {
+        UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self 
+                                                                                    action:@selector(didSwipeToCancel:)
+                                           ];
+        
+        swipe.numberOfTouchesRequired = 1;
+        swipe.direction = (UISwipeGestureRecognizerDirectionLeft);
+        [self addGestureRecognizer:swipe];
+    }
+    else {
+        if (self.gestureRecognizers.count > 0) 
+            [self removeGestureRecognizer:[self.gestureRecognizers objectAtIndex:0]];
+    }
+}
+
+-(void) didSwipeToCancel:(UISwipeGestureRecognizer*)swipe {
+    [UIView animateWithDuration:.3 
+                     animations:^{
+                         self.foX = -self.fsW;
+                         self.scrollViewInset = 0;
+                     }
+                     completion:^(BOOL finished) {
+                         self.state = AwfulRefreshControlStateNormal;
+                         self.foX = 0;
+                     }
+    ];
+}
+
+
 
 @end
