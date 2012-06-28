@@ -9,28 +9,13 @@
 #import "AwfulSubForumCell.h"
 
 @implementation AwfulSubForumCell
-@synthesize forum = _forum;
-
-- (id)init
-{
-    self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"AwfulSubForumCell"];
-    if (self) {
-        
-    }
-    return self;
-}
 
 -(void) setForum:(AwfulForum *)forum {
-    self.textLabel.text = forum.name;
-    self.textLabel.adjustsFontSizeToFitWidth = YES;
-    self.textLabel.numberOfLines = 2;
-    self.detailTextLabel.text = forum.desc;
-    self.detailTextLabel.numberOfLines = 0;
+    [super setForum:forum];
     self.indentationLevel = 1;
     self.indentationWidth = 60;
     self.textLabel.font = [UIFont boldSystemFontOfSize:15];
     self.detailTextLabel.font = [UIFont systemFontOfSize:12];
-    
 }
 
 +(CGFloat) heightForContent:(AwfulForum*)forum inTableView:(UITableView*)tableView {

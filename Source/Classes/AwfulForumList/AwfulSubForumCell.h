@@ -7,10 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AwfulForumCell.h"
 
-@interface AwfulSubForumCell : UITableViewCell
+@interface AwfulSubForumCell : AwfulForumCell
 
-@property (nonatomic,strong) AwfulForum* forum;
-
-+(CGFloat) heightForContent:(AwfulForum*)forum inTableView:(UITableView*)tableView;
 @end

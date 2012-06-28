@@ -12,19 +12,10 @@
 @implementation AwfulParentForumCell
 @synthesize isExpanded = _isExpanded;
 
-- (id)init
-{
-    self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"AwfulParentForumCell"];
-    if (self) {
-        
-    }
-    return self;
-}
 
 -(void) awakeFromNib {
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toggle)];
     [self.imageView addGestureRecognizer:tap];
-    
 }
 
 -(void) toggle {
@@ -41,16 +32,25 @@
 }
 
 -(void) setForum:(AwfulForum *)forum {
-    self.textLabel.text = forum.name;
-    self.textLabel.numberOfLines = 2;
-    self.textLabel.adjustsFontSizeToFitWidth = YES;
-    self.detailTextLabel.text = forum.desc;
-    self.detailTextLabel.numberOfLines = 0;
-    self.detailTextLabel.font = [UIFont systemFontOfSize:12];
+    [super setForum:forum];
     self.isExpanded = forum.expandedValue;
     self.imageView.image = [UIImage imageNamed:@"forum-arrow-right.png"];
-    self.indentationLevel = 1;
+    
+    NSString *imageName =  @"star_off.png" ;
+    UIButton *favImage = [UIButton buttonWithType:UIButtonTypeCustom];
 
+    [favImage setImage:[UIImage imageNamed:@"star_off.png"] forState:UIControlStateNormal];
+    [favImage setImage:[UIImage imageNamed:@"star_on.png"] forState:UIControlStateSelected];
+    
+    [favImage addTarget:self
+                 action:@selector(toggleFavorite:) 
+       forControlEvents:UIControlEventTouchUpInside
+     ];
+    
+    [favImage sizeToFit];
+    self.accessoryView = favImage;
+
+    
 }
 
 +(CGFloat) heightForContent:(AwfulForum*)forum inTableView:(UITableView*)tableView {

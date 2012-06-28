@@ -7,13 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AwfulForumCell.h"
 @class AwfulForum;
 
 static NSString* const AwfulToggleExpandForum = @"com.regularberry.awful.notifications.toggleExpandForum";
 
-@interface AwfulParentForumCell : UITableViewCell
-@property (nonatomic,strong) AwfulForum* forum;
+@interface AwfulParentForumCell : AwfulForumCell
 @property (nonatomic) BOOL isExpanded;
-
-+(CGFloat) heightForContent:(AwfulForum*)forum inTableView:(UITableView*)tableView;
 @end

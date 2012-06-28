@@ -82,7 +82,7 @@
                                 </view>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
-                                    <segue destination="b0I-zs-CAw" kind="push" identifier="ThreadList" splitViewControllerTargetIndex="1" id="53q-WG-i0p"/>
+                                    <segue destination="b0I-zs-CAw" kind="push" identifier="ThreadList" id="53q-WG-i0p"/>
                                 </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="2" indentationWidth="0.0" shouldIndentWhileEditing="NO" reuseIdentifier="AwfulSubForumCell" textLabel="5gd-fq-AWI" detailTextLabel="6NN-4u-sIE" style="IBUITableViewCellStyleSubtitle" id="JhL-dk-mfN" customClass="AwfulSubForumCell">
@@ -208,32 +208,6 @@
                                     <outlet property="unreadButton" destination="cJ2-hY-Neq" id="oEA-pg-759"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="LoadMoreCell" rowHeight="72" id="tab-Ra-3gW" userLabel="thread cell" customClass="AwfulLoadingThreadCell">
-                                <rect key="frame" x="0.0" y="94" width="320" height="72"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="71"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Load More" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="L6f-ZP-zLK">
-                                            <rect key="frame" x="20" y="16" width="280" height="40"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                            <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        </label>
-                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" style="gray" id="LA3-5U-qmu">
-                                            <rect key="frame" x="17" y="26" width="20" height="20"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        </activityIndicatorView>
-                                    </subviews>
-                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                </view>
-                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                <connections>
-                                    <outlet property="activity" destination="LA3-5U-qmu" id="iDC-hu-TVs"/>
-                                </connections>
-                            </tableViewCell>
                         </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="b0I-zs-CAw" id="RaC-fF-S7F"/>
@@ -249,7 +223,7 @@
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackTranslucent"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <segue destination="oRp-8t-Jy6" kind="replace" identifier="AwfulPage" splitViewControllerTargetIndex="1" id="hhi-LS-YNv"/>
+                        <segue destination="oRp-8t-Jy6" kind="replace" identifier="AwfulPage" customClass="AwfulChooseThreadSegue" splitViewControllerTargetIndex="1" id="hhi-LS-YNv"/>
                     </connections>
                 </tableViewController>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Forums Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" minimumFontSize="10" id="G15-hw-wus">
@@ -889,58 +863,32 @@
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                         <color key="separatorColor" red="0.74901960779999999" green="0.74901960779999999" blue="0.74901960779999999" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ForumCell" id="96p-sh-3Qq" customClass="AwfulForumCell">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="AwfulForumCell" textLabel="Gcp-h2-Mlx" detailTextLabel="nY1-DL-xyL" style="IBUITableViewCellStyleSubtitle" id="96p-sh-3Qq" customClass="AwfulForumCell">
                                 <rect key="frame" x="0.0" y="22" width="320" height="50"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                     <rect key="frame" x="0.0" y="0.0" width="300" height="49"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Questions? Comments? Suggestions? This is" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="10" id="RuY-Ed-FQB">
-                                            <rect key="frame" x="44" y="3" width="225" height="44"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Gcp-h2-Mlx">
+                                            <rect key="frame" x="10" y="5" width="38" height="22"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                            <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         </label>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="jmB-Bn-Rxu">
-                                            <rect key="frame" x="0.0" y="3" width="44" height="44"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                            <state key="normal">
-                                                <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
-                                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                            </state>
-                                            <state key="highlighted">
-                                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            </state>
-                                            <connections>
-                                                <action selector="tappedArrow:" destination="96p-sh-3Qq" eventType="touchUpInside" id="S2A-2b-7Pz"/>
-                                            </connections>
-                                        </button>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Y0T-PH-Mnw" userLabel="arrow button">
-                                            <rect key="frame" x="11" y="16" width="22" height="18"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                            <state key="normal" image="forum-arrow-right.png">
-                                                <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
-                                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                            </state>
-                                            <state key="highlighted">
-                                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            </state>
-                                            <connections>
-                                                <action selector="tappedArrow:" destination="96p-sh-3Qq" eventType="touchDown" id="hIO-0E-gtW"/>
-                                            </connections>
-                                        </button>
+                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="nY1-DL-xyL">
+                                            <rect key="frame" x="10" y="27" width="47" height="18"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                            <color key="textColor" red="0.50196078431372548" green="0.50196078431372548" blue="0.50196078431372548" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        </label>
                                     </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
-                                    <outlet property="arrow" destination="Y0T-PH-Mnw" id="hMw-oX-fnE"/>
-                                    <outlet property="titleLabel" destination="RuY-Ed-FQB" id="gap-27-pem"/>
                                     <segue destination="b0I-zs-CAw" kind="push" identifier="ThreadList" id="gCu-q9-SZ9"/>
                                 </connections>
                             </tableViewCell>
@@ -992,6 +940,9 @@
         <class className="AwfulFetchedTableViewController" superclassName="AwfulTableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulFetchedTableViewController.h"/>
         </class>
+        <class className="AwfulForumCell" superclassName="UITableViewCell">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumCell.h"/>
+        </class>
         <class className="AwfulForumHeader" superclassName="UIView">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumHeader.h"/>
             <relationships>
@@ -1038,7 +989,7 @@
         <class className="AwfulPageIpad" superclassName="AwfulPage">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPageIpad.h"/>
         </class>
-        <class className="AwfulParentForumCell" superclassName="UITableViewCell">
+        <class className="AwfulParentForumCell" superclassName="AwfulForumCell">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulParentForumCell.h"/>
         </class>
         <class className="AwfulPostBoxController" superclassName="UIViewController">
@@ -1058,7 +1009,7 @@
         <class className="AwfulSplitViewController" superclassName="UISplitViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulSplitViewController.h"/>
         </class>
-        <class className="AwfulSubForumCell" superclassName="UITableViewCell">
+        <class className="AwfulSubForumCell" superclassName="AwfulForumCell">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulSubForumCell.h"/>
         </class>
         <class className="AwfulTableViewController" superclassName="UITableViewController">
@@ -1102,7 +1053,7 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="J8h-zi-qeo"/>
+        <segue reference="gCu-q9-SZ9"/>
         <segue reference="hhi-LS-YNv"/>
         <segue reference="Kgw-hp-QCk"/>
     </inferredMetricsTieBreakers>
