@@ -150,8 +150,15 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"AwfulParentForumCell";
-    UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    AwfulForum* forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    NSString* cellIdentifier;
+    if (forum.parentForum == nil)
+        cellIdentifier = @"AwfulParentForumCell";
+    else {
+        cellIdentifier = @"AwfulSubForumCell";
+    }
+    
+    UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     [self configureCell:cell atIndexPath:indexPath];
     return cell;
 }
@@ -160,19 +167,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 -(void) configureCell:(AwfulParentForumCell*)cell atIndexPath:(NSIndexPath*)indexPath {
     AwfulForum* forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
     cell.forum = forum;
-    cell.textLabel.text = forum.name;
-    cell.textLabel.adjustsFontSizeToFitWidth = YES;
-    cell.detailTextLabel.text = forum.desc;
-    cell.detailTextLabel.numberOfLines = 0;
-    [(AwfulParentForumCell*)cell setIsExpanded:forum.expandedValue];
-    
-    if (forum.parentForum != nil) {
-        cell.indentationLevel = 2;
-        cell.textLabel.font = [UIFont boldSystemFontOfSize:15];
-        cell.textLabel.font = [UIFont boldSystemFontOfSize:14];
-        cell.detailTextLabel.text = forum.parentForum.name;
-        cell.imageView.image = nil;
-    }
 }
 
 -(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {

@@ -36,7 +36,7 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:AwfulToggleExpandForum                                                          
                                                         object:self
                                                       userInfo:userInfo];
-    
+    //fixme: animate arrow change
     
 }
 
@@ -47,17 +47,8 @@
     self.detailTextLabel.numberOfLines = 0;
     self.isExpanded = forum.expandedValue;
     self.imageView.image = [UIImage imageNamed:@"forum-arrow-right.png"];
-    self.textLabel.font = [UIFont boldSystemFontOfSize:18];
-    self.textLabel.font = [UIFont boldSystemFontOfSize:16];
-    self.indentationLevel = 0;
-    
-    if (forum.parentForum != nil) {
-        self.indentationLevel = 2;
-        self.textLabel.font = [UIFont boldSystemFontOfSize:15];
-        self.textLabel.font = [UIFont boldSystemFontOfSize:14];
-        self.detailTextLabel.text = forum.parentForum.name;
-        self.imageView.image = nil;
-    }
+    self.indentationLevel = 1;
+
 }
 
 @end
