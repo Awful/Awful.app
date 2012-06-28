@@ -45,16 +45,16 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([[segue identifier] isEqualToString:@"ThreadList"]) {
-        NSIndexPath *selected = [self.tableView indexPathForSelectedRow];
+        NSIndexPath *selected = (NSIndexPath*)sender;
         AwfulThreadListController *list = (AwfulThreadListController *)segue.destinationViewController;
-        list.forum = [self getForumAtIndexPath:selected];
+        list.forum = [self.fetchedResultsController objectAtIndexPath:selected];
     }
 }
 
 -(void) awakeFromNib {
       
     [self setEntityName:@"AwfulForum"
-              predicate:@"category != nil"
+              predicate:@"category != nil and children.@count >0"
                    sort: [NSArray arrayWithObjects:
                           [NSSortDescriptor sortDescriptorWithKey:@"category.index" ascending:YES],
                           [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES],
@@ -176,29 +176,35 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     }
 }
 
+*/
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     [[NSBundle mainBundle] loadNibNamed:@"AwfulForumHeaderView" owner:self options:nil];
     AwfulForumHeader *header = self.headerView;
     self.headerView = nil;
     
-    AwfulForumSection *forumSection = [self getForumSectionAtSection:section];
-    header.titleLabel.text = forumSection ? forumSection.forum.name : @"Unknown";
+    header.titleLabel.text = [self.fetchedResultsController.sectionIndexTitles objectAtIndex:section];
     return header;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 50;
+    return 30;
 }
-*/
 
 -(void) configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath*)indexPath {
     AwfulForum* forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    
     cell.textLabel.text = forum.name;
     cell.textLabel.adjustsFontSizeToFitWidth = YES;
     cell.detailTextLabel.text = forum.desc;
     cell.detailTextLabel.numberOfLines = 0;
+    
+    if (forum.parentForum != nil) {
+        cell.indentationLevel = 2;
+        cell.textLabel.font = [UIFont boldSystemFontOfSize:15];
+        cell.textLabel.font = [UIFont boldSystemFontOfSize:14];
+    }
 }
 
 -(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -220,6 +226,10 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     height = 10 + textSize.height + detailSize.height;
     
     return (MAX(height,44));
+}
+
+-(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [self performSegueWithIdentifier:@"ThreadList" sender:indexPath];
 }
 
 #pragma mark - Forums
