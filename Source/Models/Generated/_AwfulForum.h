@@ -6,6 +6,7 @@
 
 extern const struct AwfulForumAttributes {
 	__unsafe_unretained NSString *desc;
+	__unsafe_unretained NSString *expanded;
 	__unsafe_unretained NSString *forumID;
 	__unsafe_unretained NSString *index;
 	__unsafe_unretained NSString *isCategory;
@@ -35,6 +36,7 @@ extern const struct AwfulForumFetchedProperties {
 
 
 
+
 @interface AwfulForumID : NSManagedObjectID {}
 @end
 
@@ -51,6 +53,18 @@ extern const struct AwfulForumFetchedProperties {
 
 
 //- (BOOL)validateDesc:(id*)value_ error:(NSError**)error_;
+
+
+
+
+@property (nonatomic, strong) NSNumber* expanded;
+
+
+@property BOOL expandedValue;
+- (BOOL)expandedValue;
+- (void)setExpandedValue:(BOOL)value_;
+
+//- (BOOL)validateExpanded:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -153,6 +167,15 @@ extern const struct AwfulForumFetchedProperties {
 
 - (NSString*)primitiveDesc;
 - (void)setPrimitiveDesc:(NSString*)value;
+
+
+
+
+- (NSNumber*)primitiveExpanded;
+- (void)setPrimitiveExpanded:(NSNumber*)value;
+
+- (BOOL)primitiveExpandedValue;
+- (void)setPrimitiveExpandedValue:(BOOL)value_;
 
 
 
