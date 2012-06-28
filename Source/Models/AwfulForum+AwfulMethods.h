@@ -7,10 +7,12 @@
 //
 
 #import "AwfulForum.h"
+@class TFHppleElement;
 
 @interface AwfulForum (AwfulMethods)
 
 +(NSMutableArray *)parseForums : (NSData *)data;
 +(AwfulForum *)getForumWithID : (NSString *)forumID fromCurrentList : (NSArray *)currentList;
 
++(NSString*) forumIDFromLinkElement:(TFHppleElement*)a;
 @end

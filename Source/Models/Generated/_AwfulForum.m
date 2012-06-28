@@ -4,12 +4,15 @@
 #import "_AwfulForum.h"
 
 const struct AwfulForumAttributes AwfulForumAttributes = {
+	.desc = @"desc",
 	.forumID = @"forumID",
 	.index = @"index",
+	.isCategory = @"isCategory",
 	.name = @"name",
 };
 
 const struct AwfulForumRelationships AwfulForumRelationships = {
+	.category = @"category",
 	.children = @"children",
 	.favorite = @"favorite",
 	.parentForum = @"parentForum",
@@ -49,9 +52,20 @@ const struct AwfulForumFetchedProperties AwfulForumFetchedProperties = {
 		NSSet *affectingKey = [NSSet setWithObject:@"index"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 	}
+	if ([key isEqualToString:@"isCategoryValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"isCategory"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+	}
 
 	return keyPaths;
 }
+
+
+
+
+@dynamic desc;
+
+
 
 
 
@@ -89,12 +103,42 @@ const struct AwfulForumFetchedProperties AwfulForumFetchedProperties = {
 
 
 
+@dynamic isCategory;
+
+
+
+- (BOOL)isCategoryValue {
+	NSNumber *result = [self isCategory];
+	return [result boolValue];
+}
+
+- (void)setIsCategoryValue:(BOOL)value_ {
+	[self setIsCategory:[NSNumber numberWithBool:value_]];
+}
+
+- (BOOL)primitiveIsCategoryValue {
+	NSNumber *result = [self primitiveIsCategory];
+	return [result boolValue];
+}
+
+- (void)setPrimitiveIsCategoryValue:(BOOL)value_ {
+	[self setPrimitiveIsCategory:[NSNumber numberWithBool:value_]];
+}
+
+
+
+
+
 @dynamic name;
 
 
 
 
 
+
+@dynamic category;
+
+	
 
 @dynamic children;
 

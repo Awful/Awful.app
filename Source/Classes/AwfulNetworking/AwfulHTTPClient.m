@@ -259,7 +259,7 @@ typedef enum BookmarkAction {
 -(NSOperation *)forumsListOnCompletion : (ForumsListResponseBlock)forumsListResponseBlock onError : (AwfulErrorBlock)errorBlock
 {
     NetworkLogInfo(@"%@", THIS_METHOD);
-    NSString *path = @"forumdisplay.php?forumid=1";
+    NSString *path = @"index.php?s=";
     NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
        success:^(AFHTTPRequestOperation *operation, id response) {

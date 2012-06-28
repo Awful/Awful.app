@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "AwfulTableViewController.h"
+#import "AwfulFetchedTableViewController.h"
 
-@interface AwfulForumsListController : AwfulTableViewController <UIAlertViewDelegate>
+@interface AwfulForumsListController : AwfulFetchedTableViewController <UIAlertViewDelegate>
 
 @end

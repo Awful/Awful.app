@@ -51,6 +51,18 @@
     }
 }
 
+-(void) awakeFromNib {
+      
+    [self setEntityName:@"AwfulForum"
+              predicate:@"category != nil"
+                   sort: [NSArray arrayWithObjects:
+                          [NSSortDescriptor sortDescriptorWithKey:@"category.index" ascending:YES],
+                          [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES],
+                          nil]
+             sectionKey:@"category.index"
+     ];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -67,17 +79,8 @@
 
 - (void)loadForums
 {
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[AwfulForum entityName]];
-    NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES];
-    [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
-    fetchRequest.predicate = self.forumsPredicate;
+  
     
-    NSError *err = nil;
-    NSArray *forums = [ApplicationDelegate.managedObjectContext executeFetchRequest:fetchRequest error:&err];
-    if(err != nil) {
-        NSLog(@"failed to load forums %@", [err localizedDescription]);
-    }
-    self.forums = [NSMutableArray arrayWithArray:forums];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -87,11 +90,11 @@
     
     [self.navigationItem.leftBarButtonItem setTintColor:[UIColor colorWithRed:46.0/255 green:146.0/255 blue:190.0/255 alpha:1.0]];
     
-    if(IsLoggedIn() && [self.forums count] == 0) {
-        [self refresh];
-    } else if([self.tableView numberOfSections] == 0 && IsLoggedIn()) {
-        [self.tableView reloadData];
-    }
+   // if(IsLoggedIn() && [self.forums count] == 0) {
+     //   [self refresh];
+    //} else if([self.tableView numberOfSections] == 0 && IsLoggedIn()) {
+    //    [self.tableView reloadData];
+   // }
 }
 
 -(void)finishedRefreshing
@@ -121,7 +124,7 @@
 }
 
 #pragma mark - Table view data source
-
+/*
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return IsLoggedIn() ? [self.forumSections count] : 0;
@@ -188,9 +191,39 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 50;
 }
+*/
+
+-(void) configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath*)indexPath {
+    AwfulForum* forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    cell.textLabel.text = forum.name;
+    cell.textLabel.adjustsFontSizeToFitWidth = YES;
+    cell.detailTextLabel.text = forum.desc;
+    cell.detailTextLabel.numberOfLines = 0;
+}
+
+-(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    AwfulForum* forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    int width = tableView.frame.size.width;
+
+    CGSize textSize = {0, 0};
+    CGSize detailSize = {0, 0};
+    int height = 44;
+    
+    textSize = [forum.name sizeWithFont:[UIFont boldSystemFontOfSize:16]
+                         constrainedToSize:CGSizeMake(width, 4000) 
+                             lineBreakMode:UILineBreakModeWordWrap];
+    if(forum.desc)
+        detailSize = [forum.desc sizeWithFont:[UIFont systemFontOfSize:15] 
+                             constrainedToSize:CGSizeMake(width, 4000) 
+                                 lineBreakMode:UILineBreakModeWordWrap];
+    
+    height = 10 + textSize.height + detailSize.height;
+    
+    return (MAX(height,44));
+}
 
 #pragma mark - Forums
-
+/*
 - (void)toggleExpandForForumSection:(AwfulForumSection *)section
 {
     BOOL expanded = section.expanded;
@@ -380,6 +413,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     }
     return [self getRootSectionForSection:[self getForumSectionFromID:section.forum.parentForum.forumID]];
 }
-
+*/
 @end
 

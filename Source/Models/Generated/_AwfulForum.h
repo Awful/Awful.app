@@ -5,12 +5,15 @@
 
 
 extern const struct AwfulForumAttributes {
+	__unsafe_unretained NSString *desc;
 	__unsafe_unretained NSString *forumID;
 	__unsafe_unretained NSString *index;
+	__unsafe_unretained NSString *isCategory;
 	__unsafe_unretained NSString *name;
 } AwfulForumAttributes;
 
 extern const struct AwfulForumRelationships {
+	__unsafe_unretained NSString *category;
 	__unsafe_unretained NSString *children;
 	__unsafe_unretained NSString *favorite;
 	__unsafe_unretained NSString *parentForum;
@@ -21,9 +24,12 @@ extern const struct AwfulForumFetchedProperties {
 } AwfulForumFetchedProperties;
 
 @class AwfulForum;
+@class AwfulForum;
 @class AwfulFavorite;
 @class AwfulForum;
 @class AwfulThread;
+
+
 
 
 
@@ -37,6 +43,14 @@ extern const struct AwfulForumFetchedProperties {
 + (NSString*)entityName;
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
 - (AwfulForumID*)objectID;
+
+
+
+
+@property (nonatomic, strong) NSString* desc;
+
+
+//- (BOOL)validateDesc:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -61,11 +75,30 @@ extern const struct AwfulForumFetchedProperties {
 
 
 
+@property (nonatomic, strong) NSNumber* isCategory;
+
+
+@property BOOL isCategoryValue;
+- (BOOL)isCategoryValue;
+- (void)setIsCategoryValue:(BOOL)value_;
+
+//- (BOOL)validateIsCategory:(id*)value_ error:(NSError**)error_;
+
+
+
+
 @property (nonatomic, strong) NSString* name;
 
 
 //- (BOOL)validateName:(id*)value_ error:(NSError**)error_;
 
+
+
+
+
+@property (nonatomic, strong) AwfulForum* category;
+
+//- (BOOL)validateCategory:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -118,6 +151,12 @@ extern const struct AwfulForumFetchedProperties {
 @interface _AwfulForum (CoreDataGeneratedPrimitiveAccessors)
 
 
+- (NSString*)primitiveDesc;
+- (void)setPrimitiveDesc:(NSString*)value;
+
+
+
+
 - (NSString*)primitiveForumID;
 - (void)setPrimitiveForumID:(NSString*)value;
 
@@ -133,10 +172,24 @@ extern const struct AwfulForumFetchedProperties {
 
 
 
+- (NSNumber*)primitiveIsCategory;
+- (void)setPrimitiveIsCategory:(NSNumber*)value;
+
+- (BOOL)primitiveIsCategoryValue;
+- (void)setPrimitiveIsCategoryValue:(BOOL)value_;
+
+
+
+
 - (NSString*)primitiveName;
 - (void)setPrimitiveName:(NSString*)value;
 
 
+
+
+
+- (AwfulForum*)primitiveCategory;
+- (void)setPrimitiveCategory:(AwfulForum*)value;
 
 
 

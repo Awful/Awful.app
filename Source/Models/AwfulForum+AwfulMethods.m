@@ -9,8 +9,18 @@
 #import "AwfulForum+AwfulMethods.h"
 #import "TFHpple.h"
 #import "TFHppleElement.h"
+#import "XPathQuery.h"
 
 @implementation AwfulForum (AwfulMethods)
+
+-(id) init {
+    self = [super initWithEntity:[NSEntityDescription entityForName:[[self class] description]
+                                             inManagedObjectContext:ApplicationDelegate.managedObjectContext
+                                  ]
+  insertIntoManagedObjectContext:ApplicationDelegate.managedObjectContext];
+    
+    return self;
+}
 
 +(AwfulForum *)getForumWithID : (NSString *)forumID fromCurrentList : (NSArray *)currentList
 {
@@ -29,6 +39,91 @@
 +(NSMutableArray *)parseForums : (NSData *)data
 {
     TFHpple *page_data = [[TFHpple alloc] initWithHTMLData:data];
+    NSArray *forumLinks = PerformRawHTMLXPathQuery(page_data.data, @"//a[@class='forum']|//div[@class='subforums']//a");
+    NSMutableArray *forumIDs = [NSMutableArray new];
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"forumid=([0-9]*)" 
+                                                                           options:NSRegularExpressionCaseInsensitive 
+                                                                             error:nil];
+    for (NSString* a in forumLinks) {
+        TFHpple *link = [[TFHpple alloc] initWithHTMLData:[a dataUsingEncoding:NSUTF8StringEncoding]];
+        TFHppleElement *aElement = [link searchForSingle:@"//a"];
+        NSString *href = [aElement objectForKey:@"href"];
+        NSRange range = [[regex firstMatchInString:href 
+                                           options:0 
+                                             range:NSMakeRange(0,href.length)] 
+                         rangeAtIndex:1];
+        NSString *idString = [href substringWithRange:range];
+        
+        if (idString != nil)
+            [forumIDs addObject:[NSNumber numberWithInt:idString.intValue]];
+    }
+    
+    NSArray *rows = PerformRawHTMLXPathQuery(data, @"//tr");
+    
+    int i = 0;
+    AwfulForum* category;
+    for (NSString* e in rows) {
+        NSData *d = [e dataUsingEncoding:NSUTF8StringEncoding];
+        TFHpple* kids = [[TFHpple alloc] initWithHTMLData:d];
+        
+ 
+        
+        TFHppleElement* cat = [kids searchForSingle:@"//th[@class='category']//a"];
+        if (cat) {
+            category = [AwfulForum new];
+            category.name = [cat content];
+            category.forumID = [self forumIDFromLinkElement:cat];
+            category.indexValue = i++;
+            category.isCategoryValue = YES;
+        }
+        
+        
+        
+        TFHppleElement* img = [kids searchForSingle:@"//td[@class='icon']//img"];
+        TFHppleElement* a = [kids searchForSingle:@"//td[@class='title']//a[@class='forum']"];
+        
+        
+        NSArray* subs = [kids search:@"//div[@class='subforums']//a"];
+        
+        if (img && a) { //forum
+            AwfulForum *forum = [AwfulForum new];
+            forum.name = [a content];
+            forum.desc = [a objectForKey:@"title"];
+            forum.category = category;
+            
+            NSString *href = [a objectForKey:@"href"];
+            NSRange range = [[regex firstMatchInString:href 
+                                               options:0 
+                                                 range:NSMakeRange(0,href.length)] 
+                             rangeAtIndex:1];
+            NSString *idString = [href substringWithRange:range];
+            
+            
+            forum.forumID = idString;
+            forum.indexValue = i++;
+            //forum.icon = [AwfulIcon new];
+            //forum.icon.filename = [img objectForKey:@"src"];
+            
+            for (TFHppleElement* s in subs) {
+                AwfulForum *subforum = [AwfulForum new];
+                subforum.name = [s content];
+                subforum.parentForum = forum;
+                subforum.indexValue = i++;
+                subforum.category = category;
+                NSString *href = [s objectForKey:@"href"];
+                NSRange range = [[regex firstMatchInString:href 
+                                                   options:0 
+                                                     range:NSMakeRange(0,href.length)] 
+                                 rangeAtIndex:1];
+                NSString *idString = [href substringWithRange:range];
+                subforum.forumID = idString;
+            }
+            
+            
+        }
+    }    
+    [ApplicationDelegate saveContext];
+/*
     NSArray *forum_elements = [page_data search:@"//select[@name='forumid']/option"];
     
     NSMutableArray *forums = [NSMutableArray array];
@@ -91,6 +186,19 @@
     }
     [ApplicationDelegate saveContext];
     return forums;
+ */
+    return nil;
 }
 
++(NSString*) forumIDFromLinkElement:(TFHppleElement*)a {
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"forumid=([0-9]*)" 
+                                                                           options:NSRegularExpressionCaseInsensitive 
+                                                                             error:nil];
+    NSString *href = [a objectForKey:@"href"];
+    NSRange range = [[regex firstMatchInString:href 
+                                       options:0 
+                                         range:NSMakeRange(0,href.length)] 
+                     rangeAtIndex:1];
+    return  [href substringWithRange:range];
+}
 @end
