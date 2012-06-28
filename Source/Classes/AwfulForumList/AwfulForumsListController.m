@@ -35,11 +35,15 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
+    
     if ([[segue identifier] isEqualToString:@"ThreadList"]) {
-        NSIndexPath *selected = (NSIndexPath*)sender;
+        UITableViewCell* cell = (UITableViewCell*)sender;
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+        
         AwfulThreadListController *list = (AwfulThreadListController *)segue.destinationViewController;
-        list.forum = [self.fetchedResultsController objectAtIndexPath:selected];
+        list.forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
     }
+     
 }
 
 -(void) awakeFromNib {
@@ -190,9 +194,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     return (MAX(height,50));
 }
 
--(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self performSegueWithIdentifier:@"ThreadList" sender:indexPath];
-}
+//-(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+//    [self performSegueWithIdentifier:@"ThreadList" sender:indexPath];
+//}
 
 #pragma mark - Forums
 

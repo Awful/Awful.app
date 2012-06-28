@@ -81,6 +81,9 @@
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <segue destination="b0I-zs-CAw" kind="push" identifier="ThreadList" splitViewControllerTargetIndex="1" id="53q-WG-i0p"/>
+                                </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="2" indentationWidth="0.0" shouldIndentWhileEditing="NO" reuseIdentifier="AwfulSubForumCell" textLabel="5gd-fq-AWI" detailTextLabel="6NN-4u-sIE" style="IBUITableViewCellStyleSubtitle" id="JhL-dk-mfN" customClass="AwfulSubForumCell">
                                 <rect key="frame" x="0.0" y="72" width="320" height="50"/>
@@ -107,6 +110,9 @@
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <segue destination="b0I-zs-CAw" kind="push" identifier="AwfulThread" id="J8h-zi-qeo"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -1096,6 +1102,7 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
+        <segue reference="J8h-zi-qeo"/>
         <segue reference="hhi-LS-YNv"/>
         <segue reference="Kgw-hp-QCk"/>
     </inferredMetricsTieBreakers>
