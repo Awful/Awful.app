@@ -42,13 +42,35 @@
 
 -(void) setForum:(AwfulForum *)forum {
     self.textLabel.text = forum.name;
+    self.textLabel.numberOfLines = 2;
     self.textLabel.adjustsFontSizeToFitWidth = YES;
     self.detailTextLabel.text = forum.desc;
     self.detailTextLabel.numberOfLines = 0;
+    self.detailTextLabel.font = [UIFont systemFontOfSize:12];
     self.isExpanded = forum.expandedValue;
     self.imageView.image = [UIImage imageNamed:@"forum-arrow-right.png"];
     self.indentationLevel = 1;
 
+}
+
++(CGFloat) heightForContent:(AwfulForum*)forum inTableView:(UITableView*)tableView {
+    int width = tableView.frame.size.width - 20 - 55;
+    
+    CGSize textSize = {0, 0};
+    CGSize detailSize = {0, 0};
+    int height = 44;
+    
+    textSize = [forum.name sizeWithFont:[UIFont boldSystemFontOfSize:18]
+                      constrainedToSize:CGSizeMake(width, 4000) 
+                          lineBreakMode:UILineBreakModeWordWrap];
+    if(forum.desc)
+        detailSize = [forum.desc sizeWithFont:[UIFont systemFontOfSize:12] 
+                            constrainedToSize:CGSizeMake(width, 4000) 
+                                lineBreakMode:UILineBreakModeWordWrap];
+    
+    height = 10 + textSize.height + detailSize.height;
+    
+    return (MAX(height,50));
 }
 
 @end

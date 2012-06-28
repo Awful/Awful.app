@@ -17,6 +17,7 @@
 #import "AwfulSettings.h"
 #import "AwfulUser.h"
 #import "AwfulParentForumCell.h"
+#import "AwfulSubForumCell.h"
 
 @interface AwfulForumsListController ()
 
@@ -82,11 +83,9 @@
     
     [self.navigationItem.leftBarButtonItem setTintColor:[UIColor colorWithRed:46.0/255 green:146.0/255 blue:190.0/255 alpha:1.0]];
     
-   // if(IsLoggedIn() && [self.forums count] == 0) {
-     //   [self refresh];
-    //} else if([self.tableView numberOfSections] == 0 && IsLoggedIn()) {
-    //    [self.tableView reloadData];
-   // }
+   if(IsLoggedIn() && self.fetchedResultsController.sections.count == 0) {
+       [self refresh];
+    } 
 }
 
 -(void)finishedRefreshing
@@ -175,23 +174,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 -(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     AwfulForum* forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    int width = tableView.frame.size.width - 20 - 50;
+    if (forum.parentForum == nil)
+        return [AwfulParentForumCell heightForContent:forum inTableView:tableView];
+    else
+        return [AwfulSubForumCell heightForContent:forum inTableView:tableView];
 
-    CGSize textSize = {0, 0};
-    CGSize detailSize = {0, 0};
-    int height = 44;
-    
-    textSize = [forum.name sizeWithFont:[UIFont boldSystemFontOfSize:16]
-                         constrainedToSize:CGSizeMake(width, 4000) 
-                             lineBreakMode:UILineBreakModeWordWrap];
-    if(forum.desc)
-        detailSize = [forum.desc sizeWithFont:[UIFont systemFontOfSize:15] 
-                             constrainedToSize:CGSizeMake(width, 4000) 
-                                 lineBreakMode:UILineBreakModeWordWrap];
-    
-    height = 10 + textSize.height + detailSize.height;
-    
-    return (MAX(height,50));
 }
 
 //-(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

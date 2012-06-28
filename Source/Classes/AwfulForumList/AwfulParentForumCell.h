@@ -14,4 +14,6 @@ static NSString* const AwfulToggleExpandForum = @"com.regularberry.awful.notific
 @interface AwfulParentForumCell : UITableViewCell
 @property (nonatomic,strong) AwfulForum* forum;
 @property (nonatomic) BOOL isExpanded;
+
++(CGFloat) heightForContent:(AwfulForum*)forum inTableView:(UITableView*)tableView;
 @end

@@ -11,4 +11,6 @@
 @interface AwfulSubForumCell : UITableViewCell
 
 @property (nonatomic,strong) AwfulForum* forum;
+
++(CGFloat) heightForContent:(AwfulForum*)forum inTableView:(UITableView*)tableView;
 @end

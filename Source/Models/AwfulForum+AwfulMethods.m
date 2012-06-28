@@ -86,6 +86,7 @@
             NSArray* subs = [kids search:@"//div[@class='subforums']//a"];
             for (TFHppleElement* s in subs) {
                 AwfulForum *subforum = [existingDict objectForKey:[self forumIDFromLinkElement:s]];
+                if (!subforum) subforum = [AwfulForum new];
                 subforum.name = [s content];
                 subforum.parentForum = forum;
                 subforum.indexValue = i++;
