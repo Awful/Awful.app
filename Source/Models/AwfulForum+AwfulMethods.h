@@ -15,4 +15,5 @@
 +(AwfulForum *)getForumWithID : (NSString *)forumID fromCurrentList : (NSArray *)currentList;
 
 +(NSString*) forumIDFromLinkElement:(TFHppleElement*)a;
++(void) updateSubforums:(NSArray*)rows inForum:(AwfulForum*)forum;
 @end

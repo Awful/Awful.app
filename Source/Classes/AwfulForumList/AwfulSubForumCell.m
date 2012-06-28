@@ -28,7 +28,6 @@
     self.indentationLevel = 1;
     self.indentationWidth = 60;
     self.textLabel.font = [UIFont boldSystemFontOfSize:15];
-    self.detailTextLabel.font = [UIFont boldSystemFontOfSize:14];
     
 }
 
