@@ -82,7 +82,7 @@
                                 </view>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
-                                    <segue destination="b0I-zs-CAw" kind="push" identifier="ThreadList" id="53q-WG-i0p"/>
+                                    <segue destination="b0I-zs-CAw" kind="push" identifier="ThreadList" id="Lgq-yz-2I5"/>
                                 </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="2" indentationWidth="0.0" shouldIndentWhileEditing="NO" reuseIdentifier="AwfulSubForumCell" textLabel="5gd-fq-AWI" detailTextLabel="6NN-4u-sIE" style="IBUITableViewCellStyleSubtitle" id="JhL-dk-mfN" customClass="AwfulSubForumCell">
@@ -111,7 +111,7 @@
                                 </view>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
-                                    <segue destination="b0I-zs-CAw" kind="push" identifier="AwfulThread" id="J8h-zi-qeo"/>
+                                    <segue destination="b0I-zs-CAw" kind="push" id="jma-nB-Wd3"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -206,6 +206,316 @@
                                     <outlet property="tagImage" destination="dLf-bU-EKo" id="wqX-0g-Gdq"/>
                                     <outlet property="threadTitleLabel" destination="uOi-hq-Ypy" id="N7b-q3-s2Q"/>
                                     <outlet property="unreadButton" destination="cJ2-hY-Neq" id="oEA-pg-759"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="LoadMoreCell" rowHeight="72" id="tab-Ra-3gW" userLabel="thread cell" customClass="AwfulLoadingThreadCell">
+                                <rect key="frame" x="0.0" y="94" width="320" height="72"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="71"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Load More" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="L6f-ZP-zLK">
+                                            <rect key="frame" x="20" y="16" width="280" height="40"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </label>
+                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" style="gray" id="LA3-5U-qmu">
+                                            <rect key="frame" x="17" y="26" width="20" height="20"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        </activityIndicatorView>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <outlet property="activity" destination="LA3-5U-qmu" id="iDC-hu-TVs"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="YOSPOSThreadCell" rowHeight="72" id="jd0-uS-UUv" userLabel="thread cell" customClass="AwfulYOSPOSThreadCell">
+                                <rect key="frame" x="0.0" y="166" width="320" height="72"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="71"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Thread Title Blah blah blah" lineBreakMode="tailTruncation" numberOfLines="3" minimumFontSize="10" id="mPr-1B-bOm" userLabel="thread title">
+                                            <rect key="frame" x="60" y="0.0" width="180" height="60"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="14"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="PCp-l8-gVh">
+                                            <rect key="frame" x="267" y="25" width="32" height="20"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="17"/>
+                                            <state key="normal" title="10" backgroundImage="number-background.png">
+                                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                            <state key="highlighted">
+                                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                        </button>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Pages: 2" lineBreakMode="tailTruncation" minimumFontSize="10" id="4QM-Le-jiY">
+                                            <rect key="frame" x="70" y="56" width="200" height="10"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="10"/>
+                                            <color key="textColor" red="0.49803921569999998" green="0.49803921569999998" blue="0.49803921569999998" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="sticky.png" id="e7p-kb-fg6">
+                                            <rect key="frame" x="62" y="6" width="12" height="12"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        </imageView>
+                                        <view contentMode="scaleToFill" id="ytH-ju-QFg">
+                                            <rect key="frame" x="4" y="4" width="47" height="47"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="shsc-apple.png" id="ks5-ci-9Ox">
+                                                    <rect key="frame" x="1" y="1" width="45" height="45"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </imageView>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="ama-secondary.png" id="HY6-3L-0bM">
+                                                    <rect key="frame" x="0.0" y="0.0" width="22" height="22"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </imageView>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="threadrating.png" id="3UQ-FH-BjY">
+                                            <rect key="frame" x="5" y="54" width="45" height="13"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        </imageView>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <outlet property="pagesLabel" destination="4QM-Le-jiY" id="73v-tN-MRZ"/>
+                                    <outlet property="ratingImage" destination="3UQ-FH-BjY" id="G1X-7l-Fcn"/>
+                                    <outlet property="secondTagImage" destination="HY6-3L-0bM" id="WMg-Gj-yaX"/>
+                                    <outlet property="sticky" destination="e7p-kb-fg6" id="msS-8u-uNu"/>
+                                    <outlet property="tagContainerView" destination="ytH-ju-QFg" id="zEA-Q8-DCO"/>
+                                    <outlet property="tagImage" destination="ks5-ci-9Ox" id="z9j-wd-6mQ"/>
+                                    <outlet property="threadTitleLabel" destination="mPr-1B-bOm" id="kFs-Iu-wxT"/>
+                                    <outlet property="unreadButton" destination="PCp-l8-gVh" id="i4c-if-LPt"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="FYADThreadCell" rowHeight="72" id="muB-fq-uGK" userLabel="thread cell" customClass="AwfulFYADThreadCell">
+                                <rect key="frame" x="0.0" y="238" width="320" height="72"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="71"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Thread Title Blah blah blah" lineBreakMode="tailTruncation" numberOfLines="3" minimumFontSize="10" id="wbd-Pg-0NR" userLabel="thread title">
+                                            <rect key="frame" x="60" y="0.0" width="180" height="60"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="14"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="mb2-cX-KT0">
+                                            <rect key="frame" x="267" y="25" width="32" height="20"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" size="button"/>
+                                            <state key="normal" title="10" backgroundImage="number-background.png">
+                                                <color key="titleColor" red="0.19607843137254902" green="0.30980392156862746" blue="0.52156862745098043" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                            <state key="highlighted">
+                                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                        </button>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Pages: 2" lineBreakMode="tailTruncation" minimumFontSize="10" id="TiU-1f-dLe">
+                                            <rect key="frame" x="70" y="56" width="200" height="10"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="10"/>
+                                            <color key="textColor" red="0.49803921569999998" green="0.49803921569999998" blue="0.49803921569999998" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="sticky.png" id="KPH-y7-Kzd">
+                                            <rect key="frame" x="62" y="6" width="12" height="12"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        </imageView>
+                                        <view contentMode="scaleToFill" id="saS-NQ-9dE">
+                                            <rect key="frame" x="4" y="4" width="47" height="47"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="shsc-apple.png" id="dda-yi-PSi">
+                                                    <rect key="frame" x="1" y="1" width="45" height="45"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </imageView>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="ama-secondary.png" id="IXo-Cs-ZxY">
+                                                    <rect key="frame" x="0.0" y="0.0" width="22" height="22"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </imageView>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="threadrating.png" id="Cjc-88-oFh">
+                                            <rect key="frame" x="5" y="54" width="45" height="13"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        </imageView>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <outlet property="pagesLabel" destination="TiU-1f-dLe" id="mlB-2a-MLH"/>
+                                    <outlet property="ratingImage" destination="Cjc-88-oFh" id="zH3-ie-Gb9"/>
+                                    <outlet property="secondTagImage" destination="IXo-Cs-ZxY" id="T6H-wP-iar"/>
+                                    <outlet property="sticky" destination="KPH-y7-Kzd" id="16F-Vv-PMC"/>
+                                    <outlet property="tagContainerView" destination="saS-NQ-9dE" id="Scy-XB-7Hb"/>
+                                    <outlet property="tagImage" destination="dda-yi-PSi" id="Ibp-sv-Ten"/>
+                                    <outlet property="threadTitleLabel" destination="wbd-Pg-0NR" id="Hwb-BN-vLh"/>
+                                    <outlet property="unreadButton" destination="mb2-cX-KT0" id="qNh-z7-WAC"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="AskTellThreadCell" rowHeight="72" id="GOS-Bf-KNU" userLabel="thread cell" customClass="AwfulAskTellThreadCell">
+                                <rect key="frame" x="0.0" y="310" width="320" height="72"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="71"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Thread Title Blah blah blah" lineBreakMode="tailTruncation" numberOfLines="3" minimumFontSize="10" id="QIr-7q-r5x" userLabel="thread title">
+                                            <rect key="frame" x="60" y="0.0" width="180" height="60"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="14"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="5U9-tC-DTr">
+                                            <rect key="frame" x="267" y="25" width="32" height="20"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="17"/>
+                                            <state key="normal" title="10" backgroundImage="number-background.png">
+                                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                            <state key="highlighted">
+                                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                        </button>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Pages: 2" lineBreakMode="tailTruncation" minimumFontSize="10" id="c3N-bl-5ji">
+                                            <rect key="frame" x="70" y="56" width="200" height="10"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="10"/>
+                                            <color key="textColor" red="0.49803921569999998" green="0.49803921569999998" blue="0.49803921569999998" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="sticky.png" id="eQL-S8-JMu">
+                                            <rect key="frame" x="62" y="6" width="12" height="12"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        </imageView>
+                                        <view contentMode="scaleToFill" id="h7s-AM-SfK">
+                                            <rect key="frame" x="4" y="4" width="47" height="47"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="shsc-apple.png" id="hgH-Uw-mKU">
+                                                    <rect key="frame" x="1" y="1" width="45" height="45"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </imageView>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="ama-secondary.png" id="KRi-8S-zoR">
+                                                    <rect key="frame" x="0.0" y="0.0" width="22" height="22"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </imageView>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="threadrating.png" id="1GG-dD-bTs">
+                                            <rect key="frame" x="5" y="54" width="45" height="13"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        </imageView>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <outlet property="pagesLabel" destination="c3N-bl-5ji" id="nPb-Ee-uUY"/>
+                                    <outlet property="ratingImage" destination="1GG-dD-bTs" id="T7O-hx-qoE"/>
+                                    <outlet property="secondTagImage" destination="KRi-8S-zoR" id="6Cc-lr-qHd"/>
+                                    <outlet property="sticky" destination="eQL-S8-JMu" id="WJg-rm-5I8"/>
+                                    <outlet property="tagContainerView" destination="h7s-AM-SfK" id="8M4-Ht-dA1"/>
+                                    <outlet property="tagImage" destination="hgH-Uw-mKU" id="H9D-1r-rxd"/>
+                                    <outlet property="threadTitleLabel" destination="QIr-7q-r5x" id="HVT-ai-19w"/>
+                                    <outlet property="unreadButton" destination="5U9-tC-DTr" id="8wf-qo-SqY"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="FilmDumpThreadCell" rowHeight="72" id="vfR-7G-bZO" userLabel="thread cell" customClass="AwfulFilmDumpThreadCell">
+                                <rect key="frame" x="0.0" y="382" width="320" height="72"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="71"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Thread Title Blah blah blah" lineBreakMode="tailTruncation" numberOfLines="3" minimumFontSize="10" id="5uT-pg-fnU" userLabel="thread title">
+                                            <rect key="frame" x="60" y="0.0" width="180" height="60"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="14"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="SLf-nO-67N">
+                                            <rect key="frame" x="267" y="25" width="32" height="20"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="17"/>
+                                            <state key="normal" title="10" backgroundImage="number-background.png">
+                                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                            <state key="highlighted">
+                                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                        </button>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Pages: 2" lineBreakMode="tailTruncation" minimumFontSize="10" id="DVt-bQ-Woi">
+                                            <rect key="frame" x="70" y="56" width="200" height="10"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="10"/>
+                                            <color key="textColor" red="0.49803921569999998" green="0.49803921569999998" blue="0.49803921569999998" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="sticky.png" id="fBc-9l-CS5">
+                                            <rect key="frame" x="62" y="6" width="12" height="12"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        </imageView>
+                                        <view contentMode="scaleToFill" id="1v4-kE-Grb">
+                                            <rect key="frame" x="4" y="4" width="47" height="47"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="shsc-apple.png" id="JSn-5g-Nu0">
+                                                    <rect key="frame" x="1" y="1" width="45" height="45"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </imageView>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="ama-secondary.png" id="ryY-K8-Bbb">
+                                                    <rect key="frame" x="0.0" y="0.0" width="22" height="22"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </imageView>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="threadrating.png" id="BaS-wx-aee">
+                                            <rect key="frame" x="5" y="54" width="45" height="13"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        </imageView>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <outlet property="pagesLabel" destination="DVt-bQ-Woi" id="Psy-j4-azv"/>
+                                    <outlet property="ratingImage" destination="BaS-wx-aee" id="jze-0B-E95"/>
+                                    <outlet property="secondTagImage" destination="ryY-K8-Bbb" id="HUU-OB-sUp"/>
+                                    <outlet property="sticky" destination="fBc-9l-CS5" id="uBG-5P-Tiu"/>
+                                    <outlet property="tagContainerView" destination="1v4-kE-Grb" id="OeD-IL-cvo"/>
+                                    <outlet property="tagImage" destination="JSn-5g-Nu0" id="8IX-xa-3K5"/>
+                                    <outlet property="threadTitleLabel" destination="5uT-pg-fnU" id="VDf-if-7WK"/>
+                                    <outlet property="unreadButton" destination="SLf-nO-67N" id="08z-WZ-KBm"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -931,14 +1241,23 @@
         <class className="AwfulAddFavoriteViewController" superclassName="AwfulForumsListController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulAddFavoriteViewController.h"/>
         </class>
+        <class className="AwfulAskTellThreadCell" superclassName="AwfulThreadCell">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulAskTellThreadCell.h"/>
+        </class>
         <class className="AwfulBookmarksController" superclassName="AwfulThreadListController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulBookmarksController.h"/>
+        </class>
+        <class className="AwfulFYADThreadCell" superclassName="AwfulThreadCell">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulFYADThreadCell.h"/>
         </class>
         <class className="AwfulFavoritesViewController" superclassName="AwfulFetchedTableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulFavoritesViewController.h"/>
         </class>
         <class className="AwfulFetchedTableViewController" superclassName="AwfulTableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulFetchedTableViewController.h"/>
+        </class>
+        <class className="AwfulFilmDumpThreadCell" superclassName="AwfulThreadCell">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulFilmDumpThreadCell.h"/>
         </class>
         <class className="AwfulForumCell" superclassName="UITableViewCell">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumCell.h"/>
@@ -1018,7 +1337,7 @@
                 <relationship kind="action" name="refresh"/>
             </relationships>
         </class>
-        <class className="AwfulThreadCell" superclassName="UITableViewCell">
+        <class className="AwfulThreadCell" superclassName="TDBadgedCell">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulThreadCell.h"/>
             <relationships>
                 <relationship kind="outlet" name="pagesLabel" candidateClass="UILabel"/>
@@ -1040,11 +1359,17 @@
                 <relationship kind="outlet" name="prevPageBarButtonItem" candidateClass="UIBarButtonItem"/>
             </relationships>
         </class>
+        <class className="AwfulYOSPOSThreadCell" superclassName="AwfulThreadCell">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulYOSPOSThreadCell.h"/>
+        </class>
         <class className="ButtonSegmentedControl" superclassName="UISegmentedControl">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/ButtonSegmentedControl.h"/>
             <relationships>
                 <relationship kind="outlet" name="target"/>
             </relationships>
+        </class>
+        <class className="TDBadgedCell" superclassName="UITableViewCell">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/TDBadgedCell.h"/>
         </class>
     </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
@@ -1053,7 +1378,7 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="gCu-q9-SZ9"/>
+        <segue reference="Lgq-yz-2I5"/>
         <segue reference="hhi-LS-YNv"/>
         <segue reference="Kgw-hp-QCk"/>
     </inferredMetricsTieBreakers>

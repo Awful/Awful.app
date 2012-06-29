@@ -10,7 +10,6 @@
 #import "AwfulThread.h"
 #import "AwfulPost.h"
 #import "AwfulPostBoxController.h"
-#import "AwfulPullForActionController.h"
 #import "AwfulWebViewDelegate.h"
 
 static NSString * const AwfulPageWillLoadNotification = @"com.regularberry.awful.notification.pageWillLoad";

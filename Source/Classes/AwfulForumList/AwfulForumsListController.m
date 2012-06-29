@@ -37,13 +37,13 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     
-    if ([[segue identifier] isEqualToString:@"ThreadList"]) {
+    //if ([[segue identifier] isEqualToString:@"ThreadList"]) {
         UITableViewCell* cell = (UITableViewCell*)sender;
         NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
         
         AwfulThreadListController *list = (AwfulThreadListController *)segue.destinationViewController;
         list.forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    }
+    //}
      
 }
 

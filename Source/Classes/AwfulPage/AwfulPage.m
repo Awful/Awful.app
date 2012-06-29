@@ -859,7 +859,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 
 -(void) refreshControlCancel:(AwfulRefreshControl*)refreshControl {
     [self stop];
-    refreshControl.state = AwfulPullForActionStateNormal;
+    refreshControl.state = AwfulRefreshControlStateNormal;
 }
 
 -(BOOL) isOnLastPage {

@@ -16,6 +16,7 @@
     self.indentationWidth = 60;
     self.textLabel.font = [UIFont boldSystemFontOfSize:15];
     self.detailTextLabel.font = [UIFont systemFontOfSize:12];
+    [self setFavoriteButtonAccessory];
 }
 
 +(CGFloat) heightForContent:(AwfulForum*)forum inTableView:(UITableView*)tableView {

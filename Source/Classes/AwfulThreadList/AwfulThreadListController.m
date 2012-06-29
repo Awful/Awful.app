@@ -16,6 +16,7 @@
 #import "AwfulThread+AwfulMethods.h"
 #import "AwfulThreadCell.h"
 #import "AwfulLoginController.h"
+#import "AwfulCustomForums.h"
 
 #define THREAD_HEIGHT 76
 
@@ -65,7 +66,7 @@ typedef enum {
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if([[segue identifier] isEqualToString:@"AwfulPage"]) {
+    //if([[segue identifier] isEqualToString:@"AwfulPage"]) {
         [self.networkOperation cancel];
         
         NSIndexPath *selected = [self.tableView indexPathForSelectedRow];
@@ -90,7 +91,7 @@ typedef enum {
                                                             object:[self getThreadAtIndexPath:selected]];
 
         
-    }
+    //}
 }
 
 -(void)setForum:(AwfulForum *)forum
@@ -161,7 +162,7 @@ typedef enum {
         }
     }
     if(path != nil) {
-        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:path] withRowAnimation:UITableViewRowAnimationFade];
+        //[self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:path] withRowAnimation:UITableViewRowAnimationFade];
     }
 }
 
@@ -322,9 +323,7 @@ typedef enum {
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *threadCell = @"ThreadCell";
-    
-    AwfulThreadCell *cell = [tableView dequeueReusableCellWithIdentifier:threadCell];
+    AwfulThreadCell *cell = [tableView dequeueReusableCellWithIdentifier:[AwfulCustomForums cellIdentifierForForum:self.forum]];
     //AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
     [self configureCell:cell atIndexPath:indexPath];
     cell.threadListController = self;
@@ -336,6 +335,7 @@ typedef enum {
     AwfulThread *thread = [self getThreadAtIndexPath:indexPath];
     [(AwfulThreadCell*)cell configureForThread:thread];
 }
+
 
 #pragma mark table editing to mark cells unread
 

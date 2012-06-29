@@ -30,6 +30,21 @@
     self.detailTextLabel.font = [UIFont systemFontOfSize:12];
 }
 
+-(void) setFavoriteButtonAccessory {
+    UIButton *favImage = [UIButton buttonWithType:UIButtonTypeCustom];
+    
+    [favImage setImage:[UIImage imageNamed:@"star_off.png"] forState:UIControlStateNormal];
+    [favImage setImage:[UIImage imageNamed:@"star_on.png"] forState:UIControlStateSelected];
+    
+    [favImage addTarget:self
+                 action:@selector(toggleFavorite:) 
+       forControlEvents:UIControlEventTouchUpInside
+     ];
+    
+    [favImage sizeToFit];
+    self.accessoryView = favImage;
+}
+
 -(void) toggleFavorite:(UIButton*)button {
     button.selected = !button.selected;
     

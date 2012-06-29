@@ -12,5 +12,6 @@
 
 @property (nonatomic,strong) AwfulForum* forum;
 
+-(void) setFavoriteButtonAccessory;
 +(CGFloat) heightForContent:(AwfulForum*)forum inTableView:(UITableView*)tableView;
 @end

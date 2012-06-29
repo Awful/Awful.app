@@ -35,26 +35,11 @@
     [super setForum:forum];
     self.isExpanded = forum.expandedValue;
     self.imageView.image = [UIImage imageNamed:@"forum-arrow-right.png"];
-    
-    NSString *imageName =  @"star_off.png" ;
-    UIButton *favImage = [UIButton buttonWithType:UIButtonTypeCustom];
-
-    [favImage setImage:[UIImage imageNamed:@"star_off.png"] forState:UIControlStateNormal];
-    [favImage setImage:[UIImage imageNamed:@"star_on.png"] forState:UIControlStateSelected];
-    
-    [favImage addTarget:self
-                 action:@selector(toggleFavorite:) 
-       forControlEvents:UIControlEventTouchUpInside
-     ];
-    
-    [favImage sizeToFit];
-    self.accessoryView = favImage;
-
-    
+    [self setFavoriteButtonAccessory];
 }
 
 +(CGFloat) heightForContent:(AwfulForum*)forum inTableView:(UITableView*)tableView {
-    int width = tableView.frame.size.width - 20 - 55;
+    int width = tableView.frame.size.width - 40 - 55;
     
     CGSize textSize = {0, 0};
     CGSize detailSize = {0, 0};
