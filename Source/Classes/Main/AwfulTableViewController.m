@@ -21,7 +21,7 @@
 
 @synthesize networkOperation = _networkOperation;
 //@synthesize refreshHeaderView = _refreshHeaderView;
-@synthesize refreshControl = _refreshControl;
+@synthesize refreshControl = __refreshControl;
 @synthesize reloading = _reloading;
 @synthesize loadNextControl = _loadNextControl;
 

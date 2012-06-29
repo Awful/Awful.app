@@ -16,7 +16,7 @@
 
 @implementation TDBadgeView
 
-@synthesize width=__width, badgeString=__badgeString, parent=__parent, badgeColor=__badgeColor, badgeColorHighlighted=__badgeColorHighlighted, showShadow=__showShadow, radius=__radius;
+@synthesize width=__width, badgeString=__badgeString, parent=__parent, badgeColor=__badgeColor, badgeColorHighlighted=__badgeColorHighlighted, showShadow=__showShadow, radius=__radius, badgeFont = _badgeFont;
 
 - (id) initWithFrame:(CGRect)frame
 {
@@ -30,9 +30,9 @@
 
 - (void) drawRect:(CGRect)rect
 {		
-    CGFloat fontsize = 11;
+    CGFloat fontsize = self.badgeFont.pointSize;
     
-	CGSize numberSize = [self.badgeString sizeWithFont:[UIFont boldSystemFontOfSize: fontsize]];
+	CGSize numberSize = [self.badgeString sizeWithFont:self.badgeFont];
 		
 	CGRect bounds = CGRectMake(0 , 0, numberSize.width + 12 , 18);
 	CGFloat radius = (__radius)?__radius:4.0;
@@ -66,6 +66,7 @@
     CGSize imageSize = __badge.frame.size;
     
     // Render the image @x2 for retina people
+    UIFont *font = self.badgeFont;
     if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] == YES && [[UIScreen mainScreen] scale] == 2.00)
     {
         imageSize = CGSizeMake(__badge.frame.size.width * 2, __badge.frame.size.height * 2);
@@ -74,6 +75,7 @@
                                      __badge.frame.size.width*2, 
                                      __badge.frame.size.height*2)];
         fontsize = (fontsize * 2);
+        font = [UIFont fontWithName:self.badgeFont.familyName size:fontsize];
         bounds.origin.x = ((bounds.size.width * 2) - (numberSize.width * 2)) / 2.0f + 1;
         bounds.origin.y += 3;
         bounds.size.width = bounds.size.width * 2;
@@ -93,7 +95,7 @@
 	
 	CGContextSetBlendMode(context, kCGBlendModeClear);
 	
-	[__badgeString drawInRect:bounds withFont:[UIFont boldSystemFontOfSize:fontsize] lineBreakMode:UILineBreakModeClip];
+	[__badgeString drawInRect:bounds withFont:font lineBreakMode:UILineBreakModeClip];
 	
 	CGContextSetBlendMode(context, kCGBlendModeNormal);
 	
@@ -121,6 +123,12 @@
 - (void) dealloc
 {
 	__parent = nil;
+}
+
+-(UIFont*) badgeFont {
+    if (!_badgeFont)
+        _badgeFont = [UIFont boldSystemFontOfSize:11];
+    return _badgeFont;
 }
 
 @end
@@ -175,7 +183,7 @@
 			[self.badge setHidden:NO];
 		
 		
-		CGSize badgeSize = [self.badgeString sizeWithFont:[UIFont boldSystemFontOfSize: 11]];
+		CGSize badgeSize = [self.badgeString sizeWithFont:self.badge.badgeFont];
 		CGRect badgeframe = CGRectMake(self.contentView.frame.size.width - (badgeSize.width + 25),
                                 (CGFloat)round((self.contentView.frame.size.height - 18) / 2),
                                 badgeSize.width + 13,

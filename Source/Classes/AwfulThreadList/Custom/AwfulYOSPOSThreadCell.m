@@ -18,6 +18,7 @@
     UIColor *bgColor = [UIColor blackColor];
     self.backgroundColor =  bgColor;
     self.contentView.backgroundColor = bgColor;
+    self.badge.radius = 1;
 }
 
 -(void)configureForThread:(AwfulThread *)thread {
@@ -41,6 +42,7 @@
     self.badge.backgroundColor = [UIColor YOSPOSGreenColor];
     self.badge.layer.borderWidth = 1;
     self.badge.layer.borderColor = [[UIColor YOSPOSGreenColor] CGColor];
+    self.badge.badgeFont = [UIFont fontWithName:@"Courier" size:11];
     
     //badge number to hex
     if (self.badgeString)
