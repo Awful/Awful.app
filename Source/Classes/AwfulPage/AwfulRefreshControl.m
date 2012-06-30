@@ -86,6 +86,7 @@
     //Header Loading
     if (scrollAmount < threshhold) {
         self.state = AwfulRefreshControlStateLoading;
+        self.userScrolling = NO;
         //[scrollView setContentOffset:CGPointMake(0, -self.fsH) animated:YES];
         return;
     }
@@ -93,9 +94,9 @@
 
 
 -(void) setState:(AwfulRefreshControlState)state {
-    if (self.state == state && 
-        state != AwfulRefreshControlStateLoading &&
-        [[NSDate date] timeIntervalSinceDate:self.loadedDate] < 60)
+    if (self.state == state) //&&
+        //state != AwfulRefreshControlStateLoading &&
+        //[[NSDate date] timeIntervalSinceDate:self.loadedDate] < 60)
         return;
     
     _state = state;
@@ -106,6 +107,7 @@
             self.subtitle.text = @"Swipe left to cancel";
             self.imageView.hidden = YES;
             [self.activityView startAnimating];
+            self.userScrolling = NO;
             self.changeInsetToShow = YES;
             break;
             
@@ -114,7 +116,7 @@
             self.subtitle.text = self.stringTimeIntervalSinceLoad;
             self.imageView.hidden = NO;
             [self.activityView stopAnimating];
-            self.changeInsetToShow = NO;
+            //self.changeInsetToShow = NO;
             break;
             
         case AwfulRefreshControlStateNormal:
@@ -153,7 +155,7 @@
     if (inset == insets.top) return;
     insets.top = inset;
     
-    if (show) {
+    //if (show) {
         scrollView.userInteractionEnabled = NO;
         [UIView animateWithDuration:.3
                          animations:^{
@@ -164,7 +166,7 @@
                              scrollView.userInteractionEnabled = YES;
                          }
          ];
-    }
+    //}
 }
 
 -(void) setCanSwipeToCancel:(BOOL)canSwipeToCancel {

@@ -22,6 +22,7 @@
 
 
 -(void) setForum:(AwfulForum *)forum {
+    _forum = forum;
     self.textLabel.text = forum.name;
     self.textLabel.numberOfLines = 2;
     self.textLabel.adjustsFontSizeToFitWidth = YES;
@@ -42,17 +43,23 @@
      ];
     
     [favImage sizeToFit];
+    favImage.selected = (self.forum.favorite != nil);
+    
     self.accessoryView = favImage;
 }
 
 -(void) toggleFavorite:(UIButton*)button {
     button.selected = !button.selected;
     
-    //get forum for that button's cell
-    //set or remove favorite
-    //button.state = UIControlStateNormal? UIControlStateSelected : UIControlStateNormal;
-    //UIImageView* imageView = tap.view;
+    if (self.forum.favorite)
+        [ApplicationDelegate.managedObjectContext deleteObject:self.forum.favorite];
+    else {
+        AwfulFavorite *fav = [AwfulFavorite new];
+        fav.displayOrderValue = self.forum.indexValue;
+        fav.forum = self.forum;
+    }
     
-    //imageView.image = [UIImage imageNamed:@"star_on.png"];
+    [ApplicationDelegate saveContext];
+
 }
 @end

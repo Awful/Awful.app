@@ -105,8 +105,10 @@
 - (void)finishedRefreshing
 {
     self.reloading = NO;
-	//[self.refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
-    self.refreshControl.loadedDate = [NSDate date];
+    if (self.refreshControl) {
+        self.refreshControl.state = AwfulRefreshControlStateNormal;
+        self.refreshControl.loadedDate = [NSDate date];
+    }
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
