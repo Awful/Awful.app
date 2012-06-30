@@ -97,16 +97,18 @@
     self.textLabel.text = thread.title;
     self.textLabel.numberOfLines = 3;
     self.textLabel.adjustsFontSizeToFitWidth = YES;
-    self.textLabel.font = AwfulThreadCell.textLabelFont;
+    self.textLabel.font = [[self class] textLabelFont];
+    self.textLabel.textColor = [[self class] textColor];
+    self.textLabel.backgroundColor = [(AwfulThreadCell*)[self class] backgroundColor];
     
 
     //int posts_per_page = [AwfulUser currentUser].postsPerPageValue;
     //int total_pages = (([thread.totalReplies intValue]-1)/posts_per_page) + 1;
     self.detailTextLabel.text = [NSString stringWithFormat:@"%@\r\nKilled by %@ [date]", thread.authorName, thread.lastPostAuthorName];
-    self.detailTextLabel.font = AwfulThreadCell.detailLabelFont;
+    self.detailTextLabel.font = [[self class] detailLabelFont];
     self.detailTextLabel.numberOfLines = 2;
-    self.detailTextLabel.textColor = [UIColor darkGrayColor];
-    
+    self.detailTextLabel.textColor = [[self class] textColor];
+    self.detailTextLabel.backgroundColor = [(AwfulThreadCell*)[self class] backgroundColor];
     
     if (thread.totalUnreadPosts.intValue >= 0) {
         self.badgeString = thread.totalUnreadPosts.stringValue;
@@ -124,7 +126,8 @@
     
     
     
-    self.contentView.backgroundColor = [self getBackgroundColorForThread:thread];
+    self.contentView.backgroundColor = [(AwfulThreadCell*)[self class] backgroundColor];
+    self.backgroundColor = [(AwfulThreadCell*)[self class] backgroundColor];
     
     [self.tagLabel removeFromSuperview];
     

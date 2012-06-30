@@ -14,6 +14,7 @@
 -(void) configureForThread:(AwfulThread *)thread {
     [super configureForThread:thread];
     self.ratingImage.hidden = YES;
+    self.detailTextLabel.text = nil;
 }
 
 -(void)configureTagImage {
@@ -52,6 +53,12 @@
     else
         image = @"5.0stars.png";
         
-    self.tagImage.image = [UIImage imageNamed:image];
+    CGImageRef ref = [[UIImage imageNamed:image] CGImage];
+    UIImage *stars = [UIImage imageWithCGImage:ref scale:2 orientation:(UIImageOrientationUp)];
+    
+    
+    self.imageView.image = stars;
 }
+
++(UIFont*) textLabelFont { return [UIFont boldSystemFontOfSize:18]; }
 @end

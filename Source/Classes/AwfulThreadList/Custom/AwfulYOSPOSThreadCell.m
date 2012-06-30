@@ -26,20 +26,7 @@
 -(void)configureForThread:(AwfulThread *)thread {
     [super configureForThread:thread];
     
-    UIColor *textColor = [UIColor YOSPOSGreenColor];
-    UIColor *bgColor = [UIColor blackColor];
-    
-    self.backgroundColor =  bgColor;
-    self.contentView.backgroundColor = bgColor;
-    
-    self.textLabel.textColor = textColor;
-    self.textLabel.font = [UIFont fontWithName:@"Courier" size:14];
-    self.textLabel.backgroundColor = [UIColor clearColor];
-    
-    self.detailTextLabel.textColor = textColor;
-    self.detailTextLabel.font = [UIFont fontWithName:@"Courier" size:10];
-    self.detailTextLabel.backgroundColor = [UIColor clearColor];
-    
+
     self.badgeColor = [UIColor blackColor];
     self.badge.backgroundColor = [UIColor YOSPOSGreenColor];
     self.badge.layer.borderWidth = 1;
@@ -61,8 +48,8 @@
 -(void) configureTagImage {
     [super configureTagImage];
     
-    if (self.tagImage.image) {
-        self.tagImage.image = [self.tagImage.image greenVersion];
+    if (self.imageView.image) {
+        self.imageView.image = [self.imageView.image greenVersion];
     }
     else {
         self.tagLabel.backgroundColor = [UIColor blackColor];
