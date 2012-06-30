@@ -34,7 +34,6 @@
 -(void) setForum:(AwfulForum *)forum {
     [super setForum:forum];
     self.isExpanded = forum.expandedValue;
-    self.imageView.image = [UIImage imageNamed:@"forum-arrow-right.png"];
     [self setFavoriteButtonAccessory];
 }
 
