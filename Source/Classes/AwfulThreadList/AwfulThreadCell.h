@@ -28,17 +28,20 @@
 @property (nonatomic, strong) IBOutlet UILabel *tagLabel;
 @property (nonatomic, strong) IBOutlet UIView *tagContainerView;
 
++(UIColor*) textColor;
++(UIColor*) backgroundColor;
++(UIFont*) textLabelFont;
++(UIFont*) detailLabelFont;
+
 -(void)configureForThread : (AwfulThread *)thread;
 -(void) configureTagImage;
 -(UIColor *)getBackgroundColorForThread : (AwfulThread *)thread;
 -(void)openThreadlistOptions : (UIGestureRecognizer *)gesture;
 
+
+-(void) willLoadThreadPage:(NSNotification*)notification;
+-(void) didLoadThreadPage:(NSNotification*)notification;
+
++(CGFloat) heightForContent:(AwfulForum*)forum inTableView:(UITableView*)tableView;
 @end
 
-@interface AwfulLoadingThreadCell : UITableViewCell
-
-@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activity;
-
--(void)setActivityViewVisible : (BOOL)visible;
-
-@end

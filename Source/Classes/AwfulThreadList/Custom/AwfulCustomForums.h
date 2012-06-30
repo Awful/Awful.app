@@ -17,5 +17,5 @@ typedef int AwfulCustomForumID;
 @interface AwfulCustomForums : NSObject
 
 +(NSString*) cellIdentifierForForum:(AwfulForum*)forum;
-+(AwfulThreadCell*) cellForThread:(AwfulThread*)thread;
++(AwfulThreadCell*) cellForIdentifier:(NSString*)cellIdentifier;
 @end

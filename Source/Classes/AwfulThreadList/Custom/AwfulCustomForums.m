@@ -25,28 +25,35 @@
     switch (forum.forumID.intValue) {
             
         case AwfulCustomForumYOSPOS:
-            threadCell = @"YOSPOSThreadCell";
+            threadCell = @"AwfulYOSPOSThreadCell";
             break;
             
         case AwfulCustomForumFYAD:
-            threadCell = @"FYADThreadCell";
+            threadCell = @"AwfulFYADThreadCell";
             break;
-            
+          /*
         case AwfulCustomForumAskTell:
-            threadCell = @"AskTellThreadCell";
+            threadCell = @"AwfulAskTellThreadCell";
             break;
-            
+           */
+          
         case AwfulCustomForumFilmDump:
-            threadCell = @"FilmDumpThreadCell";
+            threadCell = @"AwfulFilmDumpThreadCell";
             break;
             
         default:
-            threadCell = @"ThreadCell";
+            threadCell = @"AwfulThreadCell";
     }
     
     return threadCell;
 }
 
++(AwfulThreadCell*) cellForIdentifier:(NSString*)cellIdentifier {
+    AwfulThreadCell* cell = [NSClassFromString(cellIdentifier) new];
+    return cell;
+}
+
+/*
 +(AwfulThreadCell*) cellForThread:(AwfulThread*)thread {
     AwfulThreadCell *cell;
     switch (thread.forum.forumID.intValue) {
@@ -73,5 +80,5 @@
     return cell;
     
 }
-
+*/
 @end

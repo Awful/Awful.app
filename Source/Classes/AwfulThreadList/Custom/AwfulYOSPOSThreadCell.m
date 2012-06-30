@@ -9,16 +9,18 @@
 #import "AwfulYOSPOSThreadCell.h"
 #import "AwfulThread.h"
 
+@interface AwfulYOSPOSThreadCell ()
+@property (nonatomic,strong) NSTimer* timer;
+@end
 
 @implementation AwfulYOSPOSThreadCell
+@synthesize timer = _timer;
 
 -(void) layoutSubviews {
     [super layoutSubviews];
     
-    UIColor *bgColor = [UIColor blackColor];
-    self.backgroundColor =  bgColor;
-    self.contentView.backgroundColor = bgColor;
-    self.badge.radius = 1;
+    self.backgroundColor =  AwfulYOSPOSThreadCell.backgroundColor;
+    self.contentView.backgroundColor = AwfulYOSPOSThreadCell.backgroundColor;
 }
 
 -(void)configureForThread:(AwfulThread *)thread {
@@ -30,19 +32,20 @@
     self.backgroundColor =  bgColor;
     self.contentView.backgroundColor = bgColor;
     
-    self.threadTitleLabel.textColor = textColor;
-    self.threadTitleLabel.font = [UIFont fontWithName:@"Courier" size:16];
-    self.threadTitleLabel.backgroundColor = [UIColor clearColor];
+    self.textLabel.textColor = textColor;
+    self.textLabel.font = [UIFont fontWithName:@"Courier" size:14];
+    self.textLabel.backgroundColor = [UIColor clearColor];
     
-    self.pagesLabel.textColor = textColor;
-    self.pagesLabel.font = [UIFont fontWithName:@"Courier" size:14];
-    self.pagesLabel.backgroundColor = [UIColor clearColor];
+    self.detailTextLabel.textColor = textColor;
+    self.detailTextLabel.font = [UIFont fontWithName:@"Courier" size:10];
+    self.detailTextLabel.backgroundColor = [UIColor clearColor];
     
     self.badgeColor = [UIColor blackColor];
     self.badge.backgroundColor = [UIColor YOSPOSGreenColor];
     self.badge.layer.borderWidth = 1;
     self.badge.layer.borderColor = [[UIColor YOSPOSGreenColor] CGColor];
     self.badge.badgeFont = [UIFont fontWithName:@"Courier" size:11];
+    self.badge.radius = 1;
     
     //badge number to hex
     if (self.badgeString)
@@ -52,6 +55,7 @@
     
     if (self.ratingImage.image)
         self.ratingImage.image = self.ratingImage.image.greenVersion;
+    
 }
 
 -(void) configureTagImage {
@@ -103,11 +107,19 @@
     self.accessoryView = lbl;
     self.badge.hidden = YES;
     
-    NSTimer *loadingTimer = [NSTimer scheduledTimerWithTimeInterval:.219                                                          target:self 
-                                                           selector:@selector(activityTimer) 
-                                                           userInfo:nil 
-                                                            repeats:YES
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:.219/2   
+                                                  target:self 
+                                                selector:@selector(activityTimer) 
+                                                userInfo:nil 
+                                                 repeats:YES
                              ];
+}
+
+
+-(void) didLoadThreadPage:(NSNotification*)notification {
+    [super didLoadThreadPage:notification];
+    [self.timer invalidate];
+    self.timer = nil;
 }
 
 -(void) activityTimer {
@@ -122,7 +134,7 @@
             lbl.text = @"\\";
             return;
         case 2:
-            lbl.text = @"|";
+            lbl.text = @"\u00A6";
             return;
         case 3:
             lbl.text = @"/";
@@ -133,6 +145,12 @@
             break;
     }
 }
+
++(UIColor*) textColor { return [UIColor YOSPOSGreenColor]; }
++(UIColor*) backgroundColor { return [UIColor blackColor]; }
++(UIFont*) textLabelFont { return [UIFont fontWithName:@"Courier" size:14]; }
++(UIFont*) detailLabelFont { return [UIFont fontWithName:@"Courier" size:10]; }
+
 
 @end
 
@@ -205,6 +223,8 @@
     UIImage *result = [UIImage imageWithCGImage:mainViewContentBitmapContext];
     return result;
 }
+
+
 @end
 
 

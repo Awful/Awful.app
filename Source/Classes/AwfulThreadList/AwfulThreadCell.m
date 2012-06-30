@@ -31,6 +31,10 @@
 @synthesize tagLabel = _tagLabel;
 @synthesize tagContainerView = _tagContainerView;
 
+-(id) init {
+    self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"AwfulThreadCell"];
+    return self;
+}
 
 -(id)initWithCoder:(NSCoder *)aDecoder
 {
@@ -41,18 +45,13 @@
     return self;
 }
 
--(void)setUnreadButton:(UIButton *)unreadButton
-{
-    if(unreadButton != _unreadButton) {
-        _unreadButton = unreadButton;
-        UIImage *number_back = [UIImage imageNamed:@"number-background.png"];
-        UIImage *stretch_back = [number_back stretchableImageWithLeftCapWidth:15.5 topCapHeight:9.5];
-        [_unreadButton setBackgroundImage:stretch_back forState:UIControlStateDisabled];
-    }
-}
-
 -(void) layoutSubviews {
     [super layoutSubviews];
+    
+    //self.backgroundColor =  [AwfulThreadCell backgroundColor];
+    //self.contentView.backgroundColor = [AwfulThreadCell backgroundColor];
+    
+    /*
     if(self.ratingImage.hidden) {
         self.tagContainerView.center = CGPointMake(self.tagContainerView.center.x, self.contentView.center.y);
         
@@ -86,11 +85,45 @@
             [self.contentView addSubview:self.sticky];
         }
     }
+     */
 }
 
 -(void)configureForThread:(AwfulThread *)thread
 {
     self.thread = thread;
+    
+    self.indentationLevel = 0;
+    
+    self.textLabel.text = thread.title;
+    self.textLabel.numberOfLines = 3;
+    self.textLabel.adjustsFontSizeToFitWidth = YES;
+    self.textLabel.font = AwfulThreadCell.textLabelFont;
+    
+
+    //int posts_per_page = [AwfulUser currentUser].postsPerPageValue;
+    //int total_pages = (([thread.totalReplies intValue]-1)/posts_per_page) + 1;
+    self.detailTextLabel.text = [NSString stringWithFormat:@"%@\r\nKilled by %@ [date]", thread.authorName, thread.lastPostAuthorName];
+    self.detailTextLabel.font = AwfulThreadCell.detailLabelFont;
+    self.detailTextLabel.numberOfLines = 2;
+    self.detailTextLabel.textColor = [UIColor darkGrayColor];
+    
+    
+    if (thread.totalUnreadPosts.intValue >= 0) {
+        self.badgeString = thread.totalUnreadPosts.stringValue;
+        self.badgeColor = [UIColor colorWithRed:0 green:.4 blue:.6 alpha:1];
+        
+        self.badge.alpha = (thread.totalUnreadPostsValue == 0)? 0.5 : 1.0;
+    }
+    else {
+        self.badgeString = nil;
+    }
+    
+    //author
+    //replies
+    //killed
+    
+    
+    
     self.contentView.backgroundColor = [self getBackgroundColorForThread:thread];
     
     [self.tagLabel removeFromSuperview];
@@ -100,7 +133,7 @@
     
     double rating = self.thread.threadRating.doubleValue;
     
-    if (rating > 0) {
+    if (rating >= 1) {
         int ratingImageNum;
         if (rating < 1.5)
             ratingImageNum = 1;
@@ -135,37 +168,32 @@
     }
 
 
+    self.contentView.alpha = thread.isLockedValue? 0.5 : 1.0;
     
-    if([thread.isLocked boolValue]) {
-        self.contentView.alpha = 0.5;
-    } else {
-        self.contentView.alpha = 1.0;
-    }
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     
-    // Content
-    int posts_per_page = [AwfulUser currentUser].postsPerPageValue;
-    int total_pages = (([thread.totalReplies intValue]-1)/posts_per_page) + 1;
-    self.pagesLabel.text = [NSString stringWithFormat:@"Pages: %d, Killed by %@", total_pages, thread.lastPostAuthorName];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(willLoadThreadPage:)
+                                                 name:AwfulPageWillLoadNotification 
+                                               object:self.thread];
     
-    NSString *unread_str = [NSString stringWithFormat:@"%@", thread.totalUnreadPosts];
-    
-    if (thread.totalUnreadPosts.intValue >= 0) {
-        self.badgeString = unread_str;
-        self.badgeColor = [UIColor colorWithRed:0 green:.4 blue:.6 alpha:1];
-    }
-
-    self.threadTitleLabel.text = thread.title;
-    
-
-    
-
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didLoadThreadPage:)
+                                                 name:AwfulPageDidLoadNotification 
+                                               object:self.thread];
 
 }
 
 -(void) configureTagImage {
     NSURL *tag_url = [self.thread firstIconURL];
     if(tag_url != nil) {
-        [self.tagImage setImage:[UIImage imageNamed:[tag_url lastPathComponent]]];
+        UIImage *img = [UIImage imageNamed:[tag_url lastPathComponent]];
+        CGImageRef ref = img.CGImage;
+        UIImage *scaled = [UIImage imageWithCGImage:ref scale:2 orientation:(UIImageOrientationUp)];
+        
+        self.imageView.image = scaled;
+        self.imageView.layer.borderWidth = 1;
+        self.imageView.layer.borderColor = [[UIColor blackColor] CGColor];
     } else {
         [self.tagImage setImage:nil];
         
@@ -194,23 +222,22 @@
         }
     }
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(willLoadThreadPage:)
-                                                 name:AwfulPageWillLoadNotification 
-                                               object:self.thread];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(didLoadThreadPage:)
-                                                 name:AwfulPageDidLoadNotification 
-                                               object:self.thread];
+    NSURL *second_url = [self.thread secondIconURL];
+    if(second_url != nil) {
+        self.secondTagImage.frame = CGRectMake(self.imageView.foX-1, self.imageView.foY-1, 
+                                               self.secondTagImage.fsW, self.secondTagImage.fsH);
+        self.secondTagImage.hidden = NO;
+        [self.secondTagImage setImage:[UIImage imageNamed:[second_url lastPathComponent]]];
+    }
 
-    self.secondTagImage.hidden = YES;
+
+    //self.secondTagImage.hidden = YES;
 }
 
 -(UIColor *)getBackgroundColorForThread : (AwfulThread *)thread
 {
     float offwhite = 241.0/255;
-    UIColor *back_color = [UIColor colorWithRed:offwhite green:offwhite blue:offwhite alpha:1.0];
+    UIColor *back_color = [UIColor colorWithWhite:offwhite alpha:1.0];
     
     AwfulStarCategory star = [thread.starCategory intValue];
     if(star == AwfulStarCategoryBlue) {
@@ -237,7 +264,7 @@
     AwfulThread *thread = notification.object;
     if (thread.threadID.intValue != self.thread.threadID.intValue) return;
     UIActivityIndicatorView *act = [[UIActivityIndicatorView alloc] 
-                                    initWithActivityIndicatorStyle:(UIActivityIndicatorViewStyleGray)
+                                    initWithActivityIndicatorStyle:(UIActivityIndicatorViewStyleWhite)
                                     ];
     self.accessoryView = act;
     [act startAnimating];
@@ -251,20 +278,30 @@
     self.badge.hidden = NO;
 }
 
-@end
++(CGFloat) heightForContent:(AwfulThread*)thread inTableView:(UITableView*)tableView {
+    int width = tableView.frame.size.width - 65 - ((thread.totalUnreadPostsValue>0)? 50 : 0);
+    
+    CGSize textSize = {0, 0};
+    CGSize detailSize = {0, 0};
+    int height = 44;
+    
+    textSize = [thread.title sizeWithFont:self.textLabelFont
+                      constrainedToSize:CGSizeMake(width, 4000) 
+                          lineBreakMode:UILineBreakModeWordWrap];
 
-@implementation AwfulLoadingThreadCell
-
-@synthesize activity = _activity;
-
--(void)setActivityViewVisible : (BOOL)visible
-{
-    self.activity.hidden = !visible;
-    if(visible) {
-        [self.activity startAnimating];
-    } else {
-        [self.activity stopAnimating];
-    }
+        detailSize = [thread.title sizeWithFont:self.detailLabelFont 
+                            constrainedToSize:CGSizeMake(width, 4000) 
+                                lineBreakMode:UILineBreakModeWordWrap];
+    
+    height = 20 + textSize.height + detailSize.height;
+    
+    return (MAX(height,70));
 }
 
++(UIColor*) textColor { return [UIColor blackColor]; }
++(UIColor*) backgroundColor { return [UIColor whiteColor]; }
++(UIFont*) textLabelFont { return [UIFont systemFontOfSize:14]; }
++(UIFont*) detailLabelFont { return [UIFont systemFontOfSize:10]; }
+
 @end
+

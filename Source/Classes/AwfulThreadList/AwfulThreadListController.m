@@ -319,14 +319,17 @@ typedef enum {
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 76;
+    AwfulThread* thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    return [AwfulThreadCell heightForContent:thread inTableView:self.tableView];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    AwfulThreadCell *cell = [tableView dequeueReusableCellWithIdentifier:[AwfulCustomForums cellIdentifierForForum:self.forum]];
-    //AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    NSString* identifier = [AwfulCustomForums cellIdentifierForForum:self.forum];
+    AwfulThreadCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    if (!cell) cell = [AwfulCustomForums cellForIdentifier:identifier];
+    
     [self configureCell:cell atIndexPath:indexPath];
-    cell.threadListController = self;
+    //cell.threadListController = self;
     
     return cell;
 }
