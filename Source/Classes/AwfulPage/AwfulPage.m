@@ -213,8 +213,10 @@
         NSLog(@"loadedDate set to %@", self.refreshControl.loadedDate);
         
         
+        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:self forKey:@"page"];
         [[NSNotificationCenter defaultCenter] postNotificationName:AwfulPageDidLoadNotification
-                                                            object:self.thread];
+                                                            object:self.thread
+                                                          userInfo:userInfo];
     }
     
 }

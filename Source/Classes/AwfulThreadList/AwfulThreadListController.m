@@ -364,9 +364,30 @@ typedef enum {
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {
-    [self performSegueWithIdentifier:@"AwfulPage" 
-                              sender:[self.tableView cellForRowAtIndexPath:indexPath]];
-
+    //[self performSegueWithIdentifier:@"AwfulPage" 
+    //                          sender:[self.tableView cellForRowAtIndexPath:indexPath]];
+    
+    //preload the page before pushing it
+    AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    AwfulPage *page = [[UIStoryboard storyboardWithName:@"main" bundle:[NSBundle mainBundle]] instantiateViewControllerWithIdentifier:@"AwfulPage"];
+    page.thread = thread;
+    [page refresh];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:AwfulPageWillLoadNotification
+                                                        object:[self getThreadAtIndexPath:indexPath]];
+    
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self 
+                                             selector:@selector(didLoadThreadPage:) 
+                                                 name:AwfulPageDidLoadNotification 
+                                               object:thread
+     ];
 }
 
+-(void) didLoadThreadPage:(NSNotification*)msg {
+    NSLog(@"loaded");
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    AwfulPage* page = [msg.userInfo objectForKey:@"page"];
+    [self.navigationController pushViewController:page animated:YES];
+}
 @end
