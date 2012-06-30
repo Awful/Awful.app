@@ -58,6 +58,7 @@
         //[self addFavorites];
         //self.automaticallyAdded = YES;
     }
+    self.tableView.editing = YES;
 }
 
 
@@ -83,6 +84,7 @@
     static NSString * const Identifier = @"AwfulForumCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:Identifier];
     [self configureCell:cell atIndexPath:indexPath];
+    cell.showsReorderControl = YES;
     return cell;
 }
 
@@ -102,6 +104,10 @@
     return YES;
 }
 
+-(BOOL) tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    return YES;
+}
+
 - (void)tableView:(UITableView *)tableView
     moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
       toIndexPath:(NSIndexPath *)destinationIndexPath
@@ -111,7 +117,7 @@
     AwfulForum *move = [reorder objectAtIndex:sourceIndexPath.row];
     [reorder removeObjectAtIndex:sourceIndexPath.row];
     [reorder insertObject:move atIndex:destinationIndexPath.row];
-    int i = 0;
+    int i = -100;
     for (AwfulForum* f in reorder) {
         f.favorite.displayOrderValue = i++;
     }
@@ -124,9 +130,25 @@
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView
            editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return UITableViewCellEditingStyleDelete;
+    return UITableViewCellEditingStyleNone;
 }
 
+- (void) tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    for(UIView* view in cell.subviews)
+    {
+        if([[[view class] description] isEqualToString:@"UITableViewCellReorderControl"])
+        {
+            //UIView *test = [view copy];
+            //test.foX = 0;
+            //[cell addSubview:test];
+            
+        }
+    }
+}
 
+-(NSString*) tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return @"Remove";
+}
 
 @end
