@@ -60,35 +60,6 @@
     }
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.identifier isEqualToString:@"ThreadList"]) {
-        NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        AwfulFavorite *favorite = [self.fetchedResultsController objectAtIndexPath:indexPath];
-        AwfulThreadListController *list = (AwfulThreadListController *)segue.destinationViewController;
-        list.forum = favorite.forum;
-    }
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return YES;
-}
-
-- (UIBarButtonItem *)addButtonItem
-{
-    if (!_addButtonItem) {
-        _addButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd 
-                                                                       target:self
-                                                                       action:@selector(addFavorites)];
-    }
-    return _addButtonItem;
-}
-
-- (void)addFavorites
-{
-    //[self performSegueWithIdentifier:@"AddFavorite" sender:self];
-}
 
 #pragma mark - Awful table view
 
@@ -99,18 +70,20 @@
 
 #pragma mark - Table view data source
 
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    return nil;
+}
+
+-(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 0;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString * const Identifier = @"AwfulForumCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:Identifier];
     [self configureCell:cell atIndexPath:indexPath];
     return cell;
-}
-
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
-{
-    AwfulForum *favorite = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    ((AwfulForumCell*)cell).forum = favorite;
 }
 
 - (void)tableView:(UITableView *)tableView
@@ -135,18 +108,14 @@
 {
     self.reordering = YES;
     NSMutableArray *reorder = [self.fetchedResultsController.fetchedObjects mutableCopy];
-    NSManagedObject *whatever = [reorder objectAtIndex:sourceIndexPath.row];
+    AwfulForum *move = [reorder objectAtIndex:sourceIndexPath.row];
     [reorder removeObjectAtIndex:sourceIndexPath.row];
-    [reorder insertObject:whatever atIndex:destinationIndexPath.row];
-    for (NSInteger i = 0; i < reorder.count; i += 1) {
-        [[reorder objectAtIndex:i] setValue:[NSNumber numberWithInteger:i]
-                                     forKey:@"displayOrder"];
+    [reorder insertObject:move atIndex:destinationIndexPath.row];
+    int i = 0;
+    for (AwfulForum* f in reorder) {
+        f.favorite.displayOrderValue = i++;
     }
-    NSError *error;
-    BOOL ok = [whatever.managedObjectContext save:&error];
-    if(!ok) {
-        NSLog(@"error saving favorite order: %@", error);
-    }
+    [ApplicationDelegate saveContext];
     self.reordering = NO;
 }
 

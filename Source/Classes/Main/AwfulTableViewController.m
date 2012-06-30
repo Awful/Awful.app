@@ -141,4 +141,14 @@
     [self stop];
 }
 
+#pragma mark cells
+
+- (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath {  
+    //subclass must override
+    abort();  
+    
+    //NSManagedObject *obj = (AwfulManagedObject*)[_fetchedResultsController objectAtIndexPath:indexPath];
+    //[obj setContentForCell:cell];
+}
+
 @end

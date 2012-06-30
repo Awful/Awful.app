@@ -6,8 +6,8 @@
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulFetchedTableViewController.h"
+#import "AwfulForumsListController.h"
 
-@interface AwfulFavoritesViewController : AwfulFetchedTableViewController
+@interface AwfulFavoritesViewController : AwfulForumsListController
 
 @end
