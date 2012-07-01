@@ -13,7 +13,7 @@
 @interface AwfulTableViewController : UITableViewController
 
 @property (nonatomic, strong) NSOperation *networkOperation;
-@property (nonatomic, strong) AwfulRefreshControl *refreshControl;
+@property (nonatomic, strong) AwfulRefreshControl *awfulRefreshControl;
 @property (nonatomic, assign) BOOL reloading;
 
 -(IBAction)refresh;

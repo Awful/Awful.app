@@ -62,7 +62,7 @@
 @synthesize actionsSegmentedControl = _actionsSegmentedControl;
 @synthesize isFullScreen = _isFullScreen;
 
-@synthesize refreshControl = _refreshControl;
+@synthesize awfulRefreshControl = _awfulRefreshControl;
 @synthesize loadNextPageControl = _loadNextPageControl;
 //@synthesize skipBlankingWebViewOnce = _skipBlankingWebViewOnce;
 /*
@@ -187,13 +187,13 @@
             [self.view addSubview:self.nextPageWebView];
             
             
-            self.refreshControl = [[AwfulRefreshControl alloc] initWithFrame:CGRectMake(0, -50, self.view.fsW, 50)];
-            [self.webView.scrollView addSubview:self.refreshControl];
+            self.awfulRefreshControl = [[AwfulRefreshControl alloc] initWithFrame:CGRectMake(0, -50, self.view.fsW, 50)];
+            [self.webView.scrollView addSubview:self.awfulRefreshControl];
             
-            [self.refreshControl addTarget:self
+            [self.awfulRefreshControl addTarget:self
                                      action:@selector(refreshControlChanged:) 
                            forControlEvents:(UIControlEventValueChanged)];
-            [self.refreshControl addTarget:self 
+            [self.awfulRefreshControl addTarget:self 
                                      action:@selector(refreshControlCancel:) 
                            forControlEvents:(UIControlEventTouchCancel)];
             
@@ -209,8 +209,8 @@
                            forControlEvents:(UIControlEventTouchCancel)];
         }
         
-        self.refreshControl.loadedDate = [NSDate date];
-        NSLog(@"loadedDate set to %@", self.refreshControl.loadedDate);
+        self.awfulRefreshControl.loadedDate = [NSDate date];
+        NSLog(@"loadedDate set to %@", self.awfulRefreshControl.loadedDate);
         
         
         NSDictionary *userInfo = [NSDictionary dictionaryWithObject:self forKey:@"page"];
@@ -821,8 +821,8 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 
 #pragma mark Pull For Action
 -(void) scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    if (self.refreshControl) {
-        self.refreshControl.userScrolling = YES;
+    if (self.awfulRefreshControl) {
+        self.awfulRefreshControl.userScrolling = YES;
     }
     
     if (self.loadNextPageControl)
@@ -831,22 +831,39 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {	
-    if (self.refreshControl && self.refreshControl.userScrolling) {
-        [self.refreshControl didScrollInScrollView:scrollView];
+    if (self.awfulRefreshControl && self.awfulRefreshControl.userScrolling) {
+        [self.awfulRefreshControl didScrollInScrollView:scrollView];
     }
     
     if (self.loadNextPageControl && self.loadNextPageControl.userScrolling)
         [self.loadNextPageControl didScrollInScrollView:scrollView];
+    
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
-    if (self.refreshControl) {
-        self.refreshControl.userScrolling = NO;
+    if (self.awfulRefreshControl) {
+        self.awfulRefreshControl.userScrolling = NO;
     }
     
     if (self.loadNextPageControl)
         self.loadNextPageControl.userScrolling = NO;
+}
+
+-(void) setIsHidingToolbars:(BOOL)isHidingToolbars {
+    _isHidingToolbars = isHidingToolbars;
+    
+    BOOL shouldHideToolbars = NO;
+    if (self.webView.scrollView.contentOffset.y >= 50 &&
+        self.webView.scrollView.contentOffset.y <= self.webView.scrollView.contentSize.height - self.webView.fsH - 50) {
+        shouldHideToolbars = YES;
+    }
+    else
+        shouldHideToolbars = NO;
+    
+    [self.navigationController setNavigationBarHidden:shouldHideToolbars animated:YES];
+    [self.navigationController setToolbarHidden:shouldHideToolbars animated:YES];
+    
 }
 
 -(void) refreshControlChanged:(AwfulRefreshControl*)refreshControl {

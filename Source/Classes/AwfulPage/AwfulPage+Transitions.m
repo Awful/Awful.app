@@ -105,8 +105,8 @@
     [self.webView removeFromSuperview];
     self.webView = self.nextPageWebView;
     
-    [self.refreshControl removeFromSuperview];
-    [self.webView.scrollView addSubview:self.refreshControl];
+    [self.awfulRefreshControl removeFromSuperview];
+    [self.webView.scrollView addSubview:self.awfulRefreshControl];
     
     [self.loadNextPageControl removeFromSuperview];
     [self.webView.scrollView addSubview:self.loadNextPageControl];

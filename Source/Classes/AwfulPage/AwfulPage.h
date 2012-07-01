@@ -64,8 +64,10 @@ typedef enum {
 @property (nonatomic, assign) BOOL draggingUp;
 @property (nonatomic, assign) BOOL isFullScreen;
 
+@property (nonatomic, assign) BOOL isHidingToolbars;
 
-@property (nonatomic, strong) AwfulRefreshControl *refreshControl;
+
+@property (nonatomic, strong) AwfulRefreshControl *awfulRefreshControl;
 @property (nonatomic, strong) AwfulLoadNextControl *loadNextPageControl;
 
 -(IBAction)hardRefresh;

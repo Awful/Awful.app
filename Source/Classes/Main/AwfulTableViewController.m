@@ -21,7 +21,7 @@
 
 @synthesize networkOperation = _networkOperation;
 //@synthesize refreshHeaderView = _refreshHeaderView;
-@synthesize refreshControl = __refreshControl;
+@synthesize awfulRefreshControl = _awfulRefreshControl;
 @synthesize reloading = _reloading;
 @synthesize loadNextControl = _loadNextControl;
 
@@ -32,11 +32,11 @@
     [super viewDidLoad];
 
     if ([self canPullToRefresh]) {
-        self.refreshControl = [[AwfulRefreshControl alloc] initWithFrame:CGRectMake(0, -50, self.tableView.fsW, 50)];
-        self.refreshControl.loadedDate = [NSDate date];
-        [self.refreshControl addTarget:self action:@selector(refreshControlChanged:) forControlEvents:(UIControlEventValueChanged)];
-        [self.refreshControl addTarget:self action:@selector(refreshControlCancel:) forControlEvents:(UIControlEventTouchCancel)];
-        [self.tableView addSubview:self.refreshControl];
+        self.awfulRefreshControl = [[AwfulRefreshControl alloc] initWithFrame:CGRectMake(0, -50, self.tableView.fsW, 50)];
+        self.awfulRefreshControl.loadedDate = [NSDate date];
+        [self.awfulRefreshControl addTarget:self action:@selector(refreshControlChanged:) forControlEvents:(UIControlEventValueChanged)];
+        [self.awfulRefreshControl addTarget:self action:@selector(refreshControlCancel:) forControlEvents:(UIControlEventTouchCancel)];
+        [self.tableView addSubview:self.awfulRefreshControl];
         
         
         
@@ -61,8 +61,8 @@
 
 #pragma mark - UIScrollViewDelegate Methods
 -(void) scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    if (self.refreshControl) {
-        self.refreshControl.userScrolling = YES;
+    if (self.awfulRefreshControl) {
+        self.awfulRefreshControl.userScrolling = YES;
     }
     
     if (self.loadNextControl)
@@ -71,8 +71,8 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {	
-    if (self.refreshControl && self.refreshControl.userScrolling) {
-        [self.refreshControl didScrollInScrollView:scrollView];
+    if (self.awfulRefreshControl && self.awfulRefreshControl.userScrolling) {
+        [self.awfulRefreshControl didScrollInScrollView:scrollView];
     }
     
     if (self.loadNextControl && self.loadNextControl.userScrolling)
@@ -81,8 +81,8 @@
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
-    if (self.refreshControl) {
-        self.refreshControl.userScrolling = NO;
+    if (self.awfulRefreshControl) {
+        self.awfulRefreshControl.userScrolling = NO;
     }
     
     if (self.loadNextControl)
@@ -105,9 +105,9 @@
 - (void)finishedRefreshing
 {
     self.reloading = NO;
-    if (self.refreshControl) {
-        self.refreshControl.state = AwfulRefreshControlStateNormal;
-        self.refreshControl.loadedDate = [NSDate date];
+    if (self.awfulRefreshControl) {
+        self.awfulRefreshControl.state = AwfulRefreshControlStateNormal;
+        self.awfulRefreshControl.loadedDate = [NSDate date];
     }
 }
 

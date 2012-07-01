@@ -369,7 +369,7 @@ typedef enum {
     
     //preload the page before pushing it
     AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    AwfulPage *page = [[UIStoryboard storyboardWithName:@"main" bundle:[NSBundle mainBundle]] instantiateViewControllerWithIdentifier:@"AwfulPage"];
+    AwfulPage *page = [[UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]] instantiateViewControllerWithIdentifier:@"AwfulPage"];
     page.thread = thread;
     [page refresh];
     
