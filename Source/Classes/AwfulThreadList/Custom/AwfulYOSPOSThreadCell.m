@@ -138,6 +138,14 @@
 +(UIFont*) textLabelFont { return [UIFont fontWithName:@"Courier" size:14]; }
 +(UIFont*) detailLabelFont { return [UIFont fontWithName:@"Courier" size:10]; }
 
+@end
+
+@implementation AwfulYOSPOSThreadListController
+
+-(void) viewDidLoad {
+    [super viewDidLoad];
+    self.tableView.separatorColor = [UIColor YOSPOSGreenColor];
+}
 
 @end
 

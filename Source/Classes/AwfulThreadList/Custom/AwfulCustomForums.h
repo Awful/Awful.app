@@ -13,9 +13,13 @@ typedef int AwfulCustomForumID;
 @class AwfulForum;
 @class AwfulThreadCell;
 @class AwfulThread;
+@class AwfulThreadListController;
 
 @interface AwfulCustomForums : NSObject
 
 +(NSString*) cellIdentifierForForum:(AwfulForum*)forum;
 +(AwfulThreadCell*) cellForIdentifier:(NSString*)cellIdentifier;
+
+
++(AwfulThreadListController*) threadListControllerForForum:(AwfulForum*)forum;
 @end

@@ -18,6 +18,7 @@
 #import "AwfulUser.h"
 #import "AwfulParentForumCell.h"
 #import "AwfulSubForumCell.h"
+#import "AwfulCustomForums.h"
 
 @interface AwfulForumsListController ()
 
@@ -181,9 +182,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 }
 
-//-(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-//    [self performSegueWithIdentifier:@"ThreadList" sender:indexPath];
-//}
+-(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    AwfulForum* forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    AwfulThreadListController *threadList = [AwfulCustomForums threadListControllerForForum:forum];
+    threadList.forum = forum;
+    [self.navigationController pushViewController:threadList animated:YES];
+}
 
 #pragma mark - Forums
 
@@ -195,7 +199,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     AwfulForum* forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
     forum.expandedValue = toggle;
-    NSLog(@"pre count: %i", [[[self.fetchedResultsController sections] objectAtIndex:indexPath.section] numberOfObjects]);
+    //NSLog(@"pre count: %i", [[[self.fetchedResultsController sections] objectAtIndex:indexPath.section] numberOfObjects]);
     [ApplicationDelegate saveContext];
     
     
@@ -207,7 +211,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [self.tableView beginUpdates];
 
     [self.fetchedResultsController performFetch:nil];
-    NSLog(@"post count: %i", [[[self.fetchedResultsController sections] objectAtIndex:indexPath.section] numberOfObjects]);
+    //NSLog(@"post count: %i", [[[self.fetchedResultsController sections] objectAtIndex:indexPath.section] numberOfObjects]);
     if (toggle) 
          [self.tableView insertRowsAtIndexPaths:rows withRowAnimation:(UITableViewRowAnimationTop)];
     else

@@ -8,10 +8,15 @@
 
 #import "AwfulCustomForums.h"
 #import "AwfulThreadCell.h"
+#import "AwfulThreadListController.h"
 
 static AwfulCustomForumID const AwfulCustomForumYOSPOS = (AwfulCustomForumID)219;
 
 @interface AwfulYOSPOSThreadCell : AwfulThreadCell
+
+@end
+
+@interface AwfulYOSPOSThreadListController : AwfulThreadListController
 
 @end
 

@@ -53,6 +53,29 @@
     return cell;
 }
 
++(NSString*) threadListIdentifierFor {
+    NSString *threadList;
+
+    
+    return threadList;
+}
+
++(AwfulThreadListController*) threadListControllerForForum:(AwfulForum*)forum {
+    NSString* className;
+    switch (forum.forumID.intValue) {
+        case AwfulCustomForumYOSPOS:
+            className = @"AwfulYOSPOSThreadListController";
+            break;
+            
+
+        default:
+            className = @"AwfulThreadListController";
+    }
+    AwfulThreadListController *threadList = [NSClassFromString(className) new];
+    [threadList awakeFromNib];
+    return threadList;
+}
+
 /*
 +(AwfulThreadCell*) cellForThread:(AwfulThread*)thread {
     AwfulThreadCell *cell;
