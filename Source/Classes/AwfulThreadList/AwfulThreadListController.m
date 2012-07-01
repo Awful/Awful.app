@@ -388,6 +388,18 @@ typedef enum {
     NSLog(@"loaded");
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     AwfulPage* page = [msg.userInfo objectForKey:@"page"];
-    [self.navigationController pushViewController:page animated:YES];
+    
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+        UINavigationController *nav = [self.splitViewController.viewControllers objectAtIndex:1];
+        [nav setViewControllers:[NSArray arrayWithObject:page] animated:YES];
+        /*
+        [self.splitViewController setViewControllers:[NSArray arrayWithObjects:
+                                                      [self.splitViewController.viewControllers objectAtIndex:0],
+                                                      page,
+                                                      nil]
+         ];*/
+    }
+    else
+        [self.navigationController pushViewController:page animated:YES];
 }
 @end

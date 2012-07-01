@@ -117,8 +117,10 @@
         _thread = newThread;
         self.threadID = _thread.threadID;
         if(_thread.title != nil) {
-            UILabel *lab = (UILabel *)self.navigationItem.titleView;
-            lab.text = self.thread.title;
+            
+            self.title = self.thread.title;
+            //UILabel *lab = (UILabel *)self.navigationItem.titleView;
+            //lab.text = self.thread.title;
            //self.navigationItem.titleView = [AwfulThreadTitleView threadTitleViewWithPage:self];
         }
         
@@ -132,6 +134,7 @@
             self.destinationType = AwfulPageDestinationTypeNewpost;
         }
     }
+
 }
 
 
@@ -851,6 +854,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 }
 
 -(void) setIsHidingToolbars:(BOOL)isHidingToolbars {
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) return;
     _isHidingToolbars = isHidingToolbars;
     
     BOOL shouldHideToolbars = NO;
@@ -931,7 +935,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     self.popController = [[UIPopoverController alloc] initWithContentViewController:vc];
     
     [self.popController setPopoverContentSize:CGSizeMake(260,sp_view.frame.size.height) animated:YES];
-    [self.popController presentPopoverFromBarButtonItem:self.pagesBarButtonItem 
+    [self.popController presentPopoverFromBarButtonItem:self.pagesBarButtonItem
                                permittedArrowDirections:UIPopoverArrowDirectionAny
                                                animated:YES];
 }
