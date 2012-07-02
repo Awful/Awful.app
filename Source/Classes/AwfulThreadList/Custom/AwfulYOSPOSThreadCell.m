@@ -82,56 +82,18 @@
     AwfulThread *thread = notification.object;
     if (thread.threadID.intValue != self.thread.threadID.intValue) return;
     
-    UILabel *lbl = [UILabel new];
-    lbl.font = [UIFont fontWithName:@"Courier" size:16];
-    lbl.textColor = [UIColor YOSPOSGreenColor];
-    lbl.backgroundColor = [UIColor blackColor];
-    
-    lbl.text = @"--";
-    lbl.tag = 0;
-    lbl.textAlignment = UITextAlignmentCenter;
-    [lbl sizeToFit];
-    self.accessoryView = lbl;
-    self.badge.hidden = YES;
-    
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:.219/2   
-                                                  target:self 
-                                                selector:@selector(activityTimer) 
-                                                userInfo:nil 
-                                                 repeats:YES
-                             ];
+    AwfulYOSPOSActivityIndicatorView *activity = [AwfulYOSPOSActivityIndicatorView new];
+    self.accessoryView = activity;
+    [activity startAnimating];
+
 }
 
 
 -(void) didLoadThreadPage:(NSNotification*)notification {
     [super didLoadThreadPage:notification];
-    [self.timer invalidate];
-    self.timer = nil;
+
 }
 
--(void) activityTimer {
-    UILabel *lbl = (UILabel*)self.accessoryView;
-    lbl.tag++;
-    switch (lbl.tag % 4) {
-        case 0:
-            lbl.text = @"--";
-            return;
-            
-        case 1:
-            lbl.text = @"\\";
-            return;
-        case 2:
-            lbl.text = @"\u00A6";
-            return;
-        case 3:
-            lbl.text = @"/";
-            return;
-            
-            
-        default:
-            break;
-    }
-}
 
 +(UIColor*) textColor { return [UIColor YOSPOSGreenColor]; }
 +(UIColor*) backgroundColor { return [UIColor blackColor]; }
@@ -141,10 +103,147 @@
 @end
 
 @implementation AwfulYOSPOSThreadListController
+@synthesize awfulRefreshControl = _awfulRefreshControl;
 
 -(void) viewDidLoad {
     [super viewDidLoad];
     self.tableView.separatorColor = [UIColor YOSPOSGreenColor];
+    
+    UILabel *title = [UILabel new];
+    title.font = [UIFont fontWithName:@"Courier-Bold" size:22];
+    title.textAlignment = UITextAlignmentCenter;
+    title.adjustsFontSizeToFitWidth = YES;
+    title.textColor = [UIColor YOSPOSGreenColor];
+    title.backgroundColor = [UIColor blackColor];
+    title.frame = CGRectMake(0, 0, 200, 50);
+    title.text = self.forum.name;
+    self.navigationItem.titleView = title;
+    
+
+}
+
+-(void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 70, 26)];
+    lbl.text = @"< Back";
+    lbl.textAlignment = UITextAlignmentCenter;
+    lbl.font = [UIFont fontWithName:@"Courier-Bold" size:12];
+    lbl.backgroundColor = [UIColor blackColor];
+    lbl.textColor = [UIColor YOSPOSGreenColor];
+    lbl.layer.borderColor = [[UIColor YOSPOSGreenColor] CGColor];
+    lbl.layer.borderWidth = 1;
+    
+    UIBarButtonItem *test = [[UIBarButtonItem alloc] initWithCustomView:lbl];
+    test.target = self;
+    test.action = @selector(pop);
+    
+    self.navigationItem.leftBarButtonItem = test;
+}
+     
+-(void) pop {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+-(AwfulRefreshControl*) awfulRefreshControl {
+    if (!_awfulRefreshControl) {
+        _awfulRefreshControl = [[AwfulYOSPOSRefreshControl alloc] initWithFrame:CGRectMake(0, -50, self.tableView.fsW, 50)];
+    }
+    return _awfulRefreshControl;
+}
+
+@end
+
+@implementation AwfulYOSPOSRefreshControl
+@synthesize activityView = _activityView;
+-(id) initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    self.title.font = [UIFont fontWithName:@"Courier" size:18];
+    self.title.textColor = [UIColor blackColor];
+    
+    self.subtitle.textColor = [UIColor blackColor];
+    self.subtitle.font = [UIFont fontWithName:@"Courier" size:14];
+    
+    [[self.layer.sublayers objectAtIndex:0] removeFromSuperlayer];
+    self.backgroundColor = [UIColor YOSPOSGreenColor];
+    
+    return self;
+}
+
+-(UIActivityIndicatorView*) activityView {
+    if (!_activityView) {
+        _activityView = [[AwfulYOSPOSActivityIndicatorView alloc] initWithInvertedColors];
+        [self addSubview:_activityView];
+    }
+    return _activityView;
+}
+
+@end
+
+@implementation AwfulYOSPOSActivityIndicatorView
+-(id) init {
+    self = [super init];
+    
+    _lbl = [UILabel new];
+    _lbl.tag = 0;
+    _lbl.font = [UIFont fontWithName:@"Courier" size:16];
+    _lbl.textColor = [UIColor YOSPOSGreenColor];
+    _lbl.backgroundColor = [UIColor blackColor];
+    
+    _lbl.text = @"--";
+    _lbl.tag = 0;
+    _lbl.textAlignment = UITextAlignmentCenter;
+    [_lbl sizeToFit];
+    self.frame = _lbl.frame;
+    [self addSubview:_lbl];
+
+    return self;
+}
+
+-(id) initWithInvertedColors {
+    self = [self init];
+    _lbl.textColor = [UIColor blackColor];
+    _lbl.backgroundColor = [UIColor YOSPOSGreenColor];
+    return self;
+}
+
+-(void) startAnimating {
+    self.hidden = NO;
+     _timer = [NSTimer scheduledTimerWithTimeInterval:.219/2
+                                               target:self 
+                                             selector:@selector(activityTimer) 
+                                             userInfo:nil 
+                                              repeats:YES
+               ];
+}
+
+-(void) activityTimer {
+    _lbl.tag++;
+    switch (_lbl.tag % 4) {
+        case 0:
+            _lbl.text = @"--";
+            return;
+            
+        case 1:
+            _lbl.text = @"\\";
+            return;
+        case 2:
+            _lbl.text = @"\u00A6";
+            return;
+        case 3:
+            _lbl.text = @"/";
+            return;
+            
+            
+        default:
+            break;
+    }
+}
+
+-(void) stopAnimating {
+    self.hidden = YES;
+    [_timer invalidate];
+    _timer = nil;
 }
 
 @end

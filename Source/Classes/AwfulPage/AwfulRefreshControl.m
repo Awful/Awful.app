@@ -33,8 +33,6 @@
         _imageView = cell.imageView;
         
         self.imageView.image = [UIImage imageNamed:@"smile.gif"];
-        _activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-        [self addSubview:self.activityView];
         
         self.canSwipeToCancel = YES;
         self.state = AwfulRefreshControlStateNormal;
@@ -55,6 +53,14 @@
         [self.layer insertSublayer:gradient atIndex:0];
     }
     return self;
+}
+
+-(UIActivityIndicatorView*) activityView {
+    if (!_activityView) {
+        _activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        [self addSubview:self.activityView];
+    }
+    return _activityView;
 }
 
 -(void) layoutSubviews {

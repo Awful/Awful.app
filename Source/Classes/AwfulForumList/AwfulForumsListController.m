@@ -86,7 +86,7 @@
     
    if(IsLoggedIn() && self.fetchedResultsController.sections.count == 0) {
        [self refresh];
-    } 
+    }
 }
 
 -(void)finishedRefreshing

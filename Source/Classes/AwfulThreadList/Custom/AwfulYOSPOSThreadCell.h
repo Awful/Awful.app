@@ -9,6 +9,7 @@
 #import "AwfulCustomForums.h"
 #import "AwfulThreadCell.h"
 #import "AwfulThreadListController.h"
+#import "AwfulRefreshControl.h"
 
 static AwfulCustomForumID const AwfulCustomForumYOSPOS = (AwfulCustomForumID)219;
 
@@ -18,6 +19,18 @@ static AwfulCustomForumID const AwfulCustomForumYOSPOS = (AwfulCustomForumID)219
 
 @interface AwfulYOSPOSThreadListController : AwfulThreadListController
 
+@end
+
+@interface AwfulYOSPOSRefreshControl : AwfulRefreshControl
+
+@end
+
+@interface AwfulYOSPOSActivityIndicatorView : UIActivityIndicatorView {
+    UILabel *_lbl;
+    NSTimer *_timer;
+}
+
+-(id) initWithInvertedColors;
 @end
 
 @interface UIColor (YOSPOS)

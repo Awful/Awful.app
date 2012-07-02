@@ -32,12 +32,12 @@
     [super viewDidLoad];
 
     if ([self canPullToRefresh]) {
-        self.awfulRefreshControl = [[AwfulRefreshControl alloc] initWithFrame:CGRectMake(0, -50, self.tableView.fsW, 50)];
         self.awfulRefreshControl.loadedDate = [NSDate date];
-        [self.awfulRefreshControl addTarget:self action:@selector(refreshControlChanged:) forControlEvents:(UIControlEventValueChanged)];
-        [self.awfulRefreshControl addTarget:self action:@selector(refreshControlCancel:) forControlEvents:(UIControlEventTouchCancel)];
-        [self.tableView addSubview:self.awfulRefreshControl];
         
+        _awfulRefreshControl.loadedDate = [NSDate date];
+        [_awfulRefreshControl addTarget:self action:@selector(refreshControlChanged:) forControlEvents:(UIControlEventValueChanged)];
+        [_awfulRefreshControl addTarget:self action:@selector(refreshControlCancel:) forControlEvents:(UIControlEventTouchCancel)];
+        [self.tableView addSubview:self.awfulRefreshControl];
         
         
         self.loadNextControl = [[AwfulLoadNextControl alloc] initWithFrame:CGRectMake(0, self.tableView.contentSize.height, self.tableView.fsW, 50)];
@@ -57,6 +57,13 @@
     [super viewWillDisappear:animated];
     [self.networkOperation cancel];
     [self finishedRefreshing];
+}
+
+-(AwfulRefreshControl*) awfulRefreshControl {
+    if (!_awfulRefreshControl) {
+        _awfulRefreshControl = [[AwfulRefreshControl alloc] initWithFrame:CGRectMake(0, -50, self.tableView.fsW, 50)];
+    }
+return _awfulRefreshControl;
 }
 
 #pragma mark - UIScrollViewDelegate Methods
