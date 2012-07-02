@@ -13,7 +13,7 @@
 
 - (id)init
 {
-    self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"AwfulParentForumCell"];
+    self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"AwfulForumCell"];
     if (self) {
         
     }

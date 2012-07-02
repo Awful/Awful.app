@@ -2,14 +2,12 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="1.1" toolsVersion="2182" systemVersion="11E53" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="D7m-b9-f1Z">
     <dependencies>
         <deployment defaultVersion="1296" identifier="iOS"/>
-        <development defaultVersion="4200" identifier="xcode"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="1181"/>
     </dependencies>
     <scenes>
         <!--Navigation Controller - Forums-->
         <scene sceneID="7Ed-Hc-PrQ">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="UJy-SE-XNe" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController storyboardIdentifier="" id="ogw-4I-ZR3" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Forums" image="list_icon.png" id="ccA-Kf-XDD"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
@@ -21,13 +19,13 @@
                         <segue destination="itn-NS-72L" kind="relationship" relationship="rootViewController" id="7Ep-TH-oyG"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="UJy-SE-XNe" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="324" y="-2631"/>
         </scene>
         <!--Awful Split View Controller - Item-->
         <scene sceneID="h6S-1A-jhG">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="WPN-d9-09r" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <splitViewController id="D7m-b9-f1Z" customClass="AwfulSplitViewController" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Item" id="bfo-a6-Z7S"/>
                     <toolbarItems/>
@@ -37,13 +35,13 @@
                         <segue destination="jeX-ok-kre" kind="relationship" relationship="detailViewController" id="vzh-w9-gyH"/>
                     </connections>
                 </splitViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="WPN-d9-09r" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-2687" y="-1455"/>
         </scene>
         <!--Awful Forums List Controller - Forums-->
         <scene sceneID="2zq-Y4-odR">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="iBx-lO-NDB" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController title="Forums" id="itn-NS-72L" customClass="AwfulForumsListController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="50" sectionHeaderHeight="22" sectionFooterHeight="22" id="kek-Ws-iPl">
                         <rect key="frame" x="0.0" y="64" width="320" height="655"/>
@@ -81,9 +79,6 @@
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <connections>
-                                    <segue destination="b0I-zs-CAw" kind="push" identifier="ThreadList" id="Lgq-yz-2I5"/>
-                                </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="2" indentationWidth="0.0" shouldIndentWhileEditing="NO" reuseIdentifier="AwfulSubForumCell" textLabel="5gd-fq-AWI" detailTextLabel="6NN-4u-sIE" style="IBUITableViewCellStyleSubtitle" id="JhL-dk-mfN" customClass="AwfulSubForumCell">
                                 <rect key="frame" x="0.0" y="72" width="320" height="50"/>
@@ -110,9 +105,6 @@
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <connections>
-                                    <segue destination="b0I-zs-CAw" kind="push" id="jma-nB-Wd3"/>
-                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -123,13 +115,13 @@
                     <navigationItem key="navigationItem" title="Forums" id="kkm-Nf-hjN"/>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackTranslucent"/>
                 </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iBx-lO-NDB" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="783" y="-2631"/>
         </scene>
         <!--Awful Thread List Controller - Title-->
         <scene sceneID="Gla-T9-53W">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="e3Q-4i-yok" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController id="b0I-zs-CAw" customClass="AwfulThreadListController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="0IP-LX-ayf">
                         <rect key="frame" x="0.0" y="64" width="320" height="704"/>
@@ -181,6 +173,7 @@
                         <segue destination="oRp-8t-Jy6" kind="replace" identifier="AwfulPage" customClass="AwfulChooseThreadSegue" splitViewControllerTargetIndex="1" id="hhi-LS-YNv"/>
                     </connections>
                 </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="e3Q-4i-yok" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Forums Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" minimumFontSize="10" id="G15-hw-wus">
                     <rect key="frame" x="0.0" y="0.0" width="150" height="44"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
@@ -195,7 +188,6 @@
         <!--Navigation Controller - Settings-->
         <scene sceneID="3En-8f-fIU">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="ygr-Ik-0FG" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController definesPresentationContext="YES" id="eNs-ia-gzc" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Settings" image="cog.png" id="tH1-Xb-Nte"/>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackTranslucent"/>
@@ -208,13 +200,13 @@
                         <segue destination="BZz-jf-x9i" kind="relationship" relationship="rootViewController" id="ylh-gU-crO"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ygr-Ik-0FG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="330" y="198"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="iBR-qX-RHb">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Bar-Lf-3un" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tabBarController definesPresentationContext="YES" id="6qG-xq-Bw4" sceneMemberID="viewController">
                     <value key="contentSizeForViewInPopover" type="size" width="320" height="783"/>
                     <nil key="simulatedBottomBarMetrics"/>
@@ -230,13 +222,13 @@
                         <segue destination="eNs-ia-gzc" kind="relationship" relationship="viewControllers" id="SmE-vb-9CD"/>
                     </connections>
                 </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Bar-Lf-3un" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-297" y="-1455"/>
         </scene>
         <!--Awful Settings View Controller - Settings-->
         <scene sceneID="Ifr-Rg-ncU">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="2VA-w8-sO3" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController id="BZz-jf-x9i" customClass="AwfulSettingsViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="singleLineEtched" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="8WJ-rJ-ayg">
                         <rect key="frame" x="0.0" y="64" width="320" height="655"/>
@@ -255,13 +247,13 @@
                         <segue destination="COB-dx-4ZV" kind="modal" identifier="Login" id="aZH-ZJ-dej"/>
                     </connections>
                 </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2VA-w8-sO3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="783" y="198"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="sXW-vv-ldT">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="rdZ-rr-MUc" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController definesPresentationContext="YES" id="COB-dx-4ZV" sceneMemberID="viewController">
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackTranslucent"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
@@ -273,13 +265,13 @@
                         <segue destination="1Fp-2s-3Kf" kind="relationship" relationship="rootViewController" id="4bh-0B-iEG"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="rdZ-rr-MUc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1323" y="90"/>
         </scene>
         <!--Awful Login Controller - Login-->
         <scene sceneID="EpQ-8e-rWI">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="9wO-v5-qhG" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController id="1Fp-2s-3Kf" customClass="AwfulLoginController" sceneMemberID="viewController">
                     <webView key="view" contentMode="scaleToFill" id="cQa-sD-PJG">
                         <rect key="frame" x="0.0" y="64" width="1024" height="704"/>
@@ -301,6 +293,7 @@
                         <outlet property="web" destination="cQa-sD-PJG" id="NBv-ZT-5cU"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="9wO-v5-qhG" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <activityIndicatorView opaque="NO" contentMode="scaleToFill" hidesWhenStopped="YES" animating="YES" style="gray" id="ew5-zZ-JJB">
                     <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -312,7 +305,6 @@
         <!--Navigation Controller-->
         <scene sceneID="Jfk-Do-hy8">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="zfi-Lc-OsW" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController definesPresentationContext="YES" id="yxf-ta-Zqb" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" systemItem="bookmarks" id="Vy9-60-zGk"/>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackTranslucent"/>
@@ -325,13 +317,13 @@
                         <segue destination="3lt-fd-sto" kind="relationship" relationship="rootViewController" id="5Dw-Bo-I59"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="zfi-Lc-OsW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="286" y="-855"/>
         </scene>
         <!--Awful Bookmarks Controller - Bookmarks-->
         <scene sceneID="T2f-5v-cct">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="LPG-ll-xrC" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController title="Bookmarks" id="3lt-fd-sto" customClass="AwfulBookmarksController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="23Q-Go-LtT">
                         <rect key="frame" x="0.0" y="64" width="320" height="655"/>
@@ -450,13 +442,13 @@
                         <segue destination="oRp-8t-Jy6" kind="replace" identifier="AwfulPage" splitViewControllerTargetIndex="1" id="Oqh-Ug-Ror"/>
                     </connections>
                 </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="LPG-ll-xrC" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="766" y="-861"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="I0M-Os-bjF">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="vIR-GK-69E" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController definesPresentationContext="YES" providesPresentationContextTransitionStyle="YES" id="oRp-8t-Jy6" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="ArT-BQ-4gm"/>
                     <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="sWc-eP-x6d">
@@ -466,13 +458,13 @@
                         <segue destination="5o1-8Y-fsn" kind="relationship" relationship="rootViewController" id="nmT-g1-b9A"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="vIR-GK-69E" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1515" y="726"/>
         </scene>
         <!--Awful Page Ipad-->
         <scene sceneID="I5P-Jg-hyP">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dQa-7P-so9" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController storyboardIdentifier="AwfulPage" hidesBottomBarWhenPushed="YES" id="5o1-8Y-fsn" customClass="AwfulPageIpad" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Auw-iH-8xK">
                         <rect key="frame" x="0.0" y="64" width="703" height="660"/>
@@ -541,6 +533,7 @@
                         <segue destination="yxI-Ea-lFb" kind="modal" identifier="QuoteBox" modalPresentationStyle="formSheet" id="iHc-lm-dh8"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dQa-7P-so9" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="thread title label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" minimumFontSize="10" id="UQv-an-WKH">
                     <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
@@ -555,7 +548,6 @@
         <!--Awful Add Favorite View Controller - Add Favorites-->
         <scene sceneID="3wc-G6-sgU">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="jWI-GD-sU9" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController id="ffn-sD-mkh" customClass="AwfulAddFavoriteViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" allowsSelectionDuringEditing="YES" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="6tM-SB-ev1">
                         <rect key="frame" x="0.0" y="64" width="320" height="655"/>
@@ -617,13 +609,13 @@
                     </navigationItem>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackTranslucent"/>
                 </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="jWI-GD-sU9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1183" y="-3516"/>
         </scene>
         <!--Awful Post Box Controller-->
         <scene sceneID="mna-8K-D6o">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="i4w-1f-nvd" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController id="yxI-Ea-lFb" customClass="AwfulPostBoxController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="aWF-R1-wvz">
                         <rect key="frame" x="0.0" y="20" width="540" height="600"/>
@@ -683,13 +675,13 @@
                         <outlet property="sendButton" destination="fuv-Av-aEq" id="GMG-JD-VJ8"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="i4w-1f-nvd" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-562" y="1933"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="vEl-Ha-B4p">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="lfN-6F-z3E" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController definesPresentationContext="YES" providesPresentationContextTransitionStyle="YES" id="jeX-ok-kre" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="7jS-vX-h8O"/>
                     <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="sHB-Vg-NLV">
@@ -699,13 +691,13 @@
                         <segue destination="bie-UO-tTR" kind="relationship" relationship="rootViewController" id="Cl7-Lp-HMY"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="lfN-6F-z3E" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-2459" y="1894"/>
         </scene>
         <!--Awful Page Ipad-->
         <scene sceneID="eeH-El-Rh0">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="C99-UB-8TE" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController storyboardIdentifier="" hidesBottomBarWhenPushed="YES" id="bie-UO-tTR" customClass="AwfulPageIpad" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="7LG-0k-3Ej">
                         <rect key="frame" x="0.0" y="64" width="768" height="916"/>
@@ -777,6 +769,7 @@
                         <outlet property="pagesSegmentedControl" destination="g6s-V8-8i1" id="BJl-0N-DVk"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="C99-UB-8TE" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="thread title label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" minimumFontSize="10" id="gls-9u-bpW">
                     <rect key="frame" x="0.0" y="0.0" width="250" height="44"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
@@ -791,7 +784,6 @@
         <!--Navigation Controller-->
         <scene sceneID="RpD-5M-nCo">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="83A-Kz-j4h" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController storyboardIdentifier="RootNavigationController" id="wlS-xD-QGL" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" systemItem="favorites" id="DkE-Q2-kgS"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
@@ -803,13 +795,13 @@
                         <segue destination="uad-aZ-DOT" kind="relationship" relationship="rootViewController" id="YPY-qU-rw7"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="83A-Kz-j4h" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="324" y="-1751"/>
         </scene>
         <!--Awful Favorites View Controller - Forums-->
         <scene sceneID="5vY-92-oTk">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="zFw-Vv-g7v" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController title="Forums" id="uad-aZ-DOT" customClass="AwfulFavoritesViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="50" sectionHeaderHeight="22" sectionFooterHeight="22" id="lD2-0F-D2L">
                         <rect key="frame" x="0.0" y="64" width="320" height="655"/>
@@ -859,6 +851,7 @@
                         <segue destination="ffn-sD-mkh" kind="push" identifier="AddFavorite" id="Dvn-yd-Dni"/>
                     </connections>
                 </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="zFw-Vv-g7v" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="783" y="-1751"/>
         </scene>
@@ -889,7 +882,7 @@
         <class className="AwfulBookmarksController" superclassName="AwfulThreadListController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulBookmarksController.h"/>
         </class>
-        <class className="AwfulFavoritesViewController" superclassName="AwfulFetchedTableViewController">
+        <class className="AwfulFavoritesViewController" superclassName="AwfulForumsListController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulFavoritesViewController.h"/>
         </class>
         <class className="AwfulFetchedTableViewController" superclassName="AwfulTableViewController">
@@ -1005,7 +998,6 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="Lgq-yz-2I5"/>
         <segue reference="hhi-LS-YNv"/>
         <segue reference="Kgw-hp-QCk"/>
     </inferredMetricsTieBreakers>

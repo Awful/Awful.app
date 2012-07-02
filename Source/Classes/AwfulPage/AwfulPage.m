@@ -852,7 +852,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     if (self.loadNextPageControl)
         self.loadNextPageControl.userScrolling = NO;
 }
-
+/*
 -(void) setIsHidingToolbars:(BOOL)isHidingToolbars {
     if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) return;
     _isHidingToolbars = isHidingToolbars;
@@ -869,7 +869,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     [self.navigationController setToolbarHidden:shouldHideToolbars animated:YES];
     
 }
-
+*/
 -(void) refreshControlChanged:(AwfulRefreshControl*)refreshControl {
     if (refreshControl.state == AwfulRefreshControlStateLoading)
         [self refresh];
