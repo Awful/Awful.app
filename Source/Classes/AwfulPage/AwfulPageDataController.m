@@ -135,6 +135,7 @@ static NSMutableArray *ParsePosts(TFHpple *parser, NSString *forumID)
     return parsedPosts;
 }
 
+static void SwapInCachedImages(NSString* post);
 static AwfulPost *ParsePost(TFHpple *parser, NSString *forumID)
 {
     AwfulPost *post = [[AwfulPost alloc] init];
@@ -218,6 +219,9 @@ static AwfulPost *ParsePost(TFHpple *parser, NSString *forumID)
                                       options:NSCaseInsensitiveSearch
                                         range:NSMakeRange(0, post_body.length)];
         
+
+        SwapInCachedImages(post_body);
+        
         post.postBody = post_body;
         
         TFHppleElement *seen = [parser searchForSingle:@"//tr[@class='seen1']|//tr[@class='seen2']"];
@@ -225,6 +229,62 @@ static AwfulPost *ParsePost(TFHpple *parser, NSString *forumID)
     }
     
     return post;
+}
+
+static void SwapInCachedImages(NSMutableString* post) {
+    //swap in local cached images, swap in retina if necessary
+    NSRegularExpression * regex = [NSRegularExpression regularExpressionWithPattern:@"\"(http://i.somethingawful.com/forumsystem/(emoticons|smilies)/([^\"]*))\""
+                                                                            options:(NSRegularExpressionCaseInsensitive)
+                                                                              error:nil
+                                   ];
+
+    int count = [regex replaceMatchesInString:post 
+                                      options:NSRegularExpressionSearch 
+                                        range:NSMakeRange(0, post.length) 
+                                 withTemplate:@"\"$3\""
+                 ];
+     
+    //todo:swap in retina version if available
+     
+    /*
+    NSArray *matches = [regex matchesInString:post options:NSRegularExpressionSearch range:NSMakeRange(0, post.length)];
+    
+    NSString *resourcePath = [[[[NSBundle mainBundle] resourcePath]
+                               stringByReplacingOccurrencesOfString:@"/" withString:@"//"]
+                              stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+    
+    NSString *replacement = [NSString stringWithFormat:@"\"smile@2x.gif\" width='15' height='15'"];
+     
+    for (NSTextCheckingResult *match in matches) {
+        NSString *urlString = [post substringWithRange:[match rangeAtIndex:1]];
+        NSString *filename = [urlString lastPathComponent];
+        //NSString *path = [post substringWithRange:NSMakeRange(match.range.location, match.range.length - filename.length-1)];
+        
+        //do we have a cached version?
+        NSURL *local = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"smile@2x.gif" ofType:nil]];
+        NSString *test;
+        if (local) {
+            //do we need a retina version?
+            //NSArray *f = [filename componentsSeparatedByString:@"."];
+            //if ([[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"%@@2x", [f objectAtIndex:0] ] 
+            //                                    ofType:[f objectAtIndex:1]]) {
+                
+                
+            //}
+                        
+            NSString *swap = [NSString stringWithFormat:@"\"%@\" width=15 height=15 ",local.absoluteString];
+            
+            test = [regex replacementStringForResult:match 
+                                                      inString:post 
+                                                        offset:0
+                                                      template:swap
+                              ];
+            NSLog(@"test:%@",test);
+        }
+        
+
+    }
+     */
 }
 
 static NSUInteger ParseNewPostIndex(NSURL *pageURL)

@@ -87,7 +87,7 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:Identifier];
     [self configureCell:cell atIndexPath:indexPath];
     cell.showsReorderControl = NO;
-    cell.imageView.image = [UIImage imageNamed:@"mad.gif"];
+    //cell.imageView.image = [UIImage imageNamed:@"mad.gif"];
 
     return cell;
 }
@@ -160,9 +160,4 @@
     return @"Remove";
 }
 
-/*
--(BOOL) tableView:(UITableView*)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath {
-    return NO;
-}
-*/
 @end

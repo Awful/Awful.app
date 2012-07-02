@@ -181,7 +181,8 @@
             self.nextPageWebView.tag = self.currentPage;
         }
         else {
-            [self.webView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
+            //[self.webView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
+            [self.webView loadHTMLString:html baseURL:[[NSBundle mainBundle] resourceURL]];
             self.webView.tag = self.currentPage;
             
             self.nextPageWebView = [UIWebView new];
