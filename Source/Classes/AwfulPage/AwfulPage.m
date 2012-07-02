@@ -64,6 +64,7 @@
 
 @synthesize awfulRefreshControl = _awfulRefreshControl;
 @synthesize loadNextPageControl = _loadNextPageControl;
+@synthesize isHidingToolbars = _isHidingToolbars;
 //@synthesize skipBlankingWebViewOnce = _skipBlankingWebViewOnce;
 /*
 - (BOOL)skipBlankingWebViewOnce
@@ -830,6 +831,8 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     
     if (self.loadNextPageControl)
         self.loadNextPageControl.userScrolling = YES;
+    
+
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
@@ -841,6 +844,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     if (self.loadNextPageControl && self.loadNextPageControl.userScrolling)
         [self.loadNextPageControl didScrollInScrollView:scrollView];
     
+    self.isHidingToolbars = YES;
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
@@ -851,15 +855,21 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     
     if (self.loadNextPageControl)
         self.loadNextPageControl.userScrolling = NO;
+    
 }
-/*
+
+-(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    self.isHidingToolbars = NO;
+    
+}
+
 -(void) setIsHidingToolbars:(BOOL)isHidingToolbars {
     if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) return;
-    _isHidingToolbars = isHidingToolbars;
+    //_isHidingToolbars = isHidingToolbars;
+    
     
     BOOL shouldHideToolbars = NO;
-    if (self.webView.scrollView.contentOffset.y >= 50 &&
-        self.webView.scrollView.contentOffset.y <= self.webView.scrollView.contentSize.height - self.webView.fsH - 50) {
+    if (self.webView.scrollView.contentOffset.y >= self.navigationController.navigationBar.fsH) {
         shouldHideToolbars = YES;
     }
     else
@@ -869,7 +879,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     [self.navigationController setToolbarHidden:shouldHideToolbars animated:YES];
     
 }
-*/
+
 -(void) refreshControlChanged:(AwfulRefreshControl*)refreshControl {
     if (refreshControl.state == AwfulRefreshControlStateLoading)
         [self refresh];

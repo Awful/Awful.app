@@ -10,6 +10,7 @@
 #import "AwfulForumsListController.h"
 #import "AwfulThreadListController.h"
 #import "AwfulForumCell.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface AwfulFavoritesViewController () <NSFetchedResultsControllerDelegate>
 @property (readonly, strong, nonatomic) UIBarButtonItem *addButtonItem;
@@ -49,6 +50,8 @@
 {
     [super viewWillAppear:animated];
     [self.navigationController setToolbarHidden:YES];
+    self.tableView.editing = YES;
+    self.tableView.allowsSelectionDuringEditing = YES;
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -58,7 +61,6 @@
         //[self addFavorites];
         //self.automaticallyAdded = YES;
     }
-    self.tableView.editing = YES;
 }
 
 
@@ -84,20 +86,12 @@
     static NSString * const Identifier = @"AwfulForumCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:Identifier];
     [self configureCell:cell atIndexPath:indexPath];
-    cell.showsReorderControl = YES;
+    cell.showsReorderControl = NO;
+    cell.imageView.image = [UIImage imageNamed:@"mad.gif"];
+
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView
-    commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
-    forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
-        [ApplicationDelegate.managedObjectContext deleteObject:forum.favorite];
-        [ApplicationDelegate saveContext];
-    }
-}
 
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -117,12 +111,15 @@
     AwfulForum *move = [reorder objectAtIndex:sourceIndexPath.row];
     [reorder removeObjectAtIndex:sourceIndexPath.row];
     [reorder insertObject:move atIndex:destinationIndexPath.row];
+    
+    //set order from -100 so added favorites always on bottom
     int i = -100;
     for (AwfulForum* f in reorder) {
         f.favorite.displayOrderValue = i++;
     }
     [ApplicationDelegate saveContext];
     self.reordering = NO;
+    [self.fetchedResultsController performFetch:nil];
 }
 
 #pragma mark - Table view delegate
@@ -139,9 +136,21 @@
     {
         if([[[view class] description] isEqualToString:@"UITableViewCellReorderControl"])
         {
-            //UIView *test = [view copy];
-            //test.foX = 0;
-            //[cell addSubview:test];
+            if([[[view class] description] isEqualToString:@"UITableViewCellReorderControl"])
+            {
+                // Creates a new subview the size of the entire cell
+                UIView *movedReorderControl = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetMaxX(view.frame), CGRectGetMaxY(view.frame))];
+                // Adds the reorder control view to our new subview
+                [movedReorderControl addSubview:view];
+                // Adds our new subview to the cell
+                [cell addSubview:movedReorderControl];
+                // CGStuff to move it to the left
+                CGSize moveLeft = CGSizeMake(movedReorderControl.frame.size.width - view.frame.size.width, movedReorderControl.frame.size.height - view.frame.size.height);
+                CGAffineTransform transform = CGAffineTransformIdentity;
+                transform = CGAffineTransformTranslate(transform, -moveLeft.width, -moveLeft.height);
+                // Performs the transform
+                [movedReorderControl setTransform:transform];
+            }
             
         }
     }
@@ -151,4 +160,9 @@
     return @"Remove";
 }
 
+/*
+-(BOOL) tableView:(UITableView*)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath {
+    return NO;
+}
+*/
 @end
