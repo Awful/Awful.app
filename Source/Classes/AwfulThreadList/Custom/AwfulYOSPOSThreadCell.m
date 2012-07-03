@@ -146,7 +146,10 @@
     UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithCustomView:back];
     
     return button;
+}
 
+-(UIImage*) customNavigationBarBackgroundImageForMetrics:(UIBarMetrics)metrics {
+    return [UIImage blackNavigationBarImageForMetrics:metrics];
 }
      
 -(void) pop {

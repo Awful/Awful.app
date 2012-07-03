@@ -286,14 +286,19 @@ typedef enum {
     self.navigationItem.leftBarButtonItem = self.customBackButton;
     
     [self.navigationController setToolbarHidden:YES];
-    /*
-    [self.navigationController.navigationBar setBackgroundImage:nil 
+    
+    [self.navigationController.navigationBar setBackgroundImage:[self customNavigationBarBackgroundImageForMetrics:(UIBarMetricsDefault)] 
                                                   forBarMetrics:(UIBarMetricsDefault)];
-     */
+     
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+}
+
+
+-(UIImage*) customNavigationBarBackgroundImageForMetrics:(UIBarMetrics)metrics {
+    return [ApplicationDelegate navigationBarBackgroundImageForMetrics:metrics];
 }
 
 -(AwfulThread *)getThreadAtIndexPath : (NSIndexPath *)path
