@@ -38,7 +38,7 @@ typedef enum {
 
 -(AwfulThread *)getThreadAtIndexPath : (NSIndexPath *)path;
 
--(void)acceptThreads : (NSMutableArray *)in_threads;
+//-(void)acceptThreads : (NSMutableArray *)in_threads;
 -(BOOL)shouldReloadOnViewLoad;
 -(void)showThreadActionsForThread : (AwfulThread *)thread;
 
@@ -48,8 +48,7 @@ typedef enum {
 
 -(void)awfulThreadUpdated : (NSNotification *)notif;
 
--(AwfulThreadCellType)getTypeAtIndexPath : (NSIndexPath *)indexPath;
--(BOOL)moreThreads;
+//-(BOOL)moreThreads;
 
 -(void)newlyVisible;
 

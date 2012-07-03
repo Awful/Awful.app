@@ -15,8 +15,8 @@ typedef enum {
 } AwfulRefreshControlState;
 
 @interface AwfulRefreshControl : UIControl
-- (void)beginRefreshing;
-- (void)endRefreshing;
+//- (void)beginRefreshing;
+//- (void)endRefreshing;
 - (void)didScrollInScrollView:(UIScrollView*)scrollView;
 -(NSString*) stringTimeIntervalSinceLoad;
 

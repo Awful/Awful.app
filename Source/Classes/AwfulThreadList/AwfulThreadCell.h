@@ -42,6 +42,6 @@
 -(void) willLoadThreadPage:(NSNotification*)notification;
 -(void) didLoadThreadPage:(NSNotification*)notification;
 
-+(CGFloat) heightForContent:(AwfulForum*)forum inTableView:(UITableView*)tableView;
++(CGFloat) heightForContent:(AwfulThread*)thread inTableView:(UITableView*)tableView;
 @end
 

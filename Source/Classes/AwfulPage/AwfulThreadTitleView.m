@@ -13,6 +13,7 @@
 @implementation AwfulThreadTitleView
 @synthesize title = _title;
 @synthesize threadTag = _threadTag;
+@synthesize page = _page;
 
 +(id) threadTitleViewWithPage:(AwfulPage *)page {
     AwfulThreadTitleView *view = [[AwfulThreadTitleView alloc] initWithFrame:CGRectMake(0, 0, page.view.fsW-100, 50)]; 

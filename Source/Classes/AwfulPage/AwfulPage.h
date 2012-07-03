@@ -105,7 +105,7 @@ typedef enum {
 -(void)hidePageNavigation;
 
 
--(void) didSwitchAutoF5:(UISwitch*)switchObj;
+//-(void) didSwitchAutoF5:(UISwitch*)switchObj;
 
 @end
 

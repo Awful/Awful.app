@@ -155,6 +155,7 @@ typedef enum {
 
 -(void)awfulThreadUpdated : (NSNotification *)notif
 {
+    /*
     AwfulThread *changedThread = [notif object];
     NSIndexPath *path = nil;
     for(AwfulThread *thread in self.awfulThreads) {
@@ -165,31 +166,12 @@ typedef enum {
     if(path != nil) {
         //[self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:path] withRowAnimation:UITableViewRowAnimationFade];
     }
+     */
 }
 
 -(void)newlyVisible
 {
     //For subclassing
-}
-
--(void)acceptThreads : (NSMutableArray *)in_threads
-{
-    [UIView animateWithDuration:0.2 animations:^(void){
-        self.view.alpha = 1.0;
-    }];
-    
-    [self.awfulThreads addObjectsFromArray:in_threads];
-    
-    float offwhite = 241.0/255;
-    self.tableView.backgroundColor = [UIColor colorWithRed:offwhite green:offwhite blue:offwhite alpha:1.0];
-    [self.tableView reloadData];
-    self.view.userInteractionEnabled = YES;
-}
-
--(void)loadThreads
-{
-    NSArray *threads = [AwfulThread threadsForForum:self.forum];
-    [self acceptThreads:[NSMutableArray arrayWithArray:threads]];
 }
 
 #pragma mark -
@@ -203,9 +185,8 @@ typedef enum {
     lab.text = self.forum.name;
     
     self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
-    
-    [self loadThreads];
-    if([self.awfulThreads count] == 0 && IsLoggedIn()) {
+
+    if(self.fetchedResultsController.fetchedObjects.count == 0 && IsLoggedIn()) {
         [self refresh];
     }
 }

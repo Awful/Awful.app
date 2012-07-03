@@ -238,11 +238,12 @@ static void SwapInCachedImages(NSMutableString* post) {
                                                                               error:nil
                                    ];
 
-    int count = [regex replaceMatchesInString:post 
-                                      options:NSRegularExpressionSearch 
-                                        range:NSMakeRange(0, post.length) 
-                                 withTemplate:@"\"$3\""
-                 ];
+    [regex replaceMatchesInString:post 
+                          options:NSRegularExpressionSearch 
+                            range:NSMakeRange(0, post.length) 
+                     withTemplate:@"\"$3\""
+    ];
+   
      
     //todo:swap in retina version if available
      

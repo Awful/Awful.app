@@ -21,6 +21,7 @@
 @synthesize loadedDate = _loadedDate;
 @synthesize userScrolling = _userScrolling;
 @synthesize canSwipeToCancel = _canSwipeToCancel;
+@synthesize changeInsetToShow = _changeInsetToShow;
 
 - (id)initWithFrame:(CGRect)frame
 {
