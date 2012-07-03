@@ -23,7 +23,6 @@ typedef enum {
 @interface AwfulThreadListController : AwfulFetchedTableViewController <UIActionSheetDelegate>
 
 @property (nonatomic, strong) AwfulForum *forum;
-@property (nonatomic, strong) NSMutableArray *awfulThreads;
 @property (nonatomic, assign) NSInteger currentPage;
 @property (nonatomic, assign) NSInteger numberOfPages;
 

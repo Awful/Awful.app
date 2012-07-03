@@ -32,7 +32,6 @@ typedef enum {
 #pragma mark Initialization
 
 @synthesize forum = _forum;
-@synthesize awfulThreads = _awfulThreads;
 @synthesize currentPage = _currentPage;
 @synthesize numberOfPages = _numberOfPages;
 @synthesize pageLabelBarButtonItem = _pageLabelBarButtonItem;
@@ -46,7 +45,6 @@ typedef enum {
 {
     self.currentPage = 1;
     self.title = self.forum.name;
-    self.awfulThreads = [[NSMutableArray alloc] init];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(awfulThreadUpdated:)
                                                  name:AwfulThreadDidUpdateNotification
@@ -226,7 +224,7 @@ typedef enum {
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         [sheet showFromTabBar:self.tabBarController.tabBar];
     } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        NSUInteger index = [self.awfulThreads indexOfObject:thread];
+        NSUInteger index = [self.fetchedResultsController.fetchedObjects indexOfObject:thread];
         if(index != NSNotFound) {
             UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
             [sheet showFromRect:cell.frame inView:self.tableView animated:YES];

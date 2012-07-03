@@ -194,7 +194,7 @@
             break;
             
         case NSFetchedResultsChangeUpdate:
-            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+            //[self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
             [self performSelectorOnMainThread:@selector(reloadRow:) withObject:indexPath waitUntilDone:NO];
             //[tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] 
             //                withRowAnimation:(UITableViewRowAnimationFade)];

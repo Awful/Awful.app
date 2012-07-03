@@ -89,9 +89,7 @@
     self.isLoading = YES;
     self.networkOperation = [[AwfulHTTPClient sharedClient] threadListForBookmarksAtPageNum:pageNum onCompletion:^(NSMutableArray *threads) {
         self.currentPage = pageNum;
-        if(pageNum == 1) {
-            [self.awfulThreads removeAllObjects];
-        }
+
         [self finishedRefreshing];
         
     } onError:^(NSError *error) {
@@ -102,9 +100,10 @@
 
 -(BOOL)moreThreads
 {//fixme
-    if(self.threadCount % 40 == 0 && [self.awfulThreads count] > 0) {
-        return YES;
-    }
+    //if(self.threadCount % 40 == 0 && [self.awfulThreads count] > 0) {
+    //    return YES;
+    //}
+    //return NO;
     return NO;
 }
 

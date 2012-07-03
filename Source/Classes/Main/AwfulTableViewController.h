@@ -10,7 +10,10 @@
 
 @class AwfulRefreshControl;
 
-@interface AwfulTableViewController : UITableViewController
+@interface AwfulTableViewController : UITableViewController {
+    @protected
+    AwfulRefreshControl* _awfulRefreshControl;
+}
 
 @property (nonatomic, strong) NSOperation *networkOperation;
 @property (nonatomic, strong) AwfulRefreshControl *awfulRefreshControl;

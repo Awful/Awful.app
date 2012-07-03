@@ -87,6 +87,12 @@
    if(IsLoggedIn() && self.fetchedResultsController.sections.count == 0) {
        [self refresh];
     }
+    
+    //reset this since it may get changed by custom forums
+    [self.navigationController.navigationBar setBackgroundImage:[ApplicationDelegate navigationBarBackgroundImageForMetrics:UIBarMetricsDefault]
+                                                  forBarMetrics:(UIBarMetricsDefault)];
+    
+    
 }
 
 -(void)finishedRefreshing

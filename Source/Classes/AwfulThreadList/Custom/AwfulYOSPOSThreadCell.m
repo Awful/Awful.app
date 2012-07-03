@@ -103,7 +103,6 @@
 @end
 
 @implementation AwfulYOSPOSThreadListController
-@synthesize awfulRefreshControl = _awfulRefreshControl;
 
 -(void) viewDidLoad {
     [super viewDidLoad];
