@@ -31,6 +31,8 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *pageLabelBarButtonItem;
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *nextPageBarButtonItem;
 
+@property (nonatomic, strong) UIBarButtonItem *customBackButton;
+
 @property (nonatomic, strong) AwfulThread *heldThread;
 @property BOOL isLoading;
 

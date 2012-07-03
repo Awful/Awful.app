@@ -40,6 +40,7 @@ typedef enum {
 @synthesize prevPageBarButtonItem = _prevPageBarButtonItem;
 @synthesize heldThread = _heldThread;
 @synthesize isLoading = _isLoading;
+@synthesize customBackButton = _customBackButton;
 
 -(void)awakeFromNib
 {
@@ -201,9 +202,6 @@ typedef enum {
     lab.numberOfLines = 2;
     lab.text = self.forum.name;
     
-    UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"list_icon.png"] style:UIBarButtonItemStyleBordered target:nil action:nil];
-    self.navigationItem.backBarButtonItem = back;
-    
     self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
     
     [self loadThreads];
@@ -303,7 +301,14 @@ typedef enum {
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    self.navigationItem.leftBarButtonItem = self.customBackButton;
+    
     [self.navigationController setToolbarHidden:YES];
+    /*
+    [self.navigationController.navigationBar setBackgroundImage:nil 
+                                                  forBarMetrics:(UIBarMetricsDefault)];
+     */
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

@@ -118,27 +118,35 @@
     title.frame = CGRectMake(0, 0, 200, 50);
     title.text = self.forum.name;
     self.navigationItem.titleView = title;
-    
+
 
 }
 
 -(void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 70, 26)];
-    lbl.text = @"< Back";
-    lbl.textAlignment = UITextAlignmentCenter;
-    lbl.font = [UIFont fontWithName:@"Courier-Bold" size:12];
-    lbl.backgroundColor = [UIColor blackColor];
-    lbl.textColor = [UIColor YOSPOSGreenColor];
-    lbl.layer.borderColor = [[UIColor YOSPOSGreenColor] CGColor];
-    lbl.layer.borderWidth = 1;
+       [self.navigationController.navigationBar setBackgroundImage:[UIImage blackNavigationBarImageForMetrics:UIBarMetricsDefault]
+                                              forBarMetrics:UIBarMetricsDefault
+ ];
+}
+
+-(UIBarButtonItem*) customBackButton {
+    UIButton *back = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 70, 26)];
+    [back setTitle:@"< Back" forState:(UIControlStateNormal)];
+    [back setTitleColor:[UIColor YOSPOSGreenColor] forState:UIControlStateNormal];
+    back.titleLabel.text = @"< Back";
+    back.titleLabel.textAlignment = UITextAlignmentCenter;
+    back.titleLabel.font = [UIFont fontWithName:@"Courier-Bold" size:12];
+    //back.backgroundColor = [UIColor blackColor];
+    //back.titleLabel.textColor = [UIColor YOSPOSGreenColor];
+    back.layer.borderColor = [[UIColor YOSPOSGreenColor] CGColor];
+    back.layer.borderWidth = 1;
+    [back addTarget:self action:@selector(pop) forControlEvents:(UIControlEventTouchUpInside)];
     
-    UIBarButtonItem *test = [[UIBarButtonItem alloc] initWithCustomView:lbl];
-    test.target = self;
-    test.action = @selector(pop);
+    UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithCustomView:back];
     
-    self.navigationItem.leftBarButtonItem = test;
+    return button;
+
 }
      
 -(void) pop {
@@ -219,7 +227,7 @@
 
 -(void) activityTimer {
     _lbl.tag++;
-    switch (_lbl.tag % 4) {
+    switch (_lbl.tag%4) {
         case 0:
             _lbl.text = @"--";
             return;
@@ -318,6 +326,27 @@
     return result;
 }
 
++(UIImage *)blackNavigationBarImageForMetrics:(UIBarMetrics)metrics
+{
+    CGFloat height = metrics == UIBarMetricsDefault ? 42 : 32;
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(1, height), YES, 0);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGColorSpaceRef rgb = CGColorSpaceCreateDeviceRGB();
+    CGContextSetFillColorSpace(context, rgb);
+    
+    // 1px top border, below status bar.
+    CGContextSaveGState(context);
+    CGContextMoveToPoint(context, 0, 0);
+    CGContextAddRect(context, CGRectMake(0, 0, 1, height));
+    CGContextSetFillColorWithColor(context, [[UIColor blackColor] CGColor]);
+    CGContextFillPath(context);
+    CGContextRestoreGState(context);
+    
+    CGColorSpaceRelease(rgb);
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return [image resizableImageWithCapInsets:UIEdgeInsetsMake(height, 0, 0, 0)];
+}
 
 @end
 

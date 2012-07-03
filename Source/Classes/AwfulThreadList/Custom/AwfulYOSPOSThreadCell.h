@@ -42,4 +42,5 @@ static AwfulCustomForumID const AwfulCustomForumYOSPOS = (AwfulCustomForumID)219
 -(UIImage*) grayscaleVersion;
 -(UIImage*) greenVersion;
 -(UIImage*) amberVersion;
++(UIImage *)blackNavigationBarImageForMetrics:(UIBarMetrics)metrics;
 @end
