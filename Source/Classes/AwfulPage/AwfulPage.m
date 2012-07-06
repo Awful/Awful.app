@@ -177,7 +177,7 @@
         
         //if nextPageWebView is null, then it's the initial load
         if (self.nextPageWebView) {
-            [self.nextPageWebView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
+            [self.nextPageWebView loadHTMLString:html baseURL:[[NSBundle mainBundle] resourceURL]];
             self.nextPageWebView.tag = self.currentPage;
         }
         else {
@@ -186,7 +186,7 @@
             self.webView.tag = self.currentPage;
             
             self.nextPageWebView = [UIWebView new];
-            self.nextPageWebView.delegate = self;
+            self.nextPageWebView.delegate = self.webViewDelegateWrapper;
             self.nextPageWebView.frame = self.webView.frame;
             self.nextPageWebView.foY = self.nextPageWebView.fsH;
             [self.view addSubview:self.nextPageWebView];

@@ -941,8 +941,11 @@
 		8C9AB7DB1597C8C60084B608 /* rolleyes.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C9AB60B1597C8C60084B608 /* rolleyes.gif */; };
 		8C9AB7DC1597C8C60084B608 /* rubshandstogetherandgrinsevilly.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C9AB60C1597C8C60084B608 /* rubshandstogetherandgrinsevilly.gif */; };
 		8C9AB7DD1597C8C60084B608 /* smile.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C9AB60D1597C8C60084B608 /* smile.gif */; };
-		8C9AB7DE1597C8C60084B608 /* smile@2x.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C9AB60E1597C8C60084B608 /* smile@2x.gif */; };
 		8C9AB7DF1597C8C60084B608 /* wink.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C9AB60F1597C8C60084B608 /* wink.gif */; };
+		8C9B9B4015A7356700D560B6 /* emot-eng101@2x.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B9B3C15A7356700D560B6 /* emot-eng101@2x.gif */; };
+		8C9B9B4115A7356700D560B6 /* emot-fuckyou@2x.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B9B3D15A7356700D560B6 /* emot-fuckyou@2x.gif */; };
+		8C9B9B4215A7356700D560B6 /* emot-smug@2x.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B9B3E15A7356700D560B6 /* emot-smug@2x.gif */; };
+		8C9B9B4315A7356700D560B6 /* smile@2x.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B9B3F15A7356700D560B6 /* smile@2x.gif */; };
 		8CCFBD251598B9AF00336F55 /* AwfulThreadTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CCFBD241598B9AF00336F55 /* AwfulThreadTitleView.m */; };
 /* End PBXBuildFile section */
 
@@ -1989,8 +1992,11 @@
 		8C9AB60B1597C8C60084B608 /* rolleyes.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = rolleyes.gif; sourceTree = "<group>"; };
 		8C9AB60C1597C8C60084B608 /* rubshandstogetherandgrinsevilly.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = rubshandstogetherandgrinsevilly.gif; sourceTree = "<group>"; };
 		8C9AB60D1597C8C60084B608 /* smile.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = smile.gif; sourceTree = "<group>"; };
-		8C9AB60E1597C8C60084B608 /* smile@2x.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "smile@2x.gif"; sourceTree = "<group>"; };
 		8C9AB60F1597C8C60084B608 /* wink.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = wink.gif; sourceTree = "<group>"; };
+		8C9B9B3C15A7356700D560B6 /* emot-eng101@2x.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "emot-eng101@2x.gif"; sourceTree = "<group>"; };
+		8C9B9B3D15A7356700D560B6 /* emot-fuckyou@2x.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "emot-fuckyou@2x.gif"; sourceTree = "<group>"; };
+		8C9B9B3E15A7356700D560B6 /* emot-smug@2x.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "emot-smug@2x.gif"; sourceTree = "<group>"; };
+		8C9B9B3F15A7356700D560B6 /* smile@2x.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "smile@2x.gif"; sourceTree = "<group>"; };
 		8CCFBD231598B9AF00336F55 /* AwfulThreadTitleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTitleView.h; sourceTree = "<group>"; };
 		8CCFBD241598B9AF00336F55 /* AwfulThreadTitleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTitleView.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Awful-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Awful-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
@@ -2961,6 +2967,7 @@
 		8C9AB43F1597C8C50084B608 /* emoticons */ = {
 			isa = PBXGroup;
 			children = (
+				8C9B9B3B15A7356700D560B6 /* retina */,
 				8C9AB4401597C8C60084B608 /* biggrin.gif */,
 				8C9AB4411597C8C60084B608 /* classic_fillmore.gif */,
 				8C9AB4421597C8C60084B608 /* confused.gif */,
@@ -3423,11 +3430,21 @@
 				8C9AB60B1597C8C60084B608 /* rolleyes.gif */,
 				8C9AB60C1597C8C60084B608 /* rubshandstogetherandgrinsevilly.gif */,
 				8C9AB60D1597C8C60084B608 /* smile.gif */,
-				8C9AB60E1597C8C60084B608 /* smile@2x.gif */,
 				8C9AB60F1597C8C60084B608 /* wink.gif */,
 			);
 			name = emoticons;
 			path = images/emoticons;
+			sourceTree = "<group>";
+		};
+		8C9B9B3B15A7356700D560B6 /* retina */ = {
+			isa = PBXGroup;
+			children = (
+				8C9B9B3C15A7356700D560B6 /* emot-eng101@2x.gif */,
+				8C9B9B3D15A7356700D560B6 /* emot-fuckyou@2x.gif */,
+				8C9B9B3E15A7356700D560B6 /* emot-smug@2x.gif */,
+				8C9B9B3F15A7356700D560B6 /* smile@2x.gif */,
+			);
+			path = retina;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -4303,10 +4320,13 @@
 				8C9AB7DB1597C8C60084B608 /* rolleyes.gif in Resources */,
 				8C9AB7DC1597C8C60084B608 /* rubshandstogetherandgrinsevilly.gif in Resources */,
 				8C9AB7DD1597C8C60084B608 /* smile.gif in Resources */,
-				8C9AB7DE1597C8C60084B608 /* smile@2x.gif in Resources */,
 				8C9AB7DF1597C8C60084B608 /* wink.gif in Resources */,
 				8C48EA25159BF9C900A59691 /* forum-arrow-down@2x.png in Resources */,
 				8C48EA26159BF9C900A59691 /* forum-arrow-right@2x.png in Resources */,
+				8C9B9B4015A7356700D560B6 /* emot-eng101@2x.gif in Resources */,
+				8C9B9B4115A7356700D560B6 /* emot-fuckyou@2x.gif in Resources */,
+				8C9B9B4215A7356700D560B6 /* emot-smug@2x.gif in Resources */,
+				8C9B9B4315A7356700D560B6 /* smile@2x.gif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
