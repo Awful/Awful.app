@@ -22,29 +22,30 @@
 @synthesize userScrolling = _userScrolling;
 @synthesize canSwipeToCancel = _canSwipeToCancel;
 @synthesize changeInsetToShow = _changeInsetToShow;
+@synthesize innerCell = _innerCell;
 
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
-        UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:(UITableViewCellStyleSubtitle) reuseIdentifier:@"pullToRefresh"];
-        cell.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-        _title = cell.textLabel;
-        _subtitle = cell.detailTextLabel;
-        _imageView = cell.imageView;
+        _innerCell = [[UITableViewCell alloc] initWithStyle:(UITableViewCellStyleSubtitle) reuseIdentifier:@"pullToRefresh"];
+        _innerCell.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        _title = _innerCell.textLabel;
+        _subtitle = _innerCell.detailTextLabel;
+        _imageView = _innerCell.imageView;
         
         self.imageView.image = [UIImage imageNamed:@"smile.gif"];
         
         self.canSwipeToCancel = YES;
         self.state = AwfulRefreshControlStateNormal;
         
-        cell.frame = CGRectMake(0, 0, self.fsW, self.fsH);
-        [self addSubview:cell];
+        _innerCell.frame = CGRectMake(0, 0, self.fsW, self.fsH);
+        [self addSubview:_innerCell];
         
         self.backgroundColor = [UIColor magentaColor];
-        cell.backgroundColor = [UIColor clearColor];
-        cell.textLabel.textColor = [UIColor whiteColor];
-        cell.detailTextLabel.textColor = [UIColor whiteColor];
+        _innerCell.backgroundColor = [UIColor clearColor];
+        _innerCell.textLabel.textColor = [UIColor whiteColor];
+        _innerCell.detailTextLabel.textColor = [UIColor whiteColor];
         
         CAGradientLayer *gradient = [CAGradientLayer layer];
         gradient.frame = self.bounds;
@@ -67,6 +68,7 @@
 -(void) layoutSubviews {
     [super layoutSubviews];
     self.activityView.frame = self.imageView.frame;
+    self.innerCell.fsW = self.fsW;
 }
 
 -(void) didScrollInScrollView:(UIScrollView *)scrollView {

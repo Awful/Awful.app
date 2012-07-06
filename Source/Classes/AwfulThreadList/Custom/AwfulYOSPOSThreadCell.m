@@ -168,11 +168,11 @@
 @synthesize activityView = _activityView;
 -(id) initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
-    self.title.font = [UIFont fontWithName:@"Courier" size:18];
+    self.title.font = [UIFont fontWithName:@"Courier" size:16];
     self.title.textColor = [UIColor blackColor];
     
     self.subtitle.textColor = [UIColor blackColor];
-    self.subtitle.font = [UIFont fontWithName:@"Courier" size:14];
+    self.subtitle.font = [UIFont fontWithName:@"Courier" size:12];
     
     [[self.layer.sublayers objectAtIndex:0] removeFromSuperlayer];
     self.backgroundColor = [UIColor YOSPOSGreenColor];

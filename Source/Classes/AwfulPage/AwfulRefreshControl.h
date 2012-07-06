@@ -24,6 +24,7 @@ typedef enum {
 @property (nonatomic,readonly) UILabel* subtitle;
 @property (nonatomic,readonly) UIActivityIndicatorView* activityView;
 @property (nonatomic, readonly) UIImageView* imageView;
+@property (nonatomic,readonly) UITableViewCell* innerCell;
 
 @property (nonatomic,readwrite) CGFloat scrollAmount;
 @property (nonatomic,strong) UIScrollView* scrollView;
