@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulFYADThreadCell.h"
+#import "AwfulCustomForumFYAD.h"
 
 @implementation AwfulFYADThreadCell
 
@@ -17,7 +17,7 @@
     self.badgeColor = [UIColor purpleColor];
 }
 
-
+//set custom fonts and colors
 +(UIColor*) textColor { return [UIColor blackColor]; }
 +(UIColor*) backgroundColor { return  [UIColor colorWithRed:1 green:.8 blue:1 alpha:1]; }
 +(UIFont*) textLabelFont { return [UIFont fontWithName:@"MarkerFelt-Wide" size:18]; }

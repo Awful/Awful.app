@@ -6,10 +6,11 @@
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulFilmDumpThreadCell.h"
+#import "AwfulCustomForumFilmDump.h"
 #import "AwfulThread+AwfulMethods.h"
 
 @implementation AwfulFilmDumpThreadCell
+//this cell removes the thread tag and replaces it with the rating
 
 -(void) configureForThread:(AwfulThread *)thread {
     [super configureForThread:thread];

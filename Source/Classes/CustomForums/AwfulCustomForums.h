@@ -20,6 +20,5 @@ typedef int AwfulCustomForumID;
 +(NSString*) cellIdentifierForForum:(AwfulForum*)forum;
 +(AwfulThreadCell*) cellForIdentifier:(NSString*)cellIdentifier;
 
-
 +(AwfulThreadListController*) threadListControllerForForum:(AwfulForum*)forum;
 @end

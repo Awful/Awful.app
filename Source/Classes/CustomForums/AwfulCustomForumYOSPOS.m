@@ -6,15 +6,10 @@
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulYOSPOSThreadCell.h"
+#import "AwfulCustomForumYOSPOS.h"
 #import "AwfulThread.h"
 
-@interface AwfulYOSPOSThreadCell ()
-@property (nonatomic,strong) NSTimer* timer;
-@end
-
 @implementation AwfulYOSPOSThreadCell
-@synthesize timer = _timer;
 
 -(void) layoutSubviews {
     [super layoutSubviews];
@@ -26,7 +21,7 @@
 -(void)configureForThread:(AwfulThread *)thread {
     [super configureForThread:thread];
     
-
+    //remove rounded corners on badge
     self.badgeColor = [UIColor blackColor];
     self.badge.backgroundColor = [UIColor YOSPOSGreenColor];
     self.badge.layer.borderWidth = 1;
@@ -34,18 +29,20 @@
     self.badge.badgeFont = [UIFont fontWithName:@"Courier" size:11];
     self.badge.radius = 1;
     
-    //badge number to hex
+    //display badge number in hex
     if (self.badgeString)
-        self.badgeString = [NSString stringWithFormat:@"0x%X", self.badgeString.intValue];
+        self.badgeString = [NSString stringWithFormat:@"%X", self.badgeString.intValue];
     
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
+    //green tinted thread rating
     if (self.ratingImage.image)
         self.ratingImage.image = self.ratingImage.image.greenVersion;
     
 }
 
 -(void) configureTagImage {
+    //green thread tags
     [super configureTagImage];
     
     if (self.imageView.image) {
@@ -57,7 +54,8 @@
     }
 }
 
--(void) setSelected:(BOOL)selected animated:(BOOL)animated{    
+-(void) setSelected:(BOOL)selected animated:(BOOL)animated{
+    //make selected cells flash like a cursor
     if (selected) {
         [UIView animateWithDuration:.5
                               delay:0
@@ -79,6 +77,7 @@
     
 }
 -(void) willLoadThreadPage:(NSNotification*)notification {
+    //swap in the custom activity view
     AwfulThread *thread = notification.object;
     if (thread.threadID.intValue != self.thread.threadID.intValue) return;
     
@@ -88,13 +87,7 @@
 
 }
 
-
--(void) didLoadThreadPage:(NSNotification*)notification {
-    [super didLoadThreadPage:notification];
-
-}
-
-
+//custom color and font definitions
 +(UIColor*) textColor { return [UIColor YOSPOSGreenColor]; }
 +(UIColor*) backgroundColor { return [UIColor blackColor]; }
 +(UIFont*) textLabelFont { return [UIFont fontWithName:@"Courier" size:14]; }
@@ -102,12 +95,15 @@
 
 @end
 
+
 @implementation AwfulYOSPOSThreadListController
+//that's not enough, let's do the threadlist too
 
 -(void) viewDidLoad {
     [super viewDidLoad];
     self.tableView.separatorColor = [UIColor YOSPOSGreenColor];
     
+    //change navbar title and formatting
     UILabel *title = [UILabel new];
     title.font = [UIFont fontWithName:@"Courier-Bold" size:22];
     title.textAlignment = UITextAlignmentCenter;
@@ -121,33 +117,31 @@
 
 }
 
--(void) viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    
-       [self.navigationController.navigationBar setBackgroundImage:[UIImage blackNavigationBarImageForMetrics:UIBarMetricsDefault]
-                                              forBarMetrics:UIBarMetricsDefault
- ];
-}
-
 -(UIBarButtonItem*) customBackButton {
+    //override this method for custom back button
+    
+    //here we're making one flat, rectangular, and green/black
     UIButton *back = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 70, 26)];
-    [back setTitle:@"< Back" forState:(UIControlStateNormal)];
+    [back setTitle:@"cd .." forState:(UIControlStateNormal)];
     [back setTitleColor:[UIColor YOSPOSGreenColor] forState:UIControlStateNormal];
-    back.titleLabel.text = @"< Back";
     back.titleLabel.textAlignment = UITextAlignmentCenter;
     back.titleLabel.font = [UIFont fontWithName:@"Courier-Bold" size:12];
-    //back.backgroundColor = [UIColor blackColor];
-    //back.titleLabel.textColor = [UIColor YOSPOSGreenColor];
     back.layer.borderColor = [[UIColor YOSPOSGreenColor] CGColor];
     back.layer.borderWidth = 1;
+    
+    //when using uibarbuttonitem initwithcustomview, the target and action properties get ignored
+    //so the custom view needs to have them
     [back addTarget:self action:@selector(pop) forControlEvents:(UIControlEventTouchUpInside)];
     
     UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithCustomView:back];
-    
     return button;
 }
 
 -(UIImage*) customNavigationBarBackgroundImageForMetrics:(UIBarMetrics)metrics {
+    //change the navbar background
+    //it ignores backgroundColor and tintColor, I assume because it's originally set with an image
+    //so it needs to be replaced with an image
+    //this just returns a black image
     return [UIImage blackNavigationBarImageForMetrics:metrics];
 }
      
@@ -156,16 +150,24 @@
 }
 
 -(AwfulRefreshControl*) awfulRefreshControl {
+    //override this method for a custom Pull to Refresh control
     if (!_awfulRefreshControl) {
         _awfulRefreshControl = [[AwfulYOSPOSRefreshControl alloc] initWithFrame:CGRectMake(0, -50, self.tableView.fsW, 50)];
     }
     return _awfulRefreshControl;
 }
 
+-(NSString*) tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
+    //custom string for deleting a table cell, which marks a thread unread
+    return @"rm -rf";
+}
 @end
 
 @implementation AwfulYOSPOSRefreshControl
 @synthesize activityView = _activityView;
+//this custom refresh control just changes the colors and fonts,
+//and changes the activity spinner
+
 -(id) initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     self.title.font = [UIFont fontWithName:@"Courier" size:16];
@@ -191,6 +193,8 @@
 @end
 
 @implementation AwfulYOSPOSActivityIndicatorView
+//change the activity indicator to something more yosposish
+//an ascii spinner using | \ -- /
 -(id) init {
     self = [super init];
     
@@ -238,7 +242,7 @@
             _lbl.text = @"\\";
             return;
         case 2:
-            _lbl.text = @"\u00A6";
+            _lbl.text = @"\u00A6";  //broken pipe unicode
             return;
         case 3:
             _lbl.text = @"/";

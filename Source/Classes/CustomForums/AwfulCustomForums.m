@@ -11,14 +11,15 @@
 #import "AwfulThreadCell.h"
 #import "AwfulThread+AwfulMethods.h"
 
-#import "AwfulYOSPOSThreadCell.h"
-#import "AwfulFYADThreadCell.h"
-#import "AwfulAskTellThreadCell.h"
-#import "AwfulFilmDumpThreadCell.h"
+#import "AwfulCustomForumYOSPOS.h"
+#import "AwfulCustomForumFYAD.h"
+#import "AwfulCustomForumFilmDump.h"
 
 
 @implementation AwfulCustomForums
 
+//If you have a custom thread cell, add it here
+//Cell Identifier should be the same name as the thread class
 +(NSString*) cellIdentifierForForum:(AwfulForum*)forum {
     NSString *threadCell;
     
@@ -31,15 +32,12 @@
         case AwfulCustomForumFYAD:
             threadCell = @"AwfulFYADThreadCell";
             break;
-          /*
-        case AwfulCustomForumAskTell:
-            threadCell = @"AwfulAskTellThreadCell";
-            break;
-           */
           
         case AwfulCustomForumFilmDump:
             threadCell = @"AwfulFilmDumpThreadCell";
             break;
+            
+        //add any new cell as another case here
             
         default:
             threadCell = @"AwfulThreadCell";
@@ -53,13 +51,7 @@
     return cell;
 }
 
-+(NSString*) threadListIdentifierFor {
-    NSString *threadList;
-
-    
-    return threadList;
-}
-
+//If you want to replace the entire threadlist controller, add that here
 +(AwfulThreadListController*) threadListControllerForForum:(AwfulForum*)forum {
     NSString* className;
     switch (forum.forumID.intValue) {
@@ -76,32 +68,4 @@
     return threadList;
 }
 
-/*
-+(AwfulThreadCell*) cellForThread:(AwfulThread*)thread {
-    AwfulThreadCell *cell;
-    switch (thread.forum.forumID.intValue) {
-            
-        case AwfulCustomForumYOSPOS:
-            cell = [AwfulYOSPOSThreadCell new];
-            break;
-            
-        case AwfulCustomForumFYAD:
-            cell = [AwfulFYADThreadCell new];
-            break;
-            
-        case AwfulCustomForumAskTell:
-            cell = [AwfulAskTellThreadCell new];
-            break;
-            
-        case AwfulCustomForumFilmDump:
-            cell = [AwfulFilmDumpThreadCell new];
-            break;
-            
-        default:
-            cell = [AwfulThreadCell new];
-    }
-    return cell;
-    
-}
-*/
 @end

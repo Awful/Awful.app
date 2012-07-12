@@ -12,5 +12,4 @@
 static AwfulCustomForumID const AwfulCustomForumFYAD = (AwfulCustomForumID)26;
 
 @interface AwfulFYADThreadCell : AwfulThreadCell
-
 @end
