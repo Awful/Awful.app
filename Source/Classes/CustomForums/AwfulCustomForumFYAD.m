@@ -24,3 +24,16 @@
 +(UIFont*) detailLabelFont { return [UIFont fontWithName:@"Marker Felt" size:12]; }
 
 @end
+
+@implementation AwfulFYADThreadListController
+
+-(UIBarButtonItem*) customBackButton {
+    //override this method for custom back button
+    UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithTitle:@"get out"
+                                                               style:(UIBarButtonItemStyleBordered)
+                                                              target:self
+                                                              action:@selector(pop)];
+    return button;
+}
+@end
+

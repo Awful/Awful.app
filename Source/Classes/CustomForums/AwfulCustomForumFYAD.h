@@ -8,8 +8,12 @@
 
 #import "AwfulCustomForums.h"
 #import "AwfulThreadCell.h"
+#import "awfulthreadListController.h"
 
 static AwfulCustomForumID const AwfulCustomForumFYAD = (AwfulCustomForumID)26;
 
 @interface AwfulFYADThreadCell : AwfulThreadCell
+@end
+
+@interface AwfulFYADThreadListController : AwfulThreadListController
 @end

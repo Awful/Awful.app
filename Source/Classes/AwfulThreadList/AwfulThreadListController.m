@@ -304,6 +304,10 @@ typedef enum {
     return [self.fetchedResultsController objectAtIndexPath:path];
 }
 
+-(void) pop {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 #pragma mark - Table view data source and delegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath

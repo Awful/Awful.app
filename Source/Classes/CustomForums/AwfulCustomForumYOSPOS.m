@@ -144,10 +144,6 @@
     //this just returns a black image
     return [UIImage blackNavigationBarImageForMetrics:metrics];
 }
-     
--(void) pop {
-    [self.navigationController popViewControllerAnimated:YES];
-}
 
 -(AwfulRefreshControl*) awfulRefreshControl {
     //override this method for a custom Pull to Refresh control

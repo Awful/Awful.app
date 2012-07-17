@@ -58,7 +58,10 @@
         case AwfulCustomForumYOSPOS:
             className = @"AwfulYOSPOSThreadListController";
             break;
-            
+           
+        case AwfulCustomForumFYAD:
+            className = @"AwfulFYADThreadListController";
+            break;
 
         default:
             className = @"AwfulThreadListController";
