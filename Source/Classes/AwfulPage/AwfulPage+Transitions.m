@@ -9,11 +9,11 @@
 #import "AwfulPage+Transitions.h"
 #import "AwfulRefreshControl.h"
 #import "AwfulLoadNextControl.h"
+#import "AwfulLastPageControl.h"
 
 @implementation AwfulPage (Transitions)
 
 -(void) doPageTransition {
-    NSLog(@"do page transition");
     //page number stored in webview tags
     //compare numbers, determine animation
     int diff = self.nextPageWebView.tag - self.webView.tag;
@@ -34,7 +34,7 @@
     //next page below original
     //hide original
     //scroll next page up a little?
-    NSLog(@"refresh transition");
+    NSLog(@"page refresh transition");
     
     self.nextPageWebView.frame = self.webView.frame;
     self.nextPageWebView.scrollView.contentOffset = self.webView.scrollView.contentOffset;
@@ -108,7 +108,15 @@
     [self.awfulRefreshControl removeFromSuperview];
     [self.webView.scrollView addSubview:self.awfulRefreshControl];
     
+    
     [self.loadNextPageControl removeFromSuperview];
+    if (self.webView.tag == self.numberOfPages) {
+        self.loadNextPageControl = [[AwfulLastPageControl alloc] initWithFrame:self.loadNextPageControl.frame];
+    }
+    else {
+        self.loadNextPageControl = [[AwfulLoadNextControl alloc] initWithFrame:self.loadNextPageControl.frame];
+    }
+    
     [self.webView.scrollView addSubview:self.loadNextPageControl];
     
 

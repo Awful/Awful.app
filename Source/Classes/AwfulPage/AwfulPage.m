@@ -26,6 +26,7 @@
 #import "OtherWebController.h"
 #import "AwfulRefreshControl.h"
 #import "AwfulLoadNextControl.h"
+#import "AwfulLastPageControl.h"
 #import "AwfulPage+Transitions.h"
 #import "AwfulWebViewDelegate.h"
 #import "AwfulThreadTitleView.h"
@@ -202,7 +203,11 @@
                                      action:@selector(refreshControlCancel:) 
                            forControlEvents:(UIControlEventTouchCancel)];
             
-            self.loadNextPageControl = [[AwfulLoadNextControl alloc] initWithFrame:CGRectMake(0, self.webView.scrollView.contentSize.height, self.view.fsW, 50)];
+            if (self.currentPage == self.numberOfPages)
+                        self.loadNextPageControl = [[AwfulLastPageControl alloc] initWithFrame:CGRectMake(0, self.webView.scrollView.contentSize.height, self.view.fsW, 50)];
+            else
+                self.loadNextPageControl = [[AwfulLoadNextControl alloc] initWithFrame:CGRectMake(0, self.webView.scrollView.contentSize.height, self.view.fsW, 50)];
+            
             [self.webView.scrollView addSubview:self.loadNextPageControl];
             
             

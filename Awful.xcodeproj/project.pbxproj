@@ -153,7 +153,6 @@
 		8C48EA61159DD8FA00A59691 /* TDBadgedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48EA60159DD8FA00A59691 /* TDBadgedCell.m */; };
 		8C79D43B1562E79E006FEE48 /* AwfulPage+Transitions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C79D43A1562E79E006FEE48 /* AwfulPage+Transitions.m */; };
 		8C905197155D6CAD0098266A /* UIView+Lazy.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C905196155D6CAD0098266A /* UIView+Lazy.m */; };
-		8CCD4CCD15B497A800E5893B /* Awful-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498215B497A700E5893B /* Awful-Info.plist */; };
 		8CCD4CCE15B497A800E5893B /* Default-Landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498315B497A700E5893B /* Default-Landscape.png */; };
 		8CCD4CCF15B497A800E5893B /* Default-Landscape@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498415B497A700E5893B /* Default-Landscape@2x~ipad.png */; };
 		8CCD4CD015B497A800E5893B /* Default-Portrait.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498515B497A700E5893B /* Default-Portrait.png */; };
@@ -990,6 +989,9 @@
 		8CCD569115B7A5BA00E5893B /* frog2.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD568F15B7A5BA00E5893B /* frog2.png */; };
 		8CCD569315B7A5CC00E5893B /* getin.001.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD569215B7A5CC00E5893B /* getin.001.gif */; };
 		8CCFBD251598B9AF00336F55 /* AwfulThreadTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CCFBD241598B9AF00336F55 /* AwfulThreadTitleView.m */; };
+		8CE4DC7615B85BDB001C62AC /* AwfulLastPageControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CE4DC7515B85BDB001C62AC /* AwfulLastPageControl.m */; };
+		8CE4DC7B15B86047001C62AC /* AnimatedGif.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CE4DC7A15B86047001C62AC /* AnimatedGif.m */; };
+		8CE4DC7E15B86498001C62AC /* AwfulAnimatedGifActivityIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CE4DC7D15B86498001C62AC /* AwfulAnimatedGifActivityIndicatorView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -2084,6 +2086,12 @@
 		8CCD569215B7A5CC00E5893B /* getin.001.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = getin.001.gif; sourceTree = "<group>"; };
 		8CCFBD231598B9AF00336F55 /* AwfulThreadTitleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTitleView.h; sourceTree = "<group>"; };
 		8CCFBD241598B9AF00336F55 /* AwfulThreadTitleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTitleView.m; sourceTree = "<group>"; };
+		8CE4DC7415B85BDB001C62AC /* AwfulLastPageControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLastPageControl.h; sourceTree = "<group>"; };
+		8CE4DC7515B85BDB001C62AC /* AwfulLastPageControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLastPageControl.m; sourceTree = "<group>"; };
+		8CE4DC7915B86047001C62AC /* AnimatedGif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimatedGif.h; sourceTree = "<group>"; };
+		8CE4DC7A15B86047001C62AC /* AnimatedGif.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnimatedGif.m; sourceTree = "<group>"; };
+		8CE4DC7C15B86498001C62AC /* AwfulAnimatedGifActivityIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAnimatedGifActivityIndicatorView.h; sourceTree = "<group>"; };
+		8CE4DC7D15B86498001C62AC /* AwfulAnimatedGifActivityIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAnimatedGifActivityIndicatorView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2327,6 +2335,7 @@
 		1190F76913BE4ECB00B9D271 /* Third Party */ = {
 			isa = PBXGroup;
 			children = (
+				8CE4DC7815B86047001C62AC /* AnimatedGif */,
 				8C48EA5E159DD8FA00A59691 /* TDBadgedCell */,
 				110FABEA15745C5C00ECF535 /* CocoaLumberjack */,
 				110FABC415745C1E00ECF535 /* AFNetworking */,
@@ -2649,6 +2658,10 @@
 				8C48E9FD159A1B2B00A59691 /* AwfulRefreshControl.m */,
 				8C48E9FF159A353400A59691 /* AwfulLoadNextControl.h */,
 				8C48EA00159A353400A59691 /* AwfulLoadNextControl.m */,
+				8CE4DC7415B85BDB001C62AC /* AwfulLastPageControl.h */,
+				8CE4DC7515B85BDB001C62AC /* AwfulLastPageControl.m */,
+				8CE4DC7C15B86498001C62AC /* AwfulAnimatedGifActivityIndicatorView.h */,
+				8CE4DC7D15B86498001C62AC /* AwfulAnimatedGifActivityIndicatorView.m */,
 			);
 			name = "pull for action";
 			sourceTree = "<group>";
@@ -3586,6 +3599,15 @@
 			path = threadtags;
 			sourceTree = "<group>";
 		};
+		8CE4DC7815B86047001C62AC /* AnimatedGif */ = {
+			isa = PBXGroup;
+			children = (
+				8CE4DC7915B86047001C62AC /* AnimatedGif.h */,
+				8CE4DC7A15B86047001C62AC /* AnimatedGif.m */,
+			);
+			path = AnimatedGif;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -3674,7 +3696,6 @@
 				1190F7ED13BE4ECB00B9D271 /* LICENSE.txt in Resources */,
 				11D7CB9814EA0CED000DA96A /* Main.storyboard in Resources */,
 				11FDA290151017490014FDCD /* MainiPad.storyboard in Resources */,
-				8CCD4CCD15B497A800E5893B /* Awful-Info.plist in Resources */,
 				8CCD4CCE15B497A800E5893B /* Default-Landscape.png in Resources */,
 				8CCD4CCF15B497A800E5893B /* Default-Landscape@2x~ipad.png in Resources */,
 				8CCD4CD015B497A800E5893B /* Default-Portrait.png in Resources */,
@@ -4667,6 +4688,9 @@
 				8CCD500715B497A900E5893B /* awful.js in Sources */,
 				8CCD500A15B497A900E5893B /* jquery.js in Sources */,
 				8CCD500E15B497A900E5893B /* salr.js in Sources */,
+				8CE4DC7615B85BDB001C62AC /* AwfulLastPageControl.m in Sources */,
+				8CE4DC7B15B86047001C62AC /* AnimatedGif.m in Sources */,
+				8CE4DC7E15B86498001C62AC /* AwfulAnimatedGifActivityIndicatorView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

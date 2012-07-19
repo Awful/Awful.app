@@ -160,7 +160,6 @@
 @end
 
 @implementation AwfulYOSPOSRefreshControl
-@synthesize activityView = _activityView;
 //this custom refresh control just changes the colors and fonts,
 //and changes the activity spinner
 
