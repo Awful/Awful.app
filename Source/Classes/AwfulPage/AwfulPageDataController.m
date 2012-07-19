@@ -274,13 +274,13 @@ static void SwapInCachedImages(NSMutableString* post) {
                     width = img.size.width;
                 }
                     
-                replacement = [NSString stringWithFormat:@"\"%@@2x.%@\" width=%.0f height=%.0f ><img src=\"%@.%@\" ", filename, filetype, width, height, filename, filetype];
+                replacement = [NSString stringWithFormat:@"\"%@@2x.%@\" width=%.0f height=%.0f ", filename, filetype, width, height];
                 NSLog(@"Using retina version of %@", filename);
             }
             else {
                 //no retina, use local version
                 replacement = [NSString stringWithFormat:@"\"%@.%@\" ", filename, filetype];
-                NSLog(@"Using local version of %@", filename);
+                //NSLog(@"Using local version of %@", filename);
             }
              
             NSRange resultRange = [match range];   

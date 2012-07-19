@@ -16,6 +16,7 @@
 @synthesize title = _title;
 @synthesize subtitle = _subtitle;
 @synthesize imageView = _imageView;
+@synthesize imageView2 = _imageView2;
 @synthesize activityView = _activityView;
 @synthesize state = _state;
 @synthesize loadedDate = _loadedDate;
@@ -34,7 +35,15 @@
         _subtitle = _innerCell.detailTextLabel;
         _imageView = _innerCell.imageView;
         
-        self.imageView.image = [UIImage imageNamed:@"smile.gif"];
+        self.imageView.image = [UIImage imageNamed:@"frog1.png"];
+        
+        _imageView2 = [[UIImageView alloc] initWithFrame:self.imageView.frame];
+        self.imageView2.image = [UIImage imageNamed:@"frog2.png"];
+        self.imageView2.layer.zPosition = 2;
+        self.imageView2.contentMode = UIViewContentModeRight;
+        self.imageView2.clipsToBounds = YES;
+        [self.innerCell addSubview:self.imageView2];
+        
         
         self.canSwipeToCancel = YES;
         self.state = AwfulRefreshControlStateNormal;
@@ -69,6 +78,8 @@
     [super layoutSubviews];
     self.activityView.frame = self.imageView.frame;
     self.innerCell.fsW = self.fsW;
+    self.imageView2.frame = self.imageView.frame;
+    self.imageView2.fsW = 0;
 }
 
 -(void) didScrollInScrollView:(UIScrollView *)scrollView {
@@ -79,6 +90,13 @@
     
     CGFloat threshhold = -2.25*self.fsH;
     CGFloat limit = -self.fsH;
+    
+    CGFloat imagePct = (scrollAmount - limit)/(threshhold - limit);
+    if (imagePct > 0) {
+        imagePct = imagePct > 1? 1 : imagePct;
+        self.imageView2.foX = self.imageView.foX + self.imageView.fsW - (self.imageView.fsW * imagePct);
+        self.imageView2.fsW = self.imageView.fsW * imagePct;
+    }
     
     //normal
     if (scrollAmount >= limit) {
