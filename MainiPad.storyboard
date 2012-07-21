@@ -5,6 +5,86 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="1181"/>
     </dependencies>
     <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="mad-tR-co1">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4LG-5q-dCD" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <navigationController definesPresentationContext="YES" id="Aug-JP-sCK" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" systemItem="search" id="uru-Wz-Nwu"/>
+                    <splitViewMasterSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="tEV-3n-9R2">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="8cr-0d-lbJ" kind="relationship" relationship="rootViewController" id="ig0-90-NfW"/>
+                    </connections>
+                </navigationController>
+            </objects>
+            <point key="canvasLocation" x="-1096" y="-3521"/>
+        </scene>
+        <!--Awful Search Controller - test-->
+        <scene sceneID="5Ns-8G-fg1">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="wMS-s1-BIt" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tableViewController title="test" id="8cr-0d-lbJ" customClass="AwfulSearchController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="G4u-sC-gQz">
+                        <rect key="frame" x="0.0" y="20" width="320" height="748"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="pjO-G7-m37">
+                                <rect key="frame" x="0.0" y="22" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="8cr-0d-lbJ" id="7DI-fY-Fol"/>
+                            <outlet property="delegate" destination="8cr-0d-lbJ" id="zwy-25-omc"/>
+                        </connections>
+                    </tableView>
+                    <tabBarItem key="tabBarItem" systemItem="search" id="Lk2-ul-BtF"/>
+                    <navigationItem key="navigationItem" id="c75-Fc-pwL">
+                        <connections>
+                            <outlet property="titleView" destination="aSl-7e-s5E" id="cOO-9i-aLI"/>
+                        </connections>
+                    </navigationItem>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <splitViewMasterSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <connections>
+                        <outlet property="searchDisplayController" destination="2yV-N6-LE4" id="ACt-sa-pZ2"/>
+                    </connections>
+                </tableViewController>
+                <searchBar contentMode="redraw" barStyle="blackOpaque" id="aSl-7e-s5E">
+                    <rect key="frame" x="0.0" y="31" width="320" height="44"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                    <textInputTraits key="textInputTraits"/>
+                    <scopeButtonTitles>
+                        <string>Title</string>
+                        <string>Title</string>
+                    </scopeButtonTitles>
+                    <connections>
+                        <outlet property="delegate" destination="8cr-0d-lbJ" id="K0k-G6-i9Y"/>
+                    </connections>
+                </searchBar>
+                <searchDisplayController id="2yV-N6-LE4">
+                    <connections>
+                        <outlet property="delegate" destination="8cr-0d-lbJ" id="f30-Jy-mVe"/>
+                        <outlet property="searchBar" destination="aSl-7e-s5E" id="vaP-gE-NIy"/>
+                        <outlet property="searchContentsController" destination="8cr-0d-lbJ" id="7bp-p2-YmN"/>
+                        <outlet property="searchResultsDataSource" destination="8cr-0d-lbJ" id="jKe-sw-6hk"/>
+                        <outlet property="searchResultsDelegate" destination="8cr-0d-lbJ" id="i8A-iF-q89"/>
+                    </connections>
+                </searchDisplayController>
+            </objects>
+            <point key="canvasLocation" x="5" y="-3400"/>
+        </scene>
         <!--Navigation Controller - Forums-->
         <scene sceneID="7Ed-Hc-PrQ">
             <objects>
@@ -203,6 +283,51 @@
             </objects>
             <point key="canvasLocation" x="330" y="198"/>
         </scene>
+        <!--Awful Private Messages Controller - Root View Controller-->
+        <scene sceneID="oLP-ro-YKP">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Yes-6a-lxh" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tableViewController id="RHp-Sk-hW2" customClass="AwfulPrivateMessagesController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="2HN-fG-k58">
+                        <rect key="frame" x="0.0" y="64" width="320" height="655"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="YH5-4M-ZAG">
+                                <rect key="frame" x="0.0" y="22" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                            </tableViewCell>
+                        </prototypes>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Root View Controller" id="ml3-G4-AAt"/>
+                    <splitViewMasterSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                </tableViewController>
+            </objects>
+            <point key="canvasLocation" x="-955" y="-865"/>
+        </scene>
+        <!--Navigation Controller - PMs-->
+        <scene sceneID="5qa-Ic-SQn">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ZNx-Tw-jqo" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <navigationController definesPresentationContext="YES" id="3sG-z7-kfs" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="PMs" image="40-inbox.png" id="qHy-w7-3eE"/>
+                    <splitViewMasterSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="CTI-lF-PD0">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="RHp-Sk-hW2" kind="relationship" relationship="rootViewController" id="Kq7-To-iy1"/>
+                    </connections>
+                </navigationController>
+            </objects>
+            <point key="canvasLocation" x="-1377" y="-865"/>
+        </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="iBR-qX-RHb">
             <objects>
@@ -219,6 +344,8 @@
                         <segue destination="wlS-xD-QGL" kind="relationship" relationship="viewControllers" id="OeB-pz-WfV"/>
                         <segue destination="yxf-ta-Zqb" kind="relationship" relationship="viewControllers" id="n5P-Yh-qxZ"/>
                         <segue destination="eNs-ia-gzc" kind="relationship" relationship="viewControllers" id="SmE-vb-9CD"/>
+                        <segue destination="3sG-z7-kfs" kind="relationship" relationship="viewControllers" id="7Lq-CW-fOM"/>
+                        <segue destination="Aug-JP-sCK" kind="relationship" relationship="viewControllers" id="CrF-is-3ag"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Bar-Lf-3un" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -501,7 +628,7 @@
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="JH9-rJ-Pf2"/>
                         <barButtonItem style="plain" id="Ovc-Zi-2lK">
                             <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" id="8iC-oY-std" customClass="ButtonSegmentedControl">
-                                <rect key="frame" x="611" y="8" width="85" height="30"/>
+                                <rect key="frame" x="676" y="8" width="85" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <segments>
                                     <segment title="" image="action.png"/>
@@ -852,6 +979,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="40-inbox.png" width="24" height="24"/>
         <image name="MasterViewButton.png" width="583" height="370"/>
         <image name="ReplyButton.png" width="395" height="599"/>
         <image name="ThreadActions.png" width="519" height="311"/>
@@ -939,6 +1067,12 @@
                 <relationship kind="outlet" name="segmentedControl" candidateClass="ButtonSegmentedControl"/>
                 <relationship kind="outlet" name="sendButton" candidateClass="UIBarButtonItem"/>
             </relationships>
+        </class>
+        <class className="AwfulPrivateMessagesController" superclassName="AwfulFetchedTableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPrivateMessagesController.h"/>
+        </class>
+        <class className="AwfulSearchController" superclassName="AwfulFetchedTableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulSearchController.h"/>
         </class>
         <class className="AwfulSettingsViewController" superclassName="AwfulTableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulSettingsViewController.h"/>

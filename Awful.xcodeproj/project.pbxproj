@@ -153,6 +153,8 @@
 		8C48EA61159DD8FA00A59691 /* TDBadgedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48EA60159DD8FA00A59691 /* TDBadgedCell.m */; };
 		8C79D43B1562E79E006FEE48 /* AwfulPage+Transitions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C79D43A1562E79E006FEE48 /* AwfulPage+Transitions.m */; };
 		8C905197155D6CAD0098266A /* UIView+Lazy.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C905196155D6CAD0098266A /* UIView+Lazy.m */; };
+		8CB5467F15BA5A8000E8BEC1 /* AwfulPrivateMessagesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB5467E15BA5A8000E8BEC1 /* AwfulPrivateMessagesController.m */; };
+		8CB5468215BA5B5600E8BEC1 /* AwfulSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB5468115BA5B5600E8BEC1 /* AwfulSearchController.m */; };
 		8CCD4CCE15B497A800E5893B /* Default-Landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498315B497A700E5893B /* Default-Landscape.png */; };
 		8CCD4CCF15B497A800E5893B /* Default-Landscape@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498415B497A700E5893B /* Default-Landscape@2x~ipad.png */; };
 		8CCD4CD015B497A800E5893B /* Default-Portrait.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498515B497A700E5893B /* Default-Portrait.png */; };
@@ -1248,6 +1250,10 @@
 		8C79D43A1562E79E006FEE48 /* AwfulPage+Transitions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AwfulPage+Transitions.m"; sourceTree = "<group>"; };
 		8C905195155D6CAD0098266A /* UIView+Lazy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Lazy.h"; sourceTree = "<group>"; };
 		8C905196155D6CAD0098266A /* UIView+Lazy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Lazy.m"; sourceTree = "<group>"; };
+		8CB5467D15BA5A8000E8BEC1 /* AwfulPrivateMessagesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessagesController.h; sourceTree = "<group>"; };
+		8CB5467E15BA5A8000E8BEC1 /* AwfulPrivateMessagesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessagesController.m; sourceTree = "<group>"; };
+		8CB5468015BA5B5600E8BEC1 /* AwfulSearchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSearchController.h; sourceTree = "<group>"; };
+		8CB5468115BA5B5600E8BEC1 /* AwfulSearchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSearchController.m; sourceTree = "<group>"; };
 		8CCD498215B497A700E5893B /* Awful-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Awful-Info.plist"; sourceTree = "<group>"; };
 		8CCD498315B497A700E5893B /* Default-Landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape.png"; sourceTree = "<group>"; };
 		8CCD498415B497A700E5893B /* Default-Landscape@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape@2x~ipad.png"; sourceTree = "<group>"; };
@@ -2137,6 +2143,8 @@
 				1190F70513BE4EA900B9D271 /* AwfulThreadList */,
 				1190F6E813BE4EA900B9D271 /* AwfulPage */,
 				1172A62F14F5DE500026CDA8 /* AwfulNetworking */,
+				8CB5467A15BA5A4D00E8BEC1 /* AwfulMessages */,
+				8CB5467B15BA5A4D00E8BEC1 /* AwfulSearch */,
 				1190F70B13BE4EA900B9D271 /* Extras */,
 				1190F71813BE4EA900B9D271 /* Login */,
 				1190F71C13BE4EA900B9D271 /* Main */,
@@ -2682,6 +2690,24 @@
 				8C79D43A1562E79E006FEE48 /* AwfulPage+Transitions.m */,
 			);
 			name = "Page Transitions";
+			sourceTree = "<group>";
+		};
+		8CB5467A15BA5A4D00E8BEC1 /* AwfulMessages */ = {
+			isa = PBXGroup;
+			children = (
+				8CB5467D15BA5A8000E8BEC1 /* AwfulPrivateMessagesController.h */,
+				8CB5467E15BA5A8000E8BEC1 /* AwfulPrivateMessagesController.m */,
+			);
+			path = AwfulMessages;
+			sourceTree = "<group>";
+		};
+		8CB5467B15BA5A4D00E8BEC1 /* AwfulSearch */ = {
+			isa = PBXGroup;
+			children = (
+				8CB5468015BA5B5600E8BEC1 /* AwfulSearchController.h */,
+				8CB5468115BA5B5600E8BEC1 /* AwfulSearchController.m */,
+			);
+			path = AwfulSearch;
 			sourceTree = "<group>";
 		};
 		8CCD498115B497A700E5893B /* Resources */ = {
@@ -4691,6 +4717,8 @@
 				8CE4DC7615B85BDB001C62AC /* AwfulLastPageControl.m in Sources */,
 				8CE4DC7B15B86047001C62AC /* AnimatedGif.m in Sources */,
 				8CE4DC7E15B86498001C62AC /* AwfulAnimatedGifActivityIndicatorView.m in Sources */,
+				8CB5467F15BA5A8000E8BEC1 /* AwfulPrivateMessagesController.m in Sources */,
+				8CB5468215BA5B5600E8BEC1 /* AwfulSearchController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
