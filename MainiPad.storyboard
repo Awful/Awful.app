@@ -927,7 +927,7 @@
         <!--Awful Favorites View Controller - Forums-->
         <scene sceneID="5vY-92-oTk">
             <objects>
-                <tableViewController title="Forums" id="uad-aZ-DOT" customClass="AwfulFavoritesViewController" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="AwfulFavoritesViewController" title="Forums" id="uad-aZ-DOT" customClass="AwfulFavoritesViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="50" sectionHeaderHeight="22" sectionFooterHeight="22" id="lD2-0F-D2L">
                         <rect key="frame" x="0.0" y="64" width="320" height="655"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

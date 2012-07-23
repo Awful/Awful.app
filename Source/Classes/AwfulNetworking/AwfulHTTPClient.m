@@ -24,7 +24,6 @@
 
 static const int NetworkLogLevel = LOG_LEVEL_OFF;
 
-static const NSTimeInterval NetworkTimeoutInterval = 5.0;
 
 @implementation AwfulHTTPClient
 

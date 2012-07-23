@@ -7,6 +7,8 @@
 //
 
 #import "AwfulPrivateMessagesController.h"
+#import "AwfulPM.h"
+#import "AwfulHTTPClient+PrivateMessages.h"
 
 @interface AwfulPrivateMessagesController ()
 
@@ -15,17 +17,35 @@
 @implementation AwfulPrivateMessagesController
 
 -(void) awakeFromNib {
-    [self setEntityName:@"AwfulForum"
-              predicate:@"category != nil and (children.@count >0 or parentForum.expanded = YES)"
+    [self setEntityName:@"AwfulPM"
+              predicate:nil
                    sort: [NSArray arrayWithObjects:
-                          [NSSortDescriptor sortDescriptorWithKey:@"category.index" ascending:YES],
-                          [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES],
+                          [NSSortDescriptor sortDescriptorWithKey:@"sent" ascending:NO],
                           nil]
-             sectionKey:@"category.index"
+             sectionKey:nil
      ];
 }
 
+- (void)refresh
+{
+    [super refresh];
+    [self.networkOperation cancel];
+    self.networkOperation = [[AwfulHTTPClient sharedClient] privateMessageListOnCompletion:^(NSMutableArray *messages) {
+        [self finishedRefreshing];
+    } 
+                                                                                   onError:^(NSError *error) {
+        [self finishedRefreshing];
+        [ApplicationDelegate requestFailed:error];
+    }];
+}
+
 -(void) configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
-    cell.textLabel.text = @"Message Title";
+    AwfulPM *pm = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    cell.textLabel.text = pm.subject;
+    cell.detailTextLabel.text = pm.from;
+}
+
+-(BOOL) tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    return YES;
 }
 @end

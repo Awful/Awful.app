@@ -159,6 +159,9 @@
 		8CB5469015BDA19C00E8BEC1 /* frog1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CB5468E15BDA19C00E8BEC1 /* frog1@2x.png */; };
 		8CB5469115BDA19C00E8BEC1 /* frog2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CB5468F15BDA19C00E8BEC1 /* frog2@2x.png */; };
 		8CB5469415BDA45F00E8BEC1 /* FVGifAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB5469315BDA45F00E8BEC1 /* FVGifAnimation.m */; };
+		8CB5469815BDC25800E8BEC1 /* _AwfulPM.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB5469715BDC25800E8BEC1 /* _AwfulPM.m */; };
+		8CB5469B15BDC26100E8BEC1 /* AwfulPM.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB5469A15BDC26100E8BEC1 /* AwfulPM.m */; };
+		8CB5469E15BDC2EE00E8BEC1 /* AwfulHTTPClient+PrivateMessages.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB5469D15BDC2ED00E8BEC1 /* AwfulHTTPClient+PrivateMessages.m */; };
 		8CCD4CCE15B497A800E5893B /* Default-Landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498315B497A700E5893B /* Default-Landscape.png */; };
 		8CCD4CCF15B497A800E5893B /* Default-Landscape@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498415B497A700E5893B /* Default-Landscape@2x~ipad.png */; };
 		8CCD4CD015B497A800E5893B /* Default-Portrait.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498515B497A700E5893B /* Default-Portrait.png */; };
@@ -1262,6 +1265,13 @@
 		8CB5468F15BDA19C00E8BEC1 /* frog2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "frog2@2x.png"; sourceTree = "<group>"; };
 		8CB5469215BDA45F00E8BEC1 /* FVGifAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FVGifAnimation.h; sourceTree = "<group>"; };
 		8CB5469315BDA45F00E8BEC1 /* FVGifAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FVGifAnimation.m; sourceTree = "<group>"; };
+		8CB5469515BDBED600E8BEC1 /* Model 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 3.xcdatamodel"; sourceTree = "<group>"; };
+		8CB5469615BDC25800E8BEC1 /* _AwfulPM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _AwfulPM.h; sourceTree = "<group>"; };
+		8CB5469715BDC25800E8BEC1 /* _AwfulPM.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulPM.m; sourceTree = "<group>"; };
+		8CB5469915BDC26100E8BEC1 /* AwfulPM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPM.h; sourceTree = "<group>"; };
+		8CB5469A15BDC26100E8BEC1 /* AwfulPM.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPM.m; sourceTree = "<group>"; };
+		8CB5469C15BDC2ED00E8BEC1 /* AwfulHTTPClient+PrivateMessages.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "AwfulHTTPClient+PrivateMessages.h"; path = "AwfulNetworking/AwfulHTTPClient+PrivateMessages.h"; sourceTree = "<group>"; };
+		8CB5469D15BDC2ED00E8BEC1 /* AwfulHTTPClient+PrivateMessages.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "AwfulHTTPClient+PrivateMessages.m"; path = "AwfulNetworking/AwfulHTTPClient+PrivateMessages.m"; sourceTree = "<group>"; };
 		8CCD498215B497A700E5893B /* Awful-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Awful-Info.plist"; sourceTree = "<group>"; };
 		8CCD498315B497A700E5893B /* Default-Landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape.png"; sourceTree = "<group>"; };
 		8CCD498415B497A700E5893B /* Default-Landscape@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape@2x~ipad.png"; sourceTree = "<group>"; };
@@ -2228,6 +2238,8 @@
 				110FABE515745C3B00ECF535 /* AwfulHTTPClient.m */,
 				110FABE615745C3B00ECF535 /* NetworkingFileLogger.h */,
 				110FABE715745C3B00ECF535 /* NetworkingFileLogger.m */,
+				8CB5469C15BDC2ED00E8BEC1 /* AwfulHTTPClient+PrivateMessages.h */,
+				8CB5469D15BDC2ED00E8BEC1 /* AwfulHTTPClient+PrivateMessages.m */,
 			);
 			name = AwfulNetworking;
 			sourceTree = "<group>";
@@ -2457,6 +2469,8 @@
 		1C6474A61569989800C72657 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				8CB5469915BDC26100E8BEC1 /* AwfulPM.h */,
+				8CB5469A15BDC26100E8BEC1 /* AwfulPM.m */,
 				1C6474A71569989800C72657 /* AwfulFavorite.h */,
 				1C6474A81569989800C72657 /* AwfulFavorite.m */,
 				1C6474A91569989800C72657 /* AwfulForum+AwfulMethods.h */,
@@ -2483,6 +2497,8 @@
 		1C6474BA1569989800C72657 /* Generated */ = {
 			isa = PBXGroup;
 			children = (
+				8CB5469615BDC25800E8BEC1 /* _AwfulPM.h */,
+				8CB5469715BDC25800E8BEC1 /* _AwfulPM.m */,
 				1C9C16451569994C0047C06E /* _AwfulFavorite.h */,
 				1C6474BC1569989800C72657 /* _AwfulFavorite.m */,
 				1C6474BD1569989800C72657 /* _AwfulForum.h */,
@@ -4584,7 +4600,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "PATH=/usr/local/bin:$PATH\ncommand -v mogenerator >/dev/null 2>&1 || { echo >&2 \"Please install mogenerator! brew install mogenerator\"; exit 0; }\nMODELS=\"$PROJECT_DIR/Source/Models\"\nmogenerator --model \"$MODELS/Model.xcdatamodeld/Model 2.xcdatamodel\" --output-dir \"$MODELS\" --machine-dir \"$MODELS/Generated\" --template-var arc=true\n";
+			shellScript = "PATH=/usr/local/bin:$PATH\ncommand -v mogenerator >/dev/null 2>&1 || { echo >&2 \"Please install mogenerator! brew install mogenerator\"; exit 0; }\nMODELS=\"$PROJECT_DIR/Source/Models\"\nmogenerator --model \"$MODELS/Model.xcdatamodeld/Model 3.xcdatamodel\" --output-dir \"$MODELS\" --machine-dir \"$MODELS/Generated\" --template-var arc=true\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -4731,6 +4747,9 @@
 				8CB5467F15BA5A8000E8BEC1 /* AwfulPrivateMessagesController.m in Sources */,
 				8CB5468215BA5B5600E8BEC1 /* AwfulSearchController.m in Sources */,
 				8CB5469415BDA45F00E8BEC1 /* FVGifAnimation.m in Sources */,
+				8CB5469815BDC25800E8BEC1 /* _AwfulPM.m in Sources */,
+				8CB5469B15BDC26100E8BEC1 /* AwfulPM.m in Sources */,
+				8CB5469E15BDC2EE00E8BEC1 /* AwfulHTTPClient+PrivateMessages.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4975,10 +4994,11 @@
 		1C6474C31569989800C72657 /* Model.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				8CB5469515BDBED600E8BEC1 /* Model 3.xcdatamodel */,
 				8C48EA1F159BD5BD00A59691 /* Model 2.xcdatamodel */,
 				1C6474C41569989800C72657 /* Model.xcdatamodel */,
 			);
-			currentVersion = 8C48EA1F159BD5BD00A59691 /* Model 2.xcdatamodel */;
+			currentVersion = 8CB5469515BDBED600E8BEC1 /* Model 3.xcdatamodel */;
 			path = Model.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

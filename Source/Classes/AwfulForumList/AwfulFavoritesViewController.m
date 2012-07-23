@@ -36,9 +36,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.navigationItem.leftBarButtonItem = self.addButtonItem;
-    self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    
+
     [self setEntityName:@"AwfulForum"
               predicate:@"favorite != nil" 
                    sort:@"favorite.index"
