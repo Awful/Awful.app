@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-@class AnimatedGif;
+@class FVGifAnimation;
 
 @interface AwfulAnimatedGifActivityIndicatorView : UIActivityIndicatorView
-@property (readonly) AnimatedGif* animatedGif;
+@property (readonly) FVGifAnimation* animatedGif;
 @property (nonatomic,readwrite) NSString* imagePath;
 
 

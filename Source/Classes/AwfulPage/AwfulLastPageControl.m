@@ -18,6 +18,7 @@
     if (self) {
         self.imageView.image = [UIImage imageNamed:@"emot-smith.gif"];
         self.innerCell.accessoryView = [UISwitch new];
+        self.imageView2.hidden = YES;
     }
     return self;
 }
@@ -29,8 +30,6 @@
         return;
     
     _state = state;
-    
-    AnimatedGif *gif;
     
     switch (state) {
         case AwfulRefreshControlStateLoading:

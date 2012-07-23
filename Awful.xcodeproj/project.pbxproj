@@ -155,6 +155,10 @@
 		8C905197155D6CAD0098266A /* UIView+Lazy.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C905196155D6CAD0098266A /* UIView+Lazy.m */; };
 		8CB5467F15BA5A8000E8BEC1 /* AwfulPrivateMessagesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB5467E15BA5A8000E8BEC1 /* AwfulPrivateMessagesController.m */; };
 		8CB5468215BA5B5600E8BEC1 /* AwfulSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB5468115BA5B5600E8BEC1 /* AwfulSearchController.m */; };
+		8CB5468D15BD936600E8BEC1 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CB5468C15BD936600E8BEC1 /* ImageIO.framework */; };
+		8CB5469015BDA19C00E8BEC1 /* frog1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CB5468E15BDA19C00E8BEC1 /* frog1@2x.png */; };
+		8CB5469115BDA19C00E8BEC1 /* frog2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CB5468F15BDA19C00E8BEC1 /* frog2@2x.png */; };
+		8CB5469415BDA45F00E8BEC1 /* FVGifAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB5469315BDA45F00E8BEC1 /* FVGifAnimation.m */; };
 		8CCD4CCE15B497A800E5893B /* Default-Landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498315B497A700E5893B /* Default-Landscape.png */; };
 		8CCD4CCF15B497A800E5893B /* Default-Landscape@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498415B497A700E5893B /* Default-Landscape@2x~ipad.png */; };
 		8CCD4CD015B497A800E5893B /* Default-Portrait.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498515B497A700E5893B /* Default-Portrait.png */; };
@@ -992,7 +996,6 @@
 		8CCD569315B7A5CC00E5893B /* getin.001.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD569215B7A5CC00E5893B /* getin.001.gif */; };
 		8CCFBD251598B9AF00336F55 /* AwfulThreadTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CCFBD241598B9AF00336F55 /* AwfulThreadTitleView.m */; };
 		8CE4DC7615B85BDB001C62AC /* AwfulLastPageControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CE4DC7515B85BDB001C62AC /* AwfulLastPageControl.m */; };
-		8CE4DC7B15B86047001C62AC /* AnimatedGif.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CE4DC7A15B86047001C62AC /* AnimatedGif.m */; };
 		8CE4DC7E15B86498001C62AC /* AwfulAnimatedGifActivityIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CE4DC7D15B86498001C62AC /* AwfulAnimatedGifActivityIndicatorView.m */; };
 /* End PBXBuildFile section */
 
@@ -1254,6 +1257,11 @@
 		8CB5467E15BA5A8000E8BEC1 /* AwfulPrivateMessagesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessagesController.m; sourceTree = "<group>"; };
 		8CB5468015BA5B5600E8BEC1 /* AwfulSearchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSearchController.h; sourceTree = "<group>"; };
 		8CB5468115BA5B5600E8BEC1 /* AwfulSearchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSearchController.m; sourceTree = "<group>"; };
+		8CB5468C15BD936600E8BEC1 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		8CB5468E15BDA19C00E8BEC1 /* frog1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "frog1@2x.png"; sourceTree = "<group>"; };
+		8CB5468F15BDA19C00E8BEC1 /* frog2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "frog2@2x.png"; sourceTree = "<group>"; };
+		8CB5469215BDA45F00E8BEC1 /* FVGifAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FVGifAnimation.h; sourceTree = "<group>"; };
+		8CB5469315BDA45F00E8BEC1 /* FVGifAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FVGifAnimation.m; sourceTree = "<group>"; };
 		8CCD498215B497A700E5893B /* Awful-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Awful-Info.plist"; sourceTree = "<group>"; };
 		8CCD498315B497A700E5893B /* Default-Landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape.png"; sourceTree = "<group>"; };
 		8CCD498415B497A700E5893B /* Default-Landscape@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape@2x~ipad.png"; sourceTree = "<group>"; };
@@ -2094,8 +2102,6 @@
 		8CCFBD241598B9AF00336F55 /* AwfulThreadTitleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTitleView.m; sourceTree = "<group>"; };
 		8CE4DC7415B85BDB001C62AC /* AwfulLastPageControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLastPageControl.h; sourceTree = "<group>"; };
 		8CE4DC7515B85BDB001C62AC /* AwfulLastPageControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLastPageControl.m; sourceTree = "<group>"; };
-		8CE4DC7915B86047001C62AC /* AnimatedGif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimatedGif.h; sourceTree = "<group>"; };
-		8CE4DC7A15B86047001C62AC /* AnimatedGif.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnimatedGif.m; sourceTree = "<group>"; };
 		8CE4DC7C15B86498001C62AC /* AwfulAnimatedGifActivityIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAnimatedGifActivityIndicatorView.h; sourceTree = "<group>"; };
 		8CE4DC7D15B86498001C62AC /* AwfulAnimatedGifActivityIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAnimatedGifActivityIndicatorView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -2116,6 +2122,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8CB5468D15BD936600E8BEC1 /* ImageIO.framework in Frameworks */,
 				110FAC0415745CE700ECF535 /* MessageUI.framework in Frameworks */,
 				10D34FA9128F41160026C7C2 /* CFNetwork.framework in Frameworks */,
 				117DBE3B1522A39A007125EF /* CoreData.framework in Frameworks */,
@@ -2626,6 +2633,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8CB5468C15BD936600E8BEC1 /* ImageIO.framework */,
 				110FAC0315745CE700ECF535 /* MessageUI.framework */,
 				117DBE3A1522A39A007125EF /* CoreData.framework */,
 				1172A62D14F5DB160026CDA8 /* Security.framework */,
@@ -2777,6 +2785,8 @@
 				8CCD504615B783FC00E5893B /* arrowright.png */,
 				8CCD568E15B7A5BA00E5893B /* frog1.png */,
 				8CCD568F15B7A5BA00E5893B /* frog2.png */,
+				8CB5468E15BDA19C00E8BEC1 /* frog1@2x.png */,
+				8CB5468F15BDA19C00E8BEC1 /* frog2@2x.png */,
 				8CCD504715B783FC00E5893B /* arrowright@2x.png */,
 				8CCD504815B783FC00E5893B /* back.png */,
 				8CCD504915B783FC00E5893B /* back@2x.png */,
@@ -3628,8 +3638,8 @@
 		8CE4DC7815B86047001C62AC /* AnimatedGif */ = {
 			isa = PBXGroup;
 			children = (
-				8CE4DC7915B86047001C62AC /* AnimatedGif.h */,
-				8CE4DC7A15B86047001C62AC /* AnimatedGif.m */,
+				8CB5469215BDA45F00E8BEC1 /* FVGifAnimation.h */,
+				8CB5469315BDA45F00E8BEC1 /* FVGifAnimation.m */,
 			);
 			path = AnimatedGif;
 			sourceTree = "<group>";
@@ -4554,6 +4564,8 @@
 				8CCD569015B7A5BA00E5893B /* frog1.png in Resources */,
 				8CCD569115B7A5BA00E5893B /* frog2.png in Resources */,
 				8CCD569315B7A5CC00E5893B /* getin.001.gif in Resources */,
+				8CB5469015BDA19C00E8BEC1 /* frog1@2x.png in Resources */,
+				8CB5469115BDA19C00E8BEC1 /* frog2@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4715,10 +4727,10 @@
 				8CCD500A15B497A900E5893B /* jquery.js in Sources */,
 				8CCD500E15B497A900E5893B /* salr.js in Sources */,
 				8CE4DC7615B85BDB001C62AC /* AwfulLastPageControl.m in Sources */,
-				8CE4DC7B15B86047001C62AC /* AnimatedGif.m in Sources */,
 				8CE4DC7E15B86498001C62AC /* AwfulAnimatedGifActivityIndicatorView.m in Sources */,
 				8CB5467F15BA5A8000E8BEC1 /* AwfulPrivateMessagesController.m in Sources */,
 				8CB5468215BA5B5600E8BEC1 /* AwfulSearchController.m in Sources */,
+				8CB5469415BDA45F00E8BEC1 /* FVGifAnimation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

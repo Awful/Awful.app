@@ -30,6 +30,15 @@
     
     if (scrollAmount < limit && self.state == AwfulRefreshControlStateNormal) return;
     
+    //image for refresh control
+    //Using 2 images on top of each other
+    //scrollamount changes the width of the top image from 0-100%
+    CGFloat imagePct = (scrollAmount - limit)/(threshhold - limit);
+    imagePct = imagePct < 0? 0 : imagePct;
+    imagePct = imagePct > 1? 1 : imagePct;
+    self.imageView2.foX = self.imageView.foX + self.imageView.fsW - (self.imageView.fsW * imagePct);
+    self.imageView2.fsW = self.imageView.fsW * imagePct;
+    
     
     //normal
     if (scrollAmount <= limit) {

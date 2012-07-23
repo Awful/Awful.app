@@ -7,6 +7,7 @@
 //
 
 #import "AwfulRefreshControl.h"
+#import "AwfulAnimatedGifActivityIndicatorView.h"
 #import <QuartzCore/QuartzCore.h>
 
 @implementation AwfulRefreshControl
@@ -68,7 +69,9 @@
 
 -(UIActivityIndicatorView*) activityView {
     if (!_activityView) {
-        _activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        _activityView = [[AwfulAnimatedGifActivityIndicatorView alloc] initWithImagePath:
+                         [[NSBundle mainBundle] pathForResource:@"emot-frogsiren" ofType:@"gif"]
+                         ];
         [self addSubview:self.activityView];
     }
     return _activityView;
@@ -91,12 +94,15 @@
     CGFloat threshhold = -2.25*self.fsH;
     CGFloat limit = -self.fsH;
     
+    //image for refresh control
+    //Using 2 images on top of each other
+    //scrollamount changes the width of the top image from 0-100%
     CGFloat imagePct = (scrollAmount - limit)/(threshhold - limit);
-    if (imagePct > 0) {
-        imagePct = imagePct > 1? 1 : imagePct;
-        self.imageView2.foX = self.imageView.foX + self.imageView.fsW - (self.imageView.fsW * imagePct);
-        self.imageView2.fsW = self.imageView.fsW * imagePct;
-    }
+    imagePct = imagePct < 0? 0 : imagePct;
+    imagePct = imagePct > 1? 1 : imagePct;
+    self.imageView2.foX = self.imageView.foX + self.imageView.fsW - (self.imageView.fsW * imagePct);
+    self.imageView2.fsW = self.imageView.fsW * imagePct;
+    
     
     //normal
     if (scrollAmount >= limit) {
@@ -133,6 +139,7 @@
             self.title.text = @"Refreshing...";
             self.subtitle.text = @"Swipe left to cancel";
             self.imageView.hidden = YES;
+            self.imageView2.hidden = YES;
             [self.activityView startAnimating];
             self.userScrolling = NO;
             self.changeInsetToShow = YES;
@@ -142,6 +149,7 @@
             self.title.text = @"Keep pulling to refresh";
             self.subtitle.text = self.stringTimeIntervalSinceLoad;
             self.imageView.hidden = NO;
+            self.imageView2.hidden = NO;
             [self.activityView stopAnimating];
             //self.changeInsetToShow = NO;
             break;
@@ -150,6 +158,7 @@
             self.title.text = @"Pull to refresh...";
             self.subtitle.text = self.stringTimeIntervalSinceLoad;
             self.imageView.hidden = NO;
+            self.imageView2.hidden = NO;
             [self.activityView stopAnimating];
             self.changeInsetToShow = NO;
             break;

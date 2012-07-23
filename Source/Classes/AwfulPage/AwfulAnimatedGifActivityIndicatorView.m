@@ -7,7 +7,7 @@
 //
 
 #import "AwfulAnimatedGifActivityIndicatorView.h"
-#import "AnimatedGif.h"
+#import "FVGifAnimation.h"
 
 @interface AwfulAnimatedGifActivityIndicatorView ()
 @property (readonly,strong) UIImageView* imageView;
@@ -26,13 +26,11 @@
                   [UIImage imageNamed:[imagePath lastPathComponent]]
                   ];
     
-    _animatedGif = [AnimatedGif new];
+    _animatedGif = [[FVGifAnimation alloc] initWithData:
+                    [NSData dataWithContentsOfFile:imagePath ]
+                    ];
     
-    self.animatedGif.imageView = self.imageView;
-    
-    [self.animatedGif decodeGIF:
-     [NSData dataWithContentsOfFile:imagePath]
-     ];
+    [self.animatedGif setAnimationToImageView:self.imageView];
     
     [self.imageView sizeToFit];
 
@@ -50,7 +48,7 @@
 
 -(void) startAnimating {
     self.hidden = NO;
-    [self.animatedGif getAnimation];
+    [self.imageView startAnimating];
 }
 
 -(void) stopAnimating {
