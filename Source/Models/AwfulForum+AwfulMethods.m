@@ -9,8 +9,18 @@
 #import "AwfulForum+AwfulMethods.h"
 #import "TFHpple.h"
 #import "TFHppleElement.h"
+#import "XPathQuery.h"
 
 @implementation AwfulForum (AwfulMethods)
+
+-(id) init {
+    self = [super initWithEntity:[NSEntityDescription entityForName:[[self class] description]
+                                             inManagedObjectContext:ApplicationDelegate.managedObjectContext
+                                  ]
+  insertIntoManagedObjectContext:ApplicationDelegate.managedObjectContext];
+    
+    return self;
+}
 
 +(AwfulForum *)getForumWithID : (NSString *)forumID fromCurrentList : (NSArray *)currentList
 {
@@ -28,69 +38,109 @@
 
 +(NSMutableArray *)parseForums : (NSData *)data
 {
-    TFHpple *page_data = [[TFHpple alloc] initWithHTMLData:data];
-    NSArray *forum_elements = [page_data search:@"//select[@name='forumid']/option"];
+    //TFHpple *page_data = [[TFHpple alloc] initWithHTMLData:data];
     
-    NSMutableArray *forums = [NSMutableArray array];
-    NSMutableArray *parents = [NSMutableArray array];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"AwfulForum"];
+    NSError *error;
+    NSArray *existingForums = [ApplicationDelegate.managedObjectContext executeFetchRequest:request
+                                                                                      error:&error
+                               ];
+    NSMutableDictionary *existingDict = [NSMutableDictionary new];
+    for (AwfulForum* f in existingForums)
+        [existingDict setObject:f forKey:f.forumID];
     
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    [fetchRequest setEntity:[NSEntityDescription entityForName:@"AwfulForum" inManagedObjectContext:ApplicationDelegate.managedObjectContext]];
     
-    NSError *error = nil;
-    NSArray *existing_forums = [ApplicationDelegate.managedObjectContext executeFetchRequest:fetchRequest error:&error];
     
-    int last_dashes_count = 0;
-    int index = 0;
-    
-    for(TFHppleElement *forum_element in forum_elements) {
-        NSString *forum_id = [forum_element objectForKey:@"value"];
-        NSString *forum_name = [forum_element content];
+    NSArray *rows = PerformRawHTMLXPathQuery(data, @"//tr");
+    AwfulForum *category;
+    int i=0;
+    for (NSString* e in rows) {
+        NSData *d = [e dataUsingEncoding:NSUTF8StringEncoding];
+        TFHpple* kids = [[TFHpple alloc] initWithHTMLData:d];
         
-        if([forum_id intValue] > 0) {
+ 
+        
+        TFHppleElement* cat = [kids searchForSingle:@"//th[@class='category']//a"];
+        if (cat) {
+            category = [existingDict objectForKey:[self forumIDFromLinkElement:cat]];
+            if (!category) category = [AwfulForum new];
+            category.name = [cat content];
+            category.forumID = [self forumIDFromLinkElement:cat];
+            category.indexValue = i++;
+            category.isCategoryValue = YES;
+        }
             
-            int num_dashes = 0;
-            for(NSUInteger i=0; i < [forum_name length]; i++) {
-                unichar c = [forum_name characterAtIndex:i];
-                if(c == '-') {
-                    num_dashes++;
-                } else if(c == ' ') {
-                    break;
-                }
+        
+        TFHppleElement* img = [kids searchForSingle:@"//td[@class='icon']//img"];
+        TFHppleElement* a = [kids searchForSingle:@"//td[@class='title']//a[@class='forum']"];
+        
+        if (img && a) { //forum
+            AwfulForum *forum = [existingDict objectForKey:[self forumIDFromLinkElement:a]];
+            if (!forum) forum = [AwfulForum new];
+            forum.name = [a content];
+            forum.desc = [a objectForKey:@"title"];
+            forum.category = category;
+            forum.forumID = [self forumIDFromLinkElement:a];
+            forum.indexValue = i++;
+            
+            NSArray* subs = [kids search:@"//div[@class='subforums']//a"];
+            for (TFHppleElement* s in subs) {
+                AwfulForum *subforum = [existingDict objectForKey:[self forumIDFromLinkElement:s]];
+                if (!subforum) subforum = [AwfulForum new];
+                subforum.name = [s content];
+                subforum.parentForum = forum;
+                subforum.indexValue = i++;
+                subforum.category = category;
+                subforum.forumID = [self forumIDFromLinkElement:s];
             }
             
-            int substring_index = num_dashes;
-            if(num_dashes > 0) {
-                substring_index += 1; // space after last '-'
-            }
-            NSString *actual_forum_name = [forum_name substringFromIndex:substring_index];
             
-            AwfulForum *forum = [AwfulForum getForumWithID:forum_id fromCurrentList:existing_forums];
-            forum.name = actual_forum_name;
-            forum.indexValue = index;
-             
-             if(num_dashes > last_dashes_count && [forums count] > 0) {
-                 [parents addObject:[forums lastObject]];
-             } else if(num_dashes < last_dashes_count) {
-                 int diff = last_dashes_count - num_dashes;
-                 for(int killer = 0; killer < diff / 2; killer++) {
-                     [parents removeLastObject];
-                 }
-             }
-             
-             if([parents count] > 0) {
-                 AwfulForum *parent = [parents lastObject];
-                 forum.parentForum = parent;
-             }
-             
-             last_dashes_count = num_dashes;
-             
-             [forums addObject:forum];
-             index++;
         }
     }
+    
     [ApplicationDelegate saveContext];
-    return forums;
+    return nil;
 }
 
++(NSString*) forumIDFromLinkElement:(TFHppleElement*)a {
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"forumid=([0-9]*)" 
+                                                                           options:NSRegularExpressionCaseInsensitive 
+                                                                             error:nil];
+    NSString *href = [a objectForKey:@"href"];
+    NSRange range = [[regex firstMatchInString:href 
+                                       options:0 
+                                         range:NSMakeRange(0,href.length)] 
+                     rangeAtIndex:1];
+    return  [href substringWithRange:range];
+}
+
++(void) updateSubforums:(NSArray*)rows inForum:(AwfulForum*)forum {
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"AwfulForum"];
+    request.predicate = [NSPredicate predicateWithFormat:@"parentForum = %@", forum];
+    NSError *error;
+    NSArray *existingForums = [ApplicationDelegate.managedObjectContext executeFetchRequest:request
+                                                                                  error:&error
+                           ];
+    NSMutableDictionary *existingDict = [NSMutableDictionary new];
+    for (AwfulForum* f in existingForums)
+        [existingDict setObject:f forKey:f.forumID];
+
+    for (NSString* row in rows) {
+        TFHpple *row_base = [[TFHpple alloc] initWithHTMLData:[row dataUsingEncoding:NSUTF8StringEncoding]];
+
+        TFHppleElement* a = [row_base searchForSingle:@"//td[@class='title']//a"];
+        TFHppleElement* dd = [row_base searchForSingle:@"//td[@class='title']//dd"];
+        
+        AwfulForum *subforum = [existingDict objectForKey:[self forumIDFromLinkElement:a]];
+        subforum.name = [a content];
+        subforum.parentForum = forum;
+        //subforum.indexValue = i++;
+        subforum.category = forum.category;
+        subforum.forumID = [self forumIDFromLinkElement:a];
+        
+        NSString *desc = [dd content];
+        desc = [desc stringByReplacingOccurrencesOfString:@"- " withString:@""];
+        subforum.desc = desc;
+    }
+}
 @end

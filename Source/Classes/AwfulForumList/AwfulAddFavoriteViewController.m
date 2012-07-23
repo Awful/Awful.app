@@ -7,9 +7,7 @@
 //
 
 #import "AwfulAddFavoriteViewController.h"
-#import "AwfulForumsListControllerSubclass.h"
 #import "AwfulFavorite.h"
-#import "AwfulForumCell.h"
 #import "AwfulForum.h"
 
 @implementation AwfulAddFavoriteViewController
@@ -28,6 +26,7 @@
 
 - (void)loadForums
 {
+    /*
     [super loadForums];
     [self.forumSections makeObjectsPerformSelector:@selector(setAllExpanded)];
     NSInteger i = 0;
@@ -39,6 +38,7 @@
         }
     }
     [self.tableView reloadData];
+     */
 }
 
 - (BOOL)canPullToRefresh
@@ -57,7 +57,7 @@
 {
     return 50;
 }
-
+/*
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView
            editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -130,5 +130,5 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         [self addFavoriteForForumAtIndexPath:indexPath];
     }
 }
-
+*/
 @end

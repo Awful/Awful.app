@@ -12,6 +12,9 @@
 #import "AwfulPostBoxController.h"
 #import "AwfulWebViewDelegate.h"
 
+static NSString * const AwfulPageWillLoadNotification = @"com.regularberry.awful.notification.pageWillLoad";
+static NSString * const AwfulPageDidLoadNotification = @"com.regularberry.awful.notification.pageDidLoad";
+
 typedef enum {
     AwfulPageDestinationTypeFirst,
     AwfulPageDestinationTypeLast,
@@ -23,8 +26,10 @@ typedef enum {
 @class AwfulPageDataController;
 @class AwfulActions;
 @class ButtonSegmentedControl;
+@class AwfulRefreshControl;
+@class AwfulLoadNextControl;
 
-@interface AwfulPage : UIViewController <AwfulWebViewDelegate, UIGestureRecognizerDelegate>
+@interface AwfulPage : UIViewController <AwfulWebViewDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate>
 {
 @protected
     AwfulActions *_actions;
@@ -34,6 +39,9 @@ typedef enum {
 @property (nonatomic, strong) NSString *threadID;
 @property (nonatomic, strong) NSString *url;
 @property (nonatomic, assign) AwfulPageDestinationType destinationType;
+@property (nonatomic, strong) IBOutlet UIWebView *webView;
+@property (nonatomic, strong) UIWebView *nextPageWebView;
+@property (nonatomic, strong) IBOutlet UIToolbar *toolbar;
 
 @property BOOL isBookmarked;
 @property BOOL shouldScrollToBottom;
@@ -55,6 +63,12 @@ typedef enum {
 
 @property (nonatomic, assign) BOOL draggingUp;
 @property (nonatomic, assign) BOOL isFullScreen;
+
+@property (nonatomic, assign) BOOL isHidingToolbars;
+
+
+@property (nonatomic, strong) AwfulRefreshControl *awfulRefreshControl;
+@property (nonatomic, strong) AwfulLoadNextControl *loadNextPageControl;
 
 -(IBAction)hardRefresh;
 -(void)setThreadTitle : (NSString *)in_title;
@@ -89,6 +103,9 @@ typedef enum {
 
 -(void)showCompletionMessage : (NSString *)message;
 -(void)hidePageNavigation;
+
+
+//-(void) didSwitchAutoF5:(UISwitch*)switchObj;
 
 @end
 

@@ -7,107 +7,60 @@
 //
 
 #import "AwfulFavoritesViewController.h"
-#import "AwfulForumCell.h"
-#import "AwfulForumSection.h"
 #import "AwfulForumsListController.h"
 #import "AwfulThreadListController.h"
+#import "AwfulForumCell.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface AwfulFavoritesViewController () <NSFetchedResultsControllerDelegate>
-
-@property (strong) NSFetchedResultsController *resultsController;
-
 @property (readonly, strong, nonatomic) UIBarButtonItem *addButtonItem;
-
 @property (assign, getter = isReordering) BOOL reordering;
-
 @property (assign) BOOL automaticallyAdded;
-
+@property (nonatomic,readwrite,strong) UILabel* noFavorites;
 @end
 
 @implementation AwfulFavoritesViewController
+@synthesize addButtonItem = _addButtonItem;
+@synthesize reordering = _reordering;
+@synthesize automaticallyAdded = _automaticallyAdded;
+@synthesize noFavorites = _noFavorites;
 
-- (void)setUpResultsController
-{
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"Favorite"];
-    NSSortDescriptor *orderDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"displayOrder"
-                                                                      ascending:YES];
-    NSSortDescriptor *forumDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"forum.index"
-                                                                      ascending:YES];
-    fetchRequest.sortDescriptors = [NSArray arrayWithObjects:orderDescriptor, forumDescriptor, nil];
-    self.resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest 
-                                                                 managedObjectContext:ApplicationDelegate.managedObjectContext
-                                                                   sectionNameKeyPath:nil
-                                                                            cacheName:nil];
-    self.resultsController.delegate = self;
+-(void) awakeFromNib {
+    [self setEntityName:@"AwfulForum"
+              predicate:@"favorite != nil"
+                   sort:@"favorite.displayOrder"
+             sectionKey:nil
+     ];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    if (!self.resultsController) {
-        [self setUpResultsController];
-    }
-    NSError *error;
-    BOOL ok = [self.resultsController performFetch:&error];
-    if(!ok) {
-        NSLog(@"error fetching favorites: %@", error);
-    }
-    self.navigationItem.leftBarButtonItem = self.addButtonItem;
-    self.navigationItem.rightBarButtonItem = self.editButtonItem;
+
+    [self setEntityName:@"AwfulForum"
+              predicate:@"favorite != nil" 
+                   sort:@"favorite.index"
+             sectionKey:nil
+     ];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self.navigationController setToolbarHidden:YES];
+    self.tableView.editing = YES;
+    self.tableView.allowsSelectionDuringEditing = YES;
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    if (!self.automaticallyAdded && self.resultsController.fetchedObjects.count == 0) {
-        [self addFavorites];
-        self.automaticallyAdded = YES;
+    if (!self.automaticallyAdded && self.fetchedResultsController.fetchedObjects.count == 0) {
+        //[self addFavorites];
+        //self.automaticallyAdded = YES;
     }
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.identifier isEqualToString:@"ThreadList"]) {
-        NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        AwfulFavorite *favorite = [self.resultsController objectAtIndexPath:indexPath];
-        AwfulThreadListController *list = (AwfulThreadListController *)segue.destinationViewController;
-        list.forum = favorite.forum;
-    }
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return YES;
-}
-
-@synthesize resultsController = _resultsController;
-
-@synthesize addButtonItem = _addButtonItem;
-
-- (UIBarButtonItem *)addButtonItem
-{
-    if (!_addButtonItem) {
-        _addButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd 
-                                                                       target:self
-                                                                       action:@selector(addFavorites)];
-    }
-    return _addButtonItem;
-}
-
-@synthesize reordering = _reordering;
-
-@synthesize automaticallyAdded = _automaticallyAdded;
-
-- (void)addFavorites
-{
-    [self performSegueWithIdentifier:@"AddFavorite" sender:self];
-}
 
 #pragma mark - Awful table view
 
@@ -118,45 +71,32 @@
 
 #pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    return self.resultsController.sections.count;
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    return nil;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    id <NSFetchedResultsSectionInfo> info = [self.resultsController.sections objectAtIndex:section];
-    return [info numberOfObjects];
+-(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 0;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView
-         cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString * const Identifier = @"ForumCell";
-    AwfulForumCell *cell = (AwfulForumCell *)[tableView dequeueReusableCellWithIdentifier:Identifier];
+    static NSString * const Identifier = @"AwfulForumCell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:Identifier];
     [self configureCell:cell atIndexPath:indexPath];
+    cell.showsReorderControl = NO;
+    //cell.imageView.image = [UIImage imageNamed:@"mad.gif"];
+
     return cell;
 }
 
-- (void)configureCell:(AwfulForumCell *)cell atIndexPath:(NSIndexPath *)indexPath
-{
-    AwfulFavorite *favorite = [self.resultsController objectAtIndexPath:indexPath];
-    cell.section = [AwfulForumSection sectionWithForum:favorite.forum];
-}
-
-- (void)tableView:(UITableView *)tableView
-    commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
-    forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        AwfulFavorite *favorite = [self.resultsController objectAtIndexPath:indexPath];
-        [ApplicationDelegate.managedObjectContext deleteObject:favorite];
-        [ApplicationDelegate saveContext];
-    }
-}
 
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    return YES;
+}
+
+-(BOOL) tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     return YES;
 }
 
@@ -165,20 +105,19 @@
       toIndexPath:(NSIndexPath *)destinationIndexPath
 {
     self.reordering = YES;
-    NSMutableArray *reorder = [self.resultsController.fetchedObjects mutableCopy];
-    NSManagedObject *whatever = [reorder objectAtIndex:sourceIndexPath.row];
+    NSMutableArray *reorder = [self.fetchedResultsController.fetchedObjects mutableCopy];
+    AwfulForum *move = [reorder objectAtIndex:sourceIndexPath.row];
     [reorder removeObjectAtIndex:sourceIndexPath.row];
-    [reorder insertObject:whatever atIndex:destinationIndexPath.row];
-    for (NSInteger i = 0; i < reorder.count; i += 1) {
-        [[reorder objectAtIndex:i] setValue:[NSNumber numberWithInteger:i]
-                                     forKey:@"displayOrder"];
+    [reorder insertObject:move atIndex:destinationIndexPath.row];
+    
+    //set order from -100 so added favorites always on bottom
+    int i = -100;
+    for (AwfulForum* f in reorder) {
+        f.favorite.displayOrderValue = i++;
     }
-    NSError *error;
-    BOOL ok = [whatever.managedObjectContext save:&error];
-    if(!ok) {
-        NSLog(@"error saving favorite order: %@", error);
-    }
+    [ApplicationDelegate saveContext];
     self.reordering = NO;
+    [self.fetchedResultsController performFetch:nil];
 }
 
 #pragma mark - Table view delegate
@@ -186,65 +125,37 @@
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView
            editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return UITableViewCellEditingStyleDelete;
+    return UITableViewCellEditingStyleNone;
 }
 
-#pragma mark - Fetched results controller delegate
-
-- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
+- (void) tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.reordering) {
-        return;
-    }
-    [self.tableView beginUpdates];
-}
-
-- (void)controller:(NSFetchedResultsController *)controller
-  didChangeSection:(id<NSFetchedResultsSectionInfo>)sectionInfo
-           atIndex:(NSUInteger)sectionIndex
-     forChangeType:(NSFetchedResultsChangeType)type
-{
-    if (type == NSFetchedResultsChangeInsert) {
-        [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex]
-                      withRowAnimation:UITableViewRowAnimationFade];
-    } else if (type == NSFetchedResultsChangeDelete) {
-        [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex]
-                      withRowAnimation:UITableViewRowAnimationFade];
-    }
-}
-
-- (void)controller:(NSFetchedResultsController *)controller
-   didChangeObject:(id)anObject
-       atIndexPath:(NSIndexPath *)indexPath
-     forChangeType:(NSFetchedResultsChangeType)type
-      newIndexPath:(NSIndexPath *)newIndexPath
-{
-    if (self.reordering) {
-        return;
-    }
-    if (type == NSFetchedResultsChangeInsert) {
-        [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
-                              withRowAnimation:UITableViewRowAnimationFade];
-    } else if (NSFetchedResultsChangeDelete) {
-        [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-                              withRowAnimation:UITableViewRowAnimationFade];
-    } else if (NSFetchedResultsChangeUpdate) {
-        AwfulForumCell *cell = (AwfulForumCell *)[self.tableView cellForRowAtIndexPath:indexPath];
-        [self configureCell:cell atIndexPath:indexPath];
-    } else if (NSFetchedResultsChangeMove) {
-        [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-                              withRowAnimation:UITableViewRowAnimationFade];
-        [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
-                              withRowAnimation:UITableViewRowAnimationFade];
+    for(UIView* view in cell.subviews)
+    {
+        if([[[view class] description] isEqualToString:@"UITableViewCellReorderControl"])
+        {
+            if([[[view class] description] isEqualToString:@"UITableViewCellReorderControl"])
+            {
+                // Creates a new subview the size of the entire cell
+                UIView *movedReorderControl = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetMaxX(view.frame), CGRectGetMaxY(view.frame))];
+                // Adds the reorder control view to our new subview
+                [movedReorderControl addSubview:view];
+                // Adds our new subview to the cell
+                [cell addSubview:movedReorderControl];
+                // CGStuff to move it to the left
+                CGSize moveLeft = CGSizeMake(movedReorderControl.frame.size.width - view.frame.size.width, movedReorderControl.frame.size.height - view.frame.size.height);
+                CGAffineTransform transform = CGAffineTransformIdentity;
+                transform = CGAffineTransformTranslate(transform, -moveLeft.width, -moveLeft.height);
+                // Performs the transform
+                [movedReorderControl setTransform:transform];
+            }
+            
+        }
     }
 }
 
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
-{
-    if (self.reordering) {
-        return;
-    }
-    [self.tableView endUpdates];
+-(NSString*) tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return @"Remove";
 }
 
 @end
