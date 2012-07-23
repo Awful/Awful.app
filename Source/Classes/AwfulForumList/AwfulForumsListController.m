@@ -20,7 +20,9 @@
 #import "AwfulSubForumCell.h"
 #import "AwfulCustomForums.h"
 
-@interface AwfulForumsListController ()
+@interface AwfulForumsListController () {
+    NSMutableDictionary *_sectionTitles;
+}
 
 @property (nonatomic, strong) IBOutlet AwfulForumHeader *headerView;
 
@@ -147,8 +149,34 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     AwfulForumHeader *header = self.headerView;
     self.headerView = nil;
     
-    header.titleLabel.text = [self.fetchedResultsController.sectionIndexTitles objectAtIndex:section];
+    NSString *index = [[self.fetchedResultsController.sections objectAtIndex:section] name];
+    header.titleLabel.text = [self sectionTitleForIndex:index];
+    
     return header;
+    
+}
+
+-(NSString*) sectionTitleForIndex:(NSString*)i {
+    if (!_sectionTitles) {
+        _sectionTitles = [NSMutableDictionary new];
+        NSMutableArray* indexes = [NSMutableArray new];
+        for (id<NSFetchedResultsSectionInfo> info in self.fetchedResultsController.sections) {
+            [indexes addObject:info.name];
+        }
+        
+        
+        NSFetchRequest *req = [NSFetchRequest fetchRequestWithEntityName:@"AwfulForum"];
+        req.predicate = [NSPredicate predicateWithFormat:@"index in %@", indexes];
+        req.sortDescriptors = [[NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES] arrayWrapper];
+        NSArray* categories = [ApplicationDelegate.managedObjectContext executeFetchRequest:req error:nil];
+        
+        for (AwfulForum* category in categories) {
+            [_sectionTitles setObject:category.name forKey:category.index.stringValue];
+        }
+    }
+    
+    return [_sectionTitles objectForKey:i];
+    
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section

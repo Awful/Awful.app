@@ -75,25 +75,15 @@
 }
 
 - (NSFetchedResultsController *)fetchedResultsController {
-    
-    if (_fetchedResultsController != nil) {
-        return _fetchedResultsController;
+    if (_fetchedResultsController == nil) {
+        _fetchedResultsController = 
+        [[NSFetchedResultsController alloc] initWithFetchRequest:self.request 
+                                            managedObjectContext:ApplicationDelegate.managedObjectContext
+                                              sectionNameKeyPath:self.sectionKey 
+                                                       cacheName:nil];
+        _fetchedResultsController.delegate = self;
     }
-    
-    _fetchedResultsController = 
-    [[NSFetchedResultsController alloc] initWithFetchRequest:self.request 
-                                        managedObjectContext:ApplicationDelegate.managedObjectContext
-                                          sectionNameKeyPath:self.sectionKey 
-                                                   cacheName:nil];
-    
-    //self.fetchedResultsController = theFetchedResultsController;
-    //NSLog(@"results sections count:%i", _fetchedResultsController.sections.count);
-    _fetchedResultsController.delegate = self;
-    
-    //[sort release];
-    
     return _fetchedResultsController;    
-    
 }
 
 #pragma mark table view

@@ -159,6 +159,7 @@
 		8CB5469015BDA19C00E8BEC1 /* frog1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CB5468E15BDA19C00E8BEC1 /* frog1@2x.png */; };
 		8CB5469115BDA19C00E8BEC1 /* frog2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CB5468F15BDA19C00E8BEC1 /* frog2@2x.png */; };
 		8CB5469415BDA45F00E8BEC1 /* FVGifAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB5469315BDA45F00E8BEC1 /* FVGifAnimation.m */; };
+		8CB546AE15BE15E200E8BEC1 /* NSObject+Lazy.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB546AD15BE15E200E8BEC1 /* NSObject+Lazy.m */; };
 		8CCD4CCE15B497A800E5893B /* Default-Landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498315B497A700E5893B /* Default-Landscape.png */; };
 		8CCD4CCF15B497A800E5893B /* Default-Landscape@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498415B497A700E5893B /* Default-Landscape@2x~ipad.png */; };
 		8CCD4CD015B497A800E5893B /* Default-Portrait.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498515B497A700E5893B /* Default-Portrait.png */; };
@@ -1262,6 +1263,10 @@
 		8CB5468F15BDA19C00E8BEC1 /* frog2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "frog2@2x.png"; sourceTree = "<group>"; };
 		8CB5469215BDA45F00E8BEC1 /* FVGifAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FVGifAnimation.h; sourceTree = "<group>"; };
 		8CB5469315BDA45F00E8BEC1 /* FVGifAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FVGifAnimation.m; sourceTree = "<group>"; };
+		8CB5469515BDBED600E8BEC1 /* Model 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 3.xcdatamodel"; sourceTree = "<group>"; };
+		8CB546AB15BDFC0F00E8BEC1 /* Model 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 3.xcdatamodel"; sourceTree = "<group>"; };
+		8CB546AC15BE15E200E8BEC1 /* NSObject+Lazy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+Lazy.h"; sourceTree = "<group>"; };
+		8CB546AD15BE15E200E8BEC1 /* NSObject+Lazy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+Lazy.m"; sourceTree = "<group>"; };
 		8CCD498215B497A700E5893B /* Awful-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Awful-Info.plist"; sourceTree = "<group>"; };
 		8CCD498315B497A700E5893B /* Default-Landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape.png"; sourceTree = "<group>"; };
 		8CCD498415B497A700E5893B /* Default-Landscape@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape@2x~ipad.png"; sourceTree = "<group>"; };
@@ -2310,6 +2315,8 @@
 				11FDA298151018740014FDCD /* OtherWebController.m */,
 				11CED26A1522901100E95EE1 /* ButtonSegmentedControl.h */,
 				11CED26B1522901100E95EE1 /* ButtonSegmentedControl.m */,
+				8CB546AC15BE15E200E8BEC1 /* NSObject+Lazy.h */,
+				8CB546AD15BE15E200E8BEC1 /* NSObject+Lazy.m */,
 			);
 			path = Extras;
 			sourceTree = "<group>";
@@ -4731,6 +4738,7 @@
 				8CB5467F15BA5A8000E8BEC1 /* AwfulPrivateMessagesController.m in Sources */,
 				8CB5468215BA5B5600E8BEC1 /* AwfulSearchController.m in Sources */,
 				8CB5469415BDA45F00E8BEC1 /* FVGifAnimation.m in Sources */,
+				8CB546AE15BE15E200E8BEC1 /* NSObject+Lazy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4975,6 +4983,8 @@
 		1C6474C31569989800C72657 /* Model.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				8CB546AB15BDFC0F00E8BEC1 /* Model 3.xcdatamodel */,
+				8CB5469515BDBED600E8BEC1 /* Model 3.xcdatamodel */,
 				8C48EA1F159BD5BD00A59691 /* Model 2.xcdatamodel */,
 				1C6474C41569989800C72657 /* Model.xcdatamodel */,
 			);

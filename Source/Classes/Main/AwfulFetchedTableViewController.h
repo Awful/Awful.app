@@ -11,6 +11,9 @@
 @interface AwfulFetchedTableViewController : AwfulTableViewController <NSFetchedResultsControllerDelegate> {    
     NSString *sectionKey, *_entity;
     NSFetchRequest *_request;
+    
+    @protected
+    NSFetchedResultsController *_fetchedResultsController;
 }
 
 -(void) setEntityName:(NSString*)entity predicate:(id)predicate sort:(id)sort sectionKey:(NSString*)sectionKeyPath;

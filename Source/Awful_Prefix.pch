@@ -10,6 +10,7 @@
     #import <CoreData/CoreData.h>
     //#import "TestFlight.h"
     #import "UIView+Lazy.h"
+    #import "NSObject+Lazy.h"
     #import "DDLog.h"
     #import "AwfulModels.h"
 #endif
