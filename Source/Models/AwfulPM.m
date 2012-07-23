@@ -30,10 +30,8 @@
     */
     
     NSArray *rows = PerformRawHTMLXPathQuery(data, @"//tr");
-    int i=0;
     for (NSString* r in rows) {
         NSData *d = [r dataUsingEncoding:NSUTF8StringEncoding];
-        TFHpple* row = [[TFHpple alloc] initWithHTMLData:d];
         AwfulPM *message = [AwfulPM new];
         
         NSArray *cells = PerformRawHTMLXPathQuery(d, @"//td");

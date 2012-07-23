@@ -283,7 +283,7 @@
             </objects>
             <point key="canvasLocation" x="330" y="198"/>
         </scene>
-        <!--Awful Private Messages Controller - Root View Controller-->
+        <!--Awful Private Messages Controller - Private Messages-->
         <scene sceneID="oLP-ro-YKP">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Yes-6a-lxh" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -305,7 +305,7 @@
                             </tableViewCell>
                         </prototypes>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Root View Controller" id="ml3-G4-AAt"/>
+                    <navigationItem key="navigationItem" title="Private Messages" id="ml3-G4-AAt"/>
                     <splitViewMasterSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                 </tableViewController>
             </objects>
@@ -317,8 +317,10 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZNx-Tw-jqo" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController definesPresentationContext="YES" id="3sG-z7-kfs" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="PMs" image="40-inbox.png" id="qHy-w7-3eE"/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
                     <splitViewMasterSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="CTI-lF-PD0">
+                    <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="blackOpaque" id="CTI-lF-PD0">
+                        <rect key="frame" x="0.0" y="-44" width="0.0" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
