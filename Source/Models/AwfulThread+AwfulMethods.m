@@ -7,6 +7,7 @@
 //
 
 #import "AwfulThread+AwfulMethods.h"
+#import "AwfulForum+AwfulMethods.h"
 #import "TFHpple.h"
 #import "TFHppleElement.h"
 #import "XPathQuery.h"
@@ -147,6 +148,10 @@
     NSString *raw_str = [[NSString alloc] initWithData:data encoding:NSISOLatin1StringEncoding];
     NSData *converted = [raw_str dataUsingEncoding:NSUTF8StringEncoding];
     TFHpple *hpple = [[TFHpple alloc] initWithHTMLData:converted];
+    
+    NSArray *subs = PerformRawHTMLXPathQuery(data, @"//table[@id='subforums']//tr[@class='subforum']");
+    if (subs.count > 0)
+        [AwfulForum updateSubforums:subs inForum:forum];
     
     NSMutableArray *threads = [[NSMutableArray alloc] init];
     NSMutableArray *existing_threads = [NSMutableArray arrayWithArray:[AwfulThread threadsForForum:forum]];
@@ -294,25 +299,28 @@
         }
     }
     
-    thread.threadRatingValue = NSNotFound;
+    //thread.threadRatingValue = NSNotFound;
     TFHppleElement *rating = [thread_base searchForSingle:@"//td[@class='rating']/img"];
     if(rating != nil) {
-        NSString *rating_str = [rating objectForKey:@"src"];
-        NSURL *rating_url = [NSURL URLWithString:rating_str];
-        NSString *last = [rating_url lastPathComponent];
-        if([last isEqualToString:@"5stars.gif"]) {
-            thread.threadRatingValue = 5;
-        } else if([last isEqualToString:@"4stars.gif"]) {
-            thread.threadRatingValue = 4;
-        } else if([last isEqualToString:@"3stars.gif"]) {
-            thread.threadRatingValue = 3;
-        } else if([last isEqualToString:@"2stars.gif"]) {
-            thread.threadRatingValue = 2;
-        } else if([last isEqualToString:@"1stars.gif"]) {
-            thread.threadRatingValue = 1;
-        } else if([last isEqualToString:@"0stars.gif"]) {
-            thread.threadRatingValue = 0;
+        NSString *rating_str = [rating objectForKey:@"title"];
+        NSError *regex_error = nil;
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"([0-9]+) votes - ([0-9\\.]+) average"           
+                                                                               options:NSRegularExpressionCaseInsensitive
+                                                                                 error:&regex_error];
+        
+        NSTextCheckingResult *match = [regex firstMatchInString:rating_str
+                                                        options:0
+                                                          range:NSMakeRange(0, rating_str.length)];
+        if (match) {
+            NSString *numVotes = [rating_str substringWithRange:[match rangeAtIndex:1]];
+            NSString *average = [rating_str substringWithRange:[match rangeAtIndex:2]];
+            //NSLog(@"%@; %@",numVotes, average);
+            
+            thread.threadVotesValue = numVotes.intValue;
+            thread.threadRating = [NSDecimalNumber decimalNumberWithString:average];
         }
+
+        
     }
     
     TFHppleElement *date = [thread_base searchForSingle:@"//td[@class='lastpost']//div[@class='date']"];

@@ -2,71 +2,85 @@
 //  AwfulForumCell.m
 //  Awful
 //
-//  Created by Regular Berry on 6/16/11.
-//  Copyright 2011 Regular Berry Software LLC. All rights reserved.
+//  Created by me on 6/28/12.
+//  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
 #import "AwfulForumCell.h"
-#import "AwfulForum.h"
-#import "AwfulForumsListControllerSubclass.h"
-
-#define LINE_SPACE 10
-#define PI_OVER_2 (3.14159f / 2.0f)
 
 @implementation AwfulForumCell
+@synthesize forum = _forum;
 
-@synthesize titleLabel = _titleLabel;
-@synthesize arrow = _arrow;
-@synthesize section = _section;
-@synthesize forumsList = _forumsList;
-
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+- (id)init
 {
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"AwfulForumCell"];
     if (self) {
-        // Initialization code
+        
     }
     return self;
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated
-{
-    [super setSelected:selected animated:animated];
 
-    // Configure the view for the selected state
+-(void) setForum:(AwfulForum *)forum {
+    _forum = forum;
+    self.textLabel.text = forum.name;
+    self.textLabel.numberOfLines = 2;
+    self.textLabel.adjustsFontSizeToFitWidth = YES;
+    self.detailTextLabel.text = forum.desc;
+    self.detailTextLabel.numberOfLines = 0;
+    self.detailTextLabel.font = [UIFont systemFontOfSize:12];
 }
 
--(void)setSection:(AwfulForumSection *)aSection
-{
-    _section = aSection;
+-(void) setFavoriteButtonAccessory {
+    UIButton *favImage = [UIButton buttonWithType:UIButtonTypeCustom];
     
-    if(_section != nil) {
-        
-        self.titleLabel.text = self.section.forum.name;
-        
-        if([_section.children count] == 0) {
-            [self.arrow removeFromSuperview];
-        } else {
-            [self addSubview:self.arrow];
-        }
-        
-        if(_section.expanded) {
-            [self.arrow setImage:[UIImage imageNamed:@"forum-arrow-down.png"] forState:UIControlStateNormal];
-        } else {
-            [self.arrow setImage:[UIImage imageNamed:@"forum-arrow-right.png"] forState:UIControlStateNormal];
-        }
-        
-        if(_section.totalAncestors > 1) {
-            self.arrow.center = CGPointMake(LINE_SPACE*3, self.arrow.center.y);
-        } else {
-            self.arrow.center = CGPointMake(LINE_SPACE*2, self.arrow.center.y);
-        }
+    [favImage setImage:[UIImage imageNamed:@"star_off.png"] forState:UIControlStateNormal];
+    [favImage setImage:[UIImage imageNamed:@"star_on.png"] forState:UIControlStateSelected];
+    
+    [favImage addTarget:self
+                 action:@selector(toggleFavorite:) 
+       forControlEvents:UIControlEventTouchUpInside
+     ];
+    
+    [favImage sizeToFit];
+    favImage.selected = (self.forum.favorite != nil);
+    
+    self.accessoryView = favImage;
+}
+
+-(void) toggleFavorite:(UIButton*)button {
+    button.selected = !button.selected;
+    
+    if (self.forum.favorite)
+        [ApplicationDelegate.managedObjectContext deleteObject:self.forum.favorite];
+    else {
+        AwfulFavorite *fav = [AwfulFavorite new];
+        fav.displayOrderValue = self.forum.indexValue;
+        fav.forum = self.forum;
     }
+    
+    [ApplicationDelegate saveContext];
+
 }
 
-- (IBAction)tappedArrow:(id)sender
-{
-    [self.forumsList toggleExpandForForumSection:self.section];
-}
 
++(CGFloat) heightForContent:(AwfulForum*)forum inTableView:(UITableView*)tableView {
+    int width = tableView.frame.size.width - 40;
+    
+    CGSize textSize = {0, 0};
+    CGSize detailSize = {0, 0};
+    int height = 44;
+    
+    textSize = [forum.name sizeWithFont:[UIFont boldSystemFontOfSize:18]
+                      constrainedToSize:CGSizeMake(width, 4000) 
+                          lineBreakMode:UILineBreakModeWordWrap];
+    if(forum.desc)
+        detailSize = [forum.desc sizeWithFont:[UIFont systemFontOfSize:12] 
+                            constrainedToSize:CGSizeMake(width, 4000) 
+                                lineBreakMode:UILineBreakModeWordWrap];
+    
+    height = 10 + textSize.height + detailSize.height;
+    
+    return (MAX(height,50));
+}
 @end

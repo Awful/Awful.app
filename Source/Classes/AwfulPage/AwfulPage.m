@@ -24,11 +24,16 @@
 #import "MWPhoto.h"
 #import "MWPhotoBrowser.h"
 #import "OtherWebController.h"
+#import "AwfulRefreshControl.h"
+#import "AwfulLoadNextControl.h"
+#import "AwfulLastPageControl.h"
+#import "AwfulPage+Transitions.h"
 #import "AwfulWebViewDelegate.h"
+#import "AwfulThreadTitleView.h"
 
 @interface AwfulPage () <AwfulWebViewDelegate, UIGestureRecognizerDelegate>
 
-@property (nonatomic, strong) IBOutlet UIWebView *webView;
+//@property (nonatomic, strong) IBOutlet UIWebView *webView;
 @property (strong) AwfulWebViewDelegateWrapper *webViewDelegateWrapper;
 
 @end
@@ -40,6 +45,8 @@
 @synthesize threadID = _threadID;
 @synthesize url = _url;
 @synthesize webView = _webView;
+@synthesize nextPageWebView = _nextPageWebView;
+@synthesize toolbar = _toolbar;
 @synthesize isBookmarked = _isBookmarked;
 @synthesize currentPage = _currentPage;
 @synthesize numberOfPages = _numberOfPages;
@@ -56,12 +63,40 @@
 @synthesize actionsSegmentedControl = _actionsSegmentedControl;
 @synthesize isFullScreen = _isFullScreen;
 
+@synthesize awfulRefreshControl = _awfulRefreshControl;
+@synthesize loadNextPageControl = _loadNextPageControl;
+@synthesize isHidingToolbars = _isHidingToolbars;
+//@synthesize skipBlankingWebViewOnce = _skipBlankingWebViewOnce;
+/*
+- (BOOL)skipBlankingWebViewOnce
+{
+    if (!_skipBlankingWebViewOnce) {
+        return NO;
+    }
+    _skipBlankingWebViewOnce = NO;
+    return YES;
+}
+*/
 #pragma mark - Initialization
 
 -(void)awakeFromNib
 {    
     self.actionsSegmentedControl.action = @selector(tappedActionsSegment:);
     self.pagesSegmentedControl.action = @selector(tappedPagesSegment:);
+    //self.webView.scrollView.delegate = self;
+    self.view.backgroundColor = [UIColor underPageBackgroundColor];
+    self.webView.backgroundColor = [UIColor scrollViewTexturedBackgroundColor];
+    //if (!self.pullToNavigateView) {
+    //    self.pullToNavigateView = [AwfulLoadingFooterView new];
+    //}
+    //self.pullToNavigateView.delegate = self;
+    //self.pullToNavigateView.scrollView = self.webView.scrollView;
+    
+    //CGRect frame = self.webView.frame;
+    //frame.origin.y = frame.size.height;
+    
+    //self.nextPageWebView = [JSBridgeWebView new];
+    //self.nextPageWebView.frame = frame;
 }
 
 - (AwfulThread *) thread
@@ -84,13 +119,16 @@
         _thread = newThread;
         self.threadID = _thread.threadID;
         if(_thread.title != nil) {
-            UILabel *lab = (UILabel *)self.navigationItem.titleView;
-            lab.text = self.thread.title;
-                //NSLog(@"title width %f", self.navigationItem.titleView.frame.size.width);
+            
+            self.title = self.thread.title;
+            //UILabel *lab = (UILabel *)self.navigationItem.titleView;
+            //lab.text = self.thread.title;
+           //self.navigationItem.titleView = [AwfulThreadTitleView threadTitleViewWithPage:self];
         }
         
         if([_thread.totalUnreadPosts intValue] == -1) {
             self.destinationType = AwfulPageDestinationTypeFirst;
+            
         } else if([_thread.totalUnreadPosts intValue] == 0) {
             self.destinationType = AwfulPageDestinationTypeLast;
                 // if the last page is full, it won't work if you go for &goto=newpost, that's why I'm setting this to last page
@@ -98,6 +136,7 @@
             self.destinationType = AwfulPageDestinationTypeNewpost;
         }
     }
+
 }
 
 
@@ -136,8 +175,60 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:AwfulThreadDidUpdateNotification object:self.thread];
         
         NSString *html = [dataController constructedPageHTML];
-        [self.webView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
+        
+        //if nextPageWebView is null, then it's the initial load
+        if (self.nextPageWebView) {
+            [self.nextPageWebView loadHTMLString:html baseURL:[[NSBundle mainBundle] resourceURL]];
+            self.nextPageWebView.tag = self.currentPage;
+        }
+        else {
+            //[self.webView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
+            [self.webView loadHTMLString:html baseURL:[[NSBundle mainBundle] resourceURL]];
+            self.webView.tag = self.currentPage;
+            
+            self.nextPageWebView = [UIWebView new];
+            self.nextPageWebView.delegate = self.webViewDelegateWrapper;
+            self.nextPageWebView.frame = self.webView.frame;
+            self.nextPageWebView.foY = self.nextPageWebView.fsH;
+            [self.view addSubview:self.nextPageWebView];
+            
+            
+            self.awfulRefreshControl = [[AwfulRefreshControl alloc] initWithFrame:CGRectMake(0, -50, self.view.fsW, 50)];
+            [self.webView.scrollView addSubview:self.awfulRefreshControl];
+            
+            [self.awfulRefreshControl addTarget:self
+                                     action:@selector(refreshControlChanged:) 
+                           forControlEvents:(UIControlEventValueChanged)];
+            [self.awfulRefreshControl addTarget:self 
+                                     action:@selector(refreshControlCancel:) 
+                           forControlEvents:(UIControlEventTouchCancel)];
+            
+            if (self.currentPage == self.numberOfPages)
+                        self.loadNextPageControl = [[AwfulLastPageControl alloc] initWithFrame:CGRectMake(0, self.webView.scrollView.contentSize.height, self.view.fsW, 50)];
+            else
+                self.loadNextPageControl = [[AwfulLoadNextControl alloc] initWithFrame:CGRectMake(0, self.webView.scrollView.contentSize.height, self.view.fsW, 50)];
+            
+            [self.webView.scrollView addSubview:self.loadNextPageControl];
+            
+            
+            [self.loadNextPageControl addTarget:self
+                                     action:@selector(loadNextControlChanged:) 
+                           forControlEvents:(UIControlEventValueChanged)];
+            [self.loadNextPageControl addTarget:self 
+                                     action:@selector(refreshControlCancel:) 
+                           forControlEvents:(UIControlEventTouchCancel)];
+        }
+        
+        self.awfulRefreshControl.loadedDate = [NSDate date];
+        NSLog(@"loadedDate set to %@", self.awfulRefreshControl.loadedDate);
+        
+        
+        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:self forKey:@"page"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:AwfulPageDidLoadNotification
+                                                            object:self.thread
+                                                          userInfo:userInfo];
     }
+    
 }
 
 - (void)setCurrentPage:(NSInteger)currentPage
@@ -156,8 +247,11 @@
 {
     AwfulThread *mythread = self.thread;
     mythread.title = title;
+    
+    //self.navigationItem.titleView = [AwfulThreadTitleView threadTitleViewWithPage:self];
     UILabel *lab = (UILabel *)self.navigationItem.titleView;
     lab.text = title;
+    lab.adjustsFontSizeToFitWidth = YES;
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -187,6 +281,7 @@
 
 -(IBAction)hardRefresh
 {    
+    self.nextPageWebView = nil;
     int posts_per_page = [AwfulUser currentUser].postsPerPageValue;
     if([self.dataController.posts count] == posts_per_page) {
         self.destinationType = AwfulPageDestinationTypeSpecific;
@@ -199,6 +294,7 @@
 
 -(void)refresh
 {        
+    //self.nextPageWebView = nil;
     [self loadPageNum:self.currentPage];
 }
 
@@ -212,8 +308,11 @@
     [self swapToStopButton];
     [self hidePageNavigation];
     if(pageNum != 0) {
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
-        hud.labelText = [NSString stringWithFormat:@"Loading Page %d", pageNum];
+        //MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
+        //hud.labelText = [NSString stringWithFormat:@"Loading Page %d", pageNum];
+        
+        //self.pullToNavigateView.state = AwfulPullForActionStateLoading;
+        //self.pullToNavigateView.statusLabel = [NSString stringWithFormat:@"Loading Page %d", pageNum];
     }
     
     AwfulThread *myThread = self.thread;
@@ -226,7 +325,23 @@
         [self updatePagesLabel];
         [self updateBookmarked];
         [self swapToRefreshButton];
-        [MBProgressHUD hideHUDForView:self.view animated:NO];
+        //[MBProgressHUD hideHUDForView:self.view animated:NO];
+        
+        /*
+        self.loadingFooterView.onLastPage = (self.currentPage == self.numberOfPages);
+        
+        self.webView.scrollView.contentInset = self.loadingFooterView.onLastPage?
+            UIEdgeInsetsMake(0, 0, self.pullForActionController.footerView.fsH, 0) :
+            UIEdgeInsetsZero;
+        
+        if (self.currentPage == self.numberOfPages) {
+            [self.loadingFooterView removeFromSuperview];
+         self.loadingFooterView = [AwfulLastPageControl new];
+         ....etc...
+            
+        }
+         */
+        
     } onError:^(NSError *error) {
         [self swapToRefreshButton];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
@@ -244,6 +359,7 @@
         [self updatePagesLabel];
         [self updateBookmarked];
         [self swapToRefreshButton];
+        //self.pullToNavigateView.onLastPage = YES;
     } onError:^(NSError *error) {
         [self swapToRefreshButton];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
@@ -420,6 +536,9 @@
 
 -(void)nextPage
 {
+    if (self.loadNextPageControl.state != AwfulRefreshControlStateLoading)
+        self.loadNextPageControl.state = AwfulRefreshControlStateLoading;
+    
     if(self.currentPage < self.numberOfPages) {
         self.destinationType = AwfulPageDestinationTypeSpecific;
         [self loadPageNum:self.currentPage + 1];
@@ -631,12 +750,45 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 
 -(void)webViewDidFinishLoad:(UIWebView *)sender
 {
+    //[self.webView.scrollView setContentOffset:CGPointMake(0, 0) animated:NO];
+    sender.scrollView.delegate = self;
+    
     [self swapToRefreshButton];
     if(self.postIDScrollDestination != nil) {
         [self scrollToSpecifiedPost];
     } else if(self.shouldScrollToBottom) {
         [self scrollToBottom];
     }
+    
+    //self.pullForActionController.headerState = AwfulPullForActionStateNormal;
+    //self.pullForActionController.footerState = AwfulPullForActionStateNormal;
+    
+    //animate old page up and offscreen, new page in from the bottom
+    if (sender == self.nextPageWebView && self.nextPageWebView.foY > 0) {
+        [self doPageTransition];
+        
+    }
+    else {
+
+        
+        [UIView animateWithDuration:.5 animations:^{
+            self.webView.scrollView.contentInset = UIEdgeInsetsZero;
+        }
+         ];
+    }
+}
+/*
+-(void) awfulFooterDidTriggerLoad:(AwfulLoadingFooterView*)pullToNavigate {
+    [self tappedNextPage:nil];
+}
+*/
+-(void)webViewDidStartLoad:(UIWebView *)webView
+{
+    
+}
+
+-(void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
+{
 }
 
 -(void)swapToRefreshButton
@@ -674,6 +826,83 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         return YES;
     }
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+}
+
+
+#pragma mark Pull For Action
+-(void) scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    if (self.awfulRefreshControl) {
+        self.awfulRefreshControl.userScrolling = YES;
+    }
+    
+    if (self.loadNextPageControl)
+        self.loadNextPageControl.userScrolling = YES;
+    
+
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{	
+    if (self.awfulRefreshControl && self.awfulRefreshControl.userScrolling) {
+        [self.awfulRefreshControl didScrollInScrollView:scrollView];
+    }
+    
+    if (self.loadNextPageControl && self.loadNextPageControl.userScrolling)
+        [self.loadNextPageControl didScrollInScrollView:scrollView];
+    
+    self.isHidingToolbars = YES;
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    if (self.awfulRefreshControl) {
+        self.awfulRefreshControl.userScrolling = NO;
+    }
+    
+    if (self.loadNextPageControl)
+        self.loadNextPageControl.userScrolling = NO;
+    
+}
+
+-(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    self.isHidingToolbars = NO;
+    
+}
+
+-(void) setIsHidingToolbars:(BOOL)isHidingToolbars {
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) return;
+    //_isHidingToolbars = isHidingToolbars;
+    
+    
+    BOOL shouldHideToolbars = NO;
+    if (self.webView.scrollView.contentOffset.y >= self.navigationController.navigationBar.fsH) {
+        shouldHideToolbars = YES;
+    }
+    else
+        shouldHideToolbars = NO;
+    
+    [self.navigationController setNavigationBarHidden:shouldHideToolbars animated:YES];
+    [self.navigationController setToolbarHidden:shouldHideToolbars animated:YES];
+    
+}
+
+-(void) refreshControlChanged:(AwfulRefreshControl*)refreshControl {
+    if (refreshControl.state == AwfulRefreshControlStateLoading)
+        [self refresh];
+}
+
+-(void) loadNextControlChanged:(AwfulLoadNextControl*)loadNextControl {
+    if (loadNextControl.state == AwfulRefreshControlStateLoading)
+        [self tappedNextPage:nil];
+}
+
+-(void) refreshControlCancel:(AwfulRefreshControl*)refreshControl {
+    [self stop];
+    refreshControl.state = AwfulRefreshControlStateNormal;
+}
+
+-(BOOL) isOnLastPage {
+    return (self.currentPage == self.numberOfPages);
 }
 
 @end
@@ -722,7 +951,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     self.popController = [[UIPopoverController alloc] initWithContentViewController:vc];
     
     [self.popController setPopoverContentSize:CGSizeMake(260,sp_view.frame.size.height) animated:YES];
-    [self.popController presentPopoverFromBarButtonItem:self.pagesBarButtonItem 
+    [self.popController presentPopoverFromBarButtonItem:self.pagesBarButtonItem
                                permittedArrowDirections:UIPopoverArrowDirectionAny
                                                animated:YES];
 }
@@ -831,6 +1060,4 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         self.popController = nil;
     }
 }
-
-
 @end
