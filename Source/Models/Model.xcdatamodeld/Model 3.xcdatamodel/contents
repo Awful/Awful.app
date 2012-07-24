@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1171" systemVersion="11E53" minimumToolsVersion="Xcode 4.1" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="AwfulEmote" representedClassName="AwfulEmote" syncable="YES">
+        <attribute name="code" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="desc" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="filename" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
     <entity name="AwfulForum" representedClassName="AwfulForum" syncable="YES">
         <attribute name="desc" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="expanded" optional="YES" attributeType="Boolean" syncable="YES"/>
@@ -52,9 +57,10 @@
     </entity>
     <elements>
         <element name="AwfulForum" positionX="160" positionY="192" width="128" height="210"/>
+        <element name="AwfulPM" positionX="160" positionY="192" width="128" height="150"/>
         <element name="AwfulThread" positionX="160" positionY="192" width="128" height="285"/>
         <element name="AwfulUser" positionX="160" positionY="192" width="128" height="90"/>
         <element name="Favorite" positionX="171" positionY="324" width="128" height="75"/>
-        <element name="AwfulPM" positionX="160" positionY="192" width="128" height="150"/>
+        <element name="AwfulEmote" positionX="160" positionY="192" width="128" height="90"/>
     </elements>
 </model>

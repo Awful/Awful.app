@@ -9,9 +9,8 @@
 #import <QuartzCore/QuartzCore.h>
 
 #import "AwfulTableViewCellEmoticonMultiple.h"
-//#import "AwfulEmote.h"
-typedef NSObject AwfulEmote ;
-//#import "UIImageView+AnimatedGif.h"
+#import "AwfulEmote.h"
+#import "FVGifAnimation.h"
 
 @implementation AwfulTableViewCellEmoticonMultiple
 @synthesize showCodes = _showCodes;
@@ -35,21 +34,22 @@ typedef NSObject AwfulEmote ;
 -(void) layoutSubviews {
     [super layoutSubviews];
     self.selectionStyle = UITableViewCellSelectionStyleNone;
-    [self.textLabel removeFromSuperview];
-    [self.detailTextLabel removeFromSuperview];
-    
+    //[self.textLabel removeFromSuperview];
+    //[self.detailTextLabel removeFromSuperview];
+    self.textLabel.text = @"x";
     int i = 0;
     self.backgroundColor = [UIColor colorWithWhite:.88 alpha:1];
     for(UIView* v in _emoteViews) {
-        v.frame = CGRectMake((101*i), 1, 100, 44);
+        v.frame = CGRectMake((126*i), 0, 125, self.fsH);
         [self addSubview:v];
         
         for (UIView* sub in v.subviews) {
             if (sub.tag == 1) { //label
                 sub.hidden = !self.showCodes;
+                sub.frame = CGRectMake(0,35,125,self.fsH-36);
             }
             else { //image
-                sub.frame = self.showCodes? CGRectMake(0,1,100,26) : CGRectMake(0,1,100,42) ;
+                sub.frame = self.showCodes? CGRectMake(0,0,125,35) : CGRectMake(0,0,125,v.fsH) ;
             }
         }
         
@@ -59,30 +59,39 @@ typedef NSObject AwfulEmote ;
 }
 
 -(UIView*) setupSubviewForEmoticon:(AwfulEmote*)emote {
-    UIView *v = [UIView new];
+    UIView *v = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 125, self.fsH)];
 
     UILabel *l = [UILabel new];
-    l.frame = CGRectMake(0,26,100,18);
-    //l.text = emote.code;
+    l.text = emote.code;
     l.textAlignment = UITextAlignmentCenter;
     l.adjustsFontSizeToFitWidth = YES;
+    l.font = [UIFont systemFontOfSize:12];
+    l.textColor = [UIColor darkGrayColor];
     l.tag = 1;
     
     [v addSubview:l];
     
     UIImageView *iv = [UIImageView new];
     iv.tag = 2;
-    iv.backgroundColor = [UIColor whiteColor];
     
+    //NSString* path = [[NSBundle mainBundle] pathForResource:emote.filename ofType:nil];
+    //FVGifAnimation* animatedGif = [[FVGifAnimation alloc] initWithData:
+    //               [NSData dataWithContentsOfFile:path]
+    //                ];
     
-    //if (emote.imageData != nil) {
-     //   iv.awfulImage = emote;
-    //}
+    //[animatedGif setAnimationToImageView:self.imageView];
     
-    iv.frame = self.showCodes? CGRectMake(0,1,100,26) : CGRectMake(0,1,100,42) ;
+    iv.image = [UIImage imageNamed:emote.filename];
+    
+    iv.frame = self.showCodes? CGRectMake(0,0,100,32) : CGRectMake(0,0,100,42) ;
     iv.contentMode = UIViewContentModeCenter;
-    
+    iv.backgroundColor = [UIColor whiteColor];
     [v addSubview:iv];
+    
+    [self.imageView startAnimating];
+    if (iv.contentScaleFactor == 2) {
+        l.text = [l.text stringByAppendingString:@"***"];
+    }
     //v.layer.borderWidth = 1.0f;
     //v.layer.borderColor = [[UIColor colorWithWhite:.88 alpha:1] CGColor];
     

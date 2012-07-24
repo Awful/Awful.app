@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AwfulPostComposerInputAccessoryView : UIView
+@interface AwfulPostComposerInputAccessoryView : UIView {
+    UIPopoverController *pop;
+}
 
 @end

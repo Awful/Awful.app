@@ -8,9 +8,11 @@
 
 #import "AwfulEmoteChooser.h"
 #import "AwfulTableViewCellEmoticonMultiple.h"
-typedef NSObject AwfulEmote;
-//#import "AwfulEmote.h"
-//#import "AwfulEmote+AwfulMethods.h"
+
+#import "AwfulEmote.h"
+#import "AwfulHTTPClient+Emoticons.h"
+
+#define MAX_EMOTE_WIDTH 90
 
 @interface AwfulEmoteChooser ()
 
@@ -19,7 +21,8 @@ typedef NSObject AwfulEmote;
 @implementation AwfulEmoteChooser
 @synthesize searchBar = _searchBar;
 
--(void) awakeFromNib {
+-(id) init {
+    self = [super init];
     _entity = @"AwfulEmote";
     _request = [NSFetchRequest new];
     NSEntityDescription *entityDesc = [NSEntityDescription entityForName:_entity 
@@ -31,14 +34,16 @@ typedef NSObject AwfulEmote;
               [NSSortDescriptor sortDescriptorWithKey:@"code" ascending:YES]
               ]
              ];
-    
+    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 200, 44)];
     self.tableView.tableHeaderView = self.searchBar;
-    imagesToCache = [NSMutableArray new];
+    //imagesToCache = [NSMutableArray new];
+    return self;
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
 	// Do any additional setup after loading the view.
 }
 
@@ -48,9 +53,15 @@ typedef NSObject AwfulEmote;
     // Release any retained subviews of the main view.
 }
 
+-(void) viewDidAppear:(BOOL)animated {
+    [self.searchBar becomeFirstResponder];
+}
+
 -(NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    CGFloat width = tableView.frame.size.width;
-    _numIconsPerRow = 5;//width/MAX_EMOTE_WIDTH;
+    //if (!_numIconsPerRow) {
+        CGFloat width = self.view.frame.size.width;
+        _numIconsPerRow = width/125;
+    //}
     
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:section];
     
@@ -59,26 +70,29 @@ typedef NSObject AwfulEmote;
     return rows;
 }
 
+-(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 50;
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell;
     NSManagedObject *obj = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
     
-    cell = [tableView dequeueReusableCellWithIdentifier:obj.entity.managedObjectClassName];
-    
+    cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
     if (cell == nil)
         cell = [[AwfulTableViewCellEmoticonMultiple alloc] initWithStyle:UITableViewCellStyleDefault 
-                                                         reuseIdentifier:obj.entity.managedObjectClassName];
+                                                         reuseIdentifier:@"AwfulTableViewCellEmoticonMultiple"];
     
-    [self configureCell:cell atIndexPath:indexPath];
     
     UIGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedCell:)];
     [cell addGestureRecognizer:tap];
+    [self configureCell:cell atIndexPath:indexPath];
+     
     return cell;
 }
 
-/*
+
 - (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath {
     AwfulTableViewCellEmoticonMultiple *gridCell = (AwfulTableViewCellEmoticonMultiple*)cell;
     //NSLog(@"config cell %d", indexPath.row);
@@ -90,10 +104,9 @@ typedef NSObject AwfulEmote;
         if (x >= self.fetchedResultsController.fetchedObjects.count) continue;
         AwfulEmote *emote = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:x 
                                                                                                 inSection:0]];
-        
         [emotes addObject:emote];
         
-        
+        /*
         if (!emote.cached && [imagesToCache indexOfObject:emote] == NSNotFound) {
             //NSLog(@"loading emote %@", emote.code);
             [imagesToCache addObject:emote];
@@ -106,50 +119,42 @@ typedef NSObject AwfulEmote;
              
          
         }
-        
+        */
     }
     
-    //[gridCell setContent:emotes];
-    //gridCell.showCodes = (self.searchBar.text.length > 0);
+    [gridCell setContent:emotes];
+    gridCell.showCodes = YES;//(self.searchBar.text.length > 0);
+     
 }
-*/
-    /*
+
 -(void) refresh {
     [self.networkOperation cancel];
     self.reloading = YES;
-    self.networkOperation = [ApplicationDelegate.awfulNetworkEngine refreshEmotesOnCompletion:nil onError:nil];
-
-                             onCompletion:^(NSMutableArray *threads) {
-        self.pages.currentPage = pageNum;
-        if(pageNum == 1) {
-            [self.awfulThreads removeAllObjects];
-        }
-        [self acceptThreads:threads];
+    self.networkOperation = [[AwfulHTTPClient sharedClient] emoticonListOnCompletion:^(NSMutableArray *messages) {
         [self finishedRefreshing];
-    } onError:^(NSError *error) {
-        [self finishedRefreshing];
-        [AwfulUtil requestFailed:error];
-    }];
+    } 
+                                                                                   onError:^(NSError *error) {
+                                                                                       [self finishedRefreshing];
+                                                                                       [ApplicationDelegate requestFailed:error];
+                                                                                   }];
 }
 
-     */
-/*
 -(void) tappedCell:(UITapGestureRecognizer *)sender  {
     AwfulTableViewCellEmoticonMultiple *cell = (AwfulTableViewCellEmoticonMultiple*)sender.view;
     NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
     CGPoint location = [sender locationInView:sender.view];
     
-    int emoteIndex = location.x / MAX_EMOTE_WIDTH;
-    NSIndexPath *emotePath = [NSIndexPath indexPathForRow:(indexPath.row*_numIconsPerRow + emoteIndex)
-                                                inSection:0];
+    //int emoteIndex = location.x / MAX_EMOTE_WIDTH;
+    //NSIndexPath *emotePath = [NSIndexPath indexPathForRow:(indexPath.row*_numIconsPerRow + emoteIndex)
+    //                                            inSection:0];
     
-    AwfulEmote *selected = (AwfulEmote*)[self.fetchedResultsController objectAtIndexPath:emotePath];
-    NSLog(@"emote: %@", selected.code);
+    //AwfulEmote *selected = (AwfulEmote*)[self.fetchedResultsController objectAtIndexPath:emotePath];
+    //NSLog(@"emote: %@", selected.code);
 
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFY_EMOTE_SELECTED object:selected];
+    //[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFY_EMOTE_SELECTED object:selected];
 }
-*/
+
 #pragma mark Search Delegate
 -(void) searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     if (searchText.length > 0) {

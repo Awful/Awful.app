@@ -7,6 +7,7 @@
 //
 
 #import "AwfulPostComposerInputAccessoryView.h"
+#import "AwfulEmoteChooser.h"
 
 @implementation AwfulPostComposerInputAccessoryView
 
@@ -23,12 +24,19 @@
                                    
                                    ];
         seg.segmentedControlStyle = UISegmentedControlStyleBar;
+        seg.momentary = YES;
         
-
+        UIButton *addEmoteButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        [addEmoteButton setImage:[UIImage imageNamed:@"emot-v.gif"] forState:(UIControlStateNormal)];
+        addEmoteButton.frame = CGRectMake(0, 0, 30, 30);
+        [addEmoteButton addTarget:self action:@selector(tappedAddEmote:) forControlEvents:(UIControlEventTouchDown)];
+        
+        
         toolbar.items = [NSArray arrayWithObjects:
                          [[UIBarButtonItem alloc] initWithCustomView:seg],
                          [[UIBarButtonItem alloc] initWithBarButtonSystemItem:(UIBarButtonSystemItemFlexibleSpace)
                                                                        target:nil action:nil],
+                         [[UIBarButtonItem alloc] initWithCustomView:addEmoteButton],
                           nil
                           ];
         [self addSubview:toolbar];
@@ -36,13 +44,14 @@
     return self;
 }
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
+-(void) tappedAddEmote:(UIButton*)button {
+    AwfulEmoteChooser *chooser = [AwfulEmoteChooser new];
+    pop = [[UIPopoverController alloc] initWithContentViewController:chooser];
+    [pop setPopoverContentSize:CGSizeMake(125*4, 768)];
+    [pop presentPopoverFromRect:button.frame inView:self permittedArrowDirections:(UIPopoverArrowDirectionDown) animated:YES];
+    
 }
-*/
+
+
 
 @end
