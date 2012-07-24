@@ -11,6 +11,7 @@
 @interface AwfulPostComposerView : UITextView {
     @protected
     UIWebView *_webView;
+    UIView* _keyboardInputAccessory;
 }
 
 -(void) bold;
@@ -20,5 +21,6 @@
 
 @property (nonatomic, readonly) NSString* html;
 @property (nonatomic, readonly) NSString* bbcode;
+@property (nonatomic, readonly) UIView* keyboardInputAccessory;
 
 @end

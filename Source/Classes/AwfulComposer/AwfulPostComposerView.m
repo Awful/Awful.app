@@ -7,6 +7,7 @@
 //
 
 #import "AwfulPostComposerView.h"
+#import "AwfulPostComposerInputAccessoryView.h"
 typedef NSObject AwfulEmote;
 
 @interface AwfulPostComposerView ()
@@ -14,25 +15,32 @@ typedef NSObject AwfulEmote;
 @end
 
 @implementation AwfulPostComposerView
-@synthesize webView = _webView;
-
+@synthesize keyboardInputAccessory = _keyboardInputAccessory;
+//@synthesize webView = _webView;
 - (id) initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
-    self.webView = [[UIWebView alloc] initWithFrame:self.frame];
+    //self.webView = [[UIWebView alloc] initWithFrame:self.frame];
     //[self addSubview:self.webView];
-    NSBundle *bundle = [NSBundle mainBundle];
-    NSURL *indexFileURL = [bundle URLForResource:@"editor" withExtension:@"html"];
-    [self.webView loadRequest:[NSURLRequest requestWithURL:indexFileURL]];
+    //NSBundle *bundle = [NSBundle mainBundle];
+    //NSURL *indexFileURL = [bundle URLForResource:@"editor" withExtension:@"html"];
+    //[self.webView loadRequest:[NSURLRequest requestWithURL:indexFileURL]];
         
+
+    self.inputAccessoryView = self.keyboardInputAccessory;
     return self;
     //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(emoteChosen:) name:NOTIFY_EMOTE_SELECTED object:nil];
 }
 
--(NSString*) text {
-    return [self.webView stringByEvaluatingJavaScriptFromString:@"document.getElementById('content').textContent"];
+-(UIView*)keyboardInputAccessory {
+    if (!_keyboardInputAccessory) {
+        _keyboardInputAccessory = [[AwfulPostComposerInputAccessoryView alloc] initWithFrame:CGRectMake(0, 0, 400, 44)];
+
+    }
+    return _keyboardInputAccessory;
 }
 
+/*
 -(void) bold {
     [self format:@"Bold"];
 }
@@ -96,4 +104,5 @@ typedef NSObject AwfulEmote;
     //NSLog(@"execCommand:%@", [self stringByEvaluatingJavaScriptFromString:script]);
 }
 
+*/
 @end

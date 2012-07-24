@@ -13,4 +13,5 @@
     NSArray *cellTypes;
 }
 @property (nonatomic,strong) AwfulPostComposerView* composerView;
+@property (nonatomic,readonly) NSString* submitString;
 @end

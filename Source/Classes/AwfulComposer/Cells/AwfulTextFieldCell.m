@@ -14,16 +14,12 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        // Initialization code
+        self.textLabel.text = @"Subject:";
+        UITextField* tf = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 250, 30)];
+        tf.delegate = self;
+        self.accessoryView = tf;
     }
     return self;
-}
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated
-{
-    [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
 }
 
 @end

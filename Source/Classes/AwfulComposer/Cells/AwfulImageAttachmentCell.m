@@ -14,16 +14,11 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        // Initialization code
+        self.textLabel.text = @"Attachment:";
+        self.detailTextLabel.text = @"None";
+        self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     return self;
-}
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated
-{
-    [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
 }
 
 @end

@@ -25,10 +25,27 @@
                   @"AwfulTextFieldCell",
                   @"AwfulTextFieldCell",
                   @"AwfulPostIconCell",
-                  @"AwfulTextFieldCell",
+                  @"AwfulPostComposerCell",
                   @"AwfulPostOptionsCell",
                   @"AwfulImageAttachmentCell",
                   nil];
+    
+    self.title = @"New Post";
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:(UIBarButtonSystemItemCancel)
+                                                                                          target:nil 
+                                                                                          action:nil
+                                             ];
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:self.submitString
+                                                                              style:(UIBarButtonItemStyleDone)
+                                                                             target:nil
+                                                                             action:nil
+                                              ];
+}
+
+-(void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:YES];
+    [self becomeFirstResponder];
 }
 
 -(int) numberOfSectionsInTableView:(UITableView *)tableView {
@@ -45,15 +62,17 @@
     if (!cell)
         cell = [[NSClassFromString(cellIdentifier) alloc] initWithStyle:(UITableViewCellStyleValue1) reuseIdentifier:cellIdentifier];
     
-    cell.textLabel.text = cellIdentifier;
-    
     return cell;
 }
 
 -(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.row == 4)
-        return 300;
-    return 44;
+        return 200;
+    return 35;
+}
+
+-(NSString*)submitString {
+    return @"Post";
 }
 
 

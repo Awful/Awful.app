@@ -51,7 +51,7 @@
 }
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    AwfulComposeController *test = [AwfulComposeController new];
+    UINavigationController *test = [[UINavigationController alloc] initWithRootViewController:[AwfulComposeController new]];
     test.modalPresentationStyle = UIModalPresentationFormSheet;
     [self.splitViewController presentModalViewController:test animated:YES];
 }

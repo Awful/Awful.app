@@ -172,6 +172,8 @@
 		8CB546EB15BF00E700E8BEC1 /* AwfulPostOptionsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB546EA15BF00E700E8BEC1 /* AwfulPostOptionsCell.m */; };
 		8CB546EE15BF010400E8BEC1 /* AwfulCurrentUserCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB546ED15BF010400E8BEC1 /* AwfulCurrentUserCell.m */; };
 		8CB546F115BF011E00E8BEC1 /* AwfulImageAttachmentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB546F015BF011E00E8BEC1 /* AwfulImageAttachmentCell.m */; };
+		8CB546F415BF0C2F00E8BEC1 /* AwfulPostComposerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB546F315BF0C2F00E8BEC1 /* AwfulPostComposerCell.m */; };
+		8CB546F715BF182700E8BEC1 /* AwfulPostComposerInputAccessoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB546F615BF182600E8BEC1 /* AwfulPostComposerInputAccessoryView.m */; };
 		8CCD4CCE15B497A800E5893B /* Default-Landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498315B497A700E5893B /* Default-Landscape.png */; };
 		8CCD4CCF15B497A800E5893B /* Default-Landscape@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498415B497A700E5893B /* Default-Landscape@2x~ipad.png */; };
 		8CCD4CD015B497A800E5893B /* Default-Portrait.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498515B497A700E5893B /* Default-Portrait.png */; };
@@ -1301,6 +1303,10 @@
 		8CB546ED15BF010400E8BEC1 /* AwfulCurrentUserCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCurrentUserCell.m; sourceTree = "<group>"; };
 		8CB546EF15BF011E00E8BEC1 /* AwfulImageAttachmentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulImageAttachmentCell.h; sourceTree = "<group>"; };
 		8CB546F015BF011E00E8BEC1 /* AwfulImageAttachmentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulImageAttachmentCell.m; sourceTree = "<group>"; };
+		8CB546F215BF0C2F00E8BEC1 /* AwfulPostComposerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostComposerCell.h; sourceTree = "<group>"; };
+		8CB546F315BF0C2F00E8BEC1 /* AwfulPostComposerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostComposerCell.m; sourceTree = "<group>"; };
+		8CB546F515BF182500E8BEC1 /* AwfulPostComposerInputAccessoryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostComposerInputAccessoryView.h; sourceTree = "<group>"; };
+		8CB546F615BF182600E8BEC1 /* AwfulPostComposerInputAccessoryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostComposerInputAccessoryView.m; sourceTree = "<group>"; };
 		8CCD498215B497A700E5893B /* Awful-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Awful-Info.plist"; sourceTree = "<group>"; };
 		8CCD498315B497A700E5893B /* Default-Landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape.png"; sourceTree = "<group>"; };
 		8CCD498415B497A700E5893B /* Default-Landscape@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape@2x~ipad.png"; sourceTree = "<group>"; };
@@ -2774,6 +2780,8 @@
 				8CB546D615BEEBF100E8BEC1 /* AwfulPostComposerView.m */,
 				8CB546DF15BEF09300E8BEC1 /* AwfulComposeController.h */,
 				8CB546E015BEF09300E8BEC1 /* AwfulComposeController.m */,
+				8CB546F515BF182500E8BEC1 /* AwfulPostComposerInputAccessoryView.h */,
+				8CB546F615BF182600E8BEC1 /* AwfulPostComposerInputAccessoryView.m */,
 			);
 			path = AwfulComposer;
 			sourceTree = "<group>";
@@ -2793,6 +2801,8 @@
 				8CB546ED15BF010400E8BEC1 /* AwfulCurrentUserCell.m */,
 				8CB546EF15BF011E00E8BEC1 /* AwfulImageAttachmentCell.h */,
 				8CB546F015BF011E00E8BEC1 /* AwfulImageAttachmentCell.m */,
+				8CB546F215BF0C2F00E8BEC1 /* AwfulPostComposerCell.h */,
+				8CB546F315BF0C2F00E8BEC1 /* AwfulPostComposerCell.m */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -4824,6 +4834,8 @@
 				8CB546EB15BF00E700E8BEC1 /* AwfulPostOptionsCell.m in Sources */,
 				8CB546EE15BF010400E8BEC1 /* AwfulCurrentUserCell.m in Sources */,
 				8CB546F115BF011E00E8BEC1 /* AwfulImageAttachmentCell.m in Sources */,
+				8CB546F415BF0C2F00E8BEC1 /* AwfulPostComposerCell.m in Sources */,
+				8CB546F715BF182700E8BEC1 /* AwfulPostComposerInputAccessoryView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

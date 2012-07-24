@@ -7,23 +7,19 @@
 //
 
 #import "AwfulCurrentUserCell.h"
+#import "AwfulUser+AwfulMethods.h"
 
 @implementation AwfulCurrentUserCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
-        // Initialization code
-    }
+    
+    self.textLabel.text = @"Logged In As:";
+    self.detailTextLabel.text = [[AwfulUser currentUser] userName];
+    self.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+    
     return self;
-}
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated
-{
-    [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
 }
 
 @end
