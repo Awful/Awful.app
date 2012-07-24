@@ -11,6 +11,7 @@
 #import "AwfulTableViewCellEmoticonMultiple.h"
 #import "AwfulEmote.h"
 #import "FVGifAnimation.h"
+#import "AwfulHTTPClient+Emoticons.h"
 
 @implementation AwfulTableViewCellEmoticonMultiple
 @synthesize showCodes = _showCodes;
@@ -81,7 +82,39 @@
     
     //[animatedGif setAnimationToImageView:self.imageView];
     
-    iv.image = [UIImage imageNamed:emote.filename];
+    iv.image = [UIImage imageNamed:emote.filename.lastPathComponent];
+    
+     if (!iv.image) {
+         //not in the bundle, check to see if it's a local path
+         NSURL *url = [NSURL URLWithString:emote.filename];
+         
+         if (url.isFileURL) {
+             iv.image = [UIImage imageWithContentsOfFile:url.path];
+             
+         }
+         else {
+            NSLog(@"would load %@",emote.filename); 
+             [[AwfulHTTPClient sharedClient] cacheEmoticon:emote 
+                                                    onCompletion:^(NSMutableArray *messages) {
+                                                        //[self finishedRefreshing];
+                                                    }
+                                                         onError:^(NSError *error) {
+                                                             //[self finishedRefreshing];
+                                                             [ApplicationDelegate requestFailed:error];
+                                                         }];
+
+            }
+     
+    
+    /*
+     //NSLog(@"loading emote %@", emote.code);
+     
+     
+      */
+     }   
+    
+    
+    
     
     iv.frame = self.showCodes? CGRectMake(0,0,100,32) : CGRectMake(0,0,100,42) ;
     iv.contentMode = UIViewContentModeCenter;

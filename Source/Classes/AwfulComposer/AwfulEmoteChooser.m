@@ -106,20 +106,8 @@
                                                                                                 inSection:0]];
         [emotes addObject:emote];
         
-        /*
-        if (!emote.cached && [imagesToCache indexOfObject:emote] == NSNotFound) {
-            //NSLog(@"loading emote %@", emote.code);
-            [imagesToCache addObject:emote];
-            [ApplicationDelegate.awfulNetworkEngine cacheImage:emote 
-                                                  onCompletion:^{
-                                                      //[self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] 
-                                                        //                    withRowAnimation:(UITableViewRowAnimationFade)];
-                                                  } 
-                                                       onError:nil];
-             
-         
-        }
-        */
+
+        
     }
     
     [gridCell setContent:emotes];

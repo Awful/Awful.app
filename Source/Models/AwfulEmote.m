@@ -28,7 +28,7 @@
             AwfulEmote *s = [NSEntityDescription insertNewObjectForEntityForName:@"AwfulEmote" 
                                                           inManagedObjectContext:ApplicationDelegate.managedObjectContext];
             s.code = [text content];
-            s.filename = [[img objectForKey:@"src"] lastPathComponent];
+            s.filename = [img objectForKey:@"src"];
             s.desc = [img objectForKey:@"title"];
             //s.cacheDate = [NSDate date];
             //s.category = something;
@@ -39,6 +39,40 @@
     NSLog(@"found %d emotes", smilies.count);
     [ApplicationDelegate saveContext];
     return smilies;
+}
+
++(void) cacheEmoticon:(AwfulEmote*)emote data:(NSData*)data {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    
+    NSArray* dirPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString* docsDir = [dirPaths objectAtIndex:0];
+    
+    [fileManager changeCurrentDirectoryPath: docsDir];
+    [fileManager createFileAtPath:emote.filename.lastPathComponent contents:data attributes:nil];
+    NSString* path = [docsDir stringByAppendingPathComponent:emote.filename.lastPathComponent];
+    NSURL *url = [NSURL fileURLWithPath:path];
+    emote.filename = url.absoluteString;
+    [ApplicationDelegate saveContext];
+}
+
+-(BOOL) isCached {
+    NSString *path = [[NSBundle mainBundle] pathForResource:self.filename.lastPathComponent ofType:nil];
+    if (path) {
+        self.filename = self.filename.lastPathComponent;
+        return YES;
+    }
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSArray* dirPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString* docsDir = [dirPaths objectAtIndex:0];
+    
+    [fileManager changeCurrentDirectoryPath: docsDir];
+    if ([fileManager fileExistsAtPath:self.filename.lastPathComponent]) {
+        self.filename = self.filename.lastPathComponent;
+        return YES;
+    }
+    
+    return NO;
 }
 
 @end
