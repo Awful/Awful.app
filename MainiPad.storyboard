@@ -103,6 +103,41 @@
             </objects>
             <point key="canvasLocation" x="324" y="-2631"/>
         </scene>
+        <!--Awful Compose Controller-->
+        <scene sceneID="Y6C-8i-iWK">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="zIC-tK-nH7" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <viewController storyboardIdentifier="AwfulComposeController" id="atU-dG-rz4" customClass="AwfulComposeController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="MXV-wR-nd9">
+                        <rect key="frame" x="0.0" y="20" width="540" height="600"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" text="aaa" id="xHx-DH-RMk" customClass="AwfulPostComposerView">
+                                <rect key="frame" x="0.0" y="44" width="540" height="556"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="blackOpaque" id="WcM-QI-eh8">
+                                <rect key="frame" x="0.0" y="0.0" width="540" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <items>
+                                    <barButtonItem style="done" systemItem="cancel" id="mMg-PE-mPa"/>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="Qul-P3-Mq8"/>
+                                    <barButtonItem title="Post" style="done" id="wQ3-xu-eab"/>
+                                </items>
+                                <color key="tintColor" red="0.0" green="0.0" blue="0.50196081399917603" alpha="1" colorSpace="calibratedRGB"/>
+                            </toolbar>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                    </view>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <modalFormSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                </viewController>
+            </objects>
+            <point key="canvasLocation" x="-2075" y="-2616"/>
+        </scene>
         <!--Awful Split View Controller - Item-->
         <scene sceneID="h6S-1A-jhG">
             <objects>
@@ -595,15 +630,16 @@
             <objects>
                 <viewController storyboardIdentifier="AwfulPage" hidesBottomBarWhenPushed="YES" id="5o1-8Y-fsn" customClass="AwfulPageIpad" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Auw-iH-8xK">
-                        <rect key="frame" x="0.0" y="64" width="768" height="916"/>
+                        <rect key="frame" x="0.0" y="64" width="703" height="660"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <webView contentMode="scaleToFill" id="uom-YB-cRl">
-                                <rect key="frame" x="0.0" y="0.0" width="768" height="916"/>
+                                <rect key="frame" x="0.0" y="0.0" width="703" height="660"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             </webView>
                         </subviews>
+                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <toolbarItems>
                         <barButtonItem style="plain" id="lFl-9U-jES">
@@ -1007,6 +1043,9 @@
         <class className="AwfulBookmarksController" superclassName="AwfulThreadListController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulBookmarksController.h"/>
         </class>
+        <class className="AwfulComposeController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulComposeController.h"/>
+        </class>
         <class className="AwfulFavoritesViewController" superclassName="AwfulForumsListController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulFavoritesViewController.h"/>
         </class>
@@ -1070,6 +1109,9 @@
                 <relationship kind="outlet" name="sendButton" candidateClass="UIBarButtonItem"/>
             </relationships>
         </class>
+        <class className="AwfulPostComposerView" superclassName="UITextView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPostComposerView.h"/>
+        </class>
         <class className="AwfulPrivateMessagesController" superclassName="AwfulFetchedTableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPrivateMessagesController.h"/>
         </class>
@@ -1129,7 +1171,7 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="hhi-LS-YNv"/>
+        <segue reference="Oqh-Ug-Ror"/>
         <segue reference="Kgw-hp-QCk"/>
     </inferredMetricsTieBreakers>
 </document>

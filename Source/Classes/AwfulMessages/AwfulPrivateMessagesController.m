@@ -9,6 +9,7 @@
 #import "AwfulPrivateMessagesController.h"
 #import "AwfulPM.h"
 #import "AwfulHTTPClient+PrivateMessages.h"
+#import "AwfulComposeController.h"
 
 @interface AwfulPrivateMessagesController ()
 
@@ -47,5 +48,11 @@
 
 -(BOOL) tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     return YES;
+}
+
+-(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    AwfulComposeController *test = [AwfulComposeController new];
+    test.modalPresentationStyle = UIModalPresentationFormSheet;
+    [self.splitViewController presentModalViewController:test animated:YES];
 }
 @end

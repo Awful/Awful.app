@@ -162,6 +162,16 @@
 		8CB5469815BDC25800E8BEC1 /* _AwfulPM.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB5469715BDC25800E8BEC1 /* _AwfulPM.m */; };
 		8CB5469B15BDC26100E8BEC1 /* AwfulPM.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB5469A15BDC26100E8BEC1 /* AwfulPM.m */; };
 		8CB5469E15BDC2EE00E8BEC1 /* AwfulHTTPClient+PrivateMessages.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB5469D15BDC2ED00E8BEC1 /* AwfulHTTPClient+PrivateMessages.m */; };
+		8CB546D915BEEBF100E8BEC1 /* AwfulEmoteChooser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB546D415BEEBF100E8BEC1 /* AwfulEmoteChooser.m */; };
+		8CB546DA15BEEBF100E8BEC1 /* AwfulPostComposerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB546D615BEEBF100E8BEC1 /* AwfulPostComposerView.m */; };
+		8CB546DB15BEEBF100E8BEC1 /* AwfulTableViewCellEmoticonMultiple.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB546D815BEEBF100E8BEC1 /* AwfulTableViewCellEmoticonMultiple.m */; };
+		8CB546DE15BEECAE00E8BEC1 /* editor.html in Resources */ = {isa = PBXBuildFile; fileRef = 8CB546DD15BEECAE00E8BEC1 /* editor.html */; };
+		8CB546E115BEF09300E8BEC1 /* AwfulComposeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB546E015BEF09300E8BEC1 /* AwfulComposeController.m */; };
+		8CB546E515BF00B100E8BEC1 /* AwfulTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB546E415BF00B100E8BEC1 /* AwfulTextFieldCell.m */; };
+		8CB546E815BF00CC00E8BEC1 /* AwfulPostIconCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB546E715BF00CC00E8BEC1 /* AwfulPostIconCell.m */; };
+		8CB546EB15BF00E700E8BEC1 /* AwfulPostOptionsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB546EA15BF00E700E8BEC1 /* AwfulPostOptionsCell.m */; };
+		8CB546EE15BF010400E8BEC1 /* AwfulCurrentUserCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB546ED15BF010400E8BEC1 /* AwfulCurrentUserCell.m */; };
+		8CB546F115BF011E00E8BEC1 /* AwfulImageAttachmentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB546F015BF011E00E8BEC1 /* AwfulImageAttachmentCell.m */; };
 		8CCD4CCE15B497A800E5893B /* Default-Landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498315B497A700E5893B /* Default-Landscape.png */; };
 		8CCD4CCF15B497A800E5893B /* Default-Landscape@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498415B497A700E5893B /* Default-Landscape@2x~ipad.png */; };
 		8CCD4CD015B497A800E5893B /* Default-Portrait.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498515B497A700E5893B /* Default-Portrait.png */; };
@@ -1272,6 +1282,25 @@
 		8CB5469A15BDC26100E8BEC1 /* AwfulPM.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPM.m; sourceTree = "<group>"; };
 		8CB5469C15BDC2ED00E8BEC1 /* AwfulHTTPClient+PrivateMessages.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "AwfulHTTPClient+PrivateMessages.h"; path = "AwfulNetworking/AwfulHTTPClient+PrivateMessages.h"; sourceTree = "<group>"; };
 		8CB5469D15BDC2ED00E8BEC1 /* AwfulHTTPClient+PrivateMessages.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "AwfulHTTPClient+PrivateMessages.m"; path = "AwfulNetworking/AwfulHTTPClient+PrivateMessages.m"; sourceTree = "<group>"; };
+		8CB546D315BEEBF100E8BEC1 /* AwfulEmoteChooser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulEmoteChooser.h; sourceTree = "<group>"; };
+		8CB546D415BEEBF100E8BEC1 /* AwfulEmoteChooser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulEmoteChooser.m; sourceTree = "<group>"; };
+		8CB546D515BEEBF100E8BEC1 /* AwfulPostComposerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostComposerView.h; sourceTree = "<group>"; };
+		8CB546D615BEEBF100E8BEC1 /* AwfulPostComposerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostComposerView.m; sourceTree = "<group>"; };
+		8CB546D715BEEBF100E8BEC1 /* AwfulTableViewCellEmoticonMultiple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AwfulTableViewCellEmoticonMultiple.h; path = ../AwfulTableViewCellEmoticonMultiple.h; sourceTree = "<group>"; };
+		8CB546D815BEEBF100E8BEC1 /* AwfulTableViewCellEmoticonMultiple.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AwfulTableViewCellEmoticonMultiple.m; path = ../AwfulTableViewCellEmoticonMultiple.m; sourceTree = "<group>"; };
+		8CB546DD15BEECAE00E8BEC1 /* editor.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = editor.html; sourceTree = "<group>"; };
+		8CB546DF15BEF09300E8BEC1 /* AwfulComposeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulComposeController.h; sourceTree = "<group>"; };
+		8CB546E015BEF09300E8BEC1 /* AwfulComposeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulComposeController.m; sourceTree = "<group>"; };
+		8CB546E315BF00B100E8BEC1 /* AwfulTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTextFieldCell.h; sourceTree = "<group>"; };
+		8CB546E415BF00B100E8BEC1 /* AwfulTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTextFieldCell.m; sourceTree = "<group>"; };
+		8CB546E615BF00CC00E8BEC1 /* AwfulPostIconCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostIconCell.h; sourceTree = "<group>"; };
+		8CB546E715BF00CC00E8BEC1 /* AwfulPostIconCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostIconCell.m; sourceTree = "<group>"; };
+		8CB546E915BF00E700E8BEC1 /* AwfulPostOptionsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostOptionsCell.h; sourceTree = "<group>"; };
+		8CB546EA15BF00E700E8BEC1 /* AwfulPostOptionsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostOptionsCell.m; sourceTree = "<group>"; };
+		8CB546EC15BF010400E8BEC1 /* AwfulCurrentUserCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCurrentUserCell.h; sourceTree = "<group>"; };
+		8CB546ED15BF010400E8BEC1 /* AwfulCurrentUserCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCurrentUserCell.m; sourceTree = "<group>"; };
+		8CB546EF15BF011E00E8BEC1 /* AwfulImageAttachmentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulImageAttachmentCell.h; sourceTree = "<group>"; };
+		8CB546F015BF011E00E8BEC1 /* AwfulImageAttachmentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulImageAttachmentCell.m; sourceTree = "<group>"; };
 		8CCD498215B497A700E5893B /* Awful-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Awful-Info.plist"; sourceTree = "<group>"; };
 		8CCD498315B497A700E5893B /* Default-Landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape.png"; sourceTree = "<group>"; };
 		8CCD498415B497A700E5893B /* Default-Landscape@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape@2x~ipad.png"; sourceTree = "<group>"; };
@@ -2154,6 +2183,7 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				8CB546D215BEEBF100E8BEC1 /* AwfulComposer */,
 				8C1BC80115AF0FFE00B75286 /* CustomForums */,
 				1190F6CC13BE4EA900B9D271 /* Actions */,
 				1190F6D713BE4EA900B9D271 /* AwfulForumList */,
@@ -2734,6 +2764,39 @@
 			path = AwfulSearch;
 			sourceTree = "<group>";
 		};
+		8CB546D215BEEBF100E8BEC1 /* AwfulComposer */ = {
+			isa = PBXGroup;
+			children = (
+				8CB546E215BF008700E8BEC1 /* Cells */,
+				8CB546D315BEEBF100E8BEC1 /* AwfulEmoteChooser.h */,
+				8CB546D415BEEBF100E8BEC1 /* AwfulEmoteChooser.m */,
+				8CB546D515BEEBF100E8BEC1 /* AwfulPostComposerView.h */,
+				8CB546D615BEEBF100E8BEC1 /* AwfulPostComposerView.m */,
+				8CB546DF15BEF09300E8BEC1 /* AwfulComposeController.h */,
+				8CB546E015BEF09300E8BEC1 /* AwfulComposeController.m */,
+			);
+			path = AwfulComposer;
+			sourceTree = "<group>";
+		};
+		8CB546E215BF008700E8BEC1 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				8CB546D715BEEBF100E8BEC1 /* AwfulTableViewCellEmoticonMultiple.h */,
+				8CB546D815BEEBF100E8BEC1 /* AwfulTableViewCellEmoticonMultiple.m */,
+				8CB546E315BF00B100E8BEC1 /* AwfulTextFieldCell.h */,
+				8CB546E415BF00B100E8BEC1 /* AwfulTextFieldCell.m */,
+				8CB546E615BF00CC00E8BEC1 /* AwfulPostIconCell.h */,
+				8CB546E715BF00CC00E8BEC1 /* AwfulPostIconCell.m */,
+				8CB546E915BF00E700E8BEC1 /* AwfulPostOptionsCell.h */,
+				8CB546EA15BF00E700E8BEC1 /* AwfulPostOptionsCell.m */,
+				8CB546EC15BF010400E8BEC1 /* AwfulCurrentUserCell.h */,
+				8CB546ED15BF010400E8BEC1 /* AwfulCurrentUserCell.m */,
+				8CB546EF15BF011E00E8BEC1 /* AwfulImageAttachmentCell.h */,
+				8CB546F015BF011E00E8BEC1 /* AwfulImageAttachmentCell.m */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
 		8CCD498115B497A700E5893B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -2781,6 +2844,7 @@
 				8CCD4CCA15B497A800E5893B /* quote-block-off.png */,
 				8CCD4CCB15B497A800E5893B /* quote-block-on.png */,
 				8CCD4CCC15B497A800E5893B /* salr.js */,
+				8CB546DD15BEECAE00E8BEC1 /* editor.html */,
 			);
 			path = "web resources";
 			sourceTree = "<group>";
@@ -4582,6 +4646,7 @@
 				8CCD569315B7A5CC00E5893B /* getin.001.gif in Resources */,
 				8CB5469015BDA19C00E8BEC1 /* frog1@2x.png in Resources */,
 				8CB5469115BDA19C00E8BEC1 /* frog2@2x.png in Resources */,
+				8CB546DE15BEECAE00E8BEC1 /* editor.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4750,6 +4815,15 @@
 				8CB5469815BDC25800E8BEC1 /* _AwfulPM.m in Sources */,
 				8CB5469B15BDC26100E8BEC1 /* AwfulPM.m in Sources */,
 				8CB5469E15BDC2EE00E8BEC1 /* AwfulHTTPClient+PrivateMessages.m in Sources */,
+				8CB546D915BEEBF100E8BEC1 /* AwfulEmoteChooser.m in Sources */,
+				8CB546DA15BEEBF100E8BEC1 /* AwfulPostComposerView.m in Sources */,
+				8CB546DB15BEEBF100E8BEC1 /* AwfulTableViewCellEmoticonMultiple.m in Sources */,
+				8CB546E115BEF09300E8BEC1 /* AwfulComposeController.m in Sources */,
+				8CB546E515BF00B100E8BEC1 /* AwfulTextFieldCell.m in Sources */,
+				8CB546E815BF00CC00E8BEC1 /* AwfulPostIconCell.m in Sources */,
+				8CB546EB15BF00E700E8BEC1 /* AwfulPostOptionsCell.m in Sources */,
+				8CB546EE15BF010400E8BEC1 /* AwfulCurrentUserCell.m in Sources */,
+				8CB546F115BF011E00E8BEC1 /* AwfulImageAttachmentCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
