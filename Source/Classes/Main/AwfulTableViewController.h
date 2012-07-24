@@ -7,12 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "EGORefreshTableHeaderView.h"
 
-@interface AwfulTableViewController : UITableViewController <EGORefreshTableHeaderDelegate>
+@class AwfulRefreshControl;
+
+@interface AwfulTableViewController : UITableViewController {
+    @protected
+    AwfulRefreshControl* _awfulRefreshControl;
+}
 
 @property (nonatomic, strong) NSOperation *networkOperation;
-@property (nonatomic, strong) EGORefreshTableHeaderView *refreshHeaderView;
+@property (nonatomic, strong) AwfulRefreshControl *awfulRefreshControl;
 @property (nonatomic, assign) BOOL reloading;
 
 -(IBAction)refresh;
@@ -22,4 +26,5 @@
 // Subclasses can implement to override the default behaviour of YES.
 - (BOOL)canPullToRefresh;
 
+- (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath;
 @end

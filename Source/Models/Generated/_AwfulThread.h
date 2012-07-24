@@ -17,6 +17,7 @@ extern const struct AwfulThreadAttributes {
 	__unsafe_unretained NSString *threadIconImageURL;
 	__unsafe_unretained NSString *threadIconImageURL2;
 	__unsafe_unretained NSString *threadRating;
+	__unsafe_unretained NSString *threadVotes;
 	__unsafe_unretained NSString *title;
 	__unsafe_unretained NSString *totalReplies;
 	__unsafe_unretained NSString *totalUnreadPosts;
@@ -42,6 +43,7 @@ extern const struct AwfulThreadFetchedProperties {
 
 @class NSObject;
 @class NSObject;
+
 
 
 
@@ -167,14 +169,22 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
-@property (nonatomic, strong) NSNumber* threadRating;
+@property (nonatomic, strong) NSDecimalNumber* threadRating;
 
-
-@property int16_t threadRatingValue;
-- (int16_t)threadRatingValue;
-- (void)setThreadRatingValue:(int16_t)value_;
 
 //- (BOOL)validateThreadRating:(id*)value_ error:(NSError**)error_;
+
+
+
+
+@property (nonatomic, strong) NSNumber* threadVotes;
+
+
+@property int16_t threadVotesValue;
+- (int16_t)threadVotesValue;
+- (void)setThreadVotesValue:(int16_t)value_;
+
+//- (BOOL)validateThreadVotes:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -310,11 +320,17 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
-- (NSNumber*)primitiveThreadRating;
-- (void)setPrimitiveThreadRating:(NSNumber*)value;
+- (NSDecimalNumber*)primitiveThreadRating;
+- (void)setPrimitiveThreadRating:(NSDecimalNumber*)value;
 
-- (int16_t)primitiveThreadRatingValue;
-- (void)setPrimitiveThreadRatingValue:(int16_t)value_;
+
+
+
+- (NSNumber*)primitiveThreadVotes;
+- (void)setPrimitiveThreadVotes:(NSNumber*)value;
+
+- (int16_t)primitiveThreadVotesValue;
+- (void)setPrimitiveThreadVotesValue:(int16_t)value_;
 
 
 

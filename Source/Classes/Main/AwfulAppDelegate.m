@@ -69,6 +69,15 @@
     [[UIBarButtonItem appearance] setTintColor:barButton];
 }
 
+
+-(UIImage*) navigationBarBackgroundImageForMetrics:(UIBarMetrics)metrics {
+    NSString *darkOrDefault = [[AwfulSettings settings] darkTheme] ? @"dark" : @"default";
+    NSURL *url = [[NSBundle mainBundle] URLForResource:darkOrDefault withExtension:@"css"];
+    AwfulCSSTemplate *css = [[AwfulCSSTemplate alloc] initWithURL:url error:NULL];
+    
+    return [css navigationBarImageForMetrics:metrics];
+}
+
 #pragma mark - Memory management
 
 - (void)saveContext
@@ -173,7 +182,7 @@
          
          */
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
+       // abort();
     }    
     
     return __persistentStoreCoordinator;

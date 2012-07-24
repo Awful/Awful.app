@@ -6,7 +6,7 @@
 //  Copyright 2010 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulTableViewController.h"
+#import "AwfulFetchedTableViewController.h"
 
 @class AwfulForum;
 @class AwfulThread;
@@ -20,10 +20,9 @@ typedef enum {
     AwfulThreadCellTypeLoadMore
 } AwfulThreadCellType;
 
-@interface AwfulThreadListController : AwfulTableViewController <UIActionSheetDelegate>
+@interface AwfulThreadListController : AwfulFetchedTableViewController <UIActionSheetDelegate>
 
 @property (nonatomic, strong) AwfulForum *forum;
-@property (nonatomic, strong) NSMutableArray *awfulThreads;
 @property (nonatomic, assign) NSInteger currentPage;
 @property (nonatomic, assign) NSInteger numberOfPages;
 
@@ -31,12 +30,14 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *pageLabelBarButtonItem;
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *nextPageBarButtonItem;
 
+@property (nonatomic, strong) UIBarButtonItem *customBackButton;
+
 @property (nonatomic, strong) AwfulThread *heldThread;
 @property BOOL isLoading;
 
 -(AwfulThread *)getThreadAtIndexPath : (NSIndexPath *)path;
 
--(void)acceptThreads : (NSMutableArray *)in_threads;
+//-(void)acceptThreads : (NSMutableArray *)in_threads;
 -(BOOL)shouldReloadOnViewLoad;
 -(void)showThreadActionsForThread : (AwfulThread *)thread;
 
@@ -46,8 +47,7 @@ typedef enum {
 
 -(void)awfulThreadUpdated : (NSNotification *)notif;
 
--(AwfulThreadCellType)getTypeAtIndexPath : (NSIndexPath *)indexPath;
--(BOOL)moreThreads;
+//-(BOOL)moreThreads;
 
 -(void)newlyVisible;
 

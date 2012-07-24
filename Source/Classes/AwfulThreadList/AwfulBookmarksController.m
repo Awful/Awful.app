@@ -25,6 +25,18 @@
         
     self.tableView.delegate = self;
     self.title = @"Bookmarks";
+    
+        
+    [self setEntityName:@"AwfulThread"
+              predicate:[NSPredicate predicateWithFormat:@"isBookmarked = YES", self.forum]
+                   sort:[NSArray arrayWithObjects:
+                         [NSSortDescriptor sortDescriptorWithKey:@"stickyIndex" ascending:NO], 
+                         [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO],
+                         nil
+                         ]
+             sectionKey:nil
+     ];
+
 }
 
 #pragma mark - View lifecycle
@@ -33,7 +45,7 @@
 {
     [super viewDidLoad];
     
-    self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    //self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
     UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"bookmarks.png"]
                                                              style:UIBarButtonItemStyleBordered
@@ -42,21 +54,12 @@
     self.navigationItem.backBarButtonItem = back;
 }
 
--(void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    [self.navigationController setToolbarHidden:YES];
-    
-    if(IsLoggedIn() && [self.awfulThreads count] == 0) {
-        [self refresh];
-    }
-}
-
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
 }
 
+/*
 -(void)awfulThreadUpdated:(NSNotification *)notif
 {
     [super awfulThreadUpdated:notif];
@@ -73,22 +76,11 @@
         [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:path] withRowAnimation:UITableViewRowAnimationFade];
     }
 }
-
--(void)loadThreads
-{
-    NSArray *threads = [AwfulThread bookmarkedThreads];
-    [self acceptThreads:[NSMutableArray arrayWithArray:threads]];
-}
+ */
 
 -(BOOL)shouldReloadOnViewLoad
 {
     return NO;
-}
-
--(void)acceptThreads:(NSMutableArray *)in_threads
-{
-    self.threadCount = [self.awfulThreads count] + [in_threads count]; // this needs to be before the super call
-    [super acceptThreads:in_threads];
 }
 
 -(void)loadPageNum : (NSUInteger)pageNum
@@ -97,10 +89,7 @@
     self.isLoading = YES;
     self.networkOperation = [[AwfulHTTPClient sharedClient] threadListForBookmarksAtPageNum:pageNum onCompletion:^(NSMutableArray *threads) {
         self.currentPage = pageNum;
-        if(pageNum == 1) {
-            [self.awfulThreads removeAllObjects];
-        }
-        [self acceptThreads:threads];
+
         [self finishedRefreshing];
         
     } onError:^(NSError *error) {
@@ -110,17 +99,15 @@
 }
 
 -(BOOL)moreThreads
-{
-    if(self.threadCount % 40 == 0 && [self.awfulThreads count] > 0) {
-        return YES;
-    }
+{//fixme
+    //if(self.threadCount % 40 == 0 && [self.awfulThreads count] > 0) {
+    //    return YES;
+    //}
+    //return NO;
     return NO;
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    if(indexPath.row == [self.awfulThreads count]) {
-        return NO;
-    }
     return YES;
 }
 
@@ -128,9 +115,14 @@
     
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         
-        AwfulThread *thread = [self.awfulThreads objectAtIndex:indexPath.row];
-        [self.awfulThreads removeObject:thread];   
-        [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
+        AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
+        thread.isBookmarkedValue = NO;
+        [ApplicationDelegate saveContext];
+        
+        [self.fetchedResultsController performFetch:nil];
+        [self.tableView beginUpdates];
+        [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView endUpdates];
         
         self.networkOperation = [[AwfulHTTPClient sharedClient] removeBookmarkedThread:thread onCompletion:^(void) {
             
@@ -142,6 +134,10 @@
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
     }   
+}
+
+-(NSString*) tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return @"Remove";
 }
 
 @end

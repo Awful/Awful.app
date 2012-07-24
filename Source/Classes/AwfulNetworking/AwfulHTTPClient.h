@@ -17,6 +17,8 @@
 
 typedef void (^AwfulErrorBlock)(NSError* error);
 
+static const NSTimeInterval NetworkTimeoutInterval = 5.0;
+
 @interface AwfulHTTPClient : AFHTTPClient
 
 // Logger that only saves network logs.

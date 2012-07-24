@@ -9,10 +9,12 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+#import "TDBadgedCell.h"
+
 @class AwfulThread;
 @class AwfulThreadListController;
 
-@interface AwfulThreadCell : UITableViewCell
+@interface AwfulThreadCell : TDBadgedCell
 
 @property (nonatomic, strong) AwfulThread *thread;
 @property (nonatomic, strong) IBOutlet UILabel *threadTitleLabel;
@@ -26,16 +28,20 @@
 @property (nonatomic, strong) IBOutlet UILabel *tagLabel;
 @property (nonatomic, strong) IBOutlet UIView *tagContainerView;
 
++(UIColor*) textColor;
++(UIColor*) backgroundColor;
++(UIFont*) textLabelFont;
++(UIFont*) detailLabelFont;
+
 -(void)configureForThread : (AwfulThread *)thread;
+-(void) configureTagImage;
 -(UIColor *)getBackgroundColorForThread : (AwfulThread *)thread;
 -(void)openThreadlistOptions : (UIGestureRecognizer *)gesture;
 
+
+-(void) willLoadThreadPage:(NSNotification*)notification;
+-(void) didLoadThreadPage:(NSNotification*)notification;
+
++(CGFloat) heightForContent:(AwfulThread*)thread inTableView:(UITableView*)tableView;
 @end
 
-@interface AwfulLoadingThreadCell : UITableViewCell
-
-@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activity;
-
--(void)setActivityViewVisible : (BOOL)visible;
-
-@end
