@@ -110,6 +110,9 @@
         
     }
     
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedCell:)];
+    [gridCell addGestureRecognizer:tap];
+    
     [gridCell setContent:emotes];
     gridCell.showCodes = YES;//(self.searchBar.text.length > 0);
      
@@ -132,15 +135,15 @@
     NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
     CGPoint location = [sender locationInView:sender.view];
     
-    //int emoteIndex = location.x / MAX_EMOTE_WIDTH;
-    //NSIndexPath *emotePath = [NSIndexPath indexPathForRow:(indexPath.row*_numIconsPerRow + emoteIndex)
-    //                                            inSection:0];
+    int emoteIndex = location.x / 125;
+    NSIndexPath *emotePath = [NSIndexPath indexPathForRow:(indexPath.row*_numIconsPerRow + emoteIndex)
+                                                inSection:0];
     
-    //AwfulEmote *selected = (AwfulEmote*)[self.fetchedResultsController objectAtIndexPath:emotePath];
+    AwfulEmote *selected = (AwfulEmote*)[self.fetchedResultsController objectAtIndexPath:emotePath];
     //NSLog(@"emote: %@", selected.code);
 
     
-    //[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFY_EMOTE_SELECTED object:selected];
+    [[NSNotificationCenter defaultCenter] postNotificationName:AwfulEmoteChosenNotification object:selected];
 }
 
 #pragma mark Search Delegate

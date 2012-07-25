@@ -20,8 +20,7 @@
         UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:self.frame];
         toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         UISegmentedControl *seg = [[UISegmentedControl alloc] initWithItems:
-                                   [NSArray arrayWithObjects:@"1",@"2",@"1",@"2",@"1",@"2",@"1",@"2", nil]
-                                   
+                                   [NSArray arrayWithObjects:@"Bold",@"Italic",@"Underline",@"Strike",@"Super",@"Sub",@"Insert Image", nil]
                                    ];
         seg.segmentedControlStyle = UISegmentedControlStyleBar;
         seg.momentary = YES;

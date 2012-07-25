@@ -10,7 +10,7 @@
 
 @interface AwfulPostComposerView : UITextView {
     @protected
-    UIWebView *_webView;
+    UIWebView *_innerWebView;
     UIView* _keyboardInputAccessory;
 }
 
@@ -21,6 +21,7 @@
 
 @property (nonatomic, readonly) NSString* html;
 @property (nonatomic, readonly) NSString* bbcode;
-@property (nonatomic, readonly) UIView* keyboardInputAccessory;
+@property (nonatomic, readonly,strong) UIView* keyboardInputAccessory;
+@property (nonatomic, readonly) UIWebView* innerWebView;
 
 @end
