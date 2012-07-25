@@ -51,6 +51,7 @@
             }
             else { //image
                 sub.frame = self.showCodes? CGRectMake(0,0,125,35) : CGRectMake(0,0,125,v.fsH) ;
+                [(UIImageView*)sub startAnimating];
             }
         }
         
@@ -74,16 +75,16 @@
     
     UIImageView *iv = [UIImageView new];
     iv.tag = 2;
-    
-    //NSString* path = [[NSBundle mainBundle] pathForResource:emote.filename ofType:nil];
-    //FVGifAnimation* animatedGif = [[FVGifAnimation alloc] initWithData:
-    //               [NSData dataWithContentsOfFile:path]
-    //                ];
-    
-    //[animatedGif setAnimationToImageView:self.imageView];
-    
     iv.image = [UIImage imageNamed:emote.filename.lastPathComponent];
+    NSString* path = [[NSBundle mainBundle] pathForResource:emote.filename.lastPathComponent ofType:nil];
+    animation = [[FVGifAnimation alloc] initWithData:
+                   [NSData dataWithContentsOfFile:path]
+                    ];
     
+    [animation setAnimationToImageView:iv];
+    
+    //iv.image = [UIImage imageNamed:emote.filename.lastPathComponent];
+    /*
      if (!iv.image) {
          //not in the bundle, check to see if it's a local path
          NSURL *url = [NSURL URLWithString:emote.filename];
@@ -106,12 +107,12 @@
             }
      
     
-    /*
+    
      //NSLog(@"loading emote %@", emote.code);
      
      
       */
-     }   
+      
     
     
     

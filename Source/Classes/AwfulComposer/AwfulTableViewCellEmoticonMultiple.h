@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-
+@class FVGifAnimation;
 @interface AwfulTableViewCellEmoticonMultiple : UITableViewCell {
     NSMutableArray *_emoteViews;
+    FVGifAnimation __strong *animation;
 }
 
 @property (nonatomic) BOOL showCodes;
