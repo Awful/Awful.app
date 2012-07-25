@@ -271,6 +271,7 @@
 		8CB5483F15BF6A5F00E8BEC1 /* yum.001.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8CB547C615BF6A5F00E8BEC1 /* yum.001.gif */; };
 		8CB5484015BF6A5F00E8BEC1 /* zaeed.001.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8CB547C715BF6A5F00E8BEC1 /* zaeed.001.gif */; };
 		8CB5484115BF6A5F00E8BEC1 /* zpatriot.001.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8CB547C815BF6A5F00E8BEC1 /* zpatriot.001.gif */; };
+		8CB5484915C027D400E8BEC1 /* UIBarButtonItem+Lazy.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB5484815C027D400E8BEC1 /* UIBarButtonItem+Lazy.m */; };
 		8CCD4CCE15B497A800E5893B /* Default-Landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498315B497A700E5893B /* Default-Landscape.png */; };
 		8CCD4CCF15B497A800E5893B /* Default-Landscape@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498415B497A700E5893B /* Default-Landscape@2x~ipad.png */; };
 		8CCD4CD015B497A800E5893B /* Default-Portrait.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498515B497A700E5893B /* Default-Portrait.png */; };
@@ -1531,6 +1532,8 @@
 		8CB547C615BF6A5F00E8BEC1 /* yum.001.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = yum.001.gif; sourceTree = "<group>"; };
 		8CB547C715BF6A5F00E8BEC1 /* zaeed.001.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = zaeed.001.gif; sourceTree = "<group>"; };
 		8CB547C815BF6A5F00E8BEC1 /* zpatriot.001.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = zpatriot.001.gif; sourceTree = "<group>"; };
+		8CB5484715C027D400E8BEC1 /* UIBarButtonItem+Lazy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIBarButtonItem+Lazy.h"; sourceTree = "<group>"; };
+		8CB5484815C027D400E8BEC1 /* UIBarButtonItem+Lazy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIBarButtonItem+Lazy.m"; sourceTree = "<group>"; };
 		8CCD498215B497A700E5893B /* Awful-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Awful-Info.plist"; sourceTree = "<group>"; };
 		8CCD498315B497A700E5893B /* Default-Landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape.png"; sourceTree = "<group>"; };
 		8CCD498415B497A700E5893B /* Default-Landscape@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape@2x~ipad.png"; sourceTree = "<group>"; };
@@ -2584,6 +2587,8 @@
 				11FDA298151018740014FDCD /* OtherWebController.m */,
 				11CED26A1522901100E95EE1 /* ButtonSegmentedControl.h */,
 				11CED26B1522901100E95EE1 /* ButtonSegmentedControl.m */,
+				8CB5484715C027D400E8BEC1 /* UIBarButtonItem+Lazy.h */,
+				8CB5484815C027D400E8BEC1 /* UIBarButtonItem+Lazy.m */,
 			);
 			path = Extras;
 			sourceTree = "<group>";
@@ -5301,6 +5306,7 @@
 				8CB5474915BF371900E8BEC1 /* _AwfulUser.m in Sources */,
 				8CB5474A15BF371900E8BEC1 /* Model.xcdatamodeld in Sources */,
 				8CB5474D15BF38B400E8BEC1 /* AwfulHTTPClient+Emoticons.m in Sources */,
+				8CB5484915C027D400E8BEC1 /* UIBarButtonItem+Lazy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
