@@ -11,7 +11,6 @@
 #import "AwfulEmote.h"
 #import "AwfulEmoteChooser.h"
 
-
 @implementation AwfulPostComposerView
 @synthesize keyboardInputAccessory = _keyboardInputAccessory;
 @synthesize innerWebView = _innerWebView;
@@ -43,29 +42,42 @@
     if (!_keyboardInputAccessory) {
         _keyboardInputAccessory = [[AwfulPostComposerInputAccessoryView alloc] initWithFrame:CGRectMake(0, 0, 400, 44)];
     }
+    [_keyboardInputAccessory addTarget:self action:@selector(keyboardInputAccessoryFormat:) forControlEvents:AwfulPostComposerInputAccessoryEventFormat];
+    
+    
     return _keyboardInputAccessory;
 }
 
-
--(void) bold {
-    [self format:@"Bold"];
-}
- 
--(void) italic {
-    [self format:@"Italic"];
-}
-
--(void) underline {
-    [self format:@"Underline"];
-}
-
--(NSString*) html {
-    return [self.innerWebView stringByEvaluatingJavaScriptFromString:@"document.getElementById('content').innerHTML"];
+#pragma formatting
+-(void) keyboardInputAccessoryFormat:(AwfulPostComposerInputAccessoryView*)postComposerAccessory {
+    switch (postComposerAccessory.formatState) {
+        case AwfulPostFormatBold:
+            [self format:@"Bold"];
+            break;
+            
+        case AwfulPostFormatItalic:
+            [self format:@"Italic"];
+            break;
+            
+        case AwfulPostFormatUnderline:
+            [self format:@"Underline"];
+            break;
+            
+            
+        default:
+            break;
+    }
 }
 
 -(void)format:(NSString *)format {
     [self.innerWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"document.execCommand(\"%@\")", format]];
 }
+
+#pragma mark accessing user input
+-(NSString*) html {
+    return [self.innerWebView stringByEvaluatingJavaScriptFromString:@"document.getElementById('content').innerHTML"];
+}
+
 
 -(NSString*) bbcode {
     NSMutableString *html = [NSMutableString stringWithString:self.html];
@@ -121,7 +133,11 @@
     //NSLog(@"execCommand:%@", [self stringByEvaluatingJavaScriptFromString:script]);
 }
 
+
 -(void) keyboardWillShow:(NSNotification*)notification {
+    //uiwebview has a built in inputAccessory that can't be changed
+    //that's p dumb, this covers it up with self.keyboardinputaccessory
+    
     UIWindow* keyboardWindow;
     
     for (UIWindow *testWindow in [[UIApplication sharedApplication] windows]) {

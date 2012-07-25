@@ -8,8 +8,23 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AwfulPostComposerInputAccessoryView : UIView {
+typedef enum {
+    AwfulPostFormatBold = 0,
+    AwfulPostFormatItalic,
+    AwfulPostFormatUnderline,
+    AwfulPostFormatStrike
+} AwfulPostFormatStyle;
+
+
+static int AwfulPostComposerInputAccessoryEventFormat = UIControlEventApplicationReserved | (1<<0);
+static int AwfulPostComposerInputAccessoryEventInsert = UIControlEventApplicationReserved | (1<<1);
+
+@interface AwfulPostComposerInputAccessoryView : UIControl {
     UIPopoverController *pop;
 }
+
+@property (readonly) AwfulPostFormatStyle formatState;
+@property (readonly,strong) UISegmentedControl* formattingControl;
+@property (readonly,strong) UISegmentedControl* insertionControl;
 
 @end
