@@ -32,8 +32,12 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(emoteChosen:) name:AwfulEmoteChosenNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(keyboardWillShow:) 
+                                             selector:@selector(keyboardWillShowOrHide:)
                                                  name:UIKeyboardWillShowNotification 
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShowOrHide:)
+                                                 name:UIKeyboardWillHideNotification
                                                object:nil];
     return self;
 }
@@ -75,7 +79,8 @@
 
 #pragma mark accessing user input
 -(NSString*) html {
-    return [self.innerWebView stringByEvaluatingJavaScriptFromString:@"document.getElementById('content').innerHTML"];
+    NSString* html = [self.innerWebView stringByEvaluatingJavaScriptFromString:@"document.getElementById('content').innerHTML"];
+    return html;
 }
 
 
@@ -93,7 +98,7 @@
     
     
     //replace emotes
-    regex = [NSRegularExpression regularExpressionWithPattern:@"<img class=\"emote\" alt=\"(.*)\" src=.*?>" 
+    regex = [NSRegularExpression regularExpressionWithPattern:@"<img src=.*? class=\"emote\" alt=\"(.*)\">"
                                                       options:0 
                                                         error:nil];
     [regex replaceMatchesInString:html
@@ -122,7 +127,8 @@
     NSString* path = [[NSBundle mainBundle] pathForResource:emote.filename.lastPathComponent ofType:nil];
     
     [self.innerWebView stringByEvaluatingJavaScriptFromString:
-     [NSString stringWithFormat:@"document.execCommand('insertImage', false, '%@')", path]
+     //[NSString stringWithFormat:@"document.execCommand('insertImage', false, '%@')", path]
+     [NSString stringWithFormat:@"document.execCommand('insertHTML', false, '<img src=\"%@\" class=\"emote\" alt=\"%@\" >')", path, emote.code]
      ];
     
     //[imagePickerPopover dismissPopoverAnimated:YES];
@@ -133,19 +139,12 @@
     //NSLog(@"execCommand:%@", [self stringByEvaluatingJavaScriptFromString:script]);
 }
 
-
--(void) keyboardWillShow:(NSNotification*)notification {
+#pragma mark keyboard handling
+-(void) keyboardWillShowOrHide:(NSNotification*)notification {
     //uiwebview has a built in inputAccessory that can't be changed
     //that's p dumb, this covers it up with self.keyboardinputaccessory
     
-    UIWindow* keyboardWindow;
-    
-    for (UIWindow *testWindow in [[UIApplication sharedApplication] windows]) {
-        if (![[testWindow class] isEqual:[UIWindow class]]) {
-            keyboardWindow = testWindow;
-            break;
-        }
-    }
+    UIWindow* keyboardWindow = [self getKeyboardWindow];
     
     CGRect keyboardFrame = [(NSValue*)[notification.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     CGRect keyboardOrigin = [[notification.userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
@@ -159,6 +158,16 @@
    // CGFloat keyboardWidth = [notification.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey].size.width;
     
     [keyboardWindow addSubview:self.keyboardInputAccessory];
+}
+
+-(UIWindow*) getKeyboardWindow {
+    for (UIWindow *testWindow in [[UIApplication sharedApplication] windows]) {
+        if (![[testWindow class] isEqual:[UIWindow class]]) {
+            return testWindow;
+            break;
+        }
+    }
+    return nil;
 }
 
 @end

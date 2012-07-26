@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AwfulTextFieldCell : UITableViewCell
+@interface AwfulTextFieldCell : UITableViewCell <UITextFieldDelegate>
 
 @end

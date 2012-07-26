@@ -8,6 +8,7 @@
 
 #import "AwfulComposeController.h"
 #import "AwfulPostComposerView.h"
+#import "AwfulPostComposerCell.h"
 
 @interface AwfulComposeController ()
 
@@ -38,8 +39,8 @@
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:self.submitString
                                                                               style:(UIBarButtonItemStyleDone)
-                                                                             target:nil
-                                                                             action:nil
+                                                                             target:self
+                                                                             action:@selector(didTapSubmit:)
                                               ];
 }
 
@@ -62,6 +63,9 @@
     if (!cell)
         cell = [[NSClassFromString(cellIdentifier) alloc] initWithStyle:(UITableViewCellStyleValue1) reuseIdentifier:cellIdentifier];
     
+    if (cellIdentifier == @"AwfulPostComposerCell")
+        self.composerView = ((AwfulPostComposerCell*)cell).composerView;
+        
     return cell;
 }
 
@@ -73,6 +77,12 @@
 
 -(NSString*)submitString {
     return @"Post";
+}
+
+-(void) didTapSubmit:(UIBarButtonItem*)submitButton {
+    NSLog(@"submit:");
+    NSLog(@"%@", self.composerView.bbcode);
+    [self dismissModalViewControllerAnimated:YES];
 }
 
 
