@@ -10,8 +10,9 @@
 @class AwfulPostComposerView;
 
 @interface AwfulComposeController : UITableViewController {
-    NSArray *cellTypes;
+    @protected NSArray *_cells;
 }
+@property (nonatomic,strong) NSArray* cells;
 @property (nonatomic,strong) AwfulPostComposerView* composerView;
 @property (nonatomic,readonly) NSString* submitString;
 @end

@@ -16,8 +16,8 @@ typedef enum {
 } AwfulPostFormatStyle;
 
 
-static int AwfulPostComposerInputAccessoryEventFormat = UIControlEventApplicationReserved | (1<<0);
-static int AwfulPostComposerInputAccessoryEventInsert = UIControlEventApplicationReserved | (1<<1);
+static int AwfulControlEventPostComposerFormat = UIControlEventApplicationReserved | (1<<0);
+static int AwfulControlEventPostComposerInsert = UIControlEventApplicationReserved | (1<<1);
 
 @interface AwfulPostComposerInputAccessoryView : UIControl {
     UIPopoverController *pop;

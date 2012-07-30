@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AwfulPostComposerView : UITextView {
+@interface AwfulPostComposerView : UITextView <AwfulWebViewDelegate> {
     @protected
     UIWebView *_innerWebView;
     UIControl* _keyboardInputAccessory;

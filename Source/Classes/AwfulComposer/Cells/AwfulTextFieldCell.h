@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AwfulPostCell.h"
 
-@interface AwfulTextFieldCell : UITableViewCell <UITextFieldDelegate>
+
+@interface AwfulTextFieldCell : AwfulPostCell <UITextFieldDelegate>
 
 @end

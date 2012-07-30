@@ -22,11 +22,13 @@
         
         UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:self.frame];
         toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+        toolbar.tintColor = [UIColor colorWithRed:.61 green:.61 blue:.65 alpha:1];
         _formattingControl = [[UISegmentedControl alloc] initWithItems:
                                    [NSArray arrayWithObjects:@"B",@"I",@"U",/*@"S",@"Sup",@"Sub",*/ nil]
                                    ];
         self.formattingControl.segmentedControlStyle = UISegmentedControlStyleBar;
         [self.formattingControl addTarget:self action:@selector(formattingControlChanged:) forControlEvents:UIControlEventValueChanged];
+        self.formattingControl.tintColor = [UIColor colorWithRed:.88 green:.88 blue:.89 alpha:1];
         
         _insertionControl = [[UISegmentedControl alloc] initWithItems:
                              [NSArray arrayWithObjects:@"+Img", [UIImage imageNamed:@"emot-v.gif"], nil]
@@ -75,7 +77,7 @@
 
 -(void) formattingControlChanged:(UISegmentedControl*)segmentedControl {
     NSLog(@"tapped %i", segmentedControl.selectedSegmentIndex);
-    [self sendActionsForControlEvents:AwfulPostComposerInputAccessoryEventFormat];
+    [self sendActionsForControlEvents:AwfulControlEventPostComposerFormat];
 }
 
 -(void) didChooseEmoticon:(NSNotification*)notification {

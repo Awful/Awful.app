@@ -46,7 +46,7 @@
     if (!_keyboardInputAccessory) {
         _keyboardInputAccessory = [[AwfulPostComposerInputAccessoryView alloc] initWithFrame:CGRectMake(0, 0, 400, 44)];
     }
-    [_keyboardInputAccessory addTarget:self action:@selector(keyboardInputAccessoryFormat:) forControlEvents:AwfulPostComposerInputAccessoryEventFormat];
+    [_keyboardInputAccessory addTarget:self action:@selector(keyboardInputAccessoryFormat:) forControlEvents:AwfulControlEventPostComposerFormat];
     
     
     return _keyboardInputAccessory;
@@ -110,11 +110,11 @@
     //for plat users attaching an image, skip in bbcode, upload via http
     
     //for inline images:
-        //image picker provides local url.  editor will show that
-        //after choosing, image uploaded to host of choice
-        //when successful, need to store the returned url somewhere, maybe in the img tag
-        //disable send button until all image uploads are done
-        //convert to bbcode using the host url
+    //image picker provides local url.  editor will show that
+    //after choosing, image uploaded to host of choice
+    //when successful, need to store the returned url somewhere, maybe in the img tag
+    //disable send button until all image uploads are done
+    //convert to bbcode using the host url
     
     return html;
 }
@@ -168,6 +168,11 @@
         }
     }
     return nil;
+}
+
+#pragma mark AwfulWebViewDelegate Protocol
+-(void) webView:(UIWebView *)webView pageDidRequestAction:(NSString *)action infoDictionary:(NSDictionary *)infoDictionary {
+    NSLog(@"here");
 }
 
 @end

@@ -20,21 +20,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    cellTypes = [NSArray arrayWithObjects:
-                  @"AwfulCurrentUserCell",
-                  @"AwfulTextFieldCell",
-                  @"AwfulTextFieldCell",
-                  @"AwfulPostIconCell",
-                  @"AwfulPostComposerCell",
-                  @"AwfulPostOptionsCell",
-                  @"AwfulImageAttachmentCell",
-                  nil];
-    
+
     self.title = @"New Post";
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:(UIBarButtonSystemItemCancel)
-                                                                                          target:nil 
-                                                                                          action:nil
+                                                                                          target:self
+                                                                                          action:@selector(didTapCancel:)
                                              ];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:self.submitString
@@ -42,6 +32,11 @@
                                                                              target:self
                                                                              action:@selector(didTapSubmit:)
                                               ];
+    
+}
+
+-(NSArray*) cells {
+    return nil;
 }
 
 -(void) viewDidAppear:(BOOL)animated {
@@ -54,11 +49,11 @@
 }
 
 -(int) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return cellTypes.count;
+    return self.cells.count;
 }
 
 -(UITableViewCell*) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *cellIdentifier = [cellTypes objectAtIndex:indexPath.row];
+    NSString *cellIdentifier = [self.cells objectAtIndex:indexPath.row];
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (!cell)
         cell = [[NSClassFromString(cellIdentifier) alloc] initWithStyle:(UITableViewCellStyleValue1) reuseIdentifier:cellIdentifier];
@@ -83,6 +78,14 @@
     NSLog(@"submit:");
     NSLog(@"%@", self.composerView.bbcode);
     [self dismissModalViewControllerAnimated:YES];
+}
+
+-(void) didTapCancel:(UIBarButtonItem*)cancelButton {
+    [self dismissModalViewControllerAnimated:YES];
+}
+
+-(BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
+    return YES;
 }
 
 

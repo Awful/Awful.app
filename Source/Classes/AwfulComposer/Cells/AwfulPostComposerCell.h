@@ -7,8 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AwfulPostCell.h"
+
 @class AwfulPostComposerView;
-@interface AwfulPostComposerCell : UITableViewCell 
+
+@interface AwfulPostComposerCell : AwfulPostCell
 @property (nonatomic,strong) AwfulPostComposerView *composerView;
 
 @end

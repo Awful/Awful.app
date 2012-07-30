@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AwfulPostCell.h"
 
-@interface AwfulCurrentUserCell : UITableViewCell
+
+@interface AwfulCurrentUserCell : AwfulPostCell
 
 @end

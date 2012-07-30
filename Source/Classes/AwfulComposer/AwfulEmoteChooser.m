@@ -76,9 +76,6 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell;
-    NSManagedObject *obj = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    
-    
     cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
     if (cell == nil)
         cell = [[AwfulTableViewCellEmoticonMultiple alloc] initWithStyle:UITableViewCellStyleDefault 
