@@ -8,20 +8,22 @@
 
 #import "AwfulThreadTagPickerController.h"
 #import "AwfulEmote.h"
+#import "AwfulHTTPClient+ThreadTags.h"
 
 @interface AwfulThreadTagPickerController ()
 
 @end
 
 @implementation AwfulThreadTagPickerController
+@synthesize forum = _forum;
 
 - (id)initWithForum:(AwfulForum *)forum {
     self = [super init];
     if (self) {
         // Custom initialization
-    [self setEntityName:@"AwfulEmote"
+    [self setEntityName:@"AwfulThreadTag"
               predicate:nil//@"forum = %@"
-                   sort:@"code"
+                   sort:@"alt"
              sectionKey:nil
      ];
     }
@@ -30,6 +32,19 @@
 
 -(void) viewDidLoad {
     [super viewDidLoad];
+}
+
+-(void) refresh {
+    [self.networkOperation cancel];
+    self.reloading = YES;
+    self.networkOperation = [[AwfulHTTPClient sharedClient] threadTagListForForum:self.forum
+                                                                     onCompletion:^(NSMutableArray *messages) {
+                                                                         [self finishedRefreshing];
+                                                                     }
+                                                                             onError:^(NSError *error) {
+                                                                                 [self finishedRefreshing];
+                                                                                 [ApplicationDelegate requestFailed:error];
+                                                                             }];
 }
 
 -(void) configureCell:(UITableViewCell *)cell inRowAtIndexPath:(NSIndexPath *)indexPath {

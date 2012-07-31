@@ -18,6 +18,7 @@ extern const struct AwfulForumRelationships {
 	__unsafe_unretained NSString *children;
 	__unsafe_unretained NSString *favorite;
 	__unsafe_unretained NSString *parentForum;
+	__unsafe_unretained NSString *threadTags;
 	__unsafe_unretained NSString *threads;
 } AwfulForumRelationships;
 
@@ -28,6 +29,7 @@ extern const struct AwfulForumFetchedProperties {
 @class AwfulForum;
 @class AwfulFavorite;
 @class AwfulForum;
+@class AwfulThreadTag;
 @class AwfulThread;
 
 
@@ -138,6 +140,13 @@ extern const struct AwfulForumFetchedProperties {
 
 
 
+@property (nonatomic, strong) NSSet* threadTags;
+
+- (NSMutableSet*)threadTagsSet;
+
+
+
+
 @property (nonatomic, strong) NSSet* threads;
 
 - (NSMutableSet*)threadsSet;
@@ -154,6 +163,11 @@ extern const struct AwfulForumFetchedProperties {
 - (void)removeChildren:(NSOrderedSet*)value_;
 - (void)addChildrenObject:(AwfulForum*)value_;
 - (void)removeChildrenObject:(AwfulForum*)value_;
+
+- (void)addThreadTags:(NSSet*)value_;
+- (void)removeThreadTags:(NSSet*)value_;
+- (void)addThreadTagsObject:(AwfulThreadTag*)value_;
+- (void)removeThreadTagsObject:(AwfulThreadTag*)value_;
 
 - (void)addThreads:(NSSet*)value_;
 - (void)removeThreads:(NSSet*)value_;
@@ -228,6 +242,11 @@ extern const struct AwfulForumFetchedProperties {
 
 - (AwfulForum*)primitiveParentForum;
 - (void)setPrimitiveParentForum:(AwfulForum*)value;
+
+
+
+- (NSMutableSet*)primitiveThreadTags;
+- (void)setPrimitiveThreadTags:(NSMutableSet*)value;
 
 
 

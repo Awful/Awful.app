@@ -13,4 +13,5 @@ static NSString* const AwfulThreadTagPickedNotification = @"com.regularberry.awf
 @interface AwfulThreadTagPickerController : AwfulGridViewController
 
 -(id) initWithForum:(AwfulForum*)forum;
+@property (nonatomic,strong) AwfulForum* forum;
 @end

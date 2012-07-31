@@ -17,6 +17,7 @@ const struct AwfulForumRelationships AwfulForumRelationships = {
 	.children = @"children",
 	.favorite = @"favorite",
 	.parentForum = @"parentForum",
+	.threadTags = @"threadTags",
 	.threads = @"threads",
 };
 
@@ -190,6 +191,19 @@ const struct AwfulForumFetchedProperties AwfulForumFetchedProperties = {
 
 @dynamic parentForum;
 
+	
+
+@dynamic threadTags;
+
+	
+- (NSMutableSet*)threadTagsSet {
+	[self willAccessValueForKey:@"threadTags"];
+  
+	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"threadTags"];
+  
+	[self didAccessValueForKey:@"threadTags"];
+	return result;
+}
 	
 
 @dynamic threads;
