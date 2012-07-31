@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1487" systemVersion="12A269" minimumToolsVersion="Xcode 4.1" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="AwfulDraft" representedClassName="AwfulDraft" syncable="YES">
+        <attribute name="content" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="draftType" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="optionAddBookmark" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="optionParseURLs" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="optionShowSignature" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="optionShowSmileys" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="recipient" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="subject" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="replyToMessage" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulPM" syncable="YES"/>
+        <relationship name="thread" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulThread" syncable="YES"/>
+        <relationship name="threadTag" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulThreadTag" syncable="YES"/>
+    </entity>
     <entity name="AwfulEmote" representedClassName="AwfulEmote" syncable="YES">
         <attribute name="code" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="desc" optional="YES" attributeType="String" syncable="YES"/>
@@ -70,5 +83,6 @@
         <element name="AwfulUser" positionX="160" positionY="192" width="128" height="90"/>
         <element name="Favorite" positionX="171" positionY="324" width="128" height="75"/>
         <element name="AwfulThreadTag" positionX="160" positionY="192" width="128" height="105"/>
+        <element name="AwfulDraft" positionX="160" positionY="192" width="128" height="210"/>
     </elements>
 </model>

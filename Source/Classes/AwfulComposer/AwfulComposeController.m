@@ -10,6 +10,7 @@
 #import "AwfulPostComposerView.h"
 #import "AwfulPostComposerCell.h"
 #import "AwfulThreadTagPickerController.h"
+#import "AwfulDraft.h"
 
 @interface AwfulComposeController ()
 
@@ -55,14 +56,31 @@
 }
 
 -(UITableViewCell*) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *cellIdentifier = [self.cells objectAtIndex:indexPath.row];
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    NSString* cellIdentifier;
+    id cellInfo = [self.cells objectAtIndex:indexPath.row];
+    
+    if ([cellInfo isKindOfClass:[NSString class]]) {
+        cellIdentifier = (NSString*)cellInfo;
+    }
+    else {
+        cellIdentifier = [cellInfo objectForKey:AwfulPostCellIdentifierKey];
+    }
+    
+    
+    AwfulPostCell* cell = (AwfulPostCell*)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (!cell)
         cell = [[NSClassFromString(cellIdentifier) alloc] initWithStyle:(UITableViewCellStyleValue1) reuseIdentifier:cellIdentifier];
     
     if (cellIdentifier == @"AwfulPostComposerCell")
         self.composerView = ((AwfulPostComposerCell*)cell).composerView;
         
+    if ([cellInfo isKindOfClass:[NSDictionary class]]) {
+        cell.dictionary = cellInfo;
+    }
+    
+    cell.draft = self.draft;
+    
+    
     return cell;
 }
 
@@ -93,6 +111,13 @@
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     AwfulPostCell* cell = [tableView cellForRowAtIndexPath:indexPath];
     [cell didSelectCell:self];
+}
+
+-(AwfulDraft*) draft {
+    if (!_draft) {
+        _draft = [AwfulDraft new];
+    }
+    return _draft;
 }
 
 

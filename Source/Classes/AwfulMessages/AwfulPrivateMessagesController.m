@@ -10,6 +10,7 @@
 #import "AwfulPM.h"
 #import "AwfulHTTPClient+PrivateMessages.h"
 #import "AwfulNewPostComposeController.h"
+#import "AwfulPMReplyComposeController.h"
 
 @interface AwfulPrivateMessagesController ()
 
@@ -25,6 +26,14 @@
                           nil]
              sectionKey:nil
      ];
+}
+
+-(void) viewDidLoad {
+    [super viewDidLoad];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:(UIBarButtonSystemItemCompose)
+                                                                                           target:self
+                                                                                           action:@selector(didTapCompose:)
+                                              ];
 }
 
 - (void)refresh
@@ -52,6 +61,12 @@
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     UINavigationController *test = [[UINavigationController alloc] initWithRootViewController:[AwfulNewPostComposeController new]];
+    test.modalPresentationStyle = UIModalPresentationFormSheet;
+    [self.splitViewController presentModalViewController:test animated:YES];
+}
+
+-(void) didTapCompose:(UIBarButtonItem*)button {
+    UINavigationController *test = [[UINavigationController alloc] initWithRootViewController:[AwfulPMReplyComposeController new]];
     test.modalPresentationStyle = UIModalPresentationFormSheet;
     [self.splitViewController presentModalViewController:test animated:YES];
 }

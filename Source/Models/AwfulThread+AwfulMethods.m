@@ -190,8 +190,7 @@
                 [existing_threads removeObjectsInArray:threads];
                 
                 if(thread == nil) {
-                    NSManagedObjectContext *moc = ApplicationDelegate.managedObjectContext;
-                    thread = [AwfulThread insertInManagedObjectContext:moc];
+                    thread = [AwfulThread new];
                 }
                 
                 thread.forum = forum;

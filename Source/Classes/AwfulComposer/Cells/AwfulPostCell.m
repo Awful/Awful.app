@@ -9,6 +9,8 @@
 #import "AwfulPostCell.h"
 
 @implementation AwfulPostCell
+@synthesize dictionary = _dictionary;
+@synthesize draft = _draft;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
@@ -25,4 +27,27 @@
     
 }
 
+-(void) setDictionary:(NSDictionary *)dictionary {
+    _dictionary = dictionary;
+    self.textLabel.text = [dictionary objectForKey:AwfulPostCellTextKey];
+}
+
+-(void) setDraft:(AwfulDraft *)draft {
+    _draft = draft;
+    if (self.dictionary) {
+        [draft addObserver:self
+                forKeyPath:[self.dictionary objectForKey:AwfulPostCellDraftInputKey]
+                   options:(NSKeyValueObservingOptionNew) context:nil
+         ];
+    }
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context
+{
+    //override me
+    NSLog(@"kvo method not overridden");
+}
 @end

@@ -7,11 +7,13 @@
 //
 
 #import "AwfulGridViewController.h"
+#import "AwfulDraft.h"
 
 static NSString* const AwfulThreadTagPickedNotification = @"com.regularberry.awful.notifications.threadtag";
 
 @interface AwfulThreadTagPickerController : AwfulGridViewController
 
--(id) initWithForum:(AwfulForum*)forum;
+-(id) initWithDraft:(AwfulDraft*)draft inForum:(AwfulForum*)forum;
 @property (nonatomic,strong) AwfulForum* forum;
+@property (nonatomic,strong) AwfulDraft* draft;
 @end

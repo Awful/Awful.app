@@ -9,6 +9,7 @@
 #import "AwfulPostIconCell.h"
 #import "AwfulThreadTagPickerController.h"
 #import "AwfulThreadTag.h"
+#import "AwfulDraft.h"
 
 @implementation AwfulPostIconCell
 
@@ -30,17 +31,34 @@
 }
 
 -(void) didSelectCell:(UIViewController *)viewController {
-    [viewController.navigationController pushViewController:[[AwfulThreadTagPickerController alloc] initWithForum:nil] animated:YES];
+    [viewController.navigationController pushViewController:[[AwfulThreadTagPickerController alloc] initWithDraft:self.draft
+                                                                                                          inForum:nil
+                                                             ]
+                                                   animated:YES
+     ];
 }
 
--(void) didPickThreadTag:(NSNotification*)notificatiion {
-    AwfulThreadTag* tag = notificatiion.object;
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context
+{
+    self.detailTextLabel.text = nil;
+    self.imageView.image = self.draft.threadTag.image;
+    
+}
+
+/*
+-(void) didPickThreadTag:(NSNotification*)notification {
+    AwfulThreadTag* tag = notification.object;
     self.detailTextLabel.text = nil;
     self.imageView.image = tag.image;
+    self.draft.threadTag = tag;
     
     if (!tag.image)
         self.detailTextLabel.text = tag.alt;
 }
+*/
 
 -(void) layoutSubviews {
     [super layoutSubviews];

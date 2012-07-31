@@ -3,15 +3,6 @@
 
 @implementation AwfulEmote
 
--(id) init {
-    self = [super initWithEntity:[NSEntityDescription entityForName:[[self class] description]
-                                             inManagedObjectContext:ApplicationDelegate.managedObjectContext
-                                  ]
-  insertIntoManagedObjectContext:ApplicationDelegate.managedObjectContext];
-    
-    return self;
-}
-
 +(NSArray*)parseEmoticonsWithData : (NSData *)data
 {
     NSLog(@"got it... parsing smilies...");

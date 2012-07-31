@@ -17,7 +17,7 @@
 @implementation AwfulThreadTagPickerController
 @synthesize forum = _forum;
 
-- (id)initWithForum:(AwfulForum *)forum {
+- (id)initWithDraft:(AwfulDraft*)draft inForum:(AwfulForum *)forum {
     self = [super init];
     if (self) {
         // Custom initialization
@@ -26,6 +26,7 @@
                    sort:@"alt"
              sectionKey:nil
      ];
+        self.draft = draft;
     }
     return self;
 }
@@ -82,7 +83,8 @@
 
 -(void) gridView:(UITableView *)tableView didSelectCellInRowAtIndexPath:(NSIndexPath *)indexPath {
     AwfulThreadTag *selected = (AwfulThreadTag*)[self.fetchedResultsController objectAtIndexPath:indexPath];
-    [[NSNotificationCenter defaultCenter] postNotificationName:AwfulThreadTagPickedNotification object:selected];
+    self.draft.threadTag = selected;
+    //[[NSNotificationCenter defaultCenter] postNotificationName:AwfulThreadTagPickedNotification object:selected];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
