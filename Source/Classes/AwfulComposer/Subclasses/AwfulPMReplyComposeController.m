@@ -10,6 +10,7 @@
 #import "AwfulPostCell.h"
 #import "AwfulPostComposerView.h"
 #import "AwfulDraft.h"
+#import "AwfulHTTPClient+PrivateMessages.h"
 
 @interface AwfulPMReplyComposeController ()
 
@@ -20,7 +21,7 @@
 -(void) viewDidLoad {
     [super viewDidLoad];
     self.title = @"New Private Message";
-    //self.draft.draftTypeValue = AwfulDraftTypePM;
+    self.draft.draftTypeValue = AwfulDraftTypePM;
 }
 
 -(NSString*) submitString {
@@ -49,8 +50,23 @@
                    AwfulDraftRelationships.threadTag, AwfulPostCellDraftInputKey,
                    nil
                    ],
-                  @"AwfulPostComposerCell",
-                  @"AwfulPostOptionCell",
+                  [NSDictionary dictionaryWithObjectsAndKeys:
+                   @"AwfulPostComposerCell", AwfulPostCellIdentifierKey,
+                   AwfulDraftAttributes.content, AwfulPostCellDraftInputKey,
+                   nil
+                   ],
+                  [NSDictionary dictionaryWithObjectsAndKeys:
+                   @"AwfulPostOptionCell", AwfulPostCellIdentifierKey,
+                   @"Parse URLs:", AwfulPostCellTextKey,
+                   AwfulDraftAttributes.optionParseURLs, AwfulPostCellDraftInputKey,
+                   nil
+                   ],
+                  [NSDictionary dictionaryWithObjectsAndKeys:
+                   @"AwfulPostOptionCell", AwfulPostCellIdentifierKey,
+                   @"Show Signature:", AwfulPostCellTextKey,
+                   AwfulDraftAttributes.optionShowSignature, AwfulPostCellDraftInputKey,
+                   nil
+                   ],
                   nil];
     }
     return _cells;
@@ -59,6 +75,7 @@
 -(void) didTapSubmit:(UIBarButtonItem*)submitButton {
     NSLog(@"submit:");
     NSLog(@"%@", self.composerView.bbcode);
+    [[AwfulHTTPClient sharedClient] sendPrivateMessage:self.draft onCompletion:nil onError:nil];
     [self dismissModalViewControllerAnimated:YES];
 }
 @end

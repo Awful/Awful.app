@@ -15,9 +15,17 @@
     self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuseIdentifier];
     if (self) {
         self.textLabel.text = @"Option";
-        //self.detailTextLabel.text = @"Parse Urls/Show Smileys/Add Bookmark/Show Signature";
-        self.accessoryView = [UISwitch new];
+        UISwitch *optionSwitch = [UISwitch new];
+        [optionSwitch addTarget:self action:@selector(didToggleSwitch:) forControlEvents:UIControlEventValueChanged];
+        self.accessoryView = optionSwitch;
     }
     return self;
+}
+
+-(void) didToggleSwitch:(UISwitch*)optionSwitch {
+    [self.draft setValue:[NSNumber numberWithBool:optionSwitch.isOn]
+                  forKey:[self.dictionary objectForKey:AwfulPostCellDraftInputKey]
+     ];
+    
 }
 @end

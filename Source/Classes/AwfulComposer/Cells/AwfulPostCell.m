@@ -48,6 +48,5 @@
                        context:(void *)context
 {
     //override me
-    NSLog(@"kvo method not overridden");
 }
 @end
