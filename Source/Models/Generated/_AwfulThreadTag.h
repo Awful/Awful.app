@@ -7,16 +7,18 @@
 extern const struct AwfulThreadTagAttributes {
 	__unsafe_unretained NSString *alt;
 	__unsafe_unretained NSString *filename;
+	__unsafe_unretained NSString *tagID;
 } AwfulThreadTagAttributes;
 
 extern const struct AwfulThreadTagRelationships {
-	__unsafe_unretained NSString *forum;
+	__unsafe_unretained NSString *forums;
 } AwfulThreadTagRelationships;
 
 extern const struct AwfulThreadTagFetchedProperties {
 } AwfulThreadTagFetchedProperties;
 
 @class AwfulForum;
+
 
 
 
@@ -49,10 +51,22 @@ extern const struct AwfulThreadTagFetchedProperties {
 
 
 
+@property (nonatomic, strong) NSNumber* tagID;
 
-@property (nonatomic, strong) NSSet* forum;
 
-- (NSMutableSet*)forumSet;
+@property int16_t tagIDValue;
+- (int16_t)tagIDValue;
+- (void)setTagIDValue:(int16_t)value_;
+
+//- (BOOL)validateTagID:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
+@property (nonatomic, strong) NSSet* forums;
+
+- (NSMutableSet*)forumsSet;
 
 
 
@@ -62,10 +76,10 @@ extern const struct AwfulThreadTagFetchedProperties {
 
 @interface _AwfulThreadTag (CoreDataGeneratedAccessors)
 
-- (void)addForum:(NSSet*)value_;
-- (void)removeForum:(NSSet*)value_;
-- (void)addForumObject:(AwfulForum*)value_;
-- (void)removeForumObject:(AwfulForum*)value_;
+- (void)addForums:(NSSet*)value_;
+- (void)removeForums:(NSSet*)value_;
+- (void)addForumsObject:(AwfulForum*)value_;
+- (void)removeForumsObject:(AwfulForum*)value_;
 
 @end
 
@@ -84,9 +98,18 @@ extern const struct AwfulThreadTagFetchedProperties {
 
 
 
+- (NSNumber*)primitiveTagID;
+- (void)setPrimitiveTagID:(NSNumber*)value;
 
-- (NSMutableSet*)primitiveForum;
-- (void)setPrimitiveForum:(NSMutableSet*)value;
+- (int16_t)primitiveTagIDValue;
+- (void)setPrimitiveTagIDValue:(int16_t)value_;
+
+
+
+
+
+- (NSMutableSet*)primitiveForums;
+- (void)setPrimitiveForums:(NSMutableSet*)value;
 
 
 @end

@@ -14,7 +14,7 @@
 }
 
 
--(UITableViewCell*) tableView:(UITableView *)tableView cellForColumnInRowAtIndexPath:(NSIndexPath *)indexPath;
+-(UITableViewCell*) gridView:(UITableView *)tableView cellForColumnInRowAtIndexPath:(NSIndexPath *)indexPath;
 - (void)configureCell:(UITableViewCell*)cell inRowAtIndexPath:(NSIndexPath *)cellIndexPath;
-
+-(void) gridView:(UITableView *)tableView didSelectCellInRowAtIndexPath:(NSIndexPath *)indexPath;
 @end

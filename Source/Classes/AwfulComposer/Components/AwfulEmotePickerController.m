@@ -116,23 +116,10 @@
                                                                                    }];
 }
 
-/*
--(void) tappedCell:(UITapGestureRecognizer *)sender  {
-    AwfulTableViewCellEmoticonMultiple *cell = (AwfulTableViewCellEmoticonMultiple*)sender.view;
-    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-    CGPoint location = [sender locationInView:sender.view];
-    
-    int emoteIndex = location.x / 125;
-    NSIndexPath *emotePath = [NSIndexPath indexPathForRow:(indexPath.row*_numIconsPerRow + emoteIndex)
-                                                inSection:0];
-    
-    AwfulEmote *selected = (AwfulEmote*)[self.fetchedResultsController objectAtIndexPath:emotePath];
-    //NSLog(@"emote: %@", selected.code);
-
-    
+-(void) gridView:(UITableView *)tableView didSelectCellInRowAtIndexPath:(NSIndexPath *)indexPath {
+    AwfulEmote *selected = (AwfulEmote*)[self.fetchedResultsController objectAtIndexPath:indexPath];
     [[NSNotificationCenter defaultCenter] postNotificationName:AwfulEmoteChosenNotification object:selected];
 }
- */
 
 #pragma mark Search Delegate
 -(void) searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
@@ -152,16 +139,6 @@
         //[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFY_EMOTE_FILTERED 
         //                                                    object:[NSNumber numberWithInt:self.fetchedResultsController.fetchedObjects.count]];
     }
-}
-
-#pragma mark fetchedresultscontroller
-//got to override this because there's multiple emotes per row
-
-- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-    
-    NSIndexPath* calculatedPath = [NSIndexPath indexPathForRow:(indexPath.row/_numColumnsPerRow) inSection:0];
-    
-    [super controller:controller didChangeObject:anObject atIndexPath:calculatedPath forChangeType:type newIndexPath:calculatedPath];
 }
 
 

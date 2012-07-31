@@ -15,14 +15,15 @@
                                  onError:(AwfulErrorBlock)errorBlock
 {
     //NetworkLogInfo(@"%@", THIS_METHOD);
-    NSString *path = [NSString stringWithFormat:@"misc.php?action=showsmilies"];
+    NSString *path = [NSString stringWithFormat:@"newthread.php?action=newthread&forumid=1"];
     NSMutableURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
     urlRequest.timeoutInterval = NetworkTimeoutInterval;
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
                                                                success:^(AFHTTPRequestOperation *operation, id response) {
                                                                    //NetworkLogInfo(@"completed %@", THIS_METHOD);
                                                                    NSData *responseData = (NSData *)response;
-                                                                   NSArray *msgs = [AwfulThreadTag parseThreadTagsWithData:responseData];
+                                                                   NSArray *msgs = [AwfulThreadTag parseThreadTagsForForum:forum
+                                                                                                                  withData:responseData];
                                                                    //[ApplicationDelegate saveContext];
                                                                    ThreadTagListResponseBlock(msgs);
                                                                }

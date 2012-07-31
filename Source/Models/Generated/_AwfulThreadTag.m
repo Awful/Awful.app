@@ -6,10 +6,11 @@
 const struct AwfulThreadTagAttributes AwfulThreadTagAttributes = {
 	.alt = @"alt",
 	.filename = @"filename",
+	.tagID = @"tagID",
 };
 
 const struct AwfulThreadTagRelationships AwfulThreadTagRelationships = {
-	.forum = @"forum",
+	.forums = @"forums",
 };
 
 const struct AwfulThreadTagFetchedProperties AwfulThreadTagFetchedProperties = {
@@ -41,6 +42,10 @@ const struct AwfulThreadTagFetchedProperties AwfulThreadTagFetchedProperties = {
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 	
+	if ([key isEqualToString:@"tagIDValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"tagID"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+	}
 
 	return keyPaths;
 }
@@ -62,15 +67,41 @@ const struct AwfulThreadTagFetchedProperties AwfulThreadTagFetchedProperties = {
 
 
 
-@dynamic forum;
+@dynamic tagID;
+
+
+
+- (int16_t)tagIDValue {
+	NSNumber *result = [self tagID];
+	return [result shortValue];
+}
+
+- (void)setTagIDValue:(int16_t)value_ {
+	[self setTagID:[NSNumber numberWithShort:value_]];
+}
+
+- (int16_t)primitiveTagIDValue {
+	NSNumber *result = [self primitiveTagID];
+	return [result shortValue];
+}
+
+- (void)setPrimitiveTagIDValue:(int16_t)value_ {
+	[self setPrimitiveTagID:[NSNumber numberWithShort:value_]];
+}
+
+
+
+
+
+@dynamic forums;
 
 	
-- (NSMutableSet*)forumSet {
-	[self willAccessValueForKey:@"forum"];
+- (NSMutableSet*)forumsSet {
+	[self willAccessValueForKey:@"forums"];
   
-	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"forum"];
+	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"forums"];
   
-	[self didAccessValueForKey:@"forum"];
+	[self didAccessValueForKey:@"forums"];
 	return result;
 }
 	

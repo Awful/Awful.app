@@ -59,16 +59,17 @@ typedef UITableViewCell AwfulGridViewCell;
         if (x >= self.fetchedResultsController.fetchedObjects.count) continue;
         
         NSIndexPath* cellIndexPath = [NSIndexPath indexPathForRow:x inSection:tableIndexPath.section];
-        UITableViewCell *cell = [self tableView:self.tableView cellForColumnInRowAtIndexPath:cellIndexPath];
+        UITableViewCell *cell = [self gridView:self.tableView cellForColumnInRowAtIndexPath:cellIndexPath];
         
         [self configureCell:cell inRowAtIndexPath:cellIndexPath];
         cell.frame = CGRectMake((_columnWidth+1) * (x-start), 0, _columnWidth, [self tableView:self.tableView heightForRowAtIndexPath:tableIndexPath] );
         [gridCell.contentView addSubview:cell];
+        cell.tag = x;
         
     }
 }
 
--(UITableViewCell*) tableView:(UITableView *)tableView cellForColumnInRowAtIndexPath:(NSIndexPath *)cellIndexPath {
+-(UITableViewCell*) gridView:(UITableView *)tableView cellForColumnInRowAtIndexPath:(NSIndexPath *)cellIndexPath {
     UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:@"AwfulImagePickerGridCell"];
     if (!cell)
         cell = [AwfulImagePickerGridCell new];
@@ -90,7 +91,26 @@ typedef UITableViewCell AwfulGridViewCell;
 }
 
 -(void)tappedCell:(UITapGestureRecognizer*)sender {
-    UITableViewCell* cell = sender.view;
+    UITableViewCell* cell = (UITableViewCell*)sender.view;
     cell.selected = YES;
+    NSIndexPath *cellIndexPath = [NSIndexPath indexPathForRow:cell.tag inSection:0];
+    [self gridView:self.tableView didSelectCellInRowAtIndexPath:cellIndexPath];
 }
+
+-(void) gridView:(UITableView *)tableView didSelectCellInRowAtIndexPath:(NSIndexPath *)indexPath {
+    //override me
+}
+
+
+#pragma mark fetchedresultscontroller
+//got to override this because there's multiple emotes per row
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+    
+    NSIndexPath* calculatedPath = [NSIndexPath indexPathForRow:(indexPath.row/_numColumnsPerRow) inSection:0];
+    
+    [super controller:controller didChangeObject:anObject atIndexPath:calculatedPath forChangeType:type newIndexPath:calculatedPath];
+}
+
+
 @end

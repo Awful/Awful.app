@@ -17,7 +17,7 @@
         <relationship name="favorite" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Favorite" inverseName="forum" inverseEntity="Favorite" syncable="YES"/>
         <relationship name="parentForum" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="children" inverseEntity="AwfulForum" syncable="YES"/>
         <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="forum" inverseEntity="AwfulThread" syncable="YES"/>
-        <relationship name="threadTags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThreadTag" inverseName="forum" inverseEntity="AwfulThreadTag" syncable="YES"/>
+        <relationship name="threadTags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThreadTag" inverseName="forums" inverseEntity="AwfulThreadTag" syncable="YES"/>
     </entity>
     <entity name="AwfulPM" representedClassName="AwfulPM" syncable="YES">
         <attribute name="content" optional="YES" attributeType="String" syncable="YES"/>
@@ -50,7 +50,8 @@
     <entity name="AwfulThreadTag" representedClassName="AwfulThreadTag" syncable="YES">
         <attribute name="alt" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="filename" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="forum" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="threadTags" inverseEntity="AwfulForum" syncable="YES"/>
+        <attribute name="tagID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <relationship name="forums" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="threadTags" inverseEntity="AwfulForum" syncable="YES"/>
     </entity>
     <entity name="AwfulUser" representedClassName="AwfulUser" syncable="YES">
         <attribute name="postsPerPage" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
@@ -68,6 +69,6 @@
         <element name="AwfulThread" positionX="160" positionY="192" width="128" height="285"/>
         <element name="AwfulUser" positionX="160" positionY="192" width="128" height="90"/>
         <element name="Favorite" positionX="171" positionY="324" width="128" height="75"/>
-        <element name="AwfulThreadTag" positionX="160" positionY="192" width="128" height="90"/>
+        <element name="AwfulThreadTag" positionX="160" positionY="192" width="128" height="105"/>
     </elements>
 </model>

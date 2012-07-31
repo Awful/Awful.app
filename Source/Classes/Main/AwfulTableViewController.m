@@ -13,8 +13,6 @@
 
 @interface AwfulTableViewController ()
 
-@property (nonatomic,strong) AwfulLoadNextControl* loadNextControl;
-
 @end
 
 @implementation AwfulTableViewController

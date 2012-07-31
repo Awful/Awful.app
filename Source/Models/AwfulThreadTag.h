@@ -2,6 +2,7 @@
 
 @interface AwfulThreadTag : _AwfulThreadTag {}
 
-+(NSArray*)parseThreadTagsWithData : (NSData *)data;
++(NSArray*)parseThreadTagsForForum:(AwfulForum*)forum withData : (NSData *)data;
 +(void) cacheThreadTag:(AwfulThreadTag*)emote data:(NSData*)data ;
+@property (nonatomic,readonly) UIImage* image;
 @end

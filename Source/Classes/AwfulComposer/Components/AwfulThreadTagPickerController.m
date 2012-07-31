@@ -7,7 +7,7 @@
 //
 
 #import "AwfulThreadTagPickerController.h"
-#import "AwfulEmote.h"
+#import "AwfulThreadTag.h"
 #import "AwfulHTTPClient+ThreadTags.h"
 
 @interface AwfulThreadTagPickerController ()
@@ -32,6 +32,8 @@
 
 -(void) viewDidLoad {
     [super viewDidLoad];
+    _columnWidth = 125;
+    self.title = @"Thread Tags";
 }
 
 -(void) refresh {
@@ -49,24 +51,43 @@
 
 -(void) configureCell:(UITableViewCell *)cell inRowAtIndexPath:(NSIndexPath *)indexPath {
     [super configureCell:cell inRowAtIndexPath:indexPath];
-    AwfulEmote* emote = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    AwfulThreadTag* tag = [self.fetchedResultsController objectAtIndexPath:indexPath];
     //cell.textLabel.text = emote.code;
     //cell.detailTextLabel.text = emote.desc;
-    cell.imageView.image = [UIImage imageNamed:emote.filename.lastPathComponent];
-    cell.textLabel.text = nil;
+    //cell.imageView.image = [UIImage imageNamed:emote.filename.lastPathComponent];
+    cell.textLabel.text = tag.alt;
+    cell.textLabel.adjustsFontSizeToFitWidth = YES;
+    cell.textLabel.textAlignment = UITextAlignmentCenter;
+    
+    cell.imageView.image = tag.image;
+    if (tag.image) {
+        cell.textLabel.text = nil;
+    }
+    
+    
+     if (!tag.image && tag.filename) {
+       
+         [[AwfulHTTPClient sharedClient] cacheThreadTag:tag
+                                           onCompletion:^(NSMutableArray *messages) {
+                                               //[self finishedRefreshing];
+                                           }
+                                                onError:^(NSError *error) {
+                                                //[self finishedRefreshing];
+                                                    [ApplicationDelegate requestFailed:error];
+                                                }
+          ];
+     
+     }
 }
 
-
--(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSManagedObject *tag = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:tag forKey:@"tag"];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:AwfulThreadTagPickedNotification
-                                                        object:self
-                                                      userInfo:userInfo
-     ];
-    
+-(void) gridView:(UITableView *)tableView didSelectCellInRowAtIndexPath:(NSIndexPath *)indexPath {
+    AwfulThreadTag *selected = (AwfulThreadTag*)[self.fetchedResultsController objectAtIndexPath:indexPath];
+    [[NSNotificationCenter defaultCenter] postNotificationName:AwfulThreadTagPickedNotification object:selected];
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+-(AwfulRefreshControl*) loadNextControl {
+    return nil;
 }
 
 

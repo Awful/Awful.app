@@ -8,7 +8,7 @@
 
 #import "AwfulPostIconCell.h"
 #import "AwfulThreadTagPickerController.h"
-#import "AwfulEmote.h"
+#import "AwfulThreadTag.h"
 
 @implementation AwfulPostIconCell
 
@@ -34,9 +34,21 @@
 }
 
 -(void) didPickThreadTag:(NSNotification*)notificatiion {
-    AwfulEmote* emote = [notificatiion.userInfo objectForKey:@"tag"];
+    AwfulThreadTag* tag = notificatiion.object;
     self.detailTextLabel.text = nil;
-    self.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:emote.filename.lastPathComponent]];
+    self.imageView.image = tag.image;
+    
+    if (!tag.image)
+        self.detailTextLabel.text = tag.alt;
+}
+
+-(void) layoutSubviews {
+    [super layoutSubviews];
+    
+    if (self.imageView.image) {
+        self.textLabel.foX = self.imageView.foX;
+        self.imageView.foX = self.contentView.fsW - self.imageView.fsW - 30;
+    }
 }
 
 @end
