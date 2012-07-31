@@ -6,13 +6,13 @@
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulComposeNewPostController.h"
+#import "AwfulNewPostComposeController.h"
 
-@interface AwfulComposeNewPostController ()
+@interface AwfulNewPostComposeController ()
 
 @end
 
-@implementation AwfulComposeNewPostController
+@implementation AwfulNewPostComposeController
 
 -(NSString*) submitString {
     return @"Post";

@@ -21,4 +21,8 @@
     return self;
 }
 
+-(void) didSelectCell:(UIViewController *)viewController {
+    //[viewController.navigationController pushViewController:[AwfulImageAttachmentChooser new] animated:YES];
+}
+
 @end

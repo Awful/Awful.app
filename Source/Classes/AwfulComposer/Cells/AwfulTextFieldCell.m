@@ -22,4 +22,8 @@
     return self;
 }
 
+-(void) didSelectCell:(UIViewController *)viewController {
+    [self.accessoryView becomeFirstResponder];
+}
+
 @end

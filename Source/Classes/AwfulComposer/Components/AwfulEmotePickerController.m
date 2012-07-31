@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulEmoteChooser.h"
+#import "AwfulEmotePickerController.h"
 #import "AwfulTableViewCellEmoticonMultiple.h"
 
 #import "AwfulEmote.h"
@@ -14,11 +14,11 @@
 
 #define MAX_EMOTE_WIDTH 90
 
-@interface AwfulEmoteChooser ()
+@interface AwfulEmotePickerController ()
 
 @end
 
-@implementation AwfulEmoteChooser
+@implementation AwfulEmotePickerController
 @synthesize searchBar = _searchBar;
 
 -(id) init {

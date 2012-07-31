@@ -9,7 +9,7 @@
 #import "AwfulPrivateMessagesController.h"
 #import "AwfulPM.h"
 #import "AwfulHTTPClient+PrivateMessages.h"
-#import "AwfulComposeController.h"
+#import "AwfulNewPostComposeController.h"
 
 @interface AwfulPrivateMessagesController ()
 
@@ -51,7 +51,7 @@
 }
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    UINavigationController *test = [[UINavigationController alloc] initWithRootViewController:[AwfulComposeController new]];
+    UINavigationController *test = [[UINavigationController alloc] initWithRootViewController:[AwfulNewPostComposeController new]];
     test.modalPresentationStyle = UIModalPresentationFormSheet;
     [self.splitViewController presentModalViewController:test animated:YES];
 }

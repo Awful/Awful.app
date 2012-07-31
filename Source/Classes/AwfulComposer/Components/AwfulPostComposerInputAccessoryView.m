@@ -7,7 +7,7 @@
 //
 
 #import "AwfulPostComposerInputAccessoryView.h"
-#import "AwfulEmoteChooser.h"
+#import "AwfulEmotePickerController.h"
 #import "UIBarButtonItem+Lazy.h"
 
 @implementation AwfulPostComposerInputAccessoryView
@@ -57,7 +57,7 @@
 
 -(void) insertControlChanged:(UISegmentedControl*)segmentedControl {
     if (segmentedControl.selectedSegmentIndex == 1) {
-        AwfulEmoteChooser *chooser = [AwfulEmoteChooser new];
+        AwfulEmotePickerController *chooser = [AwfulEmotePickerController new];
         pop = [[UIPopoverController alloc] initWithContentViewController:chooser];
         [pop setPopoverContentSize:CGSizeMake(125*4, 768)];
         [pop presentPopoverFromRect:segmentedControl.frame inView:self permittedArrowDirections:(UIPopoverArrowDirectionDown) animated:YES];

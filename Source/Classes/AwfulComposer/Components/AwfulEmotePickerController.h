@@ -9,7 +9,7 @@
 #import "AwfulFetchedTableViewController.h"
 static NSString* const AwfulEmoteChosenNotification = @"com.regularberry.awful.notifications.emoteChosen";
 
-@interface AwfulEmoteChooser : AwfulFetchedTableViewController <UISearchBarDelegate> {
+@interface AwfulEmotePickerController : AwfulFetchedTableViewController <UISearchBarDelegate> {
     int _numIconsPerRow;
     NSMutableArray* imagesToCache;
 }

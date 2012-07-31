@@ -16,8 +16,13 @@
     if (self) {
         self.textLabel.font = [UIFont systemFontOfSize:16];
         self.textLabel.textColor = [UIColor darkGrayColor];
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     return self;
+}
+
+-(void) didSelectCell:(UIViewController *)viewController {
+    
 }
 
 @end

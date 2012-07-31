@@ -30,4 +30,8 @@
     self.composerView.frame = self.contentView.frame;
 }
 
+-(void) didSelectCell:(UIViewController *)viewController {
+    [self.composerView becomeFirstResponder];
+}
+
 @end

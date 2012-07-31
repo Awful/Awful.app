@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface AwfulPostCell : UITableViewCell
-
+-(void) didSelectCell:(UIViewController*)viewController;
 @end

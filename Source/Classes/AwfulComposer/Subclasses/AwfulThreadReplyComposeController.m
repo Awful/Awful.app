@@ -6,13 +6,13 @@
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulComposeThreadReplyController.h"
+#import "AwfulThreadReplyComposeController.h"
 
-@interface AwfulComposeThreadReplyController ()
+@interface AwfulThreadReplyComposeController ()
 
 @end
 
-@implementation AwfulComposeThreadReplyController
+@implementation AwfulThreadReplyComposeController
 
 -(NSString*) submitString {
     return @"Reply";

@@ -33,6 +33,7 @@ typedef enum {
 {
 @protected
     AwfulActions *_actions;
+    UIPopoverController *pop;
 }
 
 @property (nonatomic, strong) AwfulThread *thread;

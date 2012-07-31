@@ -9,6 +9,7 @@
 #import "AwfulComposeController.h"
 #import "AwfulPostComposerView.h"
 #import "AwfulPostComposerCell.h"
+#import "AwfulThreadTagPickerController.h"
 
 @interface AwfulComposeController ()
 
@@ -33,6 +34,7 @@
                                                                              action:@selector(didTapSubmit:)
                                               ];
     
+
 }
 
 -(NSArray*) cells {
@@ -86,6 +88,15 @@
 
 -(BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
     return YES;
+}
+
+-(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    AwfulPostCell* cell = [tableView cellForRowAtIndexPath:indexPath];
+    [cell didSelectCell:self];
+}
+
+-(void) didPickThreadTag:(NSNotification*)notification {
+    NSLog(@"%@", notification.userInfo);
 }
 
 

@@ -9,7 +9,7 @@
 #import "AwfulPostComposerView.h"
 #import "AwfulPostComposerInputAccessoryView.h"
 #import "AwfulEmote.h"
-#import "AwfulEmoteChooser.h"
+#import "AwfulEmotePickerController.h"
 
 @implementation AwfulPostComposerView
 @synthesize keyboardInputAccessory = _keyboardInputAccessory;

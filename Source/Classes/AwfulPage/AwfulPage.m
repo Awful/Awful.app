@@ -30,6 +30,7 @@
 #import "AwfulPage+Transitions.h"
 #import "AwfulWebViewDelegate.h"
 #import "AwfulThreadTitleView.h"
+#import "AwfulthreadReplyComposeController.h"
 
 @interface AwfulPage () <AwfulWebViewDelegate, UIGestureRecognizerDelegate>
 
@@ -608,7 +609,8 @@
 
 -(IBAction)tappedCompose : (id)sender
 {
-    [self performSegueWithIdentifier:@"ReplyBox" sender:self];
+    pop = [[UIPopoverController alloc] initWithContentViewController:[AwfulThreadReplyComposeController new]];
+    [pop presentPopoverFromRect:CGRectMake(400, 600, 10, 10) inView:self.view permittedArrowDirections:(UIPopoverArrowDirectionDown) animated:YES];
 }
 
 #pragma mark - Navigator Content
