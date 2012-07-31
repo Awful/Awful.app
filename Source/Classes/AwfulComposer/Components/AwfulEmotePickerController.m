@@ -7,12 +7,11 @@
 //
 
 #import "AwfulEmotePickerController.h"
-#import "AwfulTableViewCellEmoticonMultiple.h"
+#import "AwfulImagePickerGridCell.h"
 
 #import "AwfulEmote.h"
 #import "AwfulHTTPClient+Emoticons.h"
-
-#define MAX_EMOTE_WIDTH 90
+#import "FVGifAnimation.h"
 
 @interface AwfulEmotePickerController ()
 
@@ -43,6 +42,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    _columnWidth = 124;
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
 	// Do any additional setup after loading the view.
 }
@@ -57,62 +57,51 @@
     [self.searchBar becomeFirstResponder];
 }
 
--(NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    //if (!_numIconsPerRow) {
-        CGFloat width = self.view.frame.size.width;
-        _numIconsPerRow = width/125;
-    //}
-    
-    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:section];
-    
-    if ([sectionInfo numberOfObjects] == 0) return 0;
-    int rows = [sectionInfo numberOfObjects]/_numIconsPerRow + 1;
-    return rows;
-}
-
 -(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 50;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell;
-    cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
-    if (cell == nil)
-        cell = [[AwfulTableViewCellEmoticonMultiple alloc] initWithStyle:UITableViewCellStyleDefault 
-                                                         reuseIdentifier:@"AwfulTableViewCellEmoticonMultiple"];
+- (void)configureCell:(UITableViewCell*)cell inRowAtIndexPath:(NSIndexPath *)indexPath {
+    AwfulImagePickerGridCell *gridCell = (AwfulImagePickerGridCell*)cell;
+    [super configureCell:cell inRowAtIndexPath:indexPath];
+    AwfulEmote* emote = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    cell.textLabel.text = nil;
+    cell.detailTextLabel.text = emote.code;
+    cell.imageView.image = [UIImage imageNamed:emote.filename.lastPathComponent];
+    gridCell.showLabel = YES;
     
     
-    UIGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedCell:)];
-    [cell addGestureRecognizer:tap];
-    [self configureCell:cell atIndexPath:indexPath];
+    gridCell.imagePath = emote.filename;
+    
+    
+    /*
+     if (!iv.image) {
+     //not in the bundle, check to see if it's a local path
+     NSURL *url = [NSURL URLWithString:emote.filename];
      
-    return cell;
-}
-
-
-- (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath {
-    AwfulTableViewCellEmoticonMultiple *gridCell = (AwfulTableViewCellEmoticonMultiple*)cell;
-    //NSLog(@"config cell %d", indexPath.row);
-    
-    NSMutableArray *emotes = [NSMutableArray new];
-    
-    for(int x = indexPath.row * _numIconsPerRow; x< (indexPath.row * _numIconsPerRow) + (_numIconsPerRow); x++) {
-        //NSLog(@"load index %d", x);
-        if (x >= self.fetchedResultsController.fetchedObjects.count) continue;
-        AwfulEmote *emote = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:x 
-                                                                                                inSection:0]];
-        [emotes addObject:emote];
-        
-
-        
-    }
-    
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedCell:)];
-    [gridCell addGestureRecognizer:tap];
-    
-    [gridCell setContent:emotes];
-    gridCell.showCodes = YES;//(self.searchBar.text.length > 0);
+     if (url.isFileURL) {
+     iv.image = [UIImage imageWithContentsOfFile:url.path];
      
+     }
+     else {
+     NSLog(@"would load %@",emote.filename);
+     [[AwfulHTTPClient sharedClient] cacheEmoticon:emote
+     onCompletion:^(NSMutableArray *messages) {
+     //[self finishedRefreshing];
+     }
+     onError:^(NSError *error) {
+     //[self finishedRefreshing];
+     [ApplicationDelegate requestFailed:error];
+     }];
+     
+     }
+     
+     
+     
+     //NSLog(@"loading emote %@", emote.code);
+     
+     
+     */
 }
 
 -(void) refresh {
@@ -120,13 +109,14 @@
     self.reloading = YES;
     self.networkOperation = [[AwfulHTTPClient sharedClient] emoticonListOnCompletion:^(NSMutableArray *messages) {
         [self finishedRefreshing];
-    } 
+    }
                                                                                    onError:^(NSError *error) {
                                                                                        [self finishedRefreshing];
                                                                                        [ApplicationDelegate requestFailed:error];
                                                                                    }];
 }
 
+/*
 -(void) tappedCell:(UITapGestureRecognizer *)sender  {
     AwfulTableViewCellEmoticonMultiple *cell = (AwfulTableViewCellEmoticonMultiple*)sender.view;
     NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
@@ -142,6 +132,7 @@
     
     [[NSNotificationCenter defaultCenter] postNotificationName:AwfulEmoteChosenNotification object:selected];
 }
+ */
 
 #pragma mark Search Delegate
 -(void) searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
@@ -168,7 +159,7 @@
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
     
-    NSIndexPath* calculatedPath = [NSIndexPath indexPathForRow:(indexPath.row/_numIconsPerRow) inSection:0];
+    NSIndexPath* calculatedPath = [NSIndexPath indexPathForRow:(indexPath.row/_numColumnsPerRow) inSection:0];
     
     [super controller:controller didChangeObject:anObject atIndexPath:calculatedPath forChangeType:type newIndexPath:calculatedPath];
 }

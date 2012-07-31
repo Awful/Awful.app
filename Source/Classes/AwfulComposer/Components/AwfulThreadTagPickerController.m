@@ -32,23 +32,13 @@
     [super viewDidLoad];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell;
-    cell = [tableView dequeueReusableCellWithIdentifier:@"UITableViewCell"];
-    if (cell == nil)
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
-                                                         reuseIdentifier:@"UITableViewCell"];
-
-    [self configureCell:cell atIndexPath:indexPath];
-    
-    return cell;
-}
-
--(void) configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+-(void) configureCell:(UITableViewCell *)cell inRowAtIndexPath:(NSIndexPath *)indexPath {
+    [super configureCell:cell inRowAtIndexPath:indexPath];
     AwfulEmote* emote = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.textLabel.text = emote.code;
-    cell.detailTextLabel.text = emote.desc;
+    //cell.textLabel.text = emote.code;
+    //cell.detailTextLabel.text = emote.desc;
     cell.imageView.image = [UIImage imageNamed:emote.filename.lastPathComponent];
+    cell.textLabel.text = nil;
 }
 
 

@@ -141,6 +141,7 @@
 
 #pragma mark keyboard handling
 -(void) keyboardWillShowOrHide:(NSNotification*)notification {
+    NSLog(@"%@",notification.object);
     //uiwebview has a built in inputAccessory that can't be changed
     //that's p dumb, this covers it up with self.keyboardinputaccessory
     
@@ -169,6 +170,8 @@
     }
     return nil;
 }
+
+
 
 #pragma mark AwfulWebViewDelegate Protocol
 -(void) webView:(UIWebView *)webView pageDidRequestAction:(NSString *)action infoDictionary:(NSDictionary *)infoDictionary {

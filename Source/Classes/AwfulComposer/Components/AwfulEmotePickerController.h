@@ -6,11 +6,10 @@
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulFetchedTableViewController.h"
+#import "AwfulGridViewController.h"
 static NSString* const AwfulEmoteChosenNotification = @"com.regularberry.awful.notifications.emoteChosen";
 
-@interface AwfulEmotePickerController : AwfulFetchedTableViewController <UISearchBarDelegate> {
-    int _numIconsPerRow;
+@interface AwfulEmotePickerController : AwfulGridViewController <UISearchBarDelegate> {
     NSMutableArray* imagesToCache;
 }
 

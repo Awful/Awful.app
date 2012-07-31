@@ -127,10 +127,12 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765080DF74369002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765070DF74369002DB57D /* CoreGraphics.framework */; };
+		8C06D2B115C81905000F9FCA /* AwfulGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C06D2B015C81905000F9FCA /* AwfulGridViewController.m */; };
 		8C1BC80A15AF0FFE00B75286 /* AwfulCustomForumFilmDump.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1BC80315AF0FFE00B75286 /* AwfulCustomForumFilmDump.m */; };
 		8C1BC80B15AF0FFE00B75286 /* AwfulCustomForumFYAD.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1BC80515AF0FFE00B75286 /* AwfulCustomForumFYAD.m */; };
 		8C1BC80C15AF0FFE00B75286 /* AwfulCustomForums.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1BC80715AF0FFE00B75286 /* AwfulCustomForums.m */; };
 		8C1BC80D15AF0FFE00B75286 /* AwfulCustomForumYOSPOS.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1BC80915AF0FFE00B75286 /* AwfulCustomForumYOSPOS.m */; };
+		8C3B019015C82E740005FD38 /* AwfulImagePickerGridCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B018F15C82E740005FD38 /* AwfulImagePickerGridCell.m */; };
 		8C48E9FE159A1B2B00A59691 /* AwfulRefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48E9FD159A1B2B00A59691 /* AwfulRefreshControl.m */; };
 		8C48EA01159A353400A59691 /* AwfulLoadNextControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48EA00159A353400A59691 /* AwfulLoadNextControl.m */; };
 		8C48EA1E159BC2AC00A59691 /* AwfulFetchedTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48EA1D159BC2AC00A59691 /* AwfulFetchedTableViewController.m */; };
@@ -1319,6 +1321,8 @@
 		1D6058910D05DD3D006BFB54 /* Awful.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Awful.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765070DF74369002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		8C06D2AF15C81904000F9FCA /* AwfulGridViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulGridViewController.h; sourceTree = "<group>"; };
+		8C06D2B015C81905000F9FCA /* AwfulGridViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulGridViewController.m; sourceTree = "<group>"; };
 		8C1BC80215AF0FFE00B75286 /* AwfulCustomForumFilmDump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCustomForumFilmDump.h; sourceTree = "<group>"; };
 		8C1BC80315AF0FFE00B75286 /* AwfulCustomForumFilmDump.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCustomForumFilmDump.m; sourceTree = "<group>"; };
 		8C1BC80415AF0FFE00B75286 /* AwfulCustomForumFYAD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCustomForumFYAD.h; sourceTree = "<group>"; };
@@ -1327,6 +1331,8 @@
 		8C1BC80715AF0FFE00B75286 /* AwfulCustomForums.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCustomForums.m; sourceTree = "<group>"; };
 		8C1BC80815AF0FFE00B75286 /* AwfulCustomForumYOSPOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCustomForumYOSPOS.h; sourceTree = "<group>"; };
 		8C1BC80915AF0FFE00B75286 /* AwfulCustomForumYOSPOS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCustomForumYOSPOS.m; sourceTree = "<group>"; };
+		8C3B018E15C82E740005FD38 /* AwfulImagePickerGridCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulImagePickerGridCell.h; sourceTree = "<group>"; };
+		8C3B018F15C82E740005FD38 /* AwfulImagePickerGridCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulImagePickerGridCell.m; sourceTree = "<group>"; };
 		8C48E9FC159A1B2B00A59691 /* AwfulRefreshControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulRefreshControl.h; sourceTree = "<group>"; };
 		8C48E9FD159A1B2B00A59691 /* AwfulRefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulRefreshControl.m; sourceTree = "<group>"; };
 		8C48E9FF159A353400A59691 /* AwfulLoadNextControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLoadNextControl.h; sourceTree = "<group>"; };
@@ -2958,6 +2964,8 @@
 				8C4C1E2615C7667300436B8A /* AwfulThreadTagPickerController.m */,
 				8C4C1E2815C766D800436B8A /* AwfulImageAttachmentPickerController.h */,
 				8C4C1E2915C766D800436B8A /* AwfulImageAttachmentPickerController.m */,
+				8C06D2AF15C81904000F9FCA /* AwfulGridViewController.h */,
+				8C06D2B015C81905000F9FCA /* AwfulGridViewController.m */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -3022,6 +3030,8 @@
 				8CB546F315BF0C2F00E8BEC1 /* AwfulPostComposerCell.m */,
 				8CFEECA415C6F1F900407A20 /* AwfulPostCell.h */,
 				8CFEECA515C6F1F900407A20 /* AwfulPostCell.m */,
+				8C3B018E15C82E740005FD38 /* AwfulImagePickerGridCell.h */,
+				8C3B018F15C82E740005FD38 /* AwfulImagePickerGridCell.m */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -5359,6 +5369,8 @@
 				8C4C1E2415C7661400436B8A /* AwfulTableViewCellEmoticonMultiple.m in Sources */,
 				8C4C1E2715C7667300436B8A /* AwfulThreadTagPickerController.m in Sources */,
 				8C4C1E2A15C766D800436B8A /* AwfulImageAttachmentPickerController.m in Sources */,
+				8C06D2B115C81905000F9FCA /* AwfulGridViewController.m in Sources */,
+				8C3B019015C82E740005FD38 /* AwfulImagePickerGridCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

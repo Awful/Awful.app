@@ -95,9 +95,5 @@
     [cell didSelectCell:self];
 }
 
--(void) didPickThreadTag:(NSNotification*)notification {
-    NSLog(@"%@", notification.userInfo);
-}
-
 
 @end

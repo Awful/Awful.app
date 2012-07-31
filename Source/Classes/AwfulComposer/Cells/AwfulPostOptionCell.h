@@ -9,6 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "AwfulPostCell.h"
 
+typedef enum {
+    AwfulPostOptionCellParseURLs,
+    AwfulPostOptionCellBookmark,
+    AwfulPostOptionCellSmilies,
+    AwfulPostOptionCellSignature
+} AwfulPostOptions;
 
 @interface AwfulPostOptionCell : AwfulPostCell
 

@@ -6,11 +6,11 @@
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulFetchedTableViewController.h"
+#import "AwfulGridViewController.h"
 
 static NSString* const AwfulThreadTagPickedNotification = @"com.regularberry.awful.notifications.threadtag";
 
-@interface AwfulThreadTagPickerController : AwfulFetchedTableViewController
+@interface AwfulThreadTagPickerController : AwfulGridViewController
 
 -(id) initWithForum:(AwfulForum*)forum;
 @end
