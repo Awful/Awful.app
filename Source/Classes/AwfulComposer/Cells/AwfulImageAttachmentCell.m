@@ -14,9 +14,9 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        self.textLabel.text = @"Attachment:";
-        self.detailTextLabel.text = @"None";
-        self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        self.textLabel.text = @"Attach Image:";
+        self.detailTextLabel.text = @"Platinum Upgrade Required";
+        //self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     return self;
 }

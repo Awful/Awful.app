@@ -17,6 +17,7 @@
 #import "AwfulThreadCell.h"
 #import "AwfulLoginController.h"
 #import "AwfulCustomForums.h"
+#import "AwfulNewPostComposeController.h"
 
 #define THREAD_HEIGHT 76
 
@@ -61,6 +62,10 @@ typedef enum {
              sectionKey:nil
      ];
     
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:(UIBarButtonSystemItemCompose)
+                                                                                           target:self
+                                                                                           action:@selector(didTapCompose:)
+                                              ];
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -170,6 +175,12 @@ typedef enum {
 -(void)newlyVisible
 {
     //For subclassing
+}
+
+-(void) didTapCompose:(UIBarButtonItem*)button {
+    UINavigationController *test = [[UINavigationController alloc] initWithRootViewController:[AwfulNewPostComposeController new]];
+    test.modalPresentationStyle = UIModalPresentationFormSheet;
+    [self.splitViewController presentModalViewController:test animated:YES];
 }
 
 #pragma mark -

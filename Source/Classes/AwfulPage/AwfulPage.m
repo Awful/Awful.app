@@ -609,8 +609,11 @@
 
 -(IBAction)tappedCompose : (id)sender
 {
-    pop = [[UIPopoverController alloc] initWithContentViewController:[AwfulThreadReplyComposeController new]];
-    [pop presentPopoverFromRect:CGRectMake(400, 600, 10, 10) inView:self.view permittedArrowDirections:(UIPopoverArrowDirectionDown) animated:YES];
+    AwfulThreadReplyComposeController *composer = [AwfulThreadReplyComposeController new];
+    composer.thread = self.thread;
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:composer];
+    nav.modalPresentationStyle = UIModalPresentationFormSheet;
+    [self presentModalViewController:nav animated:YES];
 }
 
 #pragma mark - Navigator Content

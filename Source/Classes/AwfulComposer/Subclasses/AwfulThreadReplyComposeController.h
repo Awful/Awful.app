@@ -9,5 +9,5 @@
 #import "AwfulComposeController.h"
 
 @interface AwfulThreadReplyComposeController : AwfulComposeController
-
+@property (nonatomic,strong) AwfulThread* thread;
 @end

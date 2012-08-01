@@ -31,7 +31,7 @@
 }
 
 -(void) didSelectCell:(UIViewController *)viewController {
-    [self.composerView becomeFirstResponder];
+    //[self.composerView.innerWebView becomeFirstResponder];
 }
 
 @end

@@ -23,7 +23,6 @@
         _cells = [NSArray arrayWithObjects:
                   @"AwfulCurrentUserCell",
                   @"AwfulTextFieldCell",
-                  @"AwfulTextFieldCell",
                   @"AwfulPostIconCell",
                   @"AwfulPostComposerCell",
                   @"AwfulPostOptionCell",
@@ -31,6 +30,13 @@
                   nil];
     }
     return _cells;
+}
+
+
+-(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.row == 3)
+        return 200;
+    return 35;
 }
 
 @end

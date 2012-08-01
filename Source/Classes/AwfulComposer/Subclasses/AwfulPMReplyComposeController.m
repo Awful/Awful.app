@@ -46,7 +46,7 @@
                    ],
                   [NSDictionary dictionaryWithObjectsAndKeys:
                    @"AwfulPostIconCell", AwfulPostCellIdentifierKey,
-                   @"Thread Tag:", AwfulPostCellTextKey,
+                   @"Post Icon:", AwfulPostCellTextKey,
                    AwfulDraftRelationships.threadTag, AwfulPostCellDraftInputKey,
                    nil
                    ],

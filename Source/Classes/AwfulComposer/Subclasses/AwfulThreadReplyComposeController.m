@@ -13,6 +13,13 @@
 @end
 
 @implementation AwfulThreadReplyComposeController
+@synthesize thread = _thread;
+
+-(void) viewDidLoad {
+    [super viewDidLoad];
+    self.navigationItem.prompt = self.thread.title;
+    self.title = @"New Reply";
+}
 
 -(NSString*) submitString {
     return @"Reply";
@@ -22,13 +29,21 @@
     if (!_cells) {
         _cells = [NSArray arrayWithObjects:
                   @"AwfulCurrentUserCell",
-                  @"AwfulTextFieldCell",
                   @"AwfulPostComposerCell",
+                  @"AwfulPostOptionCell",
+                  @"AwfulPostOptionCell",
+                  @"AwfulPostOptionCell",
                   @"AwfulPostOptionCell",
                   @"AwfulImageAttachmentCell",
                   nil];
     }
     return _cells;
+}
+
+-(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.row == 1)
+        return 200;
+    return 35;
 }
 
 @end

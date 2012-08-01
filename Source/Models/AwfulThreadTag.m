@@ -39,8 +39,7 @@
     [fileManager changeCurrentDirectoryPath: docsDir];
     [fileManager createFileAtPath:threadTag.filename.lastPathComponent contents:data attributes:nil];
     NSString* path = [docsDir stringByAppendingPathComponent:threadTag.filename.lastPathComponent];
-    NSURL *url = [NSURL fileURLWithPath:path];
-    threadTag.filename = url.absoluteString;
+    threadTag.filename = [@"file://" stringByAppendingString:path];
     [ApplicationDelegate saveContext];
 }
 
