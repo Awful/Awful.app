@@ -63,8 +63,8 @@
                nil
                ],
          [NSDictionary dictionaryWithObjectsAndKeys:
-          self.privateMessage.content, AwfulPostCellDetailKey,
-          @"AwfulPostCell", AwfulPostCellIdentifierKey,
+          @"AwfulPMContentCell", AwfulPostCellIdentifierKey,
+          self.privateMessage, @"AwfulPostCellPMKey",
           nil
           ],
          nil],
@@ -132,6 +132,21 @@
                                                   [ApplicationDelegate requestFailed:error];
                                               }
      ];
+}
+
+-(NSString*)submitString {
+    return @"Send";
+}
+
+-(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSDictionary *cellData = [[self.sections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
+    
+    if ([cellData isKindOfClass:[NSDictionary class]] && (
+        [[cellData objectForKey:AwfulPostCellIdentifierKey] isEqualToString:@"AwfulPostComposerCell"] ||
+        [[cellData objectForKey:AwfulPostCellIdentifierKey] isEqualToString:@"AwfulPMContentCell"]))
+        return 250;
+    
+    return 44;
 }
 
 @end

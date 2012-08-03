@@ -28,6 +28,7 @@
 -(void) layoutSubviews {
     [super layoutSubviews];
     self.composerView.frame = self.contentView.frame;
+    self.composerView.foX = 0;
 }
 
 -(void) didSelectCell:(UIViewController *)viewController {
