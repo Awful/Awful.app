@@ -17,4 +17,8 @@ typedef void (^PrivateMessagesListResponseBlock)(NSMutableArray *messages);
                                        onError:(AwfulErrorBlock)errorBlock;
 
 -(NSOperation *)sendPrivateMessage:(AwfulDraft*)draft onCompletion:(CompletionBlock)completionBlock onError:(AwfulErrorBlock)errorBlock;
+
+-(NSOperation *)loadPrivateMessage:(AwfulPM*)message
+                      onCompletion:(PrivateMessagesListResponseBlock)PMListResponseBlock
+                           onError:(AwfulErrorBlock)errorBlock;
 @end

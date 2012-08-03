@@ -6,17 +6,18 @@
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulPrivateMessagesController.h"
+#import "AwfulPrivateMessageListController.h"
 #import "AwfulPM.h"
 #import "AwfulHTTPClient+PrivateMessages.h"
 #import "AwfulNewPostComposeController.h"
-#import "AwfulPMReplyComposeController.h"
+#import "AwfulNewPMComposeController.h"
+#import "AwfulPrivateMessageViewController.h"
 
-@interface AwfulPrivateMessagesController ()
+@interface AwfulPrivateMessageListController ()
 
 @end
 
-@implementation AwfulPrivateMessagesController
+@implementation AwfulPrivateMessageListController
 
 -(void) awakeFromNib {
     [self setEntityName:@"AwfulPM"
@@ -60,13 +61,17 @@
 }
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    UINavigationController *test = [[UINavigationController alloc] initWithRootViewController:[AwfulNewPostComposeController new]];
-    test.modalPresentationStyle = UIModalPresentationFormSheet;
-    [self.splitViewController presentModalViewController:test animated:YES];
+    AwfulPM* msg = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    [self performSegueWithIdentifier:@"viewPMSegue" sender:msg];
+}
+
+-(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    AwfulPrivateMessageViewController *pmView = segue.destinationViewController;
+    pmView.privateMessage = (AwfulPM*)sender;
 }
 
 -(void) didTapCompose:(UIBarButtonItem*)button {
-    UINavigationController *test = [[UINavigationController alloc] initWithRootViewController:[AwfulPMReplyComposeController new]];
+    UINavigationController *test = [[UINavigationController alloc] initWithRootViewController:[AwfulNewPMComposeController new]];
     test.modalPresentationStyle = UIModalPresentationFormSheet;
     [self.splitViewController presentModalViewController:test animated:YES];
 }

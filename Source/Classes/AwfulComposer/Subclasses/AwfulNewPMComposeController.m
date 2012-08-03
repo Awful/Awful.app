@@ -6,17 +6,17 @@
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulPMReplyComposeController.h"
+#import "AwfulNewPMComposeController.h"
 #import "AwfulPostCell.h"
 #import "AwfulPostComposerView.h"
 #import "AwfulDraft.h"
 #import "AwfulHTTPClient+PrivateMessages.h"
 
-@interface AwfulPMReplyComposeController ()
+@interface AwfulNewPMComposeController ()
 
 @end
 
-@implementation AwfulPMReplyComposeController
+@implementation AwfulNewPMComposeController
 
 -(void) viewDidLoad {
     [super viewDidLoad];
@@ -28,9 +28,9 @@
     return @"Send";
 }
 
--(NSArray*) cells {
-    if (!_cells) {
-        _cells = [NSArray arrayWithObjects:
+-(NSArray*) sections {
+    if (!_sections) {
+        _sections = [NSArray arrayWithObjects:
                   @"AwfulCurrentUserCell",
                   [NSDictionary dictionaryWithObjectsAndKeys:
                    @"AwfulTextFieldCell", AwfulPostCellIdentifierKey,
@@ -69,7 +69,7 @@
                    ],
                   nil];
     }
-    return _cells;
+    return _sections;
 }
 
 -(void) didTapSubmit:(UIBarButtonItem*)submitButton {

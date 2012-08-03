@@ -38,7 +38,7 @@
 
 }
 
--(NSArray*) cells {
+-(NSArray*) sections {
     return nil;
 }
 
@@ -47,17 +47,18 @@
     [self becomeFirstResponder];
 }
 
--(int) numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+-(NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return [[self.sections objectAtIndex:section] count];
 }
 
--(int) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.cells.count;
+-(NSInteger) numberOfSectionsInTableView:(UITableView *)tableView {
+    return self.sections.count;
 }
 
 -(UITableViewCell*) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString* cellIdentifier;
-    id cellInfo = [self.cells objectAtIndex:indexPath.row];
+    NSArray* section = [self.sections objectAtIndex:indexPath.section];
+    id cellInfo = [section objectAtIndex:indexPath.row];
     
     if ([cellInfo isKindOfClass:[NSString class]]) {
         cellIdentifier = (NSString*)cellInfo;
@@ -69,7 +70,7 @@
     
     AwfulPostCell* cell = (AwfulPostCell*)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (!cell)
-        cell = [[NSClassFromString(cellIdentifier) alloc] initWithStyle:(UITableViewCellStyleValue1) reuseIdentifier:cellIdentifier];
+        cell = [[NSClassFromString(cellIdentifier) alloc] initWithStyle:(UITableViewCellStyleValue2) reuseIdentifier:cellIdentifier];
     
     if (cellIdentifier == @"AwfulPostComposerCell")
         self.composerView = ((AwfulPostComposerCell*)cell).composerView;
@@ -78,7 +79,8 @@
         cell.dictionary = cellInfo;
     }
     
-    cell.draft = self.draft;
+    if (self.draft)
+        cell.draft = self.draft;
     
     
     return cell;

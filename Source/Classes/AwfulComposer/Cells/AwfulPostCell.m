@@ -30,11 +30,12 @@
 -(void) setDictionary:(NSDictionary *)dictionary {
     _dictionary = dictionary;
     self.textLabel.text = [dictionary objectForKey:AwfulPostCellTextKey];
+    self.detailTextLabel.text = [dictionary objectForKey:AwfulPostCellDetailKey];
 }
 
 -(void) setDraft:(AwfulDraft *)draft {
     _draft = draft;
-    if (self.dictionary) {
+    if (self.dictionary && [self.dictionary objectForKey:AwfulPostCellDraftInputKey]) {
         [draft addObserver:self
                 forKeyPath:[self.dictionary objectForKey:AwfulPostCellDraftInputKey]
                    options:(NSKeyValueObservingOptionNew) context:nil

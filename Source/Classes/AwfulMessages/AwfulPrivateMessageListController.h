@@ -8,6 +8,6 @@
 
 #import "AwfulFetchedTableViewController.h"
 
-@interface AwfulPrivateMessagesController : AwfulFetchedTableViewController
+@interface AwfulPrivateMessageListController : AwfulFetchedTableViewController
 
 @end

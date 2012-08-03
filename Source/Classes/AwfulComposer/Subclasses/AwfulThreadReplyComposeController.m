@@ -25,9 +25,9 @@
     return @"Reply";
 }
 
--(NSArray*) cells {
-    if (!_cells) {
-        _cells = [NSArray arrayWithObjects:
+-(NSArray*) sections {
+    if (!_sections) {
+        _sections = [NSArray arrayWithObjects:
                   @"AwfulCurrentUserCell",
                   @"AwfulPostComposerCell",
                   @"AwfulPostOptionCell",
@@ -37,7 +37,7 @@
                   @"AwfulImageAttachmentCell",
                   nil];
     }
-    return _cells;
+    return _sections;
 }
 
 -(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {

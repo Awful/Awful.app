@@ -318,11 +318,11 @@
             </objects>
             <point key="canvasLocation" x="330" y="198"/>
         </scene>
-        <!--Awful Private Messages Controller - Private Messages-->
+        <!--Awful Private Message List Controller - Private Messages-->
         <scene sceneID="oLP-ro-YKP">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Yes-6a-lxh" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tableViewController id="RHp-Sk-hW2" customClass="AwfulPrivateMessagesController" sceneMemberID="viewController">
+                <tableViewController id="RHp-Sk-hW2" customClass="AwfulPrivateMessageListController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="2HN-fG-k58">
                         <rect key="frame" x="0.0" y="64" width="320" height="655"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -342,9 +342,44 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="Private Messages" id="ml3-G4-AAt"/>
                     <splitViewMasterSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <connections>
+                        <segue destination="pEj-ba-8U1" kind="push" identifier="viewPMSegue" splitViewControllerTargetIndex="1" id="eWL-5c-XYD"/>
+                    </connections>
                 </tableViewController>
             </objects>
             <point key="canvasLocation" x="-955" y="-865"/>
+        </scene>
+        <!--Awful Private Message View Controller-->
+        <scene sceneID="R3f-NS-pZ1">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="nut-ur-LvO" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tableViewController id="pEj-ba-8U1" customClass="AwfulPrivateMessageViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="singleLineEtched" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="Ox1-WA-AMA">
+                        <rect key="frame" x="0.0" y="64" width="703" height="655"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="ziy-PR-Tgo">
+                                <rect key="frame" x="0.0" y="54" width="703" height="46"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="43" y="1" width="617" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="pEj-ba-8U1" id="wtC-x8-5X2"/>
+                            <outlet property="delegate" destination="pEj-ba-8U1" id="4Be-XR-GoT"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="fTQ-ZY-vQu"/>
+                    <splitViewDetailSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                </tableViewController>
+            </objects>
+            <point key="canvasLocation" x="-1580" y="46"/>
         </scene>
         <!--Navigation Controller - PMs-->
         <scene sceneID="5qa-Ic-SQn">
@@ -1037,6 +1072,10 @@
         </class>
         <class className="AwfulPageIpad" superclassName="AwfulPage">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPageIpad.h"/>
+            <relationships>
+                <relationship kind="action" name="tappedActions:"/>
+                <relationship kind="action" name="tappedPageNav:"/>
+            </relationships>
         </class>
         <class className="AwfulParentForumCell" superclassName="AwfulForumCell">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulParentForumCell.h"/>
@@ -1044,8 +1083,11 @@
         <class className="AwfulPostComposerView" superclassName="UITextView">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPostComposerView.h"/>
         </class>
-        <class className="AwfulPrivateMessagesController" superclassName="AwfulFetchedTableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPrivateMessagesController.h"/>
+        <class className="AwfulPrivateMessageListController" superclassName="AwfulFetchedTableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPrivateMessageListController.h"/>
+        </class>
+        <class className="AwfulPrivateMessageViewController" superclassName="AwfulFetchedTableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPrivateMessageViewController.h"/>
         </class>
         <class className="AwfulSearchController" superclassName="AwfulFetchedTableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulSearchController.h"/>

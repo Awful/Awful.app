@@ -2,6 +2,9 @@
 @class TFHppleElement;
 
 @interface AwfulPM : _AwfulPM {}
-+(NSMutableArray *)parsePMsWithData:(NSData*)data;
++(NSMutableArray *)parsePMListWithData:(NSData*)data;
 +(NSString*) messageIDFromLinkElement:(TFHppleElement*)a;
+
+
++(NSMutableArray *)parsePM:(AwfulPM*)message withData:(NSData*)data;
 @end

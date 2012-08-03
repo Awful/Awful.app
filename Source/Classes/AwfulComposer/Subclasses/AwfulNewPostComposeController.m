@@ -18,9 +18,9 @@
     return @"Post";
 }
 
--(NSArray*) cells {
-    if (!_cells) {
-        _cells = [NSArray arrayWithObjects:
+-(NSArray*) sections {
+    if (!_sections) {
+        _sections = [NSArray arrayWithObjects:
                   @"AwfulCurrentUserCell",
                   @"AwfulTextFieldCell",
                   @"AwfulPostIconCell",
@@ -29,7 +29,7 @@
                   @"AwfulImageAttachmentCell",
                   nil];
     }
-    return _cells;
+    return _sections;
 }
 
 

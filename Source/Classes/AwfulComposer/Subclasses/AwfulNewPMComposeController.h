@@ -8,6 +8,6 @@
 
 #import "AwfulComposeController.h"
 
-@interface AwfulPMReplyComposeController : AwfulComposeController
+@interface AwfulNewPMComposeController : AwfulComposeController
 
 @end

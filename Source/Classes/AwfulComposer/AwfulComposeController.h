@@ -11,9 +11,9 @@
 @class AwfulDraft;
 
 @interface AwfulComposeController : UITableViewController {
-    @protected NSArray *_cells;
+    @protected NSArray *_sections;
 }
-@property (nonatomic,strong) NSArray* cells;
+@property (nonatomic,strong) NSArray* sections;
 @property (nonatomic,strong) AwfulPostComposerView* composerView;
 @property (nonatomic,readonly) NSString* submitString;
 @property (nonatomic,strong) AwfulDraft* draft;
