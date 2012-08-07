@@ -62,10 +62,7 @@ typedef enum {
              sectionKey:nil
      ];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:(UIBarButtonSystemItemCompose)
-                                                                                           target:self
-                                                                                           action:@selector(didTapCompose:)
-                                              ];
+
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -194,6 +191,9 @@ typedef enum {
     lab.text = self.forum.name;
     
     self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
+    
+    self.navigationItem.leftBarButtonItem = self.customBackButton;
+    self.navigationItem.rightBarButtonItem = self.customPostButton;
 
     if(self.fetchedResultsController.fetchedObjects.count == 0 && IsLoggedIn()) {
         [self refresh];
@@ -292,13 +292,19 @@ typedef enum {
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    self.navigationItem.leftBarButtonItem = self.customBackButton;
     
     [self.navigationController setToolbarHidden:YES];
     
     [self.navigationController.navigationBar setBackgroundImage:[self customNavigationBarBackgroundImageForMetrics:(UIBarMetricsDefault)] 
                                                   forBarMetrics:(UIBarMetricsDefault)];
      
+}
+
+-(UIBarButtonItem*) customPostButton {
+    return [[UIBarButtonItem alloc] initWithBarButtonSystemItem:(UIBarButtonSystemItemCompose)
+                                                         target:self
+                                                         action:@selector(didTapCompose:)
+            ];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

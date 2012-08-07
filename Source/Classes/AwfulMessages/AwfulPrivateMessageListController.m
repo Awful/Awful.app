@@ -11,7 +11,7 @@
 #import "AwfulHTTPClient+PrivateMessages.h"
 #import "AwfulNewPostComposeController.h"
 #import "AwfulNewPMComposeController.h"
-#import "AwfulPrivateMessageViewController.h"
+#import "AwfulPrivateMessageViewReplyComboController.h"
 
 @interface AwfulPrivateMessageListController ()
 
@@ -66,7 +66,7 @@
 }
 
 -(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    AwfulPrivateMessageViewController *pmView = segue.destinationViewController;
+    AwfulPrivateMessageViewReplyComboController *pmView = segue.destinationViewController;
     pmView.privateMessage = (AwfulPM*)sender;
 }
 

@@ -6,16 +6,16 @@
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulPrivateMessageViewController.h"
+#import "AwfulPrivateMessageViewReplyComboController.h"
 #import "AwfulPM.h"
 #import "AwfulPostCell.h"
 #import "AwfulHTTPClient+PrivateMessages.h"
 
-@interface AwfulPrivateMessageViewController ()
+@interface AwfulPrivateMessageViewReplyComboController ()
 
 @end
 
-@implementation AwfulPrivateMessageViewController
+@implementation AwfulPrivateMessageViewReplyComboController
 @synthesize privateMessage = _privateMessage;
 
 
@@ -73,7 +73,7 @@
             [NSArray arrayWithObjects:
               @"AwfulCurrentUserCell",
               [NSDictionary dictionaryWithObjectsAndKeys:
-               @"AwfulTextFieldCell", AwfulPostCellIdentifierKey,
+               @"AwfulTextFieldRFCell", AwfulPostCellIdentifierKey,
                @"To:", AwfulPostCellTextKey,
                self.privateMessage.from, AwfulPostCellDetailKey,
                AwfulDraftAttributes.recipient, AwfulPostCellDraftInputKey,

@@ -113,8 +113,6 @@
     title.frame = CGRectMake(0, 0, 200, 50);
     title.text = self.forum.name;
     self.navigationItem.titleView = title;
-
-
 }
 
 -(UIBarButtonItem*) customBackButton {
@@ -122,10 +120,10 @@
     
     //here we're making one flat, rectangular, and green/black
     UIButton *back = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 70, 26)];
-    [back setTitle:@"cd .." forState:(UIControlStateNormal)];
+    [back setTitle:@"EXIT" forState:(UIControlStateNormal)];
     [back setTitleColor:[UIColor YOSPOSGreenColor] forState:UIControlStateNormal];
     back.titleLabel.textAlignment = UITextAlignmentCenter;
-    back.titleLabel.font = [UIFont fontWithName:@"Courier-Bold" size:12];
+    back.titleLabel.font = [UIFont fontWithName:@"Courier-Bold" size:16];
     back.layer.borderColor = [[UIColor YOSPOSGreenColor] CGColor];
     back.layer.borderWidth = 1;
     
@@ -134,6 +132,23 @@
     [back addTarget:self action:@selector(pop) forControlEvents:(UIControlEventTouchUpInside)];
     
     UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithCustomView:back];
+    return button;
+}
+
+-(UIBarButtonItem*) customPostButton {
+    //change the compose button
+    UIButton *post = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 70, 26)];
+    [post setTitle:@"POST" forState:(UIControlStateNormal)];
+    [post setTitleColor:[UIColor YOSPOSGreenColor] forState:UIControlStateNormal];
+    post.titleLabel.textAlignment = UITextAlignmentCenter;
+    post.titleLabel.font = [UIFont fontWithName:@"Courier-Bold" size:16];
+    post.layer.borderColor = [[UIColor YOSPOSGreenColor] CGColor];
+    post.layer.borderWidth = 1;
+    
+    //when using uibarbuttonitem initwithcustomview, the target and action properties get ignored
+    //so the custom view needs to have them
+    [post addTarget:self action:@selector(didTapCompose:) forControlEvents:(UIControlEventTouchUpInside)];
+    UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithCustomView:post];
     return button;
 }
 

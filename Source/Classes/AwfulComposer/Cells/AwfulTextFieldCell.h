@@ -11,5 +11,5 @@
 
 
 @interface AwfulTextFieldCell : AwfulPostCell <UITextFieldDelegate>
-
+@property (nonatomic,strong) UITextField* textField;
 @end

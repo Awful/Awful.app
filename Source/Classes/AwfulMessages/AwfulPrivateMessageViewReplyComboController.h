@@ -10,6 +10,6 @@
 
 @class AwfulPM;
 
-@interface AwfulPrivateMessageViewController : AwfulComposeController
+@interface AwfulPrivateMessageViewReplyComboController : AwfulComposeController
 @property (nonatomic,strong) AwfulPM* privateMessage;
 @end

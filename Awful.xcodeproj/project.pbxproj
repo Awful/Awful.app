@@ -146,8 +146,9 @@
 		8C48EA34159C904500A59691 /* AwfulSubForumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48EA33159C904500A59691 /* AwfulSubForumCell.m */; };
 		8C48EA42159CED8700A59691 /* AwfulForumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48EA41159CED8700A59691 /* AwfulForumCell.m */; };
 		8C48EA61159DD8FA00A59691 /* TDBadgedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48EA60159DD8FA00A59691 /* TDBadgedCell.m */; };
-		8C4ACFF015CB181F00B1DBA5 /* AwfulPrivateMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4ACFEF15CB181F00B1DBA5 /* AwfulPrivateMessageViewController.m */; };
+		8C4ACFF015CB181F00B1DBA5 /* AwfulPrivateMessageViewReplyComboController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4ACFEF15CB181F00B1DBA5 /* AwfulPrivateMessageViewReplyComboController.m */; };
 		8C4ACFF415CB7CE600B1DBA5 /* AwfulPMContentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4ACFF315CB7CE600B1DBA5 /* AwfulPMContentCell.m */; };
+		8C4ACFFA15CC325E00B1DBA5 /* AwfulTextFieldRFCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4ACFF915CC325E00B1DBA5 /* AwfulTextFieldRFCell.m */; };
 		8C4C1E2015C7660800436B8A /* AwfulEmotePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4C1E1D15C7660800436B8A /* AwfulEmotePickerController.m */; };
 		8C4C1E2115C7660800436B8A /* AwfulPostComposerInputAccessoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4C1E1F15C7660800436B8A /* AwfulPostComposerInputAccessoryView.m */; };
 		8C4C1E2715C7667300436B8A /* AwfulThreadTagPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4C1E2615C7667300436B8A /* AwfulThreadTagPickerController.m */; };
@@ -1366,10 +1367,12 @@
 		8C48EA41159CED8700A59691 /* AwfulForumCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumCell.m; sourceTree = "<group>"; };
 		8C48EA5F159DD8FA00A59691 /* TDBadgedCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDBadgedCell.h; sourceTree = "<group>"; };
 		8C48EA60159DD8FA00A59691 /* TDBadgedCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDBadgedCell.m; sourceTree = "<group>"; };
-		8C4ACFEE15CB181F00B1DBA5 /* AwfulPrivateMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessageViewController.h; sourceTree = "<group>"; };
-		8C4ACFEF15CB181F00B1DBA5 /* AwfulPrivateMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessageViewController.m; sourceTree = "<group>"; };
+		8C4ACFEE15CB181F00B1DBA5 /* AwfulPrivateMessageViewReplyComboController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessageViewReplyComboController.h; sourceTree = "<group>"; };
+		8C4ACFEF15CB181F00B1DBA5 /* AwfulPrivateMessageViewReplyComboController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessageViewReplyComboController.m; sourceTree = "<group>"; };
 		8C4ACFF215CB7CE600B1DBA5 /* AwfulPMContentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPMContentCell.h; sourceTree = "<group>"; };
 		8C4ACFF315CB7CE600B1DBA5 /* AwfulPMContentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPMContentCell.m; sourceTree = "<group>"; };
+		8C4ACFF815CC325E00B1DBA5 /* AwfulTextFieldRFCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTextFieldRFCell.h; sourceTree = "<group>"; };
+		8C4ACFF915CC325E00B1DBA5 /* AwfulTextFieldRFCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTextFieldRFCell.m; sourceTree = "<group>"; };
 		8C4C1E1C15C7660800436B8A /* AwfulEmotePickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulEmotePickerController.h; sourceTree = "<group>"; };
 		8C4C1E1D15C7660800436B8A /* AwfulEmotePickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulEmotePickerController.m; sourceTree = "<group>"; };
 		8C4C1E1E15C7660800436B8A /* AwfulPostComposerInputAccessoryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostComposerInputAccessoryView.h; sourceTree = "<group>"; };
@@ -3009,8 +3012,8 @@
 			children = (
 				8CB5467D15BA5A8000E8BEC1 /* AwfulPrivateMessageListController.h */,
 				8CB5467E15BA5A8000E8BEC1 /* AwfulPrivateMessageListController.m */,
-				8C4ACFEE15CB181F00B1DBA5 /* AwfulPrivateMessageViewController.h */,
-				8C4ACFEF15CB181F00B1DBA5 /* AwfulPrivateMessageViewController.m */,
+				8C4ACFEE15CB181F00B1DBA5 /* AwfulPrivateMessageViewReplyComboController.h */,
+				8C4ACFEF15CB181F00B1DBA5 /* AwfulPrivateMessageViewReplyComboController.m */,
 				8C4ACFF215CB7CE600B1DBA5 /* AwfulPMContentCell.h */,
 				8C4ACFF315CB7CE600B1DBA5 /* AwfulPMContentCell.m */,
 			);
@@ -3059,6 +3062,8 @@
 				8CFEECA515C6F1F900407A20 /* AwfulPostCell.m */,
 				8C3B018E15C82E740005FD38 /* AwfulImagePickerGridCell.h */,
 				8C3B018F15C82E740005FD38 /* AwfulImagePickerGridCell.m */,
+				8C4ACFF815CC325E00B1DBA5 /* AwfulTextFieldRFCell.h */,
+				8C4ACFF915CC325E00B1DBA5 /* AwfulTextFieldRFCell.m */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -5411,8 +5416,9 @@
 				8C3B019D15C882FC0005FD38 /* _AwfulDraft.m in Sources */,
 				8C3B01A015C883070005FD38 /* AwfulDraft.m in Sources */,
 				8C3B01A315C88AF00005FD38 /* NSManagedObject+Lazy.m in Sources */,
-				8C4ACFF015CB181F00B1DBA5 /* AwfulPrivateMessageViewController.m in Sources */,
+				8C4ACFF015CB181F00B1DBA5 /* AwfulPrivateMessageViewReplyComboController.m in Sources */,
 				8C4ACFF415CB7CE600B1DBA5 /* AwfulPMContentCell.m in Sources */,
+				8C4ACFFA15CC325E00B1DBA5 /* AwfulTextFieldRFCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

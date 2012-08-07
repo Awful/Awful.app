@@ -349,11 +349,11 @@
             </objects>
             <point key="canvasLocation" x="-955" y="-865"/>
         </scene>
-        <!--Awful Private Message View Controller-->
+        <!--Awful Private Message View Reply Combo Controller-->
         <scene sceneID="R3f-NS-pZ1">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nut-ur-LvO" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tableViewController id="pEj-ba-8U1" customClass="AwfulPrivateMessageViewController" sceneMemberID="viewController">
+                <tableViewController id="pEj-ba-8U1" customClass="AwfulPrivateMessageViewReplyComboController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="singleLineEtched" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="Ox1-WA-AMA">
                         <rect key="frame" x="0.0" y="64" width="703" height="655"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1085,9 +1085,6 @@
         </class>
         <class className="AwfulPrivateMessageListController" superclassName="AwfulFetchedTableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPrivateMessageListController.h"/>
-        </class>
-        <class className="AwfulPrivateMessageViewController" superclassName="AwfulFetchedTableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPrivateMessageViewController.h"/>
         </class>
         <class className="AwfulSearchController" superclassName="AwfulFetchedTableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulSearchController.h"/>
