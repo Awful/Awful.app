@@ -7,6 +7,7 @@
 //
 
 #import "AwfulCustomForums.h"
+#import "AwfulYOSPOSRefreshControl.h"
 #import "AwfulThreadCell.h"
 #import "AwfulThreadListController.h"
 #import "AwfulRefreshControl.h"
@@ -23,11 +24,9 @@ static AwfulCustomForumID const AwfulCustomForumYOSPOS = (AwfulCustomForumID)219
 @interface AwfulYOSPOSThreadListController : AwfulThreadListController
 @end
 
-//and to go all out, replace other components, like here the Pull to Refresh Header
-@interface AwfulYOSPOSRefreshControl : AwfulRefreshControl
-@end
+//and to go all out, replace other components
 
-//and a replacement activity spinner
+//a replacement activity spinner
 @interface AwfulYOSPOSActivityIndicatorView : UIActivityIndicatorView {
     UILabel *_lbl;
     NSTimer *_timer;

@@ -131,7 +131,6 @@
 		8C1BC80A15AF0FFE00B75286 /* AwfulCustomForumFilmDump.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1BC80315AF0FFE00B75286 /* AwfulCustomForumFilmDump.m */; };
 		8C1BC80B15AF0FFE00B75286 /* AwfulCustomForumFYAD.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1BC80515AF0FFE00B75286 /* AwfulCustomForumFYAD.m */; };
 		8C1BC80C15AF0FFE00B75286 /* AwfulCustomForums.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1BC80715AF0FFE00B75286 /* AwfulCustomForums.m */; };
-		8C1BC80D15AF0FFE00B75286 /* AwfulCustomForumYOSPOS.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1BC80915AF0FFE00B75286 /* AwfulCustomForumYOSPOS.m */; };
 		8C3B019015C82E740005FD38 /* AwfulImagePickerGridCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B018F15C82E740005FD38 /* AwfulImagePickerGridCell.m */; };
 		8C3B019415C83FFE0005FD38 /* AwfulHTTPClient+ThreadTags.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B019315C83FFE0005FD38 /* AwfulHTTPClient+ThreadTags.m */; };
 		8C3B019715C841160005FD38 /* _AwfulThreadTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B019615C841160005FD38 /* _AwfulThreadTag.m */; };
@@ -139,6 +138,9 @@
 		8C3B019D15C882FC0005FD38 /* _AwfulDraft.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B019C15C882FC0005FD38 /* _AwfulDraft.m */; };
 		8C3B01A015C883070005FD38 /* AwfulDraft.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B019F15C883070005FD38 /* AwfulDraft.m */; };
 		8C3B01A315C88AF00005FD38 /* NSManagedObject+Lazy.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B01A215C88AF00005FD38 /* NSManagedObject+Lazy.m */; };
+		8C447E0415D448A60088B74C /* AwfulCustomForumYOSPOS.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C447E0315D448A60088B74C /* AwfulCustomForumYOSPOS.m */; };
+		8C447E0715D448E40088B74C /* AwfulYOSPOSRefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C447E0615D448E40088B74C /* AwfulYOSPOSRefreshControl.m */; };
+		8C447E0A15D449AD0088B74C /* AwfulYOSPOSFakeShell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C447E0915D449AD0088B74C /* AwfulYOSPOSFakeShell.m */; };
 		8C48E9FE159A1B2B00A59691 /* AwfulRefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48E9FD159A1B2B00A59691 /* AwfulRefreshControl.m */; };
 		8C48EA01159A353400A59691 /* AwfulLoadNextControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48EA00159A353400A59691 /* AwfulLoadNextControl.m */; };
 		8C48EA1E159BC2AC00A59691 /* AwfulFetchedTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48EA1D159BC2AC00A59691 /* AwfulFetchedTableViewController.m */; };
@@ -1337,8 +1339,6 @@
 		8C1BC80515AF0FFE00B75286 /* AwfulCustomForumFYAD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCustomForumFYAD.m; sourceTree = "<group>"; };
 		8C1BC80615AF0FFE00B75286 /* AwfulCustomForums.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCustomForums.h; sourceTree = "<group>"; };
 		8C1BC80715AF0FFE00B75286 /* AwfulCustomForums.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCustomForums.m; sourceTree = "<group>"; };
-		8C1BC80815AF0FFE00B75286 /* AwfulCustomForumYOSPOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCustomForumYOSPOS.h; sourceTree = "<group>"; };
-		8C1BC80915AF0FFE00B75286 /* AwfulCustomForumYOSPOS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCustomForumYOSPOS.m; sourceTree = "<group>"; };
 		8C3B018E15C82E740005FD38 /* AwfulImagePickerGridCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulImagePickerGridCell.h; sourceTree = "<group>"; };
 		8C3B018F15C82E740005FD38 /* AwfulImagePickerGridCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulImagePickerGridCell.m; sourceTree = "<group>"; };
 		8C3B019215C83FFE0005FD38 /* AwfulHTTPClient+ThreadTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "AwfulHTTPClient+ThreadTags.h"; path = "AwfulNetworking/AwfulHTTPClient+ThreadTags.h"; sourceTree = "<group>"; };
@@ -1353,6 +1353,12 @@
 		8C3B019F15C883070005FD38 /* AwfulDraft.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulDraft.m; sourceTree = "<group>"; };
 		8C3B01A115C88AF00005FD38 /* NSManagedObject+Lazy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+Lazy.h"; sourceTree = "<group>"; };
 		8C3B01A215C88AF00005FD38 /* NSManagedObject+Lazy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObject+Lazy.m"; sourceTree = "<group>"; };
+		8C447E0215D448A60088B74C /* AwfulCustomForumYOSPOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCustomForumYOSPOS.h; sourceTree = "<group>"; };
+		8C447E0315D448A60088B74C /* AwfulCustomForumYOSPOS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCustomForumYOSPOS.m; sourceTree = "<group>"; };
+		8C447E0515D448E40088B74C /* AwfulYOSPOSRefreshControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulYOSPOSRefreshControl.h; sourceTree = "<group>"; };
+		8C447E0615D448E40088B74C /* AwfulYOSPOSRefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulYOSPOSRefreshControl.m; sourceTree = "<group>"; };
+		8C447E0815D449AD0088B74C /* AwfulYOSPOSFakeShell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulYOSPOSFakeShell.h; sourceTree = "<group>"; };
+		8C447E0915D449AD0088B74C /* AwfulYOSPOSFakeShell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulYOSPOSFakeShell.m; sourceTree = "<group>"; };
 		8C48E9FC159A1B2B00A59691 /* AwfulRefreshControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulRefreshControl.h; sourceTree = "<group>"; };
 		8C48E9FD159A1B2B00A59691 /* AwfulRefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulRefreshControl.m; sourceTree = "<group>"; };
 		8C48E9FF159A353400A59691 /* AwfulLoadNextControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLoadNextControl.h; sourceTree = "<group>"; };
@@ -2945,16 +2951,28 @@
 		8C1BC80115AF0FFE00B75286 /* CustomForums */ = {
 			isa = PBXGroup;
 			children = (
+				8C447E0015D4487D0088B74C /* YOSPOS */,
 				8C1BC80615AF0FFE00B75286 /* AwfulCustomForums.h */,
 				8C1BC80715AF0FFE00B75286 /* AwfulCustomForums.m */,
 				8C1BC80215AF0FFE00B75286 /* AwfulCustomForumFilmDump.h */,
 				8C1BC80315AF0FFE00B75286 /* AwfulCustomForumFilmDump.m */,
 				8C1BC80415AF0FFE00B75286 /* AwfulCustomForumFYAD.h */,
 				8C1BC80515AF0FFE00B75286 /* AwfulCustomForumFYAD.m */,
-				8C1BC80815AF0FFE00B75286 /* AwfulCustomForumYOSPOS.h */,
-				8C1BC80915AF0FFE00B75286 /* AwfulCustomForumYOSPOS.m */,
 			);
 			path = CustomForums;
+			sourceTree = "<group>";
+		};
+		8C447E0015D4487D0088B74C /* YOSPOS */ = {
+			isa = PBXGroup;
+			children = (
+				8C447E0215D448A60088B74C /* AwfulCustomForumYOSPOS.h */,
+				8C447E0315D448A60088B74C /* AwfulCustomForumYOSPOS.m */,
+				8C447E0515D448E40088B74C /* AwfulYOSPOSRefreshControl.h */,
+				8C447E0615D448E40088B74C /* AwfulYOSPOSRefreshControl.m */,
+				8C447E0815D449AD0088B74C /* AwfulYOSPOSFakeShell.h */,
+				8C447E0915D449AD0088B74C /* AwfulYOSPOSFakeShell.m */,
+			);
+			path = YOSPOS;
 			sourceTree = "<group>";
 		};
 		8C48E9FB159A1B0700A59691 /* pull for action */ = {
@@ -5363,7 +5381,6 @@
 				8C1BC80A15AF0FFE00B75286 /* AwfulCustomForumFilmDump.m in Sources */,
 				8C1BC80B15AF0FFE00B75286 /* AwfulCustomForumFYAD.m in Sources */,
 				8C1BC80C15AF0FFE00B75286 /* AwfulCustomForums.m in Sources */,
-				8C1BC80D15AF0FFE00B75286 /* AwfulCustomForumYOSPOS.m in Sources */,
 				8CCD500715B497A900E5893B /* awful.js in Sources */,
 				8CCD500A15B497A900E5893B /* jquery.js in Sources */,
 				8CCD500E15B497A900E5893B /* salr.js in Sources */,
@@ -5419,6 +5436,9 @@
 				8C4ACFF015CB181F00B1DBA5 /* AwfulPrivateMessageViewReplyComboController.m in Sources */,
 				8C4ACFF415CB7CE600B1DBA5 /* AwfulPMContentCell.m in Sources */,
 				8C4ACFFA15CC325E00B1DBA5 /* AwfulTextFieldRFCell.m in Sources */,
+				8C447E0415D448A60088B74C /* AwfulCustomForumYOSPOS.m in Sources */,
+				8C447E0715D448E40088B74C /* AwfulYOSPOSRefreshControl.m in Sources */,
+				8C447E0A15D449AD0088B74C /* AwfulYOSPOSFakeShell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

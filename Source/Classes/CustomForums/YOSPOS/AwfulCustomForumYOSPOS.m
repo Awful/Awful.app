@@ -8,6 +8,7 @@
 
 #import "AwfulCustomForumYOSPOS.h"
 #import "AwfulThread.h"
+#import "AwfulUser+AwfulMethods.h"
 
 @implementation AwfulYOSPOSThreadCell
 
@@ -96,12 +97,14 @@
 @end
 
 
-@implementation AwfulYOSPOSThreadListController
 //that's not enough, let's do the threadlist too
+@implementation AwfulYOSPOSThreadListController
 
 -(void) viewDidLoad {
     [super viewDidLoad];
     self.tableView.separatorColor = [UIColor YOSPOSGreenColor];
+    
+    self.view.backgroundColor = [UIColor blackColor];
     
     //change navbar title and formatting
     UILabel *title = [UILabel new];
@@ -113,6 +116,10 @@
     title.frame = CGRectMake(0, 0, 200, 50);
     title.text = self.forum.name;
     self.navigationItem.titleView = title;
+}
+
+-(void) refresh {
+    
 }
 
 -(UIBarButtonItem*) customBackButton {
@@ -172,34 +179,6 @@
     //custom string for deleting a table cell, which marks a thread unread
     return @"rm -rf";
 }
-@end
-
-@implementation AwfulYOSPOSRefreshControl
-//this custom refresh control just changes the colors and fonts,
-//and changes the activity spinner
-
--(id) initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
-    self.title.font = [UIFont fontWithName:@"Courier" size:16];
-    self.title.textColor = [UIColor blackColor];
-    
-    self.subtitle.textColor = [UIColor blackColor];
-    self.subtitle.font = [UIFont fontWithName:@"Courier" size:12];
-    
-    [[self.layer.sublayers objectAtIndex:0] removeFromSuperlayer];
-    self.backgroundColor = [UIColor YOSPOSGreenColor];
-    
-    return self;
-}
-
--(UIActivityIndicatorView*) activityView {
-    if (!_activityView) {
-        _activityView = [[AwfulYOSPOSActivityIndicatorView alloc] initWithInvertedColors];
-        [self addSubview:_activityView];
-    }
-    return _activityView;
-}
-
 @end
 
 @implementation AwfulYOSPOSActivityIndicatorView
