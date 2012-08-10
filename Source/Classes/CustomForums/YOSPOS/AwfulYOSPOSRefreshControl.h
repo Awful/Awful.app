@@ -11,5 +11,5 @@
 
 @interface AwfulYOSPOSRefreshControl : AwfulRefreshControl
 @property (nonatomic,readonly) AwfulYOSPOSFakeShell* shell;
-@property (nonatomic) UIScrollView* scrollView;
+@property (nonatomic) UITextView* tty;
 @end

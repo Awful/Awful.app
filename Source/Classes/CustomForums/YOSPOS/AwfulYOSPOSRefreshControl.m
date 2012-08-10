@@ -11,34 +11,19 @@
 #import "AwfulYOSPOSFakeShell.h"
 
 @implementation AwfulYOSPOSRefreshControl
-@synthesize scrollView = _scrollView;
+@synthesize tty = _tty;
 //fake wget refresh control
 
 -(id) initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
-    self.title.font = [UIFont fontWithName:@"Courier" size:10];
-    self.title.numberOfLines = 0;
-    self.title.lineBreakMode = UILineBreakModeCharacterWrap;
-    self.title.clipsToBounds = NO;
-    self.title.textColor = [UIColor YOSPOSGreenColor];
-    self.title.backgroundColor = [UIColor blackColor];
-    self.title.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    self.title.tag = 0;
     
-    [self.title addObserver:self
-                 forKeyPath:@"text"
-                    options:(NSKeyValueObservingOptionNew)
-                    context:nil
+    
+    [self.tty addObserver:self
+               forKeyPath:@"text"
+                  options:(NSKeyValueObservingOptionNew)
+                  context:nil
      ];
     
-    _scrollView = [[UIScrollView alloc] initWithFrame:frame];
-    self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    [self addSubview:self.scrollView];
-    
-    [self.scrollView addSubview:self.title];
-    
-    self.subtitle.textColor = [UIColor blackColor];
-    self.subtitle.font = [UIFont fontWithName:@"Courier" size:12];
     
     [[self.layer.sublayers objectAtIndex:0] removeFromSuperlayer];
     self.backgroundColor = [UIColor blackColor];
@@ -48,26 +33,39 @@
     [self.imageView2 removeFromSuperview];
     [self.innerCell removeFromSuperview];
     
-    _shell = [[AwfulYOSPOSFakeShell alloc] initWithLabel:self.title];
+    _shell = [[AwfulYOSPOSFakeShell alloc] initWithTextView:self.tty];
     
     return self;
 }
 
+-(UITextView*) tty {
+    if (!_tty) {
+        _tty = [UITextView new];
+        _tty.font = [UIFont fontWithName:@"Courier" size:10];
+        _tty.textColor = [UIColor YOSPOSGreenColor];
+        _tty.backgroundColor = [UIColor blackColor];
+        _tty.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+        [self addSubview:_tty];
+    }
+    return _tty;
+}
+
 -(void) layoutSubviews {
     [super layoutSubviews];
-    self.scrollView.frame = self.frame;
-    self.scrollView.foY = 0;
-    self.scrollView.fsW = 320;
+    self.tty.frame = self.frame;
+    self.tty.foY = 0;
+    self.tty.fsW = 320;
 }
 
 -(void) setState:(AwfulRefreshControlState)state {
+    if (state == AwfulRefreshControlStateLoading) {
+        [self.shell execute];
+    }
+    
     [super setState:state];
     self.title.text = nil;
     self.subtitle.text = nil;
     
-    if (state == AwfulRefreshControlStateLoading) {
-        [self.shell execute];
-    }
 }
 
 
@@ -94,11 +92,10 @@
 }
 
 -(void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (object == self.title) {
-        [self.title sizeToFit];
-        self.title.fsW = 320;
-        self.scrollView.contentSize = self.title.frame.size;
-        self.scrollView.contentOffset = CGPointMake(0, self.title.fsH - self.scrollView.fsH);
+    if (object == self.tty) {
+        self.tty.fsW = 320;
+        self.tty.contentOffset = CGPointMake(0, self.tty.contentSize.height - self.tty.fsH);
+        //[self.tty scrollRangeToVisible:NSMakeRange(self.tty.text.length, 0)];
     }
 }
 

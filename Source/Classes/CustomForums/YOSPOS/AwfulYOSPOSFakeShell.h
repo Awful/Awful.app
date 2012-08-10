@@ -8,15 +8,24 @@
 
 #import <Foundation/Foundation.h>
 
-@interface AwfulYOSPOSFakeShell : NSObject
--(id) initWithLabel:(UILabel*)label;
+@class YosposhCommand;
+
+@interface AwfulYOSPOSFakeShell : NSObject <UITextViewDelegate> {
+    int currentCommandPosition;
+}
+-(id) initWithTextView:(UITextView*)textView;
 
 -(void) execute;
 
 @property (nonatomic,readonly) NSString* prompt;
-@property (nonatomic,readonly) NSString* history;
+@property (nonatomic,readonly) NSMutableString* history;
+@property (nonatomic,strong) YosposhCommand* executingCommand;
+
+-(void) output:(NSString*)format, ...;
+-(void) outputLine:(NSString*)format, ... ;
 
 @property (nonatomic,readwrite) NSString* currentCommand;
 
-@property (nonatomic,readonly,strong) UILabel* label;
+@property (nonatomic,readonly,strong) UITextView* tty;
+@property (nonatomic) BOOL isExecuting;
 @end

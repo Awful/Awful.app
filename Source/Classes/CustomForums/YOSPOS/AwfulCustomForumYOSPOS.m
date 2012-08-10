@@ -9,6 +9,7 @@
 #import "AwfulCustomForumYOSPOS.h"
 #import "AwfulThread.h"
 #import "AwfulUser+AwfulMethods.h"
+#import "AwfulYOSPOSHTTPRequestOperation.h"
 
 @implementation AwfulYOSPOSThreadCell
 
@@ -119,7 +120,29 @@
 }
 
 -(void) refresh {
+    AwfulHTTPClient *httpClient = [AwfulHTTPClient sharedClient];
     
+    NSString *path = [NSString stringWithFormat:@"forumdisplay.php?forumid=%@&perpage=40&pagenumber=%u", self.forum.forumID, self.currentPage];
+    NSMutableURLRequest *urlRequest = [httpClient requestWithMethod:@"GET" path:path parameters:nil];
+    urlRequest.timeoutInterval = NetworkTimeoutInterval;
+    AFHTTPRequestOperation *op = [[AwfulYOSPOSHTTPRequestOperation alloc] initWithRequest:urlRequest];
+    [op setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id response) {
+                                                                   //NetworkLogInfo(@"completed %@", THIS_METHOD);
+                                                                   if(self.currentPage == 1) {
+                                                                       //[AwfulThread removeOldThreadsForForum:self.forum];
+                                                                       [ApplicationDelegate saveContext];
+                                                                   }
+                                                                   
+                                                                   NSData *responseData = (NSData *)response;
+                                                                   //NSMutableArray *threads = [AwfulThread parseThreadsWithData:responseData forForum:forum];
+                                                                   [ApplicationDelegate saveContext];
+                                                                   //threadListResponseBlock(threads);
+                                                               } 
+                                                               failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                                                   //NetworkLogInfo(@"erred %@", THIS_METHOD);
+                                                                   //errorBlock(error);
+                                                               }];
+    [httpClient enqueueHTTPRequestOperation:op];
 }
 
 -(UIBarButtonItem*) customBackButton {
