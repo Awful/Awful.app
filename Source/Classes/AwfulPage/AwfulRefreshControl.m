@@ -136,8 +136,6 @@
     
     switch (state) {
         case AwfulRefreshControlStateLoading:
-            self.title.text = @"Refreshing...";
-            self.subtitle.text = @"Swipe left to cancel";
             self.imageView.hidden = YES;
             self.imageView2.hidden = YES;
             [self.activityView startAnimating];
@@ -146,8 +144,6 @@
             break;
             
         case AwfulRefreshControlStatePulling:
-            self.title.text = @"Keep pulling to refresh";
-            self.subtitle.text = self.stringTimeIntervalSinceLoad;
             self.imageView.hidden = NO;
             self.imageView2.hidden = NO;
             [self.activityView stopAnimating];
@@ -155,17 +151,34 @@
             break;
             
         case AwfulRefreshControlStateNormal:
-            self.title.text = @"Pull to refresh...";
-            self.subtitle.text = self.stringTimeIntervalSinceLoad;
             self.imageView.hidden = NO;
             self.imageView2.hidden = NO;
             [self.activityView stopAnimating];
             self.changeInsetToShow = NO;
             break;
     }
-    
+    [self changeLabelTextForCurrentState];
     [self sendActionsForControlEvents:UIControlEventValueChanged];
                                        
+}
+
+-(void) changeLabelTextForCurrentState {
+    switch (self.state) {
+        case AwfulRefreshControlStateLoading:
+            self.title.text = @"Refreshing...";
+            self.subtitle.text = @"Swipe left to cancel";
+            break;
+            
+        case AwfulRefreshControlStatePulling:
+            self.title.text = @"Keep pulling to refresh";
+            self.subtitle.text = self.stringTimeIntervalSinceLoad;
+            break;
+            
+        case AwfulRefreshControlStateNormal:
+            self.title.text = @"Pull to refresh...";
+            self.subtitle.text = self.stringTimeIntervalSinceLoad;
+            break;
+    }
 }
 
 -(NSString*) stringTimeIntervalSinceLoad {

@@ -204,12 +204,15 @@
                                      action:@selector(refreshControlCancel:) 
                            forControlEvents:(UIControlEventTouchCancel)];
             
-            if (self.currentPage == self.numberOfPages)
-                        self.loadNextPageControl = [[AwfulLastPageControl alloc] initWithFrame:CGRectMake(0, self.webView.scrollView.contentSize.height, self.view.fsW, 50)];
-            else
+            if (self.currentPage == self.numberOfPages) {
+                self.loadNextPageControl = [[AwfulLastPageControl alloc] initWithFrame:CGRectMake(0, self.webView.scrollView.contentSize.height, self.view.fsW, 50)];
+                [self.webView.scrollView addSubview:self.loadNextPageControl];
+                self.loadNextPageControl.changeInsetToShow = YES;
+            }
+            else {
                 self.loadNextPageControl = [[AwfulLoadNextControl alloc] initWithFrame:CGRectMake(0, self.webView.scrollView.contentSize.height, self.view.fsW, 50)];
-            
-            [self.webView.scrollView addSubview:self.loadNextPageControl];
+                [self.webView.scrollView addSubview:self.loadNextPageControl];
+            }
             
             
             [self.loadNextPageControl addTarget:self
@@ -775,11 +778,12 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     }
     else {
 
-        
+        /*
         [UIView animateWithDuration:.5 animations:^{
             self.webView.scrollView.contentInset = UIEdgeInsetsZero;
         }
          ];
+         */
     }
 }
 /*
@@ -871,6 +875,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 
 -(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     self.isHidingToolbars = NO;
+    self.loadNextPageControl.state = AwfulRefreshControlStateNormal;
     
 }
 

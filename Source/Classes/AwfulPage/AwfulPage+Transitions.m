@@ -112,6 +112,7 @@
     [self.loadNextPageControl removeFromSuperview];
     if (self.webView.tag == self.numberOfPages) {
         self.loadNextPageControl = [[AwfulLastPageControl alloc] initWithFrame:self.loadNextPageControl.frame];
+        self.loadNextPageControl.changeInsetToShow = YES;
     }
     else {
         self.loadNextPageControl = [[AwfulLoadNextControl alloc] initWithFrame:self.loadNextPageControl.frame];

@@ -11,16 +11,20 @@
 typedef enum {
     AwfulRefreshControlStatePulling = 0,
     AwfulRefreshControlStateNormal,
-    AwfulRefreshControlStateLoading,
+    AwfulRefreshControlStateLoading
 } AwfulRefreshControlState;
 
 @interface AwfulRefreshControl : UIControl {
     UIActivityIndicatorView *_activityView;
+    
+    @protected
+    AwfulRefreshControlState _state;
 }
 //- (void)beginRefreshing;
 //- (void)endRefreshing;
 - (void)didScrollInScrollView:(UIScrollView*)scrollView;
 -(NSString*) stringTimeIntervalSinceLoad;
+-(void) changeLabelTextForCurrentState;
 
 @property (nonatomic,readonly) UILabel* title;
 @property (nonatomic,readonly) UILabel* subtitle;

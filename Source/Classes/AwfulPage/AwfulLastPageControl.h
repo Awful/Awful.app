@@ -9,5 +9,10 @@
 #import "AwfulLoadNextControl.h"
 
 @interface AwfulLastPageControl : AwfulLoadNextControl
+@property (nonatomic,readonly,strong) UIView* autoRefreshView;
+@property (nonatomic, readonly) BOOL autoRefreshEnabled;
+
+@property (nonatomic,strong) NSTimer* refreshTimer;
+@property (nonatomic,strong) NSTimer* updateUITimer;
 
 @end

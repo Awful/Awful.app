@@ -9,18 +9,18 @@
 #import "AwfulLoadNextControl.h"
 
 @implementation AwfulLoadNextControl
-@synthesize state = _state;
 
 -(id) initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     self.hidden = YES;
+    self.imageView2.hidden = YES;
     return self;
 }
 
 -(void) didScrollInScrollView:(UIScrollView *)scrollView {
     CGFloat scrollAmount = scrollView.contentOffset.y + scrollView.fsH;
     CGFloat limit = scrollView.contentSize.height + self.fsH;
-    CGFloat threshhold = limit + 2.25*self.fsH;
+    CGFloat threshhold = limit + 1.5*self.fsH;
     
     //gets mispositioned somethimes, check that
     if (self.foY != scrollView.contentSize.height) {
@@ -60,7 +60,7 @@
     }
 }
 
-
+/*
 -(void) setState:(AwfulRefreshControlState)state {
     if (self.state == state && 
         state != AwfulRefreshControlStateLoading &&
@@ -74,6 +74,7 @@
             self.title.text = @"Loading next page...";
             self.subtitle.text = @"Swipe left to cancel";
             self.imageView.hidden = YES;
+            self.imageView2.hidden = YES;
             [self.activityView startAnimating];
             self.changeInsetToShow = YES;
             break;
@@ -97,6 +98,26 @@
     
     [self sendActionsForControlEvents:UIControlEventValueChanged];
     
+}*/
+
+
+-(void) changeLabelTextForCurrentState {
+    switch (self.state) {
+        case AwfulRefreshControlStateLoading:
+            self.title.text = @"Loading next page...";
+            self.subtitle.text = @"Swipe left to cancel";
+            break;
+            
+        case AwfulRefreshControlStatePulling:
+            self.title.text = @"Keep pulling for next page";
+            self.subtitle.text = nil;
+            break;
+            
+        case AwfulRefreshControlStateNormal:
+            self.title.text = @"End of the page";
+            self.subtitle.text = @"Pull up for next page";
+            break;
+    }
 }
 
 
