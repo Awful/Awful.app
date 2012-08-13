@@ -902,8 +902,12 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 }
 
 -(void) loadNextControlChanged:(AwfulLoadNextControl*)loadNextControl {
-    if (loadNextControl.state == AwfulRefreshControlStateLoading)
-        [self tappedNextPage:nil];
+    if (loadNextControl.state == AwfulRefreshControlStateLoading) {
+        if (self.isOnLastPage)
+            [self refresh];
+        else
+            [self tappedNextPage:nil];
+    }
 }
 
 -(void) refreshControlCancel:(AwfulRefreshControl*)refreshControl {

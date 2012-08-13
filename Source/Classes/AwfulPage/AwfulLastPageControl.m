@@ -104,9 +104,9 @@ static int const AwfulRefreshControlStateAutoRefresh = 16;
 }
 
 -(void) didChangeAutoRefreshSwitch:(UISwitch*)s {
-    _autoRefreshEnabled = s.enabled;
+    _autoRefreshEnabled = s.isOn;
     
-    if (s.enabled) {
+    if (s.isOn) {
         self.updateUITimer = [NSTimer scheduledTimerWithTimeInterval:1
                                                               target:self
                                                             selector:@selector(changeLabelTextForCurrentState)
@@ -114,15 +114,15 @@ static int const AwfulRefreshControlStateAutoRefresh = 16;
                                                              repeats:YES];
         
         
-        self.refreshTimer = [NSTimer scheduledTimerWithTimeInterval:10
+        self.refreshTimer = [NSTimer scheduledTimerWithTimeInterval:60
                                                              target:self
                                                            selector:@selector(doAutoRefresh)
                                                            userInfo:nil
                                                             repeats:YES];
     }
     else {
-        self.updateUITimer = nil;
-        self.refreshTimer = nil;
+        [self.updateUITimer invalidate];
+        [self.refreshTimer invalidate];
         [self changeLabelTextForCurrentState];
         
     }
@@ -130,6 +130,11 @@ static int const AwfulRefreshControlStateAutoRefresh = 16;
 
 -(void) doAutoRefresh {
     self.state = AwfulRefreshControlStateLoading;
+}
+
+-(void) dealloc {
+    [self.updateUITimer invalidate];
+    [self.refreshTimer invalidate];
 }
 
 @end
