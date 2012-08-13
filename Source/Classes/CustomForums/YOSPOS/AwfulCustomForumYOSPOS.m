@@ -7,7 +7,7 @@
 //
 
 #import "AwfulCustomForumYOSPOS.h"
-#import "AwfulThread.h"
+#import "AwfulThread+AwfulMethods.h"
 #import "AwfulUser+AwfulMethods.h"
 #import "AwfulYOSPOSHTTPRequestOperation.h"
 
@@ -134,7 +134,7 @@
                                                                    }
                                                                    
                                                                    NSData *responseData = (NSData *)response;
-                                                                   //NSMutableArray *threads = [AwfulThread parseThreadsWithData:responseData forForum:forum];
+                                                                   NSMutableArray *threads = [AwfulThread parseThreadsWithData:responseData forForum:self.forum];
                                                                    [ApplicationDelegate saveContext];
                                                                    //threadListResponseBlock(threads);
                                                                } 

@@ -9,6 +9,7 @@
     #import "AwfulHTTPClient.h"
     #import <CoreData/CoreData.h>
     #import "UIView+Lazy.h"
+    #import "NSObject+Lazy.h"
     #import "DDLog.h"
     #import "AwfulModels.h"
 #endif

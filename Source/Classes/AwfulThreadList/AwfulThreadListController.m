@@ -46,12 +46,13 @@ typedef enum {
 {
     self.currentPage = 1;
     self.title = self.forum.name;
+    /*
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(awfulThreadUpdated:)
                                                  name:AwfulThreadDidUpdateNotification
                                                object:nil];
     
-    
+    */
     [self setEntityName:@"AwfulThread"
               predicate:[NSPredicate predicateWithFormat:@"forum = %@", self.forum]
                    sort:[NSArray arrayWithObjects:
@@ -153,26 +154,6 @@ typedef enum {
     [self loadPageNum:self.currentPage+1];
 }
 
--(void)awfulThreadUpdated : (NSNotification *)notif
-{
-    /*
-    AwfulThread *changedThread = [notif object];
-    NSIndexPath *path = nil;
-    for(AwfulThread *thread in self.awfulThreads) {
-        if(thread == changedThread) {
-            path = [NSIndexPath indexPathForRow:[self.awfulThreads indexOfObject:thread] inSection:0];
-        }
-    }
-    if(path != nil) {
-        //[self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:path] withRowAnimation:UITableViewRowAnimationFade];
-    }
-     */
-}
-
--(void)newlyVisible
-{
-    //For subclassing
-}
 
 -(void) didTapCompose:(UIBarButtonItem*)button {
     UINavigationController *test = [[UINavigationController alloc] initWithRootViewController:[AwfulNewPostComposeController new]];
@@ -195,7 +176,7 @@ typedef enum {
     self.navigationItem.leftBarButtonItem = self.customBackButton;
     self.navigationItem.rightBarButtonItem = self.customPostButton;
 
-    if(self.fetchedResultsController.fetchedObjects.count == 0 && IsLoggedIn()) {
+    if(self.shouldReloadOnViewLoad) {
         [self refresh];
     }
 }
@@ -208,16 +189,32 @@ typedef enum {
     // e.g. self.myOutlet = nil;
 }
 
+/*
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:AwfulThreadDidUpdateNotification
                                                   object:nil];
 }
+*/
 
 -(BOOL)shouldReloadOnViewLoad
 {
     //check date on last thread we've got, if older than 10? min reload
+    NSFetchRequest *req = [NSFetchRequest fetchRequestWithEntityName:@"AwfulThread"];
+    req.predicate = [NSPredicate predicateWithFormat:@"forum = %@", self.forum];
+    req.sortDescriptors = [[NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO] wrapInArray];
+    req.fetchLimit = 1;
+    
+    NSArray* newestThread = [ApplicationDelegate.managedObjectContext executeFetchRequest:req error:nil];
+    if (newestThread) {
+        NSDate *date = [[newestThread objectAtIndex:0] lastPostDate];
+
+        NSLog(@"date=%@, now=%@, int=%f", date, [NSDate date], [date timeIntervalSinceNow]);
+        if (-[date timeIntervalSinceNow] > (60*10.0)+60*60) { //dst issue here or something, thread date an hour behind
+            return YES;
+        }
+    }
     return NO;
 }
 
@@ -307,10 +304,6 @@ typedef enum {
             ];
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-}
-
 
 -(UIImage*) customNavigationBarBackgroundImageForMetrics:(UIBarMetrics)metrics {
     return [ApplicationDelegate navigationBarBackgroundImageForMetrics:metrics];
@@ -372,6 +365,7 @@ typedef enum {
   
 }
 
+#pragma mark selection
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {
     //[self performSegueWithIdentifier:@"AwfulPage" 
@@ -395,7 +389,6 @@ typedef enum {
 }
 
 -(void) didLoadThreadPage:(NSNotification*)msg {
-    NSLog(@"loaded");
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     AwfulPage* page = [msg.userInfo objectForKey:@"page"];
     
