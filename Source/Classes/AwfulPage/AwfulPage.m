@@ -191,6 +191,10 @@
             self.nextPageWebView.delegate = self.webViewDelegateWrapper;
             self.nextPageWebView.frame = self.webView.frame;
             self.nextPageWebView.foY = self.nextPageWebView.fsH;
+            
+            //scrollsToTop is the tap status bar to scroll to the top thing
+            //it doesn't work if both webviews have this property as YES
+            self.nextPageWebView.scrollView.scrollsToTop = NO;
             [self.view addSubview:self.nextPageWebView];
             
             

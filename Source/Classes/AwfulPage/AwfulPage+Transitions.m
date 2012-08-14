@@ -119,6 +119,7 @@
     }
     [self.webView removeFromSuperview];
     self.webView = self.nextPageWebView;
+    self.webView.scrollView.scrollsToTop = YES;
     
     [self.awfulRefreshControl removeFromSuperview];
     [self.webView.scrollView addSubview:self.awfulRefreshControl];
@@ -145,6 +146,7 @@
     self.nextPageWebView.frame = self.webView.frame;
     self.nextPageWebView.foY = self.nextPageWebView.fsH;
     self.nextPageWebView.delegate = self;
+    self.nextPageWebView.scrollView.scrollsToTop = NO;
     [self.view addSubview:self.nextPageWebView];
 }
 @end
