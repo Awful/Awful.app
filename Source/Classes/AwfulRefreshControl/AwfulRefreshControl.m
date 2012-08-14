@@ -47,7 +47,6 @@
         
         
         self.canSwipeToCancel = YES;
-        self.state = AwfulRefreshControlStateNormal;
         
         _innerCell.frame = CGRectMake(0, 0, self.fsW, self.fsH);
         [self addSubview:_innerCell];
@@ -75,6 +74,12 @@
         [self addSubview:self.activityView];
     }
     return _activityView;
+}
+
+-(void) didMoveToSuperview {
+    [super didMoveToSuperview];
+    
+    [self changeLabelTextForCurrentState];
 }
 
 -(void) layoutSubviews {
@@ -177,6 +182,9 @@
         case AwfulRefreshControlStateNormal:
             self.title.text = @"Pull to refresh...";
             self.subtitle.text = self.stringTimeIntervalSinceLoad;
+            break;
+            
+        default:
             break;
     }
 }

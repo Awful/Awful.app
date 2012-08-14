@@ -9,6 +9,7 @@
 #import "AwfulLoadNextControl.h"
 
 @implementation AwfulLoadNextControl
+@synthesize nextPageNumber = _nextPageNumber;
 
 -(id) initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -59,47 +60,6 @@
         return;
     }
 }
-
-/*
--(void) setState:(AwfulRefreshControlState)state {
-    if (self.state == state && 
-        state != AwfulRefreshControlStateLoading &&
-        [[NSDate date] timeIntervalSinceDate:self.loadedDate] < 60)
-        return;
-    
-    _state = state;
-    
-    switch (state) {
-        case AwfulRefreshControlStateLoading:
-            self.title.text = @"Loading next page...";
-            self.subtitle.text = @"Swipe left to cancel";
-            self.imageView.hidden = YES;
-            self.imageView2.hidden = YES;
-            [self.activityView startAnimating];
-            self.changeInsetToShow = YES;
-            break;
-            
-        case AwfulRefreshControlStatePulling:
-            self.title.text = @"Keep pulling for next page";
-            self.subtitle.text = nil;
-            self.imageView.hidden = NO;
-            self.changeInsetToShow = NO;
-            [self.activityView stopAnimating];
-            break;
-            
-        case AwfulRefreshControlStateNormal:
-            self.title.text = @"Pull for next page...";
-            self.subtitle.text = nil;
-            self.imageView.hidden = NO;
-            self.changeInsetToShow = NO;
-            [self.activityView stopAnimating];
-            break;
-    }
-    
-    [self sendActionsForControlEvents:UIControlEventValueChanged];
-    
-}*/
-
 
 -(void) changeLabelTextForCurrentState {
     //webview's tag is the current page

@@ -9,11 +9,11 @@
 #import <UIKit/UIKit.h>
 
 typedef enum {
-    AwfulRefreshControlStatePulling = 0,
-    AwfulRefreshControlStateNormal,
-    AwfulRefreshControlStateLoading,
-    AwfulRefreshControlStateParsing,
-    AwfulRefreshControlStatePageTransition
+    AwfulRefreshControlStateNormal = UIControlStateNormal,
+    AwfulRefreshControlStatePulling = 0x00010000,
+    AwfulRefreshControlStateLoading = 0x00020000,
+    AwfulRefreshControlStateParsing = 0x00030000,
+    AwfulRefreshControlStatePageTransition = 0x00040000
 } AwfulRefreshControlState;
 
 @interface AwfulRefreshControl : UIControl {

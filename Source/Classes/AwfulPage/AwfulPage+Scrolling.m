@@ -49,7 +49,7 @@
 
 -(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     //self.isHidingToolbars = NO;
-    self.loadNextPageControl.state = AwfulRefreshControlStateNormal;
+    //self.loadNextPageControl.state = AwfulRefreshControlStateNormal;
     
     self.isHidingToolbars = YES;
 }

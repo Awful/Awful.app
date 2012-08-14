@@ -129,6 +129,7 @@
         _dataController = dataController;
         self.currentPage = dataController.currentPage;
         self.numberOfPages = dataController.numberOfPages;
+        self.loadNextPageControl.state = AwfulRefreshControlStateParsing;
         [self setThreadTitle:dataController.threadTitle];
         
         self.postIDScrollDestination = [dataController calculatePostIDScrollDestination];
@@ -306,6 +307,9 @@
 {
     // I guess the error callback doesn't necessarily get called when a network operation is 
     // cancelled, so clear the HUD when we cancel the network operation.
+    self.loadNextPageControl.nextPageNumber = pageNum;
+    self.loadNextPageControl.state = AwfulRefreshControlStateLoading;
+    
     [MBProgressHUD hideHUDForView:self.view animated:NO];
     [self.networkOperation cancel];
     
