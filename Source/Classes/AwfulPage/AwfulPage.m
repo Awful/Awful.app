@@ -224,8 +224,6 @@
         }
         
         self.awfulRefreshControl.loadedDate = [NSDate date];
-        NSLog(@"loadedDate set to %@", self.awfulRefreshControl.loadedDate);
-        
         
         NSDictionary *userInfo = [NSDictionary dictionaryWithObject:self forKey:@"page"];
         [[NSNotificationCenter defaultCenter] postNotificationName:AwfulPageDidLoadNotification
@@ -353,16 +351,7 @@
 
 -(void)loadLastPage
 {
-    [self.networkOperation cancel];
-    self.networkOperation = [[AwfulHTTPClient sharedClient] pageDataForThread:self.thread destinationType:AwfulPageDestinationTypeLast pageNum:0 onCompletion:^(AwfulPageDataController *dataController) {
-        self.dataController = dataController;
-        [self updatePagesLabel];
-        [self updateBookmarked];
-        //self.pullToNavigateView.onLastPage = YES;
-    } onError:^(NSError *error) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-        [alert show];
-    }];
+    [self loadPageNum:self.numberOfPages];
 }
 
 -(void)stop
@@ -480,21 +469,13 @@
 -(void)updatePagesLabel
 {
     self.pagesBarButtonItem.title = [NSString stringWithFormat:@"Page %d of %d", self.currentPage, self.numberOfPages];
-    if(self.currentPage == self.numberOfPages) {
-        [self.pagesSegmentedControl setEnabled:NO forSegmentAtIndex:1];
-    } else {
-        [self.pagesSegmentedControl setEnabled:YES forSegmentAtIndex:1];
-    }
-    if(self.currentPage == 1) {
-        [self.pagesSegmentedControl setEnabled:NO forSegmentAtIndex:0];
-    } else {
-        [self.pagesSegmentedControl setEnabled:YES forSegmentAtIndex:0];
-    }
+    [self.pagesSegmentedControl setEnabled:(self.currentPage < self.numberOfPages) forSegmentAtIndex:1];
+    [self.pagesSegmentedControl setEnabled:(self.currentPage > 1) forSegmentAtIndex:0];
 }
 
 - (void)updateBookmarked
 {
-    [self.thread setIsBookmarked:[NSNumber numberWithBool:self.dataController.bookmarked]];
+    self.thread.isBookmarkedValue = self.dataController.bookmarked;
 }
 
 -(IBAction)segmentedGotTapped : (id)sender
@@ -506,14 +487,19 @@
     }
 }
 
--(IBAction)tappedPagesSegment : (id)sender
+-(IBAction)tappedPagesSegment:(UISegmentedControl*)segmentedControl
 {
-    if(self.pagesSegmentedControl.selectedSegmentIndex == 0) {
-        [self prevPage];
-    } else if(self.pagesSegmentedControl.selectedSegmentIndex == 1) {
-        [self nextPage];
+    switch (segmentedControl.selectedSegmentIndex) {
+        case 0:
+            [self prevPage];
+            break;
+            
+        case 1:
+            [self nextPage];
+            break;
     }
-    self.pagesSegmentedControl.selectedSegmentIndex = -1;
+    
+    segmentedControl.selectedSegmentIndex = -1;
 }
 
 -(IBAction)tappedActionsSegment : (id)sender
@@ -768,21 +754,8 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         [self doPageTransition];
         
     }
-    else {
+}
 
-        /*
-        [UIView animateWithDuration:.5 animations:^{
-            self.webView.scrollView.contentInset = UIEdgeInsetsZero;
-        }
-         ];
-         */
-    }
-}
-/*
--(void) awfulFooterDidTriggerLoad:(AwfulLoadingFooterView*)pullToNavigate {
-    [self tappedNextPage:nil];
-}
-*/
 -(void)webViewDidStartLoad:(UIWebView *)webView
 {
     
@@ -869,6 +842,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     else
         shouldHideToolbars = NO;
     
+    [[UIApplication sharedApplication] setStatusBarHidden:shouldHideToolbars withAnimation:(UIStatusBarAnimationSlide)];
     [self.navigationController setNavigationBarHidden:shouldHideToolbars animated:YES];
     [self.navigationController setToolbarHidden:shouldHideToolbars animated:YES];
     
