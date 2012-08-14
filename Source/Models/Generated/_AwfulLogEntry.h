@@ -7,6 +7,7 @@
 extern const struct AwfulLogEntryAttributes {
 	__unsafe_unretained NSString *category;
 	__unsafe_unretained NSString *date;
+	__unsafe_unretained NSString *fromClass;
 	__unsafe_unretained NSString *message;
 } AwfulLogEntryAttributes;
 
@@ -15,6 +16,7 @@ extern const struct AwfulLogEntryRelationships {
 
 extern const struct AwfulLogEntryFetchedProperties {
 } AwfulLogEntryFetchedProperties;
+
 
 
 
@@ -49,6 +51,14 @@ extern const struct AwfulLogEntryFetchedProperties {
 
 
 
+@property (nonatomic, strong) NSString* fromClass;
+
+
+//- (BOOL)validateFromClass:(id*)value_ error:(NSError**)error_;
+
+
+
+
 @property (nonatomic, strong) NSString* message;
 
 
@@ -76,6 +86,12 @@ extern const struct AwfulLogEntryFetchedProperties {
 
 - (NSDate*)primitiveDate;
 - (void)setPrimitiveDate:(NSDate*)value;
+
+
+
+
+- (NSString*)primitiveFromClass;
+- (void)setPrimitiveFromClass:(NSString*)value;
 
 
 

@@ -6,6 +6,7 @@
 const struct AwfulLogEntryAttributes AwfulLogEntryAttributes = {
 	.category = @"category",
 	.date = @"date",
+	.fromClass = @"fromClass",
 	.message = @"message",
 };
 
@@ -56,6 +57,13 @@ const struct AwfulLogEntryFetchedProperties AwfulLogEntryFetchedProperties = {
 
 
 @dynamic date;
+
+
+
+
+
+
+@dynamic fromClass;
 
 
 

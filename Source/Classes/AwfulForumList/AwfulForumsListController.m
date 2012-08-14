@@ -218,12 +218,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [AwfulLogEntry writeLogEntryWithLevel:AwfulLogLevelInfo category:@"UI" message:@"Test of logging..."];
-    
-    AwfulFetchedTableViewController* test = [[AwfulFetchedTableViewController alloc] initWithEntity:@"AwfulLogEntry" predicate:nil sort:@"date" sectionKey:nil];
-    [self.navigationController pushViewController:test animated:YES];
-    
-    return;
     AwfulForum* forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
     AwfulThreadListController *threadList = [AwfulCustomForums threadListControllerForForum:forum];
     threadList.forum = forum;

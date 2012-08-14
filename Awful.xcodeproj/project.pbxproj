@@ -152,10 +152,7 @@
 		8C447E1315D46B1F0088B74C /* AwfulYOSPOSHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C447E1215D46B1F0088B74C /* AwfulYOSPOSHTTPRequestOperation.m */; };
 		8C447E1815D550C10088B74C /* YosposhCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C447E1715D550C10088B74C /* YosposhCommand.m */; };
 		8C447E1B15D550DC0088B74C /* YosposhCommand_wget.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C447E1A15D550DC0088B74C /* YosposhCommand_wget.m */; };
-		8C447E1E15D550EF0088B74C /* YosposhCommand_ls.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C447E1D15D550EF0088B74C /* YosposhCommand_ls.m */; };
 		8C447E2115D551000088B74C /* YosposhCommand_help.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C447E2015D550FF0088B74C /* YosposhCommand_help.m */; };
-		8C447E2415D551110088B74C /* YosposhCommand_forkbomb.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C447E2315D551110088B74C /* YosposhCommand_forkbomb.m */; };
-		8C447E2715D562F60088B74C /* YosposhCommand_cd.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C447E2615D562F50088B74C /* YosposhCommand_cd.m */; };
 		8C48EA1E159BC2AC00A59691 /* AwfulFetchedTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48EA1D159BC2AC00A59691 /* AwfulFetchedTableViewController.m */; };
 		8C48EA22159BF14B00A59691 /* AwfulParentForumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48EA21159BF14A00A59691 /* AwfulParentForumCell.m */; };
 		8C48EA34159C904500A59691 /* AwfulSubForumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48EA33159C904500A59691 /* AwfulSubForumCell.m */; };
@@ -1394,14 +1391,8 @@
 		8C447E1715D550C10088B74C /* YosposhCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YosposhCommand.m; sourceTree = "<group>"; };
 		8C447E1915D550DC0088B74C /* YosposhCommand_wget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YosposhCommand_wget.h; sourceTree = "<group>"; };
 		8C447E1A15D550DC0088B74C /* YosposhCommand_wget.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YosposhCommand_wget.m; sourceTree = "<group>"; };
-		8C447E1C15D550EF0088B74C /* YosposhCommand_ls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YosposhCommand_ls.h; sourceTree = "<group>"; };
-		8C447E1D15D550EF0088B74C /* YosposhCommand_ls.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YosposhCommand_ls.m; sourceTree = "<group>"; };
 		8C447E1F15D550FF0088B74C /* YosposhCommand_help.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YosposhCommand_help.h; sourceTree = "<group>"; };
 		8C447E2015D550FF0088B74C /* YosposhCommand_help.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YosposhCommand_help.m; sourceTree = "<group>"; };
-		8C447E2215D551110088B74C /* YosposhCommand_forkbomb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YosposhCommand_forkbomb.h; sourceTree = "<group>"; };
-		8C447E2315D551110088B74C /* YosposhCommand_forkbomb.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YosposhCommand_forkbomb.m; sourceTree = "<group>"; };
-		8C447E2515D562F40088B74C /* YosposhCommand_cd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YosposhCommand_cd.h; sourceTree = "<group>"; };
-		8C447E2615D562F50088B74C /* YosposhCommand_cd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YosposhCommand_cd.m; sourceTree = "<group>"; };
 		8C48EA1C159BC2AC00A59691 /* AwfulFetchedTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFetchedTableViewController.h; sourceTree = "<group>"; };
 		8C48EA1D159BC2AC00A59691 /* AwfulFetchedTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulFetchedTableViewController.m; sourceTree = "<group>"; };
 		8C48EA20159BF14A00A59691 /* AwfulParentForumCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulParentForumCell.h; sourceTree = "<group>"; };
@@ -3044,14 +3035,8 @@
 				8C447E1715D550C10088B74C /* YosposhCommand.m */,
 				8C447E1915D550DC0088B74C /* YosposhCommand_wget.h */,
 				8C447E1A15D550DC0088B74C /* YosposhCommand_wget.m */,
-				8C447E1C15D550EF0088B74C /* YosposhCommand_ls.h */,
-				8C447E1D15D550EF0088B74C /* YosposhCommand_ls.m */,
 				8C447E1F15D550FF0088B74C /* YosposhCommand_help.h */,
 				8C447E2015D550FF0088B74C /* YosposhCommand_help.m */,
-				8C447E2215D551110088B74C /* YosposhCommand_forkbomb.h */,
-				8C447E2315D551110088B74C /* YosposhCommand_forkbomb.m */,
-				8C447E2515D562F40088B74C /* YosposhCommand_cd.h */,
-				8C447E2615D562F50088B74C /* YosposhCommand_cd.m */,
 			);
 			path = eastereggs;
 			sourceTree = "<group>";
@@ -5499,10 +5484,7 @@
 				8C447E1315D46B1F0088B74C /* AwfulYOSPOSHTTPRequestOperation.m in Sources */,
 				8C447E1815D550C10088B74C /* YosposhCommand.m in Sources */,
 				8C447E1B15D550DC0088B74C /* YosposhCommand_wget.m in Sources */,
-				8C447E1E15D550EF0088B74C /* YosposhCommand_ls.m in Sources */,
 				8C447E2115D551000088B74C /* YosposhCommand_help.m in Sources */,
-				8C447E2415D551110088B74C /* YosposhCommand_forkbomb.m in Sources */,
-				8C447E2715D562F60088B74C /* YosposhCommand_cd.m in Sources */,
 				8CB83C7915D9404B00F9EC35 /* NSObject+Lazy.m in Sources */,
 				8C21643015DA9B98008EBC97 /* AwfulPage+Scrolling.m in Sources */,
 				8C21643415DA9CC0008EBC97 /* AwfulPage+BarButtons.m in Sources */,

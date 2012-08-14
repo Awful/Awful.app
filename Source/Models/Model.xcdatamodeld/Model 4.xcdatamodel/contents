@@ -35,6 +35,7 @@
     <entity name="AwfulLogEntry" representedClassName="AwfulLogEntry" syncable="YES">
         <attribute name="category" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="fromClass" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="message" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="AwfulPM" representedClassName="AwfulPM" syncable="YES">
@@ -89,6 +90,6 @@
         <element name="AwfulThreadTag" positionX="160" positionY="192" width="128" height="105"/>
         <element name="AwfulUser" positionX="160" positionY="192" width="128" height="90"/>
         <element name="Favorite" positionX="171" positionY="324" width="128" height="75"/>
-        <element name="AwfulLogEntry" positionX="160" positionY="192" width="128" height="90"/>
+        <element name="AwfulLogEntry" positionX="160" positionY="192" width="128" height="105"/>
     </elements>
 </model>
