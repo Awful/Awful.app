@@ -19,4 +19,9 @@
     
     return self;
 }
+
+
+-(void) setContentForCell:(UITableViewCell*)cell {
+    cell.textLabel.text = [NSString stringWithFormat:@"No format for cell %@", self.entity.managedObjectClassName];
+}
 @end

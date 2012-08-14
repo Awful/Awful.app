@@ -124,6 +124,11 @@
     return cell;
 }
 
+- (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath {
+    NSManagedObject *obj = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    [obj setContentForCell:cell];
+}
+
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section { 
     id <NSFetchedResultsSectionInfo> sectionInfo = [[_fetchedResultsController sections] objectAtIndex:section];

@@ -9,5 +9,5 @@
 #import <CoreData/CoreData.h>
 
 @interface NSManagedObject (Lazy)
-
+-(void) setContentForCell:(UITableViewCell*)cell;
 @end
