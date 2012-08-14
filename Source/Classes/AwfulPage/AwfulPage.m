@@ -641,6 +641,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 #pragma mark Pull For Action
 
 -(void) setIsHidingToolbars:(BOOL)isHidingToolbars {
+    return; //fixme: disabled until this works better
     if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) return;
     //_isHidingToolbars = isHidingToolbars;
     

@@ -9,5 +9,5 @@
 #import "AwfulRefreshControl.h"
 
 @interface AwfulLoadNextControl : AwfulRefreshControl
-
+@property (nonatomic,assign) NSUInteger nextPageNumber;
 @end

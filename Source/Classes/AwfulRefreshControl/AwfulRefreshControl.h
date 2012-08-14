@@ -11,7 +11,9 @@
 typedef enum {
     AwfulRefreshControlStatePulling = 0,
     AwfulRefreshControlStateNormal,
-    AwfulRefreshControlStateLoading
+    AwfulRefreshControlStateLoading,
+    AwfulRefreshControlStateParsing,
+    AwfulRefreshControlStatePageTransition
 } AwfulRefreshControlState;
 
 @interface AwfulRefreshControl : UIControl {

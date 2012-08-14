@@ -70,6 +70,7 @@
 -(void) pageForwardTransition {
     //position next page below current
     //move both up
+    self.loadNextPageControl.state = AwfulRefreshControlStatePageTransition;
     
     self.nextPageWebView.frame = self.webView.frame;
     self.nextPageWebView.foY = self.nextPageWebView.fsH;
@@ -78,7 +79,7 @@
     CGPoint bottomOffset = CGPointMake(0, self.webView.scrollView.contentSize.height - self.webView.scrollView.bounds.size.height + self.loadNextPageControl.fsH);
     [self.webView.scrollView setContentOffset:bottomOffset animated:YES];
     
-    [UIView animateWithDuration:.5 
+    [UIView animateWithDuration:1
                           delay:0 
                         options:(UIViewAnimationOptionCurveEaseInOut) 
                      animations:^{

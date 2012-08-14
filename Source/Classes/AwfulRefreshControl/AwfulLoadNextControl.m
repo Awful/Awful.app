@@ -102,20 +102,34 @@
 
 
 -(void) changeLabelTextForCurrentState {
+    //webview's tag is the current page
+    //this control is in the scrollview of the webview
+    NSInteger currentPage = self.superview.superview.tag;
+    
     switch (self.state) {
         case AwfulRefreshControlStateLoading:
-            self.title.text = @"Loading next page...";
+            self.title.text = [NSString stringWithFormat:@"Loading page %i", self.nextPageNumber];
             self.subtitle.text = @"Swipe left to cancel";
             break;
             
         case AwfulRefreshControlStatePulling:
-            self.title.text = @"Keep pulling for next page";
+            self.title.text = [NSString stringWithFormat:@"Keep pulling for page %i", currentPage+1];
             self.subtitle.text = nil;
             break;
             
         case AwfulRefreshControlStateNormal:
-            self.title.text = @"End of the page";
+            self.title.text = [NSString stringWithFormat:@"End of page %i", currentPage];
             self.subtitle.text = @"Pull up for next page";
+            break;
+            
+        case AwfulRefreshControlStateParsing:
+            self.title.text = [NSString stringWithFormat:@"Formatting page %i", currentPage+1];
+            break;
+            
+        case AwfulRefreshControlStatePageTransition:
+            self.title.text = [NSString stringWithFormat:@"Leaving page %i", currentPage];
+            self.imageView.image = [UIImage imageNamed:@"emot-byewhore.gif"];
+            self.imageView2.hidden = YES;
             break;
     }
 }
