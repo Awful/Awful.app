@@ -29,25 +29,34 @@
 {
     [super viewDidLoad];
 
-    if ([self canPullToRefresh]) {
-        self.awfulRefreshControl.loadedDate = [NSDate date];
-        
+    self.reloading = NO;
+}
+
+-(AwfulRefreshControl*) awfulRefreshControl {
+    if (self.canPullToRefresh && !_awfulRefreshControl) {
+        _awfulRefreshControl = [[AwfulRefreshControl alloc] initWithFrame:CGRectMake(0, -50, self.tableView.fsW, 50)];
         _awfulRefreshControl.loadedDate = [NSDate date];
         [_awfulRefreshControl addTarget:self action:@selector(refreshControlChanged:) forControlEvents:(UIControlEventValueChanged)];
         [_awfulRefreshControl addTarget:self action:@selector(refreshControlCancel:) forControlEvents:(UIControlEventTouchCancel)];
-        [self.tableView addSubview:self.awfulRefreshControl];
-        
-        
-        self.loadNextControl = [[AwfulLoadNextControl alloc] initWithFrame:CGRectMake(0, self.tableView.contentSize.height, self.tableView.fsW, 50)];
-        [self.loadNextControl addTarget:self
-                                 action:@selector(loadNextControlChanged:) 
-                       forControlEvents:(UIControlEventValueChanged)];
-        [self.loadNextControl addTarget:self 
-                                 action:@selector(refreshControlCancel:) 
-                       forControlEvents:(UIControlEventTouchCancel)];
-        [self.tableView addSubview:self.loadNextControl];
+        [self.tableView addSubview:_awfulRefreshControl];
     }
-    self.reloading = NO;
+    return _awfulRefreshControl;
+}
+
+-(AwfulLoadNextControl*) loadNextControl {
+    if (!_loadNextControl) {
+        _loadNextControl = [[AwfulLoadNextControl alloc] initWithFrame:
+                            CGRectMake(0, self.tableView.contentSize.height, self.tableView.fsW, 50)
+                            ];
+        [_loadNextControl addTarget:self
+                             action:@selector(loadNextControlChanged:)
+                   forControlEvents:(UIControlEventValueChanged)];
+        [_loadNextControl addTarget:self
+                             action:@selector(refreshControlCancel:)
+                   forControlEvents:(UIControlEventTouchCancel)];
+        [self.tableView addSubview:_loadNextControl];
+    }
+    return _loadNextControl;
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -55,13 +64,6 @@
     [super viewWillDisappear:animated];
     [self.networkOperation cancel];
     [self finishedRefreshing];
-}
-
--(AwfulRefreshControl*) awfulRefreshControl {
-    if (!_awfulRefreshControl) {
-        _awfulRefreshControl = [[AwfulRefreshControl alloc] initWithFrame:CGRectMake(0, -50, self.tableView.fsW, 50)];
-    }
-return _awfulRefreshControl;
 }
 
 #pragma mark - UIScrollViewDelegate Methods

@@ -54,32 +54,23 @@
     self.navigationItem.backBarButtonItem = back;
 }
 
--(void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-}
-
-/*
--(void)awfulThreadUpdated:(NSNotification *)notif
-{
-    [super awfulThreadUpdated:notif];
-    
-    AwfulThread *changedThread = [notif object];
-    NSIndexPath *path = nil;
-    for(AwfulThread *thread in self.awfulThreads) {
-        if(thread == changedThread && ![thread.isBookmarked boolValue]) {
-            path = [NSIndexPath indexPathForRow:[self.awfulThreads indexOfObject:thread] inSection:0];
-        }
-    }
-    if(path != nil) {
-        [self.awfulThreads removeObject:changedThread];
-        [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:path] withRowAnimation:UITableViewRowAnimationFade];
-    }
-}
- */
 
 -(BOOL)shouldReloadOnViewLoad
 {
+    //check date on last thread we've got, if older than 10? min reload
+    NSFetchRequest *req = [NSFetchRequest fetchRequestWithEntityName:@"AwfulThread"];
+    req.predicate = [NSPredicate predicateWithFormat:@"isBookmarked = YES"];
+    req.sortDescriptors = [[NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO] wrapInArray];
+    req.fetchLimit = 1;
+    
+    NSArray* newestThread = [ApplicationDelegate.managedObjectContext executeFetchRequest:req error:nil];
+    if (newestThread.count == 1) {
+        NSDate *date = [[newestThread objectAtIndex:0] lastPostDate];
+        
+        if (-[date timeIntervalSinceNow] > (60*10.0)+60*60) { //fixme: dst issue here or something, thread date an hour behind
+            return YES;
+        }
+    }
     return NO;
 }
 

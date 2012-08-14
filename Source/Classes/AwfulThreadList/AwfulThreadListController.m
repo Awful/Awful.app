@@ -18,6 +18,7 @@
 #import "AwfulLoginController.h"
 #import "AwfulCustomForums.h"
 #import "AwfulNewPostComposeController.h"
+#import "AwfulRefreshControl.h"
 
 #define THREAD_HEIGHT 76
 
@@ -117,6 +118,7 @@ typedef enum {
 -(void)refresh
 {   
     [super refresh];
+    self.awfulRefreshControl.state = AwfulRefreshControlStateLoading;
     [self loadPageNum:1];
 }
 

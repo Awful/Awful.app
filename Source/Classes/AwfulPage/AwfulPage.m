@@ -555,12 +555,17 @@
         
         [self.pagesBarButtonItem setTintColor:[UIColor darkGrayColor]];
         self.specificPageController.hiding = YES;
-        [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^(void) {
-            sp_view.frame = CGRectOffset(sp_view.frame, 0, sp_view.frame.size.height);
-        } completion:^(BOOL finished) {
-            [sp_view removeFromSuperview];
-            self.specificPageController = nil;
-        }];
+        [UIView animateWithDuration:0.3
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseInOut
+                         animations:^(void) {
+                             sp_view.frame = CGRectOffset(sp_view.frame, 0, sp_view.frame.size.height);
+                         }
+                         completion:^(BOOL finished) {
+                             [sp_view removeFromSuperview];
+                             self.specificPageController = nil;
+                         }
+         ];
         
     } else if(self.specificPageController == nil) {
         
@@ -825,7 +830,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 }
 
 -(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    self.isHidingToolbars = NO;
+    //self.isHidingToolbars = NO;
     self.loadNextPageControl.state = AwfulRefreshControlStateNormal;
     
 }
@@ -836,13 +841,12 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     
     
     BOOL shouldHideToolbars = NO;
-    if (self.webView.scrollView.contentOffset.y >= self.navigationController.navigationBar.fsH) {
+    CGFloat offset = self.webView.scrollView.contentOffset.y;
+    if (offset > 100 && offset < (self.webView.scrollView.contentSize.height-100))
         shouldHideToolbars = YES;
-    }
     else
         shouldHideToolbars = NO;
     
-    [[UIApplication sharedApplication] setStatusBarHidden:shouldHideToolbars withAnimation:(UIStatusBarAnimationSlide)];
     [self.navigationController setNavigationBarHidden:shouldHideToolbars animated:YES];
     [self.navigationController setToolbarHidden:shouldHideToolbars animated:YES];
     
