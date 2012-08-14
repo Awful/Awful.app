@@ -119,6 +119,8 @@
     self.navigationItem.titleView = title;
 }
 
+//Override refresh to use a custom HTTPRequestOperation that gives more feedback messages.
+//This is very unnecessary
 -(void) refresh {
     AwfulHTTPClient *httpClient = [AwfulHTTPClient sharedClient];
     
@@ -134,7 +136,7 @@
                                                                    }
                                                                    
                                                                    NSData *responseData = (NSData *)response;
-                                                                   NSMutableArray *threads = [AwfulThread parseThreadsWithData:responseData forForum:self.forum];
+                                                                   //NSMutableArray *threads = [AwfulThread parseThreadsWithData:responseData forForum:self.forum];
                                                                    [ApplicationDelegate saveContext];
                                                                    //threadListResponseBlock(threads);
                                                                } 
@@ -195,7 +197,8 @@
     if (!_awfulRefreshControl) {
         _awfulRefreshControl = [[AwfulYOSPOSRefreshControl alloc] initWithFrame:CGRectMake(0, -50, self.tableView.fsW, 50)];
     }
-    return _awfulRefreshControl;
+    //super sets up the control events and adds the control to the view, so it needs to be called
+    return [super awfulRefreshControl];
 }
 
 -(NSString*) tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {

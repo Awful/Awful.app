@@ -35,12 +35,18 @@
 -(AwfulRefreshControl*) awfulRefreshControl {
     if (self.canPullToRefresh && !_awfulRefreshControl) {
         _awfulRefreshControl = [[AwfulRefreshControl alloc] initWithFrame:CGRectMake(0, -50, self.tableView.fsW, 50)];
+    }
+    if (_awfulRefreshControl.superview == nil) {
         _awfulRefreshControl.loadedDate = [NSDate date];
         [_awfulRefreshControl addTarget:self action:@selector(refreshControlChanged:) forControlEvents:(UIControlEventValueChanged)];
         [_awfulRefreshControl addTarget:self action:@selector(refreshControlCancel:) forControlEvents:(UIControlEventTouchCancel)];
         [self.tableView addSubview:_awfulRefreshControl];
     }
     return _awfulRefreshControl;
+}
+
+-(void) setupAwfulRefreshControl {
+    
 }
 
 -(AwfulLoadNextControl*) loadNextControl {
