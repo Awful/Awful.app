@@ -207,10 +207,9 @@ typedef enum {
     req.fetchLimit = 1;
     
     NSArray* newestThread = [ApplicationDelegate.managedObjectContext executeFetchRequest:req error:nil];
-    if (newestThread) {
+    if (newestThread.count == 1) {
         NSDate *date = [[newestThread objectAtIndex:0] lastPostDate];
 
-        NSLog(@"date=%@, now=%@, int=%f", date, [NSDate date], [date timeIntervalSinceNow]);
         if (-[date timeIntervalSinceNow] > (60*10.0)+60*60) { //dst issue here or something, thread date an hour behind
             return YES;
         }

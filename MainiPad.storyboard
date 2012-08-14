@@ -442,7 +442,7 @@
                     <navigationItem key="navigationItem" title="Settings" id="1YP-no-M20"/>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackTranslucent"/>
                     <connections>
-                        <segue destination="COB-dx-4ZV" kind="modal" identifier="Login" id="aZH-ZJ-dej"/>
+                        <segue destination="COB-dx-4ZV" kind="modal" identifier="Login" modalPresentationStyle="formSheet" id="aZH-ZJ-dej"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2VA-w8-sO3" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -472,7 +472,7 @@
             <objects>
                 <viewController id="1Fp-2s-3Kf" customClass="AwfulLoginController" sceneMemberID="viewController">
                     <webView key="view" contentMode="scaleToFill" id="cQa-sD-PJG">
-                        <rect key="frame" x="0.0" y="64" width="1024" height="704"/>
+                        <rect key="frame" x="0.0" y="64" width="540" height="556"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
@@ -1014,131 +1014,6 @@
         <image name="sticky.png" width="12" height="12"/>
         <image name="threadrating.png" width="45" height="13"/>
     </resources>
-    <classes>
-        <class className="AwfulAddFavoriteViewController" superclassName="AwfulForumsListController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulAddFavoriteViewController.h"/>
-        </class>
-        <class className="AwfulBookmarksController" superclassName="AwfulThreadListController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulBookmarksController.h"/>
-        </class>
-        <class className="AwfulComposeController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulComposeController.h"/>
-        </class>
-        <class className="AwfulFavoritesViewController" superclassName="AwfulForumsListController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulFavoritesViewController.h"/>
-        </class>
-        <class className="AwfulFetchedTableViewController" superclassName="AwfulTableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulFetchedTableViewController.h"/>
-        </class>
-        <class className="AwfulForumCell" superclassName="UITableViewCell">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumCell.h"/>
-        </class>
-        <class className="AwfulForumHeader" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumHeader.h"/>
-            <relationships>
-                <relationship kind="outlet" name="titleLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="AwfulForumsListController" superclassName="AwfulFetchedTableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumsListController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="headerView" candidateClass="AwfulForumHeader"/>
-            </relationships>
-        </class>
-        <class className="AwfulLoginController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulLoginController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="act" candidateClass="UIActivityIndicatorView"/>
-                <relationship kind="outlet" name="web" candidateClass="UIWebView"/>
-            </relationships>
-        </class>
-        <class className="AwfulPage" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPage.h"/>
-            <relationships>
-                <relationship kind="action" name="hardRefresh"/>
-                <relationship kind="action" name="segmentedGotTapped:"/>
-                <relationship kind="action" name="tappedActions:"/>
-                <relationship kind="action" name="tappedActionsSegment:"/>
-                <relationship kind="action" name="tappedNextPage:"/>
-                <relationship kind="action" name="tappedPageNav:"/>
-                <relationship kind="action" name="tappedPagesSegment:"/>
-                <relationship kind="outlet" name="actionsSegmentedControl" candidateClass="ButtonSegmentedControl"/>
-                <relationship kind="outlet" name="nextPageBarButtonItem" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="pagesBarButtonItem" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="pagesSegmentedControl" candidateClass="ButtonSegmentedControl"/>
-                <relationship kind="outlet" name="toolbar" candidateClass="UIToolbar"/>
-                <relationship kind="outlet" name="webView" candidateClass="UIWebView"/>
-            </relationships>
-        </class>
-        <class className="AwfulPageIpad" superclassName="AwfulPage">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPageIpad.h"/>
-            <relationships>
-                <relationship kind="action" name="tappedActions:"/>
-                <relationship kind="action" name="tappedPageNav:"/>
-            </relationships>
-        </class>
-        <class className="AwfulParentForumCell" superclassName="AwfulForumCell">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulParentForumCell.h"/>
-        </class>
-        <class className="AwfulPostComposerView" superclassName="UITextView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPostComposerView.h"/>
-        </class>
-        <class className="AwfulPrivateMessageListController" superclassName="AwfulFetchedTableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPrivateMessageListController.h"/>
-        </class>
-        <class className="AwfulSearchController" superclassName="AwfulFetchedTableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulSearchController.h"/>
-        </class>
-        <class className="AwfulSettingsViewController" superclassName="AwfulTableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulSettingsViewController.h"/>
-        </class>
-        <class className="AwfulSplitViewController" superclassName="UISplitViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulSplitViewController.h"/>
-        </class>
-        <class className="AwfulSubForumCell" superclassName="AwfulForumCell">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulSubForumCell.h"/>
-        </class>
-        <class className="AwfulTableViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulTableViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="refresh"/>
-            </relationships>
-        </class>
-        <class className="AwfulThreadCell" superclassName="TDBadgedCell">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulThreadCell.h"/>
-            <relationships>
-                <relationship kind="outlet" name="pagesLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="ratingImage" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="secondTagImage" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="sticky" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="tagContainerView" candidateClass="UIView"/>
-                <relationship kind="outlet" name="tagImage" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="tagLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="threadTitleLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="unreadButton" candidateClass="UIButton"/>
-            </relationships>
-        </class>
-        <class className="AwfulThreadListController" superclassName="AwfulFetchedTableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulThreadListController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="nextPageBarButtonItem" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="pageLabelBarButtonItem" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="prevPageBarButtonItem" candidateClass="UIBarButtonItem"/>
-            </relationships>
-        </class>
-        <class className="AwfulThreadReplyComposeController" superclassName="AwfulComposeController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulThreadReplyComposeController.h"/>
-        </class>
-        <class className="ButtonSegmentedControl" superclassName="UISegmentedControl">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ButtonSegmentedControl.h"/>
-            <relationships>
-                <relationship kind="outlet" name="target"/>
-            </relationships>
-        </class>
-        <class className="TDBadgedCell" superclassName="UITableViewCell">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/TDBadgedCell.h"/>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar" statusBarStyle="blackTranslucent"/>
         <simulatedOrientationMetrics key="orientation"/>

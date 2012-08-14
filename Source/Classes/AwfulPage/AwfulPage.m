@@ -309,7 +309,6 @@
     [MBProgressHUD hideHUDForView:self.view animated:NO];
     [self.networkOperation cancel];
     
-    [self swapToStopButton];
     [self hidePageNavigation];
     if(pageNum != 0) {
         //MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
@@ -328,7 +327,6 @@
         }
         [self updatePagesLabel];
         [self updateBookmarked];
-        [self swapToRefreshButton];
         //[MBProgressHUD hideHUDForView:self.view animated:NO];
         
         /*
@@ -347,7 +345,6 @@
          */
         
     } onError:^(NSError *error) {
-        [self swapToRefreshButton];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
         [alert show];
         [MBProgressHUD hideHUDForView:self.view animated:NO];
@@ -357,15 +354,12 @@
 -(void)loadLastPage
 {
     [self.networkOperation cancel];
-    [self swapToStopButton];
     self.networkOperation = [[AwfulHTTPClient sharedClient] pageDataForThread:self.thread destinationType:AwfulPageDestinationTypeLast pageNum:0 onCompletion:^(AwfulPageDataController *dataController) {
         self.dataController = dataController;
         [self updatePagesLabel];
         [self updateBookmarked];
-        [self swapToRefreshButton];
         //self.pullToNavigateView.onLastPage = YES;
     } onError:^(NSError *error) {
-        [self swapToRefreshButton];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
         [alert show];
     }];
@@ -374,7 +368,6 @@
 -(void)stop
 {
     [self.networkOperation cancel];
-    [self swapToRefreshButton];
     [MBProgressHUD hideHUDForView:self.view animated:NO];
     [self.webView stopLoading];
 }
@@ -761,7 +754,6 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     //[self.webView.scrollView setContentOffset:CGPointMake(0, 0) animated:NO];
     sender.scrollView.delegate = self;
     
-    [self swapToRefreshButton];
     if(self.postIDScrollDestination != nil) {
         [self scrollToSpecifiedPost];
     } else if(self.shouldScrollToBottom) {
@@ -798,20 +790,6 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 
 -(void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
 {
-}
-
--(void)swapToRefreshButton
-{
-    UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(hardRefresh)];
-    refresh.style = UIBarButtonItemStyleBordered;
-    self.navigationItem.rightBarButtonItem = refresh;
-}
-
--(void)swapToStopButton
-{
-    UIBarButtonItem *stop = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop)];
-    stop.style = UIBarButtonItemStyleBordered;
-    self.navigationItem.rightBarButtonItem = stop;
 }
 
 -(void)showCompletionMessage : (NSString *)message

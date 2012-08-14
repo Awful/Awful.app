@@ -99,8 +99,6 @@ typedef enum {
 -(void)heldPost:(UILongPressGestureRecognizer *)gestureRecognizer;
 -(void)didFullscreenGesture : (UIGestureRecognizer *)gesture;
 -(void)scrollToPost : (NSString *)post_id;
--(void)swapToStopButton;
--(void)swapToRefreshButton;
 
 -(void)showCompletionMessage : (NSString *)message;
 -(void)hidePageNavigation;
