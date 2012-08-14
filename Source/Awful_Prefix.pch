@@ -12,4 +12,8 @@
     #import "NSObject+Lazy.h"
     #import "DDLog.h"
     #import "AwfulModels.h"
+
+#import "AwfulPage+BarButtons.h"
+#import "AwfulPage+Scrolling.h"
+#import "AwfulPage+Transitions.h"
 #endif

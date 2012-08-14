@@ -131,6 +131,12 @@
 		8C1BC80A15AF0FFE00B75286 /* AwfulCustomForumFilmDump.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1BC80315AF0FFE00B75286 /* AwfulCustomForumFilmDump.m */; };
 		8C1BC80B15AF0FFE00B75286 /* AwfulCustomForumFYAD.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1BC80515AF0FFE00B75286 /* AwfulCustomForumFYAD.m */; };
 		8C1BC80C15AF0FFE00B75286 /* AwfulCustomForums.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1BC80715AF0FFE00B75286 /* AwfulCustomForums.m */; };
+		8C21643015DA9B98008EBC97 /* AwfulPage+Scrolling.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C21642F15DA9B98008EBC97 /* AwfulPage+Scrolling.m */; };
+		8C21643415DA9CC0008EBC97 /* AwfulPage+BarButtons.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C21643315DA9CC0008EBC97 /* AwfulPage+BarButtons.m */; };
+		8C21644115DAAB98008EBC97 /* AwfulAnimatedGifActivityIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C21643A15DAAB98008EBC97 /* AwfulAnimatedGifActivityIndicatorView.m */; };
+		8C21644215DAAB98008EBC97 /* AwfulLastPageControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C21643C15DAAB98008EBC97 /* AwfulLastPageControl.m */; };
+		8C21644315DAAB98008EBC97 /* AwfulLoadNextControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C21643E15DAAB98008EBC97 /* AwfulLoadNextControl.m */; };
+		8C21644415DAAB98008EBC97 /* AwfulRefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C21644015DAAB98008EBC97 /* AwfulRefreshControl.m */; };
 		8C3B019015C82E740005FD38 /* AwfulImagePickerGridCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B018F15C82E740005FD38 /* AwfulImagePickerGridCell.m */; };
 		8C3B019415C83FFE0005FD38 /* AwfulHTTPClient+ThreadTags.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B019315C83FFE0005FD38 /* AwfulHTTPClient+ThreadTags.m */; };
 		8C3B019715C841160005FD38 /* _AwfulThreadTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B019615C841160005FD38 /* _AwfulThreadTag.m */; };
@@ -148,8 +154,6 @@
 		8C447E2115D551000088B74C /* YosposhCommand_help.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C447E2015D550FF0088B74C /* YosposhCommand_help.m */; };
 		8C447E2415D551110088B74C /* YosposhCommand_forkbomb.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C447E2315D551110088B74C /* YosposhCommand_forkbomb.m */; };
 		8C447E2715D562F60088B74C /* YosposhCommand_cd.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C447E2615D562F50088B74C /* YosposhCommand_cd.m */; };
-		8C48E9FE159A1B2B00A59691 /* AwfulRefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48E9FD159A1B2B00A59691 /* AwfulRefreshControl.m */; };
-		8C48EA01159A353400A59691 /* AwfulLoadNextControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48EA00159A353400A59691 /* AwfulLoadNextControl.m */; };
 		8C48EA1E159BC2AC00A59691 /* AwfulFetchedTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48EA1D159BC2AC00A59691 /* AwfulFetchedTableViewController.m */; };
 		8C48EA22159BF14B00A59691 /* AwfulParentForumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48EA21159BF14A00A59691 /* AwfulParentForumCell.m */; };
 		8C48EA34159C904500A59691 /* AwfulSubForumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48EA33159C904500A59691 /* AwfulSubForumCell.m */; };
@@ -1130,8 +1134,6 @@
 		8CCD569115B7A5BA00E5893B /* frog2.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD568F15B7A5BA00E5893B /* frog2.png */; };
 		8CCD569315B7A5CC00E5893B /* getin.001.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD569215B7A5CC00E5893B /* getin.001.gif */; };
 		8CCFBD251598B9AF00336F55 /* AwfulThreadTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CCFBD241598B9AF00336F55 /* AwfulThreadTitleView.m */; };
-		8CE4DC7615B85BDB001C62AC /* AwfulLastPageControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CE4DC7515B85BDB001C62AC /* AwfulLastPageControl.m */; };
-		8CE4DC7E15B86498001C62AC /* AwfulAnimatedGifActivityIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CE4DC7D15B86498001C62AC /* AwfulAnimatedGifActivityIndicatorView.m */; };
 		8CFEECA615C6F1F900407A20 /* AwfulPostCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFEECA515C6F1F900407A20 /* AwfulPostCell.m */; };
 		8CFEECAB15C71F6E00407A20 /* AwfulNewPMComposeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFEECAA15C71F6E00407A20 /* AwfulNewPMComposeController.m */; };
 		8CFEECAE15C71F8F00407A20 /* AwfulThreadReplyComposeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFEECAD15C71F8F00407A20 /* AwfulThreadReplyComposeController.m */; };
@@ -1347,6 +1349,18 @@
 		8C1BC80515AF0FFE00B75286 /* AwfulCustomForumFYAD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCustomForumFYAD.m; sourceTree = "<group>"; };
 		8C1BC80615AF0FFE00B75286 /* AwfulCustomForums.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCustomForums.h; sourceTree = "<group>"; };
 		8C1BC80715AF0FFE00B75286 /* AwfulCustomForums.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCustomForums.m; sourceTree = "<group>"; };
+		8C21642E15DA9B98008EBC97 /* AwfulPage+Scrolling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AwfulPage+Scrolling.h"; sourceTree = "<group>"; };
+		8C21642F15DA9B98008EBC97 /* AwfulPage+Scrolling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AwfulPage+Scrolling.m"; sourceTree = "<group>"; };
+		8C21643215DA9CC0008EBC97 /* AwfulPage+BarButtons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AwfulPage+BarButtons.h"; sourceTree = "<group>"; };
+		8C21643315DA9CC0008EBC97 /* AwfulPage+BarButtons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AwfulPage+BarButtons.m"; sourceTree = "<group>"; };
+		8C21643915DAAB98008EBC97 /* AwfulAnimatedGifActivityIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAnimatedGifActivityIndicatorView.h; sourceTree = "<group>"; };
+		8C21643A15DAAB98008EBC97 /* AwfulAnimatedGifActivityIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAnimatedGifActivityIndicatorView.m; sourceTree = "<group>"; };
+		8C21643B15DAAB98008EBC97 /* AwfulLastPageControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLastPageControl.h; sourceTree = "<group>"; };
+		8C21643C15DAAB98008EBC97 /* AwfulLastPageControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLastPageControl.m; sourceTree = "<group>"; };
+		8C21643D15DAAB98008EBC97 /* AwfulLoadNextControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLoadNextControl.h; sourceTree = "<group>"; };
+		8C21643E15DAAB98008EBC97 /* AwfulLoadNextControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLoadNextControl.m; sourceTree = "<group>"; };
+		8C21643F15DAAB98008EBC97 /* AwfulRefreshControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulRefreshControl.h; sourceTree = "<group>"; };
+		8C21644015DAAB98008EBC97 /* AwfulRefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulRefreshControl.m; sourceTree = "<group>"; };
 		8C3B018E15C82E740005FD38 /* AwfulImagePickerGridCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulImagePickerGridCell.h; sourceTree = "<group>"; };
 		8C3B018F15C82E740005FD38 /* AwfulImagePickerGridCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulImagePickerGridCell.m; sourceTree = "<group>"; };
 		8C3B019215C83FFE0005FD38 /* AwfulHTTPClient+ThreadTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "AwfulHTTPClient+ThreadTags.h"; path = "AwfulNetworking/AwfulHTTPClient+ThreadTags.h"; sourceTree = "<group>"; };
@@ -1381,10 +1395,6 @@
 		8C447E2315D551110088B74C /* YosposhCommand_forkbomb.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YosposhCommand_forkbomb.m; sourceTree = "<group>"; };
 		8C447E2515D562F40088B74C /* YosposhCommand_cd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YosposhCommand_cd.h; sourceTree = "<group>"; };
 		8C447E2615D562F50088B74C /* YosposhCommand_cd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YosposhCommand_cd.m; sourceTree = "<group>"; };
-		8C48E9FC159A1B2B00A59691 /* AwfulRefreshControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulRefreshControl.h; sourceTree = "<group>"; };
-		8C48E9FD159A1B2B00A59691 /* AwfulRefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulRefreshControl.m; sourceTree = "<group>"; };
-		8C48E9FF159A353400A59691 /* AwfulLoadNextControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLoadNextControl.h; sourceTree = "<group>"; };
-		8C48EA00159A353400A59691 /* AwfulLoadNextControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLoadNextControl.m; sourceTree = "<group>"; };
 		8C48EA1C159BC2AC00A59691 /* AwfulFetchedTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFetchedTableViewController.h; sourceTree = "<group>"; };
 		8C48EA1D159BC2AC00A59691 /* AwfulFetchedTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulFetchedTableViewController.m; sourceTree = "<group>"; };
 		8C48EA20159BF14A00A59691 /* AwfulParentForumCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulParentForumCell.h; sourceTree = "<group>"; };
@@ -2442,10 +2452,6 @@
 		8CCD569215B7A5CC00E5893B /* getin.001.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = getin.001.gif; sourceTree = "<group>"; };
 		8CCFBD231598B9AF00336F55 /* AwfulThreadTitleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTitleView.h; sourceTree = "<group>"; };
 		8CCFBD241598B9AF00336F55 /* AwfulThreadTitleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTitleView.m; sourceTree = "<group>"; };
-		8CE4DC7415B85BDB001C62AC /* AwfulLastPageControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLastPageControl.h; sourceTree = "<group>"; };
-		8CE4DC7515B85BDB001C62AC /* AwfulLastPageControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLastPageControl.m; sourceTree = "<group>"; };
-		8CE4DC7C15B86498001C62AC /* AwfulAnimatedGifActivityIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAnimatedGifActivityIndicatorView.h; sourceTree = "<group>"; };
-		8CE4DC7D15B86498001C62AC /* AwfulAnimatedGifActivityIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAnimatedGifActivityIndicatorView.m; sourceTree = "<group>"; };
 		8CFEECA415C6F1F900407A20 /* AwfulPostCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostCell.h; sourceTree = "<group>"; };
 		8CFEECA515C6F1F900407A20 /* AwfulPostCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostCell.m; sourceTree = "<group>"; };
 		8CFEECA915C71F6E00407A20 /* AwfulNewPMComposeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewPMComposeController.h; sourceTree = "<group>"; };
@@ -2494,6 +2500,7 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				8C21643815DAAB97008EBC97 /* AwfulRefreshControl */,
 				8CB546D215BEEBF100E8BEC1 /* AwfulComposer */,
 				8C1BC80115AF0FFE00B75286 /* CustomForums */,
 				1190F6CC13BE4EA900B9D271 /* Actions */,
@@ -2629,8 +2636,8 @@
 		1190F6E813BE4EA900B9D271 /* AwfulPage */ = {
 			isa = PBXGroup;
 			children = (
-				8C48E9FB159A1B0700A59691 /* pull for action */,
-				8C79D4381562E780006FEE48 /* Page Transitions */,
+				8C79D4391562E79E006FEE48 /* AwfulPage+Transitions.h */,
+				8C79D43A1562E79E006FEE48 /* AwfulPage+Transitions.m */,
 				1190F6EA13BE4EA900B9D271 /* AwfulPage.h */,
 				1190F6EB13BE4EA900B9D271 /* AwfulPage.m */,
 				1190F6F013BE4EA900B9D271 /* AwfulPostBoxController.h */,
@@ -2641,6 +2648,10 @@
 				11D5E85714DC5FA000C1002D /* AwfulPageDataController.m */,
 				8CCFBD231598B9AF00336F55 /* AwfulThreadTitleView.h */,
 				8CCFBD241598B9AF00336F55 /* AwfulThreadTitleView.m */,
+				8C21642E15DA9B98008EBC97 /* AwfulPage+Scrolling.h */,
+				8C21642F15DA9B98008EBC97 /* AwfulPage+Scrolling.m */,
+				8C21643215DA9CC0008EBC97 /* AwfulPage+BarButtons.h */,
+				8C21643315DA9CC0008EBC97 /* AwfulPage+BarButtons.m */,
 			);
 			path = AwfulPage;
 			sourceTree = "<group>";
@@ -2988,6 +2999,21 @@
 			path = CustomForums;
 			sourceTree = "<group>";
 		};
+		8C21643815DAAB97008EBC97 /* AwfulRefreshControl */ = {
+			isa = PBXGroup;
+			children = (
+				8C21643915DAAB98008EBC97 /* AwfulAnimatedGifActivityIndicatorView.h */,
+				8C21643A15DAAB98008EBC97 /* AwfulAnimatedGifActivityIndicatorView.m */,
+				8C21643B15DAAB98008EBC97 /* AwfulLastPageControl.h */,
+				8C21643C15DAAB98008EBC97 /* AwfulLastPageControl.m */,
+				8C21643D15DAAB98008EBC97 /* AwfulLoadNextControl.h */,
+				8C21643E15DAAB98008EBC97 /* AwfulLoadNextControl.m */,
+				8C21643F15DAAB98008EBC97 /* AwfulRefreshControl.h */,
+				8C21644015DAAB98008EBC97 /* AwfulRefreshControl.m */,
+			);
+			path = AwfulRefreshControl;
+			sourceTree = "<group>";
+		};
 		8C447E0015D4487D0088B74C /* YOSPOS */ = {
 			isa = PBXGroup;
 			children = (
@@ -3023,21 +3049,6 @@
 			path = eastereggs;
 			sourceTree = "<group>";
 		};
-		8C48E9FB159A1B0700A59691 /* pull for action */ = {
-			isa = PBXGroup;
-			children = (
-				8C48E9FC159A1B2B00A59691 /* AwfulRefreshControl.h */,
-				8C48E9FD159A1B2B00A59691 /* AwfulRefreshControl.m */,
-				8C48E9FF159A353400A59691 /* AwfulLoadNextControl.h */,
-				8C48EA00159A353400A59691 /* AwfulLoadNextControl.m */,
-				8CE4DC7415B85BDB001C62AC /* AwfulLastPageControl.h */,
-				8CE4DC7515B85BDB001C62AC /* AwfulLastPageControl.m */,
-				8CE4DC7C15B86498001C62AC /* AwfulAnimatedGifActivityIndicatorView.h */,
-				8CE4DC7D15B86498001C62AC /* AwfulAnimatedGifActivityIndicatorView.m */,
-			);
-			name = "pull for action";
-			sourceTree = "<group>";
-		};
 		8C48EA5E159DD8FA00A59691 /* TDBadgedCell */ = {
 			isa = PBXGroup;
 			children = (
@@ -3062,15 +3073,6 @@
 				8C06D2B015C81905000F9FCA /* AwfulGridViewController.m */,
 			);
 			path = Components;
-			sourceTree = "<group>";
-		};
-		8C79D4381562E780006FEE48 /* Page Transitions */ = {
-			isa = PBXGroup;
-			children = (
-				8C79D4391562E79E006FEE48 /* AwfulPage+Transitions.h */,
-				8C79D43A1562E79E006FEE48 /* AwfulPage+Transitions.m */,
-			);
-			name = "Page Transitions";
 			sourceTree = "<group>";
 		};
 		8CB5467A15BA5A4D00E8BEC1 /* AwfulMessages */ = {
@@ -5419,8 +5421,6 @@
 				110FAC0115745C5C00ECF535 /* DispatchQueueLogFormatter.m in Sources */,
 				1C2BFA25158AB59800692D85 /* AwfulCSSTemplate.m in Sources */,
 				8CCFBD251598B9AF00336F55 /* AwfulThreadTitleView.m in Sources */,
-				8C48E9FE159A1B2B00A59691 /* AwfulRefreshControl.m in Sources */,
-				8C48EA01159A353400A59691 /* AwfulLoadNextControl.m in Sources */,
 				8C48EA1E159BC2AC00A59691 /* AwfulFetchedTableViewController.m in Sources */,
 				8C48EA22159BF14B00A59691 /* AwfulParentForumCell.m in Sources */,
 				8C48EA34159C904500A59691 /* AwfulSubForumCell.m in Sources */,
@@ -5432,8 +5432,6 @@
 				8CCD500715B497A900E5893B /* awful.js in Sources */,
 				8CCD500A15B497A900E5893B /* jquery.js in Sources */,
 				8CCD500E15B497A900E5893B /* salr.js in Sources */,
-				8CE4DC7615B85BDB001C62AC /* AwfulLastPageControl.m in Sources */,
-				8CE4DC7E15B86498001C62AC /* AwfulAnimatedGifActivityIndicatorView.m in Sources */,
 				8CB5467F15BA5A8000E8BEC1 /* AwfulPrivateMessageListController.m in Sources */,
 				8CB5468215BA5B5600E8BEC1 /* AwfulSearchController.m in Sources */,
 				8CB5469415BDA45F00E8BEC1 /* FVGifAnimation.m in Sources */,
@@ -5495,6 +5493,12 @@
 				8C447E2415D551110088B74C /* YosposhCommand_forkbomb.m in Sources */,
 				8C447E2715D562F60088B74C /* YosposhCommand_cd.m in Sources */,
 				8CB83C7915D9404B00F9EC35 /* NSObject+Lazy.m in Sources */,
+				8C21643015DA9B98008EBC97 /* AwfulPage+Scrolling.m in Sources */,
+				8C21643415DA9CC0008EBC97 /* AwfulPage+BarButtons.m in Sources */,
+				8C21644115DAAB98008EBC97 /* AwfulAnimatedGifActivityIndicatorView.m in Sources */,
+				8C21644215DAAB98008EBC97 /* AwfulLastPageControl.m in Sources */,
+				8C21644315DAAB98008EBC97 /* AwfulLoadNextControl.m in Sources */,
+				8C21644415DAAB98008EBC97 /* AwfulRefreshControl.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,6 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+
+//#import "AwfulPage+BarButtons.h"
+//#import "AwfulPage+Scrolling.h"
+//#import "AwfulPage+Transitions.h"
+
 #import "AwfulThread.h"
 #import "AwfulPost.h"
 #import "AwfulPostBoxController.h"
@@ -74,36 +79,21 @@ typedef enum {
 -(IBAction)hardRefresh;
 -(void)setThreadTitle : (NSString *)in_title;
 
--(void)updatePagesLabel;
 
--(IBAction)tappedActions:(id)sender;
--(IBAction)tappedPageNav : (id)sender;
--(IBAction)tappedNextPage : (id)sender;
 
--(IBAction)segmentedGotTapped : (id)sender;
--(IBAction)tappedPagesSegment : (id)sender;
--(IBAction)tappedActionsSegment : (id)sender;
 
 -(void)refresh;
 -(void)loadPageNum : (NSUInteger)pageNum;
 -(void)loadLastPage;
 -(void)stop;
 
--(void)scrollToSpecifiedPost;
-- (void)showActions:(NSString *)post_id fromRect:(CGRect)rect;
+-(void)showActions:(NSString *)post_id fromRect:(CGRect)rect;
 -(void)showActions;
 -(void)loadOlderPosts;
--(void)nextPage;
--(void)prevPage;
 
 -(void)heldPost:(UILongPressGestureRecognizer *)gestureRecognizer;
--(void)didFullscreenGesture : (UIGestureRecognizer *)gesture;
--(void)scrollToPost : (NSString *)post_id;
 
 -(void)showCompletionMessage : (NSString *)message;
--(void)hidePageNavigation;
-
-
 //-(void) didSwitchAutoF5:(UISwitch*)switchObj;
 
 @end
