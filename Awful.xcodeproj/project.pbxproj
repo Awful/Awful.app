@@ -139,6 +139,7 @@
 		8C21644415DAAB98008EBC97 /* AwfulRefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C21644015DAAB98008EBC97 /* AwfulRefreshControl.m */; };
 		8C21644815DAB460008EBC97 /* _AwfulLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C21644715DAB460008EBC97 /* _AwfulLogEntry.m */; };
 		8C21644B15DAB46A008EBC97 /* AwfulLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C21644A15DAB46A008EBC97 /* AwfulLogEntry.m */; };
+		8C21645115DB2565008EBC97 /* AwfulPrivateMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C21645015DB2565008EBC97 /* AwfulPrivateMessageViewController.m */; };
 		8C3B019015C82E740005FD38 /* AwfulImagePickerGridCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B018F15C82E740005FD38 /* AwfulImagePickerGridCell.m */; };
 		8C3B019415C83FFE0005FD38 /* AwfulHTTPClient+ThreadTags.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B019315C83FFE0005FD38 /* AwfulHTTPClient+ThreadTags.m */; };
 		8C3B019715C841160005FD38 /* _AwfulThreadTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B019615C841160005FD38 /* _AwfulThreadTag.m */; };
@@ -1365,6 +1366,8 @@
 		8C21644715DAB460008EBC97 /* _AwfulLogEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulLogEntry.m; sourceTree = "<group>"; };
 		8C21644915DAB46A008EBC97 /* AwfulLogEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLogEntry.h; sourceTree = "<group>"; };
 		8C21644A15DAB46A008EBC97 /* AwfulLogEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLogEntry.m; sourceTree = "<group>"; };
+		8C21644F15DB2565008EBC97 /* AwfulPrivateMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessageViewController.h; sourceTree = "<group>"; };
+		8C21645015DB2565008EBC97 /* AwfulPrivateMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessageViewController.m; sourceTree = "<group>"; };
 		8C3B018E15C82E740005FD38 /* AwfulImagePickerGridCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulImagePickerGridCell.h; sourceTree = "<group>"; };
 		8C3B018F15C82E740005FD38 /* AwfulImagePickerGridCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulImagePickerGridCell.m; sourceTree = "<group>"; };
 		8C3B019215C83FFE0005FD38 /* AwfulHTTPClient+ThreadTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "AwfulHTTPClient+ThreadTags.h"; path = "AwfulNetworking/AwfulHTTPClient+ThreadTags.h"; sourceTree = "<group>"; };
@@ -3076,6 +3079,8 @@
 				8C4ACFEF15CB181F00B1DBA5 /* AwfulPrivateMessageViewReplyComboController.m */,
 				8C4ACFF215CB7CE600B1DBA5 /* AwfulPMContentCell.h */,
 				8C4ACFF315CB7CE600B1DBA5 /* AwfulPMContentCell.m */,
+				8C21644F15DB2565008EBC97 /* AwfulPrivateMessageViewController.h */,
+				8C21645015DB2565008EBC97 /* AwfulPrivateMessageViewController.m */,
 			);
 			path = AwfulMessages;
 			sourceTree = "<group>";
@@ -5494,6 +5499,7 @@
 				8C21644415DAAB98008EBC97 /* AwfulRefreshControl.m in Sources */,
 				8C21644815DAB460008EBC97 /* _AwfulLogEntry.m in Sources */,
 				8C21644B15DAB46A008EBC97 /* AwfulLogEntry.m in Sources */,
+				8C21645115DB2565008EBC97 /* AwfulPrivateMessageViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
