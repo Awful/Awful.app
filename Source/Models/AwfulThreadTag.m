@@ -39,15 +39,15 @@
     [fileManager changeCurrentDirectoryPath: docsDir];
     [fileManager createFileAtPath:threadTag.filename.lastPathComponent contents:data attributes:nil];
     NSString* path = [docsDir stringByAppendingPathComponent:threadTag.filename.lastPathComponent];
-    threadTag.filename = [@"file://" stringByAppendingString:path];
+    threadTag.filename = path;
     [ApplicationDelegate saveContext];
 }
 
 
 -(UIImage*) image {
-    NSURL *url = [NSURL URLWithString:self.filename];
-    if (url.isFileURL) {
-        return [UIImage imageWithContentsOfFile:url.path];
+    if (![self.filename hasPrefix:@"http"]) {
+        UIImage *img = [UIImage imageWithContentsOfFile:self.filename];
+        return [UIImage imageWithContentsOfFile:self.filename];
     }
     return nil;
 }

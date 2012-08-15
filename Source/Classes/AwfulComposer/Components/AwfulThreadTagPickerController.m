@@ -61,12 +61,12 @@
     cell.textLabel.textAlignment = UITextAlignmentCenter;
     
     cell.imageView.image = tag.image;
-    if (tag.image) {
+    if (cell.imageView.image) {
         cell.textLabel.text = nil;
     }
     
     
-     if (!tag.image && tag.filename) {
+     if (!cell.imageView.image && tag.filename) {
        
          [[AwfulHTTPClient sharedClient] cacheThreadTag:tag
                                            onCompletion:^(NSMutableArray *messages) {

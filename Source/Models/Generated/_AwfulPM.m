@@ -14,6 +14,7 @@ const struct AwfulPMAttributes AwfulPMAttributes = {
 };
 
 const struct AwfulPMRelationships AwfulPMRelationships = {
+	.threadTag = @"threadTag",
 };
 
 const struct AwfulPMFetchedProperties AwfulPMFetchedProperties = {
@@ -146,6 +147,10 @@ const struct AwfulPMFetchedProperties AwfulPMFetchedProperties = {
 
 
 
+
+@dynamic threadTag;
+
+	
 
 
 

@@ -15,11 +15,13 @@ extern const struct AwfulPMAttributes {
 } AwfulPMAttributes;
 
 extern const struct AwfulPMRelationships {
+	__unsafe_unretained NSString *threadTag;
 } AwfulPMRelationships;
 
 extern const struct AwfulPMFetchedProperties {
 } AwfulPMFetchedProperties;
 
+@class AwfulThreadTag;
 
 
 
@@ -106,6 +108,13 @@ extern const struct AwfulPMFetchedProperties {
 
 
 
+@property (nonatomic, strong) AwfulThreadTag* threadTag;
+
+//- (BOOL)validateThreadTag:(id*)value_ error:(NSError**)error_;
+
+
+
+
 
 @end
 
@@ -162,6 +171,11 @@ extern const struct AwfulPMFetchedProperties {
 - (void)setPrimitiveTo:(NSString*)value;
 
 
+
+
+
+- (AwfulThreadTag*)primitiveThreadTag;
+- (void)setPrimitiveThreadTag:(AwfulThreadTag*)value;
 
 
 @end

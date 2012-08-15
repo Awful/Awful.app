@@ -46,6 +46,7 @@
         <attribute name="sent" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="subject" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="to" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="threadTag" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulThreadTag" syncable="YES"/>
     </entity>
     <entity name="AwfulThread" representedClassName="AwfulThread" syncable="YES">
         <attribute name="authorName" optional="YES" attributeType="String" syncable="YES"/>
@@ -85,7 +86,7 @@
         <element name="AwfulDraft" positionX="160" positionY="192" width="128" height="210"/>
         <element name="AwfulEmote" positionX="160" positionY="192" width="128" height="90"/>
         <element name="AwfulForum" positionX="160" positionY="192" width="128" height="210"/>
-        <element name="AwfulPM" positionX="160" positionY="192" width="128" height="150"/>
+        <element name="AwfulPM" positionX="160" positionY="192" width="128" height="165"/>
         <element name="AwfulThread" positionX="160" positionY="192" width="128" height="285"/>
         <element name="AwfulThreadTag" positionX="160" positionY="192" width="128" height="105"/>
         <element name="AwfulUser" positionX="160" positionY="192" width="128" height="90"/>

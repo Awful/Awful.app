@@ -13,6 +13,15 @@
 
 @implementation AwfulPrivateMessageViewController
 
+-(void) viewDidLoad {
+    [super viewDidLoad];
+    self.navigationItem.leftBarButtonItem = nil;
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:(UIBarButtonSystemItemReply)
+                                                                                           target:nil
+                                                                                           action:nil
+                                              ];
+}
 -(NSArray*) sections {
     if (!_sections) {
         _sections = [NSArray arrayWithObjects:
