@@ -24,6 +24,7 @@ const struct AwfulThreadAttributes AwfulThreadAttributes = {
 
 const struct AwfulThreadRelationships AwfulThreadRelationships = {
 	.forum = @"forum",
+	.threadTag = @"threadTag",
 };
 
 const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
@@ -359,6 +360,10 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 
 
 @dynamic forum;
+
+	
+
+@dynamic threadTag;
 
 	
 

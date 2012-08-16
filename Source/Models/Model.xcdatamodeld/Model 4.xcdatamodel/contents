@@ -66,12 +66,14 @@
         <attribute name="totalReplies" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="totalUnreadPosts" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="forum" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="threads" inverseEntity="AwfulForum" syncable="YES"/>
+        <relationship name="threadTag" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulThreadTag" inverseName="threads" inverseEntity="AwfulThreadTag" syncable="YES"/>
     </entity>
     <entity name="AwfulThreadTag" representedClassName="AwfulThreadTag" syncable="YES">
         <attribute name="alt" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="filename" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="tagID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <relationship name="forums" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="threadTags" inverseEntity="AwfulForum" syncable="YES"/>
+        <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="threadTag" inverseEntity="AwfulThread" syncable="YES"/>
     </entity>
     <entity name="AwfulUser" representedClassName="AwfulUser" syncable="YES">
         <attribute name="postsPerPage" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
@@ -86,11 +88,11 @@
         <element name="AwfulDraft" positionX="160" positionY="192" width="128" height="210"/>
         <element name="AwfulEmote" positionX="160" positionY="192" width="128" height="90"/>
         <element name="AwfulForum" positionX="160" positionY="192" width="128" height="210"/>
+        <element name="AwfulLogEntry" positionX="160" positionY="192" width="128" height="105"/>
         <element name="AwfulPM" positionX="160" positionY="192" width="128" height="165"/>
-        <element name="AwfulThread" positionX="160" positionY="192" width="128" height="285"/>
-        <element name="AwfulThreadTag" positionX="160" positionY="192" width="128" height="105"/>
+        <element name="AwfulThread" positionX="160" positionY="192" width="128" height="315"/>
+        <element name="AwfulThreadTag" positionX="160" positionY="192" width="128" height="120"/>
         <element name="AwfulUser" positionX="160" positionY="192" width="128" height="90"/>
         <element name="Favorite" positionX="171" positionY="324" width="128" height="75"/>
-        <element name="AwfulLogEntry" positionX="160" positionY="192" width="128" height="105"/>
     </elements>
 </model>

@@ -11,11 +11,12 @@
 #import "AwfulForum.h"
 #import "AwfulThread.h"
 #import "AwfulThread+AwfulMethods.h"
+#import "AwfulthreadTag.h"
 #import "AwfulUser+AwfulMethods.h"
 #import "AwfulUser.h"
 #import "AwfulThreadListController.h"
 
-#define THREAD_HEIGHT 72
+//#define THREAD_HEIGHT 72
 
 @implementation AwfulThreadCell
 
@@ -188,6 +189,10 @@
 }
 
 -(void) configureTagImage {
+    self.imageView.image = self.thread.threadTag.image;
+    
+    
+    /*
     NSURL *tag_url = [self.thread firstIconURL];
     if(tag_url != nil) {
         UIImage *img = [UIImage imageNamed:[tag_url lastPathComponent]];
@@ -233,7 +238,7 @@
         [self.secondTagImage setImage:[UIImage imageNamed:[second_url lastPathComponent]]];
     }
 
-
+*/
     //self.secondTagImage.hidden = YES;
 }
 

@@ -11,6 +11,7 @@ const struct AwfulThreadTagAttributes AwfulThreadTagAttributes = {
 
 const struct AwfulThreadTagRelationships AwfulThreadTagRelationships = {
 	.forums = @"forums",
+	.threads = @"threads",
 };
 
 const struct AwfulThreadTagFetchedProperties AwfulThreadTagFetchedProperties = {
@@ -102,6 +103,19 @@ const struct AwfulThreadTagFetchedProperties AwfulThreadTagFetchedProperties = {
 	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"forums"];
   
 	[self didAccessValueForKey:@"forums"];
+	return result;
+}
+	
+
+@dynamic threads;
+
+	
+- (NSMutableSet*)threadsSet {
+	[self willAccessValueForKey:@"threads"];
+  
+	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"threads"];
+  
+	[self didAccessValueForKey:@"threads"];
 	return result;
 }
 	

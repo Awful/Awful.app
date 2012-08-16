@@ -46,10 +46,50 @@
 
 -(UIImage*) image {
     if (![self.filename hasPrefix:@"http"]) {
-        UIImage *img = [UIImage imageWithContentsOfFile:self.filename];
+        //UIImage *img = [UIImage imageWithContentsOfFile:self.filename];
         return [UIImage imageWithContentsOfFile:self.filename];
     }
     return nil;
 }
 
++(void) updateTags:(NSArray*)tags forForum:(AwfulForum*)forum {
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"AwfulThreadTag"];
+    NSError *error;
+    NSArray *existingTags = [ApplicationDelegate.managedObjectContext executeFetchRequest:request
+                                                                                      error:&error
+                               ];
+    
+    NSMutableDictionary *existingDict = [NSMutableDictionary new];
+    for (AwfulThreadTag* t in existingTags)
+        [existingDict setObject:t forKey:t.tagID];
+    
+    for (NSString* tag in tags) {
+        TFHpple *tag_base = [[TFHpple alloc] initWithHTMLData:[tag dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        TFHppleElement* a = [tag_base searchForSingle:@"//a"];
+        TFHppleElement* img = [tag_base searchForSingle:@"//img"];
+        
+        AwfulThreadTag *newTag = [existingDict objectForKey:[self tagIDFromLinkElement:a]];
+        if (!newTag) {
+            newTag = [AwfulThreadTag new];
+            newTag.filename = [img objectForKey:@"src"];
+            newTag.alt = [img objectForKey:@"alt"];
+            newTag.tagID = [self tagIDFromLinkElement:a];
+        }
+        [forum addThreadTagsObject:newTag];
+    }
+}
+
++(NSNumber*) tagIDFromLinkElement:(TFHppleElement*)a {
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"posticon=([0-9]*)"
+                                                                           options:NSRegularExpressionCaseInsensitive
+                                                                             error:nil];
+    NSString *href = [a objectForKey:@"href"];
+    NSRange range = [[regex firstMatchInString:href
+                                       options:0
+                                         range:NSMakeRange(0,href.length)]
+                     rangeAtIndex:1];
+    int tagID = [[href substringWithRange:range] intValue];
+    return  [NSNumber numberWithInt:tagID];
+}
 @end

@@ -8,6 +8,7 @@
 
 #import "AwfulThread+AwfulMethods.h"
 #import "AwfulForum+AwfulMethods.h"
+#import "AwfulThreadTag.h"
 #import "TFHpple.h"
 #import "TFHppleElement.h"
 #import "XPathQuery.h"
@@ -152,6 +153,11 @@
     NSArray *subs = PerformRawHTMLXPathQuery(data, @"//table[@id='subforums']//tr[@class='subforum']");
     if (subs.count > 0)
         [AwfulForum updateSubforums:subs inForum:forum];
+    
+    NSArray *threadTags = PerformRawHTMLXPathQuery(data, @"//div[@id='filtericons']//a");
+    if (subs.count != forum.threadTags.count)
+        [AwfulThreadTag updateTags:threadTags forForum:forum];
+    
     
     NSMutableArray *threads = [[NSMutableArray alloc] init];
     NSMutableArray *existing_threads = [NSMutableArray arrayWithArray:[AwfulThread threadsForForum:forum]];
