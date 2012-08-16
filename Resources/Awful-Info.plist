@@ -5,6 +5,8 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleDisplayName</key>
+	<string>Awful</string>
+	<key>CFBundleDisplayName~ipad</key>
 	<string>The new Awful</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
