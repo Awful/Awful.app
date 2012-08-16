@@ -212,6 +212,8 @@
         }
     }
     
+    [AwfulThreadTag getTagsForThreads:threads];
+    
     return threads;
 }
 

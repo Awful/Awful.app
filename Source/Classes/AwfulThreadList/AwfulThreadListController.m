@@ -215,8 +215,9 @@ typedef enum {
         if (-[date timeIntervalSinceNow] > (60*10.0)+60*60) { //dst issue here or something, thread date an hour behind
             return YES;
         }
+        return NO;
     }
-    return NO;
+    return YES;
 }
 
 -(void)showThreadActionsForThread : (AwfulThread *)thread

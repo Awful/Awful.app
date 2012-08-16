@@ -1,5 +1,7 @@
 #import "AwfulThreadTag.h"
 #import "TFHpple.h"
+#import "AwfulHTTPClient+ThreadTags.h"
+#import "FVGifAnimation.h"
 
 @implementation AwfulThreadTag
 
@@ -92,4 +94,69 @@
     int tagID = [[href substringWithRange:range] intValue];
     return  [NSNumber numberWithInt:tagID];
 }
+
++(NSNumber*) tagIDFromImgSrc:(NSString*)src {
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"#([0-9]*)"
+                                                                           options:NSRegularExpressionCaseInsensitive
+                                                                             error:nil];
+    NSRange range = [[regex firstMatchInString:src
+                                       options:0
+                                         range:NSMakeRange(0,src.length)]
+                     rangeAtIndex:1];
+    int tagID = [[src substringWithRange:range] intValue];
+    return  [NSNumber numberWithInt:tagID];
+}
+
++(void) getTagsForThreads:(NSArray*)threads {
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"AwfulThreadTag"];
+    NSError *error;
+    NSArray *existingTags = [ApplicationDelegate.managedObjectContext executeFetchRequest:request
+                                                                                    error:&error
+                             ];
+    
+    NSMutableDictionary *existingDict = [NSMutableDictionary new];
+    for (AwfulThreadTag* t in existingTags)
+        [existingDict setObject:t forKey:t.filename.lastPathComponent];
+    
+    for (AwfulThread* thread in threads) {
+        if (!thread.threadTag) {
+            AwfulThreadTag *tag = [existingDict objectForKey:[thread.threadIconImageURL lastPathComponent]];
+            if (!tag) {
+                tag = [AwfulThreadTag new];
+                tag.filename = [thread.threadIconImageURL absoluteString];
+                tag.tagID = [AwfulThreadTag tagIDFromImgSrc:[thread.threadIconImageURL absoluteString]];
+            }
+            thread.threadTag = tag;
+        }
+    }
+}
+
+-(void) displayInImageView:(UIImageView*)imageView {
+    //look for a retina version
+    //look for a cached version
+    //load it
+    NSString* path;
+    
+    NSString* retinaFilename = [self.filename.lastPathComponent stringByReplacingOccurrencesOfString:@"." withString:@"@2x."];
+    path = [[NSBundle mainBundle] pathForResource:retinaFilename ofType:nil];
+
+    
+    if (!path && [[NSFileManager defaultManager] fileExistsAtPath:self.filename]) {
+        path = self.filename;
+    }
+    
+    if (path) {
+        imageView.image = [UIImage imageWithContentsOfFile:path];
+        FVGifAnimation* animation = [[FVGifAnimation alloc] initWithData:
+                          [NSData dataWithContentsOfFile:path]
+                          ];
+        
+        [animation setAnimationToImageView:imageView];
+        [imageView startAnimating];
+    }
+    else {
+        [[AwfulHTTPClient sharedClient] cacheThreadTag:self onCompletion:nil onError:nil];
+    }
+}
+
 @end
