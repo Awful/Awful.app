@@ -41,6 +41,9 @@
     if (self.ratingImage.image)
         self.ratingImage.image = self.ratingImage.image.greenVersion;
     
+    
+    self.detailTextLabel.text = [NSString stringWithFormat:@"%@\r\n%@ @ %i UTC", thread.authorName, thread.lastPostAuthorName, (int)thread.lastPostDate.timeIntervalSince1970];
+    
 }
 
 -(void) configureTagImage {
@@ -136,7 +139,7 @@
                                                                    }
                                                                    
                                                                    NSData *responseData = (NSData *)response;
-                                                                   //NSMutableArray *threads = [AwfulThread parseThreadsWithData:responseData forForum:self.forum];
+                                                                   NSArray* nothing = [AwfulThread parseThreadsWithData:responseData forForum:self.forum];
                                                                    [ApplicationDelegate saveContext];
                                                                    //threadListResponseBlock(threads);
                                                                } 

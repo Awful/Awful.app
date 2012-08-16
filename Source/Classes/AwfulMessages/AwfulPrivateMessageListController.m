@@ -82,6 +82,8 @@
     
     if (pm.threadTag)
         cell.imageView.image = pm.threadTag.image;
+    else
+        cell.imageView.image = nil;
 }
 
 -(BOOL) tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {

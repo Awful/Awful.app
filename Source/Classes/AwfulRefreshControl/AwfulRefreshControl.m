@@ -36,6 +36,9 @@
         _subtitle = _innerCell.detailTextLabel;
         _imageView = _innerCell.imageView;
         
+        self.title.adjustsFontSizeToFitWidth = YES;
+        self.subtitle.adjustsFontSizeToFitWidth = YES;
+        
         self.imageView.image = [UIImage imageNamed:@"frog1.png"];
         
         _imageView2 = [[UIImageView alloc] initWithFrame:self.imageView.frame];

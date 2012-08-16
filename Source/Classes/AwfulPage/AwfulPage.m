@@ -31,6 +31,7 @@
 #import "MWPhotoBrowser.h"
 #import "OtherWebController.h"
 #import "AwfulRefreshControl.h"
+#import "AwfulLoadPrevControl.h"
 #import "AwfulLoadNextControl.h"
 #import "AwfulLastPageControl.h"
 #import "AwfulWebViewDelegate.h"
@@ -175,11 +176,11 @@
             [self.view addSubview:self.nextPageWebView];
             
             
-            self.awfulRefreshControl = [[AwfulRefreshControl alloc] initWithFrame:CGRectMake(0, -50, self.view.fsW, 50)];
+            self.awfulRefreshControl = [[AwfulLoadPrevControl alloc] initWithFrame:CGRectMake(0, -50, self.view.fsW, 50)];
             [self.webView.scrollView addSubview:self.awfulRefreshControl];
             
             [self.awfulRefreshControl addTarget:self
-                                         action:@selector(refreshControlChanged:)
+                                         action:@selector(loadPrevControlChanged:)
                                forControlEvents:(UIControlEventValueChanged)];
             [self.awfulRefreshControl addTarget:self
                                          action:@selector(refreshControlCancel:)
@@ -665,9 +666,9 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     
 }
 
--(void) refreshControlChanged:(AwfulRefreshControl*)refreshControl {
+-(void) loadPrevControlChanged:(AwfulRefreshControl*)refreshControl {
     if (refreshControl.state == AwfulRefreshControlStateLoading)
-        [self refresh];
+        [self prevPage];
 }
 
 -(void) loadNextControlChanged:(AwfulLoadNextControl*)loadNextControl {

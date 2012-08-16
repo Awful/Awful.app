@@ -99,7 +99,7 @@
 -(void) outputLine:(NSString*)format, ... {
     va_list args;
     va_start(args, format);
-    NSString *s = [NSString stringWithFormat:[format stringByAppendingString:@"\n"], args];
+    NSString *s = [format stringByAppendingString:@"\n"];//, args];
     va_end(args);
     
     [self.history appendString:s];

@@ -129,4 +129,8 @@ BOOL_PROPERTY(@"highlight_own_mentions", highlightOwnMentions, setHighlightOwnMe
 
 BOOL_PROPERTY(@"dark_theme", darkTheme, setDarkTheme);
 
+-(BOOL) enableCustomForums {
+    return YES;
+}
+
 @end

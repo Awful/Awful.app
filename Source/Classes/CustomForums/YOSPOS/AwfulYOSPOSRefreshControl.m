@@ -68,6 +68,9 @@
     
 }
 
+-(UIActivityIndicatorView*) activityView {
+    return nil;
+}
 
 -(void) didScrollInScrollView:(UIScrollView *)scrollView {
     [super didScrollInScrollView:scrollView];

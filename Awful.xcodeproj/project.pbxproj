@@ -166,6 +166,7 @@
 		8C4C1E2115C7660800436B8A /* AwfulPostComposerInputAccessoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4C1E1F15C7660800436B8A /* AwfulPostComposerInputAccessoryView.m */; };
 		8C4C1E2715C7667300436B8A /* AwfulThreadTagPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4C1E2615C7667300436B8A /* AwfulThreadTagPickerController.m */; };
 		8C4C1E2A15C766D800436B8A /* AwfulImageAttachmentPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4C1E2915C766D800436B8A /* AwfulImageAttachmentPickerController.m */; };
+		8C5852B215DC97FF00C89D66 /* AwfulLoadPrevControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C5852B115DC97FF00C89D66 /* AwfulLoadPrevControl.m */; };
 		8C79D43B1562E79E006FEE48 /* AwfulPage+Transitions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C79D43A1562E79E006FEE48 /* AwfulPage+Transitions.m */; };
 		8C905197155D6CAD0098266A /* UIView+Lazy.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C905196155D6CAD0098266A /* UIView+Lazy.m */; };
 		8CB5467F15BA5A8000E8BEC1 /* AwfulPrivateMessageListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB5467E15BA5A8000E8BEC1 /* AwfulPrivateMessageListController.m */; };
@@ -1361,7 +1362,7 @@
 		8C21643E15DAAB98008EBC97 /* AwfulLoadNextControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLoadNextControl.m; sourceTree = "<group>"; };
 		8C21643F15DAAB98008EBC97 /* AwfulRefreshControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulRefreshControl.h; sourceTree = "<group>"; };
 		8C21644015DAAB98008EBC97 /* AwfulRefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulRefreshControl.m; sourceTree = "<group>"; };
-		8C21644515DAB321008EBC97 /* Model 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Model 4.xcdatamodel"; sourceTree = "<group>"; };
+		8C21644515DAB321008EBC97 /* Model 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 4.xcdatamodel"; sourceTree = "<group>"; };
 		8C21644615DAB460008EBC97 /* _AwfulLogEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _AwfulLogEntry.h; sourceTree = "<group>"; };
 		8C21644715DAB460008EBC97 /* _AwfulLogEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulLogEntry.m; sourceTree = "<group>"; };
 		8C21644915DAB46A008EBC97 /* AwfulLogEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLogEntry.h; sourceTree = "<group>"; };
@@ -1420,6 +1421,8 @@
 		8C4C1E2615C7667300436B8A /* AwfulThreadTagPickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTagPickerController.m; sourceTree = "<group>"; };
 		8C4C1E2815C766D800436B8A /* AwfulImageAttachmentPickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulImageAttachmentPickerController.h; sourceTree = "<group>"; };
 		8C4C1E2915C766D800436B8A /* AwfulImageAttachmentPickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulImageAttachmentPickerController.m; sourceTree = "<group>"; };
+		8C5852B015DC97FF00C89D66 /* AwfulLoadPrevControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLoadPrevControl.h; sourceTree = "<group>"; };
+		8C5852B115DC97FF00C89D66 /* AwfulLoadPrevControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLoadPrevControl.m; sourceTree = "<group>"; };
 		8C79D4391562E79E006FEE48 /* AwfulPage+Transitions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AwfulPage+Transitions.h"; sourceTree = "<group>"; };
 		8C79D43A1562E79E006FEE48 /* AwfulPage+Transitions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AwfulPage+Transitions.m"; sourceTree = "<group>"; };
 		8C905195155D6CAD0098266A /* UIView+Lazy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Lazy.h"; sourceTree = "<group>"; };
@@ -3011,6 +3014,8 @@
 				8C21643E15DAAB98008EBC97 /* AwfulLoadNextControl.m */,
 				8C21643F15DAAB98008EBC97 /* AwfulRefreshControl.h */,
 				8C21644015DAAB98008EBC97 /* AwfulRefreshControl.m */,
+				8C5852B015DC97FF00C89D66 /* AwfulLoadPrevControl.h */,
+				8C5852B115DC97FF00C89D66 /* AwfulLoadPrevControl.m */,
 			);
 			path = AwfulRefreshControl;
 			sourceTree = "<group>";
@@ -5500,6 +5505,7 @@
 				8C21644815DAB460008EBC97 /* _AwfulLogEntry.m in Sources */,
 				8C21644B15DAB46A008EBC97 /* AwfulLogEntry.m in Sources */,
 				8C21645115DB2565008EBC97 /* AwfulPrivateMessageViewController.m in Sources */,
+				8C5852B215DC97FF00C89D66 /* AwfulLoadPrevControl.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
