@@ -137,8 +137,8 @@
     //load it
     NSString* path;
     
-    NSString* retinaFilename = [self.filename.lastPathComponent stringByReplacingOccurrencesOfString:@"." withString:@"@2x."];
-    path = [[NSBundle mainBundle] pathForResource:retinaFilename ofType:nil];
+    NSString* retinaFilename = [[self.filename.lastPathComponent stringByReplacingOccurrencesOfString:@"." withString:@"@2x."] stringByDeletingPathExtension];
+    path = [[NSBundle mainBundle] pathForResource:retinaFilename ofType:@"png"];
 
     
     if (!path && [[NSFileManager defaultManager] fileExistsAtPath:self.filename]) {
