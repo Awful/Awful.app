@@ -25,12 +25,14 @@ extern const struct AwfulThreadAttributes {
 
 extern const struct AwfulThreadRelationships {
 	__unsafe_unretained NSString *forum;
+	__unsafe_unretained NSString *threadTag;
 } AwfulThreadRelationships;
 
 extern const struct AwfulThreadFetchedProperties {
 } AwfulThreadFetchedProperties;
 
 @class AwfulForum;
+@class AwfulThreadTag;
 
 
 
@@ -229,6 +231,13 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
+@property (nonatomic, strong) AwfulThreadTag* threadTag;
+
+//- (BOOL)validateThreadTag:(id*)value_ error:(NSError**)error_;
+
+
+
+
 
 @end
 
@@ -362,6 +371,11 @@ extern const struct AwfulThreadFetchedProperties {
 
 - (AwfulForum*)primitiveForum;
 - (void)setPrimitiveForum:(AwfulForum*)value;
+
+
+
+- (AwfulThreadTag*)primitiveThreadTag;
+- (void)setPrimitiveThreadTag:(AwfulThreadTag*)value;
 
 
 @end

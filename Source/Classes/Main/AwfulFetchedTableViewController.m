@@ -32,11 +32,12 @@
                                                   inManagedObjectContext:ApplicationDelegate.managedObjectContext];
     self.sectionKey = sectionKeyPath;
     
-    if (predicate) 
+    if (predicate) {
         if ([predicate isKindOfClass:[NSPredicate class]])
             self.predicate = predicate;
         else if ([predicate isKindOfClass:[NSString class]])
             self.predicate = [NSPredicate predicateWithFormat:predicate];
+    }
     
     if (sort) {
         if ([sort isKindOfClass:[NSArray class]])
@@ -121,6 +122,11 @@
     }
     [self configureCell:cell atIndexPath:indexPath];
     return cell;
+}
+
+- (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath {
+    NSManagedObject *obj = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    [obj setContentForCell:cell];
 }
 
 

@@ -17,6 +17,8 @@
 #import "AwfulThreadCell.h"
 #import "AwfulLoginController.h"
 #import "AwfulCustomForums.h"
+#import "AwfulNewPostComposeController.h"
+#import "AwfulRefreshControl.h"
 
 #define THREAD_HEIGHT 76
 
@@ -45,12 +47,13 @@ typedef enum {
 {
     self.currentPage = 1;
     self.title = self.forum.name;
+    /*
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(awfulThreadUpdated:)
                                                  name:AwfulThreadDidUpdateNotification
                                                object:nil];
     
-    
+    */
     [self setEntityName:@"AwfulThread"
               predicate:[NSPredicate predicateWithFormat:@"forum = %@", self.forum]
                    sort:[NSArray arrayWithObjects:
@@ -61,6 +64,7 @@ typedef enum {
              sectionKey:nil
      ];
     
+
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -114,6 +118,7 @@ typedef enum {
 -(void)refresh
 {   
     [super refresh];
+    self.awfulRefreshControl.state = AwfulRefreshControlStateLoading;
     [self loadPageNum:1];
 }
 
@@ -151,25 +156,11 @@ typedef enum {
     [self loadPageNum:self.currentPage+1];
 }
 
--(void)awfulThreadUpdated : (NSNotification *)notif
-{
-    /*
-    AwfulThread *changedThread = [notif object];
-    NSIndexPath *path = nil;
-    for(AwfulThread *thread in self.awfulThreads) {
-        if(thread == changedThread) {
-            path = [NSIndexPath indexPathForRow:[self.awfulThreads indexOfObject:thread] inSection:0];
-        }
-    }
-    if(path != nil) {
-        //[self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:path] withRowAnimation:UITableViewRowAnimationFade];
-    }
-     */
-}
 
--(void)newlyVisible
-{
-    //For subclassing
+-(void) didTapCompose:(UIBarButtonItem*)button {
+    UINavigationController *test = [[UINavigationController alloc] initWithRootViewController:[AwfulNewPostComposeController new]];
+    test.modalPresentationStyle = UIModalPresentationFormSheet;
+    [self.splitViewController presentModalViewController:test animated:YES];
 }
 
 #pragma mark -
@@ -183,8 +174,11 @@ typedef enum {
     lab.text = self.forum.name;
     
     self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
+    
+    self.navigationItem.leftBarButtonItem = self.customBackButton;
+    self.navigationItem.rightBarButtonItem = self.customPostButton;
 
-    if(self.fetchedResultsController.fetchedObjects.count == 0 && IsLoggedIn()) {
+    if(self.shouldReloadOnViewLoad) {
         [self refresh];
     }
 }
@@ -197,17 +191,33 @@ typedef enum {
     // e.g. self.myOutlet = nil;
 }
 
+/*
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:AwfulThreadDidUpdateNotification
                                                   object:nil];
 }
+*/
 
 -(BOOL)shouldReloadOnViewLoad
 {
     //check date on last thread we've got, if older than 10? min reload
-    return NO;
+    NSFetchRequest *req = [NSFetchRequest fetchRequestWithEntityName:@"AwfulThread"];
+    req.predicate = [NSPredicate predicateWithFormat:@"forum = %@", self.forum];
+    req.sortDescriptors = [[NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO] wrapInArray];
+    req.fetchLimit = 1;
+    
+    NSArray* newestThread = [ApplicationDelegate.managedObjectContext executeFetchRequest:req error:nil];
+    if (newestThread.count == 1) {
+        NSDate *date = [[newestThread objectAtIndex:0] lastPostDate];
+
+        if (-[date timeIntervalSinceNow] > (60*10.0)+60*60) { //dst issue here or something, thread date an hour behind
+            return YES;
+        }
+        return NO;
+    }
+    return YES;
 }
 
 -(void)showThreadActionsForThread : (AwfulThread *)thread
@@ -281,7 +291,6 @@ typedef enum {
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    self.navigationItem.leftBarButtonItem = self.customBackButton;
     
     [self.navigationController setToolbarHidden:YES];
     
@@ -290,8 +299,11 @@ typedef enum {
      
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
+-(UIBarButtonItem*) customPostButton {
+    return [[UIBarButtonItem alloc] initWithBarButtonSystemItem:(UIBarButtonSystemItemCompose)
+                                                         target:self
+                                                         action:@selector(didTapCompose:)
+            ];
 }
 
 
@@ -355,6 +367,7 @@ typedef enum {
   
 }
 
+#pragma mark selection
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {
     //[self performSegueWithIdentifier:@"AwfulPage" 
@@ -378,7 +391,6 @@ typedef enum {
 }
 
 -(void) didLoadThreadPage:(NSNotification*)msg {
-    NSLog(@"loaded");
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     AwfulPage* page = [msg.userInfo objectForKey:@"page"];
     

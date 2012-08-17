@@ -38,7 +38,22 @@
     
     self.nextPageWebView.frame = self.webView.frame;
     self.nextPageWebView.scrollView.contentOffset = self.webView.scrollView.contentOffset;
-    //[self.webView removeFromSuperview];
+    
+    [self performSelector:@selector(reloadTransition2) withObject:nil afterDelay:0.0];
+}
+-(void) reloadTransition2 {
+    [self.webView removeFromSuperview];
+    
+    CGFloat pageLengthIncrease = self.nextPageWebView.scrollView.contentSize.height - self.webView.scrollView.contentSize.height;
+    CGFloat amountToScroll;
+    if (pageLengthIncrease > self.nextPageWebView.fsH)
+        amountToScroll = self.nextPageWebView.fsH - 100;
+    else
+        amountToScroll = pageLengthIncrease;
+    
+    [self.nextPageWebView.scrollView setContentOffset:CGPointMake(0, self.nextPageWebView.scrollView.contentOffset.y + amountToScroll)
+                                             animated:YES
+     ];
     
     [self didFinishPageTransition];
     
@@ -55,6 +70,7 @@
 -(void) pageForwardTransition {
     //position next page below current
     //move both up
+    self.loadNextPageControl.state = AwfulRefreshControlStatePageTransition;
     
     self.nextPageWebView.frame = self.webView.frame;
     self.nextPageWebView.foY = self.nextPageWebView.fsH;
@@ -63,7 +79,7 @@
     CGPoint bottomOffset = CGPointMake(0, self.webView.scrollView.contentSize.height - self.webView.scrollView.bounds.size.height + self.loadNextPageControl.fsH);
     [self.webView.scrollView setContentOffset:bottomOffset animated:YES];
     
-    [UIView animateWithDuration:.5 
+    [UIView animateWithDuration:1
                           delay:0 
                         options:(UIViewAnimationOptionCurveEaseInOut) 
                      animations:^{
@@ -104,18 +120,24 @@
     }
     [self.webView removeFromSuperview];
     self.webView = self.nextPageWebView;
+    self.webView.scrollView.scrollsToTop = YES;
     
     [self.awfulRefreshControl removeFromSuperview];
     [self.webView.scrollView addSubview:self.awfulRefreshControl];
     
     
     [self.loadNextPageControl removeFromSuperview];
-    if (self.webView.tag == self.numberOfPages) {
+    
+    if (self.webView.tag == self.numberOfPages && [self.loadNextPageControl isMemberOfClass:[AwfulLoadNextControl class]]) {
         self.loadNextPageControl = [[AwfulLastPageControl alloc] initWithFrame:self.loadNextPageControl.frame];
+        self.loadNextPageControl.changeInsetToShow = YES;
     }
-    else {
+    else if (self.webView.tag < self.numberOfPages && [self.loadNextPageControl isMemberOfClass:[AwfulLastPageControl class]]) {
         self.loadNextPageControl = [[AwfulLoadNextControl alloc] initWithFrame:self.loadNextPageControl.frame];
+        self.loadNextPageControl.changeInsetToShow = NO;
     }
+    
+    self.loadNextPageControl.foY = self.webView.scrollView.contentSize.height;
     
     [self.webView.scrollView addSubview:self.loadNextPageControl];
     
@@ -125,6 +147,7 @@
     self.nextPageWebView.frame = self.webView.frame;
     self.nextPageWebView.foY = self.nextPageWebView.fsH;
     self.nextPageWebView.delegate = self;
+    self.nextPageWebView.scrollView.scrollsToTop = NO;
     [self.view addSubview:self.nextPageWebView];
 }
 @end

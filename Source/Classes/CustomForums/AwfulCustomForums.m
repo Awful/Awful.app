@@ -15,6 +15,9 @@
 #import "AwfulCustomForumFYAD.h"
 #import "AwfulCustomForumFilmDump.h"
 
+#import "AwfulSettings.h"
+#import "AwfulUser.h"
+#import "Awfuluser+AwfulMethods.h"
 
 @implementation AwfulCustomForums
 
@@ -22,9 +25,8 @@
 //Cell Identifier should be the same name as the thread class
 +(NSString*) cellIdentifierForForum:(AwfulForum*)forum {
     NSString *threadCell;
-    
+
     switch (forum.forumID.intValue) {
-            
         case AwfulCustomForumYOSPOS:
             threadCell = @"AwfulYOSPOSThreadCell";
             break;

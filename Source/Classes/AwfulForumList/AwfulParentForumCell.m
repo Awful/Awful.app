@@ -35,7 +35,10 @@
     [super setForum:forum];
     self.isExpanded = forum.expandedValue;
     [self setFavoriteButtonAccessory];
+    
     self.imageView.image = [UIImage imageNamed:@"forum-arrow-right.png"];
+    self.imageView.hidden = (forum.children.count == 0);
+    
 }
 
 +(CGFloat) heightForContent:(AwfulForum*)forum inTableView:(UITableView*)tableView {

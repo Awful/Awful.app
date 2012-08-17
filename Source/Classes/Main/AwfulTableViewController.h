@@ -17,6 +17,7 @@
 
 @property (nonatomic, strong) NSOperation *networkOperation;
 @property (nonatomic, strong) AwfulRefreshControl *awfulRefreshControl;
+@property (nonatomic,strong) AwfulLoadNextControl* loadNextControl;
 @property (nonatomic, assign) BOOL reloading;
 
 -(IBAction)refresh;

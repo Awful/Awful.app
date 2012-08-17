@@ -14,7 +14,6 @@
 + (AwfulSettings *)settings;
 
 - (void)registerDefaults;
-
 @property (readonly, strong) NSArray *sections;
 
 @property (assign, nonatomic) BOOL showAvatars;
@@ -22,6 +21,8 @@
 @property (assign, nonatomic) BOOL showImages;
 
 @property (assign, nonatomic) NSInteger loadReadPosts;
+
+@property (assign, nonatomic) BOOL enableCustomForums;
 
 typedef enum
 {

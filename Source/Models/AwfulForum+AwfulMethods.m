@@ -13,15 +13,6 @@
 
 @implementation AwfulForum (AwfulMethods)
 
--(id) init {
-    self = [super initWithEntity:[NSEntityDescription entityForName:[[self class] description]
-                                             inManagedObjectContext:ApplicationDelegate.managedObjectContext
-                                  ]
-  insertIntoManagedObjectContext:ApplicationDelegate.managedObjectContext];
-    
-    return self;
-}
-
 +(AwfulForum *)getForumWithID : (NSString *)forumID fromCurrentList : (NSArray *)currentList
 {
     for(AwfulForum *existing in currentList) {

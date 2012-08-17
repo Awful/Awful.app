@@ -8,6 +8,7 @@
 
 #import "AwfulThread+AwfulMethods.h"
 #import "AwfulForum+AwfulMethods.h"
+#import "AwfulThreadTag.h"
 #import "TFHpple.h"
 #import "TFHppleElement.h"
 #import "XPathQuery.h"
@@ -153,6 +154,11 @@
     if (subs.count > 0)
         [AwfulForum updateSubforums:subs inForum:forum];
     
+    NSArray *threadTags = PerformRawHTMLXPathQuery(data, @"//div[@id='filtericons']//a");
+    if (subs.count != forum.threadTags.count)
+        [AwfulThreadTag updateTags:threadTags forForum:forum];
+    
+    
     NSMutableArray *threads = [[NSMutableArray alloc] init];
     NSMutableArray *existing_threads = [NSMutableArray arrayWithArray:[AwfulThread threadsForForum:forum]];
     
@@ -190,8 +196,7 @@
                 [existing_threads removeObjectsInArray:threads];
                 
                 if(thread == nil) {
-                    NSManagedObjectContext *moc = ApplicationDelegate.managedObjectContext;
-                    thread = [AwfulThread insertInManagedObjectContext:moc];
+                    thread = [AwfulThread new];
                 }
                 
                 thread.forum = forum;
@@ -206,6 +211,8 @@
             }
         }
     }
+    
+    [AwfulThreadTag getTagsForThreads:threads];
     
     return threads;
 }

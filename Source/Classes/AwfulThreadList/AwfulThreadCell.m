@@ -11,11 +11,12 @@
 #import "AwfulForum.h"
 #import "AwfulThread.h"
 #import "AwfulThread+AwfulMethods.h"
+#import "AwfulthreadTag.h"
 #import "AwfulUser+AwfulMethods.h"
 #import "AwfulUser.h"
 #import "AwfulThreadListController.h"
 
-#define THREAD_HEIGHT 72
+//#define THREAD_HEIGHT 72
 
 @implementation AwfulThreadCell
 
@@ -188,10 +189,19 @@
 }
 
 -(void) configureTagImage {
+    [self.thread.threadTag displayInImageView:self.imageView];
+    
+    if (!self.imageView.image) {
+        [self.thread.threadTag addObserver:self
+                                forKeyPath:@"filename"
+                                   options:NSKeyValueObservingOptionNew
+                                   context:nil
+         ];
+    }
+    
+    /*
     NSURL *tag_url = [self.thread firstIconURL];
     if(tag_url != nil) {
-        UIImage *img = [UIImage imageNamed:[tag_url lastPathComponent]];
-        CGImageRef ref = img.CGImage;
         UIImage *scaled = [UIImage imageWithCGImage:ref scale:2 orientation:(UIImageOrientationUp)];
         
         self.imageView.image = scaled;
@@ -233,7 +243,7 @@
         [self.secondTagImage setImage:[UIImage imageNamed:[second_url lastPathComponent]]];
     }
 
-
+*/
     //self.secondTagImage.hidden = YES;
 }
 
@@ -282,7 +292,7 @@
 }
 
 +(CGFloat) heightForContent:(AwfulThread*)thread inTableView:(UITableView*)tableView {
-    int width = tableView.frame.size.width - 65 - ((thread.totalUnreadPostsValue>0)? 50 : 0);
+    int width = tableView.frame.size.width - 80 - ((thread.totalUnreadPostsValue>0)? 60 : 0);
     
     CGSize textSize = {0, 0};
     CGSize detailSize = {0, 0};
@@ -292,13 +302,19 @@
                       constrainedToSize:CGSizeMake(width, 4000) 
                           lineBreakMode:UILineBreakModeWordWrap];
 
-        detailSize = [thread.title sizeWithFont:self.detailLabelFont 
-                            constrainedToSize:CGSizeMake(width, 4000) 
-                                lineBreakMode:UILineBreakModeWordWrap];
+    detailSize = [thread.title sizeWithFont:self.detailLabelFont 
+                        constrainedToSize:CGSizeMake(width, 4000) 
+                            lineBreakMode:UILineBreakModeWordWrap];
     
     height = 20 + textSize.height + detailSize.height;
     
-    return (MAX(height,70));
+    return (MAX(height,50));
+}
+
+-(void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    [object removeObserver:self forKeyPath:keyPath];
+    [self.thread willChangeValueForKey:@"threadTag"];
+    [self.thread didChangeValueForKey:@"threadTag"];
 }
 
 +(UIColor*) textColor { return [UIColor blackColor]; }

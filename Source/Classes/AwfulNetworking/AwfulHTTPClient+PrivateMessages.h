@@ -7,6 +7,7 @@
 //
 
 #import "AwfulHTTPClient.h"
+#import "AwfulDraft.h"
 
 typedef void (^PrivateMessagesListResponseBlock)(NSMutableArray *messages);
 
@@ -14,4 +15,10 @@ typedef void (^PrivateMessagesListResponseBlock)(NSMutableArray *messages);
 
 -(NSOperation *)privateMessageListOnCompletion:(PrivateMessagesListResponseBlock)PMListResponseBlock 
                                        onError:(AwfulErrorBlock)errorBlock;
+
+-(NSOperation *)sendPrivateMessage:(AwfulDraft*)draft onCompletion:(CompletionBlock)completionBlock onError:(AwfulErrorBlock)errorBlock;
+
+-(NSOperation *)loadPrivateMessage:(AwfulPM*)message
+                      onCompletion:(PrivateMessagesListResponseBlock)PMListResponseBlock
+                           onError:(AwfulErrorBlock)errorBlock;
 @end

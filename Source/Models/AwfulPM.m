@@ -2,6 +2,7 @@
 #import "TFHpple.h"
 #import "TFHppleElement.h"
 #import "XPathQuery.h"
+#import "AwfulThreadTag.h"
 
 @implementation AwfulPM
 
@@ -14,7 +15,7 @@
     return self;
 }
 
-+(NSMutableArray *)parsePMsWithData:(NSData*)data
++(NSMutableArray *)parsePMListWithData:(NSData*)data
 {
     //TFHpple *page_data = [[TFHpple alloc] initWithHTMLData:data];
     /*
@@ -38,14 +39,18 @@
         for (int j=0; j<cells.count; j++) {
             TFHpple* cell = [[TFHpple alloc] initWithHTMLData:[[cells objectAtIndex:j] dataUsingEncoding:NSUTF8StringEncoding]];
             TFHppleElement *element;
-                        
+            
+            TFHppleElement* tagImageElement;
             switch (j) {
                 case 0: //image
                     element = [cell searchForSingle:@"//img"];
                     message.repliedValue = [[element objectForKey:@"src"] rangeOfString:@"replied"].location != NSNotFound;
                     break;
                     
-                case 1: //spacer
+                case 1: //tag image
+                    element = [cell searchForSingle:@"//img"];
+                    if (element)
+                        tagImageElement = element;
                     break;
                     
                 case 2: //link with subject and id
@@ -66,6 +71,25 @@
                     message.sent = [self dateFromElement:element];
                     break;
                     
+            }
+            
+            if (tagImageElement) {
+                NSString* src = [tagImageElement objectForKey:@"src"];
+                NSFetchRequest *req = [NSFetchRequest fetchRequestWithEntityName:@"AwfulThreadTag"];
+                req.predicate = [NSPredicate predicateWithFormat:@"filename endswith %@", src.lastPathComponent];
+                req.sortDescriptors = [[NSSortDescriptor sortDescriptorWithKey:@"filename" ascending:NO] wrapInArray];
+                NSArray *tag = [ApplicationDelegate.managedObjectContext executeFetchRequest:req error:nil];
+                if (tag.count == 1) {
+                    message.threadTag = [tag objectAtIndex:0];
+                }
+                else {
+                    AwfulThreadTag *t = [AwfulThreadTag new];
+                    t.filename = src;
+                    t.alt = [tagImageElement objectForKey:@"alt"];
+                    
+                    message.threadTag = t;
+                    
+                }
             }
         }
     }
@@ -97,4 +121,27 @@
                      rangeAtIndex:1];
     return  [href substringWithRange:range];
 }
+
++(NSMutableArray *)parsePM:(AwfulPM*)message withData:(NSData*)data
+{
+    TFHpple *page_data = [[TFHpple alloc] initWithHTMLData:data];
+    /*
+     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"AwfulPM"];
+     NSError *error;
+     NSArray *existingForums = [ApplicationDelegate.managedObjectContext executeFetchRequest:request
+     error:&error
+     ];
+     NSMutableDictionary *existingDict = [NSMutableDictionary new];
+     for (AwfulForum* f in existingForums)
+     [existingDict setObject:f forKey:f.forumID];
+     
+     */
+    NSArray *rows = PerformRawHTMLXPathQuery(data, @"//td[@class='postbody']");
+    for (NSString* r in rows) {
+        message.content = r;
+    }
+    [ApplicationDelegate saveContext];
+    return nil;
+}
+
 @end
