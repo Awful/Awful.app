@@ -145,46 +145,10 @@
     return [UIImage blackNavigationBarImageForMetrics:metrics];
 }
 
--(AwfulRefreshControl*) awfulRefreshControl {
-    //override this method for a custom Pull to Refresh control
-    if (!_awfulRefreshControl) {
-        _awfulRefreshControl = [[AwfulYOSPOSRefreshControl alloc] initWithFrame:CGRectMake(0, -50, self.tableView.fsW, 50)];
-    }
-    return _awfulRefreshControl;
-}
-
 -(NSString*) tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
     //custom string for deleting a table cell, which marks a thread unread
     return @"rm -rf";
 }
-@end
-
-@implementation AwfulYOSPOSRefreshControl
-//this custom refresh control just changes the colors and fonts,
-//and changes the activity spinner
-
--(id) initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
-    self.title.font = [UIFont fontWithName:@"Courier" size:16];
-    self.title.textColor = [UIColor blackColor];
-    
-    self.subtitle.textColor = [UIColor blackColor];
-    self.subtitle.font = [UIFont fontWithName:@"Courier" size:12];
-    
-    [[self.layer.sublayers objectAtIndex:0] removeFromSuperlayer];
-    self.backgroundColor = [UIColor YOSPOSGreenColor];
-    
-    return self;
-}
-
--(UIActivityIndicatorView*) activityView {
-    if (!_activityView) {
-        _activityView = [[AwfulYOSPOSActivityIndicatorView alloc] initWithInvertedColors];
-        [self addSubview:_activityView];
-    }
-    return _activityView;
-}
-
 @end
 
 @implementation AwfulYOSPOSActivityIndicatorView

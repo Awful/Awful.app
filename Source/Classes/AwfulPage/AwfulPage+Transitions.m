@@ -7,9 +7,6 @@
 //
 
 #import "AwfulPage+Transitions.h"
-#import "AwfulRefreshControl.h"
-#import "AwfulLoadNextControl.h"
-#import "AwfulLastPageControl.h"
 
 @implementation AwfulPage (Transitions)
 
@@ -60,14 +57,13 @@
     self.nextPageWebView.foY = self.nextPageWebView.fsH;
     //self.nextPageWebView.hidden = YES;
     
-    CGPoint bottomOffset = CGPointMake(0, self.webView.scrollView.contentSize.height - self.webView.scrollView.bounds.size.height + self.loadNextPageControl.fsH);
+    CGPoint bottomOffset = CGPointMake(0, self.webView.scrollView.contentSize.height - self.webView.scrollView.bounds.size.height);
     [self.webView.scrollView setContentOffset:bottomOffset animated:YES];
     
     [UIView animateWithDuration:.5 
                           delay:0 
                         options:(UIViewAnimationOptionCurveEaseInOut) 
                      animations:^{
-                         self.nextPageWebView.foY = 0;
                          self.webView.foY = -self.webView.fsH;
                      }
                      completion:^(BOOL finished) {
@@ -104,27 +100,6 @@
     }
     [self.webView removeFromSuperview];
     self.webView = self.nextPageWebView;
-    
-    [self.awfulRefreshControl removeFromSuperview];
-    [self.webView.scrollView addSubview:self.awfulRefreshControl];
-    
-    
-    [self.loadNextPageControl removeFromSuperview];
-    if (self.webView.tag == self.numberOfPages) {
-        self.loadNextPageControl = [[AwfulLastPageControl alloc] initWithFrame:self.loadNextPageControl.frame];
-    }
-    else {
-        self.loadNextPageControl = [[AwfulLoadNextControl alloc] initWithFrame:self.loadNextPageControl.frame];
-    }
-    
-    [self.webView.scrollView addSubview:self.loadNextPageControl];
-    
-
-    
-    self.nextPageWebView = [UIWebView new];
-    self.nextPageWebView.frame = self.webView.frame;
-    self.nextPageWebView.foY = self.nextPageWebView.fsH;
-    self.nextPageWebView.delegate = self;
-    [self.view addSubview:self.nextPageWebView];
 }
+
 @end

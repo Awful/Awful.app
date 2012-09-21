@@ -9,7 +9,6 @@
 #import "AwfulCustomForums.h"
 #import "AwfulThreadCell.h"
 #import "AwfulThreadListController.h"
-#import "AwfulRefreshControl.h"
 
 //define the forum ID
 static AwfulCustomForumID const AwfulCustomForumYOSPOS = (AwfulCustomForumID)219;
@@ -21,10 +20,6 @@ static AwfulCustomForumID const AwfulCustomForumYOSPOS = (AwfulCustomForumID)219
 
 //but you can customize the ThreadListController for more options
 @interface AwfulYOSPOSThreadListController : AwfulThreadListController
-@end
-
-//and to go all out, replace other components, like here the Pull to Refresh Header
-@interface AwfulYOSPOSRefreshControl : AwfulRefreshControl
 @end
 
 //and a replacement activity spinner

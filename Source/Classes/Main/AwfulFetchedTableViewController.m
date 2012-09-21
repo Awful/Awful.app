@@ -32,11 +32,13 @@
                                                   inManagedObjectContext:ApplicationDelegate.managedObjectContext];
     self.sectionKey = sectionKeyPath;
     
-    if (predicate) 
-        if ([predicate isKindOfClass:[NSPredicate class]])
+    if (predicate) {
+        if ([predicate isKindOfClass:[NSPredicate class]]) {
             self.predicate = predicate;
-        else if ([predicate isKindOfClass:[NSString class]])
+        } else if ([predicate isKindOfClass:[NSString class]]) {
             self.predicate = [NSPredicate predicateWithFormat:predicate];
+        }
+    }
     
     if (sort) {
         if ([sort isKindOfClass:[NSArray class]])

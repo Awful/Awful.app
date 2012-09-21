@@ -24,12 +24,10 @@
 #import "MWPhoto.h"
 #import "MWPhotoBrowser.h"
 #import "OtherWebController.h"
-#import "AwfulRefreshControl.h"
-#import "AwfulLoadNextControl.h"
-#import "AwfulLastPageControl.h"
 #import "AwfulPage+Transitions.h"
 #import "AwfulWebViewDelegate.h"
 #import "AwfulThreadTitleView.h"
+#import "UIView+Lazy.h"
 
 @interface AwfulPage () <AwfulWebViewDelegate, UIGestureRecognizerDelegate>
 
@@ -191,37 +189,7 @@
             self.nextPageWebView.frame = self.webView.frame;
             self.nextPageWebView.foY = self.nextPageWebView.fsH;
             [self.view addSubview:self.nextPageWebView];
-            
-            
-            self.awfulRefreshControl = [[AwfulRefreshControl alloc] initWithFrame:CGRectMake(0, -50, self.view.fsW, 50)];
-            [self.webView.scrollView addSubview:self.awfulRefreshControl];
-            
-            [self.awfulRefreshControl addTarget:self
-                                     action:@selector(refreshControlChanged:) 
-                           forControlEvents:(UIControlEventValueChanged)];
-            [self.awfulRefreshControl addTarget:self 
-                                     action:@selector(refreshControlCancel:) 
-                           forControlEvents:(UIControlEventTouchCancel)];
-            
-            if (self.currentPage == self.numberOfPages)
-                        self.loadNextPageControl = [[AwfulLastPageControl alloc] initWithFrame:CGRectMake(0, self.webView.scrollView.contentSize.height, self.view.fsW, 50)];
-            else
-                self.loadNextPageControl = [[AwfulLoadNextControl alloc] initWithFrame:CGRectMake(0, self.webView.scrollView.contentSize.height, self.view.fsW, 50)];
-            
-            [self.webView.scrollView addSubview:self.loadNextPageControl];
-            
-            
-            [self.loadNextPageControl addTarget:self
-                                     action:@selector(loadNextControlChanged:) 
-                           forControlEvents:(UIControlEventValueChanged)];
-            [self.loadNextPageControl addTarget:self 
-                                     action:@selector(refreshControlCancel:) 
-                           forControlEvents:(UIControlEventTouchCancel)];
         }
-        
-        self.awfulRefreshControl.loadedDate = [NSDate date];
-        NSLog(@"loadedDate set to %@", self.awfulRefreshControl.loadedDate);
-        
         
         NSDictionary *userInfo = [NSDictionary dictionaryWithObject:self forKey:@"page"];
         [[NSNotificationCenter defaultCenter] postNotificationName:AwfulPageDidLoadNotification
@@ -519,27 +487,24 @@
     self.pagesSegmentedControl.selectedSegmentIndex = -1;
 }
 
--(IBAction)tappedActionsSegment : (id)sender
+-(IBAction)tappedActionsSegment:(id)sender
 {
-    if(self.actionsSegmentedControl.selectedSegmentIndex == 0) {
+    if (self.actionsSegmentedControl.selectedSegmentIndex == 0) {
         [self tappedActions:nil];
-    } else if(self.actionsSegmentedControl.selectedSegmentIndex == 1) {
+    } else if (self.actionsSegmentedControl.selectedSegmentIndex == 1) {
         [self tappedCompose:nil];
     }
     self.actionsSegmentedControl.selectedSegmentIndex = -1;
 }
 
--(IBAction)tappedNextPage : (id)sender
+-(IBAction)tappedNextPage:(id)sender
 {
     [self nextPage];
 }
 
 -(void)nextPage
 {
-    if (self.loadNextPageControl.state != AwfulRefreshControlStateLoading)
-        self.loadNextPageControl.state = AwfulRefreshControlStateLoading;
-    
-    if(self.currentPage < self.numberOfPages) {
+    if (self.currentPage < self.numberOfPages) {
         self.destinationType = AwfulPageDestinationTypeSpecific;
         [self loadPageNum:self.currentPage + 1];
     }
@@ -828,40 +793,9 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
-
-#pragma mark Pull For Action
--(void) scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    if (self.awfulRefreshControl) {
-        self.awfulRefreshControl.userScrolling = YES;
-    }
-    
-    if (self.loadNextPageControl)
-        self.loadNextPageControl.userScrolling = YES;
-    
-
-}
-
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {	
-    if (self.awfulRefreshControl && self.awfulRefreshControl.userScrolling) {
-        [self.awfulRefreshControl didScrollInScrollView:scrollView];
-    }
-    
-    if (self.loadNextPageControl && self.loadNextPageControl.userScrolling)
-        [self.loadNextPageControl didScrollInScrollView:scrollView];
-    
     self.isHidingToolbars = YES;
-}
-
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-{
-    if (self.awfulRefreshControl) {
-        self.awfulRefreshControl.userScrolling = NO;
-    }
-    
-    if (self.loadNextPageControl)
-        self.loadNextPageControl.userScrolling = NO;
-    
 }
 
 -(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
@@ -884,21 +818,6 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     [self.navigationController setNavigationBarHidden:shouldHideToolbars animated:YES];
     [self.navigationController setToolbarHidden:shouldHideToolbars animated:YES];
     
-}
-
--(void) refreshControlChanged:(AwfulRefreshControl*)refreshControl {
-    if (refreshControl.state == AwfulRefreshControlStateLoading)
-        [self refresh];
-}
-
--(void) loadNextControlChanged:(AwfulLoadNextControl*)loadNextControl {
-    if (loadNextControl.state == AwfulRefreshControlStateLoading)
-        [self tappedNextPage:nil];
-}
-
--(void) refreshControlCancel:(AwfulRefreshControl*)refreshControl {
-    [self stop];
-    refreshControl.state = AwfulRefreshControlStateNormal;
 }
 
 -(BOOL) isOnLastPage {
