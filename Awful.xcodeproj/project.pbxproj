@@ -119,6 +119,7 @@
 		1CC38B81160C017600C35A11 /* awful.js in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC515B497A800E5893B /* awful.js */; };
 		1CC38B82160C017600C35A11 /* jquery.js in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC815B497A800E5893B /* jquery.js */; };
 		1CC38B83160C017600C35A11 /* salr.js in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CCC15B497A800E5893B /* salr.js */; };
+		1CC38B8D160C0A5D00C35A11 /* SVPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC38B89160C0A5D00C35A11 /* SVPullToRefresh.m */; };
 		1CD59CDC1571A9C3008F8E2F /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
 		1CD59CDF1572F862008F8E2F /* fixture.json in Resources */ = {isa = PBXBuildFile; fileRef = 1CD59CDE1572F862008F8E2F /* fixture.json */; };
 		1CD59CF51573186B008F8E2F /* TemplateListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD59CF41573186B008F8E2F /* TemplateListViewController.m */; };
@@ -1171,6 +1172,8 @@
 		1C9C16451569994C0047C06E /* _AwfulFavorite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _AwfulFavorite.h; sourceTree = "<group>"; };
 		1CAB36B01548F0FE00A4A362 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		1CC38B7E160C007900C35A11 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
+		1CC38B88160C0A5D00C35A11 /* SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVPullToRefresh.h; sourceTree = "<group>"; };
+		1CC38B89160C0A5D00C35A11 /* SVPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVPullToRefresh.m; sourceTree = "<group>"; };
 		1CD59CDE1572F862008F8E2F /* fixture.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = fixture.json; sourceTree = "<group>"; };
 		1CD59CF31573186B008F8E2F /* TemplateListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TemplateListViewController.h; sourceTree = "<group>"; };
 		1CD59CF41573186B008F8E2F /* TemplateListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TemplateListViewController.m; sourceTree = "<group>"; };
@@ -2361,6 +2364,7 @@
 				1190F7B213BE4ECB00B9D271 /* MWPhotoBrowser */,
 				1190F7B013BE4ECB00B9D271 /* NSString+HTML.h */,
 				1190F7B113BE4ECB00B9D271 /* NSString+HTML.m */,
+				1CC38B84160C0A5D00C35A11 /* SVPullToRefresh */,
 			);
 			path = "Third Party";
 			sourceTree = "<group>";
@@ -2524,6 +2528,15 @@
 				1C92259015719D8300559312 /* AwfulTemplateTester-Prefix.pch */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		1CC38B84160C0A5D00C35A11 /* SVPullToRefresh */ = {
+			isa = PBXGroup;
+			children = (
+				1CC38B88160C0A5D00C35A11 /* SVPullToRefresh.h */,
+				1CC38B89160C0A5D00C35A11 /* SVPullToRefresh.m */,
+			);
+			path = SVPullToRefresh;
 			sourceTree = "<group>";
 		};
 		1CD59CD61571A64D008F8E2F /* Tools */ = {
@@ -4722,6 +4735,7 @@
 				8CB5469815BDC25800E8BEC1 /* _AwfulPM.m in Sources */,
 				8CB5469B15BDC26100E8BEC1 /* AwfulPM.m in Sources */,
 				8CB5469E15BDC2EE00E8BEC1 /* AwfulHTTPClient+PrivateMessages.m in Sources */,
+				1CC38B8D160C0A5D00C35A11 /* SVPullToRefresh.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

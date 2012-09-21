@@ -48,8 +48,8 @@
      
 }
 
--(void) awakeFromNib {
-      
+- (void)awakeFromNib
+{
     [self setEntityName:@"AwfulForum"
               predicate:@"category != nil and (children.@count >0 or parentForum.expanded = YES)"
                    sort: [NSArray arrayWithObjects:

@@ -7,20 +7,19 @@
 //
 
 #import "AwfulTableViewController.h"
+#import "SVPullToRefresh.h"
 
 @implementation AwfulTableViewController
-
-@synthesize networkOperation = _networkOperation;
-@synthesize reloading = _reloading;
-
-#pragma mark - View Cycle
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 
     if ([self canPullToRefresh]) {
-        // TODO
+        __weak AwfulTableViewController *blockSelf = self;
+        [self.tableView addPullToRefreshWithActionHandler:^{
+            [blockSelf refresh];
+        }];
     }
     self.reloading = NO;
 }
@@ -32,21 +31,30 @@
     [self finishedRefreshing];
 }
 
-#pragma mark - Refresh
-
 - (void)refresh
 {
     self.reloading = YES;
 }
 
--(void)stop
+- (void)stop
 {
-    
+    [self.tableView.pullToRefreshView stopAnimating];
 }
 
 - (void)finishedRefreshing
 {
     self.reloading = NO;
+    [self.tableView.pullToRefreshView stopAnimating];
+}
+
+- (BOOL)canPullToRefresh
+{
+    return YES;
+}
+
+- (BOOL)isOnLastPage
+{
+    return NO;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -57,23 +65,10 @@
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
-- (BOOL)canPullToRefresh
+- (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath
 {
-    return YES;
-}
-
--(BOOL) isOnLastPage {
-    return NO;
-}
-
-#pragma mark cells
-
-- (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath {  
-    //subclass must override
-    abort();  
-    
-    //NSManagedObject *obj = (AwfulManagedObject*)[_fetchedResultsController objectAtIndexPath:indexPath];
-    //[obj setContentForCell:cell];
+    [NSException raise:@"SubclassMustImplement"
+                format:@"Subclasses must implement %@", NSStringFromSelector(_cmd)];
 }
 
 @end
