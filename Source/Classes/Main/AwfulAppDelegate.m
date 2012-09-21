@@ -67,7 +67,8 @@
 }
 
 
--(UIImage*) navigationBarBackgroundImageForMetrics:(UIBarMetrics)metrics {
+- (UIImage *)navigationBarBackgroundImageForMetrics:(UIBarMetrics)metrics
+{
     NSString *darkOrDefault = [[AwfulSettings settings] darkTheme] ? @"dark" : @"default";
     NSURL *url = [[NSBundle mainBundle] URLForResource:darkOrDefault withExtension:@"css"];
     AwfulCSSTemplate *css = [[AwfulCSSTemplate alloc] initWithURL:url error:NULL];
@@ -142,19 +143,25 @@
         return __persistentStoreCoordinator;
     }
     
-    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"AwfulData.sqlite"];
-    
     NSError *error = nil;
     __persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
-                             [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption, 
-                             [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption,
-                             nil];
+    NSDictionary *options = @{ NSMigratePersistentStoresAutomaticallyOption: @YES,
+                               NSInferMappingModelAutomaticallyOption: @YES };
     if (![__persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType
                                                     configuration:nil
-                                                              URL:storeURL
+                                                              URL:self.storeURL
                                                           options:options
                                                             error:&error]) {
+        #if DEBUG
+        [self resetDataStore];
+        if ([__persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType
+                                                       configuration:nil
+                                                                 URL:self.storeURL
+                                                             options:options
+                                                               error:&error]) {
+            return __persistentStoreCoordinator;
+        }
+        #endif
         /*
          Replace this implementation with code to handle the error appropriately.
          
@@ -185,21 +192,19 @@
     return __persistentStoreCoordinator;
 }
 
--(void)resetDataStore
+- (void)resetDataStore
 {
-    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"AwfulData.sqlite"];
-    NSError *err = nil;
-    if([storeURL checkResourceIsReachableAndReturnError:&err]) {
-        [[NSFileManager defaultManager] removeItemAtURL:storeURL error:&err];
-        if(err != nil) {
-            NSLog(@"failed to delete data store %@", [err localizedDescription]);
+    NSError *error;
+    if ([self.storeURL checkResourceIsReachableAndReturnError:&error]) {
+        [[NSFileManager defaultManager] removeItemAtURL:self.storeURL error:&error];
+        if (error) {
+            NSLog(@"failed to delete data store %@", error.localizedDescription);
         }
     }
 
     __persistentStoreCoordinator = nil;
     __managedObjectModel = nil;
     __managedObjectContext = nil;
-    [self managedObjectContext];
 }
 
 #pragma mark - Application's Documents directory
@@ -208,6 +213,11 @@
 - (NSURL *)applicationDocumentsDirectory
 {
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+}
+
+- (NSURL *)storeURL
+{
+    return [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"AwfulData.sqlite"];
 }
 
 #pragma mark - Relaying errors
