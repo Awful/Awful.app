@@ -43,10 +43,10 @@
 		1190F75C13BE4EA900B9D271 /* AwfulLoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F71A13BE4EA900B9D271 /* AwfulLoginController.m */; };
 		1190F75E13BE4EA900B9D271 /* AwfulAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F71E13BE4EA900B9D271 /* AwfulAppDelegate.m */; };
 		1190F7E313BE4ECB00B9D271 /* 37x-Checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 1190F7A913BE4ECB00B9D271 /* 37x-Checkmark.png */; };
-		1190F7E413BE4ECB00B9D271 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7AB13BE4ECB00B9D271 /* MBProgressHUD.m */; };
+		1190F7E413BE4ECB00B9D271 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7AB13BE4ECB00B9D271 /* MBProgressHUD.m */; settings = {COMPILER_FLAGS = "-w"; }; };
 		1190F7E613BE4ECB00B9D271 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7B113BE4ECB00B9D271 /* NSString+HTML.m */; };
 		1190F7E713BE4ECB00B9D271 /* MWPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7B413BE4ECB00B9D271 /* MWPhoto.m */; };
-		1190F7E813BE4ECB00B9D271 /* MWPhotoBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7B613BE4ECB00B9D271 /* MWPhotoBrowser.m */; };
+		1190F7E813BE4ECB00B9D271 /* MWPhotoBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7B613BE4ECB00B9D271 /* MWPhotoBrowser.m */; settings = {COMPILER_FLAGS = "-w"; }; };
 		1190F7E913BE4ECB00B9D271 /* UIImage+Decompress.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7B813BE4ECB00B9D271 /* UIImage+Decompress.m */; };
 		1190F7EA13BE4ECB00B9D271 /* UIImageViewTap.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7BA13BE4ECB00B9D271 /* UIImageViewTap.m */; };
 		1190F7EB13BE4ECB00B9D271 /* UIViewTap.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7BC13BE4ECB00B9D271 /* UIViewTap.m */; };
@@ -117,19 +117,19 @@
 		1CDF7A3E1537C157008EFAE4 /* GRMustache.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A011537C157008EFAE4 /* GRMustache.m */; };
 		1CDF7A3F1537C157008EFAE4 /* GRMustacheContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A051537C157008EFAE4 /* GRMustacheContext.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		1CDF7A401537C157008EFAE4 /* GRMustacheError.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A081537C157008EFAE4 /* GRMustacheError.m */; };
-		1CDF7A411537C157008EFAE4 /* GRMustacheHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A0A1537C157008EFAE4 /* GRMustacheHelper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		1CDF7A421537C157008EFAE4 /* GRMustacheInvocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A0D1537C157008EFAE4 /* GRMustacheInvocation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		1CDF7A411537C157008EFAE4 /* GRMustacheHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A0A1537C157008EFAE4 /* GRMustacheHelper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc -w"; }; };
+		1CDF7A421537C157008EFAE4 /* GRMustacheInvocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A0D1537C157008EFAE4 /* GRMustacheInvocation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc -w"; }; };
 		1CDF7A431537C157008EFAE4 /* GRMustacheNSUndefinedKeyExceptionGuard.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A0F1537C157008EFAE4 /* GRMustacheNSUndefinedKeyExceptionGuard.m */; };
 		1CDF7A441537C157008EFAE4 /* GRMustacheProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A111537C157008EFAE4 /* GRMustacheProperty.m */; };
 		1CDF7A451537C157008EFAE4 /* GRMustacheSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A151537C157008EFAE4 /* GRMustacheSection.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		1CDF7A461537C157008EFAE4 /* GRMustacheTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A181537C157008EFAE4 /* GRMustacheTemplate.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		1CDF7A471537C157008EFAE4 /* GRMustacheTemplateParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A1B1537C157008EFAE4 /* GRMustacheTemplateParser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		1CDF7A481537C157008EFAE4 /* GRMustacheTemplateRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A1E1537C157008EFAE4 /* GRMustacheTemplateRepository.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		1CDF7A471537C157008EFAE4 /* GRMustacheTemplateParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A1B1537C157008EFAE4 /* GRMustacheTemplateParser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc -w"; }; };
+		1CDF7A481537C157008EFAE4 /* GRMustacheTemplateRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A1E1537C157008EFAE4 /* GRMustacheTemplateRepository.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc -w"; }; };
 		1CDF7A491537C157008EFAE4 /* GRMustacheTextElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A201537C157008EFAE4 /* GRMustacheTextElement.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		1CDF7A4A1537C157008EFAE4 /* GRMustacheToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A221537C157008EFAE4 /* GRMustacheToken.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		1CDF7A4B1537C157008EFAE4 /* GRMustacheTokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A241537C157008EFAE4 /* GRMustacheTokenizer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		1CDF7A4B1537C157008EFAE4 /* GRMustacheTokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A241537C157008EFAE4 /* GRMustacheTokenizer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc -w"; }; };
 		1CDF7A4C1537C157008EFAE4 /* GRMustacheVariableElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A261537C157008EFAE4 /* GRMustacheVariableElement.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		1CDF7A5A1537C157008EFAE4 /* JRSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A3C1537C157008EFAE4 /* JRSwizzle.m */; };
+		1CDF7A5A1537C157008EFAE4 /* JRSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A3C1537C157008EFAE4 /* JRSwizzle.m */; settings = {COMPILER_FLAGS = "-w"; }; };
 		1CDF7A5E1537DD2D008EFAE4 /* PostContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A5D1537DD2D008EFAE4 /* PostContext.m */; };
 		1CF2C5061543B51200E327F5 /* AwfulFavoritesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF2C5051543B51200E327F5 /* AwfulFavoritesViewController.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -4707,6 +4707,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Awful_Prefix.pch;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = "Resources/Awful-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
@@ -4715,6 +4716,16 @@
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-pedantic",
+					"-Wno-gnu",
+					"-Wno-c++-compat",
+					"-Wno-objc-missing-property-synthesis",
+					"-Wno-readonly-setter-attrs",
+					"-Wno-unused-parameter",
+				);
 			};
 			name = AdHoc;
 		};
@@ -4798,6 +4809,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Awful_Prefix.pch;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = "Resources/Awful-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
@@ -4806,6 +4818,16 @@
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "E4E742BB-04BA-42C6-A445-6BF3AA4B3292";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-pedantic",
+					"-Wno-gnu",
+					"-Wno-c++-compat",
+					"-Wno-objc-missing-property-synthesis",
+					"-Wno-readonly-setter-attrs",
+					"-Wno-unused-parameter",
+				);
 			};
 			name = Debug;
 		};
@@ -4819,6 +4841,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Awful_Prefix.pch;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = "Resources/Awful-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
@@ -4827,6 +4850,16 @@
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-pedantic",
+					"-Wno-gnu",
+					"-Wno-c++-compat",
+					"-Wno-objc-missing-property-synthesis",
+					"-Wno-readonly-setter-attrs",
+					"-Wno-unused-parameter",
+				);
 			};
 			name = Release;
 		};

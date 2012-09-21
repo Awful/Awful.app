@@ -43,7 +43,7 @@ static NSString *AwfulifiedPostBody(NSString *body)
     if (![[AwfulSettings settings] showImages]) {
         NSArray *objects = [base search:@"//img"];
         NSArray *object_strs = [base rawSearch:@"//img"];
-        for(int i = 0; i < [objects count]; i++) {
+        for(NSUInteger i = 0; i < [objects count]; i++) {
             TFHppleElement *el = [objects objectAtIndex:i];
             NSString *src = [el objectForKey:@"src"];
             NSString *reformed = [NSString stringWithFormat:@"<a href='%@'>IMG LINK</a>", src];
@@ -56,7 +56,7 @@ static NSString *AwfulifiedPostBody(NSString *body)
     
     NSArray *objects = [base search:@"//iframe"];
     NSArray *object_strs = [base rawSearch:@"//iframe"];
-    for(int i = 0; i < [objects count]; i++) {
+    for(NSUInteger i = 0; i < [objects count]; i++) {
         TFHppleElement *el = [objects objectAtIndex:i];
         NSString *str = [object_strs objectAtIndex:i];
         

@@ -32,7 +32,7 @@
     return threads;
 }
 
-+(void)removeOldThreadsForForum : (AwfulForum *)forum;
++ (void)removeOldThreadsForForum:(AwfulForum *)forum
 {
     NSArray *threads = [AwfulThread threadsForForum:forum];
     for(AwfulThread *thread in threads) {

@@ -18,8 +18,6 @@
 #import "AwfulLoginController.h"
 #import "AwfulCustomForums.h"
 
-#define THREAD_HEIGHT 76
-
 typedef enum {
     AwfulThreadListActionsTypeFirstPage = 0,
     AwfulThreadListActionsTypeLastPage,

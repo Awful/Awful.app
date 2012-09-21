@@ -21,7 +21,7 @@ typedef enum {
 
 @interface AwfulThreadActions ()
 
-@property (strong) AwfulThread *thread;
+@property (strong, nonatomic) AwfulThread *thread;
 
 @end
 

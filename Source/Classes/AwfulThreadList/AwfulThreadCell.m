@@ -14,8 +14,7 @@
 #import "AwfulUser+AwfulMethods.h"
 #import "AwfulUser.h"
 #import "AwfulThreadListController.h"
-
-#define THREAD_HEIGHT 72
+#import "UIView+Lazy.h"
 
 @implementation AwfulThreadCell
 

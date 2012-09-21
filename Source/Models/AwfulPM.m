@@ -35,7 +35,7 @@
         AwfulPM *message = [AwfulPM new];
         
         NSArray *cells = PerformRawHTMLXPathQuery(d, @"//td");
-        for (int j=0; j<cells.count; j++) {
+        for (NSUInteger j=0; j<cells.count; j++) {
             TFHpple* cell = [[TFHpple alloc] initWithHTMLData:[[cells objectAtIndex:j] dataUsingEncoding:NSUTF8StringEncoding]];
             TFHppleElement *element;
                         

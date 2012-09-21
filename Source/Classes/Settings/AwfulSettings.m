@@ -67,9 +67,9 @@
     [defaults synchronize]; \
 }
 
-BOOL_PROPERTY(@"show_avatars", showAvatars, setShowAvatars);
+BOOL_PROPERTY(@"show_avatars", showAvatars, setShowAvatars)
 
-BOOL_PROPERTY(@"show_images", showImages, setShowImages);
+BOOL_PROPERTY(@"show_images", showImages, setShowImages)
 
 static NSString * const kLoadReadPosts = @"posts_above";
 
@@ -123,10 +123,10 @@ struct {
     [defaults synchronize];
 }
 
-BOOL_PROPERTY(@"highlight_own_quotes", highlightOwnQuotes, setHighlightOwnQuotes);
+BOOL_PROPERTY(@"highlight_own_quotes", highlightOwnQuotes, setHighlightOwnQuotes)
 
-BOOL_PROPERTY(@"highlight_own_mentions", highlightOwnMentions, setHighlightOwnMentions);
+BOOL_PROPERTY(@"highlight_own_mentions", highlightOwnMentions, setHighlightOwnMentions)
 
-BOOL_PROPERTY(@"dark_theme", darkTheme, setDarkTheme);
+BOOL_PROPERTY(@"dark_theme", darkTheme, setDarkTheme)
 
 @end

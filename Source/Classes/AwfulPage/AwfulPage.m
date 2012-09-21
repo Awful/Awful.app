@@ -251,7 +251,7 @@
 {    
     self.nextPageWebView = nil;
     int posts_per_page = [AwfulUser currentUser].postsPerPageValue;
-    if([self.dataController.posts count] == posts_per_page) {
+    if([self.dataController.posts count] == (NSUInteger)posts_per_page) {
         self.destinationType = AwfulPageDestinationTypeSpecific;
         [self refresh];
     } else {
@@ -625,17 +625,20 @@ pageDidRequestAction:(NSString *)action
  infoDictionary:(NSDictionary *)infoDictionary
 {
     if ([action isEqualToString:@"nextPage"]) {
-        return [self nextPage];
+        [self nextPage];
+        return;
     }
     if ([action isEqualToString:@"loadOlderPosts"]) {
-        return [self loadOlderPosts];
+        [self loadOlderPosts];
+        return;
     }
     if ([action isEqualToString:@"postOptions"]) {
         NSString *postID = [infoDictionary objectForKey:@"postID"];
         CGRect rect = CGRectZero;
         if ([infoDictionary objectForKey:@"rect"])
             rect = CGRectFromString([infoDictionary objectForKey:@"rect"]);
-        return [self showActions:postID fromRect:rect];
+        [self showActions:postID fromRect:rect];
+        return;
     }
 }
 

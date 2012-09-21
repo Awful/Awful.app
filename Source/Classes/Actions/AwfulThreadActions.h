@@ -13,7 +13,7 @@
 
 @interface AwfulThreadActions : AwfulActions
 
-@property (readonly, strong) AwfulThread *thread;
+@property (readonly, strong, nonatomic) AwfulThread *thread;
 
 -(id)initWithThread : (AwfulThread *)thread;
 -(AwfulPage *)getPage;

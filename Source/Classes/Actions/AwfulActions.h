@@ -12,7 +12,7 @@
 
 @property (nonatomic, strong) NSMutableArray *titles;
 @property (nonatomic, weak) UIViewController *viewController;
-@property (readonly, strong, nonatomic) UIActionSheet *actionSheet;
+@property (readonly, nonatomic) UIActionSheet *actionSheet;
 @property (readonly, nonatomic) NSString *overallTitle;
 
 - (void)showFromToolbar:(UIToolbar *)toolbar;

@@ -174,9 +174,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 }
  
 
--(void) configureCell:(AwfulParentForumCell*)cell atIndexPath:(NSIndexPath*)indexPath {
-    AwfulForum* forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.forum = forum;
+- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath*)indexPath
+{
+    AwfulParentForumCell *forumCell = (AwfulParentForumCell *)cell;
+    AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    forumCell.forum = forum;
 }
 
 -(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -210,7 +212,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     
     
     NSMutableArray* rows = [NSMutableArray new];
-    for (int i=indexPath.row+1; i<=indexPath.row+forum.children.count; i++) {
+    for (NSUInteger i = indexPath.row+1; i <= indexPath.row + forum.children.count; i++) {
         [rows addObject:[NSIndexPath indexPathForRow:i inSection:indexPath.section]];
     }
     

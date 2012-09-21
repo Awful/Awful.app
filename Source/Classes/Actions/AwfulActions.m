@@ -68,7 +68,7 @@
 
 -(BOOL)isCancelled : (int)index
 {
-    return index == [self.titles count] || index == -1;
+    return (NSUInteger)index == [self.titles count] || index == -1;
 }
 
 @end
