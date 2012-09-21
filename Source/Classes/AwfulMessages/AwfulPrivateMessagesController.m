@@ -17,12 +17,14 @@
 
 @implementation AwfulPrivateMessagesController
 
-- (void)awakeFromNib
+- (NSFetchedResultsController *)createFetchedResultsController
 {
-    [self setEntityType:[AwfulPM class]
-              predicate:nil
-        sortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"sent" ascending:NO]]
-     sectionNameKeyPath:nil];
+    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulPM entityName]];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"sent" ascending:NO]];
+    return [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                               managedObjectContext:ApplicationDelegate.managedObjectContext
+                                                 sectionNameKeyPath:nil
+                                                          cacheName:nil];
 }
 
 - (void)refresh

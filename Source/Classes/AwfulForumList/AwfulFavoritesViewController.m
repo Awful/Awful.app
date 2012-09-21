@@ -24,15 +24,16 @@
 
 @implementation AwfulFavoritesViewController
 
-- (void)viewDidLoad
+- (NSFetchedResultsController *)createFetchedResultsController
 {
-    [super viewDidLoad];
-    
-    [self setEntityType:[AwfulForum class]
-              predicate:[NSPredicate predicateWithFormat:@"favorite != nil"]
-        sortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"favorite.displayOrder"
-                                                        ascending:YES]]
-     sectionNameKeyPath:nil];
+    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulForum entityName]];
+    request.predicate = [NSPredicate predicateWithFormat:@"isFavorite = YES"];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"favoriteIndex"
+                                                              ascending:YES]];
+    return [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                               managedObjectContext:ApplicationDelegate.managedObjectContext
+                                                 sectionNameKeyPath:nil
+                                                          cacheName:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -88,12 +89,9 @@
     AwfulForum *move = [reorder objectAtIndex:sourceIndexPath.row];
     [reorder removeObjectAtIndex:sourceIndexPath.row];
     [reorder insertObject:move atIndex:destinationIndexPath.row];
-    
-    //set order from -100 so added favorites always on bottom
-    int i = -100;
-    for (AwfulForum* f in reorder) {
-        f.favorite.displayOrderValue = i++;
-    }
+    [reorder enumerateObjectsUsingBlock:^(AwfulForum *forum, NSUInteger i, BOOL *stop) {
+        forum.favoriteIndexValue = i;
+    }];
     [ApplicationDelegate saveContext];
     self.reordering = NO;
     [self.fetchedResultsController performFetch:nil];
@@ -107,7 +105,7 @@
     return UITableViewCellEditingStyleNone;
 }
 
-- (void) tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     for(UIView* view in cell.subviews)
     {
@@ -133,7 +131,8 @@
     }
 }
 
--(NSString*) tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
+{
     return @"Remove";
 }
 

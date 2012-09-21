@@ -10,9 +10,7 @@
 
 @interface AwfulFetchedTableViewController : AwfulTableViewController
 
-- (void)setEntityType:(Class)entity
-            predicate:(NSPredicate *)predicate
-      sortDescriptors:(NSArray *)sortDescriptors
-   sectionNameKeyPath:(NSString*)sectionNameKeyPath;
+// Subclasses must implement.
+- (NSFetchedResultsController *)createFetchedResultsController;
 
 @end

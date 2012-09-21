@@ -6,16 +6,17 @@
 const struct AwfulForumAttributes AwfulForumAttributes = {
 	.desc = @"desc",
 	.expanded = @"expanded",
+	.favoriteIndex = @"favoriteIndex",
 	.forumID = @"forumID",
 	.index = @"index",
 	.isCategory = @"isCategory",
+	.isFavorite = @"isFavorite",
 	.name = @"name",
 };
 
 const struct AwfulForumRelationships AwfulForumRelationships = {
 	.category = @"category",
 	.children = @"children",
-	.favorite = @"favorite",
 	.parentForum = @"parentForum",
 	.threads = @"threads",
 };
@@ -53,12 +54,20 @@ const struct AwfulForumFetchedProperties AwfulForumFetchedProperties = {
 		NSSet *affectingKey = [NSSet setWithObject:@"expanded"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 	}
+	if ([key isEqualToString:@"favoriteIndexValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"favoriteIndex"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+	}
 	if ([key isEqualToString:@"indexValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"index"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 	}
 	if ([key isEqualToString:@"isCategoryValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"isCategory"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+	}
+	if ([key isEqualToString:@"isFavoriteValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"isFavorite"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 	}
 
@@ -95,6 +104,32 @@ const struct AwfulForumFetchedProperties AwfulForumFetchedProperties = {
 
 - (void)setPrimitiveExpandedValue:(BOOL)value_ {
 	[self setPrimitiveExpanded:[NSNumber numberWithBool:value_]];
+}
+
+
+
+
+
+@dynamic favoriteIndex;
+
+
+
+- (int32_t)favoriteIndexValue {
+	NSNumber *result = [self favoriteIndex];
+	return [result intValue];
+}
+
+- (void)setFavoriteIndexValue:(int32_t)value_ {
+	[self setFavoriteIndex:[NSNumber numberWithInt:value_]];
+}
+
+- (int32_t)primitiveFavoriteIndexValue {
+	NSNumber *result = [self primitiveFavoriteIndex];
+	return [result intValue];
+}
+
+- (void)setPrimitiveFavoriteIndexValue:(int32_t)value_ {
+	[self setPrimitiveFavoriteIndex:[NSNumber numberWithInt:value_]];
 }
 
 
@@ -160,6 +195,32 @@ const struct AwfulForumFetchedProperties AwfulForumFetchedProperties = {
 
 
 
+@dynamic isFavorite;
+
+
+
+- (BOOL)isFavoriteValue {
+	NSNumber *result = [self isFavorite];
+	return [result boolValue];
+}
+
+- (void)setIsFavoriteValue:(BOOL)value_ {
+	[self setIsFavorite:[NSNumber numberWithBool:value_]];
+}
+
+- (BOOL)primitiveIsFavoriteValue {
+	NSNumber *result = [self primitiveIsFavorite];
+	return [result boolValue];
+}
+
+- (void)setPrimitiveIsFavoriteValue:(BOOL)value_ {
+	[self setPrimitiveIsFavorite:[NSNumber numberWithBool:value_]];
+}
+
+
+
+
+
 @dynamic name;
 
 
@@ -182,10 +243,6 @@ const struct AwfulForumFetchedProperties AwfulForumFetchedProperties = {
 	[self didAccessValueForKey:@"children"];
 	return result;
 }
-	
-
-@dynamic favorite;
-
 	
 
 @dynamic parentForum;

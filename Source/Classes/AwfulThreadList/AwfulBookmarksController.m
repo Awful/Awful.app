@@ -11,17 +11,24 @@
 
 @implementation AwfulBookmarksController
 
-- (void)awakeFromNib
+- (NSFetchedResultsController *)createFetchedResultsController
 {
-    [super awakeFromNib];
-    
+    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulThread entityName]];
+    request.predicate = [NSPredicate predicateWithFormat:@"isBookmarked = YES"];
+    request.sortDescriptors = @[
+        [NSSortDescriptor sortDescriptorWithKey:@"stickyIndex" ascending:NO],
+        [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO]
+    ];
+    return [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                               managedObjectContext:ApplicationDelegate.managedObjectContext
+                                                 sectionNameKeyPath:nil
+                                                          cacheName:nil];
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
     self.title = @"Bookmarks";
-    
-    [self setEntityType:[AwfulThread class]
-              predicate:[NSPredicate predicateWithFormat:@"isBookmarked = YES"]
-        sortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"stickyIndex" ascending:NO],
-                           [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO]]
-     sectionNameKeyPath:nil];
 }
 
 - (BOOL)shouldReloadOnViewLoad

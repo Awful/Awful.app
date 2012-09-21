@@ -43,24 +43,27 @@
      ];
     
     [favImage sizeToFit];
-    favImage.selected = (self.forum.favorite != nil);
+    favImage.selected = self.forum.isFavoriteValue;
     
     self.accessoryView = favImage;
 }
 
--(void) toggleFavorite:(UIButton*)button {
+- (void)toggleFavorite:(UIButton *)button
+{
     button.selected = !button.selected;
-    
-    if (self.forum.favorite)
-        [ApplicationDelegate.managedObjectContext deleteObject:self.forum.favorite];
-    else {
-        AwfulFavorite *fav = [AwfulFavorite new];
-        fav.displayOrderValue = self.forum.indexValue;
-        fav.forum = self.forum;
+    self.forum.isFavoriteValue = !self.forum.isFavoriteValue;
+    if (self.forum.isFavoriteValue) {
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[[self.forum class] entityName]];
+        fetchRequest.predicate = [NSPredicate predicateWithFormat:@"isFavorite = YES"];
+        fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"favoriteIndex" ascending:NO]];
+        fetchRequest.fetchLimit = 1;
+        NSArray *results = [ApplicationDelegate.managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+        if (results && [results count] > 0) {
+            AwfulForum *bottom = results[0];
+            self.forum.favoriteIndexValue = bottom.favoriteIndexValue + 1;
+        }
     }
-    
     [ApplicationDelegate saveContext];
-
 }
 
 

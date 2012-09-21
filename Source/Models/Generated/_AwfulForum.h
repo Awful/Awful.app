@@ -7,16 +7,17 @@
 extern const struct AwfulForumAttributes {
 	__unsafe_unretained NSString *desc;
 	__unsafe_unretained NSString *expanded;
+	__unsafe_unretained NSString *favoriteIndex;
 	__unsafe_unretained NSString *forumID;
 	__unsafe_unretained NSString *index;
 	__unsafe_unretained NSString *isCategory;
+	__unsafe_unretained NSString *isFavorite;
 	__unsafe_unretained NSString *name;
 } AwfulForumAttributes;
 
 extern const struct AwfulForumRelationships {
 	__unsafe_unretained NSString *category;
 	__unsafe_unretained NSString *children;
-	__unsafe_unretained NSString *favorite;
 	__unsafe_unretained NSString *parentForum;
 	__unsafe_unretained NSString *threads;
 } AwfulForumRelationships;
@@ -26,9 +27,10 @@ extern const struct AwfulForumFetchedProperties {
 
 @class AwfulForum;
 @class AwfulForum;
-@class AwfulFavorite;
 @class AwfulForum;
 @class AwfulThread;
+
+
 
 
 
@@ -69,6 +71,18 @@ extern const struct AwfulForumFetchedProperties {
 
 
 
+@property (nonatomic, strong) NSNumber* favoriteIndex;
+
+
+@property int32_t favoriteIndexValue;
+- (int32_t)favoriteIndexValue;
+- (void)setFavoriteIndexValue:(int32_t)value_;
+
+//- (BOOL)validateFavoriteIndex:(id*)value_ error:(NSError**)error_;
+
+
+
+
 @property (nonatomic, strong) NSString* forumID;
 
 
@@ -101,6 +115,18 @@ extern const struct AwfulForumFetchedProperties {
 
 
 
+@property (nonatomic, strong) NSNumber* isFavorite;
+
+
+@property BOOL isFavoriteValue;
+- (BOOL)isFavoriteValue;
+- (void)setIsFavoriteValue:(BOOL)value_;
+
+//- (BOOL)validateIsFavorite:(id*)value_ error:(NSError**)error_;
+
+
+
+
 @property (nonatomic, strong) NSString* name;
 
 
@@ -120,13 +146,6 @@ extern const struct AwfulForumFetchedProperties {
 @property (nonatomic, strong) NSOrderedSet* children;
 
 - (NSMutableOrderedSet*)childrenSet;
-
-
-
-
-@property (nonatomic, strong) AwfulFavorite* favorite;
-
-//- (BOOL)validateFavorite:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -180,6 +199,15 @@ extern const struct AwfulForumFetchedProperties {
 
 
 
+- (NSNumber*)primitiveFavoriteIndex;
+- (void)setPrimitiveFavoriteIndex:(NSNumber*)value;
+
+- (int32_t)primitiveFavoriteIndexValue;
+- (void)setPrimitiveFavoriteIndexValue:(int32_t)value_;
+
+
+
+
 - (NSString*)primitiveForumID;
 - (void)setPrimitiveForumID:(NSString*)value;
 
@@ -204,6 +232,15 @@ extern const struct AwfulForumFetchedProperties {
 
 
 
+- (NSNumber*)primitiveIsFavorite;
+- (void)setPrimitiveIsFavorite:(NSNumber*)value;
+
+- (BOOL)primitiveIsFavoriteValue;
+- (void)setPrimitiveIsFavoriteValue:(BOOL)value_;
+
+
+
+
 - (NSString*)primitiveName;
 - (void)setPrimitiveName:(NSString*)value;
 
@@ -218,11 +255,6 @@ extern const struct AwfulForumFetchedProperties {
 
 - (NSMutableOrderedSet*)primitiveChildren;
 - (void)setPrimitiveChildren:(NSMutableOrderedSet*)value;
-
-
-
-- (AwfulFavorite*)primitiveFavorite;
-- (void)setPrimitiveFavorite:(AwfulFavorite*)value;
 
 
 

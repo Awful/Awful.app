@@ -15,26 +15,12 @@
 
 @implementation AwfulFetchedTableViewController
 
-- (void)setEntityType:(Class)entity
-            predicate:(NSPredicate *)predicate
-      sortDescriptors:(NSArray *)sortDescriptors
-   sectionNameKeyPath:(NSString*)sectionNameKeyPath
-{
-    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[entity entityName]];
-    request.predicate = predicate;
-    request.sortDescriptors = sortDescriptors;
-    
-    self.fetchedResultsController.delegate = nil;
-    self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                                                        managedObjectContext:ApplicationDelegate.managedObjectContext
-                                                                          sectionNameKeyPath:sectionNameKeyPath
-                                                                                   cacheName:nil];
-    self.fetchedResultsController.delegate = self;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.fetchedResultsController = [self createFetchedResultsController];
+    self.fetchedResultsController.delegate = self;
     
     NSError *error;
 	if (![self.fetchedResultsController performFetch:&error]) {
@@ -45,6 +31,13 @@
     
     // TODO why?
     self.tableView.sectionIndexMinimumDisplayRowCount = NSIntegerMax;
+}
+
+- (NSFetchedResultsController *)createFetchedResultsController
+{
+    [NSException raise:@"SubclassMustImplement"
+                format:@"Subclasses must implement %@", NSStringFromSelector(_cmd)];
+    return nil;
 }
 
 #pragma mark Table view delegate and data source

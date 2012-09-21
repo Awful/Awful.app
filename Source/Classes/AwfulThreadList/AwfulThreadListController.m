@@ -27,24 +27,16 @@ typedef enum {
 
 @implementation AwfulThreadListController
 
-- (void)awakeFromNib
+- (NSFetchedResultsController *)createFetchedResultsController
 {
-    self.currentPage = 1;
-    self.title = self.forum.name;
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(awfulThreadUpdated:)
-                                                 name:AwfulThreadDidUpdateNotification
-                                               object:nil];
-    [self configureAndRefetch];
-}
-
-- (void)configureAndRefetch
-{
-    [self setEntityType:[AwfulThread class]
-              predicate:[NSPredicate predicateWithFormat:@"forum = %@", self.forum]
-        sortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"stickyIndex" ascending:NO],
-                           [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO]]
-     sectionNameKeyPath:nil];
+    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulThread entityName]];
+    request.predicate = [NSPredicate predicateWithFormat:@"forum = %@", self.forum];
+    request.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"stickyIndex" ascending:NO],
+    [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO]];
+    return [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                               managedObjectContext:ApplicationDelegate.managedObjectContext
+                                                 sectionNameKeyPath:nil
+                                                          cacheName:nil];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -75,11 +67,10 @@ typedef enum {
 
 - (void)setForum:(AwfulForum *)forum
 {
-    if( _forum != forum) {
-        _forum = forum;
-        self.title = _forum.name;
-        [self configureAndRefetch];
-    }
+    if (_forum == forum) return;
+    _forum = forum;
+    self.title = _forum.name;
+    self.fetchedResultsController = [self createFetchedResultsController];
 }
 
 - (void)refresh
@@ -126,6 +117,9 @@ typedef enum {
 {
     [super viewDidLoad];
     
+    self.currentPage = 1;
+    self.title = self.forum.name;
+    
     UILabel *label = (UILabel *)self.navigationItem.titleView;
     label.numberOfLines = 2;
     label.text = self.forum.name;
@@ -137,28 +131,13 @@ typedef enum {
     }
 }
 
-- (void)viewDidUnload
-{
-    [self.networkOperation cancel];
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
-
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:AwfulThreadDidUpdateNotification
-                                                  object:nil];
-}
-
--(BOOL)shouldReloadOnViewLoad
+- (BOOL)shouldReloadOnViewLoad
 {
     //check date on last thread we've got, if older than 10? min reload
     return NO;
 }
 
--(void)showThreadActionsForThread : (AwfulThread *)thread
+- (void)showThreadActionsForThread:(AwfulThread *)thread
 {
     self.heldThread = thread;
     NSArray *titles = [NSArray arrayWithObjects:@"First Page", @"Last Page", @"Mark as Unread", nil];

@@ -29,54 +29,50 @@
 
 @implementation AwfulForumsListController
 
-#pragma mark - Initialization
-
-@synthesize headerView = _headerView;
-
+- (NSFetchedResultsController *)createFetchedResultsController
+{
+    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulForum entityName]];
+    request.predicate = [NSPredicate predicateWithFormat:@"category != nil and "
+                         "(children.@count >0 or parentForum.expanded = YES)"];
+    request.sortDescriptors = @[
+        [NSSortDescriptor sortDescriptorWithKey:@"category.index" ascending:YES],
+        [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES]
+    ];
+    return [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                               managedObjectContext:ApplicationDelegate.managedObjectContext
+                                                 sectionNameKeyPath:@"category.index"
+                                                          cacheName:nil];
+}
 
 #pragma mark - View lifecycle
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
+    UITableViewCell* cell = (UITableViewCell*)sender;
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
     
-    //if ([[segue identifier] isEqualToString:@"ThreadList"]) {
-        UITableViewCell* cell = (UITableViewCell*)sender;
-        NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-        
-        AwfulThreadListController *list = (AwfulThreadListController *)segue.destinationViewController;
-        list.forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    //}
-     
-}
-
-- (void)awakeFromNib
-{
-    [self setEntityType:[AwfulForum class]
-              predicate:[NSPredicate predicateWithFormat:@"category != nil and (children.@count >0 or parentForum.expanded = YES)"]
-        sortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"category.index" ascending:YES],
-                           [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES]]
-     sectionNameKeyPath:@"category.index"];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(toggleExpandForumCell:)
-                                                 name:AwfulToggleExpandForum
-                                               object:nil];
+    AwfulThreadListController *list = (AwfulThreadListController *)segue.destinationViewController;
+    list.forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(toggleExpandForumCell:)
+                                                 name:AwfulToggleExpandForum
+                                               object:nil];
 
     [self.navigationController setToolbarHidden:YES];
     
     self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
 }
 
-
-
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
     [self.navigationController setToolbarHidden:YES];
     
     [self.navigationItem.leftBarButtonItem setTintColor:[UIColor colorWithRed:46.0/255 green:146.0/255 blue:190.0/255 alpha:1.0]];
