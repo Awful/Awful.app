@@ -116,6 +116,9 @@
 		1C9225C11571A53700559312 /* GRMustacheVariableElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF7A261537C157008EFAE4 /* GRMustacheVariableElement.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		1CAB36B11548F0FE00A4A362 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
 		1CC38B7F160C007900C35A11 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CC38B7E160C007900C35A11 /* Default-568h@2x.png */; };
+		1CC38B81160C017600C35A11 /* awful.js in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC515B497A800E5893B /* awful.js */; };
+		1CC38B82160C017600C35A11 /* jquery.js in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC815B497A800E5893B /* jquery.js */; };
+		1CC38B83160C017600C35A11 /* salr.js in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CCC15B497A800E5893B /* salr.js */; };
 		1CD59CDC1571A9C3008F8E2F /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
 		1CD59CDF1572F862008F8E2F /* fixture.json in Resources */ = {isa = PBXBuildFile; fileRef = 1CD59CDE1572F862008F8E2F /* fixture.json */; };
 		1CD59CF51573186B008F8E2F /* TemplateListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD59CF41573186B008F8E2F /* TemplateListViewController.m */; };
@@ -181,14 +184,11 @@
 		8CCD4CDD15B497A800E5893B /* iTunesArtwork@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD499315B497A700E5893B /* iTunesArtwork@2x.png */; };
 		8CCD500515B497A900E5893B /* iPadStartupPortrait.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC215B497A800E5893B /* iPadStartupPortrait.png */; };
 		8CCD500615B497A900E5893B /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC315B497A800E5893B /* Settings.plist */; };
-		8CCD500715B497A900E5893B /* awful.js in Sources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC515B497A800E5893B /* awful.js */; };
 		8CCD500815B497A900E5893B /* dark.css in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC615B497A800E5893B /* dark.css */; };
 		8CCD500915B497A900E5893B /* default.css in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC715B497A800E5893B /* default.css */; };
-		8CCD500A15B497A900E5893B /* jquery.js in Sources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC815B497A800E5893B /* jquery.js */; };
 		8CCD500B15B497A900E5893B /* posts.html in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC915B497A800E5893B /* posts.html */; };
 		8CCD500C15B497A900E5893B /* quote-block-off.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CCA15B497A800E5893B /* quote-block-off.png */; };
 		8CCD500D15B497A900E5893B /* quote-block-on.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CCB15B497A800E5893B /* quote-block-on.png */; };
-		8CCD500E15B497A900E5893B /* salr.js in Sources */ = {isa = PBXBuildFile; fileRef = 8CCD4CCC15B497A800E5893B /* salr.js */; };
 		8CCD536815B783FD00E5893B /* 28-star.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD503C15B783FC00E5893B /* 28-star.png */; };
 		8CCD536915B783FD00E5893B /* 28-star@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD503D15B783FC00E5893B /* 28-star@2x.png */; };
 		8CCD536A15B783FD00E5893B /* 39-circle-check.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD503E15B783FC00E5893B /* 39-circle-check.png */; };
@@ -3745,6 +3745,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1CC38B81160C017600C35A11 /* awful.js in Resources */,
+				1CC38B82160C017600C35A11 /* jquery.js in Resources */,
+				1CC38B83160C017600C35A11 /* salr.js in Resources */,
 				1C5D59C3155CFE9900D00DBB /* ObjCBridge.js in Resources */,
 				1190F73B13BE4EA900B9D271 /* AwfulForumHeaderView.xib in Resources */,
 				1190F7E313BE4ECB00B9D271 /* 37x-Checkmark.png in Resources */,
@@ -4743,9 +4746,6 @@
 				8C1BC80B15AF0FFE00B75286 /* AwfulCustomForumFYAD.m in Sources */,
 				8C1BC80C15AF0FFE00B75286 /* AwfulCustomForums.m in Sources */,
 				8C1BC80D15AF0FFE00B75286 /* AwfulCustomForumYOSPOS.m in Sources */,
-				8CCD500715B497A900E5893B /* awful.js in Sources */,
-				8CCD500A15B497A900E5893B /* jquery.js in Sources */,
-				8CCD500E15B497A900E5893B /* salr.js in Sources */,
 				8CE4DC7615B85BDB001C62AC /* AwfulLastPageControl.m in Sources */,
 				8CE4DC7E15B86498001C62AC /* AwfulAnimatedGifActivityIndicatorView.m in Sources */,
 				8CB5467F15BA5A8000E8BEC1 /* AwfulPrivateMessagesController.m in Sources */,
