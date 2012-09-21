@@ -8,18 +8,11 @@
 
 #import "AwfulTableViewController.h"
 
-@interface AwfulFetchedTableViewController : AwfulTableViewController <NSFetchedResultsControllerDelegate> {    
-    NSString *sectionKey, *_entity;
-    NSFetchRequest *_request;
-}
+@interface AwfulFetchedTableViewController : AwfulTableViewController
 
--(void) setEntityName:(NSString*)entity predicate:(id)predicate sort:(id)sort sectionKey:(NSString*)sectionKeyPath;
-
-@property (nonatomic,strong) NSFetchedResultsController* fetchedResultsController;
-@property (nonatomic,strong) NSFetchRequest *request;
-@property (nonatomic,strong) NSString* sectionKey;
-@property (nonatomic,strong) NSPredicate* predicate;
-@property (nonatomic,strong) NSArray *sortDescriptors;
-@property (nonatomic,strong) NSEntityDescription *entityDescription;
+- (void)setEntityType:(Class)entity
+            predicate:(NSPredicate *)predicate
+      sortDescriptors:(NSArray *)sortDescriptors
+   sectionNameKeyPath:(NSString*)sectionNameKeyPath;
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "AwfulForumsListController.h"
+#import "AwfulFetchedTableViewControllerSubclass.h"
 #import "AwfulThreadListController.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulBookmarksController.h"
@@ -50,20 +51,16 @@
 
 - (void)awakeFromNib
 {
-    [self setEntityName:@"AwfulForum"
-              predicate:@"category != nil and (children.@count >0 or parentForum.expanded = YES)"
-                   sort: [NSArray arrayWithObjects:
-                          [NSSortDescriptor sortDescriptorWithKey:@"category.index" ascending:YES],
-                          [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES],
-                          nil]
-             sectionKey:@"category.index"
-     ];
+    [self setEntityType:[AwfulForum class]
+              predicate:[NSPredicate predicateWithFormat:@"category != nil and (children.@count >0 or parentForum.expanded = YES)"]
+        sortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"category.index" ascending:YES],
+                           [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES]]
+     sectionNameKeyPath:@"category.index"];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(toggleExpandForumCell:) 
+                                             selector:@selector(toggleExpandForumCell:)
                                                  name:AwfulToggleExpandForum
-                                               object:nil
-     ];
+                                               object:nil];
 }
 
 - (void)viewDidLoad

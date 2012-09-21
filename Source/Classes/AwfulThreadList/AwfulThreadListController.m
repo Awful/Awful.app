@@ -7,6 +7,7 @@
 //
 
 #import "AwfulThreadListController.h"
+#import "AwfulFetchedTableViewControllerSubclass.h"
 #import <QuartzCore/QuartzCore.h>
 #import "AwfulAppDelegate.h"
 #import "AwfulForum.h"
@@ -26,20 +27,7 @@ typedef enum {
 
 @implementation AwfulThreadListController
 
-#pragma mark -
-#pragma mark Initialization
-
-@synthesize forum = _forum;
-@synthesize currentPage = _currentPage;
-@synthesize numberOfPages = _numberOfPages;
-@synthesize pageLabelBarButtonItem = _pageLabelBarButtonItem;
-@synthesize nextPageBarButtonItem = _nextPageBarButtonItem;
-@synthesize prevPageBarButtonItem = _prevPageBarButtonItem;
-@synthesize heldThread = _heldThread;
-@synthesize isLoading = _isLoading;
-@synthesize customBackButton = _customBackButton;
-
--(void)awakeFromNib
+- (void)awakeFromNib
 {
     self.currentPage = 1;
     self.title = self.forum.name;
@@ -47,142 +35,104 @@ typedef enum {
                                              selector:@selector(awfulThreadUpdated:)
                                                  name:AwfulThreadDidUpdateNotification
                                                object:nil];
-    
-    
-    [self setEntityName:@"AwfulThread"
+    [self configureAndRefetch];
+}
+
+- (void)configureAndRefetch
+{
+    [self setEntityType:[AwfulThread class]
               predicate:[NSPredicate predicateWithFormat:@"forum = %@", self.forum]
-                   sort:[NSArray arrayWithObjects:
-                         [NSSortDescriptor sortDescriptorWithKey:@"stickyIndex" ascending:NO], 
-                         [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO],
-                         nil
-                         ]
-             sectionKey:nil
-     ];
+        sortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"stickyIndex" ascending:NO],
+                           [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO]]
+     sectionNameKeyPath:nil];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    [self.networkOperation cancel];
     
+    NSIndexPath *selected = [self.tableView indexPathForSelectedRow];
+    
+    AwfulPage *page = nil;
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        page = (AwfulPage *)segue.destinationViewController;
+    } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        UINavigationController *nav = (UINavigationController *)segue.destinationViewController;
+        page = (AwfulPage *)nav.topViewController;
+    }
+    
+    page.thread = [self getThreadAtIndexPath:selected];
+    [page refresh];
+    
+    if ([self splitViewController])
+    {
+        [self.splitViewController prepareForSegue:segue sender:sender];
+    }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:AwfulPageWillLoadNotification
+                                                        object:[self getThreadAtIndexPath:selected]];
 }
 
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+- (void)setForum:(AwfulForum *)forum
 {
-    //if([[segue identifier] isEqualToString:@"AwfulPage"]) {
-        [self.networkOperation cancel];
-        
-        NSIndexPath *selected = [self.tableView indexPathForSelectedRow];
-        
-        AwfulPage *page = nil;
-        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-            page = (AwfulPage *)segue.destinationViewController;
-        } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            UINavigationController *nav = (UINavigationController *)segue.destinationViewController;
-            page = (AwfulPage *)nav.topViewController;
-        }
-        
-        page.thread = [self getThreadAtIndexPath:selected];
-        [page refresh];
-        
-        if ([self splitViewController])
-        {
-            [self.splitViewController prepareForSegue:segue sender:sender];
-        }
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:AwfulPageWillLoadNotification
-                                                            object:[self getThreadAtIndexPath:selected]];
-
-        
-    //}
-}
-
--(void)setForum:(AwfulForum *)forum
-{
-    if(_forum != forum) {
+    if( _forum != forum) {
         _forum = forum;
         self.title = _forum.name;
-        
-        [self setEntityName:@"AwfulThread"
-                  predicate:[NSPredicate predicateWithFormat:@"forum = %@", self.forum]
-                       sort:[NSArray arrayWithObjects:
-                             [NSSortDescriptor sortDescriptorWithKey:@"stickyIndex" ascending:YES], 
-                             [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO],
-                             nil
-                             ]
-                 sectionKey:nil
-         ];
+        [self configureAndRefetch];
     }
 }
 
--(void)refresh
+- (void)refresh
 {   
     [super refresh];
     [self loadPageNum:1];
 }
 
--(void)stop
+- (void)stop
 {
     [self.networkOperation cancel];
     [self finishedRefreshing];
 }
 
--(void)finishedRefreshing
+- (void)finishedRefreshing
 {
     [super finishedRefreshing];
     self.isLoading = NO;
 }
 
--(void)loadPageNum : (NSUInteger)pageNum
+- (void)loadPageNum:(NSUInteger)pageNum
 {    
     [self.networkOperation cancel];
     self.isLoading = YES;
-    self.networkOperation = [[AwfulHTTPClient sharedClient] threadListForForum:self.forum pageNum:pageNum onCompletion:^(NSMutableArray *threads) {
+    self.networkOperation = [[AwfulHTTPClient sharedClient] threadListForForum:self.forum
+                                                                       pageNum:pageNum
+                                                                  onCompletion:^(NSMutableArray *threads)
+    {
         self.currentPage = pageNum;
-        if(pageNum == 1) {
-            //[self.awfulThreads removeAllObjects];
-        }
-        //[self acceptThreads:threads];
         [self finishedRefreshing];
-    } onError:^(NSError *error) {
+    } onError:^(NSError *error)
+    {
         [self finishedRefreshing];
         [ApplicationDelegate requestFailed:error];
     }];
 }
 
-
--(void) loadNextControlChanged:(AwfulRefreshControl*)refreshControl {
-    [self loadPageNum:self.currentPage+1];
-}
-
--(void)awfulThreadUpdated : (NSNotification *)notif
-{
-    /*
-    AwfulThread *changedThread = [notif object];
-    NSIndexPath *path = nil;
-    for(AwfulThread *thread in self.awfulThreads) {
-        if(thread == changedThread) {
-            path = [NSIndexPath indexPathForRow:[self.awfulThreads indexOfObject:thread] inSection:0];
-        }
-    }
-    if(path != nil) {
-        //[self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:path] withRowAnimation:UITableViewRowAnimationFade];
-    }
-     */
-}
-
--(void)newlyVisible
+- (void)newlyVisible
 {
     //For subclassing
 }
 
-#pragma mark -
-#pragma mark View lifecycle
-
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
     
-    UILabel *lab = (UILabel *)self.navigationItem.titleView;
-    lab.numberOfLines = 2;
-    lab.text = self.forum.name;
+    UILabel *label = (UILabel *)self.navigationItem.titleView;
+    label.numberOfLines = 2;
+    label.text = self.forum.name;
     
     self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
 
-    if(self.fetchedResultsController.fetchedObjects.count == 0 && IsLoggedIn()) {
+    if (self.fetchedResultsController.fetchedObjects.count == 0 && IsLoggedIn()) {
         [self refresh];
     }
 }

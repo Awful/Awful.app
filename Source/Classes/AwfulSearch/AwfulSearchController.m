@@ -8,31 +8,19 @@
 
 #import "AwfulSearchController.h"
 
-@interface AwfulSearchController ()
-
-@end
-
 @implementation AwfulSearchController
 
--(void) awakeFromNib {
-    [self setEntityName:@"AwfulThread"
-              predicate:nil
-                   sort: [NSArray arrayWithObjects:
-                          [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO],
-                          nil]
-             sectionKey:nil
-     ];
-}
-
-- (void)viewDidLoad
+- (void)awakeFromNib
 {
-    [super viewDidLoad];
+    [self setEntityType:[AwfulThread class]
+              predicate:nil
+        sortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO]]
+     sectionNameKeyPath:nil];
 }
 
--(void) configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath*)indexPath {
+- (void) configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath*)indexPath
+{
     cell.textLabel.text = @"aaaaa";
 }
-
-
 
 @end

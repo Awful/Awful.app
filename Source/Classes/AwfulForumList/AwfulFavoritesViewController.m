@@ -7,41 +7,32 @@
 //
 
 #import "AwfulFavoritesViewController.h"
+#import "AwfulFetchedTableViewControllerSubclass.h"
 #import "AwfulForumsListController.h"
 #import "AwfulThreadListController.h"
 #import "AwfulForumCell.h"
 #import <QuartzCore/QuartzCore.h>
 
-@interface AwfulFavoritesViewController () <NSFetchedResultsControllerDelegate>
+@interface AwfulFavoritesViewController ()
+
 @property (readonly, strong, nonatomic) UIBarButtonItem *addButtonItem;
 @property (assign, getter = isReordering) BOOL reordering;
 @property (assign) BOOL automaticallyAdded;
 @property (nonatomic,readwrite,strong) UILabel* noFavorites;
+
 @end
 
 @implementation AwfulFavoritesViewController
-@synthesize addButtonItem = _addButtonItem;
-@synthesize reordering = _reordering;
-@synthesize automaticallyAdded = _automaticallyAdded;
-@synthesize noFavorites = _noFavorites;
-
--(void) awakeFromNib {
-    [self setEntityName:@"AwfulForum"
-              predicate:@"favorite != nil"
-                   sort:@"favorite.displayOrder"
-             sectionKey:nil
-     ];
-}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    [self setEntityName:@"AwfulForum"
-              predicate:@"favorite != nil" 
-                   sort:@"favorite.index"
-             sectionKey:nil
-     ];
+    
+    [self setEntityType:[AwfulForum class]
+              predicate:[NSPredicate predicateWithFormat:@"favorite != nil"]
+        sortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"favorite.displayOrder"
+                                                        ascending:YES]]
+     sectionNameKeyPath:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -52,16 +43,6 @@
     self.tableView.allowsSelectionDuringEditing = YES;
 }
 
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    if (!self.automaticallyAdded && self.fetchedResultsController.fetchedObjects.count == 0) {
-        //[self addFavorites];
-        //self.automaticallyAdded = YES;
-    }
-}
-
-
 #pragma mark - Awful table view
 
 - (BOOL)canPullToRefresh
@@ -71,11 +52,13 @@
 
 #pragma mark - Table view data source
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
     return nil;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
     return 0;
 }
 
@@ -85,24 +68,20 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:Identifier];
     [self configureCell:cell atIndexPath:indexPath];
     cell.showsReorderControl = NO;
-    //cell.imageView.image = [UIImage imageNamed:@"mad.gif"];
-
     return cell;
 }
-
 
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return YES;
 }
 
--(BOOL) tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+- (BOOL) tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
     return YES;
 }
 
-- (void)tableView:(UITableView *)tableView
-    moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
-      toIndexPath:(NSIndexPath *)destinationIndexPath
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath
 {
     self.reordering = YES;
     NSMutableArray *reorder = [self.fetchedResultsController.fetchedObjects mutableCopy];

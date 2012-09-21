@@ -8,12 +8,12 @@
 
 #import "AwfulThreadListController.h"
 
-@interface AwfulBookmarksController : AwfulThreadListController <UIScrollViewDelegate>
+@interface AwfulBookmarksController : AwfulThreadListController
 
 /* 
  Used for checking if there is a second page of bookmarks. Multiples of 40 means yeah sure.
  I can't just use [awfulThreads count] because I also want to allow users to remove bookmarks and have them disappear from the table immediately.
  */
-@property NSUInteger threadCount; 
+@property (nonatomic) NSUInteger threadCount;
 
 @end
