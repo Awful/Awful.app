@@ -24,18 +24,6 @@
      sectionNameKeyPath:nil];
 }
 
-#pragma mark - View lifecycle
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    
-    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"bookmarks.png"]
-                                                                             style:UIBarButtonItemStyleBordered
-                                                                            target:nil
-                                                                            action:nil];
-}
-
 - (BOOL)shouldReloadOnViewLoad
 {
     return NO;
