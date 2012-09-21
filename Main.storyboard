@@ -28,89 +28,6 @@
             </objects>
             <point key="canvasLocation" x="734" y="-846"/>
         </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="ljP-eD-SbU">
-            <objects>
-                <navigationController definesPresentationContext="YES" id="OsU-0N-VpQ" sceneMemberID="viewController">
-                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
-                    <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="blackOpaque" id="For-on-qpg">
-                        <rect key="frame" x="0.0" y="-44" width="0.0" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <connections>
-                        <segue destination="FXl-3U-dPW" kind="relationship" relationship="rootViewController" id="89D-Qc-3NQ"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="BO5-Ib-Oc8" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1685" y="-266"/>
-        </scene>
-        <!--Awful Add Favorite View Controller - Add Favorites-->
-        <scene sceneID="ajj-oc-TJs">
-            <objects>
-                <tableViewController id="FXl-3U-dPW" customClass="AwfulAddFavoriteViewController" sceneMemberID="viewController">
-                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" allowsSelectionDuringEditing="YES" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="7iN-YA-SFn">
-                        <rect key="frame" x="0.0" y="64" width="320" height="416"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="checkmark" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ForumCell" rowHeight="50" id="MxP-5l-Xav" customClass="AwfulForumCell">
-                                <rect key="frame" x="0.0" y="22" width="320" height="50"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="300" height="49"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Questions? Comments? Suggestions? This is" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="10" id="P34-St-Oqi">
-                                            <rect key="frame" x="44" y="3" width="225" height="44"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                            <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        </label>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="eyU-fR-JJv" userLabel="arrow button">
-                                            <rect key="frame" x="11" y="16" width="22" height="18"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                            <state key="normal" image="forum-arrow-right.png">
-                                                <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
-                                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                            </state>
-                                            <state key="highlighted">
-                                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            </state>
-                                            <connections>
-                                                <action selector="tappedArrow:" destination="MxP-5l-Xav" eventType="touchDown" id="adC-Aa-SUi"/>
-                                            </connections>
-                                        </button>
-                                    </subviews>
-                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                </view>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <connections>
-                                    <outlet property="arrow" destination="eyU-fR-JJv" id="sv7-bV-r5j"/>
-                                    <outlet property="titleLabel" destination="P34-St-Oqi" id="vsH-OD-h12"/>
-                                </connections>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="FXl-3U-dPW" id="5ak-RO-hMo"/>
-                            <outlet property="delegate" destination="FXl-3U-dPW" id="zSq-Qa-rip"/>
-                        </connections>
-                    </tableView>
-                    <navigationItem key="navigationItem" title="Add Favorites" id="6X7-Rv-wuv">
-                        <barButtonItem key="rightBarButtonItem" title="Done" style="done" id="kL8-U3-qXL">
-                            <connections>
-                                <action selector="done" destination="FXl-3U-dPW" id="DPf-K9-atz"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="UGB-w7-hyp" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2203" y="-266"/>
-        </scene>
         <!--Awful Forums List Controller - Forums-->
         <scene sceneID="b1h-YA-b4T">
             <objects>
@@ -719,9 +636,6 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Favorites" id="hP7-cI-33F"/>
-                    <connections>
-                        <segue destination="OsU-0N-VpQ" kind="modal" identifier="AddFavorite" id="anO-6h-ZhH"/>
-                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dzE-VT-who" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -743,9 +657,6 @@
         <image name="threadrating.png" width="45" height="13"/>
     </resources>
     <classes>
-        <class className="AwfulAddFavoriteViewController" superclassName="AwfulForumsListController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulAddFavoriteViewController.h"/>
-        </class>
         <class className="AwfulBookmarksController" superclassName="AwfulThreadListController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulBookmarksController.h"/>
         </class>
@@ -784,6 +695,7 @@
                 <relationship kind="action" name="segmentedGotTapped:"/>
                 <relationship kind="action" name="tappedActions:"/>
                 <relationship kind="action" name="tappedActionsSegment:"/>
+                <relationship kind="action" name="tappedCompose:"/>
                 <relationship kind="action" name="tappedNextPage:"/>
                 <relationship kind="action" name="tappedPageNav:"/>
                 <relationship kind="action" name="tappedPagesSegment:"/>

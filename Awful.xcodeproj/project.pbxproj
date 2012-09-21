@@ -36,7 +36,6 @@
 		1153D0D6144E5BA6007602E8 /* AwfulSpecificPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1153D0D4144E5BA6007602E8 /* AwfulSpecificPageViewController.m */; };
 		1172A62E14F5DB160026CDA8 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1172A62D14F5DB160026CDA8 /* Security.framework */; };
 		117DBE3B1522A39A007125EF /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 117DBE3A1522A39A007125EF /* CoreData.framework */; };
-		118CF809152D281600126AAC /* AwfulAddFavoriteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 118CF808152D281600126AAC /* AwfulAddFavoriteViewController.m */; };
 		118E615B14E5A17500F0CE0A /* AwfulThreadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 112764F014DB4F6A003ACE76 /* AwfulThreadCell.m */; };
 		118E615F14E5A1F100F0CE0A /* AwfulForumHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 112764EC14DB44E6003ACE76 /* AwfulForumHeader.m */; };
 		1190F73413BE4EA900B9D271 /* AwfulActions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6CE13BE4EA900B9D271 /* AwfulActions.m */; };
@@ -1059,8 +1058,6 @@
 		1153D0D4144E5BA6007602E8 /* AwfulSpecificPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSpecificPageViewController.m; sourceTree = "<group>"; };
 		1172A62D14F5DB160026CDA8 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		117DBE3A1522A39A007125EF /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
-		118CF807152D281600126AAC /* AwfulAddFavoriteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAddFavoriteViewController.h; sourceTree = "<group>"; };
-		118CF808152D281600126AAC /* AwfulAddFavoriteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAddFavoriteViewController.m; sourceTree = "<group>"; };
 		1190F6CD13BE4EA900B9D271 /* AwfulActions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulActions.h; sourceTree = "<group>"; };
 		1190F6CE13BE4EA900B9D271 /* AwfulActions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulActions.m; sourceTree = "<group>"; };
 		1190F6CF13BE4EA900B9D271 /* AwfulPostActions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostActions.h; sourceTree = "<group>"; };
@@ -2262,8 +2259,6 @@
 				112764EB14DB44E6003ACE76 /* AwfulForumHeader.h */,
 				112764EC14DB44E6003ACE76 /* AwfulForumHeader.m */,
 				1190F6DB13BE4EA900B9D271 /* AwfulForumHeaderView.xib */,
-				118CF807152D281600126AAC /* AwfulAddFavoriteViewController.h */,
-				118CF808152D281600126AAC /* AwfulAddFavoriteViewController.m */,
 				8C48EA20159BF14A00A59691 /* AwfulParentForumCell.h */,
 				8C48EA21159BF14A00A59691 /* AwfulParentForumCell.m */,
 				8C48EA32159C904500A59691 /* AwfulSubForumCell.h */,
@@ -4662,7 +4657,6 @@
 				11FDA299151018740014FDCD /* OtherWebController.m in Sources */,
 				11FDA29C1510187F0014FDCD /* AwfulSplitViewController.m in Sources */,
 				11CED26C1522901100E95EE1 /* ButtonSegmentedControl.m in Sources */,
-				118CF809152D281600126AAC /* AwfulAddFavoriteViewController.m in Sources */,
 				1CDF7A3E1537C157008EFAE4 /* GRMustache.m in Sources */,
 				1CDF7A3F1537C157008EFAE4 /* GRMustacheContext.m in Sources */,
 				1CDF7A401537C157008EFAE4 /* GRMustacheError.m in Sources */,
