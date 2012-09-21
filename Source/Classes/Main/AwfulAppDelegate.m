@@ -10,8 +10,6 @@
 #import "AwfulSplitViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulLoginController.h"
-#import "DDLog.h"
-#import "DDTTYLogger.h"
 #import "AwfulCSSTemplate.h"
 
 @implementation AwfulAppDelegate
@@ -27,7 +25,6 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [DDLog addLogger:[DDTTYLogger sharedInstance]];
     [[AwfulSettings settings] registerDefaults];
             
     NSManagedObjectContext *context = [self managedObjectContext];

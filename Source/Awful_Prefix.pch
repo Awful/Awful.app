@@ -8,8 +8,6 @@
     #import "AwfulAppDelegate.h"
     #import "AwfulHTTPClient.h"
     #import <CoreData/CoreData.h>
-    //#import "TestFlight.h"
     #import "UIView+Lazy.h"
-    #import "DDLog.h"
     #import "AwfulModels.h"
 #endif

@@ -23,14 +23,6 @@
 		110FABE215745C1E00ECF535 /* AFXMLRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 110FABD715745C1E00ECF535 /* AFXMLRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		110FABE315745C1E00ECF535 /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 110FABD915745C1E00ECF535 /* UIImageView+AFNetworking.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		110FABE815745C3B00ECF535 /* AwfulHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 110FABE515745C3B00ECF535 /* AwfulHTTPClient.m */; };
-		110FABE915745C3B00ECF535 /* NetworkingFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 110FABE715745C3B00ECF535 /* NetworkingFileLogger.m */; };
-		110FABFB15745C5C00ECF535 /* DDAbstractDatabaseLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 110FABEC15745C5C00ECF535 /* DDAbstractDatabaseLogger.m */; };
-		110FABFC15745C5C00ECF535 /* DDASLLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 110FABEE15745C5C00ECF535 /* DDASLLogger.m */; };
-		110FABFD15745C5C00ECF535 /* DDFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 110FABF015745C5C00ECF535 /* DDFileLogger.m */; };
-		110FABFE15745C5C00ECF535 /* DDLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 110FABF215745C5C00ECF535 /* DDLog.m */; };
-		110FABFF15745C5C00ECF535 /* DDTTYLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 110FABF415745C5C00ECF535 /* DDTTYLogger.m */; };
-		110FAC0015745C5C00ECF535 /* ContextFilterLogFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 110FABF715745C5C00ECF535 /* ContextFilterLogFormatter.m */; };
-		110FAC0115745C5C00ECF535 /* DispatchQueueLogFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 110FABF915745C5C00ECF535 /* DispatchQueueLogFormatter.m */; };
 		110FAC0415745CE700ECF535 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 110FAC0315745CE700ECF535 /* MessageUI.framework */; };
 		112DB4BB14211F24005A98CB /* SALR.m in Sources */ = {isa = PBXBuildFile; fileRef = 112DB4BA14211F24005A98CB /* SALR.m */; };
 		1153D0D6144E5BA6007602E8 /* AwfulSpecificPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1153D0D4144E5BA6007602E8 /* AwfulSpecificPageViewController.m */; };
@@ -1030,23 +1022,6 @@
 		110FABD915745C1E00ECF535 /* UIImageView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+AFNetworking.m"; sourceTree = "<group>"; };
 		110FABE415745C3B00ECF535 /* AwfulHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AwfulHTTPClient.h; path = AwfulNetworking/AwfulHTTPClient.h; sourceTree = "<group>"; };
 		110FABE515745C3B00ECF535 /* AwfulHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AwfulHTTPClient.m; path = AwfulNetworking/AwfulHTTPClient.m; sourceTree = "<group>"; };
-		110FABE615745C3B00ECF535 /* NetworkingFileLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NetworkingFileLogger.h; path = AwfulNetworking/NetworkingFileLogger.h; sourceTree = "<group>"; };
-		110FABE715745C3B00ECF535 /* NetworkingFileLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NetworkingFileLogger.m; path = AwfulNetworking/NetworkingFileLogger.m; sourceTree = "<group>"; };
-		110FABEB15745C5C00ECF535 /* DDAbstractDatabaseLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDAbstractDatabaseLogger.h; sourceTree = "<group>"; };
-		110FABEC15745C5C00ECF535 /* DDAbstractDatabaseLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDAbstractDatabaseLogger.m; sourceTree = "<group>"; };
-		110FABED15745C5C00ECF535 /* DDASLLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDASLLogger.h; sourceTree = "<group>"; };
-		110FABEE15745C5C00ECF535 /* DDASLLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDASLLogger.m; sourceTree = "<group>"; };
-		110FABEF15745C5C00ECF535 /* DDFileLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDFileLogger.h; sourceTree = "<group>"; };
-		110FABF015745C5C00ECF535 /* DDFileLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDFileLogger.m; sourceTree = "<group>"; };
-		110FABF115745C5C00ECF535 /* DDLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDLog.h; sourceTree = "<group>"; };
-		110FABF215745C5C00ECF535 /* DDLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDLog.m; sourceTree = "<group>"; };
-		110FABF315745C5C00ECF535 /* DDTTYLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDTTYLogger.h; sourceTree = "<group>"; };
-		110FABF415745C5C00ECF535 /* DDTTYLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDTTYLogger.m; sourceTree = "<group>"; };
-		110FABF615745C5C00ECF535 /* ContextFilterLogFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContextFilterLogFormatter.h; sourceTree = "<group>"; };
-		110FABF715745C5C00ECF535 /* ContextFilterLogFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContextFilterLogFormatter.m; sourceTree = "<group>"; };
-		110FABF815745C5C00ECF535 /* DispatchQueueLogFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DispatchQueueLogFormatter.h; sourceTree = "<group>"; };
-		110FABF915745C5C00ECF535 /* DispatchQueueLogFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DispatchQueueLogFormatter.m; sourceTree = "<group>"; };
-		110FABFA15745C5C00ECF535 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		110FAC0315745CE700ECF535 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		112764EB14DB44E6003ACE76 /* AwfulForumHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumHeader.h; sourceTree = "<group>"; };
 		112764EC14DB44E6003ACE76 /* AwfulForumHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumHeader.m; sourceTree = "<group>"; };
@@ -2191,43 +2166,11 @@
 			path = AFNetworking;
 			sourceTree = "<group>";
 		};
-		110FABEA15745C5C00ECF535 /* CocoaLumberjack */ = {
-			isa = PBXGroup;
-			children = (
-				110FABEB15745C5C00ECF535 /* DDAbstractDatabaseLogger.h */,
-				110FABEC15745C5C00ECF535 /* DDAbstractDatabaseLogger.m */,
-				110FABED15745C5C00ECF535 /* DDASLLogger.h */,
-				110FABEE15745C5C00ECF535 /* DDASLLogger.m */,
-				110FABEF15745C5C00ECF535 /* DDFileLogger.h */,
-				110FABF015745C5C00ECF535 /* DDFileLogger.m */,
-				110FABF115745C5C00ECF535 /* DDLog.h */,
-				110FABF215745C5C00ECF535 /* DDLog.m */,
-				110FABF315745C5C00ECF535 /* DDTTYLogger.h */,
-				110FABF415745C5C00ECF535 /* DDTTYLogger.m */,
-				110FABF515745C5C00ECF535 /* Extensions */,
-			);
-			path = CocoaLumberjack;
-			sourceTree = "<group>";
-		};
-		110FABF515745C5C00ECF535 /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				110FABF615745C5C00ECF535 /* ContextFilterLogFormatter.h */,
-				110FABF715745C5C00ECF535 /* ContextFilterLogFormatter.m */,
-				110FABF815745C5C00ECF535 /* DispatchQueueLogFormatter.h */,
-				110FABF915745C5C00ECF535 /* DispatchQueueLogFormatter.m */,
-				110FABFA15745C5C00ECF535 /* README.txt */,
-			);
-			path = Extensions;
-			sourceTree = "<group>";
-		};
 		1172A62F14F5DE500026CDA8 /* AwfulNetworking */ = {
 			isa = PBXGroup;
 			children = (
 				110FABE415745C3B00ECF535 /* AwfulHTTPClient.h */,
 				110FABE515745C3B00ECF535 /* AwfulHTTPClient.m */,
-				110FABE615745C3B00ECF535 /* NetworkingFileLogger.h */,
-				110FABE715745C3B00ECF535 /* NetworkingFileLogger.m */,
 				8CB5469C15BDC2ED00E8BEC1 /* AwfulHTTPClient+PrivateMessages.h */,
 				8CB5469D15BDC2ED00E8BEC1 /* AwfulHTTPClient+PrivateMessages.m */,
 			);
@@ -2351,7 +2294,6 @@
 			children = (
 				8CE4DC7815B86047001C62AC /* AnimatedGif */,
 				8C48EA5E159DD8FA00A59691 /* TDBadgedCell */,
-				110FABEA15745C5C00ECF535 /* CocoaLumberjack */,
 				110FABC415745C1E00ECF535 /* AFNetworking */,
 				1CDF79FE1537C157008EFAE4 /* GRMustache */,
 				1190F7BF13BE4ECB00B9D271 /* Hpple */,
@@ -4704,14 +4646,6 @@
 				110FABE215745C1E00ECF535 /* AFXMLRequestOperation.m in Sources */,
 				110FABE315745C1E00ECF535 /* UIImageView+AFNetworking.m in Sources */,
 				110FABE815745C3B00ECF535 /* AwfulHTTPClient.m in Sources */,
-				110FABE915745C3B00ECF535 /* NetworkingFileLogger.m in Sources */,
-				110FABFB15745C5C00ECF535 /* DDAbstractDatabaseLogger.m in Sources */,
-				110FABFC15745C5C00ECF535 /* DDASLLogger.m in Sources */,
-				110FABFD15745C5C00ECF535 /* DDFileLogger.m in Sources */,
-				110FABFE15745C5C00ECF535 /* DDLog.m in Sources */,
-				110FABFF15745C5C00ECF535 /* DDTTYLogger.m in Sources */,
-				110FAC0015745C5C00ECF535 /* ContextFilterLogFormatter.m in Sources */,
-				110FAC0115745C5C00ECF535 /* DispatchQueueLogFormatter.m in Sources */,
 				1C2BFA25158AB59800692D85 /* AwfulCSSTemplate.m in Sources */,
 				8CCFBD251598B9AF00336F55 /* AwfulThreadTitleView.m in Sources */,
 				8C48EA1E159BC2AC00A59691 /* AwfulFetchedTableViewController.m in Sources */,

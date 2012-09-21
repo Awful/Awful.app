@@ -13,7 +13,6 @@
 #import "AwfulLoginController.h"
 #import "AwfulSettingsChoiceViewController.h"
 #import <MessageUI/MessageUI.h>
-#import "DDFileLogger.h"
 
 @interface AwfulSettingsViewController () <MFMailComposeViewControllerDelegate>
 
@@ -227,8 +226,6 @@ typedef enum SettingType
         [self performSegueWithIdentifier:@"Login" sender:self];
     } else if ([action isEqualToString:@"ResetData"]) {
         [ApplicationDelegate resetDataStore];
-    } else if ([action isEqualToString:@"SendNetworkLogs"]) {
-        [self sendNetworkLogs];
     } else {
         NSString *key = [setting objectForKey:@"Key"];
         id selectedValue = [[NSUserDefaults standardUserDefaults] objectForKey:key];
@@ -301,34 +298,6 @@ typedef enum SettingType
     NSArray *listOfSettings = [settingSection objectForKey:@"Settings"];
     return [listOfSettings objectAtIndex:indexPath.row];
 
-}
-
-#pragma mark - Actions
-
-- (void)sendNetworkLogs
-{
-    MFMailComposeViewController *composer = [[MFMailComposeViewController alloc] init];
-    composer.mailComposeDelegate = self;
-    composer.subject = @"Awful endless loading problem";
-    composer.toRecipients = [NSArray arrayWithObject:@"sean@regularberry.com"];
-    id <DDLogFileManager> manager = [AwfulHTTPClient logger].logFileManager;
-    NSString *logFilePath = [manager.sortedLogFilePaths lastObject];
-    NSData *data = [NSData dataWithContentsOfFile:logFilePath];
-    [composer addAttachmentData:data mimeType:@"text/plain" fileName:@"AwfulNetworkLog"];
-    [composer setMessageBody:@"I've attached a log of the networking calls. Maybe it'll help?"
-                      isHTML:NO];
-    [self presentViewController:composer animated:YES completion:nil];
-}
-
-#pragma mark - Mail compose view controller delegate
-
-- (void)mailComposeController:(MFMailComposeViewController *)controller
-          didFinishWithResult:(MFMailComposeResult)result
-                        error:(NSError *)error
-{
-    if (result == MFMailComposeResultSent)
-        [[AwfulHTTPClient logger] rollLogFile];
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end
