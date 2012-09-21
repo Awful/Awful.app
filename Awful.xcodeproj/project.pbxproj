@@ -42,7 +42,6 @@
 		1190F75313BE4EA900B9D271 /* AwfulThreadListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F70913BE4EA900B9D271 /* AwfulThreadListController.m */; };
 		1190F75C13BE4EA900B9D271 /* AwfulLoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F71A13BE4EA900B9D271 /* AwfulLoginController.m */; };
 		1190F75E13BE4EA900B9D271 /* AwfulAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F71E13BE4EA900B9D271 /* AwfulAppDelegate.m */; };
-		1190F76813BE4EA900B9D271 /* SmilieGrabber.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F73313BE4EA900B9D271 /* SmilieGrabber.m */; };
 		1190F7E313BE4ECB00B9D271 /* 37x-Checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 1190F7A913BE4ECB00B9D271 /* 37x-Checkmark.png */; };
 		1190F7E413BE4ECB00B9D271 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7AB13BE4ECB00B9D271 /* MBProgressHUD.m */; };
 		1190F7E613BE4ECB00B9D271 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7B113BE4ECB00B9D271 /* NSString+HTML.m */; };
@@ -4577,7 +4576,6 @@
 				1190F75313BE4EA900B9D271 /* AwfulThreadListController.m in Sources */,
 				1190F75C13BE4EA900B9D271 /* AwfulLoginController.m in Sources */,
 				1190F75E13BE4EA900B9D271 /* AwfulAppDelegate.m in Sources */,
-				1190F76813BE4EA900B9D271 /* SmilieGrabber.m in Sources */,
 				1190F7E413BE4ECB00B9D271 /* MBProgressHUD.m in Sources */,
 				1190F7E613BE4ECB00B9D271 /* NSString+HTML.m in Sources */,
 				1190F7E713BE4ECB00B9D271 /* MWPhoto.m in Sources */,
