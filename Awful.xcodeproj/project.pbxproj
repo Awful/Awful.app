@@ -2392,8 +2392,6 @@
 		1C6474A61569989800C72657 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				8CB5469915BDC26100E8BEC1 /* AwfulPM.h */,
-				8CB5469A15BDC26100E8BEC1 /* AwfulPM.m */,
 				1CC38BB1160D8C5800C35A11 /* AwfulCategory.h */,
 				1CC38BB2160D8C5800C35A11 /* AwfulCategory.m */,
 				1C6474A91569989800C72657 /* AwfulForum+AwfulMethods.h */,
@@ -2401,6 +2399,8 @@
 				1C6474AB1569989800C72657 /* AwfulForum.h */,
 				1C6474AC1569989800C72657 /* AwfulForum.m */,
 				1C6474AD1569989800C72657 /* AwfulModels.h */,
+				8CB5469915BDC26100E8BEC1 /* AwfulPM.h */,
+				8CB5469A15BDC26100E8BEC1 /* AwfulPM.m */,
 				1C6474B01569989800C72657 /* AwfulPost.h */,
 				1C6474B11569989800C72657 /* AwfulPost.m */,
 				1C6474B21569989800C72657 /* AwfulThread+AwfulMethods.h */,
@@ -2420,12 +2420,12 @@
 		1C6474BA1569989800C72657 /* Generated */ = {
 			isa = PBXGroup;
 			children = (
-				8CB5469615BDC25800E8BEC1 /* _AwfulPM.h */,
-				8CB5469715BDC25800E8BEC1 /* _AwfulPM.m */,
 				1CC38BB4160D8C6000C35A11 /* _AwfulCategory.h */,
 				1CC38BB5160D8C6000C35A11 /* _AwfulCategory.m */,
 				1C6474BD1569989800C72657 /* _AwfulForum.h */,
 				1C6474BE1569989800C72657 /* _AwfulForum.m */,
+				8CB5469615BDC25800E8BEC1 /* _AwfulPM.h */,
+				8CB5469715BDC25800E8BEC1 /* _AwfulPM.m */,
 				1C6474BF1569989800C72657 /* _AwfulThread.h */,
 				1C6474C01569989800C72657 /* _AwfulThread.m */,
 				1C6474C11569989800C72657 /* _AwfulUser.h */,
