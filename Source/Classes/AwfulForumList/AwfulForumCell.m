@@ -26,9 +26,6 @@
     self.textLabel.text = forum.name;
     self.textLabel.numberOfLines = 2;
     self.textLabel.adjustsFontSizeToFitWidth = YES;
-    self.detailTextLabel.text = forum.desc;
-    self.detailTextLabel.numberOfLines = 0;
-    self.detailTextLabel.font = [UIFont systemFontOfSize:12];
 }
 
 - (void)setFavoriteButtonAccessory
@@ -67,23 +64,13 @@
     [ApplicationDelegate saveContext];
 }
 
-
 + (CGFloat)heightForContent:(AwfulForum *)forum inTableView:(UITableView *)tableView
 {
     int width = tableView.frame.size.width - 40;
-    int height = 44;
-    CGSize textSize;
-    CGSize detailSize;
-    
-    textSize = [forum.name sizeWithFont:[UIFont boldSystemFontOfSize:18]
-                      constrainedToSize:CGSizeMake(width, 4000) 
-                          lineBreakMode:UILineBreakModeWordWrap];
-    if(forum.desc)
-        detailSize = [forum.desc sizeWithFont:[UIFont systemFontOfSize:12] 
-                            constrainedToSize:CGSizeMake(width, 4000) 
-                                lineBreakMode:UILineBreakModeWordWrap];
-    
-    height = 10 + textSize.height + detailSize.height;
-    return MAX(height, 50);
+    CGSize textSize = [forum.name sizeWithFont:[UIFont boldSystemFontOfSize:18]
+                             constrainedToSize:CGSizeMake(width, 4000)
+                                 lineBreakMode:UILineBreakModeWordWrap];
+    return MAX(10 + textSize.height, 50);
 }
+
 @end

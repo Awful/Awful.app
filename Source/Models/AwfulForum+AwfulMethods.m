@@ -171,20 +171,13 @@
         [existingDict setObject:f forKey:f.forumID];
 
     for (NSString* row in rows) {
-        TFHpple *row_base = [[TFHpple alloc] initWithHTMLData:[row dataUsingEncoding:NSUTF8StringEncoding]];
-
-        TFHppleElement* a = [row_base searchForSingle:@"//td[@class='title']//a"];
-        TFHppleElement* dd = [row_base searchForSingle:@"//td[@class='title']//dd"];
-        
+        TFHpple *rowBase = [[TFHpple alloc] initWithHTMLData:[row dataUsingEncoding:NSUTF8StringEncoding]];
+        TFHppleElement* a = [rowBase searchForSingle:@"//td[@class='title']//a"];
         AwfulForum *subforum = [existingDict objectForKey:[self forumIDFromLinkElement:a]];
         subforum.name = [a content];
         subforum.parentForum = forum;
         subforum.category = forum.category;
         subforum.forumID = [self forumIDFromLinkElement:a];
-        
-        NSString *desc = [dd content];
-        desc = [desc stringByReplacingOccurrencesOfString:@"- " withString:@""];
-        subforum.desc = desc;
     }
 }
 

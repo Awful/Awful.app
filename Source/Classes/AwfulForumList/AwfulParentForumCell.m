@@ -39,20 +39,12 @@
 + (CGFloat)heightForContent:(AwfulForum *)forum inTableView:(UITableView *)tableView
 {
     int width = tableView.frame.size.width - 40 - 55;
-    CGSize textSize;
-    CGSize detailSize;
     int height = 44;
-    
-    textSize = [forum.name sizeWithFont:[UIFont boldSystemFontOfSize:18]
-                      constrainedToSize:CGSizeMake(width, 4000) 
-                          lineBreakMode:UILineBreakModeWordWrap];
-    if (forum.desc)
-        detailSize = [forum.desc sizeWithFont:[UIFont systemFontOfSize:12] 
-                            constrainedToSize:CGSizeMake(width, 4000) 
-                                lineBreakMode:UILineBreakModeWordWrap];
-    
-    height = 10 + textSize.height + detailSize.height;
-    return MAX(height,50);
+    CGSize textSize = [forum.name sizeWithFont:[UIFont boldSystemFontOfSize:18]
+                             constrainedToSize:CGSizeMake(width, 4000)
+                                 lineBreakMode:UILineBreakModeWordWrap];
+    height = 10 + textSize.height;
+    return MAX(height, 50);
 }
 
 @end

@@ -4,7 +4,6 @@
 #import "_AwfulForum.h"
 
 const struct AwfulForumAttributes AwfulForumAttributes = {
-	.desc = @"desc",
 	.expanded = @"expanded",
 	.favoriteIndex = @"favoriteIndex",
 	.forumID = @"forumID",
@@ -68,13 +67,6 @@ const struct AwfulForumFetchedProperties AwfulForumFetchedProperties = {
 
 	return keyPaths;
 }
-
-
-
-
-@dynamic desc;
-
-
 
 
 
