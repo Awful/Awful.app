@@ -108,6 +108,8 @@
 		1CC38B82160C017600C35A11 /* jquery.js in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC815B497A800E5893B /* jquery.js */; };
 		1CC38B83160C017600C35A11 /* salr.js in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CCC15B497A800E5893B /* salr.js */; };
 		1CC38B8D160C0A5D00C35A11 /* SVPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC38B89160C0A5D00C35A11 /* SVPullToRefresh.m */; };
+		1CC38BB3160D8C5900C35A11 /* AwfulCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC38BB2160D8C5800C35A11 /* AwfulCategory.m */; };
+		1CC38BB6160D8C6000C35A11 /* _AwfulCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC38BB5160D8C6000C35A11 /* _AwfulCategory.m */; };
 		1CD59CDC1571A9C3008F8E2F /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
 		1CD59CDF1572F862008F8E2F /* fixture.json in Resources */ = {isa = PBXBuildFile; fileRef = 1CD59CDE1572F862008F8E2F /* fixture.json */; };
 		1CD59CF51573186B008F8E2F /* TemplateListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD59CF41573186B008F8E2F /* TemplateListViewController.m */; };
@@ -1137,6 +1139,10 @@
 		1CC38B88160C0A5D00C35A11 /* SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVPullToRefresh.h; sourceTree = "<group>"; };
 		1CC38B89160C0A5D00C35A11 /* SVPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVPullToRefresh.m; sourceTree = "<group>"; };
 		1CC38BA3160C2CE600C35A11 /* AwfulFetchedTableViewControllerSubclass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AwfulFetchedTableViewControllerSubclass.h; sourceTree = "<group>"; };
+		1CC38BB1160D8C5800C35A11 /* AwfulCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCategory.h; sourceTree = "<group>"; };
+		1CC38BB2160D8C5800C35A11 /* AwfulCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCategory.m; sourceTree = "<group>"; };
+		1CC38BB4160D8C6000C35A11 /* _AwfulCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _AwfulCategory.h; sourceTree = "<group>"; };
+		1CC38BB5160D8C6000C35A11 /* _AwfulCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulCategory.m; sourceTree = "<group>"; };
 		1CD59CDE1572F862008F8E2F /* fixture.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = fixture.json; sourceTree = "<group>"; };
 		1CD59CF31573186B008F8E2F /* TemplateListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TemplateListViewController.h; sourceTree = "<group>"; };
 		1CD59CF41573186B008F8E2F /* TemplateListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TemplateListViewController.m; sourceTree = "<group>"; };
@@ -2388,6 +2394,8 @@
 			children = (
 				8CB5469915BDC26100E8BEC1 /* AwfulPM.h */,
 				8CB5469A15BDC26100E8BEC1 /* AwfulPM.m */,
+				1CC38BB1160D8C5800C35A11 /* AwfulCategory.h */,
+				1CC38BB2160D8C5800C35A11 /* AwfulCategory.m */,
 				1C6474A91569989800C72657 /* AwfulForum+AwfulMethods.h */,
 				1C6474AA1569989800C72657 /* AwfulForum+AwfulMethods.m */,
 				1C6474AB1569989800C72657 /* AwfulForum.h */,
@@ -2414,6 +2422,8 @@
 			children = (
 				8CB5469615BDC25800E8BEC1 /* _AwfulPM.h */,
 				8CB5469715BDC25800E8BEC1 /* _AwfulPM.m */,
+				1CC38BB4160D8C6000C35A11 /* _AwfulCategory.h */,
+				1CC38BB5160D8C6000C35A11 /* _AwfulCategory.m */,
 				1C6474BD1569989800C72657 /* _AwfulForum.h */,
 				1C6474BE1569989800C72657 /* _AwfulForum.m */,
 				1C6474BF1569989800C72657 /* _AwfulThread.h */,
@@ -4630,6 +4640,8 @@
 				8CB5469B15BDC26100E8BEC1 /* AwfulPM.m in Sources */,
 				8CB5469E15BDC2EE00E8BEC1 /* AwfulHTTPClient+PrivateMessages.m in Sources */,
 				1CC38B8D160C0A5D00C35A11 /* SVPullToRefresh.m in Sources */,
+				1CC38BB3160D8C5900C35A11 /* AwfulCategory.m in Sources */,
+				1CC38BB6160D8C6000C35A11 /* _AwfulCategory.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

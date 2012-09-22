@@ -40,7 +40,7 @@
     ];
     return [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                managedObjectContext:ApplicationDelegate.managedObjectContext
-                                                 sectionNameKeyPath:@"category.index"
+                                                 sectionNameKeyPath:@"category.name"
                                                           cacheName:nil];
 }
 
@@ -140,7 +140,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     AwfulForumHeader *header = self.headerView;
     self.headerView = nil;
     
-    header.titleLabel.text = [self.fetchedResultsController.sectionIndexTitles objectAtIndex:section];
+    header.titleLabel.text = [self.fetchedResultsController.sections[section] name];
     return header;
 }
 

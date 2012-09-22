@@ -9,7 +9,6 @@ const struct AwfulForumAttributes AwfulForumAttributes = {
 	.favoriteIndex = @"favoriteIndex",
 	.forumID = @"forumID",
 	.index = @"index",
-	.isCategory = @"isCategory",
 	.isFavorite = @"isFavorite",
 	.name = @"name",
 };
@@ -60,10 +59,6 @@ const struct AwfulForumFetchedProperties AwfulForumFetchedProperties = {
 	}
 	if ([key isEqualToString:@"indexValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"index"];
-		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-	}
-	if ([key isEqualToString:@"isCategoryValue"]) {
-		NSSet *affectingKey = [NSSet setWithObject:@"isCategory"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 	}
 	if ([key isEqualToString:@"isFavoriteValue"]) {
@@ -163,32 +158,6 @@ const struct AwfulForumFetchedProperties AwfulForumFetchedProperties = {
 
 - (void)setPrimitiveIndexValue:(int32_t)value_ {
 	[self setPrimitiveIndex:[NSNumber numberWithInt:value_]];
-}
-
-
-
-
-
-@dynamic isCategory;
-
-
-
-- (BOOL)isCategoryValue {
-	NSNumber *result = [self isCategory];
-	return [result boolValue];
-}
-
-- (void)setIsCategoryValue:(BOOL)value_ {
-	[self setIsCategory:[NSNumber numberWithBool:value_]];
-}
-
-- (BOOL)primitiveIsCategoryValue {
-	NSNumber *result = [self primitiveIsCategory];
-	return [result boolValue];
-}
-
-- (void)setPrimitiveIsCategoryValue:(BOOL)value_ {
-	[self setPrimitiveIsCategory:[NSNumber numberWithBool:value_]];
 }
 
 

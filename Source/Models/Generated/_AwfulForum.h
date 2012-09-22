@@ -10,7 +10,6 @@ extern const struct AwfulForumAttributes {
 	__unsafe_unretained NSString *favoriteIndex;
 	__unsafe_unretained NSString *forumID;
 	__unsafe_unretained NSString *index;
-	__unsafe_unretained NSString *isCategory;
 	__unsafe_unretained NSString *isFavorite;
 	__unsafe_unretained NSString *name;
 } AwfulForumAttributes;
@@ -25,11 +24,10 @@ extern const struct AwfulForumRelationships {
 extern const struct AwfulForumFetchedProperties {
 } AwfulForumFetchedProperties;
 
-@class AwfulForum;
+@class AwfulCategory;
 @class AwfulForum;
 @class AwfulForum;
 @class AwfulThread;
-
 
 
 
@@ -103,18 +101,6 @@ extern const struct AwfulForumFetchedProperties {
 
 
 
-@property (nonatomic, strong) NSNumber* isCategory;
-
-
-@property BOOL isCategoryValue;
-- (BOOL)isCategoryValue;
-- (void)setIsCategoryValue:(BOOL)value_;
-
-//- (BOOL)validateIsCategory:(id*)value_ error:(NSError**)error_;
-
-
-
-
 @property (nonatomic, strong) NSNumber* isFavorite;
 
 
@@ -136,7 +122,7 @@ extern const struct AwfulForumFetchedProperties {
 
 
 
-@property (nonatomic, strong) AwfulForum* category;
+@property (nonatomic, strong) AwfulCategory* category;
 
 //- (BOOL)validateCategory:(id*)value_ error:(NSError**)error_;
 
@@ -223,15 +209,6 @@ extern const struct AwfulForumFetchedProperties {
 
 
 
-- (NSNumber*)primitiveIsCategory;
-- (void)setPrimitiveIsCategory:(NSNumber*)value;
-
-- (BOOL)primitiveIsCategoryValue;
-- (void)setPrimitiveIsCategoryValue:(BOOL)value_;
-
-
-
-
 - (NSNumber*)primitiveIsFavorite;
 - (void)setPrimitiveIsFavorite:(NSNumber*)value;
 
@@ -248,8 +225,8 @@ extern const struct AwfulForumFetchedProperties {
 
 
 
-- (AwfulForum*)primitiveCategory;
-- (void)setPrimitiveCategory:(AwfulForum*)value;
+- (AwfulCategory*)primitiveCategory;
+- (void)setPrimitiveCategory:(AwfulCategory*)value;
 
 
 

@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1810" systemVersion="12C54" minimumToolsVersion="Xcode 4.1" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="AwfulCategory" representedClassName="AwfulCategory" syncable="YES">
+        <attribute name="categoryID" attributeType="String" syncable="YES"/>
+        <attribute name="index" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <relationship name="forums" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="category" inverseEntity="AwfulForum" syncable="YES"/>
+    </entity>
     <entity name="AwfulForum" representedClassName="AwfulForum" syncable="YES">
         <attribute name="desc" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="expanded" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="favoriteIndex" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="forumID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="index" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <attribute name="isCategory" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="isFavorite" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="category" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulForum" syncable="YES"/>
+        <relationship name="category" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulCategory" inverseName="forums" inverseEntity="AwfulCategory" syncable="YES"/>
         <relationship name="children" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="AwfulForum" inverseName="parentForum" inverseEntity="AwfulForum" syncable="YES"/>
         <relationship name="parentForum" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="children" inverseEntity="AwfulForum" syncable="YES"/>
         <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="forum" inverseEntity="AwfulThread" syncable="YES"/>
@@ -48,9 +53,10 @@
         <attribute name="userName" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="AwfulForum" positionX="205" positionY="285" width="128" height="225"/>
+        <element name="AwfulForum" positionX="205" positionY="285" width="128" height="210"/>
         <element name="AwfulPM" positionX="396" positionY="210" width="128" height="150"/>
         <element name="AwfulThread" positionX="25" positionY="210" width="128" height="285"/>
         <element name="AwfulUser" positionX="207" positionY="171" width="128" height="90"/>
+        <element name="AwfulCategory" positionX="160" positionY="192" width="128" height="105"/>
     </elements>
 </model>
