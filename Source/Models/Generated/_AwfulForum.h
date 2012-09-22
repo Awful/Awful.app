@@ -35,7 +35,6 @@ extern const struct AwfulForumFetchedProperties {
 
 
 
-
 @interface AwfulForumID : NSManagedObjectID {}
 @end
 

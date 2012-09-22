@@ -9,16 +9,6 @@
 #import "AwfulForumCell.h"
 
 @implementation AwfulForumCell
-@synthesize forum = _forum;
-
-- (id)init
-{
-    self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"AwfulForumCell"];
-    if (self) {
-        
-    }
-    return self;
-}
 
 - (void)setForum:(AwfulForum *)forum
 {
@@ -31,18 +21,13 @@
 - (void)setFavoriteButtonAccessory
 {
     UIButton *favImage = [UIButton buttonWithType:UIButtonTypeCustom];
-    
     [favImage setImage:[UIImage imageNamed:@"star_off.png"] forState:UIControlStateNormal];
     [favImage setImage:[UIImage imageNamed:@"star_on.png"] forState:UIControlStateSelected];
-    
     [favImage addTarget:self
                  action:@selector(toggleFavorite:) 
-       forControlEvents:UIControlEventTouchUpInside
-     ];
-    
+       forControlEvents:UIControlEventTouchUpInside];
     [favImage sizeToFit];
     favImage.selected = self.forum.isFavoriteValue;
-    
     self.accessoryView = favImage;
 }
 

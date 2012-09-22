@@ -159,7 +159,7 @@
     return [href substringWithRange:range];
 }
 
-+ (void)updateSubforums:(NSArray*)rows inForum:(AwfulForum*)forum
++ (void)updateSubforums:(NSArray *)rows inForum:(AwfulForum *)forum
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"AwfulForum"];
     request.predicate = [NSPredicate predicateWithFormat:@"parentForum = %@", forum];

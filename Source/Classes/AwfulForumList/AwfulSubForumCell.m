@@ -10,7 +10,8 @@
 
 @implementation AwfulSubForumCell
 
--(void) setForum:(AwfulForum *)forum {
+- (void)setForum:(AwfulForum *)forum
+{
     [super setForum:forum];
     self.indentationLevel = 1;
     self.indentationWidth = 60;
