@@ -22,18 +22,23 @@
 {
     self.expanded = !self.expanded;
     [self.delegate parentForumCellDidToggleExpansion:self];
-    if (self.expanded)
-        self.imageView.image = [UIImage imageNamed:@"forum-arrow-down.png"];
-    else
-        self.imageView.image = [UIImage imageNamed:@"forum-arrow-right.png"];
+    [self updateArrow];
 }
 
 - (void)setForum:(AwfulForum *)forum
 {
     [super setForum:forum];
     self.expanded = forum.expandedValue;
+    [self updateArrow];
     [self setFavoriteButtonAccessory];
-    self.imageView.image = [UIImage imageNamed:@"forum-arrow-right.png"];
+}
+
+- (void)updateArrow
+{
+    if (self.expanded)
+        self.imageView.image = [UIImage imageNamed:@"forum-arrow-down.png"];
+    else
+        self.imageView.image = [UIImage imageNamed:@"forum-arrow-right.png"];
 }
 
 + (CGFloat)heightForContent:(AwfulForum *)forum inTableView:(UITableView *)tableView
