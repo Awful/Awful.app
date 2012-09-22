@@ -27,67 +27,123 @@
     return newForum;
 }
 
-+ (NSMutableArray *)parseForums:(NSData *)data
++ (NSArray *)parseForums:(NSData *)data
 {
     NSManagedObjectContext *context = ApplicationDelegate.managedObjectContext;
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[AwfulForum entityName]];
     NSError *error;
     NSArray *allExistingForums = [context executeFetchRequest:request error:&error];
     NSMutableDictionary *existingForums = [NSMutableDictionary new];
-    for (AwfulForum *f in allExistingForums)
+    for (AwfulForum *f in allExistingForums) {
         existingForums[f.forumID] = f;
+    }
     request = [NSFetchRequest fetchRequestWithEntityName:[AwfulCategory entityName]];
     NSArray *allExistingCategories = [context executeFetchRequest:request error:&error];
     NSMutableDictionary *existingCategories = [NSMutableDictionary new];
-    for (AwfulCategory *c in allExistingCategories)
+    for (AwfulCategory *c in allExistingCategories) {
         existingCategories[c.categoryID] = c;
+    }
     
-    NSArray *rows = PerformRawHTMLXPathQuery(data, @"//tr");
-    AwfulCategory *category;
+    // There's a pulldown menu at the bottom of forumdisplay.php and showthread.php like this:
+    //
+    // <select name="forumid">
+    //   <option value="-1">Whatever</option>
+    //   <option value="pm">Private Messages</option>
+    //   ...
+    //   <option value="-1">--------------------</option>
+    //   <option value="48"> Main</option>
+    //   <option value="1">-- General Bullshit</option>
+    //   <option value="155">---- SA's Front Page Discussion</option>
+    //   ...
+    // </select>
+    //
+    // This is the only place that lists *all* forums. index.php only shows one level of subforums.
+    TFHpple *forumdisplay = [[TFHpple alloc] initWithHTMLData:data];
+    NSArray *listOfItems = [forumdisplay search:@"//select[@name='forumid']/option"];
     int indexOfCategory = 0;
-    int i = 0;
-    for (NSString* e in rows) {
-        NSData *d = [e dataUsingEncoding:NSUTF8StringEncoding];
-        TFHpple* kids = [[TFHpple alloc] initWithHTMLData:d];
+    int indexOfForum = 0;
+    
+    NSMutableArray *allCategories = [NSMutableArray new];
+    NSMutableArray *allForums = [NSMutableArray new];
+    AwfulCategory *category;
+    NSMutableArray *forumStack = [NSMutableArray new];
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"^(-*) ?(.*)$"
+                                                                           options:0
+                                                                             error:&error];
+    if (!regex) {
+        NSLog(@"Regex failure parsing forums: %@", error);
+        return nil;
+    }
+    
+    for (TFHppleElement *item in listOfItems) {
+        NSString *forumOrCategoryID = [item objectForKey:@"value"];
+        if ([forumOrCategoryID integerValue] <= 0)
+            continue;
         
-        TFHppleElement* cat = [kids searchForSingle:@"//th[@class='category']//a"];
-        if (cat) {
-            NSString *categoryID = [self forumIDFromLinkElement:cat];
-            category = existingCategories[categoryID];
+        NSTextCheckingResult *match = [regex firstMatchInString:[item content]
+                                                        options:0
+                                                          range:NSMakeRange(0, [[item content] length])];
+        NSString *name = [[item content] substringWithRange:[match rangeAtIndex:2]];
+        NSUInteger depth = [match rangeAtIndex:1].length / 2;
+        if (depth == 0) {
+            [forumStack removeAllObjects];
+            category = existingCategories[forumOrCategoryID];
             if (!category)
                 category = [AwfulCategory insertInManagedObjectContext:context];
-            category.categoryID = categoryID;
-            category.name = [cat content];
+            category.categoryID = forumOrCategoryID;
+            category.name = name;
             category.indexValue = indexOfCategory++;
-        }
-        
-        TFHppleElement *img = [kids searchForSingle:@"//td[@class='icon']//img"];
-        TFHppleElement *a = [kids searchForSingle:@"//td[@class='title']//a[@class='forum']"];
-        
-        if (img && a) { //forum
-            AwfulForum *forum = existingForums[[self forumIDFromLinkElement:a]];
-            if (!forum) forum = [AwfulForum insertInManagedObjectContext:context];
-            forum.name = [a content];
-            forum.desc = [a objectForKey:@"title"];
-            forum.category = category;
-            forum.forumID = [self forumIDFromLinkElement:a];
-            forum.indexValue = i++;
-            
-            NSArray* subs = [kids search:@"//div[@class='subforums']//a"];
-            for (TFHppleElement* s in subs) {
-                AwfulForum *subforum = existingForums[[self forumIDFromLinkElement:s]];
-                if (!subforum) subforum = [AwfulForum insertInManagedObjectContext:context];
-                subforum.name = [s content];
-                subforum.parentForum = forum;
-                subforum.indexValue = i++;
-                subforum.category = category;
-                subforum.forumID = [self forumIDFromLinkElement:s];
+            [allCategories addObject:category];
+        } else {
+            while ([forumStack count] >= depth) {
+                [forumStack removeLastObject];
             }
+            AwfulForum *forum = existingForums[forumOrCategoryID];
+            if (!forum) forum = [AwfulForum insertInManagedObjectContext:context];
+            forum.name = name;
+            forum.category = category;
+            forum.forumID = forumOrCategoryID;
+            forum.indexValue = indexOfForum++;
+            if ([forumStack count])
+                forum.parentForum = [forumStack lastObject];
+            [forumStack addObject:forum];
+            [allForums addObject:forum];
+            existingForums[forum.forumID] = forum;
         }
     }
     
+    // Remove categories we didn't come across.
+    if ([allCategories count] > 0) {
+        request = [NSFetchRequest fetchRequestWithEntityName:[AwfulCategory entityName]];
+        NSArray *keep = [allCategories valueForKey:AwfulCategoryAttributes.categoryID];
+        request.predicate = [NSPredicate predicateWithFormat:@"NOT (categoryID IN %@)", keep];
+        NSArray *dead = [ApplicationDelegate.managedObjectContext executeFetchRequest:request
+                                                                                error:&error];
+        if (!dead) {
+            NSLog(@"Error deleting dead categories: %@", error);
+            return nil;
+        }
+        for (AwfulCategory *category in dead)
+            [category.managedObjectContext deleteObject:category];
+    }
+    
+    // Ditto for forums.
+    if ([allForums count] > 0) {
+        request = [NSFetchRequest fetchRequestWithEntityName:[AwfulForum entityName]];
+        NSArray *keep = [allForums valueForKey:AwfulForumAttributes.forumID];
+        request.predicate = [NSPredicate predicateWithFormat:@"NOT (forumID IN %@)", keep];
+        NSArray *dead = [ApplicationDelegate.managedObjectContext executeFetchRequest:request
+                                                                                error:&error];
+        if (!dead) {
+            NSLog(@"Error deleting dead forums: %@", error);
+            return nil;
+        }
+        for (AwfulForum *forum in dead)
+            [forum.managedObjectContext deleteObject:forum];
+    }
+    
     [ApplicationDelegate saveContext];
-    return nil;
+    return [allForums count] > 0 ? allForums : [existingForums allValues];
 }
 
 + (NSString *)forumIDFromLinkElement:(TFHppleElement *)a
@@ -123,7 +179,6 @@
         AwfulForum *subforum = [existingDict objectForKey:[self forumIDFromLinkElement:a]];
         subforum.name = [a content];
         subforum.parentForum = forum;
-        //subforum.indexValue = i++;
         subforum.category = forum.category;
         subforum.forumID = [self forumIDFromLinkElement:a];
         
@@ -132,4 +187,5 @@
         subforum.desc = desc;
     }
 }
+
 @end

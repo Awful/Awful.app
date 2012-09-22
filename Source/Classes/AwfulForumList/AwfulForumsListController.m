@@ -30,7 +30,7 @@
 - (NSFetchedResultsController *)createFetchedResultsController
 {
     NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulForum entityName]];
-    request.predicate = [NSPredicate predicateWithFormat:@"children.@count > 0 or parentForum.expanded = YES"];
+    request.predicate = [NSPredicate predicateWithFormat:@"parentForum == nil or parentForum.expanded == YES"];
     request.sortDescriptors = @[
         [NSSortDescriptor sortDescriptorWithKey:@"category.index" ascending:YES],
         [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES]
@@ -82,9 +82,11 @@
 {
     [super refresh];
     [self.networkOperation cancel];
-    self.networkOperation = [[AwfulHTTPClient sharedClient] forumsListOnCompletion:^(id _)
+    self.networkOperation = [[AwfulHTTPClient sharedClient] forumsListOnCompletion:^(NSArray *listOfForums)
     {
         [self finishedRefreshing];
+        [self.fetchedResultsController performFetch:NULL];
+        [self.tableView reloadData];
     } onError:^(NSError *error)
     {
         [self finishedRefreshing];
@@ -119,20 +121,20 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    AwfulForum* forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    NSString* cellIdentifier = forum.parentForum ? @"AwfulSubForumCell" : @"AwfulParentForumCell";
+    AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    NSString *cellIdentifier = [forum.children count] ? @"AwfulParentForumCell" : @"AwfulSubForumCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     [self configureCell:cell atIndexPath:indexPath];
     return cell;
 }
 
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath*)indexPath
+- (void)configureCell:(UITableViewCell *)plainCell atIndexPath:(NSIndexPath*)indexPath
 {
-    AwfulParentForumCell *forumCell = (AwfulParentForumCell *)cell;
+    AwfulForumCell *cell = (AwfulForumCell *)plainCell;
     AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    forumCell.forum = forum;
-    if ([forumCell isKindOfClass:[AwfulParentForumCell class]])
-        forumCell.delegate = self;
+    cell.forum = forum;
+    if ([cell isKindOfClass:[AwfulParentForumCell class]])
+        ((AwfulParentForumCell *)cell).delegate = self;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath

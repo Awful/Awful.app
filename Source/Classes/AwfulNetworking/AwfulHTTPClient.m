@@ -223,14 +223,17 @@ typedef enum BookmarkAction {
 
 -(NSOperation *)forumsListOnCompletion : (ForumsListResponseBlock)forumsListResponseBlock onError : (AwfulErrorBlock)errorBlock
 {
-    NSString *path = @"index.php?s=";
+    // Seems like only forumdisplay.php and showthread.php have the <select> with a complete list
+    // of forums. We'll use the Comedy Goldmine as it's generally available (even when signed out)
+    // and hopefully it's not much of a burden since threads rarely get goldmined.
+    NSString *path = @"forumdisplay.php?forumid=21";
     NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
        success:^(AFHTTPRequestOperation *operation, id response) {
            NSData *data = (NSData *)response;
-           NSMutableArray *forums = [AwfulForum parseForums:data];
+           NSArray *forums = [AwfulForum parseForums:data];
            if (forumsListResponseBlock) {
-               forumsListResponseBlock(forums);
+               forumsListResponseBlock([forums mutableCopy]);
            }
        } 
        failure:^(AFHTTPRequestOperation *operation, NSError *error) {

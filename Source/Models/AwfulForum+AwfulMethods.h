@@ -11,7 +11,7 @@
 
 @interface AwfulForum (AwfulMethods)
 
-+ (NSMutableArray *)parseForums:(NSData *)data;
++ (NSArray *)parseForums:(NSData *)data;
 + (void)updateSubforums:(NSArray*)rows inForum:(AwfulForum*)forum;
 
 @end
