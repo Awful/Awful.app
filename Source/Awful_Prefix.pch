@@ -5,9 +5,10 @@
 #ifdef __OBJC__
     #import <Foundation/Foundation.h>
     #import <UIKit/UIKit.h>
+    #import <CoreData/CoreData.h>
+    #import <QuartzCore/QuartzCore.h>
     #import "AwfulAppDelegate.h"
     #import "AwfulHTTPClient.h"
-    #import <CoreData/CoreData.h>
-    #import "UIView+Lazy.h"
     #import "AwfulModels.h"
+    #import "UIView+Lazy.h"
 #endif

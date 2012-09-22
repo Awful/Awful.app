@@ -7,14 +7,11 @@
 //
 
 #import "AwfulHTTPClient.h"
-#import "AwfulForum.h"
 #import "AwfulForum+AwfulMethods.h"
 #import "TFHpple.h"
-#import "AwfulThread.h"
 #import "AwfulThread+AwfulMethods.h"
 #import "AwfulPage.h"
 #import "AwfulPageDataController.h"
-#import "AwfulUser.h"
 #import "AwfulUser+AwfulMethods.h"
 #import "AwfulPageTemplate.h"
 #import "NSString+HTML.h"

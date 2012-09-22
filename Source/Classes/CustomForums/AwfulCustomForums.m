@@ -7,7 +7,6 @@
 //
 
 #import "AwfulCustomForums.h"
-#import "AwfulForum.h"
 #import "AwfulThreadCell.h"
 #import "AwfulThread+AwfulMethods.h"
 

@@ -20,8 +20,8 @@
     return self;
 }
 
-
--(void) setForum:(AwfulForum *)forum {
+- (void)setForum:(AwfulForum *)forum
+{
     _forum = forum;
     self.textLabel.text = forum.name;
     self.textLabel.numberOfLines = 2;
@@ -31,7 +31,8 @@
     self.detailTextLabel.font = [UIFont systemFontOfSize:12];
 }
 
--(void) setFavoriteButtonAccessory {
+- (void)setFavoriteButtonAccessory
+{
     UIButton *favImage = [UIButton buttonWithType:UIButtonTypeCustom];
     
     [favImage setImage:[UIImage imageNamed:@"star_off.png"] forState:UIControlStateNormal];
@@ -67,12 +68,12 @@
 }
 
 
-+(CGFloat) heightForContent:(AwfulForum*)forum inTableView:(UITableView*)tableView {
++ (CGFloat)heightForContent:(AwfulForum *)forum inTableView:(UITableView *)tableView
+{
     int width = tableView.frame.size.width - 40;
-    
-    CGSize textSize = {0, 0};
-    CGSize detailSize = {0, 0};
     int height = 44;
+    CGSize textSize;
+    CGSize detailSize;
     
     textSize = [forum.name sizeWithFont:[UIFont boldSystemFontOfSize:18]
                       constrainedToSize:CGSizeMake(width, 4000) 
@@ -83,7 +84,6 @@
                                 lineBreakMode:UILineBreakModeWordWrap];
     
     height = 10 + textSize.height + detailSize.height;
-    
-    return (MAX(height,50));
+    return MAX(height, 50);
 }
 @end

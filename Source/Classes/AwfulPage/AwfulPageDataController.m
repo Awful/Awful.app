@@ -7,13 +7,10 @@
 //
 
 #import "AwfulPageDataController.h"
-#import "AwfulForum.h"
 #import "TFHpple.h"
 #import "TFHppleElement.h"
 #import "XPathQuery.h"
-#import "AwfulPost.h"
 #import "AwfulUser+AwfulMethods.h"
-#import "AwfulUser.h"
 #import "AwfulPageTemplate.h"
 
 @interface AwfulPageDataController ()

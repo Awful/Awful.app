@@ -11,7 +11,6 @@
 #import "AwfulForumsListController.h"
 #import "AwfulThreadListController.h"
 #import "AwfulForumCell.h"
-#import <QuartzCore/QuartzCore.h>
 
 @interface AwfulFavoritesViewController ()
 

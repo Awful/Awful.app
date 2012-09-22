@@ -8,12 +8,9 @@
 
 #import "AwfulThreadListController.h"
 #import "AwfulFetchedTableViewControllerSubclass.h"
-#import <QuartzCore/QuartzCore.h>
 #import "AwfulAppDelegate.h"
-#import "AwfulForum.h"
 #import "AwfulPage.h"
 #import "AwfulSettings.h"
-#import "AwfulThread.h"
 #import "AwfulThread+AwfulMethods.h"
 #import "AwfulThreadCell.h"
 #import "AwfulLoginController.h"

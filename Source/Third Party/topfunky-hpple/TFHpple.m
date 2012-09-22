@@ -29,8 +29,6 @@
 
 #import "TFHpple.h"
 #import "XPathQuery.h"
-#import "AwfulPost.h"
-#import "AwfulThread.h"
 
 @implementation TFHpple
 

@@ -11,9 +11,7 @@
 
 @interface AwfulForum (AwfulMethods)
 
-+(NSMutableArray *)parseForums : (NSData *)data;
-+(AwfulForum *)getForumWithID : (NSString *)forumID fromCurrentList : (NSArray *)currentList;
++ (NSMutableArray *)parseForums:(NSData *)data;
++ (void)updateSubforums:(NSArray*)rows inForum:(AwfulForum*)forum;
 
-+(NSString*) forumIDFromLinkElement:(TFHppleElement*)a;
-+(void) updateSubforums:(NSArray*)rows inForum:(AwfulForum*)forum;
 @end

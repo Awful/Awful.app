@@ -8,7 +8,6 @@
 
 #import "SALR.h"
 #import "AwfulSettings.h"
-#import "AwfulUser.h"
 #import "AwfulUser+AwfulMethods.h"
 
 @implementation SALR

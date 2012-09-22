@@ -7,8 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "AwfulThread.h"
-#import "AwfulPost.h"
 #import "AwfulPostBoxController.h"
 #import "AwfulWebViewDelegate.h"
 

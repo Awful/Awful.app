@@ -6,13 +6,9 @@
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
-#import <QuartzCore/QuartzCore.h>
 #import "AwfulThreadCell.h"
-#import "AwfulForum.h"
-#import "AwfulThread.h"
 #import "AwfulThread+AwfulMethods.h"
 #import "AwfulUser+AwfulMethods.h"
-#import "AwfulUser.h"
 #import "AwfulThreadListController.h"
 #import "UIView+Lazy.h"
 

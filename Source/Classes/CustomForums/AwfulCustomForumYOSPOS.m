@@ -7,7 +7,6 @@
 //
 
 #import "AwfulCustomForumYOSPOS.h"
-#import "AwfulThread.h"
 
 @implementation AwfulYOSPOSThreadCell
 

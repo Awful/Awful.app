@@ -7,7 +7,6 @@
 //
 
 #import "AwfulThreadTitleView.h"
-#import "AwfulThread.h"
 #import "AwfulPage.h"
 
 @implementation AwfulThreadTitleView

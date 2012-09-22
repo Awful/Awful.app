@@ -8,12 +8,10 @@
 
 #import "AwfulPageTemplate.h"
 #import "AwfulPageDataController.h"
-#import "AwfulPost.h"
 #import "AwfulSettings.h"
 #import "GRMustacheTemplate.h"
 #import "PostContext.h"
 #import "SALR.h"
-#import "AwfulForum.h"
 
 /*
  Notes:

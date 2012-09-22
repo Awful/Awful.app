@@ -8,28 +8,10 @@
 
 #import "AwfulSpecificPageViewController.h"
 #import "AwfulPage.h"
-#import "AwfulThread.h"
-#import "AwfulForum.h"
 #import "AwfulThreadListController.h"
 #import "ButtonSegmentedControl.h"
-#import <QuartzCore/QuartzCore.h>
 
 @implementation AwfulSpecificPageViewController
-
-@synthesize hiding = _hiding;
-@synthesize page = _page;
-@synthesize containerView = _containerView;
-@synthesize pickerView = _pickerView;
-@synthesize jumpToPageBarButtonItem = _jumpToPageBarButtonItem;
-@synthesize firstLastSegmentedControl = _firstLastSegmentedControl;
-
-- (void)didReceiveMemoryWarning
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc that aren't in use.
-}
 
 - (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
 {
@@ -48,43 +30,26 @@
 
 #pragma mark - View lifecycle
 
--(void)awakeFromNib
-{
-    
-}
-
--(void)loadView
+- (void)loadView
 {
     [super loadView];
     [self.jumpToPageBarButtonItem setTintColor:[UIColor darkGrayColor]];
     self.firstLastSegmentedControl.action = @selector(hitFirstLastSegment:);
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
-
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         return YES;
     }
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
--(IBAction)hitFirstLastSegment : (id)sender
+- (IBAction)hitFirstLastSegment:(id)sender
 {
-    if(self.firstLastSegmentedControl.selectedSegmentIndex == 0) {
+    if (self.firstLastSegmentedControl.selectedSegmentIndex == 0) {
         [self hitFirst:nil];
-    } else if(self.firstLastSegmentedControl.selectedSegmentIndex == 1) {
+    } else if (self.firstLastSegmentedControl.selectedSegmentIndex == 1) {
         [self hitLast:nil];
     }
     self.firstLastSegmentedControl.selectedSegmentIndex = -1;
@@ -96,13 +61,13 @@
     [self.page loadPageNum:[self.pickerView selectedRowInComponent:0]+1];
 }
 
--(IBAction)hitFirst : (id)sender
+- (IBAction)hitFirst:(id)sender
 {
     self.page.destinationType = AwfulPageDestinationTypeSpecific;
     [self.page loadPageNum:1];
 }
 
--(IBAction)hitLast : (id)sender
+- (IBAction)hitLast:(id)sender
 {
     self.page.destinationType = AwfulPageDestinationTypeSpecific;
     [self.page loadPageNum:self.page.numberOfPages];

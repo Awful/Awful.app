@@ -8,10 +8,7 @@
 
 #import "AwfulPostBoxController.h"
 #import "AwfulPage.h"
-#import "AwfulThread.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulPost.h"
-#import "AwfulPage.h"
 #import "MBProgressHUD.h"
 #import "ButtonSegmentedControl.h"
 

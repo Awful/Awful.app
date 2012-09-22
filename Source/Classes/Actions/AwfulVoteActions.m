@@ -7,7 +7,6 @@
 //
 
 #import "AwfulVoteActions.h"
-#import "AwfulThread.h"
 #import "AwfulPage.h"
 
 @implementation AwfulVoteActions

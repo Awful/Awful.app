@@ -7,7 +7,6 @@
 //
 
 #import "AwfulThreadActions.h"
-#import "AwfulThread.h"
 #import "AwfulPostBoxController.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulVoteActions.h"

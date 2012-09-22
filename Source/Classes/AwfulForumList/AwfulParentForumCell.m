@@ -7,7 +7,6 @@
 //
 
 #import "AwfulParentForumCell.h"
-#import "AwfulForum.h"
 
 @implementation AwfulParentForumCell
 

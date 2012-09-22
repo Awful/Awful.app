@@ -8,7 +8,6 @@
 
 #import "AwfulSettingsViewController.h"
 #import "AwfulSettings.h"
-#import "AwfulUser.h"
 #import "AwfulUser+AwfulMethods.h"
 #import "AwfulLoginController.h"
 #import "AwfulSettingsChoiceViewController.h"
