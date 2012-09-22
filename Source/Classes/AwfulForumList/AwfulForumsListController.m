@@ -32,8 +32,7 @@
 - (NSFetchedResultsController *)createFetchedResultsController
 {
     NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulForum entityName]];
-    request.predicate = [NSPredicate predicateWithFormat:@"category != nil and "
-                         "(children.@count >0 or parentForum.expanded = YES)"];
+    request.predicate = [NSPredicate predicateWithFormat:@"children.@count > 0 or parentForum.expanded = YES"];
     request.sortDescriptors = @[
         [NSSortDescriptor sortDescriptorWithKey:@"category.index" ascending:YES],
         [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES]
