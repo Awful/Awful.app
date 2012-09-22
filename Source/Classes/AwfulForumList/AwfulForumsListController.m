@@ -21,7 +21,7 @@
 #import "AwfulSubForumCell.h"
 #import "AwfulCustomForums.h"
 
-@interface AwfulForumsListController ()
+@interface AwfulForumsListController () <AwfulParentForumCellDelegate>
 
 @property (nonatomic, strong) IBOutlet AwfulForumHeader *headerView;
 
@@ -57,11 +57,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(toggleExpandForumCell:)
-                                                 name:AwfulToggleExpandForum
-                                               object:nil];
 
     [self.navigationController setToolbarHidden:YES];
     
@@ -122,77 +117,53 @@
     return 30;
 }
 
-
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     AwfulForum* forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    NSString* cellIdentifier;
-    if (forum.parentForum == nil)
-        cellIdentifier = @"AwfulParentForumCell";
-    else {
-        cellIdentifier = @"AwfulSubForumCell";
-    }
-    
-    UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    NSString* cellIdentifier = forum.parentForum ? @"AwfulSubForumCell" : @"AwfulParentForumCell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     [self configureCell:cell atIndexPath:indexPath];
     return cell;
 }
- 
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath*)indexPath
 {
     AwfulParentForumCell *forumCell = (AwfulParentForumCell *)cell;
     AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
     forumCell.forum = forum;
+    if ([forumCell isKindOfClass:[AwfulParentForumCell class]])
+        forumCell.delegate = self;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    AwfulForum* forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    if (forum.parentForum == nil)
-        return [AwfulParentForumCell heightForContent:forum inTableView:tableView];
-    else
-        return [AwfulSubForumCell heightForContent:forum inTableView:tableView];
-
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    Class cellClass = forum.parentForum ? [AwfulSubForumCell class] : [AwfulParentForumCell class];
+    return [cellClass heightForContent:forum inTableView:tableView];
 }
 
--(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    AwfulForum* forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
     AwfulThreadListController *threadList = [AwfulCustomForums threadListControllerForForum:forum];
     threadList.forum = forum;
     [self.navigationController pushViewController:threadList animated:YES];
 }
 
-#pragma mark - Forums
+#pragma mark - Parent forum cell delegate
 
--(void) toggleExpandForumCell:(NSNotification*)msg {
-    AwfulParentForumCell* cell = msg.object;
-    BOOL toggle = [[msg.userInfo objectForKey:@"toggle"] boolValue];
-    
-    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-    AwfulForum* forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    
-    forum.expandedValue = toggle;
-    //NSLog(@"pre count: %i", [[[self.fetchedResultsController sections] objectAtIndex:indexPath.section] numberOfObjects]);
+- (void)parentForumCellDidToggleExpansion:(AwfulParentForumCell *)cell
+{
+    cell.forum.expandedValue = cell.expanded;
     [ApplicationDelegate saveContext];
     
-    
-    NSMutableArray* rows = [NSMutableArray new];
-    for (NSUInteger i = indexPath.row+1; i <= indexPath.row + forum.children.count; i++) {
-        [rows addObject:[NSIndexPath indexPathForRow:i inSection:indexPath.section]];
+    // The fetched results controller won't pick up on changes to the keypath "parentForum.expanded"
+    // so we need to help it along. (Not sure why it needs this...)
+    for (AwfulForum *child in cell.forum.children) {
+        [child willChangeValueForKey:AwfulForumRelationships.parentForum];
+        [child didChangeValueForKey:AwfulForumRelationships.parentForum];
     }
-    
-    [self.tableView beginUpdates];
-
-    [self.fetchedResultsController performFetch:nil];
-    //NSLog(@"post count: %i", [[[self.fetchedResultsController sections] objectAtIndex:indexPath.section] numberOfObjects]);
-    if (toggle) 
-         [self.tableView insertRowsAtIndexPaths:rows withRowAnimation:(UITableViewRowAnimationTop)];
-    else
-         [self.tableView deleteRowsAtIndexPaths:rows withRowAnimation:(UITableViewRowAnimationTop)];
-         
-    [self.tableView endUpdates];
-        
 }
 
 @end

@@ -19,17 +19,11 @@
     [self.imageView addGestureRecognizer:tap];
 }
 
--(void) toggle {
-    _isExpanded = !_isExpanded;
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:self.isExpanded]
-                                                                                  forKey:@"toggle"
-                              ];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:AwfulToggleExpandForum                                                          
-                                                        object:self
-                                                      userInfo:userInfo];
-    //fixme: animate arrow change
-    
+- (void)toggle
+{
+    self.expanded = !self.expanded;
+    [self.delegate parentForumCellDidToggleExpansion:self];
+    // TODO animate arrow change
 }
 
 - (void)setForum:(AwfulForum *)forum

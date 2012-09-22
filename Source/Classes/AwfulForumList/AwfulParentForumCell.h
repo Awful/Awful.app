@@ -8,10 +8,19 @@
 
 #import <UIKit/UIKit.h>
 #import "AwfulForumCell.h"
-@class AwfulForum;
 
-static NSString* const AwfulToggleExpandForum = @"com.regularberry.awful.notifications.toggleExpandForum";
+@protocol AwfulParentForumCellDelegate;
 
 @interface AwfulParentForumCell : AwfulForumCell
-@property (nonatomic) BOOL isExpanded;
+
+@property (weak, nonatomic) id <AwfulParentForumCellDelegate> delegate;
+@property (getter=isExpanded, nonatomic) BOOL expanded;
+
+@end
+
+@protocol AwfulParentForumCellDelegate <NSObject>
+
+@required
+- (void)parentForumCellDidToggleExpansion:(AwfulParentForumCell *)cell;
+
 @end
