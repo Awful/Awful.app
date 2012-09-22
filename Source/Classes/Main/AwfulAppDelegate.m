@@ -153,7 +153,7 @@
                                                           options:options
                                                             error:&error]) {
         #if DEBUG
-        [self resetDataStore];
+        [self deleteDataStore];
         if ([__persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType
                                                        configuration:nil
                                                                  URL:self.storeURL
@@ -194,6 +194,14 @@
 
 - (void)resetDataStore
 {
+    [self deleteDataStore];
+    __persistentStoreCoordinator = nil;
+    __managedObjectModel = nil;
+    __managedObjectContext = nil;
+}
+
+- (void)deleteDataStore
+{
     NSError *error;
     if ([self.storeURL checkResourceIsReachableAndReturnError:&error]) {
         [[NSFileManager defaultManager] removeItemAtURL:self.storeURL error:&error];
@@ -201,10 +209,6 @@
             NSLog(@"failed to delete data store %@", error.localizedDescription);
         }
     }
-
-    __persistentStoreCoordinator = nil;
-    __managedObjectModel = nil;
-    __managedObjectContext = nil;
 }
 
 #pragma mark - Application's Documents directory
