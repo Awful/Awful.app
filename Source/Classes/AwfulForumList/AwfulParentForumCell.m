@@ -22,7 +22,10 @@
 {
     self.expanded = !self.expanded;
     [self.delegate parentForumCellDidToggleExpansion:self];
-    // TODO animate arrow change
+    if (self.expanded)
+        self.imageView.image = [UIImage imageNamed:@"forum-arrow-down.png"];
+    else
+        self.imageView.image = [UIImage imageNamed:@"forum-arrow-right.png"];
 }
 
 - (void)setForum:(AwfulForum *)forum
