@@ -1,5 +1,5 @@
 //
-//  AwfulForumsList.h
+//  AwfulForumsListController.h
 //  Awful
 //
 //  Created by Sean Berry on 7/27/10.
@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "AwfulFetchedTableViewController.h"
 
-@interface AwfulForumsListController : AwfulFetchedTableViewController <UIAlertViewDelegate>
+@interface AwfulForumsListController : AwfulFetchedTableViewController
 
 @end

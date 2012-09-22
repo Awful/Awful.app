@@ -61,8 +61,8 @@
             category.indexValue = indexOfCategory++;
         }
         
-        TFHppleElement* img = [kids searchForSingle:@"//td[@class='icon']//img"];
-        TFHppleElement* a = [kids searchForSingle:@"//td[@class='title']//a[@class='forum']"];
+        TFHppleElement *img = [kids searchForSingle:@"//td[@class='icon']//img"];
+        TFHppleElement *a = [kids searchForSingle:@"//td[@class='title']//a[@class='forum']"];
         
         if (img && a) { //forum
             AwfulForum *forum = existingForums[[self forumIDFromLinkElement:a]];

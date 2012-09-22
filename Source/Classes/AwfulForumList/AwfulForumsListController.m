@@ -1,5 +1,5 @@
 //
-//  AwfulForumsList.m
+//  AwfulForumsListController.m
 //  Awful
 //
 //  Created by Sean Berry on 7/27/10.
@@ -76,63 +76,37 @@
     
     [self.navigationItem.leftBarButtonItem setTintColor:[UIColor colorWithRed:46.0/255 green:146.0/255 blue:190.0/255 alpha:1.0]];
     
-   if(IsLoggedIn() && self.fetchedResultsController.sections.count == 0) {
+    if (IsLoggedIn() && [self.fetchedResultsController.sections count] == 0) {
        [self refresh];
     }
     
     //reset this since it may get changed by custom forums
     [self.navigationController.navigationBar setBackgroundImage:[ApplicationDelegate navigationBarBackgroundImageForMetrics:UIBarMetricsDefault]
                                                   forBarMetrics:(UIBarMetricsDefault)];
-    
-    
-}
-
--(void)finishedRefreshing
-{
-    [super finishedRefreshing];
 }
 
 - (void)refresh
 {
     [super refresh];
     [self.networkOperation cancel];
-    self.networkOperation = [[AwfulHTTPClient sharedClient] forumsListOnCompletion:^(NSMutableArray *forums) {
-        
+    self.networkOperation = [[AwfulHTTPClient sharedClient] forumsListOnCompletion:^(id _)
+    {
         [self finishedRefreshing];
-        
-    } onError:^(NSError *error) {
+    } onError:^(NSError *error)
+    {
         [self finishedRefreshing];
         [ApplicationDelegate requestFailed:error];
     }];
 }
 
--(void)stop
+- (void)stop
 {
     [self.networkOperation cancel];
     [self finishedRefreshing];
 }
 
 #pragma mark - Table view data source
-/*
 
-- (void)tableView:(UITableView *)tableView
-  willDisplayCell:(UITableViewCell *)cell
-forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // need to set background color here to make it work on the disclosure indicator
-    AwfulForumSection *section = [self getForumSectionAtIndexPath:indexPath];
-    AwfulForumCell *forumCell = (AwfulForumCell *)cell;
-    if (section.totalAncestors > 1) {
-        UIColor *gray = [UIColor colorWithRed:235.0/255 green:235.0/255 blue:236.0/255 alpha:1.0];
-        cell.backgroundColor = gray;
-        forumCell.titleLabel.backgroundColor = gray;
-    } else {
-        cell.backgroundColor = [UIColor whiteColor];
-        forumCell.titleLabel.backgroundColor = [UIColor whiteColor];
-    }
-}
-
-*/
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     [[NSBundle mainBundle] loadNibNamed:@"AwfulForumHeaderView" owner:self options:nil];
