@@ -144,11 +144,6 @@
     } else {
         cell.showsExpanded = AwfulForumCellShowsExpandedLeavesRoom;
     }
-    if (!cell.showsExpanded) {
-        CGRect frame = cell.textLabel.frame;
-        frame.size.width -= 42;
-        cell.textLabel.frame = frame;
-    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
