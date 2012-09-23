@@ -28,9 +28,6 @@
 		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
 		exit(-1);  // Fail
 	}
-    
-    // TODO why?
-    self.tableView.sectionIndexMinimumDisplayRowCount = NSIntegerMax;
 }
 
 - (NSFetchedResultsController *)createFetchedResultsController
