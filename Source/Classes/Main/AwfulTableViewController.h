@@ -14,11 +14,17 @@
 @property (assign, nonatomic) BOOL reloading;
 
 - (IBAction)refresh;
+- (IBAction)nextPage;
+
 - (void)stop;
+
 - (void)finishedRefreshing;
 
-// Subclasses can implement to override the default behaviour of YES.
+// Subclasses can implement to override the default behavior of YES.
 - (BOOL)canPullToRefresh;
+
+// Subclasses can implement to override the default behavior of NO.
+- (BOOL)canPullForNextPage;
 
 // Subclasses must implement this method and must not call super.
 - (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath;

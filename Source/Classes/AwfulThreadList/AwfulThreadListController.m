@@ -15,6 +15,7 @@
 #import "AwfulThreadCell.h"
 #import "AwfulLoginController.h"
 #import "AwfulCustomForums.h"
+#import "SVPullToRefresh.h"
 
 typedef enum {
     AwfulThreadListActionsTypeFirstPage = 0,
@@ -72,10 +73,23 @@ typedef enum {
     self.fetchedResultsController = [self createFetchedResultsController];
 }
 
+#pragma mark - Table view controller
+
 - (void)refresh
 {   
     [super refresh];
     [self loadPageNum:1];
+}
+
+- (BOOL)canPullForNextPage
+{
+    return YES;
+}
+
+- (void)nextPage
+{
+    [super nextPage];
+    [self loadPageNum:self.currentPage + 1];
 }
 
 - (void)stop
@@ -96,7 +110,7 @@ typedef enum {
     self.isLoading = YES;
     self.networkOperation = [[AwfulHTTPClient sharedClient] threadListForForum:self.forum
                                                                        pageNum:pageNum
-                                                                  onCompletion:^(NSMutableArray *threads)
+                                                                  onCompletion:^(id _)
     {
         self.currentPage = pageNum;
         [self finishedRefreshing];
@@ -158,7 +172,7 @@ typedef enum {
     }
 }
 
--(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == AwfulThreadListActionsTypeFirstPage) {
         AwfulPage *page = [self.storyboard instantiateViewControllerWithIdentifier:@"AwfulPage"];
@@ -167,34 +181,37 @@ typedef enum {
         [self displayPage:page];
         [page loadPageNum:1];
         
-    } else if(buttonIndex == AwfulThreadListActionsTypeLastPage) {
+    } else if (buttonIndex == AwfulThreadListActionsTypeLastPage) {
         AwfulPage *page = [self.storyboard instantiateViewControllerWithIdentifier:@"AwfulPage"];
         page.thread = self.heldThread;
         page.destinationType = AwfulPageDestinationTypeLast;
         [self displayPage:page];
         [page loadPageNum:0];
         
-    } else if(buttonIndex == AwfulThreadListActionsTypeUnread) {
+    } else if (buttonIndex == AwfulThreadListActionsTypeUnread) {
         [self markThreadUnseen:self.heldThread];
 
     }
 }
 
--(void) markThreadUnseen:(AwfulThread*)thread {
-    [[AwfulHTTPClient sharedClient] markThreadUnseen:thread onCompletion:^(void) {
+- (void)markThreadUnseen:(AwfulThread *)thread
+{
+    [[AwfulHTTPClient sharedClient] markThreadUnseen:thread onCompletion:^(void)
+    {
         thread.totalUnreadPosts = [NSNumber numberWithInt:-1];
         [ApplicationDelegate saveContext];
         
-    } onError:^(NSError *error) {
+    } onError:^(NSError *error)
+    {
         [ApplicationDelegate requestFailed:error];
     }];
 }
 
--(void)displayPage : (AwfulPage *)page
+- (void)displayPage:(AwfulPage *)page
 {
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         [self.navigationController pushViewController:page animated:YES];
-    } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    } else if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         NSMutableArray *vcs = [NSMutableArray arrayWithArray:self.splitViewController.viewControllers];
         [vcs removeLastObject];
         
@@ -216,21 +233,18 @@ typedef enum {
      
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-}
-
-
--(UIImage*) customNavigationBarBackgroundImageForMetrics:(UIBarMetrics)metrics {
+- (UIImage *)customNavigationBarBackgroundImageForMetrics:(UIBarMetrics)metrics
+{
     return [ApplicationDelegate navigationBarBackgroundImageForMetrics:metrics];
 }
 
--(AwfulThread *)getThreadAtIndexPath : (NSIndexPath *)path
+- (AwfulThread *)getThreadAtIndexPath:(NSIndexPath *)path
 {    
     return [self.fetchedResultsController objectAtIndexPath:path];
 }
 
--(void) pop {
+- (void)pop
+{
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -242,43 +256,42 @@ typedef enum {
     return [AwfulThreadCell heightForContent:thread inTableView:self.tableView];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
     NSString* identifier = [AwfulCustomForums cellIdentifierForForum:self.forum];
     AwfulThreadCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     if (!cell) cell = [AwfulCustomForums cellForIdentifier:identifier];
     
     [self configureCell:cell atIndexPath:indexPath];
-    //cell.threadListController = self;
     
     return cell;
 }
 
-- (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath {
+- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+{
     AwfulThread *thread = [self getThreadAtIndexPath:indexPath];
     [(AwfulThreadCell*)cell configureForThread:thread];
 }
 
-
 #pragma mark table editing to mark cells unread
 
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
     AwfulThread *thread = [self getThreadAtIndexPath:indexPath];
-    //NSLog(@"setting canEdit:%i for %@",thread.totalUnreadPostsValue >= 0, thread.title );
     return (thread.totalUnreadPostsValue >= 0);
 }
 
--(NSString*) tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
+{
     return @"Mark Unread";
 }
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        
         AwfulThread *thread = [self getThreadAtIndexPath:indexPath];
         [self markThreadUnseen:thread];
-    }   
-  
+    }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
@@ -303,8 +316,8 @@ typedef enum {
      ];
 }
 
--(void) didLoadThreadPage:(NSNotification*)msg {
-    NSLog(@"loaded");
+- (void)didLoadThreadPage:(NSNotification *)msg
+{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     AwfulPage* page = [msg.userInfo objectForKey:@"page"];
     
@@ -318,7 +331,9 @@ typedef enum {
                                                       nil]
          ];*/
     }
-    else
+    else {
         [self.navigationController pushViewController:page animated:YES];
+    }
 }
+
 @end

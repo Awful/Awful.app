@@ -10,8 +10,6 @@
 
 @class AwfulForum;
 @class AwfulThread;
-@class AwfulSplitViewController;
-@class AwfulThreadCell;
 @class AwfulPage;
 
 typedef enum {
@@ -35,18 +33,15 @@ typedef enum {
 @property (nonatomic, strong) AwfulThread *heldThread;
 @property BOOL isLoading;
 
--(AwfulThread *)getThreadAtIndexPath : (NSIndexPath *)path;
+- (AwfulThread *)getThreadAtIndexPath:(NSIndexPath *)path;
 
-//-(void)acceptThreads : (NSMutableArray *)in_threads;
--(BOOL)shouldReloadOnViewLoad;
--(void)showThreadActionsForThread : (AwfulThread *)thread;
+- (BOOL)shouldReloadOnViewLoad;
+- (void)showThreadActionsForThread:(AwfulThread *)thread;
 
--(void)displayPage : (AwfulPage *)page;
--(void)loadPageNum : (NSUInteger)pageNum;
--(void)stop;
+- (void)displayPage:(AwfulPage *)page;
+- (void)loadPageNum:(NSUInteger)pageNum;
+- (void)stop;
 
-//-(BOOL)moreThreads;
-
--(void)newlyVisible;
+- (void)newlyVisible;
 
 @end
