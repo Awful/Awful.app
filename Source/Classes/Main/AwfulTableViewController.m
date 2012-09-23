@@ -8,6 +8,7 @@
 
 #import "AwfulTableViewController.h"
 #import "SVPullToRefresh.h"
+#import "AwfulSettings.h"
 
 @implementation AwfulTableViewController
 
@@ -25,6 +26,12 @@
         [self.tableView addInfiniteScrollingWithActionHandler:^{
             [blockSelf nextPage];
         }];
+    }
+    
+    if ([[AwfulSettings settings] darkTheme]) {
+        self.tableView.backgroundColor = [UIColor darkGrayColor];
+    } else {
+        self.tableView.backgroundColor = [UIColor whiteColor];
     }
 }
 

@@ -12,6 +12,7 @@
 #import "AwfulThreadListController.h"
 #import "AwfulForumCell.h"
 #import "AwfulCustomForums.h"
+#import "AwfulSettings.h"
 
 @interface AwfulFavoritesViewController () <AwfulForumCellDelegate>
 
@@ -101,6 +102,17 @@
     cell.textLabel.text = forum.name;
     cell.showsExpanded = NO;
     cell.showsFavorite = NO;
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([[AwfulSettings settings] darkTheme]) {
+        cell.backgroundColor = [UIColor darkGrayColor];
+        cell.textLabel.textColor = [UIColor whiteColor];
+    } else {
+        cell.backgroundColor = [UIColor whiteColor];
+        cell.textLabel.textColor = [UIColor blackColor];
+    }
 }
 
 - (void)forumCellDidToggleFavorite:(AwfulForumCell *)cell

@@ -109,6 +109,11 @@
     
     AwfulForum *anyForum = [[self.fetchedResultsController.sections[section] objects] lastObject];
     header.titleLabel.text = anyForum.category.name;
+    if ([[AwfulSettings settings] darkTheme]) {
+        header.backgroundColor = [UIColor blackColor];
+    } else {
+        header.backgroundColor = [UIColor colorWithRed:0 green:0.4 blue:0.6 alpha:1];
+    }
     return header;
 }
 
@@ -154,6 +159,17 @@
                                    showsFavorite:YES
                                    showsExpanded:AwfulForumCellShowsExpandedLeavesRoom
                                       tableWidth:tableView.bounds.size.width];
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([[AwfulSettings settings] darkTheme]) {
+        cell.backgroundColor = [UIColor darkGrayColor];
+        cell.textLabel.textColor = [UIColor whiteColor];
+    } else {
+        cell.backgroundColor = [UIColor whiteColor];
+        cell.textLabel.textColor = [UIColor blackColor];
+    }
 }
 
 static inline CGFloat FontSizeForForum(AwfulForum *forum)

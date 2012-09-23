@@ -10,7 +10,7 @@
 #import "AwfulThread+AwfulMethods.h"
 #import "AwfulUser+AwfulMethods.h"
 #import "AwfulThreadListController.h"
-#import "UIView+Lazy.h"
+#import "AwfulSettings.h"
 
 @implementation AwfulThreadCell
 
@@ -296,10 +296,24 @@
     return (MAX(height,70));
 }
 
-+(UIColor*) textColor { return [UIColor blackColor]; }
-+(UIColor*) backgroundColor { return [UIColor whiteColor]; }
-+(UIFont*) textLabelFont { return [UIFont systemFontOfSize:14]; }
-+(UIFont*) detailLabelFont { return [UIFont systemFontOfSize:10]; }
++ (UIColor *)textColor
+{
+    return [[AwfulSettings settings] darkTheme] ? [UIColor whiteColor] : [UIColor blackColor];
+}
+
++ (UIColor *)backgroundColor
+{
+    return [[AwfulSettings settings] darkTheme] ? [UIColor darkGrayColor] : [UIColor whiteColor];
+}
+
++ (UIFont *)textLabelFont
+{
+    return [UIFont systemFontOfSize:14];
+}
+
++ (UIFont *)detailLabelFont
+{
+    return [UIFont systemFontOfSize:10];
+}
 
 @end
-

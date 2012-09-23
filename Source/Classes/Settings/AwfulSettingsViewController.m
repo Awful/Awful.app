@@ -40,6 +40,10 @@
     if (self.user.userName == nil && IsLoggedIn()) {
         [self refresh];
     }
+    if ([[AwfulSettings settings] darkTheme]) {
+        self.tableView.backgroundView = nil;
+        self.tableView.backgroundColor = [UIColor darkGrayColor];
+    }
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -53,7 +57,7 @@
     }
 }
 
--(BOOL)canPullToRefresh
+- (BOOL)canPullToRefresh
 {
     return NO;
 }
@@ -194,6 +198,16 @@ typedef enum SettingType
     [[NSUserDefaults standardUserDefaults] setBool:switchView.on forKey:key];
     if ([key isEqualToString:@"dark_theme"]) {
         [ApplicationDelegate configureAppearance];
+    }
+}
+
+- (void)tableView:(UITableView *)tableView
+  willDisplayCell:(UITableViewCell *)cell
+forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([[AwfulSettings settings] darkTheme]) {
+        cell.textLabel.textColor = [UIColor whiteColor];
+        cell.backgroundColor = [UIColor darkGrayColor];
     }
 }
 
