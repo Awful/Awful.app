@@ -28,8 +28,10 @@ typedef enum {
 {
     NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulThread entityName]];
     request.predicate = [NSPredicate predicateWithFormat:@"forum = %@", self.forum];
-    request.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"stickyIndex" ascending:NO],
-    [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO]];
+    request.sortDescriptors = @[
+        [NSSortDescriptor sortDescriptorWithKey:@"stickyIndex" ascending:YES],
+        [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO]
+    ];
     return [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                managedObjectContext:ApplicationDelegate.managedObjectContext
                                                  sectionNameKeyPath:nil
