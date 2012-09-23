@@ -74,6 +74,7 @@
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
+    if (self.userDrivenChange) return;
     [self.tableView beginUpdates];
 }
 
@@ -84,6 +85,7 @@
      forChangeType:(NSFetchedResultsChangeType)type
       newIndexPath:(NSIndexPath *)newIndexPath
 {
+    if (self.userDrivenChange) return;
     switch (type) {
         case NSFetchedResultsChangeInsert: {
             [self.tableView insertRowsAtIndexPaths:@[newIndexPath]
@@ -131,6 +133,7 @@
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
+    if (self.userDrivenChange) return;
     [self.tableView endUpdates];
 }
 

@@ -8,6 +8,8 @@
 
 @interface AwfulFetchedTableViewController ()
 
-@property (strong) NSFetchedResultsController *fetchedResultsController;
+@property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
+
+@property (nonatomic) BOOL userDrivenChange;
 
 @end

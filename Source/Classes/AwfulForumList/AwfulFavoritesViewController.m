@@ -16,9 +16,7 @@
 @interface AwfulFavoritesViewController () <AwfulForumCellDelegate>
 
 @property (readonly, strong, nonatomic) UIBarButtonItem *addButtonItem;
-@property (assign, getter = isReordering) BOOL reordering;
 @property (assign) BOOL automaticallyAdded;
-@property (nonatomic,readwrite,strong) UILabel* noFavorites;
 
 @end
 
@@ -39,6 +37,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.navigationItem.rightBarButtonItem = self.editButtonItem;
     self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
 }
 
@@ -70,7 +69,7 @@
     return NO;
 }
 
-#pragma mark - Table view data source
+#pragma mark - Table view data source and delegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -114,7 +113,7 @@
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath
 {
-    self.reordering = YES;
+    self.userDrivenChange = YES;
     NSMutableArray *reorder = [self.fetchedResultsController.fetchedObjects mutableCopy];
     AwfulForum *move = [reorder objectAtIndex:sourceIndexPath.row];
     [reorder removeObjectAtIndex:sourceIndexPath.row];
@@ -123,16 +122,27 @@
         forum.favoriteIndexValue = i;
     }];
     [ApplicationDelegate saveContext];
-    self.reordering = NO;
-    [self.fetchedResultsController performFetch:nil];
+    self.userDrivenChange = NO;
 }
-
-#pragma mark - Table view delegate
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView
            editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return UITableViewCellEditingStyleNone;
+    return UITableViewCellEditingStyleDelete;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+        forum.isFavoriteValue = NO;
+        NSArray *reindex = [self.fetchedResultsController fetchedObjects];
+        [reindex enumerateObjectsUsingBlock:^(AwfulForum *f, NSUInteger i, BOOL *stop) {
+            if (![f isEqual:forum])
+                f.favoriteIndexValue = i;
+        }];
+        [ApplicationDelegate saveContext];
+    }
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
