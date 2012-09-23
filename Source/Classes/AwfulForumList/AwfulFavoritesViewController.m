@@ -11,8 +11,9 @@
 #import "AwfulForumsListController.h"
 #import "AwfulThreadListController.h"
 #import "AwfulForumCell.h"
+#import "AwfulCustomForums.h"
 
-@interface AwfulFavoritesViewController ()
+@interface AwfulFavoritesViewController () <AwfulForumCellDelegate>
 
 @property (readonly, strong, nonatomic) UIBarButtonItem *addButtonItem;
 @property (assign, getter = isReordering) BOOL reordering;
@@ -35,12 +36,31 @@
                                                           cacheName:nil];
 }
 
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self.navigationController setToolbarHidden:YES];
-    self.tableView.editing = YES;
-    self.tableView.allowsSelectionDuringEditing = YES;
+    [self.navigationItem.leftBarButtonItem setTintColor:[UIColor colorWithRed:46.0/255
+                                                                        green:146.0/255
+                                                                         blue:190.0/255
+                                                                        alpha:1.0]];
+    [self.navigationController.navigationBar setBackgroundImage:[ApplicationDelegate navigationBarBackgroundImageForMetrics:UIBarMetricsDefault]
+                                                  forBarMetrics:(UIBarMetricsDefault)];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    UITableViewCell* cell = (UITableViewCell*)sender;
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+    
+    AwfulThreadListController *list = (AwfulThreadListController *)segue.destinationViewController;
+    list.forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
 }
 
 #pragma mark - Awful table view
@@ -52,33 +72,44 @@
 
 #pragma mark - Table view data source
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return nil;
+    AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    return [AwfulForumCell heightForCellWithText:forum.name
+                                        fontSize:20
+                                   showsFavorite:YES
+                                   showsExpanded:NO
+                                      tableWidth:tableView.bounds.size.width];
 }
 
-- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+- (UITableViewCell *)tableView:(UITableView *)tableView
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 0;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    static NSString * const Identifier = @"AwfulForumCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:Identifier];
+    static NSString * const Identifier = @"ForumCell";
+    AwfulForumCell *cell = [tableView dequeueReusableCellWithIdentifier:Identifier];
+    if (!cell) {
+        cell = [AwfulForumCell new];
+    }
     [self configureCell:cell atIndexPath:indexPath];
-    cell.showsReorderControl = NO;
     return cell;
 }
 
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)configureCell:(UITableViewCell *)genericCell atIndexPath:(NSIndexPath *)indexPath
 {
-    return YES;
+    AwfulForumCell *cell = (AwfulForumCell *)genericCell;
+    cell.delegate = self;
+    AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    cell.textLabel.text = forum.name;
+    cell.showsExpanded = NO;
+    cell.showsFavorite = NO;
 }
 
-- (BOOL) tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)forumCellDidToggleFavorite:(AwfulForumCell *)cell
 {
-    return YES;
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+    AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    forum.isFavoriteValue = cell.favorite;
+    [ApplicationDelegate saveContext];
 }
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath
@@ -104,35 +135,17 @@
     return UITableViewCellEditingStyleNone;
 }
 
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    for(UIView* view in cell.subviews)
-    {
-        if([[[view class] description] isEqualToString:@"UITableViewCellReorderControl"])
-        {
-            if([[[view class] description] isEqualToString:@"UITableViewCellReorderControl"])
-            {
-                // Creates a new subview the size of the entire cell
-                UIView *movedReorderControl = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetMaxX(view.frame), CGRectGetMaxY(view.frame))];
-                // Adds the reorder control view to our new subview
-                [movedReorderControl addSubview:view];
-                // Adds our new subview to the cell
-                [cell addSubview:movedReorderControl];
-                // CGStuff to move it to the left
-                CGSize moveLeft = CGSizeMake(movedReorderControl.frame.size.width - view.frame.size.width, movedReorderControl.frame.size.height - view.frame.size.height);
-                CGAffineTransform transform = CGAffineTransformIdentity;
-                transform = CGAffineTransformTranslate(transform, -moveLeft.width, -moveLeft.height);
-                // Performs the transform
-                [movedReorderControl setTransform:transform];
-            }
-            
-        }
-    }
-}
-
 - (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return @"Remove";
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    AwfulThreadListController *threadList = [AwfulCustomForums threadListControllerForForum:forum];
+    threadList.forum = forum;
+    [self.navigationController pushViewController:threadList animated:YES];
 }
 
 @end

@@ -15,11 +15,10 @@
 #import "AwfulForumHeader.h"
 #import "AwfulLoginController.h"
 #import "AwfulSettings.h"
-#import "AwfulParentForumCell.h"
-#import "AwfulSubForumCell.h"
 #import "AwfulCustomForums.h"
+#import "AwfulForumCell.h"
 
-@interface AwfulForumsListController () <AwfulParentForumCellDelegate>
+@interface AwfulForumsListController () <AwfulForumCellDelegate>
 
 @property (nonatomic, strong) IBOutlet AwfulForumHeader *headerView;
 
@@ -121,9 +120,11 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    NSString *cellIdentifier = [forum.children count] ? @"AwfulParentForumCell" : @"AwfulSubForumCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    static NSString * const Identifier = @"ForumCell";
+    AwfulForumCell *cell = [tableView dequeueReusableCellWithIdentifier:Identifier];
+    if (!cell) {
+        cell = [AwfulForumCell new];
+    }
     [self configureCell:cell atIndexPath:indexPath];
     return cell;
 }
@@ -132,16 +133,37 @@
 {
     AwfulForumCell *cell = (AwfulForumCell *)plainCell;
     AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.forum = forum;
-    if ([cell isKindOfClass:[AwfulParentForumCell class]])
-        ((AwfulParentForumCell *)cell).delegate = self;
+    cell.delegate = self;
+    cell.textLabel.text = forum.name;
+    cell.textLabel.font = [UIFont boldSystemFontOfSize:FontSizeForForum(forum)];
+    cell.favorite = forum.isFavoriteValue;
+    cell.showsFavorite = YES;
+    cell.expanded = forum.expandedValue;
+    if ([forum.children count]) {
+        cell.showsExpanded = AwfulForumCellShowsExpandedButton;
+    } else {
+        cell.showsExpanded = AwfulForumCellShowsExpandedLeavesRoom;
+    }
+    if (!cell.showsExpanded) {
+        CGRect frame = cell.textLabel.frame;
+        frame.size.width -= 42;
+        cell.textLabel.frame = frame;
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    Class cellClass = forum.parentForum ? [AwfulSubForumCell class] : [AwfulParentForumCell class];
-    return [cellClass heightForContent:forum inTableView:tableView];
+    return [AwfulForumCell heightForCellWithText:forum.name
+                                        fontSize:FontSizeForForum(forum)
+                                   showsFavorite:YES
+                                   showsExpanded:AwfulForumCellShowsExpandedLeavesRoom
+                                      tableWidth:tableView.bounds.size.width];
+}
+
+static inline CGFloat FontSizeForForum(AwfulForum *forum)
+{
+    return 20 - (forum.parentForum ? 5 : 0);
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -154,16 +176,58 @@
 
 #pragma mark - Parent forum cell delegate
 
-- (void)parentForumCellDidToggleExpansion:(AwfulParentForumCell *)cell
+- (void)forumCellDidToggleFavorite:(AwfulForumCell *)cell
 {
-    cell.forum.expandedValue = cell.expanded;
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+    AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    forum.isFavoriteValue = cell.favorite;
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[AwfulForum entityName]];
+    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"isFavorite == YES"];
+    NSError *error;
+    if (cell.favorite) {
+        NSUInteger count = [ApplicationDelegate.managedObjectContext countForFetchRequest:fetchRequest
+                                                                                    error:&error];
+        if (count == NSNotFound) {
+            NSLog(@"Error setting favorite index: %@", error);
+        }
+        forum.favoriteIndexValue = count;
+    } else {
+        NSArray *renumber = [ApplicationDelegate.managedObjectContext executeFetchRequest:fetchRequest
+                                                                                    error:&error];
+        if (!renumber) {
+            NSLog(@"Error renumbering favorites: %@", error);
+        }
+        [renumber enumerateObjectsUsingBlock:^(AwfulForum *favorite, NSUInteger i, BOOL *stop) {
+            favorite.favoriteIndexValue = i;
+        }];
+    }
+    [ApplicationDelegate saveContext];
+}
+
+- (void)forumCellDidToggleExpanded:(AwfulForumCell *)cell
+{
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+    AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    if (cell.expanded) {
+        forum.expandedValue = YES;
+    } else {
+        RecursivelyCollapseForum(forum);
+    }
     [ApplicationDelegate saveContext];
     
     // The fetched results controller won't pick up on changes to the keypath "parentForum.expanded"
-    // so we need to help it along. (Not sure why it needs this...)
-    for (AwfulForum *child in cell.forum.children) {
+    // for forums that should be newly visible (dunno why) so we need to help it along.
+    for (AwfulForum *child in forum.children) {
         [child willChangeValueForKey:AwfulForumRelationships.parentForum];
         [child didChangeValueForKey:AwfulForumRelationships.parentForum];
+    }
+}
+
+static void RecursivelyCollapseForum(AwfulForum *forum)
+{
+    forum.expandedValue = NO;
+    for (AwfulForum *child in forum.children) {
+        RecursivelyCollapseForum(child);
     }
 }
 

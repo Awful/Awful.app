@@ -140,8 +140,6 @@
 		8C1BC80C15AF0FFE00B75286 /* AwfulCustomForums.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1BC80715AF0FFE00B75286 /* AwfulCustomForums.m */; };
 		8C1BC80D15AF0FFE00B75286 /* AwfulCustomForumYOSPOS.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1BC80915AF0FFE00B75286 /* AwfulCustomForumYOSPOS.m */; };
 		8C48EA1E159BC2AC00A59691 /* AwfulFetchedTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48EA1D159BC2AC00A59691 /* AwfulFetchedTableViewController.m */; };
-		8C48EA22159BF14B00A59691 /* AwfulParentForumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48EA21159BF14A00A59691 /* AwfulParentForumCell.m */; };
-		8C48EA34159C904500A59691 /* AwfulSubForumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48EA33159C904500A59691 /* AwfulSubForumCell.m */; };
 		8C48EA42159CED8700A59691 /* AwfulForumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48EA41159CED8700A59691 /* AwfulForumCell.m */; };
 		8C48EA61159DD8FA00A59691 /* TDBadgedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48EA60159DD8FA00A59691 /* TDBadgedCell.m */; };
 		8C79D43B1562E79E006FEE48 /* AwfulPage+Transitions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C79D43A1562E79E006FEE48 /* AwfulPage+Transitions.m */; };
@@ -1210,10 +1208,6 @@
 		8C48EA1C159BC2AC00A59691 /* AwfulFetchedTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFetchedTableViewController.h; sourceTree = "<group>"; };
 		8C48EA1D159BC2AC00A59691 /* AwfulFetchedTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulFetchedTableViewController.m; sourceTree = "<group>"; };
 		8C48EA1F159BD5BD00A59691 /* Model 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 2.xcdatamodel"; sourceTree = "<group>"; };
-		8C48EA20159BF14A00A59691 /* AwfulParentForumCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulParentForumCell.h; sourceTree = "<group>"; };
-		8C48EA21159BF14A00A59691 /* AwfulParentForumCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulParentForumCell.m; sourceTree = "<group>"; };
-		8C48EA32159C904500A59691 /* AwfulSubForumCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSubForumCell.h; sourceTree = "<group>"; };
-		8C48EA33159C904500A59691 /* AwfulSubForumCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSubForumCell.m; sourceTree = "<group>"; };
 		8C48EA40159CED8700A59691 /* AwfulForumCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumCell.h; sourceTree = "<group>"; };
 		8C48EA41159CED8700A59691 /* AwfulForumCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumCell.m; sourceTree = "<group>"; };
 		8C48EA5F159DD8FA00A59691 /* TDBadgedCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDBadgedCell.h; sourceTree = "<group>"; };
@@ -2194,10 +2188,6 @@
 				112764EB14DB44E6003ACE76 /* AwfulForumHeader.h */,
 				112764EC14DB44E6003ACE76 /* AwfulForumHeader.m */,
 				1190F6DB13BE4EA900B9D271 /* AwfulForumHeaderView.xib */,
-				8C48EA20159BF14A00A59691 /* AwfulParentForumCell.h */,
-				8C48EA21159BF14A00A59691 /* AwfulParentForumCell.m */,
-				8C48EA32159C904500A59691 /* AwfulSubForumCell.h */,
-				8C48EA33159C904500A59691 /* AwfulSubForumCell.m */,
 				8C48EA40159CED8700A59691 /* AwfulForumCell.h */,
 				8C48EA41159CED8700A59691 /* AwfulForumCell.m */,
 			);
@@ -4626,8 +4616,6 @@
 				1C2BFA25158AB59800692D85 /* AwfulCSSTemplate.m in Sources */,
 				8CCFBD251598B9AF00336F55 /* AwfulThreadTitleView.m in Sources */,
 				8C48EA1E159BC2AC00A59691 /* AwfulFetchedTableViewController.m in Sources */,
-				8C48EA22159BF14B00A59691 /* AwfulParentForumCell.m in Sources */,
-				8C48EA34159C904500A59691 /* AwfulSubForumCell.m in Sources */,
 				8C48EA42159CED8700A59691 /* AwfulForumCell.m in Sources */,
 				8C48EA61159DD8FA00A59691 /* TDBadgedCell.m in Sources */,
 				8C1BC80A15AF0FFE00B75286 /* AwfulCustomForumFilmDump.m in Sources */,

@@ -37,50 +37,6 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <color key="separatorColor" red="0.74901960784313726" green="0.74901960784313726" blue="0.74901960784313726" alpha="1" colorSpace="calibratedRGB"/>
-                        <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="AwfulParentForumCell" textLabel="2pN-K0-Wzf" imageView="QCW-XT-M53" style="IBUITableViewCellStyleDefault" id="9Ly-ME-eQi" customClass="AwfulParentForumCell">
-                                <rect key="frame" x="0.0" y="22" width="320" height="50"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="300" height="49"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="2pN-K0-Wzf">
-                                            <rect key="frame" x="42" y="0.0" width="248" height="49"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                            <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                        </label>
-                                        <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" image="forum-arrow-right.png" id="QCW-XT-M53">
-                                            <rect key="frame" x="10" y="15" width="22" height="19"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </imageView>
-                                    </subviews>
-                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                </view>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="2" indentationWidth="0.0" shouldIndentWhileEditing="NO" reuseIdentifier="AwfulSubForumCell" textLabel="ZUV-ok-Ozc" style="IBUITableViewCellStyleDefault" id="yPY-Ed-Jd1" customClass="AwfulSubForumCell">
-                                <rect key="frame" x="0.0" y="72" width="320" height="50"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="300" height="49"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ZUV-ok-Ozc">
-                                            <rect key="frame" x="10" y="0.0" width="280" height="49"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                            <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                        </label>
-                                    </subviews>
-                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                </view>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            </tableViewCell>
-                        </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="Cko-3x-oc7" id="6ND-OV-xoS"/>
                             <outlet property="delegate" destination="Cko-3x-oc7" id="NO4-vh-f2X"/>
@@ -588,27 +544,6 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <color key="separatorColor" red="0.74901960779999999" green="0.74901960779999999" blue="0.74901960779999999" alpha="1" colorSpace="calibratedRGB"/>
-                        <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="AwfulForumCell" textLabel="i8A-zM-WjR" style="IBUITableViewCellStyleDefault" id="rej-kr-yt3" customClass="AwfulForumCell">
-                                <rect key="frame" x="0.0" y="22" width="320" height="50"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="300" height="49"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="i8A-zM-WjR">
-                                            <rect key="frame" x="10" y="0.0" width="280" height="49"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                            <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                        </label>
-                                    </subviews>
-                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                </view>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            </tableViewCell>
-                        </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="nz9-Nl-GVG" id="vNJ-ML-IJt"/>
                             <outlet property="delegate" destination="nz9-Nl-GVG" id="p9e-Vr-4Zw"/>
@@ -628,7 +563,6 @@
         <image name="arrowright.png" width="23" height="18"/>
         <image name="cog.png" width="19" height="20"/>
         <image name="compose.png" width="22" height="18"/>
-        <image name="forum-arrow-right.png" width="22" height="19"/>
         <image name="list_icon.png" width="20" height="18"/>
         <image name="number-background.png" width="32" height="20"/>
         <image name="shsc-apple.png" width="90" height="90"/>
@@ -639,14 +573,11 @@
         <class className="AwfulBookmarksController" superclassName="AwfulThreadListController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulBookmarksController.h"/>
         </class>
-        <class className="AwfulFavoritesViewController" superclassName="AwfulForumsListController">
+        <class className="AwfulFavoritesViewController" superclassName="AwfulFetchedTableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulFavoritesViewController.h"/>
         </class>
         <class className="AwfulFetchedTableViewController" superclassName="AwfulTableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulFetchedTableViewController.h"/>
-        </class>
-        <class className="AwfulForumCell" superclassName="UITableViewCell">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumCell.h"/>
         </class>
         <class className="AwfulForumHeader" superclassName="UIView">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumHeader.h"/>
@@ -674,6 +605,7 @@
                 <relationship kind="action" name="segmentedGotTapped:"/>
                 <relationship kind="action" name="tappedActions:"/>
                 <relationship kind="action" name="tappedActionsSegment:"/>
+                <relationship kind="action" name="tappedCompose:"/>
                 <relationship kind="action" name="tappedNextPage:"/>
                 <relationship kind="action" name="tappedPageNav:"/>
                 <relationship kind="action" name="tappedPagesSegment:"/>
@@ -684,9 +616,6 @@
                 <relationship kind="outlet" name="toolbar" candidateClass="UIToolbar"/>
                 <relationship kind="outlet" name="webView" candidateClass="UIWebView"/>
             </relationships>
-        </class>
-        <class className="AwfulParentForumCell" superclassName="AwfulForumCell">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulParentForumCell.h"/>
         </class>
         <class className="AwfulPostBoxController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPostBoxController.h"/>
@@ -714,9 +643,6 @@
                 <relationship kind="outlet" name="jumpToPageBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="pickerView" candidateClass="UIPickerView"/>
             </relationships>
-        </class>
-        <class className="AwfulSubForumCell" superclassName="AwfulForumCell">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulSubForumCell.h"/>
         </class>
         <class className="AwfulTableViewController" superclassName="UITableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulTableViewController.h"/>

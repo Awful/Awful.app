@@ -2,60 +2,157 @@
 //  AwfulForumCell.m
 //  Awful
 //
-//  Created by me on 6/28/12.
+//  Created by Nolan Waite on 2012-09-22.
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
 #import "AwfulForumCell.h"
 
+@interface AwfulForumCell ()
+
+@property (readonly, nonatomic) UIButton *favoriteButton;
+
+@end
+
 @implementation AwfulForumCell
 
-- (void)setForum:(AwfulForum *)forum
+#pragma mark - Init
+
+- (id)initWithReuseIdentifier:(NSString *)reuseIdentifier
 {
-    _forum = forum;
-    self.textLabel.text = forum.name;
-    self.textLabel.numberOfLines = 2;
-    self.textLabel.adjustsFontSizeToFitWidth = YES;
+    self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
+    if (self) {
+        self.textLabel.numberOfLines = 0;
+        UITapGestureRecognizer *tapToExpand = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                      action:@selector(toggleExpanded)];
+        [self.imageView addGestureRecognizer:tapToExpand];
+        self.imageView.userInteractionEnabled = YES;
+    }
+    return self;
 }
 
-- (void)setFavoriteButtonAccessory
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
-    UIButton *favImage = [UIButton buttonWithType:UIButtonTypeCustom];
-    [favImage setImage:[UIImage imageNamed:@"star_off.png"] forState:UIControlStateNormal];
-    [favImage setImage:[UIImage imageNamed:@"star_on.png"] forState:UIControlStateSelected];
-    [favImage addTarget:self
-                 action:@selector(toggleFavorite:) 
-       forControlEvents:UIControlEventTouchUpInside];
-    [favImage sizeToFit];
-    favImage.selected = self.forum.isFavoriteValue;
-    self.accessoryView = favImage;
+    return [self initWithReuseIdentifier:reuseIdentifier];
 }
 
-- (void)toggleFavorite:(UIButton *)button
+#pragma mark - Favorite
+
+- (void)setFavorite:(BOOL)isFavorite
 {
-    button.selected = !button.selected;
-    self.forum.isFavoriteValue = !self.forum.isFavoriteValue;
-    if (self.forum.isFavoriteValue) {
-        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[[self.forum class] entityName]];
-        fetchRequest.predicate = [NSPredicate predicateWithFormat:@"isFavorite = YES"];
-        fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"favoriteIndex" ascending:NO]];
-        fetchRequest.fetchLimit = 1;
-        NSArray *results = [ApplicationDelegate.managedObjectContext executeFetchRequest:fetchRequest error:NULL];
-        if (results && [results count] > 0) {
-            AwfulForum *bottom = results[0];
-            self.forum.favoriteIndexValue = bottom.favoriteIndexValue + 1;
+    if (_favorite == isFavorite) return;
+    _favorite = isFavorite;
+    self.favoriteButton.selected = isFavorite;
+}
+
+static UIButton *CreateFavoriteButton(id target)
+{
+    UIButton *favoriteButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [favoriteButton setImage:[UIImage imageNamed:@"star_off.png"] forState:UIControlStateNormal];
+    [favoriteButton setImage:[UIImage imageNamed:@"star_on.png"] forState:UIControlStateSelected];
+    [favoriteButton addTarget:target
+                       action:@selector(toggleFavorite)
+             forControlEvents:UIControlEventTouchUpInside];
+    [favoriteButton sizeToFit];
+    return favoriteButton;
+}
+
+- (void)setShowsFavorite:(BOOL)showsFavorite
+{
+    if (_showsFavorite == showsFavorite) return;
+    _showsFavorite = showsFavorite;
+    if (showsFavorite) {
+        self.accessoryView = CreateFavoriteButton(self);
+        self.favoriteButton.selected = self.favorite;
+    } else {
+        self.accessoryView = nil;
+    }
+}
+
+- (void)toggleFavorite
+{
+    self.favorite = !self.favorite;
+    if ([self.delegate respondsToSelector:@selector(forumCellDidToggleFavorite:)]) {
+        [self.delegate forumCellDidToggleFavorite:self];
+    }
+}
+
+- (UIButton *)favoriteButton
+{
+    return (UIButton *)self.accessoryView;
+}
+
+#pragma mark - Expanded
+
+- (void)setExpanded:(BOOL)expanded
+{
+    if (_expanded == expanded) return;
+    _expanded = expanded;
+    if (self.showsExpanded) {
+        [self updateExpandedImage];
+        if ([self.delegate respondsToSelector:@selector(forumCellDidToggleExpanded:)]) {
+            [self.delegate forumCellDidToggleExpanded:self];
         }
     }
-    [ApplicationDelegate saveContext];
 }
 
-+ (CGFloat)heightForContent:(AwfulForum *)forum inTableView:(UITableView *)tableView
+- (void)setShowsExpanded:(AwfulForumCellShowsExpanded)showsExpanded
 {
-    int width = tableView.frame.size.width - 40;
-    CGSize textSize = [forum.name sizeWithFont:[UIFont boldSystemFontOfSize:18]
-                             constrainedToSize:CGSizeMake(width, 4000)
-                                 lineBreakMode:UILineBreakModeWordWrap];
-    return MAX(10 + textSize.height, 50);
+    if (_showsExpanded == showsExpanded) return;
+    _showsExpanded = showsExpanded;
+    if (showsExpanded == AwfulForumCellShowsExpandedButton) {
+        [self updateExpandedImage];
+    } else {
+        self.imageView.image = nil;
+    }
+}
+
+- (void)updateExpandedImage
+{
+    if (self.expanded) {
+        self.imageView.image = [UIImage imageNamed:@"forum-arrow-down.png"];
+    } else {
+        self.imageView.image = [UIImage imageNamed:@"forum-arrow-right.png"];
+    }
+}
+
+- (void)toggleExpanded
+{
+    self.expanded = !self.expanded;
+}
+
+#pragma mark - Size and layout
+
++ (CGFloat)heightForCellWithText:(NSString *)text
+                        fontSize:(CGFloat)fontSize
+                   showsFavorite:(BOOL)showsFavorite
+                   showsExpanded:(AwfulForumCellShowsExpanded)showsExpanded
+                      tableWidth:(CGFloat)tableWidth
+{
+    CGFloat width = tableWidth;
+    if (showsExpanded != AwfulForumCellShowsExpandedNever) {
+        width -= 42;
+    }
+    if (showsFavorite) {
+        width -= 50;
+    }
+    CGSize textSize = [text sizeWithFont:[UIFont boldSystemFontOfSize:fontSize]
+                       constrainedToSize:CGSizeMake(width, CGFLOAT_MAX)];
+    // TODO figure out why cells with 3 lines have too much top/bottom padding, while cells with
+    // < 3 lines are fine.
+    CGFloat offset = textSize.height > 80 ? -10 : 0;
+    return MAX(textSize.height + offset + 26, 50);
+}
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    if (self.showsExpanded == AwfulForumCellShowsExpandedLeavesRoom) {
+        CGRect frame = self.textLabel.frame;
+        frame.origin.x += 32;
+        frame.size.width -= 32;
+        self.textLabel.frame = frame;
+    }
 }
 
 @end
