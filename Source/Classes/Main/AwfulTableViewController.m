@@ -21,6 +21,9 @@
         [self.tableView addPullToRefreshWithActionHandler:^{
             [blockSelf refresh];
         }];
+        if ([[AwfulSettings settings] darkTheme]) {
+            self.tableView.pullToRefreshView.textColor = [UIColor whiteColor];
+        }
     }
     if ([self canPullForNextPage]) {
         [self.tableView addInfiniteScrollingWithActionHandler:^{
