@@ -83,7 +83,7 @@
      */
 }
 
--(void)configureForThread:(AwfulThread *)thread
+- (void)configureForThread:(AwfulThread *)thread
 {
     self.thread = thread;
     
@@ -99,7 +99,8 @@
 
     //int posts_per_page = [AwfulUser currentUser].postsPerPageValue;
     //int total_pages = (([thread.totalReplies intValue]-1)/posts_per_page) + 1;
-    self.detailTextLabel.text = [NSString stringWithFormat:@"%@\r\nKilled by %@ [date]", thread.authorName, thread.lastPostAuthorName];
+    self.detailTextLabel.text = [NSString stringWithFormat:@"%@\nKilled by %@ [%@]",
+                                 thread.authorName, thread.lastPostAuthorName, thread.lastPostDate];
     self.detailTextLabel.font = [[self class] detailLabelFont];
     self.detailTextLabel.numberOfLines = 2;
     self.detailTextLabel.textColor = [[self class] textColor];
@@ -107,7 +108,11 @@
     
     if (thread.totalUnreadPosts.intValue >= 0) {
         self.badgeString = thread.totalUnreadPosts.stringValue;
-        self.badgeColor = [UIColor colorWithRed:0 green:.4 blue:.6 alpha:1];
+        if ([[AwfulSettings settings] darkTheme]) {
+            self.badgeColor = [UIColor blackColor];
+        } else {
+            self.badgeColor = [UIColor colorWithRed:0 green:.4 blue:.6 alpha:1];
+        }
         
         self.badge.alpha = (thread.totalUnreadPostsValue == 0)? 0.5 : 1.0;
     }
