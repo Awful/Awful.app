@@ -134,9 +134,16 @@
 @end
 
 
+@interface TDBadgedCell ()
+
+@property (getter=isShowingDeleteConfirmation, nonatomic) BOOL showingDeleteConfirmation;
+
+@end
+
+
 @implementation TDBadgedCell
 
-@synthesize badgeString, badge=__badge, badgeColor, badgeColorHighlighted, showShadow;
+@synthesize badgeString, badge=__badge, badgeColor, badgeColorHighlighted, showShadow, showingDeleteConfirmation = _showingDeleteConfirmation;
 
 #pragma mark - Init methods
 
@@ -174,7 +181,7 @@
 {
 	[super layoutSubviews];
 	
-	if(self.badgeString)
+	if(self.badgeString && !self.editing && !self.showingDeleteConfirmation)
 	{
 		//force badges to hide on edit.
 		if(self.editing)
@@ -189,11 +196,8 @@
                                 badgeSize.width + 13,
                                 18);
 		
-        if(self.showShadow)
-            [self.badge setShowShadow:YES];
-        else
-            [self.badge setShowShadow:NO];
-            
+        self.badge.showShadow = self.showShadow;
+        
 		[self.badge setFrame:badgeframe];
 		[self.badge setBadgeString:self.badgeString];
 		
@@ -225,6 +229,10 @@
 	}
 	else
 	{
+        CGRect frame = self.badge.frame;
+        frame.origin.x += frame.size.width;
+        frame.size.width = 0;
+        self.badge.frame = frame;
 		[self.badge setHidden:YES];
 	}
 	
@@ -271,5 +279,14 @@
 	}
 }
 
+- (void)willTransitionToState:(UITableViewCellStateMask)state
+{
+    [super willTransitionToState:state];
+    if (state & UITableViewCellStateShowingDeleteConfirmationMask) {
+        self.showingDeleteConfirmation = YES;
+    } else {
+        self.showingDeleteConfirmation = NO;
+    }
+}
 
 @end
