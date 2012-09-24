@@ -99,8 +99,9 @@
 
     //int posts_per_page = [AwfulUser currentUser].postsPerPageValue;
     //int total_pages = (([thread.totalReplies intValue]-1)/posts_per_page) + 1;
-    self.detailTextLabel.text = [NSString stringWithFormat:@"%@\nKilled by %@ [%@]",
-                                 thread.authorName, thread.lastPostAuthorName, thread.lastPostDate];
+    NSString *formattedDate = [[self lastPostDateFormatter] stringFromDate:thread.lastPostDate];
+    self.detailTextLabel.text = [NSString stringWithFormat:@"%@\nKilled by %@ %@",
+                                 thread.authorName, thread.lastPostAuthorName, formattedDate];
     self.detailTextLabel.font = [[self class] detailLabelFont];
     self.detailTextLabel.numberOfLines = 2;
     self.detailTextLabel.textColor = [[self class] textColor];
@@ -185,6 +186,16 @@
                                                  name:AwfulPageDidLoadNotification 
                                                object:self.thread];
 
+}
+
+- (NSDateFormatter *)lastPostDateFormatter
+{
+    static NSDateFormatter *formatter = nil;
+    if (!formatter) {
+        formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"HH:mm MMM d, yyyy"];
+    }
+    return formatter;
 }
 
 -(void) configureTagImage {
