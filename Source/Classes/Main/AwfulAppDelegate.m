@@ -11,6 +11,7 @@
 #import "AwfulSettings.h"
 #import "AwfulLoginController.h"
 #import "AwfulCSSTemplate.h"
+#import "GRMustache.h"
 
 @implementation AwfulAppDelegate
 
@@ -26,6 +27,9 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [[AwfulSettings settings] registerDefaults];
+    #if DEBUG
+    [GRMustache preventNSUndefinedKeyExceptionAttack];
+    #endif
             
     NSManagedObjectContext *context = [self managedObjectContext];
     if (context == nil) {
