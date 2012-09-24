@@ -61,9 +61,14 @@
     UIImage *landscape = [css navigationBarImageForMetrics:UIBarMetricsLandscapePhone];
     [[UINavigationBar appearance] setBackgroundImage:landscape
                                        forBarMetrics:UIBarMetricsLandscapePhone];
-    
-    UIColor *barButton = [UIColor colorWithRed:46.0/255 green:146.0/255 blue:190.0/255 alpha:1];
-    [[UIBarButtonItem appearance] setTintColor:barButton];
+    if ([[AwfulSettings settings] darkTheme]) {
+        [[UIBarButtonItem appearance] setTintColor:[UIColor blackColor]];
+    } else {
+        [[UIBarButtonItem appearance] setTintColor:[UIColor colorWithRed:46.0/255
+                                                                   green:146.0/255
+                                                                    blue:190.0/255
+                                                                   alpha:1]];
+    }
 }
 
 
