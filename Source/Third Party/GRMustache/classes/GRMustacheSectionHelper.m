@@ -20,56 +20,49 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "GRMustacheHelper_private.h"
-#import "GRMustacheSection_private.h"
+#import "GRMustacheSectionHelper.h"
+#import "GRMustacheSection.h"
 
 
 // =============================================================================
-#pragma mark - Private concrete class GRMustacheBlockHelper
+#pragma mark - Private concrete class GRMustacheBlockSectionHelper
 
-#if NS_BLOCKS_AVAILABLE
-
-@interface GRMustacheBlockHelper: GRMustacheHelper {
+/**
+ * Private subclass of GRMustacheSectionHelper that render sections by calling
+ * a block.
+ */
+@interface GRMustacheBlockSectionHelper: GRMustacheSectionHelper {
 @private
     NSString *(^_block)(GRMustacheSection* section);
 }
 - (id)initWithBlock:(NSString *(^)(GRMustacheSection* section))block;
 @end
 
-#endif /* if NS_BLOCKS_AVAILABLE */
-
 
 // =============================================================================
-#pragma mark - GRMustacheHelper
+#pragma mark - GRMustacheSectionHelper
 
-@implementation GRMustacheHelper
-
-#if NS_BLOCKS_AVAILABLE
+@implementation GRMustacheSectionHelper
 
 + (id)helperWithBlock:(NSString *(^)(GRMustacheSection* section))block
 {
-    return [[[GRMustacheBlockHelper alloc] initWithBlock:block] autorelease];
+    return [[[GRMustacheBlockSectionHelper alloc] initWithBlock:block] autorelease];
 }
 
-#endif /* if NS_BLOCKS_AVAILABLE */
-
-#pragma mark <GRMustacheHelper>
+#pragma mark <GRMustacheSectionHelper>
 
 - (NSString *)renderSection:(GRMustacheSection *)section
 {
-    NSAssert(NO, @"abstract method");
-    return nil;
+    return [section render];
 }
 
 @end
 
 
 // =============================================================================
-#pragma mark - Private concrete class GRMustacheBlockHelper
+#pragma mark - Private concrete class GRMustacheBlockSectionHelper
 
-#if NS_BLOCKS_AVAILABLE
-
-@implementation GRMustacheBlockHelper
+@implementation GRMustacheBlockSectionHelper
 
 - (id)initWithBlock:(NSString *(^)(GRMustacheSection* section))block
 {
@@ -87,17 +80,30 @@
     [super dealloc];
 }
 
-#pragma mark <GRMustacheHelper>
+#pragma mark <GRMustacheSectionHelper>
 
 - (NSString *)renderSection:(GRMustacheSection *)section
 {
-    NSString *result = _block(section);
-    if (result == nil) {
-        return @"";
+    NSString *rendering = nil;
+    
+    if (_block) {
+        rendering = _block(section);
     }
-    return result;
+    
+    return rendering;
 }
 
 @end
 
-#endif /* if NS_BLOCKS_AVAILABLE */
+
+// =============================================================================
+#pragma mark - GRMustacheHelper
+
+@implementation GRMustacheHelper
+
++ (id)helperWithBlock:(NSString *(^)(GRMustacheSection* section))block
+{
+    return [GRMustacheSectionHelper helperWithBlock:block];
+}
+
+@end

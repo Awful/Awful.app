@@ -23,14 +23,40 @@
 #import "GRMustacheAvailabilityMacros_private.h"
 #import "GRMustacheRenderingElement_private.h"
 
-@class GRMustacheInvocation;
+@class GRMustacheExpression;
+@class GRMustacheTemplateRepository;
+@class GRMustacheSectionElement;
 
+/**
+ * A GRMustacheVariableElement is a rendering element that renders variable
+ * substitution tags such as `{{name}}` and `{{{name}}}`.
+ *
+ * For instance, the template string "{{name}} is {{age}} years old." would give
+ * two GRMustacheVariableElement instances:
+ *
+ * - a GRMustacheVariableElement that renders the `name` key in a context.
+ * - a GRMustacheVariableElement that renders the `age` key in a context.
+ *
+ * @see GRMustacheRenderingElement
+ */
 @interface GRMustacheVariableElement: NSObject<GRMustacheRenderingElement> {
 @private
-    GRMustacheInvocation *_invocation;
+    GRMustacheTemplateRepository *_templateRepository;
+    GRMustacheExpression *_expression;
+    GRMustacheSectionElement *_enumerableSectionElement;
     BOOL _raw;
 }
 
-+ (id)variableElementWithInvocation:(GRMustacheInvocation *)invocation raw:(BOOL)raw GRMUSTACHE_API_INTERNAL;
+/**
+ * Builds and returns a GRMustacheVariableElement.
+ *
+ * @param expression  The expression that would evaluate against a runtime.
+ * @param raw         NO if the value should be rendered HTML-escaped.
+ *
+ * @return a GRMustacheVariableElement
+ *
+ * @see GRMustacheExpression
+ */
++ (id)variableElementWithExpression:(GRMustacheExpression *)expression templateRepository:(GRMustacheTemplateRepository *)templateRepository raw:(BOOL)raw GRMUSTACHE_API_INTERNAL;
 
 @end

@@ -20,56 +20,56 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "GRMustacheTextElement_private.h"
+#import "GRMustacheIdentifierExpression_private.h"
+#import "GRMustacheRuntime_private.h"
 
+@interface GRMustacheIdentifierExpression()
+@property (nonatomic, copy) NSString *identifier;
 
-@interface GRMustacheTextElement()
-@property (nonatomic, retain) NSString *text;
-- (id)initWithString:(NSString *)text;
+- (id)initWithIdentifier:(NSString *)identifier;
 @end
 
+@implementation GRMustacheIdentifierExpression
+@synthesize identifier=_identifier;
 
-@implementation GRMustacheTextElement
-@synthesize text=_text;
-
-+ (id)textElementWithString:(NSString *)text
++ (id)expressionWithIdentifier:(NSString *)identifier
 {
-    return [[[self alloc] initWithString:text] autorelease];
+    return [[[self alloc] initWithIdentifier:identifier] autorelease];
+}
+
+- (id)initWithIdentifier:(NSString *)identifier
+{
+    self = [super init];
+    if (self) {
+        self.identifier = identifier;
+    }
+    return self;
 }
 
 - (void)dealloc
 {
-    [_text release];
+    [_identifier release];
     [super dealloc];
 }
 
-#pragma mark <GRMustacheRenderingElement>
-
-- (void)renderInBuffer:(NSMutableString *)buffer withRuntime:(GRMustacheRuntime *)runtime
+- (BOOL)isEqual:(id)expression
 {
-    [buffer appendString:_text];
-}
-
-- (BOOL)isFinal
-{
-    return YES;
-}
-
-- (BOOL)canOverrideNonFinalRenderingElement:(id<GRMustacheRenderingElement>)element
-{
-    return NO;
-}
-
-#pragma mark Private
-
-- (id)initWithString:(NSString *)text
-{
-    NSAssert(text, @"WTF");
-    self = [self init];
-    if (self) {
-        self.text = text;
+    if (![expression isKindOfClass:[GRMustacheIdentifierExpression class]]) {
+        return NO;
     }
-    return self;
+    return [_identifier isEqual:((GRMustacheIdentifierExpression *)expression).identifier];
+}
+
+
+#pragma mark - GRMustacheExpression
+
+- (id)evaluateInRuntime:(GRMustacheRuntime *)runtime asFilterValue:(BOOL)filterValue
+{
+    if (filterValue) {
+        return [runtime filterValueForKey:_identifier];
+    } else {
+        return [runtime contextValueForKey:_identifier];
+    }
 }
 
 @end

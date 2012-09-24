@@ -20,39 +20,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
-#import "GRMustacheAvailabilityMacros_private.h"
+#import "GRMustacheImplicitIteratorExpression_private.h"
+#import "GRMustacheRuntime_private.h"
 
-@class GRMustacheSectionElement;
-@class GRMustacheRuntime;
+@implementation GRMustacheImplicitIteratorExpression
 
-// Documented in GRMustacheSection.h
-@interface GRMustacheSection: NSObject {
-@private
-    GRMustacheSectionElement *_sectionElement;
-    GRMustacheRuntime *_runtime;
++ (id)expression
+{
+    return [[[self alloc] init] autorelease];
 }
 
-// Documented in GRMustacheSection.h
-@property (nonatomic, readonly) NSString *innerTemplateString GRMUSTACHE_API_PUBLIC;
+- (BOOL)isEqual:(id)expression
+{
+    return [expression isKindOfClass:[GRMustacheImplicitIteratorExpression class]];
+}
 
-// Documented in GRMustacheSection.h
-- (NSString *)render GRMUSTACHE_API_PUBLIC;
 
-// Documented in GRMustacheSection.h
-- (NSString *)renderTemplateString:(NSString *)string error:(NSError **)outError GRMUSTACHE_API_PUBLIC;
+#pragma mark - GRMustacheExpression
 
-/**
- * Builds and returns a section suitable for GRMustacheSectionHelper.
- *
- * @param sectionElement    The underlying sectionElement.
- * @param runtime           A runtime.
- *
- * @return A section.
- *
- * @see GRMustacheSectionHelper protocol
- * @see GRMustacheSectionElement
- * @see GRMustacheRuntime
- */
-+ (id)sectionWithSectionElement:(GRMustacheSectionElement *)sectionElement runtime:(GRMustacheRuntime *)runtime GRMUSTACHE_API_INTERNAL;
+- (id)evaluateInRuntime:(GRMustacheRuntime *)runtime asFilterValue:(BOOL)filterValue
+{
+    NSAssert(!filterValue, @"GRMustacheImplicitIteratorExpression invoked for a filter");
+    return [runtime currentContextValue];
+}
+
 @end

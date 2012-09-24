@@ -21,78 +21,113 @@
 // THE SOFTWARE.
 
 #import "GRMustacheVariableElement_private.h"
-#import "GRMustacheInvocation_private.h"
+#import "GRMustacheVariableHelper.h"
+#import "GRMustacheVariable_private.h"
+#import "GRMustacheExpression_private.h"
 #import "GRMustacheTemplate_private.h"
+#import "GRMustacheRuntime_private.h"
+#import "GRMustacheSectionElement_private.h"
+#import "GRMustacheImplicitIteratorExpression_private.h"
 
 @interface GRMustacheVariableElement()
-@property (nonatomic, retain) GRMustacheInvocation *invocation;
-@property (nonatomic) BOOL raw;
-- (id)initWithInvocation:(GRMustacheInvocation *)invocation raw:(BOOL)raw;
+- (id)initWithExpression:(GRMustacheExpression *)expression templateRepository:(GRMustacheTemplateRepository *)templateRepository raw:(BOOL)raw;
 - (NSString *)htmlEscape:(NSString *)string;
 @end
 
 
 @implementation GRMustacheVariableElement
-@synthesize invocation=_invocation;
-@synthesize raw=_raw;
 
-+ (id)variableElementWithInvocation:(GRMustacheInvocation *)invocation raw:(BOOL)raw
++ (id)variableElementWithExpression:(GRMustacheExpression *)expression templateRepository:(GRMustacheTemplateRepository *)templateRepository raw:(BOOL)raw
 {
-    return [[[self alloc] initWithInvocation:invocation raw:raw] autorelease];
+    return [[[self alloc] initWithExpression:expression templateRepository:templateRepository raw:raw] autorelease];
 }
 
 - (void)dealloc
 {
-    [_invocation release];
+    [_expression release];
+    [_enumerableSectionElement release];
     [super dealloc];
 }
 
 
 #pragma mark <GRMustacheRenderingElement>
 
-- (NSString *)renderContext:(GRMustacheContext *)context inRootTemplate:(GRMustacheTemplate *)rootTemplate
+- (void)renderInBuffer:(NSMutableString *)buffer withRuntime:(GRMustacheRuntime *)runtime
 {
-    // invoke
-    
-    [_invocation invokeWithContext:context];
-    if ([rootTemplate.delegate respondsToSelector:@selector(template:willRenderReturnValueOfInvocation:)]) {
-        [rootTemplate.delegate template:rootTemplate willRenderReturnValueOfInvocation:_invocation];
-    }
-    id value = _invocation.returnValue;
-    
-    
-    // interpret
-    
-    NSString *result = nil;
-    if (value && (value != [NSNull null])) {
-        result = [value description];
-        if (!_raw) {
-            result = [self htmlEscape:result];
+    id value = [_expression evaluateInRuntime:runtime asFilterValue:NO];
+    [runtime delegateValue:value interpretation:GRMustacheInterpretationVariable forRenderingToken:_expression.token usingBlock:^(id value) {
+
+        // Interpret value
+
+        if ((value == nil) ||
+            (value == [NSNull null]))
+        {
+            // Missing value
         }
-    }
-    
-    
-    // finish
-    
-    if ([rootTemplate.delegate respondsToSelector:@selector(template:didRenderReturnValueOfInvocation:)]) {
-        [rootTemplate.delegate template:rootTemplate didRenderReturnValueOfInvocation:_invocation];
-    }
-    
-    if (!result) {
-        return @"";
-    }
-    return result;
+        else if ([value conformsToProtocol:@protocol(NSFastEnumeration)] && ![value isKindOfClass:[NSDictionary class]])
+        {
+            // Enumerable: render {{items}} just as {{#items}}{{.}}{{/items}}
+            
+            if (_enumerableSectionElement == nil) {
+                // Build {{#items}}{{.}}{{/items}} or {{#items}}{{{.}}}{{/items}}, depending on _raw
+                GRMustacheExpression *expression = [GRMustacheImplicitIteratorExpression expression];
+                GRMustacheVariableElement *innerElement = [GRMustacheVariableElement variableElementWithExpression:expression templateRepository:_templateRepository raw:_raw];
+                _enumerableSectionElement = [GRMustacheSectionElement sectionElementWithExpression:_expression
+                                                                                templateRepository:_templateRepository
+                                                                                    templateString:nil                          // unused
+                                                                                        innerRange:NSMakeRange(NSNotFound, 0)   // unused
+                                                                                          inverted:NO
+                                                                                       overridable:NO
+                                                                                          elements:[NSArray arrayWithObject:innerElement]];
+                [_enumerableSectionElement retain];
+            }
+            [_enumerableSectionElement renderInBuffer:buffer withRuntime:runtime];
+        }
+        else if ([value conformsToProtocol:@protocol(GRMustacheVariableHelper)])
+        {
+            // Helper
+            
+            GRMustacheRuntime *helperRuntime = [runtime runtimeByAddingContextObject:value];
+            GRMustacheVariable *variable = [GRMustacheVariable variableWithTemplateRepository:_templateRepository runtime:helperRuntime];
+            NSString *rendering = [(id<GRMustacheVariableHelper>)value renderVariable:variable];
+            if (rendering) {
+                // Never HTML escape helpers
+                [buffer appendString:rendering];
+            }
+        }
+        else
+        {
+            // Object
+            
+            NSString *rendering = [value description];
+            if (!_raw) {
+                rendering = [self htmlEscape:rendering];
+            }
+            [buffer appendString:rendering];
+        }
+    }];
+}
+
+- (BOOL)isFinal
+{
+    return YES;
+}
+
+- (BOOL)canOverrideNonFinalRenderingElement:(id<GRMustacheRenderingElement>)element
+{
+    return NO;
 }
 
 
 #pragma mark Private
 
-- (id)initWithInvocation:(GRMustacheInvocation *)invocation raw:(BOOL)raw
+- (id)initWithExpression:(GRMustacheExpression *)expression templateRepository:(GRMustacheTemplateRepository *)templateRepository raw:(BOOL)raw
 {
     self = [self init];
     if (self) {
-        self.invocation = invocation;
-        self.raw = raw;
+        _templateRepository = templateRepository; // do not retain, since self is retained by a template, that is retained by the template repository.
+        _expression = [expression retain];
+        _raw = raw;
     }
     return self;
 }

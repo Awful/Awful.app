@@ -1,17 +1,17 @@
 // The MIT License
-// 
+//
 // Copyright (c) 2012 Gwendal Roué
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,27 +23,35 @@
 #import <Foundation/Foundation.h>
 #import "GRMustacheAvailabilityMacros_private.h"
 
-@class GRMustacheSection;
-@class GRMustacheContext;
+@class GRMustacheTemplateRepository;
+@class GRMustacheRuntime;
 
-// =============================================================================
-#pragma mark - <GRMustacheHelper>
+// Documented in GRMustacheVariable.h
+@interface GRMustacheVariable : NSObject {
+@private
+    GRMustacheTemplateRepository *_templateRepository;
+    GRMustacheRuntime *_runtime;
+}
 
-@protocol GRMustacheHelper<NSObject>
-@required
-- (NSString *)renderSection:(GRMustacheSection *)section GRMUSTACHE_API_PUBLIC;
-@end
+// Documented in GRMustacheVariable.h
+- (NSString *)renderTemplateString:(NSString *)string error:(NSError **)outError GRMUSTACHE_API_PUBLIC;
 
+// Documented in GRMustacheVariable.h
+- (NSString *)renderTemplateNamed:(NSString *)name error:(NSError **)outError GRMUSTACHE_API_PUBLIC;
 
-// =============================================================================
-#pragma mark - GRMustacheHelper
-
-@interface GRMustacheHelper: NSObject<GRMustacheHelper>
-
-#if NS_BLOCKS_AVAILABLE
-
-+ (id)helperWithBlock:(NSString *(^)(GRMustacheSection* section))block GRMUSTACHE_API_PUBLIC;
-
-#endif /* if NS_BLOCKS_AVAILABLE */
-
+/**
+ * Builds and returns a variable suitable for GRMustacheVariableHelper.
+ *
+ * @param templateRepository  A Template repository that allows helpers to
+ *                            render template strings through
+ *                            renderTemplateString:error: and
+ *                            renderTemplateNamed:error: methods.
+ * @param runtime             A runtime.
+ *
+ * @return A variable.
+ *
+ * @see GRMustacheVariableHelper protocol
+ * @see GRMustacheRuntime
+ */
++ (id)variableWithTemplateRepository:(GRMustacheTemplateRepository *)templateRepository runtime:(GRMustacheRuntime *)runtime GRMUSTACHE_API_INTERNAL;
 @end

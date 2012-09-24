@@ -20,38 +20,70 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
-#import "GRMustacheAvailabilityMacros_private.h"
-#import "GRMustacheTokenizer_private.h"
-#import "GRMustache_private.h"
-
-
-@class GRMustacheTemplateParser;
-@protocol GRMustacheRenderingElement;
-
+#import "GRMustacheFilter.h"
 
 // =============================================================================
-#pragma mark - <GRMustacheTemplateParserDataSource>
+#pragma mark - Private concrete class GRMustacheBlockFilter
 
-@protocol GRMustacheTemplateParserDataSource <NSObject>
-@required
-- (id<GRMustacheRenderingElement>)templateParser:(GRMustacheTemplateParser *)templateParser renderingElementForPartialName:(NSString *)name error:(NSError **)outError GRMUSTACHE_API_INTERNAL;
+/**
+ * Private subclass of GRMustacheFilter that filter values by calling a block.
+ */
+@interface GRMustacheBlockFilter: GRMustacheFilter {
+@private
+    id(^_block)(id value);
+}
+- (id)initWithBlock:(id(^)(id value))block;
 @end
 
 
 // =============================================================================
-#pragma mark - GRMustacheTemplateParser
+#pragma mark - GRMustacheFilter
 
-@interface GRMustacheTemplateParser : NSObject<GRMustacheTokenizerDelegate> {
-@private
-    NSError *_error;
-    NSMutableArray *_elementsStack;
-    NSMutableArray *_sectionOpeningTokenStack;
-    NSMutableArray *_currentElements;
-    GRMustacheToken *_currentSectionOpeningToken;
-    id<GRMustacheTemplateParserDataSource> _dataSource;
+@implementation GRMustacheFilter
+
++ (id)filterWithBlock:(id(^)(id value))block
+{
+    return [[[GRMustacheBlockFilter alloc] initWithBlock:block] autorelease];
 }
-@property (nonatomic, assign) id<GRMustacheTemplateParserDataSource> dataSource GRMUSTACHE_API_INTERNAL;
 
-- (NSArray *)renderingElementsReturningError:(NSError **)outError GRMUSTACHE_API_INTERNAL;
+- (id)transformedValue:(id)object
+{
+    return object;
+}
+
+@end
+
+
+// =============================================================================
+#pragma mark - Private concrete class GRMustacheBlockFilter
+
+@implementation GRMustacheBlockFilter
+
+- (id)initWithBlock:(id(^)(id value))block
+{
+    self = [self init];
+    if (self) {
+        _block = [block copy];
+    }
+    return self;
+}
+
+
+- (void)dealloc
+{
+    [_block release];
+    [super dealloc];
+}
+
+#pragma mark <GRMustacheFilter>
+
+- (id)transformedValue:(id)object
+{
+    if (_block) {
+        return _block(object);
+    }
+    
+    return nil;
+}
+
 @end

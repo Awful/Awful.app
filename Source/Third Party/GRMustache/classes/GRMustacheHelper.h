@@ -20,28 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
-#import "GRMustacheAvailabilityMacros.h"
+#warning GRMustacheHelper.h is deprecated
 
-@class GRMustacheSection;
-
-
-// =============================================================================
-#pragma mark - <GRMustacheHelper>
-
-@protocol GRMustacheHelper<NSObject>
-@required
-- (NSString *)renderSection:(GRMustacheSection *)section AVAILABLE_GRMUSTACHE_VERSION_3_0_AND_LATER;
-@end
-
-
-// =============================================================================
-#pragma mark - GRMustacheHelper
-
-#if NS_BLOCKS_AVAILABLE
-
-@interface GRMustacheHelper: NSObject<GRMustacheHelper>
-+ (id)helperWithBlock:(NSString *(^)(GRMustacheSection* section))block AVAILABLE_GRMUSTACHE_VERSION_3_0_AND_LATER;
-@end
-
-#endif /* if NS_BLOCKS_AVAILABLE */
+#import "GRMustacheSectionHelper.h"

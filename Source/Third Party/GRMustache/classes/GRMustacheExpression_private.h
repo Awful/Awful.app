@@ -23,36 +23,44 @@
 #import <Foundation/Foundation.h>
 #import "GRMustacheAvailabilityMacros_private.h"
 
-@class GRMustacheSectionElement;
 @class GRMustacheRuntime;
-
-// Documented in GRMustacheSection.h
-@interface GRMustacheSection: NSObject {
-@private
-    GRMustacheSectionElement *_sectionElement;
-    GRMustacheRuntime *_runtime;
-}
-
-// Documented in GRMustacheSection.h
-@property (nonatomic, readonly) NSString *innerTemplateString GRMUSTACHE_API_PUBLIC;
-
-// Documented in GRMustacheSection.h
-- (NSString *)render GRMUSTACHE_API_PUBLIC;
-
-// Documented in GRMustacheSection.h
-- (NSString *)renderTemplateString:(NSString *)string error:(NSError **)outError GRMUSTACHE_API_PUBLIC;
+@class GRMustacheToken;
 
 /**
- * Builds and returns a section suitable for GRMustacheSectionHelper.
+ * The GRMustacheExpression is the base class for objects that can provide
+ * values out of a Mustache runtime.
  *
- * @param sectionElement    The underlying sectionElement.
- * @param runtime           A runtime.
+ * GRMustacheExpression instances are built by GRMustacheParser. For instance,
+ * the `{{ name }}` tag would yield a GRMustacheIdentifierExpression.
  *
- * @return A section.
- *
- * @see GRMustacheSectionHelper protocol
- * @see GRMustacheSectionElement
- * @see GRMustacheRuntime
+ * @see GRMustacheFilteredExpression
+ * @see GRMustacheIdentifierExpression
+ * @see GRMustacheImplicitIteratorExpression
+ * @see GRMustacheScopedExpression
  */
-+ (id)sectionWithSectionElement:(GRMustacheSectionElement *)sectionElement runtime:(GRMustacheRuntime *)runtime GRMUSTACHE_API_INTERNAL;
+@interface GRMustacheExpression : NSObject {
+@private
+    GRMustacheToken *_token;
+}
+
+/**
+ * This property stores a token whose sole purpose is to help the library user
+ * debugging his templates, using the token's ability to output its location
+ * (`{{ foo }}` at line 23 of /path/to/template).
+ *
+ * @see GRMustacheInvocation
+ */
+@property (nonatomic, retain) GRMustacheToken *token GRMUSTACHE_API_INTERNAL;
+
+/**
+ * Evaluates an expression against a runtime, and return the value.
+ *
+ * @param runtime       A Mustache runtime object
+ * @param filterValue   The expression evaluates in the runtime's context stack,
+ *                      or filter stack, depending on this boolean.
+ *
+ * @return The value of the expression.
+ */
+- (id)evaluateInRuntime:(GRMustacheRuntime *)runtime asFilterValue:(BOOL)filterValue GRMUSTACHE_API_INTERNAL;
+
 @end

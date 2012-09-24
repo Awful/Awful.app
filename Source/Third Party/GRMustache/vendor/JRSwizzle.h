@@ -1,7 +1,5 @@
-// JRSwizzle.h semver:1.0
-//   Copyright (c) 2007-2011 Jonathan 'Wolf' Rentzsch: http://rentzsch.com
-//   Some rights reserved: http://opensource.org/licenses/MIT
-//   https://github.com/rentzsch/jrswizzle
+//	Copyright (c) 2007-2011 Jonathan 'Wolf' Rentzsch: http://rentzsch.com
+//	Some rights reserved: http://opensource.org/licenses/mit-license.php
 
 #import <Foundation/Foundation.h>
 

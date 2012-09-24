@@ -21,14 +21,32 @@
 // THE SOFTWARE.
 
 #import "GRMustache_private.h"
-#import "GRMustacheContext_private.h"
+#import "GRMustacheRuntime_private.h"
 #import "GRMustacheVersion.h"
+#import "GRMustacheError.h"
 
 @implementation GRMustache
 
++ (void)load
+{
+    // We need to initialize GRMustacheFilterException, which is deprecated.
+    //
+    // We'll temporarily disable deprecation warnings when assigning it.
+    //
+    // But make sure we do not disable deprecating warnings for
+    // GRMustacheRenderingException.
+    
+    NSString *exception = GRMustacheRenderingException;
+    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    GRMustacheFilterException = exception;
+#pragma clang diagnostic pop
+}
+
 + (void)preventNSUndefinedKeyExceptionAttack
 {
-    [GRMustacheContext preventNSUndefinedKeyExceptionAttack];
+    [GRMustacheRuntime preventNSUndefinedKeyExceptionAttack];
 }
 
 + (GRMustacheVersion)version

@@ -23,10 +23,48 @@
 #import <Foundation/Foundation.h>
 #import "GRMustacheAvailabilityMacros_private.h"
 
-@class GRMustacheContext;
-@class GRMustacheTemplate;
+@class GRMustacheRuntime;
 
+/**
+ * The protocol for "rendering elements".
+ * 
+ * When parsing a Mustache template, GRMustacheCompiler builds a syntax
+ * tree of objects representing raw text and various mustache tags.
+ * 
+ * This syntax tree is made of objects conforming to the
+ * GRMustacheRenderingElement.
+ * 
+ * Their responsability is to render, provided with a Mustache runtime.
+ * 
+ * For instance, the template string "hello {{name}}!" would give four rendering
+ * elements:
+ *
+ * - a GRMustacheTextElement that renders "hello ".
+ * - a GRMustacheVariableElement that renders the value of the `name` key in the
+ *   runtime.
+ * - a GRMustacheTextElement that renders "!".
+ * - a GRMustacheTemplate that would contain the three previous elements, and
+ *   render the concatenation of their renderings.
+ * 
+ * @see GRMustacheCompiler
+ * @see GRMustacheRuntime
+ */
 @protocol GRMustacheRenderingElement<NSObject>
 @required
-- (NSString *)renderContext:(GRMustacheContext *)context inRootTemplate:(GRMustacheTemplate *)rootTemplate GRMUSTACHE_API_INTERNAL;
+@property (nonatomic, readonly, getter=isFinal) BOOL final GRMUSTACHE_API_INTERNAL;
+
+/**
+ * Appends the rendering of the receiver in a buffer.
+ * 
+ * @param buffer    A mutable string
+ * @param runtime   A runtime
+ *
+ * @see GRMustacheRuntime
+ */
+- (void)renderInBuffer:(NSMutableString *)buffer withRuntime:(GRMustacheRuntime *)runtime GRMUSTACHE_API_INTERNAL;
+
+/**
+ *
+ */
+- (BOOL)canOverrideNonFinalRenderingElement:(id<GRMustacheRenderingElement>)element GRMUSTACHE_API_INTERNAL;
 @end

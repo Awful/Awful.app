@@ -20,35 +20,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
-#import "GRMustacheAvailabilityMacros_private.h"
-#import "GRMustacheToken_private.h"
+#import "GRMustacheExpression_private.h"
 
-
-@class GRMustacheTokenizer;
-
-
-// =============================================================================
-#pragma mark - <GRMustacheTokenizerDelegate>
-
-@protocol GRMustacheTokenizerDelegate<NSObject>
-@optional
-- (BOOL)tokenizer:(GRMustacheTokenizer *)tokenizer shouldContinueAfterParsingToken:(GRMustacheToken *)token GRMUSTACHE_API_INTERNAL;
-- (void)tokenizerDidFinish:(GRMustacheTokenizer *)tokenizer GRMUSTACHE_API_INTERNAL;
-- (void)tokenizer:(GRMustacheTokenizer *)tokenizer didFailWithError:(NSError *)error GRMUSTACHE_API_INTERNAL;
-@end
-
-
-// =============================================================================
-#pragma mark - GRMustacheTokenizer
-
-@interface GRMustacheTokenizer : NSObject {
+/**
+ * The GRMustacheIdentifierExpression is able to perform the deep lookup of an
+ * identifier in a runtime.
+ *
+ * @see GRMustacheExpression
+ */
+@interface GRMustacheIdentifierExpression : GRMustacheExpression {
 @private
-    id<GRMustacheTokenizerDelegate> _delegate;
-    NSString *_otag;
-    NSString *_ctag;
+    NSString *_identifier;
 }
 
-@property (nonatomic, assign) id<GRMustacheTokenizerDelegate> delegate GRMUSTACHE_API_INTERNAL;
-- (void)parseTemplateString:(NSString *)templateString templateID:(id)templateID GRMUSTACHE_API_INTERNAL;
+/**
+ * Returns an identifier expression, given an identifier.
+ *
+ * For instance, the Mustache tag `{{ name }}` contains an identifier
+ * expression, whose identifier is `name`.
+ *
+ * @param identifier  An identifier
+ *
+ * @return A GRMustacheIdentifierExpression.
+ */
++ (id)expressionWithIdentifier:(NSString *)identifier GRMUSTACHE_API_INTERNAL;
 @end

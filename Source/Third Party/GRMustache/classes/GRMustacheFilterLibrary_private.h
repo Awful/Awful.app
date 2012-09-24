@@ -23,36 +23,13 @@
 #import <Foundation/Foundation.h>
 #import "GRMustacheAvailabilityMacros_private.h"
 
-@class GRMustacheSectionElement;
-@class GRMustacheRuntime;
-
-// Documented in GRMustacheSection.h
-@interface GRMustacheSection: NSObject {
-@private
-    GRMustacheSectionElement *_sectionElement;
-    GRMustacheRuntime *_runtime;
-}
-
-// Documented in GRMustacheSection.h
-@property (nonatomic, readonly) NSString *innerTemplateString GRMUSTACHE_API_PUBLIC;
-
-// Documented in GRMustacheSection.h
-- (NSString *)render GRMUSTACHE_API_PUBLIC;
-
-// Documented in GRMustacheSection.h
-- (NSString *)renderTemplateString:(NSString *)string error:(NSError **)outError GRMUSTACHE_API_PUBLIC;
+/**
+ * The GRMustacheFilterLibrary provides all built-in filters.
+ */
+@interface GRMustacheFilterLibrary : NSObject
 
 /**
- * Builds and returns a section suitable for GRMustacheSectionHelper.
- *
- * @param sectionElement    The underlying sectionElement.
- * @param runtime           A runtime.
- *
- * @return A section.
- *
- * @see GRMustacheSectionHelper protocol
- * @see GRMustacheSectionElement
- * @see GRMustacheRuntime
+ * Returns the shared filter library.
  */
-+ (id)sectionWithSectionElement:(GRMustacheSectionElement *)sectionElement runtime:(GRMustacheRuntime *)runtime GRMUSTACHE_API_INTERNAL;
++ (id)filterLibrary GRMUSTACHE_API_INTERNAL;
 @end

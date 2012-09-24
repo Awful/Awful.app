@@ -23,11 +23,49 @@
 #import <Foundation/Foundation.h>
 #import "GRMustacheAvailabilityMacros.h"
 
+/**
+ * The GRMustacheInvocation class gives you information about the values that
+ * are rendered.
+ *
+ * You'll be given GRMustacheInvocation instances when providing a
+ * GRMustacheTemplateDelegate to your templates.
+ *
+ * **Companion guide:** https://github.com/groue/GRMustache/blob/master/Guides/delegate.md
+ * 
+ * @see GRMustacheTemplateDelegate
+ *
+ * @since v1.12
+ */
 @interface GRMustacheInvocation : NSObject {
 @private
     id _returnValue;
     id _token;
 }
-@property (nonatomic, readonly) NSString *key AVAILABLE_GRMUSTACHE_VERSION_3_0_AND_LATER;
-@property (nonatomic, retain) id returnValue AVAILABLE_GRMUSTACHE_VERSION_3_0_AND_LATER;
+
+/**
+ * Returns a string that describes the invocation.
+ *
+ * It contains the original Mustache tag, the line number, and the path, URL, or
+ * name of the template, if any.
+ *
+ * @return a string that describes the invocation.
+ *
+ * @since v1.12
+ */
+- (NSString *)description;
+
+/**
+ * The return value of the invocation.
+ *
+ * For instance, the invocation that you would get for a `{{name}}` tag would
+ * have the name in the `returnValue` property.
+ *
+ * In a template's delegate methods, you can set the returnValue of an
+ * invocation, and alter a template rendering.
+ *
+ * @see GRMustacheTemplateDelegate
+ *
+ * @since v1.12
+ */
+@property (nonatomic, retain) id returnValue AVAILABLE_GRMUSTACHE_VERSION_5_0_AND_LATER;
 @end

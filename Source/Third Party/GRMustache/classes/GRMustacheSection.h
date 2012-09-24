@@ -23,58 +23,71 @@
 #import <Foundation/Foundation.h>
 #import "GRMustacheAvailabilityMacros.h"
 
-@class GRMustacheInvocation;
-@class GRMustacheTemplate;
-
+/**
+ * A GRMustacheSection represents a Mustache section such as 
+ * `{{#name}}...{{/name}}`.
+ *
+ * You will be provided with GRMustacheSection objects when implementing
+ * mustache lambda sections with objects conforming to the
+ * GRMustacheSectionHelper protocol.
+ *
+ * **Companion guide:** https://github.com/groue/GRMustache/blob/master/Guides/helpers.md
+ *
+ * @see GRMustacheSectionHelper protocol
+ *
+ * @since v1.3
+ */
 @interface GRMustacheSection: NSObject {
 @private
-    GRMustacheInvocation *_invocation;
-    GRMustacheTemplate *_rootTemplate;
-    NSString *_templateString;
-    NSRange _range;
-    BOOL _inverted;
-    NSArray *_elems;
-    id _renderingContext;
+    id _sectionElement;
+    id _runtime;
 }
 
 
-//////////////////////////////////////////////////////////////////////////////////////////
-/// @name Accessing the current rendering context
-//////////////////////////////////////////////////////////////////////////////////////////
 
-/**
- Returns the current rendering context.
- 
- @since v2.0
- */
-@property (nonatomic, readonly) id renderingContext AVAILABLE_GRMUSTACHE_VERSION_3_0_AND_LATER;
-
-
-
-
-//////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 /// @name Accessing the literal inner content
-//////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 /**
- Returns the literal inner content of the section, with unprocessed mustache `{{tags}}`.
- 
- @since v2.0
+ * The literal inner content of the section, with unprocessed Mustache
+ * `{{tags}}`.
+ *
+ * @since v2.0
  */
-@property (nonatomic, readonly) NSString *innerTemplateString AVAILABLE_GRMUSTACHE_VERSION_3_0_AND_LATER;
+@property (nonatomic, readonly) NSString *innerTemplateString AVAILABLE_GRMUSTACHE_VERSION_5_0_AND_LATER;
 
 
-//////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 /// @name Rendering the inner content
-//////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 /**
- Renders the inner content of the receiver with the current context
- 
- @return A string containing the rendered inner content.
- 
- @since v2.0
+ * Renders the inner content of the receiver with the current rendering context.
+ * 
+ * @return A string containing the rendered inner content.
+ *
+ * @since v2.0
  */
-- (NSString *)render AVAILABLE_GRMUSTACHE_VERSION_3_0_AND_LATER;
+- (NSString *)render AVAILABLE_GRMUSTACHE_VERSION_5_0_AND_LATER;
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @name Rendering another template string
+////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Renders a template string with the current rendering context.
+ *
+ * @param string    A template string
+ * @param outError  If there is an error loading or parsing template and
+ *                  partials, upon return contains an NSError object that
+ *                  describes the problem.
+ *
+ * @return A string containing the rendering of the template string.
+ *
+ * @since v4.3
+ */
+- (NSString *)renderTemplateString:(NSString *)string error:(NSError **)outError AVAILABLE_GRMUSTACHE_VERSION_5_0_AND_LATER;
 
 @end

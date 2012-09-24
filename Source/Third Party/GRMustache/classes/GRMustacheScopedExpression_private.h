@@ -20,29 +20,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
-#import "GRMustacheAvailabilityMacros_private.h"
-#import "GRMustache_private.h"
+#import "GRMustacheExpression_private.h"
 
-#if !defined(NS_BLOCK_ASSERTIONS)
-// For testing purpose
-extern BOOL GRMustacheContextDidCatchNSUndefinedKeyException;
-#endif
-
-@interface GRMustacheContext: NSObject {
+/**
+ * The GRMustacheScopedExpression extracts a key out of a value.
+ *
+ * @see GRMustacheExpression
+ */
+@interface GRMustacheScopedExpression : GRMustacheExpression {
 @private
-    id _object;
-    GRMustacheContext *_parent;
+    GRMustacheExpression *_baseExpression;
+    NSString *_scopeIdentifier;
 }
 
-@property (nonatomic, retain, readonly) id object GRMUSTACHE_API_INTERNAL;
-@property (nonatomic, retain, readonly) GRMustacheContext *parent GRMUSTACHE_API_INTERNAL;
-
-+ (void)preventNSUndefinedKeyExceptionAttack GRMUSTACHE_API_INTERNAL;
-+ (id)contextWithObject:(id)object GRMUSTACHE_API_INTERNAL;
-+ (id)contextWithObject:(id)object andObjectList:(va_list)objectList GRMUSTACHE_API_INTERNAL;
-- (GRMustacheContext *)contextByAddingObject:(id)object GRMUSTACHE_API_INTERNAL;
-- (GRMustacheContext *)contextForKey:(NSString *)key scoped:(BOOL)scoped GRMUSTACHE_API_INTERNAL;
-- (id)valueForKey:(NSString *)key scoped:(BOOL)scoped GRMUSTACHE_API_INTERNAL;
-
+/**
+ * Returns a scoped expression, given an expression that returns a value, and
+ * an identifier.
+ *
+ * For instance, the Mustache tag `{{ person.name }}` contains a scoped
+ * expression, whose baseExpression is a GRMustacheIdentifierExpression (for the
+ * identifier `person`), and whose identifier is `name`.
+ *
+ * @param baseExpression   An expression.
+ * @param scopeIdentifier  An identifier.
+ *
+ * @return A GRMustacheScopedExpression.
+ */
++ (id)expressionWithBaseExpression:(GRMustacheExpression *)baseExpression scopeIdentifier:(NSString *)scopeIdentifier GRMUSTACHE_API_INTERNAL;
 @end

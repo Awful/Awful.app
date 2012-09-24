@@ -22,19 +22,29 @@
 
 #import <Foundation/Foundation.h>
 #import "GRMustacheAvailabilityMacros_private.h"
-#import "GRMustache_private.h"
 
-@class GRMustacheContext;
 @class GRMustacheToken;
 
+// Documented in GRMustacheInvocation.h
 @interface GRMustacheInvocation : NSObject {
 @private
     id _returnValue;
     GRMustacheToken *_token;
 }
-@property (nonatomic, readonly) NSString *key GRMUSTACHE_API_PUBLIC;
+
+/**
+ * The getter of this property is documented in GRMustacheInvocation.h.
+ *
+ * The setter allow GRMustacheExpression objects to prepare invocations.
+ *
+ * @see GRMustacheExpression
+ */
 @property (nonatomic, retain) id returnValue GRMUSTACHE_API_PUBLIC;
-@property (nonatomic, retain, readonly) NSString *description GRMUSTACHE_API_PUBLIC;
-+ (id)invocationWithToken:(GRMustacheToken *)token keys:(NSArray *)keys GRMUSTACHE_API_INTERNAL;
-- (void)invokeWithContext:(GRMustacheContext *)context GRMUSTACHE_API_INTERNAL;
+
+/**
+ * The debugging token of an invocation allows an invocation to build a
+ * meaningful description like "`{{ foo }}` at line 12 of /path/to/template".
+ */
+@property (nonatomic, retain) GRMustacheToken *token GRMUSTACHE_API_INTERNAL;
+
 @end

@@ -22,23 +22,23 @@
 
 
 /**
- The major component of GRMustache version
- 
- @since v1.0
+ * The major component of GRMustache version
+ * 
+ * @since v1.0
  */
-#define GRMUSTACHE_MAJOR_VERSION 3
+#define GRMUSTACHE_MAJOR_VERSION 5
 
 /**
- The minor component of GRMustache version
- 
- @since v1.0
+ * The minor component of GRMustache version
+ * 
+ * @since v1.0
  */
-#define GRMUSTACHE_MINOR_VERSION 0
+#define GRMUSTACHE_MINOR_VERSION 2
 
 /**
- The patch-level component of GRMustache version
- 
- @since v1.0
+ * The patch-level component of GRMustache version
+ * 
+ * @since v1.0
  */
 #define GRMUSTACHE_PATCH_VERSION 0
 
