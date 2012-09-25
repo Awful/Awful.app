@@ -15,21 +15,16 @@
 
 @interface AwfulSettingsViewController () <MFMailComposeViewControllerDelegate>
 
-@property (strong) NSArray *sections;
+@property (strong, nonatomic) NSArray *sections;
 
-@property (strong) AwfulUser *user;
+@property (strong, nonatomic) AwfulUser *user;
 
-@property (strong) NSMutableArray *switches;
+@property (strong, nonatomic) NSMutableArray *switches;
 
 @end
 
+
 @implementation AwfulSettingsViewController
-
-@synthesize sections = _sections;
-
-@synthesize user = _user;
-
-@synthesize switches = _switches;
 
 - (void)viewDidLoad
 {
@@ -66,11 +61,13 @@
 {
     [super refresh];
     [self.networkOperation cancel];
-    self.networkOperation = [[AwfulHTTPClient sharedClient] userInfoRequestOnCompletion:^(AwfulUser *user) {
+    self.networkOperation = [[AwfulHTTPClient sharedClient] userInfoRequestOnCompletion:^(AwfulUser *user)
+    {
         self.user = user;
         [self.tableView reloadData];
         [self finishedRefreshing];
-    } onError:^(NSError *error) {
+    } onError:^(NSError *error)
+    {
         [self finishedRefreshing];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed"
                                                         message:[error localizedDescription]
@@ -84,7 +81,7 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView 
 {
     if (IsLoggedIn()) {
-        return self.sections.count - 1;
+        return [self.sections count] - 1;
     } else {
         return 2;
     }
@@ -93,8 +90,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     section = [self fudgedSectionForSection:section];
-    NSDictionary *settingSection = [self.sections objectAtIndex:section];
-    return [[settingSection objectForKey:@"Settings"] count];
+    return [self.sections[section][@"Settings"] count];
 }
 
 typedef enum SettingType
@@ -114,11 +110,11 @@ typedef enum SettingType
     
     NSDictionary *setting = [self settingForIndexPath:indexPath];
     SettingType settingType = ImmutableSetting;
-    if ([[setting objectForKey:@"Type"] isEqual:@"Switch"]) {
+    if ([setting[@"Type"] isEqual:@"Switch"]) {
         settingType = OnOffSetting;
-    } else if ([setting objectForKey:@"Choices"]) {
+    } else if (setting[@"Choices"]) {
         settingType = ChoiceSetting;
-    } else if ([setting objectForKey:@"Action"]) {
+    } else if (setting[@"Action"]) {
         settingType = ButtonSetting;
     }
     NSString *identifier = @"Value1";
@@ -133,17 +129,27 @@ typedef enum SettingType
         cell = [[UITableViewCell alloc] initWithStyle:style 
                                       reuseIdentifier:identifier];
     }
+    if (style == UITableViewCellStyleValue1) {
+        if ([[AwfulSettings settings] darkTheme]) {
+            cell.detailTextLabel.textColor = [UIColor lightGrayColor];
+        } else {
+            cell.detailTextLabel.textColor = [UIColor colorWithRed:0.224
+                                                             green:0.329
+                                                              blue:0.518
+                                                             alpha:1];
+        }
+    }
     
     // Set it up as we like it.
     
-    cell.textLabel.text = [setting objectForKey:@"Title"];
+    cell.textLabel.text = setting[@"Title"];
     
     if (settingType == ImmutableSetting) {
         // This only works because there's one immutable setting here.
         cell.detailTextLabel.text = self.user.userName;
     }
     
-    NSString *key = [setting objectForKey:@"Key"];
+    NSString *key = setting[@"Key"];
     id valueForSetting = key ? [[NSUserDefaults standardUserDefaults] objectForKey:key] : nil;
     
     if (settingType == OnOffSetting) {
@@ -152,7 +158,7 @@ typedef enum SettingType
             tag = self.switches.count;
             [self.switches addObject:indexPath];
         }
-        UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
+        UISwitch *switchView = [UISwitch new];
         switchView.on = [valueForSetting boolValue];
         [switchView addTarget:self
                        action:@selector(hitSwitch:)
@@ -165,9 +171,9 @@ typedef enum SettingType
     
     if (settingType == ChoiceSetting) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        for (NSDictionary *choice in [setting objectForKey:@"Choices"]) {
-            if ([[choice objectForKey:@"Value"] isEqual:valueForSetting]) {
-                cell.detailTextLabel.text = [choice objectForKey:@"Title"];
+        for (NSDictionary *choice in setting[@"Choices"]) {
+            if ([choice[@"Value"] isEqual:valueForSetting]) {
+                cell.detailTextLabel.text = choice[@"Title"];
                 break;
             }
         }
@@ -192,7 +198,7 @@ typedef enum SettingType
 
 - (void)hitSwitch:(UISwitch *)switchView
 {
-    NSIndexPath *indexPath = [self.switches objectAtIndex:switchView.tag];
+    NSIndexPath *indexPath = self.switches[switchView.tag];
     NSDictionary *setting = [self settingForIndexPath:indexPath];
     NSString *key = [setting objectForKey:@"Key"];
     [[NSUserDefaults standardUserDefaults] setBool:switchView.on forKey:key];
@@ -216,7 +222,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSIndexPath *fudgedIndexPath = [self fudgedIndexPathForIndexPath:indexPath];
     NSDictionary *setting = [self settingForIndexPath:fudgedIndexPath];
-    if ([setting objectForKey:@"Action"] || [setting objectForKey:@"Choices"]) {
+    if (setting[@"Action"] || setting[@"Choices"]) {
         return indexPath;
     }
     return nil;
@@ -226,7 +232,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSIndexPath *fudgedIndexPath = [self fudgedIndexPathForIndexPath:indexPath];
     NSDictionary *setting = [self settingForIndexPath:fudgedIndexPath];
-    NSString *action = [setting objectForKey:@"Action"];
+    NSString *action = setting[@"Action"];
     if ([action isEqualToString:@"LogOut"]) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log Out"
                                                         message:@"Are you sure you want to log out?"
@@ -240,8 +246,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     } else if ([action isEqualToString:@"ResetData"]) {
         [ApplicationDelegate resetDataStore];
     } else {
-        NSString *key = [setting objectForKey:@"Key"];
-        id selectedValue = [[NSUserDefaults standardUserDefaults] objectForKey:key];
+        id selectedValue = [[NSUserDefaults standardUserDefaults] objectForKey:setting[@"Key"]];
         AwfulSettingsChoiceViewController *choiceViewController = [[AwfulSettingsChoiceViewController alloc] initWithSetting:setting selectedValue:selectedValue];
         choiceViewController.settingsViewController = self;
         [self.navigationController pushViewController:choiceViewController animated:YES];
@@ -251,9 +256,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (void)didMakeChoice:(AwfulSettingsChoiceViewController *)choiceViewController
 {
-    NSString *key = [choiceViewController.setting objectForKey:@"Key"];
     [[NSUserDefaults standardUserDefaults] setObject:choiceViewController.selectedValue
-                                              forKey:key];
+                                              forKey:choiceViewController.setting[@"Key"]];
     [self.tableView reloadData];
 }
 
@@ -276,15 +280,84 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
     section = [self fudgedSectionForSection:section];
-    NSDictionary *settingSection = [self.sections objectAtIndex:section];
-    return [settingSection objectForKey:@"Title"];
+    return self.sections[section][@"Title"];
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    NSString *title = [tableView.dataSource tableView:tableView titleForHeaderInSection:section];
+    if (!title) return nil;
+    
+    UILabel *label = [UILabel new];
+    label.frame = CGRectMake(20, 13, 280, 30);
+    label.font = [UIFont boldSystemFontOfSize:17];
+    label.text = title;
+    label.backgroundColor = [UIColor clearColor];
+    if ([[AwfulSettings settings] darkTheme]) {
+        label.textColor = [UIColor whiteColor];
+        label.shadowColor = [UIColor grayColor];
+    } else {
+        label.textColor = [UIColor colorWithRed:0.265 green:0.294 blue:0.367 alpha:1];
+        label.shadowColor = [UIColor whiteColor];
+    }
+    label.shadowOffset = CGSizeMake(-1, 1);
+
+    UIView *wrapper = [UIView new];
+    wrapper.frame = (CGRect){ .size = { 320, 40 } };
+    wrapper.backgroundColor = [UIColor clearColor];
+    [wrapper addSubview:label];
+    return wrapper;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    NSString *title = [tableView.dataSource tableView:tableView titleForHeaderInSection:section];
+    return title ? 47 : 0;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
 {
     section = [self fudgedSectionForSection:section];
-    NSDictionary *settingSection = [self.sections objectAtIndex:section];
-    return [settingSection objectForKey:@"Explanation"];
+    return self.sections[section][@"Explanation"];
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    NSString *text = [tableView.dataSource tableView:tableView titleForFooterInSection:section];
+    if (!text) return nil;
+    
+    UILabel *label = [UILabel new];
+    label.numberOfLines = 0;
+    label.textAlignment = NSTextAlignmentCenter;
+    label.font = [UIFont systemFontOfSize:15];
+    label.frame = CGRectMake(20, 5, 280, 0);
+    label.text = text;
+    [label sizeToFit];
+    label.backgroundColor = [UIColor clearColor];
+    if ([[AwfulSettings settings] darkTheme]) {
+        label.textColor = [UIColor whiteColor];
+        label.shadowColor = [UIColor grayColor];
+    } else {
+        label.textColor = [UIColor colorWithRed:0.298 green:0.337 blue:0.424 alpha:1];
+        label.shadowColor = [UIColor whiteColor];
+    }
+    label.shadowOffset = CGSizeMake(0, 1);
+    
+    UIView *wrapper = [UIView new];
+    wrapper.frame = (CGRect){ .size = { 320, label.bounds.size.height + 5 } };
+    wrapper.backgroundColor = [UIColor clearColor];
+    [wrapper addSubview:label];
+    return wrapper;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    NSString *text = [tableView.dataSource tableView:tableView titleForFooterInSection:section];
+    if (!text) return 0;
+    CGSize expected = [text sizeWithFont:[UIFont systemFontOfSize:15]
+                                forWidth:280
+                           lineBreakMode:NSLineBreakByWordWrapping];
+    return expected.height + 5 + (section < tableView.numberOfSections - 1 ? 34 : 0);
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -292,8 +365,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     if (buttonIndex != 1)
         return;
     
-    NSURL *awful_url = [NSURL URLWithString:@"http://forums.somethingawful.com"];
-    NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:awful_url];
+    NSURL *sa = [NSURL URLWithString:@"http://forums.somethingawful.com"];
+    NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:sa];
     
     for (NSHTTPCookie *cookie in cookies) {
         [[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteCookie:cookie];
@@ -307,9 +380,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (NSDictionary *)settingForIndexPath:(NSIndexPath *)indexPath
 {
-    NSDictionary *settingSection = [self.sections objectAtIndex:indexPath.section];
-    NSArray *listOfSettings = [settingSection objectForKey:@"Settings"];
-    return [listOfSettings objectAtIndex:indexPath.row];
+    return self.sections[indexPath.section][@"Settings"][indexPath.row];
 
 }
 

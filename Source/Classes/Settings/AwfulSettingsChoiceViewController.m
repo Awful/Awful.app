@@ -8,6 +8,7 @@
 
 #import "AwfulSettingsChoiceViewController.h"
 #import "AwfulSettingsViewController.h"
+#import "AwfulSettings.h"
 
 @interface AwfulSettingsChoiceViewController ()
 
@@ -32,15 +33,6 @@
     return self;
 }
 
-@synthesize setting = _setting;
-
-@synthesize selectedValue = _selectedValue;
-
-@synthesize settingsViewController = _settingsViewController;
-
-@synthesize currentIndexPath = _currentIndexPath;
-
-
 - (id)initWithStyle:(UITableViewStyle)style
 {
     return [self initWithSetting:nil selectedValue:nil];
@@ -54,13 +46,23 @@
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    if ([[AwfulSettings settings] darkTheme]) {
+        self.tableView.backgroundView = nil;
+        self.tableView.backgroundColor = [UIColor darkGrayColor];
+    }
+}
+
 - (void)viewWillDisappear:(BOOL)animated
 {
     [self.settingsViewController didMakeChoice:self];
     [super viewWillDisappear:animated];
 }
 
-#pragma mark - Table view data source
+#pragma mark - Table view data source and delegate
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -94,7 +96,15 @@
     return cell;
 }
 
-#pragma mark - Table view delegate
+- (void)tableView:(UITableView *)tableView
+  willDisplayCell:(UITableViewCell *)cell
+forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([[AwfulSettings settings] darkTheme]) {
+        cell.textLabel.textColor = [UIColor whiteColor];
+        cell.backgroundColor = [UIColor darkGrayColor];
+    }
+}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {

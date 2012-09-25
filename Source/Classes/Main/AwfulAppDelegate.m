@@ -68,6 +68,7 @@
                                        forBarMetrics:UIBarMetricsLandscapePhone];
     if ([[AwfulSettings settings] darkTheme]) {
         [[UIBarButtonItem appearance] setTintColor:[UIColor blackColor]];
+        [[UISwitch appearance] setOnTintColor:[UIColor orangeColor]];
     } else {
         [[UIBarButtonItem appearance] setTintColor:[UIColor colorWithRed:46.0/255
                                                                    green:146.0/255
