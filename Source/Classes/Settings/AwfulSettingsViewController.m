@@ -53,7 +53,7 @@
         AwfulLoginController *login = (AwfulLoginController *)nav.topViewController;
         login.accountViewController = self;
         AwfulSplitViewController *split = (AwfulSplitViewController *)self.splitViewController;
-        [split.popoverController dismissPopoverAnimated:NO];
+        [split.masterPopoverController dismissPopoverAnimated:NO];
     }
 }
 

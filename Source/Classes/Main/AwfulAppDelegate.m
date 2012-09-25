@@ -32,20 +32,21 @@
     #endif
             
     NSManagedObjectContext *context = [self managedObjectContext];
-    if (context == nil) {
+    if (!context) {
         NSLog(@"no managed object context loaded");
     }
     
+    UITabBarController *tabBar;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         self.splitController = (AwfulSplitViewController *)self.window.rootViewController;
+        tabBar = self.splitController.viewControllers[0];
     } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        UITabBarController *tabBar = (UITabBarController *)self.window.rootViewController;
-        if(!IsLoggedIn()) {
-            tabBar.selectedIndex = 3;
-        } else {
-            AwfulFirstTab tab = [[AwfulSettings settings] firstTab];
-            tabBar.selectedIndex = tab;
-        }
+        tabBar = (UITabBarController *)self.window.rootViewController;
+    }
+    if (!IsLoggedIn()) {
+        tabBar.selectedIndex = 3;
+    } else {
+        tabBar.selectedIndex = [[AwfulSettings settings] firstTab];
     }
     
     [self configureAppearance];

@@ -221,7 +221,8 @@ typedef enum {
     }
 }
 
-- (void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated
+{
     [super viewWillAppear:animated];
     
     self.navigationItem.leftBarButtonItem = self.customBackButton;
@@ -319,17 +320,15 @@ typedef enum {
 - (void)didLoadThreadPage:(NSNotification *)msg
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    AwfulPage* page = [msg.userInfo objectForKey:@"page"];
+    AwfulPage *page = [msg.userInfo objectForKey:@"page"];
     
-    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
-        UINavigationController *nav = [self.splitViewController.viewControllers objectAtIndex:1];
-        [nav setViewControllers:[NSArray arrayWithObject:page] animated:YES];
-        /*
-        [self.splitViewController setViewControllers:[NSArray arrayWithObjects:
-                                                      [self.splitViewController.viewControllers objectAtIndex:0],
-                                                      page,
-                                                      nil]
-         ];*/
+    if (self.splitViewController) {
+        UINavigationController *nav = self.splitViewController.viewControllers[1];
+        [nav setViewControllers:@[page] animated:YES];
+        if ([self.splitViewController isKindOfClass:[AwfulSplitViewController class]]) {
+            AwfulSplitViewController *svc = (AwfulSplitViewController *)self.splitViewController;
+            [svc.masterPopoverController dismissPopoverAnimated:YES];
+        }
     }
     else {
         [self.navigationController pushViewController:page animated:YES];
