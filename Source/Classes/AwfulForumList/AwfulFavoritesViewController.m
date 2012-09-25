@@ -17,7 +17,8 @@
 @interface AwfulFavoritesViewController () <AwfulForumCellDelegate>
 
 @property (readonly, strong, nonatomic) UIBarButtonItem *addButtonItem;
-@property (assign) BOOL automaticallyAdded;
+@property (assign, nonatomic) BOOL automaticallyAdded;
+@property (weak, nonatomic) UIView *coverView;
 
 @end
 
@@ -42,6 +43,8 @@
     self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
 }
 
+static void *KVOContext = @"AwfulFavoritesViewController KVO context";
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
@@ -52,6 +55,15 @@
                                                                         alpha:1.0]];
     [self.navigationController.navigationBar setBackgroundImage:[ApplicationDelegate navigationBarBackgroundImageForMetrics:UIBarMetricsDefault]
                                                   forBarMetrics:(UIBarMetricsDefault)];
+    BOOL anyFavorites = [self.fetchedResultsController.fetchedObjects count] > 0;
+    self.navigationItem.rightBarButtonItem = anyFavorites ? self.editButtonItem : nil;
+    if (anyFavorites) {
+        [self.coverView removeFromSuperview];
+        self.tableView.scrollEnabled = YES;
+    } else {
+        [self.view insertSubview:self.coverView atIndex:[self.view.subviews count]];
+        self.tableView.scrollEnabled = NO;
+    }
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -61,6 +73,42 @@
     
     AwfulThreadListController *list = (AwfulThreadListController *)segue.destinationViewController;
     list.forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+}
+
+- (UIView *)coverView
+{
+    if (_coverView) {
+        return _coverView;
+    }
+    UIView *coverView = [[UIView alloc] initWithFrame:(CGRect){ .size = self.view.bounds.size }];
+    coverView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    if ([[AwfulSettings settings] darkTheme]) {
+        coverView.backgroundColor = [UIColor darkGrayColor];
+    } else {
+        coverView.backgroundColor = [UIColor whiteColor];
+    }
+    coverView.opaque = YES;
+    UILabel *noFavorites = [UILabel new];
+    noFavorites.backgroundColor = [UIColor clearColor];
+    noFavorites.text = @"No Favorites";
+    noFavorites.font = [UIFont systemFontOfSize:35];
+    noFavorites.textColor = [UIColor grayColor];
+    [noFavorites sizeToFit];
+    noFavorites.center = CGPointMake(coverView.bounds.size.width / 2,
+                                     coverView.bounds.size.height / 2);
+    [coverView addSubview:noFavorites];
+    UILabel *tapAStar = [UILabel new];
+    tapAStar.bounds = (CGRect){ .size.width = noFavorites.bounds.size.width };
+    tapAStar.backgroundColor = [UIColor clearColor];
+    tapAStar.text = @"Tap a star in the forums list to add one.";
+    tapAStar.font = [UIFont systemFontOfSize:16];
+    tapAStar.textColor = [UIColor grayColor];
+    [tapAStar sizeToFit];
+    tapAStar.center = CGPointMake(noFavorites.center.x,
+                                  noFavorites.center.y + noFavorites.bounds.size.height / 1.5);
+    [coverView addSubview:tapAStar];
+    _coverView = coverView;
+    return coverView;
 }
 
 #pragma mark - Awful table view
