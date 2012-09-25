@@ -697,6 +697,10 @@
         </class>
         <class className="AwfulPageIpad" superclassName="AwfulPage">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPageIpad.h"/>
+            <relationships>
+                <relationship kind="action" name="tappedActions:"/>
+                <relationship kind="action" name="tappedPageNav:"/>
+            </relationships>
         </class>
         <class className="AwfulPostBoxController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPostBoxController.h"/>
@@ -718,6 +722,7 @@
         <class className="AwfulTableViewController" superclassName="UITableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulTableViewController.h"/>
             <relationships>
+                <relationship kind="action" name="nextPage"/>
                 <relationship kind="action" name="refresh"/>
             </relationships>
         </class>
