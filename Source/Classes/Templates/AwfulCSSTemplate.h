@@ -19,3 +19,12 @@
 - (UIImage *)navigationBarImageForMetrics:(UIBarMetrics)metrics;
 
 @end
+
+
+@interface AwfulCSSTemplate (Settings)
+
++ (AwfulCSSTemplate *)currentTemplate;
+
++ (AwfulCSSTemplate *)defaultTemplate;
+
+@end

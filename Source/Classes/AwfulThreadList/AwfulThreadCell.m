@@ -109,12 +109,7 @@
     
     if (thread.totalUnreadPosts.intValue >= 0) {
         self.badgeString = thread.totalUnreadPosts.stringValue;
-        if ([[AwfulSettings settings] darkTheme]) {
-            self.badgeColor = [UIColor blackColor];
-        } else {
-            self.badgeColor = [UIColor colorWithRed:0 green:.4 blue:.6 alpha:1];
-        }
-        
+        self.badgeColor = [UIColor colorWithRed:0 green:.4 blue:.6 alpha:1];
         self.badge.alpha = (thread.totalUnreadPostsValue == 0)? 0.5 : 1.0;
     }
     else {
@@ -314,12 +309,12 @@
 
 + (UIColor *)textColor
 {
-    return [[AwfulSettings settings] darkTheme] ? [UIColor whiteColor] : [UIColor blackColor];
+    return [UIColor blackColor];
 }
 
 + (UIColor *)backgroundColor
 {
-    return [[AwfulSettings settings] darkTheme] ? [UIColor darkGrayColor] : [UIColor whiteColor];
+    return [UIColor whiteColor];
 }
 
 + (UIFont *)textLabelFont

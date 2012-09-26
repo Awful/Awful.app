@@ -13,6 +13,7 @@
 #import "AwfulForumCell.h"
 #import "AwfulCustomForums.h"
 #import "AwfulSettings.h"
+#import "AwfulCSSTemplate.h"
 
 @interface AwfulFavoritesViewController () <AwfulForumCellDelegate>
 
@@ -53,8 +54,10 @@ static void *KVOContext = @"AwfulFavoritesViewController KVO context";
                                                                         green:146.0/255
                                                                          blue:190.0/255
                                                                         alpha:1.0]];
-    [self.navigationController.navigationBar setBackgroundImage:[ApplicationDelegate navigationBarBackgroundImageForMetrics:UIBarMetricsDefault]
-                                                  forBarMetrics:(UIBarMetricsDefault)];
+    UIBarMetrics metrics = UIBarMetricsDefault;
+    UIImage *background = [[AwfulCSSTemplate defaultTemplate] navigationBarImageForMetrics:metrics];
+    [self.navigationController.navigationBar setBackgroundImage:background
+                                                  forBarMetrics:metrics];
     BOOL anyFavorites = [self.fetchedResultsController.fetchedObjects count] > 0;
     self.navigationItem.rightBarButtonItem = anyFavorites ? self.editButtonItem : nil;
     if (anyFavorites) {
@@ -82,11 +85,7 @@ static void *KVOContext = @"AwfulFavoritesViewController KVO context";
     }
     UIView *coverView = [[UIView alloc] initWithFrame:(CGRect){ .size = self.view.bounds.size }];
     coverView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    if ([[AwfulSettings settings] darkTheme]) {
-        coverView.backgroundColor = [UIColor darkGrayColor];
-    } else {
-        coverView.backgroundColor = [UIColor whiteColor];
-    }
+    coverView.backgroundColor = [UIColor whiteColor];
     coverView.opaque = YES;
     UILabel *noFavorites = [UILabel new];
     noFavorites.backgroundColor = [UIColor clearColor];
@@ -154,13 +153,8 @@ static void *KVOContext = @"AwfulFavoritesViewController KVO context";
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([[AwfulSettings settings] darkTheme]) {
-        cell.backgroundColor = [UIColor darkGrayColor];
-        cell.textLabel.textColor = [UIColor whiteColor];
-    } else {
-        cell.backgroundColor = [UIColor whiteColor];
-        cell.textLabel.textColor = [UIColor blackColor];
-    }
+    cell.backgroundColor = [UIColor whiteColor];
+    cell.textLabel.textColor = [UIColor blackColor];
 }
 
 - (void)forumCellDidToggleFavorite:(AwfulForumCell *)cell

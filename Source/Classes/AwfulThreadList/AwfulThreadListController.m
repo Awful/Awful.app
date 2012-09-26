@@ -16,6 +16,7 @@
 #import "AwfulLoginController.h"
 #import "AwfulCustomForums.h"
 #import "SVPullToRefresh.h"
+#import "AwfulCSSTemplate.h"
 
 typedef enum {
     AwfulThreadListActionsTypeFirstPage = 0,
@@ -236,7 +237,7 @@ typedef enum {
 
 - (UIImage *)customNavigationBarBackgroundImageForMetrics:(UIBarMetrics)metrics
 {
-    return [ApplicationDelegate navigationBarBackgroundImageForMetrics:metrics];
+    return [[AwfulCSSTemplate defaultTemplate] navigationBarImageForMetrics:metrics];
 }
 
 - (AwfulThread *)getThreadAtIndexPath:(NSIndexPath *)path
@@ -253,7 +254,7 @@ typedef enum {
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    AwfulThread* thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
     return [AwfulThreadCell heightForContent:thread inTableView:self.tableView];
 }
 

@@ -58,33 +58,16 @@
 
 - (void)configureAppearance
 {
-    NSString *darkOrDefault = [[AwfulSettings settings] darkTheme] ? @"dark" : @"default";
-    NSURL *url = [[NSBundle mainBundle] URLForResource:darkOrDefault withExtension:@"css"];
-    AwfulCSSTemplate *css = [[AwfulCSSTemplate alloc] initWithURL:url error:NULL];
+    AwfulCSSTemplate *css = [AwfulCSSTemplate defaultTemplate];
     UIImage *portrait = [css navigationBarImageForMetrics:UIBarMetricsDefault];
     [[UINavigationBar appearance] setBackgroundImage:portrait forBarMetrics:UIBarMetricsDefault];
     UIImage *landscape = [css navigationBarImageForMetrics:UIBarMetricsLandscapePhone];
     [[UINavigationBar appearance] setBackgroundImage:landscape
                                        forBarMetrics:UIBarMetricsLandscapePhone];
-    if ([[AwfulSettings settings] darkTheme]) {
-        [[UIBarButtonItem appearance] setTintColor:[UIColor blackColor]];
-        [[UISwitch appearance] setOnTintColor:[UIColor orangeColor]];
-    } else {
-        [[UIBarButtonItem appearance] setTintColor:[UIColor colorWithRed:46.0/255
-                                                                   green:146.0/255
-                                                                    blue:190.0/255
-                                                                   alpha:1]];
-    }
-}
-
-
-- (UIImage *)navigationBarBackgroundImageForMetrics:(UIBarMetrics)metrics
-{
-    NSString *darkOrDefault = [[AwfulSettings settings] darkTheme] ? @"dark" : @"default";
-    NSURL *url = [[NSBundle mainBundle] URLForResource:darkOrDefault withExtension:@"css"];
-    AwfulCSSTemplate *css = [[AwfulCSSTemplate alloc] initWithURL:url error:NULL];
-    
-    return [css navigationBarImageForMetrics:metrics];
+    [[UIBarButtonItem appearance] setTintColor:[UIColor colorWithRed:46.0/255
+                                                               green:146.0/255
+                                                                blue:190.0/255
+                                                               alpha:1]];
 }
 
 #pragma mark - Memory management

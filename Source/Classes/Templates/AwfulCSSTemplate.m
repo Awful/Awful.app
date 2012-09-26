@@ -46,14 +46,6 @@
     return self;
 }
 
-@synthesize URL = _URL;
-@synthesize CSS = _CSS;
-@synthesize navBarTopBorder = _navBarTopBorder;
-@synthesize navBarTopGradientStart = _navBarTopGradientStart;
-@synthesize navBarTopGradientEnd = _navBarTopGradientEnd;
-@synthesize navBarBottomGradientStart = _navBarBottomGradientStart;
-@synthesize navBarBottomGradientEnd = _navBarBottomGradientEnd;
-
 static UIColor *ColorWithHexString(NSString *hexString)
 {
     NSScanner *scanner = [NSScanner scannerWithString:hexString];
@@ -228,6 +220,31 @@ static NSTextCheckingResult *FirstMatchForRegex(NSString *pattern,
         }
     }];
     return captured;
+}
+
+@end
+
+@implementation AwfulCSSTemplate (Settings)
+
++ (AwfulCSSTemplate *)currentTemplate
+{
+    return CommonCSSLoader([[AwfulSettings settings] darkTheme] ? @"dark" : @"default");
+}
+
++ (AwfulCSSTemplate *)defaultTemplate
+{
+    return CommonCSSLoader(@"default");
+}
+
+static AwfulCSSTemplate *CommonCSSLoader(NSString *basename)
+{
+    NSURL *url = [[NSBundle mainBundle] URLForResource:basename withExtension:@"css"];
+    NSError *error;
+    AwfulCSSTemplate *css = [[AwfulCSSTemplate alloc] initWithURL:url error:&error];
+    if (!css) {
+        NSLog(@"error loading current template %@: %@", url, error);
+    }
+    return css;
 }
 
 @end

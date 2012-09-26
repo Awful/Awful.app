@@ -17,6 +17,7 @@
 #import "AwfulSettings.h"
 #import "AwfulCustomForums.h"
 #import "AwfulForumCell.h"
+#import "AwfulCSSTemplate.h"
 
 @interface AwfulForumsListController () <AwfulForumCellDelegate>
 
@@ -73,8 +74,10 @@
     }
     
     //reset this since it may get changed by custom forums
-    [self.navigationController.navigationBar setBackgroundImage:[ApplicationDelegate navigationBarBackgroundImageForMetrics:UIBarMetricsDefault]
-                                                  forBarMetrics:(UIBarMetricsDefault)];
+    UIBarMetrics metrics = UIBarMetricsDefault;
+    UIImage *background = [[AwfulCSSTemplate defaultTemplate] navigationBarImageForMetrics:metrics];
+    [self.navigationController.navigationBar setBackgroundImage:background
+                                                  forBarMetrics:metrics];
 }
 
 - (void)refresh
@@ -109,11 +112,7 @@
     
     AwfulForum *anyForum = [[self.fetchedResultsController.sections[section] objects] lastObject];
     header.titleLabel.text = anyForum.category.name;
-    if ([[AwfulSettings settings] darkTheme]) {
-        header.backgroundColor = [UIColor blackColor];
-    } else {
-        header.backgroundColor = [UIColor colorWithRed:0 green:0.4 blue:0.6 alpha:1];
-    }
+    header.backgroundColor = [UIColor colorWithRed:0 green:0.4 blue:0.6 alpha:1];
     return header;
 }
 
@@ -163,13 +162,8 @@
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([[AwfulSettings settings] darkTheme]) {
-        cell.backgroundColor = [UIColor darkGrayColor];
-        cell.textLabel.textColor = [UIColor whiteColor];
-    } else {
-        cell.backgroundColor = [UIColor whiteColor];
-        cell.textLabel.textColor = [UIColor blackColor];
-    }
+    cell.backgroundColor = [UIColor whiteColor];
+    cell.textLabel.textColor = [UIColor blackColor];
 }
 
 static inline CGFloat FontSizeForForum(AwfulForum *forum)

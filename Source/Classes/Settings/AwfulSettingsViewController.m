@@ -30,14 +30,10 @@
 {
     [super viewDidLoad];
     self.switches = [NSMutableArray new];
-    self.sections = [[AwfulSettings settings] sections];
+    self.sections = AwfulSettings.settings.sections;
     self.user = [AwfulUser currentUser];
     if (self.user.userName == nil && IsLoggedIn()) {
         [self refresh];
-    }
-    if ([[AwfulSettings settings] darkTheme]) {
-        self.tableView.backgroundView = nil;
-        self.tableView.backgroundColor = [UIColor darkGrayColor];
     }
 }
 
@@ -130,14 +126,10 @@ typedef enum SettingType
                                       reuseIdentifier:identifier];
     }
     if (style == UITableViewCellStyleValue1) {
-        if ([[AwfulSettings settings] darkTheme]) {
-            cell.detailTextLabel.textColor = [UIColor lightGrayColor];
-        } else {
-            cell.detailTextLabel.textColor = [UIColor colorWithRed:0.224
-                                                             green:0.329
-                                                              blue:0.518
-                                                             alpha:1];
-        }
+        cell.detailTextLabel.textColor = [UIColor colorWithRed:0.224
+                                                         green:0.329
+                                                          blue:0.518
+                                                         alpha:1];
     }
     
     // Set it up as we like it.
@@ -202,19 +194,6 @@ typedef enum SettingType
     NSDictionary *setting = [self settingForIndexPath:indexPath];
     NSString *key = [setting objectForKey:@"Key"];
     [[NSUserDefaults standardUserDefaults] setBool:switchView.on forKey:key];
-    if ([key isEqualToString:@"dark_theme"]) {
-        [ApplicationDelegate configureAppearance];
-    }
-}
-
-- (void)tableView:(UITableView *)tableView
-  willDisplayCell:(UITableViewCell *)cell
-forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if ([[AwfulSettings settings] darkTheme]) {
-        cell.textLabel.textColor = [UIColor whiteColor];
-        cell.backgroundColor = [UIColor darkGrayColor];
-    }
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView
@@ -293,13 +272,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     label.font = [UIFont boldSystemFontOfSize:17];
     label.text = title;
     label.backgroundColor = [UIColor clearColor];
-    if ([[AwfulSettings settings] darkTheme]) {
-        label.textColor = [UIColor whiteColor];
-        label.shadowColor = [UIColor grayColor];
-    } else {
-        label.textColor = [UIColor colorWithRed:0.265 green:0.294 blue:0.367 alpha:1];
-        label.shadowColor = [UIColor whiteColor];
-    }
+    label.textColor = [UIColor colorWithRed:0.265 green:0.294 blue:0.367 alpha:1];
+    label.shadowColor = [UIColor whiteColor];
     label.shadowOffset = CGSizeMake(-1, 1);
 
     UIView *wrapper = [UIView new];
@@ -334,13 +308,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     label.text = text;
     [label sizeToFit];
     label.backgroundColor = [UIColor clearColor];
-    if ([[AwfulSettings settings] darkTheme]) {
-        label.textColor = [UIColor whiteColor];
-        label.shadowColor = [UIColor grayColor];
-    } else {
-        label.textColor = [UIColor colorWithRed:0.298 green:0.337 blue:0.424 alpha:1];
-        label.shadowColor = [UIColor whiteColor];
-    }
+    label.textColor = [UIColor colorWithRed:0.298 green:0.337 blue:0.424 alpha:1];
+    label.shadowColor = [UIColor whiteColor];
     label.shadowOffset = CGSizeMake(0, 1);
     
     UIView *wrapper = [UIView new];

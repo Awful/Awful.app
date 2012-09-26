@@ -23,7 +23,6 @@
 @property (readonly, strong, nonatomic) NSManagedObjectContext *throwawayObjectContext;
 
 - (void)configureAppearance;
-- (UIImage *)navigationBarBackgroundImageForMetrics:(UIBarMetrics)metrics;
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
 - (void)resetDataStore;

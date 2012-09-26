@@ -21,9 +21,6 @@
         [self.tableView addPullToRefreshWithActionHandler:^{
             [blockSelf refresh];
         }];
-        if ([[AwfulSettings settings] darkTheme]) {
-            self.tableView.pullToRefreshView.textColor = [UIColor whiteColor];
-        }
     }
     if ([self canPullForNextPage]) {
         [self.tableView addInfiniteScrollingWithActionHandler:^{
@@ -31,11 +28,7 @@
         }];
     }
     
-    if ([[AwfulSettings settings] darkTheme]) {
-        self.tableView.backgroundColor = [UIColor darkGrayColor];
-    } else {
-        self.tableView.backgroundColor = [UIColor whiteColor];
-    }
+    self.tableView.backgroundColor = [UIColor whiteColor];
 }
 
 - (void)viewWillDisappear:(BOOL)animated

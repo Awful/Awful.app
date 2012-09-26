@@ -46,16 +46,6 @@
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    
-    if ([[AwfulSettings settings] darkTheme]) {
-        self.tableView.backgroundView = nil;
-        self.tableView.backgroundColor = [UIColor darkGrayColor];
-    }
-}
-
 - (void)viewWillDisappear:(BOOL)animated
 {
     [self.settingsViewController didMakeChoice:self];
@@ -94,16 +84,6 @@
     }
     
     return cell;
-}
-
-- (void)tableView:(UITableView *)tableView
-  willDisplayCell:(UITableViewCell *)cell
-forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if ([[AwfulSettings settings] darkTheme]) {
-        cell.textLabel.textColor = [UIColor whiteColor];
-        cell.backgroundColor = [UIColor darkGrayColor];
-    }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
