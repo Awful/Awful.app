@@ -2214,10 +2214,9 @@
 			path = Util;
 			sourceTree = "<group>";
 		};
-		1190F76913BE4ECB00B9D271 /* Third Party */ = {
+		1190F76913BE4ECB00B9D271 /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
-				8C48EA5E159DD8FA00A59691 /* TDBadgedCell */,
 				110FABC415745C1E00ECF535 /* AFNetworking */,
 				1CDF79FE1537C157008EFAE4 /* GRMustache */,
 				1190F7BF13BE4ECB00B9D271 /* Hpple */,
@@ -2226,8 +2225,9 @@
 				1190F7B013BE4ECB00B9D271 /* NSString+HTML.h */,
 				1190F7B113BE4ECB00B9D271 /* NSString+HTML.m */,
 				1CC38B84160C0A5D00C35A11 /* SVPullToRefresh */,
+				8C48EA5E159DD8FA00A59691 /* TDBadgedCell */,
 			);
-			path = "Third Party";
+			path = Vendor;
 			sourceTree = "<group>";
 		};
 		1190F7A813BE4ECB00B9D271 /* MBProgressHUD */ = {
@@ -2291,6 +2291,7 @@
 				1CC7800E1612D8AE002AF958 /* Forum List */,
 				1190F71813BE4EA900B9D271 /* Login */,
 				1190F71C13BE4EA900B9D271 /* Main */,
+				1C6474A61569989800C72657 /* Models */,
 				1CC7801D1612D988002AF958 /* Networking */,
 				1CC780241612D9DD002AF958 /* Posts */,
 				1CDD51951542949600326C7B /* Settings */,
@@ -2298,8 +2299,6 @@
 				1CC780471612DA8D002AF958 /* Thread List */,
 				1CC780371612DA2A002AF958 /* Web View Bridge */,
 				080E96DDFE201D6D7F000001 /* Classes */,
-				1C6474A61569989800C72657 /* Models */,
-				1190F76913BE4ECB00B9D271 /* Third Party */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -2603,6 +2602,7 @@
 				8CCD498115B497A700E5893B /* Resources */,
 				1C3857A115675AFE0078AF95 /* Source */,
 				1CD59CD61571A64D008F8E2F /* Tools */,
+				1190F76913BE4ECB00B9D271 /* Vendor */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
