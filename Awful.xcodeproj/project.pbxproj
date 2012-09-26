@@ -143,7 +143,6 @@
 		8CB5468D15BD936600E8BEC1 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CB5468C15BD936600E8BEC1 /* ImageIO.framework */; };
 		8CB5469015BDA19C00E8BEC1 /* frog1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CB5468E15BDA19C00E8BEC1 /* frog1@2x.png */; };
 		8CB5469115BDA19C00E8BEC1 /* frog2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CB5468F15BDA19C00E8BEC1 /* frog2@2x.png */; };
-		8CB5469415BDA45F00E8BEC1 /* FVGifAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB5469315BDA45F00E8BEC1 /* FVGifAnimation.m */; };
 		8CB5469815BDC25800E8BEC1 /* _AwfulPM.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB5469715BDC25800E8BEC1 /* _AwfulPM.m */; };
 		8CB5469B15BDC26100E8BEC1 /* AwfulPM.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB5469A15BDC26100E8BEC1 /* AwfulPM.m */; };
 		8CB5469E15BDC2EE00E8BEC1 /* AwfulHTTPClient+PrivateMessages.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB5469D15BDC2ED00E8BEC1 /* AwfulHTTPClient+PrivateMessages.m */; };
@@ -1237,8 +1236,6 @@
 		8CB5468C15BD936600E8BEC1 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		8CB5468E15BDA19C00E8BEC1 /* frog1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "frog1@2x.png"; sourceTree = "<group>"; };
 		8CB5468F15BDA19C00E8BEC1 /* frog2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "frog2@2x.png"; sourceTree = "<group>"; };
-		8CB5469215BDA45F00E8BEC1 /* FVGifAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FVGifAnimation.h; sourceTree = "<group>"; };
-		8CB5469315BDA45F00E8BEC1 /* FVGifAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FVGifAnimation.m; sourceTree = "<group>"; };
 		8CB5469515BDBED600E8BEC1 /* Model 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 3.xcdatamodel"; sourceTree = "<group>"; };
 		8CB5469615BDC25800E8BEC1 /* _AwfulPM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _AwfulPM.h; sourceTree = "<group>"; };
 		8CB5469715BDC25800E8BEC1 /* _AwfulPM.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulPM.m; sourceTree = "<group>"; };
@@ -2291,7 +2288,6 @@
 		1190F76913BE4ECB00B9D271 /* Third Party */ = {
 			isa = PBXGroup;
 			children = (
-				8CE4DC7815B86047001C62AC /* AnimatedGif */,
 				8C48EA5E159DD8FA00A59691 /* TDBadgedCell */,
 				110FABC415745C1E00ECF535 /* AFNetworking */,
 				1CDF79FE1537C157008EFAE4 /* GRMustache */,
@@ -3569,15 +3565,6 @@
 			path = threadtags;
 			sourceTree = "<group>";
 		};
-		8CE4DC7815B86047001C62AC /* AnimatedGif */ = {
-			isa = PBXGroup;
-			children = (
-				8CB5469215BDA45F00E8BEC1 /* FVGifAnimation.h */,
-				8CB5469315BDA45F00E8BEC1 /* FVGifAnimation.m */,
-			);
-			path = AnimatedGif;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -4613,7 +4600,6 @@
 				8C1BC80C15AF0FFE00B75286 /* AwfulCustomForums.m in Sources */,
 				8C1BC80D15AF0FFE00B75286 /* AwfulCustomForumYOSPOS.m in Sources */,
 				8CB5467F15BA5A8000E8BEC1 /* AwfulPrivateMessagesController.m in Sources */,
-				8CB5469415BDA45F00E8BEC1 /* FVGifAnimation.m in Sources */,
 				8CB5469815BDC25800E8BEC1 /* _AwfulPM.m in Sources */,
 				8CB5469B15BDC26100E8BEC1 /* AwfulPM.m in Sources */,
 				8CB5469E15BDC2EE00E8BEC1 /* AwfulHTTPClient+PrivateMessages.m in Sources */,
