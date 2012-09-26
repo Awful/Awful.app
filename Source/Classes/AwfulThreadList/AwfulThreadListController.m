@@ -316,6 +316,7 @@ typedef enum {
                                                  name:AwfulPageDidLoadNotification 
                                                object:thread
      ];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (void)didLoadThreadPage:(NSNotification *)msg

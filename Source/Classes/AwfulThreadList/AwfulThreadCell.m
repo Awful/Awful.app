@@ -273,8 +273,7 @@
     AwfulThread *thread = notification.object;
     if (thread.threadID.intValue != self.thread.threadID.intValue) return;
     UIActivityIndicatorView *act = [[UIActivityIndicatorView alloc] 
-                                    initWithActivityIndicatorStyle:(UIActivityIndicatorViewStyleWhite)
-                                    ];
+                                    initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     self.accessoryView = act;
     [act startAnimating];
     self.badge.hidden = YES;
