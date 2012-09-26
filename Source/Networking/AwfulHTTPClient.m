@@ -12,7 +12,6 @@
 #import "AwfulThread+AwfulMethods.h"
 #import "AwfulPage.h"
 #import "AwfulPageDataController.h"
-#import "AwfulUser+AwfulMethods.h"
 #import "AwfulPageTemplate.h"
 #import "NSString+HTML.h"
 #import "AFNetworkActivityIndicatorManager.h"
@@ -131,7 +130,7 @@
     NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
        success:^(AFHTTPRequestOperation *operation, id response) {
-           AwfulUser *user = [AwfulUser currentUser];
+           AwfulUser *user = AwfulSettings.settings.currentUser;
            
            if(user == nil) {
                errorBlock(nil);

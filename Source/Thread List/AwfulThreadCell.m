@@ -8,7 +8,6 @@
 
 #import "AwfulThreadCell.h"
 #import "AwfulThread+AwfulMethods.h"
-#import "AwfulUser+AwfulMethods.h"
 #import "AwfulThreadListController.h"
 #import "AwfulSettings.h"
 

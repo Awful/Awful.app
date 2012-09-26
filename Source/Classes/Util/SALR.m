@@ -8,14 +8,13 @@
 
 #import "SALR.h"
 #import "AwfulSettings.h"
-#import "AwfulUser+AwfulMethods.h"
 
 @implementation SALR
 
 + (NSString *)config
 {
     NSMutableDictionary *config = [[NSMutableDictionary alloc] init];
-    AwfulUser *user = [AwfulUser currentUser];
+    AwfulUser *user = AwfulSettings.settings.currentUser;
     if(user.userName != nil) {
         [config setObject:user.userName forKey:@"username"];
     } else {

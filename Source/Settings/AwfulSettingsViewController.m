@@ -8,9 +8,9 @@
 
 #import "AwfulSettingsViewController.h"
 #import "AwfulSettings.h"
-#import "AwfulUser+AwfulMethods.h"
 #import "AwfulLoginController.h"
 #import "AwfulSettingsChoiceViewController.h"
+#import "AwfulUser.h"
 #import <MessageUI/MessageUI.h>
 
 @interface AwfulSettingsViewController () <MFMailComposeViewControllerDelegate>
@@ -31,7 +31,7 @@
     [super viewDidLoad];
     self.switches = [NSMutableArray new];
     self.sections = AwfulSettings.settings.sections;
-    self.user = [AwfulUser currentUser];
+    self.user = AwfulSettings.settings.currentUser;
     if (self.user.userName == nil && IsLoggedIn()) {
         [self refresh];
     }
@@ -341,9 +341,7 @@ typedef enum SettingType
         [[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteCookie:cookie];
     }
     
-    AwfulUser *user = [AwfulUser currentUser];
-    [ApplicationDelegate.managedObjectContext deleteObject:user];
-    [ApplicationDelegate saveContext];
+    AwfulSettings.settings.currentUser = nil;
     [self.tableView reloadData];
 }
 

@@ -10,7 +10,6 @@
 #import "TFHpple.h"
 #import "TFHppleElement.h"
 #import "XPathQuery.h"
-#import "AwfulUser+AwfulMethods.h"
 #import "AwfulPageTemplate.h"
 
 @interface AwfulPageDataController ()

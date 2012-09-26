@@ -14,7 +14,6 @@
 #import "AwfulSettings.h"
 #import "AwfulSpecificPageViewController.h"
 #import "AwfulThreadActions.h"
-#import "AwfulUser+AwfulMethods.h"
 #import "AwfulVoteActions.h"
 #import "ButtonSegmentedControl.h"
 #import "MBProgressHUD.h"
@@ -246,8 +245,7 @@
 -(IBAction)hardRefresh
 {    
     self.nextPageWebView = nil;
-    int posts_per_page = [AwfulUser currentUser].postsPerPageValue;
-    if([self.dataController.posts count] == (NSUInteger)posts_per_page) {
+    if([self.dataController.posts count] == 40) {
         self.destinationType = AwfulPageDestinationTypeSpecific;
         [self refresh];
     } else {

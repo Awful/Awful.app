@@ -38,4 +38,6 @@ typedef enum
 
 @property (assign, nonatomic) BOOL darkTheme;
 
+@property (strong, nonatomic) AwfulUser *currentUser;
+
 @end
