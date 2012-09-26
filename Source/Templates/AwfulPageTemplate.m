@@ -20,11 +20,9 @@
  - the tappedBottom() javascript triggers a 'next page' call if there are pages left
  */
 
-static NSString * const DefaultCSSFilename = @"default.css";
-
 static NSURL *DefaultCSSURL()
 {
-    return [[NSBundle mainBundle] URLForResource:DefaultCSSFilename withExtension:nil];
+    return [[NSBundle mainBundle] URLForResource:@"default.css" withExtension:nil];
 }
 
 
@@ -55,8 +53,6 @@ static NSURL *DefaultCSSURL()
 
 @implementation AwfulPageTemplate
 
-@synthesize template = _template;
-
 - (GRMustacheTemplate *)template
 {
     if (_template) {
@@ -71,31 +67,38 @@ static NSURL *DefaultCSSURL()
     return _template;
 }
 
--(NSURL *)getTemplateURLFromForum : (AwfulForum *)forum
+// Template files are searched for in the following order in the documents directory
+// (where ## is the forum ID):
+//
+//   1. dark-##.css (if dark theme is enabled)
+//   2. default-##.css
+//   3. dark.css (if dark theme is enabled)
+//   4. default.css
+//
+// If no template is found, steps 1-4 are repeated in the application's resources directory.
+- (NSURL *)getTemplateURLFromForum:(AwfulForum *)forum
 {
-    if([[AwfulSettings settings] darkTheme]) {
-        NSString *darkName = @"dark.css";
-        NSURL *defaultDarkURL = [[ApplicationDelegate applicationDocumentsDirectory] URLByAppendingPathComponent:darkName];
-        if([defaultDarkURL checkResourceIsReachableAndReturnError:nil]) {
-            return defaultDarkURL;
-        }
-        return [[NSBundle mainBundle] URLForResource:darkName withExtension:nil];
+    NSArray *listOfFilenames = @[
+        [NSString stringWithFormat:@"default-%@.css", forum.forumID],
+        @"default.css"
+    ];
+    if (AwfulSettings.settings.darkTheme) {
+        listOfFilenames = @[
+            [NSString stringWithFormat:@"dark-%@.css", forum.forumID],
+            listOfFilenames[0],
+            @"dark.css",
+            listOfFilenames[1]
+        ];
     }
-    
-    if(forum != nil) {
-        NSString *name = [NSString stringWithFormat:@"%@.css", forum.forumID];
-        NSURL *url = [[ApplicationDelegate applicationDocumentsDirectory] URLByAppendingPathComponent:name];
-        if([url checkResourceIsReachableAndReturnError:nil]) {
-            return url;
-        }
+    for (NSString *filename in listOfFilenames) {
+        NSURL *url = [[ApplicationDelegate applicationDocumentsDirectory] URLByAppendingPathComponent:filename];
+        if ([url checkResourceIsReachableAndReturnError:NULL]) return url;
     }
-    
-    NSURL *defaultURL = [[ApplicationDelegate applicationDocumentsDirectory] URLByAppendingPathComponent:DefaultCSSFilename];
-    if([defaultURL checkResourceIsReachableAndReturnError:nil]) {
-        return defaultURL;
+    for (NSString *filename in listOfFilenames) {
+        NSURL *url = [[NSBundle mainBundle] URLForResource:filename withExtension:nil];
+        if ([url checkResourceIsReachableAndReturnError:NULL]) return url;
     }
-    
-    return DefaultCSSURL();
+    return nil;
 }
 
 - (NSString *)renderWithPageDataController:(AwfulPageDataController *)dataController displayAllPosts : (BOOL)displayAllPosts
