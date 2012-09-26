@@ -44,8 +44,6 @@
     self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
 }
 
-static void *KVOContext = @"AwfulFavoritesViewController KVO context";
-
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
