@@ -274,7 +274,8 @@
 }
 
 - (void)heldPost:(UILongPressGestureRecognizer *)gestureRecognizer
-{    
+{
+    if (gestureRecognizer.state != UIGestureRecognizerStateBegan) return;
     CGPoint p = [gestureRecognizer locationInView:self.webView];
     NSString *js_tag_name = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).tagName", p.x, p.y];
     NSString *tag_name = [self.webView stringByEvaluatingJavaScriptFromString:js_tag_name];
@@ -306,13 +307,6 @@
     [self.webView addGestureRecognizer:press];
     self.webViewDelegateWrapper = [AwfulWebViewDelegateWrapper delegateWrappingDelegate:self];
     self.webView.delegate = self.webViewDelegateWrapper;
-}
-
-- (void)viewDidUnload
-{
-    [self.networkOperation cancel];
-    [self.webView stopLoading];
-    [super viewDidUnload];
 }
 
 - (void)viewWillAppear:(BOOL)animated
