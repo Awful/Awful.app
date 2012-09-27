@@ -20,7 +20,6 @@
 #import "MWPhoto.h"
 #import "MWPhotoBrowser.h"
 #import "OtherWebController.h"
-#import "AwfulPage+Transitions.h"
 #import "AwfulWebViewDelegate.h"
 #import "AwfulThreadTitleView.h"
 
@@ -168,23 +167,8 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:AwfulThreadDidUpdateNotification object:self.thread];
         
         NSString *html = [dataController constructedPageHTML];
-        
-        //if nextPageWebView is null, then it's the initial load
-        if (self.nextPageWebView) {
-            [self.nextPageWebView loadHTMLString:html baseURL:[[NSBundle mainBundle] resourceURL]];
-            self.nextPageWebView.tag = self.currentPage;
-        }
-        else {
-            //[self.webView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
-            [self.webView loadHTMLString:html baseURL:[[NSBundle mainBundle] resourceURL]];
-            self.webView.tag = self.currentPage;
-            
-            self.nextPageWebView = [UIWebView new];
-            self.nextPageWebView.delegate = self.webViewDelegateWrapper;
-            self.nextPageWebView.frame = self.webView.frame;
-            self.nextPageWebView.foY = self.nextPageWebView.fsH;
-            [self.view addSubview:self.nextPageWebView];
-        }
+        [self.webView loadHTMLString:html baseURL:[[NSBundle mainBundle] resourceURL]];
+        self.webView.tag = self.currentPage;
         
         NSDictionary *userInfo = [NSDictionary dictionaryWithObject:self forKey:@"page"];
         [[NSNotificationCenter defaultCenter] postNotificationName:AwfulPageDidLoadNotification
@@ -710,9 +694,8 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     return YES;
 }
 
--(void)webViewDidFinishLoad:(UIWebView *)sender
+- (void)webViewDidFinishLoad:(UIWebView *)sender
 {
-    //[self.webView.scrollView setContentOffset:CGPointMake(0, 0) animated:NO];
     sender.scrollView.delegate = self;
     
     [self swapToRefreshButton];
@@ -721,29 +704,8 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     } else if(self.shouldScrollToBottom) {
         [self scrollToBottom];
     }
-    
-    //self.pullForActionController.headerState = AwfulPullForActionStateNormal;
-    //self.pullForActionController.footerState = AwfulPullForActionStateNormal;
-    
-    //animate old page up and offscreen, new page in from the bottom
-    if (sender == self.nextPageWebView && self.nextPageWebView.foY > 0) {
-        [self doPageTransition];
-        
-    }
-    else {
+}
 
-        
-        [UIView animateWithDuration:.5 animations:^{
-            self.webView.scrollView.contentInset = UIEdgeInsetsZero;
-        }
-         ];
-    }
-}
-/*
--(void) awfulFooterDidTriggerLoad:(AwfulLoadingFooterView*)pullToNavigate {
-    [self tappedNextPage:nil];
-}
-*/
 -(void)webViewDidStartLoad:(UIWebView *)webView
 {
     
@@ -806,7 +768,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     
     
     BOOL shouldHideToolbars = NO;
-    if (self.webView.scrollView.contentOffset.y >= self.navigationController.navigationBar.fsH) {
+    if (self.webView.scrollView.contentOffset.y >= self.navigationController.navigationBar.frame.size.height) {
         shouldHideToolbars = YES;
     }
     else

@@ -11,5 +11,4 @@
     #import "AwfulHTTPClient.h"
     #import "AwfulModels.h"
     #import "AwfulSettings.h"
-    #import "UIView+Lazy.h"
 #endif

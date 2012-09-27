@@ -232,8 +232,11 @@
     
     NSURL *second_url = [self.thread secondIconURL];
     if(second_url != nil) {
-        self.secondTagImage.frame = CGRectMake(self.imageView.foX-1, self.imageView.foY-1, 
-                                               self.secondTagImage.fsW, self.secondTagImage.fsH);
+        self.secondTagImage.frame = (CGRect){
+            .origin.x = self.imageView.frame.origin.x - 1,
+            .origin.y = self.imageView.frame.origin.y - 1,
+            .size = self.secondTagImage.frame.size
+        };
         self.secondTagImage.hidden = NO;
         [self.secondTagImage setImage:[UIImage imageNamed:[second_url lastPathComponent]]];
     }

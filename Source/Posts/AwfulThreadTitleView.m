@@ -10,12 +10,10 @@
 #import "AwfulPage.h"
 
 @implementation AwfulThreadTitleView
-@synthesize title = _title;
-@synthesize threadTag = _threadTag;
-@synthesize page = _page;
 
-+(id) threadTitleViewWithPage:(AwfulPage *)page {
-    AwfulThreadTitleView *view = [[AwfulThreadTitleView alloc] initWithFrame:CGRectMake(0, 0, page.view.fsW-100, 50)]; 
++ (id)threadTitleViewWithPage:(AwfulPage *)page
+{
+    AwfulThreadTitleView *view = [[AwfulThreadTitleView alloc] initWithFrame:CGRectMake(0, 0, page.view.frame.size.width - 100, 50)];
     view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     view.backgroundColor = [UIColor greenColor];
     view.title.text = page.thread.title;
@@ -27,27 +25,27 @@
     return view;
 }
 
--(void) layoutSubviews {
-    NSLog(@"%@",self);
+- (void)layoutSubviews
+{
     if (self.threadTag.image)
         self.threadTag.frame = CGRectMake(0, 0, 45, 45);
-    
-    
     self.title.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
-    self.title.frame = CGRectMake(50, 0, self.fsW-50, 25);
+    self.title.frame = CGRectMake(50, 0, self.frame.size.width - 50, 25);
     self.title.textAlignment = UITextAlignmentCenter;
-    //[self.title sizeToFit];
 }
 
--(UILabel*) title {
+- (UILabel *)title
+{
     if (!_title)
         _title = [UILabel new];
     return _title;
 }
 
--(UIImageView*) threadTag {
+- (UIImageView *)threadTag
+{
     if (!_threadTag)
         _threadTag = [UIImageView new];
     return _threadTag;
 }
+
 @end
