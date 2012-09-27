@@ -14,7 +14,7 @@
 @end
 
 
-@interface AwfulSplitViewController : UISplitViewController <UISplitViewControllerDelegate>
+@interface AwfulSplitViewController : UISplitViewController
 
 @property (nonatomic, strong) UIPopoverController *masterPopoverController;
 @property (nonatomic, strong) UIBarButtonItem *rootPopoverButtonItem;

@@ -10,6 +10,7 @@
 #import "AwfulPage.h"
 
 @class AwfulForum;
+@class AwfulPost;
 @class AwfulThread;
 @class AwfulPageDataController;
 @class AwfulUser;

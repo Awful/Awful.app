@@ -1,5 +1,5 @@
 //
-//  AwfulSmallPageController.m
+//  AwfulSpecificPageViewController.m
 //  Awful
 //
 //  Created by Sean Berry on 10/18/11.

@@ -7,11 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "AwfulPostBoxController.h"
-#import "AwfulWebViewDelegate.h"
-
-static NSString * const AwfulPageWillLoadNotification = @"com.regularberry.awful.notification.pageWillLoad";
-static NSString * const AwfulPageDidLoadNotification = @"com.regularberry.awful.notification.pageDidLoad";
+#import "AwfulSplitViewController.h"
 
 typedef enum {
     AwfulPageDestinationTypeFirst,
@@ -20,101 +16,46 @@ typedef enum {
     AwfulPageDestinationTypeSpecific
 } AwfulPageDestinationType;
 
-@class AwfulSpecificPageViewController;
-@class AwfulPageDataController;
 @class AwfulActions;
-@class ButtonSegmentedControl;
-@class AwfulRefreshControl;
-@class AwfulLoadNextControl;
+@class AwfulThread;
 
-@interface AwfulPage : UIViewController <AwfulWebViewDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate>
-{
-@protected
-    AwfulActions *_actions;
-}
+
+@interface AwfulPage : UIViewController
 
 @property (nonatomic, strong) AwfulThread *thread;
-@property (nonatomic, strong) NSString *threadID;
-@property (nonatomic, strong) NSString *url;
-@property (nonatomic, assign) AwfulPageDestinationType destinationType;
-@property (nonatomic, strong) IBOutlet UIWebView *webView;
-@property (nonatomic, strong) UIWebView *nextPageWebView;
-@property (nonatomic, strong) IBOutlet UIToolbar *toolbar;
 
-@property BOOL isBookmarked;
-@property BOOL shouldScrollToBottom;
-@property (nonatomic, strong) NSString *postIDScrollDestination;
+@property (nonatomic, strong) NSString *threadID;
+
+@property (nonatomic, assign) AwfulPageDestinationType destinationType;
 
 @property (nonatomic, strong) AwfulActions *actions;
+
 @property (nonatomic, assign) NSInteger currentPage;
+
 @property (nonatomic, assign) NSInteger numberOfPages;
 
-@property (nonatomic, strong) AwfulPageDataController *dataController;
-@property (nonatomic, strong) AwfulSpecificPageViewController *specificPageController;
-@property (nonatomic, strong) NSOperation *networkOperation;
+- (IBAction)hardRefresh;
 
-@property (nonatomic, strong) IBOutlet UIBarButtonItem *pagesBarButtonItem;
-@property (nonatomic, strong) IBOutlet UIBarButtonItem *nextPageBarButtonItem;
+- (void)setThreadTitle:(NSString *)threadTitle;
 
-@property (nonatomic, strong) IBOutlet ButtonSegmentedControl *pagesSegmentedControl;
-@property (nonatomic, strong) IBOutlet ButtonSegmentedControl *actionsSegmentedControl;
+- (void)updatePagesLabel;
 
-@property (nonatomic, assign) BOOL draggingUp;
-@property (nonatomic, assign) BOOL isFullScreen;
+- (void)refresh;
 
-@property (nonatomic, assign) BOOL isHidingToolbars;
+- (void)showActions;
 
+- (void)loadPageNum:(NSUInteger)pageNum;
 
-@property (nonatomic, strong) AwfulRefreshControl *awfulRefreshControl;
-@property (nonatomic, strong) AwfulLoadNextControl *loadNextPageControl;
-
--(IBAction)hardRefresh;
--(void)setThreadTitle : (NSString *)in_title;
-
--(void)updatePagesLabel;
-
--(IBAction)tappedActions:(id)sender;
--(IBAction)tappedPageNav : (id)sender;
--(IBAction)tappedNextPage : (id)sender;
-
--(IBAction)segmentedGotTapped : (id)sender;
--(IBAction)tappedPagesSegment : (id)sender;
--(IBAction)tappedActionsSegment : (id)sender;
-
--(void)refresh;
--(void)loadPageNum : (NSUInteger)pageNum;
--(void)loadLastPage;
--(void)stop;
-
--(void)scrollToSpecifiedPost;
-- (void)showActions:(NSString *)post_id fromRect:(CGRect)rect;
--(void)showActions;
--(void)loadOlderPosts;
--(void)nextPage;
--(void)prevPage;
-
--(void)heldPost:(UILongPressGestureRecognizer *)gestureRecognizer;
--(void)didFullscreenGesture : (UIGestureRecognizer *)gesture;
--(void)scrollToPost : (NSString *)post_id;
--(void)swapToStopButton;
--(void)swapToRefreshButton;
-
--(void)showCompletionMessage : (NSString *)message;
--(void)hidePageNavigation;
-
-
-//-(void) didSwitchAutoF5:(UISwitch*)switchObj;
+- (void)showCompletionMessage:(NSString *)message;
 
 @end
 
-#import "AwfulSplitViewController.h"
 
-@interface AwfulPageIpad: AwfulPage <SubstitutableDetailViewController, UIGestureRecognizerDelegate>
-{
-    CGPoint _lastTouch;
-}
+extern NSString * const AwfulPageWillLoadNotification;
 
-@property (nonatomic, strong) UIPopoverController *popController;
+extern NSString * const AwfulPageDidLoadNotification;
 
-- (void)handleTap:(UITapGestureRecognizer *)sender;
+
+@interface AwfulPageIpad : AwfulPage <SubstitutableDetailViewController>
+
 @end

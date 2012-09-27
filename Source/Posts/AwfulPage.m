@@ -8,87 +8,60 @@
 
 #import "AwfulThreadListController.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulLoginController.h"
 #import "AwfulPageDataController.h"
 #import "AwfulPostActions.h"
-#import "AwfulSettings.h"
+#import "AwfulPostBoxController.h"
 #import "AwfulSpecificPageViewController.h"
 #import "AwfulThreadActions.h"
+#import "AwfulThreadTitleView.h"
 #import "AwfulVoteActions.h"
+#import "AwfulWebViewDelegate.h"
 #import "ButtonSegmentedControl.h"
 #import "MBProgressHUD.h"
 #import "MWPhoto.h"
 #import "MWPhotoBrowser.h"
 #import "OtherWebController.h"
-#import "AwfulWebViewDelegate.h"
-#import "AwfulThreadTitleView.h"
 
-@interface AwfulPage () <AwfulWebViewDelegate, UIGestureRecognizerDelegate>
+@interface AwfulPage () <AwfulWebViewDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate>
 
-//@property (nonatomic, strong) IBOutlet UIWebView *webView;
-@property (strong) AwfulWebViewDelegateWrapper *webViewDelegateWrapper;
+@property (strong, nonatomic) AwfulWebViewDelegateWrapper *webViewDelegateWrapper;
+
+@property (strong, nonatomic) NSOperation *networkOperation;
+
+@property (nonatomic, strong) IBOutlet UIBarButtonItem *pagesBarButtonItem;
+
+@property (nonatomic, strong) IBOutlet UIBarButtonItem *nextPageBarButtonItem;
+
+@property (nonatomic, strong) IBOutlet ButtonSegmentedControl *pagesSegmentedControl;
+
+@property (nonatomic, strong) IBOutlet ButtonSegmentedControl *actionsSegmentedControl;
+
+@property (nonatomic, strong) AwfulSpecificPageViewController *specificPageController;
+
+@property (nonatomic, strong) IBOutlet UIWebView *webView;
+
+@property (nonatomic, strong) NSString *postIDScrollDestination;
+
+@property (nonatomic, strong) AwfulPageDataController *dataController;
+
+@property BOOL shouldScrollToBottom;
 
 @end
 
+
 @implementation AwfulPage
-
-@synthesize destinationType = _destinationType;
-@synthesize thread = _thread;
-@synthesize threadID = _threadID;
-@synthesize url = _url;
-@synthesize webView = _webView;
-@synthesize nextPageWebView = _nextPageWebView;
-@synthesize toolbar = _toolbar;
-@synthesize isBookmarked = _isBookmarked;
-@synthesize currentPage = _currentPage;
-@synthesize numberOfPages = _numberOfPages;
-@synthesize shouldScrollToBottom = _shouldScrollToBottom;
-@synthesize postIDScrollDestination = _postIDScrollDestination;
-@synthesize specificPageController = _specificPageController;
-@synthesize dataController = _dataController;
-@synthesize networkOperation = _networkOperation;
-@synthesize actions = _actions;
-@synthesize pagesBarButtonItem = _pagesBarButtonItem;
-@synthesize nextPageBarButtonItem = _nextPageBarButtonItem;
-@synthesize draggingUp = _draggingUp;
-@synthesize pagesSegmentedControl = _pagesSegmentedControl;
-@synthesize actionsSegmentedControl = _actionsSegmentedControl;
-@synthesize isFullScreen = _isFullScreen;
-
-@synthesize awfulRefreshControl = _awfulRefreshControl;
-@synthesize loadNextPageControl = _loadNextPageControl;
-@synthesize isHidingToolbars = _isHidingToolbars;
-//@synthesize skipBlankingWebViewOnce = _skipBlankingWebViewOnce;
-/*
-- (BOOL)skipBlankingWebViewOnce
 {
-    if (!_skipBlankingWebViewOnce) {
-        return NO;
-    }
-    _skipBlankingWebViewOnce = NO;
-    return YES;
+    AwfulThread *_thread;
 }
-*/
-#pragma mark - Initialization
 
--(void)awakeFromNib
-{    
+- (void)awakeFromNib
+{
+    [super awakeFromNib];
+    
     self.actionsSegmentedControl.action = @selector(tappedActionsSegment:);
     self.pagesSegmentedControl.action = @selector(tappedPagesSegment:);
-    //self.webView.scrollView.delegate = self;
     self.view.backgroundColor = [UIColor underPageBackgroundColor];
     self.webView.backgroundColor = [UIColor scrollViewTexturedBackgroundColor];
-    //if (!self.pullToNavigateView) {
-    //    self.pullToNavigateView = [AwfulLoadingFooterView new];
-    //}
-    //self.pullToNavigateView.delegate = self;
-    //self.pullToNavigateView.scrollView = self.webView.scrollView;
-    
-    //CGRect frame = self.webView.frame;
-    //frame.origin.y = frame.size.height;
-    
-    //self.nextPageWebView = [JSBridgeWebView new];
-    //self.nextPageWebView.frame = frame;
 }
 
 - (AwfulThread *) thread
@@ -104,78 +77,66 @@
     return _thread;
 }
 
--(void)setThread:(AwfulThread *)newThread
+- (void)setThread:(AwfulThread *)newThread
 {
+    if (_thread == newThread) return;
 
-    if(_thread != newThread) {
-        _thread = newThread;
-        self.threadID = _thread.threadID;
-        if(_thread.title != nil) {
-            
-            self.title = self.thread.title;
-            //UILabel *lab = (UILabel *)self.navigationItem.titleView;
-            //lab.text = self.thread.title;
-           //self.navigationItem.titleView = [AwfulThreadTitleView threadTitleViewWithPage:self];
-        }
-        
-        if([_thread.totalUnreadPosts intValue] == -1) {
-            self.destinationType = AwfulPageDestinationTypeFirst;
-            
-        } else if([_thread.totalUnreadPosts intValue] == 0) {
-            self.destinationType = AwfulPageDestinationTypeLast;
-                // if the last page is full, it won't work if you go for &goto=newpost, that's why I'm setting this to last page
-        } else {
-            self.destinationType = AwfulPageDestinationTypeNewpost;
-        }
+    _thread = newThread;
+    self.threadID = _thread.threadID;
+    if (_thread.title != nil) {
+        self.title = self.thread.title;
     }
-
+    if ([_thread.totalUnreadPosts intValue] == -1) {
+        self.destinationType = AwfulPageDestinationTypeFirst;
+    } else if ([_thread.totalUnreadPosts intValue] == 0) {
+        self.destinationType = AwfulPageDestinationTypeLast;
+            // if the last page is full, it won't work if you go for &goto=newpost, that's why I'm setting this to last page
+    } else {
+        self.destinationType = AwfulPageDestinationTypeNewpost;
+    }
 }
 
-
--(void)setDestinationType:(AwfulPageDestinationType)destinationType
+- (void)setDestinationType:(AwfulPageDestinationType)destinationType
 {
     _destinationType = destinationType;
-    self.shouldScrollToBottom = (_destinationType == AwfulPageDestinationTypeLast);
+    self.shouldScrollToBottom = _destinationType == AwfulPageDestinationTypeLast;
 }
 
--(void)setDataController:(AwfulPageDataController *)dataController
+- (void)setDataController:(AwfulPageDataController *)dataController
 {
-    if(_dataController != dataController) {
-        _dataController = dataController;
-        self.currentPage = dataController.currentPage;
-        self.numberOfPages = dataController.numberOfPages;
-        [self setThreadTitle:dataController.threadTitle];
-        
-        self.postIDScrollDestination = [dataController calculatePostIDScrollDestination];
-        self.shouldScrollToBottom = [dataController shouldScrollToBottom];
-        if(self.destinationType != AwfulPageDestinationTypeNewpost) {
-            self.shouldScrollToBottom = NO;
-        }
-        
-        int numNewPosts = [_dataController numNewPostsLoaded];
-        if(numNewPosts > 0 && (self.destinationType == AwfulPageDestinationTypeNewpost || self.currentPage == self.numberOfPages)) {
-            int unreadPosts = [self.thread.totalUnreadPosts intValue];
-            if(unreadPosts != -1) {
-                unreadPosts -= numNewPosts;
-                self.thread.totalUnreadPosts = [NSNumber numberWithInt:MAX(unreadPosts, 0)];
-                [ApplicationDelegate saveContext];
-            }
-        } else if(self.destinationType == AwfulPageDestinationTypeLast) {
-            self.thread.totalUnreadPosts = [NSNumber numberWithInt:0];
-            [ApplicationDelegate saveContext];
-        }
-        [[NSNotificationCenter defaultCenter] postNotificationName:AwfulThreadDidUpdateNotification object:self.thread];
-        
-        NSString *html = [dataController constructedPageHTML];
-        [self.webView loadHTMLString:html baseURL:[[NSBundle mainBundle] resourceURL]];
-        self.webView.tag = self.currentPage;
-        
-        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:self forKey:@"page"];
-        [[NSNotificationCenter defaultCenter] postNotificationName:AwfulPageDidLoadNotification
-                                                            object:self.thread
-                                                          userInfo:userInfo];
+    if (_dataController == dataController) return;
+
+    _dataController = dataController;
+    self.currentPage = dataController.currentPage;
+    self.numberOfPages = dataController.numberOfPages;
+    [self setThreadTitle:dataController.threadTitle];
+    
+    self.postIDScrollDestination = [dataController calculatePostIDScrollDestination];
+    self.shouldScrollToBottom = [dataController shouldScrollToBottom];
+    if (self.destinationType != AwfulPageDestinationTypeNewpost) {
+        self.shouldScrollToBottom = NO;
     }
     
+    int numNewPosts = [_dataController numNewPostsLoaded];
+    if (numNewPosts > 0 && (self.destinationType == AwfulPageDestinationTypeNewpost || self.currentPage == self.numberOfPages)) {
+        int unreadPosts = [self.thread.totalUnreadPosts intValue];
+        if(unreadPosts != -1) {
+            unreadPosts -= numNewPosts;
+            self.thread.totalUnreadPostsValue = MAX(unreadPosts, 0);
+            [ApplicationDelegate saveContext];
+        }
+    } else if (self.destinationType == AwfulPageDestinationTypeLast) {
+        self.thread.totalUnreadPostsValue = 0;
+        [ApplicationDelegate saveContext];
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:AwfulThreadDidUpdateNotification
+                                                        object:self.thread];
+    NSString *html = [dataController constructedPageHTML];
+    [self.webView loadHTMLString:html baseURL:[[NSBundle mainBundle] resourceURL]];
+    self.webView.tag = self.currentPage;
+    [[NSNotificationCenter defaultCenter] postNotificationName:AwfulPageDidLoadNotification
+                                                        object:self.thread
+                                                      userInfo:@{ @"page" : self }];
 }
 
 - (void)setCurrentPage:(NSInteger)currentPage
@@ -190,33 +151,31 @@
     [self updatePagesLabel];
 }
 
--(void)setThreadTitle : (NSString *)title
+- (void)setThreadTitle:(NSString *)title
 {
     AwfulThread *mythread = self.thread;
     mythread.title = title;
-    
-    //self.navigationItem.titleView = [AwfulThreadTitleView threadTitleViewWithPage:self];
     UILabel *lab = (UILabel *)self.navigationItem.titleView;
     lab.text = title;
     lab.adjustsFontSizeToFitWidth = YES;
 }
 
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if([[segue identifier] isEqualToString:@"ReplyBox"]) {
+    if ([segue.identifier isEqualToString:@"ReplyBox"]) {
         AwfulPostBoxController *postBox = (AwfulPostBoxController *)segue.destinationViewController;
         postBox.thread = self.thread;
         postBox.page = self;
-    } else if([[segue identifier] isEqualToString:@"EditPost"]) {
-        if([sender isMemberOfClass:[AwfulPostActions class]]) {
+    } else if ([segue.identifier isEqualToString:@"EditPost"]) {
+        if ([sender isMemberOfClass:[AwfulPostActions class]]) {
             AwfulPostActions *actions = (AwfulPostActions *)sender;
             AwfulPostBoxController *editBox = (AwfulPostBoxController *)segue.destinationViewController;
             editBox.post = actions.post;
             editBox.startingText = actions.postContents;
             editBox.page = self;
         }
-    } else if([[segue identifier] isEqualToString:@"QuoteBox"]) {
-        if([sender isMemberOfClass:[AwfulPostActions class]]) {
+    } else if ([segue.identifier isEqualToString:@"QuoteBox"]) {
+        if ([sender isMemberOfClass:[AwfulPostActions class]]) {
             AwfulPostActions *actions = (AwfulPostActions *)sender;
             AwfulPostBoxController *quoteBox = (AwfulPostBoxController *)segue.destinationViewController;
             quoteBox.thread = self.thread;
@@ -226,10 +185,9 @@
     }
 }
 
--(IBAction)hardRefresh
-{    
-    self.nextPageWebView = nil;
-    if([self.dataController.posts count] == 40) {
+- (IBAction)hardRefresh
+{
+    if ([self.dataController.posts count] == 40) {
         self.destinationType = AwfulPageDestinationTypeSpecific;
         [self refresh];
     } else {
@@ -238,13 +196,12 @@
     }
 }
 
--(void)refresh
-{        
-    //self.nextPageWebView = nil;
+- (void)refresh
+{
     [self loadPageNum:self.currentPage];
 }
 
--(void)loadPageNum : (NSUInteger)pageNum
+- (void)loadPageNum:(NSUInteger)pageNum
 {
     // I guess the error callback doesn't necessarily get called when a network operation is 
     // cancelled, so clear the HUD when we cancel the network operation.
@@ -253,67 +210,55 @@
     
     [self swapToStopButton];
     [self hidePageNavigation];
-    if(pageNum != 0) {
-        //MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
-        //hud.labelText = [NSString stringWithFormat:@"Loading Page %d", pageNum];
-        
-        //self.pullToNavigateView.state = AwfulPullForActionStateLoading;
-        //self.pullToNavigateView.statusLabel = [NSString stringWithFormat:@"Loading Page %d", pageNum];
-    }
-    
     AwfulThread *myThread = self.thread;
     AwfulPageDestinationType destType = self.destinationType;
-    self.networkOperation = [[AwfulHTTPClient sharedClient] pageDataForThread:myThread destinationType:destType pageNum:pageNum onCompletion:^(AwfulPageDataController *dataController) {
+    self.networkOperation = [[AwfulHTTPClient sharedClient] pageDataForThread:myThread
+                                                              destinationType:destType
+                                                                      pageNum:pageNum
+                                                                 onCompletion:^(AwfulPageDataController *dataController)
+    {
         self.dataController = dataController;
-        if(self.destinationType == AwfulPageDestinationTypeSpecific) {
+        if (self.destinationType == AwfulPageDestinationTypeSpecific) {
             self.currentPage = pageNum;
         }
         [self updatePagesLabel];
         [self updateBookmarked];
         [self swapToRefreshButton];
-        //[MBProgressHUD hideHUDForView:self.view animated:NO];
-        
-        /*
-        self.loadingFooterView.onLastPage = (self.currentPage == self.numberOfPages);
-        
-        self.webView.scrollView.contentInset = self.loadingFooterView.onLastPage?
-            UIEdgeInsetsMake(0, 0, self.pullForActionController.footerView.fsH, 0) :
-            UIEdgeInsetsZero;
-        
-        if (self.currentPage == self.numberOfPages) {
-            [self.loadingFooterView removeFromSuperview];
-         self.loadingFooterView = [AwfulLastPageControl new];
-         ....etc...
-            
-        }
-         */
-        
-    } onError:^(NSError *error) {
+    } onError:^(NSError *error)
+    {
         [self swapToRefreshButton];
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed"
+                                                        message:error.localizedDescription
+                                                       delegate:nil
+                                              cancelButtonTitle:@"Ok"
+                                              otherButtonTitles:nil];
         [alert show];
         [MBProgressHUD hideHUDForView:self.view animated:NO];
     }];
 }
 
--(void)loadLastPage
+- (void)loadLastPage
 {
     [self.networkOperation cancel];
     [self swapToStopButton];
-    self.networkOperation = [[AwfulHTTPClient sharedClient] pageDataForThread:self.thread destinationType:AwfulPageDestinationTypeLast pageNum:0 onCompletion:^(AwfulPageDataController *dataController) {
+    self.networkOperation = [[AwfulHTTPClient sharedClient] pageDataForThread:self.thread
+                                                              destinationType:AwfulPageDestinationTypeLast
+                                                                      pageNum:0
+                                                                 onCompletion:^(AwfulPageDataController *dataController)
+    {
         self.dataController = dataController;
         [self updatePagesLabel];
         [self updateBookmarked];
         [self swapToRefreshButton];
-        //self.pullToNavigateView.onLastPage = YES;
-    } onError:^(NSError *error) {
+    } onError:^(NSError *error)
+    {
         [self swapToRefreshButton];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
         [alert show];
     }];
 }
 
--(void)stop
+- (void)stop
 {
     [self.networkOperation cancel];
     [self swapToRefreshButton];
@@ -321,55 +266,29 @@
     [self.webView stopLoading];
 }
 
--(void)loadOlderPosts
+- (void)loadOlderPosts
 {
     NSString *html = [self.dataController constructedPageHTMLWithAllPosts];
-    [self.webView loadHTMLString:html baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
+    [self.webView loadHTMLString:html
+                         baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
 }
 
--(void)heldPost:(UILongPressGestureRecognizer *)gestureRecognizer
+- (void)heldPost:(UILongPressGestureRecognizer *)gestureRecognizer
 {    
     CGPoint p = [gestureRecognizer locationInView:self.webView];
-    
     NSString *js_tag_name = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).tagName", p.x, p.y];
     NSString *tag_name = [self.webView stringByEvaluatingJavaScriptFromString:js_tag_name];
-    if([tag_name isEqualToString:@"IMG"]) {
+    if ([tag_name isEqualToString:@"IMG"]) {
         NSString *js_src = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).src", p.x, p.y];
         NSString *src = [self.webView stringByEvaluatingJavaScriptFromString:js_src];
         NSString *js_class = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).className", p.x, p.y];
         NSString *class = [self.webView stringByEvaluatingJavaScriptFromString:js_class];
-        
-        BOOL proceed = YES;
-        
-        if([class isEqualToString:@"postaction"]) {
-            proceed = NO;
-        }
-        
-        if(proceed) {
-            NSMutableArray *photos = [[NSMutableArray alloc] init];
-            [photos addObject:[MWPhoto photoWithURL:[NSURL URLWithString:src]]];
-            
+        if (![class isEqualToString:@"postaction"]) {
+            NSArray *photos = @[[MWPhoto photoWithURL:[NSURL URLWithString:src]]];
             MWPhotoBrowser *browser = [[MWPhotoBrowser alloc] initWithPhotos:photos];
-            
             UIViewController *vc = ApplicationDelegate.window.rootViewController;
             UINavigationController *navi = [[UINavigationController alloc] initWithRootViewController:browser];
             [vc presentModalViewController:navi animated:YES];
-            
-        }
-    }
-}
-
--(void)didFullscreenGesture : (UIGestureRecognizer *)gesture
-{
-    if([gesture state] == UIGestureRecognizerStateRecognized) {
-        self.isFullScreen = !self.isFullScreen;
-        
-        if(self.isFullScreen) {
-            [self.navigationController setNavigationBarHidden:YES animated:YES];
-            [self.navigationController setToolbarHidden:YES animated:YES];
-        } else {
-            [self.navigationController setNavigationBarHidden:NO animated:YES];
-            [self.navigationController setToolbarHidden:NO animated:YES];
         }
     }
 }
@@ -380,24 +299,14 @@
 {
     [super viewDidLoad];
     
-    self.isFullScreen = NO;
-    
-    UILongPressGestureRecognizer *press = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(heldPost:)];
+    UILongPressGestureRecognizer *press = [[UILongPressGestureRecognizer alloc] initWithTarget:self
+                                                                                        action:@selector(heldPost:)];
     press.delegate = self;
     press.minimumPressDuration = 0.3;
     [self.webView addGestureRecognizer:press];
     self.webViewDelegateWrapper = [AwfulWebViewDelegateWrapper delegateWrappingDelegate:self];
     self.webView.delegate = self.webViewDelegateWrapper;
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(didFullscreenGesture:)];
-        [self.webView addGestureRecognizer:pinch];
-        pinch.delegate = self;
-    }
-    
-    [self.pagesBarButtonItem setTintColor:[UIColor darkGrayColor]];
 }
-
-@synthesize webViewDelegateWrapper = _webViewDelegateWrapper;
 
 - (void)viewDidUnload
 {
@@ -406,9 +315,10 @@
     [super viewDidUnload];
 }
 
--(void)viewWillAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
     [self.navigationController setToolbarHidden:NO];
     self.navigationController.toolbar.barStyle = UIBarStyleBlack;
 }
@@ -421,20 +331,21 @@
         NSURL *blank = [NSURL URLWithString:@"about:blank"];
         [self.webView loadRequest:[NSURLRequest requestWithURL:blank]];
     }
+    
     [super viewDidDisappear:animated];
 }
 
 #pragma mark - BarButtonItem Actions
 
--(void)updatePagesLabel
+- (void)updatePagesLabel
 {
     self.pagesBarButtonItem.title = [NSString stringWithFormat:@"Page %d of %d", self.currentPage, self.numberOfPages];
-    if(self.currentPage == self.numberOfPages) {
+    if (self.currentPage == self.numberOfPages) {
         [self.pagesSegmentedControl setEnabled:NO forSegmentAtIndex:1];
     } else {
         [self.pagesSegmentedControl setEnabled:YES forSegmentAtIndex:1];
     }
-    if(self.currentPage == 1) {
+    if (self.currentPage == 1) {
         [self.pagesSegmentedControl setEnabled:NO forSegmentAtIndex:0];
     } else {
         [self.pagesSegmentedControl setEnabled:YES forSegmentAtIndex:0];
@@ -443,10 +354,10 @@
 
 - (void)updateBookmarked
 {
-    [self.thread setIsBookmarked:[NSNumber numberWithBool:self.dataController.bookmarked]];
+    self.thread.isBookmarkedValue = self.dataController.bookmarked;
 }
 
--(IBAction)segmentedGotTapped : (id)sender
+- (IBAction)segmentedGotTapped:(id)sender
 {
     if(sender == self.actionsSegmentedControl) {
         [self tappedActionsSegment:nil];
@@ -455,7 +366,7 @@
     }
 }
 
--(IBAction)tappedPagesSegment : (id)sender
+- (IBAction)tappedPagesSegment:(id)sender
 {
     if(self.pagesSegmentedControl.selectedSegmentIndex == 0) {
         [self prevPage];
@@ -465,7 +376,7 @@
     self.pagesSegmentedControl.selectedSegmentIndex = -1;
 }
 
--(IBAction)tappedActionsSegment:(id)sender
+- (IBAction)tappedActionsSegment:(id)sender
 {
     if (self.actionsSegmentedControl.selectedSegmentIndex == 0) {
         [self tappedActions:nil];
@@ -475,12 +386,12 @@
     self.actionsSegmentedControl.selectedSegmentIndex = -1;
 }
 
--(IBAction)tappedNextPage:(id)sender
+- (IBAction)tappedNextPage:(id)sender
 {
     [self nextPage];
 }
 
--(void)nextPage
+- (void)nextPage
 {
     if (self.currentPage < self.numberOfPages) {
         self.destinationType = AwfulPageDestinationTypeSpecific;
@@ -488,7 +399,7 @@
     }
 }
 
--(void)prevPage
+- (void)prevPage
 {
     if(self.currentPage > 1) {
         self.destinationType = AwfulPageDestinationTypeSpecific;
@@ -496,16 +407,16 @@
     }
 }
 
--(IBAction)tappedActions:(id)sender
+- (IBAction)tappedActions:(id)sender
 {
     self.actions = [[AwfulThreadActions alloc] initWithThread:self.thread];
     self.actions.viewController = self;
     [self.actions showFromToolbar:self.navigationController.toolbar];
 }
 
--(void)tappedPageNav : (id)sender
+- (void)tappedPageNav:(id)sender
 {
-    if(self.numberOfPages <= 0 || self.currentPage <= 0) {
+    if (self.numberOfPages <= 0 || self.currentPage <= 0) {
         return;
     }
     
@@ -515,9 +426,13 @@
         
         [self.pagesBarButtonItem setTintColor:[UIColor darkGrayColor]];
         self.specificPageController.hiding = YES;
-        [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^(void) {
+        [UIView animateWithDuration:0.3
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseInOut
+                         animations:^{
             sp_view.frame = CGRectOffset(sp_view.frame, 0, sp_view.frame.size.height);
-        } completion:^(BOOL finished) {
+        } completion:^(BOOL finished)
+        {
             [sp_view removeFromSuperview];
             self.specificPageController = nil;
         }];
@@ -532,7 +447,7 @@
         sp_view.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, sp_view.frame.size.height);
         
         [self.view addSubview:sp_view];
-        [UIView animateWithDuration:0.3 animations:^(void) {
+        [UIView animateWithDuration:0.3 animations:^{
             sp_view.frame = CGRectOffset(sp_view.frame, 0, -sp_view.frame.size.height+40);
         }];
         
@@ -542,45 +457,45 @@
     }
 }
        
--(void)hidePageNavigation
+- (void)hidePageNavigation
 {
-    if(self.specificPageController != nil) {
+    if (self.specificPageController != nil) {
         [self tappedPageNav:nil];
     }
 }
 
--(IBAction)tappedCompose : (id)sender
+- (IBAction)tappedCompose:(id)sender
 {
     [self performSegueWithIdentifier:@"ReplyBox" sender:self];
 }
 
 #pragma mark - Navigator Content
 
--(void)scrollToBottom
+- (void)scrollToBottom
 {
     [self.webView stringByEvaluatingJavaScriptFromString:@"window.scrollTo(0, document.body.scrollHeight);"];
 }
 
--(void)scrollToSpecifiedPost
+- (void)scrollToSpecifiedPost
 {
     [self scrollToPost:self.postIDScrollDestination];
 }
 
--(void)scrollToPost : (NSString *)post_id
+- (void)scrollToPost:(NSString *)postID
 {
-    if(post_id != nil) {
-        NSString *scrolling = [NSString stringWithFormat:@"scrollToID('%@')", post_id];
+    if (postID) {
+        NSString *scrolling = [NSString stringWithFormat:@"scrollToID('%@')", postID];
         [self.webView stringByEvaluatingJavaScriptFromString:scrolling];
     }
 }
 
--(void)showActions:(NSString *)post_id fromRect:(CGRect)rect
+- (void)showActions:(NSString *)postID fromRect:(CGRect)rect
 {
     self.actions = nil;
-    if (!post_id || post_id.length == 0)
+    if (!postID || postID.length == 0)
         return;
     for (AwfulPost *post in self.dataController.posts) {
-        if([post.postID isEqualToString:post_id]) {
+        if ([post.postID isEqualToString:postID]) {
             self.actions = [[AwfulPostActions alloc] initWithAwfulPost:post
                                                                   page:self];
             break;
@@ -590,7 +505,7 @@
     [self.actions showFromRect:rect inView:[self.view superview] animated:YES];
 }
 
--(void)showActions
+- (void)showActions
 {
     self.actions.viewController = self;
     [self.actions showFromToolbar:self.navigationController.toolbar];
@@ -599,8 +514,8 @@
 #pragma mark - AwfulWebViewDelegate
 
 - (void)webView:(UIWebView *)webView
-pageDidRequestAction:(NSString *)action
- infoDictionary:(NSDictionary *)infoDictionary
+    pageDidRequestAction:(NSString *)action
+    infoDictionary:(NSDictionary *)infoDictionary
 {
     if ([action isEqualToString:@"nextPage"]) {
         [self nextPage];
@@ -620,75 +535,69 @@ pageDidRequestAction:(NSString *)action
     }
 }
 
-#pragma mark - Gesture Delegate
+#pragma mark - Gesture recognizer delegate
 
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
-shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gesture
+    shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)other
 {
     return YES;
 }
 
-#pragma mark - Web View Delegate
+#pragma mark - Web view delegate
 
 - (BOOL)webView:(UIWebView *)webView
-shouldStartLoadWithRequest:(NSURLRequest *)request
- navigationType:(UIWebViewNavigationType)navigationType
+    shouldStartLoadWithRequest:(NSURLRequest *)request
+    navigationType:(UIWebViewNavigationType)navigationType
 {    
-    if(navigationType == UIWebViewNavigationTypeLinkClicked) {
-        
-        NSURL *open_url = request.URL;
-        
-        if([[request.URL host] isEqualToString:@"forums.somethingawful.com"] &&
+    if (navigationType == UIWebViewNavigationTypeLinkClicked) { 
+        NSURL *openURL = request.URL;
+        if ([[request.URL host] isEqualToString:@"forums.somethingawful.com"] &&
            [[request.URL lastPathComponent] isEqualToString:@"showthread.php"]) {
-            
-            NSString *thread_id = nil;
-            NSString *page_number = nil;
-            
-            NSArray *query_elements = [[request.URL query] componentsSeparatedByString:@"&"];
-            for(NSString *element in query_elements) {
-                NSArray *key_and_val = [element componentsSeparatedByString:@"="];
-                if([[key_and_val objectAtIndex:0] isEqualToString:@"threadid"]) {
-                    thread_id = [key_and_val lastObject];
-                } else if([[key_and_val objectAtIndex:0] isEqualToString:@"pagenumber"]) {
-                    page_number = [key_and_val lastObject];
+            NSString *threadID;
+            NSString *pageNumber;
+            NSArray *queryElements = [[request.URL query] componentsSeparatedByString:@"&"];
+            for (NSString *element in queryElements) {
+                NSArray *keyAndVal = [element componentsSeparatedByString:@"="];
+                if ([keyAndVal[0] isEqualToString:@"threadid"]) {
+                    threadID = [keyAndVal lastObject];
+                } else if ([keyAndVal[0] isEqualToString:@"pagenumber"]) {
+                    pageNumber = [keyAndVal lastObject];
                 }
             }
             
-            if(thread_id != nil) {
+            if (threadID) {
                 NSManagedObjectContext *moc = ApplicationDelegate.throwawayObjectContext;
                 AwfulThread *intra = [AwfulThread insertInManagedObjectContext:moc];
-                intra.threadID = thread_id;
-                
+                intra.threadID = threadID;
                 AwfulPage *page = [self.storyboard instantiateViewControllerWithIdentifier:@"AwfulPage"];
                 page.thread = intra;
                 [self.navigationController pushViewController:page animated:YES];
-                if(page_number != nil) {
+                if (pageNumber != nil) {
                     page.destinationType = AwfulPageDestinationTypeSpecific;
-                    [page loadPageNum:[page_number integerValue]];
+                    [page loadPageNum:[pageNumber integerValue]];
                 } else {
                     page.destinationType = AwfulPageDestinationTypeFirst;
                     [page refresh];
                 }
                 return NO;
             }
-            
-            
-        } else if([[request.URL host] isEqualToString:@"itunes.apple.com"] || [[request.URL host] isEqualToString:@"phobos.apple.com"])  {
+        } else if ([[request.URL host] isEqualToString:@"itunes.apple.com"]
+                   || [[request.URL host] isEqualToString:@"phobos.apple.com"]) {
             [[UIApplication sharedApplication] openURL:request.URL];
             return NO;
-        } else if([request.URL host] == nil && [[request.URL lastPathComponent] isEqualToString:@"showthread.php"]) {
-            open_url = [NSURL URLWithString:[NSString stringWithFormat:@"http://forums.somethingawful.com/%@", request.URL]];
+        } else if (![request.URL host]
+                   && [[request.URL lastPathComponent] isEqualToString:@"showthread.php"]) {
+            openURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://forums.somethingawful.com/%@", request.URL]];
         }
         
-        OtherWebController *other = [[OtherWebController alloc] initWithURL:open_url];
-        UINavigationController *other_nav = [[UINavigationController alloc] initWithRootViewController:other];
-        other_nav.navigationBar.barStyle = UIBarStyleBlack;
-        [other_nav setToolbarHidden:NO];
-        other_nav.toolbar.barStyle = UIBarStyleBlack;
+        OtherWebController *other = [[OtherWebController alloc] initWithURL:openURL];
+        UINavigationController *otherNav = [[UINavigationController alloc] initWithRootViewController:other];
+        otherNav.navigationBar.barStyle = UIBarStyleBlack;
+        [otherNav setToolbarHidden:NO];
+        otherNav.toolbar.barStyle = UIBarStyleBlack;
         
         UIViewController *vc = ApplicationDelegate.window.rootViewController;
-        [vc presentModalViewController:other_nav animated:YES];
-        
+        [vc presentModalViewController:otherNav animated:YES];
         return NO;
     }
     return YES;
@@ -696,49 +605,43 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 
 - (void)webViewDidFinishLoad:(UIWebView *)sender
 {
-    sender.scrollView.delegate = self;
-    
     [self swapToRefreshButton];
-    if(self.postIDScrollDestination != nil) {
+    if (self.postIDScrollDestination != nil) {
         [self scrollToSpecifiedPost];
     } else if(self.shouldScrollToBottom) {
         [self scrollToBottom];
     }
 }
 
--(void)webViewDidStartLoad:(UIWebView *)webView
-{
-    
-}
-
--(void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
-{
-}
-
--(void)swapToRefreshButton
+- (void)swapToRefreshButton
 {
     UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(hardRefresh)];
     refresh.style = UIBarButtonItemStyleBordered;
     self.navigationItem.rightBarButtonItem = refresh;
 }
 
--(void)swapToStopButton
+- (void)swapToStopButton
 {
     UIBarButtonItem *stop = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop)];
     stop.style = UIBarButtonItemStyleBordered;
     self.navigationItem.rightBarButtonItem = stop;
 }
 
--(void)showCompletionMessage : (NSString *)message
+- (void)showCompletionMessage:(NSString *)message
 {
-    dispatch_async(dispatch_get_main_queue(), ^(){
+    dispatch_async(dispatch_get_main_queue(), ^{
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
         hud.labelText = message;
         hud.customView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"37x-Checkmark"]];
         hud.mode = MBProgressHUDModeCustomView;
-        [UIView animateWithDuration:0.5 delay:2.0 options:UIViewAnimationOptionCurveEaseIn animations:^(void){
+        [UIView animateWithDuration:0.5
+                              delay:2.0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^
+        {
             hud.alpha = 0.0;
-        } completion:^(BOOL finished) {
+        } completion:^(BOOL finished)
+        {
             [MBProgressHUD hideHUDForView:self.view animated:NO];
         }];
     });
@@ -746,74 +649,63 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         return YES;
     }
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{	
-    self.isHidingToolbars = YES;
-}
-
--(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    self.isHidingToolbars = NO;
-    
-}
-
--(void) setIsHidingToolbars:(BOOL)isHidingToolbars {
-    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) return;
-    //_isHidingToolbars = isHidingToolbars;
-    
-    
-    BOOL shouldHideToolbars = NO;
-    if (self.webView.scrollView.contentOffset.y >= self.navigationController.navigationBar.frame.size.height) {
-        shouldHideToolbars = YES;
-    }
-    else
-        shouldHideToolbars = NO;
-    
-    [self.navigationController setNavigationBarHidden:shouldHideToolbars animated:YES];
-    [self.navigationController setToolbarHidden:shouldHideToolbars animated:YES];
-    
-}
-
--(BOOL) isOnLastPage {
-    return (self.currentPage == self.numberOfPages);
+- (BOOL)isOnLastPage
+{
+    return self.currentPage == self.numberOfPages;
 }
 
 @end
 
-@implementation AwfulPageIpad
-@synthesize popController = _popController;
 
-- (void)viewDidLoad {
+NSString * const AwfulPageWillLoadNotification = @"com.regularberry.awful.notification.pageWillLoad";
+NSString * const AwfulPageDidLoadNotification = @"com.regularberry.awful.notification.pageDidLoad";
+
+
+@interface AwfulPageIpad ()
+
+@property (nonatomic, strong) UIPopoverController *popController;
+
+@end
+
+
+@implementation AwfulPageIpad
+{
+    CGPoint _lastTouch;
+}
+
+- (void)viewDidLoad
+{
     [super viewDidLoad];
     
-    
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                          action:@selector(handleTap:)];
     tap.delegate = self;
     [self.webView addGestureRecognizer:tap];
 }
 
--(IBAction)tappedPageNav : (id)sender
+- (IBAction)tappedPageNav:(id)sender
 {
-    if(self.popController)
+    if (self.popController)
     {
         [self.popController dismissPopoverAnimated:YES];
         self.popController = nil;
     }
     
-    if(self.numberOfPages <= 0 || self.currentPage <= 0)
+    if (self.numberOfPages <= 0 || self.currentPage <= 0)
     {
         return;
     }
     
     UIView *sp_view = self.specificPageController.containerView;
         
-    if(self.specificPageController == nil) {
-        
+    if (!self.specificPageController)
+    {
         self.specificPageController = [[UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]] instantiateViewControllerWithIdentifier:@"AwfulSpecificPageController"];
         self.specificPageController.page = self;
         [self.specificPageController loadView];
@@ -835,29 +727,28 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 }
 
 
-- (void)showRootPopoverButtonItem:(UIBarButtonItem *)barButtonItem {
-
+- (void)showRootPopoverButtonItem:(UIBarButtonItem *)barButtonItem
+{
     [self.navigationItem setLeftBarButtonItem:barButtonItem animated:YES];
 }
 
-
-- (void)invalidateRootPopoverButtonItem:(UIBarButtonItem *)barButtonItem {
-    
+- (void)invalidateRootPopoverButtonItem:(UIBarButtonItem *)barButtonItem
+{    
     [self.navigationItem setLeftBarButtonItem:nil animated:YES];
 }
 
 - (void)handleTap:(UITapGestureRecognizer *)sender 
 {     
-    if (sender.state == UIGestureRecognizerStateEnded)     
-    {         // handling code     
+    if (sender.state == UIGestureRecognizerStateEnded) {
         _lastTouch = [sender locationInView:self.view];
-    } 
+    }
 }
 
 // hack for embedded youtube controls to work
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
+       shouldReceiveTouch:(UITouch *)touch
 {
-    if([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
+    if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
         CGPoint loc = [touch locationInView:self.view];
         _lastTouch = loc;
         return NO;
@@ -865,19 +756,19 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     return YES;
 }
 
--(IBAction)tappedActions:(id)sender
+- (IBAction)tappedActions:(id)sender
 {
     self.actions = [[AwfulThreadActions alloc] initWithThread:self.thread];
     [self showActions];
 }
 
--(void)showActions
+- (void)showActions
 {    
     self.actions.viewController = self;
     UIActionSheet *sheet = self.actions.actionSheet;
     CGRect buttonRect;
-    if ([self.actions isKindOfClass:[AwfulThreadActions class]] || [self.actions isKindOfClass:[AwfulVoteActions class]])
-    {
+    if ([self.actions isKindOfClass:[AwfulThreadActions class]]
+        || [self.actions isKindOfClass:[AwfulVoteActions class]]) {
         buttonRect = self.actionsSegmentedControl.frame;
         buttonRect.origin.y += self.view.frame.size.height;  //Add the height of the view to the button y
         buttonRect.size.width = buttonRect.size.width / 2;   //Action is the first button, so the width is really only half
@@ -891,27 +782,24 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 - (void)showActions:(NSString *)post_id fromRect:(CGRect)rect
 {
     self.actions = nil;
-    if (!post_id || post_id.length == 0)
-        return;
+    if (!post_id || post_id.length == 0) return;
     for (AwfulPost *post in self.dataController.posts) {
-        if([post.postID isEqualToString:post_id]) {
+        if ([post.postID isEqualToString:post_id]) {
             self.actions = [[AwfulPostActions alloc] initWithAwfulPost:post
                                                                   page:self];
             break;
         }
     }
-    if(self.popController)
-    {
+    if (self.popController) {
         [self.popController dismissPopoverAnimated:YES];
         self.popController = nil;
     }
-    if (!self.actions)
-        return;
+    if (!self.actions) return;
     self.actions.viewController = self;
     UIActionSheet *sheet = self.actions.actionSheet;
     CGRect buttonRect = rect;
-    if ([self.actions isKindOfClass:[AwfulThreadActions class]] || [self.actions isKindOfClass:[AwfulVoteActions class]])
-    {
+    if ([self.actions isKindOfClass:[AwfulThreadActions class]]
+        || [self.actions isKindOfClass:[AwfulVoteActions class]]) {
         buttonRect = self.actionsSegmentedControl.frame;
         buttonRect.origin.y += self.view.frame.size.height;  //Add the height of the view to the button y
         buttonRect.size.width = buttonRect.size.width / 2;   //Action is the first button, so the width is really only half
@@ -919,10 +807,9 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     [sheet showFromRect:buttonRect inView:self.view animated:YES];
 }
 
--(IBAction)tappedCompose : (id)sender
+- (IBAction)tappedCompose:(id)sender
 {
-        //Hide any popovers if composed pressed
-    if(self.popController)
+    if (self.popController)
     {
         [self.popController dismissPopoverAnimated:YES];
         self.popController = nil;
@@ -931,11 +818,12 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     [super tappedCompose:sender];
 }
 
--(void)hidePageNavigation
+- (void)hidePageNavigation
 {
-    if(self.popController) {
+    if (self.popController) {
         [self.popController dismissPopoverAnimated:YES];
         self.popController = nil;
     }
 }
+
 @end

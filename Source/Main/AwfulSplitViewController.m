@@ -10,6 +10,10 @@
 #import "AwfulLoginController.h"
 #import "AwfulSettings.h"
 
+@interface AwfulSplitViewController () <UISplitViewControllerDelegate>
+
+@end
+
 @implementation AwfulSplitViewController
 
 - (void)awakeFromNib
