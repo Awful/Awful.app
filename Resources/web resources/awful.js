@@ -1,15 +1,12 @@
-function tappedBottom()
-{
+function tappedBottom() {
     Awful.send("nextPage");
 }
 
-function tappedOlderPosts()
-{
+function tappedOlderPosts() {
     Awful.send("loadOlderPosts");
 }
 
-function tappedPost(postid, el)
-{
+function tappedPost(postid, el) {
     var infoDict = { postID: postid };
     if (el) {
         var offset = $(el).offset();
@@ -22,18 +19,25 @@ function tappedPost(postid, el)
     Awful.send("postOptions", infoDict);
 }
 
-function scrollToID(postid)
-{   
+function scrollToID(postid) {
     var obj = document.getElementById(postid);
     document.getElementById(postid).scrollIntoView();
 }
 
-function addAvatarClass()
-{
+function addAvatarClass() {
     $('article').each(function(){
       var avatarSrc = $(this).find('.avatar').attr('src');
       if(avatarSrc == null) {
          $(this).addClass('noAvatar');
       }
     });
+}
+
+function imageURLAtPosition(x, y) {
+    var img = $(document.elementFromPoint(x, y))
+              .filter('img')
+              .not('.postaction')
+              .not('img[src*=http://i.somethingawful.com/forumsystem/emoticons/]')
+              .not('img[src*=http://fi.somethingawful.com/images/smilies/]');
+    return !!img[0] ? img[0].src : null;
 }

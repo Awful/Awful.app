@@ -277,20 +277,14 @@
 {
     if (gestureRecognizer.state != UIGestureRecognizerStateBegan) return;
     CGPoint p = [gestureRecognizer locationInView:self.webView];
-    NSString *js_tag_name = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).tagName", p.x, p.y];
-    NSString *tag_name = [self.webView stringByEvaluatingJavaScriptFromString:js_tag_name];
-    if ([tag_name isEqualToString:@"IMG"]) {
-        NSString *js_src = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).src", p.x, p.y];
-        NSString *src = [self.webView stringByEvaluatingJavaScriptFromString:js_src];
-        NSString *js_class = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).className", p.x, p.y];
-        NSString *class = [self.webView stringByEvaluatingJavaScriptFromString:js_class];
-        if (![class isEqualToString:@"postaction"]) {
-            NSArray *photos = @[[MWPhoto photoWithURL:[NSURL URLWithString:src]]];
-            MWPhotoBrowser *browser = [[MWPhotoBrowser alloc] initWithPhotos:photos];
-            UIViewController *vc = ApplicationDelegate.window.rootViewController;
-            UINavigationController *navi = [[UINavigationController alloc] initWithRootViewController:browser];
-            [vc presentModalViewController:navi animated:YES];
-        }
+    NSString *js = [NSString stringWithFormat:@"imageURLAtPosition(%f, %f)", p.x, p.y];
+    NSString *src = [self.webView stringByEvaluatingJavaScriptFromString:js];
+    if ([src length]) {
+        NSArray *photos = @[[MWPhoto photoWithURL:[NSURL URLWithString:src]]];
+        MWPhotoBrowser *browser = [[MWPhotoBrowser alloc] initWithPhotos:photos];
+        UIViewController *vc = ApplicationDelegate.window.rootViewController;
+        UINavigationController *navi = [[UINavigationController alloc] initWithRootViewController:browser];
+        [vc presentModalViewController:navi animated:YES];
     }
 }
 
