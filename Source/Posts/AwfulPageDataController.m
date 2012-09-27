@@ -131,7 +131,6 @@ static NSMutableArray *ParsePosts(TFHpple *parser, NSString *forumID)
     return parsedPosts;
 }
 
-static void SwapInCachedImages(NSString* post);
 static AwfulPost *ParsePost(TFHpple *parser, NSString *forumID)
 {
     AwfulPost *post = [[AwfulPost alloc] init];
@@ -214,10 +213,7 @@ static AwfulPost *ParsePost(TFHpple *parser, NSString *forumID)
                                    withString:@"<s></s>"
                                       options:NSCaseInsensitiveSearch
                                         range:NSMakeRange(0, post_body.length)];
-        
 
-        SwapInCachedImages(post_body);
-        
         post.postBody = post_body;
         
         TFHppleElement *seen = [parser searchForSingle:@"//tr[@class='seen1']|//tr[@class='seen2']"];
@@ -225,83 +221,6 @@ static AwfulPost *ParsePost(TFHpple *parser, NSString *forumID)
     }
     
     return post;
-}
-
-static void SwapInCachedImages(NSMutableString* post) {
-    //swap in local cached images, swap in retina if necessary
-    NSRegularExpression * regex = [NSRegularExpression regularExpressionWithPattern:@"\"(http://f?i.somethingawful.com/(forumsystem|images)/(emoticons|smilies)/([^\"]*).(gif|png|jpg))\""
-                                                                            options:(NSRegularExpressionCaseInsensitive)
-                                                                              error:nil
-                                   ];
-    /*
-    [regex replaceMatchesInString:post 
-                          options:NSRegularExpressionSearch 
-                            range:NSMakeRange(0, post.length) 
-                     withTemplate:@"\"$3\""
-    ];
-   */
-     
-    //swap in retina version if available
-     
-    int offset = 0;
-    NSArray *matches = [regex matchesInString:post options:NSRegularExpressionSearch range:NSMakeRange(0, post.length)];
-    for (NSTextCheckingResult *match in matches) {
-        NSRange fileNameRange = NSMakeRange([match rangeAtIndex:4].location + offset, [match rangeAtIndex:4].length);
-        NSString *filename = [post substringWithRange:fileNameRange];
-        
-        NSRange fileTypeRange = NSMakeRange([match rangeAtIndex:5].location + offset, [match rangeAtIndex:5].length);
-        NSString *filetype = [post substringWithRange:fileTypeRange];
-        NSString *replacement;
-        
-        //do we have a cached version?
-        NSString *local = [[NSBundle mainBundle] pathForResource:filename ofType:filetype];
-        if (local) {
-            BOOL retinaVersion = [[NSBundle mainBundle] pathForResource:[filename stringByAppendingString:@"@2x"]
-                                                                      ofType:filetype] != nil;
-            BOOL retinaScreen = [[UIScreen mainScreen] respondsToSelector:@selector(scale)] && 
-                                    [[UIScreen mainScreen] scale] == 2.00;
-            
-            if (retinaScreen && retinaVersion) {
-                //got a retina version, find out the size of the original
-                CGFloat height, width;
-                @autoreleasepool {
-                    UIImage *img = [UIImage imageNamed:[NSString stringWithFormat:@"%@.%@",filename,filetype]];
-                    height = img.size.height;
-                    width = img.size.width;
-                }
-                    
-                replacement = [NSString stringWithFormat:@"\"%@@2x.%@\" width=%.0f height=%.0f ", filename, filetype, width, height];
-                NSLog(@"Using retina version of %@", filename);
-            }
-            else {
-                //no retina, use local version
-                replacement = [NSString stringWithFormat:@"\"%@.%@\" ", filename, filetype];
-                //NSLog(@"Using local version of %@", filename);
-            }
-             
-            NSRange resultRange = [match range];   
-            resultRange.location += offset; // resultRange.location is updated 
-            // based on the offset updated below
-            
-            // implement your own replace functionality using
-            // replacementStringForResult:inString:offset:template:
-            // note that in the template $0 is replaced by the match
-            // make the replacement
-
-            [post replaceCharactersInRange:resultRange withString:replacement];
-            
-            // update the offset based on the replacement
-            offset += ([replacement length] - resultRange.length);
-            //NSLog(@"%@",post);
-        }
-        
-        else {
-            //no local version, do nothing
-            NSLog(@"FYI: no local version of %@", filename);
-        }
-        
-    }
-     
 }
 
 static NSUInteger ParseNewPostIndex(NSURL *pageURL)
