@@ -343,54 +343,68 @@
             <objects>
                 <viewController storyboardIdentifier="AwfulPage" hidesBottomBarWhenPushed="YES" id="5o1-8Y-fsn" customClass="AwfulPageIpad" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Auw-iH-8xK">
-                        <rect key="frame" x="0.0" y="64" width="703" height="660"/>
+                        <rect key="frame" x="0.0" y="64" width="703" height="704"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <webView contentMode="scaleToFill" id="uom-YB-cRl">
-                                <rect key="frame" x="0.0" y="0.0" width="703" height="660"/>
+                                <rect key="frame" x="0.0" y="0.0" width="703" height="655"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             </webView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="blackOpaque" id="fGl-10-oBf">
+                                <rect key="frame" x="0.0" y="655" width="703" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <items>
+                                    <barButtonItem style="plain" id="Tvq-UL-xrB">
+                                        <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" id="W8W-AE-xfN" customClass="ButtonSegmentedControl">
+                                            <rect key="frame" x="7" y="8" width="85" height="30"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <segments>
+                                                <segment title="" image="arrowleft.png"/>
+                                                <segment title="" image="arrowright.png"/>
+                                            </segments>
+                                            <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                            <connections>
+                                                <outlet property="target" destination="5o1-8Y-fsn" id="E5y-bf-a7j"/>
+                                            </connections>
+                                        </segmentedControl>
+                                        <connections>
+                                            <action selector="segmentedGotTapped:" destination="5o1-8Y-fsn" id="TeO-hB-9VH"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="V54-nu-d8H"/>
+                                    <barButtonItem title="Page 0 of 0" id="dJP-Y6-6Q0">
+                                        <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                        <connections>
+                                            <action selector="tappedPageNav:" destination="5o1-8Y-fsn" id="9Ix-Pd-bGf"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="iKx-nX-2XL"/>
+                                    <barButtonItem style="plain" id="hdi-s3-sV6">
+                                        <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" id="3oF-FN-JOQ" customClass="ButtonSegmentedControl">
+                                            <rect key="frame" x="611" y="8" width="85" height="30"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <segments>
+                                                <segment title="" image="action.png"/>
+                                                <segment title="" image="compose.png"/>
+                                            </segments>
+                                            <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                            <connections>
+                                                <outlet property="target" destination="5o1-8Y-fsn" id="zmW-Ke-aX0"/>
+                                            </connections>
+                                        </segmentedControl>
+                                        <connections>
+                                            <action selector="segmentedGotTapped:" destination="5o1-8Y-fsn" id="0xX-k9-e5Y"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
                         </subviews>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <toolbarItems>
-                        <barButtonItem style="plain" id="lFl-9U-jES">
-                            <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" id="bJd-qz-tCR" customClass="ButtonSegmentedControl">
-                                <rect key="frame" x="7" y="8" width="85" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <segments>
-                                    <segment title="" image="arrowleft.png"/>
-                                    <segment title="" image="arrowright.png"/>
-                                </segments>
-                                <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                <connections>
-                                    <outlet property="target" destination="5o1-8Y-fsn" id="Ktl-av-qL6"/>
-                                </connections>
-                            </segmentedControl>
-                        </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="b3P-3z-AdL"/>
-                        <barButtonItem title="Page 0 of 0" id="zRI-WD-s5u">
-                            <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                            <connections>
-                                <action selector="tappedPageNav:" destination="5o1-8Y-fsn" id="Qbg-13-AUe"/>
-                            </connections>
-                        </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="JH9-rJ-Pf2"/>
-                        <barButtonItem style="plain" id="Ovc-Zi-2lK">
-                            <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" id="8iC-oY-std" customClass="ButtonSegmentedControl">
-                                <rect key="frame" x="611" y="8" width="85" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <segments>
-                                    <segment title="" image="action.png"/>
-                                    <segment title="" image="compose.png"/>
-                                </segments>
-                                <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                <connections>
-                                    <outlet property="target" destination="5o1-8Y-fsn" id="B08-JN-9KI"/>
-                                </connections>
-                            </segmentedControl>
-                        </barButtonItem>
                     </toolbarItems>
                     <navigationItem key="navigationItem" id="qo2-8W-zzZ">
                         <connections>
@@ -398,11 +412,11 @@
                         </connections>
                     </navigationItem>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackTranslucent"/>
-                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics" barStyle="blackOpaque"/>
                     <connections>
-                        <outlet property="actionsSegmentedControl" destination="8iC-oY-std" id="cIZ-i5-OZs"/>
-                        <outlet property="pagesBarButtonItem" destination="zRI-WD-s5u" id="ptW-Cg-QAt"/>
-                        <outlet property="pagesSegmentedControl" destination="bJd-qz-tCR" id="7jR-DF-prj"/>
+                        <outlet property="actionsSegmentedControl" destination="3oF-FN-JOQ" id="FwJ-fS-4JS"/>
+                        <outlet property="pagesBarButtonItem" destination="dJP-Y6-6Q0" id="cLv-Fv-60Y"/>
+                        <outlet property="pagesSegmentedControl" destination="W8W-AE-xfN" id="63s-d5-AsY"/>
+                        <outlet property="toolbar" destination="fGl-10-oBf" id="lZu-Mv-lCh"/>
                         <outlet property="webView" destination="uom-YB-cRl" id="XgE-cF-mrW"/>
                         <segue destination="yxI-Ea-lFb" kind="modal" identifier="ReplyBox" modalPresentationStyle="formSheet" id="Kgw-hp-QCk"/>
                         <segue destination="yxI-Ea-lFb" kind="modal" identifier="EditPost" modalPresentationStyle="formSheet" id="eTP-h5-cDY"/>
@@ -508,29 +522,77 @@
             <objects>
                 <viewController storyboardIdentifier="" hidesBottomBarWhenPushed="YES" id="bie-UO-tTR" customClass="AwfulPageIpad" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="7LG-0k-3Ej">
-                        <rect key="frame" x="0.0" y="64" width="768" height="916"/>
+                        <rect key="frame" x="0.0" y="64" width="768" height="960"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="MasterViewButton.png" id="cp1-S1-7eq">
-                                <rect key="frame" x="20" y="-98" width="288" height="381"/>
+                                <rect key="frame" x="20" y="-84" width="288" height="381"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" image="singlePageMovement.png" id="q8c-S4-NsX">
-                                <rect key="frame" x="43" y="665" width="240" height="251"/>
+                                <rect key="frame" x="43" y="660" width="240" height="251"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" image="multiPageMovement.png" id="53N-NK-ouE">
-                                <rect key="frame" x="106" y="762" width="251" height="175"/>
+                                <rect key="frame" x="106" y="753" width="251" height="175"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" image="ReplyButton.png" id="yWI-U5-wIu">
-                                <rect key="frame" x="444" y="577" width="376" height="339"/>
+                                <rect key="frame" x="444" y="566" width="376" height="339"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" image="ThreadActions.png" id="YlL-YF-Z2O">
-                                <rect key="frame" x="410" y="707" width="288" height="242"/>
+                                <rect key="frame" x="410" y="699" width="288" height="242"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                             </imageView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="blackOpaque" id="z6J-g0-fdP">
+                                <rect key="frame" x="0.0" y="911" width="768" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <items>
+                                    <barButtonItem enabled="NO" style="plain" id="kIG-mY-AQB">
+                                        <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" id="29d-nT-Ecx" customClass="ButtonSegmentedControl">
+                                            <rect key="frame" x="7" y="8" width="85" height="30"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <segments>
+                                                <segment title="" image="arrowleft.png"/>
+                                                <segment title="" image="arrowright.png"/>
+                                            </segments>
+                                            <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                            <connections>
+                                                <outlet property="target" destination="5o1-8Y-fsn" id="LpF-My-tYe"/>
+                                            </connections>
+                                        </segmentedControl>
+                                        <connections>
+                                            <action selector="segmentedGotTapped:" destination="5o1-8Y-fsn" id="9bK-K0-eIo"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="bMH-oU-X88"/>
+                                    <barButtonItem enabled="NO" title="Page 0 of 0" id="2X2-ie-ffk">
+                                        <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                        <connections>
+                                            <action selector="tappedPageNav:" destination="5o1-8Y-fsn" id="Sn5-IE-d1c"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="ngl-L2-Dl6"/>
+                                    <barButtonItem enabled="NO" style="plain" id="BqH-4i-zQE">
+                                        <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" id="3mI-vY-p41" customClass="ButtonSegmentedControl">
+                                            <rect key="frame" x="676" y="8" width="85" height="30"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <segments>
+                                                <segment title="" image="action.png"/>
+                                                <segment title="" image="compose.png"/>
+                                            </segments>
+                                            <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                            <connections>
+                                                <outlet property="target" destination="5o1-8Y-fsn" id="IKG-dR-oBa"/>
+                                            </connections>
+                                        </segmentedControl>
+                                        <connections>
+                                            <action selector="segmentedGotTapped:" destination="5o1-8Y-fsn" id="Qte-aR-GSx"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -569,12 +631,12 @@
                         </connections>
                     </navigationItem>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackTranslucent"/>
-                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics" barStyle="blackOpaque"/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
                     <connections>
                         <outlet property="actionsSegmentedControl" destination="456-tE-J9r" id="omr-Ug-1mO"/>
                         <outlet property="pagesBarButtonItem" destination="8l0-ib-JyV" id="VEb-8T-OC1"/>
                         <outlet property="pagesSegmentedControl" destination="g6s-V8-8i1" id="BJl-0N-DVk"/>
+                        <outlet property="toolbar" destination="z6J-g0-fdP" id="181-cP-j08"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="C99-UB-8TE" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -685,6 +747,7 @@
                 <relationship kind="outlet" name="nextPageBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="pagesBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="pagesSegmentedControl" candidateClass="ButtonSegmentedControl"/>
+                <relationship kind="outlet" name="toolbar" candidateClass="UIToolbar"/>
                 <relationship kind="outlet" name="webView" candidateClass="UIWebView"/>
             </relationships>
         </class>

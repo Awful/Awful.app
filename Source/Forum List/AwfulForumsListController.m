@@ -55,8 +55,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    [self.navigationController setToolbarHidden:YES];
     
     self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
 }
@@ -64,8 +62,6 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
-    [self.navigationController setToolbarHidden:YES];
     
     [self.navigationItem.leftBarButtonItem setTintColor:[UIColor colorWithRed:46.0/255 green:146.0/255 blue:190.0/255 alpha:1.0]];
     

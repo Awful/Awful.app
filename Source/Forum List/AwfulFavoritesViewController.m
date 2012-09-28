@@ -47,7 +47,6 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self.navigationController setToolbarHidden:YES];
     [self.navigationItem.leftBarButtonItem setTintColor:[UIColor colorWithRed:46.0/255
                                                                         green:146.0/255
                                                                          blue:190.0/255

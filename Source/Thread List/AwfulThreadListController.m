@@ -227,9 +227,6 @@ typedef enum {
     [super viewWillAppear:animated];
     
     self.navigationItem.leftBarButtonItem = self.customBackButton;
-    
-    [self.navigationController setToolbarHidden:YES];
-    
     [self.navigationController.navigationBar setBackgroundImage:[self customNavigationBarBackgroundImageForMetrics:(UIBarMetricsDefault)] 
                                                   forBarMetrics:(UIBarMetricsDefault)];
      

@@ -28,6 +28,8 @@
 
 @property (strong, nonatomic) NSOperation *networkOperation;
 
+@property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
+
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *pagesBarButtonItem;
 
 @property (nonatomic, strong) IBOutlet UIBarButtonItem *nextPageBarButtonItem;
@@ -58,8 +60,6 @@
 {
     [super awakeFromNib];
     
-    self.actionsSegmentedControl.action = @selector(tappedActionsSegment:);
-    self.pagesSegmentedControl.action = @selector(tappedPagesSegment:);
     self.view.backgroundColor = [UIColor underPageBackgroundColor];
     self.webView.backgroundColor = [UIColor scrollViewTexturedBackgroundColor];
 }
@@ -294,6 +294,9 @@
 {
     [super viewDidLoad];
     
+    self.actionsSegmentedControl.action = @selector(tappedActionsSegment:);
+    self.pagesSegmentedControl.action = @selector(tappedPagesSegment:);
+    
     UILongPressGestureRecognizer *press = [[UILongPressGestureRecognizer alloc] initWithTarget:self
                                                                                         action:@selector(heldPost:)];
     press.delegate = self;
@@ -301,14 +304,6 @@
     [self.webView addGestureRecognizer:press];
     self.webViewDelegateWrapper = [AwfulWebViewDelegateWrapper delegateWrappingDelegate:self];
     self.webView.delegate = self.webViewDelegateWrapper;
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    
-    [self.navigationController setToolbarHidden:NO];
-    self.navigationController.toolbar.barStyle = UIBarStyleBlack;
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -328,16 +323,10 @@
 - (void)updatePagesLabel
 {
     self.pagesBarButtonItem.title = [NSString stringWithFormat:@"Page %d of %d", self.currentPage, self.numberOfPages];
-    if (self.currentPage == self.numberOfPages) {
-        [self.pagesSegmentedControl setEnabled:NO forSegmentAtIndex:1];
-    } else {
-        [self.pagesSegmentedControl setEnabled:YES forSegmentAtIndex:1];
-    }
-    if (self.currentPage == 1) {
-        [self.pagesSegmentedControl setEnabled:NO forSegmentAtIndex:0];
-    } else {
-        [self.pagesSegmentedControl setEnabled:YES forSegmentAtIndex:0];
-    }
+    [self.pagesSegmentedControl setEnabled:self.currentPage != self.numberOfPages
+                         forSegmentAtIndex:1];
+    [self.pagesSegmentedControl setEnabled:self.currentPage != 1
+                         forSegmentAtIndex:0];
 }
 
 - (void)updateBookmarked
@@ -399,7 +388,7 @@
 {
     self.actions = [[AwfulThreadActions alloc] initWithThread:self.thread];
     self.actions.viewController = self;
-    [self.actions showFromToolbar:self.navigationController.toolbar];
+    [self.actions showFromToolbar:self.toolbar];
 }
 
 - (void)tappedPageNav:(id)sender
@@ -496,7 +485,7 @@
 - (void)showActions
 {
     self.actions.viewController = self;
-    [self.actions showFromToolbar:self.navigationController.toolbar];
+    [self.actions showFromToolbar:self.toolbar];
 }
 
 #pragma mark - AwfulWebViewDelegate
@@ -675,6 +664,9 @@ NSString * const AwfulPageDidLoadNotification = @"com.regularberry.awful.notific
                                                                           action:@selector(handleTap:)];
     tap.delegate = self;
     [self.webView addGestureRecognizer:tap];
+    CGRect frame = self.toolbar.frame;
+    frame.size.height = 49;
+    self.toolbar.frame = frame;
 }
 
 - (IBAction)tappedPageNav:(id)sender
@@ -753,18 +745,16 @@ NSString * const AwfulPageDidLoadNotification = @"com.regularberry.awful.notific
 - (void)showActions
 {    
     self.actions.viewController = self;
-    UIActionSheet *sheet = self.actions.actionSheet;
-    CGRect buttonRect;
-    if ([self.actions isKindOfClass:[AwfulThreadActions class]]
-        || [self.actions isKindOfClass:[AwfulVoteActions class]]) {
-        buttonRect = self.actionsSegmentedControl.frame;
-        buttonRect.origin.y += self.view.frame.size.height;  //Add the height of the view to the button y
-        buttonRect.size.width = buttonRect.size.width / 2;   //Action is the first button, so the width is really only half
-    } else {
+    if (!([self.actions isKindOfClass:[AwfulThreadActions class]]
+            || [self.actions isKindOfClass:[AwfulVoteActions class]])) {
         NSLog(@"only thread actions and vote actions are supported by this 'showActions' method");
         return;
     }
-    [sheet showFromRect:buttonRect inView:self.view animated:YES];
+    CGRect rect = self.actionsSegmentedControl.frame;
+    rect.size.width /= 2;
+    [self.actions.actionSheet showFromRect:rect
+                                    inView:self.actionsSegmentedControl.superview
+                                  animated:YES];
 }
 
 - (void)showActions:(NSString *)post_id fromRect:(CGRect)rect
@@ -789,8 +779,7 @@ NSString * const AwfulPageDidLoadNotification = @"com.regularberry.awful.notific
     if ([self.actions isKindOfClass:[AwfulThreadActions class]]
         || [self.actions isKindOfClass:[AwfulVoteActions class]]) {
         buttonRect = self.actionsSegmentedControl.frame;
-        buttonRect.origin.y += self.view.frame.size.height;  //Add the height of the view to the button y
-        buttonRect.size.width = buttonRect.size.width / 2;   //Action is the first button, so the width is really only half
+        buttonRect.size.width /= 2;
     }
     [sheet showFromRect:buttonRect inView:self.view animated:YES];
 }
