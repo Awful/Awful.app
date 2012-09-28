@@ -407,7 +407,7 @@
                               delay:0.0
                             options:UIViewAnimationOptionCurveEaseInOut
                          animations:^{
-            sp_view.frame = CGRectOffset(sp_view.frame, 0, sp_view.frame.size.height);
+            sp_view.frame = CGRectOffset(sp_view.frame, 0, sp_view.frame.size.height + self.toolbar.bounds.size.height);
         } completion:^(BOOL finished)
         {
             [sp_view removeFromSuperview];
@@ -424,8 +424,9 @@
         sp_view.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, sp_view.frame.size.height);
         
         [self.view addSubview:sp_view];
+        [self.view bringSubviewToFront:self.toolbar];
         [UIView animateWithDuration:0.3 animations:^{
-            sp_view.frame = CGRectOffset(sp_view.frame, 0, -sp_view.frame.size.height+40);
+            sp_view.frame = CGRectOffset(sp_view.frame, 0, -sp_view.frame.size.height - self.toolbar.bounds.size.height);
         }];
         
         [self.specificPageController.pickerView selectRow:self.currentPage - 1
