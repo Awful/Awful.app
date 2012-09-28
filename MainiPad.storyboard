@@ -681,26 +681,15 @@
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPage.h"/>
             <relationships>
                 <relationship kind="action" name="hardRefresh"/>
-                <relationship kind="action" name="segmentedGotTapped:"/>
-                <relationship kind="action" name="tappedActions:"/>
-                <relationship kind="action" name="tappedActionsSegment:"/>
-                <relationship kind="action" name="tappedNextPage:"/>
-                <relationship kind="action" name="tappedPageNav:"/>
-                <relationship kind="action" name="tappedPagesSegment:"/>
                 <relationship kind="outlet" name="actionsSegmentedControl" candidateClass="ButtonSegmentedControl"/>
                 <relationship kind="outlet" name="nextPageBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="pagesBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="pagesSegmentedControl" candidateClass="ButtonSegmentedControl"/>
-                <relationship kind="outlet" name="toolbar" candidateClass="UIToolbar"/>
                 <relationship kind="outlet" name="webView" candidateClass="UIWebView"/>
             </relationships>
         </class>
         <class className="AwfulPageIpad" superclassName="AwfulPage">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPageIpad.h"/>
-            <relationships>
-                <relationship kind="action" name="tappedActions:"/>
-                <relationship kind="action" name="tappedPageNav:"/>
-            </relationships>
         </class>
         <class className="AwfulPostBoxController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPostBoxController.h"/>
