@@ -15,7 +15,14 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.tableView.backgroundColor = [UIColor whiteColor];
+}
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
     __weak AwfulTableViewController *blockSelf = self;
     if ([self canPullToRefresh]) {
         [self.tableView addPullToRefreshWithActionHandler:^{
@@ -27,15 +34,13 @@
             [blockSelf nextPage];
         }];
     }
-    
-    self.tableView.backgroundColor = [UIColor whiteColor];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [super viewWillDisappear:animated];
     [self.networkOperation cancel];
     [self finishedRefreshing];
+    [super viewWillDisappear:animated];
 }
 
 - (void)refresh
