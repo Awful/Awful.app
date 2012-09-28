@@ -640,8 +640,8 @@
 @end
 
 
-NSString * const AwfulPageWillLoadNotification = @"com.regularberry.awful.notification.pageWillLoad";
-NSString * const AwfulPageDidLoadNotification = @"com.regularberry.awful.notification.pageDidLoad";
+NSString * const AwfulPageWillLoadNotification = @"com.awfulapp.Awful.PageWillLoadNotification";
+NSString * const AwfulPageDidLoadNotification = @"com.awfulapp.Awful.PageDidLoadNotification";
 
 
 @interface AwfulPageIpad ()
