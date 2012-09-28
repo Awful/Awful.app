@@ -295,12 +295,11 @@ typedef enum {
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {
-    //[self performSegueWithIdentifier:@"AwfulPage" 
-    //                          sender:[self.tableView cellForRowAtIndexPath:indexPath]];
-    
     //preload the page before pushing it
+    NSString *board = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"MainiPad" : @"Main";
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:board bundle:nil];
+    AwfulPage *page = [storyboard instantiateViewControllerWithIdentifier:@"AwfulPage"];
     AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    AwfulPage *page = [self.storyboard instantiateViewControllerWithIdentifier:@"AwfulPage"];
     page.thread = thread;
     [page refresh];
     
