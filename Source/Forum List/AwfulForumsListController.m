@@ -21,9 +21,8 @@
 
 @interface AwfulForumsListController () <AwfulForumCellDelegate>
 
-@property (nonatomic, strong) IBOutlet AwfulForumHeader *headerView;
-
 @end
+
 
 @implementation AwfulForumsListController
 
@@ -102,19 +101,15 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    [[NSBundle mainBundle] loadNibNamed:@"AwfulForumHeaderView" owner:self options:nil];
-    AwfulForumHeader *header = self.headerView;
-    self.headerView = nil;
-    
+    AwfulForumHeader *header = [AwfulForumHeader new];
     AwfulForum *anyForum = [[self.fetchedResultsController.sections[section] objects] lastObject];
-    header.titleLabel.text = anyForum.category.name;
-    header.backgroundColor = [UIColor colorWithRed:0 green:0.4 blue:0.6 alpha:1];
+    header.textLabel.text = anyForum.category.name;
     return header;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 26;
+    return 50;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
@@ -123,7 +118,7 @@
     static NSString * const Identifier = @"ForumCell";
     AwfulForumCell *cell = [tableView dequeueReusableCellWithIdentifier:Identifier];
     if (!cell) {
-        cell = [AwfulForumCell new];
+        cell = [[AwfulForumCell alloc] initWithReuseIdentifier:Identifier];
     }
     [self configureCell:cell atIndexPath:indexPath];
     return cell;
@@ -135,7 +130,6 @@
     AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
     cell.delegate = self;
     cell.textLabel.text = forum.name;
-    cell.textLabel.font = [UIFont boldSystemFontOfSize:FontSizeForForum(forum)];
     cell.favorite = forum.isFavoriteValue;
     cell.showsFavorite = YES;
     cell.expanded = forum.expandedValue;
@@ -144,27 +138,19 @@
     } else {
         cell.showsExpanded = AwfulForumCellShowsExpandedLeavesRoom;
     }
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView
+  willDisplayCell:(UITableViewCell *)cell
+forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    return [AwfulForumCell heightForCellWithText:forum.name
-                                        fontSize:FontSizeForForum(forum)
-                                   showsFavorite:YES
-                                   showsExpanded:AwfulForumCellShowsExpandedLeavesRoom
-                                      tableWidth:tableView.bounds.size.width];
-}
-
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    cell.backgroundColor = [UIColor whiteColor];
-    cell.textLabel.textColor = [UIColor blackColor];
-}
-
-static inline CGFloat FontSizeForForum(AwfulForum *forum)
-{
-    return 20 - (forum.parentForum ? 5 : 0);
+    if (forum.parentForum) {
+        cell.backgroundColor = [UIColor colorWithRed:0.922 green:0.922 blue:0.925 alpha:1];
+    } else {
+        cell.backgroundColor = [UIColor whiteColor];
+    }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

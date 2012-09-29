@@ -10,9 +10,10 @@
 
 @interface AwfulForumCell ()
 
-@property (readonly, nonatomic) UIButton *favoriteButton;
+@property (weak, nonatomic) UIButton *favoriteButton;
 
 @end
+
 
 @implementation AwfulForumCell
 
@@ -27,6 +28,8 @@
                                                                                       action:@selector(toggleExpanded)];
         [self.imageView addGestureRecognizer:tapToExpand];
         self.imageView.userInteractionEnabled = YES;
+        self.textLabel.font = [UIFont boldSystemFontOfSize:15];
+        self.textLabel.numberOfLines = 2;
     }
     return self;
 }
@@ -45,7 +48,23 @@
     self.favoriteButton.selected = isFavorite;
 }
 
-static UIButton *CreateFavoriteButton(id target)
+- (void)setShowsFavorite:(BOOL)showsFavorite
+{
+    if (_showsFavorite == showsFavorite) return;
+    _showsFavorite = showsFavorite;
+    if (showsFavorite) {
+        if (!self.favoriteButton) {
+            self.favoriteButton = CreateFavoriteButtonWithTarget(self);
+            [self.contentView addSubview:self.favoriteButton];
+        }
+        self.favoriteButton.selected = self.favorite;
+    } else {
+        [self.favoriteButton removeFromSuperview];
+    }
+    [self setNeedsLayout];
+}
+
+static UIButton *CreateFavoriteButtonWithTarget(id target)
 {
     UIButton *favoriteButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [favoriteButton setImage:[UIImage imageNamed:@"star_off.png"] forState:UIControlStateNormal];
@@ -57,29 +76,12 @@ static UIButton *CreateFavoriteButton(id target)
     return favoriteButton;
 }
 
-- (void)setShowsFavorite:(BOOL)showsFavorite
-{
-    if (_showsFavorite == showsFavorite) return;
-    _showsFavorite = showsFavorite;
-    if (showsFavorite) {
-        self.accessoryView = CreateFavoriteButton(self);
-        self.favoriteButton.selected = self.favorite;
-    } else {
-        self.accessoryView = nil;
-    }
-}
-
 - (void)toggleFavorite
 {
     self.favorite = !self.favorite;
     if ([self.delegate respondsToSelector:@selector(forumCellDidToggleFavorite:)]) {
         [self.delegate forumCellDidToggleFavorite:self];
     }
-}
-
-- (UIButton *)favoriteButton
-{
-    return (UIButton *)self.accessoryView;
 }
 
 #pragma mark - Expanded
@@ -123,36 +125,22 @@ static UIButton *CreateFavoriteButton(id target)
 
 #pragma mark - Size and layout
 
-+ (CGFloat)heightForCellWithText:(NSString *)text
-                        fontSize:(CGFloat)fontSize
-                   showsFavorite:(BOOL)showsFavorite
-                   showsExpanded:(AwfulForumCellShowsExpanded)showsExpanded
-                      tableWidth:(CGFloat)tableWidth
-{
-    CGFloat width = tableWidth;
-    if (showsExpanded != AwfulForumCellShowsExpandedNever) {
-        width -= 42;
-    }
-    if (showsFavorite) {
-        width -= 50;
-    }
-    CGSize textSize = [text sizeWithFont:[UIFont boldSystemFontOfSize:fontSize]
-                       constrainedToSize:CGSizeMake(width, CGFLOAT_MAX)];
-    // TODO figure out why cells with 3 lines have too much top/bottom padding, while cells with
-    // < 3 lines are fine.
-    CGFloat offset = textSize.height > 80 ? -10 : 0;
-    return MAX(textSize.height + offset + 26, 50);
-}
+static const CGFloat StarLeftMargin = 11;
 
 - (void)layoutSubviews
 {
     [super layoutSubviews];
+    CGRect textFrame = self.textLabel.frame;
     if (self.showsExpanded == AwfulForumCellShowsExpandedLeavesRoom) {
-        CGRect frame = self.textLabel.frame;
-        frame.origin.x += 32;
-        frame.size.width -= 32;
-        self.textLabel.frame = frame;
+        textFrame.origin.x += 32;
+        textFrame.size.width -= 32;
     }
+    if (self.favoriteButton) {
+        self.favoriteButton.center = CGPointMake(CGRectGetMaxX(textFrame) - StarLeftMargin,
+                                                 CGRectGetMidY(textFrame));
+        textFrame.size.width -= self.favoriteButton.bounds.size.width + StarLeftMargin;
+    }
+    self.textLabel.frame = textFrame;
 }
 
 @end

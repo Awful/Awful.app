@@ -116,23 +116,13 @@
 
 #pragma mark - Table view data source and delegate
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    return [AwfulForumCell heightForCellWithText:forum.name
-                                        fontSize:20
-                                   showsFavorite:YES
-                                   showsExpanded:NO
-                                      tableWidth:tableView.bounds.size.width];
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString * const Identifier = @"ForumCell";
     AwfulForumCell *cell = [tableView dequeueReusableCellWithIdentifier:Identifier];
     if (!cell) {
-        cell = [AwfulForumCell new];
+        cell = [[AwfulForumCell alloc] initWithReuseIdentifier:Identifier];
     }
     [self configureCell:cell atIndexPath:indexPath];
     return cell;
@@ -146,12 +136,19 @@
     cell.textLabel.text = forum.name;
     cell.showsExpanded = NO;
     cell.showsFavorite = NO;
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 }
 
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView
+  willDisplayCell:(UITableViewCell *)cell
+forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    cell.backgroundColor = [UIColor whiteColor];
-    cell.textLabel.textColor = [UIColor blackColor];
+    AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    if (forum.parentForum) {
+        cell.backgroundColor = [UIColor colorWithRed:0.922 green:0.922 blue:0.925 alpha:1];
+    } else {
+        cell.backgroundColor = [UIColor whiteColor];
+    }
 }
 
 - (void)forumCellDidToggleFavorite:(AwfulForumCell *)cell
@@ -162,7 +159,9 @@
     [ApplicationDelegate saveContext];
 }
 
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath
+- (void)tableView:(UITableView *)tableView
+    moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
+    toIndexPath:(NSIndexPath *)destinationIndexPath
 {
     self.userDrivenChange = YES;
     NSMutableArray *reorder = [self.fetchedResultsController.fetchedObjects mutableCopy];
@@ -182,7 +181,9 @@
     return UITableViewCellEditingStyleDelete;
 }
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView
+    commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
+    forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
@@ -196,7 +197,8 @@
     }
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
+- (NSString *)tableView:(UITableView *)tableView
+    titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return @"Remove";
 }

@@ -33,12 +33,6 @@ typedef enum
 
 @property (nonatomic) AwfulForumCellShowsExpanded showsExpanded;
 
-+ (CGFloat)heightForCellWithText:(NSString *)text
-                        fontSize:(CGFloat)fontSize
-                   showsFavorite:(BOOL)showsFavorite
-                   showsExpanded:(AwfulForumCellShowsExpanded)showsExpanded
-                      tableWidth:(CGFloat)tableWidth;
-
 @end
 
 

@@ -10,6 +10,6 @@
 
 @interface AwfulForumHeader : UIView
 
-@property (nonatomic, strong) IBOutlet UILabel *titleLabel;
+@property (nonatomic, strong) UILabel *textLabel;
 
 @end
