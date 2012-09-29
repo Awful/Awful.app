@@ -54,7 +54,8 @@
 {
     [super viewDidLoad];
     
-    self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
+    self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1];
+    self.tableView.backgroundColor = [UIColor colorWithRed:0.859 green:0.910 blue:0.957 alpha:1];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -148,7 +149,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     if (forum.parentForum) {
         cell.backgroundColor = [UIColor colorWithRed:0.922 green:0.922 blue:0.925 alpha:1];
     } else {
-        cell.backgroundColor = [UIColor whiteColor];
+        cell.backgroundColor = [UIColor colorWithRed:0.859 green:0.910 blue:0.957 alpha:1];
     }
 }
 

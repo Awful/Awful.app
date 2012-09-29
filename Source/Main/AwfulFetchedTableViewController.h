@@ -8,7 +8,7 @@
 
 #import "AwfulTableViewController.h"
 
-@interface AwfulFetchedTableViewController : AwfulTableViewController
+@interface AwfulFetchedTableViewController : AwfulTableViewController <NSFetchedResultsControllerDelegate>
 
 // Subclasses must implement.
 - (NSFetchedResultsController *)createFetchedResultsController;

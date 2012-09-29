@@ -40,7 +40,8 @@
 {
     [super viewDidLoad];
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
+    self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1];
+    self.tableView.backgroundColor = [UIColor colorWithRed:0.859 green:0.910 blue:0.957 alpha:1];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -57,12 +58,27 @@
     BOOL anyFavorites = [self.fetchedResultsController.fetchedObjects count] > 0;
     self.navigationItem.rightBarButtonItem = anyFavorites ? self.editButtonItem : nil;
     if (anyFavorites) {
-        [self.coverView removeFromSuperview];
-        self.tableView.scrollEnabled = YES;
+        [self hideNoFavoritesCover];
     } else {
-        [self.view insertSubview:self.coverView atIndex:[self.view.subviews count]];
-        self.tableView.scrollEnabled = NO;
+        [self showNoFavoritesCoverAnimated:NO];
     }
+}
+
+- (void)showNoFavoritesCoverAnimated:(BOOL)animated
+{
+    self.tableView.scrollEnabled = NO;
+    UIView *cover = self.coverView;
+    [UIView transitionWithView:self.view
+                      duration:animated ? 0.6 : 0
+                       options:UIViewAnimationOptionTransitionCurlDown
+                    animations:^{ [self.view addSubview:cover]; }
+                    completion:nil];
+}
+
+- (void)hideNoFavoritesCover
+{
+    [self.coverView removeFromSuperview];
+    self.tableView.scrollEnabled = YES;
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -113,6 +129,24 @@
     return NO;
 }
 
+#pragma mark - Fetched results controller delegate
+
+- (void)controller:(NSFetchedResultsController *)controller
+   didChangeObject:(id)object
+       atIndexPath:(NSIndexPath *)indexPath
+     forChangeType:(NSFetchedResultsChangeType)type
+      newIndexPath:(NSIndexPath *)newIndexPath
+{
+    [super controller:controller
+      didChangeObject:object
+          atIndexPath:indexPath
+        forChangeType:type
+         newIndexPath:newIndexPath];
+    if ([controller.fetchedObjects count] == 0) {
+        [self showNoFavoritesCoverAnimated:YES];
+    }
+}
+
 #pragma mark - Table view data source and delegate
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
@@ -142,12 +176,7 @@
   willDisplayCell:(UITableViewCell *)cell
 forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    if (forum.parentForum) {
-        cell.backgroundColor = [UIColor colorWithRed:0.922 green:0.922 blue:0.925 alpha:1];
-    } else {
-        cell.backgroundColor = [UIColor whiteColor];
-    }
+    cell.backgroundColor = [UIColor colorWithRed:0.859 green:0.910 blue:0.957 alpha:1];
 }
 
 - (void)forumCellDidToggleFavorite:(AwfulForumCell *)cell

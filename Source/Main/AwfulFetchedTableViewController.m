@@ -9,10 +9,6 @@
 #import "AwfulFetchedTableViewController.h"
 #import "AwfulFetchedTableViewControllerSubclass.h"
 
-@interface AwfulFetchedTableViewController () <NSFetchedResultsControllerDelegate>
-
-@end
-
 @implementation AwfulFetchedTableViewController
 
 - (void)viewDidLoad
