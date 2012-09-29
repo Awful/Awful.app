@@ -97,10 +97,10 @@
     }
     UIView *coverView = [[UIView alloc] initWithFrame:(CGRect){ .size = self.view.bounds.size }];
     coverView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    coverView.backgroundColor = [UIColor whiteColor];
+    coverView.backgroundColor = self.tableView.backgroundColor;
     coverView.opaque = YES;
     UILabel *noFavorites = [UILabel new];
-    noFavorites.backgroundColor = [UIColor clearColor];
+    noFavorites.backgroundColor = self.tableView.backgroundColor;
     noFavorites.text = @"No Favorites";
     noFavorites.font = [UIFont systemFontOfSize:35];
     noFavorites.textColor = [UIColor grayColor];
@@ -110,7 +110,7 @@
     [coverView addSubview:noFavorites];
     UILabel *tapAStar = [UILabel new];
     tapAStar.bounds = (CGRect){ .size.width = noFavorites.bounds.size.width };
-    tapAStar.backgroundColor = [UIColor clearColor];
+    tapAStar.backgroundColor = self.tableView.backgroundColor;
     tapAStar.text = @"Tap a star in the forums list to add one.";
     tapAStar.font = [UIFont systemFontOfSize:16];
     tapAStar.textColor = [UIColor grayColor];
