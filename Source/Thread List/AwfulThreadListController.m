@@ -14,7 +14,6 @@
 #import "AwfulThread+AwfulMethods.h"
 #import "AwfulThreadCell.h"
 #import "AwfulLoginController.h"
-#import "AwfulCustomForums.h"
 #import "SVPullToRefresh.h"
 #import "AwfulCSSTemplate.h"
 
@@ -54,16 +53,16 @@ typedef enum {
         page = (AwfulPage *)nav.topViewController;
     }
     
-    page.thread = [self getThreadAtIndexPath:selected];
+    AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:selected];
+    page.thread = thread;
     [page refresh];
     
-    if ([self splitViewController])
-    {
+    if (self.splitViewController) {
         [self.splitViewController prepareForSegue:segue sender:sender];
     }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:AwfulPageWillLoadNotification
-                                                        object:[self getThreadAtIndexPath:selected]];
+                                                        object:thread];
 }
 
 - (void)setForum:(AwfulForum *)forum
@@ -222,26 +221,6 @@ typedef enum {
     }
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    
-    self.navigationItem.leftBarButtonItem = self.customBackButton;
-    [self.navigationController.navigationBar setBackgroundImage:[self customNavigationBarBackgroundImageForMetrics:(UIBarMetricsDefault)] 
-                                                  forBarMetrics:(UIBarMetricsDefault)];
-     
-}
-
-- (UIImage *)customNavigationBarBackgroundImageForMetrics:(UIBarMetrics)metrics
-{
-    return [[AwfulCSSTemplate defaultTemplate] navigationBarImageForMetrics:metrics];
-}
-
-- (AwfulThread *)getThreadAtIndexPath:(NSIndexPath *)path
-{    
-    return [self.fetchedResultsController objectAtIndexPath:path];
-}
-
 - (void)pop
 {
     [self.navigationController popViewControllerAnimated:YES];
@@ -255,20 +234,22 @@ typedef enum {
     return [AwfulThreadCell heightForContent:thread inTableView:self.tableView];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString* identifier = [AwfulCustomForums cellIdentifierForForum:self.forum];
-    AwfulThreadCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-    if (!cell) cell = [AwfulCustomForums cellForIdentifier:identifier];
-    
+    static NSString * const Identifier = @"AwfulThreadCell";
+    AwfulThreadCell *cell = [tableView dequeueReusableCellWithIdentifier:Identifier];
+    if (!cell) {
+        cell = [[AwfulThreadCell alloc] initWithStyle:UITableViewCellStyleSubtitle
+                                      reuseIdentifier:Identifier];
+    }
     [self configureCell:cell atIndexPath:indexPath];
-    
     return cell;
 }
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
-    AwfulThread *thread = [self getThreadAtIndexPath:indexPath];
+    AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
     [(AwfulThreadCell*)cell configureForThread:thread];
 }
 
@@ -276,19 +257,22 @@ typedef enum {
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    AwfulThread *thread = [self getThreadAtIndexPath:indexPath];
+    AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
     return (thread.totalUnreadPostsValue >= 0);
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
+- (NSString *)tableView:(UITableView *)tableView
+    titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return @"Mark Unread";
 }
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView
+    commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
+    forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        AwfulThread *thread = [self getThreadAtIndexPath:indexPath];
+        AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
         [self markThreadUnseen:thread];
     }
 }
@@ -302,16 +286,12 @@ typedef enum {
     AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
     page.thread = thread;
     [page refresh];
-    
     [[NSNotificationCenter defaultCenter] postNotificationName:AwfulPageWillLoadNotification
-                                                        object:[self getThreadAtIndexPath:indexPath]];
-    
-    
+                                                        object:thread];
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(didLoadThreadPage:) 
                                                  name:AwfulPageDidLoadNotification 
-                                               object:thread
-     ];
+                                               object:thread];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 

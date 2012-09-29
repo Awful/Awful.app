@@ -11,7 +11,6 @@
 #import "AwfulForumsListController.h"
 #import "AwfulThreadListController.h"
 #import "AwfulForumCell.h"
-#import "AwfulCustomForums.h"
 #import "AwfulSettings.h"
 #import "AwfulCSSTemplate.h"
 
@@ -206,7 +205,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    AwfulThreadListController *threadList = [AwfulCustomForums threadListControllerForForum:forum];
+    AwfulThreadListController *threadList = [AwfulThreadListController new];
     threadList.forum = forum;
     [self.navigationController pushViewController:threadList animated:YES];
 }

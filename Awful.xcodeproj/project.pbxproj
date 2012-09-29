@@ -113,10 +113,6 @@
 		1CC7804E1612DA8E002AF958 /* AwfulBookmarksController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780491612DA8E002AF958 /* AwfulBookmarksController.m */; };
 		1CC7804F1612DA8E002AF958 /* AwfulThreadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7804B1612DA8E002AF958 /* AwfulThreadCell.m */; };
 		1CC780501612DA8E002AF958 /* AwfulThreadListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7804D1612DA8E002AF958 /* AwfulThreadListController.m */; };
-		1CC7805A1612DAB8002AF958 /* AwfulCustomForumFilmDump.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780531612DAB7002AF958 /* AwfulCustomForumFilmDump.m */; };
-		1CC7805B1612DAB8002AF958 /* AwfulCustomForumFYAD.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780551612DAB7002AF958 /* AwfulCustomForumFYAD.m */; };
-		1CC7805C1612DAB8002AF958 /* AwfulCustomForums.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780571612DAB8002AF958 /* AwfulCustomForums.m */; };
-		1CC7805D1612DAB8002AF958 /* AwfulCustomForumYOSPOS.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780591612DAB8002AF958 /* AwfulCustomForumYOSPOS.m */; };
 		1CC780601612DB04002AF958 /* AwfulSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7805F1612DB04002AF958 /* AwfulSplitViewController.m */; };
 		1CC7806D1612DBB2002AF958 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CC780661612DBB2002AF958 /* Default-568h@2x.png */; };
 		1CC7806E1612DBB2002AF958 /* Default-Landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CC780671612DBB2002AF958 /* Default-Landscape.png */; };
@@ -680,14 +676,6 @@
 		1CC7804B1612DA8E002AF958 /* AwfulThreadCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadCell.m; sourceTree = "<group>"; };
 		1CC7804C1612DA8E002AF958 /* AwfulThreadListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadListController.h; sourceTree = "<group>"; };
 		1CC7804D1612DA8E002AF958 /* AwfulThreadListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadListController.m; sourceTree = "<group>"; };
-		1CC780521612DAB7002AF958 /* AwfulCustomForumFilmDump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCustomForumFilmDump.h; sourceTree = "<group>"; };
-		1CC780531612DAB7002AF958 /* AwfulCustomForumFilmDump.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCustomForumFilmDump.m; sourceTree = "<group>"; };
-		1CC780541612DAB7002AF958 /* AwfulCustomForumFYAD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCustomForumFYAD.h; sourceTree = "<group>"; };
-		1CC780551612DAB7002AF958 /* AwfulCustomForumFYAD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCustomForumFYAD.m; sourceTree = "<group>"; };
-		1CC780561612DAB7002AF958 /* AwfulCustomForums.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCustomForums.h; sourceTree = "<group>"; };
-		1CC780571612DAB8002AF958 /* AwfulCustomForums.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCustomForums.m; sourceTree = "<group>"; };
-		1CC780581612DAB8002AF958 /* AwfulCustomForumYOSPOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCustomForumYOSPOS.h; sourceTree = "<group>"; };
-		1CC780591612DAB8002AF958 /* AwfulCustomForumYOSPOS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCustomForumYOSPOS.m; sourceTree = "<group>"; };
 		1CC7805E1612DB04002AF958 /* AwfulSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSplitViewController.h; sourceTree = "<group>"; };
 		1CC7805F1612DB04002AF958 /* AwfulSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSplitViewController.m; sourceTree = "<group>"; };
 		1CC780661612DBB2002AF958 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
@@ -1251,7 +1239,6 @@
 			isa = PBXGroup;
 			children = (
 				1190F6CC13BE4EA900B9D271 /* Actions */,
-				1CC780511612DAB4002AF958 /* Forum Customization */,
 				1CC7800E1612D8AE002AF958 /* Forum List */,
 				1190F71813BE4EA900B9D271 /* Login */,
 				1190F71C13BE4EA900B9D271 /* Main */,
@@ -1403,21 +1390,6 @@
 				1CC7804D1612DA8E002AF958 /* AwfulThreadListController.m */,
 			);
 			path = "Thread List";
-			sourceTree = "<group>";
-		};
-		1CC780511612DAB4002AF958 /* Forum Customization */ = {
-			isa = PBXGroup;
-			children = (
-				1CC780521612DAB7002AF958 /* AwfulCustomForumFilmDump.h */,
-				1CC780531612DAB7002AF958 /* AwfulCustomForumFilmDump.m */,
-				1CC780541612DAB7002AF958 /* AwfulCustomForumFYAD.h */,
-				1CC780551612DAB7002AF958 /* AwfulCustomForumFYAD.m */,
-				1CC780561612DAB7002AF958 /* AwfulCustomForums.h */,
-				1CC780571612DAB8002AF958 /* AwfulCustomForums.m */,
-				1CC780581612DAB8002AF958 /* AwfulCustomForumYOSPOS.h */,
-				1CC780591612DAB8002AF958 /* AwfulCustomForumYOSPOS.m */,
-			);
-			path = "Forum Customization";
 			sourceTree = "<group>";
 		};
 		1CC780651612DBB2002AF958 /* Default */ = {
@@ -2481,10 +2453,6 @@
 				1CC7804E1612DA8E002AF958 /* AwfulBookmarksController.m in Sources */,
 				1CC7804F1612DA8E002AF958 /* AwfulThreadCell.m in Sources */,
 				1CC780501612DA8E002AF958 /* AwfulThreadListController.m in Sources */,
-				1CC7805A1612DAB8002AF958 /* AwfulCustomForumFilmDump.m in Sources */,
-				1CC7805B1612DAB8002AF958 /* AwfulCustomForumFYAD.m in Sources */,
-				1CC7805C1612DAB8002AF958 /* AwfulCustomForums.m in Sources */,
-				1CC7805D1612DAB8002AF958 /* AwfulCustomForumYOSPOS.m in Sources */,
 				1CC780601612DB04002AF958 /* AwfulSplitViewController.m in Sources */,
 				1CC780791612E0EA002AF958 /* AwfulUser.m in Sources */,
 			);
