@@ -218,7 +218,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         forum.isFavoriteValue = NO;
         NSArray *reindex = [self.fetchedResultsController fetchedObjects];
         [reindex enumerateObjectsUsingBlock:^(AwfulForum *f, NSUInteger i, BOOL *stop) {
-            if (![f isEqual:forum])
+            if (f.isFavoriteValue)
                 f.favoriteIndexValue = i;
         }];
         [ApplicationDelegate saveContext];
