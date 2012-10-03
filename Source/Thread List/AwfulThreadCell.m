@@ -39,7 +39,7 @@
         UILabel *originalPosterTextLabel = [UILabel new];
         originalPosterTextLabel.backgroundColor = [UIColor clearColor];
         originalPosterTextLabel.font = self.detailTextLabel.font;
-        originalPosterTextLabel.textColor = [UIColor colorWithRed:0.063 green:0.471 blue:0.659 alpha:1];
+        originalPosterTextLabel.textColor = [self originalPosterTextColor];
         [self.contentView addSubview:originalPosterTextLabel];
         _originalPosterTextLabel = originalPosterTextLabel;
         
@@ -153,10 +153,16 @@
     [self.originalPosterTextLabel sizeToFit];
 }
 
+- (UIColor *)originalPosterTextColor
+{
+    return [UIColor colorWithRed:0.063 green:0.471 blue:0.659 alpha:1];
+}
+
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated
 {
     [super setHighlighted:highlighted animated:animated];
     
+    self.originalPosterTextLabel.textColor = highlighted ? [UIColor whiteColor] : [self originalPosterTextColor];
     [self.unreadCountBadgeView setNeedsDisplay];
 }
 
@@ -164,6 +170,7 @@
 {
     [super setSelected:selected animated:animated];
     
+    self.originalPosterTextLabel.textColor = selected ? [UIColor whiteColor] : [self originalPosterTextColor];
     [self.unreadCountBadgeView setNeedsDisplay];
 }
 
