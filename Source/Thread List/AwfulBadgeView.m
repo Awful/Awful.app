@@ -86,7 +86,7 @@
 {
     if (_badgeText == badgeText) return;
     _badgeText = [badgeText copy];
-    [self setNeedsDisplay];
+    [self sizeToFit];
 }
 
 - (void)setBadgeColor:(UIColor *)badgeColor
