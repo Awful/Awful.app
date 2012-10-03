@@ -10,6 +10,8 @@
 
 @interface AwfulForumCell ()
 
+@property (weak, nonatomic) UIButton *expandButton;
+
 @property (weak, nonatomic) UIButton *favoriteButton;
 
 @end
@@ -23,9 +25,17 @@
 {
     self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
     if (self) {
-        UITapGestureRecognizer *tapToExpand = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                                      action:@selector(toggleExpanded)];
-        [self.imageView addGestureRecognizer:tapToExpand];
+        UIButton *expandButton = [UIButton new];
+        [expandButton addTarget:self
+                         action:@selector(toggleExpanded)
+               forControlEvents:UIControlEventTouchUpInside];
+        [expandButton setImage:[UIImage imageNamed:@"forum-arrow-right.png"]
+                      forState:UIControlStateNormal];
+        [expandButton setImage:[UIImage imageNamed:@"forum-arrow-down.png"]
+                      forState:UIControlStateSelected];
+        expandButton.contentMode = UIViewContentModeCenter;
+        [self.contentView addSubview:expandButton];
+        _expandButton = expandButton;
         self.imageView.userInteractionEnabled = YES;
         self.textLabel.font = [UIFont boldSystemFontOfSize:15];
         self.textLabel.numberOfLines = 2;
@@ -93,8 +103,8 @@ static UIButton *CreateFavoriteButtonWithTarget(id target)
 {
     if (_expanded == expanded) return;
     _expanded = expanded;
+    [self.expandButton setSelected:expanded];
     if (self.showsExpanded) {
-        [self updateExpandedImage];
         if ([self.delegate respondsToSelector:@selector(forumCellDidToggleExpanded:)]) {
             [self.delegate forumCellDidToggleExpanded:self];
         }
@@ -105,20 +115,7 @@ static UIButton *CreateFavoriteButtonWithTarget(id target)
 {
     if (_showsExpanded == showsExpanded) return;
     _showsExpanded = showsExpanded;
-    if (showsExpanded == AwfulForumCellShowsExpandedButton) {
-        [self updateExpandedImage];
-    } else {
-        self.imageView.image = nil;
-    }
-}
-
-- (void)updateExpandedImage
-{
-    if (self.expanded) {
-        self.imageView.image = [UIImage imageNamed:@"forum-arrow-down.png"];
-    } else {
-        self.imageView.image = [UIImage imageNamed:@"forum-arrow-right.png"];
-    }
+    self.expandButton.hidden = showsExpanded != AwfulForumCellShowsExpandedButton;
 }
 
 - (void)toggleExpanded
@@ -134,9 +131,13 @@ static const CGFloat StarLeftMargin = 11;
 {
     [super layoutSubviews];
     CGRect textFrame = self.textLabel.frame;
-    if (self.showsExpanded == AwfulForumCellShowsExpandedLeavesRoom) {
-        textFrame.origin.x += 32;
-        textFrame.size.width -= 32;
+    if (self.showsExpanded == AwfulForumCellShowsExpandedNever) {
+        self.expandButton.frame = CGRectZero;
+    } else {
+        self.expandButton.frame = CGRectMake(0, 0, 40, self.contentView.bounds.size.height);
+        CGFloat newOriginX = CGRectGetMaxX(self.expandButton.frame) + 4;
+        textFrame.size.width -= newOriginX - textFrame.origin.x;
+        textFrame.origin.x = newOriginX;
     }
     if (self.favoriteButton) {
         self.favoriteButton.center = CGPointMake(CGRectGetMaxX(textFrame) - StarLeftMargin,
