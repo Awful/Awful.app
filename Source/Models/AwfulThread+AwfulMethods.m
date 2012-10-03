@@ -333,7 +333,11 @@
         if(df == nil) {
             df = [[NSDateFormatter alloc] init];
             [df setTimeZone:[NSTimeZone localTimeZone]];
-            [df setDateFormat:@"HH:mm MMM d, yyyy"];
+            if ([[date content] rangeOfString:@"AM"].location != NSNotFound || [[date content] rangeOfString:@"PM"].location != NSNotFound) {
+                [df setDateFormat:@"h:mm a MMM d, yyyy"];
+            } else {
+                [df setDateFormat:@"HH:mm MMM d, yyyy"];
+            }
         }
         
         NSDate *myDate = [df dateFromString:[date content]];
