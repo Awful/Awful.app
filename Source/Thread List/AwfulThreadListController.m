@@ -176,15 +176,17 @@ typedef enum {
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
+    NSString *board = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"MainiPad" : @"Main";
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:board bundle:nil];
     if (buttonIndex == AwfulThreadListActionsTypeFirstPage) {
-        AwfulPage *page = [self.storyboard instantiateViewControllerWithIdentifier:@"AwfulPage"];
+        AwfulPage *page = [storyboard instantiateViewControllerWithIdentifier:@"AwfulPage"];
         page.thread = self.heldThread;
         page.destinationType = AwfulPageDestinationTypeFirst;
         [self displayPage:page];
         [page loadPageNum:1];
         
     } else if (buttonIndex == AwfulThreadListActionsTypeLastPage) {
-        AwfulPage *page = [self.storyboard instantiateViewControllerWithIdentifier:@"AwfulPage"];
+        AwfulPage *page = [storyboard instantiateViewControllerWithIdentifier:@"AwfulPage"];
         page.thread = self.heldThread;
         page.destinationType = AwfulPageDestinationTypeLast;
         [self displayPage:page];
@@ -238,6 +240,9 @@ typedef enum {
     if (!cell) {
         cell = [[AwfulThreadCell alloc] initWithStyle:UITableViewCellStyleSubtitle
                                       reuseIdentifier:Identifier];
+        UILongPressGestureRecognizer *longPress = [UILongPressGestureRecognizer new];
+        [longPress addTarget:self action:@selector(showThreadActions:)];
+        [cell addGestureRecognizer:longPress];
     }
     [self configureCell:cell atIndexPath:indexPath];
     return cell;
@@ -260,6 +265,16 @@ typedef enum {
     cell.showsUnread = thread.totalUnreadPostsValue != -1;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
+}
+
+- (void)showThreadActions:(UILongPressGestureRecognizer *)longPress
+{
+    if (longPress.state == UIGestureRecognizerStateBegan) {
+        UITableViewCell *cell = (UITableViewCell *)longPress.view;
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+        AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
+        [self showThreadActionsForThread:thread];
     }
 }
 
