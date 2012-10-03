@@ -258,6 +258,9 @@ typedef enum {
     cell.unreadCountBadgeView.badgeText = [thread.totalUnreadPosts stringValue];
     cell.unreadCountBadgeView.on = thread.totalUnreadPostsValue > 0;
     cell.showsUnread = thread.totalUnreadPostsValue != -1;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
 }
 
 #pragma mark table editing to mark cells unread
