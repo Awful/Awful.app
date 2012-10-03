@@ -33,6 +33,7 @@
 - (void)loadView
 {
     [super loadView];
+    
     [self.jumpToPageBarButtonItem setTintColor:[UIColor darkGrayColor]];
     self.firstLastSegmentedControl.action = @selector(hitFirstLastSegment:);
 }

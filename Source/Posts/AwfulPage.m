@@ -399,9 +399,7 @@
     
     UIView *sp_view = self.specificPageController.containerView;
     
-    if(self.specificPageController != nil && !self.specificPageController.hiding) {
-        
-        [self.pagesBarButtonItem setTintColor:[UIColor darkGrayColor]];
+    if (self.specificPageController != nil && !self.specificPageController.hiding) {
         self.specificPageController.hiding = YES;
         [UIView animateWithDuration:0.3
                               delay:0.0
@@ -415,8 +413,6 @@
         }];
         
     } else if(self.specificPageController == nil) {
-        
-        [self.pagesBarButtonItem setTintColor:[UIColor blackColor]];
         self.specificPageController = [self.storyboard instantiateViewControllerWithIdentifier:@"AwfulSpecificPageController"];
         self.specificPageController.page = self;
         [self.specificPageController loadView];

@@ -63,8 +63,6 @@
 {
     [super viewWillAppear:animated];
     
-    [self.navigationItem.leftBarButtonItem setTintColor:[UIColor colorWithRed:46.0/255 green:146.0/255 blue:190.0/255 alpha:1.0]];
-    
     if (IsLoggedIn() && [self.fetchedResultsController.sections count] == 0) {
        [self refresh];
     }

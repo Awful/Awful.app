@@ -64,10 +64,11 @@
     UIImage *landscape = [css navigationBarImageForMetrics:UIBarMetricsLandscapePhone];
     [[UINavigationBar appearance] setBackgroundImage:landscape
                                        forBarMetrics:UIBarMetricsLandscapePhone];
-    [[UIBarButtonItem appearance] setTintColor:[UIColor colorWithRed:46.0/255
-                                                               green:146.0/255
-                                                                blue:190.0/255
-                                                               alpha:1]];
+    [[UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil]
+                                   setTintColor:[UIColor colorWithRed:46.0/255
+                                                                green:146.0/255
+                                                                 blue:190.0/255
+                                                                alpha:1]];
 }
 
 #pragma mark - Memory management

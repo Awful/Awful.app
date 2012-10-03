@@ -39,25 +39,19 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self.navigationItem.leftBarButtonItem setTintColor:[UIColor colorWithRed:46.0/255
-                                                                        green:146.0/255
-                                                                         blue:190.0/255
-                                                                        alpha:1.0]];
-    UIBarMetrics metrics = UIBarMetricsDefault;
-    UIImage *background = [[AwfulCSSTemplate defaultTemplate] navigationBarImageForMetrics:metrics];
-    [self.navigationController.navigationBar setBackgroundImage:background
-                                                  forBarMetrics:metrics];
-    BOOL anyFavorites = [self.fetchedResultsController.fetchedObjects count] > 0;
-    self.navigationItem.rightBarButtonItem = anyFavorites ? self.editButtonItem : nil;
-    if (anyFavorites) {
+    
+    if ([self.fetchedResultsController.fetchedObjects count] > 0) {
+        self.navigationItem.rightBarButtonItem = self.editButtonItem;
         [self hideNoFavoritesCover];
     } else {
+        self.navigationItem.rightBarButtonItem = nil;
         [self showNoFavoritesCoverAnimated:NO];
     }
 }
