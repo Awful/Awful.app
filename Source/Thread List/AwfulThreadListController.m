@@ -332,6 +332,7 @@ typedef enum {
             AwfulSplitViewController *svc = (AwfulSplitViewController *)self.splitViewController;
             [svc.masterPopoverController dismissPopoverAnimated:YES];
         }
+        [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
     }
     else {
         [self.navigationController pushViewController:page animated:YES];
