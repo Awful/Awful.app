@@ -144,7 +144,7 @@
     self.detailTextLabel.frame = detailTextLabelFrame;
     
     [self.detailTextLabel sizeToFit];
-    static const CGFloat detailRightMargin = 4;
+    static const CGFloat detailRightMargin = 5;
     self.originalPosterTextLabel.frame = (CGRect){
         .origin.x = CGRectGetMaxX(detailTextLabelFrame) + detailRightMargin,
         .origin.y = detailTextLabelFrame.origin.y,
@@ -155,7 +155,7 @@
 
 - (UIColor *)originalPosterTextColor
 {
-    return [UIColor colorWithRed:0.063 green:0.471 blue:0.659 alpha:1];
+    return [UIColor colorWithHue:0.553 saturation:0.198 brightness:0.659 alpha:1];
 }
 
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated

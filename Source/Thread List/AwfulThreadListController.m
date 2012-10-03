@@ -261,7 +261,7 @@ typedef enum {
                                                                 numberStyle:NSNumberFormatterDecimalStyle];
     NSString *plural = numberOfPages == 1 ? @"" : @"s";
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ page%@", pagesFormatted, plural];
-    cell.originalPosterTextLabel.text = thread.authorName;
+    cell.originalPosterTextLabel.text = [NSString stringWithFormat:@"Posted by %@", thread.authorName];
     cell.unreadCountBadgeView.badgeText = [thread.totalUnreadPosts stringValue];
     cell.unreadCountBadgeView.on = thread.totalUnreadPostsValue > 0;
     cell.showsUnread = thread.totalUnreadPostsValue != -1;
