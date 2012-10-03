@@ -11,6 +11,34 @@
 
 @implementation AwfulBookmarksController
 
+- (void)commonInit
+{
+    UIBarButtonItem *marks = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"bookmarks.png"]
+                                                landscapeImagePhone:[UIImage imageNamed:@"bookmarks-landscape.png"]
+                                                              style:UIBarButtonItemStylePlain
+                                                             target:nil
+                                                             action:NULL];
+    self.navigationItem.backBarButtonItem = marks;
+}
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        [self commonInit];
+    }
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)decoder
+{
+    self = [super initWithCoder:decoder];
+    if (self) {
+        [self commonInit];
+    }
+    return self;
+}
+
 - (NSFetchedResultsController *)createFetchedResultsController
 {
     NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulThread entityName]];
