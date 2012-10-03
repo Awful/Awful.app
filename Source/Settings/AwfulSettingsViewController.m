@@ -35,6 +35,8 @@
     if (self.user.userName == nil && IsLoggedIn()) {
         [self refresh];
     }
+    self.tableView.backgroundView = nil;
+    self.tableView.backgroundColor = [UIColor colorWithHue:0.604 saturation:0.035 brightness:0.898 alpha:1];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
