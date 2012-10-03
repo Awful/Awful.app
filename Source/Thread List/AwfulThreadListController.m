@@ -137,7 +137,9 @@ typedef enum {
     label.numberOfLines = 2;
     label.text = self.forum.name;
     
-    self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.0];
+    self.tableView.separatorColor = [UIColor colorWithWhite:0.75 alpha:1];
+    self.tableView.backgroundColor = [UIColor colorWithRed:0.859 green:0.910 blue:0.957 alpha:1];
+    self.tableView.rowHeight = 75;
 
     if (self.fetchedResultsController.fetchedObjects.count == 0 && IsLoggedIn()) {
         [self refresh];
@@ -228,12 +230,6 @@ typedef enum {
 
 #pragma mark - Table view data source and delegate
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    return [AwfulThreadCell heightForContent:thread inTableView:self.tableView];
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -247,10 +243,21 @@ typedef enum {
     return cell;
 }
 
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+- (void)configureCell:(UITableViewCell *)genericCell atIndexPath:(NSIndexPath *)indexPath
 {
+    AwfulThreadCell *cell = (AwfulThreadCell *)genericCell;
     AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    [(AwfulThreadCell*)cell configureForThread:thread];
+    // TODO handle tags we don't ship
+    cell.threadTagImageView.image = [UIImage imageNamed:[thread.firstIconURL lastPathComponent]];
+    [cell setSticky:thread.stickyIndexValue != NSNotFound];
+    [cell setRating:[thread.threadRating floatValue]];
+    cell.textLabel.text = thread.title;
+    NSString *plural = thread.totalRepliesValue == 1 ? @"" : @"s";
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ page%@", thread.totalReplies, plural];
+    cell.originalPosterTextLabel.text = thread.authorName;
+    cell.unreadCountBadgeView.badgeText = [thread.totalUnreadPosts stringValue];
+    cell.unreadCountBadgeView.on = thread.totalUnreadPostsValue > 0;
+    cell.showsUnread = thread.totalUnreadPostsValue != -1;
 }
 
 #pragma mark table editing to mark cells unread

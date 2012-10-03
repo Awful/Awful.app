@@ -2,46 +2,28 @@
 //  AwfulThreadCell.h
 //  Awful
 //
-//  Created by Sean Berry on 2/2/12.
+//  Created by Nolan Waite on 2012-10-02.
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "AwfulBadgeView.h"
 
-#import "TDBadgedCell.h"
+@interface AwfulThreadCell : UITableViewCell
 
-@class AwfulThread;
-@class AwfulThreadListController;
+// Designated initializer.
+- (id)initWithReuseIdentifier:(NSString *)reuseIdentifier;
 
-@interface AwfulThreadCell : TDBadgedCell
+@property (readonly, nonatomic) UIImageView *threadTagImageView;
 
-@property (nonatomic, strong) AwfulThread *thread;
-@property (nonatomic, strong) IBOutlet UILabel *threadTitleLabel;
-@property (nonatomic, strong) IBOutlet UILabel *pagesLabel;
-@property (nonatomic, strong) IBOutlet UIButton *unreadButton;
-@property (nonatomic, strong) IBOutlet UIImageView *sticky;
-@property (nonatomic, strong) IBOutlet UIImageView *tagImage;
-@property (nonatomic, strong) IBOutlet UIImageView *secondTagImage;
-@property (nonatomic, strong) IBOutlet UIImageView *ratingImage;
-@property (nonatomic, weak) AwfulThreadListController *threadListController;
-@property (nonatomic, strong) IBOutlet UILabel *tagLabel;
-@property (nonatomic, strong) IBOutlet UIView *tagContainerView;
+- (void)setSticky:(BOOL)sticky;
 
-+(UIColor*) textColor;
-+(UIColor*) backgroundColor;
-+(UIFont*) textLabelFont;
-+(UIFont*) detailLabelFont;
+- (void)setRating:(CGFloat)rating;
 
--(void)configureForThread : (AwfulThread *)thread;
--(void) configureTagImage;
--(UIColor *)getBackgroundColorForThread : (AwfulThread *)thread;
--(void)openThreadlistOptions : (UIGestureRecognizer *)gesture;
+@property (readonly, weak, nonatomic) UILabel *originalPosterTextLabel;
 
+@property (readonly, weak, nonatomic) AwfulBadgeView *unreadCountBadgeView;
 
--(void) willLoadThreadPage:(NSNotification*)notification;
--(void) didLoadThreadPage:(NSNotification*)notification;
+@property (nonatomic) BOOL showsUnread;
 
-+(CGFloat) heightForContent:(AwfulThread*)thread inTableView:(UITableView*)tableView;
 @end
-

@@ -56,6 +56,7 @@
     
     self.tableView.separatorColor = [UIColor colorWithWhite:0.75 alpha:1];
     self.tableView.backgroundColor = [UIColor whiteColor];
+    self.tableView.rowHeight = 50;
 }
 
 - (void)viewWillAppear:(BOOL)animated
