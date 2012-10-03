@@ -257,8 +257,11 @@ typedef enum {
     [cell setSticky:thread.stickyIndexValue != NSNotFound];
     [cell setRating:[thread.threadRating floatValue]];
     cell.textLabel.text = thread.title;
-    NSString *plural = thread.totalRepliesValue == 1 ? @"" : @"s";
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ page%@", thread.totalReplies, plural];
+    NSInteger numberOfPages = thread.totalRepliesValue / 40 + 1;
+    NSString *pagesFormatted = [NSNumberFormatter localizedStringFromNumber:@(numberOfPages)
+                                                                numberStyle:NSNumberFormatterDecimalStyle];
+    NSString *plural = numberOfPages == 1 ? @"" : @"s";
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ page%@", pagesFormatted, plural];
     cell.originalPosterTextLabel.text = thread.authorName;
     cell.unreadCountBadgeView.badgeText = [thread.totalUnreadPosts stringValue];
     cell.unreadCountBadgeView.on = thread.totalUnreadPostsValue > 0;
