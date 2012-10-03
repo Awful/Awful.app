@@ -54,8 +54,8 @@
 {
     [super viewDidLoad];
     
-    self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1];
-    self.tableView.backgroundColor = [UIColor colorWithRed:0.859 green:0.910 blue:0.957 alpha:1];
+    self.tableView.separatorColor = [UIColor colorWithWhite:0.75 alpha:1];
+    self.tableView.backgroundColor = [UIColor whiteColor];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -67,12 +67,6 @@
     if (IsLoggedIn() && [self.fetchedResultsController.sections count] == 0) {
        [self refresh];
     }
-    
-    //reset this since it may get changed by custom forums
-    UIBarMetrics metrics = UIBarMetricsDefault;
-    UIImage *background = [[AwfulCSSTemplate defaultTemplate] navigationBarImageForMetrics:metrics];
-    [self.navigationController.navigationBar setBackgroundImage:background
-                                                  forBarMetrics:metrics];
 }
 
 - (void)refresh
@@ -149,7 +143,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     if (forum.parentForum) {
         cell.backgroundColor = [UIColor colorWithRed:0.922 green:0.922 blue:0.925 alpha:1];
     } else {
-        cell.backgroundColor = [UIColor colorWithRed:0.859 green:0.910 blue:0.957 alpha:1];
+        cell.backgroundColor = [UIColor whiteColor];
     }
 }
 

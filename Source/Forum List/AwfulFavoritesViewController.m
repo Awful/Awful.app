@@ -40,8 +40,6 @@
 {
     [super viewDidLoad];
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    self.tableView.separatorColor = [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1];
-    self.tableView.backgroundColor = [UIColor colorWithRed:0.859 green:0.910 blue:0.957 alpha:1];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -176,7 +174,7 @@
   willDisplayCell:(UITableViewCell *)cell
 forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    cell.backgroundColor = [UIColor colorWithRed:0.859 green:0.910 blue:0.957 alpha:1];
+    cell.backgroundColor = [UIColor whiteColor];
 }
 
 - (void)forumCellDidToggleFavorite:(AwfulForumCell *)cell
