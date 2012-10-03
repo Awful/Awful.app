@@ -263,8 +263,6 @@ typedef enum {
     }
 }
 
-#pragma mark table editing to mark cells unread
-
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
     AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
@@ -302,7 +300,6 @@ typedef enum {
                                              selector:@selector(didLoadThreadPage:) 
                                                  name:AwfulPageDidLoadNotification 
                                                object:thread];
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (void)didLoadThreadPage:(NSNotification *)msg
