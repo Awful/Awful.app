@@ -131,7 +131,6 @@
     } else {
         cell.showsExpanded = AwfulForumCellShowsExpandedLeavesRoom;
     }
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 }
 
 - (void)tableView:(UITableView *)tableView

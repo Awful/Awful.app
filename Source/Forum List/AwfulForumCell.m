@@ -72,7 +72,11 @@ static UIButton *CreateFavoriteButtonWithTarget(id target)
     [favoriteButton addTarget:target
                        action:@selector(toggleFavorite)
              forControlEvents:UIControlEventTouchUpInside];
+    favoriteButton.contentMode = UIViewContentModeCenter;
     [favoriteButton sizeToFit];
+    CGRect bounds = favoriteButton.bounds;
+    bounds.size.width += 40;
+    favoriteButton.bounds = bounds;
     return favoriteButton;
 }
 
@@ -138,7 +142,7 @@ static const CGFloat StarLeftMargin = 11;
     if (self.favoriteButton) {
         self.favoriteButton.center = CGPointMake(CGRectGetMaxX(textFrame) - StarLeftMargin,
                                                  CGRectGetMidY(textFrame));
-        textFrame.size.width -= self.favoriteButton.bounds.size.width + StarLeftMargin;
+        textFrame.size.width -= self.favoriteButton.imageView.bounds.size.width + StarLeftMargin;
     }
     self.textLabel.frame = textFrame;
 }
