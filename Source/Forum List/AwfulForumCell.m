@@ -23,7 +23,6 @@
 {
     self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
     if (self) {
-        self.textLabel.numberOfLines = 0;
         UITapGestureRecognizer *tapToExpand = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                                       action:@selector(toggleExpanded)];
         [self.imageView addGestureRecognizer:tapToExpand];
