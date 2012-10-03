@@ -86,7 +86,7 @@
 
 +(NSMutableArray *)parseBookmarkedThreadsWithData : (NSData *)data
 {
-    NSString *raw_str = [[NSString alloc] initWithData:data encoding:NSISOLatin1StringEncoding];
+    NSString *raw_str = [[NSString alloc] initWithData:data encoding:NSWindowsCP1252StringEncoding];
     NSData *converted = [raw_str dataUsingEncoding:NSUTF8StringEncoding];
     TFHpple *hpple = [[TFHpple alloc] initWithHTMLData:converted];
     
@@ -145,7 +145,7 @@
 
 +(NSMutableArray *)parseThreadsWithData : (NSData *)data forForum : (AwfulForum *)forum
 {
-    NSString *raw_str = [[NSString alloc] initWithData:data encoding:NSISOLatin1StringEncoding];
+    NSString *raw_str = [[NSString alloc] initWithData:data encoding:NSWindowsCP1252StringEncoding];
     NSData *converted = [raw_str dataUsingEncoding:NSUTF8StringEncoding];
     TFHpple *hpple = [[TFHpple alloc] initWithHTMLData:converted];
     

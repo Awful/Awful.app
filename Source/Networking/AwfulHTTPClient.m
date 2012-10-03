@@ -35,7 +35,7 @@
 {
     self = [super initWithBaseURL:url];
     if (self) {
-        self.stringEncoding = NSISOLatin1StringEncoding;
+        self.stringEncoding = NSWindowsCP1252StringEncoding;
     }
     return self;
 }
@@ -138,7 +138,7 @@
            }
            
            NSData *data = (NSData *)response;
-           NSString *html_str = [[NSString alloc] initWithData:data encoding:NSISOLatin1StringEncoding];
+           NSString *html_str = [[NSString alloc] initWithData:data encoding:NSWindowsCP1252StringEncoding];
            if(html_str == nil) {
                // attempt to avoid some crashes
                errorBlock(nil);
@@ -251,7 +251,7 @@ typedef enum BookmarkAction {
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
        success:^(AFHTTPRequestOperation *operation, id response) {
            NSData *data = (NSData *)response;
-           NSString *rawString = [[NSString alloc] initWithData:data encoding:NSISOLatin1StringEncoding];
+           NSString *rawString = [[NSString alloc] initWithData:data encoding:self.stringEncoding];
            NSData *converted = [rawString dataUsingEncoding:NSUTF8StringEncoding];
            TFHpple *pageData = [[TFHpple alloc] initWithHTMLData:converted];
            
@@ -316,7 +316,7 @@ QuotePostContent,
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
        success:^(AFHTTPRequestOperation *operation, id response) {
            NSData *data = (NSData *)response;
-           NSString *rawString = [[NSString alloc] initWithData:data encoding:NSISOLatin1StringEncoding];
+           NSString *rawString = [[NSString alloc] initWithData:data encoding:self.stringEncoding];
            NSData *converted = [rawString dataUsingEncoding:NSUTF8StringEncoding];
            TFHpple *base = [[TFHpple alloc] initWithHTMLData:converted];
            
@@ -347,7 +347,7 @@ QuotePostContent,
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
        success:^(AFHTTPRequestOperation *operation, id response) {
            NSData *data = (NSData *)response;
-           NSString *rawString = [[NSString alloc] initWithData:data encoding:NSISOLatin1StringEncoding];
+           NSString *rawString = [[NSString alloc] initWithData:data encoding:self.stringEncoding];
            NSData *converted = [rawString dataUsingEncoding:NSUTF8StringEncoding];
            TFHpple *pageData = [[TFHpple alloc] initWithHTMLData:converted];
            
