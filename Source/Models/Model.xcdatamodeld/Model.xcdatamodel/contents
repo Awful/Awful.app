@@ -18,15 +18,6 @@
         <relationship name="parentForum" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="children" inverseEntity="AwfulForum" syncable="YES"/>
         <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="forum" inverseEntity="AwfulThread" syncable="YES"/>
     </entity>
-    <entity name="AwfulPM" representedClassName="AwfulPM" syncable="YES">
-        <attribute name="content" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="from" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="messageID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <attribute name="replied" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="sent" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="subject" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="to" optional="YES" attributeType="String" syncable="YES"/>
-    </entity>
     <entity name="AwfulThread" representedClassName="AwfulThread" syncable="YES">
         <attribute name="authorName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="isBookmarked" optional="YES" attributeType="Boolean" syncable="YES"/>
@@ -49,7 +40,6 @@
     <elements>
         <element name="AwfulCategory" positionX="160" positionY="192" width="128" height="105"/>
         <element name="AwfulForum" positionX="205" positionY="285" width="128" height="195"/>
-        <element name="AwfulPM" positionX="396" positionY="210" width="128" height="150"/>
         <element name="AwfulThread" positionX="25" positionY="210" width="128" height="285"/>
     </elements>
 </model>
