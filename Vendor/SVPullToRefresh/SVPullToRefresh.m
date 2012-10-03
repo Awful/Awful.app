@@ -159,18 +159,19 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
 
 - (void)setPullToRefreshActionHandler:(void (^)(void))actionHandler {
     pullToRefreshActionHandler = [actionHandler copy];
-    [_scrollView addSubview:self];
     self.showsPullToRefresh = YES;
-    
-    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, 150, 20)];
-    titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
-    titleLabel.font = [UIFont boldSystemFontOfSize:14];
-    titleLabel.backgroundColor = [UIColor clearColor];
-    titleLabel.textColor = textColor;
-    [self addSubview:titleLabel];
-    
-    [self addSubview:self.arrow];
-    	
+    if (![self.superview isEqual:_scrollView]) {
+        [_scrollView addSubview:self];
+        
+        self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, 150, 20)];
+        titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
+        titleLabel.font = [UIFont boldSystemFontOfSize:14];
+        titleLabel.backgroundColor = [UIColor clearColor];
+        titleLabel.textColor = textColor;
+        [self addSubview:titleLabel];
+        
+        [self addSubview:self.arrow];
+    }
     self.state = SVPullToRefreshStateHidden;    
     self.frame = CGRectMake(0, -SVPullToRefreshViewHeight, self.scrollView.bounds.size.width, SVPullToRefreshViewHeight);
 }
