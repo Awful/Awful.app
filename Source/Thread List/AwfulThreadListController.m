@@ -138,7 +138,6 @@ typedef enum {
     label.text = self.forum.name;
     
     self.tableView.separatorColor = [UIColor colorWithWhite:0.75 alpha:1];
-    self.tableView.backgroundColor = [UIColor colorWithRed:0.859 green:0.910 blue:0.957 alpha:1];
     self.tableView.rowHeight = 75;
 
     if (self.fetchedResultsController.fetchedObjects.count == 0 && IsLoggedIn()) {
