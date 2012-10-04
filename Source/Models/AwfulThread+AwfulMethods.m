@@ -11,6 +11,7 @@
 #import "TFHpple.h"
 #import "TFHppleElement.h"
 #import "XPathQuery.h"
+#import "AwfulStringEncoding.h"
 
 @implementation AwfulThread (AwfulMethods)
 
@@ -86,7 +87,7 @@
 
 +(NSMutableArray *)parseBookmarkedThreadsWithData : (NSData *)data
 {
-    NSString *raw_str = [[NSString alloc] initWithData:data encoding:NSWindowsCP1252StringEncoding];
+    NSString *raw_str = StringFromSomethingAwfulData(data);
     NSData *converted = [raw_str dataUsingEncoding:NSUTF8StringEncoding];
     TFHpple *hpple = [[TFHpple alloc] initWithHTMLData:converted];
     
@@ -330,19 +331,22 @@
         thread.lastPostAuthorName = [NSString stringWithFormat:@"%@", [last_author content]];
         
         static NSDateFormatter *df = nil;
-        if(df == nil) {
+        if (df == nil) {
             df = [[NSDateFormatter alloc] init];
             [df setTimeZone:[NSTimeZone localTimeZone]];
-            if ([[date content] rangeOfString:@"AM"].location != NSNotFound || [[date content] rangeOfString:@"PM"].location != NSNotFound) {
-                [df setDateFormat:@"h:mm a MMM d, yyyy"];
-            } else {
-                [df setDateFormat:@"HH:mm MMM d, yyyy"];
-            }
+            [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
         }
-        
-        NSDate *myDate = [df dateFromString:[date content]];
-        if(myDate != nil) {
-            thread.lastPostDate = myDate;
+        static NSString *formats[] = {
+            @"h:mm a MMM d, yyyy",
+            @"HH:mm MMM d, yyyy",
+        };
+        for (size_t i = 0; i < sizeof(formats) / sizeof(formats[0]); i++) {
+            [df setDateFormat:formats[i]];
+            NSDate *myDate = [df dateFromString:[date content]];
+            if(myDate != nil) {
+                thread.lastPostDate = myDate;
+                break;
+            }
         }
     }
 }
