@@ -88,13 +88,6 @@
         AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
         thread.isBookmarkedValue = NO;
         [ApplicationDelegate saveContext];
-        
-        [self.fetchedResultsController performFetch:nil];
-        [self.tableView beginUpdates];
-        [self.tableView deleteRowsAtIndexPaths:@[indexPath]
-                              withRowAnimation:UITableViewRowAnimationFade];
-        [self.tableView endUpdates];
-        
         self.networkOperation = [[AwfulHTTPClient sharedClient] removeBookmarkedThread:thread
                                                                           onCompletion:nil
                                                                                onError:^(NSError *error)
