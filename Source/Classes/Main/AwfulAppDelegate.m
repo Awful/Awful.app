@@ -13,6 +13,10 @@
 #import "DDLog.h"
 #import "DDTTYLogger.h"
 
+@interface AwfulAppDelegate () <UIAlertViewDelegate>
+
+@end
+
 @implementation AwfulAppDelegate
 
 @synthesize window = _window;
@@ -83,9 +87,29 @@
 
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-    /*AwfulNavigator *nav = getNavigator();
-    if ([nav isKindOfClass:[AwfulNavigatorIpad class]])
-        [((AwfulNavigatorIpad *) nav) callForumsRefresh];*/
+    // Only nag about once a week.
+    static NSString * const NagKey = @"NagToGetNewVersion";
+    NSDate *lastTime = [[NSUserDefaults standardUserDefaults] objectForKey:NagKey];
+    if (lastTime && [lastTime timeIntervalSinceDate:[NSDate date]] < 60.0 * 60 * 24 * 7) {
+        return;
+    }
+    UIAlertView *alert = [UIAlertView new];
+    alert.delegate = self;
+    alert.title = @"This App is Done";
+    alert.message = @"Awful has moved to a new spot in the App Store, and this version will never again be updated. You should get the new version.";
+    [alert addButtonWithTitle:@"How sad"];
+    [alert addButtonWithTitle:@"App Store"];
+    alert.cancelButtonIndex = 0;
+    [alert show];
+    [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:NagKey];
+}
+
+- (void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 1) {
+        NSURL *url = [NSURL URLWithString:@"http://itunes.apple.com/app/awful-unofficial-something/id567936609?ls=1&mt=8"];
+        [[UIApplication sharedApplication] openURL:url];
+    }
 }
 
 

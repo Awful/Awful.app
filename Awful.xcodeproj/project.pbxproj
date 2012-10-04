@@ -421,6 +421,7 @@
 		1C6474D11569989800C72657 /* _AwfulUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474C21569989800C72657 /* _AwfulUser.m */; };
 		1C6474D21569989800C72657 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474C31569989800C72657 /* Model.xcdatamodeld */; };
 		1C7B87201544D83D00891D41 /* AwfulForumSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B871F1544D83D00891D41 /* AwfulForumSection.m */; };
+		1C83DB43161D682400E53CFA /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C83DB42161D682400E53CFA /* Default-568h@2x.png */; };
 		1C92258515719D8300559312 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		1C92258615719D8300559312 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1C92258715719D8300559312 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765070DF74369002DB57D /* CoreGraphics.framework */; };
@@ -975,6 +976,7 @@
 		1C7B871B1544D73100891D41 /* AwfulForumsListControllerSubclass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumsListControllerSubclass.h; sourceTree = "<group>"; };
 		1C7B871E1544D83C00891D41 /* AwfulForumSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumSection.h; sourceTree = "<group>"; };
 		1C7B871F1544D83D00891D41 /* AwfulForumSection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumSection.m; sourceTree = "<group>"; };
+		1C83DB42161D682400E53CFA /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		1C92258315719D8300559312 /* AwfulTemplateTester.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AwfulTemplateTester.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C92258A15719D8300559312 /* AwfulTemplateTester-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AwfulTemplateTester-Info.plist"; sourceTree = "<group>"; };
 		1C92258C15719D8300559312 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -1963,6 +1965,7 @@
 				8D1107310486CEB800E47090 /* Awful-Info.plist */,
 				11D6EFE0154DE4D3005801AC /* Default.png */,
 				11D6EFDE154DE405005801AC /* Default@2x.png */,
+				1C83DB42161D682400E53CFA /* Default-568h@2x.png */,
 				11D6EFD7154DE1DD005801AC /* Default-Portrait.png */,
 				11D6EFD8154DE1DD005801AC /* Default-Portrait@2x~ipad.png */,
 				11D6EFD1154DE116005801AC /* Default-Landscape.png */,
@@ -2431,6 +2434,7 @@
 				1CD59CF7157336F5008F8E2F /* default.css in Resources */,
 				1CD59CF9157338FC008F8E2F /* dark.css in Resources */,
 				11BBD68715799C190070C793 /* tava-cellphone.png in Resources */,
+				1C83DB43161D682400E53CFA /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
