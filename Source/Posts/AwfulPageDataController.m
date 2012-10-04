@@ -11,6 +11,7 @@
 #import "TFHppleElement.h"
 #import "XPathQuery.h"
 #import "AwfulPageTemplate.h"
+#import "AwfulStringEncoding.h"
 
 @interface AwfulPageDataController ()
 
@@ -34,8 +35,9 @@
     self = [super init];
     if (self) {
         NSString *raw = [[NSString alloc] initWithData:responseData encoding:NSWindowsCP1252StringEncoding];
-        NSString *filtered = [raw stringByReplacingOccurrencesOfString:@"<size:" withString:@"<"];
-        NSData *converted = [filtered dataUsingEncoding:NSUTF8StringEncoding];
+        NSAssert(!raw || [raw rangeOfString:@"<size:"].location == NSNotFound, @"found <size:", nil);
+//        NSString *filtered = [raw stringByReplacingOccurrencesOfString:@"<size:" withString:@"<"];
+        NSData *converted = [StringFromSomethingAwfulData(responseData) dataUsingEncoding:NSUTF8StringEncoding];
         TFHpple *pageParser = [[TFHpple alloc] initWithHTMLData:converted];
         _threadTitle = ParseThreadTitle(pageParser);
         _forum = ParseForum(pageParser);

@@ -67,6 +67,7 @@
 		1C6474CB1569989800C72657 /* AwfulThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474B51569989800C72657 /* AwfulThread.m */; };
 		1C6474CF1569989800C72657 /* _AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474BE1569989800C72657 /* _AwfulForum.m */; };
 		1C6474D01569989800C72657 /* _AwfulThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474C01569989800C72657 /* _AwfulThread.m */; };
+		1C83DB30161D4D1100E53CFA /* AwfulStringEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C83DB2F161D4D1100E53CFA /* AwfulStringEncoding.m */; };
 		1CAB36B11548F0FE00A4A362 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
 		1CC38B81160C017600C35A11 /* awful.js in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC515B497A800E5893B /* awful.js */; };
 		1CC38B82160C017600C35A11 /* jquery.js in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC815B497A800E5893B /* jquery.js */; };
@@ -131,18 +132,6 @@
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765080DF74369002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765070DF74369002DB57D /* CoreGraphics.framework */; };
 		8C48EA1E159BC2AC00A59691 /* AwfulFetchedTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48EA1D159BC2AC00A59691 /* AwfulFetchedTableViewController.m */; };
-		8C8EBE4D161D30AE00ED1EFF /* lf-dji.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE41161D30AE00ED1EFF /* lf-dji.png */; };
-		8C8EBE4E161D30AE00ED1EFF /* bss-fanboy.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE42161D30AE00ED1EFF /* bss-fanboy.png */; };
-		8C8EBE4F161D30AE00ED1EFF /* lan-south.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE43161D30AE00ED1EFF /* lan-south.png */; };
-		8C8EBE50161D30AE00ED1EFF /* gip-army.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE44161D30AE00ED1EFF /* gip-army.png */; };
-		8C8EBE51161D30AE00ED1EFF /* fyad-socks.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE45161D30AE00ED1EFF /* fyad-socks.png */; };
-		8C8EBE52161D30AE00ED1EFF /* dd-GOP.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE46161D30AE00ED1EFF /* dd-GOP.png */; };
-		8C8EBE53161D30AE00ED1EFF /* fyad-parotty.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE47161D30AE00ED1EFF /* fyad-parotty.png */; };
-		8C8EBE54161D30AE00ED1EFF /* fyad-lovecum.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE48161D30AE00ED1EFF /* fyad-lovecum.png */; };
-		8C8EBE55161D30AE00ED1EFF /* fyad-imgay.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE49161D30AE00ED1EFF /* fyad-imgay.png */; };
-		8C8EBE56161D30AE00ED1EFF /* fyad-framed.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE4A161D30AE00ED1EFF /* fyad-framed.png */; };
-		8C8EBE57161D30AE00ED1EFF /* fyad-flannel.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE4B161D30AE00ED1EFF /* fyad-flannel.png */; };
-		8C8EBE58161D30AE00ED1EFF /* fyad-atheist.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE4C161D30AE00ED1EFF /* fyad-atheist.png */; };
 		8C8EBE66161D30ED00ED1EFF /* lf-dji.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE5A161D30ED00ED1EFF /* lf-dji.png */; };
 		8C8EBE67161D30ED00ED1EFF /* bss-fanboy.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE5B161D30ED00ED1EFF /* bss-fanboy.png */; };
 		8C8EBE68161D30ED00ED1EFF /* lan-south.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE5C161D30ED00ED1EFF /* lan-south.png */; };
@@ -547,6 +536,8 @@
 		1C6474BE1569989800C72657 /* _AwfulForum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulForum.m; sourceTree = "<group>"; };
 		1C6474BF1569989800C72657 /* _AwfulThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _AwfulThread.h; sourceTree = "<group>"; };
 		1C6474C01569989800C72657 /* _AwfulThread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulThread.m; sourceTree = "<group>"; };
+		1C83DB2E161D4D1100E53CFA /* AwfulStringEncoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulStringEncoding.h; sourceTree = "<group>"; };
+		1C83DB2F161D4D1100E53CFA /* AwfulStringEncoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulStringEncoding.m; sourceTree = "<group>"; };
 		1CAB36B01548F0FE00A4A362 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		1CC38B88160C0A5D00C35A11 /* SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVPullToRefresh.h; sourceTree = "<group>"; };
 		1CC38B89160C0A5D00C35A11 /* SVPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVPullToRefresh.m; sourceTree = "<group>"; };
@@ -1267,6 +1258,8 @@
 			children = (
 				1CC780201612D989002AF958 /* AwfulHTTPClient.h */,
 				1CC780211612D989002AF958 /* AwfulHTTPClient.m */,
+				1C83DB2E161D4D1100E53CFA /* AwfulStringEncoding.h */,
+				1C83DB2F161D4D1100E53CFA /* AwfulStringEncoding.m */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -2175,18 +2168,6 @@
 				1C13FF95161CDDD4000ED2B1 /* bookmarks-landscape@2x.png in Resources */,
 				1C13FF96161CDDD4000ED2B1 /* bookmarks.png in Resources */,
 				1C13FF97161CDDD4000ED2B1 /* bookmarks@2x.png in Resources */,
-				8C8EBE4D161D30AE00ED1EFF /* lf-dji.png in Resources */,
-				8C8EBE4E161D30AE00ED1EFF /* bss-fanboy.png in Resources */,
-				8C8EBE4F161D30AE00ED1EFF /* lan-south.png in Resources */,
-				8C8EBE50161D30AE00ED1EFF /* gip-army.png in Resources */,
-				8C8EBE51161D30AE00ED1EFF /* fyad-socks.png in Resources */,
-				8C8EBE52161D30AE00ED1EFF /* dd-GOP.png in Resources */,
-				8C8EBE53161D30AE00ED1EFF /* fyad-parotty.png in Resources */,
-				8C8EBE54161D30AE00ED1EFF /* fyad-lovecum.png in Resources */,
-				8C8EBE55161D30AE00ED1EFF /* fyad-imgay.png in Resources */,
-				8C8EBE56161D30AE00ED1EFF /* fyad-framed.png in Resources */,
-				8C8EBE57161D30AE00ED1EFF /* fyad-flannel.png in Resources */,
-				8C8EBE58161D30AE00ED1EFF /* fyad-atheist.png in Resources */,
 				8C8EBE66161D30ED00ED1EFF /* lf-dji.png in Resources */,
 				8C8EBE67161D30ED00ED1EFF /* bss-fanboy.png in Resources */,
 				8C8EBE68161D30ED00ED1EFF /* lan-south.png in Resources */,
@@ -2319,6 +2300,7 @@
 				1C13FF64161948DE000ED2B1 /* Model.xcdatamodeld in Sources */,
 				1C13FF67161BCCB6000ED2B1 /* AwfulThreadCell.m in Sources */,
 				1C13FF6A161BF733000ED2B1 /* AwfulBadgeView.m in Sources */,
+				1C83DB30161D4D1100E53CFA /* AwfulStringEncoding.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

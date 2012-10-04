@@ -16,6 +16,7 @@
 #import "NSString+HTML.h"
 #import "AFNetworkActivityIndicatorManager.h"
 #import "AFHTTPRequestOperation.h"
+#import "AwfulStringEncoding.h"
 
 @implementation AwfulHTTPClient
 
@@ -137,8 +138,7 @@
                return;
            }
            
-           NSData *data = (NSData *)response;
-           NSString *html_str = [[NSString alloc] initWithData:data encoding:NSWindowsCP1252StringEncoding];
+           NSString *html_str = StringFromSomethingAwfulData((NSData *)response);
            if(html_str == nil) {
                // attempt to avoid some crashes
                errorBlock(nil);
