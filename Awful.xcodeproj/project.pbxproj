@@ -131,6 +131,30 @@
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765080DF74369002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765070DF74369002DB57D /* CoreGraphics.framework */; };
 		8C48EA1E159BC2AC00A59691 /* AwfulFetchedTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48EA1D159BC2AC00A59691 /* AwfulFetchedTableViewController.m */; };
+		8C8EBE4D161D30AE00ED1EFF /* lf-dji.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE41161D30AE00ED1EFF /* lf-dji.png */; };
+		8C8EBE4E161D30AE00ED1EFF /* bss-fanboy.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE42161D30AE00ED1EFF /* bss-fanboy.png */; };
+		8C8EBE4F161D30AE00ED1EFF /* lan-south.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE43161D30AE00ED1EFF /* lan-south.png */; };
+		8C8EBE50161D30AE00ED1EFF /* gip-army.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE44161D30AE00ED1EFF /* gip-army.png */; };
+		8C8EBE51161D30AE00ED1EFF /* fyad-socks.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE45161D30AE00ED1EFF /* fyad-socks.png */; };
+		8C8EBE52161D30AE00ED1EFF /* dd-GOP.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE46161D30AE00ED1EFF /* dd-GOP.png */; };
+		8C8EBE53161D30AE00ED1EFF /* fyad-parotty.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE47161D30AE00ED1EFF /* fyad-parotty.png */; };
+		8C8EBE54161D30AE00ED1EFF /* fyad-lovecum.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE48161D30AE00ED1EFF /* fyad-lovecum.png */; };
+		8C8EBE55161D30AE00ED1EFF /* fyad-imgay.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE49161D30AE00ED1EFF /* fyad-imgay.png */; };
+		8C8EBE56161D30AE00ED1EFF /* fyad-framed.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE4A161D30AE00ED1EFF /* fyad-framed.png */; };
+		8C8EBE57161D30AE00ED1EFF /* fyad-flannel.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE4B161D30AE00ED1EFF /* fyad-flannel.png */; };
+		8C8EBE58161D30AE00ED1EFF /* fyad-atheist.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE4C161D30AE00ED1EFF /* fyad-atheist.png */; };
+		8C8EBE66161D30ED00ED1EFF /* lf-dji.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE5A161D30ED00ED1EFF /* lf-dji.png */; };
+		8C8EBE67161D30ED00ED1EFF /* bss-fanboy.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE5B161D30ED00ED1EFF /* bss-fanboy.png */; };
+		8C8EBE68161D30ED00ED1EFF /* lan-south.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE5C161D30ED00ED1EFF /* lan-south.png */; };
+		8C8EBE69161D30ED00ED1EFF /* gip-army.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE5D161D30ED00ED1EFF /* gip-army.png */; };
+		8C8EBE6A161D30ED00ED1EFF /* fyad-socks.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE5E161D30ED00ED1EFF /* fyad-socks.png */; };
+		8C8EBE6B161D30ED00ED1EFF /* dd-GOP.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE5F161D30ED00ED1EFF /* dd-GOP.png */; };
+		8C8EBE6C161D30ED00ED1EFF /* fyad-parotty.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE60161D30ED00ED1EFF /* fyad-parotty.png */; };
+		8C8EBE6D161D30ED00ED1EFF /* fyad-lovecum.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE61161D30ED00ED1EFF /* fyad-lovecum.png */; };
+		8C8EBE6E161D30ED00ED1EFF /* fyad-imgay.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE62161D30ED00ED1EFF /* fyad-imgay.png */; };
+		8C8EBE6F161D30ED00ED1EFF /* fyad-framed.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE63161D30ED00ED1EFF /* fyad-framed.png */; };
+		8C8EBE70161D30ED00ED1EFF /* fyad-flannel.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE64161D30ED00ED1EFF /* fyad-flannel.png */; };
+		8C8EBE71161D30ED00ED1EFF /* fyad-atheist.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8EBE65161D30ED00ED1EFF /* fyad-atheist.png */; };
 		8CB5468D15BD936600E8BEC1 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CB5468C15BD936600E8BEC1 /* ImageIO.framework */; };
 		8CCD4CD415B497A800E5893B /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498A15B497A700E5893B /* Icon-72.png */; };
 		8CCD4CD515B497A800E5893B /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498B15B497A700E5893B /* Icon-72@2x.png */; };
@@ -648,6 +672,30 @@
 		288765070DF74369002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		8C48EA1C159BC2AC00A59691 /* AwfulFetchedTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFetchedTableViewController.h; sourceTree = "<group>"; };
 		8C48EA1D159BC2AC00A59691 /* AwfulFetchedTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulFetchedTableViewController.m; sourceTree = "<group>"; };
+		8C8EBE41161D30AE00ED1EFF /* lf-dji.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "lf-dji.png"; path = "../../../Dropbox/designedimages/lf-dji.png"; sourceTree = "<group>"; };
+		8C8EBE42161D30AE00ED1EFF /* bss-fanboy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bss-fanboy.png"; path = "../../../Dropbox/designedimages/bss-fanboy.png"; sourceTree = "<group>"; };
+		8C8EBE43161D30AE00ED1EFF /* lan-south.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "lan-south.png"; path = "../../../Dropbox/designedimages/lan-south.png"; sourceTree = "<group>"; };
+		8C8EBE44161D30AE00ED1EFF /* gip-army.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "gip-army.png"; path = "../../../Dropbox/designedimages/gip-army.png"; sourceTree = "<group>"; };
+		8C8EBE45161D30AE00ED1EFF /* fyad-socks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "fyad-socks.png"; path = "../../../Dropbox/designedimages/fyad-socks.png"; sourceTree = "<group>"; };
+		8C8EBE46161D30AE00ED1EFF /* dd-GOP.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "dd-GOP.png"; path = "../../../Dropbox/designedimages/dd-GOP.png"; sourceTree = "<group>"; };
+		8C8EBE47161D30AE00ED1EFF /* fyad-parotty.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "fyad-parotty.png"; path = "../../../Dropbox/designedimages/fyad-parotty.png"; sourceTree = "<group>"; };
+		8C8EBE48161D30AE00ED1EFF /* fyad-lovecum.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "fyad-lovecum.png"; path = "../../../Dropbox/designedimages/fyad-lovecum.png"; sourceTree = "<group>"; };
+		8C8EBE49161D30AE00ED1EFF /* fyad-imgay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "fyad-imgay.png"; path = "../../../Dropbox/designedimages/fyad-imgay.png"; sourceTree = "<group>"; };
+		8C8EBE4A161D30AE00ED1EFF /* fyad-framed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "fyad-framed.png"; path = "../../../Dropbox/designedimages/fyad-framed.png"; sourceTree = "<group>"; };
+		8C8EBE4B161D30AE00ED1EFF /* fyad-flannel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "fyad-flannel.png"; path = "../../../Dropbox/designedimages/fyad-flannel.png"; sourceTree = "<group>"; };
+		8C8EBE4C161D30AE00ED1EFF /* fyad-atheist.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "fyad-atheist.png"; path = "../../../Dropbox/designedimages/fyad-atheist.png"; sourceTree = "<group>"; };
+		8C8EBE5A161D30ED00ED1EFF /* lf-dji.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lf-dji.png"; sourceTree = "<group>"; };
+		8C8EBE5B161D30ED00ED1EFF /* bss-fanboy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bss-fanboy.png"; sourceTree = "<group>"; };
+		8C8EBE5C161D30ED00ED1EFF /* lan-south.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lan-south.png"; sourceTree = "<group>"; };
+		8C8EBE5D161D30ED00ED1EFF /* gip-army.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gip-army.png"; sourceTree = "<group>"; };
+		8C8EBE5E161D30ED00ED1EFF /* fyad-socks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-socks.png"; sourceTree = "<group>"; };
+		8C8EBE5F161D30ED00ED1EFF /* dd-GOP.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dd-GOP.png"; sourceTree = "<group>"; };
+		8C8EBE60161D30ED00ED1EFF /* fyad-parotty.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-parotty.png"; sourceTree = "<group>"; };
+		8C8EBE61161D30ED00ED1EFF /* fyad-lovecum.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-lovecum.png"; sourceTree = "<group>"; };
+		8C8EBE62161D30ED00ED1EFF /* fyad-imgay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-imgay.png"; sourceTree = "<group>"; };
+		8C8EBE63161D30ED00ED1EFF /* fyad-framed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-framed.png"; sourceTree = "<group>"; };
+		8C8EBE64161D30ED00ED1EFF /* fyad-flannel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-flannel.png"; sourceTree = "<group>"; };
+		8C8EBE65161D30ED00ED1EFF /* fyad-atheist.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-atheist.png"; sourceTree = "<group>"; };
 		8CB5468C15BD936600E8BEC1 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		8CCD498215B497A700E5893B /* Awful-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Awful-Info.plist"; sourceTree = "<group>"; };
 		8CCD498A15B497A700E5893B /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
@@ -1513,6 +1561,18 @@
 		8CCD527B15B783FC00E5893B /* Thread Tags */ = {
 			isa = PBXGroup;
 			children = (
+				8C8EBE5A161D30ED00ED1EFF /* lf-dji.png */,
+				8C8EBE5B161D30ED00ED1EFF /* bss-fanboy.png */,
+				8C8EBE5C161D30ED00ED1EFF /* lan-south.png */,
+				8C8EBE5D161D30ED00ED1EFF /* gip-army.png */,
+				8C8EBE5E161D30ED00ED1EFF /* fyad-socks.png */,
+				8C8EBE5F161D30ED00ED1EFF /* dd-GOP.png */,
+				8C8EBE60161D30ED00ED1EFF /* fyad-parotty.png */,
+				8C8EBE61161D30ED00ED1EFF /* fyad-lovecum.png */,
+				8C8EBE62161D30ED00ED1EFF /* fyad-imgay.png */,
+				8C8EBE63161D30ED00ED1EFF /* fyad-framed.png */,
+				8C8EBE64161D30ED00ED1EFF /* fyad-flannel.png */,
+				8C8EBE65161D30ED00ED1EFF /* fyad-atheist.png */,
 				8CCD527C15B783FC00E5893B /* ai-cycles.png */,
 				8CCD527D15B783FC00E5893B /* ama-secondary.png */,
 				8CCD527E15B783FC00E5893B /* art.png */,
@@ -1531,6 +1591,18 @@
 				8CCD528B15B783FC00E5893B /* byob-grouch.png */,
 				8CCD528C15B783FC00E5893B /* byob-slax.png */,
 				8CCD528D15B783FC00E5893B /* cars.png */,
+				8C8EBE41161D30AE00ED1EFF /* lf-dji.png */,
+				8C8EBE42161D30AE00ED1EFF /* bss-fanboy.png */,
+				8C8EBE43161D30AE00ED1EFF /* lan-south.png */,
+				8C8EBE44161D30AE00ED1EFF /* gip-army.png */,
+				8C8EBE45161D30AE00ED1EFF /* fyad-socks.png */,
+				8C8EBE46161D30AE00ED1EFF /* dd-GOP.png */,
+				8C8EBE47161D30AE00ED1EFF /* fyad-parotty.png */,
+				8C8EBE48161D30AE00ED1EFF /* fyad-lovecum.png */,
+				8C8EBE49161D30AE00ED1EFF /* fyad-imgay.png */,
+				8C8EBE4A161D30AE00ED1EFF /* fyad-framed.png */,
+				8C8EBE4B161D30AE00ED1EFF /* fyad-flannel.png */,
+				8C8EBE4C161D30AE00ED1EFF /* fyad-atheist.png */,
 				8CCD528E15B783FC00E5893B /* cc-critique.png */,
 				8CCD528F15B783FC00E5893B /* cc-design.png */,
 				8CCD529015B783FC00E5893B /* cc-fiction.png */,
@@ -2107,6 +2179,30 @@
 				1C13FF95161CDDD4000ED2B1 /* bookmarks-landscape@2x.png in Resources */,
 				1C13FF96161CDDD4000ED2B1 /* bookmarks.png in Resources */,
 				1C13FF97161CDDD4000ED2B1 /* bookmarks@2x.png in Resources */,
+				8C8EBE4D161D30AE00ED1EFF /* lf-dji.png in Resources */,
+				8C8EBE4E161D30AE00ED1EFF /* bss-fanboy.png in Resources */,
+				8C8EBE4F161D30AE00ED1EFF /* lan-south.png in Resources */,
+				8C8EBE50161D30AE00ED1EFF /* gip-army.png in Resources */,
+				8C8EBE51161D30AE00ED1EFF /* fyad-socks.png in Resources */,
+				8C8EBE52161D30AE00ED1EFF /* dd-GOP.png in Resources */,
+				8C8EBE53161D30AE00ED1EFF /* fyad-parotty.png in Resources */,
+				8C8EBE54161D30AE00ED1EFF /* fyad-lovecum.png in Resources */,
+				8C8EBE55161D30AE00ED1EFF /* fyad-imgay.png in Resources */,
+				8C8EBE56161D30AE00ED1EFF /* fyad-framed.png in Resources */,
+				8C8EBE57161D30AE00ED1EFF /* fyad-flannel.png in Resources */,
+				8C8EBE58161D30AE00ED1EFF /* fyad-atheist.png in Resources */,
+				8C8EBE66161D30ED00ED1EFF /* lf-dji.png in Resources */,
+				8C8EBE67161D30ED00ED1EFF /* bss-fanboy.png in Resources */,
+				8C8EBE68161D30ED00ED1EFF /* lan-south.png in Resources */,
+				8C8EBE69161D30ED00ED1EFF /* gip-army.png in Resources */,
+				8C8EBE6A161D30ED00ED1EFF /* fyad-socks.png in Resources */,
+				8C8EBE6B161D30ED00ED1EFF /* dd-GOP.png in Resources */,
+				8C8EBE6C161D30ED00ED1EFF /* fyad-parotty.png in Resources */,
+				8C8EBE6D161D30ED00ED1EFF /* fyad-lovecum.png in Resources */,
+				8C8EBE6E161D30ED00ED1EFF /* fyad-imgay.png in Resources */,
+				8C8EBE6F161D30ED00ED1EFF /* fyad-framed.png in Resources */,
+				8C8EBE70161D30ED00ED1EFF /* fyad-flannel.png in Resources */,
+				8C8EBE71161D30ED00ED1EFF /* fyad-atheist.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
