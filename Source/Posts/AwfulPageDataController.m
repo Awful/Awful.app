@@ -34,9 +34,6 @@
 {
     self = [super init];
     if (self) {
-        NSString *raw = [[NSString alloc] initWithData:responseData encoding:NSWindowsCP1252StringEncoding];
-        NSAssert(!raw || [raw rangeOfString:@"<size:"].location == NSNotFound, @"found <size:", nil);
-//        NSString *filtered = [raw stringByReplacingOccurrencesOfString:@"<size:" withString:@"<"];
         NSData *converted = [StringFromSomethingAwfulData(responseData) dataUsingEncoding:NSUTF8StringEncoding];
         TFHpple *pageParser = [[TFHpple alloc] initWithHTMLData:converted];
         _threadTitle = ParseThreadTitle(pageParser);
