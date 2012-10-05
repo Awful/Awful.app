@@ -12,6 +12,7 @@
 #import "XPathQuery.h"
 #import "AwfulPageTemplate.h"
 #import "AwfulStringEncoding.h"
+#import "AwfulForum.h"
 
 @interface AwfulPageDataController ()
 
@@ -47,15 +48,20 @@
     return self;
 }
 
+// XPath boilerplate to handle HTML class attribute.
+//
+//   NSString *xpath = @"//div[" HAS_CLASS(breadcrumbs) "]";
+#define HAS_CLASS(name) "contains(concat(' ', normalize-space(@class), ' '), ' " #name "')"
+
 static NSString *ParseThreadTitle(TFHpple *parser)
 {
-    TFHppleElement *title = [parser searchForSingle:@"//a[@class='bclast']"];
+    TFHppleElement *title = [parser searchForSingle:@"//a[" HAS_CLASS(bclast) "]"];
     return title ? [title content] : @"Title Not Found";
 }
 
 static AwfulForum *ParseForum(TFHpple *parser)
 {
-    NSArray *breadcrumbs = [parser search:@"//div[@class='breadcrumbs']//a"];
+    NSArray *breadcrumbs = [parser search:@"//div[" HAS_CLASS(breadcrumbs) "]//a"];
     NSString *lastForumID = nil;
     for (TFHppleElement *element in breadcrumbs) {
         NSString *src = [element objectForKey:@"href"];
@@ -70,7 +76,7 @@ static AwfulForum *ParseForum(TFHpple *parser)
         return nil;
     }
     
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"AwfulForum"];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[AwfulForum entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"forumID=%@", lastForumID];
     [fetchRequest setPredicate:predicate];
     
@@ -87,7 +93,7 @@ static AwfulForum *ParseForum(TFHpple *parser)
 
 static NSInteger ParsePageCount(TFHpple *parser, NSInteger *currentPage)
 {
-    NSArray *strings = PerformRawHTMLXPathQuery(parser.data, @"//div[@class='pages top']");
+    NSArray *strings = PerformRawHTMLXPathQuery(parser.data, @"//div[" HAS_CLASS(pages) " and " HAS_CLASS(top) "]");
     if ([strings count] == 0) {
         *currentPage = 1;
         return 1;
@@ -108,7 +114,7 @@ static NSInteger ParsePageCount(TFHpple *parser, NSInteger *currentPage)
     NSString *totalPagesString = [pageInfo substringWithRange:combined];
     
     TFHpple *base = [[TFHpple alloc] initWithHTMLData:[pageInfo dataUsingEncoding:NSUTF8StringEncoding]];
-    TFHppleElement *curpage = [base searchForSingle:@"//span[@class='curpage']"];
+    TFHppleElement *curpage = [base searchForSingle:@"//span[" HAS_CLASS(curpage) "]"];
     if (curpage) {
         *currentPage = [[curpage content] intValue];
     }
@@ -119,7 +125,7 @@ static AwfulPost *ParsePost(TFHpple *parser, NSString *forumID);
 
 static NSMutableArray *ParsePosts(TFHpple *parser, NSString *forumID)
 {
-    NSArray *postStrings = PerformRawHTMLXPathQuery(parser.data, @"//table[@class='post']|//table[@class='post ignored']");
+    NSArray *postStrings = PerformRawHTMLXPathQuery(parser.data, @"//table[" HAS_CLASS(post) "]");
     NSMutableArray *parsedPosts = [[NSMutableArray alloc] init];
     for (NSString *postHTML in postStrings) @autoreleasepool {
         TFHpple *postBase = [[TFHpple alloc] initWithHTMLData:[postHTML dataUsingEncoding:NSUTF8StringEncoding]];
@@ -130,29 +136,32 @@ static NSMutableArray *ParsePosts(TFHpple *parser, NSString *forumID)
     return parsedPosts;
 }
 
+// List contents of an HTML element's class attribute.
+static NSArray *ClassesForElement(TFHppleElement *element)
+{
+    NSString *attribute = [element objectForKey:@"class"];
+    if (!attribute) return nil;
+    
+    NSCharacterSet *whitespace = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+    NSArray *parts = [attribute componentsSeparatedByCharactersInSet:whitespace];
+    NSIndexSet *nonempty = [parts indexesOfObjectsPassingTest:
+                            ^BOOL(NSString *s, NSUInteger _, BOOL *__) { return [s length] > 0; }];
+    return [parts objectsAtIndexes:nonempty];
+}
+
 static AwfulPost *ParsePost(TFHpple *parser, NSString *forumID)
 {
     AwfulPost *post = [[AwfulPost alloc] init];
     
-    NSString *username_search = @"//dt[@class='author']|//dt[@class='author op']|//dt[@class='author role-mod']|//dt[@class='author role-admin']|//dt[@class='author role-mod op']|//dt[@class='author role-admin op']";
-    
+    NSString *username_search = @"//dt[" HAS_CLASS(author) "]";
     TFHppleElement *author = [parser searchForSingle:username_search];
     if(author != nil) {
         post.posterName = [author content];
-        NSString *author_class = [author objectForKey:@"class"];
-        if([author_class isEqualToString:@"author op"] || [author_class isEqualToString:@"author role-admin op"] || [author_class isEqualToString:@"author role-mod op"]) {
-            post.isOP = YES;
-        } else {
-            post.isOP = NO;
-        }
-        
-        TFHppleElement *mod = [parser searchForSingle:@"//dt[@class='author role-mod']|//dt[@class='author role-mod op']"];
-        if(mod != nil) {
+        NSArray *classes = ClassesForElement(author);
+        post.isOP = [classes containsObject:@"op"];
+        if ([classes containsObject:@"role-mod"]) {
             post.posterType = AwfulUserTypeMod;
-        }
-        
-        TFHppleElement *admin = [parser searchForSingle:@"//dt[@class='author role-admin']|//dt[@class='author role-admin op']"];
-        if(admin != nil) {
+        } else if ([classes containsObject:@"role-admin"]) {
             post.posterType = AwfulUserTypeAdmin;
         }
         
@@ -161,35 +170,33 @@ static AwfulPost *ParsePost(TFHpple *parser, NSString *forumID)
         }
     }
     
-    TFHppleElement *post_id = [parser searchForSingle:@"//table[@class='post']|//table[@class='post ignored']"];
+    TFHppleElement *post_id = [parser searchForSingle:@"//table[" HAS_CLASS(post) "]"];
     if(post_id != nil) {
         NSString *post_id_str = [post_id objectForKey:@"id"];
         post.postID = [post_id_str substringFromIndex:4];
     }
     
-    TFHppleElement *post_date = [parser searchForSingle:@"//td[@class='postdate']"];
+    TFHppleElement *post_date = [parser searchForSingle:@"//td[" HAS_CLASS(postdate) "]"];
     if(post_date != nil) {
         post.postDate = [post_date content];
     }
     
-    TFHppleElement *seen_link = [parser searchForSingle:@"//td[@class='postdate']//a[@title='Mark thread seen up to this post']"];
+    TFHppleElement *seen_link = [parser searchForSingle:@"//td[" HAS_CLASS(postdate) "]//a[@title='Mark thread seen up to this post']"];
     if(seen_link != nil) {
         post.markSeenLink = [seen_link objectForKey:@"href"];
     }
     
-    TFHppleElement *avatar = [parser searchForSingle:@"//dd[@class='title']//img"];
+    TFHppleElement *avatar = [parser searchForSingle:@"//dd[" HAS_CLASS(title) "]//img"];
     if(avatar != nil) {
         post.avatarURL = [NSURL URLWithString:[avatar objectForKey:@"src"]];
     }
     
-    TFHppleElement *edited = [parser searchForSingle:@"//p[@class='editedby']/span"];
-    if(edited != nil) {
-        post.editedStr = [[edited content] stringByReplacingOccurrencesOfString:@"fucked around with this message" withString:@"edited"];
-    }
+    TFHppleElement *edited = [parser searchForSingle:@"//p[" HAS_CLASS(editedby) "]/span"];
+    post.editedStr = [edited content];
     
-    NSString *body_search_str = @"//td[@class='postbody']";
+    NSString *body_search_str = @"//td[" HAS_CLASS(postbody) "]";
     if([forumID isEqualToString:@"26"]) {
-        body_search_str = @"//div[@class='complete_shit funbox']";
+        body_search_str = @"//div[" HAS_CLASS(complete_shit) " and " HAS_CLASS(funbox) "]";
     }
     
     NSArray *body_strings = [parser rawSearch:body_search_str];
@@ -215,7 +222,7 @@ static AwfulPost *ParsePost(TFHpple *parser, NSString *forumID)
 
         post.postBody = post_body;
         
-        TFHppleElement *seen = [parser searchForSingle:@"//tr[@class='seen1']|//tr[@class='seen2']"];
+        TFHppleElement *seen = [parser searchForSingle:@"//tr[" HAS_CLASS(seen1) "]|//tr[" HAS_CLASS(seen2) "]"];
         post.seen = (seen != nil);
     }
     
@@ -245,7 +252,7 @@ static NSString *ParseUserAdHTML(TFHpple *parser)
 static BOOL ParseBookmarked(TFHpple *parser)
 {
     TFHppleElement *markButton = [parser searchForSingle:@"//img[@id='button_bookmark']"];
-    return [[markButton.attributes objectForKey:@"class"] isEqualToString:@"unbookmark"];
+    return [ClassesForElement(markButton) containsObject:@"unbookmark"];
 }
 
 @synthesize template = _template;
