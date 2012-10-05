@@ -25,6 +25,8 @@
 
 @implementation AwfulReplyViewController
 
+#pragma mark - View lifecycle
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -53,10 +55,23 @@
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
+#pragma mark - Editing a reply
+
 - (IBAction)tappedSegment:(id)sender
 {
     NSInteger index = self.segmentedControl.selectedSegmentIndex;
-    [self hitTextBarButtonItem:[self.segmentedControl titleForSegmentAtIndex:index]];
+    NSString *toInsert = [self.segmentedControl titleForSegmentAtIndex:index];
+    
+    NSMutableString *contents = [self.replyTextView.text mutableCopy];
+    NSRange selection = self.replyTextView.selectedRange;
+    if (selection.length == 0) {
+        [contents insertString:toInsert atIndex:selection.location];
+    } else {
+        [contents replaceCharactersInRange:selection withString:toInsert];
+    }
+    self.replyTextView.text = contents;
+    self.replyTextView.selectedRange = NSMakeRange(selection.location + 1, 0);
+    self.segmentedControl.selectedSegmentIndex = -1;
 }
 
 - (void)keyboardWillShow:(NSNotification *)note
@@ -82,51 +97,7 @@
     }
 }
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex != 1) return;
-
-    [self.networkOperation cancel];
-    
-    if (self.thread) {
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
-        hud.labelText = @"Replying…";
-        self.networkOperation = [[AwfulHTTPClient sharedClient] replyToThread:self.thread
-                                                                     withText:self.replyTextView.text
-                                                                 onCompletion:^
-        {
-            [MBProgressHUD hideHUDForView:self.view animated:NO];
-            [self.presentingViewController dismissModalViewControllerAnimated:YES];
-            [self.page refresh];
-        } onError:^(NSError *error)
-        {
-            [MBProgressHUD hideHUDForView:self.view animated:NO];
-            [ApplicationDelegate requestFailed:error];
-        }];
-    } else if (self.post) {
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
-        hud.labelText = @"Editing…";
-        self.networkOperation = [[AwfulHTTPClient sharedClient] editPost:self.post
-                                                            withContents:self.replyTextView.text
-                                                            onCompletion:^
-        {
-            [MBProgressHUD hideHUDForView:self.view animated:NO];
-            [self.presentingViewController dismissModalViewControllerAnimated:YES];
-            [self.page hardRefresh];
-        } onError:^(NSError *error)
-        {
-            [MBProgressHUD hideHUDForView:self.view animated:NO];
-            [ApplicationDelegate requestFailed:error];
-        }];
-    }
-    [self.replyTextView resignFirstResponder];
-}
-
-- (IBAction)hideReply
-{
-    [MBProgressHUD hideHUDForView:self.view animated:NO];
-    [self.presentingViewController dismissModalViewControllerAnimated:YES];
-}
+#pragma mark - Sending a reply (or not)
 
 - (IBAction)hitSend
 {
@@ -139,19 +110,50 @@
     [alert show];
 }
 
-- (void)hitTextBarButtonItem:(NSString *)str
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    NSMutableString *replyString = [[NSMutableString alloc] initWithString:[self.replyTextView text]];
+    if (buttonIndex != 1) return;
     
-    NSRange cursorPosition = [self.replyTextView selectedRange];
-    if(cursorPosition.length == 0) {
-        [replyString insertString:str atIndex:cursorPosition.location];
-    } else  {
-        [replyString replaceCharactersInRange:cursorPosition withString:str];
+    [self.networkOperation cancel];
+    
+    if (self.thread) {
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
+        hud.labelText = @"Replying…";
+        self.networkOperation = [[AwfulHTTPClient sharedClient] replyToThread:self.thread
+                                                                     withText:self.replyTextView.text
+                                                                 onCompletion:^
+                                 {
+                                     [MBProgressHUD hideHUDForView:self.view animated:NO];
+                                     [self.presentingViewController dismissModalViewControllerAnimated:YES];
+                                     [self.page refresh];
+                                 } onError:^(NSError *error)
+                                 {
+                                     [MBProgressHUD hideHUDForView:self.view animated:NO];
+                                     [ApplicationDelegate requestFailed:error];
+                                 }];
+    } else if (self.post) {
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
+        hud.labelText = @"Editing…";
+        self.networkOperation = [[AwfulHTTPClient sharedClient] editPost:self.post
+                                                            withContents:self.replyTextView.text
+                                                            onCompletion:^
+                                 {
+                                     [MBProgressHUD hideHUDForView:self.view animated:NO];
+                                     [self.presentingViewController dismissModalViewControllerAnimated:YES];
+                                     [self.page hardRefresh];
+                                 } onError:^(NSError *error)
+                                 {
+                                     [MBProgressHUD hideHUDForView:self.view animated:NO];
+                                     [ApplicationDelegate requestFailed:error];
+                                 }];
     }
-    self.replyTextView.text = replyString;
-    self.replyTextView.selectedRange = NSMakeRange(cursorPosition.location+1, cursorPosition.length);
-    self.segmentedControl.selectedSegmentIndex = -1;
+    [self.replyTextView resignFirstResponder];
+}
+
+- (IBAction)hideReply
+{
+    [MBProgressHUD hideHUDForView:self.view animated:NO];
+    [self.presentingViewController dismissModalViewControllerAnimated:YES];
 }
 
 @end
