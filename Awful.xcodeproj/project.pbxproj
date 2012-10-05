@@ -108,7 +108,7 @@
 		1CC780231612D989002AF958 /* AwfulHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780211612D989002AF958 /* AwfulHTTPClient.m */; };
 		1CC780321612D9DE002AF958 /* AwfulPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780281612D9DE002AF958 /* AwfulPage.m */; };
 		1CC780331612D9DE002AF958 /* AwfulPageDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7802A1612D9DE002AF958 /* AwfulPageDataController.m */; };
-		1CC780341612D9DE002AF958 /* AwfulPostBoxController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7802C1612D9DE002AF958 /* AwfulPostBoxController.m */; };
+		1CC780341612D9DE002AF958 /* AwfulReplyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7802C1612D9DE002AF958 /* AwfulReplyViewController.m */; };
 		1CC780351612D9DE002AF958 /* AwfulSpecificPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7802E1612D9DE002AF958 /* AwfulSpecificPageViewController.m */; };
 		1CC780361612D9DE002AF958 /* AwfulThreadTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780301612D9DE002AF958 /* AwfulThreadTitleView.m */; };
 		1CC7803B1612DA2B002AF958 /* AwfulWebViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780391612DA2B002AF958 /* AwfulWebViewDelegate.m */; };
@@ -624,8 +624,8 @@
 		1CC780281612D9DE002AF958 /* AwfulPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPage.m; sourceTree = "<group>"; };
 		1CC780291612D9DE002AF958 /* AwfulPageDataController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPageDataController.h; sourceTree = "<group>"; };
 		1CC7802A1612D9DE002AF958 /* AwfulPageDataController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPageDataController.m; sourceTree = "<group>"; };
-		1CC7802B1612D9DE002AF958 /* AwfulPostBoxController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostBoxController.h; sourceTree = "<group>"; };
-		1CC7802C1612D9DE002AF958 /* AwfulPostBoxController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostBoxController.m; sourceTree = "<group>"; };
+		1CC7802B1612D9DE002AF958 /* AwfulReplyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulReplyViewController.h; sourceTree = "<group>"; };
+		1CC7802C1612D9DE002AF958 /* AwfulReplyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulReplyViewController.m; sourceTree = "<group>"; };
 		1CC7802D1612D9DE002AF958 /* AwfulSpecificPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSpecificPageViewController.h; sourceTree = "<group>"; };
 		1CC7802E1612D9DE002AF958 /* AwfulSpecificPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSpecificPageViewController.m; sourceTree = "<group>"; };
 		1CC7802F1612D9DE002AF958 /* AwfulThreadTitleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTitleView.h; sourceTree = "<group>"; };
@@ -1271,8 +1271,8 @@
 				1CC780281612D9DE002AF958 /* AwfulPage.m */,
 				1CC780291612D9DE002AF958 /* AwfulPageDataController.h */,
 				1CC7802A1612D9DE002AF958 /* AwfulPageDataController.m */,
-				1CC7802B1612D9DE002AF958 /* AwfulPostBoxController.h */,
-				1CC7802C1612D9DE002AF958 /* AwfulPostBoxController.m */,
+				1CC7802B1612D9DE002AF958 /* AwfulReplyViewController.h */,
+				1CC7802C1612D9DE002AF958 /* AwfulReplyViewController.m */,
 				1CC7802D1612D9DE002AF958 /* AwfulSpecificPageViewController.h */,
 				1CC7802E1612D9DE002AF958 /* AwfulSpecificPageViewController.m */,
 				1CC7802F1612D9DE002AF958 /* AwfulThreadTitleView.h */,
@@ -2286,7 +2286,7 @@
 				1CC780231612D989002AF958 /* AwfulHTTPClient.m in Sources */,
 				1CC780321612D9DE002AF958 /* AwfulPage.m in Sources */,
 				1CC780331612D9DE002AF958 /* AwfulPageDataController.m in Sources */,
-				1CC780341612D9DE002AF958 /* AwfulPostBoxController.m in Sources */,
+				1CC780341612D9DE002AF958 /* AwfulReplyViewController.m in Sources */,
 				1CC780351612D9DE002AF958 /* AwfulSpecificPageViewController.m in Sources */,
 				1CC780361612D9DE002AF958 /* AwfulThreadTitleView.m in Sources */,
 				1CC7803B1612DA2B002AF958 /* AwfulWebViewDelegate.m in Sources */,

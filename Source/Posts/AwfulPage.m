@@ -10,7 +10,7 @@
 #import "AwfulAppDelegate.h"
 #import "AwfulPageDataController.h"
 #import "AwfulPostActions.h"
-#import "AwfulPostBoxController.h"
+#import "AwfulReplyViewController.h"
 #import "AwfulSpecificPageViewController.h"
 #import "AwfulThreadActions.h"
 #import "AwfulThreadTitleView.h"
@@ -163,13 +163,13 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([segue.identifier isEqualToString:@"ReplyBox"]) {
-        AwfulPostBoxController *postBox = (AwfulPostBoxController *)segue.destinationViewController;
+        AwfulReplyViewController *postBox = (AwfulReplyViewController *)segue.destinationViewController;
         postBox.thread = self.thread;
         postBox.page = self;
     } else if ([segue.identifier isEqualToString:@"EditPost"]) {
         if ([sender isMemberOfClass:[AwfulPostActions class]]) {
             AwfulPostActions *actions = (AwfulPostActions *)sender;
-            AwfulPostBoxController *editBox = (AwfulPostBoxController *)segue.destinationViewController;
+            AwfulReplyViewController *editBox = (AwfulReplyViewController *)segue.destinationViewController;
             editBox.post = actions.post;
             editBox.startingText = actions.postContents;
             editBox.page = self;
@@ -177,7 +177,7 @@
     } else if ([segue.identifier isEqualToString:@"QuoteBox"]) {
         if ([sender isMemberOfClass:[AwfulPostActions class]]) {
             AwfulPostActions *actions = (AwfulPostActions *)sender;
-            AwfulPostBoxController *quoteBox = (AwfulPostBoxController *)segue.destinationViewController;
+            AwfulReplyViewController *quoteBox = (AwfulReplyViewController *)segue.destinationViewController;
             quoteBox.thread = self.thread;
             quoteBox.startingText = actions.postContents;
             quoteBox.page = self;

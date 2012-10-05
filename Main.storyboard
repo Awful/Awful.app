@@ -157,10 +157,10 @@
             </objects>
             <point key="canvasLocation" x="2041" y="323"/>
         </scene>
-        <!--Awful Post Box Controller-->
+        <!--Awful Reply View Controller-->
         <scene sceneID="ImM-lh-86n">
             <objects>
-                <viewController id="gcK-tO-FtL" customClass="AwfulPostBoxController" sceneMemberID="viewController">
+                <viewController id="gcK-tO-FtL" customClass="AwfulReplyViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="HEz-6U-BQu">
                         <rect key="frame" x="0.0" y="20" width="320" height="460"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>

@@ -7,7 +7,7 @@
 //
 
 #import "AwfulThreadActions.h"
-#import "AwfulPostBoxController.h"
+#import "AwfulReplyViewController.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulVoteActions.h"
 #import <MobileCoreServices/UTCoreTypes.h>
