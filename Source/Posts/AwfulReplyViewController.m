@@ -61,16 +61,7 @@
 {
     NSInteger index = self.segmentedControl.selectedSegmentIndex;
     NSString *toInsert = [self.segmentedControl titleForSegmentAtIndex:index];
-    
-    NSMutableString *contents = [self.replyTextView.text mutableCopy];
-    NSRange selection = self.replyTextView.selectedRange;
-    if (selection.length == 0) {
-        [contents insertString:toInsert atIndex:selection.location];
-    } else {
-        [contents replaceCharactersInRange:selection withString:toInsert];
-    }
-    self.replyTextView.text = contents;
-    self.replyTextView.selectedRange = NSMakeRange(selection.location + 1, 0);
+    [self.replyTextView replaceRange:self.replyTextView.selectedTextRange withText:toInsert];
     self.segmentedControl.selectedSegmentIndex = -1;
 }
 
