@@ -213,7 +213,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
                                                          numberStyle:NSNumberFormatterSpellOutStyle];
         // TODO when we implement reloading state after termination, save images to Caches folder.
         self.images[key] = image;
-        NSString *placeholder = [NSString stringWithFormat:@"[img]chosen-image-%@[/img]", key];
+        NSString *placeholder = [NSString stringWithFormat:@"[img]awful://%@.png[/img]", key];
         [self.replyTextView replaceRange:self.replyTextView.selectedTextRange
                                 withText:placeholder];
     }
