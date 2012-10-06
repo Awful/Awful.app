@@ -12,6 +12,7 @@
 #import "AwfulAppDelegate.h"
 #import "MBProgressHUD.h"
 #import "ButtonSegmentedControl.h"
+#import "ImgurHTTPClient.h"
 
 @interface AwfulReplyViewController () <UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPopoverControllerDelegate>
 
@@ -306,6 +307,32 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     
     [self.networkOperation cancel];
     
+    if ([self.images count] == 0) {
+        [self completeReply:nil];
+        return;
+    }
+    
+    NSArray *imageKeys = [self.images allKeys];
+    NSArray *images = [self.images objectsForKeys:imageKeys notFoundMarker:[NSNull null]];
+    [[ImgurHTTPClient sharedClient] uploadImages:images andThen:^(NSError *error, NSArray *urls)
+    {
+        if (!error) {
+            [self completeReply:[NSDictionary dictionaryWithObjects:urls forKeys:imageKeys]];
+            return;
+        }
+        NSString *message = [NSString stringWithFormat:@"Uploading images to imgur didn't work: %@",
+                             [error localizedDescription]];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Image Uploading Failed"
+                                                        message:message
+                                                       delegate:nil
+                                              cancelButtonTitle:@"Fiddlesticks"
+                                              otherButtonTitles:nil];
+        [alert show];
+    }];
+}
+
+- (void)completeReply:(NSDictionary *)imageURLsForPlaceholders
+{
     if (self.thread) {
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
         hud.labelText = @"Replying…";
