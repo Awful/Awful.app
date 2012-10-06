@@ -217,8 +217,12 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
         [self.replyTextView replaceRange:self.replyTextView.selectedTextRange
                                 withText:placeholder];
     }
-    // See below re: popover.
-    [self dismissViewControllerAnimated:YES completion:nil];
+    if (self.pickerPopover) {
+        [self.pickerPopover dismissPopoverAnimated:YES];
+        self.pickerPopover = nil;
+    } else {
+        [picker dismissViewControllerAnimated:YES completion:nil];
+    }
     [self.replyTextView becomeFirstResponder];
 }
 
