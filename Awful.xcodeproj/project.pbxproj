@@ -68,6 +68,7 @@
 		1C6474CF1569989800C72657 /* _AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474BE1569989800C72657 /* _AwfulForum.m */; };
 		1C6474D01569989800C72657 /* _AwfulThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474C01569989800C72657 /* _AwfulThread.m */; };
 		1C83DB30161D4D1100E53CFA /* AwfulStringEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C83DB2F161D4D1100E53CFA /* AwfulStringEncoding.m */; };
+		1C83DB54161FF48600E53CFA /* ImgurHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */; };
 		1CAB36B11548F0FE00A4A362 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
 		1CC38B81160C017600C35A11 /* awful.js in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC515B497A800E5893B /* awful.js */; };
 		1CC38B82160C017600C35A11 /* jquery.js in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC815B497A800E5893B /* jquery.js */; };
@@ -538,6 +539,8 @@
 		1C6474C01569989800C72657 /* _AwfulThread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulThread.m; sourceTree = "<group>"; };
 		1C83DB2E161D4D1100E53CFA /* AwfulStringEncoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulStringEncoding.h; sourceTree = "<group>"; };
 		1C83DB2F161D4D1100E53CFA /* AwfulStringEncoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulStringEncoding.m; sourceTree = "<group>"; };
+		1C83DB52161FF48600E53CFA /* ImgurHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImgurHTTPClient.h; sourceTree = "<group>"; };
+		1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImgurHTTPClient.m; sourceTree = "<group>"; };
 		1CAB36B01548F0FE00A4A362 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		1CC38B88160C0A5D00C35A11 /* SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVPullToRefresh.h; sourceTree = "<group>"; };
 		1CC38B89160C0A5D00C35A11 /* SVPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVPullToRefresh.m; sourceTree = "<group>"; };
@@ -1169,6 +1172,7 @@
 			children = (
 				1190F6CC13BE4EA900B9D271 /* Actions */,
 				1CC7800E1612D8AE002AF958 /* Forum List */,
+				1C83DB50161FF45200E53CFA /* Imgur API */,
 				1190F71813BE4EA900B9D271 /* Login */,
 				1190F71C13BE4EA900B9D271 /* Main */,
 				1C6474A61569989800C72657 /* Models */,
@@ -1218,6 +1222,15 @@
 				1C6474C01569989800C72657 /* _AwfulThread.m */,
 			);
 			path = Generated;
+			sourceTree = "<group>";
+		};
+		1C83DB50161FF45200E53CFA /* Imgur API */ = {
+			isa = PBXGroup;
+			children = (
+				1C83DB52161FF48600E53CFA /* ImgurHTTPClient.h */,
+				1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */,
+			);
+			path = "Imgur API";
 			sourceTree = "<group>";
 		};
 		1CC38B84160C0A5D00C35A11 /* SVPullToRefresh */ = {
@@ -2301,6 +2314,7 @@
 				1C13FF67161BCCB6000ED2B1 /* AwfulThreadCell.m in Sources */,
 				1C13FF6A161BF733000ED2B1 /* AwfulBadgeView.m in Sources */,
 				1C83DB30161D4D1100E53CFA /* AwfulStringEncoding.m in Sources */,
+				1C83DB54161FF48600E53CFA /* ImgurHTTPClient.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
