@@ -426,6 +426,7 @@
 		8CCD568915B783FD00E5893B /* yp-gnugpl.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD536315B783FD00E5893B /* yp-gnugpl.png */; };
 		8CCD568A15B783FD00E5893B /* yp-snowcrash971.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD536415B783FD00E5893B /* yp-snowcrash971.png */; };
 		8CCD568B15B783FD00E5893B /* yp-tubes296.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD536515B783FD00E5893B /* yp-tubes296.png */; };
+		8CDBA0781621D641000EE760 /* postActions.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CDBA0771621D641000EE760 /* postActions.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -972,6 +973,7 @@
 		8CCD536315B783FD00E5893B /* yp-gnugpl.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yp-gnugpl.png"; sourceTree = "<group>"; };
 		8CCD536415B783FD00E5893B /* yp-snowcrash971.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yp-snowcrash971.png"; sourceTree = "<group>"; };
 		8CCD536515B783FD00E5893B /* yp-tubes296.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yp-tubes296.png"; sourceTree = "<group>"; };
+		8CDBA0771621D641000EE760 /* postActions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = postActions.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1499,6 +1501,7 @@
 		8CCD503B15B783FC00E5893B /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				8CDBA0771621D641000EE760 /* postActions.png */,
 				8CCD504215B783FC00E5893B /* action.png */,
 				8CCD504315B783FC00E5893B /* action@2x.png */,
 				8CCD504415B783FC00E5893B /* arrowleft.png */,
@@ -2180,6 +2183,7 @@
 				8C8EBE6F161D30ED00ED1EFF /* fyad-framed.png in Resources */,
 				8C8EBE70161D30ED00ED1EFF /* fyad-flannel.png in Resources */,
 				8C8EBE71161D30ED00ED1EFF /* fyad-atheist.png in Resources */,
+				8CDBA0781621D641000EE760 /* postActions.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
