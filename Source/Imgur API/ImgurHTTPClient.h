@@ -17,7 +17,8 @@
 // images   - an array of UIImage instances to upload.
 // callback - a block that takes two arguments and returns nothing:
 //              error - an NSError instance on failure, or nil if successful.
-//              urls  - an array of NSURL instances pointing to the uploaded images if successful.
+//              urls  - an array of NSURL instances pointing to the uploaded images if successful,
+//                      or nil on failure.
 - (void)uploadImages:(NSArray *)images andThen:(void(^)(NSError *error, NSArray *urls))callback;
 
 // Possible reasons for NO may include network reachability or API rate limiting.
