@@ -29,11 +29,25 @@
     self.segmentedControl.action = @selector(tappedSegment:);
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillShow:)
-                                                 name:UIKeyboardWillShowNotification
+                                             selector:@selector(keyboardDidShow:)
+                                                 name:UIKeyboardDidShowNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification
                                                object:nil];
     self.replyTextView.text = self.startingText;
     [self.replyTextView becomeFirstResponder];
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIKeyboardDidShowNotification
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIKeyboardWillHideNotification
+                                                  object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -64,23 +78,22 @@
     [self hitTextBarButtonItem:str];
 }
 
--(void)keyboardWillShow:(NSNotification *)notification
+- (void)keyboardDidShow:(NSNotification *)note
 {
-    double duration = [[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
-    CGRect keyboardRect = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    CGRect keyboardBounds = [self.view convertRect:keyboardRect fromView:nil];
-    
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        // using form sheet the keyboard doesn't overlap
-        float height = self.view.bounds.size.height;
-        float replyBoxHeight = (height - 44 - (height - keyboardBounds.origin.y));
-        replyBoxHeight = MAX(350, replyBoxHeight); // someone bugged out the height one time so I'm hacking in a minimum
-        self.replyTextView.frame = CGRectMake(5, 44, self.replyTextView.bounds.size.width, replyBoxHeight);
-    } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        [UIView animateWithDuration:duration animations:^{
-            self.replyTextView.frame = CGRectMake(5, 44, self.replyTextView.bounds.size.width, self.view.bounds.size.height-44-keyboardBounds.size.height);
-        }];
-    }
+    CGRect keyboardFrame = [note.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGRect relativeKeyboardFrame = [self.replyTextView convertRect:keyboardFrame fromView:nil];
+    CGRect overlap = CGRectIntersection(relativeKeyboardFrame, self.replyTextView.bounds);
+    // The 2 isn't strictly necessary, I just like a little cushion between the cursor and keyboard.
+    UIEdgeInsets insets = (UIEdgeInsets){ .bottom = overlap.size.height + 2 };
+    self.replyTextView.contentInset = insets;
+    self.replyTextView.scrollIndicatorInsets = insets;
+    [self.replyTextView scrollRangeToVisible:self.replyTextView.selectedRange];
+}
+
+- (void)keyboardWillHide:(NSNotification *)note
+{
+    self.replyTextView.contentInset = UIEdgeInsetsZero;
+    self.replyTextView.scrollIndicatorInsets = UIEdgeInsetsZero;
 }
 
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
