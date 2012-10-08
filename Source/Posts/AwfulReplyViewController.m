@@ -214,8 +214,12 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
                                                          numberStyle:NSNumberFormatterSpellOutStyle];
         // TODO when we implement reloading state after termination, save images to Caches folder.
         self.images[key] = image;
+        
+        // "Keep all images smaller than **800 pixels horizontal and 600 pixels vertical.**"
+        // http://www.somethingawful.com/d/forum-rules/forum-rules.php?page=2
+        BOOL shouldThumbnail = image.size.width > 800 || image.size.height > 600;
         [self.replyTextView replaceRange:self.replyTextView.selectedTextRange
-                                withText:ImageKeyToPlaceholder(key)];
+                                withText:ImageKeyToPlaceholder(key, shouldThumbnail)];
     }
     if (self.pickerPopover) {
         [self.pickerPopover dismissPopoverAnimated:YES];
@@ -226,9 +230,10 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     [self.replyTextView becomeFirstResponder];
 }
 
-static NSString *ImageKeyToPlaceholder(NSString *key)
+static NSString *ImageKeyToPlaceholder(NSString *key, BOOL thumbnail)
 {
-    return [NSString stringWithFormat:@"[img]awful://%@.png[/img]", key];
+    NSString *t = thumbnail ? @"t" : @"";
+    return [NSString stringWithFormat:@"[%@img]awful://%@.png[/%@img]", t, key, t];
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
