@@ -337,6 +337,7 @@ withImagePlaceholderResults:placeholderResults
             replacementURLs:nil];
         return;
     }
+    [SVProgressHUD showWithStatus:@"Uploading images…" maskType:SVProgressHUDMaskTypeClear];
     
     NSArray *images = [self.images objectsForKeys:imageKeys notFoundMarker:[NSNull null]];
     [[ImgurHTTPClient sharedClient] uploadImages:images andThen:^(NSError *error, NSArray *urls)
@@ -347,6 +348,7 @@ withImagePlaceholderResults:placeholderResults
                 replacementURLs:[NSDictionary dictionaryWithObjects:urls forKeys:imageKeys]];
             return;
         }
+        [SVProgressHUD dismiss];
         NSString *message = [NSString stringWithFormat:@"Uploading images to imgur didn't work: %@",
                              [error localizedDescription]];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Image Uploading Failed"
