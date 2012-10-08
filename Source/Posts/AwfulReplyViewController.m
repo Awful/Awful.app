@@ -311,17 +311,40 @@ static NSString *ImageKeyToPlaceholder(NSString *key)
     
     [self.networkOperation cancel];
     
-    if ([self.images count] == 0) {
-        [self completeReply:nil];
+    NSString *reply = self.replyTextView.text;
+    NSMutableArray *imageKeys = [NSMutableArray new];
+    NSString *pattern = @"\\[(t?img)\\](awful://(.+)\\.png)\\[/\\1\\]";
+    NSError *error;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
+                                                                           options:0
+                                                                             error:&error];
+    if (!regex) {
+        NSLog(@"error parsing image URL placeholder regex: %@", error);
+        return;
+    }
+    NSArray *placeholderResults = [regex matchesInString:reply
+                                                 options:0
+                                                   range:NSMakeRange(0, [reply length])];
+    for (NSTextCheckingResult *result in placeholderResults) {
+        NSRange rangeOfKey = [result rangeAtIndex:3];
+        if (rangeOfKey.location == NSNotFound) continue;
+        [imageKeys addObject:[reply substringWithRange:rangeOfKey]];
+    }
+    
+    if ([imageKeys count] == 0) {
+        [self completeReply:reply
+withImagePlaceholderResults:placeholderResults
+            replacementURLs:nil];
         return;
     }
     
-    NSArray *imageKeys = [self.images allKeys];
     NSArray *images = [self.images objectsForKeys:imageKeys notFoundMarker:[NSNull null]];
     [[ImgurHTTPClient sharedClient] uploadImages:images andThen:^(NSError *error, NSArray *urls)
     {
         if (!error) {
-            [self completeReply:[NSDictionary dictionaryWithObjects:urls forKeys:imageKeys]];
+            [self completeReply:reply
+    withImagePlaceholderResults:placeholderResults
+                replacementURLs:[NSDictionary dictionaryWithObjects:urls forKeys:imageKeys]];
             return;
         }
         NSString *message = [NSString stringWithFormat:@"Uploading images to imgur didn't work: %@",
@@ -335,36 +358,25 @@ static NSString *ImageKeyToPlaceholder(NSString *key)
     }];
 }
 
-- (void)completeReply:(NSDictionary *)imageURLsForPlaceholders
+- (void)completeReply:(NSString *)reply
+    withImagePlaceholderResults:(NSArray *)placeholderResults
+    replacementURLs:(NSDictionary *)replacementURLs
 {
-    NSString *reply = self.replyTextView.text;
-    if (imageURLsForPlaceholders) {
-        NSString *pattern = @"\\[(t?img)\\](awful://(.+)\\.png)\\[/\\1\\]";
-        NSError *error;
-        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
-                                                                               options:0
-                                                                                 error:&error];
-        if (!regex) {
-            NSLog(@"error parsing image URL placeholder regex: %@", error);
-        }
+    if ([placeholderResults count] > 0) {
         NSMutableString *replacedReply = [reply mutableCopy];
-        __block NSInteger offset = 0;
-        [regex enumerateMatchesInString:self.replyTextView.text
-                                options:0
-                                  range:NSMakeRange(0, [reply length])
-                             usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags _, BOOL *__)
-        {
+        NSInteger offset = 0;
+        for (NSTextCheckingResult *result in placeholderResults) {
             NSRange rangeOfKey = [result rangeAtIndex:3];
             if (rangeOfKey.location == NSNotFound) return;
             rangeOfKey.location += offset;
-            NSURL *url = imageURLsForPlaceholders[[reply substringWithRange:rangeOfKey]];
+            NSURL *url = replacementURLs[[reply substringWithRange:rangeOfKey]];
             if (!url) return;
             NSUInteger priorLength = [replacedReply length];
             NSRange rangeOfURL = [result rangeAtIndex:2];
             rangeOfURL.location += offset;
             [replacedReply replaceCharactersInRange:rangeOfURL withString:[url absoluteString]];
             offset += ([replacedReply length] - priorLength);
-        }];
+        }
         reply = replacedReply;
     }
     
