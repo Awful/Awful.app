@@ -105,7 +105,11 @@ body header.older-posts {
 /* All devices - Post header */
 
 article header button.post-action {
-    background-image: url("postActions.png");
+    background-image: url("postActionsDark.png");
+    background-size: 80%;
+}
+article.seen1 header button.post-action, article.seen2 header button.post-action {
+    background-image: url("postActionsDarkRead.png");
     background-size: 80%;
 }
 
