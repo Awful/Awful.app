@@ -7,11 +7,8 @@
 //
 
 #import "AwfulPageDataController.h"
-#import "TFHpple.h"
-#import "TFHppleElement.h"
-#import "XPathQuery.h"
+#import "AwfulParsing.h"
 #import "AwfulPageTemplate.h"
-#import "AwfulStringEncoding.h"
 #import "AwfulForum.h"
 
 @interface AwfulPageDataController ()
@@ -47,11 +44,6 @@
     }
     return self;
 }
-
-// XPath boilerplate to handle HTML class attribute.
-//
-//   NSString *xpath = @"//div[" HAS_CLASS(breadcrumbs) "]";
-#define HAS_CLASS(name) "contains(concat(' ', normalize-space(@class), ' '), ' " #name "')"
 
 static NSString *ParseThreadTitle(TFHpple *parser)
 {

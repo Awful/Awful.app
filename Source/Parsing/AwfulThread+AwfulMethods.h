@@ -21,7 +21,6 @@
 +(NSMutableArray *)parseBookmarkedThreadsWithData : (NSData *)data;
 
 +(void)populateAwfulThread : (AwfulThread *)thread fromBase : (TFHpple *)thread_base;
-+(NSString *)buildThreadParseString;
 
 -(NSURL *)firstIconURL;
 -(NSURL *)secondIconURL;

@@ -7,11 +7,11 @@
 //
 
 #import "AwfulForum.h"
-@class TFHppleElement;
 
 @interface AwfulForum (AwfulMethods)
 
 + (NSArray *)parseForums:(NSData *)data;
+
 + (void)updateSubforums:(NSArray*)rows inForum:(AwfulForum*)forum;
 
 @end

@@ -7,9 +7,7 @@
 //
 
 #import "AwfulForum+AwfulMethods.h"
-#import "TFHpple.h"
-#import "TFHppleElement.h"
-#import "XPathQuery.h"
+#import "AwfulParsing.h"
 
 @implementation AwfulForum (AwfulMethods)
 
@@ -172,7 +170,7 @@
 
     for (NSString* row in rows) {
         TFHpple *rowBase = [[TFHpple alloc] initWithHTMLData:[row dataUsingEncoding:NSUTF8StringEncoding]];
-        TFHppleElement* a = [rowBase searchForSingle:@"//td[@class='title']//a"];
+        TFHppleElement* a = [rowBase searchForSingle:@"//td[" HAS_CLASS(title) "]//a"];
         AwfulForum *subforum = [existingDict objectForKey:[self forumIDFromLinkElement:a]];
         subforum.name = [a content];
         subforum.parentForum = forum;
