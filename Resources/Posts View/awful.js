@@ -23,6 +23,9 @@ function scrollToID(postid) {
     var obj = document.getElementById(postid);
     document.getElementById(postid).scrollIntoView();
 }
+function scrollToBottom() {
+    window.scrollTo(0, document.body.scrollHeight);
+}
 
 function addAvatarClass() {
     $('article').each(function(){

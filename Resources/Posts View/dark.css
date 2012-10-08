@@ -24,7 +24,13 @@
 
 body {
     color: white;
-    background-color: black;
+}
+
+article {
+    margin: 10px 5px;
+    border-radius: 5px;
+    box-shadow: none;
+    padding: 5px;
 }
 
 a {
@@ -42,20 +48,81 @@ body header.older-posts {
     background-color: #003d67;
 }
 
+#headerActions {
+    background: #17181c;
+    height: 44px;
+    border-bottom: 1px solid #c7c7c7;
+    box-shadow: none;
+}
+#headerActions li {
+    display: block;
+    float:left;
+    font-weight: bold;
+    font-size: 16px;
+    color: #a3a3a3;
+    width: 50%;
+    height: 44px;
+    text-align: left;
+    padding-top: 12px;
+    border-left: 1px solid #000;
+    border-right: 1px solid #374e60;
+    border-bottom: 1px solid #374e60;
+    text-shadow: 0 1px #000000;}
+#headerActions.unreadPosts li {
+    width: 33%;
+    font-size: 12px;
+    text-align: center;
+    text-shadow: 0 1px #fff;
+    padding-top: 8px;
+}
+#headerActions.unreadPosts li:nth-of-type(2) {
+    width: 34%;
+}
+#headerActions.unreadPosts li:nth-of-type(2) {
+}
+
+.scrollToBottom {
+    background: 8px 12px no-repeat url("downArrowDark.png");
+    padding-left: 25px;
+}
+.unreadPosts .scrollToBottom {
+    background: 8px 12px no-repeat url("downArrowDark.png");
+    padding-left: 20px;
+}
+.older-posts {
+    background: 8px 12px no-repeat url("loadDark.png");
+    padding-left: 30px;
+}
+.parentForum {
+    background: 8px 12px no-repeat url("forumsListGreyDark.png");
+    padding-left: 35px;
+}
+.unreadPosts .parentForum {
+    background: 8px 12px no-repeat url("forumsListGreyDark.png");
+    padding-left: 28px;
+}
+
 /* All devices - Post header */
 
 article header button.post-action {
-    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEQAAAA8CAYAAADfYhweAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAABBJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M2ICgxMy4wIDIwMTIwMzA1Lm0uNDE1IDIwMTIvMDMvMDU6MjE6MDA6MDApICAoV2luZG93cykiIHhtcDpDcmVhdGVEYXRlPSIyMDEyLTAzLTIxVDExOjIzOjM3LTA0OjAwIiB4bXA6TW9kaWZ5RGF0ZT0iMjAxMi0wNC0yOVQyMjo0NDowMisyMDowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAxMi0wNC0yOVQyMjo0NDowMisyMDowMCIgZGM6Zm9ybWF0PSJpbWFnZS9wbmciIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6NTgyRTRERDM5MjZFMTFFMTlDMjM5RTA5OUJCNUUwOEIiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NTgyRTRERDQ5MjZFMTFFMTlD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");
+    background-image: url("postActions.png");
+    background-size: 80%;
 }
 
 /* iPhone - Post header */
 
 body.iphone article header {
-    background-color: black;
+    width: 100%;
+    height: 44px;
+    border-bottom: 1px solid #4e4e4e;
+    position: relative;
+}
+body.iphone article.seen1 header, body.iphone article.seen2 header {
+    border-bottom: 1px solid #536879;
 }
 
-body.iphone article.op header {
-    background-color: #0c506d;
+body.iphone article.op .poster-name {
+    color: #199ed7;
 }
 
 /* iPad - Post header */
@@ -80,7 +147,7 @@ article.altcolor1 {
 }
 
 article.altcolor2 {
-    background-color: #292929;
+    background-color: #393939;
 }
 
 article.seen1 {
@@ -88,7 +155,7 @@ article.seen1 {
 }
 
 article.seen2 {
-    background-color: #141f30;
+    background-color: #101926;
 }
 
 article section {
@@ -142,6 +209,5 @@ body.ipad article section .bbc-block pre {
 /* iPhone - Back matter */
 
 body div.pages-left {
-    background-color: black;
-    color: #fff;
+    color: #000;
 }
