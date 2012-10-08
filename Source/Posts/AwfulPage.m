@@ -17,9 +17,9 @@
 #import "AwfulVoteActions.h"
 #import "AwfulWebViewDelegate.h"
 #import "ButtonSegmentedControl.h"
-#import "MBProgressHUD.h"
 #import "MWPhoto.h"
 #import "MWPhotoBrowser.h"
+#import "SVProgressHUD.h"
 #import "OtherWebController.h"
 
 @interface AwfulPage () <AwfulWebViewDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate>
@@ -205,7 +205,7 @@
 {
     // I guess the error callback doesn't necessarily get called when a network operation is 
     // cancelled, so clear the HUD when we cancel the network operation.
-    [MBProgressHUD hideHUDForView:self.view animated:NO];
+    [SVProgressHUD dismiss];
     [self.networkOperation cancel];
     
     [self swapToStopButton];
@@ -233,7 +233,7 @@
                                               cancelButtonTitle:@"Ok"
                                               otherButtonTitles:nil];
         [alert show];
-        [MBProgressHUD hideHUDForView:self.view animated:NO];
+        [SVProgressHUD dismiss];
     }];
 }
 
@@ -262,7 +262,7 @@
 {
     [self.networkOperation cancel];
     [self swapToRefreshButton];
-    [MBProgressHUD hideHUDForView:self.view animated:NO];
+    [SVProgressHUD dismiss];
     [self.webView stopLoading];
 }
 
@@ -604,20 +604,7 @@
 - (void)showCompletionMessage:(NSString *)message
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
-        hud.labelText = message;
-        hud.customView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"37x-Checkmark"]];
-        hud.mode = MBProgressHUDModeCustomView;
-        [UIView animateWithDuration:0.5
-                              delay:2.0
-                            options:UIViewAnimationOptionCurveEaseIn
-                         animations:^
-        {
-            hud.alpha = 0.0;
-        } completion:^(BOOL finished)
-        {
-            [MBProgressHUD hideHUDForView:self.view animated:NO];
-        }];
+        [SVProgressHUD showSuccessWithStatus:message];
     });
 }
 

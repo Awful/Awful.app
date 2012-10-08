@@ -32,8 +32,6 @@
 		1190F73813BE4EA900B9D271 /* AwfulVoteActions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F6D613BE4EA900B9D271 /* AwfulVoteActions.m */; };
 		1190F75C13BE4EA900B9D271 /* AwfulLoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F71A13BE4EA900B9D271 /* AwfulLoginController.m */; };
 		1190F75E13BE4EA900B9D271 /* AwfulAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F71E13BE4EA900B9D271 /* AwfulAppDelegate.m */; };
-		1190F7E313BE4ECB00B9D271 /* 37x-Checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 1190F7A913BE4ECB00B9D271 /* 37x-Checkmark.png */; };
-		1190F7E413BE4ECB00B9D271 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7AB13BE4ECB00B9D271 /* MBProgressHUD.m */; settings = {COMPILER_FLAGS = "-w"; }; };
 		1190F7E613BE4ECB00B9D271 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7B113BE4ECB00B9D271 /* NSString+HTML.m */; };
 		1190F7E713BE4ECB00B9D271 /* MWPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7B413BE4ECB00B9D271 /* MWPhoto.m */; };
 		1190F7E813BE4ECB00B9D271 /* MWPhotoBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7B613BE4ECB00B9D271 /* MWPhotoBrowser.m */; settings = {COMPILER_FLAGS = "-w"; }; };
@@ -52,6 +50,8 @@
 		11FDA290151017490014FDCD /* MainiPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 11FDA28E151017490014FDCD /* MainiPad.storyboard */; };
 		11FDA296151018600014FDCD /* AwfulSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA295151018600014FDCD /* AwfulSettingsViewController.m */; };
 		11FDA299151018740014FDCD /* OtherWebController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA298151018740014FDCD /* OtherWebController.m */; };
+		1C05ED4F162299DE00FE567F /* SVProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C05ED48162299DE00FE567F /* SVProgressHUD.m */; };
+		1C05ED5A16229CDD00FE567F /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1C05ED5916229CDD00FE567F /* SVProgressHUD.bundle */; };
 		1C13FF64161948DE000ED2B1 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1C13FF62161948DE000ED2B1 /* Model.xcdatamodeld */; };
 		1C13FF67161BCCB6000ED2B1 /* AwfulThreadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C13FF66161BCCB6000ED2B1 /* AwfulThreadCell.m */; };
 		1C13FF6A161BF733000ED2B1 /* AwfulBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C13FF69161BF732000ED2B1 /* AwfulBadgeView.m */; };
@@ -476,9 +476,6 @@
 		1190F71A13BE4EA900B9D271 /* AwfulLoginController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLoginController.m; sourceTree = "<group>"; };
 		1190F71D13BE4EA900B9D271 /* AwfulAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAppDelegate.h; sourceTree = "<group>"; };
 		1190F71E13BE4EA900B9D271 /* AwfulAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAppDelegate.m; sourceTree = "<group>"; };
-		1190F7A913BE4ECB00B9D271 /* 37x-Checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "37x-Checkmark.png"; sourceTree = "<group>"; };
-		1190F7AA13BE4ECB00B9D271 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
-		1190F7AB13BE4ECB00B9D271 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		1190F7B013BE4ECB00B9D271 /* NSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+HTML.h"; sourceTree = "<group>"; };
 		1190F7B113BE4ECB00B9D271 /* NSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+HTML.m"; sourceTree = "<group>"; };
 		1190F7B313BE4ECB00B9D271 /* MWPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWPhoto.h; sourceTree = "<group>"; };
@@ -512,6 +509,9 @@
 		11FDA295151018600014FDCD /* AwfulSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettingsViewController.m; sourceTree = "<group>"; };
 		11FDA297151018740014FDCD /* OtherWebController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OtherWebController.h; sourceTree = "<group>"; };
 		11FDA298151018740014FDCD /* OtherWebController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OtherWebController.m; sourceTree = "<group>"; };
+		1C05ED47162299DE00FE567F /* SVProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVProgressHUD.h; sourceTree = "<group>"; };
+		1C05ED48162299DE00FE567F /* SVProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVProgressHUD.m; sourceTree = "<group>"; };
+		1C05ED5916229CDD00FE567F /* SVProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = SVProgressHUD.bundle; path = Vendor/SVProgressHUD/SVProgressHUD.bundle; sourceTree = SOURCE_ROOT; };
 		1C13FF63161948DE000ED2B1 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		1C13FF65161BCCB5000ED2B1 /* AwfulThreadCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadCell.h; sourceTree = "<group>"; };
 		1C13FF66161BCCB6000ED2B1 /* AwfulThreadCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadCell.m; sourceTree = "<group>"; };
@@ -1109,25 +1109,15 @@
 				110FABC415745C1E00ECF535 /* AFNetworking */,
 				1CDF79FE1537C157008EFAE4 /* GRMustache */,
 				1190F7BF13BE4ECB00B9D271 /* Hpple */,
-				1190F7A813BE4ECB00B9D271 /* MBProgressHUD */,
 				1190F7B213BE4ECB00B9D271 /* MWPhotoBrowser */,
 				1C83DB551620113F00E53CFA /* NSData+Base64.h */,
 				1C83DB561620113F00E53CFA /* NSData+Base64.m */,
 				1190F7B013BE4ECB00B9D271 /* NSString+HTML.h */,
 				1190F7B113BE4ECB00B9D271 /* NSString+HTML.m */,
+				1C05ED40162299DE00FE567F /* SVProgressHUD */,
 				1CC38B84160C0A5D00C35A11 /* SVPullToRefresh */,
 			);
 			path = Vendor;
-			sourceTree = "<group>";
-		};
-		1190F7A813BE4ECB00B9D271 /* MBProgressHUD */ = {
-			isa = PBXGroup;
-			children = (
-				1190F7A913BE4ECB00B9D271 /* 37x-Checkmark.png */,
-				1190F7AA13BE4ECB00B9D271 /* MBProgressHUD.h */,
-				1190F7AB13BE4ECB00B9D271 /* MBProgressHUD.m */,
-			);
-			path = MBProgressHUD;
 			sourceTree = "<group>";
 		};
 		1190F7B213BE4ECB00B9D271 /* MWPhotoBrowser */ = {
@@ -1170,6 +1160,15 @@
 				1D6058910D05DD3D006BFB54 /* Awful.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		1C05ED40162299DE00FE567F /* SVProgressHUD */ = {
+			isa = PBXGroup;
+			children = (
+				1C05ED47162299DE00FE567F /* SVProgressHUD.h */,
+				1C05ED48162299DE00FE567F /* SVProgressHUD.m */,
+			);
+			path = SVProgressHUD;
 			sourceTree = "<group>";
 		};
 		1C3857A115675AFE0078AF95 /* Source */ = {
@@ -1243,6 +1242,7 @@
 			children = (
 				1CC38B88160C0A5D00C35A11 /* SVPullToRefresh.h */,
 				1CC38B89160C0A5D00C35A11 /* SVPullToRefresh.m */,
+				1C05ED5916229CDD00FE567F /* SVProgressHUD.bundle */,
 			);
 			path = SVPullToRefresh;
 			sourceTree = "<group>";
@@ -1890,7 +1890,6 @@
 				1CC38B82160C017600C35A11 /* jquery.js in Resources */,
 				1CC7803C1612DA2B002AF958 /* ObjCBridge.js in Resources */,
 				1CC38B83160C017600C35A11 /* salr.js in Resources */,
-				1190F7E313BE4ECB00B9D271 /* 37x-Checkmark.png in Resources */,
 				1190F7ED13BE4ECB00B9D271 /* LICENSE.txt in Resources */,
 				11D7CB9814EA0CED000DA96A /* Main.storyboard in Resources */,
 				11FDA290151017490014FDCD /* MainiPad.storyboard in Resources */,
@@ -2198,6 +2197,7 @@
 				8C8EBE6F161D30ED00ED1EFF /* fyad-framed.png in Resources */,
 				8C8EBE70161D30ED00ED1EFF /* fyad-flannel.png in Resources */,
 				8C8EBE71161D30ED00ED1EFF /* fyad-atheist.png in Resources */,
+				1C05ED5A16229CDD00FE567F /* SVProgressHUD.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2231,7 +2231,6 @@
 				1190F73813BE4EA900B9D271 /* AwfulVoteActions.m in Sources */,
 				1190F75C13BE4EA900B9D271 /* AwfulLoginController.m in Sources */,
 				1190F75E13BE4EA900B9D271 /* AwfulAppDelegate.m in Sources */,
-				1190F7E413BE4ECB00B9D271 /* MBProgressHUD.m in Sources */,
 				1190F7E613BE4ECB00B9D271 /* NSString+HTML.m in Sources */,
 				1190F7E713BE4ECB00B9D271 /* MWPhoto.m in Sources */,
 				1190F7E813BE4ECB00B9D271 /* MWPhotoBrowser.m in Sources */,
@@ -2321,6 +2320,7 @@
 				1C83DB30161D4D1100E53CFA /* AwfulStringEncoding.m in Sources */,
 				1C83DB54161FF48600E53CFA /* ImgurHTTPClient.m in Sources */,
 				1C83DB571620113F00E53CFA /* NSData+Base64.m in Sources */,
+				1C05ED4F162299DE00FE567F /* SVProgressHUD.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

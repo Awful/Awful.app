@@ -10,9 +10,9 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulPage.h"
 #import "AwfulAppDelegate.h"
-#import "MBProgressHUD.h"
 #import "ButtonSegmentedControl.h"
 #import "ImgurHTTPClient.h"
+#import "SVProgressHUD.h"
 
 @interface AwfulReplyViewController () <UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPopoverControllerDelegate>
 
@@ -362,6 +362,9 @@ withImagePlaceholderResults:placeholderResults
     withImagePlaceholderResults:(NSArray *)placeholderResults
     replacementURLs:(NSDictionary *)replacementURLs
 {
+    if (self.thread) [SVProgressHUD showWithStatus:@"Replying…" maskType:SVProgressHUDMaskTypeClear];
+    else if (self.post) [SVProgressHUD showWithStatus:@"Editing…" maskType:SVProgressHUDMaskTypeClear];
+    
     if ([placeholderResults count] > 0) {
         NSMutableString *replacedReply = [reply mutableCopy];
         NSInteger offset = 0;
@@ -381,33 +384,29 @@ withImagePlaceholderResults:placeholderResults
     }
     
     if (self.thread) {
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
-        hud.labelText = @"Replying…";
         self.networkOperation = [[AwfulHTTPClient sharedClient] replyToThread:self.thread
                                                                      withText:reply
                                                                  onCompletion:^
                                  {
-                                     [MBProgressHUD hideHUDForView:self.view animated:NO];
+                                     [SVProgressHUD dismiss];
                                      [self.presentingViewController dismissModalViewControllerAnimated:YES];
                                      [self.page refresh];
                                  } onError:^(NSError *error)
                                  {
-                                     [MBProgressHUD hideHUDForView:self.view animated:NO];
+                                     [SVProgressHUD dismiss];
                                      [ApplicationDelegate requestFailed:error];
                                  }];
     } else if (self.post) {
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
-        hud.labelText = @"Editing…";
         self.networkOperation = [[AwfulHTTPClient sharedClient] editPost:self.post
                                                             withContents:reply
                                                             onCompletion:^
                                  {
-                                     [MBProgressHUD hideHUDForView:self.view animated:NO];
+                                     [SVProgressHUD dismiss];
                                      [self.presentingViewController dismissModalViewControllerAnimated:YES];
                                      [self.page hardRefresh];
                                  } onError:^(NSError *error)
                                  {
-                                     [MBProgressHUD hideHUDForView:self.view animated:NO];
+                                     [SVProgressHUD dismiss];
                                      [ApplicationDelegate requestFailed:error];
                                  }];
     }
@@ -416,7 +415,7 @@ withImagePlaceholderResults:placeholderResults
 
 - (IBAction)hideReply
 {
-    [MBProgressHUD hideHUDForView:self.view animated:NO];
+    [SVProgressHUD dismiss];
     [self.presentingViewController dismissModalViewControllerAnimated:YES];
 }
 

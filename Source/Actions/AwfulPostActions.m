@@ -83,7 +83,7 @@ typedef enum {
             [[AwfulHTTPClient sharedClient] processMarkSeenLink:self.post.markSeenLink onCompletion:^(void){
                 if([self.viewController isKindOfClass:[AwfulPage class]]) {
                     AwfulPage *page = (AwfulPage *)self.viewController;
-                    [page showCompletionMessage:@"Marked up to there."];
+                    [page showCompletionMessage:@"Marked up to there"];
                 }
             } onError:^(NSError *error){
                 [ApplicationDelegate requestFailed:error];
