@@ -214,9 +214,8 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
                                                          numberStyle:NSNumberFormatterSpellOutStyle];
         // TODO when we implement reloading state after termination, save images to Caches folder.
         self.images[key] = image;
-        NSString *placeholder = [NSString stringWithFormat:@"[img]awful://%@.png[/img]", key];
         [self.replyTextView replaceRange:self.replyTextView.selectedTextRange
-                                withText:placeholder];
+                                withText:ImageKeyToPlaceholder(key)];
     }
     if (self.pickerPopover) {
         [self.pickerPopover dismissPopoverAnimated:YES];
@@ -225,6 +224,11 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
         [picker dismissViewControllerAnimated:YES completion:nil];
     }
     [self.replyTextView becomeFirstResponder];
+}
+
+static NSString *ImageKeyToPlaceholder(NSString *key)
+{
+    return [NSString stringWithFormat:@"[img]awful://%@.png[/img]", key];
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
@@ -333,11 +337,42 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 
 - (void)completeReply:(NSDictionary *)imageURLsForPlaceholders
 {
+    NSString *reply = self.replyTextView.text;
+    if (imageURLsForPlaceholders) {
+        NSString *pattern = @"\\[(t?img)\\](awful://(.+)\\.png)\\[/\\1\\]";
+        NSError *error;
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
+                                                                               options:0
+                                                                                 error:&error];
+        if (!regex) {
+            NSLog(@"error parsing image URL placeholder regex: %@", error);
+        }
+        NSMutableString *replacedReply = [reply mutableCopy];
+        __block NSInteger offset = 0;
+        [regex enumerateMatchesInString:self.replyTextView.text
+                                options:0
+                                  range:NSMakeRange(0, [reply length])
+                             usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags _, BOOL *__)
+        {
+            NSRange rangeOfKey = [result rangeAtIndex:3];
+            if (rangeOfKey.location == NSNotFound) return;
+            rangeOfKey.location += offset;
+            NSURL *url = imageURLsForPlaceholders[[reply substringWithRange:rangeOfKey]];
+            if (!url) return;
+            NSUInteger priorLength = [replacedReply length];
+            NSRange rangeOfURL = [result rangeAtIndex:2];
+            rangeOfURL.location += offset;
+            [replacedReply replaceCharactersInRange:rangeOfURL withString:[url absoluteString]];
+            offset += ([replacedReply length] - priorLength);
+        }];
+        reply = replacedReply;
+    }
+    
     if (self.thread) {
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
         hud.labelText = @"Replying…";
         self.networkOperation = [[AwfulHTTPClient sharedClient] replyToThread:self.thread
-                                                                     withText:self.replyTextView.text
+                                                                     withText:reply
                                                                  onCompletion:^
                                  {
                                      [MBProgressHUD hideHUDForView:self.view animated:NO];
@@ -352,7 +387,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
         hud.labelText = @"Editing…";
         self.networkOperation = [[AwfulHTTPClient sharedClient] editPost:self.post
-                                                            withContents:self.replyTextView.text
+                                                            withContents:reply
                                                             onCompletion:^
                                  {
                                      [MBProgressHUD hideHUDForView:self.view animated:NO];
