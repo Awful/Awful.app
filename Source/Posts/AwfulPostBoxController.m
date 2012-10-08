@@ -37,7 +37,6 @@
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
     self.replyTextView.text = self.startingText;
-    [self.replyTextView becomeFirstResponder];
 }
 
 - (void)dealloc
@@ -54,6 +53,7 @@
 {
     [super viewWillAppear:animated];
     self.sendButton.title = self.post ? @"Save" : @"Reply";
+    [self.replyTextView becomeFirstResponder];
 }
 
 - (void)viewDidUnload
