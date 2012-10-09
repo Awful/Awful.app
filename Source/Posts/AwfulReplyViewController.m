@@ -10,7 +10,6 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulPage.h"
 #import "AwfulAppDelegate.h"
-#import "ButtonSegmentedControl.h"
 #import "ImgurHTTPClient.h"
 #import "SVProgressHUD.h"
 
@@ -24,7 +23,6 @@ typedef enum {
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *sendButton;
 @property (weak, nonatomic) IBOutlet UITextView *replyTextView;
-@property (weak, nonatomic) IBOutlet ButtonSegmentedControl *segmentedControl;
 
 @property (weak, nonatomic) NSOperation *networkOperation;
 
@@ -63,7 +61,6 @@ typedef enum {
 {
     [super viewDidLoad];
     
-    self.segmentedControl.action = @selector(tappedSegment:);
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardDidShow:)
                                                  name:UIKeyboardDidShowNotification
@@ -409,14 +406,6 @@ static NSString *ImageKeyToPlaceholder(NSString *key, BOOL thumbnail)
 }
 
 #pragma mark - Editing a reply
-
-- (IBAction)tappedSegment:(id)sender
-{
-    NSInteger index = self.segmentedControl.selectedSegmentIndex;
-    NSString *toInsert = [self.segmentedControl titleForSegmentAtIndex:index];
-    [self.replyTextView replaceRange:self.replyTextView.selectedTextRange withText:toInsert];
-    self.segmentedControl.selectedSegmentIndex = -1;
-}
 
 - (void)keyboardDidShow:(NSNotification *)note
 {
