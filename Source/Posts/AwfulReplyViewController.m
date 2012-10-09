@@ -14,6 +14,12 @@
 #import "ImgurHTTPClient.h"
 #import "SVProgressHUD.h"
 
+typedef enum {
+    TopLevelMenu = 0,
+    ImageSourceSubmenu,
+    FormattingSubmenu
+} Menu;
+
 @interface AwfulReplyViewController () <UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPopoverControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *sendButton;
@@ -22,7 +28,7 @@
 
 @property (weak, nonatomic) NSOperation *networkOperation;
 
-@property (getter=isShowingImageSourceSubmenu, nonatomic) BOOL showingImageSourceSubmenu;
+@property (nonatomic) Menu currentMenu;
 
 @property (nonatomic) id observerToken;
 
@@ -70,7 +76,7 @@
     [super viewWillAppear:animated];
     
     self.sendButton.title = self.post ? @"Save" : @"Reply";
-    [self configureImageMenuItem];
+    [self configureTopLevelMenuItems];
     [self.replyTextView becomeFirstResponder];
 }
 
@@ -86,17 +92,19 @@
 
 - (BOOL)canBecomeFirstResponder
 {
-    return self.showingImageSourceSubmenu;
+    return self.currentMenu != TopLevelMenu;
 }
 
 #pragma mark - Menu items
 
-- (void)configureImageMenuItem
+- (void)configureTopLevelMenuItems
 {
     [UIMenuController sharedMenuController].menuItems = @[
-        [[UIMenuItem alloc] initWithTitle:@"[img]" action:@selector(insertImage:)]
+        [[UIMenuItem alloc] initWithTitle:@"[url]" action:@selector(linkifySelection:)],
+        [[UIMenuItem alloc] initWithTitle:@"[img]" action:@selector(insertImage:)],
+        [[UIMenuItem alloc] initWithTitle:@"Format" action:@selector(showFormattingSubmenu:)]
     ];
-    self.showingImageSourceSubmenu = NO;
+    self.currentMenu = TopLevelMenu;
 }
 
 - (void)configureImageSourceSubmenuItems
@@ -105,24 +113,77 @@
         [[UIMenuItem alloc] initWithTitle:@"From Camera" action:@selector(insertImageFromCamera:)],
         [[UIMenuItem alloc] initWithTitle:@"From Library" action:@selector(insertImageFromLibrary:)]
     ];
-    self.showingImageSourceSubmenu = YES;
+    self.currentMenu = ImageSourceSubmenu;
+}
+
+- (void)configureFormattingSubmenuItems
+{
+    [UIMenuController sharedMenuController].menuItems = @[
+        [[UIMenuItem alloc] initWithTitle:@"[b]" action:@selector(emboldenSelection:)],
+        [[UIMenuItem alloc] initWithTitle:@"[s]" action:@selector(strikeSelection:)],
+        [[UIMenuItem alloc] initWithTitle:@"[u]" action:@selector(underlineSelection:)],
+        [[UIMenuItem alloc] initWithTitle:@"[i]" action:@selector(italicizeSelection:)],
+        [[UIMenuItem alloc] initWithTitle:@"[spoiler]" action:@selector(spoilerSelection:)],
+        [[UIMenuItem alloc] initWithTitle:@"[fixed]" action:@selector(monospaceSelection:)],
+        [[UIMenuItem alloc] initWithTitle:@"[quote]" action:@selector(quoteSelection:)],
+        [[UIMenuItem alloc] initWithTitle:@"[code]" action:@selector(encodeSelection:)],
+    ];
+    self.currentMenu = FormattingSubmenu;
 }
 
 - (BOOL)canPerformAction:(SEL)action withSender:(id)sender
 {
+    // URL item
+    if (action == @selector(linkifySelection:)) {
+        return self.currentMenu == TopLevelMenu;
+    }
+    
+    // Image item and submenu
     if (action == @selector(insertImage:)) {
-        if (self.showingImageSourceSubmenu) return NO;
+        if (self.currentMenu != TopLevelMenu) return NO;
         return [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]
             || [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
     }
     
     if (action == @selector(insertImageFromCamera:) || action == @selector(insertImageFromLibrary:)) {
-        return self.showingImageSourceSubmenu;
+        return self.currentMenu == ImageSourceSubmenu;
     }
     
-    if (self.showingImageSourceSubmenu) return NO;
+    // Formatting item and submenu
+    if (action == @selector(showFormattingSubmenu:)) {
+        return self.currentMenu == TopLevelMenu;
+    }
+    
+    if (action == @selector(emboldenSelection:) || action == @selector(strikeSelection:) ||
+        action == @selector(underlineSelection:) || action == @selector(italicizeSelection:) ||
+        action == @selector(spoilerSelection:) || action == @selector(monospaceSelection:) ||
+        action == @selector(quoteSelection:) || action == @selector(encodeSelection:)) {
+        return self.currentMenu == FormattingSubmenu;
+    }
+    
+    if (self.currentMenu != TopLevelMenu) return NO;
     
     return [super canPerformAction:action withSender:sender];
+}
+
+- (void)linkifySelection:(id)sender
+{
+    NSError *error;
+    NSDataDetector *linkDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink error:&error];
+    if (!linkDetector) {
+        NSLog(@"error creating link data detector: %@", linkDetector);
+        return;
+    }
+    NSString *selection = [self.replyTextView.text substringWithRange:self.replyTextView.selectedRange];
+    NSRange everything = NSMakeRange(0, [selection length]);
+    NSArray *matches = [linkDetector matchesInString:selection
+                                             options:0
+                                               range:everything];
+    if ([matches count] == 1 && NSEqualRanges([matches[0] range], everything)) {
+        [self wrapSelectionInTag:@"[url]"];
+    } else {
+        [self wrapSelectionInTag:@"[url=]"];
+    }
 }
 
 - (void)insertImage:(id)sender
@@ -138,17 +199,29 @@
         return;
     }
     
-    // At this point the menu has been dismissed, but we need it back where it was.
+    [self configureImageSourceSubmenuItems];
+    [self showSubmenuThenResetToTopLevelMenuOnHide];
+}
+
+- (CGRect)selectedTextRect
+{
+    UITextRange *selection = self.replyTextView.selectedTextRange;
+    CGRect startRect = [self.replyTextView caretRectForPosition:selection.start];
+    CGRect endRect = [self.replyTextView caretRectForPosition:selection.end];
+    return CGRectUnion(startRect, endRect);
+}
+
+- (void)showSubmenuThenResetToTopLevelMenuOnHide
+{
     [[UIMenuController sharedMenuController] setTargetRect:[self selectedTextRect]
                                                     inView:self.replyTextView];
     
-    [self configureImageSourceSubmenuItems];
-    
-    // Jump out in front of the responder chain to hide the Paste menu item.
+    // Jump out in front of the responder chain to hide items outside of our submenu.
     [self becomeFirstResponder];
     [[UIMenuController sharedMenuController] setMenuVisible:YES animated:YES];
+    [self.replyTextView becomeFirstResponder];
     
-    // Need to reset the menu items once an image source is chosen, but also if the menu disappears
+    // Need to reset the menu items after a submenu item is chosen, but also if the menu disappears
     // for any other reason.
     __weak NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
     self.observerToken = [center addObserverForName:UIMenuControllerDidHideMenuNotification
@@ -158,16 +231,8 @@
     {
         [center removeObserver:self.observerToken];
         self.observerToken = nil;
-        [self configureImageMenuItem];
+        [self configureTopLevelMenuItems];
     }];
-}
-
-- (CGRect)selectedTextRect
-{
-    UITextRange *selection = self.replyTextView.selectedTextRange;
-    CGRect startRect = [self.replyTextView caretRectForPosition:selection.start];
-    CGRect endRect = [self.replyTextView caretRectForPosition:selection.end];
-    return CGRectUnion(startRect, endRect);
 }
 
 - (void)insertImageFromCamera:(id)sender
@@ -205,6 +270,76 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
     picker.mediaTypes = @[ (NSString *)kUTTypeImage ];
     picker.allowsEditing = YES;
     return picker;
+}
+
+- (void)showFormattingSubmenu:(id)sender
+{
+    [self configureFormattingSubmenuItems];
+    [self showSubmenuThenResetToTopLevelMenuOnHide];
+}
+
+- (void)emboldenSelection:(id)sender
+{
+    [self wrapSelectionInTag:@"[b]"];
+}
+
+- (void)strikeSelection:(id)sender
+{
+    [self wrapSelectionInTag:@"[s]"];
+}
+
+- (void)underlineSelection:(id)sender
+{
+    [self wrapSelectionInTag:@"[u]"];
+}
+
+- (void)italicizeSelection:(id)sender
+{
+    [self wrapSelectionInTag:@"[i]"];
+}
+
+- (void)spoilerSelection:(id)sender
+{
+    [self wrapSelectionInTag:@"[spoiler]"];
+}
+
+- (void)monospaceSelection:(id)sender
+{
+    [self wrapSelectionInTag:@"[fixed]"];
+}
+
+- (void)quoteSelection:(id)sender
+{
+    [self wrapSelectionInTag:@"[quote=]\n"];
+}
+
+- (void)encodeSelection:(id)sender
+{
+    [self wrapSelectionInTag:@"[code]\n"];
+}
+
+- (void)wrapSelectionInTag:(NSString *)tag
+{
+    NSMutableString *closingTag = [tag mutableCopy];
+    [closingTag insertString:@"/" atIndex:1];
+    [closingTag replaceOccurrencesOfString:@"="
+                                withString:@""
+                                   options:0
+                                     range:NSMakeRange(0, [closingTag length])];
+    if ([tag hasSuffix:@"\n"]) {
+        [closingTag insertString:@"\n" atIndex:0];
+    }
+    NSRange range = self.replyTextView.selectedRange;
+    NSString *selection = [self.replyTextView.text substringWithRange:range];
+    NSString *tagged = [NSString stringWithFormat:@"%@%@%@", tag, selection, closingTag];
+    [self.replyTextView replaceRange:self.replyTextView.selectedTextRange withText:tagged];
+    NSRange equalsSign = [tag rangeOfString:@"="];
+    if (equalsSign.location == NSNotFound && ![tag hasSuffix:@"\n"]) {
+        self.replyTextView.selectedRange = NSMakeRange(range.location + [tag length], range.length);
+    } else {
+        self.replyTextView.selectedRange = NSMakeRange(range.location + equalsSign.location + 1, 0);
+    }
+    [self.replyTextView becomeFirstResponder];
 }
 
 #pragma mark - Image picker delegate
