@@ -1,27 +1,23 @@
 Awful
 =====
 
-Awful is an iOS app for browsing the [Something Awful Forums][forums] on your iPhone or iPad. Some of its story can be found in its [thread][] or its [other thread][thread2].
-
-[forums]: http://forums.somethingawful.com
-[thread]: http://forums.somethingawful.com/showthread.php?threadid=3381510
-[thread2]: http://forums.somethingawful.com/showthread.php?threadid=3483760
+Awful is an iPhone and iPad app for browsing the [Something Awful Forums][forums]. Its story can be found in [its thread][thread] (and among [older][old thread] [threads][older thread]).
 
 An unofficial app
 -----------------
 
-This app is unofficial and is not endorsed by Lowtax. Use at your own risk.
+This app is unofficial and is not endorsed by Something Awful.
 
 Build
 -----
 
-1. Grab code: `git clone https://github.com/regularberry/Awful.git`
-2. Open Xcode project and build away: `open Awful.xcodeproj`
+1. Grab code: `git clone https://github.com/AwfulDevs/Awful.git`
+2. Open Xcode project and build away: `cd Awful && Awful.xcodeproj`
 
 Contribute
 ----------
 
-We welcome any feedback, issues, or pull requests. Thanks!
+You can help! Head over to [Awful's thread][thread] and tell us about any issues you're having. Send in some lovingly crafted [thread tags][]. Or check out the code and send pull requests. If you're curious about anything at all, stop by the [thread][] and say hi.
 
 License
 -------
@@ -31,4 +27,19 @@ License
 Credit
 ------
 
-Awful is developed by [Sean Berry](https://github.com/regularberry), [enigmatic](https://github.com/enigmatic), [pokeyman](https://github.com/nolanw), The Dave, and Diabolik900.
+Awful development is led by [pokeyman][], was started by [OHIO][], and gets or got a ton of help from [Diabolik900][], [enigma105][], [hardstyle][], and [The Dave][].
+
+
+[forums]: http://forums.somethingawful.com
+[thread]: http://forums.somethingawful.com/showthread.php?threadid=3510131
+[old thread]: http://forums.somethingawful.com/showthread.php?threadid=3381510
+[older thread]: http://forums.somethingawful.com/showthread.php?threadid=3483760
+
+[tags]: https://github.com/AwfulDevs/Awful/wiki/Thread-tags
+
+[Diabolik900]: http://forums.somethingawful.com/member.php?action=getinfo&userid=113215
+[enigma105]: http://forums.somethingawful.com/member.php?action=getinfo&userid=51258
+[hardstyle]: http://forums.somethingawful.com/member.php?action=getinfo&userid=51070
+[OHIO]: http://forums.somethingawful.com/member.php?action=getinfo&userid=82915
+[pokeyman]: http://forums.somethingawful.com/member.php?action=getinfo&userid=106125
+[The Dave]: http://forums.somethingawful.com/member.php?action=getinfo&userid=41741
