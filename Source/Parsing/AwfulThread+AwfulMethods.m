@@ -207,6 +207,12 @@
     if(icon != nil) {
         NSString *icon_str = [icon objectForKey:@"src"];
         thread.threadIconImageURL = [NSURL URLWithString:icon_str];
+    } else {
+        // Film Dump rating.
+        TFHppleElement *rating = [thread_base searchForSingle:@"//td[" HAS_CLASS(rating) "]/img[contains(@src, '/rate/reviews')]"];
+        if (rating) {
+            thread.threadIconImageURL = [NSURL URLWithString:[rating objectForKey:@"src"]];
+        }
     }
     
     TFHppleElement *icon2 = [thread_base searchForSingle:@"//td[" HAS_CLASS(icon2) "]/img"];

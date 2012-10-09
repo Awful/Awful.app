@@ -27,6 +27,7 @@
         self.detailTextLabel.font = [UIFont systemFontOfSize:11];
         self.imageView.layer.borderColor = [UIColor blackColor].CGColor;
         self.imageView.layer.borderWidth = 1;
+        self.imageView.contentMode = UIViewContentModeScaleAspectFit;
         
         UIImageView *stickyImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sticky.png"]];
         [self.contentView addSubview:stickyImageView];

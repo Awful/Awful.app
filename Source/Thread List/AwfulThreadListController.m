@@ -254,7 +254,12 @@ typedef enum {
     // TODO handle tags we don't ship
     cell.threadTagImageView.image = [UIImage imageNamed:[thread.firstIconURL lastPathComponent]];
     [cell setSticky:thread.stickyIndexValue != NSNotFound];
-    [cell setRating:[thread.threadRating floatValue]];
+    // Hardcode Film Dump to never show ratings; its thread tags are the ratings.
+    if ([thread.forum.forumID isEqualToString:@"133"]) {
+        [cell setRating:0];
+    } else {
+        [cell setRating:[thread.threadRating floatValue]];
+    }
     cell.textLabel.text = thread.title;
     NSInteger numberOfPages = thread.totalRepliesValue / 40 + 1;
     NSString *pagesFormatted = [NSNumberFormatter localizedStringFromNumber:@(numberOfPages)
