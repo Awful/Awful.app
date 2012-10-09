@@ -7,8 +7,8 @@
 //
 
 #import "MWPhotoBrowser.h"
+#import "SVProgressHUD.h"
 #import "ZoomingScrollView.h"
-#import "MBProgressHUD.h"
 #import "AwfulAppDelegate.h"
 
 #define PADDING 10
@@ -129,7 +129,7 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^(void) {
         
-        [MBProgressHUD hideHUDForView:self.view animated:NO];
+        [SVProgressHUD dismiss];
         
         if(error != nil) {
             [ApplicationDelegate requestFailed:error];
@@ -141,8 +141,7 @@
 {
     if([photos count] > 0) {
         MWPhoto *photo = [photos objectAtIndex:0];
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        hud.labelText = @"Saving Image...";
+        [SVProgressHUD showWithStatus:@"Saving Image…" maskType:SVProgressHUDMaskTypeClear];
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
             UIImageWriteToSavedPhotosAlbum(photo.photoImage, self, @selector(image:didFinishSavingWithError:contextInfo:), NULL);

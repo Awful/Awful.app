@@ -8,7 +8,6 @@
 
 #import "MWPhoto.h"
 #import "UIImage+Decompress.h"
-#import "MBProgressHUD.h"
 
 // Private
 @interface MWPhoto ()
