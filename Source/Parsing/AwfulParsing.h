@@ -18,16 +18,33 @@
 #define HAS_CLASS(name) "contains(concat(' ', normalize-space(@class), ' '), ' " #name "')"
 
 
-@interface ParsedUserInfo : NSObject
+@interface ParsedInfo : NSObject
 
-- (id)initWithHTMLData:(NSData *)html;
+// Designated initializer.
+- (id)initWithHTMLData:(NSData *)htmlData;
 
 @property (readonly, copy, nonatomic) NSData *htmlData;
+
+@end
+
+
+@interface ParsedUserInfo : ParsedInfo
 
 @property (readonly, copy, nonatomic) NSString *userID;
 
 @property (readonly, copy, nonatomic) NSString *username;
 
 - (void)applyToObject:(id)object;
+
+@end
+
+
+@interface ParsedReplyFormInfo : ParsedInfo
+
+@property (readonly, copy, nonatomic) NSString *formkey;
+
+@property (readonly, copy, nonatomic) NSString *formCookie;
+
+@property (readonly, copy, nonatomic) NSString *bookmark;
 
 @end

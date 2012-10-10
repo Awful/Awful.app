@@ -8,9 +8,26 @@
 
 #import "AwfulParsing.h"
 
-@interface ParsedUserInfo ()
+@interface ParsedInfo ()
 
 @property (copy, nonatomic) NSData *htmlData;
+
+@end
+
+@implementation ParsedInfo
+
+- (id)initWithHTMLData:(NSData *)htmlData
+{
+    self = [super init];
+    if (self) {
+        _htmlData = [htmlData copy];
+    }
+    return self;
+}
+
+@end
+
+@interface ParsedUserInfo ()
 
 @property (copy, nonatomic) NSString *userID;
 
@@ -19,15 +36,6 @@
 @end
 
 @implementation ParsedUserInfo
-
-- (id)initWithHTMLData:(NSData *)html
-{
-    self = [super init];
-    if (self) {
-        _htmlData = [html copy];
-    }
-    return self;
-}
 
 - (void)parseHTMLData
 {
@@ -89,6 +97,49 @@
         if (![value isEqual:[NSNull null]])
             [object setValue:value forKey:key];
     }
+}
+
+@end
+
+
+@interface ParsedReplyFormInfo ()
+
+@property (copy, nonatomic) NSString *formkey;
+
+@property (copy, nonatomic) NSString *formCookie;
+
+@property (copy, nonatomic) NSString *bookmark;
+
+@end
+
+
+@implementation ParsedReplyFormInfo
+
+- (void)parseHTMLData
+{
+    NSString *htmlString = StringFromSomethingAwfulData(self.htmlData);
+    NSData *utf8Data = [htmlString dataUsingEncoding:NSUTF8StringEncoding];
+    TFHpple *pageData = [[TFHpple alloc] initWithHTMLData:utf8Data];
+    TFHppleElement *formkey = [pageData searchForSingle:@"//input[@name='formkey']"];
+    self.formkey = [formkey objectForKey:@"value"];
+    TFHppleElement *formCookie = [pageData searchForSingle:@"//input[@name='form_cookie']"];
+    self.formCookie = [formCookie objectForKey:@"value"];
+    TFHppleElement *bookmark = [pageData searchForSingle:@"//input[@name='bookmark' and @checked='checked']"];
+    if (bookmark) {
+        self.bookmark = [bookmark objectForKey:@"value"];
+    }
+}
+
+- (NSString *)formkey
+{
+    if (!_formkey) [self parseHTMLData];
+    return _formkey;
+}
+
+- (NSString *)formCookie
+{
+    if (!_formCookie) [self parseHTMLData];
+    return _formCookie;
 }
 
 @end

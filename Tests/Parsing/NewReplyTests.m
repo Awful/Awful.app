@@ -7,6 +7,7 @@
 //
 
 #import "ParsingTests.h"
+#import "AwfulParsing.h"
 
 @interface NewReplyTests : ParsingTests
 
@@ -18,6 +19,14 @@
 + (NSString *)fixtureFilename
 {
     return @"newreply.html";
+}
+
+- (void)testFormValues
+{
+    ParsedReplyFormInfo *info = [[ParsedReplyFormInfo alloc] initWithHTMLData:self.fixture];
+    STAssertEqualObjects(info.formkey, @"0253d85a945b60daa0165f718df82b8a", nil);
+    STAssertEqualObjects(info.formCookie, @"ea89ff590b8c", nil);
+    STAssertEqualObjects(info.bookmark, @"yes", nil);
 }
 
 @end

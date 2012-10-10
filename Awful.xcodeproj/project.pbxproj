@@ -107,6 +107,10 @@
 		1CBDB5F61625BACE0004BDF4 /* AwfulParsing.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5F51625BACE0004BDF4 /* AwfulParsing.m */; };
 		1CBDB5F71625BACE0004BDF4 /* AwfulParsing.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5F51625BACE0004BDF4 /* AwfulParsing.m */; };
 		1CBDB5F81625BB630004BDF4 /* AwfulStringEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C83DB2F161D4D1100E53CFA /* AwfulStringEncoding.m */; };
+		1CBDB5F91625E7320004BDF4 /* TFHpple.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7C213BE4ECB00B9D271 /* TFHpple.m */; };
+		1CBDB5FA1625E7320004BDF4 /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7C413BE4ECB00B9D271 /* TFHppleElement.m */; };
+		1CBDB5FB1625E7320004BDF4 /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7C613BE4ECB00B9D271 /* XPathQuery.m */; };
+		1CBDB5FC1625E7440004BDF4 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
 		1CC38B81160C017600C35A11 /* awful.js in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC515B497A800E5893B /* awful.js */; };
 		1CC38B82160C017600C35A11 /* jquery.js in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC815B497A800E5893B /* jquery.js */; };
 		1CC38B83160C017600C35A11 /* salr.js in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CCC15B497A800E5893B /* salr.js */; };
@@ -1059,6 +1063,7 @@
 				1CBDB5BF16259C6C0004BDF4 /* UIKit.framework in Frameworks */,
 				1CBDB5C016259C6C0004BDF4 /* Foundation.framework in Frameworks */,
 				1CBDB5E41625A9FD0004BDF4 /* CoreData.framework in Frameworks */,
+				1CBDB5FC1625E7440004BDF4 /* libxml2.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2441,6 +2446,9 @@
 				1CBDB5E81625AA240004BDF4 /* AwfulDataStack.m in Sources */,
 				1CBDB5F71625BACE0004BDF4 /* AwfulParsing.m in Sources */,
 				1CBDB5F81625BB630004BDF4 /* AwfulStringEncoding.m in Sources */,
+				1CBDB5F91625E7320004BDF4 /* TFHpple.m in Sources */,
+				1CBDB5FA1625E7320004BDF4 /* TFHppleElement.m in Sources */,
+				1CBDB5FB1625E7320004BDF4 /* XPathQuery.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

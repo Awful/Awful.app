@@ -209,61 +209,53 @@ typedef enum BookmarkAction {
     return (NSOperation *)op;
 }
 
--(NSOperation *)replyToThread : (AwfulThread *)thread withText : (NSString *)text onCompletion : (CompletionBlock)completionBlock onError : (AwfulErrorBlock)errorBlock
+- (NSOperation *)replyToThread:(AwfulThread *)thread
+                      withText:(NSString *)text
+                  onCompletion:(CompletionBlock)completionBlock
+                       onError:(AwfulErrorBlock)errorBlock
 {
-    NSString *path = [NSString stringWithFormat:@"newreply.php?s=&action=newreply&threadid=%@", thread.threadID];
+    NSString *path = [NSString stringWithFormat:@"newreply.php?s=&action=newreply&threadid=%@",
+                      thread.threadID];
     NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
-    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
-       success:^(AFHTTPRequestOperation *operation, id response) {
-           NSData *data = (NSData *)response;
-           NSString *rawString = [[NSString alloc] initWithData:data encoding:self.stringEncoding];
-           NSData *converted = [rawString dataUsingEncoding:NSUTF8StringEncoding];
-           TFHpple *pageData = [[TFHpple alloc] initWithHTMLData:converted];
-           
-           TFHppleElement *formkeyElement = [pageData searchForSingle:@"//input[@name='formkey']"];
-           TFHppleElement *formcookieElement = [pageData searchForSingle:@"//input[@name='form_cookie']"];
-           
-           NSString *formkey = [formkeyElement objectForKey:@"value"];
-           NSString *formcookie = [formcookieElement objectForKey:@"value"];
-           TFHppleElement *bookmarkElement = [pageData searchForSingle:@"//input[@name='bookmark' and @checked='checked']"];
-           
-           NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-           
-           if(bookmarkElement != nil) {
-               NSString *bookmark = [bookmarkElement objectForKey:@"value"];
-               [dict setValue:bookmark forKey:@"bookmark"];
-           }
-           
-           [dict setValue:thread.threadID forKey:@"threadid"];
-           [dict setValue:formkey forKey:@"formkey"];
-           [dict setValue:formcookie forKey:@"form_cookie"];
-           [dict setValue:@"postreply" forKey:@"action"];
-           [dict setValue:text forKey:@"message"];
-           [dict setValue:@"yes" forKey:@"parseurl"];
-           [dict setValue:@"Submit Reply" forKey:@"submit"];
-           
-           NSURLRequest *postRequest = [self requestWithMethod:@"POST" path:@"newreply.php" parameters:dict];
-           AFHTTPRequestOperation *finalOp = [self HTTPRequestOperationWithRequest:postRequest 
-                success:^(AFHTTPRequestOperation *operation, id response) {
-                    if (completionBlock) completionBlock();
-                } 
-                failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                    if (errorBlock) errorBlock(error);
-                }];
-           
-           [self enqueueHTTPRequestOperation:finalOp];
-       } 
-       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-           errorBlock(error);
-       }];
-    
+    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
+                                                               success:^(id _, id response)
+    {
+        ParsedReplyFormInfo *formInfo = [[ParsedReplyFormInfo alloc] initWithHTMLData:(NSData *)response];
+        NSMutableDictionary *parameters = [@{
+            @"threadid" : thread.threadID,
+            @"formkey" : formInfo.formkey,
+            @"form_cookie" : formInfo.formCookie,
+            @"action" : @"postreply",
+            @"message" : text,
+            @"parseurl" : @"yes",
+            @"submit" : @"Submit Reply",
+        } mutableCopy];
+        if (formInfo.bookmark) {
+            parameters[@"bookmark"] = formInfo.bookmark;
+        }
+        
+        NSURLRequest *postRequest = [self requestWithMethod:@"POST"
+                                                       path:@"newreply.php"
+                                                 parameters:parameters];
+        [self enqueueHTTPRequestOperation:[self HTTPRequestOperationWithRequest:postRequest
+                                                                        success:^(id _, id __)
+        {
+            if (completionBlock) completionBlock();
+        } failure:^(id _, NSError *error)
+        {
+            if (errorBlock) errorBlock(error);
+        }]];
+    } failure:^(id _, NSError *error)
+    {
+        errorBlock(error);
+    }];
     [self enqueueHTTPRequestOperation:op];
-    return (NSOperation *)op;
+    return op;
 }
 
 typedef enum PostContentType {
-EditPostContent,
-QuotePostContent,
+    EditPostContent,
+    QuotePostContent,
 } PostContentType;
 
 -(NSOperation *)contentsForPost : (AwfulPost *)post postType : (PostContentType)postType onCompletion:(PostContentResponseBlock)postContentResponseBlock onError:(AwfulErrorBlock)errorBlock
