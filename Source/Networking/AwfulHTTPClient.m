@@ -17,6 +17,7 @@
 #import "AFNetworkActivityIndicatorManager.h"
 #import "AFHTTPRequestOperation.h"
 #import "AwfulStringEncoding.h"
+#import "AwfulParsing.h"
 
 @implementation AwfulHTTPClient
 
@@ -125,65 +126,34 @@
     return (NSOperation *)op;
 }
 
--(NSOperation *)userInfoRequestOnCompletion : (UserResponseBlock)userResponseBlock onError : (AwfulErrorBlock)errorBlock
+- (NSOperation *)userInfoRequestOnCompletion:(UserResponseBlock)userResponseBlock
+                                     onError:(AwfulErrorBlock)errorBlock
 {
     NSString *path = @"member.php?action=editprofile";
     NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
-       success:^(AFHTTPRequestOperation *operation, id response) {
-           AwfulUser *user = AwfulSettings.settings.currentUser;
-           
-           if(user == nil) {
-               errorBlock(nil);
-               return;
-           }
-           
-           NSString *html_str = StringFromSomethingAwfulData((NSData *)response);
-           if(html_str == nil) {
-               // attempt to avoid some crashes
-               errorBlock(nil);
-               return;
-           }
-           
-           NSError *regex_error = nil;
-           NSRegularExpression *userid_regex = [NSRegularExpression regularExpressionWithPattern:@"userid=(\\d+)" options:NSRegularExpressionCaseInsensitive error:&regex_error];
-           
-           if(regex_error != nil) {
-               NSLog(@"%@", [regex_error localizedDescription]);
-           }
-           
-           NSTextCheckingResult *userid_result = [userid_regex firstMatchInString:html_str options:0 range:NSMakeRange(0, [html_str length])];
-           NSRange userid_range = [userid_result rangeAtIndex:1];
-           if(userid_range.location != NSNotFound) {
-               NSString *user_id = [html_str substringWithRange:userid_range];
-               int user_id_int = [user_id intValue];
-               if(user_id_int != 0) {
-                   [user setUserID:user_id];
-               }
-           }
-           
-           NSRegularExpression *username_regex = [NSRegularExpression regularExpressionWithPattern:@"Edit Profile - (.*?)<" options:NSRegularExpressionCaseInsensitive error:&regex_error];
-           
-           if(regex_error != nil) {
-               NSLog(@"%@", [regex_error localizedDescription]);
-           }
-           
-           NSTextCheckingResult *username_result = [username_regex firstMatchInString:html_str options:0 range:NSMakeRange(0, [html_str length])];
-           NSRange username_range = [username_result rangeAtIndex:1];
-           if(username_range.location != NSNotFound) {
-               NSString *username = [html_str substringWithRange:username_range];
-               username = [username stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-               [user setUserName:username];
-           }
-           
-           [[AwfulDataStack sharedDataStack] save];
-           userResponseBlock(user);
-       } 
-       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-           errorBlock(error);
-       }];
+                                                               success:^(id _, id response)
+    {
+        AwfulUser *user = AwfulSettings.settings.currentUser;
+        if (!user) {
+            errorBlock(nil);
+            return;
+        }
+        ParsedUserInfo *parsed = [[ParsedUserInfo alloc] initWithHTMLData:(NSData *)response];
+        if (parsed.userID) {
+            user.userID = parsed.userID;
+        }
+        if (parsed.username) {
+            user.username = parsed.username;
+        }
+        AwfulSettings.settings.currentUser = user;
+        userResponseBlock(user);
+    } failure:^(AFHTTPRequestOperation *_, NSError *error)
+    {
+        errorBlock(error);
+    }];
     [self enqueueHTTPRequestOperation:op];
-    return (NSOperation *)op;
+    return op;
 }
 
 typedef enum BookmarkAction {
