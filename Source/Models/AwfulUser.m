@@ -19,7 +19,7 @@
 
 - (NSDictionary *)dictionaryRepresentation
 {
-    return [self dictionaryWithValuesForKeys:@[@"userName", @"userID"]];
+    return [self dictionaryWithValuesForKeys:@[ @"username", @"userID" ]];
 }
 
 @end
