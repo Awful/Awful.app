@@ -87,6 +87,16 @@
 		1CBDB5971624B26B0004BDF4 /* 4.0stars.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CBDB58C1624B26B0004BDF4 /* 4.0stars.png */; };
 		1CBDB5981624B26B0004BDF4 /* 4.5stars.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CBDB58D1624B26B0004BDF4 /* 4.5stars.png */; };
 		1CBDB5991624B26B0004BDF4 /* 5.0stars.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CBDB58E1624B26B0004BDF4 /* 5.0stars.png */; };
+		1CBDB5BE16259C6C0004BDF4 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CBDB5BD16259C6C0004BDF4 /* SenTestingKit.framework */; };
+		1CBDB5BF16259C6C0004BDF4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
+		1CBDB5C016259C6C0004BDF4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
+		1CBDB5D41625A08F0004BDF4 /* ForumTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5D31625A08F0004BDF4 /* ForumTests.m */; };
+		1CBDB5D71625A0A70004BDF4 /* BookmarkedThreadsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5D61625A0A70004BDF4 /* BookmarkedThreadsTests.m */; };
+		1CBDB5DA1625A0B60004BDF4 /* ProfileTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5D91625A0B60004BDF4 /* ProfileTests.m */; };
+		1CBDB5DD1625A0C10004BDF4 /* NewReplyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5DC1625A0C10004BDF4 /* NewReplyTests.m */; };
+		1CBDB5E01625A0D00004BDF4 /* ThreadTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5DF1625A0D00004BDF4 /* ThreadTests.m */; };
+		1CBDB5E31625A7780004BDF4 /* ParsingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5E21625A7780004BDF4 /* ParsingTests.m */; };
+		1CBDB5E41625A9FD0004BDF4 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 117DBE3A1522A39A007125EF /* CoreData.framework */; };
 		1CC38B81160C017600C35A11 /* awful.js in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC515B497A800E5893B /* awful.js */; };
 		1CC38B82160C017600C35A11 /* jquery.js in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC815B497A800E5893B /* jquery.js */; };
 		1CC38B83160C017600C35A11 /* salr.js in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CCC15B497A800E5893B /* salr.js */; };
@@ -578,6 +588,17 @@
 		1CBDB58C1624B26B0004BDF4 /* 4.0stars.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 4.0stars.png; sourceTree = "<group>"; };
 		1CBDB58D1624B26B0004BDF4 /* 4.5stars.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 4.5stars.png; sourceTree = "<group>"; };
 		1CBDB58E1624B26B0004BDF4 /* 5.0stars.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 5.0stars.png; sourceTree = "<group>"; };
+		1CBDB5BC16259C6C0004BDF4 /* ParsingTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ParsingTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1CBDB5BD16259C6C0004BDF4 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		1CBDB5C316259C6D0004BDF4 /* ParsingTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ParsingTests-Info.plist"; sourceTree = "<group>"; };
+		1CBDB5CA16259C6D0004BDF4 /* ParsingTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ParsingTests-Prefix.pch"; sourceTree = "<group>"; };
+		1CBDB5D31625A08F0004BDF4 /* ForumTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ForumTests.m; sourceTree = "<group>"; };
+		1CBDB5D61625A0A70004BDF4 /* BookmarkedThreadsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarkedThreadsTests.m; sourceTree = "<group>"; };
+		1CBDB5D91625A0B60004BDF4 /* ProfileTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileTests.m; sourceTree = "<group>"; };
+		1CBDB5DC1625A0C10004BDF4 /* NewReplyTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewReplyTests.m; sourceTree = "<group>"; };
+		1CBDB5DF1625A0D00004BDF4 /* ThreadTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreadTests.m; sourceTree = "<group>"; };
+		1CBDB5E11625A7780004BDF4 /* ParsingTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParsingTests.h; sourceTree = "<group>"; };
+		1CBDB5E21625A7780004BDF4 /* ParsingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParsingTests.m; sourceTree = "<group>"; };
 		1CC38B88160C0A5D00C35A11 /* SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVPullToRefresh.h; sourceTree = "<group>"; };
 		1CC38B89160C0A5D00C35A11 /* SVPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVPullToRefresh.m; sourceTree = "<group>"; };
 		1CC38BA3160C2CE600C35A11 /* AwfulFetchedTableViewControllerSubclass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AwfulFetchedTableViewControllerSubclass.h; sourceTree = "<group>"; };
@@ -1012,6 +1033,17 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		1CBDB5B816259C6C0004BDF4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1CBDB5BE16259C6C0004BDF4 /* SenTestingKit.framework in Frameworks */,
+				1CBDB5BF16259C6C0004BDF4 /* UIKit.framework in Frameworks */,
+				1CBDB5C016259C6C0004BDF4 /* Foundation.framework in Frameworks */,
+				1CBDB5E41625A9FD0004BDF4 /* CoreData.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1D60588F0D05DD3D006BFB54 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1189,6 +1221,7 @@
 			isa = PBXGroup;
 			children = (
 				1D6058910D05DD3D006BFB54 /* Awful.app */,
+				1CBDB5BC16259C6C0004BDF4 /* ParsingTests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1277,6 +1310,30 @@
 				1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */,
 			);
 			path = "Imgur API";
+			sourceTree = "<group>";
+		};
+		1CBDB5C116259C6C0004BDF4 /* Parsing */ = {
+			isa = PBXGroup;
+			children = (
+				1CBDB5C316259C6D0004BDF4 /* ParsingTests-Info.plist */,
+				1CBDB5CA16259C6D0004BDF4 /* ParsingTests-Prefix.pch */,
+				1CBDB5E11625A7780004BDF4 /* ParsingTests.h */,
+				1CBDB5E21625A7780004BDF4 /* ParsingTests.m */,
+				1CBDB5D61625A0A70004BDF4 /* BookmarkedThreadsTests.m */,
+				1CBDB5D31625A08F0004BDF4 /* ForumTests.m */,
+				1CBDB5DC1625A0C10004BDF4 /* NewReplyTests.m */,
+				1CBDB5D91625A0B60004BDF4 /* ProfileTests.m */,
+				1CBDB5DF1625A0D00004BDF4 /* ThreadTests.m */,
+			);
+			path = Parsing;
+			sourceTree = "<group>";
+		};
+		1CBDB5CE16259C930004BDF4 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				1CBDB5C116259C6C0004BDF4 /* Parsing */,
+			);
+			path = Tests;
 			sourceTree = "<group>";
 		};
 		1CC38B84160C0A5D00C35A11 /* SVPullToRefresh */ = {
@@ -1482,6 +1539,7 @@
 				8CCD498115B497A700E5893B /* Resources */,
 				1C3857A115675AFE0078AF95 /* Source */,
 				1190F76913BE4ECB00B9D271 /* Vendor */,
+				1CBDB5CE16259C930004BDF4 /* Tests */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
@@ -1506,6 +1564,7 @@
 				10D34FAE128F413C0026C7C2 /* MobileCoreServices.framework */,
 				10D34FB0128F413C0026C7C2 /* SystemConfiguration.framework */,
 				10D34FB6128F414E0026C7C2 /* libz.dylib */,
+				1CBDB5BD16259C6C0004BDF4 /* SenTestingKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1889,6 +1948,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		1CBDB5BB16259C6C0004BDF4 /* ParsingTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1CBDB5CB16259C6D0004BDF4 /* Build configuration list for PBXNativeTarget "ParsingTests" */;
+			buildPhases = (
+				1CBDB5B716259C6C0004BDF4 /* Sources */,
+				1CBDB5B816259C6C0004BDF4 /* Frameworks */,
+				1CBDB5B916259C6C0004BDF4 /* Resources */,
+				1CBDB5BA16259C6C0004BDF4 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ParsingTests;
+			productName = ParsingTests;
+			productReference = 1CBDB5BC16259C6C0004BDF4 /* ParsingTests.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
 		1D6058900D05DD3D006BFB54 /* Awful */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Awful" */;
@@ -1932,11 +2009,19 @@
 			projectRoot = "";
 			targets = (
 				1D6058900D05DD3D006BFB54 /* Awful */,
+				1CBDB5BB16259C6C0004BDF4 /* ParsingTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		1CBDB5B916259C6C0004BDF4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1D60588D0D05DD3D006BFB54 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2288,9 +2373,35 @@
 			shellPath = /bin/sh;
 			shellScript = "PATH=/usr/local/bin:$PATH\ncommand -v mogenerator >/dev/null 2>&1 || { echo >&2 \"Please install mogenerator! brew install mogenerator\"; exit 0; }\nMODELS=\"$PROJECT_DIR/Source/Models\"\nmogenerator --model \"$MODELS/Model.xcdatamodeld/Model.xcdatamodel\" --output-dir \"$MODELS\" --machine-dir \"$MODELS/Generated\" --template-var arc=true\n";
 		};
+		1CBDB5BA16259C6C0004BDF4 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		1CBDB5B716259C6C0004BDF4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1CBDB5D41625A08F0004BDF4 /* ForumTests.m in Sources */,
+				1CBDB5D71625A0A70004BDF4 /* BookmarkedThreadsTests.m in Sources */,
+				1CBDB5DA1625A0B60004BDF4 /* ProfileTests.m in Sources */,
+				1CBDB5DD1625A0C10004BDF4 /* NewReplyTests.m in Sources */,
+				1CBDB5E01625A0D00004BDF4 /* ThreadTests.m in Sources */,
+				1CBDB5E31625A7780004BDF4 /* ParsingTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1D60588E0D05DD3D006BFB54 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2397,6 +2508,65 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		1CBDB5CC16259C6D0004BDF4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Tests/Parsing/ParsingTests-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				INFOPLIST_FILE = "Tests/Parsing/ParsingTests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		1CBDB5CD16259C6D0004BDF4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Tests/Parsing/ParsingTests-Prefix.pch";
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				INFOPLIST_FILE = "Tests/Parsing/ParsingTests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
 		1D6058940D05DD3E006BFB54 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2501,6 +2671,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1CBDB5CB16259C6D0004BDF4 /* Build configuration list for PBXNativeTarget "ParsingTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1CBDB5CC16259C6D0004BDF4 /* Debug */,
+				1CBDB5CD16259C6D0004BDF4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Awful" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
