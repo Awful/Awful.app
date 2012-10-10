@@ -28,4 +28,6 @@
 
 @property (readonly, copy, nonatomic) NSString *username;
 
+- (void)applyToObject:(id)object;
+
 @end

@@ -81,4 +81,14 @@
     return _username;
 }
 
+- (void)applyToObject:(id)object
+{
+    NSDictionary *values = [self dictionaryWithValuesForKeys:@[ @"userID", @"username" ]];
+    for (NSString *key in values) {
+        id value = values[key];
+        if (![value isEqual:[NSNull null]])
+            [object setValue:value forKey:key];
+    }
+}
+
 @end

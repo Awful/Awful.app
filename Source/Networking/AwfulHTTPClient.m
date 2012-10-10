@@ -140,12 +140,7 @@
             return;
         }
         ParsedUserInfo *parsed = [[ParsedUserInfo alloc] initWithHTMLData:(NSData *)response];
-        if (parsed.userID) {
-            user.userID = parsed.userID;
-        }
-        if (parsed.username) {
-            user.username = parsed.username;
-        }
+        [parsed applyToObject:user];
         AwfulSettings.settings.currentUser = user;
         userResponseBlock(user);
     } failure:^(AFHTTPRequestOperation *_, NSError *error)
