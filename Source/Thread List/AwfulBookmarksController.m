@@ -8,6 +8,7 @@
 
 #import "AwfulBookmarksController.h"
 #import "AwfulFetchedTableViewControllerSubclass.h"
+#import "AwfulAppDelegate.h"
 
 @implementation AwfulBookmarksController
 
@@ -47,7 +48,7 @@
         [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO]
     ];
     return [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                               managedObjectContext:ApplicationDelegate.managedObjectContext
+                                               managedObjectContext:[AwfulDataStack sharedDataStack].context
                                                  sectionNameKeyPath:nil
                                                           cacheName:nil];
 }
@@ -75,7 +76,7 @@
     } onError:^(NSError *error)
     {
         [self finishedRefreshing];
-        [ApplicationDelegate requestFailed:error];
+        [[AwfulAppDelegate instance] requestFailed:error];
     }];
 }
 
@@ -86,7 +87,7 @@
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
         thread.isBookmarkedValue = NO;
-        [ApplicationDelegate saveContext];
+        [[AwfulDataStack sharedDataStack] save];
         self.networkOperation = [[AwfulHTTPClient sharedClient] removeBookmarkedThread:thread
                                                                           onCompletion:nil
                                                                                onError:^(NSError *error)

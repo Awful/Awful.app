@@ -8,7 +8,7 @@
     #import <CoreData/CoreData.h>
     #import <MobileCoreServices/MobileCoreServices.h>
     #import <QuartzCore/QuartzCore.h>
-    #import "AwfulAppDelegate.h"
+    #import "AwfulDataStack.h"
     #import "AwfulHTTPClient.h"
     #import "AwfulModels.h"
     #import "AwfulSettings.h"

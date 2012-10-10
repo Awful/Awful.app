@@ -31,7 +31,7 @@
     request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"favoriteIndex"
                                                               ascending:YES]];
     return [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                               managedObjectContext:ApplicationDelegate.managedObjectContext
+                                               managedObjectContext:[AwfulDataStack sharedDataStack].context
                                                  sectionNameKeyPath:nil
                                                           cacheName:nil];
 }
@@ -176,7 +176,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
     AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
     forum.isFavoriteValue = cell.favorite;
-    [ApplicationDelegate saveContext];
+    [[AwfulDataStack sharedDataStack] save];
 }
 
 - (void)tableView:(UITableView *)tableView
@@ -191,7 +191,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [reorder enumerateObjectsUsingBlock:^(AwfulForum *forum, NSUInteger i, BOOL *stop) {
         forum.favoriteIndexValue = i;
     }];
-    [ApplicationDelegate saveContext];
+    [[AwfulDataStack sharedDataStack] save];
     self.userDrivenChange = NO;
 }
 
@@ -213,7 +213,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
             if (f.isFavoriteValue)
                 f.favoriteIndexValue = i;
         }];
-        [ApplicationDelegate saveContext];
+        [[AwfulDataStack sharedDataStack] save];
     }
 }
 

@@ -132,7 +132,7 @@
         [SVProgressHUD dismiss];
         
         if(error != nil) {
-            [ApplicationDelegate requestFailed:error];
+            [[AwfulAppDelegate instance] requestFailed:error];
         }
     });
 }

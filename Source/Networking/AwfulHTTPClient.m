@@ -50,12 +50,12 @@
         success:^(AFHTTPRequestOperation *operation, id response) {
             if(pageNum == 1) {
                 [AwfulThread removeOldThreadsForForum:forum];
-                [ApplicationDelegate saveContext];
+                [[AwfulDataStack sharedDataStack] save];
             }
             
             NSData *responseData = (NSData *)response;
             NSMutableArray *threads = [AwfulThread parseThreadsWithData:responseData forForum:forum];
-            [ApplicationDelegate saveContext];
+            [[AwfulDataStack sharedDataStack] save];
             threadListResponseBlock(threads);
         } 
         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -77,7 +77,7 @@
            
            NSData *responseData = (NSData *)response;
            NSMutableArray *threads = [AwfulThread parseBookmarkedThreadsWithData:responseData];
-           [ApplicationDelegate saveContext];
+           [[AwfulDataStack sharedDataStack] save];
            threadListResponseBlock(threads);
        } 
        failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -176,7 +176,7 @@
                [user setUserName:username];
            }
            
-           [ApplicationDelegate saveContext];
+           [[AwfulDataStack sharedDataStack] save];
            userResponseBlock(user);
        } 
        failure:^(AFHTTPRequestOperation *operation, NSError *error) {

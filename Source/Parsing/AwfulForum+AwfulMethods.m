@@ -19,15 +19,15 @@
         }
     }
     
-    NSManagedObjectContext *moc = ApplicationDelegate.managedObjectContext;
-    AwfulForum *newForum = [AwfulForum insertInManagedObjectContext:moc];
+    NSManagedObjectContext *context = [AwfulDataStack sharedDataStack].context;
+    AwfulForum *newForum = [AwfulForum insertInManagedObjectContext:context];
     newForum.forumID = forumID;
     return newForum;
 }
 
 + (NSArray *)parseForums:(NSData *)data
 {
-    NSManagedObjectContext *context = ApplicationDelegate.managedObjectContext;
+    NSManagedObjectContext *context = [AwfulDataStack sharedDataStack].context;
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[AwfulForum entityName]];
     NSError *error;
     NSArray *allExistingForums = [context executeFetchRequest:request error:&error];
@@ -115,7 +115,7 @@
         request = [NSFetchRequest fetchRequestWithEntityName:[AwfulCategory entityName]];
         NSArray *keep = [allCategories valueForKey:AwfulCategoryAttributes.categoryID];
         request.predicate = [NSPredicate predicateWithFormat:@"NOT (categoryID IN %@)", keep];
-        NSArray *dead = [ApplicationDelegate.managedObjectContext executeFetchRequest:request
+        NSArray *dead = [[AwfulDataStack sharedDataStack].context executeFetchRequest:request
                                                                                 error:&error];
         if (!dead) {
             NSLog(@"Error deleting dead categories: %@", error);
@@ -130,7 +130,7 @@
         request = [NSFetchRequest fetchRequestWithEntityName:[AwfulForum entityName]];
         NSArray *keep = [allForums valueForKey:AwfulForumAttributes.forumID];
         request.predicate = [NSPredicate predicateWithFormat:@"NOT (forumID IN %@)", keep];
-        NSArray *dead = [ApplicationDelegate.managedObjectContext executeFetchRequest:request
+        NSArray *dead = [[AwfulDataStack sharedDataStack].context executeFetchRequest:request
                                                                                 error:&error];
         if (!dead) {
             NSLog(@"Error deleting dead forums: %@", error);
@@ -140,7 +140,7 @@
             [forum.managedObjectContext deleteObject:forum];
     }
     
-    [ApplicationDelegate saveContext];
+    [[AwfulDataStack sharedDataStack] save];
     return [allForums count] > 0 ? allForums : [existingForums allValues];
 }
 
@@ -162,7 +162,7 @@
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"AwfulForum"];
     request.predicate = [NSPredicate predicateWithFormat:@"parentForum = %@", forum];
     NSError *error;
-    NSArray *existingForums = [ApplicationDelegate.managedObjectContext executeFetchRequest:request
+    NSArray *existingForums = [[AwfulDataStack sharedDataStack].context executeFetchRequest:request
                                                                                       error:&error];
     NSMutableDictionary *existingDict = [NSMutableDictionary new];
     for (AwfulForum* f in existingForums)

@@ -8,6 +8,7 @@
 
 #import "AwfulVoteActions.h"
 #import "AwfulPage.h"
+#import "AwfulAppDelegate.h"
 
 @implementation AwfulVoteActions
 
@@ -58,7 +59,7 @@
                 [page showCompletionMessage:@"Great Job!"];
             }
         } onError:^(NSError *error) {
-            [ApplicationDelegate requestFailed:error];
+            [[AwfulAppDelegate instance] requestFailed:error];
         }];
     }
 }

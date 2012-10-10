@@ -21,11 +21,12 @@
     [fetchRequest setSortDescriptors:[NSArray arrayWithObjects:stickySort, sort, nil]];
     [fetchRequest setPredicate:predicate];
     
-    NSError *err = nil;
-    NSArray *threads = [ApplicationDelegate.managedObjectContext executeFetchRequest:fetchRequest error:&err];
-    if(err != nil) {
-        NSLog(@"failed to load threads %@", [err localizedDescription]);
-        return [NSArray array];
+    NSError *error;
+    NSArray *threads = [[AwfulDataStack sharedDataStack].context executeFetchRequest:fetchRequest
+                                                                               error:&error];
+    if (!threads) {
+        NSLog(@"failed to load threads %@", error);
+        return nil;
     }
     return threads;
 }
@@ -35,7 +36,7 @@
     NSArray *threads = [AwfulThread threadsForForum:forum];
     for(AwfulThread *thread in threads) {
         if(!thread.isBookmarkedValue) {
-            [ApplicationDelegate.managedObjectContext deleteObject:thread];
+            [thread.managedObjectContext deleteObject:thread];
         }
     }
 }
@@ -48,11 +49,12 @@
     [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
     [fetchRequest setPredicate:predicate];
     
-    NSError *err = nil;
-    NSArray *threads = [ApplicationDelegate.managedObjectContext executeFetchRequest:fetchRequest error:&err];
-    if(err != nil) {
-        NSLog(@"failed to load threads %@", [err localizedDescription]);
-        return [NSArray array];
+    NSError *error = nil;
+    NSArray *threads = [[AwfulDataStack sharedDataStack].context executeFetchRequest:fetchRequest
+                                                                               error:&error];
+    if (!threads) {
+        NSLog(@"failed to load threads %@", error);
+        return nil;
     }
     return threads;
 }
@@ -61,7 +63,7 @@
 {
     NSArray *threads = [AwfulThread bookmarkedThreads];
     for(AwfulThread *thread in threads) {
-        [ApplicationDelegate.managedObjectContext deleteObject:thread];
+        [thread.managedObjectContext deleteObject:thread];
     }
 }
 
@@ -108,7 +110,7 @@
                 [existing_threads removeObjectsInArray:threads];
                 
                 if(thread == nil) {
-                    NSManagedObjectContext *moc = ApplicationDelegate.managedObjectContext;
+                    NSManagedObjectContext *moc = [AwfulDataStack sharedDataStack].context;
                     thread = [AwfulThread insertInManagedObjectContext:moc];
                 }
                 
@@ -171,7 +173,7 @@
                 [existing_threads removeObjectsInArray:threads];
                 
                 if(thread == nil) {
-                    NSManagedObjectContext *moc = ApplicationDelegate.managedObjectContext;
+                    NSManagedObjectContext *moc = [AwfulDataStack sharedDataStack].context;
                     thread = [AwfulThread insertInManagedObjectContext:moc];
                 }
                 

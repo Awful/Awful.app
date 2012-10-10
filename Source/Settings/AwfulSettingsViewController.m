@@ -225,7 +225,9 @@ typedef enum SettingType
     } else if ([action isEqualToString:@"LogIn"]) {
         [self performSegueWithIdentifier:@"Login" sender:self];
     } else if ([action isEqualToString:@"ResetData"]) {
-        [ApplicationDelegate resetDataStore];
+        [[AwfulDataStack sharedDataStack] deleteAllDataAndResetStack];
+        // TODO clear cookies
+        // TODO remove user object from defaults
     } else {
         id selectedValue = [[NSUserDefaults standardUserDefaults] objectForKey:setting[@"Key"]];
         AwfulSettingsChoiceViewController *choiceViewController = [[AwfulSettingsChoiceViewController alloc] initWithSetting:setting selectedValue:selectedValue];

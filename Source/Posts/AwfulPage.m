@@ -70,7 +70,12 @@
     {
         NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulThread entityName]];
         [request setPredicate:[NSPredicate predicateWithFormat:@"threadID like %@", self.threadID]];
-        NSArray *results = [ApplicationDelegate.managedObjectContext executeFetchRequest:request error:nil];
+        NSError *error;
+        NSArray *results = [[AwfulDataStack sharedDataStack].context executeFetchRequest:request
+                                                                                   error:&error];
+        if (!results) {
+            NSLog(@"error refetching thread: %@", error);
+        }
         
         _thread = [results objectAtIndex:0];
     }
@@ -123,11 +128,11 @@
         if(unreadPosts != -1) {
             unreadPosts -= numNewPosts;
             self.thread.totalUnreadPostsValue = MAX(unreadPosts, 0);
-            [ApplicationDelegate saveContext];
+            [[AwfulDataStack sharedDataStack] save];
         }
     } else if (self.destinationType == AwfulPageDestinationTypeLast) {
         self.thread.totalUnreadPostsValue = 0;
-        [ApplicationDelegate saveContext];
+        [[AwfulDataStack sharedDataStack] save];
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:AwfulThreadDidUpdateNotification
                                                         object:self.thread];
@@ -282,7 +287,7 @@
     if ([src length]) {
         NSArray *photos = @[[MWPhoto photoWithURL:[NSURL URLWithString:src]]];
         MWPhotoBrowser *browser = [[MWPhotoBrowser alloc] initWithPhotos:photos];
-        UIViewController *vc = ApplicationDelegate.window.rootViewController;
+        UIViewController *vc = [AwfulAppDelegate instance].window.rootViewController;
         UINavigationController *navi = [[UINavigationController alloc] initWithRootViewController:browser];
         [vc presentModalViewController:navi animated:YES];
     }
@@ -539,8 +544,13 @@
                 }
             }
             
+            // TODO (nolan) idgi, why a throwaway context?
             if (threadID) {
-                NSManagedObjectContext *moc = ApplicationDelegate.throwawayObjectContext;
+                NSManagedObjectModel *model = [NSManagedObjectModel mergedModelFromBundles:nil];
+                NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
+                NSManagedObjectContext *moc = [NSManagedObjectContext new];
+                [moc setPersistentStoreCoordinator:coordinator];
+                [moc setUndoManager:nil];
                 AwfulThread *intra = [AwfulThread insertInManagedObjectContext:moc];
                 intra.threadID = threadID;
                 AwfulPage *page = [self.storyboard instantiateViewControllerWithIdentifier:@"AwfulPage"];
@@ -570,7 +580,7 @@
         [otherNav setToolbarHidden:NO];
         otherNav.toolbar.barStyle = UIBarStyleBlack;
         
-        UIViewController *vc = ApplicationDelegate.window.rootViewController;
+        UIViewController *vc = [AwfulAppDelegate instance].window.rootViewController;
         [vc presentModalViewController:otherNav animated:YES];
         return NO;
     }

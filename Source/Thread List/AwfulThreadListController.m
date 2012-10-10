@@ -34,7 +34,7 @@ typedef enum {
         [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO]
     ];
     return [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                               managedObjectContext:ApplicationDelegate.managedObjectContext
+                                               managedObjectContext:[AwfulDataStack sharedDataStack].context
                                                  sectionNameKeyPath:nil
                                                           cacheName:nil];
 }
@@ -117,7 +117,7 @@ typedef enum {
     } onError:^(NSError *error)
     {
         [self finishedRefreshing];
-        [ApplicationDelegate requestFailed:error];
+        [[AwfulAppDelegate instance] requestFailed:error];
     }];
 }
 
@@ -202,11 +202,11 @@ typedef enum {
     [[AwfulHTTPClient sharedClient] markThreadUnseen:thread onCompletion:^(void)
     {
         thread.totalUnreadPosts = [NSNumber numberWithInt:-1];
-        [ApplicationDelegate saveContext];
+        [[AwfulDataStack sharedDataStack] save];
         
     } onError:^(NSError *error)
     {
-        [ApplicationDelegate requestFailed:error];
+        [[AwfulAppDelegate instance] requestFailed:error];
     }];
 }
 

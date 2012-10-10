@@ -7,10 +7,10 @@
 //
 
 #import <SenTestingKit/SenTestingKit.h>
-#import <CoreData/CoreData.h>
+#import "AwfulDataStack.h"
 
 @interface ParsingTests : SenTestCase
 
-@property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (readonly, strong, nonatomic) AwfulDataStack *dataStack;
 
 @end

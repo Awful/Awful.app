@@ -72,11 +72,11 @@ static AwfulForum *ParseForum(TFHpple *parser)
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"forumID=%@", lastForumID];
     [fetchRequest setPredicate:predicate];
     
-    NSError *err = nil;
-    NSArray *results = [ApplicationDelegate.managedObjectContext executeFetchRequest:fetchRequest
-                                                                               error:&err];
+    NSError *error = nil;
+    NSArray *results = [[AwfulDataStack sharedDataStack].context executeFetchRequest:fetchRequest
+                                                                               error:&error];
     if (!results) {
-        NSLog(@"couldn't fetch forum from forumid %@", [err localizedDescription]);
+        NSLog(@"couldn't fetch forum from forumid %@", error);
         return nil;
     }
     

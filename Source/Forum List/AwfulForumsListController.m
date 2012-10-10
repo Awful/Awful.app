@@ -34,7 +34,7 @@
         [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES]
     ];
     return [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                               managedObjectContext:ApplicationDelegate.managedObjectContext
+                                               managedObjectContext:[AwfulDataStack sharedDataStack].context
                                                  sectionNameKeyPath:@"category.index"
                                                           cacheName:nil];
 }
@@ -79,7 +79,7 @@
     } onError:^(NSError *error)
     {
         [self finishedRefreshing];
-        [ApplicationDelegate requestFailed:error];
+        [[AwfulAppDelegate instance] requestFailed:error];
     }];
 }
 
@@ -163,14 +163,14 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     fetchRequest.predicate = [NSPredicate predicateWithFormat:@"isFavorite == YES"];
     NSError *error;
     if (cell.favorite) {
-        NSUInteger count = [ApplicationDelegate.managedObjectContext countForFetchRequest:fetchRequest
+        NSUInteger count = [[AwfulDataStack sharedDataStack].context countForFetchRequest:fetchRequest
                                                                                     error:&error];
         if (count == NSNotFound) {
             NSLog(@"Error setting favorite index: %@", error);
         }
         forum.favoriteIndexValue = count;
     } else {
-        NSArray *renumber = [ApplicationDelegate.managedObjectContext executeFetchRequest:fetchRequest
+        NSArray *renumber = [[AwfulDataStack sharedDataStack].context executeFetchRequest:fetchRequest
                                                                                     error:&error];
         if (!renumber) {
             NSLog(@"Error renumbering favorites: %@", error);
@@ -179,7 +179,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
             favorite.favoriteIndexValue = i;
         }];
     }
-    [ApplicationDelegate saveContext];
+    [[AwfulDataStack sharedDataStack] save];
 }
 
 - (void)forumCellDidToggleExpanded:(AwfulForumCell *)cell
@@ -191,7 +191,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     } else {
         RecursivelyCollapseForum(forum);
     }
-    [ApplicationDelegate saveContext];
+    [[AwfulDataStack sharedDataStack] save];
     
     // The fetched results controller won't pick up on changes to the keypath "parentForum.expanded"
     // for forums that should be newly visible (dunno why) so we need to help it along.

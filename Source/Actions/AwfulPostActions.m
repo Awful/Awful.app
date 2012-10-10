@@ -9,6 +9,7 @@
 #import "AwfulPostActions.h"
 #import "AwfulPost.h"
 #import "AwfulPage.h"
+#import "AwfulAppDelegate.h"
 
 typedef enum {
     AwfulPostActionTypeEdit,
@@ -52,7 +53,7 @@ typedef enum {
                 self.postContents = contents;
                 [self.viewController performSegueWithIdentifier:@"EditPost" sender:self];
             } onError:^(NSError *error) {
-                [ApplicationDelegate requestFailed:error];
+                [[AwfulAppDelegate instance] requestFailed:error];
             }];
             return;
         }
@@ -66,7 +67,7 @@ typedef enum {
             self.postContents = [contents stringByAppendingString:@"\n"];
             [self.viewController performSegueWithIdentifier:@"QuoteBox" sender:self];
         } onError:^(NSError *error) {
-            [ApplicationDelegate requestFailed:error];
+            [[AwfulAppDelegate instance] requestFailed:error];
         }];
         return;
         
@@ -86,7 +87,7 @@ typedef enum {
                     [page showCompletionMessage:@"Marked up to there"];
                 }
             } onError:^(NSError *error){
-                [ApplicationDelegate requestFailed:error];
+                [[AwfulAppDelegate instance] requestFailed:error];
             }];
         }
     }

@@ -91,7 +91,9 @@ static NSURL *DefaultCSSURL()
         ];
     }
     for (NSString *filename in listOfFilenames) {
-        NSURL *url = [[ApplicationDelegate applicationDocumentsDirectory] URLByAppendingPathComponent:filename];
+        NSURL *documents = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory
+                                                                   inDomains:NSUserDomainMask] lastObject];
+        NSURL *url = [documents URLByAppendingPathComponent:filename];
         if ([url checkResourceIsReachableAndReturnError:NULL]) return url;
     }
     for (NSString *filename in listOfFilenames) {

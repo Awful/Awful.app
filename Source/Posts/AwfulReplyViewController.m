@@ -529,7 +529,7 @@ withImagePlaceholderResults:placeholderResults
                                  } onError:^(NSError *error)
                                  {
                                      [SVProgressHUD dismiss];
-                                     [ApplicationDelegate requestFailed:error];
+                                     [[AwfulAppDelegate instance] requestFailed:error];
                                  }];
     } else if (self.post) {
         self.networkOperation = [[AwfulHTTPClient sharedClient] editPost:self.post
@@ -542,7 +542,7 @@ withImagePlaceholderResults:placeholderResults
                                  } onError:^(NSError *error)
                                  {
                                      [SVProgressHUD dismiss];
-                                     [ApplicationDelegate requestFailed:error];
+                                     [[AwfulAppDelegate instance] requestFailed:error];
                                  }];
     }
     [self.replyTextView resignFirstResponder];
