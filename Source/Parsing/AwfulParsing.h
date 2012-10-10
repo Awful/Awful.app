@@ -16,3 +16,16 @@
 //
 //   NSString *xpath = @"//div[" HAS_CLASS(breadcrumbs) "]";
 #define HAS_CLASS(name) "contains(concat(' ', normalize-space(@class), ' '), ' " #name "')"
+
+
+@interface ParsedUserInfo : NSObject
+
+- (id)initWithHTMLData:(NSData *)html;
+
+@property (readonly, copy, nonatomic) NSData *htmlData;
+
+@property (readonly, copy, nonatomic) NSString *userID;
+
+@property (readonly, copy, nonatomic) NSString *username;
+
+@end

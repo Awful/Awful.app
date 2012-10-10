@@ -7,6 +7,7 @@
 //
 
 #import "ParsingTests.h"
+#import "AwfulParsing.h"
 
 @interface ProfileTests : ParsingTests
 
@@ -14,5 +15,17 @@
 
 
 @implementation ProfileTests
+
++ (NSString *)fixtureFilename
+{
+    return @"member.html";
+}
+
+- (void)testUserInfo
+{
+    ParsedUserInfo *userInfo = [[ParsedUserInfo alloc] initWithHTMLData:self.fixture];
+    STAssertEqualObjects(userInfo.userID, @"106125", nil);
+    STAssertEqualObjects(userInfo.username, @"pokeyman", nil);
+}
 
 @end

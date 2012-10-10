@@ -10,6 +10,31 @@
 
 @implementation ParsingTests
 {
+    NSData *_fixture;
+}
+
++ (NSString *)fixtureFilename
+{
+    [NSException raise:NSInternalInconsistencyException
+                format:@"subclasses must override %@", NSStringFromSelector(_cmd)];
+    return nil;
+}
+
+- (void)setUp
+{
+    if (!_fixture) {
+        NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+        NSURL *fixtureURL = [bundle URLForResource:[[self class] fixtureFilename]
+                                     withExtension:nil];
+        _fixture = [NSData dataWithContentsOfURL:fixtureURL];
+    }
+}
+
+@end
+
+
+@implementation CoreDataParsingTests
+{
     AwfulDataStack *_dataStack;
 }
 

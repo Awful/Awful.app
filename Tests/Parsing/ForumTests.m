@@ -15,4 +15,9 @@
 
 @implementation ForumTests
 
++ (NSString *)fixtureFilename
+{
+    return @"forumdisplay.html";
+}
+
 @end

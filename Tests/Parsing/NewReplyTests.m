@@ -15,4 +15,9 @@
 
 @implementation NewReplyTests
 
++ (NSString *)fixtureFilename
+{
+    return @"newreply.html";
+}
+
 @end

@@ -15,4 +15,9 @@
 
 @implementation ThreadTests
 
++ (NSString *)fixtureFilename
+{
+    return @"showthread.html";
+}
+
 @end

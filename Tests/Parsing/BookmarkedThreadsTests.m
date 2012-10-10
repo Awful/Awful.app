@@ -15,4 +15,9 @@
 
 @implementation BookmarkedThreadsTests
 
++ (NSString *)fixtureFilename
+{
+    return @"bookmarkthreads.html";
+}
+
 @end

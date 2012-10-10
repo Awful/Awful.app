@@ -11,6 +11,15 @@
 
 @interface ParsingTests : SenTestCase
 
+@property (readonly, copy, nonatomic) NSData *fixture;
+
++ (NSString *)fixtureFilename;
+
+@end
+
+
+@interface CoreDataParsingTests : ParsingTests
+
 @property (readonly, strong, nonatomic) AwfulDataStack *dataStack;
 
 @end
