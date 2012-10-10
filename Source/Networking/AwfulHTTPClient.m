@@ -139,7 +139,7 @@
             errorBlock(nil);
             return;
         }
-        ParsedUserInfo *parsed = [[ParsedUserInfo alloc] initWithHTMLData:(NSData *)response];
+        UserParsedInfo *parsed = [[UserParsedInfo alloc] initWithHTMLData:(NSData *)response];
         [parsed applyToObject:user];
         AwfulSettings.settings.currentUser = user;
         userResponseBlock(user);
@@ -185,28 +185,26 @@ typedef enum BookmarkAction {
     return [self modifyBookmark:RemoveBookmark withThread:thread onCompletion:completionBlock onError:errorBlock];
 }
 
--(NSOperation *)forumsListOnCompletion : (ForumsListResponseBlock)forumsListResponseBlock onError : (AwfulErrorBlock)errorBlock
+- (NSOperation *)forumsListOnCompletion:(ForumsListResponseBlock)forumsListResponseBlock
+                                onError:(AwfulErrorBlock)errorBlock
 {
     // Seems like only forumdisplay.php and showthread.php have the <select> with a complete list
-    // of forums. We'll use the Comedy Goldmine as it's generally available (even when signed out)
-    // and hopefully it's not much of a burden since threads rarely get goldmined.
+    // of forums. We'll use the Comedy Goldmine as it's generally available and hopefully it's not
+    // much of a burden since threads rarely get goldmined.
     NSString *path = @"forumdisplay.php?forumid=21";
     NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
-    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
-       success:^(AFHTTPRequestOperation *operation, id response) {
-           NSData *data = (NSData *)response;
-           NSArray *forums = [AwfulForum parseForums:data];
-           if (forumsListResponseBlock) {
-               forumsListResponseBlock([forums mutableCopy]);
-           }
-       } 
-       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-           if (errorBlock) {
-               errorBlock(error);
-           }
-       }];
+    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
+                                                               success:^(id _, id response)
+    {
+        NSData *data = (NSData *)response;
+        NSArray *forums = [AwfulForum updateCategoriesAndForums:data];
+        if (forumsListResponseBlock) forumsListResponseBlock([forums mutableCopy]);
+    } failure:^(id _, NSError *error)
+    {
+        if (errorBlock) errorBlock(error);
+    }];
     [self enqueueHTTPRequestOperation:op];
-    return (NSOperation *)op;
+    return op;
 }
 
 - (NSOperation *)replyToThread:(AwfulThread *)thread
@@ -220,7 +218,7 @@ typedef enum BookmarkAction {
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
                                                                success:^(id _, id response)
     {
-        ParsedReplyFormInfo *formInfo = [[ParsedReplyFormInfo alloc] initWithHTMLData:(NSData *)response];
+        ReplyFormParsedInfo *formInfo = [[ReplyFormParsedInfo alloc] initWithHTMLData:(NSData *)response];
         NSMutableDictionary *parameters = [@{
             @"threadid" : thread.threadID,
             @"formkey" : formInfo.formkey,

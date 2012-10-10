@@ -25,9 +25,14 @@
     return self;
 }
 
+- (id)init
+{
+    return [self initWithHTMLData:nil];
+}
+
 @end
 
-@interface ParsedUserInfo ()
+@interface UserParsedInfo ()
 
 @property (copy, nonatomic) NSString *userID;
 
@@ -35,7 +40,7 @@
 
 @end
 
-@implementation ParsedUserInfo
+@implementation UserParsedInfo
 
 - (void)parseHTMLData
 {
@@ -102,7 +107,7 @@
 @end
 
 
-@interface ParsedReplyFormInfo ()
+@interface ReplyFormParsedInfo ()
 
 @property (copy, nonatomic) NSString *formkey;
 
@@ -113,18 +118,18 @@
 @end
 
 
-@implementation ParsedReplyFormInfo
+@implementation ReplyFormParsedInfo
 
 - (void)parseHTMLData
 {
     NSString *htmlString = StringFromSomethingAwfulData(self.htmlData);
     NSData *utf8Data = [htmlString dataUsingEncoding:NSUTF8StringEncoding];
-    TFHpple *pageData = [[TFHpple alloc] initWithHTMLData:utf8Data];
-    TFHppleElement *formkey = [pageData searchForSingle:@"//input[@name='formkey']"];
+    TFHpple *document = [[TFHpple alloc] initWithHTMLData:utf8Data];
+    TFHppleElement *formkey = [document searchForSingle:@"//input[@name='formkey']"];
     self.formkey = [formkey objectForKey:@"value"];
-    TFHppleElement *formCookie = [pageData searchForSingle:@"//input[@name='form_cookie']"];
+    TFHppleElement *formCookie = [document searchForSingle:@"//input[@name='form_cookie']"];
     self.formCookie = [formCookie objectForKey:@"value"];
-    TFHppleElement *bookmark = [pageData searchForSingle:@"//input[@name='bookmark' and @checked='checked']"];
+    TFHppleElement *bookmark = [document searchForSingle:@"//input[@name='bookmark' and @checked='checked']"];
     if (bookmark) {
         self.bookmark = [bookmark objectForKey:@"value"];
     }
@@ -140,6 +145,160 @@
 {
     if (!_formCookie) [self parseHTMLData];
     return _formCookie;
+}
+
+@end
+
+
+@interface ForumHierarchyParsedInfo ()
+
+@property (readonly, nonatomic) NSMutableArray *mutableCategories;
+
+@end
+
+
+@interface CategoryParsedInfo ()
+
+@property (readonly, nonatomic) NSMutableArray *mutableForums;
+
+@property (copy, nonatomic) NSString *name;
+
+@property (copy, nonatomic) NSString *categoryID;
+
+@end
+
+
+@interface ForumParsedInfo ()
+
+@property (weak, nonatomic) CategoryParsedInfo *category;
+
+@property (readonly, nonatomic) NSMutableArray *mutableSubforums;
+
+@property (weak, nonatomic) ForumParsedInfo *parentForum;
+
+@property (copy, nonatomic) NSString *name;
+
+@property (copy, nonatomic) NSString *forumID;
+
+@end
+
+
+@implementation ForumHierarchyParsedInfo
+
+- (id)initWithHTMLData:(NSData *)htmlData
+{
+    self = [super initWithHTMLData:htmlData];
+    if (self) {
+        _mutableCategories = [NSMutableArray new];
+    }
+    return self;
+}
+
+- (void)parseHTMLData
+{
+    // There's a pulldown menu at the bottom of forumdisplay.php and showthread.php like this:
+    //
+    // <select name="forumid">
+    //   <option value="-1">Whatever</option>
+    //   <option value="pm">Private Messages</option>
+    //   ...
+    //   <option value="-1">--------------------</option>
+    //   <option value="48"> Main</option>
+    //   <option value="1">-- General Bullshit</option>
+    //   <option value="155">---- SA's Front Page Discussion</option>
+    //   ...
+    // </select>
+    //
+    // This is the only place that lists *all* forums, so this is what we parse.
+    NSError *error;
+    NSRegularExpression *depthRegex = [NSRegularExpression regularExpressionWithPattern:@"^(-*) ?(.*)$"
+                                                                                options:0
+                                                                                  error:&error];
+    if (!depthRegex) {
+        NSLog(@"error creating depth regex: %@", error);
+        return;
+    }
+    NSMutableArray *forumStack = [NSMutableArray new];
+    TFHpple *document = [[TFHpple alloc] initWithHTMLData:self.htmlData];
+    NSArray *listOfItems = [document search:@"//select[@name='forumid']/option"];
+    CategoryParsedInfo *currentCategory;
+    for (TFHppleElement *item in listOfItems) {
+        NSString *forumOrCategoryID = [item objectForKey:@"value"];
+        if ([forumOrCategoryID integerValue] <= 0) continue;
+        NSTextCheckingResult *match = [depthRegex firstMatchInString:[item content]
+                                                        options:0
+                                                          range:NSMakeRange(0, [[item content] length])];
+        NSString *name = [[item content] substringWithRange:[match rangeAtIndex:2]];
+        NSUInteger depth = [match rangeAtIndex:1].length / 2;
+        if (depth == 0) {
+            [forumStack removeAllObjects];
+            currentCategory = [CategoryParsedInfo new];
+            currentCategory.categoryID = forumOrCategoryID;
+            currentCategory.name = name;
+            [self.mutableCategories addObject:currentCategory];
+        } else {
+            while ([forumStack count] >= depth) {
+                [forumStack removeLastObject];
+            }
+            ForumParsedInfo *forum = [ForumParsedInfo new];
+            forum.name = name;
+            forum.forumID = forumOrCategoryID;
+            forum.category = currentCategory;
+            if ([forumStack count] > 0) {
+                ForumParsedInfo *parentForum = [forumStack lastObject];
+                forum.parentForum = parentForum;
+                [parentForum.mutableSubforums addObject:forum];
+            } else {
+                CategoryParsedInfo *category = [self.categories lastObject];
+                [category.mutableForums addObject:forum];
+            }
+            [forumStack addObject:forum];
+        }
+    }
+}
+
+- (NSArray *)categories
+{
+    if ([self.mutableCategories count] == 0) [self parseHTMLData];
+    return [self.mutableCategories copy];
+}
+
+@end
+
+
+@implementation CategoryParsedInfo
+
+- (id)initWithHTMLData:(NSData *)htmlData
+{
+    self = [super initWithHTMLData:htmlData];
+    if (self) {
+        _mutableForums = [NSMutableArray new];
+    }
+    return self;
+}
+
+- (NSArray *)forums
+{
+    return [self.mutableForums copy];
+}
+
+@end
+
+
+@implementation ForumParsedInfo
+
+- (id)initWithHTMLData:(NSData *)htmlData
+{
+    self = [super initWithHTMLData:htmlData];
+    if (self) {
+        _mutableSubforums = [NSMutableArray new];
+    }
+    return self;
+}
+
+- (NSArray *)subforums
+{
+    return [self.mutableSubforums copy];
 }
 
 @end

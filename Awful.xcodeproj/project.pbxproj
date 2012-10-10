@@ -111,6 +111,7 @@
 		1CBDB5FA1625E7320004BDF4 /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7C413BE4ECB00B9D271 /* TFHppleElement.m */; };
 		1CBDB5FB1625E7320004BDF4 /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7C613BE4ECB00B9D271 /* XPathQuery.m */; };
 		1CBDB5FC1625E7440004BDF4 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
+		1CBDB5FF162600D40004BDF4 /* NSManagedObject+Awful.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5FE162600D40004BDF4 /* NSManagedObject+Awful.m */; };
 		1CC38B81160C017600C35A11 /* awful.js in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC515B497A800E5893B /* awful.js */; };
 		1CC38B82160C017600C35A11 /* jquery.js in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC815B497A800E5893B /* jquery.js */; };
 		1CC38B83160C017600C35A11 /* salr.js in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CCC15B497A800E5893B /* salr.js */; };
@@ -621,6 +622,8 @@
 		1CBDB5EE1625B76F0004BDF4 /* newreply.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = newreply.html; sourceTree = "<group>"; };
 		1CBDB5EF1625B76F0004BDF4 /* showthread.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = showthread.html; sourceTree = "<group>"; };
 		1CBDB5F51625BACE0004BDF4 /* AwfulParsing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulParsing.m; sourceTree = "<group>"; };
+		1CBDB5FD162600D30004BDF4 /* NSManagedObject+Awful.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+Awful.h"; sourceTree = "<group>"; };
+		1CBDB5FE162600D40004BDF4 /* NSManagedObject+Awful.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObject+Awful.m"; sourceTree = "<group>"; };
 		1CC38B88160C0A5D00C35A11 /* SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVPullToRefresh.h; sourceTree = "<group>"; };
 		1CC38B89160C0A5D00C35A11 /* SVPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVPullToRefresh.m; sourceTree = "<group>"; };
 		1CC38BA3160C2CE600C35A11 /* AwfulFetchedTableViewControllerSubclass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AwfulFetchedTableViewControllerSubclass.h; sourceTree = "<group>"; };
@@ -1312,6 +1315,8 @@
 				1CC780781612E0EA002AF958 /* AwfulUser.m */,
 				1C6474BA1569989800C72657 /* Generated */,
 				1C13FF62161948DE000ED2B1 /* Model.xcdatamodeld */,
+				1CBDB5FD162600D30004BDF4 /* NSManagedObject+Awful.h */,
+				1CBDB5FE162600D40004BDF4 /* NSManagedObject+Awful.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -2554,6 +2559,7 @@
 				1C05ED4F162299DE00FE567F /* SVProgressHUD.m in Sources */,
 				1CBDB5E71625AA240004BDF4 /* AwfulDataStack.m in Sources */,
 				1CBDB5F61625BACE0004BDF4 /* AwfulParsing.m in Sources */,
+				1CBDB5FF162600D40004BDF4 /* NSManagedObject+Awful.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

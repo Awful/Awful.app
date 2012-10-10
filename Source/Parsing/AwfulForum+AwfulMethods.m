@@ -18,126 +18,62 @@
             return existing;
         }
     }
-    
-    NSManagedObjectContext *context = [AwfulDataStack sharedDataStack].context;
-    AwfulForum *newForum = [AwfulForum insertInManagedObjectContext:context];
+    AwfulForum *newForum = [AwfulForum insertNew];
     newForum.forumID = forumID;
     return newForum;
 }
 
-+ (NSArray *)parseForums:(NSData *)data
++ (NSArray *)updateCategoriesAndForums:(NSData *)data
 {
-    NSManagedObjectContext *context = [AwfulDataStack sharedDataStack].context;
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[AwfulForum entityName]];
-    NSError *error;
-    NSArray *allExistingForums = [context executeFetchRequest:request error:&error];
     NSMutableDictionary *existingForums = [NSMutableDictionary new];
-    for (AwfulForum *f in allExistingForums) {
+    for (AwfulForum *f in [AwfulForum fetchAll]) {
         existingForums[f.forumID] = f;
     }
-    request = [NSFetchRequest fetchRequestWithEntityName:[AwfulCategory entityName]];
-    NSArray *allExistingCategories = [context executeFetchRequest:request error:&error];
     NSMutableDictionary *existingCategories = [NSMutableDictionary new];
-    for (AwfulCategory *c in allExistingCategories) {
+    for (AwfulCategory *c in [AwfulCategory fetchAll]) {
         existingCategories[c.categoryID] = c;
     }
-    
-    // There's a pulldown menu at the bottom of forumdisplay.php and showthread.php like this:
-    //
-    // <select name="forumid">
-    //   <option value="-1">Whatever</option>
-    //   <option value="pm">Private Messages</option>
-    //   ...
-    //   <option value="-1">--------------------</option>
-    //   <option value="48"> Main</option>
-    //   <option value="1">-- General Bullshit</option>
-    //   <option value="155">---- SA's Front Page Discussion</option>
-    //   ...
-    // </select>
-    //
-    // This is the only place that lists *all* forums. index.php only shows one level of subforums.
-    TFHpple *forumdisplay = [[TFHpple alloc] initWithHTMLData:data];
-    NSArray *listOfItems = [forumdisplay search:@"//select[@name='forumid']/option"];
+    NSMutableArray *allForums = [NSMutableArray new];
+    ForumHierarchyParsedInfo *info = [[ForumHierarchyParsedInfo alloc] initWithHTMLData:data];
     int indexOfCategory = 0;
     int indexOfForum = 0;
-    
-    NSMutableArray *allCategories = [NSMutableArray new];
-    NSMutableArray *allForums = [NSMutableArray new];
-    AwfulCategory *category;
-    NSMutableArray *forumStack = [NSMutableArray new];
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"^(-*) ?(.*)$"
-                                                                           options:0
-                                                                             error:&error];
-    if (!regex) {
-        NSLog(@"Regex failure parsing forums: %@", error);
-        return nil;
-    }
-    
-    for (TFHppleElement *item in listOfItems) {
-        NSString *forumOrCategoryID = [item objectForKey:@"value"];
-        if ([forumOrCategoryID integerValue] <= 0)
-            continue;
-        
-        NSTextCheckingResult *match = [regex firstMatchInString:[item content]
-                                                        options:0
-                                                          range:NSMakeRange(0, [[item content] length])];
-        NSString *name = [[item content] substringWithRange:[match rangeAtIndex:2]];
-        NSUInteger depth = [match rangeAtIndex:1].length / 2;
-        if (depth == 0) {
-            [forumStack removeAllObjects];
-            category = existingCategories[forumOrCategoryID];
-            if (!category)
-                category = [AwfulCategory insertInManagedObjectContext:context];
-            category.categoryID = forumOrCategoryID;
-            category.name = name;
-            category.indexValue = indexOfCategory++;
-            [allCategories addObject:category];
-        } else {
-            while ([forumStack count] >= depth) {
-                [forumStack removeLastObject];
+    for (CategoryParsedInfo *categoryInfo in info.categories) {
+        AwfulCategory *category = existingCategories[categoryInfo.categoryID];
+        if (!category) category = [AwfulCategory insertNew];
+        category.categoryID = categoryInfo.categoryID;
+        category.name = categoryInfo.name;
+        category.indexValue = indexOfCategory++;
+        NSMutableArray *forumStack = [categoryInfo.forums mutableCopy];
+        while ([forumStack count] > 0) {
+            ForumParsedInfo *forumInfo = [forumStack objectAtIndex:0];
+            [forumStack removeObjectAtIndex:0];
+            AwfulForum *forum = existingForums[forumInfo.forumID];
+            if (!forum) {
+                forum = [AwfulForum insertNew];
+                forum.forumID = forumInfo.forumID;
             }
-            AwfulForum *forum = existingForums[forumOrCategoryID];
-            if (!forum) forum = [AwfulForum insertInManagedObjectContext:context];
-            forum.name = name;
+            forum.name = forumInfo.name;
             forum.category = category;
-            forum.forumID = forumOrCategoryID;
             forum.indexValue = indexOfForum++;
-            if ([forumStack count])
-                forum.parentForum = [forumStack lastObject];
-            [forumStack addObject:forum];
+            if (forumInfo.parentForum) {
+                forum.parentForum = existingForums[forumInfo.parentForum.forumID];
+            }
             [allForums addObject:forum];
             existingForums[forum.forumID] = forum;
+            NSRange start = NSMakeRange(0, [forumInfo.subforums count]);
+            [forumStack insertObjects:forumInfo.subforums
+                            atIndexes:[NSIndexSet indexSetWithIndexesInRange:start]];
         }
     }
     
-    // Remove categories we didn't come across.
-    if ([allCategories count] > 0) {
-        request = [NSFetchRequest fetchRequestWithEntityName:[AwfulCategory entityName]];
-        NSArray *keep = [allCategories valueForKey:AwfulCategoryAttributes.categoryID];
-        request.predicate = [NSPredicate predicateWithFormat:@"NOT (categoryID IN %@)", keep];
-        NSArray *dead = [[AwfulDataStack sharedDataStack].context executeFetchRequest:request
-                                                                                error:&error];
-        if (!dead) {
-            NSLog(@"Error deleting dead categories: %@", error);
-            return nil;
-        }
-        for (AwfulCategory *category in dead)
-            [category.managedObjectContext deleteObject:category];
+    if ([info.categories count] > 0) {
+        NSArray *keep = [info.categories valueForKey:@"categoryID"];
+        [AwfulCategory deleteAllMatchingPredicate:@"NOT (categoryID IN %@)", keep];
     }
     
-    // Ditto for forums.
     if ([allForums count] > 0) {
-        request = [NSFetchRequest fetchRequestWithEntityName:[AwfulForum entityName]];
         NSArray *keep = [allForums valueForKey:AwfulForumAttributes.forumID];
-        request.predicate = [NSPredicate predicateWithFormat:@"NOT (forumID IN %@)", keep];
-        NSArray *dead = [[AwfulDataStack sharedDataStack].context executeFetchRequest:request
-                                                                                error:&error];
-        if (!dead) {
-            NSLog(@"Error deleting dead forums: %@", error);
-            return nil;
-        }
-        for (AwfulForum *forum in dead)
-            [forum.managedObjectContext deleteObject:forum];
+        [AwfulForum deleteAllMatchingPredicate:@"NOT (forumID IN %@)", keep];
     }
     
     [[AwfulDataStack sharedDataStack] save];

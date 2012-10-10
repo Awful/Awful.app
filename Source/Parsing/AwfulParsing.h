@@ -28,7 +28,7 @@
 @end
 
 
-@interface ParsedUserInfo : ParsedInfo
+@interface UserParsedInfo : ParsedInfo
 
 @property (readonly, copy, nonatomic) NSString *userID;
 
@@ -39,12 +39,45 @@
 @end
 
 
-@interface ParsedReplyFormInfo : ParsedInfo
+@interface ReplyFormParsedInfo : ParsedInfo
 
 @property (readonly, copy, nonatomic) NSString *formkey;
 
 @property (readonly, copy, nonatomic) NSString *formCookie;
 
 @property (readonly, copy, nonatomic) NSString *bookmark;
+
+@end
+
+
+@interface ForumHierarchyParsedInfo : ParsedInfo
+
+@property (readonly, nonatomic) NSArray *categories;
+
+@end
+
+
+@interface CategoryParsedInfo : ParsedInfo
+
+@property (readonly, nonatomic) NSArray *forums;
+
+@property (readonly, copy, nonatomic) NSString *name;
+
+@property (readonly, copy, nonatomic) NSString *categoryID;
+
+@end
+
+
+@interface ForumParsedInfo : ParsedInfo
+
+@property (readonly, weak, nonatomic) CategoryParsedInfo *category;
+
+@property (readonly, nonatomic) NSArray *subforums;
+
+@property (readonly, weak, nonatomic) ForumParsedInfo *parentForum;
+
+@property (readonly, copy, nonatomic) NSString *name;
+
+@property (readonly, copy, nonatomic) NSString *forumID;
 
 @end

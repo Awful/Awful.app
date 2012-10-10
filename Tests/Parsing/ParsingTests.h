@@ -8,6 +8,7 @@
 
 #import <SenTestingKit/SenTestingKit.h>
 #import "AwfulDataStack.h"
+#import "AwfulParsing.h"
 
 @interface ParsingTests : SenTestCase
 

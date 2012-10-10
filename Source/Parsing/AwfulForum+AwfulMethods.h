@@ -10,7 +10,7 @@
 
 @interface AwfulForum (AwfulMethods)
 
-+ (NSArray *)parseForums:(NSData *)data;
++ (NSArray *)updateCategoriesAndForums:(NSData *)data;
 
 + (void)updateSubforums:(NSArray*)rows inForum:(AwfulForum*)forum;
 
