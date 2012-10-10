@@ -10,7 +10,7 @@
 
 @interface AwfulUser : NSObject
 
-@property (copy, nonatomic) NSString *userName;
+@property (copy, nonatomic) NSString *username;
 
 @property (copy, nonatomic) NSString *userID;
 

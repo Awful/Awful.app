@@ -15,8 +15,8 @@
 {
     NSMutableDictionary *config = [[NSMutableDictionary alloc] init];
     AwfulUser *user = AwfulSettings.settings.currentUser;
-    if(user.userName != nil) {
-        [config setObject:user.userName forKey:@"username"];
+    if(user.username != nil) {
+        [config setObject:user.username forKey:@"username"];
     } else {
         return @"";
     }

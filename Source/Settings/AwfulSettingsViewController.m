@@ -32,7 +32,7 @@
     self.switches = [NSMutableArray new];
     self.sections = AwfulSettings.settings.sections;
     self.user = AwfulSettings.settings.currentUser;
-    if (self.user.userName == nil && IsLoggedIn()) {
+    if (self.user.username == nil && IsLoggedIn()) {
         [self refresh];
     }
     self.tableView.backgroundView = nil;
@@ -140,7 +140,7 @@ typedef enum SettingType
     
     if (settingType == ImmutableSetting) {
         // This only works because there's one immutable setting here.
-        cell.detailTextLabel.text = self.user.userName;
+        cell.detailTextLabel.text = self.user.username;
     }
     
     NSString *key = setting[@"Key"];
