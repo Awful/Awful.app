@@ -50,4 +50,46 @@
                          @"The Game Room", nil);
 }
 
+- (void)testThreads
+{
+    NSArray *threadInfos = [ThreadParsedInfo threadsWithHTMLData:self.fixture];
+    STAssertEquals([threadInfos count], 40U, nil);
+    
+    STAssertEqualObjects([[threadInfos lastObject] forumID], @"46", nil);
+    
+    STAssertEqualObjects([threadInfos[1] threadID], @"3508391", nil);
+    STAssertEqualObjects([threadInfos[8] threadID], @"3510496", nil);
+    
+    STAssertEqualObjects([threadInfos[7] title], @"UK Political Cartoons Megathread Part 2", nil);
+    
+    STAssertTrue([threadInfos[0] sticky] && [threadInfos[3] sticky], nil);
+    STAssertFalse([threadInfos[5] sticky] || [threadInfos[10] sticky], nil);
+    
+    STAssertEqualObjects([[threadInfos[12] threadIconImageURL] absoluteString],
+                         @"http://fi.somethingawful.com/forums/posticons/lf-marx.png#522", nil);
+    
+    STAssertEqualObjects([threadInfos[16] authorName], @"ChlamydiaJones", nil);
+    
+    STAssertTrue([threadInfos[17] seen] && [threadInfos[4] seen], nil);
+    STAssertFalse([threadInfos[19] seen] || [threadInfos[24] seen], nil);
+    
+    STAssertFalse([threadInfos[6] isLocked], nil);
+    
+    STAssertEquals([threadInfos[0] starCategory], 3, nil);
+    STAssertEquals([threadInfos[30] starCategory], 1, nil);
+    
+    STAssertEquals([threadInfos[30] totalUnreadPosts], 0, nil);
+    STAssertEquals([threadInfos[31] totalUnreadPosts], -1, nil);
+    STAssertEquals([threadInfos[29] totalUnreadPosts], 48, nil);
+    
+    STAssertEquals([threadInfos[38] totalReplies], 1708, nil);
+    
+    STAssertEquals([threadInfos[33] threadVotes], 22, nil);
+    STAssertEqualObjects([threadInfos[33] threadRating], [NSDecimalNumber decimalNumberWithString:@"2.87"], nil);
+    
+    STAssertEqualObjects([threadInfos[30] lastPostAuthorName], @"Kafka Esq.", nil);
+    
+    STAssertNotNil([threadInfos[35] lastPostDate], nil);
+}
+
 @end

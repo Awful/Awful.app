@@ -81,3 +81,43 @@
 @property (readonly, copy, nonatomic) NSString *forumID;
 
 @end
+
+
+@interface ThreadParsedInfo : ParsedInfo
+
+@property (readonly, copy, nonatomic) NSString *forumID;
+
+@property (readonly, copy, nonatomic) NSString *threadID;
+
+@property (readonly, copy, nonatomic) NSString *title;
+
+@property (readonly, nonatomic) BOOL sticky;
+
+@property (readonly, nonatomic) NSURL *threadIconImageURL;
+
+@property (readonly, nonatomic) NSURL *threadIconImageURL2;
+
+@property (readonly, copy, nonatomic) NSString *authorName;
+
+@property (readonly, nonatomic) BOOL seen;
+
+@property (readonly, nonatomic) BOOL isLocked;
+
+@property (readonly, nonatomic) NSInteger starCategory;
+
+// Defaults to -1.
+@property (readonly, nonatomic) NSInteger totalUnreadPosts;
+
+@property (readonly, nonatomic) NSInteger totalReplies;
+
+@property (readonly, nonatomic) NSInteger threadVotes;
+
+@property (readonly, nonatomic) NSDecimalNumber *threadRating;
+
+@property (readonly, copy, nonatomic) NSString *lastPostAuthorName;
+
+@property (readonly, nonatomic) NSDate *lastPostDate;
+
++ (NSArray *)threadsWithHTMLData:(NSData *)htmlData;
+
+@end

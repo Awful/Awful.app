@@ -7,6 +7,7 @@
 //
 
 #import "AwfulParsing.h"
+#import "AwfulThread+AwfulMethods.h"
 
 @interface ParsedInfo ()
 
@@ -21,6 +22,7 @@
     self = [super init];
     if (self) {
         _htmlData = [htmlData copy];
+        [self parseHTMLData];
     }
     return self;
 }
@@ -28,6 +30,12 @@
 - (id)init
 {
     return [self initWithHTMLData:nil];
+}
+
+- (void)parseHTMLData
+{
+    [NSException raise:NSInternalInconsistencyException
+                format:@"subclasses must implement %@", NSStringFromSelector(_cmd)];
 }
 
 @end
@@ -82,18 +90,6 @@
     }
 }
 
-- (NSString *)userID
-{
-    if (!_userID) [self parseHTMLData];
-    return _userID;
-}
-
-- (NSString *)username
-{
-    if (!_username) [self parseHTMLData];
-    return _username;
-}
-
 - (void)applyToObject:(id)object
 {
     NSDictionary *values = [self dictionaryWithValuesForKeys:@[ @"userID", @"username" ]];
@@ -135,18 +131,6 @@
     }
 }
 
-- (NSString *)formkey
-{
-    if (!_formkey) [self parseHTMLData];
-    return _formkey;
-}
-
-- (NSString *)formCookie
-{
-    if (!_formCookie) [self parseHTMLData];
-    return _formCookie;
-}
-
 @end
 
 
@@ -185,17 +169,9 @@
 
 @implementation ForumHierarchyParsedInfo
 
-- (id)initWithHTMLData:(NSData *)htmlData
-{
-    self = [super initWithHTMLData:htmlData];
-    if (self) {
-        _mutableCategories = [NSMutableArray new];
-    }
-    return self;
-}
-
 - (void)parseHTMLData
 {
+    _mutableCategories = [NSMutableArray new];
     // There's a pulldown menu at the bottom of forumdisplay.php and showthread.php like this:
     //
     // <select name="forumid">
@@ -259,7 +235,6 @@
 
 - (NSArray *)categories
 {
-    if ([self.mutableCategories count] == 0) [self parseHTMLData];
     return [self.mutableCategories copy];
 }
 
@@ -268,13 +243,9 @@
 
 @implementation CategoryParsedInfo
 
-- (id)initWithHTMLData:(NSData *)htmlData
+- (void)parseHTMLData
 {
-    self = [super initWithHTMLData:htmlData];
-    if (self) {
-        _mutableForums = [NSMutableArray new];
-    }
-    return self;
+    _mutableForums = [NSMutableArray new];
 }
 
 - (NSArray *)forums
@@ -287,18 +258,193 @@
 
 @implementation ForumParsedInfo
 
-- (id)initWithHTMLData:(NSData *)htmlData
+- (void)parseHTMLData
 {
-    self = [super initWithHTMLData:htmlData];
-    if (self) {
-        _mutableSubforums = [NSMutableArray new];
-    }
-    return self;
+    _mutableSubforums = [NSMutableArray new];
 }
 
 - (NSArray *)subforums
 {
     return [self.mutableSubforums copy];
+}
+
+@end
+
+
+@interface ThreadParsedInfo ()
+
+@property (copy, nonatomic) NSString *forumID;
+
+@property (copy, nonatomic) NSString *threadID;
+
+@property (copy, nonatomic) NSString *title;
+
+@property (nonatomic) BOOL sticky;
+
+@property (nonatomic) NSURL *threadIconImageURL;
+
+@property (nonatomic) NSURL *threadIconImageURL2;
+
+@property (copy, nonatomic) NSString *authorName;
+
+@property (nonatomic) BOOL seen;
+
+@property (nonatomic) BOOL isLocked;
+
+@property (nonatomic) NSInteger starCategory;
+
+@property (nonatomic) NSInteger totalUnreadPosts;
+
+@property (nonatomic) NSInteger totalReplies;
+
+@property (nonatomic) NSInteger threadVotes;
+
+@property (nonatomic) NSDecimalNumber *threadRating;
+
+@property (copy, nonatomic) NSString *lastPostAuthorName;
+
+@property (nonatomic) NSDate *lastPostDate;
+
+@end
+
+
+@implementation ThreadParsedInfo
+
++ (NSArray *)threadsWithHTMLData:(NSData *)htmlData
+{
+    // The breadcrumbs tell us what forum we're in!
+    TFHpple *doc = [[TFHpple alloc] initWithHTMLData:htmlData];
+    NSString *forumID;
+    TFHppleElement *forum = [doc searchForSingle:@"(//div[" HAS_CLASS(breadcrumbs) "]//a[contains(@href, 'forumid')])[last()]"];
+    if (forum) {
+        NSError *error;
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"forumid=(\\d+)"
+                                                                               options:0
+                                                                                 error:&error];
+        if (!regex) {
+            NSLog(@"error creating forumid regex: %@", error);
+        }
+        NSString *href = [forum objectForKey:@"href"];
+        NSTextCheckingResult *match = [regex firstMatchInString:href options:0 range:NSMakeRange(0, [href length])];
+        if (match) {
+            forumID = [href substringWithRange:[match rangeAtIndex:1]];
+        }
+    }
+    
+    NSMutableArray *threads = [NSMutableArray new];
+    for (NSString *oneThread in PerformRawHTMLXPathQuery(htmlData, @"//tr[" HAS_CLASS(thread) "]")) {
+        NSData *dataForOneThread = [oneThread dataUsingEncoding:NSUTF8StringEncoding];
+        ThreadParsedInfo *info = [[self alloc] initWithHTMLData:dataForOneThread];
+        info.forumID = forumID;
+        [threads addObject:info];
+    }
+    return threads;
+}
+
+- (void)parseHTMLData
+{
+    TFHpple *doc = [[TFHpple alloc] initWithHTMLData:self.htmlData];
+    
+    TFHppleElement *row = [doc searchForSingle:@"//tr[" HAS_CLASS(thread) "]"];
+    self.threadID = [[row objectForKey:@"id"] substringFromIndex:6];
+    
+    TFHppleElement *title = [doc searchForSingle:@"//a[" HAS_CLASS(thread_title) "]"];
+    self.title = [title content];
+    
+    TFHppleElement *sticky = [doc searchForSingle:@"//td[" HAS_CLASS(title_sticky) "]"];
+    self.sticky = !!sticky;
+    
+    TFHppleElement *icon = [doc searchForSingle:@"//td[" HAS_CLASS(icon) "]/img"];
+    if (!icon) {
+        // Film Dump rating.
+        icon = [doc searchForSingle:@"//td[" HAS_CLASS(rating) "]/img[contains(@src, '/rate/reviews')]"];
+    }
+    if (icon) {
+        self.threadIconImageURL = [NSURL URLWithString:[icon objectForKey:@"src"]];
+    }
+    
+    TFHppleElement *icon2 = [doc searchForSingle:@"//td[" HAS_CLASS(icon2) "]/img"];
+    if (icon2) {
+        self.threadIconImageURL2 = [NSURL URLWithString:[icon2 objectForKey:@"src"]];
+    }
+    
+    TFHppleElement *author = [doc searchForSingle:@"//td[" HAS_CLASS(author) "]/a"];
+    self.authorName = [author content];
+    
+    TFHppleElement *seen = [doc searchForSingle:@"//tr[" HAS_CLASS(seen) "]"];
+    self.seen = !!seen;
+    
+    TFHppleElement *locked = [doc searchForSingle:@"//tr[" HAS_CLASS(closed) "]"];
+    self.isLocked = !!locked;
+    
+    TFHppleElement *star = [doc searchForSingle:@"//td[" HAS_CLASS(star) "]//img[contains(@src, 'star')]"];
+    NSURL *starURL = [NSURL URLWithString:[star objectForKey:@"src"]];
+    if ([[starURL lastPathComponent] hasSuffix:@"star0.gif"]) {
+        self.starCategory = AwfulStarCategoryBlue;
+    } else if ([[starURL lastPathComponent] hasSuffix:@"star1.gif"]) {
+        self.starCategory = AwfulStarCategoryRed;
+    } else if ([[starURL lastPathComponent] hasSuffix:@"star2.gif"]) {
+        self.starCategory = AwfulStarCategoryYellow;
+    } else {
+        self.starCategory = AwfulStarCategoryNone;
+    }
+    
+    self.totalUnreadPosts = -1;
+    TFHppleElement *unread = [doc searchForSingle:@"//a[" HAS_CLASS(count) "]/b"];
+    if (unread) {
+        self.totalUnreadPosts = [[unread content] intValue];
+    } else {
+        if ([doc searchForSingle:@"//a[" HAS_CLASS(x) "]"]) {
+            self.totalUnreadPosts = 0;
+        }
+    }
+    
+    TFHppleElement *total = [doc searchForSingle:@"//td[" HAS_CLASS(replies) "]/a"];
+    if (!total) {
+        total = [doc searchForSingle:@"//td[" HAS_CLASS(replies) "]"];
+    }
+    self.totalReplies = [[total content] intValue];
+    
+    TFHppleElement *rating = [doc searchForSingle:@"//td[" HAS_CLASS(rating) "]/img"];
+    if (rating) {
+        NSScanner *numberScanner = [NSScanner scannerWithString:[rating objectForKey:@"title"]];
+        NSCharacterSet *notNumbers = [[NSCharacterSet characterSetWithCharactersInString:@"0123456789."] invertedSet];
+        [numberScanner setCharactersToBeSkipped:notNumbers];
+        NSInteger numberOfVotes;
+        BOOL ok = [numberScanner scanInteger:&numberOfVotes];
+        if (ok) {
+            self.threadVotes = numberOfVotes;
+        }
+        NSDecimal average;
+        ok = [numberScanner scanDecimal:&average];
+        if (ok) {
+            self.threadRating = [NSDecimalNumber decimalNumberWithDecimal:average];
+        }
+    }
+    
+    TFHppleElement *date = [doc searchForSingle:@"//td[" HAS_CLASS(lastpost) "]//div[" HAS_CLASS(date) "]"];
+    TFHppleElement *lastAuthor = [doc searchForSingle:@"//td[" HAS_CLASS(lastpost) "]//a[" HAS_CLASS(author) "]"];
+    self.lastPostAuthorName = [lastAuthor content];
+    if (date) {
+        static NSDateFormatter *df = nil;
+        if (df == nil) {
+            df = [[NSDateFormatter alloc] init];
+            [df setTimeZone:[NSTimeZone localTimeZone]];
+            [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+        }
+        static NSString *formats[] = {
+            @"h:mm a MMM d, yyyy",
+            @"HH:mm MMM d, yyyy",
+        };
+        for (size_t i = 0; i < sizeof(formats) / sizeof(formats[0]); i++) {
+            [df setDateFormat:formats[i]];
+            NSDate *parsedDate = [df dateFromString:[date content]];
+            if (parsedDate) {
+                self.lastPostDate = parsedDate;
+                break;
+            }
+        }
+    }
 }
 
 @end
