@@ -95,9 +95,7 @@
 		1CBDB5DD1625A0C10004BDF4 /* NewReplyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5DC1625A0C10004BDF4 /* NewReplyTests.m */; };
 		1CBDB5E01625A0D00004BDF4 /* ThreadTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5DF1625A0D00004BDF4 /* ThreadTests.m */; };
 		1CBDB5E31625A7780004BDF4 /* ParsingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5E21625A7780004BDF4 /* ParsingTests.m */; };
-		1CBDB5E41625A9FD0004BDF4 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 117DBE3A1522A39A007125EF /* CoreData.framework */; };
 		1CBDB5E71625AA240004BDF4 /* AwfulDataStack.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5E61625AA240004BDF4 /* AwfulDataStack.m */; };
-		1CBDB5E81625AA240004BDF4 /* AwfulDataStack.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5E61625AA240004BDF4 /* AwfulDataStack.m */; };
 		1CBDB5F01625B76F0004BDF4 /* bookmarkthreads.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CBDB5EB1625B76F0004BDF4 /* bookmarkthreads.html */; };
 		1CBDB5F11625B76F0004BDF4 /* forumdisplay.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CBDB5EC1625B76F0004BDF4 /* forumdisplay.html */; };
 		1CBDB5F21625B76F0004BDF4 /* member.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CBDB5ED1625B76F0004BDF4 /* member.html */; };
@@ -1062,7 +1060,6 @@
 				1CBDB5BE16259C6C0004BDF4 /* SenTestingKit.framework in Frameworks */,
 				1CBDB5BF16259C6C0004BDF4 /* UIKit.framework in Frameworks */,
 				1CBDB5C016259C6C0004BDF4 /* Foundation.framework in Frameworks */,
-				1CBDB5E41625A9FD0004BDF4 /* CoreData.framework in Frameworks */,
 				1CBDB5FC1625E7440004BDF4 /* libxml2.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2443,7 +2440,6 @@
 				1CBDB5DD1625A0C10004BDF4 /* NewReplyTests.m in Sources */,
 				1CBDB5E01625A0D00004BDF4 /* ThreadTests.m in Sources */,
 				1CBDB5E31625A7780004BDF4 /* ParsingTests.m in Sources */,
-				1CBDB5E81625AA240004BDF4 /* AwfulDataStack.m in Sources */,
 				1CBDB5F71625BACE0004BDF4 /* AwfulParsing.m in Sources */,
 				1CBDB5F81625BB630004BDF4 /* AwfulStringEncoding.m in Sources */,
 				1CBDB5F91625E7320004BDF4 /* TFHpple.m in Sources */,

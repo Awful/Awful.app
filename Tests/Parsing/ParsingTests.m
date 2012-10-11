@@ -31,26 +31,3 @@
 }
 
 @end
-
-
-@implementation CoreDataParsingTests
-{
-    AwfulDataStack *_dataStack;
-}
-
-- (AwfulDataStack *)dataStack
-{
-    if (_dataStack) return _dataStack;
-    NSURL *documents = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory
-                                                               inDomains:NSUserDomainMask] lastObject];
-    NSURL *storeURL = [documents URLByAppendingPathComponent:@"TestData.db"];
-    _dataStack = [[AwfulDataStack alloc] initWithStoreURL:storeURL];
-    return _dataStack;
-}
-
-- (void)tearDown
-{
-    [self.dataStack deleteAllDataAndResetStack];
-}
-
-@end
