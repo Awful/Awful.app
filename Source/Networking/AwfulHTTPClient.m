@@ -7,7 +7,6 @@
 //
 
 #import "AwfulHTTPClient.h"
-#import "AwfulForum+AwfulMethods.h"
 #import "TFHpple.h"
 #import "AwfulThread+AwfulMethods.h"
 #import "AwfulPage.h"
@@ -197,7 +196,8 @@ typedef enum BookmarkAction {
                                                                success:^(id _, id response)
     {
         NSData *data = (NSData *)response;
-        NSArray *forums = [AwfulForum updateCategoriesAndForums:data];
+        ForumHierarchyParsedInfo *info = [[ForumHierarchyParsedInfo alloc] initWithHTMLData:data];
+        NSArray *forums = [AwfulForum updateCategoriesAndForums:info];
         if (forumsListResponseBlock) forumsListResponseBlock([forums mutableCopy]);
     } failure:^(id _, NSError *error)
     {

@@ -7,7 +7,6 @@
 //
 
 #import "AwfulThread+AwfulMethods.h"
-#import "AwfulForum+AwfulMethods.h"
 #import "AwfulParsing.h"
 
 @implementation AwfulThread (AwfulMethods)
@@ -131,14 +130,8 @@
     NSString *raw_str = [[NSString alloc] initWithData:data encoding:NSWindowsCP1252StringEncoding];
     NSData *converted = [raw_str dataUsingEncoding:NSUTF8StringEncoding];
     TFHpple *hpple = [[TFHpple alloc] initWithHTMLData:converted];
-    
-    NSArray *subs = PerformRawHTMLXPathQuery(data, @"//table[@id='subforums']//tr[" HAS_CLASS(subforum) "]");
-    if (subs.count > 0)
-        [AwfulForum updateSubforums:subs inForum:forum];
-    
     NSMutableArray *threads = [[NSMutableArray alloc] init];
     NSMutableArray *existing_threads = [NSMutableArray arrayWithArray:[AwfulThread threadsForForum:forum]];
-    
     NSString *xpathForThread = @"//tr[" HAS_CLASS(thread) "]";
     NSArray *post_strings = PerformRawHTMLXPathQuery(hpple.data, @"//tr[" HAS_CLASS(thread) "]");
     

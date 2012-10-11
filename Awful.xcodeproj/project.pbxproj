@@ -56,7 +56,6 @@
 		1C05EDA9162306BB00FE567F /* modstar.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C05EDA5162306BB00FE567F /* modstar.gif */; };
 		1C05EDAA162306BB00FE567F /* postaction-dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C05EDA6162306BB00FE567F /* postaction-dark.png */; };
 		1C05EDAB162306BB00FE567F /* postaction.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C05EDA7162306BB00FE567F /* postaction.png */; };
-		1C05EDB516230C5500FE567F /* AwfulForum+AwfulMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C05EDB216230C5400FE567F /* AwfulForum+AwfulMethods.m */; };
 		1C05EDB616230C5500FE567F /* AwfulThread+AwfulMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C05EDB416230C5500FE567F /* AwfulThread+AwfulMethods.m */; };
 		1C05EDB916230CB500FE567F /* AwfulPageDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C05EDB816230CB500FE567F /* AwfulPageDataController.m */; };
 		1C13FF64161948DE000ED2B1 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1C13FF62161948DE000ED2B1 /* Model.xcdatamodeld */; };
@@ -557,8 +556,6 @@
 		1C05EDA6162306BB00FE567F /* postaction-dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "postaction-dark.png"; sourceTree = "<group>"; };
 		1C05EDA7162306BB00FE567F /* postaction.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = postaction.png; sourceTree = "<group>"; };
 		1C05EDAE16230C1700FE567F /* AwfulParsing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulParsing.h; sourceTree = "<group>"; };
-		1C05EDB116230C5400FE567F /* AwfulForum+AwfulMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AwfulForum+AwfulMethods.h"; sourceTree = "<group>"; };
-		1C05EDB216230C5400FE567F /* AwfulForum+AwfulMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AwfulForum+AwfulMethods.m"; sourceTree = "<group>"; };
 		1C05EDB316230C5400FE567F /* AwfulThread+AwfulMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AwfulThread+AwfulMethods.h"; sourceTree = "<group>"; };
 		1C05EDB416230C5500FE567F /* AwfulThread+AwfulMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AwfulThread+AwfulMethods.m"; sourceTree = "<group>"; };
 		1C05EDB716230CB500FE567F /* AwfulPageDataController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPageDataController.h; sourceTree = "<group>"; };
@@ -1268,8 +1265,6 @@
 			children = (
 				1C05EDAE16230C1700FE567F /* AwfulParsing.h */,
 				1CBDB5F51625BACE0004BDF4 /* AwfulParsing.m */,
-				1C05EDB116230C5400FE567F /* AwfulForum+AwfulMethods.h */,
-				1C05EDB216230C5400FE567F /* AwfulForum+AwfulMethods.m */,
 				1C05EDB716230CB500FE567F /* AwfulPageDataController.h */,
 				1C05EDB816230CB500FE567F /* AwfulPageDataController.m */,
 				1C05EDB316230C5400FE567F /* AwfulThread+AwfulMethods.h */,
@@ -2551,7 +2546,6 @@
 				1C13FF67161BCCB6000ED2B1 /* AwfulThreadCell.m in Sources */,
 				1C13FF6A161BF733000ED2B1 /* AwfulBadgeView.m in Sources */,
 				1C83DB30161D4D1100E53CFA /* AwfulStringEncoding.m in Sources */,
-				1C05EDB516230C5500FE567F /* AwfulForum+AwfulMethods.m in Sources */,
 				1C05EDB616230C5500FE567F /* AwfulThread+AwfulMethods.m in Sources */,
 				1C05EDB916230CB500FE567F /* AwfulPageDataController.m in Sources */,
 				1C83DB54161FF48600E53CFA /* ImgurHTTPClient.m in Sources */,
