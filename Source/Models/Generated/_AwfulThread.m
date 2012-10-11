@@ -7,6 +7,7 @@ const struct AwfulThreadAttributes AwfulThreadAttributes = {
 	.authorName = @"authorName",
 	.isBookmarked = @"isBookmarked",
 	.isLocked = @"isLocked",
+	.isSticky = @"isSticky",
 	.lastPostAuthorName = @"lastPostAuthorName",
 	.lastPostDate = @"lastPostDate",
 	.seen = @"seen",
@@ -61,6 +62,10 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 	}
 	if ([key isEqualToString:@"isLockedValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"isLocked"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+	}
+	if ([key isEqualToString:@"isStickyValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"isSticky"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 	}
 	if ([key isEqualToString:@"seenValue"]) {
@@ -147,6 +152,32 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 
 - (void)setPrimitiveIsLockedValue:(BOOL)value_ {
 	[self setPrimitiveIsLocked:[NSNumber numberWithBool:value_]];
+}
+
+
+
+
+
+@dynamic isSticky;
+
+
+
+- (BOOL)isStickyValue {
+	NSNumber *result = [self isSticky];
+	return [result boolValue];
+}
+
+- (void)setIsStickyValue:(BOOL)value_ {
+	[self setIsSticky:[NSNumber numberWithBool:value_]];
+}
+
+- (BOOL)primitiveIsStickyValue {
+	NSNumber *result = [self primitiveIsSticky];
+	return [result boolValue];
+}
+
+- (void)setPrimitiveIsStickyValue:(BOOL)value_ {
+	[self setPrimitiveIsSticky:[NSNumber numberWithBool:value_]];
 }
 
 
