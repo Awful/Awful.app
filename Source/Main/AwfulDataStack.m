@@ -94,11 +94,22 @@
 
 - (void)deleteAllData
 {
+    NSArray *storeURLs = [[self.coordinator persistentStores] valueForKey:@"URL"];
+    if ([storeURLs count] == 0) {
+        storeURLs = @[ [[self class] defaultStoreURL] ];
+    }
     for (NSPersistentStore *store in [self.coordinator persistentStores]) {
         NSError *error;
-        BOOL ok = [[NSFileManager defaultManager] removeItemAtURL:[store URL] error:&error];
+        BOOL ok = [self.coordinator removePersistentStore:store error:&error];
         if (!ok) {
-            NSLog(@"failed to delete data store %@: %@", [store URL], [error localizedDescription]);
+            NSLog(@"failed to remove persistent store %@: %@", store, error);
+        }
+    }
+    for (NSURL *storeURL in storeURLs) {
+        NSError *error;
+        BOOL ok = [[NSFileManager defaultManager] removeItemAtURL:storeURL error:&error];
+        if (!ok) {
+            NSLog(@"failed to delete data store %@: %@", storeURL, error);
         }
     }
 }

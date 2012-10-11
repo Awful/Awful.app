@@ -66,4 +66,9 @@
     return [allForums count] > 0 ? allForums : [existingForums allValues];
 }
 
+- (void)deleteUnbookmarkedThreads
+{
+    [AwfulThread deleteAllMatchingPredicate:@"forum == %@ AND isBookmarked == NO", self];
+}
+
 @end

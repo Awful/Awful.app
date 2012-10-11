@@ -7,7 +7,7 @@
 //
 
 #import "AwfulParsing.h"
-#import "AwfulThread+AwfulMethods.h"
+#import "AwfulThread.h"
 
 @interface ParsedInfo ()
 
@@ -36,6 +36,22 @@
 {
     [NSException raise:NSInternalInconsistencyException
                 format:@"subclasses must implement %@", NSStringFromSelector(_cmd)];
+}
+
+- (void)applyToObject:(id)object
+{
+    NSDictionary *values = [self dictionaryWithValuesForKeys:[[self class] keysToApplyToObject]];
+    for (NSString *key in values) {
+        id value = values[key];
+        if (![value isEqual:[NSNull null]]) {
+            [object setValue:value forKey:key];
+        }
+    }
+}
+
++ (NSArray *)keysToApplyToObject
+{
+    return @[];
 }
 
 @end
@@ -90,14 +106,9 @@
     }
 }
 
-- (void)applyToObject:(id)object
++ (NSArray *)keysToApplyToObject
 {
-    NSDictionary *values = [self dictionaryWithValuesForKeys:@[ @"userID", @"username" ]];
-    for (NSString *key in values) {
-        id value = values[key];
-        if (![value isEqual:[NSNull null]])
-            [object setValue:value forKey:key];
-    }
+    return @[ @"userID", @"username" ];
 }
 
 @end
@@ -279,7 +290,7 @@
 
 @property (copy, nonatomic) NSString *title;
 
-@property (nonatomic) BOOL sticky;
+@property (nonatomic) BOOL isSticky;
 
 @property (nonatomic) NSURL *threadIconImageURL;
 
@@ -309,6 +320,11 @@
 
 
 @implementation ThreadParsedInfo
+
+- (BOOL)isBookmarked
+{
+    return self.starCategory != AwfulStarCategoryNone;
+}
 
 + (NSArray *)threadsWithHTMLData:(NSData *)htmlData
 {
@@ -351,8 +367,8 @@
     TFHppleElement *title = [doc searchForSingle:@"//a[" HAS_CLASS(thread_title) "]"];
     self.title = [title content];
     
-    TFHppleElement *sticky = [doc searchForSingle:@"//td[" HAS_CLASS(title_sticky) "]"];
-    self.sticky = !!sticky;
+    TFHppleElement *isSticky = [doc searchForSingle:@"//td[" HAS_CLASS(title_sticky) "]"];
+    self.isSticky = !!isSticky;
     
     TFHppleElement *icon = [doc searchForSingle:@"//td[" HAS_CLASS(icon) "]/img"];
     if (!icon) {
@@ -445,6 +461,15 @@
             }
         }
     }
+}
+
++ (NSArray *)keysToApplyToObject
+{
+    return @[
+        @"threadID", @"title", @"threadIconImageURL", @"threadIconImageURL2", @"authorName",
+        @"seen", @"isLocked", @"starCategory", @"totalUnreadPosts", @"totalReplies", @"threadVotes",
+        @"threadRating", @"lastPostAuthorName", @"lastPostDate", @"isBookmarked", @"isSticky"
+    ];
 }
 
 @end

@@ -22,21 +22,34 @@
     return all;
 }
 
-+ (void)deleteAllMatchingPredicate:(NSString *)format, ...
++ (NSArray *)fetchAllMatchingPredicate:(id)format, ...
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[(Class)self entityName]];
+    if ([format isKindOfClass:[NSPredicate class]]) {
+        [request setPredicate:(NSPredicate *)format];
+    } else {
+        va_list args;
+        va_start(args, format);
+        [request setPredicate:[NSPredicate predicateWithFormat:format arguments:args]];
+        va_end(args);
+    }
+    NSError *error;
+    NSArray *matches = [[AwfulDataStack sharedDataStack].context executeFetchRequest:request
+                                                                               error:&error];
+    if (!matches) {
+        NSLog(@"error fetching %@ matching %@: %@", self, [request predicate], error);
+    }
+    return matches;
+}
+
++ (void)deleteAllMatchingPredicate:(NSString *)format, ...
+{
     va_list args;
     va_start(args, format);
-    request.predicate = [NSPredicate predicateWithFormat:format arguments:args];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:format arguments:args];
     va_end(args);
-    NSError *error;
-    NSArray *dead = [[AwfulDataStack sharedDataStack].context executeFetchRequest:request
-                                                                            error:&error];
-    if (!dead) {
-        NSLog(@"error deleting %@ matching %@: %@", self, request.predicate, error);
-    }
-    for (AwfulCategory *category in dead) {
-        [category.managedObjectContext deleteObject:category];
+    for (NSManagedObject *dying in [self fetchAllMatchingPredicate:predicate]) {
+        [dying.managedObjectContext deleteObject:dying];
     }
 }
 

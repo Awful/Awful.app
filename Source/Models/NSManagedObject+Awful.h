@@ -12,6 +12,8 @@
 
 + (NSArray *)fetchAll;
 
++ (NSArray *)fetchAllMatchingPredicate:(id)formatOrPredicate, ...;
+
 + (void)deleteAllMatchingPredicate:(NSString *)format, ...;
 
 + (id)insertNew;

@@ -8,7 +8,6 @@
 
 #import "AwfulHTTPClient.h"
 #import "TFHpple.h"
-#import "AwfulThread+AwfulMethods.h"
 #import "AwfulPage.h"
 #import "AwfulPageDataController.h"
 #import "AwfulPageTemplate.h"
@@ -20,16 +19,16 @@
 
 @implementation AwfulHTTPClient
 
-+ (id)sharedClient {
-    static AwfulHTTPClient *__sharedClient;
++ (AwfulHTTPClient *)sharedClient
+{
+    static AwfulHTTPClient *sharedClient;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        __sharedClient = [[AwfulHTTPClient alloc] initWithBaseURL:
-                            [NSURL URLWithString:@"http://forums.somethingawful.com/"]];
+        sharedClient = [[AwfulHTTPClient alloc] initWithBaseURL:
+                        [NSURL URLWithString:@"http://forums.somethingawful.com/"]];
         [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
     });
-    
-    return __sharedClient;
+    return sharedClient;
 }
 
 - (id)initWithBaseURL:(NSURL *)url
@@ -41,50 +40,63 @@
     return self;
 }
 
--(NSOperation *)threadListForForum:(AwfulForum *)forum pageNum:(NSUInteger)pageNum onCompletion:(ThreadListResponseBlock)threadListResponseBlock onError:(AwfulErrorBlock)errorBlock
+- (NSOperation *)threadListForForum:(AwfulForum *)forum
+                            pageNum:(NSUInteger)pageNum
+                       onCompletion:(ThreadListResponseBlock)threadListResponseBlock
+                            onError:(AwfulErrorBlock)errorBlock
 {
     NSString *path = [NSString stringWithFormat:@"forumdisplay.php?forumid=%@&perpage=40&pagenumber=%u", forum.forumID, pageNum];
     NSMutableURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
-    urlRequest.timeoutInterval = NetworkTimeoutInterval;
+    urlRequest.timeoutInterval = 5.0;
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
-        success:^(AFHTTPRequestOperation *operation, id response) {
-            if(pageNum == 1) {
-                [AwfulThread removeOldThreadsForForum:forum];
-                [[AwfulDataStack sharedDataStack] save];
-            }
-            
-            NSData *responseData = (NSData *)response;
-            NSMutableArray *threads = [AwfulThread parseThreadsWithData:responseData forForum:forum];
-            [[AwfulDataStack sharedDataStack] save];
-            threadListResponseBlock(threads);
-        } 
-        failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            errorBlock(error);
+                                                               success:^(id _, id response)
+    {
+        if (pageNum == 1) {
+            [forum deleteUnbookmarkedThreads];
+        }
+        NSData *data = (NSData *)response;
+        NSArray *threadInfos = [ThreadParsedInfo threadsWithHTMLData:data];
+        NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:threadInfos];
+        // Assumes less than one page (40 threads' worth) of stickied threads.
+        NSInteger stickyIndex = -(NSInteger)[threads count];
+        for (AwfulThread *thread in threads) {
+            thread.forum = forum;
+            thread.stickyIndexValue = thread.isStickyValue ? stickyIndex++ : 0;
+        }
+        [[AwfulDataStack sharedDataStack] save];
+        threadListResponseBlock([threads mutableCopy]);
+    } failure:^(id _, NSError *error)
+    {
+        errorBlock(error);
     }];
     [self enqueueHTTPRequestOperation:op];
-    return (NSOperation *)op;
+    return op;
 }
 
--(NSOperation *)threadListForBookmarksAtPageNum:(NSUInteger)pageNum onCompletion:(ThreadListResponseBlock)threadListResponseBlock onError:(AwfulErrorBlock) errorBlock
+- (NSOperation *)threadListForBookmarksAtPageNum:(NSUInteger)pageNum onCompletion:(ThreadListResponseBlock)threadListResponseBlock onError:(AwfulErrorBlock) errorBlock
 {
     NSString *path = [NSString stringWithFormat:@"bookmarkthreads.php?action=view&perpage=40&pagenumber=%d", pageNum];
     NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
-       success:^(AFHTTPRequestOperation *operation, id response) {
-           if(pageNum == 1) {
-               [AwfulThread removeBookmarkedThreads];
-           }
-           
-           NSData *responseData = (NSData *)response;
-           NSMutableArray *threads = [AwfulThread parseBookmarkedThreadsWithData:responseData];
-           [[AwfulDataStack sharedDataStack] save];
-           threadListResponseBlock(threads);
-       } 
-       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-           errorBlock(error);
-       }];
+                                                               success:^(id _, id response)
+    {
+        if (pageNum == 1) {
+            [AwfulThread removeBookmarkedThreads];
+        }
+        NSData *data = (NSData *)response;
+        NSArray *threadInfos = [ThreadParsedInfo threadsWithHTMLData:data];
+        NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:threadInfos];
+        for (AwfulThread *thread in threads) {
+            thread.isBookmarkedValue = YES;
+        }
+        [[AwfulDataStack sharedDataStack] save];
+        threadListResponseBlock([threads mutableCopy]);
+    } failure:^(id _, NSError *error)
+    {
+        errorBlock(error);
+    }];
     [self enqueueHTTPRequestOperation:op];
-    return (NSOperation *)op;
+    return op;
 }
 
 -(NSOperation *)pageDataForThread : (AwfulThread *)thread destinationType : (AwfulPageDestinationType)destinationType pageNum : (NSUInteger)pageNum onCompletion:(PageResponseBlock)pageResponseBlock onError:(AwfulErrorBlock)errorBlock

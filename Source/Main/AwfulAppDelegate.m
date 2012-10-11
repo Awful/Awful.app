@@ -28,6 +28,7 @@ static AwfulAppDelegate *_instance;
 {
     _instance = self;
     [[AwfulSettings settings] registerDefaults];
+    [AwfulDataStack sharedDataStack].initFailureAction = AwfulDataStackInitFailureDelete;
     #if DEBUG
     [GRMustache preventNSUndefinedKeyExceptionAttack];
     #endif

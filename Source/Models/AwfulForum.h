@@ -13,4 +13,6 @@
 
 + (NSArray *)updateCategoriesAndForums:(ForumHierarchyParsedInfo *)info;
 
+- (void)deleteUnbookmarkedThreads;
+
 @end

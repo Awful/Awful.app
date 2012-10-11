@@ -8,8 +8,25 @@
 
 #import "_AwfulThread.h"
 
-@interface AwfulThread : _AwfulThread {}
+@interface AwfulThread : _AwfulThread
+
++ (NSArray *)bookmarkedThreads;
++ (void)removeBookmarkedThreads;
+
+@property (readonly, nonatomic) NSURL *firstIconURL;
+@property (readonly, nonatomic) NSURL *secondIconURL;
+
++ (NSArray *)threadsCreatedOrUpdatedWithParsedInfo:(NSArray *)threadInfos;
 
 @end
+
+
+typedef enum {
+    AwfulStarCategoryBlue = 0,
+    AwfulStarCategoryRed,
+    AwfulStarCategoryYellow,
+    AwfulStarCategoryNone
+} AwfulStarCategory;
+
 
 extern NSString * const AwfulThreadDidUpdateNotification;

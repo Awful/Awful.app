@@ -8,20 +8,19 @@
 
 #import "AFHTTPClient.h"
 #import "AwfulPage.h"
-
 @class AwfulForum;
 @class AwfulPost;
 @class AwfulThread;
 @class AwfulPageDataController;
 @class AwfulUser;
 
+
 typedef void (^AwfulErrorBlock)(NSError* error);
 
-static const NSTimeInterval NetworkTimeoutInterval = 5.0;
 
 @interface AwfulHTTPClient : AFHTTPClient
 
-+ (id)sharedClient;
++ (AwfulHTTPClient *)sharedClient;
 
 typedef void (^ThreadListResponseBlock)(NSMutableArray *threads);
 typedef void (^PageResponseBlock)(AwfulPageDataController *dataController);

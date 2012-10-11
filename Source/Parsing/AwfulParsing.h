@@ -25,6 +25,8 @@
 
 @property (readonly, copy, nonatomic) NSData *htmlData;
 
+- (void)applyToObject:(id)object;
+
 @end
 
 
@@ -33,8 +35,6 @@
 @property (readonly, copy, nonatomic) NSString *userID;
 
 @property (readonly, copy, nonatomic) NSString *username;
-
-- (void)applyToObject:(id)object;
 
 @end
 
@@ -91,7 +91,7 @@
 
 @property (readonly, copy, nonatomic) NSString *title;
 
-@property (readonly, nonatomic) BOOL sticky;
+@property (readonly, nonatomic) BOOL isSticky;
 
 @property (readonly, nonatomic) NSURL *threadIconImageURL;
 
@@ -104,6 +104,8 @@
 @property (readonly, nonatomic) BOOL isLocked;
 
 @property (readonly, nonatomic) NSInteger starCategory;
+
+@property (readonly, nonatomic) BOOL isBookmarked;
 
 // Defaults to -1.
 @property (readonly, nonatomic) NSInteger totalUnreadPosts;
