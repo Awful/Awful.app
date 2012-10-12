@@ -20,7 +20,6 @@
 #import "MWPhoto.h"
 #import "MWPhotoBrowser.h"
 #import "SVProgressHUD.h"
-#import "OtherWebController.h"
 
 @interface AwfulPage () <AwfulWebViewDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate>
 
@@ -527,64 +526,53 @@
 - (BOOL)webView:(UIWebView *)webView
     shouldStartLoadWithRequest:(NSURLRequest *)request
     navigationType:(UIWebViewNavigationType)navigationType
-{    
-    if (navigationType == UIWebViewNavigationTypeLinkClicked) { 
-        NSURL *openURL = request.URL;
-        if ([[request.URL host] isEqualToString:@"forums.somethingawful.com"] &&
-           [[request.URL lastPathComponent] isEqualToString:@"showthread.php"]) {
-            NSString *threadID;
-            NSString *pageNumber;
-            NSArray *queryElements = [[request.URL query] componentsSeparatedByString:@"&"];
-            for (NSString *element in queryElements) {
-                NSArray *keyAndVal = [element componentsSeparatedByString:@"="];
-                if ([keyAndVal[0] isEqualToString:@"threadid"]) {
-                    threadID = [keyAndVal lastObject];
-                } else if ([keyAndVal[0] isEqualToString:@"pagenumber"]) {
-                    pageNumber = [keyAndVal lastObject];
-                }
+{
+    if (navigationType != UIWebViewNavigationTypeLinkClicked) {
+        return YES;
+    }
+    NSURL *url = request.URL;
+    if ([[url host] isEqualToString:@"forums.somethingawful.com"] &&
+        [[url lastPathComponent] isEqualToString:@"showthread.php"]) {
+        NSString *threadID;
+        NSString *pageNumber;
+        NSArray *queryElements = [[request.URL query] componentsSeparatedByString:@"&"];
+        for (NSString *element in queryElements) {
+            NSArray *keyAndVal = [element componentsSeparatedByString:@"="];
+            if ([keyAndVal[0] isEqualToString:@"threadid"]) {
+                threadID = [keyAndVal lastObject];
+            } else if ([keyAndVal[0] isEqualToString:@"pagenumber"]) {
+                pageNumber = [keyAndVal lastObject];
             }
-            
-            // TODO (nolan) idgi, why a throwaway context?
-            if (threadID) {
-                NSManagedObjectModel *model = [NSManagedObjectModel mergedModelFromBundles:nil];
-                NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
-                NSManagedObjectContext *moc = [NSManagedObjectContext new];
-                [moc setPersistentStoreCoordinator:coordinator];
-                [moc setUndoManager:nil];
-                AwfulThread *intra = [AwfulThread insertInManagedObjectContext:moc];
-                intra.threadID = threadID;
-                AwfulPage *page = [self.storyboard instantiateViewControllerWithIdentifier:@"AwfulPage"];
-                page.thread = intra;
-                [self.navigationController pushViewController:page animated:YES];
-                if (pageNumber != nil) {
-                    page.destinationType = AwfulPageDestinationTypeSpecific;
-                    [page loadPageNum:[pageNumber integerValue]];
-                } else {
-                    page.destinationType = AwfulPageDestinationTypeFirst;
-                    [page refresh];
-                }
-                return NO;
-            }
-        } else if ([[request.URL host] isEqualToString:@"itunes.apple.com"]
-                   || [[request.URL host] isEqualToString:@"phobos.apple.com"]) {
-            [[UIApplication sharedApplication] openURL:request.URL];
-            return NO;
-        } else if (![request.URL host]
-                   && [[request.URL lastPathComponent] isEqualToString:@"showthread.php"]) {
-            openURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://forums.somethingawful.com/%@", request.URL]];
         }
         
-        OtherWebController *other = [[OtherWebController alloc] initWithURL:openURL];
-        UINavigationController *otherNav = [[UINavigationController alloc] initWithRootViewController:other];
-        otherNav.navigationBar.barStyle = UIBarStyleBlack;
-        [otherNav setToolbarHidden:NO];
-        otherNav.toolbar.barStyle = UIBarStyleBlack;
-        
-        UIViewController *vc = [AwfulAppDelegate instance].window.rootViewController;
-        [vc presentModalViewController:otherNav animated:YES];
-        return NO;
+        // TODO (nolan) idgi, why a throwaway context?
+        if (threadID) {
+            NSManagedObjectModel *model = [NSManagedObjectModel mergedModelFromBundles:nil];
+            NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
+            NSManagedObjectContext *moc = [NSManagedObjectContext new];
+            [moc setPersistentStoreCoordinator:coordinator];
+            [moc setUndoManager:nil];
+            AwfulThread *intra = [AwfulThread insertInManagedObjectContext:moc];
+            intra.threadID = threadID;
+            AwfulPage *page = [self.storyboard instantiateViewControllerWithIdentifier:@"AwfulPage"];
+            page.thread = intra;
+            [self.navigationController pushViewController:page animated:YES];
+            if (pageNumber != nil) {
+                page.destinationType = AwfulPageDestinationTypeSpecific;
+                [page loadPageNum:[pageNumber integerValue]];
+            } else {
+                page.destinationType = AwfulPageDestinationTypeFirst;
+                [page refresh];
+            }
+            return NO;
+        }
+    } else if (![url host] && [[url lastPathComponent] isEqualToString:@"showthread.php"]) {
+        // TODO when does this happen?
+        url = [NSURL URLWithString:[NSString stringWithFormat:@"http://forums.somethingawful.com/%@",
+                                    request.URL]];
     }
-    return YES;
+    [[UIApplication sharedApplication] openURL:url];
+    return NO;
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)sender
