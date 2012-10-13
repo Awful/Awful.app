@@ -10,12 +10,10 @@
 #import "AwfulFetchedTableViewControllerSubclass.h"
 #import "AwfulThreadListController.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulBookmarksController.h"
 #import "AwfulForumHeader.h"
 #import "AwfulLoginController.h"
 #import "AwfulSettings.h"
 #import "AwfulForumCell.h"
-#import "AwfulCSSTemplate.h"
 
 @interface AwfulForumsListController () <AwfulForumCellDelegate>
 
