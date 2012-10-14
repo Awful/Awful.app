@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1810" systemVersion="12C54" minimumToolsVersion="Xcode 4.1" macOSVersion="Automatic" iOSVersion="Automatic">
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1811" systemVersion="12C54" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="AwfulCategory" representedClassName="AwfulCategory" syncable="YES">
         <attribute name="categoryID" attributeType="String" syncable="YES"/>
         <attribute name="index" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
@@ -7,7 +7,7 @@
         <relationship name="forums" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="category" inverseEntity="AwfulForum" syncable="YES"/>
     </entity>
     <entity name="AwfulForum" representedClassName="AwfulForum" syncable="YES">
-        <attribute name="expanded" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="expanded" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="favoriteIndex" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="forumID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="index" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
@@ -20,13 +20,14 @@
     </entity>
     <entity name="AwfulThread" representedClassName="AwfulThread" syncable="YES">
         <attribute name="authorName" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="isBookmarked" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="isLocked" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="isBookmarked" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="isLocked" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="isSticky" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="lastPostAuthorName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="lastPostDate" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="seen" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="seen" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="starCategory" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="stickyIndex" optional="YES" attributeType="Integer 32" syncable="YES"/>
+        <attribute name="stickyIndex" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="threadIconImageURL" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="threadIconImageURL2" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="threadID" optional="YES" attributeType="String" syncable="YES"/>
@@ -40,6 +41,6 @@
     <elements>
         <element name="AwfulCategory" positionX="160" positionY="192" width="128" height="105"/>
         <element name="AwfulForum" positionX="205" positionY="285" width="128" height="195"/>
-        <element name="AwfulThread" positionX="25" positionY="210" width="128" height="285"/>
+        <element name="AwfulThread" positionX="25" positionY="210" width="128" height="315"/>
     </elements>
 </model>
