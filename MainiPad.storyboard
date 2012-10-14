@@ -137,46 +137,10 @@
                         <rect key="frame" x="0.0" y="-44" width="0.0" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
-                    <connections>
-                        <segue destination="1Fp-2s-3Kf" kind="relationship" relationship="rootViewController" id="4bh-0B-iEG"/>
-                    </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rdZ-rr-MUc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1323" y="90"/>
-        </scene>
-        <!--Awful Login Controller - Login-->
-        <scene sceneID="EpQ-8e-rWI">
-            <objects>
-                <viewController id="1Fp-2s-3Kf" customClass="AwfulLoginController" sceneMemberID="viewController">
-                    <webView key="view" contentMode="scaleToFill" id="cQa-sD-PJG">
-                        <rect key="frame" x="0.0" y="64" width="1024" height="704"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
-                    </webView>
-                    <navigationItem key="navigationItem" title="Login" id="S7x-lb-fGl">
-                        <barButtonItem key="leftBarButtonItem" style="done" systemItem="cancel" id="hpz-df-s61">
-                            <connections>
-                                <action selector="cancel" destination="1Fp-2s-3Kf" id="ejl-nP-yId"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
-                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackTranslucent"/>
-                    <connections>
-                        <outlet property="act" destination="ew5-zZ-JJB" id="Gel-oG-Por"/>
-                        <outlet property="view" destination="cQa-sD-PJG" id="1cI-4S-jon"/>
-                        <outlet property="web" destination="cQa-sD-PJG" id="NBv-ZT-5cU"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="9wO-v5-qhG" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <activityIndicatorView opaque="NO" contentMode="scaleToFill" hidesWhenStopped="YES" animating="YES" style="gray" id="ew5-zZ-JJB">
-                    <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <color key="color" cocoaTouchSystemColor="darkTextColor"/>
-                </activityIndicatorView>
-            </objects>
-            <point key="canvasLocation" x="2466" y="84"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Jfk-Do-hy8">
@@ -600,19 +564,10 @@
         <class className="AwfulForumsListController" superclassName="AwfulFetchedTableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulForumsListController.h"/>
         </class>
-        <class className="AwfulLoginController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulLoginController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="act" candidateClass="UIActivityIndicatorView"/>
-                <relationship kind="outlet" name="web" candidateClass="UIWebView"/>
-            </relationships>
-        </class>
         <class className="AwfulPage" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPage.h"/>
             <relationships>
                 <relationship kind="action" name="hardRefresh"/>
-                <relationship kind="action" name="segmentedGotTapped:"/>
-                <relationship kind="action" name="tappedActions:"/>
                 <relationship kind="outlet" name="actionsSegmentedControl" candidateClass="ButtonSegmentedControl"/>
                 <relationship kind="outlet" name="nextPageBarButtonItem" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="pagesBarButtonItem" candidateClass="UIBarButtonItem"/>
@@ -623,17 +578,11 @@
         </class>
         <class className="AwfulPageIpad" superclassName="AwfulPage">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulPageIpad.h"/>
-            <relationships>
-                <relationship kind="action" name="tappedActions:"/>
-                <relationship kind="action" name="tappedCompose:"/>
-                <relationship kind="action" name="tappedPageNav:"/>
-            </relationships>
         </class>
         <class className="AwfulReplyViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AwfulReplyViewController.h"/>
             <relationships>
                 <relationship kind="outlet" name="replyTextView" candidateClass="UITextView"/>
-                <relationship kind="outlet" name="segmentedControl" candidateClass="ButtonSegmentedControl"/>
                 <relationship kind="outlet" name="sendButton" candidateClass="UIBarButtonItem"/>
             </relationships>
         </class>

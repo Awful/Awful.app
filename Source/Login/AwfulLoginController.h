@@ -8,11 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@class AwfulSettingsViewController;
-
-@interface AwfulLoginController : UIViewController <UIWebViewDelegate>
-
-@property (nonatomic, weak) AwfulSettingsViewController *accountViewController;
+@interface AwfulLoginController : UITableViewController
 
 @end
 

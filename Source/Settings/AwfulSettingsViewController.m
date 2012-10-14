@@ -39,17 +39,6 @@
     self.tableView.backgroundColor = [UIColor colorWithHue:0.604 saturation:0.035 brightness:0.898 alpha:1];
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([[segue identifier] isEqualToString:@"Login"]) {
-        UINavigationController *nav = (UINavigationController *)segue.destinationViewController;
-        AwfulLoginController *login = (AwfulLoginController *)nav.topViewController;
-        login.accountViewController = self;
-        AwfulSplitViewController *split = (AwfulSplitViewController *)self.splitViewController;
-        [split.masterPopoverController dismissPopoverAnimated:NO];
-    }
-}
-
 - (BOOL)canPullToRefresh
 {
     return NO;
@@ -223,7 +212,9 @@ typedef enum SettingType
         alert.delegate = self;
         [alert show];
     } else if ([action isEqualToString:@"LogIn"]) {
-        [self performSegueWithIdentifier:@"Login" sender:self];
+        AwfulLoginController *login = [[AwfulLoginController alloc] initWithStyle:UITableViewStyleGrouped];
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:login];
+        [self presentViewController:nav animated:YES completion:nil];
     } else if ([action isEqualToString:@"ResetData"]) {
         [[AwfulDataStack sharedDataStack] deleteAllDataAndResetStack];
         // TODO clear cookies

@@ -74,6 +74,7 @@
 		1CAB36B11548F0FE00A4A362 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
 		1CBD5242162B5A3D00928740 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1CBD5240162B5A3D00928740 /* Model.xcdatamodeld */; };
 		1CBD5244162B5C2500928740 /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1CBD5243162B5C2500928740 /* README.txt */; };
+		1CBD5247162B66BC00928740 /* AwfulTextEntryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBD5246162B66BC00928740 /* AwfulTextEntryCell.m */; };
 		1CBDB58F1624B26B0004BDF4 /* 0.0stars.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CBDB5841624B26B0004BDF4 /* 0.0stars.png */; };
 		1CBDB5901624B26B0004BDF4 /* 0.5stars.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CBDB5851624B26B0004BDF4 /* 0.5stars.png */; };
 		1CBDB5911624B26B0004BDF4 /* 1.0stars.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CBDB5861624B26B0004BDF4 /* 1.0stars.png */; };
@@ -583,6 +584,8 @@
 		1CAB36B01548F0FE00A4A362 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		1CBD5241162B5A3D00928740 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		1CBD5243162B5C2500928740 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
+		1CBD5245162B66BC00928740 /* AwfulTextEntryCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTextEntryCell.h; sourceTree = "<group>"; };
+		1CBD5246162B66BC00928740 /* AwfulTextEntryCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTextEntryCell.m; sourceTree = "<group>"; };
 		1CBDB5841624B26B0004BDF4 /* 0.0stars.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0.0stars.png; sourceTree = "<group>"; };
 		1CBDB5851624B26B0004BDF4 /* 0.5stars.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0.5stars.png; sourceTree = "<group>"; };
 		1CBDB5861624B26B0004BDF4 /* 1.0stars.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1.0stars.png; sourceTree = "<group>"; };
@@ -1149,6 +1152,8 @@
 			children = (
 				1190F71913BE4EA900B9D271 /* AwfulLoginController.h */,
 				1190F71A13BE4EA900B9D271 /* AwfulLoginController.m */,
+				1CBD5245162B66BC00928740 /* AwfulTextEntryCell.h */,
+				1CBD5246162B66BC00928740 /* AwfulTextEntryCell.m */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -2542,6 +2547,7 @@
 				1CBDB5F61625BACE0004BDF4 /* AwfulParsing.m in Sources */,
 				1CBDB5FF162600D40004BDF4 /* NSManagedObject+Awful.m in Sources */,
 				1CBD5242162B5A3D00928740 /* Model.xcdatamodeld in Sources */,
+				1CBD5247162B66BC00928740 /* AwfulTextEntryCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
