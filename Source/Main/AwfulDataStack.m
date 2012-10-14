@@ -135,9 +135,9 @@
 
 + (NSURL *)defaultStoreURL
 {
-    NSURL *documents = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory
-                                                               inDomains:NSUserDomainMask] lastObject];
-    return [documents URLByAppendingPathComponent:@"AwfulData.sqlite"];
+    NSURL *caches = [[[NSFileManager defaultManager] URLsForDirectory:NSCachesDirectory
+                                                            inDomains:NSUserDomainMask] lastObject];
+    return [caches URLByAppendingPathComponent:@"AwfulData.sqlite"];
 }
 
 @end
