@@ -73,6 +73,7 @@
 		1C83DB571620113F00E53CFA /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C83DB561620113F00E53CFA /* NSData+Base64.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc -w"; }; };
 		1CAB36B11548F0FE00A4A362 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
 		1CBD5242162B5A3D00928740 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1CBD5240162B5A3D00928740 /* Model.xcdatamodeld */; };
+		1CBD5244162B5C2500928740 /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1CBD5243162B5C2500928740 /* README.txt */; };
 		1CBDB58F1624B26B0004BDF4 /* 0.0stars.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CBDB5841624B26B0004BDF4 /* 0.0stars.png */; };
 		1CBDB5901624B26B0004BDF4 /* 0.5stars.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CBDB5851624B26B0004BDF4 /* 0.5stars.png */; };
 		1CBDB5911624B26B0004BDF4 /* 1.0stars.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CBDB5861624B26B0004BDF4 /* 1.0stars.png */; };
@@ -581,6 +582,7 @@
 		1C83DB561620113F00E53CFA /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
 		1CAB36B01548F0FE00A4A362 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		1CBD5241162B5A3D00928740 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		1CBD5243162B5C2500928740 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		1CBDB5841624B26B0004BDF4 /* 0.0stars.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0.0stars.png; sourceTree = "<group>"; };
 		1CBDB5851624B26B0004BDF4 /* 0.5stars.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0.5stars.png; sourceTree = "<group>"; };
 		1CBDB5861624B26B0004BDF4 /* 1.0stars.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1.0stars.png; sourceTree = "<group>"; };
@@ -1639,6 +1641,7 @@
 				1C3CC798162876AE00088AA8 /* modstar.png */,
 				1C05EDA6162306BB00FE567F /* postaction-dark.png */,
 				1C05EDA7162306BB00FE567F /* postaction.png */,
+				1CBD5243162B5C2500928740 /* README.txt */,
 			);
 			path = "Posts View";
 			sourceTree = "<group>";
@@ -2384,6 +2387,7 @@
 				1CBDB5991624B26B0004BDF4 /* 5.0stars.png in Resources */,
 				1C3CC799162876AE00088AA8 /* adminstar.png in Resources */,
 				1C3CC79A162876AE00088AA8 /* modstar.png in Resources */,
+				1CBD5244162B5C2500928740 /* README.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

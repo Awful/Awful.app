@@ -46,6 +46,22 @@ static AwfulAppDelegate *_instance;
         tabBar.selectedIndex = [[AwfulSettings settings] firstTab];
     }
     
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSFileManager *fileman = [NSFileManager defaultManager];
+        NSURL *cssReadme = [[NSBundle mainBundle] URLForResource:@"README"
+                                                   withExtension:@"txt"];
+        NSURL *documents = [[fileman URLsForDirectory:NSDocumentDirectory
+                                            inDomains:NSUserDomainMask] lastObject];
+        NSURL *destination = [documents URLByAppendingPathComponent:@"README.txt"];
+        NSError *error;
+        BOOL ok = [fileman copyItemAtURL:cssReadme
+                                   toURL:destination
+                                   error:&error];
+        if (!ok && [error code] != NSFileWriteFileExistsError) {
+            NSLog(@"error copying README.txt to documents: %@", error);
+        }
+    });
+    
     [self configureAppearance];
     
     [self.window makeKeyAndVisible];
