@@ -57,4 +57,8 @@ typedef void (^PostContentResponseBlock)(NSString *postContent);
 
 -(NSOperation *)markThreadUnseen : (AwfulThread *)thread onCompletion : (CompletionBlock)completionBlock onError:(AwfulErrorBlock)errorBlock;
 
+- (NSOperation *)logInAsUsername:(NSString *)username
+                    withPassword:(NSString *)password
+                         andThen:(void (^)(NSError *error))callback;
+
 @end

@@ -16,6 +16,8 @@
 
 @property (copy, nonatomic) NSString *password;
 
+@property (nonatomic) BOOL loggingIn;
+
 @end
 
 
@@ -109,7 +111,11 @@
         }
     } else if (indexPath.section == 1) {
         cell.textLabel.text = @"Login!";
-        cell.textLabel.textColor = [self formIsValid] ? [UIColor blackColor] : [UIColor grayColor];
+        if (self.loggingIn || ![self formIsValid]) {
+            cell.textLabel.textColor = [UIColor grayColor];
+        } else {
+            cell.textLabel.textColor = [UIColor blackColor];
+        }
         if (self.username && self.password) {
             cell.selectionStyle = UITableViewCellSelectionStyleBlue;
         }
@@ -128,6 +134,13 @@
 - (BOOL)formIsValid
 {
     return [self.username length] > 0 && [self.password length] > 0;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    if (![self formIsValid]) return;
+    [self login];
 }
 
 #pragma mark - UITextFieldDelegate
@@ -169,7 +182,24 @@
 
 - (void)login
 {
-    
+    self.loggingIn = YES;
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
+                  withRowAnimation:UITableViewRowAnimationNone];
+    self.tableView.userInteractionEnabled = NO;
+    [[AwfulHTTPClient sharedClient] logInAsUsername:self.username
+                                       withPassword:self.password
+                                            andThen:^(NSError *error)
+    {
+        if (error) {
+            [self.delegate loginController:self didFailToLogInWithError:error];
+        } else {
+            [self.delegate loginControllerDidLogIn:self];
+        }
+        self.loggingIn = NO;
+        self.tableView.userInteractionEnabled = YES;
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
+                      withRowAnimation:UITableViewRowAnimationNone];
+    }];
 }
 
 - (void)forgotPassword

@@ -13,7 +13,7 @@
 #import "AwfulUser.h"
 #import <MessageUI/MessageUI.h>
 
-@interface AwfulSettingsViewController () <MFMailComposeViewControllerDelegate>
+@interface AwfulSettingsViewController () <MFMailComposeViewControllerDelegate, AwfulLoginControllerDelegate>
 
 @property (strong, nonatomic) NSArray *sections;
 
@@ -213,6 +213,7 @@ typedef enum SettingType
         [alert show];
     } else if ([action isEqualToString:@"LogIn"]) {
         AwfulLoginController *login = [[AwfulLoginController alloc] initWithStyle:UITableViewStyleGrouped];
+        login.delegate = self;
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:login];
         [self presentViewController:nav animated:YES completion:nil];
     } else if ([action isEqualToString:@"ResetData"]) {
@@ -249,6 +250,22 @@ typedef enum SettingType
     } else {
         return section;
     }
+}
+
+- (void)loginControllerDidLogIn:(AwfulLoginController *)login
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.tableView reloadData];
+    [self refresh];
+}
+
+- (void)loginController:(AwfulLoginController *)login didFailToLogInWithError:(NSError *)error
+{
+    UIAlertView *alert = [UIAlertView new];
+    alert.title = @"Problem Logging In";
+    alert.message = @"Double-check your username and password, then try again.";
+    [alert addButtonWithTitle:@"Alright"];
+    [alert show];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section

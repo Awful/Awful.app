@@ -404,4 +404,34 @@ typedef enum PostContentType {
     return (NSOperation *)op;
 }
 
+- (NSOperation *)logInAsUsername:(NSString *)username
+                    withPassword:(NSString *)password
+                         andThen:(void (^)(NSError *error))callback
+{
+    NSDictionary *parameters = @{
+        @"action" : @"login",
+        @"username" : username,
+        @"password" : password
+    };
+    NSURLRequest *request = [self requestWithMethod:@"POST"
+                                               path:@"account.php"
+                                         parameters:parameters];
+    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
+                                                               success:^(id _, id responseObject)
+    {
+        NSString *response = [[NSString alloc] initWithData:responseObject
+                                                   encoding:NSWindowsCP1252StringEncoding];
+        if ([response rangeOfString:@"GLLLUUUUUEEEEEE"].location != NSNotFound) {
+            if (callback) callback(nil);
+        } else {
+            if (callback) callback([NSError errorWithDomain:NSCocoaErrorDomain code:-1 userInfo:nil]);
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error)
+    {
+        if (callback) callback(error);
+    }];
+    [self enqueueHTTPRequestOperation:op];
+    return op;
+}
+
 @end
