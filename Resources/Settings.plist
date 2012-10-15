@@ -7,6 +7,8 @@
 		<dict>
 			<key>Identifier</key>
 			<string>LogOutSection</string>
+			<key>Explanation</key>
+			<string>Logging out erases all cached forums, threads, and posts too.</string>
 			<key>Settings</key>
 			<array>
 				<dict>
@@ -20,21 +22,6 @@
 					<string>Log Out</string>
 					<key>Action</key>
 					<string>LogOut</string>
-				</dict>
-			</array>
-		</dict>
-		<dict>
-			<key>Identifier</key>
-			<string>ResetDataSection</string>
-			<key>Explanation</key>
-			<string>Resetting data erases all cached forums, threads, and posts.</string>
-			<key>Settings</key>
-			<array>
-				<dict>
-					<key>Title</key>
-					<string>Reset Data</string>
-					<key>Action</key>
-					<string>ResetData</string>
 				</dict>
 			</array>
 		</dict>

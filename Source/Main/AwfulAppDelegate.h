@@ -17,6 +17,8 @@
 @property (nonatomic, strong) IBOutlet UIWindow *window;
 @property (nonatomic, strong) IBOutlet AwfulSplitViewController *splitController;
 
+- (void)logOut;
+
 - (void)requestFailed:(NSError *)error;
 
 @end

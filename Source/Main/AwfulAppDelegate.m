@@ -69,24 +69,56 @@ static AwfulAppDelegate *_instance;
     
     if (!IsLoggedIn()) {
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            [self performSelector:@selector(showLogin) withObject:nil afterDelay:0];
+            [self performSelector:@selector(showLoginFormAtLaunch) withObject:nil afterDelay:0];
         } else {
-            [self showLogin];
+            [self showLoginFormAtLaunch];
         }
     }
     
     return YES;
 }
 
-- (void)showLogin
+- (void)showLoginFormAtLaunch
+{
+    [self showLoginFormIsAtLaunch:YES andThen:nil];
+}
+
+- (void)showLoginFormIsAtLaunch:(BOOL)isAtLaunch andThen:(void (^)(void))callback
 {
     AwfulLoginController *login = [AwfulLoginController new];
     login.delegate = self;
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:login];
     nav.modalPresentationStyle = UIModalPresentationFormSheet;
+    BOOL animated = !isAtLaunch || UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
     [self.window.rootViewController presentViewController:nav
-                                                 animated:UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
-                                               completion:nil];
+                                                 animated:animated
+                                               completion:callback];
+}
+
+- (void)logOut
+{
+    NSURL *sa = [NSURL URLWithString:@"http://forums.somethingawful.com"];
+    NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:sa];
+    
+    for (NSHTTPCookie *cookie in cookies) {
+        [[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteCookie:cookie];
+    }
+    
+    AwfulSettings.settings.currentUser = nil;
+    NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
+    [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
+    [[AwfulDataStack sharedDataStack] deleteAllDataAndResetStack];
+    
+    [self showLoginFormIsAtLaunch:NO andThen:^{
+        UITabBarController *tabBar;
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            self.splitController = (AwfulSplitViewController *)self.window.rootViewController;
+            tabBar = self.splitController.viewControllers[0];
+        } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            tabBar = (UITabBarController *)self.window.rootViewController;
+        }
+        tabBar.selectedIndex = 0;
+    }];
 }
 
 - (void)configureAppearance

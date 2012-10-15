@@ -11,9 +11,10 @@
 #import "AwfulLoginController.h"
 #import "AwfulSettingsChoiceViewController.h"
 #import "AwfulUser.h"
+#import "AwfulAppDelegate.h"
 #import <MessageUI/MessageUI.h>
 
-@interface AwfulSettingsViewController () <MFMailComposeViewControllerDelegate, AwfulLoginControllerDelegate>
+@interface AwfulSettingsViewController () <MFMailComposeViewControllerDelegate>
 
 @property (strong, nonatomic) NSArray *sections;
 
@@ -202,15 +203,6 @@ typedef enum SettingType
                                               otherButtonTitles:@"Log Out", nil];
         alert.delegate = self;
         [alert show];
-    } else if ([action isEqualToString:@"LogIn"]) {
-        AwfulLoginController *login = [[AwfulLoginController alloc] initWithStyle:UITableViewStyleGrouped];
-        login.delegate = self;
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:login];
-        [self presentViewController:nav animated:YES completion:nil];
-    } else if ([action isEqualToString:@"ResetData"]) {
-        [[AwfulDataStack sharedDataStack] deleteAllDataAndResetStack];
-        // TODO clear cookies
-        // TODO remove user object from defaults
     } else {
         id selectedValue = [[NSUserDefaults standardUserDefaults] objectForKey:setting[@"Key"]];
         AwfulSettingsChoiceViewController *choiceViewController = [[AwfulSettingsChoiceViewController alloc] initWithSetting:setting selectedValue:selectedValue];
@@ -225,22 +217,6 @@ typedef enum SettingType
     [[NSUserDefaults standardUserDefaults] setObject:choiceViewController.selectedValue
                                               forKey:choiceViewController.setting[@"Key"]];
     [self.tableView reloadData];
-}
-
-- (void)loginControllerDidLogIn:(AwfulLoginController *)login
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
-    [self.tableView reloadData];
-    [self refresh];
-}
-
-- (void)loginController:(AwfulLoginController *)login didFailToLogInWithError:(NSError *)error
-{
-    UIAlertView *alert = [UIAlertView new];
-    alert.title = @"Problem Logging In";
-    alert.message = @"Double-check your username and password, then try again.";
-    [alert addButtonWithTitle:@"Alright"];
-    [alert show];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
@@ -316,18 +292,8 @@ typedef enum SettingType
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if (buttonIndex != 1)
-        return;
-    
-    NSURL *sa = [NSURL URLWithString:@"http://forums.somethingawful.com"];
-    NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:sa];
-    
-    for (NSHTTPCookie *cookie in cookies) {
-        [[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteCookie:cookie];
-    }
-    
-    AwfulSettings.settings.currentUser = nil;
-    [self.tableView reloadData];
+    if (buttonIndex != 1) return;
+    [[AwfulAppDelegate instance] logOut];
 }
 
 - (NSDictionary *)settingForIndexPath:(NSIndexPath *)indexPath
