@@ -15,14 +15,25 @@
 {
     [super viewDidLoad];
     
+    [self getFetchedResultsController:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(getFetchedResultsController:)
+                                                 name:AwfulDataStackDidResetNotification
+                                               object:[AwfulDataStack sharedDataStack]];
+}
+
+- (void)getFetchedResultsController:(NSNotification *)note
+{
+    self.fetchedResultsController.delegate = nil;
+    self.fetchedResultsController = nil;
+    [self.tableView reloadData];
     self.fetchedResultsController = [self createFetchedResultsController];
     self.fetchedResultsController.delegate = self;
     
     NSError *error;
 	if (![self.fetchedResultsController performFetch:&error]) {
 		// Update to handle the error appropriately.
-		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-		exit(-1);  // Fail
+		NSLog(@"error fetching: %@", error);
 	}
 }
 

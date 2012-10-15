@@ -35,3 +35,9 @@ typedef enum {
 + (NSURL *)defaultStoreURL;
 
 @end
+
+
+// Sent after -deleteAllDataAndResetStack completes. The notification's object is the data stack.
+// This might be a good time to recreate fetched results controllers or anything else that refers
+// to a stack's managed object context.
+extern NSString * const AwfulDataStackDidResetNotification;

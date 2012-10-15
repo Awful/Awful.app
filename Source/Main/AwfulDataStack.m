@@ -131,6 +131,8 @@
     self.coordinator = nil;
     self.model = nil;
     self.context = nil;
+    [[NSNotificationCenter defaultCenter] postNotificationName:AwfulDataStackDidResetNotification
+                                                        object:self];
 }
 
 + (NSURL *)defaultStoreURL
@@ -141,3 +143,6 @@
 }
 
 @end
+
+
+NSString * const AwfulDataStackDidResetNotification = @"AwfulDataStackDidResetNotification";
