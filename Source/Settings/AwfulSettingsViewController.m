@@ -67,16 +67,11 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView 
 {
-    if (IsLoggedIn()) {
-        return [self.sections count] - 1;
-    } else {
-        return 2;
-    }
+    return [self.sections count];
 } 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    section = [self fudgedSectionForSection:section];
     return [self.sections[section][@"Settings"] count];
 }
 
@@ -91,8 +86,6 @@ typedef enum SettingType
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    indexPath = [self fudgedIndexPathForIndexPath:indexPath];
-    
     // Grab the cell we need.
     
     NSDictionary *setting = [self settingForIndexPath:indexPath];
@@ -190,8 +183,7 @@ typedef enum SettingType
 - (NSIndexPath *)tableView:(UITableView *)tableView
   willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSIndexPath *fudgedIndexPath = [self fudgedIndexPathForIndexPath:indexPath];
-    NSDictionary *setting = [self settingForIndexPath:fudgedIndexPath];
+    NSDictionary *setting = [self settingForIndexPath:indexPath];
     if (setting[@"Action"] || setting[@"Choices"]) {
         return indexPath;
     }
@@ -200,8 +192,7 @@ typedef enum SettingType
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSIndexPath *fudgedIndexPath = [self fudgedIndexPathForIndexPath:indexPath];
-    NSDictionary *setting = [self settingForIndexPath:fudgedIndexPath];
+    NSDictionary *setting = [self settingForIndexPath:indexPath];
     NSString *action = setting[@"Action"];
     if ([action isEqualToString:@"LogOut"]) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log Out"
@@ -236,22 +227,6 @@ typedef enum SettingType
     [self.tableView reloadData];
 }
 
-- (NSIndexPath *)fudgedIndexPathForIndexPath:(NSIndexPath *)indexPath
-{
-    return [NSIndexPath indexPathForRow:indexPath.row
-                              inSection:[self fudgedSectionForSection:indexPath.section]];
-}
-
-- (NSInteger)fudgedSectionForSection:(NSInteger)section
-{
-    // Skip either LogInSection or LogOutSection as needed.
-    if (IsLoggedIn() || section > 0) {
-        return section + 1;
-    } else {
-        return section;
-    }
-}
-
 - (void)loginControllerDidLogIn:(AwfulLoginController *)login
 {
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -270,7 +245,6 @@ typedef enum SettingType
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    section = [self fudgedSectionForSection:section];
     return self.sections[section][@"Title"];
 }
 
@@ -303,7 +277,6 @@ typedef enum SettingType
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
 {
-    section = [self fudgedSectionForSection:section];
     return self.sections[section][@"Explanation"];
 }
 

@@ -45,11 +45,7 @@ static AwfulAppDelegate *_instance;
     } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         tabBar = (UITabBarController *)self.window.rootViewController;
     }
-    if (!IsLoggedIn()) {
-        tabBar.selectedIndex = 3;
-    } else {
-        tabBar.selectedIndex = [[AwfulSettings settings] firstTab];
-    }
+    tabBar.selectedIndex = [[AwfulSettings settings] firstTab];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         NSFileManager *fileman = [NSFileManager defaultManager];

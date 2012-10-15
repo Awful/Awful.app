@@ -6,19 +6,6 @@
 	<array>
 		<dict>
 			<key>Identifier</key>
-			<string>LogInSection</string>
-			<key>Settings</key>
-			<array>
-				<dict>
-					<key>Title</key>
-					<string>Log In</string>
-					<key>Action</key>
-					<string>LogIn</string>
-				</dict>
-			</array>
-		</dict>
-		<dict>
-			<key>Identifier</key>
 			<string>LogOutSection</string>
 			<key>Settings</key>
 			<array>
