@@ -13,6 +13,11 @@
 #import "AwfulCSSTemplate.h"
 #import "GRMustache.h"
 
+@interface AwfulAppDelegate () <AwfulLoginControllerDelegate>
+
+@end
+
+
 @implementation AwfulAppDelegate
 
 static AwfulAppDelegate *_instance;
@@ -46,7 +51,7 @@ static AwfulAppDelegate *_instance;
         tabBar.selectedIndex = [[AwfulSettings settings] firstTab];
     }
     
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         NSFileManager *fileman = [NSFileManager defaultManager];
         NSURL *cssReadme = [[NSBundle mainBundle] URLForResource:@"README"
                                                    withExtension:@"txt"];
@@ -66,7 +71,26 @@ static AwfulAppDelegate *_instance;
     
     [self.window makeKeyAndVisible];
     
+    if (!IsLoggedIn()) {
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            [self performSelector:@selector(showLogin) withObject:nil afterDelay:0];
+        } else {
+            [self showLogin];
+        }
+    }
+    
     return YES;
+}
+
+- (void)showLogin
+{
+    AwfulLoginController *login = [AwfulLoginController new];
+    login.delegate = self;
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:login];
+    nav.modalPresentationStyle = UIModalPresentationFormSheet;
+    [self.window.rootViewController presentViewController:nav
+                                                 animated:UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
+                                               completion:nil];
 }
 
 - (void)configureAppearance
@@ -96,6 +120,24 @@ static AwfulAppDelegate *_instance;
     [pickerNavBar setBackgroundImage:nil forBarMetrics:UIBarMetricsLandscapePhone];
     id pickerNavBarItem = [UIBarButtonItem appearanceWhenContainedIn:[UIImagePickerController class], nil];
     [pickerNavBarItem setTintColor:nil];
+}
+
+#pragma mark - AwfulLoginControllerDelegate
+
+- (void)loginControllerDidLogIn:(AwfulLoginController *)login
+{
+    [self.window.rootViewController dismissViewControllerAnimated:YES completion:^{
+        [[AwfulHTTPClient sharedClient] forumsListOnCompletion:nil onError:nil];
+    }];
+}
+
+- (void)loginController:(AwfulLoginController *)login didFailToLogInWithError:(NSError *)error
+{
+    UIAlertView *alert = [UIAlertView new];
+    alert.title = @"Problem Logging In";
+    alert.message = @"Double-check your username and password, then try again.";
+    [alert addButtonWithTitle:@"Alright"];
+    [alert show];
 }
 
 #pragma mark - Relaying errors

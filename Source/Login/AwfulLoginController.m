@@ -23,6 +23,11 @@
 
 @implementation AwfulLoginController
 
+- (id)init
+{
+    return [super initWithStyle:UITableViewStyleGrouped];
+}
+
 #pragma mark - UIViewController
 
 - (void)viewDidLoad
@@ -48,6 +53,15 @@
     frame.size.height += 40;
     forgotLink.frame = frame;
     self.tableView.tableFooterView = forgotLink;
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    AwfulTextEntryCell *cell = (AwfulTextEntryCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+    [cell.textField becomeFirstResponder];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)o
