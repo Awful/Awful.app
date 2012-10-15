@@ -125,6 +125,14 @@ static AwfulAppDelegate *_instance;
 {
     [self.window.rootViewController dismissViewControllerAnimated:YES completion:^{
         [[AwfulHTTPClient sharedClient] forumsListOnCompletion:nil onError:nil];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            AwfulSplitViewController *split = (AwfulSplitViewController *)self.window.rootViewController;
+            #pragma clang diagnostic push
+            #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+            [split.rootPopoverButtonItem.target performSelector:split.rootPopoverButtonItem.action
+                                                     withObject:split.rootPopoverButtonItem];
+            #pragma clang diagnostic pop
+        }
     }];
 }
 
