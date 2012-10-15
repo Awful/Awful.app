@@ -34,7 +34,7 @@
 {
     [super viewDidLoad];
     
-    self.title = @"Login";
+    self.title = @"Awful";
     self.tableView.backgroundView = nil;
     self.tableView.backgroundColor = [UIColor colorWithHue:0.604
                                                 saturation:0.035

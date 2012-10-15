@@ -97,6 +97,7 @@ static AwfulAppDelegate *_instance;
     [navBar setBackgroundImage:portrait forBarMetrics:UIBarMetricsDefault];
     UIImage *landscape = [css navigationBarImageForMetrics:UIBarMetricsLandscapePhone];
     [navBar setBackgroundImage:landscape forBarMetrics:UIBarMetricsLandscapePhone];
+    [navBar setTitleTextAttributes:@{ UITextAttributeTextColor : [UIColor whiteColor] }];
     id navBarItem = [UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil];
     [navBarItem setTintColor:[UIColor colorWithRed:46.0/255 green:146.0/255 blue:190.0/255 alpha:1]];
     
