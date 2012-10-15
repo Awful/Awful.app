@@ -61,6 +61,11 @@ static AwfulAppDelegate *_instance;
         if (!ok && [error code] != NSFileWriteFileExistsError) {
             NSLog(@"error copying README.txt to documents: %@", error);
         }
+        NSURL *oldData = [documents URLByAppendingPathComponent:@"AwfulData.sqlite"];
+        ok = [fileman removeItemAtURL:oldData error:&error];
+        if (!ok && [error code] != NSFileNoSuchFileError) {
+            NSLog(@"error deleting Documents/AwfulData.sqlite: %@", error);
+        }
     });
     
     [self configureAppearance];
