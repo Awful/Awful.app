@@ -8,7 +8,7 @@
 			<key>Identifier</key>
 			<string>LogOutSection</string>
 			<key>Explanation</key>
-			<string>Logging out erases all cached forums, threads, and posts too.</string>
+			<string>Logging out erases all cached forums, threads, and posts.</string>
 			<key>Settings</key>
 			<array>
 				<dict>
