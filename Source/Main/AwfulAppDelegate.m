@@ -10,7 +10,6 @@
 #import "AwfulSplitViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulLoginController.h"
-#import "AwfulCSSTemplate.h"
 #import "AwfulForumsListController.h"
 #import "AwfulFavoritesViewController.h"
 #import "AwfulBookmarksController.h"
@@ -156,14 +155,35 @@ static AwfulAppDelegate *_instance;
 - (void)configureAppearance
 {
     id navBar = [UINavigationBar appearance];
-    AwfulCSSTemplate *css = [AwfulCSSTemplate defaultTemplate];
-    UIImage *portrait = [css navigationBarImageForMetrics:UIBarMetricsDefault];
-    [navBar setBackgroundImage:portrait forBarMetrics:UIBarMetricsDefault];
-    UIImage *landscape = [css navigationBarImageForMetrics:UIBarMetricsLandscapePhone];
-    [navBar setBackgroundImage:landscape forBarMetrics:UIBarMetricsLandscapePhone];
+    UIImage *barImage = [[UIImage imageNamed:@"navbar.png"]
+                         resizableImageWithCapInsets:UIEdgeInsetsZero];
+    [navBar setBackgroundImage:barImage forBarMetrics:UIBarMetricsDefault];
+    UIImage *landscapeBarImage = [[UIImage imageNamed:@"navbar-landscape.png"]
+                                  resizableImageWithCapInsets:UIEdgeInsetsZero];
+    [navBar setBackgroundImage:landscapeBarImage forBarMetrics:UIBarMetricsLandscapePhone];
     [navBar setTitleTextAttributes:@{ UITextAttributeTextColor : [UIColor whiteColor] }];
+    
     id navBarItem = [UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil];
-    [navBarItem setTintColor:[UIColor colorWithRed:46.0/255 green:146.0/255 blue:190.0/255 alpha:1]];
+    UIImage *navBarButton = [[UIImage imageNamed:@"navbar-button.png"]
+                             resizableImageWithCapInsets:UIEdgeInsetsMake(0, 6, 0, 6)];
+    [navBarItem setBackgroundImage:navBarButton
+                          forState:UIControlStateNormal
+                        barMetrics:UIBarMetricsDefault];
+    UIImage *navBarLandscapeButton = [[UIImage imageNamed:@"navbar-button-landscape.png"]
+                                      resizableImageWithCapInsets:UIEdgeInsetsMake(0, 6, 0, 6)];
+    [navBarItem setBackgroundImage:navBarLandscapeButton
+                          forState:UIControlStateNormal
+                        barMetrics:UIBarMetricsLandscapePhone];
+    UIImage *backButton = [[UIImage imageNamed:@"navbar-back.png"]
+                           resizableImageWithCapInsets:UIEdgeInsetsMake(0, 13, 0, 6)];
+    [navBarItem setBackButtonBackgroundImage:backButton
+                                    forState:UIControlStateNormal
+                                  barMetrics:UIBarMetricsDefault];
+    UIImage *landscapeBackButton = [[UIImage imageNamed:@"navbar-back-landscape.png"]
+                                    resizableImageWithCapInsets:UIEdgeInsetsMake(0, 13, 0, 6)];
+    [navBarItem setBackButtonBackgroundImage:landscapeBackButton
+                                    forState:UIControlStateNormal
+                                  barMetrics:UIBarMetricsLandscapePhone];
     
     // On iPad, image pickers appear in popovers. And they look awful with the navigation bar and
     // bar item changes above. The obvious answer is to clear the customizations using
