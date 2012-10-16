@@ -16,8 +16,6 @@
 
 @property (strong, readonly, nonatomic) NSString *CSS;
 
-- (UIImage *)navigationBarImageForMetrics:(UIBarMetrics)metrics;
-
 @end
 
 

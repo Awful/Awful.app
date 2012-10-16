@@ -6,13 +6,6 @@
  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
  */
 
-
-#navbar {
-    border-top-color: #858585;
-    gradient-top: #636363 #222222;
-    gradient-bottom: #000000 #000000;
-}
-
 /*
  default.css is always included before this or any other template.
  That is, you can easily override anything in default.css by specifying something here.
