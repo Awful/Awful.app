@@ -23,29 +23,27 @@
 
 @interface AwfulPage () <AwfulWebViewDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate>
 
-@property (strong, nonatomic) AwfulWebViewDelegateWrapper *webViewDelegateWrapper;
+@property (nonatomic) AwfulWebViewDelegateWrapper *webViewDelegateWrapper;
 
-@property (strong, nonatomic) NSOperation *networkOperation;
+@property (nonatomic) NSOperation *networkOperation;
 
-@property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
+@property (nonatomic) UIToolbar *toolbar;
 
-@property (nonatomic, strong) IBOutlet UIBarButtonItem *pagesBarButtonItem;
+@property (nonatomic) UIBarButtonItem *pagesBarButtonItem;
 
-@property (nonatomic, strong) IBOutlet UIBarButtonItem *nextPageBarButtonItem;
+@property (nonatomic) ButtonSegmentedControl *pagesSegmentedControl;
 
-@property (nonatomic, strong) IBOutlet ButtonSegmentedControl *pagesSegmentedControl;
+@property (nonatomic) ButtonSegmentedControl *actionsSegmentedControl;
 
-@property (nonatomic, strong) IBOutlet ButtonSegmentedControl *actionsSegmentedControl;
+@property (nonatomic) AwfulSpecificPageViewController *specificPageController;
 
-@property (nonatomic, strong) AwfulSpecificPageViewController *specificPageController;
+@property (nonatomic) UIWebView *webView;
 
-@property (nonatomic, strong) IBOutlet UIWebView *webView;
+@property (copy, nonatomic) NSString *postIDScrollDestination;
 
-@property (nonatomic, strong) NSString *postIDScrollDestination;
+@property (nonatomic) AwfulPageDataController *dataController;
 
-@property (nonatomic, strong) AwfulPageDataController *dataController;
-
-@property BOOL shouldScrollToBottom;
+@property (nonatomic) BOOL shouldScrollToBottom;
 
 @end
 
@@ -55,12 +53,13 @@
     AwfulThread *_thread;
 }
 
-- (void)awakeFromNib
+- (id)init
 {
-    [super awakeFromNib];
-    
-    self.view.backgroundColor = [UIColor underPageBackgroundColor];
-    self.webView.backgroundColor = [UIColor scrollViewTexturedBackgroundColor];
+    self = [super initWithNibName:nil bundle:nil];
+    if (self) {
+        self.hidesBottomBarWhenPushed = YES;
+    }
+    return self;
 }
 
 - (AwfulThread *) thread
@@ -164,29 +163,24 @@
     lab.adjustsFontSizeToFitWidth = YES;
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+- (void)editPostWithActions:(AwfulPostActions *)actions
 {
-    if ([segue.identifier isEqualToString:@"ReplyBox"]) {
-        AwfulReplyViewController *postBox = (AwfulReplyViewController *)segue.destinationViewController;
-        postBox.thread = self.thread;
-        postBox.page = self;
-    } else if ([segue.identifier isEqualToString:@"EditPost"]) {
-        if ([sender isMemberOfClass:[AwfulPostActions class]]) {
-            AwfulPostActions *actions = (AwfulPostActions *)sender;
-            AwfulReplyViewController *editBox = (AwfulReplyViewController *)segue.destinationViewController;
-            editBox.post = actions.post;
-            editBox.startingText = actions.postContents;
-            editBox.page = self;
-        }
-    } else if ([segue.identifier isEqualToString:@"QuoteBox"]) {
-        if ([sender isMemberOfClass:[AwfulPostActions class]]) {
-            AwfulPostActions *actions = (AwfulPostActions *)sender;
-            AwfulReplyViewController *quoteBox = (AwfulReplyViewController *)segue.destinationViewController;
-            quoteBox.thread = self.thread;
-            quoteBox.startingText = actions.postContents;
-            quoteBox.page = self;
-        }
-    }
+    AwfulReplyViewController *editBox = [AwfulReplyViewController new];
+    editBox.post = actions.post;
+    editBox.startingText = actions.postContents;
+    editBox.page = self;
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:editBox];
+    [self presentViewController:nav animated:YES completion:nil];
+}
+
+- (void)quotePostWithActions:(AwfulPostActions *)actions
+{
+    AwfulReplyViewController *quoteBox = [AwfulReplyViewController new];
+    quoteBox.thread = self.thread;
+    quoteBox.startingText = actions.postContents;
+    quoteBox.page = self;
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:quoteBox];
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (IBAction)hardRefresh
@@ -294,20 +288,70 @@
 
 #pragma mark - View lifecycle
 
+- (void)loadView
+{
+    self.view = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    self.view.backgroundColor = [UIColor underPageBackgroundColor];
+    CGRect webFrame, toolbarFrame;
+    CGRectDivide(self.view.bounds, &toolbarFrame, &webFrame, 49, CGRectMaxYEdge);
+    
+    self.toolbar = [[UIToolbar alloc] initWithFrame:toolbarFrame];
+    self.toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
+    self.toolbar.barStyle = UIBarStyleBlack;
+    self.pagesBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Page ? of ?"
+                                                               style:UIBarButtonItemStyleBordered
+                                                              target:self
+                                                              action:@selector(tappedPageNav:)];
+    self.pagesSegmentedControl = [[ButtonSegmentedControl alloc] initWithItems:@[
+                                  [UIImage imageNamed:@"arrowleft.png"],
+                                  [UIImage imageNamed:@"arrowright.png"]]];
+    self.pagesSegmentedControl.bounds = CGRectMake(0, 0, 85, 30);
+    self.pagesSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+    self.pagesSegmentedControl.target = self;
+    self.pagesSegmentedControl.action = @selector(tappedPagesSegment:);
+    self.actionsSegmentedControl = [[ButtonSegmentedControl alloc] initWithItems:@[
+                                    [UIImage imageNamed:@"action.png"],
+                                    [UIImage imageNamed:@"compose.png"]]];
+    self.actionsSegmentedControl.bounds = CGRectMake(0, 0, 85, 30);
+    self.actionsSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+    self.actionsSegmentedControl.target = self;
+    self.actionsSegmentedControl.action = @selector(tappedActionsSegment:);
+    self.toolbar.items = @[
+        [[UIBarButtonItem alloc] initWithCustomView:self.pagesSegmentedControl],
+        [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+                                                      target:nil
+                                                      action:NULL],
+        self.pagesBarButtonItem,
+        [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+                                                      target:nil
+                                                      action:NULL],
+        [[UIBarButtonItem alloc] initWithCustomView:self.actionsSegmentedControl]
+    ];
+    [self.view addSubview:self.toolbar];
+    
+    self.webView = [[UIWebView alloc] initWithFrame:webFrame];
+    self.webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    self.webView.backgroundColor = [UIColor underPageBackgroundColor];
+    self.webViewDelegateWrapper = [AwfulWebViewDelegateWrapper delegateWrappingDelegate:self];
+    self.webView.delegate = self.webViewDelegateWrapper;
+    [self.view addSubview:self.webView];
+}
+
+- (UIWebView *)webView
+{
+    if (!_webView) [self view];
+    return _webView;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    self.actionsSegmentedControl.action = @selector(tappedActionsSegment:);
-    self.pagesSegmentedControl.action = @selector(tappedPagesSegment:);
     
     UILongPressGestureRecognizer *press = [[UILongPressGestureRecognizer alloc] initWithTarget:self
                                                                                         action:@selector(heldPost:)];
     press.delegate = self;
     press.minimumPressDuration = 0.3;
     [self.webView addGestureRecognizer:press];
-    self.webViewDelegateWrapper = [AwfulWebViewDelegateWrapper delegateWrappingDelegate:self];
-    self.webView.delegate = self.webViewDelegateWrapper;
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -362,7 +406,7 @@
     if (self.actionsSegmentedControl.selectedSegmentIndex == 0) {
         [self tappedActions:nil];
     } else if (self.actionsSegmentedControl.selectedSegmentIndex == 1) {
-        [self tappedCompose:nil];
+        [self tappedCompose];
     }
     self.actionsSegmentedControl.selectedSegmentIndex = -1;
 }
@@ -401,7 +445,7 @@
         return;
     }
     
-    UIView *sp_view = self.specificPageController.containerView;
+    UIView *sp_view = self.specificPageController.view;
     
     if (self.specificPageController != nil && !self.specificPageController.hiding) {
         self.specificPageController.hiding = YES;
@@ -417,10 +461,9 @@
         }];
         
     } else if(self.specificPageController == nil) {
-        self.specificPageController = [self.storyboard instantiateViewControllerWithIdentifier:@"AwfulSpecificPageController"];
+        self.specificPageController = [AwfulSpecificPageViewController new];
         self.specificPageController.page = self;
-        [self.specificPageController loadView];
-        sp_view = self.specificPageController.containerView;
+        sp_view = self.specificPageController.view;
         sp_view.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, sp_view.frame.size.height);
         
         [self.view addSubview:sp_view];
@@ -442,9 +485,13 @@
     }
 }
 
-- (IBAction)tappedCompose:(id)sender
+- (IBAction)tappedCompose
 {
-    [self performSegueWithIdentifier:@"ReplyBox" sender:self];
+    AwfulReplyViewController *postBox = [AwfulReplyViewController new];
+    postBox.thread = self.thread;
+    postBox.page = self;
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:postBox];
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 #pragma mark - Navigator Content
@@ -554,7 +601,7 @@
             [moc setUndoManager:nil];
             AwfulThread *intra = [AwfulThread insertInManagedObjectContext:moc];
             intra.threadID = threadID;
-            AwfulPage *page = [self.storyboard instantiateViewControllerWithIdentifier:@"AwfulPage"];
+            AwfulPage *page = [AwfulPage new];
             page.thread = intra;
             [self.navigationController pushViewController:page animated:YES];
             if (pageNumber != nil) {
@@ -664,14 +711,14 @@ NSString * const AwfulPageDidLoadNotification = @"com.awfulapp.Awful.PageDidLoad
         return;
     }
     
-    UIView *sp_view = self.specificPageController.containerView;
+    UIView *sp_view = self.specificPageController.view;
         
     if (!self.specificPageController)
     {
-        self.specificPageController = [[UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]] instantiateViewControllerWithIdentifier:@"AwfulSpecificPageController"];
+        self.specificPageController = [AwfulSpecificPageViewController new];
         self.specificPageController.page = self;
         [self.specificPageController loadView];
-        sp_view = self.specificPageController.containerView;
+        sp_view = self.specificPageController.view;
         
         [self.specificPageController.pickerView selectRow:self.currentPage - 1
                                               inComponent:0
@@ -766,7 +813,7 @@ NSString * const AwfulPageDidLoadNotification = @"com.awfulapp.Awful.PageDidLoad
     [sheet showFromRect:buttonRect inView:self.view animated:YES];
 }
 
-- (IBAction)tappedCompose:(id)sender
+- (IBAction)tappedCompose
 {
     if (self.popController)
     {
@@ -774,7 +821,7 @@ NSString * const AwfulPageDidLoadNotification = @"com.awfulapp.Awful.PageDidLoad
         self.popController = nil;
     }
     
-    [super tappedCompose:sender];
+    [super tappedCompose];
 }
 
 - (void)hidePageNavigation

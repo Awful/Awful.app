@@ -51,7 +51,8 @@ typedef enum {
         if(action == AwfulPostActionTypeEdit) {
             [[AwfulHTTPClient sharedClient] editContentsForPost:self.post onCompletion:^(NSString *contents) {
                 self.postContents = contents;
-                [self.viewController performSegueWithIdentifier:@"EditPost" sender:self];
+                AwfulPage *page = (AwfulPage *)self.viewController;
+                [page editPostWithActions:self];
             } onError:^(NSError *error) {
                 [[AwfulAppDelegate instance] requestFailed:error];
             }];
@@ -65,7 +66,8 @@ typedef enum {
         
         [[AwfulHTTPClient sharedClient] quoteContentsForPost:self.post onCompletion:^(NSString *contents) {
             self.postContents = [contents stringByAppendingString:@"\n"];
-            [self.viewController performSegueWithIdentifier:@"QuoteBox" sender:self];
+            AwfulPage *page = (AwfulPage *)self.viewController;
+            [page quotePostWithActions:self];
         } onError:^(NSError *error) {
             [[AwfulAppDelegate instance] requestFailed:error];
         }];

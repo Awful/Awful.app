@@ -6,17 +6,16 @@
 //  Copyright (c) 2011 Regular Berry Software LLC. All rights reserved.
 //
 
-@protocol SubstitutableDetailViewController <NSObject>
-
-- (void)showRootPopoverButtonItem:(UIBarButtonItem *)barButtonItem;
-- (void)invalidateRootPopoverButtonItem:(UIBarButtonItem *)barButtonItem;
-
-@end
-
-
 @interface AwfulSplitViewController : UISplitViewController
 
-@property (nonatomic, strong) UIPopoverController *masterPopoverController;
-@property (nonatomic, strong) UIBarButtonItem *rootPopoverButtonItem;
+// Designated initializer.
+- (id)init;
+
+- (void)ensureLeftBarButtonItemOnDetailView;
+
+@property (strong, nonatomic) UIPopoverController *masterPopoverController;
+@property (strong, nonatomic) UIBarButtonItem *rootPopoverButtonItem;
+
+- (void)showMasterView;
 
 @end

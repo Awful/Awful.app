@@ -24,6 +24,16 @@
 
 @implementation AwfulFavoritesViewController
 
+- (id)init
+{
+    self = [super initWithNibName:nil bundle:nil];
+    if (self) {
+        self.title = @"Favorites";
+        self.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemFavorites tag:0];
+    }
+    return self;
+}
+
 - (NSFetchedResultsController *)createFetchedResultsController
 {
     NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulForum entityName]];
@@ -71,15 +81,6 @@
 {
     [self.coverView removeFromSuperview];
     self.tableView.scrollEnabled = YES;
-}
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    UITableViewCell* cell = (UITableViewCell*)sender;
-    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-    
-    AwfulThreadListController *list = (AwfulThreadListController *)segue.destinationViewController;
-    list.forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
 }
 
 - (UIView *)coverView

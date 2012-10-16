@@ -21,8 +21,11 @@ typedef enum {
 
 @interface AwfulReplyViewController () <UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPopoverControllerDelegate>
 
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *sendButton;
-@property (weak, nonatomic) IBOutlet UITextView *replyTextView;
+@property (strong, nonatomic) UIBarButtonItem *sendButton;
+
+@property (strong, nonatomic) UIBarButtonItem *cancelButton;
+
+@property (readonly, nonatomic) UITextView *replyTextView;
 
 @property (weak, nonatomic) NSOperation *networkOperation;
 
@@ -55,12 +58,43 @@ typedef enum {
     self.images = [NSMutableDictionary new];
 }
 
-#pragma mark - View lifecycle
+- (UITextView *)replyTextView
+{
+    return (UITextView *)self.view;
+}
+
+- (UIBarButtonItem *)sendButton
+{
+    if (_sendButton) return _sendButton;
+    _sendButton = [[UIBarButtonItem alloc] initWithTitle:@"Reply"
+                                                   style:UIBarButtonItemStyleDone
+                                                  target:self
+                                                  action:@selector(hitSend)];
+    return _sendButton;
+}
+
+- (UIBarButtonItem *)cancelButton
+{
+    if (_cancelButton) return _cancelButton;
+    _cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel"
+                                                     style:UIBarButtonItemStyleBordered
+                                                    target:self
+                                                    action:@selector(hideReply)];
+    return _cancelButton;
+}
+
+#pragma mark - UIViewController
+
+- (void)loadView
+{
+    UITextView *textView = [UITextView new];
+    textView.font = [UIFont systemFontOfSize:17];
+    self.view = textView;
+}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardDidShow:)
                                                  name:UIKeyboardDidShowNotification
@@ -69,15 +103,17 @@ typedef enum {
                                              selector:@selector(keyboardWillHide:)
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
+    self.navigationItem.rightBarButtonItem = self.sendButton;
+    self.navigationItem.leftBarButtonItem = self.cancelButton;
     self.replyTextView.text = self.startingText;
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
     self.sendButton.title = self.post ? @"Save" : @"Reply";
     [self configureTopLevelMenuItems];
+    self.navigationItem.title = self.page.thread.title;
     [self.replyTextView becomeFirstResponder];
 }
 
@@ -89,7 +125,7 @@ typedef enum {
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
-#pragma mark - Responder overrides
+#pragma mark - UIResponder
 
 - (BOOL)canBecomeFirstResponder
 {

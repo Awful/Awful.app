@@ -11,9 +11,13 @@
 #import "AwfulSettings.h"
 #import "AwfulLoginController.h"
 #import "AwfulCSSTemplate.h"
+#import "AwfulForumsListController.h"
+#import "AwfulFavoritesViewController.h"
+#import "AwfulBookmarksController.h"
+#import "AwfulSettingsViewController.h"
 #import "GRMustache.h"
 
-@interface AwfulAppDelegate () <AwfulLoginControllerDelegate>
+@interface AwfulAppDelegate () <UITabBarControllerDelegate, AwfulLoginControllerDelegate>
 
 @end
 
@@ -34,18 +38,30 @@ static AwfulAppDelegate *_instance;
     _instance = self;
     [[AwfulSettings settings] registerDefaults];
     [AwfulDataStack sharedDataStack].initFailureAction = AwfulDataStackInitFailureDelete;
-    #if DEBUG
-    [GRMustache preventNSUndefinedKeyExceptionAttack];
-    #endif
+    if (DEBUG) [GRMustache preventNSUndefinedKeyExceptionAttack];
     
-    UITabBarController *tabBar;
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        self.splitController = (AwfulSplitViewController *)self.window.rootViewController;
-        tabBar = self.splitController.viewControllers[0];
-    } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        tabBar = (UITabBarController *)self.window.rootViewController;
-    }
+    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    
+    UITabBarController *tabBar = [UITabBarController new];
+    tabBar.wantsFullScreenLayout = NO;
+    tabBar.viewControllers = @[
+        [[UINavigationController alloc] initWithRootViewController:[AwfulForumsListController new]],
+        [[UINavigationController alloc] initWithRootViewController:[AwfulFavoritesViewController new]],
+        [[UINavigationController alloc] initWithRootViewController:[AwfulBookmarksController new]],
+        [[UINavigationController alloc] initWithRootViewController:[AwfulSettingsViewController new]]
+    ];
     tabBar.selectedIndex = [[AwfulSettings settings] firstTab];
+    tabBar.delegate = self;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        AwfulSplitViewController *splitController = [AwfulSplitViewController new];
+        UIViewController *gray = [UIViewController new];
+        gray.view.backgroundColor = [UIColor darkGrayColor];
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:gray];
+        splitController.viewControllers = @[ tabBar, nav ];
+        self.window.rootViewController = splitController;
+    } else {
+        self.window.rootViewController = tabBar;
+    }
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         NSFileManager *fileman = [NSFileManager defaultManager];
@@ -80,7 +96,18 @@ static AwfulAppDelegate *_instance;
         }
     }
     
+    if (IsLoggedIn()) {
+        AwfulSplitViewController *split = (AwfulSplitViewController *)self.window.rootViewController;
+        [split performSelector:@selector(showMasterView) withObject:nil afterDelay:0.1];
+    }
+    
     return YES;
+}
+
+- (BOOL)tabBarController:(UITabBarController *)tabBarController
+    shouldSelectViewController:(UIViewController *)viewController
+{
+    return IsLoggedIn();
 }
 
 - (void)showLoginFormAtLaunch
@@ -117,8 +144,8 @@ static AwfulAppDelegate *_instance;
     [self showLoginFormIsAtLaunch:NO andThen:^{
         UITabBarController *tabBar;
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            self.splitController = (AwfulSplitViewController *)self.window.rootViewController;
-            tabBar = self.splitController.viewControllers[0];
+            AwfulSplitViewController *split = (AwfulSplitViewController *)self.window.rootViewController;
+            tabBar = split.viewControllers[0];
         } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
             tabBar = (UITabBarController *)self.window.rootViewController;
         }
@@ -164,11 +191,7 @@ static AwfulAppDelegate *_instance;
         [[AwfulHTTPClient sharedClient] forumsListOnCompletion:nil onError:nil];
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             AwfulSplitViewController *split = (AwfulSplitViewController *)self.window.rootViewController;
-            #pragma clang diagnostic push
-            #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-            [split.rootPopoverButtonItem.target performSelector:split.rootPopoverButtonItem.action
-                                                     withObject:split.rootPopoverButtonItem];
-            #pragma clang diagnostic pop
+            [split showMasterView];
         }
     }];
 }

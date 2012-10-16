@@ -22,6 +22,16 @@
 
 @implementation AwfulForumsListController
 
+- (id)init
+{
+    self = [super initWithNibName:nil bundle:nil];
+    if (self) {
+        self.title = @"Forums";
+        self.tabBarItem.image = [UIImage imageNamed:@"list_icon.png"];
+    }
+    return self;
+}
+
 - (NSFetchedResultsController *)createFetchedResultsController
 {
     NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulForum entityName]];
@@ -37,15 +47,6 @@
 }
 
 #pragma mark - View lifecycle
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    UITableViewCell* cell = (UITableViewCell*)sender;
-    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-    
-    AwfulThreadListController *list = (AwfulThreadListController *)segue.destinationViewController;
-    list.forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
-}
 
 - (void)viewDidLoad
 {

@@ -12,9 +12,8 @@
 #import "AwfulSettingsChoiceViewController.h"
 #import "AwfulUser.h"
 #import "AwfulAppDelegate.h"
-#import <MessageUI/MessageUI.h>
 
-@interface AwfulSettingsViewController () <MFMailComposeViewControllerDelegate>
+@interface AwfulSettingsViewController () <UIAlertViewDelegate>
 
 @property (strong, nonatomic) NSArray *sections;
 
@@ -27,17 +26,32 @@
 
 @implementation AwfulSettingsViewController
 
+- (id)init
+{
+    self = [super initWithStyle:UITableViewStyleGrouped];
+    if (self) {
+        self.title = @"Settings";
+        self.tabBarItem.image = [UIImage imageNamed:@"cog.png"];
+    }
+    return self;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     self.switches = [NSMutableArray new];
     self.sections = AwfulSettings.settings.sections;
-    self.user = AwfulSettings.settings.currentUser;
-    if (self.user.username == nil && IsLoggedIn()) {
-        [self refresh];
-    }
     self.tableView.backgroundView = nil;
     self.tableView.backgroundColor = [UIColor colorWithHue:0.604 saturation:0.035 brightness:0.898 alpha:1];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    self.user = AwfulSettings.settings.currentUser;
+    if ([self.user.username length] == 0) {
+        [self refresh];
+    }
 }
 
 - (BOOL)canPullToRefresh
@@ -65,6 +79,8 @@
         [alert show];
     }];
 }
+
+#pragma mark - Table view delegate and data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView 
 {
@@ -212,6 +228,11 @@ typedef enum SettingType
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
+- (NSDictionary *)settingForIndexPath:(NSIndexPath *)indexPath
+{
+    return self.sections[indexPath.section][@"Settings"][indexPath.row];
+}
+
 - (void)didMakeChoice:(AwfulSettingsChoiceViewController *)choiceViewController
 {
     [[NSUserDefaults standardUserDefaults] setObject:choiceViewController.selectedValue
@@ -290,16 +311,12 @@ typedef enum SettingType
     return expected.height + 5 + (section < tableView.numberOfSections - 1 ? 34 : 0);
 }
 
+#pragma mark - UIAlertView delegate
+
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex != 1) return;
     [[AwfulAppDelegate instance] logOut];
-}
-
-- (NSDictionary *)settingForIndexPath:(NSIndexPath *)indexPath
-{
-    return self.sections[indexPath.section][@"Settings"][indexPath.row];
-
 }
 
 @end

@@ -11,15 +11,14 @@
 @class AwfulPage;
 @class ButtonSegmentedControl;
 
-@interface AwfulSpecificPageViewController : UIViewController <UIPickerViewDataSource, UIPickerViewDelegate>
+@interface AwfulSpecificPageViewController : UIViewController
 
 @property (nonatomic, weak) AwfulPage *page;
-@property BOOL hiding;
-@property (nonatomic, strong) IBOutlet UIView *containerView;
-@property (nonatomic, strong) IBOutlet UIPickerView *pickerView;
+@property (nonatomic) BOOL hiding;
+@property (nonatomic) UIPickerView *pickerView;
 
-@property (nonatomic, strong) IBOutlet UIBarButtonItem *jumpToPageBarButtonItem;
-@property (nonatomic, strong) IBOutlet ButtonSegmentedControl *firstLastSegmentedControl;
+@property (nonatomic) UIBarButtonItem *jumpToPageBarButtonItem;
+@property (nonatomic) ButtonSegmentedControl *firstLastSegmentedControl;
 
 -(IBAction)hitJumpToPage:(id)sender;
 -(IBAction)hitFirst : (id)sender;

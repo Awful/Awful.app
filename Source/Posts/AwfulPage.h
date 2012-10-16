@@ -17,6 +17,7 @@ typedef enum {
 } AwfulPageDestinationType;
 
 @class AwfulActions;
+@class AwfulPostActions;
 @class AwfulThread;
 
 
@@ -48,6 +49,10 @@ typedef enum {
 
 - (void)showCompletionMessage:(NSString *)message;
 
+- (void)editPostWithActions:(AwfulPostActions *)actions;
+
+- (void)quotePostWithActions:(AwfulPostActions *)actions;
+
 @end
 
 
@@ -56,6 +61,6 @@ extern NSString * const AwfulPageWillLoadNotification;
 extern NSString * const AwfulPageDidLoadNotification;
 
 
-@interface AwfulPageIpad : AwfulPage <SubstitutableDetailViewController>
+@interface AwfulPageIpad : AwfulPage
 
 @end

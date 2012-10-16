@@ -14,6 +14,9 @@
 
 - (void)commonInit
 {
+    self.title = @"Bookmarked Threads";
+    self.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemBookmarks tag:0];
+    self.tabBarItem.title = @"Bookmarks";
     UIBarButtonItem *marks = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"bookmarks.png"]
                                                 landscapeImagePhone:[UIImage imageNamed:@"bookmarks-landscape.png"]
                                                               style:UIBarButtonItemStylePlain

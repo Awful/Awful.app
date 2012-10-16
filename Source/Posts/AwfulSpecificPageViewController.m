@@ -11,6 +11,11 @@
 #import "AwfulThreadListController.h"
 #import "ButtonSegmentedControl.h"
 
+@interface AwfulSpecificPageViewController () <UIPickerViewDataSource, UIPickerViewDelegate>
+
+@end
+
+
 @implementation AwfulSpecificPageViewController
 
 - (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
@@ -32,10 +37,34 @@
 
 - (void)loadView
 {
-    [super loadView];
+    self.view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 260)];
     
-    [self.jumpToPageBarButtonItem setTintColor:[UIColor darkGrayColor]];
+    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
+    toolbar.barStyle = UIBarStyleBlack;
+    self.firstLastSegmentedControl = [[ButtonSegmentedControl alloc] initWithItems:@[ @"First", @"Last" ]];
+    self.firstLastSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+    CGRect bounds = self.firstLastSegmentedControl.bounds;
+    bounds.size.width = 115;
+    self.firstLastSegmentedControl.bounds = bounds;
+    self.firstLastSegmentedControl.target = self;
     self.firstLastSegmentedControl.action = @selector(hitFirstLastSegment:);
+    self.firstLastSegmentedControl.tintColor = [UIColor darkGrayColor];
+    UIBarButtonItem *firstLast = [[UIBarButtonItem alloc] initWithCustomView:self.firstLastSegmentedControl];
+    UIBarButtonItem *separator = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL];
+    self.jumpToPageBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Jump to Page"
+                                                                    style:UIBarButtonItemStyleBordered
+                                                                   target:self
+                                                                   action:@selector(hitJumpToPage:)];
+    self.jumpToPageBarButtonItem.tintColor = [UIColor darkGrayColor];
+    toolbar.items = @[ firstLast, separator, self.jumpToPageBarButtonItem ];
+    [self.view addSubview:toolbar];
+    
+    self.pickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 44, 320, 216)];
+    self.pickerView.dataSource = self;
+    self.pickerView.delegate = self;
+    self.pickerView.showsSelectionIndicator = YES;
+    [self.view addSubview:self.pickerView];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

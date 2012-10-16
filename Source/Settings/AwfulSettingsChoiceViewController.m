@@ -22,6 +22,8 @@
 
 @implementation AwfulSettingsChoiceViewController
 
+#pragma mark - Init
+
 - (id)initWithSetting:(NSDictionary *)setting selectedValue:(id)selectedValue
 {
     self = [super initWithStyle:UITableViewStyleGrouped];
@@ -38,12 +40,13 @@
     return [self initWithSetting:nil selectedValue:nil];
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+#pragma mark - UIViewController
+
+- (void)viewDidLoad
 {
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        return YES;
-    }
-    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+    [super viewDidLoad];
+    self.tableView.backgroundView = nil;
+    self.tableView.backgroundColor = [UIColor colorWithHue:0.604 saturation:0.035 brightness:0.898 alpha:1];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -52,7 +55,15 @@
     [super viewWillDisappear:animated];
 }
 
-#pragma mark - Table view data source and delegate
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        return YES;
+    }
+    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+}
+
+#pragma mark - UITableView data source and delegate
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {

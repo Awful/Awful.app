@@ -38,32 +38,6 @@ typedef enum {
                                                           cacheName:nil];
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    [self.networkOperation cancel];
-    
-    NSIndexPath *selected = [self.tableView indexPathForSelectedRow];
-    
-    AwfulPage *page = nil;
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        page = (AwfulPage *)segue.destinationViewController;
-    } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        UINavigationController *nav = (UINavigationController *)segue.destinationViewController;
-        page = (AwfulPage *)nav.topViewController;
-    }
-    
-    AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:selected];
-    page.thread = thread;
-    [page refresh];
-    
-    if (self.splitViewController) {
-        [self.splitViewController prepareForSegue:segue sender:sender];
-    }
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:AwfulPageWillLoadNotification
-                                                        object:thread];
-}
-
 - (void)setForum:(AwfulForum *)forum
 {
     if (_forum == forum) return;
@@ -174,17 +148,15 @@ typedef enum {
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    NSString *board = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"MainiPad" : @"Main";
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:board bundle:nil];
     if (buttonIndex == AwfulThreadListActionsTypeFirstPage) {
-        AwfulPage *page = [storyboard instantiateViewControllerWithIdentifier:@"AwfulPage"];
+        AwfulPage *page = [AwfulPage new];
         page.thread = self.heldThread;
         page.destinationType = AwfulPageDestinationTypeFirst;
         [self displayPage:page];
         [page loadPageNum:1];
         
     } else if (buttonIndex == AwfulThreadListActionsTypeLastPage) {
-        AwfulPage *page = [storyboard instantiateViewControllerWithIdentifier:@"AwfulPage"];
+        AwfulPage *page = [AwfulPage new];
         page.thread = self.heldThread;
         page.destinationType = AwfulPageDestinationTypeLast;
         [self displayPage:page];
@@ -220,6 +192,8 @@ typedef enum {
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:page];
         [vcs addObject:nav];
         self.splitViewController.viewControllers = vcs;
+        AwfulSplitViewController *split = (AwfulSplitViewController *)self.splitViewController;
+        [split ensureLeftBarButtonItemOnDetailView];
     }
 }
 
@@ -309,12 +283,11 @@ typedef enum {
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {
     //preload the page before pushing it
-    NSString *board = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"MainiPad" : @"Main";
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:board bundle:nil];
-    AwfulPage *page = [storyboard instantiateViewControllerWithIdentifier:@"AwfulPage"];
+    AwfulPage *page = [AwfulPage new];
     AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
     page.thread = thread;
     [page refresh];
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:AwfulPageWillLoadNotification
                                                         object:thread];
     [[NSNotificationCenter defaultCenter] addObserver:self 

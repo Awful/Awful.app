@@ -14,12 +14,41 @@
 
 @end
 
+
 @implementation AwfulSplitViewController
 
-- (void)awakeFromNib
+- (id)init
 {
-    [super awakeFromNib];
-    self.delegate = self;
+    self = [super initWithNibName:nil bundle:nil];
+    if (self) {
+        self.delegate = self;
+    }
+    return self;
+}
+
+- (void)ensureLeftBarButtonItemOnDetailView
+{
+    if (!self.rootPopoverButtonItem) return;
+    UINavigationController *nav = self.viewControllers[1];
+    UIViewController *detail = nav.viewControllers[0];
+    if ([detail.navigationItem.leftBarButtonItem isEqual:self.rootPopoverButtonItem]) return;
+    [detail.navigationItem setLeftBarButtonItem:self.rootPopoverButtonItem animated:YES];
+}
+
+- (void)showMasterView
+{
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+    [self.rootPopoverButtonItem.target performSelector:self.rootPopoverButtonItem.action
+                                            withObject:self.rootPopoverButtonItem];
+    #pragma clang diagnostic pop
+}
+
+#pragma mark - UIViewController
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    return [self init];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -27,19 +56,17 @@
     return YES;
 }
 
-#pragma mark - Split view controller delegate
+#pragma mark - UISplitViewControllerDelegate
 
 - (void)splitViewController:(UISplitViewController*)svc
      willHideViewController:(UIViewController *)aViewController
           withBarButtonItem:(UIBarButtonItem*)barButtonItem
        forPopoverController:(UIPopoverController*)pc
 {
-    // Keep references to the popover controller and the popover button, and tell the detail view controller to show the button.
     [barButtonItem setImage:[UIImage imageNamed:@"list_icon.png"]];
     self.masterPopoverController = pc;
     self.rootPopoverButtonItem = barButtonItem;
-    UIViewController <SubstitutableDetailViewController> *detailViewController = (UIViewController<SubstitutableDetailViewController>*)[[self.viewControllers objectAtIndex:1] topViewController];
-    [detailViewController showRootPopoverButtonItem:self.rootPopoverButtonItem];
+    [self ensureLeftBarButtonItemOnDetailView];
 }
 
 
@@ -47,22 +74,13 @@
      willShowViewController:(UIViewController *)aViewController
   invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem
 {
-    // Nil out references to the popover controller and the popover button, and tell the detail view controller to hide the button.
-    UIViewController <SubstitutableDetailViewController> *detailViewController = (UIViewController<SubstitutableDetailViewController>*)[[self.viewControllers objectAtIndex:1] topViewController];
-    [detailViewController invalidateRootPopoverButtonItem:self.rootPopoverButtonItem];
+    UINavigationController *nav = self.viewControllers[1];
+    UIViewController *detail = nav.viewControllers[0];
+    if ([detail.navigationItem.leftBarButtonItem isEqual:self.rootPopoverButtonItem]) {
+        [detail.navigationItem setLeftBarButtonItem:nil animated:YES];
+    }
     self.masterPopoverController = nil;
     self.rootPopoverButtonItem = nil;
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if (self.rootPopoverButtonItem) {
-        UIViewController<SubstitutableDetailViewController>* detailViewController = (UIViewController<SubstitutableDetailViewController>*)[segue.destinationViewController topViewController];
-        [detailViewController showRootPopoverButtonItem:self.rootPopoverButtonItem];
-    }
-    
-    if (self.masterPopoverController) {
-        [self.masterPopoverController dismissPopoverAnimated:YES];
-    }
-}
 @end

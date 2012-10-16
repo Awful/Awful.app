@@ -48,6 +48,7 @@
                                       cancelButtonTitle:nil
                                  destructiveButtonTitle:nil
                                       otherButtonTitles:nil];
+    _actionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
     for (NSString *title in self.titles) {
         [_actionSheet addButtonWithTitle:title];
     }

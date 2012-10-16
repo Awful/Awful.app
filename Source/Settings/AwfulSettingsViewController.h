@@ -10,7 +10,7 @@
 
 @class AwfulSettingsChoiceViewController;
 
-@interface AwfulSettingsViewController : AwfulTableViewController <UIAlertViewDelegate>
+@interface AwfulSettingsViewController : AwfulTableViewController
 
 - (void)didMakeChoice:(AwfulSettingsChoiceViewController *)choiceViewController;
 
