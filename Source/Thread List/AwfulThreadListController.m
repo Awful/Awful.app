@@ -304,13 +304,11 @@ typedef enum {
     if (self.splitViewController) {
         UINavigationController *nav = self.splitViewController.viewControllers[1];
         [nav setViewControllers:@[page] animated:YES];
-        if ([self.splitViewController isKindOfClass:[AwfulSplitViewController class]]) {
-            AwfulSplitViewController *svc = (AwfulSplitViewController *)self.splitViewController;
-            [svc.masterPopoverController dismissPopoverAnimated:YES];
-        }
+        AwfulSplitViewController *split = (AwfulSplitViewController *)self.splitViewController;
+        [split ensureLeftBarButtonItemOnDetailView];
+        [split.masterPopoverController dismissPopoverAnimated:YES];
         [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
-    }
-    else {
+    } else {
         [self.navigationController pushViewController:page animated:YES];
     }
 }
