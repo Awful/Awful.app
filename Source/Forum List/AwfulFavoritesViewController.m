@@ -22,6 +22,12 @@
 
 @end
 
+
+@interface CoverView : UIView
+
+@end
+
+
 @implementation AwfulFavoritesViewController
 
 - (id)init
@@ -32,38 +38,6 @@
         self.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemFavorites tag:0];
     }
     return self;
-}
-
-- (NSFetchedResultsController *)createFetchedResultsController
-{
-    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulForum entityName]];
-    request.predicate = [NSPredicate predicateWithFormat:@"isFavorite = YES"];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"favoriteIndex"
-                                                              ascending:YES]];
-    return [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                               managedObjectContext:[AwfulDataStack sharedDataStack].context
-                                                 sectionNameKeyPath:nil
-                                                          cacheName:nil];
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    
-    self.navigationItem.rightBarButtonItem = self.editButtonItem;
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    
-    if ([self.fetchedResultsController.fetchedObjects count] > 0) {
-        self.navigationItem.rightBarButtonItem = self.editButtonItem;
-        [self hideNoFavoritesCover];
-    } else {
-        self.navigationItem.rightBarButtonItem = nil;
-        [self showNoFavoritesCoverAnimated:NO];
-    }
 }
 
 - (void)showNoFavoritesCoverAnimated:(BOOL)animated
@@ -85,44 +59,57 @@
 
 - (UIView *)coverView
 {
-    if (_coverView) {
-        return _coverView;
-    }
-    UIView *coverView = [[UIView alloc] initWithFrame:(CGRect){ .size = self.view.bounds.size }];
-    coverView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    coverView.backgroundColor = self.tableView.backgroundColor;
-    coverView.opaque = YES;
-    UILabel *noFavorites = [UILabel new];
-    noFavorites.backgroundColor = self.tableView.backgroundColor;
-    noFavorites.text = @"No Favorites";
-    noFavorites.font = [UIFont systemFontOfSize:35];
-    noFavorites.textColor = [UIColor grayColor];
-    [noFavorites sizeToFit];
-    noFavorites.center = CGPointMake(coverView.bounds.size.width / 2,
-                                     coverView.bounds.size.height / 2);
-    [coverView addSubview:noFavorites];
-    UILabel *tapAStar = [UILabel new];
-    tapAStar.bounds = (CGRect){ .size.width = noFavorites.bounds.size.width };
-    tapAStar.backgroundColor = self.tableView.backgroundColor;
-    tapAStar.text = @"Tap a star in the forums list to add one.";
-    tapAStar.font = [UIFont systemFontOfSize:16];
-    tapAStar.textColor = [UIColor grayColor];
-    [tapAStar sizeToFit];
-    tapAStar.center = CGPointMake(noFavorites.center.x,
-                                  noFavorites.center.y + noFavorites.bounds.size.height / 1.5);
-    [coverView addSubview:tapAStar];
+    if (_coverView) return _coverView;
+    UIView *coverView = [[CoverView alloc] initWithFrame:self.view.bounds];
+    [self.view addSubview:coverView];
     _coverView = coverView;
     return coverView;
 }
 
-#pragma mark - Awful table view
+#pragma mark - AwfulFetchedTableViewController
+
+- (NSFetchedResultsController *)createFetchedResultsController
+{
+    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulForum entityName]];
+    request.predicate = [NSPredicate predicateWithFormat:@"isFavorite = YES"];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"favoriteIndex"
+                                                              ascending:YES]];
+    return [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                               managedObjectContext:[AwfulDataStack sharedDataStack].context
+                                                 sectionNameKeyPath:nil
+                                                          cacheName:nil];
+}
+
+#pragma mark - UIViewController
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    self.tableView.tableFooterView = [UIView new];
+    self.tableView.tableFooterView.backgroundColor = [UIColor clearColor];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    if ([self.fetchedResultsController.fetchedObjects count] > 0) {
+        self.navigationItem.rightBarButtonItem = self.editButtonItem;
+        [self hideNoFavoritesCover];
+    } else {
+        self.navigationItem.rightBarButtonItem = nil;
+        [self showNoFavoritesCoverAnimated:NO];
+    }
+}
+
+#pragma mark - AwfulTableViewController
 
 - (BOOL)canPullToRefresh
 {
     return NO;
 }
 
-#pragma mark - Fetched results controller delegate
+#pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controller:(NSFetchedResultsController *)controller
    didChangeObject:(id)object
@@ -230,6 +217,57 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     AwfulThreadListController *threadList = [AwfulThreadListController new];
     threadList.forum = forum;
     [self.navigationController pushViewController:threadList animated:YES];
+}
+
+@end
+
+
+@interface CoverView ()
+
+@property (weak, nonatomic) UILabel *noFavoritesLabel;
+
+@property (weak, nonatomic) UILabel *tapAStarLabel;
+
+@end
+
+
+@implementation CoverView
+
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        
+        UILabel *noFavoritesLabel = [UILabel new];
+        noFavoritesLabel.text = @"No Favorites";
+        noFavoritesLabel.font = [UIFont systemFontOfSize:35];
+        noFavoritesLabel.textColor = [UIColor grayColor];
+        [self addSubview:noFavoritesLabel];
+        _noFavoritesLabel = noFavoritesLabel;
+        
+        UILabel *tapAStarLabel = [UILabel new];
+        tapAStarLabel.text = @"Tap a star in the forums list to add one.";
+        tapAStarLabel.font = [UIFont systemFontOfSize:16];
+        tapAStarLabel.textColor = [UIColor grayColor];
+        [self addSubview:tapAStarLabel];
+        _tapAStarLabel = tapAStarLabel;
+    }
+    return self;
+}
+
+- (void)layoutSubviews
+{
+    [self.noFavoritesLabel sizeToFit];
+    self.noFavoritesLabel.center = CGPointMake(CGRectGetMidX(self.bounds),
+                                               CGRectGetMidY(self.bounds));
+    
+    self.tapAStarLabel.bounds = (CGRect){ .size.width = self.noFavoritesLabel.bounds.size.width };
+    [self.tapAStarLabel sizeToFit];
+    self.tapAStarLabel.center = CGPointMake(self.noFavoritesLabel.center.x,
+                                            self.noFavoritesLabel.center.y +
+                                            self.noFavoritesLabel.bounds.size.height / 1.5);
+
 }
 
 @end
