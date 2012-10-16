@@ -96,7 +96,7 @@ static AwfulAppDelegate *_instance;
         }
     }
     
-    if (IsLoggedIn()) {
+    if (IsLoggedIn() && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         AwfulSplitViewController *split = (AwfulSplitViewController *)self.window.rootViewController;
         [split performSelector:@selector(showMasterView) withObject:nil afterDelay:0.1];
     }
