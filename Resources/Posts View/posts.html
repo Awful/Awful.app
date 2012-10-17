@@ -15,9 +15,13 @@
 </style>
 
 <body class="{{device}}">
-    {{#postsAboveNotice}}
-    <header class="older-posts" onClick="tappedOlderPosts()">Load {{postsAboveNotice}}</header>
-    {{/postsAboveNotice}}
+    
+    <ul id="headerActions" class="{{#postsAboveNotice}}unreadPosts{{/postsAboveNotice}}" >
+        <li class="parentForum">Parent Forum</li>
+        {{#postsAboveNotice}}<li class="older-posts" onClick="tappedOlderPosts()">Load Read Posts</li>{{/postsAboveNotice}}
+        <li class="scrollToBottom" onClick="scrollToBottom()">Scroll to Bottom</li>
+    </ul>
+    
     
     {{#posts}}
     <article id="{{postID}}" class="{{altCSSClass}} {{#isOP}}op{{/isOP}}">
@@ -38,7 +42,7 @@
                 {{posterName}}
                 </span>
             </h1>
-            <p class="post-date">Posted on {{postDate}}</p>
+            <p class="post-date">{{postDate}}</p>
             
             <button class="post-action" onClick="tappedPost('{{postID}}', this)" />
         </header>

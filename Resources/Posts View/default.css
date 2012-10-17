@@ -40,22 +40,73 @@ a.quote_link {
 
 /* All devices - Front matter */
 
-header.older-posts {
-    width: 100%;
-    height: 26px;
-    font-size: 16px;
-    padding-top: 2px;
-    text-align: center;
-    color: #dbe8f5;
-    background-color: #003d67;
+#headerActions {
+    background: #e6e6e6;
+    height: 44px;
+    box-shadow: 0 0 5px 5px #7b7b7b;
+    border-bottom: 1px solid #c7c7c7;
+}
+#headerActions li {
+    display: block;
+    float:left;
+    font-weight: bold;
+    font-size: 12px;
+    color: #143761;
+    width: 50%;
+    height: 44px;
+    text-align: left;
+    padding-top: 14px;
+    border-left: 1px solid #c7c7c7;
+    border-right: 1px solid #f6f6f6;
+    border-bottom: 1px solid #f6f6f6;
+    text-shadow: 0 1px #fff;}
+#headerActions.unreadPosts li {
+    width: 33%;
+    font-size: 12px;
+    text-shadow: 0 1px #fff;
+    padding-top: 7px;
+}
+#headerActions.unreadPosts li:nth-of-type(2) {
+    width: 34%;
+}
+
+.scrollToBottom {
+    background: 9px 12px no-repeat url("downArrow.png");
+    padding-left: 30px;
+}
+.unreadPosts .scrollToBottom {
+    background: 9px 12px no-repeat url("downArrow.png");
+    padding-left: 30px;
+}
+.older-posts {
+    background: 7px 12px no-repeat url("load.png");
+    padding-left: 37px;
+}
+.parentForum {
+    background: 9px 12px no-repeat url("forumsListGrey.png");
+    padding-left: 38px;
+}
+.unreadPosts .parentForum {
+    background: 9px 12px no-repeat url("forumsListGrey.png");
+    padding-left: 39px;
+}
+
+body {
+    background-color: #929292;
+}
+
+article {
+    margin: 10px 5px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px 5px #7b7b7b;
+    padding: 5px;
 }
 
 /* All devices - Post header */
-
 article header button.post-action {
     border: none;
-    background-image: url("postaction.png");
-    background-size: 100%;
+    background-image: url("postActions.png");
+    background-size: 80%;
     background-repeat: no-repeat;
 }
 
@@ -63,27 +114,29 @@ article header button.post-action {
 
 body.iphone article header {
     width: 100%;
-    height: 54px;
-    background-color: #006698;
-    color: white;
+    height: 44px;
+    border-bottom: 1px solid #f0f0f0;
     position: relative;
 }
+body.iphone article.seen1 header, body.iphone article.seen2 header {
+    border-bottom: 1px solid #d5dfe9;
+}
 
-body.iphone article.op header {
-    background-color: #199ed7;
+body.iphone article.op .poster-name {
+    color: #199ed7;
 }
 
 body.iphone article header img.avatar {
     position: absolute;
     top: 4px;
     left: 5px;
-    max-width: 45px;
-    max-height: 45px;
+    max-width: 33px;
+    max-height: 33px;
 }
 
 body.iphone article header h1 {
     font-size: 1em;
-    padding-top: 8px;
+    padding-top: 4px;
 }
 
 body.iphone article header p {
@@ -91,8 +144,8 @@ body.iphone article header p {
 }
 
 body.iphone article header h1, body.iphone article header p {
-    padding-left: 60px;
-    padding-right: 60px;
+    padding-left: 50px;
+    padding-right: 40px;
     display: inline-block;
     vertical-align: middle;
 }
@@ -167,11 +220,11 @@ body.ipad article header button.post-action {
 /* All devices - post body */
 
 article.altcolor1 {
-    background-color: #f4f4f4;
+    background-color: #fff;
 }
 
 article.altcolor2 {
-    background-color: #e8e8e8;
+    background-color: #fff;
 }
 
 article.seen1 {
@@ -179,7 +232,7 @@ article.seen1 {
 }
 
 article.seen2 {
-    background-color: #e7eff5;
+    background-color: #dbe8f5;
 }
 
 article section p.editedby {
@@ -317,9 +370,9 @@ body.iphone div.ad img {
 }
 
 body div.pages-left {
+    color: lightgrey;
     text-align: center;
-    background-color: white;
-    height: 60px;
+    height: 40px;
     font-size: 20px;
-    padding-top: 16px;
+    padding-top: 4px;
 }

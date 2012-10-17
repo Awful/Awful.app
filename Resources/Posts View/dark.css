@@ -17,7 +17,13 @@
 
 body {
     color: white;
-    background-color: black;
+}
+
+article {
+    margin: 10px 5px;
+    border-radius: 5px;
+    box-shadow: none;
+    padding: 5px;
 }
 
 a {
@@ -30,25 +36,83 @@ a.quote_link {
 
 /* All - Front matter */
 
-body header.older-posts {
-    color: #dbe8f5;
-    background-color: #003d67;
+
+#headerActions {
+    background: #e6e6e6;
+    height: 44px;
+    box-shadow: 0 0 5px 5px #7b7b7b;
+    border-bottom: 1px solid #c7c7c7;
+}
+#headerActions li {
+    display: block;
+    float:left;
+    font-weight: bold;
+    font-size: 12px;
+    color: #143761;
+    width: 50%;
+    height: 44px;
+    text-align: left;
+    padding-top: 14px;
+    border-left: 1px solid #c7c7c7;
+    border-right: 1px solid #f6f6f6;
+    border-bottom: 1px solid #f6f6f6;
+    text-shadow: 0 1px #fff;}
+#headerActions.unreadPosts li {
+    width: 33%;
+    font-size: 12px;
+    text-shadow: 0 1px #fff;
+    padding-top: 7px;
+}
+#headerActions.unreadPosts li:nth-of-type(2) {
+    width: 34%;
+}
+
+.scrollToBottom {
+    background: 9px 12px no-repeat url("downArrow.png");
+    padding-left: 30px;
+}
+.unreadPosts .scrollToBottom {
+    background: 9px 12px no-repeat url("downArrow.png");
+    padding-left: 30px;
+}
+.older-posts {
+    background: 7px 12px no-repeat url("load.png");
+    padding-left: 37px;
+}
+.parentForum {
+    background: 9px 12px no-repeat url("forumsListGrey.png");
+    padding-left: 38px;
+}
+.unreadPosts .parentForum {
+    background: 9px 12px no-repeat url("forumsListGrey.png");
+    padding-left: 39px;
 }
 
 /* All devices - Post header */
 
 article header button.post-action {
-    background-image: url("postaction-dark.png");
+    background-image: url("postActionsDark.png");
+    background-size: 80%;
+}
+article.seen1 header button.post-action, article.seen2 header button.post-action {
+    background-image: url("postActionsDarkRead.png");
+    background-size: 80%;
 }
 
 /* iPhone - Post header */
 
 body.iphone article header {
-    background-color: black;
+    width: 100%;
+    height: 44px;
+    border-bottom: 1px solid #4e4e4e;
+    position: relative;
+}
+body.iphone article.seen1 header, body.iphone article.seen2 header {
+    border-bottom: 1px solid #536879;
 }
 
-body.iphone article.op header {
-    background-color: #0c506d;
+body.iphone article.op .poster-name {
+    color: #199ed7;
 }
 
 /* iPad - Post header */
@@ -73,7 +137,7 @@ article.altcolor1 {
 }
 
 article.altcolor2 {
-    background-color: #292929;
+    background-color: #393939;
 }
 
 article.seen1 {
@@ -81,7 +145,7 @@ article.seen1 {
 }
 
 article.seen2 {
-    background-color: #141f30;
+    background-color: #101926;
 }
 
 article section {
@@ -135,6 +199,5 @@ body.ipad article section .bbc-block pre {
 /* iPhone - Back matter */
 
 body div.pages-left {
-    background-color: black;
-    color: #fff;
+    color: #000;
 }
