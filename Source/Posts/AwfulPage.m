@@ -278,13 +278,6 @@
     }];
 }
 
-- (void)stop
-{
-    [self.networkOperation cancel];
-    [SVProgressHUD dismiss];
-    [self.webView stopLoading];
-}
-
 - (void)loadOlderPosts
 {
     NSString *html = [self.dataController constructedPageHTMLWithAllPosts];
