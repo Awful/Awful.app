@@ -72,7 +72,7 @@
         // not bust out of a landscape phone navigation bar.
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 30)];
         titleLabel.numberOfLines = 2;
-        titleLabel.font = [UIFont boldSystemFontOfSize:13];
+        titleLabel.font = [UIFont boldSystemFontOfSize:15];
         titleLabel.textColor = [UIColor whiteColor];
         titleLabel.backgroundColor = [UIColor clearColor];
         titleLabel.shadowColor = [UIColor colorWithWhite:0 alpha:0.5];
