@@ -149,14 +149,14 @@ typedef enum {
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == AwfulThreadListActionsTypeFirstPage) {
-        AwfulPage *page = [AwfulPage new];
+        AwfulPage *page = [AwfulPage newDeviceSpecificPage];
         page.thread = self.heldThread;
         page.destinationType = AwfulPageDestinationTypeFirst;
         [self displayPage:page];
         [page loadPageNum:1];
         
     } else if (buttonIndex == AwfulThreadListActionsTypeLastPage) {
-        AwfulPage *page = [AwfulPage new];
+        AwfulPage *page = [AwfulPage newDeviceSpecificPage];
         page.thread = self.heldThread;
         page.destinationType = AwfulPageDestinationTypeLast;
         [self displayPage:page];
@@ -283,7 +283,7 @@ typedef enum {
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {
     //preload the page before pushing it
-    AwfulPage *page = [AwfulPage new];
+    AwfulPage *page = [AwfulPage newDeviceSpecificPage];
     AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
     page.thread = thread;
     [page refresh];

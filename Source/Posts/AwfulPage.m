@@ -53,6 +53,14 @@
     AwfulThread *_thread;
 }
 
++ (id)newDeviceSpecificPage
+{
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        return [AwfulPageIpad new];
+    }
+    return [self new];
+}
+
 - (id)init
 {
     self = [super initWithNibName:nil bundle:nil];
@@ -593,7 +601,7 @@
             [moc setUndoManager:nil];
             AwfulThread *intra = [AwfulThread insertInManagedObjectContext:moc];
             intra.threadID = threadID;
-            AwfulPage *page = [AwfulPage new];
+            AwfulPage *page = [AwfulPage newDeviceSpecificPage];
             page.thread = intra;
             [self.navigationController pushViewController:page animated:YES];
             if (pageNumber != nil) {
@@ -706,7 +714,7 @@ NSString * const AwfulPageDidLoadNotification = @"com.awfulapp.Awful.PageDidLoad
 
     self.popController = [[UIPopoverController alloc] initWithContentViewController:vc];
     
-    [self.popController setPopoverContentSize:CGSizeMake(260,sp_view.frame.size.height) animated:YES];
+    [self.popController setPopoverContentSize:vc.view.bounds.size animated:NO];
     [self.popController presentPopoverFromBarButtonItem:self.pagesBarButtonItem
                                permittedArrowDirections:UIPopoverArrowDirectionAny
                                                animated:YES];

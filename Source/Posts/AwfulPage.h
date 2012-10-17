@@ -23,6 +23,8 @@ typedef enum {
 
 @interface AwfulPage : UIViewController
 
++ (id)newDeviceSpecificPage;
+
 @property (nonatomic, strong) AwfulThread *thread;
 
 @property (nonatomic, strong) NSString *threadID;
