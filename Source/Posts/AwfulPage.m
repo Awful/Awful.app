@@ -45,6 +45,8 @@
 
 @property (nonatomic) BOOL shouldScrollToBottom;
 
+@property (readonly, nonatomic) UILabel *titleLabel;
+
 @end
 
 
@@ -66,11 +68,24 @@
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         self.hidesBottomBarWhenPushed = YES;
+        // UINavigationBar never sets a height, so we need one here. This is just small enough to
+        // not bust out of a landscape phone navigation bar.
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 30)];
+        titleLabel.numberOfLines = 2;
+        titleLabel.font = [UIFont boldSystemFontOfSize:13];
+        titleLabel.textColor = [UIColor whiteColor];
+        titleLabel.backgroundColor = [UIColor clearColor];
+        titleLabel.shadowColor = [UIColor colorWithWhite:0 alpha:0.5];
+        titleLabel.textAlignment = UITextAlignmentCenter;
+        titleLabel.minimumFontSize = 9;
+        titleLabel.adjustsFontSizeToFitWidth = YES;
+        titleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        self.navigationItem.titleView = titleLabel;
     }
     return self;
 }
 
-- (AwfulThread *) thread
+- (AwfulThread *)thread
 {
     if ([_thread isFault])
     {
@@ -96,6 +111,7 @@
     self.threadID = _thread.threadID;
     if (_thread.title != nil) {
         self.title = self.thread.title;
+        self.titleLabel.text = self.thread.title;
     }
     if ([_thread.totalUnreadPosts intValue] == -1) {
         self.destinationType = AwfulPageDestinationTypeFirst;
@@ -169,6 +185,11 @@
     UILabel *lab = (UILabel *)self.navigationItem.titleView;
     lab.text = title;
     lab.adjustsFontSizeToFitWidth = YES;
+}
+
+- (UILabel *)titleLabel
+{
+    return (UILabel *)self.navigationItem.titleView;
 }
 
 - (void)editPostWithActions:(AwfulPostActions *)actions
