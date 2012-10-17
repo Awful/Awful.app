@@ -666,18 +666,10 @@ NSString * const AwfulPageDidLoadNotification = @"com.awfulapp.Awful.PageDidLoad
 
 
 @implementation AwfulPageIpad
-{
-    CGPoint _lastTouch;
-}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                          action:@selector(handleTap:)];
-    tap.delegate = self;
-    [self.webView addGestureRecognizer:tap];
     CGRect frame = self.toolbar.frame;
     frame.size.height = 49;
     self.toolbar.frame = frame;
@@ -718,25 +710,6 @@ NSString * const AwfulPageDidLoadNotification = @"com.awfulapp.Awful.PageDidLoad
     [self.popController presentPopoverFromBarButtonItem:self.pagesBarButtonItem
                                permittedArrowDirections:UIPopoverArrowDirectionAny
                                                animated:YES];
-}
-
-- (void)handleTap:(UITapGestureRecognizer *)sender 
-{     
-    if (sender.state == UIGestureRecognizerStateEnded) {
-        _lastTouch = [sender locationInView:self.view];
-    }
-}
-
-// hack for embedded youtube controls to work
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
-       shouldReceiveTouch:(UITouch *)touch
-{
-    if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
-        CGPoint loc = [touch locationInView:self.view];
-        _lastTouch = loc;
-        return NO;
-    }
-    return YES;
 }
 
 - (IBAction)tappedActions:(id)sender
