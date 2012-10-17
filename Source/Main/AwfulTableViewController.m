@@ -15,14 +15,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
     self.tableView.backgroundColor = [UIColor whiteColor];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
     __weak AwfulTableViewController *blockSelf = self;
     if ([self canPullToRefresh]) {
         [self.tableView addPullToRefreshWithActionHandler:^{
@@ -91,7 +89,7 @@
 
 - (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath
 {
-    [NSException raise:@"SubclassMustImplement"
+    [NSException raise:NSInternalInconsistencyException
                 format:@"Subclasses must implement %@", NSStringFromSelector(_cmd)];
 }
 

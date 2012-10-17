@@ -10,10 +10,12 @@
 
 @interface AwfulTableViewController : UITableViewController
 
-@property (strong, nonatomic) NSOperation *networkOperation;
-@property (assign, nonatomic) BOOL reloading;
+@property (nonatomic) NSOperation *networkOperation;
+
+@property (nonatomic) BOOL reloading;
 
 - (IBAction)refresh;
+
 - (IBAction)nextPage;
 
 - (void)stop;

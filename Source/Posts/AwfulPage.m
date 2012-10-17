@@ -712,17 +712,6 @@ NSString * const AwfulPageDidLoadNotification = @"com.awfulapp.Awful.PageDidLoad
                                                animated:YES];
 }
 
-
-- (void)showRootPopoverButtonItem:(UIBarButtonItem *)barButtonItem
-{
-    [self.navigationItem setLeftBarButtonItem:barButtonItem animated:YES];
-}
-
-- (void)invalidateRootPopoverButtonItem:(UIBarButtonItem *)barButtonItem
-{    
-    [self.navigationItem setLeftBarButtonItem:nil animated:YES];
-}
-
 - (void)handleTap:(UITapGestureRecognizer *)sender 
 {     
     if (sender.state == UIGestureRecognizerStateEnded) {
