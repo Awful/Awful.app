@@ -161,7 +161,10 @@ static AwfulAppDelegate *_instance;
     UIImage *landscapeBarImage = [[UIImage imageNamed:@"navbar-landscape.png"]
                                   resizableImageWithCapInsets:UIEdgeInsetsZero];
     [navBar setBackgroundImage:landscapeBarImage forBarMetrics:UIBarMetricsLandscapePhone];
-    [navBar setTitleTextAttributes:@{ UITextAttributeTextColor : [UIColor whiteColor] }];
+    [navBar setTitleTextAttributes:@{
+        UITextAttributeTextColor : [UIColor whiteColor],
+        UITextAttributeTextShadowColor : [UIColor colorWithWhite:0 alpha:0.5]
+    }];
     
     id navBarItem = [UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil];
     UIImage *navBarButton = [[UIImage imageNamed:@"navbar-button.png"]
