@@ -205,8 +205,6 @@
     // cancelled, so clear the HUD when we cancel the network operation.
     [SVProgressHUD dismiss];
     [self.networkOperation cancel];
-    
-    [self swapToStopButton];
     [self hidePageNavigation];
     AwfulThread *myThread = self.thread;
     AwfulPageDestinationType destType = self.destinationType;
@@ -221,10 +219,8 @@
         }
         [self updatePagesLabel];
         [self updateBookmarked];
-        [self swapToRefreshButton];
     } onError:^(NSError *error)
     {
-        [self swapToRefreshButton];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed"
                                                         message:error.localizedDescription
                                                        delegate:nil
@@ -238,7 +234,6 @@
 - (void)loadLastPage
 {
     [self.networkOperation cancel];
-    [self swapToStopButton];
     self.networkOperation = [[AwfulHTTPClient sharedClient] pageDataForThread:self.thread
                                                               destinationType:AwfulPageDestinationTypeLast
                                                                       pageNum:0
@@ -247,10 +242,8 @@
         self.dataController = dataController;
         [self updatePagesLabel];
         [self updateBookmarked];
-        [self swapToRefreshButton];
     } onError:^(NSError *error)
     {
-        [self swapToRefreshButton];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
         [alert show];
     }];
@@ -259,7 +252,6 @@
 - (void)stop
 {
     [self.networkOperation cancel];
-    [self swapToRefreshButton];
     [SVProgressHUD dismiss];
     [self.webView stopLoading];
 }
@@ -624,26 +616,11 @@
 
 - (void)webViewDidFinishLoad:(UIWebView *)sender
 {
-    [self swapToRefreshButton];
     if (self.postIDScrollDestination != nil) {
         [self scrollToSpecifiedPost];
     } else if(self.shouldScrollToBottom) {
         [self scrollToBottom];
     }
-}
-
-- (void)swapToRefreshButton
-{
-    UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(hardRefresh)];
-    refresh.style = UIBarButtonItemStyleBordered;
-    self.navigationItem.rightBarButtonItem = refresh;
-}
-
-- (void)swapToStopButton
-{
-    UIBarButtonItem *stop = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop)];
-    stop.style = UIBarButtonItemStyleBordered;
-    self.navigationItem.rightBarButtonItem = stop;
 }
 
 - (void)showCompletionMessage:(NSString *)message
