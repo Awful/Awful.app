@@ -12,11 +12,12 @@
 
 - (id)init
 {
-    self = [super initWithFrame:CGRectMake(0, 0, 320, 50)];
+    self = [super initWithFrame:CGRectMake(0, 0, 320, [[self class] height])];
     if (self) {
-        self.backgroundColor = [UIColor colorWithRed:0.051 green:0.404 blue:0.592 alpha:1];
+        self.backgroundColor = [UIColor colorWithWhite:0.573 alpha:1];
         CGRect textFrame = (CGRect){ .origin.x = 12, .size = self.bounds.size };
         textFrame.size.width -= textFrame.origin.x * 2;
+        textFrame.size.height -= 9;
         self.textLabel = [[UILabel alloc] initWithFrame:textFrame];
         self.textLabel.font = [UIFont boldSystemFontOfSize:19];
         self.textLabel.textColor = [UIColor whiteColor];
@@ -25,6 +26,11 @@
         [self addSubview:self.textLabel];
     }
     return self;
+}
+
++ (CGFloat)height
+{
+    return 30;
 }
 
 @end

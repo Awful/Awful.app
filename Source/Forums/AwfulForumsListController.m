@@ -24,7 +24,7 @@
 
 - (id)init
 {
-    self = [super initWithNibName:nil bundle:nil];
+    self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
         self.title = @"Forums";
         self.tabBarItem.image = [UIImage imageNamed:@"list_icon.png"];
@@ -51,9 +51,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    self.tableView.separatorColor = [UIColor colorWithWhite:0.75 alpha:1];
+    self.tableView.separatorColor = [UIColor colorWithWhite:0.94 alpha:1];
     self.tableView.rowHeight = 50;
+    self.view.backgroundColor = [UIColor colorWithWhite:0.573 alpha:1];
+    self.tableView.backgroundView = nil;
+    
+    // Bump table view contents down so the first section header is nicely spaced from the top.
+    self.tableView.contentInset = UIEdgeInsetsMake(10, 0, 0, 0);
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -99,7 +103,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 50;
+    return [AwfulForumHeader height];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView

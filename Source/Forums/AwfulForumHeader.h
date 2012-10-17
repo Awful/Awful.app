@@ -12,4 +12,6 @@
 
 @property (nonatomic, strong) UILabel *textLabel;
 
++ (CGFloat)height;
+
 @end
