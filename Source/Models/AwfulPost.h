@@ -18,6 +18,7 @@ typedef enum {
 
 @property (nonatomic, strong) NSString *postID;
 @property (nonatomic, strong) NSString *postDate;
+@property (nonatomic, strong) NSString *regDate;
 @property (nonatomic, strong) NSString *posterName;
 @property AwfulUserType posterType;
 @property (nonatomic, strong) NSURL *avatarURL;

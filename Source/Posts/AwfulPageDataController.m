@@ -172,6 +172,11 @@ static AwfulPost *ParsePost(TFHpple *parser, NSString *forumID)
         post.postDate = [post_date content];
     }
     
+    TFHppleElement *reg_date = [parser searchForSingle:@"//dd[@class='registered']"];
+    if(reg_date != nil) {
+        post.regDate = [reg_date content];
+    }
+    
     TFHppleElement *seen_link = [parser searchForSingle:@"//td[@class='postdate']//a[@title='Mark thread seen up to this post']"];
     if(seen_link != nil) {
         post.markSeenLink = [seen_link objectForKey:@"href"];

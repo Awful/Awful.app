@@ -11,7 +11,7 @@
 @implementation AwfulPost
 
 @synthesize postID, postDate, posterName;
-@synthesize posterType, avatarURL, editedStr;
+@synthesize posterType, avatarURL, regDate, editedStr;
 @synthesize rawContent, markSeenLink, seen;
 @synthesize isOP, canEdit, altCSSClass, postBody;
 @synthesize postIndex = _postIndex;
