@@ -8,6 +8,7 @@
 
 #import "AwfulThreadListController.h"
 #import "AwfulAppDelegate.h"
+#import "AwfulPageBar.h"
 #import "AwfulPageDataController.h"
 #import "AwfulPostActions.h"
 #import "AwfulReplyViewController.h"
@@ -27,13 +28,7 @@
 
 @property (nonatomic) NSOperation *networkOperation;
 
-@property (nonatomic) UIToolbar *toolbar;
-
-@property (nonatomic) UIBarButtonItem *pagesBarButtonItem;
-
-@property (nonatomic) ButtonSegmentedControl *pagesSegmentedControl;
-
-@property (nonatomic) ButtonSegmentedControl *actionsSegmentedControl;
+@property (nonatomic) AwfulPageBar *pageBar;
 
 @property (nonatomic) AwfulSpecificPageViewController *specificPageController;
 
@@ -306,42 +301,20 @@
 {
     self.view = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.view.backgroundColor = [UIColor underPageBackgroundColor];
-    CGRect webFrame, toolbarFrame;
-    CGRectDivide(self.view.bounds, &toolbarFrame, &webFrame, 49, CGRectMaxYEdge);
+    CGRect webFrame, pageBarFrame;
+    CGRectDivide(self.view.bounds, &pageBarFrame, &webFrame, 38, CGRectMaxYEdge);
     
-    self.toolbar = [[UIToolbar alloc] initWithFrame:toolbarFrame];
-    self.toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
-    self.toolbar.barStyle = UIBarStyleBlack;
-    self.pagesBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Page ? of ?"
-                                                               style:UIBarButtonItemStyleBordered
-                                                              target:self
-                                                              action:@selector(tappedPageNav:)];
-    self.pagesSegmentedControl = [[ButtonSegmentedControl alloc] initWithItems:@[
-                                  [UIImage imageNamed:@"arrowleft.png"],
-                                  [UIImage imageNamed:@"arrowright.png"]]];
-    self.pagesSegmentedControl.bounds = CGRectMake(0, 0, 85, 30);
-    self.pagesSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-    self.pagesSegmentedControl.target = self;
-    self.pagesSegmentedControl.action = @selector(tappedPagesSegment:);
-    self.actionsSegmentedControl = [[ButtonSegmentedControl alloc] initWithItems:@[
-                                    [UIImage imageNamed:@"action.png"],
-                                    [UIImage imageNamed:@"compose.png"]]];
-    self.actionsSegmentedControl.bounds = CGRectMake(0, 0, 85, 30);
-    self.actionsSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-    self.actionsSegmentedControl.target = self;
-    self.actionsSegmentedControl.action = @selector(tappedActionsSegment:);
-    self.toolbar.items = @[
-        [[UIBarButtonItem alloc] initWithCustomView:self.pagesSegmentedControl],
-        [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
-                                                      target:nil
-                                                      action:NULL],
-        self.pagesBarButtonItem,
-        [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
-                                                      target:nil
-                                                      action:NULL],
-        [[UIBarButtonItem alloc] initWithCustomView:self.actionsSegmentedControl]
-    ];
-    [self.view addSubview:self.toolbar];
+    self.pageBar = [[AwfulPageBar alloc] initWithFrame:pageBarFrame];
+    [self.pageBar.backForwardControl addTarget:self
+                                        action:@selector(tappedPagesSegment:)
+                              forControlEvents:UIControlEventValueChanged];
+    [self.pageBar.jumpToPageButton addTarget:self
+                                      action:@selector(tappedPageNav:)
+                            forControlEvents:UIControlEventTouchUpInside];
+    [self.pageBar.actionsComposeControl addTarget:self
+                                           action:@selector(tappedActionsSegment:)
+                                 forControlEvents:UIControlEventValueChanged];
+    [self.view addSubview:self.pageBar];
     
     self.webView = [[UIWebView alloc] initWithFrame:webFrame];
     self.webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -394,11 +367,13 @@
 
 - (void)updatePagesLabel
 {
-    self.pagesBarButtonItem.title = [NSString stringWithFormat:@"Page %d of %d", self.currentPage, self.numberOfPages];
-    [self.pagesSegmentedControl setEnabled:self.currentPage != self.numberOfPages
-                         forSegmentAtIndex:1];
-    [self.pagesSegmentedControl setEnabled:self.currentPage != 1
-                         forSegmentAtIndex:0];
+    [self.pageBar.jumpToPageButton setTitle:[NSString stringWithFormat:@"Page %d of %d",
+                                             self.currentPage, self.numberOfPages]
+                                   forState:UIControlStateNormal];
+    [self.pageBar.backForwardControl setEnabled:self.currentPage != self.numberOfPages
+                              forSegmentAtIndex:1];
+    [self.pageBar.backForwardControl setEnabled:self.currentPage != 1
+                              forSegmentAtIndex:0];
 }
 
 - (void)updateBookmarked
@@ -406,33 +381,26 @@
     self.thread.isBookmarkedValue = self.dataController.bookmarked;
 }
 
-- (IBAction)segmentedGotTapped:(id)sender
-{
-    if(sender == self.actionsSegmentedControl) {
-        [self tappedActionsSegment:nil];
-    } else if(sender == self.pagesSegmentedControl) {
-        [self tappedPagesSegment:nil];
-    }
-}
-
 - (IBAction)tappedPagesSegment:(id)sender
 {
-    if(self.pagesSegmentedControl.selectedSegmentIndex == 0) {
+    UISegmentedControl *backForward = sender;
+    if (backForward.selectedSegmentIndex == 0) {
         [self prevPage];
-    } else if(self.pagesSegmentedControl.selectedSegmentIndex == 1) {
+    } else if (backForward.selectedSegmentIndex == 1) {
         [self nextPage];
     }
-    self.pagesSegmentedControl.selectedSegmentIndex = -1;
+    backForward.selectedSegmentIndex = UISegmentedControlNoSegment;
 }
 
 - (IBAction)tappedActionsSegment:(id)sender
 {
-    if (self.actionsSegmentedControl.selectedSegmentIndex == 0) {
+    UISegmentedControl *actions = sender;
+    if (actions.selectedSegmentIndex == 0) {
         [self tappedActions:nil];
-    } else if (self.actionsSegmentedControl.selectedSegmentIndex == 1) {
+    } else if (actions.selectedSegmentIndex == 1) {
         [self tappedCompose];
     }
-    self.actionsSegmentedControl.selectedSegmentIndex = -1;
+    actions.selectedSegmentIndex = UISegmentedControlNoSegment;
 }
 
 - (IBAction)tappedNextPage:(id)sender
@@ -460,7 +428,7 @@
 {
     self.actions = [[AwfulThreadActions alloc] initWithThread:self.thread];
     self.actions.viewController = self;
-    [self.actions showFromToolbar:self.toolbar];
+    [self.actions showFromRect:self.pageBar.frame inView:self.view animated:YES];
 }
 
 - (void)tappedPageNav:(id)sender
@@ -477,7 +445,7 @@
                               delay:0.0
                             options:UIViewAnimationOptionCurveEaseInOut
                          animations:^{
-            sp_view.frame = CGRectOffset(sp_view.frame, 0, sp_view.frame.size.height + self.toolbar.bounds.size.height);
+            sp_view.frame = CGRectOffset(sp_view.frame, 0, sp_view.frame.size.height + self.pageBar.bounds.size.height);
         } completion:^(BOOL finished)
         {
             [sp_view removeFromSuperview];
@@ -491,9 +459,9 @@
         sp_view.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, sp_view.frame.size.height);
         
         [self.view addSubview:sp_view];
-        [self.view bringSubviewToFront:self.toolbar];
+        [self.view bringSubviewToFront:self.pageBar];
         [UIView animateWithDuration:0.3 animations:^{
-            sp_view.frame = CGRectOffset(sp_view.frame, 0, -sp_view.frame.size.height - self.toolbar.bounds.size.height);
+            sp_view.frame = CGRectOffset(sp_view.frame, 0, -sp_view.frame.size.height - self.pageBar.bounds.size.height);
         }];
         
         [self.specificPageController.pickerView selectRow:self.currentPage - 1
@@ -557,7 +525,7 @@
 - (void)showActions
 {
     self.actions.viewController = self;
-    [self.actions showFromToolbar:self.toolbar];
+    [self.actions showFromRect:self.pageBar.frame inView:self.view animated:YES];
 }
 
 #pragma mark - AwfulWebViewDelegate
@@ -691,14 +659,6 @@ NSString * const AwfulPageDidLoadNotification = @"com.awfulapp.Awful.PageDidLoad
 
 @implementation AwfulPageIpad
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    CGRect frame = self.toolbar.frame;
-    frame.size.height = 49;
-    self.toolbar.frame = frame;
-}
-
 - (IBAction)tappedPageNav:(id)sender
 {
     if (self.popController)
@@ -731,9 +691,10 @@ NSString * const AwfulPageDidLoadNotification = @"com.awfulapp.Awful.PageDidLoad
     self.popController = [[UIPopoverController alloc] initWithContentViewController:vc];
     
     [self.popController setPopoverContentSize:vc.view.bounds.size animated:NO];
-    [self.popController presentPopoverFromBarButtonItem:self.pagesBarButtonItem
-                               permittedArrowDirections:UIPopoverArrowDirectionAny
-                                               animated:YES];
+    [self.popController presentPopoverFromRect:self.pageBar.jumpToPageButton.frame
+                                        inView:self.pageBar
+                      permittedArrowDirections:UIPopoverArrowDirectionAny
+                                      animated:YES];
 }
 
 - (IBAction)tappedActions:(id)sender
@@ -750,10 +711,10 @@ NSString * const AwfulPageDidLoadNotification = @"com.awfulapp.Awful.PageDidLoad
         NSLog(@"only thread actions and vote actions are supported by this 'showActions' method");
         return;
     }
-    CGRect rect = self.actionsSegmentedControl.frame;
+    CGRect rect = self.pageBar.actionsComposeControl.frame;
     rect.size.width /= 2;
     [self.actions.actionSheet showFromRect:rect
-                                    inView:self.actionsSegmentedControl.superview
+                                    inView:self.pageBar.actionsComposeControl.superview
                                   animated:YES];
 }
 
@@ -778,7 +739,7 @@ NSString * const AwfulPageDidLoadNotification = @"com.awfulapp.Awful.PageDidLoad
     CGRect buttonRect = rect;
     if ([self.actions isKindOfClass:[AwfulThreadActions class]]
         || [self.actions isKindOfClass:[AwfulVoteActions class]]) {
-        buttonRect = self.actionsSegmentedControl.frame;
+        buttonRect = self.pageBar.actionsComposeControl.frame;
         buttonRect.size.width /= 2;
     }
     [sheet showFromRect:buttonRect inView:self.view animated:YES];
