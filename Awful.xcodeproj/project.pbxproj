@@ -1307,7 +1307,7 @@
 				1190F7C613BE4ECB00B9D271 /* XPathQuery.m */,
 			);
 			name = Hpple;
-			path = "topfunky-hpple";
+			path = hpple;
 			sourceTree = "<group>";
 		};
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
