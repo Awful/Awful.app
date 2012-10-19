@@ -8,6 +8,7 @@
 
 #import "AwfulSettingsViewController.h"
 #import "AwfulSettings.h"
+#import "AwfulLicensesViewController.h"
 #import "AwfulLoginController.h"
 #import "AwfulSettingsChoiceViewController.h"
 #import "AwfulUser.h"
@@ -43,6 +44,9 @@
     self.sections = AwfulSettings.settings.sections;
     self.tableView.backgroundView = nil;
     self.tableView.backgroundColor = [UIColor colorWithHue:0.604 saturation:0.035 brightness:0.898 alpha:1];
+    
+    // Make sure the bottom section's footer is visible.
+    self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 18, 0);
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -242,6 +246,9 @@ typedef enum SettingType
         } else {
             [self.navigationController pushViewController:page animated:YES];
         }
+    } else if ([action isEqualToString:@"ShowLicenses"]) {
+        [self.navigationController pushViewController:[AwfulLicensesViewController new]
+                                             animated:YES];
     } else {
         id selectedValue = [[NSUserDefaults standardUserDefaults] objectForKey:setting[@"Key"]];
         AwfulSettingsChoiceViewController *choiceViewController = [[AwfulSettingsChoiceViewController alloc] initWithSetting:setting selectedValue:selectedValue];

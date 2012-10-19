@@ -195,6 +195,8 @@
 		1CFBED011631A6EA008AF641 /* star-off@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CFBECFD1631A6EA008AF641 /* star-off@2x.png */; };
 		1CFBED021631A6EA008AF641 /* star-on.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CFBECFE1631A6EA008AF641 /* star-on.png */; };
 		1CFBED031631A6EA008AF641 /* star-on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CFBECFF1631A6EA008AF641 /* star-on@2x.png */; };
+		1CFBED051631BF53008AF641 /* licenses.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CFBED041631BF53008AF641 /* licenses.html */; };
+		1CFBED081631C068008AF641 /* AwfulLicensesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFBED071631C068008AF641 /* AwfulLicensesViewController.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765080DF74369002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765070DF74369002DB57D /* CoreGraphics.framework */; };
@@ -798,6 +800,9 @@
 		1CFBECFD1631A6EA008AF641 /* star-off@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "star-off@2x.png"; sourceTree = "<group>"; };
 		1CFBECFE1631A6EA008AF641 /* star-on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "star-on.png"; sourceTree = "<group>"; };
 		1CFBECFF1631A6EA008AF641 /* star-on@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "star-on@2x.png"; sourceTree = "<group>"; };
+		1CFBED041631BF53008AF641 /* licenses.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = licenses.html; sourceTree = "<group>"; };
+		1CFBED061631C068008AF641 /* AwfulLicensesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLicensesViewController.h; sourceTree = "<group>"; };
+		1CFBED071631C068008AF641 /* AwfulLicensesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLicensesViewController.m; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* Awful.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Awful.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -1562,6 +1567,8 @@
 				11FDA295151018600014FDCD /* AwfulSettingsViewController.m */,
 				1C277CA31543554700CD2CCE /* AwfulSettingsChoiceViewController.h */,
 				1C277CA41543554700CD2CCE /* AwfulSettingsChoiceViewController.m */,
+				1CFBED061631C068008AF641 /* AwfulLicensesViewController.h */,
+				1CFBED071631C068008AF641 /* AwfulLicensesViewController.m */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -1680,6 +1687,7 @@
 				1CC780651612DBB2002AF958 /* Default */,
 				8CCD498915B497A700E5893B /* Icons */,
 				8CCD503B15B783FC00E5893B /* Images */,
+				1CFBED041631BF53008AF641 /* licenses.html */,
 				8CCD4CC415B497A800E5893B /* Posts View */,
 				8CCD527B15B783FC00E5893B /* Thread Tags */,
 			);
@@ -2105,8 +2113,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Awful" */;
 			buildPhases = (
-				1C5D59EE1563666B00D00DBB /* mogenerator */,
+				1CFBED0A1631C9CA008AF641 /* Compile third-party licenses */,
 				1D60588D0D05DD3D006BFB54 /* Resources */,
+				1C5D59EE1563666B00D00DBB /* mogenerator */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
 				1D60588F0D05DD3D006BFB54 /* Frameworks */,
 			);
@@ -2529,6 +2538,7 @@
 				1CFBED011631A6EA008AF641 /* star-off@2x.png in Resources */,
 				1CFBED021631A6EA008AF641 /* star-on.png in Resources */,
 				1CFBED031631A6EA008AF641 /* star-on@2x.png in Resources */,
+				1CFBED051631BF53008AF641 /* licenses.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2561,6 +2571,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+		1CFBED0A1631C9CA008AF641 /* Compile third-party licenses */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Compile third-party licenses";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "rake licenses\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -2684,6 +2709,7 @@
 				1CBD5242162B5A3D00928740 /* Model.xcdatamodeld in Sources */,
 				1CBD5247162B66BC00928740 /* AwfulTextEntryCell.m in Sources */,
 				1CFBECEE163076F1008AF641 /* AwfulPageBar.m in Sources */,
+				1CFBED081631C068008AF641 /* AwfulLicensesViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

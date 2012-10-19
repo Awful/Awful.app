@@ -176,6 +176,19 @@
 				</dict>
 			</array>
 		</dict>
+		<dict>
+			<key>Explanation</key>
+			<string>Awful uses these third-party libraries.</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Licenses</string>
+					<key>Action</key>
+					<string>ShowLicenses</string>
+				</dict>
+			</array>
+		</dict>
 	</array>
 </dict>
 </plist>
