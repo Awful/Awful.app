@@ -157,7 +157,6 @@
 		1CC780321612D9DE002AF958 /* AwfulPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780281612D9DE002AF958 /* AwfulPage.m */; };
 		1CC780341612D9DE002AF958 /* AwfulReplyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7802C1612D9DE002AF958 /* AwfulReplyViewController.m */; };
 		1CC780351612D9DE002AF958 /* AwfulSpecificPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7802E1612D9DE002AF958 /* AwfulSpecificPageViewController.m */; };
-		1CC780361612D9DE002AF958 /* AwfulThreadTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780301612D9DE002AF958 /* AwfulThreadTitleView.m */; };
 		1CC7803B1612DA2B002AF958 /* AwfulWebViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780391612DA2B002AF958 /* AwfulWebViewDelegate.m */; };
 		1CC7803C1612DA2B002AF958 /* ObjCBridge.js in Resources */ = {isa = PBXBuildFile; fileRef = 1CC7803A1612DA2B002AF958 /* ObjCBridge.js */; };
 		1CC780441612DA49002AF958 /* AwfulCSSTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7803F1612DA49002AF958 /* AwfulCSSTemplate.m */; };
@@ -755,8 +754,6 @@
 		1CC7802C1612D9DE002AF958 /* AwfulReplyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulReplyViewController.m; sourceTree = "<group>"; };
 		1CC7802D1612D9DE002AF958 /* AwfulSpecificPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSpecificPageViewController.h; sourceTree = "<group>"; };
 		1CC7802E1612D9DE002AF958 /* AwfulSpecificPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSpecificPageViewController.m; sourceTree = "<group>"; };
-		1CC7802F1612D9DE002AF958 /* AwfulThreadTitleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTitleView.h; sourceTree = "<group>"; };
-		1CC780301612D9DE002AF958 /* AwfulThreadTitleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTitleView.m; sourceTree = "<group>"; };
 		1CC780381612DA2B002AF958 /* AwfulWebViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulWebViewDelegate.h; sourceTree = "<group>"; };
 		1CC780391612DA2B002AF958 /* AwfulWebViewDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulWebViewDelegate.m; sourceTree = "<group>"; };
 		1CC7803A1612DA2B002AF958 /* ObjCBridge.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = ObjCBridge.js; sourceTree = "<group>"; };
@@ -1508,8 +1505,6 @@
 				1CC7802C1612D9DE002AF958 /* AwfulReplyViewController.m */,
 				1CC7802D1612D9DE002AF958 /* AwfulSpecificPageViewController.h */,
 				1CC7802E1612D9DE002AF958 /* AwfulSpecificPageViewController.m */,
-				1CC7802F1612D9DE002AF958 /* AwfulThreadTitleView.h */,
-				1CC780301612D9DE002AF958 /* AwfulThreadTitleView.m */,
 			);
 			path = Posts;
 			sourceTree = "<group>";
@@ -2692,7 +2687,6 @@
 				1CC780321612D9DE002AF958 /* AwfulPage.m in Sources */,
 				1CC780341612D9DE002AF958 /* AwfulReplyViewController.m in Sources */,
 				1CC780351612D9DE002AF958 /* AwfulSpecificPageViewController.m in Sources */,
-				1CC780361612D9DE002AF958 /* AwfulThreadTitleView.m in Sources */,
 				1CC7803B1612DA2B002AF958 /* AwfulWebViewDelegate.m in Sources */,
 				1CC780441612DA49002AF958 /* AwfulCSSTemplate.m in Sources */,
 				1CC780451612DA49002AF958 /* AwfulPageTemplate.m in Sources */,

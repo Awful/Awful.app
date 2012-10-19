@@ -14,7 +14,6 @@
 #import "AwfulReplyViewController.h"
 #import "AwfulSpecificPageViewController.h"
 #import "AwfulThreadActions.h"
-#import "AwfulThreadTitleView.h"
 #import "AwfulVoteActions.h"
 #import "AwfulWebViewDelegate.h"
 #import "ButtonSegmentedControl.h"
