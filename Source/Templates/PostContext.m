@@ -28,6 +28,7 @@ static NSString *AwfulifiedPostBody(NSString *body);
         _isAdmin = post.posterType == AwfulUserTypeAdmin;
         _posterName = post.posterName;
         _postDate = post.postDate;
+        _regDate = post.regDate;
         _altCSSClass = post.altCSSClass;
         _postBody = AwfulifiedPostBody(post.postBody);
     }
@@ -89,6 +90,7 @@ static NSString *AwfulifiedPostBody(NSString *body)
 @synthesize isAdmin = _isAdmin;
 @synthesize posterName = _posterName;
 @synthesize postDate = _postDate;
+@synthesize regDate = _regDate;
 @synthesize altCSSClass = _altCSSClass;
 @synthesize postBody = _postBody;
 

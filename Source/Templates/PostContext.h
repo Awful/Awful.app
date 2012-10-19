@@ -22,6 +22,7 @@
 @property (assign) BOOL isAdmin;
 @property (strong) NSString *posterName;
 @property (strong) NSString *postDate;
+@property (strong) NSString *regDate;
 
 // either 'altcolor1', 'altcolor2', 'seen1', or 'seen2' depending on the post index (even/odd)
 @property (strong) NSString *altCSSClass;

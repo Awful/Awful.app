@@ -25,11 +25,7 @@
     
     {{#posts}}
     <article id="{{postID}}" class="{{altCSSClass}} {{#isOP}}op{{/isOP}}">
-        <header>
-            {{#avatarURL}}
-            <img class="avatar" src="{{avatarURL}}" />
-            {{/avatarURL}}
-            
+        <header>            
             <h1>
                 {{#isMod}}
                 <img src="modstar.png" width="14" height="13" />
@@ -42,6 +38,12 @@
                 {{posterName}}
                 </span>
             </h1>
+            {{#regDate}}
+            <p class="regDate">{{regDate}}</p>
+            {{/regDate}}
+            {{#avatarURL}}
+            <img class="avatar" src="{{avatarURL}}" />
+            {{/avatarURL}}
             <p class="post-date">{{postDate}}</p>
             
             <button class="post-action" onClick="tappedPost('{{postID}}', this)" />

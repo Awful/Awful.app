@@ -118,6 +118,9 @@ body.iphone article header {
     border-bottom: 1px solid #f0f0f0;
     position: relative;
 }
+body.iphone article header p.regDate {
+    display: none;
+}
 body.iphone article.seen1 header, body.iphone article.seen2 header {
     border-bottom: 1px solid #d5dfe9;
 }
@@ -170,33 +173,35 @@ body.iphone p.post-date {
 
 body.ipad article {
     clear: both;
-    min-height: 100px;
+    min-height: 150px;
+    position: relative;
+    padding: 15px 53px 15px 15px;
+}
+body.ipad article.noAvatar {
+    min-height: auto;
 }
 
 body.ipad article header {
-    width: 100%;
-    height: 50px;
-    text-shadow: 0 1px #fafafa;
-    position: relative;
-    padding-top: 10px;
-    padding-left: 95px;
-    padding-right: 95px;
+    width: 152px;
+    float: left;
+    margin: 0 15px 15px 0;
+    padding: 0 10px 10px 0;
 }
 
-body.ipad article.noAvatar header{
-    padding-left: 13px;
+body.ipad article header p.regDate {
+    color: #000;
+    font-style: normal;
 }
 
 body.ipad article header img.avatar {
-    max-width: 75px;
-    max-height: 75px;
-    position: absolute;
-    top: 13px;
-    left: 13px;
+    max-width: 80px;
+    max-height: 80px;
 }
 
 body.ipad article header h1 {
     font-size: 1em;
+    display: block;
+    width: 100%;
 }
 
 body.ipad article.op header span.poster-name {
@@ -208,11 +213,16 @@ body.ipad article header p {
     font-style: italic;
     color: #999;
 }
-
+body.ipad p.post-date {
+    position: absolute;
+    bottom: 10px;
+    right: 40px;
+    font-style: normal;
+}
 body.ipad article header button.post-action {
     position: absolute;
-    top: 13px;
-    right: 13px;
+    bottom: 0;
+    right: 0;
     width: 30px;
     height: 26px;
 }
@@ -264,98 +274,40 @@ article section ul, article section ol {
 
 /* iPhone - Post body */
 
-body.iphone article section {
+body article section {
     font-size: 15px;
     padding: 5px;
 }
 
-body.iphone article section .bbc-block, body.iphone article section .bbc-block h5 {
-    border-bottom-width: 1px;
-    border-bottom-style: solid;
-    border-bottom-color: #999;
-}
-
-body.iphone article section .bbc-block h4 {
-    padding-top: 1px;
-    padding-bottom: 2px;
-    border-top-width: 1px;
-    border-top-style: solid;
-    border-top-color: #999;
-    font-size: 13px;
-    font-style: italic;
-}
-
-body.iphone article section .bbc-block h5 {
-    font-size: 12px;
-}
-
-body.iphone article section .bbc-block h4, body.iphone article section .bbc-block h5 {
-    display: block;
-    color: #555;
-}
-
-body.iphone article section .bbc-block blockquote {
-    font-size: 12px;
-    padding: 5px;
-}
-
-/* iPad - Post body */
-
-body.ipad article {
-    padding-bottom: 5px;
-    border-bottom-width: 1px;
-    border-bottom-style: solid;
-    border-bottom-color: #c1c1c1;
-}
-
-body.ipad article section {
-    margin-left: 95px;
-    margin-right: 13px;
-}
-
-body.ipad article.noAvatar section {
-    margin-left: 13px;
-}
-
-body.ipad article section .bbc-block, body.ipad article section .bbc-block h5 {
-    max-width: 100%;
-}
-
-body.ipad article section .bbc-block h4, body.ipad article section .bbc-block h5 {
-    display: block;
-    color: #555;
-}
-
-body.ipad article section .bbc-block h4 {
+body article section .bbc-block h4 {
     padding-top: 1px;
     padding-bottom: 2px;
     font-size: 13px;
     font-style: italic;
+    margin-top: 10px;
 }
 
-body.ipad article section .bbc-block h5 {
+body article section .bbc-block h5 {
     font-size: 12px;
 }
 
-body.ipad article section .bbc-block blockquote {
-    font-size: 0.85em;
-    padding-right: 0.5em;
-    padding-left: 1em;
-    margin: 0.5em 1em;
+body article section .bbc-block h4, body.iphone article section .bbc-block h5 {
+    display: block;
+    color: #555;
+}
+
+body article section .bbc-block blockquote {
+    font-size: 12px;
+    padding: 0 10px;
+    margin: 0 0 10px 0;
     border-left-width: 1px;
     border-left-style: solid;
     border-left-color: #999;
 }
 
-body.ipad article section .bbc-block pre {
-    max-width: 500px;
-    font-size: 0.85em;
-    padding-right: 0.5em;
-    padding-left: 1em;
-    margin: 0.5em 1em;
-    border-left-width: 1px;
-    border-left-style: solid;
-    border-left-width: #999;
+/* iPad - Post body */
+body.ipad article section .bbc-block, body.ipad article section .bbc-block h5 {
+	margin: 1em 155px 1em 10px;
 }
 
 /* iPhone - Back matter */
