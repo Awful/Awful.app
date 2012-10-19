@@ -219,6 +219,29 @@ typedef enum SettingType
                                               otherButtonTitles:@"Log Out", nil];
         alert.delegate = self;
         [alert show];
+    } else if ([action isEqualToString:@"GoToAwfulThread"]) {
+        NSString *threadID = setting[@"ThreadID"];
+        NSArray *threads = [AwfulThread fetchAllMatchingPredicate:@"threadID = %@", threadID];
+        AwfulThread *thread;
+        if ([threads count] < 1) {
+            thread = [AwfulThread insertNew];
+            thread.threadID = threadID;
+        } else {
+            thread = threads[0];
+        }
+        AwfulPage *page = [AwfulPage newDeviceSpecificPage];
+        page.destinationType = AwfulPageDestinationTypeNewpost;
+        page.thread = thread;
+        [page refresh];
+        if (self.splitViewController) {
+            AwfulSplitViewController *split = (AwfulSplitViewController *)self.splitViewController;
+            UINavigationController *nav = split.viewControllers[1];
+            [nav setViewControllers:@[ page ] animated:YES];
+            [split ensureLeftBarButtonItemOnDetailView];
+            [split.masterPopoverController dismissPopoverAnimated:YES];
+        } else {
+            [self.navigationController pushViewController:page animated:YES];
+        }
     } else {
         id selectedValue = [[NSUserDefaults standardUserDefaults] objectForKey:setting[@"Key"]];
         AwfulSettingsChoiceViewController *choiceViewController = [[AwfulSettingsChoiceViewController alloc] initWithSetting:setting selectedValue:selectedValue];
