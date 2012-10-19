@@ -523,7 +523,9 @@
 - (void)showActions
 {
     self.actions.viewController = self;
-    [self.actions showFromRect:self.pageBar.frame inView:self.view animated:YES];
+    [self.actions showFromRect:[self.view convertRect:self.pageBar.frame toView:self.view.superview]
+                        inView:self.view.superview
+                      animated:YES];
 }
 
 #pragma mark - AwfulWebViewDelegate
