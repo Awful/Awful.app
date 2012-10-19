@@ -27,11 +27,6 @@
     return @"Actions";
 }
 
-- (void)showFromToolbar:(UIToolbar *)toolbar
-{
-    [self.actionSheet showFromToolbar:toolbar];
-}
-
 - (void)showFromRect:(CGRect)rect inView:(UIView *)view animated:(BOOL)animated
 {
     [self.actionSheet showFromRect:rect inView:view animated:animated];

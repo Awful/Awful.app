@@ -15,7 +15,6 @@
 @property (readonly, nonatomic) UIActionSheet *actionSheet;
 @property (readonly, nonatomic) NSString *overallTitle;
 
-- (void)showFromToolbar:(UIToolbar *)toolbar;
 - (void)showFromRect:(CGRect)rect inView:(UIView *)view animated:(BOOL)animated;
 
 - (BOOL)isCancelled : (int)index;
