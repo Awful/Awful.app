@@ -250,11 +250,6 @@
 		8CCD556C15B783FD00E5893B /* forum-arrow-down@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD524315B783FC00E5893B /* forum-arrow-down@2x.png */; };
 		8CCD556D15B783FD00E5893B /* forum-arrow-right.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD524415B783FC00E5893B /* forum-arrow-right.png */; };
 		8CCD556E15B783FD00E5893B /* forum-arrow-right@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD524515B783FC00E5893B /* forum-arrow-right@2x.png */; };
-		8CCD557015B783FD00E5893B /* MasterViewButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD524815B783FC00E5893B /* MasterViewButton.png */; };
-		8CCD557115B783FD00E5893B /* multiPageMovement.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD524915B783FC00E5893B /* multiPageMovement.png */; };
-		8CCD557215B783FD00E5893B /* ReplyButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD524A15B783FC00E5893B /* ReplyButton.png */; };
-		8CCD557315B783FD00E5893B /* singlePageMovement.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD524B15B783FC00E5893B /* singlePageMovement.png */; };
-		8CCD557415B783FD00E5893B /* ThreadActions.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD524C15B783FC00E5893B /* ThreadActions.png */; };
 		8CCD557515B783FD00E5893B /* icon_arrow_left.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD524D15B783FC00E5893B /* icon_arrow_left.png */; };
 		8CCD557615B783FD00E5893B /* icon_arrow_right.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD524E15B783FC00E5893B /* icon_arrow_right.png */; };
 		8CCD557915B783FD00E5893B /* list_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD525115B783FC00E5893B /* list_icon.png */; };
@@ -875,11 +870,6 @@
 		8CCD524315B783FC00E5893B /* forum-arrow-down@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forum-arrow-down@2x.png"; sourceTree = "<group>"; };
 		8CCD524415B783FC00E5893B /* forum-arrow-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forum-arrow-right.png"; sourceTree = "<group>"; };
 		8CCD524515B783FC00E5893B /* forum-arrow-right@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forum-arrow-right@2x.png"; sourceTree = "<group>"; };
-		8CCD524815B783FC00E5893B /* MasterViewButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MasterViewButton.png; sourceTree = "<group>"; };
-		8CCD524915B783FC00E5893B /* multiPageMovement.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = multiPageMovement.png; sourceTree = "<group>"; };
-		8CCD524A15B783FC00E5893B /* ReplyButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ReplyButton.png; sourceTree = "<group>"; };
-		8CCD524B15B783FC00E5893B /* singlePageMovement.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = singlePageMovement.png; sourceTree = "<group>"; };
-		8CCD524C15B783FC00E5893B /* ThreadActions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ThreadActions.png; sourceTree = "<group>"; };
 		8CCD524D15B783FC00E5893B /* icon_arrow_left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_arrow_left.png; sourceTree = "<group>"; };
 		8CCD524E15B783FC00E5893B /* icon_arrow_right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_arrow_right.png; sourceTree = "<group>"; };
 		8CCD525115B783FC00E5893B /* list_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = list_icon.png; sourceTree = "<group>"; };
@@ -1769,7 +1759,6 @@
 				8CCD524315B783FC00E5893B /* forum-arrow-down@2x.png */,
 				8CCD524415B783FC00E5893B /* forum-arrow-right.png */,
 				8CCD524515B783FC00E5893B /* forum-arrow-right@2x.png */,
-				8CCD524715B783FC00E5893B /* help */,
 				8C9B02C11623630F00676B98 /* forumsListGreyDark.png */,
 				8C9B02C21623630F00676B98 /* forumsListGreyDark@2x.png */,
 				8CCD524D15B783FC00E5893B /* icon_arrow_left.png */,
@@ -1821,18 +1810,6 @@
 				8CCD527715B783FC00E5893B /* sticky.png */,
 			);
 			path = Images;
-			sourceTree = "<group>";
-		};
-		8CCD524715B783FC00E5893B /* help */ = {
-			isa = PBXGroup;
-			children = (
-				8CCD524815B783FC00E5893B /* MasterViewButton.png */,
-				8CCD524915B783FC00E5893B /* multiPageMovement.png */,
-				8CCD524A15B783FC00E5893B /* ReplyButton.png */,
-				8CCD524B15B783FC00E5893B /* singlePageMovement.png */,
-				8CCD524C15B783FC00E5893B /* ThreadActions.png */,
-			);
-			path = help;
 			sourceTree = "<group>";
 		};
 		8CCD527B15B783FC00E5893B /* Thread Tags */ = {
@@ -2219,11 +2196,6 @@
 				8CCD556C15B783FD00E5893B /* forum-arrow-down@2x.png in Resources */,
 				8CCD556D15B783FD00E5893B /* forum-arrow-right.png in Resources */,
 				8CCD556E15B783FD00E5893B /* forum-arrow-right@2x.png in Resources */,
-				8CCD557015B783FD00E5893B /* MasterViewButton.png in Resources */,
-				8CCD557115B783FD00E5893B /* multiPageMovement.png in Resources */,
-				8CCD557215B783FD00E5893B /* ReplyButton.png in Resources */,
-				8CCD557315B783FD00E5893B /* singlePageMovement.png in Resources */,
-				8CCD557415B783FD00E5893B /* ThreadActions.png in Resources */,
 				8CCD557515B783FD00E5893B /* icon_arrow_left.png in Resources */,
 				8CCD557615B783FD00E5893B /* icon_arrow_right.png in Resources */,
 				8CCD557915B783FD00E5893B /* list_icon.png in Resources */,
