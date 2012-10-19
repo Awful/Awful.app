@@ -39,8 +39,6 @@ typedef enum {
 
 - (IBAction)hardRefresh;
 
-- (void)setThreadTitle:(NSString *)threadTitle;
-
 - (void)updatePagesLabel;
 
 - (void)refresh;

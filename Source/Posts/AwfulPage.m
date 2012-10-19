@@ -62,16 +62,21 @@
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         self.hidesBottomBarWhenPushed = YES;
-        // UINavigationBar never sets a height, so we need one here. This is just small enough to
-        // not bust out of a landscape phone navigation bar.
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 30)];
+        // UINavigationBar never seems to make our label taller, but it does position it nicely,
+        // so we set an overly tall height to make sure we get two lines.
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 100)];
         titleLabel.numberOfLines = 2;
-        titleLabel.font = [UIFont boldSystemFontOfSize:15];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            titleLabel.font = [UIFont boldSystemFontOfSize:17];
+            titleLabel.minimumFontSize = 13;
+        } else {
+            titleLabel.font = [UIFont boldSystemFontOfSize:13];
+            titleLabel.minimumFontSize = 9;
+        }
         titleLabel.textColor = [UIColor whiteColor];
         titleLabel.backgroundColor = [UIColor clearColor];
         titleLabel.shadowColor = [UIColor colorWithWhite:0 alpha:0.5];
         titleLabel.textAlignment = UITextAlignmentCenter;
-        titleLabel.minimumFontSize = 9;
         titleLabel.adjustsFontSizeToFitWidth = YES;
         titleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         self.navigationItem.titleView = titleLabel;
@@ -130,7 +135,8 @@
     _dataController = dataController;
     self.currentPage = dataController.currentPage;
     self.numberOfPages = dataController.numberOfPages;
-    [self setThreadTitle:dataController.threadTitle];
+    self.thread.title = dataController.threadTitle;
+    self.titleLabel.text = self.thread.title;
     
     self.postIDScrollDestination = [dataController calculatePostIDScrollDestination];
     self.shouldScrollToBottom = [dataController shouldScrollToBottom];
@@ -170,15 +176,6 @@
 {
     _numberOfPages = numberOfPages;
     [self updatePagesLabel];
-}
-
-- (void)setThreadTitle:(NSString *)title
-{
-    AwfulThread *mythread = self.thread;
-    mythread.title = title;
-    UILabel *lab = (UILabel *)self.navigationItem.titleView;
-    lab.text = title;
-    lab.adjustsFontSizeToFitWidth = YES;
 }
 
 - (UILabel *)titleLabel
