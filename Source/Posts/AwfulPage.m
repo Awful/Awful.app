@@ -354,7 +354,7 @@
 {
     if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
         UIView *sp_view = self.specificPageController.view;
-        sp_view.frame = CGRectMake(0, self.view.frame.size.height - sp_view.frame.size.height,
+        sp_view.frame = CGRectMake(0, self.view.frame.size.height - sp_view.frame.size.height - self.pageBar.frame.size.height,
                                    self.view.frame.size.width, sp_view.frame.size.height);
     }
 }

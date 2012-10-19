@@ -37,10 +37,13 @@
 
 - (void)loadView
 {
-    self.view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 260)];
+    self.view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)];
     self.view.backgroundColor = [UIColor darkGrayColor];
     
-    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    CGRect toolbarFrame, pickerFrame;
+    CGRectDivide(self.view.bounds, &toolbarFrame, &pickerFrame, 44, CGRectMinYEdge);
+    
+    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:toolbarFrame];
     toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
     toolbar.barStyle = UIBarStyleBlack;
     self.firstLastSegmentedControl = [[ButtonSegmentedControl alloc] initWithItems:@[ @"First", @"Last" ]];
@@ -61,8 +64,8 @@
     toolbar.items = @[ firstLast, separator, self.jumpToPageBarButtonItem ];
     [self.view addSubview:toolbar];
     
-    self.pickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 44, 320, 216)];
-    self.pickerView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
+    self.pickerView = [[UIPickerView alloc] initWithFrame:pickerFrame];
+    self.pickerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.pickerView.dataSource = self;
     self.pickerView.delegate = self;
     self.pickerView.showsSelectionIndicator = YES;
