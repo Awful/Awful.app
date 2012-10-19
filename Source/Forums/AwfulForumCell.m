@@ -76,8 +76,8 @@
 static UIButton *CreateFavoriteButtonWithTarget(id target)
 {
     UIButton *favoriteButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [favoriteButton setImage:[UIImage imageNamed:@"star_off.png"] forState:UIControlStateNormal];
-    [favoriteButton setImage:[UIImage imageNamed:@"star_on.png"] forState:UIControlStateSelected];
+    [favoriteButton setImage:[UIImage imageNamed:@"star-off.png"] forState:UIControlStateNormal];
+    [favoriteButton setImage:[UIImage imageNamed:@"star-on.png"] forState:UIControlStateSelected];
     [favoriteButton addTarget:target
                        action:@selector(toggleFavorite)
              forControlEvents:UIControlEventTouchUpInside];
