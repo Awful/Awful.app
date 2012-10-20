@@ -317,6 +317,7 @@
     self.webView.backgroundColor = [UIColor underPageBackgroundColor];
     self.webViewDelegateWrapper = [AwfulWebViewDelegateWrapper delegateWrappingDelegate:self];
     self.webView.delegate = self.webViewDelegateWrapper;
+    self.webView.dataDetectorTypes = UIDataDetectorTypeNone;
     [self.view addSubview:self.webView];
 }
 
