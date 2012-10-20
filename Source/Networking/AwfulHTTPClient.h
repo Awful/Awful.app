@@ -43,7 +43,18 @@ typedef void (^PostContentResponseBlock)(NSString *postContent);
 
 -(NSOperation *)forumsListOnCompletion : (ForumsListResponseBlock)forumsListResponseBlock onError : (AwfulErrorBlock)errorBlock;
 
--(NSOperation *)replyToThread : (AwfulThread *)thread withText : (NSString *)text onCompletion : (CompletionBlock)completionBlock onError : (AwfulErrorBlock)errorBlock;
+// Posts a new reply to a thread.
+//
+// threadID - The ID of the thread to reply to.
+// text     - The bbcode-formatted reply.
+// callback - A block to call after sending the reply, which takes as parameters:
+//              error  - An error on failure, or nil on success.
+//              postID - The ID of the new post, or nil if it's the last post in the thread.
+//
+// Returns the enqueued network operation.
+- (NSOperation *)replyToThreadWithID:(NSString *)threadID
+                                text:(NSString *)text
+                             andThen:(void (^)(NSError *error, NSString *postID))callback;
 
 -(NSOperation *)editContentsForPost : (AwfulPost *)post onCompletion:(PostContentResponseBlock)postContentResponseBlock onError:(AwfulErrorBlock)errorBlock;
 
@@ -60,5 +71,18 @@ typedef void (^PostContentResponseBlock)(NSString *postContent);
 - (NSOperation *)logInAsUsername:(NSString *)username
                     withPassword:(NSString *)password
                          andThen:(void (^)(NSError *error))callback;
+
+// Finds the thread and page where a post appears.
+//
+// postID   - The ID of the post to locate.
+// callback - A block to call after locating the post, which takes as parameters:
+//              error    - An error on failure, or nil on success.
+//              threadID - The ID of the thread containing the post, or nil on failure.
+//              page     - The page number where the post appears, or NSIntegerMax if the post
+//                         appears on the last page, or 0 on failure.
+//
+// Returns the enqueued network operation.
+- (NSOperation *)locatePostWithID:(NSString *)postID
+                          andThen:(void (^)(NSError *error, NSString *threadID, NSInteger page))callback;
 
 @end

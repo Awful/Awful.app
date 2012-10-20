@@ -572,17 +572,9 @@
     NSURL *url = request.URL;
     if ([[url host] isEqualToString:@"forums.somethingawful.com"] &&
         [[url lastPathComponent] isEqualToString:@"showthread.php"]) {
-        NSString *threadID;
-        NSString *pageNumber;
-        NSArray *queryElements = [[request.URL query] componentsSeparatedByString:@"&"];
-        for (NSString *element in queryElements) {
-            NSArray *keyAndVal = [element componentsSeparatedByString:@"="];
-            if ([keyAndVal[0] isEqualToString:@"threadid"]) {
-                threadID = [keyAndVal lastObject];
-            } else if ([keyAndVal[0] isEqualToString:@"pagenumber"]) {
-                pageNumber = [keyAndVal lastObject];
-            }
-        }
+        NSDictionary *query = [[request URL] queryDictionary];
+        NSString *threadID = query[@"threadid"];
+        NSString *pageNumber = query[@"pagenumber"];
         
         // TODO (nolan) idgi, why a throwaway context?
         if (threadID) {

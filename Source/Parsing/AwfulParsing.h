@@ -123,3 +123,12 @@
 + (NSArray *)threadsWithHTMLData:(NSData *)htmlData;
 
 @end
+
+
+@interface SuccessfulReplyInfo : ParsedInfo
+
+@property (readonly, copy, nonatomic) NSString *postID;
+
+@property (readonly, nonatomic) BOOL lastPage;
+
+@end

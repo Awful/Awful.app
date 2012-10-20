@@ -219,20 +219,20 @@ typedef enum BookmarkAction {
     return op;
 }
 
-- (NSOperation *)replyToThread:(AwfulThread *)thread
-                      withText:(NSString *)text
-                  onCompletion:(CompletionBlock)completionBlock
-                       onError:(AwfulErrorBlock)errorBlock
+- (NSOperation *)replyToThreadWithID:(NSString *)threadID
+                                text:(NSString *)text
+                             andThen:(void (^)(NSError *error, NSString *postID))callback
 {
-    NSString *path = [NSString stringWithFormat:@"newreply.php?s=&action=newreply&threadid=%@",
-                      thread.threadID];
-    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
+    NSDictionary *parameters = @{ @"action" : @"newreply", @"threadid" : threadID };
+    NSURLRequest *urlRequest = [self requestWithMethod:@"GET"
+                                                  path:@"newreply.php"
+                                            parameters:parameters];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
-                                                               success:^(id _, id response)
+                                                               success:^(id _, id data)
     {
-        ReplyFormParsedInfo *formInfo = [[ReplyFormParsedInfo alloc] initWithHTMLData:(NSData *)response];
-        NSMutableDictionary *parameters = [@{
-            @"threadid" : thread.threadID,
+        ReplyFormParsedInfo *formInfo = [[ReplyFormParsedInfo alloc] initWithHTMLData:(NSData *)data];
+        NSMutableDictionary *postParameters = [@{
+            @"threadid" : threadID,
             @"formkey" : formInfo.formkey,
             @"form_cookie" : formInfo.formCookie,
             @"action" : @"postreply",
@@ -241,23 +241,24 @@ typedef enum BookmarkAction {
             @"submit" : @"Submit Reply",
         } mutableCopy];
         if (formInfo.bookmark) {
-            parameters[@"bookmark"] = formInfo.bookmark;
+            postParameters[@"bookmark"] = formInfo.bookmark;
         }
         
         NSURLRequest *postRequest = [self requestWithMethod:@"POST"
                                                        path:@"newreply.php"
-                                                 parameters:parameters];
+                                                 parameters:postParameters];
         [self enqueueHTTPRequestOperation:[self HTTPRequestOperationWithRequest:postRequest
-                                                                        success:^(id _, id __)
+                                                                        success:^(id _, id responseData)
         {
-            if (completionBlock) completionBlock();
+            SuccessfulReplyInfo *replyInfo = [[SuccessfulReplyInfo alloc] initWithHTMLData:(NSData *)responseData];
+            if (callback) callback(nil, replyInfo.lastPage ? nil : replyInfo.postID);
         } failure:^(id _, NSError *error)
         {
-            if (errorBlock) errorBlock(error);
+            if (callback) callback(error, nil);
         }]];
     } failure:^(id _, NSError *error)
     {
-        errorBlock(error);
+        if (callback) callback(error, nil);
     }];
     [self enqueueHTTPRequestOperation:op];
     return op;
@@ -420,15 +421,54 @@ typedef enum PostContentType {
                                                                success:^(id _, id responseObject)
     {
         NSString *response = [[NSString alloc] initWithData:responseObject
-                                                   encoding:NSWindowsCP1252StringEncoding];
+                                                   encoding:self.stringEncoding];
         if ([response rangeOfString:@"GLLLUUUUUEEEEEE"].location != NSNotFound) {
             if (callback) callback(nil);
         } else {
-            if (callback) callback([NSError errorWithDomain:NSCocoaErrorDomain code:-1 userInfo:nil]);
+            if (callback) callback([NSError errorWithDomain:NSCocoaErrorDomain
+                                                       code:-1
+                                                   userInfo:nil]);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error)
     {
         if (callback) callback(error);
+    }];
+    [self enqueueHTTPRequestOperation:op];
+    return op;
+}
+
+- (NSOperation *)locatePostWithID:(NSString *)postID
+                          andThen:(void (^)(NSError *error, NSString *threadID, NSInteger page))callback
+{
+    // The SA Forums will direct a certain URL to the thread with a given post. We'll wait for that
+    // redirect, then parse out the info we need.
+    NSURLRequest *request = [self requestWithMethod:@"GET"
+                                               path:@"showthread.php"
+                                         parameters:@{ @"goto" : @"post", @"postid" : postID }];
+    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
+                                                               success:^(id _, id __)
+    {
+        // Once we have the redirect we want, we cancel the operation. So if this "success" callback
+        // gets called, we've actually failed.
+        if (callback) callback(nil, nil, 0);
+    } failure:^(id _, NSError *error)
+    {
+        if (callback) callback(error, nil, 0);
+    }];
+    __weak AFHTTPRequestOperation *blockOp = op;
+    [op setRedirectResponseBlock:^NSURLRequest *(id _, NSURLRequest *request, NSURLResponse *response)
+    {
+        if (!response) return request;
+        [blockOp cancel];
+        NSDictionary *query = [[request URL] queryDictionary];
+        if (callback) {
+            dispatch_queue_t queue = blockOp.successCallbackQueue;
+            if (!queue) queue = dispatch_get_main_queue();
+            dispatch_async(queue, ^{
+                callback(nil, query[@"threadid"], [query[@"pagenumber"] integerValue]);
+            });
+        }
+        return nil;
     }];
     [self enqueueHTTPRequestOperation:op];
     return op;

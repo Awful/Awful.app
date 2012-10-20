@@ -533,8 +533,8 @@ withImagePlaceholderResults:placeholderResults
     withImagePlaceholderResults:(NSArray *)placeholderResults
     replacementURLs:(NSDictionary *)replacementURLs
 {
-    if (self.thread) [SVProgressHUD showWithStatus:@"Replying…" maskType:SVProgressHUDMaskTypeClear];
-    else if (self.post) [SVProgressHUD showWithStatus:@"Editing…" maskType:SVProgressHUDMaskTypeClear];
+    [SVProgressHUD showWithStatus:self.thread ? @"Replying…" : @"Editing…"
+                         maskType:SVProgressHUDMaskTypeClear];
     
     if ([placeholderResults count] > 0) {
         NSMutableString *replacedReply = [reply mutableCopy];
@@ -555,33 +555,70 @@ withImagePlaceholderResults:placeholderResults
     }
     
     if (self.thread) {
-        self.networkOperation = [[AwfulHTTPClient sharedClient] replyToThread:self.thread
-                                                                     withText:reply
-                                                                 onCompletion:^
-                                 {
-                                     [SVProgressHUD dismiss];
-                                     [self.presentingViewController dismissModalViewControllerAnimated:YES];
-                                     [self.page refresh];
-                                 } onError:^(NSError *error)
-                                 {
-                                     [SVProgressHUD dismiss];
-                                     [[AwfulAppDelegate instance] requestFailed:error];
-                                 }];
+        [self sendReply:reply];
     } else if (self.post) {
-        self.networkOperation = [[AwfulHTTPClient sharedClient] editPost:self.post
-                                                            withContents:reply
-                                                            onCompletion:^
-                                 {
-                                     [SVProgressHUD dismiss];
-                                     [self.presentingViewController dismissModalViewControllerAnimated:YES];
-                                     [self.page hardRefresh];
-                                 } onError:^(NSError *error)
-                                 {
-                                     [SVProgressHUD dismiss];
-                                     [[AwfulAppDelegate instance] requestFailed:error];
-                                 }];
+        [self sendEdit:reply];
     }
     [self.replyTextView resignFirstResponder];
+}
+
+- (void)sendReply:(NSString *)reply
+{
+    id op = [[AwfulHTTPClient sharedClient] replyToThreadWithID:self.thread.threadID
+                                                           text:reply
+                                                        andThen:^(NSError *error, NSString *postID)
+             {
+                 if (error) {
+                     [SVProgressHUD dismiss];
+                     [[AwfulAppDelegate instance] requestFailed:error];
+                     return;
+                 }
+                 // If the new post is the thread's last post, we don't get its ID.
+                 // Which is kind of unhelpful if someone posts between now and when
+                 // the refresh comes through.
+                 if (!postID) {
+                     [SVProgressHUD dismiss];
+                     self.page.destinationType = AwfulPageDestinationTypeLast;
+                     [self.page refresh];
+                     [self.presentingViewController dismissModalViewControllerAnimated:YES];
+                     return;
+                 }
+                 [[AwfulHTTPClient sharedClient] locatePostWithID:postID
+                                                          andThen:^(NSError *error, NSString *threadID, NSInteger page)
+                  {
+                      [SVProgressHUD dismiss];
+                      if ([self.page.thread.threadID isEqualToString:threadID]) {
+                          self.page.destinationType = AwfulPageDestinationTypeNewpost;
+                          [self.page loadPageNum:page];
+                      }
+                      [self.presentingViewController dismissModalViewControllerAnimated:YES];
+                  }];
+             }];
+    self.networkOperation = op;
+}
+
+- (void)sendEdit:(NSString *)edit
+{
+    id op = [[AwfulHTTPClient sharedClient] editPost:self.post
+                                        withContents:edit
+                                        onCompletion:^
+             {
+                 [[AwfulHTTPClient sharedClient] locatePostWithID:self.post.postID
+                                                          andThen:^(NSError *error, NSString *threadID, NSInteger page)
+                  {
+                      [SVProgressHUD dismiss];
+                      if ([self.page.thread.threadID isEqualToString:threadID]) {
+                          self.page.destinationType = AwfulPageDestinationTypeSpecific;
+                          [self.page loadPageNum:page];
+                      }
+                      [self.presentingViewController dismissModalViewControllerAnimated:YES];
+                  }];
+             } onError:^(NSError *error)
+             {
+                 [SVProgressHUD dismiss];
+                 [[AwfulAppDelegate instance] requestFailed:error];
+             }];
+    self.networkOperation = op;
 }
 
 - (IBAction)hideReply

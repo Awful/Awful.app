@@ -197,6 +197,7 @@
 		1CFBED031631A6EA008AF641 /* star-on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CFBECFF1631A6EA008AF641 /* star-on@2x.png */; };
 		1CFBED051631BF53008AF641 /* licenses.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CFBED041631BF53008AF641 /* licenses.html */; };
 		1CFBED081631C068008AF641 /* AwfulLicensesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFBED071631C068008AF641 /* AwfulLicensesViewController.m */; };
+		1CFBED0D1632212C008AF641 /* NSURL+QueryDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFBED0C1632212C008AF641 /* NSURL+QueryDictionary.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765080DF74369002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765070DF74369002DB57D /* CoreGraphics.framework */; };
@@ -803,6 +804,8 @@
 		1CFBED041631BF53008AF641 /* licenses.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = licenses.html; sourceTree = "<group>"; };
 		1CFBED061631C068008AF641 /* AwfulLicensesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLicensesViewController.h; sourceTree = "<group>"; };
 		1CFBED071631C068008AF641 /* AwfulLicensesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLicensesViewController.m; sourceTree = "<group>"; };
+		1CFBED0B1632212C008AF641 /* NSURL+QueryDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+QueryDictionary.h"; sourceTree = "<group>"; };
+		1CFBED0C1632212C008AF641 /* NSURL+QueryDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+QueryDictionary.m"; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* Awful.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Awful.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -1251,6 +1254,8 @@
 				8C48EA1D159BC2AC00A59691 /* AwfulFetchedTableViewController.m */,
 				1CC38BA3160C2CE600C35A11 /* AwfulFetchedTableViewControllerSubclass.h */,
 				1190F7F213BE4EDA00B9D271 /* main.m */,
+				1CFBED0B1632212C008AF641 /* NSURL+QueryDictionary.h */,
+				1CFBED0C1632212C008AF641 /* NSURL+QueryDictionary.m */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -2710,6 +2715,7 @@
 				1CBD5247162B66BC00928740 /* AwfulTextEntryCell.m in Sources */,
 				1CFBECEE163076F1008AF641 /* AwfulPageBar.m in Sources */,
 				1CFBED081631C068008AF641 /* AwfulLicensesViewController.m in Sources */,
+				1CFBED0D1632212C008AF641 /* NSURL+QueryDictionary.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
