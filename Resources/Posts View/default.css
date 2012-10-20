@@ -176,17 +176,20 @@ body.ipad article {
     clear: both;
     min-height: 150px;
     position: relative;
-    padding: 15px 53px 15px 15px;
+    padding: 15px;
 }
 body.ipad article.noAvatar {
     min-height: auto;
 }
 
 body.ipad article header {
-    width: 152px;
+    width: 136px;
+    height: 132px;
     float: left;
-    margin: 0 15px 15px 0;
-    padding: 0 10px 10px 0;
+    margin: 0 5px 0 0;
+    padding: 0;
+    background: -webkit-linear-gradient(left top, transparent 50%, rgba(0, 0, 0, 0.035));
+    border-bottom-right-radius: 4px;
 }
 
 body.ipad article header p.regDate {
@@ -307,8 +310,14 @@ body article section .bbc-block blockquote {
 }
 
 /* iPad - Post body */
+
+body.ipad article section {
+    padding: 0 0 15px 0;
+}
+
 body.ipad article section .bbc-block, body.ipad article section .bbc-block h5 {
-	margin: 1em 155px 1em 10px;
+	margin: 1em 10px;
+    overflow: hidden; /* So SALR green background doesn't bleed behind avatar. */
 }
 
 /* iPhone - Back matter */

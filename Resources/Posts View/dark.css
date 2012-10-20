@@ -126,7 +126,7 @@ body.ipad article.op header span.poster-name {
     color: #0c506d;
 }
 
-body.ipad article header p {
+body.ipad article header p, body.ipad article header p.regDate {
     color: white;
 }
 
