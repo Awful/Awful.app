@@ -41,6 +41,8 @@
 
 @property (readonly, nonatomic) UILabel *titleLabel;
 
+@property (nonatomic,weak) UIRefreshControl *webViewRefreshControl;
+
 @end
 
 
@@ -80,6 +82,7 @@
         titleLabel.adjustsFontSizeToFitWidth = YES;
         titleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         self.navigationItem.titleView = titleLabel;
+        [self refresh];
     }
     return self;
 }
@@ -239,6 +242,8 @@
         }
         [self updatePagesLabel];
         [self updateBookmarked];
+        [[self webViewRefreshControl] endRefreshing];
+
     } onError:^(NSError *error)
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed"
@@ -336,6 +341,12 @@
     press.delegate = self;
     press.minimumPressDuration = 0.3;
     [self.webView addGestureRecognizer:press];
+    
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+    [refreshControl addTarget:self action:@selector(hardRefresh) forControlEvents:UIControlEventValueChanged];
+    [self.webView.scrollView addSubview:refreshControl];
+    [self setWebViewRefreshControl:refreshControl];
+    
 }
 
 - (void)viewDidDisappear:(BOOL)animated
