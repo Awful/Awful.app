@@ -9,6 +9,7 @@
 #import "AwfulReplyViewController.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulPage.h"
+#import "AwfulThreadTitleLabel.h"
 #import "AwfulAppDelegate.h"
 #import "ImgurHTTPClient.h"
 #import "SVProgressHUD.h"
@@ -24,6 +25,8 @@ typedef enum {
 @property (strong, nonatomic) UIBarButtonItem *sendButton;
 
 @property (strong, nonatomic) UIBarButtonItem *cancelButton;
+
+@property (readonly, nonatomic) UILabel *titleLabel;
 
 @property (readonly, nonatomic) UITextView *replyTextView;
 
@@ -41,6 +44,20 @@ typedef enum {
 
 @implementation AwfulReplyViewController
 
+- (id)init
+{
+    self = [super initWithNibName:nil bundle:nil];
+    if (self) {
+        self.navigationItem.titleView = NewAwfulThreadTitleLabel();
+    }
+    return self;
+}
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    return [self init];
+}
+
 - (void)dealloc
 {
     if (_observerToken) [[NSNotificationCenter defaultCenter] removeObserver:_observerToken];
@@ -55,7 +72,13 @@ typedef enum {
 - (void)setPage:(AwfulPage *)page
 {
     _page = page;
+    self.titleLabel.text = page.thread.title;
     self.images = [NSMutableDictionary new];
+}
+
+- (UILabel *)titleLabel
+{
+    return (UILabel *)self.navigationItem.titleView;
 }
 
 - (UITextView *)replyTextView
@@ -113,7 +136,6 @@ typedef enum {
     [super viewWillAppear:animated];
     self.sendButton.title = self.post ? @"Save" : @"Reply";
     [self configureTopLevelMenuItems];
-    self.navigationItem.title = self.page.thread.title;
     [self.replyTextView becomeFirstResponder];
 }
 
