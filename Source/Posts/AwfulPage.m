@@ -343,7 +343,7 @@
     [self.webView addGestureRecognizer:press];
     
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
-    [refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
+    [refreshControl addTarget:self action:@selector(hardRefresh) forControlEvents:UIControlEventValueChanged];
     [self.webView.scrollView addSubview:refreshControl];
     [self setWebViewRefreshControl:refreshControl];
     
