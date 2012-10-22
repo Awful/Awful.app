@@ -16,9 +16,9 @@
 
 @property (readonly, nonatomic) UIImageView *threadTagImageView;
 
-- (void)setSticky:(BOOL)sticky;
+@property (nonatomic, getter=isSticky) BOOL sticky;
 
-- (void)setRating:(CGFloat)rating;
+@property (nonatomic) CGFloat rating;
 
 @property (readonly, weak, nonatomic) UILabel *originalPosterTextLabel;
 

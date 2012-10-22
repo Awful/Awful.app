@@ -32,6 +32,7 @@
     UINavigationController *nav = self.viewControllers[1];
     UIViewController *detail = nav.viewControllers[0];
     if ([detail.navigationItem.leftBarButtonItem isEqual:self.rootPopoverButtonItem]) return;
+    self.rootPopoverButtonItem.accessibilityLabel = @"Sidebar";
     [detail.navigationItem setLeftBarButtonItem:self.rootPopoverButtonItem animated:YES];
 }
 

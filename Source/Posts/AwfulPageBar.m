@@ -15,20 +15,28 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
+        
+        UIImage *previousPage = [UIImage imageNamed:@"arrowleft.png"];
+        previousPage.accessibilityLabel = @"Previous page";
+        UIImage *nextPage = [UIImage imageNamed:@"arrowright.png"];
+        nextPage.accessibilityLabel = @"Next page";
         UISegmentedControl *backForwardControl = [[UISegmentedControl alloc] initWithItems:@[
-                                                  [UIImage imageNamed:@"arrowleft.png"],
-                                                  [UIImage imageNamed:@"arrowright.png"]]];
+                                                  previousPage, nextPage]];
         [self addSubview:backForwardControl];
         _backForwardControl = backForwardControl;
         
         UIButton *jumpToPage = [UIButton buttonWithType:UIButtonTypeCustom];
         jumpToPage.titleLabel.font = [UIFont boldSystemFontOfSize:11];
+        jumpToPage.accessibilityHint = @"Jumps to a page";
         [self addSubview:jumpToPage];
         _jumpToPageButton = jumpToPage;
         
+        UIImage *action = [UIImage imageNamed:@"action.png"];
+        action.accessibilityLabel = @"Thread actions";
+        UIImage *reply = [UIImage imageNamed:@"compose.png"];
+        reply.accessibilityLabel = @"Reply to thread";
         UISegmentedControl *actionsCompose = [[UISegmentedControl alloc] initWithItems:@[
-                                              [UIImage imageNamed:@"action.png"],
-                                              [UIImage imageNamed:@"compose.png"]]];
+                                                 action, reply]];
         [self addSubview:actionsCompose];
         _actionsComposeControl = actionsCompose;
         

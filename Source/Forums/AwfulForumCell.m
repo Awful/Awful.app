@@ -34,6 +34,7 @@
         [expandButton setImage:[UIImage imageNamed:@"forum-arrow-down.png"]
                       forState:UIControlStateSelected];
         expandButton.contentMode = UIViewContentModeCenter;
+        expandButton.accessibilityLabel = @"Show subforums";
         [self.contentView addSubview:expandButton];
         _expandButton = expandButton;
         self.imageView.userInteractionEnabled = YES;
@@ -86,6 +87,7 @@ static UIButton *CreateFavoriteButtonWithTarget(id target)
     CGRect bounds = favoriteButton.bounds;
     bounds.size.width += 40;
     favoriteButton.bounds = bounds;
+    favoriteButton.accessibilityLabel = @"Mark as favorite";
     return favoriteButton;
 }
 

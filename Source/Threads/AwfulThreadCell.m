@@ -64,11 +64,14 @@
 
 - (void)setSticky:(BOOL)sticky
 {
+    _sticky = sticky;
     self.stickyImageView.hidden = !sticky;
 }
 
 - (void)setRating:(CGFloat)rating
 {
+    if (rating == _rating) return;
+    _rating = rating;
     self.ratingImageView.hidden = rating < 1;
     if (self.ratingImageView.hidden) return;
     NSInteger ratingImageNumber = lroundf(rating);
@@ -159,6 +162,8 @@
     return [UIColor colorWithHue:0.553 saturation:0.198 brightness:0.659 alpha:1];
 }
 
+#pragma mark - UITableViewCell
+
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated
 {
     [super setHighlighted:highlighted animated:animated];
@@ -195,6 +200,30 @@
             self.unreadCountBadgeView.hidden = NO;
         }
     }
+}
+
+#pragma mark - UIAccessibility
+
+- (NSString *)accessibilityLabel
+{
+    NSMutableArray *parts = [NSMutableArray new];
+    [parts addObject:self.textLabel.accessibilityLabel];
+    if (self.sticky) {
+        [parts addObject:@"sticky"];
+    }
+    if (self.rating >= 1) {
+        [parts addObject:[NSString stringWithFormat:@"rated %.1f", self.rating]];
+    }
+    [parts addObject:self.detailTextLabel.accessibilityLabel];
+    [parts addObject:self.originalPosterTextLabel.accessibilityLabel];
+    return [parts componentsJoinedByString:@", "];
+}
+
+- (NSString *)accessibilityValue
+{
+    if (!self.showsUnread) return @"Thread unread";
+    NSInteger unread = [self.unreadCountBadgeView.badgeText integerValue];
+    return [NSString stringWithFormat:@"%d unread post%@", unread, unread == 1 ? @"" : @"s"];
 }
 
 @end
