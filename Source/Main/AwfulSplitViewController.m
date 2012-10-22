@@ -17,13 +17,12 @@
 
 @implementation AwfulSplitViewController
 
-- (id)init
+// If you're hiding the master view in both orientations, and you set the delegate before setting
+// the view controllers, you get a spurious warning. So we set the delegate here instead.
+- (void)setViewControllers:(NSArray *)viewControllers
 {
-    self = [super initWithNibName:nil bundle:nil];
-    if (self) {
-        self.delegate = self;
-    }
-    return self;
+    [super setViewControllers:viewControllers];
+    self.delegate = self;
 }
 
 - (void)ensureLeftBarButtonItemOnDetailView
@@ -46,11 +45,6 @@
 }
 
 #pragma mark - UIViewController
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    return [self init];
-}
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {

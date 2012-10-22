@@ -8,9 +8,6 @@
 
 @interface AwfulSplitViewController : UISplitViewController
 
-// Designated initializer.
-- (id)init;
-
 - (void)ensureLeftBarButtonItemOnDetailView;
 
 @property (strong, nonatomic) UIPopoverController *masterPopoverController;
