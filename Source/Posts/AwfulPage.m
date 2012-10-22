@@ -351,10 +351,9 @@
     [self.pageBar.jumpToPageButton setTitle:[NSString stringWithFormat:@"Page %d of %d",
                                              self.currentPage, self.numberOfPages]
                                    forState:UIControlStateNormal];
+    [self.pageBar.backForwardControl setEnabled:self.currentPage != 1 forSegmentAtIndex:0];
     [self.pageBar.backForwardControl setEnabled:self.currentPage != self.numberOfPages
                               forSegmentAtIndex:1];
-    [self.pageBar.backForwardControl setEnabled:self.currentPage != 1
-                              forSegmentAtIndex:0];
 }
 
 - (void)updateBookmarked

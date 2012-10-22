@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ButtonSegmentedControl.h"
 
 @interface AwfulPageBar : UIView
 
