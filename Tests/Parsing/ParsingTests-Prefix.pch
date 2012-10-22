@@ -6,4 +6,5 @@
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
     #import <SenTestingKit/SenTestingKit.h>
+    #import "NSURL+QueryDictionary.h"
 #endif

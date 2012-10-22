@@ -62,8 +62,8 @@
     
     STAssertEqualObjects([threadInfos[7] title], @"UK Political Cartoons Megathread Part 2", nil);
     
-    STAssertTrue([threadInfos[0] sticky] && [threadInfos[3] sticky], nil);
-    STAssertFalse([threadInfos[5] sticky] || [threadInfos[10] sticky], nil);
+    STAssertTrue([threadInfos[0] isSticky] && [threadInfos[3] isSticky], nil);
+    STAssertFalse([threadInfos[5] isSticky] || [threadInfos[10] isSticky], nil);
     
     STAssertEqualObjects([[threadInfos[12] threadIconImageURL] absoluteString],
                          @"http://fi.somethingawful.com/forums/posticons/lf-marx.png#522", nil);

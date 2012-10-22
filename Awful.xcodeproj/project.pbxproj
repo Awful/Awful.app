@@ -69,6 +69,7 @@
 		1C83DB571620113F00E53CFA /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C83DB561620113F00E53CFA /* NSData+Base64.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc -w"; }; };
 		1C95FED81634C0380041A01F /* AwfulThreadTitleLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C95FED71634C0380041A01F /* AwfulThreadTitleLabel.m */; };
 		1CAB36B11548F0FE00A4A362 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
+		1CAED9C41635BD1F001F5F04 /* NSURL+QueryDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFBED0C1632212C008AF641 /* NSURL+QueryDictionary.m */; };
 		1CBD5242162B5A3D00928740 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1CBD5240162B5A3D00928740 /* Model.xcdatamodeld */; };
 		1CBD5244162B5C2500928740 /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1CBD5243162B5C2500928740 /* README.txt */; };
 		1CBD5247162B66BC00928740 /* AwfulTextEntryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBD5246162B66BC00928740 /* AwfulTextEntryCell.m */; };
@@ -2615,6 +2616,7 @@
 				1CBDB5F91625E7320004BDF4 /* TFHpple.m in Sources */,
 				1CBDB5FA1625E7320004BDF4 /* TFHppleElement.m in Sources */,
 				1CBDB5FB1625E7320004BDF4 /* XPathQuery.m in Sources */,
+				1CAED9C41635BD1F001F5F04 /* NSURL+QueryDictionary.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
