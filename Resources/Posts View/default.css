@@ -288,7 +288,6 @@ body article section .bbc-block h4 {
     padding-bottom: 2px;
     font-size: 13px;
     font-style: italic;
-    margin-top: 10px;
 }
 
 body article section .bbc-block h5 {
@@ -303,7 +302,6 @@ body article section .bbc-block h4, body.iphone article section .bbc-block h5 {
 body article section .bbc-block blockquote {
     font-size: 12px;
     padding: 0 10px;
-    margin: 0 0 10px 0;
     border-left-width: 1px;
     border-left-style: solid;
     border-left-color: #999;
@@ -316,7 +314,7 @@ body.ipad article section {
 }
 
 body.ipad article section .bbc-block, body.ipad article section .bbc-block h5 {
-	margin: 1em 10px;
+	margin: 0 10px 1em 10px;
     overflow: hidden; /* So SALR green background doesn't bleed behind avatar. */
 }
 

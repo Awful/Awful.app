@@ -24,9 +24,7 @@
                forKey:@"highlightUsername"];
     [config setObject:[[AwfulSettings settings] highlightOwnQuotes] ? @"true" : @"false"
                forKey:@"highlightUserQuote"];
-    NSString *alpha = AwfulSettings.settings.darkTheme ? @"0.5" : @"1.0";
-    [config setObject:[NSString stringWithFormat:@"rgba(162, 205, 90, %@)", alpha]
-               forKey:@"userQuote"];
+    [config setObject:@"rgba(162, 205, 90, 0.5)" forKey:@"userQuote"];
     [config setObject:@"#9933ff" forKey:@"usernameHighlight"];
     
     NSError *error;
