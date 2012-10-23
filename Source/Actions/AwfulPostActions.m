@@ -32,7 +32,9 @@ typedef enum {
         if(self.post.canEdit) {
             [self.titles addObject:@"Edit"];
         }
-        [self.titles addObject:@"Quote"];
+        if (!aPage.thread.isLockedValue) {
+            [self.titles addObject:@"Quote"];
+        }
         [self.titles addObject:@"Copy post URL"];
         [self.titles addObject:@"Mark read up to here"];
     }
@@ -46,6 +48,7 @@ typedef enum {
 
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
+    if (self.page.thread.isLockedValue) buttonIndex += 1;
     AwfulPostActionType action = buttonIndex;
     if(self.post.canEdit) {
         if(action == AwfulPostActionTypeEdit) {

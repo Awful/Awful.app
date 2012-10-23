@@ -128,6 +128,7 @@
            NSURL *lastURL = [urlResponse URL];
            NSData *data = (NSData *)response;
            AwfulPageDataController *data_controller = [[AwfulPageDataController alloc] initWithResponseData:data pageURL:lastURL];
+           thread.isLockedValue = data_controller.isLocked;
            pageResponseBlock(data_controller);
        } 
        failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -231,6 +232,12 @@ typedef enum BookmarkAction {
                                                                success:^(id _, id data)
     {
         ReplyFormParsedInfo *formInfo = [[ReplyFormParsedInfo alloc] initWithHTMLData:(NSData *)data];
+        if (!(formInfo.formkey && formInfo.formCookie)) {
+            NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : @"Thread is closed" };
+            NSError *error = [NSError errorWithDomain:NSCocoaErrorDomain code:-1 userInfo:userInfo];
+            if (callback) callback(error, nil);
+            return;
+        }
         NSMutableDictionary *postParameters = [@{
             @"threadid" : threadID,
             @"formkey" : formInfo.formkey,

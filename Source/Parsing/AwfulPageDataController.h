@@ -13,6 +13,7 @@
 @interface AwfulPageDataController : NSObject
 
 @property (nonatomic, strong) NSString *threadTitle;
+@property (nonatomic, assign) BOOL isLocked;
 @property (nonatomic, strong) AwfulForum *forum;
 @property (nonatomic, assign) NSInteger currentPage;
 @property (nonatomic, assign) NSInteger numberOfPages;

@@ -35,6 +35,7 @@
         NSData *converted = [StringFromSomethingAwfulData(responseData) dataUsingEncoding:NSUTF8StringEncoding];
         TFHpple *pageParser = [[TFHpple alloc] initWithHTMLData:converted];
         _threadTitle = ParseThreadTitle(pageParser);
+        _isLocked = ParseThreadLocked(pageParser);
         _forum = ParseForum(pageParser);
         _numberOfPages = ParsePageCount(pageParser, &_currentPage);
         _posts = ParsePosts(pageParser, _forum.forumID);
@@ -49,6 +50,11 @@ static NSString *ParseThreadTitle(TFHpple *parser)
 {
     TFHppleElement *title = [parser searchForSingle:@"//a[" HAS_CLASS(bclast) "]"];
     return title ? [title content] : @"Title Not Found";
+}
+
+static BOOL ParseThreadLocked(TFHpple *parser)
+{
+    return !![parser searchForSingle:@"//a[contains(@href, 'newreply')]/img[contains(@src, 'closed')]"];
 }
 
 static AwfulForum *ParseForum(TFHpple *parser)
