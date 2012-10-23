@@ -15,13 +15,12 @@
 </style>
 
 <body class="{{device}}">
-    <!--
-    <ul id="headerActions" class="{{#postsAboveNotice}}unreadPosts{{/postsAboveNotice}}" >
-        <li class="parentForum">Parent Forum</li>
-        {{#postsAboveNotice}}<li class="older-posts" onClick="tappedOlderPosts()">Load Read Posts</li>{{/postsAboveNotice}}
+    <ul id="headerActions" class="{{#postsAboveNotice}}unreadPosts{{/postsAboveNotice}}">
+        {{#postsAboveNotice}}
+        <li class="older-posts" onClick="tappedOlderPosts()">Load Read Posts</li>
+        {{/postsAboveNotice}}
         <li class="scrollToBottom" onClick="scrollToBottom()">Scroll to Bottom</li>
     </ul>
-    -->
     
     {{#posts}}
     <article id="{{postID}}" class="{{altCSSClass}} {{#isOP}}op{{/isOP}}">

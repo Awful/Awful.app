@@ -2,7 +2,7 @@
  default.css
  Awful
  
- Created by Nolan Waite on 10-05-27.
+ Created by Nolan Waite on 12-05-27.
  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
  */
 
@@ -49,26 +49,15 @@ a.quote_link {
 }
 #headerActions li {
     display: block;
-    float:left;
     font-weight: bold;
     font-size: 12px;
     color: #143761;
-    width: 50%;
+    width: 140px;
     height: 44px;
-    text-align: left;
+    text-align: center;
     padding-top: 14px;
-    border-left: 1px solid #c7c7c7;
-    border-right: 1px solid #f6f6f6;
-    border-bottom: 1px solid #f6f6f6;
-    text-shadow: 0 1px #fff;}
-#headerActions.unreadPosts li {
-    width: 33%;
-    font-size: 12px;
     text-shadow: 0 1px #fff;
-    padding-top: 7px;
-}
-#headerActions.unreadPosts li:nth-of-type(2) {
-    width: 34%;
+    margin: 0 auto;
 }
 
 .scrollToBottom {
