@@ -77,21 +77,22 @@
     static const CGFloat segWidth = 85;
     static const CGFloat butWidth = 110;
     static const CGFloat itemHeight = 29;
+    static const CGFloat topOffset = 1;
     
     self.backForwardControl.frame = CGRectMake(horizontalMargin, 0, segWidth, itemHeight);
     self.backForwardControl.center = CGPointMake(self.backForwardControl.center.x,
-                                                 CGRectGetMidY(self.bounds));
+                                                 CGRectGetMidY(self.bounds) + topOffset);
     self.backForwardControl.frame = CGRectIntegral(self.backForwardControl.frame);
     
     self.jumpToPageButton.bounds = CGRectMake(0, 0, butWidth, itemHeight);
     self.jumpToPageButton.center = CGPointMake(CGRectGetMidX(self.bounds),
-                                               CGRectGetMidY(self.bounds));
+                                               CGRectGetMidY(self.bounds) + topOffset);
     self.jumpToPageButton.frame = CGRectIntegral(self.jumpToPageButton.frame);
     
     self.actionsComposeControl.frame = CGRectMake(CGRectGetMaxX(self.bounds) - horizontalMargin - segWidth, 0,
                                                   segWidth, itemHeight);
     self.actionsComposeControl.center = CGPointMake(self.actionsComposeControl.center.x,
-                                                    CGRectGetMidY(self.bounds));
+                                                    CGRectGetMidY(self.bounds) + topOffset);
     self.actionsComposeControl.frame = CGRectIntegral(self.actionsComposeControl.frame);
 }
 
