@@ -393,6 +393,8 @@
     if (self.currentPage < self.numberOfPages) {
         self.destinationType = AwfulPageDestinationTypeSpecific;
         [self loadPageNum:self.currentPage + 1];
+    } else {
+        [self hardRefresh];
     }
 }
 
