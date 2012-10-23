@@ -1,8 +1,23 @@
 require 'erb'
+require 'uri'
 
-# This Rakefile exists to compile all third-party licenses into a single HTML
-# file for inclusion in Awful. This file is displayed verbatim within the app
-# when a button on the Settings screen is tapped.
+def urlescape(f)
+  URI.escape(f, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
+end
+
+desc "Compile list of thread tags available from GitHub Pages"
+task :tags do
+  tags = %w[Resources Thread\ Tags]
+  paths = Dir[File.join(tags + ["*.png"])]
+  File.open("tags.txt", "w") do |out|
+    out << tags.map { |t| urlescape(t) }.join("/") << "\n"
+    out << paths.map { |n| File.basename(n) }.join("\n")
+  end
+end
+
+# Compile all third-party licenses into a single HTML file for inclusion in
+# Awful. This file is displayed verbatim within the app when a button on the
+# Settings screen is tapped.
 licenses = "Resources/licenses.html"
 
 (Dir["Vendor/**/LICEN[CS]E*.*"] + Dir["Vendor/*.h"]).each do |license|
@@ -39,6 +54,7 @@ file licenses do |t|
   
   File.open("Resources/licenses.html", "w") do |out|
     projects = licenses.keys.sort
+    # DATA doesn't work in Rakefiles :-(
     template = File.open(__FILE__).read.split(/^__END__\s*/, 2).last
     html = ERB.new(template, 0, "%<>")
     out << html.result(binding)
