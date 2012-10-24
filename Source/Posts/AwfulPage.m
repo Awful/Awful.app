@@ -257,8 +257,7 @@
 - (void)loadOlderPosts
 {
     NSString *html = [self.dataController constructedPageHTMLWithAllPosts];
-    [self.webView loadHTMLString:html
-                         baseURL:[NSURL URLWithString:@"http://forums.somethingawful.com"]];
+    [self.webView loadHTMLString:html baseURL:[[NSBundle mainBundle] resourceURL]];
 }
 
 - (void)heldPost:(UILongPressGestureRecognizer *)gestureRecognizer
