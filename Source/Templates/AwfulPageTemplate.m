@@ -157,7 +157,7 @@ static NSURL *DefaultCSSURL()
         } else if (pagesLeft == 1) {
             self.pagesLeftNotice = @"1 page left.";
         } else {
-            self.pagesLeftNotice = @"End of the thread.";
+            self.pagesLeftNotice = @"End of the thread. Tap to refresh.";
         }
         NSMutableArray *posts = [NSMutableArray array];
         int currentIndex = 0;
