@@ -24,7 +24,7 @@ UILabel *NewAwfulThreadTitleLabel()
     titleLabel.textColor = [UIColor whiteColor];
     titleLabel.backgroundColor = [UIColor clearColor];
     titleLabel.shadowColor = [UIColor colorWithWhite:0 alpha:0.5];
-    titleLabel.textAlignment = UITextAlignmentCenter;
+    titleLabel.textAlignment = UITextAlignmentLeft;
     titleLabel.adjustsFontSizeToFitWidth = YES;
     titleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     return titleLabel;
