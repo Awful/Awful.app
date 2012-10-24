@@ -1,5 +1,5 @@
 //
-//  AwfulThreadList.m
+//  AwfulThreadListController.m
 //  Awful
 //
 //  Created by Sean Berry on 7/27/10.
@@ -9,7 +9,10 @@
 #import "AwfulThreadListController.h"
 #import "AwfulFetchedTableViewControllerSubclass.h"
 #import "AwfulAppDelegate.h"
+#import "AwfulDataStack.h"
+#import "AwfulHTTPClient.h"
 #import "AwfulLoginController.h"
+#import "AwfulModels.h"
 #import "AwfulPage.h"
 #import "AwfulSettings.h"
 #import "AwfulThreadCell.h"

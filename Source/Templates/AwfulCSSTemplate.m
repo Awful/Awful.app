@@ -7,6 +7,7 @@
 //
 
 #import "AwfulCSSTemplate.h"
+#import "AwfulSettings.h"
 
 @interface NSString (AwfulRegex)
 

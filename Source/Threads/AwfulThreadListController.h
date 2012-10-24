@@ -1,5 +1,5 @@
 //
-//  AwfulThreadList.h
+//  AwfulThreadListController.h
 //  Awful
 //
 //  Created by Sean Berry on 7/27/10.

@@ -7,9 +7,10 @@
 //
 
 #import "AwfulPostActions.h"
-#import "AwfulPost.h"
-#import "AwfulPage.h"
 #import "AwfulAppDelegate.h"
+#import "AwfulHTTPClient.h"
+#import "AwfulModels.h"
+#import "AwfulPage.h"
 
 typedef enum {
     AwfulPostActionTypeEdit,

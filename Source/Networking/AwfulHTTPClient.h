@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AFHTTPClient.h"
+#import "AFNetworking.h"
 #import "AwfulPage.h"
 @class AwfulForum;
 @class AwfulPost;

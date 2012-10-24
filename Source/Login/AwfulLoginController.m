@@ -8,6 +8,7 @@
 
 #import "AwfulLoginController.h"
 #import "AwfulAppDelegate.h"
+#import "AwfulHTTPClient.h"
 #import "AwfulTextEntryCell.h"
 
 @interface AwfulLoginController () <UITextFieldDelegate>

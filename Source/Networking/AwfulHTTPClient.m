@@ -7,15 +7,14 @@
 //
 
 #import "AwfulHTTPClient.h"
-#import "TFHpple.h"
+#import "AwfulDataStack.h"
+#import "AwfulModels.h"
 #import "AwfulPage.h"
 #import "AwfulPageDataController.h"
 #import "AwfulPageTemplate.h"
-#import "NSString+HTML.h"
-#import "AFNetworkActivityIndicatorManager.h"
-#import "AFHTTPRequestOperation.h"
-#import "AwfulStringEncoding.h"
 #import "AwfulParsing.h"
+#import "AwfulSettings.h"
+#import "AwfulStringEncoding.h"
 
 @implementation AwfulHTTPClient
 

@@ -8,10 +8,6 @@
     #import <CoreData/CoreData.h>
     #import <MobileCoreServices/MobileCoreServices.h>
     #import <QuartzCore/QuartzCore.h>
-    #import "AwfulDataStack.h"
-    #import "AwfulHTTPClient.h"
-    #import "AwfulModels.h"
-    #import "AwfulSettings.h"
     #import "NSManagedObject+Awful.h"
     #import "NSURL+QueryDictionary.h"
 #endif

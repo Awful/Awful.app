@@ -7,10 +7,10 @@
 //
 
 #import "AwfulReplyViewController.h"
-#import "AwfulHTTPClient.h"
-#import "AwfulPage.h"
-#import "AwfulThreadTitleLabel.h"
 #import "AwfulAppDelegate.h"
+#import "AwfulHTTPClient.h"
+#import "AwfulModels.h"
+#import "AwfulThreadTitleLabel.h"
 #import "ImgurHTTPClient.h"
 #import "SVProgressHUD.h"
 

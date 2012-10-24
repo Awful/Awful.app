@@ -7,12 +7,14 @@
 //
 
 #import "AwfulSettingsViewController.h"
-#import "AwfulSettings.h"
+#import "AwfulAppDelegate.h"
+#import "AwfulHTTPClient.h"
 #import "AwfulLicensesViewController.h"
 #import "AwfulLoginController.h"
+#import "AwfulModels.h"
+#import "AwfulSettings.h"
 #import "AwfulSettingsChoiceViewController.h"
 #import "AwfulUser.h"
-#import "AwfulAppDelegate.h"
 
 @interface AwfulSettingsViewController () <UIAlertViewDelegate>
 

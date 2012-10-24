@@ -7,6 +7,8 @@
 //
 
 #import "NSManagedObject+Awful.h"
+#import "AwfulDataStack.h"
+#import "AwfulModels.h"
 
 @implementation NSManagedObject (Awful)
 

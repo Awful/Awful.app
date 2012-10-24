@@ -8,6 +8,10 @@
 
 #import "AwfulThreadActions.h"
 #import "AwfulAppDelegate.h"
+#import "AwfulDataStack.h"
+#import "AwfulHTTPClient.h"
+#import "AwfulModels.h"
+#import "AwfulPage.h"
 #import "AwfulVoteActions.h"
 #import <MobileCoreServices/UTCoreTypes.h>
 

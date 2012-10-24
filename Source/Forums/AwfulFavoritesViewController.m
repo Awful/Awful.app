@@ -8,11 +8,13 @@
 
 #import "AwfulFavoritesViewController.h"
 #import "AwfulFetchedTableViewControllerSubclass.h"
+#import "AwfulCSSTemplate.h"
+#import "AwfulDataStack.h"
 #import "AwfulForumsListController.h"
+#import "AwfulModels.h"
 #import "AwfulThreadListController.h"
 #import "AwfulForumCell.h"
 #import "AwfulSettings.h"
-#import "AwfulCSSTemplate.h"
 
 @interface AwfulFavoritesViewController () <AwfulForumCellDelegate>
 

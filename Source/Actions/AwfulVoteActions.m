@@ -7,8 +7,9 @@
 //
 
 #import "AwfulVoteActions.h"
-#import "AwfulPage.h"
 #import "AwfulAppDelegate.h"
+#import "AwfulHTTPClient.h"
+#import "AwfulPage.h"
 
 @implementation AwfulVoteActions
 

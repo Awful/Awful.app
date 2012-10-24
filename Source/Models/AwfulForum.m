@@ -7,6 +7,9 @@
 //
 
 #import "AwfulForum.h"
+#import "AwfulCategory.h"
+#import "AwfulDataStack.h"
+#import "AwfulThread.h"
 
 @implementation AwfulForum
 

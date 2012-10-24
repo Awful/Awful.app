@@ -7,13 +7,16 @@
 //
 
 #import "AwfulAppDelegate.h"
-#import "AwfulSplitViewController.h"
-#import "AwfulSettings.h"
-#import "AwfulLoginController.h"
-#import "AwfulForumsListController.h"
-#import "AwfulFavoritesViewController.h"
 #import "AwfulBookmarksController.h"
+#import "AwfulDataStack.h"
+#import "AwfulFavoritesViewController.h"
+#import "AwfulForumsListController.h"
+#import "AwfulHTTPClient.h"
+#import "AwfulLoginController.h"
+#import "AwfulSettings.h"
 #import "AwfulSettingsViewController.h"
+#import "AwfulSplitViewController.h"
+#import "AFNetworking.h"
 #import "GRMustache.h"
 
 @interface AwfulAppDelegate () <UITabBarControllerDelegate, AwfulLoginControllerDelegate>

@@ -7,6 +7,7 @@
 //
 
 #import "AwfulPageTemplate.h"
+#import "AwfulModels.h"
 #import "AwfulPageDataController.h"
 #import "AwfulSettings.h"
 #import "GRMustacheTemplate.h"

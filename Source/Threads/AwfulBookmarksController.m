@@ -9,6 +9,9 @@
 #import "AwfulBookmarksController.h"
 #import "AwfulFetchedTableViewControllerSubclass.h"
 #import "AwfulAppDelegate.h"
+#import "AwfulDataStack.h"
+#import "AwfulModels.h"
+#import "AwfulHTTPClient.h"
 
 @implementation AwfulBookmarksController
 

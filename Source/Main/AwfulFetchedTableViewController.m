@@ -8,6 +8,7 @@
 
 #import "AwfulFetchedTableViewController.h"
 #import "AwfulFetchedTableViewControllerSubclass.h"
+#import "AwfulDataStack.h"
 
 @implementation AwfulFetchedTableViewController
 
