@@ -35,7 +35,7 @@ Awful development is led by [pokeyman][], was started by [OHIO][], and gets or g
 [old thread]: http://forums.somethingawful.com/showthread.php?threadid=3381510
 [older thread]: http://forums.somethingawful.com/showthread.php?threadid=3483760
 
-[tags]: https://github.com/AwfulDevs/Awful/wiki/Thread-tags
+[thread tags]: https://github.com/AwfulDevs/Awful/wiki/Thread-tags
 
 [Diabolik900]: http://forums.somethingawful.com/member.php?action=getinfo&userid=113215
 [enigma105]: http://forums.somethingawful.com/member.php?action=getinfo&userid=51258
