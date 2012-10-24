@@ -265,6 +265,10 @@ article section ul, article section ol {
     padding-left: 20px;
 }
 
+article section .bbc-block.code {
+    margin: 1em 0;
+}
+
 /* iPhone - Post body */
 
 body article section {
@@ -305,6 +309,10 @@ body.ipad article section {
 body.ipad article section .bbc-block, body.ipad article section .bbc-block h5 {
 	margin: 0 10px 1em 10px;
     overflow: hidden; /* So SALR green background doesn't bleed behind avatar. */
+}
+
+body.ipad article section .bbc-block.code h5 {
+    margin: 0;
 }
 
 /* iPhone - Back matter */
