@@ -92,11 +92,11 @@ a.quote_link {
 
 article header button.post-action {
     background-image: url("postActionsDark.png");
-    background-size: 80%;
+    background-size: 100%;
 }
 article.seen1 header button.post-action, article.seen2 header button.post-action {
     background-image: url("postActionsDarkRead.png");
-    background-size: 80%;
+    background-size: 100%;
 }
 
 /* iPhone - Post header */
@@ -133,11 +133,11 @@ body.ipad article header p, body.ipad article header p.regDate {
 /* All devices - post body */
 
 article.altcolor1 {
-    background-color: #393939;
+    background-color: #272727;
 }
 
 article.altcolor2 {
-    background-color: #393939;
+    background-color: #272727;
 }
 
 article.seen1 {

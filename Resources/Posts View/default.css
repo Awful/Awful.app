@@ -57,7 +57,7 @@ a.quote_link {
     text-align: center;
     padding-top: 14px;
     text-shadow: 0 1px #fff;
-    margin: 0 auto;
+    float: left;
 }
 
 .scrollToBottom {
@@ -96,7 +96,7 @@ article {
 article header button.post-action {
     border: none;
     background-image: url("postActions.png");
-    background-size: 80%;
+    background-size: 100%;
     background-repeat: no-repeat;
 }
 
@@ -149,10 +149,10 @@ body.iphone article.noAvatar header h1, body.iphone article.noAvatar header p {
 
 body.iphone article header button.post-action {
     position: absolute;
-    top: 8px;
-    right: 5px;
-    width: 45px;
-    height: 40px;
+    top: 3px;
+    right: 4px;
+    width: 38px;
+    height: 34px;
 }
 
 body.iphone p.post-date {
@@ -209,15 +209,15 @@ body.ipad article header p {
 body.ipad p.post-date {
     position: absolute;
     bottom: 10px;
-    right: 40px;
+    right: 50px;
     font-style: normal;
 }
 body.ipad article header button.post-action {
     position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 30px;
-    height: 26px;
+    bottom: 5px;
+    right: 12px;
+    width: 28px;
+    height: 24px;
 }
 
 /* All devices - post body */

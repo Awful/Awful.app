@@ -53,7 +53,7 @@
     [super viewDidLoad];
     self.tableView.separatorColor = [UIColor colorWithWhite:0.94 alpha:1];
     self.tableView.rowHeight = 50;
-    self.view.backgroundColor = [UIColor colorWithWhite:0.573 alpha:1];
+    self.view.backgroundColor = [UIColor colorWithWhite:0.333 alpha:1];
     self.tableView.backgroundView = nil;
     
     // Bump table view contents down so the first section header is nicely spaced from the top.
@@ -96,6 +96,7 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     AwfulForumHeader *header = [AwfulForumHeader new];
+    header.backgroundColor = tableView.backgroundColor;
     AwfulForum *anyForum = [[self.fetchedResultsController.sections[section] objects] lastObject];
     header.textLabel.text = anyForum.category.name;
     return header;
