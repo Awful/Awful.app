@@ -14,8 +14,6 @@
 // Designated initializer.
 - (id)initWithReuseIdentifier:(NSString *)reuseIdentifier;
 
-@property (readonly, nonatomic) UIImageView *threadTagImageView;
-
 @property (nonatomic, getter=isSticky) BOOL sticky;
 
 @property (nonatomic) CGFloat rating;

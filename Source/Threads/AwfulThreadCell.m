@@ -57,11 +57,6 @@
     return [self initWithReuseIdentifier:reuseIdentifier];
 }
 
-- (UIImageView *)threadTagImageView
-{
-    return self.imageView;
-}
-
 - (void)setSticky:(BOOL)sticky
 {
     _sticky = sticky;
@@ -101,20 +96,20 @@
     CGRect ratingImageFrame = self.ratingImageView.frame;
     CGFloat effectiveRatingHeight = self.ratingImageView.hidden ? 0 : ratingImageFrame.size.height + 2;
     static const CGFloat tagWidth = 45;
-    self.threadTagImageView.frame = (CGRect){
+    self.imageView.frame = (CGRect){
         .origin.x = 4,
         .origin.y = (cellSize.height - tagWidth - effectiveRatingHeight) / 2,
         .size = CGSizeMake(tagWidth, tagWidth)
     };
     if (!self.stickyImageView.hidden) {
         CGRect stickyImageFrame = self.stickyImageView.frame;
-        stickyImageFrame.origin.x = CGRectGetMaxX(self.threadTagImageView.frame) - stickyImageFrame.size.width + 1;
-        stickyImageFrame.origin.y = CGRectGetMaxY(self.threadTagImageView.frame) - stickyImageFrame.size.height + 1;
+        stickyImageFrame.origin.x = CGRectGetMaxX(self.imageView.frame) - stickyImageFrame.size.width + 1;
+        stickyImageFrame.origin.y = CGRectGetMaxY(self.imageView.frame) - stickyImageFrame.size.height + 1;
         self.stickyImageView.frame = stickyImageFrame;
     }
     if (!self.ratingImageView.hidden) {
-        ratingImageFrame.origin.x = CGRectGetMidX(self.threadTagImageView.frame) - ratingImageFrame.size.width / 2;
-        ratingImageFrame.origin.y = CGRectGetMaxY(self.threadTagImageView.frame) + 2;
+        ratingImageFrame.origin.x = CGRectGetMidX(self.imageView.frame) - ratingImageFrame.size.width / 2;
+        ratingImageFrame.origin.y = CGRectGetMaxY(self.imageView.frame) + 2;
         self.ratingImageView.frame = ratingImageFrame;
     }
     
@@ -130,7 +125,7 @@
     CGRect textLabelFrame = self.textLabel.frame;
     CGRect detailTextLabelFrame = self.detailTextLabel.frame;
     static CGFloat const tagRightMargin = 9;
-    CGFloat textOriginX = CGRectGetMaxX(self.threadTagImageView.frame) + tagRightMargin;
+    CGFloat textOriginX = CGRectGetMaxX(self.imageView.frame) + tagRightMargin;
     CGFloat badgeViewEffectiveWidth = (self.editing || self.showingDeleteConfirmation) ? tagRightMargin : 70;
     CGSize constraint = CGSizeMake(cellSize.width - textOriginX - badgeViewEffectiveWidth,
                                    58);
