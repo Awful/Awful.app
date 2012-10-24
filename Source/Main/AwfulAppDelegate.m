@@ -154,21 +154,21 @@ static AwfulAppDelegate *_instance;
 
 - (void)configureAppearance
 {
+    // Including a navbar.png (i.e. @1x), or setting a background image for
+    // UIBarMetricsLandscapePhone, makes the background come out completely different for some
+    // unknown reason on non-retina devices and in landscape on the phone. I'm out of ideas.
+    // Simply setting UIBarMetricsDefault and only including navbar@2x.png works great on retina
+    // and non-retina devices alike, so that's where I'm leaving it.
     id navBar = [UINavigationBar appearance];
-    UIImage *barImage = [[UIImage imageNamed:@"navbar.png"]
-                         resizableImageWithCapInsets:UIEdgeInsetsZero];
+    UIImage *barImage = [UIImage imageNamed:@"navbar.png"];
     [navBar setBackgroundImage:barImage forBarMetrics:UIBarMetricsDefault];
-    UIImage *landscapeBarImage = [[UIImage imageNamed:@"navbar-landscape.png"]
-                                  resizableImageWithCapInsets:UIEdgeInsetsZero];
-    [navBar setBackgroundImage:landscapeBarImage forBarMetrics:UIBarMetricsLandscapePhone];
     [navBar setTitleTextAttributes:@{
         UITextAttributeTextColor : [UIColor whiteColor],
         UITextAttributeTextShadowColor : [UIColor colorWithWhite:0 alpha:0.5]
     }];
     
     id navBarItem = [UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil];
-    UIImage *navBarButton = [[UIImage imageNamed:@"navbar-button.png"]
-                             resizableImageWithCapInsets:UIEdgeInsetsMake(0, 6, 0, 6)];
+    UIImage *navBarButton = [UIImage imageNamed:@"navbar-button.png"];
     [navBarItem setBackgroundImage:navBarButton
                           forState:UIControlStateNormal
                         barMetrics:UIBarMetricsDefault];
