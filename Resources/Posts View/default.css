@@ -62,22 +62,27 @@ a.quote_link {
 
 .scrollToBottom {
     background: 9px 12px no-repeat url("downArrow.png");
+    background-size: auto 50%;
     padding-left: 30px;
 }
 .unreadPosts .scrollToBottom {
     background: 9px 12px no-repeat url("downArrow.png");
+    background-size: auto 50%;
     padding-left: 30px;
 }
 .older-posts {
     background: 7px 12px no-repeat url("load.png");
+    background-size: auto 50%;
     padding-left: 37px;
 }
 .parentForum {
     background: 9px 12px no-repeat url("forumsListGrey.png");
+    background-size: auto 50%;
     padding-left: 38px;
 }
 .unreadPosts .parentForum {
     background: 9px 12px no-repeat url("forumsListGrey.png");
+    background-size: auto 50%;
     padding-left: 39px;
 }
 
