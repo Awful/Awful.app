@@ -9,12 +9,12 @@
 #import "AwfulThreadListController.h"
 #import "AwfulFetchedTableViewControllerSubclass.h"
 #import "AwfulAppDelegate.h"
+#import "AwfulLoginController.h"
 #import "AwfulPage.h"
 #import "AwfulSettings.h"
 #import "AwfulThreadCell.h"
-#import "AwfulLoginController.h"
+#import "AwfulThreadTags.h"
 #import "SVPullToRefresh.h"
-#import "AwfulCSSTemplate.h"
 
 typedef enum {
     AwfulThreadListActionsTypeFirstPage = 0,
@@ -22,7 +22,26 @@ typedef enum {
     AwfulThreadListActionsTypeUnread
 } AwfulThreadListActionsType;
 
+
+@interface AwfulThreadListController ()
+
+@property (nonatomic) NSMutableDictionary *cellsWithoutThreadTags;
+
+@property (nonatomic) BOOL listeningForNewThreadTags;
+
+@end
+
+
 @implementation AwfulThreadListController
+
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        _cellsWithoutThreadTags = [NSMutableDictionary new];
+    }
+    return self;
+}
 
 - (NSFetchedResultsController *)createFetchedResultsController
 {
@@ -224,8 +243,10 @@ typedef enum {
 {
     AwfulThreadCell *cell = (AwfulThreadCell *)genericCell;
     AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    // TODO handle tags we don't ship
-    cell.threadTagImageView.image = [UIImage imageNamed:[thread.firstIconURL lastPathComponent]];
+    cell.imageView.image = [[AwfulThreadTags sharedThreadTags] threadTagNamed:thread.firstIconName];
+    if (!cell.imageView.image) {
+        [self updateThreadTag:thread.firstIconName forCellAtIndexPath:indexPath];
+    }
     [cell setSticky:thread.isStickyValue];
     // Hardcode Film Dump to never show ratings; its thread tags are the ratings.
     if ([thread.forum.forumID isEqualToString:@"133"]) {
@@ -245,6 +266,38 @@ typedef enum {
     cell.showsUnread = thread.totalUnreadPostsValue != -1;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
+}
+
+- (void)updateThreadTag:(NSString *)threadTagName forCellAtIndexPath:(NSIndexPath *)indexPath
+{
+    self.cellsWithoutThreadTags[indexPath] = threadTagName;
+    if (self.listeningForNewThreadTags) return;
+    self.listeningForNewThreadTags = YES;
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(newThreadTags:)
+                                                 name:AwfulNewThreadTagsAvailableNotification
+                                               object:nil];
+}
+
+- (void)newThreadTags:(NSNotification *)note
+{
+    NSMutableArray *updated = [NSMutableArray new];
+    for (NSIndexPath *indexPath in self.cellsWithoutThreadTags) {
+        NSString *tag = self.cellsWithoutThreadTags[indexPath];
+        UIImage *image = [[AwfulThreadTags sharedThreadTags] threadTagNamed:tag];
+        if (!image) continue;
+        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+        cell.imageView.image = image;
+        [updated addObject:indexPath];
+    }
+    [self.tableView reloadRowsAtIndexPaths:updated withRowAnimation:UITableViewRowAnimationNone];
+    [self.cellsWithoutThreadTags removeObjectsForKeys:updated];
+    if ([self.cellsWithoutThreadTags count] == 0) {
+        self.listeningForNewThreadTags = NO;
+        [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                        name:AwfulNewThreadTagsAvailableNotification
+                                                      object:nil];
     }
 }
 

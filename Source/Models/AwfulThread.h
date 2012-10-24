@@ -13,8 +13,8 @@
 + (NSArray *)bookmarkedThreads;
 + (void)removeBookmarkedThreads;
 
-@property (readonly, nonatomic) NSURL *firstIconURL;
-@property (readonly, nonatomic) NSURL *secondIconURL;
+@property (readonly, nonatomic) NSString *firstIconName;
+@property (readonly, nonatomic) NSString *secondIconName;
 
 + (NSArray *)threadsCreatedOrUpdatedWithParsedInfo:(NSArray *)threadInfos;
 

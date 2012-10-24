@@ -41,26 +41,16 @@
     }
 }
 
-- (NSURL *)firstIconURL
+- (NSString *)firstIconName
 {
-    if(self.threadIconImageURL == nil) {
-        return nil;
-    }
-    
-    NSString *minus_extension = [[self.threadIconImageURL lastPathComponent] stringByDeletingPathExtension];
-    NSURL *tag_url = [[NSBundle mainBundle] URLForResource:minus_extension withExtension:@"png"];
-    return tag_url;
+    NSString *basename = [[self.threadIconImageURL lastPathComponent] stringByDeletingPathExtension];
+    return [basename stringByAppendingPathExtension:@"png"];
 }
 
-- (NSURL *)secondIconURL
+- (NSString *)secondIconName
 {
-    if(self.threadIconImageURL2 == nil) {
-        return nil;
-    }
-    
-    NSString *minus_extension = [[self.threadIconImageURL2 lastPathComponent] stringByDeletingPathExtension];
-    NSURL *tag_url = [[NSBundle mainBundle] URLForResource:[minus_extension stringByAppendingString:@"-secondary"] withExtension:@"png"];
-    return tag_url;
+    NSString *basename = [[self.threadIconImageURL2 lastPathComponent] stringByDeletingPathExtension];
+    return [basename stringByAppendingPathExtension:@"png"];
 }
 
 + (NSArray *)threadsCreatedOrUpdatedWithParsedInfo:(NSArray *)threadInfos

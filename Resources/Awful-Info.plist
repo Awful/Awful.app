@@ -85,5 +85,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
+	<key>AwfulNewThreadTagURL</key>
+	<string>http://awfulapp.com/</string>
 </dict>
 </plist>

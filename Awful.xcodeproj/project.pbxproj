@@ -655,6 +655,8 @@
 		1C95FED61634C0380041A01F /* AwfulThreadTitleLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTitleLabel.h; sourceTree = "<group>"; };
 		1C95FED71634C0380041A01F /* AwfulThreadTitleLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTitleLabel.m; sourceTree = "<group>"; };
 		1CAB36B01548F0FE00A4A362 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
+		1CAED9D916373F91001F5F04 /* AwfulThreadTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTags.h; sourceTree = "<group>"; };
+		1CAED9DA16373F91001F5F04 /* AwfulThreadTags.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTags.m; sourceTree = "<group>"; };
 		1CAED9DD16375F52001F5F04 /* lf-dji.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lf-dji.png"; sourceTree = "<group>"; };
 		1CAED9DF16375F63001F5F04 /* bss-fanboy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bss-fanboy.png"; sourceTree = "<group>"; };
 		1CAED9E116375F7C001F5F04 /* lan-south.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lan-south.png"; sourceTree = "<group>"; };
@@ -1550,6 +1552,8 @@
 				1CC780211612D989002AF958 /* AwfulHTTPClient.m */,
 				1C83DB2E161D4D1100E53CFA /* AwfulStringEncoding.h */,
 				1C83DB2F161D4D1100E53CFA /* AwfulStringEncoding.m */,
+				1CAED9D916373F91001F5F04 /* AwfulThreadTags.h */,
+				1CAED9DA16373F91001F5F04 /* AwfulThreadTags.m */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -2849,6 +2853,7 @@
 				1CFBED081631C068008AF641 /* AwfulLicensesViewController.m in Sources */,
 				1CFBED0D1632212C008AF641 /* NSURL+QueryDictionary.m in Sources */,
 				1C95FED81634C0380041A01F /* AwfulThreadTitleLabel.m in Sources */,
+				1CAED9DB16373F91001F5F04 /* AwfulThreadTags.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
