@@ -104,7 +104,7 @@
     } else {
         self.destinationType = AwfulPageDestinationTypeNewpost;
     }
-    [self.pageBar.actionsComposeControl setEnabled:!self.thread.isLockedValue forSegmentAtIndex:1];
+    [self.pageBar.actionsComposeControl setEnabled:self.thread.canReply forSegmentAtIndex:1];
 }
 
 - (void)setDestinationType:(AwfulPageDestinationType)destinationType
@@ -354,7 +354,7 @@
     [self.pageBar.backForwardControl setEnabled:self.currentPage != 1 forSegmentAtIndex:0];
     [self.pageBar.backForwardControl setEnabled:self.currentPage != self.numberOfPages
                               forSegmentAtIndex:1];
-    [self.pageBar.actionsComposeControl setEnabled:!self.thread.isLockedValue forSegmentAtIndex:1];
+    [self.pageBar.actionsComposeControl setEnabled:self.thread.canReply forSegmentAtIndex:1];
 }
 
 - (void)updateBookmarked

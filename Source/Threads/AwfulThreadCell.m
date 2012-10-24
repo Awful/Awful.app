@@ -76,9 +76,14 @@
                                                       ratingImageNumber]];
 }
 
+- (void)setClosed:(BOOL)closed
+{
+    _closed = closed;
+    self.textLabel.textColor = closed ? [UIColor grayColor] : [UIColor blackColor];
+}
+
 - (void)setShowsUnread:(BOOL)showsUnread
 {
-    if (_showsUnread == showsUnread) return;
     _showsUnread = showsUnread;
     if (!(self.editing || self.showingDeleteConfirmation))
         self.unreadCountBadgeView.hidden = !showsUnread;
@@ -205,6 +210,9 @@
     [parts addObject:self.textLabel.accessibilityLabel];
     if (self.sticky) {
         [parts addObject:@"sticky"];
+    }
+    if (self.closed) {
+        [parts addObject:@"closed"];
     }
     if (self.rating >= 1) {
         [parts addObject:[NSString stringWithFormat:@"rated %.1f", self.rating]];

@@ -302,6 +302,8 @@
 
 @property (nonatomic) BOOL isLocked;
 
+@property (nonatomic) BOOL isClosed;
+
 @property (nonatomic) NSInteger starCategory;
 
 @property (nonatomic) NSInteger totalUnreadPosts;
@@ -390,8 +392,8 @@
     TFHppleElement *seen = [doc searchForSingle:@"//tr[" HAS_CLASS(seen) "]"];
     self.seen = !!seen;
     
-    TFHppleElement *locked = [doc searchForSingle:@"//tr[" HAS_CLASS(closed) "]"];
-    self.isLocked = !!locked;
+    TFHppleElement *closed = [doc searchForSingle:@"//tr[" HAS_CLASS(closed) "]"];
+    self.isClosed = !!closed;
     
     TFHppleElement *star = [doc searchForSingle:@"//td[" HAS_CLASS(star) "]//img[contains(@src, 'star')]"];
     NSURL *starURL = [NSURL URLWithString:[star objectForKey:@"src"]];
@@ -467,8 +469,9 @@
 {
     return @[
         @"threadID", @"title", @"threadIconImageURL", @"threadIconImageURL2", @"authorName",
-        @"seen", @"isLocked", @"starCategory", @"totalUnreadPosts", @"totalReplies", @"threadVotes",
-        @"threadRating", @"lastPostAuthorName", @"lastPostDate", @"isBookmarked", @"isSticky"
+        @"seen", @"isLocked", @"isClosed", @"starCategory", @"totalUnreadPosts", @"totalReplies",
+        @"threadVotes", @"threadRating", @"lastPostAuthorName", @"lastPostDate", @"isBookmarked",
+        @"isSticky"
     ];
 }
 

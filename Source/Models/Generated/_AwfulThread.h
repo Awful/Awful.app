@@ -7,6 +7,7 @@
 extern const struct AwfulThreadAttributes {
 	__unsafe_unretained NSString *authorName;
 	__unsafe_unretained NSString *isBookmarked;
+	__unsafe_unretained NSString *isClosed;
 	__unsafe_unretained NSString *isLocked;
 	__unsafe_unretained NSString *isSticky;
 	__unsafe_unretained NSString *lastPostAuthorName;
@@ -32,6 +33,7 @@ extern const struct AwfulThreadFetchedProperties {
 } AwfulThreadFetchedProperties;
 
 @class AwfulForum;
+
 
 
 
@@ -79,6 +81,18 @@ extern const struct AwfulThreadFetchedProperties {
 - (void)setIsBookmarkedValue:(BOOL)value_;
 
 //- (BOOL)validateIsBookmarked:(id*)value_ error:(NSError**)error_;
+
+
+
+
+@property (nonatomic, strong) NSNumber* isClosed;
+
+
+@property BOOL isClosedValue;
+- (BOOL)isClosedValue;
+- (void)setIsClosedValue:(BOOL)value_;
+
+//- (BOOL)validateIsClosed:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -264,6 +278,15 @@ extern const struct AwfulThreadFetchedProperties {
 
 - (BOOL)primitiveIsBookmarkedValue;
 - (void)setPrimitiveIsBookmarkedValue:(BOOL)value_;
+
+
+
+
+- (NSNumber*)primitiveIsClosed;
+- (void)setPrimitiveIsClosed:(NSNumber*)value;
+
+- (BOOL)primitiveIsClosedValue;
+- (void)setPrimitiveIsClosedValue:(BOOL)value_;
 
 
 

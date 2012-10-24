@@ -6,6 +6,7 @@
 const struct AwfulThreadAttributes AwfulThreadAttributes = {
 	.authorName = @"authorName",
 	.isBookmarked = @"isBookmarked",
+	.isClosed = @"isClosed",
 	.isLocked = @"isLocked",
 	.isSticky = @"isSticky",
 	.lastPostAuthorName = @"lastPostAuthorName",
@@ -58,6 +59,10 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 	
 	if ([key isEqualToString:@"isBookmarkedValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"isBookmarked"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+	}
+	if ([key isEqualToString:@"isClosedValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"isClosed"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 	}
 	if ([key isEqualToString:@"isLockedValue"]) {
@@ -126,6 +131,32 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 
 - (void)setPrimitiveIsBookmarkedValue:(BOOL)value_ {
 	[self setPrimitiveIsBookmarked:[NSNumber numberWithBool:value_]];
+}
+
+
+
+
+
+@dynamic isClosed;
+
+
+
+- (BOOL)isClosedValue {
+	NSNumber *result = [self isClosed];
+	return [result boolValue];
+}
+
+- (void)setIsClosedValue:(BOOL)value_ {
+	[self setIsClosed:[NSNumber numberWithBool:value_]];
+}
+
+- (BOOL)primitiveIsClosedValue {
+	NSNumber *result = [self primitiveIsClosed];
+	return [result boolValue];
+}
+
+- (void)setPrimitiveIsClosedValue:(BOOL)value_ {
+	[self setPrimitiveIsClosed:[NSNumber numberWithBool:value_]];
 }
 
 

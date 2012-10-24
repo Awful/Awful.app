@@ -247,12 +247,13 @@ typedef enum {
     if (!cell.imageView.image) {
         [self updateThreadTag:thread.firstIconName forCellAtIndexPath:indexPath];
     }
-    [cell setSticky:thread.isStickyValue];
+    cell.sticky = thread.isStickyValue;
+    cell.closed = thread.isClosedValue;
     // Hardcode Film Dump to never show ratings; its thread tags are the ratings.
     if ([thread.forum.forumID isEqualToString:@"133"]) {
-        [cell setRating:0];
+        cell.rating = 0;
     } else {
-        [cell setRating:[thread.threadRating floatValue]];
+        cell.rating = [thread.threadRating floatValue];
     }
     cell.textLabel.text = thread.title;
     NSInteger numberOfPages = thread.totalRepliesValue / 40 + 1;

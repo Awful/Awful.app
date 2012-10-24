@@ -16,6 +16,8 @@
 @property (readonly, nonatomic) NSString *firstIconName;
 @property (readonly, nonatomic) NSString *secondIconName;
 
+@property (readonly, nonatomic) BOOL canReply;
+
 + (NSArray *)threadsCreatedOrUpdatedWithParsedInfo:(NSArray *)threadInfos;
 
 @end

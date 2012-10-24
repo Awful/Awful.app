@@ -103,6 +103,8 @@
 
 @property (readonly, nonatomic) BOOL isLocked;
 
+@property (readonly, nonatomic) BOOL isClosed;
+
 @property (readonly, nonatomic) NSInteger starCategory;
 
 @property (readonly, nonatomic) BOOL isBookmarked;

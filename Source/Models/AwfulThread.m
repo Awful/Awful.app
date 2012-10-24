@@ -7,6 +7,7 @@
 //
 
 #import "AwfulThread.h"
+#import "AwfulParsing.h"
 
 @implementation AwfulThread
 
@@ -51,6 +52,16 @@
 {
     NSString *basename = [[self.threadIconImageURL2 lastPathComponent] stringByDeletingPathExtension];
     return [basename stringByAppendingPathExtension:@"png"];
+}
+
+- (BOOL)canReply
+{
+    return !(self.isClosedValue || self.isLockedValue);
+}
+
++ (NSSet *)keyPathsForValuesAffectingCanReply
+{
+    return [NSSet setWithObjects:@"isClosed", @"isLocked", nil];
 }
 
 + (NSArray *)threadsCreatedOrUpdatedWithParsedInfo:(NSArray *)threadInfos

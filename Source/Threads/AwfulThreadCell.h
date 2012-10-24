@@ -18,6 +18,8 @@
 
 @property (nonatomic) CGFloat rating;
 
+@property (getter=isClosed, nonatomic) BOOL closed;
+
 @property (readonly, weak, nonatomic) UILabel *originalPosterTextLabel;
 
 @property (readonly, weak, nonatomic) AwfulBadgeView *unreadCountBadgeView;
