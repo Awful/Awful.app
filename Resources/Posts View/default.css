@@ -22,7 +22,7 @@ body {
     -webkit-touch-callout: none;
 }
 
-img {
+img, iframe {
     max-width: 100%;
 }
 
