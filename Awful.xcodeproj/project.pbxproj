@@ -360,6 +360,7 @@
 		1CAEDB5816377A2C001F5F04 /* tcc-weed.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CAEDB5716377A2C001F5F04 /* tcc-weed.png */; };
 		1CAEDB5A16377A35001F5F04 /* tg-d20.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CAEDB5916377A35001F5F04 /* tg-d20.png */; };
 		1CAEDB5C16377A43001F5F04 /* ycs-achieve.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CAEDB5B16377A43001F5F04 /* ycs-achieve.png */; };
+		1CB52A6E1637B21700032AD3 /* AwfulThreadTags.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CAED9DA16373F91001F5F04 /* AwfulThreadTags.m */; };
 		1CBD5242162B5A3D00928740 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1CBD5240162B5A3D00928740 /* Model.xcdatamodeld */; };
 		1CBD5244162B5C2500928740 /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1CBD5243162B5C2500928740 /* README.txt */; };
 		1CBD5247162B66BC00928740 /* AwfulTextEntryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBD5246162B66BC00928740 /* AwfulTextEntryCell.m */; };
@@ -2853,7 +2854,7 @@
 				1CFBED081631C068008AF641 /* AwfulLicensesViewController.m in Sources */,
 				1CFBED0D1632212C008AF641 /* NSURL+QueryDictionary.m in Sources */,
 				1C95FED81634C0380041A01F /* AwfulThreadTitleLabel.m in Sources */,
-				1CAED9DB16373F91001F5F04 /* AwfulThreadTags.m in Sources */,
+				1CB52A6E1637B21700032AD3 /* AwfulThreadTags.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
