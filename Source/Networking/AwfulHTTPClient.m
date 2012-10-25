@@ -18,15 +18,15 @@
 
 @implementation AwfulHTTPClient
 
-+ (AwfulHTTPClient *)sharedClient
++ (AwfulHTTPClient *)client
 {
-    static AwfulHTTPClient *sharedClient;
+    static AwfulHTTPClient *instance;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedClient = [[AwfulHTTPClient alloc] initWithBaseURL:
-                        [NSURL URLWithString:@"http://forums.somethingawful.com/"]];
+        instance = [[AwfulHTTPClient alloc] initWithBaseURL:
+                    [NSURL URLWithString:@"http://forums.somethingawful.com/"]];
     });
-    return sharedClient;
+    return instance;
 }
 
 - (id)initWithBaseURL:(NSURL *)url
@@ -38,55 +38,50 @@
     return self;
 }
 
-- (NSOperation *)threadListForForum:(AwfulForum *)forum
-                            pageNum:(NSUInteger)pageNum
-                       onCompletion:(ThreadListResponseBlock)threadListResponseBlock
-                            onError:(AwfulErrorBlock)errorBlock
+- (NSOperation *)listThreadsInForumWithID:(NSString *)forumID
+                                   onPage:(NSInteger)page
+                                  andThen:(void (^)(NSError *error, NSArray *threads))callback
 {
-    NSString *path = [NSString stringWithFormat:@"forumdisplay.php?forumid=%@&perpage=40&pagenumber=%u", forum.forumID, pageNum];
-    NSMutableURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
-    urlRequest.timeoutInterval = 5.0;
-    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
-                                                               success:^(id _, id response)
+    NSDictionary *parameters = @{ @"forumid": forumID, @"perpage": @40, @"pagenumber": @(page) };
+    NSURLRequest *request = [self requestWithMethod:@"GET"
+                                               path:@"forumdisplay.php"
+                                         parameters:parameters];
+    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
+                                                               success:^(id _, id responseObject)
     {
-        NSData *data = (NSData *)response;
-        NSArray *threadInfos = [ThreadParsedInfo threadsWithHTMLData:data];
-        NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:threadInfos];
-        // Assumes less than one page (40 threads' worth) of stickied threads.
+        NSArray *infos = [ThreadParsedInfo threadsWithHTMLData:responseObject];
+        NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:infos];
         NSInteger stickyIndex = -(NSInteger)[threads count];
+        NSArray *forums = [AwfulForum fetchAllMatchingPredicate:@"forumID = %@", forumID];
         for (AwfulThread *thread in threads) {
-            thread.forum = forum;
+            if ([forums count] > 0) thread.forum = forums[0];
             thread.stickyIndexValue = thread.isStickyValue ? stickyIndex++ : 0;
         }
         [[AwfulDataStack sharedDataStack] save];
-        threadListResponseBlock([threads mutableCopy]);
-    } failure:^(id _, NSError *error)
-    {
-        errorBlock(error);
+    } failure:^(id _, NSError *error) {
+        if (callback) callback(error, nil);
     }];
     [self enqueueHTTPRequestOperation:op];
     return op;
 }
 
-- (NSOperation *)threadListForBookmarksAtPageNum:(NSUInteger)pageNum onCompletion:(ThreadListResponseBlock)threadListResponseBlock onError:(AwfulErrorBlock) errorBlock
+- (NSOperation *)listBookmarkedThreadsOnPage:(NSInteger)page
+                                     andThen:(void (^)(NSError *error, NSArray *threads))callback
 {
-    NSString *path = [NSString stringWithFormat:@"bookmarkthreads.php?action=view&perpage=40&pagenumber=%d", pageNum];
-    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
-    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
-                                                               success:^(id _, id response)
+    NSDictionary *parameters = @{ @"action": @"view", @"perpage": @40, @"pagenumber": @(page) };
+    NSURLRequest *request = [self requestWithMethod:@"GET"
+                                               path:@"bookmarkthreads.php"
+                                         parameters:parameters];
+    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
+                                                               success:^(id _, id responseData)
     {
-        NSData *data = (NSData *)response;
-        NSArray *threadInfos = [ThreadParsedInfo threadsWithHTMLData:data];
+        NSArray *threadInfos = [ThreadParsedInfo threadsWithHTMLData:responseData];
         NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:threadInfos];
         [threads setValue:@YES forKey:AwfulThreadAttributes.isBookmarked];
-        for (AwfulThread *thread in threads) {
-            thread.isBookmarkedValue = YES;
-        }
         [[AwfulDataStack sharedDataStack] save];
-        threadListResponseBlock([threads mutableCopy]);
-    } failure:^(id _, NSError *error)
-    {
-        errorBlock(error);
+        if (callback) callback(nil, threads);
+    } failure:^(id _, NSError *error) {
+        if (callback) callback(error, nil);
     }];
     [self enqueueHTTPRequestOperation:op];
     return op;
@@ -131,83 +126,79 @@
     return (NSOperation *)op;
 }
 
-- (NSOperation *)userInfoRequestOnCompletion:(UserResponseBlock)userResponseBlock
-                                     onError:(AwfulErrorBlock)errorBlock
+- (NSOperation *)learnUserInfoAndThen:(void (^)(NSError *error, NSDictionary *userInfo))callback
 {
-    NSString *path = @"member.php?action=editprofile";
-    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
+    NSDictionary *parameters = @{ @"action": @"editprofile" };
+    NSURLRequest *urlRequest = [self requestWithMethod:@"GET"
+                                                  path:@"member.php"
+                                            parameters:parameters];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
                                                                success:^(id _, id response)
     {
-        AwfulUser *user = AwfulSettings.settings.currentUser;
-        if (!user) {
-            errorBlock(nil);
-            return;
-        }
         UserParsedInfo *parsed = [[UserParsedInfo alloc] initWithHTMLData:(NSData *)response];
-        [parsed applyToObject:user];
-        AwfulSettings.settings.currentUser = user;
-        userResponseBlock(user);
-    } failure:^(AFHTTPRequestOperation *_, NSError *error)
-    {
-        errorBlock(error);
+        if (callback) callback(nil, @{ @"userID": parsed.userID, @"username": parsed.username });
+    } failure:^(id _, NSError *error) {
+        if (callback) callback(error, nil);
     }];
     [self enqueueHTTPRequestOperation:op];
     return op;
 }
 
-typedef enum BookmarkAction {
-    AddBookmark,
-    RemoveBookmark,
-} BookmarkAction;
-
-- (NSOperation *)modifyBookmark:(BookmarkAction)action withThread:(AwfulThread *)thread onCompletion:(CompletionBlock)completionBlock onError:(AwfulErrorBlock)errorBlock
+- (NSOperation *)bookmarkThreadWithID:(NSString *)threadID
+                              andThen:(void (^)(NSError *error))callback
 {
-    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-    [dict setObject:@"1" forKey:@"json"];
-    [dict setObject:(action == AddBookmark ? @"add" : @"remove") forKey:@"action"];
-    [dict setObject:thread.threadID forKey:@"threadid"];
-    NSString *path = @"bookmarkthreads.php";
-    NSURLRequest *urlRequest = [self requestWithMethod:@"POST" path:path parameters:dict];
-    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
-       success:^(AFHTTPRequestOperation *operation, id response) {
-           if (completionBlock) completionBlock();
-       } 
-       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-           if (errorBlock) errorBlock(error);
-       }];
+    return [self addOrRemove:Add bookmarkWithThreadID:threadID andThen:callback];
+}
+
+- (NSOperation *)unbookmarkThreadWithID:(NSString *)threadID
+                                andThen:(void (^)(NSError *error))callback
+{
+    return [self addOrRemove:Remove bookmarkWithThreadID:threadID andThen:callback];
+}
+
+typedef enum {
+    Add,
+    Remove
+} AddOrRemove;
+
+static NSString * const AddOrRemoveString[] = { @"add", @"remove" };
+
+- (NSOperation *)addOrRemove:(AddOrRemove)action
+        bookmarkWithThreadID:(NSString *)threadID
+                     andThen:(void (^)(NSError *error))callback
+{
+    NSDictionary *parameters = @{ @"json": @"1", @"action": AddOrRemoveString[action], @"threadid": threadID };
+    NSURLRequest *request = [self requestWithMethod:@"POST"
+                                               path:@"bookmarkthreads.php"
+                                         parameters:parameters];
+    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
+                                                               success:^(id _, id __)
+    {
+        if (callback) callback(nil);
+    } failure:^(id _, NSError *error) {
+        if (callback) callback(error);
+    }];
     [self enqueueHTTPRequestOperation:op];
-    return (NSOperation *)op;
+    return op;
 }
 
--(NSOperation *)addBookmarkedThread : (AwfulThread *)thread onCompletion : (CompletionBlock)completionBlock onError : (AwfulErrorBlock)errorBlock
-{
-    return [self modifyBookmark:AddBookmark withThread:thread onCompletion:completionBlock onError:errorBlock];
-}
-
--(NSOperation *)removeBookmarkedThread : (AwfulThread *)thread onCompletion : (CompletionBlock)completionBlock onError : (AwfulErrorBlock)errorBlock
-{
-    return [self modifyBookmark:RemoveBookmark withThread:thread onCompletion:completionBlock onError:errorBlock];
-}
-
-- (NSOperation *)forumsListOnCompletion:(ForumsListResponseBlock)forumsListResponseBlock
-                                onError:(AwfulErrorBlock)errorBlock
+- (NSOperation *)listForumsAndThen:(void (^)(NSError *error, NSArray *forums))callback
 {
     // Seems like only forumdisplay.php and showthread.php have the <select> with a complete list
     // of forums. We'll use the Comedy Goldmine as it's generally available and hopefully it's not
     // much of a burden since threads rarely get goldmined.
-    NSString *path = @"forumdisplay.php?forumid=21";
-    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
+    NSURLRequest *urlRequest = [self requestWithMethod:@"GET"
+                                                  path:@"forumdisplay.php"
+                                            parameters:@{ @"forumid": @"21" }];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
                                                                success:^(id _, id response)
     {
         NSData *data = (NSData *)response;
         ForumHierarchyParsedInfo *info = [[ForumHierarchyParsedInfo alloc] initWithHTMLData:data];
         NSArray *forums = [AwfulForum updateCategoriesAndForums:info];
-        if (forumsListResponseBlock) forumsListResponseBlock([forums mutableCopy]);
-    } failure:^(id _, NSError *error)
-    {
-        if (errorBlock) errorBlock(error);
+        if (callback) callback(nil, forums);
+    } failure:^(id _, NSError *error) {
+        if (callback) callback(error, nil);
     }];
     [self enqueueHTTPRequestOperation:op];
     return op;
@@ -264,110 +255,105 @@ typedef enum BookmarkAction {
     return op;
 }
 
-typedef enum PostContentType {
-    EditPostContent,
-    QuotePostContent,
-} PostContentType;
-
--(NSOperation *)contentsForPost : (AwfulPost *)post postType : (PostContentType)postType onCompletion:(PostContentResponseBlock)postContentResponseBlock onError:(AwfulErrorBlock)errorBlock
+- (NSOperation *)getTextOfPostWithID:(NSString *)postID
+                             andThen:(void (^)(NSError *error, NSString *text))callback
 {
-    NSString *path;
-    if(postType == EditPostContent) {
-        path = [NSString stringWithFormat:@"editpost.php?action=editpost&postid=%@", post.postID];
-    } else if(postType == QuotePostContent) {
-        path = [NSString stringWithFormat:@"newreply.php?action=newreply&postid=%@", post.postID];
-    } else {
-        return nil;
-    }
-    
-    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
-    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
-       success:^(AFHTTPRequestOperation *operation, id response) {
-           NSData *data = (NSData *)response;
-           NSString *rawString = [[NSString alloc] initWithData:data encoding:self.stringEncoding];
-           NSData *converted = [rawString dataUsingEncoding:NSUTF8StringEncoding];
-           TFHpple *base = [[TFHpple alloc] initWithHTMLData:converted];
-           
-           TFHppleElement *quoteElement = [base searchForSingle:@"//textarea[@name='message']"];
-           postContentResponseBlock([quoteElement content]);
-       } 
-       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-           errorBlock(error);
-       }];
+    NSURLRequest *request = [self requestWithMethod:@"GET"
+                                               path:@"editpost.php"
+                                         parameters:@{ @"action": @"editpost", @"postid": postID }];
+    return [self textOfPostWithRequest:request andThen:callback];
+}
+
+- (NSOperation *)quoteTextOfPostWithID:(NSString *)postID
+                               andThen:(void (^)(NSError *error, NSString *quotedText))callback
+{
+    NSURLRequest *request = [self requestWithMethod:@"GET"
+                                               path:@"newreply.php"
+                                         parameters:@{ @"action": @"newreply", @"postid": postID }];
+    return [self textOfPostWithRequest:request andThen:callback];
+}
+
+- (NSOperation *)textOfPostWithRequest:(NSURLRequest *)request
+                               andThen:(void (^)(NSError *, NSString *))callback
+{
+    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
+                                                               success:^(id _, id responseData)
+    {
+        NSString *rawString = [[NSString alloc] initWithData:responseData
+                                                    encoding:self.stringEncoding];
+        NSData *converted = [rawString dataUsingEncoding:NSUTF8StringEncoding];
+        TFHpple *base = [[TFHpple alloc] initWithHTMLData:converted];
+        TFHppleElement *textarea = [base searchForSingle:@"//textarea[@name='message']"];
+        if (callback) callback(nil, [textarea content]);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error, nil);
+    }];
     [self enqueueHTTPRequestOperation:op];
-    return (NSOperation *)op;
+    return op;
 }
 
--(NSOperation *)editContentsForPost : (AwfulPost *)post onCompletion:(PostContentResponseBlock)postContentResponseBlock onError:(AwfulErrorBlock)errorBlock
+- (NSOperation *)editPostWithID:(NSString *)postID
+                           text:(NSString *)text
+                        andThen:(void (^)(NSError *error))callback
 {
-    return [self contentsForPost:post postType:EditPostContent onCompletion:postContentResponseBlock onError:errorBlock];
-}
-
--(NSOperation *)quoteContentsForPost : (AwfulPost *)post onCompletion:(PostContentResponseBlock)postContentResponseBlock onError:(AwfulErrorBlock)errorBlock
-{
-    return [self contentsForPost:post postType:QuotePostContent onCompletion:postContentResponseBlock onError:errorBlock];
-}
-
--(NSOperation *)editPost : (AwfulPost *)post withContents : (NSString *)contents onCompletion : (CompletionBlock)completionBlock onError:(AwfulErrorBlock)errorBlock
-{
-    NSString *path = [NSString stringWithFormat:@"editpost.php?action=editpost&postid=%@", post.postID];
-    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
-    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
-       success:^(AFHTTPRequestOperation *operation, id response) {
-           NSData *data = (NSData *)response;
-           NSString *rawString = [[NSString alloc] initWithData:data encoding:self.stringEncoding];
-           NSData *converted = [rawString dataUsingEncoding:NSUTF8StringEncoding];
-           TFHpple *pageData = [[TFHpple alloc] initWithHTMLData:converted];
-           
-           NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-           
-           TFHppleElement *bookmarkElement = [pageData searchForSingle:@"//input[@name='bookmark' and @checked='checked']"];
-           if(bookmarkElement != nil) {
-               NSString *bookmark = [bookmarkElement objectForKey:@"value"];
-               [dict setValue:bookmark forKey:@"bookmark"];
-           }
-           
-           [dict setValue:@"updatepost" forKey:@"action"];
-           [dict setValue:@"Save Changes" forKey:@"submit"];
-           [dict setValue:post.postID forKey:@"postid"];
-           [dict setValue:contents forKey:@"message"];
-           
-           NSURLRequest *postRequest = [self requestWithMethod:@"POST" path:@"editpost.php" parameters:dict];
-           AFHTTPRequestOperation *finalOp = [self HTTPRequestOperationWithRequest:postRequest 
-               success:^(AFHTTPRequestOperation *operation, id response) {
-                   if (completionBlock) completionBlock();
-               } 
-               failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                   if (errorBlock) errorBlock(error);
-               }];
-           
-           [self enqueueHTTPRequestOperation:finalOp];
-
-       } 
-       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-           errorBlock(error);
-       }];
+    NSDictionary *parameters = @{ @"action": @"editpost", @"postid": postID };
+    NSURLRequest *request = [self requestWithMethod:@"GET"
+                                               path:@"editpost.php"
+                                         parameters:parameters];
+    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
+                                                               success:^(id _, id responseData)
+    {
+        NSMutableDictionary *moreParameters = [@{
+                                               @"action": @"updatepost",
+                                               @"submit": @"Save Changes",
+                                               @"postid": postID,
+                                               @"message": text
+                                               } mutableCopy];
+        NSString *rawString = [[NSString alloc] initWithData:responseData
+                                                    encoding:self.stringEncoding];
+        NSData *converted = [rawString dataUsingEncoding:NSUTF8StringEncoding];
+        TFHpple *pageData = [[TFHpple alloc] initWithHTMLData:converted];
+        TFHppleElement *bookmarkElement = [pageData searchForSingle:@"//input[@name='bookmark' and @checked='checked']"];
+        if (bookmarkElement) {
+            moreParameters[@"bookmark"] = [bookmarkElement objectForKey:@"value"];
+        }
+        NSURLRequest *anotherRequest = [self requestWithMethod:@"POST"
+                                                          path:@"editpost.php"
+                                                    parameters:moreParameters];
+        AFHTTPRequestOperation *finalOp = [self HTTPRequestOperationWithRequest:anotherRequest
+                                                                        success:^(id _, id __)
+        {
+            if (callback) callback(nil);
+        } failure:^(id _, NSError *error) {
+            if (callback) callback(error);
+        }];
+        
+        [self enqueueHTTPRequestOperation:finalOp];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error);
+    }];
     [self enqueueHTTPRequestOperation:op];
-    return (NSOperation *)op;
+    return op;
 }
 
--(NSOperation *)submitVote : (int)value forThread : (AwfulThread *)thread onCompletion : (CompletionBlock)completionBlock onError:(AwfulErrorBlock)errorBlock
+- (NSOperation *)rateThreadWithID:(NSString *)threadID
+                           rating:(NSInteger)rating
+                          andThen:(void (^)(NSError *error))callback
 {
-    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-    int voteValue = MAX(5, MIN(1, value));
-    [dict setValue:[NSNumber numberWithInt:voteValue] forKey:@"vote"];
-    [dict setValue:thread.threadID forKey:@"threadid"];
-    
-    NSURLRequest *urlRequest = [self requestWithMethod:@"POST" path:@"threadrate.php" parameters:dict];
-    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
-       success:^(AFHTTPRequestOperation *operation, id response) {
-           if (completionBlock) completionBlock();
-       } 
-       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-           if (errorBlock) errorBlock(error);
-       }];
+    NSDictionary *parameters = @{ @"vote": @(MAX(5, MIN(1, rating))), @"threadid": threadID };
+    NSURLRequest *request = [self requestWithMethod:@"POST"
+                                               path:@"threadrate.php"
+                                         parameters:parameters];
+    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
+                                                               success:^(id _, id __)
+    {
+        if (callback) callback(nil);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error);
+    }];
     [self enqueueHTTPRequestOperation:op];
-    return (NSOperation *)op;
+    return op;
 }
 
 -(NSOperation *)processMarkSeenLink : (NSString *)markSeenLink onCompletion : (CompletionBlock)completionBlock onError:(AwfulErrorBlock)errorBlock
@@ -385,24 +371,22 @@ typedef enum PostContentType {
     return (NSOperation *)op;
 }
 
--(NSOperation *)markThreadUnseen : (AwfulThread *)thread onCompletion : (CompletionBlock)completionBlock onError:(AwfulErrorBlock)errorBlock
+- (NSOperation *)forgetReadPostsInThreadWithID:(NSString *)threadID
+                                       andThen:(void (^)(NSError *error))callback
 {
-    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-    [dict setValue:thread.threadID forKey:@"threadid"];
-    [dict setValue:@"resetseen" forKey:@"action"];
-    [dict setValue:@"1" forKey:@"json"];
-    
-    NSString *path = @"showthread.php";
-    NSURLRequest *urlRequest = [self requestWithMethod:@"POST" path:path parameters:dict];
-    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
-       success:^(AFHTTPRequestOperation *operation, id response) {
-           if (completionBlock) completionBlock();
-       } 
-       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-           if (errorBlock) errorBlock(error);
-       }];
+    NSDictionary *parameters = @{ @"threadid": threadID, @"action": @"resetseen", @"json": @"1" };
+    NSURLRequest *request = [self requestWithMethod:@"POST"
+                                               path:@"showthread.php"
+                                         parameters:parameters];
+    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
+                                                               success:^(id _, id __)
+    {
+           if (callback) callback(nil);
+    } failure:^(id _, NSError *error) {
+           if (callback) callback(error);
+    }];
     [self enqueueHTTPRequestOperation:op];
-    return (NSOperation *)op;
+    return op;
 }
 
 - (NSOperation *)logInAsUsername:(NSString *)username
@@ -438,7 +422,7 @@ typedef enum PostContentType {
 }
 
 - (NSOperation *)locatePostWithID:(NSString *)postID
-                          andThen:(void (^)(NSError *error, NSString *threadID, NSInteger page))callback
+    andThen:(void (^)(NSError *error, NSString *threadID, NSInteger page))callback
 {
     // The SA Forums will direct a certain URL to the thread with a given post. We'll wait for that
     // redirect, then parse out the info we need.

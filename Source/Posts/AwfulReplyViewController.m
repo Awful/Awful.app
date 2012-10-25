@@ -586,9 +586,9 @@ withImagePlaceholderResults:placeholderResults
 
 - (void)sendReply:(NSString *)reply
 {
-    id op = [[AwfulHTTPClient sharedClient] replyToThreadWithID:self.thread.threadID
-                                                           text:reply
-                                                        andThen:^(NSError *error, NSString *postID)
+    id op = [[AwfulHTTPClient client] replyToThreadWithID:self.thread.threadID
+                                                     text:reply
+                                                  andThen:^(NSError *error, NSString *postID)
              {
                  if (error) {
                      [SVProgressHUD dismiss];
@@ -605,8 +605,8 @@ withImagePlaceholderResults:placeholderResults
                      [self.presentingViewController dismissModalViewControllerAnimated:YES];
                      return;
                  }
-                 [[AwfulHTTPClient sharedClient] locatePostWithID:postID
-                                                          andThen:^(NSError *error, NSString *threadID, NSInteger page)
+                 [[AwfulHTTPClient client] locatePostWithID:postID
+                                                    andThen:^(NSError *error, NSString *threadID, NSInteger page)
                   {
                       [SVProgressHUD dismiss];
                       if ([self.page.thread.threadID isEqualToString:threadID]) {
@@ -621,25 +621,26 @@ withImagePlaceholderResults:placeholderResults
 
 - (void)sendEdit:(NSString *)edit
 {
-    id op = [[AwfulHTTPClient sharedClient] editPost:self.post
-                                        withContents:edit
-                                        onCompletion:^
-             {
-                 [[AwfulHTTPClient sharedClient] locatePostWithID:self.post.postID
-                                                          andThen:^(NSError *error, NSString *threadID, NSInteger page)
-                  {
-                      [SVProgressHUD dismiss];
-                      if ([self.page.thread.threadID isEqualToString:threadID]) {
-                          self.page.destinationType = AwfulPageDestinationTypeSpecific;
-                          [self.page loadPageNum:page];
-                      }
-                      [self.presentingViewController dismissModalViewControllerAnimated:YES];
-                  }];
-             } onError:^(NSError *error)
+    id op = [[AwfulHTTPClient client] editPostWithID:self.post.postID
+                                                text:edit
+                                             andThen:^(NSError *error)
+    {
+        if (error) {
+            [SVProgressHUD dismiss];
+             [[AwfulAppDelegate instance] requestFailed:error];
+        } else {
+            [[AwfulHTTPClient client] locatePostWithID:self.post.postID
+                                               andThen:^(NSError *error, NSString *threadID, NSInteger page)
              {
                  [SVProgressHUD dismiss];
-                 [[AwfulAppDelegate instance] requestFailed:error];
+                 if ([self.page.thread.threadID isEqualToString:threadID]) {
+                     self.page.destinationType = AwfulPageDestinationTypeSpecific;
+                     [self.page loadPageNum:page];
+                 }
+                 [self.presentingViewController dismissModalViewControllerAnimated:YES];
              }];
+        }
+    }];
     self.networkOperation = op;
 }
 

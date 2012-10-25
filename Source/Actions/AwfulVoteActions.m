@@ -9,6 +9,7 @@
 #import "AwfulVoteActions.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulHTTPClient.h"
+#import "AwfulModels.h"
 #import "AwfulPage.h"
 
 @implementation AwfulVoteActions
@@ -54,13 +55,15 @@
     }
     
     if(vote_num != -1) {
-        [[AwfulHTTPClient sharedClient] submitVote:vote_num forThread:self.thread onCompletion:^(void) {
-            if([self.viewController isKindOfClass:[AwfulPage class]]) {
-                AwfulPage *page = (AwfulPage *)self.viewController;
-                [page showCompletionMessage:@"Great Job!"];
+        [[AwfulHTTPClient client] rateThreadWithID:self.thread.threadID rating:vote_num andThen:^(NSError *error) {
+            if (error) {
+                [[AwfulAppDelegate instance] requestFailed:error];
+            } else {
+                if([self.viewController isKindOfClass:[AwfulPage class]]) {
+                    AwfulPage *page = (AwfulPage *)self.viewController;
+                    [page showCompletionMessage:@"Great Job!"];
+                }
             }
-        } onError:^(NSError *error) {
-            [[AwfulAppDelegate instance] requestFailed:error];
         }];
     }
 }

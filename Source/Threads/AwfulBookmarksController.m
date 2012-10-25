@@ -55,21 +55,21 @@
 {   
     [self.networkOperation cancel];
     self.isLoading = YES;
-    id op = [[AwfulHTTPClient sharedClient] threadListForBookmarksAtPageNum:pageNum
-                                                               onCompletion:^(NSArray *threads)
+    id op = [[AwfulHTTPClient client] listBookmarkedThreadsOnPage:pageNum
+                                                          andThen:^(NSError *error, NSArray *threads)
     {
-        if (pageNum == 1) {
-            NSArray *bookmarks = [AwfulThread fetchAllMatchingPredicate:@"isBookmarked = YES"];
-            [bookmarks setValue:@NO forKey:AwfulThreadAttributes.isBookmarked];
-            [threads setValue:@YES forKey:AwfulThreadAttributes.isBookmarked];
-            [[AwfulDataStack sharedDataStack] save];
+        if (error) {
+            [[AwfulAppDelegate instance] requestFailed:error];
+        } else {
+            if (pageNum == 1) {
+                NSArray *bookmarks = [AwfulThread fetchAllMatchingPredicate:@"isBookmarked = YES"];
+                [bookmarks setValue:@NO forKey:AwfulThreadAttributes.isBookmarked];
+                [threads setValue:@YES forKey:AwfulThreadAttributes.isBookmarked];
+                [[AwfulDataStack sharedDataStack] save];
+            }
+            self.currentPage = pageNum;
         }
-        self.currentPage = pageNum;
         [self finishedRefreshing];
-    } onError:^(NSError *error)
-    {
-        [self finishedRefreshing];
-        [[AwfulAppDelegate instance] requestFailed:error];
     }];
     self.networkOperation = op;
 }
@@ -82,11 +82,17 @@
         AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
         thread.isBookmarkedValue = NO;
         [[AwfulDataStack sharedDataStack] save];
-        self.networkOperation = [[AwfulHTTPClient sharedClient] removeBookmarkedThread:thread
-                                                                          onCompletion:nil
-                                                                               onError:^(NSError *error)
+        self.networkOperation = [[AwfulHTTPClient client] unbookmarkThreadWithID:thread.threadID
+                                                                         andThen:^(NSError *error)
         {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+            if (!error) return;
+            thread.isBookmarkedValue = YES;
+            [[AwfulDataStack sharedDataStack] save];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Could Not Unbookmark"
+                                                            message:[error localizedDescription]
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"Whatever"
+                                                  otherButtonTitles:nil];
             [alert show];
         }];
     }

@@ -215,7 +215,7 @@ static AwfulAppDelegate *_instance;
 - (void)loginControllerDidLogIn:(AwfulLoginController *)login
 {
     [self.window.rootViewController dismissViewControllerAnimated:YES completion:^{
-        [[AwfulHTTPClient sharedClient] forumsListOnCompletion:nil onError:nil];
+        [[AwfulHTTPClient client] listForumsAndThen:nil];
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             AwfulSplitViewController *split = (AwfulSplitViewController *)self.window.rootViewController;
             [split showMasterView];

@@ -104,22 +104,23 @@ typedef enum {
 {    
     [self.networkOperation cancel];
     self.isLoading = YES;
-    self.networkOperation = [[AwfulHTTPClient sharedClient] threadListForForum:self.forum
-                                                                       pageNum:pageNum
-                                                                  onCompletion:^(NSArray *threads)
+    id op = [[AwfulHTTPClient client] listThreadsInForumWithID:self.forum.forumID
+                                                        onPage:pageNum
+                                                       andThen:^(NSError *error, NSArray *threads)
     {
-        if (pageNum == 1) {
-            [self.forum.threads setValue:@YES forKey:@"hideFromList"];
+        if (error) {
+            [[AwfulAppDelegate instance] requestFailed:error];
+        } else {
+            if (pageNum == 1) {
+                [self.forum.threads setValue:@YES forKey:@"hideFromList"];
+            }
+            [threads setValue:@NO forKey:@"hideFromList"];
+            [[AwfulDataStack sharedDataStack] save];
+            self.currentPage = pageNum;
         }
-        [threads setValue:@NO forKey:@"hideFromList"];
-        [[AwfulDataStack sharedDataStack] save];
-        self.currentPage = pageNum;
         [self finishedRefreshing];
-    } onError:^(NSError *error)
-    {
-        [self finishedRefreshing];
-        [[AwfulAppDelegate instance] requestFailed:error];
     }];
+    self.networkOperation = op;
 }
 
 - (void)newlyVisible
@@ -197,14 +198,15 @@ typedef enum {
 
 - (void)markThreadUnseen:(AwfulThread *)thread
 {
-    [[AwfulHTTPClient sharedClient] markThreadUnseen:thread onCompletion:^(void)
+    [[AwfulHTTPClient client] forgetReadPostsInThreadWithID:thread.threadID
+                                                    andThen:^(NSError *error)
     {
-        thread.totalUnreadPosts = [NSNumber numberWithInt:-1];
-        [[AwfulDataStack sharedDataStack] save];
-        
-    } onError:^(NSError *error)
-    {
-        [[AwfulAppDelegate instance] requestFailed:error];
+        if (error) {
+            [[AwfulAppDelegate instance] requestFailed:error];
+        } else {
+            thread.totalUnreadPostsValue = -1;
+            [[AwfulDataStack sharedDataStack] save];
+        }
     }];
 }
 

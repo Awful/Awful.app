@@ -8,11 +8,8 @@
 
 #import "AFNetworking.h"
 #import "AwfulPage.h"
-@class AwfulForum;
-@class AwfulPost;
 @class AwfulThread;
 @class AwfulPageDataController;
-@class AwfulUser;
 
 
 typedef void (^AwfulErrorBlock)(NSError* error);
@@ -20,28 +17,76 @@ typedef void (^AwfulErrorBlock)(NSError* error);
 
 @interface AwfulHTTPClient : AFHTTPClient
 
-+ (AwfulHTTPClient *)sharedClient;
+// Singleton instance.
++ (AwfulHTTPClient *)client;
 
-typedef void (^ThreadListResponseBlock)(NSMutableArray *threads);
 typedef void (^PageResponseBlock)(AwfulPageDataController *dataController);
-typedef void (^UserResponseBlock)(AwfulUser *user);
 typedef void (^CompletionBlock)(void);
-typedef void (^ForumsListResponseBlock)(NSMutableArray *forums);
-typedef void (^PostContentResponseBlock)(NSString *postContent);
 
--(NSOperation *)threadListForForum:(AwfulForum *)forum pageNum:(NSUInteger)pageNum onCompletion:(ThreadListResponseBlock)threadListResponseBlock onError:(AwfulErrorBlock)errorBlock;
+// Gets the threads in a forum on a given page.
+//
+// forumID  - The ID of the forum with the threads.
+// page     - Which page to get.
+// callback - A block to call after listing the threads, which takes as parameters:
+//              error   - An error on failure, or nil on success.
+//              threads - A list of AwfulThread on success, or nil on failure.
+//
+// Returns the enqueued network operation.
+- (NSOperation *)listThreadsInForumWithID:(NSString *)forumID
+                                   onPage:(NSInteger)page
+                                  andThen:(void (^)(NSError *error, NSArray *threads))callback;
 
--(NSOperation *)threadListForBookmarksAtPageNum:(NSUInteger)pageNum onCompletion:(ThreadListResponseBlock)threadListResponseBlock onError:(AwfulErrorBlock) errorBlock;
+// Gets the bookmarked threads on a given page.
+//
+// page     - Which page to get.
+// callback - A block to call after listing the threads, which takes as parameters:
+//              error   - An error on failure, or nil on success.
+//              threads - A list of AwfulThread on success, or nil on failure.
+//
+// Returns the enqueued network operation.
+- (NSOperation *)listBookmarkedThreadsOnPage:(NSInteger)page
+                                     andThen:(void (^)(NSError *error, NSArray *threads))callback;
 
 -(NSOperation *)pageDataForThread : (AwfulThread *)thread destinationType : (AwfulPageDestinationType)destinationType pageNum : (NSUInteger)pageNum onCompletion:(PageResponseBlock)pageResponseBlock onError:(AwfulErrorBlock)errorBlock;
 
--(NSOperation *)userInfoRequestOnCompletion : (UserResponseBlock)userResponseBlock onError : (AwfulErrorBlock)errorBlock;
+// Get the logged-in user's name and ID.
+//
+// callback - A block to call after getting the user's info, which takes as parameters:
+//              error    - An error on failure, or nil on success.
+//              userInfo - A dictionary with keys "userID", "username" on success, or nil on
+//                         failure.
+//
+// Returns the enqueued network operation.
+- (NSOperation *)learnUserInfoAndThen:(void (^)(NSError *error, NSDictionary *userInfo))callback;
 
--(NSOperation *)addBookmarkedThread : (AwfulThread *)thread onCompletion : (CompletionBlock)completionBlock onError : (AwfulErrorBlock)errorBlock;
+// Add a thread to the user's bookmarks.
+//
+// threadID - The ID of the thread to add.
+// callback - A block to call after adding the thread, which takes as parameters:
+//              error - An error on failure, or nil on success.
+//
+// Returns the enqueued network operation.
+- (NSOperation *)bookmarkThreadWithID:(NSString *)threadID
+                              andThen:(void (^)(NSError *error))callback;
 
--(NSOperation *)removeBookmarkedThread : (AwfulThread *)thread onCompletion : (CompletionBlock)completionBlock onError : (AwfulErrorBlock)errorBlock;
+// Remove a thread from the user's bookmarks.
+//
+// threadID - The ID of the thread to add.
+// callback - A block to call after removing the thread, which takes as parameters:
+//              error - An error on failure, or nil on success.
+//
+// Returns the enqueued network operation.
+- (NSOperation *)unbookmarkThreadWithID:(NSString *)threadID
+                                andThen:(void (^)(NSError *error))callback;
 
--(NSOperation *)forumsListOnCompletion : (ForumsListResponseBlock)forumsListResponseBlock onError : (AwfulErrorBlock)errorBlock;
+// Get the forum hierarchy.
+//
+// callback - A block to call after updating all forums and subforums, which takes as parameters:
+//              error  - An error on failure, or nil on succes.
+//              forums - A list of AwfulForum on success, or nil on failure.
+//
+// Returns the enqueued network operation.
+- (NSOperation *)listForumsAndThen:(void (^)(NSError *error, NSArray *forums))callback;
 
 // Posts a new reply to a thread.
 //
@@ -56,18 +101,72 @@ typedef void (^PostContentResponseBlock)(NSString *postContent);
                                 text:(NSString *)text
                              andThen:(void (^)(NSError *error, NSString *postID))callback;
 
--(NSOperation *)editContentsForPost : (AwfulPost *)post onCompletion:(PostContentResponseBlock)postContentResponseBlock onError:(AwfulErrorBlock)errorBlock;
+// Get the text of a post, for editing.
+//
+// postID   - The ID of the post.
+// callback - A block to call after getting the text of the post, which takes as parameters:
+//              error - An error on failure, or nil on success.
+//              text  - The text content of the post, or nil on failure.
+//
+// Returns the enqueued network operation.
+- (NSOperation *)getTextOfPostWithID:(NSString *)postID
+                             andThen:(void (^)(NSError *error, NSString *text))callback;
 
--(NSOperation *)quoteContentsForPost : (AwfulPost *)post onCompletion:(PostContentResponseBlock)postContentResponseBlock onError:(AwfulErrorBlock)errorBlock;
+// Get the text of a post, for quoting.
+//
+// postID - The ID of the post.
+// callback - A block to call after getting the quoted text of the post, which takes as parameters:
+//              error      - An error on failure, or nil on success.
+//              quotedText - The quoted text content of the post, or nil on failure.
+//
+// Returns the enqueued network operation.
+- (NSOperation *)quoteTextOfPostWithID:(NSString *)postID
+                               andThen:(void (^)(NSError *error, NSString *quotedText))callback;
 
--(NSOperation *)editPost : (AwfulPost *)post withContents : (NSString *)contents onCompletion : (CompletionBlock)completionBlock onError:(AwfulErrorBlock)errorBlock;
+// Edit a post's content.
+//
+// postID - The post to edit.
+// text   - The new content for the post.
+// callback - A block to call after editing the post, which takes as parameters:
+//              error - An error on failure, or nil on success.
+//
+// Returns the enqueued network operation.
+- (NSOperation *)editPostWithID:(NSString *)postID
+                           text:(NSString *)text
+                        andThen:(void (^)(NSError *error))callback;
 
--(NSOperation *)submitVote : (int)value forThread : (AwfulThread *)thread onCompletion : (CompletionBlock)completionBlock onError:(AwfulErrorBlock)errorBlock;
+// Rate a thread.
+//
+// threadID - Which thread to rate.
+// rating   - A rating from 1 to 5, inclusive.
+// callback - A block to call after voting, which takes as parameters:
+//              error - An error on failure, or nil on success.
+//
+// Returns the enqueued network operation.
+- (NSOperation *)rateThreadWithID:(NSString *)threadID
+                           rating:(NSInteger)rating
+                          andThen:(void (^)(NSError *error))callback;
 
 -(NSOperation *)processMarkSeenLink : (NSString *)markSeenLink onCompletion : (CompletionBlock)completionBlock onError:(AwfulErrorBlock)errorBlock;
 
--(NSOperation *)markThreadUnseen : (AwfulThread *)thread onCompletion : (CompletionBlock)completionBlock onError:(AwfulErrorBlock)errorBlock;
+// Mark an entire thread as unread.
+//
+// threadID - Which thread to mark.
+// callback - A block to call after marking, which takes as parameters:
+//              error - An error on failure, or nil on success.
+//
+// Returns the enqueued network operation.
+- (NSOperation *)forgetReadPostsInThreadWithID:(NSString *)threadID
+                                       andThen:(void (^)(NSError *error))callback;
 
+// Logs in to the Forums, setting a cookie for future requests.
+//
+// username - Who to log in as.
+// password - Their password.
+// callback - A block to call after logging in, which takes as parameters:
+//              error - An error on failure, or nil on success.
+//
+// Returns the enqueued network operation.
 - (NSOperation *)logInAsUsername:(NSString *)username
                     withPassword:(NSString *)password
                          andThen:(void (^)(NSError *error))callback;
@@ -83,6 +182,6 @@ typedef void (^PostContentResponseBlock)(NSString *postContent);
 //
 // Returns the enqueued network operation.
 - (NSOperation *)locatePostWithID:(NSString *)postID
-                          andThen:(void (^)(NSError *error, NSString *threadID, NSInteger page))callback;
+    andThen:(void (^)(NSError *error, NSString *threadID, NSInteger page))callback;
 
 @end

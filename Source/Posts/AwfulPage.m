@@ -216,10 +216,10 @@
     [self hidePageNavigation];
     AwfulThread *myThread = self.thread;
     AwfulPageDestinationType destType = self.destinationType;
-    self.networkOperation = [[AwfulHTTPClient sharedClient] pageDataForThread:myThread
-                                                              destinationType:destType
-                                                                      pageNum:pageNum
-                                                                 onCompletion:^(AwfulPageDataController *dataController)
+    self.networkOperation = [[AwfulHTTPClient client] pageDataForThread:myThread
+                                                        destinationType:destType
+                                                                pageNum:pageNum
+                                                           onCompletion:^(AwfulPageDataController *dataController)
     {
         self.dataController = dataController;
         if (self.destinationType == AwfulPageDestinationTypeSpecific) {
@@ -242,10 +242,10 @@
 - (void)loadLastPage
 {
     [self.networkOperation cancel];
-    self.networkOperation = [[AwfulHTTPClient sharedClient] pageDataForThread:self.thread
-                                                              destinationType:AwfulPageDestinationTypeLast
-                                                                      pageNum:0
-                                                                 onCompletion:^(AwfulPageDataController *dataController)
+    self.networkOperation = [[AwfulHTTPClient client] pageDataForThread:self.thread
+                                                        destinationType:AwfulPageDestinationTypeLast
+                                                                pageNum:0
+                                                           onCompletion:^(AwfulPageDataController *dataController)
     {
         self.dataController = dataController;
         [self updatePagesLabel];

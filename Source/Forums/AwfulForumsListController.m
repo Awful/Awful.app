@@ -76,16 +76,14 @@
 {
     [super refresh];
     [self.networkOperation cancel];
-    self.networkOperation = [[AwfulHTTPClient sharedClient] forumsListOnCompletion:^(NSArray *listOfForums)
+    id op = [[AwfulHTTPClient client] listForumsAndThen:^(NSError *error, NSArray *forums)
     {
+        if (error) {
+            [[AwfulAppDelegate instance] requestFailed:error];
+        }
         [self finishedRefreshing];
-        [self.fetchedResultsController performFetch:NULL];
-        [self.tableView reloadData];
-    } onError:^(NSError *error)
-    {
-        [self finishedRefreshing];
-        [[AwfulAppDelegate instance] requestFailed:error];
     }];
+    self.networkOperation = op;
 }
 
 - (void)stop

@@ -69,22 +69,26 @@ typedef enum {
         [page showActions];
         
     } else if (buttonIndex == AwfulThreadActionBookmarks) {
-        CompletionBlock completion = ^{
-            self.thread.isBookmarkedValue = !self.thread.isBookmarkedValue;
-            [[AwfulDataStack sharedDataStack] save];
-            [[NSNotificationCenter defaultCenter] postNotificationName:AwfulThreadDidUpdateNotification
-                                                                object:self.thread];
-        };
         if (self.thread.isBookmarkedValue) {
-            [[AwfulHTTPClient sharedClient] removeBookmarkedThread:self.thread
-                                                      onCompletion:completion
-                                                           onError:nil];
+            [[AwfulHTTPClient client] unbookmarkThreadWithID:self.thread.threadID
+                                                     andThen:^(NSError *error)
+            {
+                if (!error) [self updateThreadIsBookmarked];
+            }];
         } else {
-            [[AwfulHTTPClient sharedClient] addBookmarkedThread:self.thread
-                                                   onCompletion:completion
-                                                        onError:nil];
+            [[AwfulHTTPClient client] bookmarkThreadWithID:self.thread.threadID
+                                                   andThen:^(NSError *error)
+            {
+                if (!error) [self updateThreadIsBookmarked];
+            }];
         }
     }
+}
+
+- (void)updateThreadIsBookmarked
+{
+    self.thread.isBookmarkedValue = !self.thread.isBookmarkedValue;
+    [[AwfulDataStack sharedDataStack] save];
 }
 
 -(AwfulPage *)getPage

@@ -201,9 +201,9 @@
     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
                   withRowAnimation:UITableViewRowAnimationNone];
     self.tableView.userInteractionEnabled = NO;
-    [[AwfulHTTPClient sharedClient] logInAsUsername:self.username
-                                       withPassword:self.password
-                                            andThen:^(NSError *error)
+    [[AwfulHTTPClient client] logInAsUsername:self.username
+                                 withPassword:self.password
+                                      andThen:^(NSError *error)
     {
         if (error) {
             [self.delegate loginController:self didFailToLogInWithError:error];

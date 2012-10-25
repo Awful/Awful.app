@@ -53,12 +53,16 @@ typedef enum {
     AwfulPostActionType action = buttonIndex;
     if(self.post.canEdit) {
         if(action == AwfulPostActionTypeEdit) {
-            [[AwfulHTTPClient sharedClient] editContentsForPost:self.post onCompletion:^(NSString *contents) {
-                self.postContents = contents;
-                AwfulPage *page = (AwfulPage *)self.viewController;
-                [page editPostWithActions:self];
-            } onError:^(NSError *error) {
-                [[AwfulAppDelegate instance] requestFailed:error];
+            [[AwfulHTTPClient client] getTextOfPostWithID:self.post.postID
+                                                  andThen:^(NSError *error, NSString *text)
+            {
+                if (error) {
+                    [[AwfulAppDelegate instance] requestFailed:error];
+                } else {
+                    self.postContents = text;
+                    AwfulPage *page = (AwfulPage *)self.viewController;
+                    [page editPostWithActions:self];
+                }
             }];
             return;
         }
@@ -68,12 +72,16 @@ typedef enum {
     
     if(action == AwfulPostActionTypeQuote) {
         
-        [[AwfulHTTPClient sharedClient] quoteContentsForPost:self.post onCompletion:^(NSString *contents) {
-            self.postContents = [contents stringByAppendingString:@"\n"];
-            AwfulPage *page = (AwfulPage *)self.viewController;
-            [page quotePostWithActions:self];
-        } onError:^(NSError *error) {
-            [[AwfulAppDelegate instance] requestFailed:error];
+        [[AwfulHTTPClient client] quoteTextOfPostWithID:self.post.postID
+                                                andThen:^(NSError *error, NSString *quotedText)
+        {
+            if (error) {
+                [[AwfulAppDelegate instance] requestFailed:error];
+            } else {
+                self.postContents = [quotedText stringByAppendingString:@"\n"];
+                AwfulPage *page = (AwfulPage *)self.viewController;
+                [page quotePostWithActions:self];
+            }
         }];
         return;
         
@@ -87,7 +95,7 @@ typedef enum {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Not available" message:@"That feature requires you set 'Show an icon next to each post indicating if it has been seen or not' in your forum options" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
             [alert show];
         } else {
-            [[AwfulHTTPClient sharedClient] processMarkSeenLink:self.post.markSeenLink onCompletion:^(void){
+            [[AwfulHTTPClient client] processMarkSeenLink:self.post.markSeenLink onCompletion:^(void){
                 if([self.viewController isKindOfClass:[AwfulPage class]]) {
                     AwfulPage *page = (AwfulPage *)self.viewController;
                     [page showCompletionMessage:@"Marked up to there"];

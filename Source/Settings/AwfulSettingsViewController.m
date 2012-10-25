@@ -69,21 +69,24 @@
 {
     [super refresh];
     [self.networkOperation cancel];
-    self.networkOperation = [[AwfulHTTPClient sharedClient] userInfoRequestOnCompletion:^(AwfulUser *user)
+    id op = [[AwfulHTTPClient client] learnUserInfoAndThen:^(NSError *error, NSDictionary *userInfo)
     {
-        self.user = user;
-        [self.tableView reloadData];
-        [self finishedRefreshing];
-    } onError:^(NSError *error)
-    {
-        [self finishedRefreshing];
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed"
-                                                        message:[error localizedDescription]
-                                                       delegate:nil
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-        [alert show];
+        if (error) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed"
+                                                            message:[error localizedDescription]
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+            [alert show];
+        } else {
+            AwfulUser *user = [AwfulSettings settings].currentUser;
+            [user setValuesForKeysWithDictionary:userInfo];
+            self.user = user;
+            [self.tableView reloadData];
+            [self finishedRefreshing];
+        }
     }];
+    self.networkOperation = op;
 }
 
 #pragma mark - Table view delegate and data source
