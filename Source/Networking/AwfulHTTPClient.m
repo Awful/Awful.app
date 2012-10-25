@@ -47,9 +47,9 @@
                                                path:@"forumdisplay.php"
                                          parameters:parameters];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
-                                                               success:^(id _, id responseObject)
+                                                               success:^(id _, id data)
     {
-        NSArray *infos = [ThreadParsedInfo threadsWithHTMLData:responseObject];
+        NSArray *infos = [ThreadParsedInfo threadsWithHTMLData:data];
         NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:infos];
         NSInteger stickyIndex = -(NSInteger)[threads count];
         NSArray *forums = [AwfulForum fetchAllMatchingPredicate:@"forumID = %@", forumID];
@@ -73,9 +73,9 @@
                                                path:@"bookmarkthreads.php"
                                          parameters:parameters];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
-                                                               success:^(id _, id responseData)
+                                                               success:^(id _, id data)
     {
-        NSArray *threadInfos = [ThreadParsedInfo threadsWithHTMLData:responseData];
+        NSArray *threadInfos = [ThreadParsedInfo threadsWithHTMLData:data];
         NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:threadInfos];
         [threads setValue:@YES forKey:AwfulThreadAttributes.isBookmarked];
         [[AwfulDataStack sharedDataStack] save];
@@ -133,9 +133,9 @@
                                                   path:@"member.php"
                                             parameters:parameters];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
-                                                               success:^(id _, id response)
+                                                               success:^(id _, id data)
     {
-        UserParsedInfo *parsed = [[UserParsedInfo alloc] initWithHTMLData:(NSData *)response];
+        UserParsedInfo *parsed = [[UserParsedInfo alloc] initWithHTMLData:data];
         if (callback) callback(nil, @{ @"userID": parsed.userID, @"username": parsed.username });
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
@@ -167,7 +167,11 @@ static NSString * const AddOrRemoveString[] = { @"add", @"remove" };
         bookmarkWithThreadID:(NSString *)threadID
                      andThen:(void (^)(NSError *error))callback
 {
-    NSDictionary *parameters = @{ @"json": @"1", @"action": AddOrRemoveString[action], @"threadid": threadID };
+    NSDictionary *parameters = @{
+        @"json": @"1",
+        @"action": AddOrRemoveString[action],
+        @"threadid": threadID
+    };
     NSURLRequest *request = [self requestWithMethod:@"POST"
                                                path:@"bookmarkthreads.php"
                                          parameters:parameters];
@@ -191,9 +195,8 @@ static NSString * const AddOrRemoveString[] = { @"add", @"remove" };
                                                   path:@"forumdisplay.php"
                                             parameters:@{ @"forumid": @"21" }];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
-                                                               success:^(id _, id response)
+                                                               success:^(id _, id data)
     {
-        NSData *data = (NSData *)response;
         ForumHierarchyParsedInfo *info = [[ForumHierarchyParsedInfo alloc] initWithHTMLData:data];
         NSArray *forums = [AwfulForum updateCategoriesAndForums:info];
         if (callback) callback(nil, forums);
@@ -215,7 +218,7 @@ static NSString * const AddOrRemoveString[] = { @"add", @"remove" };
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
                                                                success:^(id _, id data)
     {
-        ReplyFormParsedInfo *formInfo = [[ReplyFormParsedInfo alloc] initWithHTMLData:(NSData *)data];
+        ReplyFormParsedInfo *formInfo = [[ReplyFormParsedInfo alloc] initWithHTMLData:data];
         if (!(formInfo.formkey && formInfo.formCookie)) {
             NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : @"Thread is closed" };
             NSError *error = [NSError errorWithDomain:NSCocoaErrorDomain code:-1 userInfo:userInfo];
@@ -239,9 +242,9 @@ static NSString * const AddOrRemoveString[] = { @"add", @"remove" };
                                                        path:@"newreply.php"
                                                  parameters:postParameters];
         [self enqueueHTTPRequestOperation:[self HTTPRequestOperationWithRequest:postRequest
-                                                                        success:^(id _, id responseData)
+                                                                        success:^(id _, id data)
         {
-            SuccessfulReplyInfo *replyInfo = [[SuccessfulReplyInfo alloc] initWithHTMLData:(NSData *)responseData];
+            SuccessfulReplyInfo *replyInfo = [[SuccessfulReplyInfo alloc] initWithHTMLData:data];
             if (callback) callback(nil, replyInfo.lastPage ? nil : replyInfo.postID);
         } failure:^(id _, NSError *error)
         {
@@ -277,10 +280,9 @@ static NSString * const AddOrRemoveString[] = { @"add", @"remove" };
                                andThen:(void (^)(NSError *, NSString *))callback
 {
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
-                                                               success:^(id _, id responseData)
+                                                               success:^(id _, id data)
     {
-        NSString *rawString = [[NSString alloc] initWithData:responseData
-                                                    encoding:self.stringEncoding];
+        NSString *rawString = [[NSString alloc] initWithData:data encoding:self.stringEncoding];
         NSData *converted = [rawString dataUsingEncoding:NSUTF8StringEncoding];
         TFHpple *base = [[TFHpple alloc] initWithHTMLData:converted];
         TFHppleElement *textarea = [base searchForSingle:@"//textarea[@name='message']"];
@@ -301,7 +303,7 @@ static NSString * const AddOrRemoveString[] = { @"add", @"remove" };
                                                path:@"editpost.php"
                                          parameters:parameters];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
-                                                               success:^(id _, id responseData)
+                                                               success:^(id _, id data)
     {
         NSMutableDictionary *moreParameters = [@{
                                                @"action": @"updatepost",
@@ -309,8 +311,7 @@ static NSString * const AddOrRemoveString[] = { @"add", @"remove" };
                                                @"postid": postID,
                                                @"message": text
                                                } mutableCopy];
-        NSString *rawString = [[NSString alloc] initWithData:responseData
-                                                    encoding:self.stringEncoding];
+        NSString *rawString = [[NSString alloc] initWithData:data encoding:self.stringEncoding];
         NSData *converted = [rawString dataUsingEncoding:NSUTF8StringEncoding];
         TFHpple *pageData = [[TFHpple alloc] initWithHTMLData:converted];
         TFHppleElement *bookmarkElement = [pageData searchForSingle:@"//input[@name='bookmark' and @checked='checked']"];
@@ -402,10 +403,9 @@ static NSString * const AddOrRemoveString[] = { @"add", @"remove" };
                                                path:@"account.php"
                                          parameters:parameters];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
-                                                               success:^(id _, id responseObject)
+                                                               success:^(id _, id data)
     {
-        NSString *response = [[NSString alloc] initWithData:responseObject
-                                                   encoding:self.stringEncoding];
+        NSString *response = [[NSString alloc] initWithData:data encoding:self.stringEncoding];
         if ([response rangeOfString:@"GLLLUUUUUEEEEEE"].location != NSNotFound) {
             if (callback) callback(nil);
         } else {
