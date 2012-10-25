@@ -90,6 +90,3 @@
 }
 
 @end
-
-
-NSString * const AwfulThreadDidUpdateNotification = @"Thread did update notification";

@@ -29,6 +29,3 @@ typedef enum {
     AwfulStarCategoryYellow,
     AwfulStarCategoryNone
 } AwfulStarCategory;
-
-
-extern NSString * const AwfulThreadDidUpdateNotification;

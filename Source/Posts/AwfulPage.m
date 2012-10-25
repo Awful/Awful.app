@@ -144,8 +144,6 @@
         self.thread.totalUnreadPostsValue = 0;
         [[AwfulDataStack sharedDataStack] save];
     }
-    [[NSNotificationCenter defaultCenter] postNotificationName:AwfulThreadDidUpdateNotification
-                                                        object:self.thread];
     NSString *html = [dataController constructedPageHTML];
     [self.webView loadHTMLString:html baseURL:[[NSBundle mainBundle] resourceURL]];
     self.webView.tag = self.currentPage;
