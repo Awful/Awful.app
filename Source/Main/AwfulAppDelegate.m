@@ -40,6 +40,7 @@ static AwfulAppDelegate *_instance;
     _instance = self;
     [[AwfulSettings settings] registerDefaults];
     [AwfulDataStack sharedDataStack].initFailureAction = AwfulDataStackInitFailureDelete;
+    [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
     if (DEBUG) [GRMustache preventNSUndefinedKeyExceptionAttack];
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];

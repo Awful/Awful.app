@@ -25,7 +25,6 @@
     dispatch_once(&onceToken, ^{
         sharedClient = [[AwfulHTTPClient alloc] initWithBaseURL:
                         [NSURL URLWithString:@"http://forums.somethingawful.com/"]];
-        [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
     });
     return sharedClient;
 }
