@@ -10,8 +10,8 @@
 #import "AwfulFetchedTableViewControllerSubclass.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulDataStack.h"
-#import "AwfulModels.h"
 #import "AwfulHTTPClient.h"
+#import "AwfulModels.h"
 
 @implementation AwfulBookmarksController
 
@@ -76,7 +76,9 @@
 
 #pragma mark - Table view data source and delegate
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView
+    commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
+    forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
@@ -98,9 +100,10 @@
     }
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
+- (NSString *)tableView:(UITableView *)tableView
+    titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return @"Remove";
+    return @"Unbookmark";
 }
 
 @end
