@@ -20,6 +20,9 @@ typedef enum {
 
 @interface AwfulThreadListController : AwfulFetchedTableViewController <UIActionSheetDelegate>
 
+// Designated initializer.
+- (id)init;
+
 @property (nonatomic, strong) AwfulForum *forum;
 @property (nonatomic, assign) NSInteger currentPage;
 @property (nonatomic, assign) NSInteger numberOfPages;

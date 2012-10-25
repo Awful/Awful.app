@@ -132,7 +132,6 @@ typedef enum {
     [super viewDidLoad];
     
     self.currentPage = 1;
-    self.title = self.forum.name;
     
     UILabel *label = (UILabel *)self.navigationItem.titleView;
     label.numberOfLines = 2;

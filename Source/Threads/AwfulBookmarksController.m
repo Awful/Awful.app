@@ -15,34 +15,21 @@
 
 @implementation AwfulBookmarksController
 
-- (void)commonInit
+- (id)init
 {
-    self.title = @"Bookmarked Threads";
-    self.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemBookmarks tag:0];
+    if (!(self = [super init])) return nil;
+    self.title = @"Bookmarks";
+    self.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemBookmarks
+                                                                 tag:0];
     self.tabBarItem.title = @"Bookmarks";
-    UIBarButtonItem *marks = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"bookmarks.png"]
-                                                landscapeImagePhone:[UIImage imageNamed:@"bookmarks-landscape.png"]
+    UIImage *portrait = [UIImage imageNamed:@"bookmarks.png"];
+    UIImage *landscapePhone = [UIImage imageNamed:@"bookmarks-landscape.png"];
+    UIBarButtonItem *marks = [[UIBarButtonItem alloc] initWithImage:portrait
+                                                landscapeImagePhone:landscapePhone
                                                               style:UIBarButtonItemStylePlain
                                                              target:nil
                                                              action:NULL];
     self.navigationItem.backBarButtonItem = marks;
-}
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        [self commonInit];
-    }
-    return self;
-}
-
-- (id)initWithCoder:(NSCoder *)decoder
-{
-    self = [super initWithCoder:decoder];
-    if (self) {
-        [self commonInit];
-    }
     return self;
 }
 
@@ -57,12 +44,6 @@
                                                managedObjectContext:[AwfulDataStack sharedDataStack].context
                                                  sectionNameKeyPath:nil
                                                           cacheName:nil];
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    self.title = @"Bookmarks";
 }
 
 - (BOOL)shouldReloadOnViewLoad
