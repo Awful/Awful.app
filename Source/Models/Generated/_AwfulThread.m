@@ -5,6 +5,7 @@
 
 const struct AwfulThreadAttributes AwfulThreadAttributes = {
 	.authorName = @"authorName",
+	.hideFromList = @"hideFromList",
 	.isBookmarked = @"isBookmarked",
 	.isClosed = @"isClosed",
 	.isLocked = @"isLocked",
@@ -57,6 +58,10 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 	
+	if ([key isEqualToString:@"hideFromListValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"hideFromList"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+	}
 	if ([key isEqualToString:@"isBookmarkedValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"isBookmarked"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
@@ -106,6 +111,32 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 
 @dynamic authorName;
 
+
+
+
+
+
+@dynamic hideFromList;
+
+
+
+- (BOOL)hideFromListValue {
+	NSNumber *result = [self hideFromList];
+	return [result boolValue];
+}
+
+- (void)setHideFromListValue:(BOOL)value_ {
+	[self setHideFromList:[NSNumber numberWithBool:value_]];
+}
+
+- (BOOL)primitiveHideFromListValue {
+	NSNumber *result = [self primitiveHideFromList];
+	return [result boolValue];
+}
+
+- (void)setPrimitiveHideFromListValue:(BOOL)value_ {
+	[self setPrimitiveHideFromList:[NSNumber numberWithBool:value_]];
+}
 
 
 

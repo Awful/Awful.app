@@ -6,6 +6,7 @@
 
 extern const struct AwfulThreadAttributes {
 	__unsafe_unretained NSString *authorName;
+	__unsafe_unretained NSString *hideFromList;
 	__unsafe_unretained NSString *isBookmarked;
 	__unsafe_unretained NSString *isClosed;
 	__unsafe_unretained NSString *isLocked;
@@ -45,6 +46,7 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
+
 @class NSObject;
 @class NSObject;
 
@@ -69,6 +71,18 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 //- (BOOL)validateAuthorName:(id*)value_ error:(NSError**)error_;
+
+
+
+
+@property (nonatomic, strong) NSNumber* hideFromList;
+
+
+@property BOOL hideFromListValue;
+- (BOOL)hideFromListValue;
+- (void)setHideFromListValue:(BOOL)value_;
+
+//- (BOOL)validateHideFromList:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -269,6 +283,15 @@ extern const struct AwfulThreadFetchedProperties {
 
 - (NSString*)primitiveAuthorName;
 - (void)setPrimitiveAuthorName:(NSString*)value;
+
+
+
+
+- (NSNumber*)primitiveHideFromList;
+- (void)setPrimitiveHideFromList:(NSNumber*)value;
+
+- (BOOL)primitiveHideFromListValue;
+- (void)setPrimitiveHideFromListValue:(BOOL)value_;
 
 
 

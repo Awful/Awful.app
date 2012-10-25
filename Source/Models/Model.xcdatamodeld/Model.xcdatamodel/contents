@@ -20,6 +20,7 @@
     </entity>
     <entity name="AwfulThread" representedClassName="AwfulThread" syncable="YES">
         <attribute name="authorName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="hideFromList" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
         <attribute name="isBookmarked" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="isClosed" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="isLocked" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
@@ -42,6 +43,6 @@
     <elements>
         <element name="AwfulCategory" positionX="160" positionY="192" width="128" height="105"/>
         <element name="AwfulForum" positionX="205" positionY="285" width="128" height="195"/>
-        <element name="AwfulThread" positionX="25" positionY="210" width="128" height="330"/>
+        <element name="AwfulThread" positionX="25" positionY="210" width="128" height="345"/>
     </elements>
 </model>

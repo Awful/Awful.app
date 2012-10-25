@@ -74,9 +74,15 @@
 {   
     [self.networkOperation cancel];
     self.isLoading = YES;
-    self.networkOperation = [[AwfulHTTPClient sharedClient] threadListForBookmarksAtPageNum:pageNum
-                                                                               onCompletion:^(id _)
+    id op = [[AwfulHTTPClient sharedClient] threadListForBookmarksAtPageNum:pageNum
+                                                               onCompletion:^(NSArray *threads)
     {
+        if (pageNum == 1) {
+            NSArray *bookmarks = [AwfulThread fetchAllMatchingPredicate:@"isBookmarked = YES"];
+            [bookmarks setValue:@NO forKey:AwfulThreadAttributes.isBookmarked];
+            [threads setValue:@YES forKey:AwfulThreadAttributes.isBookmarked];
+            [[AwfulDataStack sharedDataStack] save];
+        }
         self.currentPage = pageNum;
         [self finishedRefreshing];
     } onError:^(NSError *error)
@@ -84,6 +90,7 @@
         [self finishedRefreshing];
         [[AwfulAppDelegate instance] requestFailed:error];
     }];
+    self.networkOperation = op;
 }
 
 #pragma mark - Table view data source and delegate

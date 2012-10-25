@@ -49,9 +49,6 @@
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
                                                                success:^(id _, id response)
     {
-        if (pageNum == 1) {
-            [forum deleteUnbookmarkedThreads];
-        }
         NSData *data = (NSData *)response;
         NSArray *threadInfos = [ThreadParsedInfo threadsWithHTMLData:data];
         NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:threadInfos];
@@ -78,12 +75,10 @@
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
                                                                success:^(id _, id response)
     {
-        if (pageNum == 1) {
-            [AwfulThread removeBookmarkedThreads];
-        }
         NSData *data = (NSData *)response;
         NSArray *threadInfos = [ThreadParsedInfo threadsWithHTMLData:data];
         NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:threadInfos];
+        [threads setValue:@YES forKey:AwfulThreadAttributes.isBookmarked];
         for (AwfulThread *thread in threads) {
             thread.isBookmarkedValue = YES;
         }

@@ -49,7 +49,8 @@ typedef enum {
 - (NSFetchedResultsController *)createFetchedResultsController
 {
     NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulThread entityName]];
-    request.predicate = [NSPredicate predicateWithFormat:@"forum = %@", self.forum];
+    request.predicate = [NSPredicate predicateWithFormat:@"hideFromList == NO AND forum == %@",
+                         self.forum];
     request.sortDescriptors = @[
         [NSSortDescriptor sortDescriptorWithKey:@"stickyIndex" ascending:YES],
         [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO]
@@ -71,7 +72,7 @@ typedef enum {
 #pragma mark - Table view controller
 
 - (void)refresh
-{   
+{
     [super refresh];
     [self loadPageNum:1];
 }
@@ -105,8 +106,13 @@ typedef enum {
     self.isLoading = YES;
     self.networkOperation = [[AwfulHTTPClient sharedClient] threadListForForum:self.forum
                                                                        pageNum:pageNum
-                                                                  onCompletion:^(id _)
+                                                                  onCompletion:^(NSArray *threads)
     {
+        if (pageNum == 1) {
+            [self.forum.threads setValue:@YES forKey:@"hideFromList"];
+        }
+        [threads setValue:@NO forKey:@"hideFromList"];
+        [[AwfulDataStack sharedDataStack] save];
         self.currentPage = pageNum;
         [self finishedRefreshing];
     } onError:^(NSError *error)
