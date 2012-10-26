@@ -26,7 +26,10 @@
         NSBundle *bundle = [NSBundle bundleForClass:[self class]];
         NSURL *fixtureURL = [bundle URLForResource:[[self class] fixtureFilename]
                                      withExtension:nil];
-        _fixture = [NSData dataWithContentsOfURL:fixtureURL];
+        NSString *dumbCharset = [NSString stringWithContentsOfURL:fixtureURL
+                                                         encoding:NSWindowsCP1252StringEncoding
+                                                            error:NULL];
+        _fixture = [dumbCharset dataUsingEncoding:NSUTF8StringEncoding];
     }
 }
 
