@@ -44,6 +44,26 @@
     return matches;
 }
 
++ (id)firstMatchingPredicate:(id)formatOrPredicate, ...
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[(Class)self entityName]];
+    if ([formatOrPredicate isKindOfClass:[NSPredicate class]]) {
+        [request setPredicate:(NSPredicate *)formatOrPredicate];
+    } else {
+        va_list args;
+        va_start(args, formatOrPredicate);
+        [request setPredicate:[NSPredicate predicateWithFormat:formatOrPredicate arguments:args]];
+        va_end(args);
+    }
+    NSError *error;
+    NSArray *matches = [[AwfulDataStack sharedDataStack].context executeFetchRequest:request
+                                                                               error:&error];
+    if (!matches) {
+        NSLog(@"error fetching %@ matching %@: %@", self, [request predicate], error);
+    }
+    return [matches count] > 0 ? matches[0] : nil;
+}
+
 + (void)deleteAllMatchingPredicate:(NSString *)format, ...
 {
     va_list args;

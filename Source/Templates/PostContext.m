@@ -30,8 +30,12 @@ static NSString *AwfulifiedPostBody(NSString *body);
         _isMod = post.authorIsAModerator;
         _isAdmin = post.authorIsAnAdministrator;
         _posterName = post.authorName;
-        _postDate = post.postDate;
-        _regDate = post.authorRegDate;
+        _postDate = [NSDateFormatter localizedStringFromDate:post.postDate
+                                                   dateStyle:NSDateFormatterMediumStyle
+                                                   timeStyle:NSDateFormatterShortStyle];
+        _regDate = [NSDateFormatter localizedStringFromDate:post.authorRegDate
+                                                  dateStyle:NSDateFormatterMediumStyle
+                                                  timeStyle:NSDateFormatterNoStyle];
         if ([post.threadIndex integerValue] % 2) {
             _altCSSClass = post.beenSeen ? @"seen2" : @"altcolor2";
         } else {

@@ -478,11 +478,11 @@
 
 @property (copy, nonatomic) NSString *threadIndex;
 
-@property (copy, nonatomic) NSString *postDate;
+@property (nonatomic) NSDate *postDate;
 
 @property (copy, nonatomic) NSString *authorName;
 
-@property (copy, nonatomic) NSString *authorRegDate;
+@property (nonatomic) NSDate *authorRegDate;
 
 @property (nonatomic) BOOL authorIsAModerator;
 
@@ -513,8 +513,27 @@
     self.postID = [[table objectForKey:@"id"] substringFromIndex:4];
     self.threadIndex = [table objectForKey:@"data-idx"];
     
-    TFHppleElement *postdate = [doc searchForSingle:@"//td[" HAS_CLASS(postdate) "]"];
-    self.postDate = [postdate content];
+    NSString *postdate = [[doc searchForSingle:@"//td[" HAS_CLASS(postdate) "]"] content];
+    if (postdate) {
+        static NSDateFormatter *df = nil;
+        if (!df) {
+            df = [NSDateFormatter new];
+            [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+        }
+        [df setTimeZone:[NSTimeZone localTimeZone]];
+        static NSString *formats[] = {
+            @"MMM d, yyyy h:mm a",
+            @"MMM d, yyyy HH:mm"
+        };
+        for (size_t i = 0; i < sizeof(formats) / sizeof(formats[0]); i++) {
+            [df setDateFormat:formats[i]];
+            NSDate *parsedDate = [df dateFromString:postdate];
+            if (parsedDate) {
+                self.postDate = parsedDate;
+                break;
+            }
+        }
+    }
     
     TFHppleElement *author = [doc searchForSingle:@"//dt[" HAS_CLASS(author) "]"];
     self.authorName = [author content];
@@ -524,7 +543,16 @@
     self.authorIsAModerator = [authorClasses containsObject:@"role-mod"];
     self.authorIsAnAdministrator = [authorClasses containsObject:@"role-admin"];
     self.authorIsOriginalPoster = [authorClasses containsObject:@"op"];
-    self.authorRegDate = [[doc searchForSingle:@"//dd[" HAS_CLASS(registered) "]"] content];
+    NSString *regdate = [[doc searchForSingle:@"//dd[" HAS_CLASS(registered) "]"] content];
+    if (regdate) {
+        static NSDateFormatter *df = nil;
+        if (!df) {
+            df = [NSDateFormatter new];
+            [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+            [df setDateFormat:@"MMM d, yyyy"];
+        }
+        self.authorRegDate = [df dateFromString:regdate];
+    }
     self.authorCustomTitleHTML = [[doc rawSearch:@"//dd[" HAS_CLASS(title) "]"] lastObject];
     TFHppleElement *avatar = [doc searchForSingle:@"//dd[" HAS_CLASS(title) "]//img"];
     self.authorAvatarURL = [NSURL URLWithString:[avatar objectForKey:@"src"]];
@@ -549,6 +577,15 @@
                                                      options:0
                                                        range:NSMakeRange(0, [innerHTML length])
                                                 withTemplate:@"<$1></$1>"];
+}
+
++ (NSArray *)keysToApplyToObject
+{
+    return @[
+        @"postID", @"authorName", @"authorIsAModerator", @"authorIsAnAdministrator",
+        @"authorIsOriginalPoster", @"authorCustomTitleHTML", @"editable", @"beenSeen", @"innerHTML",
+        @"authorRegDate", @"postDate"
+    ];
 }
 
 @end

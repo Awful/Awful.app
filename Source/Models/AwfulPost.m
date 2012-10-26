@@ -2,49 +2,54 @@
 //  AwfulPost.m
 //  Awful
 //
-//  Created by Sean Berry on 7/31/10.
-//  Copyright 2010 Regular Berry Software LLC. All rights reserved.
+//  Created by Nolan Waite on 12-10-26.
+//  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
 #import "AwfulPost.h"
+#import "AwfulDataStack.h"
+#import "AwfulForum.h"
+#import "AwfulParsing.h"
+#import "AwfulThread.h"
 
 @implementation AwfulPost
 
-@synthesize postID, postDate, posterName;
-@synthesize posterType, avatarURL, regDate, editedStr;
-@synthesize rawContent, markSeenLink, seen;
-@synthesize isOP, canEdit, altCSSClass, postBody;
-@synthesize postIndex = _postIndex;
-
--(id)init
++ (NSArray *)postsCreatedOrUpdatedFromPageInfo:(PageParsedInfo *)pageInfo
 {
-    if((self=[super init])) {
-        self.posterType = AwfulUserTypeNormal;
-        self.isOP = NO;
-        self.canEdit = NO;
-        self.seen = NO;
-        self.postIndex = NSNotFound;
+    AwfulForum *forum = [AwfulForum firstMatchingPredicate:@"forumID = %@", pageInfo.forumID];
+    if (!forum) {
+        forum = [AwfulForum insertNew];
+        forum.forumID = pageInfo.forumID;
     }
-    return self;
-}
-
--(void)setPostIndex : (NSUInteger)postIndex
-{
-    if(_postIndex != postIndex) {
-        _postIndex = postIndex;
-        
-        NSString *base = @"altcolor";
-        if(self.seen) {
-            base = @"seen";
-        }
-        
-        int suffix = 1;
-        if(postIndex % 2 == 0) {
-            suffix = 2;
-        }
-        self.altCSSClass = [base stringByAppendingFormat:@"%d", suffix];
+    forum.name = pageInfo.forumName;
+    AwfulThread *thread = [AwfulThread firstMatchingPredicate:@"threadID = %@", pageInfo.threadID];
+    if (!thread) {
+        thread = [AwfulThread insertNew];
+        thread.threadID = pageInfo.threadID;
     }
+    thread.forum = forum;
+    thread.title = pageInfo.threadTitle;
+    thread.isBookmarkedValue = pageInfo.threadBookmarked;
+    thread.isLockedValue = pageInfo.threadLocked;
+    
+    NSArray *allPosts = [thread.posts allObjects];
+    NSArray *allPostIDs = [allPosts valueForKey:@"postID"];
+    NSDictionary *existingPosts = [NSDictionary dictionaryWithObjects:allPosts forKeys:allPostIDs];
+    NSMutableArray *posts = [NSMutableArray new];
+    for (PostParsedInfo *postInfo in pageInfo.posts) {
+        AwfulPost *post = existingPosts[postInfo.postID];
+        if (!post) {
+            post = [AwfulPost insertNew];
+            post.thread = thread;
+        }
+        [postInfo applyToObject:post];
+        post.threadIndexValue = [postInfo.threadIndex integerValue];
+        post.authorAvatarURL = [postInfo.authorAvatarURL absoluteString];
+        [posts addObject:post];
+    }
+    [posts setValue:@(pageInfo.pageNumber) forKey:AwfulPostAttributes.threadPage];
+    [[AwfulDataStack sharedDataStack] save];
+    return posts;
 }
 
 @end
-

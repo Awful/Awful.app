@@ -28,12 +28,14 @@ extern const struct AwfulThreadAttributes {
 
 extern const struct AwfulThreadRelationships {
 	__unsafe_unretained NSString *forum;
+	__unsafe_unretained NSString *posts;
 } AwfulThreadRelationships;
 
 extern const struct AwfulThreadFetchedProperties {
 } AwfulThreadFetchedProperties;
 
 @class AwfulForum;
+@class AwfulPost;
 
 
 
@@ -271,10 +273,22 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
+@property (nonatomic, strong) NSSet* posts;
+
+- (NSMutableSet*)postsSet;
+
+
+
+
 
 @end
 
 @interface _AwfulThread (CoreDataGeneratedAccessors)
+
+- (void)addPosts:(NSSet*)value_;
+- (void)removePosts:(NSSet*)value_;
+- (void)addPostsObject:(AwfulPost*)value_;
+- (void)removePostsObject:(AwfulPost*)value_;
 
 @end
 
@@ -431,6 +445,11 @@ extern const struct AwfulThreadFetchedProperties {
 
 - (AwfulForum*)primitiveForum;
 - (void)setPrimitiveForum:(AwfulForum*)value;
+
+
+
+- (NSMutableSet*)primitivePosts;
+- (void)setPrimitivePosts:(NSMutableSet*)value;
 
 
 @end

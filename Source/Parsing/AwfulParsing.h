@@ -132,11 +132,11 @@
 
 @property (readonly, copy, nonatomic) NSString *threadIndex;
 
-@property (readonly, copy, nonatomic) NSString *postDate;
+@property (readonly, nonatomic) NSDate *postDate;
 
 @property (readonly, copy, nonatomic) NSString *authorName;
 
-@property (readonly, copy, nonatomic) NSString *authorRegDate;
+@property (readonly, nonatomic) NSDate *authorRegDate;
 
 @property (readonly, nonatomic) BOOL authorIsAModerator;
 

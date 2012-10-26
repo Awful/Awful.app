@@ -2,34 +2,15 @@
 //  AwfulPost.h
 //  Awful
 //
-//  Created by Sean Berry on 7/31/10.
-//  Copyright 2010 Regular Berry Software LLC. All rights reserved.
+//  Created by Nolan Waite on 12-10-26.
+//  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "_AwfulPost.h"
+@class PageParsedInfo;
 
-typedef enum {
-    AwfulUserTypeNormal = 0,
-    AwfulUserTypeMod,
-    AwfulUserTypeAdmin
-} AwfulUserType;
+@interface AwfulPost : _AwfulPost
 
-@interface AwfulPost : NSObject
-
-@property (nonatomic, strong) NSString *postID;
-@property (nonatomic, strong) NSString *postDate;
-@property (nonatomic, strong) NSString *regDate;
-@property (nonatomic, strong) NSString *posterName;
-@property AwfulUserType posterType;
-@property (nonatomic, strong) NSURL *avatarURL;
-@property (nonatomic, strong) NSString *editedStr;
-@property (nonatomic, strong) NSString *rawContent;
-@property (nonatomic, strong) NSString *markSeenLink;
-@property (nonatomic, strong) NSString *altCSSClass;
-@property (nonatomic, strong) NSString *postBody;
-@property BOOL isOP;
-@property BOOL canEdit;
-@property BOOL seen;
-@property (nonatomic, assign) NSUInteger postIndex;
++ (NSArray *)postsCreatedOrUpdatedFromPageInfo:(PageParsedInfo *)pageInfo;
 
 @end

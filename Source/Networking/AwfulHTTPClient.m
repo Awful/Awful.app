@@ -110,6 +110,7 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
     {
         PageParsedInfo *info = [[PageParsedInfo alloc] initWithHTMLData:
                                 ConvertFromWindows1252ToUTF8(data)];
+        [AwfulPost postsCreatedOrUpdatedFromPageInfo:info];
         if (callback) callback(nil, info);
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
