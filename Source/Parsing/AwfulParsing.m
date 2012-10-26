@@ -441,9 +441,9 @@
         static NSDateFormatter *df = nil;
         if (df == nil) {
             df = [[NSDateFormatter alloc] init];
-            [df setTimeZone:[NSTimeZone localTimeZone]];
             [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
         }
+        [df setTimeZone:[NSTimeZone localTimeZone]];
         static NSString *formats[] = {
             @"h:mm a MMM d, yyyy",
             @"HH:mm MMM d, yyyy",
