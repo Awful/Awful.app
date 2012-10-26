@@ -8,6 +8,7 @@
 
 #import "AwfulParsing.h"
 #import "AwfulThread.h"
+#import "NSURL+QueryDictionary.h"
 
 @interface ParsedInfo ()
 
