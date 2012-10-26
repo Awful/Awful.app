@@ -566,6 +566,8 @@
 
 @property (copy, nonatomic) NSString *forumID;
 
+@property (copy, nonatomic) NSString *forumName;
+
 @property (copy, nonatomic) NSString *threadID;
 
 @property (copy, nonatomic) NSString *threadTitle;
@@ -593,6 +595,7 @@
     
     TFHppleElement *forumLink = [doc searchForSingle:
                                  @"//div[" HAS_CLASS(breadcrumbs) "]//a[position() = last() - 1]"];
+    self.forumName = [forumLink content];
     NSURL *forumURL = [NSURL URLWithString:[forumLink objectForKey:@"href"]];
     self.forumID = [forumURL queryDictionary][@"forumid"];
     

@@ -169,6 +169,8 @@
 
 @property (readonly, copy, nonatomic) NSString *forumID;
 
+@property (readonly, copy, nonatomic) NSString *forumName;
+
 @property (readonly, copy, nonatomic) NSString *threadID;
 
 @property (readonly, copy, nonatomic) NSString *threadTitle;

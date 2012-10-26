@@ -26,6 +26,7 @@
     STAssertEquals(info.pageNumber, 5, nil);
     STAssertEquals(info.pagesInThread, 24, nil);
     STAssertEqualObjects(info.forumID, @"46", nil);
+    STAssertEqualObjects(info.forumName, @"Debate & Discussion", nil);
     STAssertEqualObjects(info.threadID, @"3507451", nil);
     STAssertEqualObjects(info.threadTitle,
                          @"Canadian Politics Thread: Revenge of Trudeaumania: Brawl Me, Maybe",
