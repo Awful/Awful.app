@@ -478,6 +478,169 @@
 @end
 
 
+@interface PostParsedInfo ()
+
+@property (copy, nonatomic) NSString *postID;
+
+@property (copy, nonatomic) NSString *threadIndex;
+
+@property (copy, nonatomic) NSString *postDate;
+
+@property (copy, nonatomic) NSString *authorName;
+
+@property (copy, nonatomic) NSString *authorRegDate;
+
+@property (nonatomic) BOOL authorIsAModerator;
+
+@property (nonatomic) BOOL authorIsAnAdministrator;
+
+@property (nonatomic) BOOL authorIsOriginalPoster;
+
+@property (copy, nonatomic) NSString *authorCustomTitleHTML;
+
+@property (nonatomic) NSURL *authorAvatarURL;
+
+@property (getter=isEditable, nonatomic) BOOL editable;
+
+@property (nonatomic) BOOL beenSeen;
+
+@property (copy, nonatomic) NSString *innerHTML;
+
+@end
+
+
+@implementation PostParsedInfo
+
+- (void)parseHTMLData
+{
+    TFHpple *doc = [[TFHpple alloc] initWithHTMLData:self.htmlData];
+    
+    TFHppleElement *table = [doc searchForSingle:@"//table[" HAS_CLASS(post) "]"];
+    self.postID = [[table objectForKey:@"id"] substringFromIndex:4];
+    self.threadIndex = [table objectForKey:@"data-idx"];
+    
+    TFHppleElement *postdate = [doc searchForSingle:@"//td[" HAS_CLASS(postdate) "]"];
+    self.postDate = [postdate content];
+    
+    TFHppleElement *author = [doc searchForSingle:@"//dt[" HAS_CLASS(author) "]"];
+    self.authorName = [author content];
+    NSCharacterSet *space = [NSCharacterSet whitespaceCharacterSet];
+    NSArray *authorClasses = [[author objectForKey:@"class"]
+                              componentsSeparatedByCharactersInSet:space];
+    self.authorIsAModerator = [authorClasses containsObject:@"role-mod"];
+    self.authorIsAnAdministrator = [authorClasses containsObject:@"role-admin"];
+    self.authorIsOriginalPoster = [authorClasses containsObject:@"op"];
+    self.authorRegDate = [[doc searchForSingle:@"//dd[" HAS_CLASS(registered) "]"] content];
+    self.authorCustomTitleHTML = [[doc rawSearch:@"//dd[" HAS_CLASS(title) "]"] lastObject];
+    TFHppleElement *avatar = [doc searchForSingle:@"//dd[" HAS_CLASS(title) "]//img"];
+    self.authorAvatarURL = [NSURL URLWithString:[avatar objectForKey:@"src"]];
+    
+    self.editable = !![doc searchForSingle:
+                       @"//ul[" HAS_CLASS(postbuttons) "]//a[contains(@href, 'editpost')]"];
+    
+    self.beenSeen = !![doc searchForSingle:@"//tr[" HAS_CLASS(seen1) " or " HAS_CLASS(seen2) "]"];
+    
+    NSString *innerHTML = [[doc rawSearch:@"//td[" HAS_CLASS(postbody) "]"] lastObject];
+    // We need to do a little bit of fixup here. libxml collapses e.g. '<b></b>' into '<b/>'.
+    // WebKit then sees '<b/>', parses it as '<b>', and the the rest of the document turns bold.
+    NSError *error;
+    NSString *pattern = @"<(b|code|em|i|q|s|small|strong|sub|sup|u)\\/>";
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
+                                                                           options:0
+                                                                             error:&error];
+    if (!regex) {
+        NSLog(@"error compiling self-closing HTML tag regex: %@", error);
+    }
+    self.innerHTML = [regex stringByReplacingMatchesInString:innerHTML
+                                                     options:0
+                                                       range:NSMakeRange(0, [innerHTML length])
+                                                withTemplate:@"<$1></$1>"];
+}
+
+@end
+
+
+@interface PageParsedInfo ()
+
+@property (copy, nonatomic) NSArray *posts;
+
+@property (nonatomic) NSInteger pageNumber;
+
+@property (nonatomic) NSInteger pagesInThread;
+
+@property (copy, nonatomic) NSString *advertisementHTML;
+
+@property (copy, nonatomic) NSString *forumID;
+
+@property (copy, nonatomic) NSString *threadID;
+
+@property (copy, nonatomic) NSString *threadTitle;
+
+@property (getter=isThreadLocked, nonatomic) BOOL threadLocked;
+
+@property (getter=isThreadBookmarked, nonatomic) BOOL threadBookmarked;
+
+@end
+
+
+@implementation PageParsedInfo
+
+- (void)parseHTMLData
+{
+    TFHpple *doc = [[TFHpple alloc] initWithHTMLData:self.htmlData];
+    
+    TFHppleElement *threadLink = [doc searchForSingle:@"//a[" HAS_CLASS(bclast) "]"];
+    self.threadTitle = [threadLink content];
+    NSURL *threadURL = [NSURL URLWithString:[threadLink objectForKey:@"href"]];
+    self.threadID = [threadURL queryDictionary][@"threadid"];
+    
+    self.threadLocked = !![doc searchForSingle:
+                           @"//a[contains(@href, 'newreply')]/img[contains(@src, 'closed')]"];
+    
+    TFHppleElement *forumLink = [doc searchForSingle:@"//div[" HAS_CLASS(breadcrumbs) "]//a[position() = last() - 1]"];
+    NSURL *forumURL = [NSURL URLWithString:[forumLink objectForKey:@"href"]];
+    self.forumID = [forumURL queryDictionary][@"forumid"];
+    
+    NSString *pages = [[doc searchForSingle:@"//div[" HAS_CLASS(pages) "]/text()"] content];
+    NSError *error;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\((\\d+)\\)"
+                                                                           options:0
+                                                                             error:&error];
+    if (!regex) {
+        NSLog(@"error compiling number of pages regex: %@", error);
+    }
+    NSTextCheckingResult *match = [regex firstMatchInString:pages
+                                                    options:0
+                                                      range:NSMakeRange(0, [pages length])];
+    if ([match rangeAtIndex:1].location != NSNotFound) {
+        self.pagesInThread = [[pages substringWithRange:[match rangeAtIndex:1]] integerValue];
+    }
+    
+    TFHppleElement *currentPage = [doc searchForSingle:
+                                   @"//div[" HAS_CLASS(pages) "]//span[" HAS_CLASS(curpage) "]"];
+    self.pageNumber = [[currentPage content] integerValue];
+    
+    NSArray *ads = [doc rawSearch:@"(//div[@id = 'ad_banner_user']/a)[1]"];
+    if ([ads count] > 0) self.advertisementHTML = ads[0];
+    
+    TFHppleElement *mark = [doc searchForSingle:@"//img[@id = 'button_bookmark']"];
+    NSCharacterSet *space = [NSCharacterSet whitespaceCharacterSet];
+    NSArray *classes = [[mark objectForKey:@"class"] componentsSeparatedByCharactersInSet:space];
+    self.threadBookmarked = [classes containsObject:@"unbookmark"];
+    
+    NSMutableArray *posts = [NSMutableArray new];
+    NSString *path = @"//table[" HAS_CLASS(post) "]";
+    NSArray *listOfRawPosts = PerformRawHTMLXPathQuery(self.htmlData, path);
+    for (NSString *rawPost in listOfRawPosts) {
+        NSData *postData = [rawPost dataUsingEncoding:NSUTF8StringEncoding];
+        [posts addObject:[[PostParsedInfo alloc] initWithHTMLData:postData]];
+    }
+    self.posts = posts;
+}
+
+@end
+
+
 @interface SuccessfulReplyInfo ()
 
 @property (copy, nonatomic) NSString *postID;

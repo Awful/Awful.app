@@ -127,6 +127,60 @@
 @end
 
 
+@interface PostParsedInfo : ParsedInfo
+
+@property (readonly, copy, nonatomic) NSString *postID;
+
+@property (readonly, copy, nonatomic) NSString *threadIndex;
+
+@property (readonly, copy, nonatomic) NSString *postDate;
+
+@property (readonly, copy, nonatomic) NSString *authorName;
+
+@property (readonly, copy, nonatomic) NSString *authorRegDate;
+
+@property (readonly, nonatomic) BOOL authorIsAModerator;
+
+@property (readonly, nonatomic) BOOL authorIsAnAdministrator;
+
+@property (readonly, nonatomic) BOOL authorIsOriginalPoster;
+
+@property (readonly, copy, nonatomic) NSString *authorCustomTitleHTML;
+
+@property (readonly, nonatomic) NSURL *authorAvatarURL;
+
+@property (readonly, getter=isEditable, nonatomic) BOOL editable;
+
+@property (readonly, nonatomic) BOOL beenSeen;
+
+@property (readonly, copy, nonatomic) NSString *innerHTML;
+
+@end
+
+
+@interface PageParsedInfo : ParsedInfo
+
+@property (readonly, copy, nonatomic) NSArray *posts;
+
+@property (readonly, nonatomic) NSInteger pageNumber;
+
+@property (readonly, nonatomic) NSInteger pagesInThread;
+
+@property (readonly, copy, nonatomic) NSString *advertisementHTML;
+
+@property (readonly, copy, nonatomic) NSString *forumID;
+
+@property (readonly, copy, nonatomic) NSString *threadID;
+
+@property (readonly, copy, nonatomic) NSString *threadTitle;
+
+@property (readonly, getter=isThreadLocked, nonatomic) BOOL threadLocked;
+
+@property (readonly, getter=isThreadBookmarked, nonatomic) BOOL threadBookmarked;
+
+@end
+
+
 @interface SuccessfulReplyInfo : ParsedInfo
 
 @property (readonly, copy, nonatomic) NSString *postID;
