@@ -43,15 +43,9 @@ typedef enum {
 
 - (void)refresh;
 
-- (void)showActions;
-
 - (void)loadPageNum:(NSUInteger)pageNum;
 
 - (void)showCompletionMessage:(NSString *)message;
-
-- (void)editPostWithActions:(AwfulPostActions *)actions;
-
-- (void)quotePostWithActions:(AwfulPostActions *)actions;
 
 @end
 

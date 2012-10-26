@@ -8,6 +8,7 @@
 
 #import "AwfulThreadListController.h"
 #import "AwfulFetchedTableViewControllerSubclass.h"
+#import "AwfulActionSheet.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulDataStack.h"
 #import "AwfulHTTPClient.h"
@@ -154,45 +155,34 @@ typedef enum {
 
 - (void)showThreadActionsForThread:(AwfulThread *)thread
 {
-    self.heldThread = thread;
-    NSArray *titles = [NSArray arrayWithObjects:@"First Page", @"Last Page", @"Mark as Unread", nil];
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"Thread Actions" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-    for(NSString *title in titles) {
-        [sheet addButtonWithTitle:title];
-    }
-    [sheet addButtonWithTitle:@"Cancel"];
-    sheet.cancelButtonIndex = [titles count];
-    
+    AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:thread.title];
+    [sheet addButtonWithTitle:@"Jump to First Page" block:^{
+        AwfulPage *page = [AwfulPage newDeviceSpecificPage];
+        page.thread = thread;
+        page.destinationType = AwfulPageDestinationTypeFirst;
+        [self displayPage:page];
+        [page loadPageNum:1];
+    }];
+    [sheet addButtonWithTitle:@"Jump to Last Page" block:^{
+        AwfulPage *page = [AwfulPage newDeviceSpecificPage];
+        page.thread = thread;
+        page.destinationType = AwfulPageDestinationTypeLast;
+        [self displayPage:page];
+        [page loadPageNum:AwfulPageLast];
+    }];
+    [sheet addButtonWithTitle:@"Mark as Unread" block:^{
+        [self markThreadUnseen:thread];
+    }];
+    [sheet addCancelButtonWithTitle:@"Cancel"];
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         [sheet showFromTabBar:self.tabBarController.tabBar];
     } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         NSUInteger index = [self.fetchedResultsController.fetchedObjects indexOfObject:thread];
-        if(index != NSNotFound) {
-            UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+        if (index != NSNotFound) {
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+            UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
             [sheet showFromRect:cell.frame inView:self.tableView animated:YES];
         }
-    }
-}
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex == AwfulThreadListActionsTypeFirstPage) {
-        AwfulPage *page = [AwfulPage newDeviceSpecificPage];
-        page.thread = self.heldThread;
-        page.destinationType = AwfulPageDestinationTypeFirst;
-        [self displayPage:page];
-        [page loadPageNum:1];
-        
-    } else if (buttonIndex == AwfulThreadListActionsTypeLastPage) {
-        AwfulPage *page = [AwfulPage newDeviceSpecificPage];
-        page.thread = self.heldThread;
-        page.destinationType = AwfulPageDestinationTypeLast;
-        [self displayPage:page];
-        [page loadPageNum:0];
-        
-    } else if (buttonIndex == AwfulThreadListActionsTypeUnread) {
-        [self markThreadUnseen:self.heldThread];
-
     }
 }
 

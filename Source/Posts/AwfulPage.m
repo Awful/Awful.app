@@ -7,19 +7,17 @@
 //
 
 #import "AwfulPage.h"
+#import "AwfulActionSheet.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulDataStack.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
 #import "AwfulPageBar.h"
 #import "AwfulPageDataController.h"
-#import "AwfulPostActions.h"
 #import "AwfulReplyViewController.h"
 #import "AwfulSpecificPageViewController.h"
 #import "AwfulThreadListController.h"
 #import "AwfulThreadTitleLabel.h"
-#import "AwfulThreadActions.h"
-#import "AwfulVoteActions.h"
 #import "AwfulWebViewDelegate.h"
 #import "MWPhoto.h"
 #import "MWPhotoBrowser.h"
@@ -44,6 +42,10 @@
 @property (nonatomic) BOOL shouldScrollToBottom;
 
 @property (readonly, nonatomic) UILabel *titleLabel;
+
+- (void)showThreadActionsFromRect:(CGRect)rect inView:(UIView *)view;
+
+- (void)showPostActions:(NSString *)postID fromRect:(CGRect)rect inView:(UIView *)view;
 
 @end
 
@@ -167,26 +169,6 @@
 - (UILabel *)titleLabel
 {
     return (UILabel *)self.navigationItem.titleView;
-}
-
-- (void)editPostWithActions:(AwfulPostActions *)actions
-{
-    AwfulReplyViewController *editBox = [AwfulReplyViewController new];
-    editBox.post = actions.post;
-    editBox.startingText = actions.postContents;
-    editBox.page = self;
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:editBox];
-    [self presentViewController:nav animated:YES completion:nil];
-}
-
-- (void)quotePostWithActions:(AwfulPostActions *)actions
-{
-    AwfulReplyViewController *quoteBox = [AwfulReplyViewController new];
-    quoteBox.thread = self.thread;
-    quoteBox.startingText = actions.postContents;
-    quoteBox.page = self;
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:quoteBox];
-    [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (IBAction)hardRefresh
@@ -378,7 +360,7 @@
 {
     UISegmentedControl *actions = sender;
     if (actions.selectedSegmentIndex == 0) {
-        [self tappedActions:nil];
+        [self tappedActions];
     } else if (actions.selectedSegmentIndex == 1) {
         [self tappedCompose];
     }
@@ -408,13 +390,64 @@
     }
 }
 
-- (IBAction)tappedActions:(id)sender
+- (IBAction)tappedActions
 {
-    self.actions = [[AwfulThreadActions alloc] initWithThread:self.thread];
-    self.actions.viewController = self;
-    [self.actions showFromRect:[self.view convertRect:self.pageBar.frame toView:self.view.superview]
-                        inView:self.view.superview
-                      animated:YES];
+    CGRect rect = [self.view convertRect:self.pageBar.frame toView:self.view.superview];
+    [self showThreadActionsFromRect:rect inView:self.view.superview];
+}
+
+- (void)showThreadActionsFromRect:(CGRect)rect inView:(UIView *)view
+{
+    AwfulActionSheet *sheet = [AwfulActionSheet new];
+    [sheet addButtonWithTitle:@"Copy Thread URL" block:^{
+        NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
+                         "showthread.php?threadid=%@&pagenumber=%@",
+                         self.thread.threadID, @(self.currentPage)];
+        [UIPasteboard generalPasteboard].URL = [NSURL URLWithString:url];
+    }];
+    [sheet addButtonWithTitle:@"Vote" block:^{
+        AwfulActionSheet *vote = [AwfulActionSheet new];
+        for (int i = 5; i >= 1; i--) {
+            [vote addButtonWithTitle:[@(i) stringValue] block:^{
+                [[AwfulHTTPClient client] rateThreadWithID:self.thread.threadID
+                                                    rating:i
+                                                   andThen:^(NSError *error)
+                 {
+                     NSLog(@"error casting vote on thread %@: %@", self.thread.threadID, error);
+                 }];
+            }];
+        }
+        [vote addCancelButtonWithTitle:@"Cancel"];
+        [vote showFromRect:rect inView:view animated:YES];
+    }];
+    NSString *bookmark = self.thread.isBookmarkedValue ? @"Unbookmark Thread" : @"Bookmark Thread";
+    [sheet addButtonWithTitle:bookmark block:^{
+        if (self.thread.isBookmarkedValue) {
+            [[AwfulHTTPClient client] unbookmarkThreadWithID:self.thread.threadID
+                                                     andThen:^(NSError *error)
+             {
+                 if (error) {
+                     NSLog(@"error unbookmarking thread %@: %@", self.thread.threadID, error);
+                 } else {
+                     self.thread.isBookmarkedValue = NO;
+                     [[AwfulDataStack sharedDataStack] save];
+                 }
+             }];
+        } else {
+            [[AwfulHTTPClient client] bookmarkThreadWithID:self.thread.threadID
+                                                   andThen:^(NSError *error)
+             {
+                 if (error) {
+                     NSLog(@"error bookmarking thread %@: %@", self.thread.threadID, error);
+                 } else {
+                     self.thread.isBookmarkedValue = YES;
+                     [[AwfulDataStack sharedDataStack] save];
+                 }
+             }];
+        }
+    }];
+    [sheet addCancelButtonWithTitle:@"Cancel"];
+    [sheet showFromRect:rect inView:view animated:YES];
 }
 
 - (void)tappedPageNav:(id)sender
@@ -492,28 +525,92 @@
     }
 }
 
-- (void)showActions:(NSString *)postID fromRect:(CGRect)rect
+- (void)showPostActions:(NSString *)postID fromRect:(CGRect)rect
 {
-    self.actions = nil;
-    if (!postID || postID.length == 0)
-        return;
-    for (AwfulPost *post in self.dataController.posts) {
+    rect = [self.view.superview convertRect:rect fromView:self.view];
+    [self showPostActions:postID fromRect:rect inView:self.view.superview];
+}
+
+- (void)showPostActions:(NSString *)postID fromRect:(CGRect)rect inView:(UIView *)view
+{
+    PostParsedInfo *postInfo;
+    for (PostParsedInfo *post in self.pageInfo.posts) {
         if ([post.postID isEqualToString:postID]) {
-            self.actions = [[AwfulPostActions alloc] initWithAwfulPost:post
-                                                                  page:self];
+            postInfo = post;
             break;
         }
     }
-    self.actions.viewController = self;
-    [self.actions showFromRect:rect inView:[self.view superview] animated:YES];
-}
-
-- (void)showActions
-{
-    self.actions.viewController = self;
-    [self.actions showFromRect:[self.view convertRect:self.pageBar.frame toView:self.view.superview]
-                        inView:self.view.superview
-                      animated:YES];
+    NSString *title = [NSString stringWithFormat:@"%@'s Post", postInfo.authorName];
+    if ([postInfo.authorName isEqualToString:[AwfulSettings settings].currentUser.username]) {
+        title = @"Your Post";
+    }
+    AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:title];
+    if (postInfo.editable) {
+        [sheet addButtonWithTitle:@"Edit" block:^{
+            [[AwfulHTTPClient client] getTextOfPostWithID:postID
+                                                  andThen:^(NSError *error, NSString *text)
+            {
+                if (error) {
+                    UIAlertView *alert = [UIAlertView new];
+                    alert.title = @"Could Not Edit Post";
+                    alert.message = [error localizedDescription];
+                    [alert addButtonWithTitle:@"Alright"];
+                    [alert show];
+                    return;
+                }
+                AwfulReplyViewController *reply = [AwfulReplyViewController new];
+                reply.post = postInfo;
+                reply.startingText = text;
+                reply.page = self;
+                UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:reply];
+                [self presentViewController:nav animated:YES completion:nil];
+            }];
+        }];
+    }
+    if (!self.pageInfo.threadLocked) {
+        [sheet addButtonWithTitle:@"Quote" block:^{
+            [[AwfulHTTPClient client] quoteTextOfPostWithID:postID
+                                                    andThen:^(NSError *error, NSString *quotedText)
+            {
+                if (error) {
+                    UIAlertView *alert = [UIAlertView new];
+                    alert.title = @"Could Not Quote Post";
+                    alert.message = [error localizedDescription];
+                    [alert addButtonWithTitle:@"Alright"];
+                    [alert show];
+                    return;
+                }
+                AwfulReplyViewController *reply = [AwfulReplyViewController new];
+                reply.thread = self.thread;
+                reply.startingText = quotedText;
+                reply.page = self;
+                UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:reply];
+                [self presentViewController:nav animated:YES completion:nil];
+            }];
+        }];
+    }
+    [sheet addButtonWithTitle:@"Copy Post URL" block:^{
+        NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
+                         "showthread.php?threadid=%@&pagenumber=%@#post%@",
+                         self.thread.threadID, @(self.currentPage), postID];
+        [UIPasteboard generalPasteboard].URL = [NSURL URLWithString:url];
+    }];
+    [sheet addButtonWithTitle:@"Mark Read to Here" block:^{
+        [[AwfulHTTPClient client] markThreadWithID:self.thread.threadID
+                               readUpToPostAtIndex:postInfo.threadIndex
+                                           andThen:^(NSError *error)
+         {
+             if (error) {
+                 UIAlertView *alert = [UIAlertView new];
+                 alert.title = @"Could Not Mark Read";
+                 alert.message = [error localizedDescription];
+                 [alert addButtonWithTitle:@"Alright"];
+                 [alert show];
+             }
+         }];
+    }];
+    [sheet addCancelButtonWithTitle:@"Cancel"];
+    [sheet showFromRect:rect inView:view animated:YES];
 }
 
 #pragma mark - AwfulWebViewDelegate
@@ -535,7 +632,8 @@
         CGRect rect = CGRectZero;
         if ([infoDictionary objectForKey:@"rect"])
             rect = CGRectFromString([infoDictionary objectForKey:@"rect"]);
-        [self showActions:postID fromRect:rect];
+        rect = [self.webView convertRect:rect toView:self.view];
+        [self showPostActions:postID fromRect:rect];
         return;
     }
 }
@@ -677,52 +775,20 @@ NSString * const AwfulPageDidLoadNotification = @"com.awfulapp.Awful.PageDidLoad
                                       animated:YES];
 }
 
-- (IBAction)tappedActions:(id)sender
+- (void)tappedActions
 {
-    self.actions = [[AwfulThreadActions alloc] initWithThread:self.thread];
-    [self showActions];
-}
-
-- (void)showActions
-{    
-    self.actions.viewController = self;
-    if (!([self.actions isKindOfClass:[AwfulThreadActions class]]
-            || [self.actions isKindOfClass:[AwfulVoteActions class]])) {
-        NSLog(@"only thread actions and vote actions are supported by this 'showActions' method");
-        return;
-    }
     CGRect rect = self.pageBar.actionsComposeControl.frame;
     rect.size.width /= 2;
-    [self.actions.actionSheet showFromRect:rect
-                                    inView:self.pageBar.actionsComposeControl.superview
-                                  animated:YES];
+    [self showThreadActionsFromRect:rect inView:self.pageBar.actionsComposeControl.superview];
 }
 
-- (void)showActions:(NSString *)post_id fromRect:(CGRect)rect
+- (void)showPostActions:(NSString *)postID fromRect:(CGRect)rect
 {
-    self.actions = nil;
-    if (!post_id || post_id.length == 0) return;
-    for (AwfulPost *post in self.dataController.posts) {
-        if ([post.postID isEqualToString:post_id]) {
-            self.actions = [[AwfulPostActions alloc] initWithAwfulPost:post
-                                                                  page:self];
-            break;
-        }
-    }
     if (self.popController) {
         [self.popController dismissPopoverAnimated:YES];
         self.popController = nil;
     }
-    if (!self.actions) return;
-    self.actions.viewController = self;
-    UIActionSheet *sheet = self.actions.actionSheet;
-    CGRect buttonRect = rect;
-    if ([self.actions isKindOfClass:[AwfulThreadActions class]]
-        || [self.actions isKindOfClass:[AwfulVoteActions class]]) {
-        buttonRect = self.pageBar.actionsComposeControl.frame;
-        buttonRect.size.width /= 2;
-    }
-    [sheet showFromRect:buttonRect inView:self.view animated:YES];
+    [self showPostActions:postID fromRect:rect inView:self.view];
 }
 
 - (IBAction)tappedCompose
