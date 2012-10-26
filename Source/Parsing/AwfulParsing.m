@@ -69,42 +69,29 @@
 
 - (void)parseHTMLData
 {
-    NSString *html = StringFromSomethingAwfulData(self.htmlData);
-    if (!html) return;
+    TFHpple *doc = [[TFHpple alloc] initWithHTMLData:self.htmlData];
     
-    NSError *regex_error = nil;
-    NSRegularExpression *userid_regex = [NSRegularExpression regularExpressionWithPattern:@"userid=(\\d+)" options:NSRegularExpressionCaseInsensitive error:&regex_error];
-    
-    if(regex_error != nil) {
-        NSLog(@"%@", [regex_error localizedDescription]);
+    NSString *usernameNode = [[doc searchForSingle:
+                               @"//th[starts-with(., 'Edit Profile')]/text()[1]"] content];
+    NSString *namePattern = @"Edit Profile - (.*)\\s$";
+    NSError *error;
+    NSRegularExpression *nameRegex = [NSRegularExpression regularExpressionWithPattern:namePattern
+                                                                               options:0
+                                                                                 error:&error];
+    if (!nameRegex) {
+        NSLog(@"error creating username regex: %@", error);
+    }
+    NSRange allName = NSMakeRange(0, [usernameNode length]);
+    NSTextCheckingResult *nameMatch = [nameRegex firstMatchInString:usernameNode
+                                                            options:0
+                                                              range:allName];
+    if ([nameMatch rangeAtIndex:1].location != NSNotFound) {
+        self.username = [usernameNode substringWithRange:[nameMatch rangeAtIndex:1]];
     }
     
-    NSTextCheckingResult *userid_result = [userid_regex firstMatchInString:html
-                                                                   options:0
-                                                                     range:NSMakeRange(0, [html length])];
-    NSRange userid_range = [userid_result rangeAtIndex:1];
-    if (userid_range.location != NSNotFound) {
-        NSString *user_id = [html substringWithRange:userid_range];
-        int user_id_int = [user_id intValue];
-        if (user_id_int != 0) {
-            self.userID = user_id;
-        }
-    }
-    
-    NSRegularExpression *username_regex = [NSRegularExpression regularExpressionWithPattern:@"Edit Profile - (.*?)<" options:NSRegularExpressionCaseInsensitive error:&regex_error];
-    
-    if(regex_error != nil) {
-        NSLog(@"%@", [regex_error localizedDescription]);
-    }
-    
-    NSTextCheckingResult *username_result = [username_regex firstMatchInString:html
-                                                                       options:0
-                                                                         range:NSMakeRange(0, [html length])];
-    NSRange username_range = [username_result rangeAtIndex:1];
-    if (username_range.location != NSNotFound) {
-        NSString *username = [html substringWithRange:username_range];
-        self.username = [username stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-    }
+    TFHppleElement *infoLink = [doc searchForSingle:@"//a[contains(@href, 'userid')]"];
+    NSURL *infoURL = [NSURL URLWithString:[infoLink objectForKey:@"href"]];
+    self.userID = [infoURL queryDictionary][@"userid"];
 }
 
 + (NSArray *)keysToApplyToObject
@@ -130,9 +117,7 @@
 
 - (void)parseHTMLData
 {
-    NSString *htmlString = StringFromSomethingAwfulData(self.htmlData);
-    NSData *utf8Data = [htmlString dataUsingEncoding:NSUTF8StringEncoding];
-    TFHpple *document = [[TFHpple alloc] initWithHTMLData:utf8Data];
+    TFHpple *document = [[TFHpple alloc] initWithHTMLData:self.htmlData];
     TFHppleElement *formkey = [document searchForSingle:@"//input[@name='formkey']"];
     self.formkey = [formkey objectForKey:@"value"];
     TFHppleElement *formCookie = [document searchForSingle:@"//input[@name='form_cookie']"];
@@ -334,10 +319,12 @@
     // The breadcrumbs tell us what forum we're in!
     TFHpple *doc = [[TFHpple alloc] initWithHTMLData:htmlData];
     NSString *forumID;
-    TFHppleElement *forum = [doc searchForSingle:@"(//div[" HAS_CLASS(breadcrumbs) "]//a[contains(@href, 'forumid')])[last()]"];
+    TFHppleElement *forum = [doc searchForSingle:@"(//div[" HAS_CLASS(breadcrumbs) "]//"
+                             "a[contains(@href, 'forumid')])[last()]"];
     if (forum) {
         NSError *error;
-        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"forumid=(\\d+)"
+        NSString *pattern = @"forumid=(\\d+)";
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
                                                                                options:0
                                                                                  error:&error];
         if (!regex) {
@@ -351,7 +338,8 @@
     }
     
     NSMutableArray *threads = [NSMutableArray new];
-    for (NSString *oneThread in PerformRawHTMLXPathQuery(htmlData, @"//tr[" HAS_CLASS(thread) "]")) {
+    NSArray *rawThreads = PerformRawHTMLXPathQuery(htmlData, @"//tr[" HAS_CLASS(thread) "]");
+    for (NSString *oneThread in rawThreads) {
         NSData *dataForOneThread = [oneThread dataUsingEncoding:NSUTF8StringEncoding];
         ThreadParsedInfo *info = [[self alloc] initWithHTMLData:dataForOneThread];
         info.forumID = forumID;
@@ -376,7 +364,8 @@
     TFHppleElement *icon = [doc searchForSingle:@"//td[" HAS_CLASS(icon) "]/img"];
     if (!icon) {
         // Film Dump rating.
-        icon = [doc searchForSingle:@"//td[" HAS_CLASS(rating) "]/img[contains(@src, '/rate/reviews')]"];
+        icon = [doc searchForSingle:
+                @"//td[" HAS_CLASS(rating) "]/img[contains(@src, '/rate/reviews')]"];
     }
     if (icon) {
         self.threadIconImageURL = [NSURL URLWithString:[icon objectForKey:@"src"]];
@@ -396,7 +385,8 @@
     TFHppleElement *closed = [doc searchForSingle:@"//tr[" HAS_CLASS(closed) "]"];
     self.isClosed = !!closed;
     
-    TFHppleElement *star = [doc searchForSingle:@"//td[" HAS_CLASS(star) "]//img[contains(@src, 'star')]"];
+    TFHppleElement *star = [doc searchForSingle:
+                            @"//td[" HAS_CLASS(star) "]//img[contains(@src, 'star')]"];
     NSURL *starURL = [NSURL URLWithString:[star objectForKey:@"src"]];
     if ([[starURL lastPathComponent] hasSuffix:@"star0.gif"]) {
         self.starCategory = AwfulStarCategoryBlue;
@@ -427,7 +417,8 @@
     TFHppleElement *rating = [doc searchForSingle:@"//td[" HAS_CLASS(rating) "]/img"];
     if (rating) {
         NSScanner *numberScanner = [NSScanner scannerWithString:[rating objectForKey:@"title"]];
-        NSCharacterSet *notNumbers = [[NSCharacterSet characterSetWithCharactersInString:@"0123456789."] invertedSet];
+        NSCharacterSet *notNumbers = [[NSCharacterSet characterSetWithCharactersInString:
+                                       @"0123456789."] invertedSet];
         [numberScanner setCharactersToBeSkipped:notNumbers];
         NSInteger numberOfVotes;
         BOOL ok = [numberScanner scanInteger:&numberOfVotes];
@@ -441,8 +432,10 @@
         }
     }
     
-    TFHppleElement *date = [doc searchForSingle:@"//td[" HAS_CLASS(lastpost) "]//div[" HAS_CLASS(date) "]"];
-    TFHppleElement *lastAuthor = [doc searchForSingle:@"//td[" HAS_CLASS(lastpost) "]//a[" HAS_CLASS(author) "]"];
+    TFHppleElement *date = [doc searchForSingle:
+                            @"//td[" HAS_CLASS(lastpost) "]//div[" HAS_CLASS(date) "]"];
+    TFHppleElement *lastAuthor = [doc searchForSingle:
+                                  @"//td[" HAS_CLASS(lastpost) "]//a[" HAS_CLASS(author) "]"];
     self.lastPostAuthorName = [lastAuthor content];
     if (date) {
         static NSDateFormatter *df = nil;
@@ -598,7 +591,8 @@
     self.threadLocked = !![doc searchForSingle:
                            @"//a[contains(@href, 'newreply')]/img[contains(@src, 'closed')]"];
     
-    TFHppleElement *forumLink = [doc searchForSingle:@"//div[" HAS_CLASS(breadcrumbs) "]//a[position() = last() - 1]"];
+    TFHppleElement *forumLink = [doc searchForSingle:
+                                 @"//div[" HAS_CLASS(breadcrumbs) "]//a[position() = last() - 1]"];
     NSURL *forumURL = [NSURL URLWithString:[forumLink objectForKey:@"href"]];
     self.forumID = [forumURL queryDictionary][@"forumid"];
     

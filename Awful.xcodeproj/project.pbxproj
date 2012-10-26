@@ -64,7 +64,6 @@
 		1C6474CB1569989800C72657 /* AwfulThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474B51569989800C72657 /* AwfulThread.m */; };
 		1C6474CF1569989800C72657 /* _AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474BE1569989800C72657 /* _AwfulForum.m */; };
 		1C6474D01569989800C72657 /* _AwfulThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474C01569989800C72657 /* _AwfulThread.m */; };
-		1C83DB30161D4D1100E53CFA /* AwfulStringEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C83DB2F161D4D1100E53CFA /* AwfulStringEncoding.m */; };
 		1C83DB54161FF48600E53CFA /* ImgurHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */; };
 		1C83DB571620113F00E53CFA /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C83DB561620113F00E53CFA /* NSData+Base64.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc -w"; }; };
 		1C95FED81634C0380041A01F /* AwfulThreadTitleLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C95FED71634C0380041A01F /* AwfulThreadTitleLabel.m */; };
@@ -401,7 +400,6 @@
 		1CBDB5F41625B76F0004BDF4 /* showthread.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CBDB5EF1625B76F0004BDF4 /* showthread.html */; };
 		1CBDB5F61625BACE0004BDF4 /* AwfulParsing.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5F51625BACE0004BDF4 /* AwfulParsing.m */; };
 		1CBDB5F71625BACE0004BDF4 /* AwfulParsing.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5F51625BACE0004BDF4 /* AwfulParsing.m */; };
-		1CBDB5F81625BB630004BDF4 /* AwfulStringEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C83DB2F161D4D1100E53CFA /* AwfulStringEncoding.m */; };
 		1CBDB5F91625E7320004BDF4 /* TFHpple.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7C213BE4ECB00B9D271 /* TFHpple.m */; };
 		1CBDB5FA1625E7320004BDF4 /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7C413BE4ECB00B9D271 /* TFHppleElement.m */; };
 		1CBDB5FB1625E7320004BDF4 /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7C613BE4ECB00B9D271 /* XPathQuery.m */; };
@@ -641,8 +639,6 @@
 		1C6474BE1569989800C72657 /* _AwfulForum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulForum.m; sourceTree = "<group>"; };
 		1C6474BF1569989800C72657 /* _AwfulThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _AwfulThread.h; sourceTree = "<group>"; };
 		1C6474C01569989800C72657 /* _AwfulThread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulThread.m; sourceTree = "<group>"; };
-		1C83DB2E161D4D1100E53CFA /* AwfulStringEncoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulStringEncoding.h; sourceTree = "<group>"; };
-		1C83DB2F161D4D1100E53CFA /* AwfulStringEncoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulStringEncoding.m; sourceTree = "<group>"; };
 		1C83DB52161FF48600E53CFA /* ImgurHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImgurHTTPClient.h; sourceTree = "<group>"; };
 		1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImgurHTTPClient.m; sourceTree = "<group>"; };
 		1C83DB551620113F00E53CFA /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
@@ -1539,8 +1535,6 @@
 			children = (
 				1CC780201612D989002AF958 /* AwfulHTTPClient.h */,
 				1CC780211612D989002AF958 /* AwfulHTTPClient.m */,
-				1C83DB2E161D4D1100E53CFA /* AwfulStringEncoding.h */,
-				1C83DB2F161D4D1100E53CFA /* AwfulStringEncoding.m */,
 				1CAED9D916373F91001F5F04 /* AwfulThreadTags.h */,
 				1CAED9DA16373F91001F5F04 /* AwfulThreadTags.m */,
 			);
@@ -2718,7 +2712,6 @@
 				1CBDB5E01625A0D00004BDF4 /* ThreadTests.m in Sources */,
 				1CBDB5E31625A7780004BDF4 /* ParsingTests.m in Sources */,
 				1CBDB5F71625BACE0004BDF4 /* AwfulParsing.m in Sources */,
-				1CBDB5F81625BB630004BDF4 /* AwfulStringEncoding.m in Sources */,
 				1CBDB5F91625E7320004BDF4 /* TFHpple.m in Sources */,
 				1CBDB5FA1625E7320004BDF4 /* TFHppleElement.m in Sources */,
 				1CBDB5FB1625E7320004BDF4 /* XPathQuery.m in Sources */,
@@ -2816,7 +2809,6 @@
 				1CC780791612E0EA002AF958 /* AwfulUser.m in Sources */,
 				1C13FF67161BCCB6000ED2B1 /* AwfulThreadCell.m in Sources */,
 				1C13FF6A161BF733000ED2B1 /* AwfulBadgeView.m in Sources */,
-				1C83DB30161D4D1100E53CFA /* AwfulStringEncoding.m in Sources */,
 				1C05EDB916230CB500FE567F /* AwfulPageDataController.m in Sources */,
 				1C83DB54161FF48600E53CFA /* ImgurHTTPClient.m in Sources */,
 				1C83DB571620113F00E53CFA /* NSData+Base64.m in Sources */,

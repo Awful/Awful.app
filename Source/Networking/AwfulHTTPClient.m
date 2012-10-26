@@ -14,7 +14,6 @@
 #import "AwfulPageTemplate.h"
 #import "AwfulParsing.h"
 #import "AwfulSettings.h"
-#import "AwfulStringEncoding.h"
 
 @implementation AwfulHTTPClient
 
@@ -38,6 +37,13 @@
     return self;
 }
 
+static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
+{
+    NSString *ugh = [[NSString alloc] initWithData:windows1252
+                                          encoding:NSWindowsCP1252StringEncoding];
+    return [ugh dataUsingEncoding:NSUTF8StringEncoding];
+}
+
 - (NSOperation *)listThreadsInForumWithID:(NSString *)forumID
                                    onPage:(NSInteger)page
                                   andThen:(void (^)(NSError *error, NSArray *threads))callback
@@ -49,7 +55,7 @@
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
                                                                success:^(id _, id data)
     {
-        NSArray *infos = [ThreadParsedInfo threadsWithHTMLData:data];
+        NSArray *infos = [ThreadParsedInfo threadsWithHTMLData:ConvertFromWindows1252ToUTF8(data)];
         NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:infos];
         NSInteger stickyIndex = -(NSInteger)[threads count];
         NSArray *forums = [AwfulForum fetchAllMatchingPredicate:@"forumID = %@", forumID];
@@ -75,7 +81,8 @@
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
                                                                success:^(id _, id data)
     {
-        NSArray *threadInfos = [ThreadParsedInfo threadsWithHTMLData:data];
+        NSArray *threadInfos = [ThreadParsedInfo threadsWithHTMLData:
+                                ConvertFromWindows1252ToUTF8(data)];
         NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:threadInfos];
         [threads setValue:@YES forKey:AwfulThreadAttributes.isBookmarked];
         [[AwfulDataStack sharedDataStack] save];
@@ -135,7 +142,8 @@
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
                                                                success:^(id _, id data)
     {
-        UserParsedInfo *parsed = [[UserParsedInfo alloc] initWithHTMLData:data];
+        UserParsedInfo *parsed = [[UserParsedInfo alloc] initWithHTMLData:
+                                  ConvertFromWindows1252ToUTF8(data)];
         if (callback) callback(nil, @{ @"userID": parsed.userID, @"username": parsed.username });
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
@@ -197,7 +205,8 @@ static NSString * const AddOrRemoveString[] = { @"add", @"remove" };
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
                                                                success:^(id _, id data)
     {
-        ForumHierarchyParsedInfo *info = [[ForumHierarchyParsedInfo alloc] initWithHTMLData:data];
+        ForumHierarchyParsedInfo *info = [[ForumHierarchyParsedInfo alloc] initWithHTMLData:
+                                          ConvertFromWindows1252ToUTF8(data)];
         NSArray *forums = [AwfulForum updateCategoriesAndForums:info];
         if (callback) callback(nil, forums);
     } failure:^(id _, NSError *error) {
@@ -218,7 +227,8 @@ static NSString * const AddOrRemoveString[] = { @"add", @"remove" };
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
                                                                success:^(id _, id data)
     {
-        ReplyFormParsedInfo *formInfo = [[ReplyFormParsedInfo alloc] initWithHTMLData:data];
+        ReplyFormParsedInfo *formInfo = [[ReplyFormParsedInfo alloc] initWithHTMLData:
+                                         ConvertFromWindows1252ToUTF8(data)];
         if (!(formInfo.formkey && formInfo.formCookie)) {
             NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : @"Thread is closed" };
             NSError *error = [NSError errorWithDomain:NSCocoaErrorDomain code:-1 userInfo:userInfo];
@@ -244,7 +254,8 @@ static NSString * const AddOrRemoveString[] = { @"add", @"remove" };
         [self enqueueHTTPRequestOperation:[self HTTPRequestOperationWithRequest:postRequest
                                                                         success:^(id _, id data)
         {
-            SuccessfulReplyInfo *replyInfo = [[SuccessfulReplyInfo alloc] initWithHTMLData:data];
+            SuccessfulReplyInfo *replyInfo = [[SuccessfulReplyInfo alloc] initWithHTMLData:
+                                              ConvertFromWindows1252ToUTF8(data)];
             if (callback) callback(nil, replyInfo.lastPage ? nil : replyInfo.postID);
         } failure:^(id _, NSError *error)
         {
@@ -282,9 +293,7 @@ static NSString * const AddOrRemoveString[] = { @"add", @"remove" };
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
                                                                success:^(id _, id data)
     {
-        NSString *rawString = [[NSString alloc] initWithData:data encoding:self.stringEncoding];
-        NSData *converted = [rawString dataUsingEncoding:NSUTF8StringEncoding];
-        TFHpple *base = [[TFHpple alloc] initWithHTMLData:converted];
+        TFHpple *base = [[TFHpple alloc] initWithHTMLData:ConvertFromWindows1252ToUTF8(data)];
         TFHppleElement *textarea = [base searchForSingle:@"//textarea[@name='message']"];
         if (callback) callback(nil, [textarea content]);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -311,10 +320,9 @@ static NSString * const AddOrRemoveString[] = { @"add", @"remove" };
                                                @"postid": postID,
                                                @"message": text
                                                } mutableCopy];
-        NSString *rawString = [[NSString alloc] initWithData:data encoding:self.stringEncoding];
-        NSData *converted = [rawString dataUsingEncoding:NSUTF8StringEncoding];
-        TFHpple *pageData = [[TFHpple alloc] initWithHTMLData:converted];
-        TFHppleElement *bookmarkElement = [pageData searchForSingle:@"//input[@name='bookmark' and @checked='checked']"];
+        TFHpple *pageData = [[TFHpple alloc] initWithHTMLData:ConvertFromWindows1252ToUTF8(data)];
+        TFHppleElement *bookmarkElement = [pageData searchForSingle:
+                                           @"//input[@name='bookmark' and @checked='checked']"];
         if (bookmarkElement) {
             moreParameters[@"bookmark"] = [bookmarkElement objectForKey:@"value"];
         }

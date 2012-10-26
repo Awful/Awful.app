@@ -33,7 +33,9 @@
 {
     self = [super init];
     if (self) {
-        NSData *converted = [StringFromSomethingAwfulData(responseData) dataUsingEncoding:NSUTF8StringEncoding];
+        NSString *ugh = [[NSString alloc] initWithData:responseData
+                                              encoding:NSWindowsCP1252StringEncoding];
+        NSData *converted = [ugh dataUsingEncoding:NSUTF8StringEncoding];
         TFHpple *pageParser = [[TFHpple alloc] initWithHTMLData:converted];
         _threadTitle = ParseThreadTitle(pageParser);
         _isLocked = ParseThreadLocked(pageParser);

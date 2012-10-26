@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "AwfulStringEncoding.h"
 #import "TFHpple.h"
 #import "TFHppleElement.h"
 #import "XPathQuery.h"
