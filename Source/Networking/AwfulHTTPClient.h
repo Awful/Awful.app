@@ -7,21 +7,12 @@
 //
 
 #import "AFNetworking.h"
-#import "AwfulPage.h"
-@class AwfulThread;
-@class AwfulPageDataController;
-
-
-typedef void (^AwfulErrorBlock)(NSError* error);
-
+@class PageParsedInfo;
 
 @interface AwfulHTTPClient : AFHTTPClient
 
 // Singleton instance.
 + (AwfulHTTPClient *)client;
-
-typedef void (^PageResponseBlock)(AwfulPageDataController *dataController);
-typedef void (^CompletionBlock)(void);
 
 // Gets the threads in a forum on a given page.
 //
@@ -47,7 +38,24 @@ typedef void (^CompletionBlock)(void);
 - (NSOperation *)listBookmarkedThreadsOnPage:(NSInteger)page
                                      andThen:(void (^)(NSError *error, NSArray *threads))callback;
 
--(NSOperation *)pageDataForThread : (AwfulThread *)thread destinationType : (AwfulPageDestinationType)destinationType pageNum : (NSUInteger)pageNum onCompletion:(PageResponseBlock)pageResponseBlock onError:(AwfulErrorBlock)errorBlock;
+// Gets the posts in a thread on a given page.
+//
+// threadID - Which thread to list.
+// page     - Which page to get. First page is 1; AwfulPageNextUnread and AwfulPageLast are also
+//            available.
+// callback - A block to call after listing the posts, which takes as parameters:
+//              error    - An error on failure, or nil on success.
+//              pageInfo - The posts and other information gleaned from the page.
+//
+// Returns the enqueued network operation.
+- (NSOperation *)listPostsInThreadWithID:(NSString *)threadID
+    onPage:(NSInteger)page
+    andThen:(void (^)(NSError *error, PageParsedInfo *pageInfo))callback;
+
+enum {
+    AwfulPageNextUnread = -1,
+    AwfulPageLast = -2
+};
 
 // Get the logged-in user's name and ID.
 //
@@ -147,7 +155,17 @@ typedef void (^CompletionBlock)(void);
                            rating:(NSInteger)rating
                           andThen:(void (^)(NSError *error))callback;
 
--(NSOperation *)processMarkSeenLink : (NSString *)markSeenLink onCompletion : (CompletionBlock)completionBlock onError:(AwfulErrorBlock)errorBlock;
+// Mark a thread as read up to a point.
+//
+// threadID - Which thread to mark.
+// index    - How many posts to mark as read.
+// callback - A block to call after marking, which takes as parameters:
+//              error - An error on failure, or nil on success.
+//
+// Returns the enqueued network operation.
+- (NSOperation *)markThreadWithID:(NSString *)threadID
+              readUpToPostAtIndex:(NSString *)index
+                          andThen:(void (^)(NSError *error))callback;
 
 // Mark an entire thread as unread.
 //

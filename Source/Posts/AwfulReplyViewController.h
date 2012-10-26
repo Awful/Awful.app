@@ -9,13 +9,13 @@
 #import <UIKit/UIKit.h>
 
 @class AwfulThread;
-@class AwfulPost;
 @class AwfulPage;
+@class PostParsedInfo;
 
 @interface AwfulReplyViewController : UIViewController
 
 @property (strong, nonatomic) AwfulThread *thread;
-@property (strong, nonatomic) AwfulPost *post;
+@property (strong, nonatomic) PostParsedInfo *post;
 @property (strong, nonatomic) NSString *startingText;
 @property (weak, nonatomic) AwfulPage *page;
 

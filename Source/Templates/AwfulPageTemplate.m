@@ -8,7 +8,7 @@
 
 #import "AwfulPageTemplate.h"
 #import "AwfulModels.h"
-#import "AwfulPageDataController.h"
+#import "AwfulParsing.h"
 #import "AwfulSettings.h"
 #import "GRMustacheTemplate.h"
 #import "PostContext.h"
@@ -30,7 +30,7 @@ static NSURL *DefaultCSSURL()
 @interface TemplateContext : NSObject
 
 // Designated initializer.
-- (id)initWithPageDataController:(AwfulPageDataController *)dataController overridePostRemover : (BOOL)overridePostRemover;
+- (id)initWithPageInfo:(PageParsedInfo *)pageInfo overridePostRemover:(BOOL)overridePostRemover;
 
 @property (readonly, nonatomic) NSArray *javascripts;
 @property (readonly, nonatomic) NSString *salrConfig;
@@ -77,15 +77,15 @@ static NSURL *DefaultCSSURL()
 //   4. default.css
 //
 // If no template is found, steps 1-4 are repeated in the application's resources directory.
-- (NSURL *)getTemplateURLFromForum:(AwfulForum *)forum
+- (NSURL *)getTemplateURLFromForumWithID:(NSString *)forumID
 {
     NSArray *listOfFilenames = @[
-        [NSString stringWithFormat:@"default-%@.css", forum.forumID],
+        [NSString stringWithFormat:@"default-%@.css", forumID],
         @"default.css"
     ];
     if (AwfulSettings.settings.darkTheme) {
         listOfFilenames = @[
-            [NSString stringWithFormat:@"dark-%@.css", forum.forumID],
+            [NSString stringWithFormat:@"dark-%@.css", forumID],
             listOfFilenames[0],
             @"dark.css",
             listOfFilenames[1]
@@ -104,16 +104,12 @@ static NSURL *DefaultCSSURL()
     return nil;
 }
 
-- (NSString *)renderWithPageDataController:(AwfulPageDataController *)dataController displayAllPosts : (BOOL)displayAllPosts
+- (NSString *)renderWithPageInfo:(PageParsedInfo *)pageInfo displayAllPosts:(BOOL)displayAllPosts
 {
-    TemplateContext *context = [[TemplateContext alloc] initWithPageDataController:dataController overridePostRemover:displayAllPosts];
-    context.cssURL = [self getTemplateURLFromForum:dataController.forum];
+    TemplateContext *context = [[TemplateContext alloc] initWithPageInfo:pageInfo
+                                                     overridePostRemover:displayAllPosts];
+    context.cssURL = [self getTemplateURLFromForumWithID:pageInfo.forumID];
     return [self.template renderObject:context];
-}
-
-- (NSString *)renderWithPageDataController:(AwfulPageDataController *)dataController
-{
-    return [self renderWithPageDataController:dataController displayAllPosts:NO];
 }
 
 @end
@@ -146,13 +142,13 @@ static NSURL *DefaultCSSURL()
 
 @implementation TemplateContext
 
-- (id)initWithPageDataController:(AwfulPageDataController *)dataController overridePostRemover : (BOOL)overridePostRemover
+- (id)initWithPageInfo:(PageParsedInfo *)pageInfo overridePostRemover:(BOOL)overridePostRemover
 {
     self = [super init];
     if (self)
     {
-        self.userAd = dataController.userAd;
-        NSInteger pagesLeft = dataController.numberOfPages - dataController.currentPage;
+        self.userAd = pageInfo.advertisementHTML;
+        NSInteger pagesLeft = pageInfo.pagesInThread - pageInfo.pageNumber;
         if (pagesLeft > 1) {
             self.pagesLeftNotice = [NSString stringWithFormat:@"%d pages left.", pagesLeft];
         } else if (pagesLeft == 1) {
@@ -163,24 +159,34 @@ static NSURL *DefaultCSSURL()
         NSMutableArray *posts = [NSMutableArray array];
         int currentIndex = 0;
         int numPostsAbove = [[AwfulSettings settings] loadReadPosts];
-        int firstPostIndex = MAX(dataController.newestPostIndex - numPostsAbove, 0);
+        int firstPostIndex = [pageInfo.posts count];
+        for (NSUInteger i = 0; i < [pageInfo.posts count]; i++) {
+            PostParsedInfo *post = pageInfo.posts[i];
+            if (!post.beenSeen) {
+                firstPostIndex = i;
+                break;
+            }
+        }
         int numHiddenPosts = 0;
         
         // no new posts on a page, show them all!
-        if([dataController.posts count] == dataController.newestPostIndex) { 
+        if ([pageInfo.posts count] == (NSUInteger)firstPostIndex) {
             firstPostIndex = 0;
+        } else {
+            firstPostIndex -= numPostsAbove;
+            if (firstPostIndex < 0) firstPostIndex = 0;
         }
         
-        for(AwfulPost *post in dataController.posts) {
-            if(currentIndex >= firstPostIndex || overridePostRemover) {
-                [posts addObject:[[PostContext alloc] initWithPost:post]];
+        for (PostParsedInfo *post in pageInfo.posts) {
+            if (currentIndex >= firstPostIndex || overridePostRemover) {
+                [posts addObject:[[PostContext alloc] initWithPostInfo:post]];
             } else {
                 numHiddenPosts++;
             }
             currentIndex++;
         }
-        if(numHiddenPosts > 0) {
-            if(numHiddenPosts == 1) {
+        if (numHiddenPosts > 0) {
+            if (numHiddenPosts == 1) {
                 self.postsAboveNotice = @"1 Post Above";
             } else {
                 self.postsAboveNotice = [NSString stringWithFormat:@"%d Posts Above", numHiddenPosts];

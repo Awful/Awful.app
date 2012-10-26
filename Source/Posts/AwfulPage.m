@@ -13,8 +13,9 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
 #import "AwfulPageBar.h"
-#import "AwfulPageDataController.h"
+#import "AwfulPageTemplate.h"
 #import "AwfulReplyViewController.h"
+#import "AwfulSettings.h"
 #import "AwfulSpecificPageViewController.h"
 #import "AwfulThreadListController.h"
 #import "AwfulThreadTitleLabel.h"
@@ -37,7 +38,7 @@
 
 @property (copy, nonatomic) NSString *postIDScrollDestination;
 
-@property (nonatomic) AwfulPageDataController *dataController;
+@property (nonatomic) PageParsedInfo *pageInfo;
 
 @property (nonatomic) BOOL shouldScrollToBottom;
 
@@ -118,23 +119,37 @@
     self.shouldScrollToBottom = _destinationType == AwfulPageDestinationTypeLast;
 }
 
-- (void)setDataController:(AwfulPageDataController *)dataController
+- (void)setPageInfo:(PageParsedInfo *)pageInfo
 {
-    if (_dataController == dataController) return;
-
-    _dataController = dataController;
-    self.currentPage = dataController.currentPage;
-    self.numberOfPages = dataController.numberOfPages;
-    self.thread.title = dataController.threadTitle;
+    if (_pageInfo == pageInfo) return;
+    _pageInfo = pageInfo;
+    self.currentPage = pageInfo.pageNumber;
+    self.numberOfPages = pageInfo.pagesInThread;
+    self.thread.title = pageInfo.threadTitle;
     self.titleLabel.text = self.thread.title;
     
-    self.postIDScrollDestination = [dataController calculatePostIDScrollDestination];
-    self.shouldScrollToBottom = [dataController shouldScrollToBottom];
+    NSUInteger firstUnreadPostIndex = [pageInfo.posts count];
+    NSString *firstUnreadPostID;
+    for (NSUInteger i = 0; i < [pageInfo.posts count]; i++) {
+        PostParsedInfo *post = pageInfo.posts[i];
+        if (!post.beenSeen) {
+            firstUnreadPostIndex = i;
+            firstUnreadPostID = post.postID;
+            break;
+        }
+    }
+    if (firstUnreadPostIndex < [pageInfo.posts count]) {
+        self.postIDScrollDestination = firstUnreadPostID;
+        self.shouldScrollToBottom = NO;
+    } else {
+        self.postIDScrollDestination = nil;
+        self.shouldScrollToBottom = YES;
+    }
     if (self.destinationType != AwfulPageDestinationTypeNewpost) {
         self.shouldScrollToBottom = NO;
     }
     
-    int numNewPosts = [_dataController numNewPostsLoaded];
+    int numNewPosts = firstUnreadPostIndex - [pageInfo.posts count];
     if (numNewPosts > 0 && (self.destinationType == AwfulPageDestinationTypeNewpost || self.currentPage == self.numberOfPages)) {
         int unreadPosts = [self.thread.totalUnreadPosts intValue];
         if(unreadPosts != -1) {
@@ -146,7 +161,8 @@
         self.thread.totalUnreadPostsValue = 0;
         [[AwfulDataStack sharedDataStack] save];
     }
-    NSString *html = [dataController constructedPageHTML];
+    AwfulPageTemplate *template = [AwfulPageTemplate new];
+    NSString *html = [template renderWithPageInfo:pageInfo displayAllPosts:NO];
     [self.webView loadHTMLString:html baseURL:[[NSBundle mainBundle] resourceURL]];
     self.webView.tag = self.currentPage;
     [[NSNotificationCenter defaultCenter] postNotificationName:AwfulPageDidLoadNotification
@@ -173,7 +189,7 @@
 
 - (IBAction)hardRefresh
 {
-    if ([self.dataController.posts count] == 40) {
+    if ([self.pageInfo.posts count] == 40) {
         self.destinationType = AwfulPageDestinationTypeSpecific;
         [self refresh];
     } else {
@@ -194,52 +210,58 @@
     [SVProgressHUD dismiss];
     [self.networkOperation cancel];
     [self hidePageNavigation];
-    AwfulThread *myThread = self.thread;
-    AwfulPageDestinationType destType = self.destinationType;
-    self.networkOperation = [[AwfulHTTPClient client] pageDataForThread:myThread
-                                                        destinationType:destType
-                                                                pageNum:pageNum
-                                                           onCompletion:^(AwfulPageDataController *dataController)
+    if (self.destinationType == AwfulPageDestinationTypeLast) pageNum = AwfulPageLast;
+    else if (self.destinationType == AwfulPageDestinationTypeNewpost) pageNum = AwfulPageNextUnread;
+    id op = [[AwfulHTTPClient client] listPostsInThreadWithID:self.thread.threadID
+                                                       onPage:pageNum
+                                                      andThen:^(NSError *error, PageParsedInfo *pageInfo)
     {
-        self.dataController = dataController;
+        if (error) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed"
+                                                            message:[error localizedDescription]
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"Ok"
+                                                  otherButtonTitles:nil];
+            [alert show];
+            return;
+        }
+        self.pageInfo = pageInfo;
         if (self.destinationType == AwfulPageDestinationTypeSpecific) {
             self.currentPage = pageNum;
         }
         [self updatePagesLabel];
         [self updateBookmarked];
-    } onError:^(NSError *error)
-    {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed"
-                                                        message:error.localizedDescription
-                                                       delegate:nil
-                                              cancelButtonTitle:@"Ok"
-                                              otherButtonTitles:nil];
-        [alert show];
-        [SVProgressHUD dismiss];
     }];
+    self.networkOperation = op;
 }
 
 - (void)loadLastPage
 {
     [self.networkOperation cancel];
-    self.networkOperation = [[AwfulHTTPClient client] pageDataForThread:self.thread
-                                                        destinationType:AwfulPageDestinationTypeLast
-                                                                pageNum:0
-                                                           onCompletion:^(AwfulPageDataController *dataController)
+    id op = [[AwfulHTTPClient client] listPostsInThreadWithID:self.thread.threadID
+                                                       onPage:AwfulPageLast
+                                                      andThen:^(NSError *error, PageParsedInfo *pageInfo)
     {
-        self.dataController = dataController;
+        if (error) {            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed"
+                                                            message:[error localizedDescription]
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"Ok"
+                                                  otherButtonTitles:nil];
+            [alert show];
+            return;
+        }
+        self.pageInfo = pageInfo;
         [self updatePagesLabel];
         [self updateBookmarked];
-    } onError:^(NSError *error)
-    {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-        [alert show];
     }];
+    self.networkOperation = op;
 }
 
 - (void)loadOlderPosts
 {
-    NSString *html = [self.dataController constructedPageHTMLWithAllPosts];
+    AwfulPageTemplate *template = [AwfulPageTemplate new];
+    NSString *html = [template renderWithPageInfo:self.pageInfo displayAllPosts:YES];
     [self.webView loadHTMLString:html baseURL:[[NSBundle mainBundle] resourceURL]];
 }
 
@@ -342,7 +364,7 @@
 
 - (void)updateBookmarked
 {
-    self.thread.isBookmarkedValue = self.dataController.bookmarked;
+    self.thread.isBookmarkedValue = self.pageInfo.threadBookmarked;
 }
 
 - (IBAction)tappedPagesSegment:(id)sender

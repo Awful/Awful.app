@@ -10,7 +10,6 @@
 #import "AwfulDataStack.h"
 #import "AwfulModels.h"
 #import "AwfulPage.h"
-#import "AwfulPageDataController.h"
 #import "AwfulPageTemplate.h"
 #import "AwfulParsing.h"
 #import "AwfulSettings.h"
@@ -64,6 +63,7 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
             thread.stickyIndexValue = thread.isStickyValue ? stickyIndex++ : 0;
         }
         [[AwfulDataStack sharedDataStack] save];
+        if (callback) callback(nil, threads);
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
     }];
@@ -94,43 +94,28 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
     return op;
 }
 
--(NSOperation *)pageDataForThread : (AwfulThread *)thread destinationType : (AwfulPageDestinationType)destinationType pageNum : (NSUInteger)pageNum onCompletion:(PageResponseBlock)pageResponseBlock onError:(AwfulErrorBlock)errorBlock
+- (NSOperation *)listPostsInThreadWithID:(NSString *)threadID
+    onPage:(NSInteger)page
+    andThen:(void (^)(NSError *error, PageParsedInfo *pageInfo))callback
 {
-    NSString *append = @"";
-    switch(destinationType) {
-        case AwfulPageDestinationTypeFirst:
-            append = @"";
-            break;
-        case AwfulPageDestinationTypeLast:
-            append = @"&goto=lastpost";
-            break;
-        case AwfulPageDestinationTypeNewpost:
-            append = @"&goto=newpost";
-            break;
-        case AwfulPageDestinationTypeSpecific:
-            append = [NSString stringWithFormat:@"&pagenumber=%d", pageNum];
-            break;
-        default:
-            append = @"";
-            break;
-    }
-    
-    NSString *path = [[NSString alloc] initWithFormat:@"showthread.php?threadid=%@%@", thread.threadID, append];
-    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
-    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
-       success:^(AFHTTPRequestOperation *operation, id response) {
-           NSURLResponse *urlResponse = [operation response];
-           NSURL *lastURL = [urlResponse URL];
-           NSData *data = (NSData *)response;
-           AwfulPageDataController *data_controller = [[AwfulPageDataController alloc] initWithResponseData:data pageURL:lastURL];
-           thread.isLockedValue = data_controller.isLocked;
-           pageResponseBlock(data_controller);
-       } 
-       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-           errorBlock(error);
-       }];
+    NSMutableDictionary *parameters = [@{ @"threadid": threadID } mutableCopy];
+    if (page == AwfulPageNextUnread) parameters[@"goto"] = @"newpost";
+    else if (page == AwfulPageLast) parameters[@"goto"] = @"lastpost";
+    else parameters[@"pagenumber"] = @(page);
+    NSURLRequest *request = [self requestWithMethod:@"GET"
+                                               path:@"showthread.php"
+                                         parameters:parameters];
+    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
+                                                               success:^(id _, id data)
+    {
+        PageParsedInfo *info = [[PageParsedInfo alloc] initWithHTMLData:
+                                ConvertFromWindows1252ToUTF8(data)];
+        if (callback) callback(nil, info);
+    } failure:^(id _, NSError *error) {
+        if (callback) callback(error, nil);
+    }];
     [self enqueueHTTPRequestOperation:op];
-    return (NSOperation *)op;
+    return op;
 }
 
 - (NSOperation *)learnUserInfoAndThen:(void (^)(NSError *error, NSDictionary *userInfo))callback
@@ -365,19 +350,23 @@ static NSString * const AddOrRemoveString[] = { @"add", @"remove" };
     return op;
 }
 
--(NSOperation *)processMarkSeenLink : (NSString *)markSeenLink onCompletion : (CompletionBlock)completionBlock onError:(AwfulErrorBlock)errorBlock
+- (NSOperation *)markThreadWithID:(NSString *)threadID
+              readUpToPostAtIndex:(NSString *)index
+                          andThen:(void (^)(NSError *error))callback
 {
-    NSString *path = markSeenLink;
-    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
-    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
-       success:^(AFHTTPRequestOperation *operation, id response) {
-           if (completionBlock) completionBlock();
-       } 
-       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-           if (errorBlock) errorBlock(error);
-       }];
+    NSDictionary *parameters = @{ @"action": @"setseen", @"threadid": threadID, @"index": index };
+    NSURLRequest *request = [self requestWithMethod:@"GET"
+                                               path:@"showthread.php"
+                                         parameters:parameters];
+    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
+                                                               success:^(id _, id __)
+    {
+        if (callback) callback(nil);
+    } failure:^(id _, NSError *error) {
+        if (callback) callback(error);
+    }];
     [self enqueueHTTPRequestOperation:op];
-    return (NSOperation *)op;
+    return op;
 }
 
 - (NSOperation *)forgetReadPostsInThreadWithID:(NSString *)threadID

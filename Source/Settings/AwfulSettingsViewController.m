@@ -12,6 +12,7 @@
 #import "AwfulLicensesViewController.h"
 #import "AwfulLoginController.h"
 #import "AwfulModels.h"
+#import "AwfulPage.h"
 #import "AwfulSettings.h"
 #import "AwfulSettingsChoiceViewController.h"
 #import "AwfulUser.h"

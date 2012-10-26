@@ -31,7 +31,6 @@
 #import <Foundation/Foundation.h>
 
 #import "TFHppleElement.h"
-#import "AwfulPost.h"
 
 @interface TFHpple : NSObject {
   NSData * data;

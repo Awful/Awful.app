@@ -10,6 +10,7 @@
 #import "AwfulAppDelegate.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
+#import "AwfulPage.h"
 #import "AwfulThreadTitleLabel.h"
 #import "ImgurHTTPClient.h"
 #import "SVProgressHUD.h"

@@ -7,15 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-
-@class AwfulPageDataController;
-@class AwfulForum;
+@class PageParsedInfo;
 
 @interface AwfulPageTemplate : NSObject
 
-
--(NSURL *)getTemplateURLFromForum : (AwfulForum *)forum;
-- (NSString *)renderWithPageDataController:(AwfulPageDataController *)dataController;
-- (NSString *)renderWithPageDataController:(AwfulPageDataController *)dataController displayAllPosts : (BOOL)displayAllPosts;
+- (NSString *)renderWithPageInfo:(PageParsedInfo *)pageInfo displayAllPosts:(BOOL)displayAllPosts;
 
 @end
