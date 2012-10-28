@@ -18,32 +18,6 @@
     [AwfulThread deleteAllMatchingPredicate:@"forum == %@ AND isBookmarked == NO", forum];
 }
 
-+ (NSArray *)bookmarkedThreads
-{
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[AwfulThread entityName]];
-    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isBookmarked==YES"];
-    [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
-    [fetchRequest setPredicate:predicate];
-    
-    NSError *error = nil;
-    NSArray *threads = [[AwfulDataStack sharedDataStack].context executeFetchRequest:fetchRequest
-                                                                               error:&error];
-    if (!threads) {
-        NSLog(@"failed to load threads %@", error);
-        return nil;
-    }
-    return threads;
-}
-
-+ (void)removeBookmarkedThreads
-{
-    NSArray *threads = [AwfulThread bookmarkedThreads];
-    for(AwfulThread *thread in threads) {
-        [thread.managedObjectContext deleteObject:thread];
-    }
-}
-
 - (NSString *)firstIconName
 {
     NSString *basename = [[self.threadIconImageURL lastPathComponent] stringByDeletingPathExtension];
@@ -70,7 +44,7 @@
 {
     NSMutableArray *threads = [[NSMutableArray alloc] init];
     NSMutableDictionary *existingThreads = [NSMutableDictionary new];
-    for (AwfulThread *thread in [self bookmarkedThreads]) {
+    for (AwfulThread *thread in [self fetchAll]) {
         existingThreads[thread.threadID] = thread;
     }
     

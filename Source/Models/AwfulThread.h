@@ -10,9 +10,6 @@
 
 @interface AwfulThread : _AwfulThread
 
-+ (NSArray *)bookmarkedThreads;
-+ (void)removeBookmarkedThreads;
-
 @property (readonly, nonatomic) NSString *firstIconName;
 @property (readonly, nonatomic) NSString *secondIconName;
 
