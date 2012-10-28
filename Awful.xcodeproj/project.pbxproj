@@ -486,7 +486,9 @@
 		8C2D931D16231BFE00DF604A /* downArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C2D931716231BFE00DF604A /* downArrow.png */; };
 		8C2D931F16231BFE00DF604A /* forumsListGrey.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C2D931916231BFE00DF604A /* forumsListGrey.png */; };
 		8C2D932116231BFE00DF604A /* load.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C2D931B16231BFE00DF604A /* load.png */; };
+		8C4141A9163B77880048942F /* postActionsYospos.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C4141A8163B77880048942F /* postActionsYospos.png */; };
 		8C48EA1E159BC2AC00A59691 /* AwfulFetchedTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48EA1D159BC2AC00A59691 /* AwfulFetchedTableViewController.m */; };
+		8C7E9C60163B73B200E6FE3C /* default-219.css in Resources */ = {isa = PBXBuildFile; fileRef = 8C7E9C5F163B73B200E6FE3C /* default-219.css */; };
 		8C9B02C51623630F00676B98 /* downArrowDark.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B02BF1623630F00676B98 /* downArrowDark.png */; };
 		8C9B02C71623630F00676B98 /* forumsListGreyDark.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B02C11623630F00676B98 /* forumsListGreyDark.png */; };
 		8C9B02C91623630F00676B98 /* loadDark.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B02C31623630F00676B98 /* loadDark.png */; };
@@ -892,8 +894,10 @@
 		8C2D931716231BFE00DF604A /* downArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = downArrow.png; sourceTree = "<group>"; };
 		8C2D931916231BFE00DF604A /* forumsListGrey.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = forumsListGrey.png; sourceTree = "<group>"; };
 		8C2D931B16231BFE00DF604A /* load.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = load.png; sourceTree = "<group>"; };
+		8C4141A8163B77880048942F /* postActionsYospos.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = postActionsYospos.png; sourceTree = "<group>"; };
 		8C48EA1C159BC2AC00A59691 /* AwfulFetchedTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFetchedTableViewController.h; sourceTree = "<group>"; };
 		8C48EA1D159BC2AC00A59691 /* AwfulFetchedTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulFetchedTableViewController.m; sourceTree = "<group>"; };
+		8C7E9C5F163B73B200E6FE3C /* default-219.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "default-219.css"; sourceTree = "<group>"; };
 		8C9B02BF1623630F00676B98 /* downArrowDark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = downArrowDark.png; path = Resources/images/downArrowDark.png; sourceTree = SOURCE_ROOT; };
 		8C9B02C11623630F00676B98 /* forumsListGreyDark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = forumsListGreyDark.png; path = Resources/images/forumsListGreyDark.png; sourceTree = SOURCE_ROOT; };
 		8C9B02C31623630F00676B98 /* loadDark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = loadDark.png; path = Resources/images/loadDark.png; sourceTree = SOURCE_ROOT; };
@@ -1776,6 +1780,7 @@
 				8CCD4CC715B497A800E5893B /* default.css */,
 				8CCD4CC515B497A800E5893B /* awful.js */,
 				8CCD4CC815B497A800E5893B /* jquery.js */,
+				8C7E9C5F163B73B200E6FE3C /* default-219.css */,
 				8CCD4CCC15B497A800E5893B /* salr.js */,
 				8CCD4CC915B497A800E5893B /* posts.html */,
 				1C3CC797162876AE00088AA8 /* adminstar.png */,
@@ -1822,6 +1827,7 @@
 				8CCD524215B783FC00E5893B /* forum-arrow-down.png */,
 				8CCD524315B783FC00E5893B /* forum-arrow-down@2x.png */,
 				8CCD524415B783FC00E5893B /* forum-arrow-right.png */,
+				8C4141A8163B77880048942F /* postActionsYospos.png */,
 				8CCD524515B783FC00E5893B /* forum-arrow-right@2x.png */,
 				8C9B02C11623630F00676B98 /* forumsListGreyDark.png */,
 				8CCD524D15B783FC00E5893B /* icon_arrow_left.png */,
@@ -2641,6 +2647,8 @@
 				1CAEDB5816377A2C001F5F04 /* tcc-weed.png in Resources */,
 				1CAEDB5A16377A35001F5F04 /* tg-d20.png in Resources */,
 				1CAEDB5C16377A43001F5F04 /* ycs-achieve.png in Resources */,
+				8C7E9C60163B73B200E6FE3C /* default-219.css in Resources */,
+				8C4141A9163B77880048942F /* postActionsYospos.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

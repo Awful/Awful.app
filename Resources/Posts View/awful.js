@@ -49,4 +49,8 @@ $('document').ready ( function() {
     if( $('.older-posts').length ) {
         $('body').addClass('unreadPosts');
     }
+<<<<<<< HEAD
  });
+=======
+});
+>>>>>>> YOSPOS-theme
