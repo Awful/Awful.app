@@ -12,6 +12,7 @@ const struct AwfulThreadAttributes AwfulThreadAttributes = {
 	.isSticky = @"isSticky",
 	.lastPostAuthorName = @"lastPostAuthorName",
 	.lastPostDate = @"lastPostDate",
+	.numberOfPages = @"numberOfPages",
 	.seen = @"seen",
 	.starCategory = @"starCategory",
 	.stickyIndex = @"stickyIndex",
@@ -77,6 +78,10 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 	}
 	if ([key isEqualToString:@"isStickyValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"isSticky"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+	}
+	if ([key isEqualToString:@"numberOfPagesValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"numberOfPages"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 	}
 	if ([key isEqualToString:@"seenValue"]) {
@@ -256,6 +261,32 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 
 @dynamic lastPostDate;
 
+
+
+
+
+
+@dynamic numberOfPages;
+
+
+
+- (int32_t)numberOfPagesValue {
+	NSNumber *result = [self numberOfPages];
+	return [result intValue];
+}
+
+- (void)setNumberOfPagesValue:(int32_t)value_ {
+	[self setNumberOfPages:[NSNumber numberWithInt:value_]];
+}
+
+- (int32_t)primitiveNumberOfPagesValue {
+	NSNumber *result = [self primitiveNumberOfPages];
+	return [result intValue];
+}
+
+- (void)setPrimitiveNumberOfPagesValue:(int32_t)value_ {
+	[self setPrimitiveNumberOfPages:[NSNumber numberWithInt:value_]];
+}
 
 
 

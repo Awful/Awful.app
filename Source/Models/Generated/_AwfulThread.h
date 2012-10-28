@@ -13,6 +13,7 @@ extern const struct AwfulThreadAttributes {
 	__unsafe_unretained NSString *isSticky;
 	__unsafe_unretained NSString *lastPostAuthorName;
 	__unsafe_unretained NSString *lastPostDate;
+	__unsafe_unretained NSString *numberOfPages;
 	__unsafe_unretained NSString *seen;
 	__unsafe_unretained NSString *starCategory;
 	__unsafe_unretained NSString *stickyIndex;
@@ -36,6 +37,7 @@ extern const struct AwfulThreadFetchedProperties {
 
 @class AwfulForum;
 @class AwfulPost;
+
 
 
 
@@ -149,6 +151,18 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 //- (BOOL)validateLastPostDate:(id*)value_ error:(NSError**)error_;
+
+
+
+
+@property (nonatomic, strong) NSNumber* numberOfPages;
+
+
+@property int32_t numberOfPagesValue;
+- (int32_t)numberOfPagesValue;
+- (void)setNumberOfPagesValue:(int32_t)value_;
+
+//- (BOOL)validateNumberOfPages:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -354,6 +368,15 @@ extern const struct AwfulThreadFetchedProperties {
 
 - (NSDate*)primitiveLastPostDate;
 - (void)setPrimitiveLastPostDate:(NSDate*)value;
+
+
+
+
+- (NSNumber*)primitiveNumberOfPages;
+- (void)setPrimitiveNumberOfPages:(NSNumber*)value;
+
+- (int32_t)primitiveNumberOfPagesValue;
+- (void)setPrimitiveNumberOfPagesValue:(int32_t)value_;
 
 
 

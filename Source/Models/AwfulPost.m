@@ -32,6 +32,7 @@
     thread.title = pageInfo.threadTitle;
     thread.isBookmarkedValue = pageInfo.threadBookmarked;
     thread.isLockedValue = pageInfo.threadLocked;
+    thread.numberOfPagesValue = pageInfo.pagesInThread;
     
     NSArray *allPosts = [thread.posts allObjects];
     NSArray *allPostIDs = [allPosts valueForKey:@"postID"];

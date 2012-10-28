@@ -90,4 +90,14 @@
     return threads;
 }
 
+#pragma mark - _AwfulThread
+
+- (void)setTotalReplies:(NSNumber *)totalReplies
+{
+    [self willChangeValueForKey:AwfulThreadAttributes.totalReplies];
+    self.primitiveTotalReplies = totalReplies;
+    [self didChangeValueForKey:AwfulThreadAttributes.totalReplies];
+    self.numberOfPagesValue = 1 + [totalReplies integerValue] / 40;
+}
+
 @end
