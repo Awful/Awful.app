@@ -44,13 +44,14 @@
 // page     - Which page to get. First page is 1; AwfulPageNextUnread and AwfulPageLast are also
 //            available.
 // callback - A block to call after listing the posts, which takes as parameters:
-//              error    - An error on failure, or nil on success.
-//              pageInfo - The posts and other information gleaned from the page.
+//              error             - An error on failure, or nil on success.
+//              posts             - The posts gleaned from the page.
+//              advertisementHTML - The ad at the bottom of the page.
 //
 // Returns the enqueued network operation.
 - (NSOperation *)listPostsInThreadWithID:(NSString *)threadID
     onPage:(NSInteger)page
-    andThen:(void (^)(NSError *error, PageParsedInfo *pageInfo))callback;
+    andThen:(void (^)(NSError *error, NSArray *posts, NSString *advertisementHTML))callback;
 
 enum {
     AwfulPageNextUnread = -1,

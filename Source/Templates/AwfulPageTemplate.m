@@ -8,7 +8,6 @@
 
 #import "AwfulPageTemplate.h"
 #import "AwfulModels.h"
-#import "AwfulParsing.h"
 #import "AwfulSettings.h"
 #import "GRMustacheTemplate.h"
 #import "PostContext.h"
@@ -30,7 +29,7 @@ static NSURL *DefaultCSSURL()
 @interface TemplateContext : NSObject
 
 // Designated initializer.
-- (id)initWithPageInfo:(PageParsedInfo *)pageInfo overridePostRemover:(BOOL)overridePostRemover;
+- (id)initWithPosts:(NSArray *)posts overridePostRemover:(BOOL)overridePostRemover;
 
 @property (readonly, nonatomic) NSArray *javascripts;
 @property (readonly, nonatomic) NSString *salrConfig;
@@ -104,11 +103,15 @@ static NSURL *DefaultCSSURL()
     return nil;
 }
 
-- (NSString *)renderWithPageInfo:(PageParsedInfo *)pageInfo displayAllPosts:(BOOL)displayAllPosts
+- (NSString *)renderWithPosts:(NSArray *)posts
+            advertisementHTML:(NSString *)ad
+              displayAllPosts:(BOOL)displayAllPosts
 {
-    TemplateContext *context = [[TemplateContext alloc] initWithPageInfo:pageInfo
-                                                     overridePostRemover:displayAllPosts];
-    context.cssURL = [self getTemplateURLFromForumWithID:pageInfo.forumID];
+    TemplateContext *context = [[TemplateContext alloc] initWithPosts:posts
+                                                  overridePostRemover:displayAllPosts];
+    context.userAd = ad;
+    AwfulPost *post = [posts lastObject];
+    context.cssURL = [self getTemplateURLFromForumWithID:post.thread.forum.forumID];
     return [self.template renderObject:context];
 }
 
@@ -142,13 +145,13 @@ static NSURL *DefaultCSSURL()
 
 @implementation TemplateContext
 
-- (id)initWithPageInfo:(PageParsedInfo *)pageInfo overridePostRemover:(BOOL)overridePostRemover
+- (id)initWithPosts:(NSArray *)posts overridePostRemover:(BOOL)overridePostRemover
 {
     self = [super init];
     if (self)
     {
-        self.userAd = pageInfo.advertisementHTML;
-        NSInteger pagesLeft = pageInfo.pagesInThread - pageInfo.pageNumber;
+        AwfulPost *anyPost = [posts lastObject];
+        NSInteger pagesLeft = anyPost.thread.numberOfPagesValue - anyPost.threadPageValue;
         if (pagesLeft > 1) {
             self.pagesLeftNotice = [NSString stringWithFormat:@"%d pages left.", pagesLeft];
         } else if (pagesLeft == 1) {
@@ -156,13 +159,13 @@ static NSURL *DefaultCSSURL()
         } else {
             self.pagesLeftNotice = @"End of the thread. Tap to refresh.";
         }
-        NSMutableArray *posts = [NSMutableArray array];
+        NSMutableArray *renderedPosts = [NSMutableArray array];
         int currentIndex = 0;
         int numPostsAbove = [[AwfulSettings settings] loadReadPosts];
-        int firstPostIndex = [pageInfo.posts count];
-        for (NSUInteger i = 0; i < [pageInfo.posts count]; i++) {
-            PostParsedInfo *post = pageInfo.posts[i];
-            if (!post.beenSeen) {
+        int firstPostIndex = [posts count];
+        for (NSUInteger i = 0; i < [posts count]; i++) {
+            AwfulPost *post = posts[i];
+            if (!post.beenSeenValue) {
                 firstPostIndex = i;
                 break;
             }
@@ -170,16 +173,16 @@ static NSURL *DefaultCSSURL()
         int numHiddenPosts = 0;
         
         // no new posts on a page, show them all!
-        if ([pageInfo.posts count] == (NSUInteger)firstPostIndex) {
+        if ([posts count] == (NSUInteger)firstPostIndex) {
             firstPostIndex = 0;
         } else {
             firstPostIndex -= numPostsAbove;
             if (firstPostIndex < 0) firstPostIndex = 0;
         }
         
-        for (PostParsedInfo *post in pageInfo.posts) {
+        for (AwfulPost *post in posts) {
             if (currentIndex >= firstPostIndex || overridePostRemover) {
-                [posts addObject:[[PostContext alloc] initWithPostInfo:post]];
+                [renderedPosts addObject:[[PostContext alloc] initWithPost:post]];
             } else {
                 numHiddenPosts++;
             }
@@ -192,7 +195,7 @@ static NSURL *DefaultCSSURL()
                 self.postsAboveNotice = [NSString stringWithFormat:@"%d Posts Above", numHiddenPosts];
             }
         }
-        self.posts = posts;
+        self.posts = renderedPosts;
     }
     return self;
 }

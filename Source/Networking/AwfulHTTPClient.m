@@ -96,7 +96,7 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
 
 - (NSOperation *)listPostsInThreadWithID:(NSString *)threadID
     onPage:(NSInteger)page
-    andThen:(void (^)(NSError *error, PageParsedInfo *pageInfo))callback
+    andThen:(void (^)(NSError *error, NSArray *posts, NSString *advertisementHTML))callback
 {
     NSMutableDictionary *parameters = [@{ @"threadid": threadID } mutableCopy];
     if (page == AwfulPageNextUnread) parameters[@"goto"] = @"newpost";
@@ -110,10 +110,10 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
     {
         PageParsedInfo *info = [[PageParsedInfo alloc] initWithHTMLData:
                                 ConvertFromWindows1252ToUTF8(data)];
-        [AwfulPost postsCreatedOrUpdatedFromPageInfo:info];
-        if (callback) callback(nil, info);
+        NSArray *posts = [AwfulPost postsCreatedOrUpdatedFromPageInfo:info];
+        if (callback) callback(nil, posts, info.advertisementHTML);
     } failure:^(id _, NSError *error) {
-        if (callback) callback(error, nil);
+        if (callback) callback(error, nil, nil);
     }];
     [self enqueueHTTPRequestOperation:op];
     return op;

@@ -7,7 +7,7 @@
 //
 
 #import "PostContext.h"
-#import "AwfulParsing.h"
+#import "AwfulModels.h"
 #import "AwfulPost.h"
 #import "AwfulSettings.h"
 #import "TFHpple.h"
@@ -17,18 +17,18 @@
 
 static NSString *AwfulifiedPostBody(NSString *body);
 
-- (id)initWithPostInfo:(PostParsedInfo *)post
+- (id)initWithPost:(AwfulPost *)post
 {
     self = [super init];
     if (self)
     {
         _postID = post.postID;
-        _isOP = post.authorIsOriginalPoster;
+        _isOP = post.authorIsOriginalPosterValue;
         if ([[AwfulSettings settings] showAvatars]) {
-            _avatarURL = [post.authorAvatarURL absoluteString];
+            _avatarURL = post.authorAvatarURL;
         }
-        _isMod = post.authorIsAModerator;
-        _isAdmin = post.authorIsAnAdministrator;
+        _isMod = post.authorIsAModeratorValue;
+        _isAdmin = post.authorIsAnAdministratorValue;
         _posterName = post.authorName;
         _postDate = [NSDateFormatter localizedStringFromDate:post.postDate
                                                    dateStyle:NSDateFormatterMediumStyle
@@ -37,9 +37,9 @@ static NSString *AwfulifiedPostBody(NSString *body);
                                                   dateStyle:NSDateFormatterMediumStyle
                                                   timeStyle:NSDateFormatterNoStyle];
         if ([post.threadIndex integerValue] % 2) {
-            _altCSSClass = post.beenSeen ? @"seen2" : @"altcolor2";
+            _altCSSClass = post.beenSeenValue ? @"seen2" : @"altcolor2";
         } else {
-            _altCSSClass = post.beenSeen ? @"seen1" : @"altcolor1";
+            _altCSSClass = post.beenSeenValue ? @"seen1" : @"altcolor1";
         }
         _postBody = AwfulifiedPostBody(post.innerHTML);
     }

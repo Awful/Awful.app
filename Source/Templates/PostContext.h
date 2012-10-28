@@ -7,12 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
-@class PostParsedInfo;
+@class AwfulPost;
 
 @interface PostContext : NSObject
 
 // Designated initializer.
-- (id)initWithPostInfo:(PostParsedInfo *)post;
+- (id)initWithPost:(AwfulPost *)post;
 
 @property (strong) NSString *postID;
 @property (assign) BOOL isOP;

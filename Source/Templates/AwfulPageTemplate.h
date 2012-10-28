@@ -7,10 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-@class PageParsedInfo;
 
 @interface AwfulPageTemplate : NSObject
 
-- (NSString *)renderWithPageInfo:(PageParsedInfo *)pageInfo displayAllPosts:(BOOL)displayAllPosts;
+- (NSString *)renderWithPosts:(NSArray *)posts
+            advertisementHTML:(NSString *)ad
+              displayAllPosts:(BOOL)displayAllPosts;
 
 @end

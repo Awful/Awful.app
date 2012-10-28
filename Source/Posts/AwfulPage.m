@@ -38,7 +38,9 @@
 
 @property (copy, nonatomic) NSString *postIDScrollDestination;
 
-@property (nonatomic) PageParsedInfo *pageInfo;
+@property (copy, nonatomic) NSArray *posts;
+
+@property (copy, nonatomic) NSString *advertisementHTML;
 
 @property (nonatomic) BOOL shouldScrollToBottom;
 
@@ -119,26 +121,27 @@
     self.shouldScrollToBottom = _destinationType == AwfulPageDestinationTypeLast;
 }
 
-- (void)setPageInfo:(PageParsedInfo *)pageInfo
+- (void)setPosts:(NSArray *)posts
 {
-    if (_pageInfo == pageInfo) return;
-    _pageInfo = pageInfo;
-    self.currentPage = pageInfo.pageNumber;
-    self.numberOfPages = pageInfo.pagesInThread;
-    self.thread.title = pageInfo.threadTitle;
+    if (_posts == posts) return;
+    _posts = [posts copy];
+    AwfulPost *anyPost = [posts lastObject];
+    self.currentPage = anyPost.threadPageValue;
+    self.numberOfPages = anyPost.thread.numberOfPagesValue;
+    self.thread.title = anyPost.thread.title;
     self.titleLabel.text = self.thread.title;
     
-    NSUInteger firstUnreadPostIndex = [pageInfo.posts count];
+    NSUInteger firstUnreadPostIndex = [posts count];
     NSString *firstUnreadPostID;
-    for (NSUInteger i = 0; i < [pageInfo.posts count]; i++) {
-        PostParsedInfo *post = pageInfo.posts[i];
-        if (!post.beenSeen) {
+    for (NSUInteger i = 0; i < [posts count]; i++) {
+        AwfulPost *post = posts[i];
+        if (!post.beenSeenValue) {
             firstUnreadPostIndex = i;
             firstUnreadPostID = post.postID;
             break;
         }
     }
-    if (firstUnreadPostIndex < [pageInfo.posts count]) {
+    if (firstUnreadPostIndex < [posts count]) {
         self.postIDScrollDestination = firstUnreadPostID;
         self.shouldScrollToBottom = NO;
     } else {
@@ -149,7 +152,7 @@
         self.shouldScrollToBottom = NO;
     }
     
-    int numNewPosts = firstUnreadPostIndex - [pageInfo.posts count];
+    int numNewPosts = firstUnreadPostIndex - [posts count];
     if (numNewPosts > 0 && (self.destinationType == AwfulPageDestinationTypeNewpost || self.currentPage == self.numberOfPages)) {
         int unreadPosts = [self.thread.totalUnreadPosts intValue];
         if(unreadPosts != -1) {
@@ -162,7 +165,9 @@
         [[AwfulDataStack sharedDataStack] save];
     }
     AwfulPageTemplate *template = [AwfulPageTemplate new];
-    NSString *html = [template renderWithPageInfo:pageInfo displayAllPosts:NO];
+    NSString *html = [template renderWithPosts:posts
+                             advertisementHTML:self.advertisementHTML
+                               displayAllPosts:NO];
     [self.webView loadHTMLString:html baseURL:[[NSBundle mainBundle] resourceURL]];
     self.webView.tag = self.currentPage;
     [[NSNotificationCenter defaultCenter] postNotificationName:AwfulPageDidLoadNotification
@@ -189,7 +194,7 @@
 
 - (IBAction)hardRefresh
 {
-    if ([self.pageInfo.posts count] == 40) {
+    if ([self.posts count] == 40) {
         self.destinationType = AwfulPageDestinationTypeSpecific;
         [self refresh];
     } else {
@@ -214,7 +219,7 @@
     else if (self.destinationType == AwfulPageDestinationTypeNewpost) pageNum = AwfulPageNextUnread;
     id op = [[AwfulHTTPClient client] listPostsInThreadWithID:self.thread.threadID
                                                        onPage:pageNum
-                                                      andThen:^(NSError *error, PageParsedInfo *pageInfo)
+                                                      andThen:^(NSError *error, NSArray *posts, NSString *advertisementHTML)
     {
         if (error) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed"
@@ -225,12 +230,12 @@
             [alert show];
             return;
         }
-        self.pageInfo = pageInfo;
+        self.advertisementHTML = advertisementHTML;
+        self.posts = posts;
         if (self.destinationType == AwfulPageDestinationTypeSpecific) {
             self.currentPage = pageNum;
         }
         [self updatePagesLabel];
-        [self updateBookmarked];
     }];
     self.networkOperation = op;
 }
@@ -240,7 +245,7 @@
     [self.networkOperation cancel];
     id op = [[AwfulHTTPClient client] listPostsInThreadWithID:self.thread.threadID
                                                        onPage:AwfulPageLast
-                                                      andThen:^(NSError *error, PageParsedInfo *pageInfo)
+                                                      andThen:^(NSError *error, NSArray *posts, NSString *advertisementHTML)
     {
         if (error) {            
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed"
@@ -251,9 +256,9 @@
             [alert show];
             return;
         }
-        self.pageInfo = pageInfo;
+        self.advertisementHTML = advertisementHTML;
+        self.posts = posts;
         [self updatePagesLabel];
-        [self updateBookmarked];
     }];
     self.networkOperation = op;
 }
@@ -261,7 +266,9 @@
 - (void)loadOlderPosts
 {
     AwfulPageTemplate *template = [AwfulPageTemplate new];
-    NSString *html = [template renderWithPageInfo:self.pageInfo displayAllPosts:YES];
+    NSString *html = [template renderWithPosts:self.posts
+                             advertisementHTML:self.advertisementHTML
+                               displayAllPosts:YES];
     [self.webView loadHTMLString:html baseURL:[[NSBundle mainBundle] resourceURL]];
 }
 
@@ -360,11 +367,6 @@
     [self.pageBar.backForwardControl setEnabled:self.currentPage != self.numberOfPages
                               forSegmentAtIndex:1];
     [self.pageBar.actionsComposeControl setEnabled:self.thread.canReply forSegmentAtIndex:1];
-}
-
-- (void)updateBookmarked
-{
-    self.thread.isBookmarkedValue = self.pageInfo.threadBookmarked;
 }
 
 - (IBAction)tappedPagesSegment:(id)sender
@@ -555,19 +557,13 @@
 
 - (void)showPostActions:(NSString *)postID fromRect:(CGRect)rect inView:(UIView *)view
 {
-    PostParsedInfo *postInfo;
-    for (PostParsedInfo *post in self.pageInfo.posts) {
-        if ([post.postID isEqualToString:postID]) {
-            postInfo = post;
-            break;
-        }
-    }
-    NSString *title = [NSString stringWithFormat:@"%@'s Post", postInfo.authorName];
-    if ([postInfo.authorName isEqualToString:[AwfulSettings settings].currentUser.username]) {
+    AwfulPost *post = [AwfulPost firstMatchingPredicate:@"postID = %@", postID];
+    NSString *title = [NSString stringWithFormat:@"%@'s Post", post.authorName];
+    if ([post.authorName isEqualToString:[AwfulSettings settings].currentUser.username]) {
         title = @"Your Post";
     }
     AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:title];
-    if (postInfo.editable) {
+    if (post.editableValue) {
         [sheet addButtonWithTitle:@"Edit" block:^{
             [[AwfulHTTPClient client] getTextOfPostWithID:postID
                                                   andThen:^(NSError *error, NSString *text)
@@ -581,7 +577,7 @@
                     return;
                 }
                 AwfulReplyViewController *reply = [AwfulReplyViewController new];
-                reply.post = postInfo;
+                reply.post = post;
                 reply.startingText = text;
                 reply.page = self;
                 UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:reply];
@@ -589,7 +585,7 @@
             }];
         }];
     }
-    if (!self.pageInfo.threadLocked) {
+    if (!self.thread.isLockedValue) {
         [sheet addButtonWithTitle:@"Quote" block:^{
             [[AwfulHTTPClient client] quoteTextOfPostWithID:postID
                                                     andThen:^(NSError *error, NSString *quotedText)
@@ -619,7 +615,7 @@
     }];
     [sheet addButtonWithTitle:@"Mark Read to Here" block:^{
         [[AwfulHTTPClient client] markThreadWithID:self.thread.threadID
-                               readUpToPostAtIndex:postInfo.threadIndex
+                               readUpToPostAtIndex:[@(post.threadIndexValue) stringValue]
                                            andThen:^(NSError *error)
          {
              if (error) {
