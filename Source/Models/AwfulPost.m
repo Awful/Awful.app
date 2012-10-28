@@ -11,6 +11,7 @@
 #import "AwfulForum.h"
 #import "AwfulParsing.h"
 #import "AwfulThread.h"
+#import "NSManagedObject+Awful.h"
 
 @implementation AwfulPost
 

@@ -10,6 +10,7 @@
 #import "AwfulCategory.h"
 #import "AwfulDataStack.h"
 #import "AwfulThread.h"
+#import "NSManagedObject+Awful.h"
 
 @implementation AwfulForum
 

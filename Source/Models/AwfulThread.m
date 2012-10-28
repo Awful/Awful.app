@@ -9,6 +9,7 @@
 #import "AwfulThread.h"
 #import "AwfulDataStack.h"
 #import "AwfulParsing.h"
+#import "NSManagedObject+Awful.h"
 
 @implementation AwfulThread
 
