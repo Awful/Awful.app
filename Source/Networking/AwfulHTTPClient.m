@@ -13,6 +13,7 @@
 #import "AwfulPageTemplate.h"
 #import "AwfulParsing.h"
 #import "AwfulSettings.h"
+#import "NSManagedObject+Awful.h"
 
 @implementation AwfulHTTPClient
 

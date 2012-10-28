@@ -22,6 +22,7 @@
 #import "AwfulWebViewDelegate.h"
 #import "MWPhoto.h"
 #import "MWPhotoBrowser.h"
+#import "NSManagedObject+Awful.h"
 #import "SVProgressHUD.h"
 
 @interface AwfulPage () <AwfulWebViewDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate>
