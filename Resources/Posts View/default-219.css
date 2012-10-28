@@ -127,17 +127,8 @@ article.seen1, article.seen2 {
     background-color: #0b2d0b;
 }
 
-
 article section .bbc-spoiler, article section .bbc-spoiler li {
-    background: #57ff57;
-}
-
-article section .bbc-spoiler a:link, article section .bbc-spoiler a:visited, article section .bbc-spoiler a:active {
-    color: #57ff57;
-}
-
-article section .bbc-spoiler:hover a:link, article section .bbc-spoiler:hover a:visited, article section .bbc-spoiler:hover a:active {
-    color: #000;
+    color: black;
 }
 
 /* iPhone - Post body */
