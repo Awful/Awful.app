@@ -44,3 +44,9 @@ function imageURLAtPosition(x, y) {
               .not('img[src*=http://fi.somethingawful.com/images/smilies/]');
     return !!img[0] ? img[0].src : null;
 }
+
+$('document').ready ( function() {
+    if( $('.older-posts').length ) {
+        $('body').addClass('unreadPosts');
+    }
+ });
