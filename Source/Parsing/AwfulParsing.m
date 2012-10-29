@@ -9,6 +9,15 @@
 #import "AwfulParsing.h"
 #import "AwfulThread.h"
 #import "NSURL+QueryDictionary.h"
+#import "TFHpple.h"
+#import "XPathQuery.h"
+
+
+// XPath boilerplate to handle HTML class attribute.
+//
+//   NSString *xpath = @"//div[" HAS_CLASS(breadcrumbs) "]";
+#define HAS_CLASS(name) "contains(concat(' ', normalize-space(@class), ' '), ' " #name " ')"
+
 
 @interface ParsedInfo ()
 
@@ -110,6 +119,8 @@
 
 @property (copy, nonatomic) NSString *bookmark;
 
+@property (copy, nonatomic) NSString *text;
+
 @end
 
 
@@ -126,6 +137,7 @@
     if (bookmark) {
         self.bookmark = [bookmark objectForKey:@"value"];
     }
+    self.text = [[document searchForSingle:@"//textarea[@name = 'message']"] content];
 }
 
 @end

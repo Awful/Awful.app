@@ -7,15 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "TFHpple.h"
-#import "TFHppleElement.h"
-#import "XPathQuery.h"
-
-// XPath boilerplate to handle HTML class attribute.
-//
-//   NSString *xpath = @"//div[" HAS_CLASS(breadcrumbs) "]";
-#define HAS_CLASS(name) "contains(concat(' ', normalize-space(@class), ' '), ' " #name " ')"
-
 
 @interface ParsedInfo : NSObject
 
@@ -45,6 +36,8 @@
 @property (readonly, copy, nonatomic) NSString *formCookie;
 
 @property (readonly, copy, nonatomic) NSString *bookmark;
+
+@property (readonly, copy, nonatomic) NSString *text;
 
 @end
 

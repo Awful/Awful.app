@@ -261,9 +261,9 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
                                                                success:^(id _, id data)
     {
-        TFHpple *base = [[TFHpple alloc] initWithHTMLData:ConvertFromWindows1252ToUTF8(data)];
-        TFHppleElement *textarea = [base searchForSingle:@"//textarea[@name='message']"];
-        if (callback) callback(nil, [textarea content]);
+        ReplyFormParsedInfo *formInfo = [[ReplyFormParsedInfo alloc] initWithHTMLData:
+                                         ConvertFromWindows1252ToUTF8(data)];
+        if (callback) callback(nil, formInfo.text);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (callback) callback(error, nil);
     }];
@@ -283,16 +283,15 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
                                                                success:^(id _, id data)
     {
         NSMutableDictionary *moreParameters = [@{
-                                               @"action": @"updatepost",
-                                               @"submit": @"Save Changes",
-                                               @"postid": postID,
-                                               @"message": text
-                                               } mutableCopy];
-        TFHpple *pageData = [[TFHpple alloc] initWithHTMLData:ConvertFromWindows1252ToUTF8(data)];
-        TFHppleElement *bookmarkElement = [pageData searchForSingle:
-                                           @"//input[@name='bookmark' and @checked='checked']"];
-        if (bookmarkElement) {
-            moreParameters[@"bookmark"] = [bookmarkElement objectForKey:@"value"];
+             @"action": @"updatepost",
+             @"submit": @"Save Changes",
+             @"postid": postID,
+             @"message": text
+         } mutableCopy];
+        ReplyFormParsedInfo *formInfo = [[ReplyFormParsedInfo alloc] initWithHTMLData:
+                                         ConvertFromWindows1252ToUTF8(data)];
+        if (formInfo.bookmark) {
+            moreParameters[@"bookmark"] = formInfo.bookmark;
         }
         NSURLRequest *anotherRequest = [self requestWithMethod:@"POST"
                                                           path:@"editpost.php"
