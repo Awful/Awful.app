@@ -359,7 +359,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
     UILongPressGestureRecognizer *press = [[UILongPressGestureRecognizer alloc] initWithTarget:self
                                                                                         action:@selector(heldPost:)];
     press.delegate = self;
