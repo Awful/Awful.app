@@ -620,7 +620,7 @@
                 }
                 AwfulReplyViewController *reply = [AwfulReplyViewController new];
                 reply.thread = self.thread;
-                reply.startingText = quotedText;
+                reply.startingText = [quotedText stringByAppendingString:@"\n\n"];
                 reply.page = self;
                 UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:reply];
                 [self presentViewController:nav animated:YES completion:nil];
