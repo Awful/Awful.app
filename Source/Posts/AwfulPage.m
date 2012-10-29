@@ -41,6 +41,8 @@
 
 @property (copy, nonatomic) NSArray *posts;
 
+@property (nonatomic) BOOL didJustMarkAsReadToHere;
+
 @property (copy, nonatomic) NSString *advertisementHTML;
 
 @property (nonatomic) BOOL shouldScrollToBottom;
@@ -211,6 +213,7 @@
 
 - (void)loadPageNum:(NSUInteger)pageNum
 {
+    [self markPostsAsBeenSeen];
     // I guess the error callback doesn't necessarily get called when a network operation is 
     // cancelled, so clear the HUD when we cancel the network operation.
     [SVProgressHUD dismiss];
@@ -243,6 +246,7 @@
 
 - (void)loadLastPage
 {
+    [self markPostsAsBeenSeen];
     [self.networkOperation cancel];
     id op = [[AwfulHTTPClient client] listPostsInThreadWithID:self.thread.threadID
                                                        onPage:AwfulPageLast
@@ -262,6 +266,34 @@
         [self updatePagesLabel];
     }];
     self.networkOperation = op;
+}
+
+- (void)markPostsAsBeenSeen
+{
+    if (self.didJustMarkAsReadToHere) {
+        self.didJustMarkAsReadToHere = NO;
+        return;
+    }
+    AwfulPost *lastPost = [self.posts lastObject];
+    if (!lastPost || lastPost.beenSeenValue) return;
+    [self markPostsAsBeenSeenUpToPost:lastPost];
+}
+
+- (void)markPostsAsBeenSeenUpToPost:(AwfulPost *)post
+{
+    NSUInteger lastSeen = [self.posts indexOfObject:post];
+    if (lastSeen == NSNotFound) return;
+    for (NSUInteger i = 0; i < [self.posts count]; i++) {
+        [self.posts[i] setBeenSeenValue:i <= lastSeen];
+    }
+    NSInteger readPosts = post.threadIndexValue - 1;
+    if (self.thread.totalRepliesValue < readPosts) {
+        // This can happen if new replies appear in between times we parse the total number of
+        // replies in the thread.
+        self.thread.totalRepliesValue = readPosts;
+    }
+    self.thread.totalUnreadPostsValue = self.thread.totalRepliesValue - readPosts;
+    [[AwfulDataStack sharedDataStack] save];
 }
 
 - (void)loadOlderPosts
@@ -343,7 +375,7 @@
         NSURL *blank = [NSURL URLWithString:@"about:blank"];
         [self.webView loadRequest:[NSURLRequest requestWithURL:blank]];
     }
-    
+    [self markPostsAsBeenSeen];
     [super viewDidDisappear:animated];
 }
 
@@ -625,6 +657,10 @@
                  alert.message = [error localizedDescription];
                  [alert addButtonWithTitle:@"Alright"];
                  [alert show];
+             } else {
+                 self.didJustMarkAsReadToHere = YES;
+                 NSUInteger postIndex = [self.posts indexOfObject:post];
+                 if (postIndex != NSNotFound) [self markPostsAsBeenSeenUpToPost:post];
              }
          }];
     }];
