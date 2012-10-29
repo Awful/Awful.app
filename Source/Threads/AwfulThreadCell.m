@@ -65,15 +65,18 @@
 
 - (void)setRating:(CGFloat)rating
 {
-    if (rating == _rating) return;
     _rating = rating;
     self.ratingImageView.hidden = rating < 1;
-    if (self.ratingImageView.hidden) return;
-    NSInteger ratingImageNumber = lroundf(rating);
-    ratingImageNumber = MAX(1, ratingImageNumber);
-    ratingImageNumber = MIN(ratingImageNumber, 5);
-    self.ratingImageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"rating%d.png",
-                                                      ratingImageNumber]];
+    if (self.ratingImageView.hidden) {
+        self.ratingImageView.image = nil;
+    } else {
+        NSInteger ratingImageNumber = lroundf(rating);
+        ratingImageNumber = MAX(1, ratingImageNumber);
+        ratingImageNumber = MIN(ratingImageNumber, 5);
+        self.ratingImageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"rating%d.png",
+                                                          ratingImageNumber]];
+    }
+    [self setNeedsLayout];
 }
 
 - (void)setClosed:(BOOL)closed
