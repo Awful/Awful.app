@@ -53,7 +53,7 @@ file licenses do |t|
   end
   
   File.open("Resources/licenses.html", "w") do |out|
-    projects = licenses.keys.sort
+    projects = licenses.keys.sort { |a, b| a.downcase <=> b.downcase || a <=> b }
     # DATA doesn't work in Rakefiles :-(
     template = File.open(__FILE__).read.split(/^__END__\s*/, 2).last
     html = ERB.new(template, 0, "%<>")
