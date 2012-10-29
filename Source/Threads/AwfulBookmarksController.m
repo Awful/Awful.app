@@ -1,5 +1,5 @@
 //
-//  BookmarksController.m
+//  AwfulBookmarksController.m
 //  Awful
 //
 //  Created by Sean Berry on 7/26/10.
@@ -12,6 +12,7 @@
 #import "AwfulDataStack.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
+#import "NSManagedObject+Awful.h"
 
 @implementation AwfulBookmarksController
 

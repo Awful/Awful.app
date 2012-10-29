@@ -1,5 +1,5 @@
 //
-//  BookmarksController.h
+//  AwfulBookmarksController.h
 //  Awful
 //
 //  Created by Sean Berry on 7/26/10.
