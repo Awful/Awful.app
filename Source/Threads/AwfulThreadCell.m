@@ -134,7 +134,10 @@
     CGRect detailTextLabelFrame = self.detailTextLabel.frame;
     static CGFloat const tagRightMargin = 9;
     CGFloat textOriginX = CGRectGetMaxX(self.imageView.frame) + tagRightMargin;
-    CGFloat badgeViewEffectiveWidth = (self.editing || self.showingDeleteConfirmation) ? tagRightMargin : 70;
+    CGFloat badgeViewEffectiveWidth = 70;
+    if (self.editing || self.showingDeleteConfirmation || !self.showsUnread) {
+        badgeViewEffectiveWidth = tagRightMargin;
+    }
     CGSize constraint = CGSizeMake(cellSize.width - textOriginX - badgeViewEffectiveWidth,
                                    58);
     CGSize textSize = [self.textLabel.text sizeWithFont:self.textLabel.font
