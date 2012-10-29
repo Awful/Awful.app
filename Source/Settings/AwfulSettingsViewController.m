@@ -16,6 +16,7 @@
 #import "AwfulSettings.h"
 #import "AwfulSettingsChoiceViewController.h"
 #import "AwfulUser.h"
+#import "NSManagedObject+Awful.h"
 
 @interface AwfulSettingsViewController () <UIAlertViewDelegate>
 
