@@ -39,11 +39,13 @@
 - (void)testPostInfo
 {
     PageParsedInfo *info = [[PageParsedInfo alloc] initWithHTMLData:self.fixture];
+    NSDateFormatter *formatter = [NSDateFormatter new];
     
     PostParsedInfo *first = info.posts[0];
     STAssertEqualObjects(first.postID, @"407741839", nil);
     STAssertEqualObjects(first.threadIndex, @"161", nil);
-    STAssertEqualObjects(first.postDate, @"Sep 20, 2012  8:16 AM", nil);
+    [formatter setDateFormat:@"MMM dd, yyyy  h:mm a"];
+    STAssertEqualObjects([formatter stringFromDate:first.postDate], @"Sep 20, 2012  8:16 AM", nil);
     STAssertTrue(first.beenSeen, nil);
     STAssertFalse(first.editable, nil);
     
@@ -83,7 +85,8 @@
     PostParsedInfo *last = [info.posts lastObject];
     STAssertEqualObjects(last.postID, @"407769816", nil);
     STAssertEqualObjects(last.threadIndex, @"200", nil);
-    STAssertEqualObjects(last.authorRegDate, @"Aug 25, 2009", nil);
+    [formatter setDateFormat:@"MMM dd, yyyy"];
+    STAssertEqualObjects([formatter stringFromDate:last.authorRegDate], @"Aug 25, 2009", nil);
     STAssertFalse(last.beenSeen, nil);
     STAssertFalse(last.editable, nil);
 }
