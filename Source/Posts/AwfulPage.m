@@ -14,6 +14,7 @@
 #import "AwfulModels.h"
 #import "AwfulPageBar.h"
 #import "AwfulPageTemplate.h"
+#import "AwfulPostsView.h"
 #import "AwfulReplyViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulSpecificPageViewController.h"
@@ -339,7 +340,7 @@
     [self.pageBar.actionsComposeControl addTarget:self
                                            action:@selector(tappedActionsSegment:)
                                  forControlEvents:UIControlEventValueChanged];
-    [self.view addSubview:self.pageBar];
+//    [self.view addSubview:self.pageBar];
     
     self.webView = [[UIWebView alloc] initWithFrame:webFrame];
     self.webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -347,7 +348,11 @@
     self.webViewDelegateWrapper = [AwfulWebViewDelegateWrapper delegateWrappingDelegate:self];
     self.webView.delegate = self.webViewDelegateWrapper;
     self.webView.dataDetectorTypes = UIDataDetectorTypeNone;
-    [self.view addSubview:self.webView];
+//    [self.view addSubview:self.webView];
+    
+    CGRect viewFrame = (CGRect){ .size = self.view.bounds.size };
+    AwfulPostsView *view = [[AwfulPostsView alloc] initWithFrame:viewFrame];
+    [self.view addSubview:view];
 }
 
 - (UIWebView *)webView

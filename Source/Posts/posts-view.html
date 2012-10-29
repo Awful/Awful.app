@@ -1,0 +1,13 @@
+<!doctype html>
+<meta charset=utf-8>
+
+<h1>AwfulPostsView</h1>
+
+<script id=template type=text/html>
+<a href=about:blank>click {{dis}}</a>
+</script>
+
+<script src=posts-view.js></script>
+<script>
+$(function(){ $('h1').html($('#template').mustache({dis: 'my stache'})) })
+</script>
