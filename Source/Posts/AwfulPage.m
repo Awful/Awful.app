@@ -226,10 +226,10 @@
                                                       andThen:^(NSError *error, NSArray *posts, NSString *advertisementHTML)
     {
         if (error) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed"
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Could Not Load Page"
                                                             message:[error localizedDescription]
                                                            delegate:nil
-                                                  cancelButtonTitle:@"Ok"
+                                                  cancelButtonTitle:@"Uh Huh"
                                                   otherButtonTitles:nil];
             [alert show];
             return;
@@ -253,10 +253,10 @@
                                                       andThen:^(NSError *error, NSArray *posts, NSString *advertisementHTML)
     {
         if (error) {            
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed"
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Could Not Load Last Page"
                                                             message:[error localizedDescription]
                                                            delegate:nil
-                                                  cancelButtonTitle:@"Ok"
+                                                  cancelButtonTitle:@"Thanks For The Effort"
                                                   otherButtonTitles:nil];
             [alert show];
             return;

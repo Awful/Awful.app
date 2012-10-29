@@ -73,10 +73,10 @@
     id op = [[AwfulHTTPClient client] learnUserInfoAndThen:^(NSError *error, NSDictionary *userInfo)
     {
         if (error) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed"
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Could Not Load User Info"
                                                             message:[error localizedDescription]
                                                            delegate:nil
-                                                  cancelButtonTitle:@"OK"
+                                                  cancelButtonTitle:@"Shucks"
                                                   otherButtonTitles:nil];
             [alert show];
         } else {
