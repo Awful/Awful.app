@@ -139,32 +139,13 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
     return op;
 }
 
-- (NSOperation *)bookmarkThreadWithID:(NSString *)threadID
-                              andThen:(void (^)(NSError *error))callback
-{
-    return [self addOrRemove:Add bookmarkWithThreadID:threadID andThen:callback];
-}
-
-- (NSOperation *)unbookmarkThreadWithID:(NSString *)threadID
-                                andThen:(void (^)(NSError *error))callback
-{
-    return [self addOrRemove:Remove bookmarkWithThreadID:threadID andThen:callback];
-}
-
-typedef enum {
-    Add,
-    Remove
-} AddOrRemove;
-
-static NSString * const AddOrRemoveString[] = { @"add", @"remove" };
-
-- (NSOperation *)addOrRemove:(AddOrRemove)action
-        bookmarkWithThreadID:(NSString *)threadID
-                     andThen:(void (^)(NSError *error))callback
+- (NSOperation *)setThreadWithID:(NSString *)threadID
+                    isBookmarked:(BOOL)isBookmarked
+                         andThen:(void (^)(NSError *error))callback
 {
     NSDictionary *parameters = @{
         @"json": @"1",
-        @"action": AddOrRemoveString[action],
+        @"action": isBookmarked ? @"add" : @"remove",
         @"threadid": threadID
     };
     NSURLRequest *request = [self requestWithMethod:@"POST"

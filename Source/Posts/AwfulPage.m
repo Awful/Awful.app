@@ -478,29 +478,17 @@
     }];
     NSString *bookmark = self.thread.isBookmarkedValue ? @"Unbookmark Thread" : @"Bookmark Thread";
     [sheet addButtonWithTitle:bookmark block:^{
-        if (self.thread.isBookmarkedValue) {
-            [[AwfulHTTPClient client] unbookmarkThreadWithID:self.thread.threadID
-                                                     andThen:^(NSError *error)
-             {
-                 if (error) {
-                     NSLog(@"error unbookmarking thread %@: %@", self.thread.threadID, error);
-                 } else {
-                     self.thread.isBookmarkedValue = NO;
-                     [[AwfulDataStack sharedDataStack] save];
-                 }
-             }];
-        } else {
-            [[AwfulHTTPClient client] bookmarkThreadWithID:self.thread.threadID
-                                                   andThen:^(NSError *error)
-             {
-                 if (error) {
-                     NSLog(@"error bookmarking thread %@: %@", self.thread.threadID, error);
-                 } else {
-                     self.thread.isBookmarkedValue = YES;
-                     [[AwfulDataStack sharedDataStack] save];
-                 }
-             }];
-        }
+        [[AwfulHTTPClient client] setThreadWithID:self.thread.threadID
+                                     isBookmarked:!self.thread.isBookmarkedValue
+                                          andThen:^(NSError *error)
+        {
+            if (error) {
+                NSLog(@"error %@bookmarking thread %@: %@", self.thread.isBookmarkedValue ? @"un" : @"", self.thread.threadID, error);
+            } else {
+                self.thread.isBookmarkedValue = NO;
+                [[AwfulDataStack sharedDataStack] save];
+            }
+        }];
     }];
     [sheet addCancelButtonWithTitle:@"Cancel"];
     [sheet showFromRect:rect inView:view animated:YES];

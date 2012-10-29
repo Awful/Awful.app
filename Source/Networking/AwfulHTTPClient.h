@@ -68,25 +68,17 @@ enum {
 // Returns the enqueued network operation.
 - (NSOperation *)learnUserInfoAndThen:(void (^)(NSError *error, NSDictionary *userInfo))callback;
 
-// Add a thread to the user's bookmarks.
+// Add or remove a thread from the user's bookmarks.
 //
-// threadID - The ID of the thread to add.
-// callback - A block to call after adding the thread, which takes as parameters:
-//              error - An error on failure, or nil on success.
-//
-// Returns the enqueued network operation.
-- (NSOperation *)bookmarkThreadWithID:(NSString *)threadID
-                              andThen:(void (^)(NSError *error))callback;
-
-// Remove a thread from the user's bookmarks.
-//
-// threadID - The ID of the thread to add.
-// callback - A block to call after removing the thread, which takes as parameters:
-//              error - An error on failure, or nil on success.
+// threadID     - The ID of the thread to add.
+// isBookmarked - YES if the thread should be added to the user's bookmarks, or NO otherwise.
+// callback     - A block to call after removing the thread, which takes as parameters:
+//                  error - An error on failure, or nil on success.
 //
 // Returns the enqueued network operation.
-- (NSOperation *)unbookmarkThreadWithID:(NSString *)threadID
-                                andThen:(void (^)(NSError *error))callback;
+- (NSOperation *)setThreadWithID:(NSString *)threadID
+                    isBookmarked:(BOOL)isBookmarked
+                         andThen:(void (^)(NSError *error))callback;
 
 // Get the forum hierarchy.
 //

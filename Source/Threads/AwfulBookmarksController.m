@@ -85,8 +85,9 @@
         AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
         thread.isBookmarkedValue = NO;
         [[AwfulDataStack sharedDataStack] save];
-        self.networkOperation = [[AwfulHTTPClient client] unbookmarkThreadWithID:thread.threadID
-                                                                         andThen:^(NSError *error)
+        self.networkOperation = [[AwfulHTTPClient client] setThreadWithID:thread.threadID
+                                                             isBookmarked:NO
+                                                                  andThen:^(NSError *error)
         {
             if (!error) return;
             thread.isBookmarkedValue = YES;
