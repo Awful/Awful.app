@@ -7,11 +7,17 @@
 //
 
 #import "AwfulSpecificPageViewController.h"
+#import "AwfulHTTPClient.h"
+#import "AwfulModels.h"
 #import "AwfulPage.h"
 #import "AwfulThreadListController.h"
 #import "ButtonSegmentedControl.h"
 
 @interface AwfulSpecificPageViewController () <UIPickerViewDataSource, UIPickerViewDelegate>
+
+@property (nonatomic) UIBarButtonItem *jumpToPageBarButtonItem;
+
+@property (nonatomic) ButtonSegmentedControl *firstLastSegmentedControl;
 
 @end
 
@@ -25,10 +31,12 @@
 
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
-    return self.page.numberOfPages;
+    return self.page.thread.numberOfPagesValue;
 }
 
-- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
+- (NSString *)pickerView:(UIPickerView *)pickerView
+             titleForRow:(NSInteger)row
+            forComponent:(NSInteger)component
 {
     return [NSString stringWithFormat:@"%d", row+1];
 }
@@ -52,14 +60,14 @@
     bounds.size.width = 115;
     self.firstLastSegmentedControl.bounds = bounds;
     self.firstLastSegmentedControl.target = self;
-    self.firstLastSegmentedControl.action = @selector(hitFirstLastSegment:);
+    self.firstLastSegmentedControl.action = @selector(hitFirstLastSegment);
     self.firstLastSegmentedControl.tintColor = [UIColor darkGrayColor];
     UIBarButtonItem *firstLast = [[UIBarButtonItem alloc] initWithCustomView:self.firstLastSegmentedControl];
     UIBarButtonItem *separator = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL];
     self.jumpToPageBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Jump to Page"
                                                                     style:UIBarButtonItemStyleBordered
                                                                    target:self
-                                                                   action:@selector(hitJumpToPage:)];
+                                                                   action:@selector(hitJumpToPage)];
     self.jumpToPageBarButtonItem.tintColor = [UIColor darkGrayColor];
     toolbar.items = @[ firstLast, separator, self.jumpToPageBarButtonItem ];
     [self.view addSubview:toolbar];
@@ -80,32 +88,19 @@
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
-- (IBAction)hitFirstLastSegment:(id)sender
+- (IBAction)hitFirstLastSegment
 {
     if (self.firstLastSegmentedControl.selectedSegmentIndex == 0) {
-        [self hitFirst:nil];
+        [self.page loadPage:1];
     } else if (self.firstLastSegmentedControl.selectedSegmentIndex == 1) {
-        [self hitLast:nil];
+        [self.page loadPage:AwfulPageLast];
     }
     self.firstLastSegmentedControl.selectedSegmentIndex = -1;
 }
 
-- (IBAction)hitJumpToPage:(id)sender 
+- (IBAction)hitJumpToPage
 {
-    self.page.destinationType = AwfulPageDestinationTypeSpecific;
-    [self.page loadPageNum:[self.pickerView selectedRowInComponent:0]+1];
-}
-
-- (IBAction)hitFirst:(id)sender
-{
-    self.page.destinationType = AwfulPageDestinationTypeSpecific;
-    [self.page loadPageNum:1];
-}
-
-- (IBAction)hitLast:(id)sender
-{
-    self.page.destinationType = AwfulPageDestinationTypeSpecific;
-    [self.page loadPageNum:self.page.numberOfPages];
+    [self.page loadPage:[self.pickerView selectedRowInComponent:0] + 1];
 }
 
 @end

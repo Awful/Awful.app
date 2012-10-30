@@ -601,8 +601,7 @@ withImagePlaceholderResults:placeholderResults
                  // the refresh comes through.
                  if (!postID) {
                      [SVProgressHUD dismiss];
-                     self.page.destinationType = AwfulPageDestinationTypeLast;
-                     [self.page refresh];
+                     [self.page loadPage:self.page.currentPage];
                      [self.presentingViewController dismissModalViewControllerAnimated:YES];
                      return;
                  }
@@ -611,8 +610,7 @@ withImagePlaceholderResults:placeholderResults
                   {
                       [SVProgressHUD dismiss];
                       if ([self.page.thread.threadID isEqualToString:threadID]) {
-                          self.page.destinationType = AwfulPageDestinationTypeNewpost;
-                          [self.page loadPageNum:page];
+                          [self.page loadPage:AwfulPageNextUnread];
                       }
                       [self.presentingViewController dismissModalViewControllerAnimated:YES];
                   }];
@@ -635,8 +633,7 @@ withImagePlaceholderResults:placeholderResults
              {
                  [SVProgressHUD dismiss];
                  if ([self.page.thread.threadID isEqualToString:threadID]) {
-                     self.page.destinationType = AwfulPageDestinationTypeSpecific;
-                     [self.page loadPageNum:page];
+                     [self.page loadPage:page];
                  }
                  [self.presentingViewController dismissModalViewControllerAnimated:YES];
              }];

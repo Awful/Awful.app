@@ -8,6 +8,24 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol AwfulPostsViewDelegate;
+
+
 @interface AwfulPostsView : UIView
+
+@property (weak, nonatomic) id <AwfulPostsViewDelegate> delegate;
+
+- (void)reloadData;
+
+@end
+
+
+@protocol AwfulPostsViewDelegate <NSObject>
+
+@required
+
+- (NSInteger)numberOfPostsInPostsView:(AwfulPostsView *)postsView;
+
+- (NSDictionary *)postsView:(AwfulPostsView *)postsView postAtIndex:(NSInteger)index;
 
 @end

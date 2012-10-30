@@ -17,7 +17,6 @@
 #import "AwfulSettingsViewController.h"
 #import "AwfulSplitViewController.h"
 #import "AFNetworking.h"
-#import "GRMustache.h"
 
 @interface AwfulAppDelegate () <UITabBarControllerDelegate, AwfulLoginControllerDelegate>
 
@@ -41,7 +40,6 @@ static AwfulAppDelegate *_instance;
     [[AwfulSettings settings] registerDefaults];
     [AwfulDataStack sharedDataStack].initFailureAction = AwfulDataStackInitFailureDelete;
     [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
-    if (DEBUG) [GRMustache preventNSUndefinedKeyExceptionAttack];
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     
@@ -68,7 +66,7 @@ static AwfulAppDelegate *_instance;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         NSFileManager *fileman = [NSFileManager defaultManager];
-        NSURL *cssReadme = [[NSBundle mainBundle] URLForResource:@"README"
+        NSURL *cssReadme = [[NSBundle mainBundle] URLForResource:@"Custom CSS README"
                                                    withExtension:@"txt"];
         NSURL *documents = [[fileman URLsForDirectory:NSDocumentDirectory
                                             inDomains:NSUserDomainMask] lastObject];

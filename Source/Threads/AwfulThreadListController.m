@@ -16,6 +16,7 @@
 #import "AwfulModels.h"
 #import "AwfulPage.h"
 #import "AwfulSettings.h"
+#import "AwfulSplitViewController.h"
 #import "AwfulThreadCell.h"
 #import "AwfulThreadTags.h"
 #import "SVPullToRefresh.h"
@@ -159,16 +160,14 @@ typedef enum {
     [sheet addButtonWithTitle:@"Jump to First Page" block:^{
         AwfulPage *page = [AwfulPage newDeviceSpecificPage];
         page.thread = thread;
-        page.destinationType = AwfulPageDestinationTypeFirst;
         [self displayPage:page];
-        [page loadPageNum:1];
+        [page loadPage:1];
     }];
     [sheet addButtonWithTitle:@"Jump to Last Page" block:^{
         AwfulPage *page = [AwfulPage newDeviceSpecificPage];
         page.thread = thread;
-        page.destinationType = AwfulPageDestinationTypeLast;
         [self displayPage:page];
-        [page loadPageNum:AwfulPageLast];
+        [page loadPage:AwfulPageLast];
     }];
     [sheet addButtonWithTitle:@"Mark as Unread" block:^{
         [self markThreadUnseen:thread];
@@ -339,10 +338,7 @@ typedef enum {
     AwfulPage *page = [AwfulPage newDeviceSpecificPage];
     AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
     page.thread = thread;
-    [page refresh];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:AwfulPageWillLoadNotification
-                                                        object:thread];
+    [page loadPage:AwfulPageNextUnread];
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(didLoadThreadPage:) 
                                                  name:AwfulPageDidLoadNotification 

@@ -7,17 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "AwfulSplitViewController.h"
 
-typedef enum {
-    AwfulPageDestinationTypeFirst,
-    AwfulPageDestinationTypeLast,
-    AwfulPageDestinationTypeNewpost,
-    AwfulPageDestinationTypeSpecific
-} AwfulPageDestinationType;
-
-@class AwfulActions;
-@class AwfulPostActions;
 @class AwfulThread;
 
 
@@ -27,30 +17,12 @@ typedef enum {
 
 @property (nonatomic, strong) AwfulThread *thread;
 
-@property (nonatomic, strong) NSString *threadID;
-
-@property (nonatomic, assign) AwfulPageDestinationType destinationType;
-
-@property (nonatomic, strong) AwfulActions *actions;
-
 @property (nonatomic, assign) NSInteger currentPage;
 
-@property (nonatomic, assign) NSInteger numberOfPages;
-
-- (IBAction)hardRefresh;
-
-- (void)updatePagesLabel;
-
-- (void)refresh;
-
-- (void)loadPageNum:(NSUInteger)pageNum;
-
-- (void)showCompletionMessage:(NSString *)message;
+- (void)loadPage:(NSInteger)page;
 
 @end
 
-
-extern NSString * const AwfulPageWillLoadNotification;
 
 extern NSString * const AwfulPageDidLoadNotification;
 

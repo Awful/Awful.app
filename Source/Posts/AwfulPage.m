@@ -13,40 +13,29 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
 #import "AwfulPageBar.h"
-#import "AwfulPageTemplate.h"
 #import "AwfulPostsView.h"
 #import "AwfulReplyViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulSpecificPageViewController.h"
-#import "AwfulThreadListController.h"
 #import "AwfulThreadTitleLabel.h"
-#import "AwfulWebViewDelegate.h"
 #import "MWPhoto.h"
 #import "MWPhotoBrowser.h"
 #import "NSManagedObject+Awful.h"
 #import "SVProgressHUD.h"
 
-@interface AwfulPage () <AwfulWebViewDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate>
-
-@property (nonatomic) AwfulWebViewDelegateWrapper *webViewDelegateWrapper;
+@interface AwfulPage () <AwfulPostsViewDelegate>
 
 @property (nonatomic) NSOperation *networkOperation;
 
-@property (nonatomic) AwfulPageBar *pageBar;
+@property (weak, nonatomic) AwfulPageBar *pageBar;
 
 @property (nonatomic) AwfulSpecificPageViewController *specificPageController;
 
-@property (nonatomic) UIWebView *webView;
-
-@property (copy, nonatomic) NSString *postIDScrollDestination;
+@property (weak, nonatomic) AwfulPostsView *postsView;
 
 @property (copy, nonatomic) NSArray *posts;
 
 @property (nonatomic) BOOL didJustMarkAsReadToHere;
-
-@property (copy, nonatomic) NSString *advertisementHTML;
-
-@property (nonatomic) BOOL shouldScrollToBottom;
 
 @property (readonly, nonatomic) UILabel *titleLabel;
 
@@ -58,9 +47,6 @@
 
 
 @implementation AwfulPage
-{
-    AwfulThread *_thread;
-}
 
 + (id)newDeviceSpecificPage
 {
@@ -80,49 +66,12 @@
     return self;
 }
 
-- (AwfulThread *)thread
+- (void)setThread:(AwfulThread *)thread
 {
-    if ([_thread isFault])
-    {
-        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulThread entityName]];
-        [request setPredicate:[NSPredicate predicateWithFormat:@"threadID like %@", self.threadID]];
-        NSError *error;
-        NSArray *results = [[AwfulDataStack sharedDataStack].context executeFetchRequest:request
-                                                                                   error:&error];
-        if (!results) {
-            NSLog(@"error refetching thread: %@", error);
-        }
-        
-        _thread = [results objectAtIndex:0];
-    }
-    return _thread;
-}
-
-- (void)setThread:(AwfulThread *)newThread
-{
-    if (_thread == newThread) return;
-
-    _thread = newThread;
-    self.threadID = _thread.threadID;
-    if (_thread.title != nil) {
-        self.title = self.thread.title;
-        self.titleLabel.text = self.thread.title;
-    }
-    if ([_thread.totalUnreadPosts intValue] == -1) {
-        self.destinationType = AwfulPageDestinationTypeFirst;
-    } else if ([_thread.totalUnreadPosts intValue] == 0) {
-        self.destinationType = AwfulPageDestinationTypeLast;
-            // if the last page is full, it won't work if you go for &goto=newpost, that's why I'm setting this to last page
-    } else {
-        self.destinationType = AwfulPageDestinationTypeNewpost;
-    }
-    [self.pageBar.actionsComposeControl setEnabled:self.thread.canReply forSegmentAtIndex:1];
-}
-
-- (void)setDestinationType:(AwfulPageDestinationType)destinationType
-{
-    _destinationType = destinationType;
-    self.shouldScrollToBottom = _destinationType == AwfulPageDestinationTypeLast;
+    if (_thread == thread) return;
+    _thread = thread;
+    self.titleLabel.text = _thread.title;
+    [self updatePageBar];
 }
 
 - (void)setPosts:(NSArray *)posts
@@ -130,50 +79,9 @@
     if (_posts == posts) return;
     _posts = [posts copy];
     AwfulPost *anyPost = [posts lastObject];
+    self.thread = anyPost.thread;
     self.currentPage = anyPost.threadPageValue;
-    self.numberOfPages = anyPost.thread.numberOfPagesValue;
-    self.thread.title = anyPost.thread.title;
-    self.titleLabel.text = self.thread.title;
-    
-    NSUInteger firstUnreadPostIndex = [posts count];
-    NSString *firstUnreadPostID;
-    for (NSUInteger i = 0; i < [posts count]; i++) {
-        AwfulPost *post = posts[i];
-        if (!post.beenSeenValue) {
-            firstUnreadPostIndex = i;
-            firstUnreadPostID = post.postID;
-            break;
-        }
-    }
-    if (firstUnreadPostIndex < [posts count]) {
-        self.postIDScrollDestination = firstUnreadPostID;
-        self.shouldScrollToBottom = NO;
-    } else {
-        self.postIDScrollDestination = nil;
-        self.shouldScrollToBottom = YES;
-    }
-    if (self.destinationType != AwfulPageDestinationTypeNewpost) {
-        self.shouldScrollToBottom = NO;
-    }
-    
-    int numNewPosts = firstUnreadPostIndex - [posts count];
-    if (numNewPosts > 0 && (self.destinationType == AwfulPageDestinationTypeNewpost || self.currentPage == self.numberOfPages)) {
-        int unreadPosts = [self.thread.totalUnreadPosts intValue];
-        if(unreadPosts != -1) {
-            unreadPosts -= numNewPosts;
-            self.thread.totalUnreadPostsValue = MAX(unreadPosts, 0);
-            [[AwfulDataStack sharedDataStack] save];
-        }
-    } else if (self.destinationType == AwfulPageDestinationTypeLast) {
-        self.thread.totalUnreadPostsValue = 0;
-        [[AwfulDataStack sharedDataStack] save];
-    }
-    AwfulPageTemplate *template = [AwfulPageTemplate new];
-    NSString *html = [template renderWithPosts:posts
-                             advertisementHTML:self.advertisementHTML
-                               displayAllPosts:NO];
-    [self.webView loadHTMLString:html baseURL:[[NSBundle mainBundle] resourceURL]];
-    self.webView.tag = self.currentPage;
+    [self.postsView reloadData];
     [[NSNotificationCenter defaultCenter] postNotificationName:AwfulPageDidLoadNotification
                                                         object:self.thread
                                                       userInfo:@{ @"page" : self }];
@@ -182,13 +90,7 @@
 - (void)setCurrentPage:(NSInteger)currentPage
 {
     _currentPage = currentPage;
-    [self updatePagesLabel];
-}
-
-- (void)setNumberOfPages:(NSInteger)numberOfPages
-{
-    _numberOfPages = numberOfPages;
-    [self updatePagesLabel];
+    [self updatePageBar];
 }
 
 - (UILabel *)titleLabel
@@ -196,34 +98,18 @@
     return (UILabel *)self.navigationItem.titleView;
 }
 
-- (IBAction)hardRefresh
-{
-    if ([self.posts count] == 40) {
-        self.destinationType = AwfulPageDestinationTypeSpecific;
-        [self refresh];
-    } else {
-        self.destinationType = AwfulPageDestinationTypeNewpost;
-        [self refresh];
-    }
-}
-
 - (void)refresh
 {
-    [self loadPageNum:self.currentPage];
+    [self loadPage:self.currentPage];
 }
 
-- (void)loadPageNum:(NSUInteger)pageNum
+- (void)loadPage:(NSInteger)page
 {
     [self markPostsAsBeenSeen];
-    // I guess the error callback doesn't necessarily get called when a network operation is 
-    // cancelled, so clear the HUD when we cancel the network operation.
-    [SVProgressHUD dismiss];
     [self.networkOperation cancel];
     [self hidePageNavigation];
-    if (self.destinationType == AwfulPageDestinationTypeLast) pageNum = AwfulPageLast;
-    else if (self.destinationType == AwfulPageDestinationTypeNewpost) pageNum = AwfulPageNextUnread;
     id op = [[AwfulHTTPClient client] listPostsInThreadWithID:self.thread.threadID
-                                                       onPage:pageNum
+                                                       onPage:page
                                                       andThen:^(NSError *error, NSArray *posts, NSString *advertisementHTML)
     {
         if (error) {
@@ -235,36 +121,11 @@
             [alert show];
             return;
         }
-        self.advertisementHTML = advertisementHTML;
+        // TODO pass advertisement along to posts view
         self.posts = posts;
-        if (self.destinationType == AwfulPageDestinationTypeSpecific) {
-            self.currentPage = pageNum;
-        }
-        [self updatePagesLabel];
-    }];
-    self.networkOperation = op;
-}
-
-- (void)loadLastPage
-{
-    [self markPostsAsBeenSeen];
-    [self.networkOperation cancel];
-    id op = [[AwfulHTTPClient client] listPostsInThreadWithID:self.thread.threadID
-                                                       onPage:AwfulPageLast
-                                                      andThen:^(NSError *error, NSArray *posts, NSString *advertisementHTML)
-    {
-        if (error) {            
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Could Not Load Last Page"
-                                                            message:[error localizedDescription]
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"Thanks For The Effort"
-                                                  otherButtonTitles:nil];
-            [alert show];
-            return;
-        }
-        self.advertisementHTML = advertisementHTML;
-        self.posts = posts;
-        [self updatePagesLabel];
+        AwfulPost *anyPost = [self.posts lastObject];
+        self.currentPage = anyPost.threadPageValue;
+        [self updatePageBar];
     }];
     self.networkOperation = op;
 }
@@ -297,78 +158,47 @@
     [[AwfulDataStack sharedDataStack] save];
 }
 
-- (void)loadOlderPosts
-{
-    AwfulPageTemplate *template = [AwfulPageTemplate new];
-    NSString *html = [template renderWithPosts:self.posts
-                             advertisementHTML:self.advertisementHTML
-                               displayAllPosts:YES];
-    [self.webView loadHTMLString:html baseURL:[[NSBundle mainBundle] resourceURL]];
-}
-
-- (void)heldPost:(UILongPressGestureRecognizer *)gestureRecognizer
-{
-    if (gestureRecognizer.state != UIGestureRecognizerStateBegan) return;
-    CGPoint p = [gestureRecognizer locationInView:self.webView];
-    NSString *js = [NSString stringWithFormat:@"imageURLAtPosition(%f, %f)", p.x, p.y];
-    NSString *src = [self.webView stringByEvaluatingJavaScriptFromString:js];
-    if ([src length]) {
-        NSArray *photos = @[[MWPhoto photoWithURL:[NSURL URLWithString:src]]];
-        MWPhotoBrowser *browser = [[MWPhotoBrowser alloc] initWithPhotos:photos];
-        UIViewController *vc = [AwfulAppDelegate instance].window.rootViewController;
-        UINavigationController *navi = [[UINavigationController alloc] initWithRootViewController:browser];
-        [vc presentModalViewController:navi animated:YES];
-    }
-}
-
 #pragma mark - UIViewController
 
 - (void)loadView
 {
     self.view = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.view.backgroundColor = [UIColor underPageBackgroundColor];
-    CGRect webFrame, pageBarFrame;
-    CGRectDivide(self.view.bounds, &pageBarFrame, &webFrame, 38, CGRectMaxYEdge);
+    CGRect postsFrame, pageBarFrame;
+    CGRectDivide(self.view.bounds, &pageBarFrame, &postsFrame, 38, CGRectMaxYEdge);
     
-    self.pageBar = [[AwfulPageBar alloc] initWithFrame:pageBarFrame];
-    [self.pageBar.backForwardControl addTarget:self
-                                        action:@selector(tappedPagesSegment:)
-                              forControlEvents:UIControlEventValueChanged];
-    [self.pageBar.jumpToPageButton addTarget:self
-                                      action:@selector(tappedPageNav:)
-                            forControlEvents:UIControlEventTouchUpInside];
-    [self.pageBar.actionsComposeControl addTarget:self
-                                           action:@selector(tappedActionsSegment:)
-                                 forControlEvents:UIControlEventValueChanged];
-//    [self.view addSubview:self.pageBar];
+    AwfulPageBar *pageBar = [[AwfulPageBar alloc] initWithFrame:pageBarFrame];
+    [pageBar.backForwardControl addTarget:self
+                                   action:@selector(tappedPagesSegment:)
+                         forControlEvents:UIControlEventValueChanged];
+    [pageBar.jumpToPageButton addTarget:self
+                                 action:@selector(tappedPageNav:)
+                       forControlEvents:UIControlEventTouchUpInside];
+    [pageBar.actionsComposeControl addTarget:self
+                                      action:@selector(tappedActionsSegment:)
+                            forControlEvents:UIControlEventValueChanged];
+    [self.view addSubview:pageBar];
+    self.pageBar = pageBar;
     
-    self.webView = [[UIWebView alloc] initWithFrame:webFrame];
-    self.webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    self.webView.backgroundColor = [UIColor underPageBackgroundColor];
-    self.webViewDelegateWrapper = [AwfulWebViewDelegateWrapper delegateWrappingDelegate:self];
-    self.webView.delegate = self.webViewDelegateWrapper;
-    self.webView.dataDetectorTypes = UIDataDetectorTypeNone;
-//    [self.view addSubview:self.webView];
-    
-    CGRect viewFrame = (CGRect){ .size = self.view.bounds.size };
-    AwfulPostsView *view = [[AwfulPostsView alloc] initWithFrame:viewFrame];
-    [self.view addSubview:view];
-}
-
-- (UIWebView *)webView
-{
-    if (!_webView) [self view];
-    return _webView;
+    AwfulPostsView *postsView = [[AwfulPostsView alloc] initWithFrame:postsFrame];
+    postsView.delegate = self;
+    postsView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    postsView.backgroundColor = [UIColor underPageBackgroundColor];
+    self.postsView = postsView;
+    [self.view addSubview:postsView];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    // TODO implement
+    /*
     UILongPressGestureRecognizer *press = [[UILongPressGestureRecognizer alloc] initWithTarget:self
                                                                                         action:@selector(heldPost:)];
     press.delegate = self;
     press.minimumPressDuration = 0.3;
     [self.webView addGestureRecognizer:press];
+     */
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -376,8 +206,11 @@
     // Blank the web view if we're leaving for good. Otherwise we get weirdness like videos
     // continuing to play their sound after the user switches to a different thread.
     if (!self.navigationController) {
+        // TODO implement
+        /*
         NSURL *blank = [NSURL URLWithString:@"about:blank"];
         [self.webView loadRequest:[NSURLRequest requestWithURL:blank]];
+         */
     }
     [self markPostsAsBeenSeen];
     [super viewDidDisappear:animated];
@@ -395,14 +228,15 @@
 
 #pragma mark - BarButtonItem Actions
 
-- (void)updatePagesLabel
+- (void)updatePageBar
 {
-    [self.pageBar.jumpToPageButton setTitle:[NSString stringWithFormat:@"Page %d of %d",
-                                             self.currentPage, self.numberOfPages]
-                                   forState:UIControlStateNormal];
-    [self.pageBar.backForwardControl setEnabled:self.currentPage != 1 forSegmentAtIndex:0];
-    [self.pageBar.backForwardControl setEnabled:self.currentPage != self.numberOfPages
+    [self.pageBar.backForwardControl setEnabled:self.currentPage != 1
+                              forSegmentAtIndex:0];
+    [self.pageBar.backForwardControl setEnabled:self.currentPage != self.thread.numberOfPagesValue
                               forSegmentAtIndex:1];
+    [self.pageBar.jumpToPageButton setTitle:[NSString stringWithFormat:@"Page %d of %@",
+                                             self.currentPage, self.thread.numberOfPages]
+                                   forState:UIControlStateNormal];
     [self.pageBar.actionsComposeControl setEnabled:self.thread.canReply forSegmentAtIndex:1];
 }
 
@@ -435,20 +269,17 @@
 
 - (void)nextPage
 {
-    if (self.currentPage < self.numberOfPages) {
-        self.destinationType = AwfulPageDestinationTypeSpecific;
-        [self loadPageNum:self.currentPage + 1];
+    if (self.currentPage < self.thread.numberOfPagesValue) {
+        [self loadPage:self.currentPage + 1];
     } else {
-        [self hardRefresh];
+        [self loadPage:self.currentPage];
     }
 }
 
 - (void)prevPage
 {
-    if(self.currentPage > 1) {
-        self.destinationType = AwfulPageDestinationTypeSpecific;
-        [self loadPageNum:self.currentPage - 1];
-    }
+    if (self.currentPage <= 1) return;
+    [self loadPage:self.currentPage - 1];
 }
 
 - (IBAction)tappedActions
@@ -501,7 +332,7 @@
 
 - (void)tappedPageNav:(id)sender
 {
-    if (self.numberOfPages <= 0 || self.currentPage <= 0) {
+    if (self.thread.numberOfPagesValue <= 0 || self.currentPage <= 0) {
         return;
     }
     
@@ -552,26 +383,6 @@
     postBox.page = self;
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:postBox];
     [self presentViewController:nav animated:YES completion:nil];
-}
-
-#pragma mark - Navigator Content
-
-- (void)scrollToBottom
-{
-    [self.webView stringByEvaluatingJavaScriptFromString:@"window.scrollTo(0, document.body.scrollHeight);"];
-}
-
-- (void)scrollToSpecifiedPost
-{
-    [self scrollToPost:self.postIDScrollDestination];
-}
-
-- (void)scrollToPost:(NSString *)postID
-{
-    if (postID) {
-        NSString *scrolling = [NSString stringWithFormat:@"scrollToID('%@')", postID];
-        [self.webView stringByEvaluatingJavaScriptFromString:scrolling];
-    }
 }
 
 - (void)showPostActions:(NSString *)postID fromRect:(CGRect)rect
@@ -660,31 +471,6 @@
     [sheet showFromRect:rect inView:view animated:YES];
 }
 
-#pragma mark - AwfulWebViewDelegate
-
-- (void)webView:(UIWebView *)webView
-    pageDidRequestAction:(NSString *)action
-    infoDictionary:(NSDictionary *)infoDictionary
-{
-    if ([action isEqualToString:@"nextPage"]) {
-        [self nextPage];
-        return;
-    }
-    if ([action isEqualToString:@"loadOlderPosts"]) {
-        [self loadOlderPosts];
-        return;
-    }
-    if ([action isEqualToString:@"postOptions"]) {
-        NSString *postID = [infoDictionary objectForKey:@"postID"];
-        CGRect rect = CGRectZero;
-        if ([infoDictionary objectForKey:@"rect"])
-            rect = CGRectFromString([infoDictionary objectForKey:@"rect"]);
-        rect = [self.webView convertRect:rect toView:self.view];
-        [self showPostActions:postID fromRect:rect];
-        return;
-    }
-}
-
 #pragma mark - Gesture recognizer delegate
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gesture
@@ -722,11 +508,9 @@
             page.thread = intra;
             [self.navigationController pushViewController:page animated:YES];
             if (pageNumber != nil) {
-                page.destinationType = AwfulPageDestinationTypeSpecific;
-                [page loadPageNum:[pageNumber integerValue]];
+                [page loadPage:[pageNumber integerValue]];
             } else {
-                page.destinationType = AwfulPageDestinationTypeFirst;
-                [page refresh];
+                [page loadPage:1];
             }
             return NO;
         }
@@ -739,22 +523,6 @@
     return NO;
 }
 
-- (void)webViewDidFinishLoad:(UIWebView *)sender
-{
-    if (self.postIDScrollDestination != nil) {
-        [self scrollToSpecifiedPost];
-    } else if(self.shouldScrollToBottom) {
-        [self scrollToBottom];
-    }
-}
-
-- (void)showCompletionMessage:(NSString *)message
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [SVProgressHUD showSuccessWithStatus:message];
-    });
-}
-
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -763,9 +531,25 @@
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
-- (BOOL)isOnLastPage
+#pragma mark - AwfulPostsViewDelegate
+
+- (NSInteger)numberOfPostsInPostsView:(AwfulPostsView *)postsView
 {
-    return self.currentPage == self.numberOfPages;
+    return [self.posts count];
+}
+
+- (NSDictionary *)postsView:(AwfulPostsView *)postsView postAtIndex:(NSInteger)index
+{
+    AwfulPost *post = self.posts[index];
+    NSArray *keys = @[ @"postID", @"authorName", @"authorAvatarURL", @"beenSeen", @"innerHTML" ];
+    NSMutableDictionary *dict = [[post dictionaryWithValuesForKeys:keys] mutableCopy];
+    dict[@"postDate"] = [NSDateFormatter localizedStringFromDate:post.postDate
+                                                       dateStyle:NSDateFormatterMediumStyle
+                                                       timeStyle:NSDateFormatterShortStyle];
+    dict[@"authorRegDate"] = [NSDateFormatter localizedStringFromDate:post.authorRegDate
+                                                            dateStyle:NSDateFormatterMediumStyle
+                                                            timeStyle:NSDateFormatterNoStyle];
+    return dict;
 }
 
 @end
@@ -792,7 +576,7 @@ NSString * const AwfulPageDidLoadNotification = @"com.awfulapp.Awful.PageDidLoad
         self.popController = nil;
     }
     
-    if (self.numberOfPages <= 0 || self.currentPage <= 0)
+    if (self.thread.numberOfPagesValue <= 0 || self.currentPage <= 0)
     {
         return;
     }

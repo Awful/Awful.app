@@ -15,6 +15,7 @@
 #import "AwfulPage.h"
 #import "AwfulSettings.h"
 #import "AwfulSettingsChoiceViewController.h"
+#import "AwfulSplitViewController.h"
 #import "AwfulUser.h"
 #import "NSManagedObject+Awful.h"
 
@@ -241,9 +242,8 @@ typedef enum SettingType
             thread = threads[0];
         }
         AwfulPage *page = [AwfulPage newDeviceSpecificPage];
-        page.destinationType = AwfulPageDestinationTypeNewpost;
         page.thread = thread;
-        [page refresh];
+        [page loadPage:AwfulPageNextUnread];
         if (self.splitViewController) {
             AwfulSplitViewController *split = (AwfulSplitViewController *)self.splitViewController;
             UINavigationController *nav = split.viewControllers[1];

@@ -1,13 +1,25 @@
 <!doctype html>
-<meta charset=utf-8>
+<meta charset="utf-8">
 
-<h1>AwfulPostsView</h1>
+<div id="posts"></div>
 
-<script id=template type=text/html>
-<a href=about:blank>click {{dis}}</a>
+<script id="postTemplate" type="text/html">
+<article id="{{postID}}" class="{{#beenSeen}}seen{{/beenSeen}} {{#roles}}role-{{.}} {{/roles}}">
+  <header>
+    <h1>{{authorName}}</h1>
+    <time>{{postDate}}</time>
+    {{#authorAvatarURL}}<img src="{{authorAvatarURL}}">{{/authorAvatarURL}}
+  </header>
+  
+  <section>
+    {{{innerHTML}}}
+  </section>
+  
+  <footer>
+    <time>{{authorRegDate}}</time>
+    <button />
+  </footer>
+</article>
 </script>
 
-<script src=posts-view.js></script>
-<script>
-$(function(){ $('h1').html($('#template').mustache({dis: 'my stache'})) })
-</script>
+<script src="posts-view.js"></script>

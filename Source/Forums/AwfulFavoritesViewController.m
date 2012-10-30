@@ -8,7 +8,6 @@
 
 #import "AwfulFavoritesViewController.h"
 #import "AwfulFetchedTableViewControllerSubclass.h"
-#import "AwfulCSSTemplate.h"
 #import "AwfulDataStack.h"
 #import "AwfulForumsListController.h"
 #import "AwfulModels.h"

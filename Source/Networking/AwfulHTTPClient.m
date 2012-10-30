@@ -9,8 +9,6 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulDataStack.h"
 #import "AwfulModels.h"
-#import "AwfulPage.h"
-#import "AwfulPageTemplate.h"
 #import "AwfulParsing.h"
 #import "AwfulSettings.h"
 #import "NSManagedObject+Awful.h"
