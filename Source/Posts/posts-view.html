@@ -1,25 +1,28 @@
 <!doctype html>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
 <link rel="stylesheet">
 
 <div id="posts"></div>
 
 <script id="postTemplate" type="text/html">
-<article id="{{postID}}" class="{{#beenSeen}}seen{{/beenSeen}} {{#roles}}role-{{.}} {{/roles}}">
+<article id="{{postID}}" class="{{#beenSeen}}seen{{/beenSeen}}
+                                {{#roles}}role-{{.}} {{/roles}}
+                                {{^authorAvatarURL}}no-avatar{{/authorAvatarURL}}">
   <header>
     <h1>{{authorName}}</h1>
-    <time>{{postDate}}</time>
+    
+    <time class="postdate">{{postDate}}</time>
+    <time class="regdate">{{authorRegDate}}</time>
+    
     {{#authorAvatarURL}}<img src="{{authorAvatarURL}}">{{/authorAvatarURL}}
+    
+    <button />
   </header>
   
   <section>
     {{{innerHTML}}}
   </section>
-  
-  <footer>
-    <time>{{authorRegDate}}</time>
-    <button />
-  </footer>
 </article>
 </script>
 
