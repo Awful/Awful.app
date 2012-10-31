@@ -25,6 +25,8 @@ window.Awful = Awful
 
 
 $(function(){
+  $('body').addClass($.os.ipad ? 'ipad' : 'iphone')
+  
   $('#posts').on('click', 'button', showPostActions)
 })
 

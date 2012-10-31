@@ -6,7 +6,7 @@ We use a few JavaScript libraries for AwfulPostsView. Here's how to build them.
 
 jQuery for modern browsers.
 
-`$ rake concat[-polyfill:-detect:-fx:-form:touch] dist`
+`$ rake concat[-polyfill:-fx:-form:touch] dist`
 
 Then move `dist/zepto.min.js` to this folder.
 
