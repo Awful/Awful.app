@@ -221,11 +221,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     // Blank the web view if we're leaving for good. Otherwise we get weirdness like videos
     // continuing to play their sound after the user switches to a different thread.
     if (!self.navigationController) {
-        // TODO implement
-        /*
-        NSURL *blank = [NSURL URLWithString:@"about:blank"];
-        [self.webView loadRequest:[NSURLRequest requestWithURL:blank]];
-         */
+        [self.postsView clearAllPosts];
     }
     [self markPostsAsBeenSeen];
     [super viewDidDisappear:animated];

@@ -17,6 +17,8 @@
 
 - (void)reloadData;
 
+- (void)clearAllPosts;
+
 @property (nonatomic) NSURL *stylesheetURL;
 
 @property (getter=isDark, nonatomic) BOOL dark;

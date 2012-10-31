@@ -59,6 +59,11 @@
     [self evalJavaScript:@"Awful.posts(%@)", json];
 }
 
+- (void)clearAllPosts
+{
+    [self evalJavaScript:@"Awful.posts([])"];
+}
+
 - (NSString *)evalJavaScript:(NSString *)script, ...
 {
     va_list args;
