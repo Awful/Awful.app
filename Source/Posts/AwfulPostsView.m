@@ -16,6 +16,9 @@
 
 
 @implementation AwfulPostsView
+{
+    dispatch_once_t _onceOnFirstLoad;
+}
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -94,9 +97,11 @@
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
-    [self updateStylesheetURL];
-    [self updateDark];
-    [self reloadData];
+    dispatch_once(&_onceOnFirstLoad, ^{
+        [self updateStylesheetURL];
+        [self updateDark];
+        [self reloadData];
+    });
 }
 
 - (BOOL)webView:(UIWebView *)webView
