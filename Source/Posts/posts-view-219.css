@@ -86,7 +86,7 @@ body {
 /* iPad post header sits in the top left corner. */
 .ipad #posts > article > header {
   width: 136px;
-  height: 125px;
+  height: 135px;
   float: left;
   margin: 0 5px 0 0;
   padding: 0;
@@ -132,9 +132,24 @@ body {
 /* iPad posts show author's name too. */
 .ipad #posts > article > header > h1 {
   font-size: 1em;
-  width: 100%;
+  width: 118px;
   margin: 0;
   display: block;
+}
+
+/* Mods and admins get a little star by their name. */
+#posts > article.role-admin > header > h1 {
+  background-image: url('adminstar.png');
+}
+#posts > article.role-mod > header > h1 {
+  background-image: url('modstar.png');
+}
+#posts > article.role-admin > header > h1,
+#posts > article.role-mod > header > h1 {
+  background-repeat: no-repeat;
+  background-position: 0 center;
+  background-size: auto 1em;
+  padding-left: 18px;
 }
 
 /* iPhone posts show post date a little smaller. */
@@ -152,12 +167,10 @@ body {
 }
 
 /* Move author's name and the post date out from the avatar. */
-.iphone #posts > article > header > h1,
-.iphone #posts > article > header > time.postdate {
+.iphone #posts > article > header {
   padding-left: 50px;
 }
-.iphone #posts > article.no-avatar > header > h1,
-.iphone #posts > article.no-avatar > header > time.postdate {
+.iphone #posts > article.no-avatar > header {
   padding-left: 5px;
 }
 

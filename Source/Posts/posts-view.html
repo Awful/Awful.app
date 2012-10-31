@@ -7,7 +7,9 @@
 
 <script id="postTemplate" type="text/html">
 <article id="{{postID}}" class="{{#beenSeen}}seen{{/beenSeen}}
-                                {{#roles}}role-{{.}} {{/roles}}
+                                {{#authorIsOriginalPoster}}role-op{{/authorIsOriginalPoster}}
+                                {{#authorIsAModerator}}role-mod{{/authorIsAModerator}}
+                                {{#authorIsAnAdministrator}}role-admin{{/authorIsAnAdministrator}}
                                 {{^authorAvatarURL}}no-avatar{{/authorAvatarURL}}">
   <header>
     <h1>{{authorName}}</h1>

@@ -545,7 +545,10 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 - (NSDictionary *)postsView:(AwfulPostsView *)postsView postAtIndex:(NSInteger)index
 {
     AwfulPost *post = self.posts[index];
-    NSArray *keys = @[ @"postID", @"authorName", @"authorAvatarURL", @"beenSeen", @"innerHTML" ];
+    NSArray *keys = @[
+        @"postID", @"authorName", @"authorAvatarURL", @"beenSeen", @"innerHTML",
+        @"authorIsOriginalPoster", @"authorIsAModerator", @"authorIsAnAdministrator"
+    ];
     NSMutableDictionary *dict = [[post dictionaryWithValuesForKeys:keys] mutableCopy];
     dict[@"postDate"] = [NSDateFormatter localizedStringFromDate:post.postDate
                                                        dateStyle:NSDateFormatterMediumStyle
