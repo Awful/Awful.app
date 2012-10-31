@@ -41,6 +41,11 @@ body {
   background-color: #929292;
 }
 
+/* White text in dark mode. */
+body.dark {
+  color: white;
+}
+
 /* Posts hover nicely above the background and are offset parents. */
 #posts > article {
   margin: 10px 5px;
@@ -50,14 +55,29 @@ body {
   position: relative;
 }
 
+/* No shadow in dark mode. */
+.dark #posts > article {
+  box-shadow: none;
+}
+
 /* Posts have a white background. */
 #posts > article {
   background-color: white;
 }
 
+/* Posts in dark mode have a very dark grey background. */
+.dark #posts > article {
+  background-color: #272727;
+}
+
 /* Posts already seen have a light blue background. */
 #posts > article.seen {
   background-color: #dbe8f5;
+}
+
+/* Posts already seen in dark mode have a dark blue background. */
+.dark #posts > article.seen {
+  background-color: #101926;
 }
 
 /* iPad posts need some more padding. */
@@ -94,12 +114,25 @@ body {
   border-bottom-right-radius: 4px;
 }
 
+/* iPad post header text in dark mode has a shadow. */
+.ipad.dark #posts > article > header {
+  text-shadow: 0 1px black;
+}
+
 /* iPhone posts have a horizontal divider between header and post. */
 .iphone #posts > article > header {
   border-bottom: 1px solid #f0f0f0;
 }
 .iphone #posts > article.seen > header {
   border-bottom-color: #d5dfe9;
+}
+
+/* iPhone posts have a different horizontal divider in dark mode. */
+.iphone.dark #posts > article > header {
+  border-bottom: 1px solid #4e4e4e;
+}
+.iphone.dark #posts > article.seen > header {
+  borer-bottom: 1px solid #536879;
 }
 
 /* iPhone posts show author's avatar to the left of their name. */
@@ -117,7 +150,7 @@ body {
   max-height: 80px;
 }
 
-/* iPhone posts show author's username. */
+/* iPhone posts show author's name. */
 .iphone #posts > article > header > h1 {
   font-size: 1em;
   margin: 0;
@@ -126,7 +159,7 @@ body {
   vertical-align: middle;
 }
 
-/* iPad posts show author's username too. */
+/* iPad posts show author's name too. */
 .ipad #posts > article > header > h1 {
   font-size: 1em;
   width: 100%;
@@ -165,6 +198,14 @@ body {
   background-image: url("post-actions.png");
   background-size: 100%;
   background-repeat: no-repeat;
+}
+
+/* "Show post actions" button has dark mode versions for seen and unseen. */
+.dark #posts > article > header > button {
+  background-image: url("post-actions-dark.png");
+}
+.dark #posts > article.seen > header > button {
+  background-image: url("post-actions-dark-read.png");
 }
 
 /* iPhone posts have a "show post actions" button in the top right. */
@@ -226,6 +267,11 @@ body {
   color: #003366;
 }
 
+/* Make links in dark mode pretty. */
+.dark #posts > article > section a {
+  color: #93daff;
+}
+
 /* Links to quoted posts should look a bit different. */
 #posts > article > section a.quote_link {
   text-decoration: none;
@@ -242,11 +288,33 @@ body {
   color: black;
 }
 
+/* Everything in dark mode spoiler tags is white. */
+.dark #posts > article > section .bbc-spoiler,
+.dark #posts > article > section .bbc-spoiler li {
+  background: white;
+}
+.dark #posts > article > section .bbc-spoiler a:link,
+.dark #posts > article > section .bbc-spoiler a:visited,
+.dark #posts > article > section .bbc-spoiler a:active {
+  color: white;
+}
+
+/* Tapping a dark mode spoiler tag makes its background black (immediately). */
+.dark #posts > article > section .bbc-spoiler:hover {
+  background: black;
+}
+
 /* All block headings, like 'quote' or 'code', are grey. */
 #posts > article > section .bbc-block h4,
 #posts > article > section .bbc-block h5 {
   display: block;
   color: #555;
+}
+
+/* In dark mode, all block headings are a lighter grey. */
+.dark #posts > article > section .bbc-block h4,
+.dark #posts > article > section .bbc-block h5 {
+  color: #999;
 }
 
 /* Block headings like 'quote' are smaller and go in italics. */
@@ -268,6 +336,11 @@ body {
   border-left: 1px solid #999;
   margin: 0;
   padding: 0 10px;
+}
+
+/* Dark mode quotes have a darker left border. */
+.dark #posts > article > section blockquote {
+  border-left-color: #555;
 }
 
 /* Quote, code, etc. blocks on iPad get some margin. */
