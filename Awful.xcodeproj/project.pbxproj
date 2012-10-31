@@ -467,8 +467,8 @@
 		8C9B02C51623630F00676B98 /* downArrowDark.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B02BF1623630F00676B98 /* downArrowDark.png */; };
 		8C9B02C71623630F00676B98 /* forumsListGreyDark.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B02C11623630F00676B98 /* forumsListGreyDark.png */; };
 		8C9B02C91623630F00676B98 /* loadDark.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B02C31623630F00676B98 /* loadDark.png */; };
-		8C9B0357162368E800676B98 /* postActionsDark.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B0355162368E800676B98 /* postActionsDark.png */; };
-		8C9B0358162368E800676B98 /* postActionsDarkRead.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B0356162368E800676B98 /* postActionsDarkRead.png */; };
+		8C9B0357162368E800676B98 /* post-actions-dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B0355162368E800676B98 /* post-actions-dark.png */; };
+		8C9B0358162368E800676B98 /* post-actions-dark-read.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B0356162368E800676B98 /* post-actions-dark-read.png */; };
 		8CB5468D15BD936600E8BEC1 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CB5468C15BD936600E8BEC1 /* ImageIO.framework */; };
 		8CCD4CD415B497A800E5893B /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498A15B497A700E5893B /* Icon-72.png */; };
 		8CCD4CD515B497A800E5893B /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498B15B497A700E5893B /* Icon-72@2x.png */; };
@@ -508,7 +508,7 @@
 		8CCD558815B783FD00E5893B /* rating4.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD526015B783FC00E5893B /* rating4.png */; };
 		8CCD558915B783FD00E5893B /* rating5.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD526115B783FC00E5893B /* rating5.png */; };
 		8CCD559E15B783FD00E5893B /* sticky.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD527715B783FC00E5893B /* sticky.png */; };
-		8CDBA0781621D641000EE760 /* postActions.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CDBA0771621D641000EE760 /* postActions.png */; };
+		8CDBA0781621D641000EE760 /* post-actions.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CDBA0771621D641000EE760 /* post-actions.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -807,8 +807,8 @@
 		8C9B02BF1623630F00676B98 /* downArrowDark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = downArrowDark.png; path = Resources/images/downArrowDark.png; sourceTree = SOURCE_ROOT; };
 		8C9B02C11623630F00676B98 /* forumsListGreyDark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = forumsListGreyDark.png; path = Resources/images/forumsListGreyDark.png; sourceTree = SOURCE_ROOT; };
 		8C9B02C31623630F00676B98 /* loadDark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = loadDark.png; path = Resources/images/loadDark.png; sourceTree = SOURCE_ROOT; };
-		8C9B0355162368E800676B98 /* postActionsDark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = postActionsDark.png; sourceTree = "<group>"; };
-		8C9B0356162368E800676B98 /* postActionsDarkRead.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = postActionsDarkRead.png; sourceTree = "<group>"; };
+		8C9B0355162368E800676B98 /* post-actions-dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "post-actions-dark.png"; sourceTree = "<group>"; };
+		8C9B0356162368E800676B98 /* post-actions-dark-read.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "post-actions-dark-read.png"; sourceTree = "<group>"; };
 		8CB5468C15BD936600E8BEC1 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		8CCD498215B497A700E5893B /* Awful-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Awful-Info.plist"; sourceTree = "<group>"; };
 		8CCD498A15B497A700E5893B /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
@@ -1083,7 +1083,7 @@
 		8CCD536315B783FD00E5893B /* yp-gnugpl.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yp-gnugpl.png"; sourceTree = "<group>"; };
 		8CCD536415B783FD00E5893B /* yp-snowcrash971.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yp-snowcrash971.png"; sourceTree = "<group>"; };
 		8CCD536515B783FD00E5893B /* yp-tubes296.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yp-tubes296.png"; sourceTree = "<group>"; };
-		8CDBA0771621D641000EE760 /* postActions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = postActions.png; sourceTree = "<group>"; };
+		8CDBA0771621D641000EE760 /* post-actions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "post-actions.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1616,9 +1616,9 @@
 				1CFBECE6162F526A008AF641 /* pagebar-segmented-divider@2x.png */,
 				1CFBECD3162F4ED7008AF641 /* pagebar.png */,
 				1CFBECD4162F4ED7008AF641 /* pagebar@2x.png */,
-				8CDBA0771621D641000EE760 /* postActions.png */,
-				8C9B0355162368E800676B98 /* postActionsDark.png */,
-				8C9B0356162368E800676B98 /* postActionsDarkRead.png */,
+				8CDBA0771621D641000EE760 /* post-actions.png */,
+				8C9B0355162368E800676B98 /* post-actions-dark.png */,
+				8C9B0356162368E800676B98 /* post-actions-dark-read.png */,
 				8CCD525C15B783FC00E5893B /* rating0.png */,
 				8CCD525D15B783FC00E5893B /* rating1.png */,
 				8CCD525E15B783FC00E5893B /* rating2.png */,
@@ -2105,15 +2105,15 @@
 				1CBD5283162DCB1B00928740 /* navbar-button.png in Resources */,
 				1CBD5284162DCB1B00928740 /* navbar-button@2x.png in Resources */,
 				1CBD5288162DCB1B00928740 /* navbar@2x.png in Resources */,
-				8CDBA0781621D641000EE760 /* postActions.png in Resources */,
+				8CDBA0781621D641000EE760 /* post-actions.png in Resources */,
 				8C2D931D16231BFE00DF604A /* downArrow.png in Resources */,
 				8C2D931F16231BFE00DF604A /* forumsListGrey.png in Resources */,
 				8C2D932116231BFE00DF604A /* load.png in Resources */,
 				8C9B02C51623630F00676B98 /* downArrowDark.png in Resources */,
 				8C9B02C71623630F00676B98 /* forumsListGreyDark.png in Resources */,
 				8C9B02C91623630F00676B98 /* loadDark.png in Resources */,
-				8C9B0357162368E800676B98 /* postActionsDark.png in Resources */,
-				8C9B0358162368E800676B98 /* postActionsDarkRead.png in Resources */,
+				8C9B0357162368E800676B98 /* post-actions-dark.png in Resources */,
+				8C9B0358162368E800676B98 /* post-actions-dark-read.png in Resources */,
 				1CFBECDB162F4ED7008AF641 /* pagebar-button-selected.png in Resources */,
 				1CFBECDC162F4ED7008AF641 /* pagebar-button-selected@2x.png in Resources */,
 				1CFBECDD162F4ED7008AF641 /* pagebar-button.png in Resources */,
