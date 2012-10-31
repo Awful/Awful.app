@@ -216,19 +216,6 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     return _postsView;
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    // TODO implement
-    /*
-    UILongPressGestureRecognizer *press = [[UILongPressGestureRecognizer alloc] initWithTarget:self
-                                                                                        action:@selector(heldPost:)];
-    press.delegate = self;
-    press.minimumPressDuration = 0.3;
-    [self.webView addGestureRecognizer:press];
-     */
-}
-
 - (void)viewDidDisappear:(BOOL)animated
 {
     // Blank the web view if we're leaving for good. Otherwise we get weirdness like videos
@@ -579,6 +566,14 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     CGRect rect = CGRectMake([rectDict[@"left"] floatValue], [rectDict[@"top"] floatValue],
                              [rectDict[@"width"] floatValue], [rectDict[@"height"] floatValue]);
     [self showActionsForPost:post fromRect:rect inView:self.postsView];
+}
+
+- (void)previewImageAtURLString:(NSString *)urlString
+{
+    NSArray *photos = @[ [MWPhoto photoWithURL:[NSURL URLWithString:urlString]] ];
+    MWPhotoBrowser *browser = [[MWPhotoBrowser alloc] initWithPhotos:photos];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:browser];
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 @end

@@ -126,7 +126,9 @@
     
     NSArray *arguments;
     if ([components count] >= 3) {
-        NSData *data = [components[2] dataUsingEncoding:NSUTF8StringEncoding];
+        NSArray *args = [components subarrayWithRange:NSMakeRange(2, [components count] - 2)];
+        NSString *stringData = [args componentsJoinedByString:@"/"];
+        NSData *data = [stringData dataUsingEncoding:NSUTF8StringEncoding];
         NSError *error;
         arguments = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
         if (!arguments) {

@@ -685,6 +685,8 @@ $(function(){
   $('body').addClass($.os.ipad ? 'ipad' : 'iphone')
   
   $('#posts').on('click', 'button', showPostActions)
+  
+  $('#posts').on('longTap', 'article > section > img', previewImage)
 })
 
 function showPostActions(e) {
@@ -694,4 +696,9 @@ function showPostActions(e) {
   rect.left -= window.pageXOffset
   rect.top -= window.pageYOffset
   Awful.invoke("showActionsForPostAtIndex:fromRectDictionary:", post.index(), rect)
+}
+
+function previewImage(e) {
+  var img = $(e.target)
+  Awful.invoke("previewImageAtURLString:", img.attr('src'))
 }
