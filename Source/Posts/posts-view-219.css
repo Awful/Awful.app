@@ -1,3 +1,307 @@
-* {
-  color: purple;
+/*
+ posts-view-219.css
+ Awful
+ 
+ Created by Jim Murtha on 12-10-26.
+ Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
+*/
+
+/* Leave spacing up to posts. */
+body {
+  margin: 0;
+}
+
+/* Default font and size. */
+body {
+  font-family: monospace;
+  font-size: 14px;
+}
+
+/* Don't change text size when the device's orientation changes. */
+body {
+  /* (Only works when combined with viewport settings in markup.) */
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Text, images, and embedded videos should never "break tables". */
+body {
+  word-wrap: break-word;
+}
+img, iframe {
+  max-width: 100%;
+}
+
+/* Don't show default menu when long-tapping text. */
+body {
+  -webkit-touch-callout: none;
+}
+
+/* Solid black background. */
+body {
+  background-color: black;
+}
+
+/* Green text. */
+body {
+  color: #57ff57;
+}
+
+/* Posts hover nicely above the background and are offset parents. */
+#posts > article {
+  margin: 10px 5px;
+  padding: 5px;
+  border-radius: 5px;
+  position: relative;
+}
+
+/* Posts have a nearly black background. */
+#posts > article {
+  background-color: #191919;
+}
+
+/* Posts already seen have a dark green background. */
+#posts > article.seen {
+  background-color: #0b2d0b;
+}
+
+/* iPad posts need some more padding. */
+.ipad #posts > article {
+  padding: 15px;
+}
+
+/* iPad posts with avatars have a minimum height. */
+.ipad #posts > article {
+  min-height: 150px;
+}
+.ipad #posts > article.no-avatar {
+  min-height: auto;
+}
+
+/* iPhone post header goes across the screen. */
+.iphone #posts > article > header {
+  width: 100%;
+  height: 44px;
+}
+
+/* iPad post header sits in the top left corner. */
+.ipad #posts > article > header {
+  width: 136px;
+  height: 125px;
+  float: left;
+  margin: 0 5px 0 0;
+  padding: 0;
+}
+
+/* iPad post header has a small gradient background. */
+.ipad #posts > article > header {
+  background: -webkit-linear-gradient(left top, transparent 50%, rgba(0, 0, 0, 0.035));
+}
+
+/* iPhone posts have a horizontal divider between header and post. */
+.iphone #posts > article > header {
+  border-bottom: 1px solid #444;
+}
+.iphone #posts > article.seen > header {
+  border-bottom-color: #395339;
+}
+
+/* iPhone posts show author's avatar to the left of their name. */
+.iphone #posts > article > header > img {
+  position: absolute;
+  top: 9px;
+  left: 10px;
+  max-width: 33px;
+  max-height: 33px;
+}
+
+/* iPad posts show author's avatar below the author's regdate. */
+.ipad #posts > article > header > img {
+  max-width: 80px;
+  max-height: 80px;
+}
+
+/* iPhone posts show author's name. */
+.iphone #posts > article > header > h1 {
+  font-size: 1em;
+  margin: 0;
+  padding-top: 4px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* iPad posts show author's name too. */
+.ipad #posts > article > header > h1 {
+  font-size: 1em;
+  width: 100%;
+  margin: 0;
+  display: block;
+}
+
+/* iPhone posts show post date a little smaller. */
+.iphone #posts > article > header > time.postdate {
+  font-size: 0.85em;
+  display: block;
+}
+
+/* iPad posts show post date in the bottom right corner. */
+.ipad #posts > article > header > time.postdate {
+  font-size: 0.85em;
+  position: absolute;
+  bottom: 10px;
+  right: 55px;
+}
+
+/* Move author's name and the post date out from the avatar. */
+.iphone #posts > article > header > h1,
+.iphone #posts > article > header > time.postdate {
+  padding-left: 50px;
+}
+.iphone #posts > article.no-avatar > header > h1,
+.iphone #posts > article.no-avatar > header > time.postdate {
+  padding-left: 5px;
+}
+
+/* "Show post actions" button is a custom image. */
+#posts > article > header > button {
+  border: none;
+  background-image: url("post-actions-yospos.png");
+  background-size: 100%;
+  background-repeat: no-repeat;
+}
+
+/* iPhone posts have a "show post actions" button in the top right. */
+.iphone #posts > article > header > button {
+  width: 38px;
+  height: 34px;
+  position: absolute;
+  top: 9px;
+  right: 10px;
+}
+
+/* iPad posts are similar. */
+.ipad #posts > article > header > button {
+  width: 28px;
+  height: 24px;
+  position: absolute;
+  bottom: 5px;
+  right: 12px;
+}
+
+/* Move author's name and the post date out from the "show post actions" button. */
+.iphone #posts > article > header > h1,
+.iphone #posts > article > header > time.postdate {
+  padding-right: 40px;
+}
+
+/* iPhone posts don't show regdates. */
+.iphone #posts > article > header > time.regdate {
+  display: none;
+}
+
+/* iPad posts show regdate smaller under author's name. */
+.ipad #posts > article > header > time.regdate {
+  font-size: 12px;
+}
+
+/* Highlight original poster. */
+#posts > article.role-op > header > h1 {
+  color: #199ed7;
+}
+
+/* Post bodies' text is a bit larger. */
+#posts > article > section {
+  font-size: 15px;
+}
+
+/* iPhone post bodies have a bit of padding. */
+.iphone #posts > article > section {
+  padding: 5px;
+}
+
+/* iPad post bodies have only bottom padding. */
+.ipad #posts > article > section {
+  padding: 0 0 15px 0;
+}
+
+/* Make links in post bodies pretty. */
+#posts > article > section a {
+  color: #57ff57;
+}
+
+/* Links to quoted posts should look a bit different. */
+#posts > article > section a.quote_link {
+  text-decoration: none;
+}
+
+/* Everything in spoiler tags is black. */
+#posts > article > section .bbc-spoiler,
+#posts > article > section .bbc-spoiler li {
+  color: black;
+}
+#posts > article > section .bbc-spoiler a:link,
+#posts > article > section .bbc-spoiler a:visited,
+#posts > article > section .bbc-spoiler a:active {
+  color: black;
+}
+
+/* All block headings, like 'quote' or 'code', ain't inline. */
+#posts > article > section .bbc-block h4,
+#posts > article > section .bbc-block h5 {
+  display: block;
+}
+
+/* Block headings like 'quote' are smaller and go in italics. */
+#posts > article > section .bbc-block h4 {
+  font-size: 13px;
+  font-style: italic;
+  margin: 0;
+  padding: 1px 0 2px 0;
+}
+
+/* Block headings like 'code' are even smaller but not in italics. */
+#posts > article > section .bbc-block h5 {
+  font-size: 12px;
+}
+
+/* Quotes are smaller and have a left border. */
+#posts > article > section blockquote {
+  font-size: 12px;
+  border-left: 1px solid #57ff57;
+  margin: 0;
+  padding: 0 10px;
+}
+
+/* Quote, code, etc. blocks on iPad get some margin. */
+.ipad #posts > article > section .bbc-block {
+  margin: 0 10px 1em 10px;
+}
+
+/* Quote, code, etc. blocks on iPad shouldn't hide behind the floating header. */
+.ipad #posts > article > section .bbc-block {
+  overflow: hidden;
+}
+
+/* Shrink quoted images. We can always long-tap to see a preview. */
+#posts > article > section blockquote img {
+  max-width: 160px;
+  max-height: 100px;
+}
+
+/* Add some space above and below code blocks. */
+#posts > article > section .bbc-block.code {
+  margin: 1em 0;
+}
+
+/* Lists on iPhone shan't be indented; it wastes too much space. */
+.iphone #posts > article > section ul,
+.iphone #posts > article > section ol {
+  margin: 0;
+  padding-left: 1.5em;
+}
+
+/* The little "edited by" blurb at the end of a post is smaller and in italics. */
+#posts > article > section p.editedby {
+  font-size: 0.75em;
+  font-style: italic;
+  margin-top: 5px;
 }
