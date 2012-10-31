@@ -78,11 +78,24 @@
     [self evalJavaScript:@"Awful.setStylesheetURL('%@')", url ? url : @""];
 }
 
+- (void)setDark:(BOOL)dark
+{
+    if (_dark == dark) return;
+    _dark = dark;
+    [self updateDark];
+}
+
+- (void)updateDark
+{
+    [self evalJavaScript:@"Awful.setDark(%@)", self.dark ? @"true" : @"false"];
+}
+
 #pragma mark - UIWebViewDelegate
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
     [self updateStylesheetURL];
+    [self updateDark];
     [self reloadData];
 }
 

@@ -19,6 +19,8 @@
 
 @property (nonatomic) NSURL *stylesheetURL;
 
+@property (getter=isDark, nonatomic) BOOL dark;
+
 @end
 
 

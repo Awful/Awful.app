@@ -20,6 +20,11 @@ Awful.setStylesheetURL = function(url){
   $('link').attr('href', url)
 }
 
+Awful.setDark = function(dark){
+  if (dark) $('body').addClass('dark')
+  else $('body').removeClass('dark')
+}
+
 window.Awful = Awful
 })()
 
