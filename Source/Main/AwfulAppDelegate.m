@@ -17,6 +17,7 @@
 #import "AwfulSettingsViewController.h"
 #import "AwfulSplitViewController.h"
 #import "AFNetworking.h"
+#import "NSFileManager+UserDirectories.h"
 
 @interface AwfulAppDelegate () <UITabBarControllerDelegate, AwfulLoginControllerDelegate>
 
@@ -68,8 +69,7 @@ static AwfulAppDelegate *_instance;
         NSFileManager *fileman = [NSFileManager defaultManager];
         NSURL *cssReadme = [[NSBundle mainBundle] URLForResource:@"Custom CSS README"
                                                    withExtension:@"txt"];
-        NSURL *documents = [[fileman URLsForDirectory:NSDocumentDirectory
-                                            inDomains:NSUserDomainMask] lastObject];
+        NSURL *documents = [fileman documentDirectory];
         NSURL *destination = [documents URLByAppendingPathComponent:@"README.txt"];
         NSError *error;
         BOOL ok = [fileman copyItemAtURL:cssReadme

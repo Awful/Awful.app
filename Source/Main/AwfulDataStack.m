@@ -7,6 +7,7 @@
 //
 
 #import "AwfulDataStack.h"
+#import "NSFileManager+UserDirectories.h"
 
 @interface AwfulDataStack ()
 
@@ -137,8 +138,7 @@
 
 + (NSURL *)defaultStoreURL
 {
-    NSURL *caches = [[[NSFileManager defaultManager] URLsForDirectory:NSCachesDirectory
-                                                            inDomains:NSUserDomainMask] lastObject];
+    NSURL *caches = [[NSFileManager defaultManager] cachesDirectory];
     return [caches URLByAppendingPathComponent:@"AwfulData.sqlite"];
 }
 

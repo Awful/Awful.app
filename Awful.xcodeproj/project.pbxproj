@@ -58,6 +58,7 @@
 		1C277CA51543554700CD2CCE /* AwfulSettingsChoiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C277CA41543554700CD2CCE /* AwfulSettingsChoiceViewController.m */; };
 		1C3CC799162876AE00088AA8 /* adminstar.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3CC797162876AE00088AA8 /* adminstar.png */; };
 		1C3CC79A162876AE00088AA8 /* modstar.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3CC798162876AE00088AA8 /* modstar.png */; };
+		1C40E5B01640F924004AAFA6 /* NSFileManager+UserDirectories.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C40E5AF1640F924004AAFA6 /* NSFileManager+UserDirectories.m */; };
 		1C6474C71569989800C72657 /* AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474AC1569989800C72657 /* AwfulForum.m */; };
 		1C6474CB1569989800C72657 /* AwfulThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474B51569989800C72657 /* AwfulThread.m */; };
 		1C6474CF1569989800C72657 /* _AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474BE1569989800C72657 /* _AwfulForum.m */; };
@@ -598,6 +599,8 @@
 		1C277CA41543554700CD2CCE /* AwfulSettingsChoiceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettingsChoiceViewController.m; sourceTree = "<group>"; };
 		1C3CC797162876AE00088AA8 /* adminstar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = adminstar.png; sourceTree = "<group>"; };
 		1C3CC798162876AE00088AA8 /* modstar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = modstar.png; sourceTree = "<group>"; };
+		1C40E5AE1640F924004AAFA6 /* NSFileManager+UserDirectories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSFileManager+UserDirectories.h"; path = "Source/Main/NSFileManager+UserDirectories.h"; sourceTree = SOURCE_ROOT; };
+		1C40E5AF1640F924004AAFA6 /* NSFileManager+UserDirectories.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSFileManager+UserDirectories.m"; path = "Source/Main/NSFileManager+UserDirectories.m"; sourceTree = SOURCE_ROOT; };
 		1C6474AB1569989800C72657 /* AwfulForum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForum.h; sourceTree = "<group>"; };
 		1C6474AC1569989800C72657 /* AwfulForum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForum.m; sourceTree = "<group>"; };
 		1C6474AD1569989800C72657 /* AwfulModels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulModels.h; sourceTree = "<group>"; };
@@ -1188,6 +1191,8 @@
 				1C090FBB163A6477003FD0A3 /* AwfulActionSheet.h */,
 				1C090FBC163A6477003FD0A3 /* AwfulActionSheet.m */,
 				1190F7F213BE4EDA00B9D271 /* main.m */,
+				1C40E5AE1640F924004AAFA6 /* NSFileManager+UserDirectories.h */,
+				1C40E5AF1640F924004AAFA6 /* NSFileManager+UserDirectories.m */,
 				1CFBED0B1632212C008AF641 /* NSURL+QueryDictionary.h */,
 				1CFBED0C1632212C008AF641 /* NSURL+QueryDictionary.m */,
 			);
@@ -2589,6 +2594,7 @@
 				1C090FBA163A40C1003FD0A3 /* AwfulPost.m in Sources */,
 				1C090FBD163A6477003FD0A3 /* AwfulActionSheet.m in Sources */,
 				1C23A0A2163E6C40006C7F39 /* AwfulPostsView.m in Sources */,
+				1C40E5B01640F924004AAFA6 /* NSFileManager+UserDirectories.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,6 +7,7 @@
 //
 
 #import "AwfulThreadTags.h"
+#import "NSFileManager+UserDirectories.h"
 
 @interface AwfulThreadTags ()
 
@@ -116,8 +117,7 @@ static NSString * const kNewThreadTagURLKey = @"AwfulNewThreadTagURL";
 
 - (NSURL *)cacheFolder
 {
-    NSURL *caches = [[[NSFileManager defaultManager] URLsForDirectory:NSCachesDirectory
-                                                            inDomains:NSUserDomainMask] lastObject];
+    NSURL *caches = [[NSFileManager defaultManager] cachesDirectory];
     return [caches URLByAppendingPathComponent:@"Thread Tags"];
 }
 
