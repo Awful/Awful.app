@@ -64,4 +64,52 @@
     [self reloadData];
 }
 
+- (BOOL)webView:(UIWebView *)webView
+    shouldStartLoadWithRequest:(NSURLRequest *)request
+    navigationType:(UIWebViewNavigationType)navigationType
+{
+    if ([[[request URL] scheme] isEqualToString:@"x-objc"]) {
+        [self bridgeJavaScriptToObjectiveCWithURL:[request URL]];
+        return NO;
+    }
+    return YES;
+}
+
+- (void)bridgeJavaScriptToObjectiveCWithURL:(NSURL *)url
+{
+    if (![self.delegate respondsToSelector:@selector(methodSignatureForSelector:)]) return;
+    NSArray *components = [url pathComponents];
+    if ([components count] < 2) return;
+    
+    SEL selector = NSSelectorFromString(components[1]);
+    if (![self.delegate respondsToSelector:selector]) return;
+    
+    NSArray *arguments;
+    if ([components count] >= 3) {
+        NSData *data = [components[2] dataUsingEncoding:NSUTF8StringEncoding];
+        NSError *error;
+        arguments = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+        if (!arguments) {
+            NSLog(@"error deserializing arguments from JavaScript for method %@: %@",
+                  NSStringFromSelector(selector), error);
+        }
+    }
+    NSUInteger expectedArguments = [[components[1] componentsSeparatedByString:@":"] count] - 1;
+    if ([arguments count] != expectedArguments) {
+        NSLog(@"expecting %u arguments for %@, got %u instead",
+              expectedArguments, NSStringFromSelector(selector), [arguments count]);
+        return;
+    }
+    
+    NSMethodSignature *signature = [self.delegate methodSignatureForSelector:selector];
+    if (!signature) return;
+    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
+    [invocation setSelector:selector];
+    for (NSUInteger i = 0; i < [arguments count]; i++) {
+        id arg = arguments[i];
+        [invocation setArgument:&arg atIndex:i + 2];
+    }
+    [invocation invokeWithTarget:self.delegate];
+}
+
 @end

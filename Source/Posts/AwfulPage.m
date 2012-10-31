@@ -41,7 +41,7 @@
 
 - (void)showThreadActionsFromRect:(CGRect)rect inView:(UIView *)view;
 
-- (void)showPostActions:(NSString *)postID fromRect:(CGRect)rect inView:(UIView *)view;
+- (void)showActionsForPost:(AwfulPost *)post fromRect:(CGRect)rect inView:(UIView *)view;
 
 @end
 
@@ -385,15 +385,8 @@
     [self presentViewController:nav animated:YES completion:nil];
 }
 
-- (void)showPostActions:(NSString *)postID fromRect:(CGRect)rect
+- (void)showActionsForPost:(AwfulPost *)post fromRect:(CGRect)rect inView:(UIView *)view
 {
-    rect = [self.view.superview convertRect:rect fromView:self.view];
-    [self showPostActions:postID fromRect:rect inView:self.view.superview];
-}
-
-- (void)showPostActions:(NSString *)postID fromRect:(CGRect)rect inView:(UIView *)view
-{
-    AwfulPost *post = [AwfulPost firstMatchingPredicate:@"postID = %@", postID];
     NSString *title = [NSString stringWithFormat:@"%@'s Post", post.authorName];
     if ([post.authorName isEqualToString:[AwfulSettings settings].currentUser.username]) {
         title = @"Your Post";
@@ -401,7 +394,7 @@
     AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:title];
     if (post.editableValue) {
         [sheet addButtonWithTitle:@"Edit" block:^{
-            [[AwfulHTTPClient client] getTextOfPostWithID:postID
+            [[AwfulHTTPClient client] getTextOfPostWithID:post.postID
                                                   andThen:^(NSError *error, NSString *text)
             {
                 if (error) {
@@ -423,7 +416,7 @@
     }
     if (!self.thread.isLockedValue) {
         [sheet addButtonWithTitle:@"Quote" block:^{
-            [[AwfulHTTPClient client] quoteTextOfPostWithID:postID
+            [[AwfulHTTPClient client] quoteTextOfPostWithID:post.postID
                                                     andThen:^(NSError *error, NSString *quotedText)
             {
                 if (error) {
@@ -446,7 +439,7 @@
     [sheet addButtonWithTitle:@"Copy Post URL" block:^{
         NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
                          "showthread.php?threadid=%@&pagenumber=%@#post%@",
-                         self.thread.threadID, @(self.currentPage), postID];
+                         self.thread.threadID, @(self.currentPage), post.postID];
         [UIPasteboard generalPasteboard].URL = [NSURL URLWithString:url];
     }];
     [sheet addButtonWithTitle:@"Mark Read to Here" block:^{
@@ -552,6 +545,14 @@
     return dict;
 }
 
+- (void)showActionsForPostAtIndex:(NSNumber *)index fromRectDictionary:(NSDictionary *)rectDict
+{
+    AwfulPost *post = self.posts[[index integerValue]];
+    CGRect rect = CGRectMake([rectDict[@"left"] floatValue], [rectDict[@"top"] floatValue],
+                             [rectDict[@"width"] floatValue], [rectDict[@"height"] floatValue]);
+    [self showActionsForPost:post fromRect:rect inView:self.postsView];
+}
+
 @end
 
 
@@ -613,13 +614,13 @@ NSString * const AwfulPageDidLoadNotification = @"com.awfulapp.Awful.PageDidLoad
     [self showThreadActionsFromRect:rect inView:self.pageBar.actionsComposeControl.superview];
 }
 
-- (void)showPostActions:(NSString *)postID fromRect:(CGRect)rect
+- (void)showActionsForPost:(AwfulPost *)post fromRect:(CGRect)rect inView:(UIView *)view
 {
     if (self.popController) {
         [self.popController dismissPopoverAnimated:YES];
         self.popController = nil;
     }
-    [self showPostActions:postID fromRect:rect inView:self.view];
+    [super showActionsForPost:post fromRect:rect inView:view];
 }
 
 - (IBAction)tappedCompose
