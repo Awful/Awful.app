@@ -17,6 +17,8 @@
 
 - (void)reloadData;
 
+@property (nonatomic) NSURL *stylesheetURL;
+
 @end
 
 

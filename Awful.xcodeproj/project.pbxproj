@@ -59,6 +59,8 @@
 		1C3CC799162876AE00088AA8 /* adminstar.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3CC797162876AE00088AA8 /* adminstar.png */; };
 		1C3CC79A162876AE00088AA8 /* modstar.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3CC798162876AE00088AA8 /* modstar.png */; };
 		1C40E5B01640F924004AAFA6 /* NSFileManager+UserDirectories.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C40E5AF1640F924004AAFA6 /* NSFileManager+UserDirectories.m */; };
+		1C40E5B21640FC2D004AAFA6 /* posts-view.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C40E5B11640FC2C004AAFA6 /* posts-view.css */; };
+		1C40E5B41640FDB9004AAFA6 /* posts-view-219.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C40E5B31640FDB8004AAFA6 /* posts-view-219.css */; };
 		1C6474C71569989800C72657 /* AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474AC1569989800C72657 /* AwfulForum.m */; };
 		1C6474CB1569989800C72657 /* AwfulThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474B51569989800C72657 /* AwfulThread.m */; };
 		1C6474CF1569989800C72657 /* _AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474BE1569989800C72657 /* _AwfulForum.m */; };
@@ -601,6 +603,8 @@
 		1C3CC798162876AE00088AA8 /* modstar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = modstar.png; sourceTree = "<group>"; };
 		1C40E5AE1640F924004AAFA6 /* NSFileManager+UserDirectories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSFileManager+UserDirectories.h"; path = "Source/Main/NSFileManager+UserDirectories.h"; sourceTree = SOURCE_ROOT; };
 		1C40E5AF1640F924004AAFA6 /* NSFileManager+UserDirectories.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSFileManager+UserDirectories.m"; path = "Source/Main/NSFileManager+UserDirectories.m"; sourceTree = SOURCE_ROOT; };
+		1C40E5B11640FC2C004AAFA6 /* posts-view.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view.css"; sourceTree = "<group>"; };
+		1C40E5B31640FDB8004AAFA6 /* posts-view-219.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-219.css"; sourceTree = "<group>"; };
 		1C6474AB1569989800C72657 /* AwfulForum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForum.h; sourceTree = "<group>"; };
 		1C6474AC1569989800C72657 /* AwfulForum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForum.m; sourceTree = "<group>"; };
 		1C6474AD1569989800C72657 /* AwfulModels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulModels.h; sourceTree = "<group>"; };
@@ -1429,6 +1433,8 @@
 				1C23A0A1163E6C40006C7F39 /* AwfulPostsView.m */,
 				1C23A0A4163E6E1D006C7F39 /* posts-view.html */,
 				1C23A0A6163E7D2B006C7F39 /* posts-view.js */,
+				1C40E5B11640FC2C004AAFA6 /* posts-view.css */,
+				1C40E5B31640FDB8004AAFA6 /* posts-view-219.css */,
 				8CCD4CC615B497A800E5893B /* dark.css */,
 				8CCD4CC715B497A800E5893B /* default.css */,
 				8C7E9C5F163B73B200E6FE3C /* default-219.css */,
@@ -2424,6 +2430,8 @@
 				8C5159E2163DB796000114F6 /* RP-20a6zc0.png in Resources */,
 				8C5159E3163DB796000114F6 /* fyad-zounds.png in Resources */,
 				1C23A0A5163E6E1D006C7F39 /* posts-view.html in Resources */,
+				1C40E5B21640FC2D004AAFA6 /* posts-view.css in Resources */,
+				1C40E5B41640FDB9004AAFA6 /* posts-view-219.css in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

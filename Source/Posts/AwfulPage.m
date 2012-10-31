@@ -20,6 +20,7 @@
 #import "AwfulThreadTitleLabel.h"
 #import "MWPhoto.h"
 #import "MWPhotoBrowser.h"
+#import "NSFileManager+UserDirectories.h"
 #import "NSManagedObject+Awful.h"
 #import "SVProgressHUD.h"
 
@@ -70,8 +71,28 @@
 {
     if (_thread == thread) return;
     _thread = thread;
-    self.titleLabel.text = _thread.title;
+    self.titleLabel.text = thread.title;
     [self updatePageBar];
+    self.postsView.stylesheetURL = StylesheetURLForForumWithID(thread.forum.forumID);
+}
+
+static NSURL* StylesheetURLForForumWithID(NSString *forumID)
+{
+    NSArray *listOfFilenames = @[
+        [NSString stringWithFormat:@"posts-view-%@.css", forumID],
+        @"posts-view.css"
+    ];
+    NSURL *documents = [[NSFileManager defaultManager] documentDirectory];
+    for (NSString *filename in listOfFilenames) {
+        NSURL *url = [documents URLByAppendingPathComponent:filename];
+        if ([url checkResourceIsReachableAndReturnError:NULL]) return url;
+    }
+    for (NSString *filename in listOfFilenames) {
+        NSURL *url = [[NSBundle mainBundle] URLForResource:filename
+                                             withExtension:nil];
+        if ([url checkResourceIsReachableAndReturnError:NULL]) return url;
+    }
+    return nil;
 }
 
 - (void)setPosts:(NSArray *)posts
@@ -186,6 +207,12 @@
     postsView.backgroundColor = [UIColor underPageBackgroundColor];
     self.postsView = postsView;
     [self.view addSubview:postsView];
+}
+
+- (AwfulPostsView *)postsView
+{
+    if (!_postsView) [self view];
+    return _postsView;
 }
 
 - (void)viewDidLoad

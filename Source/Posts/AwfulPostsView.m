@@ -53,14 +53,36 @@
         NSLog(@"error serializing posts: %@", error);
     }
     NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    NSString *js = [NSString stringWithFormat:@"Awful.posts(%@)", json];
-    [self.webView stringByEvaluatingJavaScriptFromString:js];
+    [self evalJavaScript:@"Awful.posts(%@)", json];
+}
+
+- (NSString *)evalJavaScript:(NSString *)script, ...
+{
+    va_list args;
+    va_start(args, script);
+    NSString *js = [[NSString alloc] initWithFormat:script arguments:args];
+    va_end(args);
+    return [self.webView stringByEvaluatingJavaScriptFromString:js];
+}
+
+- (void)setStylesheetURL:(NSURL *)stylesheetURL
+{
+    if (_stylesheetURL == stylesheetURL) return;
+    _stylesheetURL = stylesheetURL;
+    [self updateStylesheetURL];
+}
+
+- (void)updateStylesheetURL
+{
+    NSString *url = [self.stylesheetURL absoluteString];
+    [self evalJavaScript:@"Awful.setStylesheetURL('%@')", url ? url : @""];
 }
 
 #pragma mark - UIWebViewDelegate
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
+    [self updateStylesheetURL];
     [self reloadData];
 }
 

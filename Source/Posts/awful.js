@@ -16,6 +16,10 @@ Awful.invoke = function(selector, varargs){
   window.location.href = url
 }
 
+Awful.setStylesheetURL = function(url){
+  $('link').attr('href', url)
+}
+
 window.Awful = Awful
 })()
 
