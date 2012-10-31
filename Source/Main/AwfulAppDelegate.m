@@ -70,13 +70,20 @@ static AwfulAppDelegate *_instance;
         NSURL *cssReadme = [[NSBundle mainBundle] URLForResource:@"Custom CSS README"
                                                    withExtension:@"txt"];
         NSURL *documents = [fileman documentDirectory];
-        NSURL *destination = [documents URLByAppendingPathComponent:@"README.txt"];
+        NSURL *readmeDestination = [documents URLByAppendingPathComponent:@"README.txt"];
         NSError *error;
         BOOL ok = [fileman copyItemAtURL:cssReadme
-                                   toURL:destination
+                                   toURL:readmeDestination
                                    error:&error];
         if (!ok && [error code] != NSFileWriteFileExistsError) {
             NSLog(@"error copying README.txt to documents: %@", error);
+        }
+        NSURL *exampleCSS = [[NSBundle mainBundle] URLForResource:@"posts-view"
+                                                    withExtension:@"css"];
+        NSURL *cssDestination = [documents URLByAppendingPathComponent:@"example-posts-view.css"];
+        ok = [fileman copyItemAtURL:exampleCSS toURL:cssDestination error:&error];
+        if (!ok && [error code] != NSFileWriteFileExistsError) {
+            NSLog(@"error copying example-posts-view.css to documents: %@", error);
         }
         NSURL *oldData = [documents URLByAppendingPathComponent:@"AwfulData.sqlite"];
         ok = [fileman removeItemAtURL:oldData error:&error];

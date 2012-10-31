@@ -6,16 +6,22 @@ Awful to use your own stylesheet by placing .css files here. If you need any
 help, come visit the thread:
 http://forums.somethingawful.com/showthread.php?threadid=3510131
 
-If you place a file called "default.css" in this folder, it gets used for every
-thread in every forum you visit. It's added after our built-in defaults.css,
-which you can find here:
-https://github.com/AwfulDevs/Awful/blob/master/Resources/Posts%20View/default.css
+If you place a file called "posts-view.css" in this folder, it gets used for
+every thread in every forum you visit. The one built in to Awful is included in
+this folder as "example-posts-view.css". Feel free to use it as a starting
+point for your own stylesheet.
 
-And that's not all! You can tell Awful to use your stylesheet only in certain
+But that's not all! You can tell Awful to use your stylesheet only in certain
 forums. For example, notice that the URL for YOSPOS is:
 http://forums.somethingawful.com/forumdisplay.php?forumid=219
-If you place a file called "default-219.css" here, it will be used for all
+If you place a file called "page-view-219.css" here, it will be used for all
 threads in YOSPOS, but not for any other threads.
 
-Finally, if "Dark mode" is enabled in Awful's settings, the files "dark.css" and
-"dark-219.css" (for example) are used if you place them here.
+The <body> tag will have the "dark" class if the dark theme is enabled. It will
+have the "iphone" class on an iPhone, and the "iPad" class on an iPad. Have a
+look at the example to see how we use these classes.
+
+Once again, if you need any help, please come say hi.
+http://forums.somethingawful.com/showthread.php?threadid=3510131
+
+-pokeyman
