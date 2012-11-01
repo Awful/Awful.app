@@ -121,18 +121,6 @@
     [self evalJavaScript:@"Awful.dark(%@)", self.dark ? @"true" : @"false"];
 }
 
-- (void)setPreviouslySeenPostsToShow:(NSInteger)previouslySeenPostsToShow
-{
-    if (_previouslySeenPostsToShow == previouslySeenPostsToShow) return;
-    _previouslySeenPostsToShow = previouslySeenPostsToShow;
-    [self updatePreviouslySeenPostsToShow];
-}
-
-- (void)updatePreviouslySeenPostsToShow
-{
-    [self evalJavaScript:@"Awful.previouslySeenPostsToShow(%d)", self.previouslySeenPostsToShow];
-}
-
 - (UIScrollView *)scrollView
 {
     return self.webView.scrollView;
@@ -145,7 +133,6 @@
     dispatch_once(&_onceOnFirstLoad, ^{
         [self updateStylesheetURL];
         [self updateDark];
-        [self updatePreviouslySeenPostsToShow];
         [self reloadData];
     });
 }

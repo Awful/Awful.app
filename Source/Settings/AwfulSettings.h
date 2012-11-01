@@ -22,8 +22,6 @@
 
 @property (assign, nonatomic) BOOL showImages;
 
-@property (assign, nonatomic) NSInteger loadReadPosts;
-
 typedef enum
 {
     AwfulFirstTabForums,

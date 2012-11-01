@@ -67,35 +67,6 @@
 					<key>Key</key>
 					<string>show_images</string>
 				</dict>
-				<dict>
-					<key>Title</key>
-					<string>Load Read Posts</string>
-					<key>Choices</key>
-					<array>
-						<dict>
-							<key>Title</key>
-							<string>None</string>
-							<key>Value</key>
-							<integer>0</integer>
-						</dict>
-						<dict>
-							<key>Title</key>
-							<string>One post</string>
-							<key>Value</key>
-							<integer>1</integer>
-						</dict>
-						<dict>
-							<key>Title</key>
-							<string>Two posts</string>
-							<key>Value</key>
-							<integer>2</integer>
-						</dict>
-					</array>
-					<key>Default</key>
-					<integer>1</integer>
-					<key>Key</key>
-					<string>posts_above</string>
-				</dict>
 			</array>
 		</dict>
 		<dict>

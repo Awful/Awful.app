@@ -223,7 +223,6 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     postsView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     postsView.backgroundColor = [UIColor underPageBackgroundColor];
     postsView.dark = [AwfulSettings settings].darkTheme;
-    postsView.previouslySeenPostsToShow = [AwfulSettings settings].loadReadPosts;
     self.postsView = postsView;
     [self.view addSubview:postsView];
     

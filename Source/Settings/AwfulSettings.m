@@ -72,20 +72,6 @@ BOOL_PROPERTY(@"show_avatars", showAvatars, setShowAvatars)
 
 BOOL_PROPERTY(@"show_images", showImages, setShowImages)
 
-static NSString * const kLoadReadPosts = @"posts_above";
-
-- (NSInteger)loadReadPosts
-{
-    return [[NSUserDefaults standardUserDefaults] integerForKey:kLoadReadPosts];
-}
-
-- (void)setLoadReadPosts:(NSInteger)loadReadPosts
-{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setInteger:loadReadPosts forKey:kLoadReadPosts];
-    [defaults synchronize];
-}
-
 static NSString * const kFirstTab = @"default_load";
 struct {
     __unsafe_unretained NSString *Forums;

@@ -652,7 +652,6 @@ var Mustache;
 })(jQuery);
 ;(function(){
 var Awful = {}
-var previouslySeenPostsToShow = 0
 Awful.leftoverPosts = []
 
 Awful.posts = function(posts){
@@ -664,11 +663,10 @@ Awful.posts = function(posts){
     }
   })
   
-  var startAt = Math.max(firstUnseen - previouslySeenPostsToShow, 0)
-  Awful.leftoverPosts = posts.slice(0, startAt)
+  Awful.leftoverPosts = posts.slice(0, firstUnseen)
   $('#posts').empty()
   
-  $.each(posts.slice(startAt), function(i, post){
+  $.each(posts.slice(firstUnseen), function(i, post){
     render(post).appendTo('#posts')
   })
   return Awful.leftoverPosts.length
@@ -687,10 +685,6 @@ Awful.stylesheetURL = function(url){
 Awful.dark = function(dark){
   if (dark) $('body').addClass('dark')
   else $('body').removeClass('dark')
-}
-
-Awful.previouslySeenPostsToShow = function(previouslySeen){
-  previouslySeenPostsToShow = previouslySeen
 }
 
 Awful.showAllPosts = function(){
