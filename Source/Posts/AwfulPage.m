@@ -533,8 +533,7 @@ static void * const KVOContext = @"AwfulPostsView KVO";
                  [alert show];
              } else {
                  self.didJustMarkAsReadToHere = YES;
-                 NSUInteger postIndex = [self.posts indexOfObject:post];
-                 if (postIndex != NSNotFound) [self markPostsAsBeenSeenUpToPost:post];
+                 if ([self.posts containsObject:post]) [self markPostsAsBeenSeenUpToPost:post];
              }
          }];
     }];
