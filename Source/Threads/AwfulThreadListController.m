@@ -338,7 +338,7 @@ typedef enum {
     AwfulPage *page = [AwfulPage newDeviceSpecificPage];
     AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
     page.thread = thread;
-    [page loadPage:AwfulPageNextUnread];
+    [page loadPage:thread.seenValue ? AwfulPageNextUnread : 1];
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(didLoadThreadPage:) 
                                                  name:AwfulPageDidLoadNotification 

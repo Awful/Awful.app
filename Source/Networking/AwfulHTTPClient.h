@@ -48,6 +48,9 @@
 //              posts             - The posts gleaned from the page.
 //              advertisementHTML - The ad at the bottom of the page.
 //
+// N.B. If you've never read a thread before (or marked it unread), the "next unread" page is the
+//      last page of the thread. (It's an SA thing, I don't get it either.)
+//
 // Returns the enqueued network operation.
 - (NSOperation *)listPostsInThreadWithID:(NSString *)threadID
     onPage:(NSInteger)page
