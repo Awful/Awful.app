@@ -61,6 +61,9 @@
 
 
 @implementation AwfulPage
+{
+    BOOL _observingScrollView;
+}
 
 + (id)newDeviceSpecificPage
 {
@@ -254,6 +257,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 // Here, we simply override that first attempt to set the contentOffset too high.
 - (void)keepTopBarHiddenOnFirstView
 {
+    _observingScrollView = YES;
     [self.postsView.scrollView addObserver:self
                                 forKeyPath:@"contentOffset"
                                    options:NSKeyValueObservingOptionNew
@@ -276,6 +280,16 @@ static void * const KVOContext = @"AwfulPostsView KVO";
     if (offset.y < 0) {
         [object setContentOffset:CGPointZero];
         [object removeObserver:self forKeyPath:keyPath context:context];
+        _observingScrollView = NO;
+    }
+}
+
+- (void)dealloc
+{
+    if (_observingScrollView) {
+        [self.postsView.scrollView removeObserver:self
+                                       forKeyPath:@"contentOffset"
+                                          context:KVOContext];
     }
 }
 
