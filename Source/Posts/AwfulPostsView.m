@@ -56,12 +56,35 @@
         NSLog(@"error serializing posts: %@", error);
     }
     NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    [self evalJavaScript:@"Awful.posts(%@)", json];
+    [self sendPostsJSONAndTellDelegate:json];
+}
+
+- (void)showHiddenSeenPosts
+{
+    float diff = [[self evalJavaScript:@"Awful.showAllPosts()"] floatValue];
+    CGPoint offset = self.webView.scrollView.contentOffset;
+    offset.y += diff;
+    self.webView.scrollView.contentOffset = offset;
+    
+    if (diff > 0) {
+        if ([self.delegate respondsToSelector:@selector(postsView:numberOfHiddenSeenPosts:)]) {
+            [self.delegate postsView:self numberOfHiddenSeenPosts:0];
+        }
+    }
 }
 
 - (void)clearAllPosts
 {
-    [self evalJavaScript:@"Awful.posts([])"];
+    [self sendPostsJSONAndTellDelegate:nil];
+}
+
+- (void)sendPostsJSONAndTellDelegate:(NSString *)postsJSON
+{
+    if (!postsJSON) postsJSON = @"[]";
+    NSInteger hiddenSeenPosts = [[self evalJavaScript:@"Awful.posts(%@)", postsJSON] integerValue];
+    if ([self.delegate respondsToSelector:@selector(postsView:numberOfHiddenSeenPosts:)]) {
+        [self.delegate postsView:self numberOfHiddenSeenPosts:hiddenSeenPosts];
+    }
 }
 
 - (NSString *)evalJavaScript:(NSString *)script, ...
@@ -83,7 +106,7 @@
 - (void)updateStylesheetURL
 {
     NSString *url = [self.stylesheetURL absoluteString];
-    [self evalJavaScript:@"Awful.setStylesheetURL('%@')", url ? url : @""];
+    [self evalJavaScript:@"Awful.stylesheetURL('%@')", url ? url : @""];
 }
 
 - (void)setDark:(BOOL)dark
@@ -95,7 +118,19 @@
 
 - (void)updateDark
 {
-    [self evalJavaScript:@"Awful.setDark(%@)", self.dark ? @"true" : @"false"];
+    [self evalJavaScript:@"Awful.dark(%@)", self.dark ? @"true" : @"false"];
+}
+
+- (void)setPreviouslySeenPostsToShow:(NSInteger)previouslySeenPostsToShow
+{
+    if (_previouslySeenPostsToShow == previouslySeenPostsToShow) return;
+    _previouslySeenPostsToShow = previouslySeenPostsToShow;
+    [self updatePreviouslySeenPostsToShow];
+}
+
+- (void)updatePreviouslySeenPostsToShow
+{
+    [self evalJavaScript:@"Awful.previouslySeenPostsToShow(%d)", self.previouslySeenPostsToShow];
 }
 
 #pragma mark - UIWebViewDelegate
@@ -105,6 +140,7 @@
     dispatch_once(&_onceOnFirstLoad, ^{
         [self updateStylesheetURL];
         [self updateDark];
+        [self updatePreviouslySeenPostsToShow];
         [self reloadData];
     });
 }

@@ -17,11 +17,15 @@
 
 - (void)reloadData;
 
+- (void)showHiddenSeenPosts;
+
 - (void)clearAllPosts;
 
 @property (nonatomic) NSURL *stylesheetURL;
 
 @property (getter=isDark, nonatomic) BOOL dark;
+
+@property (nonatomic) NSInteger previouslySeenPostsToShow;
 
 @end
 
@@ -35,6 +39,8 @@
 - (NSDictionary *)postsView:(AwfulPostsView *)postsView postAtIndex:(NSInteger)index;
 
 @optional
+
+- (void)postsView:(AwfulPostsView *)postsView numberOfHiddenSeenPosts:(NSInteger)hiddenPosts;
 
 // In addition to the methods listed in this protocol, the delegate can have arbitrary methods
 // called from JavaScript running in the posts view. Parameters to methods called this way will be

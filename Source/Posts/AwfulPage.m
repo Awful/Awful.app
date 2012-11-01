@@ -34,6 +34,8 @@
 
 @property (weak, nonatomic) AwfulPostsView *postsView;
 
+@property (weak, nonatomic) UIButton *loadReadPostsButton;
+
 @property (copy, nonatomic) NSArray *posts;
 
 @property (nonatomic) BOOL didJustMarkAsReadToHere;
@@ -206,8 +208,20 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     postsView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     postsView.backgroundColor = [UIColor underPageBackgroundColor];
     postsView.dark = [AwfulSettings settings].darkTheme;
+    postsView.previouslySeenPostsToShow = [AwfulSettings settings].loadReadPosts;
     self.postsView = postsView;
     [self.view addSubview:postsView];
+    
+    UIButton *loadReadPostsButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [loadReadPostsButton setTitle:@"Load Read Posts" forState:UIControlStateNormal];
+    loadReadPostsButton.frame = CGRectMake(0, 0, 100, 40);
+    [loadReadPostsButton sizeToFit];
+    loadReadPostsButton.hidden = YES;
+    [loadReadPostsButton addTarget:postsView
+                            action:@selector(showHiddenSeenPosts)
+                  forControlEvents:UIControlEventTouchUpInside];
+    self.loadReadPostsButton = loadReadPostsButton;
+    [self.view addSubview:loadReadPostsButton];
 }
 
 - (AwfulPostsView *)postsView
@@ -557,6 +571,11 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                                                             dateStyle:NSDateFormatterMediumStyle
                                                             timeStyle:NSDateFormatterNoStyle];
     return dict;
+}
+
+- (void)postsView:(AwfulPostsView *)postsView numberOfHiddenSeenPosts:(NSInteger)hiddenPosts
+{
+    self.loadReadPostsButton.hidden = hiddenPosts == 0;
 }
 
 - (void)showActionsForPostAtIndex:(NSNumber *)index fromRectDictionary:(NSDictionary *)rectDict
