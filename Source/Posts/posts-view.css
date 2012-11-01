@@ -6,6 +6,11 @@
  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 */
 
+/* Width and height include padding and border. */
+* {
+  box-sizing: border-box;
+}
+
 /* Leave spacing up to posts. */
 body {
   margin: 0;
@@ -162,7 +167,7 @@ body.dark {
 /* iPad posts show author's name too. */
 .ipad #posts > article > header > h1 {
   font-size: 1em;
-  width: 118px;
+  width: 100%;
   margin: 0;
   display: block;
 }
@@ -240,9 +245,8 @@ body.dark {
 }
 
 /* Move author's name and the post date out from the "show post actions" button. */
-.iphone #posts > article > header > h1,
-.iphone #posts > article > header > time.postdate {
-  padding-right: 40px;
+.iphone #posts > article > header {
+  padding-right: 50px;
 }
 
 /* iPhone posts don't show regdates. */
@@ -250,9 +254,10 @@ body.dark {
   display: none;
 }
 
-/* iPad posts show regdate smaller under author's name. */
+/* iPad posts show regdate smaller, under author's name, on its own line. */
 .ipad #posts > article > header > time.regdate {
   font-size: 12px;
+  display: block;
 }
 
 /* Highlight original poster. */
