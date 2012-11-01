@@ -49,6 +49,8 @@
 
 @property (copy, nonatomic) NSArray *posts;
 
+@property (copy, nonatomic) NSString *advertisementHTML;
+
 @property (nonatomic) BOOL didJustMarkAsReadToHere;
 
 @property (readonly, nonatomic) UILabel *titleLabel;
@@ -118,8 +120,6 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     AwfulPost *anyPost = [posts lastObject];
     self.thread = anyPost.thread;
     self.currentPage = anyPost.threadPageValue;
-    [self.postsView reloadData];
-    self.postsView.scrollView.contentOffset = CGPointZero;
     [[NSNotificationCenter defaultCenter] postNotificationName:AwfulPageDidLoadNotification
                                                         object:self.thread
                                                       userInfo:@{ @"page" : self }];
@@ -159,8 +159,10 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
             [alert show];
             return;
         }
-        // TODO pass advertisement along to posts view
         self.posts = posts;
+        self.advertisementHTML = advertisementHTML;
+        [self.postsView reloadData];
+        self.postsView.scrollView.contentOffset = CGPointZero;
         AwfulPost *anyPost = [self.posts lastObject];
         self.currentPage = anyPost.threadPageValue;
         [self updatePageBar];
@@ -595,6 +597,11 @@ static void * const KVOContext = @"AwfulPostsView KVO";
                                                             dateStyle:NSDateFormatterMediumStyle
                                                             timeStyle:NSDateFormatterNoStyle];
     return dict;
+}
+
+- (NSString *)advertisementHTMLForPostsView:(AwfulPostsView *)postsView
+{
+    return self.advertisementHTML;
 }
 
 - (void)postsView:(AwfulPostsView *)postsView numberOfHiddenSeenPosts:(NSInteger)hiddenPosts

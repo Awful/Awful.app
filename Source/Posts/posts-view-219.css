@@ -36,6 +36,11 @@ img, iframe {
   max-width: 100%;
 }
 
+/* Images and iframes shouldn't stretch out from not breaking tables. */
+img, iframe {
+  height: auto;
+}
+
 /* Don't show default menu when long-tapping text. */
 body {
   -webkit-touch-callout: none;
@@ -322,4 +327,9 @@ body {
   font-size: 0.75em;
   font-style: italic;
   margin-top: 5px;
+}
+
+/* Center the ad. */
+body > #ad {
+  text-align: center;
 }

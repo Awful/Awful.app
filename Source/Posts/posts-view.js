@@ -696,6 +696,10 @@ Awful.showAllPosts = function(){
   return firstAlreadyShown.offset().top - oldTop
 }
 
+Awful.ad = function(ad){
+  $('#ad').html(ad)
+}
+
 function render(post) {
   return $('#postTemplate').mustache(post)
 }

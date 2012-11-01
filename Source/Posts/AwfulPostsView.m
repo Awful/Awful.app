@@ -57,6 +57,23 @@
     }
     NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     [self sendPostsJSONAndTellDelegate:json];
+    [self reloadAd];
+}
+
+- (void)reloadAd
+{
+    if (![self.delegate respondsToSelector:@selector(advertisementHTMLForPostsView:)])
+        return;
+    NSString *ad = [self.delegate advertisementHTMLForPostsView:self];
+    if ([ad length] == 0) ad = @"";
+    NSError *error;
+    NSData *adJSON = [NSJSONSerialization dataWithJSONObject:@[ ad ] options:0 error:&error];
+    if (!adJSON) {
+        NSLog(@"error serializing ad: %@", error);
+        return;
+    }
+    [self evalJavaScript:@"Awful.ad(%@[0])",
+     [[NSString alloc] initWithData:adJSON encoding:NSUTF8StringEncoding]];
 }
 
 - (void)showHiddenSeenPosts

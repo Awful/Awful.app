@@ -40,6 +40,8 @@
 
 @optional
 
+- (NSString *)advertisementHTMLForPostsView:(AwfulPostsView *)postsView;
+
 - (void)postsView:(AwfulPostsView *)postsView numberOfHiddenSeenPosts:(NSInteger)hiddenPosts;
 
 - (void)postsView:(AwfulPostsView *)postsView didTapLinkToURL:(NSURL *)url;
