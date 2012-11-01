@@ -601,6 +601,7 @@ withImagePlaceholderResults:placeholderResults
                  // the refresh comes through.
                  if (!postID) {
                      [SVProgressHUD dismiss];
+                     // TODO load next page if current page is full!
                      [self.page loadPage:self.page.currentPage];
                      [self.presentingViewController dismissModalViewControllerAnimated:YES];
                      return;
