@@ -133,6 +133,11 @@
     [self evalJavaScript:@"Awful.previouslySeenPostsToShow(%d)", self.previouslySeenPostsToShow];
 }
 
+- (UIScrollView *)scrollView
+{
+    return self.webView.scrollView;
+}
+
 #pragma mark - UIWebViewDelegate
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView

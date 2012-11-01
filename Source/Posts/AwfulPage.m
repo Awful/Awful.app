@@ -24,6 +24,16 @@
 #import "NSManagedObject+Awful.h"
 #import "SVProgressHUD.h"
 
+@interface TopBarView : UIView
+
+@end
+
+
+@implementation TopBarView
+
+@end
+
+
 @interface AwfulPage () <AwfulPostsViewDelegate>
 
 @property (nonatomic) NSOperation *networkOperation;
@@ -33,6 +43,8 @@
 @property (nonatomic) AwfulSpecificPageViewController *specificPageController;
 
 @property (weak, nonatomic) AwfulPostsView *postsView;
+
+@property (weak, nonatomic) TopBarView *topBar;
 
 @property (weak, nonatomic) UIButton *loadReadPostsButton;
 
@@ -105,6 +117,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     self.thread = anyPost.thread;
     self.currentPage = anyPost.threadPageValue;
     [self.postsView reloadData];
+    self.postsView.scrollView.contentOffset = CGPointZero;
     [[NSNotificationCenter defaultCenter] postNotificationName:AwfulPageDidLoadNotification
                                                         object:self.thread
                                                       userInfo:@{ @"page" : self }];
@@ -212,6 +225,14 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     self.postsView = postsView;
     [self.view addSubview:postsView];
     
+    TopBarView *topBar = [TopBarView new];
+    topBar.frame = CGRectMake(0, 0, self.view.frame.size.width, -44);
+    topBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    [postsView.scrollView addSubview:topBar];
+    self.topBar = topBar;
+    postsView.scrollView.contentInset = UIEdgeInsetsMake(44, 0, 0, 0);
+    [self keepTopBarHiddenOnFirstView];
+    
     UIButton *loadReadPostsButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [loadReadPostsButton setTitle:@"Load Read Posts" forState:UIControlStateNormal];
     loadReadPostsButton.frame = CGRectMake(0, 0, 100, 40);
@@ -221,13 +242,45 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                             action:@selector(showHiddenSeenPosts)
                   forControlEvents:UIControlEventTouchUpInside];
     self.loadReadPostsButton = loadReadPostsButton;
-    [self.view addSubview:loadReadPostsButton];
+    [self.topBar addSubview:loadReadPostsButton];
 }
 
 - (AwfulPostsView *)postsView
 {
     if (!_postsView) [self view];
     return _postsView;
+}
+
+// We want to hide the top bar until the user reveals it. Unfortunately, AwfulPostsView's scrollView
+// changes its contentSize at some arbitrary point (when it loads the posts we send it), which
+// changes the contentOffset to reveal the top bar.
+//
+// Here, we simply override that first attempt to set the contentOffset too high.
+- (void)keepTopBarHiddenOnFirstView
+{
+    [self.postsView.scrollView addObserver:self
+                                forKeyPath:@"contentOffset"
+                                   options:NSKeyValueObservingOptionNew
+                                   context:KVOContext];
+}
+
+static void * const KVOContext = @"AwfulPostsView KVO";
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context
+{
+    if (context != KVOContext) {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+        return;
+    }
+    
+    CGPoint offset = [change[NSKeyValueChangeNewKey] CGPointValue];
+    if (offset.y < 0) {
+        [object setContentOffset:CGPointZero];
+        [object removeObserver:self forKeyPath:keyPath context:context];
+    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated

@@ -27,6 +27,8 @@
 
 @property (nonatomic) NSInteger previouslySeenPostsToShow;
 
+@property (readonly, nonatomic) UIScrollView *scrollView;
+
 @end
 
 
