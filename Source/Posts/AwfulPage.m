@@ -615,7 +615,6 @@ static void * const KVOContext = @"AwfulPostsView KVO";
 @end
 
 
-NSString * const AwfulPageWillLoadNotification = @"com.awfulapp.Awful.PageWillLoadNotification";
 NSString * const AwfulPageDidLoadNotification = @"com.awfulapp.Awful.PageDidLoadNotification";
 
 
