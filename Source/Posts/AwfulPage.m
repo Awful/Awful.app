@@ -26,10 +26,11 @@
 
 @interface TopBarView : UIView
 
-@end
+@property (readonly, weak, nonatomic) UIButton *goToForumButton;
 
+@property (readonly, weak, nonatomic) UIButton *loadReadPostsButton;
 
-@implementation TopBarView
+@property (readonly, weak, nonatomic) UIButton *scrollToBottomButton;
 
 @end
 
@@ -45,8 +46,6 @@
 @property (weak, nonatomic) AwfulPostsView *postsView;
 
 @property (weak, nonatomic) TopBarView *topBar;
-
-@property (weak, nonatomic) UIButton *loadReadPostsButton;
 
 @property (copy, nonatomic) NSArray *posts;
 
@@ -228,21 +227,18 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     TopBarView *topBar = [TopBarView new];
     topBar.frame = CGRectMake(0, 0, self.view.frame.size.width, -44);
     topBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    topBar.goToForumButton.enabled = NO;
+    [topBar.loadReadPostsButton addTarget:postsView
+                                   action:@selector(showHiddenSeenPosts)
+                         forControlEvents:UIControlEventTouchUpInside];
+    topBar.loadReadPostsButton.enabled = NO;
+    [topBar.scrollToBottomButton addTarget:self
+                                    action:@selector(scrollToBottom)
+                          forControlEvents:UIControlEventTouchUpInside];
     [postsView.scrollView addSubview:topBar];
     self.topBar = topBar;
     postsView.scrollView.contentInset = UIEdgeInsetsMake(44, 0, 0, 0);
     [self keepTopBarHiddenOnFirstView];
-    
-    UIButton *loadReadPostsButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [loadReadPostsButton setTitle:@"Load Read Posts" forState:UIControlStateNormal];
-    loadReadPostsButton.frame = CGRectMake(0, 0, 100, 40);
-    [loadReadPostsButton sizeToFit];
-    loadReadPostsButton.hidden = YES;
-    [loadReadPostsButton addTarget:postsView
-                            action:@selector(showHiddenSeenPosts)
-                  forControlEvents:UIControlEventTouchUpInside];
-    self.loadReadPostsButton = loadReadPostsButton;
-    [self.topBar addSubview:loadReadPostsButton];
 }
 
 - (AwfulPostsView *)postsView
@@ -281,6 +277,13 @@ static void * const KVOContext = @"AwfulPostsView KVO";
         [object setContentOffset:CGPointZero];
         [object removeObserver:self forKeyPath:keyPath context:context];
     }
+}
+
+- (void)scrollToBottom
+{
+    UIScrollView *scrollView = self.postsView.scrollView;
+    [scrollView scrollRectToVisible:CGRectMake(0, scrollView.contentSize.height - 1, 1, 1)
+                           animated:YES];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -627,7 +630,7 @@ static void * const KVOContext = @"AwfulPostsView KVO";
 
 - (void)postsView:(AwfulPostsView *)postsView numberOfHiddenSeenPosts:(NSInteger)hiddenPosts
 {
-    self.loadReadPostsButton.hidden = hiddenPosts == 0;
+    self.topBar.loadReadPostsButton.enabled = hiddenPosts > 0;
 }
 
 - (void)showActionsForPostAtIndex:(NSNumber *)index fromRectDictionary:(NSDictionary *)rectDict
@@ -733,6 +736,81 @@ NSString * const AwfulPageDidLoadNotification = @"com.awfulapp.Awful.PageDidLoad
         [self.popController dismissPopoverAnimated:YES];
         self.popController = nil;
     }
+}
+
+@end
+
+
+@interface TopBarView ()
+
+@property (weak, nonatomic) UIButton *goToForumButton;
+
+@property (weak, nonatomic) UIButton *loadReadPostsButton;
+
+@property (weak, nonatomic) UIButton *scrollToBottomButton;
+
+@end
+
+
+@implementation TopBarView
+
+- (id)initWithFrame:(CGRect)frame
+{
+    if (!(self = [super initWithFrame:frame])) return nil;
+    
+    self.backgroundColor = [UIColor colorWithWhite:0.902 alpha:1];
+    
+    UIButton *goToForumButton = [self makeButton];
+    [goToForumButton setTitle:@"Go To\nForum" forState:UIControlStateNormal];
+    [goToForumButton setImage:[UIImage imageNamed:@"go-to-forum.png"]
+                     forState:UIControlStateNormal];
+    _goToForumButton = goToForumButton;
+    
+    UIButton *loadReadPostsButton = [self makeButton];
+    [loadReadPostsButton setTitle:@"Load Read\nPosts" forState:UIControlStateNormal];
+    [loadReadPostsButton setImage:[UIImage imageNamed:@"load-read-posts.png"]
+                         forState:UIControlStateNormal];
+    _loadReadPostsButton = loadReadPostsButton;
+    
+    UIButton *scrollToBottomButton = [self makeButton];
+    [scrollToBottomButton setTitle:@"Scroll To\nBottom" forState:UIControlStateNormal];
+    [scrollToBottomButton setImage:[UIImage imageNamed:@"scroll-to-bottom.png"]
+                          forState:UIControlStateNormal];
+    _scrollToBottomButton = scrollToBottomButton;
+    
+    return self;
+}
+
+- (UIButton *)makeButton
+{
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    button.titleEdgeInsets = UIEdgeInsetsMake(0, 6, 0, 0);
+    button.titleLabel.font = [UIFont boldSystemFontOfSize:12];
+    button.titleLabel.numberOfLines = 2;
+    button.titleLabel.shadowOffset = CGSizeMake(0, 1);
+    [button setTitleColor:[UIColor colorWithHue:0.590
+                                     saturation:0.771
+                                     brightness:0.376
+                                          alpha:1.000]
+                 forState:UIControlStateNormal];
+    [button setTitleShadowColor:[UIColor whiteColor]
+                       forState:UIControlStateNormal];
+    [button setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+    button.imageEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0);
+    [self addSubview:button];
+    return button;
+}
+
+- (void)layoutSubviews
+{
+    CGFloat buttonWidth = floorf(self.bounds.size.width / 3);
+    CGFloat x = floorf(self.bounds.size.width - buttonWidth * 3) / 2;
+    
+    self.goToForumButton.frame = CGRectMake(x, 0, buttonWidth, self.bounds.size.height);
+    x += buttonWidth;
+    self.loadReadPostsButton.frame = CGRectMake(x, 0, buttonWidth, self.bounds.size.height);
+    x += buttonWidth;
+    self.scrollToBottomButton.frame = CGRectMake(x, 0, buttonWidth, self.bounds.size.height);
 }
 
 @end

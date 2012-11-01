@@ -61,6 +61,7 @@
 		1C40E5B01640F924004AAFA6 /* NSFileManager+UserDirectories.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C40E5AF1640F924004AAFA6 /* NSFileManager+UserDirectories.m */; };
 		1C40E5B21640FC2D004AAFA6 /* posts-view.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C40E5B11640FC2C004AAFA6 /* posts-view.css */; };
 		1C40E5B41640FDB9004AAFA6 /* posts-view-219.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C40E5B31640FDB8004AAFA6 /* posts-view-219.css */; };
+		1C40E5C1164296DE004AAFA6 /* load-read-posts@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C40E5C0164296DE004AAFA6 /* load-read-posts@2x.png */; };
 		1C6474C71569989800C72657 /* AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474AC1569989800C72657 /* AwfulForum.m */; };
 		1C6474CB1569989800C72657 /* AwfulThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474B51569989800C72657 /* AwfulThread.m */; };
 		1C6474CF1569989800C72657 /* _AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474BE1569989800C72657 /* _AwfulForum.m */; };
@@ -448,9 +449,8 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765080DF74369002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765070DF74369002DB57D /* CoreGraphics.framework */; };
-		8C2D931D16231BFE00DF604A /* downArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C2D931716231BFE00DF604A /* downArrow.png */; };
-		8C2D931F16231BFE00DF604A /* forumsListGrey.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C2D931916231BFE00DF604A /* forumsListGrey.png */; };
-		8C2D932116231BFE00DF604A /* load.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C2D931B16231BFE00DF604A /* load.png */; };
+		8C2D931D16231BFE00DF604A /* scroll-to-bottom@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C2D931716231BFE00DF604A /* scroll-to-bottom@2x.png */; };
+		8C2D931F16231BFE00DF604A /* go-to-forum@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C2D931916231BFE00DF604A /* go-to-forum@2x.png */; };
 		8C4141A9163B77880048942F /* post-actions-yospos.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C4141A8163B77880048942F /* post-actions-yospos.png */; };
 		8C48EA1E159BC2AC00A59691 /* AwfulFetchedTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C48EA1D159BC2AC00A59691 /* AwfulFetchedTableViewController.m */; };
 		8C5159DA163DB796000114F6 /* adtrw-hokutonoken.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C5159D0163DB796000114F6 /* adtrw-hokutonoken.png */; };
@@ -464,8 +464,6 @@
 		8C5159E2163DB796000114F6 /* RP-20a6zc0.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C5159D8163DB796000114F6 /* RP-20a6zc0.png */; };
 		8C5159E3163DB796000114F6 /* fyad-zounds.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C5159D9163DB796000114F6 /* fyad-zounds.png */; };
 		8C9B02C51623630F00676B98 /* downArrowDark.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B02BF1623630F00676B98 /* downArrowDark.png */; };
-		8C9B02C71623630F00676B98 /* forumsListGreyDark.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B02C11623630F00676B98 /* forumsListGreyDark.png */; };
-		8C9B02C91623630F00676B98 /* loadDark.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B02C31623630F00676B98 /* loadDark.png */; };
 		8C9B0357162368E800676B98 /* post-actions-dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B0355162368E800676B98 /* post-actions-dark.png */; };
 		8C9B0358162368E800676B98 /* post-actions-dark-read.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B0356162368E800676B98 /* post-actions-dark-read.png */; };
 		8CB5468D15BD936600E8BEC1 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CB5468C15BD936600E8BEC1 /* ImageIO.framework */; };
@@ -602,6 +600,7 @@
 		1C40E5AF1640F924004AAFA6 /* NSFileManager+UserDirectories.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSFileManager+UserDirectories.m"; path = "Source/Main/NSFileManager+UserDirectories.m"; sourceTree = SOURCE_ROOT; };
 		1C40E5B11640FC2C004AAFA6 /* posts-view.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view.css"; sourceTree = "<group>"; };
 		1C40E5B31640FDB8004AAFA6 /* posts-view-219.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-219.css"; sourceTree = "<group>"; };
+		1C40E5C0164296DE004AAFA6 /* load-read-posts@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "load-read-posts@2x.png"; sourceTree = "<group>"; };
 		1C6474AB1569989800C72657 /* AwfulForum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForum.h; sourceTree = "<group>"; };
 		1C6474AC1569989800C72657 /* AwfulForum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForum.m; sourceTree = "<group>"; };
 		1C6474AD1569989800C72657 /* AwfulModels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulModels.h; sourceTree = "<group>"; };
@@ -784,9 +783,8 @@
 		1D6058910D05DD3D006BFB54 /* Awful.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Awful.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765070DF74369002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		8C2D931716231BFE00DF604A /* downArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = downArrow.png; sourceTree = "<group>"; };
-		8C2D931916231BFE00DF604A /* forumsListGrey.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = forumsListGrey.png; sourceTree = "<group>"; };
-		8C2D931B16231BFE00DF604A /* load.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = load.png; sourceTree = "<group>"; };
+		8C2D931716231BFE00DF604A /* scroll-to-bottom@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "scroll-to-bottom@2x.png"; sourceTree = "<group>"; };
+		8C2D931916231BFE00DF604A /* go-to-forum@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "go-to-forum@2x.png"; sourceTree = "<group>"; };
 		8C4141A8163B77880048942F /* post-actions-yospos.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "post-actions-yospos.png"; sourceTree = "<group>"; };
 		8C48EA1C159BC2AC00A59691 /* AwfulFetchedTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFetchedTableViewController.h; sourceTree = "<group>"; };
 		8C48EA1D159BC2AC00A59691 /* AwfulFetchedTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulFetchedTableViewController.m; sourceTree = "<group>"; };
@@ -801,8 +799,6 @@
 		8C5159D8163DB796000114F6 /* RP-20a6zc0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "RP-20a6zc0.png"; sourceTree = "<group>"; };
 		8C5159D9163DB796000114F6 /* fyad-zounds.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-zounds.png"; sourceTree = "<group>"; };
 		8C9B02BF1623630F00676B98 /* downArrowDark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = downArrowDark.png; path = Resources/images/downArrowDark.png; sourceTree = SOURCE_ROOT; };
-		8C9B02C11623630F00676B98 /* forumsListGreyDark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = forumsListGreyDark.png; path = Resources/images/forumsListGreyDark.png; sourceTree = SOURCE_ROOT; };
-		8C9B02C31623630F00676B98 /* loadDark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = loadDark.png; path = Resources/images/loadDark.png; sourceTree = SOURCE_ROOT; };
 		8C9B0355162368E800676B98 /* post-actions-dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "post-actions-dark.png"; sourceTree = "<group>"; };
 		8C9B0356162368E800676B98 /* post-actions-dark-read.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "post-actions-dark-read.png"; sourceTree = "<group>"; };
 		8CB5468C15BD936600E8BEC1 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
@@ -1565,9 +1561,6 @@
 				8CCD504415B783FC00E5893B /* arrowleft.png */,
 				8CCD504515B783FC00E5893B /* arrowleft@2x.png */,
 				8CCD504615B783FC00E5893B /* arrowright.png */,
-				8C2D931716231BFE00DF604A /* downArrow.png */,
-				8C2D931916231BFE00DF604A /* forumsListGrey.png */,
-				8C2D931B16231BFE00DF604A /* load.png */,
 				1C13FF90161CDDD3000ED2B1 /* bookmarks-landscape.png */,
 				1C13FF91161CDDD4000ED2B1 /* bookmarks-landscape@2x.png */,
 				1C13FF92161CDDD4000ED2B1 /* bookmarks.png */,
@@ -1582,12 +1575,12 @@
 				8CCD524315B783FC00E5893B /* forum-arrow-down@2x.png */,
 				8CCD524415B783FC00E5893B /* forum-arrow-right.png */,
 				8CCD524515B783FC00E5893B /* forum-arrow-right@2x.png */,
-				8C9B02C11623630F00676B98 /* forumsListGreyDark.png */,
+				8C2D931916231BFE00DF604A /* go-to-forum@2x.png */,
 				8CCD524D15B783FC00E5893B /* icon_arrow_left.png */,
 				8CCD524E15B783FC00E5893B /* icon_arrow_right.png */,
 				8CCD525115B783FC00E5893B /* list_icon.png */,
 				8CCD525215B783FC00E5893B /* list_icon@2x.png */,
-				8C9B02C31623630F00676B98 /* loadDark.png */,
+				1C40E5C0164296DE004AAFA6 /* load-read-posts@2x.png */,
 				1C3CC798162876AE00088AA8 /* modstar.png */,
 				1CBD5271162DCB1B00928740 /* navbar-back-landscape.png */,
 				1CBD5272162DCB1B00928740 /* navbar-back-landscape@2x.png */,
@@ -1616,6 +1609,7 @@
 				8CCD525F15B783FC00E5893B /* rating3.png */,
 				8CCD526015B783FC00E5893B /* rating4.png */,
 				8CCD526115B783FC00E5893B /* rating5.png */,
+				8C2D931716231BFE00DF604A /* scroll-to-bottom@2x.png */,
 				1CFBECFC1631A6EA008AF641 /* star-off.png */,
 				1CFBECFD1631A6EA008AF641 /* star-off@2x.png */,
 				1CFBECFE1631A6EA008AF641 /* star-on.png */,
@@ -2095,12 +2089,9 @@
 				1CBD5284162DCB1B00928740 /* navbar-button@2x.png in Resources */,
 				1CBD5288162DCB1B00928740 /* navbar@2x.png in Resources */,
 				8CDBA0781621D641000EE760 /* post-actions.png in Resources */,
-				8C2D931D16231BFE00DF604A /* downArrow.png in Resources */,
-				8C2D931F16231BFE00DF604A /* forumsListGrey.png in Resources */,
-				8C2D932116231BFE00DF604A /* load.png in Resources */,
+				8C2D931D16231BFE00DF604A /* scroll-to-bottom@2x.png in Resources */,
+				8C2D931F16231BFE00DF604A /* go-to-forum@2x.png in Resources */,
 				8C9B02C51623630F00676B98 /* downArrowDark.png in Resources */,
-				8C9B02C71623630F00676B98 /* forumsListGreyDark.png in Resources */,
-				8C9B02C91623630F00676B98 /* loadDark.png in Resources */,
 				8C9B0357162368E800676B98 /* post-actions-dark.png in Resources */,
 				8C9B0358162368E800676B98 /* post-actions-dark-read.png in Resources */,
 				1CFBECDB162F4ED7008AF641 /* pagebar-button-selected.png in Resources */,
@@ -2420,6 +2411,7 @@
 				1C23A0A5163E6E1D006C7F39 /* posts-view.html in Resources */,
 				1C40E5B21640FC2D004AAFA6 /* posts-view.css in Resources */,
 				1C40E5B41640FDB9004AAFA6 /* posts-view-219.css in Resources */,
+				1C40E5C1164296DE004AAFA6 /* load-read-posts@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
