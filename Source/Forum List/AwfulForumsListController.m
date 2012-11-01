@@ -25,7 +25,7 @@
 - (NSFetchedResultsController *)createFetchedResultsController
 {
     NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulForum entityName]];
-    request.predicate = [NSPredicate predicateWithFormat:@"parentForum == nil or parentForum.expanded == YES"];
+    request.predicate = [NSPredicate predicateWithFormat:@"(parentForum == nil or parentForum.expanded == YES) AND forumID != 90"];
     request.sortDescriptors = @[
         [NSSortDescriptor sortDescriptorWithKey:@"category.index" ascending:YES],
         [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES]
