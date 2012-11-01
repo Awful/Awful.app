@@ -163,7 +163,7 @@
         }
         return NO;
     }
-    return NO;
+    return YES;
 }
 
 - (void)bridgeJavaScriptToObjectiveCWithURL:(NSURL *)url
