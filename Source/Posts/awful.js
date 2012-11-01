@@ -1,7 +1,7 @@
 ;(function(){
 var Awful = {}
 var previouslySeenPostsToShow = 0
-var leftoverPosts = []
+Awful.leftoverPosts = []
 
 Awful.posts = function(posts){
   var firstUnseen = 0
@@ -13,13 +13,13 @@ Awful.posts = function(posts){
   })
   
   var startAt = Math.max(firstUnseen - previouslySeenPostsToShow, 0)
-  leftoverPosts = posts.slice(0, startAt)
+  Awful.leftoverPosts = posts.slice(0, startAt)
   $('#posts').empty()
   
   $.each(posts.slice(startAt), function(i, post){
     render(post).appendTo('#posts')
   })
-  return leftoverPosts.length
+  return Awful.leftoverPosts.length
 }
 
 Awful.invoke = function(selector, varargs){
@@ -44,7 +44,7 @@ Awful.previouslySeenPostsToShow = function(previouslySeen){
 Awful.showAllPosts = function(){
   var firstAlreadyShown = $('#posts > article').first()
   var oldTop = firstAlreadyShown.offset().top
-  $.each(leftoverPosts, function(i, post){
+  $.each(Awful.leftoverPosts, function(i, post){
     render(post).insertBefore(firstAlreadyShown)
   })
   return firstAlreadyShown.offset().top - oldTop
@@ -71,10 +71,11 @@ $(function(){
 function showPostActions(e) {
   var button = $(e.target)
   var post = button.closest('article')
+  var indexOfPost = post.index() + Awful.leftoverPosts.length
   var rect = button.offset()
   rect.left -= window.pageXOffset
   rect.top -= window.pageYOffset
-  Awful.invoke("showActionsForPostAtIndex:fromRectDictionary:", post.index(), rect)
+  Awful.invoke("showActionsForPostAtIndex:fromRectDictionary:", indexOfPost, rect)
 }
 
 function previewImage(e) {
