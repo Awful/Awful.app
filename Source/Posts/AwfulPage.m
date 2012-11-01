@@ -552,50 +552,6 @@ static void * const KVOContext = @"AwfulPostsView KVO";
     return YES;
 }
 
-#pragma mark - Web view delegate
-
-- (BOOL)webView:(UIWebView *)webView
-    shouldStartLoadWithRequest:(NSURLRequest *)request
-    navigationType:(UIWebViewNavigationType)navigationType
-{
-    if (navigationType != UIWebViewNavigationTypeLinkClicked) {
-        return YES;
-    }
-    NSURL *url = request.URL;
-    if ([[url host] isEqualToString:@"forums.somethingawful.com"] &&
-        [[url lastPathComponent] isEqualToString:@"showthread.php"]) {
-        NSDictionary *query = [[request URL] queryDictionary];
-        NSString *threadID = query[@"threadid"];
-        NSString *pageNumber = query[@"pagenumber"];
-        
-        // TODO (nolan) idgi, why a throwaway context?
-        if (threadID) {
-            NSManagedObjectModel *model = [NSManagedObjectModel mergedModelFromBundles:nil];
-            NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
-            NSManagedObjectContext *moc = [NSManagedObjectContext new];
-            [moc setPersistentStoreCoordinator:coordinator];
-            [moc setUndoManager:nil];
-            AwfulThread *intra = [AwfulThread insertInManagedObjectContext:moc];
-            intra.threadID = threadID;
-            AwfulPage *page = [AwfulPage newDeviceSpecificPage];
-            page.thread = intra;
-            [self.navigationController pushViewController:page animated:YES];
-            if (pageNumber != nil) {
-                [page loadPage:[pageNumber integerValue]];
-            } else {
-                [page loadPage:1];
-            }
-            return NO;
-        }
-    } else if (![url host] && [[url lastPathComponent] isEqualToString:@"showthread.php"]) {
-        // TODO when does this happen?
-        url = [NSURL URLWithString:[NSString stringWithFormat:@"http://forums.somethingawful.com/%@",
-                                    request.URL]];
-    }
-    [[UIApplication sharedApplication] openURL:url];
-    return NO;
-}
-
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -631,6 +587,13 @@ static void * const KVOContext = @"AwfulPostsView KVO";
 - (void)postsView:(AwfulPostsView *)postsView numberOfHiddenSeenPosts:(NSInteger)hiddenPosts
 {
     self.topBar.loadReadPostsButton.enabled = hiddenPosts > 0;
+}
+
+- (void)postsView:(AwfulPostsView *)postsView didTapLinkToURL:(NSURL *)url
+{
+    // TODO intercept links to forums, threads, posts and show in-app.
+    // N.B. Some links have no host and go to showthread.php
+    [[UIApplication sharedApplication] openURL:url];
 }
 
 - (void)showActionsForPostAtIndex:(NSNumber *)index fromRectDictionary:(NSDictionary *)rectDict

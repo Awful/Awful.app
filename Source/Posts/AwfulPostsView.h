@@ -44,6 +44,8 @@
 
 - (void)postsView:(AwfulPostsView *)postsView numberOfHiddenSeenPosts:(NSInteger)hiddenPosts;
 
+- (void)postsView:(AwfulPostsView *)postsView didTapLinkToURL:(NSURL *)url;
+
 // In addition to the methods listed in this protocol, the delegate can have arbitrary methods
 // called from JavaScript running in the posts view. Parameters to methods called this way will be
 // Foundation objects allowed in JSON.

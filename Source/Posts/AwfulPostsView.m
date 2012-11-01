@@ -157,8 +157,13 @@
     if ([[[request URL] scheme] isEqualToString:@"x-objc"]) {
         [self bridgeJavaScriptToObjectiveCWithURL:[request URL]];
         return NO;
+    } else if (navigationType == UIWebViewNavigationTypeLinkClicked) {
+        if ([self.delegate respondsToSelector:@selector(postsView:didTapLinkToURL:)]) {
+            [self.delegate postsView:self didTapLinkToURL:[request URL]];
+        }
+        return NO;
     }
-    return YES;
+    return NO;
 }
 
 - (void)bridgeJavaScriptToObjectiveCWithURL:(NSURL *)url
