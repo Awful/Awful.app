@@ -1260,6 +1260,7 @@
 			children = (
 				1C05ED47162299DE00FE567F /* SVProgressHUD.h */,
 				1C05ED48162299DE00FE567F /* SVProgressHUD.m */,
+				1C05ED5916229CDD00FE567F /* SVProgressHUD.bundle */,
 			);
 			path = SVProgressHUD;
 			sourceTree = "<group>";
@@ -1379,7 +1380,6 @@
 			children = (
 				1CC38B88160C0A5D00C35A11 /* SVPullToRefresh.h */,
 				1CC38B89160C0A5D00C35A11 /* SVPullToRefresh.m */,
-				1C05ED5916229CDD00FE567F /* SVProgressHUD.bundle */,
 			);
 			path = SVPullToRefresh;
 			sourceTree = "<group>";
