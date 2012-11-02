@@ -27,6 +27,7 @@
     self.fetchedResultsController.delegate = nil;
     self.fetchedResultsController = nil;
     [self.tableView reloadData];
+    [self refresh];
     self.fetchedResultsController = [self createFetchedResultsController];
     self.fetchedResultsController.delegate = self;
     

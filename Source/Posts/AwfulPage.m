@@ -20,6 +20,7 @@
 #import "MWPhoto.h"
 #import "MWPhotoBrowser.h"
 #import "SVProgressHUD.h"
+#import "SVPullToRefresh.h"
 
 @interface AwfulPage () <AwfulWebViewDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate>
 
@@ -41,7 +42,7 @@
 
 @property (readonly, nonatomic) UILabel *titleLabel;
 
-@property (nonatomic,weak) UIRefreshControl *webViewRefreshControl;
+//@property (nonatomic,weak) UIRefreshControl *webViewRefreshControl;
 
 @end
 
@@ -82,7 +83,6 @@
         titleLabel.adjustsFontSizeToFitWidth = YES;
         titleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         self.navigationItem.titleView = titleLabel;
-        [self refresh];
     }
     return self;
 }
@@ -242,7 +242,7 @@
         }
         [self updatePagesLabel];
         [self updateBookmarked];
-        [[self webViewRefreshControl] endRefreshing];
+        [[[[self webView] scrollView] pullToRefreshView] stopAnimating];
 
     } onError:^(NSError *error)
     {
@@ -342,10 +342,21 @@
     press.minimumPressDuration = 0.3;
     [self.webView addGestureRecognizer:press];
     
+    
+    //avoid a reference loop
+    __weak __block id wb_self = self;
+    [self.webView.scrollView addPullToRefreshWithActionHandler:^{
+        [wb_self hardRefresh];
+    }];
+     
+    
+    /* IOS 6 only :(
+     
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
     [refreshControl addTarget:self action:@selector(hardRefresh) forControlEvents:UIControlEventValueChanged];
     [self.webView.scrollView addSubview:refreshControl];
     [self setWebViewRefreshControl:refreshControl];
+     */
     
 }
 

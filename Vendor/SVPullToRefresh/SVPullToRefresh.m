@@ -229,10 +229,13 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
 
 - (void)setShowsInfiniteScrolling:(BOOL)show {
     showsInfiniteScrolling = show;
+    
     if(!show)
         [(UITableView*)self.scrollView setTableFooterView:self.originalTableFooterView];
     else
         [(UITableView*)self.scrollView setTableFooterView:self];
+     
+    
 }
 
 #pragma mark -
