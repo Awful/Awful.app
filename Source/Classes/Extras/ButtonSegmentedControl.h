@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@class AwfulPage;
-
 @interface ButtonSegmentedControl : UISegmentedControl
 
 @property (nonatomic, weak) IBOutlet id<NSObject> target;

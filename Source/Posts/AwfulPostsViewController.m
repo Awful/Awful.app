@@ -1,12 +1,12 @@
 //
-//  AwfulPage.m
+//  AwfulPostsViewController.m
 //  Awful
 //
 //  Created by Sean Berry on 7/29/10.
 //  Copyright 2010 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulPage.h"
+#import "AwfulPostsViewController.h"
 #import "AwfulActionSheet.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulDataStack.h"
@@ -36,7 +36,7 @@
 @end
 
 
-@interface AwfulPage () <AwfulPostsViewDelegate, NSFetchedResultsControllerDelegate>
+@interface AwfulPostsViewController () <AwfulPostsViewDelegate, NSFetchedResultsControllerDelegate>
 
 @property (nonatomic) NSFetchedResultsController *fetchedResultsController;
 
@@ -67,7 +67,7 @@
 @end
 
 
-@implementation AwfulPage
+@implementation AwfulPostsViewController
 {
     BOOL _observingScrollView;
 }
@@ -75,7 +75,7 @@
 + (id)newDeviceSpecificPage
 {
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        return [AwfulPageIpad new];
+        return [AwfulPostsViewControllerIpad new];
     }
     return [self new];
 }
@@ -727,14 +727,14 @@ static void * KVOContext = @"AwfulPostsView KVO";
 @end
 
 
-@interface AwfulPageIpad ()
+@interface AwfulPostsViewControllerIpad ()
 
 @property (nonatomic, strong) UIPopoverController *popController;
 
 @end
 
 
-@implementation AwfulPageIpad
+@implementation AwfulPostsViewControllerIpad
 
 - (IBAction)tappedPageNav:(id)sender
 {

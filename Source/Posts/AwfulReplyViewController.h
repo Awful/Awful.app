@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@class AwfulPage;
+@class AwfulPostsViewController;
 @class AwfulPost;
 @class AwfulThread;
 
@@ -17,6 +17,6 @@
 @property (strong, nonatomic) AwfulThread *thread;
 @property (strong, nonatomic) AwfulPost *post;
 @property (strong, nonatomic) NSString *startingText;
-@property (weak, nonatomic) AwfulPage *page;
+@property (weak, nonatomic) AwfulPostsViewController *page;
 
 @end

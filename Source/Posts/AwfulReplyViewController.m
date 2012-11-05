@@ -10,7 +10,7 @@
 #import "AwfulAppDelegate.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
-#import "AwfulPage.h"
+#import "AwfulPostsViewController.h"
 #import "AwfulThreadTitleLabel.h"
 #import "ImgurHTTPClient.h"
 #import "SVProgressHUD.h"
@@ -70,7 +70,7 @@ typedef enum {
                                                   object:nil];
 }
 
-- (void)setPage:(AwfulPage *)page
+- (void)setPage:(AwfulPostsViewController *)page
 {
     _page = page;
     self.titleLabel.text = page.thread.title;

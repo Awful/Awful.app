@@ -9,7 +9,7 @@
 #import "AwfulSpecificPageViewController.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
-#import "AwfulPage.h"
+#import "AwfulPostsViewController.h"
 #import "AwfulThreadListController.h"
 #import "ButtonSegmentedControl.h"
 

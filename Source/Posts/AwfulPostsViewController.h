@@ -1,5 +1,5 @@
 //
-//  AwfulPage.h
+//  AwfulPostsViewController.h
 //  Awful
 //
 //  Created by Sean Berry on 7/29/10.
@@ -10,7 +10,7 @@
 @class AwfulThread;
 
 
-@interface AwfulPage : UIViewController
+@interface AwfulPostsViewController : UIViewController
 
 + (id)newDeviceSpecificPage;
 
@@ -23,6 +23,6 @@
 @end
 
 
-@interface AwfulPageIpad : AwfulPage
+@interface AwfulPostsViewControllerIpad : AwfulPostsViewController
 
 @end

@@ -10,7 +10,7 @@
 
 @class AwfulForum;
 @class AwfulThread;
-@class AwfulPage;
+@class AwfulPostsViewController;
 
 typedef enum {
     AwfulThreadCellTypeUnknown,
@@ -38,7 +38,7 @@ typedef enum {
 - (BOOL)shouldReloadOnViewLoad;
 - (void)showThreadActionsForThread:(AwfulThread *)thread;
 
-- (void)displayPage:(AwfulPage *)page;
+- (void)displayPage:(AwfulPostsViewController *)page;
 - (void)loadPageNum:(NSUInteger)pageNum;
 - (void)stop;
 

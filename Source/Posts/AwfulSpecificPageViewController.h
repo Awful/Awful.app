@@ -7,11 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-@class AwfulPage;
+@class AwfulPostsViewController;
 
 @interface AwfulSpecificPageViewController : UIViewController
 
-@property (nonatomic, weak) AwfulPage *page;
+@property (nonatomic, weak) AwfulPostsViewController *page;
 
 @property (nonatomic) UIPickerView *pickerView;
 

@@ -12,7 +12,7 @@
 #import "AwfulLicensesViewController.h"
 #import "AwfulLoginController.h"
 #import "AwfulModels.h"
-#import "AwfulPage.h"
+#import "AwfulPostsViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulSettingsChoiceViewController.h"
 #import "AwfulSplitViewController.h"
@@ -241,7 +241,7 @@ typedef enum SettingType
         } else {
             thread = threads[0];
         }
-        AwfulPage *page = [AwfulPage newDeviceSpecificPage];
+        AwfulPostsViewController *page = [AwfulPostsViewController newDeviceSpecificPage];
         page.thread = thread;
         [page loadPage:AwfulPageNextUnread];
         if (self.splitViewController) {

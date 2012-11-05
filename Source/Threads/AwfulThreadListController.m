@@ -14,7 +14,7 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulLoginController.h"
 #import "AwfulModels.h"
-#import "AwfulPage.h"
+#import "AwfulPostsViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulSplitViewController.h"
 #import "AwfulThreadCell.h"
@@ -158,13 +158,13 @@ typedef enum {
 {
     AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:thread.title];
     [sheet addButtonWithTitle:@"Jump to First Page" block:^{
-        AwfulPage *page = [AwfulPage newDeviceSpecificPage];
+        AwfulPostsViewController *page = [AwfulPostsViewController newDeviceSpecificPage];
         page.thread = thread;
         [self displayPage:page];
         [page loadPage:1];
     }];
     [sheet addButtonWithTitle:@"Jump to Last Page" block:^{
-        AwfulPage *page = [AwfulPage newDeviceSpecificPage];
+        AwfulPostsViewController *page = [AwfulPostsViewController newDeviceSpecificPage];
         page.thread = thread;
         [self displayPage:page];
         [page loadPage:AwfulPageLast];
@@ -199,7 +199,7 @@ typedef enum {
     }];
 }
 
-- (void)displayPage:(AwfulPage *)page
+- (void)displayPage:(AwfulPostsViewController *)page
 {
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         [self.navigationController pushViewController:page animated:YES];
@@ -334,7 +334,7 @@ typedef enum {
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {
-    AwfulPage *page = [AwfulPage newDeviceSpecificPage];
+    AwfulPostsViewController *page = [AwfulPostsViewController newDeviceSpecificPage];
     AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
     page.thread = thread;
     [page loadPage:thread.seenValue ? AwfulPageNextUnread : 1];

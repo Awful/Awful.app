@@ -7,7 +7,6 @@
 //
 
 #import "ButtonSegmentedControl.h"
-#import "AwfulPage.h"
 
 @implementation ButtonSegmentedControl
 
