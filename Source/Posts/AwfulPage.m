@@ -292,9 +292,9 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     return _postsView;
 }
 
-// We want to hide the top bar until the user reveals it. Unfortunately, AwfulPostsView's scrollView
-// changes its contentSize at some arbitrary point (when it loads the posts we send it), which
-// changes the contentOffset to reveal the top bar.
+// We want to hide the top bar until the user reveals it. Unfortunately, AwfulPostsView's
+// scrollView changes its contentSize at some arbitrary point (when it loads the posts we send it),
+// which changes the contentOffset to reveal the top bar.
 //
 // Here, we simply override that first attempt to set the contentOffset too high.
 - (void)keepTopBarHiddenOnFirstView
