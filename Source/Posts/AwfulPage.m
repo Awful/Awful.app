@@ -279,17 +279,17 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     [self.postsView.scrollView addObserver:self
                                 forKeyPath:@"contentOffset"
                                    options:NSKeyValueObservingOptionNew
-                                   context:KVOContext];
+                                   context:&KVOContext];
 }
 
-static void * const KVOContext = @"AwfulPostsView KVO";
+static void * KVOContext = @"AwfulPostsView KVO";
 
 - (void)observeValueForKeyPath:(NSString *)keyPath
                       ofObject:(id)object
                         change:(NSDictionary *)change
                        context:(void *)context
 {
-    if (context != KVOContext) {
+    if (context != &KVOContext) {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
         return;
     }
@@ -307,7 +307,7 @@ static void * const KVOContext = @"AwfulPostsView KVO";
     if (_observingScrollView) {
         [self.postsView.scrollView removeObserver:self
                                        forKeyPath:@"contentOffset"
-                                          context:KVOContext];
+                                          context:&KVOContext];
     }
 }
 
