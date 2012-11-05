@@ -60,6 +60,10 @@
 
 - (void)showActionsForPost:(AwfulPost *)post fromRect:(CGRect)rect inView:(UIView *)view;
 
+@property (nonatomic) NSDateFormatter *regDateFormatter;
+
+@property (nonatomic) NSDateFormatter *postDateFormatter;
+
 @end
 
 
@@ -652,12 +656,8 @@ static void * KVOContext = @"AwfulPostsView KVO";
         @"authorIsOriginalPoster", @"authorIsAModerator", @"authorIsAnAdministrator"
     ];
     NSMutableDictionary *dict = [[post dictionaryWithValuesForKeys:keys] mutableCopy];
-    dict[@"postDate"] = [NSDateFormatter localizedStringFromDate:post.postDate
-                                                       dateStyle:NSDateFormatterMediumStyle
-                                                       timeStyle:NSDateFormatterShortStyle];
-    dict[@"authorRegDate"] = [NSDateFormatter localizedStringFromDate:post.authorRegDate
-                                                            dateStyle:NSDateFormatterMediumStyle
-                                                            timeStyle:NSDateFormatterNoStyle];
+    dict[@"postDate"] = [self.postDateFormatter stringFromDate:post.postDate];
+    dict[@"authorRegDate"] = [self.regDateFormatter stringFromDate:post.authorRegDate];
     return dict;
 }
 
@@ -693,6 +693,26 @@ static void * KVOContext = @"AwfulPostsView KVO";
     MWPhotoBrowser *browser = [[MWPhotoBrowser alloc] initWithPhotos:photos];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:browser];
     [self presentViewController:nav animated:YES completion:nil];
+}
+
+- (NSDateFormatter *)regDateFormatter
+{
+    if (_regDateFormatter) return _regDateFormatter;
+    _regDateFormatter = [NSDateFormatter new];
+    // Jan 2, 2003
+    _regDateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+    _regDateFormatter.dateFormat = @"MMM d, yyyy";
+    return _regDateFormatter;
+}
+
+- (NSDateFormatter *)postDateFormatter
+{
+    if (_postDateFormatter) return _postDateFormatter;
+    _postDateFormatter = [NSDateFormatter new];
+    // Jan 2, 2003 16:05
+    _postDateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+    _postDateFormatter.dateFormat = @"MMM d, yyyy HH:mm";
+    return _postDateFormatter;
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate
