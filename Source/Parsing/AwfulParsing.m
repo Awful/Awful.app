@@ -575,6 +575,9 @@
     self.beenSeen = !![doc searchForSingle:@"//tr[" HAS_CLASS(seen1) " or " HAS_CLASS(seen2) "]"];
     
     NSString *innerHTML = [[doc rawSearch:@"//td[" HAS_CLASS(postbody) "]"] lastObject];
+    // Carriage returns sneak into posts (maybe from Windows users?) and get converted into &#13;
+    // which add uncollapsible whitespace to the start of lines in posts.
+    innerHTML = [innerHTML stringByReplacingOccurrencesOfString:@"&#13;" withString:@""];
     // We need to do a little bit of fixup here. libxml collapses e.g. '<b></b>' into '<b/>'.
     // WebKit then sees '<b/>', parses it as '<b>', and the the rest of the document turns bold.
     NSError *error;
