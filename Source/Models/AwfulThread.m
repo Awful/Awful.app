@@ -44,7 +44,8 @@
 {
     NSMutableArray *threads = [[NSMutableArray alloc] init];
     NSMutableDictionary *existingThreads = [NSMutableDictionary new];
-    for (AwfulThread *thread in [self fetchAll]) {
+    NSArray *threadIDs = [threadInfos valueForKey:@"threadID"];
+    for (AwfulThread *thread in [self fetchAllMatchingPredicate:@"threadID IN %@", threadIDs]) {
         existingThreads[thread.threadID] = thread;
     }
     

@@ -17,7 +17,7 @@
 + (NSArray *)updateCategoriesAndForums:(ForumHierarchyParsedInfo *)info
 {
     NSMutableDictionary *existingForums = [NSMutableDictionary new];
-    for (AwfulForum *f in [AwfulForum fetchAll]) {
+    for (AwfulForum *f in [AwfulForum fetchAllMatchingPredicate:@"forumID != NIL"]) {
         existingForums[f.forumID] = f;
     }
     NSMutableDictionary *existingCategories = [NSMutableDictionary new];

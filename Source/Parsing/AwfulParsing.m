@@ -652,18 +652,21 @@
     self.forumID = [forumURL queryDictionary][@"forumid"];
     
     NSString *pages = [[doc searchForSingle:@"//div[" HAS_CLASS(pages) "]/text()"] content];
-    NSError *error;
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\((\\d+)\\)"
-                                                                           options:0
-                                                                             error:&error];
-    if (!regex) {
-        NSLog(@"error compiling number of pages regex: %@", error);
-    }
-    NSTextCheckingResult *match = [regex firstMatchInString:pages
-                                                    options:0
-                                                      range:NSMakeRange(0, [pages length])];
-    if ([match rangeAtIndex:1].location != NSNotFound) {
-        self.pagesInThread = [[pages substringWithRange:[match rangeAtIndex:1]] integerValue];
+    if (pages) {
+        NSString *pattern = @"\\((\\d+)\\)";
+        NSError *error;
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
+                                                                               options:0
+                                                                                 error:&error];
+        if (!regex) {
+            NSLog(@"error compiling number of pages regex: %@", error);
+        }
+        NSTextCheckingResult *match = [regex firstMatchInString:pages
+                                                        options:0
+                                                          range:NSMakeRange(0, [pages length])];
+        if ([match rangeAtIndex:1].location != NSNotFound) {
+            self.pagesInThread = [[pages substringWithRange:[match rangeAtIndex:1]] integerValue];
+        }
     }
     
     TFHppleElement *currentPage = [doc searchForSingle:
