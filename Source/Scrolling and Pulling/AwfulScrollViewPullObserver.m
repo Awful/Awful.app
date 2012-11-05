@@ -63,13 +63,19 @@ static void * KVOContext = @"AwfulPullToRefreshObserver KVO";
     }
     
     if (wouldTrigger && !self.scrollView.dragging && self.scrollView.decelerating) {
-        if (!_triggered && self.didTrigger) self.didTrigger();
+        if (!_triggered && self.didTrigger) {
+            dispatch_async(dispatch_get_main_queue(), self.didTrigger);
+        }
         _triggered = YES;
     } else if (self.scrollView.dragging && !self.scrollView.decelerating) {
         if (wouldTrigger) {
-            if (!_wouldHaveTriggered && self.willTrigger) self.willTrigger();
+            if (!_wouldHaveTriggered && self.willTrigger) {
+                dispatch_async(dispatch_get_main_queue(), self.willTrigger);
+            }
         } else {
-            if (_wouldHaveTriggered && self.willNotTrigger) self.willNotTrigger();
+            if (_wouldHaveTriggered && self.willNotTrigger) {
+                dispatch_async(dispatch_get_main_queue(), self.willNotTrigger);
+            }
         }
     }
     _wouldHaveTriggered = wouldTrigger;
