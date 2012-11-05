@@ -23,9 +23,6 @@
 @end
 
 
-extern NSString * const AwfulPageDidLoadNotification;
-
-
 @interface AwfulPageIpad : AwfulPage
 
 @end

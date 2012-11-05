@@ -704,7 +704,6 @@ static void * KVOContext = @"AwfulPostsView KVO";
     [self updatePullForNextPageLabel];
 }
 
-NSString * const AwfulPageDidLoadNotification = @"com.awfulapp.Awful.PageDidLoadNotification";
 @end
 
 

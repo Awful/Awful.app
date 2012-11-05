@@ -334,29 +334,18 @@ typedef enum {
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {
-    //preload the page before pushing it
     AwfulPage *page = [AwfulPage newDeviceSpecificPage];
     AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
     page.thread = thread;
     [page loadPage:thread.seenValue ? AwfulPageNextUnread : 1];
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(didLoadThreadPage:) 
-                                                 name:AwfulPageDidLoadNotification 
-                                               object:thread];
-}
-
-- (void)didLoadThreadPage:(NSNotification *)msg
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    AwfulPage *page = [msg.userInfo objectForKey:@"page"];
-    
     if (self.splitViewController) {
         UINavigationController *nav = self.splitViewController.viewControllers[1];
         [nav setViewControllers:@[page] animated:YES];
         AwfulSplitViewController *split = (AwfulSplitViewController *)self.splitViewController;
         [split ensureLeftBarButtonItemOnDetailView];
         [split.masterPopoverController dismissPopoverAnimated:YES];
-        [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
+        [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow
+                                      animated:YES];
     } else {
         [self.navigationController pushViewController:page animated:YES];
     }
