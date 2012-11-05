@@ -23,6 +23,7 @@
 #import "NSFileManager+UserDirectories.h"
 #import "NSManagedObject+Awful.h"
 #import "SVProgressHUD.h"
+#import "UIScrollView+AwfulPullingUpAndDown.h"
 
 @interface TopBarView : UIView
 
@@ -123,6 +124,22 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     [[NSNotificationCenter defaultCenter] postNotificationName:AwfulPageDidLoadNotification
                                                         object:self.thread
                                                       userInfo:@{ @"page" : self }];
+    [self.postsView.scrollView.pullUpToRefreshControl setRefreshing:NO animated:YES];
+    [self updatePullForNextPageLabel];
+}
+
+- (void)updatePullForNextPageLabel
+{
+    AwfulPullToRefreshControl *refresh = self.postsView.scrollView.pullUpToRefreshControl;
+    if (self.thread.numberOfPagesValue > self.currentPage) {
+        [refresh setTitle:@"Pull for next page…" forState:UIControlStateNormal];
+        [refresh setTitle:@"Release for next page…" forState:UIControlStateSelected];
+        [refresh setTitle:@"Loading next page…" forState:AwfulControlStateRefreshing];
+    } else {
+        [refresh setTitle:@"Pull to refresh…" forState:UIControlStateNormal];
+        [refresh setTitle:@"Release to refresh…" forState:UIControlStateSelected];
+        [refresh setTitle:@"Refreshing…" forState:AwfulControlStateRefreshing];
+    }
 }
 
 - (void)setCurrentPage:(NSInteger)currentPage
@@ -299,6 +316,25 @@ static void * const KVOContext = @"AwfulPostsView KVO";
     UIScrollView *scrollView = self.postsView.scrollView;
     [scrollView scrollRectToVisible:CGRectMake(0, scrollView.contentSize.height - 1, 1, 1)
                            animated:YES];
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    AwfulPullToRefreshControl *refresh = self.postsView.scrollView.pullUpToRefreshControl;
+    refresh.backgroundColor = self.topBar.backgroundColor;
+    [refresh addTarget:self
+                action:@selector(loadNextPageOrRefresh)
+      forControlEvents:UIControlEventValueChanged];
+}
+
+- (void)loadNextPageOrRefresh
+{
+    if (self.thread.numberOfPagesValue > self.currentPage || [self.posts count] >= 40) {
+        [self loadPage:self.currentPage + 1];
+    } else {
+        [self loadPage:self.currentPage];
+    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated

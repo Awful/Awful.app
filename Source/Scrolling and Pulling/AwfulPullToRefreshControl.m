@@ -1,0 +1,333 @@
+//
+//  AwfulPullToRefreshControl.m
+//  Awful
+//
+//  Created by Nolan Waite on 2012-11-03.
+//  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
+//
+
+#import "AwfulPullToRefreshControl.h"
+#import <QuartzCore/QuartzCore.h>
+
+// If we set rotation to exactly M_PI, Core Animation decides which direction to rotate (i.e. it
+// doesn't matter if we say positive or negative M_PI).
+#define M_ALMOST_PI (M_PI - 0.0001)
+
+
+@interface ArrowView : UIView
+
+@property (nonatomic) UIColor *color;
+
+- (void)setRotation:(CGFloat)radians animated:(BOOL)animated;
+
+@end
+
+
+@interface AwfulPullToRefreshControl ()
+
+@property (nonatomic) UIScrollView *scrollView;
+
+@property (nonatomic) UIControlState customState;
+
+@property (nonatomic) AwfulScrollViewPullObserver *observer;
+
+@property (weak, nonatomic) ArrowView *arrow;
+
+@property (weak, nonatomic) UIActivityIndicatorView *spinner;
+
+@property (weak, nonatomic) UILabel *titleLabel;
+
+@property (readonly, nonatomic) NSMutableDictionary *titles;
+
+@end
+
+
+@implementation AwfulPullToRefreshControl
+
+- (id)initWithScrollView:(UIScrollView *)scrollView
+               direction:(AwfulScrollViewPullDirection)direction
+{
+    if (!(self = [super initWithFrame:CGRectMake(0, 0, 320, 55)])) return nil;
+    _scrollView = scrollView;
+    [_scrollView addObserver:self
+                  forKeyPath:@"frame"
+                     options:NSKeyValueObservingOptionInitial
+                     context:&KVOContext];
+    [_scrollView addObserver:self
+                  forKeyPath:@"contentSize"
+                     options:NSKeyValueObservingOptionInitial
+                     context:&KVOContext];
+    
+    _titles = [@{
+        @(UIControlStateNormal): @"Pull to refresh…",
+        @(UIControlStateSelected): @"Release to refresh…",
+        @(AwfulControlStateRefreshing): @"Refreshing…"
+    } mutableCopy];
+    
+    ArrowView *arrow = [[ArrowView alloc] initWithFrame:CGRectMake(0, 0, 22, 48)];
+    arrow.backgroundColor = [UIColor clearColor];
+    [self addSubview:arrow];
+    _arrow = arrow;
+    [self resetArrow];
+    
+    UIActivityIndicatorView *spinner = [UIActivityIndicatorView new];
+    spinner.alpha = 0;
+    spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
+    [self addSubview:spinner];
+    _spinner = spinner;
+    
+    UILabel *titleLabel = [UILabel new];
+    titleLabel.text = _titles[@(UIControlStateNormal)];
+    titleLabel.font = [UIFont boldSystemFontOfSize:14];
+    titleLabel.textColor = [UIColor darkGrayColor];
+    titleLabel.backgroundColor = [UIColor clearColor];
+    [titleLabel sizeToFit];
+    [self addSubview:titleLabel];
+    _titleLabel = titleLabel;
+    
+    _observer = [[AwfulScrollViewPullObserver alloc] initWithScrollView:scrollView
+                                                              direction:direction
+                                                          triggerOffset:self.bounds.size.height];
+    _observer.willTrigger = ^{ self.selected = YES; };
+    _observer.willNotTrigger = ^{ self.selected = NO; };
+    __weak id blockSelf = self;
+    _observer.didTrigger = ^
+    {
+        self.refreshing = YES;
+        [blockSelf sendActionsForControlEvents:UIControlEventValueChanged];
+    };
+    return self;
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context
+{
+    if (context != &KVOContext) {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+        return;
+    }
+    
+    if (self.direction == AwfulScrollViewPullDown) {
+        CGRect frame = self.frame;
+        frame.origin.y = -frame.size.height;
+        frame.size.width = self.scrollView.bounds.size.width;
+        self.frame = frame;
+    } else if (self.direction == AwfulScrollViewPullUp) {
+        CGRect frame = self.frame;
+        frame.origin.y = self.scrollView.contentSize.height;
+        frame.size.width = self.scrollView.bounds.size.width;
+        self.frame = frame;
+    }
+}
+
+- (void)dealloc
+{
+    [_scrollView removeObserver:self forKeyPath:@"frame" context:&KVOContext];
+    [_scrollView removeObserver:self forKeyPath:@"contentSize" context:&KVOContext];
+}
+
+static void * KVOContext = @"AwfulPullToRefreshControl KVO";
+
+- (AwfulScrollViewPullDirection)direction
+{
+    return self.observer.direction;
+}
+
+- (BOOL)isRefreshing
+{
+    return !!(self.state & AwfulControlStateRefreshing);
+}
+
+- (void)setRefreshing:(BOOL)refreshing
+{
+    [self setRefreshing:refreshing animated:NO];
+}
+
+- (void)setRefreshing:(BOOL)refreshing animated:(BOOL)animated
+{
+    if (self.refreshing == refreshing) return;
+    [self willChangeValueForKey:@"refreshing"];
+    if (refreshing) {
+        self.customState |= AwfulControlStateRefreshing;
+    } else {
+        self.customState &= ~AwfulControlStateRefreshing;
+    }
+    [self didChangeValueForKey:@"refreshing"];
+    
+    // Change title immediately if we're refreshing. Otherwise change it after animations.
+    if (refreshing) {
+        [self updateTitleLabel];
+    }
+    UIEdgeInsets contentInset = self.scrollView.contentInset;
+    CGFloat insetChange = self.frame.size.height * (refreshing ? 1 : -1);
+    if (self.direction == AwfulScrollViewPullDown) {
+        contentInset.top += insetChange;
+    } else if (self.direction == AwfulScrollViewPullUp) {
+        contentInset.bottom += insetChange;
+    }
+    if (refreshing) {
+        [self.spinner startAnimating];
+    }
+    [UIView animateWithDuration:animated ? 0.3 : 0
+                          delay:0
+                        options:(UIViewAnimationOptionAllowUserInteraction |
+                                 UIViewAnimationOptionBeginFromCurrentState)
+                     animations:^
+    {
+        self.scrollView.contentInset = contentInset;
+        if (refreshing) {
+            self.arrow.alpha = 0;
+            self.spinner.alpha = 1;
+        }
+    } completion:^(BOOL _)
+    {
+        if (!refreshing) {
+            [self.observer reset];
+            self.selected = NO;
+            self.arrow.alpha = 1;
+            self.spinner.alpha = 0;
+            [self.spinner stopAnimating];
+            [self updateTitleLabel];
+        }
+    }];
+}
+
+- (void)resetArrow
+{
+    [self.arrow setRotation:self.direction == AwfulScrollViewPullDown ? M_ALMOST_PI : 0
+                   animated:NO];
+}
+
+- (NSString *)titleForState:(UIControlState)state
+{
+    NSString *title = self.titles[@(state)];
+    if (title) return title;
+    return self.titles[@(UIControlStateNormal)];
+}
+
+- (void)setTitle:(NSString *)title forState:(UIControlState)state
+{
+    self.titles[@(state)] = title;
+    [self updateTitleLabel];
+}
+
+- (void)updateTitleLabel
+{
+    if (self.state & AwfulControlStateRefreshing) {
+        self.titleLabel.text = [self titleForState:AwfulControlStateRefreshing];
+    } else if (self.state & UIControlStateSelected) {
+        self.titleLabel.text = [self titleForState:UIControlStateSelected];
+    } else {
+        self.titleLabel.text = [self titleForState:UIControlStateNormal];
+    }
+}
+
+#pragma mark - UIControl
+
+- (UIControlState)state
+{
+    return [super state] | self.customState;
+}
+
++ (NSSet *)keyPathsForValuesAffectingState
+{
+    return [[super keyPathsForValuesAffectingValueForKey:@"state"]
+            setByAddingObject:@"customState" ];
+}
+
+- (void)setSelected:(BOOL)selected
+{
+    [super setSelected:selected];
+    if (selected) {
+        [self.arrow setRotation:self.direction == AwfulScrollViewPullDown ? M_ALMOST_PI : 0
+                       animated:YES];
+    } else {
+        [self.arrow setRotation:self.direction == AwfulScrollViewPullDown ? 0 : M_ALMOST_PI
+                       animated:YES];
+    }
+    [self updateTitleLabel];
+}
+
+#pragma mark - UIView
+
+- (void)layoutSubviews
+{
+    CGFloat leftOffset = CGRectGetMidX(self.bounds) - 100;
+    CGRect arrowFrame = self.arrow.frame;
+    arrowFrame.origin.x = leftOffset;
+    arrowFrame.origin.y = floor((self.bounds.size.height - arrowFrame.size.height) / 2);
+    self.arrow.frame = arrowFrame;
+    self.spinner.center = self.arrow.center;
+    
+    CGRect titleFrame = self.titleLabel.frame;
+    titleFrame.origin.x = leftOffset + 44;
+    titleFrame.origin.y = floor((self.bounds.size.height - titleFrame.size.height) / 2);
+    titleFrame.size.width = self.bounds.size.width - titleFrame.origin.x;
+    self.titleLabel.frame = titleFrame;
+}
+
+- (id)initWithFrame:(CGRect)frame
+{
+    return [self initWithScrollView:nil direction:0];
+}
+
+@end
+
+
+@implementation ArrowView
+
+- (id)initWithFrame:(CGRect)frame
+{
+    if (!(self = [super initWithFrame:frame])) return nil;
+    _color = [UIColor grayColor];
+    return self;
+}
+
+- (void)drawRect:(CGRect)rect
+{
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGSize size = self.bounds.size;
+    // Six rectangular segments for the shaft.
+    // Each segment is half the width of this view and one twelfth the height.
+    // There's a gap of half a segment between each.
+    CGRect rects[6];
+    CGFloat segmentHeight = floorf(size.height / 12);
+    for (size_t i = 0; i < sizeof(rects) / sizeof(rects[0]); i++) {
+        rects[i] = CGRectMake(floorf(size.width / 4), floorf(segmentHeight * 1.5 * i),
+                              floorf(size.width / 2), segmentHeight);
+    }
+    CGContextAddRects(context, rects, sizeof(rects) / sizeof(rects[0]));
+    // And a triangle for the head.
+    // The triangle abuts the sixth segment of the shaft. It's as wide as this view and 3/10 the
+    // height.
+    CGContextMoveToPoint(context, 0, CGRectGetMaxY(rects[5]));
+    CGContextAddLineToPoint(context, size.width, CGRectGetMaxY(rects[5]));
+    CGContextAddLineToPoint(context, floorf(size.width / 2),
+                            CGRectGetMaxY(rects[5]) + floorf(size.height * 0.3));
+    CGContextClosePath(context);
+    // Draw arrow with a gradient.
+    CGContextClip(context);
+    CGColorRef start = [self.color colorWithAlphaComponent:0].CGColor;
+    CGColorRef end = self.color.CGColor;
+    CFArrayRef colors = (__bridge CFArrayRef)(@[ (__bridge id)start, (__bridge id)end ]);
+    CGGradientRef gradient = CGGradientCreateWithColors(CGColorGetColorSpace(start), colors,
+                                                        (CGFloat[]){ 0, 0.75 });
+    CGContextDrawLinearGradient(context, gradient, CGPointZero, CGPointMake(0, size.height), 0);
+    CGGradientRelease(gradient);
+}
+
+
+- (void)setRotation:(CGFloat)radians animated:(BOOL)animated
+{
+    [UIView animateWithDuration:(animated ? 0.2 : 0)
+                          delay:0
+                        options:UIViewAnimationOptionBeginFromCurrentState
+                     animations:^
+    {
+        self.transform = CGAffineTransformMakeRotation(radians);
+    } completion:nil];
+}
+
+@end
