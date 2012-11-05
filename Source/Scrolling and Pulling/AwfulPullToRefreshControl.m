@@ -311,8 +311,9 @@ static void * KVOContext = @"AwfulPullToRefreshControl KVO";
     CGContextClip(context);
     CGColorRef start = [self.color colorWithAlphaComponent:0].CGColor;
     CGColorRef end = self.color.CGColor;
-    CFArrayRef colors = (__bridge CFArrayRef)(@[ (__bridge id)start, (__bridge id)end ]);
-    CGGradientRef gradient = CGGradientCreateWithColors(CGColorGetColorSpace(start), colors,
+    NSArray *colors = @[ (__bridge id)start, (__bridge id)end ];
+    CGGradientRef gradient = CGGradientCreateWithColors(CGColorGetColorSpace(start),
+                                                        (__bridge CFArrayRef)colors,
                                                         (CGFloat[]){ 0, 0.75 });
     CGContextDrawLinearGradient(context, gradient, CGPointZero, CGPointMake(0, size.height), 0);
     CGGradientRelease(gradient);
