@@ -36,7 +36,9 @@
 @end
 
 
-@interface AwfulPage () <AwfulPostsViewDelegate>
+@interface AwfulPage () <AwfulPostsViewDelegate, NSFetchedResultsControllerDelegate>
+
+@property (nonatomic) NSFetchedResultsController *fetchedResultsController;
 
 @property (nonatomic) NSOperation *networkOperation;
 
@@ -47,8 +49,6 @@
 @property (weak, nonatomic) AwfulPostsView *postsView;
 
 @property (weak, nonatomic) TopBarView *topBar;
-
-@property (copy, nonatomic) NSArray *posts;
 
 @property (copy, nonatomic) NSString *advertisementHTML;
 
@@ -93,6 +93,7 @@
     self.titleLabel.text = thread.title;
     [self updatePageBar];
     self.postsView.stylesheetURL = StylesheetURLForForumWithID(thread.forum.forumID);
+    [self updateFetchedResultsController];
 }
 
 static NSURL* StylesheetURLForForumWithID(NSString *forumID)
@@ -114,18 +115,33 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     return nil;
 }
 
-- (void)setPosts:(NSArray *)posts
+- (void)updateFetchedResultsController
 {
-    if (_posts == posts) return;
-    _posts = [posts copy];
-    AwfulPost *anyPost = [posts lastObject];
-    self.thread = anyPost.thread;
-    self.currentPage = anyPost.threadPageValue;
-    [[NSNotificationCenter defaultCenter] postNotificationName:AwfulPageDidLoadNotification
-                                                        object:self.thread
-                                                      userInfo:@{ @"page" : self }];
-    [self.postsView.scrollView.pullUpToRefreshControl setRefreshing:NO animated:YES];
-    [self updatePullForNextPageLabel];
+    NSFetchRequest *request = self.fetchedResultsController.fetchRequest;
+    if (!request) {
+        request = [NSFetchRequest fetchRequestWithEntityName:[AwfulPost entityName]];
+        [request setSortDescriptors:@[
+            [NSSortDescriptor sortDescriptorWithKey:AwfulPostAttributes.threadIndex ascending:YES]
+        ]];
+        NSManagedObjectContext *context = self.thread.managedObjectContext;
+        NSFetchedResultsController *controller;
+        controller = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                         managedObjectContext:context
+                                                           sectionNameKeyPath:nil
+                                                                    cacheName:nil];
+        controller.delegate = self;
+        self.fetchedResultsController = controller;
+    }
+    request.predicate = [NSPredicate predicateWithFormat:@"thread == %@ AND threadPage = %d",
+                         self.thread, self.currentPage];
+    NSError *error;
+    BOOL ok = [self.fetchedResultsController performFetch:&error];
+    if (!ok) {
+        NSLog(@"error fetching posts in AwfulPostsView: %@", error);
+    }
+    if ([[self.fetchedResultsController fetchedObjects] count] == 0) {
+        [self controllerDidChangeContent:self.fetchedResultsController];
+    }
 }
 
 - (void)updatePullForNextPageLabel
@@ -145,7 +161,9 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 - (void)setCurrentPage:(NSInteger)currentPage
 {
     _currentPage = currentPage;
+    [self updateFetchedResultsController];
     [self updatePageBar];
+    [self updatePullForNextPageLabel];
 }
 
 - (UILabel *)titleLabel
@@ -163,6 +181,10 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     [self markPostsAsBeenSeen];
     [self.networkOperation cancel];
     [self hidePageNavigation];
+    if (page > 0) {
+        self.currentPage = page;
+        [self.postsView reloadData];
+    }
     id op = [[AwfulHTTPClient client] listPostsInThreadWithID:self.thread.threadID
                                                        onPage:page
                                                       andThen:^(NSError *error, NSArray *posts, NSString *advertisementHTML)
@@ -176,12 +198,13 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
             [alert show];
             return;
         }
-        self.posts = posts;
         self.advertisementHTML = advertisementHTML;
+        AwfulPost *anyPost = [posts lastObject];
+        if (page < 1) {
+            self.currentPage = anyPost.threadPageValue;
+        }
         [self.postsView reloadData];
         self.postsView.scrollView.contentOffset = CGPointZero;
-        AwfulPost *anyPost = [self.posts lastObject];
-        self.currentPage = anyPost.threadPageValue;
         [self updatePageBar];
     }];
     self.networkOperation = op;
@@ -193,17 +216,18 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         self.didJustMarkAsReadToHere = NO;
         return;
     }
-    AwfulPost *lastPost = [self.posts lastObject];
+    AwfulPost *lastPost = [[self.fetchedResultsController fetchedObjects] lastObject];
     if (!lastPost || lastPost.beenSeenValue) return;
     [self markPostsAsBeenSeenUpToPost:lastPost];
 }
 
 - (void)markPostsAsBeenSeenUpToPost:(AwfulPost *)post
 {
-    NSUInteger lastSeen = [self.posts indexOfObject:post];
+    NSArray *posts = [self.fetchedResultsController fetchedObjects];
+    NSUInteger lastSeen = [posts indexOfObject:post];
     if (lastSeen == NSNotFound) return;
-    for (NSUInteger i = 0; i < [self.posts count]; i++) {
-        [self.posts[i] setBeenSeenValue:i <= lastSeen];
+    for (NSUInteger i = 0; i < [posts count]; i++) {
+        [posts[i] setBeenSeenValue:i <= lastSeen];
     }
     NSInteger readPosts = post.threadIndexValue - 1;
     if (self.thread.totalRepliesValue < readPosts) {
@@ -330,7 +354,8 @@ static void * KVOContext = @"AwfulPostsView KVO";
 
 - (void)loadNextPageOrRefresh
 {
-    if (self.thread.numberOfPagesValue > self.currentPage || [self.posts count] >= 40) {
+    NSArray *posts = [self.fetchedResultsController fetchedObjects];
+    if (self.thread.numberOfPagesValue > self.currentPage || [posts count] >= 40) {
         [self loadPage:self.currentPage + 1];
     } else {
         [self loadPage:self.currentPage];
@@ -587,7 +612,7 @@ static void * KVOContext = @"AwfulPostsView KVO";
                  [alert show];
              } else {
                  self.didJustMarkAsReadToHere = YES;
-                 if ([self.posts containsObject:post]) [self markPostsAsBeenSeenUpToPost:post];
+                 [self markPostsAsBeenSeenUpToPost:post];
              }
          }];
     }];
@@ -615,12 +640,13 @@ static void * KVOContext = @"AwfulPostsView KVO";
 
 - (NSInteger)numberOfPostsInPostsView:(AwfulPostsView *)postsView
 {
-    return [self.posts count];
+    return [[self.fetchedResultsController fetchedObjects] count];
 }
 
 - (NSDictionary *)postsView:(AwfulPostsView *)postsView postAtIndex:(NSInteger)index
 {
-    AwfulPost *post = self.posts[index];
+    NSArray *posts = [self.fetchedResultsController fetchedObjects];
+    AwfulPost *post = posts[index];
     NSArray *keys = @[
         @"postID", @"authorName", @"authorAvatarURL", @"beenSeen", @"innerHTML",
         @"authorIsOriginalPoster", @"authorIsAModerator", @"authorIsAnAdministrator"
@@ -654,7 +680,8 @@ static void * KVOContext = @"AwfulPostsView KVO";
 
 - (void)showActionsForPostAtIndex:(NSNumber *)index fromRectDictionary:(NSDictionary *)rectDict
 {
-    AwfulPost *post = self.posts[[index integerValue]];
+    NSArray *posts = [self.fetchedResultsController fetchedObjects];
+    AwfulPost *post = posts[[index integerValue]];
     CGRect rect = CGRectMake([rectDict[@"left"] floatValue], [rectDict[@"top"] floatValue],
                              [rectDict[@"width"] floatValue], [rectDict[@"height"] floatValue]);
     [self showActionsForPost:post fromRect:rect inView:self.postsView];
@@ -668,10 +695,17 @@ static void * KVOContext = @"AwfulPostsView KVO";
     [self presentViewController:nav animated:YES completion:nil];
 }
 
-@end
+#pragma mark - NSFetchedResultsControllerDelegate
 
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+{
+    [self.postsView reloadData];
+    [self.postsView.scrollView.pullUpToRefreshControl setRefreshing:NO animated:YES];
+    [self updatePullForNextPageLabel];
+}
 
 NSString * const AwfulPageDidLoadNotification = @"com.awfulapp.Awful.PageDidLoadNotification";
+@end
 
 
 @interface AwfulPageIpad ()
