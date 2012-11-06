@@ -700,8 +700,19 @@ Awful.ad = function(ad){
   $('#ad').html(ad)
 }
 
+var baseURL = "http://forums.somethingawful.com/"
+
 function render(post) {
-  return $('#postTemplate').mustache(post)
+  rendered = $('#postTemplate').mustache(post)
+  rendered.find('a:not([href *= "://"])').each(function(){
+    var a = $(this)
+    a.attr('href', baseURL + a.attr('href'))
+  })
+  rendered.find('img:not([src *= "://"])').each(function(){
+    var img = $(this)
+    img.attr('src', baseURL + img.attr('src'))
+  })
+  return rendered
 }
 
 window.Awful = Awful
