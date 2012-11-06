@@ -375,8 +375,8 @@ static void * KVOContext = @"AwfulPostsView KVO";
     // continuing to play their sound after the user switches to a different thread.
     if (!self.navigationController) {
         [self.postsView clearAllPosts];
+        [self markPostsAsBeenSeen];
     }
-    [self markPostsAsBeenSeen];
     [super viewDidDisappear:animated];
 }
 
