@@ -633,6 +633,13 @@
 
 @implementation PageParsedInfo
 
+- (id)initWithHTMLData:(NSData *)htmlData
+{
+    _pageNumber = 1;
+    _pagesInThread = 1;
+    return [super initWithHTMLData:htmlData];
+}
+
 - (void)parseHTMLData
 {
     TFHpple *doc = [[TFHpple alloc] initWithHTMLData:self.htmlData];
@@ -653,7 +660,7 @@
     
     NSString *pages = [[doc searchForSingle:@"//div[" HAS_CLASS(pages) "]/text()"] content];
     if (pages) {
-        NSString *pattern = @"\\((\\d+)\\)";
+        NSString *pattern = @"[(](\\d+)[)]";
         NSError *error;
         NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
                                                                                options:0
@@ -665,13 +672,15 @@
                                                         options:0
                                                           range:NSMakeRange(0, [pages length])];
         if ([match rangeAtIndex:1].location != NSNotFound) {
-            self.pagesInThread = [[pages substringWithRange:[match rangeAtIndex:1]] integerValue];
+            NSInteger pageCount = [[pages substringWithRange:[match rangeAtIndex:1]] integerValue];
+            if (pageCount > 0) self.pagesInThread = pageCount;
         }
     }
     
     TFHppleElement *currentPage = [doc searchForSingle:
                                    @"//div[" HAS_CLASS(pages) "]//span[" HAS_CLASS(curpage) "]"];
-    self.pageNumber = [[currentPage content] integerValue];
+    NSInteger pageNumber = [[currentPage content] integerValue];
+    if (pageNumber > 0) self.pageNumber = pageNumber;
     
     NSArray *ads = [doc rawSearch:@"(//div[@id = 'ad_banner_user']/a)[1]"];
     if ([ads count] > 0) self.advertisementHTML = ads[0];
