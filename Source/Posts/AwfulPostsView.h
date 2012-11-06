@@ -17,6 +17,8 @@
 
 - (void)reloadData;
 
+- (void)reloadAdvertisementHTML;
+
 - (void)showHiddenSeenPosts;
 
 - (void)clearAllPosts;

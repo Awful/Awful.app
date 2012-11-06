@@ -185,9 +185,12 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     [self markPostsAsBeenSeen];
     [self.networkOperation cancel];
     [self hidePageNavigation];
+    self.advertisementHTML = nil;
     if (page > 0) {
         self.currentPage = page;
         [self.postsView reloadData];
+    } else {
+        [self.postsView reloadAdvertisementHTML];
     }
     id op = [[AwfulHTTPClient client] listPostsInThreadWithID:self.thread.threadID
                                                        onPage:page
