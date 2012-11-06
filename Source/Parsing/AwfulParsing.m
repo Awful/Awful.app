@@ -665,9 +665,7 @@
         NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
                                                                                options:0
                                                                                  error:&error];
-        if (!regex) {
-            NSLog(@"error compiling number of pages regex: %@", error);
-        }
+        if (!regex) NSLog(@"error compiling number of pages regex: %@", error);
         NSTextCheckingResult *match = [regex firstMatchInString:pages
                                                         options:0
                                                           range:NSMakeRange(0, [pages length])];
