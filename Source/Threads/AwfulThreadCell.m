@@ -61,6 +61,7 @@
 {
     _sticky = sticky;
     self.stickyImageView.hidden = !sticky;
+    if (sticky) [self.contentView bringSubviewToFront:self.stickyImageView];
 }
 
 - (void)setRating:(CGFloat)rating
