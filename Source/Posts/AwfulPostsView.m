@@ -50,13 +50,7 @@
     for (NSInteger i = 0; i < numberOfPosts; i++) {
         [posts addObject:[self.delegate postsView:self postAtIndex:i]];
     }
-    NSError *error;
-    NSData *data = [NSJSONSerialization dataWithJSONObject:posts options:0 error:&error];
-    if (!data) {
-        NSLog(@"error serializing posts: %@", error);
-    }
-    NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    [self sendPostsJSONAndTellDelegate:json];
+    [self sendPostsJSONAndTellDelegate:JSONize(posts)];
     [self reloadAdvertisementHTML];
 }
 
@@ -67,15 +61,36 @@
         NSString *ad = [self.delegate advertisementHTMLForPostsView:self];
         if ([ad length] == 0) ad = @"";
     }
-    NSError *error;
-    NSData *adJSON = [NSJSONSerialization dataWithJSONObject:@[ ad ] options:0 error:&error];
-    if (!adJSON) {
-        NSLog(@"error serializing ad: %@", error);
-        return;
-    }
     // Foundation's JSON serializer only does arrays and objects at the top level.
-    [self evalJavaScript:@"Awful.ad(%@[0])",
-     [[NSString alloc] initWithData:adJSON encoding:NSUTF8StringEncoding]];
+    [self evalJavaScript:@"Awful.ad(%@[0])", JSONize(@[ ad ])];
+}
+
+- (void)insertPostAtIndex:(NSInteger)index
+{
+    NSDictionary *post = [self.delegate postsView:self postAtIndex:index];
+    [self evalJavaScript:@"Awful.insertPost(%@, %d)", JSONize(post), index];
+}
+
+- (void)deletePostAtIndex:(NSInteger)index
+{
+    [self evalJavaScript:@"Awful.deletePost(%d)", index];
+}
+
+- (void)reloadPostAtIndex:(NSInteger)index
+{
+    NSDictionary *post = [self.delegate postsView:self postAtIndex:index];
+    [self evalJavaScript:@"Awful.post(%d, %@)", index, JSONize(post)];
+}
+
+static NSString * JSONize(id obj)
+{
+    NSError *error;
+    NSData *data = [NSJSONSerialization dataWithJSONObject:obj options:0 error:&error];
+    if (!data) {
+        NSLog(@"error serializing %@: %@", obj, error);
+        return nil;
+    }
+    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 }
 
 - (void)showHiddenSeenPosts

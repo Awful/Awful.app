@@ -20,6 +20,39 @@ Awful.posts = function(posts){
   return Awful.leftoverPosts.length
 }
 
+Awful.insertPost = function(post, i){
+  if (i < Awful.leftoverPosts.length) {
+    Awful.leftoverPosts.splice(i, 0, post)
+    return
+  }
+  i -= Awful.leftoverPosts.length
+  if (i === 0) {
+    render(post).prependTo('#posts')
+  } else if (i >= $('#posts > article').length) {
+    render(post).appendTo('#posts')
+  } else {
+    $('#posts > article').eq(i).before(render(post))
+  }
+}
+
+Awful.deletePost = function(post, i){
+  if (i < Awful.leftoverPosts.length) {
+    Awful.leftoverPosts.splice(i, 1)
+    return
+  }
+  i -= Awful.leftoverPosts.length
+  $('#posts > article').eq(i).remove()
+}
+
+Awful.post = function(i, post){
+  if (i < Awful.leftoverPosts.length) {
+    Awful.leftoverPosts[i] = post
+    return
+  }
+  i -= Awful.leftoverPosts.length
+  $('#posts > article').eq(i).replaceWith(render(post))
+}
+
 Awful.invoke = function(selector, varargs){
   var stem = "x-objc:///" + selector + "/"
   var args = Array.prototype.slice.call(arguments, 1)

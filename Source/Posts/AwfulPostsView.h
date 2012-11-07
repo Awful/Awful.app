@@ -19,6 +19,12 @@
 
 - (void)reloadAdvertisementHTML;
 
+- (void)insertPostAtIndex:(NSInteger)index;
+
+- (void)deletePostAtIndex:(NSInteger)index;
+
+- (void)reloadPostAtIndex:(NSInteger)index;
+
 - (void)showHiddenSeenPosts;
 
 - (void)clearAllPosts;

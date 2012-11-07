@@ -68,6 +68,8 @@
 
 @property (nonatomic) UIPopoverController *popover;
 
+@property (nonatomic) BOOL markingPostsAsSeen;
+
 @end
 
 
@@ -232,6 +234,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 
 - (void)markPostsAsBeenSeenUpToPost:(AwfulPost *)post
 {
+    self.markingPostsAsSeen = YES;
     NSArray *posts = [self.fetchedResultsController fetchedObjects];
     NSUInteger lastSeen = [posts indexOfObject:post];
     if (lastSeen == NSNotFound) return;
@@ -246,6 +249,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     }
     self.thread.totalUnreadPostsValue = self.thread.totalRepliesValue - readPosts;
     [[AwfulDataStack sharedDataStack] save];
+    self.markingPostsAsSeen = NO;
 }
 
 - (void)scrollToBottom
@@ -725,9 +729,27 @@ static void * KVOContext = @"AwfulPostsView KVO";
 
 #pragma mark - NSFetchedResultsControllerDelegate
 
+- (void)controller:(NSFetchedResultsController *)controller
+   didChangeObject:(AwfulPost *)post
+       atIndexPath:(NSIndexPath *)indexPath
+     forChangeType:(NSFetchedResultsChangeType)type
+      newIndexPath:(NSIndexPath *)newIndexPath
+{
+    if (self.markingPostsAsSeen) return;
+    if (type == NSFetchedResultsChangeInsert) {
+        [self.postsView insertPostAtIndex:indexPath.row];
+    } else if (type == NSFetchedResultsChangeDelete) {
+        [self.postsView deletePostAtIndex:indexPath.row];
+    } else if (type == NSFetchedResultsChangeUpdate) {
+        [self.postsView reloadPostAtIndex:indexPath.row];
+    } else if (type == NSFetchedResultsChangeMove) {
+        [self.postsView deletePostAtIndex:indexPath.row];
+        [self.postsView insertPostAtIndex:newIndexPath.row];
+    }
+}
+
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
-    [self.postsView reloadData];
     [self.pullUpToRefreshControl setRefreshing:NO animated:YES];
     [self updatePullForNextPageLabel];
 }
