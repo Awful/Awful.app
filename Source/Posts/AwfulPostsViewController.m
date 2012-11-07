@@ -68,7 +68,7 @@
 
 @property (nonatomic) UIPopoverController *popover;
 
-@property (nonatomic) BOOL markingPostsAsSeen;
+@property (nonatomic) BOOL markingPostsAsBeenSeen;
 
 @end
 
@@ -234,7 +234,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 
 - (void)markPostsAsBeenSeenUpToPost:(AwfulPost *)post
 {
-    self.markingPostsAsSeen = YES;
+    self.markingPostsAsBeenSeen = YES;
     NSArray *posts = [self.fetchedResultsController fetchedObjects];
     NSUInteger lastSeen = [posts indexOfObject:post];
     if (lastSeen == NSNotFound) return;
@@ -249,7 +249,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     }
     self.thread.totalUnreadPostsValue = self.thread.totalRepliesValue - readPosts;
     [[AwfulDataStack sharedDataStack] save];
-    self.markingPostsAsSeen = NO;
+    self.markingPostsAsBeenSeen = NO;
 }
 
 - (void)scrollToBottom
@@ -735,7 +735,7 @@ static void * KVOContext = @"AwfulPostsView KVO";
      forChangeType:(NSFetchedResultsChangeType)type
       newIndexPath:(NSIndexPath *)newIndexPath
 {
-    if (self.markingPostsAsSeen) return;
+    if (self.markingPostsAsBeenSeen) return;
     if (type == NSFetchedResultsChangeInsert) {
         [self.postsView insertPostAtIndex:indexPath.row];
     } else if (type == NSFetchedResultsChangeDelete) {
