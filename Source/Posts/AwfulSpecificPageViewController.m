@@ -11,18 +11,41 @@
 #import "AwfulModels.h"
 #import "AwfulPostsViewController.h"
 #import "AwfulThreadListController.h"
-#import "ButtonSegmentedControl.h"
 
 @interface AwfulSpecificPageViewController () <UIPickerViewDataSource, UIPickerViewDelegate>
 
 @property (nonatomic) UIBarButtonItem *jumpToPageBarButtonItem;
 
-@property (nonatomic) ButtonSegmentedControl *firstLastSegmentedControl;
+@property (nonatomic) UISegmentedControl *firstLastSegmentedControl;
 
 @end
 
 
 @implementation AwfulSpecificPageViewController
+
+- (id)init
+{
+    if (!(self = [super initWithNibName:nil bundle:nil])) return nil;
+    _hiding = YES;
+    return self;
+}
+
+- (IBAction)hitFirstLastSegment
+{
+    if (self.firstLastSegmentedControl.selectedSegmentIndex == 0) {
+        [self.page loadPage:1];
+    } else if (self.firstLastSegmentedControl.selectedSegmentIndex == 1) {
+        [self.page loadPage:AwfulPageLast];
+    }
+    self.firstLastSegmentedControl.selectedSegmentIndex = -1;
+}
+
+- (IBAction)hitJumpToPage
+{
+    [self.page loadPage:[self.pickerView selectedRowInComponent:0] + 1];
+}
+
+#pragma mark - UIPickerViewDataSource and UIPickerViewDelegate
 
 - (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
 {
@@ -41,7 +64,12 @@
     return [NSString stringWithFormat:@"%d", row+1];
 }
 
-#pragma mark - View lifecycle
+#pragma mark - UIViewController
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    return [self init];
+}
 
 - (void)loadView
 {
@@ -54,13 +82,14 @@
     UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:toolbarFrame];
     toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
     toolbar.barStyle = UIBarStyleBlack;
-    self.firstLastSegmentedControl = [[ButtonSegmentedControl alloc] initWithItems:@[ @"First", @"Last" ]];
+    self.firstLastSegmentedControl = [[UISegmentedControl alloc] initWithItems:@[ @"First", @"Last" ]];
     self.firstLastSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
     CGRect bounds = self.firstLastSegmentedControl.bounds;
     bounds.size.width = 115;
     self.firstLastSegmentedControl.bounds = bounds;
-    self.firstLastSegmentedControl.target = self;
-    self.firstLastSegmentedControl.action = @selector(hitFirstLastSegment);
+    [self.firstLastSegmentedControl addTarget:self
+                                       action:@selector(hitFirstLastSegment)
+                             forControlEvents:UIControlEventValueChanged];
     self.firstLastSegmentedControl.tintColor = [UIColor darkGrayColor];
     UIBarButtonItem *firstLast = [[UIBarButtonItem alloc] initWithCustomView:self.firstLastSegmentedControl];
     UIBarButtonItem *separator = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL];
@@ -86,21 +115,6 @@
         return YES;
     }
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
-}
-
-- (IBAction)hitFirstLastSegment
-{
-    if (self.firstLastSegmentedControl.selectedSegmentIndex == 0) {
-        [self.page loadPage:1];
-    } else if (self.firstLastSegmentedControl.selectedSegmentIndex == 1) {
-        [self.page loadPage:AwfulPageLast];
-    }
-    self.firstLastSegmentedControl.selectedSegmentIndex = -1;
-}
-
-- (IBAction)hitJumpToPage
-{
-    [self.page loadPage:[self.pickerView selectedRowInComponent:0] + 1];
 }
 
 @end

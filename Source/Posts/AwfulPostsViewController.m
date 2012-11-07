@@ -396,7 +396,18 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                     permittedArrowDirections:UIPopoverArrowDirectionAny
                                     animated:YES];
     } else {
-        if (self.specificPageController != nil && !self.specificPageController.hiding) {
+        if (self.specificPageController.hiding) {
+            self.specificPageController.hiding = NO;
+            self.specificPageController.page = self;
+            sp_view = self.specificPageController.view;
+            sp_view.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, sp_view.frame.size.height);
+            
+            [self.view addSubview:sp_view];
+            [self.view bringSubviewToFront:self.pageBar];
+            [UIView animateWithDuration:0.3 animations:^{
+                sp_view.frame = CGRectOffset(sp_view.frame, 0, -sp_view.frame.size.height - self.pageBar.bounds.size.height);
+            }];
+        } else {
             self.specificPageController.hiding = YES;
             [UIView animateWithDuration:0.3
                                   delay:0.0
@@ -408,18 +419,6 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                  [sp_view removeFromSuperview];
                  self.specificPageController = nil;
              }];
-            
-        } else if(self.specificPageController == nil) {
-            self.specificPageController = [AwfulSpecificPageViewController new];
-            self.specificPageController.page = self;
-            sp_view = self.specificPageController.view;
-            sp_view.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, sp_view.frame.size.height);
-            
-            [self.view addSubview:sp_view];
-            [self.view bringSubviewToFront:self.pageBar];
-            [UIView animateWithDuration:0.3 animations:^{
-                sp_view.frame = CGRectOffset(sp_view.frame, 0, -sp_view.frame.size.height - self.pageBar.bounds.size.height);
-            }];
         }
     }
 }

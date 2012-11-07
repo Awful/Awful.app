@@ -38,7 +38,6 @@
 		1190F7EF13BE4ECB00B9D271 /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7C413BE4ECB00B9D271 /* TFHppleElement.m */; };
 		1190F7F013BE4ECB00B9D271 /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7C613BE4ECB00B9D271 /* XPathQuery.m */; };
 		1190F7F313BE4EDA00B9D271 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7F213BE4EDA00B9D271 /* main.m */; };
-		11CED26C1522901100E95EE1 /* ButtonSegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 11CED26B1522901100E95EE1 /* ButtonSegmentedControl.m */; };
 		11DFB44214FF1CBB0001A34C /* AwfulTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DFB44114FF1CBB0001A34C /* AwfulTableViewController.m */; };
 		11FDA296151018600014FDCD /* AwfulSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA295151018600014FDCD /* AwfulSettingsViewController.m */; };
 		1C05ED4F162299DE00FE567F /* SVProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C05ED48162299DE00FE567F /* SVProgressHUD.m */; };
@@ -674,8 +673,6 @@
 		1190F7C613BE4ECB00B9D271 /* XPathQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XPathQuery.m; sourceTree = "<group>"; };
 		1190F7F113BE4EDA00B9D271 /* Awful_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Awful_Prefix.pch; sourceTree = "<group>"; };
 		1190F7F213BE4EDA00B9D271 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		11CED26A1522901100E95EE1 /* ButtonSegmentedControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ButtonSegmentedControl.h; sourceTree = "<group>"; };
-		11CED26B1522901100E95EE1 /* ButtonSegmentedControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ButtonSegmentedControl.m; sourceTree = "<group>"; };
 		11DFB44014FF1CBB0001A34C /* AwfulTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTableViewController.h; sourceTree = "<group>"; };
 		11DFB44114FF1CBB0001A34C /* AwfulTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTableViewController.m; sourceTree = "<group>"; };
 		11FDA294151018600014FDCD /* AwfulSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettingsViewController.h; sourceTree = "<group>"; };
@@ -1334,14 +1331,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		080E96DDFE201D6D7F000001 /* Classes */ = {
-			isa = PBXGroup;
-			children = (
-				1190F70B13BE4EA900B9D271 /* Extras */,
-			);
-			path = Classes;
-			sourceTree = "<group>";
-		};
 		110FABC415745C1E00ECF535 /* AFNetworking */ = {
 			isa = PBXGroup;
 			children = (
@@ -1368,15 +1357,6 @@
 				110FABD915745C1E00ECF535 /* UIImageView+AFNetworking.m */,
 			);
 			path = AFNetworking;
-			sourceTree = "<group>";
-		};
-		1190F70B13BE4EA900B9D271 /* Extras */ = {
-			isa = PBXGroup;
-			children = (
-				11CED26A1522901100E95EE1 /* ButtonSegmentedControl.h */,
-				11CED26B1522901100E95EE1 /* ButtonSegmentedControl.m */,
-			);
-			path = Extras;
 			sourceTree = "<group>";
 		};
 		1190F71813BE4EA900B9D271 /* Login */ = {
@@ -1520,7 +1500,6 @@
 				1C278A3316453296007D3CEC /* Scrolling and Pulling */,
 				1CDD51951542949600326C7B /* Settings */,
 				1CC780471612DA8D002AF958 /* Threads */,
-				080E96DDFE201D6D7F000001 /* Classes */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -2980,7 +2959,6 @@
 				1190F7F313BE4EDA00B9D271 /* main.m in Sources */,
 				11DFB44214FF1CBB0001A34C /* AwfulTableViewController.m in Sources */,
 				11FDA296151018600014FDCD /* AwfulSettingsViewController.m in Sources */,
-				11CED26C1522901100E95EE1 /* ButtonSegmentedControl.m in Sources */,
 				1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */,
 				1C277CA51543554700CD2CCE /* AwfulSettingsChoiceViewController.m in Sources */,
 				1C6474C71569989800C72657 /* AwfulForum.m in Sources */,
