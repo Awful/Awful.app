@@ -241,7 +241,7 @@ typedef enum SettingType
         } else {
             thread = threads[0];
         }
-        AwfulPostsViewController *page = [AwfulPostsViewController newDeviceSpecificPage];
+        AwfulPostsViewController *page = [AwfulPostsViewController new];
         page.thread = thread;
         [page loadPage:AwfulPageNextUnread];
         if (self.splitViewController) {

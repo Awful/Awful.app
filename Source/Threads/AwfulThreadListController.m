@@ -158,13 +158,13 @@ typedef enum {
 {
     AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:thread.title];
     [sheet addButtonWithTitle:@"Jump to First Page" block:^{
-        AwfulPostsViewController *page = [AwfulPostsViewController newDeviceSpecificPage];
+        AwfulPostsViewController *page = [AwfulPostsViewController new];
         page.thread = thread;
         [self displayPage:page];
         [page loadPage:1];
     }];
     [sheet addButtonWithTitle:@"Jump to Last Page" block:^{
-        AwfulPostsViewController *page = [AwfulPostsViewController newDeviceSpecificPage];
+        AwfulPostsViewController *page = [AwfulPostsViewController new];
         page.thread = thread;
         [self displayPage:page];
         [page loadPage:AwfulPageLast];
@@ -334,7 +334,7 @@ typedef enum {
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {
-    AwfulPostsViewController *page = [AwfulPostsViewController newDeviceSpecificPage];
+    AwfulPostsViewController *page = [AwfulPostsViewController new];
     AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
     page.thread = thread;
     [page loadPage:thread.seenValue ? AwfulPageNextUnread : 1];

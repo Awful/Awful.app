@@ -12,17 +12,10 @@
 
 @interface AwfulPostsViewController : UIViewController
 
-+ (id)newDeviceSpecificPage;
-
 @property (nonatomic, strong) AwfulThread *thread;
 
 @property (nonatomic, assign) NSInteger currentPage;
 
 - (void)loadPage:(NSInteger)page;
-
-@end
-
-
-@interface AwfulPostsViewControllerIpad : AwfulPostsViewController
 
 @end

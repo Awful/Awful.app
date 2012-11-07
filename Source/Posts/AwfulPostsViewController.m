@@ -66,20 +66,14 @@
 
 @property (nonatomic) NSDateFormatter *postDateFormatter;
 
+@property (nonatomic) UIPopoverController *popover;
+
 @end
 
 
 @implementation AwfulPostsViewController
 {
     BOOL _observingScrollView;
-}
-
-+ (id)newDeviceSpecificPage
-{
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        return [AwfulPostsViewControllerIpad new];
-    }
-    return [self new];
 }
 
 - (id)init
@@ -162,6 +156,12 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         [refresh setTitle:@"Release to refresh…" forState:UIControlStateSelected];
         [refresh setTitle:@"Refreshing…" forState:AwfulControlStateRefreshing];
     }
+}
+
+- (AwfulPostsView *)postsView
+{
+    if (!_postsView) [self view];
+    return _postsView;
 }
 
 - (void)setCurrentPage:(NSInteger)currentPage
@@ -248,6 +248,278 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     [[AwfulDataStack sharedDataStack] save];
 }
 
+- (void)scrollToBottom
+{
+    UIScrollView *scrollView = self.postsView.scrollView;
+    [scrollView scrollRectToVisible:CGRectMake(0, scrollView.contentSize.height - 1, 1, 1)
+                           animated:YES];
+}
+
+- (void)loadNextPageOrRefresh
+{
+    NSArray *posts = [self.fetchedResultsController fetchedObjects];
+    if (self.thread.numberOfPagesValue > self.currentPage || [posts count] >= 40) {
+        [self loadPage:self.currentPage + 1];
+    } else {
+        [self loadPage:self.currentPage];
+    }
+}
+
+- (void)updatePageBar
+{
+    [self.pageBar.backForwardControl setEnabled:self.currentPage != 1
+                              forSegmentAtIndex:0];
+    [self.pageBar.backForwardControl setEnabled:self.currentPage != self.thread.numberOfPagesValue
+                              forSegmentAtIndex:1];
+    [self.pageBar.jumpToPageButton setTitle:[NSString stringWithFormat:@"Page %d of %@",
+                                             self.currentPage, self.thread.numberOfPages]
+                                   forState:UIControlStateNormal];
+    [self.pageBar.actionsComposeControl setEnabled:self.thread.canReply forSegmentAtIndex:1];
+}
+
+- (void)tappedPagesSegment:(id)sender
+{
+    UISegmentedControl *backForward = sender;
+    if (backForward.selectedSegmentIndex == 0) {
+        [self prevPage];
+    } else if (backForward.selectedSegmentIndex == 1) {
+        [self nextPage];
+    }
+    backForward.selectedSegmentIndex = UISegmentedControlNoSegment;
+}
+
+- (void)tappedActionsSegment:(id)sender
+{
+    UISegmentedControl *actions = sender;
+    if (actions.selectedSegmentIndex == 0) {
+        [self tappedActions];
+    } else if (actions.selectedSegmentIndex == 1) {
+        [self tappedCompose];
+    }
+    actions.selectedSegmentIndex = UISegmentedControlNoSegment;
+}
+
+- (void)nextPage
+{
+    if (self.currentPage < self.thread.numberOfPagesValue) {
+        [self loadPage:self.currentPage + 1];
+    } else {
+        [self loadPage:self.currentPage];
+    }
+}
+
+- (void)prevPage
+{
+    if (self.currentPage <= 1) return;
+    [self loadPage:self.currentPage - 1];
+}
+
+- (void)tappedActions
+{
+    CGRect rect = self.pageBar.actionsComposeControl.frame;
+    rect.size.width /= 2;
+    rect = [self.view.superview convertRect:rect fromView:self.pageBar];
+    [self showThreadActionsFromRect:rect inView:self.view.superview];
+}
+
+- (void)showThreadActionsFromRect:(CGRect)rect inView:(UIView *)view
+{
+    AwfulActionSheet *sheet = [AwfulActionSheet new];
+    [sheet addButtonWithTitle:@"Copy Thread URL" block:^{
+        NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
+                         "showthread.php?threadid=%@&pagenumber=%@",
+                         self.thread.threadID, @(self.currentPage)];
+        [UIPasteboard generalPasteboard].URL = [NSURL URLWithString:url];
+    }];
+    [sheet addButtonWithTitle:@"Vote" block:^{
+        AwfulActionSheet *vote = [AwfulActionSheet new];
+        for (int i = 5; i >= 1; i--) {
+            [vote addButtonWithTitle:[@(i) stringValue] block:^{
+                [[AwfulHTTPClient client] rateThreadWithID:self.thread.threadID
+                                                    rating:i
+                                                   andThen:^(NSError *error)
+                 {
+                     NSLog(@"error casting vote on thread %@: %@", self.thread.threadID, error);
+                 }];
+            }];
+        }
+        [vote addCancelButtonWithTitle:@"Cancel"];
+        [vote showFromRect:rect inView:view animated:YES];
+    }];
+    NSString *bookmark = self.thread.isBookmarkedValue ? @"Unbookmark Thread" : @"Bookmark Thread";
+    [sheet addButtonWithTitle:bookmark block:^{
+        [[AwfulHTTPClient client] setThreadWithID:self.thread.threadID
+                                     isBookmarked:!self.thread.isBookmarkedValue
+                                          andThen:^(NSError *error)
+         {
+             if (error) {
+                 NSLog(@"error %@bookmarking thread %@: %@", self.thread.isBookmarkedValue ? @"un" : @"", self.thread.threadID, error);
+             } else {
+                 self.thread.isBookmarkedValue = NO;
+                 [[AwfulDataStack sharedDataStack] save];
+             }
+         }];
+    }];
+    [sheet addCancelButtonWithTitle:@"Cancel"];
+    [sheet showFromRect:rect inView:view animated:YES];
+}
+
+- (void)tappedPageNav:(id)sender
+{
+    [self dismissPopoverAnimated:YES];
+    if (self.thread.numberOfPagesValue <= 0 || self.currentPage <= 0) return;
+    
+    UIView *sp_view = self.specificPageController.view;
+    if (!sp_view)
+    {
+        self.specificPageController = [AwfulSpecificPageViewController new];
+        self.specificPageController.page = self;
+        sp_view = self.specificPageController.view;
+        [self.specificPageController.pickerView selectRow:self.currentPage - 1
+                                              inComponent:0
+                                                 animated:NO];
+    }
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        UIViewController *vc = self.specificPageController;
+        
+        self.popover = [[UIPopoverController alloc] initWithContentViewController:vc];
+        
+        [self.popover setPopoverContentSize:vc.view.bounds.size animated:NO];
+        [self.popover presentPopoverFromRect:self.pageBar.jumpToPageButton.frame
+                                      inView:self.pageBar
+                    permittedArrowDirections:UIPopoverArrowDirectionAny
+                                    animated:YES];
+    } else {
+        if (self.specificPageController != nil && !self.specificPageController.hiding) {
+            self.specificPageController.hiding = YES;
+            [UIView animateWithDuration:0.3
+                                  delay:0.0
+                                options:UIViewAnimationOptionCurveEaseInOut
+                             animations:^{
+                                 sp_view.frame = CGRectOffset(sp_view.frame, 0, sp_view.frame.size.height + self.pageBar.bounds.size.height);
+                             } completion:^(BOOL finished)
+             {
+                 [sp_view removeFromSuperview];
+                 self.specificPageController = nil;
+             }];
+            
+        } else if(self.specificPageController == nil) {
+            self.specificPageController = [AwfulSpecificPageViewController new];
+            self.specificPageController.page = self;
+            sp_view = self.specificPageController.view;
+            sp_view.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, sp_view.frame.size.height);
+            
+            [self.view addSubview:sp_view];
+            [self.view bringSubviewToFront:self.pageBar];
+            [UIView animateWithDuration:0.3 animations:^{
+                sp_view.frame = CGRectOffset(sp_view.frame, 0, -sp_view.frame.size.height - self.pageBar.bounds.size.height);
+            }];
+        }
+    }
+}
+
+- (void)hidePageNavigation
+{
+    [self dismissPopoverAnimated:YES];
+    if (self.specificPageController) [self tappedPageNav:nil];
+}
+
+- (void)tappedCompose
+{
+    [self dismissPopoverAnimated:YES];
+    AwfulReplyViewController *postBox = [AwfulReplyViewController new];
+    postBox.thread = self.thread;
+    postBox.page = self;
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:postBox];
+    [self presentViewController:nav animated:YES completion:nil];
+}
+
+- (void)showActionsForPost:(AwfulPost *)post fromRect:(CGRect)rect inView:(UIView *)view
+{
+    [self dismissPopoverAnimated:YES];
+    NSString *title = [NSString stringWithFormat:@"%@'s Post", post.authorName];
+    if ([post.authorName isEqualToString:[AwfulSettings settings].currentUser.username]) {
+        title = @"Your Post";
+    }
+    AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:title];
+    if (post.editableValue) {
+        [sheet addButtonWithTitle:@"Edit" block:^{
+            [[AwfulHTTPClient client] getTextOfPostWithID:post.postID
+                                                  andThen:^(NSError *error, NSString *text)
+             {
+                 if (error) {
+                     UIAlertView *alert = [UIAlertView new];
+                     alert.title = @"Could Not Edit Post";
+                     alert.message = [error localizedDescription];
+                     [alert addButtonWithTitle:@"Alright"];
+                     [alert show];
+                     return;
+                 }
+                 AwfulReplyViewController *reply = [AwfulReplyViewController new];
+                 reply.post = post;
+                 reply.startingText = text;
+                 reply.page = self;
+                 UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:reply];
+                 [self presentViewController:nav animated:YES completion:nil];
+             }];
+        }];
+    }
+    if (!self.thread.isLockedValue) {
+        [sheet addButtonWithTitle:@"Quote" block:^{
+            [[AwfulHTTPClient client] quoteTextOfPostWithID:post.postID
+                                                    andThen:^(NSError *error, NSString *quotedText)
+             {
+                 if (error) {
+                     UIAlertView *alert = [UIAlertView new];
+                     alert.title = @"Could Not Quote Post";
+                     alert.message = [error localizedDescription];
+                     [alert addButtonWithTitle:@"Alright"];
+                     [alert show];
+                     return;
+                 }
+                 AwfulReplyViewController *reply = [AwfulReplyViewController new];
+                 reply.thread = self.thread;
+                 reply.startingText = [quotedText stringByAppendingString:@"\n\n"];
+                 reply.page = self;
+                 UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:reply];
+                 [self presentViewController:nav animated:YES completion:nil];
+             }];
+        }];
+    }
+    [sheet addButtonWithTitle:@"Copy Post URL" block:^{
+        NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
+                         "showthread.php?threadid=%@&pagenumber=%@#post%@",
+                         self.thread.threadID, @(self.currentPage), post.postID];
+        [UIPasteboard generalPasteboard].URL = [NSURL URLWithString:url];
+    }];
+    [sheet addButtonWithTitle:@"Mark Read to Here" block:^{
+        [[AwfulHTTPClient client] markThreadWithID:self.thread.threadID
+                               readUpToPostAtIndex:[@(post.threadIndexValue) stringValue]
+                                           andThen:^(NSError *error)
+         {
+             if (error) {
+                 UIAlertView *alert = [UIAlertView new];
+                 alert.title = @"Could Not Mark Read";
+                 alert.message = [error localizedDescription];
+                 [alert addButtonWithTitle:@"Alright"];
+                 [alert show];
+             } else {
+                 self.didJustMarkAsReadToHere = YES;
+                 [self markPostsAsBeenSeenUpToPost:post];
+             }
+         }];
+    }];
+    [sheet addCancelButtonWithTitle:@"Cancel"];
+    [sheet showFromRect:rect inView:view animated:YES];
+}
+
+- (void)dismissPopoverAnimated:(BOOL)animated
+{
+    [self.popover dismissPopoverAnimated:animated];
+    self.popover = nil;
+}
+
 #pragma mark - UIViewController
 
 - (void)loadView
@@ -304,12 +576,6 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     self.pullUpToRefreshControl = refresh;
 }
 
-- (AwfulPostsView *)postsView
-{
-    if (!_postsView) [self view];
-    return _postsView;
-}
-
 // We want to hide the top bar until the user reveals it. Unfortunately, AwfulPostsView's
 // scrollView changes its contentSize at some arbitrary point (when it loads the posts we send it),
 // which changes the contentOffset to reveal the top bar.
@@ -323,8 +589,6 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                                    options:NSKeyValueObservingOptionNew
                                    context:&KVOContext];
 }
-
-static void * KVOContext = @"AwfulPostsView KVO";
 
 - (void)observeValueForKeyPath:(NSString *)keyPath
                       ofObject:(id)object
@@ -344,29 +608,14 @@ static void * KVOContext = @"AwfulPostsView KVO";
     }
 }
 
+static void * KVOContext = @"AwfulPostsView KVO";
+
 - (void)dealloc
 {
     if (_observingScrollView) {
         [self.postsView.scrollView removeObserver:self
                                        forKeyPath:@"contentOffset"
                                           context:&KVOContext];
-    }
-}
-
-- (void)scrollToBottom
-{
-    UIScrollView *scrollView = self.postsView.scrollView;
-    [scrollView scrollRectToVisible:CGRectMake(0, scrollView.contentSize.height - 1, 1, 1)
-                           animated:YES];
-}
-
-- (void)loadNextPageOrRefresh
-{
-    NSArray *posts = [self.fetchedResultsController fetchedObjects];
-    if (self.thread.numberOfPagesValue > self.currentPage || [posts count] >= 40) {
-        [self loadPage:self.currentPage + 1];
-    } else {
-        [self loadPage:self.currentPage];
     }
 }
 
@@ -389,251 +638,6 @@ static void * KVOContext = @"AwfulPostsView KVO";
         sp_view.frame = CGRectMake(0, self.view.frame.size.height - sp_view.frame.size.height - self.pageBar.frame.size.height,
                                    self.view.frame.size.width, sp_view.frame.size.height);
     }
-}
-
-#pragma mark - BarButtonItem Actions
-
-- (void)updatePageBar
-{
-    [self.pageBar.backForwardControl setEnabled:self.currentPage != 1
-                              forSegmentAtIndex:0];
-    [self.pageBar.backForwardControl setEnabled:self.currentPage != self.thread.numberOfPagesValue
-                              forSegmentAtIndex:1];
-    [self.pageBar.jumpToPageButton setTitle:[NSString stringWithFormat:@"Page %d of %@",
-                                             self.currentPage, self.thread.numberOfPages]
-                                   forState:UIControlStateNormal];
-    [self.pageBar.actionsComposeControl setEnabled:self.thread.canReply forSegmentAtIndex:1];
-}
-
-- (IBAction)tappedPagesSegment:(id)sender
-{
-    UISegmentedControl *backForward = sender;
-    if (backForward.selectedSegmentIndex == 0) {
-        [self prevPage];
-    } else if (backForward.selectedSegmentIndex == 1) {
-        [self nextPage];
-    }
-    backForward.selectedSegmentIndex = UISegmentedControlNoSegment;
-}
-
-- (IBAction)tappedActionsSegment:(id)sender
-{
-    UISegmentedControl *actions = sender;
-    if (actions.selectedSegmentIndex == 0) {
-        [self tappedActions];
-    } else if (actions.selectedSegmentIndex == 1) {
-        [self tappedCompose];
-    }
-    actions.selectedSegmentIndex = UISegmentedControlNoSegment;
-}
-
-- (IBAction)tappedNextPage:(id)sender
-{
-    [self nextPage];
-}
-
-- (void)nextPage
-{
-    if (self.currentPage < self.thread.numberOfPagesValue) {
-        [self loadPage:self.currentPage + 1];
-    } else {
-        [self loadPage:self.currentPage];
-    }
-}
-
-- (void)prevPage
-{
-    if (self.currentPage <= 1) return;
-    [self loadPage:self.currentPage - 1];
-}
-
-- (IBAction)tappedActions
-{
-    CGRect rect = [self.view convertRect:self.pageBar.frame toView:self.view.superview];
-    [self showThreadActionsFromRect:rect inView:self.view.superview];
-}
-
-- (void)showThreadActionsFromRect:(CGRect)rect inView:(UIView *)view
-{
-    AwfulActionSheet *sheet = [AwfulActionSheet new];
-    [sheet addButtonWithTitle:@"Copy Thread URL" block:^{
-        NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
-                         "showthread.php?threadid=%@&pagenumber=%@",
-                         self.thread.threadID, @(self.currentPage)];
-        [UIPasteboard generalPasteboard].URL = [NSURL URLWithString:url];
-    }];
-    [sheet addButtonWithTitle:@"Vote" block:^{
-        AwfulActionSheet *vote = [AwfulActionSheet new];
-        for (int i = 5; i >= 1; i--) {
-            [vote addButtonWithTitle:[@(i) stringValue] block:^{
-                [[AwfulHTTPClient client] rateThreadWithID:self.thread.threadID
-                                                    rating:i
-                                                   andThen:^(NSError *error)
-                 {
-                     NSLog(@"error casting vote on thread %@: %@", self.thread.threadID, error);
-                 }];
-            }];
-        }
-        [vote addCancelButtonWithTitle:@"Cancel"];
-        [vote showFromRect:rect inView:view animated:YES];
-    }];
-    NSString *bookmark = self.thread.isBookmarkedValue ? @"Unbookmark Thread" : @"Bookmark Thread";
-    [sheet addButtonWithTitle:bookmark block:^{
-        [[AwfulHTTPClient client] setThreadWithID:self.thread.threadID
-                                     isBookmarked:!self.thread.isBookmarkedValue
-                                          andThen:^(NSError *error)
-        {
-            if (error) {
-                NSLog(@"error %@bookmarking thread %@: %@", self.thread.isBookmarkedValue ? @"un" : @"", self.thread.threadID, error);
-            } else {
-                self.thread.isBookmarkedValue = NO;
-                [[AwfulDataStack sharedDataStack] save];
-            }
-        }];
-    }];
-    [sheet addCancelButtonWithTitle:@"Cancel"];
-    [sheet showFromRect:rect inView:view animated:YES];
-}
-
-- (void)tappedPageNav:(id)sender
-{
-    if (self.thread.numberOfPagesValue <= 0 || self.currentPage <= 0) {
-        return;
-    }
-    
-    UIView *sp_view = self.specificPageController.view;
-    
-    if (self.specificPageController != nil && !self.specificPageController.hiding) {
-        self.specificPageController.hiding = YES;
-        [UIView animateWithDuration:0.3
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseInOut
-                         animations:^{
-            sp_view.frame = CGRectOffset(sp_view.frame, 0, sp_view.frame.size.height + self.pageBar.bounds.size.height);
-        } completion:^(BOOL finished)
-        {
-            [sp_view removeFromSuperview];
-            self.specificPageController = nil;
-        }];
-        
-    } else if(self.specificPageController == nil) {
-        self.specificPageController = [AwfulSpecificPageViewController new];
-        self.specificPageController.page = self;
-        sp_view = self.specificPageController.view;
-        sp_view.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, sp_view.frame.size.height);
-        
-        [self.view addSubview:sp_view];
-        [self.view bringSubviewToFront:self.pageBar];
-        [UIView animateWithDuration:0.3 animations:^{
-            sp_view.frame = CGRectOffset(sp_view.frame, 0, -sp_view.frame.size.height - self.pageBar.bounds.size.height);
-        }];
-        
-        [self.specificPageController.pickerView selectRow:self.currentPage - 1
-                                              inComponent:0
-                                                 animated:NO];
-    }
-}
-       
-- (void)hidePageNavigation
-{
-    if (self.specificPageController != nil) {
-        [self tappedPageNav:nil];
-    }
-}
-
-- (IBAction)tappedCompose
-{
-    AwfulReplyViewController *postBox = [AwfulReplyViewController new];
-    postBox.thread = self.thread;
-    postBox.page = self;
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:postBox];
-    [self presentViewController:nav animated:YES completion:nil];
-}
-
-- (void)showActionsForPost:(AwfulPost *)post fromRect:(CGRect)rect inView:(UIView *)view
-{
-    NSString *title = [NSString stringWithFormat:@"%@'s Post", post.authorName];
-    if ([post.authorName isEqualToString:[AwfulSettings settings].currentUser.username]) {
-        title = @"Your Post";
-    }
-    AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:title];
-    if (post.editableValue) {
-        [sheet addButtonWithTitle:@"Edit" block:^{
-            [[AwfulHTTPClient client] getTextOfPostWithID:post.postID
-                                                  andThen:^(NSError *error, NSString *text)
-            {
-                if (error) {
-                    UIAlertView *alert = [UIAlertView new];
-                    alert.title = @"Could Not Edit Post";
-                    alert.message = [error localizedDescription];
-                    [alert addButtonWithTitle:@"Alright"];
-                    [alert show];
-                    return;
-                }
-                AwfulReplyViewController *reply = [AwfulReplyViewController new];
-                reply.post = post;
-                reply.startingText = text;
-                reply.page = self;
-                UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:reply];
-                [self presentViewController:nav animated:YES completion:nil];
-            }];
-        }];
-    }
-    if (!self.thread.isLockedValue) {
-        [sheet addButtonWithTitle:@"Quote" block:^{
-            [[AwfulHTTPClient client] quoteTextOfPostWithID:post.postID
-                                                    andThen:^(NSError *error, NSString *quotedText)
-            {
-                if (error) {
-                    UIAlertView *alert = [UIAlertView new];
-                    alert.title = @"Could Not Quote Post";
-                    alert.message = [error localizedDescription];
-                    [alert addButtonWithTitle:@"Alright"];
-                    [alert show];
-                    return;
-                }
-                AwfulReplyViewController *reply = [AwfulReplyViewController new];
-                reply.thread = self.thread;
-                reply.startingText = [quotedText stringByAppendingString:@"\n\n"];
-                reply.page = self;
-                UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:reply];
-                [self presentViewController:nav animated:YES completion:nil];
-            }];
-        }];
-    }
-    [sheet addButtonWithTitle:@"Copy Post URL" block:^{
-        NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
-                         "showthread.php?threadid=%@&pagenumber=%@#post%@",
-                         self.thread.threadID, @(self.currentPage), post.postID];
-        [UIPasteboard generalPasteboard].URL = [NSURL URLWithString:url];
-    }];
-    [sheet addButtonWithTitle:@"Mark Read to Here" block:^{
-        [[AwfulHTTPClient client] markThreadWithID:self.thread.threadID
-                               readUpToPostAtIndex:[@(post.threadIndexValue) stringValue]
-                                           andThen:^(NSError *error)
-         {
-             if (error) {
-                 UIAlertView *alert = [UIAlertView new];
-                 alert.title = @"Could Not Mark Read";
-                 alert.message = [error localizedDescription];
-                 [alert addButtonWithTitle:@"Alright"];
-                 [alert show];
-             } else {
-                 self.didJustMarkAsReadToHere = YES;
-                 [self markPostsAsBeenSeenUpToPost:post];
-             }
-         }];
-    }];
-    [sheet addCancelButtonWithTitle:@"Cancel"];
-    [sheet showFromRect:rect inView:view animated:YES];
-}
-
-#pragma mark - Gesture recognizer delegate
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gesture
-    shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)other
-{
-    return YES;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -726,91 +730,6 @@ static void * KVOContext = @"AwfulPostsView KVO";
     [self.postsView reloadData];
     [self.pullUpToRefreshControl setRefreshing:NO animated:YES];
     [self updatePullForNextPageLabel];
-}
-
-@end
-
-
-@interface AwfulPostsViewControllerIpad ()
-
-@property (nonatomic, strong) UIPopoverController *popController;
-
-@end
-
-
-@implementation AwfulPostsViewControllerIpad
-
-- (IBAction)tappedPageNav:(id)sender
-{
-    if (self.popController)
-    {
-        [self.popController dismissPopoverAnimated:YES];
-        self.popController = nil;
-    }
-    
-    if (self.thread.numberOfPagesValue <= 0 || self.currentPage <= 0)
-    {
-        return;
-    }
-    
-    UIView *sp_view = self.specificPageController.view;
-        
-    if (!self.specificPageController)
-    {
-        self.specificPageController = [AwfulSpecificPageViewController new];
-        self.specificPageController.page = self;
-        [self.specificPageController loadView];
-        sp_view = self.specificPageController.view;
-        
-        [self.specificPageController.pickerView selectRow:self.currentPage - 1
-                                              inComponent:0
-                                                 animated:NO];
-    }
-
-    UIViewController *vc = self.specificPageController;
-
-    self.popController = [[UIPopoverController alloc] initWithContentViewController:vc];
-    
-    [self.popController setPopoverContentSize:vc.view.bounds.size animated:NO];
-    [self.popController presentPopoverFromRect:self.pageBar.jumpToPageButton.frame
-                                        inView:self.pageBar
-                      permittedArrowDirections:UIPopoverArrowDirectionAny
-                                      animated:YES];
-}
-
-- (void)tappedActions
-{
-    CGRect rect = self.pageBar.actionsComposeControl.frame;
-    rect.size.width /= 2;
-    [self showThreadActionsFromRect:rect inView:self.pageBar.actionsComposeControl.superview];
-}
-
-- (void)showActionsForPost:(AwfulPost *)post fromRect:(CGRect)rect inView:(UIView *)view
-{
-    if (self.popController) {
-        [self.popController dismissPopoverAnimated:YES];
-        self.popController = nil;
-    }
-    [super showActionsForPost:post fromRect:rect inView:view];
-}
-
-- (IBAction)tappedCompose
-{
-    if (self.popController)
-    {
-        [self.popController dismissPopoverAnimated:YES];
-        self.popController = nil;
-    }
-    
-    [super tappedCompose];
-}
-
-- (void)hidePageNavigation
-{
-    if (self.popController) {
-        [self.popController dismissPopoverAnimated:YES];
-        self.popController = nil;
-    }
 }
 
 @end
