@@ -132,7 +132,7 @@
     // Detail text label and original poster text label go beside one another horizontally.
     CGRect textLabelFrame = self.textLabel.frame;
     CGRect detailTextLabelFrame = self.detailTextLabel.frame;
-    static CGFloat const tagRightMargin = 9;
+    static const CGFloat tagRightMargin = 9;
     CGFloat textOriginX = CGRectGetMaxX(self.imageView.frame) + tagRightMargin;
     CGFloat badgeViewEffectiveWidth = 70;
     if (self.editing || self.showingDeleteConfirmation || !self.showsUnread) {
