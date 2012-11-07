@@ -668,8 +668,12 @@ static void * KVOContext = @"AwfulPostsView KVO";
         @"authorIsOriginalPoster", @"authorIsAModerator", @"authorIsAnAdministrator"
     ];
     NSMutableDictionary *dict = [[post dictionaryWithValuesForKeys:keys] mutableCopy];
-    dict[@"postDate"] = [self.postDateFormatter stringFromDate:post.postDate];
-    dict[@"authorRegDate"] = [self.regDateFormatter stringFromDate:post.authorRegDate];
+    if (post.postDate) {
+        dict[@"postDate"] = [self.postDateFormatter stringFromDate:post.postDate];
+    }
+    if (post.authorRegDate) {
+        dict[@"authorRegDate"] = [self.regDateFormatter stringFromDate:post.authorRegDate];
+    }
     return dict;
 }
 
