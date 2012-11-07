@@ -13,10 +13,7 @@
 @interface AwfulPullToRefreshControl : UIControl
 
 // Designated initializer.
-- (id)initWithScrollView:(UIScrollView *)scrollView
-               direction:(AwfulScrollViewPullDirection)direction;
-
-@property (readonly, nonatomic) UIScrollView *scrollView;
+- (id)initWithDirection:(AwfulScrollViewPullDirection)direction;
 
 @property (readonly, nonatomic) AwfulScrollViewPullDirection direction;
 

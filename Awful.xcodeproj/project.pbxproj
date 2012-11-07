@@ -58,7 +58,6 @@
 		1C277CA51543554700CD2CCE /* AwfulSettingsChoiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C277CA41543554700CD2CCE /* AwfulSettingsChoiceViewController.m */; };
 		1C278A4D1647A47F007D3CEC /* AwfulPullToRefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C278A481647A47F007D3CEC /* AwfulPullToRefreshControl.m */; };
 		1C278A4E1647A47F007D3CEC /* AwfulScrollViewPullObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C278A4A1647A47F007D3CEC /* AwfulScrollViewPullObserver.m */; };
-		1C278A4F1647A47F007D3CEC /* UIScrollView+AwfulPullingUpAndDown.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C278A4C1647A47F007D3CEC /* UIScrollView+AwfulPullingUpAndDown.m */; };
 		1C3CC799162876AE00088AA8 /* adminstar.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3CC797162876AE00088AA8 /* adminstar.png */; };
 		1C3CC79A162876AE00088AA8 /* modstar.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3CC798162876AE00088AA8 /* modstar.png */; };
 		1C40E5B01640F924004AAFA6 /* NSFileManager+UserDirectories.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C40E5AF1640F924004AAFA6 /* NSFileManager+UserDirectories.m */; };
@@ -708,8 +707,6 @@
 		1C278A481647A47F007D3CEC /* AwfulPullToRefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPullToRefreshControl.m; sourceTree = "<group>"; };
 		1C278A491647A47F007D3CEC /* AwfulScrollViewPullObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScrollViewPullObserver.h; sourceTree = "<group>"; };
 		1C278A4A1647A47F007D3CEC /* AwfulScrollViewPullObserver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScrollViewPullObserver.m; sourceTree = "<group>"; };
-		1C278A4B1647A47F007D3CEC /* UIScrollView+AwfulPullingUpAndDown.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+AwfulPullingUpAndDown.h"; sourceTree = "<group>"; };
-		1C278A4C1647A47F007D3CEC /* UIScrollView+AwfulPullingUpAndDown.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+AwfulPullingUpAndDown.m"; sourceTree = "<group>"; };
 		1C3CC797162876AE00088AA8 /* adminstar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = adminstar.png; sourceTree = "<group>"; };
 		1C3CC798162876AE00088AA8 /* modstar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = modstar.png; sourceTree = "<group>"; };
 		1C40E5AE1640F924004AAFA6 /* NSFileManager+UserDirectories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSFileManager+UserDirectories.h"; path = "Source/Main/NSFileManager+UserDirectories.h"; sourceTree = SOURCE_ROOT; };
@@ -1500,8 +1497,6 @@
 				1C278A481647A47F007D3CEC /* AwfulPullToRefreshControl.m */,
 				1C278A491647A47F007D3CEC /* AwfulScrollViewPullObserver.h */,
 				1C278A4A1647A47F007D3CEC /* AwfulScrollViewPullObserver.m */,
-				1C278A4B1647A47F007D3CEC /* UIScrollView+AwfulPullingUpAndDown.h */,
-				1C278A4C1647A47F007D3CEC /* UIScrollView+AwfulPullingUpAndDown.m */,
 			);
 			path = "Scrolling and Pulling";
 			sourceTree = "<group>";
@@ -3035,7 +3030,6 @@
 				1C40E5B01640F924004AAFA6 /* NSFileManager+UserDirectories.m in Sources */,
 				1C278A4D1647A47F007D3CEC /* AwfulPullToRefreshControl.m in Sources */,
 				1C278A4E1647A47F007D3CEC /* AwfulScrollViewPullObserver.m in Sources */,
-				1C278A4F1647A47F007D3CEC /* UIScrollView+AwfulPullingUpAndDown.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

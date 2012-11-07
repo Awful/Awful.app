@@ -22,7 +22,7 @@ typedef void (^AwfulPullToRefreshBlock)(void);
                direction:(AwfulScrollViewPullDirection)direction
            triggerOffset:(CGFloat)triggerOffset;
 
-@property (readonly, nonatomic) UIScrollView *scrollView;
+@property (readonly, weak, nonatomic) UIScrollView *scrollView;
 
 @property (readonly, nonatomic) AwfulScrollViewPullDirection direction;
 
@@ -37,5 +37,7 @@ typedef void (^AwfulPullToRefreshBlock)(void);
 @property (copy, nonatomic) AwfulPullToRefreshBlock scrollViewDidResize;
 
 - (void)reset;
+
+- (void)willLeaveScrollView:(UIScrollView *)scrollView;
 
 @end

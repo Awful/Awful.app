@@ -14,6 +14,7 @@
 #import "AwfulModels.h"
 #import "AwfulPageBar.h"
 #import "AwfulPostsView.h"
+#import "AwfulPullToRefreshControl.h"
 #import "AwfulReplyViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulSpecificPageViewController.h"
@@ -23,7 +24,6 @@
 #import "NSFileManager+UserDirectories.h"
 #import "NSManagedObject+Awful.h"
 #import "SVProgressHUD.h"
-#import "UIScrollView+AwfulPullingUpAndDown.h"
 
 @interface TopBarView : UIView
 
@@ -47,6 +47,8 @@
 @property (nonatomic) AwfulSpecificPageViewController *specificPageController;
 
 @property (weak, nonatomic) AwfulPostsView *postsView;
+
+@property (weak, nonatomic) AwfulPullToRefreshControl *pullUpToRefreshControl;
 
 @property (weak, nonatomic) TopBarView *topBar;
 
@@ -150,7 +152,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 
 - (void)updatePullForNextPageLabel
 {
-    AwfulPullToRefreshControl *refresh = self.postsView.scrollView.pullUpToRefreshControl;
+    AwfulPullToRefreshControl *refresh = self.pullUpToRefreshControl;
     if (self.thread.numberOfPagesValue > self.currentPage) {
         [refresh setTitle:@"Pull for next page…" forState:UIControlStateNormal];
         [refresh setTitle:@"Release for next page…" forState:UIControlStateSelected];
@@ -291,6 +293,15 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     self.topBar = topBar;
     postsView.scrollView.contentInset = UIEdgeInsetsMake(44, 0, 0, 0);
     [self keepTopBarHiddenOnFirstView];
+    
+    AwfulPullToRefreshControl *refresh;
+    refresh = [[AwfulPullToRefreshControl alloc] initWithDirection:AwfulScrollViewPullUp];
+    [refresh addTarget:self
+                action:@selector(loadNextPageOrRefresh)
+      forControlEvents:UIControlEventValueChanged];
+    refresh.backgroundColor = self.topBar.backgroundColor;
+    [self.postsView.scrollView addSubview:refresh];
+    self.pullUpToRefreshControl = refresh;
 }
 
 - (AwfulPostsView *)postsView
@@ -347,16 +358,6 @@ static void * KVOContext = @"AwfulPostsView KVO";
     UIScrollView *scrollView = self.postsView.scrollView;
     [scrollView scrollRectToVisible:CGRectMake(0, scrollView.contentSize.height - 1, 1, 1)
                            animated:YES];
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    AwfulPullToRefreshControl *refresh = self.postsView.scrollView.pullUpToRefreshControl;
-    refresh.backgroundColor = self.topBar.backgroundColor;
-    [refresh addTarget:self
-                action:@selector(loadNextPageOrRefresh)
-      forControlEvents:UIControlEventValueChanged];
 }
 
 - (void)loadNextPageOrRefresh
@@ -723,7 +724,7 @@ static void * KVOContext = @"AwfulPostsView KVO";
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
     [self.postsView reloadData];
-    [self.postsView.scrollView.pullUpToRefreshControl setRefreshing:NO animated:YES];
+    [self.pullUpToRefreshControl setRefreshing:NO animated:YES];
     [self updatePullForNextPageLabel];
 }
 

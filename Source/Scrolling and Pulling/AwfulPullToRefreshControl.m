@@ -11,7 +11,7 @@
 
 // If we set rotation to exactly M_PI, Core Animation decides which direction to rotate (i.e. it
 // doesn't matter if we say positive or negative M_PI).
-#define M_ALMOST_PI (M_PI - 0.0001)
+#define M_ALMOST_PI (M_PI - 0.00001)
 
 
 @interface ArrowView : UIView
@@ -25,7 +25,7 @@
 
 @interface AwfulPullToRefreshControl ()
 
-@property (nonatomic) UIScrollView *scrollView;
+@property (readonly, nonatomic) UIScrollView *scrollView;
 
 @property (nonatomic) UIControlState customState;
 
@@ -44,20 +44,10 @@
 
 @implementation AwfulPullToRefreshControl
 
-- (id)initWithScrollView:(UIScrollView *)scrollView
-               direction:(AwfulScrollViewPullDirection)direction
+- (id)initWithDirection:(AwfulScrollViewPullDirection)direction
 {
     if (!(self = [super initWithFrame:CGRectMake(0, 0, 320, 55)])) return nil;
-    _scrollView = scrollView;
-    [_scrollView addObserver:self
-                  forKeyPath:@"frame"
-                     options:NSKeyValueObservingOptionInitial
-                     context:&KVOContext];
-    [_scrollView addObserver:self
-                  forKeyPath:@"contentSize"
-                     options:NSKeyValueObservingOptionInitial
-                     context:&KVOContext];
-    
+    _direction = direction;
     _titles = [@{
         @(UIControlStateNormal): @"Pull to refresh…",
         @(UIControlStateSelected): @"Release to refresh…",
@@ -84,55 +74,12 @@
     [titleLabel sizeToFit];
     [self addSubview:titleLabel];
     _titleLabel = titleLabel;
-    
-    _observer = [[AwfulScrollViewPullObserver alloc] initWithScrollView:scrollView
-                                                              direction:direction
-                                                          triggerOffset:self.bounds.size.height];
-    _observer.willTrigger = ^{ self.selected = YES; };
-    _observer.willNotTrigger = ^{ self.selected = NO; };
-    __weak id blockSelf = self;
-    _observer.didTrigger = ^
-    {
-        self.refreshing = YES;
-        [blockSelf sendActionsForControlEvents:UIControlEventValueChanged];
-    };
     return self;
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath
-                      ofObject:(id)object
-                        change:(NSDictionary *)change
-                       context:(void *)context
+- (UIScrollView *)scrollView
 {
-    if (context != &KVOContext) {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-        return;
-    }
-    
-    if (self.direction == AwfulScrollViewPullDown) {
-        CGRect frame = self.frame;
-        frame.origin.y = -frame.size.height;
-        frame.size.width = self.scrollView.bounds.size.width;
-        self.frame = frame;
-    } else if (self.direction == AwfulScrollViewPullUp) {
-        CGRect frame = self.frame;
-        frame.origin.y = self.scrollView.contentSize.height;
-        frame.size.width = self.scrollView.bounds.size.width;
-        self.frame = frame;
-    }
-}
-
-- (void)dealloc
-{
-    [_scrollView removeObserver:self forKeyPath:@"frame" context:&KVOContext];
-    [_scrollView removeObserver:self forKeyPath:@"contentSize" context:&KVOContext];
-}
-
-static void * KVOContext = @"AwfulPullToRefreshControl KVO";
-
-- (AwfulScrollViewPullDirection)direction
-{
-    return self.observer.direction;
+    return (UIScrollView *)[self superview];
 }
 
 - (BOOL)isRefreshing
@@ -224,6 +171,21 @@ static void * KVOContext = @"AwfulPullToRefreshControl KVO";
     }
 }
 
+- (void)repositionWithinScrollView
+{
+    if (self.direction == AwfulScrollViewPullDown) {
+        CGRect frame = self.frame;
+        frame.origin.y = -frame.size.height;
+        frame.size.width = self.superview.bounds.size.width;
+        self.frame = frame;
+    } else if (self.direction == AwfulScrollViewPullUp) {
+        CGRect frame = self.frame;
+        frame.origin.y = self.scrollView.contentSize.height;
+        frame.size.width = self.scrollView.bounds.size.width;
+        self.frame = frame;
+    }
+}
+
 #pragma mark - UIControl
 
 - (UIControlState)state
@@ -240,12 +202,10 @@ static void * KVOContext = @"AwfulPullToRefreshControl KVO";
 - (void)setSelected:(BOOL)selected
 {
     [super setSelected:selected];
-    if (selected) {
-        [self.arrow setRotation:self.direction == AwfulScrollViewPullDown ? M_ALMOST_PI : 0
-                       animated:YES];
-    } else {
-        [self.arrow setRotation:self.direction == AwfulScrollViewPullDown ? 0 : M_ALMOST_PI
-                       animated:YES];
+    if (self.direction == AwfulScrollViewPullDown) {
+        [self.arrow setRotation:(selected ? 0 : M_ALMOST_PI) animated:YES];
+    } else if (self.direction == AwfulScrollViewPullUp) {
+        [self.arrow setRotation:(selected ? M_ALMOST_PI : 0) animated:YES];
     }
     [self updateTitleLabel];
 }
@@ -268,10 +228,60 @@ static void * KVOContext = @"AwfulPullToRefreshControl KVO";
     self.titleLabel.frame = titleFrame;
 }
 
+- (void)willMoveToSuperview:(UIView *)newSuperview
+{
+    if ([newSuperview isKindOfClass:[UIScrollView class]]) {
+        UIScrollView *scrollView = (UIScrollView *)newSuperview;
+        [self repositionWithinScrollView];
+        if (self.direction == AwfulScrollViewPullUp) {
+            [scrollView addObserver:self
+                         forKeyPath:@"contentSize"
+                            options:0
+                            context:&KVOContext];
+        }
+        CGFloat triggerOffset = self.bounds.size.height;
+        self.observer = [[AwfulScrollViewPullObserver alloc] initWithScrollView:scrollView
+                                                                      direction:self.direction
+                                                                  triggerOffset:triggerOffset];
+        self.observer.willTrigger = ^{ self.selected = YES; };
+        self.observer.willNotTrigger = ^{ self.selected = NO; };
+        __weak id blockSelf = self;
+        self.observer.didTrigger = ^
+        {
+            self.refreshing = YES;
+            [blockSelf sendActionsForControlEvents:UIControlEventValueChanged];
+        };
+    } else {
+        if (self.direction == AwfulScrollViewPullUp) {
+            [self.scrollView removeObserver:self forKeyPath:@"contentSize" context:&KVOContext];
+        }
+        [self.observer willLeaveScrollView:(UIScrollView *)self.superview];
+        self.observer = nil;
+    }
+}
+
 - (id)initWithFrame:(CGRect)frame
 {
-    return [self initWithScrollView:nil direction:0];
+    return [self initWithDirection:0];
 }
+
+#pragma mark - NSKeyValueObserving
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context
+{
+    if (context != &KVOContext) {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+        return;
+    }
+    if ([keyPath isEqualToString:@"contentSize"]) {
+        [self repositionWithinScrollView];
+    }
+}
+
+static void * KVOContext = @"AwfulPullToRefreshControl KVO";
 
 @end
 

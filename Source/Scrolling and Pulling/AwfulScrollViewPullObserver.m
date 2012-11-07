@@ -24,17 +24,21 @@
     _triggerOffset = triggerOffset;
     [_scrollView addObserver:self
                   forKeyPath:@"contentOffset"
-                     options:NSKeyValueObservingOptionPrior | NSKeyValueObservingOptionOld
+                     options:NSKeyValueObservingOptionNew
                      context:&KVOContext];
     return self;
 }
 
-- (void)dealloc
+- (void)reset
 {
-    [_scrollView removeObserver:self forKeyPath:@"contentOffset" context:&KVOContext];
+    _wouldHaveTriggered = NO;
+    _triggered = NO;
 }
 
-static void * KVOContext = @"AwfulPullToRefreshObserver KVO";
+- (void)willLeaveScrollView:(UIScrollView *)scrollView
+{
+    [scrollView removeObserver:self forKeyPath:@"contentOffset" context:&KVOContext];
+}
 
 #pragma mark - NSKeyValueObserving
 
@@ -50,7 +54,7 @@ static void * KVOContext = @"AwfulPullToRefreshObserver KVO";
     
     if (_triggered) return;
     
-    CGFloat currentOffset = [change[NSKeyValueChangeOldKey] CGPointValue].y;
+    CGFloat currentOffset = [change[NSKeyValueChangeNewKey] CGPointValue].y;
     BOOL wouldTrigger = NO;
     if (self.direction == AwfulScrollViewPullDown) {
         wouldTrigger = currentOffset <= -self.triggerOffset;
@@ -63,29 +67,20 @@ static void * KVOContext = @"AwfulPullToRefreshObserver KVO";
     }
     
     if (wouldTrigger && !self.scrollView.dragging && self.scrollView.decelerating) {
-        if (!_triggered && self.didTrigger) {
-            dispatch_async(dispatch_get_main_queue(), self.didTrigger);
-        }
+        BOOL wasntTriggered = !_triggered;
         _triggered = YES;
+        if (wasntTriggered && self.didTrigger) self.didTrigger();
     } else if (self.scrollView.dragging && !self.scrollView.decelerating) {
         if (wouldTrigger) {
-            if (!_wouldHaveTriggered && self.willTrigger) {
-                dispatch_async(dispatch_get_main_queue(), self.willTrigger);
-            }
+            if (!_wouldHaveTriggered && self.willTrigger) self.willTrigger();
         } else {
-            if (_wouldHaveTriggered && self.willNotTrigger) {
-                dispatch_async(dispatch_get_main_queue(), self.willNotTrigger);
-            }
+            if (_wouldHaveTriggered && self.willNotTrigger) self.willNotTrigger();
         }
     }
     _wouldHaveTriggered = wouldTrigger;
 }
 
-- (void)reset
-{
-    _wouldHaveTriggered = NO;
-    _triggered = NO;
-}
+static void * KVOContext = @"AwfulPullToRefreshObserver KVO";
 
 #pragma mark - NSObject
 
