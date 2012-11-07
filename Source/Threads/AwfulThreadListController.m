@@ -20,6 +20,7 @@
 #import "AwfulThreadCell.h"
 #import "AwfulThreadTags.h"
 #import "SVPullToRefresh.h"
+#import "UIViewController+NavigationEnclosure.h"
 
 typedef enum {
     AwfulThreadListActionsTypeFirstPage = 0,
@@ -207,8 +208,7 @@ typedef enum {
         NSMutableArray *vcs = [NSMutableArray arrayWithArray:self.splitViewController.viewControllers];
         [vcs removeLastObject];
         
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:page];
-        [vcs addObject:nav];
+        [vcs addObject:[page enclosingNavigationController]];
         self.splitViewController.viewControllers = vcs;
         AwfulSplitViewController *split = (AwfulSplitViewController *)self.splitViewController;
         [split ensureLeftBarButtonItemOnDetailView];

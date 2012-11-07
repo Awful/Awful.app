@@ -18,6 +18,7 @@
 #import "AwfulSplitViewController.h"
 #import "AFNetworking.h"
 #import "NSFileManager+UserDirectories.h"
+#import "UIViewController+NavigationEnclosure.h"
 
 @interface AwfulAppDelegate () <UITabBarControllerDelegate, AwfulLoginControllerDelegate>
 
@@ -35,7 +36,8 @@ static AwfulAppDelegate *_instance;
 
 #pragma mark - Application lifecycle
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+- (BOOL)application:(UIApplication *)application
+    didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     _instance = self;
     [[AwfulSettings settings] registerDefaults];
@@ -47,10 +49,10 @@ static AwfulAppDelegate *_instance;
     UITabBarController *tabBar = [UITabBarController new];
     tabBar.wantsFullScreenLayout = NO;
     tabBar.viewControllers = @[
-        [[UINavigationController alloc] initWithRootViewController:[AwfulForumsListController new]],
-        [[UINavigationController alloc] initWithRootViewController:[AwfulFavoritesViewController new]],
-        [[UINavigationController alloc] initWithRootViewController:[AwfulBookmarksController new]],
-        [[UINavigationController alloc] initWithRootViewController:[AwfulSettingsViewController new]]
+        [[AwfulForumsListController new] enclosingNavigationController],
+        [[AwfulFavoritesViewController new] enclosingNavigationController],
+        [[AwfulBookmarksController new] enclosingNavigationController],
+        [[AwfulSettingsViewController new] enclosingNavigationController]
     ];
     tabBar.selectedIndex = [[AwfulSettings settings] firstTab];
     tabBar.delegate = self;
@@ -58,8 +60,7 @@ static AwfulAppDelegate *_instance;
         AwfulSplitViewController *splitController = [AwfulSplitViewController new];
         UIViewController *gray = [UIViewController new];
         gray.view.backgroundColor = [UIColor darkGrayColor];
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:gray];
-        splitController.viewControllers = @[ tabBar, nav ];
+        splitController.viewControllers = @[ tabBar, [gray enclosingNavigationController] ];
         self.window.rootViewController = splitController;
     } else {
         self.window.rootViewController = tabBar;
@@ -127,7 +128,7 @@ static AwfulAppDelegate *_instance;
 {
     AwfulLoginController *login = [AwfulLoginController new];
     login.delegate = self;
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:login];
+    UINavigationController *nav = [login enclosingNavigationController];
     nav.modalPresentationStyle = UIModalPresentationFormSheet;
     BOOL animated = !isAtLaunch || UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
     [self.window.rootViewController presentViewController:nav

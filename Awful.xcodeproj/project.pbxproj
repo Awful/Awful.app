@@ -432,6 +432,7 @@
 		1CC780731612DBB2002AF958 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CC7806C1612DBB2002AF958 /* Default@2x.png */; };
 		1CC780791612E0EA002AF958 /* AwfulUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780781612E0EA002AF958 /* AwfulUser.m */; };
 		1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD5198154294D400326C7B /* AwfulSettings.m */; };
+		1CF0D616164AE95200CFA137 /* UIViewController+NavigationEnclosure.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0D615164AE95200CFA137 /* UIViewController+NavigationEnclosure.m */; };
 		1CFBECDB162F4ED7008AF641 /* pagebar-button-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CFBECCB162F4ED7008AF641 /* pagebar-button-selected.png */; };
 		1CFBECDC162F4ED7008AF641 /* pagebar-button-selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CFBECCC162F4ED7008AF641 /* pagebar-button-selected@2x.png */; };
 		1CFBECDD162F4ED7008AF641 /* pagebar-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CFBECCD162F4ED7008AF641 /* pagebar-button.png */; };
@@ -873,6 +874,8 @@
 		1CC780781612E0EA002AF958 /* AwfulUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulUser.m; sourceTree = "<group>"; };
 		1CDD5197154294D400326C7B /* AwfulSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettings.h; sourceTree = "<group>"; };
 		1CDD5198154294D400326C7B /* AwfulSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettings.m; sourceTree = "<group>"; };
+		1CF0D614164AE95200CFA137 /* UIViewController+NavigationEnclosure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+NavigationEnclosure.h"; sourceTree = "<group>"; };
+		1CF0D615164AE95200CFA137 /* UIViewController+NavigationEnclosure.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+NavigationEnclosure.m"; sourceTree = "<group>"; };
 		1CFBECCB162F4ED7008AF641 /* pagebar-button-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pagebar-button-selected.png"; sourceTree = "<group>"; };
 		1CFBECCC162F4ED7008AF641 /* pagebar-button-selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pagebar-button-selected@2x.png"; sourceTree = "<group>"; };
 		1CFBECCD162F4ED7008AF641 /* pagebar-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pagebar-button.png"; sourceTree = "<group>"; };
@@ -1409,6 +1412,8 @@
 				1C40E5AF1640F924004AAFA6 /* NSFileManager+UserDirectories.m */,
 				1CFBED0B1632212C008AF641 /* NSURL+QueryDictionary.h */,
 				1CFBED0C1632212C008AF641 /* NSURL+QueryDictionary.m */,
+				1CF0D614164AE95200CFA137 /* UIViewController+NavigationEnclosure.h */,
+				1CF0D615164AE95200CFA137 /* UIViewController+NavigationEnclosure.m */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -3030,6 +3035,7 @@
 				1C40E5B01640F924004AAFA6 /* NSFileManager+UserDirectories.m in Sources */,
 				1C278A4D1647A47F007D3CEC /* AwfulPullToRefreshControl.m in Sources */,
 				1C278A4E1647A47F007D3CEC /* AwfulScrollViewPullObserver.m in Sources */,
+				1CF0D616164AE95200CFA137 /* UIViewController+NavigationEnclosure.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

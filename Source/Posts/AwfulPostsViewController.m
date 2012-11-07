@@ -24,6 +24,7 @@
 #import "NSFileManager+UserDirectories.h"
 #import "NSManagedObject+Awful.h"
 #import "SVProgressHUD.h"
+#import "UIViewController+NavigationEnclosure.h"
 
 @interface TopBarView : UIView
 
@@ -435,7 +436,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     AwfulReplyViewController *postBox = [AwfulReplyViewController new];
     postBox.thread = self.thread;
     postBox.page = self;
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:postBox];
+    UINavigationController *nav = [postBox enclosingNavigationController];
     [self presentViewController:nav animated:YES completion:nil];
 }
 
@@ -464,7 +465,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                  reply.post = post;
                  reply.startingText = text;
                  reply.page = self;
-                 UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:reply];
+                 UINavigationController *nav = [reply enclosingNavigationController];
                  [self presentViewController:nav animated:YES completion:nil];
              }];
         }];
@@ -486,7 +487,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                  reply.thread = self.thread;
                  reply.startingText = [quotedText stringByAppendingString:@"\n\n"];
                  reply.page = self;
-                 UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:reply];
+                 UINavigationController *nav = [reply enclosingNavigationController];
                  [self presentViewController:nav animated:YES completion:nil];
              }];
         }];
@@ -703,7 +704,7 @@ static void * KVOContext = @"AwfulPostsView KVO";
 {
     NSArray *photos = @[ [MWPhoto photoWithURL:[NSURL URLWithString:urlString]] ];
     MWPhotoBrowser *browser = [[MWPhotoBrowser alloc] initWithPhotos:photos];
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:browser];
+    UINavigationController *nav = [browser enclosingNavigationController];
     [self presentViewController:nav animated:YES completion:nil];
 }
 
