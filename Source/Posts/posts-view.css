@@ -36,11 +36,6 @@ img, iframe {
   max-width: 100%;
 }
 
-/* Images and iframes shouldn't stretch out from not breaking tables. */
-img, iframe {
-  height: auto;
-}
-
 /* Don't show default menu when long-tapping text. */
 body {
   -webkit-touch-callout: none;
