@@ -158,7 +158,7 @@
     self.originalPosterTextLabel.frame = (CGRect){
         .origin.x = CGRectGetMaxX(detailTextLabelFrame) + detailRightMargin,
         .origin.y = detailTextLabelFrame.origin.y,
-        .size.width = textLabelFrame.size.width - detailTextLabelFrame.size.width - detailRightMargin
+        .size.width = cellSize.width - CGRectGetMaxX(detailTextLabelFrame) - detailRightMargin
     };
     [self.originalPosterTextLabel sizeToFit];
 }
