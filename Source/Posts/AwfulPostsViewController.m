@@ -186,7 +186,6 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 
 - (void)loadPage:(NSInteger)page
 {
-    [self markPostsAsBeenSeen];
     [self.networkOperation cancel];
     [self hidePageNavigation];
     self.advertisementHTML = nil;
@@ -217,6 +216,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         [self.postsView reloadData];
         self.postsView.scrollView.contentOffset = CGPointZero;
         [self updatePageBar];
+        [self markPostsAsBeenSeen];
     }];
     self.networkOperation = op;
 }
