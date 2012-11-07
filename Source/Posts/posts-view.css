@@ -335,6 +335,12 @@ body.dark {
   color: #999;
 }
 
+/* Block headings have no top or bottom margin. */
+#posts > article > section .bbc-block h4,
+#posts > article > section .bbc-block h5 {
+  margin: 0;
+}
+
 /* Block headings like 'quote' are smaller and go in italics. */
 #posts > article > section .bbc-block h4 {
   font-size: 13px;
@@ -377,16 +383,17 @@ body.dark {
   max-height: 100px;
 }
 
-/* Add some space above and below code blocks. */
-#posts > article > section .bbc-block.code {
-  margin: 1em 0;
-}
-
 /* Lists on iPhone shan't be indented; it wastes too much space. */
 .iphone #posts > article > section ul,
 .iphone #posts > article > section ol {
   margin: 0;
   padding-left: 1.5em;
+}
+
+/* Code blocks need no margin and have a smaller font size. */
+#posts > article > section .bbc-block.code pre {
+  margin: 0;
+  font-size: 0.75em;
 }
 
 /* The little "edited by" blurb at the end of a post is smaller and in italics. */
