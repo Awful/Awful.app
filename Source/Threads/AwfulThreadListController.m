@@ -69,7 +69,20 @@ typedef enum {
     if (_forum == forum) return;
     _forum = forum;
     self.title = _forum.name;
+    self.navigationItem.backBarButtonItem = [self abbreviatedBackBarButtonItem];
     self.fetchedResultsController = [self createFetchedResultsController];
+}
+
+- (UIBarButtonItem *)abbreviatedBackBarButtonItem
+{
+    NSURL *abbreviationsURL = [[NSBundle mainBundle] URLForResource:@"Forum Abbreviations"
+                                                      withExtension:@"plist"];
+    NSDictionary *abbreviations = [NSDictionary dictionaryWithContentsOfURL:abbreviationsURL];
+    NSString *text = abbreviations[self.forum.forumID];
+    if (!text) return nil;
+    return [[UIBarButtonItem alloc] initWithTitle:text style:UIBarButtonItemStyleBordered
+                                           target:nil
+                                           action:NULL];
 }
 
 #pragma mark - Table view controller
