@@ -17,6 +17,7 @@
 
 + (NSArray *)postsCreatedOrUpdatedFromPageInfo:(PageParsedInfo *)pageInfo
 {
+    if ([pageInfo.forumID length] == 0 || [pageInfo.threadID length] == 0) return nil;
     AwfulForum *forum = [AwfulForum firstMatchingPredicate:@"forumID = %@", pageInfo.forumID];
     if (!forum) {
         forum = [AwfulForum insertNew];
