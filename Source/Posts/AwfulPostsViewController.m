@@ -576,7 +576,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     [self keepTopBarHiddenOnFirstView];
     
     AwfulPullToRefreshControl *refresh;
-    refresh = [[AwfulPullToRefreshControl alloc] initWithDirection:AwfulScrollViewPullUp];
+    refresh = [[AwfulPullToRefreshControl alloc] initWithDirection:AwfulScrollViewPullUp
+                                                     triggerOffset:40];
     [refresh addTarget:self
                 action:@selector(loadNextPageOrRefresh)
       forControlEvents:UIControlEventValueChanged];

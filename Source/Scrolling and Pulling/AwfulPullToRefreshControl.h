@@ -13,20 +13,27 @@
 @interface AwfulPullToRefreshControl : UIControl
 
 // Designated initializer.
-- (id)initWithDirection:(AwfulScrollViewPullDirection)direction;
+- (id)initWithDirection:(AwfulScrollViewPullDirection)direction
+          triggerOffset:(CGFloat)triggerOffset;
 
 @property (readonly, nonatomic) AwfulScrollViewPullDirection direction;
+
+// Number of points to drag the scroll view **beyond this control's height** before the refresh
+// is triggered. Default is 0.
+@property (readonly, nonatomic) CGFloat triggerOffset;
 
 @property (getter=isRefreshing, nonatomic) BOOL refreshing;
 
 - (void)setRefreshing:(BOOL)refreshing animated:(BOOL)animated;
 
-// If no title has been set for the given state, returns the title for UIControlStateNormal.
-//
 // By default, titles are set for:
 //     - UIControlStateNormal
 //     - UIControlStateSelected (i.e. dragged far enough to refresh if released)
 //     - AwfulControlStateRefreshing.
+//
+// If no title has been set for the given state, returns the title for UIControlStateNormal.
+- (NSString *)titleForState:(UIControlState)state;
+
 - (void)setTitle:(NSString *)title forState:(UIControlState)state;
 
 @end

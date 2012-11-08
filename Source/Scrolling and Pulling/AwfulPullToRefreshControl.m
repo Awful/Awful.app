@@ -45,9 +45,11 @@
 @implementation AwfulPullToRefreshControl
 
 - (id)initWithDirection:(AwfulScrollViewPullDirection)direction
+          triggerOffset:(CGFloat)triggerOffset
 {
     if (!(self = [super initWithFrame:CGRectMake(0, 0, 320, 55)])) return nil;
     _direction = direction;
+    _triggerOffset = triggerOffset;
     _titles = [@{
         @(UIControlStateNormal): @"Pull to refresh…",
         @(UIControlStateSelected): @"Release to refresh…",
@@ -239,7 +241,7 @@
                             options:0
                             context:&KVOContext];
         }
-        CGFloat triggerOffset = self.bounds.size.height;
+        CGFloat triggerOffset = self.bounds.size.height + self.triggerOffset;
         self.observer = [[AwfulScrollViewPullObserver alloc] initWithScrollView:scrollView
                                                                       direction:self.direction
                                                                   triggerOffset:triggerOffset];
@@ -262,7 +264,7 @@
 
 - (id)initWithFrame:(CGRect)frame
 {
-    return [self initWithDirection:0];
+    return [self initWithDirection:0 triggerOffset:0];
 }
 
 #pragma mark - NSKeyValueObserving
