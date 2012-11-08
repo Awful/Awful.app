@@ -575,7 +575,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     [refresh addTarget:self
                 action:@selector(loadNextPageOrRefresh)
       forControlEvents:UIControlEventValueChanged];
-    refresh.backgroundColor = self.topBar.backgroundColor;
+    refresh.backgroundColor = [UIColor clearColor];
     [self.postsView.scrollView addSubview:refresh];
     self.pullUpToRefreshControl = refresh;
 }
