@@ -62,14 +62,14 @@
     
     UIActivityIndicatorView *spinner = [UIActivityIndicatorView new];
     spinner.alpha = 0;
-    spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
+    spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
     [self addSubview:spinner];
     _spinner = spinner;
     
     UILabel *titleLabel = [UILabel new];
     titleLabel.text = _titles[@(UIControlStateNormal)];
     titleLabel.font = [UIFont boldSystemFontOfSize:14];
-    titleLabel.textColor = [UIColor darkGrayColor];
+    titleLabel.textColor = [UIColor lightGrayColor];
     titleLabel.backgroundColor = [UIColor clearColor];
     [titleLabel sizeToFit];
     [self addSubview:titleLabel];
@@ -291,7 +291,7 @@ static void * KVOContext = @"AwfulPullToRefreshControl KVO";
 - (id)initWithFrame:(CGRect)frame
 {
     if (!(self = [super initWithFrame:frame])) return nil;
-    _color = [UIColor grayColor];
+    _color = [UIColor lightGrayColor];
     return self;
 }
 

@@ -23,6 +23,8 @@ bb-fantasy.png
 bb-foreign.png
 bb-nonfiction.png
 books.png
+bs-diablo.png
+bs-starcraft.png
 bss-con.png
 bss-discussion.png
 bss-fanboy.png
@@ -138,14 +140,17 @@ fyad-ghosts.png
 fyad-imgay.png
 fyad-lovecum.png
 fyad-menopause.png
+fyad-mystery.png
 fyad-nilbog.png
 fyad-parotty.png
+fyad-puns.png
 fyad-robocop.png
 fyad-salad.png
 fyad-sandwich.png
 fyad-socks.png
 fyad-suts.png
 fyad-tim.png
+fyad-trout.png
 fyad-zounds.png
 games-360.png
 games-360ps3tag.png
@@ -182,6 +187,7 @@ gws-meat.png
 gws-snacks.png
 gws-soup.png
 gws-veg.png
+gws-veggie.png
 hell-boot.png
 hell-fuckthis.png
 hell-glomp.png
@@ -365,6 +371,7 @@ tfr-box.png
 tg-boardgames.png
 tg-d20.png
 tg-gurps.png
+tg-mafia.png
 tg-recruiting.png
 tg-wargames.png
 tma-secondary.png
