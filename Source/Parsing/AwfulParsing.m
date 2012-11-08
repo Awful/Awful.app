@@ -137,7 +137,44 @@
     if (bookmark) {
         self.bookmark = [bookmark objectForKey:@"value"];
     }
-    self.text = [[document searchForSingle:@"//textarea[@name = 'message']"] content];
+    NSString *withEntities = [[document searchForSingle:@"//textarea[@name = 'message']"] content];
+    self.text = DeEntitify(withEntities);
+}
+
+static NSString * DeEntitify(NSString *withEntities)
+{
+    if ([withEntities length] == 0) return withEntities;
+    NSMutableString *noEntities = [withEntities mutableCopy];
+    NSError *error;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"&#(\\d+);"
+                                                                           options:0
+                                                                             error:&error];
+    if (!regex) {
+        NSLog(@"error creating regex in DeEntitify: %@", error);
+        return nil;
+    }
+    __block NSInteger offset = 0;
+    [regex enumerateMatchesInString:withEntities
+                            options:0
+                              range:NSMakeRange(0, [withEntities length])
+                         usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags _, BOOL *__)
+    {
+        if ([result rangeAtIndex:1].location == NSNotFound) {
+            return;
+        }
+        NSString *entityValue = [withEntities substringWithRange:[result rangeAtIndex:1]];
+        NSNumberFormatter *formatter = [NSNumberFormatter new];
+        [formatter setNumberStyle:NSNumberFormatterNoStyle];
+        uint32_t codepoint = [[formatter numberFromString:entityValue] unsignedIntValue];
+        NSString *character = [[NSString alloc] initWithBytes:&codepoint
+                                                       length:sizeof(codepoint)
+                                                     encoding:NSUTF32LittleEndianStringEncoding];
+        NSRange replacementRange = [result range];
+        replacementRange.location += offset;
+        [noEntities replaceCharactersInRange:replacementRange withString:character];
+        offset += [character length] - [result range].length;
+    }];
+    return noEntities;
 }
 
 @end

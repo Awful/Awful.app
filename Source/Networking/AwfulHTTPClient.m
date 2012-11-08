@@ -39,6 +39,13 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
 {
     NSString *ugh = [[NSString alloc] initWithData:windows1252
                                           encoding:NSWindowsCP1252StringEncoding];
+    // Sometimes it isn't windows-1252 and is actually what's sent in headers: ISO-8859-1.
+    // Example: http://forums.somethingawful.com/showthread.php?threadid=2357406&pagenumber=2
+    // Maybe it's just old posts; the example is from 2007. And we definitely get some mojibake,
+    // but at least it's something.
+    if (!ugh) {
+        ugh = [[NSString alloc] initWithData:windows1252 encoding:NSISOLatin1StringEncoding];
+    }
     return [ugh dataUsingEncoding:NSUTF8StringEncoding];
 }
 
@@ -206,7 +213,7 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
             @"formkey" : formInfo.formkey,
             @"form_cookie" : formInfo.formCookie,
             @"action" : @"postreply",
-            @"message" : text,
+            @"message" : Entitify(text),
             @"parseurl" : @"yes",
             @"submit" : @"Submit Reply",
         } mutableCopy];
@@ -233,6 +240,55 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
     }];
     [self enqueueHTTPRequestOperation:op];
     return op;
+}
+
+static NSString * Entitify(NSString *noEntities)
+{
+    // Replace all characters outside windows-1252 with XML entities.
+    noEntities = [noEntities precomposedStringWithCanonicalMapping];
+    NSMutableString *withEntities = [noEntities mutableCopy];
+    NSError *error;
+    NSString *pattern = @"(?x)[^ \\u0000-\\u007F \\u20AC \\u201A \\u0192 \u201E \\u2026 \\u2020 "
+                         "\\u2021 \\u02C6 \\u2030 \\u0160 \\u2039 \\u0152 \\u017D \\u2018 \\u2019 "
+                         "\\u201C \\u201D \\u2022 \\u2013 \\u2014 \\u02DC \\u2122 \\u0161 \\u203A "
+                         "\\u0153 \\u017E \\u0178 \u00A0-\u00FF ]";
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
+                                                                           options:0
+                                                                             error:&error];
+    if (!regex) {
+        NSLog(@"error creating regex in Entitify: %@", error);
+        return nil;
+    }
+    __block NSInteger offset = 0;
+    NSNumberFormatter *formatter = [NSNumberFormatter new];
+    [formatter setNumberStyle:NSNumberFormatterNoStyle];
+    [regex enumerateMatchesInString:noEntities
+                            options:0
+                              range:NSMakeRange(0, [noEntities length])
+                         usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags _, BOOL *__)
+    {
+        NSMutableString *replacement = [NSMutableString new];
+        NSString *needsEntity = [noEntities substringWithRange:[result range]];
+        uint32_t codepoint;
+        NSRange remaining = NSMakeRange(0, [needsEntity length]);
+        while ([needsEntity getBytes:&codepoint
+                           maxLength:sizeof(codepoint)
+                          usedLength:NULL
+                            encoding:NSUTF32LittleEndianStringEncoding
+                             options:0
+                               range:remaining
+                      remainingRange:&remaining]) {
+            NSNumber *number = [NSNumber numberWithUnsignedInt:CFSwapInt32LittleToHost(codepoint)];
+            [replacement appendFormat:@"&#%@;", [formatter stringFromNumber:number]];
+        }
+        
+        // TODO update offset
+        NSRange replacementRange = [result range];
+        replacementRange.location += offset;
+        [withEntities replaceCharactersInRange:replacementRange withString:replacement];
+        offset += [replacement length] - replacementRange.length;
+    }];
+    return withEntities;
 }
 
 - (NSOperation *)getTextOfPostWithID:(NSString *)postID
@@ -284,7 +340,7 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
              @"action": @"updatepost",
              @"submit": @"Save Changes",
              @"postid": postID,
-             @"message": text
+             @"message": Entitify(text)
          } mutableCopy];
         ReplyFormParsedInfo *formInfo = [[ReplyFormParsedInfo alloc] initWithHTMLData:
                                          ConvertFromWindows1252ToUTF8(data)];
