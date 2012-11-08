@@ -13,6 +13,13 @@
 #import "AwfulSettings.h"
 #import "NSManagedObject+Awful.h"
 
+@interface AwfulHTTPClient ()
+
+@property (nonatomic) dispatch_queue_t parseQueue;
+
+@end
+
+
 @implementation AwfulHTTPClient
 
 + (AwfulHTTPClient *)client
@@ -31,8 +38,14 @@
     self = [super initWithBaseURL:url];
     if (self) {
         self.stringEncoding = NSWindowsCP1252StringEncoding;
+        _parseQueue = dispatch_queue_create("com.awfulapp.Awful.parsing", NULL);
     }
     return self;
+}
+
+- (void)dealloc
+{
+    dispatch_release(_parseQueue);
 }
 
 static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
@@ -60,16 +73,21 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
                                                                success:^(id _, id data)
     {
-        NSArray *infos = [ThreadParsedInfo threadsWithHTMLData:ConvertFromWindows1252ToUTF8(data)];
-        NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:infos];
-        NSInteger stickyIndex = -(NSInteger)[threads count];
-        NSArray *forums = [AwfulForum fetchAllMatchingPredicate:@"forumID = %@", forumID];
-        for (AwfulThread *thread in threads) {
-            if ([forums count] > 0) thread.forum = forums[0];
-            thread.stickyIndexValue = thread.isStickyValue ? stickyIndex++ : 0;
-        }
-        [[AwfulDataStack sharedDataStack] save];
-        if (callback) callback(nil, threads);
+        dispatch_async(self.parseQueue, ^{
+            NSArray *infos = [ThreadParsedInfo threadsWithHTMLData:
+                              ConvertFromWindows1252ToUTF8(data)];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:infos];
+                NSInteger stickyIndex = -(NSInteger)[threads count];
+                NSArray *forums = [AwfulForum fetchAllMatchingPredicate:@"forumID = %@", forumID];
+                for (AwfulThread *thread in threads) {
+                    if ([forums count] > 0) thread.forum = forums[0];
+                    thread.stickyIndexValue = thread.isStickyValue ? stickyIndex++ : 0;
+                }
+                [[AwfulDataStack sharedDataStack] save];
+                if (callback) callback(nil, threads);
+            });
+        });
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
     }];
@@ -87,12 +105,16 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
                                                                success:^(id _, id data)
     {
-        NSArray *threadInfos = [ThreadParsedInfo threadsWithHTMLData:
-                                ConvertFromWindows1252ToUTF8(data)];
-        NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:threadInfos];
-        [threads setValue:@YES forKey:AwfulThreadAttributes.isBookmarked];
-        [[AwfulDataStack sharedDataStack] save];
-        if (callback) callback(nil, threads);
+        dispatch_async(self.parseQueue, ^{
+            NSArray *threadInfos = [ThreadParsedInfo threadsWithHTMLData:
+                                    ConvertFromWindows1252ToUTF8(data)];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:threadInfos];
+                [threads setValue:@YES forKey:AwfulThreadAttributes.isBookmarked];
+                [[AwfulDataStack sharedDataStack] save];
+                if (callback) callback(nil, threads);
+            });
+        });
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
     }];
@@ -114,10 +136,14 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
                                                                success:^(id _, id data)
     {
-        PageParsedInfo *info = [[PageParsedInfo alloc] initWithHTMLData:
-                                ConvertFromWindows1252ToUTF8(data)];
-        NSArray *posts = [AwfulPost postsCreatedOrUpdatedFromPageInfo:info];
-        if (callback) callback(nil, posts, info.advertisementHTML);
+        dispatch_async(self.parseQueue, ^{
+            PageParsedInfo *info = [[PageParsedInfo alloc] initWithHTMLData:
+                                    ConvertFromWindows1252ToUTF8(data)];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSArray *posts = [AwfulPost postsCreatedOrUpdatedFromPageInfo:info];
+                if (callback) callback(nil, posts, info.advertisementHTML);
+            });
+        });
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil, nil);
     }];
@@ -134,9 +160,13 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
                                                                success:^(id _, id data)
     {
-        UserParsedInfo *parsed = [[UserParsedInfo alloc] initWithHTMLData:
-                                  ConvertFromWindows1252ToUTF8(data)];
-        if (callback) callback(nil, @{ @"userID": parsed.userID, @"username": parsed.username });
+        dispatch_async(self.parseQueue, ^{
+            UserParsedInfo *parsed = [[UserParsedInfo alloc] initWithHTMLData:
+                                      ConvertFromWindows1252ToUTF8(data)];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (callback) callback(nil, @{ @"userID": parsed.userID, @"username": parsed.username });
+            });
+        });
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
     }];
@@ -178,10 +208,14 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
                                                                success:^(id _, id data)
     {
-        ForumHierarchyParsedInfo *info = [[ForumHierarchyParsedInfo alloc] initWithHTMLData:
-                                          ConvertFromWindows1252ToUTF8(data)];
-        NSArray *forums = [AwfulForum updateCategoriesAndForums:info];
-        if (callback) callback(nil, forums);
+        dispatch_async(self.parseQueue, ^{
+            ForumHierarchyParsedInfo *info = [[ForumHierarchyParsedInfo alloc] initWithHTMLData:
+                                              ConvertFromWindows1252ToUTF8(data)];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSArray *forums = [AwfulForum updateCategoriesAndForums:info];
+                if (callback) callback(nil, forums);
+            });
+        });
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
     }];
@@ -200,40 +234,54 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
                                                                success:^(id _, id data)
     {
-        ReplyFormParsedInfo *formInfo = [[ReplyFormParsedInfo alloc] initWithHTMLData:
-                                         ConvertFromWindows1252ToUTF8(data)];
-        if (!(formInfo.formkey && formInfo.formCookie)) {
-            NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : @"Thread is closed" };
-            NSError *error = [NSError errorWithDomain:NSCocoaErrorDomain code:-1 userInfo:userInfo];
-            if (callback) callback(error, nil);
-            return;
-        }
-        NSMutableDictionary *postParameters = [@{
-            @"threadid" : threadID,
-            @"formkey" : formInfo.formkey,
-            @"form_cookie" : formInfo.formCookie,
-            @"action" : @"postreply",
-            @"message" : Entitify(text),
-            @"parseurl" : @"yes",
-            @"submit" : @"Submit Reply",
-        } mutableCopy];
-        if (formInfo.bookmark) {
-            postParameters[@"bookmark"] = formInfo.bookmark;
-        }
-        
-        NSURLRequest *postRequest = [self requestWithMethod:@"POST"
-                                                       path:@"newreply.php"
-                                                 parameters:postParameters];
-        [self enqueueHTTPRequestOperation:[self HTTPRequestOperationWithRequest:postRequest
-                                                                        success:^(id _, id data)
-        {
-            SuccessfulReplyInfo *replyInfo = [[SuccessfulReplyInfo alloc] initWithHTMLData:
+        dispatch_async(self.parseQueue, ^{
+            ReplyFormParsedInfo *formInfo = [[ReplyFormParsedInfo alloc] initWithHTMLData:
+                                             ConvertFromWindows1252ToUTF8(data)];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (!(formInfo.formkey && formInfo.formCookie)) {
+                    NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : @"Thread is closed" };
+                    NSError *error = [NSError errorWithDomain:NSCocoaErrorDomain
+                                                         code:-1
+                                                     userInfo:userInfo];
+                    if (callback) callback(error, nil);
+                    return;
+                }
+                NSMutableDictionary *postParameters = [@{
+                                                       @"threadid" : threadID,
+                                                       @"formkey" : formInfo.formkey,
+                                                       @"form_cookie" : formInfo.formCookie,
+                                                       @"action" : @"postreply",
+                                                       @"message" : Entitify(text),
+                                                       @"parseurl" : @"yes",
+                                                       @"submit" : @"Submit Reply",
+                                                       } mutableCopy];
+                if (formInfo.bookmark) {
+                    postParameters[@"bookmark"] = formInfo.bookmark;
+                }
+                
+                NSURLRequest *postRequest = [self requestWithMethod:@"POST"
+                                                               path:@"newreply.php"
+                                                         parameters:postParameters];
+                AFHTTPRequestOperation *opTwo;
+                opTwo = [self HTTPRequestOperationWithRequest:postRequest
+                                                      success:^(id _, id data)
+                         {
+                             dispatch_async(self.parseQueue, ^{
+                                 SuccessfulReplyInfo *replyInfo;
+                                 replyInfo = [[SuccessfulReplyInfo alloc] initWithHTMLData:
                                               ConvertFromWindows1252ToUTF8(data)];
-            if (callback) callback(nil, replyInfo.lastPage ? nil : replyInfo.postID);
-        } failure:^(id _, NSError *error)
-        {
-            if (callback) callback(error, nil);
-        }]];
+                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                     NSString *postID = replyInfo.lastPage ? nil : replyInfo.postID;
+                                     if (callback) callback(nil, postID);
+                                 });
+                             });
+                         } failure:^(id _, NSError *error)
+                         {
+                             if (callback) callback(error, nil);
+                         }];
+                [self enqueueHTTPRequestOperation:opTwo];
+            });
+        });
     } failure:^(id _, NSError *error)
     {
         if (callback) callback(error, nil);
@@ -315,9 +363,13 @@ static NSString * Entitify(NSString *noEntities)
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
                                                                success:^(id _, id data)
     {
-        ReplyFormParsedInfo *formInfo = [[ReplyFormParsedInfo alloc] initWithHTMLData:
-                                         ConvertFromWindows1252ToUTF8(data)];
-        if (callback) callback(nil, formInfo.text);
+        dispatch_async(self.parseQueue, ^{
+            ReplyFormParsedInfo *formInfo = [[ReplyFormParsedInfo alloc] initWithHTMLData:
+                                             ConvertFromWindows1252ToUTF8(data)];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (callback) callback(nil, formInfo.text);
+            });
+        });
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (callback) callback(error, nil);
     }];
@@ -342,24 +394,27 @@ static NSString * Entitify(NSString *noEntities)
              @"postid": postID,
              @"message": Entitify(text)
          } mutableCopy];
-        ReplyFormParsedInfo *formInfo = [[ReplyFormParsedInfo alloc] initWithHTMLData:
-                                         ConvertFromWindows1252ToUTF8(data)];
-        if (formInfo.bookmark) {
-            moreParameters[@"bookmark"] = formInfo.bookmark;
-        }
-        NSURLRequest *anotherRequest = [self requestWithMethod:@"POST"
-                                                          path:@"editpost.php"
-                                                    parameters:moreParameters];
-        AFHTTPRequestOperation *finalOp = [self HTTPRequestOperationWithRequest:anotherRequest
-                                                                        success:^(id _, id __)
-        {
-            if (callback) callback(nil);
-        } failure:^(id _, NSError *error) {
-            if (callback) callback(error);
-        }];
-        
-        [self enqueueHTTPRequestOperation:finalOp];
-        
+        dispatch_async(self.parseQueue, ^{
+            ReplyFormParsedInfo *formInfo = [[ReplyFormParsedInfo alloc] initWithHTMLData:
+                                             ConvertFromWindows1252ToUTF8(data)];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (formInfo.bookmark) {
+                    moreParameters[@"bookmark"] = formInfo.bookmark;
+                }
+                NSURLRequest *anotherRequest = [self requestWithMethod:@"POST"
+                                                                  path:@"editpost.php"
+                                                            parameters:moreParameters];
+                AFHTTPRequestOperation *finalOp;
+                finalOp = [self HTTPRequestOperationWithRequest:anotherRequest
+                                                        success:^(id _, id __)
+                           {
+                               if (callback) callback(nil);
+                           } failure:^(id _, NSError *error) {
+                               if (callback) callback(error);
+                           }];
+                [self enqueueHTTPRequestOperation:finalOp];
+            });
+        });
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (callback) callback(error);
     }];
