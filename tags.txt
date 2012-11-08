@@ -186,7 +186,6 @@ gws-local.png
 gws-meat.png
 gws-snacks.png
 gws-soup.png
-gws-veg.png
 gws-veggie.png
 hell-boot.png
 hell-fuckthis.png
@@ -395,6 +394,7 @@ wrestlehut-tna.png
 wrestling-raw.png
 wrestling-roh.png
 wrestling-sd.png
+ww-denim.png
 ycs-achieve.png
 ycs-girl.png
 ycs-goomba.png
