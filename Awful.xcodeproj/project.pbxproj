@@ -584,7 +584,7 @@
 		8CF02E4516484CCE0059BC56 /* gws-meat.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DDA16484CCE0059BC56 /* gws-meat.png */; };
 		8CF02E4616484CCE0059BC56 /* gws-snacks.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DDB16484CCE0059BC56 /* gws-snacks.png */; };
 		8CF02E4716484CCE0059BC56 /* gws-soup.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DDC16484CCE0059BC56 /* gws-soup.png */; };
-		8CF02E4816484CCE0059BC56 /* gws-veg.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DDD16484CCE0059BC56 /* gws-veg.png */; };
+		8CF02E4816484CCE0059BC56 /* gws-veggie.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DDD16484CCE0059BC56 /* gws-veggie.png */; };
 		8CF02E4916484CCE0059BC56 /* pi-caged.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DDE16484CCE0059BC56 /* pi-caged.png */; };
 		8CF02E4A16484CCE0059BC56 /* pi-herps.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DDF16484CCE0059BC56 /* pi-herps.png */; };
 		8CF02E4B16484CCE0059BC56 /* psp-itstime.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DE016484CCE0059BC56 /* psp-itstime.png */; };
@@ -1273,7 +1273,7 @@
 		8CF02DDA16484CCE0059BC56 /* gws-meat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gws-meat.png"; sourceTree = "<group>"; };
 		8CF02DDB16484CCE0059BC56 /* gws-snacks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gws-snacks.png"; sourceTree = "<group>"; };
 		8CF02DDC16484CCE0059BC56 /* gws-soup.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gws-soup.png"; sourceTree = "<group>"; };
-		8CF02DDD16484CCE0059BC56 /* gws-veg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gws-veg.png"; sourceTree = "<group>"; };
+		8CF02DDD16484CCE0059BC56 /* gws-veggie.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gws-veggie.png"; sourceTree = "<group>"; };
 		8CF02DDE16484CCE0059BC56 /* pi-caged.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pi-caged.png"; sourceTree = "<group>"; };
 		8CF02DDF16484CCE0059BC56 /* pi-herps.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pi-herps.png"; sourceTree = "<group>"; };
 		8CF02DE016484CCE0059BC56 /* psp-itstime.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "psp-itstime.png"; sourceTree = "<group>"; };
@@ -2044,7 +2044,7 @@
 				8CF02DDA16484CCE0059BC56 /* gws-meat.png */,
 				8CF02DDB16484CCE0059BC56 /* gws-snacks.png */,
 				8CF02DDC16484CCE0059BC56 /* gws-soup.png */,
-				8CF02DDD16484CCE0059BC56 /* gws-veg.png */,
+				8CF02DDD16484CCE0059BC56 /* gws-veggie.png */,
 				8CCD52D215B783FC00E5893B /* hell-boot.png */,
 				8CCD52D315B783FC00E5893B /* hell-fuckthis.png */,
 				8CCD52D415B783FC00E5893B /* hell-glomp.png */,
@@ -2827,7 +2827,7 @@
 				8CF02E4516484CCE0059BC56 /* gws-meat.png in Resources */,
 				8CF02E4616484CCE0059BC56 /* gws-snacks.png in Resources */,
 				8CF02E4716484CCE0059BC56 /* gws-soup.png in Resources */,
-				8CF02E4816484CCE0059BC56 /* gws-veg.png in Resources */,
+				8CF02E4816484CCE0059BC56 /* gws-veggie.png in Resources */,
 				8CF02E4916484CCE0059BC56 /* pi-caged.png in Resources */,
 				8CF02E4A16484CCE0059BC56 /* pi-herps.png in Resources */,
 				8CF02E4B16484CCE0059BC56 /* psp-itstime.png in Resources */,
