@@ -143,7 +143,7 @@
 
 - (void)resetArrow
 {
-    [self.arrow setRotation:self.direction == AwfulScrollViewPullDown ? M_ALMOST_PI : 0
+    [self.arrow setRotation:self.direction == AwfulScrollViewPullDown ? 0 : M_ALMOST_PI
                    animated:NO];
 }
 
@@ -203,9 +203,9 @@
 {
     [super setSelected:selected];
     if (self.direction == AwfulScrollViewPullDown) {
-        [self.arrow setRotation:(selected ? 0 : M_ALMOST_PI) animated:YES];
-    } else if (self.direction == AwfulScrollViewPullUp) {
         [self.arrow setRotation:(selected ? M_ALMOST_PI : 0) animated:YES];
+    } else if (self.direction == AwfulScrollViewPullUp) {
+        [self.arrow setRotation:(selected ? 0 : M_ALMOST_PI) animated:YES];
     }
     [self updateTitleLabel];
 }
@@ -248,7 +248,7 @@
         __weak id blockSelf = self;
         self.observer.didTrigger = ^
         {
-            self.refreshing = YES;
+            [blockSelf setRefreshing:YES animated:YES];
             [blockSelf sendActionsForControlEvents:UIControlEventValueChanged];
         };
     } else {
