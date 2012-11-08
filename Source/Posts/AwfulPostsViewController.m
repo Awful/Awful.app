@@ -71,13 +71,14 @@
 
 @property (nonatomic) BOOL markingPostsAsBeenSeen;
 
+@property (nonatomic) BOOL observingScrollView;
+
+@property (nonatomic) BOOL refreshingSamePage;
+
 @end
 
 
 @implementation AwfulPostsViewController
-{
-    BOOL _observingScrollView;
-}
 
 - (id)init
 {
@@ -207,17 +208,20 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                                                   cancelButtonTitle:@"Uh Huh"
                                                   otherButtonTitles:nil];
             [alert show];
-            return;
+        } else {
+            self.advertisementHTML = advertisementHTML;
+            AwfulPost *anyPost = [posts lastObject];
+            if (page < 1) {
+                self.currentPage = anyPost.threadPageValue;
+            }
+            [self.postsView reloadData];
+            if (!self.refreshingSamePage) {
+                self.postsView.scrollView.contentOffset = CGPointZero;
+            }
+            [self updatePageBar];
+            [self markPostsAsBeenSeen];
         }
-        self.advertisementHTML = advertisementHTML;
-        AwfulPost *anyPost = [posts lastObject];
-        if (page < 1) {
-            self.currentPage = anyPost.threadPageValue;
-        }
-        [self.postsView reloadData];
-        self.postsView.scrollView.contentOffset = CGPointZero;
-        [self updatePageBar];
-        [self markPostsAsBeenSeen];
+        self.refreshingSamePage = NO;
     }];
     self.networkOperation = op;
 }
@@ -266,6 +270,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     if (self.thread.numberOfPagesValue > self.currentPage || [posts count] >= 40) {
         [self loadPage:self.currentPage + 1];
     } else {
+        self.refreshingSamePage = YES;
         [self loadPage:self.currentPage];
     }
 }
