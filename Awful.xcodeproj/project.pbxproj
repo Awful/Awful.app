@@ -474,7 +474,6 @@
 		8CAB2837164B4FB0009BC24F /* fyad-puns.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CAB2830164B4FB0009BC24F /* fyad-puns.png */; };
 		8CAB2838164B4FB0009BC24F /* fyad-mystery.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CAB2831164B4FB0009BC24F /* fyad-mystery.png */; };
 		8CAB2839164B4FB0009BC24F /* tg-mafia.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CAB2832164B4FB0009BC24F /* tg-mafia.png */; };
-		8CAB283A164B4FB0009BC24F /* gws-veggie.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CAB2833164B4FB0009BC24F /* gws-veggie.png */; };
 		8CAB283B164B4FB0009BC24F /* bs-diablo.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CAB2834164B4FB0009BC24F /* bs-diablo.png */; };
 		8CAB283C164B4FB0009BC24F /* bs-starcraft.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CAB2835164B4FB0009BC24F /* bs-starcraft.png */; };
 		8CB5468D15BD936600E8BEC1 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CB5468C15BD936600E8BEC1 /* ImageIO.framework */; };
@@ -2324,7 +2323,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0450;
 				ORGANIZATIONNAME = "Regular Berry Software LLC";
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Awful" */;
@@ -2873,7 +2872,6 @@
 				8CAB2837164B4FB0009BC24F /* fyad-puns.png in Resources */,
 				8CAB2838164B4FB0009BC24F /* fyad-mystery.png in Resources */,
 				8CAB2839164B4FB0009BC24F /* tg-mafia.png in Resources */,
-				8CAB283A164B4FB0009BC24F /* gws-veggie.png in Resources */,
 				8CAB283B164B4FB0009BC24F /* bs-diablo.png in Resources */,
 				8CAB283C164B4FB0009BC24F /* bs-starcraft.png in Resources */,
 				1C9C675F164C332F00478270 /* ww-denim.png in Resources */,
