@@ -752,7 +752,7 @@ static void * KVOContext = @"AwfulPostsView KVO";
     } else if (type == NSFetchedResultsChangeDelete) {
         [self.postsView deletePostAtIndex:indexPath.row];
     } else if (type == NSFetchedResultsChangeUpdate) {
-        [self.postsView reloadPostAtIndex:indexPath.row];
+        // TODO Handle this without making the scroll view go haywire.
     } else if (type == NSFetchedResultsChangeMove) {
         [self.postsView deletePostAtIndex:indexPath.row];
         [self.postsView insertPostAtIndex:newIndexPath.row];
