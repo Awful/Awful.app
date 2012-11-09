@@ -578,7 +578,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     
     AwfulPullToRefreshControl *refresh;
     refresh = [[AwfulPullToRefreshControl alloc] initWithDirection:AwfulScrollViewPullUp
-                                                     triggerOffset:40];
+                                                     triggerOffset:30];
     [refresh addTarget:self
                 action:@selector(loadNextPageOrRefresh)
       forControlEvents:UIControlEventValueChanged];
