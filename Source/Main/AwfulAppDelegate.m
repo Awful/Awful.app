@@ -16,6 +16,7 @@
 #import "AwfulSettings.h"
 #import "AwfulSettingsViewController.h"
 #import "AwfulSplitViewController.h"
+#import "AwfulStartViewController.h"
 #import "AFNetworking.h"
 #import "NSFileManager+UserDirectories.h"
 #import "UIViewController+NavigationEnclosure.h"
@@ -58,9 +59,8 @@ static AwfulAppDelegate *_instance;
     tabBar.delegate = self;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         AwfulSplitViewController *splitController = [AwfulSplitViewController new];
-        UIViewController *gray = [UIViewController new];
-        gray.view.backgroundColor = [UIColor darkGrayColor];
-        splitController.viewControllers = @[ tabBar, [gray enclosingNavigationController] ];
+        AwfulStartViewController *start = [AwfulStartViewController new];
+        splitController.viewControllers = @[ tabBar, [start enclosingNavigationController] ];
         self.window.rootViewController = splitController;
     } else {
         self.window.rootViewController = tabBar;
