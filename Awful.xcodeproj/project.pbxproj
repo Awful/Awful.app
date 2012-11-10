@@ -45,6 +45,11 @@
 		1C090FB7163A40A1003FD0A3 /* _AwfulPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C090FB6163A40A1003FD0A3 /* _AwfulPost.m */; };
 		1C090FBA163A40C1003FD0A3 /* AwfulPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C090FB9163A40C1003FD0A3 /* AwfulPost.m */; };
 		1C090FBD163A6477003FD0A3 /* AwfulActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C090FBC163A6477003FD0A3 /* AwfulActionSheet.m */; };
+		1C101576164E8A7200302B19 /* tag-collage-Landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C101572164E8A7200302B19 /* tag-collage-Landscape.png */; };
+		1C101577164E8A7200302B19 /* tag-collage-Landscape@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C101573164E8A7200302B19 /* tag-collage-Landscape@2x.png */; };
+		1C101578164E8A7200302B19 /* tag-collage-Portrait.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C101574164E8A7200302B19 /* tag-collage-Portrait.png */; };
+		1C101579164E8A7200302B19 /* tag-collage-Portrait@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C101575164E8A7200302B19 /* tag-collage-Portrait@2x.png */; };
+		1C10157C164E8B0A00302B19 /* AwfulStartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C10157B164E8B0A00302B19 /* AwfulStartViewController.m */; };
 		1C13FF67161BCCB6000ED2B1 /* AwfulThreadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C13FF66161BCCB6000ED2B1 /* AwfulThreadCell.m */; };
 		1C13FF6A161BF733000ED2B1 /* AwfulBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C13FF69161BF732000ED2B1 /* AwfulBadgeView.m */; };
 		1C13FF94161CDDD4000ED2B1 /* bookmarks-landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C13FF90161CDDD3000ED2B1 /* bookmarks-landscape.png */; };
@@ -695,6 +700,12 @@
 		1C090FB9163A40C1003FD0A3 /* AwfulPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPost.m; sourceTree = "<group>"; };
 		1C090FBB163A6477003FD0A3 /* AwfulActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulActionSheet.h; sourceTree = "<group>"; };
 		1C090FBC163A6477003FD0A3 /* AwfulActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulActionSheet.m; sourceTree = "<group>"; };
+		1C101572164E8A7200302B19 /* tag-collage-Landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tag-collage-Landscape.png"; sourceTree = "<group>"; };
+		1C101573164E8A7200302B19 /* tag-collage-Landscape@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tag-collage-Landscape@2x.png"; sourceTree = "<group>"; };
+		1C101574164E8A7200302B19 /* tag-collage-Portrait.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tag-collage-Portrait.png"; sourceTree = "<group>"; };
+		1C101575164E8A7200302B19 /* tag-collage-Portrait@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tag-collage-Portrait@2x.png"; sourceTree = "<group>"; };
+		1C10157A164E8B0A00302B19 /* AwfulStartViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulStartViewController.h; sourceTree = "<group>"; };
+		1C10157B164E8B0A00302B19 /* AwfulStartViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulStartViewController.m; sourceTree = "<group>"; };
 		1C13FF65161BCCB5000ED2B1 /* AwfulThreadCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadCell.h; sourceTree = "<group>"; };
 		1C13FF66161BCCB6000ED2B1 /* AwfulThreadCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadCell.m; sourceTree = "<group>"; };
 		1C13FF68161BF732000ED2B1 /* AwfulBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulBadgeView.h; sourceTree = "<group>"; };
@@ -1397,6 +1408,8 @@
 				1CBDB5E61625AA240004BDF4 /* AwfulDataStack.m */,
 				1CC7805E1612DB04002AF958 /* AwfulSplitViewController.h */,
 				1CC7805F1612DB04002AF958 /* AwfulSplitViewController.m */,
+				1C10157A164E8B0A00302B19 /* AwfulStartViewController.h */,
+				1C10157B164E8B0A00302B19 /* AwfulStartViewController.m */,
 				11DFB44014FF1CBB0001A34C /* AwfulTableViewController.h */,
 				11DFB44114FF1CBB0001A34C /* AwfulTableViewController.m */,
 				8C48EA1C159BC2AC00A59691 /* AwfulFetchedTableViewController.h */,
@@ -1849,6 +1862,10 @@
 				1CFBECFE1631A6EA008AF641 /* star-on.png */,
 				1CFBECFF1631A6EA008AF641 /* star-on@2x.png */,
 				8CCD527715B783FC00E5893B /* sticky.png */,
+				1C101572164E8A7200302B19 /* tag-collage-Landscape.png */,
+				1C101573164E8A7200302B19 /* tag-collage-Landscape@2x.png */,
+				1C101574164E8A7200302B19 /* tag-collage-Portrait.png */,
+				1C101575164E8A7200302B19 /* tag-collage-Portrait@2x.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -2875,6 +2892,10 @@
 				8CAB283B164B4FB0009BC24F /* bs-diablo.png in Resources */,
 				8CAB283C164B4FB0009BC24F /* bs-starcraft.png in Resources */,
 				1C9C675F164C332F00478270 /* ww-denim.png in Resources */,
+				1C101576164E8A7200302B19 /* tag-collage-Landscape.png in Resources */,
+				1C101577164E8A7200302B19 /* tag-collage-Landscape@2x.png in Resources */,
+				1C101578164E8A7200302B19 /* tag-collage-Portrait.png in Resources */,
+				1C101579164E8A7200302B19 /* tag-collage-Portrait@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3048,6 +3069,7 @@
 				1C278A4D1647A47F007D3CEC /* AwfulPullToRefreshControl.m in Sources */,
 				1C278A4E1647A47F007D3CEC /* AwfulScrollViewPullObserver.m in Sources */,
 				1CF0D616164AE95200CFA137 /* UIViewController+NavigationEnclosure.m in Sources */,
+				1C10157C164E8B0A00302B19 /* AwfulStartViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
