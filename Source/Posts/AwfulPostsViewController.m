@@ -276,8 +276,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 
 - (void)loadNextPageOrRefresh
 {
-    NSArray *posts = [self.fetchedResultsController fetchedObjects];
-    if (self.thread.numberOfPagesValue > self.currentPage || [posts count] >= 40) {
+    if (self.thread.numberOfPagesValue > self.currentPage) {
         self.refreshingSamePage = NO;
         [self loadPage:self.currentPage + 1];
     } else {
