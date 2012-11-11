@@ -39,6 +39,8 @@
 
 @property (readonly, nonatomic) NSMutableDictionary *titles;
 
+@property (weak, nonatomic) CAGradientLayer *gradient;
+
 @end
 
 
@@ -188,6 +190,16 @@
     }
 }
 
+- (CAGradientLayer *)gradient
+{
+    if (_gradient) return _gradient;
+    CAGradientLayer *gradient = [CAGradientLayer layer];
+    gradient.frame = (CGRect){ .size = self.bounds.size };
+    [self.layer insertSublayer:gradient atIndex:0];
+    _gradient = gradient;
+    return _gradient;
+}
+
 #pragma mark - UIControl
 
 - (UIControlState)state
@@ -216,6 +228,8 @@
 
 - (void)layoutSubviews
 {
+    if (_gradient) self.gradient.frame = (CGRect){ .size = self.bounds.size };
+    
     CGFloat leftOffset = CGRectGetMidX(self.bounds) - 100;
     CGRect arrowFrame = self.arrow.frame;
     arrowFrame.origin.x = leftOffset;

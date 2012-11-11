@@ -36,6 +36,8 @@
 
 - (void)setTitle:(NSString *)title forState:(UIControlState)state;
 
+@property (readonly, weak, nonatomic) CAGradientLayer *gradient;
+
 @end
 
 enum {
