@@ -726,6 +726,7 @@ Awful.showAllPosts = function(){
   $.each(Awful.leftoverPosts, function(i, post){
     render(post).insertBefore(firstAlreadyShown)
   })
+  Awful.leftoverPosts.length = 0
   return firstAlreadyShown.offset().top - oldTop
 }
 
