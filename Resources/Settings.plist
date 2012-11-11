@@ -133,6 +133,8 @@
 			</array>
 		</dict>
 		<dict>
+			<key>Title</key>
+			<string>Posts</string>
 			<key>Settings</key>
 			<array>
 				<dict>
@@ -144,6 +146,16 @@
 					<false/>
 					<key>Key</key>
 					<string>dark_theme</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Confirm Replies</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>confirm_before_replying</string>
 				</dict>
 			</array>
 		</dict>

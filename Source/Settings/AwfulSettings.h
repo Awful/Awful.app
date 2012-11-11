@@ -35,6 +35,8 @@ typedef enum
 
 @property (assign, nonatomic) BOOL highlightOwnMentions;
 
+@property (assign, nonatomic) BOOL confirmBeforeReplying;
+
 @property (assign, nonatomic) BOOL darkTheme;
 
 @property (strong, nonatomic) AwfulUser *currentUser;

@@ -11,6 +11,7 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
 #import "AwfulPostsViewController.h"
+#import "AwfulSettings.h"
 #import "AwfulThreadTitleLabel.h"
 #import "ImgurHTTPClient.h"
 #import "SVProgressHUD.h"
@@ -488,13 +489,19 @@ static NSString *ImageKeyToPlaceholder(NSString *key, BOOL thumbnail)
 
 - (IBAction)hitSend
 {
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Incoming Forums Superstar"
-                                                    message:@"Does my reply offer any significant advice or help contribute to the conversation in any fashion?"
-                                                   delegate:self
-                                          cancelButtonTitle:@"Nope"
-                                          otherButtonTitles:self.sendButton.title, nil];
-    alert.delegate = self;
-    [alert show];
+    if (AwfulSettings.settings.confirmBeforeReplying) {
+        static NSString * message = @"Does my reply offer any significant advice or help "
+                                     "contribute to the conversation in any fashion?";
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Incoming Forums Superstar"
+                                                        message:message
+                                                       delegate:self
+                                              cancelButtonTitle:@"Nope"
+                                              otherButtonTitles:self.sendButton.title, nil];
+        alert.delegate = self;
+        [alert show];
+    } else {
+        [self alertView:nil clickedButtonAtIndex:1];
+    }
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
