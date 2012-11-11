@@ -261,6 +261,12 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     self.markingPostsAsBeenSeen = NO;
 }
 
+- (void)goToParentForum
+{
+    NSString *url = [NSString stringWithFormat:@"awful://forums/%@", self.thread.forum.forumID];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+}
+
 - (void)scrollToBottom
 {
     UIScrollView *scrollView = self.postsView.scrollView;
@@ -567,7 +573,9 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     TopBarView *topBar = [TopBarView new];
     topBar.frame = CGRectMake(0, 0, self.view.frame.size.width, -44);
     topBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    topBar.goToForumButton.enabled = NO;
+    [topBar.goToForumButton addTarget:self
+                               action:@selector(goToParentForum)
+                     forControlEvents:UIControlEventTouchUpInside];
     [topBar.loadReadPostsButton addTarget:postsView
                                    action:@selector(showHiddenSeenPosts)
                          forControlEvents:UIControlEventTouchUpInside];

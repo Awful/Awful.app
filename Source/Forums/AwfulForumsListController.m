@@ -49,7 +49,14 @@
                                                           cacheName:nil];
 }
 
-#pragma mark - View lifecycle
+- (void)showForum:(AwfulForum *)forum
+{
+    AwfulThreadListController *threadList = [AwfulThreadListController new];
+    threadList.forum = forum;
+    [self.navigationController pushViewController:threadList animated:YES];
+}
+
+#pragma mark - UIViewController
 
 - (void)viewDidLoad
 {
@@ -151,9 +158,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    AwfulThreadListController *threadList = [AwfulThreadListController new];
-    threadList.forum = forum;
-    [self.navigationController pushViewController:threadList animated:YES];
+    [self showForum:forum];
 }
 
 #pragma mark - Parent forum cell delegate

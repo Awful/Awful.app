@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>AwfulNewThreadTagURL</key>
+	<string>http://awfulapp.com/</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleDisplayName</key>
@@ -39,6 +41,19 @@
 	<string>1.8</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.awfulapp.Awful</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>awful</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>18</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -66,7 +81,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
-	<key>AwfulNewThreadTagURL</key>
-	<string>http://awfulapp.com/</string>
 </dict>
 </plist>

@@ -7,7 +7,10 @@
 //
 
 #import "AwfulFetchedTableViewController.h"
+@class AwfulForum;
 
 @interface AwfulForumsListController : AwfulFetchedTableViewController
+
+- (void)showForum:(AwfulForum *)forum;
 
 @end
