@@ -23,6 +23,7 @@
 #import "MWPhotoBrowser.h"
 #import "NSFileManager+UserDirectories.h"
 #import "NSManagedObject+Awful.h"
+#import <QuartzCore/QuartzCore.h>
 #import "SVProgressHUD.h"
 #import "UIViewController+NavigationEnclosure.h"
 
@@ -538,7 +539,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 - (void)loadView
 {
     self.view = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    self.view.backgroundColor = [UIColor underPageBackgroundColor];
+    self.view.backgroundColor = [UIColor colorWithHue:0.561 saturation:0.107 brightness:0.404 alpha:1];
     CGRect postsFrame, pageBarFrame;
     CGRectDivide(self.view.bounds, &pageBarFrame, &postsFrame, 38, CGRectMaxYEdge);
     
@@ -558,7 +559,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     AwfulPostsView *postsView = [[AwfulPostsView alloc] initWithFrame:postsFrame];
     postsView.delegate = self;
     postsView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    postsView.backgroundColor = [UIColor underPageBackgroundColor];
+    postsView.backgroundColor = self.view.backgroundColor;
     postsView.dark = [AwfulSettings settings].darkTheme;
     self.postsView = postsView;
     [self.view addSubview:postsView];
@@ -585,7 +586,15 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     [refresh addTarget:self
                 action:@selector(loadNextPageOrRefresh)
       forControlEvents:UIControlEventValueChanged];
-    refresh.backgroundColor = [UIColor clearColor];
+    refresh.backgroundColor = postsView.backgroundColor;
+    CAGradientLayer *gradient = [CAGradientLayer layer];
+    gradient.frame = (CGRect){ .size = refresh.bounds.size };
+    gradient.colors = @[
+        (id)[UIColor colorWithWhite:0 alpha:0.3].CGColor,
+        (id)[UIColor colorWithWhite:0 alpha:0].CGColor
+    ];
+    gradient.endPoint = CGPointMake(0.5, 0.5);
+    [refresh.layer insertSublayer:gradient atIndex:0];
     [self.postsView.scrollView addSubview:refresh];
     self.pullUpToRefreshControl = refresh;
 }

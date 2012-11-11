@@ -27,6 +27,7 @@
     webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     webView.delegate = self;
     webView.dataDetectorTypes = UIDataDetectorTypeNone;
+    RemoveShadowFromAboveAndBelowWebView(webView);
     NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
     NSURL *postsViewURL = [thisBundle URLForResource:@"posts-view" withExtension:@"html"];
     NSError *error;
@@ -41,6 +42,15 @@
     [self addSubview:webView];
     _webView = webView;
     return self;
+}
+
+static void RemoveShadowFromAboveAndBelowWebView(UIWebView *webView)
+{
+    for (UIView *view in [webView.scrollView subviews]) {
+        if ([view isKindOfClass:[UIImageView class]]) {
+            view.hidden = YES;
+        }
+    }
 }
 
 - (void)reloadData
