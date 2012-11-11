@@ -191,12 +191,14 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     [self.networkOperation cancel];
     [self hidePageNavigation];
     self.advertisementHTML = nil;
-    if (page > 0) {
-        self.currentPage = page;
-        [self.postsView reloadData];
-        self.postsView.scrollView.contentOffset = CGPointZero;
-    } else {
-        [self.postsView reloadAdvertisementHTML];
+    if (!self.refreshingSamePage) {
+        if (page > 0) {
+            self.currentPage = page;
+            [self.postsView reloadData];
+            self.postsView.scrollView.contentOffset = CGPointZero;
+        } else {
+            [self.postsView reloadAdvertisementHTML];
+        }
     }
     id op = [[AwfulHTTPClient client] listPostsInThreadWithID:self.thread.threadID
                                                        onPage:page
@@ -269,6 +271,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 {
     NSArray *posts = [self.fetchedResultsController fetchedObjects];
     if (self.thread.numberOfPagesValue > self.currentPage || [posts count] >= 40) {
+        self.refreshingSamePage = NO;
         [self loadPage:self.currentPage + 1];
     } else {
         self.refreshingSamePage = YES;
