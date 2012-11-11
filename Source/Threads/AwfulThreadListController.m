@@ -104,22 +104,9 @@ typedef enum {
     [self loadPageNum:self.currentPage + 1];
 }
 
-- (void)stop
-{
-    [self.networkOperation cancel];
-    [self finishedRefreshing];
-}
-
-- (void)finishedRefreshing
-{
-    [super finishedRefreshing];
-    self.isLoading = NO;
-}
-
 - (void)loadPageNum:(NSUInteger)pageNum
 {    
     [self.networkOperation cancel];
-    self.isLoading = YES;
     id op = [[AwfulHTTPClient client] listThreadsInForumWithID:self.forum.forumID
                                                         onPage:pageNum
                                                        andThen:^(NSError *error, NSArray *threads)
@@ -134,14 +121,9 @@ typedef enum {
             [[AwfulDataStack sharedDataStack] save];
             self.currentPage = pageNum;
         }
-        [self finishedRefreshing];
+        self.refreshing = NO;
     }];
     self.networkOperation = op;
-}
-
-- (void)newlyVisible
-{
-    //For subclassing
 }
 
 - (void)viewDidLoad
@@ -160,12 +142,6 @@ typedef enum {
     if (self.fetchedResultsController.fetchedObjects.count == 0 && IsLoggedIn()) {
         [self refresh];
     }
-}
-
-- (BOOL)shouldReloadOnViewLoad
-{
-    //check date on last thread we've got, if older than 10? min reload
-    return NO;
 }
 
 - (void)showThreadActionsForThread:(AwfulThread *)thread

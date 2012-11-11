@@ -86,7 +86,7 @@
             [user setValuesForKeysWithDictionary:userInfo];
             self.user = user;
             [self.tableView reloadData];
-            [self finishedRefreshing];
+            self.refreshing = NO;
         }
     }];
     self.networkOperation = op;

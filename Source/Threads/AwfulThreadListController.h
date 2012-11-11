@@ -33,15 +33,9 @@ typedef enum {
 
 @property (nonatomic, strong) AwfulThread *heldThread;
 
-@property BOOL isLoading;
-
-- (BOOL)shouldReloadOnViewLoad;
 - (void)showThreadActionsForThread:(AwfulThread *)thread;
 
 - (void)displayPage:(AwfulPostsViewController *)page;
 - (void)loadPageNum:(NSUInteger)pageNum;
-- (void)stop;
-
-- (void)newlyVisible;
 
 @end

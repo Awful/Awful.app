@@ -7,8 +7,8 @@
 //
 
 #import "AwfulTableViewController.h"
-#import "SVPullToRefresh.h"
 #import "AwfulSettings.h"
+#import "SVPullToRefresh.h"
 
 @implementation AwfulTableViewController
 
@@ -37,31 +37,36 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [self.networkOperation cancel];
-    [self finishedRefreshing];
+    self.refreshing = NO;
     [super viewWillDisappear:animated];
 }
 
 - (void)refresh
 {
-    self.reloading = YES;
+    self.refreshing = YES;
 }
 
-- (IBAction)nextPage
+- (void)nextPage
 {
-    self.reloading = YES;
+    self.refreshing = YES;
 }
 
 - (void)stop
 {
-    [self.tableView.pullToRefreshView stopAnimating];
-    [self.tableView.infiniteScrollingView stopAnimating];
+    self.refreshing = NO;
 }
 
-- (void)finishedRefreshing
+- (void)setRefreshing:(BOOL)refreshing
 {
-    self.reloading = NO;
-    [self.tableView.pullToRefreshView stopAnimating];
-    [self.tableView.infiniteScrollingView stopAnimating];
+    if (_refreshing == refreshing) return;
+    _refreshing = refreshing;
+    if (refreshing) {
+        if ([self canPullToRefresh]) [self.tableView.pullToRefreshView startAnimating];
+        if ([self canPullForNextPage]) [self.tableView.infiniteScrollingView startAnimating];
+    } else {
+        if ([self canPullToRefresh]) [self.tableView.pullToRefreshView stopAnimating];
+        if ([self canPullForNextPage]) [self.tableView.infiniteScrollingView stopAnimating];
+    }
 }
 
 - (BOOL)canPullToRefresh
@@ -70,11 +75,6 @@
 }
 
 - (BOOL)canPullForNextPage
-{
-    return NO;
-}
-
-- (BOOL)isOnLastPage
 {
     return NO;
 }

@@ -12,15 +12,13 @@
 
 @property (nonatomic) NSOperation *networkOperation;
 
-@property (nonatomic) BOOL reloading;
+@property (nonatomic) BOOL refreshing;
 
-- (IBAction)refresh;
+- (void)refresh;
 
-- (IBAction)nextPage;
+- (void)nextPage;
 
 - (void)stop;
-
-- (void)finishedRefreshing;
 
 // Subclasses can implement to override the default behavior of YES.
 - (BOOL)canPullToRefresh;

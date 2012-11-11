@@ -88,15 +88,9 @@
         if (error) {
             [[AwfulAppDelegate instance] requestFailed:error];
         }
-        [self finishedRefreshing];
+        self.refreshing = NO;
     }];
     self.networkOperation = op;
-}
-
-- (void)stop
-{
-    [self.networkOperation cancel];
-    [self finishedRefreshing];
 }
 
 #pragma mark - Table view data source

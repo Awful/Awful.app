@@ -47,15 +47,9 @@
                                                           cacheName:nil];
 }
 
-- (BOOL)shouldReloadOnViewLoad
-{
-    return NO;
-}
-
 - (void)loadPageNum:(NSUInteger)pageNum
 {   
     [self.networkOperation cancel];
-    self.isLoading = YES;
     id op = [[AwfulHTTPClient client] listBookmarkedThreadsOnPage:pageNum
                                                           andThen:^(NSError *error, NSArray *threads)
     {
@@ -70,7 +64,7 @@
             }
             self.currentPage = pageNum;
         }
-        [self finishedRefreshing];
+        self.refreshing = NO;
     }];
     self.networkOperation = op;
 }
