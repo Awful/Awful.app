@@ -10,6 +10,7 @@ extern const struct AwfulForumAttributes {
 	__unsafe_unretained NSString *forumID;
 	__unsafe_unretained NSString *index;
 	__unsafe_unretained NSString *isFavorite;
+	__unsafe_unretained NSString *lastRefresh;
 	__unsafe_unretained NSString *name;
 } AwfulForumAttributes;
 
@@ -27,6 +28,7 @@ extern const struct AwfulForumFetchedProperties {
 @class AwfulForum;
 @class AwfulForum;
 @class AwfulThread;
+
 
 
 
@@ -99,6 +101,14 @@ extern const struct AwfulForumFetchedProperties {
 - (void)setIsFavoriteValue:(BOOL)value_;
 
 //- (BOOL)validateIsFavorite:(id*)value_ error:(NSError**)error_;
+
+
+
+
+@property (nonatomic, strong) NSDate* lastRefresh;
+
+
+//- (BOOL)validateLastRefresh:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -198,6 +208,12 @@ extern const struct AwfulForumFetchedProperties {
 
 - (BOOL)primitiveIsFavoriteValue;
 - (void)setPrimitiveIsFavoriteValue:(BOOL)value_;
+
+
+
+
+- (NSDate*)primitiveLastRefresh;
+- (void)setPrimitiveLastRefresh:(NSDate*)value;
 
 
 

@@ -32,6 +32,7 @@
             [blockSelf nextPage];
         }];
     }
+    if ([self refreshOnAppear]) [self refresh];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -75,6 +76,11 @@
 }
 
 - (BOOL)canPullForNextPage
+{
+    return NO;
+}
+
+- (BOOL)refreshOnAppear
 {
     return NO;
 }

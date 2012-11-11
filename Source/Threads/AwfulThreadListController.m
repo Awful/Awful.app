@@ -98,6 +98,12 @@ typedef enum {
     return YES;
 }
 
+- (BOOL)refreshOnAppear
+{
+    if (!self.forum.lastRefresh) return YES;
+    return [[NSDate date] timeIntervalSinceDate:self.forum.lastRefresh] > 60 * 15;
+}
+
 - (void)nextPage
 {
     [super nextPage];
@@ -118,6 +124,7 @@ typedef enum {
                 [self.forum.threads setValue:@YES forKey:@"hideFromList"];
             }
             [threads setValue:@NO forKey:@"hideFromList"];
+            self.forum.lastRefresh = [NSDate date];
             [[AwfulDataStack sharedDataStack] save];
             self.currentPage = pageNum;
         }

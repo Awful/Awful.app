@@ -26,6 +26,9 @@
 // Subclasses can implement to override the default behavior of NO.
 - (BOOL)canPullForNextPage;
 
+// Subclasses can implement to override the default behavior of NO.
+- (BOOL)refreshOnAppear;
+
 // Subclasses must implement this method and must not call super.
 - (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath;
 

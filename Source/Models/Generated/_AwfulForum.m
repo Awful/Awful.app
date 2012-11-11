@@ -9,6 +9,7 @@ const struct AwfulForumAttributes AwfulForumAttributes = {
 	.forumID = @"forumID",
 	.index = @"index",
 	.isFavorite = @"isFavorite",
+	.lastRefresh = @"lastRefresh",
 	.name = @"name",
 };
 
@@ -177,6 +178,13 @@ const struct AwfulForumFetchedProperties AwfulForumFetchedProperties = {
 - (void)setPrimitiveIsFavoriteValue:(BOOL)value_ {
 	[self setPrimitiveIsFavorite:[NSNumber numberWithBool:value_]];
 }
+
+
+
+
+
+@dynamic lastRefresh;
+
 
 
 

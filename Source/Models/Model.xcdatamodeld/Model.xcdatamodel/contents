@@ -12,6 +12,7 @@
         <attribute name="forumID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="index" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="isFavorite" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="lastRefresh" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="category" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulCategory" inverseName="forums" inverseEntity="AwfulCategory" syncable="YES"/>
         <relationship name="children" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="AwfulForum" inverseName="parentForum" inverseEntity="AwfulForum" syncable="YES"/>
@@ -61,7 +62,7 @@
     </entity>
     <elements>
         <element name="AwfulCategory" positionX="160" positionY="192" width="128" height="105"/>
-        <element name="AwfulForum" positionX="205" positionY="285" width="128" height="195"/>
+        <element name="AwfulForum" positionX="205" positionY="285" width="128" height="210"/>
         <element name="AwfulPost" positionX="160" positionY="192" width="128" height="270"/>
         <element name="AwfulThread" positionX="25" positionY="210" width="128" height="375"/>
     </elements>

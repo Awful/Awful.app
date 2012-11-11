@@ -14,6 +14,13 @@
 #import "AwfulModels.h"
 #import "NSManagedObject+Awful.h"
 
+@interface AwfulBookmarksController ()
+
+@property (nonatomic) NSDate *lastRefreshDate;
+
+@end
+
+
 @implementation AwfulBookmarksController
 
 - (id)init
@@ -61,6 +68,7 @@
                 [bookmarks setValue:@NO forKey:AwfulThreadAttributes.isBookmarked];
                 [threads setValue:@YES forKey:AwfulThreadAttributes.isBookmarked];
                 [[AwfulDataStack sharedDataStack] save];
+                self.lastRefreshDate = [NSDate date];
             }
             self.currentPage = pageNum;
         }
@@ -68,6 +76,25 @@
     }];
     self.networkOperation = op;
 }
+
+- (BOOL)refreshOnAppear
+{
+    if (!self.lastRefreshDate) return YES;
+    return [[NSDate date] timeIntervalSinceDate:self.lastRefreshDate] > 60 * 10;
+}
+
+- (NSDate *)lastRefreshDate
+{
+    return [[NSUserDefaults standardUserDefaults] objectForKey:kLastBookmarksRefreshDate];
+}
+
+- (void)setLastRefreshDate:(NSDate *)lastRefreshDate
+{
+    [[NSUserDefaults standardUserDefaults] setObject:lastRefreshDate
+                                              forKey:kLastBookmarksRefreshDate];
+}
+
+static NSString * const kLastBookmarksRefreshDate = @"com.awfulapp.Awful.LastBookmarksRefreshDate";
 
 #pragma mark - Table view data source and delegate
 
