@@ -13,6 +13,7 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
 #import "NSManagedObject+Awful.h"
+#import "SVPullToRefresh.h"
 
 @interface AwfulBookmarksController ()
 
@@ -54,6 +55,14 @@
                                                           cacheName:nil];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    if ([self.fetchedResultsController.fetchedObjects count] < 40) {
+        self.tableView.showsInfiniteScrolling = NO;
+    }
+}
+
 - (void)loadPageNum:(NSUInteger)pageNum
 {   
     [self.networkOperation cancel];
@@ -71,6 +80,7 @@
                 [[AwfulDataStack sharedDataStack] save];
                 self.ignoreUpdates = NO;
                 self.lastRefreshDate = [NSDate date];
+                self.tableView.showsInfiniteScrolling = [threads count] >= 40;
             }
             self.currentPage = pageNum;
         }
