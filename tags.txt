@@ -93,6 +93,7 @@ dd-asia.png
 dd-dems.png
 dd-economics.png
 dd-environment.png
+dd-europe.png
 dd-fox.png
 dd-GOP.png
 dd-gotcha.png
@@ -389,6 +390,7 @@ weird.png
 whine.png
 wrestlehut-ecw.png
 wrestlehut-global.png
+wrestlehut-indy.png
 wrestlehut-thunder.png
 wrestlehut-tna.png
 wrestling-raw.png
