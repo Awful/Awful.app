@@ -17,7 +17,7 @@
 #import "AwfulPullToRefreshControl.h"
 #import "AwfulReplyViewController.h"
 #import "AwfulSettings.h"
-#import "AwfulSpecificPageViewController.h"
+#import "AwfulSpecificPageController.h"
 #import "AwfulThreadTitleLabel.h"
 #import "MWPhoto.h"
 #import "MWPhotoBrowser.h"
@@ -38,7 +38,7 @@
 @end
 
 
-@interface AwfulPostsViewController () <AwfulPostsViewDelegate, NSFetchedResultsControllerDelegate>
+@interface AwfulPostsViewController () <AwfulPostsViewDelegate, AwfulSpecificPageControllerDelegate, UIPopoverControllerDelegate, NSFetchedResultsControllerDelegate>
 
 @property (nonatomic) NSFetchedResultsController *fetchedResultsController;
 
@@ -46,7 +46,7 @@
 
 @property (weak, nonatomic) AwfulPageBar *pageBar;
 
-@property (nonatomic) AwfulSpecificPageViewController *specificPageController;
+@property (nonatomic) AwfulSpecificPageController *specificPageController;
 
 @property (weak, nonatomic) AwfulPostsView *postsView;
 
@@ -386,55 +386,32 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 
 - (void)tappedPageNav:(id)sender
 {
-    [self dismissPopoverAnimated:YES];
-    if (self.thread.numberOfPagesValue <= 0 || self.currentPage <= 0) return;
-    
-    UIView *sp_view = self.specificPageController.view;
-    if (!sp_view)
-    {
-        self.specificPageController = [AwfulSpecificPageViewController new];
-        self.specificPageController.page = self;
-        sp_view = self.specificPageController.view;
-        [self.specificPageController.pickerView selectRow:self.currentPage - 1
-                                              inComponent:0
-                                                 animated:NO];
+    if (self.specificPageController) {
+        [self dismissPopoverAnimated:YES];
+        [self.specificPageController willMoveToParentViewController:nil];
+        [self.specificPageController hideAnimated:YES];
+        [self.specificPageController removeFromParentViewController];
+        self.specificPageController = nil;
+        return;
     }
-    
+    if (self.thread.numberOfPagesValue <= 0 || self.currentPage <= 0) return;
+    self.specificPageController = [AwfulSpecificPageController new];
+    self.specificPageController.delegate = self;
+    [self.specificPageController reloadPages];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        UIViewController *vc = self.specificPageController;
-        
-        self.popover = [[UIPopoverController alloc] initWithContentViewController:vc];
-        
-        [self.popover setPopoverContentSize:vc.view.bounds.size animated:NO];
+        [self.specificPageController reloadPages];
+        self.popover = [[UIPopoverController alloc]
+                        initWithContentViewController:self.specificPageController];
+        self.popover.delegate = self;
+        self.popover.popoverContentSize = self.specificPageController.view.bounds.size;
         [self.popover presentPopoverFromRect:self.pageBar.jumpToPageButton.frame
                                       inView:self.pageBar
                     permittedArrowDirections:UIPopoverArrowDirectionAny
                                     animated:YES];
     } else {
-        if (self.specificPageController.hiding) {
-            self.specificPageController.hiding = NO;
-            self.specificPageController.page = self;
-            sp_view = self.specificPageController.view;
-            sp_view.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, sp_view.frame.size.height);
-            
-            [self.view addSubview:sp_view];
-            [self.view bringSubviewToFront:self.pageBar];
-            [UIView animateWithDuration:0.3 animations:^{
-                sp_view.frame = CGRectOffset(sp_view.frame, 0, -sp_view.frame.size.height - self.pageBar.bounds.size.height);
-            }];
-        } else {
-            self.specificPageController.hiding = YES;
-            [UIView animateWithDuration:0.3
-                                  delay:0.0
-                                options:UIViewAnimationOptionCurveEaseInOut
-                             animations:^{
-                                 sp_view.frame = CGRectOffset(sp_view.frame, 0, sp_view.frame.size.height + self.pageBar.bounds.size.height);
-                             } completion:^(BOOL finished)
-             {
-                 [sp_view removeFromSuperview];
-                 self.specificPageController = nil;
-             }];
-        }
+        [self addChildViewController:self.specificPageController];
+        [self.specificPageController showInView:self.postsView animated:YES];
+        [self.specificPageController didMoveToParentViewController:self];
     }
 }
 
@@ -535,8 +512,11 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 
 - (void)dismissPopoverAnimated:(BOOL)animated
 {
-    [self.popover dismissPopoverAnimated:animated];
-    self.popover = nil;
+    if (self.popover) {
+        [self.popover dismissPopoverAnimated:animated];
+        self.popover = nil;
+        if (self.specificPageController) self.specificPageController = nil;
+    }
 }
 
 - (void)updatePullUpTriggerOffset
@@ -610,6 +590,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     [self.postsView.scrollView addSubview:refresh];
     self.pullUpToRefreshControl = refresh;
     [self updatePullUpTriggerOffset];
+    
+    [self.view bringSubviewToFront:self.pageBar];
 }
 
 // We want to hide the top bar until the user reveals it. Unfortunately, AwfulPostsView's
@@ -669,12 +651,21 @@ static void * KVOContext = @"AwfulPostsView KVO";
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
                                          duration:(NSTimeInterval)duration
 {
-    if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
-        UIView *sp_view = self.specificPageController.view;
-        sp_view.frame = CGRectMake(0, self.view.frame.size.height - sp_view.frame.size.height - self.pageBar.frame.size.height,
-                                   self.view.frame.size.width, sp_view.frame.size.height);
-    }
     [self updatePullUpTriggerOffset];
+    if (self.specificPageController && !self.popover) {
+        CGRect frame = self.specificPageController.view.frame;
+        frame.size.width = self.view.frame.size.width;
+        frame.origin.y = self.postsView.frame.size.height - frame.size.height;
+        self.specificPageController.view.frame = frame;
+    }
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [self.popover presentPopoverFromRect:self.pageBar.jumpToPageButton.frame
+                                  inView:self.pageBar
+                permittedArrowDirections:UIPopoverArrowDirectionAny
+                                animated:NO];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -789,6 +780,39 @@ static void * KVOContext = @"AwfulPostsView KVO";
 {
     [self.pullUpToRefreshControl setRefreshing:NO animated:YES];
     [self updatePullForNextPageLabel];
+}
+
+#pragma mark - AwfulSpecificPageControllerDelegate
+
+- (NSInteger)numberOfPagesInSpecificPageController:(AwfulSpecificPageController *)controller
+{
+    return self.thread.numberOfPagesValue;
+}
+
+- (NSInteger)currentPageForSpecificPageController:(AwfulSpecificPageController *)controller
+{
+    return self.currentPage;
+}
+
+- (void)specificPageController:(AwfulSpecificPageController *)controller
+                 didSelectPage:(NSInteger)page
+{
+    [self dismissPopoverAnimated:YES];
+    [self loadPage:page];
+    self.specificPageController = nil;
+}
+
+- (void)specificPageControllerDidCancel:(AwfulSpecificPageController *)controller
+{
+    [self dismissPopoverAnimated:YES];
+    self.specificPageController = nil;
+}
+
+#pragma mark - UIPopoverControllerDelegate
+
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popover
+{
+    if (popover == self.popover) self.popover = nil;
 }
 
 @end

@@ -426,7 +426,7 @@
 		1CC780231612D989002AF958 /* AwfulHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780211612D989002AF958 /* AwfulHTTPClient.m */; };
 		1CC780321612D9DE002AF958 /* AwfulPostsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780281612D9DE002AF958 /* AwfulPostsViewController.m */; };
 		1CC780341612D9DE002AF958 /* AwfulReplyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7802C1612D9DE002AF958 /* AwfulReplyViewController.m */; };
-		1CC780351612D9DE002AF958 /* AwfulSpecificPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7802E1612D9DE002AF958 /* AwfulSpecificPageViewController.m */; };
+		1CC780351612D9DE002AF958 /* AwfulSpecificPageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7802E1612D9DE002AF958 /* AwfulSpecificPageController.m */; };
 		1CC7804E1612DA8E002AF958 /* AwfulBookmarksController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780491612DA8E002AF958 /* AwfulBookmarksController.m */; };
 		1CC780501612DA8E002AF958 /* AwfulThreadListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7804D1612DA8E002AF958 /* AwfulThreadListController.m */; };
 		1CC780601612DB04002AF958 /* AwfulSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7805F1612DB04002AF958 /* AwfulSplitViewController.m */; };
@@ -877,8 +877,8 @@
 		1CC780281612D9DE002AF958 /* AwfulPostsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostsViewController.m; sourceTree = "<group>"; };
 		1CC7802B1612D9DE002AF958 /* AwfulReplyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulReplyViewController.h; sourceTree = "<group>"; };
 		1CC7802C1612D9DE002AF958 /* AwfulReplyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulReplyViewController.m; sourceTree = "<group>"; };
-		1CC7802D1612D9DE002AF958 /* AwfulSpecificPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSpecificPageViewController.h; sourceTree = "<group>"; };
-		1CC7802E1612D9DE002AF958 /* AwfulSpecificPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSpecificPageViewController.m; sourceTree = "<group>"; };
+		1CC7802D1612D9DE002AF958 /* AwfulSpecificPageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSpecificPageController.h; sourceTree = "<group>"; };
+		1CC7802E1612D9DE002AF958 /* AwfulSpecificPageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSpecificPageController.m; sourceTree = "<group>"; };
 		1CC780481612DA8E002AF958 /* AwfulBookmarksController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulBookmarksController.h; sourceTree = "<group>"; };
 		1CC780491612DA8E002AF958 /* AwfulBookmarksController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulBookmarksController.m; sourceTree = "<group>"; };
 		1CC7804C1612DA8E002AF958 /* AwfulThreadListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadListController.h; sourceTree = "<group>"; };
@@ -1666,8 +1666,8 @@
 				1CFBECED163076F1008AF641 /* AwfulPageBar.m */,
 				1CC7802B1612D9DE002AF958 /* AwfulReplyViewController.h */,
 				1CC7802C1612D9DE002AF958 /* AwfulReplyViewController.m */,
-				1CC7802D1612D9DE002AF958 /* AwfulSpecificPageViewController.h */,
-				1CC7802E1612D9DE002AF958 /* AwfulSpecificPageViewController.m */,
+				1CC7802D1612D9DE002AF958 /* AwfulSpecificPageController.h */,
+				1CC7802E1612D9DE002AF958 /* AwfulSpecificPageController.m */,
 				1C95FED61634C0380041A01F /* AwfulThreadTitleLabel.h */,
 				1C95FED71634C0380041A01F /* AwfulThreadTitleLabel.m */,
 				1C23A0A0163E6C40006C7F39 /* AwfulPostsView.h */,
@@ -3050,7 +3050,7 @@
 				1CC780231612D989002AF958 /* AwfulHTTPClient.m in Sources */,
 				1CC780321612D9DE002AF958 /* AwfulPostsViewController.m in Sources */,
 				1CC780341612D9DE002AF958 /* AwfulReplyViewController.m in Sources */,
-				1CC780351612D9DE002AF958 /* AwfulSpecificPageViewController.m in Sources */,
+				1CC780351612D9DE002AF958 /* AwfulSpecificPageController.m in Sources */,
 				1CC7804E1612DA8E002AF958 /* AwfulBookmarksController.m in Sources */,
 				1CC780501612DA8E002AF958 /* AwfulThreadListController.m in Sources */,
 				1CC780601612DB04002AF958 /* AwfulSplitViewController.m in Sources */,
