@@ -32,7 +32,7 @@
             [blockSelf nextPage];
         }];
     }
-    if ([self refreshOnAppear]) [self refresh];
+    if ([self refreshOnAppear]) [self.tableView.pullToRefreshView triggerRefresh];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
