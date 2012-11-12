@@ -12,4 +12,6 @@
 
 @property (nonatomic) BOOL userDrivenChange;
 
+@property (nonatomic) BOOL ignoreUpdates;
+
 @end

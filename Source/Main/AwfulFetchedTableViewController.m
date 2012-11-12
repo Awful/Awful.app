@@ -15,7 +15,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
     [self getFetchedResultsController:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(getFetchedResultsController:)
@@ -40,12 +39,12 @@
 
 - (NSFetchedResultsController *)createFetchedResultsController
 {
-    [NSException raise:@"SubclassMustImplement"
+    [NSException raise:NSInternalInconsistencyException
                 format:@"Subclasses must implement %@", NSStringFromSelector(_cmd)];
     return nil;
 }
 
-#pragma mark Table view delegate and data source
+#pragma mark - UITableViewDataSource and UITableViewDelegate
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -57,25 +56,7 @@
     return [self.fetchedResultsController.sections[section] numberOfObjects];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    NSManagedObject *obj = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    UITableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:obj.entity.managedObjectClassName];
-    
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:(UITableViewCellStyleSubtitle)
-                                      reuseIdentifier:obj.entity.managedObjectClassName];
-    }
-    [self configureCell:cell atIndexPath:indexPath];
-    return cell;
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
-    return [self.fetchedResultsController.sections[section] name];
-}
-
-#pragma mark Fetched results controller delegate
+#pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
@@ -110,6 +91,7 @@
             break;
         }
         case NSFetchedResultsChangeUpdate: {
+            if (self.ignoreUpdates) return;
             [self configureCell:[self.tableView cellForRowAtIndexPath:indexPath]
                     atIndexPath:indexPath];
             break;

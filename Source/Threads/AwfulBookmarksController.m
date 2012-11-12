@@ -67,7 +67,9 @@
                 NSArray *bookmarks = [AwfulThread fetchAllMatchingPredicate:@"isBookmarked = YES"];
                 [bookmarks setValue:@NO forKey:AwfulThreadAttributes.isBookmarked];
                 [threads setValue:@YES forKey:AwfulThreadAttributes.isBookmarked];
+                self.ignoreUpdates = YES;
                 [[AwfulDataStack sharedDataStack] save];
+                self.ignoreUpdates = NO;
                 self.lastRefreshDate = [NSDate date];
             }
             self.currentPage = pageNum;
