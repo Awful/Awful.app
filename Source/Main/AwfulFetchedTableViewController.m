@@ -75,19 +75,19 @@
     switch (type) {
         case NSFetchedResultsChangeInsert: {
             [self.tableView insertRowsAtIndexPaths:@[newIndexPath]
-                                  withRowAnimation:UITableViewRowAnimationTop];
+                                  withRowAnimation:UITableViewRowAnimationAutomatic];
             break;
         }
         case NSFetchedResultsChangeDelete: {
             [self.tableView deleteRowsAtIndexPaths:@[indexPath]
-                                  withRowAnimation:UITableViewRowAnimationTop];
+                                  withRowAnimation:UITableViewRowAnimationAutomatic];
             break;
         }
         case NSFetchedResultsChangeMove: {
             [self.tableView deleteRowsAtIndexPaths:@[indexPath]
-                                  withRowAnimation:UITableViewRowAnimationTop];
+                                  withRowAnimation:UITableViewRowAnimationAutomatic];
             [self.tableView insertRowsAtIndexPaths:@[newIndexPath]
-                                  withRowAnimation:(UITableViewRowAnimationTop)];
+                                  withRowAnimation:UITableViewRowAnimationAutomatic];
             break;
         }
         case NSFetchedResultsChangeUpdate: {
