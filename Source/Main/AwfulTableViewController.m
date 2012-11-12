@@ -63,7 +63,6 @@
     _refreshing = refreshing;
     if (refreshing) {
         if ([self canPullToRefresh]) [self.tableView.pullToRefreshView startAnimating];
-        if ([self canPullForNextPage]) [self.tableView.infiniteScrollingView startAnimating];
     } else {
         if ([self canPullToRefresh]) [self.tableView.pullToRefreshView stopAnimating];
         if ([self canPullForNextPage]) [self.tableView.infiniteScrollingView stopAnimating];
