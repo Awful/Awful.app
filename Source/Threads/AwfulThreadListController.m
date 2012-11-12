@@ -128,7 +128,9 @@ typedef enum {
             }
             [threads setValue:@NO forKey:@"hideFromList"];
             self.forum.lastRefresh = [NSDate date];
+            self.ignoreUpdates = YES;
             [[AwfulDataStack sharedDataStack] save];
+            self.ignoreUpdates = NO;
             self.currentPage = pageNum;
         }
         self.refreshing = NO;
