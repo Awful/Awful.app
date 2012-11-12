@@ -303,7 +303,8 @@ static CGFloat const SVPullToRefreshViewHeight = 60;
     newInsets.top = self.frame.origin.y*-1+self.originalScrollViewContentInset.top;
     newInsets.bottom = self.scrollView.contentInset.bottom;
     [self setScrollViewContentInset:newInsets];
-    [self.scrollView setContentOffset:CGPointMake(0, -self.frame.size.height) animated:NO];
+//    (nolanw) "Start animating" does not mean "show me your shitty animations".
+//    [self.scrollView setContentOffset:CGPointMake(0, -self.frame.size.height) animated:NO];
     [self rotateArrow:0 hide:YES];
 }
 
