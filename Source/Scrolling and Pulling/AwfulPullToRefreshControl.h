@@ -13,14 +13,13 @@
 @interface AwfulPullToRefreshControl : UIControl
 
 // Designated initializer.
-- (id)initWithDirection:(AwfulScrollViewPullDirection)direction
-          triggerOffset:(CGFloat)triggerOffset;
+- (id)initWithDirection:(AwfulScrollViewPullDirection)direction;
 
 @property (readonly, nonatomic) AwfulScrollViewPullDirection direction;
 
 // Number of points to drag the scroll view **beyond this control's height** before the refresh
 // is triggered. Default is 0.
-@property (readonly, nonatomic) CGFloat triggerOffset;
+@property (nonatomic) CGFloat triggerOffset;
 
 @property (getter=isRefreshing, nonatomic) BOOL refreshing;
 

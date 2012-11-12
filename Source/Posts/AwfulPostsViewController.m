@@ -539,6 +539,15 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     self.popover = nil;
 }
 
+- (void)updatePullUpTriggerOffset
+{
+    if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
+        self.pullUpToRefreshControl.triggerOffset = 45;
+    } else {
+        self.pullUpToRefreshControl.triggerOffset = 25;
+    }
+}
+
 #pragma mark - UIViewController
 
 - (void)loadView
@@ -588,8 +597,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     [self keepTopBarHiddenOnFirstView];
     
     AwfulPullToRefreshControl *refresh;
-    refresh = [[AwfulPullToRefreshControl alloc] initWithDirection:AwfulScrollViewPullUp
-                                                     triggerOffset:30];
+    refresh = [[AwfulPullToRefreshControl alloc] initWithDirection:AwfulScrollViewPullUp];
     [refresh addTarget:self
                 action:@selector(loadNextPageOrRefresh)
       forControlEvents:UIControlEventValueChanged];
@@ -601,6 +609,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     refresh.gradient.endPoint = CGPointMake(0.5, 0.5);
     [self.postsView.scrollView addSubview:refresh];
     self.pullUpToRefreshControl = refresh;
+    [self updatePullUpTriggerOffset];
 }
 
 // We want to hide the top bar until the user reveals it. Unfortunately, AwfulPostsView's
@@ -665,6 +674,7 @@ static void * KVOContext = @"AwfulPostsView KVO";
         sp_view.frame = CGRectMake(0, self.view.frame.size.height - sp_view.frame.size.height - self.pageBar.frame.size.height,
                                    self.view.frame.size.width, sp_view.frame.size.height);
     }
+    [self updatePullUpTriggerOffset];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
