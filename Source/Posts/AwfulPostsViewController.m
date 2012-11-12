@@ -38,7 +38,9 @@
 @end
 
 
-@interface AwfulPostsViewController () <AwfulPostsViewDelegate, AwfulSpecificPageControllerDelegate, UIPopoverControllerDelegate, NSFetchedResultsControllerDelegate>
+@interface AwfulPostsViewController () <AwfulPostsViewDelegate, UIPopoverControllerDelegate,
+                                        AwfulSpecificPageControllerDelegate,
+                                        NSFetchedResultsControllerDelegate>
 
 @property (nonatomic) NSFetchedResultsController *fetchedResultsController;
 
@@ -203,7 +205,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     }
     id op = [[AwfulHTTPClient client] listPostsInThreadWithID:self.thread.threadID
                                                        onPage:page
-                                                      andThen:^(NSError *error, NSArray *posts, NSString *advertisementHTML)
+                                                      andThen:^(NSError *error, NSArray *posts,
+                                                                NSString *advertisementHTML)
     {
         if (error) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Could Not Load Page"
@@ -373,7 +376,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                                           andThen:^(NSError *error)
          {
              if (error) {
-                 NSLog(@"error %@bookmarking thread %@: %@", self.thread.isBookmarkedValue ? @"un" : @"", self.thread.threadID, error);
+                 NSLog(@"error %@bookmarking thread %@: %@",
+                       self.thread.isBookmarkedValue ? @"un" : @"", self.thread.threadID, error);
              } else {
                  self.thread.isBookmarkedValue = NO;
                  [[AwfulDataStack sharedDataStack] save];
@@ -533,7 +537,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 - (void)loadView
 {
     self.view = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    self.view.backgroundColor = [UIColor colorWithHue:0.561 saturation:0.107 brightness:0.404 alpha:1];
+    self.view.backgroundColor = [UIColor colorWithHue:0.561 saturation:0.107 brightness:0.404
+                                                alpha:1];
     CGRect postsFrame, pageBarFrame;
     CGRectDivide(self.view.bounds, &pageBarFrame, &postsFrame, 38, CGRectMaxYEdge);
     
