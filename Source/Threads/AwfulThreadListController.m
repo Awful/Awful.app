@@ -90,6 +90,7 @@ typedef enum {
 - (void)refresh
 {
     [super refresh];
+    [self.cellsWithoutThreadTags removeAllObjects];
     [self loadPageNum:1];
 }
 
