@@ -193,7 +193,6 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 - (void)loadPage:(NSInteger)page
 {
     [self.networkOperation cancel];
-    [self hidePageNavigation];
     self.advertisementHTML = nil;
     if (!self.refreshingSamePage) {
         if (page > 0) {
@@ -418,12 +417,6 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         [self.specificPageController showInView:self.postsView animated:YES];
         [self.specificPageController didMoveToParentViewController:self];
     }
-}
-
-- (void)hidePageNavigation
-{
-    [self dismissPopoverAnimated:YES];
-    if (self.specificPageController) [self tappedPageNav:nil];
 }
 
 - (void)tappedCompose
@@ -817,7 +810,10 @@ static void * KVOContext = @"AwfulPostsView KVO";
 
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popover
 {
-    if (popover == self.popover) self.popover = nil;
+    if (popover == self.popover) {
+        self.popover = nil;
+        self.specificPageController = nil;
+    }
 }
 
 #pragma mark - AwfulReplyViewControllerDelegate
