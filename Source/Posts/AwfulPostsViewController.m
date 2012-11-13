@@ -803,9 +803,13 @@ static void * KVOContext = @"AwfulPostsView KVO";
 - (void)specificPageController:(AwfulSpecificPageController *)controller
                  didSelectPage:(NSInteger)page
 {
-    [self dismissPopoverAnimated:YES];
+    if (self.popover) {
+        [self dismissPopoverAnimated:YES];
+    } else {
+        [self.specificPageController hideAnimated:YES];
+        self.specificPageController = nil;
+    }
     [self loadPage:page];
-    self.specificPageController = nil;
 }
 
 - (void)specificPageControllerDidCancel:(AwfulSpecificPageController *)controller
