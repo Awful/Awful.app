@@ -55,6 +55,13 @@
                                                           cacheName:nil];
 }
 
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    self.tableView.tableFooterView = [UIView new];
+    self.tableView.tableFooterView.backgroundColor = [UIColor clearColor];
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
