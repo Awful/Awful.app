@@ -108,6 +108,7 @@ typedef enum {
     self.replyTextView.text = text;
     self.titleLabel.text = post.thread.title;
     self.sendButton.title = @"Edit";
+    self.images = [NSMutableDictionary new];
 }
 
 - (void)replyToThread:(AwfulThread *)thread withInitialContents:(NSString *)contents
@@ -117,6 +118,7 @@ typedef enum {
     self.replyTextView.text = contents;
     self.titleLabel.text = thread.title;
     self.sendButton.title = @"Reply";
+    self.images = [NSMutableDictionary new];
 }
 
 #pragma mark - UIViewController
