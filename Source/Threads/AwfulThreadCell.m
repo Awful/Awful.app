@@ -29,7 +29,8 @@
         self.imageView.layer.borderWidth = 1;
         self.imageView.contentMode = UIViewContentModeScaleAspectFit;
         
-        UIImageView *stickyImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sticky.png"]];
+        UIImageView *stickyImageView = [[UIImageView alloc] initWithImage:
+                                        [UIImage imageNamed:@"sticky.png"]];
         [self.contentView addSubview:stickyImageView];
         _stickyImageView = stickyImageView;
         
@@ -100,10 +101,11 @@
     
     CGSize cellSize = self.contentView.bounds.size;
     
-    // Center tag image view and rating image view (if visible) as a unit and align them on the left.
-    // Sticky goes over bottom right corner of tag.
+    // Center tag image view and rating image view (if visible) as a unit and align them on the
+    // left. Sticky goes over bottom right corner of tag.
     CGRect ratingImageFrame = self.ratingImageView.frame;
-    CGFloat effectiveRatingHeight = self.ratingImageView.hidden ? 0 : ratingImageFrame.size.height + 2;
+    CGFloat effectiveRatingHeight = self.ratingImageView.hidden ? 0 :
+                                    ratingImageFrame.size.height + 2;
     static const CGFloat tagWidth = 45;
     self.imageView.frame = (CGRect){
         .origin.x = 4,
@@ -112,12 +114,15 @@
     };
     if (!self.stickyImageView.hidden) {
         CGRect stickyImageFrame = self.stickyImageView.frame;
-        stickyImageFrame.origin.x = CGRectGetMaxX(self.imageView.frame) - stickyImageFrame.size.width + 1;
-        stickyImageFrame.origin.y = CGRectGetMaxY(self.imageView.frame) - stickyImageFrame.size.height + 1;
+        stickyImageFrame.origin.x = CGRectGetMaxX(self.imageView.frame) -
+                                    stickyImageFrame.size.width + 1;
+        stickyImageFrame.origin.y = CGRectGetMaxY(self.imageView.frame) -
+                                    stickyImageFrame.size.height + 1;
         self.stickyImageView.frame = stickyImageFrame;
     }
     if (!self.ratingImageView.hidden) {
-        ratingImageFrame.origin.x = CGRectGetMidX(self.imageView.frame) - ratingImageFrame.size.width / 2;
+        ratingImageFrame.origin.x = CGRectGetMidX(self.imageView.frame) -
+                                    ratingImageFrame.size.width / 2;
         ratingImageFrame.origin.y = CGRectGetMaxY(self.imageView.frame) + 2;
         self.ratingImageView.frame = ratingImageFrame;
     }
@@ -143,11 +148,13 @@
                                    58);
     CGSize textSize = [self.textLabel.text sizeWithFont:self.textLabel.font
                                       constrainedToSize:constraint];
-    CGFloat detailVerticalOffset = CGRectGetMinY(detailTextLabelFrame) - CGRectGetMaxY(textLabelFrame);
+    CGFloat detailVerticalOffset = CGRectGetMinY(detailTextLabelFrame) -
+    CGRectGetMaxY(textLabelFrame);
     textLabelFrame.origin.x = textOriginX;
     detailTextLabelFrame.origin.x = textOriginX;
     textLabelFrame.size = textSize;
-    textLabelFrame.origin.y = (self.contentView.bounds.size.height - textSize.height - detailTextLabelFrame.size.height) / 2 - detailVerticalOffset;
+    textLabelFrame.origin.y = (self.contentView.bounds.size.height - textSize.height -
+                               detailTextLabelFrame.size.height) / 2 - detailVerticalOffset;
     textLabelFrame = CGRectIntegral(textLabelFrame);
     detailTextLabelFrame.origin.y = CGRectGetMaxY(textLabelFrame) + detailVerticalOffset;
     
@@ -156,12 +163,14 @@
     
     [self.detailTextLabel sizeToFit];
     static const CGFloat detailRightMargin = 5;
-    self.originalPosterTextLabel.frame = (CGRect){
-        .origin.x = CGRectGetMaxX(detailTextLabelFrame) + detailRightMargin,
-        .origin.y = detailTextLabelFrame.origin.y,
-        .size.width = cellSize.width - CGRectGetMaxX(detailTextLabelFrame) - detailRightMargin
-    };
-    [self.originalPosterTextLabel sizeToFit];
+    CGRect originalPosterFrame = self.detailTextLabel.frame;
+    originalPosterFrame.origin.x = CGRectGetMaxX(detailTextLabelFrame) + detailRightMargin;
+    originalPosterFrame.size.width = cellSize.width - CGRectGetMaxX(detailTextLabelFrame);
+    originalPosterFrame.size.width -= detailRightMargin;
+    if (self.showsUnread) {
+        originalPosterFrame.size.width -= (cellSize.width - unreadCountFrame.origin.x);
+    }
+    self.originalPosterTextLabel.frame = originalPosterFrame;
 }
 
 - (UIColor *)originalPosterTextColor
@@ -175,7 +184,8 @@
 {
     [super setHighlighted:highlighted animated:animated];
     
-    self.originalPosterTextLabel.textColor = highlighted ? [UIColor whiteColor] : [self originalPosterTextColor];
+    self.originalPosterTextLabel.textColor = highlighted ? [UIColor whiteColor] :
+                                             [self originalPosterTextColor];
     [self.unreadCountBadgeView setNeedsDisplay];
 }
 
@@ -183,7 +193,8 @@
 {
     [super setSelected:selected animated:animated];
     
-    self.originalPosterTextLabel.textColor = selected ? [UIColor whiteColor] : [self originalPosterTextColor];
+    self.originalPosterTextLabel.textColor = selected ? [UIColor whiteColor] :
+                                             [self originalPosterTextColor];
     [self.unreadCountBadgeView setNeedsDisplay];
 }
 
