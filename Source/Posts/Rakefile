@@ -1,12 +1,13 @@
 require 'open3'
 
-FILES = "zepto.min.js - jquery.mustache.js awful.js"
+FILES = "- jquery.mustache.js awful.js"
 
 task :default => [ :assemble ]
 
 desc "assemble posts-view.js"
 task :assemble do
   Open3.popen3("cat #{FILES} > posts-view.js") do |i, _, _|
+    i.print File.read("zepto.min.js").gsub("750", "500")
     i.puts <<-YO.gsub(/^ */, '')
       
       
