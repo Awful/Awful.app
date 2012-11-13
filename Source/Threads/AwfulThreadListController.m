@@ -256,11 +256,18 @@ typedef enum {
         cell.rating = [thread.threadRating floatValue];
     }
     cell.textLabel.text = thread.title;
+    NSNumberFormatterStyle numberStyle = NSNumberFormatterDecimalStyle;
     NSString *pagesFormatted = [NSNumberFormatter localizedStringFromNumber:thread.numberOfPages
-                                                                numberStyle:NSNumberFormatterDecimalStyle];
+                                                                numberStyle:numberStyle];
     NSString *plural = thread.numberOfPagesValue == 1 ? @"" : @"s";
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ page%@", pagesFormatted, plural];
-    cell.originalPosterTextLabel.text = [NSString stringWithFormat:@"Posted by %@", thread.authorName];
+    if (thread.seenValue) {
+        cell.originalPosterTextLabel.text = [NSString stringWithFormat:@"Killed by %@",
+                                             thread.lastPostAuthorName];
+    } else {
+        cell.originalPosterTextLabel.text = [NSString stringWithFormat:@"Posted by %@",
+                                             thread.authorName];
+    }
     cell.unreadCountBadgeView.badgeText = [thread.totalUnreadPosts stringValue];
     cell.unreadCountBadgeView.on = thread.totalUnreadPostsValue > 0;
     cell.showsUnread = thread.totalUnreadPostsValue != -1;
