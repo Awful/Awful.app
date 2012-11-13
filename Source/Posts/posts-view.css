@@ -36,9 +36,14 @@ img, iframe {
   max-width: 100%;
 }
 
-/* Don't show default menu when long-tapping text. */
+/* Don't show default menu when long-tapping links. */
 body {
   -webkit-touch-callout: none;
+}
+
+/* Don't show selection when long-tapping images. We handle that ourselves. */
+#posts > article > section img {
+    -webkit-user-select: none;
 }
 
 /* Solid dark grey background. */
