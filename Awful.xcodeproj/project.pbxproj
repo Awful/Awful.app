@@ -988,7 +988,6 @@
 		8CAB2830164B4FB0009BC24F /* fyad-puns.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-puns.png"; sourceTree = "<group>"; };
 		8CAB2831164B4FB0009BC24F /* fyad-mystery.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-mystery.png"; sourceTree = "<group>"; };
 		8CAB2832164B4FB0009BC24F /* tg-mafia.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tg-mafia.png"; sourceTree = "<group>"; };
-		8CAB2833164B4FB0009BC24F /* gws-veggie.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gws-veggie.png"; sourceTree = "<group>"; };
 		8CAB2834164B4FB0009BC24F /* bs-diablo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bs-diablo.png"; sourceTree = "<group>"; };
 		8CAB2835164B4FB0009BC24F /* bs-starcraft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bs-starcraft.png"; sourceTree = "<group>"; };
 		8CB5468C15BD936600E8BEC1 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
@@ -1925,13 +1924,6 @@
 				8C5159D0163DB796000114F6 /* adtrw-hokutonoken.png */,
 				8CCD527C15B783FC00E5893B /* ai-cycles.png */,
 				8C5159D1163DB796000114F6 /* AICA-TAG-60s.png */,
-				8CAB282F164B4FB0009BC24F /* fyad-trout.png */,
-				8CAB2830164B4FB0009BC24F /* fyad-puns.png */,
-				8CAB2831164B4FB0009BC24F /* fyad-mystery.png */,
-				8CAB2832164B4FB0009BC24F /* tg-mafia.png */,
-				8CAB2833164B4FB0009BC24F /* gws-veggie.png */,
-				8CAB2834164B4FB0009BC24F /* bs-diablo.png */,
-				8CAB2835164B4FB0009BC24F /* bs-starcraft.png */,
 				8C5159D2163DB796000114F6 /* AICA-TAG-70s.png */,
 				8C5159D3163DB796000114F6 /* AICA-TAG-80s.png */,
 				8C5159D4163DB796000114F6 /* AICA-TAG-classic.png */,
@@ -1953,6 +1945,8 @@
 				8CF02DB316484CCE0059BC56 /* bb-foreign.png */,
 				8CCD528515B783FC00E5893B /* bb-nonfiction.png */,
 				8CCD528615B783FC00E5893B /* books.png */,
+				8CAB2834164B4FB0009BC24F /* bs-diablo.png */,
+				8CAB2835164B4FB0009BC24F /* bs-starcraft.png */,
 				8CF02DB416484CCE0059BC56 /* bss-con.png */,
 				8CCD528715B783FC00E5893B /* bss-discussion.png */,
 				1C67BB1916493C5F00898B35 /* bss-fanboy.png */,
@@ -2071,8 +2065,10 @@
 				1CAED9E916375FB8001F5F04 /* fyad-lovecum.png */,
 				8CAAE2E51651CC52004C8C8A /* fyad-magician.png */,
 				8CF02DD416484CCE0059BC56 /* fyad-menopause.png */,
+				8CAB2831164B4FB0009BC24F /* fyad-mystery.png */,
 				8CCD52C015B783FC00E5893B /* fyad-nilbog.png */,
 				1CAED9EA16375FB8001F5F04 /* fyad-parotty.png */,
+				8CAB2830164B4FB0009BC24F /* fyad-puns.png */,
 				1CAEDB3116377986001F5F04 /* fyad-robocop.png */,
 				8CF02DB116484CCE0059BC56 /* fyad-salad.png */,
 				1CAEDB3216377986001F5F04 /* fyad-sandwich.png */,
@@ -2080,6 +2076,7 @@
 				8CF02DB216484CCE0059BC56 /* fyad-suts.png */,
 				8CAAE2E41651CC52004C8C8A /* fyad-thuggery.png */,
 				8CCD52C115B783FC00E5893B /* fyad-tim.png */,
+				8CAB282F164B4FB0009BC24F /* fyad-trout.png */,
 				8C5159D9163DB796000114F6 /* fyad-zounds.png */,
 				8CCD52C215B783FC00E5893B /* games-360.png */,
 				8CCD52C315B783FC00E5893B /* games-360ps3tag.png */,
@@ -2316,6 +2313,7 @@
 				1CAEDB5916377A35001F5F04 /* tg-d20.png */,
 				8CAAE2D81651CC52004C8C8A /* tg-dd.png */,
 				8CCD534415B783FC00E5893B /* tg-gurps.png */,
+				8CAB2832164B4FB0009BC24F /* tg-mafia.png */,
 				8CAAE2EB1651CC52004C8C8A /* tg-poker.png */,
 				8CF02DFB16484CCE0059BC56 /* tg-recruiting.png */,
 				8CAAE2D71651CC52004C8C8A /* tg-story.png */,
