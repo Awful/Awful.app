@@ -121,65 +121,179 @@ typedef enum {
     self.images = [NSMutableDictionary new];
 }
 
-#pragma mark - UIViewController
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (void)keyboardDidShow:(NSNotification *)note
 {
-    return [self init];
+    CGRect keyboardFrame = [note.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGRect relativeKeyboardFrame = [self.replyTextView convertRect:keyboardFrame fromView:nil];
+    CGRect overlap = CGRectIntersection(relativeKeyboardFrame, self.replyTextView.bounds);
+    // The 2 isn't strictly necessary, I just like a little cushion between the cursor and keyboard.
+    UIEdgeInsets insets = (UIEdgeInsets){ .bottom = overlap.size.height + 2 };
+    self.replyTextView.contentInset = insets;
+    self.replyTextView.scrollIndicatorInsets = insets;
+    [self.replyTextView scrollRangeToVisible:self.replyTextView.selectedRange];
 }
 
-- (void)loadView
+- (void)keyboardWillHide:(NSNotification *)note
 {
-    UITextView *textView = [UITextView new];
-    textView.font = [UIFont systemFontOfSize:17];
-    self.view = textView;
+    self.replyTextView.contentInset = UIEdgeInsetsZero;
+    self.replyTextView.scrollIndicatorInsets = UIEdgeInsetsZero;
 }
 
-- (void)viewDidLoad
+- (void)hitSend
 {
-    [super viewDidLoad];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardDidShow:)
-                                                 name:UIKeyboardDidShowNotification
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillHide:)
-                                                 name:UIKeyboardWillHideNotification
-                                               object:nil];
-    self.navigationItem.rightBarButtonItem = self.sendButton;
-    self.navigationItem.leftBarButtonItem = self.cancelButton;
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    [self configureTopLevelMenuItems];
-    [self.replyTextView becomeFirstResponder];
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        return YES;
+    if (AwfulSettings.settings.confirmBeforeReplying) {
+        static NSString * message = @"Does my reply offer any significant advice or help "
+        "contribute to the conversation in any fashion?";
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Incoming Forums Superstar"
+                                                        message:message
+                                                       delegate:self
+                                              cancelButtonTitle:@"Nope"
+                                              otherButtonTitles:self.sendButton.title, nil];
+        alert.delegate = self;
+        [alert show];
+    } else {
+        [self alertView:nil clickedButtonAtIndex:1];
     }
-    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
-#pragma mark - UIResponder
-
-- (BOOL)canBecomeFirstResponder
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    return self.currentMenu != TopLevelMenu;
+    if (buttonIndex != 1) return;
+    
+    [self.networkOperation cancel];
+    
+    NSString *reply = self.replyTextView.text;
+    NSMutableArray *imageKeys = [NSMutableArray new];
+    NSString *pattern = @"\\[(t?img)\\](awful://(.+)\\.png)\\[/\\1\\]";
+    NSError *error;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
+                                                                           options:0
+                                                                             error:&error];
+    if (!regex) {
+        NSLog(@"error parsing image URL placeholder regex: %@", error);
+        return;
+    }
+    NSArray *placeholderResults = [regex matchesInString:reply
+                                                 options:0
+                                                   range:NSMakeRange(0, [reply length])];
+    for (NSTextCheckingResult *result in placeholderResults) {
+        NSRange rangeOfKey = [result rangeAtIndex:3];
+        if (rangeOfKey.location == NSNotFound) continue;
+        [imageKeys addObject:[reply substringWithRange:rangeOfKey]];
+    }
+    
+    if ([imageKeys count] == 0) {
+        [self completeReply:reply
+withImagePlaceholderResults:placeholderResults
+            replacementURLs:nil];
+        return;
+    }
+    [SVProgressHUD showWithStatus:@"Uploading images…" maskType:SVProgressHUDMaskTypeClear];
+    
+    NSArray *images = [self.images objectsForKeys:imageKeys notFoundMarker:[NSNull null]];
+    [[ImgurHTTPClient sharedClient] uploadImages:images andThen:^(NSError *error, NSArray *urls)
+     {
+         if (!error) {
+             [self completeReply:reply
+     withImagePlaceholderResults:placeholderResults
+                 replacementURLs:[NSDictionary dictionaryWithObjects:urls forKeys:imageKeys]];
+             return;
+         }
+         [SVProgressHUD dismiss];
+         NSString *message = [NSString stringWithFormat:@"Uploading images to imgur didn't work: "
+                                                         "%@", [error localizedDescription]];
+         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Image Uploading Failed"
+                                                         message:message
+                                                        delegate:nil
+                                               cancelButtonTitle:@"Fiddlesticks"
+                                               otherButtonTitles:nil];
+         [alert show];
+     }];
 }
 
+- (void)completeReply:(NSString *)reply
+    withImagePlaceholderResults:(NSArray *)placeholderResults
+    replacementURLs:(NSDictionary *)replacementURLs
+{
+    [SVProgressHUD showWithStatus:self.thread ? @"Replying…" : @"Editing…"
+                         maskType:SVProgressHUDMaskTypeClear];
+    
+    if ([placeholderResults count] > 0) {
+        NSMutableString *replacedReply = [reply mutableCopy];
+        NSInteger offset = 0;
+        for (__strong NSTextCheckingResult *result in placeholderResults) {
+            result = [result resultByAdjustingRangesWithOffset:offset];
+            if ([result rangeAtIndex:3].location == NSNotFound) return;
+            NSString *key = [reply substringWithRange:[result rangeAtIndex:3]];
+            NSString *url = [replacementURLs[key] absoluteString];
+            NSUInteger priorLength = [replacedReply length];
+            if (url) {
+                NSRange rangeOfURL = [result rangeAtIndex:2];
+                rangeOfURL.location += offset;
+                [replacedReply replaceCharactersInRange:rangeOfURL withString:url];
+            } else {
+                NSLog(@"found no associated image URL, so stripping tag %@",
+                      [replacedReply substringWithRange:result.range]);
+                [replacedReply replaceCharactersInRange:result.range withString:@""];
+            }
+            offset += ([replacedReply length] - priorLength);
+        }
+        reply = replacedReply;
+    }
+    
+    if (self.thread) {
+        [self sendReply:reply];
+    } else if (self.post) {
+        [self sendEdit:reply];
+    }
+    [self.replyTextView resignFirstResponder];
+}
+
+- (void)sendReply:(NSString *)reply
+{
+    id op = [[AwfulHTTPClient client] replyToThreadWithID:self.thread.threadID
+                                                     text:reply
+                                                  andThen:^(NSError *error, NSString *postID)
+             {
+                 [SVProgressHUD dismiss];
+                 if (error) {
+                     [[AwfulAppDelegate instance] requestFailed:error];
+                     return;
+                 }
+                 [self.delegate replyViewController:self didReplyToThread:self.thread];
+             }];
+    self.networkOperation = op;
+}
+
+- (void)sendEdit:(NSString *)edit
+{
+    id op = [[AwfulHTTPClient client] editPostWithID:self.post.postID
+                                                text:edit
+                                             andThen:^(NSError *error)
+             {
+                 [SVProgressHUD dismiss];
+                 if (error) {
+                     [[AwfulAppDelegate instance] requestFailed:error];
+                     return;
+                 }
+                 [self.delegate replyViewController:self didEditPost:self.post];
+             }];
+    self.networkOperation = op;
+}
+
+- (void)cancel
+{
+    [SVProgressHUD dismiss];
+    [self.delegate replyViewControllerDidCancel:self];
+}
 #pragma mark - Menu items
 
 - (void)configureTopLevelMenuItems
 {
     [UIMenuController sharedMenuController].menuItems = @[
-        [[UIMenuItem alloc] initWithTitle:@"[url]" action:@selector(linkifySelection:)],
-        [[UIMenuItem alloc] initWithTitle:@"[img]" action:@selector(insertImage:)],
-        [[UIMenuItem alloc] initWithTitle:@"Format" action:@selector(showFormattingSubmenu:)]
+    [[UIMenuItem alloc] initWithTitle:@"[url]" action:@selector(linkifySelection:)],
+    [[UIMenuItem alloc] initWithTitle:@"[img]" action:@selector(insertImage:)],
+    [[UIMenuItem alloc] initWithTitle:@"Format" action:@selector(showFormattingSubmenu:)]
     ];
     self.currentMenu = TopLevelMenu;
 }
@@ -187,8 +301,8 @@ typedef enum {
 - (void)configureImageSourceSubmenuItems
 {
     [UIMenuController sharedMenuController].menuItems = @[
-        [[UIMenuItem alloc] initWithTitle:@"From Camera" action:@selector(insertImageFromCamera:)],
-        [[UIMenuItem alloc] initWithTitle:@"From Library" action:@selector(insertImageFromLibrary:)]
+    [[UIMenuItem alloc] initWithTitle:@"From Camera" action:@selector(insertImageFromCamera:)],
+    [[UIMenuItem alloc] initWithTitle:@"From Library" action:@selector(insertImageFromLibrary:)]
     ];
     self.currentMenu = ImageSourceSubmenu;
 }
@@ -196,14 +310,14 @@ typedef enum {
 - (void)configureFormattingSubmenuItems
 {
     [UIMenuController sharedMenuController].menuItems = @[
-        [[UIMenuItem alloc] initWithTitle:@"[b]" action:@selector(emboldenSelection:)],
-        [[UIMenuItem alloc] initWithTitle:@"[s]" action:@selector(strikeSelection:)],
-        [[UIMenuItem alloc] initWithTitle:@"[u]" action:@selector(underlineSelection:)],
-        [[UIMenuItem alloc] initWithTitle:@"[i]" action:@selector(italicizeSelection:)],
-        [[UIMenuItem alloc] initWithTitle:@"[spoiler]" action:@selector(spoilerSelection:)],
-        [[UIMenuItem alloc] initWithTitle:@"[fixed]" action:@selector(monospaceSelection:)],
-        [[UIMenuItem alloc] initWithTitle:@"[quote]" action:@selector(quoteSelection:)],
-        [[UIMenuItem alloc] initWithTitle:@"[code]" action:@selector(encodeSelection:)],
+    [[UIMenuItem alloc] initWithTitle:@"[b]" action:@selector(emboldenSelection:)],
+    [[UIMenuItem alloc] initWithTitle:@"[s]" action:@selector(strikeSelection:)],
+    [[UIMenuItem alloc] initWithTitle:@"[u]" action:@selector(underlineSelection:)],
+    [[UIMenuItem alloc] initWithTitle:@"[i]" action:@selector(italicizeSelection:)],
+    [[UIMenuItem alloc] initWithTitle:@"[spoiler]" action:@selector(spoilerSelection:)],
+    [[UIMenuItem alloc] initWithTitle:@"[fixed]" action:@selector(monospaceSelection:)],
+    [[UIMenuItem alloc] initWithTitle:@"[quote]" action:@selector(quoteSelection:)],
+    [[UIMenuItem alloc] initWithTitle:@"[code]" action:@selector(encodeSelection:)],
     ];
     self.currentMenu = FormattingSubmenu;
 }
@@ -220,8 +334,8 @@ typedef enum {
         if (self.currentMenu != TopLevelMenu) return NO;
         return [UIImagePickerController isSourceTypeAvailable:
                 UIImagePickerControllerSourceTypePhotoLibrary] ||
-               [UIImagePickerController isSourceTypeAvailable:
-                UIImagePickerControllerSourceTypeCamera];
+        [UIImagePickerController isSourceTypeAvailable:
+         UIImagePickerControllerSourceTypeCamera];
     }
     
     if (action == @selector(insertImageFromCamera:) ||
@@ -312,11 +426,11 @@ typedef enum {
                                              object:nil
                                               queue:[NSOperationQueue mainQueue]
                                          usingBlock:^(NSNotification *note)
-    {
-        [center removeObserver:self.observerToken];
-        self.observerToken = nil;
-        [self configureTopLevelMenuItems];
-    }];
+                          {
+                              [center removeObserver:self.observerToken];
+                              self.observerToken = nil;
+                              [self configureTopLevelMenuItems];
+                          }];
 }
 
 - (void)insertImageFromCamera:(id)sender
@@ -428,7 +542,58 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
     [self.replyTextView becomeFirstResponder];
 }
 
-#pragma mark - Image picker delegate
+#pragma mark - UIViewController
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    return [self init];
+}
+
+- (void)loadView
+{
+    UITextView *textView = [UITextView new];
+    textView.font = [UIFont systemFontOfSize:17];
+    self.view = textView;
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardDidShow:)
+                                                 name:UIKeyboardDidShowNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
+    self.navigationItem.rightBarButtonItem = self.sendButton;
+    self.navigationItem.leftBarButtonItem = self.cancelButton;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self configureTopLevelMenuItems];
+    [self.replyTextView becomeFirstResponder];
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        return YES;
+    }
+    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+}
+
+#pragma mark - UIResponder
+
+- (BOOL)canBecomeFirstResponder
+{
+    return self.currentMenu != TopLevelMenu;
+}
+
+#pragma mark - UIImagePickerControllerDelegate
 
 - (void)imagePickerController:(UIImagePickerController *)picker
 didFinishPickingMediaWithInfo:(NSDictionary *)info
@@ -471,7 +636,7 @@ static NSString *ImageKeyToPlaceholder(NSString *key, BOOL thumbnail)
     [self.replyTextView becomeFirstResponder];
 }
 
-#pragma mark - Navigation controller delegate
+#pragma mark - UINavigationControllerDelegate
 
 // Set the title of the topmost view of the UIImagePickerController.
 - (void)navigationController:(UINavigationController *)navigationController
@@ -483,177 +648,12 @@ static NSString *ImageKeyToPlaceholder(NSString *key, BOOL thumbnail)
     }
 }
 
-#pragma mark - Popover delegate
+#pragma mark - UIPopoverControllerDelegate
 
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
 {
     if (![popoverController isEqual:self.pickerPopover]) return;
     [self.replyTextView becomeFirstResponder];
-}
-
-#pragma mark - Editing a reply
-
-- (void)keyboardDidShow:(NSNotification *)note
-{
-    CGRect keyboardFrame = [note.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    CGRect relativeKeyboardFrame = [self.replyTextView convertRect:keyboardFrame fromView:nil];
-    CGRect overlap = CGRectIntersection(relativeKeyboardFrame, self.replyTextView.bounds);
-    // The 2 isn't strictly necessary, I just like a little cushion between the cursor and keyboard.
-    UIEdgeInsets insets = (UIEdgeInsets){ .bottom = overlap.size.height + 2 };
-    self.replyTextView.contentInset = insets;
-    self.replyTextView.scrollIndicatorInsets = insets;
-    [self.replyTextView scrollRangeToVisible:self.replyTextView.selectedRange];
-}
-
-- (void)keyboardWillHide:(NSNotification *)note
-{
-    self.replyTextView.contentInset = UIEdgeInsetsZero;
-    self.replyTextView.scrollIndicatorInsets = UIEdgeInsetsZero;
-}
-
-#pragma mark - Sending a reply (or not)
-
-- (IBAction)hitSend
-{
-    if (AwfulSettings.settings.confirmBeforeReplying) {
-        static NSString * message = @"Does my reply offer any significant advice or help "
-                                     "contribute to the conversation in any fashion?";
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Incoming Forums Superstar"
-                                                        message:message
-                                                       delegate:self
-                                              cancelButtonTitle:@"Nope"
-                                              otherButtonTitles:self.sendButton.title, nil];
-        alert.delegate = self;
-        [alert show];
-    } else {
-        [self alertView:nil clickedButtonAtIndex:1];
-    }
-}
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex != 1) return;
-    
-    [self.networkOperation cancel];
-    
-    NSString *reply = self.replyTextView.text;
-    NSMutableArray *imageKeys = [NSMutableArray new];
-    NSString *pattern = @"\\[(t?img)\\](awful://(.+)\\.png)\\[/\\1\\]";
-    NSError *error;
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
-                                                                           options:0
-                                                                             error:&error];
-    if (!regex) {
-        NSLog(@"error parsing image URL placeholder regex: %@", error);
-        return;
-    }
-    NSArray *placeholderResults = [regex matchesInString:reply
-                                                 options:0
-                                                   range:NSMakeRange(0, [reply length])];
-    for (NSTextCheckingResult *result in placeholderResults) {
-        NSRange rangeOfKey = [result rangeAtIndex:3];
-        if (rangeOfKey.location == NSNotFound) continue;
-        [imageKeys addObject:[reply substringWithRange:rangeOfKey]];
-    }
-    
-    if ([imageKeys count] == 0) {
-        [self completeReply:reply
-withImagePlaceholderResults:placeholderResults
-            replacementURLs:nil];
-        return;
-    }
-    [SVProgressHUD showWithStatus:@"Uploading images…" maskType:SVProgressHUDMaskTypeClear];
-    
-    NSArray *images = [self.images objectsForKeys:imageKeys notFoundMarker:[NSNull null]];
-    [[ImgurHTTPClient sharedClient] uploadImages:images andThen:^(NSError *error, NSArray *urls)
-    {
-        if (!error) {
-            [self completeReply:reply
-    withImagePlaceholderResults:placeholderResults
-                replacementURLs:[NSDictionary dictionaryWithObjects:urls forKeys:imageKeys]];
-            return;
-        }
-        [SVProgressHUD dismiss];
-        NSString *message = [NSString stringWithFormat:@"Uploading images to imgur didn't work: %@",
-                             [error localizedDescription]];
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Image Uploading Failed"
-                                                        message:message
-                                                       delegate:nil
-                                              cancelButtonTitle:@"Fiddlesticks"
-                                              otherButtonTitles:nil];
-        [alert show];
-    }];
-}
-
-- (void)completeReply:(NSString *)reply
-    withImagePlaceholderResults:(NSArray *)placeholderResults
-    replacementURLs:(NSDictionary *)replacementURLs
-{
-    [SVProgressHUD showWithStatus:self.thread ? @"Replying…" : @"Editing…"
-                         maskType:SVProgressHUDMaskTypeClear];
-    
-    if ([placeholderResults count] > 0) {
-        NSMutableString *replacedReply = [reply mutableCopy];
-        NSInteger offset = 0;
-        for (NSTextCheckingResult *result in placeholderResults) {
-            NSRange rangeOfKey = [result rangeAtIndex:3];
-            if (rangeOfKey.location == NSNotFound) return;
-            rangeOfKey.location += offset;
-            NSURL *url = replacementURLs[[reply substringWithRange:rangeOfKey]];
-            if (!url) return;
-            NSUInteger priorLength = [replacedReply length];
-            NSRange rangeOfURL = [result rangeAtIndex:2];
-            rangeOfURL.location += offset;
-            [replacedReply replaceCharactersInRange:rangeOfURL withString:[url absoluteString]];
-            offset += ([replacedReply length] - priorLength);
-        }
-        reply = replacedReply;
-    }
-    
-    if (self.thread) {
-        [self sendReply:reply];
-    } else if (self.post) {
-        [self sendEdit:reply];
-    }
-    [self.replyTextView resignFirstResponder];
-}
-
-- (void)sendReply:(NSString *)reply
-{
-    id op = [[AwfulHTTPClient client] replyToThreadWithID:self.thread.threadID
-                                                     text:reply
-                                                  andThen:^(NSError *error, NSString *postID)
-             {
-                 [SVProgressHUD dismiss];
-                 if (error) {
-                     [[AwfulAppDelegate instance] requestFailed:error];
-                     return;
-                 }
-                 [self.delegate replyViewController:self didReplyToThread:self.thread];
-             }];
-    self.networkOperation = op;
-}
-
-- (void)sendEdit:(NSString *)edit
-{
-    id op = [[AwfulHTTPClient client] editPostWithID:self.post.postID
-                                                text:edit
-                                             andThen:^(NSError *error)
-    {
-        [SVProgressHUD dismiss];
-        if (error) {
-             [[AwfulAppDelegate instance] requestFailed:error];
-            return;
-        }
-        [self.delegate replyViewController:self didEditPost:self.post];
-    }];
-    self.networkOperation = op;
-}
-
-- (void)cancel
-{
-    [SVProgressHUD dismiss];
-    [self.delegate replyViewControllerDidCancel:self];
 }
 
 @end
