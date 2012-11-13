@@ -39,7 +39,7 @@ task :sort_tags do
     path.downcase + path
   }
   File.open(pbxproj, "w") do |out|
-    project.each { |line| out << line << $/ }
+    project.each { |line| out << line }
   end
 end
 
