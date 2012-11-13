@@ -290,13 +290,20 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 
 - (void)updatePageBar
 {
-    [self.pageBar.backForwardControl setEnabled:self.currentPage != 1
+    [self.pageBar.backForwardControl setEnabled:self.currentPage > 1
                               forSegmentAtIndex:0];
-    [self.pageBar.backForwardControl setEnabled:self.currentPage != self.thread.numberOfPagesValue
-                              forSegmentAtIndex:1];
-    [self.pageBar.jumpToPageButton setTitle:[NSString stringWithFormat:@"Page %d of %@",
-                                             self.currentPage, self.thread.numberOfPages]
-                                   forState:UIControlStateNormal];
+    if (self.currentPage > 0 && self.currentPage < self.thread.numberOfPagesValue) {
+        [self.pageBar.backForwardControl setEnabled:YES forSegmentAtIndex:1];
+    } else {
+        [self.pageBar.backForwardControl setEnabled:NO forSegmentAtIndex:1];
+    }
+    if (self.currentPage > 0 && self.thread.numberOfPagesValue > 0) {
+        [self.pageBar.jumpToPageButton setTitle:[NSString stringWithFormat:@"Page %d of %@",
+                                                 self.currentPage, self.thread.numberOfPages]
+                                       forState:UIControlStateNormal];
+    } else {
+        [self.pageBar.jumpToPageButton setTitle:@"" forState:UIControlStateNormal];
+    }
     [self.pageBar.actionsComposeControl setEnabled:self.thread.canReply forSegmentAtIndex:1];
 }
 
@@ -547,6 +554,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                             forControlEvents:UIControlEventValueChanged];
     [self.view addSubview:pageBar];
     self.pageBar = pageBar;
+    [self updatePageBar];
     
     AwfulPostsView *postsView = [[AwfulPostsView alloc] initWithFrame:postsFrame];
     postsView.delegate = self;
