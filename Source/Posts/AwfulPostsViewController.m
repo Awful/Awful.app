@@ -40,7 +40,8 @@
 
 @interface AwfulPostsViewController () <AwfulPostsViewDelegate, UIPopoverControllerDelegate,
                                         AwfulSpecificPageControllerDelegate,
-                                        NSFetchedResultsControllerDelegate>
+                                        NSFetchedResultsControllerDelegate,
+                                        AwfulReplyViewControllerDelegate>
 
 @property (nonatomic) NSFetchedResultsController *fetchedResultsController;
 
@@ -428,10 +429,10 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 - (void)tappedCompose
 {
     [self dismissPopoverAnimated:YES];
-    AwfulReplyViewController *postBox = [AwfulReplyViewController new];
-    postBox.thread = self.thread;
-    postBox.page = self;
-    UINavigationController *nav = [postBox enclosingNavigationController];
+    AwfulReplyViewController *reply = [AwfulReplyViewController new];
+    reply.delegate = self;
+    [reply replyToThread:self.thread withInitialContents:nil];
+    UINavigationController *nav = [reply enclosingNavigationController];
     [self presentViewController:nav animated:YES completion:nil];
 }
 
@@ -457,9 +458,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                      return;
                  }
                  AwfulReplyViewController *reply = [AwfulReplyViewController new];
-                 reply.post = post;
-                 reply.startingText = text;
-                 reply.page = self;
+                 reply.delegate = self;
+                 [reply editPost:post text:text];
                  UINavigationController *nav = [reply enclosingNavigationController];
                  [self presentViewController:nav animated:YES completion:nil];
              }];
@@ -479,9 +479,9 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                      return;
                  }
                  AwfulReplyViewController *reply = [AwfulReplyViewController new];
-                 reply.thread = self.thread;
-                 reply.startingText = [quotedText stringByAppendingString:@"\n\n"];
-                 reply.page = self;
+                 reply.delegate = self;
+                 [reply replyToThread:self.thread
+                  withInitialContents:[quotedText stringByAppendingString:@"\n\n"]];
                  UINavigationController *nav = [reply enclosingNavigationController];
                  [self presentViewController:nav animated:YES completion:nil];
              }];
@@ -818,6 +818,30 @@ static void * KVOContext = @"AwfulPostsView KVO";
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popover
 {
     if (popover == self.popover) self.popover = nil;
+}
+
+#pragma mark - AwfulReplyViewControllerDelegate
+
+- (void)replyViewController:(AwfulReplyViewController *)replyViewController
+           didReplyToThread:(AwfulThread *)thread
+{
+    [self dismissViewControllerAnimated:YES completion:^{
+        [self loadPage:AwfulPageNextUnread];
+    }];
+}
+
+- (void)replyViewController:(AwfulReplyViewController *)replyViewController
+                didEditPost:(AwfulPost *)post
+{
+    [self dismissViewControllerAnimated:YES completion:^{
+        // TODO jump to post
+        [self loadPage:post.threadPageValue];
+    }];
+}
+
+- (void)replyViewControllerDidCancel:(AwfulReplyViewController *)replyViewController
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

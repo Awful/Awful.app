@@ -22,7 +22,8 @@ typedef enum {
     FormattingSubmenu
 } Menu;
 
-@interface AwfulReplyViewController () <UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPopoverControllerDelegate>
+@interface AwfulReplyViewController () <UIAlertViewDelegate, UIImagePickerControllerDelegate,
+                                        UINavigationControllerDelegate, UIPopoverControllerDelegate>
 
 @property (strong, nonatomic) UIBarButtonItem *sendButton;
 
@@ -42,6 +43,10 @@ typedef enum {
 
 @property (nonatomic) NSMutableDictionary *images;
 
+@property (nonatomic) AwfulThread *thread;
+
+@property (nonatomic) AwfulPost *post;
+
 @end
 
 @implementation AwfulReplyViewController
@@ -55,11 +60,6 @@ typedef enum {
     return self;
 }
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    return [self init];
-}
-
 - (void)dealloc
 {
     if (_observerToken) [[NSNotificationCenter defaultCenter] removeObserver:_observerToken];
@@ -69,13 +69,6 @@ typedef enum {
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIKeyboardWillHideNotification
                                                   object:nil];
-}
-
-- (void)setPage:(AwfulPostsViewController *)page
-{
-    _page = page;
-    self.titleLabel.text = page.thread.title;
-    self.images = [NSMutableDictionary new];
 }
 
 - (UILabel *)titleLabel
@@ -104,11 +97,34 @@ typedef enum {
     _cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel"
                                                      style:UIBarButtonItemStyleBordered
                                                     target:self
-                                                    action:@selector(hideReply)];
+                                                    action:@selector(cancel)];
     return _cancelButton;
 }
 
+- (void)editPost:(AwfulPost *)post text:(NSString *)text
+{
+    self.post = post;
+    self.thread = nil;
+    self.replyTextView.text = text;
+    self.titleLabel.text = post.thread.title;
+    self.sendButton.title = @"Edit";
+}
+
+- (void)replyToThread:(AwfulThread *)thread withInitialContents:(NSString *)contents
+{
+    self.thread = thread;
+    self.post = nil;
+    self.replyTextView.text = contents;
+    self.titleLabel.text = thread.title;
+    self.sendButton.title = @"Reply";
+}
+
 #pragma mark - UIViewController
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    return [self init];
+}
 
 - (void)loadView
 {
@@ -130,13 +146,11 @@ typedef enum {
                                                object:nil];
     self.navigationItem.rightBarButtonItem = self.sendButton;
     self.navigationItem.leftBarButtonItem = self.cancelButton;
-    self.replyTextView.text = self.startingText;
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    self.sendButton.title = self.post ? @"Save" : @"Reply";
     [self configureTopLevelMenuItems];
     [self.replyTextView becomeFirstResponder];
 }
@@ -202,11 +216,14 @@ typedef enum {
     // Image item and submenu
     if (action == @selector(insertImage:)) {
         if (self.currentMenu != TopLevelMenu) return NO;
-        return [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]
-            || [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
+        return [UIImagePickerController isSourceTypeAvailable:
+                UIImagePickerControllerSourceTypePhotoLibrary] ||
+               [UIImagePickerController isSourceTypeAvailable:
+                UIImagePickerControllerSourceTypeCamera];
     }
     
-    if (action == @selector(insertImageFromCamera:) || action == @selector(insertImageFromLibrary:)) {
+    if (action == @selector(insertImageFromCamera:) ||
+        action == @selector(insertImageFromLibrary:)) {
         return self.currentMenu == ImageSourceSubmenu;
     }
     
@@ -230,12 +247,14 @@ typedef enum {
 - (void)linkifySelection:(id)sender
 {
     NSError *error;
-    NSDataDetector *linkDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink error:&error];
+    NSDataDetector *linkDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink
+                                                                   error:&error];
     if (!linkDetector) {
         NSLog(@"error creating link data detector: %@", linkDetector);
         return;
     }
-    NSString *selection = [self.replyTextView.text substringWithRange:self.replyTextView.selectedRange];
+    NSRange selectedRange = self.replyTextView.selectedRange;
+    NSString *selection = [self.replyTextView.text substringWithRange:selectedRange];
     NSRange everything = NSMakeRange(0, [selection length]);
     NSArray *matches = [linkDetector matchesInString:selection
                                              options:0
@@ -249,8 +268,10 @@ typedef enum {
 
 - (void)insertImage:(id)sender
 {
-    BOOL camera = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
-    BOOL library = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary];
+    BOOL camera = [UIImagePickerController isSourceTypeAvailable:
+                   UIImagePickerControllerSourceTypeCamera];
+    BOOL library = [UIImagePickerController isSourceTypeAvailable:
+                    UIImagePickerControllerSourceTypePhotoLibrary];
     if (!camera && !library) return;
     if (camera && !library) {
         [self insertImageFromCamera:nil];
@@ -298,7 +319,8 @@ typedef enum {
 
 - (void)insertImageFromCamera:(id)sender
 {
-    UIImagePickerController *picker = ImagePickerForSourceType(UIImagePickerControllerSourceTypeCamera);
+    UIImagePickerController *picker;
+    picker = ImagePickerForSourceType(UIImagePickerControllerSourceTypeCamera);
     if (!picker) return;
     picker.delegate = self;
     [self presentModalViewController:picker animated:YES];
@@ -306,7 +328,8 @@ typedef enum {
 
 - (void)insertImageFromLibrary:(id)sender
 {
-    UIImagePickerController *picker = ImagePickerForSourceType(UIImagePickerControllerSourceTypePhotoLibrary);
+    UIImagePickerController *picker;
+    picker = ImagePickerForSourceType(UIImagePickerControllerSourceTypePhotoLibrary);
     if (!picker) return;
     picker.delegate = self;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -411,8 +434,9 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     if ([info[UIImagePickerControllerMediaType] isEqual:(NSString *)kUTTypeImage]) {
         UIImage *image = info[UIImagePickerControllerEditedImage];
         if (!image) image = info[UIImagePickerControllerOriginalImage];
+        NSNumberFormatterStyle numberStyle = NSNumberFormatterSpellOutStyle;
         NSString *key = [NSNumberFormatter localizedStringFromNumber:@([self.images count] + 1)
-                                                         numberStyle:NSNumberFormatterSpellOutStyle];
+                                                         numberStyle:numberStyle];
         // TODO when we implement reloading state after termination, save images to Caches folder.
         self.images[key] = image;
         
@@ -598,30 +622,12 @@ withImagePlaceholderResults:placeholderResults
                                                      text:reply
                                                   andThen:^(NSError *error, NSString *postID)
              {
+                 [SVProgressHUD dismiss];
                  if (error) {
-                     [SVProgressHUD dismiss];
                      [[AwfulAppDelegate instance] requestFailed:error];
                      return;
                  }
-                 // If the new post is the thread's last post, we don't get its ID.
-                 // Which is kind of unhelpful if someone posts between now and when
-                 // the refresh comes through.
-                 if (!postID) {
-                     [SVProgressHUD dismiss];
-                     // TODO load next page if current page is full!
-                     [self.page loadPage:self.page.currentPage];
-                     [self.presentingViewController dismissModalViewControllerAnimated:YES];
-                     return;
-                 }
-                 [[AwfulHTTPClient client] locatePostWithID:postID
-                                                    andThen:^(NSError *error, NSString *threadID, NSInteger page)
-                  {
-                      [SVProgressHUD dismiss];
-                      if ([self.page.thread.threadID isEqualToString:threadID]) {
-                          [self.page loadPage:AwfulPageNextUnread];
-                      }
-                      [self.presentingViewController dismissModalViewControllerAnimated:YES];
-                  }];
+                 [self.delegate replyViewController:self didReplyToThread:self.thread];
              }];
     self.networkOperation = op;
 }
@@ -632,28 +638,20 @@ withImagePlaceholderResults:placeholderResults
                                                 text:edit
                                              andThen:^(NSError *error)
     {
+        [SVProgressHUD dismiss];
         if (error) {
-            [SVProgressHUD dismiss];
              [[AwfulAppDelegate instance] requestFailed:error];
-        } else {
-            [[AwfulHTTPClient client] locatePostWithID:self.post.postID
-                                               andThen:^(NSError *error, NSString *threadID, NSInteger page)
-             {
-                 [SVProgressHUD dismiss];
-                 if ([self.page.thread.threadID isEqualToString:threadID]) {
-                     [self.page loadPage:page];
-                 }
-                 [self.presentingViewController dismissModalViewControllerAnimated:YES];
-             }];
+            return;
         }
+        [self.delegate replyViewController:self didEditPost:self.post];
     }];
     self.networkOperation = op;
 }
 
-- (IBAction)hideReply
+- (void)cancel
 {
     [SVProgressHUD dismiss];
-    [self.presentingViewController dismissModalViewControllerAnimated:YES];
+    [self.delegate replyViewControllerDidCancel:self];
 }
 
 @end

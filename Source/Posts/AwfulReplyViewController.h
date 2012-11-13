@@ -7,16 +7,30 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AwfulModels.h"
 
-@class AwfulPostsViewController;
-@class AwfulPost;
-@class AwfulThread;
+@protocol AwfulReplyViewControllerDelegate;
+
 
 @interface AwfulReplyViewController : UIViewController
 
-@property (strong, nonatomic) AwfulThread *thread;
-@property (strong, nonatomic) AwfulPost *post;
-@property (strong, nonatomic) NSString *startingText;
-@property (weak, nonatomic) AwfulPostsViewController *page;
+@property (weak, nonatomic) id <AwfulReplyViewControllerDelegate> delegate;
+
+- (void)editPost:(AwfulPost *)post text:(NSString *)text;
+
+- (void)replyToThread:(AwfulThread *)thread withInitialContents:(NSString *)contents;
+
+@end
+
+
+@protocol AwfulReplyViewControllerDelegate <NSObject>
+
+- (void)replyViewController:(AwfulReplyViewController *)replyViewController
+                didEditPost:(AwfulPost *)post;
+
+- (void)replyViewController:(AwfulReplyViewController *)replyViewController
+           didReplyToThread:(AwfulThread *)thread;
+
+- (void)replyViewControllerDidCancel:(AwfulReplyViewController *)replyViewController;
 
 @end
