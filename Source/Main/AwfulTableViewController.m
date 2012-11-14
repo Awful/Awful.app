@@ -10,6 +10,12 @@
 #import "AwfulSettings.h"
 #import "SVPullToRefresh.h"
 
+@interface AwfulTableViewController ()
+
+@property (nonatomic, getter=isObserving) BOOL observing;
+
+@end
+
 @implementation AwfulTableViewController
 
 - (void)viewDidLoad
@@ -32,14 +38,51 @@
             [blockSelf nextPage];
         }];
     }
-    if ([self refreshOnAppear]) [self.tableView.pullToRefreshView triggerRefresh];
+    [self refreshIfNeededOnAppear];
+    [self startObserving];
+}
+
+- (void)becameActive
+{
+    [self refreshIfNeededOnAppear];
+}
+
+- (void)refreshIfNeededOnAppear
+{
+    if (![self refreshOnAppear]) return;
+    [self.tableView.pullToRefreshView triggerRefresh];
+}
+
+- (void)startObserving
+{
+    if (self.observing) return;
+    self.observing = YES;
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(becameActive)
+                                                 name:UIApplicationDidBecomeActiveNotification
+                                               object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [self.networkOperation cancel];
     self.refreshing = NO;
+    [self stopObserving];
     [super viewWillDisappear:animated];
+}
+
+- (void)dealloc
+{
+    [self stopObserving];
+}
+
+- (void)stopObserving
+{
+    if (!self.observing) return;
+    self.observing = NO;
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIApplicationDidBecomeActiveNotification
+                                                  object:nil];
 }
 
 - (void)refresh
