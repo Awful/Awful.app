@@ -23,17 +23,17 @@
 #import "AFNetworkActivityIndicatorManager.h"
 
 #import "AFHTTPRequestOperation.h"
-#import <libkern/OSAtomic.h>
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
-static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
+static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.17;
 
 @interface AFNetworkActivityIndicatorManager ()
-@property (readwrite, nonatomic, assign) NSInteger activityCount;
-@property (readwrite, nonatomic, retain) NSTimer *activityIndicatorVisibilityTimer;
+@property (readwrite, assign) NSInteger activityCount;
+@property (readwrite, nonatomic, strong) NSTimer *activityIndicatorVisibilityTimer;
 @property (readonly, getter = isNetworkActivityIndicatorVisible) BOOL networkActivityIndicatorVisible;
 
 - (void)updateNetworkActivityIndicatorVisibility;
+- (void)updateNetworkActivityIndicatorVisibilityDelayed;
 @end
 
 @implementation AFNetworkActivityIndicatorManager
@@ -52,6 +52,10 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
     return _sharedManager;
 }
 
++ (NSSet *)keyPathsForValuesAffectingIsNetworkActivityIndicatorVisible {
+    return [NSSet setWithObject:@"activityCount"];
+}
+
 - (id)init {
     self = [super init];
     if (!self) {
@@ -68,9 +72,7 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     [_activityIndicatorVisibilityTimer invalidate];
-    [_activityIndicatorVisibilityTimer release]; _activityIndicatorVisibilityTimer = nil;
     
-    [super dealloc];
 }
 
 - (void)updateNetworkActivityIndicatorVisibilityDelayed {
@@ -79,9 +81,9 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
         if (![self isNetworkActivityIndicatorVisible]) {
             [self.activityIndicatorVisibilityTimer invalidate];
             self.activityIndicatorVisibilityTimer = [NSTimer timerWithTimeInterval:kAFNetworkActivityIndicatorInvisibilityDelay target:self selector:@selector(updateNetworkActivityIndicatorVisibility) userInfo:nil repeats:NO];
-            [[NSRunLoop currentRunLoop] addTimer:self.activityIndicatorVisibilityTimer forMode:NSRunLoopCommonModes];
+            [[NSRunLoop mainRunLoop] addTimer:self.activityIndicatorVisibilityTimer forMode:NSRunLoopCommonModes];
         } else {
-            [self updateNetworkActivityIndicatorVisibility];
+            [self performSelectorOnMainThread:@selector(updateNetworkActivityIndicatorVisibility) withObject:nil waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
         }
     }
 }
@@ -91,37 +93,37 @@ static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.25;
 }
 
 - (void)updateNetworkActivityIndicatorVisibility {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:[self isNetworkActivityIndicatorVisible]];
-    });
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:[self isNetworkActivityIndicatorVisible]];
 }
 
 // Not exposed, but used if activityCount is set via KVC.
+- (NSInteger)activityCount {
+	return _activityCount;
+}
+
 - (void)setActivityCount:(NSInteger)activityCount {
-    __sync_swap(&_activityCount, activityCount);
+	@synchronized(self) {
+		_activityCount = activityCount;
+	}
     [self updateNetworkActivityIndicatorVisibilityDelayed];
 }
 
 - (void)incrementActivityCount {
     [self willChangeValueForKey:@"activityCount"];
-    OSAtomicIncrement32((int32_t*)&_activityCount);
+	@synchronized(self) {
+		_activityCount++;
+	}
     [self didChangeValueForKey:@"activityCount"];
     [self updateNetworkActivityIndicatorVisibilityDelayed];
 }
 
 - (void)decrementActivityCount {
     [self willChangeValueForKey:@"activityCount"];
-    bool success;
-    do {
-        int32_t currentCount = _activityCount;
-        success = OSAtomicCompareAndSwap32(currentCount, MIN(currentCount - 1, currentCount), &_activityCount);
-    } while(!success);
+	@synchronized(self) {
+		_activityCount = MAX(_activityCount - 1, 0);
+	}
     [self didChangeValueForKey:@"activityCount"];
     [self updateNetworkActivityIndicatorVisibilityDelayed];
-}
-
-+ (NSSet *)keyPathsForValuesAffectingIsNetworkActivityIndicatorVisible {
-    return [NSSet setWithObject:@"activityCount"];
 }
 
 @end
