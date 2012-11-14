@@ -498,6 +498,7 @@
 		8C5159E1163DB796000114F6 /* AICA-TAG-race.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C5159D7163DB796000114F6 /* AICA-TAG-race.png */; };
 		8C5159E2163DB796000114F6 /* RP-20a6zc0.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C5159D8163DB796000114F6 /* RP-20a6zc0.png */; };
 		8C5159E3163DB796000114F6 /* fyad-zounds.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C5159D9163DB796000114F6 /* fyad-zounds.png */; };
+		8C6F084A1653498F00B43251 /* byob-anti.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C6F08491653498F00B43251 /* byob-anti.png */; };
 		8C9B02C51623630F00676B98 /* downArrowDark.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B02BF1623630F00676B98 /* downArrowDark.png */; };
 		8C9B0357162368E800676B98 /* post-actions-dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B0355162368E800676B98 /* post-actions-dark.png */; };
 		8C9B0358162368E800676B98 /* post-actions-dark-read.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B0356162368E800676B98 /* post-actions-dark-read.png */; };
@@ -1043,6 +1044,7 @@
 		8C5159D7163DB796000114F6 /* AICA-TAG-race.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AICA-TAG-race.png"; sourceTree = "<group>"; };
 		8C5159D8163DB796000114F6 /* RP-20a6zc0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "RP-20a6zc0.png"; sourceTree = "<group>"; };
 		8C5159D9163DB796000114F6 /* fyad-zounds.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-zounds.png"; sourceTree = "<group>"; };
+		8C6F08491653498F00B43251 /* byob-anti.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "byob-anti.png"; sourceTree = "<group>"; };
 		8C9B02BF1623630F00676B98 /* downArrowDark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = downArrowDark.png; path = Resources/images/downArrowDark.png; sourceTree = SOURCE_ROOT; };
 		8C9B0355162368E800676B98 /* post-actions-dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "post-actions-dark.png"; sourceTree = "<group>"; };
 		8C9B0356162368E800676B98 /* post-actions-dark-read.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "post-actions-dark-read.png"; sourceTree = "<group>"; };
@@ -2077,6 +2079,7 @@
 				8CF02DCA16484CCE0059BC56 /* bss-shipping.png */,
 				8CF02DA716484CCE0059BC56 /* bss-swag.png */,
 				8CF02DA816484CCE0059BC56 /* bss-webcomic.png */,
+				8C6F08491653498F00B43251 /* byob-anti.png */,
 				8CF02DA916484CCE0059BC56 /* byob-cheer.png */,
 				1CAEDB1516377925001F5F04 /* byob-chill.png */,
 				8CF02DB816484CCE0059BC56 /* byob-dent.png */,
@@ -3231,6 +3234,7 @@
 				8C3CCD65165344C200C28342 /* fyad-smallthread.png in Resources */,
 				8C3CCD67165344D500C28342 /* hell-tim.png in Resources */,
 				8C3CCD69165344E300C28342 /* lf-whites.png in Resources */,
+				8C6F084A1653498F00B43251 /* byob-anti.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
