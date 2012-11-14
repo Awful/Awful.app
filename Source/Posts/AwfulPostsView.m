@@ -105,10 +105,19 @@ static NSString * JSONize(id obj)
 
 - (void)showHiddenSeenPosts
 {
+    UIScrollView *scrollView = self.webView.scrollView;
+    BOOL justScrollToBottom = scrollView.contentSize.height <= scrollView.frame.size.height;
+    
     float diff = [[self evalJavaScript:@"Awful.showAllPosts()"] floatValue];
-    CGPoint offset = self.webView.scrollView.contentOffset;
-    offset.y += diff;
-    self.webView.scrollView.contentOffset = offset;
+    
+    if (justScrollToBottom) {
+        [scrollView scrollRectToVisible:CGRectMake(0, scrollView.contentSize.height - 1, 1, 1)
+                               animated:NO];
+    } else {
+        CGPoint offset = scrollView.contentOffset;
+        offset.y += diff;
+        scrollView.contentOffset = offset;
+    }
     
     if (diff > 0) {
         if ([self.delegate respondsToSelector:@selector(postsView:numberOfHiddenSeenPosts:)]) {
