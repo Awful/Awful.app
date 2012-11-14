@@ -760,7 +760,7 @@ $(function(){
   
   $('#posts').on('click', 'article > header > button', showPostActions)
   
-  $('#posts').on('longTap', 'article > section > img', previewImage)
+  $('#posts').on('longTap', 'article > section img', previewImage)
 })
 
 function showPostActions(e) {
