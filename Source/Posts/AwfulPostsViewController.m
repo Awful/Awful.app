@@ -11,6 +11,7 @@
 #import "AwfulAppDelegate.h"
 #import "AwfulDataStack.h"
 #import "AwfulHTTPClient.h"
+#import "AwfulImagePreviewViewController.h"
 #import "AwfulModels.h"
 #import "AwfulPageBar.h"
 #import "AwfulPostsView.h"
@@ -19,8 +20,6 @@
 #import "AwfulSettings.h"
 #import "AwfulSpecificPageController.h"
 #import "AwfulThreadTitleLabel.h"
-#import "MWPhoto.h"
-#import "MWPhotoBrowser.h"
 #import "NSFileManager+UserDirectories.h"
 #import "NSManagedObject+Awful.h"
 #import <QuartzCore/QuartzCore.h>
@@ -735,9 +734,11 @@ static void * KVOContext = @"AwfulPostsView KVO";
 
 - (void)previewImageAtURLString:(NSString *)urlString
 {
-    NSArray *photos = @[ [MWPhoto photoWithURL:[NSURL URLWithString:urlString]] ];
-    MWPhotoBrowser *browser = [[MWPhotoBrowser alloc] initWithPhotos:photos];
-    UINavigationController *nav = [browser enclosingNavigationController];
+    AwfulImagePreviewViewController *preview = [[AwfulImagePreviewViewController alloc]
+                                                initWithURL:[NSURL URLWithString:urlString]];
+    preview.title = self.thread.title;
+    UINavigationController *nav = [preview enclosingNavigationController];
+    nav.navigationBar.translucent = YES;
     [self presentViewController:nav animated:YES completion:nil];
 }
 
