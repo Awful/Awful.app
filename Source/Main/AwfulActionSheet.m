@@ -31,6 +31,7 @@
 
 - (void)commonInit
 {
+    self.delegate = self;
     self.actionSheetStyle = UIActionSheetStyleBlackOpaque;
     _blocks = [NSMutableDictionary new];
 }
@@ -61,8 +62,8 @@
 // designated initializer to always get called.
 - (id)init
 {
-    self = [super init];
-    if (self) [self commonInit];
+    if (!(self = [super init])) return nil;
+    [self commonInit];
     return self;
 }
 
@@ -74,9 +75,7 @@
     destructiveButtonTitle:(NSString *)destructiveButtonTitle
     otherButtonTitles:(NSString *)otherButtonTitles, ...
 {
-    self = [self initWithTitle:title];
-    self.delegate = delegate;
-    return self;
+    return [self initWithTitle:title];
 }
 
 - (id <UIActionSheetDelegate>)delegate
