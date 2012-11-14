@@ -14,6 +14,7 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulLoginController.h"
 #import "AwfulModels.h"
+#import "AwfulNavigationBar.h"
 #import "AwfulSettings.h"
 #import "AwfulSettingsViewController.h"
 #import "AwfulSplitViewController.h"
@@ -97,7 +98,7 @@ static AwfulAppDelegate *_instance;
     // unknown reason on non-retina devices and in landscape on the phone. I'm out of ideas.
     // Simply setting UIBarMetricsDefault and only including navbar@2x.png works great on retina
     // and non-retina devices alike, so that's where I'm leaving it.
-    id navBar = [UINavigationBar appearance];
+    AwfulNavigationBar *navBar = [AwfulNavigationBar appearance];
     UIImage *barImage = [UIImage imageNamed:@"navbar.png"];
     [navBar setBackgroundImage:barImage forBarMetrics:UIBarMetricsDefault];
     [navBar setTitleTextAttributes:@{
@@ -105,7 +106,8 @@ static AwfulAppDelegate *_instance;
         UITextAttributeTextShadowColor : [UIColor colorWithWhite:0 alpha:0.5]
     }];
     
-    id navBarItem = [UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil];
+    UIBarButtonItem *navBarItem = [UIBarButtonItem appearanceWhenContainedIn:
+                                   [AwfulNavigationBar class], nil];
     UIImage *navBarButton = [UIImage imageNamed:@"navbar-button.png"];
     [navBarItem setBackgroundImage:navBarButton
                           forState:UIControlStateNormal
@@ -125,23 +127,6 @@ static AwfulAppDelegate *_instance;
     [navBarItem setBackButtonBackgroundImage:landscapeBackButton
                                     forState:UIControlStateNormal
                                   barMetrics:UIBarMetricsLandscapePhone];
-    
-    // On iPad, image pickers appear in popovers. And they look awful with the navigation bar and
-    // bar item changes above. The obvious answer is to clear the customizations using
-    // +appearanceWhenContainedIn:[UIPopoverController class], except the top-level split view
-    // controller uses a popover to show the master view in portrait, so now it gets unstyled.
-    // No problem, right? Just make a UIPopoverController subclass, clear its custom appearance,
-    // and use that for the image picker popover. Except that still clears the appearance in the
-    // split view controller's popover, even though it's not an instance of my subclass.
-    // Not sure why.
-    //
-    // This works for now, though if we use popovers for other things we'll need to style them too.
-    // (We'll use the default look for the picker on the phone too, it better matches the reply view.)
-    id pickerNavBar = [UINavigationBar appearanceWhenContainedIn:[UIImagePickerController class], nil];
-    [pickerNavBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-    [pickerNavBar setBackgroundImage:nil forBarMetrics:UIBarMetricsLandscapePhone];
-    id pickerNavBarItem = [UIBarButtonItem appearanceWhenContainedIn:[UIImagePickerController class], nil];
-    [pickerNavBarItem setTintColor:nil];
 }
 
 - (UITabBarController *)tabBarController

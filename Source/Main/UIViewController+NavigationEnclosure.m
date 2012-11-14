@@ -7,13 +7,18 @@
 //
 
 #import "UIViewController+NavigationEnclosure.h"
+#import "AwfulNavigationBar.h"
 
 @implementation UIViewController (NavigationEnclosure)
 
 - (UINavigationController *)enclosingNavigationController
 {
     if (self.navigationController) return self.navigationController;
-    return [[UINavigationController alloc] initWithRootViewController:self];
+    UINavigationController *nav = [[UINavigationController alloc]
+                                   initWithNavigationBarClass:[AwfulNavigationBar class]
+                                   toolbarClass:nil];
+    nav.viewControllers = @[ self ];
+    return nav;
 }
 
 @end
