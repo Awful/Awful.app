@@ -20,6 +20,8 @@
 
 @interface AwfulForumsListController () <AwfulForumCellDelegate>
 
+@property (nonatomic) NSDate *lastRefresh;
+
 @end
 
 
@@ -56,6 +58,48 @@
     [self.navigationController pushViewController:threadList animated:YES];
 }
 
+- (NSDate *)lastRefresh
+{
+    return [[NSUserDefaults standardUserDefaults] objectForKey:kLastRefreshDate];
+}
+
+- (void)setLastRefresh:(NSDate *)lastRefresh
+{
+    [[NSUserDefaults standardUserDefaults] setObject:lastRefresh forKey:kLastRefreshDate];
+}
+
+NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
+
+#pragma mark - AwfulTableViewController
+
+- (void)refresh
+{
+    [super refresh];
+    [self.networkOperation cancel];
+    id op = [[AwfulHTTPClient client] listForumsAndThen:^(NSError *error, NSArray *forums)
+             {
+                 if (error) {
+                     [[AwfulAppDelegate instance] requestFailed:error];
+                 } else {
+                     self.lastRefresh = [NSDate date];
+                 }
+                 self.refreshing = NO;
+             }];
+    self.networkOperation = op;
+}
+
+- (BOOL)canPullToRefresh
+{
+    return NO;
+}
+
+- (BOOL)refreshOnAppear
+{
+    if (!IsLoggedIn()) return NO;
+    if (!self.lastRefresh) return YES;
+    return [[NSDate date] timeIntervalSinceDate:self.lastRefresh] > 60 * 60 * 20;
+}
+
 #pragma mark - UIViewController
 
 - (void)viewDidLoad
@@ -77,20 +121,6 @@
     if (IsLoggedIn() && [self.fetchedResultsController.sections count] == 0) {
        [self refresh];
     }
-}
-
-- (void)refresh
-{
-    [super refresh];
-    [self.networkOperation cancel];
-    id op = [[AwfulHTTPClient client] listForumsAndThen:^(NSError *error, NSArray *forums)
-    {
-        if (error) {
-            [[AwfulAppDelegate instance] requestFailed:error];
-        }
-        self.refreshing = NO;
-    }];
-    self.networkOperation = op;
 }
 
 #pragma mark - Table view data source
