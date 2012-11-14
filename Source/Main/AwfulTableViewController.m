@@ -50,7 +50,11 @@
 - (void)refreshIfNeededOnAppear
 {
     if (![self refreshOnAppear]) return;
-    [self.tableView.pullToRefreshView triggerRefresh];
+    if ([self canPullToRefresh]) {
+        [self.tableView.pullToRefreshView triggerRefresh];
+    } else {
+        [self refresh];
+    }
 }
 
 - (void)startObserving
