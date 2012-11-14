@@ -57,7 +57,9 @@ extern const struct AwfulPostFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSString* authorAvatarURL;
+
 
 
 //- (BOOL)validateAuthorAvatarURL:(id*)value_ error:(NSError**)error_;
@@ -65,7 +67,9 @@ extern const struct AwfulPostFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSString* authorCustomTitleHTML;
+
 
 
 //- (BOOL)validateAuthorCustomTitleHTML:(id*)value_ error:(NSError**)error_;
@@ -73,7 +77,9 @@ extern const struct AwfulPostFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSNumber* authorIsAModerator;
+
 
 
 @property BOOL authorIsAModeratorValue;
@@ -85,7 +91,9 @@ extern const struct AwfulPostFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSNumber* authorIsAnAdministrator;
+
 
 
 @property BOOL authorIsAnAdministratorValue;
@@ -97,7 +105,9 @@ extern const struct AwfulPostFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSNumber* authorIsOriginalPoster;
+
 
 
 @property BOOL authorIsOriginalPosterValue;
@@ -109,7 +119,9 @@ extern const struct AwfulPostFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSString* authorName;
+
 
 
 //- (BOOL)validateAuthorName:(id*)value_ error:(NSError**)error_;
@@ -117,7 +129,9 @@ extern const struct AwfulPostFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSDate* authorRegDate;
+
 
 
 //- (BOOL)validateAuthorRegDate:(id*)value_ error:(NSError**)error_;
@@ -125,7 +139,9 @@ extern const struct AwfulPostFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSNumber* beenSeen;
+
 
 
 @property BOOL beenSeenValue;
@@ -137,7 +153,9 @@ extern const struct AwfulPostFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSNumber* editable;
+
 
 
 @property BOOL editableValue;
@@ -149,7 +167,9 @@ extern const struct AwfulPostFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSString* innerHTML;
+
 
 
 //- (BOOL)validateInnerHTML:(id*)value_ error:(NSError**)error_;
@@ -157,7 +177,9 @@ extern const struct AwfulPostFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSDate* postDate;
+
 
 
 //- (BOOL)validatePostDate:(id*)value_ error:(NSError**)error_;
@@ -165,7 +187,9 @@ extern const struct AwfulPostFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSString* postID;
+
 
 
 //- (BOOL)validatePostID:(id*)value_ error:(NSError**)error_;
@@ -173,7 +197,9 @@ extern const struct AwfulPostFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSNumber* threadIndex;
+
 
 
 @property int32_t threadIndexValue;
@@ -185,7 +211,9 @@ extern const struct AwfulPostFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSNumber* threadPage;
+
 
 
 @property int32_t threadPageValue;
@@ -198,7 +226,7 @@ extern const struct AwfulPostFetchedProperties {
 
 
 
-@property (nonatomic, strong) AwfulThread* thread;
+@property (nonatomic, strong) AwfulThread *thread;
 
 //- (BOOL)validateThread:(id*)value_ error:(NSError**)error_;
 

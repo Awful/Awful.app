@@ -46,24 +46,28 @@ const struct AwfulForumFetchedProperties AwfulForumFetchedProperties = {
 	return (AwfulForumID*)[super objectID];
 }
 
-+ (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
++ (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 	
 	if ([key isEqualToString:@"expandedValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"expanded"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
 	}
 	if ([key isEqualToString:@"favoriteIndexValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"favoriteIndex"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
 	}
 	if ([key isEqualToString:@"indexValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"index"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
 	}
 	if ([key isEqualToString:@"isFavoriteValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"isFavorite"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
 	}
 
 	return keyPaths;
