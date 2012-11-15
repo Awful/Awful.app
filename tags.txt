@@ -151,7 +151,7 @@ fyad-moof.png
 fyad-mystery.png
 fyad-nilbog.png
 fyad-otherforums.png
-fyad-parotty.png
+fyad-parroty.png
 fyad-puns.png
 FYAD-redants.png
 fyad-robocop.png

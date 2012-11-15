@@ -151,7 +151,7 @@
 		1CAEDA5816376E56001F5F04 /* fyad-imgay.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CAED9E816375FB8001F5F04 /* fyad-imgay.png */; };
 		1CAEDA5916376E56001F5F04 /* fyad-lovecum.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CAED9E916375FB8001F5F04 /* fyad-lovecum.png */; };
 		1CAEDA5A16376E56001F5F04 /* fyad-nilbog.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD52C015B783FC00E5893B /* fyad-nilbog.png */; };
-		1CAEDA5B16376E56001F5F04 /* fyad-parotty.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CAED9EA16375FB8001F5F04 /* fyad-parotty.png */; };
+		1CAEDA5B16376E56001F5F04 /* fyad-parroty.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CAED9EA16375FB8001F5F04 /* fyad-parroty.png */; };
 		1CAEDA5C16376E56001F5F04 /* fyad-socks.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CAED9EB16375FB8001F5F04 /* fyad-socks.png */; };
 		1CAEDA5D16376E56001F5F04 /* fyad-tim.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD52C115B783FC00E5893B /* fyad-tim.png */; };
 		1CAEDA5E16376E56001F5F04 /* games-360.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD52C215B783FC00E5893B /* games-360.png */; };
@@ -829,7 +829,7 @@
 		1CAED9E716375FB8001F5F04 /* fyad-framed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-framed.png"; sourceTree = "<group>"; };
 		1CAED9E816375FB8001F5F04 /* fyad-imgay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-imgay.png"; sourceTree = "<group>"; };
 		1CAED9E916375FB8001F5F04 /* fyad-lovecum.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-lovecum.png"; sourceTree = "<group>"; };
-		1CAED9EA16375FB8001F5F04 /* fyad-parotty.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-parotty.png"; sourceTree = "<group>"; };
+		1CAED9EA16375FB8001F5F04 /* fyad-parroty.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-parroty.png"; sourceTree = "<group>"; };
 		1CAED9EB16375FB8001F5F04 /* fyad-socks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-socks.png"; sourceTree = "<group>"; };
 		1CAED9F316375FC8001F5F04 /* fyad-atheist.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-atheist.png"; sourceTree = "<group>"; };
 		1CAED9F516375FE7001F5F04 /* dd-GOP.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dd-GOP.png"; sourceTree = "<group>"; };
@@ -2158,7 +2158,7 @@
 				8CAB2831164B4FB0009BC24F /* fyad-mystery.png */,
 				8CCD52C015B783FC00E5893B /* fyad-nilbog.png */,
 				8CF95C741653276000060F19 /* fyad-otherforums.png */,
-				1CAED9EA16375FB8001F5F04 /* fyad-parotty.png */,
+				1CAED9EA16375FB8001F5F04 /* fyad-parroty.png */,
 				8CAB2830164B4FB0009BC24F /* fyad-puns.png */,
 				8C3CCD60165344AC00C28342 /* FYAD-redants.png */,
 				1CAEDB3116377986001F5F04 /* fyad-robocop.png */,
@@ -2764,7 +2764,7 @@
 				1CAEDA5816376E56001F5F04 /* fyad-imgay.png in Resources */,
 				1CAEDA5916376E56001F5F04 /* fyad-lovecum.png in Resources */,
 				1CAEDA5A16376E56001F5F04 /* fyad-nilbog.png in Resources */,
-				1CAEDA5B16376E56001F5F04 /* fyad-parotty.png in Resources */,
+				1CAEDA5B16376E56001F5F04 /* fyad-parroty.png in Resources */,
 				1CAEDA5C16376E56001F5F04 /* fyad-socks.png in Resources */,
 				1CAEDA5D16376E56001F5F04 /* fyad-tim.png in Resources */,
 				1CAEDA5E16376E56001F5F04 /* games-360.png in Resources */,
