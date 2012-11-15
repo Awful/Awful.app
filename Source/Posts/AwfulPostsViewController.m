@@ -197,7 +197,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         if (page > 0) {
             self.currentPage = page;
             [self.postsView reloadData];
-            self.postsView.scrollView.contentOffset = CGPointZero;
+            [self.postsView.scrollView setContentOffset:CGPointZero animated:YES];
         } else {
             [self.postsView reloadAdvertisementHTML];
         }
