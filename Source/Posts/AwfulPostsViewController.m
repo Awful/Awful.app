@@ -772,7 +772,7 @@ static void * KVOContext = @"AwfulPostsView KVO";
 {
     if (self.markingPostsAsBeenSeen) return;
     if (type == NSFetchedResultsChangeInsert) {
-        [self.postsView insertPostAtIndex:indexPath.row];
+        [self.postsView insertPostAtIndex:newIndexPath.row];
     } else if (type == NSFetchedResultsChangeDelete) {
         [self.postsView deletePostAtIndex:indexPath.row];
     } else if (type == NSFetchedResultsChangeUpdate) {
