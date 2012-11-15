@@ -1,11 +1,11 @@
 Resources/Thread%20Tags
 adtrw-hokutonoken.png
 ai-cycles.png
+ai-mods.png
 AICA-TAG-60s.png
 AICA-TAG-70s.png
 AICA-TAG-80s.png
 AICA-TAG-classic.png
-AICA-TAG-mods.png
 AICA-TAG-newride.png
 AICA-TAG-race.png
 AICA-TAG-trip.png
@@ -53,7 +53,7 @@ byob-soulja.png
 byob-treasure.png
 CA-TAG-CA-atb.png
 CA-TAG-CA-dirtmoto.png
-CA-TAG-CA-road.png
+CA-TAG-CA-roadbike.png
 CA-TAG-CA-streetmoto.png
 cars.png
 cc-critique.png
@@ -151,9 +151,9 @@ fyad-moof.png
 fyad-mystery.png
 fyad-nilbog.png
 fyad-otherforums.png
-fyad-parotty.png
+fyad-parroty.png
 fyad-puns.png
-fyad-redants.png
+FYAD-redants.png
 fyad-robocop.png
 fyad-salad.png
 fyad-sandwich.png
@@ -390,6 +390,10 @@ RP-seriea.png
 RP-spl.png
 RP-uefa_tag.png
 sam-clothing.png
+samartd-interestcheck.png
+samartd-organs.png
+samartd-potions.png
+samartd-water.png
 sap-language.png
 sas-fantasy.png
 school.png
@@ -406,10 +410,6 @@ shsc-linux.png
 shsc-networking.png
 shsc-sysadmin.png
 shsc-win.png
-smartd-interestcheck.png
-smartd-organs.png
-smartd-potions.png
-smartd-water.png
 sports-boxing.png
 sports-golf.png
 sports-mlb.png
