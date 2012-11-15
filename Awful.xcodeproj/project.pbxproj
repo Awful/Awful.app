@@ -525,6 +525,11 @@
 		8CAB283B164B4FB0009BC24F /* bs-diablo.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CAB2834164B4FB0009BC24F /* bs-diablo.png */; };
 		8CAB283C164B4FB0009BC24F /* bs-starcraft.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CAB2835164B4FB0009BC24F /* bs-starcraft.png */; };
 		8CB5468D15BD936600E8BEC1 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CB5468C15BD936600E8BEC1 /* ImageIO.framework */; };
+		8CBD8E1A16548AFC00749A8F /* ycs-link.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CBD8E1516548AFC00749A8F /* ycs-link.png */; };
+		8CBD8E1B16548AFC00749A8F /* LF-pcc6-2-32-576.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CBD8E1616548AFC00749A8F /* LF-pcc6-2-32-576.png */; };
+		8CBD8E1C16548AFC00749A8F /* fyad-starcraft.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CBD8E1716548AFC00749A8F /* fyad-starcraft.png */; };
+		8CBD8E1D16548AFC00749A8F /* fyad-hogyanker.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CBD8E1816548AFC00749A8F /* fyad-hogyanker.png */; };
+		8CBD8E1E16548AFC00749A8F /* fyad-yuck.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CBD8E1916548AFC00749A8F /* fyad-yuck.png */; };
 		8CCD4CD415B497A800E5893B /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498A15B497A700E5893B /* Icon-72.png */; };
 		8CCD4CD515B497A800E5893B /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498B15B497A700E5893B /* Icon-72@2x.png */; };
 		8CCD4CD615B497A800E5893B /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD498C15B497A700E5893B /* Icon-Small-50.png */; };
@@ -1059,6 +1064,11 @@
 		8CAB2834164B4FB0009BC24F /* bs-diablo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bs-diablo.png"; sourceTree = "<group>"; };
 		8CAB2835164B4FB0009BC24F /* bs-starcraft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bs-starcraft.png"; sourceTree = "<group>"; };
 		8CB5468C15BD936600E8BEC1 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		8CBD8E1516548AFC00749A8F /* ycs-link.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ycs-link.png"; sourceTree = "<group>"; };
+		8CBD8E1616548AFC00749A8F /* LF-pcc6-2-32-576.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LF-pcc6-2-32-576.png"; sourceTree = "<group>"; };
+		8CBD8E1716548AFC00749A8F /* fyad-starcraft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-starcraft.png"; sourceTree = "<group>"; };
+		8CBD8E1816548AFC00749A8F /* fyad-hogyanker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-hogyanker.png"; sourceTree = "<group>"; };
+		8CBD8E1916548AFC00749A8F /* fyad-yuck.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-yuck.png"; sourceTree = "<group>"; };
 		8CCD498215B497A700E5893B /* Awful-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Awful-Info.plist"; sourceTree = "<group>"; };
 		8CCD498A15B497A700E5893B /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
 		8CCD498B15B497A700E5893B /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72@2x.png"; sourceTree = "<group>"; };
@@ -2147,6 +2157,7 @@
 				8C3CCD3F16533B1E00C28342 /* fyad-ghostride.png */,
 				1CAEDB2F1637797C001F5F04 /* fyad-ghosts.png */,
 				8C3CCD3E16533B1E00C28342 /* fyad-hark.png */,
+				8CBD8E1816548AFC00749A8F /* fyad-hogyanker.png */,
 				8CAAE2E61651CC52004C8C8A /* fyad-horses.png */,
 				8C3CCD3D16533B1E00C28342 /* fyad-hunting.png */,
 				1CAED9E816375FB8001F5F04 /* fyad-imgay.png */,
@@ -2168,6 +2179,7 @@
 				1CAED9EB16375FB8001F5F04 /* fyad-socks.png */,
 				8CF95C731653276000060F19 /* fyad-space.png */,
 				8C3CCD62165344C100C28342 /* fyad-speedrun.png */,
+				8CBD8E1716548AFC00749A8F /* fyad-starcraft.png */,
 				8CF02DB216484CCE0059BC56 /* fyad-suts.png */,
 				8CAAE2E41651CC52004C8C8A /* fyad-thuggery.png */,
 				8CCD52C115B783FC00E5893B /* fyad-tim.png */,
@@ -2178,6 +2190,7 @@
 				8CF95C721653276000060F19 /* fyad-wiki.png */,
 				8CF95C711653276000060F19 /* fyad-words.png */,
 				8C3CCD3A16533B1D00C28342 /* fyad-yourrights.png */,
+				8CBD8E1916548AFC00749A8F /* fyad-yuck.png */,
 				8C5159D9163DB796000114F6 /* fyad-zounds.png */,
 				8CCD52C215B783FC00E5893B /* games-360.png */,
 				8CCD52C315B783FC00E5893B /* games-360ps3tag.png */,
@@ -2295,6 +2308,7 @@
 				1CAEDB43163779D9001F5F04 /* lf-marx.png */,
 				8C3CCD4E16533B9E00C28342 /* lf-migra.png */,
 				8CF95C6D1653276000060F19 /* LF-nazisrael2.png */,
+				8CBD8E1616548AFC00749A8F /* LF-pcc6-2-32-576.png */,
 				8CCD52FE15B783FC00E5893B /* LF-pennybags.png */,
 				8CF95C6C1653276000060F19 /* LF-perspective_1.png */,
 				8CCD52FF15B783FC00E5893B /* LF-purestrain2.png */,
@@ -2492,6 +2506,7 @@
 				8CCD535715B783FD00E5893B /* ycs-goomba.png */,
 				8CF02E0116484CCE0059BC56 /* ycs-jc.png */,
 				8CCD535815B783FD00E5893B /* ycs-letsgo.png */,
+				8CBD8E1516548AFC00749A8F /* ycs-link.png */,
 				8CCD535915B783FD00E5893B /* yospos-blurit.png */,
 				8CCD535A15B783FD00E5893B /* YOSPOS-DOS.png */,
 				8CCD535B15B783FD00E5893B /* yospos-hackersafe.png */,
@@ -3198,6 +3213,11 @@
 				8C3CCD67165344D500C28342 /* hell-tim.png in Resources */,
 				8C3CCD69165344E300C28342 /* lf-whites.png in Resources */,
 				8C6F084A1653498F00B43251 /* byob-anti.png in Resources */,
+				8CBD8E1A16548AFC00749A8F /* ycs-link.png in Resources */,
+				8CBD8E1B16548AFC00749A8F /* LF-pcc6-2-32-576.png in Resources */,
+				8CBD8E1C16548AFC00749A8F /* fyad-starcraft.png in Resources */,
+				8CBD8E1D16548AFC00749A8F /* fyad-hogyanker.png in Resources */,
+				8CBD8E1E16548AFC00749A8F /* fyad-yuck.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
