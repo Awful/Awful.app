@@ -475,7 +475,7 @@
 		8C3CCD5B1653448700C28342 /* LF-iraq.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C3CCD5A1653448700C28342 /* LF-iraq.png */; };
 		8C3CCD5D1653449400C28342 /* lf-trains.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C3CCD5C1653449300C28342 /* lf-trains.png */; };
 		8C3CCD5F165344A000C28342 /* phiz-irony.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C3CCD5E165344A000C28342 /* phiz-irony.png */; };
-		8C3CCD61165344AC00C28342 /* fyad-redants.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C3CCD60165344AC00C28342 /* fyad-redants.png */; };
+		8C3CCD61165344AC00C28342 /* FYAD-redants.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C3CCD60165344AC00C28342 /* FYAD-redants.png */; };
 		8C3CCD64165344C200C28342 /* fyad-speedrun.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C3CCD62165344C100C28342 /* fyad-speedrun.png */; };
 		8C3CCD65165344C200C28342 /* fyad-smallthread.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C3CCD63165344C200C28342 /* fyad-smallthread.png */; };
 		8C3CCD67165344D500C28342 /* hell-tim.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C3CCD66165344D500C28342 /* hell-tim.png */; };
@@ -487,7 +487,7 @@
 		8C5159DC163DB796000114F6 /* AICA-TAG-70s.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C5159D2163DB796000114F6 /* AICA-TAG-70s.png */; };
 		8C5159DD163DB796000114F6 /* AICA-TAG-80s.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C5159D3163DB796000114F6 /* AICA-TAG-80s.png */; };
 		8C5159DE163DB796000114F6 /* AICA-TAG-classic.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C5159D4163DB796000114F6 /* AICA-TAG-classic.png */; };
-		8C5159DF163DB796000114F6 /* AICA-TAG-mods.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C5159D5163DB796000114F6 /* AICA-TAG-mods.png */; };
+		8C5159DF163DB796000114F6 /* ai-mods.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C5159D5163DB796000114F6 /* ai-mods.png */; };
 		8C5159E0163DB796000114F6 /* AICA-TAG-newride.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C5159D6163DB796000114F6 /* AICA-TAG-newride.png */; };
 		8C5159E1163DB796000114F6 /* AICA-TAG-race.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C5159D7163DB796000114F6 /* AICA-TAG-race.png */; };
 		8C5159E2163DB796000114F6 /* RP-20a6zc0.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C5159D8163DB796000114F6 /* RP-20a6zc0.png */; };
@@ -619,7 +619,7 @@
 		8CF02E3816484CCE0059BC56 /* byob-treasure.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DCD16484CCE0059BC56 /* byob-treasure.png */; };
 		8CF02E3916484CCE0059BC56 /* CA-TAG-CA-atb.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DCE16484CCE0059BC56 /* CA-TAG-CA-atb.png */; };
 		8CF02E3A16484CCE0059BC56 /* CA-TAG-CA-dirtmoto.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DCF16484CCE0059BC56 /* CA-TAG-CA-dirtmoto.png */; };
-		8CF02E3B16484CCE0059BC56 /* CA-TAG-CA-road.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DD016484CCE0059BC56 /* CA-TAG-CA-road.png */; };
+		8CF02E3B16484CCE0059BC56 /* CA-TAG-CA-roadbike.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DD016484CCE0059BC56 /* CA-TAG-CA-roadbike.png */; };
 		8CF02E3C16484CCE0059BC56 /* cc-writing.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DD116484CCE0059BC56 /* cc-writing.png */; };
 		8CF02E3D16484CCE0059BC56 /* dd-africa.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DD216484CCE0059BC56 /* dd-africa.png */; };
 		8CF02E3E16484CCE0059BC56 /* fyad-cockfights.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DD316484CCE0059BC56 /* fyad-cockfights.png */; };
@@ -649,10 +649,10 @@
 		8CF02E5616484CCE0059BC56 /* RP-ligue1.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DEB16484CCE0059BC56 /* RP-ligue1.png */; };
 		8CF02E5716484CCE0059BC56 /* RP-MOTD_TAG.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DEC16484CCE0059BC56 /* RP-MOTD_TAG.png */; };
 		8CF02E5816484CCE0059BC56 /* RP-nonleague.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DED16484CCE0059BC56 /* RP-nonleague.png */; };
-		8CF02E5916484CCE0059BC56 /* smartd-interestcheck.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DEE16484CCE0059BC56 /* smartd-interestcheck.png */; };
-		8CF02E5A16484CCE0059BC56 /* smartd-organs.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DEF16484CCE0059BC56 /* smartd-organs.png */; };
-		8CF02E5B16484CCE0059BC56 /* smartd-potions.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DF016484CCE0059BC56 /* smartd-potions.png */; };
-		8CF02E5C16484CCE0059BC56 /* smartd-water.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DF116484CCE0059BC56 /* smartd-water.png */; };
+		8CF02E5916484CCE0059BC56 /* samartd-interestcheck.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DEE16484CCE0059BC56 /* samartd-interestcheck.png */; };
+		8CF02E5A16484CCE0059BC56 /* samartd-organs.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DEF16484CCE0059BC56 /* samartd-organs.png */; };
+		8CF02E5B16484CCE0059BC56 /* samartd-potions.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DF016484CCE0059BC56 /* samartd-potions.png */; };
+		8CF02E5C16484CCE0059BC56 /* samartd-water.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DF116484CCE0059BC56 /* samartd-water.png */; };
 		8CF02E5D16484CCE0059BC56 /* sports-sylvia.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DF216484CCE0059BC56 /* sports-sylvia.png */; };
 		8CF02E5E16484CCE0059BC56 /* tcc-acid.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DF316484CCE0059BC56 /* tcc-acid.png */; };
 		8CF02E5F16484CCE0059BC56 /* tcc-downers.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02DF416484CCE0059BC56 /* tcc-downers.png */; };
@@ -1008,7 +1008,7 @@
 		8C3CCD5A1653448700C28342 /* LF-iraq.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LF-iraq.png"; sourceTree = "<group>"; };
 		8C3CCD5C1653449300C28342 /* lf-trains.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lf-trains.png"; sourceTree = "<group>"; };
 		8C3CCD5E165344A000C28342 /* phiz-irony.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phiz-irony.png"; sourceTree = "<group>"; };
-		8C3CCD60165344AC00C28342 /* fyad-redants.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-redants.png"; sourceTree = "<group>"; };
+		8C3CCD60165344AC00C28342 /* FYAD-redants.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FYAD-redants.png"; sourceTree = "<group>"; };
 		8C3CCD62165344C100C28342 /* fyad-speedrun.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-speedrun.png"; sourceTree = "<group>"; };
 		8C3CCD63165344C200C28342 /* fyad-smallthread.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-smallthread.png"; sourceTree = "<group>"; };
 		8C3CCD66165344D500C28342 /* hell-tim.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hell-tim.png"; sourceTree = "<group>"; };
@@ -1021,7 +1021,7 @@
 		8C5159D2163DB796000114F6 /* AICA-TAG-70s.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AICA-TAG-70s.png"; sourceTree = "<group>"; };
 		8C5159D3163DB796000114F6 /* AICA-TAG-80s.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AICA-TAG-80s.png"; sourceTree = "<group>"; };
 		8C5159D4163DB796000114F6 /* AICA-TAG-classic.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AICA-TAG-classic.png"; sourceTree = "<group>"; };
-		8C5159D5163DB796000114F6 /* AICA-TAG-mods.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AICA-TAG-mods.png"; sourceTree = "<group>"; };
+		8C5159D5163DB796000114F6 /* ai-mods.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ai-mods.png"; sourceTree = "<group>"; };
 		8C5159D6163DB796000114F6 /* AICA-TAG-newride.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AICA-TAG-newride.png"; sourceTree = "<group>"; };
 		8C5159D7163DB796000114F6 /* AICA-TAG-race.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AICA-TAG-race.png"; sourceTree = "<group>"; };
 		8C5159D8163DB796000114F6 /* RP-20a6zc0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "RP-20a6zc0.png"; sourceTree = "<group>"; };
@@ -1388,7 +1388,7 @@
 		8CF02DCD16484CCE0059BC56 /* byob-treasure.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "byob-treasure.png"; sourceTree = "<group>"; };
 		8CF02DCE16484CCE0059BC56 /* CA-TAG-CA-atb.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CA-TAG-CA-atb.png"; sourceTree = "<group>"; };
 		8CF02DCF16484CCE0059BC56 /* CA-TAG-CA-dirtmoto.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CA-TAG-CA-dirtmoto.png"; sourceTree = "<group>"; };
-		8CF02DD016484CCE0059BC56 /* CA-TAG-CA-road.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CA-TAG-CA-road.png"; sourceTree = "<group>"; };
+		8CF02DD016484CCE0059BC56 /* CA-TAG-CA-roadbike.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CA-TAG-CA-roadbike.png"; sourceTree = "<group>"; };
 		8CF02DD116484CCE0059BC56 /* cc-writing.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cc-writing.png"; sourceTree = "<group>"; };
 		8CF02DD216484CCE0059BC56 /* dd-africa.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dd-africa.png"; sourceTree = "<group>"; };
 		8CF02DD316484CCE0059BC56 /* fyad-cockfights.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-cockfights.png"; sourceTree = "<group>"; };
@@ -1418,10 +1418,10 @@
 		8CF02DEB16484CCE0059BC56 /* RP-ligue1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "RP-ligue1.png"; sourceTree = "<group>"; };
 		8CF02DEC16484CCE0059BC56 /* RP-MOTD_TAG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "RP-MOTD_TAG.png"; sourceTree = "<group>"; };
 		8CF02DED16484CCE0059BC56 /* RP-nonleague.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "RP-nonleague.png"; sourceTree = "<group>"; };
-		8CF02DEE16484CCE0059BC56 /* smartd-interestcheck.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "smartd-interestcheck.png"; sourceTree = "<group>"; };
-		8CF02DEF16484CCE0059BC56 /* smartd-organs.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "smartd-organs.png"; sourceTree = "<group>"; };
-		8CF02DF016484CCE0059BC56 /* smartd-potions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "smartd-potions.png"; sourceTree = "<group>"; };
-		8CF02DF116484CCE0059BC56 /* smartd-water.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "smartd-water.png"; sourceTree = "<group>"; };
+		8CF02DEE16484CCE0059BC56 /* samartd-interestcheck.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "samartd-interestcheck.png"; sourceTree = "<group>"; };
+		8CF02DEF16484CCE0059BC56 /* samartd-organs.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "samartd-organs.png"; sourceTree = "<group>"; };
+		8CF02DF016484CCE0059BC56 /* samartd-potions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "samartd-potions.png"; sourceTree = "<group>"; };
+		8CF02DF116484CCE0059BC56 /* samartd-water.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "samartd-water.png"; sourceTree = "<group>"; };
 		8CF02DF216484CCE0059BC56 /* sports-sylvia.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sports-sylvia.png"; sourceTree = "<group>"; };
 		8CF02DF316484CCE0059BC56 /* tcc-acid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tcc-acid.png"; sourceTree = "<group>"; };
 		8CF02DF416484CCE0059BC56 /* tcc-downers.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tcc-downers.png"; sourceTree = "<group>"; };
@@ -2011,7 +2011,7 @@
 				8C5159D2163DB796000114F6 /* AICA-TAG-70s.png */,
 				8C5159D3163DB796000114F6 /* AICA-TAG-80s.png */,
 				8C5159D4163DB796000114F6 /* AICA-TAG-classic.png */,
-				8C5159D5163DB796000114F6 /* AICA-TAG-mods.png */,
+				8C5159D5163DB796000114F6 /* ai-mods.png */,
 				8C5159D6163DB796000114F6 /* AICA-TAG-newride.png */,
 				8C5159D7163DB796000114F6 /* AICA-TAG-race.png */,
 				1CAEDB05163778DF001F5F04 /* AICA-TAG-trip.png */,
@@ -2059,7 +2059,7 @@
 				8CF02DCD16484CCE0059BC56 /* byob-treasure.png */,
 				8CF02DCE16484CCE0059BC56 /* CA-TAG-CA-atb.png */,
 				8CF02DCF16484CCE0059BC56 /* CA-TAG-CA-dirtmoto.png */,
-				8CF02DD016484CCE0059BC56 /* CA-TAG-CA-road.png */,
+				8CF02DD016484CCE0059BC56 /* CA-TAG-CA-roadbike.png */,
 				8CF02DBB16484CCE0059BC56 /* CA-TAG-CA-streetmoto.png */,
 				8CCD528D15B783FC00E5893B /* cars.png */,
 				8CCD528E15B783FC00E5893B /* cc-critique.png */,
@@ -2160,7 +2160,7 @@
 				8CF95C741653276000060F19 /* fyad-otherforums.png */,
 				1CAED9EA16375FB8001F5F04 /* fyad-parotty.png */,
 				8CAB2830164B4FB0009BC24F /* fyad-puns.png */,
-				8C3CCD60165344AC00C28342 /* fyad-redants.png */,
+				8C3CCD60165344AC00C28342 /* FYAD-redants.png */,
 				1CAEDB3116377986001F5F04 /* fyad-robocop.png */,
 				8CF02DB116484CCE0059BC56 /* fyad-salad.png */,
 				1CAEDB3216377986001F5F04 /* fyad-sandwich.png */,
@@ -2413,10 +2413,10 @@
 				8CCD532915B783FC00E5893B /* shsc-networking.png */,
 				8CCD532A15B783FC00E5893B /* shsc-sysadmin.png */,
 				8CCD532B15B783FC00E5893B /* shsc-win.png */,
-				8CF02DEE16484CCE0059BC56 /* smartd-interestcheck.png */,
-				8CF02DEF16484CCE0059BC56 /* smartd-organs.png */,
-				8CF02DF016484CCE0059BC56 /* smartd-potions.png */,
-				8CF02DF116484CCE0059BC56 /* smartd-water.png */,
+				8CF02DEE16484CCE0059BC56 /* samartd-interestcheck.png */,
+				8CF02DEF16484CCE0059BC56 /* samartd-organs.png */,
+				8CF02DF016484CCE0059BC56 /* samartd-potions.png */,
+				8CF02DF116484CCE0059BC56 /* samartd-water.png */,
 				1CAEDB5116377A13001F5F04 /* sports-boxing.png */,
 				8CCD532C15B783FC00E5893B /* sports-golf.png */,
 				8CCD532D15B783FC00E5893B /* sports-mlb.png */,
@@ -2984,7 +2984,7 @@
 				8C5159DC163DB796000114F6 /* AICA-TAG-70s.png in Resources */,
 				8C5159DD163DB796000114F6 /* AICA-TAG-80s.png in Resources */,
 				8C5159DE163DB796000114F6 /* AICA-TAG-classic.png in Resources */,
-				8C5159DF163DB796000114F6 /* AICA-TAG-mods.png in Resources */,
+				8C5159DF163DB796000114F6 /* ai-mods.png in Resources */,
 				8C5159E0163DB796000114F6 /* AICA-TAG-newride.png in Resources */,
 				8C5159E1163DB796000114F6 /* AICA-TAG-race.png in Resources */,
 				8C5159E2163DB796000114F6 /* RP-20a6zc0.png in Resources */,
@@ -3050,7 +3050,7 @@
 				8CF02E3816484CCE0059BC56 /* byob-treasure.png in Resources */,
 				8CF02E3916484CCE0059BC56 /* CA-TAG-CA-atb.png in Resources */,
 				8CF02E3A16484CCE0059BC56 /* CA-TAG-CA-dirtmoto.png in Resources */,
-				8CF02E3B16484CCE0059BC56 /* CA-TAG-CA-road.png in Resources */,
+				8CF02E3B16484CCE0059BC56 /* CA-TAG-CA-roadbike.png in Resources */,
 				8CF02E3C16484CCE0059BC56 /* cc-writing.png in Resources */,
 				8CF02E3D16484CCE0059BC56 /* dd-africa.png in Resources */,
 				8CF02E3E16484CCE0059BC56 /* fyad-cockfights.png in Resources */,
@@ -3080,10 +3080,10 @@
 				8CF02E5616484CCE0059BC56 /* RP-ligue1.png in Resources */,
 				8CF02E5716484CCE0059BC56 /* RP-MOTD_TAG.png in Resources */,
 				8CF02E5816484CCE0059BC56 /* RP-nonleague.png in Resources */,
-				8CF02E5916484CCE0059BC56 /* smartd-interestcheck.png in Resources */,
-				8CF02E5A16484CCE0059BC56 /* smartd-organs.png in Resources */,
-				8CF02E5B16484CCE0059BC56 /* smartd-potions.png in Resources */,
-				8CF02E5C16484CCE0059BC56 /* smartd-water.png in Resources */,
+				8CF02E5916484CCE0059BC56 /* samartd-interestcheck.png in Resources */,
+				8CF02E5A16484CCE0059BC56 /* samartd-organs.png in Resources */,
+				8CF02E5B16484CCE0059BC56 /* samartd-potions.png in Resources */,
+				8CF02E5C16484CCE0059BC56 /* samartd-water.png in Resources */,
 				8CF02E5D16484CCE0059BC56 /* sports-sylvia.png in Resources */,
 				8CF02E5E16484CCE0059BC56 /* tcc-acid.png in Resources */,
 				8CF02E5F16484CCE0059BC56 /* tcc-downers.png in Resources */,
@@ -3192,7 +3192,7 @@
 				8C3CCD5B1653448700C28342 /* LF-iraq.png in Resources */,
 				8C3CCD5D1653449400C28342 /* lf-trains.png in Resources */,
 				8C3CCD5F165344A000C28342 /* phiz-irony.png in Resources */,
-				8C3CCD61165344AC00C28342 /* fyad-redants.png in Resources */,
+				8C3CCD61165344AC00C28342 /* FYAD-redants.png in Resources */,
 				8C3CCD64165344C200C28342 /* fyad-speedrun.png in Resources */,
 				8C3CCD65165344C200C28342 /* fyad-smallthread.png in Resources */,
 				8C3CCD67165344D500C28342 /* hell-tim.png in Resources */,
