@@ -236,6 +236,11 @@ body.dark {
   background-image: url("post-actions-dark-read.png");
 }
 
+/* "Show post actions" button is not selectable. */
+#posts > article > header > button {
+  -webkit-user-select: none;
+}
+
 /* iPhone posts have a "show post actions" button in the top right. */
 .iphone #posts > article > header > button {
   width: 38px;
