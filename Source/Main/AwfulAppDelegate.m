@@ -59,10 +59,10 @@ static AwfulAppDelegate *_instance;
 {
     NSURL *sa = [NSURL URLWithString:@"http://forums.somethingawful.com"];
     NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:sa];
-    
     for (NSHTTPCookie *cookie in cookies) {
         [[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteCookie:cookie];
     }
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
     
     AwfulSettings.settings.currentUser = nil;
     NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
