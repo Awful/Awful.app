@@ -27,6 +27,7 @@
     webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     webView.delegate = self;
     webView.dataDetectorTypes = UIDataDetectorTypeNone;
+    webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
     RemoveShadowFromAboveAndBelowWebView(webView);
     NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
     NSURL *postsViewURL = [thisBundle URLForResource:@"posts-view" withExtension:@"html"];
