@@ -43,7 +43,12 @@ body {
 
 /* Don't show selection when long-tapping images. We handle that ourselves. */
 #posts > article > section img {
-    -webkit-user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Don't show rectangle around tapped links. */
+#posts > article a {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 /* Solid black background. */
