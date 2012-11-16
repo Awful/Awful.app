@@ -258,9 +258,11 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    self.statusBarStyle = [UIApplication sharedApplication].statusBarStyle;
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent
-                                                animated:YES];
+    if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+        self.statusBarStyle = [UIApplication sharedApplication].statusBarStyle;
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent
+                                                    animated:YES];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -272,7 +274,9 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [self.automaticallyHideBarsTimer invalidate];
-    [[UIApplication sharedApplication] setStatusBarStyle:self.statusBarStyle animated:YES];
+    if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+        [[UIApplication sharedApplication] setStatusBarStyle:self.statusBarStyle animated:YES];
+    }
     [[UIApplication sharedApplication] setStatusBarHidden:NO
                                             withAnimation:UIStatusBarAnimationNone];
     [super viewWillDisappear:animated];
