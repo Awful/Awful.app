@@ -149,6 +149,10 @@ static AwfulAppDelegate *_instance;
     [[AwfulSettings settings] registerDefaults];
     [AwfulDataStack sharedDataStack].initFailureAction = AwfulDataStackInitFailureDelete;
     [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
+    NSUInteger sixtyMB = 1024 * 1024 * 60;
+    if ([[NSURLCache sharedURLCache] diskCapacity] < sixtyMB) {
+        [[NSURLCache sharedURLCache] setDiskCapacity:sixtyMB];
+    }
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     
