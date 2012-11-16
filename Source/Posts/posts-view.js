@@ -758,7 +758,7 @@ window.Awful = Awful
 $(function(){
   $('body').addClass($.os.ipad ? 'ipad' : 'iphone')
   
-  $('#posts').on('click', 'article > header > button', showPostActions)
+  $('#posts').on('tap', 'article > header > button', showPostActions)
   
   $('#posts').on('longTap', 'article > section img', previewImage)
 })
