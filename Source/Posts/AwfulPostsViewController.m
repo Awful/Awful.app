@@ -220,7 +220,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
             if (page < 1) {
                 self.currentPage = anyPost.threadPageValue;
             }
-            if (!self.refreshingSamePage) {
+            if (!self.refreshingSamePage && page < 1) {
                 [self.postsView reloadData];
                 self.postsView.scrollView.contentOffset = CGPointZero;
             }
