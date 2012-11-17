@@ -8,7 +8,7 @@
 
 #import "AwfulForumsListController.h"
 #import "AwfulFetchedTableViewControllerSubclass.h"
-#import "AwfulAppDelegate.h"
+#import "AwfulAlertView.h"
 #import "AwfulDataStack.h"
 #import "AwfulForumCell.h"
 #import "AwfulForumHeader.h"
@@ -79,7 +79,7 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
     id op = [[AwfulHTTPClient client] listForumsAndThen:^(NSError *error, NSArray *forums)
              {
                  if (error) {
-                     [[AwfulAppDelegate instance] requestFailed:error];
+                     [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
                  } else {
                      self.lastRefresh = [NSDate date];
                  }

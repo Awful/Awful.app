@@ -8,7 +8,7 @@
 
 #import "AwfulBookmarksController.h"
 #import "AwfulFetchedTableViewControllerSubclass.h"
-#import "AwfulAppDelegate.h"
+#import "AwfulAlertView.h"
 #import "AwfulDataStack.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
@@ -77,7 +77,7 @@
                                                           andThen:^(NSError *error, NSArray *threads)
     {
         if (error) {
-            [[AwfulAppDelegate instance] requestFailed:error];
+            [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"Drats"];
         } else {
             if (pageNum == 1) {
                 NSArray *bookmarks = [AwfulThread fetchAllMatchingPredicate:@"isBookmarked = YES"];
@@ -132,12 +132,9 @@ static NSString * const kLastBookmarksRefreshDate = @"com.awfulapp.Awful.LastBoo
             if (!error) return;
             thread.isBookmarkedValue = YES;
             [[AwfulDataStack sharedDataStack] save];
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Could Not Unbookmark"
-                                                            message:[error localizedDescription]
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"Whatever"
-                                                  otherButtonTitles:nil];
-            [alert show];
+            [AwfulAlertView showWithTitle:@"Could Not Unbookmark"
+                                    error:error
+                              buttonTitle:@"Whatever"];
         }];
     }
 }

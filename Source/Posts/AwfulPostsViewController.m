@@ -8,7 +8,7 @@
 
 #import "AwfulPostsViewController.h"
 #import "AwfulActionSheet.h"
-#import "AwfulAppDelegate.h"
+#import "AwfulAlertView.h"
 #import "AwfulDataStack.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulImagePreviewViewController.h"
@@ -208,12 +208,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                                                                 NSString *advertisementHTML)
     {
         if (error) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Could Not Load Page"
-                                                            message:[error localizedDescription]
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"Uh Huh"
-                                                  otherButtonTitles:nil];
-            [alert show];
+            [AwfulAlertView showWithTitle:@"Could Not Load Page" error:error buttonTitle:@"Uh Huh"];
         } else {
             self.advertisementHTML = advertisementHTML;
             AwfulPost *anyPost = [posts lastObject];
@@ -449,11 +444,9 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                                                   andThen:^(NSError *error, NSString *text)
              {
                  if (error) {
-                     UIAlertView *alert = [UIAlertView new];
-                     alert.title = @"Could Not Edit Post";
-                     alert.message = [error localizedDescription];
-                     [alert addButtonWithTitle:@"Alright"];
-                     [alert show];
+                     [AwfulAlertView showWithTitle:@"Could Not Edit Post"
+                                             error:error
+                                       buttonTitle:@"Alright"];
                      return;
                  }
                  AwfulReplyViewController *reply = [AwfulReplyViewController new];
@@ -470,11 +463,9 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                                                     andThen:^(NSError *error, NSString *quotedText)
              {
                  if (error) {
-                     UIAlertView *alert = [UIAlertView new];
-                     alert.title = @"Could Not Quote Post";
-                     alert.message = [error localizedDescription];
-                     [alert addButtonWithTitle:@"Alright"];
-                     [alert show];
+                     [AwfulAlertView showWithTitle:@"Could Not Quote Post"
+                                             error:error
+                                       buttonTitle:@"Alright"];
                      return;
                  }
                  AwfulReplyViewController *reply = [AwfulReplyViewController new];
@@ -498,11 +489,9 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                                            andThen:^(NSError *error)
          {
              if (error) {
-                 UIAlertView *alert = [UIAlertView new];
-                 alert.title = @"Could Not Mark Read";
-                 alert.message = [error localizedDescription];
-                 [alert addButtonWithTitle:@"Alright"];
-                 [alert show];
+                 [AwfulAlertView showWithTitle:@"Could Not Mark Read"
+                                         error:error
+                                   buttonTitle:@"Alright"];
              } else {
                  self.didJustMarkAsReadToHere = YES;
                  [self markPostsAsBeenSeenUpToPost:post];

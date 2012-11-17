@@ -7,7 +7,7 @@
 //
 
 #import "AwfulReplyViewController.h"
-#import "AwfulAppDelegate.h"
+#import "AwfulAlertView.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
 #import "AwfulPostsViewController.h"
@@ -22,7 +22,7 @@ typedef enum {
     FormattingSubmenu
 } Menu;
 
-@interface AwfulReplyViewController () <UIAlertViewDelegate, UIImagePickerControllerDelegate,
+@interface AwfulReplyViewController () <UIImagePickerControllerDelegate,
                                         UINavigationControllerDelegate, UIPopoverControllerDelegate>
 
 @property (strong, nonatomic) UIBarButtonItem *sendButton;
@@ -142,24 +142,20 @@ typedef enum {
 - (void)hitSend
 {
     if (AwfulSettings.settings.confirmBeforeReplying) {
-        static NSString * message = @"Does my reply offer any significant advice or help "
-        "contribute to the conversation in any fashion?";
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Incoming Forums Superstar"
-                                                        message:message
-                                                       delegate:self
-                                              cancelButtonTitle:@"Nope"
-                                              otherButtonTitles:self.sendButton.title, nil];
-        alert.delegate = self;
+        AwfulAlertView *alert = [AwfulAlertView new];
+        alert.title = @"Incoming Forums Superstar";
+        alert.message = @"Does my reply offer any significant advice or help "
+                         "contribute to the conversation in any fashion?";
+        [alert addCancelButtonWithTitle:@"Nope" block:nil];
+        [alert addButtonWithTitle:self.sendButton.title block:^{ [self send]; }];
         [alert show];
     } else {
-        [self alertView:nil clickedButtonAtIndex:1];
+        [self send];
     }
 }
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+- (void)send
 {
-    if (buttonIndex != 1) return;
-    
     [self.networkOperation cancel];
     
     NSString *reply = self.replyTextView.text;
@@ -200,14 +196,9 @@ withImagePlaceholderResults:placeholderResults
              return;
          }
          [SVProgressHUD dismiss];
-         NSString *message = [NSString stringWithFormat:@"Uploading images to imgur didn't work: "
-                                                         "%@", [error localizedDescription]];
-         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Image Uploading Failed"
-                                                         message:message
-                                                        delegate:nil
-                                               cancelButtonTitle:@"Fiddlesticks"
-                                               otherButtonTitles:nil];
-         [alert show];
+         [AwfulAlertView showWithTitle:@"Image Uploading Failed"
+                                 error:error
+                           buttonTitle:@"Fiddlesticks"];
      }];
 }
 
@@ -255,11 +246,12 @@ withImagePlaceholderResults:placeholderResults
                                                      text:reply
                                                   andThen:^(NSError *error, NSString *postID)
              {
-                 [SVProgressHUD dismiss];
                  if (error) {
-                     [[AwfulAppDelegate instance] requestFailed:error];
+                     [SVProgressHUD dismiss];
+                     [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
                      return;
                  }
+                 [SVProgressHUD showSuccessWithStatus:@"Replied"];
                  [self.delegate replyViewController:self didReplyToThread:self.thread];
              }];
     self.networkOperation = op;
@@ -271,11 +263,12 @@ withImagePlaceholderResults:placeholderResults
                                                 text:edit
                                              andThen:^(NSError *error)
              {
-                 [SVProgressHUD dismiss];
                  if (error) {
-                     [[AwfulAppDelegate instance] requestFailed:error];
+                     [SVProgressHUD dismiss];
+                     [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
                      return;
                  }
+                 [SVProgressHUD showSuccessWithStatus:@"Edited"];
                  [self.delegate replyViewController:self didEditPost:self.post];
              }];
     self.networkOperation = op;

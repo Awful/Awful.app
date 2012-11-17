@@ -9,7 +9,7 @@
 #import "AwfulThreadListController.h"
 #import "AwfulFetchedTableViewControllerSubclass.h"
 #import "AwfulActionSheet.h"
-#import "AwfulAppDelegate.h"
+#import "AwfulAlertView.h"
 #import "AwfulDataStack.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulLoginController.h"
@@ -121,7 +121,7 @@ typedef enum {
                                                        andThen:^(NSError *error, NSArray *threads)
     {
         if (error) {
-            [[AwfulAppDelegate instance] requestFailed:error];
+            [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
         } else {
             if (pageNum == 1) {
                 [self.forum.threads setValue:@YES forKey:@"hideFromList"];
@@ -193,7 +193,7 @@ typedef enum {
                                                     andThen:^(NSError *error)
     {
         if (error) {
-            [[AwfulAppDelegate instance] requestFailed:error];
+            [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
         } else {
             thread.totalUnreadPostsValue = -1;
             [[AwfulDataStack sharedDataStack] save];

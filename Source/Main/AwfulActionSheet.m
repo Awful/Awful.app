@@ -49,10 +49,16 @@
     if (block) self.blocks[@(i)] = [block copy];
 }
 
-- (void)addCancelButtonWithTitle:(NSString *)title
+- (void)addCancelButtonWithTitle:(NSString *)title block:(void (^)(void))block
 {
     NSInteger i = [self addButtonWithTitle:title];
     self.cancelButtonIndex = i;
+    if (block) self.blocks[@(i)] = [block copy];
+}
+
+- (void)addCancelButtonWithTitle:(NSString *)title
+{
+    [self addCancelButtonWithTitle:title block:nil];
 }
 
 #pragma mark - NSObject

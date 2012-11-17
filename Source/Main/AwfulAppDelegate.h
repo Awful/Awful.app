@@ -18,6 +18,4 @@
 
 - (void)logOut;
 
-- (void)requestFailed:(NSError *)error;
-
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "AwfulSettingsViewController.h"
+#import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulLicensesViewController.h"
@@ -19,7 +20,7 @@
 #import "AwfulUser.h"
 #import "NSManagedObject+Awful.h"
 
-@interface AwfulSettingsViewController () <UIAlertViewDelegate>
+@interface AwfulSettingsViewController ()
 
 @property (strong, nonatomic) NSArray *sections;
 
@@ -48,7 +49,8 @@
     self.switches = [NSMutableArray new];
     self.sections = AwfulSettings.settings.sections;
     self.tableView.backgroundView = nil;
-    self.tableView.backgroundColor = [UIColor colorWithHue:0.604 saturation:0.035 brightness:0.898 alpha:1];
+    self.tableView.backgroundColor = [UIColor colorWithHue:0.604 saturation:0.035 brightness:0.898
+                                                     alpha:1];
     
     // Make sure the bottom section's footer is visible.
     self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 18, 0);
@@ -75,12 +77,9 @@
     id op = [[AwfulHTTPClient client] learnUserInfoAndThen:^(NSError *error, NSDictionary *userInfo)
     {
         if (error) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Could Not Load User Info"
-                                                            message:[error localizedDescription]
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"Shucks"
-                                                  otherButtonTitles:nil];
-            [alert show];
+            [AwfulAlertView showWithTitle:@"Could Not Load User Info"
+                                    error:error
+                              buttonTitle:@"Shucks"];
         } else {
             AwfulUser *user = [AwfulSettings settings].currentUser;
             [user setValuesForKeysWithDictionary:userInfo];
@@ -224,12 +223,11 @@ typedef enum SettingType
     NSDictionary *setting = [self settingForIndexPath:indexPath];
     NSString *action = setting[@"Action"];
     if ([action isEqualToString:@"LogOut"]) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log Out"
-                                                        message:@"Are you sure you want to log out?"
-                                                       delegate:self
-                                              cancelButtonTitle:@"Cancel"
-                                              otherButtonTitles:@"Log Out", nil];
-        alert.delegate = self;
+        AwfulAlertView *alert = [AwfulAlertView new];
+        alert.title = @"Log Out";
+        alert.message = @"Are you sure you want to log out?";
+        [alert addCancelButtonWithTitle:@"Cancel" block:nil];
+        [alert addButtonWithTitle:@"Log Out" block:^{ [[AwfulAppDelegate instance] logOut]; }];
         [alert show];
     } else if ([action isEqualToString:@"GoToAwfulThread"]) {
         NSString *threadID = setting[@"ThreadID"];
@@ -346,14 +344,6 @@ typedef enum SettingType
                                 forWidth:280
                            lineBreakMode:NSLineBreakByWordWrapping];
     return expected.height + 5 + (section < tableView.numberOfSections - 1 ? 34 : 0);
-}
-
-#pragma mark - UIAlertView delegate
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex != 1) return;
-    [[AwfulAppDelegate instance] logOut];
 }
 
 @end

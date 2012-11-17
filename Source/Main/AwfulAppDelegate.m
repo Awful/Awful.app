@@ -7,6 +7,7 @@
 //
 
 #import "AwfulAppDelegate.h"
+#import "AwfulAlertView.h"
 #import "AwfulBookmarksController.h"
 #import "AwfulDataStack.h"
 #import "AwfulFavoritesViewController.h"
@@ -79,16 +80,6 @@ static AwfulAppDelegate *_instance;
         }
         tabBar.selectedIndex = 0;
     }];
-}
-
-- (void)requestFailed:(NSError *)error
-{
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Network Error"
-                                                    message:[error localizedDescription]
-                                                   delegate:nil
-                                          cancelButtonTitle:@"Drats"
-                                          otherButtonTitles:nil];
-    [alert show];
 }
 
 - (void)configureAppearance
@@ -271,11 +262,10 @@ static AwfulAppDelegate *_instance;
 
 - (void)loginController:(AwfulLoginController *)login didFailToLogInWithError:(NSError *)error
 {
-    UIAlertView *alert = [UIAlertView new];
-    alert.title = @"Problem Logging In";
-    alert.message = @"Double-check your username and password, then try again.";
-    [alert addButtonWithTitle:@"Alright"];
-    [alert show];
+    [AwfulAlertView showWithTitle:@"Problem Logging In"
+                          message:@"Double-check your username and password, then try again."
+                      buttonTitle:@"Alright"
+                       completion:nil];
 }
 
 @end

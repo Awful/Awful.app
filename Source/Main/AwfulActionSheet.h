@@ -20,6 +20,8 @@
 
 - (void)addDestructiveButtonWithTitle:(NSString *)title block:(void (^)(void))block;
 
+- (void)addCancelButtonWithTitle:(NSString *)title block:(void (^)(void))block;
+
 - (void)addCancelButtonWithTitle:(NSString *)title;
 
 @end

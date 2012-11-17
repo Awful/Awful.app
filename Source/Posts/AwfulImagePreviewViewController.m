@@ -8,12 +8,12 @@
 
 #import "AwfulImagePreviewViewController.h"
 #import "AwfulActionSheet.h"
+#import "AwfulAlertView.h"
 #import "AwfulThreadTitleLabel.h"
 #import "SVProgressHUD.h"
 #import "UIImageView+AFNetworking.h"
 
-@interface AwfulImagePreviewViewController () <UIScrollViewDelegate, UIActionSheetDelegate,
-                                               UIAlertViewDelegate>
+@interface AwfulImagePreviewViewController () <UIScrollViewDelegate>
 
 @property (weak, nonatomic) UIScrollView *scrollView;
 
@@ -102,12 +102,7 @@
          [self centerImageInScrollView];
      } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error)
      {
-         UIAlertView *alert = [UIAlertView new];
-         alert.title = @"Could Not Load Image";
-         alert.message = [NSString stringWithFormat:@"%@ (error code %@)",
-                          [error localizedDescription], @([error code])];
-         [alert addButtonWithTitle:@"OK"];
-         [alert show];
+         [AwfulAlertView showWithTitle:@"Could Not Load Image" error:error buttonTitle:@"OK"];
     }];
 }
 
@@ -160,8 +155,9 @@
         [UIPasteboard generalPasteboard].URL = self.imageURL;
         [self hideBarsAfterShortDuration];
     }];
-    [sheet addCancelButtonWithTitle:@"Cancel"];
-    sheet.delegate = self;
+    [sheet addCancelButtonWithTitle:@"Cancel" block:^{
+        [self hideBarsAfterShortDuration];
+    }];
     [sheet showFromBarButtonItem:self.actionButton animated:YES];
 }
 
@@ -170,12 +166,10 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         if (error) {
             [SVProgressHUD dismiss];
-            UIAlertView *alert = [UIAlertView new];
-            alert.title = @"Could Not Save Image";
-            alert.message = [NSString stringWithFormat:@"%@ (error code %@)",
-                             [error localizedDescription], @([error code])];
-            alert.delegate = self;
-            [alert show];
+            [AwfulAlertView showWithTitle:@"Could Not Save Image"
+                                    error:error
+                              buttonTitle:@"OK"
+                               completion:^{ [self hideBarsAfterShortDuration]; }];
         } else {
             [SVProgressHUD showSuccessWithStatus:@"Saved"];
             [self hideBarsAfterShortDuration];
@@ -315,22 +309,6 @@
                         atScale:(float)scale
 {
     // Implemented so zooming works.
-}
-
-#pragma mark - UIActionSheetDelegate
-
-- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex == actionSheet.cancelButtonIndex) {
-        [self hideBarsAfterShortDuration];
-    }
-}
-
-#pragma mark - UIAlertViewDelegate
-
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
-{
-    [self hideBarsAfterShortDuration];
 }
 
 @end
