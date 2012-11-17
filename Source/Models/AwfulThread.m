@@ -51,7 +51,7 @@
     
     for (ThreadParsedInfo *info in threadInfos) {
         if ([info.threadID length] == 0) {
-            NSLog(@"ignoring ID-less thread");
+            NSLog(@"ignoring ID-less thread (announcement?)");
             continue;
         }
         AwfulThread *thread = existingThreads[info.threadID];
