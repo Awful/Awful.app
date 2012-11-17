@@ -22,6 +22,7 @@
 #import "AwfulThreadTitleLabel.h"
 #import "NSFileManager+UserDirectories.h"
 #import "NSManagedObject+Awful.h"
+#import "NSString+CollapseWhitespace.h"
 #import <QuartzCore/QuartzCore.h>
 #import "SVProgressHUD.h"
 #import "UIViewController+NavigationEnclosure.h"
@@ -97,7 +98,8 @@
 {
     if (_thread == thread) return;
     _thread = thread;
-    self.titleLabel.text = thread.title;
+    self.title = [thread.title stringByCollapsingWhitespace];
+    self.titleLabel.text = self.title;
     [self updatePageBar];
     self.postsView.stylesheetURL = StylesheetURLForForumWithID(thread.forum.forumID);
     [self updateFetchedResultsController];
@@ -725,7 +727,7 @@ static void * KVOContext = @"AwfulPostsView KVO";
 {
     AwfulImagePreviewViewController *preview = [[AwfulImagePreviewViewController alloc]
                                                 initWithURL:[NSURL URLWithString:urlString]];
-    preview.title = self.thread.title;
+    preview.title = self.title;
     UINavigationController *nav = [preview enclosingNavigationController];
     nav.navigationBar.translucent = YES;
     [self presentViewController:nav animated:YES completion:nil];

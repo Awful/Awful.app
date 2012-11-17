@@ -19,6 +19,7 @@
 #import "AwfulSplitViewController.h"
 #import "AwfulThreadCell.h"
 #import "AwfulThreadTags.h"
+#import "NSString+CollapseWhitespace.h"
 #import "SVPullToRefresh.h"
 #import "UIViewController+NavigationEnclosure.h"
 
@@ -158,7 +159,8 @@ typedef enum {
 
 - (void)showThreadActionsForThread:(AwfulThread *)thread
 {
-    AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:thread.title];
+    AwfulActionSheet *sheet = [AwfulActionSheet new];
+    sheet.title = [thread.title stringByCollapsingWhitespace];
     [sheet addButtonWithTitle:@"Jump to First Page" block:^{
         AwfulPostsViewController *page = [AwfulPostsViewController new];
         page.thread = thread;
@@ -255,7 +257,7 @@ typedef enum {
     } else {
         cell.rating = [thread.threadRating floatValue];
     }
-    cell.textLabel.text = thread.title;
+    cell.textLabel.text = [thread.title stringByCollapsingWhitespace];
     NSNumberFormatterStyle numberStyle = NSNumberFormatterDecimalStyle;
     NSString *pagesFormatted = [NSNumberFormatter localizedStringFromNumber:thread.numberOfPages
                                                                 numberStyle:numberStyle];

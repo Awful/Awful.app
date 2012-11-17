@@ -14,6 +14,7 @@
 #import "AwfulSettings.h"
 #import "AwfulThreadTitleLabel.h"
 #import "ImgurHTTPClient.h"
+#import "NSString+CollapseWhitespace.h"
 #import "SVProgressHUD.h"
 
 typedef enum {
@@ -106,7 +107,8 @@ typedef enum {
     self.post = post;
     self.thread = nil;
     self.replyTextView.text = text;
-    self.titleLabel.text = post.thread.title;
+    self.title = [post.thread.title stringByCollapsingWhitespace];
+    self.titleLabel.text = self.title;
     self.sendButton.title = @"Edit";
     self.images = [NSMutableDictionary new];
 }
@@ -116,7 +118,8 @@ typedef enum {
     self.thread = thread;
     self.post = nil;
     self.replyTextView.text = contents;
-    self.titleLabel.text = thread.title;
+    self.title = [thread.title stringByCollapsingWhitespace];
+    self.titleLabel.text = self.title;
     self.sendButton.title = @"Reply";
     self.images = [NSMutableDictionary new];
 }
