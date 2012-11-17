@@ -76,8 +76,6 @@
 
 @property (nonatomic) BOOL observingScrollView;
 
-@property (nonatomic) BOOL refreshingSamePage;
-
 @end
 
 
@@ -174,6 +172,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 
 - (void)setCurrentPage:(NSInteger)currentPage
 {
+    if (_currentPage == currentPage) return;
     _currentPage = currentPage;
     [self updateFetchedResultsController];
     [self updatePageBar];
@@ -192,16 +191,14 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 
 - (void)loadPage:(NSInteger)page
 {
+    BOOL refreshingCurrentPage = page > 0 && page == self.currentPage;
     [self.networkOperation cancel];
     self.advertisementHTML = nil;
-    if (!self.refreshingSamePage) {
-        if (page > 0) {
-            self.currentPage = page;
-            [self.postsView reloadData];
-            [self.postsView.scrollView setContentOffset:CGPointZero animated:YES];
-        } else {
-            [self.postsView reloadAdvertisementHTML];
-        }
+    if (page < 1) [self.postsView reloadAdvertisementHTML];
+    if (page > 0) self.currentPage = page;
+    if (!refreshingCurrentPage) {
+        [self.postsView reloadData];
+        [self.postsView.scrollView setContentOffset:CGPointZero animated:YES];
     }
     id op = [[AwfulHTTPClient client] listPostsInThreadWithID:self.thread.threadID
                                                        onPage:page
@@ -210,20 +207,16 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     {
         if (error) {
             [AwfulAlertView showWithTitle:@"Could Not Load Page" error:error buttonTitle:@"Uh Huh"];
-        } else {
-            self.advertisementHTML = advertisementHTML;
-            AwfulPost *anyPost = [posts lastObject];
-            if (page < 1) {
-                self.currentPage = anyPost.threadPageValue;
-            }
-            if (!self.refreshingSamePage && page < 1) {
-                [self.postsView reloadData];
-                self.postsView.scrollView.contentOffset = CGPointZero;
-            }
-            [self updatePageBar];
-            [self markPostsAsBeenSeen];
+            return;
         }
-        self.refreshingSamePage = NO;
+        self.advertisementHTML = advertisementHTML;
+        AwfulPost *anyPost = [posts lastObject];
+        self.currentPage = anyPost.threadPageValue;
+        if (!refreshingCurrentPage) {
+            [self.postsView reloadData];
+            self.postsView.scrollView.contentOffset = CGPointZero;
+        }
+        [self markPostsAsBeenSeen];
     }];
     self.networkOperation = op;
 }
@@ -275,10 +268,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 - (void)loadNextPageOrRefresh
 {
     if (self.thread.numberOfPagesValue > self.currentPage) {
-        self.refreshingSamePage = NO;
         [self loadPage:self.currentPage + 1];
     } else {
-        self.refreshingSamePage = YES;
         [self loadPage:self.currentPage];
     }
 }
