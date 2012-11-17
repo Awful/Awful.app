@@ -855,18 +855,22 @@ static void * KVOContext = @"AwfulPostsView KVO";
     
     UIButton *goToForumButton = [self makeButton];
     [goToForumButton setTitle:@"Go To\nForum" forState:UIControlStateNormal];
+    goToForumButton.accessibilityLabel = @"Go to forum";
+    goToForumButton.accessibilityHint = @"Opens this thread's forum";
     [goToForumButton setImage:[UIImage imageNamed:@"go-to-forum.png"]
                      forState:UIControlStateNormal];
     _goToForumButton = goToForumButton;
     
     UIButton *loadReadPostsButton = [self makeButton];
     [loadReadPostsButton setTitle:@"Load Read\nPosts" forState:UIControlStateNormal];
+    loadReadPostsButton.accessibilityLabel = @"Load read posts";
     [loadReadPostsButton setImage:[UIImage imageNamed:@"load-read-posts.png"]
                          forState:UIControlStateNormal];
     _loadReadPostsButton = loadReadPostsButton;
     
     UIButton *scrollToBottomButton = [self makeButton];
     [scrollToBottomButton setTitle:@"Scroll To\nBottom" forState:UIControlStateNormal];
+    scrollToBottomButton.accessibilityLabel = @"Scroll to bottom";
     [scrollToBottomButton setImage:[UIImage imageNamed:@"scroll-to-bottom.png"]
                           forState:UIControlStateNormal];
     _scrollToBottomButton = scrollToBottomButton;

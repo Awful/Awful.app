@@ -31,6 +31,11 @@
     titleLabel.adjustsFontSizeToFitWidth = YES;
     titleLabel.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                    UIViewAutoresizingFlexibleHeight);
+    NSComparisonResult atLeastSix = [[UIDevice currentDevice].systemVersion compare:@"6.0"
+                                                                            options:NSNumericSearch];
+    if (atLeastSix != NSOrderedAscending) {
+        titleLabel.accessibilityTraits |= UIAccessibilityTraitHeader;
+    }
     self.titleView = titleLabel;
     return titleLabel;
 }
