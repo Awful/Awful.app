@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-
 @protocol AwfulForumCellDelegate;
 
 typedef enum

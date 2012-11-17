@@ -7,35 +7,16 @@
 //
 
 #import "AwfulFetchedTableViewController.h"
-
 @class AwfulForum;
-@class AwfulThread;
-@class AwfulPostsViewController;
 
-typedef enum {
-    AwfulThreadCellTypeUnknown,
-    AwfulThreadCellTypeThread,
-    AwfulThreadCellTypeLoadMore
-} AwfulThreadCellType;
-
-@interface AwfulThreadListController : AwfulFetchedTableViewController <UIActionSheetDelegate>
+@interface AwfulThreadListController : AwfulFetchedTableViewController
 
 // Designated initializer.
 - (id)init;
 
 @property (nonatomic, strong) AwfulForum *forum;
 @property (nonatomic, assign) NSInteger currentPage;
-@property (nonatomic, assign) NSInteger numberOfPages;
 
-@property (nonatomic, strong) IBOutlet UIBarButtonItem *prevPageBarButtonItem;
-@property (nonatomic, strong) IBOutlet UIBarButtonItem *pageLabelBarButtonItem;
-@property (nonatomic, strong) IBOutlet UIBarButtonItem *nextPageBarButtonItem;
-
-@property (nonatomic, strong) AwfulThread *heldThread;
-
-- (void)showThreadActionsForThread:(AwfulThread *)thread;
-
-- (void)displayPage:(AwfulPostsViewController *)page;
 - (void)loadPageNum:(NSUInteger)pageNum;
 
 @end

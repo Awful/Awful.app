@@ -10,7 +10,6 @@
 #import "AwfulAlertView.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
-#import "AwfulPostsViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulThreadTitleLabel.h"
 #import "ImgurHTTPClient.h"

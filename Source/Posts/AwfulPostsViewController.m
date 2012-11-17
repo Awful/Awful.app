@@ -24,7 +24,6 @@
 #import "NSManagedObject+Awful.h"
 #import "NSString+CollapseWhitespace.h"
 #import <QuartzCore/QuartzCore.h>
-#import "SVProgressHUD.h"
 #import "UIViewController+NavigationEnclosure.h"
 
 @interface TopBarView : UIView
