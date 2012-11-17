@@ -885,9 +885,7 @@ static void * KVOContext = @"AwfulPostsView KVO";
     button.titleLabel.font = [UIFont boldSystemFontOfSize:12];
     button.titleLabel.numberOfLines = 2;
     button.titleLabel.shadowOffset = CGSizeMake(0, 1);
-    [button setTitleColor:[UIColor colorWithHue:0.590
-                                     saturation:0.771
-                                     brightness:0.376
+    [button setTitleColor:[UIColor colorWithHue:0.590 saturation:0.771 brightness:0.376
                                           alpha:1.000]
                  forState:UIControlStateNormal];
     [button setTitleShadowColor:[UIColor whiteColor]
