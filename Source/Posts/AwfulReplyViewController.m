@@ -11,10 +11,10 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
 #import "AwfulSettings.h"
-#import "AwfulThreadTitleLabel.h"
 #import "ImgurHTTPClient.h"
 #import "NSString+CollapseWhitespace.h"
 #import "SVProgressHUD.h"
+#import "UINavigationItem+TwoLineTitle.h"
 
 typedef enum {
     TopLevelMenu = 0,
@@ -28,8 +28,6 @@ typedef enum {
 @property (strong, nonatomic) UIBarButtonItem *sendButton;
 
 @property (strong, nonatomic) UIBarButtonItem *cancelButton;
-
-@property (readonly, nonatomic) UILabel *titleLabel;
 
 @property (readonly, nonatomic) UITextView *replyTextView;
 
@@ -51,15 +49,6 @@ typedef enum {
 
 @implementation AwfulReplyViewController
 
-- (id)init
-{
-    self = [super initWithNibName:nil bundle:nil];
-    if (self) {
-        self.navigationItem.titleView = NewAwfulThreadTitleLabel();
-    }
-    return self;
-}
-
 - (void)dealloc
 {
     if (_observerToken) [[NSNotificationCenter defaultCenter] removeObserver:_observerToken];
@@ -69,11 +58,6 @@ typedef enum {
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIKeyboardWillHideNotification
                                                   object:nil];
-}
-
-- (UILabel *)titleLabel
-{
-    return (UILabel *)self.navigationItem.titleView;
 }
 
 - (UITextView *)replyTextView
@@ -107,7 +91,7 @@ typedef enum {
     self.thread = nil;
     self.replyTextView.text = text;
     self.title = [post.thread.title stringByCollapsingWhitespace];
-    self.titleLabel.text = self.title;
+    self.navigationItem.titleLabel.text = self.title;
     self.sendButton.title = @"Edit";
     self.images = [NSMutableDictionary new];
 }
@@ -118,7 +102,7 @@ typedef enum {
     self.post = nil;
     self.replyTextView.text = contents;
     self.title = [thread.title stringByCollapsingWhitespace];
-    self.titleLabel.text = self.title;
+    self.navigationItem.titleLabel.text = self.title;
     self.sendButton.title = @"Reply";
     self.images = [NSMutableDictionary new];
 }

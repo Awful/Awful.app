@@ -1,15 +1,18 @@
 //
-//  AwfulThreadTitleLabel.m
+//  UINavigationItem+TwoLineTitle.m
 //  Awful
 //
-//  Created by Nolan Waite on 2012-10-21.
+//  Created by Nolan Waite on 2012-11-17.
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulThreadTitleLabel.h"
+#import "UINavigationItem+TwoLineTitle.h"
 
-UILabel *NewAwfulThreadTitleLabel()
+@implementation UINavigationItem (TwoLineTitle)
+
+- (UILabel *)titleLabel
 {
+    if (self.titleView) return (UILabel *)self.titleView;
     // UINavigationBar never seems to make our label taller, but it does position it nicely,
     // so we set an overly tall height to make sure we get two lines.
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 100)];
@@ -26,6 +29,15 @@ UILabel *NewAwfulThreadTitleLabel()
     titleLabel.shadowColor = [UIColor colorWithWhite:0 alpha:0.5];
     titleLabel.textAlignment = UITextAlignmentLeft;
     titleLabel.adjustsFontSizeToFitWidth = YES;
-    titleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    titleLabel.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                   UIViewAutoresizingFlexibleHeight);
+    self.titleView = titleLabel;
     return titleLabel;
 }
+
+- (void)setTitleLabel:(UILabel *)titleLabel
+{
+    self.titleView = titleLabel;
+}
+
+@end

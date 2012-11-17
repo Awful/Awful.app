@@ -19,11 +19,11 @@
 #import "AwfulReplyViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulSpecificPageController.h"
-#import "AwfulThreadTitleLabel.h"
 #import "NSFileManager+UserDirectories.h"
 #import "NSManagedObject+Awful.h"
 #import "NSString+CollapseWhitespace.h"
 #import <QuartzCore/QuartzCore.h>
+#import "UINavigationItem+TwoLineTitle.h"
 #import "UIViewController+NavigationEnclosure.h"
 
 @interface TopBarView : UIView
@@ -60,8 +60,6 @@
 
 @property (nonatomic) BOOL didJustMarkAsReadToHere;
 
-@property (readonly, nonatomic) UILabel *titleLabel;
-
 - (void)showThreadActionsFromRect:(CGRect)rect inView:(UIView *)view;
 
 - (void)showActionsForPost:(AwfulPost *)post fromRect:(CGRect)rect inView:(UIView *)view;
@@ -86,7 +84,6 @@
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         self.hidesBottomBarWhenPushed = YES;
-        self.navigationItem.titleView = NewAwfulThreadTitleLabel();
     }
     return self;
 }
@@ -96,7 +93,6 @@
     if (_thread == thread) return;
     _thread = thread;
     self.title = [thread.title stringByCollapsingWhitespace];
-    self.titleLabel.text = self.title;
     [self updatePageBar];
     self.postsView.stylesheetURL = StylesheetURLForForumWithID(thread.forum.forumID);
     [self updateFetchedResultsController];
@@ -177,11 +173,6 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     [self updateFetchedResultsController];
     [self updatePageBar];
     [self updatePullForNextPageLabel];
-}
-
-- (UILabel *)titleLabel
-{
-    return (UILabel *)self.navigationItem.titleView;
 }
 
 - (void)refresh
@@ -513,6 +504,12 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 }
 
 #pragma mark - UIViewController
+
+- (void)setTitle:(NSString *)title
+{
+    [super setTitle:title];
+    self.navigationItem.titleLabel.text = title;
+}
 
 - (void)loadView
 {

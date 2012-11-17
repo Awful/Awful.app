@@ -9,9 +9,9 @@
 #import "AwfulImagePreviewViewController.h"
 #import "AwfulActionSheet.h"
 #import "AwfulAlertView.h"
-#import "AwfulThreadTitleLabel.h"
 #import "SVProgressHUD.h"
 #import "UIImageView+AFNetworking.h"
+#import "UINavigationItem+TwoLineTitle.h"
 
 @interface AwfulImagePreviewViewController () <UIScrollViewDelegate>
 
@@ -27,8 +27,6 @@
 
 @property (nonatomic) UIBarButtonItem *actionButton;
 
-@property (readonly, nonatomic) UILabel *titleLabel;
-
 @end
 
 
@@ -42,7 +40,6 @@
         self.wantsFullScreenLayout = YES;
         self.navigationItem.leftBarButtonItem = self.doneButton;
         self.navigationItem.rightBarButtonItem = self.actionButton;
-        self.navigationItem.titleView = NewAwfulThreadTitleLabel();
     }
     return self;
 }
@@ -70,11 +67,6 @@
                                                                   target:self
                                                                   action:@selector(showActions)];
     return _actionButton;
-}
-
-- (UILabel *)titleLabel
-{
-    return (UILabel *)self.navigationItem.titleView;
 }
 
 - (void)updateImageView
@@ -210,7 +202,7 @@
 - (void)setTitle:(NSString *)title
 {
     [super setTitle:title];
-    self.titleLabel.text = title;
+    self.navigationItem.titleLabel.text = title;
 }
 
 - (void)loadView

@@ -61,6 +61,7 @@
 		1C278A4E1647A47F007D3CEC /* AwfulScrollViewPullObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C278A4A1647A47F007D3CEC /* AwfulScrollViewPullObserver.m */; };
 		1C33D0E21656E845004C6D79 /* AwfulAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C33D0E11656E845004C6D79 /* AwfulAlertView.m */; };
 		1C33D0E616574505004C6D79 /* NSString+CollapseWhitespace.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C33D0E516574505004C6D79 /* NSString+CollapseWhitespace.m */; };
+		1C33D0EC165818BF004C6D79 /* UINavigationItem+TwoLineTitle.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C33D0EB165818BF004C6D79 /* UINavigationItem+TwoLineTitle.m */; };
 		1C3CC799162876AE00088AA8 /* adminstar.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3CC797162876AE00088AA8 /* adminstar.png */; };
 		1C3CC79A162876AE00088AA8 /* modstar.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3CC798162876AE00088AA8 /* modstar.png */; };
 		1C40E5B01640F924004AAFA6 /* NSFileManager+UserDirectories.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C40E5AF1640F924004AAFA6 /* NSFileManager+UserDirectories.m */; };
@@ -74,7 +75,6 @@
 		1C67BB1A16493C5F00898B35 /* bss-fanboy.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C67BB1916493C5F00898B35 /* bss-fanboy.png */; };
 		1C83DB54161FF48600E53CFA /* ImgurHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */; };
 		1C83DB571620113F00E53CFA /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C83DB561620113F00E53CFA /* NSData+Base64.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc -w"; }; };
-		1C95FED81634C0380041A01F /* AwfulThreadTitleLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C95FED71634C0380041A01F /* AwfulThreadTitleLabel.m */; };
 		1C9C675F164C332F00478270 /* ww-denim.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C9C675E164C332F00478270 /* ww-denim.png */; };
 		1CAB36B11548F0FE00A4A362 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
 		1CAED9C41635BD1F001F5F04 /* NSURL+QueryDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFBED0C1632212C008AF641 /* NSURL+QueryDictionary.m */; };
@@ -814,6 +814,8 @@
 		1C33D0E11656E845004C6D79 /* AwfulAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAlertView.m; sourceTree = "<group>"; };
 		1C33D0E416574505004C6D79 /* NSString+CollapseWhitespace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+CollapseWhitespace.h"; sourceTree = "<group>"; };
 		1C33D0E516574505004C6D79 /* NSString+CollapseWhitespace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+CollapseWhitespace.m"; sourceTree = "<group>"; };
+		1C33D0EA165818BE004C6D79 /* UINavigationItem+TwoLineTitle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationItem+TwoLineTitle.h"; sourceTree = "<group>"; };
+		1C33D0EB165818BF004C6D79 /* UINavigationItem+TwoLineTitle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationItem+TwoLineTitle.m"; sourceTree = "<group>"; };
 		1C3CC797162876AE00088AA8 /* adminstar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = adminstar.png; sourceTree = "<group>"; };
 		1C3CC798162876AE00088AA8 /* modstar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = modstar.png; sourceTree = "<group>"; };
 		1C40E5AE1640F924004AAFA6 /* NSFileManager+UserDirectories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSFileManager+UserDirectories.h"; path = "Source/Main/NSFileManager+UserDirectories.h"; sourceTree = SOURCE_ROOT; };
@@ -835,8 +837,6 @@
 		1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImgurHTTPClient.m; sourceTree = "<group>"; };
 		1C83DB551620113F00E53CFA /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
 		1C83DB561620113F00E53CFA /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
-		1C95FED61634C0380041A01F /* AwfulThreadTitleLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTitleLabel.h; sourceTree = "<group>"; };
-		1C95FED71634C0380041A01F /* AwfulThreadTitleLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTitleLabel.m; sourceTree = "<group>"; };
 		1C9C675E164C332F00478270 /* ww-denim.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ww-denim.png"; sourceTree = "<group>"; };
 		1CAB36B01548F0FE00A4A362 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		1CAED9D916373F91001F5F04 /* AwfulThreadTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTags.h; sourceTree = "<group>"; };
@@ -1610,6 +1610,8 @@
 				1C33D0E516574505004C6D79 /* NSString+CollapseWhitespace.m */,
 				1CFBED0B1632212C008AF641 /* NSURL+QueryDictionary.h */,
 				1CFBED0C1632212C008AF641 /* NSURL+QueryDictionary.m */,
+				1C33D0EA165818BE004C6D79 /* UINavigationItem+TwoLineTitle.h */,
+				1C33D0EB165818BF004C6D79 /* UINavigationItem+TwoLineTitle.m */,
 				1CF0D614164AE95200CFA137 /* UIViewController+NavigationEnclosure.h */,
 				1CF0D615164AE95200CFA137 /* UIViewController+NavigationEnclosure.m */,
 			);
@@ -1831,8 +1833,6 @@
 				1CC7802C1612D9DE002AF958 /* AwfulReplyViewController.m */,
 				1CC7802D1612D9DE002AF958 /* AwfulSpecificPageController.h */,
 				1CC7802E1612D9DE002AF958 /* AwfulSpecificPageController.m */,
-				1C95FED61634C0380041A01F /* AwfulThreadTitleLabel.h */,
-				1C95FED71634C0380041A01F /* AwfulThreadTitleLabel.m */,
 				1C23A0A0163E6C40006C7F39 /* AwfulPostsView.h */,
 				1C23A0A1163E6C40006C7F39 /* AwfulPostsView.m */,
 				1C23A0A4163E6E1D006C7F39 /* posts-view.html */,
@@ -3405,7 +3405,6 @@
 				1CFBECEE163076F1008AF641 /* AwfulPageBar.m in Sources */,
 				1CFBED081631C068008AF641 /* AwfulLicensesViewController.m in Sources */,
 				1CFBED0D1632212C008AF641 /* NSURL+QueryDictionary.m in Sources */,
-				1C95FED81634C0380041A01F /* AwfulThreadTitleLabel.m in Sources */,
 				1CB52A6E1637B21700032AD3 /* AwfulThreadTags.m in Sources */,
 				1C090FB7163A40A1003FD0A3 /* _AwfulPost.m in Sources */,
 				1C090FBA163A40C1003FD0A3 /* AwfulPost.m in Sources */,
@@ -3430,6 +3429,7 @@
 				1C10161016545B9300302B19 /* AwfulNavigationBar.m in Sources */,
 				1C33D0E21656E845004C6D79 /* AwfulAlertView.m in Sources */,
 				1C33D0E616574505004C6D79 /* NSString+CollapseWhitespace.m in Sources */,
+				1C33D0EC165818BF004C6D79 /* UINavigationItem+TwoLineTitle.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
