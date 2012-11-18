@@ -15,12 +15,11 @@
 </style>
 
 <body class="{{device}}">
+    {{#postsAboveNotice}}
     <ul id="headerActions" class="{{#postsAboveNotice}}unreadPosts{{/postsAboveNotice}}">
-        {{#postsAboveNotice}}
         <li class="older-posts" onClick="tappedOlderPosts()">Load Read Posts</li>
-        {{/postsAboveNotice}}
-        <li class="scrollToBottom" onClick="scrollToBottom()">Scroll to Bottom</li>
     </ul>
+    {{/postsAboveNotice}}
     
     {{#posts}}
     <article id="{{postID}}" class="{{altCSSClass}} {{#isOP}}op{{/isOP}}">

@@ -34,65 +34,6 @@ a.quote_link {
     text-decoration: none;
 }
 
-/* All - Front matter */
-
-
-#headerActions {
-    background: #e6e6e6;
-    height: 44px;
-    box-shadow: 0 0 5px 5px #7b7b7b;
-    border-bottom: 1px solid #c7c7c7;
-}
-#headerActions li {
-    display: block;
-    float:left;
-    font-weight: bold;
-    font-size: 12px;
-    color: #143761;
-    width: 50%;
-    height: 44px;
-    text-align: left;
-    padding-top: 14px;
-    border-left: 1px solid #c7c7c7;
-    border-right: 1px solid #f6f6f6;
-    border-bottom: 1px solid #f6f6f6;
-    text-shadow: 0 1px #fff;}
-#headerActions.unreadPosts li {
-    width: 33%;
-    font-size: 12px;
-    text-shadow: 0 1px #fff;
-    padding-top: 7px;
-}
-#headerActions.unreadPosts li:nth-of-type(2) {
-    width: 34%;
-}
-
-.scrollToBottom {
-    background: 9px 12px no-repeat url("downArrow.png");
-    background-size: auto 50%;
-    padding-left: 30px;
-}
-.unreadPosts .scrollToBottom {
-    background: 9px 12px no-repeat url("downArrow.png");
-    background-size: auto 50%;
-    padding-left: 30px;
-}
-.older-posts {
-    background: 7px 12px no-repeat url("load.png");
-    background-size: auto 50%;
-    padding-left: 37px;
-}
-.parentForum {
-    background: 9px 12px no-repeat url("forumsListGrey.png");
-    background-size: auto 50%;
-    padding-left: 38px;
-}
-.unreadPosts .parentForum {
-    background: 9px 12px no-repeat url("forumsListGrey.png");
-    background-size: auto 50%;
-    padding-left: 39px;
-}
-
 /* All devices - Post header */
 
 article header button.post-action {
