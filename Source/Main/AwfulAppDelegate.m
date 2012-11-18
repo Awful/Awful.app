@@ -27,6 +27,10 @@
 
 @interface AwfulAppDelegate () <UITabBarControllerDelegate, AwfulLoginControllerDelegate>
 
+@property (weak, nonatomic) AwfulSplitViewController *splitViewController;
+
+@property (weak, nonatomic) UITabBarController *tabBarController;
+
 @end
 
 
@@ -120,17 +124,6 @@ static AwfulAppDelegate *_instance;
                                   barMetrics:UIBarMetricsLandscapePhone];
 }
 
-- (UITabBarController *)tabBarController
-{
-    if ([self.window.rootViewController isKindOfClass:[UITabBarController class]]) {
-        return (UITabBarController *)self.window.rootViewController;
-    } else if ([self.window.rootViewController isKindOfClass:[UISplitViewController class]]) {
-        UISplitViewController *split = (UISplitViewController *)self.window.rootViewController;
-        if ([split.viewControllers count] > 0) return split.viewControllers[0];
-    }
-    return nil;
-}
-
 #pragma mark - UIApplicationDelegate
 
 - (BOOL)application:(UIApplication *)application
@@ -162,9 +155,11 @@ static AwfulAppDelegate *_instance;
         AwfulStartViewController *start = [AwfulStartViewController new];
         splitController.viewControllers = @[ tabBar, [start enclosingNavigationController] ];
         self.window.rootViewController = splitController;
+        self.splitViewController = splitController;
     } else {
         self.window.rootViewController = tabBar;
     }
+    self.tabBarController = tabBar;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         NSFileManager *fileman = [NSFileManager defaultManager];
@@ -224,17 +219,30 @@ static AwfulAppDelegate *_instance;
     // Open the forums list: awful://forums
     // Open a specific forum: awful://forums/:forumID
     if ([[url host] isEqualToString:@"forums"]) {
-        UINavigationController *nav = self.tabBarController.viewControllers[0];
-        [nav popToRootViewControllerAnimated:NO];
-        self.tabBarController.selectedViewController = nav;
+        AwfulForum *forum;
         // First path component is the /
         if ([[url pathComponents] count] > 1) {
             NSString *forumID = [url pathComponents][1];
-            AwfulForum *forum = [AwfulForum firstMatchingPredicate:@"forumID == %@", forumID];
+            forum = [AwfulForum firstMatchingPredicate:@"forumID == %@", forumID];
             if (!forum) return NO;
-            AwfulForumsListController *list = nav.viewControllers[0];
-            [list showForum:forum];
         }
+        UINavigationController *nav = self.tabBarController.viewControllers[0];
+        self.tabBarController.selectedViewController = nav;
+        if (!forum) {
+            [nav popToRootViewControllerAnimated:YES];
+            return YES;
+        }
+        for (AwfulThreadListController *viewController in nav.viewControllers) {
+            if (![viewController isKindOfClass:[AwfulThreadListController class]]) continue;
+            if ([viewController.forum isEqual:forum]) {
+                [nav popToViewController:viewController animated:YES];
+                return YES;
+            }
+        }
+        AwfulForumsListController *list = nav.viewControllers[0];
+        [nav popToViewController:list animated:NO];
+        [list showForum:forum];
+        [self.splitViewController showMasterView];
     }
     return YES;
 }
