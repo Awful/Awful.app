@@ -180,6 +180,19 @@ static NSString * JSONize(id obj)
     return self.webView.scrollView;
 }
 
+- (void)setLoadingMessage:(NSString *)loadingMessage
+{
+    if (_loadingMessage == loadingMessage) return;
+    _loadingMessage = [loadingMessage copy];
+    [self updateLoadingMessage];
+}
+
+- (void)updateLoadingMessage
+{
+    NSString *json = JSONize(@[ self.loadingMessage ? self.loadingMessage : [NSNull null] ]);
+    [self evalJavaScript:@"Awful.loading(%@[0])", json];
+}
+
 #pragma mark - UIWebViewDelegate
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
@@ -187,6 +200,7 @@ static NSString * JSONize(id obj)
     dispatch_once(&_onceOnFirstLoad, ^{
         [self updateStylesheetURL];
         [self updateDark];
+        [self updateLoadingMessage];
         [self reloadData];
     });
 }

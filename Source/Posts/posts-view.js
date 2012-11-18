@@ -734,6 +734,15 @@ Awful.ad = function(ad){
   $('#ad').html(ad)
 }
 
+Awful.loading = function(loading){
+  if (loading === null || loading === undefined) {
+    $('#loading').hide().siblings('div').show()
+  } else {
+    $('#loading').show().siblings('div').hide()
+    $('#loading p').text(loading)
+  }
+}
+
 var baseURL = "http://forums.somethingawful.com/"
 
 function render(post) {

@@ -182,14 +182,26 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 
 - (void)loadPage:(NSInteger)page
 {
-    BOOL refreshingCurrentPage = page > 0 && page == self.currentPage;
     [self.networkOperation cancel];
     self.advertisementHTML = nil;
     if (page < 1) [self.postsView reloadAdvertisementHTML];
+    // Check this before updating current page.
+    BOOL refreshingCurrentPage = page > 0 && page == self.currentPage;
     if (page > 0) self.currentPage = page;
+    if (page > 0 && [self.fetchedResultsController.fetchedObjects count] > 0) {
+        self.postsView.loadingMessage = nil;
+    } else {
+        if (page > 0) {
+            self.postsView.loadingMessage = [NSString stringWithFormat:@"Loading page %d…", page];
+        } else if (page == AwfulPageLast) {
+            self.postsView.loadingMessage = @"Loading last page…";
+        } else if (page == AwfulPageNextUnread) {
+            self.postsView.loadingMessage = @"Loading next unread page…";
+        }
+    }
     if (!refreshingCurrentPage) {
         [self.postsView reloadData];
-        [self.postsView.scrollView setContentOffset:CGPointZero animated:YES];
+        [self.postsView.scrollView setContentOffset:CGPointZero animated:NO];
     }
     id op = [[AwfulHTTPClient client] listPostsInThreadWithID:self.thread.threadID
                                                        onPage:page
@@ -207,6 +219,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
             [self.postsView reloadData];
             self.postsView.scrollView.contentOffset = CGPointZero;
         }
+        self.postsView.loadingMessage = nil;
         [self markPostsAsBeenSeen];
     }];
     self.networkOperation = op;
