@@ -12,6 +12,8 @@
 
 @interface AwfulSplitViewController () <UISplitViewControllerDelegate>
 
+@property (readonly, getter=isMasterViewVisible, nonatomic) BOOL masterViewVisible;
+
 @end
 
 
@@ -37,11 +39,17 @@
 
 - (void)showMasterView
 {
+    if (self.masterViewVisible) return;
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
     [self.rootPopoverButtonItem.target performSelector:self.rootPopoverButtonItem.action
                                             withObject:self.rootPopoverButtonItem];
     #pragma clang diagnostic pop
+}
+
+- (BOOL)isMasterViewVisible
+{
+    return !self.masterPopoverController;
 }
 
 #pragma mark - UIViewController
