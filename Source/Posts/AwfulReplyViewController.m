@@ -523,11 +523,6 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
 
 #pragma mark - UIViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    return [self init];
-}
-
 - (void)loadView
 {
     UITextView *textView = [UITextView new];
