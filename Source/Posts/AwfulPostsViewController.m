@@ -44,7 +44,7 @@
 
 @property (nonatomic) NSFetchedResultsController *fetchedResultsController;
 
-@property (nonatomic) NSOperation *networkOperation;
+@property (weak, nonatomic) NSOperation *networkOperation;
 
 @property (weak, nonatomic) AwfulPageBar *pageBar;
 
@@ -73,6 +73,8 @@
 @property (nonatomic) BOOL markingPostsAsBeenSeen;
 
 @property (nonatomic) BOOL observingScrollView;
+
+@property NSInteger loadingPage;
 
 @end
 
@@ -182,6 +184,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 
 - (void)loadPage:(NSInteger)page
 {
+    self.loadingPage = page;
     [self.networkOperation cancel];
     self.advertisementHTML = nil;
     if (page < 1) [self.postsView reloadAdvertisementHTML];
@@ -208,6 +211,10 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                                                       andThen:^(NSError *error, NSArray *posts,
                                                                 NSString *advertisementHTML)
     {
+        // Since we load cached pages where possible, things can get out of order if we change
+        // pages quickly. If the callback comes in after we've moved away from the requested page,
+        // just don't bother going any further. We have the data for later.
+        if (page != self.loadingPage) return;
         if (error) {
             [AwfulAlertView showWithTitle:@"Could Not Load Page" error:error buttonTitle:@"Uh Huh"];
             return;
