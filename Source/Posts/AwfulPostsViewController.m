@@ -75,8 +75,6 @@
 
 @property (nonatomic) BOOL observingScrollView;
 
-@property NSInteger loadingPage;
-
 @property (nonatomic) NSMutableArray *cachedUpdatesWhileScrolling;
 
 @end
@@ -124,6 +122,11 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 
 - (void)updateFetchedResultsController
 {
+    if (self.currentPage < 1) {
+        self.fetchedResultsController.delegate = nil;
+        self.fetchedResultsController = nil;
+        return;
+    }
     NSFetchRequest *request = self.fetchedResultsController.fetchRequest;
     if (!request) {
         request = [NSFetchRequest fetchRequestWithEntityName:[AwfulPost entityName]];
@@ -181,19 +184,14 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     [self updatePullForNextPageLabel];
 }
 
-- (void)refresh
-{
-    [self loadPage:self.currentPage];
-}
-
 - (void)loadPage:(NSInteger)page
 {
-    self.loadingPage = page;
     [self.networkOperation cancel];
+    self.currentPage = page;
     if (page > 0) {
-        self.currentPage = page;
         [self fetchPosts];
         if ([self.fetchedResultsController.fetchedObjects count] > 0) {
+            self.postsView.scrollView.contentOffset = CGPointZero;
             self.postsView.loadingMessage = nil;
         } else {
             self.postsView.loadingMessage = [NSString stringWithFormat:@"Loading page %d…", page];
@@ -212,6 +210,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     }
     self.advertisementHTML = nil;
     [self.postsView reloadData];
+    // This blockSelf exists entirely so we capture self in the block, which allows its use while
+    // debugging. Otherwise lldb/gdb don't know anything about "self".
     __block AwfulPostsViewController *blockSelf = self;
     id op = [[AwfulHTTPClient client] listPostsInThreadWithID:self.thread.threadID
                                                        onPage:page
@@ -221,7 +221,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         // Since we load cached pages where possible, things can get out of order if we change
         // pages quickly. If the callback comes in after we've moved away from the requested page,
         // just don't bother going any further. We have the data for later.
-        if (page != self.loadingPage) return;
+        if (page != self.currentPage) return;
         if (error) {
             [AwfulAlertView showWithTitle:@"Could Not Load Page" error:error buttonTitle:@"Uh Huh"];
             return;
@@ -234,7 +234,6 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
             [self.postsView reloadData];
         }
         self.postsView.loadingMessage = nil;
-        [self markPostsAsBeenSeen];
         [blockSelf markPostsAsBeenSeen];
     }];
     self.networkOperation = op;
