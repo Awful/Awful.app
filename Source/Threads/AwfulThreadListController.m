@@ -198,6 +198,7 @@ typedef enum {
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
         } else {
             thread.totalUnreadPostsValue = -1;
+            thread.seenValue = NO;
             [[AwfulDataStack sharedDataStack] save];
         }
     }];
