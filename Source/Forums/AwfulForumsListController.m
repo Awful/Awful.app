@@ -11,7 +11,6 @@
 #import "AwfulAlertView.h"
 #import "AwfulDataStack.h"
 #import "AwfulForumCell.h"
-#import "AwfulForumHeader.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
 #import "AwfulLoginController.h"
@@ -25,11 +24,23 @@
 @end
 
 
+@interface AwfulForumHeader : UILabel @end
+
+@implementation AwfulForumHeader
+
+- (void)drawTextInRect:(CGRect)rect
+{
+    [super drawTextInRect:CGRectInset(rect, 10, 0)];
+}
+
+@end
+
+
 @implementation AwfulForumsListController
 
 - (id)init
 {
-    self = [super initWithStyle:UITableViewStyleGrouped];
+    self = [super initWithStyle:UITableViewStylePlain];
     if (self) {
         self.title = @"Forums";
         self.tabBarItem.image = [UIImage imageNamed:@"list_icon.png"];
@@ -107,36 +118,31 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
     [super viewDidLoad];
     self.tableView.separatorColor = [UIColor colorWithWhite:0.94 alpha:1];
     self.tableView.rowHeight = 50;
-    self.view.backgroundColor = [UIColor colorWithWhite:0.333 alpha:1];
+    self.view.backgroundColor = [UIColor colorWithWhite:0.494 alpha:1];
     self.tableView.backgroundView = nil;
-    
-    // Bump table view contents down so the first section header is nicely spaced from the top.
-    self.tableView.contentInset = UIEdgeInsetsMake(10, 0, 0, 0);
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    
-    if (IsLoggedIn() && [self.fetchedResultsController.sections count] == 0) {
-       [self refresh];
-    }
+    CGRect headerFrame = (CGRect){ .size.height = self.tableView.rowHeight };
+    self.tableView.tableHeaderView = [[UIView alloc] initWithFrame:headerFrame];
+    self.tableView.contentInset = (UIEdgeInsets){ .top = -self.tableView.rowHeight };
 }
 
 #pragma mark - Table view data source
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    AwfulForumHeader *header = [AwfulForumHeader new];
+    UILabel *header = [AwfulForumHeader new];
+    header.frame = (CGRect){ .size = { tableView.bounds.size.width, tableView.rowHeight } };
+    header.font = [UIFont boldSystemFontOfSize:19];
+    header.textColor = [UIColor whiteColor];
+    header.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     header.backgroundColor = tableView.backgroundColor;
     AwfulForum *anyForum = [[self.fetchedResultsController.sections[section] objects] lastObject];
-    header.textLabel.text = anyForum.category.name;
+    header.text = anyForum.category.name;
     return header;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return [AwfulForumHeader height];
+    return tableView.rowHeight;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
