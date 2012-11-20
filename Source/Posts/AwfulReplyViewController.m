@@ -447,7 +447,7 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
     UIImagePickerController *picker = [UIImagePickerController new];
     picker.sourceType = sourceType;
     picker.mediaTypes = @[ (NSString *)kUTTypeImage ];
-    picker.allowsEditing = YES;
+    picker.allowsEditing = NO;
     return picker;
 }
 
