@@ -611,7 +611,10 @@ static NSString * DeEntitify(NSString *withEntities)
     
     self.beenSeen = !![doc searchForSingle:@"//tr[" HAS_CLASS(seen1) " or " HAS_CLASS(seen2) "]"];
     
-    NSString *innerHTML = [[doc rawSearch:@"//td[" HAS_CLASS(postbody) "]"] lastObject];
+    // FYAD and subforums store the post text in a div within postbody.
+    NSString *innerHTML = [[doc rawSearch:@"//div[" HAS_CLASS(complete_shit) "]"] lastObject];
+    // Everything else just uses the postbody.
+    if (!innerHTML) innerHTML = [[doc rawSearch:@"//td[" HAS_CLASS(postbody) "]"] lastObject];
     // Carriage returns sneak into posts (maybe from Windows users?) and get converted into &#13;
     // which add uncollapsible whitespace to the start of lines in posts.
     innerHTML = [innerHTML stringByReplacingOccurrencesOfString:@"&#13;" withString:@""];
