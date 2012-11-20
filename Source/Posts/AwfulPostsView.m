@@ -106,7 +106,7 @@ static NSString * JSONize(id obj)
 
 - (void)showHiddenSeenPosts
 {
-    UIScrollView *scrollView = self.webView.scrollView;
+    UIScrollView *scrollView = self.scrollView;
     BOOL justScrollToBottom = scrollView.contentSize.height <= scrollView.frame.size.height;
     
     float diff = [[self evalJavaScript:@"Awful.showAllPosts()"] floatValue];
@@ -191,6 +191,12 @@ static NSString * JSONize(id obj)
 {
     NSString *json = JSONize(@[ self.loadingMessage ? self.loadingMessage : [NSNull null] ]);
     [self evalJavaScript:@"Awful.loading(%@[0])", json];
+    if (self.loadingMessage) {
+        self.scrollView.contentOffset = CGPointZero;
+        self.scrollView.scrollEnabled = NO;
+    } else {
+        self.scrollView.scrollEnabled = YES;
+    }
 }
 
 #pragma mark - UIWebViewDelegate

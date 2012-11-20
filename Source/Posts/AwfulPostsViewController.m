@@ -40,7 +40,8 @@
 @interface AwfulPostsViewController () <AwfulPostsViewDelegate, UIPopoverControllerDelegate,
                                         AwfulSpecificPageControllerDelegate,
                                         NSFetchedResultsControllerDelegate,
-                                        AwfulReplyViewControllerDelegate>
+                                        AwfulReplyViewControllerDelegate,
+                                        UIScrollViewDelegate>
 
 @property (nonatomic) NSFetchedResultsController *fetchedResultsController;
 
@@ -75,6 +76,8 @@
 @property (nonatomic) BOOL observingScrollView;
 
 @property NSInteger loadingPage;
+
+@property (nonatomic) NSMutableArray *cachedUpdatesWhileScrolling;
 
 @end
 
@@ -138,13 +141,14 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     }
     request.predicate = [NSPredicate predicateWithFormat:@"thread == %@ AND threadPage = %d",
                          self.thread, self.currentPage];
+}
+
+- (void)fetchPosts
+{
     NSError *error;
     BOOL ok = [self.fetchedResultsController performFetch:&error];
     if (!ok) {
         NSLog(@"error fetching posts in AwfulPostsView: %@", error);
-    }
-    if ([[self.fetchedResultsController fetchedObjects] count] == 0) {
-        [self controllerDidChangeContent:self.fetchedResultsController];
     }
 }
 
@@ -186,26 +190,29 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 {
     self.loadingPage = page;
     [self.networkOperation cancel];
-    self.advertisementHTML = nil;
-    if (page < 1) [self.postsView reloadAdvertisementHTML];
-    // Check this before updating current page.
-    BOOL refreshingCurrentPage = page > 0 && page == self.currentPage;
-    if (page > 0) self.currentPage = page;
-    if (page > 0 && [self.fetchedResultsController.fetchedObjects count] > 0) {
-        self.postsView.loadingMessage = nil;
-    } else {
-        if (page > 0) {
+    if (page > 0) {
+        self.currentPage = page;
+        [self fetchPosts];
+        if ([self.fetchedResultsController.fetchedObjects count] > 0) {
+            self.postsView.loadingMessage = nil;
+        } else {
             self.postsView.loadingMessage = [NSString stringWithFormat:@"Loading page %d…", page];
-        } else if (page == AwfulPageLast) {
+        }
+    } else {
+        self.fetchedResultsController.delegate = nil;
+        self.fetchedResultsController = nil;
+        if (page == AwfulPageLast) {
             self.postsView.loadingMessage = @"Loading last page…";
         } else if (page == AwfulPageNextUnread) {
             self.postsView.loadingMessage = @"Loading next unread page…";
         }
     }
-    if (!refreshingCurrentPage) {
-        [self.postsView reloadData];
-        [self.postsView.scrollView setContentOffset:CGPointZero animated:NO];
+    if (self.postsView.loadingMessage) {
+        self.pullUpToRefreshControl.refreshing = NO;
     }
+    self.advertisementHTML = nil;
+    [self.postsView reloadData];
+    __block AwfulPostsViewController *blockSelf = self;
     id op = [[AwfulHTTPClient client] listPostsInThreadWithID:self.thread.threadID
                                                        onPage:page
                                                       andThen:^(NSError *error, NSArray *posts,
@@ -222,12 +229,13 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         self.advertisementHTML = advertisementHTML;
         AwfulPost *anyPost = [posts lastObject];
         self.currentPage = anyPost.threadPageValue;
-        if (!refreshingCurrentPage) {
+        if ([self.fetchedResultsController.fetchedObjects count] == 0) {
+            [self fetchPosts];
             [self.postsView reloadData];
-            self.postsView.scrollView.contentOffset = CGPointZero;
         }
         self.postsView.loadingMessage = nil;
         [self markPostsAsBeenSeen];
+        [blockSelf markPostsAsBeenSeen];
     }];
     self.networkOperation = op;
 }
@@ -578,6 +586,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     self.topBar = topBar;
     postsView.scrollView.contentInset = UIEdgeInsetsMake(44, 0, 0, 0);
     [self keepTopBarHiddenOnFirstView];
+    postsView.scrollView.delegate = self;
     
     AwfulPullToRefreshControl *refresh;
     refresh = [[AwfulPullToRefreshControl alloc] initWithDirection:AwfulScrollViewPullUp];
@@ -769,12 +778,25 @@ static void * KVOContext = @"AwfulPostsView KVO";
       newIndexPath:(NSIndexPath *)newIndexPath
 {
     if (self.markingPostsAsBeenSeen) return;
+    if (self.cachedUpdatesWhileScrolling) {
+        NSMethodSignature *signature = [self methodSignatureForSelector:_cmd];
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
+        invocation.selector = _cmd;
+        [invocation setArgument:&controller atIndex:2];
+        [invocation setArgument:&post atIndex:3];
+        [invocation setArgument:&indexPath atIndex:4];
+        [invocation setArgument:&type atIndex:5];
+        [invocation setArgument:&newIndexPath atIndex:6];
+        [invocation retainArguments];
+        [self.cachedUpdatesWhileScrolling addObject:invocation];
+        return;
+    }
     if (type == NSFetchedResultsChangeInsert) {
         [self.postsView insertPostAtIndex:newIndexPath.row];
     } else if (type == NSFetchedResultsChangeDelete) {
         [self.postsView deletePostAtIndex:indexPath.row];
     } else if (type == NSFetchedResultsChangeUpdate) {
-        // TODO Handle this without making the scroll view go haywire.
+        [self.postsView reloadPostAtIndex:indexPath.row];
     } else if (type == NSFetchedResultsChangeMove) {
         [self.postsView deletePostAtIndex:indexPath.row];
         [self.postsView insertPostAtIndex:newIndexPath.row];
@@ -849,6 +871,31 @@ static void * KVOContext = @"AwfulPostsView KVO";
 - (void)replyViewControllerDidCancel:(AwfulReplyViewController *)replyViewController
 {
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - UIScrollViewDelegate
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    if (!self.cachedUpdatesWhileScrolling) self.cachedUpdatesWhileScrolling = [NSMutableArray new];
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)willDecelerate
+{
+    if (willDecelerate) return;
+    [self processCachedUpdates];
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    [self processCachedUpdates];
+}
+
+- (void)processCachedUpdates
+{
+    NSArray *invocations = [self.cachedUpdatesWhileScrolling copy];
+    self.cachedUpdatesWhileScrolling = nil;
+    [invocations makeObjectsPerformSelector:@selector(invokeWithTarget:) withObject:self];
 }
 
 @end
