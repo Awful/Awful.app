@@ -841,7 +841,7 @@ function highlightMentions(post) {
     }
   }
   function replaceAll(node) {
-    if (node.parentNode.nodeName === "SPAN" && node.parentNode.className === "highlight") return;
+    if ($(node.parentNode).filter('span.highlight').length > 0) return
     var i = node.data.indexOf(username)
     if (i === -1) return
     var nameNode = node.splitText(i)
@@ -867,7 +867,12 @@ function hideAvatar(post) {
 }
 
 function hideImages(post) {
-  $(post).children('section').find('img').not('img[src*="://fi.somethingawful.com/images/smilies"]').each(function(){
+  $(post).children('section').find('img')
+         .not('img[src*="://fi.somethingawful.com/images/smilies"]')
+         .not('img[src*="://fi.somethingawful.com/safs/smilies"]')
+         .not('img[src*="://i.somethingawful.com/images/emot"]')
+         .not('img[src*="://i.somethingawful.com/forumsystem/emoticons"]')
+         .each(function(){
     $(this).replaceWith($('<a data-awful="image"/>').text($(this).attr('src')))
   })
 }
