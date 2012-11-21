@@ -17,14 +17,11 @@
 #import "AwfulSettings.h"
 #import "AwfulSettingsChoiceViewController.h"
 #import "AwfulSplitViewController.h"
-#import "AwfulUser.h"
 #import "NSManagedObject+Awful.h"
 
 @interface AwfulSettingsViewController ()
 
 @property (strong, nonatomic) NSArray *sections;
-
-@property (strong, nonatomic) AwfulUser *user;
 
 @property (strong, nonatomic) NSMutableArray *switches;
 
@@ -77,14 +74,12 @@
     id op = [[AwfulHTTPClient client] learnUserInfoAndThen:^(NSError *error, NSDictionary *userInfo)
     {
         if (error) {
-            [AwfulAlertView showWithTitle:@"Could Not Load User Info"
-                                    error:error
-                              buttonTitle:@"Shucks"];
+            NSLog(@"failed refreshing user info: %@", error);
         } else {
-            AwfulUser *user = [AwfulSettings settings].currentUser;
-            [user setValuesForKeysWithDictionary:userInfo];
-            self.user = user;
-            [self.tableView reloadData];
+            if (![userInfo[@"username"] isEqual:[AwfulSettings settings].username]) {
+                [AwfulSettings settings].username = userInfo[@"username"];
+                [self.tableView reloadData];
+            }
             self.refreshing = NO;
         }
     }];
@@ -150,7 +145,7 @@ typedef enum SettingType
     
     if (settingType == ImmutableSetting) {
         // This only works because there's one immutable setting here.
-        cell.detailTextLabel.text = self.user.username;
+        cell.detailTextLabel.text = [AwfulSettings settings].username;
     }
     
     NSString *key = setting[@"Key"];

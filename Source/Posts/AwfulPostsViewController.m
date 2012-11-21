@@ -444,7 +444,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 {
     [self dismissPopoverAnimated:YES];
     NSString *title = [NSString stringWithFormat:@"%@'s Post", post.authorName];
-    if ([post.authorName isEqualToString:[AwfulSettings settings].currentUser.username]) {
+    if ([post.authorName isEqualToString:[AwfulSettings settings].username]) {
         title = @"Your Post";
     }
     AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:title];

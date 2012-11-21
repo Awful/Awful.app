@@ -7,7 +7,6 @@
 //
 
 #import "AwfulSettings.h"
-#import "AwfulUser.h"
 
 @interface AwfulSettings ()
 
@@ -120,16 +119,24 @@ BOOL_PROPERTY(@"dark_theme", darkTheme, setDarkTheme)
 
 static NSString * const kCurrentUser = @"current_user";
 
-- (AwfulUser *)currentUser
+static NSString * const kUsername = @"username";
+
+- (NSString *)username
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    return [AwfulUser userWithDictionaryRepresentation:[defaults objectForKey:kCurrentUser]];
+    NSString *username = [defaults objectForKey:kUsername];
+    if (username) return username;
+    NSDictionary *oldUser = [defaults objectForKey:kCurrentUser];
+    [defaults removeObjectForKey:kCurrentUser];
+    self.username = oldUser[@"username"];
+    return oldUser[@"username"];
 }
 
-- (void)setCurrentUser:(AwfulUser *)currentUser
+- (void)setUsername:(NSString *)username
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:[currentUser dictionaryRepresentation] forKey:kCurrentUser];
+    if (username) [defaults setObject:username forKey:kUsername];
+    else [defaults removeObjectForKey:kUsername];
     [defaults synchronize];
 }
 

@@ -2,4 +2,3 @@
 #import "AwfulForum.h"
 #import "AwfulPost.h"
 #import "AwfulThread.h"
-#import "AwfulUser.h"

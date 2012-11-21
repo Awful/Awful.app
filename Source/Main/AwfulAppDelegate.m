@@ -69,7 +69,7 @@ static AwfulAppDelegate *_instance;
     }
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
     
-    AwfulSettings.settings.currentUser = nil;
+    AwfulSettings.settings.username = nil;
     NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
     [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
     [[AwfulDataStack sharedDataStack] deleteAllDataAndResetStack];

@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-@class AwfulUser;
 
 @interface AwfulSettings : NSObject
 
@@ -39,6 +38,6 @@ typedef enum
 
 @property (assign, nonatomic) BOOL darkTheme;
 
-@property (strong, nonatomic) AwfulUser *currentUser;
+@property (copy, nonatomic) NSString *username;
 
 @end
