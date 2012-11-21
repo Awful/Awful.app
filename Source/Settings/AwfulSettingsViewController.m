@@ -274,6 +274,10 @@ typedef enum SettingType
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     NSString *title = [tableView.dataSource tableView:tableView titleForHeaderInSection:section];
+    if (!title && section == 0) {
+        NSDictionary *infoPlist = [[NSBundle mainBundle] infoDictionary];
+        title = [NSString stringWithFormat:@"Awful %@", infoPlist[@"CFBundleShortVersionString"]];
+    }
     if (!title) return nil;
     
     UILabel *label = [UILabel new];
@@ -295,7 +299,7 @@ typedef enum SettingType
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     NSString *title = [tableView.dataSource tableView:tableView titleForHeaderInSection:section];
-    return title ? 47 : 0;
+    return title || section == 0 ? 47 : 0;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
