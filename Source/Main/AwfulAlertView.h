@@ -10,6 +10,8 @@
 
 @interface AwfulAlertView : UIAlertView
 
+- (id)initWithTitle:(NSString *)title;
+
 + (void)showWithTitle:(NSString *)title
               message:(NSString *)message
           buttonTitle:(NSString *)buttonTitle

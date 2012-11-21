@@ -14,6 +14,9 @@
 // Singleton instance.
 + (AwfulHTTPClient *)client;
 
+// Returns YES if the forums are reachable through current network settings.
+@property (readonly, getter=isReachable, nonatomic) BOOL reachable;
+
 // Gets the threads in a forum on a given page.
 //
 // forumID  - The ID of the forum with the threads.

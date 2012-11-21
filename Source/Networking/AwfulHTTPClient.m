@@ -15,6 +15,8 @@
 
 @interface AwfulHTTPClient ()
 
+@property (getter=isReachable, nonatomic) BOOL reachable;
+
 @property (nonatomic) dispatch_queue_t parseQueue;
 
 @end
@@ -39,6 +41,9 @@
     if (self) {
         self.stringEncoding = NSWindowsCP1252StringEncoding;
         _parseQueue = dispatch_queue_create("com.awfulapp.Awful.parsing", NULL);
+        [self setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+            self.reachable = status != AFNetworkReachabilityStatusNotReachable;
+        }];
     }
     return self;
 }

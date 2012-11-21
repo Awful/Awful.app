@@ -104,7 +104,9 @@ typedef enum {
 
 - (BOOL)refreshOnAppear
 {
+    if (![AwfulHTTPClient client].reachable) return NO;
     if (!self.forum.lastRefresh) return YES;
+    if ([self.fetchedResultsController.fetchedObjects count] == 0) return YES;
     return [[NSDate date] timeIntervalSinceDate:self.forum.lastRefresh] > 60 * 15;
 }
 
@@ -151,10 +153,6 @@ typedef enum {
     
     self.tableView.separatorColor = [UIColor colorWithWhite:0.75 alpha:1];
     self.tableView.rowHeight = 75;
-
-    if (self.fetchedResultsController.fetchedObjects.count == 0 && IsLoggedIn()) {
-        [self refresh];
-    }
 }
 
 - (void)showThreadActionsForThread:(AwfulThread *)thread

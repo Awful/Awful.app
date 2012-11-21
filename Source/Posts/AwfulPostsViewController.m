@@ -223,7 +223,14 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         // just don't bother going any further. We have the data for later.
         if (page != self.currentPage) return;
         if (error) {
-            [AwfulAlertView showWithTitle:@"Could Not Load Page" error:error buttonTitle:@"Uh Huh"];
+            if (self.postsView.loadingMessage) {
+                self.postsView.loadingMessage = nil;
+                if (![[self.pageBar.jumpToPageButton titleForState:UIControlStateNormal] length]) {
+                    [self.pageBar.jumpToPageButton setTitle:@"Page ? of ?"
+                                                   forState:UIControlStateNormal];
+                }
+            }
+            [AwfulAlertView showWithTitle:@"Could Not Load Page" error:error buttonTitle:@"OK"];
             return;
         }
         self.advertisementHTML = advertisementHTML;
@@ -409,7 +416,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         self.specificPageController = nil;
         return;
     }
-    if (self.thread.numberOfPagesValue <= 0 || self.currentPage <= 0) return;
+    if (self.postsView.loadingMessage) return;
     self.specificPageController = [AwfulSpecificPageController new];
     self.specificPageController.delegate = self;
     [self.specificPageController reloadPages];

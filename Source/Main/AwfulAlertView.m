@@ -18,6 +18,13 @@
 
 @implementation AwfulAlertView
 
+- (id)initWithTitle:(NSString *)title
+{
+    if (!(self = [self initWithFrame:CGRectZero])) return nil;
+    self.title = title;
+    return self;
+}
+
 + (void)showWithTitle:(NSString *)title
               message:(NSString *)message
           buttonTitle:(NSString *)buttonTitle
@@ -25,8 +32,7 @@
 {
     AwfulAlertView *alert = [[self alloc] initWithTitle:title];
     alert.message = message;
-    alert.blocks[@(alert.numberOfButtons)] = [block copy];
-    [alert addButtonWithTitle:buttonTitle];
+    [alert addButtonWithTitle:buttonTitle block:block];
     [alert show];
 }
 

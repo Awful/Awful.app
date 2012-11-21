@@ -98,6 +98,7 @@
 
 - (BOOL)refreshOnAppear
 {
+    if (![AwfulHTTPClient client].reachable) return NO;
     if (!self.lastRefreshDate) return YES;
     return [[NSDate date] timeIntervalSinceDate:self.lastRefreshDate] > 60 * 10;
 }

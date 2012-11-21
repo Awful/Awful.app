@@ -107,6 +107,7 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
 - (BOOL)refreshOnAppear
 {
     if (!IsLoggedIn()) return NO;
+    if (![AwfulHTTPClient client].reachable) return NO;
     if (!self.lastRefresh) return YES;
     return [[NSDate date] timeIntervalSinceDate:self.lastRefresh] > 60 * 60 * 20;
 }
