@@ -53,18 +53,14 @@
     self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 18, 0);
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    self.user = AwfulSettings.settings.currentUser;
-    if ([self.user.username length] == 0) {
-        [self refresh];
-    }
-}
-
 - (BOOL)canPullToRefresh
 {
     return NO;
+}
+
+- (BOOL)refreshOnAppear
+{
+    return YES;
 }
 
 - (void)refresh
