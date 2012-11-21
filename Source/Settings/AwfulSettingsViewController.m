@@ -315,6 +315,11 @@ typedef enum SettingType
     label.frame = CGRectMake(20, 5, 280, 0);
     label.text = text;
     [label sizeToFit];
+    if (label.frame.size.width < 280) {
+        CGRect frame = label.frame;
+        frame.size.width = 280;
+        label.frame = frame;
+    }
     label.backgroundColor = [UIColor clearColor];
     label.textColor = [UIColor colorWithRed:0.298 green:0.337 blue:0.424 alpha:1];
     label.shadowColor = [UIColor whiteColor];
