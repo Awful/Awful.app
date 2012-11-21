@@ -42,14 +42,14 @@
 		</dict>
 		<dict>
 			<key>Title</key>
-			<string>Automatic Loading</string>
+			<string>Images</string>
 			<key>Explanation</key>
-			<string>Whatever doesn&apos;t load automatically can be loaded manually.</string>
+			<string>Hidden images turn into a link.</string>
 			<key>Settings</key>
 			<array>
 				<dict>
 					<key>Title</key>
-					<string>Load Avatars</string>
+					<string>Show Avatars</string>
 					<key>Type</key>
 					<string>Switch</string>
 					<key>Default</key>
@@ -59,7 +59,7 @@
 				</dict>
 				<dict>
 					<key>Title</key>
-					<string>Load Images</string>
+					<string>Show Images</string>
 					<key>Type</key>
 					<string>Switch</string>
 					<key>Default</key>
@@ -70,8 +70,6 @@
 			</array>
 		</dict>
 		<dict>
-			<key>Title</key>
-			<string>First Tab</string>
 			<key>Settings</key>
 			<array>
 				<dict>
@@ -107,7 +105,7 @@
 		</dict>
 		<dict>
 			<key>Title</key>
-			<string>SALR</string>
+			<string>Highlights</string>
 			<key>Settings</key>
 			<array>
 				<dict>
@@ -122,7 +120,7 @@
 				</dict>
 				<dict>
 					<key>Title</key>
-					<string>Highlight Own Quotes</string>
+					<string>Highlight Quotes</string>
 					<key>Type</key>
 					<string>Switch</string>
 					<key>Default</key>
