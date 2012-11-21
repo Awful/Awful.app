@@ -175,6 +175,32 @@ static NSString * JSONize(id obj)
     [self evalJavaScript:@"Awful.dark(%@)", self.dark ? @"true" : @"false"];
 }
 
+- (void)setHighlightQuoteUsername:(NSString *)highlightQuoteUsername
+{
+    if (_highlightQuoteUsername == highlightQuoteUsername) return;
+    _highlightQuoteUsername = [highlightQuoteUsername copy];
+    [self updateHighlightQuoteUsername];
+}
+
+- (void)updateHighlightQuoteUsername
+{
+    NSString *json = JSONize(@[ self.highlightQuoteUsername ?: [NSNull null] ]);
+    [self evalJavaScript:@"Awful.highlightQuoteUsername(%@[0])", json];
+}
+
+- (void)setHighlightMentionUsername:(NSString *)highlightMentionUsername
+{
+    if (_highlightMentionUsername == highlightMentionUsername) return;
+    _highlightMentionUsername = [highlightMentionUsername copy];
+    [self updateHighlightMentionUsername];
+}
+
+- (void)updateHighlightMentionUsername
+{
+    NSString *json = JSONize(@[ self.highlightMentionUsername ?: [NSNull null] ]);
+    [self evalJavaScript:@"Awful.highlightMentionUsername(%@[0])", json];
+}
+
 - (UIScrollView *)scrollView
 {
     return self.webView.scrollView;
@@ -189,7 +215,7 @@ static NSString * JSONize(id obj)
 
 - (void)updateLoadingMessage
 {
-    NSString *json = JSONize(@[ self.loadingMessage ? self.loadingMessage : [NSNull null] ]);
+    NSString *json = JSONize(@[ self.loadingMessage ?: [NSNull null] ]);
     [self evalJavaScript:@"Awful.loading(%@[0])", json];
     if (self.loadingMessage) {
         self.scrollView.contentOffset = CGPointZero;
@@ -207,6 +233,8 @@ static NSString * JSONize(id obj)
         [self updateStylesheetURL];
         [self updateDark];
         [self updateLoadingMessage];
+        [self updateHighlightQuoteUsername];
+        [self updateHighlightMentionUsername];
         [self reloadData];
     });
 }

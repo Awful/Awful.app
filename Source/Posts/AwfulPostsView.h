@@ -33,6 +33,12 @@
 
 @property (getter=isDark, nonatomic) BOOL dark;
 
+// Set to nil to highlight no quotes.
+@property (copy, nonatomic) NSString *highlightQuoteUsername;
+
+// Set to nil to highlight no mentions.
+@property (copy, nonatomic) NSString *highlightMentionUsername;
+
 @property (readonly, nonatomic) UIScrollView *scrollView;
 
 // Set to nil to hide loading screen.

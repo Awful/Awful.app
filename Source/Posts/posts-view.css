@@ -369,6 +369,11 @@ body.dark {
   font-size: 12px;
 }
 
+/* Highlighted blocks (because they mention the user) get a green background. */
+#posts > article > section .bbc-block.highlight {
+  background-color: rgba(162, 205, 90, 0.5);
+}
+
 /* Quotes are smaller and have a left border. */
 #posts > article > section blockquote {
   font-size: 12px;
@@ -409,6 +414,11 @@ body.dark {
 #posts > article > section .bbc-block.code pre {
   margin: 0;
   font-size: 0.75em;
+}
+
+/* Mentions of the user's name are highlighted in purple. */
+#posts > article > section span.highlight {
+  color: hsl(268, 96%, 72%);
 }
 
 /* The little "edited by" blurb at the end of a post is smaller and in italics. */

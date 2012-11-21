@@ -735,11 +735,36 @@ Awful.ad = function(ad){
 }
 
 Awful.loading = function(loading){
-  if (loading === null || loading === undefined) {
+  if (nullOrUndefined(loading)) {
     $('#loading').hide().siblings('div').show()
   } else {
     $('#loading').show().siblings('div').hide()
     $('#loading p').text(loading)
+  }
+}
+
+Awful.highlightQuoteUsername = function(username){
+  Awful._highlightQuoteUsername = username
+  if (nullOrUndefined(username)) {
+    $('div.bbc-block.highlight').removeClass('highlight')
+  } else {
+    $('#posts > article > section').each(function(){
+      highlightQuotes(this)
+    })
+  }
+}
+
+Awful.highlightMentionUsername = function(username){
+  Awful._highlightMentionUsername = username
+  if (nullOrUndefined(username)) {
+    $('#posts > article > section span.highlight').each(function(){
+      this.parentNode.replaceChild(this.firstChild, this)
+      this.parentNode.normalize()
+    })
+  } else {
+    $('#posts > article > section').each(function(){
+      if ($(this).text().indexOf(username) != -1) highlightMentions(this)
+    })
   }
 }
 
@@ -755,7 +780,52 @@ function render(post) {
     var img = $(this)
     img.attr('src', baseURL + img.attr('src'))
   })
+  highlightQuotes(rendered)
+  highlightMentions(rendered)
   return rendered
+}
+
+function nullOrUndefined(arg) {
+  return arg === null || arg === undefined
+}
+
+function highlightQuotes(post) {
+  var username = Awful._highlightQuoteUsername
+  if (nullOrUndefined(username)) return
+  $(post).find('div.bbc-block a.quote_link').each(function(){
+    if ($(this).text().indexOf(username) === 0) {
+      $(this).closest('div.bbc-block').addClass('highlight')
+    }
+  })
+}
+
+function highlightMentions(post) {
+  var username = Awful._highlightMentionUsername
+  if (nullOrUndefined(username)) return
+  eachTextNode($(post)[0], replaceAll)
+  
+  function eachTextNode(node, callback) {
+    if (node.nodeType === Node.TEXT_NODE) callback(node)
+    for (var i = 0, len = node.childNodes.length; i < len; i++) {
+      eachTextNode(node.childNodes[i], callback)
+    }
+  }
+  function replaceAll(node) {
+    if (node.parentNode.nodeName === "SPAN" && node.parentNode.className === "highlight") return;
+    var i = node.data.indexOf(username)
+    if (i === -1) return
+    var nameNode = node.splitText(i)
+    var rest = nameNode.splitText(username.length)
+    var span = node.ownerDocument.createElement('span')
+    span.className = 'highlight'
+    span.appendChild(nameNode.cloneNode(true))
+    node.parentNode.replaceChild(span, nameNode)
+    replaceAll(rest)
+  }
+}
+
+function regexEscape(s){
+  return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
 }
 
 window.Awful = Awful
