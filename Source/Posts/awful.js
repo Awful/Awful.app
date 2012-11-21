@@ -131,6 +131,19 @@ Awful.showAvatars = function(on){
   }
 }
 
+Awful.showImages = function(on){
+  Awful._showImages = !!on
+  if (on) {
+    $('#posts > article > section a[data-awful="image"]').each(function(){
+      $(this).replaceWith($('<img>', { src: $(this).text(), border: '0' }))
+    })
+  } else {
+    $('#posts > article').each(function(){
+      hideImages(this)
+    })
+  }
+}
+
 var baseURL = "http://forums.somethingawful.com/"
 
 function render(post) {
@@ -144,6 +157,7 @@ function render(post) {
     img.attr('src', baseURL + img.attr('src'))
   })
   if (!Awful._showAvatars) hideAvatar(rendered)
+  if (!Awful._showImages) hideImages(rendered)
   highlightQuotes(rendered)
   highlightMentions(rendered)
   return rendered
@@ -188,16 +202,22 @@ function highlightMentions(post) {
   }
 }
 
-function regexEscape(s){
+function regexEscape(s) {
   return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
 }
 
-function hideAvatar(post){
+function hideAvatar(post) {
   var img = $(post).find('header > img')
   if (img.length === 0) return
   img.closest('header').data('avatar', img.attr('src'))
   img.remove()
   $(post).addClass('no-avatar')
+}
+
+function hideImages(post) {
+  $(post).children('section').find('img').not('img[src*="://fi.somethingawful.com/images/smilies"]').each(function(){
+    $(this).replaceWith($('<a data-awful="image"/>').text($(this).attr('src')))
+  })
 }
 
 window.Awful = Awful
@@ -212,6 +232,8 @@ $(function(){
   $('#posts').on('tap', 'article > header > button', showPostActions)
   
   $('#posts').on('longTap', 'article > section img', previewImage)
+  
+  $('#posts').on('click', 'a[data-awful="image"]', showLinkedImage)
 })
 
 function showPostActions(e) {
@@ -225,8 +247,13 @@ function showPostActions(e) {
 }
 
 function previewImage(e) {
-  var img = $(e.target)
-  Awful.invoke("previewImageAtURLString:", img.attr('src'))
+  Awful.invoke("previewImageAtURLString:", $(e.target).attr('src'))
+}
+
+function showLinkedImage(e) {
+  var link = $(e.target)
+  link.replaceWith($('<img border=0>').attr('src', link.text()))
+  e.preventDefault()
 }
 
 })()

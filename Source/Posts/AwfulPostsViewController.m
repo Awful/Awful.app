@@ -566,6 +566,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     postsView.backgroundColor = self.view.backgroundColor;
     postsView.dark = [AwfulSettings settings].darkTheme;
     postsView.showAvatars = [AwfulSettings settings].showAvatars;
+    postsView.showImages = [AwfulSettings settings].showImages;
     if (AwfulSettings.settings.highlightOwnMentions) {
         postsView.highlightMentionUsername = [AwfulSettings settings].username;
     }
