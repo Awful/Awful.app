@@ -259,6 +259,13 @@ static AwfulAppDelegate *_instance;
 
 - (void)loginControllerDidLogIn:(AwfulLoginController *)login
 {
+    [[AwfulHTTPClient client] learnUserInfoAndThen:^(NSError *error, NSDictionary *userInfo) {
+        if (error) {
+            NSLog(@"error fetching username: %@", error);
+        } else {
+            [AwfulSettings settings].username = userInfo[@"username"];
+        }
+    }];
     [self.window.rootViewController dismissViewControllerAnimated:YES completion:^{
         [[AwfulHTTPClient client] listForumsAndThen:nil];
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
