@@ -175,6 +175,18 @@ static NSString * JSONize(id obj)
     [self evalJavaScript:@"Awful.dark(%@)", self.dark ? @"true" : @"false"];
 }
 
+- (void)setShowAvatars:(BOOL)showAvatars
+{
+    if (_showAvatars == showAvatars) return;
+    _showAvatars = showAvatars;
+    [self updateShowAvatars];
+}
+
+- (void)updateShowAvatars
+{
+    [self evalJavaScript:@"Awful.showAvatars(%@)", self.showAvatars ? @"true" : @"false"];
+}
+
 - (void)setHighlightQuoteUsername:(NSString *)highlightQuoteUsername
 {
     if (_highlightQuoteUsername == highlightQuoteUsername) return;
@@ -232,6 +244,7 @@ static NSString * JSONize(id obj)
     dispatch_once(&_onceOnFirstLoad, ^{
         [self updateStylesheetURL];
         [self updateDark];
+        [self updateShowAvatars];
         [self updateLoadingMessage];
         [self updateHighlightQuoteUsername];
         [self updateHighlightMentionUsername];

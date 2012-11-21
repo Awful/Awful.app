@@ -33,6 +33,8 @@
 
 @property (getter=isDark, nonatomic) BOOL dark;
 
+@property (nonatomic) BOOL showAvatars;
+
 // Set to nil to highlight no quotes.
 @property (copy, nonatomic) NSString *highlightQuoteUsername;
 

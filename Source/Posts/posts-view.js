@@ -768,6 +768,21 @@ Awful.highlightMentionUsername = function(username){
   }
 }
 
+Awful.showAvatars = function(on){
+  Awful._showAvatars = !!on
+  if (on) {
+    $('#posts > article > header[data-avatar]').each(function(){
+      $('<img>', { src: $(this).data('avatar'), alt: '' }).insertBefore($(this).children('button'))
+      $(this).data('avatar', null)
+      $(this).closest('article').removeClass('no-avatar')
+    })
+  } else {
+    $('#posts > article > header > img').each(function(){
+      hideAvatar($(this).closest('article'))
+    })
+  }
+}
+
 var baseURL = "http://forums.somethingawful.com/"
 
 function render(post) {
@@ -780,6 +795,7 @@ function render(post) {
     var img = $(this)
     img.attr('src', baseURL + img.attr('src'))
   })
+  if (!Awful._showAvatars) hideAvatar(rendered)
   highlightQuotes(rendered)
   highlightMentions(rendered)
   return rendered
@@ -826,6 +842,14 @@ function highlightMentions(post) {
 
 function regexEscape(s){
   return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
+}
+
+function hideAvatar(post){
+  var img = $(post).find('header > img')
+  if (img.length === 0) return
+  img.closest('header').data('avatar', img.attr('src'))
+  img.remove()
+  $(post).addClass('no-avatar')
 }
 
 window.Awful = Awful
