@@ -121,6 +121,8 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
     self.tableView.rowHeight = 50;
     self.view.backgroundColor = [UIColor colorWithWhite:0.494 alpha:1];
     self.tableView.backgroundView = nil;
+    
+    // This little ditty stops section headers from sticking.
     CGRect headerFrame = (CGRect){ .size.height = self.tableView.rowHeight };
     self.tableView.tableHeaderView = [[UIView alloc] initWithFrame:headerFrame];
     self.tableView.contentInset = (UIEdgeInsets){ .top = -self.tableView.rowHeight };
