@@ -200,17 +200,21 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 {
     [self.networkOperation cancel];
     self.currentPage = page;
-    self.postsView.endMessage = nil;
+    BOOL refreshingSamePage = [self.fetchedResultsController.fetchedObjects count] > 0;
+    if (!refreshingSamePage) self.postsView.endMessage = nil;
     if (page > 0) {
-        [self fetchPosts];
-        if ([self.fetchedResultsController.fetchedObjects count] > 0) {
-            self.postsView.scrollView.contentOffset = CGPointZero;
-            self.postsView.loadingMessage = nil;
-            if (page >= self.thread.numberOfPagesValue) {
-                self.postsView.endMessage = @"End of the thread";
+        if (!refreshingSamePage) {
+            [self fetchPosts];
+            if ([self.fetchedResultsController.fetchedObjects count] > 0) {
+                self.postsView.scrollView.contentOffset = CGPointZero;
+                self.postsView.loadingMessage = nil;
+                if (page >= self.thread.numberOfPagesValue) {
+                    self.postsView.endMessage = @"End of the thread";
+                }
+            } else {
+                self.postsView.loadingMessage = [NSString stringWithFormat:
+                                                 @"Loading page %d…", page];
             }
-        } else {
-            self.postsView.loadingMessage = [NSString stringWithFormat:@"Loading page %d…", page];
         }
     } else {
         self.fetchedResultsController.delegate = nil;
@@ -224,8 +228,10 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     if (self.postsView.loadingMessage) {
         self.pullUpToRefreshControl.refreshing = NO;
     }
-    self.advertisementHTML = nil;
-    [self.postsView reloadData];
+    if (!refreshingSamePage) {
+        self.advertisementHTML = nil;
+        [self.postsView reloadData];
+    }
     // This blockSelf exists entirely so we capture self in the block, which allows its use while
     // debugging. Otherwise lldb/gdb don't know anything about "self".
     __block AwfulPostsViewController *blockSelf = self;
@@ -871,14 +877,21 @@ static char KVOContext;
         return;
     }
     if (type == NSFetchedResultsChangeInsert) {
-        [self.postsView insertPostAtIndex:newIndexPath.row];
+        if (newIndexPath.row < self.hiddenPosts) return;
+        [self.postsView insertPostAtIndex:newIndexPath.row - self.hiddenPosts];
     } else if (type == NSFetchedResultsChangeDelete) {
-        [self.postsView deletePostAtIndex:indexPath.row];
+        if (indexPath.row < self.hiddenPosts) return;
+        [self.postsView deletePostAtIndex:indexPath.row - self.hiddenPosts];
     } else if (type == NSFetchedResultsChangeUpdate) {
-        [self.postsView reloadPostAtIndex:indexPath.row];
+        if (indexPath.row < self.hiddenPosts) return;
+        [self.postsView reloadPostAtIndex:indexPath.row - self.hiddenPosts];
     } else if (type == NSFetchedResultsChangeMove) {
-        [self.postsView deletePostAtIndex:indexPath.row];
-        [self.postsView insertPostAtIndex:newIndexPath.row];
+        if (indexPath.row >= self.hiddenPosts) {
+            [self.postsView deletePostAtIndex:indexPath.row - self.hiddenPosts];
+        }
+        if (newIndexPath.row >= self.hiddenPosts) {
+            [self.postsView insertPostAtIndex:newIndexPath.row - self.hiddenPosts];
+        }
     }
 }
 
