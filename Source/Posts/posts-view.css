@@ -71,6 +71,7 @@ body.dark {
   text-align: justify;
   -webkit-hyphens: auto;
   hyphens: auto
+  text-justify: auto;
 }
 
 /* No shadow in dark mode. */
