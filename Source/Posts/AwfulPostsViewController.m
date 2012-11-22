@@ -270,6 +270,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         [self updateLoadingMessage];
         [self updatePageBar];
         [self updateEndMessage];
+        [self updatePullForNextPageLabel];
         [blockSelf markPostsAsBeenSeen];
     }];
     self.networkOperation = op;
