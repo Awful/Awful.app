@@ -54,6 +54,10 @@ Awful.loading = function(loading){
   }
 }
 
+Awful.endMessage = function(end){
+  $('#end').text(nullOrUndefined(end) ? '' : end)
+}
+
 Awful.highlightQuoteUsername = function(username){
   Awful._highlightQuoteUsername = username
   if (nullOrUndefined(username)) {

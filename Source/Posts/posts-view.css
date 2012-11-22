@@ -428,6 +428,14 @@ body.dark {
   margin-top: 5px;
 }
 
+/* The "end of the thread" message is white, with a bit of a shadow. */
+#end {
+  text-align: center;
+  line-height: 3em;
+  color: white;
+  text-shadow: black 0 -1px;
+}
+
 /* Center the ad. */
 body > #ad {
   text-align: center;

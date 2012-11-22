@@ -261,6 +261,19 @@ static NSString * JSONize(id obj)
     }
 }
 
+- (void)setEndMessage:(NSString *)endMessage
+{
+    if (_endMessage == endMessage) return;
+    _endMessage = [endMessage copy];
+    [self updateEndMessage];
+}
+
+- (void)updateEndMessage
+{
+    NSString *json = JSONize(@[ self.endMessage ?: [NSNull null] ]);
+    [self evalJavaScript:@"Awful.endMessage(%@[0])", json];
+}
+
 #pragma mark - UIWebViewDelegate
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
@@ -273,6 +286,7 @@ static NSString * JSONize(id obj)
         [self updateLoadingMessage];
         [self updateHighlightQuoteUsername];
         [self updateHighlightMentionUsername];
+        [self updateEndMessage];
         [self reloadData];
     });
 }

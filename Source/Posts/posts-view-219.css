@@ -346,6 +346,12 @@ body {
   margin-top: 5px;
 }
 
+/* The "end of the thread" message is centered. */
+#end {
+  text-align: center;
+  line-height: 2em;
+}
+
 /* Center the ad. */
 body > #ad {
   text-align: center;

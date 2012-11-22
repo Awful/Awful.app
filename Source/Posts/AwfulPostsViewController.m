@@ -200,11 +200,15 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 {
     [self.networkOperation cancel];
     self.currentPage = page;
+    self.postsView.endMessage = nil;
     if (page > 0) {
         [self fetchPosts];
         if ([self.fetchedResultsController.fetchedObjects count] > 0) {
             self.postsView.scrollView.contentOffset = CGPointZero;
             self.postsView.loadingMessage = nil;
+            if (page >= self.thread.numberOfPagesValue) {
+                self.postsView.endMessage = @"End of the thread";
+            }
         } else {
             self.postsView.loadingMessage = [NSString stringWithFormat:@"Loading page %d…", page];
         }
@@ -263,6 +267,11 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
             [self.postsView reloadData];
         }
         self.postsView.loadingMessage = nil;
+        if (self.currentPage >= self.thread.numberOfPagesValue) {
+            self.postsView.endMessage = @"End of the thread";
+        } else {
+            self.postsView.endMessage = nil;
+        }
         [blockSelf markPostsAsBeenSeen];
     }];
     self.networkOperation = op;
