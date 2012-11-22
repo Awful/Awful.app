@@ -652,32 +652,15 @@ var Mustache;
 })(jQuery);
 ;(function(){
 var Awful = {}
-Awful.leftoverPosts = []
 
 Awful.posts = function(posts){
-  var firstUnseen = 0
-  $.each(posts, function(i, post){
-    if (!post.beenSeen) {
-      firstUnseen = i
-      return false
-    }
-  })
-  
-  Awful.leftoverPosts = posts.slice(0, firstUnseen)
   $('#posts').empty()
-  
-  $.each(posts.slice(firstUnseen), function(i, post){
+  $.each(posts, function(i, post){
     render(post).appendTo('#posts')
   })
-  return Awful.leftoverPosts.length
 }
 
 Awful.insertPost = function(post, i){
-  if (i < Awful.leftoverPosts.length) {
-    Awful.leftoverPosts.splice(i, 0, post)
-    return
-  }
-  i -= Awful.leftoverPosts.length
   if (i === 0) {
     render(post).prependTo('#posts')
   } else if (i >= $('#posts > article').length) {
@@ -688,20 +671,10 @@ Awful.insertPost = function(post, i){
 }
 
 Awful.deletePost = function(post, i){
-  if (i < Awful.leftoverPosts.length) {
-    Awful.leftoverPosts.splice(i, 1)
-    return
-  }
-  i -= Awful.leftoverPosts.length
   $('#posts > article').eq(i).remove()
 }
 
 Awful.post = function(i, post){
-  if (i < Awful.leftoverPosts.length) {
-    Awful.leftoverPosts[i] = post
-    return
-  }
-  i -= Awful.leftoverPosts.length
   $('#posts > article').eq(i).replaceWith(render(post))
 }
 
@@ -718,16 +691,6 @@ Awful.stylesheetURL = function(url){
 Awful.dark = function(dark){
   if (dark) $('body').addClass('dark')
   else $('body').removeClass('dark')
-}
-
-Awful.showAllPosts = function(){
-  var firstAlreadyShown = $('#posts > article').first()
-  var oldTop = firstAlreadyShown.offset().top
-  $.each(Awful.leftoverPosts, function(i, post){
-    render(post).insertBefore(firstAlreadyShown)
-  })
-  Awful.leftoverPosts.length = 0
-  return firstAlreadyShown.offset().top - oldTop
 }
 
 Awful.ad = function(ad){
@@ -896,11 +859,10 @@ $(function(){
 function showPostActions(e) {
   var button = $(e.target)
   var post = button.closest('article')
-  var indexOfPost = post.index() + Awful.leftoverPosts.length
   var rect = button.offset()
   rect.left -= window.pageXOffset
   rect.top -= window.pageYOffset
-  Awful.invoke("showActionsForPostAtIndex:fromRectDictionary:", indexOfPost, rect)
+  Awful.invoke("showActionsForPostAtIndex:fromRectDictionary:", post.index(), rect)
 }
 
 function previewImage(e) {

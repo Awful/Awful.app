@@ -19,13 +19,15 @@
 
 - (void)reloadAdvertisementHTML;
 
+- (void)beginUpdates;
+
 - (void)insertPostAtIndex:(NSInteger)index;
 
 - (void)deletePostAtIndex:(NSInteger)index;
 
 - (void)reloadPostAtIndex:(NSInteger)index;
 
-- (void)showHiddenSeenPosts;
+- (void)endUpdates;
 
 - (void)clearAllPosts;
 
@@ -62,8 +64,6 @@
 @optional
 
 - (NSString *)advertisementHTMLForPostsView:(AwfulPostsView *)postsView;
-
-- (void)postsView:(AwfulPostsView *)postsView numberOfHiddenSeenPosts:(NSInteger)hiddenPosts;
 
 - (void)postsView:(AwfulPostsView *)postsView didTapLinkToURL:(NSURL *)url;
 

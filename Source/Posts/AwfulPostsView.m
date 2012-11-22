@@ -12,6 +12,12 @@
 
 @property (weak, nonatomic) UIWebView *webView;
 
+@property (nonatomic) NSMutableIndexSet *toDelete;
+
+@property (nonatomic) NSMutableIndexSet *toInsert;
+
+@property (nonatomic) NSMutableIndexSet *toReload;
+
 @end
 
 
@@ -61,7 +67,7 @@ static void RemoveShadowFromAboveAndBelowWebView(UIWebView *webView)
     for (NSInteger i = 0; i < numberOfPosts; i++) {
         [posts addObject:[self.delegate postsView:self postAtIndex:i]];
     }
-    [self sendPostsJSONAndTellDelegate:JSONize(posts)];
+    [self evalJavaScript:@"Awful.posts(%@)", JSONize(posts)];
     [self reloadAdvertisementHTML];
 }
 
@@ -76,21 +82,59 @@ static void RemoveShadowFromAboveAndBelowWebView(UIWebView *webView)
     [self evalJavaScript:@"Awful.ad(%@[0])", JSONize(@[ ad ])];
 }
 
+- (void)beginUpdates
+{
+    self.toDelete = [NSMutableIndexSet new];
+    self.toInsert = [NSMutableIndexSet new];
+    self.toReload = [NSMutableIndexSet new];
+}
+
 - (void)insertPostAtIndex:(NSInteger)index
 {
+    if (self.toInsert) {
+        [self.toInsert addIndex:index];
+        return;
+    }
     NSDictionary *post = [self.delegate postsView:self postAtIndex:index];
     [self evalJavaScript:@"Awful.insertPost(%@, %d)", JSONize(post), index];
 }
 
 - (void)deletePostAtIndex:(NSInteger)index
 {
+    if (self.toDelete) {
+        [self.toDelete addIndex:index];
+        return;
+    }
     [self evalJavaScript:@"Awful.deletePost(%d)", index];
 }
 
 - (void)reloadPostAtIndex:(NSInteger)index
 {
+    if (self.toReload) {
+        [self.toReload addIndex:index];
+        return;
+    }
     NSDictionary *post = [self.delegate postsView:self postAtIndex:index];
     [self evalJavaScript:@"Awful.post(%d, %@)", index, JSONize(post)];
+}
+
+- (void)endUpdates
+{
+    NSIndexSet *toDelete = self.toDelete;
+    self.toDelete = nil;
+    [toDelete enumerateIndexesUsingBlock:^(NSUInteger i, BOOL *_) {
+        [self deletePostAtIndex:i];
+    }];
+    NSIndexSet *toInsert = self.toInsert;
+    self.toInsert = nil;
+    [toInsert enumerateIndexesUsingBlock:^(NSUInteger i, BOOL *_) {
+        [self insertPostAtIndex:i];
+    }];
+    NSIndexSet *toReload = self.toReload;
+    self.toReload = nil;
+    [toReload enumerateIndexesUsingBlock:^(NSUInteger i, BOOL *_) {
+        [self reloadPostAtIndex:i];
+    }];
 }
 
 static NSString * JSONize(id obj)
@@ -104,41 +148,9 @@ static NSString * JSONize(id obj)
     return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 }
 
-- (void)showHiddenSeenPosts
-{
-    UIScrollView *scrollView = self.scrollView;
-    BOOL justScrollToBottom = scrollView.contentSize.height <= scrollView.frame.size.height;
-    
-    float diff = [[self evalJavaScript:@"Awful.showAllPosts()"] floatValue];
-    
-    if (justScrollToBottom) {
-        [scrollView scrollRectToVisible:CGRectMake(0, scrollView.contentSize.height - 1, 1, 1)
-                               animated:NO];
-    } else {
-        CGPoint offset = scrollView.contentOffset;
-        offset.y += diff;
-        scrollView.contentOffset = offset;
-    }
-    
-    if (diff > 0) {
-        if ([self.delegate respondsToSelector:@selector(postsView:numberOfHiddenSeenPosts:)]) {
-            [self.delegate postsView:self numberOfHiddenSeenPosts:0];
-        }
-    }
-}
-
 - (void)clearAllPosts
 {
-    [self sendPostsJSONAndTellDelegate:nil];
-}
-
-- (void)sendPostsJSONAndTellDelegate:(NSString *)postsJSON
-{
-    if (!postsJSON) postsJSON = @"[]";
-    NSInteger hiddenSeenPosts = [[self evalJavaScript:@"Awful.posts(%@)", postsJSON] integerValue];
-    if ([self.delegate respondsToSelector:@selector(postsView:numberOfHiddenSeenPosts:)]) {
-        [self.delegate postsView:self numberOfHiddenSeenPosts:hiddenSeenPosts];
-    }
+    [self evalJavaScript:@"Awful.posts([])"];
 }
 
 - (NSString *)evalJavaScript:(NSString *)script, ...

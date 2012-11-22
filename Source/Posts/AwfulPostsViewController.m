@@ -45,6 +45,8 @@
 
 @property (nonatomic) NSFetchedResultsController *fetchedResultsController;
 
+@property (nonatomic) NSInteger hiddenPosts;
+
 @property (weak, nonatomic) NSOperation *networkOperation;
 
 @property (weak, nonatomic) AwfulPageBar *pageBar;
@@ -73,7 +75,9 @@
 
 @property (nonatomic) BOOL markingPostsAsBeenSeen;
 
-@property (nonatomic) BOOL observingScrollView;
+@property (nonatomic) BOOL observingScrollViewOffset;
+
+@property (nonatomic) BOOL observingScrollViewSize;
 
 @property (nonatomic) NSMutableArray *cachedUpdatesWhileScrolling;
 
@@ -179,9 +183,17 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 {
     if (_currentPage == currentPage) return;
     _currentPage = currentPage;
+    self.hiddenPosts = 0;
     [self updateFetchedResultsController];
     [self updatePageBar];
     [self updatePullForNextPageLabel];
+}
+
+- (void)setHiddenPosts:(NSInteger)hiddenPosts
+{
+    if (_hiddenPosts == hiddenPosts) return;
+    _hiddenPosts = hiddenPosts;
+    self.topBar.loadReadPostsButton.enabled = hiddenPosts > 0;
 }
 
 - (void)loadPage:(NSInteger)page
@@ -236,6 +248,16 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         self.advertisementHTML = advertisementHTML;
         AwfulPost *anyPost = [posts lastObject];
         self.currentPage = anyPost.threadPageValue;
+        if (page == AwfulPageNextUnread) {
+            // if there are any unread posts, hide read posts
+            for (NSUInteger i = 0; i < [posts count]; i++) {
+                AwfulPost *post = posts[i];
+                if (!post.beenSeenValue) {
+                    self.hiddenPosts = i;
+                    break;
+                }
+            }
+        }
         if ([self.fetchedResultsController.fetchedObjects count] == 0) {
             [self fetchPosts];
             [self.postsView reloadData];
@@ -537,6 +559,17 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     }
 }
 
+- (void)showHiddenSeenPosts
+{
+    [self.postsView beginUpdates];
+    for (NSInteger i = 0; i < self.hiddenPosts; i++) {
+        [self.postsView insertPostAtIndex:i];
+    }
+    self.hiddenPosts = 0;
+    [self.postsView endUpdates];
+    [self maintainScrollOffsetAfterSizeChange];
+}
+
 #pragma mark - UIViewController
 
 - (void)setTitle:(NSString *)title
@@ -589,10 +622,10 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     [topBar.goToForumButton addTarget:self
                                action:@selector(goToParentForum)
                      forControlEvents:UIControlEventTouchUpInside];
-    [topBar.loadReadPostsButton addTarget:postsView
+    [topBar.loadReadPostsButton addTarget:self
                                    action:@selector(showHiddenSeenPosts)
                          forControlEvents:UIControlEventTouchUpInside];
-    topBar.loadReadPostsButton.enabled = NO;
+    topBar.loadReadPostsButton.enabled = self.hiddenPosts > 0;
     [topBar.scrollToBottomButton addTarget:self
                                     action:@selector(scrollToBottom)
                           forControlEvents:UIControlEventTouchUpInside];
@@ -627,10 +660,20 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 // Here, we simply override that first attempt to set the contentOffset too high.
 - (void)keepTopBarHiddenOnFirstView
 {
-    _observingScrollView = YES;
+    _observingScrollViewOffset = YES;
     [self.postsView.scrollView addObserver:self
                                 forKeyPath:@"contentOffset"
                                    options:NSKeyValueObservingOptionNew
+                                   context:&KVOContext];
+}
+
+- (void)maintainScrollOffsetAfterSizeChange
+{
+    _observingScrollViewSize = YES;
+    [self.postsView.scrollView addObserver:self
+                                forKeyPath:@"contentSize"
+                                   options:(NSKeyValueObservingOptionOld |
+                                            NSKeyValueObservingOptionNew)
                                    context:&KVOContext];
 }
 
@@ -643,22 +686,36 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
         return;
     }
-    
-    CGPoint offset = [change[NSKeyValueChangeNewKey] CGPointValue];
-    if (offset.y < 0) {
-        [object setContentOffset:CGPointZero];
+    if ([keyPath isEqualToString:@"contentOffset"]) {
+        CGPoint offset = [change[NSKeyValueChangeNewKey] CGPointValue];
+        if (offset.y < 0) {
+            [object setContentOffset:CGPointZero];
+            [object removeObserver:self forKeyPath:keyPath context:context];
+            _observingScrollViewOffset = NO;
+        }
+    } else if ([keyPath isEqualToString:@"contentSize"]) {
+        CGSize oldSize = [change[NSKeyValueChangeOldKey] CGSizeValue];
+        CGSize newSize = [change[NSKeyValueChangeNewKey] CGSizeValue];
+        CGPoint contentOffset = [object contentOffset];
+        contentOffset.y += newSize.height - oldSize.height;
+        [object setContentOffset:contentOffset];
         [object removeObserver:self forKeyPath:keyPath context:context];
-        _observingScrollView = NO;
+        _observingScrollViewSize = NO;
     }
 }
 
-static void * KVOContext = @"AwfulPostsView KVO";
+static char KVOContext;
 
 - (void)dealloc
 {
-    if (_observingScrollView) {
+    if (_observingScrollViewOffset) {
         [self.postsView.scrollView removeObserver:self
                                        forKeyPath:@"contentOffset"
+                                          context:&KVOContext];
+    }
+    if (_observingScrollViewSize) {
+        [self.postsView.scrollView removeObserver:self
+                                       forKeyPath:@"contentSize"
                                           context:&KVOContext];
     }
 }
@@ -706,13 +763,12 @@ static void * KVOContext = @"AwfulPostsView KVO";
 
 - (NSInteger)numberOfPostsInPostsView:(AwfulPostsView *)postsView
 {
-    return [[self.fetchedResultsController fetchedObjects] count];
+    return [[self.fetchedResultsController fetchedObjects] count] - self.hiddenPosts;
 }
 
 - (NSDictionary *)postsView:(AwfulPostsView *)postsView postAtIndex:(NSInteger)index
 {
-    NSArray *posts = [self.fetchedResultsController fetchedObjects];
-    AwfulPost *post = posts[index];
+    AwfulPost *post = self.fetchedResultsController.fetchedObjects[index + self.hiddenPosts];
     NSArray *keys = @[
         @"postID", @"authorName", @"authorAvatarURL", @"beenSeen", @"innerHTML",
         @"authorIsOriginalPoster", @"authorIsAModerator", @"authorIsAnAdministrator"
@@ -732,22 +788,17 @@ static void * KVOContext = @"AwfulPostsView KVO";
     return self.advertisementHTML;
 }
 
-- (void)postsView:(AwfulPostsView *)postsView numberOfHiddenSeenPosts:(NSInteger)hiddenPosts
-{
-    self.topBar.loadReadPostsButton.enabled = hiddenPosts > 0;
-}
-
 - (void)postsView:(AwfulPostsView *)postsView didTapLinkToURL:(NSURL *)url
 {
     // TODO intercept links to forums, threads, posts and show in-app.
-    // N.B. Some links have no host and go to showthread.php
+    // N.B. Some links may have no host and go to showthread.php
     [[UIApplication sharedApplication] openURL:url];
 }
 
 - (void)showActionsForPostAtIndex:(NSNumber *)index fromRectDictionary:(NSDictionary *)rectDict
 {
-    NSArray *posts = [self.fetchedResultsController fetchedObjects];
-    AwfulPost *post = posts[[index integerValue]];
+    NSInteger unboxed = [index integerValue] + self.hiddenPosts;
+    AwfulPost *post = self.fetchedResultsController.fetchedObjects[unboxed];
     CGRect rect = CGRectMake([rectDict[@"left"] floatValue], [rectDict[@"top"] floatValue],
                              [rectDict[@"width"] floatValue], [rectDict[@"height"] floatValue]);
     [self showActionsForPost:post fromRect:rect inView:self.postsView];
@@ -785,6 +836,11 @@ static void * KVOContext = @"AwfulPostsView KVO";
 
 #pragma mark - NSFetchedResultsControllerDelegate
 
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
+{
+    if (!self.cachedUpdatesWhileScrolling) [self.postsView beginUpdates];
+}
+
 - (void)controller:(NSFetchedResultsController *)controller
    didChangeObject:(AwfulPost *)post
        atIndexPath:(NSIndexPath *)indexPath
@@ -819,6 +875,7 @@ static void * KVOContext = @"AwfulPostsView KVO";
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
+    if (!self.cachedUpdatesWhileScrolling) [self.postsView endUpdates];
     [self.pullUpToRefreshControl setRefreshing:NO animated:YES];
     [self updatePullForNextPageLabel];
 }
@@ -909,7 +966,9 @@ static void * KVOContext = @"AwfulPostsView KVO";
 {
     NSArray *invocations = [self.cachedUpdatesWhileScrolling copy];
     self.cachedUpdatesWhileScrolling = nil;
+    [self.postsView beginUpdates];
     [invocations makeObjectsPerformSelector:@selector(invokeWithTarget:) withObject:self];
+    [self.postsView endUpdates];
 }
 
 @end
