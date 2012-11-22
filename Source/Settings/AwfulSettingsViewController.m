@@ -40,18 +40,7 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    self.switches = [NSMutableArray new];
-    self.sections = AwfulSettings.settings.sections;
-    self.tableView.backgroundView = nil;
-    self.tableView.backgroundColor = [UIColor colorWithHue:0.604 saturation:0.035 brightness:0.898
-                                                     alpha:1];
-    
-    // Make sure the bottom section's footer is visible.
-    self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 18, 0);
-}
+#pragma mark - AwfulTableViewController
 
 - (BOOL)canPullToRefresh
 {
@@ -82,7 +71,28 @@
     self.networkOperation = op;
 }
 
-#pragma mark - Table view delegate and data source
+#pragma mark - UIViewController
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    self.switches = [NSMutableArray new];
+    self.sections = AwfulSettings.settings.sections;
+    self.tableView.backgroundView = nil;
+    self.tableView.backgroundColor = [UIColor colorWithHue:0.604 saturation:0.035 brightness:0.898
+                                                     alpha:1];
+    
+    // Make sure the bottom section's footer is visible.
+    self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 18, 0);
+}
+
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
+                                         duration:(NSTimeInterval)duration
+{
+    [self.tableView reloadData];
+}
+
+#pragma mark - UITableViewDataSource and UITableViewDelegate
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView 
 {
@@ -247,7 +257,9 @@ typedef enum SettingType
                                              animated:YES];
     } else {
         id selectedValue = [[NSUserDefaults standardUserDefaults] objectForKey:setting[@"Key"]];
-        AwfulSettingsChoiceViewController *choiceViewController = [[AwfulSettingsChoiceViewController alloc] initWithSetting:setting selectedValue:selectedValue];
+        AwfulSettingsChoiceViewController *choiceViewController;
+        choiceViewController = [[AwfulSettingsChoiceViewController alloc]
+                                initWithSetting:setting selectedValue:selectedValue];
         choiceViewController.settingsViewController = self;
         [self.navigationController pushViewController:choiceViewController animated:YES];
     }
@@ -281,7 +293,7 @@ typedef enum SettingType
     if (!title) return nil;
     
     UILabel *label = [UILabel new];
-    label.frame = CGRectMake(20, 13, 280, 30);
+    label.frame = CGRectMake(20, 13, tableView.bounds.size.width - 40, 30);
     label.font = [UIFont boldSystemFontOfSize:17];
     label.text = title;
     label.backgroundColor = [UIColor clearColor];
@@ -316,18 +328,17 @@ typedef enum SettingType
     label.numberOfLines = 0;
     label.textAlignment = NSTextAlignmentCenter;
     label.font = [UIFont systemFontOfSize:15];
-    label.frame = CGRectMake(20, 5, 280, 0);
+    CGFloat width = self.tableView.bounds.size.width - 40;
+    label.frame = CGRectMake(20, 5, width, 0);
     label.text = text;
-    [label sizeToFit];
-    if (label.frame.size.width < 280) {
-        CGRect frame = label.frame;
-        frame.size.width = 280;
-        label.frame = frame;
-    }
     label.backgroundColor = [UIColor clearColor];
     label.textColor = [UIColor colorWithRed:0.298 green:0.337 blue:0.424 alpha:1];
     label.shadowColor = [UIColor whiteColor];
     label.shadowOffset = CGSizeMake(0, 1);
+    [label sizeToFit];
+    CGRect frame = label.frame;
+    frame.size.width = width;
+    label.frame = frame;
     
     UIView *wrapper = [UIView new];
     wrapper.frame = (CGRect){ .size = { 320, label.bounds.size.height + 5 } };
