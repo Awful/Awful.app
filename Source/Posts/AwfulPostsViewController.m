@@ -148,14 +148,10 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     }
     request.predicate = [NSPredicate predicateWithFormat:@"thread == %@ AND threadPage = %d",
                          self.thread, self.currentPage];
-}
-
-- (void)fetchPosts
-{
     NSError *error;
     BOOL ok = [self.fetchedResultsController performFetch:&error];
     if (!ok) {
-        NSLog(@"error fetching posts in AwfulPostsView: %@", error);
+        NSLog(@"error fetching posts: %@", error);
     }
 }
 
@@ -183,10 +179,29 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 {
     if (_currentPage == currentPage) return;
     _currentPage = currentPage;
-    self.hiddenPosts = 0;
-    [self updateFetchedResultsController];
-    [self updatePageBar];
-    [self updatePullForNextPageLabel];
+}
+
+- (void)updateLoadingMessage
+{
+    if (self.currentPage == AwfulPageLast) {
+        self.postsView.loadingMessage = @"Loading last page…";
+    } else if (self.currentPage == AwfulPageNextUnread) {
+        self.postsView.loadingMessage = @"Loading next unread post…";
+    } else if ([self.fetchedResultsController.fetchedObjects count] == 0) {
+        self.postsView.loadingMessage = [NSString stringWithFormat:
+                                         @"Loading page %d", self.currentPage];
+    } else {
+        self.postsView.loadingMessage = nil;
+    }
+}
+
+- (void)updateEndMessage
+{
+    if (self.currentPage > 0 && self.currentPage >= self.thread.numberOfPagesValue) {
+        self.postsView.endMessage = @"End of the thread";
+    } else {
+        self.postsView.endMessage = nil;
+    }
 }
 
 - (void)setHiddenPosts:(NSInteger)hiddenPosts
@@ -199,36 +214,17 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 - (void)loadPage:(NSInteger)page
 {
     [self.networkOperation cancel];
+    NSInteger oldPage = self.currentPage;
     self.currentPage = page;
-    BOOL refreshingSamePage = [self.fetchedResultsController.fetchedObjects count] > 0;
-    if (!refreshingSamePage) self.postsView.endMessage = nil;
-    if (page > 0) {
-        if (!refreshingSamePage) {
-            [self fetchPosts];
-            if ([self.fetchedResultsController.fetchedObjects count] > 0) {
-                self.postsView.scrollView.contentOffset = CGPointZero;
-                self.postsView.loadingMessage = nil;
-                if (page >= self.thread.numberOfPagesValue) {
-                    self.postsView.endMessage = @"End of the thread";
-                }
-            } else {
-                self.postsView.loadingMessage = [NSString stringWithFormat:
-                                                 @"Loading page %d…", page];
-            }
-        }
-    } else {
-        self.fetchedResultsController.delegate = nil;
-        self.fetchedResultsController = nil;
-        if (page == AwfulPageLast) {
-            self.postsView.loadingMessage = @"Loading last page…";
-        } else if (page == AwfulPageNextUnread) {
-            self.postsView.loadingMessage = @"Loading next unread page…";
-        }
-    }
-    if (self.postsView.loadingMessage) {
-        self.pullUpToRefreshControl.refreshing = NO;
-    }
+    BOOL refreshingSamePage = page > 0 && page == oldPage;
     if (!refreshingSamePage) {
+        [self updateFetchedResultsController];
+        [self updateLoadingMessage];
+        [self updatePageBar];
+        [self updateEndMessage];
+        self.pullUpToRefreshControl.refreshing = NO;
+        [self updatePullForNextPageLabel];
+        self.postsView.scrollView.contentOffset = CGPointZero;
         self.advertisementHTML = nil;
         [self.postsView reloadData];
     }
@@ -255,29 +251,25 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
             [AwfulAlertView showWithTitle:@"Could Not Load Page" error:error buttonTitle:@"OK"];
             return;
         }
+        self.currentPage = [[posts lastObject] threadPageValue];
         self.advertisementHTML = advertisementHTML;
-        AwfulPost *anyPost = [posts lastObject];
-        self.currentPage = anyPost.threadPageValue;
         if (page == AwfulPageNextUnread) {
-            // if there are any unread posts, hide read posts
-            for (NSUInteger i = 0; i < [posts count]; i++) {
-                AwfulPost *post = posts[i];
-                if (!post.beenSeenValue) {
-                    self.hiddenPosts = i;
-                    break;
-                }
-            }
+            NSUInteger firstUnread = [posts indexOfObjectPassingTest:^BOOL(AwfulPost *post,
+                                                                           NSUInteger _, BOOL *__)
+            {
+                return !post.beenSeenValue;
+            }];
+            self.hiddenPosts = firstUnread != NSNotFound ? firstUnread : 0;
+        } else {
+            self.hiddenPosts = 0;
         }
-        if ([self.fetchedResultsController.fetchedObjects count] == 0) {
-            [self fetchPosts];
+        if (!self.fetchedResultsController) {
+            [self updateFetchedResultsController];
             [self.postsView reloadData];
         }
-        self.postsView.loadingMessage = nil;
-        if (self.currentPage >= self.thread.numberOfPagesValue) {
-            self.postsView.endMessage = @"End of the thread";
-        } else {
-            self.postsView.endMessage = nil;
-        }
+        [self updateLoadingMessage];
+        [self updatePageBar];
+        [self updateEndMessage];
         [blockSelf markPostsAsBeenSeen];
     }];
     self.networkOperation = op;
