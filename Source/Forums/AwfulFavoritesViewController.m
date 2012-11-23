@@ -201,8 +201,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         forum.isFavoriteValue = NO;
         NSArray *reindex = [self.fetchedResultsController fetchedObjects];
         [reindex enumerateObjectsUsingBlock:^(AwfulForum *f, NSUInteger i, BOOL *stop) {
-            if (f.isFavoriteValue)
-                f.favoriteIndexValue = i;
+            if (f.isFavoriteValue) f.favoriteIndexValue = i;
         }];
         [[AwfulDataStack sharedDataStack] save];
     }

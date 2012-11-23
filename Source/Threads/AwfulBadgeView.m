@@ -78,9 +78,7 @@
 
 - (UIFont *)font
 {
-    static UIFont *font = nil;
-    if (!font) font = [UIFont boldSystemFontOfSize:13];
-    return font;
+    return [UIFont boldSystemFontOfSize:13];
 }
 
 - (void)setBadgeText:(NSString *)badgeText

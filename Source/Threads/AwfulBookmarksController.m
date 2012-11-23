@@ -58,6 +58,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    // Hide separators after the last cell.
     self.tableView.tableFooterView = [UIView new];
     self.tableView.tableFooterView.backgroundColor = [UIColor clearColor];
 }
@@ -74,10 +76,11 @@
 {   
     [self.networkOperation cancel];
     id op = [[AwfulHTTPClient client] listBookmarkedThreadsOnPage:pageNum
-                                                          andThen:^(NSError *error, NSArray *threads)
+                                                          andThen:^(NSError *error,
+                                                                    NSArray *threads)
     {
         if (error) {
-            [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"Drats"];
+            [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
         } else {
             if (pageNum == 1) {
                 NSArray *bookmarks = [AwfulThread fetchAllMatchingPredicate:@"isBookmarked = YES"];

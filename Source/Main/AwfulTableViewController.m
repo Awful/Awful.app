@@ -18,12 +18,6 @@
 
 @implementation AwfulTableViewController
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    self.tableView.backgroundColor = [UIColor whiteColor];
-}
-
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];

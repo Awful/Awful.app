@@ -198,7 +198,6 @@
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated
 {
     [super setEditing:editing animated:animated];
-    
     if (self.showsUnread) {
         self.unreadCountBadgeView.hidden = editing;
     }
@@ -207,7 +206,6 @@
 - (void)willTransitionToState:(UITableViewCellStateMask)state
 {
     [super willTransitionToState:state];
-    
     if (state & UITableViewCellStateShowingDeleteConfirmationMask) {
         self.unreadCountBadgeView.hidden = YES;
     } else {
