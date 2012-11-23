@@ -270,6 +270,11 @@ typedef enum {
         cell.originalPosterTextLabel.text = [NSString stringWithFormat:@"Posted by %@",
                                              thread.authorName];
     }
+    AwfulTheme *theme = [AwfulTheme currentTheme];
+    cell.originalPosterTextLabel.textColor = theme.threadListOriginalPosterTextColor;
+    cell.unreadCountBadgeView.badgeColor = theme.threadListUnreadBadgeColor;
+    cell.unreadCountBadgeView.highlightedBadgeColor = theme.threadListUnreadBadgeHighlightedColor;
+    cell.unreadCountBadgeView.offBadgeColor = theme.threadListUnreadBadgeOffColor;
     cell.unreadCountBadgeView.badgeText = [thread.totalUnreadPosts stringValue];
     cell.unreadCountBadgeView.on = thread.totalUnreadPostsValue > 0;
     cell.showsUnread = thread.totalUnreadPostsValue != -1;

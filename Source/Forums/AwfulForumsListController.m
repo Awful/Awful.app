@@ -18,7 +18,7 @@
 #import "AwfulTheme.h"
 #import "AwfulThreadListController.h"
 
-@interface AwfulForumsListController () <AwfulForumCellDelegate>
+@interface AwfulForumsListController ()
 
 @property (nonatomic) NSDate *lastRefresh;
 
@@ -81,6 +81,66 @@
 }
 
 NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
+
+- (void)toggleFavorite:(UIButton *)button
+{
+    button.selected = !button.selected;
+    UIView *cell = button.superview;
+    while (cell && ![cell isKindOfClass:[UITableViewCell class]]) cell = cell.superview;
+    if (!cell) return;
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:(UITableViewCell *)cell];
+    AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    forum.isFavoriteValue = button.selected;
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:
+                                    [AwfulForum entityName]];
+    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"isFavorite == YES"];
+    NSError *error;
+    if (forum.isFavoriteValue) {
+        NSUInteger count = [[AwfulDataStack sharedDataStack].context
+                            countForFetchRequest:fetchRequest error:&error];
+        if (count == NSNotFound) NSLog(@"Error setting favorite index: %@", error);
+        forum.favoriteIndexValue = count;
+    } else {
+        NSArray *renumber = [[AwfulDataStack sharedDataStack].context
+                             executeFetchRequest:fetchRequest error:&error];
+        if (!renumber) NSLog(@"Error renumbering favorites: %@", error);
+        [renumber enumerateObjectsUsingBlock:^(AwfulForum *favorite, NSUInteger i, BOOL *stop) {
+            favorite.favoriteIndexValue = i;
+        }];
+    }
+    [[AwfulDataStack sharedDataStack] save];
+}
+
+- (void)toggleExpanded:(UIButton *)button
+{
+    button.selected = !button.selected;
+    UIView *cell = button.superview;
+    while (cell && ![cell isKindOfClass:[UITableViewCell class]]) cell = cell.superview;
+    if (!cell) return;
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:(UITableViewCell *)cell];
+    AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    if (button.selected) {
+        forum.expandedValue = YES;
+    } else {
+        RecursivelyCollapseForum(forum);
+    }
+    [[AwfulDataStack sharedDataStack] save];
+    
+    // The fetched results controller won't pick up on changes to the keypath "parentForum.expanded"
+    // for forums that should be newly visible (dunno why) so we need to help it along.
+    for (AwfulForum *child in forum.children) {
+        [child willChangeValueForKey:AwfulForumRelationships.parentForum];
+        [child didChangeValueForKey:AwfulForumRelationships.parentForum];
+    }
+}
+
+static void RecursivelyCollapseForum(AwfulForum *forum)
+{
+    forum.expandedValue = NO;
+    for (AwfulForum *child in forum.children) {
+        RecursivelyCollapseForum(child);
+    }
+}
 
 #pragma mark - AwfulTableViewController
 
@@ -159,6 +219,22 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
     AwfulForumCell *cell = [tableView dequeueReusableCellWithIdentifier:Identifier];
     if (!cell) {
         cell = [[AwfulForumCell alloc] initWithReuseIdentifier:Identifier];
+        cell.showsFavorite = YES;
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        [cell.expandButton addTarget:self
+                              action:@selector(toggleExpanded:)
+                    forControlEvents:UIControlEventTouchUpInside];
+        [cell.expandButton setImage:[AwfulTheme currentTheme].forumCellExpandButtonNormalImage
+                           forState:UIControlStateNormal];
+        [cell.expandButton setImage:[AwfulTheme currentTheme].forumCellExpandButtonSelectedImage
+                           forState:UIControlStateSelected];
+        [cell.favoriteButton addTarget:self
+                                action:@selector(toggleFavorite:)
+                      forControlEvents:UIControlEventTouchUpInside];
+        [cell.favoriteButton setImage:[AwfulTheme currentTheme].forumCellFavoriteButtonNormalImage
+                             forState:UIControlStateNormal];
+        [cell.favoriteButton setImage:[AwfulTheme currentTheme].forumCellFavoriteButtonSelectedImage
+                             forState:UIControlStateSelected];
     }
     [self configureCell:cell atIndexPath:indexPath];
     return cell;
@@ -168,10 +244,8 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
 {
     AwfulForumCell *cell = (AwfulForumCell *)plainCell;
     AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.delegate = self;
     cell.textLabel.text = forum.name;
     cell.favorite = forum.isFavoriteValue;
-    cell.showsFavorite = YES;
     cell.expanded = forum.expandedValue;
     if ([forum.children count]) {
         cell.showsExpanded = AwfulForumCellShowsExpandedButton;
@@ -196,63 +270,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
     [self showForum:forum];
-}
-
-#pragma mark - Parent forum cell delegate
-
-- (void)forumCellDidToggleFavorite:(AwfulForumCell *)cell
-{
-    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-    AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    forum.isFavoriteValue = cell.favorite;
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[AwfulForum entityName]];
-    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"isFavorite == YES"];
-    NSError *error;
-    if (cell.favorite) {
-        NSUInteger count = [[AwfulDataStack sharedDataStack].context countForFetchRequest:fetchRequest
-                                                                                    error:&error];
-        if (count == NSNotFound) {
-            NSLog(@"Error setting favorite index: %@", error);
-        }
-        forum.favoriteIndexValue = count;
-    } else {
-        NSArray *renumber = [[AwfulDataStack sharedDataStack].context executeFetchRequest:fetchRequest
-                                                                                    error:&error];
-        if (!renumber) {
-            NSLog(@"Error renumbering favorites: %@", error);
-        }
-        [renumber enumerateObjectsUsingBlock:^(AwfulForum *favorite, NSUInteger i, BOOL *stop) {
-            favorite.favoriteIndexValue = i;
-        }];
-    }
-    [[AwfulDataStack sharedDataStack] save];
-}
-
-- (void)forumCellDidToggleExpanded:(AwfulForumCell *)cell
-{
-    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-    AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    if (cell.expanded) {
-        forum.expandedValue = YES;
-    } else {
-        RecursivelyCollapseForum(forum);
-    }
-    [[AwfulDataStack sharedDataStack] save];
-    
-    // The fetched results controller won't pick up on changes to the keypath "parentForum.expanded"
-    // for forums that should be newly visible (dunno why) so we need to help it along.
-    for (AwfulForum *child in forum.children) {
-        [child willChangeValueForKey:AwfulForumRelationships.parentForum];
-        [child didChangeValueForKey:AwfulForumRelationships.parentForum];
-    }
-}
-
-static void RecursivelyCollapseForum(AwfulForum *forum)
-{
-    forum.expandedValue = NO;
-    for (AwfulForum *child in forum.children) {
-        RecursivelyCollapseForum(child);
-    }
 }
 
 @end

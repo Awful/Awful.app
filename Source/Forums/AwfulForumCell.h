@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-@protocol AwfulForumCellDelegate;
 
 typedef enum
 {
@@ -22,24 +21,16 @@ typedef enum
 // Designated initializer.
 - (id)initWithReuseIdentifier:(NSString *)reuseIdentifier;
 
-@property (weak, nonatomic) id <AwfulForumCellDelegate> delegate;
-
 @property (getter=isFavorite, nonatomic) BOOL favorite;
 
 @property (nonatomic) BOOL showsFavorite;
+
+@property (readonly, weak, nonatomic) UIButton *favoriteButton;
 
 @property (getter=isExpanded, nonatomic) BOOL expanded;
 
 @property (nonatomic) AwfulForumCellShowsExpanded showsExpanded;
 
-@end
-
-
-@protocol AwfulForumCellDelegate <NSObject>
-@optional
-
-- (void)forumCellDidToggleFavorite:(AwfulForumCell *)cell;
-
-- (void)forumCellDidToggleExpanded:(AwfulForumCell *)cell;
+@property (readonly, weak, nonatomic) UIButton *expandButton;
 
 @end

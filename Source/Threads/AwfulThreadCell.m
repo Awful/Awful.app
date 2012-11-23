@@ -7,13 +7,14 @@
 //
 
 #import "AwfulThreadCell.h"
-#import "AwfulTheme.h"
 
 @interface AwfulThreadCell ()
 
 @property (weak, nonatomic) UIImageView *stickyImageView;
 
 @property (readonly, weak, nonatomic) UIImageView *ratingImageView;
+
+@property (nonatomic) UIColor *oldOriginalPosterTextColor;
 
 @end
 
@@ -42,8 +43,6 @@
         UILabel *originalPosterTextLabel = [UILabel new];
         originalPosterTextLabel.backgroundColor = [UIColor clearColor];
         originalPosterTextLabel.font = self.detailTextLabel.font;
-        UIColor *color = [AwfulTheme currentTheme].threadListOriginalPosterTextColor;
-        originalPosterTextLabel.textColor = color;
         [self.contentView addSubview:originalPosterTextLabel];
         _originalPosterTextLabel = originalPosterTextLabel;
         
@@ -180,18 +179,26 @@
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated
 {
     [super setHighlighted:highlighted animated:animated];
-    UIColor *color = [AwfulTheme currentTheme].threadListOriginalPosterTextColor;
-    if (highlighted) color = [UIColor whiteColor];
-    self.originalPosterTextLabel.textColor = color;
+    if (highlighted) {
+        self.oldOriginalPosterTextColor = self.originalPosterTextLabel.textColor;
+        self.originalPosterTextLabel.textColor = [UIColor whiteColor];
+    } else {
+        self.originalPosterTextLabel.textColor = self.oldOriginalPosterTextColor;
+        self.oldOriginalPosterTextColor = nil;
+    }
     [self.unreadCountBadgeView setNeedsDisplay];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
     [super setSelected:selected animated:animated];
-    UIColor *color = [AwfulTheme currentTheme].threadListOriginalPosterTextColor;
-    if (selected) color = [UIColor whiteColor];
-    self.originalPosterTextLabel.textColor = color;
+    if (selected) {
+        self.oldOriginalPosterTextColor = self.originalPosterTextLabel.textColor;
+        self.originalPosterTextLabel.textColor = [UIColor whiteColor];
+    } else {
+        self.originalPosterTextLabel.textColor = self.oldOriginalPosterTextColor;
+        self.oldOriginalPosterTextColor = nil;
+    }
     [self.unreadCountBadgeView setNeedsDisplay];
 }
 

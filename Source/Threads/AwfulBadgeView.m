@@ -7,7 +7,6 @@
 //
 
 #import "AwfulBadgeView.h"
-#import "AwfulTheme.h"
 
 @interface AwfulBadgeView ()
 

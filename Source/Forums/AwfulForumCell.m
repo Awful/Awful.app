@@ -27,19 +27,18 @@
     self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
     if (self) {
         UIButton *expandButton = [UIButton new];
-        [expandButton addTarget:self
-                         action:@selector(toggleExpanded)
-               forControlEvents:UIControlEventTouchUpInside];
-        [expandButton setImage:[AwfulTheme currentTheme].forumCellExpandButtonNormalImage
-                      forState:UIControlStateNormal];
-        [expandButton setImage:[AwfulTheme currentTheme].forumCellExpandButtonSelectedImage
-                      forState:UIControlStateSelected];
         expandButton.contentMode = UIViewContentModeCenter;
         [self updateExpandButtonAccessibilityLabel];
-        expandButton.accessibilityLabel = @"List subforums";
         [self.contentView addSubview:expandButton];
         _expandButton = expandButton;
-        self.imageView.userInteractionEnabled = YES;
+        
+        UIButton *favoriteButton = [UIButton new];
+        favoriteButton.contentMode = UIViewContentModeCenter;
+        favoriteButton.hidden = YES;
+        [self updateFavoriteButtonAccessibilityLabel];
+        [self.contentView addSubview:favoriteButton];
+        _favoriteButton = favoriteButton;
+        
         self.textLabel.font = [UIFont boldSystemFontOfSize:15];
         self.textLabel.numberOfLines = 2;
     }
@@ -61,20 +60,16 @@
     [self updateFavoriteButtonAccessibilityLabel];
 }
 
+
+- (BOOL)showsFavorite
+{
+    return !self.favoriteButton.hidden;
+}
+
 - (void)setShowsFavorite:(BOOL)showsFavorite
 {
-    if (_showsFavorite == showsFavorite) return;
-    _showsFavorite = showsFavorite;
-    if (showsFavorite) {
-        if (!self.favoriteButton) {
-            self.favoriteButton = CreateFavoriteButtonWithTarget(self);
-            [self.contentView addSubview:self.favoriteButton];
-        }
-        self.favoriteButton.selected = self.favorite;
-        [self updateFavoriteButtonAccessibilityLabel];
-    } else {
-        [self.favoriteButton removeFromSuperview];
-    }
+    if (showsFavorite == !self.favoriteButton.hidden) return;
+    self.favoriteButton.hidden = !showsFavorite;
     [self setNeedsLayout];
 }
 
@@ -87,44 +82,17 @@
     }
 }
 
-static UIButton *CreateFavoriteButtonWithTarget(id target)
-{
-    UIButton *favoriteButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [favoriteButton setImage:[AwfulTheme currentTheme].forumCellFavoriteButtonNormalImage
-                    forState:UIControlStateNormal];
-    [favoriteButton setImage:[AwfulTheme currentTheme].forumCellFavoriteButtonSelectedImage
-                    forState:UIControlStateSelected];
-    [favoriteButton addTarget:target
-                       action:@selector(toggleFavorite)
-             forControlEvents:UIControlEventTouchUpInside];
-    favoriteButton.contentMode = UIViewContentModeCenter;
-    [favoriteButton sizeToFit];
-    CGRect bounds = favoriteButton.bounds;
-    bounds.size.width += 40;
-    favoriteButton.bounds = bounds;
-    return favoriteButton;
-}
-
-- (void)toggleFavorite
-{
-    self.favorite = !self.favorite;
-    if ([self.delegate respondsToSelector:@selector(forumCellDidToggleFavorite:)]) {
-        [self.delegate forumCellDidToggleFavorite:self];
-    }
-}
-
 #pragma mark - Expanded
+
+- (BOOL)isExpanded
+{
+    return self.expandButton.selected;
+}
 
 - (void)setExpanded:(BOOL)expanded
 {
-    if (_expanded == expanded) return;
-    _expanded = expanded;
-    [self.expandButton setSelected:expanded];
-    if (self.showsExpanded) {
-        if ([self.delegate respondsToSelector:@selector(forumCellDidToggleExpanded:)]) {
-            [self.delegate forumCellDidToggleExpanded:self];
-        }
-    }
+    if (expanded == self.expandButton.selected) return;
+    self.expandButton.selected = expanded;
 }
 
 - (void)updateExpandButtonAccessibilityLabel
@@ -143,11 +111,6 @@ static UIButton *CreateFavoriteButtonWithTarget(id target)
     self.expandButton.hidden = showsExpanded != AwfulForumCellShowsExpandedButton;
 }
 
-- (void)toggleExpanded
-{
-    self.expanded = !self.expanded;
-}
-
 #pragma mark - Size and layout
 
 static const CGFloat StarLeftMargin = 11;
@@ -164,7 +127,11 @@ static const CGFloat StarLeftMargin = 11;
         textFrame.size.width -= newOriginX - textFrame.origin.x;
         textFrame.origin.x = newOriginX;
     }
-    if (self.favoriteButton) {
+    if (self.showsFavorite) {
+        [self.favoriteButton sizeToFit];
+        CGRect bounds = self.favoriteButton.bounds;
+        bounds.size.width += 40;
+        self.favoriteButton.bounds = bounds;
         self.favoriteButton.center = CGPointMake(CGRectGetMaxX(textFrame) - StarLeftMargin,
                                                  CGRectGetMidY(textFrame));
         textFrame.size.width -= self.favoriteButton.imageView.bounds.size.width + StarLeftMargin;

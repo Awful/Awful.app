@@ -15,7 +15,7 @@
 #import "AwfulForumCell.h"
 #import "AwfulTheme.h"
 
-@interface AwfulFavoritesViewController () <AwfulForumCellDelegate>
+@interface AwfulFavoritesViewController ()
 
 @property (readonly, strong, nonatomic) UIBarButtonItem *addButtonItem;
 @property (assign, nonatomic) BOOL automaticallyAdded;
@@ -147,7 +147,6 @@
 - (void)configureCell:(UITableViewCell *)genericCell atIndexPath:(NSIndexPath *)indexPath
 {
     AwfulForumCell *cell = (AwfulForumCell *)genericCell;
-    cell.delegate = self;
     AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
     cell.textLabel.text = forum.name;
     cell.showsExpanded = NO;
@@ -160,14 +159,6 @@
 forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     cell.backgroundColor = [AwfulTheme currentTheme].forumCellBackgroundColor;
-}
-
-- (void)forumCellDidToggleFavorite:(AwfulForumCell *)cell
-{
-    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-    AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    forum.isFavoriteValue = cell.favorite;
-    [[AwfulDataStack sharedDataStack] save];
 }
 
 - (void)tableView:(UITableView *)tableView
