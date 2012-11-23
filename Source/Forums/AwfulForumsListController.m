@@ -127,6 +127,9 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
     CGRect headerFrame = (CGRect){ .size.height = self.tableView.rowHeight };
     self.tableView.tableHeaderView = [[UIView alloc] initWithFrame:headerFrame];
     self.tableView.contentInset = (UIEdgeInsets){ .top = -self.tableView.rowHeight };
+    
+    // Don't show cell separators after last cell.
+    self.tableView.tableFooterView = [UIView new];
 }
 
 #pragma mark - Table view data source
