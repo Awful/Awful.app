@@ -35,7 +35,8 @@
         [expandButton setImage:[AwfulTheme currentTheme].forumCellExpandButtonSelectedImage
                       forState:UIControlStateSelected];
         expandButton.contentMode = UIViewContentModeCenter;
-        expandButton.accessibilityLabel = @"Show subforums";
+        [self updateExpandButtonAccessibilityLabel];
+        expandButton.accessibilityLabel = @"List subforums";
         [self.contentView addSubview:expandButton];
         _expandButton = expandButton;
         self.imageView.userInteractionEnabled = YES;
@@ -57,6 +58,7 @@
     if (_favorite == isFavorite) return;
     _favorite = isFavorite;
     self.favoriteButton.selected = isFavorite;
+    [self updateFavoriteButtonAccessibilityLabel];
 }
 
 - (void)setShowsFavorite:(BOOL)showsFavorite
@@ -69,10 +71,20 @@
             [self.contentView addSubview:self.favoriteButton];
         }
         self.favoriteButton.selected = self.favorite;
+        [self updateFavoriteButtonAccessibilityLabel];
     } else {
         [self.favoriteButton removeFromSuperview];
     }
     [self setNeedsLayout];
+}
+
+- (void)updateFavoriteButtonAccessibilityLabel
+{
+    if (self.favoriteButton.selected) {
+        self.favoriteButton.accessibilityLabel = @"Remove from favorites";
+    } else {
+        self.favoriteButton.accessibilityLabel = @"Add to favorites";
+    }
 }
 
 static UIButton *CreateFavoriteButtonWithTarget(id target)
@@ -90,7 +102,6 @@ static UIButton *CreateFavoriteButtonWithTarget(id target)
     CGRect bounds = favoriteButton.bounds;
     bounds.size.width += 40;
     favoriteButton.bounds = bounds;
-    favoriteButton.accessibilityLabel = @"Mark as favorite";
     return favoriteButton;
 }
 
@@ -113,6 +124,15 @@ static UIButton *CreateFavoriteButtonWithTarget(id target)
         if ([self.delegate respondsToSelector:@selector(forumCellDidToggleExpanded:)]) {
             [self.delegate forumCellDidToggleExpanded:self];
         }
+    }
+}
+
+- (void)updateExpandButtonAccessibilityLabel
+{
+    if (self.expandButton.selected) {
+        self.expandButton.accessibilityLabel = @"Hide subforums";
+    } else {
+        self.expandButton.accessibilityLabel = @"List subforums";
     }
 }
 
