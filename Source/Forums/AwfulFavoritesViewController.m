@@ -263,13 +263,14 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [self.noFavoritesLabel sizeToFit];
     self.noFavoritesLabel.center = CGPointMake(CGRectGetMidX(self.bounds),
                                                CGRectGetMidY(self.bounds));
+    self.noFavoritesLabel.frame = CGRectIntegral(self.noFavoritesLabel.frame);
     
     self.tapAStarLabel.bounds = (CGRect){ .size.width = self.noFavoritesLabel.bounds.size.width };
     [self.tapAStarLabel sizeToFit];
     self.tapAStarLabel.center = CGPointMake(self.noFavoritesLabel.center.x,
                                             self.noFavoritesLabel.center.y +
                                             self.noFavoritesLabel.bounds.size.height / 1.5);
-
+    self.tapAStarLabel.frame = CGRectIntegral(self.tapAStarLabel.frame);
 }
 
 @end
