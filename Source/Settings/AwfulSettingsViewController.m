@@ -17,6 +17,7 @@
 #import "AwfulSettings.h"
 #import "AwfulSettingsChoiceViewController.h"
 #import "AwfulSplitViewController.h"
+#import "AwfulTheme.h"
 #import "NSManagedObject+Awful.h"
 
 @interface AwfulSettingsViewController ()
@@ -79,8 +80,7 @@
     self.switches = [NSMutableArray new];
     self.sections = AwfulSettings.settings.sections;
     self.tableView.backgroundView = nil;
-    self.tableView.backgroundColor = [UIColor colorWithHue:0.604 saturation:0.035 brightness:0.898
-                                                     alpha:1];
+    self.tableView.backgroundColor = [AwfulTheme currentTheme].settingsViewBackgroundColor;
     
     // Make sure the bottom section's footer is visible.
     self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 18, 0);
@@ -297,7 +297,7 @@ typedef enum SettingType
     label.font = [UIFont boldSystemFontOfSize:17];
     label.text = title;
     label.backgroundColor = [UIColor clearColor];
-    label.textColor = [UIColor colorWithRed:0.265 green:0.294 blue:0.367 alpha:1];
+    label.textColor = [AwfulTheme currentTheme].settingsViewHeaderTextColor;
     label.shadowColor = [UIColor whiteColor];
     label.shadowOffset = CGSizeMake(-1, 1);
 
@@ -332,7 +332,7 @@ typedef enum SettingType
     label.frame = CGRectMake(20, 5, width, 0);
     label.text = text;
     label.backgroundColor = [UIColor clearColor];
-    label.textColor = [UIColor colorWithRed:0.298 green:0.337 blue:0.424 alpha:1];
+    label.textColor = [AwfulTheme currentTheme].settingsViewFooterTextColor;
     label.shadowColor = [UIColor whiteColor];
     label.shadowOffset = CGSizeMake(0, 1);
     [label sizeToFit];

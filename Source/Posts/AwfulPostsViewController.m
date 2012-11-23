@@ -19,6 +19,7 @@
 #import "AwfulReplyViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulSpecificPageController.h"
+#import "AwfulTheme.h"
 #import "NSFileManager+UserDirectories.h"
 #import "NSManagedObject+Awful.h"
 #import "NSString+CollapseWhitespace.h"
@@ -589,8 +590,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 - (void)loadView
 {
     self.view = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    self.view.backgroundColor = [UIColor colorWithHue:0.561 saturation:0.107 brightness:0.404
-                                                alpha:1];
+    self.view.backgroundColor = [AwfulTheme currentTheme].postsViewBackgroundColor;
     CGRect postsFrame, pageBarFrame;
     CGRectDivide(self.view.bounds, &pageBarFrame, &postsFrame, 38, CGRectMaxYEdge);
     
@@ -1006,7 +1006,7 @@ static char KVOContext;
 {
     if (!(self = [super initWithFrame:frame])) return nil;
     
-    self.backgroundColor = [UIColor colorWithWhite:0.902 alpha:1];
+    self.backgroundColor = [AwfulTheme currentTheme].postsViewTopBarBackgroundColor;
     
     UIButton *goToForumButton = [self makeButton];
     [goToForumButton setTitle:@"Go To\nForum" forState:UIControlStateNormal];
@@ -1040,12 +1040,12 @@ static char KVOContext;
     button.titleLabel.font = [UIFont boldSystemFontOfSize:12];
     button.titleLabel.numberOfLines = 2;
     button.titleLabel.shadowOffset = CGSizeMake(0, 1);
-    [button setTitleColor:[UIColor colorWithHue:0.590 saturation:0.771 brightness:0.376
-                                          alpha:1.000]
+    [button setTitleColor:[AwfulTheme currentTheme].postsViewTopBarButtonTextColor
                  forState:UIControlStateNormal];
     [button setTitleShadowColor:[UIColor whiteColor]
                        forState:UIControlStateNormal];
-    [button setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+    [button setTitleColor:[AwfulTheme currentTheme].postsViewTopBarButtonDisabledTextColor
+                 forState:UIControlStateDisabled];
     button.imageEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0);
     [self addSubview:button];
     return button;

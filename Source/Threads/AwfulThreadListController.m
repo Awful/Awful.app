@@ -17,6 +17,7 @@
 #import "AwfulPostsViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulSplitViewController.h"
+#import "AwfulTheme.h"
 #import "AwfulThreadCell.h"
 #import "AwfulThreadTags.h"
 #import "NSString+CollapseWhitespace.h"
@@ -151,7 +152,7 @@ typedef enum {
     label.numberOfLines = 2;
     label.text = self.forum.name;
     
-    self.tableView.separatorColor = [UIColor colorWithWhite:0.75 alpha:1];
+    self.tableView.separatorColor = [AwfulTheme currentTheme].threadListSeparatorColor;
     self.tableView.rowHeight = 75;
 }
 

@@ -7,6 +7,7 @@
 //
 
 #import "AwfulThreadCell.h"
+#import "AwfulTheme.h"
 
 @interface AwfulThreadCell ()
 
@@ -41,7 +42,8 @@
         UILabel *originalPosterTextLabel = [UILabel new];
         originalPosterTextLabel.backgroundColor = [UIColor clearColor];
         originalPosterTextLabel.font = self.detailTextLabel.font;
-        originalPosterTextLabel.textColor = [self originalPosterTextColor];
+        UIColor *color = [AwfulTheme currentTheme].threadListOriginalPosterTextColor;
+        originalPosterTextLabel.textColor = color;
         [self.contentView addSubview:originalPosterTextLabel];
         _originalPosterTextLabel = originalPosterTextLabel;
         
@@ -173,28 +175,23 @@
     self.originalPosterTextLabel.frame = originalPosterFrame;
 }
 
-- (UIColor *)originalPosterTextColor
-{
-    return [UIColor colorWithHue:0.553 saturation:0.198 brightness:0.659 alpha:1];
-}
-
 #pragma mark - UITableViewCell
 
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated
 {
     [super setHighlighted:highlighted animated:animated];
-    
-    self.originalPosterTextLabel.textColor = highlighted ? [UIColor whiteColor] :
-                                             [self originalPosterTextColor];
+    UIColor *color = [AwfulTheme currentTheme].threadListOriginalPosterTextColor;
+    if (highlighted) color = [UIColor whiteColor];
+    self.originalPosterTextLabel.textColor = color;
     [self.unreadCountBadgeView setNeedsDisplay];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
     [super setSelected:selected animated:animated];
-    
-    self.originalPosterTextLabel.textColor = selected ? [UIColor whiteColor] :
-                                             [self originalPosterTextColor];
+    UIColor *color = [AwfulTheme currentTheme].threadListOriginalPosterTextColor;
+    if (selected) color = [UIColor whiteColor];
+    self.originalPosterTextLabel.textColor = color;
     [self.unreadCountBadgeView setNeedsDisplay];
 }
 

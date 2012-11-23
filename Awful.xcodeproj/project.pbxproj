@@ -433,6 +433,7 @@
 		1CC780721612DBB2002AF958 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CC7806B1612DBB2002AF958 /* Default.png */; };
 		1CC780731612DBB2002AF958 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CC7806C1612DBB2002AF958 /* Default@2x.png */; };
 		1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD5198154294D400326C7B /* AwfulSettings.m */; };
+		1CE2D980165EEC1F0024AC1C /* AwfulTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D97F165EEC1F0024AC1C /* AwfulTheme.m */; };
 		1CF0D616164AE95200CFA137 /* UIViewController+NavigationEnclosure.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0D615164AE95200CFA137 /* UIViewController+NavigationEnclosure.m */; };
 		1CF0D619164B0A7C00CFA137 /* Forum Abbreviations.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CF0D618164B0A7C00CFA137 /* Forum Abbreviations.plist */; };
 		1CFBECDB162F4ED7008AF641 /* pagebar-button-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CFBECCB162F4ED7008AF641 /* pagebar-button-selected.png */; };
@@ -974,6 +975,8 @@
 		1CC7806C1612DBB2002AF958 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		1CDD5197154294D400326C7B /* AwfulSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettings.h; sourceTree = "<group>"; };
 		1CDD5198154294D400326C7B /* AwfulSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettings.m; sourceTree = "<group>"; };
+		1CE2D97E165EEC1F0024AC1C /* AwfulTheme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTheme.h; sourceTree = "<group>"; };
+		1CE2D97F165EEC1F0024AC1C /* AwfulTheme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTheme.m; sourceTree = "<group>"; };
 		1CF0D614164AE95200CFA137 /* UIViewController+NavigationEnclosure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+NavigationEnclosure.h"; sourceTree = "<group>"; };
 		1CF0D615164AE95200CFA137 /* UIViewController+NavigationEnclosure.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+NavigationEnclosure.m"; sourceTree = "<group>"; };
 		1CF0D618164B0A7C00CFA137 /* Forum Abbreviations.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Forum Abbreviations.plist"; sourceTree = "<group>"; };
@@ -1873,6 +1876,8 @@
 				1C277CA41543554700CD2CCE /* AwfulSettingsChoiceViewController.m */,
 				1CFBED061631C068008AF641 /* AwfulLicensesViewController.h */,
 				1CFBED071631C068008AF641 /* AwfulLicensesViewController.m */,
+				1CE2D97E165EEC1F0024AC1C /* AwfulTheme.h */,
+				1CE2D97F165EEC1F0024AC1C /* AwfulTheme.m */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -3418,6 +3423,7 @@
 				1C33D0E21656E845004C6D79 /* AwfulAlertView.m in Sources */,
 				1C33D0E616574505004C6D79 /* NSString+CollapseWhitespace.m in Sources */,
 				1C33D0EC165818BF004C6D79 /* UINavigationItem+TwoLineTitle.m in Sources */,
+				1CE2D980165EEC1F0024AC1C /* AwfulTheme.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

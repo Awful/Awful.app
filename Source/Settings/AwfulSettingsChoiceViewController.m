@@ -9,6 +9,7 @@
 #import "AwfulSettingsChoiceViewController.h"
 #import "AwfulSettingsViewController.h"
 #import "AwfulSettings.h"
+#import "AwfulTheme.h"
 
 @interface AwfulSettingsChoiceViewController ()
 
@@ -46,7 +47,7 @@
 {
     [super viewDidLoad];
     self.tableView.backgroundView = nil;
-    self.tableView.backgroundColor = [UIColor colorWithHue:0.604 saturation:0.035 brightness:0.898 alpha:1];
+    self.tableView.backgroundColor = [AwfulTheme currentTheme].settingsViewBackgroundColor;
 }
 
 - (void)viewWillDisappear:(BOOL)animated

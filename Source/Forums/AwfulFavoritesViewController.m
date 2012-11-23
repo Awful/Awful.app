@@ -13,7 +13,7 @@
 #import "AwfulModels.h"
 #import "AwfulThreadListController.h"
 #import "AwfulForumCell.h"
-#import "AwfulSettings.h"
+#import "AwfulTheme.h"
 
 @interface AwfulFavoritesViewController () <AwfulForumCellDelegate>
 
@@ -87,6 +87,8 @@
 {
     [super viewDidLoad];
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    
+    // Hide the cell separators after the last cell.
     self.tableView.tableFooterView = [UIView new];
     self.tableView.tableFooterView.backgroundColor = [UIColor clearColor];
 }
@@ -157,7 +159,7 @@
   willDisplayCell:(UITableViewCell *)cell
 forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    cell.backgroundColor = [UIColor whiteColor];
+    cell.backgroundColor = [AwfulTheme currentTheme].forumCellBackgroundColor;
 }
 
 - (void)forumCellDidToggleFavorite:(AwfulForumCell *)cell

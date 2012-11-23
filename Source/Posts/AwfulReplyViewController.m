@@ -11,6 +11,7 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
 #import "AwfulSettings.h"
+#import "AwfulTheme.h"
 #import "ImgurHTTPClient.h"
 #import "NSString+CollapseWhitespace.h"
 #import "SVProgressHUD.h"
@@ -527,6 +528,8 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
 {
     UITextView *textView = [UITextView new];
     textView.font = [UIFont systemFontOfSize:17];
+    textView.textColor = [AwfulTheme currentTheme].replyViewTextColor;
+    textView.backgroundColor = [AwfulTheme currentTheme].replyViewBackgroundColor;
     self.view = textView;
 }
 

@@ -15,6 +15,7 @@
 #import "AwfulModels.h"
 #import "AwfulLoginController.h"
 #import "AwfulSettings.h"
+#import "AwfulTheme.h"
 #import "AwfulThreadListController.h"
 
 @interface AwfulForumsListController () <AwfulForumCellDelegate>
@@ -117,9 +118,9 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.tableView.separatorColor = [UIColor colorWithWhite:0.94 alpha:1];
+    self.tableView.separatorColor = [AwfulTheme currentTheme].forumListSeparatorColor;
     self.tableView.rowHeight = 50;
-    self.view.backgroundColor = [UIColor colorWithWhite:0.494 alpha:1];
+    self.view.backgroundColor = [AwfulTheme currentTheme].forumListBackgroundColor;
     self.tableView.backgroundView = nil;
     
     // This little ditty stops section headers from sticking.
@@ -135,7 +136,7 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
     UILabel *header = [AwfulForumHeader new];
     header.frame = (CGRect){ .size = { tableView.bounds.size.width, tableView.rowHeight } };
     header.font = [UIFont boldSystemFontOfSize:19];
-    header.textColor = [UIColor whiteColor];
+    header.textColor = [AwfulTheme currentTheme].forumListHeaderTextColor;
     header.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     header.backgroundColor = tableView.backgroundColor;
     AwfulForum *anyForum = [[self.fetchedResultsController.sections[section] objects] lastObject];
@@ -182,9 +183,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
     if (forum.parentForum) {
-        cell.backgroundColor = [UIColor colorWithRed:0.922 green:0.922 blue:0.925 alpha:1];
+        cell.backgroundColor = [AwfulTheme currentTheme].forumCellSubforumBackgroundColor;
     } else {
-        cell.backgroundColor = [UIColor whiteColor];
+        cell.backgroundColor = [AwfulTheme currentTheme].forumCellBackgroundColor;
     }
 }
 

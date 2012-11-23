@@ -7,6 +7,7 @@
 //
 
 #import "AwfulForumCell.h"
+#import "AwfulTheme.h"
 
 @interface AwfulForumCell ()
 
@@ -29,9 +30,9 @@
         [expandButton addTarget:self
                          action:@selector(toggleExpanded)
                forControlEvents:UIControlEventTouchUpInside];
-        [expandButton setImage:[UIImage imageNamed:@"forum-arrow-right.png"]
+        [expandButton setImage:[AwfulTheme currentTheme].forumCellExpandButtonNormalImage
                       forState:UIControlStateNormal];
-        [expandButton setImage:[UIImage imageNamed:@"forum-arrow-down.png"]
+        [expandButton setImage:[AwfulTheme currentTheme].forumCellExpandButtonSelectedImage
                       forState:UIControlStateSelected];
         expandButton.contentMode = UIViewContentModeCenter;
         expandButton.accessibilityLabel = @"Show subforums";
@@ -77,8 +78,10 @@
 static UIButton *CreateFavoriteButtonWithTarget(id target)
 {
     UIButton *favoriteButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [favoriteButton setImage:[UIImage imageNamed:@"star-off.png"] forState:UIControlStateNormal];
-    [favoriteButton setImage:[UIImage imageNamed:@"star-on.png"] forState:UIControlStateSelected];
+    [favoriteButton setImage:[AwfulTheme currentTheme].forumCellFavoriteButtonNormalImage
+                    forState:UIControlStateNormal];
+    [favoriteButton setImage:[AwfulTheme currentTheme].forumCellFavoriteButtonSelectedImage
+                    forState:UIControlStateSelected];
     [favoriteButton addTarget:target
                        action:@selector(toggleFavorite)
              forControlEvents:UIControlEventTouchUpInside];
