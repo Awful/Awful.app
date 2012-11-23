@@ -7,7 +7,7 @@
 //
 
 #import "AwfulTableViewController.h"
-#import "AwfulSettings.h"
+#import "AwfulTheme.h"
 #import "SVPullToRefresh.h"
 
 @interface AwfulTableViewController ()
@@ -17,6 +17,37 @@
 @end
 
 @implementation AwfulTableViewController
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    if (!(self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) return nil;
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(themeChanged:)
+                                                 name:AwfulThemeDidChangeNotification
+                                               object:nil];
+    return self;
+}
+
+- (void)dealloc
+{
+    [self stopObservingApplicationDidBecomeActive];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:AwfulThemeDidChangeNotification
+                                                  object:nil];
+}
+
+- (void)themeChanged:(NSNotification *)note
+{
+    if (![self isViewLoaded]) return;
+    [self.tableView reloadData];
+    [self refreshTheme];
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    [self refreshTheme];
+}
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -33,7 +64,7 @@
         }];
     }
     [self refreshIfNeededOnAppear];
-    [self startObserving];
+    [self startObservingApplicationDidBecomeActive];
 }
 
 - (void)becameActive
@@ -51,7 +82,7 @@
     }
 }
 
-- (void)startObserving
+- (void)startObservingApplicationDidBecomeActive
 {
     if (self.observing) return;
     self.observing = YES;
@@ -65,16 +96,11 @@
 {
     [self.networkOperation cancel];
     self.refreshing = NO;
-    [self stopObserving];
+    [self stopObservingApplicationDidBecomeActive];
     [super viewWillDisappear:animated];
 }
 
-- (void)dealloc
-{
-    [self stopObserving];
-}
-
-- (void)stopObserving
+- (void)stopObservingApplicationDidBecomeActive
 {
     if (!self.observing) return;
     self.observing = NO;
@@ -137,6 +163,11 @@
 {
     [NSException raise:NSInternalInconsistencyException
                 format:@"Subclasses must implement %@", NSStringFromSelector(_cmd)];
+}
+
+- (void)refreshTheme
+{
+    // Subclasses may implement.
 }
 
 @end

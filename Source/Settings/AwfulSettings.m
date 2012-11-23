@@ -65,6 +65,7 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults]; \
     [defaults setBool:val forKey:__key]; \
     [defaults synchronize]; \
+    [self postSettingDidChange:__key]; \
 }
 
 BOOL_PROPERTY(@"show_avatars", showAvatars, setShowAvatars)
@@ -107,6 +108,7 @@ struct {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:value forKey:kFirstTab];
     [defaults synchronize];
+    [self postSettingDidChange:kFirstTab];
 }
 
 BOOL_PROPERTY(@"highlight_own_quotes", highlightOwnQuotes, setHighlightOwnQuotes)
@@ -115,7 +117,7 @@ BOOL_PROPERTY(@"highlight_own_mentions", highlightOwnMentions, setHighlightOwnMe
 
 BOOL_PROPERTY(@"confirm_before_replying", confirmBeforeReplying, setConfirmBeforeReplying)
 
-BOOL_PROPERTY(@"dark_theme", darkTheme, setDarkTheme)
+BOOL_PROPERTY(AwfulSettingsKeys.darkTheme, darkTheme, setDarkTheme)
 
 static NSString * const kCurrentUser = @"current_user";
 
@@ -138,6 +140,24 @@ static NSString * const kUsername = @"username";
     if (username) [defaults setObject:username forKey:kUsername];
     else [defaults removeObjectForKey:kUsername];
     [defaults synchronize];
+    [self postSettingDidChange:kUsername];
+}
+
+- (void)postSettingDidChange:(NSString *)key
+{
+    NSDictionary *userInfo = @{ AwfulSettingsDidChangeSettingsKey : @[ key ] };
+    [[NSNotificationCenter defaultCenter] postNotificationName:AwfulSettingsDidChangeNotification
+                                                        object:self
+                                                      userInfo:userInfo];
 }
 
 @end
+
+
+NSString * const AwfulSettingsDidChangeNotification = @"com.awfulapp.Awful.SettingsDidChange";
+
+NSString * const AwfulSettingsDidChangeSettingsKey = @"settings";
+
+const struct AwfulSettingsKeys AwfulSettingsKeys = {
+	.darkTheme = @"dark_theme",
+};

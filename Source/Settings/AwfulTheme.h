@@ -57,3 +57,7 @@
 @property (readonly, nonatomic) UIColor *settingsViewFooterTextColor;
 
 @end
+
+
+// Sent to the default center whenever the current theme changes.
+extern NSString * const AwfulThemeDidChangeNotification;

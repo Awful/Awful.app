@@ -142,6 +142,19 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
     }
 }
 
+- (void)setCellImagesForCell:(AwfulForumCell *)cell
+{
+    if (!cell) return;
+    [cell.expandButton setImage:[AwfulTheme currentTheme].forumCellExpandButtonNormalImage
+                       forState:UIControlStateNormal];
+    [cell.expandButton setImage:[AwfulTheme currentTheme].forumCellExpandButtonSelectedImage
+                       forState:UIControlStateSelected];
+    [cell.favoriteButton setImage:[AwfulTheme currentTheme].forumCellFavoriteButtonNormalImage
+                         forState:UIControlStateNormal];
+    [cell.favoriteButton setImage:[AwfulTheme currentTheme].forumCellFavoriteButtonSelectedImage
+                         forState:UIControlStateSelected];
+}
+
 #pragma mark - AwfulTableViewController
 
 - (void)refresh
@@ -173,14 +186,21 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
     return [[NSDate date] timeIntervalSinceDate:self.lastRefresh] > 60 * 60 * 20;
 }
 
+- (void)refreshTheme
+{
+    self.tableView.separatorColor = [AwfulTheme currentTheme].forumListSeparatorColor;
+    self.view.backgroundColor = [AwfulTheme currentTheme].forumListBackgroundColor;
+    for (AwfulForumCell *cell in [self.tableView visibleCells]) {
+        [self setCellImagesForCell:cell];
+    }
+}
+
 #pragma mark - UIViewController
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.tableView.separatorColor = [AwfulTheme currentTheme].forumListSeparatorColor;
     self.tableView.rowHeight = 50;
-    self.view.backgroundColor = [AwfulTheme currentTheme].forumListBackgroundColor;
     self.tableView.backgroundView = nil;
     
     // This little ditty stops section headers from sticking.
@@ -224,17 +244,9 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
         [cell.expandButton addTarget:self
                               action:@selector(toggleExpanded:)
                     forControlEvents:UIControlEventTouchUpInside];
-        [cell.expandButton setImage:[AwfulTheme currentTheme].forumCellExpandButtonNormalImage
-                           forState:UIControlStateNormal];
-        [cell.expandButton setImage:[AwfulTheme currentTheme].forumCellExpandButtonSelectedImage
-                           forState:UIControlStateSelected];
         [cell.favoriteButton addTarget:self
                                 action:@selector(toggleFavorite:)
                       forControlEvents:UIControlEventTouchUpInside];
-        [cell.favoriteButton setImage:[AwfulTheme currentTheme].forumCellFavoriteButtonNormalImage
-                             forState:UIControlStateNormal];
-        [cell.favoriteButton setImage:[AwfulTheme currentTheme].forumCellFavoriteButtonSelectedImage
-                             forState:UIControlStateSelected];
     }
     [self configureCell:cell atIndexPath:indexPath];
     return cell;
@@ -245,6 +257,7 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
     AwfulForumCell *cell = (AwfulForumCell *)plainCell;
     AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
     cell.textLabel.text = forum.name;
+    [self setCellImagesForCell:cell];
     cell.favorite = forum.isFavoriteValue;
     cell.expanded = forum.expandedValue;
     if ([forum.children count]) {

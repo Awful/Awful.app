@@ -41,3 +41,15 @@ typedef enum
 @property (copy, nonatomic) NSString *username;
 
 @end
+
+// Sent to default center whenever a setting changes. The userInfo dictionary has a value for
+// AwfulSettingsDidChangeSettingsKey.
+extern NSString * const AwfulSettingsDidChangeNotification;
+
+// A collection (responds to -containsObject:) of settings that changed.
+extern NSString * const AwfulSettingsDidChangeSettingsKey;
+
+// Possible values in the AwfulSettingsDidChangeSettingsKey collection.
+extern const struct AwfulSettingsKeys {
+	__unsafe_unretained NSString *darkTheme;
+} AwfulSettingsKeys;

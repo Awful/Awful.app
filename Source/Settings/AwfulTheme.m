@@ -7,6 +7,14 @@
 //
 
 #import "AwfulTheme.h"
+#import "AwfulSettings.h"
+
+@interface AwfulTheme ()
+
+@property (getter=isDark, nonatomic) BOOL dark;
+
+@end
+
 
 @implementation AwfulTheme
 
@@ -18,6 +26,34 @@
         instance = [self new];
     });
     return instance;
+}
+
+- (id)init
+{
+    if (!(self = [super init])) return nil;
+    _dark = [AwfulSettings settings].darkTheme;
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(settingsChanged:)
+                                                 name:AwfulSettingsDidChangeNotification
+                                               object:nil];
+    return self;
+}
+
+- (void)settingsChanged:(NSNotification *)note
+{
+    NSArray *changed = note.userInfo[AwfulSettingsDidChangeSettingsKey];
+    if ([changed containsObject:AwfulSettingsKeys.darkTheme]) {
+        self.dark = [AwfulSettings settings].darkTheme;
+        [[NSNotificationCenter defaultCenter] postNotificationName:AwfulThemeDidChangeNotification
+                                                            object:self];
+    }
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:AwfulSettingsDidChangeNotification
+                                                  object:nil];
 }
 
 #pragma mark - Login view
@@ -158,3 +194,6 @@
 }
 
 @end
+
+
+NSString * const AwfulThemeDidChangeNotification = @"com.awfulapp.Awful.ThemeDidChange";

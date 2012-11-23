@@ -206,7 +206,11 @@ typedef enum SettingType
     NSIndexPath *indexPath = self.switches[switchView.tag];
     NSDictionary *setting = [self settingForIndexPath:indexPath];
     NSString *key = [setting objectForKey:@"Key"];
-    [[NSUserDefaults standardUserDefaults] setBool:switchView.on forKey:key];
+    if ([key isEqualToString:AwfulSettingsKeys.darkTheme]) {
+        [AwfulSettings settings].darkTheme = switchView.on;
+    } else {
+        [[NSUserDefaults standardUserDefaults] setBool:switchView.on forKey:key];
+    }
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView
