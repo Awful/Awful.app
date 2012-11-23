@@ -625,7 +625,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     [self.view addSubview:postsView];
     
     TopBarView *topBar = [TopBarView new];
-    topBar.frame = CGRectMake(0, 0, self.view.frame.size.width, -44);
+    topBar.frame = CGRectMake(0, -44, self.view.frame.size.width, 44);
     topBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     [topBar.goToForumButton addTarget:self
                                action:@selector(goToParentForum)
