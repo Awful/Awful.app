@@ -18,15 +18,15 @@
 @interface AwfulFavoritesViewController ()
 
 @property (readonly, strong, nonatomic) UIBarButtonItem *addButtonItem;
+
 @property (assign, nonatomic) BOOL automaticallyAdded;
+
 @property (weak, nonatomic) UIView *coverView;
 
 @end
 
 
-@interface CoverView : UIView
-
-@end
+@interface CoverView : UIView @end
 
 
 @implementation AwfulFavoritesViewController
@@ -36,7 +36,8 @@
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         self.title = @"Favorites";
-        self.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemFavorites tag:0];
+        self.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemFavorites
+                                                                     tag:0];
     }
     return self;
 }
@@ -67,6 +68,17 @@
     return coverView;
 }
 
+- (void)updateCoverAndEditButtonAnimated:(BOOL)animated
+{
+    if ([self.fetchedResultsController.fetchedObjects count] > 0) {
+        self.navigationItem.rightBarButtonItem = self.editButtonItem;
+        [self hideNoFavoritesCover];
+    } else {
+        self.navigationItem.rightBarButtonItem = nil;
+        [self showNoFavoritesCoverAnimated:animated];
+    }
+}
+
 #pragma mark - AwfulFetchedTableViewController
 
 - (NSFetchedResultsController *)createFetchedResultsController
@@ -90,18 +102,20 @@
     
     // Hide the cell separators after the last cell.
     self.tableView.tableFooterView = [UIView new];
-    self.tableView.tableFooterView.backgroundColor = [UIColor clearColor];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    if ([self.fetchedResultsController.fetchedObjects count] > 0) {
-        self.navigationItem.rightBarButtonItem = self.editButtonItem;
-        [self hideNoFavoritesCover];
-    } else {
-        self.navigationItem.rightBarButtonItem = nil;
-        [self showNoFavoritesCoverAnimated:NO];
+    [self updateCoverAndEditButtonAnimated:NO];
+}
+
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated
+{
+    [super setEditing:editing animated:animated];
+    if (!editing) {
+        [[AwfulDataStack sharedDataStack] save];
+        [self updateCoverAndEditButtonAnimated:YES];
     }
 }
 
@@ -130,7 +144,7 @@
     }
 }
 
-#pragma mark - Table view data source and delegate
+#pragma mark - UITableViewDataSource and UITableViewDelegate
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -139,19 +153,16 @@
     AwfulForumCell *cell = [tableView dequeueReusableCellWithIdentifier:Identifier];
     if (!cell) {
         cell = [[AwfulForumCell alloc] initWithReuseIdentifier:Identifier];
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     [self configureCell:cell atIndexPath:indexPath];
     return cell;
 }
 
-- (void)configureCell:(UITableViewCell *)genericCell atIndexPath:(NSIndexPath *)indexPath
+- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
-    AwfulForumCell *cell = (AwfulForumCell *)genericCell;
     AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
     cell.textLabel.text = forum.name;
-    cell.showsExpanded = NO;
-    cell.showsFavorite = NO;
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 }
 
 - (void)tableView:(UITableView *)tableView
@@ -194,7 +205,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         [reindex enumerateObjectsUsingBlock:^(AwfulForum *f, NSUInteger i, BOOL *stop) {
             if (f.isFavoriteValue) f.favoriteIndexValue = i;
         }];
-        [[AwfulDataStack sharedDataStack] save];
+        if (self.editing && [self.fetchedResultsController.fetchedObjects count] == 0) {
+            [self setEditing:NO animated:YES];
+        } else {
+            [[AwfulDataStack sharedDataStack] save];
+            [self updateCoverAndEditButtonAnimated:YES];
+        }
     }
 }
 
