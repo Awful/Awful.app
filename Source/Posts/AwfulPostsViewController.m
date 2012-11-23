@@ -127,7 +127,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 
 - (void)updateFetchedResultsController
 {
-    if (self.currentPage < 1) {
+    if (!self.thread || self.currentPage < 1) {
         self.fetchedResultsController.delegate = nil;
         self.fetchedResultsController = nil;
         return;
