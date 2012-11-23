@@ -15,18 +15,24 @@
 #import "AwfulForumCell.h"
 #import "AwfulTheme.h"
 
+@interface CoverView : UIView
+
+@property (readonly, weak, nonatomic) UILabel *noFavoritesLabel;
+
+@property (readonly, weak, nonatomic) UILabel *tapAStarLabel;
+
+@end
+
+
 @interface AwfulFavoritesViewController ()
 
 @property (readonly, strong, nonatomic) UIBarButtonItem *addButtonItem;
 
 @property (assign, nonatomic) BOOL automaticallyAdded;
 
-@property (weak, nonatomic) UIView *coverView;
+@property (weak, nonatomic) CoverView *coverView;
 
 @end
-
-
-@interface CoverView : UIView @end
 
 
 @implementation AwfulFavoritesViewController
@@ -59,10 +65,10 @@
     self.tableView.scrollEnabled = YES;
 }
 
-- (UIView *)coverView
+- (CoverView *)coverView
 {
     if (_coverView) return _coverView;
-    UIView *coverView = [[CoverView alloc] initWithFrame:self.view.bounds];
+    CoverView *coverView = [[CoverView alloc] initWithFrame:self.view.bounds];
     [self.view addSubview:coverView];
     _coverView = coverView;
     return coverView;
@@ -126,6 +132,14 @@
     return NO;
 }
 
+- (void)retheme
+{
+    self.tableView.separatorColor = [AwfulTheme currentTheme].favoritesSeparatorColor;
+    self.view.backgroundColor = [AwfulTheme currentTheme].favoritesBackgroundColor;
+    self.coverView.noFavoritesLabel.textColor = [AwfulTheme currentTheme].noFavoritesTextColor;
+    self.coverView.tapAStarLabel.textColor = [AwfulTheme currentTheme].noFavoritesTextColor;
+}
+
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controller:(NSFetchedResultsController *)controller
@@ -163,6 +177,7 @@
 {
     AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
     cell.textLabel.text = forum.name;
+    cell.textLabel.textColor = [AwfulTheme currentTheme].forumCellTextColor;
 }
 
 - (void)tableView:(UITableView *)tableView
@@ -252,6 +267,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         noFavoritesLabel.text = @"No Favorites";
         noFavoritesLabel.font = [UIFont systemFontOfSize:35];
         noFavoritesLabel.textColor = [UIColor grayColor];
+        noFavoritesLabel.backgroundColor = [UIColor clearColor];
         [self addSubview:noFavoritesLabel];
         _noFavoritesLabel = noFavoritesLabel;
         
@@ -259,6 +275,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         tapAStarLabel.text = @"Tap a star in the forums list to add one.";
         tapAStarLabel.font = [UIFont systemFontOfSize:16];
         tapAStarLabel.textColor = [UIColor grayColor];
+        tapAStarLabel.backgroundColor = [UIColor clearColor];
         [self addSubview:tapAStarLabel];
         _tapAStarLabel = tapAStarLabel;
     }

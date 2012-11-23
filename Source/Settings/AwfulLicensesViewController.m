@@ -7,15 +7,16 @@
 //
 
 #import "AwfulLicensesViewController.h"
+#import "AwfulTheme.h"
+
+@interface AwfulLicensesViewController () <UIWebViewDelegate> @end
 
 @implementation AwfulLicensesViewController
 
 - (id)init
 {
-    self = [super initWithNibName:nil bundle:nil];
-    if (self) {
-        self.title = @"Licenses";
-    }
+    if (!(self = [super initWithNibName:nil bundle:nil])) return nil;
+    self.title = @"Licenses";
     return self;
 }
 
@@ -29,9 +30,25 @@
 - (void)loadView
 {
     UIWebView *webView = [UIWebView new];
+    webView.delegate = self;
     NSURL *licenses = [[NSBundle mainBundle] URLForResource:@"licenses" withExtension:@"html"];
     [webView loadRequest:[NSURLRequest requestWithURL:licenses]];
     self.view = webView;
+}
+
+#pragma mark - UIWebViewDelegate
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView
+{
+    NSString *js = [NSString stringWithFormat:
+                    @"document.body.style.color = '%@';"
+                     "document.body.style.backgroundColor = '%@';"
+                     "var as = document.getElementsByTagName('a');"
+                     "for (var i = 0; i < as.length; i++) as[i].style.color = '%@'",
+                    [AwfulTheme currentTheme].licensesViewTextHTMLColor,
+                    [AwfulTheme currentTheme].licensesViewBackgroundHTMLColor,
+                    [AwfulTheme currentTheme].licensesViewLinkHTMLColor];
+    [webView stringByEvaluatingJavaScriptFromString:js];
 }
 
 @end

@@ -117,6 +117,12 @@ typedef enum {
     [self loadPageNum:self.currentPage + 1];
 }
 
+- (void)retheme
+{
+    self.view.backgroundColor = [AwfulTheme currentTheme].threadListBackgroundColor;
+    self.tableView.separatorColor = [AwfulTheme currentTheme].threadListSeparatorColor;
+}
+
 - (void)loadPageNum:(NSUInteger)pageNum
 {    
     [self.networkOperation cancel];
@@ -145,14 +151,7 @@ typedef enum {
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
     self.currentPage = 1;
-    
-    UILabel *label = (UILabel *)self.navigationItem.titleView;
-    label.numberOfLines = 2;
-    label.text = self.forum.name;
-    
-    self.tableView.separatorColor = [AwfulTheme currentTheme].threadListSeparatorColor;
     self.tableView.rowHeight = 75;
 }
 
@@ -258,11 +257,13 @@ typedef enum {
         cell.rating = [thread.threadRating floatValue];
     }
     cell.textLabel.text = [thread.title stringByCollapsingWhitespace];
+    cell.textLabel.textColor = [AwfulTheme currentTheme].threadCellTextColor;
     NSNumberFormatterStyle numberStyle = NSNumberFormatterDecimalStyle;
     NSString *pagesFormatted = [NSNumberFormatter localizedStringFromNumber:thread.numberOfPages
                                                                 numberStyle:numberStyle];
     NSString *plural = thread.numberOfPagesValue == 1 ? @"" : @"s";
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ page%@", pagesFormatted, plural];
+    cell.detailTextLabel.textColor = [AwfulTheme currentTheme].threadCellPagesTextColor;
     if (thread.seenValue) {
         cell.originalPosterTextLabel.text = [NSString stringWithFormat:@"Killed by %@",
                                              thread.lastPostAuthorName];
@@ -271,7 +272,7 @@ typedef enum {
                                              thread.authorName];
     }
     AwfulTheme *theme = [AwfulTheme currentTheme];
-    cell.originalPosterTextLabel.textColor = theme.threadListOriginalPosterTextColor;
+    cell.originalPosterTextLabel.textColor = theme.threadCellOriginalPosterTextColor;
     cell.unreadCountBadgeView.badgeColor = theme.threadListUnreadBadgeColor;
     cell.unreadCountBadgeView.highlightedBadgeColor = theme.threadListUnreadBadgeHighlightedColor;
     cell.unreadCountBadgeView.offBadgeColor = theme.threadListUnreadBadgeOffColor;
@@ -323,6 +324,13 @@ typedef enum {
         AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
         [self showThreadActionsForThread:thread];
     }
+}
+
+- (void)tableView:(UITableView *)tableView
+  willDisplayCell:(UITableViewCell *)cell
+forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    cell.backgroundColor = [AwfulTheme currentTheme].threadCellBackgroundColor;
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath

@@ -34,6 +34,6 @@
 
 // Subclasses can implement to update any colors etc. when the current theme changes.
 // This also gets called on viewDidLoad.
-- (void)refreshTheme;
+- (void)retheme;
 
 @end

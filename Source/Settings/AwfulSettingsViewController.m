@@ -72,6 +72,12 @@
     self.networkOperation = op;
 }
 
+- (void)retheme
+{
+    self.tableView.backgroundColor = [AwfulTheme currentTheme].settingsViewBackgroundColor;
+    self.tableView.separatorColor = [AwfulTheme currentTheme].settingsCellSeparatorColor;
+}
+
 #pragma mark - UIViewController
 
 - (void)viewDidLoad
@@ -80,7 +86,6 @@
     self.switches = [NSMutableArray new];
     self.sections = AwfulSettings.settings.sections;
     self.tableView.backgroundView = nil;
-    self.tableView.backgroundColor = [AwfulTheme currentTheme].settingsViewBackgroundColor;
     
     // Make sure the bottom section's footer is visible.
     self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 18, 0);
@@ -139,15 +144,14 @@ typedef enum SettingType
                                       reuseIdentifier:identifier];
     }
     if (style == UITableViewCellStyleValue1) {
-        cell.detailTextLabel.textColor = [UIColor colorWithRed:0.224
-                                                         green:0.329
-                                                          blue:0.518
-                                                         alpha:1];
+        UIColor *color = [AwfulTheme currentTheme].settingsCellCurrentValueTextColor;
+        cell.detailTextLabel.textColor = color;
     }
     
     // Set it up as we like it.
     
     cell.textLabel.text = setting[@"Title"];
+    cell.textLabel.textColor = [AwfulTheme currentTheme].settingsCellTextColor;
     
     if (settingType == ImmutableSetting) {
         // This only works because there's one immutable setting here.
@@ -164,6 +168,7 @@ typedef enum SettingType
             [self.switches addObject:indexPath];
         }
         UISwitch *switchView = [UISwitch new];
+        switchView.onTintColor = [AwfulTheme currentTheme].settingsCellSwitchOnTintColor;
         switchView.on = [valueForSetting boolValue];
         [switchView addTarget:self
                        action:@selector(hitSwitch:)
@@ -211,6 +216,13 @@ typedef enum SettingType
     } else {
         [[NSUserDefaults standardUserDefaults] setBool:switchView.on forKey:key];
     }
+}
+
+- (void)tableView:(UITableView *)tableView
+  willDisplayCell:(UITableViewCell *)cell
+forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    cell.backgroundColor = [AwfulTheme currentTheme].settingsCellBackgroundColor;
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView
@@ -302,7 +314,7 @@ typedef enum SettingType
     label.text = title;
     label.backgroundColor = [UIColor clearColor];
     label.textColor = [AwfulTheme currentTheme].settingsViewHeaderTextColor;
-    label.shadowColor = [UIColor whiteColor];
+    label.shadowColor = [AwfulTheme currentTheme].settingsViewHeaderShadowColor;
     label.shadowOffset = CGSizeMake(-1, 1);
 
     UIView *wrapper = [UIView new];
@@ -337,7 +349,7 @@ typedef enum SettingType
     label.text = text;
     label.backgroundColor = [UIColor clearColor];
     label.textColor = [AwfulTheme currentTheme].settingsViewFooterTextColor;
-    label.shadowColor = [UIColor whiteColor];
+    label.shadowColor = [AwfulTheme currentTheme].settingsViewFooterShadowColor;
     label.shadowOffset = CGSizeMake(0, 1);
     [label sizeToFit];
     CGRect frame = label.frame;

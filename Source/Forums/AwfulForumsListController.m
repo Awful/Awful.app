@@ -186,7 +186,7 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
     return [[NSDate date] timeIntervalSinceDate:self.lastRefresh] > 60 * 60 * 20;
 }
 
-- (void)refreshTheme
+- (void)retheme
 {
     self.tableView.separatorColor = [AwfulTheme currentTheme].forumListSeparatorColor;
     self.view.backgroundColor = [AwfulTheme currentTheme].forumListBackgroundColor;
@@ -257,6 +257,7 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
     AwfulForumCell *cell = (AwfulForumCell *)plainCell;
     AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
     cell.textLabel.text = forum.name;
+    cell.textLabel.textColor = [AwfulTheme currentTheme].forumCellTextColor;
     [self setCellImagesForCell:cell];
     cell.favorite = forum.isFavoriteValue;
     cell.expanded = forum.expandedValue;

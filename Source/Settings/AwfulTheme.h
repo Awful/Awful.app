@@ -23,6 +23,7 @@
 @property (readonly, nonatomic) UIColor *forumListBackgroundColor;
 @property (readonly, nonatomic) UIColor *forumListSeparatorColor;
 @property (readonly, nonatomic) UIColor *forumListHeaderTextColor;
+@property (readonly, nonatomic) UIColor *forumCellTextColor;
 @property (readonly, nonatomic) UIColor *forumCellBackgroundColor;
 @property (readonly, nonatomic) UIColor *forumCellSubforumBackgroundColor;
 @property (readonly, nonatomic) UIImage *forumCellExpandButtonNormalImage;
@@ -30,10 +31,20 @@
 @property (readonly, nonatomic) UIImage *forumCellFavoriteButtonNormalImage;
 @property (readonly, nonatomic) UIImage *forumCellFavoriteButtonSelectedImage;
 
+// Favorites
+
+@property (readonly, nonatomic) UIColor *favoritesBackgroundColor;
+@property (readonly, nonatomic) UIColor *favoritesSeparatorColor;
+@property (readonly, nonatomic) UIColor *noFavoritesTextColor;
+
 // Thread list
 
+@property (readonly, nonatomic) UIColor *threadListBackgroundColor;
+@property (readonly, nonatomic) UIColor *threadCellBackgroundColor;
+@property (readonly, nonatomic) UIColor *threadCellTextColor;
+@property (readonly, nonatomic) UIColor *threadCellPagesTextColor;
+@property (readonly, nonatomic) UIColor *threadCellOriginalPosterTextColor;
 @property (readonly, nonatomic) UIColor *threadListSeparatorColor;
-@property (readonly, nonatomic) UIColor *threadListOriginalPosterTextColor;
 @property (readonly, nonatomic) UIColor *threadListUnreadBadgeColor;
 @property (readonly, nonatomic) UIColor *threadListUnreadBadgeHighlightedColor;
 @property (readonly, nonatomic) UIColor *threadListUnreadBadgeOffColor;
@@ -54,7 +65,20 @@
 
 @property (readonly, nonatomic) UIColor *settingsViewBackgroundColor;
 @property (readonly, nonatomic) UIColor *settingsViewHeaderTextColor;
+@property (readonly, nonatomic) UIColor *settingsViewHeaderShadowColor;
 @property (readonly, nonatomic) UIColor *settingsViewFooterTextColor;
+@property (readonly, nonatomic) UIColor *settingsViewFooterShadowColor;
+@property (readonly, nonatomic) UIColor *settingsCellBackgroundColor;
+@property (readonly, nonatomic) UIColor *settingsCellTextColor;
+@property (readonly, nonatomic) UIColor *settingsCellCurrentValueTextColor;
+@property (readonly, nonatomic) UIColor *settingsCellSwitchOnTintColor;
+@property (readonly, nonatomic) UIColor *settingsCellSeparatorColor;
+
+// Licenses view
+
+@property (readonly, nonatomic) NSString *licensesViewBackgroundHTMLColor;
+@property (readonly, nonatomic) NSString *licensesViewTextHTMLColor;
+@property (readonly, nonatomic) NSString *licensesViewLinkHTMLColor;
 
 @end
 

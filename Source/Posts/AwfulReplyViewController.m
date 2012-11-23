@@ -266,6 +266,19 @@ withImagePlaceholderResults:placeholderResults
     [SVProgressHUD dismiss];
     [self.delegate replyViewControllerDidCancel:self];
 }
+
+- (void)retheme
+{
+    self.replyTextView.textColor = [AwfulTheme currentTheme].replyViewTextColor;
+    self.replyTextView.backgroundColor = [AwfulTheme currentTheme].replyViewBackgroundColor;
+    self.replyTextView.keyboardAppearance = UIKeyboardAppearanceAlert;
+}
+
+- (void)currentThemeChanged:(NSNotification *)note
+{
+    [self retheme];
+}
+
 #pragma mark - Menu items
 
 - (void)configureTopLevelMenuItems
@@ -528,8 +541,6 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
 {
     UITextView *textView = [UITextView new];
     textView.font = [UIFont systemFontOfSize:17];
-    textView.textColor = [AwfulTheme currentTheme].replyViewTextColor;
-    textView.backgroundColor = [AwfulTheme currentTheme].replyViewBackgroundColor;
     self.view = textView;
 }
 
@@ -553,6 +564,19 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
     [super viewWillAppear:animated];
     [self configureTopLevelMenuItems];
     [self.replyTextView becomeFirstResponder];
+    [self retheme];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(currentThemeChanged:)
+                                                 name:AwfulThemeDidChangeNotification
+                                               object:nil];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:AwfulThemeDidChangeNotification
+                                                  object:nil];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

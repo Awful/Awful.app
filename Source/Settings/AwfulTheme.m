@@ -56,141 +56,268 @@
                                                   object:nil];
 }
 
+#define LIGHT(a) if (!self.dark) return a
+#define DARK(b) return b
+#define DEFAULT(c) return c
+
 #pragma mark - Login view
 
 - (UIColor *)loginViewBackgroundColor
 {
-    return [UIColor colorWithHue:0.604 saturation:0.035 brightness:0.898 alpha:1];
+    DEFAULT([UIColor colorWithHue:0.604 saturation:0.035 brightness:0.898 alpha:1]);
 }
 
 - (UIColor *)loginViewForgotLinkTextColor
 {
-    return [UIColor colorWithHue:0.584 saturation:0.960 brightness:0.388 alpha:1];
+    DEFAULT([UIColor colorWithHue:0.584 saturation:0.960 brightness:0.388 alpha:1]);
 }
 
 #pragma mark - Forum list
 
 - (UIColor *)forumListBackgroundColor
 {
-    return [UIColor colorWithWhite:0.494 alpha:1];
+    DEFAULT([UIColor colorWithWhite:0.494 alpha:1]);
 }
 
 - (UIColor *)forumListSeparatorColor
 {
-    return [UIColor colorWithWhite:0.94 alpha:1];
+    LIGHT([UIColor colorWithWhite:0.94 alpha:1]);
+    DARK([UIColor colorWithWhite:0.306 alpha:1]);
 }
 
 - (UIColor *)forumListHeaderTextColor
 {
-    return [UIColor whiteColor];
+    LIGHT([UIColor whiteColor]);
+    DARK([UIColor colorWithWhite:0.153 alpha:1.000]);
+}
+
+- (UIColor *)forumCellTextColor
+{
+    LIGHT([UIColor blackColor]);
+    DARK([UIColor whiteColor]);
 }
 
 - (UIColor *)forumCellBackgroundColor
 {
-    return [UIColor whiteColor];
+    LIGHT([UIColor whiteColor]);
+    DARK([UIColor colorWithWhite:0.153 alpha:1]);
 }
 
 - (UIColor *)forumCellSubforumBackgroundColor
 {
-    return [UIColor colorWithRed:0.922 green:0.922 blue:0.925 alpha:1];
+    LIGHT([UIColor colorWithWhite:0.922 alpha:1]);
+    DARK([UIColor colorWithWhite:0.25 alpha:1]);
 }
 
 - (UIImage *)forumCellExpandButtonNormalImage
 {
-    return [UIImage imageNamed:@"forum-arrow-right.png"];
+    DEFAULT([UIImage imageNamed:@"forum-arrow-right.png"]);
 }
 
 - (UIImage *)forumCellExpandButtonSelectedImage
 {
-    return [UIImage imageNamed:@"forum-arrow-down.png"];
+    DEFAULT([UIImage imageNamed:@"forum-arrow-down.png"]);
 }
 
 - (UIImage *)forumCellFavoriteButtonNormalImage
 {
-    return [UIImage imageNamed:@"star-off.png"];
+    LIGHT([UIImage imageNamed:@"star-off.png"]);
+    DARK([UIImage imageNamed:@"star-off-dark.png"]);
 }
 
 - (UIImage *)forumCellFavoriteButtonSelectedImage
 {
-    return [UIImage imageNamed:@"star-on.png"];
+    DEFAULT([UIImage imageNamed:@"star-on.png"]);
+}
+
+#pragma mark - Favorites
+
+- (UIColor *)favoritesBackgroundColor
+{
+    DEFAULT(self.forumCellBackgroundColor);
+}
+
+- (UIColor *)favoritesSeparatorColor
+{
+    DEFAULT(self.forumListSeparatorColor);
+}
+
+- (UIColor *)noFavoritesTextColor
+{
+    LIGHT([UIColor grayColor]);
+    DARK([UIColor whiteColor]);
 }
 
 #pragma mark - Thread list
 
-- (UIColor *)threadListSeparatorColor
+- (UIColor *)threadListBackgroundColor
 {
-    return [UIColor colorWithWhite:0.75 alpha:1];
+    DEFAULT(self.threadCellBackgroundColor);
 }
 
-- (UIColor *)threadListOriginalPosterTextColor
+- (UIColor *)threadCellBackgroundColor
 {
-    return [UIColor colorWithHue:0.553 saturation:0.198 brightness:0.659 alpha:1];
+    LIGHT([UIColor whiteColor]);
+    DARK(self.forumCellBackgroundColor);
+}
+
+- (UIColor *)threadCellTextColor
+{
+    LIGHT([UIColor blackColor]);
+    DARK([UIColor whiteColor]);
+}
+
+- (UIColor *)threadCellPagesTextColor
+{
+    LIGHT([UIColor grayColor]);
+    DARK([UIColor lightGrayColor]);
+}
+
+- (UIColor *)threadCellOriginalPosterTextColor
+{
+    LIGHT([UIColor colorWithHue:0.555 saturation:0.906 brightness:0.667 alpha:1]);
+    DARK([UIColor colorWithHue:0.555 saturation:0.3 brightness:0.8 alpha:1]);
+}
+
+- (UIColor *)threadListSeparatorColor
+{
+    LIGHT([UIColor colorWithWhite:0.75 alpha:1]);
+    DARK([UIColor colorWithWhite:0.5 alpha:1]);
 }
 
 - (UIColor *)threadListUnreadBadgeColor
 {
-    return [UIColor colorWithRed:0.169 green:0.408 blue:0.588 alpha:1];
+    LIGHT([UIColor colorWithRed:0.169 green:0.408 blue:0.588 alpha:1]);
+    DARK([UIColor colorWithRed:0.435 green:0.659 blue:0.769 alpha:1]);
 }
 
 - (UIColor *)threadListUnreadBadgeHighlightedColor
 {
-    return [UIColor whiteColor];
+    DEFAULT([UIColor whiteColor]);
 }
 
 - (UIColor *)threadListUnreadBadgeOffColor
 {
-    return [UIColor colorWithRed:0.435 green:0.659 blue:0.769 alpha:1];
+    LIGHT([UIColor colorWithRed:0.435 green:0.659 blue:0.769 alpha:1]);
+    DARK([UIColor colorWithRed:0.169 green:0.408 blue:0.588 alpha:1]);
 }
 
 #pragma mark - Posts view
 
 - (UIColor *)postsViewBackgroundColor
 {
-    return [UIColor colorWithHue:0.561 saturation:0.107 brightness:0.404 alpha:1];
+    DEFAULT([UIColor colorWithHue:0.561 saturation:0.107 brightness:0.404 alpha:1]);
 }
 
 - (UIColor *)postsViewTopBarBackgroundColor
 {
-    return [UIColor colorWithWhite:0.902 alpha:1];
+    DEFAULT([UIColor colorWithWhite:0.902 alpha:1]);
 }
 
 - (UIColor *)postsViewTopBarButtonTextColor
 {
-    return [UIColor colorWithHue:0.590 saturation:0.771 brightness:0.376 alpha:1];
+    DEFAULT([UIColor colorWithHue:0.590 saturation:0.771 brightness:0.376 alpha:1]);
 }
 
 - (UIColor *)postsViewTopBarButtonDisabledTextColor
 {
-    return [UIColor lightGrayColor];
+    DEFAULT([UIColor lightGrayColor]);
 }
 
 #pragma mark - Reply view
 
 - (UIColor *)replyViewBackgroundColor
 {
-    return [UIColor whiteColor];
+    LIGHT([UIColor whiteColor]);
+    DARK([UIColor blackColor]);
 }
 
 - (UIColor *)replyViewTextColor
 {
-    return [UIColor blackColor];
+    LIGHT([UIColor blackColor]);
+    DARK([UIColor whiteColor]);
 }
 
 #pragma mark - Settings view
 
 - (UIColor *)settingsViewBackgroundColor
 {
-    return [UIColor colorWithHue:0.604 saturation:0.035 brightness:0.898 alpha:1];
+    LIGHT([UIColor colorWithHue:0.604 saturation:0.035 brightness:0.898 alpha:1]);
+    DARK([UIColor blackColor]);
 }
 
 - (UIColor *)settingsViewHeaderTextColor
 {
-    return [UIColor colorWithRed:0.265 green:0.294 blue:0.367 alpha:1];
+    LIGHT([UIColor colorWithRed:0.265 green:0.294 blue:0.367 alpha:1]);
+    DARK([UIColor whiteColor]);
+}
+
+- (UIColor *)settingsViewHeaderShadowColor
+{
+    LIGHT([UIColor whiteColor]);
+    DARK([UIColor darkGrayColor]);
 }
 
 - (UIColor *)settingsViewFooterTextColor
 {
-    return [UIColor colorWithRed:0.298 green:0.337 blue:0.424 alpha:1];
+    LIGHT([UIColor colorWithRed:0.298 green:0.337 blue:0.424 alpha:1]);
+    DARK([UIColor whiteColor]);
+}
+
+- (UIColor *)settingsViewFooterShadowColor
+{
+    LIGHT([UIColor whiteColor]);
+    DARK([UIColor darkGrayColor]);
+}
+
+- (UIColor *)settingsCellBackgroundColor
+{
+    LIGHT([UIColor whiteColor]);
+    DARK([UIColor darkGrayColor]);
+}
+
+- (UIColor *)settingsCellTextColor
+{
+    LIGHT([UIColor blackColor]);
+    DARK([UIColor whiteColor]);
+}
+
+- (UIColor *)settingsCellCurrentValueTextColor
+{
+    LIGHT([UIColor colorWithHue:0.607 saturation:0.568 brightness:0.518 alpha:1]);
+    DARK([UIColor colorWithHue:0.607 saturation:0.307 brightness:1 alpha:1]);
+}
+
+- (UIColor *)settingsCellSwitchOnTintColor
+{
+    LIGHT(nil);
+    DARK([UIColor orangeColor]);
+}
+
+- (UIColor *)settingsCellSeparatorColor
+{
+    LIGHT([UIColor colorWithWhite:0.83 alpha:1]);
+    DARK([UIColor grayColor]);
+}
+
+#pragma mark - Licenses view
+
+- (NSString *)licensesViewBackgroundHTMLColor
+{
+    LIGHT(@"white");
+    DARK(@"black");
+}
+
+- (NSString *)licensesViewTextHTMLColor
+{
+    LIGHT(@"black");
+    DARK(@"white");
+}
+
+- (NSString *)licensesViewLinkHTMLColor
+{
+    LIGHT(@"blue");
+    DARK(@"orange");
 }
 
 @end

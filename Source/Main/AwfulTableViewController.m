@@ -40,13 +40,13 @@
 {
     if (![self isViewLoaded]) return;
     [self.tableView reloadData];
-    [self refreshTheme];
+    [self retheme];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self refreshTheme];
+    [self retheme];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -165,7 +165,7 @@
                 format:@"Subclasses must implement %@", NSStringFromSelector(_cmd)];
 }
 
-- (void)refreshTheme
+- (void)retheme
 {
     // Subclasses may implement.
 }

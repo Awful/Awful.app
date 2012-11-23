@@ -579,6 +579,22 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     [self maintainScrollOffsetAfterSizeChange];
 }
 
+- (void)retheme
+{
+    self.topBar.backgroundColor = [AwfulTheme currentTheme].postsViewTopBarBackgroundColor;
+    NSArray *buttons = @[ self.topBar.goToForumButton, self.topBar.loadReadPostsButton,
+                          self.topBar.scrollToBottomButton ];
+    for (UIButton *button in buttons) {
+        [button setTitleColor:[AwfulTheme currentTheme].postsViewTopBarButtonTextColor
+                     forState:UIControlStateNormal];
+        [button setTitleShadowColor:[UIColor whiteColor]
+                           forState:UIControlStateNormal];
+        [button setTitleColor:[AwfulTheme currentTheme].postsViewTopBarButtonDisabledTextColor
+                     forState:UIControlStateDisabled];
+    }
+    self.postsView.dark = [AwfulSettings settings].darkTheme;
+}
+
 #pragma mark - UIViewController
 
 - (void)setTitle:(NSString *)title
@@ -612,7 +628,6 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     postsView.delegate = self;
     postsView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     postsView.backgroundColor = self.view.backgroundColor;
-    postsView.dark = [AwfulSettings settings].darkTheme;
     postsView.showAvatars = [AwfulSettings settings].showAvatars;
     postsView.showImages = [AwfulSettings settings].showImages;
     if (AwfulSettings.settings.highlightOwnMentions) {
@@ -659,6 +674,35 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     [self updatePullUpTriggerOffset];
     
     [self.view bringSubviewToFront:self.pageBar];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self retheme];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(currentThemeChanged:)
+                                                 name:AwfulThemeDidChangeNotification
+                                               object:nil];
+}
+
+- (void)currentThemeChanged:(NSNotification *)note
+{
+    [self retheme];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:AwfulThemeDidChangeNotification
+                                                  object:nil];
+    // Blank the web view if we're leaving for good. Otherwise we get weirdness like videos
+    // continuing to play their sound after the user switches to a different thread.
+    if (!self.navigationController) {
+        [self.postsView clearAllPosts];
+        [self markPostsAsBeenSeen];
+    }
+    [super viewDidDisappear:animated];
 }
 
 // We want to hide the top bar until the user reveals it. Unfortunately, AwfulPostsView's
@@ -726,17 +770,6 @@ static char KVOContext;
                                        forKeyPath:@"contentSize"
                                           context:&KVOContext];
     }
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-    // Blank the web view if we're leaving for good. Otherwise we get weirdness like videos
-    // continuing to play their sound after the user switches to a different thread.
-    if (!self.navigationController) {
-        [self.postsView clearAllPosts];
-        [self markPostsAsBeenSeen];
-    }
-    [super viewDidDisappear:animated];
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
@@ -1005,9 +1038,6 @@ static char KVOContext;
 - (id)initWithFrame:(CGRect)frame
 {
     if (!(self = [super initWithFrame:frame])) return nil;
-    
-    self.backgroundColor = [AwfulTheme currentTheme].postsViewTopBarBackgroundColor;
-    
     UIButton *goToForumButton = [self makeButton];
     [goToForumButton setTitle:@"Go To\nForum" forState:UIControlStateNormal];
     goToForumButton.accessibilityLabel = @"Go to forum";
@@ -1040,12 +1070,6 @@ static char KVOContext;
     button.titleLabel.font = [UIFont boldSystemFontOfSize:12];
     button.titleLabel.numberOfLines = 2;
     button.titleLabel.shadowOffset = CGSizeMake(0, 1);
-    [button setTitleColor:[AwfulTheme currentTheme].postsViewTopBarButtonTextColor
-                 forState:UIControlStateNormal];
-    [button setTitleShadowColor:[UIColor whiteColor]
-                       forState:UIControlStateNormal];
-    [button setTitleColor:[AwfulTheme currentTheme].postsViewTopBarButtonDisabledTextColor
-                 forState:UIControlStateDisabled];
     button.imageEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0);
     [self addSubview:button];
     return button;
