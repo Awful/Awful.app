@@ -13,6 +13,10 @@
 // Singleton instance.
 + (AwfulTheme *)currentTheme;
 
+// Table views
+
+@property (readonly, nonatomic) UITableViewCellSelectionStyle cellSelectionStyle;
+
 // Login view
 
 @property (readonly, nonatomic) UIColor *loginViewBackgroundColor;

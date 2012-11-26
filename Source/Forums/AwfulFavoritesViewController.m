@@ -178,6 +178,7 @@
     AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
     cell.textLabel.text = forum.name;
     cell.textLabel.textColor = [AwfulTheme currentTheme].forumCellTextColor;
+    cell.selectionStyle = [AwfulTheme currentTheme].cellSelectionStyle;
 }
 
 - (void)tableView:(UITableView *)tableView

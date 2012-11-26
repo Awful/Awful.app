@@ -192,7 +192,7 @@ typedef enum SettingType
     }
     
     if (settingType == ChoiceSetting || settingType == ButtonSetting) {
-         cell.selectionStyle = UITableViewCellSelectionStyleBlue;   
+        cell.selectionStyle = [AwfulTheme currentTheme].cellSelectionStyle;
     } else {
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }

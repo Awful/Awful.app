@@ -60,6 +60,14 @@
 #define DARK(b) return b
 #define DEFAULT(c) return c
 
+#pragma mark - Table views
+
+- (UITableViewCellSelectionStyle)cellSelectionStyle
+{
+    LIGHT(UITableViewCellSelectionStyleBlue);
+    DARK(UITableViewCellSelectionStyleGray);
+}
+
 #pragma mark - Login view
 
 - (UIColor *)loginViewBackgroundColor

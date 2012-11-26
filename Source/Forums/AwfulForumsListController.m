@@ -266,6 +266,7 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
     } else {
         cell.showsExpanded = AwfulForumCellShowsExpandedLeavesRoom;
     }
+    cell.selectionStyle = [AwfulTheme currentTheme].cellSelectionStyle;
 }
 
 - (void)tableView:(UITableView *)tableView
