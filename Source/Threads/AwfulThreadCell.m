@@ -182,7 +182,7 @@
     if (highlighted) {
         self.oldOriginalPosterTextColor = self.originalPosterTextLabel.textColor;
         self.originalPosterTextLabel.textColor = [UIColor whiteColor];
-    } else {
+    } else if (self.oldOriginalPosterTextColor) {
         self.originalPosterTextLabel.textColor = self.oldOriginalPosterTextColor;
         self.oldOriginalPosterTextColor = nil;
     }
@@ -195,7 +195,7 @@
     if (selected) {
         self.oldOriginalPosterTextColor = self.originalPosterTextLabel.textColor;
         self.originalPosterTextLabel.textColor = [UIColor whiteColor];
-    } else {
+    } else if (self.oldOriginalPosterTextColor) {
         self.originalPosterTextLabel.textColor = self.oldOriginalPosterTextColor;
         self.oldOriginalPosterTextColor = nil;
     }
