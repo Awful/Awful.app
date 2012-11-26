@@ -41,6 +41,21 @@
 			</array>
 		</dict>
 		<dict>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Dark Theme</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<false/>
+					<key>Key</key>
+					<string>dark_theme</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
 			<key>Title</key>
 			<string>Images</string>
 			<key>Explanation</key>
@@ -66,6 +81,50 @@
 					<true/>
 					<key>Key</key>
 					<string>show_images</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>Posts</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Highlight Mentions</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>highlight_own_mentions</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Highlight Quotes</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>highlight_own_quotes</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>Posting</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Confirm Replies</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>confirm_before_replying</string>
 				</dict>
 			</array>
 		</dict>
@@ -100,60 +159,6 @@
 					<string>forumslist</string>
 					<key>Key</key>
 					<string>default_load</string>
-				</dict>
-			</array>
-		</dict>
-		<dict>
-			<key>Title</key>
-			<string>Highlights</string>
-			<key>Settings</key>
-			<array>
-				<dict>
-					<key>Title</key>
-					<string>Highlight Mentions</string>
-					<key>Type</key>
-					<string>Switch</string>
-					<key>Default</key>
-					<true/>
-					<key>Key</key>
-					<string>highlight_own_mentions</string>
-				</dict>
-				<dict>
-					<key>Title</key>
-					<string>Highlight Quotes</string>
-					<key>Type</key>
-					<string>Switch</string>
-					<key>Default</key>
-					<true/>
-					<key>Key</key>
-					<string>highlight_own_quotes</string>
-				</dict>
-			</array>
-		</dict>
-		<dict>
-			<key>Title</key>
-			<string>Posts</string>
-			<key>Settings</key>
-			<array>
-				<dict>
-					<key>Title</key>
-					<string>Dark Theme</string>
-					<key>Type</key>
-					<string>Switch</string>
-					<key>Default</key>
-					<false/>
-					<key>Key</key>
-					<string>dark_theme</string>
-				</dict>
-				<dict>
-					<key>Title</key>
-					<string>Confirm Replies</string>
-					<key>Type</key>
-					<string>Switch</string>
-					<key>Default</key>
-					<true/>
-					<key>Key</key>
-					<string>confirm_before_replying</string>
 				</dict>
 			</array>
 		</dict>
