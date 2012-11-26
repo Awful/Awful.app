@@ -227,6 +227,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         [self updatePullForNextPageLabel];
         self.postsView.scrollView.contentOffset = CGPointZero;
         self.advertisementHTML = nil;
+        self.hiddenPosts = 0;
         [self.postsView reloadData];
     }
     // This blockSelf exists entirely so we capture self in the block, which allows its use while
@@ -260,9 +261,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
             {
                 return !post.beenSeenValue;
             }];
-            self.hiddenPosts = firstUnread != NSNotFound ? firstUnread : 0;
-        } else {
-            self.hiddenPosts = 0;
+            if (firstUnread != NSNotFound) self.hiddenPosts = firstUnread;
         }
         if (!self.fetchedResultsController) {
             [self updateFetchedResultsController];
