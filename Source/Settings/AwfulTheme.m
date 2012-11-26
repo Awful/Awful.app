@@ -304,7 +304,7 @@
 
 - (UIColor *)settingsCellSeparatorColor
 {
-    LIGHT([UIColor colorWithWhite:0.83 alpha:1]);
+    LIGHT(nil);
     DARK([UIColor grayColor]);
 }
 
