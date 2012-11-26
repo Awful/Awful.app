@@ -361,12 +361,14 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
+    CGFloat margin = 22;
+    if (section + 1 == tableView.numberOfSections) margin = 0;
     NSString *text = [tableView.dataSource tableView:tableView titleForFooterInSection:section];
-    if (!text) return 0;
+    if (!text) return margin;
+    CGSize max = CGSizeMake(tableView.bounds.size.width - 40, CGFLOAT_MAX);
     CGSize expected = [text sizeWithFont:[UIFont systemFontOfSize:15]
-                                forWidth:280
-                           lineBreakMode:NSLineBreakByWordWrapping];
-    return expected.height + 5 + (section < tableView.numberOfSections - 1 ? 34 : 0);
+                                constrainedToSize:max];
+    return expected.height + margin;
 }
 
 @end
