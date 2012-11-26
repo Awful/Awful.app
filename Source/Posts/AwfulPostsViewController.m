@@ -89,11 +89,46 @@
 
 - (id)init
 {
-    self = [super initWithNibName:nil bundle:nil];
-    if (self) {
-        self.hidesBottomBarWhenPushed = YES;
-    }
+    if (!(self = [super initWithNibName:nil bundle:nil])) return nil;
+    self.hidesBottomBarWhenPushed = YES;
+    NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
+    [noteCenter addObserver:self
+                   selector:@selector(currentThemeChanged:)
+                       name:AwfulThemeDidChangeNotification
+                     object:nil];
+    [noteCenter addObserver:self
+                   selector:@selector(settingChanged:)
+                       name:AwfulSettingsDidChangeNotification
+                     object:nil];
     return self;
+}
+
+- (void)dealloc
+{
+    NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
+    [noteCenter removeObserver:self name:AwfulSettingsDidChangeNotification object:nil];
+    [noteCenter removeObserver:self name:AwfulThemeDidChangeNotification object:nil];
+    [self stopObserving];
+}
+
+- (void)currentThemeChanged:(NSNotification *)note
+{
+    if (![self isViewLoaded]) return;
+    [self retheme];
+}
+
+- (void)settingChanged:(NSNotification *)note
+{
+    if (![self isViewLoaded]) return;
+    NSArray *importantKeys = @[
+    AwfulSettingsKeys.highlightOwnMentions,
+    AwfulSettingsKeys.highlightOwnQuotes,
+    AwfulSettingsKeys.showAvatars,
+    AwfulSettingsKeys.showImages,
+    AwfulSettingsKeys.username,
+    ];
+    NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
+    if ([keys firstObjectCommonWithArray:importantKeys]) [self configurePostsViewSettings];
 }
 
 - (void)setThread:(AwfulThread *)thread
@@ -689,41 +724,10 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 {
     [super viewWillAppear:animated];
     [self retheme];
-    NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
-    [noteCenter addObserver:self
-                   selector:@selector(currentThemeChanged:)
-                       name:AwfulThemeDidChangeNotification
-                     object:nil];
-    [noteCenter addObserver:self
-                   selector:@selector(settingChanged:)
-                       name:AwfulSettingsDidChangeNotification
-                     object:nil];
-}
-
-- (void)currentThemeChanged:(NSNotification *)note
-{
-    [self retheme];
-}
-
-- (void)settingChanged:(NSNotification *)note
-{
-    NSArray *importantKeys = @[
-        AwfulSettingsKeys.highlightOwnMentions,
-        AwfulSettingsKeys.highlightOwnQuotes,
-        AwfulSettingsKeys.showAvatars,
-        AwfulSettingsKeys.showImages,
-        AwfulSettingsKeys.username,
-    ];
-    NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
-    if ([keys firstObjectCommonWithArray:importantKeys]) [self configurePostsViewSettings];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
-{
-    NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
-    [noteCenter removeObserver:self name:AwfulSettingsDidChangeNotification object:nil];
-    [noteCenter removeObserver:self name:AwfulThemeDidChangeNotification object:nil];
-    
+{    
     // Blank the web view if we're leaving for good. Otherwise we get weirdness like videos
     // continuing to play their sound after the user switches to a different thread.
     if (!self.navigationController) {
@@ -786,7 +790,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 
 static char KVOContext;
 
-- (void)dealloc
+- (void)stopObserving
 {
     if (_observingScrollViewOffset) {
         [self.postsView.scrollView removeObserver:self
