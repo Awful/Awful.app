@@ -210,12 +210,8 @@ typedef enum SettingType
 {
     NSIndexPath *indexPath = self.switches[switchView.tag];
     NSDictionary *setting = [self settingForIndexPath:indexPath];
-    NSString *key = [setting objectForKey:@"Key"];
-    if ([key isEqualToString:AwfulSettingsKeys.darkTheme]) {
-        [AwfulSettings settings].darkTheme = switchView.on;
-    } else {
-        [[NSUserDefaults standardUserDefaults] setBool:switchView.on forKey:key];
-    }
+    NSString *key = setting[@"Key"];
+    [AwfulSettings settings][key] = @(switchView.on);
 }
 
 - (void)tableView:(UITableView *)tableView
@@ -289,8 +285,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (void)didMakeChoice:(AwfulSettingsChoiceViewController *)choiceViewController
 {
-    [[NSUserDefaults standardUserDefaults] setObject:choiceViewController.selectedValue
-                                              forKey:choiceViewController.setting[@"Key"]];
+    NSString *key = choiceViewController.setting[@"Key"];
+    [AwfulSettings settings][key] = choiceViewController.selectedValue;
     [self.tableView reloadData];
 }
 

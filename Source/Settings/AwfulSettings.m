@@ -54,25 +54,21 @@
 
 @synthesize sections = _sections;
 
-#define BOOL_PROPERTY(__key, __get, __set) \
+#define BOOL_PROPERTY(__get, __set) \
 - (BOOL)__get \
 { \
-    return [[NSUserDefaults standardUserDefaults] boolForKey:__key]; \
+    return [self[AwfulSettingsKeys.__get] boolValue]; \
 } \
 \
 - (void)__set:(BOOL)val \
 { \
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults]; \
-    [defaults setBool:val forKey:__key]; \
-    [defaults synchronize]; \
-    [self postSettingDidChange:__key]; \
+    self[AwfulSettingsKeys.__get] = @(val); \
 }
 
-BOOL_PROPERTY(@"show_avatars", showAvatars, setShowAvatars)
+BOOL_PROPERTY(showAvatars, setShowAvatars)
 
-BOOL_PROPERTY(@"show_images", showImages, setShowImages)
+BOOL_PROPERTY(showImages, setShowImages)
 
-static NSString * const kFirstTab = @"default_load";
 struct {
     __unsafe_unretained NSString *Forums;
     __unsafe_unretained NSString *Favorites;
@@ -85,10 +81,8 @@ struct {
 
 - (AwfulFirstTab)firstTab
 {
-    NSString *value = [[NSUserDefaults standardUserDefaults] stringForKey:kFirstTab];
-    if ([value isEqualToString:AwfulFirstTabs.Forums]) {
-        return AwfulFirstTabForums;
-    } else if ([value isEqualToString:AwfulFirstTabs.Favorites]) {
+    NSString *value = self[AwfulSettingsKeys.firstTab];
+    if ([value isEqualToString:AwfulFirstTabs.Favorites]) {
         return AwfulFirstTabFavorites;
     } else if ([value isEqualToString:AwfulFirstTabs.Bookmarks]) {
         return AwfulFirstTabBookmarks;
@@ -104,47 +98,53 @@ struct {
         case AwfulFirstTabForums: value = AwfulFirstTabs.Forums; break;
         case AwfulFirstTabBookmarks: value = AwfulFirstTabs.Bookmarks; break;
         case AwfulFirstTabFavorites: value = AwfulFirstTabs.Favorites; break;
+        default: return;
     }
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:value forKey:kFirstTab];
-    [defaults synchronize];
-    [self postSettingDidChange:kFirstTab];
+    self[AwfulSettingsKeys.firstTab] = value;
 }
 
-BOOL_PROPERTY(@"highlight_own_quotes", highlightOwnQuotes, setHighlightOwnQuotes)
+BOOL_PROPERTY(highlightOwnQuotes, setHighlightOwnQuotes)
 
-BOOL_PROPERTY(@"highlight_own_mentions", highlightOwnMentions, setHighlightOwnMentions)
+BOOL_PROPERTY(highlightOwnMentions, setHighlightOwnMentions)
 
-BOOL_PROPERTY(@"confirm_before_replying", confirmBeforeReplying, setConfirmBeforeReplying)
+BOOL_PROPERTY(confirmBeforeReplying, setConfirmBeforeReplying)
 
-BOOL_PROPERTY(AwfulSettingsKeys.darkTheme, darkTheme, setDarkTheme)
+BOOL_PROPERTY(darkTheme, setDarkTheme)
 
-static NSString * const kCurrentUser = @"current_user";
-
-static NSString * const kUsername = @"username";
+struct {
+    __unsafe_unretained NSString *currentUser;
+} ObsoleteSettingsKeys = {
+    @"current_user",
+};
 
 - (NSString *)username
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *username = [defaults objectForKey:kUsername];
+    NSString *username = [defaults objectForKey:AwfulSettingsKeys.username];
     if (username) return username;
-    NSDictionary *oldUser = [defaults objectForKey:kCurrentUser];
-    [defaults removeObjectForKey:kCurrentUser];
+    NSDictionary *oldUser = [defaults objectForKey:ObsoleteSettingsKeys.currentUser];
+    [defaults removeObjectForKey:ObsoleteSettingsKeys.currentUser];
     self.username = oldUser[@"username"];
     return oldUser[@"username"];
 }
 
 - (void)setUsername:(NSString *)username
 {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    if (username) [defaults setObject:username forKey:kUsername];
-    else [defaults removeObjectForKey:kUsername];
-    [defaults synchronize];
-    [self postSettingDidChange:kUsername];
+    self[AwfulSettingsKeys.username] = username;
 }
 
-- (void)postSettingDidChange:(NSString *)key
+- (id)objectForKeyedSubscript:(id)key
 {
+    return [[NSUserDefaults standardUserDefaults] objectForKey:key];
+}
+
+- (void)setObject:(id)object forKeyedSubscript:(id <NSCopying>)key
+{
+    NSParameterAssert(key);
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if (object) [defaults setObject:object forKey:(NSString *)key];
+    else [defaults removeObjectForKey:(NSString *)key];
+    [defaults synchronize];
     NSDictionary *userInfo = @{ AwfulSettingsDidChangeSettingsKey : @[ key ] };
     [[NSNotificationCenter defaultCenter] postNotificationName:AwfulSettingsDidChangeNotification
                                                         object:self
@@ -159,5 +159,12 @@ NSString * const AwfulSettingsDidChangeNotification = @"com.awfulapp.Awful.Setti
 NSString * const AwfulSettingsDidChangeSettingsKey = @"settings";
 
 const struct AwfulSettingsKeys AwfulSettingsKeys = {
+    .showAvatars = @"show_avatars",
+    .showImages = @"show_images",
+    .firstTab = @"default_load",
+    .highlightOwnQuotes = @"highlight_own_quotes",
+    .highlightOwnMentions = @"highlight_own_mentions",
+    .confirmBeforeReplying = @"confirm_before_replying",
 	.darkTheme = @"dark_theme",
+    .username = @"username",
 };

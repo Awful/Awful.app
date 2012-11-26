@@ -40,6 +40,10 @@ typedef enum
 
 @property (copy, nonatomic) NSString *username;
 
+- (id)objectForKeyedSubscript:(id)key;
+
+- (void)setObject:(id)object forKeyedSubscript:(id <NSCopying>)key;
+
 @end
 
 // Sent to default center whenever a setting changes. The userInfo dictionary has a value for
@@ -49,7 +53,14 @@ extern NSString * const AwfulSettingsDidChangeNotification;
 // A collection (responds to -containsObject:) of settings that changed.
 extern NSString * const AwfulSettingsDidChangeSettingsKey;
 
-// Possible values in the AwfulSettingsDidChangeSettingsKey collection.
+// Possible values in the AwfulSettingsDidChangeSettingsKey collection, and keys for subscripting.
 extern const struct AwfulSettingsKeys {
+    __unsafe_unretained NSString *showAvatars;
+    __unsafe_unretained NSString *showImages;
+    __unsafe_unretained NSString *firstTab;
+    __unsafe_unretained NSString *highlightOwnQuotes;
+    __unsafe_unretained NSString *highlightOwnMentions;
+    __unsafe_unretained NSString *confirmBeforeReplying;
 	__unsafe_unretained NSString *darkTheme;
+    __unsafe_unretained NSString *username;
 } AwfulSettingsKeys;

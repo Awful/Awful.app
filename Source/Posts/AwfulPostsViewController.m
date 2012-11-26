@@ -594,6 +594,23 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     self.postsView.dark = [AwfulSettings settings].darkTheme;
 }
 
+- (void)configurePostsViewSettings
+{
+    self.postsView.showAvatars = [AwfulSettings settings].showAvatars;
+    self.postsView.showImages = [AwfulSettings settings].showImages;
+    if ([AwfulSettings settings].highlightOwnMentions) {
+        self.postsView.highlightMentionUsername = [AwfulSettings settings].username;
+    } else {
+        self.postsView.highlightMentionUsername = nil;
+    }
+    if ([AwfulSettings settings].highlightOwnQuotes) {
+        self.postsView.highlightQuoteUsername = [AwfulSettings settings].username;
+    } else {
+        self.postsView.highlightQuoteUsername = nil;
+    }
+
+}
+
 #pragma mark - UIViewController
 
 - (void)setTitle:(NSString *)title
@@ -627,16 +644,9 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     postsView.delegate = self;
     postsView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     postsView.backgroundColor = self.view.backgroundColor;
-    postsView.showAvatars = [AwfulSettings settings].showAvatars;
-    postsView.showImages = [AwfulSettings settings].showImages;
-    if (AwfulSettings.settings.highlightOwnMentions) {
-        postsView.highlightMentionUsername = [AwfulSettings settings].username;
-    }
-    if (AwfulSettings.settings.highlightOwnQuotes) {
-        postsView.highlightQuoteUsername = [AwfulSettings settings].username;
-    }
     self.postsView = postsView;
     [self.view addSubview:postsView];
+    [self configurePostsViewSettings];
     
     TopBarView *topBar = [TopBarView new];
     topBar.frame = CGRectMake(0, -44, self.view.frame.size.width, 44);
@@ -679,10 +689,15 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 {
     [super viewWillAppear:animated];
     [self retheme];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(currentThemeChanged:)
-                                                 name:AwfulThemeDidChangeNotification
-                                               object:nil];
+    NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
+    [noteCenter addObserver:self
+                   selector:@selector(currentThemeChanged:)
+                       name:AwfulThemeDidChangeNotification
+                     object:nil];
+    [noteCenter addObserver:self
+                   selector:@selector(settingChanged:)
+                       name:AwfulSettingsDidChangeNotification
+                     object:nil];
 }
 
 - (void)currentThemeChanged:(NSNotification *)note
@@ -690,11 +705,25 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     [self retheme];
 }
 
+- (void)settingChanged:(NSNotification *)note
+{
+    NSArray *importantKeys = @[
+        AwfulSettingsKeys.highlightOwnMentions,
+        AwfulSettingsKeys.highlightOwnQuotes,
+        AwfulSettingsKeys.showAvatars,
+        AwfulSettingsKeys.showImages,
+        AwfulSettingsKeys.username,
+    ];
+    NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
+    if ([keys firstObjectCommonWithArray:importantKeys]) [self configurePostsViewSettings];
+}
+
 - (void)viewDidDisappear:(BOOL)animated
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:AwfulThemeDidChangeNotification
-                                                  object:nil];
+    NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
+    [noteCenter removeObserver:self name:AwfulSettingsDidChangeNotification object:nil];
+    [noteCenter removeObserver:self name:AwfulThemeDidChangeNotification object:nil];
+    
     // Blank the web view if we're leaving for good. Otherwise we get weirdness like videos
     // continuing to play their sound after the user switches to a different thread.
     if (!self.navigationController) {
