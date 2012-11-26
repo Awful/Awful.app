@@ -186,6 +186,7 @@ games-ps3.png
 games-psp.png
 Games-vita.png
 games-wii.png
+games-wiiu.png
 games.png
 gip-airforce.png
 gip-army.png

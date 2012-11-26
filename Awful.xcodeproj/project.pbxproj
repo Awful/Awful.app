@@ -436,6 +436,7 @@
 		1CE2D980165EEC1F0024AC1C /* AwfulTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D97F165EEC1F0024AC1C /* AwfulTheme.m */; };
 		1CE2D983165F8B8D0024AC1C /* star-off-dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CE2D981165F8B8D0024AC1C /* star-off-dark.png */; };
 		1CE2D984165F8B8D0024AC1C /* star-off-dark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CE2D982165F8B8D0024AC1C /* star-off-dark@2x.png */; };
+		1CE2D98E16632E610024AC1C /* games-wiiu.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CE2D98D16632E610024AC1C /* games-wiiu.png */; };
 		1CF0D616164AE95200CFA137 /* UIViewController+NavigationEnclosure.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0D615164AE95200CFA137 /* UIViewController+NavigationEnclosure.m */; };
 		1CF0D619164B0A7C00CFA137 /* Forum Abbreviations.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CF0D618164B0A7C00CFA137 /* Forum Abbreviations.plist */; };
 		1CFBECDB162F4ED7008AF641 /* pagebar-button-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CFBECCB162F4ED7008AF641 /* pagebar-button-selected.png */; };
@@ -981,6 +982,7 @@
 		1CE2D97F165EEC1F0024AC1C /* AwfulTheme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTheme.m; sourceTree = "<group>"; };
 		1CE2D981165F8B8D0024AC1C /* star-off-dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "star-off-dark.png"; sourceTree = "<group>"; };
 		1CE2D982165F8B8D0024AC1C /* star-off-dark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "star-off-dark@2x.png"; sourceTree = "<group>"; };
+		1CE2D98D16632E610024AC1C /* games-wiiu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "games-wiiu.png"; sourceTree = "<group>"; };
 		1CF0D614164AE95200CFA137 /* UIViewController+NavigationEnclosure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+NavigationEnclosure.h"; sourceTree = "<group>"; };
 		1CF0D615164AE95200CFA137 /* UIViewController+NavigationEnclosure.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+NavigationEnclosure.m"; sourceTree = "<group>"; };
 		1CF0D618164B0A7C00CFA137 /* Forum Abbreviations.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Forum Abbreviations.plist"; sourceTree = "<group>"; };
@@ -2230,6 +2232,7 @@
 				8CCD52C815B783FC00E5893B /* games-psp.png */,
 				8CCD52C915B783FC00E5893B /* Games-vita.png */,
 				8CCD52CA15B783FC00E5893B /* games-wii.png */,
+				1CE2D98D16632E610024AC1C /* games-wiiu.png */,
 				8CCD52CB15B783FC00E5893B /* games.png */,
 				8CF95C851653276000060F19 /* gip-airforce.png */,
 				1CAED9E316375F91001F5F04 /* gip-army.png */,
@@ -3263,6 +3266,7 @@
 				8C87429D1655FE1C0018AC6C /* phiz-ant.png in Resources */,
 				1CE2D983165F8B8D0024AC1C /* star-off-dark.png in Resources */,
 				1CE2D984165F8B8D0024AC1C /* star-off-dark@2x.png in Resources */,
+				1CE2D98E16632E610024AC1C /* games-wiiu.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
