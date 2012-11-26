@@ -102,30 +102,32 @@
     
     CGSize cellSize = self.contentView.bounds.size;
     
-    // Center tag image view and rating image view (if visible) as a unit and align them on the
-    // left. Sticky goes over bottom right corner of tag.
-    CGRect ratingImageFrame = self.ratingImageView.frame;
-    CGFloat effectiveRatingHeight = self.ratingImageView.hidden ? 0 :
-                                    ratingImageFrame.size.height + 2;
-    static const CGFloat tagWidth = 45;
-    self.imageView.frame = (CGRect){
-        .origin.x = 4,
-        .origin.y = (cellSize.height - tagWidth - effectiveRatingHeight) / 2,
-        .size = CGSizeMake(tagWidth, tagWidth)
-    };
-    if (!self.stickyImageView.hidden) {
-        CGRect stickyImageFrame = self.stickyImageView.frame;
-        stickyImageFrame.origin.x = CGRectGetMaxX(self.imageView.frame) -
-                                    stickyImageFrame.size.width + 1;
-        stickyImageFrame.origin.y = CGRectGetMaxY(self.imageView.frame) -
-                                    stickyImageFrame.size.height + 1;
-        self.stickyImageView.frame = stickyImageFrame;
-    }
-    if (!self.ratingImageView.hidden) {
-        ratingImageFrame.origin.x = CGRectGetMidX(self.imageView.frame) -
-                                    ratingImageFrame.size.width / 2;
-        ratingImageFrame.origin.y = CGRectGetMaxY(self.imageView.frame) + 2;
-        self.ratingImageView.frame = ratingImageFrame;
+    if (!self.imageView.hidden) {
+        // Center tag image view and rating image view (if visible) as a unit and align them on the
+        // left. Sticky goes over bottom right corner of tag.
+        CGRect ratingImageFrame = self.ratingImageView.frame;
+        CGFloat effectiveRatingHeight = self.ratingImageView.hidden ? 0 :
+        ratingImageFrame.size.height + 2;
+        static const CGFloat tagWidth = 45;
+        self.imageView.frame = (CGRect){
+            .origin.x = 4,
+            .origin.y = (cellSize.height - tagWidth - effectiveRatingHeight) / 2,
+            .size = CGSizeMake(tagWidth, tagWidth)
+        };
+        if (!self.stickyImageView.hidden) {
+            CGRect stickyImageFrame = self.stickyImageView.frame;
+            stickyImageFrame.origin.x = CGRectGetMaxX(self.imageView.frame) -
+            stickyImageFrame.size.width + 1;
+            stickyImageFrame.origin.y = CGRectGetMaxY(self.imageView.frame) -
+            stickyImageFrame.size.height + 1;
+            self.stickyImageView.frame = stickyImageFrame;
+        }
+        if (!self.ratingImageView.hidden) {
+            ratingImageFrame.origin.x = CGRectGetMidX(self.imageView.frame) -
+            ratingImageFrame.size.width / 2;
+            ratingImageFrame.origin.y = CGRectGetMaxY(self.imageView.frame) + 2;
+            self.ratingImageView.frame = ratingImageFrame;
+        }
     }
     
     // Align badge view right horizontally, center vertically.
@@ -140,7 +142,8 @@
     CGRect textLabelFrame = self.textLabel.frame;
     CGRect detailTextLabelFrame = self.detailTextLabel.frame;
     static const CGFloat tagRightMargin = 9;
-    CGFloat textOriginX = CGRectGetMaxX(self.imageView.frame) + tagRightMargin;
+    CGFloat textOriginX = 5;
+    if (!self.imageView.hidden) textOriginX = CGRectGetMaxX(self.imageView.frame) + tagRightMargin;
     CGFloat badgeViewEffectiveWidth = 70;
     if (self.editing || self.showingDeleteConfirmation || !self.showsUnread) {
         badgeViewEffectiveWidth = tagRightMargin;

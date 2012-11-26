@@ -45,10 +45,19 @@ typedef enum {
 - (id)init
 {
     self = [super init];
-    if (self) {
-        _cellsWithoutThreadTags = [NSMutableDictionary new];
-    }
+    if (!(self = [super init])) return nil;
+    _cellsWithoutThreadTags = [NSMutableDictionary new];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(settingsChanged:)
+                                                 name:AwfulSettingsDidChangeNotification
+                                               object:nil];
     return self;
+}
+
+- (void)dealloc
+{
+    NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
+    [noteCenter removeObserver:self name:AwfulSettingsDidChangeNotification object:nil];
 }
 
 - (NSFetchedResultsController *)createFetchedResultsController
@@ -85,6 +94,15 @@ typedef enum {
     return [[UIBarButtonItem alloc] initWithTitle:text style:UIBarButtonItemStyleBordered
                                            target:nil
                                            action:NULL];
+}
+
+- (void)settingsChanged:(NSNotification *)note
+{
+    if (![self isViewLoaded]) return;
+    NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
+    if ([keys containsObject:AwfulSettingsKeys.showThreadTags]) {
+        [self.tableView reloadData];
+    }
 }
 
 #pragma mark - Table view controller
@@ -244,17 +262,25 @@ typedef enum {
 {
     AwfulThreadCell *cell = (AwfulThreadCell *)genericCell;
     AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.imageView.image = [[AwfulThreadTags sharedThreadTags] threadTagNamed:thread.firstIconName];
-    if (!cell.imageView.image) {
-        [self updateThreadTag:thread.firstIconName forCellAtIndexPath:indexPath];
-    }
-    cell.sticky = thread.isStickyValue;
-    cell.closed = thread.isClosedValue;
-    // Hardcode Film Dump to never show ratings; its thread tags are the ratings.
-    if ([thread.forum.forumID isEqualToString:@"133"]) {
-        cell.rating = 0;
+    if ([AwfulSettings settings].showThreadTags) {
+        cell.imageView.hidden = NO;
+        cell.imageView.image = [[AwfulThreadTags sharedThreadTags]
+                                threadTagNamed:thread.firstIconName];
+        if (!cell.imageView.image) {
+            [self updateThreadTag:thread.firstIconName forCellAtIndexPath:indexPath];
+        }
+        cell.sticky = thread.isStickyValue;
+        // Hardcode Film Dump to never show ratings; its thread tags are the ratings.
+        if ([thread.forum.forumID isEqualToString:@"133"]) {
+            cell.rating = 0;
+        } else {
+            cell.rating = [thread.threadRating floatValue];
+        }
     } else {
-        cell.rating = [thread.threadRating floatValue];
+        cell.imageView.hidden = YES;
+        cell.sticky = NO;
+        cell.closed = thread.isClosedValue;
+        cell.rating = 0;
     }
     cell.textLabel.text = [thread.title stringByCollapsingWhitespace];
     cell.textLabel.textColor = [AwfulTheme currentTheme].threadCellTextColor;

@@ -133,6 +133,8 @@ struct {
     self[AwfulSettingsKeys.username] = username;
 }
 
+BOOL_PROPERTY(showThreadTags, setShowThreadTags)
+
 - (id)objectForKeyedSubscript:(id)key
 {
     return [[NSUserDefaults standardUserDefaults] objectForKey:key];
@@ -167,4 +169,5 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .confirmBeforeReplying = @"confirm_before_replying",
 	.darkTheme = @"dark_theme",
     .username = @"username",
+    .showThreadTags = @"show_thread_tags",
 };

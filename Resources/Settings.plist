@@ -56,6 +56,21 @@
 			</array>
 		</dict>
 		<dict>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Show Thread Tags</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>show_thread_tags</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
 			<key>Title</key>
 			<string>Images</string>
 			<key>Explanation</key>
