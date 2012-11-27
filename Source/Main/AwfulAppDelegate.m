@@ -227,18 +227,30 @@ static AwfulAppDelegate *_instance;
             if (!forum) return NO;
         }
         UINavigationController *nav = self.tabBarController.viewControllers[0];
-        self.tabBarController.selectedViewController = nav;
         if (!forum) {
             [nav popToRootViewControllerAnimated:YES];
+            self.tabBarController.selectedViewController = nav;
+            [self.splitViewController showMasterView];
             return YES;
         }
-        for (AwfulThreadListController *viewController in nav.viewControllers) {
-            if (![viewController isKindOfClass:[AwfulThreadListController class]]) continue;
-            if ([viewController.forum isEqual:forum]) {
-                [nav popToViewController:viewController animated:YES];
-                return YES;
+        if (self.tabBarController.selectedIndex < 2) {
+            UINavigationController *selected;
+            selected = (UINavigationController *)self.tabBarController.selectedViewController;
+            NSMutableArray *maybes = [@[ selected.topViewController ] mutableCopy];
+            if ([selected.viewControllers count] > 1) {
+                [maybes insertObject:selected.viewControllers[[selected.viewControllers count] - 2]
+                             atIndex:0];
+            }
+            for (AwfulThreadListController *viewController in maybes) {
+                if (![viewController isKindOfClass:[AwfulThreadListController class]]) continue;
+                if ([viewController.forum isEqual:forum]) {
+                    [selected popToViewController:viewController animated:YES];
+                    [self.splitViewController showMasterView];
+                    return YES;
+                }
             }
         }
+        self.tabBarController.selectedViewController = nav;
         AwfulForumsListController *list = nav.viewControllers[0];
         [nav popToViewController:list animated:NO];
         [list showForum:forum];
