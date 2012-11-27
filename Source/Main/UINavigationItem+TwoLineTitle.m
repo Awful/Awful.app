@@ -8,41 +8,79 @@
 
 #import "UINavigationItem+TwoLineTitle.h"
 
+@interface CenteringThreadTitleLabelHolder : UIView
+
+@property (weak, nonatomic) UILabel *label;
+
+@end
+
+
 @implementation UINavigationItem (TwoLineTitle)
 
 - (UILabel *)titleLabel
 {
-    if (self.titleView) return (UILabel *)self.titleView;
-    // UINavigationBar never seems to make our label taller, but it does position it nicely,
-    // so we set an overly tall height to make sure we get two lines.
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 100)];
-    titleLabel.numberOfLines = 2;
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        titleLabel.font = [UIFont boldSystemFontOfSize:17];
-        titleLabel.minimumFontSize = 13;
-    } else {
-        titleLabel.font = [UIFont boldSystemFontOfSize:13];
-        titleLabel.minimumFontSize = 9;
-    }
-    titleLabel.textColor = [UIColor whiteColor];
-    titleLabel.backgroundColor = [UIColor clearColor];
-    titleLabel.shadowColor = [UIColor colorWithWhite:0 alpha:0.5];
-    titleLabel.textAlignment = UITextAlignmentLeft;
-    titleLabel.adjustsFontSizeToFitWidth = YES;
-    titleLabel.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
-                                   UIViewAutoresizingFlexibleHeight);
-    NSComparisonResult atLeastSix = [[UIDevice currentDevice].systemVersion compare:@"6.0"
-                                                                            options:NSNumericSearch];
-    if (atLeastSix != NSOrderedAscending) {
-        titleLabel.accessibilityTraits |= UIAccessibilityTraitHeader;
-    }
-    self.titleView = titleLabel;
-    return titleLabel;
+    if (self.titleView) return [(CenteringThreadTitleLabelHolder *)self.titleView label];
+    CenteringThreadTitleLabelHolder *holder = [CenteringThreadTitleLabelHolder new];
+    holder.frame = CGRectMake(0, 0, 1024, 32);
+    holder.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    self.titleView = holder;
+    return holder.label;
 }
 
 - (void)setTitleLabel:(UILabel *)titleLabel
 {
     self.titleView = titleLabel;
+}
+
+@end
+
+
+@implementation CenteringThreadTitleLabelHolder
+
+- (id)initWithFrame:(CGRect)frame
+{
+    if (!(self = [super initWithFrame:frame])) return nil;
+    UILabel *label = [UILabel new];
+    label.textAlignment = UITextAlignmentCenter;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        label.font = [UIFont boldSystemFontOfSize:17];
+    } else {
+        label.font = [UIFont boldSystemFontOfSize:13];
+        label.numberOfLines = 2;
+    }
+    label.textColor = [UIColor whiteColor];
+    label.backgroundColor = [UIColor clearColor];
+    label.shadowColor = [UIColor colorWithWhite:0 alpha:0.5];
+    NSComparisonResult atLeastSix = [[UIDevice currentDevice].systemVersion
+                                     compare:@"6.0" options:NSNumericSearch];
+    if (atLeastSix != NSOrderedAscending) {
+        label.accessibilityTraits |= UIAccessibilityTraitHeader;
+    }
+    [self addSubview:label];
+    self.label = label;
+    return self;
+}
+
+- (void)layoutSubviews
+{
+    CGFloat leftOffset = CGRectGetMinX(self.frame);
+    CGFloat rightOffset = self.superview.bounds.size.width - CGRectGetMaxX(self.frame);
+    CGRect absolutelyCenteredFrame = self.bounds;
+    absolutelyCenteredFrame.size.width -= fabs(leftOffset - rightOffset);
+    if (rightOffset > leftOffset) absolutelyCenteredFrame.origin.x += (rightOffset - leftOffset);
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        self.label.frame = absolutelyCenteredFrame;
+        return;
+    }
+    CGSize fits = [self.label.text sizeWithFont:self.label.font
+                              constrainedToSize:absolutelyCenteredFrame.size];
+    if (fits.height / self.label.font.leading > 1.5) {
+        self.label.textAlignment = UITextAlignmentLeft;
+        self.label.frame = self.bounds;
+    } else {
+        self.label.textAlignment = UITextAlignmentCenter;
+        self.label.frame = absolutelyCenteredFrame;
+    }
 }
 
 @end
