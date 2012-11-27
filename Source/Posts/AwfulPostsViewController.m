@@ -76,11 +76,13 @@
 
 @property (nonatomic) BOOL markingPostsAsBeenSeen;
 
-@property (nonatomic) BOOL observingScrollViewOffset;
-
 @property (nonatomic) BOOL observingScrollViewSize;
 
 @property (nonatomic) NSMutableArray *cachedUpdatesWhileScrolling;
+
+@property (nonatomic) CGPoint lastContentOffset;
+
+@property (nonatomic) BOOL scrollingUp;
 
 @end
 
@@ -121,11 +123,11 @@
 {
     if (![self isViewLoaded]) return;
     NSArray *importantKeys = @[
-    AwfulSettingsKeys.highlightOwnMentions,
-    AwfulSettingsKeys.highlightOwnQuotes,
-    AwfulSettingsKeys.showAvatars,
-    AwfulSettingsKeys.showImages,
-    AwfulSettingsKeys.username,
+        AwfulSettingsKeys.highlightOwnMentions,
+        AwfulSettingsKeys.highlightOwnQuotes,
+        AwfulSettingsKeys.showAvatars,
+        AwfulSettingsKeys.showImages,
+        AwfulSettingsKeys.username,
     ];
     NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
     if ([keys firstObjectCommonWithArray:importantKeys]) [self configurePostsViewSettings];
@@ -260,7 +262,9 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         [self updateEndMessage];
         self.pullUpToRefreshControl.refreshing = NO;
         [self updatePullForNextPageLabel];
-        self.postsView.scrollView.contentOffset = CGPointZero;
+        if ([self.fetchedResultsController.fetchedObjects count] == 0) {
+            self.postsView.scrollView.contentOffset = CGPointZero;
+        }
         self.advertisementHTML = nil;
         self.hiddenPosts = 0;
         [self.postsView reloadData];
@@ -306,6 +310,10 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         [self updatePageBar];
         [self updateEndMessage];
         [self updatePullForNextPageLabel];
+        if (!refreshingSamePage) {
+            CGFloat inset = self.postsView.scrollView.contentInset.top;
+            self.postsView.scrollView.contentOffset = CGPointMake(0, -inset);
+        }
         [blockSelf markPostsAsBeenSeen];
     }];
     self.networkOperation = op;
@@ -699,7 +707,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     [postsView.scrollView addSubview:topBar];
     self.topBar = topBar;
     postsView.scrollView.contentInset = UIEdgeInsetsMake(44, 0, 0, 0);
-    [self keepTopBarHiddenOnFirstView];
+    postsView.scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(44, 0, 0, 0);
     postsView.scrollView.delegate = self;
     
     AwfulPullToRefreshControl *refresh;
@@ -737,20 +745,6 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     [super viewDidDisappear:animated];
 }
 
-// We want to hide the top bar until the user reveals it. Unfortunately, AwfulPostsView's
-// scrollView changes its contentSize at some arbitrary point (when it loads the posts we send it),
-// which changes the contentOffset to reveal the top bar.
-//
-// Here, we simply override that first attempt to set the contentOffset too high.
-- (void)keepTopBarHiddenOnFirstView
-{
-    _observingScrollViewOffset = YES;
-    [self.postsView.scrollView addObserver:self
-                                forKeyPath:@"contentOffset"
-                                   options:NSKeyValueObservingOptionNew
-                                   context:&KVOContext];
-}
-
 - (void)maintainScrollOffsetAfterSizeChange
 {
     _observingScrollViewSize = YES;
@@ -770,14 +764,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
         return;
     }
-    if ([keyPath isEqualToString:@"contentOffset"]) {
-        CGPoint offset = [change[NSKeyValueChangeNewKey] CGPointValue];
-        if (offset.y < 0) {
-            [object setContentOffset:CGPointZero];
-            [object removeObserver:self forKeyPath:keyPath context:context];
-            _observingScrollViewOffset = NO;
-        }
-    } else if ([keyPath isEqualToString:@"contentSize"]) {
+    if ([keyPath isEqualToString:@"contentSize"]) {
         CGSize oldSize = [change[NSKeyValueChangeOldKey] CGSizeValue];
         CGSize newSize = [change[NSKeyValueChangeNewKey] CGSizeValue];
         CGPoint contentOffset = [object contentOffset];
@@ -792,11 +779,6 @@ static char KVOContext;
 
 - (void)stopObserving
 {
-    if (_observingScrollViewOffset) {
-        [self.postsView.scrollView removeObserver:self
-                                       forKeyPath:@"contentOffset"
-                                          context:&KVOContext];
-    }
     if (_observingScrollViewSize) {
         [self.postsView.scrollView removeObserver:self
                                        forKeyPath:@"contentSize"
@@ -1029,12 +1011,51 @@ static char KVOContext;
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
     if (!self.cachedUpdatesWhileScrolling) self.cachedUpdatesWhileScrolling = [NSMutableArray new];
+    
+    self.lastContentOffset = scrollView.contentOffset;
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    CGRect topBarFrame = self.topBar.frame;
+    // Stick top bar underneath navigation bar; it shouldn't bounce.
+    if (scrollView.contentOffset.y <= -topBarFrame.size.height) {
+        topBarFrame.origin.y = scrollView.contentOffset.y;
+    } else {
+        // When we scroll down, the top bar stays perched atop the scroll view. Though we let it
+        // scroll out of view if needed
+        if (!self.scrollingUp) {
+            if (!CGRectIntersectsRect(topBarFrame, scrollView.bounds)) {
+                topBarFrame.origin.y = -topBarFrame.size.height;
+            }
+        }
+        // Anytime we scroll up, keep the top bar visible if it was already.
+        else if (topBarFrame.origin.y > scrollView.contentOffset.y) {
+            topBarFrame.origin.y = CGRectGetMinY(scrollView.bounds);
+        }
+    }
+    self.topBar.frame = topBarFrame;
+    if (!CGPointEqualToPoint(self.lastContentOffset, scrollView.contentOffset)) {
+        self.scrollingUp = scrollView.contentOffset.y < self.lastContentOffset.y;
+        self.lastContentOffset = scrollView.contentOffset;
+    }
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)willDecelerate
 {
-    if (willDecelerate) return;
-    [self processCachedUpdates];
+    if (!willDecelerate) [self processCachedUpdates];
+    
+    // If we're decelerating upwards and the top bar isn't already visible, put the top bar just
+    // out of view so it slides in.
+    CGRect topBarFrame = self.topBar.frame;
+    if (willDecelerate && self.scrollingUp && topBarFrame.origin.y >= -topBarFrame.size.height &&
+        topBarFrame.origin.y < CGRectGetMinY(scrollView.bounds) - topBarFrame.size.height) {
+        topBarFrame.origin.y = CGRectGetMinY(scrollView.bounds) - topBarFrame.size.height;
+        if (topBarFrame.origin.y < -topBarFrame.size.height) {
+            topBarFrame.origin.y = -topBarFrame.size.height;
+        }
+        self.topBar.frame = topBarFrame;
+    }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
