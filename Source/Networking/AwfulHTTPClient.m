@@ -132,6 +132,7 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
     andThen:(void (^)(NSError *error, NSArray *posts, NSString *advertisementHTML))callback
 {
     NSMutableDictionary *parameters = [@{ @"threadid": threadID } mutableCopy];
+    parameters[@"perpage"] = @40;
     if (page == AwfulPageNextUnread) parameters[@"goto"] = @"newpost";
     else if (page == AwfulPageLast) parameters[@"goto"] = @"lastpost";
     else parameters[@"pagenumber"] = @(page);
