@@ -75,7 +75,7 @@ static void RemoveShadowFromAboveAndBelowWebView(UIWebView *webView)
 {
     NSString *ad = @"";
     if ([self.delegate respondsToSelector:@selector(advertisementHTMLForPostsView:)]) {
-        NSString *ad = [self.delegate advertisementHTMLForPostsView:self];
+        ad = [self.delegate advertisementHTMLForPostsView:self];
         if ([ad length] == 0) ad = @"";
     }
     // Foundation's JSON serializer only does arrays and objects at the top level.

@@ -305,6 +305,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         if (!self.fetchedResultsController) {
             [self updateFetchedResultsController];
             [self.postsView reloadData];
+        } else {
+            [self.postsView reloadAdvertisementHTML];
         }
         [self updateLoadingMessage];
         [self updatePageBar];
