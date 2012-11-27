@@ -305,7 +305,7 @@ static NSString * Entitify(NSString *noEntities)
     NSString *pattern = @"(?x)[^ \\u0000-\\u007F \\u20AC \\u201A \\u0192 \u201E \\u2026 \\u2020 "
                          "\\u2021 \\u02C6 \\u2030 \\u0160 \\u2039 \\u0152 \\u017D \\u2018 \\u2019 "
                          "\\u201C \\u201D \\u2022 \\u2013 \\u2014 \\u02DC \\u2122 \\u0161 \\u203A "
-                         "\\u0153 \\u017E \\u0178 \u00A0-\u00FF ]";
+                         "\\u0153 \\u017E \\u0178 \\u00A0-\\u00FF ]";
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
                                                                            options:0
                                                                              error:&error];
