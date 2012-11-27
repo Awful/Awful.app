@@ -84,6 +84,8 @@
 
 @property (nonatomic) BOOL scrollingUp;
 
+@property (copy, nonatomic) NSString *jumpToPostAfterLoad;
+
 @end
 
 
@@ -252,6 +254,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 - (void)loadPage:(NSInteger)page
 {
     [self.networkOperation cancel];
+    self.jumpToPostAfterLoad = nil;
     NSInteger oldPage = self.currentPage;
     self.currentPage = page;
     BOOL refreshingSamePage = page > 0 && page == oldPage;
@@ -308,6 +311,9 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         } else {
             [self.postsView reloadAdvertisementHTML];
         }
+        if (self.postsView.loadingMessage && self.jumpToPostAfterLoad) {
+            [self.postsView jumpToElementWithID:self.jumpToPostAfterLoad];
+        }
         [self updateLoadingMessage];
         [self updatePageBar];
         [self updateEndMessage];
@@ -319,6 +325,15 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         [blockSelf markPostsAsBeenSeen];
     }];
     self.networkOperation = op;
+}
+
+- (void)jumpToPostWithID:(NSString *)postID
+{
+    if (self.postsView.loadingMessage) {
+        self.jumpToPostAfterLoad = postID;
+    } else {
+        [self.postsView jumpToElementWithID:postID];
+    }
 }
 
 - (void)markPostsAsBeenSeen
@@ -998,8 +1013,8 @@ static char KVOContext;
                 didEditPost:(AwfulPost *)post
 {
     [self dismissViewControllerAnimated:YES completion:^{
-        // TODO jump to post
         [self loadPage:post.threadPageValue];
+        [self jumpToPostWithID:post.postID];
     }];
 }
 

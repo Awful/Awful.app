@@ -153,6 +153,19 @@ static NSString * JSONize(id obj)
     [self evalJavaScript:@"Awful.posts([])"];
 }
 
+- (void)jumpToElementWithID:(NSString *)elementID
+{
+    if (!self.hasLoaded) {
+        self.jumpToElementAfterLoading = elementID;
+        return;
+    }
+    // Clear the hash first in case we're jumping again to the same place as last time.
+    [self evalJavaScript:@"window.location.hash = ''"];
+    if ([elementID length] > 0) {
+        [self evalJavaScript:@"window.location.hash = '#' + %@[0]", JSONize(@[ elementID ])];
+    }
+}
+
 - (NSString *)evalJavaScript:(NSString *)script, ...
 {
     va_list args;

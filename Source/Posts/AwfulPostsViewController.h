@@ -18,4 +18,6 @@
 
 - (void)loadPage:(NSInteger)page;
 
+- (void)jumpToPostWithID:(NSString *)postID;
+
 @end

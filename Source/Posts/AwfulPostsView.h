@@ -31,6 +31,8 @@
 
 - (void)clearAllPosts;
 
+- (void)jumpToElementWithID:(NSString *)elementID;
+
 @property (nonatomic) NSURL *stylesheetURL;
 
 @property (getter=isDark, nonatomic) BOOL dark;
