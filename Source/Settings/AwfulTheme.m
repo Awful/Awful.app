@@ -90,7 +90,7 @@
 - (UIColor *)forumListSeparatorColor
 {
     LIGHT([UIColor colorWithWhite:0.94 alpha:1]);
-    DARK([UIColor colorWithWhite:0.306 alpha:1]);
+    DARK([UIColor colorWithWhite:0.106 alpha:1]);
 }
 
 - (UIColor *)forumListHeaderTextColor
@@ -190,7 +190,7 @@
 - (UIColor *)threadListSeparatorColor
 {
     LIGHT([UIColor colorWithWhite:0.75 alpha:1]);
-    DARK([UIColor colorWithWhite:0.5 alpha:1]);
+    DARK([UIColor colorWithWhite:0.106 alpha:1]);
 }
 
 - (UIColor *)threadListUnreadBadgeColor
