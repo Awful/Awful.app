@@ -14,6 +14,8 @@
 
 @property (nonatomic, strong) AwfulThread *thread;
 
+@property (nonatomic, copy) NSString *threadID;
+
 @property (nonatomic, assign) NSInteger currentPage;
 
 - (void)loadPage:(NSInteger)page;

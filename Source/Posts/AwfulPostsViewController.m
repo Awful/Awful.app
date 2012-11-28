@@ -137,12 +137,22 @@
 
 - (void)setThread:(AwfulThread *)thread
 {
-    if (_thread == thread) return;
+    if ([_thread isEqual:thread]) return;
     _thread = thread;
+    _threadID = [thread.threadID copy];
     self.title = [thread.title stringByCollapsingWhitespace];
     [self updatePageBar];
     self.postsView.stylesheetURL = StylesheetURLForForumWithID(thread.forum.forumID);
     [self updateFetchedResultsController];
+}
+
+- (void)setThreadID:(NSString *)threadID
+{
+    if (threadID == _threadID) return;
+    self.thread = [AwfulThread firstMatchingPredicate:@"threadID = %@", threadID];
+    if (!self.thread) {
+        _threadID = [threadID copy];
+    }
 }
 
 static NSURL* StylesheetURLForForumWithID(NSString *forumID)
@@ -275,7 +285,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     // This blockSelf exists entirely so we capture self in the block, which allows its use while
     // debugging. Otherwise lldb/gdb don't know anything about "self".
     __block AwfulPostsViewController *blockSelf = self;
-    id op = [[AwfulHTTPClient client] listPostsInThreadWithID:self.thread.threadID
+    id op = [[AwfulHTTPClient client] listPostsInThreadWithID:self.threadID
                                                        onPage:page
                                                       andThen:^(NSError *error, NSArray *posts,
                                                                 NSString *advertisementHTML)
@@ -295,6 +305,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
             [AwfulAlertView showWithTitle:@"Could Not Load Page" error:error buttonTitle:@"OK"];
             return;
         }
+        self.thread = [[posts lastObject] thread];
         self.currentPage = [[posts lastObject] threadPageValue];
         self.advertisementHTML = advertisementHTML;
         if (page == AwfulPageNextUnread) {
