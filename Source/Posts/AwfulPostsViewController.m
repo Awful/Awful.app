@@ -277,7 +277,10 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         self.pullUpToRefreshControl.refreshing = NO;
         [self updatePullForNextPageLabel];
         if ([self.fetchedResultsController.fetchedObjects count] == 0) {
-            self.postsView.scrollView.contentOffset = CGPointZero;
+            [self.postsView.scrollView setContentOffset:CGPointZero animated:NO];
+        } else {
+            UIEdgeInsets inset = self.postsView.scrollView.contentInset;
+            [self.postsView.scrollView setContentOffset:CGPointMake(0, -inset.top) animated:NO];
         }
         self.advertisementHTML = nil;
         self.hiddenPosts = 0;
@@ -326,13 +329,14 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         if (self.postsView.loadingMessage && self.jumpToPostAfterLoad) {
             [self.postsView jumpToElementWithID:self.jumpToPostAfterLoad];
         }
+        BOOL wasLoading = !!self.postsView.loadingMessage;
         [self updateLoadingMessage];
         [self updatePageBar];
         [self updateEndMessage];
         [self updatePullForNextPageLabel];
-        if (!refreshingSamePage) {
+        if (wasLoading) {
             CGFloat inset = self.postsView.scrollView.contentInset.top;
-            self.postsView.scrollView.contentOffset = CGPointMake(0, -inset);
+            [self.postsView.scrollView setContentOffset:CGPointMake(0, -inset) animated:NO];
         }
         [blockSelf markPostsAsBeenSeen];
     }];
