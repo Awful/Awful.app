@@ -326,15 +326,15 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         } else {
             [self.postsView reloadAdvertisementHTML];
         }
-        if (self.postsView.loadingMessage && self.jumpToPostAfterLoad) {
-            [self.postsView jumpToElementWithID:self.jumpToPostAfterLoad];
-        }
         BOOL wasLoading = !!self.postsView.loadingMessage;
         [self updateLoadingMessage];
         [self updatePageBar];
         [self updateEndMessage];
         [self updatePullForNextPageLabel];
-        if (wasLoading) {
+        if (self.jumpToPostAfterLoad) {
+            [self.postsView jumpToElementWithID:self.jumpToPostAfterLoad];
+            self.jumpToPostAfterLoad = nil;
+        } else if (wasLoading) {
             CGFloat inset = self.postsView.scrollView.contentInset.top;
             [self.postsView.scrollView setContentOffset:CGPointMake(0, -inset) animated:NO];
         }
