@@ -763,7 +763,7 @@ Awful.showImages = function(on){
   }
 }
 
-var baseURL = "http://forums.somethingawful.com/"
+var baseURL = "http://forums.somethingawful.com"
 
 function render(post) {
   rendered = $('#postTemplate').mustache(post)
