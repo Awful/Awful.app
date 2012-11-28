@@ -10,6 +10,7 @@
 
 @implementation AwfulScrollViewPullObserver
 {
+    BOOL _wasDragging;
     BOOL _wouldHaveTriggered;
     BOOL _triggered;
 }
@@ -32,6 +33,7 @@
 - (void)reset
 {
     _wouldHaveTriggered = NO;
+    _wasDragging = NO;
     _triggered = NO;
 }
 
@@ -66,7 +68,7 @@
         wouldTrigger = exposedBottom >= self.triggerOffset;
     }
     
-    if (wouldTrigger && !self.scrollView.dragging) {
+    if (wouldTrigger && _wasDragging && !self.scrollView.dragging) {
         BOOL wasntTriggered = !_triggered;
         _triggered = YES;
         if (wasntTriggered && self.didTrigger) self.didTrigger();
@@ -78,6 +80,7 @@
         }
     }
     _wouldHaveTriggered = wouldTrigger;
+    _wasDragging = self.scrollView.dragging;
 }
 
 static void * KVOContext = @"AwfulPullToRefreshObserver KVO";
