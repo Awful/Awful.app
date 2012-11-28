@@ -68,6 +68,10 @@ body.dark {
   border-radius: 5px;
   box-shadow: 0 0 5px 5px #7b7b7b;
   position: relative;
+  text-align: justify;
+  -webkit-hyphens: auto;
+  hyphens: auto
+  text-justify: auto;
 }
 
 /* No shadow in dark mode. */
@@ -439,6 +443,7 @@ body.dark {
 /* Center the ad. */
 body > #ad {
   text-align: center;
+  display: none;
 }
 
 /* The loading view takes up the whole screen. */
