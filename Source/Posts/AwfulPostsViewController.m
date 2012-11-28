@@ -23,6 +23,7 @@
 #import "NSFileManager+UserDirectories.h"
 #import "NSManagedObject+Awful.h"
 #import "NSString+CollapseWhitespace.h"
+#import "NSURL+QueryDictionary.h"
 #import <QuartzCore/QuartzCore.h>
 #import "UINavigationItem+TwoLineTitle.h"
 #import "UIViewController+NavigationEnclosure.h"
@@ -873,9 +874,68 @@ static char KVOContext;
 
 - (void)postsView:(AwfulPostsView *)postsView didTapLinkToURL:(NSURL *)url
 {
-    // TODO intercept links to forums, threads, posts and show in-app.
-    // N.B. Some links may have no host and go to showthread.php
+    // Anything not on the Forums goes to Safari (or wherever).
+    if ([[url host] compare:@"forums.somethingawful.com" options:NSCaseInsensitiveSearch] !=
+        NSOrderedSame) {
+        [[UIApplication sharedApplication] openURL:url];
+        return;
+    }
+    
+    // Links to specific posts stay within Awful.
+    if ([[url path] compare:@"/showthread.php" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
+        NSDictionary *query = [url queryDictionary];
+        if ([query[@"goto"] isEqual:@"post"] && query[@"postid"]) {
+            NSString *postID = query[@"postid"];
+            // Is the post on this page?
+            NSArray *thisPagePosts = self.fetchedResultsController.fetchedObjects;
+            NSUInteger i = [thisPagePosts indexOfObjectPassingTest:^BOOL(AwfulPost *post,
+                                                                         NSUInteger _, BOOL *__)
+            {
+                return [post.postID isEqualToString:postID];
+            }];
+            if (i != NSNotFound) {
+                if ((NSInteger)i < self.hiddenPosts) [self showHiddenSeenPosts];
+                [self jumpToPostWithID:postID];
+                CGRect topBarFrame = self.topBar.frame;
+                topBarFrame.origin.y = -topBarFrame.size.height;
+                self.topBar.frame = topBarFrame;
+                return;
+            }
+            // Have we seen the post before?
+            AwfulPost *post = [AwfulPost firstMatchingPredicate:@"postID = %@", postID];
+            if (post) {
+                [self pushPostsViewForPostWithID:post.postID
+                                          onPage:post.threadPageValue
+                                  ofThreadWithID:post.thread.threadID];
+                return;
+            }
+            // Gotta go find it then.
+            [[AwfulHTTPClient client] locatePostWithID:postID andThen:^(NSError *error,
+                                                                        NSString *threadID,
+                                                                        NSInteger page)
+            {
+                if (error) {
+                    NSLog(@"couldn't find post for tapped link %@: %@", url, error);
+                    return;
+                }
+                [self pushPostsViewForPostWithID:postID onPage:page ofThreadWithID:threadID];
+            }];
+        }
+    }
+    
+    // Anything on the Forums that we don't handle goes to Safari (or wherever).
     [[UIApplication sharedApplication] openURL:url];
+}
+
+- (void)pushPostsViewForPostWithID:(NSString *)postID
+                            onPage:(NSInteger)page
+                    ofThreadWithID:(NSString *)threadID
+{
+    AwfulPostsViewController *postsView = [AwfulPostsViewController new];
+    postsView.threadID = threadID;
+    [postsView loadPage:page];
+    [postsView jumpToPostWithID:postID];
+    [self.navigationController pushViewController:postsView animated:YES];
 }
 
 - (void)showActionsForPostAtIndex:(NSNumber *)index fromRectDictionary:(NSDictionary *)rectDict
