@@ -924,6 +924,7 @@ static char KVOContext;
                 }
                 [self pushPostsViewForPostWithID:postID onPage:page ofThreadWithID:threadID];
             }];
+            return;
         }
     }
     
