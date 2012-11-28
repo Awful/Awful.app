@@ -12,11 +12,15 @@
 
 @property (weak, nonatomic) UIWebView *webView;
 
+@property (nonatomic) BOOL hasLoaded;
+
 @property (nonatomic) NSMutableIndexSet *toDelete;
 
 @property (nonatomic) NSMutableIndexSet *toInsert;
 
 @property (nonatomic) NSMutableIndexSet *toReload;
+
+@property (copy, nonatomic) NSString *jumpToElementAfterLoading;
 
 @end
 
@@ -300,7 +304,12 @@ static NSString * JSONize(id obj)
         [self updateHighlightQuoteUsername];
         [self updateHighlightMentionUsername];
         [self updateEndMessage];
+        self.hasLoaded = YES;
         [self reloadData];
+        if (self.jumpToElementAfterLoading) {
+            [self jumpToElementWithID:self.jumpToElementAfterLoading];
+            self.jumpToElementAfterLoading = nil;
+        }
     });
 }
 
