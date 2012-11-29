@@ -100,7 +100,8 @@ typedef enum {
 {
     if (![self isViewLoaded]) return;
     NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
-    if ([keys containsObject:AwfulSettingsKeys.showThreadTags]) {
+    if ([keys containsObject:AwfulSettingsKeys.showThreadTags] ||
+        [keys containsObject:AwfulSettingsKeys.colorBookmarks]) {
         [self.tableView reloadData];
     }
 }
@@ -317,6 +318,7 @@ typedef enum {
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
+    [self setBackgroundColorForCell:cell forRowAtIndexPath:indexPath];
 }
 
 - (void)updateThreadTag:(NSString *)threadTagName forCellAtIndexPath:(NSIndexPath *)indexPath
@@ -381,7 +383,23 @@ typedef enum {
   willDisplayCell:(UITableViewCell *)cell
 forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    cell.backgroundColor = [AwfulTheme currentTheme].threadCellBackgroundColor;
+    [self setBackgroundColorForCell:cell forRowAtIndexPath:indexPath];
+}
+
+- (void)setBackgroundColorForCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UIColor *color = [AwfulTheme currentTheme].threadCellBackgroundColor;
+    if ([AwfulSettings settings].colorBookmarks) {
+        AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
+        if (thread.starCategoryValue == AwfulStarCategoryBlue) {
+            color = [AwfulTheme currentTheme].threadCellBlueBackgroundColor;
+        } else if (thread.starCategoryValue == AwfulStarCategoryRed) {
+            color = [AwfulTheme currentTheme].threadCellRedBackgroundColor;
+        } else if (thread.starCategoryValue == AwfulStarCategoryYellow) {
+            color = [AwfulTheme currentTheme].threadCellYellowBackgroundColor;
+        }
+    }
+    cell.backgroundColor = color;
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath

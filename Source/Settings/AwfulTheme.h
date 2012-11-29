@@ -46,6 +46,9 @@
 
 @property (readonly, nonatomic) UIColor *threadListBackgroundColor;
 @property (readonly, nonatomic) UIColor *threadCellBackgroundColor;
+@property (readonly, nonatomic) UIColor *threadCellBlueBackgroundColor;
+@property (readonly, nonatomic) UIColor *threadCellRedBackgroundColor;
+@property (readonly, nonatomic) UIColor *threadCellYellowBackgroundColor;
 @property (readonly, nonatomic) UIColor *threadCellTextColor;
 @property (readonly, nonatomic) UIColor *threadCellPagesTextColor;
 @property (readonly, nonatomic) UIColor *threadCellOriginalPosterTextColor;

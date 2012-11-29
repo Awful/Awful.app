@@ -42,6 +42,8 @@ typedef enum
 
 @property (assign, nonatomic) BOOL showThreadTags;
 
+@property (assign, nonatomic) BOOL colorBookmarks;
+
 - (id)objectForKeyedSubscript:(id)key;
 
 - (void)setObject:(id)object forKeyedSubscript:(id <NSCopying>)key;
@@ -66,4 +68,5 @@ extern const struct AwfulSettingsKeys {
 	__unsafe_unretained NSString *darkTheme;
     __unsafe_unretained NSString *username;
     __unsafe_unretained NSString *showThreadTags;
+    __unsafe_unretained NSString *colorBookmarks;
 } AwfulSettingsKeys;

@@ -178,6 +178,24 @@
     DARK(self.forumCellBackgroundColor);
 }
 
+- (UIColor *)threadCellBlueBackgroundColor
+{
+    LIGHT([UIColor colorWithHue:0.583 saturation:0.106 brightness:0.961 alpha:1]);
+    DARK([UIColor colorWithHue:0.583 saturation:0.302 brightness:0.35 alpha:1]);
+}
+
+- (UIColor *)threadCellRedBackgroundColor
+{
+    LIGHT([UIColor colorWithHue:1 saturation:0.091 brightness:0.949 alpha:1]);
+    DARK([UIColor colorWithHue:1 saturation:0.305 brightness:0.35 alpha:1]);
+}
+
+- (UIColor *)threadCellYellowBackgroundColor
+{
+    LIGHT([UIColor colorWithHue:0.167 saturation:0.091 brightness:0.949 alpha:1]);
+    DARK([UIColor colorWithHue:0.167 saturation:0.3 brightness:0.35 alpha:1]);
+}
+
 - (UIColor *)threadCellTextColor
 {
     LIGHT([UIColor blackColor]);

@@ -135,6 +135,8 @@ struct {
 
 BOOL_PROPERTY(showThreadTags, setShowThreadTags)
 
+BOOL_PROPERTY(colorBookmarks, setColorBookmarks)
+
 - (id)objectForKeyedSubscript:(id)key
 {
     return [[NSUserDefaults standardUserDefaults] objectForKey:key];
@@ -170,4 +172,5 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
 	.darkTheme = @"dark_theme",
     .username = @"username",
     .showThreadTags = @"show_thread_tags",
+    .colorBookmarks = @"color_bookmarks",
 };
