@@ -893,16 +893,38 @@ static char KVOContext;
         return;
     }
     
-    // Links to specific posts stay within Awful.
+    NSDictionary *query = [url queryDictionary];
+    NSString *redirect;
+    // Thread or post.
     if ([[url path] compare:@"/showthread.php" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
-        NSDictionary *query = [url queryDictionary];
+        // Link to specific post.
         if ([query[@"goto"] isEqual:@"post"] && query[@"postid"]) {
-            NSString *redirect = [NSString stringWithFormat:@"awful://posts/%@", query[@"postid"]];
-            url = [NSURL URLWithString:redirect];
+            redirect = [NSString stringWithFormat:@"awful://posts/%@", query[@"postid"]];
+        }
+        // Link to specific post.
+        else if ([[url fragment] hasPrefix:@"post"] && [[url fragment] length] > 4) {
+            redirect = [NSString stringWithFormat:@"awful://posts/%@",
+                        [[url fragment] substringFromIndex:4]];
+        }
+        // Link to page on specific thread.
+        else if (query[@"threadid"] && query[@"pagenumber"]) {
+            redirect = [NSString stringWithFormat:@"awful://threads/%@/pages/%@",
+                        query[@"threadid"], query[@"pagenumber"]];
+        }
+        // Link to specific thread.
+        else if (query[@"threadid"]) {
+            redirect = [NSString stringWithFormat:@"awful://threads/%@/pages/1",
+                        query[@"threadid"]];
         }
     }
-    
-    // Anything on the Forums that we don't handle goes to Safari (or wherever).
+    // Forum.
+    else if ([[url path] compare:@"/forumdisplay.php" options:NSCaseInsensitiveSearch] ==
+             NSOrderedSame) {
+        if (query[@"forumid"]) {
+            redirect = [NSString stringWithFormat:@"awful://forums/%@", query[@"forumid"]];
+        }
+    }
+    if (redirect) url = [NSURL URLWithString:redirect];
     [[UIApplication sharedApplication] openURL:url];
 }
 
