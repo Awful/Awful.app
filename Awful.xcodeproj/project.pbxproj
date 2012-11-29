@@ -1707,7 +1707,7 @@
 				1C05EDAD16230BFE00FE567F /* Parsing */,
 				1CC780241612D9DD002AF958 /* Posts */,
 				1C278A3316453296007D3CEC /* Scrolling and Pulling */,
-				1CDD51951542949600326C7B /* Settings */,
+				1CDD51951542949600326C7B /* Settings and Theming */,
 				1CC780471612DA8D002AF958 /* Threads */,
 			);
 			path = Source;
@@ -1879,7 +1879,7 @@
 			path = Default;
 			sourceTree = "<group>";
 		};
-		1CDD51951542949600326C7B /* Settings */ = {
+		1CDD51951542949600326C7B /* Settings and Theming */ = {
 			isa = PBXGroup;
 			children = (
 				1CDD5197154294D400326C7B /* AwfulSettings.h */,
@@ -1893,6 +1893,7 @@
 				1CE2D97E165EEC1F0024AC1C /* AwfulTheme.h */,
 				1CE2D97F165EEC1F0024AC1C /* AwfulTheme.m */,
 			);
+			name = "Settings and Theming";
 			path = Settings;
 			sourceTree = "<group>";
 		};

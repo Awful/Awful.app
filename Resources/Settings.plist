@@ -56,6 +56,8 @@
 			</array>
 		</dict>
 		<dict>
+			<key>Title</key>
+			<string>Threads</string>
 			<key>Settings</key>
 			<array>
 				<dict>
@@ -82,36 +84,9 @@
 		</dict>
 		<dict>
 			<key>Title</key>
-			<string>Images</string>
+			<string>Posts</string>
 			<key>Explanation</key>
 			<string>Hidden images turn into a link.</string>
-			<key>Settings</key>
-			<array>
-				<dict>
-					<key>Title</key>
-					<string>Show Avatars</string>
-					<key>Type</key>
-					<string>Switch</string>
-					<key>Default</key>
-					<true/>
-					<key>Key</key>
-					<string>show_avatars</string>
-				</dict>
-				<dict>
-					<key>Title</key>
-					<string>Show Images</string>
-					<key>Type</key>
-					<string>Switch</string>
-					<key>Default</key>
-					<true/>
-					<key>Key</key>
-					<string>show_images</string>
-				</dict>
-			</array>
-		</dict>
-		<dict>
-			<key>Title</key>
-			<string>Posts</string>
 			<key>Settings</key>
 			<array>
 				<dict>
@@ -133,6 +108,26 @@
 					<true/>
 					<key>Key</key>
 					<string>highlight_own_quotes</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Show Avatars</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>show_avatars</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Show Images</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>show_images</string>
 				</dict>
 			</array>
 		</dict>
