@@ -458,6 +458,14 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765080DF74369002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765070DF74369002DB57D /* CoreGraphics.framework */; };
+		8C2450F91666F76900D3079C /* forum-header-dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C2450F51666F76900D3079C /* forum-header-dark.png */; };
+		8C2450FA1666F76900D3079C /* forum-header-dark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C2450F61666F76900D3079C /* forum-header-dark@2x.png */; };
+		8C2450FB1666F76900D3079C /* forum-header-light.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C2450F71666F76900D3079C /* forum-header-light.png */; };
+		8C2450FC1666F76900D3079C /* forum-header-light@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C2450F81666F76900D3079C /* forum-header-light@2x.png */; };
+		8C2451001666FDA400D3079C /* forum-arrow-down-dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C2450FE1666FDA300D3079C /* forum-arrow-down-dark.png */; };
+		8C2451011666FDA400D3079C /* forum-arrow-down-dark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C2450FF1666FDA300D3079C /* forum-arrow-down-dark@2x.png */; };
+		8C2451041666FDAE00D3079C /* forum-arrow-right-dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C2451021666FDAE00D3079C /* forum-arrow-right-dark.png */; };
+		8C2451051666FDAE00D3079C /* forum-arrow-right-dark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C2451031666FDAE00D3079C /* forum-arrow-right-dark@2x.png */; };
 		8C2D931D16231BFE00DF604A /* scroll-to-bottom@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C2D931716231BFE00DF604A /* scroll-to-bottom@2x.png */; };
 		8C2D931F16231BFE00DF604A /* go-to-forum@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C2D931916231BFE00DF604A /* go-to-forum@2x.png */; };
 		8C3CCD4016533B1E00C28342 /* fyad-yourrights.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C3CCD3A16533B1D00C28342 /* fyad-yourrights.png */; };
@@ -1009,6 +1017,14 @@
 		1D6058910D05DD3D006BFB54 /* Awful.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Awful.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765070DF74369002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		8C2450F51666F76900D3079C /* forum-header-dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forum-header-dark.png"; sourceTree = "<group>"; };
+		8C2450F61666F76900D3079C /* forum-header-dark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forum-header-dark@2x.png"; sourceTree = "<group>"; };
+		8C2450F71666F76900D3079C /* forum-header-light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forum-header-light.png"; sourceTree = "<group>"; };
+		8C2450F81666F76900D3079C /* forum-header-light@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forum-header-light@2x.png"; sourceTree = "<group>"; };
+		8C2450FE1666FDA300D3079C /* forum-arrow-down-dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forum-arrow-down-dark.png"; sourceTree = "<group>"; };
+		8C2450FF1666FDA300D3079C /* forum-arrow-down-dark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forum-arrow-down-dark@2x.png"; sourceTree = "<group>"; };
+		8C2451021666FDAE00D3079C /* forum-arrow-right-dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forum-arrow-right-dark.png"; sourceTree = "<group>"; };
+		8C2451031666FDAE00D3079C /* forum-arrow-right-dark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forum-arrow-right-dark@2x.png"; sourceTree = "<group>"; };
 		8C2D931716231BFE00DF604A /* scroll-to-bottom@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "scroll-to-bottom@2x.png"; sourceTree = "<group>"; };
 		8C2D931916231BFE00DF604A /* go-to-forum@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "go-to-forum@2x.png"; sourceTree = "<group>"; };
 		8C3CCD3A16533B1D00C28342 /* fyad-yourrights.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-yourrights.png"; sourceTree = "<group>"; };
@@ -1989,8 +2005,16 @@
 				8C9B02BF1623630F00676B98 /* downArrowDark.png */,
 				8CCD524215B783FC00E5893B /* forum-arrow-down.png */,
 				8CCD524315B783FC00E5893B /* forum-arrow-down@2x.png */,
+				8C2450FE1666FDA300D3079C /* forum-arrow-down-dark.png */,
+				8C2450FF1666FDA300D3079C /* forum-arrow-down-dark@2x.png */,
 				8CCD524415B783FC00E5893B /* forum-arrow-right.png */,
 				8CCD524515B783FC00E5893B /* forum-arrow-right@2x.png */,
+				8C2451021666FDAE00D3079C /* forum-arrow-right-dark.png */,
+				8C2451031666FDAE00D3079C /* forum-arrow-right-dark@2x.png */,
+				8C2450F51666F76900D3079C /* forum-header-dark.png */,
+				8C2450F61666F76900D3079C /* forum-header-dark@2x.png */,
+				8C2450F71666F76900D3079C /* forum-header-light.png */,
+				8C2450F81666F76900D3079C /* forum-header-light@2x.png */,
 				8C2D931916231BFE00DF604A /* go-to-forum@2x.png */,
 				8CCD524D15B783FC00E5893B /* icon_arrow_left.png */,
 				8CCD524E15B783FC00E5893B /* icon_arrow_right.png */,
@@ -3267,6 +3291,14 @@
 				1CE2D983165F8B8D0024AC1C /* star-off-dark.png in Resources */,
 				1CE2D984165F8B8D0024AC1C /* star-off-dark@2x.png in Resources */,
 				1CE2D98E16632E610024AC1C /* games-wiiu.png in Resources */,
+				8C2450F91666F76900D3079C /* forum-header-dark.png in Resources */,
+				8C2450FA1666F76900D3079C /* forum-header-dark@2x.png in Resources */,
+				8C2450FB1666F76900D3079C /* forum-header-light.png in Resources */,
+				8C2450FC1666F76900D3079C /* forum-header-light@2x.png in Resources */,
+				8C2451001666FDA400D3079C /* forum-arrow-down-dark.png in Resources */,
+				8C2451011666FDA400D3079C /* forum-arrow-down-dark@2x.png in Resources */,
+				8C2451041666FDAE00D3079C /* forum-arrow-right-dark.png in Resources */,
+				8C2451051666FDAE00D3079C /* forum-arrow-right-dark@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

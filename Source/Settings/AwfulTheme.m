@@ -82,21 +82,28 @@
 
 #pragma mark - Forum list
 
+
 - (UIColor *)forumListBackgroundColor
 {
     DEFAULT([UIColor colorWithWhite:0.494 alpha:1]);
 }
 
+- (UIColor *)forumListHeaderBackgroundColor
+{
+    LIGHT([UIColor colorWithPatternImage: [UIImage imageNamed: @"forum-header-light.png"]]);
+    DARK([UIColor colorWithPatternImage: [UIImage imageNamed: @"forum-header-dark.png"]]);
+}
+
 - (UIColor *)forumListSeparatorColor
 {
-    LIGHT([UIColor colorWithWhite:0.94 alpha:1]);
-    DARK([UIColor colorWithWhite:0.106 alpha:1]);
+    LIGHT([UIColor colorWithWhite:0.95 alpha:1]);
+    DARK([UIColor blackColor]);
 }
 
 - (UIColor *)forumListHeaderTextColor
 {
     LIGHT([UIColor whiteColor]);
-    DARK([UIColor colorWithWhite:0.153 alpha:1.000]);
+    DARK([UIColor colorWithWhite:0.86 alpha:1.000]);
 }
 
 - (UIColor *)forumCellTextColor
@@ -108,23 +115,25 @@
 - (UIColor *)forumCellBackgroundColor
 {
     LIGHT([UIColor whiteColor]);
-    DARK([UIColor colorWithWhite:0.153 alpha:1]);
+    DARK([UIColor colorWithWhite:0.15 alpha:1]);
 }
 
 - (UIColor *)forumCellSubforumBackgroundColor
 {
-    LIGHT([UIColor colorWithWhite:0.922 alpha:1]);
-    DARK([UIColor colorWithWhite:0.25 alpha:1]);
+    LIGHT([UIColor colorWithWhite:0.95 alpha:1]);
+    DARK([UIColor colorWithWhite:0.10 alpha:1]);
 }
 
 - (UIImage *)forumCellExpandButtonNormalImage
 {
-    DEFAULT([UIImage imageNamed:@"forum-arrow-right.png"]);
+    LIGHT([UIImage imageNamed:@"forum-arrow-right.png"]);
+    DARK([UIImage imageNamed:@"forum-arrow-right-dark.png"]);
 }
 
 - (UIImage *)forumCellExpandButtonSelectedImage
 {
-    DEFAULT([UIImage imageNamed:@"forum-arrow-down.png"]);
+    LIGHT([UIImage imageNamed:@"forum-arrow-down.png"]);
+    DARK([UIImage imageNamed:@"forum-arrow-down-dark.png"]);
 }
 
 - (UIImage *)forumCellFavoriteButtonNormalImage

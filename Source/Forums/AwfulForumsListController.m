@@ -201,6 +201,7 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
 {
     [super viewDidLoad];
     self.tableView.rowHeight = 50;
+    self.tableView.sectionHeaderHeight = 26;
     self.tableView.backgroundView = nil;
     
     // This little ditty stops section headers from sticking.
@@ -218,10 +219,10 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
 {
     UILabel *header = [AwfulForumHeader new];
     header.frame = (CGRect){ .size = { tableView.bounds.size.width, tableView.rowHeight } };
-    header.font = [UIFont boldSystemFontOfSize:19];
+    header.font = [UIFont boldSystemFontOfSize:15];
     header.textColor = [AwfulTheme currentTheme].forumListHeaderTextColor;
     header.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    header.backgroundColor = tableView.backgroundColor;
+    header.backgroundColor = [AwfulTheme currentTheme].forumListHeaderBackgroundColor;
     AwfulForum *anyForum = [[self.fetchedResultsController.sections[section] objects] lastObject];
     header.text = anyForum.category.name;
     return header;
@@ -229,7 +230,7 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return tableView.rowHeight;
+    return tableView.sectionHeaderHeight;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
