@@ -239,6 +239,20 @@ static AwfulAppDelegate *_instance;
         [self.splitViewController showMasterView];
     }
     
+    // Open bookmarks: awful://bookmarks
+    if ([section isEqualToString:@"bookmarks"]) {
+        UINavigationController *nav = self.tabBarController.viewControllers[2];
+        [nav popToRootViewControllerAnimated:YES];
+        self.tabBarController.selectedViewController = nav;
+    }
+    
+    // Open settings: awful://settings
+    if ([section isEqualToString:@"settings"]) {
+        UINavigationController *nav = self.tabBarController.viewControllers[3];
+        [nav popToRootViewControllerAnimated:YES];
+        self.tabBarController.selectedViewController = nav;
+    }
+    
     return YES;
 }
 
