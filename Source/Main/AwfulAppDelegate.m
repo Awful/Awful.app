@@ -16,6 +16,7 @@
 #import "AwfulLoginController.h"
 #import "AwfulModels.h"
 #import "AwfulNavigationBar.h"
+#import "AwfulPostsViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulSettingsViewController.h"
 #import "AwfulSplitViewController.h"
@@ -251,6 +252,43 @@ static AwfulAppDelegate *_instance;
         UINavigationController *nav = self.tabBarController.viewControllers[3];
         [nav popToRootViewControllerAnimated:YES];
         self.tabBarController.selectedViewController = nav;
+    }
+    
+    // Open a thread: awful://threads/:threadID
+    // Open a specific page of a thread: awful://threads/:threadID/pages/:page
+    //     :page may be a positive integer, the text "last", or the text "unread".
+    if ([section isEqualToString:@"threads"]) {
+        // First path component is the /
+        if ([[url pathComponents] count] < 2) return NO;
+        NSString *threadID = [url pathComponents][1];
+        NSInteger page = 0;
+        if ([[url pathComponents] count] >= 4) {
+            if ([[url pathComponents][2] isEqualToString:@"pages"]) {
+                NSString *pageString = [url pathComponents][3];
+                if ([pageString isEqualToString:@"last"]) page = AwfulPageLast;
+                else if ([pageString isEqualToString:@"unread"]) page = AwfulPageNextUnread;
+                else page = [pageString integerValue];
+            }
+        }
+        // Maybe the thread is already open.
+        for (UIViewController *viewController in self.tabBarController.viewControllers) {
+            UINavigationController *nav = (UINavigationController *)viewController;
+            AwfulPostsViewController *top = (AwfulPostsViewController *)nav.topViewController;
+            if (![top isKindOfClass:[AwfulPostsViewController class]]) continue;
+            if ([top.threadID isEqualToString:threadID]) {
+                if (page == 0 || page == top.currentPage) {
+                    self.tabBarController.selectedViewController = nav;
+                    return YES;
+                }
+            }
+        }
+        if (page == 0) page = 1;
+        UINavigationController *nav;
+        nav = (UINavigationController *)self.tabBarController.selectedViewController;
+        AwfulPostsViewController *postsView = [AwfulPostsViewController new];
+        postsView.threadID = threadID;
+        [postsView loadPage:page];
+        [nav pushViewController:postsView animated:YES];
     }
     
     return YES;
