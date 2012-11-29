@@ -222,7 +222,7 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
     header.font = [UIFont boldSystemFontOfSize:15];
     header.textColor = [AwfulTheme currentTheme].forumListHeaderTextColor;
     header.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    header.backgroundColor = tableView.backgroundColor;
+    header.backgroundColor = [AwfulTheme currentTheme].forumListHeaderBackgroundColor;
     AwfulForum *anyForum = [[self.fetchedResultsController.sections[section] objects] lastObject];
     header.text = anyForum.category.name;
     return header;

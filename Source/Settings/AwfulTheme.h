@@ -26,6 +26,7 @@
 
 @property (readonly, nonatomic) UIColor *forumListBackgroundColor;
 @property (readonly, nonatomic) UIColor *forumListSeparatorColor;
+@property (readonly, nonatomic) UIColor *forumListHeaderBackgroundColor;
 @property (readonly, nonatomic) UIColor *forumListHeaderTextColor;
 @property (readonly, nonatomic) UIColor *forumCellTextColor;
 @property (readonly, nonatomic) UIColor *forumCellBackgroundColor;
