@@ -216,47 +216,53 @@ static AwfulAppDelegate *_instance;
     if ([[url scheme] compare:@"awful" options:NSCaseInsensitiveSearch] != NSOrderedSame) return NO;
     if (!IsLoggedIn()) return NO;
     
+    NSString *section = [url host];
+    
     // Open the forums list: awful://forums
-    // Open a specific forum: awful://forums/:forumID
-    if ([[url host] isEqualToString:@"forums"]) {
+    // Open a specific forum from the list: awful://forums/:forumID
+    // Open the favorites list: awful://favorites
+    // Open a specific forum from the favorites: awful://favorites/:forumID
+    if ([section isEqualToString:@"forums"] || [section isEqualToString:@"favorites"]) {
         AwfulForum *forum;
         // First path component is the /
         if ([[url pathComponents] count] > 1) {
-            NSString *forumID = [url pathComponents][1];
-            forum = [AwfulForum firstMatchingPredicate:@"forumID == %@", forumID];
-            if (!forum) return NO;
+            forum = [AwfulForum firstMatchingPredicate:@"forumID = %@", [url pathComponents][1]];
         }
         UINavigationController *nav = self.tabBarController.viewControllers[0];
-        if (!forum) {
-            [nav popToRootViewControllerAnimated:YES];
-            self.tabBarController.selectedViewController = nav;
-            [self.splitViewController showMasterView];
-            return YES;
-        }
-        if (self.tabBarController.selectedIndex < 2) {
-            UINavigationController *selected;
-            selected = (UINavigationController *)self.tabBarController.selectedViewController;
-            NSMutableArray *maybes = [@[ selected.topViewController ] mutableCopy];
-            if ([selected.viewControllers count] > 1) {
-                [maybes insertObject:selected.viewControllers[[selected.viewControllers count] - 2]
-                             atIndex:0];
-            }
-            for (AwfulThreadListController *viewController in maybes) {
-                if (![viewController isKindOfClass:[AwfulThreadListController class]]) continue;
-                if ([viewController.forum isEqual:forum]) {
-                    [selected popToViewController:viewController animated:YES];
-                    [self.splitViewController showMasterView];
-                    return YES;
-                }
+        if ([section isEqualToString:@"favorites"]) {
+            if (!forum || forum.isFavoriteValue) {
+                nav = self.tabBarController.viewControllers[1];
             }
         }
+        [self jumpToForum:forum inNavigationController:nav];
         self.tabBarController.selectedViewController = nav;
-        AwfulForumsListController *list = nav.viewControllers[0];
-        [nav popToViewController:list animated:NO];
-        [list showForum:forum];
         [self.splitViewController showMasterView];
     }
+    
     return YES;
+}
+
+- (void)jumpToForum:(AwfulForum *)forum inNavigationController:(UINavigationController *)nav
+{
+    if (!forum) {
+        [nav popToRootViewControllerAnimated:YES];
+        return;
+    }
+    NSMutableArray *maybes = [@[ nav.topViewController ] mutableCopy];
+    if ([nav.viewControllers count] > 1) {
+        [maybes insertObject:nav.viewControllers[[nav.viewControllers count] - 2] atIndex:0];
+    }
+    for (AwfulThreadListController *viewController in maybes) {
+        if (![viewController isKindOfClass:[AwfulThreadListController class]]) continue;
+        if ([viewController.forum isEqual:forum]) {
+            [nav popToViewController:viewController animated:YES];
+            return;
+        }
+    }
+    [nav popToRootViewControllerAnimated:NO];
+    AwfulThreadListController *threadList = [AwfulThreadListController new];
+    threadList.forum = forum;
+    [nav pushViewController:threadList animated:YES];
 }
 
 #pragma mark - UITabBarControllerDelegate

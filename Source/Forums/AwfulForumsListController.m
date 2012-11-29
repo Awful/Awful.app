@@ -63,13 +63,6 @@
                                                           cacheName:nil];
 }
 
-- (void)showForum:(AwfulForum *)forum
-{
-    AwfulThreadListController *threadList = [AwfulThreadListController new];
-    threadList.forum = forum;
-    [self.navigationController pushViewController:threadList animated:YES];
-}
-
 - (NSDate *)lastRefresh
 {
     return [[NSUserDefaults standardUserDefaults] objectForKey:kLastRefreshDate];
@@ -285,7 +278,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    [self showForum:forum];
+    AwfulThreadListController *threadList = [AwfulThreadListController new];
+    threadList.forum = forum;
+    [self.navigationController pushViewController:threadList animated:YES];
 }
 
 @end
