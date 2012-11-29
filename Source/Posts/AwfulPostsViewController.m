@@ -309,8 +309,10 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
             [AwfulAlertView showWithTitle:@"Could Not Load Page" error:error buttonTitle:@"OK"];
             return;
         }
-        self.thread = [[posts lastObject] thread];
-        self.currentPage = [[posts lastObject] threadPageValue];
+        if ([posts count] > 0) {
+            self.thread = [[posts lastObject] thread];
+            self.currentPage = [[posts lastObject] threadPageValue];
+        }
         self.advertisementHTML = advertisementHTML;
         if (page == AwfulPageNextUnread) {
             NSUInteger firstUnread = [posts indexOfObjectPassingTest:^BOOL(AwfulPost *post,
