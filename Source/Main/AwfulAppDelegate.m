@@ -24,6 +24,7 @@
 #import "AFNetworking.h"
 #import "NSFileManager+UserDirectories.h"
 #import "NSManagedObject+Awful.h"
+#import "SVProgressHUD.h"
 #import "UIViewController+NavigationEnclosure.h"
 
 @interface AwfulAppDelegate () <UITabBarControllerDelegate, AwfulLoginControllerDelegate>
@@ -291,7 +292,59 @@ static AwfulAppDelegate *_instance;
         [nav pushViewController:postsView animated:YES];
     }
     
+    // Open a post: awful://posts/:postID
+    if ([section isEqualToString:@"posts"]) {
+        if ([[url pathComponents] count] < 2) return NO;
+        NSString *postID = [url pathComponents][1];
+        // Is the post in a thread that's already open?
+        for (UIViewController *viewController in self.tabBarController.viewControllers) {
+            UINavigationController *nav = (UINavigationController *)viewController;
+            AwfulPostsViewController *top = (AwfulPostsViewController *)nav.topViewController;
+            if (![top isKindOfClass:[AwfulPostsViewController class]]) continue;
+            if ([[top.posts valueForKey:@"postID"] containsObject:postID]) {
+                self.tabBarController.selectedViewController = nav;
+                [top jumpToPostWithID:postID];
+                return YES;
+            }
+        }
+        // Have we seen the post before?
+        AwfulPost *post = [AwfulPost firstMatchingPredicate:@"postID = %@", postID];
+        if (post) {
+            [self pushPostsViewForPostWithID:post.postID
+                                      onPage:post.threadPageValue
+                              ofThreadWithID:post.thread.threadID];
+            return YES;
+        }
+        // Gotta go find it then.
+        [SVProgressHUD showWithStatus:@"Locating Post"];
+        [[AwfulHTTPClient client] locatePostWithID:postID andThen:^(NSError *error,
+                                                                    NSString *threadID,
+                                                                    NSInteger page)
+         {
+             if (error) {
+                 [SVProgressHUD showErrorWithStatus:@"Post Not Found"];
+                 NSLog(@"couldn't find post for tapped link %@: %@", url, error);
+                 return;
+             }
+             [SVProgressHUD dismiss];
+             [self pushPostsViewForPostWithID:postID onPage:page ofThreadWithID:threadID];
+         }];
+    }
+    
     return YES;
+}
+
+- (void)pushPostsViewForPostWithID:(NSString *)postID
+                            onPage:(NSInteger)page
+                    ofThreadWithID:(NSString *)threadID
+{
+    AwfulPostsViewController *postsView = [AwfulPostsViewController new];
+    postsView.threadID = threadID;
+    [postsView loadPage:page];
+    [postsView jumpToPostWithID:postID];
+    UINavigationController *nav;
+    nav = (UINavigationController *)self.tabBarController.selectedViewController;
+    [nav pushViewController:postsView animated:YES];
 }
 
 - (void)jumpToForum:(AwfulForum *)forum inNavigationController:(UINavigationController *)nav

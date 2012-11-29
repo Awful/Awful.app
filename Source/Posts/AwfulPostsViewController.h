@@ -12,14 +12,16 @@
 
 @interface AwfulPostsViewController : UIViewController
 
-@property (nonatomic, strong) AwfulThread *thread;
+@property (strong, nonatomic) AwfulThread *thread;
 
-@property (nonatomic, copy) NSString *threadID;
+@property (copy, nonatomic) NSString *threadID;
 
-@property (nonatomic, assign) NSInteger currentPage;
+@property (assign, nonatomic) NSInteger currentPage;
 
 - (void)loadPage:(NSInteger)page;
 
 - (void)jumpToPostWithID:(NSString *)postID;
+
+@property (readonly, nonatomic) NSArray *posts;
 
 @end
