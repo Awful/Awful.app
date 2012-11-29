@@ -10,6 +10,8 @@
 
 @interface AwfulThreadCell ()
 
+@property (weak, nonatomic) UIImageView *secondaryTagImageView;
+
 @property (weak, nonatomic) UIImageView *stickyImageView;
 
 @property (readonly, weak, nonatomic) UIImageView *ratingImageView;
@@ -30,6 +32,11 @@
         self.imageView.layer.borderColor = [UIColor blackColor].CGColor;
         self.imageView.layer.borderWidth = 1;
         self.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        
+        UIImageView *secondaryTagImageView = [UIImageView new];
+        secondaryTagImageView.contentMode = UIViewContentModeScaleAspectFit;
+        [self.contentView addSubview:secondaryTagImageView];
+        _secondaryTagImageView = secondaryTagImageView;
         
         UIImageView *stickyImageView = [[UIImageView alloc] initWithImage:
                                         [UIImage imageNamed:@"sticky.png"]];
@@ -114,6 +121,11 @@
             .origin.y = (cellSize.height - tagWidth - effectiveRatingHeight) / 2,
             .size = CGSizeMake(tagWidth, tagWidth)
         };
+        CGRect secondaryTagFrame = self.imageView.frame;
+        secondaryTagFrame.size.width /= 2;
+        secondaryTagFrame.size.height /= 2;
+        self.secondaryTagImageView.frame = secondaryTagFrame;
+        [self.contentView insertSubview:self.secondaryTagImageView aboveSubview:self.imageView];
         if (!self.stickyImageView.hidden) {
             CGRect stickyImageFrame = self.stickyImageView.frame;
             stickyImageFrame.origin.x = CGRectGetMaxX(self.imageView.frame) -
@@ -121,6 +133,7 @@
             stickyImageFrame.origin.y = CGRectGetMaxY(self.imageView.frame) -
             stickyImageFrame.size.height + 1;
             self.stickyImageView.frame = stickyImageFrame;
+            [self.contentView insertSubview:self.stickyImageView aboveSubview:self.imageView];
         }
         if (!self.ratingImageView.hidden) {
             ratingImageFrame.origin.x = CGRectGetMidX(self.imageView.frame) -

@@ -269,6 +269,12 @@ typedef enum {
         if (!cell.imageView.image) {
             [self updateThreadTag:thread.firstIconName forCellAtIndexPath:indexPath];
         }
+        cell.secondaryTagImageView.hidden = NO;
+        cell.secondaryTagImageView.image = [[AwfulThreadTags sharedThreadTags]
+                                            threadTagNamed:thread.secondIconName];
+        if (thread.secondIconName && !cell.secondaryTagImageView.image) {
+            [self updateThreadTag:thread.secondIconName forCellAtIndexPath:indexPath];
+        }
         cell.sticky = thread.isStickyValue;
         // Hardcode Film Dump to never show ratings; its thread tags are the ratings.
         if ([thread.forum.forumID isEqualToString:@"133"]) {
@@ -277,7 +283,10 @@ typedef enum {
             cell.rating = [thread.threadRating floatValue];
         }
     } else {
+        cell.imageView.image = nil;
         cell.imageView.hidden = YES;
+        cell.secondaryTagImageView.image = nil;
+        cell.secondaryTagImageView.hidden = YES;
         cell.sticky = NO;
         cell.closed = thread.isClosedValue;
         cell.rating = 0;
@@ -312,7 +321,10 @@ typedef enum {
 
 - (void)updateThreadTag:(NSString *)threadTagName forCellAtIndexPath:(NSIndexPath *)indexPath
 {
-    self.cellsWithoutThreadTags[indexPath] = threadTagName;
+    if (!self.cellsWithoutThreadTags[indexPath]) {
+        self.cellsWithoutThreadTags[indexPath] = [NSMutableArray new];
+    }
+    [self.cellsWithoutThreadTags[indexPath] addObject:threadTagName];
     if (self.listeningForNewThreadTags) return;
     self.listeningForNewThreadTags = YES;
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -325,15 +337,28 @@ typedef enum {
 {
     NSMutableArray *updated = [NSMutableArray new];
     for (NSIndexPath *indexPath in self.cellsWithoutThreadTags) {
-        NSString *tag = self.cellsWithoutThreadTags[indexPath];
-        UIImage *image = [[AwfulThreadTags sharedThreadTags] threadTagNamed:tag];
-        if (!image) continue;
-        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-        cell.imageView.image = image;
-        [updated addObject:indexPath];
+        NSMutableArray *listOfTags = self.cellsWithoutThreadTags[indexPath];
+        for (NSString *tag in [listOfTags copy]) {
+            UIImage *image = [[AwfulThreadTags sharedThreadTags] threadTagNamed:tag];
+            if (!image) continue;
+            UITableViewCell *genericCell = [self.tableView cellForRowAtIndexPath:indexPath];
+            AwfulThreadCell *cell = (AwfulThreadCell *)genericCell;
+            AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
+            if ([tag isEqualToString:thread.firstIconName]) {
+                cell.imageView.image = image;
+            } else if ([tag isEqualToString:thread.secondIconName]) {
+                cell.secondaryTagImageView.image = image;
+            }
+            [updated addObject:indexPath];
+            [listOfTags removeObject:tag];
+        }
     }
     [self.tableView reloadRowsAtIndexPaths:updated withRowAnimation:UITableViewRowAnimationNone];
-    [self.cellsWithoutThreadTags removeObjectsForKeys:updated];
+    for (id key in updated) {
+        if ([self.cellsWithoutThreadTags[key] count] == 0) {
+            [self.cellsWithoutThreadTags removeObjectForKey:key];
+        }
+    }
     if ([self.cellsWithoutThreadTags count] == 0) {
         self.listeningForNewThreadTags = NO;
         [[NSNotificationCenter defaultCenter] removeObserver:self

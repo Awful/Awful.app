@@ -20,13 +20,15 @@
 
 - (NSString *)firstIconName
 {
-    NSString *basename = [[self.threadIconImageURL lastPathComponent] stringByDeletingPathExtension];
+    NSString *basename = [[self.threadIconImageURL lastPathComponent]
+                          stringByDeletingPathExtension];
     return [basename stringByAppendingPathExtension:@"png"];
 }
 
 - (NSString *)secondIconName
 {
-    NSString *basename = [[self.threadIconImageURL2 lastPathComponent] stringByDeletingPathExtension];
+    NSString *basename = [[self.threadIconImageURL2 lastPathComponent]
+                          stringByDeletingPathExtension];
     return [basename stringByAppendingPathExtension:@"png"];
 }
 
@@ -56,7 +58,8 @@
         }
         AwfulThread *thread = existingThreads[info.threadID];
         if (!thread) {
-            thread = [AwfulThread insertInManagedObjectContext:[AwfulDataStack sharedDataStack].context];
+            thread = [AwfulThread insertInManagedObjectContext:
+                      [AwfulDataStack sharedDataStack].context];
         }
         [info applyToObject:thread];
         [threads addObject:thread];

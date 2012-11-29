@@ -9,7 +9,7 @@ AICA-TAG-classic.png
 AICA-TAG-newride.png
 AICA-TAG-race.png
 AICA-TAG-trip.png
-ama-secondary.png
+ama.png
 ap-1999.png
 art.png
 asktell-jobs.png
@@ -234,18 +234,14 @@ help.png
 humor.png
 icon-30-attnmod.png
 icon-31-hotthread.png
-icon-37-selling-secondary.png
 icon-37-selling.png
-icon-38-buying-secondary.png
 icon-38-buying.png
 icon-41-game-xbox.png
 icon-42-game-ps2.png
 icon-43-game-gamecube.png
 icon-44-game-gba.png
 icon-45-game-pc.png
-icon-46-trading-secondary.png
 icon-46-trading.png
-icon-52-trading-secondary.png
 icon-52-trading.png
 icon-59-lobster.png
 icon-60-pig.png
@@ -467,7 +463,7 @@ tg-poker.png
 tg-recruiting.png
 tg-story.png
 tg-wargames.png
-tma-secondary.png
+tma.png
 trp-laliga.png
 tv.png
 tviv-cable.png
