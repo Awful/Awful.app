@@ -90,8 +90,8 @@
 
 - (UIColor *)forumListHeaderBackgroundColor
 {
-    LIGHT([UIColor colorWithPatternImage: [UIImage imageNamed: @"forum-header-light.png"]]);
-    DARK([UIColor colorWithPatternImage: [UIImage imageNamed: @"forum-header-dark.png"]]);
+    LIGHT([UIColor colorWithPatternImage:[UIImage imageNamed:@"forum-header-light.png"]]);
+    DARK([UIColor colorWithPatternImage:[UIImage imageNamed:@"forum-header-dark.png"]]);
 }
 
 - (UIColor *)forumListSeparatorColor
