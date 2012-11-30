@@ -97,7 +97,7 @@
 - (UIColor *)forumListSeparatorColor
 {
     LIGHT([UIColor colorWithWhite:0.95 alpha:1]);
-    DARK([UIColor blackColor]);
+    DARK([UIColor colorWithWhite:0.19 alpha:1]);
 }
 
 - (UIColor *)forumListHeaderTextColor
@@ -115,13 +115,13 @@
 - (UIColor *)forumCellBackgroundColor
 {
     LIGHT([UIColor whiteColor]);
-    DARK([UIColor colorWithWhite:0.15 alpha:1]);
+    DARK([UIColor colorWithWhite:0.07 alpha:1]);
 }
 
 - (UIColor *)forumCellSubforumBackgroundColor
 {
     LIGHT([UIColor colorWithWhite:0.95 alpha:1]);
-    DARK([UIColor colorWithWhite:0.10 alpha:1]);
+    DARK([UIColor colorWithWhite:0.12 alpha:1]);
 }
 
 - (UIImage *)forumCellExpandButtonNormalImage
