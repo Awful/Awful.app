@@ -317,6 +317,7 @@ typedef enum {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     [self setBackgroundColorForCell:cell forRowAtIndexPath:indexPath];
+    cell.selectionStyle = [AwfulTheme currentTheme].cellSelectionStyle;
 }
 
 - (void)updateThreadTag:(NSString *)threadTagName forCellAtIndexPath:(NSIndexPath *)indexPath
