@@ -884,7 +884,14 @@ function showPostActions(e) {
 }
 
 function previewImage(e) {
-  Awful.invoke("previewImageAtURLString:", $(e.target).attr('src'))
+  // Handle URLs with spaces and such.
+  var src = $(e.target).attr('src')
+  var skip = src.indexOf('://') != -1 ? 1 : 0
+  var url = $.map(src.split('/'), function(part, i){
+    // URL might already be encoded, so decode it first.
+    return i < skip ? part : encodeURIComponent(decodeURIComponent(part))
+  }).join('/')
+  Awful.invoke("previewImageAtURLString:", url)
 }
 
 function showLinkedImage(e) {
