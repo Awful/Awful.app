@@ -27,20 +27,7 @@
 		</dict>
 		<dict>
 			<key>Explanation</key>
-			<string>Report bugs, suggest new features, or talk about Awful.</string>
-			<key>Settings</key>
-			<array>
-				<dict>
-					<key>Title</key>
-					<string>Go to Awful&apos;s Thread</string>
-					<key>Action</key>
-					<string>GoToAwfulThread</string>
-					<key>ThreadID</key>
-					<string>3510131</string>
-				</dict>
-			</array>
-		</dict>
-		<dict>
+			<string>Report bugs, suggest features, and spread Awful love in the thread.</string>
 			<key>Settings</key>
 			<array>
 				<dict>
@@ -52,6 +39,14 @@
 					<false/>
 					<key>Key</key>
 					<string>dark_theme</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Go to Awful&apos;s Thread</string>
+					<key>Action</key>
+					<string>GoToAwfulThread</string>
+					<key>ThreadID</key>
+					<string>3510131</string>
 				</dict>
 			</array>
 		</dict>
