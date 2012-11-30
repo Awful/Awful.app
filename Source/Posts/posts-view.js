@@ -684,8 +684,22 @@ Awful.invoke = function(selector, varargs){
   window.location.href = stem + encodeURIComponent(JSON.stringify(args))
 }
 
+Awful.invokeOnView = function(selector, varargs){
+  var stem = "x-objc-postsview:///" + selector + "/"
+  var args = Array.prototype.slice.call(arguments, 1)
+  window.location.href = stem + encodeURIComponent(JSON.stringify(args))
+}
+
 Awful.stylesheetURL = function(url){
-  $('link').attr('href', url)
+  if ($('link').length) {
+    $('link').attr('href', url)
+    return
+  }
+  $('head').append($('<link>', { rel: 'stylesheet', href: url }))
+  var img = $('<img>', { src: url })[0]
+  img.onerror = function(){
+    Awful.invokeOnView('firstStylesheetDidLoad')
+  }
 }
 
 Awful.dark = function(dark){

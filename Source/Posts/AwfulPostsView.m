@@ -10,7 +10,7 @@
 
 @interface AwfulPostsView () <UIWebViewDelegate>
 
-@property (weak, nonatomic) UIWebView *webView;
+@property (nonatomic) UIWebView *webView;
 
 @property (nonatomic) BOOL hasLoaded;
 
@@ -38,6 +38,8 @@
     webView.delegate = self;
     webView.dataDetectorTypes = UIDataDetectorTypeNone;
     webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
+    webView.backgroundColor = [UIColor clearColor];
+    webView.opaque = NO;
     RemoveShadowFromAboveAndBelowWebView(webView);
     NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
     NSURL *postsViewURL = [thisBundle URLForResource:@"posts-view" withExtension:@"html"];
@@ -50,7 +52,6 @@
         return nil;
     }
     [webView loadHTMLString:html baseURL:[thisBundle resourceURL]];
-    [self addSubview:webView];
     _webView = webView;
     return self;
 }
@@ -291,6 +292,12 @@ static NSString * JSONize(id obj)
     [self evalJavaScript:@"Awful.endMessage(%@[0])", json];
 }
 
+- (void)firstStylesheetDidLoad
+{
+    self.webView.frame = (CGRect){ .size = self.bounds.size };
+    [self addSubview:self.webView];
+}
+
 #pragma mark - UIWebViewDelegate
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
@@ -320,6 +327,8 @@ static NSString * JSONize(id obj)
     if ([[[request URL] scheme] isEqualToString:@"x-objc"]) {
         [self bridgeJavaScriptToObjectiveCWithURL:[request URL]];
         return NO;
+    } else if ([[[request URL] scheme] isEqualToString:@"x-objc-postsview"]) {
+        [self bridgeJavaScriptToObjectiveCOnSelfWithURL:[request URL]];
     } else if (navigationType == UIWebViewNavigationTypeLinkClicked) {
         if ([self.delegate respondsToSelector:@selector(postsView:didTapLinkToURL:)]) {
             [self.delegate postsView:self didTapLinkToURL:[request URL]];
@@ -331,12 +340,21 @@ static NSString * JSONize(id obj)
 
 - (void)bridgeJavaScriptToObjectiveCWithURL:(NSURL *)url
 {
-    if (![self.delegate respondsToSelector:@selector(methodSignatureForSelector:)]) return;
+    InvokeBridgedMethodWithURLAndTarget(url, self.delegate);
+}
+
+- (void)bridgeJavaScriptToObjectiveCOnSelfWithURL:(NSURL *)url
+{
+    InvokeBridgedMethodWithURLAndTarget(url, self);
+}
+
+static void InvokeBridgedMethodWithURLAndTarget(NSURL *url, id target)
+{
     NSArray *components = [url pathComponents];
     if ([components count] < 2) return;
     
     SEL selector = NSSelectorFromString(components[1]);
-    if (![self.delegate respondsToSelector:selector]) return;
+    if (![target respondsToSelector:selector]) return;
     
     NSArray *arguments;
     if ([components count] >= 3) {
@@ -357,7 +375,7 @@ static NSString * JSONize(id obj)
         return;
     }
     
-    NSMethodSignature *signature = [self.delegate methodSignatureForSelector:selector];
+    NSMethodSignature *signature = [target methodSignatureForSelector:selector];
     if (!signature) return;
     NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
     [invocation setSelector:selector];
@@ -365,7 +383,7 @@ static NSString * JSONize(id obj)
         id arg = arguments[i];
         [invocation setArgument:&arg atIndex:i + 2];
     }
-    [invocation invokeWithTarget:self.delegate];
+    [invocation invokeWithTarget:target];
 }
 
 @end
