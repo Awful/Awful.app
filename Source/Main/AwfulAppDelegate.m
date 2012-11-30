@@ -275,7 +275,11 @@ static AwfulAppDelegate *_instance;
             }
         }
         // Maybe the thread is already open.
-        for (UIViewController *viewController in self.tabBarController.viewControllers) {
+        NSArray *maybes = self.tabBarController.viewControllers;
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            maybes = @[ self.splitViewController.viewControllers[1] ];
+        }
+        for (UIViewController *viewController in maybes) {
             UINavigationController *nav = (UINavigationController *)viewController;
             AwfulPostsViewController *top = (AwfulPostsViewController *)nav.topViewController;
             if (![top isKindOfClass:[AwfulPostsViewController class]]) continue;
@@ -287,11 +291,19 @@ static AwfulAppDelegate *_instance;
             }
         }
         if (page == 0) page = 1;
-        UINavigationController *nav;
-        nav = (UINavigationController *)self.tabBarController.selectedViewController;
         AwfulPostsViewController *postsView = [AwfulPostsViewController new];
         postsView.threadID = threadID;
         [postsView loadPage:page];
+        UINavigationController *nav;
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            nav = self.splitViewController.viewControllers[1];
+            if (![nav.topViewController isKindOfClass:[AwfulPostsViewController class]]) {
+                [nav setViewControllers:@[ postsView ] animated:YES];
+                return YES;
+            }
+        } else {
+            nav = (UINavigationController *)self.tabBarController.selectedViewController;
+        }
         [nav pushViewController:postsView animated:YES];
     }
     
@@ -300,7 +312,11 @@ static AwfulAppDelegate *_instance;
         if ([[url pathComponents] count] < 2) return NO;
         NSString *postID = [url pathComponents][1];
         // Is the post in a thread that's already open?
-        for (UIViewController *viewController in self.tabBarController.viewControllers) {
+        NSArray *maybes = self.tabBarController.viewControllers;
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            maybes = @[ self.splitViewController.viewControllers[1] ];
+        }
+        for (UIViewController *viewController in maybes) {
             UINavigationController *nav = (UINavigationController *)viewController;
             AwfulPostsViewController *top = (AwfulPostsViewController *)nav.topViewController;
             if (![top isKindOfClass:[AwfulPostsViewController class]]) continue;
@@ -346,7 +362,15 @@ static AwfulAppDelegate *_instance;
     [postsView loadPage:page];
     [postsView jumpToPostWithID:postID];
     UINavigationController *nav;
-    nav = (UINavigationController *)self.tabBarController.selectedViewController;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        nav = self.splitViewController.viewControllers[1];
+        if (![nav.topViewController isKindOfClass:[AwfulPostsViewController class]]) {
+            [nav setViewControllers:@[ postsView ] animated:YES];
+            return;
+        }
+    } else {
+        nav = (UINavigationController *)self.tabBarController.selectedViewController;
+    }
     [nav pushViewController:postsView animated:YES];
 }
 
