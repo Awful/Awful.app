@@ -241,7 +241,8 @@
 
 - (UIColor *)postsViewBackgroundColor
 {
-    DEFAULT([UIColor colorWithHue:0.561 saturation:0.107 brightness:0.404 alpha:1]);
+    LIGHT([UIColor colorWithWhite:0.82 alpha:1]);
+    DARK([UIColor colorWithWhite:0.075 alpha:1]);
 }
 
 - (UIColor *)postsViewTopBarBackgroundColor
