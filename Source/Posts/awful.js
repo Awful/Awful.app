@@ -1,5 +1,6 @@
 ;(function(){
 var Awful = {}
+var spinner
 
 Awful.posts = function(posts){
   $('#posts').empty()
@@ -46,13 +47,23 @@ Awful.stylesheetURL = function(url){
   $('head').append($('<link>', { rel: 'stylesheet', href: url }))
   var img = $('<img>', { src: url })[0]
   img.onerror = function(){
-    Awful.invokeOnView('firstStylesheetDidLoad')
+    Awful.firstStylesheetDidLoad()
   }
+}
+
+Awful.firstStylesheetDidLoad = function(){
+  addSpinnerIfNecessary()
+  Awful.invokeOnView('firstStylesheetDidLoad')
 }
 
 Awful.dark = function(dark){
   if (dark) $('body').addClass('dark')
   else $('body').removeClass('dark')
+  if (spinner) {
+    spinner.stop()
+    spinner = null
+    addSpinnerIfNecessary()
+  }
 }
 
 Awful.ad = function(ad){
@@ -62,10 +73,22 @@ Awful.ad = function(ad){
 Awful.loading = function(loading){
   if (nullOrUndefined(loading)) {
     $('#loading').hide().siblings('div').show()
+    if (spinner) {
+      spinner.stop()
+      spinner = null
+    }
   } else {
     $('#loading').show().siblings('div').hide()
+    addSpinnerIfNecessary()
     $('#loading p').text(loading)
   }
+}
+
+function addSpinnerIfNecessary() {
+  var $bar = $('#loading .progress-bar')
+  if ($bar.css('display') !== 'none') return
+  spinner = new Spinner({ color: $bar.css('color') }).spin()
+  $bar.parent().prepend(spinner.el)
 }
 
 Awful.endMessage = function(end){

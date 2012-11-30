@@ -1,6 +1,6 @@
 require 'open3'
 
-FILES = "- jquery.mustache.js awful.js"
+FILES = "- jquery.mustache.js spin.min.js awful.js"
 
 task :default => [ :assemble ]
 
