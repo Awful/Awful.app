@@ -428,7 +428,7 @@ static NSString * DeEntitify(NSString *withEntities)
     TFHppleElement *author = [doc searchForSingle:@"//td[" HAS_CLASS(author) "]/a"];
     self.authorName = [author content];
     
-    TFHppleElement *seen = [doc searchForSingle:@"//tr[" HAS_CLASS(seen) "]"];
+    TFHppleElement *seen = [doc searchForSingle:@"//div[" HAS_CLASS(lastseen) "]"];
     self.seen = !!seen;
     
     TFHppleElement *closed = [doc searchForSingle:@"//tr[" HAS_CLASS(closed) "]"];
