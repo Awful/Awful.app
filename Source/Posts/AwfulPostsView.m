@@ -353,7 +353,8 @@ static NSString * JSONize(id obj)
 
 static void InvokeBridgedMethodWithURLAndTarget(NSURL *url, id target, NSArray *whitelist)
 {
-    NSArray *components = [url pathComponents];
+    // Can't use [url pathComponents] because it can ignore multiple consecutive slashes.
+    NSArray *components = [[url path] componentsSeparatedByString:@"/"];
     if ([components count] < 2) return;
     
     if (![whitelist containsObject:components[1]]) return;
