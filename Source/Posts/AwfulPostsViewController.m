@@ -944,8 +944,13 @@ static char KVOContext;
 
 - (void)previewImageAtURLString:(NSString *)urlString
 {
+    NSURL *url = [NSURL URLWithString:urlString];
+    if (!url) {
+        NSLog(@"could not parse URL for image preview: %@", urlString);
+        return;
+    }
     AwfulImagePreviewViewController *preview = [[AwfulImagePreviewViewController alloc]
-                                                initWithURL:[NSURL URLWithString:urlString]];
+                                                initWithURL:url];
     preview.title = self.title;
     UINavigationController *nav = [preview enclosingNavigationController];
     nav.navigationBar.translucent = YES;
