@@ -6,6 +6,23 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		1CE2D9A016688C640024AC1C /* Build Resources */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 1CE2D9A116688C640024AC1C /* Build configuration list for PBXAggregateTarget "Build Resources" */;
+			buildPhases = (
+				1CE2D9A616688C810024AC1C /* Compile third-party licenses */,
+				1CE2D9A716688C950024AC1C /* Compile AwfulPostsView JavaScript */,
+				1CE2D9A816688CC20024AC1C /* mogenerator */,
+				1CE2D9A916688CDE0024AC1C /* Update image tag list */,
+			);
+			dependencies = (
+			);
+			name = "Build Resources";
+			productName = "Build Resources";
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		10D34FA9128F41160026C7C2 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10D34FA8128F41160026C7C2 /* CFNetwork.framework */; };
 		10D34FAF128F413C0026C7C2 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10D34FAE128F413C0026C7C2 /* MobileCoreServices.framework */; };
@@ -727,6 +744,16 @@
 		8CF95CA81653276000060F19 /* gip-marines.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF95C841653276000060F19 /* gip-marines.png */; };
 		8CF95CA91653276000060F19 /* gip-airforce.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF95C851653276000060F19 /* gip-airforce.png */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		1CE2D9A416688C700024AC1C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1CE2D9A016688C640024AC1C;
+			remoteInfo = "Build Resources";
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		107CF9A211FF7776007C16F4 /* libxml2.2.7.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.2.7.3.dylib; path = usr/lib/libxml2.2.7.3.dylib; sourceTree = SDKROOT; };
@@ -2609,17 +2636,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Awful" */;
 			buildPhases = (
-				1CFBED0A1631C9CA008AF641 /* Compile third-party licenses */,
-				1C23A0B5163F482B006C7F39 /* Compile AwfulPostsView JavaScript */,
 				1D60588D0D05DD3D006BFB54 /* Resources */,
-				1C5D59EE1563666B00D00DBB /* mogenerator */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
 				1D60588F0D05DD3D006BFB54 /* Frameworks */,
-				1CAED9D016373DFE001F5F04 /* Update image tag list */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				1CE2D9A516688C700024AC1C /* PBXTargetDependency */,
 			);
 			name = Awful;
 			productName = Awful;
@@ -2651,6 +2675,7 @@
 			projectRoot = "";
 			targets = (
 				1D6058900D05DD3D006BFB54 /* Awful */,
+				1CE2D9A016688C640024AC1C /* Build Resources */,
 				1CBDB5BB16259C6C0004BDF4 /* ParsingTests */,
 			);
 		};
@@ -3299,50 +3324,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		1C23A0B5163F482B006C7F39 /* Compile AwfulPostsView JavaScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Compile AwfulPostsView JavaScript";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd Source/Posts\nrake\n";
-			showEnvVarsInLog = 0;
-		};
-		1C5D59EE1563666B00D00DBB /* mogenerator */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = mogenerator;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "PATH=/usr/local/bin:$PATH\ncommand -v mogenerator >/dev/null 2>&1 || { echo >&2 \"Please install mogenerator! brew install mogenerator\"; exit 0; }\nMODELS=\"$PROJECT_DIR/Source/Models\"\nmogenerator --model \"$MODELS/Model.xcdatamodeld\" --output-dir \"$MODELS\" --machine-dir \"$MODELS/Generated\" --template-var arc=true\n";
-		};
-		1CAED9D016373DFE001F5F04 /* Update image tag list */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Update image tag list";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "rake tags\n";
-			showEnvVarsInLog = 0;
-		};
 		1CBDB5BA16259C6C0004BDF4 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -3356,7 +3337,7 @@
 			shellPath = /bin/sh;
 			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
 		};
-		1CFBED0A1631C9CA008AF641 /* Compile third-party licenses */ = {
+		1CE2D9A616688C810024AC1C /* Compile third-party licenses */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -3369,7 +3350,48 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "rake licenses\n";
-			showEnvVarsInLog = 0;
+		};
+		1CE2D9A716688C950024AC1C /* Compile AwfulPostsView JavaScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Compile AwfulPostsView JavaScript";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd Source/Posts\nrake\n";
+		};
+		1CE2D9A816688CC20024AC1C /* mogenerator */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = mogenerator;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "PATH=/usr/local/bin:$PATH\ncommand -v mogenerator >/dev/null 2>&1 || { echo >&2 \"Please install mogenerator! brew install mogenerator\"; exit 0; }\nMODELS=\"$PROJECT_DIR/Source/Models\"\nmogenerator --model \"$MODELS/Model.xcdatamodeld\" --output-dir \"$MODELS\" --machine-dir \"$MODELS/Generated\" --template-var arc=true\n";
+		};
+		1CE2D9A916688CDE0024AC1C /* Update image tag list */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Update image tag list";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "rake tags\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -3467,6 +3489,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		1CE2D9A516688C700024AC1C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1CE2D9A016688C640024AC1C /* Build Resources */;
+			targetProxy = 1CE2D9A416688C700024AC1C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
 		1CBDB5CC16259C6D0004BDF4 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -3524,6 +3554,20 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
+		1CE2D9A216688C640024AC1C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		1CE2D9A316688C640024AC1C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
 		};
@@ -3640,6 +3684,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
+		};
+		1CE2D9A116688C640024AC1C /* Build configuration list for PBXAggregateTarget "Build Resources" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1CE2D9A216688C640024AC1C /* Debug */,
+				1CE2D9A316688C640024AC1C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Awful" */ = {
 			isa = XCConfigurationList;
