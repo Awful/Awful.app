@@ -928,6 +928,11 @@ static char KVOContext;
     [[UIApplication sharedApplication] openURL:url];
 }
 
+- (NSArray *)whitelistedSelectorsForPostsView:(AwfulPostsView *)postsView
+{
+    return @[ @"showActionsForPostAtIndex:fromRectDictionary:", @"previewImageAtURLString:" ];
+}
+
 - (void)showActionsForPostAtIndex:(NSNumber *)index fromRectDictionary:(NSDictionary *)rectDict
 {
     NSInteger unboxed = [index integerValue] + self.hiddenPosts;

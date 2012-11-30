@@ -340,19 +340,23 @@ static NSString * JSONize(id obj)
 
 - (void)bridgeJavaScriptToObjectiveCWithURL:(NSURL *)url
 {
-    InvokeBridgedMethodWithURLAndTarget(url, self.delegate);
+    if (![self.delegate respondsToSelector:@selector(whitelistedSelectorsForPostsView:)]) return;
+    NSArray *whitelist = [self.delegate whitelistedSelectorsForPostsView:self];
+    InvokeBridgedMethodWithURLAndTarget(url, self.delegate, whitelist);
 }
 
 - (void)bridgeJavaScriptToObjectiveCOnSelfWithURL:(NSURL *)url
 {
-    InvokeBridgedMethodWithURLAndTarget(url, self);
+    NSArray *whitelist = @[ @"firstStylesheetDidLoad" ];
+    InvokeBridgedMethodWithURLAndTarget(url, self, whitelist);
 }
 
-static void InvokeBridgedMethodWithURLAndTarget(NSURL *url, id target)
+static void InvokeBridgedMethodWithURLAndTarget(NSURL *url, id target, NSArray *whitelist)
 {
     NSArray *components = [url pathComponents];
     if ([components count] < 2) return;
     
+    if (![whitelist containsObject:components[1]]) return;
     SEL selector = NSSelectorFromString(components[1]);
     if (![target respondsToSelector:selector]) return;
     

@@ -75,6 +75,12 @@
 // In addition to the methods listed in this protocol, the delegate can have arbitrary methods
 // called from JavaScript running in the posts view. Parameters to methods called this way will be
 // Foundation objects allowed in JSON.
+//
+// Only the methods whose selectors are in the whitelist will be called. If this method is not
+// implemented, nothing is called.
+- (NSArray *)whitelistedSelectorsForPostsView:(AwfulPostsView *)postsView;
+
+@required
 
 // This is part of the JavaScript to Objective-C one-way bridge. NSObject and NSProxy already
 // implement this method, so you probably don't need to do anything.
