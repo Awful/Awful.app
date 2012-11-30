@@ -231,8 +231,6 @@ typedef enum {
         
         [vcs addObject:[page enclosingNavigationController]];
         self.splitViewController.viewControllers = vcs;
-        AwfulSplitViewController *split = (AwfulSplitViewController *)self.splitViewController;
-        [split ensureLeftBarButtonItemOnDetailView];
     }
 }
 
@@ -434,7 +432,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         UINavigationController *nav = self.splitViewController.viewControllers[1];
         [nav setViewControllers:@[page] animated:YES];
         AwfulSplitViewController *split = (AwfulSplitViewController *)self.splitViewController;
-        [split ensureLeftBarButtonItemOnDetailView];
         [split.masterPopoverController dismissPopoverAnimated:YES];
         [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow
                                       animated:YES];

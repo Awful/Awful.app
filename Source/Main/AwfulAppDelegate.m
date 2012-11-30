@@ -27,7 +27,8 @@
 #import "SVProgressHUD.h"
 #import "UIViewController+NavigationEnclosure.h"
 
-@interface AwfulAppDelegate () <UITabBarControllerDelegate, AwfulLoginControllerDelegate>
+@interface AwfulAppDelegate () <UITabBarControllerDelegate, UINavigationControllerDelegate,
+                                AwfulLoginControllerDelegate>
 
 @property (weak, nonatomic) AwfulSplitViewController *splitViewController;
 
@@ -155,7 +156,9 @@ static AwfulAppDelegate *_instance;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         AwfulSplitViewController *splitController = [AwfulSplitViewController new];
         AwfulStartViewController *start = [AwfulStartViewController new];
-        splitController.viewControllers = @[ tabBar, [start enclosingNavigationController] ];
+        UINavigationController *nav = [start enclosingNavigationController];
+        nav.delegate = self;
+        splitController.viewControllers = @[ tabBar, nav ];
         self.window.rootViewController = splitController;
         self.splitViewController = splitController;
     } else {
@@ -376,6 +379,15 @@ static AwfulAppDelegate *_instance;
     shouldSelectViewController:(UIViewController *)viewController
 {
     return IsLoggedIn();
+}
+
+#pragma mark - UINavigationControllerDelegate
+
+- (void)navigationController:(UINavigationController *)navigationController
+      willShowViewController:(UIViewController *)viewController
+                    animated:(BOOL)animated
+{
+    [self.splitViewController ensureLeftBarButtonItemOnDetailView];
 }
 
 #pragma mark - AwfulLoginControllerDelegate

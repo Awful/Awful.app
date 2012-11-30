@@ -259,7 +259,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
             AwfulSplitViewController *split = (AwfulSplitViewController *)self.splitViewController;
             UINavigationController *nav = split.viewControllers[1];
             [nav setViewControllers:@[ page ] animated:YES];
-            [split ensureLeftBarButtonItemOnDetailView];
             [split.masterPopoverController dismissPopoverAnimated:YES];
         } else {
             [self.navigationController pushViewController:page animated:YES];
