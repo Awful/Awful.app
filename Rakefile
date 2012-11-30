@@ -96,6 +96,7 @@ __END__
 <!doctype html>
 <meta charset=utf-8>
 <style>
+body { background-color: transparent; }
 * { font-family: Helvetica, sans-serif; }
 a { text-decoration: none; }
 ul { margin: 0; padding: 0; }

@@ -338,10 +338,10 @@
 
 #pragma mark - Licenses view
 
-- (NSString *)licensesViewBackgroundHTMLColor
+- (UIColor *)licensesViewBackgroundColor
 {
-    LIGHT(@"white");
-    DARK(@"black");
+    LIGHT([UIColor whiteColor]);
+    DARK([UIColor blackColor]);
 }
 
 - (NSString *)licensesViewTextHTMLColor

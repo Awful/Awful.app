@@ -84,7 +84,7 @@
 
 // Licenses view
 
-@property (readonly, nonatomic) NSString *licensesViewBackgroundHTMLColor;
+@property (readonly, nonatomic) UIColor *licensesViewBackgroundColor;
 @property (readonly, nonatomic) NSString *licensesViewTextHTMLColor;
 @property (readonly, nonatomic) NSString *licensesViewLinkHTMLColor;
 

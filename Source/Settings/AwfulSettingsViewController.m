@@ -19,6 +19,7 @@
 #import "AwfulSplitViewController.h"
 #import "AwfulTheme.h"
 #import "NSManagedObject+Awful.h"
+#import "UIViewController+NavigationEnclosure.h"
 
 @interface AwfulSettingsViewController ()
 
@@ -39,6 +40,11 @@
         self.tabBarItem.image = [UIImage imageNamed:@"cog.png"];
     }
     return self;
+}
+
+- (void)dismissLicenses
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - AwfulTableViewController
@@ -264,8 +270,14 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
             [self.navigationController pushViewController:page animated:YES];
         }
     } else if ([action isEqualToString:@"ShowLicenses"]) {
-        [self.navigationController pushViewController:[AwfulLicensesViewController new]
-                                             animated:YES];
+        AwfulLicensesViewController *licenses = [AwfulLicensesViewController new];
+        UIBarButtonItem *doneItem = [[UIBarButtonItem alloc]
+                                     initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                     target:self action:@selector(dismissLicenses)];
+        licenses.navigationItem.rightBarButtonItem = doneItem;
+        UINavigationController *nav = [licenses enclosingNavigationController];
+        nav.modalPresentationStyle = UIModalPresentationFormSheet;
+        [self presentViewController:nav animated:YES completion:nil];
     } else {
         id selectedValue = [[NSUserDefaults standardUserDefaults] objectForKey:setting[@"Key"]];
         AwfulSettingsChoiceViewController *choiceViewController;
