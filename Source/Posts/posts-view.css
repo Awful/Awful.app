@@ -53,7 +53,7 @@ body {
 
 /* Solid dark grey background. */
 body {
-  background-color: #929292;
+  background-color: #131313;
 }
 
 /* White text in dark mode. */
@@ -82,7 +82,7 @@ body.dark {
 
 /* Posts in dark mode have a very dark grey background. */
 .dark #posts > article {
-  background-color: #272727;
+  background-color: #313131;
 }
 
 /* Posts already seen have a light blue background. */
@@ -92,7 +92,7 @@ body.dark {
 
 /* Posts already seen in dark mode have a dark blue background. */
 .dark #posts > article.seen {
-  background-color: #101926;
+  background-color: #121e2e;
 }
 
 /* iPad posts need some more padding. */
