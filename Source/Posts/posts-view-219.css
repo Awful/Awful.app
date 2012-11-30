@@ -385,7 +385,7 @@ body > #loading .progress-bar {
 body > #loading .progress-bar > div {
   position: absolute;
   top: 0; right: 0; bottom: 0; left: 0;
-  -webkit-animation: spin 2s step-end infinite;
+  -webkit-animation: spin 0.5s step-end infinite;
 }
 
 /* The loading progress bar is a fake ascii spinner. */
