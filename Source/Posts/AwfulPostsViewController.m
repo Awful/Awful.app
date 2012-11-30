@@ -264,7 +264,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 {
     if (_hiddenPosts == hiddenPosts) return;
     _hiddenPosts = hiddenPosts;
-    self.topBar.loadReadPostsButton.enabled = hiddenPosts > 0;
+    [self updateTopBar];
 }
 
 - (void)loadPage:(NSInteger)page
@@ -278,6 +278,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         [self updateFetchedResultsController];
         [self updateLoadingMessage];
         [self updatePageBar];
+        [self updateTopBar];
         [self updateEndMessage];
         self.pullUpToRefreshControl.refreshing = NO;
         [self updatePullForNextPageLabel];
@@ -336,6 +337,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         }
         [self updateLoadingMessage];
         [self updatePageBar];
+        [self updateTopBar];
         [self updateEndMessage];
         [self updatePullForNextPageLabel];
         if (self.jumpToPostAfterLoad) {
@@ -429,6 +431,12 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         [self.pageBar.jumpToPageButton setTitle:@"" forState:UIControlStateNormal];
     }
     [self.pageBar.actionsComposeControl setEnabled:self.thread.canReply forSegmentAtIndex:1];
+}
+
+- (void)updateTopBar
+{
+    self.topBar.scrollToBottomButton.enabled = [self.posts count] > 0;
+    self.topBar.loadReadPostsButton.enabled = self.hiddenPosts > 0;
 }
 
 - (void)tappedPagesSegment:(id)sender
