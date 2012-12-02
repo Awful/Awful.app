@@ -71,7 +71,7 @@ body.dark {
   margin: 10px 5px;
   padding: 5px;
   border-radius: 5px;
-  box-shadow: 0 0 5px 5px #7b7b7b;
+  box-shadow: 0 0 5px 5px #c1c1c1;
   position: relative;
 }
 
@@ -433,12 +433,18 @@ body.dark {
   margin-top: 5px;
 }
 
-/* The "end of the thread" message is white, with a bit of a shadow. */
+/* The "end of the thread" message is white in dark mode and black in light mode, with a bit of a shadow. */
 #end {
   text-align: center;
   line-height: 3em;
-  color: white;
-  text-shadow: black 0 -1px;
+  color: black;
+  text-shadow: white 0 1px;
+}
+.dark #end {
+    text-align: center;
+    line-height: 3em;
+    color: white;
+    text-shadow: black 0 1px;
 }
 
 /* Center the ad. */
