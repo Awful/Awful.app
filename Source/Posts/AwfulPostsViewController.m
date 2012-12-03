@@ -240,9 +240,9 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 - (void)updateLoadingMessage
 {
     if (self.currentPage == AwfulPageLast) {
-        self.postsView.loadingMessage = @"Loading last page…";
+        self.postsView.loadingMessage = @"Loading last page";
     } else if (self.currentPage == AwfulPageNextUnread) {
-        self.postsView.loadingMessage = @"Loading next unread post…";
+        self.postsView.loadingMessage = @"Loading unread posts";
     } else if ([self.fetchedResultsController.fetchedObjects count] == 0) {
         self.postsView.loadingMessage = [NSString stringWithFormat:
                                          @"Loading page %d", self.currentPage];

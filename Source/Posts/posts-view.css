@@ -481,11 +481,12 @@ body > #loading .spinner {
   margin: 0 auto;
 }
 
-/* The loading text is centered, white, bold, with a little shadow. */
+/* The loading text is centered with a little shadow. */
 body > #loading p {
   text-align: center;
-  font-weight: bold;
-  color: white;
-  text-shadow: #555 -1px -1px;
   padding-top: 30px;
+  text-shadow: #ddd 0 -1px;
+}
+body.dark > #loading p {
+  text-shadow: #555 0 -1px;
 }

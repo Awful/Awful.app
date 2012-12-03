@@ -740,7 +740,7 @@ Awful.loading = function(loading){
 function addSpinnerIfNecessary() {
   var $bar = $('#loading .progress-bar')
   if ($bar.css('display') !== 'none') return
-  spinner = new Spinner({ color: $bar.css('color') }).spin()
+  spinner = new Spinner({ color: $bar.css('color'), width: 3 }).spin()
   $bar.parent().prepend(spinner.el)
 }
 
