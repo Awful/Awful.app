@@ -32,7 +32,7 @@
 // Subclasses must implement this method and must not call super.
 - (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath;
 
-// Subclasses can implement to update any colors etc. when the current theme changes.
+// Subclasses can implement to update any colors etc. when the current theme changes. Call super!
 // This also gets called on viewDidLoad.
 - (void)retheme;
 

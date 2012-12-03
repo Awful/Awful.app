@@ -16,6 +16,7 @@
 // Table views
 
 @property (readonly, nonatomic) UITableViewCellSelectionStyle cellSelectionStyle;
+@property (readonly, nonatomic) UIActivityIndicatorViewStyle activityIndicatorViewStyle;
 
 // Login view
 

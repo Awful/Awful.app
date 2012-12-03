@@ -167,7 +167,13 @@
 
 - (void)retheme
 {
-    // Subclasses may implement.
+    UIActivityIndicatorViewStyle style = [AwfulTheme currentTheme].activityIndicatorViewStyle;
+    if ([self canPullToRefresh]) {
+        self.tableView.pullToRefreshView.activityIndicatorViewStyle = style;
+    }
+    if ([self canPullForNextPage]) {
+        self.tableView.infiniteScrollingView.activityIndicatorViewStyle = style;
+    }
 }
 
 @end

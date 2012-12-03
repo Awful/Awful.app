@@ -181,6 +181,7 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
 
 - (void)retheme
 {
+    [super retheme];
     self.tableView.separatorColor = [AwfulTheme currentTheme].forumListSeparatorColor;
     self.view.backgroundColor = [AwfulTheme currentTheme].forumListBackgroundColor;
     for (AwfulForumCell *cell in [self.tableView visibleCells]) {

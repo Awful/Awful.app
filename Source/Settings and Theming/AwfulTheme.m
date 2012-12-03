@@ -68,6 +68,12 @@
     DARK(UITableViewCellSelectionStyleGray);
 }
 
+- (UIActivityIndicatorViewStyle)activityIndicatorViewStyle
+{
+    LIGHT(UIActivityIndicatorViewStyleGray);
+    DARK(UIActivityIndicatorViewStyleWhite);
+}
+
 #pragma mark - Login view
 
 - (UIColor *)loginViewBackgroundColor

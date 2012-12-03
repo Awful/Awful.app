@@ -134,6 +134,7 @@
 
 - (void)retheme
 {
+    [super retheme];
     self.tableView.separatorColor = [AwfulTheme currentTheme].favoritesSeparatorColor;
     self.view.backgroundColor = [AwfulTheme currentTheme].favoritesBackgroundColor;
     self.coverView.noFavoritesLabel.textColor = [AwfulTheme currentTheme].noFavoritesTextColor;

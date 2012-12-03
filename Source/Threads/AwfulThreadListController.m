@@ -138,6 +138,7 @@ typedef enum {
 
 - (void)retheme
 {
+    [super retheme];
     self.view.backgroundColor = [AwfulTheme currentTheme].threadListBackgroundColor;
     self.tableView.separatorColor = [AwfulTheme currentTheme].threadListSeparatorColor;
 }

@@ -80,6 +80,7 @@
 
 - (void)retheme
 {
+    [super retheme];
     self.tableView.backgroundColor = [AwfulTheme currentTheme].settingsViewBackgroundColor;
     self.tableView.separatorColor = [AwfulTheme currentTheme].settingsCellSeparatorColor;
 }
