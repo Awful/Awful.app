@@ -282,12 +282,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         [self updateEndMessage];
         self.pullUpToRefreshControl.refreshing = NO;
         [self updatePullForNextPageLabel];
-        if ([self.fetchedResultsController.fetchedObjects count] == 0) {
-            [self.postsView.scrollView setContentOffset:CGPointZero animated:NO];
-        } else {
-            UIEdgeInsets inset = self.postsView.scrollView.contentInset;
-            [self.postsView.scrollView setContentOffset:CGPointMake(0, -inset.top) animated:NO];
-        }
+        UIEdgeInsets inset = self.postsView.scrollView.contentInset;
+        [self.postsView.scrollView setContentOffset:CGPointMake(0, -inset.top) animated:NO];
         self.advertisementHTML = nil;
         self.hiddenPosts = 0;
         [self.postsView reloadData];
