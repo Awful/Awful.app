@@ -14,14 +14,15 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
+        self.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                 UIViewAutoresizingFlexibleTopMargin);
         
         UIImage *previousPage = [UIImage imageNamed:@"arrowleft.png"];
         previousPage.accessibilityLabel = @"Previous page";
         UIImage *nextPage = [UIImage imageNamed:@"arrowright.png"];
         nextPage.accessibilityLabel = @"Next page";
-        UISegmentedControl *backForwardControl = [[UISegmentedControl alloc] initWithItems:@[
-                                                  previousPage, nextPage]];
+        UISegmentedControl *backForwardControl = [[UISegmentedControl alloc]
+                                                  initWithItems:@[ previousPage, nextPage ]];
         [self addSubview:backForwardControl];
         _backForwardControl = backForwardControl;
         
@@ -35,8 +36,8 @@
         action.accessibilityLabel = @"Thread actions";
         UIImage *reply = [UIImage imageNamed:@"compose.png"];
         reply.accessibilityLabel = @"Reply to thread";
-        UISegmentedControl *actionsCompose = [[UISegmentedControl alloc] initWithItems:@[
-                                                 action, reply]];
+        UISegmentedControl *actionsCompose = [[UISegmentedControl alloc]
+                                              initWithItems:@[ action, reply ]];
         [self addSubview:actionsCompose];
         _actionsComposeControl = actionsCompose;
         
