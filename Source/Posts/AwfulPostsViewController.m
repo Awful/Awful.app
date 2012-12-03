@@ -304,15 +304,30 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         // pages quickly. If the callback comes in after we've moved away from the requested page,
         // just don't bother going any further. We have the data for later.
         if (page != self.currentPage) return;
+        BOOL wasLoading = !!self.postsView.loadingMessage;
         if (error) {
-            if (self.postsView.loadingMessage) {
+            if (wasLoading) {
                 self.postsView.loadingMessage = nil;
                 if (![[self.pageBar.jumpToPageButton titleForState:UIControlStateNormal] length]) {
-                    [self.pageBar.jumpToPageButton setTitle:@"Page ? of ?"
-                                                   forState:UIControlStateNormal];
+                    if (self.thread.numberOfPagesValue > 0) {
+                        NSString *title = [NSString stringWithFormat:@"Page ? of %@",
+                                           self.thread.numberOfPages];
+                        [self.pageBar.jumpToPageButton setTitle:title
+                                                       forState:UIControlStateNormal];
+                    } else {
+                        [self.pageBar.jumpToPageButton setTitle:@"Page ? of ?"
+                                                       forState:UIControlStateNormal];
+                    }
                 }
             }
+            // Poor man's offline mode.
+            if (!wasLoading && !refreshingSamePage
+                && [error.domain isEqualToString:NSURLErrorDomain]
+                && error.code == NSURLErrorNotConnectedToInternet) {
+                return;
+            }
             [AwfulAlertView showWithTitle:@"Could Not Load Page" error:error buttonTitle:@"OK"];
+            self.pullUpToRefreshControl.refreshing = NO;
             return;
         }
         if ([posts count] > 0) {
@@ -329,7 +344,6 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
             if (firstUnread != NSNotFound) self.hiddenPosts = firstUnread;
         }
         if (!self.fetchedResultsController) [self updateFetchedResultsController];
-        BOOL wasLoading = !!self.postsView.loadingMessage;
         if (wasLoading) {
             [self.postsView reloadData];
         } else {
@@ -538,6 +552,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         return;
     }
     if (self.postsView.loadingMessage) return;
+    if (self.thread.numberOfPagesValue < 1) return;
     self.specificPageController = [AwfulSpecificPageController new];
     self.specificPageController.delegate = self;
     [self.specificPageController reloadPages];
@@ -1047,7 +1062,14 @@ static char KVOContext;
 
 - (NSInteger)currentPageForSpecificPageController:(AwfulSpecificPageController *)controller
 {
-    return self.currentPage;
+    if (self.currentPage > 0) {
+        return self.currentPage;
+    }
+    else if (self.currentPage == AwfulPageLast && self.thread.numberOfPagesValue > 0) {
+        return self.thread.numberOfPagesValue;
+    } else {
+        return 1;
+    }
 }
 
 - (void)specificPageController:(AwfulSpecificPageController *)controller
