@@ -15,6 +15,8 @@
 
 @property (copy, nonatomic) NSString *badgeText;
 
+@property (nonatomic) UIColor *textColor;
+
 @property (nonatomic) UIColor *badgeColor;
 
 @property (nonatomic) UIColor *highlightedBadgeColor;

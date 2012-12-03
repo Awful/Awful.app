@@ -23,6 +23,7 @@
     self = [super initWithFrame:CGRectZero];
     if (self) {
         _cell = cell;
+        _textColor = [UIColor whiteColor];
         _badgeColor = [UIColor colorWithRed:0.169 green:0.408 blue:0.588 alpha:1];
         _highlightedBadgeColor = [UIColor whiteColor];
         _offBadgeColor = [UIColor colorWithRed:0.435 green:0.659 blue:0.769 alpha:1];
@@ -37,34 +38,22 @@
 - (void)drawRect:(CGRect)rect
 {
     CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    // Technique via DDBadgeViewCell by Ching-Lan 'digdog' HUANG.
-    // https://github.com/digdog/DDBadgeViewCell
     UIColor *badgeColor = self.on ? self.badgeColor : self.offBadgeColor;
     if (self.cell.highlighted || self.cell.selected) {
         badgeColor = self.highlightedBadgeColor;
     }
-    
-    CGContextSaveGState(context);
     CGContextSetFillColorWithColor(context, badgeColor.CGColor);
-    CGMutablePathRef path = CGPathCreateMutable();
-    CGPathAddArc(path, NULL,
-                 self.bounds.origin.x + self.bounds.size.width - self.bounds.size.height / 2,
-                 self.bounds.origin.y + self.bounds.size.height / 2,
-                 self.bounds.size.height / 2, M_PI / 2, M_PI * 3 / 2, YES);
-    CGPathAddArc(path, NULL,
-                 self.bounds.origin.x + self.bounds.size.height / 2,
-                 self.bounds.origin.y + self.bounds.size.height / 2,
-                 self.bounds.size.height / 2, M_PI * 3 / 2, M_PI / 2, YES);
-    CGContextAddPath(context, path);
+    CGContextAddArc(context,
+                    self.bounds.origin.x + self.bounds.size.width - self.bounds.size.height / 2,
+                    self.bounds.origin.y + self.bounds.size.height / 2,
+                    self.bounds.size.height / 2, M_PI / 2, M_PI * 3 / 2, 1);
+    CGContextAddArc(context,
+                    self.bounds.origin.x + self.bounds.size.height / 2,
+                    self.bounds.origin.y + self.bounds.size.height / 2,
+                    self.bounds.size.height / 2, M_PI * 3 / 2, M_PI / 2, 1);
     CGContextDrawPath(context, kCGPathFill);
-    CGPathRelease(path);
-    CGContextRestoreGState(context);
-    
-    CGContextSaveGState(context);
-    CGContextSetBlendMode(context, kCGBlendModeClear);
+    CGContextSetFillColorWithColor(context, self.textColor.CGColor);
     [self.badgeText drawInRect:CGRectInset(self.bounds, 7, 2) withFont:self.font];
-    CGContextRestoreGState(context);
 }
 
 - (void)sizeToFit
@@ -84,6 +73,13 @@
 {
     if (_badgeText == badgeText) return;
     _badgeText = [badgeText copy];
+    [self setNeedsDisplay];
+}
+
+- (void)setTextColor:(UIColor *)textColor
+{
+    if (_textColor == textColor) return;
+    _textColor = textColor;
     [self setNeedsDisplay];
 }
 
