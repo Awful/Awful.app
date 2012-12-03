@@ -806,8 +806,8 @@ var baseURL = "http://forums.somethingawful.com"
 function render(post) {
   rendered = $('#postTemplate').mustache(post)
   rendered.find('a:not([href *= "://"])').each(function(){
-    var a = $(this)
-    a.attr('href', baseURL + a.attr('href'))
+    var a = $(this), href = a.attr('href')
+    a.attr('href', baseURL + (href.indexOf('/') !== 0 ? '/' : '') + href)
   })
   rendered.find('img:not([src *= "://"])').each(function(){
     var img = $(this)
