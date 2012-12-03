@@ -100,8 +100,7 @@ typedef enum {
 {
     if (![self isViewLoaded]) return;
     NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
-    if ([keys containsObject:AwfulSettingsKeys.showThreadTags] ||
-        [keys containsObject:AwfulSettingsKeys.colorBookmarks]) {
+    if ([keys containsObject:AwfulSettingsKeys.showThreadTags]) {
         [self.tableView reloadData];
     }
 }

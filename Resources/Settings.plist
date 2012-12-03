@@ -65,16 +65,6 @@
 					<key>Key</key>
 					<string>show_thread_tags</string>
 				</dict>
-				<dict>
-					<key>Title</key>
-					<string>Color Bookmarks</string>
-					<key>Type</key>
-					<string>Switch</string>
-					<key>Default</key>
-					<false/>
-					<key>Key</key>
-					<string>color_bookmarks</string>
-				</dict>
 			</array>
 		</dict>
 		<dict>
