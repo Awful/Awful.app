@@ -257,7 +257,12 @@
     DARK([UIColor colorWithWhite:0.075 alpha:1]);
 }
 
-- (UIColor *)postsViewTopBarBackgroundColor
+- (UIColor *)postsViewTopBarMarginColor
+{
+    DEFAULT([UIColor colorWithWhite:0.714 alpha:1]);
+}
+
+- (UIColor *)postsViewTopBarButtonBackgroundColor
 {
     DEFAULT([UIColor colorWithWhite:0.902 alpha:1]);
 }

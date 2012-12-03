@@ -65,7 +65,8 @@
 // Posts view
 
 @property (readonly, nonatomic) UIColor *postsViewBackgroundColor;
-@property (readonly, nonatomic) UIColor *postsViewTopBarBackgroundColor;
+@property (readonly, nonatomic) UIColor *postsViewTopBarMarginColor;
+@property (readonly, nonatomic) UIColor *postsViewTopBarButtonBackgroundColor;
 @property (readonly, nonatomic) UIColor *postsViewTopBarButtonTextColor;
 @property (readonly, nonatomic) UIColor *postsViewTopBarButtonDisabledTextColor;
 

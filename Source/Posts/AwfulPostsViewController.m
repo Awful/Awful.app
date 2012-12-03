@@ -682,7 +682,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 
 - (void)retheme
 {
-    self.topBar.backgroundColor = [AwfulTheme currentTheme].postsViewTopBarBackgroundColor;
+    self.topBar.backgroundColor = [AwfulTheme currentTheme].postsViewTopBarMarginColor;
     NSArray *buttons = @[ self.topBar.goToForumButton, self.topBar.loadReadPostsButton,
                           self.topBar.scrollToBottomButton ];
     for (UIButton *button in buttons) {
@@ -692,6 +692,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                            forState:UIControlStateNormal];
         [button setTitleColor:[AwfulTheme currentTheme].postsViewTopBarButtonDisabledTextColor
                      forState:UIControlStateDisabled];
+        button.backgroundColor = [AwfulTheme currentTheme].postsViewTopBarButtonBackgroundColor;
     }
     self.postsView.dark = [AwfulSettings settings].darkTheme;
 }
@@ -752,7 +753,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     [self configurePostsViewSettings];
     
     TopBarView *topBar = [TopBarView new];
-    topBar.frame = CGRectMake(0, -44, self.view.frame.size.width, 44);
+    topBar.frame = CGRectMake(0, -40, self.view.frame.size.width, 40);
     topBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     [topBar.goToForumButton addTarget:self
                                action:@selector(goToParentForum)
@@ -766,8 +767,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                           forControlEvents:UIControlEventTouchUpInside];
     [postsView.scrollView addSubview:topBar];
     self.topBar = topBar;
-    postsView.scrollView.contentInset = UIEdgeInsetsMake(44, 0, 0, 0);
-    postsView.scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(44, 0, 0, 0);
+    postsView.scrollView.contentInset = UIEdgeInsetsMake(topBar.bounds.size.height, 0, 0, 0);
+    postsView.scrollView.scrollIndicatorInsets = postsView.scrollView.contentInset;
     postsView.scrollView.delegate = self;
     
     AwfulPullToRefreshControl *refresh;
@@ -1206,25 +1207,19 @@ static char KVOContext;
 {
     if (!(self = [super initWithFrame:frame])) return nil;
     UIButton *goToForumButton = [self makeButton];
-    [goToForumButton setTitle:@"Go To\nForum" forState:UIControlStateNormal];
-    goToForumButton.accessibilityLabel = @"Go to forum";
+    [goToForumButton setTitle:@"Parent Forum" forState:UIControlStateNormal];
+    goToForumButton.accessibilityLabel = @"Parent forum";
     goToForumButton.accessibilityHint = @"Opens this thread's forum";
-    [goToForumButton setImage:[UIImage imageNamed:@"go-to-forum.png"]
-                     forState:UIControlStateNormal];
     _goToForumButton = goToForumButton;
     
     UIButton *loadReadPostsButton = [self makeButton];
-    [loadReadPostsButton setTitle:@"Load Read\nPosts" forState:UIControlStateNormal];
-    loadReadPostsButton.accessibilityLabel = @"Load read posts";
-    [loadReadPostsButton setImage:[UIImage imageNamed:@"load-read-posts.png"]
-                         forState:UIControlStateNormal];
+    [loadReadPostsButton setTitle:@"Previous Posts" forState:UIControlStateNormal];
+    loadReadPostsButton.accessibilityLabel = @"Previous posts";
     _loadReadPostsButton = loadReadPostsButton;
     
     UIButton *scrollToBottomButton = [self makeButton];
-    [scrollToBottomButton setTitle:@"Scroll To\nBottom" forState:UIControlStateNormal];
-    scrollToBottomButton.accessibilityLabel = @"Scroll to bottom";
-    [scrollToBottomButton setImage:[UIImage imageNamed:@"scroll-to-bottom.png"]
-                          forState:UIControlStateNormal];
+    [scrollToBottomButton setTitle:@"Scroll To End" forState:UIControlStateNormal];
+    scrollToBottomButton.accessibilityLabel = @"Scroll to end";
     _scrollToBottomButton = scrollToBottomButton;
     
     return self;
@@ -1233,25 +1228,21 @@ static char KVOContext;
 - (UIButton *)makeButton
 {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    button.titleEdgeInsets = UIEdgeInsetsMake(0, 6, 0, 0);
     button.titleLabel.font = [UIFont boldSystemFontOfSize:12];
-    button.titleLabel.numberOfLines = 2;
-    button.titleLabel.shadowOffset = CGSizeMake(0, 1);
-    button.imageEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0);
     [self addSubview:button];
     return button;
 }
 
 - (void)layoutSubviews
 {
-    CGFloat buttonWidth = floorf(self.bounds.size.width / 3);
+    CGFloat buttonWidth = floorf((self.bounds.size.width - 2) / 3);
     CGFloat x = floorf(self.bounds.size.width - buttonWidth * 3) / 2;
     
-    self.goToForumButton.frame = CGRectMake(x, 0, buttonWidth, self.bounds.size.height);
-    x += buttonWidth;
-    self.loadReadPostsButton.frame = CGRectMake(x, 0, buttonWidth, self.bounds.size.height);
-    x += buttonWidth;
-    self.scrollToBottomButton.frame = CGRectMake(x, 0, buttonWidth, self.bounds.size.height);
+    self.goToForumButton.frame = CGRectMake(x, 0, buttonWidth, self.bounds.size.height - 1);
+    x += buttonWidth + 1;
+    self.loadReadPostsButton.frame = CGRectMake(x, 0, buttonWidth, self.bounds.size.height - 1);
+    x += buttonWidth + 1;
+    self.scrollToBottomButton.frame = CGRectMake(x, 0, buttonWidth, self.bounds.size.height - 1);
 }
 
 @end
