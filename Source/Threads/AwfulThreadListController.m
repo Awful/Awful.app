@@ -308,16 +308,24 @@ typedef enum {
     }
     AwfulTheme *theme = [AwfulTheme currentTheme];
     cell.originalPosterTextLabel.textColor = theme.threadCellOriginalPosterTextColor;
-    cell.unreadCountBadgeView.badgeColor = theme.threadListUnreadBadgeColor;
+    if (thread.starCategoryValue == AwfulStarCategoryRed) {
+        cell.unreadCountBadgeView.badgeColor = theme.threadListUnreadBadgeRedColor;
+        cell.unreadCountBadgeView.offBadgeColor = theme.threadListUnreadBadgeRedOffColor;
+    } else if (thread.starCategoryValue == AwfulStarCategoryYellow) {
+        cell.unreadCountBadgeView.badgeColor = theme.threadListUnreadBadgeYellowColor;
+        cell.unreadCountBadgeView.offBadgeColor = theme.threadListUnreadBadgeYellowOffColor;
+    } else {
+        cell.unreadCountBadgeView.badgeColor = theme.threadListUnreadBadgeBlueColor;
+        cell.unreadCountBadgeView.offBadgeColor = theme.threadListUnreadBadgeBlueOffColor;
+    }
     cell.unreadCountBadgeView.highlightedBadgeColor = theme.threadListUnreadBadgeHighlightedColor;
-    cell.unreadCountBadgeView.offBadgeColor = theme.threadListUnreadBadgeOffColor;
     cell.unreadCountBadgeView.badgeText = [thread.totalUnreadPosts stringValue];
     cell.unreadCountBadgeView.on = thread.totalUnreadPostsValue > 0;
     cell.showsUnread = thread.totalUnreadPostsValue != -1;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
-    [self setBackgroundColorForCell:cell forRowAtIndexPath:indexPath];
+    cell.backgroundColor = theme.threadCellBackgroundColor;
     cell.selectionStyle = [AwfulTheme currentTheme].cellSelectionStyle;
 }
 
@@ -383,23 +391,7 @@ typedef enum {
   willDisplayCell:(UITableViewCell *)cell
 forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self setBackgroundColorForCell:cell forRowAtIndexPath:indexPath];
-}
-
-- (void)setBackgroundColorForCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    UIColor *color = [AwfulTheme currentTheme].threadCellBackgroundColor;
-    if ([AwfulSettings settings].colorBookmarks) {
-        AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
-        if (thread.starCategoryValue == AwfulStarCategoryBlue) {
-            color = [AwfulTheme currentTheme].threadCellBlueBackgroundColor;
-        } else if (thread.starCategoryValue == AwfulStarCategoryRed) {
-            color = [AwfulTheme currentTheme].threadCellRedBackgroundColor;
-        } else if (thread.starCategoryValue == AwfulStarCategoryYellow) {
-            color = [AwfulTheme currentTheme].threadCellYellowBackgroundColor;
-        }
-    }
-    cell.backgroundColor = color;
+    cell.backgroundColor = [AwfulTheme currentTheme].threadCellBackgroundColor;
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath

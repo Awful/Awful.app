@@ -12,6 +12,7 @@
 #import "AwfulDataStack.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
+#import "AwfulThreadCell.h"
 #import "NSManagedObject+Awful.h"
 #import "SVPullToRefresh.h"
 
@@ -120,6 +121,17 @@
 static NSString * const kLastBookmarksRefreshDate = @"com.awfulapp.Awful.LastBookmarksRefreshDate";
 
 #pragma mark - Table view data source and delegate
+
+- (void)configureCell:(UITableViewCell *)genericCell atIndexPath:(NSIndexPath *)indexPath
+{
+    [super configureCell:genericCell atIndexPath:indexPath];
+    AwfulThreadCell *cell = (AwfulThreadCell *)genericCell;
+    if (!cell.showsUnread) {
+        cell.unreadCountBadgeView.badgeText = @"∞";
+        cell.unreadCountBadgeView.on = YES;
+        cell.showsUnread = YES;
+    }
+}
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {

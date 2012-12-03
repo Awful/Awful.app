@@ -24,6 +24,7 @@
     if (self) {
         _cell = cell;
         _textColor = [UIColor whiteColor];
+        _highlightedTextColor = [UIColor blackColor];
         _badgeColor = [UIColor colorWithRed:0.169 green:0.408 blue:0.588 alpha:1];
         _highlightedBadgeColor = [UIColor whiteColor];
         _offBadgeColor = [UIColor colorWithRed:0.435 green:0.659 blue:0.769 alpha:1];
@@ -39,8 +40,10 @@
 {
     CGContextRef context = UIGraphicsGetCurrentContext();
     UIColor *badgeColor = self.on ? self.badgeColor : self.offBadgeColor;
+    UIColor *textColor = self.textColor;
     if (self.cell.highlighted || self.cell.selected) {
         badgeColor = self.highlightedBadgeColor;
+        textColor = self.highlightedTextColor;
     }
     CGContextSetFillColorWithColor(context, badgeColor.CGColor);
     CGContextAddArc(context,
@@ -52,7 +55,7 @@
                     self.bounds.origin.y + self.bounds.size.height / 2,
                     self.bounds.size.height / 2, M_PI * 3 / 2, M_PI / 2, 1);
     CGContextDrawPath(context, kCGPathFill);
-    CGContextSetFillColorWithColor(context, self.textColor.CGColor);
+    CGContextSetFillColorWithColor(context, textColor.CGColor);
     [self.badgeText drawInRect:CGRectInset(self.bounds, 7, 2) withFont:self.font];
 }
 
@@ -80,6 +83,13 @@
 {
     if (_textColor == textColor) return;
     _textColor = textColor;
+    [self setNeedsDisplay];
+}
+
+- (void)setHighlightedTextColor:(UIColor *)highlightedTextColor
+{
+    if (_highlightedTextColor == highlightedTextColor) return;
+    _highlightedTextColor = highlightedTextColor;
     [self setNeedsDisplay];
 }
 

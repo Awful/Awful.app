@@ -17,6 +17,8 @@
 
 @property (nonatomic) UIColor *textColor;
 
+@property (nonatomic) UIColor *highlightedTextColor;
+
 @property (nonatomic) UIColor *badgeColor;
 
 @property (nonatomic) UIColor *highlightedBadgeColor;

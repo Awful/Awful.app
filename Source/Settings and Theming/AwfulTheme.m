@@ -184,24 +184,6 @@
     DARK(self.forumCellBackgroundColor);
 }
 
-- (UIColor *)threadCellBlueBackgroundColor
-{
-    LIGHT([UIColor colorWithHue:0.583 saturation:0.106 brightness:0.961 alpha:1]);
-    DARK([UIColor colorWithHue:0.583 saturation:0.302 brightness:0.35 alpha:1]);
-}
-
-- (UIColor *)threadCellRedBackgroundColor
-{
-    LIGHT([UIColor colorWithHue:1 saturation:0.091 brightness:0.949 alpha:1]);
-    DARK([UIColor colorWithHue:1 saturation:0.305 brightness:0.35 alpha:1]);
-}
-
-- (UIColor *)threadCellYellowBackgroundColor
-{
-    LIGHT([UIColor colorWithHue:0.167 saturation:0.091 brightness:0.949 alpha:1]);
-    DARK([UIColor colorWithHue:0.167 saturation:0.3 brightness:0.35 alpha:1]);
-}
-
 - (UIColor *)threadCellTextColor
 {
     LIGHT([UIColor blackColor]);
@@ -226,10 +208,22 @@
     DARK([UIColor colorWithWhite:0.106 alpha:1]);
 }
 
-- (UIColor *)threadListUnreadBadgeColor
+- (UIColor *)threadListUnreadBadgeBlueColor
 {
-    LIGHT([UIColor colorWithRed:0.169 green:0.408 blue:0.588 alpha:1]);
+    LIGHT([UIColor colorWithHue:0.563 saturation:0.885 brightness:0.988 alpha:1]);
     DARK([UIColor colorWithRed:0.435 green:0.659 blue:0.769 alpha:1]);
+}
+
+- (UIColor *)threadListUnreadBadgeRedColor
+{
+    LIGHT([UIColor colorWithHue:0.996 saturation:0.917 brightness:0.988 alpha:1]);
+    DARK([UIColor colorWithHue:1 saturation:0.605 brightness:1 alpha:1]);
+}
+
+- (UIColor *)threadListUnreadBadgeYellowColor
+{
+    LIGHT([UIColor colorWithHue:0.158 saturation:0.541 brightness:0.887 alpha:1]);
+    DARK([UIColor colorWithHue:0.169 saturation:0.652 brightness:0.746 alpha:1]);
 }
 
 - (UIColor *)threadListUnreadBadgeHighlightedColor
@@ -237,10 +231,22 @@
     DEFAULT([UIColor whiteColor]);
 }
 
-- (UIColor *)threadListUnreadBadgeOffColor
+- (UIColor *)threadListUnreadBadgeBlueOffColor
 {
     LIGHT([UIColor colorWithRed:0.435 green:0.659 blue:0.769 alpha:1]);
     DARK([UIColor colorWithRed:0.169 green:0.408 blue:0.588 alpha:1]);
+}
+
+- (UIColor *)threadListUnreadBadgeRedOffColor
+{
+    LIGHT([UIColor colorWithHue:0.995 saturation:0.484 brightness:0.988 alpha:1]);
+    DARK([UIColor colorWithHue:1 saturation:0.605 brightness:0.599 alpha:1]);
+}
+
+- (UIColor *)threadListUnreadBadgeYellowOffColor
+{
+    LIGHT([UIColor colorWithHue:0.158 saturation:0.292 brightness:0.887 alpha:1]);
+    DARK([UIColor colorWithHue:0.167 saturation:0.3 brightness:0.5 alpha:1]);
 }
 
 #pragma mark - Posts view
