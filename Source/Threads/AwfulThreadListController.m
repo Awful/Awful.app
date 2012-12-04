@@ -11,6 +11,7 @@
 #import "AwfulActionSheet.h"
 #import "AwfulAlertView.h"
 #import "AwfulDataStack.h"
+#import "AwfulDisclosureIndicatorView.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulLoginController.h"
 #import "AwfulModels.h"
@@ -252,6 +253,11 @@ typedef enum {
         UILongPressGestureRecognizer *longPress = [UILongPressGestureRecognizer new];
         [longPress addTarget:self action:@selector(showThreadActions:)];
         [cell addGestureRecognizer:longPress];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            AwfulDisclosureIndicatorView *accessory = [AwfulDisclosureIndicatorView new];
+            accessory.cell = cell;
+            cell.accessoryView = accessory;
+        }
     }
     [self configureCell:cell atIndexPath:indexPath];
     return cell;
@@ -325,11 +331,11 @@ typedef enum {
     cell.unreadCountBadgeView.badgeText = [thread.totalUnreadPosts stringValue];
     cell.unreadCountBadgeView.on = thread.totalUnreadPostsValue > 0;
     cell.showsUnread = thread.totalUnreadPostsValue != -1;
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    }
     cell.backgroundColor = theme.threadCellBackgroundColor;
-    cell.selectionStyle = [AwfulTheme currentTheme].cellSelectionStyle;
+    cell.selectionStyle = theme.cellSelectionStyle;
+    AwfulDisclosureIndicatorView *disclosure = (AwfulDisclosureIndicatorView *)cell.accessoryView;
+    disclosure.color = theme.disclosureIndicatorColor;
+    disclosure.highlightedColor = theme.disclosureIndicatorHighlightedColor;
 }
 
 - (void)updateThreadTag:(NSString *)threadTagName forCellAtIndexPath:(NSIndexPath *)indexPath

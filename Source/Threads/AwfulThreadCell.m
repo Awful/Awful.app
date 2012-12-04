@@ -203,6 +203,7 @@
         self.oldOriginalPosterTextColor = nil;
     }
     [self.unreadCountBadgeView setNeedsDisplay];
+    [self.accessoryView setNeedsDisplay];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
@@ -216,6 +217,7 @@
         self.oldOriginalPosterTextColor = nil;
     }
     [self.unreadCountBadgeView setNeedsDisplay];
+    [self.accessoryView setNeedsDisplay];
 }
 
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated

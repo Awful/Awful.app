@@ -111,7 +111,21 @@
     self.expandButton.hidden = showsExpanded != AwfulForumCellShowsExpandedButton;
 }
 
-#pragma mark - Size and layout
+#pragma mark - UITableViewCell
+
+- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated
+{
+    [super setHighlighted:highlighted animated:animated];
+    [self.accessoryView setNeedsDisplay];
+}
+
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated
+{
+    [super setSelected:selected animated:animated];
+    [self.accessoryView setNeedsDisplay];
+}
+
+#pragma mark - UIView
 
 static const CGFloat StarLeftMargin = 11;
 

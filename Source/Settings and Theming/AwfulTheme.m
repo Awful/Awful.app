@@ -74,6 +74,18 @@
     DARK(UIActivityIndicatorViewStyleWhite);
 }
 
+- (UIColor *)disclosureIndicatorColor
+{
+    LIGHT([UIColor grayColor]);
+    DARK([UIColor darkGrayColor]);
+}
+
+- (UIColor *)disclosureIndicatorHighlightedColor
+{
+    LIGHT([UIColor whiteColor]);
+    DARK([UIColor blackColor]);
+}
+
 #pragma mark - Login view
 
 - (UIColor *)loginViewBackgroundColor

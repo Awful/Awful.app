@@ -17,6 +17,8 @@
 
 @property (readonly, nonatomic) UITableViewCellSelectionStyle cellSelectionStyle;
 @property (readonly, nonatomic) UIActivityIndicatorViewStyle activityIndicatorViewStyle;
+@property (readonly, nonatomic) UIColor *disclosureIndicatorColor;
+@property (readonly, nonatomic) UIColor *disclosureIndicatorHighlightedColor;
 
 // Login view
 

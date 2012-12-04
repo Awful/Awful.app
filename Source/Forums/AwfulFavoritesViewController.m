@@ -9,6 +9,7 @@
 #import "AwfulFavoritesViewController.h"
 #import "AwfulFetchedTableViewControllerSubclass.h"
 #import "AwfulDataStack.h"
+#import "AwfulDisclosureIndicatorView.h"
 #import "AwfulForumsListController.h"
 #import "AwfulModels.h"
 #import "AwfulThreadListController.h"
@@ -168,7 +169,9 @@
     AwfulForumCell *cell = [tableView dequeueReusableCellWithIdentifier:Identifier];
     if (!cell) {
         cell = [[AwfulForumCell alloc] initWithReuseIdentifier:Identifier];
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        AwfulDisclosureIndicatorView *disclosure = [AwfulDisclosureIndicatorView new];
+        disclosure.cell = cell;
+        cell.accessoryView = disclosure;
     }
     [self configureCell:cell atIndexPath:indexPath];
     return cell;
@@ -180,6 +183,9 @@
     cell.textLabel.text = forum.name;
     cell.textLabel.textColor = [AwfulTheme currentTheme].forumCellTextColor;
     cell.selectionStyle = [AwfulTheme currentTheme].cellSelectionStyle;
+    AwfulDisclosureIndicatorView *disclosure = (AwfulDisclosureIndicatorView *)cell.accessoryView;
+    disclosure.color = [AwfulTheme currentTheme].disclosureIndicatorColor;
+    disclosure.highlightedColor = [AwfulTheme currentTheme].disclosureIndicatorHighlightedColor;
 }
 
 - (void)tableView:(UITableView *)tableView

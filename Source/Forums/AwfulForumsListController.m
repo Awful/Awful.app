@@ -10,6 +10,7 @@
 #import "AwfulFetchedTableViewControllerSubclass.h"
 #import "AwfulAlertView.h"
 #import "AwfulDataStack.h"
+#import "AwfulDisclosureIndicatorView.h"
 #import "AwfulForumCell.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
@@ -207,7 +208,7 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
     self.tableView.tableFooterView = [UIView new];
 }
 
-#pragma mark - Table view data source
+#pragma mark - UITableViewDataSource
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
@@ -235,7 +236,9 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
     if (!cell) {
         cell = [[AwfulForumCell alloc] initWithReuseIdentifier:Identifier];
         cell.showsFavorite = YES;
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        AwfulDisclosureIndicatorView *disclosure = [AwfulDisclosureIndicatorView new];
+        disclosure.cell = cell;
+        cell.accessoryView = disclosure;
         [cell.expandButton addTarget:self
                               action:@selector(toggleExpanded:)
                     forControlEvents:UIControlEventTouchUpInside];
@@ -262,6 +265,9 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
         cell.showsExpanded = AwfulForumCellShowsExpandedLeavesRoom;
     }
     cell.selectionStyle = [AwfulTheme currentTheme].cellSelectionStyle;
+    AwfulDisclosureIndicatorView *disclosure = (AwfulDisclosureIndicatorView *)cell.accessoryView;
+    disclosure.color = [AwfulTheme currentTheme].disclosureIndicatorColor;
+    disclosure.highlightedColor = [AwfulTheme currentTheme].disclosureIndicatorHighlightedColor;
 }
 
 - (void)tableView:(UITableView *)tableView
