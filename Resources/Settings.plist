@@ -13,9 +13,46 @@
 			<array>
 				<dict>
 					<key>Title</key>
-					<string>Logged in as</string>
+					<string>Logged In As</string>
 					<key>ValueIdentifier</key>
 					<string>Username</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Launch Tab</string>
+					<key>Choices</key>
+					<array>
+						<dict>
+							<key>Title</key>
+							<string>Forums</string>
+							<key>Value</key>
+							<string>forumslist</string>
+						</dict>
+						<dict>
+							<key>Title</key>
+							<string>Favorites</string>
+							<key>Value</key>
+							<string>favorites</string>
+						</dict>
+						<dict>
+							<key>Title</key>
+							<string>Bookmarks</string>
+							<key>Value</key>
+							<string>bookmarks</string>
+						</dict>
+					</array>
+					<key>Default</key>
+					<string>forumslist</string>
+					<key>Key</key>
+					<string>default_load</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Go to Awful&apos;s Thread</string>
+					<key>Action</key>
+					<string>GoToAwfulThread</string>
+					<key>ThreadID</key>
+					<string>3510131</string>
 				</dict>
 				<dict>
 					<key>Title</key>
@@ -26,8 +63,8 @@
 			</array>
 		</dict>
 		<dict>
-			<key>Explanation</key>
-			<string>Report bugs, suggest features, and spread Awful love in the thread.</string>
+			<key>Title</key>
+			<string>Appearance</string>
 			<key>Settings</key>
 			<array>
 				<dict>
@@ -40,21 +77,6 @@
 					<key>Key</key>
 					<string>dark_theme</string>
 				</dict>
-				<dict>
-					<key>Title</key>
-					<string>Go to Awful&apos;s Thread</string>
-					<key>Action</key>
-					<string>GoToAwfulThread</string>
-					<key>ThreadID</key>
-					<string>3510131</string>
-				</dict>
-			</array>
-		</dict>
-		<dict>
-			<key>Title</key>
-			<string>Threads</string>
-			<key>Settings</key>
-			<array>
 				<dict>
 					<key>Title</key>
 					<string>Show Thread Tags</string>
@@ -130,40 +152,6 @@
 					<true/>
 					<key>Key</key>
 					<string>confirm_before_replying</string>
-				</dict>
-			</array>
-		</dict>
-		<dict>
-			<key>Settings</key>
-			<array>
-				<dict>
-					<key>Title</key>
-					<string>First Visible Tab</string>
-					<key>Choices</key>
-					<array>
-						<dict>
-							<key>Title</key>
-							<string>Forums</string>
-							<key>Value</key>
-							<string>forumslist</string>
-						</dict>
-						<dict>
-							<key>Title</key>
-							<string>Favorites</string>
-							<key>Value</key>
-							<string>favorites</string>
-						</dict>
-						<dict>
-							<key>Title</key>
-							<string>Bookmarks</string>
-							<key>Value</key>
-							<string>bookmarks</string>
-						</dict>
-					</array>
-					<key>Default</key>
-					<string>forumslist</string>
-					<key>Key</key>
-					<string>default_load</string>
 				</dict>
 			</array>
 		</dict>
