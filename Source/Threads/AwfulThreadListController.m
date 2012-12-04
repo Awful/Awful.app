@@ -291,7 +291,11 @@ typedef enum {
         cell.rating = 0;
     }
     cell.textLabel.text = [thread.title stringByCollapsingWhitespace];
-    cell.textLabel.textColor = [AwfulTheme currentTheme].threadCellTextColor;
+    if (thread.canReply) {
+        cell.textLabel.textColor = [AwfulTheme currentTheme].threadCellTextColor;
+    } else {
+        cell.textLabel.textColor = [AwfulTheme currentTheme].threadCellLockedThreadColor;
+    }
     NSNumberFormatterStyle numberStyle = NSNumberFormatterDecimalStyle;
     NSString *pagesFormatted = [NSNumberFormatter localizedStringFromNumber:thread.numberOfPages
                                                                 numberStyle:numberStyle];

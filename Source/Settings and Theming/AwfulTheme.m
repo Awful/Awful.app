@@ -190,6 +190,11 @@
     DARK([UIColor whiteColor]);
 }
 
+- (UIColor *)threadCellLockedThreadColor
+{
+    DEFAULT([UIColor grayColor]);
+}
+
 - (UIColor *)threadCellPagesTextColor
 {
     LIGHT([UIColor grayColor]);
