@@ -152,6 +152,8 @@ var baseURL = "http://forums.somethingawful.com"
 
 function render(post) {
   rendered = $('#postTemplate').mustache(post)
+  // Some links and images come with relative URLs, which break as we set our
+  // relative URL to the app's resource directory. Let's fix those up.
   rendered.find('a:not([href *= "://"])').each(function(){
     var a = $(this), href = a.attr('href')
     a.attr('href', baseURL + (href.indexOf('/') !== 0 ? '/' : '') + href)
