@@ -224,6 +224,7 @@ function hideImages(post) {
          .not('img[src*="://fi.somethingawful.com/safs/smilies"]')
          .not('img[src*="://i.somethingawful.com/images/emot"]')
          .not('img[src*="://i.somethingawful.com/forumsystem/emoticons"]')
+         .not('img[src*="://fi.somethingawful.com/forums/posticons"]')
          .each(function(){
     $(this).replaceWith($('<a data-awful="image"/>').text($(this).attr('src')))
   })
