@@ -160,6 +160,11 @@ function render(post) {
     var img = $(this)
     img.attr('src', baseURL + img.attr('src'))
   })
+  // We style spoilers ourselves.
+  rendered.find('span.bbc-spoiler')
+          .removeAttr('onmouseover')
+          .removeAttr('onmouseout')
+          .removeAttr('style')
   if (!Awful._showAvatars) hideAvatar(rendered)
   if (!Awful._showImages) hideImages(rendered)
   highlightQuotes(rendered)
@@ -244,6 +249,10 @@ $(function(){
   $('#posts').on('longTap', 'article > section img', previewImage)
   
   $('#posts').on('click', 'a[data-awful="image"]', showLinkedImage)
+  
+  $('#posts').on('click', '.bbc-spoiler', toggleSpoiled)
+  
+  $('#posts').on('click', '.bbc-spoiler a', cancelUnspoiledLinks)
 })
 
 function showPostActions(e) {
@@ -270,6 +279,19 @@ function showLinkedImage(e) {
   var link = $(e.target)
   link.replaceWith($('<img border=0>').attr('src', link.text()))
   e.preventDefault()
+}
+
+function toggleSpoiled(e) {
+  $(e.target).toggleClass('spoiled')
+}
+
+function cancelUnspoiledLinks(e) {
+  var link = $(e.target)
+  var spoiler = link.closest('.bbc-spoiler')
+  if (!spoiler.hasClass('spoiled')) {
+    spoiler.addClass('spoiled')
+    e.preventDefault()
+  }
 }
 
 })()

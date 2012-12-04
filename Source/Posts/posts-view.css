@@ -326,6 +326,7 @@ body.dark {
 /* Everything in spoiler tags is black. */
 #posts > article > section .bbc-spoiler,
 #posts > article > section .bbc-spoiler li {
+  color: black;
   background: black;
 }
 #posts > article > section .bbc-spoiler a:link,
@@ -337,6 +338,7 @@ body.dark {
 /* Everything in dark mode spoiler tags is white. */
 .dark #posts > article > section .bbc-spoiler,
 .dark #posts > article > section .bbc-spoiler li {
+  color: white;
   background: white;
 }
 .dark #posts > article > section .bbc-spoiler a:link,
@@ -345,9 +347,9 @@ body.dark {
   color: white;
 }
 
-/* Tapping a dark mode spoiler tag makes its background black (immediately). */
-.dark #posts > article > section .bbc-spoiler:hover {
-  background: black;
+/* Tapping a spoiler tag reveals its contents. */
+#posts > article > section .bbc-spoiler.spoiled {
+  background: transparent;
 }
 
 /* All block headings, like 'quote' or 'code', are grey. */

@@ -277,6 +277,11 @@ body {
   color: black;
 }
 
+/* Tapping a spoiler tag reveals its contents. */
+#posts > article > section .bbc-spoiler.spoiled {
+  background: transparent;
+}
+
 /* All block headings, like 'quote' or 'code', ain't inline. */
 #posts > article > section .bbc-block h4,
 #posts > article > section .bbc-block h5 {
