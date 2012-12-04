@@ -348,8 +348,7 @@
 
 - (UIColor *)settingsCellSwitchOnTintColor
 {
-    LIGHT(nil);
-    DARK([UIColor orangeColor]);
+    DEFAULT(nil);
 }
 
 - (UIColor *)settingsCellSeparatorColor
