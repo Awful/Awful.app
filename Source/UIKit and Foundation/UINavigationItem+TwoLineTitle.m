@@ -68,18 +68,25 @@
     CGRect absolutelyCenteredFrame = self.bounds;
     absolutelyCenteredFrame.size.width -= fabs(leftOffset - rightOffset);
     if (rightOffset > leftOffset) absolutelyCenteredFrame.origin.x += (rightOffset - leftOffset);
+    CGSize sizeThatAdmitsAtLeastTwoLines = absolutelyCenteredFrame.size;
+    sizeThatAdmitsAtLeastTwoLines.height = self.label.font.leading * 3;
+    CGSize centredSize = [self.label.text sizeWithFont:self.label.font
+                              constrainedToSize:sizeThatAdmitsAtLeastTwoLines];
+    BOOL fitsCentredOnOneLine = centredSize.height / self.label.font.leading < 1.5;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        self.label.frame = absolutelyCenteredFrame;
+        if (fitsCentredOnOneLine) {
+            self.label.frame = absolutelyCenteredFrame;
+        } else {
+            self.label.frame = self.bounds;
+        }
         return;
     }
-    CGSize fits = [self.label.text sizeWithFont:self.label.font
-                              constrainedToSize:absolutelyCenteredFrame.size];
-    if (fits.height / self.label.font.leading > 1.5) {
-        self.label.textAlignment = UITextAlignmentLeft;
-        self.label.frame = self.bounds;
-    } else {
+    if (fitsCentredOnOneLine) {
         self.label.textAlignment = UITextAlignmentCenter;
         self.label.frame = absolutelyCenteredFrame;
+    } else {
+        self.label.textAlignment = UITextAlignmentLeft;
+        self.label.frame = self.bounds;
     }
 }
 
