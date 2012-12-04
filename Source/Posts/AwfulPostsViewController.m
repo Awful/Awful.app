@@ -785,11 +785,6 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                 action:@selector(loadNextPageOrRefresh)
       forControlEvents:UIControlEventValueChanged];
     refresh.backgroundColor = postsView.backgroundColor;
-    refresh.gradient.colors = @[
-        (id)[UIColor colorWithWhite:0 alpha:0.3].CGColor,
-        (id)[UIColor colorWithWhite:0 alpha:0].CGColor
-    ];
-    refresh.gradient.endPoint = CGPointMake(0.5, 0.5);
     [self.postsView.scrollView addSubview:refresh];
     self.pullUpToRefreshControl = refresh;
     [self updatePullUpTriggerOffset];
