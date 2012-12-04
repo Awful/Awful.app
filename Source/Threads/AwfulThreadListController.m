@@ -297,10 +297,10 @@ typedef enum {
         cell.rating = 0;
     }
     cell.textLabel.text = [thread.title stringByCollapsingWhitespace];
-    if (thread.canReply) {
+    if (!thread.isClosedValue) {
         cell.textLabel.textColor = [AwfulTheme currentTheme].threadCellTextColor;
     } else {
-        cell.textLabel.textColor = [AwfulTheme currentTheme].threadCellLockedThreadColor;
+        cell.textLabel.textColor = [AwfulTheme currentTheme].threadCellClosedThreadColor;
     }
     NSNumberFormatterStyle numberStyle = NSNumberFormatterDecimalStyle;
     NSString *pagesFormatted = [NSNumberFormatter localizedStringFromNumber:thread.numberOfPages

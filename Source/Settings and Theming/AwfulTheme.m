@@ -202,7 +202,7 @@
     DARK([UIColor whiteColor]);
 }
 
-- (UIColor *)threadCellLockedThreadColor
+- (UIColor *)threadCellClosedThreadColor
 {
     DEFAULT([UIColor grayColor]);
 }
