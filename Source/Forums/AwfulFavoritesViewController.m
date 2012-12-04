@@ -280,7 +280,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         _noFavoritesLabel = noFavoritesLabel;
         
         UILabel *tapAStarLabel = [UILabel new];
-        tapAStarLabel.text = @"Tap a star in the forums list to add one.";
+        tapAStarLabel.text = @"Add forums by tapping stars.";
         tapAStarLabel.font = [UIFont systemFontOfSize:16];
         tapAStarLabel.textColor = [UIColor grayColor];
         tapAStarLabel.backgroundColor = [UIColor clearColor];
@@ -293,16 +293,18 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (void)layoutSubviews
 {
     [self.noFavoritesLabel sizeToFit];
-    self.noFavoritesLabel.center = CGPointMake(CGRectGetMidX(self.bounds),
-                                               CGRectGetMidY(self.bounds));
-    self.noFavoritesLabel.frame = CGRectIntegral(self.noFavoritesLabel.frame);
-    
-    self.tapAStarLabel.bounds = (CGRect){ .size.width = self.noFavoritesLabel.bounds.size.width };
     [self.tapAStarLabel sizeToFit];
-    self.tapAStarLabel.center = CGPointMake(self.noFavoritesLabel.center.x,
-                                            self.noFavoritesLabel.center.y +
-                                            self.noFavoritesLabel.bounds.size.height / 1.5);
-    self.tapAStarLabel.frame = CGRectIntegral(self.tapAStarLabel.frame);
+    CGFloat totalHeight = (self.noFavoritesLabel.bounds.size.height + 5 +
+                           self.tapAStarLabel.bounds.size.height + 20);
+    CGFloat topMargin = (self.bounds.size.height - totalHeight) / 2;
+    CGRect noFavoritesFrame = self.noFavoritesLabel.frame;
+    noFavoritesFrame.origin.x = CGRectGetMidX(self.bounds) - noFavoritesFrame.size.width / 2;
+    noFavoritesFrame.origin.y = topMargin;
+    self.noFavoritesLabel.frame = CGRectIntegral(noFavoritesFrame);
+    CGRect tapAStarFrame = self.tapAStarLabel.frame;
+    tapAStarFrame.origin.x = CGRectGetMidX(self.bounds) - tapAStarFrame.size.width / 2;
+    tapAStarFrame.origin.y = CGRectGetMaxY(noFavoritesFrame) + 5;
+    self.tapAStarLabel.frame = CGRectIntegral(tapAStarFrame);
 }
 
 @end
