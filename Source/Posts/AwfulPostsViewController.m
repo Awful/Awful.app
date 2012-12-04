@@ -351,7 +351,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         [self updateEndMessage];
         [self updatePullForNextPageLabel];
         if (self.jumpToPostAfterLoad) {
-            [self.postsView jumpToElementWithID:self.jumpToPostAfterLoad];
+            [self jumpToPostWithID:self.jumpToPostAfterLoad];
             self.jumpToPostAfterLoad = nil;
         } else if (wasLoading) {
             CGFloat inset = self.postsView.scrollView.contentInset.top;
@@ -367,6 +367,14 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     if (self.postsView.loadingMessage) {
         self.jumpToPostAfterLoad = postID;
     } else {
+        if (self.hiddenPosts > 0) {
+            NSUInteger i = [self.posts indexOfObjectPassingTest:^BOOL(AwfulPost *post,
+                                                                      NSUInteger _, BOOL *__)
+            {
+                return [post.postID isEqualToString:postID];
+            }];
+            if (i < (NSUInteger)self.hiddenPosts) [self showHiddenSeenPosts];
+        }
         [self.postsView jumpToElementWithID:postID];
     }
 }
