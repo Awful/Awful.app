@@ -335,8 +335,6 @@ static NSString * DeEntitify(NSString *withEntities)
 
 @property (nonatomic) BOOL seen;
 
-@property (nonatomic) BOOL isLocked;
-
 @property (nonatomic) BOOL isClosed;
 
 @property (nonatomic) NSInteger starCategory;
@@ -512,7 +510,7 @@ static NSString * DeEntitify(NSString *withEntities)
 {
     return @[
         @"threadID", @"title", @"threadIconImageURL", @"threadIconImageURL2", @"authorName",
-        @"seen", @"isLocked", @"isClosed", @"starCategory", @"totalUnreadPosts", @"totalReplies",
+        @"seen", @"isClosed", @"starCategory", @"totalUnreadPosts", @"totalReplies",
         @"threadVotes", @"threadRating", @"lastPostAuthorName", @"lastPostDate", @"isBookmarked",
         @"isSticky"
     ];

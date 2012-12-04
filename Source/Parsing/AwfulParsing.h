@@ -93,8 +93,6 @@
 
 @property (readonly, nonatomic) BOOL seen;
 
-@property (readonly, nonatomic) BOOL isLocked;
-
 @property (readonly, nonatomic) BOOL isClosed;
 
 @property (readonly, nonatomic) NSInteger starCategory;
