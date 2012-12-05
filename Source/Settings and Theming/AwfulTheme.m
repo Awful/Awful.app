@@ -227,20 +227,18 @@
 
 - (UIColor *)threadListUnreadBadgeBlueColor
 {
-    LIGHT([UIColor colorWithRed:0.169 green:0.408 blue:0.588 alpha:1]);
-    DARK([UIColor colorWithRed:0.169 green:0.408 blue:0.588 alpha:1]);
+    DEFAULT([UIColor colorWithHue:0.580 saturation:0.639 brightness:0.576 alpha:1]);
 }
 
 - (UIColor *)threadListUnreadBadgeRedColor
 {
-    LIGHT([UIColor colorWithRed:0.773 green:0 blue:0 alpha:1]);
-    DARK([UIColor colorWithRed:0.773 green:0 blue:0 alpha:1]);
+    DEFAULT([UIColor colorWithHue:0.992 saturation:0.872 brightness:0.706 alpha:1]);
 }
 
 - (UIColor *)threadListUnreadBadgeYellowColor
 {
-    LIGHT([UIColor colorWithRed:0.843 green:0.827 blue:0.145 alpha:1]);
-    DARK([UIColor colorWithRed:0.843 green:0.827 blue:0.145 alpha:1]);
+    LIGHT([UIColor colorWithHue:0.164 saturation:0.511 brightness:0.875 alpha:1]);
+    DARK([UIColor colorWithHue:0.166 saturation:0.778 brightness:0.741 alpha:1]);
 }
 
 - (UIColor *)threadListUnreadBadgeHighlightedColor
@@ -250,20 +248,17 @@
 
 - (UIColor *)threadListUnreadBadgeBlueOffColor
 {
-    LIGHT([UIColor colorWithRed:0.337 green:0.525 blue:0.671 alpha:1]);
-    DARK([UIColor colorWithRed:0.337 green:0.525 blue:0.671 alpha:1]);
+    DEFAULT([self.threadListUnreadBadgeBlueColor colorWithAlphaComponent:0.5]);
 }
 
 - (UIColor *)threadListUnreadBadgeRedOffColor
 {
-    LIGHT([UIColor colorWithRed:0.784 green:0.333 blue:0.333 alpha:1]);
-    DARK([UIColor colorWithRed:0.784 green:0.333 blue:0.333 alpha:1]);
+    DEFAULT([self.threadListUnreadBadgeRedColor colorWithAlphaComponent:0.5]);
 }
 
 - (UIColor *)threadListUnreadBadgeYellowOffColor
 {
-    LIGHT([UIColor colorWithRed:0.824 green:0.816 blue:0.451 alpha:1]);
-    DARK([UIColor colorWithRed:0.824 green:0.816 blue:0.451 alpha:1]);
+    DEFAULT([self.threadListUnreadBadgeYellowColor colorWithAlphaComponent:0.5]);
 }
 
 #pragma mark - Posts view
