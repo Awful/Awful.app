@@ -227,20 +227,20 @@
 
 - (UIColor *)threadListUnreadBadgeBlueColor
 {
-    LIGHT([UIColor colorWithHue:0.563 saturation:0.885 brightness:0.988 alpha:1]);
-    DARK([UIColor colorWithRed:0.435 green:0.659 blue:0.769 alpha:1]);
+    LIGHT([UIColor colorWithRed:0.169 green:0.408 blue:0.588 alpha:1]);
+    DARK([UIColor colorWithRed:0.169 green:0.408 blue:0.588 alpha:1]);
 }
 
 - (UIColor *)threadListUnreadBadgeRedColor
 {
-    LIGHT([UIColor colorWithHue:0.996 saturation:0.917 brightness:0.988 alpha:1]);
-    DARK([UIColor colorWithHue:1 saturation:0.605 brightness:1 alpha:1]);
+    LIGHT([UIColor colorWithRed:0.773 green:0 blue:0 alpha:1]);
+    DARK([UIColor colorWithRed:0.773 green:0 blue:0 alpha:1]);
 }
 
 - (UIColor *)threadListUnreadBadgeYellowColor
 {
-    LIGHT([UIColor colorWithHue:0.158 saturation:0.541 brightness:0.887 alpha:1]);
-    DARK([UIColor colorWithHue:0.169 saturation:0.652 brightness:0.746 alpha:1]);
+    LIGHT([UIColor colorWithRed:0.843 green:0.827 blue:0.145 alpha:1]);
+    DARK([UIColor colorWithRed:0.843 green:0.827 blue:0.145 alpha:1]);
 }
 
 - (UIColor *)threadListUnreadBadgeHighlightedColor
@@ -250,20 +250,20 @@
 
 - (UIColor *)threadListUnreadBadgeBlueOffColor
 {
-    LIGHT([UIColor colorWithRed:0.435 green:0.659 blue:0.769 alpha:1]);
-    DARK([UIColor colorWithRed:0.169 green:0.408 blue:0.588 alpha:1]);
+    LIGHT([UIColor colorWithRed:0.337 green:0.525 blue:0.671 alpha:1]);
+    DARK([UIColor colorWithRed:0.337 green:0.525 blue:0.671 alpha:1]);
 }
 
 - (UIColor *)threadListUnreadBadgeRedOffColor
 {
-    LIGHT([UIColor colorWithHue:0.995 saturation:0.484 brightness:0.988 alpha:1]);
-    DARK([UIColor colorWithHue:1 saturation:0.605 brightness:0.599 alpha:1]);
+    LIGHT([UIColor colorWithRed:0.784 green:0.333 blue:0.333 alpha:1]);
+    DARK([UIColor colorWithRed:0.784 green:0.333 blue:0.333 alpha:1]);
 }
 
 - (UIColor *)threadListUnreadBadgeYellowOffColor
 {
-    LIGHT([UIColor colorWithHue:0.158 saturation:0.292 brightness:0.887 alpha:1]);
-    DARK([UIColor colorWithHue:0.167 saturation:0.3 brightness:0.5 alpha:1]);
+    LIGHT([UIColor colorWithRed:0.824 green:0.816 blue:0.451 alpha:1]);
+    DARK([UIColor colorWithRed:0.824 green:0.816 blue:0.451 alpha:1]);
 }
 
 #pragma mark - Posts view
