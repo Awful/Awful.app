@@ -84,7 +84,7 @@
 		1C5B997F166F9844004C5D0E /* tab-background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B997C166F9844004C5D0E /* tab-background@2x.png */; };
 		1C5B9980166F9844004C5D0E /* tab-selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B997D166F9844004C5D0E /* tab-selected@2x.png */; };
 		1C5B9981166F9844004C5D0E /* tab-divider@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B997E166F9844004C5D0E /* tab-divider@2x.png */; };
-		1C5B99AE166FF91B004C5D0E /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B99AB166FF91B004C5D0E /* Model.xcdatamodeld */; };
+		1C5B99BC166FFA4F004C5D0E /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B99B8166FFA4F004C5D0E /* Model.xcdatamodeld */; };
 		1C6474C71569989800C72657 /* AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474AC1569989800C72657 /* AwfulForum.m */; };
 		1C6474CB1569989800C72657 /* AwfulThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474B51569989800C72657 /* AwfulThread.m */; };
 		1C6474CF1569989800C72657 /* _AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474BE1569989800C72657 /* _AwfulForum.m */; };
@@ -851,8 +851,9 @@
 		1C5B997C166F9844004C5D0E /* tab-background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tab-background@2x.png"; sourceTree = "<group>"; };
 		1C5B997D166F9844004C5D0E /* tab-selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tab-selected@2x.png"; sourceTree = "<group>"; };
 		1C5B997E166F9844004C5D0E /* tab-divider@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tab-divider@2x.png"; sourceTree = "<group>"; };
-		1C5B99AC166FF91B004C5D0E /* Model-1.8.1.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model-1.8.1.xcdatamodel"; sourceTree = "<group>"; };
-		1C5B99AD166FF91B004C5D0E /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		1C5B99B9166FFA4F004C5D0E /* Model-1.8.1.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model-1.8.1.xcdatamodel"; sourceTree = "<group>"; };
+		1C5B99BA166FFA4F004C5D0E /* Model-1.8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model-1.8.xcdatamodel"; sourceTree = "<group>"; };
+		1C5B99BB166FFA4F004C5D0E /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		1C6474AB1569989800C72657 /* AwfulForum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForum.h; sourceTree = "<group>"; };
 		1C6474AC1569989800C72657 /* AwfulForum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForum.m; sourceTree = "<group>"; };
 		1C6474AD1569989800C72657 /* AwfulModels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulModels.h; sourceTree = "<group>"; };
@@ -1737,7 +1738,7 @@
 				1C6474B41569989800C72657 /* AwfulThread.h */,
 				1C6474B51569989800C72657 /* AwfulThread.m */,
 				1C6474BA1569989800C72657 /* Generated */,
-				1C5B99AB166FF91B004C5D0E /* Model.xcdatamodeld */,
+				1C5B99B8166FFA4F004C5D0E /* Model.xcdatamodeld */,
 				1CBDB5FD162600D30004BDF4 /* NSManagedObject+Awful.h */,
 				1CBDB5FE162600D40004BDF4 /* NSManagedObject+Awful.m */,
 			);
@@ -3493,7 +3494,7 @@
 				1C5B996C166E78F9004C5D0E /* AwfulDisclosureIndicatorView.m in Sources */,
 				1C5B9970166F565C004C5D0E /* AwfulTabBarController.m in Sources */,
 				1C5B9973166F5835004C5D0E /* AwfulTabBar.m in Sources */,
-				1C5B99AE166FF91B004C5D0E /* Model.xcdatamodeld in Sources */,
+				1C5B99BC166FFA4F004C5D0E /* Model.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3725,13 +3726,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		1C5B99AB166FF91B004C5D0E /* Model.xcdatamodeld */ = {
+		1C5B99B8166FFA4F004C5D0E /* Model.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				1C5B99AC166FF91B004C5D0E /* Model-1.8.1.xcdatamodel */,
-				1C5B99AD166FF91B004C5D0E /* Model.xcdatamodel */,
+				1C5B99B9166FFA4F004C5D0E /* Model-1.8.1.xcdatamodel */,
+				1C5B99BA166FFA4F004C5D0E /* Model-1.8.xcdatamodel */,
+				1C5B99BB166FFA4F004C5D0E /* Model.xcdatamodel */,
 			);
-			currentVersion = 1C5B99AD166FF91B004C5D0E /* Model.xcdatamodel */;
+			currentVersion = 1C5B99BB166FFA4F004C5D0E /* Model.xcdatamodel */;
 			path = Model.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
