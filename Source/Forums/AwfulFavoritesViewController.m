@@ -43,8 +43,7 @@
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         self.title = @"Favorites";
-        self.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemFavorites
-                                                                     tag:0];
+        self.tabBarItem.image = [UIImage imageNamed:@"favorites-icon.png"];
     }
     return self;
 }

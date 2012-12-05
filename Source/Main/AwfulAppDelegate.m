@@ -21,18 +21,19 @@
 #import "AwfulSettingsViewController.h"
 #import "AwfulSplitViewController.h"
 #import "AwfulStartViewController.h"
+#import "AwfulTabBarController.h"
 #import "AFNetworking.h"
 #import "NSFileManager+UserDirectories.h"
 #import "NSManagedObject+Awful.h"
 #import "SVProgressHUD.h"
 #import "UIViewController+NavigationEnclosure.h"
 
-@interface AwfulAppDelegate () <UITabBarControllerDelegate, UINavigationControllerDelegate,
+@interface AwfulAppDelegate () <AwfulTabBarControllerDelegate, UINavigationControllerDelegate,
                                 AwfulLoginControllerDelegate>
 
 @property (weak, nonatomic) AwfulSplitViewController *splitViewController;
 
-@property (weak, nonatomic) UITabBarController *tabBarController;
+@property (weak, nonatomic) AwfulTabBarController *tabBarController;
 
 @end
 
@@ -143,15 +144,14 @@ static AwfulAppDelegate *_instance;
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     
-    UITabBarController *tabBar = [UITabBarController new];
-    tabBar.wantsFullScreenLayout = NO;
+    AwfulTabBarController *tabBar = [AwfulTabBarController new];
     tabBar.viewControllers = @[
         [[AwfulForumsListController new] enclosingNavigationController],
         [[AwfulFavoritesViewController new] enclosingNavigationController],
         [[AwfulBookmarksController new] enclosingNavigationController],
         [[AwfulSettingsViewController new] enclosingNavigationController]
     ];
-    tabBar.selectedIndex = [[AwfulSettings settings] firstTab];
+    tabBar.selectedViewController = tabBar.viewControllers[[[AwfulSettings settings] firstTab]];
     tabBar.delegate = self;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         AwfulSplitViewController *splitController = [AwfulSplitViewController new];
@@ -397,9 +397,9 @@ static AwfulAppDelegate *_instance;
     [nav pushViewController:threadList animated:YES];
 }
 
-#pragma mark - UITabBarControllerDelegate
+#pragma mark - AwfulTabBarControllerDelegate
 
-- (BOOL)tabBarController:(UITabBarController *)tabBarController
+- (BOOL)tabBarController:(AwfulTabBarController *)tabBarController
     shouldSelectViewController:(UIViewController *)viewController
 {
     return IsLoggedIn();

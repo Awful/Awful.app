@@ -29,9 +29,7 @@
 {
     if (!(self = [super init])) return nil;
     self.title = @"Bookmarks";
-    self.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemBookmarks
-                                                                 tag:0];
-    self.tabBarItem.title = @"Bookmarks";
+    self.tabBarItem.image = [UIImage imageNamed:@"bookmarks.png"];
     UIImage *portrait = [UIImage imageNamed:@"bookmarks.png"];
     UIImage *landscapePhone = [UIImage imageNamed:@"bookmarks-landscape.png"];
     UIBarButtonItem *marks = [[UIBarButtonItem alloc] initWithImage:portrait

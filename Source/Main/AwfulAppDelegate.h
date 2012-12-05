@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@class AwfulSplitViewController;
-
 @interface AwfulAppDelegate : NSObject <UIApplicationDelegate>
 
 + (AwfulAppDelegate *)instance;

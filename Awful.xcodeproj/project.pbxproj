@@ -78,6 +78,13 @@
 		1C40E5B21640FC2D004AAFA6 /* posts-view.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C40E5B11640FC2C004AAFA6 /* posts-view.css */; };
 		1C40E5B41640FDB9004AAFA6 /* posts-view-219.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C40E5B31640FDB8004AAFA6 /* posts-view-219.css */; };
 		1C5B996C166E78F9004C5D0E /* AwfulDisclosureIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B996B166E78F9004C5D0E /* AwfulDisclosureIndicatorView.m */; };
+		1C5B9970166F565C004C5D0E /* AwfulTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B996F166F565C004C5D0E /* AwfulTabBarController.m */; };
+		1C5B9973166F5835004C5D0E /* AwfulTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B9972166F5835004C5D0E /* AwfulTabBar.m */; };
+		1C5B9979166F6E4B004C5D0E /* favorites-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9978166F6E4B004C5D0E /* favorites-icon@2x.png */; };
+		1C5B997B166F6E54004C5D0E /* pm-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B997A166F6E54004C5D0E /* pm-icon@2x.png */; };
+		1C5B997F166F9844004C5D0E /* tab-background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B997C166F9844004C5D0E /* tab-background@2x.png */; };
+		1C5B9980166F9844004C5D0E /* tab-selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B997D166F9844004C5D0E /* tab-selected@2x.png */; };
+		1C5B9981166F9844004C5D0E /* tab-divider@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B997E166F9844004C5D0E /* tab-divider@2x.png */; };
 		1C6474C71569989800C72657 /* AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474AC1569989800C72657 /* AwfulForum.m */; };
 		1C6474CB1569989800C72657 /* AwfulThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474B51569989800C72657 /* AwfulThread.m */; };
 		1C6474CF1569989800C72657 /* _AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474BE1569989800C72657 /* _AwfulForum.m */; };
@@ -837,6 +844,15 @@
 		1C40E5B31640FDB8004AAFA6 /* posts-view-219.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-219.css"; sourceTree = "<group>"; };
 		1C5B996A166E78F9004C5D0E /* AwfulDisclosureIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulDisclosureIndicatorView.h; sourceTree = "<group>"; };
 		1C5B996B166E78F9004C5D0E /* AwfulDisclosureIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulDisclosureIndicatorView.m; sourceTree = "<group>"; };
+		1C5B996E166F565C004C5D0E /* AwfulTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTabBarController.h; sourceTree = "<group>"; };
+		1C5B996F166F565C004C5D0E /* AwfulTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTabBarController.m; sourceTree = "<group>"; };
+		1C5B9971166F5835004C5D0E /* AwfulTabBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTabBar.h; sourceTree = "<group>"; };
+		1C5B9972166F5835004C5D0E /* AwfulTabBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTabBar.m; sourceTree = "<group>"; };
+		1C5B9978166F6E4B004C5D0E /* favorites-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "favorites-icon@2x.png"; sourceTree = "<group>"; };
+		1C5B997A166F6E54004C5D0E /* pm-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pm-icon@2x.png"; sourceTree = "<group>"; };
+		1C5B997C166F9844004C5D0E /* tab-background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tab-background@2x.png"; sourceTree = "<group>"; };
+		1C5B997D166F9844004C5D0E /* tab-selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tab-selected@2x.png"; sourceTree = "<group>"; };
+		1C5B997E166F9844004C5D0E /* tab-divider@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tab-divider@2x.png"; sourceTree = "<group>"; };
 		1C6474AB1569989800C72657 /* AwfulForum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForum.h; sourceTree = "<group>"; };
 		1C6474AC1569989800C72657 /* AwfulForum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForum.m; sourceTree = "<group>"; };
 		1C6474AD1569989800C72657 /* AwfulModels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulModels.h; sourceTree = "<group>"; };
@@ -1907,6 +1923,10 @@
 				1CE2D9C7166ABD0D0024AC1C /* AwfulNavigationBar.m */,
 				1CE2D9C8166ABD0D0024AC1C /* AwfulSplitViewController.h */,
 				1CE2D9C9166ABD0D0024AC1C /* AwfulSplitViewController.m */,
+				1C5B996E166F565C004C5D0E /* AwfulTabBarController.h */,
+				1C5B996F166F565C004C5D0E /* AwfulTabBarController.m */,
+				1C5B9971166F5835004C5D0E /* AwfulTabBar.h */,
+				1C5B9972166F5835004C5D0E /* AwfulTabBar.m */,
 				1CE2D9CA166ABD0D0024AC1C /* AwfulTableViewController.h */,
 				1CE2D9CB166ABD0D0024AC1C /* AwfulTableViewController.m */,
 				1CE2D9CC166ABD0D0024AC1C /* NSFileManager+UserDirectories.h */,
@@ -2022,6 +2042,7 @@
 				8CCD504F15B783FC00E5893B /* compose.png */,
 				8CCD505015B783FC00E5893B /* compose@2x.png */,
 				8C9B02BF1623630F00676B98 /* downArrowDark.png */,
+				1C5B9978166F6E4B004C5D0E /* favorites-icon@2x.png */,
 				8CCD524215B783FC00E5893B /* forum-arrow-down.png */,
 				8CCD524315B783FC00E5893B /* forum-arrow-down@2x.png */,
 				8C2450FE1666FDA300D3079C /* forum-arrow-down-dark.png */,
@@ -2056,6 +2077,7 @@
 				1CFBECE6162F526A008AF641 /* pagebar-segmented-divider@2x.png */,
 				1CFBECD3162F4ED7008AF641 /* pagebar.png */,
 				1CFBECD4162F4ED7008AF641 /* pagebar@2x.png */,
+				1C5B997A166F6E54004C5D0E /* pm-icon@2x.png */,
 				8C4141A8163B77880048942F /* post-actions-yospos.png */,
 				8CCD525C15B783FC00E5893B /* rating0.png */,
 				8CCD525D15B783FC00E5893B /* rating1.png */,
@@ -2070,6 +2092,9 @@
 				1CFBECFE1631A6EA008AF641 /* star-on.png */,
 				1CFBECFF1631A6EA008AF641 /* star-on@2x.png */,
 				8CCD527715B783FC00E5893B /* sticky.png */,
+				1C5B997C166F9844004C5D0E /* tab-background@2x.png */,
+				1C5B997E166F9844004C5D0E /* tab-divider@2x.png */,
+				1C5B997D166F9844004C5D0E /* tab-selected@2x.png */,
 				1C101572164E8A7200302B19 /* tag-collage-Landscape.png */,
 				1C101573164E8A7200302B19 /* tag-collage-Landscape@2x.png */,
 				1C101574164E8A7200302B19 /* tag-collage-Portrait.png */,
@@ -3296,6 +3321,11 @@
 				8C2451041666FDAE00D3079C /* forum-arrow-right-dark.png in Resources */,
 				8C2451051666FDAE00D3079C /* forum-arrow-right-dark@2x.png in Resources */,
 				1CE2D99F16688BA00024AC1C /* ama.png in Resources */,
+				1C5B9979166F6E4B004C5D0E /* favorites-icon@2x.png in Resources */,
+				1C5B997B166F6E54004C5D0E /* pm-icon@2x.png in Resources */,
+				1C5B997F166F9844004C5D0E /* tab-background@2x.png in Resources */,
+				1C5B9980166F9844004C5D0E /* tab-selected@2x.png in Resources */,
+				1C5B9981166F9844004C5D0E /* tab-divider@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3462,6 +3492,8 @@
 				1CE2D9DF166ABD0D0024AC1C /* UINavigationItem+TwoLineTitle.m in Sources */,
 				1CE2D9E0166ABD0D0024AC1C /* UIViewController+NavigationEnclosure.m in Sources */,
 				1C5B996C166E78F9004C5D0E /* AwfulDisclosureIndicatorView.m in Sources */,
+				1C5B9970166F565C004C5D0E /* AwfulTabBarController.m in Sources */,
+				1C5B9973166F5835004C5D0E /* AwfulTabBar.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
