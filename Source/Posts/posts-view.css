@@ -256,6 +256,12 @@ body.dark {
   font-size: 40px;
   width: 50px;
 }
+.dark #posts > article > header > button:after {
+    color: #777777;
+}
+.dark #posts > article.seen > header > button:after {
+    color: #536879;
+}
 .ipad #posts > article > header > button:after {
   font-size: 30px;
   width: 38px;
