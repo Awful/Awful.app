@@ -962,6 +962,9 @@ static char KVOContext;
     AwfulPost *post = self.fetchedResultsController.fetchedObjects[unboxed];
     CGRect rect = CGRectMake([rectDict[@"left"] floatValue], [rectDict[@"top"] floatValue],
                              [rectDict[@"width"] floatValue], [rectDict[@"height"] floatValue]);
+    if (self.postsView.scrollView.contentOffset.y < 0) {
+        rect.origin.y -= self.postsView.scrollView.contentOffset.y;
+    }
     [self showActionsForPost:post fromRect:rect inView:self.postsView];
 }
 
