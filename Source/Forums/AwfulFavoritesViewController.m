@@ -52,11 +52,15 @@
 {
     self.tableView.scrollEnabled = NO;
     UIView *cover = self.coverView;
-    [UIView transitionWithView:self.view
-                      duration:animated ? 0.6 : 0
-                       options:UIViewAnimationOptionTransitionCurlDown
-                    animations:^{ [self.view addSubview:cover]; }
-                    completion:nil];
+    if (animated) {
+        [UIView transitionWithView:self.view
+                          duration:0.6
+                           options:UIViewAnimationOptionTransitionCurlDown
+                        animations:^{ [self.view addSubview:cover]; }
+                        completion:nil];
+    } else {
+        [self.view addSubview:cover];
+    }
 }
 
 - (void)hideNoFavoritesCover
