@@ -18,33 +18,14 @@
         <relationship name="parentForum" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="children" inverseEntity="AwfulForum" syncable="YES"/>
         <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="forum" inverseEntity="AwfulThread" syncable="YES"/>
     </entity>
-    <entity name="AwfulPost" representedClassName="AwfulPost" syncable="YES">
-        <attribute name="authorAvatarURL" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="authorCustomTitleHTML" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="authorIsAModerator" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
-        <attribute name="authorIsAnAdministrator" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
-        <attribute name="authorIsOriginalPoster" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
-        <attribute name="authorName" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="authorRegDate" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="beenSeen" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
-        <attribute name="editable" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
-        <attribute name="innerHTML" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="postDate" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="postID" attributeType="String" syncable="YES"/>
-        <attribute name="threadIndex" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <attribute name="threadPage" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <relationship name="thread" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="posts" inverseEntity="AwfulThread" syncable="YES"/>
-    </entity>
     <entity name="AwfulThread" representedClassName="AwfulThread" syncable="YES">
         <attribute name="authorName" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="hideFromList" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
         <attribute name="isBookmarked" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="isClosed" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="isLocked" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="isSticky" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="lastPostAuthorName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="lastPostDate" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="numberOfPages" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="seen" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="starCategory" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="stickyIndex" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
@@ -57,12 +38,10 @@
         <attribute name="totalReplies" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="totalUnreadPosts" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="forum" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="threads" inverseEntity="AwfulForum" syncable="YES"/>
-        <relationship name="posts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulPost" inverseName="thread" inverseEntity="AwfulPost" syncable="YES"/>
     </entity>
     <elements>
         <element name="AwfulCategory" positionX="160" positionY="192" width="128" height="105"/>
         <element name="AwfulForum" positionX="205" positionY="285" width="128" height="195"/>
-        <element name="AwfulPost" positionX="160" positionY="192" width="128" height="270"/>
-        <element name="AwfulThread" positionX="25" positionY="210" width="128" height="375"/>
+        <element name="AwfulThread" positionX="25" positionY="210" width="128" height="330"/>
     </elements>
 </model>
