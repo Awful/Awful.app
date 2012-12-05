@@ -221,8 +221,7 @@
 
 - (UIColor *)threadListSeparatorColor
 {
-    LIGHT([UIColor colorWithWhite:0.75 alpha:1]);
-    DARK([UIColor colorWithWhite:0.106 alpha:1]);
+    DEFAULT(self.disclosureIndicatorColor);
 }
 
 - (UIColor *)threadListUnreadBadgeBlueColor
