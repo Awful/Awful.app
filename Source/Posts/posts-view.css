@@ -449,11 +449,11 @@ body.dark {
   margin-top: 5px;
 }
 
-/* The "end of the thread" message is white in dark mode and black in light mode, with a bit of a shadow. */
+/* The "end of the thread" message is white in dark mode and dark grey in light mode, with a bit of a shadow. */
 #end {
   text-align: center;
   line-height: 3em;
-  color: black;
+  color: #636363;
   text-shadow: white 0 1px;
 }
 .dark #end {
