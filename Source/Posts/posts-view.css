@@ -256,6 +256,12 @@ body.dark {
   font-size: 40px;
   width: 50px;
 }
+.dark #posts > article > header > button:after {
+    color: #777777;
+}
+.dark #posts > article.seen > header > button:after {
+    color: #536879;
+}
 .ipad #posts > article > header > button:after {
   font-size: 30px;
   width: 38px;
@@ -443,11 +449,11 @@ body.dark {
   margin-top: 5px;
 }
 
-/* The "end of the thread" message is white in dark mode and black in light mode, with a bit of a shadow. */
+/* The "end of the thread" message is white in dark mode and dark grey in light mode, with a bit of a shadow. */
 #end {
   text-align: center;
   line-height: 3em;
-  color: black;
+  color: #636363;
   text-shadow: white 0 1px;
 }
 .dark #end {
@@ -470,6 +476,7 @@ body.dark {
 
 /* The progress bar and loading text go in the middle. */
 #loading .container {
+  color: #636363;
   position: absolute;
   top: 50%;
   margin-top: -30px;
@@ -480,7 +487,7 @@ body.dark {
 /* If the progress bar is hidden, we'll show a spinner of this color from spin.js instead. */
 #loading .progress-bar {
   display: none;
-  color: #000;
+  color: #636363;
 }
 .dark > #loading .progress-bar {
   color: #fff;
