@@ -313,7 +313,7 @@
 - (UIColor *)settingsViewBackgroundColor
 {
     LIGHT([UIColor colorWithHue:0.604 saturation:0.035 brightness:0.898 alpha:1]);
-    DARK([UIColor blackColor]);
+    DARK(self.postsViewBackgroundColor);
 }
 
 - (UIColor *)settingsViewHeaderTextColor
@@ -325,7 +325,7 @@
 - (UIColor *)settingsViewHeaderShadowColor
 {
     LIGHT([UIColor whiteColor]);
-    DARK([UIColor darkGrayColor]);
+    DARK([UIColor grayColor]);
 }
 
 - (UIColor *)settingsViewFooterTextColor
@@ -343,7 +343,7 @@
 - (UIColor *)settingsCellBackgroundColor
 {
     LIGHT([UIColor whiteColor]);
-    DARK([UIColor darkGrayColor]);
+    DARK(self.settingsViewBackgroundColor);
 }
 
 - (UIColor *)settingsCellTextColor
@@ -355,7 +355,7 @@
 - (UIColor *)settingsCellCurrentValueTextColor
 {
     LIGHT([UIColor colorWithHue:0.607 saturation:0.568 brightness:0.518 alpha:1]);
-    DARK([UIColor colorWithHue:0.607 saturation:0.307 brightness:1 alpha:1]);
+    DARK([UIColor colorWithHue:0.584 saturation:0.570 brightness:1.000 alpha:1]);
 }
 
 - (UIColor *)settingsCellSwitchOnTintColor
@@ -366,7 +366,7 @@
 - (UIColor *)settingsCellSeparatorColor
 {
     LIGHT(nil);
-    DARK([UIColor grayColor]);
+    DARK(self.forumListSeparatorColor);
 }
 
 #pragma mark - Licenses view

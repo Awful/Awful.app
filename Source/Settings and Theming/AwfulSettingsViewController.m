@@ -93,6 +93,7 @@
     self.switches = [NSMutableArray new];
     self.sections = AwfulSettings.settings.sections;
     self.tableView.backgroundView = nil;
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
     
     // Make sure the bottom section's footer is visible.
     self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 18, 0);
