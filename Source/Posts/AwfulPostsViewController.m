@@ -691,6 +691,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 
 - (void)retheme
 {
+    self.view.backgroundColor = [AwfulTheme currentTheme].postsViewBackgroundColor;
     self.topBar.backgroundColor = [AwfulTheme currentTheme].postsViewTopBarMarginColor;
     NSArray *buttons = @[ self.topBar.goToForumButton, self.topBar.loadReadPostsButton,
                           self.topBar.scrollToBottomButton ];
@@ -735,7 +736,6 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 - (void)loadView
 {
     self.view = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    self.view.backgroundColor = [AwfulTheme currentTheme].postsViewBackgroundColor;
     CGRect postsFrame, pageBarFrame;
     CGRectDivide(self.view.bounds, &pageBarFrame, &postsFrame, 38, CGRectMaxYEdge);
     
