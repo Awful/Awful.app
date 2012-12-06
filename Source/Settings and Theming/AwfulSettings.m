@@ -124,7 +124,7 @@ struct {
     if (username) return username;
     NSDictionary *oldUser = [defaults objectForKey:ObsoleteSettingsKeys.currentUser];
     [defaults removeObjectForKey:ObsoleteSettingsKeys.currentUser];
-    self.username = oldUser[@"username"];
+    [self setObject:oldUser[@"username"] withoutNotifyingForKey:AwfulSettingsKeys.username];
     return oldUser[@"username"];
 }
 
@@ -143,14 +143,19 @@ BOOL_PROPERTY(showThreadTags, setShowThreadTags)
 - (void)setObject:(id)object forKeyedSubscript:(id <NSCopying>)key
 {
     NSParameterAssert(key);
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    if (object) [defaults setObject:object forKey:(NSString *)key];
-    else [defaults removeObjectForKey:(NSString *)key];
-    [defaults synchronize];
+    [self setObject:object withoutNotifyingForKey:key];
     NSDictionary *userInfo = @{ AwfulSettingsDidChangeSettingsKey : @[ key ] };
     [[NSNotificationCenter defaultCenter] postNotificationName:AwfulSettingsDidChangeNotification
                                                         object:self
                                                       userInfo:userInfo];
+}
+
+- (void)setObject:(id)object withoutNotifyingForKey:(id)key
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if (object) [defaults setObject:object forKey:(NSString *)key];
+    else [defaults removeObjectForKey:(NSString *)key];
+    [defaults synchronize];
 }
 
 @end
