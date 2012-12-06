@@ -72,6 +72,7 @@
 @property (readonly, nonatomic) UIColor *postsViewTopBarButtonBackgroundColor;
 @property (readonly, nonatomic) UIColor *postsViewTopBarButtonTextColor;
 @property (readonly, nonatomic) UIColor *postsViewTopBarButtonDisabledTextColor;
+@property (readonly, nonatomic) UIColor *postsViewPullUpForNextPageTextAndArrowColor;
 
 // Reply view
 

@@ -35,6 +35,12 @@
 
 - (void)setTitle:(NSString *)title forState:(UIControlState)state;
 
+@property (nonatomic) UIColor *textColor;
+
+@property (nonatomic) UIActivityIndicatorViewStyle spinnerStyle;
+
+@property (nonatomic) UIColor *arrowColor;
+
 @end
 
 enum {

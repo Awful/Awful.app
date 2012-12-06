@@ -690,19 +690,21 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 
 - (void)retheme
 {
-    self.view.backgroundColor = [AwfulTheme currentTheme].postsViewBackgroundColor;
-    self.topBar.backgroundColor = [AwfulTheme currentTheme].postsViewTopBarMarginColor;
+    AwfulTheme *theme = [AwfulTheme currentTheme];
+    self.view.backgroundColor = theme.postsViewBackgroundColor;
+    self.topBar.backgroundColor = theme.postsViewTopBarMarginColor;
     NSArray *buttons = @[ self.topBar.goToForumButton, self.topBar.loadReadPostsButton,
                           self.topBar.scrollToBottomButton ];
     for (UIButton *button in buttons) {
-        [button setTitleColor:[AwfulTheme currentTheme].postsViewTopBarButtonTextColor
-                     forState:UIControlStateNormal];
-        [button setTitleShadowColor:[UIColor whiteColor]
-                           forState:UIControlStateNormal];
-        [button setTitleColor:[AwfulTheme currentTheme].postsViewTopBarButtonDisabledTextColor
+        [button setTitleColor:theme.postsViewTopBarButtonTextColor forState:UIControlStateNormal];
+        [button setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [button setTitleColor:theme.postsViewTopBarButtonDisabledTextColor
                      forState:UIControlStateDisabled];
-        button.backgroundColor = [AwfulTheme currentTheme].postsViewTopBarButtonBackgroundColor;
+        button.backgroundColor = theme.postsViewTopBarButtonBackgroundColor;
     }
+    self.pullUpToRefreshControl.spinnerStyle = theme.activityIndicatorViewStyle;
+    self.pullUpToRefreshControl.textColor = theme.postsViewPullUpForNextPageTextAndArrowColor;
+    self.pullUpToRefreshControl.arrowColor = theme.postsViewPullUpForNextPageTextAndArrowColor;
     self.postsView.dark = [AwfulSettings settings].darkTheme;
 }
 

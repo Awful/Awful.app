@@ -194,6 +194,36 @@
     }
 }
 
+- (UIColor *)textColor
+{
+    return self.titleLabel.textColor;
+}
+
+- (void)setTextColor:(UIColor *)textColor
+{
+    self.titleLabel.textColor = textColor;
+}
+
+- (UIActivityIndicatorViewStyle)spinnerStyle
+{
+    return self.spinner.activityIndicatorViewStyle;
+}
+
+- (void)setSpinnerStyle:(UIActivityIndicatorViewStyle)spinnerStyle
+{
+    self.spinner.activityIndicatorViewStyle = spinnerStyle;
+}
+
+- (UIColor *)arrowColor
+{
+    return self.arrow.color;
+}
+
+- (void)setArrowColor:(UIColor *)arrowColor
+{
+    self.arrow.color = arrowColor;
+}
+
 #pragma mark - UIControl
 
 - (UIControlState)state
@@ -347,6 +377,13 @@ static void * KVOContext = @"AwfulPullToRefreshControl KVO";
     {
         self.transform = CGAffineTransformMakeRotation(radians);
     } completion:nil];
+}
+
+- (void)setColor:(UIColor *)color
+{
+    if (_color == color) return;
+    _color = color;
+    [self setNeedsDisplay];
 }
 
 @end

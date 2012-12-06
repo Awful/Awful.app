@@ -288,6 +288,12 @@
     DEFAULT([UIColor lightGrayColor]);
 }
 
+- (UIColor *)postsViewPullUpForNextPageTextAndArrowColor
+{
+    LIGHT([UIColor grayColor]);
+    DARK([UIColor lightGrayColor]);
+}
+
 #pragma mark - Reply view
 
 - (UIColor *)replyViewBackgroundColor
