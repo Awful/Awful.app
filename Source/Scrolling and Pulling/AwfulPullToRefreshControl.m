@@ -252,7 +252,7 @@
 
 - (void)layoutSubviews
 {
-    CGFloat leftOffset = CGRectGetMidX(self.bounds) - 100;
+    CGFloat leftOffset = CGRectGetMidX(self.bounds) - 98;
     CGRect arrowFrame = self.arrow.frame;
     arrowFrame.origin.x = leftOffset;
     arrowFrame.origin.y = floor((self.bounds.size.height - arrowFrame.size.height) / 2);
