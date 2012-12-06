@@ -406,6 +406,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         self.thread.totalRepliesValue = readPosts;
     }
     self.thread.totalUnreadPostsValue = self.thread.totalRepliesValue - readPosts;
+    self.thread.seenValue = YES;
     [[AwfulDataStack sharedDataStack] save];
     self.markingPostsAsBeenSeen = NO;
 }
