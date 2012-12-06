@@ -7,6 +7,7 @@
 //
 
 #import "AwfulTableViewController.h"
+#import "AwfulHTTPClient.h"
 #import "AwfulTheme.h"
 #import "SVPullToRefresh.h"
 
@@ -69,7 +70,7 @@
 
 - (void)becameActive
 {
-    [self refreshIfNeededOnAppear];
+    if ([AwfulHTTPClient client].reachable) [self refreshIfNeededOnAppear];
 }
 
 - (void)refreshIfNeededOnAppear
