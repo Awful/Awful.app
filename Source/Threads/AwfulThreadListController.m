@@ -18,6 +18,7 @@
 #import "AwfulPostsViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulSplitViewController.h"
+#import "AwfulTabBarController.h"
 #import "AwfulTheme.h"
 #import "AwfulThreadCell.h"
 #import "AwfulThreadTags.h"
@@ -196,7 +197,9 @@ typedef enum {
     }];
     [sheet addCancelButtonWithTitle:@"Cancel"];
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        [sheet showFromTabBar:self.tabBarController.tabBar];
+        [sheet showFromRect:self.awfulTabBarController.tabBar.frame
+                     inView:self.awfulTabBarController.view
+                   animated:YES];
     } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         NSUInteger index = [self.fetchedResultsController.fetchedObjects indexOfObject:thread];
         if (index != NSNotFound) {

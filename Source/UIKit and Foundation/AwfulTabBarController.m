@@ -188,3 +188,18 @@
 }
 
 @end
+
+
+@implementation UIViewController (AwfulTabBarController)
+
+- (AwfulTabBarController *)awfulTabBarController
+{
+    UIViewController *vc = self;
+    while (vc) {
+        vc = vc.parentViewController;
+        if ([vc isKindOfClass:[AwfulTabBarController class]]) return (AwfulTabBarController *)vc;
+    }
+    return nil;
+}
+
+@end

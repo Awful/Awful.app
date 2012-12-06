@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AwfulTabBar.h"
 @protocol AwfulTabBarControllerDelegate;
 
 // A custom tab bar controller so we can make the tabs look however we want.
@@ -28,6 +29,9 @@
 
 @property (weak, nonatomic) id <AwfulTabBarControllerDelegate> delegate;
 
+// For presenting action sheets.
+@property (readonly, weak, nonatomic) AwfulTabBar *tabBar;
+
 @end
 
 
@@ -36,5 +40,12 @@
 
 - (BOOL)tabBarController:(AwfulTabBarController *)controller
     shouldSelectViewController:(UIViewController *)viewController;
+
+@end
+
+
+@interface UIViewController (AwfulTabBarController)
+
+@property (readonly, nonatomic) AwfulTabBarController *awfulTabBarController;
 
 @end
