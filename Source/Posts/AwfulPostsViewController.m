@@ -318,8 +318,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
             }
             // Poor man's offline mode.
             if (!wasLoading && !refreshingSamePage
-                && [error.domain isEqualToString:NSURLErrorDomain]
-                && error.code == NSURLErrorNotConnectedToInternet) {
+                && [error.domain isEqualToString:NSURLErrorDomain]) {
                 return;
             }
             [AwfulAlertView showWithTitle:@"Could Not Load Page" error:error buttonTitle:@"OK"];
