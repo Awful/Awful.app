@@ -62,6 +62,7 @@
     {
         [going removeFromParentViewController];
         [coming didMoveToParentViewController:self];
+        [self.view bringSubviewToFront:self.tabBar];
     }];
 }
 
