@@ -148,19 +148,17 @@ Awful.showImages = function(on){
   }
 }
 
-var baseURL = "http://forums.somethingawful.com"
-
 function render(post) {
   rendered = $('#postTemplate').mustache(post)
   // Some links and images come with relative URLs, which break as we set our
   // relative URL to the app's resource directory. Let's fix those up.
   rendered.find('a:not([href *= "://"])').each(function(){
-    var a = $(this), href = a.attr('href')
-    a.attr('href', baseURL + (href.indexOf('/') !== 0 ? '/' : '') + href)
+    var a = $(this)
+    a.attr('href', prependBaseURL(a.attr('href')))
   })
   rendered.find('img:not([src *= "://"])').each(function(){
     var img = $(this)
-    img.attr('src', baseURL + img.attr('src'))
+    img.attr('src', prependBaseURL(img.attr('src')))
   })
   // We style spoilers ourselves.
   rendered.find('span.bbc-spoiler')
@@ -172,6 +170,10 @@ function render(post) {
   highlightQuotes(rendered)
   highlightMentions(rendered)
   return rendered
+}
+
+function prependBaseURL(relativeURL) {
+  return "http://forums.somethingawful.com" + (relativeURL.indexOf('/') !== 0 ? '/' : '') + relativeURL
 }
 
 function nullOrUndefined(arg) {
