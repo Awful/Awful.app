@@ -14,14 +14,9 @@
 #import "AwfulTheme.h"
 #import "ImgurHTTPClient.h"
 #import "NSString+CollapseWhitespace.h"
+#import "PSMenuItem.h"
 #import "SVProgressHUD.h"
 #import "UINavigationItem+TwoLineTitle.h"
-
-typedef enum {
-    TopLevelMenu = 0,
-    ImageSourceSubmenu,
-    FormattingSubmenu
-} Menu;
 
 @interface AwfulReplyViewController () <UIImagePickerControllerDelegate,
                                         UINavigationControllerDelegate, UIPopoverControllerDelegate>
@@ -33,8 +28,6 @@ typedef enum {
 @property (readonly, nonatomic) UITextView *replyTextView;
 
 @property (weak, nonatomic) NSOperation *networkOperation;
-
-@property (nonatomic) Menu currentMenu;
 
 @property (nonatomic) id observerToken;
 
@@ -284,76 +277,40 @@ withImagePlaceholderResults:placeholderResults
 - (void)configureTopLevelMenuItems
 {
     [UIMenuController sharedMenuController].menuItems = @[
-    [[UIMenuItem alloc] initWithTitle:@"[url]" action:@selector(linkifySelection:)],
-    [[UIMenuItem alloc] initWithTitle:@"[img]" action:@selector(insertImage:)],
-    [[UIMenuItem alloc] initWithTitle:@"Format" action:@selector(showFormattingSubmenu:)]
+        [[PSMenuItem alloc] initWithTitle:@"[url]" block:^{ [self linkifySelection]; }],
+        [[PSMenuItem alloc] initWithTitle:@"[img]" block:^{ [self insertImage]; }],
+        [[PSMenuItem alloc] initWithTitle:@"Format" block:^{ [self showFormattingSubmenu]; }]
     ];
-    self.currentMenu = TopLevelMenu;
 }
 
 - (void)configureImageSourceSubmenuItems
 {
     [UIMenuController sharedMenuController].menuItems = @[
-    [[UIMenuItem alloc] initWithTitle:@"From Camera" action:@selector(insertImageFromCamera:)],
-    [[UIMenuItem alloc] initWithTitle:@"From Library" action:@selector(insertImageFromLibrary:)]
+        [[PSMenuItem alloc] initWithTitle:@"From Camera" block:^{ [self insertImageFromCamera]; }],
+        [[PSMenuItem alloc] initWithTitle:@"From Library"
+                                    block:^{ [self insertImageFromLibrary]; }],
     ];
-    self.currentMenu = ImageSourceSubmenu;
 }
 
 - (void)configureFormattingSubmenuItems
 {
     [UIMenuController sharedMenuController].menuItems = @[
-    [[UIMenuItem alloc] initWithTitle:@"[b]" action:@selector(emboldenSelection:)],
-    [[UIMenuItem alloc] initWithTitle:@"[s]" action:@selector(strikeSelection:)],
-    [[UIMenuItem alloc] initWithTitle:@"[u]" action:@selector(underlineSelection:)],
-    [[UIMenuItem alloc] initWithTitle:@"[i]" action:@selector(italicizeSelection:)],
-    [[UIMenuItem alloc] initWithTitle:@"[spoiler]" action:@selector(spoilerSelection:)],
-    [[UIMenuItem alloc] initWithTitle:@"[fixed]" action:@selector(monospaceSelection:)],
-    [[UIMenuItem alloc] initWithTitle:@"[quote]" action:@selector(quoteSelection:)],
-    [[UIMenuItem alloc] initWithTitle:@"[code]" action:@selector(encodeSelection:)],
+        [[PSMenuItem alloc] initWithTitle:@"[b]" block:^{ [self wrapSelectionInTag:@"[b]"]; }],
+        [[PSMenuItem alloc] initWithTitle:@"[s]" block:^{ [self wrapSelectionInTag:@"[s]"]; }],
+        [[PSMenuItem alloc] initWithTitle:@"[u]" block:^{ [self wrapSelectionInTag:@"[u]"]; }],
+        [[PSMenuItem alloc] initWithTitle:@"[i]" block:^{ [self wrapSelectionInTag:@"[i]"]; }],
+        [[PSMenuItem alloc] initWithTitle:@"[spoiler]"
+                                    block:^{ [self wrapSelectionInTag:@"[spoiler]"]; }],
+        [[PSMenuItem alloc] initWithTitle:@"[fixed]"
+                                    block:^{ [self wrapSelectionInTag:@"[fixed]"]; }],
+        [[PSMenuItem alloc] initWithTitle:@"[quote]"
+                                    block:^{ [self wrapSelectionInTag:@"[quote=]\n"]; }],
+        [[PSMenuItem alloc] initWithTitle:@"[code]"
+                                    block:^{ [self wrapSelectionInTag:@"[code]\n"]; }],
     ];
-    self.currentMenu = FormattingSubmenu;
 }
 
-- (BOOL)canPerformAction:(SEL)action withSender:(id)sender
-{
-    // URL item
-    if (action == @selector(linkifySelection:)) {
-        return self.currentMenu == TopLevelMenu;
-    }
-    
-    // Image item and submenu
-    if (action == @selector(insertImage:)) {
-        if (self.currentMenu != TopLevelMenu) return NO;
-        return [UIImagePickerController isSourceTypeAvailable:
-                UIImagePickerControllerSourceTypePhotoLibrary] ||
-        [UIImagePickerController isSourceTypeAvailable:
-         UIImagePickerControllerSourceTypeCamera];
-    }
-    
-    if (action == @selector(insertImageFromCamera:) ||
-        action == @selector(insertImageFromLibrary:)) {
-        return self.currentMenu == ImageSourceSubmenu;
-    }
-    
-    // Formatting item and submenu
-    if (action == @selector(showFormattingSubmenu:)) {
-        return self.currentMenu == TopLevelMenu;
-    }
-    
-    if (action == @selector(emboldenSelection:) || action == @selector(strikeSelection:) ||
-        action == @selector(underlineSelection:) || action == @selector(italicizeSelection:) ||
-        action == @selector(spoilerSelection:) || action == @selector(monospaceSelection:) ||
-        action == @selector(quoteSelection:) || action == @selector(encodeSelection:)) {
-        return self.currentMenu == FormattingSubmenu;
-    }
-    
-    if (self.currentMenu != TopLevelMenu) return NO;
-    
-    return [super canPerformAction:action withSender:sender];
-}
-
-- (void)linkifySelection:(id)sender
+- (void)linkifySelection
 {
     NSError *error;
     NSDataDetector *linkDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink
@@ -375,7 +332,7 @@ withImagePlaceholderResults:placeholderResults
     }
 }
 
-- (void)insertImage:(id)sender
+- (void)insertImage
 {
     BOOL camera = [UIImagePickerController isSourceTypeAvailable:
                    UIImagePickerControllerSourceTypeCamera];
@@ -383,10 +340,10 @@ withImagePlaceholderResults:placeholderResults
                     UIImagePickerControllerSourceTypePhotoLibrary];
     if (!camera && !library) return;
     if (camera && !library) {
-        [self insertImageFromCamera:nil];
+        [self insertImageFromCamera];
         return;
     } else if (library && !camera) {
-        [self insertImageFromLibrary:nil];
+        [self insertImageFromLibrary];
         return;
     }
     
@@ -405,12 +362,8 @@ withImagePlaceholderResults:placeholderResults
 - (void)showSubmenuThenResetToTopLevelMenuOnHide
 {
     [[UIMenuController sharedMenuController] setTargetRect:[self selectedTextRect]
-                                                    inView:self.replyTextView];
-    
-    // Jump out in front of the responder chain to hide items outside of our submenu.
-    [self becomeFirstResponder];
+                                                    inView:self.view];
     [[UIMenuController sharedMenuController] setMenuVisible:YES animated:YES];
-    [self.replyTextView becomeFirstResponder];
     
     // Need to reset the menu items after a submenu item is chosen, but also if the menu disappears
     // for any other reason.
@@ -426,7 +379,7 @@ withImagePlaceholderResults:placeholderResults
                           }];
 }
 
-- (void)insertImageFromCamera:(id)sender
+- (void)insertImageFromCamera
 {
     UIImagePickerController *picker;
     picker = ImagePickerForSourceType(UIImagePickerControllerSourceTypeCamera);
@@ -435,7 +388,7 @@ withImagePlaceholderResults:placeholderResults
     [self presentModalViewController:picker animated:YES];
 }
 
-- (void)insertImageFromLibrary:(id)sender
+- (void)insertImageFromLibrary
 {
     UIImagePickerController *picker;
     picker = ImagePickerForSourceType(UIImagePickerControllerSourceTypePhotoLibrary);
@@ -465,50 +418,10 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
     return picker;
 }
 
-- (void)showFormattingSubmenu:(id)sender
+- (void)showFormattingSubmenu
 {
     [self configureFormattingSubmenuItems];
     [self showSubmenuThenResetToTopLevelMenuOnHide];
-}
-
-- (void)emboldenSelection:(id)sender
-{
-    [self wrapSelectionInTag:@"[b]"];
-}
-
-- (void)strikeSelection:(id)sender
-{
-    [self wrapSelectionInTag:@"[s]"];
-}
-
-- (void)underlineSelection:(id)sender
-{
-    [self wrapSelectionInTag:@"[u]"];
-}
-
-- (void)italicizeSelection:(id)sender
-{
-    [self wrapSelectionInTag:@"[i]"];
-}
-
-- (void)spoilerSelection:(id)sender
-{
-    [self wrapSelectionInTag:@"[spoiler]"];
-}
-
-- (void)monospaceSelection:(id)sender
-{
-    [self wrapSelectionInTag:@"[fixed]"];
-}
-
-- (void)quoteSelection:(id)sender
-{
-    [self wrapSelectionInTag:@"[quote=]\n"];
-}
-
-- (void)encodeSelection:(id)sender
-{
-    [self wrapSelectionInTag:@"[code]\n"];
 }
 
 - (void)wrapSelectionInTag:(NSString *)tag
@@ -542,6 +455,7 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
     UITextView *textView = [UITextView new];
     textView.font = [UIFont systemFontOfSize:17];
     self.view = textView;
+    [PSMenuItem installMenuHandlerForObject:self.view];
 }
 
 - (void)viewDidLoad
@@ -585,13 +499,6 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
         return YES;
     }
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
-}
-
-#pragma mark - UIResponder
-
-- (BOOL)canBecomeFirstResponder
-{
-    return self.currentMenu != TopLevelMenu;
 }
 
 #pragma mark - UIImagePickerControllerDelegate

@@ -76,6 +76,7 @@
 		1C3CC79A162876AE00088AA8 /* modstar.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3CC798162876AE00088AA8 /* modstar.png */; };
 		1C40E5B21640FC2D004AAFA6 /* posts-view.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C40E5B11640FC2C004AAFA6 /* posts-view.css */; };
 		1C40E5B41640FDB9004AAFA6 /* posts-view-219.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C40E5B31640FDB8004AAFA6 /* posts-view-219.css */; };
+		1C4D7BDB167A5C7C00CF3659 /* PSMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C4D7BD9167A5C7C00CF3659 /* PSMenuItem.m */; };
 		1C5B996C166E78F9004C5D0E /* AwfulDisclosureIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B996B166E78F9004C5D0E /* AwfulDisclosureIndicatorView.m */; };
 		1C5B9970166F565C004C5D0E /* AwfulTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B996F166F565C004C5D0E /* AwfulTabBarController.m */; };
 		1C5B9973166F5835004C5D0E /* AwfulTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B9972166F5835004C5D0E /* AwfulTabBar.m */; };
@@ -839,6 +840,8 @@
 		1C3CC798162876AE00088AA8 /* modstar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = modstar.png; sourceTree = "<group>"; };
 		1C40E5B11640FC2C004AAFA6 /* posts-view.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view.css"; sourceTree = "<group>"; };
 		1C40E5B31640FDB8004AAFA6 /* posts-view-219.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-219.css"; sourceTree = "<group>"; };
+		1C4D7BD8167A5C7C00CF3659 /* PSMenuItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSMenuItem.h; sourceTree = "<group>"; };
+		1C4D7BD9167A5C7C00CF3659 /* PSMenuItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSMenuItem.m; sourceTree = "<group>"; };
 		1C5B996A166E78F9004C5D0E /* AwfulDisclosureIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulDisclosureIndicatorView.h; sourceTree = "<group>"; };
 		1C5B996B166E78F9004C5D0E /* AwfulDisclosureIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulDisclosureIndicatorView.m; sourceTree = "<group>"; };
 		1C5B996E166F565C004C5D0E /* AwfulTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTabBarController.h; sourceTree = "<group>"; };
@@ -1645,6 +1648,7 @@
 				1190F7BF13BE4ECB00B9D271 /* Hpple */,
 				1C83DB551620113F00E53CFA /* NSData+Base64.h */,
 				1C83DB561620113F00E53CFA /* NSData+Base64.m */,
+				1C4D7BD6167A5C7C00CF3659 /* PSMenuItem */,
 				1C05ED40162299DE00FE567F /* SVProgressHUD */,
 				1CC38B84160C0A5D00C35A11 /* SVPullToRefresh */,
 			);
@@ -1721,6 +1725,15 @@
 				1CE2D99D16688AC40024AC1C /* UIKit and Foundation */,
 			);
 			path = Source;
+			sourceTree = "<group>";
+		};
+		1C4D7BD6167A5C7C00CF3659 /* PSMenuItem */ = {
+			isa = PBXGroup;
+			children = (
+				1C4D7BD8167A5C7C00CF3659 /* PSMenuItem.h */,
+				1C4D7BD9167A5C7C00CF3659 /* PSMenuItem.m */,
+			);
+			path = PSMenuItem;
 			sourceTree = "<group>";
 		};
 		1C6474A61569989800C72657 /* Models */ = {
@@ -3491,6 +3504,7 @@
 				1C5B9970166F565C004C5D0E /* AwfulTabBarController.m in Sources */,
 				1C5B9973166F5835004C5D0E /* AwfulTabBar.m in Sources */,
 				1C5B99BC166FFA4F004C5D0E /* Model.xcdatamodeld in Sources */,
+				1C4D7BDB167A5C7C00CF3659 /* PSMenuItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
