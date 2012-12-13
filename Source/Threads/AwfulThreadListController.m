@@ -192,9 +192,11 @@ typedef enum {
         [self displayPage:page];
         [page loadPage:AwfulPageLast];
     }];
-    [sheet addButtonWithTitle:@"Mark as Unread" block:^{
-        [self markThreadUnseen:thread];
-    }];
+    if (thread.seenValue) {
+        [sheet addButtonWithTitle:@"Mark as Unread" block:^{
+            [self markThreadUnseen:thread];
+        }];
+    }
     [sheet addCancelButtonWithTitle:@"Cancel"];
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         [sheet showFromRect:self.awfulTabBarController.tabBar.frame
