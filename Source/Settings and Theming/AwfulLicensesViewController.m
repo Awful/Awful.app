@@ -52,6 +52,7 @@
     webView.backgroundColor = [UIColor clearColor];
     webView.opaque = NO;
     webView.delegate = self;
+    webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
     NSURL *licenses = [[NSBundle mainBundle] URLForResource:@"licenses" withExtension:@"html"];
     [webView loadRequest:[NSURLRequest requestWithURL:licenses]];
     [self.view addSubview:webView];
