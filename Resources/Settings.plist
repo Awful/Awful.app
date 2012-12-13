@@ -79,6 +79,16 @@
 				</dict>
 				<dict>
 					<key>Title</key>
+					<string>Forum-Specific Themes</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>show_forum_specific_themes</string>
+				</dict>
+				<dict>
+					<key>Title</key>
 					<string>Show Thread Tags</string>
 					<key>Type</key>
 					<string>Switch</string>

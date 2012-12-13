@@ -133,6 +133,7 @@
         AwfulSettingsKeys.showAvatars,
         AwfulSettingsKeys.showImages,
         AwfulSettingsKeys.username,
+        AwfulSettingsKeys.showForumSpecificThemes
     ];
     NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
     if ([keys firstObjectCommonWithArray:importantKeys]) [self configurePostsViewSettings];
@@ -145,7 +146,7 @@
     _threadID = [thread.threadID copy];
     self.title = [thread.title stringByCollapsingWhitespace];
     [self updatePageBar];
-    self.postsView.stylesheetURL = StylesheetURLForForumWithID(thread.forum.forumID);
+    [self configurePostsViewSettings];
     [self updateFetchedResultsController];
 }
 
@@ -165,10 +166,11 @@
 
 static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 {
-    NSArray *listOfFilenames = @[
-        [NSString stringWithFormat:@"posts-view-%@.css", forumID],
-        @"posts-view.css"
-    ];
+    NSMutableArray *listOfFilenames = [@[ @"posts-view.css" ] mutableCopy];
+    if (forumID) {
+        [listOfFilenames insertObject:[NSString stringWithFormat:@"posts-view-%@.css", forumID]
+                              atIndex:0];
+    }
     NSURL *documents = [[NSFileManager defaultManager] documentDirectory];
     for (NSString *filename in listOfFilenames) {
         NSURL *url = [documents URLByAppendingPathComponent:filename];
@@ -712,7 +714,13 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     } else {
         self.postsView.highlightQuoteUsername = nil;
     }
-
+    NSURL *stylesheetURL;
+    if ([AwfulSettings settings].showForumSpecificThemes) {
+        stylesheetURL = StylesheetURLForForumWithID(self.thread.forum.forumID);
+    } else {
+        stylesheetURL = StylesheetURLForForumWithID(nil);
+    }
+    self.postsView.stylesheetURL = stylesheetURL;
 }
 
 #pragma mark - UIViewController
