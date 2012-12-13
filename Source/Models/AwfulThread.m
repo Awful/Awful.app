@@ -75,7 +75,10 @@
     [self willChangeValueForKey:AwfulThreadAttributes.totalReplies];
     self.primitiveTotalReplies = totalReplies;
     [self didChangeValueForKey:AwfulThreadAttributes.totalReplies];
-    self.numberOfPagesValue = 1 + [totalReplies integerValue] / 40;
+    NSInteger minimumNumberOfPages = 1 + [totalReplies integerValue] / 40;
+    if (minimumNumberOfPages > self.numberOfPagesValue) {
+        self.numberOfPagesValue = minimumNumberOfPages;
+    }
 }
 
 @end
