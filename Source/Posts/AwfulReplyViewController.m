@@ -86,7 +86,7 @@
     self.replyTextView.text = text;
     self.title = [post.thread.title stringByCollapsingWhitespace];
     self.navigationItem.titleLabel.text = self.title;
-    self.sendButton.title = @"Edit";
+    self.sendButton.title = @"Save";
     self.images = [NSMutableDictionary new];
 }
 
