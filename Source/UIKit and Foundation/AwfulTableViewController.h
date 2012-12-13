@@ -33,7 +33,7 @@
 - (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath;
 
 // Subclasses can implement to update any colors etc. when the current theme changes. Call super!
-// This also gets called on viewDidLoad.
+// This also gets called on viewWillAppear.
 - (void)retheme;
 
 @end

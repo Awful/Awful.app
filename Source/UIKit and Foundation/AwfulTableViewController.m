@@ -44,12 +44,6 @@
     [self retheme];
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    [self retheme];
-}
-
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
@@ -64,6 +58,7 @@
             [blockSelf nextPage];
         }];
     }
+    [self retheme];
     [self refreshIfNeededOnAppear];
     [self startObservingApplicationDidBecomeActive];
 }
