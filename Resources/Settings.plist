@@ -69,6 +69,35 @@
 			<array>
 				<dict>
 					<key>Title</key>
+					<string>YOSPOS Style</string>
+					<key>Choices</key>
+					<array>
+						<dict>
+							<key>Title</key>
+							<string>Boring</string>
+							<key>Value</key>
+							<string>none</string>
+						</dict>
+						<dict>
+							<key>Title</key>
+							<string>Green</string>
+							<key>Value</key>
+							<string>amber</string>
+						</dict>
+						<dict>
+							<key>Title</key>
+							<string>Amber</string>
+							<key>Value</key>
+							<string>amber</string>
+						</dict>
+					</array>
+					<key>Default</key>
+					<string>green</string>
+					<key>Key</key>
+					<string>yospos_style</string>
+				</dict>
+				<dict>
+					<key>Title</key>
 					<string>Dark Theme</string>
 					<key>Type</key>
 					<string>Switch</string>
