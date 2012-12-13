@@ -229,14 +229,13 @@ typedef enum {
 
 - (void)displayPage:(AwfulPostsViewController *)page
 {
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+    AwfulSplitViewController *split = (AwfulSplitViewController *)self.splitViewController;
+    if (!split) {
         [self.navigationController pushViewController:page animated:YES];
-    } else if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        NSMutableArray *vcs = [NSMutableArray arrayWithArray:self.splitViewController.viewControllers];
-        [vcs removeLastObject];
-        
-        [vcs addObject:[page enclosingNavigationController]];
-        self.splitViewController.viewControllers = vcs;
+    } else {
+        UINavigationController *nav = (UINavigationController *)split.viewControllers[1];
+        nav.viewControllers = @[ page ];
+        [split.masterPopoverController dismissPopoverAnimated:YES];
     }
 }
 
@@ -436,16 +435,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
     page.thread = thread;
     [page loadPage:thread.seenValue ? AwfulPageNextUnread : 1];
-    if (self.splitViewController) {
-        UINavigationController *nav = self.splitViewController.viewControllers[1];
-        [nav setViewControllers:@[page] animated:YES];
-        AwfulSplitViewController *split = (AwfulSplitViewController *)self.splitViewController;
-        [split.masterPopoverController dismissPopoverAnimated:YES];
-        [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow
-                                      animated:YES];
-    } else {
-        [self.navigationController pushViewController:page animated:YES];
-    }
+    [self displayPage:page];
 }
 
 @end
