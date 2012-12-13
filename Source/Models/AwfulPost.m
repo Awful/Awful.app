@@ -39,14 +39,19 @@
     NSArray *allPostIDs = [allPosts valueForKey:@"postID"];
     NSDictionary *existingPosts = [NSDictionary dictionaryWithObjects:allPosts forKeys:allPostIDs];
     NSMutableArray *posts = [NSMutableArray new];
-    for (PostParsedInfo *postInfo in pageInfo.posts) {
+    for (NSUInteger i = 0; i < [pageInfo.posts count]; i++) {
+        PostParsedInfo *postInfo = pageInfo.posts[i];
         AwfulPost *post = existingPosts[postInfo.postID];
         if (!post) {
             post = [AwfulPost insertNew];
             post.thread = thread;
         }
         [postInfo applyToObject:post];
-        post.threadIndexValue = [postInfo.threadIndex integerValue];
+        if ([postInfo.threadIndex length] > 0) {
+            post.threadIndexValue = [postInfo.threadIndex integerValue];
+        } else {
+            post.threadIndexValue = (pageInfo.pageNumber - 1) * 40 + i + 1;
+        }
         post.authorAvatarURL = [postInfo.authorAvatarURL absoluteString];
         [posts addObject:post];
     }
