@@ -128,8 +128,11 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
 }
 
 - (NSOperation *)listPostsInThreadWithID:(NSString *)threadID
-    onPage:(NSInteger)page
-    andThen:(void (^)(NSError *error, NSArray *posts, NSString *advertisementHTML))callback
+                                  onPage:(NSInteger)page
+                                 andThen:(void (^)(NSError *error,
+                                                   NSArray *posts,
+                                                   NSUInteger firstUnreadPost,
+                                                   NSString *advertisementHTML))callback
 {
     NSMutableDictionary *parameters = [@{ @"threadid": threadID } mutableCopy];
     parameters[@"perpage"] = @40;
@@ -140,18 +143,28 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
                                                path:@"showthread.php"
                                          parameters:parameters];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
-                                                               success:^(id _, id data)
+                                                               success:^(id op, id data)
     {
         dispatch_async(self.parseQueue, ^{
             PageParsedInfo *info = [[PageParsedInfo alloc] initWithHTMLData:
                                     ConvertFromWindows1252ToUTF8(data)];
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSArray *posts = [AwfulPost postsCreatedOrUpdatedFromPageInfo:info];
-                if (callback) callback(nil, posts, info.advertisementHTML);
+                if (callback) {
+                    NSInteger firstUnreadPost = NSNotFound;
+                    if (page == AwfulPageNextUnread) {
+                        NSString *fragment = [[[op response] URL] fragment];
+                        if ([fragment hasPrefix:@"pti"]) {
+                            firstUnreadPost = [[fragment substringFromIndex:3] integerValue] - 1;
+                            if (firstUnreadPost < 0) firstUnreadPost = NSNotFound;
+                        }
+                    }
+                    callback(nil, posts, firstUnreadPost, info.advertisementHTML);
+                }
             });
         });
     } failure:^(id _, NSError *error) {
-        if (callback) callback(error, nil, nil);
+        if (callback) callback(error, nil, NSNotFound, nil);
     }];
     [self enqueueHTTPRequestOperation:op];
     return op;

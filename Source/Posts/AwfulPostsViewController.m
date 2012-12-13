@@ -294,6 +294,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     id op = [[AwfulHTTPClient client] listPostsInThreadWithID:self.threadID
                                                        onPage:page
                                                       andThen:^(NSError *error, NSArray *posts,
+                                                                NSUInteger firstUnreadPost,
                                                                 NSString *advertisementHTML)
     {
         // Since we load cached pages where possible, things can get out of order if we change
@@ -330,13 +331,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
             self.currentPage = [[posts lastObject] threadPageValue];
         }
         self.advertisementHTML = advertisementHTML;
-        if (page == AwfulPageNextUnread) {
-            NSUInteger firstUnread = [posts indexOfObjectPassingTest:^BOOL(AwfulPost *post,
-                                                                           NSUInteger _, BOOL *__)
-            {
-                return !post.beenSeenValue;
-            }];
-            if (firstUnread != NSNotFound) self.hiddenPosts = firstUnread;
+        if (page == AwfulPageNextUnread && firstUnreadPost != NSNotFound) {
+            self.hiddenPosts = firstUnreadPost;
         }
         if (!self.fetchedResultsController) [self updateFetchedResultsController];
         if (wasLoading) {

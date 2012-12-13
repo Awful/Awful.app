@@ -49,6 +49,8 @@
 // callback - A block to call after listing the posts, which takes as parameters:
 //              error             - An error on failure, or nil on success.
 //              posts             - The posts gleaned from the page.
+//              firstUnreadPost   - Which post in the posts array is the first unread.
+//                                  Only set if the page requested was AwfulPageNextUnread.
 //              advertisementHTML - The ad at the bottom of the page.
 //
 // N.B. If you've never read a thread before (or marked it unread), the "next unread" page is the
@@ -56,8 +58,11 @@
 //
 // Returns the enqueued network operation.
 - (NSOperation *)listPostsInThreadWithID:(NSString *)threadID
-    onPage:(NSInteger)page
-    andThen:(void (^)(NSError *error, NSArray *posts, NSString *advertisementHTML))callback;
+                                  onPage:(NSInteger)page
+                                 andThen:(void (^)(NSError *error,
+                                                   NSArray *posts,
+                                                   NSUInteger firstUnreadPost,
+                                                   NSString *advertisementHTML))callback;
 
 enum {
     AwfulPageNextUnread = -1,
