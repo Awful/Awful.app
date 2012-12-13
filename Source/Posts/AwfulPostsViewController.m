@@ -166,6 +166,55 @@
 
 static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 {
+    
+    
+    NSMutableString *filename = [NSMutableString stringWithString:@"posts-view"];
+    NSString *ext = @".css";
+    NSURL *docs = [[NSFileManager defaultManager] documentDirectory];
+    NSURL *url = nil;
+    
+    if ([forumID isEqualToString:@"219"])
+    {
+        
+        NSLog(@"yosposstyle: %d ; %@",[AwfulSettings settings].yosposStyle,[AwfulSettings settings][AwfulSettingsKeys.yosposStyle]);
+        
+        
+        switch ([AwfulSettings settings].yosposStyle)
+        {
+            case AwfulYOSPOSStyleNone:
+                break;
+            case AwfulYOSPOSStyleAmber:
+                [filename appendFormat:@"-%@-%@",forumID,@"amber"];
+                break;
+            case AwfulYOSPOSStyleGreen:
+                [filename appendFormat:@"-%@",forumID];
+                break;
+            default:
+                break;
+        }
+    }
+    [filename appendString:ext];
+    url = [docs URLByAppendingPathComponent:filename];
+    if ([url checkResourceIsReachableAndReturnError:NULL])
+    {
+        NSLog(@"URL: %@",url);
+        return url;
+    }
+    
+    url = [[NSBundle mainBundle] URLForResource:filename withExtension:nil];
+    if ([url checkResourceIsReachableAndReturnError:NULL]) {
+        NSLog(@"URL: %@",url);
+        return url;
+    }
+    
+    return nil;
+
+    
+
+    
+    
+    
+    /*
     NSMutableArray *listOfFilenames = [@[ @"posts-view.css" ] mutableCopy];
     if (forumID) {
         [listOfFilenames insertObject:[NSString stringWithFormat:@"posts-view-%@.css", forumID]
@@ -182,6 +231,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         if ([url checkResourceIsReachableAndReturnError:NULL]) return url;
     }
     return nil;
+     */
 }
 
 - (void)updateFetchedResultsController
