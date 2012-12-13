@@ -44,7 +44,7 @@
     return matches;
 }
 
-+ (id)firstMatchingPredicate:(id)formatOrPredicate, ...
++ (instancetype)firstMatchingPredicate:(id)formatOrPredicate, ...
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[(Class)self entityName]];
     if ([formatOrPredicate isKindOfClass:[NSPredicate class]]) {
@@ -75,7 +75,7 @@
     }
 }
 
-+ (id)insertNew
++ (instancetype)insertNew
 {
     return [(Class)self insertInManagedObjectContext:[AwfulDataStack sharedDataStack].context];
 }

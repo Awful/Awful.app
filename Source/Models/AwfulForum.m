@@ -37,11 +37,8 @@
         while ([forumStack count] > 0) {
             ForumParsedInfo *forumInfo = [forumStack objectAtIndex:0];
             [forumStack removeObjectAtIndex:0];
-            AwfulForum *forum = existingForums[forumInfo.forumID];
-            if (!forum) {
-                forum = [AwfulForum insertNew];
-                forum.forumID = forumInfo.forumID;
-            }
+            AwfulForum *forum = existingForums[forumInfo.forumID] ?: [AwfulForum insertNew];
+            forum.forumID = forumInfo.forumID;
             forum.name = forumInfo.name;
             forum.category = category;
             forum.indexValue = indexOfForum++;

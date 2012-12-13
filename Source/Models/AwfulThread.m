@@ -13,11 +13,6 @@
 
 @implementation AwfulThread
 
-+ (void)removeOldThreadsForForum:(AwfulForum *)forum
-{
-    [AwfulThread deleteAllMatchingPredicate:@"forum == %@ AND isBookmarked == NO", forum];
-}
-
 - (NSString *)firstIconName
 {
     NSString *basename = [[self.threadIconImageURL lastPathComponent]
@@ -57,10 +52,7 @@
             continue;
         }
         AwfulThread *thread = existingThreads[info.threadID];
-        if (!thread) {
-            thread = [AwfulThread insertInManagedObjectContext:
-                      [AwfulDataStack sharedDataStack].context];
-        }
+        if (!thread) thread = [AwfulThread insertNew];
         [info applyToObject:thread];
         [threads addObject:thread];
     }

@@ -245,7 +245,7 @@ typedef enum {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-#pragma mark - Table view data source and delegate
+#pragma mark - UITableViewDataSource and UITableViewDelegate
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
