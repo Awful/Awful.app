@@ -48,7 +48,7 @@ end
 # Settings screen is tapped.
 licenses = "Resources/licenses.html"
 
-(Dir["Vendor/**/LICEN[CS]E*.*"] + Dir["Vendor/*.h"]).each do |license|
+(Dir["Vendor/**/LICENSE.txt"] + Dir["Vendor/*.h"]).each do |license|
   file licenses => license
 end
 
@@ -58,7 +58,7 @@ file licenses => __FILE__
 file licenses do |t|
   licenses = {}
   headers = t.prerequisites.select { |p| p.match(/\.h$/) }
-  standalone = t.prerequisites.select { |p| p.match(/LICEN[CS]E/) }
+  standalone = t.prerequisites.select { |p| p["LICENSE"] }
   standalone.each do |license_path|
     project = license_path.split(File::SEPARATOR)[1]
     File.open(license_path) do |license|
