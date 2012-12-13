@@ -56,6 +56,11 @@
     return self;
 }
 
+- (void)dealloc
+{
+    self.webView.delegate = nil;
+}
+
 static void RemoveShadowFromAboveAndBelowWebView(UIWebView *webView)
 {
     for (UIView *view in [webView.scrollView subviews]) {

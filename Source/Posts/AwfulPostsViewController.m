@@ -114,6 +114,7 @@
     [noteCenter removeObserver:self name:AwfulSettingsDidChangeNotification object:nil];
     [noteCenter removeObserver:self name:AwfulThemeDidChangeNotification object:nil];
     [self stopObserving];
+    self.postsView.scrollView.delegate = nil;
 }
 
 - (void)currentThemeChanged:(NSNotification *)note
