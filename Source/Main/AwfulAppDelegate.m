@@ -285,7 +285,9 @@ static AwfulAppDelegate *_instance;
             if (![top isKindOfClass:[AwfulPostsViewController class]]) continue;
             if ([top.threadID isEqualToString:threadID]) {
                 if (page == 0 || page == top.currentPage) {
-                    self.tabBarController.selectedViewController = nav;
+                    if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+                        self.tabBarController.selectedViewController = nav;
+                    }
                     return YES;
                 }
             }
@@ -321,7 +323,9 @@ static AwfulAppDelegate *_instance;
             AwfulPostsViewController *top = (AwfulPostsViewController *)nav.topViewController;
             if (![top isKindOfClass:[AwfulPostsViewController class]]) continue;
             if ([[top.posts valueForKey:@"postID"] containsObject:postID]) {
-                self.tabBarController.selectedViewController = nav;
+                if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+                    self.tabBarController.selectedViewController = nav;
+                }
                 [top jumpToPostWithID:postID];
                 return YES;
             }

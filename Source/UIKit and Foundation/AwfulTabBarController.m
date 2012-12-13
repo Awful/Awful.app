@@ -33,6 +33,7 @@
 - (void)setSelectedViewController:(UIViewController *)selectedViewController
 {
     if (_selectedViewController == selectedViewController) return;
+    if (![self.viewControllers containsObject:selectedViewController]) return;
     if (_selectedViewController) {
         [self replaceViewController:_selectedViewController
                  withViewController:selectedViewController];
