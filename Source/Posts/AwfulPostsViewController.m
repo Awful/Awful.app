@@ -25,6 +25,7 @@
 #import "NSString+CollapseWhitespace.h"
 #import "NSURL+QueryDictionary.h"
 #import <QuartzCore/QuartzCore.h>
+#import "SVProgressHUD.h"
 #import "UINavigationItem+TwoLineTitle.h"
 #import "UIViewController+NavigationEnclosure.h"
 
@@ -638,6 +639,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                                          error:error
                                    buttonTitle:@"Alright"];
              } else {
+                 [SVProgressHUD showSuccessWithStatus:@"Marked"];
                  self.didJustMarkAsReadToHere = YES;
                  [self markPostsAsBeenSeenUpToPost:post];
              }
