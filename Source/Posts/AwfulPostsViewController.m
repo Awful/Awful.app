@@ -209,29 +209,6 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     
     return nil;
 
-    
-
-    
-    
-    
-    /*
-    NSMutableArray *listOfFilenames = [@[ @"posts-view.css" ] mutableCopy];
-    if (forumID) {
-        [listOfFilenames insertObject:[NSString stringWithFormat:@"posts-view-%@.css", forumID]
-                              atIndex:0];
-    }
-    NSURL *documents = [[NSFileManager defaultManager] documentDirectory];
-    for (NSString *filename in listOfFilenames) {
-        NSURL *url = [documents URLByAppendingPathComponent:filename];
-        if ([url checkResourceIsReachableAndReturnError:NULL]) return url;
-    }
-    for (NSString *filename in listOfFilenames) {
-        NSURL *url = [[NSBundle mainBundle] URLForResource:filename
-                                             withExtension:nil];
-        if ([url checkResourceIsReachableAndReturnError:NULL]) return url;
-    }
-    return nil;
-     */
 }
 
 - (void)updateFetchedResultsController
