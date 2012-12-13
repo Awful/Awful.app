@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+// A navigation bar we can target for UIAppearance, it also pop to its navigation controller's root
+// when the back button is long-tapped.
 @interface AwfulNavigationBar : UINavigationBar
 
 @end
