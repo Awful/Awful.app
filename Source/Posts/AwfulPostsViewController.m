@@ -231,12 +231,6 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     return _postsView;
 }
 
-- (void)setCurrentPage:(NSInteger)currentPage
-{
-    if (_currentPage == currentPage) return;
-    _currentPage = currentPage;
-}
-
 - (void)updateLoadingMessage
 {
     if (self.currentPage == AwfulPageLast) {
