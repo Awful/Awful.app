@@ -140,7 +140,7 @@
     
     NSString *reply = self.replyTextView.text;
     NSMutableArray *imageKeys = [NSMutableArray new];
-    NSString *pattern = @"\\[(t?img)\\](awful://(.+)\\.png)\\[/\\1\\]";
+    NSString *pattern = @"\\[(t?img)\\](will-upload-to-imgur://(.+)\\.png)\\[/\\1\\]";
     NSError *error;
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
                                                                            options:0
@@ -533,7 +533,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 static NSString *ImageKeyToPlaceholder(NSString *key, BOOL thumbnail)
 {
     NSString *t = thumbnail ? @"t" : @"";
-    return [NSString stringWithFormat:@"[%@img]awful://%@.png[/%@img]", t, key, t];
+    return [NSString stringWithFormat:@"[%@img]will-upload-to-imgur://%@.png[/%@img]", t, key, t];
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
