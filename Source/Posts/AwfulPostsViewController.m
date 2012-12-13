@@ -471,11 +471,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 
 - (void)nextPage
 {
-    if (self.currentPage < self.thread.numberOfPagesValue) {
-        [self loadPage:self.currentPage + 1];
-    } else {
-        [self loadPage:self.currentPage];
-    }
+    if (self.currentPage >= self.thread.numberOfPagesValue) return;
+    [self loadPage:self.currentPage + 1];
 }
 
 - (void)prevPage
