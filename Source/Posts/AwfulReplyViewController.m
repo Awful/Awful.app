@@ -121,12 +121,14 @@
 
 - (void)hitSend
 {
+    [self.replyTextView resignFirstResponder];
     if (AwfulSettings.settings.confirmBeforeReplying) {
         AwfulAlertView *alert = [AwfulAlertView new];
         alert.title = @"Incoming Forums Superstar";
         alert.message = @"Does my reply offer any significant advice or help "
                          "contribute to the conversation in any fashion?";
-        [alert addCancelButtonWithTitle:@"Nope" block:nil];
+        [alert addCancelButtonWithTitle:@"Nope"
+                                  block:^{ [self.replyTextView becomeFirstResponder]; }];
         [alert addButtonWithTitle:self.sendButton.title block:^{ [self send]; }];
         [alert show];
     } else {
