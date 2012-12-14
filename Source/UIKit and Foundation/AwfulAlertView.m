@@ -41,6 +41,7 @@
           buttonTitle:(NSString *)buttonTitle
            completion:(void (^)(void))block
 {
+    NSLog(@"%@", error);
     NSString *message = [NSString stringWithFormat:@"%@ (error code %@)",
                          [error localizedDescription], @([error code])];
     [self showWithTitle:title message:message buttonTitle:buttonTitle completion:block];
