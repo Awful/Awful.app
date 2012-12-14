@@ -32,4 +32,7 @@ enum {
     ImgurAPIErrorUnknown = -1,
     ImgurAPIErrorRateLimitExceeded = -1000,
     ImgurAPIErrorInvalidImage = -1001,
+    ImgurAPIErrorActionNotSupported = -1002,
+    ImgurAPIErrorUnexpectedRemoteError = -1003,
+    ImgurAPIErrorMissingImageURL = -1004,
 };

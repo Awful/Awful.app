@@ -40,7 +40,9 @@
             @"key" : @"4b083e3139cadecd17153b69f3cd666c",
             @"image" : [dataForImage base64EncodedString]
         };
-        [requests addObject:[self requestWithMethod:@"POST" path:@"/2/upload.json" parameters:parameters]];
+        [requests addObject:[self requestWithMethod:@"POST"
+                                               path:@"/2/upload.json"
+                                         parameters:parameters]];
     }
     NSMutableArray *listOfURLs = [NSMutableArray new];
     [self enqueueBatchOfHTTPRequestOperationsWithRequests:requests
@@ -48,19 +50,6 @@
                                           completionBlock:^(NSArray *listOfOperations)
     {
         for (AFJSONRequestOperation *operation in listOfOperations) {
-            if (![operation isKindOfClass:[AFJSONRequestOperation class]]) {
-                if (callback) {
-                    NSDictionary *userInfo = @{
-                        NSLocalizedDescriptionKey : @"An unknown error occurred",
-                        NSUnderlyingErrorKey : operation.error
-                    };
-                    NSError *error = [NSError errorWithDomain:ImgurAPIErrorDomain
-                                                         code:ImgurAPIErrorUnknown
-                                                     userInfo:userInfo];
-                    dispatch_async(dispatch_get_main_queue(), ^{ callback(error, nil); });
-                }
-                return;
-            }
             NSDictionary *response = operation.responseJSON;
             if (!operation.hasAcceptableStatusCode) {
                 if (callback) {
@@ -69,6 +58,10 @@
                         errorCode = ImgurAPIErrorInvalidImage;
                     } else if (operation.response.statusCode == 403) {
                         errorCode = ImgurAPIErrorRateLimitExceeded;
+                    } else if (operation.response.statusCode == 404) {
+                        errorCode = ImgurAPIErrorActionNotSupported;
+                    } else if (operation.response.statusCode == 500) {
+                        errorCode = ImgurAPIErrorUnexpectedRemoteError;
                     }
                     NSString *message = response[@"error"][@"message"];
                     if (!message) message = @"An unknown error occurred";
@@ -86,9 +79,11 @@
             NSString *url = response[@"upload"][@"links"][@"original"];
             if (!url) {
                 if (callback) {
-                    NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : @"An unknown error occurred" };
+                    NSDictionary *userInfo = @{
+                        NSLocalizedDescriptionKey : @"Missing image URL"
+                    };
                     NSError *error = [NSError errorWithDomain:ImgurAPIErrorDomain
-                                                         code:ImgurAPIErrorUnknown
+                                                         code:ImgurAPIErrorMissingImageURL
                                                      userInfo:userInfo];
                     dispatch_async(dispatch_get_main_queue(), ^{ callback(error, nil); });
                 }
