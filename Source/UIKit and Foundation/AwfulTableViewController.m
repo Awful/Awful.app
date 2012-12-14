@@ -44,12 +44,6 @@
     [self retheme];
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    [self retheme];
-}
-
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
