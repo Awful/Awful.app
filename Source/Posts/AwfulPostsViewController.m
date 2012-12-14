@@ -663,9 +663,17 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 - (void)updatePullUpTriggerOffset
 {
     if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
-        self.pullUpToRefreshControl.triggerOffset = 45;
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            self.pullUpToRefreshControl.triggerOffset = 45;
+        } else {
+            self.pullUpToRefreshControl.triggerOffset = 35;
+        }
     } else {
-        self.pullUpToRefreshControl.triggerOffset = 25;
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            self.pullUpToRefreshControl.triggerOffset = 25;
+        } else {
+            self.pullUpToRefreshControl.triggerOffset = 0;
+        }
     }
 }
 
