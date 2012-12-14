@@ -166,22 +166,49 @@
 
 static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 {
-    NSMutableArray *listOfFilenames = [@[ @"posts-view.css" ] mutableCopy];
-    if (forumID) {
-        [listOfFilenames insertObject:[NSString stringWithFormat:@"posts-view-%@.css", forumID]
-                              atIndex:0];
+    
+    
+    NSMutableString *filename = [NSMutableString stringWithString:@"posts-view"];
+    NSString *ext = @".css";
+    NSURL *docs = [[NSFileManager defaultManager] documentDirectory];
+    NSURL *url = nil;
+    
+    if ([forumID isEqualToString:@"219"])
+    {
+        
+        NSLog(@"yosposstyle: %d ; %@",[AwfulSettings settings].yosposStyle,[AwfulSettings settings][AwfulSettingsKeys.yosposStyle]);
+        
+        
+        switch ([AwfulSettings settings].yosposStyle)
+        {
+            case AwfulYOSPOSStyleNone:
+                break;
+            case AwfulYOSPOSStyleAmber:
+                [filename appendFormat:@"-%@-%@",forumID,@"amber"];
+                break;
+            case AwfulYOSPOSStyleGreen:
+                [filename appendFormat:@"-%@",forumID];
+                break;
+            default:
+                break;
+        }
     }
-    NSURL *documents = [[NSFileManager defaultManager] documentDirectory];
-    for (NSString *filename in listOfFilenames) {
-        NSURL *url = [documents URLByAppendingPathComponent:filename];
-        if ([url checkResourceIsReachableAndReturnError:NULL]) return url;
+    [filename appendString:ext];
+    url = [docs URLByAppendingPathComponent:filename];
+    if ([url checkResourceIsReachableAndReturnError:NULL])
+    {
+        NSLog(@"URL: %@",url);
+        return url;
     }
-    for (NSString *filename in listOfFilenames) {
-        NSURL *url = [[NSBundle mainBundle] URLForResource:filename
-                                             withExtension:nil];
-        if ([url checkResourceIsReachableAndReturnError:NULL]) return url;
+    
+    url = [[NSBundle mainBundle] URLForResource:filename withExtension:nil];
+    if ([url checkResourceIsReachableAndReturnError:NULL]) {
+        NSLog(@"URL: %@",url);
+        return url;
     }
+    
     return nil;
+
 }
 
 - (void)updateFetchedResultsController
