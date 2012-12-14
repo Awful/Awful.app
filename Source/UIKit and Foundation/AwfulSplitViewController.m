@@ -30,6 +30,7 @@
 - (void)ensureLeftBarButtonItemOnDetailView
 {
     if (!self.rootPopoverButtonItem) return;
+    if ([self.viewControllers count] < 2) return;
     UINavigationController *nav = self.viewControllers[1];
     UIViewController *detail = nav.viewControllers[0];
     if ([detail.navigationItem.leftBarButtonItem isEqual:self.rootPopoverButtonItem]) return;
