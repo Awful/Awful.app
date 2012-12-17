@@ -103,6 +103,57 @@ struct {
     self[AwfulSettingsKeys.firstTab] = value;
 }
 
+struct {
+    __unsafe_unretained NSString *None;
+    __unsafe_unretained NSString *Green;
+    __unsafe_unretained NSString *Amber;
+} AwfulYOSPOSStyles = {
+    @"none",
+    @"green",
+    @"amber",
+};
+
+
+- (AwfulYOSPOSStyle)yosposStyle
+{
+    NSString *val = self[AwfulSettingsKeys.yosposStyle];
+    if([val isEqualToString:AwfulYOSPOSStyles.None])
+    {
+        return AwfulYOSPOSStyleNone;
+    } else if ([val isEqualToString:AwfulYOSPOSStyles.Amber])
+    {
+        return AwfulYOSPOSStyleAmber;
+    } else if ([val isEqualToString:AwfulYOSPOSStyles.Green])
+    {
+        return AwfulYOSPOSStyleGreen;
+    } else {
+        return AwfulYOSPOSStyleGreen;
+
+    }
+    
+}
+-(void) setYosposStyle:(AwfulYOSPOSStyle)yosposStyle
+{
+    NSString *val;
+    switch (yosposStyle) {
+        case AwfulYOSPOSStyleAmber:
+            val = AwfulYOSPOSStyles.Amber;
+            break;
+        case AwfulYOSPOSStyleGreen:
+            val = AwfulYOSPOSStyles.Green;
+            break;
+        case AwfulYOSPOSStyleNone:
+            val = AwfulYOSPOSStyles.None;
+            break;
+        default:
+            return;
+    }
+    self[AwfulSettingsKeys.yosposStyle] = val;
+}
+
+
+
+
 BOOL_PROPERTY(highlightOwnQuotes, setHighlightOwnQuotes)
 
 BOOL_PROPERTY(highlightOwnMentions, setHighlightOwnMentions)
@@ -178,4 +229,5 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .username = @"username",
     .showThreadTags = @"show_thread_tags",
     .showForumSpecificThemes = @"show_forum_specific_themes",
+    .yosposStyle = @"yospos_style",
 };
