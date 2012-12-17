@@ -186,8 +186,6 @@ struct {
 
 BOOL_PROPERTY(showThreadTags, setShowThreadTags)
 
-BOOL_PROPERTY(showForumSpecificThemes, setShowForumSpecificThemes)
-
 - (id)objectForKeyedSubscript:(id)key
 {
     return [[NSUserDefaults standardUserDefaults] objectForKey:key];
@@ -228,6 +226,5 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
 	.darkTheme = @"dark_theme",
     .username = @"username",
     .showThreadTags = @"show_thread_tags",
-    .showForumSpecificThemes = @"show_forum_specific_themes",
     .yosposStyle = @"yospos_style",
 };

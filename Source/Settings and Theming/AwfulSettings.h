@@ -42,8 +42,6 @@ typedef enum
 
 @property (assign, nonatomic) BOOL showThreadTags;
 
-@property (assign, nonatomic) BOOL showForumSpecificThemes;
-
 typedef enum {
     AwfulYOSPOSStyleNone,
     AwfulYOSPOSStyleGreen,
@@ -76,6 +74,5 @@ extern const struct AwfulSettingsKeys {
 	__unsafe_unretained NSString *darkTheme;
     __unsafe_unretained NSString *username;
     __unsafe_unretained NSString *showThreadTags;
-    __unsafe_unretained NSString *showForumSpecificThemes;
     __unsafe_unretained NSString *yosposStyle;
 } AwfulSettingsKeys;

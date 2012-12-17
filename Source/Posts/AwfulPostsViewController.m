@@ -133,7 +133,7 @@
         AwfulSettingsKeys.showAvatars,
         AwfulSettingsKeys.showImages,
         AwfulSettingsKeys.username,
-        AwfulSettingsKeys.showForumSpecificThemes
+        AwfulSettingsKeys.yosposStyle
     ];
     NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
     if ([keys firstObjectCommonWithArray:importantKeys]) [self configurePostsViewSettings];
@@ -727,13 +727,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     } else {
         self.postsView.highlightQuoteUsername = nil;
     }
-    NSURL *stylesheetURL;
-    if ([AwfulSettings settings].showForumSpecificThemes) {
-        stylesheetURL = StylesheetURLForForumWithID(self.thread.forum.forumID);
-    } else {
-        stylesheetURL = StylesheetURLForForumWithID(nil);
-    }
-    self.postsView.stylesheetURL = stylesheetURL;
+    self.postsView.stylesheetURL = StylesheetURLForForumWithID(self.thread.forum.forumID);
 }
 
 #pragma mark - UIViewController

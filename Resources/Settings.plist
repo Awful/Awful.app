@@ -69,7 +69,27 @@
 			<array>
 				<dict>
 					<key>Title</key>
-					<string>YOSPOS Style</string>
+					<string>Dark Theme</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<false/>
+					<key>Key</key>
+					<string>dark_theme</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Show Thread Tags</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>show_thread_tags</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>YOSPOS</string>
 					<key>Choices</key>
 					<array>
 						<dict>
@@ -95,36 +115,6 @@
 					<string>green</string>
 					<key>Key</key>
 					<string>yospos_style</string>
-				</dict>
-				<dict>
-					<key>Title</key>
-					<string>Dark Theme</string>
-					<key>Type</key>
-					<string>Switch</string>
-					<key>Default</key>
-					<false/>
-					<key>Key</key>
-					<string>dark_theme</string>
-				</dict>
-				<dict>
-					<key>Title</key>
-					<string>Forum-Specific Themes</string>
-					<key>Type</key>
-					<string>Switch</string>
-					<key>Default</key>
-					<true/>
-					<key>Key</key>
-					<string>show_forum_specific_themes</string>
-				</dict>
-				<dict>
-					<key>Title</key>
-					<string>Show Thread Tags</string>
-					<key>Type</key>
-					<string>Switch</string>
-					<key>Default</key>
-					<true/>
-					<key>Key</key>
-					<string>show_thread_tags</string>
 				</dict>
 			</array>
 		</dict>
