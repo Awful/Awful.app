@@ -166,49 +166,27 @@
 
 static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 {
-    
-    
-    NSMutableString *filename = [NSMutableString stringWithString:@"posts-view"];
-    NSString *ext = @".css";
-    NSURL *docs = [[NSFileManager defaultManager] documentDirectory];
-    NSURL *url = nil;
-    
-    if ([forumID isEqualToString:@"219"])
-    {
-        
-        NSLog(@"yosposstyle: %d ; %@",[AwfulSettings settings].yosposStyle,[AwfulSettings settings][AwfulSettingsKeys.yosposStyle]);
-        
-        
-        switch ([AwfulSettings settings].yosposStyle)
-        {
-            case AwfulYOSPOSStyleNone:
-                break;
-            case AwfulYOSPOSStyleAmber:
-                [filename appendFormat:@"-%@-%@",forumID,@"amber"];
-                break;
-            case AwfulYOSPOSStyleGreen:
-                [filename appendFormat:@"-%@",forumID];
-                break;
-            default:
-                break;
+    NSMutableArray *listOfFilenames = [@[ @"posts-view.css" ] mutableCopy];
+    if (forumID) {
+        NSString *filename = [NSString stringWithFormat:@"posts-view-%@.css", forumID];
+        if ([forumID isEqualToString:@"219"]) {
+            AwfulYOSPOSStyle style = [AwfulSettings settings].yosposStyle;
+            if (style == AwfulYOSPOSStyleAmber) filename = @"posts-view-219-amber.css";
+            else if (style == AwfulYOSPOSStyleNone) filename = nil;
         }
+        if (filename) [listOfFilenames insertObject:filename atIndex:0];
     }
-    [filename appendString:ext];
-    url = [docs URLByAppendingPathComponent:filename];
-    if ([url checkResourceIsReachableAndReturnError:NULL])
-    {
-        NSLog(@"URL: %@",url);
-        return url;
+    NSURL *documents = [[NSFileManager defaultManager] documentDirectory];
+    for (NSString *filename in listOfFilenames) {
+        NSURL *url = [documents URLByAppendingPathComponent:filename];
+        if ([url checkResourceIsReachableAndReturnError:NULL]) return url;
     }
-    
-    url = [[NSBundle mainBundle] URLForResource:filename withExtension:nil];
-    if ([url checkResourceIsReachableAndReturnError:NULL]) {
-        NSLog(@"URL: %@",url);
-        return url;
+    for (NSString *filename in listOfFilenames) {
+        NSURL *url = [[NSBundle mainBundle] URLForResource:filename
+                                             withExtension:nil];
+        if ([url checkResourceIsReachableAndReturnError:NULL]) return url;
     }
-    
     return nil;
-
 }
 
 - (void)updateFetchedResultsController
