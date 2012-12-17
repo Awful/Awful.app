@@ -94,6 +94,27 @@
 		1C67BB1A16493C5F00898B35 /* bss-fanboy.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C67BB1916493C5F00898B35 /* bss-fanboy.png */; };
 		1C83DB54161FF48600E53CFA /* ImgurHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */; };
 		1C83DB571620113F00E53CFA /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C83DB561620113F00E53CFA /* NSData+Base64.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc -w"; }; };
+		1C96D057167FDEA60043B194 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
+		1C96D058167FDEA60043B194 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
+		1C96D059167FDEA60043B194 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765070DF74369002DB57D /* CoreGraphics.framework */; };
+		1C96D05F167FDEA60043B194 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1C96D05D167FDEA60043B194 /* InfoPlist.strings */; };
+		1C96D061167FDEA60043B194 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D060167FDEA60043B194 /* main.m */; };
+		1C96D065167FDEA60043B194 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D064167FDEA60043B194 /* AppDelegate.m */; };
+		1C96D067167FDEA60043B194 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C96D066167FDEA60043B194 /* Default.png */; };
+		1C96D069167FDEA60043B194 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C96D068167FDEA60043B194 /* Default@2x.png */; };
+		1C96D06B167FDEA60043B194 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C96D06A167FDEA60043B194 /* Default-568h@2x.png */; };
+		1C96D06E167FDEA70043B194 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D06D167FDEA70043B194 /* ViewController.m */; };
+		1C96D071167FDEA70043B194 /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C96D06F167FDEA70043B194 /* ViewController.xib */; };
+		1C96D079167FE0BA0043B194 /* ImgurHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */; };
+		1C96D07A167FE1250043B194 /* SVProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C05ED48162299DE00FE567F /* SVProgressHUD.m */; };
+		1C96D07B167FE1290043B194 /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1C05ED5916229CDD00FE567F /* SVProgressHUD.bundle */; };
+		1C96D07C167FE2B30043B194 /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1015D71654129C00302B19 /* AFHTTPClient.m */; };
+		1C96D07D167FE2B30043B194 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1015D91654129C00302B19 /* AFHTTPRequestOperation.m */; };
+		1C96D07E167FE2B30043B194 /* AFJSONRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1015DD1654129C00302B19 /* AFJSONRequestOperation.m */; };
+		1C96D07F167FE2B30043B194 /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1015E41654129C00302B19 /* AFURLConnectionOperation.m */; };
+		1C96D080167FE2DB0043B194 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10D34FB0128F413C0026C7C2 /* SystemConfiguration.framework */; };
+		1C96D081167FE2EC0043B194 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10D34FAE128F413C0026C7C2 /* MobileCoreServices.framework */; };
+		1C96D082167FE3500043B194 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C83DB561620113F00E53CFA /* NSData+Base64.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		1C9C675F164C332F00478270 /* ww-denim.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C9C675E164C332F00478270 /* ww-denim.png */; };
 		1CAB36B11548F0FE00A4A362 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
 		1CAEDA0F16376E56001F5F04 /* ai-cycles.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD527C15B783FC00E5893B /* ai-cycles.png */; };
@@ -872,6 +893,19 @@
 		1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImgurHTTPClient.m; sourceTree = "<group>"; };
 		1C83DB551620113F00E53CFA /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
 		1C83DB561620113F00E53CFA /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
+		1C96D055167FDEA60043B194 /* Imgur API Test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Imgur API Test.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1C96D05C167FDEA60043B194 /* Imgur API Test-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Imgur API Test-Info.plist"; sourceTree = "<group>"; };
+		1C96D05E167FDEA60043B194 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1C96D060167FDEA60043B194 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		1C96D062167FDEA60043B194 /* Imgur API Test-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Imgur API Test-Prefix.pch"; sourceTree = "<group>"; };
+		1C96D063167FDEA60043B194 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		1C96D064167FDEA60043B194 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		1C96D066167FDEA60043B194 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		1C96D068167FDEA60043B194 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		1C96D06A167FDEA60043B194 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		1C96D06C167FDEA70043B194 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		1C96D06D167FDEA70043B194 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		1C96D070167FDEA70043B194 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController.xib; sourceTree = "<group>"; };
 		1C9C675E164C332F00478270 /* ww-denim.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ww-denim.png"; sourceTree = "<group>"; };
 		1CAB36B01548F0FE00A4A362 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		1CAED9D916373F91001F5F04 /* AwfulThreadTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTags.h; sourceTree = "<group>"; };
@@ -1557,6 +1591,18 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		1C96D052167FDEA60043B194 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C96D057167FDEA60043B194 /* UIKit.framework in Frameworks */,
+				1C96D058167FDEA60043B194 /* Foundation.framework in Frameworks */,
+				1C96D059167FDEA60043B194 /* CoreGraphics.framework in Frameworks */,
+				1C96D081167FE2EC0043B194 /* MobileCoreServices.framework in Frameworks */,
+				1C96D080167FE2DB0043B194 /* SystemConfiguration.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1CBDB5B816259C6C0004BDF4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1676,6 +1722,7 @@
 			children = (
 				1D6058910D05DD3D006BFB54 /* Awful.app */,
 				1CBDB5BC16259C6C0004BDF4 /* ParsingTests.octest */,
+				1C96D055167FDEA60043B194 /* Imgur API Test.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1782,6 +1829,33 @@
 			path = "Imgur API";
 			sourceTree = "<group>";
 		};
+		1C96D05A167FDEA60043B194 /* Imgur API Test */ = {
+			isa = PBXGroup;
+			children = (
+				1C96D063167FDEA60043B194 /* AppDelegate.h */,
+				1C96D064167FDEA60043B194 /* AppDelegate.m */,
+				1C96D06C167FDEA70043B194 /* ViewController.h */,
+				1C96D06D167FDEA70043B194 /* ViewController.m */,
+				1C96D06F167FDEA70043B194 /* ViewController.xib */,
+				1C96D05B167FDEA60043B194 /* Supporting Files */,
+			);
+			path = "Imgur API Test";
+			sourceTree = "<group>";
+		};
+		1C96D05B167FDEA60043B194 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				1C96D05C167FDEA60043B194 /* Imgur API Test-Info.plist */,
+				1C96D05D167FDEA60043B194 /* InfoPlist.strings */,
+				1C96D060167FDEA60043B194 /* main.m */,
+				1C96D062167FDEA60043B194 /* Imgur API Test-Prefix.pch */,
+				1C96D066167FDEA60043B194 /* Default.png */,
+				1C96D068167FDEA60043B194 /* Default@2x.png */,
+				1C96D06A167FDEA60043B194 /* Default-568h@2x.png */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		1CBDB5C116259C6C0004BDF4 /* Parsing */ = {
 			isa = PBXGroup;
 			children = (
@@ -1802,6 +1876,7 @@
 		1CBDB5CE16259C930004BDF4 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				1C96D05A167FDEA60043B194 /* Imgur API Test */,
 				1CBDB5C116259C6C0004BDF4 /* Parsing */,
 			);
 			path = Tests;
@@ -2637,6 +2712,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		1C96D054167FDEA60043B194 /* Imgur API Test */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1C96D077167FDEA70043B194 /* Build configuration list for PBXNativeTarget "Imgur API Test" */;
+			buildPhases = (
+				1C96D051167FDEA60043B194 /* Sources */,
+				1C96D052167FDEA60043B194 /* Frameworks */,
+				1C96D053167FDEA60043B194 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Imgur API Test";
+			productName = "Imgur API Test";
+			productReference = 1C96D055167FDEA60043B194 /* Imgur API Test.app */;
+			productType = "com.apple.product-type.application";
+		};
 		1CBDB5BB16259C6C0004BDF4 /* ParsingTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1CBDB5CB16259C6D0004BDF4 /* Build configuration list for PBXNativeTarget "ParsingTests" */;
@@ -2700,11 +2792,25 @@
 				1D6058900D05DD3D006BFB54 /* Awful */,
 				1CE2D9A016688C640024AC1C /* Build Resources */,
 				1CBDB5BB16259C6C0004BDF4 /* ParsingTests */,
+				1C96D054167FDEA60043B194 /* Imgur API Test */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		1C96D053167FDEA60043B194 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C96D05F167FDEA60043B194 /* InfoPlist.strings in Resources */,
+				1C96D067167FDEA60043B194 /* Default.png in Resources */,
+				1C96D069167FDEA60043B194 /* Default@2x.png in Resources */,
+				1C96D06B167FDEA60043B194 /* Default-568h@2x.png in Resources */,
+				1C96D071167FDEA70043B194 /* ViewController.xib in Resources */,
+				1C96D07B167FE1290043B194 /* SVProgressHUD.bundle in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1CBDB5B916259C6C0004BDF4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3418,6 +3524,23 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		1C96D051167FDEA60043B194 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C96D061167FDEA60043B194 /* main.m in Sources */,
+				1C96D065167FDEA60043B194 /* AppDelegate.m in Sources */,
+				1C96D06E167FDEA70043B194 /* ViewController.m in Sources */,
+				1C96D079167FE0BA0043B194 /* ImgurHTTPClient.m in Sources */,
+				1C96D07A167FE1250043B194 /* SVProgressHUD.m in Sources */,
+				1C96D07C167FE2B30043B194 /* AFHTTPClient.m in Sources */,
+				1C96D07D167FE2B30043B194 /* AFHTTPRequestOperation.m in Sources */,
+				1C96D07E167FE2B30043B194 /* AFJSONRequestOperation.m in Sources */,
+				1C96D07F167FE2B30043B194 /* AFURLConnectionOperation.m in Sources */,
+				1C96D082167FE3500043B194 /* NSData+Base64.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1CBDB5B716259C6C0004BDF4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3522,7 +3645,83 @@
 		};
 /* End PBXTargetDependency section */
 
+/* Begin PBXVariantGroup section */
+		1C96D05D167FDEA60043B194 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1C96D05E167FDEA60043B194 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		1C96D06F167FDEA70043B194 /* ViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1C96D070167FDEA70043B194 /* en */,
+			);
+			name = ViewController.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
+		1C96D075167FDEA70043B194 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Tests/Imgur API Test/Imgur API Test-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				INFOPLIST_FILE = "Tests/Imgur API Test/Imgur API Test-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		1C96D076167FDEA70043B194 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Tests/Imgur API Test/Imgur API Test-Prefix.pch";
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				INFOPLIST_FILE = "Tests/Imgur API Test/Imgur API Test-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
 		1CBDB5CC16259C6D0004BDF4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3701,6 +3900,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1C96D077167FDEA70043B194 /* Build configuration list for PBXNativeTarget "Imgur API Test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1C96D075167FDEA70043B194 /* Debug */,
+				1C96D076167FDEA70043B194 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		1CBDB5CB16259C6D0004BDF4 /* Build configuration list for PBXNativeTarget "ParsingTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
