@@ -93,7 +93,6 @@
 		1C6474D01569989800C72657 /* _AwfulThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474C01569989800C72657 /* _AwfulThread.m */; };
 		1C67BB1A16493C5F00898B35 /* bss-fanboy.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C67BB1916493C5F00898B35 /* bss-fanboy.png */; };
 		1C83DB54161FF48600E53CFA /* ImgurHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */; };
-		1C83DB571620113F00E53CFA /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C83DB561620113F00E53CFA /* NSData+Base64.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc -w"; }; };
 		1C96D057167FDEA60043B194 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		1C96D058167FDEA60043B194 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1C96D059167FDEA60043B194 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765070DF74369002DB57D /* CoreGraphics.framework */; };
@@ -114,7 +113,6 @@
 		1C96D07F167FE2B30043B194 /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1015E41654129C00302B19 /* AFURLConnectionOperation.m */; };
 		1C96D080167FE2DB0043B194 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10D34FB0128F413C0026C7C2 /* SystemConfiguration.framework */; };
 		1C96D081167FE2EC0043B194 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10D34FAE128F413C0026C7C2 /* MobileCoreServices.framework */; };
-		1C96D082167FE3500043B194 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C83DB561620113F00E53CFA /* NSData+Base64.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		1C96D085168010AF0043B194 /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D084168010AF0043B194 /* UIImage+Resize.m */; };
 		1C96D086168016750043B194 /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D084168010AF0043B194 /* UIImage+Resize.m */; };
 		1C9C675F164C332F00478270 /* ww-denim.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C9C675E164C332F00478270 /* ww-denim.png */; };
@@ -893,8 +891,6 @@
 		1C67BB1916493C5F00898B35 /* bss-fanboy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bss-fanboy.png"; sourceTree = "<group>"; };
 		1C83DB52161FF48600E53CFA /* ImgurHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImgurHTTPClient.h; sourceTree = "<group>"; };
 		1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImgurHTTPClient.m; sourceTree = "<group>"; };
-		1C83DB551620113F00E53CFA /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
-		1C83DB561620113F00E53CFA /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
 		1C96D055167FDEA60043B194 /* Imgur API Test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Imgur API Test.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C96D05C167FDEA60043B194 /* Imgur API Test-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Imgur API Test-Info.plist"; sourceTree = "<group>"; };
 		1C96D05E167FDEA60043B194 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -1698,8 +1694,6 @@
 			children = (
 				110FABC415745C1E00ECF535 /* AFNetworking */,
 				1190F7BF13BE4ECB00B9D271 /* Hpple */,
-				1C83DB551620113F00E53CFA /* NSData+Base64.h */,
-				1C83DB561620113F00E53CFA /* NSData+Base64.m */,
 				1C4D7BD6167A5C7C00CF3659 /* PSMenuItem */,
 				1C05ED40162299DE00FE567F /* SVProgressHUD */,
 				1CC38B84160C0A5D00C35A11 /* SVPullToRefresh */,
@@ -3543,7 +3537,6 @@
 				1C96D07D167FE2B30043B194 /* AFHTTPRequestOperation.m in Sources */,
 				1C96D07E167FE2B30043B194 /* AFJSONRequestOperation.m in Sources */,
 				1C96D07F167FE2B30043B194 /* AFURLConnectionOperation.m in Sources */,
-				1C96D082167FE3500043B194 /* NSData+Base64.m in Sources */,
 				1C96D086168016750043B194 /* UIImage+Resize.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3597,7 +3590,6 @@
 				1C13FF67161BCCB6000ED2B1 /* AwfulThreadCell.m in Sources */,
 				1C13FF6A161BF733000ED2B1 /* AwfulBadgeView.m in Sources */,
 				1C83DB54161FF48600E53CFA /* ImgurHTTPClient.m in Sources */,
-				1C83DB571620113F00E53CFA /* NSData+Base64.m in Sources */,
 				1C05ED4F162299DE00FE567F /* SVProgressHUD.m in Sources */,
 				1CBDB5E71625AA240004BDF4 /* AwfulDataStack.m in Sources */,
 				1CBDB5F61625BACE0004BDF4 /* AwfulParsing.m in Sources */,
