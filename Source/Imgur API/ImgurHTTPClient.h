@@ -23,6 +23,8 @@
 //              urls  - an array of NSURL instances pointing to the uploaded images if successful,
 //                      or nil on failure.
 //
+// N.B. The callback is not called if the upload is cancelled.
+//
 // Returns an object that can cancel the upload if it receives -cancel.
 - (id <ImgurHTTPClientCancelToken>)uploadImages:(NSArray *)images
                                         andThen:(void(^)(NSError *error, NSArray *urls))callback;
