@@ -8,11 +8,11 @@
 
 #import "AFNetworking.h"
 
-// Client for the Imgur Anonymous API, version 2.
+// Client for the Imgur Anonymous API, version 3.
 @interface ImgurHTTPClient : AFHTTPClient
 
 // Singleton.
-+ (ImgurHTTPClient *)sharedClient;
++ (instancetype)client;
 
 // images   - an array of UIImage instances to upload.
 // callback - a block that takes two arguments and returns nothing:
@@ -20,9 +20,6 @@
 //              urls  - an array of NSURL instances pointing to the uploaded images if successful,
 //                      or nil on failure.
 - (void)uploadImages:(NSArray *)images andThen:(void(^)(NSError *error, NSArray *urls))callback;
-
-// Possible reasons for NO may include network reachability or API rate limiting.
-- (void)checkIfAnyImagesCanBeUploadedAndThen:(void(^)(BOOL canUploadAtLeastOneImage))callback;
 
 @end
 

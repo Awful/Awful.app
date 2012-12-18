@@ -51,7 +51,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     [self dismissViewControllerAnimated:YES completion:^{
         [SVProgressHUD showWithStatus:@"Uploading image…" maskType:SVProgressHUDMaskTypeBlack];
     }];
-    [[ImgurHTTPClient sharedClient] uploadImages:@[ info[UIImagePickerControllerOriginalImage] ]
+    [[ImgurHTTPClient client] uploadImages:@[ info[UIImagePickerControllerOriginalImage] ]
                                          andThen:^(NSError *error, NSArray *urls)
     {
         if (error) {

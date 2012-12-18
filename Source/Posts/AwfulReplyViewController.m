@@ -169,7 +169,7 @@ withImagePlaceholderResults:placeholderResults
     [SVProgressHUD showWithStatus:@"Uploading images…" maskType:SVProgressHUDMaskTypeClear];
     
     NSArray *images = [self.images objectsForKeys:imageKeys notFoundMarker:[NSNull null]];
-    [[ImgurHTTPClient sharedClient] uploadImages:images andThen:^(NSError *error, NSArray *urls)
+    [[ImgurHTTPClient client] uploadImages:images andThen:^(NSError *error, NSArray *urls)
      {
          if (!error) {
              [self completeReply:reply

@@ -11,22 +11,21 @@
 
 @implementation ImgurHTTPClient
 
-+ (ImgurHTTPClient *)sharedClient
++ (ImgurHTTPClient *)client
 {
     static ImgurHTTPClient *instance;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        instance = [[self alloc] initWithBaseURL:[NSURL URLWithString:@"https://api.imgur.com"]];
+        instance = [[self alloc] initWithBaseURL:[NSURL URLWithString:@"https://api.imgur.com/"]];
     });
     return instance;
 }
 
 - (id)initWithBaseURL:(NSURL *)url
 {
-    self = [super initWithBaseURL:url];
-    if (self) {
-        [self registerHTTPOperationClass:[AFJSONRequestOperation class]];
-    }
+    if (!(self = [super initWithBaseURL:url])) return nil;
+    [self registerHTTPOperationClass:[AFJSONRequestOperation class]];
+    [self setDefaultHeader:@"Authorization" value:@"Client-ID 4db466addcb5cfc"];
     return self;
 }
 
@@ -35,14 +34,9 @@
 {
     NSMutableArray *requests = [NSMutableArray new];
     for (UIImage *image in images) {
-        NSData *dataForImage = UIImagePNGRepresentation(image);
-        NSDictionary *parameters = @{
-            @"key" : @"4b083e3139cadecd17153b69f3cd666c",
-            @"image" : [dataForImage base64EncodedString]
-        };
-        [requests addObject:[self requestWithMethod:@"POST"
-                                               path:@"/2/upload.json"
-                                         parameters:parameters]];
+        NSData *imageData = UIImagePNGRepresentation(image);
+        NSDictionary *dict = @{ @"image": [imageData base64EncodedString] };
+        [requests addObject:[self requestWithMethod:@"POST" path:@"/3/image.json" parameters:dict]];
     }
     NSMutableArray *listOfURLs = [NSMutableArray new];
     [self enqueueBatchOfHTTPRequestOperationsWithRequests:requests
@@ -63,7 +57,7 @@
                     } else if (operation.response.statusCode == 500) {
                         errorCode = ImgurAPIErrorUnexpectedRemoteError;
                     }
-                    NSString *message = response[@"error"][@"message"];
+                    NSString *message = response[@"data"][@"error"][@"message"];
                     if (!message) message = @"An unknown error occurred";
                     NSDictionary *userInfo = @{
                         NSLocalizedDescriptionKey : message,
@@ -76,7 +70,7 @@
                 }
                 return;
             }
-            NSString *url = response[@"upload"][@"links"][@"original"];
+            NSString *url = response[@"data"][@"link"];
             if (!url) {
                 if (callback) {
                     NSDictionary *userInfo = @{
@@ -92,19 +86,6 @@
             [listOfURLs addObject:[NSURL URLWithString:url]];
         }
         if (callback) dispatch_async(dispatch_get_main_queue(), ^{ callback(nil, listOfURLs); });
-    }];
-}
-
-- (void)checkIfAnyImagesCanBeUploadedAndThen:(void(^)(BOOL canUploadAtLeastOneImage))callback
-{
-    [self getPath:@"/2/credits.json" parameters:nil success:^(AFHTTPRequestOperation *operation, id _)
-    {
-        NSDictionary *headers = [operation.response allHeaderFields];
-        NSInteger creditsRemaining = [headers[@"X-RateLimit-Remaining"] integerValue];
-        if (callback) dispatch_async(dispatch_get_main_queue(), ^{ callback(creditsRemaining > 10); });
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error)
-    {
-        if (callback) dispatch_async(dispatch_get_main_queue(), ^{ callback(NO); });
     }];
 }
 
