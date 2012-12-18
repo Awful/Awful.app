@@ -115,6 +115,8 @@
 		1C96D080167FE2DB0043B194 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10D34FB0128F413C0026C7C2 /* SystemConfiguration.framework */; };
 		1C96D081167FE2EC0043B194 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10D34FAE128F413C0026C7C2 /* MobileCoreServices.framework */; };
 		1C96D082167FE3500043B194 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C83DB561620113F00E53CFA /* NSData+Base64.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		1C96D085168010AF0043B194 /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D084168010AF0043B194 /* UIImage+Resize.m */; };
+		1C96D086168016750043B194 /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D084168010AF0043B194 /* UIImage+Resize.m */; };
 		1C9C675F164C332F00478270 /* ww-denim.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C9C675E164C332F00478270 /* ww-denim.png */; };
 		1CAB36B11548F0FE00A4A362 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
 		1CAEDA0F16376E56001F5F04 /* ai-cycles.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD527C15B783FC00E5893B /* ai-cycles.png */; };
@@ -906,6 +908,8 @@
 		1C96D06C167FDEA70043B194 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		1C96D06D167FDEA70043B194 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		1C96D070167FDEA70043B194 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController.xib; sourceTree = "<group>"; };
+		1C96D083168010AF0043B194 /* UIImage+Resize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Resize.h"; sourceTree = "<group>"; };
+		1C96D084168010AF0043B194 /* UIImage+Resize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Resize.m"; sourceTree = "<group>"; };
 		1C9C675E164C332F00478270 /* ww-denim.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ww-denim.png"; sourceTree = "<group>"; };
 		1CAB36B01548F0FE00A4A362 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		1CAED9D916373F91001F5F04 /* AwfulThreadTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTags.h; sourceTree = "<group>"; };
@@ -1699,6 +1703,8 @@
 				1C4D7BD6167A5C7C00CF3659 /* PSMenuItem */,
 				1C05ED40162299DE00FE567F /* SVProgressHUD */,
 				1CC38B84160C0A5D00C35A11 /* SVPullToRefresh */,
+				1C96D083168010AF0043B194 /* UIImage+Resize.h */,
+				1C96D084168010AF0043B194 /* UIImage+Resize.m */,
 			);
 			path = Vendor;
 			sourceTree = "<group>";
@@ -3538,6 +3544,7 @@
 				1C96D07E167FE2B30043B194 /* AFJSONRequestOperation.m in Sources */,
 				1C96D07F167FE2B30043B194 /* AFURLConnectionOperation.m in Sources */,
 				1C96D082167FE3500043B194 /* NSData+Base64.m in Sources */,
+				1C96D086168016750043B194 /* UIImage+Resize.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3632,6 +3639,7 @@
 				1C5B9973166F5835004C5D0E /* AwfulTabBar.m in Sources */,
 				1C5B99BC166FFA4F004C5D0E /* Model.xcdatamodeld in Sources */,
 				1C4D7BDB167A5C7C00CF3659 /* PSMenuItem.m in Sources */,
+				1C96D085168010AF0043B194 /* UIImage+Resize.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

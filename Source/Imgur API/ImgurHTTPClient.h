@@ -14,7 +14,7 @@
 // Singleton.
 + (instancetype)client;
 
-// images   - an array of UIImage instances to upload.
+// images   - an array of UIImage instances to upload. Uploaded images may be downscaled.
 // callback - a block that takes two arguments and returns nothing:
 //              error - an NSError instance on failure, or nil if successful.
 //              urls  - an array of NSURL instances pointing to the uploaded images if successful,
