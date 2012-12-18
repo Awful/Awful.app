@@ -39,6 +39,8 @@
 
 @property (nonatomic) AwfulPost *post;
 
+@property (nonatomic) id <ImgurHTTPClientCancelToken> imageUploadCancelToken;
+
 @end
 
 @implementation AwfulReplyViewController
@@ -121,7 +123,9 @@
 
 - (void)hitSend
 {
+    if (self.imageUploadCancelToken) return;
     [self.replyTextView resignFirstResponder];
+    self.replyTextView.userInteractionEnabled = NO;
     if (AwfulSettings.settings.confirmBeforeReplying) {
         AwfulAlertView *alert = [AwfulAlertView new];
         alert.title = @"Incoming Forums Superstar";
@@ -166,11 +170,14 @@ withImagePlaceholderResults:placeholderResults
             replacementURLs:nil];
         return;
     }
-    [SVProgressHUD showWithStatus:@"Uploading images…" maskType:SVProgressHUDMaskTypeClear];
+    [SVProgressHUD showWithStatus:@"Uploading images…"];
     
     NSArray *images = [self.images objectsForKeys:imageKeys notFoundMarker:[NSNull null]];
-    [[ImgurHTTPClient client] uploadImages:images andThen:^(NSError *error, NSArray *urls)
+    self.imageUploadCancelToken = [[ImgurHTTPClient client] uploadImages:images
+                                                                 andThen:^(NSError *error,
+                                                                           NSArray *urls)
      {
+         self.imageUploadCancelToken = nil;
          if (!error) {
              [self completeReply:reply
      withImagePlaceholderResults:placeholderResults
@@ -259,7 +266,14 @@ withImagePlaceholderResults:placeholderResults
 - (void)cancel
 {
     [SVProgressHUD dismiss];
-    [self.delegate replyViewControllerDidCancel:self];
+    if (self.imageUploadCancelToken) {
+        [self.imageUploadCancelToken cancel];
+        self.imageUploadCancelToken = nil;
+        self.replyTextView.userInteractionEnabled = YES;
+        [self.replyTextView becomeFirstResponder];
+    } else {
+        [self.delegate replyViewControllerDidCancel:self];
+    }
 }
 
 - (void)retheme
@@ -485,6 +499,7 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
                                              selector:@selector(currentThemeChanged:)
                                                  name:AwfulThemeDidChangeNotification
                                                object:nil];
+    self.replyTextView.userInteractionEnabled = YES;
 }
 
 - (void)viewDidDisappear:(BOOL)animated
