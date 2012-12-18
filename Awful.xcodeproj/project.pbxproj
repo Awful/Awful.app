@@ -1930,7 +1930,6 @@
 		1CC780241612D9DD002AF958 /* Posts */ = {
 			isa = PBXGroup;
 			children = (
-				1769D400167A91DB00CD1590 /* posts-view-219-amber.css */,
 				1CC780271612D9DE002AF958 /* AwfulPostsViewController.h */,
 				1CC780281612D9DE002AF958 /* AwfulPostsViewController.m */,
 				1CFBECEC163076F1008AF641 /* AwfulPageBar.h */,
@@ -1947,6 +1946,7 @@
 				1C23A0A6163E7D2B006C7F39 /* posts-view.js */,
 				1C40E5B11640FC2C004AAFA6 /* posts-view.css */,
 				1C40E5B31640FDB8004AAFA6 /* posts-view-219.css */,
+				1769D400167A91DB00CD1590 /* posts-view-219-amber.css */,
 			);
 			path = Posts;
 			sourceTree = "<group>";
