@@ -602,6 +602,8 @@
 		8CCD558815B783FD00E5893B /* rating4.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD526015B783FC00E5893B /* rating4.png */; };
 		8CCD558915B783FD00E5893B /* rating5.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD526115B783FC00E5893B /* rating5.png */; };
 		8CCD559E15B783FD00E5893B /* sticky.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD527715B783FC00E5893B /* sticky.png */; };
+		8CEBABE8167FFE2500680935 /* posts-view-219-macinyos.css in Resources */ = {isa = PBXBuildFile; fileRef = 8CEBABE7167FFE2500680935 /* posts-view-219-macinyos.css */; };
+		8CEBABEB168000B800680935 /* macinyos-wallpaper.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEBABEA168000B800680935 /* macinyos-wallpaper.png */; };
 		8CF02E0216484CCE0059BC56 /* lp-fps.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02D9716484CCE0059BC56 /* lp-fps.png */; };
 		8CF02E0316484CCE0059BC56 /* lp-romhack.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02D9816484CCE0059BC56 /* lp-romhack.png */; };
 		8CF02E0416484CCE0059BC56 /* lp-rpg.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02D9916484CCE0059BC56 /* lp-rpg.png */; };
@@ -1411,6 +1413,8 @@
 		8CCD536315B783FD00E5893B /* yp-gnugpl.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yp-gnugpl.png"; sourceTree = "<group>"; };
 		8CCD536415B783FD00E5893B /* yp-snowcrash971.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yp-snowcrash971.png"; sourceTree = "<group>"; };
 		8CCD536515B783FD00E5893B /* yp-tubes296.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yp-tubes296.png"; sourceTree = "<group>"; };
+		8CEBABE7167FFE2500680935 /* posts-view-219-macinyos.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-219-macinyos.css"; sourceTree = "<group>"; };
+		8CEBABEA168000B800680935 /* macinyos-wallpaper.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-wallpaper.png"; sourceTree = "<group>"; };
 		8CF02D9716484CCE0059BC56 /* lp-fps.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lp-fps.png"; sourceTree = "<group>"; };
 		8CF02D9816484CCE0059BC56 /* lp-romhack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lp-romhack.png"; sourceTree = "<group>"; };
 		8CF02D9916484CCE0059BC56 /* lp-rpg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lp-rpg.png"; sourceTree = "<group>"; };
@@ -1855,6 +1859,7 @@
 		1CC780241612D9DD002AF958 /* Posts */ = {
 			isa = PBXGroup;
 			children = (
+				8CEBABE7167FFE2500680935 /* posts-view-219-macinyos.css */,
 				1769D400167A91DB00CD1590 /* posts-view-219-amber.css */,
 				1CC780271612D9DE002AF958 /* AwfulPostsViewController.h */,
 				1CC780281612D9DE002AF958 /* AwfulPostsViewController.m */,
@@ -2033,6 +2038,7 @@
 				1CBDB5841624B26B0004BDF4 /* 0.0stars.png */,
 				1CBDB5851624B26B0004BDF4 /* 0.5stars.png */,
 				1CBDB5861624B26B0004BDF4 /* 1.0stars.png */,
+				8CEBABEA168000B800680935 /* macinyos-wallpaper.png */,
 				1CBDB5871624B26B0004BDF4 /* 1.5stars.png */,
 				1CBDB5881624B26B0004BDF4 /* 2.0stars.png */,
 				1CBDB5891624B26B0004BDF4 /* 2.5stars.png */,
@@ -3340,6 +3346,8 @@
 				1C5B9980166F9844004C5D0E /* tab-selected@2x.png in Resources */,
 				1C5B9981166F9844004C5D0E /* tab-divider@2x.png in Resources */,
 				1769D401167A91DB00CD1590 /* posts-view-219-amber.css in Resources */,
+				8CEBABE8167FFE2500680935 /* posts-view-219-macinyos.css in Resources */,
+				8CEBABEB168000B800680935 /* macinyos-wallpaper.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
