@@ -5,8 +5,6 @@
 	<key>Sections</key>
 	<array>
 		<dict>
-			<key>Identifier</key>
-			<string>LogOutSection</string>
 			<key>Explanation</key>
 			<string>Logging out erases all cached forums, threads, and posts.</string>
 			<key>Settings</key>
