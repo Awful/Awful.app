@@ -158,11 +158,11 @@ function render(post) {
   rendered = $('#postTemplate').mustache(post)
   // Some links and images come with relative URLs, which break as we set our
   // relative URL to the app's resource directory. Let's fix those up.
-  rendered.find('a:not([href *= "://"])').each(function(){
+  rendered.find('a:not([href *= ":"])').each(function(){
     var a = $(this)
     a.attr('href', prependBaseURL(a.attr('href')))
   })
-  rendered.find('img:not([src *= "://"])').each(function(){
+  rendered.find('img:not([src *= ":"])').each(function(){
     var img = $(this)
     img.attr('src', prependBaseURL(img.attr('src')))
   })
