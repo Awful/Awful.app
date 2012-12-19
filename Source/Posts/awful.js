@@ -148,6 +148,12 @@ Awful.showImages = function(on){
   }
 }
 
+Awful.documentWidth = function(width){
+  $('meta[name="viewport"]').attr({
+    content: "width=" + (width ? width : "device-width") + ", initial-scale=1, minimum-scale=1, maximum-scale=1"
+  })
+}
+
 function render(post) {
   rendered = $('#postTemplate').mustache(post)
   // Some links and images come with relative URLs, which break as we set our

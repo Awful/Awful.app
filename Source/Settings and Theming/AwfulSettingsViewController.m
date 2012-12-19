@@ -92,7 +92,10 @@
 {
     [super viewDidLoad];
     self.switches = [NSMutableArray new];
-    self.sections = AwfulSettings.settings.sections;
+    NSString *device = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"iPad" : @"iPhone";
+    NSPredicate *sectionPredicate = [NSPredicate predicateWithFormat:
+                                     @"Device = nil OR Device = %@", device];
+    self.sections = [AwfulSettings.settings.sections filteredArrayUsingPredicate:sectionPredicate];
     self.tableView.backgroundView = nil;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
     
