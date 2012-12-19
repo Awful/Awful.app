@@ -113,40 +113,27 @@ struct {
     @"amber",
 };
 
-
 - (AwfulYOSPOSStyle)yosposStyle
 {
     NSString *val = self[AwfulSettingsKeys.yosposStyle];
-    if([val isEqualToString:AwfulYOSPOSStyles.None])
-    {
+    if([val isEqualToString:AwfulYOSPOSStyles.None]) {
         return AwfulYOSPOSStyleNone;
-    } else if ([val isEqualToString:AwfulYOSPOSStyles.Amber])
-    {
+    } else if ([val isEqualToString:AwfulYOSPOSStyles.Amber]) {
         return AwfulYOSPOSStyleAmber;
-    } else if ([val isEqualToString:AwfulYOSPOSStyles.Green])
-    {
+    } else if ([val isEqualToString:AwfulYOSPOSStyles.Green]) {
         return AwfulYOSPOSStyleGreen;
     } else {
         return AwfulYOSPOSStyleGreen;
-
     }
-    
 }
--(void) setYosposStyle:(AwfulYOSPOSStyle)yosposStyle
+
+- (void)setYosposStyle:(AwfulYOSPOSStyle)yosposStyle
 {
     NSString *val;
     switch (yosposStyle) {
-        case AwfulYOSPOSStyleAmber:
-            val = AwfulYOSPOSStyles.Amber;
-            break;
-        case AwfulYOSPOSStyleGreen:
-            val = AwfulYOSPOSStyles.Green;
-            break;
-        case AwfulYOSPOSStyleNone:
-            val = AwfulYOSPOSStyles.None;
-            break;
-        default:
-            return;
+        case AwfulYOSPOSStyleAmber: val = AwfulYOSPOSStyles.Amber; break;
+        case AwfulYOSPOSStyleGreen: val = AwfulYOSPOSStyles.Green; break;
+        case AwfulYOSPOSStyleNone:  val = AwfulYOSPOSStyles.None;  break;
     }
     self[AwfulSettingsKeys.yosposStyle] = val;
 }

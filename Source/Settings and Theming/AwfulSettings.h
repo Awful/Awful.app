@@ -21,8 +21,7 @@
 
 @property (assign, nonatomic) BOOL showImages;
 
-typedef enum
-{
+typedef enum {
     AwfulFirstTabForums,
     AwfulFirstTabFavorites,
     AwfulFirstTabBookmarks,
@@ -48,7 +47,7 @@ typedef enum {
     AwfulYOSPOSStyleAmber,
 } AwfulYOSPOSStyle;
 
-@property (assign,nonatomic) AwfulYOSPOSStyle yosposStyle;
+@property (assign, nonatomic) AwfulYOSPOSStyle yosposStyle;
 
 typedef enum {
     AwfulKeepSidebarOpenNever,
