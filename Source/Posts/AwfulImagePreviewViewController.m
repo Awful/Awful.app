@@ -144,7 +144,10 @@
         });
     }];
     [sheet addButtonWithTitle:@"Copy Image URL" block:^{
-        [UIPasteboard generalPasteboard].URL = self.imageURL;
+        [UIPasteboard generalPasteboard].items = @[ @{
+            (id)kUTTypeURL: self.imageURL,
+            (id)kUTTypePlainText: [self.imageURL absoluteString]
+        }];
         [self hideBarsAfterShortDuration];
     }];
     [sheet addCancelButtonWithTitle:@"Cancel" block:^{

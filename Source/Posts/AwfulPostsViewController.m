@@ -505,7 +505,10 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
                          "showthread.php?threadid=%@&perpage=40&pagenumber=%@",
                          self.thread.threadID, @(self.currentPage)];
-        [UIPasteboard generalPasteboard].URL = [NSURL URLWithString:url];
+        [UIPasteboard generalPasteboard].items = @[ @{
+            (id)kUTTypeURL: [NSURL URLWithString:url],
+            (id)kUTTypePlainText: url
+        }];
     }];
     [sheet addButtonWithTitle:@"Vote" block:^{
         AwfulActionSheet *vote = [AwfulActionSheet new];
@@ -634,7 +637,10 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
                          "showthread.php?threadid=%@&perpage=40&pagenumber=%@#post%@",
                          self.thread.threadID, @(self.currentPage), post.postID];
-        [UIPasteboard generalPasteboard].URL = [NSURL URLWithString:url];
+        [UIPasteboard generalPasteboard].items = @[ @{
+            (id)kUTTypeURL: [NSURL URLWithString:url],
+            (id)kUTTypePlainText: url
+        }];
     }];
     [sheet addButtonWithTitle:@"Mark Read to Here" block:^{
         [[AwfulHTTPClient client] markThreadWithID:self.thread.threadID
