@@ -301,11 +301,18 @@ withImagePlaceholderResults:placeholderResults
 
 - (void)configureImageSourceSubmenuItems
 {
-    [UIMenuController sharedMenuController].menuItems = @[
-        [[PSMenuItem alloc] initWithTitle:@"From Camera" block:^{ [self insertImageFromCamera]; }],
-        [[PSMenuItem alloc] initWithTitle:@"From Library"
-                                    block:^{ [self insertImageFromLibrary]; }],
-    ];
+    NSMutableArray *menuItems = [NSMutableArray new];
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        [menuItems addObject:[[PSMenuItem alloc] initWithTitle:@"From Camera"
+                                                         block:^{ [self insertImageFromCamera]; }]];
+    }
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
+        [menuItems addObject:[[PSMenuItem alloc] initWithTitle:@"From Library"
+                                                         block:^{ [self insertImageFromLibrary]; }]];
+    }
+    [menuItems addObject:[[PSMenuItem alloc] initWithTitle:@"[img]"
+                                                     block:^{ [self wrapSelectionInTag:@"[img]"]; }]];
+    [UIMenuController sharedMenuController].menuItems = menuItems;
 }
 
 - (void)configureFormattingSubmenuItems
@@ -350,19 +357,6 @@ withImagePlaceholderResults:placeholderResults
 
 - (void)insertImage
 {
-    BOOL camera = [UIImagePickerController isSourceTypeAvailable:
-                   UIImagePickerControllerSourceTypeCamera];
-    BOOL library = [UIImagePickerController isSourceTypeAvailable:
-                    UIImagePickerControllerSourceTypePhotoLibrary];
-    if (!camera && !library) return;
-    if (camera && !library) {
-        [self insertImageFromCamera];
-        return;
-    } else if (library && !camera) {
-        [self insertImageFromLibrary];
-        return;
-    }
-    
     [self configureImageSourceSubmenuItems];
     [self showSubmenuThenResetToTopLevelMenuOnHide];
 }
