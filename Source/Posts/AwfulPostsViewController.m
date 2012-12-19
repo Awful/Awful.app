@@ -503,7 +503,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     AwfulActionSheet *sheet = [AwfulActionSheet new];
     [sheet addButtonWithTitle:@"Copy Thread URL" block:^{
         NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
-                         "showthread.php?threadid=%@&pagenumber=%@",
+                         "showthread.php?threadid=%@&perpage=40&pagenumber=%@",
                          self.thread.threadID, @(self.currentPage)];
         [UIPasteboard generalPasteboard].URL = [NSURL URLWithString:url];
     }];
@@ -632,7 +632,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     }
     [sheet addButtonWithTitle:@"Copy Post URL" block:^{
         NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
-                         "showthread.php?threadid=%@&pagenumber=%@#post%@",
+                         "showthread.php?threadid=%@&perpage=40&pagenumber=%@#post%@",
                          self.thread.threadID, @(self.currentPage), post.postID];
         [UIPasteboard generalPasteboard].URL = [NSURL URLWithString:url];
     }];
