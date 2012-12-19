@@ -18,7 +18,7 @@ body {
 
 /* Default font and size. */
 body {
-  font-family: monospace;
+  font-family: 'Geeza Pro', sans-serif;
   font-size: 14px;
 }
 
@@ -51,43 +51,60 @@ body {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
-/* Solid black background. */
+/* Black and white checked background. */
 body {
     background-image: url('macinyos-wallpaper.png');
     background-size: 2px;
 }
 
-/* Green text. */
+/* Black text. */
 body {
-  color: #57ff57;
+  color: #000;
 }
 
 /* Posts hover nicely above the background and are offset parents. */
 #posts > article {
-  margin: 10px 5px;
-  padding: 5px;
-  border-radius: 5px;
+  border: 1px solid #000;
+  margin: 0 5px;
+  padding: 0;
+  border-radius: 0;
   position: relative;
 }
 
-/* Posts have a nearly black background. */
+/* Posts have a white background. */
 #posts > article {
-  background-color: #191919;
+    margin-top: 5px;
+    background: top left no-repeat url('macinyos-heading.png') #fff;
 }
-
+#posts > article:before {
+    content: 'YOSPOS';
+    background-color: #fff;
+    font-size:.75em;
+    position: relative;
+    top: 0;
+    left: 42%;
+    padding: 1px 4px;
+    text-align: center;
+    font-weight: bold;
+}
+.ipad #posts > article:before {
+    top: -5px;
+    left: 30%;
+}
 /* Posts already seen have a dark green background. */
 #posts > article.seen {
-  background-color: #0b2d0b;
+  background-color: #f1f1f1;
 }
 
 /* iPad posts need some more padding. */
 .ipad #posts > article {
-  padding: 15px;
+  padding: 5px;
+    padding-bottom: 40px;
 }
 
 /* iPad posts with avatars have a minimum height. */
 .ipad #posts > article {
-  min-height: 150px;
+  min-height: 178px;
 }
 .ipad #posts > article.no-avatar {
   min-height: auto;
@@ -101,30 +118,32 @@ body {
 
 /* iPad post header sits in the top left corner. */
 .ipad #posts > article > header {
-  width: 136px;
-  height: 135px;
+  width: 160px;
+  height: 100%;
   float: left;
-  margin: 0 5px 0 0;
-  padding: 0;
+  margin: 18px 5px 5px 0;
+  padding: 5px;
 }
 
 /* iPad post header has a small gradient background. */
 .ipad #posts > article > header {
-  background: -webkit-linear-gradient(left top, transparent 50%, rgba(0, 0, 0, 0.035));
+    border: 1px none solid solid none #000;
 }
 
 /* iPhone posts have a horizontal divider between header and post. */
 .iphone #posts > article > header {
+  border-top: 1px solid #444;
   border-bottom: 1px solid #444;
 }
 .iphone #posts > article.seen > header {
+  border-top-color: #395339;
   border-bottom-color: #395339;
 }
 
 /* iPhone posts show author's avatar to the left of their name. */
 .iphone #posts > article > header > img {
   position: absolute;
-  top: 9px;
+  top: 28px;
   left: 10px;
   max-width: 33px;
   max-height: 33px;
@@ -147,7 +166,7 @@ body {
 
 /* iPad posts show author's name too. */
 .ipad #posts > article > header > h1 {
-  font-size: 1em;
+  font-size: 0.85em;
   width: 100%;
   margin: 0;
   display: block;
@@ -155,16 +174,15 @@ body {
 
 /* Mods and admins get a little star by their name. */
 #posts > article.role-admin > header > h1 {
-  background-image: url('adminstar.png');
+  background-image: url('macinyos-adminstar.png');
 }
 #posts > article.role-mod > header > h1 {
-  background-image: url('modstar.png');
+  background-image: url('macinyos-modstar.png');
 }
 #posts > article.role-admin > header > h1,
 #posts > article.role-mod > header > h1 {
   background-repeat: no-repeat;
   background-position: 0 center;
-  background-size: auto 1em;
   padding-left: 18px;
 }
 
@@ -179,7 +197,7 @@ body {
   font-size: 0.85em;
   position: absolute;
   bottom: 10px;
-  right: 55px;
+  right: 85px;
 }
 
 /* Move author's name and the post date out from the avatar. */
@@ -195,36 +213,40 @@ body {
   width: 48px;
   height: 34px;
   position: absolute;
-  top: 9px;
+  top: 26px;
   right: 10px;
 }
 
 /* iPad posts are similar. */
 .ipad #posts > article > header > button {
-  width: 38px;
-  height: 24px;
+    width: 58px;
+    height: 34px;
   position: absolute;
-  bottom: 12px;
+  bottom: 5px;
   right: 12px;
 }
 
 /* "Show post actions" button is a centered ellipsis. */
 #posts > article > header > button {
-  border: none;
+  background: top left no-repeat url('macinyos-postactions-bg.png') #fff;
+  background-size: 31px;
+  border: 1px solid black;
+  border-radius: 4px;
+  height: 38px;
+  width: 70px;
 }
 #posts > article > header > button:after {
   content: "⋯";
   position: absolute;
-  top: -5px; right: 0;
+  top: 10px; right: 0px;
   text-align: center;
-  color: #57ff57;
-  font-size: 40px;
+  color: #000;
+  font-size: 20px;
   font-weight: bold;
-  width: 50px;
+  text-align: right
 }
 .ipad #posts > article > header > button:after {
   font-size: 30px;
-  width: 38px;
   top: -7px;
 }
 
@@ -251,7 +273,8 @@ body {
 
 /* Highlight original poster. */
 #posts > article.role-op > header > h1 {
-  color: #199ed7;
+  color: #000;
+    text-transform: italic;
 }
 
 /* Post bodies' text is a bit larger. */
@@ -271,7 +294,7 @@ body {
 
 /* Make links in post bodies pretty. */
 #posts > article > section a {
-  color: #57ff57;
+  color: #000;
 }
 
 /* Links to quoted posts should look a bit different. */
@@ -323,7 +346,7 @@ body {
 /* Quotes are smaller and have a left border. */
 #posts > article > section blockquote {
   font-size: 12px;
-  border-left: 1px solid #57ff57;
+  border-left: 1px solid #000;
   margin: 0;
   padding: 0 10px;
 }
@@ -391,7 +414,7 @@ body > #loading .container {
 
 /* The loading progress bar is centered with a green border. */
 body > #loading .progress-bar {
-  border: 2px solid #57ff57;
+  border: 2px solid #000;
   width: 50px;
   height: 50px;
   margin: 0 auto;
