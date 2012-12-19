@@ -9,6 +9,7 @@
 #import "AwfulSettingsViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
+#import "AwfulDisclosureIndicatorView.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulLicensesViewController.h"
 #import "AwfulLoginController.h"
@@ -132,17 +133,19 @@ typedef enum SettingType
     
     NSDictionary *setting = [self settingForIndexPath:indexPath];
     SettingType settingType = ImmutableSetting;
+    NSString *identifier = @"ImmutableSetting";
     if ([setting[@"Type"] isEqual:@"Switch"]) {
         settingType = OnOffSetting;
+        identifier = @"Switch";
     } else if (setting[@"Choices"]) {
         settingType = ChoiceSetting;
+        identifier = @"Choices";
     } else if (setting[@"Action"]) {
         settingType = ButtonSetting;
+        identifier = @"Action";
     }
-    NSString *identifier = @"Value1";
     UITableViewCellStyle style = UITableViewCellStyleValue1;
     if (settingType == OnOffSetting || settingType == ButtonSetting) {
-        identifier = @"Default";
         style = UITableViewCellStyleDefault;
     }
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
@@ -150,6 +153,15 @@ typedef enum SettingType
     {
         cell = [[UITableViewCell alloc] initWithStyle:style 
                                       reuseIdentifier:identifier];
+        if (settingType == OnOffSetting) {
+            UISwitch *switchView = [UISwitch new];
+            [switchView addTarget:self
+                           action:@selector(hitSwitch:)
+                 forControlEvents:UIControlEventValueChanged];
+            cell.accessoryView = switchView;
+        } else if (settingType == ChoiceSetting) {
+            cell.accessoryView = [AwfulDisclosureIndicatorView new];
+        }
     }
     if (style == UITableViewCellStyleValue1) {
         UIColor *color = [AwfulTheme currentTheme].settingsCellCurrentValueTextColor;
@@ -170,33 +182,25 @@ typedef enum SettingType
     id valueForSetting = key ? [[NSUserDefaults standardUserDefaults] objectForKey:key] : nil;
     
     if (settingType == OnOffSetting) {
+        UISwitch *switchView = (UISwitch *)cell.accessoryView;
+        switchView.on = [valueForSetting boolValue];
+        switchView.onTintColor = [AwfulTheme currentTheme].settingsCellSwitchOnTintColor;
         NSUInteger tag = [self.switches indexOfObject:indexPath];
         if (tag == NSNotFound) {
             tag = self.switches.count;
             [self.switches addObject:indexPath];
         }
-        UISwitch *switchView = [UISwitch new];
-        switchView.onTintColor = [AwfulTheme currentTheme].settingsCellSwitchOnTintColor;
-        switchView.on = [valueForSetting boolValue];
-        [switchView addTarget:self
-                       action:@selector(hitSwitch:)
-             forControlEvents:UIControlEventValueChanged];
         switchView.tag = tag;
-        cell.accessoryView = switchView;
-    } else {
-        cell.accessoryView = nil;
-    }
-    
-    if (settingType == ChoiceSetting) {
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    } else if (settingType == ChoiceSetting) {
+        AwfulDisclosureIndicatorView *disclosure = (AwfulDisclosureIndicatorView *)cell.accessoryView;
+        disclosure.color = [AwfulTheme currentTheme].disclosureIndicatorColor;
+        disclosure.highlightedColor = [AwfulTheme currentTheme].disclosureIndicatorHighlightedColor;
         for (NSDictionary *choice in setting[@"Choices"]) {
             if ([choice[@"Value"] isEqual:valueForSetting]) {
                 cell.detailTextLabel.text = choice[@"Title"];
                 break;
             }
         }
-    } else {
-        cell.accessoryType = UITableViewCellAccessoryNone;
     }
     
     if (settingType == ChoiceSetting || settingType == ButtonSetting) {
