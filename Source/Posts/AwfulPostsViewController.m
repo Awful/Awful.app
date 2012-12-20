@@ -9,6 +9,7 @@
 #import "AwfulPostsViewController.h"
 #import "AwfulActionSheet.h"
 #import "AwfulAlertView.h"
+#import "AwfulBrowserViewController.h"
 #import "AwfulDataStack.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulImagePreviewViewController.h"
@@ -23,6 +24,8 @@
 #import "NSFileManager+UserDirectories.h"
 #import "NSManagedObject+Awful.h"
 #import "NSString+CollapseWhitespace.h"
+#import "NSURL+Awful.h"
+#import "NSURL+OpensInBrowser.h"
 #import "NSURL+QueryDictionary.h"
 #import <QuartzCore/QuartzCore.h>
 #import "SVProgressHUD.h"
@@ -44,6 +47,7 @@
                                         AwfulSpecificPageControllerDelegate,
                                         NSFetchedResultsControllerDelegate,
                                         AwfulReplyViewControllerDelegate,
+                                        AwfulBrowserViewControllerDelegate,
                                         UIScrollViewDelegate>
 
 @property (nonatomic) NSFetchedResultsController *fetchedResultsController;
@@ -922,46 +926,18 @@ static char KVOContext;
 
 - (void)postsView:(AwfulPostsView *)postsView didTapLinkToURL:(NSURL *)url
 {
-    // Anything not on the Forums goes to Safari (or wherever).
-    if ([[url host] compare:@"forums.somethingawful.com" options:NSCaseInsensitiveSearch] !=
-        NSOrderedSame) {
+    if ([url awfulURL]) {
+        [[UIApplication sharedApplication] openURL:[url awfulURL]];
+    } else if (![url opensInBrowser]) {
         [[UIApplication sharedApplication] openURL:url];
-        return;
+    } else {
+        AwfulBrowserViewController *browser = [AwfulBrowserViewController new];
+        browser.delegate = self;
+        browser.URL = url;
+        [self presentViewController:[browser enclosingNavigationController]
+                           animated:YES
+                         completion:nil];
     }
-    
-    NSDictionary *query = [url queryDictionary];
-    NSString *redirect;
-    // Thread or post.
-    if ([[url path] compare:@"/showthread.php" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
-        // Link to specific post.
-        if ([query[@"goto"] isEqual:@"post"] && query[@"postid"]) {
-            redirect = [NSString stringWithFormat:@"awful://posts/%@", query[@"postid"]];
-        }
-        // Link to specific post.
-        else if ([[url fragment] hasPrefix:@"post"] && [[url fragment] length] > 4) {
-            redirect = [NSString stringWithFormat:@"awful://posts/%@",
-                        [[url fragment] substringFromIndex:4]];
-        }
-        // Link to page on specific thread.
-        else if (query[@"threadid"] && query[@"pagenumber"]) {
-            redirect = [NSString stringWithFormat:@"awful://threads/%@/pages/%@",
-                        query[@"threadid"], query[@"pagenumber"]];
-        }
-        // Link to specific thread.
-        else if (query[@"threadid"]) {
-            redirect = [NSString stringWithFormat:@"awful://threads/%@/pages/1",
-                        query[@"threadid"]];
-        }
-    }
-    // Forum.
-    else if ([[url path] compare:@"/forumdisplay.php" options:NSCaseInsensitiveSearch] ==
-             NSOrderedSame) {
-        if (query[@"forumid"]) {
-            redirect = [NSString stringWithFormat:@"awful://forums/%@", query[@"forumid"]];
-        }
-    }
-    if (redirect) url = [NSURL URLWithString:redirect];
-    [[UIApplication sharedApplication] openURL:url];
 }
 
 - (NSArray *)whitelistedSelectorsForPostsView:(AwfulPostsView *)postsView
@@ -1136,6 +1112,13 @@ static char KVOContext;
 }
 
 - (void)replyViewControllerDidCancel:(AwfulReplyViewController *)replyViewController
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - AwfulBrowserViewControllerDelegate
+
+- (void)browserDidClose:(AwfulBrowserViewController *)browser
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }

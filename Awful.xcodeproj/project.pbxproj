@@ -115,6 +115,9 @@
 		1C96D081167FE2EC0043B194 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10D34FAE128F413C0026C7C2 /* MobileCoreServices.framework */; };
 		1C96D085168010AF0043B194 /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D084168010AF0043B194 /* UIImage+Resize.m */; };
 		1C96D086168016750043B194 /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D084168010AF0043B194 /* UIImage+Resize.m */; };
+		1C96D0A2168298BF0043B194 /* AwfulBrowserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0A1168298BF0043B194 /* AwfulBrowserViewController.m */; };
+		1C96D0AC1682B1140043B194 /* NSURL+Awful.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0AB1682B1140043B194 /* NSURL+Awful.m */; };
+		1C96D0AF1682B25A0043B194 /* NSURL+OpensInBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0AE1682B25A0043B194 /* NSURL+OpensInBrowser.m */; };
 		1C9C675F164C332F00478270 /* ww-denim.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C9C675E164C332F00478270 /* ww-denim.png */; };
 		1CAB36B11548F0FE00A4A362 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
 		1CAEDA0F16376E56001F5F04 /* ai-cycles.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD527C15B783FC00E5893B /* ai-cycles.png */; };
@@ -906,6 +909,12 @@
 		1C96D070167FDEA70043B194 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController.xib; sourceTree = "<group>"; };
 		1C96D083168010AF0043B194 /* UIImage+Resize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Resize.h"; sourceTree = "<group>"; };
 		1C96D084168010AF0043B194 /* UIImage+Resize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Resize.m"; sourceTree = "<group>"; };
+		1C96D0A0168298BF0043B194 /* AwfulBrowserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulBrowserViewController.h; sourceTree = "<group>"; };
+		1C96D0A1168298BF0043B194 /* AwfulBrowserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulBrowserViewController.m; sourceTree = "<group>"; };
+		1C96D0AA1682B1140043B194 /* NSURL+Awful.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+Awful.h"; sourceTree = "<group>"; };
+		1C96D0AB1682B1140043B194 /* NSURL+Awful.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+Awful.m"; sourceTree = "<group>"; };
+		1C96D0AD1682B25A0043B194 /* NSURL+OpensInBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+OpensInBrowser.h"; sourceTree = "<group>"; };
+		1C96D0AE1682B25A0043B194 /* NSURL+OpensInBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+OpensInBrowser.m"; sourceTree = "<group>"; };
 		1C9C675E164C332F00478270 /* ww-denim.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ww-denim.png"; sourceTree = "<group>"; };
 		1CAB36B01548F0FE00A4A362 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		1CAED9D916373F91001F5F04 /* AwfulThreadTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTags.h; sourceTree = "<group>"; };
@@ -1947,6 +1956,8 @@
 				1C40E5B11640FC2C004AAFA6 /* posts-view.css */,
 				1C40E5B31640FDB8004AAFA6 /* posts-view-219.css */,
 				1769D400167A91DB00CD1590 /* posts-view-219-amber.css */,
+				1C96D0A0168298BF0043B194 /* AwfulBrowserViewController.h */,
+				1C96D0A1168298BF0043B194 /* AwfulBrowserViewController.m */,
 			);
 			path = Posts;
 			sourceTree = "<group>";
@@ -2023,6 +2034,10 @@
 				1CE2D9CD166ABD0D0024AC1C /* NSFileManager+UserDirectories.m */,
 				1CE2D9CE166ABD0D0024AC1C /* NSString+CollapseWhitespace.h */,
 				1CE2D9CF166ABD0D0024AC1C /* NSString+CollapseWhitespace.m */,
+				1C96D0AA1682B1140043B194 /* NSURL+Awful.h */,
+				1C96D0AB1682B1140043B194 /* NSURL+Awful.m */,
+				1C96D0AD1682B25A0043B194 /* NSURL+OpensInBrowser.h */,
+				1C96D0AE1682B25A0043B194 /* NSURL+OpensInBrowser.m */,
 				1CE2D9D0166ABD0D0024AC1C /* NSURL+QueryDictionary.h */,
 				1CE2D9D1166ABD0D0024AC1C /* NSURL+QueryDictionary.m */,
 				1CE2D9D2166ABD0D0024AC1C /* UINavigationItem+TwoLineTitle.h */,
@@ -3632,6 +3647,9 @@
 				1C5B99BC166FFA4F004C5D0E /* Model.xcdatamodeld in Sources */,
 				1C4D7BDB167A5C7C00CF3659 /* PSMenuItem.m in Sources */,
 				1C96D085168010AF0043B194 /* UIImage+Resize.m in Sources */,
+				1C96D0A2168298BF0043B194 /* AwfulBrowserViewController.m in Sources */,
+				1C96D0AC1682B1140043B194 /* NSURL+Awful.m in Sources */,
+				1C96D0AF1682B25A0043B194 /* NSURL+OpensInBrowser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3907,6 +3925,7 @@
 				1C96D076167FDEA70043B194 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
 		};
 		1CBDB5CB16259C6D0004BDF4 /* Build configuration list for PBXNativeTarget "ParsingTests" */ = {
 			isa = XCConfigurationList;
