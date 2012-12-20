@@ -118,6 +118,8 @@
 		1C96D0A2168298BF0043B194 /* AwfulBrowserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0A1168298BF0043B194 /* AwfulBrowserViewController.m */; };
 		1C96D0AC1682B1140043B194 /* NSURL+Awful.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0AB1682B1140043B194 /* NSURL+Awful.m */; };
 		1C96D0AF1682B25A0043B194 /* NSURL+OpensInBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0AE1682B25A0043B194 /* NSURL+OpensInBrowser.m */; };
+		1C96D0B51682BBA80043B194 /* AwfulExternalBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0B41682BBA80043B194 /* AwfulExternalBrowser.m */; };
+		1C96D0B71682BBF10043B194 /* Browsers.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1C96D0B61682BBF10043B194 /* Browsers.plist */; };
 		1C9C675F164C332F00478270 /* ww-denim.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C9C675E164C332F00478270 /* ww-denim.png */; };
 		1CAB36B11548F0FE00A4A362 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
 		1CAEDA0F16376E56001F5F04 /* ai-cycles.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD527C15B783FC00E5893B /* ai-cycles.png */; };
@@ -915,6 +917,9 @@
 		1C96D0AB1682B1140043B194 /* NSURL+Awful.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+Awful.m"; sourceTree = "<group>"; };
 		1C96D0AD1682B25A0043B194 /* NSURL+OpensInBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+OpensInBrowser.h"; sourceTree = "<group>"; };
 		1C96D0AE1682B25A0043B194 /* NSURL+OpensInBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+OpensInBrowser.m"; sourceTree = "<group>"; };
+		1C96D0B31682BBA80043B194 /* AwfulExternalBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulExternalBrowser.h; sourceTree = "<group>"; };
+		1C96D0B41682BBA80043B194 /* AwfulExternalBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulExternalBrowser.m; sourceTree = "<group>"; };
+		1C96D0B61682BBF10043B194 /* Browsers.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Browsers.plist; sourceTree = "<group>"; };
 		1C9C675E164C332F00478270 /* ww-denim.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ww-denim.png"; sourceTree = "<group>"; };
 		1CAB36B01548F0FE00A4A362 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		1CAED9D916373F91001F5F04 /* AwfulThreadTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTags.h; sourceTree = "<group>"; };
@@ -1958,6 +1963,8 @@
 				1769D400167A91DB00CD1590 /* posts-view-219-amber.css */,
 				1C96D0A0168298BF0043B194 /* AwfulBrowserViewController.h */,
 				1C96D0A1168298BF0043B194 /* AwfulBrowserViewController.m */,
+				1C96D0B31682BBA80043B194 /* AwfulExternalBrowser.h */,
+				1C96D0B41682BBA80043B194 /* AwfulExternalBrowser.m */,
 			);
 			path = Posts;
 			sourceTree = "<group>";
@@ -2088,6 +2095,7 @@
 			isa = PBXGroup;
 			children = (
 				8CCD498215B497A700E5893B /* Awful-Info.plist */,
+				1C96D0B61682BBF10043B194 /* Browsers.plist */,
 				1CBD5243162B5C2500928740 /* Custom CSS README.txt */,
 				1CC780651612DBB2002AF958 /* Default */,
 				1CF0D618164B0A7C00CFA137 /* Forum Abbreviations.plist */,
@@ -3461,6 +3469,7 @@
 				1C5B9980166F9844004C5D0E /* tab-selected@2x.png in Resources */,
 				1C5B9981166F9844004C5D0E /* tab-divider@2x.png in Resources */,
 				1769D401167A91DB00CD1590 /* posts-view-219-amber.css in Resources */,
+				1C96D0B71682BBF10043B194 /* Browsers.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3650,6 +3659,7 @@
 				1C96D0A2168298BF0043B194 /* AwfulBrowserViewController.m in Sources */,
 				1C96D0AC1682B1140043B194 /* NSURL+Awful.m in Sources */,
 				1C96D0AF1682B25A0043B194 /* NSURL+OpensInBrowser.m in Sources */,
+				1C96D0B51682BBA80043B194 /* AwfulExternalBrowser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

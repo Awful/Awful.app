@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>Title</key>
+		<string>Chrome</string>
+		<key>http</key>
+		<string>googlechrome</string>
+		<key>https</key>
+		<string>googlechromes</string>
+	</dict>
+	<dict>
+		<key>Title</key>
+		<string>Grazing</string>
+		<key>http</key>
+		<string>grazing</string>
+		<key>https</key>
+		<string>grazings</string>
+	</dict>
+	<dict>
+		<key>Title</key>
+		<string>iCab Mobile</string>
+		<key>http</key>
+		<string>icabmobile</string>
+		<key>https</key>
+		<string>icabmobiles</string>
+	</dict>
+	<dict>
+		<key>Title</key>
+		<string>Mercury</string>
+		<key>http</key>
+		<string>merc</string>
+	</dict>
+	<dict>
+		<key>Title</key>
+		<string>Opera Mini</string>
+		<key>http</key>
+		<string>ohttp</string>
+		<key>https</key>
+		<string>ohttps</string>
+		<key>ftp</key>
+		<string>oftp</string>
+	</dict>
+</array>
+</plist>

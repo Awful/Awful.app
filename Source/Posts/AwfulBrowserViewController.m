@@ -8,6 +8,7 @@
 
 #import "AwfulBrowserViewController.h"
 #import "AwfulActionSheet.h"
+#import "AwfulExternalBrowser.h"
 #import "AwfulTheme.h"
 #import "UINavigationItem+TwoLineTitle.h"
 
@@ -21,10 +22,16 @@
 
 - (void)act:(UIBarButtonItem *)sender
 {
+    NSURL *url = self.webView.request.URL;
     AwfulActionSheet *sheet = [AwfulActionSheet new];
     [sheet addButtonWithTitle:@"Open in Safari" block:^{
-        [[UIApplication sharedApplication] openURL:self.webView.request.URL];
+        [[UIApplication sharedApplication] openURL:url];
     }];
+    for (AwfulExternalBrowser *browser in [AwfulExternalBrowser installedBrowsers]) {
+        if (![browser canOpenURL:url]) continue;
+        [sheet addButtonWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title]
+                            block:^{ [browser openURL:url]; }];
+    }
     [sheet addCancelButtonWithTitle:@"Cancel"];
     [sheet showFromBarButtonItem:sender animated:YES];
 }
@@ -100,6 +107,7 @@
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    _URL = webView.request.URL;
     NSString *title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
     self.navigationItem.titleLabel.text = title;
     [self preventDefaultLongTapMenu];
