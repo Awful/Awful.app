@@ -21,8 +21,7 @@
 
 @property (assign, nonatomic) BOOL showImages;
 
-typedef enum
-{
+typedef enum {
     AwfulFirstTabForums,
     AwfulFirstTabFavorites,
     AwfulFirstTabBookmarks,
@@ -49,7 +48,16 @@ typedef enum {
     AwfulYOSPOSStyleMacinyos,
 } AwfulYOSPOSStyle;
 
-@property (assign,nonatomic) AwfulYOSPOSStyle yosposStyle;
+@property (assign, nonatomic) AwfulYOSPOSStyle yosposStyle;
+
+typedef enum {
+    AwfulKeepSidebarOpenNever,
+    AwfulKeepSidebarOpenInLandscape,
+    AwfulKeepSidebarOpenInPortrait,
+    AwfulKeepSidebarOpenAlways,
+} AwfulKeepSidebarOpenWhen;
+
+@property (assign, nonatomic) AwfulKeepSidebarOpenWhen keepSidebarOpen;
 
 - (id)objectForKeyedSubscript:(id)key;
 
@@ -76,4 +84,5 @@ extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *username;
     __unsafe_unretained NSString *showThreadTags;
     __unsafe_unretained NSString *yosposStyle;
+    __unsafe_unretained NSString *keepSidebarOpen;
 } AwfulSettingsKeys;

@@ -61,14 +61,11 @@
 {
     if (_selectedItem == selectedItem) return;
     if (_selectedItem) {
-        UIImage *image = MakeNormalImageForSelectedImage(_selectedItem.image);
-        image.accessibilityLabel = selectedItem.title;
-        [self.segmentedControl setImage:image
+        [self.segmentedControl setImage:MakeNormalImageForSelectedImage(_selectedItem.image)
                       forSegmentAtIndex:[self.items indexOfObject:_selectedItem]];
     }
     _selectedItem = selectedItem;
     self.segmentedControl.selectedSegmentIndex = [self.items indexOfObject:selectedItem];
-    selectedItem.image.accessibilityLabel = selectedItem.title;
     [self.segmentedControl setImage:selectedItem.image
                   forSegmentAtIndex:self.segmentedControl.selectedSegmentIndex];
 }
@@ -86,6 +83,7 @@
     [self.segmentedControl removeAllSegments];
     for (NSUInteger i = 0; i < [self.items count]; i++) {
         UITabBarItem *item = self.items[i];
+        item.image.accessibilityLabel = item.title;
         UIImage *image = i == 0 ? item.image : MakeNormalImageForSelectedImage(item.image);
         [self.segmentedControl insertSegmentWithImage:image atIndex:i animated:NO];
     }
@@ -102,6 +100,7 @@ UIImage * MakeNormalImageForSelectedImage(UIImage *image)
     CGContextDrawImage(context, (CGRect){ .size = image.size }, image.CGImage);
     UIImage *normal = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
+    normal.accessibilityLabel = image.accessibilityLabel;
     return normal;
 }
 

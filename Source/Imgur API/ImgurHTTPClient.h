@@ -7,24 +7,37 @@
 //
 
 #import "AFNetworking.h"
+@protocol ImgurHTTPClientCancelToken;
 
-// Client for the Imgur Anonymous API, version 2.
+// Client for the Imgur Anonymous API, version 3.
 @interface ImgurHTTPClient : AFHTTPClient
 
 // Singleton.
-+ (ImgurHTTPClient *)sharedClient;
++ (instancetype)client;
 
-// images   - an array of UIImage instances to upload.
+// Upload images anonymously to Imgur, downscaling and rotating images as needed.
+//
+// images   - an array of UIImage instances to upload. Uploaded images may be downscaled.
 // callback - a block that takes two arguments and returns nothing:
 //              error - an NSError instance on failure, or nil if successful.
 //              urls  - an array of NSURL instances pointing to the uploaded images if successful,
 //                      or nil on failure.
-- (void)uploadImages:(NSArray *)images andThen:(void(^)(NSError *error, NSArray *urls))callback;
-
-// Possible reasons for NO may include network reachability or API rate limiting.
-- (void)checkIfAnyImagesCanBeUploadedAndThen:(void(^)(BOOL canUploadAtLeastOneImage))callback;
+//
+// N.B. The callback is not called if the upload is cancelled.
+//
+// Returns an object that can cancel the upload if it receives -cancel.
+- (id <ImgurHTTPClientCancelToken>)uploadImages:(NSArray *)images
+                                        andThen:(void(^)(NSError *error, NSArray *urls))callback;
 
 @end
+
+
+@protocol ImgurHTTPClientCancelToken
+
+- (void)cancel;
+
+@end
+
 
 extern NSString * const ImgurAPIErrorDomain;
 

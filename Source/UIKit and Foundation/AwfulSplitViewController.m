@@ -66,7 +66,12 @@
    shouldHideViewController:(UIViewController *)vc
               inOrientation:(UIInterfaceOrientation)orientation
 {
-    return YES;
+    switch ([AwfulSettings settings].keepSidebarOpen) {
+        case AwfulKeepSidebarOpenAlways: return NO;
+        case AwfulKeepSidebarOpenInLandscape: return UIInterfaceOrientationIsPortrait(orientation);
+        case AwfulKeepSidebarOpenInPortrait: return UIInterfaceOrientationIsLandscape(orientation);
+        case AwfulKeepSidebarOpenNever: default: return YES;
+    }
 }
 
 - (void)splitViewController:(UISplitViewController*)svc

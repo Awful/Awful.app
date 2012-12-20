@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 @class AwfulThread;
 
-
 @interface AwfulPostsViewController : UIViewController
 
 @property (strong, nonatomic) AwfulThread *thread;

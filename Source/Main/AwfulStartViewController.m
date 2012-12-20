@@ -36,6 +36,7 @@
 {
     self.view = [[UIImageView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
     self.view.backgroundColor = [UIColor darkGrayColor];
+    self.view.contentMode = UIViewContentModeTopLeft;
 }
 
 - (void)viewDidLoad

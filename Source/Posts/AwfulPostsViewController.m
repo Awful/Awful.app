@@ -9,7 +9,9 @@
 #import "AwfulPostsViewController.h"
 #import "AwfulActionSheet.h"
 #import "AwfulAlertView.h"
+#import "AwfulBrowserViewController.h"
 #import "AwfulDataStack.h"
+#import "AwfulExternalBrowser.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulImagePreviewViewController.h"
 #import "AwfulModels.h"
@@ -23,6 +25,8 @@
 #import "NSFileManager+UserDirectories.h"
 #import "NSManagedObject+Awful.h"
 #import "NSString+CollapseWhitespace.h"
+#import "NSURL+Awful.h"
+#import "NSURL+OpensInBrowser.h"
 #import "NSURL+QueryDictionary.h"
 #import <QuartzCore/QuartzCore.h>
 #import "SVProgressHUD.h"
@@ -44,6 +48,7 @@
                                         AwfulSpecificPageControllerDelegate,
                                         NSFetchedResultsControllerDelegate,
                                         AwfulReplyViewControllerDelegate,
+                                        AwfulBrowserViewControllerDelegate,
                                         UIScrollViewDelegate>
 
 @property (nonatomic) NSFetchedResultsController *fetchedResultsController;
@@ -504,9 +509,12 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     AwfulActionSheet *sheet = [AwfulActionSheet new];
     [sheet addButtonWithTitle:@"Copy Thread URL" block:^{
         NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
-                         "showthread.php?threadid=%@&pagenumber=%@",
+                         "showthread.php?threadid=%@&perpage=40&pagenumber=%@",
                          self.thread.threadID, @(self.currentPage)];
-        [UIPasteboard generalPasteboard].URL = [NSURL URLWithString:url];
+        [UIPasteboard generalPasteboard].items = @[ @{
+            (id)kUTTypeURL: [NSURL URLWithString:url],
+            (id)kUTTypePlainText: url
+        }];
     }];
     [sheet addButtonWithTitle:@"Vote" block:^{
         AwfulActionSheet *vote = [AwfulActionSheet new];
@@ -633,9 +641,12 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     }
     [sheet addButtonWithTitle:@"Copy Post URL" block:^{
         NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
-                         "showthread.php?threadid=%@&pagenumber=%@#post%@",
+                         "showthread.php?threadid=%@&perpage=40&pagenumber=%@#post%@",
                          self.thread.threadID, @(self.currentPage), post.postID];
-        [UIPasteboard generalPasteboard].URL = [NSURL URLWithString:url];
+        [UIPasteboard generalPasteboard].items = @[ @{
+            (id)kUTTypeURL: [NSURL URLWithString:url],
+            (id)kUTTypePlainText: url
+        }];
     }];
     [sheet addButtonWithTitle:@"Mark Read to Here" block:^{
         [[AwfulHTTPClient client] markThreadWithID:self.thread.threadID
@@ -917,51 +928,32 @@ static char KVOContext;
 
 - (void)postsView:(AwfulPostsView *)postsView didTapLinkToURL:(NSURL *)url
 {
-    // Anything not on the Forums goes to Safari (or wherever).
-    if ([[url host] compare:@"forums.somethingawful.com" options:NSCaseInsensitiveSearch] !=
-        NSOrderedSame) {
+    if ([url awfulURL]) {
+        [[UIApplication sharedApplication] openURL:[url awfulURL]];
+    } else if (![url opensInBrowser]) {
         [[UIApplication sharedApplication] openURL:url];
-        return;
+    } else {
+        [self openURLInBuiltInBrowser:url];
     }
-    
-    NSDictionary *query = [url queryDictionary];
-    NSString *redirect;
-    // Thread or post.
-    if ([[url path] compare:@"/showthread.php" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
-        // Link to specific post.
-        if ([query[@"goto"] isEqual:@"post"] && query[@"postid"]) {
-            redirect = [NSString stringWithFormat:@"awful://posts/%@", query[@"postid"]];
-        }
-        // Link to specific post.
-        else if ([[url fragment] hasPrefix:@"post"] && [[url fragment] length] > 4) {
-            redirect = [NSString stringWithFormat:@"awful://posts/%@",
-                        [[url fragment] substringFromIndex:4]];
-        }
-        // Link to page on specific thread.
-        else if (query[@"threadid"] && query[@"pagenumber"]) {
-            redirect = [NSString stringWithFormat:@"awful://threads/%@/pages/%@",
-                        query[@"threadid"], query[@"pagenumber"]];
-        }
-        // Link to specific thread.
-        else if (query[@"threadid"]) {
-            redirect = [NSString stringWithFormat:@"awful://threads/%@/pages/1",
-                        query[@"threadid"]];
-        }
-    }
-    // Forum.
-    else if ([[url path] compare:@"/forumdisplay.php" options:NSCaseInsensitiveSearch] ==
-             NSOrderedSame) {
-        if (query[@"forumid"]) {
-            redirect = [NSString stringWithFormat:@"awful://forums/%@", query[@"forumid"]];
-        }
-    }
-    if (redirect) url = [NSURL URLWithString:redirect];
-    [[UIApplication sharedApplication] openURL:url];
+}
+
+- (void)openURLInBuiltInBrowser:(NSURL *)url
+{
+    AwfulBrowserViewController *browser = [AwfulBrowserViewController new];
+    browser.delegate = self;
+    browser.URL = url;
+    [self presentViewController:[browser enclosingNavigationController]
+                       animated:YES
+                     completion:nil];
 }
 
 - (NSArray *)whitelistedSelectorsForPostsView:(AwfulPostsView *)postsView
 {
-    return @[ @"showActionsForPostAtIndex:fromRectDictionary:", @"previewImageAtURLString:" ];
+    return @[
+        @"showActionsForPostAtIndex:fromRectDictionary:",
+        @"previewImageAtURLString:",
+        @"showMenuForLinkWithURLString:fromRectDictionary:"
+    ];
 }
 
 - (void)showActionsForPostAtIndex:(NSNumber *)index fromRectDictionary:(NSDictionary *)rectDict
@@ -989,6 +981,41 @@ static char KVOContext;
     UINavigationController *nav = [preview enclosingNavigationController];
     nav.navigationBar.translucent = YES;
     [self presentViewController:nav animated:YES completion:nil];
+}
+
+- (void)showMenuForLinkWithURLString:(NSString *)urlString
+                  fromRectDictionary:(NSDictionary *)rectDict
+{
+    NSURL *url = [NSURL URLWithString:urlString];
+    if (!url) {
+        NSLog(@"could not parse URL for link long tap menu: %@", urlString);
+        return;
+    }
+    if ([url awfulURL]) {
+        [[UIApplication sharedApplication] openURL:[url awfulURL]];
+        return;
+    }
+    if (![url opensInBrowser]) {
+        [[UIApplication sharedApplication] openURL:url];
+        return;
+    }
+    CGRect rect = CGRectMake([rectDict[@"left"] floatValue], [rectDict[@"top"] floatValue],
+                             [rectDict[@"width"] floatValue], [rectDict[@"height"] floatValue]);
+    if (self.postsView.scrollView.contentOffset.y < 0) {
+        rect.origin.y -= self.postsView.scrollView.contentOffset.y;
+    }
+    AwfulActionSheet *sheet = [AwfulActionSheet new];
+    sheet.title = urlString;
+    [sheet addButtonWithTitle:@"Open in Awful" block:^{ [self openURLInBuiltInBrowser:url]; }];
+    [sheet addButtonWithTitle:@"Open in Safari"
+                        block:^{ [[UIApplication sharedApplication] openURL:url]; }];
+    for (AwfulExternalBrowser *browser in [AwfulExternalBrowser installedBrowsers]) {
+        if (![browser canOpenURL:url]) continue;
+        [sheet addButtonWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title]
+                            block:^{ [browser openURL:url]; }];
+    }
+    [sheet addCancelButtonWithTitle:@"Cancel"];
+    [sheet showFromRect:rect inView:self.postsView animated:YES];
 }
 
 - (NSDateFormatter *)regDateFormatter
@@ -1131,6 +1158,13 @@ static char KVOContext;
 }
 
 - (void)replyViewControllerDidCancel:(AwfulReplyViewController *)replyViewController
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - AwfulBrowserViewControllerDelegate
+
+- (void)browserDidClose:(AwfulBrowserViewController *)browser
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
