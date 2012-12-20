@@ -136,13 +136,13 @@
 						</dict>
 						<dict>
 							<key>Title</key>
-							<string>In Landscape</string>
+							<string>Landscape</string>
 							<key>Value</key>
 							<string>landscape</string>
 						</dict>
 						<dict>
 							<key>Title</key>
-							<string>In Portrait</string>
+							<string>Portrait</string>
 							<key>Value</key>
 							<string>portrait</string>
 						</dict>
