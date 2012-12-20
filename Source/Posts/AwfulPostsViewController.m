@@ -11,6 +11,7 @@
 #import "AwfulAlertView.h"
 #import "AwfulBrowserViewController.h"
 #import "AwfulDataStack.h"
+#import "AwfulExternalBrowser.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulImagePreviewViewController.h"
 #import "AwfulModels.h"
@@ -931,18 +932,27 @@ static char KVOContext;
     } else if (![url opensInBrowser]) {
         [[UIApplication sharedApplication] openURL:url];
     } else {
-        AwfulBrowserViewController *browser = [AwfulBrowserViewController new];
-        browser.delegate = self;
-        browser.URL = url;
-        [self presentViewController:[browser enclosingNavigationController]
-                           animated:YES
-                         completion:nil];
+        [self openURLInBuiltInBrowser:url];
     }
+}
+
+- (void)openURLInBuiltInBrowser:(NSURL *)url
+{
+    AwfulBrowserViewController *browser = [AwfulBrowserViewController new];
+    browser.delegate = self;
+    browser.URL = url;
+    [self presentViewController:[browser enclosingNavigationController]
+                       animated:YES
+                     completion:nil];
 }
 
 - (NSArray *)whitelistedSelectorsForPostsView:(AwfulPostsView *)postsView
 {
-    return @[ @"showActionsForPostAtIndex:fromRectDictionary:", @"previewImageAtURLString:" ];
+    return @[
+        @"showActionsForPostAtIndex:fromRectDictionary:",
+        @"previewImageAtURLString:",
+        @"showMenuForLinkWithURLString:fromRectDictionary:"
+    ];
 }
 
 - (void)showActionsForPostAtIndex:(NSNumber *)index fromRectDictionary:(NSDictionary *)rectDict
@@ -970,6 +980,41 @@ static char KVOContext;
     UINavigationController *nav = [preview enclosingNavigationController];
     nav.navigationBar.translucent = YES;
     [self presentViewController:nav animated:YES completion:nil];
+}
+
+- (void)showMenuForLinkWithURLString:(NSString *)urlString
+                  fromRectDictionary:(NSDictionary *)rectDict
+{
+    NSURL *url = [NSURL URLWithString:urlString];
+    if (!url) {
+        NSLog(@"could not parse URL for link long tap menu: %@", urlString);
+        return;
+    }
+    if ([url awfulURL]) {
+        [[UIApplication sharedApplication] openURL:[url awfulURL]];
+        return;
+    }
+    if (![url opensInBrowser]) {
+        [[UIApplication sharedApplication] openURL:url];
+        return;
+    }
+    CGRect rect = CGRectMake([rectDict[@"left"] floatValue], [rectDict[@"top"] floatValue],
+                             [rectDict[@"width"] floatValue], [rectDict[@"height"] floatValue]);
+    if (self.postsView.scrollView.contentOffset.y < 0) {
+        rect.origin.y -= self.postsView.scrollView.contentOffset.y;
+    }
+    AwfulActionSheet *sheet = [AwfulActionSheet new];
+    sheet.title = urlString;
+    [sheet addButtonWithTitle:@"Open in Awful" block:^{ [self openURLInBuiltInBrowser:url]; }];
+    [sheet addButtonWithTitle:@"Open in Safari"
+                        block:^{ [[UIApplication sharedApplication] openURL:url]; }];
+    for (AwfulExternalBrowser *browser in [AwfulExternalBrowser installedBrowsers]) {
+        if (![browser canOpenURL:url]) continue;
+        [sheet addButtonWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title]
+                            block:^{ [browser openURL:url]; }];
+    }
+    [sheet addCancelButtonWithTitle:@"Cancel"];
+    [sheet showFromRect:rect inView:self.postsView animated:YES];
 }
 
 - (NSDateFormatter *)regDateFormatter

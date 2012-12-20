@@ -912,6 +912,8 @@ $(function(){
   $('#posts').on('click', '.bbc-spoiler', toggleSpoiled)
   
   $('#posts').on('click', '.bbc-spoiler a', cancelUnspoiledLinks)
+  
+  $('#posts').on('longTap', 'article > section a', showLinkMenu)
 })
 
 function showPostActions(e) {
@@ -951,6 +953,15 @@ function cancelUnspoiledLinks(e) {
     spoiler.addClass('spoiled')
     e.preventDefault()
   }
+}
+
+function showLinkMenu(e) {
+  var link = $(e.target).closest('a')
+  var rect = link.offset()
+  rect.left -= window.pageXOffset
+  rect.top -= window.pageYOffset
+  Awful.invoke("showMenuForLinkWithURLString:fromRectDictionary:", link.attr('href'), rect)
+  e.preventDefault()
 }
 
 })()
