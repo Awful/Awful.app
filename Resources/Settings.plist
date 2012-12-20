@@ -108,6 +108,12 @@
 							<key>Value</key>
 							<string>amber</string>
 						</dict>
+						<dict>
+							<key>Title</key>
+							<string>Macinyos</string>
+							<key>Value</key>
+							<string>macinyos</string>
+						</dict>
 					</array>
 					<key>Default</key>
 					<string>green</string>

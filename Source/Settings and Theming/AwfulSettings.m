@@ -107,10 +107,12 @@ struct {
     __unsafe_unretained NSString *None;
     __unsafe_unretained NSString *Green;
     __unsafe_unretained NSString *Amber;
+    __unsafe_unretained NSString *Macinyos;
 } AwfulYOSPOSStyles = {
     @"none",
     @"green",
     @"amber",
+    @"macinyos",
 };
 
 - (AwfulYOSPOSStyle)yosposStyle
@@ -122,6 +124,9 @@ struct {
         return AwfulYOSPOSStyleAmber;
     } else if ([val isEqualToString:AwfulYOSPOSStyles.Green]) {
         return AwfulYOSPOSStyleGreen;
+    } else if ([val isEqualToString:AwfulYOSPOSStyles.Macinyos])
+    {
+        return AwfulYOSPOSStyleMacinyos;
     } else {
         return AwfulYOSPOSStyleGreen;
     }
@@ -131,9 +136,20 @@ struct {
 {
     NSString *val;
     switch (yosposStyle) {
-        case AwfulYOSPOSStyleAmber: val = AwfulYOSPOSStyles.Amber; break;
-        case AwfulYOSPOSStyleGreen: val = AwfulYOSPOSStyles.Green; break;
-        case AwfulYOSPOSStyleNone:  val = AwfulYOSPOSStyles.None;  break;
+        case AwfulYOSPOSStyleMacinyos:
+            val = AwfulYOSPOSStyles.Macinyos;
+            break;
+        case AwfulYOSPOSStyleAmber:
+            val = AwfulYOSPOSStyles.Amber;
+            break;
+        case AwfulYOSPOSStyleGreen:
+            val = AwfulYOSPOSStyles.Green;
+            break;
+        case AwfulYOSPOSStyleNone:
+            val = AwfulYOSPOSStyles.None;
+            break;
+        default:
+            return;
     }
     self[AwfulSettingsKeys.yosposStyle] = val;
 }
