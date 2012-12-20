@@ -38,6 +38,7 @@
     webView.delegate = self;
     webView.dataDetectorTypes = UIDataDetectorTypeNone;
     webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
+    webView.scalesPageToFit = YES;
     webView.backgroundColor = [UIColor clearColor];
     webView.opaque = NO;
     RemoveShadowFromAboveAndBelowWebView(webView);
@@ -297,21 +298,6 @@ static NSString * JSONize(id obj)
     [self evalJavaScript:@"Awful.endMessage(%@[0])", json];
 }
 
-- (void)setDocumentWidth:(NSInteger)width
-{
-    if (_documentWidth == width) return;
-    _documentWidth = width;
-    [self updateDocumentWidth];
-}
-
-- (void)updateDocumentWidth
-{
-    id width = [NSString stringWithFormat:@"%dpx", self.documentWidth];
-    if (!self.documentWidth) width = [NSNull null];
-    NSString *json = JSONize(@[ width ]);
-    [self evalJavaScript:@"Awful.documentWidth(%@[0])", json];
-}
-
 - (void)firstStylesheetDidLoad
 {
     self.webView.frame = (CGRect){ .size = self.bounds.size };
@@ -331,7 +317,6 @@ static NSString * JSONize(id obj)
         [self updateHighlightQuoteUsername];
         [self updateHighlightMentionUsername];
         [self updateEndMessage];
-        [self updateDocumentWidth];
         self.hasLoaded = YES;
         [self reloadData];
         if (self.jumpToElementAfterLoading) {

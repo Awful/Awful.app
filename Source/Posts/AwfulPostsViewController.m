@@ -808,7 +808,6 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    self.postsView.documentWidth = CGRectGetWidth(self.view.frame);
     [self retheme];
 }
 
@@ -874,7 +873,6 @@ static char KVOContext;
         frame.origin.y = self.postsView.frame.size.height - frame.size.height;
         self.specificPageController.view.frame = frame;
     }
-    self.postsView.documentWidth = CGRectGetWidth(self.view.frame);
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation

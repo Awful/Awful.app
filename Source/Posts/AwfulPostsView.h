@@ -55,9 +55,6 @@
 // Set to nil to hide end of thread message.
 @property (copy, nonatomic) NSString *endMessage;
 
-// Set to 0 to default to device width.
-@property (nonatomic) NSInteger documentWidth;
-
 @end
 
 
