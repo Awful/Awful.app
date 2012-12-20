@@ -20,6 +20,7 @@ body {
 body {
   font-family: 'Geeza Pro', sans-serif;
   font-size: 14px;
+  -webkit-font-smoothing: none;
 }
 
 /* Don't change text size when the device's orientation changes. */
@@ -54,6 +55,7 @@ body {
 /* Black and white checked background. */
 body {
     background-image: url('macinyos-wallpaper.png');
+    background-attachment: fixed;
     background-size: 2px;
 }
 
@@ -64,33 +66,24 @@ body {
 
 /* Posts hover nicely above the background and are offset parents. */
 #posts > article {
-  border: 1px solid #000;
+  border: solid #000;
+  border-width: 1px 2px 2px 1px;
   margin: 0 5px;
   padding: 0;
-  border-radius: 0;
+  border-radius: 2px;
   position: relative;
 }
 
 /* Posts have a white background. */
 #posts > article {
     margin-top: 5px;
-    background: top left no-repeat url('macinyos-heading.png') #fff;
-}
-#posts > article:before {
-    content: 'YOSPOS';
+    margin-bottom: 5px;
+    background-repeat: no-repeat;
     background-color: #fff;
-    font-size:.75em;
-    position: relative;
-    top: 0;
-    left: 42%;
-    padding: 1px 4px;
-    text-align: center;
-    font-weight: bold;
+    background-image:  url('macinyos-heading-center.png'), url('macinyos-heading-right.png'), url('macinyos-heading.png');
+    background-position: top center, top right, top left;
 }
-.ipad #posts > article:before {
-    top: -5px;
-    left: 30%;
-}
+
 /* Posts already seen have a dark green background. */
 #posts > article.seen {
   background-color: #f1f1f1;
@@ -98,8 +91,7 @@ body {
 
 /* iPad posts need some more padding. */
 .ipad #posts > article {
-  padding: 5px;
-    padding-bottom: 40px;
+  padding: 18px 5px 40px 5px;
 }
 
 /* iPad posts with avatars have a minimum height. */
@@ -113,7 +105,8 @@ body {
 /* iPhone post header goes across the screen. */
 .iphone #posts > article > header {
   width: 100%;
-  height: 44px;
+    height: 65px;
+    padding-top: 18px;
 }
 
 /* iPad post header sits in the top left corner. */

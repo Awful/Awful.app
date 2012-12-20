@@ -480,6 +480,8 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765080DF74369002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765070DF74369002DB57D /* CoreGraphics.framework */; };
+		8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C0F4F541682CCFA00E25D7E /* macinyos-heading-center.png */; };
+		8C0F4F571682CCFA00E25D7E /* macinyos-heading-right.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C0F4F551682CCFA00E25D7E /* macinyos-heading-right.png */; };
 		8C2450F91666F76900D3079C /* forum-header-dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C2450F51666F76900D3079C /* forum-header-dark.png */; };
 		8C2450FA1666F76900D3079C /* forum-header-dark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C2450F61666F76900D3079C /* forum-header-dark@2x.png */; };
 		8C2450FB1666F76900D3079C /* forum-header-light.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C2450F71666F76900D3079C /* forum-header-light.png */; };
@@ -1066,6 +1068,8 @@
 		1D6058910D05DD3D006BFB54 /* Awful.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Awful.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765070DF74369002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		8C0F4F541682CCFA00E25D7E /* macinyos-heading-center.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading-center.png"; sourceTree = "<group>"; };
+		8C0F4F551682CCFA00E25D7E /* macinyos-heading-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading-right.png"; sourceTree = "<group>"; };
 		8C2450F51666F76900D3079C /* forum-header-dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forum-header-dark.png"; sourceTree = "<group>"; };
 		8C2450F61666F76900D3079C /* forum-header-dark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forum-header-dark@2x.png"; sourceTree = "<group>"; };
 		8C2450F71666F76900D3079C /* forum-header-light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forum-header-light.png"; sourceTree = "<group>"; };
@@ -2047,6 +2051,8 @@
 			children = (
 				1CBDB5841624B26B0004BDF4 /* 0.0stars.png */,
 				8CFB175E168145B5007C70D5 /* macinyos-adminstar.png */,
+				8C0F4F541682CCFA00E25D7E /* macinyos-heading-center.png */,
+				8C0F4F551682CCFA00E25D7E /* macinyos-heading-right.png */,
 				8CFB175F168145B5007C70D5 /* macinyos-modstar.png */,
 				1CBDB5851624B26B0004BDF4 /* 0.5stars.png */,
 				1CBDB5861624B26B0004BDF4 /* 1.0stars.png */,
@@ -3368,6 +3374,8 @@
 				8CFB1760168145B5007C70D5 /* macinyos-adminstar.png in Resources */,
 				8CFB1761168145B5007C70D5 /* macinyos-modstar.png in Resources */,
 				8C33C21A168173E1005782F9 /* happymac.png in Resources */,
+				8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */,
+				8C0F4F571682CCFA00E25D7E /* macinyos-heading-right.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
