@@ -393,24 +393,29 @@ body > #ad {
 
 /* The loading view takes up the whole screen. */
 body > #loading {
-  background: center 19% no-repeat url('happymac.png');
+  background: center 45% no-repeat url('macinyos-loading.png') #fff;
+  border: 1px solid #000;
   position: fixed;
   top: 0; right: 0; bottom: 0; left: 0;
 }
 body.ipad > #loading {
-  background: center 45% no-repeat url('happymac.png');
+    background: center 45% no-repeat url('macinyos-loading.png') #fff;
+    border: 1px solid #000;
 }
 /* The progress bar and loading text go in the middle. */
 body > #loading .container {
   position: absolute;
-  top: 50%;
-  margin-top: -25px;
+  top: 60%;
+  margin-top: -10px;
   left: 0; right: 0;
+}
+body.ipad > #loading .container {
+    margin-top: -50px;
 }
 
 /* The loading progress bar is centered with a green border. */
 body > #loading .progress-bar {
-    border: none;
+  border: none;
   width: 50px;
   height: 50px;
   margin: 0 auto;
