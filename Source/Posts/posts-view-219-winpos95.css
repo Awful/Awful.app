@@ -18,7 +18,7 @@ body {
 
 /* Default font and size. */
 body {
-    font-family: 'Geeza Pro', sans-serif;
+    font-family: arial, sans-serif;
     font-size: 14px;
     -webkit-font-smoothing: none;
 }
@@ -54,9 +54,7 @@ body {
 
 /* Black and white checked background. */
 body {
-    background-image: url('macinyos-wallpaper.png');
-    background-attachment: fixed;
-    background-size: 2px;
+    background: #008080;
 }
 
 /* Black text. */
@@ -66,33 +64,32 @@ body {
 
 /* Posts hover nicely above the background and are offset parents. */
 #posts > article {
-    border: solid #000;
-    border-width: 1px 2px 2px 1px;
     margin: 0 5px;
     padding: 0;
-    border-radius: 2px;
     position: relative;
-}
-
-/* Posts have a white background. */
-#posts > article {
+    border-style: groove;
+    border-width: 2px;
+    border-top-color: #dfdfdf;
+    border-right-color: #808080;
+    border-bottom-color: #808080;
+    border-left-color: #dfdfdf;
     margin-top: 5px;
     margin-bottom: 5px;
-    background-repeat: no-repeat, no-repeat, no-repeat, repeat-x;
-    background-color: #fff;
-    background-image: url('macinyos-heading-left.png'), url('macinyos-heading-center.png'), url('macinyos-heading-right.png'), url('macinyos-heading.png');
-    background-position: top left, top center, top right, top left;
-    background-size: 20px 17px, 56px 17px, 20px 17px, 1px 18px;
+    background-repeat: no-repeat, no-repeat, repeat-x;
+    background-color: #c0c0c0;
+    background-image: url('winpos95-heading-left.png'), url('winpos95-heading-right.png'), url('winpos95-heading.png');
+    background-position: top left, top right, top left;
+    background-size: 77px 18px, 52px 18px, 1px 18px;
 }
 
 /* Posts already seen have a dark green background. */
 #posts > article.seen {
-    background-color: #f1f1f1;
+    background-image: url('winpos95-heading-left-seen.png'), url('winpos95-heading-right.png'), url('winpos95-heading-seen.png');
 }
 
 /* iPad posts need some more padding. */
 .ipad #posts > article {
-    padding: 18px 5px 40px 5px;
+    padding: 25px 5px 40px 5px;
 }
 
 /* iPad posts with avatars have a minimum height. */
@@ -168,15 +165,16 @@ body {
 
 /* Mods and admins get a little star by their name. */
 #posts > article.role-admin > header > h1 {
-    background-image: url('macinyos-adminstar.png');
+    background-image: url('adminstar.png');
 }
 #posts > article.role-mod > header > h1 {
-    background-image: url('macinyos-modstar.png');
+    background-image: url('modstar.png');
 }
 #posts > article.role-admin > header > h1,
 #posts > article.role-mod > header > h1 {
     background-repeat: no-repeat;
     background-position: 0 center;
+    background-size: auto 1em;
     padding-left: 18px;
 }
 
@@ -204,7 +202,7 @@ body {
 
 /* iPhone posts have a "show post actions" button in the top right. */
 .iphone #posts > article > header > button {
-    width: 48px;
+    width: 70px;
     height: 34px;
     position: absolute;
     top: 26px;
@@ -213,7 +211,7 @@ body {
 
 /* iPad posts are similar. */
 .ipad #posts > article > header > button {
-    width: 58px;
+    width: 60px;
     height: 34px;
     position: absolute;
     bottom: 5px;
@@ -222,26 +220,21 @@ body {
 
 /* "Show post actions" button is a centered ellipsis. */
 #posts > article > header > button {
-    background: top left no-repeat url('macinyos-postactions-bg.png') #fff;
-    background-size: 31px;
-    border: 1px solid black;
-    border-radius: 4px;
+    background: #c0c0c0;
+    border-width: 2px;
+    border-style: groove;
+    border-top-color: #dfdfdf;
+    border-right-color: #808080;
+    border-bottom-color: #808080;
+    border-left-color: #dfdfdf;
     height: 38px;
-    width: 70px;
 }
 #posts > article > header > button:after {
-    content: "⋯";
-    position: absolute;
-    top: 10px; right: 0px;
-    text-align: center;
+    content: "Start";
+    text-align: right;
     color: #000;
-    font-size: 20px;
+    font-size: 14px;
     font-weight: bold;
-    text-align: right
-}
-.ipad #posts > article > header > button:after {
-    font-size: 30px;
-    top: -7px;
 }
 
 /* "Show post actions" button is not selectable. */
@@ -392,25 +385,14 @@ body > #ad {
     text-align: center;
 }
 
-/* The loading view looks like the old bootscreen. */
+/* The loading view has the hourglass animation. */
 body > #loading {
-    background: center 45% no-repeat url('macinyos-loading.png') #fff;
-    background-size: 221px 141px;
-    border: 1px solid #000;
+    background: center center no-repeat url('hourglass.gif');
     position: fixed;
-    top: 30px; right: 10px; bottom: 30px; left: 10px;
-}
-/* Need to adjust size of loading screen when phone is in landscape, so we use a media query */
-@media only screen and (min-width: 480px) and (max-width: 767px) {
-	body.iphone > #loading {
-        top: 5px; right: 40px; bottom: 5px; left: 40px;
-    }
+    top: 0; right: 0; bottom: 0; left: 0;
 }
 body.ipad > #loading {
-    background: center 45% no-repeat url('macinyos-loading.png') #fff;
-    background-size: 221px 141px;
-    border: 1px solid #000;
-    top: 50px; right: 20px; bottom: 50px; left: 20px;
+    top: 0; right: 0; bottom: 0; left: 0;
 }
 /* The progress bar and loading text go in the middle. */
 body > #loading .container {

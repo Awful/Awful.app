@@ -178,6 +178,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
             AwfulYOSPOSStyle style = [AwfulSettings settings].yosposStyle;
             if (style == AwfulYOSPOSStyleAmber) filename = @"posts-view-219-amber.css";
             else if (style == AwfulYOSPOSStyleMacinyos) filename = @"posts-view-219-macinyos.css";
+            else if (style == AwfulYOSPOSStyleWinpos95) filename = @"posts-view-219-winpos95.css";
             else if (style == AwfulYOSPOSStyleNone) filename = nil;
         }
         if (filename) [listOfFilenames insertObject:filename atIndex:0];

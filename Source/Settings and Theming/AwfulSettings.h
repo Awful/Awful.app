@@ -46,6 +46,7 @@ typedef enum {
     AwfulYOSPOSStyleGreen,
     AwfulYOSPOSStyleAmber,
     AwfulYOSPOSStyleMacinyos,
+    AwfulYOSPOSStyleWinpos95,
 } AwfulYOSPOSStyle;
 
 @property (assign, nonatomic) AwfulYOSPOSStyle yosposStyle;
