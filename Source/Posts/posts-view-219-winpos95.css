@@ -165,15 +165,16 @@ body {
 
 /* Mods and admins get a little star by their name. */
 #posts > article.role-admin > header > h1 {
-    background-image: url('macinyos-adminstar.png');
+    background-image: url('adminstar.png');
 }
 #posts > article.role-mod > header > h1 {
-    background-image: url('macinyos-modstar.png');
+    background-image: url('modstar.png');
 }
 #posts > article.role-admin > header > h1,
 #posts > article.role-mod > header > h1 {
     background-repeat: no-repeat;
     background-position: 0 center;
+    background-size: auto 1em;
     padding-left: 18px;
 }
 
