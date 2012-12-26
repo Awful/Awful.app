@@ -926,13 +926,13 @@ function showPostActions(e) {
 }
 
 function previewImage(e) {
-  // Handle URLs with spaces and such.
   var src = $(e.target).attr('src')
+  // Need to encode the URL to pass it through to Objective-C land. It may already be encoded, so we can't blindly encode it. It may also require encoding (a common one is spaces in image URLs for some reason) so we need to encode it at some point.
   var skip = src.indexOf('://') != -1 ? 1 : 0
-  var url = $.map(src.split('/'), function(part, i){
-    // URL might already be encoded, so decode it first.
-    return i < skip ? part : encodeURIComponent(decodeURIComponent(part))
-  }).join('/')
+  var decodedParts = $.map(src.split('/'), function(part, i){
+    return i < skip ? part : decodeURIComponent(part)
+  })
+  var url = encodeURI(decodedParts.join('/'))
   Awful.invoke("previewImageAtURLString:", url)
 }
 
