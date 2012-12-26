@@ -114,6 +114,12 @@
 							<key>Value</key>
 							<string>macinyos</string>
 						</dict>
+						<dict>
+							<key>Title</key>
+							<string>Winpos 95</string>
+							<key>Value</key>
+							<string>winpos95</string>
+						</dict>
 					</array>
 					<key>Default</key>
 					<string>green</string>

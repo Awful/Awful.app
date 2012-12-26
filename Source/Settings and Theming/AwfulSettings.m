@@ -108,11 +108,13 @@ struct {
     __unsafe_unretained NSString *Green;
     __unsafe_unretained NSString *Amber;
     __unsafe_unretained NSString *Macinyos;
+    __unsafe_unretained NSString *Winpos95;
 } AwfulYOSPOSStyles = {
     @"none",
     @"green",
     @"amber",
     @"macinyos",
+    @"winpos95",
 };
 
 - (AwfulYOSPOSStyle)yosposStyle
@@ -127,6 +129,9 @@ struct {
     } else if ([val isEqualToString:AwfulYOSPOSStyles.Macinyos])
     {
         return AwfulYOSPOSStyleMacinyos;
+    } else if ([val isEqualToString:AwfulYOSPOSStyles.Winpos95])
+    {
+        return AwfulYOSPOSStyleWinpos95;
     } else {
         return AwfulYOSPOSStyleGreen;
     }
@@ -136,6 +141,9 @@ struct {
 {
     NSString *val;
     switch (yosposStyle) {
+        case AwfulYOSPOSStyleWinpos95:
+            val = AwfulYOSPOSStyles.Winpos95;
+            break;
         case AwfulYOSPOSStyleMacinyos:
             val = AwfulYOSPOSStyles.Macinyos;
             break;
