@@ -10,6 +10,7 @@ extern const struct AwfulUserAttributes {
 	__unsafe_unretained NSString *customTitle;
 	__unsafe_unretained NSString *moderator;
 	__unsafe_unretained NSString *regdate;
+	__unsafe_unretained NSString *userID;
 	__unsafe_unretained NSString *username;
 } AwfulUserAttributes;
 
@@ -23,6 +24,7 @@ extern const struct AwfulUserFetchedProperties {
 
 @class AwfulPost;
 @class AwfulThread;
+
 
 
 
@@ -97,6 +99,16 @@ extern const struct AwfulUserFetchedProperties {
 
 
 //- (BOOL)validateRegdate:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
+@property (nonatomic, strong) NSString* userID;
+
+
+
+//- (BOOL)validateUserID:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -178,6 +190,12 @@ extern const struct AwfulUserFetchedProperties {
 
 - (NSDate*)primitiveRegdate;
 - (void)setPrimitiveRegdate:(NSDate*)value;
+
+
+
+
+- (NSString*)primitiveUserID;
+- (void)setPrimitiveUserID:(NSString*)value;
 
 
 

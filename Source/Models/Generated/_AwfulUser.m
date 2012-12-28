@@ -9,6 +9,7 @@ const struct AwfulUserAttributes AwfulUserAttributes = {
 	.customTitle = @"customTitle",
 	.moderator = @"moderator",
 	.regdate = @"regdate",
+	.userID = @"userID",
 	.username = @"username",
 };
 
@@ -130,6 +131,13 @@ const struct AwfulUserFetchedProperties AwfulUserFetchedProperties = {
 
 
 @dynamic regdate;
+
+
+
+
+
+
+@dynamic userID;
 
 
 

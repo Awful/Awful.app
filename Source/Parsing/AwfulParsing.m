@@ -317,6 +317,42 @@ static NSString * DeEntitify(NSString *withEntities)
 @end
 
 
+@interface UserParsedInfo ()
+
+@property (copy, nonatomic) NSString *username;
+
+@property (copy, nonatomic) NSString *userID;
+
+@property (nonatomic) NSDate *regdate;
+
+@property (nonatomic) BOOL moderator;
+
+@property (nonatomic) BOOL administrator;
+
+@property (nonatomic) BOOL originalPoster;
+
+@property (copy, nonatomic) NSString *customTitle;
+
+@property (nonatomic) NSURL *avatarURL;
+
+@end
+
+
+@implementation UserParsedInfo
+
+- (void)parseHTMLData
+{
+    
+}
+
++ (NSArray *)keysToApplyToObject
+{
+    return @[ @"username", @"userID", @"regdate", @"moderator", @"administrator", @"customTitle" ];
+}
+
+@end
+
+
 @interface ThreadParsedInfo ()
 
 @property (copy, nonatomic) NSString *forumID;
@@ -331,7 +367,7 @@ static NSString * DeEntitify(NSString *withEntities)
 
 @property (nonatomic) NSURL *threadIconImageURL2;
 
-@property (copy, nonatomic) NSString *authorName;
+@property (nonatomic) UserParsedInfo *author;
 
 @property (nonatomic) BOOL seen;
 
@@ -423,8 +459,21 @@ static NSString * DeEntitify(NSString *withEntities)
         self.threadIconImageURL2 = [NSURL URLWithString:[icon2 objectForKey:@"src"]];
     }
     
+    self.author = [UserParsedInfo new];
     TFHppleElement *author = [doc searchForSingle:@"//td[" HAS_CLASS(author) "]/a"];
-    self.authorName = [author content];
+    self.author.username = [author content];
+    NSError *error;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"userid=(\\d+)"
+                                                                           options:0
+                                                                             error:&error];
+    if (!regex) {
+        NSLog(@"error creating userid regex: %@", error);
+    }
+    NSString *profileLink = [author objectForKey:@"href"];
+    NSTextCheckingResult *match = [regex firstMatchInString:profileLink
+                                                    options:0
+                                                      range:NSMakeRange(0, [profileLink length])];
+    if (match) self.author.userID = [profileLink substringWithRange:[match rangeAtIndex:1]];
     
     TFHppleElement *seen = [doc searchForSingle:@"//div[" HAS_CLASS(lastseen) "]"];
     self.seen = !!seen;
@@ -518,40 +567,6 @@ static NSString * DeEntitify(NSString *withEntities)
 @end
 
 
-@interface UserParsedInfo ()
-
-@property (copy, nonatomic) NSString *username;
-
-@property (nonatomic) NSDate *regdate;
-
-@property (nonatomic) BOOL moderator;
-
-@property (nonatomic) BOOL administrator;
-
-@property (nonatomic) BOOL originalPoster;
-
-@property (copy, nonatomic) NSString *customTitle;
-
-@property (nonatomic) NSURL *avatarURL;
-
-@end
-
-
-@implementation UserParsedInfo
-
-- (void)parseHTMLData
-{
-    
-}
-
-+ (NSArray *)keysToApplyToObject
-{
-    return @[ @"username", @"regdate", @"moderator", @"administrator", @"customTitle" ];
-}
-
-@end
-
-
 @interface PostParsedInfo ()
 
 @property (copy, nonatomic) NSString *postID;
@@ -625,6 +640,19 @@ static NSString * DeEntitify(NSString *withEntities)
     self.author.customTitle = [[doc rawSearch:@"//dd[" HAS_CLASS(title) "]"] lastObject];
     TFHppleElement *avatar = [doc searchForSingle:@"//dd[" HAS_CLASS(title) "]//img"];
     self.author.avatarURL = [NSURL URLWithString:[avatar objectForKey:@"src"]];
+    TFHppleElement *profile = [doc searchForSingle:@"//ul[" HAS_CLASS(profilelinks) "]//a"];
+    NSError *profileError;
+    NSRegularExpression *profileRegex = [NSRegularExpression regularExpressionWithPattern:@"userid=(\\d+)"
+                                                                                  options:0
+                                                                                    error:&profileError];
+    if (!profileRegex) {
+        NSLog(@"error creating userid regex: %@", profileError);
+    }
+    NSString *profileLink = [profile objectForKey:@"href"];
+    NSTextCheckingResult *match = [profileRegex firstMatchInString:profileLink
+                                                           options:0
+                                                             range:NSMakeRange(0, [profileLink length])];
+    if (match) self.author.userID = [profileLink substringWithRange:[match rangeAtIndex:1]];
     
     self.editable = !![doc searchForSingle:
                        @"//ul[" HAS_CLASS(postbuttons) "]//a[contains(@href, 'editpost')]"];

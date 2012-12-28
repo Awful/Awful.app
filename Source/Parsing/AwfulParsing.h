@@ -75,6 +75,27 @@
 @end
 
 
+@interface UserParsedInfo : ParsedInfo
+
+@property (readonly, copy, nonatomic) NSString *username;
+
+@property (readonly, copy, nonatomic) NSString *userID;
+
+@property (readonly, nonatomic) NSDate *regdate;
+
+@property (readonly, nonatomic) BOOL moderator;
+
+@property (readonly, nonatomic) BOOL administrator;
+
+@property (readonly, nonatomic) BOOL originalPoster;
+
+@property (readonly, copy, nonatomic) NSString *customTitle;
+
+@property (readonly, nonatomic) NSURL *avatarURL;
+
+@end
+
+
 @interface ThreadParsedInfo : ParsedInfo
 
 @property (readonly, copy, nonatomic) NSString *forumID;
@@ -89,7 +110,7 @@
 
 @property (readonly, nonatomic) NSURL *threadIconImageURL2;
 
-@property (readonly, copy, nonatomic) NSString *authorName;
+@property (readonly, nonatomic) UserParsedInfo *author;
 
 @property (readonly, nonatomic) BOOL seen;
 
@@ -113,25 +134,6 @@
 @property (readonly, nonatomic) NSDate *lastPostDate;
 
 + (NSArray *)threadsWithHTMLData:(NSData *)htmlData;
-
-@end
-
-
-@interface UserParsedInfo : ParsedInfo
-
-@property (readonly, copy, nonatomic) NSString *username;
-
-@property (readonly, nonatomic) NSDate *regdate;
-
-@property (readonly, nonatomic) BOOL moderator;
-
-@property (readonly, nonatomic) BOOL administrator;
-
-@property (readonly, nonatomic) BOOL originalPoster;
-
-@property (readonly, copy, nonatomic) NSString *customTitle;
-
-@property (readonly, nonatomic) NSURL *avatarURL;
 
 @end
 

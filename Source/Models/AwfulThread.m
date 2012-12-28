@@ -47,7 +47,7 @@
         existingThreads[thread.threadID] = thread;
     }
     NSMutableDictionary *existingUsers = [NSMutableDictionary new];
-    NSArray *usernames = [threadInfos valueForKey:@"authorName"];
+    NSArray *usernames = [threadInfos valueForKeyPath:@"author.username"];
     for (AwfulUser *user in [AwfulUser fetchAllMatchingPredicate:@"username IN %@", usernames]) {
         existingUsers[user.username] = user;
     }
@@ -61,7 +61,7 @@
         if (!thread) thread = [AwfulThread insertNew];
         [info applyToObject:thread];
         if (!thread.author) thread.author = [AwfulUser insertNew];
-        thread.author.username = info.authorName;
+        [info.author applyToObject:thread.author];
         existingUsers[thread.author.username] = thread.author;
         [threads addObject:thread];
     }
