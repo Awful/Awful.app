@@ -5,13 +5,26 @@
 
 
 extern const struct AwfulUserAttributes {
+	__unsafe_unretained NSString *aboutMe;
 	__unsafe_unretained NSString *administrator;
+	__unsafe_unretained NSString *aimName;
 	__unsafe_unretained NSString *avatarURL;
 	__unsafe_unretained NSString *customTitle;
+	__unsafe_unretained NSString *gender;
+	__unsafe_unretained NSString *homepageURL;
+	__unsafe_unretained NSString *icqName;
+	__unsafe_unretained NSString *interests;
+	__unsafe_unretained NSString *lastPost;
+	__unsafe_unretained NSString *location;
 	__unsafe_unretained NSString *moderator;
+	__unsafe_unretained NSString *occupation;
+	__unsafe_unretained NSString *postCount;
+	__unsafe_unretained NSString *postRate;
+	__unsafe_unretained NSString *profilePictureURL;
 	__unsafe_unretained NSString *regdate;
 	__unsafe_unretained NSString *userID;
 	__unsafe_unretained NSString *username;
+	__unsafe_unretained NSString *yahooName;
 } AwfulUserAttributes;
 
 extern const struct AwfulUserRelationships {
@@ -24,6 +37,19 @@ extern const struct AwfulUserFetchedProperties {
 
 @class AwfulPost;
 @class AwfulThread;
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -46,6 +72,16 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
+@property (nonatomic, strong) NSString* aboutMe;
+
+
+
+//- (BOOL)validateAboutMe:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
 @property (nonatomic, strong) NSNumber* administrator;
 
 
@@ -55,6 +91,16 @@ extern const struct AwfulUserFetchedProperties {
 - (void)setAdministratorValue:(BOOL)value_;
 
 //- (BOOL)validateAdministrator:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
+@property (nonatomic, strong) NSString* aimName;
+
+
+
+//- (BOOL)validateAimName:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -80,6 +126,66 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
+@property (nonatomic, strong) NSString* gender;
+
+
+
+//- (BOOL)validateGender:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
+@property (nonatomic, strong) NSString* homepageURL;
+
+
+
+//- (BOOL)validateHomepageURL:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
+@property (nonatomic, strong) NSString* icqName;
+
+
+
+//- (BOOL)validateIcqName:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
+@property (nonatomic, strong) NSString* interests;
+
+
+
+//- (BOOL)validateInterests:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
+@property (nonatomic, strong) NSDate* lastPost;
+
+
+
+//- (BOOL)validateLastPost:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
+@property (nonatomic, strong) NSString* location;
+
+
+
+//- (BOOL)validateLocation:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
 @property (nonatomic, strong) NSNumber* moderator;
 
 
@@ -89,6 +195,50 @@ extern const struct AwfulUserFetchedProperties {
 - (void)setModeratorValue:(BOOL)value_;
 
 //- (BOOL)validateModerator:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
+@property (nonatomic, strong) NSString* occupation;
+
+
+
+//- (BOOL)validateOccupation:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
+@property (nonatomic, strong) NSNumber* postCount;
+
+
+
+@property int32_t postCountValue;
+- (int32_t)postCountValue;
+- (void)setPostCountValue:(int32_t)value_;
+
+//- (BOOL)validatePostCount:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
+@property (nonatomic, strong) NSString* postRate;
+
+
+
+//- (BOOL)validatePostRate:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
+@property (nonatomic, strong) NSString* profilePictureURL;
+
+
+
+//- (BOOL)validateProfilePictureURL:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -119,6 +269,16 @@ extern const struct AwfulUserFetchedProperties {
 
 
 //- (BOOL)validateUsername:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
+@property (nonatomic, strong) NSString* yahooName;
+
+
+
+//- (BOOL)validateYahooName:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -158,11 +318,23 @@ extern const struct AwfulUserFetchedProperties {
 @interface _AwfulUser (CoreDataGeneratedPrimitiveAccessors)
 
 
+- (NSString*)primitiveAboutMe;
+- (void)setPrimitiveAboutMe:(NSString*)value;
+
+
+
+
 - (NSNumber*)primitiveAdministrator;
 - (void)setPrimitiveAdministrator:(NSNumber*)value;
 
 - (BOOL)primitiveAdministratorValue;
 - (void)setPrimitiveAdministratorValue:(BOOL)value_;
+
+
+
+
+- (NSString*)primitiveAimName;
+- (void)setPrimitiveAimName:(NSString*)value;
 
 
 
@@ -179,11 +351,74 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
+- (NSString*)primitiveGender;
+- (void)setPrimitiveGender:(NSString*)value;
+
+
+
+
+- (NSString*)primitiveHomepageURL;
+- (void)setPrimitiveHomepageURL:(NSString*)value;
+
+
+
+
+- (NSString*)primitiveIcqName;
+- (void)setPrimitiveIcqName:(NSString*)value;
+
+
+
+
+- (NSString*)primitiveInterests;
+- (void)setPrimitiveInterests:(NSString*)value;
+
+
+
+
+- (NSDate*)primitiveLastPost;
+- (void)setPrimitiveLastPost:(NSDate*)value;
+
+
+
+
+- (NSString*)primitiveLocation;
+- (void)setPrimitiveLocation:(NSString*)value;
+
+
+
+
 - (NSNumber*)primitiveModerator;
 - (void)setPrimitiveModerator:(NSNumber*)value;
 
 - (BOOL)primitiveModeratorValue;
 - (void)setPrimitiveModeratorValue:(BOOL)value_;
+
+
+
+
+- (NSString*)primitiveOccupation;
+- (void)setPrimitiveOccupation:(NSString*)value;
+
+
+
+
+- (NSNumber*)primitivePostCount;
+- (void)setPrimitivePostCount:(NSNumber*)value;
+
+- (int32_t)primitivePostCountValue;
+- (void)setPrimitivePostCountValue:(int32_t)value_;
+
+
+
+
+- (NSString*)primitivePostRate;
+- (void)setPrimitivePostRate:(NSString*)value;
+
+
+
+
+- (NSString*)primitiveProfilePictureURL;
+- (void)setPrimitiveProfilePictureURL:(NSString*)value;
 
 
 
@@ -202,6 +437,12 @@ extern const struct AwfulUserFetchedProperties {
 
 - (NSString*)primitiveUsername;
 - (void)setPrimitiveUsername:(NSString*)value;
+
+
+
+
+- (NSString*)primitiveYahooName;
+- (void)setPrimitiveYahooName:(NSString*)value;
 
 
 

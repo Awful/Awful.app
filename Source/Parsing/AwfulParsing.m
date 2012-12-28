@@ -72,7 +72,75 @@
 
 @property (copy, nonatomic) NSString *username;
 
+@property (nonatomic) NSDate *regdate;
+
+@property (nonatomic) NSURL *avatar;
+
+@property (copy, nonatomic) NSString *customTitle;
+
+@property (copy, nonatomic) NSString *aboutMe;
+
+@property (copy, nonatomic) NSString *aimName;
+
+@property (copy, nonatomic) NSString *gender;
+
+@property (nonatomic) NSURL *homepage;
+
+@property (copy, nonatomic) NSString *icqName;
+
+@property (copy, nonatomic) NSString *interests;
+
+@property (nonatomic) NSDate *lastPost;
+
+@property (copy, nonatomic) NSString *location;
+
+@property (copy, nonatomic) NSString *occupation;
+
+@property (nonatomic) NSInteger postCount;
+
+@property (copy, nonatomic) NSString *postRate;
+
+@property (nonatomic) NSURL *profilePicture;
+
+@property (copy, nonatomic) NSString *yahooName;
+
 @end
+
+
+static NSDate * RegdateFromString(NSString *s)
+{
+    static NSDateFormatter *df = nil;
+    if (!df) {
+        df = [NSDateFormatter new];
+        [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+        [df setDateFormat:@"MMM d, yyyy"];
+    }
+    return [df dateFromString:s];
+}
+
+
+static NSDate * PostDateFromString(NSString *s)
+{
+    static NSDateFormatter *df = nil;
+    if (df == nil) {
+        df = [[NSDateFormatter alloc] init];
+        [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+    }
+    [df setTimeZone:[NSTimeZone localTimeZone]];
+    static NSString *formats[] = {
+        @"h:mm a MMM d, yyyy",
+        @"MMM d, yyyy h:mm a",
+        @"HH:mm MMM d, yyyy",
+        @"MMM d, yyyy HH:mm",
+    };
+    for (size_t i = 0; i < sizeof(formats) / sizeof(formats[0]); i++) {
+        [df setDateFormat:formats[i]];
+        NSDate *parsedDate = [df dateFromString:s];
+        if (parsedDate) return parsedDate;
+    }
+    return nil;
+}
+
 
 @implementation ProfileParsedInfo
 
@@ -80,6 +148,16 @@
 {
     TFHpple *doc = [[TFHpple alloc] initWithHTMLData:self.htmlData];
     
+    TFHppleElement *editProfileNode = [doc searchForSingle:@"//th[starts-with(., 'Edit Profile')]"];
+    if (editProfileNode) {
+        [self parseHTMLDataFromEditProfilePage:doc];
+    } else {
+        [self parseHTMLDataFromViewProfilePage:doc];
+    }
+}
+
+- (void)parseHTMLDataFromEditProfilePage:(TFHpple *)doc
+{
     NSString *usernameNode = [[doc searchForSingle:
                                @"//th[starts-with(., 'Edit Profile')]/text()[1]"] content];
     NSString *namePattern = @"Edit Profile - (.*)\\s$";
@@ -103,9 +181,69 @@
     self.userID = [infoURL queryDictionary][@"userid"];
 }
 
+- (void)parseHTMLDataFromViewProfilePage:(TFHpple *)doc
+{
+    self.username = [[doc searchForSingle:@"//dt[" HAS_CLASS(author) "]"] content];
+    TFHppleElement *regdate = [doc searchForSingle:@"//dd[" HAS_CLASS(registered) "]"];
+    if (regdate) self.regdate = RegdateFromString([regdate content]);
+    TFHppleElement *avatar = [doc searchForSingle:@"//dd[" HAS_CLASS(title) "]//img"];
+    if (avatar) {
+        self.avatar = [NSURL URLWithString:[avatar objectForKey:@"src"]];
+        NSMutableArray *nodesAfterAvatar = [[doc rawSearch:@"//dd[" HAS_CLASS(title) "]//br[1]/following-sibling::node()"] mutableCopy];
+        [nodesAfterAvatar removeLastObject];
+        self.customTitle = [nodesAfterAvatar componentsJoinedByString:@""];
+    } else {
+        NSArray *titleNodes = [doc rawSearch:@"//dd[" HAS_CLASS(title) "]/node()"];
+        self.customTitle = [titleNodes componentsJoinedByString:@""];
+    }
+    self.aboutMe = [[doc searchForSingle:@"//td[" HAS_CLASS(info) "]/p[2]"] content];
+    NSString *imFormat = @"//dl[" HAS_CLASS(contacts) "]/dt[" HAS_CLASS(%@) "]/following-sibling::dd[not(span)]";
+    for (NSString *im in @[ @"aim", @"icq", @"yahoo" ]) {
+        TFHppleElement *imElement = [doc searchForSingle:[NSString stringWithFormat:imFormat, im]];
+        if (imElement) {
+            [self setValue:[imElement content] forKey:[NSString stringWithFormat:@"%@Name", im]];
+        }
+    }
+    TFHppleElement *postCount = [doc searchForSingle:@"//dl[" HAS_CLASS(additional) "]/dt[contains(text(), 'Post Count')]/following-sibling::dd"];
+    if (postCount && [[postCount content] integerValue]) {
+        self.postCount = [[postCount content] integerValue];
+    }
+    TFHppleElement *postRate = [doc searchForSingle:@"//dl[" HAS_CLASS(additional) "]/dt[contains(text(), 'Post Rate')]/following-sibling::dd"];
+    self.postRate = [postRate content];
+    TFHppleElement *about = [doc searchForSingle:@"//td[" HAS_CLASS(info) "]/p[1]"];
+    if (about) {
+    NSError *error;
+        NSRegularExpression *genderRegex = [NSRegularExpression regularExpressionWithPattern:@"claims to be a ([a-z]+)"
+                                                                                     options:0
+                                                                                       error:&error];
+        if (!genderRegex) NSLog(@"error parsing profile gender regex: %@", error);
+        NSTextCheckingResult *result = [genderRegex firstMatchInString:[about content]
+                                                               options:0
+                                                                 range:NSMakeRange(0, [[about content] length])];
+        self.gender = [[about content] substringWithRange:[result rangeAtIndex:1]];
+    }
+    TFHppleElement *picture = [doc searchForSingle:@"//div[" HAS_CLASS(userpic) "]//img"];
+    if (picture) self.profilePicture = [NSURL URLWithString:[picture objectForKey:@"src"]];
+    TFHppleElement *location = [doc searchForSingle:@"//dl[" HAS_CLASS(additional) "]/dt[contains(text(), 'Location')]/following-sibling::dd"];
+    self.location = [location content];
+    TFHppleElement *interests = [doc searchForSingle:@"//dl[" HAS_CLASS(additional) "]/dt[contains(text(), 'Interests')]/following-sibling::dd"];
+    self.interests = [interests content];
+    TFHppleElement *occupation = [doc searchForSingle:@"//dl[" HAS_CLASS(additional) "]/dt[contains(text(), 'Occupation')]/following-sibling::dd"];
+    self.occupation = [occupation content];
+    TFHppleElement *lastPost = [doc searchForSingle:@"//dl[" HAS_CLASS(additional) "]/dt[contains(text(), 'Last Post')]/following-sibling::dd"];
+    if (lastPost) self.lastPost = PostDateFromString([lastPost content]);
+}
+
 + (NSArray *)keysToApplyToObject
 {
-    return @[ @"userID", @"username" ];
+    // TODO many of these should actually clear an existing value if they are nil
+    // (i.e. customTitle, aboutMe, aimName, gender, icqName, interests, location, occupation, yahooName)
+    // Under the current implementation of -applyToObject:, this will not occur.
+    return @[
+        @"userID", @"username", @"regdate", @"customTitle", @"aboutMe", @"aimName", @"gender",
+        @"icqName", @"interests", @"lastPost", @"location", @"occupation", @"postCount",
+        @"yahooName", @"postRate"
+    ];
 }
 
 @end
@@ -533,26 +671,7 @@ static NSString * DeEntitify(NSString *withEntities)
     TFHppleElement *lastAuthor = [doc searchForSingle:
                                   @"//td[" HAS_CLASS(lastpost) "]//a[" HAS_CLASS(author) "]"];
     self.lastPostAuthorName = [lastAuthor content];
-    if (date) {
-        static NSDateFormatter *df = nil;
-        if (df == nil) {
-            df = [[NSDateFormatter alloc] init];
-            [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
-        }
-        [df setTimeZone:[NSTimeZone localTimeZone]];
-        static NSString *formats[] = {
-            @"h:mm a MMM d, yyyy",
-            @"HH:mm MMM d, yyyy",
-        };
-        for (size_t i = 0; i < sizeof(formats) / sizeof(formats[0]); i++) {
-            [df setDateFormat:formats[i]];
-            NSDate *parsedDate = [df dateFromString:[date content]];
-            if (parsedDate) {
-                self.lastPostDate = parsedDate;
-                break;
-            }
-        }
-    }
+    if (date) self.lastPostDate = PostDateFromString([date content]);
 }
 
 + (NSArray *)keysToApplyToObject
@@ -628,18 +747,16 @@ static NSString * DeEntitify(NSString *withEntities)
     self.author.administrator = [authorClasses containsObject:@"role-admin"];
     self.author.originalPoster = [authorClasses containsObject:@"op"];
     NSString *regdate = [[doc searchForSingle:@"//dd[" HAS_CLASS(registered) "]"] content];
-    if (regdate) {
-        static NSDateFormatter *df = nil;
-        if (!df) {
-            df = [NSDateFormatter new];
-            [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
-            [df setDateFormat:@"MMM d, yyyy"];
-        }
-        self.author.regdate = [df dateFromString:regdate];
-    }
-    self.author.customTitle = [[doc rawSearch:@"//dd[" HAS_CLASS(title) "]"] lastObject];
+    if (regdate) self.author.regdate = RegdateFromString(regdate);
     TFHppleElement *avatar = [doc searchForSingle:@"//dd[" HAS_CLASS(title) "]//img"];
-    self.author.avatarURL = [NSURL URLWithString:[avatar objectForKey:@"src"]];
+    if (avatar) {
+        self.author.avatarURL = [NSURL URLWithString:[avatar objectForKey:@"src"]];
+        NSMutableArray *nodesAfterAvatar = [[doc rawSearch:@"//dd[" HAS_CLASS(title) "]//br[1]/following-sibling::node()"] mutableCopy];
+        [nodesAfterAvatar removeLastObject];
+        self.author.customTitle = [nodesAfterAvatar componentsJoinedByString:@""];
+    } else {
+        self.author.customTitle = [[doc rawSearch:@"//dd[" HAS_CLASS(title) "]"] lastObject];
+    }
     TFHppleElement *profile = [doc searchForSingle:@"//ul[" HAS_CLASS(profilelinks) "]//a"];
     NSError *profileError;
     NSRegularExpression *profileRegex = [NSRegularExpression regularExpressionWithPattern:@"userid=(\\d+)"

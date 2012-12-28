@@ -4,13 +4,26 @@
 #import "_AwfulUser.h"
 
 const struct AwfulUserAttributes AwfulUserAttributes = {
+	.aboutMe = @"aboutMe",
 	.administrator = @"administrator",
+	.aimName = @"aimName",
 	.avatarURL = @"avatarURL",
 	.customTitle = @"customTitle",
+	.gender = @"gender",
+	.homepageURL = @"homepageURL",
+	.icqName = @"icqName",
+	.interests = @"interests",
+	.lastPost = @"lastPost",
+	.location = @"location",
 	.moderator = @"moderator",
+	.occupation = @"occupation",
+	.postCount = @"postCount",
+	.postRate = @"postRate",
+	.profilePictureURL = @"profilePictureURL",
 	.regdate = @"regdate",
 	.userID = @"userID",
 	.username = @"username",
+	.yahooName = @"yahooName",
 };
 
 const struct AwfulUserRelationships AwfulUserRelationships = {
@@ -57,9 +70,21 @@ const struct AwfulUserFetchedProperties AwfulUserFetchedProperties = {
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
+	if ([key isEqualToString:@"postCountValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"postCount"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
 
 	return keyPaths;
 }
+
+
+
+
+@dynamic aboutMe;
+
+
 
 
 
@@ -90,6 +115,13 @@ const struct AwfulUserFetchedProperties AwfulUserFetchedProperties = {
 
 
 
+@dynamic aimName;
+
+
+
+
+
+
 @dynamic avatarURL;
 
 
@@ -98,6 +130,48 @@ const struct AwfulUserFetchedProperties AwfulUserFetchedProperties = {
 
 
 @dynamic customTitle;
+
+
+
+
+
+
+@dynamic gender;
+
+
+
+
+
+
+@dynamic homepageURL;
+
+
+
+
+
+
+@dynamic icqName;
+
+
+
+
+
+
+@dynamic interests;
+
+
+
+
+
+
+@dynamic lastPost;
+
+
+
+
+
+
+@dynamic location;
 
 
 
@@ -130,6 +204,53 @@ const struct AwfulUserFetchedProperties AwfulUserFetchedProperties = {
 
 
 
+@dynamic occupation;
+
+
+
+
+
+
+@dynamic postCount;
+
+
+
+- (int32_t)postCountValue {
+	NSNumber *result = [self postCount];
+	return [result intValue];
+}
+
+- (void)setPostCountValue:(int32_t)value_ {
+	[self setPostCount:[NSNumber numberWithInt:value_]];
+}
+
+- (int32_t)primitivePostCountValue {
+	NSNumber *result = [self primitivePostCount];
+	return [result intValue];
+}
+
+- (void)setPrimitivePostCountValue:(int32_t)value_ {
+	[self setPrimitivePostCount:[NSNumber numberWithInt:value_]];
+}
+
+
+
+
+
+@dynamic postRate;
+
+
+
+
+
+
+@dynamic profilePictureURL;
+
+
+
+
+
+
 @dynamic regdate;
 
 
@@ -145,6 +266,13 @@ const struct AwfulUserFetchedProperties AwfulUserFetchedProperties = {
 
 
 @dynamic username;
+
+
+
+
+
+
+@dynamic yahooName;
 
 
 

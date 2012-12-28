@@ -55,13 +55,26 @@
         <relationship name="posts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulPost" inverseName="thread" inverseEntity="AwfulPost" syncable="YES"/>
     </entity>
     <entity name="AwfulUser" representedClassName="AwfulUser" syncable="YES">
+        <attribute name="aboutMe" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="administrator" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="aimName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="avatarURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="customTitle" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="gender" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="homepageURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="icqName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="interests" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lastPost" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="location" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="moderator" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="occupation" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="postCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="postRate" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="profilePictureURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="regdate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="userID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="username" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="yahooName" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="posts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulPost" inverseName="author" inverseEntity="AwfulPost" syncable="YES"/>
         <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="author" inverseEntity="AwfulThread" syncable="YES"/>
     </entity>
@@ -70,6 +83,6 @@
         <element name="AwfulForum" positionX="205" positionY="285" width="128" height="210"/>
         <element name="AwfulPost" positionX="160" positionY="192" width="128" height="180"/>
         <element name="AwfulThread" positionX="25" positionY="210" width="128" height="375"/>
-        <element name="AwfulUser" positionX="160" positionY="192" width="128" height="180"/>
+        <element name="AwfulUser" positionX="160" positionY="192" width="128" height="375"/>
     </elements>
 </model>

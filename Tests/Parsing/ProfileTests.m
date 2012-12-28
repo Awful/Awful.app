@@ -8,23 +8,37 @@
 
 #import "ParsingTests.h"
 
-@interface ProfileTests : ParsingTests
+@interface EditProfileTests : ParsingTests @end
+@implementation EditProfileTests
 
-@end
-
-
-@implementation ProfileTests
-
-+ (NSString *)fixtureFilename
-{
-    return @"member.html";
-}
++ (NSString *)fixtureFilename { return @"member.html"; }
 
 - (void)testEditProfileInfo
 {
     ProfileParsedInfo *profileInfo = [[ProfileParsedInfo alloc] initWithHTMLData:self.fixture];
     STAssertEqualObjects(profileInfo.userID, @"106125", nil);
     STAssertEqualObjects(profileInfo.username, @"pokeyman", nil);
+}
+
+@end
+
+
+@interface ViewProfileTests : ParsingTests @end
+@implementation ViewProfileTests
+
++ (NSString *)fixtureFilename { return @"profile.html"; }
+
+- (void)testViewProfileInfo
+{
+    ProfileParsedInfo *profileInfo = [[ProfileParsedInfo alloc] initWithHTMLData:self.fixture];
+    STAssertEqualObjects(profileInfo.username, @"pokeyman", nil);
+    STAssertNotNil(profileInfo.avatar, nil);
+    STAssertTrue([profileInfo.customTitle rangeOfString:@"play?"].location != NSNotFound, nil);
+    STAssertEqualObjects(profileInfo.icqName, @"1234", nil);
+    STAssertNil(profileInfo.aimName, nil);
+    STAssertEquals(profileInfo.postCount, 1954, nil);
+    STAssertTrue([profileInfo.postRate rangeOfString:@"0.88"].location == 0, nil);
+    STAssertEqualObjects(profileInfo.gender, @"porpoise", nil);
 }
 
 @end
