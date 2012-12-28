@@ -596,8 +596,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 - (void)showActionsForPost:(AwfulPost *)post fromRect:(CGRect)rect inView:(UIView *)view
 {
     [self dismissPopoverAnimated:YES];
-    NSString *title = [NSString stringWithFormat:@"%@'s Post", post.authorName];
-    if ([post.authorName isEqualToString:[AwfulSettings settings].username]) {
+    NSString *title = [NSString stringWithFormat:@"%@'s Post", post.author.username];
+    if ([post.author.username isEqualToString:[AwfulSettings settings].username]) {
         title = @"Your Post";
     }
     AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:title];
@@ -908,16 +908,18 @@ static char KVOContext;
 - (NSDictionary *)postsView:(AwfulPostsView *)postsView postAtIndex:(NSInteger)index
 {
     AwfulPost *post = self.fetchedResultsController.fetchedObjects[index + self.hiddenPosts];
-    NSArray *keys = @[
-        @"postID", @"authorName", @"authorAvatarURL", @"beenSeen", @"innerHTML",
-        @"authorIsOriginalPoster", @"authorIsAModerator", @"authorIsAnAdministrator"
-    ];
+    NSArray *keys = @[ @"postID", @"beenSeen", @"innerHTML" ];
     NSMutableDictionary *dict = [[post dictionaryWithValuesForKeys:keys] mutableCopy];
     if (post.postDate) {
         dict[@"postDate"] = [self.postDateFormatter stringFromDate:post.postDate];
     }
-    if (post.authorRegDate) {
-        dict[@"authorRegDate"] = [self.regDateFormatter stringFromDate:post.authorRegDate];
+    if (post.author.username) dict[@"authorName"] = post.author.username;
+    if (post.author.avatarURL) dict[@"authorAvatarURL"] = post.author.avatarURL;
+    if ([post.author isEqual:post.thread.author]) dict[@"authorIsOriginalPoster"] = @YES;
+    if (post.author.moderatorValue) dict[@"authorIsAModerator"] = @YES;
+    if (post.author.administratorValue) dict[@"authorIsAnAdministrator"] = @YES;
+    if (post.author.regdate) {
+        dict[@"authorRegDate"] = [self.regDateFormatter stringFromDate:post.author.regdate];
     }
     return dict;
 }

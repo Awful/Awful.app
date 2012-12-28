@@ -5,13 +5,6 @@
 
 
 extern const struct AwfulPostAttributes {
-	__unsafe_unretained NSString *authorAvatarURL;
-	__unsafe_unretained NSString *authorCustomTitleHTML;
-	__unsafe_unretained NSString *authorIsAModerator;
-	__unsafe_unretained NSString *authorIsAnAdministrator;
-	__unsafe_unretained NSString *authorIsOriginalPoster;
-	__unsafe_unretained NSString *authorName;
-	__unsafe_unretained NSString *authorRegDate;
 	__unsafe_unretained NSString *beenSeen;
 	__unsafe_unretained NSString *editable;
 	__unsafe_unretained NSString *innerHTML;
@@ -22,20 +15,15 @@ extern const struct AwfulPostAttributes {
 } AwfulPostAttributes;
 
 extern const struct AwfulPostRelationships {
+	__unsafe_unretained NSString *author;
 	__unsafe_unretained NSString *thread;
 } AwfulPostRelationships;
 
 extern const struct AwfulPostFetchedProperties {
 } AwfulPostFetchedProperties;
 
+@class AwfulUser;
 @class AwfulThread;
-
-
-
-
-
-
-
 
 
 
@@ -53,88 +41,6 @@ extern const struct AwfulPostFetchedProperties {
 + (NSString*)entityName;
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
 - (AwfulPostID*)objectID;
-
-
-
-
-
-@property (nonatomic, strong) NSString* authorAvatarURL;
-
-
-
-//- (BOOL)validateAuthorAvatarURL:(id*)value_ error:(NSError**)error_;
-
-
-
-
-
-@property (nonatomic, strong) NSString* authorCustomTitleHTML;
-
-
-
-//- (BOOL)validateAuthorCustomTitleHTML:(id*)value_ error:(NSError**)error_;
-
-
-
-
-
-@property (nonatomic, strong) NSNumber* authorIsAModerator;
-
-
-
-@property BOOL authorIsAModeratorValue;
-- (BOOL)authorIsAModeratorValue;
-- (void)setAuthorIsAModeratorValue:(BOOL)value_;
-
-//- (BOOL)validateAuthorIsAModerator:(id*)value_ error:(NSError**)error_;
-
-
-
-
-
-@property (nonatomic, strong) NSNumber* authorIsAnAdministrator;
-
-
-
-@property BOOL authorIsAnAdministratorValue;
-- (BOOL)authorIsAnAdministratorValue;
-- (void)setAuthorIsAnAdministratorValue:(BOOL)value_;
-
-//- (BOOL)validateAuthorIsAnAdministrator:(id*)value_ error:(NSError**)error_;
-
-
-
-
-
-@property (nonatomic, strong) NSNumber* authorIsOriginalPoster;
-
-
-
-@property BOOL authorIsOriginalPosterValue;
-- (BOOL)authorIsOriginalPosterValue;
-- (void)setAuthorIsOriginalPosterValue:(BOOL)value_;
-
-//- (BOOL)validateAuthorIsOriginalPoster:(id*)value_ error:(NSError**)error_;
-
-
-
-
-
-@property (nonatomic, strong) NSString* authorName;
-
-
-
-//- (BOOL)validateAuthorName:(id*)value_ error:(NSError**)error_;
-
-
-
-
-
-@property (nonatomic, strong) NSDate* authorRegDate;
-
-
-
-//- (BOOL)validateAuthorRegDate:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -226,6 +132,13 @@ extern const struct AwfulPostFetchedProperties {
 
 
 
+@property (nonatomic, strong) AwfulUser *author;
+
+//- (BOOL)validateAuthor:(id*)value_ error:(NSError**)error_;
+
+
+
+
 @property (nonatomic, strong) AwfulThread *thread;
 
 //- (BOOL)validateThread:(id*)value_ error:(NSError**)error_;
@@ -241,57 +154,6 @@ extern const struct AwfulPostFetchedProperties {
 @end
 
 @interface _AwfulPost (CoreDataGeneratedPrimitiveAccessors)
-
-
-- (NSString*)primitiveAuthorAvatarURL;
-- (void)setPrimitiveAuthorAvatarURL:(NSString*)value;
-
-
-
-
-- (NSString*)primitiveAuthorCustomTitleHTML;
-- (void)setPrimitiveAuthorCustomTitleHTML:(NSString*)value;
-
-
-
-
-- (NSNumber*)primitiveAuthorIsAModerator;
-- (void)setPrimitiveAuthorIsAModerator:(NSNumber*)value;
-
-- (BOOL)primitiveAuthorIsAModeratorValue;
-- (void)setPrimitiveAuthorIsAModeratorValue:(BOOL)value_;
-
-
-
-
-- (NSNumber*)primitiveAuthorIsAnAdministrator;
-- (void)setPrimitiveAuthorIsAnAdministrator:(NSNumber*)value;
-
-- (BOOL)primitiveAuthorIsAnAdministratorValue;
-- (void)setPrimitiveAuthorIsAnAdministratorValue:(BOOL)value_;
-
-
-
-
-- (NSNumber*)primitiveAuthorIsOriginalPoster;
-- (void)setPrimitiveAuthorIsOriginalPoster:(NSNumber*)value;
-
-- (BOOL)primitiveAuthorIsOriginalPosterValue;
-- (void)setPrimitiveAuthorIsOriginalPosterValue:(BOOL)value_;
-
-
-
-
-- (NSString*)primitiveAuthorName;
-- (void)setPrimitiveAuthorName:(NSString*)value;
-
-
-
-
-- (NSDate*)primitiveAuthorRegDate;
-- (void)setPrimitiveAuthorRegDate:(NSDate*)value;
-
-
 
 
 - (NSNumber*)primitiveBeenSeen;
@@ -346,6 +208,11 @@ extern const struct AwfulPostFetchedProperties {
 - (void)setPrimitiveThreadPageValue:(int32_t)value_;
 
 
+
+
+
+- (AwfulUser*)primitiveAuthor;
+- (void)setPrimitiveAuthor:(AwfulUser*)value;
 
 
 

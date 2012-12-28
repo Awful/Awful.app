@@ -9,6 +9,7 @@
 #import "AwfulThread.h"
 #import "AwfulDataStack.h"
 #import "AwfulParsing.h"
+#import "AwfulUser.h"
 #import "NSManagedObject+Awful.h"
 
 @implementation AwfulThread
@@ -45,6 +46,11 @@
     for (AwfulThread *thread in [self fetchAllMatchingPredicate:@"threadID IN %@", threadIDs]) {
         existingThreads[thread.threadID] = thread;
     }
+    NSMutableDictionary *existingUsers = [NSMutableDictionary new];
+    NSArray *usernames = [threadInfos valueForKey:@"authorName"];
+    for (AwfulUser *user in [AwfulUser fetchAllMatchingPredicate:@"username IN %@", usernames]) {
+        existingUsers[user.username] = user;
+    }
     
     for (ThreadParsedInfo *info in threadInfos) {
         if ([info.threadID length] == 0) {
@@ -54,6 +60,9 @@
         AwfulThread *thread = existingThreads[info.threadID];
         if (!thread) thread = [AwfulThread insertNew];
         [info applyToObject:thread];
+        if (!thread.author) thread.author = [AwfulUser insertNew];
+        thread.author.username = info.authorName;
+        existingUsers[thread.author.username] = thread.author;
         [threads addObject:thread];
     }
     [[AwfulDataStack sharedDataStack] save];

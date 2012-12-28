@@ -11,6 +11,7 @@
 #import "AwfulForum.h"
 #import "AwfulParsing.h"
 #import "AwfulThread.h"
+#import "AwfulUser.h"
 #import "NSManagedObject+Awful.h"
 
 @implementation AwfulPost
@@ -38,6 +39,11 @@
     NSArray *allPosts = [thread.posts allObjects];
     NSArray *allPostIDs = [allPosts valueForKey:@"postID"];
     NSDictionary *existingPosts = [NSDictionary dictionaryWithObjects:allPosts forKeys:allPostIDs];
+    NSArray *allAuthorNames = [pageInfo.posts valueForKeyPath:@"author.username"];
+    NSMutableDictionary *existingUsers = [NSMutableDictionary new];
+    for (AwfulUser *user in [AwfulUser fetchAllMatchingPredicate:@"username IN %@", allAuthorNames]) {
+        existingUsers[user.username] = user;
+    }
     NSMutableArray *posts = [NSMutableArray new];
     for (NSUInteger i = 0; i < [pageInfo.posts count]; i++) {
         PostParsedInfo *postInfo = pageInfo.posts[i];
@@ -52,7 +58,12 @@
         } else {
             post.threadIndexValue = (pageInfo.pageNumber - 1) * 40 + i + 1;
         }
-        post.authorAvatarURL = [postInfo.authorAvatarURL absoluteString];
+        if (!post.author) {
+            post.author = existingUsers[postInfo.author.username] ?: [AwfulUser insertNew];
+        }
+        [postInfo.author applyToObject:post.author];
+        post.author.avatarURL = [postInfo.author.avatarURL absoluteString];
+        existingUsers[post.author.username] = post.author;
         [posts addObject:post];
     }
     [posts setValue:@(pageInfo.pageNumber) forKey:AwfulPostAttributes.threadPage];

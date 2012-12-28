@@ -92,6 +92,8 @@
 		1C6474CF1569989800C72657 /* _AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474BE1569989800C72657 /* _AwfulForum.m */; };
 		1C6474D01569989800C72657 /* _AwfulThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474C01569989800C72657 /* _AwfulThread.m */; };
 		1C67BB1A16493C5F00898B35 /* bss-fanboy.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C67BB1916493C5F00898B35 /* bss-fanboy.png */; };
+		1C6D3EE8168D7B1400B91A65 /* _AwfulUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D3EE7168D7B1400B91A65 /* _AwfulUser.m */; };
+		1C6D3EEB168D7B1E00B91A65 /* AwfulUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D3EEA168D7B1E00B91A65 /* AwfulUser.m */; };
 		1C83DB54161FF48600E53CFA /* ImgurHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */; };
 		1C96D057167FDEA60043B194 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		1C96D058167FDEA60043B194 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -901,7 +903,7 @@
 		1C5B997E166F9844004C5D0E /* tab-divider@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tab-divider@2x.png"; sourceTree = "<group>"; };
 		1C5B99B9166FFA4F004C5D0E /* Model-1.8.1.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model-1.8.1.xcdatamodel"; sourceTree = "<group>"; };
 		1C5B99BA166FFA4F004C5D0E /* Model-1.8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model-1.8.xcdatamodel"; sourceTree = "<group>"; };
-		1C5B99BB166FFA4F004C5D0E /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		1C5B99BB166FFA4F004C5D0E /* Model-1.9.1.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model-1.9.1.xcdatamodel"; sourceTree = "<group>"; };
 		1C6474AB1569989800C72657 /* AwfulForum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForum.h; sourceTree = "<group>"; };
 		1C6474AC1569989800C72657 /* AwfulForum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForum.m; sourceTree = "<group>"; };
 		1C6474AD1569989800C72657 /* AwfulModels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulModels.h; sourceTree = "<group>"; };
@@ -912,6 +914,11 @@
 		1C6474BF1569989800C72657 /* _AwfulThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _AwfulThread.h; sourceTree = "<group>"; };
 		1C6474C01569989800C72657 /* _AwfulThread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulThread.m; sourceTree = "<group>"; };
 		1C67BB1916493C5F00898B35 /* bss-fanboy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bss-fanboy.png"; sourceTree = "<group>"; };
+		1C6D3EE4168D798200B91A65 /* Model-1.10.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Model-1.10.xcdatamodel"; sourceTree = "<group>"; };
+		1C6D3EE6168D7B1400B91A65 /* _AwfulUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _AwfulUser.h; sourceTree = "<group>"; };
+		1C6D3EE7168D7B1400B91A65 /* _AwfulUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulUser.m; sourceTree = "<group>"; };
+		1C6D3EE9168D7B1E00B91A65 /* AwfulUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulUser.h; sourceTree = "<group>"; };
+		1C6D3EEA168D7B1E00B91A65 /* AwfulUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulUser.m; sourceTree = "<group>"; };
 		1C83DB52161FF48600E53CFA /* ImgurHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImgurHTTPClient.h; sourceTree = "<group>"; };
 		1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImgurHTTPClient.m; sourceTree = "<group>"; };
 		1C96D055167FDEA60043B194 /* Imgur API Test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Imgur API Test.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1847,6 +1854,8 @@
 				1C090FB9163A40C1003FD0A3 /* AwfulPost.m */,
 				1C6474B41569989800C72657 /* AwfulThread.h */,
 				1C6474B51569989800C72657 /* AwfulThread.m */,
+				1C6D3EE9168D7B1E00B91A65 /* AwfulUser.h */,
+				1C6D3EEA168D7B1E00B91A65 /* AwfulUser.m */,
 				1C6474BA1569989800C72657 /* Generated */,
 				1C5B99B8166FFA4F004C5D0E /* Model.xcdatamodeld */,
 				1CBDB5FD162600D30004BDF4 /* NSManagedObject+Awful.h */,
@@ -1866,6 +1875,8 @@
 				1C090FB6163A40A1003FD0A3 /* _AwfulPost.m */,
 				1C6474BF1569989800C72657 /* _AwfulThread.h */,
 				1C6474C01569989800C72657 /* _AwfulThread.m */,
+				1C6D3EE6168D7B1400B91A65 /* _AwfulUser.h */,
+				1C6D3EE7168D7B1400B91A65 /* _AwfulUser.m */,
 			);
 			path = Generated;
 			sourceTree = "<group>";
@@ -3733,6 +3744,8 @@
 				1C96D0AC1682B1140043B194 /* NSURL+Awful.m in Sources */,
 				1C96D0AF1682B25A0043B194 /* NSURL+OpensInBrowser.m in Sources */,
 				1C96D0B51682BBA80043B194 /* AwfulExternalBrowser.m in Sources */,
+				1C6D3EE8168D7B1400B91A65 /* _AwfulUser.m in Sources */,
+				1C6D3EEB168D7B1E00B91A65 /* AwfulUser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4054,9 +4067,10 @@
 			children = (
 				1C5B99B9166FFA4F004C5D0E /* Model-1.8.1.xcdatamodel */,
 				1C5B99BA166FFA4F004C5D0E /* Model-1.8.xcdatamodel */,
-				1C5B99BB166FFA4F004C5D0E /* Model.xcdatamodel */,
+				1C5B99BB166FFA4F004C5D0E /* Model-1.9.1.xcdatamodel */,
+				1C6D3EE4168D798200B91A65 /* Model-1.10.xcdatamodel */,
 			);
-			currentVersion = 1C5B99BB166FFA4F004C5D0E /* Model.xcdatamodel */;
+			currentVersion = 1C6D3EE4168D798200B91A65 /* Model-1.10.xcdatamodel */;
 			path = Model.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

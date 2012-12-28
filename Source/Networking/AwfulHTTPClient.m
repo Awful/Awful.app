@@ -180,7 +180,7 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
                                                                success:^(id _, id data)
     {
         dispatch_async(self.parseQueue, ^{
-            UserParsedInfo *parsed = [[UserParsedInfo alloc] initWithHTMLData:
+            ProfileParsedInfo *parsed = [[ProfileParsedInfo alloc] initWithHTMLData:
                                       ConvertFromWindows1252ToUTF8(data)];
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (callback) callback(nil, @{ @"userID": parsed.userID, @"username": parsed.username });

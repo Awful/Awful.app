@@ -4,13 +4,6 @@
 #import "_AwfulPost.h"
 
 const struct AwfulPostAttributes AwfulPostAttributes = {
-	.authorAvatarURL = @"authorAvatarURL",
-	.authorCustomTitleHTML = @"authorCustomTitleHTML",
-	.authorIsAModerator = @"authorIsAModerator",
-	.authorIsAnAdministrator = @"authorIsAnAdministrator",
-	.authorIsOriginalPoster = @"authorIsOriginalPoster",
-	.authorName = @"authorName",
-	.authorRegDate = @"authorRegDate",
 	.beenSeen = @"beenSeen",
 	.editable = @"editable",
 	.innerHTML = @"innerHTML",
@@ -21,6 +14,7 @@ const struct AwfulPostAttributes AwfulPostAttributes = {
 };
 
 const struct AwfulPostRelationships AwfulPostRelationships = {
+	.author = @"author",
 	.thread = @"thread",
 };
 
@@ -53,21 +47,6 @@ const struct AwfulPostFetchedProperties AwfulPostFetchedProperties = {
 + (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 	
-	if ([key isEqualToString:@"authorIsAModeratorValue"]) {
-		NSSet *affectingKey = [NSSet setWithObject:@"authorIsAModerator"];
-		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
-	}
-	if ([key isEqualToString:@"authorIsAnAdministratorValue"]) {
-		NSSet *affectingKey = [NSSet setWithObject:@"authorIsAnAdministrator"];
-		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
-	}
-	if ([key isEqualToString:@"authorIsOriginalPosterValue"]) {
-		NSSet *affectingKey = [NSSet setWithObject:@"authorIsOriginalPoster"];
-		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
-	}
 	if ([key isEqualToString:@"beenSeenValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"beenSeen"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
@@ -91,112 +70,6 @@ const struct AwfulPostFetchedProperties AwfulPostFetchedProperties = {
 
 	return keyPaths;
 }
-
-
-
-
-@dynamic authorAvatarURL;
-
-
-
-
-
-
-@dynamic authorCustomTitleHTML;
-
-
-
-
-
-
-@dynamic authorIsAModerator;
-
-
-
-- (BOOL)authorIsAModeratorValue {
-	NSNumber *result = [self authorIsAModerator];
-	return [result boolValue];
-}
-
-- (void)setAuthorIsAModeratorValue:(BOOL)value_ {
-	[self setAuthorIsAModerator:[NSNumber numberWithBool:value_]];
-}
-
-- (BOOL)primitiveAuthorIsAModeratorValue {
-	NSNumber *result = [self primitiveAuthorIsAModerator];
-	return [result boolValue];
-}
-
-- (void)setPrimitiveAuthorIsAModeratorValue:(BOOL)value_ {
-	[self setPrimitiveAuthorIsAModerator:[NSNumber numberWithBool:value_]];
-}
-
-
-
-
-
-@dynamic authorIsAnAdministrator;
-
-
-
-- (BOOL)authorIsAnAdministratorValue {
-	NSNumber *result = [self authorIsAnAdministrator];
-	return [result boolValue];
-}
-
-- (void)setAuthorIsAnAdministratorValue:(BOOL)value_ {
-	[self setAuthorIsAnAdministrator:[NSNumber numberWithBool:value_]];
-}
-
-- (BOOL)primitiveAuthorIsAnAdministratorValue {
-	NSNumber *result = [self primitiveAuthorIsAnAdministrator];
-	return [result boolValue];
-}
-
-- (void)setPrimitiveAuthorIsAnAdministratorValue:(BOOL)value_ {
-	[self setPrimitiveAuthorIsAnAdministrator:[NSNumber numberWithBool:value_]];
-}
-
-
-
-
-
-@dynamic authorIsOriginalPoster;
-
-
-
-- (BOOL)authorIsOriginalPosterValue {
-	NSNumber *result = [self authorIsOriginalPoster];
-	return [result boolValue];
-}
-
-- (void)setAuthorIsOriginalPosterValue:(BOOL)value_ {
-	[self setAuthorIsOriginalPoster:[NSNumber numberWithBool:value_]];
-}
-
-- (BOOL)primitiveAuthorIsOriginalPosterValue {
-	NSNumber *result = [self primitiveAuthorIsOriginalPoster];
-	return [result boolValue];
-}
-
-- (void)setPrimitiveAuthorIsOriginalPosterValue:(BOOL)value_ {
-	[self setPrimitiveAuthorIsOriginalPoster:[NSNumber numberWithBool:value_]];
-}
-
-
-
-
-
-@dynamic authorName;
-
-
-
-
-
-
-@dynamic authorRegDate;
-
-
 
 
 
@@ -325,6 +198,10 @@ const struct AwfulPostFetchedProperties AwfulPostFetchedProperties = {
 
 
 
+
+@dynamic author;
+
+	
 
 @dynamic thread;
 

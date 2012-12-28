@@ -317,7 +317,7 @@ typedef enum {
                                              thread.lastPostAuthorName];
     } else {
         cell.originalPosterTextLabel.text = [NSString stringWithFormat:@"Posted by %@",
-                                             thread.authorName];
+                                             thread.author.username];
     }
     AwfulTheme *theme = [AwfulTheme currentTheme];
     cell.originalPosterTextLabel.textColor = theme.threadCellOriginalPosterTextColor;

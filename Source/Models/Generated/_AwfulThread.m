@@ -4,7 +4,6 @@
 #import "_AwfulThread.h"
 
 const struct AwfulThreadAttributes AwfulThreadAttributes = {
-	.authorName = @"authorName",
 	.hideFromList = @"hideFromList",
 	.isBookmarked = @"isBookmarked",
 	.isClosed = @"isClosed",
@@ -27,6 +26,7 @@ const struct AwfulThreadAttributes AwfulThreadAttributes = {
 };
 
 const struct AwfulThreadRelationships AwfulThreadRelationships = {
+	.author = @"author",
 	.forum = @"forum",
 	.posts = @"posts",
 };
@@ -123,13 +123,6 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 
 	return keyPaths;
 }
-
-
-
-
-@dynamic authorName;
-
-
 
 
 
@@ -494,6 +487,10 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 
 
 
+
+@dynamic author;
+
+	
 
 @dynamic forum;
 

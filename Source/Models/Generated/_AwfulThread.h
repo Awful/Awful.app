@@ -5,7 +5,6 @@
 
 
 extern const struct AwfulThreadAttributes {
-	__unsafe_unretained NSString *authorName;
 	__unsafe_unretained NSString *hideFromList;
 	__unsafe_unretained NSString *isBookmarked;
 	__unsafe_unretained NSString *isClosed;
@@ -28,6 +27,7 @@ extern const struct AwfulThreadAttributes {
 } AwfulThreadAttributes;
 
 extern const struct AwfulThreadRelationships {
+	__unsafe_unretained NSString *author;
 	__unsafe_unretained NSString *forum;
 	__unsafe_unretained NSString *posts;
 } AwfulThreadRelationships;
@@ -35,9 +35,9 @@ extern const struct AwfulThreadRelationships {
 extern const struct AwfulThreadFetchedProperties {
 } AwfulThreadFetchedProperties;
 
+@class AwfulUser;
 @class AwfulForum;
 @class AwfulPost;
-
 
 
 
@@ -67,16 +67,6 @@ extern const struct AwfulThreadFetchedProperties {
 + (NSString*)entityName;
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
 - (AwfulThreadID*)objectID;
-
-
-
-
-
-@property (nonatomic, strong) NSString* authorName;
-
-
-
-//- (BOOL)validateAuthorName:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -320,6 +310,13 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
+@property (nonatomic, strong) AwfulUser *author;
+
+//- (BOOL)validateAuthor:(id*)value_ error:(NSError**)error_;
+
+
+
+
 @property (nonatomic, strong) AwfulForum *forum;
 
 //- (BOOL)validateForum:(id*)value_ error:(NSError**)error_;
@@ -347,12 +344,6 @@ extern const struct AwfulThreadFetchedProperties {
 @end
 
 @interface _AwfulThread (CoreDataGeneratedPrimitiveAccessors)
-
-
-- (NSString*)primitiveAuthorName;
-- (void)setPrimitiveAuthorName:(NSString*)value;
-
-
 
 
 - (NSNumber*)primitiveHideFromList;
@@ -503,6 +494,11 @@ extern const struct AwfulThreadFetchedProperties {
 - (void)setPrimitiveTotalUnreadPostsValue:(int32_t)value_;
 
 
+
+
+
+- (AwfulUser*)primitiveAuthor;
+- (void)setPrimitiveAuthor:(AwfulUser*)value;
 
 
 

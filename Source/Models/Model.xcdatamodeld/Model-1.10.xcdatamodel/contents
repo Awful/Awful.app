@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1811" systemVersion="12C60" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="AwfulCategory" representedClassName="AwfulCategory" syncable="YES">
+        <attribute name="categoryID" attributeType="String" syncable="YES"/>
+        <attribute name="index" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <relationship name="forums" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="category" inverseEntity="AwfulForum" syncable="YES"/>
+    </entity>
+    <entity name="AwfulForum" representedClassName="AwfulForum" syncable="YES">
+        <attribute name="expanded" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="favoriteIndex" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="forumID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="index" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="isFavorite" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="lastRefresh" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="category" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulCategory" inverseName="forums" inverseEntity="AwfulCategory" syncable="YES"/>
+        <relationship name="children" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="AwfulForum" inverseName="parentForum" inverseEntity="AwfulForum" syncable="YES"/>
+        <relationship name="parentForum" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="children" inverseEntity="AwfulForum" syncable="YES"/>
+        <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="forum" inverseEntity="AwfulThread" syncable="YES"/>
+    </entity>
+    <entity name="AwfulPost" representedClassName="AwfulPost" syncable="YES">
+        <attribute name="beenSeen" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="editable" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="innerHTML" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="postDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="postID" attributeType="String" syncable="YES"/>
+        <attribute name="threadIndex" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="threadPage" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <relationship name="author" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulUser" inverseName="posts" inverseEntity="AwfulUser" syncable="YES"/>
+        <relationship name="thread" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="posts" inverseEntity="AwfulThread" syncable="YES"/>
+    </entity>
+    <entity name="AwfulThread" representedClassName="AwfulThread" syncable="YES">
+        <attribute name="hideFromList" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
+        <attribute name="isBookmarked" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="isClosed" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="isLocked" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="isSticky" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="lastPostAuthorName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lastPostDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="numberOfPages" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="seen" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="starCategory" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="stickyIndex" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="threadIconImageURL" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="threadIconImageURL2" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="threadID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="threadRating" optional="YES" attributeType="Decimal" defaultValueString="0" syncable="YES"/>
+        <attribute name="threadVotes" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="totalReplies" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="totalUnreadPosts" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <relationship name="author" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulUser" inverseName="threads" inverseEntity="AwfulUser" syncable="YES"/>
+        <relationship name="forum" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="threads" inverseEntity="AwfulForum" syncable="YES"/>
+        <relationship name="posts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulPost" inverseName="thread" inverseEntity="AwfulPost" syncable="YES"/>
+    </entity>
+    <entity name="AwfulUser" representedClassName="AwfulUser" syncable="YES">
+        <attribute name="administrator" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="avatarURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="customTitle" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="moderator" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="regdate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="username" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="posts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulPost" inverseName="author" inverseEntity="AwfulPost" syncable="YES"/>
+        <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="author" inverseEntity="AwfulThread" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="AwfulCategory" positionX="160" positionY="192" width="128" height="105"/>
+        <element name="AwfulForum" positionX="205" positionY="285" width="128" height="210"/>
+        <element name="AwfulPost" positionX="160" positionY="192" width="128" height="180"/>
+        <element name="AwfulThread" positionX="25" positionY="210" width="128" height="375"/>
+        <element name="AwfulUser" positionX="160" positionY="192" width="128" height="165"/>
+    </elements>
+</model>

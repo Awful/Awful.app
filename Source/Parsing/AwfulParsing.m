@@ -66,7 +66,7 @@
 
 @end
 
-@interface UserParsedInfo ()
+@interface ProfileParsedInfo ()
 
 @property (copy, nonatomic) NSString *userID;
 
@@ -74,7 +74,7 @@
 
 @end
 
-@implementation UserParsedInfo
+@implementation ProfileParsedInfo
 
 - (void)parseHTMLData
 {
@@ -509,11 +509,44 @@ static NSString * DeEntitify(NSString *withEntities)
 + (NSArray *)keysToApplyToObject
 {
     return @[
-        @"threadID", @"title", @"threadIconImageURL", @"threadIconImageURL2", @"authorName",
+        @"threadID", @"title", @"threadIconImageURL", @"threadIconImageURL2", @"isSticky",
         @"seen", @"isClosed", @"starCategory", @"totalUnreadPosts", @"totalReplies",
-        @"threadVotes", @"threadRating", @"lastPostAuthorName", @"lastPostDate", @"isBookmarked",
-        @"isSticky"
+        @"threadVotes", @"threadRating", @"lastPostAuthorName", @"lastPostDate", @"isBookmarked"
     ];
+}
+
+@end
+
+
+@interface UserParsedInfo ()
+
+@property (copy, nonatomic) NSString *username;
+
+@property (nonatomic) NSDate *regdate;
+
+@property (nonatomic) BOOL moderator;
+
+@property (nonatomic) BOOL administrator;
+
+@property (nonatomic) BOOL originalPoster;
+
+@property (copy, nonatomic) NSString *customTitle;
+
+@property (nonatomic) NSURL *avatarURL;
+
+@end
+
+
+@implementation UserParsedInfo
+
+- (void)parseHTMLData
+{
+    
+}
+
++ (NSArray *)keysToApplyToObject
+{
+    return @[ @"username", @"regdate", @"moderator", @"administrator", @"customTitle" ];
 }
 
 @end
@@ -527,19 +560,7 @@ static NSString * DeEntitify(NSString *withEntities)
 
 @property (nonatomic) NSDate *postDate;
 
-@property (copy, nonatomic) NSString *authorName;
-
-@property (nonatomic) NSDate *authorRegDate;
-
-@property (nonatomic) BOOL authorIsAModerator;
-
-@property (nonatomic) BOOL authorIsAnAdministrator;
-
-@property (nonatomic) BOOL authorIsOriginalPoster;
-
-@property (copy, nonatomic) NSString *authorCustomTitleHTML;
-
-@property (nonatomic) NSURL *authorAvatarURL;
+@property (nonatomic) UserParsedInfo *author;
 
 @property (getter=isEditable, nonatomic) BOOL editable;
 
@@ -582,14 +603,15 @@ static NSString * DeEntitify(NSString *withEntities)
         }
     }
     
+    self.author = [UserParsedInfo new];
     TFHppleElement *author = [doc searchForSingle:@"//dt[" HAS_CLASS(author) "]"];
-    self.authorName = [author content];
+    self.author.username = [author content];
     NSCharacterSet *space = [NSCharacterSet whitespaceCharacterSet];
     NSArray *authorClasses = [[author objectForKey:@"class"]
                               componentsSeparatedByCharactersInSet:space];
-    self.authorIsAModerator = [authorClasses containsObject:@"role-mod"];
-    self.authorIsAnAdministrator = [authorClasses containsObject:@"role-admin"];
-    self.authorIsOriginalPoster = [authorClasses containsObject:@"op"];
+    self.author.moderator = [authorClasses containsObject:@"role-mod"];
+    self.author.administrator = [authorClasses containsObject:@"role-admin"];
+    self.author.originalPoster = [authorClasses containsObject:@"op"];
     NSString *regdate = [[doc searchForSingle:@"//dd[" HAS_CLASS(registered) "]"] content];
     if (regdate) {
         static NSDateFormatter *df = nil;
@@ -598,11 +620,11 @@ static NSString * DeEntitify(NSString *withEntities)
             [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
             [df setDateFormat:@"MMM d, yyyy"];
         }
-        self.authorRegDate = [df dateFromString:regdate];
+        self.author.regdate = [df dateFromString:regdate];
     }
-    self.authorCustomTitleHTML = [[doc rawSearch:@"//dd[" HAS_CLASS(title) "]"] lastObject];
+    self.author.customTitle = [[doc rawSearch:@"//dd[" HAS_CLASS(title) "]"] lastObject];
     TFHppleElement *avatar = [doc searchForSingle:@"//dd[" HAS_CLASS(title) "]//img"];
-    self.authorAvatarURL = [NSURL URLWithString:[avatar objectForKey:@"src"]];
+    self.author.avatarURL = [NSURL URLWithString:[avatar objectForKey:@"src"]];
     
     self.editable = !![doc searchForSingle:
                        @"//ul[" HAS_CLASS(postbuttons) "]//a[contains(@href, 'editpost')]"];
@@ -634,11 +656,7 @@ static NSString * DeEntitify(NSString *withEntities)
 
 + (NSArray *)keysToApplyToObject
 {
-    return @[
-        @"postID", @"authorName", @"authorIsAModerator", @"authorIsAnAdministrator",
-        @"authorIsOriginalPoster", @"authorCustomTitleHTML", @"editable", @"beenSeen", @"innerHTML",
-        @"authorRegDate", @"postDate"
-    ];
+    return @[ @"postID", @"editable", @"beenSeen", @"innerHTML", @"postDate" ];
 }
 
 @end
