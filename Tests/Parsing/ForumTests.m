@@ -68,12 +68,12 @@
     STAssertEqualObjects([[threadInfos[12] threadIconImageURL] absoluteString],
                          @"http://fi.somethingawful.com/forums/posticons/lf-marx.png#522", nil);
     
-    STAssertEqualObjects([threadInfos[16] authorName], @"ChlamydiaJones", nil);
+    STAssertEqualObjects([[threadInfos[16] author] username], @"ChlamydiaJones", nil);
     
     STAssertTrue([threadInfos[17] seen] && [threadInfos[4] seen], nil);
     STAssertFalse([threadInfos[19] seen] || [threadInfos[24] seen], nil);
     
-    STAssertFalse([threadInfos[6] isLocked], nil);
+    STAssertFalse([threadInfos[6] isClosed], nil);
     
     STAssertEquals([threadInfos[0] starCategory], 3, nil);
     STAssertEquals([threadInfos[30] starCategory], 1, nil);

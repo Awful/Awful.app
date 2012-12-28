@@ -52,9 +52,9 @@
     PostParsedInfo *tenth = info.posts[10];
     STAssertEqualObjects(tenth.postID, @"407751664", nil);
     STAssertEqualObjects(tenth.threadIndex, @"171", nil);
-    STAssertEqualObjects(tenth.authorName, @"JayMax", nil);
+    STAssertEqualObjects(tenth.author.username, @"JayMax", nil);
     STAssertTrue([tenth.innerHTML rangeOfString:@"Québec"].location != NSNotFound, nil);
-    STAssertTrue([tenth.authorCustomTitleHTML rangeOfString:@"gentleman"].location != NSNotFound,
+    STAssertTrue([tenth.author.customTitle rangeOfString:@"gentleman"].location != NSNotFound,
                  nil);
     STAssertTrue(tenth.beenSeen, nil);
     STAssertFalse(tenth.editable, nil);
@@ -62,19 +62,19 @@
     PostParsedInfo *twelfth = info.posts[12];
     STAssertEqualObjects(twelfth.postID, @"407751956", nil);
     STAssertEqualObjects(twelfth.threadIndex, @"173", nil);
-    STAssertEqualObjects(twelfth.authorName, @"Dreylad", nil);
-    STAssertTrue(twelfth.authorIsOriginalPoster, nil);
-    STAssertFalse(twelfth.authorIsAModerator, nil);
+    STAssertEqualObjects(twelfth.author.username, @"Dreylad", nil);
+    STAssertTrue(twelfth.author.originalPoster, nil);
+    STAssertFalse(twelfth.author.moderator, nil);
     STAssertFalse(twelfth.beenSeen, nil);
     STAssertFalse(twelfth.editable, nil);
     
     PostParsedInfo *fourteenth = info.posts[14];
     STAssertEqualObjects(fourteenth.postID, @"407753032", nil);
     STAssertEqualObjects(fourteenth.threadIndex, @"175", nil);
-    STAssertEqualObjects(fourteenth.authorName, @"angerbrat", nil);
-    STAssertTrue(fourteenth.authorIsAnAdministrator, nil);
-    STAssertFalse(fourteenth.authorIsAModerator, nil);
-    STAssertEqualObjects([fourteenth.authorAvatarURL path], @"/images/angerbrat.jpg" , nil);
+    STAssertEqualObjects(fourteenth.author.username, @"angerbrat", nil);
+    STAssertTrue(fourteenth.author.administrator, nil);
+    STAssertFalse(fourteenth.author.moderator, nil);
+    STAssertEqualObjects([fourteenth.author.avatarURL path], @"/images/angerbrat.jpg" , nil);
     STAssertFalse(fourteenth.beenSeen, nil);
     STAssertFalse(fourteenth.editable, nil);
     
@@ -86,7 +86,7 @@
     STAssertEqualObjects(last.postID, @"407769816", nil);
     STAssertEqualObjects(last.threadIndex, @"200", nil);
     [formatter setDateFormat:@"MMM dd, yyyy"];
-    STAssertEqualObjects([formatter stringFromDate:last.authorRegDate], @"Aug 25, 2009", nil);
+    STAssertEqualObjects([formatter stringFromDate:last.author.regdate], @"Aug 25, 2009", nil);
     STAssertFalse(last.beenSeen, nil);
     STAssertFalse(last.editable, nil);
 }

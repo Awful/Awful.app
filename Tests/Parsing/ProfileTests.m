@@ -20,11 +20,11 @@
     return @"member.html";
 }
 
-- (void)testUserInfo
+- (void)testEditProfileInfo
 {
-    UserParsedInfo *userInfo = [[UserParsedInfo alloc] initWithHTMLData:self.fixture];
-    STAssertEqualObjects(userInfo.userID, @"106125", nil);
-    STAssertEqualObjects(userInfo.username, @"pokeyman", nil);
+    ProfileParsedInfo *profileInfo = [[ProfileParsedInfo alloc] initWithHTMLData:self.fixture];
+    STAssertEqualObjects(profileInfo.userID, @"106125", nil);
+    STAssertEqualObjects(profileInfo.username, @"pokeyman", nil);
 }
 
 @end
