@@ -7,7 +7,21 @@
 //
 
 #import "AwfulUser.h"
+#import "AwfulDataStack.h"
+#import "AwfulParsing.h"
 
 @implementation AwfulUser
+
++ (instancetype)userCreatedOrUpdatedFromProfileInfo:(ProfileParsedInfo *)profileInfo
+{
+    AwfulUser *user = [self firstMatchingPredicate:@"userID = %@", profileInfo.userID];
+    if (!user) user = [AwfulUser insertNew];
+    [profileInfo applyToObject:user];
+    user.avatarURL = [profileInfo.avatar absoluteString];
+    user.homepageURL = [profileInfo.homepage absoluteString];
+    user.profilePictureURL = [profileInfo.profilePicture absoluteString];
+    [[AwfulDataStack sharedDataStack] save];
+    return user;
+}
 
 @end

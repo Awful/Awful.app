@@ -7,7 +7,10 @@
 //
 
 #import "_AwfulUser.h"
+@class ProfileParsedInfo;
 
 @interface AwfulUser : _AwfulUser
+
++ (instancetype)userCreatedOrUpdatedFromProfileInfo:(ProfileParsedInfo *)profileInfo;
 
 @end

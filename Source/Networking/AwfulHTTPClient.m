@@ -565,4 +565,35 @@ static NSString * Entitify(NSString *noEntities)
     return op;
 }
 
+- (NSOperation *)profileUserWithID:(NSString *)userID
+                           andThen:(void (^)(NSError *error, AwfulUser *user))callback
+{
+    NSDictionary *parameters = @{ @"action": @"getinfo", @"userid": userID };
+    NSURLRequest *request = [self requestWithMethod:@"GET"
+                                               path:@"member.php"
+                                         parameters:parameters];
+    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
+                                                               success:^(id op, id data)
+    {
+        dispatch_async(self.parseQueue, ^{
+            ProfileParsedInfo *info = [[ProfileParsedInfo alloc] initWithHTMLData:
+                                       ConvertFromWindows1252ToUTF8(data)];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                AwfulUser *user = [AwfulUser userCreatedOrUpdatedFromProfileInfo:info];
+                if (user.profilePictureURL && [user.profilePictureURL hasPrefix:@"/"]) {
+                    NSString *base = [self.baseURL absoluteString];
+                    base = [base substringToIndex:[base length] - 1];
+                    user.profilePictureURL = [base stringByAppendingString:user.profilePictureURL];
+                    [[AwfulDataStack sharedDataStack] save];
+                }
+                if (callback) callback(nil, user);
+            });
+        });
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error, nil);
+    }];
+    [self enqueueHTTPRequestOperation:op];
+    return op;
+}
+
 @end

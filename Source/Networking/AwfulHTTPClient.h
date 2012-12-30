@@ -7,7 +7,7 @@
 //
 
 #import "AFNetworking.h"
-@class PageParsedInfo;
+@class AwfulUser;
 
 @interface AwfulHTTPClient : AFHTTPClient
 
@@ -205,5 +205,16 @@ enum {
 // Returns the enqueued network operation.
 - (NSOperation *)locatePostWithID:(NSString *)postID
     andThen:(void (^)(NSError *error, NSString *threadID, NSInteger page))callback;
+
+// Find a user's profile.
+//
+// userID   - The ID of the user to update with their profile info.
+// callback - A block to call after updating the user info, which takes as parameters:
+//              error - An error on failure, or nil on success.
+//              user  - The updated user on success, or nil on failure.
+//
+// Returns the enqueued network operation.
+- (NSOperation *)profileUserWithID:(NSString *)userID
+                           andThen:(void (^)(NSError *error, AwfulUser *user))callback;
 
 @end
