@@ -1,0 +1,43 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1, minimum-scale=1, maximum-scale=1">
+<link rel="stylesheet" href="profile-view.css">
+
+<div id="profile"></div>
+
+<script id="template" type="text/html">
+<header>
+{{#avatarURL}}<img src="{{avatarURL}}" alt="">{{/avatarURL}}
+{{{customTitle}}}
+</header>
+
+<p>
+There have been <b>{{postCount}}</b> posts made by <i>{{username}}</i>, an average of {{postRate}}, since registering on <b>{{regdate}}</b>. <i>{{username}}</i> claims to be a {{gender}}.
+</p>
+
+<p>{{aboutMe}}</p>
+
+{{#anyContactInformation}}
+<table>
+  <caption>Contact Information</caption>
+  {{#contactInformation}}
+  <tr><th>{{service}}</th><td>{{address}}</td></tr>
+  {{/contactInformation}}
+</table>
+{{/anyContactInformation}}
+
+<table>
+  <caption>Additional Info</caption>
+  {{#regdate}}<tr><th>Member Since</th><td>{{regdate}}</td></tr>{{/regdate}}
+  {{#postCount}}<tr><th>Post Count</th><td>{{postCount}}</td></tr>{{/postCount}}
+  {{#postRate}}<tr><th>Post Rate</th><td>{{postRate}}</td></tr>{{/postRate}}
+  {{#lastPost}}<tr><th>Last Post</th><td>{{lastPost}}</td></tr>{{/lastPost}}
+  {{#additionalInfo}}
+  <tr><th>{{kind}}</th><td>{{info}}</td></tr>
+  {{/additionalInfo}}
+</table>
+
+{{#profilePictureURL}}<img src="{{profilePictureURL}}" alt="">{{/profilePictureURL}}
+</script>
+
+<script src="profile-view.js"></script>

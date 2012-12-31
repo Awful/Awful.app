@@ -1,0 +1,53 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+img {
+  max-width: 100%;
+}
+
+header {
+  margin-bottom: 1em;
+}
+
+header img {
+  float: left;
+}
+
+p {
+  clear: both;
+}
+
+table {
+  width: 100%;
+  margin-top: 1em;
+}
+
+table caption {
+  text-align: left;
+  font-size: 1.5em;
+}
+
+th {
+  width: 120px;
+  font-weight: normal;
+  text-align: right;
+  text-transform: lowercase;
+  font-size: 0.85em;
+  padding-right: 5px;
+}
+
+td {
+  font-weight: bold;
+  font-size: 0.85em;
+}
+
+body.dark {
+  color: white;
+  background-color: #131313;
+}

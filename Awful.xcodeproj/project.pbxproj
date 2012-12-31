@@ -13,6 +13,7 @@
 			buildPhases = (
 				1CE2D9A616688C810024AC1C /* Compile third-party licenses */,
 				1CE2D9A716688C950024AC1C /* Compile AwfulPostsView JavaScript */,
+				1C6ED633169103B70015CDD5 /* Compile AwfulProfileViewController JavaScript */,
 				1CE2D9A816688CC20024AC1C /* mogenerator */,
 				1CE2D9A916688CDE0024AC1C /* Update image tag list */,
 			);
@@ -96,7 +97,11 @@
 		1C6D3EF3168D89FC00B91A65 /* posts-view-219-amber.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C6D3EF2168D89FC00B91A65 /* posts-view-219-amber.css */; };
 		1C6D3EF4168D95B200B91A65 /* NSURL+QueryDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9D1166ABD0D0024AC1C /* NSURL+QueryDictionary.m */; };
 		1C6D3EF7168D97CB00B91A65 /* profile.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C6D3EF5168D97B900B91A65 /* profile.html */; };
+		1C6ED638169104150015CDD5 /* profile-view.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C6ED636169104150015CDD5 /* profile-view.html */; };
+		1C6ED63A169104340015CDD5 /* profile-view.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C6ED639169104340015CDD5 /* profile-view.js */; };
+		1C6ED63D1691055E0015CDD5 /* AwfulProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6ED63C1691055E0015CDD5 /* AwfulProfileViewController.m */; };
 		1C83DB54161FF48600E53CFA /* ImgurHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */; };
+		1C8BE4FA169115020022B331 /* profile-view.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C8BE4F9169115020022B331 /* profile-view.css */; };
 		1C96D057167FDEA60043B194 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		1C96D058167FDEA60043B194 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1C96D059167FDEA60043B194 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765070DF74369002DB57D /* CoreGraphics.framework */; };
@@ -922,8 +927,13 @@
 		1C6D3EEA168D7B1E00B91A65 /* AwfulUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulUser.m; sourceTree = "<group>"; };
 		1C6D3EF2168D89FC00B91A65 /* posts-view-219-amber.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-219-amber.css"; sourceTree = "<group>"; };
 		1C6D3EF5168D97B900B91A65 /* profile.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = profile.html; sourceTree = "<group>"; };
+		1C6ED636169104150015CDD5 /* profile-view.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "profile-view.html"; sourceTree = "<group>"; };
+		1C6ED639169104340015CDD5 /* profile-view.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "profile-view.js"; sourceTree = "<group>"; };
+		1C6ED63B1691055E0015CDD5 /* AwfulProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulProfileViewController.h; sourceTree = "<group>"; };
+		1C6ED63C1691055E0015CDD5 /* AwfulProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulProfileViewController.m; sourceTree = "<group>"; };
 		1C83DB52161FF48600E53CFA /* ImgurHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImgurHTTPClient.h; sourceTree = "<group>"; };
 		1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImgurHTTPClient.m; sourceTree = "<group>"; };
+		1C8BE4F9169115020022B331 /* profile-view.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "profile-view.css"; sourceTree = "<group>"; };
 		1C96D055167FDEA60043B194 /* Imgur API Test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Imgur API Test.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C96D05C167FDEA60043B194 /* Imgur API Test-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Imgur API Test-Info.plist"; sourceTree = "<group>"; };
 		1C96D05E167FDEA60043B194 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -1832,6 +1842,7 @@
 				1CDD51951542949600326C7B /* Settings and Theming */,
 				1CC780471612DA8D002AF958 /* Threads */,
 				1CE2D99D16688AC40024AC1C /* UIKit and Foundation */,
+				1C6ED634169103FE0015CDD5 /* Users */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -1882,6 +1893,18 @@
 				1C6D3EE7168D7B1400B91A65 /* _AwfulUser.m */,
 			);
 			path = Generated;
+			sourceTree = "<group>";
+		};
+		1C6ED634169103FE0015CDD5 /* Users */ = {
+			isa = PBXGroup;
+			children = (
+				1C6ED63B1691055E0015CDD5 /* AwfulProfileViewController.h */,
+				1C6ED63C1691055E0015CDD5 /* AwfulProfileViewController.m */,
+				1C8BE4F9169115020022B331 /* profile-view.css */,
+				1C6ED636169104150015CDD5 /* profile-view.html */,
+				1C6ED639169104340015CDD5 /* profile-view.js */,
+			);
+			path = Users;
 			sourceTree = "<group>";
 		};
 		1C83DB50161FF45200E53CFA /* Imgur API */ = {
@@ -3558,12 +3581,29 @@
 				8CEB405C16877E1600BFA9A8 /* winpos95-heading-left-seen.png in Resources */,
 				8CEB405E1687865300BFA9A8 /* hourglass.gif in Resources */,
 				1C6D3EF3168D89FC00B91A65 /* posts-view-219-amber.css in Resources */,
+				1C6ED63A169104340015CDD5 /* profile-view.js in Resources */,
+				1C6ED638169104150015CDD5 /* profile-view.html in Resources */,
+				1C8BE4FA169115020022B331 /* profile-view.css in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		1C6ED633169103B70015CDD5 /* Compile AwfulProfileViewController JavaScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Compile AwfulProfileViewController JavaScript";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd Source/Users\nrake\n";
+		};
 		1CBDB5BA16259C6C0004BDF4 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -3751,6 +3791,7 @@
 				1C96D0B51682BBA80043B194 /* AwfulExternalBrowser.m in Sources */,
 				1C6D3EE8168D7B1400B91A65 /* _AwfulUser.m in Sources */,
 				1C6D3EEB168D7B1E00B91A65 /* AwfulUser.m in Sources */,
+				1C6ED63D1691055E0015CDD5 /* AwfulProfileViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
