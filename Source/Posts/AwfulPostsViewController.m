@@ -17,6 +17,7 @@
 #import "AwfulModels.h"
 #import "AwfulPageBar.h"
 #import "AwfulPostsView.h"
+#import "AwfulProfileViewController.h"
 #import "AwfulPullToRefreshControl.h"
 #import "AwfulReplyViewController.h"
 #import "AwfulSettings.h"
@@ -92,6 +93,8 @@
 @property (nonatomic) BOOL scrollingUp;
 
 @property (copy, nonatomic) NSString *jumpToPostAfterLoad;
+
+@property (nonatomic) UIPopoverController *profilePopover;
 
 @end
 
@@ -955,7 +958,8 @@ static char KVOContext;
     return @[
         @"showActionsForPostAtIndex:fromRectDictionary:",
         @"previewImageAtURLString:",
-        @"showMenuForLinkWithURLString:fromRectDictionary:"
+        @"showMenuForLinkWithURLString:fromRectDictionary:",
+        @"showProfileForPostAtIndex:fromRectDictionary:"
     ];
 }
 
@@ -1039,6 +1043,38 @@ static char KVOContext;
     _postDateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
     _postDateFormatter.dateFormat = @"MMM d, yyyy HH:mm";
     return _postDateFormatter;
+}
+
+- (void)showProfileForPostAtIndex:(NSNumber *)index fromRectDictionary:(NSDictionary *)rectDict
+{
+    NSInteger unboxed = [index integerValue] + self.hiddenPosts;
+    AwfulPost *post = self.fetchedResultsController.fetchedObjects[unboxed];
+    AwfulProfileViewController *profile = [AwfulProfileViewController new];
+    profile.userID = post.author.userID;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:profile];
+        self.profilePopover = [[UIPopoverController alloc] initWithContentViewController:nav];
+        self.profilePopover.popoverContentSize = CGSizeMake(320, 460);
+        CGRect rect = CGRectMake([rectDict[@"left"] floatValue], [rectDict[@"top"] floatValue],
+                                 [rectDict[@"width"] floatValue], [rectDict[@"height"] floatValue]);
+        [self.profilePopover presentPopoverFromRect:rect
+                                             inView:self.postsView
+                           permittedArrowDirections:UIPopoverArrowDirectionAny
+                                           animated:YES];
+    } else {
+        UINavigationController *nav = [profile enclosingNavigationController];
+        UIBarButtonItem *doneButton = [[UIBarButtonItem alloc]
+                                       initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                       target:self
+                                       action:@selector(doneProfile)];
+        profile.navigationItem.rightBarButtonItem = doneButton;
+        [self presentViewController:nav animated:YES completion:nil];
+    }
+}
+
+- (void)doneProfile
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

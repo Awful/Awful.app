@@ -47,6 +47,11 @@ body {
     -webkit-user-select: none;
 }
 
+/* Don't show selection when long-tapping header. */
+#posts > article > header {
+  -webkit-user-select: none;
+}
+
 /* Don't show rectangle around tapped links. */
 #posts > article a {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);

@@ -905,6 +905,8 @@ $(function(){
   
   $('#posts').on('tap', 'article > header > button', showPostActions)
   
+  $('#posts').on('longTap', 'article > header', showProfile)
+  
   $('#posts').on('longTap', 'article > section img', previewImage)
   
   $('#posts').on('click', 'a[data-awful="image"]', showLinkedImage)
@@ -923,6 +925,17 @@ function showPostActions(e) {
   rect.left -= window.pageXOffset
   rect.top -= window.pageYOffset
   Awful.invoke("showActionsForPostAtIndex:fromRectDictionary:", post.index(), rect)
+}
+
+function showProfile(e) {
+  var target = $(e.target)
+  if (target.is('button')) return true
+  var header = target.is('header') ? target : target.closest('header')
+  var rect = header.offset()
+  rect.left -= window.pageXOffset
+  rect.top -= window.pageYOffset
+  var post = header.closest('article')
+  Awful.invoke("showProfileForPostAtIndex:fromRectDictionary:", post.index(), rect)
 }
 
 function previewImage(e) {
