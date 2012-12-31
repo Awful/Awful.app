@@ -1,6 +1,6 @@
 require 'open3'
 
-FILES = "- jquery.mustache.js spin.min.js awful.js"
+FILES = "- ../../Vendor/mustache.js/jquery.mustache.js spin.min.js awful.js"
 
 task :default => [ :assemble ]
 
@@ -8,7 +8,7 @@ desc "assemble posts-view.js"
 task :assemble do
   Open3.popen3("cat #{FILES} > posts-view.js") do |i, _, _|
     # Shorten long tap interval.
-    i.print File.read("zepto.min.js").gsub("750", "500")
+    i.print File.read("../../Vendor/zepto/zepto.min.js").gsub("750", "500")
     i.puts <<-YO.gsub(/^ */, '')
       
       
