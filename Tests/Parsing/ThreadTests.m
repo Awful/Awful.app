@@ -24,7 +24,7 @@
 {
     PageParsedInfo *info = [[PageParsedInfo alloc] initWithHTMLData:self.fixture];
     STAssertEquals(info.pageNumber, 5, nil);
-    STAssertEquals(info.pagesInThread, 24, nil);
+    STAssertEquals(info.pagesInThread, 110, nil);
     STAssertEqualObjects(info.forumID, @"46", nil);
     STAssertEqualObjects(info.forumName, @"Debate & Discussion", nil);
     STAssertEqualObjects(info.threadID, @"3507451", nil);
@@ -71,7 +71,7 @@
     PostParsedInfo *fourteenth = info.posts[14];
     STAssertEqualObjects(fourteenth.postID, @"407753032", nil);
     STAssertEqualObjects(fourteenth.threadIndex, @"175", nil);
-    STAssertEqualObjects(fourteenth.author.username, @"angerbrat", nil);
+    STAssertEqualObjects(fourteenth.author.username, @"angerbot", nil);
     STAssertTrue(fourteenth.author.administrator, nil);
     STAssertFalse(fourteenth.author.moderator, nil);
     STAssertEqualObjects([fourteenth.author.avatarURL path], @"/images/angerbrat.jpg" , nil);
