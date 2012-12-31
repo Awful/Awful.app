@@ -348,8 +348,6 @@ static NSString * Entitify(NSString *noEntities)
             NSNumber *number = [NSNumber numberWithUnsignedInt:CFSwapInt32LittleToHost(codepoint)];
             [replacement appendFormat:@"&#%@;", [formatter stringFromNumber:number]];
         }
-        
-        // TODO update offset
         NSRange replacementRange = [result range];
         replacementRange.location += offset;
         [withEntities replaceCharactersInRange:replacementRange withString:replacement];
