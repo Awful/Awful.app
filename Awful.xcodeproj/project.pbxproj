@@ -76,6 +76,7 @@
 		1C3CC79A162876AE00088AA8 /* modstar.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3CC798162876AE00088AA8 /* modstar.png */; };
 		1C40E5B21640FC2D004AAFA6 /* posts-view.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C40E5B11640FC2C004AAFA6 /* posts-view.css */; };
 		1C40E5B41640FDB9004AAFA6 /* posts-view-219.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C40E5B31640FDB8004AAFA6 /* posts-view-219.css */; };
+		1C410D3B169257F100E4A14E /* NSURL+QueryDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9D1166ABD0D0024AC1C /* NSURL+QueryDictionary.m */; };
 		1C4D7BDB167A5C7C00CF3659 /* PSMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C4D7BD9167A5C7C00CF3659 /* PSMenuItem.m */; };
 		1C5B996C166E78F9004C5D0E /* AwfulDisclosureIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B996B166E78F9004C5D0E /* AwfulDisclosureIndicatorView.m */; };
 		1C5B9970166F565C004C5D0E /* AwfulTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B996F166F565C004C5D0E /* AwfulTabBarController.m */; };
@@ -3428,6 +3429,7 @@
 				1CBDB5F91625E7320004BDF4 /* TFHpple.m in Sources */,
 				1CBDB5FA1625E7320004BDF4 /* TFHppleElement.m in Sources */,
 				1CBDB5FB1625E7320004BDF4 /* XPathQuery.m in Sources */,
+				1C410D3B169257F100E4A14E /* NSURL+QueryDictionary.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

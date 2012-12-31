@@ -696,27 +696,35 @@ static NSString * DeEntitify(NSString *withEntities)
     NSURL *forumURL = [NSURL URLWithString:[forumLink objectForKey:@"href"]];
     self.forumID = [forumURL queryDictionary][@"forumid"];
     
-    NSString *pages = [[doc searchForSingle:@"//div[" HAS_CLASS(pages) "]/text()"] content];
-    if (pages) {
-        NSString *pattern = @"[(](\\d+)[)]";
-        NSError *error;
-        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
-                                                                               options:0
-                                                                                 error:&error];
-        if (!regex) NSLog(@"error compiling number of pages regex: %@", error);
-        NSTextCheckingResult *match = [regex firstMatchInString:pages
-                                                        options:0
-                                                          range:NSMakeRange(0, [pages length])];
-        if ([match rangeAtIndex:1].location != NSNotFound) {
-            NSInteger pageCount = [[pages substringWithRange:[match rangeAtIndex:1]] integerValue];
-            if (pageCount > 0) self.pagesInThread = pageCount;
+    if ([doc searchForSingle:@"//div[" HAS_CLASS(pages) "]/select"]) {
+        TFHppleElement *lastPage = [doc searchForSingle:@"//div[" HAS_CLASS(pages) "]/select/option[position() = last()]"];
+        NSInteger numberOfPages = [[lastPage content] integerValue];
+        if (numberOfPages > 0) self.pagesInThread = numberOfPages;
+        TFHppleElement *currentPage = [doc searchForSingle:
+                                       @"//div[" HAS_CLASS(pages) "]/select/option[@selected]"];
+        NSInteger pageNumber = [[currentPage content] integerValue];
+        if (pageNumber > 0) self.pageNumber = pageNumber;
+    } else {
+        NSString *pages = [[doc searchForSingle:@"//div[" HAS_CLASS(pages) "]/text()"] content];
+        if (pages) {
+            NSString *pattern = @"[(](\\d+)[)]";
+            NSError *error;
+            NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
+                                                                                   options:0
+                                                                                     error:&error];
+            if (!regex) NSLog(@"error compiling number of pages regex: %@", error);
+            NSTextCheckingResult *match = [regex firstMatchInString:pages
+                                                            options:0
+                                                              range:NSMakeRange(0, [pages length])];
+            if ([match rangeAtIndex:1].location != NSNotFound) {
+                NSInteger pageCount = [[pages substringWithRange:[match rangeAtIndex:1]] integerValue];
+                if (pageCount > 0) self.pagesInThread = pageCount;
+            }
         }
+        TFHppleElement *currentPage = [doc searchForSingle:@"//div[" HAS_CLASS(pages) "]//span[" HAS_CLASS(curpage) "]"];
+        NSInteger pageNumber = [[currentPage content] integerValue];
+        if (pageNumber > 0) self.pageNumber = pageNumber;
     }
-    
-    TFHppleElement *currentPage = [doc searchForSingle:
-                                   @"//div[" HAS_CLASS(pages) "]//span[" HAS_CLASS(curpage) "]"];
-    NSInteger pageNumber = [[currentPage content] integerValue];
-    if (pageNumber > 0) self.pageNumber = pageNumber;
     
     NSArray *ads = [doc rawSearch:@"(//div[@id = 'ad_banner_user']/a)[1]"];
     if ([ads count] > 0) self.advertisementHTML = ads[0];
