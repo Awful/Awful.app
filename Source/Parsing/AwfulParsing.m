@@ -749,14 +749,11 @@ static NSString * DeEntitify(NSString *withEntities)
     self.author.originalPoster = [authorClasses containsObject:@"op"];
     NSString *regdate = [[doc searchForSingle:@"//dd[" HAS_CLASS(registered) "]"] content];
     if (regdate) self.author.regdate = RegdateFromString(regdate);
-    TFHppleElement *avatar = [doc searchForSingle:@"//dd[" HAS_CLASS(title) "]//img"];
+    TFHppleElement *avatar = [doc searchForSingle:@"//dd[" HAS_CLASS(title) "]//img[count(preceding-sibling::*) = 0 and (parent::div or parent::dd)]"];
     if (avatar) {
         self.author.avatarURL = [NSURL URLWithString:[avatar objectForKey:@"src"]];
-        NSMutableArray *nodesAfterAvatar = [[doc rawSearch:@"//dd[" HAS_CLASS(title) "]//br[1]/following-sibling::node()"] mutableCopy];
-        [nodesAfterAvatar removeLastObject];
-        self.author.customTitle = [nodesAfterAvatar componentsJoinedByString:@""];
     } else {
-        self.author.customTitle = [[doc rawSearch:@"//dd[" HAS_CLASS(title) "]"] lastObject];
+        self.author.avatarURL = nil;
     }
     TFHppleElement *profile = [doc searchForSingle:@"//ul[" HAS_CLASS(profilelinks) "]//a"];
     NSError *profileError;
