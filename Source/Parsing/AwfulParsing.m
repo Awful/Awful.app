@@ -142,6 +142,30 @@ static NSDate * PostDateFromString(NSString *s)
 }
 
 
+static NSString * FixSAAndlibxmlHTMLSerialization(NSString *html)
+{
+    // Carriage returns sneak into posts (maybe from Windows users?) and get converted into &#13;
+    // by the super-smart Forums non-Windows-1252 character conversion. This adds uncollapsible
+    // whitespace to the start of lines.
+    html = [html stringByReplacingOccurrencesOfString:@"&#13;" withString:@""];
+    // libxml collapses e.g. '<b></b>' into '<b/>'. WebKit then sees '<b/>', parses it as '<b>',
+    // and the the rest of the document turns bold.
+    NSError *error;
+    NSString *pattern = @"<(b|code|em|i|q|s|small|strong|sub|sup|u)\\/>";
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
+                                                                           options:0
+                                                                             error:&error];
+    if (!regex) {
+        NSLog(@"error compiling self-closing HTML tag regex: %@", error);
+    }
+    return [regex stringByReplacingMatchesInString:html
+                                           options:0
+                                             range:NSMakeRange(0, [html length])
+                                      withTemplate:@"<$1></$1>"];
+    
+}
+
+
 @implementation ProfileParsedInfo
 
 - (void)parseHTMLData
@@ -191,7 +215,8 @@ static NSDate * PostDateFromString(NSString *s)
     if (avatar) {
         self.avatar = [NSURL URLWithString:[avatar objectForKey:@"src"]];
         NSArray *nodesAfterAvatar = [doc rawSearch:@"//dd[" HAS_CLASS(title) "]//img[count(preceding-sibling::*) = 0 and (parent::div or parent::dd)]/following-sibling::node()"];
-        self.customTitle = [nodesAfterAvatar componentsJoinedByString:@""];
+        NSString *customTitleHTML = [nodesAfterAvatar componentsJoinedByString:@""];
+        self.customTitle = FixSAAndlibxmlHTMLSerialization(customTitleHTML);
     } else {
         NSArray *titleNodes = [doc rawSearch:@"//dd[" HAS_CLASS(title) "]/node()"];
         self.customTitle = [titleNodes componentsJoinedByString:@""];
@@ -778,23 +803,7 @@ static NSString * DeEntitify(NSString *withEntities)
     NSString *innerHTML = [[doc rawSearch:@"//div[" HAS_CLASS(complete_shit) "]"] lastObject];
     // Everything else just uses the postbody.
     if (!innerHTML) innerHTML = [[doc rawSearch:@"//td[" HAS_CLASS(postbody) "]"] lastObject];
-    // Carriage returns sneak into posts (maybe from Windows users?) and get converted into &#13;
-    // which add uncollapsible whitespace to the start of lines in posts.
-    innerHTML = [innerHTML stringByReplacingOccurrencesOfString:@"&#13;" withString:@""];
-    // We need to do a little bit of fixup here. libxml collapses e.g. '<b></b>' into '<b/>'.
-    // WebKit then sees '<b/>', parses it as '<b>', and the the rest of the document turns bold.
-    NSError *error;
-    NSString *pattern = @"<(b|code|em|i|q|s|small|strong|sub|sup|u)\\/>";
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
-                                                                           options:0
-                                                                             error:&error];
-    if (!regex) {
-        NSLog(@"error compiling self-closing HTML tag regex: %@", error);
-    }
-    self.innerHTML = [regex stringByReplacingMatchesInString:innerHTML
-                                                     options:0
-                                                       range:NSMakeRange(0, [innerHTML length])
-                                                withTemplate:@"<$1></$1>"];
+    self.innerHTML = FixSAAndlibxmlHTMLSerialization(innerHTML);
 }
 
 + (NSArray *)keysToApplyToObject
