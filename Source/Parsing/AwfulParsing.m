@@ -186,11 +186,11 @@ static NSDate * PostDateFromString(NSString *s)
     self.username = [[doc searchForSingle:@"//dt[" HAS_CLASS(author) "]"] content];
     TFHppleElement *regdate = [doc searchForSingle:@"//dd[" HAS_CLASS(registered) "]"];
     if (regdate) self.regdate = RegdateFromString([regdate content]);
-    TFHppleElement *avatar = [doc searchForSingle:@"//dd[" HAS_CLASS(title) "]//img"];
+    TFHppleElement *avatar = [doc searchForSingle:
+                              @"//dd[" HAS_CLASS(title) "]//img[count(preceding-sibling::*) = 0 and (parent::div or parent::dd)]"];
     if (avatar) {
         self.avatar = [NSURL URLWithString:[avatar objectForKey:@"src"]];
-        NSMutableArray *nodesAfterAvatar = [[doc rawSearch:@"//dd[" HAS_CLASS(title) "]//br[1]/following-sibling::node()"] mutableCopy];
-        [nodesAfterAvatar removeLastObject];
+        NSArray *nodesAfterAvatar = [doc rawSearch:@"//dd[" HAS_CLASS(title) "]//img[count(preceding-sibling::*) = 0 and (parent::div or parent::dd)]/following-sibling::node()"];
         self.customTitle = [nodesAfterAvatar componentsJoinedByString:@""];
     } else {
         NSArray *titleNodes = [doc rawSearch:@"//dd[" HAS_CLASS(title) "]/node()"];
@@ -212,14 +212,15 @@ static NSDate * PostDateFromString(NSString *s)
     self.postRate = [postRate content];
     TFHppleElement *about = [doc searchForSingle:@"//td[" HAS_CLASS(info) "]/p[1]"];
     if (about) {
-    NSError *error;
-        NSRegularExpression *genderRegex = [NSRegularExpression regularExpressionWithPattern:@"claims to be a ([a-z]+)"
-                                                                                     options:0
-                                                                                       error:&error];
-        if (!genderRegex) NSLog(@"error parsing profile gender regex: %@", error);
-        NSTextCheckingResult *result = [genderRegex firstMatchInString:[about content]
-                                                               options:0
-                                                                 range:NSMakeRange(0, [[about content] length])];
+        NSError *error;
+        NSRegularExpression *regex = [NSRegularExpression
+                                      regularExpressionWithPattern:@"claims to be a ([a-z]+)"
+                                      options:0
+                                      error:&error];
+        if (!regex) NSLog(@"error parsing profile gender regex: %@", error);
+        NSTextCheckingResult *result = [regex firstMatchInString:[about content]
+                                                         options:0
+                                                           range:NSMakeRange(0, [[about content] length])];
         self.gender = [[about content] substringWithRange:[result rangeAtIndex:1]];
     }
     TFHppleElement *picture = [doc searchForSingle:@"//div[" HAS_CLASS(userpic) "]//img"];
