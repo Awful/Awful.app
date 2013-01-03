@@ -275,7 +275,7 @@ typedef enum {
         cell.imageView.hidden = NO;
         cell.imageView.image = [[AwfulThreadTags sharedThreadTags]
                                 threadTagNamed:thread.firstIconName];
-        if (!cell.imageView.image) {
+        if (!cell.imageView.image && thread.firstIconName) {
             [self updateThreadTag:thread.firstIconName forCellAtIndexPath:indexPath];
         }
         cell.secondaryTagImageView.hidden = NO;
