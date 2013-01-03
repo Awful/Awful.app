@@ -823,7 +823,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    // The built-in browser gets pushed, and we change the back button before we do. This resets it.
+    // When the built-in browser or a user profile gets pushed, we change the back button. This
+    // resets it to the default.
     self.navigationItem.backBarButtonItem = nil;
 }
 
@@ -1071,19 +1072,14 @@ static char KVOContext;
                            permittedArrowDirections:UIPopoverArrowDirectionAny
                                            animated:YES];
     } else {
-        UINavigationController *nav = [profile enclosingNavigationController];
-        UIBarButtonItem *doneButton = [[UIBarButtonItem alloc]
-                                       initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                       target:self
-                                       action:@selector(doneProfile)];
-        profile.navigationItem.rightBarButtonItem = doneButton;
-        [self presentViewController:nav animated:YES completion:nil];
+        profile.hidesBottomBarWhenPushed = YES;
+        UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithTitle:@"Back"
+                                                                 style:UIBarButtonItemStyleBordered
+                                                                target:nil
+                                                                action:NULL];
+        self.navigationItem.backBarButtonItem = back;
+        [self.navigationController pushViewController:profile animated:YES];
     }
-}
-
-- (void)doneProfile
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate
