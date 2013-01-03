@@ -8,17 +8,10 @@
 
 #import "ParsingTests.h"
 
-@interface ForumTests : ParsingTests
-
-@end
-
-
+@interface ForumTests : ParsingTests @end
 @implementation ForumTests
 
-+ (NSString *)fixtureFilename
-{
-    return @"forumdisplay.html";
-}
++ (NSString *)fixtureFilename { return @"forumdisplay.html"; }
 
 - (void)testCategoryAndForumHierarchy
 {
@@ -57,37 +50,36 @@
     
     STAssertEqualObjects([[threadInfos lastObject] forumID], @"46", nil);
     
-    STAssertEqualObjects([threadInfos[1] threadID], @"3508391", nil);
-    STAssertEqualObjects([threadInfos[8] threadID], @"3510496", nil);
+    STAssertEqualObjects([threadInfos[1] threadID], @"3520449", nil);
+    STAssertEqualObjects([threadInfos[8] threadID], @"3521148", nil);
     
-    STAssertEqualObjects([threadInfos[7] title], @"UK Political Cartoons Megathread Part 2", nil);
+    STAssertEqualObjects([threadInfos[7] title], @"End of an Era: Remembering a Hero of the United States Congress", nil);
     
-    STAssertTrue([threadInfos[0] isSticky] && [threadInfos[3] isSticky], nil);
-    STAssertFalse([threadInfos[5] isSticky] || [threadInfos[10] isSticky], nil);
+    STAssertTrue([threadInfos[0] isSticky], nil);
+    STAssertFalse([threadInfos[1] isSticky] || [threadInfos[10] isSticky], nil);
     
     STAssertEqualObjects([[threadInfos[12] threadIconImageURL] absoluteString],
-                         @"http://fi.somethingawful.com/forums/posticons/lf-marx.png#522", nil);
+                         @"http://fi.somethingawful.com/forums/posticons/lf-gotmine.gif#534", nil);
     
-    STAssertEqualObjects([[threadInfos[16] author] username], @"ChlamydiaJones", nil);
+    STAssertEqualObjects([[threadInfos[16] author] username], @"WYA", nil);
     
-    STAssertTrue([threadInfos[17] seen] && [threadInfos[4] seen], nil);
+    STAssertTrue([threadInfos[12] seen] && [threadInfos[13] seen], nil);
     STAssertFalse([threadInfos[19] seen] || [threadInfos[24] seen], nil);
     
     STAssertFalse([threadInfos[6] isClosed], nil);
     
     STAssertEquals([threadInfos[0] starCategory], 3, nil);
-    STAssertEquals([threadInfos[30] starCategory], 1, nil);
     
-    STAssertEquals([threadInfos[30] totalUnreadPosts], 0, nil);
-    STAssertEquals([threadInfos[31] totalUnreadPosts], -1, nil);
-    STAssertEquals([threadInfos[29] totalUnreadPosts], 48, nil);
+    STAssertEquals([threadInfos[0] totalUnreadPosts], 0, nil);
+    STAssertEquals([threadInfos[1] totalUnreadPosts], -1, nil);
+    STAssertEquals([threadInfos[11] totalUnreadPosts], 2272, nil);
     
-    STAssertEquals([threadInfos[38] totalReplies], 1708, nil);
+    STAssertEquals([threadInfos[38] totalReplies], 343, nil);
     
-    STAssertEquals([threadInfos[33] threadVotes], 22, nil);
-    STAssertEqualObjects([threadInfos[33] threadRating], [NSDecimalNumber decimalNumberWithString:@"2.87"], nil);
+    STAssertEquals([threadInfos[8] threadVotes], 63, nil);
+    STAssertEqualObjects([threadInfos[8] threadRating], [NSDecimalNumber decimalNumberWithString:@"1.58"], nil);
     
-    STAssertEqualObjects([threadInfos[30] lastPostAuthorName], @"Kafka Esq.", nil);
+    STAssertEqualObjects([threadInfos[30] lastPostAuthorName], @"richardfun", nil);
     
     STAssertNotNil([threadInfos[35] lastPostDate], nil);
 }
