@@ -185,7 +185,7 @@
 					<key>Type</key>
 					<string>Switch</string>
 					<key>Default</key>
-					<true/>
+					<false/>
 					<key>Key</key>
 					<string>highlight_own_mentions</string>
 				</dict>
@@ -195,7 +195,7 @@
 					<key>Type</key>
 					<string>Switch</string>
 					<key>Default</key>
-					<true/>
+					<false/>
 					<key>Key</key>
 					<string>highlight_own_quotes</string>
 				</dict>
