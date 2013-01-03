@@ -7,19 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-@protocol AwfulBrowserViewControllerDelegate;
 
 @interface AwfulBrowserViewController : UIViewController
 
-@property (weak, nonatomic) id <AwfulBrowserViewControllerDelegate> delegate;
-
 @property (nonatomic) NSURL *URL;
-
-@end
-
-
-@protocol AwfulBrowserViewControllerDelegate <NSObject>
-
-- (void)browserDidClose:(AwfulBrowserViewController *)browser;
 
 @end

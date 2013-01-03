@@ -36,11 +36,6 @@
     [sheet showFromBarButtonItem:sender animated:YES];
 }
 
-- (void)close
-{
-    [self.delegate browserDidClose:self];
-}
-
 - (void)setURL:(NSURL *)URL
 {
     if (_URL == URL) return;
@@ -64,11 +59,6 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     if (!(self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) return nil;
-    UIBarButtonItem *doneButton;
-    doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                                               target:self
-                                                               action:@selector(close)];
-    self.navigationItem.leftBarButtonItem = doneButton;
     UIBarButtonItem *actionButton;
     actionButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                                                                  target:self

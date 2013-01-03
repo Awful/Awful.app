@@ -49,7 +49,6 @@
                                         AwfulSpecificPageControllerDelegate,
                                         NSFetchedResultsControllerDelegate,
                                         AwfulReplyViewControllerDelegate,
-                                        AwfulBrowserViewControllerDelegate,
                                         UIScrollViewDelegate>
 
 @property (nonatomic) NSFetchedResultsController *fetchedResultsController;
@@ -821,6 +820,13 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     [self retheme];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    // The built-in browser gets pushed, and we change the back button before we do. This resets it.
+    self.navigationItem.backBarButtonItem = nil;
+}
+
 - (void)viewDidDisappear:(BOOL)animated
 {    
     // Blank the web view if we're leaving for good. Otherwise we get weirdness like videos
@@ -946,11 +952,14 @@ static char KVOContext;
 - (void)openURLInBuiltInBrowser:(NSURL *)url
 {
     AwfulBrowserViewController *browser = [AwfulBrowserViewController new];
-    browser.delegate = self;
     browser.URL = url;
-    [self presentViewController:[browser enclosingNavigationController]
-                       animated:YES
-                     completion:nil];
+    browser.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:browser animated:YES];
+    UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithTitle:@"Back"
+                                                             style:UIBarButtonItemStyleBordered
+                                                            target:nil
+                                                            action:NULL];
+    self.navigationItem.backBarButtonItem = back;
 }
 
 - (NSArray *)whitelistedSelectorsForPostsView:(AwfulPostsView *)postsView
