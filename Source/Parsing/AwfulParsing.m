@@ -261,14 +261,29 @@ static NSString * FixSAAndlibxmlHTMLSerialization(NSString *html)
 
 + (NSArray *)keysToApplyToObject
 {
-    // TODO many of these should actually clear an existing value if they are nil
-    // (i.e. customTitle, aboutMe, aimName, gender, icqName, interests, location, occupation, yahooName)
-    // Under the current implementation of -applyToObject:, this will not occur.
     return @[
         @"userID", @"username", @"regdate", @"customTitle", @"aboutMe", @"aimName", @"gender",
         @"icqName", @"interests", @"lastPost", @"location", @"occupation", @"postCount",
         @"yahooName", @"postRate"
     ];
+}
+
++ (NSArray *)keysToNullifyIfNull
+{
+    return @[
+        @"customTitle", @"aboutMe", @"aimName", @"gender", @"icqName", @"interests", @"location",
+        @"occupation", @"yahooName"
+    ];
+}
+
+- (void)applyToObject:(id)object
+{
+    [super applyToObject:object];
+    for (NSString *key in [[self class] keysToNullifyIfNull]) {
+        if ([[self valueForKey:key] isEqual:[NSNull null]]) {
+            [object setValue:[NSNull null] forKey:key];
+        }
+    }
 }
 
 @end
