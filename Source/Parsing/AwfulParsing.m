@@ -608,7 +608,7 @@ static NSString * DeEntitify(NSString *withEntities)
     TFHppleElement *isSticky = [doc searchForSingle:@"//td[" HAS_CLASS(title_sticky) "]"];
     self.isSticky = !!isSticky;
     
-    TFHppleElement *icon = [doc searchForSingle:@"//td[" HAS_CLASS(icon) "]/img"];
+    TFHppleElement *icon = [doc searchForSingle:@"//td[" HAS_CLASS(icon) "]//img"];
     if (!icon) {
         // Film Dump rating.
         icon = [doc searchForSingle:

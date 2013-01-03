@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
 	<title>Bookmarked threads - The Something Awful Forums</title>
@@ -8,19 +8,20 @@
 	<!--[if lt IE 7]><link rel="stylesheet" type="text/css" href="/css/ie.css?1348360344"><![endif]-->
 	<!--[if lt IE 8]><link rel="stylesheet" type="text/css" href="/css/ie7.css?1348360344"><![endif]-->
 	<link rel="apple-touch-icon" href="http://i.somethingawful.com/core/icon/iphone-touch/forums.png">
-	<link rel="stylesheet" type="text/css" href="/css/main.css?1349148332">
+	<link rel="stylesheet" type="text/css" href="/css/main.css?1349831252">
 	<link rel="stylesheet" type="text/css" href="/css/bbcode.css?1348360344">
 	<link rel="stylesheet" type="text/css" href="http://www.somethingawful.com/globalcss/globalmenu.css">
+
 	
 
 	<!-- <script src="/__utm.js" type="text/javascript"></script> -->
-	<script src="/js/dojo/dojo.js?1348360344" type="text/javascript"></script>
-	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/themes/redmond/jquery-ui.css">
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.min.js"></script>
-
+	<!-- script src="/js/dojo/dojo.js?1348360344" type="text/javascript"></script -->
+	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/redmond/jquery-ui.css">
+	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
 	<!-- ts-specific includes -->
 	
+	<link rel="stylesheet" type="text/css" href="http://www.somethingawful.com/css/forums.css">
 
 	
 
@@ -29,7 +30,9 @@
 		
 	</script>
 
-	<script type="text/javascript" src="/js/vb/forums.combined.js?1348432878"></script>
+	<script type="text/javascript" src="/js/vb/forums.combined.js?1357141016"></script>
+
+	
 
 	
 
@@ -42,14 +45,14 @@
 		div.standard { margin-top:0; }
 	</style>
 	<script type="text/javascript">
-		dojo.addOnLoad( function() {
-			bm_stars.init();
-			bookmarks_mui.add_buttons_button();
-		} );
+		// dojo.addOnLoad( function() {
+		// 	bm_stars.init();
+		// 	bookmarks_mui.add_buttons_button();
+		// } );
 	</script>
 
 </head>
-<body id="something_awful">
+<body id="something_awful" class="bookmark_threads">
 
 <div id="globalmenu">
 	<ul>
@@ -91,33 +94,11 @@
 <li>- <a href="/stats.php">Posting Gloryhole</a></li>
 <li>- <a href="/banlist.php">Leper's Colony</a></li>
 <li>- <a href="/supportmail.php">Support</a></li>
-<li>- <a href="/account.php?action=logout&amp;ma=fabe059a">Log Out</a></li>
+<li>- <a href="/account.php?action=logout&amp;ma=f26fad4c">Log Out</a></li>
 
 </ul>
 
 
-<div class="oma_pal">
-	<!-- SA Banner Top -->
-<script type='text/javascript'>
-<!--//<![CDATA[
-   document.MAX_ct0 ='';
-   var m3_u = (location.protocol=='https:'?'https://cas.criteo.com/delivery/ajs.php?':'http://cas.criteo.com/delivery/ajs.php?');
-   var m3_r = Math.floor(Math.random()*99999999999);
-   document.write ("<scr"+"ipt type='text/javascript' src='"+m3_u);
-   document.write ("zoneid=62545");document.write("&amp;nodis=1");
-   document.write ('&amp;cb=' + m3_r);
-   if (document.MAX_used != ',') document.write ("&amp;exclude=" + document.MAX_used);
-   document.write (document.charset ? '&amp;charset='+document.charset : (document.characterSet ? '&amp;charset='+document.characterSet : ''));
-   document.write ("&amp;loc=" + escape(window.location));
-   if (document.referrer) document.write ("&amp;referer=" + escape(document.referrer));
-   if (document.context) document.write ("&context=" + escape(document.context));
-   if ((typeof(document.MAX_ct0) != 'undefined') && (document.MAX_ct0.substring(0,4) == 'http')) {
-       document.write ("&amp;ct0=" + escape(document.MAX_ct0));
-   }
-   if (document.mmm_fo) document.write ("&amp;mmm_fo=1");
-   document.write ("'></scr"+"ipt>");
-//]]>--></script>
-</div>
 
 
 
@@ -145,7 +126,7 @@
 
 <form method="POST" action="/bookmarkthreads.php" name="bookmarks">
 
-<div style="width:70%;margin:16px 0 0 0;">
+<div>
 There are two ways to delete bookmarks.  You can either click on the star icon until it turns clear, or use the &quot;Edit Bookmarks&quot; button to enable the quick delete feature.  The bookmark stars feature must be enabled in your options, or you won't see the star icons.
 </div>
 
@@ -168,81 +149,193 @@ There are two ways to delete bookmarks.  You can either click on the star icon u
 	</thead>
 	<tbody>
 		
-		<tr class="thread seen" id="thread3423490">
-	<td class="star"><img src="http://fi.somethingawful.com/style/bookmarks/star0.gif" onclick="bm_stars.toggle(this, '3423490');" alt=""></td>
-	<td class="icon"><img src="http://fi.somethingawful.com/forums/posticons/icons-08/politics.png#85" alt=""></td>
+		<tr class="thread" id="thread3481275">
+	<td class="star"></td>
+	<td class="icon"><a href="/forumdisplay.php?forumid=0&amp;posticon=418"><img src="http://fi.somethingawful.com/forums/posticons/coc-theory.gif#418" alt=""></a></td>
 	<td class="title">
-		<div class="lastseen"><a href="/showthread.php?action=resetseen&amp;threadid=3423490" class="x" title="Mark as unread" onclick="seen.reset(this);return false;">X</a></div>
-		<div class="info">
-			<a href="showthread.php?threadid=3423490" class="thread_title">The West Wing: &quot;Tell your friend POTUS he's got a funny name.&quot;</a>
-			<div class="title_pages">Pages: <a class="pagenumber" href="showthread.php?threadid=3423490&amp;pagenumber=1">1</a><a class="pagenumber" href="showthread.php?threadid=3423490&amp;pagenumber=2">2</a><a class="pagenumber" href="showthread.php?threadid=3423490&amp;pagenumber=3">3</a><a class="pagenumber" href="showthread.php?threadid=3423490&amp;pagenumber=4">4</a><a class="pagenumber" href="showthread.php?threadid=3423490&amp;pagenumber=5">5</a><a class="pagenumber" href="showthread.php?threadid=3423490&amp;pagenumber=6">6</a><a class="pagenumber" href="showthread.php?threadid=3423490&amp;pagenumber=7">7</a>... <a class="pagenumber" href="showthread.php?threadid=3423490&amp;goto=lastpost">Last</a></div>
+		<div class="title_inner">
+			<div class="lastseen"><a href="/showthread.php?action=resetseen&amp;threadid=3481275" class="x" title="Mark as unread">X</a><a title="Jump to last read post" href="/showthread.php?threadid=3481275&amp;goto=newpost" class="count"><b>9</b></a></div>
+			<div class="info">
+				<a href="showthread.php?threadid=3481275" class="thread_title">The PL (Programming Language) thread: I'm glad Python is the current hipste</a>
+				<div class="title_pages">Pages: <a class="pagenumber" href="showthread.php?threadid=3481275&amp;pagenumber=1">1</a><a class="pagenumber" href="showthread.php?threadid=3481275&amp;pagenumber=2">2</a><a class="pagenumber" href="showthread.php?threadid=3481275&amp;pagenumber=3">3</a><a class="pagenumber" href="showthread.php?threadid=3481275&amp;pagenumber=4">4</a><a class="pagenumber" href="showthread.php?threadid=3481275&amp;pagenumber=5">5</a><a class="pagenumber" href="showthread.php?threadid=3481275&amp;pagenumber=6">6</a><a class="pagenumber" href="showthread.php?threadid=3481275&amp;pagenumber=7">7</a>... <a class="pagenumber" href="showthread.php?threadid=3481275&amp;goto=lastpost">Last</a></div>
+			</div>
 		</div>
 	</td>
-	<td class="author"><a href="member.php?action=getinfo&amp;userid=111699">FISHMANPET</a></td>
-	<td class="replies">1784</td>
-	<td class="views">102151</td>
-	<td class="rating">&nbsp;</td>
-	<td class="lastpost"><div class="date">12:06 AM Oct 10, 2012</div><a class="author" href="showthread.php?goto=lastpost&amp;threadid=3423490">pokeyman</a></td>
-</tr><tr class="thread seen" id="thread3507451">
-	<td class="star"><img src="http://fi.somethingawful.com/style/bookmarks/star0.gif" onclick="bm_stars.toggle(this, '3507451');" alt=""></td>
-	<td class="icon"><img src="http://fi.somethingawful.com/forums/posticons/lan-canada.gif#576" alt=""></td>
+	<td class="author"><a href="member.php?action=getinfo&amp;userid=150418">I am in</a></td>
+	<td class="replies">12200</td>
+	<td class="views">285898</td>
+	<td class="rating"><img src="http://fi.somethingawful.com/rate/default/4stars.gif" alt="" title="29 votes - 3.83 average"></td>
+	<td class="lastpost"><div class="date">22:38 Jan  2, 2013</div><a class="author" href="showthread.php?goto=lastpost&amp;threadid=3481275">rotor</a></td>
+</tr><tr class="thread" id="thread3510131">
+	<td class="star"></td>
+	<td class="icon"><a href="/forumdisplay.php?forumid=0&amp;posticon=139"><img src="http://fi.somethingawful.com/forums/posticons/shsc-apple.gif#139" alt=""></a></td>
 	<td class="title">
-		<div class="lastseen"><a href="/showthread.php?action=resetseen&amp;threadid=3507451" class="x" title="Mark as unread" onclick="seen.reset(this);return false;">X</a></div>
-		<div class="info">
-			<a href="showthread.php?threadid=3507451" class="thread_title">Canadian Politics Thread: Revenge of Trudeaumania: Brawl Me, Maybe</a>
-			<div class="title_pages">Pages: <a class="pagenumber" href="showthread.php?threadid=3507451&amp;pagenumber=1">1</a><a class="pagenumber" href="showthread.php?threadid=3507451&amp;pagenumber=2">2</a><a class="pagenumber" href="showthread.php?threadid=3507451&amp;pagenumber=3">3</a><a class="pagenumber" href="showthread.php?threadid=3507451&amp;pagenumber=4">4</a><a class="pagenumber" href="showthread.php?threadid=3507451&amp;pagenumber=5">5</a><a class="pagenumber" href="showthread.php?threadid=3507451&amp;pagenumber=6">6</a><a class="pagenumber" href="showthread.php?threadid=3507451&amp;pagenumber=7">7</a>... <a class="pagenumber" href="showthread.php?threadid=3507451&amp;goto=lastpost">Last</a></div>
+		<div class="title_inner">
+			<div class="lastseen"><a href="/showthread.php?action=resetseen&amp;threadid=3510131" class="x" title="Mark as unread">X</a></div>
+			<div class="info">
+				<a href="showthread.php?threadid=3510131" class="thread_title">Awful iPhone/iPad apps - Back to the MAXX</a>
+				<div class="title_pages">Pages: <a class="pagenumber" href="showthread.php?threadid=3510131&amp;pagenumber=1">1</a><a class="pagenumber" href="showthread.php?threadid=3510131&amp;pagenumber=2">2</a><a class="pagenumber" href="showthread.php?threadid=3510131&amp;pagenumber=3">3</a><a class="pagenumber" href="showthread.php?threadid=3510131&amp;pagenumber=4">4</a><a class="pagenumber" href="showthread.php?threadid=3510131&amp;pagenumber=5">5</a><a class="pagenumber" href="showthread.php?threadid=3510131&amp;pagenumber=6">6</a><a class="pagenumber" href="showthread.php?threadid=3510131&amp;pagenumber=7">7</a>... <a class="pagenumber" href="showthread.php?threadid=3510131&amp;goto=lastpost">Last</a></div>
+			</div>
+		</div>
+	</td>
+	<td class="author"><a href="member.php?action=getinfo&amp;userid=106125">pokeyman</a></td>
+	<td class="replies">1299</td>
+	<td class="views">79176</td>
+	<td class="rating">&nbsp;</td>
+	<td class="lastpost"><div class="date">21:50 Jan  2, 2013</div><a class="author" href="showthread.php?goto=lastpost&amp;threadid=3510131">pokeyman</a></td>
+</tr><tr class="thread" id="thread3391052">
+	<td class="star"></td>
+	<td class="icon"><a href="/forumdisplay.php?forumid=0&amp;posticon=624"><img src="http://fi.somethingawful.com/forums/posticons/cps-android.gif#624" alt=""></a></td>
+	<td class="title">
+		<div class="title_inner">
+			<div class="lastseen"><a href="/showthread.php?action=resetseen&amp;threadid=3391052" class="x" title="Mark as unread">X</a></div>
+			<div class="info">
+				<a href="showthread.php?threadid=3391052" class="thread_title">Awful Android app</a>
+				<div class="title_pages">Pages: <a class="pagenumber" href="showthread.php?threadid=3391052&amp;pagenumber=1">1</a><a class="pagenumber" href="showthread.php?threadid=3391052&amp;pagenumber=2">2</a><a class="pagenumber" href="showthread.php?threadid=3391052&amp;pagenumber=3">3</a><a class="pagenumber" href="showthread.php?threadid=3391052&amp;pagenumber=4">4</a><a class="pagenumber" href="showthread.php?threadid=3391052&amp;pagenumber=5">5</a><a class="pagenumber" href="showthread.php?threadid=3391052&amp;pagenumber=6">6</a><a class="pagenumber" href="showthread.php?threadid=3391052&amp;pagenumber=7">7</a>... <a class="pagenumber" href="showthread.php?threadid=3391052&amp;goto=lastpost">Last</a></div>
+			</div>
+		</div>
+	</td>
+	<td class="author"><a href="member.php?action=getinfo&amp;userid=115838">Ferg</a></td>
+	<td class="replies">7790</td>
+	<td class="views">522653</td>
+	<td class="rating"><img src="http://fi.somethingawful.com/rate/default/5stars.gif" alt="" title="156 votes - 4.84 average"></td>
+	<td class="lastpost"><div class="date">21:41 Jan  2, 2013</div><a class="author" href="showthread.php?goto=lastpost&amp;threadid=3391052">AlexMoron</a></td>
+</tr><tr class="thread" id="thread3501654">
+	<td class="star"></td>
+	<td class="icon"><a href="/forumdisplay.php?forumid=0&amp;posticon=95"><img src="http://fi.somethingawful.com/forums/posticons/icons-08/whine.png#95" alt=""></a></td>
+	<td class="title title_sticky">
+		<div class="title_inner">
+			<div class="lastseen"><a href="/showthread.php?action=resetseen&amp;threadid=3501654" class="x" title="Mark as unread">X</a><a title="Jump to last read post" href="/showthread.php?threadid=3501654&amp;goto=newpost" class="count"><b>2</b></a></div>
+			<div class="info">
+				<a href="showthread.php?threadid=3501654" class="thread_title">State of the forums</a>
+				<div class="title_pages">Pages: <a class="pagenumber" href="showthread.php?threadid=3501654&amp;pagenumber=1">1</a><a class="pagenumber" href="showthread.php?threadid=3501654&amp;pagenumber=2">2</a><a class="pagenumber" href="showthread.php?threadid=3501654&amp;pagenumber=3">3</a><a class="pagenumber" href="showthread.php?threadid=3501654&amp;pagenumber=4">4</a><a class="pagenumber" href="showthread.php?threadid=3501654&amp;pagenumber=5">5</a><a class="pagenumber" href="showthread.php?threadid=3501654&amp;pagenumber=6">6</a><a class="pagenumber" href="showthread.php?threadid=3501654&amp;pagenumber=7">7</a>... <a class="pagenumber" href="showthread.php?threadid=3501654&amp;goto=lastpost">Last</a></div>
+			</div>
+		</div>
+	</td>
+	<td class="author"><a href="member.php?action=getinfo&amp;userid=186591">Choochacacko</a></td>
+	<td class="replies">563</td>
+	<td class="views">67190</td>
+	<td class="rating">&nbsp;</td>
+	<td class="lastpost"><div class="date">21:15 Jan  2, 2013</div><a class="author" href="showthread.php?goto=lastpost&amp;threadid=3501654">Sexual Aluminum</a></td>
+</tr><tr class="thread" id="thread2779598">
+	<td class="star"></td>
+	<td class="icon"><a href="/forumdisplay.php?forumid=0&amp;posticon=418"><img src="http://fi.somethingawful.com/forums/posticons/coc-theory.gif#418" alt=""></a></td>
+	<td class="title title_sticky">
+		<div class="title_inner">
+			<div class="lastseen"><a href="/showthread.php?action=resetseen&amp;threadid=2779598" class="x" title="Mark as unread">X</a><a title="Jump to last read post" href="/showthread.php?threadid=2779598&amp;goto=newpost" class="count"><b>1</b></a></div>
+			<div class="info">
+				<a href="showthread.php?threadid=2779598" class="thread_title">Ask General Programming Questions Not Worth Their Own Thread</a>
+				<div class="title_pages">Pages: <a class="pagenumber" href="showthread.php?threadid=2779598&amp;pagenumber=1">1</a><a class="pagenumber" href="showthread.php?threadid=2779598&amp;pagenumber=2">2</a><a class="pagenumber" href="showthread.php?threadid=2779598&amp;pagenumber=3">3</a><a class="pagenumber" href="showthread.php?threadid=2779598&amp;pagenumber=4">4</a><a class="pagenumber" href="showthread.php?threadid=2779598&amp;pagenumber=5">5</a><a class="pagenumber" href="showthread.php?threadid=2779598&amp;pagenumber=6">6</a><a class="pagenumber" href="showthread.php?threadid=2779598&amp;pagenumber=7">7</a>... <a class="pagenumber" href="showthread.php?threadid=2779598&amp;goto=lastpost">Last</a></div>
+			</div>
+		</div>
+	</td>
+	<td class="author"><a href="member.php?action=getinfo&amp;userid=41187">csammis</a></td>
+	<td class="replies">9585</td>
+	<td class="views">486849</td>
+	<td class="rating"><img src="http://fi.somethingawful.com/rate/default/5stars.gif" alt="" title="16 votes - 4.94 average"></td>
+	<td class="lastpost"><div class="date">20:53 Jan  2, 2013</div><a class="author" href="showthread.php?goto=lastpost&amp;threadid=2779598">ShoulderDaemon</a></td>
+</tr><tr class="thread" id="thread3507451">
+	<td class="star"></td>
+	<td class="icon"><a href="/forumdisplay.php?forumid=0&amp;posticon=576"><img src="http://fi.somethingawful.com/forums/posticons/lan-canada.gif#576" alt=""></a></td>
+	<td class="title">
+		<div class="title_inner">
+			<div class="lastseen"><a href="/showthread.php?action=resetseen&amp;threadid=3507451" class="x" title="Mark as unread">X</a></div>
+			<div class="info">
+				<a href="showthread.php?threadid=3507451" class="thread_title">Canadian Politics Thread: Revenge of Trudeaumania: Brawl Me, Maybe</a>
+				<div class="title_pages">Pages: <a class="pagenumber" href="showthread.php?threadid=3507451&amp;pagenumber=1">1</a><a class="pagenumber" href="showthread.php?threadid=3507451&amp;pagenumber=2">2</a><a class="pagenumber" href="showthread.php?threadid=3507451&amp;pagenumber=3">3</a><a class="pagenumber" href="showthread.php?threadid=3507451&amp;pagenumber=4">4</a><a class="pagenumber" href="showthread.php?threadid=3507451&amp;pagenumber=5">5</a><a class="pagenumber" href="showthread.php?threadid=3507451&amp;pagenumber=6">6</a><a class="pagenumber" href="showthread.php?threadid=3507451&amp;pagenumber=7">7</a>... <a class="pagenumber" href="showthread.php?threadid=3507451&amp;goto=lastpost">Last</a></div>
+			</div>
 		</div>
 	</td>
 	<td class="author"><a href="member.php?action=getinfo&amp;userid=23658">Dreylad</a></td>
-	<td class="replies">938</td>
-	<td class="views">53861</td>
+	<td class="replies">4362</td>
+	<td class="views">242316</td>
 	<td class="rating">&nbsp;</td>
-	<td class="lastpost"><div class="date">10:07 PM Oct  9, 2012</div><a class="author" href="showthread.php?goto=lastpost&amp;threadid=3507451">Kafka Esq.</a></td>
-</tr><tr class="thread seen" id="thread3400187">
-	<td class="star"><img src="http://fi.somethingawful.com/style/bookmarks/star0.gif" onclick="bm_stars.toggle(this, '3400187');" alt=""></td>
-	<td class="icon"><img src="http://fi.somethingawful.com/forums/posticons/shsc-apple.gif#139" alt=""></td>
+	<td class="lastpost"><div class="date">20:51 Jan  2, 2013</div><a class="author" href="showthread.php?goto=lastpost&amp;threadid=3507451">cougar cub</a></td>
+</tr><tr class="thread" id="thread2803713">
+	<td class="star"></td>
+	<td class="icon"><a href="/forumdisplay.php?forumid=0&amp;posticon=167"><img src="http://fi.somethingawful.com/forums/posticons/shsc-code.gif#167" alt=""></a></td>
 	<td class="title">
-		<div class="lastseen"><a href="/showthread.php?action=resetseen&amp;threadid=3400187" class="x" title="Mark as unread" onclick="seen.reset(this);return false;">X</a></div>
-		<div class="info">
-			<a href="showthread.php?threadid=3400187" class="thread_title">Apple App Development: iOS (iPhones and iPads), Mac OS X, Xcode, Cocoa</a>
-			<div class="title_pages">Pages: <a class="pagenumber" href="showthread.php?threadid=3400187&amp;pagenumber=1">1</a><a class="pagenumber" href="showthread.php?threadid=3400187&amp;pagenumber=2">2</a><a class="pagenumber" href="showthread.php?threadid=3400187&amp;pagenumber=3">3</a><a class="pagenumber" href="showthread.php?threadid=3400187&amp;pagenumber=4">4</a><a class="pagenumber" href="showthread.php?threadid=3400187&amp;pagenumber=5">5</a><a class="pagenumber" href="showthread.php?threadid=3400187&amp;pagenumber=6">6</a><a class="pagenumber" href="showthread.php?threadid=3400187&amp;pagenumber=7">7</a>... <a class="pagenumber" href="showthread.php?threadid=3400187&amp;goto=lastpost">Last</a></div>
-		</div>
-	</td>
-	<td class="author"><a href="member.php?action=getinfo&amp;userid=106125">pokeyman</a></td>
-	<td class="replies">3349</td>
-	<td class="views">142439</td>
-	<td class="rating"><img src="http://fi.somethingawful.com/rate/default/5stars.gif" alt="" title="8 votes - 4.56 average"></td>
-	<td class="lastpost"><div class="date"> 9:59 PM Oct  9, 2012</div><a class="author" href="showthread.php?goto=lastpost&amp;threadid=3400187">duck monster</a></td>
-</tr><tr class="thread seen" id="thread2803713">
-	<td class="star"><img src="http://fi.somethingawful.com/style/bookmarks/star0.gif" onclick="bm_stars.toggle(this, '2803713');" alt=""></td>
-	<td class="icon"><img src="http://fi.somethingawful.com/forums/posticons/shsc-code.gif#167" alt=""></td>
-	<td class="title">
-		<div class="lastseen"><a href="/showthread.php?action=resetseen&amp;threadid=2803713" class="x" title="Mark as unread" onclick="seen.reset(this);return false;">X</a></div>
-		<div class="info">
-			<a href="showthread.php?threadid=2803713" class="thread_title">Coding horrors: post the code that makes you laugh (or cry)</a>
-			<div class="title_pages">Pages: <a class="pagenumber" href="showthread.php?threadid=2803713&amp;pagenumber=1">1</a><a class="pagenumber" href="showthread.php?threadid=2803713&amp;pagenumber=2">2</a><a class="pagenumber" href="showthread.php?threadid=2803713&amp;pagenumber=3">3</a><a class="pagenumber" href="showthread.php?threadid=2803713&amp;pagenumber=4">4</a><a class="pagenumber" href="showthread.php?threadid=2803713&amp;pagenumber=5">5</a><a class="pagenumber" href="showthread.php?threadid=2803713&amp;pagenumber=6">6</a><a class="pagenumber" href="showthread.php?threadid=2803713&amp;pagenumber=7">7</a>... <a class="pagenumber" href="showthread.php?threadid=2803713&amp;goto=lastpost">Last</a></div>
+		<div class="title_inner">
+			<div class="lastseen"><a href="/showthread.php?action=resetseen&amp;threadid=2803713" class="x" title="Mark as unread">X</a><a title="Jump to last read post" href="/showthread.php?threadid=2803713&amp;goto=newpost" class="count"><b>1</b></a></div>
+			<div class="info">
+				<a href="showthread.php?threadid=2803713" class="thread_title">Coding horrors: post the code that makes you laugh (or cry)</a>
+				<div class="title_pages">Pages: <a class="pagenumber" href="showthread.php?threadid=2803713&amp;pagenumber=1">1</a><a class="pagenumber" href="showthread.php?threadid=2803713&amp;pagenumber=2">2</a><a class="pagenumber" href="showthread.php?threadid=2803713&amp;pagenumber=3">3</a><a class="pagenumber" href="showthread.php?threadid=2803713&amp;pagenumber=4">4</a><a class="pagenumber" href="showthread.php?threadid=2803713&amp;pagenumber=5">5</a><a class="pagenumber" href="showthread.php?threadid=2803713&amp;pagenumber=6">6</a><a class="pagenumber" href="showthread.php?threadid=2803713&amp;pagenumber=7">7</a>... <a class="pagenumber" href="showthread.php?threadid=2803713&amp;goto=lastpost">Last</a></div>
+			</div>
 		</div>
 	</td>
 	<td class="author"><a href="member.php?action=getinfo&amp;userid=67824">Ranma4703</a></td>
-	<td class="replies">14565</td>
-	<td class="views">1591475</td>
-	<td class="rating"><img src="http://fi.somethingawful.com/rate/default/5stars.gif" alt="" title="69 votes - 4.54 average"></td>
-	<td class="lastpost"><div class="date"> 5:02 PM Oct  9, 2012</div><a class="author" href="showthread.php?goto=lastpost&amp;threadid=2803713">Qwertycoatl</a></td>
-</tr><tr class="thread seen" id="thread3510131">
-	<td class="star"><img src="http://fi.somethingawful.com/style/bookmarks/star0.gif" onclick="bm_stars.toggle(this, '3510131');" alt=""></td>
-	<td class="icon"><img src="http://fi.somethingawful.com/forums/posticons/shsc-apple.gif#139" alt=""></td>
+	<td class="replies">15748</td>
+	<td class="views">1718938</td>
+	<td class="rating"><img src="http://fi.somethingawful.com/rate/default/5stars.gif" alt="" title="71 votes - 4.53 average"></td>
+	<td class="lastpost"><div class="date">19:23 Jan  2, 2013</div><a class="author" href="showthread.php?goto=lastpost&amp;threadid=2803713">Suspicious Dish</a></td>
+</tr><tr class="thread" id="thread3400187">
+	<td class="star"></td>
+	<td class="icon"><a href="/forumdisplay.php?forumid=0&amp;posticon=139"><img src="http://fi.somethingawful.com/forums/posticons/shsc-apple.gif#139" alt=""></a></td>
 	<td class="title">
-		<div class="lastseen"><a href="/showthread.php?action=resetseen&amp;threadid=3510131" class="x" title="Mark as unread" onclick="seen.reset(this);return false;">X</a></div>
-		<div class="info">
-			<a href="showthread.php?threadid=3510131" class="thread_title">Awful iPhone/iPad apps - Back to the MAXX</a>
-			<div class="title_pages">Pages: <a class="pagenumber" href="showthread.php?threadid=3510131&amp;pagenumber=1">1</a><a class="pagenumber" href="showthread.php?threadid=3510131&amp;pagenumber=2">2</a></div>
+		<div class="title_inner">
+			<div class="lastseen"><a href="/showthread.php?action=resetseen&amp;threadid=3400187" class="x" title="Mark as unread">X</a></div>
+			<div class="info">
+				<a href="showthread.php?threadid=3400187" class="thread_title">Apple App Development: iOS (iPhones and iPads), Mac OS X, Xcode, Cocoa</a>
+				<div class="title_pages">Pages: <a class="pagenumber" href="showthread.php?threadid=3400187&amp;pagenumber=1">1</a><a class="pagenumber" href="showthread.php?threadid=3400187&amp;pagenumber=2">2</a><a class="pagenumber" href="showthread.php?threadid=3400187&amp;pagenumber=3">3</a><a class="pagenumber" href="showthread.php?threadid=3400187&amp;pagenumber=4">4</a><a class="pagenumber" href="showthread.php?threadid=3400187&amp;pagenumber=5">5</a><a class="pagenumber" href="showthread.php?threadid=3400187&amp;pagenumber=6">6</a><a class="pagenumber" href="showthread.php?threadid=3400187&amp;pagenumber=7">7</a>... <a class="pagenumber" href="showthread.php?threadid=3400187&amp;goto=lastpost">Last</a></div>
+			</div>
 		</div>
 	</td>
 	<td class="author"><a href="member.php?action=getinfo&amp;userid=106125">pokeyman</a></td>
-	<td class="replies">62</td>
-	<td class="views">4337</td>
+	<td class="replies">3817</td>
+	<td class="views">161818</td>
+	<td class="rating"><img src="http://fi.somethingawful.com/rate/default/5stars.gif" alt="" title="8 votes - 4.56 average"></td>
+	<td class="lastpost"><div class="date">16:59 Jan  2, 2013</div><a class="author" href="showthread.php?goto=lastpost&amp;threadid=3400187">DreadCthulhu</a></td>
+</tr><tr class="thread" id="thread3524781">
+	<td class="star"></td>
+	<td class="icon"><a href="/forumdisplay.php?forumid=0&amp;posticon=576"><img src="http://fi.somethingawful.com/forums/posticons/lan-canada.gif#576" alt=""></a></td>
+	<td class="title">
+		<div class="title_inner">
+			<div class="lastseen"><a href="/showthread.php?action=resetseen&amp;threadid=3524781" class="x" title="Mark as unread">X</a><a title="Jump to last read post" href="/showthread.php?threadid=3524781&amp;goto=newpost" class="count"><b>1</b></a></div>
+			<div class="info">
+				<a href="showthread.php?threadid=3524781" class="thread_title">Idle No More: Sticking it to a &quot;Shifty Large Lump&quot;</a>
+				<div class="title_pages">Pages: <a class="pagenumber" href="showthread.php?threadid=3524781&amp;pagenumber=1">1</a><a class="pagenumber" href="showthread.php?threadid=3524781&amp;pagenumber=2">2</a><a class="pagenumber" href="showthread.php?threadid=3524781&amp;pagenumber=3">3</a><a class="pagenumber" href="showthread.php?threadid=3524781&amp;pagenumber=4">4</a></div>
+			</div>
+		</div>
+	</td>
+	<td class="author"><a href="member.php?action=getinfo&amp;userid=147977">Salaminizer</a></td>
+	<td class="replies">136</td>
+	<td class="views">8293</td>
 	<td class="rating">&nbsp;</td>
-	<td class="lastpost"><div class="date"> 8:43 AM Oct  9, 2012</div><a class="author" href="showthread.php?goto=lastpost&amp;threadid=3510131">myron cope</a></td>
+	<td class="lastpost"><div class="date">05:59 Jan  2, 2013</div><a class="author" href="showthread.php?goto=lastpost&amp;threadid=3524781">MaterialConceptual</a></td>
+</tr><tr class="thread" id="thread3438788">
+	<td class="star"></td>
+	<td class="icon"><a href="/forumdisplay.php?forumid=0&amp;posticon=105"><img src="http://fi.somethingawful.com/forums/posticons/icons-08/tech.png#105" alt=""></a></td>
+	<td class="title">
+		<div class="title_inner">
+			<div class="lastseen"><a href="/showthread.php?action=resetseen&amp;threadid=3438788" class="x" title="Mark as unread">X</a></div>
+			<div class="info">
+				<a href="showthread.php?threadid=3438788" class="thread_title">5by5 - they all left</a>
+				<div class="title_pages">Pages: <a class="pagenumber" href="showthread.php?threadid=3438788&amp;pagenumber=1">1</a><a class="pagenumber" href="showthread.php?threadid=3438788&amp;pagenumber=2">2</a><a class="pagenumber" href="showthread.php?threadid=3438788&amp;pagenumber=3">3</a><a class="pagenumber" href="showthread.php?threadid=3438788&amp;pagenumber=4">4</a><a class="pagenumber" href="showthread.php?threadid=3438788&amp;pagenumber=5">5</a></div>
+			</div>
+		</div>
+	</td>
+	<td class="author"><a href="member.php?action=getinfo&amp;userid=51629">what is this</a></td>
+	<td class="replies">192</td>
+	<td class="views">10484</td>
+	<td class="rating">&nbsp;</td>
+	<td class="lastpost"><div class="date">05:27 Jan  2, 2013</div><a class="author" href="showthread.php?goto=lastpost&amp;threadid=3438788">WHOIS John Galt</a></td>
+</tr><tr class="thread" id="thread2841382">
+	<td class="star"></td>
+	<td class="icon"><a href="/forumdisplay.php?forumid=0&amp;posticon=116"><img src="http://fi.somethingawful.com/forums/posticons/icons-08/photos.png#116" alt=""></a></td>
+	<td class="title">
+		<div class="title_inner">
+			<div class="lastseen"><a href="/showthread.php?action=resetseen&amp;threadid=2841382" class="x" title="Mark as unread">X</a></div>
+			<div class="info">
+				<a href="showthread.php?threadid=2841382" class="thread_title">Post screenshots of stuff you're working on!</a>
+				<div class="title_pages">Pages: <a class="pagenumber" href="showthread.php?threadid=2841382&amp;pagenumber=1">1</a><a class="pagenumber" href="showthread.php?threadid=2841382&amp;pagenumber=2">2</a><a class="pagenumber" href="showthread.php?threadid=2841382&amp;pagenumber=3">3</a><a class="pagenumber" href="showthread.php?threadid=2841382&amp;pagenumber=4">4</a><a class="pagenumber" href="showthread.php?threadid=2841382&amp;pagenumber=5">5</a><a class="pagenumber" href="showthread.php?threadid=2841382&amp;pagenumber=6">6</a><a class="pagenumber" href="showthread.php?threadid=2841382&amp;pagenumber=7">7</a>... <a class="pagenumber" href="showthread.php?threadid=2841382&amp;goto=lastpost">Last</a></div>
+			</div>
+		</div>
+	</td>
+	<td class="author"><a href="member.php?action=getinfo&amp;userid=87026">Sir Davey</a></td>
+	<td class="replies">3998</td>
+	<td class="views">754408</td>
+	<td class="rating"><img src="http://fi.somethingawful.com/rate/default/5stars.gif" alt="" title="31 votes - 4.69 average"></td>
+	<td class="lastpost"><div class="date">18:57 Jan  1, 2013</div><a class="author" href="showthread.php?goto=lastpost&amp;threadid=2841382">Contains Acetone</a></td>
 </tr>
 	</tbody>
 </table>
@@ -275,11 +368,11 @@ There are two ways to delete bookmarks.  You can either click on the star icon u
 <li>- <a href="/stats.php">Posting Gloryhole</a></li>
 <li>- <a href="/banlist.php">Leper's Colony</a></li>
 <li>- <a href="/supportmail.php">Support</a></li>
-<li>- <a href="/account.php?action=logout&amp;ma=fabe059a">Log Out</a></li>
+<li>- <a href="/account.php?action=logout&amp;ma=f26fad4c">Log Out</a></li>
 
 </ul>
 	<div id="copyright">
-		Powered by: vBulletin Version 2.2.9 (<a href="/CHANGES">SAVB-v2.1.9</a>)<br>
+		Powered by: vBulletin Version 2.2.9 (<a href="/CHANGES">SAVB-v2.1.12</a>)<br>
 		Copyright &copy;2000, 2001, Jelsoft Enterprises Limited.<br>
 		Copyright &copy;2012, Something Awful LLC<br>
 	</div>
@@ -309,20 +402,20 @@ There are two ways to delete bookmarks.  You can either click on the star icon u
 	} catch(e) {};
 
 	// indie
-	try {
-		if(document.location.hostname != 'forums.somethingawful.com')
-			throw undefined;
+	// try {
+	// 	if(document.location.hostname != 'forums.somethingawful.com')
+	// 		throw undefined;
 
-		$(document).ready(function() {
-			var ic_element = document.createElement('script');
-			ic_element.type = 'text/javascript';
-			ic_element.async = true;
-			ic_element.id = 'ic_annonymous_pixel';
-			ic_element.src = 'http://pixel.indieclick.com/annonymous/domain/somethingawful.com/reach/script_ic.js';
-			var ic_script = document.getElementsByTagName('script')[0];
-			ic_script.parentNode.insertBefore(ic_element, ic_script);
-		});
-	} catch(e) {};
+	// 	$(document).ready(function() {
+	// 		var ic_element = document.createElement('script');
+	// 		ic_element.type = 'text/javascript';
+	// 		ic_element.async = true;
+	// 		ic_element.id = 'ic_annonymous_pixel';
+	// 		ic_element.src = 'http://pixel.indieclick.com/annonymous/domain/somethingawful.com/reach/script_ic.js';
+	// 		var ic_script = document.getElementsByTagName('script')[0];
+	// 		ic_script.parentNode.insertBefore(ic_element, ic_script);
+	// 	});
+	// } catch(e) {};
 </script>
 <noscript><img src="http://pixel.quantserve.com/pixel/p-82vTvmw-enlng.gif" style="display:none;" border="0" height="1" width="1" alt="Quantcast"></noscript>
 
