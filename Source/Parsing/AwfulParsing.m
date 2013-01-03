@@ -66,9 +66,8 @@
 
 @end
 
-@interface ProfileParsedInfo ()
 
-@property (copy, nonatomic) NSString *userID;
+@interface ProfileParsedInfo ()
 
 @property (copy, nonatomic) NSString *username;
 

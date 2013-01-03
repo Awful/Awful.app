@@ -576,6 +576,7 @@ static NSString * Entitify(NSString *noEntities)
         dispatch_async(self.parseQueue, ^{
             ProfileParsedInfo *info = [[ProfileParsedInfo alloc] initWithHTMLData:
                                        ConvertFromWindows1252ToUTF8(data)];
+            info.userID = userID;
             dispatch_async(dispatch_get_main_queue(), ^{
                 AwfulUser *user = [AwfulUser userCreatedOrUpdatedFromProfileInfo:info];
                 if (user.profilePictureURL && [user.profilePictureURL hasPrefix:@"/"]) {

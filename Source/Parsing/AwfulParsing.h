@@ -22,7 +22,7 @@
 
 @interface ProfileParsedInfo : ParsedInfo
 
-@property (readonly, copy, nonatomic) NSString *userID;
+@property (copy, nonatomic) NSString *userID;
 
 @property (readonly, copy, nonatomic) NSString *username;
 
