@@ -79,14 +79,14 @@ static AwfulAppDelegate *_instance;
     [[AwfulDataStack sharedDataStack] deleteAllDataAndResetStack];
     
     [self showLoginFormIsAtLaunch:NO andThen:^{
-        UITabBarController *tabBar;
+        AwfulTabBarController *tabBar;
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             AwfulSplitViewController *split = (AwfulSplitViewController *)self.window.rootViewController;
             tabBar = split.viewControllers[0];
         } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-            tabBar = (UITabBarController *)self.window.rootViewController;
+            tabBar = (AwfulTabBarController *)self.window.rootViewController;
         }
-        tabBar.selectedIndex = 0;
+        tabBar.selectedViewController = tabBar.viewControllers[0];
     }];
 }
 
