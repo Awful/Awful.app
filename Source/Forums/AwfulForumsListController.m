@@ -50,6 +50,11 @@
     return self;
 }
 
+- (void)dealloc
+{
+    [self stopObservingReachabilityChanges];
+}
+
 - (NSFetchedResultsController *)createFetchedResultsController
 {
     NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulForum entityName]];
@@ -149,6 +154,19 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
                          forState:UIControlStateSelected];
 }
 
+- (void)reachabilityChanged:(NSNotification *)note
+{
+    if ([self refreshOnAppear]) [self refresh];
+}
+
+- (void)stopObservingReachabilityChanges
+{
+    [[NSNotificationCenter defaultCenter]
+     removeObserver:self
+     name:AFNetworkingReachabilityDidChangeNotification
+     object:nil];
+}
+
 #pragma mark - AwfulTableViewController
 
 - (void)refresh
@@ -177,7 +195,10 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
     if (!IsLoggedIn()) return NO;
     if (![AwfulHTTPClient client].reachable) return NO;
     if (!self.lastRefresh) return YES;
-    return [[NSDate date] timeIntervalSinceDate:self.lastRefresh] > 60 * 60 * 20;
+    if ([[NSDate date] timeIntervalSinceDate:self.lastRefresh] > 60 * 60 * 20) return YES;
+    if ([self.fetchedResultsController.fetchedObjects count] == 0) return YES;
+    if ([AwfulForum firstMatchingPredicate:@"index = -1"]) return YES;
+    return NO;
 }
 
 - (void)retheme
@@ -207,6 +228,21 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
     
     // Don't show cell separators after last cell.
     self.tableView.tableFooterView = [UIView new];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(reachabilityChanged:)
+                                                 name:AFNetworkingReachabilityDidChangeNotification
+                                               object:nil];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [self stopObservingReachabilityChanges];
+    [super viewDidDisappear:animated];
 }
 
 #pragma mark - UITableViewDataSource

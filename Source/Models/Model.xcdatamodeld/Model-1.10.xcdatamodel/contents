@@ -2,7 +2,7 @@
 <model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1811" systemVersion="12C60" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="AwfulCategory" representedClassName="AwfulCategory" syncable="YES">
         <attribute name="categoryID" attributeType="String" syncable="YES"/>
-        <attribute name="index" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="index" attributeType="Integer 32" defaultValueString="-1" syncable="YES"/>
         <attribute name="name" attributeType="String" syncable="YES"/>
         <relationship name="forums" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="category" inverseEntity="AwfulForum" syncable="YES"/>
     </entity>
@@ -10,7 +10,7 @@
         <attribute name="expanded" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="favoriteIndex" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="forumID" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="index" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="index" attributeType="Integer 32" defaultValueString="-1" syncable="YES"/>
         <attribute name="isFavorite" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="lastRefresh" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
