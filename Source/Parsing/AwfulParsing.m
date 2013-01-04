@@ -817,6 +817,9 @@ static NSString * DeEntitify(NSString *withEntities)
     NSString *innerHTML = [[doc rawSearch:@"//div[" HAS_CLASS(complete_shit) "]"] lastObject];
     // Everything else just uses the postbody.
     if (!innerHTML) innerHTML = [[doc rawSearch:@"//td[" HAS_CLASS(postbody) "]"] lastObject];
+    
+    innerHTML = [self swapInCachedImagesInHTML:innerHTML];
+    
     self.innerHTML = FixSAAndlibxmlHTMLSerialization(innerHTML);
 }
 
@@ -824,6 +827,75 @@ static NSString * DeEntitify(NSString *withEntities)
 {
     return @[ @"postID", @"editable", @"beenSeen", @"innerHTML", @"postDate" ];
 }
+
+-(NSString*)swapInCachedImagesInHTML:(NSString*) html {
+    NSMutableString* post = [html mutableCopy];
+    
+    NSRegularExpression * regex = [NSRegularExpression regularExpressionWithPattern:@"\"(http://f?i.somethingawful.com/(forumsystem|images)/(emoticons|smilies)/([^\"]*).(gif|png|jpg))\""
+                                                                            options:(NSRegularExpressionCaseInsensitive)
+                                                                              error:nil
+                                   ];
+    
+    int offset = 0;
+    //match all emoticons based on src
+    NSArray *matches = [regex matchesInString:post options:NSRegularExpressionSearch range:NSMakeRange(0, post.length)];
+    for (NSTextCheckingResult *match in matches) {
+        NSRange fileNameRange = NSMakeRange([match rangeAtIndex:4].location + offset, [match rangeAtIndex:4].length);
+        NSString *filename = [post substringWithRange:fileNameRange];
+        
+        NSRange fileTypeRange = NSMakeRange([match rangeAtIndex:5].location + offset, [match rangeAtIndex:5].length);
+        NSString *filetype = [post substringWithRange:fileTypeRange];
+        NSString *replacement;
+        
+        //do we have a retina version?
+        BOOL retinaVersion = [[NSBundle mainBundle] pathForResource:[filename stringByAppendingString:@"@2x"]
+                                                             ofType:filetype] != nil;
+        //is there a retina screen
+        BOOL retinaScreen = [[UIScreen mainScreen] respondsToSelector:@selector(scale)] &&
+        [[UIScreen mainScreen] scale] == 2.00;
+        
+        //if so let's do this shit
+        if (retinaScreen && retinaVersion) {
+            //got a retina version, find out the size of the original
+            CGFloat height, width;
+            @autoreleasepool {
+                UIImage *img = [UIImage imageNamed:[NSString stringWithFormat:@"%@.%@",filename,filetype]];
+                height = img.size.height;
+                width = img.size.width;
+            }
+            
+            NSString *path = [[NSBundle mainBundle] pathForResource:[filename stringByAppendingString:@"@2x"]
+                                                             ofType:filetype];
+            
+            replacement = [NSString stringWithFormat:@"\"file://%@\" width=%.0f height=%.0f ", path, width, height];
+            NSLog(@"FYI: Using retina version of %@", filename);
+
+            
+            NSRange resultRange = [match range];
+            resultRange.location += offset; // resultRange.location is updated
+            // based on the offset updated below
+            
+            // implement your own replace functionality using
+            // replacementStringForResult:inString:offset:template:
+            // note that in the template $0 is replaced by the match
+            // make the replacement
+            
+            [post replaceCharactersInRange:resultRange withString:replacement];
+            
+            // update the offset based on the replacement
+            offset += ([replacement length] - resultRange.length);
+            //NSLog(@"%@",post);
+        }
+        
+        else {
+            //no local version, do nothing
+            //NSLog(@"FYI: no local version of %@", filename);
+        }
+        
+    }
+    return post;
+}
+
 
 @end
 

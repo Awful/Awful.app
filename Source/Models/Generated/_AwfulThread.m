@@ -57,68 +57,56 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 	return (AwfulThreadID*)[super objectID];
 }
 
-+ (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
++ (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 	
 	if ([key isEqualToString:@"hideFromListValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"hideFromList"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
 	}
 	if ([key isEqualToString:@"isBookmarkedValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"isBookmarked"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
 	}
 	if ([key isEqualToString:@"isClosedValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"isClosed"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
 	}
 	if ([key isEqualToString:@"isLockedValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"isLocked"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
 	}
 	if ([key isEqualToString:@"isStickyValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"isSticky"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
 	}
 	if ([key isEqualToString:@"numberOfPagesValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"numberOfPages"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
 	}
 	if ([key isEqualToString:@"seenValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"seen"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
 	}
 	if ([key isEqualToString:@"starCategoryValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"starCategory"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
 	}
 	if ([key isEqualToString:@"stickyIndexValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"stickyIndex"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
 	}
 	if ([key isEqualToString:@"threadVotesValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"threadVotes"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
 	}
 	if ([key isEqualToString:@"totalRepliesValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"totalReplies"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
 	}
 	if ([key isEqualToString:@"totalUnreadPostsValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"totalUnreadPosts"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
 	}
 
 	return keyPaths;

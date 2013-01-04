@@ -49,9 +49,7 @@ extern const struct AwfulForumFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSNumber* expanded;
-
 
 
 @property BOOL expandedValue;
@@ -63,9 +61,7 @@ extern const struct AwfulForumFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSNumber* favoriteIndex;
-
 
 
 @property int32_t favoriteIndexValue;
@@ -77,9 +73,7 @@ extern const struct AwfulForumFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSString* forumID;
-
 
 
 //- (BOOL)validateForumID:(id*)value_ error:(NSError**)error_;
@@ -87,9 +81,7 @@ extern const struct AwfulForumFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSNumber* index;
-
 
 
 @property int32_t indexValue;
@@ -101,9 +93,7 @@ extern const struct AwfulForumFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSNumber* isFavorite;
-
 
 
 @property BOOL isFavoriteValue;
@@ -115,9 +105,7 @@ extern const struct AwfulForumFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSDate* lastRefresh;
-
 
 
 //- (BOOL)validateLastRefresh:(id*)value_ error:(NSError**)error_;
@@ -125,9 +113,7 @@ extern const struct AwfulForumFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSString* name;
-
 
 
 //- (BOOL)validateName:(id*)value_ error:(NSError**)error_;
@@ -136,28 +122,28 @@ extern const struct AwfulForumFetchedProperties {
 
 
 
-@property (nonatomic, strong) AwfulCategory *category;
+@property (nonatomic, strong) AwfulCategory* category;
 
 //- (BOOL)validateCategory:(id*)value_ error:(NSError**)error_;
 
 
 
 
-@property (nonatomic, strong) NSOrderedSet *children;
+@property (nonatomic, strong) NSOrderedSet* children;
 
 - (NSMutableOrderedSet*)childrenSet;
 
 
 
 
-@property (nonatomic, strong) AwfulForum *parentForum;
+@property (nonatomic, strong) AwfulForum* parentForum;
 
 //- (BOOL)validateParentForum:(id*)value_ error:(NSError**)error_;
 
 
 
 
-@property (nonatomic, strong) NSSet *threads;
+@property (nonatomic, strong) NSSet* threads;
 
 - (NSMutableSet*)threadsSet;
 

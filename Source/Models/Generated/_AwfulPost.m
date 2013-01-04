@@ -44,28 +44,24 @@ const struct AwfulPostFetchedProperties AwfulPostFetchedProperties = {
 	return (AwfulPostID*)[super objectID];
 }
 
-+ (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
++ (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 	
 	if ([key isEqualToString:@"beenSeenValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"beenSeen"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
 	}
 	if ([key isEqualToString:@"editableValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"editable"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
 	}
 	if ([key isEqualToString:@"threadIndexValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"threadIndex"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
 	}
 	if ([key isEqualToString:@"threadPageValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"threadPage"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
 	}
 
 	return keyPaths;

@@ -35,9 +35,7 @@ extern const struct AwfulCategoryFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSString* categoryID;
-
 
 
 //- (BOOL)validateCategoryID:(id*)value_ error:(NSError**)error_;
@@ -45,9 +43,7 @@ extern const struct AwfulCategoryFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSNumber* index;
-
 
 
 @property int32_t indexValue;
@@ -59,9 +55,7 @@ extern const struct AwfulCategoryFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSString* name;
-
 
 
 //- (BOOL)validateName:(id*)value_ error:(NSError**)error_;
@@ -70,7 +64,7 @@ extern const struct AwfulCategoryFetchedProperties {
 
 
 
-@property (nonatomic, strong) NSSet *forums;
+@property (nonatomic, strong) NSSet* forums;
 
 - (NSMutableSet*)forumsSet;
 

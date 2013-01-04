@@ -96,7 +96,6 @@
 		1C6D3EE8168D7B1400B91A65 /* _AwfulUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D3EE7168D7B1400B91A65 /* _AwfulUser.m */; };
 		1C6D3EEB168D7B1E00B91A65 /* AwfulUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D3EEA168D7B1E00B91A65 /* AwfulUser.m */; };
 		1C6D3EF3168D89FC00B91A65 /* posts-view-219-amber.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C6D3EF2168D89FC00B91A65 /* posts-view-219-amber.css */; };
-		1C6D3EF4168D95B200B91A65 /* NSURL+QueryDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9D1166ABD0D0024AC1C /* NSURL+QueryDictionary.m */; };
 		1C6D3EF7168D97CB00B91A65 /* profile.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C6D3EF5168D97B900B91A65 /* profile.html */; };
 		1C6ED638169104150015CDD5 /* profile-view.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C6ED636169104150015CDD5 /* profile-view.html */; };
 		1C6ED63A169104340015CDD5 /* profile-view.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C6ED639169104340015CDD5 /* profile-view.js */; };
@@ -574,6 +573,33 @@
 		8C5159E2163DB796000114F6 /* RP-20a6zc0.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C5159D8163DB796000114F6 /* RP-20a6zc0.png */; };
 		8C5159E3163DB796000114F6 /* fyad-zounds.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C5159D9163DB796000114F6 /* fyad-zounds.png */; };
 		8C6F084A1653498F00B43251 /* byob-anti.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C6F08491653498F00B43251 /* byob-anti.png */; };
+		8C823037169731FA0012102E /* rolleyes@2x.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C82301C169731FA0012102E /* rolleyes@2x.gif */; };
+		8C823038169731FA0012102E /* emot-smuggo@2x.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C82301D169731FA0012102E /* emot-smuggo@2x.gif */; };
+		8C823039169731FA0012102E /* emot-stare@2x.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C82301E169731FA0012102E /* emot-stare@2x.gif */; };
+		8C82303A169731FA0012102E /* emot-unsmith@2x.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C82301F169731FA0012102E /* emot-unsmith@2x.gif */; };
+		8C82303B169731FA0012102E /* emot-v@2x.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C823020169731FA0012102E /* emot-v@2x.gif */; };
+		8C82303C169731FA0012102E /* negativeman-55f@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C823021169731FA0012102E /* negativeman-55f@2x.png */; };
+		8C82303D169731FA0012102E /* confused@2x.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C823022169731FA0012102E /* confused@2x.gif */; };
+		8C82303E169731FA0012102E /* emot-backtowork@2x.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C823023169731FA0012102E /* emot-backtowork@2x.gif */; };
+		8C82303F169731FA0012102E /* emot-buddy@2x.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C823024169731FA0012102E /* emot-buddy@2x.gif */; };
+		8C823040169731FA0012102E /* emot-eng101@2x.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C823025169731FA0012102E /* emot-eng101@2x.gif */; };
+		8C823041169731FA0012102E /* emot-frog@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C823026169731FA0012102E /* emot-frog@2x.png */; };
+		8C823042169731FA0012102E /* emot-fuckyou@2x.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C823027169731FA0012102E /* emot-fuckyou@2x.gif */; };
+		8C823043169731FA0012102E /* emot-psyduck@2x.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C823028169731FA0012102E /* emot-psyduck@2x.gif */; };
+		8C823044169731FA0012102E /* emot-q@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C823029169731FA0012102E /* emot-q@2x.png */; };
+		8C823045169731FA0012102E /* emot-razz@2x.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C82302A169731FA0012102E /* emot-razz@2x.gif */; };
+		8C823046169731FA0012102E /* emot-regd09@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C82302B169731FA0012102E /* emot-regd09@2x.png */; };
+		8C823047169731FA0012102E /* emot-smith@2x.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C82302C169731FA0012102E /* emot-smith@2x.gif */; };
+		8C823048169731FA0012102E /* emot-smug@2x.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C82302D169731FA0012102E /* emot-smug@2x.gif */; };
+		8C823049169731FA0012102E /* emot-smugdog@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C82302E169731FA0012102E /* emot-smugdog@2x.png */; };
+		8C82304A169731FA0012102E /* emot-spergin@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C82302F169731FA0012102E /* emot-spergin@2x.png */; };
+		8C82304B169731FA0012102E /* emot-toot@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C823030169731FA0012102E /* emot-toot@2x.png */; };
+		8C82304C169731FA0012102E /* emot-zombie@2x.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C823031169731FA0012102E /* emot-zombie@2x.gif */; };
+		8C82304D169731FA0012102E /* frown@2x.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C823032169731FA0012102E /* frown@2x.gif */; };
+		8C82304E169731FA0012102E /* mad@2x.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C823033169731FA0012102E /* mad@2x.gif */; };
+		8C82304F169731FA0012102E /* redface@2x.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C823034169731FA0012102E /* redface@2x.gif */; };
+		8C823050169731FA0012102E /* smile@2x.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C823035169731FA0012102E /* smile@2x.gif */; };
+		8C823051169731FA0012102E /* wink@2x.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C823036169731FA0012102E /* wink@2x.gif */; };
 		8C87428E1655FD990018AC6C /* byob.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C87428D1655FD990018AC6C /* byob.png */; };
 		8C8742911655FDAE0018AC6C /* trp-laliga.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8742901655FDAE0018AC6C /* trp-laliga.png */; };
 		8C8742931655FDC10018AC6C /* mods-expert.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8742921655FDC10018AC6C /* mods-expert.png */; };
@@ -1212,6 +1238,33 @@
 		8C5159D8163DB796000114F6 /* RP-20a6zc0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "RP-20a6zc0.png"; sourceTree = "<group>"; };
 		8C5159D9163DB796000114F6 /* fyad-zounds.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-zounds.png"; sourceTree = "<group>"; };
 		8C6F08491653498F00B43251 /* byob-anti.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "byob-anti.png"; sourceTree = "<group>"; };
+		8C82301C169731FA0012102E /* rolleyes@2x.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "rolleyes@2x.gif"; sourceTree = "<group>"; };
+		8C82301D169731FA0012102E /* emot-smuggo@2x.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "emot-smuggo@2x.gif"; sourceTree = "<group>"; };
+		8C82301E169731FA0012102E /* emot-stare@2x.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "emot-stare@2x.gif"; sourceTree = "<group>"; };
+		8C82301F169731FA0012102E /* emot-unsmith@2x.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "emot-unsmith@2x.gif"; sourceTree = "<group>"; };
+		8C823020169731FA0012102E /* emot-v@2x.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "emot-v@2x.gif"; sourceTree = "<group>"; };
+		8C823021169731FA0012102E /* negativeman-55f@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "negativeman-55f@2x.png"; sourceTree = "<group>"; };
+		8C823022169731FA0012102E /* confused@2x.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "confused@2x.gif"; sourceTree = "<group>"; };
+		8C823023169731FA0012102E /* emot-backtowork@2x.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "emot-backtowork@2x.gif"; sourceTree = "<group>"; };
+		8C823024169731FA0012102E /* emot-buddy@2x.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "emot-buddy@2x.gif"; sourceTree = "<group>"; };
+		8C823025169731FA0012102E /* emot-eng101@2x.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "emot-eng101@2x.gif"; sourceTree = "<group>"; };
+		8C823026169731FA0012102E /* emot-frog@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "emot-frog@2x.png"; sourceTree = "<group>"; };
+		8C823027169731FA0012102E /* emot-fuckyou@2x.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "emot-fuckyou@2x.gif"; sourceTree = "<group>"; };
+		8C823028169731FA0012102E /* emot-psyduck@2x.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "emot-psyduck@2x.gif"; sourceTree = "<group>"; };
+		8C823029169731FA0012102E /* emot-q@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "emot-q@2x.png"; sourceTree = "<group>"; };
+		8C82302A169731FA0012102E /* emot-razz@2x.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "emot-razz@2x.gif"; sourceTree = "<group>"; };
+		8C82302B169731FA0012102E /* emot-regd09@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "emot-regd09@2x.png"; sourceTree = "<group>"; };
+		8C82302C169731FA0012102E /* emot-smith@2x.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "emot-smith@2x.gif"; sourceTree = "<group>"; };
+		8C82302D169731FA0012102E /* emot-smug@2x.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "emot-smug@2x.gif"; sourceTree = "<group>"; };
+		8C82302E169731FA0012102E /* emot-smugdog@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "emot-smugdog@2x.png"; sourceTree = "<group>"; };
+		8C82302F169731FA0012102E /* emot-spergin@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "emot-spergin@2x.png"; sourceTree = "<group>"; };
+		8C823030169731FA0012102E /* emot-toot@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "emot-toot@2x.png"; sourceTree = "<group>"; };
+		8C823031169731FA0012102E /* emot-zombie@2x.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "emot-zombie@2x.gif"; sourceTree = "<group>"; };
+		8C823032169731FA0012102E /* frown@2x.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "frown@2x.gif"; sourceTree = "<group>"; };
+		8C823033169731FA0012102E /* mad@2x.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "mad@2x.gif"; sourceTree = "<group>"; };
+		8C823034169731FA0012102E /* redface@2x.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "redface@2x.gif"; sourceTree = "<group>"; };
+		8C823035169731FA0012102E /* smile@2x.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "smile@2x.gif"; sourceTree = "<group>"; };
+		8C823036169731FA0012102E /* wink@2x.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "wink@2x.gif"; sourceTree = "<group>"; };
 		8C87428D1655FD990018AC6C /* byob.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = byob.png; sourceTree = "<group>"; };
 		8C8742901655FDAE0018AC6C /* trp-laliga.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trp-laliga.png"; sourceTree = "<group>"; };
 		8C8742921655FDC10018AC6C /* mods-expert.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mods-expert.png"; sourceTree = "<group>"; };
@@ -2191,9 +2244,44 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		8C82301A169731D70012102E /* Smilies */ = {
+			isa = PBXGroup;
+			children = (
+				8C82301C169731FA0012102E /* rolleyes@2x.gif */,
+				8C82301D169731FA0012102E /* emot-smuggo@2x.gif */,
+				8C82301E169731FA0012102E /* emot-stare@2x.gif */,
+				8C82301F169731FA0012102E /* emot-unsmith@2x.gif */,
+				8C823020169731FA0012102E /* emot-v@2x.gif */,
+				8C823021169731FA0012102E /* negativeman-55f@2x.png */,
+				8C823022169731FA0012102E /* confused@2x.gif */,
+				8C823023169731FA0012102E /* emot-backtowork@2x.gif */,
+				8C823024169731FA0012102E /* emot-buddy@2x.gif */,
+				8C823025169731FA0012102E /* emot-eng101@2x.gif */,
+				8C823026169731FA0012102E /* emot-frog@2x.png */,
+				8C823027169731FA0012102E /* emot-fuckyou@2x.gif */,
+				8C823028169731FA0012102E /* emot-psyduck@2x.gif */,
+				8C823029169731FA0012102E /* emot-q@2x.png */,
+				8C82302A169731FA0012102E /* emot-razz@2x.gif */,
+				8C82302B169731FA0012102E /* emot-regd09@2x.png */,
+				8C82302C169731FA0012102E /* emot-smith@2x.gif */,
+				8C82302D169731FA0012102E /* emot-smug@2x.gif */,
+				8C82302E169731FA0012102E /* emot-smugdog@2x.png */,
+				8C82302F169731FA0012102E /* emot-spergin@2x.png */,
+				8C823030169731FA0012102E /* emot-toot@2x.png */,
+				8C823031169731FA0012102E /* emot-zombie@2x.gif */,
+				8C823032169731FA0012102E /* frown@2x.gif */,
+				8C823033169731FA0012102E /* mad@2x.gif */,
+				8C823034169731FA0012102E /* redface@2x.gif */,
+				8C823035169731FA0012102E /* smile@2x.gif */,
+				8C823036169731FA0012102E /* wink@2x.gif */,
+			);
+			path = Smilies;
+			sourceTree = "<group>";
+		};
 		8CCD498115B497A700E5893B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				8C82301A169731D70012102E /* Smilies */,
 				8CCD498215B497A700E5893B /* Awful-Info.plist */,
 				1C96D0B61682BBF10043B194 /* Browsers.plist */,
 				1CBD5243162B5C2500928740 /* Custom CSS README.txt */,
@@ -3617,6 +3705,33 @@
 				8CC4AD6316907DD100639C80 /* posts-view-26.css in Resources */,
 				8C9834E2169091CE009F0CD6 /* fyad-bubble.png in Resources */,
 				1C8BE51B16917FB60022B331 /* posts-view-25.css in Resources */,
+				8C823037169731FA0012102E /* rolleyes@2x.gif in Resources */,
+				8C823038169731FA0012102E /* emot-smuggo@2x.gif in Resources */,
+				8C823039169731FA0012102E /* emot-stare@2x.gif in Resources */,
+				8C82303A169731FA0012102E /* emot-unsmith@2x.gif in Resources */,
+				8C82303B169731FA0012102E /* emot-v@2x.gif in Resources */,
+				8C82303C169731FA0012102E /* negativeman-55f@2x.png in Resources */,
+				8C82303D169731FA0012102E /* confused@2x.gif in Resources */,
+				8C82303E169731FA0012102E /* emot-backtowork@2x.gif in Resources */,
+				8C82303F169731FA0012102E /* emot-buddy@2x.gif in Resources */,
+				8C823040169731FA0012102E /* emot-eng101@2x.gif in Resources */,
+				8C823041169731FA0012102E /* emot-frog@2x.png in Resources */,
+				8C823042169731FA0012102E /* emot-fuckyou@2x.gif in Resources */,
+				8C823043169731FA0012102E /* emot-psyduck@2x.gif in Resources */,
+				8C823044169731FA0012102E /* emot-q@2x.png in Resources */,
+				8C823045169731FA0012102E /* emot-razz@2x.gif in Resources */,
+				8C823046169731FA0012102E /* emot-regd09@2x.png in Resources */,
+				8C823047169731FA0012102E /* emot-smith@2x.gif in Resources */,
+				8C823048169731FA0012102E /* emot-smug@2x.gif in Resources */,
+				8C823049169731FA0012102E /* emot-smugdog@2x.png in Resources */,
+				8C82304A169731FA0012102E /* emot-spergin@2x.png in Resources */,
+				8C82304B169731FA0012102E /* emot-toot@2x.png in Resources */,
+				8C82304C169731FA0012102E /* emot-zombie@2x.gif in Resources */,
+				8C82304D169731FA0012102E /* frown@2x.gif in Resources */,
+				8C82304E169731FA0012102E /* mad@2x.gif in Resources */,
+				8C82304F169731FA0012102E /* redface@2x.gif in Resources */,
+				8C823050169731FA0012102E /* smile@2x.gif in Resources */,
+				8C823051169731FA0012102E /* wink@2x.gif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3690,7 +3805,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "PATH=/usr/local/bin:$PATH\ncommand -v mogenerator >/dev/null 2>&1 || { echo >&2 \"Please install mogenerator! brew install mogenerator\"; exit 0; }\nMODELS=\"$PROJECT_DIR/Source/Models\"\nmogenerator --model \"$MODELS/Model.xcdatamodeld\" --output-dir \"$MODELS\" --machine-dir \"$MODELS/Generated\" --template-var arc=true\n";
+			shellScript = "PATH=/usr/local/bin:$PATH\ncommand -v mogenerator >/dev/null 2>&1 || { echo >&2 \"Please install mogenerator! brew install mogenerator\"; exit 0; }\nMODELS=\"$PROJECT_DIR/Source/Models\"\nmogenerator --model \"$MODELS/Model.xcdatamodeld/Model-1.10.xcdatamodel\" --output-dir \"$MODELS\" --machine-dir \"$MODELS/Generated\" --template-var arc=true";
 		};
 		1CE2D9A916688CDE0024AC1C /* Update image tag list */ = {
 			isa = PBXShellScriptBuildPhase;

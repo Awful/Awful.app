@@ -71,9 +71,7 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSString* aboutMe;
-
 
 
 //- (BOOL)validateAboutMe:(id*)value_ error:(NSError**)error_;
@@ -81,9 +79,7 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSNumber* administrator;
-
 
 
 @property BOOL administratorValue;
@@ -95,9 +91,7 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSString* aimName;
-
 
 
 //- (BOOL)validateAimName:(id*)value_ error:(NSError**)error_;
@@ -105,9 +99,7 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSString* avatarURL;
-
 
 
 //- (BOOL)validateAvatarURL:(id*)value_ error:(NSError**)error_;
@@ -115,9 +107,7 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSString* customTitle;
-
 
 
 //- (BOOL)validateCustomTitle:(id*)value_ error:(NSError**)error_;
@@ -125,9 +115,7 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSString* gender;
-
 
 
 //- (BOOL)validateGender:(id*)value_ error:(NSError**)error_;
@@ -135,9 +123,7 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSString* homepageURL;
-
 
 
 //- (BOOL)validateHomepageURL:(id*)value_ error:(NSError**)error_;
@@ -145,9 +131,7 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSString* icqName;
-
 
 
 //- (BOOL)validateIcqName:(id*)value_ error:(NSError**)error_;
@@ -155,9 +139,7 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSString* interests;
-
 
 
 //- (BOOL)validateInterests:(id*)value_ error:(NSError**)error_;
@@ -165,9 +147,7 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSDate* lastPost;
-
 
 
 //- (BOOL)validateLastPost:(id*)value_ error:(NSError**)error_;
@@ -175,9 +155,7 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSString* location;
-
 
 
 //- (BOOL)validateLocation:(id*)value_ error:(NSError**)error_;
@@ -185,9 +163,7 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSNumber* moderator;
-
 
 
 @property BOOL moderatorValue;
@@ -199,9 +175,7 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSString* occupation;
-
 
 
 //- (BOOL)validateOccupation:(id*)value_ error:(NSError**)error_;
@@ -209,9 +183,7 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSNumber* postCount;
-
 
 
 @property int32_t postCountValue;
@@ -223,9 +195,7 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSString* postRate;
-
 
 
 //- (BOOL)validatePostRate:(id*)value_ error:(NSError**)error_;
@@ -233,9 +203,7 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSString* profilePictureURL;
-
 
 
 //- (BOOL)validateProfilePictureURL:(id*)value_ error:(NSError**)error_;
@@ -243,9 +211,7 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSDate* regdate;
-
 
 
 //- (BOOL)validateRegdate:(id*)value_ error:(NSError**)error_;
@@ -253,9 +219,7 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSString* userID;
-
 
 
 //- (BOOL)validateUserID:(id*)value_ error:(NSError**)error_;
@@ -263,9 +227,7 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSString* username;
-
 
 
 //- (BOOL)validateUsername:(id*)value_ error:(NSError**)error_;
@@ -273,9 +235,7 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
-
 @property (nonatomic, strong) NSString* yahooName;
-
 
 
 //- (BOOL)validateYahooName:(id*)value_ error:(NSError**)error_;
@@ -284,14 +244,14 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
-@property (nonatomic, strong) NSSet *posts;
+@property (nonatomic, strong) NSSet* posts;
 
 - (NSMutableSet*)postsSet;
 
 
 
 
-@property (nonatomic, strong) NSSet *threads;
+@property (nonatomic, strong) NSSet* threads;
 
 - (NSMutableSet*)threadsSet;
 
