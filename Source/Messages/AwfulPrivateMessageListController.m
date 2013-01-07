@@ -8,6 +8,7 @@
 
 #import "AwfulPrivateMessage.h"
 #import "AwfulPrivateMessageListController.h"
+#import "AwfulPrivateMessageViewController.h"
 #import "AwfulDataStack.h"
 #import "AwfulHTTPClient+PrivateMessages.h"
 #import "AwfulThreadCell.h"
@@ -169,10 +170,12 @@
 }
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    /*
-    AwfulPM* msg = [self. objectAtIndexPath:indexPath];
-    [self performSegueWithIdentifier:@"push" sender:msg];
-     */
+    
+    AwfulPrivateMessage* msg = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    AwfulPrivateMessageViewController *vc = [[AwfulPrivateMessageViewController alloc] initWithPrivateMessage:msg];
+    
+    [self.navigationController pushViewController:vc animated:YES];
+     
 }
 /*
 -(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {

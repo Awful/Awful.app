@@ -11,5 +11,5 @@
 
 @interface PrivateMessageParsedInfo : ParsedInfo
 +(NSMutableArray *)parsePMListWithData:(NSData*)data;
-
++(NSMutableArray *)parsePM:(AwfulPrivateMessage*)message withData:(NSData*)data;
 @end

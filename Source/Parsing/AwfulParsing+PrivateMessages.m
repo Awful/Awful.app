@@ -109,23 +109,11 @@
 
 +(NSMutableArray *)parsePM:(AwfulPrivateMessage*)message withData:(NSData*)data
 {
-    //TFHpple *page_data = [[TFHpple alloc] initWithHTMLData:data];
-    /*
-     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"AwfulPM"];
-     NSError *error;
-     NSArray *existingForums = [ApplicationDelegate.managedObjectContext executeFetchRequest:request
-     error:&error
-     ];
-     NSMutableDictionary *existingDict = [NSMutableDictionary new];
-     for (AwfulForum* f in existingForums)
-     [existingDict setObject:f forKey:f.forumID];
-     
-     */
     NSArray *rows = PerformRawHTMLXPathQuery(data, @"//td[@class='postbody']");
     for (NSString* r in rows) {
         message.content = r;
     }
-    //[ApplicationDelegate saveContext];
+    [[AwfulDataStack sharedDataStack] save];
     return nil;
 }
 

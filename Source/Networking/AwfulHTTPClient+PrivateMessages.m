@@ -35,31 +35,29 @@
     return (NSOperation *)op;
 }
 
-/*
--(NSOperation *)loadPrivateMessage:(AwfulPM*)message
-                      onCompletion:(PrivateMessagesListResponseBlock)PMListResponseBlock
-                                       onError:(AwfulErrorBlock)errorBlock
+
+-(NSOperation *)loadPrivateMessage:(AwfulPrivateMessage*)message
+                           andThen:(PrivateMessagesListResponseBlock)PMListResponseBlock
 {
     //NetworkLogInfo(@"%@", THIS_METHOD);
     NSString *path = [NSString stringWithFormat:@"private.php?action=show&privatemessageid=%@", message.messageID];
     NSMutableURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
-    urlRequest.timeoutInterval = NetworkTimeoutInterval;
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
                                                                success:^(AFHTTPRequestOperation *operation, id response) {
                                                                    //NetworkLogInfo(@"completed %@", THIS_METHOD);
                                                                    NSData *responseData = (NSData *)response;
-                                                                   NSMutableArray *msgs = [AwfulPM parsePM:message withData:responseData];
+                                                                   [PrivateMessageParsedInfo parsePM:message withData:responseData];
                                                                    //[ApplicationDelegate saveContext];
                                                                    //PMListResponseBlock(msgs);
                                                                }
                                                                failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                                                                    //NetworkLogInfo(@"erred %@", THIS_METHOD);
-                                                                   errorBlock(error);
+                                                                   
                                                                }];
     [self enqueueHTTPRequestOperation:op];
     return (NSOperation *)op;
 }
-
+/*
 -(NSOperation *)sendPrivateMessage:(AwfulDraft*)draft onCompletion:(CompletionBlock)completionBlock onError:(AwfulErrorBlock)errorBlock
 {
     //NetworkLogInfo(@"%@", THIS_METHOD);
