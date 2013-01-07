@@ -544,8 +544,6 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                  NSLog(@"error %@bookmarking thread %@: %@",
                        self.thread.isBookmarkedValue ? @"un" : @"", self.thread.threadID, error);
              } else {
-                 self.thread.isBookmarkedValue = NO;
-                 [[AwfulDataStack sharedDataStack] save];
              }
          }];
     }];

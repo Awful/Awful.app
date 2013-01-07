@@ -208,6 +208,9 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
                                                                success:^(id _, id __)
     {
+        AwfulThread *thread = [AwfulThread firstMatchingPredicate:@"threadID = %@", threadID];
+        thread.isBookmarkedValue = isBookmarked;
+        [[AwfulDataStack sharedDataStack] save];
         if (callback) callback(nil);
     } failure:^(id _, NSError *error) {
         if (callback) callback(error);
