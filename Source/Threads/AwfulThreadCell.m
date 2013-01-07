@@ -14,7 +14,7 @@
 
 @property (weak, nonatomic) UIImageView *stickyImageView;
 
-@property (readonly, weak, nonatomic) UIImageView *ratingImageView;
+@property (weak, nonatomic) UIImageView *ratingImageView;
 
 @property (nonatomic) UIColor *oldOriginalPosterTextColor;
 
