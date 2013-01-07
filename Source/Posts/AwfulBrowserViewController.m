@@ -32,6 +32,12 @@
         [sheet addButtonWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title]
                             block:^{ [browser openURL:url]; }];
     }
+    [sheet addButtonWithTitle:@"Copy URL" block:^{
+        [UIPasteboard generalPasteboard].items = @[ @{
+            (id)kUTTypeURL: self.webView.request.URL,
+            (id)kUTTypePlainText: [self.webView.request.URL absoluteString]
+        } ];
+    }];
     [sheet addCancelButtonWithTitle:@"Cancel"];
     [sheet showFromBarButtonItem:sender animated:YES];
 }
