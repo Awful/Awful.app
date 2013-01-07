@@ -23,18 +23,35 @@
 
 @implementation AwfulSettingsChoiceViewController
 
-#pragma mark - Init
-
 - (id)initWithSetting:(NSDictionary *)setting selectedValue:(id)selectedValue
 {
-    self = [super initWithStyle:UITableViewStyleGrouped];
-    if (self) {
-        self.setting = setting;
-        self.selectedValue = selectedValue;
-        self.title = [setting objectForKey:@"Title"];
-    }
+    if (!(self = [super initWithStyle:UITableViewStyleGrouped])) return nil;
+    self.setting = setting;
+    self.selectedValue = selectedValue;
+    self.title = setting[@"Title"];
     return self;
 }
+
+- (void)retheme
+{
+    self.tableView.backgroundColor = [AwfulTheme currentTheme].settingsViewBackgroundColor;
+    self.tableView.separatorColor = [AwfulTheme currentTheme].settingsCellSeparatorColor;
+}
+
+- (void)themeChanged:(NSNotification *)note
+{
+    [self retheme];
+    [self.tableView reloadData];
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:AwfulThemeDidChangeNotification
+                                                  object:nil];
+}
+
+#pragma mark - UITableViewController
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -47,7 +64,17 @@
 {
     [super viewDidLoad];
     self.tableView.backgroundView = nil;
-    self.tableView.backgroundColor = [AwfulTheme currentTheme].settingsViewBackgroundColor;
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(themeChanged:)
+                                                 name:AwfulThemeDidChangeNotification
+                                               object:nil];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self retheme];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -84,18 +111,24 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                       reuseIdentifier:CellIdentifier];
     }
-    
-    NSDictionary *choice = [[self.setting objectForKey:@"Choices"] objectAtIndex:indexPath.row];
-    
-    cell.textLabel.text = [choice objectForKey:@"Title"];
-    if ([[choice objectForKey:@"Value"] isEqual:self.selectedValue]) {
+    NSDictionary *choice = self.setting[@"Choices"][indexPath.row];
+    cell.textLabel.text = choice[@"Title"];
+    cell.textLabel.textColor = [AwfulTheme currentTheme].settingsCellTextColor;
+    if ([choice[@"Value"] isEqual:self.selectedValue]) {
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
         self.currentIndexPath = indexPath;
     } else {
         cell.accessoryType = UITableViewCellAccessoryNone;
     }
-    
+    cell.selectionStyle = [AwfulTheme currentTheme].cellSelectionStyle;
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView
+  willDisplayCell:(UITableViewCell *)cell
+forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    cell.backgroundColor = [AwfulTheme currentTheme].settingsCellBackgroundColor;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
