@@ -106,6 +106,7 @@
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
                                          duration:(NSTimeInterval)duration
 {
+    // Fix headers and footers on rotate.
     [self.tableView reloadData];
 }
 
