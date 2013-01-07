@@ -544,6 +544,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                  NSLog(@"error %@bookmarking thread %@: %@",
                        self.thread.isBookmarkedValue ? @"un" : @"", self.thread.threadID, error);
              } else {
+                 NSString *status = self.thread.isBookmarkedValue ? @"Bookmarked" : @"Unbookmarked";
+                 [SVProgressHUD showSuccessWithStatus:status];
              }
          }];
     }];
