@@ -131,6 +131,8 @@
 		<dict>
 			<key>Title</key>
 			<string>Sidebar</string>
+			<key>Explanation</key>
+			<string>Rotate your device after setting.</string>
 			<key>Device</key>
 			<string>iPad</string>
 			<key>Settings</key>
