@@ -7,7 +7,6 @@
 //
 
 #import "AwfulSettingsChoiceViewController.h"
-#import "AwfulSettingsViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 
@@ -21,13 +20,14 @@
 
 @end
 
+
 @implementation AwfulSettingsChoiceViewController
 
-- (id)initWithSetting:(NSDictionary *)setting selectedValue:(id)selectedValue
+- (id)initWithSetting:(NSDictionary *)setting
 {
     if (!(self = [super initWithStyle:UITableViewStyleGrouped])) return nil;
     self.setting = setting;
-    self.selectedValue = selectedValue;
+    self.selectedValue = [[NSUserDefaults standardUserDefaults] valueForKey:self.setting[@"Key"]];
     self.title = setting[@"Title"];
     return self;
 }
@@ -55,7 +55,7 @@
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
-    return [self initWithSetting:nil selectedValue:nil];
+    return [self initWithSetting:nil];
 }
 
 #pragma mark - UIViewController
@@ -75,12 +75,6 @@
 {
     [super viewWillAppear:animated];
     [self retheme];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [self.settingsViewController didMakeChoice:self];
-    [super viewWillDisappear:animated];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -137,8 +131,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     if ([indexPath isEqual:self.currentIndexPath]) {
         return;
     }
-    NSDictionary *choice = [[self.setting objectForKey:@"Choices"] objectAtIndex:indexPath.row];
-    self.selectedValue = [choice objectForKey:@"Value"];
+    NSDictionary *choice = self.setting[@"Choices"][indexPath.row];
+    self.selectedValue = choice[@"Value"];
+    [AwfulSettings settings][self.setting[@"Key"]] = self.selectedValue;
     UITableViewCell *oldCell = [tableView cellForRowAtIndexPath:self.currentIndexPath];
     oldCell.accessoryType = UITableViewCellAccessoryNone;
     UITableViewCell *newCell = [tableView cellForRowAtIndexPath:indexPath];
