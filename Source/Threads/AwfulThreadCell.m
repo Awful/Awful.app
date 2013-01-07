@@ -157,7 +157,7 @@
     static const CGFloat tagRightMargin = 9;
     CGFloat textOriginX = 5;
     if (!self.imageView.hidden) textOriginX = CGRectGetMaxX(self.imageView.frame) + tagRightMargin;
-    CGFloat badgeViewEffectiveWidth = 70;
+    CGFloat badgeViewEffectiveWidth = CGRectGetWidth(unreadCountFrame) + tagRightMargin;
     if (self.editing || self.showingDeleteConfirmation || !self.showsUnread) {
         badgeViewEffectiveWidth = tagRightMargin;
     }
