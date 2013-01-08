@@ -28,6 +28,11 @@
 @property (nonatomic) id observerToken;
 @property (nonatomic) UIPopoverController *pickerPopover;
 @property (nonatomic) NSMutableDictionary *images;
+@property (nonatomic,weak) AwfulAlertView* confirmationAlert;
+
+- (void)cancel;
+- (void)send;
+- (void)didReplaceImagePlaceholders:(NSString*)newMessageString;
 
 @end
 

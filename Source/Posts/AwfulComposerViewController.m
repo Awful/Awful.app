@@ -50,7 +50,7 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
     _cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel"
                                                      style:UIBarButtonItemStyleBordered
                                                     target:self
-                                                    action:@selector(cancel)];
+                                                    action:@selector(hitCancel)];
     return _cancelButton;
 }
 
@@ -97,26 +97,30 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
     [self retheme];
 }
 
+-(AwfulAlertView*) confirmationAlert
+{
+    AwfulAlertView *alert = [AwfulAlertView new];
+    alert.title = @"Really send";
+    alert.message = @"Really send?";
+    [alert addCancelButtonWithTitle:@"Nope"
+                              block:^{ [self.composerTextView becomeFirstResponder]; }];
+    [alert addButtonWithTitle:self.sendButton.title block:^{ }];
+    return alert;
+}
+
 - (void)hitSend
 {
     if (self.imageUploadCancelToken) return;
     [self.composerTextView resignFirstResponder];
     self.composerTextView.userInteractionEnabled = NO;
     if (AwfulSettings.settings.confirmBeforeReplying) {
-        AwfulAlertView *alert = [AwfulAlertView new];
-        alert.title = @"Incoming Forums Superstar";
-        alert.message = @"Does my reply offer any significant advice or help "
-        "contribute to the conversation in any fashion?";
-        [alert addCancelButtonWithTitle:@"Nope"
-                                  block:^{ [self.composerTextView becomeFirstResponder]; }];
-        [alert addButtonWithTitle:self.sendButton.title block:^{ [self send]; }];
-        [alert show];
+        [self.confirmationAlert show];
     } else {
-        [self send];
+        [self prepareToSend];
     }
 }
 
-- (void)send
+- (void)prepareToSend
 {
     [self.networkOperation cancel];
     
@@ -139,11 +143,11 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
         if (rangeOfKey.location == NSNotFound) continue;
         [imageKeys addObject:[reply substringWithRange:rangeOfKey]];
     }
-    /*
+    
     if ([imageKeys count] == 0) {
-        [self completeReply:reply
-withImagePlaceholderResults:placeholderResults
-            replacementURLs:nil];
+        [self replaceImagePlaceholdersForString:reply
+                    withImagePlaceholderResults:placeholderResults
+                                replacementURLs:nil];
         return;
     }
     [SVProgressHUD showWithStatus:@"Uploading images…"];
@@ -155,7 +159,7 @@ withImagePlaceholderResults:placeholderResults
                                    {
                                        self.imageUploadCancelToken = nil;
                                        if (!error) {
-                                           [self completeReply:reply
+                                           [self replaceImagePlaceholdersForString:reply
                                    withImagePlaceholderResults:placeholderResults
                                                replacementURLs:[NSDictionary dictionaryWithObjects:urls forKeys:imageKeys]];
                                            return;
@@ -165,9 +169,53 @@ withImagePlaceholderResults:placeholderResults
                                                                error:error
                                                          buttonTitle:@"Fiddlesticks"];
                                    }];
-     */
+     
 }
 
+- (void)replaceImagePlaceholdersForString:(NSString *)reply
+     withImagePlaceholderResults:(NSArray *)placeholderResults
+                 replacementURLs:(NSDictionary *)replacementURLs
+{
+    //[SVProgressHUD showWithStatus:self.thread ? @"Replying…" : @"Editing…"
+    //                     maskType:SVProgressHUDMaskTypeClear];
+    
+    if ([placeholderResults count] > 0) {
+        NSMutableString *replacedReply = [reply mutableCopy];
+        NSInteger offset = 0;
+        for (__strong NSTextCheckingResult *result in placeholderResults) {
+            result = [result resultByAdjustingRangesWithOffset:offset];
+            if ([result rangeAtIndex:3].location == NSNotFound) return;
+            NSString *key = [reply substringWithRange:[result rangeAtIndex:3]];
+            NSString *url = [replacementURLs[key] absoluteString];
+            NSUInteger priorLength = [replacedReply length];
+            if (url) {
+                NSRange rangeOfURL = [result rangeAtIndex:2];
+                rangeOfURL.location += offset;
+                [replacedReply replaceCharactersInRange:rangeOfURL withString:url];
+            } else {
+                NSLog(@"found no associated image URL, so stripping tag %@",
+                      [replacedReply substringWithRange:result.range]);
+                [replacedReply replaceCharactersInRange:result.range withString:@""];
+            }
+            offset += ([replacedReply length] - priorLength);
+        }
+        reply = replacedReply;
+    }
+    
+    [self.composerTextView resignFirstResponder];
+    
+    [self didReplaceImagePlaceholders:reply];
+}
+
+- (void)didReplaceImagePlaceholders:(NSString *)newMessageString {
+    //subclasses need handle the new message string
+    [self send];
+}
+
+
+-(void) send {
+    [NSException raise:@"Subclass must override" format:nil];
+}
 
 #pragma mark - Menu items
 

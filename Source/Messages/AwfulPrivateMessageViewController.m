@@ -8,6 +8,7 @@
 
 #import "AwfulPrivateMessageViewController.h"
 #import "AwfulPrivateMessage.h"
+#import "AwfulPMComposerViewController.h"
 #import "AwfulDataStack.h"
 //#import "AwfulHTTPClient+PrivateMessages.h"
 //#import "AwfulPostCell.h"
@@ -29,9 +30,10 @@
     [super viewDidLoad];
     self.navigationItem.leftBarButtonItem = nil;
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:(UIBarButtonSystemItemReply)
-                                                                                           target:nil
-                                                                                           action:nil
+    self.navigationItem.rightBarButtonItem =[[UIBarButtonItem alloc]
+                                             initWithBarButtonSystemItem:(UIBarButtonSystemItemReply)
+                                                                  target:self
+                                                                  action:@selector(reply)
                                               ];
 }
 
@@ -102,6 +104,14 @@
 -(NSString*)submitString {
     return nil;
 }
+
+-(void) reply {
+    AwfulPMComposerViewController *writer = [AwfulPMComposerViewController new];
+    [writer replyToPrivateMessage:self.privateMessage];
     
+    [self.navigationController pushViewController:writer animated:YES];
+
+}
+
 
 @end

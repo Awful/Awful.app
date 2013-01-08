@@ -22,10 +22,10 @@
 }
 
 
-- (void)sendEdit:(NSString *)edit
+- (void)send
 {
     id op = [[AwfulHTTPClient client] editPostWithID:self.post.postID
-                                                text:edit
+                                                text:self.reply
                                              andThen:^(NSError *error)
              {
                  if (error) {
@@ -37,5 +37,17 @@
                  [self.delegate composerViewController:self didSend:self.post];
              }];
     self.networkOperation = op;
+}
+
+-(AwfulAlertView*) confirmationAlert
+{
+    AwfulAlertView *alert = [AwfulAlertView new];
+    alert.title = @"Save Edits?";
+    alert.message = @"Are you sure you fixed all the mistakes in "
+    "your post? I find that very hard to believe.";
+    [alert addCancelButtonWithTitle:@"Nope"
+                              block:^{ [self.composerTextView becomeFirstResponder]; }];
+    [alert addButtonWithTitle:self.sendButton.title block:^{ }];
+    return alert;
 }
 @end

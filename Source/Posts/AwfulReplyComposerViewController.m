@@ -32,47 +32,15 @@
     self.images = [NSMutableDictionary new];
 }
 
-
-
-- (void)completeReply:(NSString *)reply
-    withImagePlaceholderResults:(NSArray *)placeholderResults
-    replacementURLs:(NSDictionary *)replacementURLs
-{
-    [SVProgressHUD showWithStatus:self.thread ? @"Replying…" : @"Editing…"
-                         maskType:SVProgressHUDMaskTypeClear];
-    
-    if ([placeholderResults count] > 0) {
-        NSMutableString *replacedReply = [reply mutableCopy];
-        NSInteger offset = 0;
-        for (__strong NSTextCheckingResult *result in placeholderResults) {
-            result = [result resultByAdjustingRangesWithOffset:offset];
-            if ([result rangeAtIndex:3].location == NSNotFound) return;
-            NSString *key = [reply substringWithRange:[result rangeAtIndex:3]];
-            NSString *url = [replacementURLs[key] absoluteString];
-            NSUInteger priorLength = [replacedReply length];
-            if (url) {
-                NSRange rangeOfURL = [result rangeAtIndex:2];
-                rangeOfURL.location += offset;
-                [replacedReply replaceCharactersInRange:rangeOfURL withString:url];
-            } else {
-                NSLog(@"found no associated image URL, so stripping tag %@",
-                      [replacedReply substringWithRange:result.range]);
-                [replacedReply replaceCharactersInRange:result.range withString:@""];
-            }
-            offset += ([replacedReply length] - priorLength);
-        }
-        reply = replacedReply;
-    }
-    
-    [self sendReply:reply];
-    
-    [self.composerTextView resignFirstResponder];
+-(void) didReplaceImagePlaceholders:(NSString *)newMessageString {
+    self.reply = newMessageString;
+    [super didReplaceImagePlaceholders:newMessageString];
 }
 
-- (void)sendReply:(NSString *)reply
+- (void)send
 {
     id op = [[AwfulHTTPClient client] replyToThreadWithID:self.thread.threadID
-                                                     text:reply
+                                                     text:self.reply
                                                   andThen:^(NSError *error, NSString *postID)
              {
                  if (error) {
@@ -87,5 +55,16 @@
 }
 
 
+-(AwfulAlertView*) confirmationAlert
+{
+    AwfulAlertView *alert = [AwfulAlertView new];
+    alert.title = @"Incoming Forums Superstar";
+    alert.message = @"Does my reply offer any significant advice or help "
+    "contribute to the conversation in any fashion?";
+    [alert addCancelButtonWithTitle:@"Nope"
+                                           block:^{ [self.composerTextView becomeFirstResponder]; }];
+    [alert addButtonWithTitle:self.sendButton.title block:^{ }];
+    return alert;
+}
 
 @end

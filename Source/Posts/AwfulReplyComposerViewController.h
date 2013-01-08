@@ -12,6 +12,7 @@
 
 @property (nonatomic) AwfulThread *thread;
 @property (nonatomic) AwfulPost *post;
+@property (nonatomic,strong) NSString* reply;
 
 - (void)replyToThread:(AwfulThread *)thread withInitialContents:(NSString *)contents;
 
