@@ -64,21 +64,19 @@
 
 - (void)send
 {
-    /*
-    id op = [[AwfulHTTPClient client] replyToThreadWithID:self.thread.threadID
-                                                     text:reply
-                                                  andThen:^(NSError *error, NSString *postID)
+    
+    id op = [[AwfulHTTPClient client] sendPrivateMessage:self.draft
+                                                 andThen:^(NSError *error, AwfulPrivateMessage *message)
              {
                  if (error) {
                      [SVProgressHUD dismiss];
                      [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
                      return;
                  }
-                 [SVProgressHUD showSuccessWithStatus:@"Replied"];
-                 [self.delegate replyViewController:self didReplyToThread:self.thread];
+                 [SVProgressHUD showSuccessWithStatus:@"Sent"];
              }];
     self.networkOperation = op;
-     */
+     
 }
 
 -(AwfulAlertView*) confirmationAlert

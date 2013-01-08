@@ -7,17 +7,15 @@
 //
 
 #import "AwfulHTTPClient.h"
-//#import "AwfulDraft.h"
-
-typedef void (^PrivateMessagesListResponseBlock)(NSError* error, NSMutableArray *messages);
+#import "AwfulPrivateMessage.h"
 
 @interface AwfulHTTPClient (PrivateMessages)
 
--(NSOperation *)privateMessageListAndThen:(PrivateMessagesListResponseBlock)PMListResponseBlock;
+-(NSOperation *)privateMessageListAndThen:(void (^)(NSError *error, NSArray *messages))callback;
 
-//-(NSOperation *)sendPrivateMessage:(AwfulDraft*)draft onCompletion:(CompletionBlock)completionBlock onError:(AwfulErrorBlock)errorBlock;
+-(NSOperation *)sendPrivateMessage:(AwfulPrivateMessage*)draft
+                           andThen:(void (^)(NSError *error, AwfulPrivateMessage *message))callback;
 
-//-(NSOperation *)loadPrivateMessage:(AwfulPM*)message
-//                      onCompletion:(PrivateMessagesListResponseBlock)PMListResponseBlock
-//                           onError:(AwfulErrorBlock)errorBlock;
+-(NSOperation *)loadPrivateMessage:(AwfulPrivateMessage*)message
+                           andThen:(void (^)(NSError *error, AwfulPrivateMessage* message))callback;
 @end

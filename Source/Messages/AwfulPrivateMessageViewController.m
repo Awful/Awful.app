@@ -10,7 +10,7 @@
 #import "AwfulPrivateMessage.h"
 #import "AwfulPMComposerViewController.h"
 #import "AwfulDataStack.h"
-//#import "AwfulHTTPClient+PrivateMessages.h"
+#import "AwfulHTTPClient+PrivateMessages.h"
 //#import "AwfulPostCell.h"
 
 #define AwfulPostCellTextKey @"AwfulPostCellTextKey"
@@ -35,6 +35,23 @@
                                                                   target:self
                                                                   action:@selector(reply)
                                               ];
+}
+
+-(BOOL) refreshOnAppear {
+    return (self.privateMessage.content == nil);
+}
+
+- (void)refresh
+{
+    [super refresh];
+    
+    [self.networkOperation cancel];
+    self.networkOperation = [[AwfulHTTPClient client]
+                             loadPrivateMessage:self.privateMessage andThen:^(NSError *error, AwfulPrivateMessage *message) {
+                                 self.refreshing = NO;
+                                 [self.tableView reloadData];
+                             }];
+    
 }
 
 -(NSInteger) numberOfSectionsInTableView:(UITableView *)tableView {
@@ -88,7 +105,7 @@
                        ],
                       [NSDictionary dictionaryWithObjectsAndKeys:
                        @"AwfulPMContentCell", AwfulPostCellTextKey,
-                       @"nothing yet", @"AwfulPostCellPMKey",
+                       self.privateMessage.content, AwfulPostCellDetailTextKey,
                        nil
                        ],
                       nil

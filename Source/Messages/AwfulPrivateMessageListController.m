@@ -83,7 +83,7 @@
     
     [self.networkOperation cancel];
     self.networkOperation = [[AwfulHTTPClient client]
-                             privateMessageListAndThen:^(NSError *error, NSMutableArray *messages) {
+                             privateMessageListAndThen:^(NSError *error, NSArray *messages) {
                                  self.refreshing = NO;
     }];
      

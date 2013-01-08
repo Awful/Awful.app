@@ -12,7 +12,7 @@
 
 @implementation AwfulHTTPClient (PrivateMessages)
 
--(NSOperation *)privateMessageListAndThen:(PrivateMessagesListResponseBlock)PMListResponseBlock
+-(NSOperation *)privateMessageListAndThen:(void (^)(NSError *error, NSArray *messages))callback
 {
     //NetworkLogInfo(@"%@", THIS_METHOD);
     NSString *path = [NSString stringWithFormat:@"private.php"];
@@ -25,11 +25,11 @@
                                                                    NSMutableArray *msgs = [PrivateMessageParsedInfo parsePMListWithData:responseData];
                                                                    
                                                                    NSError *error;
-                                                                   PMListResponseBlock(error, msgs);
+                                                                   callback(error, msgs);
                                                                } 
                                                                failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                                                                    //NetworkLogInfo(@"erred %@", THIS_METHOD);
-                                                                   PMListResponseBlock(error, nil);
+                                                                   callback(error, nil);
                                                                }];
     [self enqueueHTTPRequestOperation:op];
     return (NSOperation *)op;
@@ -37,7 +37,7 @@
 
 
 -(NSOperation *)loadPrivateMessage:(AwfulPrivateMessage*)message
-                           andThen:(PrivateMessagesListResponseBlock)PMListResponseBlock
+                           andThen:(void (^)(NSError *error, AwfulPrivateMessage *message))callback
 {
     //NetworkLogInfo(@"%@", THIS_METHOD);
     NSString *path = [NSString stringWithFormat:@"private.php?action=show&privatemessageid=%@", message.messageID];
@@ -48,10 +48,10 @@
                                                                    NSData *responseData = (NSData *)response;
                                                                    [PrivateMessageParsedInfo parsePM:message withData:responseData];
                                                                    //[ApplicationDelegate saveContext];
-                                                                   //PMListResponseBlock(msgs);
+                                                                   callback(nil, message);
                                                                }
                                                                failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                                                   //NetworkLogInfo(@"erred %@", THIS_METHOD);
+                                                                   callback(error, nil);
                                                                    
                                                                }];
     [self enqueueHTTPRequestOperation:op];
@@ -59,6 +59,7 @@
 }
 
 -(NSOperation *)sendPrivateMessage:(AwfulPrivateMessage*)draft
+                           andThen:(void (^)(NSError *error, AwfulPrivateMessage* message))callback
 {
     //NetworkLogInfo(@"%@", THIS_METHOD);
     //NSString *path = [NSString stringWithFormat:@"newreply.php?s=&action=newreply&threadid=%@", thread.threadID];

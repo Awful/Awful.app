@@ -107,14 +107,13 @@
     return  [href substringWithRange:range];
 }
 
-+(NSMutableArray *)parsePM:(AwfulPrivateMessage*)message withData:(NSData*)data
++(void)parsePM:(AwfulPrivateMessage*)message withData:(NSData*)data
 {
     NSArray *rows = PerformRawHTMLXPathQuery(data, @"//td[@class='postbody']");
     for (NSString* r in rows) {
         message.content = r;
     }
     [[AwfulDataStack sharedDataStack] save];
-    return nil;
 }
 
 @end
