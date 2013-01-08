@@ -19,7 +19,8 @@
 #import "AwfulPostsView.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulPullToRefreshControl.h"
-#import "AwfulReplyViewController.h"
+#import "AwfulReplyComposerViewController.h"
+#import "AwfulEditPostComposerViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulSpecificPageController.h"
 #import "AwfulTheme.h"
@@ -48,7 +49,7 @@
 @interface AwfulPostsViewController () <AwfulPostsViewDelegate, UIPopoverControllerDelegate,
                                         AwfulSpecificPageControllerDelegate,
                                         NSFetchedResultsControllerDelegate,
-                                        AwfulReplyViewControllerDelegate,
+                                        AwfulComposerViewControllerDelegate,
                                         UIScrollViewDelegate>
 
 @property (nonatomic) NSFetchedResultsController *fetchedResultsController;
@@ -588,7 +589,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 - (void)tappedCompose
 {
     [self dismissPopoverAnimated:YES];
-    AwfulReplyViewController *reply = [AwfulReplyViewController new];
+    AwfulReplyComposerViewController *reply = [AwfulReplyComposerViewController new];
     reply.delegate = self;
     [reply replyToThread:self.thread withInitialContents:nil];
     UINavigationController *nav = [reply enclosingNavigationController];
@@ -614,10 +615,10 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                                        buttonTitle:@"Alright"];
                      return;
                  }
-                 AwfulReplyViewController *reply = [AwfulReplyViewController new];
-                 reply.delegate = self;
-                 [reply editPost:post text:text];
-                 UINavigationController *nav = [reply enclosingNavigationController];
+                 AwfulEditPostComposerViewController *edit = [AwfulEditPostComposerViewController new];
+                 edit.delegate = self;
+                 [edit editPost:post text:text];
+                 UINavigationController *nav = [edit enclosingNavigationController];
                  [self presentViewController:nav animated:YES completion:nil];
              }];
         }];
@@ -633,7 +634,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                                        buttonTitle:@"Alright"];
                      return;
                  }
-                 AwfulReplyViewController *reply = [AwfulReplyViewController new];
+                 AwfulReplyComposerViewController *reply = [AwfulReplyComposerViewController new];
                  reply.delegate = self;
                  [reply replyToThread:self.thread
                   withInitialContents:[quotedText stringByAppendingString:@"\n\n"]];
@@ -1184,24 +1185,22 @@ static char KVOContext;
 
 #pragma mark - AwfulReplyViewControllerDelegate
 
-- (void)replyViewController:(AwfulReplyViewController *)replyViewController
-           didReplyToThread:(AwfulThread *)thread
-{
+- (void)composerViewController:(AwfulComposerViewController *)composerViewController didSend:(id)obj {
     [self dismissViewControllerAnimated:YES completion:^{
-        [self loadPage:AwfulPageNextUnread];
+        if ([composerViewController isMemberOfClass:[AwfulReplyComposerViewController class]])
+        {
+            [self loadPage:AwfulPageNextUnread];
+        }
+        else if ([composerViewController isMemberOfClass:[AwfulEditPostComposerViewController class]])
+        {
+            AwfulPost* post = (AwfulPost*)obj;
+            [self loadPage:post.threadPageValue];
+            [self jumpToPostWithID:post.postID];
+        }
     }];
 }
 
-- (void)replyViewController:(AwfulReplyViewController *)replyViewController
-                didEditPost:(AwfulPost *)post
-{
-    [self dismissViewControllerAnimated:YES completion:^{
-        [self loadPage:post.threadPageValue];
-        [self jumpToPostWithID:post.postID];
-    }];
-}
-
-- (void)replyViewControllerDidCancel:(AwfulReplyViewController *)replyViewController
+- (void)composerViewControllerDidCancel:(AwfulComposerViewController *)composerViewController
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }

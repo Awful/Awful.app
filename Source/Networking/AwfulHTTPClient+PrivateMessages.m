@@ -57,29 +57,30 @@
     [self enqueueHTTPRequestOperation:op];
     return (NSOperation *)op;
 }
-/*
--(NSOperation *)sendPrivateMessage:(AwfulDraft*)draft onCompletion:(CompletionBlock)completionBlock onError:(AwfulErrorBlock)errorBlock
+
+-(NSOperation *)sendPrivateMessage:(AwfulPrivateMessage*)draft
 {
     //NetworkLogInfo(@"%@", THIS_METHOD);
     //NSString *path = [NSString stringWithFormat:@"newreply.php?s=&action=newreply&threadid=%@", thread.threadID];
     //NSMutableDictionary *params = [msg dictionaryWithValuesForKeys:nil];
     NSLog(@"%@",draft.entity.attributesByName.allKeys);
     return nil;
-    
+    /*
     NSURLRequest *postRequest = [self requestWithMethod:@"POST" path:@"private.php" parameters:nil];
     
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:postRequest
                                                                     success:^(AFHTTPRequestOperation *operation, id response) {
-                                                                        if (completionBlock) completionBlock();
+                                                                        //if (completionBlock) completionBlock();
                                                                     } 
                                                                     failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                                                        if (errorBlock) errorBlock(error);
+                                                                        //if (errorBlock) errorBlock(error);
                                                                     }
                                        ];
        
     [self enqueueHTTPRequestOperation:op];
 
     return (NSOperation *)op;
+     */
 }
-*/
+
 @end

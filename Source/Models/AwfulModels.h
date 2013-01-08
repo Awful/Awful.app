@@ -3,3 +3,4 @@
 #import "AwfulPost.h"
 #import "AwfulThread.h"
 #import "AwfulUser.h"
+#import "AwfulPrivateMessage.h"

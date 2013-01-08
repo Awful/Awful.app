@@ -43,16 +43,18 @@ const struct AwfulPrivateMessageFetchedProperties AwfulPrivateMessageFetchedProp
 	return (AwfulPrivateMessageID*)[super objectID];
 }
 
-+ (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
++ (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 	
 	if ([key isEqualToString:@"messageIDValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"messageID"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
 	}
 	if ([key isEqualToString:@"repliedValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"replied"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
 	}
 
 	return keyPaths;

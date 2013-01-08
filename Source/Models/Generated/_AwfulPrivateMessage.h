@@ -43,7 +43,9 @@ extern const struct AwfulPrivateMessageFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSString* content;
+
 
 
 //- (BOOL)validateContent:(id*)value_ error:(NSError**)error_;
@@ -51,7 +53,9 @@ extern const struct AwfulPrivateMessageFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSString* from;
+
 
 
 //- (BOOL)validateFrom:(id*)value_ error:(NSError**)error_;
@@ -59,7 +63,9 @@ extern const struct AwfulPrivateMessageFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSNumber* messageID;
+
 
 
 @property int32_t messageIDValue;
@@ -71,7 +77,9 @@ extern const struct AwfulPrivateMessageFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSNumber* replied;
+
 
 
 @property BOOL repliedValue;
@@ -83,7 +91,9 @@ extern const struct AwfulPrivateMessageFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSDate* sent;
+
 
 
 //- (BOOL)validateSent:(id*)value_ error:(NSError**)error_;
@@ -91,7 +101,9 @@ extern const struct AwfulPrivateMessageFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSString* subject;
+
 
 
 //- (BOOL)validateSubject:(id*)value_ error:(NSError**)error_;
@@ -99,7 +111,9 @@ extern const struct AwfulPrivateMessageFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) id threadIconImageURL;
+
 
 
 //- (BOOL)validateThreadIconImageURL:(id*)value_ error:(NSError**)error_;
@@ -107,7 +121,9 @@ extern const struct AwfulPrivateMessageFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSString* to;
+
 
 
 //- (BOOL)validateTo:(id*)value_ error:(NSError**)error_;
