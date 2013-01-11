@@ -291,6 +291,13 @@ typedef enum {
         } else {
             cell.rating = [thread.threadRating floatValue];
         }
+        if (!thread.isClosedValue) {
+            cell.imageView.alpha = 1;
+            cell.ratingImageView.alpha = 1;
+        } else {
+            cell.imageView.alpha = 0.5;
+            cell.ratingImageView.alpha = 0.5;
+        }
     } else {
         cell.imageView.image = nil;
         cell.imageView.hidden = YES;
