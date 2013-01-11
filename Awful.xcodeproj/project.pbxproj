@@ -575,6 +575,7 @@
 		8C5159E3163DB796000114F6 /* fyad-zounds.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C5159D9163DB796000114F6 /* fyad-zounds.png */; };
 		8C6F084A1653498F00B43251 /* byob-anti.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C6F08491653498F00B43251 /* byob-anti.png */; };
 		8C7002AA169D226C00FC0B78 /* AwfulEmoticonKeyboardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7002A9169D226C00FC0B78 /* AwfulEmoticonKeyboardController.m */; };
+		8C70055616A05BBC00FC0B78 /* AwfulEmoticonChooserCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C70055516A05BBC00FC0B78 /* AwfulEmoticonChooserCellView.m */; };
 		8C87428E1655FD990018AC6C /* byob.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C87428D1655FD990018AC6C /* byob.png */; };
 		8C8742911655FDAE0018AC6C /* trp-laliga.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8742901655FDAE0018AC6C /* trp-laliga.png */; };
 		8C8742931655FDC10018AC6C /* mods-expert.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8742921655FDC10018AC6C /* mods-expert.png */; };
@@ -1216,6 +1217,8 @@
 		8C6F08491653498F00B43251 /* byob-anti.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "byob-anti.png"; sourceTree = "<group>"; };
 		8C7002A8169D226C00FC0B78 /* AwfulEmoticonKeyboardController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulEmoticonKeyboardController.h; sourceTree = "<group>"; };
 		8C7002A9169D226C00FC0B78 /* AwfulEmoticonKeyboardController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulEmoticonKeyboardController.m; sourceTree = "<group>"; };
+		8C70055416A05BBB00FC0B78 /* AwfulEmoticonChooserCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulEmoticonChooserCellView.h; sourceTree = "<group>"; };
+		8C70055516A05BBC00FC0B78 /* AwfulEmoticonChooserCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulEmoticonChooserCellView.m; sourceTree = "<group>"; };
 		8C87428D1655FD990018AC6C /* byob.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = byob.png; sourceTree = "<group>"; };
 		8C8742901655FDAE0018AC6C /* trp-laliga.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trp-laliga.png"; sourceTree = "<group>"; };
 		8C8742921655FDC10018AC6C /* mods-expert.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mods-expert.png"; sourceTree = "<group>"; };
@@ -2071,6 +2074,8 @@
 				1C96D0B41682BBA80043B194 /* AwfulExternalBrowser.m */,
 				8C7002A8169D226C00FC0B78 /* AwfulEmoticonKeyboardController.h */,
 				8C7002A9169D226C00FC0B78 /* AwfulEmoticonKeyboardController.m */,
+				8C70055416A05BBB00FC0B78 /* AwfulEmoticonChooserCellView.h */,
+				8C70055516A05BBC00FC0B78 /* AwfulEmoticonChooserCellView.m */,
 			);
 			path = Posts;
 			sourceTree = "<group>";
@@ -3834,6 +3839,7 @@
 				1C6D3EEB168D7B1E00B91A65 /* AwfulUser.m in Sources */,
 				1C6ED63D1691055E0015CDD5 /* AwfulProfileViewController.m in Sources */,
 				8C7002AA169D226C00FC0B78 /* AwfulEmoticonKeyboardController.m in Sources */,
+				8C70055616A05BBC00FC0B78 /* AwfulEmoticonChooserCellView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

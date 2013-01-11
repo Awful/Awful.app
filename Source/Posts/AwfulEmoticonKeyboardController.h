@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AwfulEmoticonKeyboardController : UIViewController <UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
+@interface AwfulEmoticonKeyboardController : UIViewController <UICollectionViewDataSource,
+                                                                UICollectionViewDelegateFlowLayout,
+                                                                UIScrollViewDelegate>
 @property (nonatomic,strong) UICollectionView* emoticonCollection;
+@property (nonatomic,strong) UIPageControl* pageControl;
 @end
