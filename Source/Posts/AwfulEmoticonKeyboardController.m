@@ -8,6 +8,9 @@
 
 #import "AwfulEmoticonKeyboardController.h"
 #import "AwfulEmoticonChooserCellView.h"
+#import "AwfulModels.h"
+#import "AwfulDataStack.h"
+#import "AwfulHTTPClient+Emoticons.h"
 
 @interface AwfulEmoticonKeyboardController ()
 
@@ -23,8 +26,40 @@
     self.view.frame = CGRectMake(0, 0, 768, 264);
     self.view.backgroundColor = [UIColor lightGrayColor];
     
+    
+    [self.fetchedResultsController performFetch:nil];
+    
+    if (self.fetchedResultsController.fetchedObjects.count == 0) {
+            //[self.networkOperation cancel];
+            id op = [[AwfulHTTPClient client] emoticonListAndThen:^(NSError *error)
+                     {
+                         if (error) {
+                         }
+                         else {
+                             
+                         }
+                     }];
+        NSLog(@"op%@",op);
+    }
+    
     [self.view addSubview:self.emoticonCollection];
     [self.view addSubview:self.pageControl];
+}
+
+- (NSFetchedResultsController *)fetchedResultsController
+{
+    if (_fetchedResultsController) return _fetchedResultsController;
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulEmoticon entityName]];
+    request.sortDescriptors = @[
+    [NSSortDescriptor sortDescriptorWithKey:@"code" ascending:YES]
+    ];
+    
+    _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                               managedObjectContext:[AwfulDataStack sharedDataStack].context
+                                                 sectionNameKeyPath:@"group"
+                                                          cacheName:nil];
+    return _fetchedResultsController;
 }
 
 
@@ -74,25 +109,31 @@
 
 #pragma mark Collection View Data Source
 -(int) collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    int test = [self.fetchedResultsController.sections[section] numberOfObjects];
+    return test;
+    
     int width = self.emoticonCollection.frame.size.width ;
     int height = self.emoticonCollection.frame.size.height;
     int numAcross = width / 100;
     int numDown = height / 40;
     
     return numAcross*numDown;
+    
 }
 
 -(int) numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    return 10;
+    return self.fetchedResultsController.sections.count;
 }
 
 -(UICollectionViewCell*) collectionView:(UICollectionView *)collectionView
                  cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
+
+    AwfulEmoticon *emoticon = [self.fetchedResultsController objectAtIndexPath:indexPath];
     AwfulEmoticonChooserCellView* cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell"
                                                                            forIndexPath:indexPath];
     
-    cell.textLabel.text = [NSString stringWithFormat:@"(%i,%i)", indexPath.section, indexPath.row];
+    cell.textLabel.text = [NSString stringWithFormat:@"(%i,%i)%@", indexPath.section, indexPath.row, emoticon.code];
     cell.backgroundColor = [UIColor grayColor];
     cell.imageView.image = [UIImage imageNamed:@"star-off-dark.png"];
     

@@ -13,4 +13,5 @@
                                                                 UIScrollViewDelegate>
 @property (nonatomic,strong) UICollectionView* emoticonCollection;
 @property (nonatomic,strong) UIPageControl* pageControl;
+@property (nonatomic,strong) NSFetchedResultsController* fetchedResultsController;
 @end
