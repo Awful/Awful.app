@@ -544,8 +544,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                  NSLog(@"error %@bookmarking thread %@: %@",
                        self.thread.isBookmarkedValue ? @"un" : @"", self.thread.threadID, error);
              } else {
-                 self.thread.isBookmarkedValue = NO;
-                 [[AwfulDataStack sharedDataStack] save];
+                 NSString *status = self.thread.isBookmarkedValue ? @"Bookmarked" : @"Unbookmarked";
+                 [SVProgressHUD showSuccessWithStatus:status];
              }
          }];
     }];
@@ -1031,6 +1031,12 @@ static char KVOContext;
         [sheet addButtonWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title]
                             block:^{ [browser openURL:url]; }];
     }
+    [sheet addButtonWithTitle:@"Copy URL" block:^{
+        [UIPasteboard generalPasteboard].items = @[ @{
+            (id)kUTTypeURL: url,
+            (id)kUTTypePlainText: urlString
+        } ];
+    }];
     [sheet addCancelButtonWithTitle:@"Cancel"];
     [sheet showFromRect:rect inView:self.postsView animated:YES];
 }

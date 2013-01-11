@@ -20,6 +20,8 @@
 
 @property (nonatomic) CGFloat rating;
 
+@property (readonly, weak, nonatomic) UIImageView *ratingImageView;
+
 @property (getter=isClosed, nonatomic) BOOL closed;
 
 @property (readonly, weak, nonatomic) UILabel *originalPosterTextLabel;

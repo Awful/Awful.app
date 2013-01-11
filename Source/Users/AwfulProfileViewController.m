@@ -35,13 +35,6 @@
     self.user = [AwfulUser firstMatchingPredicate:@"userID = %@", _userID];
 }
 
-- (void)setUser:(AwfulUser *)user
-{
-    if ([_user isEqual:user]) return;
-    _user = user;
-    [self renderUser];
-}
-
 - (void)renderUser
 {
     if (!self.user) return;
@@ -164,6 +157,7 @@
                                              selector:@selector(settingsChanged:)
                                                  name:AwfulSettingsDidChangeNotification
                                                object:nil];
+    [self renderUser];
     [[AwfulHTTPClient client] profileUserWithID:self.userID
                                         andThen:^(NSError *error, AwfulUser *user)
      {
@@ -175,6 +169,7 @@
              return;
          }
          self.user = user;
+         [self renderUser];
      }];
 }
 

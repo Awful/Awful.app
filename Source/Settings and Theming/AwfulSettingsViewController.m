@@ -103,9 +103,16 @@
     self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 18, 0);
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.tableView reloadData];
+}
+
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
                                          duration:(NSTimeInterval)duration
 {
+    // Fix headers and footers on rotate.
     [self.tableView reloadData];
 }
 
@@ -288,11 +295,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         nav.modalPresentationStyle = UIModalPresentationFormSheet;
         [self presentViewController:nav animated:YES completion:nil];
     } else {
-        id selectedValue = [[NSUserDefaults standardUserDefaults] objectForKey:setting[@"Key"]];
         AwfulSettingsChoiceViewController *choiceViewController;
-        choiceViewController = [[AwfulSettingsChoiceViewController alloc]
-                                initWithSetting:setting selectedValue:selectedValue];
-        choiceViewController.settingsViewController = self;
+        choiceViewController = [[AwfulSettingsChoiceViewController alloc] initWithSetting:setting];
         [self.navigationController pushViewController:choiceViewController animated:YES];
     }
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -301,13 +305,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (NSDictionary *)settingForIndexPath:(NSIndexPath *)indexPath
 {
     return self.sections[indexPath.section][@"Settings"][indexPath.row];
-}
-
-- (void)didMakeChoice:(AwfulSettingsChoiceViewController *)choiceViewController
-{
-    NSString *key = choiceViewController.setting[@"Key"];
-    [AwfulSettings settings][key] = choiceViewController.selectedValue;
-    [self.tableView reloadData];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section

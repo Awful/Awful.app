@@ -114,9 +114,7 @@ Awful.highlightMentionUsername = function(username){
       this.parentNode.normalize()
     })
   } else {
-    $('#posts > article > section').each(function(){
-      if ($(this).text().indexOf(username) != -1) highlightMentions(this)
-    })
+    $('#posts > article > section').each(function(){ highlightMentions(this) })
   }
 }
 
@@ -193,6 +191,7 @@ function highlightQuotes(post) {
 function highlightMentions(post) {
   var username = Awful._highlightMentionUsername
   if (nullOrUndefined(username)) return
+  var regex = new RegExp("\\b" + regexEscape(username) + "\\b", "i")
   eachTextNode($(post)[0], replaceAll)
   
   function eachTextNode(node, callback) {
@@ -203,9 +202,9 @@ function highlightMentions(post) {
   }
   function replaceAll(node) {
     if ($(node.parentNode).filter('span.highlight').length > 0) return
-    var i = node.data.indexOf(username)
-    if (i === -1) return
-    var nameNode = node.splitText(i)
+    var match = node.data.match(regex)
+    if (match === null) return
+    var nameNode = node.splitText(match.index)
     var rest = nameNode.splitText(username.length)
     var span = node.ownerDocument.createElement('span')
     span.className = 'highlight'
