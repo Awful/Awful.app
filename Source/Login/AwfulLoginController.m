@@ -11,6 +11,7 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulTextEntryCell.h"
 #import "AwfulTheme.h"
+#import "AwfulEmoticonKeyboardController.h"
 
 @interface AwfulLoginController () <UITextFieldDelegate>
 
@@ -19,6 +20,8 @@
 @property (copy, nonatomic) NSString *password;
 
 @property (nonatomic) BOOL loggingIn;
+
+@property (nonatomic,strong) AwfulEmoticonKeyboardController* emote;
 
 @end
 
@@ -109,11 +112,16 @@
         entryCell.textField.tag = indexPath.row;
         entryCell.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         entryCell.textField.autocorrectionType = UITextAutocorrectionTypeNo;
+        
+
+        
         if (indexPath.row == 0) {
             entryCell.textLabel.text = @"User Name";
             entryCell.textField.placeholder = @"Stupid Newbie";
             entryCell.textField.text = self.username;
             entryCell.textField.secureTextEntry = NO;
+            self.emote = [AwfulEmoticonKeyboardController new];
+            entryCell.textField.inputView = self.emote.view;
             entryCell.textField.returnKeyType = [self.password length] > 0 ? UIReturnKeyGo : UIReturnKeyNext;
         } else if (indexPath.row == 1) {
             entryCell.textLabel.text = @"Password";
