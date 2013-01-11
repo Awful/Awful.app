@@ -7,11 +7,13 @@
         <relationship name="forums" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="category" inverseEntity="AwfulForum" syncable="YES"/>
     </entity>
     <entity name="AwfulEmoticon" representedClassName="AwfulEmoticon" syncable="YES">
-        <attribute name="cachedString" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="cachedPath" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="code" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="desc" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="height" optional="YES" attributeType="Integer 32" defaultValueString="0.0" syncable="YES"/>
         <attribute name="urlString" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="usageCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="width" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="group" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulEmoticonGroup" inverseName="emoticons" inverseEntity="AwfulEmoticonGroup" syncable="YES"/>
     </entity>
     <entity name="AwfulEmoticonGroup" representedClassName="AwfulEmoticonGroup" syncable="YES">
@@ -96,7 +98,7 @@
         <element name="AwfulPost" positionX="160" positionY="192" width="128" height="180"/>
         <element name="AwfulThread" positionX="25" positionY="210" width="128" height="375"/>
         <element name="AwfulUser" positionX="160" positionY="192" width="128" height="375"/>
-        <element name="AwfulEmoticon" positionX="160" positionY="192" width="128" height="135"/>
+        <element name="AwfulEmoticon" positionX="160" positionY="192" width="128" height="165"/>
         <element name="AwfulEmoticonGroup" positionX="160" positionY="192" width="128" height="75"/>
     </elements>
 </model>

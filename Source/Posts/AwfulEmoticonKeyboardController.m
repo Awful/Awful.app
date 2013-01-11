@@ -24,7 +24,7 @@
 {
     [super viewDidLoad];
     self.view.frame = CGRectMake(0, 0, 768, 264);
-    self.view.backgroundColor = [UIColor lightGrayColor];
+    self.view.backgroundColor = [UIColor whiteColor];
     
     
     [self.fetchedResultsController performFetch:nil];
@@ -44,6 +44,8 @@
     
     [self.view addSubview:self.emoticonCollection];
     [self.view addSubview:self.pageControl];
+    
+    [[AwfulHTTPClient client] downloadUncachedEmoticons];
 }
 
 - (NSFetchedResultsController *)fetchedResultsController
@@ -52,6 +54,7 @@
     
     NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulEmoticon entityName]];
     request.sortDescriptors = @[
+    [NSSortDescriptor sortDescriptorWithKey:@"width" ascending:YES],
     [NSSortDescriptor sortDescriptorWithKey:@"code" ascending:YES]
     ];
     
@@ -67,7 +70,7 @@
     if (_emoticonCollection) return _emoticonCollection;
     
     UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
-    [flowLayout setItemSize:CGSizeMake(100, 40)];
+    //[flowLayout setItemSize:CGSizeMake(100, 44)];
     [flowLayout setScrollDirection:UICollectionViewScrollDirectionHorizontal];
     
     _emoticonCollection = [[UICollectionView alloc] initWithFrame:self.view.frame
@@ -84,7 +87,7 @@
     _emoticonCollection.frame = CGRectMake(0,
                                            10,
                                            self.view.frame.size.width,
-                                           200);
+                                           210);
     
     [_emoticonCollection registerClass:[AwfulEmoticonChooserCellView class] forCellWithReuseIdentifier:@"cell"];
     
@@ -133,15 +136,28 @@
     AwfulEmoticonChooserCellView* cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell"
                                                                            forIndexPath:indexPath];
     
-    cell.textLabel.text = [NSString stringWithFormat:@"(%i,%i)%@", indexPath.section, indexPath.row, emoticon.code];
-    cell.backgroundColor = [UIColor grayColor];
-    cell.imageView.image = [UIImage imageNamed:@"star-off-dark.png"];
+    cell.textLabel.text = emoticon.code;
+    
+    cell.imageView.image = [UIImage imageWithContentsOfFile:emoticon.cachedPath];
+    
     
     return (UICollectionViewCell*)cell;
 }
 
 #pragma mark – UICollectionViewDelegateFlowLayout
-
+-(CGSize) collectionView:(UICollectionView *)collectionView
+                  layout:(UICollectionViewLayout *)collectionViewLayout
+  sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    AwfulEmoticon *emoticon = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    if (CGSizeEqualToSize(emoticon.size, CGSizeZero))
+        return CGSizeMake(100, 40);
+    
+    CGSize minSize = [emoticon.code sizeWithFont:[UIFont systemFontOfSize:10]];
+    
+    return CGSizeMake(MAX(MAX(emoticon.size.width,minSize.width+5),44), 44);
+    
+}
 
 -(UIEdgeInsets) collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
 

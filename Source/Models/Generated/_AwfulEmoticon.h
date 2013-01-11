@@ -5,11 +5,13 @@
 
 
 extern const struct AwfulEmoticonAttributes {
-	__unsafe_unretained NSString *cachedString;
+	__unsafe_unretained NSString *cachedPath;
 	__unsafe_unretained NSString *code;
 	__unsafe_unretained NSString *desc;
+	__unsafe_unretained NSString *height;
 	__unsafe_unretained NSString *urlString;
 	__unsafe_unretained NSString *usageCount;
+	__unsafe_unretained NSString *width;
 } AwfulEmoticonAttributes;
 
 extern const struct AwfulEmoticonRelationships {
@@ -20,6 +22,8 @@ extern const struct AwfulEmoticonFetchedProperties {
 } AwfulEmoticonFetchedProperties;
 
 @class AwfulEmoticonGroup;
+
+
 
 
 
@@ -40,11 +44,11 @@ extern const struct AwfulEmoticonFetchedProperties {
 
 
 
-@property (nonatomic, strong) NSString* cachedString;
+@property (nonatomic, strong) NSString* cachedPath;
 
 
 
-//- (BOOL)validateCachedString:(id*)value_ error:(NSError**)error_;
+//- (BOOL)validateCachedPath:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -65,6 +69,20 @@ extern const struct AwfulEmoticonFetchedProperties {
 
 
 //- (BOOL)validateDesc:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
+@property (nonatomic, strong) NSNumber* height;
+
+
+
+@property int32_t heightValue;
+- (int32_t)heightValue;
+- (void)setHeightValue:(int32_t)value_;
+
+//- (BOOL)validateHeight:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -94,6 +112,20 @@ extern const struct AwfulEmoticonFetchedProperties {
 
 
 
+@property (nonatomic, strong) NSNumber* width;
+
+
+
+@property int32_t widthValue;
+- (int32_t)widthValue;
+- (void)setWidthValue:(int32_t)value_;
+
+//- (BOOL)validateWidth:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
 @property (nonatomic, strong) AwfulEmoticonGroup *group;
 
 //- (BOOL)validateGroup:(id*)value_ error:(NSError**)error_;
@@ -111,8 +143,8 @@ extern const struct AwfulEmoticonFetchedProperties {
 @interface _AwfulEmoticon (CoreDataGeneratedPrimitiveAccessors)
 
 
-- (NSString*)primitiveCachedString;
-- (void)setPrimitiveCachedString:(NSString*)value;
+- (NSString*)primitiveCachedPath;
+- (void)setPrimitiveCachedPath:(NSString*)value;
 
 
 
@@ -129,6 +161,15 @@ extern const struct AwfulEmoticonFetchedProperties {
 
 
 
+- (NSNumber*)primitiveHeight;
+- (void)setPrimitiveHeight:(NSNumber*)value;
+
+- (int32_t)primitiveHeightValue;
+- (void)setPrimitiveHeightValue:(int32_t)value_;
+
+
+
+
 - (NSString*)primitiveUrlString;
 - (void)setPrimitiveUrlString:(NSString*)value;
 
@@ -140,6 +181,15 @@ extern const struct AwfulEmoticonFetchedProperties {
 
 - (int32_t)primitiveUsageCountValue;
 - (void)setPrimitiveUsageCountValue:(int32_t)value_;
+
+
+
+
+- (NSNumber*)primitiveWidth;
+- (void)setPrimitiveWidth:(NSNumber*)value;
+
+- (int32_t)primitiveWidthValue;
+- (void)setPrimitiveWidthValue:(int32_t)value_;
 
 
 

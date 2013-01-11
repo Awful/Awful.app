@@ -10,6 +10,7 @@
 #import "AwfulModels.h"
 #import "AwfulParsing+Emoticons.h"
 #import "AwfulDataStack.h"
+#import "NSFileManager+UserDirectories.h"
 
 @implementation AwfulHTTPClient (Emoticons)
 -(NSOperation *)emoticonListAndThen:(void (^)(NSError *))callback
@@ -53,5 +54,76 @@
                                                                }];
     [self enqueueHTTPRequestOperation:op];
     return (NSOperation *)op;
+}
+
+
+- (void)downloadUncachedEmoticons
+{
+    NSFetchRequest *req = [NSFetchRequest fetchRequestWithEntityName:[AwfulEmoticon entityName]];
+    req.predicate = [NSPredicate predicateWithFormat:@"cachedPath == nil"];
+    
+    
+    NSArray *tagsToDownload = [[[AwfulDataStack sharedDataStack] context]
+                               executeFetchRequest:req
+                               error:nil];
+    
+    NSMutableArray *batchOfOperations = [NSMutableArray new];
+    for (AwfulEmoticon* downloadMe in tagsToDownload) {
+        //self.downloadingEmoticons = NO;
+        NSURLRequest *request = [self requestWithMethod:@"GET" path:downloadMe.urlString parameters:nil];
+        AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
+                                                                   success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                                                       NSData *data = (NSData*)responseObject;
+                                                                       UIImage *img = [UIImage imageWithData:data];
+                                                                       downloadMe.widthValue = img.size.width;
+                                                                       downloadMe.heightValue = img.size.height;
+                                                                       NSString *path = [[[self cacheFolder] URLByAppendingPathComponent:downloadMe.urlString.lastPathComponent] path];
+                                                                       
+                                                                       [[NSFileManager defaultManager] createFileAtPath:path
+                                                                         contents:data attributes:nil];
+                                                                       downloadMe.cachedPath = path;
+                                                                       
+                                                                   } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                                                       //code
+                                                                   }];
+        //NSURL *outURL = [[self cacheFolder] URLByAppendingPathComponent:downloadMe.urlString.lastPathComponent];
+        //op.outputStream = [NSOutputStream outputStreamWithURL:outURL append:NO];
+        //downloadMe.cachedPath = outURL.filePathURL.path;
+        [batchOfOperations addObject:op];
+    }
+    
+    [self ensureCacheFolder];
+    [self enqueueBatchOfHTTPRequestOperations:batchOfOperations
+                                progressBlock:nil
+                              completionBlock:^(NSArray *operations)
+     {
+         //self.downloadingEmoticons = NO;
+         NSMutableArray *newlyCachedEmoticons = [NSMutableArray new];
+         for (AFHTTPRequestOperation *op in operations) {
+             if ([op hasAcceptableStatusCode]) {
+                 [newlyCachedEmoticons addObject:[[op.request URL] lastPathComponent]];
+             }
+         }
+         if ([newlyCachedEmoticons count] == 0) return;
+         
+         [[AwfulDataStack sharedDataStack] save];
+         //[[NSNotificationCenter defaultCenter] postNotificationName:AwfulNewThreadTagsAvailableNotification
+         //                                                    object:newlyAvailableTagNames];
+     }];
+}
+
+- (NSURL *)cacheFolder
+{
+    NSURL *caches = [[NSFileManager defaultManager] cachesDirectory];
+    return [caches URLByAppendingPathComponent:@"Emoticons"];
+}
+
+- (void)ensureCacheFolder
+{
+    NSError *error;
+    BOOL ok = [[NSFileManager defaultManager] createDirectoryAtURL:[self cacheFolder] withIntermediateDirectories:YES attributes:nil error:&error];
+    if (!ok) {
+        NSLog(@"error creating thread tag cache folder %@: %@", [self cacheFolder], error);
+    }
 }
 @end

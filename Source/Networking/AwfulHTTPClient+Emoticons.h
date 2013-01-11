@@ -16,4 +16,5 @@
 
 -(NSOperation *)cacheEmoticon:(AwfulEmoticon*)emoticon
                       andThen:(void (^)(NSError *error))callback;
+- (void)downloadUncachedEmoticons;
 @end

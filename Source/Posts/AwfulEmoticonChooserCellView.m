@@ -22,6 +22,7 @@
 }
 
 -(void) layoutSubviews {
+    self.imageView.backgroundColor = [UIColor clearColor];
     if (!self.imageView.image) self.imageView.backgroundColor = [UIColor darkGrayColor];
     
     if (!self.textLabel.text) {
@@ -37,7 +38,7 @@
                                           self.frame.size.height-15,
                                           self.frame.size.width,
                                           15);
-        self.textLabel.backgroundColor = [UIColor yellowColor];
+        self.textLabel.backgroundColor = [UIColor clearColor];
         [self addSubview:self.textLabel];
     }
     [self addSubview:self.imageView];
