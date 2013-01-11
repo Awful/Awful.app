@@ -151,7 +151,7 @@ static AwfulAppDelegate *_instance;
         [[AwfulBookmarksController new] enclosingNavigationController],
         [[AwfulSettingsViewController new] enclosingNavigationController]
     ];
-    tabBar.selectedViewController = tabBar.viewControllers[[[AwfulSettings settings] firstTab]];
+    //tabBar.selectedViewController = tabBar.viewControllers[[[AwfulSettings settings] firstTab]];
     tabBar.delegate = self;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         AwfulSplitViewController *splitController = [AwfulSplitViewController new];
