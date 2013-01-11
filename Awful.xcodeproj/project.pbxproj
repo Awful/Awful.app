@@ -576,6 +576,12 @@
 		8C6F084A1653498F00B43251 /* byob-anti.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C6F08491653498F00B43251 /* byob-anti.png */; };
 		8C7002AA169D226C00FC0B78 /* AwfulEmoticonKeyboardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7002A9169D226C00FC0B78 /* AwfulEmoticonKeyboardController.m */; };
 		8C70055616A05BBC00FC0B78 /* AwfulEmoticonChooserCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C70055516A05BBC00FC0B78 /* AwfulEmoticonChooserCellView.m */; };
+		8C70056216A076FF00FC0B78 /* AwfulEmoticon.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C70055F16A076FF00FC0B78 /* AwfulEmoticon.m */; };
+		8C70056316A076FF00FC0B78 /* AwfulEmoticonGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C70056116A076FF00FC0B78 /* AwfulEmoticonGroup.m */; };
+		8C70056816A0770A00FC0B78 /* _AwfulEmoticon.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C70056516A0770A00FC0B78 /* _AwfulEmoticon.m */; };
+		8C70056916A0770A00FC0B78 /* _AwfulEmoticonGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C70056716A0770A00FC0B78 /* _AwfulEmoticonGroup.m */; };
+		8C70057116A079A700FC0B78 /* AwfulHTTPClient+Emoticons.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C70057016A079A700FC0B78 /* AwfulHTTPClient+Emoticons.m */; };
+		8C70057416A07A9000FC0B78 /* AwfulParsing+Emoticons.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C70057316A07A9000FC0B78 /* AwfulParsing+Emoticons.m */; };
 		8C87428E1655FD990018AC6C /* byob.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C87428D1655FD990018AC6C /* byob.png */; };
 		8C8742911655FDAE0018AC6C /* trp-laliga.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8742901655FDAE0018AC6C /* trp-laliga.png */; };
 		8C8742931655FDC10018AC6C /* mods-expert.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8742921655FDC10018AC6C /* mods-expert.png */; };
@@ -1219,6 +1225,19 @@
 		8C7002A9169D226C00FC0B78 /* AwfulEmoticonKeyboardController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulEmoticonKeyboardController.m; sourceTree = "<group>"; };
 		8C70055416A05BBB00FC0B78 /* AwfulEmoticonChooserCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulEmoticonChooserCellView.h; sourceTree = "<group>"; };
 		8C70055516A05BBC00FC0B78 /* AwfulEmoticonChooserCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulEmoticonChooserCellView.m; sourceTree = "<group>"; };
+		8C70055816A075A200FC0B78 /* Model-1.11.1.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Model-1.11.1.xcdatamodel"; sourceTree = "<group>"; };
+		8C70055E16A076FF00FC0B78 /* AwfulEmoticon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulEmoticon.h; sourceTree = "<group>"; };
+		8C70055F16A076FF00FC0B78 /* AwfulEmoticon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulEmoticon.m; sourceTree = "<group>"; };
+		8C70056016A076FF00FC0B78 /* AwfulEmoticonGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulEmoticonGroup.h; sourceTree = "<group>"; };
+		8C70056116A076FF00FC0B78 /* AwfulEmoticonGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulEmoticonGroup.m; sourceTree = "<group>"; };
+		8C70056416A0770A00FC0B78 /* _AwfulEmoticon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _AwfulEmoticon.h; sourceTree = "<group>"; };
+		8C70056516A0770A00FC0B78 /* _AwfulEmoticon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulEmoticon.m; sourceTree = "<group>"; };
+		8C70056616A0770A00FC0B78 /* _AwfulEmoticonGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _AwfulEmoticonGroup.h; sourceTree = "<group>"; };
+		8C70056716A0770A00FC0B78 /* _AwfulEmoticonGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulEmoticonGroup.m; sourceTree = "<group>"; };
+		8C70056F16A079A700FC0B78 /* AwfulHTTPClient+Emoticons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AwfulHTTPClient+Emoticons.h"; sourceTree = "<group>"; };
+		8C70057016A079A700FC0B78 /* AwfulHTTPClient+Emoticons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AwfulHTTPClient+Emoticons.m"; sourceTree = "<group>"; };
+		8C70057216A07A9000FC0B78 /* AwfulParsing+Emoticons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AwfulParsing+Emoticons.h"; sourceTree = "<group>"; };
+		8C70057316A07A9000FC0B78 /* AwfulParsing+Emoticons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AwfulParsing+Emoticons.m"; sourceTree = "<group>"; };
 		8C87428D1655FD990018AC6C /* byob.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = byob.png; sourceTree = "<group>"; };
 		8C8742901655FDAE0018AC6C /* trp-laliga.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trp-laliga.png"; sourceTree = "<group>"; };
 		8C8742921655FDC10018AC6C /* mods-expert.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mods-expert.png"; sourceTree = "<group>"; };
@@ -1836,6 +1855,8 @@
 			children = (
 				1C05EDAE16230C1700FE567F /* AwfulParsing.h */,
 				1CBDB5F51625BACE0004BDF4 /* AwfulParsing.m */,
+				8C70057216A07A9000FC0B78 /* AwfulParsing+Emoticons.h */,
+				8C70057316A07A9000FC0B78 /* AwfulParsing+Emoticons.m */,
 			);
 			path = Parsing;
 			sourceTree = "<group>";
@@ -1883,6 +1904,10 @@
 		1C6474A61569989800C72657 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				8C70055E16A076FF00FC0B78 /* AwfulEmoticon.h */,
+				8C70055F16A076FF00FC0B78 /* AwfulEmoticon.m */,
+				8C70056016A076FF00FC0B78 /* AwfulEmoticonGroup.h */,
+				8C70056116A076FF00FC0B78 /* AwfulEmoticonGroup.m */,
 				1CC38BB1160D8C5800C35A11 /* AwfulCategory.h */,
 				1CC38BB2160D8C5800C35A11 /* AwfulCategory.m */,
 				1C6474AB1569989800C72657 /* AwfulForum.h */,
@@ -1905,6 +1930,10 @@
 		1C6474BA1569989800C72657 /* Generated */ = {
 			isa = PBXGroup;
 			children = (
+				8C70056416A0770A00FC0B78 /* _AwfulEmoticon.h */,
+				8C70056516A0770A00FC0B78 /* _AwfulEmoticon.m */,
+				8C70056616A0770A00FC0B78 /* _AwfulEmoticonGroup.h */,
+				8C70056716A0770A00FC0B78 /* _AwfulEmoticonGroup.m */,
 				1CC38BB4160D8C6000C35A11 /* _AwfulCategory.h */,
 				1CC38BB5160D8C6000C35A11 /* _AwfulCategory.m */,
 				1C6474BD1569989800C72657 /* _AwfulForum.h */,
@@ -2036,6 +2065,8 @@
 		1CC7801D1612D988002AF958 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
+				8C70056F16A079A700FC0B78 /* AwfulHTTPClient+Emoticons.h */,
+				8C70057016A079A700FC0B78 /* AwfulHTTPClient+Emoticons.m */,
 				1CC780201612D989002AF958 /* AwfulHTTPClient.h */,
 				1CC780211612D989002AF958 /* AwfulHTTPClient.m */,
 				1CAED9D916373F91001F5F04 /* AwfulThreadTags.h */,
@@ -3840,6 +3871,12 @@
 				1C6ED63D1691055E0015CDD5 /* AwfulProfileViewController.m in Sources */,
 				8C7002AA169D226C00FC0B78 /* AwfulEmoticonKeyboardController.m in Sources */,
 				8C70055616A05BBC00FC0B78 /* AwfulEmoticonChooserCellView.m in Sources */,
+				8C70056216A076FF00FC0B78 /* AwfulEmoticon.m in Sources */,
+				8C70056316A076FF00FC0B78 /* AwfulEmoticonGroup.m in Sources */,
+				8C70056816A0770A00FC0B78 /* _AwfulEmoticon.m in Sources */,
+				8C70056916A0770A00FC0B78 /* _AwfulEmoticonGroup.m in Sources */,
+				8C70057116A079A700FC0B78 /* AwfulHTTPClient+Emoticons.m in Sources */,
+				8C70057416A07A9000FC0B78 /* AwfulParsing+Emoticons.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4013,7 +4050,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Main/Awful_Prefix.pch;
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				INFOPLIST_FILE = "Resources/Awful-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
@@ -4159,12 +4196,13 @@
 		1C5B99B8166FFA4F004C5D0E /* Model.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				8C70055816A075A200FC0B78 /* Model-1.11.1.xcdatamodel */,
 				1C5B99B9166FFA4F004C5D0E /* Model-1.8.1.xcdatamodel */,
 				1C5B99BA166FFA4F004C5D0E /* Model-1.8.xcdatamodel */,
 				1C5B99BB166FFA4F004C5D0E /* Model-1.9.1.xcdatamodel */,
 				1C6D3EE4168D798200B91A65 /* Model-1.10.xcdatamodel */,
 			);
-			currentVersion = 1C6D3EE4168D798200B91A65 /* Model-1.10.xcdatamodel */;
+			currentVersion = 8C70055816A075A200FC0B78 /* Model-1.11.1.xcdatamodel */;
 			path = Model.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
