@@ -71,7 +71,9 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSNumber* hideFromList;
+
 
 
 @property BOOL hideFromListValue;
@@ -83,7 +85,9 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSNumber* isBookmarked;
+
 
 
 @property BOOL isBookmarkedValue;
@@ -95,7 +99,9 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSNumber* isClosed;
+
 
 
 @property BOOL isClosedValue;
@@ -107,7 +113,9 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSNumber* isLocked;
+
 
 
 @property BOOL isLockedValue;
@@ -119,7 +127,9 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSNumber* isSticky;
+
 
 
 @property BOOL isStickyValue;
@@ -131,7 +141,9 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSString* lastPostAuthorName;
+
 
 
 //- (BOOL)validateLastPostAuthorName:(id*)value_ error:(NSError**)error_;
@@ -139,7 +151,9 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSDate* lastPostDate;
+
 
 
 //- (BOOL)validateLastPostDate:(id*)value_ error:(NSError**)error_;
@@ -147,7 +161,9 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSNumber* numberOfPages;
+
 
 
 @property int32_t numberOfPagesValue;
@@ -159,7 +175,9 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSNumber* seen;
+
 
 
 @property BOOL seenValue;
@@ -171,7 +189,9 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSNumber* starCategory;
+
 
 
 @property int16_t starCategoryValue;
@@ -183,7 +203,9 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSNumber* stickyIndex;
+
 
 
 @property int32_t stickyIndexValue;
@@ -195,7 +217,9 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSString* threadID;
+
 
 
 //- (BOOL)validateThreadID:(id*)value_ error:(NSError**)error_;
@@ -203,7 +227,9 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) id threadIconImageURL;
+
 
 
 //- (BOOL)validateThreadIconImageURL:(id*)value_ error:(NSError**)error_;
@@ -211,7 +237,9 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) id threadIconImageURL2;
+
 
 
 //- (BOOL)validateThreadIconImageURL2:(id*)value_ error:(NSError**)error_;
@@ -219,7 +247,9 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSDecimalNumber* threadRating;
+
 
 
 //- (BOOL)validateThreadRating:(id*)value_ error:(NSError**)error_;
@@ -227,7 +257,9 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSNumber* threadVotes;
+
 
 
 @property int16_t threadVotesValue;
@@ -239,7 +271,9 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSString* title;
+
 
 
 //- (BOOL)validateTitle:(id*)value_ error:(NSError**)error_;
@@ -247,7 +281,9 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSNumber* totalReplies;
+
 
 
 @property int32_t totalRepliesValue;
@@ -259,7 +295,9 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSNumber* totalUnreadPosts;
+
 
 
 @property int32_t totalUnreadPostsValue;
@@ -272,21 +310,21 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
-@property (nonatomic, strong) AwfulUser* author;
+@property (nonatomic, strong) AwfulUser *author;
 
 //- (BOOL)validateAuthor:(id*)value_ error:(NSError**)error_;
 
 
 
 
-@property (nonatomic, strong) AwfulForum* forum;
+@property (nonatomic, strong) AwfulForum *forum;
 
 //- (BOOL)validateForum:(id*)value_ error:(NSError**)error_;
 
 
 
 
-@property (nonatomic, strong) NSSet* posts;
+@property (nonatomic, strong) NSSet *posts;
 
 - (NSMutableSet*)postsSet;
 

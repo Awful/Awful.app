@@ -57,20 +57,23 @@ const struct AwfulUserFetchedProperties AwfulUserFetchedProperties = {
 	return (AwfulUserID*)[super objectID];
 }
 
-+ (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
++ (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 	
 	if ([key isEqualToString:@"administratorValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"administrator"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
 	}
 	if ([key isEqualToString:@"moderatorValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"moderator"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
 	}
 	if ([key isEqualToString:@"postCountValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"postCount"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
 	}
 
 	return keyPaths;
