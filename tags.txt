@@ -466,6 +466,7 @@ tg-wargames.png
 tma.png
 trp-laliga.png
 tv.png
+tviv-bluray.png
 tviv-cable.png
 tviv-cartoon.png
 tviv-classic.png

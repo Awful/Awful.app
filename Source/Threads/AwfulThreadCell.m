@@ -14,7 +14,7 @@
 
 @property (weak, nonatomic) UIImageView *stickyImageView;
 
-@property (readonly, weak, nonatomic) UIImageView *ratingImageView;
+@property (weak, nonatomic) UIImageView *ratingImageView;
 
 @property (nonatomic) UIColor *oldOriginalPosterTextColor;
 
@@ -26,7 +26,7 @@
 {
     self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuseIdentifier];
     if (self) {
-        self.textLabel.numberOfLines = 3;
+        self.textLabel.numberOfLines = 2;
         self.textLabel.font = [UIFont systemFontOfSize:15];
         self.detailTextLabel.font = [UIFont systemFontOfSize:11];
         self.imageView.layer.borderColor = [UIColor blackColor].CGColor;
@@ -157,12 +157,12 @@
     static const CGFloat tagRightMargin = 9;
     CGFloat textOriginX = 5;
     if (!self.imageView.hidden) textOriginX = CGRectGetMaxX(self.imageView.frame) + tagRightMargin;
-    CGFloat badgeViewEffectiveWidth = 70;
+    CGFloat badgeViewEffectiveWidth = CGRectGetWidth(unreadCountFrame) + tagRightMargin;
     if (self.editing || self.showingDeleteConfirmation || !self.showsUnread) {
         badgeViewEffectiveWidth = tagRightMargin;
     }
     CGSize constraint = CGSizeMake(cellSize.width - textOriginX - badgeViewEffectiveWidth,
-                                   58);
+                                   self.textLabel.numberOfLines * self.textLabel.font.leading);
     CGSize textSize = [self.textLabel.text sizeWithFont:self.textLabel.font
                                       constrainedToSize:constraint];
     CGFloat detailVerticalOffset = CGRectGetMinY(detailTextLabelFrame) -

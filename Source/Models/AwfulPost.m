@@ -65,6 +65,9 @@
         post.author.avatarURL = [postInfo.author.avatarURL absoluteString];
         existingUsers[post.author.username] = post.author;
         [posts addObject:post];
+        if (postInfo.author.originalPoster) {
+            thread.author = post.author;
+        }
     }
     [posts setValue:@(pageInfo.pageNumber) forKey:AwfulPostAttributes.threadPage];
     [[AwfulDataStack sharedDataStack] save];

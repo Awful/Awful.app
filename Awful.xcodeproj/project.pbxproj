@@ -44,6 +44,7 @@
 		1C05ED5A16229CDD00FE567F /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1C05ED5916229CDD00FE567F /* SVProgressHUD.bundle */; };
 		1C090FB7163A40A1003FD0A3 /* _AwfulPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C090FB6163A40A1003FD0A3 /* _AwfulPost.m */; };
 		1C090FBA163A40C1003FD0A3 /* AwfulPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C090FB9163A40C1003FD0A3 /* AwfulPost.m */; };
+		1C0B4FE9169E331F00261F28 /* tviv-bluray.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C0B4FE8169E331F00261F28 /* tviv-bluray.png */; };
 		1C101576164E8A7200302B19 /* tag-collage-Landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C101572164E8A7200302B19 /* tag-collage-Landscape.png */; };
 		1C101577164E8A7200302B19 /* tag-collage-Landscape@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C101573164E8A7200302B19 /* tag-collage-Landscape@2x.png */; };
 		1C101578164E8A7200302B19 /* tag-collage-Portrait.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C101574164E8A7200302B19 /* tag-collage-Portrait.png */; };
@@ -852,6 +853,7 @@
 		1C090FB6163A40A1003FD0A3 /* _AwfulPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulPost.m; sourceTree = "<group>"; };
 		1C090FB8163A40C1003FD0A3 /* AwfulPost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPost.h; sourceTree = "<group>"; };
 		1C090FB9163A40C1003FD0A3 /* AwfulPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPost.m; sourceTree = "<group>"; };
+		1C0B4FE8169E331F00261F28 /* tviv-bluray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tviv-bluray.png"; sourceTree = "<group>"; };
 		1C101572164E8A7200302B19 /* tag-collage-Landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tag-collage-Landscape.png"; sourceTree = "<group>"; };
 		1C101573164E8A7200302B19 /* tag-collage-Landscape@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tag-collage-Landscape@2x.png"; sourceTree = "<group>"; };
 		1C101574164E8A7200302B19 /* tag-collage-Portrait.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tag-collage-Portrait.png"; sourceTree = "<group>"; };
@@ -2807,6 +2809,7 @@
 				8CCD534515B783FC00E5893B /* tma.png */,
 				8C8742901655FDAE0018AC6C /* trp-laliga.png */,
 				8CCD534615B783FC00E5893B /* tv.png */,
+				1C0B4FE8169E331F00261F28 /* tviv-bluray.png */,
 				8CCD534715B783FC00E5893B /* tviv-cable.png */,
 				8CCD534815B783FC00E5893B /* tviv-cartoon.png */,
 				8CF02DFD16484CCE0059BC56 /* tviv-classic.png */,
@@ -3621,6 +3624,7 @@
 				8CC4AD6316907DD100639C80 /* posts-view-26.css in Resources */,
 				8C9834E2169091CE009F0CD6 /* fyad-bubble.png in Resources */,
 				1C8BE51B16917FB60022B331 /* posts-view-25.css in Resources */,
+				1C0B4FE9169E331F00261F28 /* tviv-bluray.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

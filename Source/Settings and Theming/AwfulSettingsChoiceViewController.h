@@ -8,16 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@class AwfulSettingsViewController;
-
 @interface AwfulSettingsChoiceViewController : UITableViewController
 
-- (id)initWithSetting:(NSDictionary *)setting selectedValue:(id)selectedValue;
+- (id)initWithSetting:(NSDictionary *)setting;
 
 @property (readonly, strong) NSDictionary *setting;
-
-@property (readonly, weak) id selectedValue;
-
-@property (weak) AwfulSettingsViewController *settingsViewController;
 
 @end
