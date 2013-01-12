@@ -115,8 +115,6 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
                                     ConvertFromWindows1252ToUTF8(data)];
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:threadInfos];
-                [threads setValue:@YES forKey:AwfulThreadAttributes.isBookmarked];
-                [[AwfulDataStack sharedDataStack] save];
                 if (callback) callback(nil, threads);
             });
         });
