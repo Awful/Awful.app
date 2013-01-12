@@ -443,6 +443,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     page.thread = thread;
     [page loadPage:thread.seenValue ? AwfulPageNextUnread : 1];
     [self displayPage:page];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 @end
