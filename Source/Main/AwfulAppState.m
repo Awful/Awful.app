@@ -39,4 +39,40 @@
     return [AwfulAppState.awfulDefaults integerForKey:kAwfulAppStateSelectedTab];
 }
 
++(void) setScrollOffset:(CGFloat)scrollOffset atIndexPath:(NSIndexPath*)indexPath
+{
+    NSMutableArray *array = [[AwfulAppState.awfulDefaults arrayForKey:kAwfulAppStateNavStack] mutableCopy];
+    if (!array) array = [NSMutableArray new];
+    
+    NSMutableArray *stack;
+    if (indexPath.section < (int)array.count)
+        stack = [array[indexPath.section] mutableCopy];
+    else stack = [NSMutableArray new];
+    
+    NSMutableDictionary *screenState;
+    if (indexPath.row < (int)stack.count)
+        screenState = [stack[indexPath.row] mutableCopy];
+    else screenState = [NSMutableDictionary new];
+    
+    screenState[kAwfulScreenStateScrollOffsetKey] = [NSNumber numberWithFloat:scrollOffset];
+    
+    stack[indexPath.row] = screenState;
+    array[indexPath.section] = stack;
+    
+    [AwfulAppState.awfulDefaults setObject:array forKey:kAwfulAppStateNavStack];
+    
+    NSLog(@"Saving scroll position:%f for %i.%i", scrollOffset, indexPath.section, indexPath.row);
+    [AwfulAppState.awfulDefaults synchronize];
+}
+
++(CGPoint) scrollOffsetAtIndexPath:(NSIndexPath*)indexPath
+{
+    NSArray *array = [AwfulAppState.awfulDefaults arrayForKey:kAwfulAppStateNavStack];
+    NSDictionary *screenState = array[indexPath.section][indexPath.row];
+    
+    
+    NSLog(@"Reading scroll position:%f for %i.%i", [[screenState objectForKey:kAwfulScreenStateScrollOffsetKey] floatValue], indexPath.section, indexPath.row);
+    return CGPointMake(0, [[screenState objectForKey:kAwfulScreenStateScrollOffsetKey] floatValue]);
+}
+
 @end
