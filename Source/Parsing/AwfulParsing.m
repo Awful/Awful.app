@@ -659,14 +659,14 @@ static NSString * DeEntitify(NSString *withEntities)
     TFHppleElement *closed = [doc searchForSingle:@"//tr[" HAS_CLASS(closed) "]"];
     self.isClosed = !!closed;
     
-    TFHppleElement *star = [doc searchForSingle:
-                            @"//td[" HAS_CLASS(star) "]//img[contains(@src, 'star')]"];
-    NSURL *starURL = [NSURL URLWithString:[star objectForKey:@"src"]];
-    if ([[starURL lastPathComponent] hasSuffix:@"star0.gif"]) {
+    TFHppleElement *star = [doc searchForSingle:@"//td[" HAS_CLASS(star) "]"];
+    NSCharacterSet *white = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+    NSArray *classes = [[star objectForKey:@"class"] componentsSeparatedByCharactersInSet:white];
+    if ([classes containsObject:@"bm0"]) {
         self.starCategory = AwfulStarCategoryBlue;
-    } else if ([[starURL lastPathComponent] hasSuffix:@"star1.gif"]) {
+    } else if ([classes containsObject:@"bm1"]) {
         self.starCategory = AwfulStarCategoryRed;
-    } else if ([[starURL lastPathComponent] hasSuffix:@"star2.gif"]) {
+    } else if ([classes containsObject:@"bm2"]) {
         self.starCategory = AwfulStarCategoryYellow;
     } else {
         self.starCategory = AwfulStarCategoryNone;
