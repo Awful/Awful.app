@@ -12,12 +12,15 @@
 #import "SVProgressHUD.h"
 #import "UIImageView+AFNetworking.h"
 #import "UINavigationItem+TwoLineTitle.h"
+#import "FVGifAnimation.h"
 
 @interface AwfulImagePreviewViewController () <UIScrollViewDelegate>
 
 @property (weak, nonatomic) UIScrollView *scrollView;
 
 @property (weak, nonatomic) UIImageView *imageView;
+
+@property (strong, nonatomic) FVGifAnimation *animation;
 
 @property (nonatomic) UIStatusBarStyle statusBarStyle;
 
@@ -69,6 +72,13 @@
     return _actionButton;
 }
 
+- (FVGifAnimation*) animation
+{
+    if (_animation) return _animation;
+    _animation = [[FVGifAnimation alloc] initWithURL:self.imageURL];
+    return _animation;
+}
+
 - (void)updateImageView
 {
     if (!self.imageURL) return;
@@ -80,11 +90,20 @@
                                    success:^(NSURLRequest *request, NSHTTPURLResponse *response,
                                              UIImage *image)
      {
-         // AFNetworking helpfully sets the image scale to the main screen's scale.
-         image = [UIImage imageWithCGImage:image.CGImage
-                                     scale:1
-                               orientation:image.imageOrientation];
-         self.imageView.image = image;
+         if(![self.imageURL.lastPathComponent hasSuffix:@".gif"])
+         {
+             // AFNetworking helpfully sets the image scale to the main screen's scale.
+             image = [UIImage imageWithCGImage:image.CGImage
+                                         scale:1
+                                   orientation:image.imageOrientation];
+             self.imageView.image = image;         }
+         else
+         {
+             //animated gif support
+             [self.animation setAnimationToImageView:self.imageView];
+             [self.imageView startAnimating];
+             
+         }
          self.imageView.backgroundColor = [UIColor whiteColor];
          [self.imageView sizeToFit];
          self.scrollView.contentSize = self.imageView.bounds.size;
@@ -92,10 +111,11 @@
          self.scrollView.zoomScale = [self minimumZoomScale];
          self.scrollView.maximumZoomScale = 40;
          [self centerImageInScrollView];
+         
      } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error)
      {
          [AwfulAlertView showWithTitle:@"Could Not Load Image" error:error buttonTitle:@"OK"];
-    }];
+     }];
 }
 
 - (CGFloat)minimumZoomScale
@@ -145,8 +165,8 @@
     }];
     [sheet addButtonWithTitle:@"Copy Image URL" block:^{
         [UIPasteboard generalPasteboard].items = @[ @{
-            (id)kUTTypeURL: self.imageURL,
-            (id)kUTTypePlainText: [self.imageURL absoluteString]
+        (id)kUTTypeURL: self.imageURL,
+        (id)kUTTypePlainText: [self.imageURL absoluteString]
         }];
         [self hideBarsAfterShortDuration];
     }];

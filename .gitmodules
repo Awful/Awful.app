@@ -1,0 +1,3 @@
+[submodule "Vendor/FVGifAnimation"]
+	path = Vendor/FVGifAnimation
+	url = git://github.com/flexfrank/FVGifAnimation.git
