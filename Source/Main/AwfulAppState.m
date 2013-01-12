@@ -68,11 +68,17 @@
 +(CGPoint) scrollOffsetAtIndexPath:(NSIndexPath*)indexPath
 {
     NSArray *array = [AwfulAppState.awfulDefaults arrayForKey:kAwfulAppStateNavStack];
-    NSDictionary *screenState = array[indexPath.section][indexPath.row];
+    if (indexPath.section < (int)array.count) {
+        if (indexPath.row < (int)[array[indexPath.section] count]) {
+            NSDictionary *screenState = array[indexPath.section][indexPath.row];
+            NSLog(@"Reading scroll position:%f for %i.%i", [[screenState objectForKey:kAwfulScreenStateScrollOffsetKey] floatValue], indexPath.section, indexPath.row);
+            return CGPointMake(0, [[screenState objectForKey:kAwfulScreenStateScrollOffsetKey] floatValue]);
+        }
+    }
+        
+    return CGPointZero;
     
     
-    NSLog(@"Reading scroll position:%f for %i.%i", [[screenState objectForKey:kAwfulScreenStateScrollOffsetKey] floatValue], indexPath.section, indexPath.row);
-    return CGPointMake(0, [[screenState objectForKey:kAwfulScreenStateScrollOffsetKey] floatValue]);
 }
 
 @end

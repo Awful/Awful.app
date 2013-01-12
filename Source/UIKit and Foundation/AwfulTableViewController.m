@@ -64,8 +64,9 @@
     [self refreshIfNeededOnAppear];
     [self startObservingApplicationDidBecomeActive];
     
+    int row = [self.navigationController.viewControllers indexOfObject:self];
     [self.tableView setContentOffset:[AwfulAppState scrollOffsetAtIndexPath:
-                                            [NSIndexPath indexPathForRow:0
+                                            [NSIndexPath indexPathForRow:row
                                                                 inSection:0]]
                             animated:NO];
 }
@@ -181,8 +182,10 @@
 
 #pragma mark scroll delegate
 -(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    int row = [self.navigationController.viewControllers indexOfObject:self];
+    
     [AwfulAppState setScrollOffset:scrollView.contentOffset.y
-                       atIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
+                       atIndexPath:[NSIndexPath indexPathForRow:row inSection:0]
      ];
 }
 
