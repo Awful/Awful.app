@@ -44,6 +44,11 @@
     return nil;
 }
 
+- (void)dealloc
+{
+    self.fetchedResultsController.delegate = nil;
+}
+
 #pragma mark - UITableViewDataSource and UITableViewDelegate
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
