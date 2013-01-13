@@ -29,7 +29,7 @@
     }
     self.tabBar.items = [self.viewControllers valueForKey:@"tabBarItem"];
     
-    self.selectedViewController = self.viewControllers[[AwfulAppState selectedTab]];
+    self.selectedViewController = self.viewControllers[AwfulAppState.sharedAppState.selectedTab];
 }
 
 - (void)setSelectedViewController:(UIViewController *)selectedViewController
@@ -44,7 +44,7 @@
     }
     _selectedViewController = selectedViewController;
     self.tabBar.selectedItem = selectedViewController.tabBarItem;
-    [AwfulAppState setSelectedTab:[self.viewControllers indexOfObject:_selectedViewController]];
+    AwfulAppState.sharedAppState.selectedTab = [self.viewControllers indexOfObject:_selectedViewController];
 }
 
 - (void)addViewController:(UIViewController *)coming

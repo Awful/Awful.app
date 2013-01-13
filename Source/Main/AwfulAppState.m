@@ -7,40 +7,71 @@
 //
 
 #import "AwfulAppState.h"
+#import "AwfulModels.h"
 
 @interface AwfulAppState ()
-+(NSUserDefaults*) awfulDefaults;
+@property (nonatomic) NSUserDefaults *awfulDefaults;
+@property (nonatomic) NSUbiquitousKeyValueStore *awfulCloudDefaults;
 @end
 
 @implementation AwfulAppState
 
-+(NSUserDefaults*) awfulDefaults
++ (AwfulAppState *)sharedAppState
 {
-    return [NSUserDefaults standardUserDefaults];
+    static AwfulAppState *instance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        instance = [self new];
+    });
+    return instance;
 }
-/*
- -(void)setThreadScrollOffset:(CGFloat)threadScrollOffset
- {
- [self.userDefaults setFloat:threadScrollOffset forKey:AwfulAppStateThreadPosition];
- }
- 
- -(CGFloat) threadScrollOffset {
- return [self.userDefaults floatForKey:AwfulAppStateThreadPosition];
- }
- */
 
-+(void)setSelectedTab:(NSUInteger)selectedTab
+-(NSUserDefaults*) awfulDefaults
 {
-    [AwfulAppState.awfulDefaults setInteger:selectedTab forKey:kAwfulAppStateSelectedTab];
-    [AwfulAppState.awfulDefaults synchronize];
+    if (_awfulDefaults) return _awfulDefaults;
+    _awfulDefaults = [NSUserDefaults standardUserDefaults];
+    return _awfulDefaults;
 }
 
-+(NSUInteger) selectedTab {
-    return [AwfulAppState.awfulDefaults integerForKey:kAwfulAppStateSelectedTab];
+-(NSUbiquitousKeyValueStore*) awfulCloudDefaults {
+    if(_awfulCloudDefaults) return _awfulCloudDefaults;
+    _awfulCloudDefaults = [NSUbiquitousKeyValueStore new];
+    return _awfulCloudDefaults;
 }
 
+#pragma mark Remembering selected tab
+-(void)setSelectedTab:(NSUInteger)selectedTab
+{
+    [self.awfulDefaults setInteger:selectedTab forKey:kAwfulAppStateSelectedTab];
+    [self.awfulDefaults synchronize];
+    
+    [self.awfulCloudDefaults setLongLong:selectedTab forKey:kAwfulAppStateSelectedTab];
+}
+
+-(NSUInteger) selectedTab {
+    int test = [self.awfulDefaults integerForKey:kAwfulAppStateSelectedTab];
+    return [self.awfulDefaults integerForKey:kAwfulAppStateSelectedTab];
+}
+
+
+#pragma mark Remember favorite forums
++(void) setForum:(AwfulForum*)forum isFavorite:(BOOL)isFavorite
+{
+    
+    
+}
+
+
+#pragma mark Remember expanded forums
+
+
+#pragma mark Remembering scroll position
 +(void) setScrollOffset:(CGFloat)scrollOffset atIndexPath:(NSIndexPath*)indexPath
 {
+    //probably want to save the current width too?
+    //an ipad scroll position will be much lower than the same point on a phone
+    //plus orientation differences too
+    /*
     NSMutableArray *array = [[AwfulAppState.awfulDefaults arrayForKey:kAwfulAppStateNavStack] mutableCopy];
     if (!array) array = [NSMutableArray new];
     
@@ -63,10 +94,12 @@
     
     NSLog(@"Saving scroll position:%f for %i.%i", scrollOffset, indexPath.section, indexPath.row);
     [AwfulAppState.awfulDefaults synchronize];
+     */
 }
 
 +(CGPoint) scrollOffsetAtIndexPath:(NSIndexPath*)indexPath
 {
+    /*
     NSArray *array = [AwfulAppState.awfulDefaults arrayForKey:kAwfulAppStateNavStack];
     if (indexPath.section < (int)array.count) {
         if (indexPath.row < (int)[array[indexPath.section] count]) {
@@ -75,7 +108,7 @@
             return CGPointMake(0, [[screenState objectForKey:kAwfulScreenStateScrollOffsetKey] floatValue]);
         }
     }
-        
+        */
     return CGPointZero;
     
     

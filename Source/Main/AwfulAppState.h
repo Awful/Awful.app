@@ -15,10 +15,13 @@ static NSString* kAwfulScreenStateScrollOffsetKey = @"kAwfulScreenStateScrollOff
 static NSString* kAwfulScreenStateScreenKey = @"kAwfulScreenStateScreenIDKey";
 
 
+static NSString* kAwfulAppStateFavoriteForums = @"kAwfulAppStateFavoriteForums";
+static NSString* kAwfulAppStateExpandedForums = @"kAwfulAppStateExpandedForums";
+
+
 @interface AwfulAppState : NSObject
-//+(void) threadScrollOffset;
-+(NSUInteger) selectedTab;
-+(void) setSelectedTab:(NSUInteger)index;
++ (AwfulAppState *)sharedAppState;
+@property (nonatomic) NSUInteger selectedTab;
 
 +(CGPoint) scrollOffsetAtIndexPath:(NSIndexPath*)indexPath;
 +(void) setScrollOffset:(CGFloat)scrollOffset atIndexPath:(NSIndexPath*)indexPath;
