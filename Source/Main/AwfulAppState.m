@@ -28,9 +28,10 @@
 
 -(NSUserDefaults*) awfulDefaults
 {
-    if (_awfulDefaults) return _awfulDefaults;
-    _awfulDefaults = [NSUserDefaults standardUserDefaults];
-    return _awfulDefaults;
+    return self.awfulCloudDefaults;
+    //if (_awfulDefaults) return _awfulDefaults;
+    //_awfulDefaults = [NSUserDefaults standardUserDefaults];
+    //return _awfulDefaults;
 }
 
 -(NSUbiquitousKeyValueStore*) awfulCloudDefaults {
@@ -42,15 +43,15 @@
 #pragma mark Remembering selected tab
 -(void)setSelectedTab:(NSUInteger)selectedTab
 {
-    [self.awfulDefaults setInteger:selectedTab forKey:kAwfulAppStateSelectedTab];
-    [self.awfulDefaults synchronize];
+    //[self.awfulDefaults setInteger:selectedTab forKey:kAwfulAppStateSelectedTab];
+    //[self.awfulDefaults synchronize];
     
     [self.awfulCloudDefaults setLongLong:selectedTab forKey:kAwfulAppStateSelectedTab];
+    [self.awfulCloudDefaults synchronize];
 }
 
 -(NSUInteger) selectedTab {
-    int test = [self.awfulDefaults integerForKey:kAwfulAppStateSelectedTab];
-    return [self.awfulDefaults integerForKey:kAwfulAppStateSelectedTab];
+    return [self.awfulCloudDefaults longLongForKey:kAwfulAppStateSelectedTab];
 }
 
 

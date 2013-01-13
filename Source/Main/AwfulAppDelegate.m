@@ -142,6 +142,8 @@ static AwfulAppDelegate *_instance;
         [[NSURLCache sharedURLCache] setDiskCapacity:sixtyMB];
     }
     
+    [self iCloudSetup];
+    
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     
     AwfulTabBarController *tabBar = [AwfulTabBarController new];
@@ -444,6 +446,28 @@ static AwfulAppDelegate *_instance;
                           message:@"Double-check your username and password, then try again."
                       buttonTitle:@"Alright"
                        completion:nil];
+}
+
+#pragma mark iCloud Sync Handlers
+
+- (void)iCloudSetup
+{
+    // register to observe notifications from the store
+    [[NSNotificationCenter defaultCenter]
+     addObserver: self
+     selector: @selector (storeDidChange:)
+     name: NSUbiquitousKeyValueStoreDidChangeExternallyNotification
+     object: [NSUbiquitousKeyValueStore defaultStore]];
+    
+    // get changes that might have happened while this
+    // instance of your app wasn't running
+    [[NSUbiquitousKeyValueStore defaultStore] synchronize];
+}
+
+- (void)storeDidChange:(NSNotification*)notification
+{
+    NSLog(@"Got a KV change notification:%@", notification);
+    
 }
 
 @end
