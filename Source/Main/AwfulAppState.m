@@ -28,7 +28,7 @@
 
 -(NSUserDefaults*) awfulDefaults
 {
-    return self.awfulCloudDefaults;
+    return nil;
     //if (_awfulDefaults) return _awfulDefaults;
     //_awfulDefaults = [NSUserDefaults standardUserDefaults];
     //return _awfulDefaults;

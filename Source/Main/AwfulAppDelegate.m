@@ -359,6 +359,28 @@ static AwfulAppDelegate *_instance;
     return YES;
 }
 
+- (void)applicationWillResignActive:(UIApplication *)application
+{
+    [[AwfulDataStack sharedDataStack] save];
+}
+
+- (void)applicationDidEnterBackground:(UIApplication *)application
+{
+    [[AwfulDataStack sharedDataStack] save];
+}
+
+- (void)applicationWillEnterForeground:(UIApplication *)application
+{
+    [[AwfulDataStack sharedDataStack] save];
+}
+
+- (void)applicationWillTerminate:(UIApplication *)application
+{
+    [[AwfulDataStack sharedDataStack] save];
+}
+
+#pragma mark navigation
+
 - (void)pushPostsViewForPostWithID:(NSString *)postID
                             onPage:(NSInteger)page
                     ofThreadWithID:(NSString *)threadID

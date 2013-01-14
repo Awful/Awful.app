@@ -20,6 +20,12 @@
                                              selector:@selector(getFetchedResultsController:)
                                                  name:AwfulDataStackDidResetNotification
                                                object:[AwfulDataStack sharedDataStack]];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(refreshForRemoteChange:)
+                                                 name:AwfulDataStackDidRemoteChangeNotification
+                                               object:AwfulDataStack.sharedDataStack
+     ];
 }
 
 - (void)getFetchedResultsController:(NSNotification *)note
@@ -54,6 +60,14 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return [self.fetchedResultsController.sections[section] numberOfObjects];
+}
+
+#pragma mark refresh on remote updates
+
+- (void)refreshForRemoteChange:(NSNotification*)notification
+{
+    NSLog(@"remote data change, refreshing");
+    [self.fetchedResultsController performFetch:nil];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

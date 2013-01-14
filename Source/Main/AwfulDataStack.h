@@ -41,3 +41,6 @@ typedef enum {
 // This might be a good time to recreate fetched results controllers or anything else that refers
 // to a stack's managed object context.
 extern NSString * const AwfulDataStackDidResetNotification;
+
+// Sent after data is updated from iCloud.  FetchedResultsControllers, etc need to refresh themselves.  AwfulFetchedTableViewController listens for this, other things will need to themselves
+extern NSString * const AwfulDataStackDidRemoteChangeNotification;
