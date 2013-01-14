@@ -368,13 +368,17 @@ typedef enum {
 {
     NSMutableArray *updated = [NSMutableArray new];
     for (NSIndexPath *indexPath in self.cellsWithoutThreadTags) {
+        UITableViewCell *genericCell = [self.tableView cellForRowAtIndexPath:indexPath];
+        AwfulThreadCell *cell = (AwfulThreadCell *)genericCell;
+        if (!cell) {
+            self.cellsWithoutThreadTags[indexPath] = @[];
+            continue;
+        }
+        AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
         NSMutableArray *listOfTags = self.cellsWithoutThreadTags[indexPath];
         for (NSString *tag in [listOfTags copy]) {
             UIImage *image = [[AwfulThreadTags sharedThreadTags] threadTagNamed:tag];
             if (!image) continue;
-            UITableViewCell *genericCell = [self.tableView cellForRowAtIndexPath:indexPath];
-            AwfulThreadCell *cell = (AwfulThreadCell *)genericCell;
-            AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
             if ([tag isEqualToString:thread.firstIconName]) {
                 cell.imageView.image = image;
             } else if ([tag isEqualToString:thread.secondIconName]) {
