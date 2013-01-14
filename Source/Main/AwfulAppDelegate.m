@@ -27,6 +27,7 @@
 #import "NSManagedObject+Awful.h"
 #import "SVProgressHUD.h"
 #import "UIViewController+NavigationEnclosure.h"
+#import "AwfulAppState.h"
 
 @interface AwfulAppDelegate () <AwfulTabBarControllerDelegate, UINavigationControllerDelegate,
                                 AwfulLoginControllerDelegate>
@@ -446,6 +447,7 @@ static AwfulAppDelegate *_instance;
 
 - (void)loginControllerDidLogIn:(AwfulLoginController *)login
 {
+    //[[AwfulAppState sharedAppState] syncForumCookies];
     [[AwfulHTTPClient client] learnUserInfoAndThen:^(NSError *error, NSDictionary *userInfo) {
         if (error) {
             NSLog(@"error fetching username: %@", error);

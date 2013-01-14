@@ -51,16 +51,29 @@
     if (_context) return _context;
     
     _context = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
-    [_context performBlockAndWait:^{
+    //[_context performBlockAndWait:^{
         [_context setPersistentStoreCoordinator:self.coordinator];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(mergeChangesFrom_iCloud:)
                                                      name:NSPersistentStoreDidImportUbiquitousContentChangesNotification
                                                    object:self.coordinator
          ];
-    }];
+        
+        //listen for changes on other threads
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(mergeChangesFromContextDidSaveNotification:)
+                                                     name:NSManagedObjectContextDidSaveNotification
+                                                   object:nil
+         ];
+    //}];
 
     return _context;
+}
+
+- (NSManagedObjectContext*) newContextForThread {
+    NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSConfinementConcurrencyType];
+    moc.persistentStoreCoordinator = self.coordinator;
+    return moc;
 }
 
 - (NSManagedObjectModel *)model

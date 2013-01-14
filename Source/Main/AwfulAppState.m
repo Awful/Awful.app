@@ -114,5 +114,34 @@
     
     
 }
+/*
+-(NSArray*) forumCookies
+{
+    return [self.awfulCloudDefaults objectForKey:kAwfulAppStateForumCookies];
+}
+
+-(void) syncForumCookies
+{
+    NSArray *cloudCookies = self.forumCookies;
+    if(!cloudCookies) cloudCookies = [NSArray new];
+    
+    NSURL *sa = [NSURL URLWithString:@"http://forums.somethingawful.com"];
+    NSArray *localCookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:sa];
+    
+    NSArray *combined = [cloudCookies arrayByAddingObjectsFromArray:localCookies];
+    
+    NSCoder *encoder = [NSCoder new];
+    NSData *encoded = [combined encodeWithCoder:encoder];
+    
+    [self.awfulCloudDefaults setObject:combined forKey:kAwfulAppStateForumCookies];
+    
+    for(NSHTTPCookie *cookie in combined)
+    {
+        [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:cookie];
+    }
+    
+    [self.awfulCloudDefaults synchronize];
+}
+*/
 
 @end
