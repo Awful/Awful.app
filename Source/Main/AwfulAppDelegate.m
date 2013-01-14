@@ -72,6 +72,8 @@ static AwfulAppDelegate *_instance;
     for (NSHTTPCookie *cookie in cookies) {
         [[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteCookie:cookie];
     }
+    [AwfulAppState.sharedAppState clearCloudCookies];
+    
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
     
     AwfulSettings.settings.username = nil;

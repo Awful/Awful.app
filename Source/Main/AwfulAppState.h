@@ -30,6 +30,8 @@ static NSString* kAwfulAppStateForumCookieData = @"kAwfulAppStateForumCookieData
 @property (nonatomic,readonly) BOOL isLoggedIn;
 @property (nonatomic) NSArray* forumCookieData;
 -(void) syncForumCookies;
+-(void) clearCloudCookies;
 
 -(NSURL *) iCloudDataDirectory;
+
 @end

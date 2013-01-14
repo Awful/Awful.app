@@ -147,5 +147,10 @@
     [self.awfulCloudDefaults synchronize];
 }
 
+-(void) clearCloudCookies {
+    [self.awfulCloudDefaults removeObjectForKey:kAwfulAppStateForumCookieData];
+    [self.awfulCloudDefaults synchronize];
+}
+
 
 @end
