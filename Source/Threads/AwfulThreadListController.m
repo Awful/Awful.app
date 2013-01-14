@@ -198,11 +198,11 @@ typedef enum {
         }];
     }
     [sheet addCancelButtonWithTitle:@"Cancel"];
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         [sheet showFromRect:self.awfulTabBarController.tabBar.frame
                      inView:self.awfulTabBarController.view
                    animated:YES];
-    } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    } else if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         NSUInteger index = [self.fetchedResultsController.fetchedObjects indexOfObject:thread];
         if (index != NSNotFound) {
             NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
