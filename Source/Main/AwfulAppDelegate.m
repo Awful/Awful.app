@@ -447,7 +447,7 @@ static AwfulAppDelegate *_instance;
 
 - (void)loginControllerDidLogIn:(AwfulLoginController *)login
 {
-    //[[AwfulAppState sharedAppState] syncForumCookies];
+    [[AwfulAppState sharedAppState] syncForumCookies];
     [[AwfulHTTPClient client] learnUserInfoAndThen:^(NSError *error, NSDictionary *userInfo) {
         if (error) {
             NSLog(@"error fetching username: %@", error);
@@ -486,11 +486,13 @@ static AwfulAppDelegate *_instance;
     // get changes that might have happened while this
     // instance of your app wasn't running
     [[NSUbiquitousKeyValueStore defaultStore] synchronize];
+    [[AwfulAppState sharedAppState] syncForumCookies];
 }
 
 - (void)storeDidChange:(NSNotification*)notification
 {
     NSLog(@"Got a KV change notification:%@", notification);
+    [[AwfulAppState sharedAppState] syncForumCookies];
     
 }
 

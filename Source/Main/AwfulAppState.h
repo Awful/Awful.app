@@ -17,7 +17,7 @@ static NSString* kAwfulScreenStateScreenKey = @"kAwfulScreenStateScreenIDKey";
 static NSString* kAwfulAppStateFavoriteForums = @"kAwfulAppStateFavoriteForums";
 static NSString* kAwfulAppStateExpandedForums = @"kAwfulAppStateExpandedForums";
 
-static NSString* kAwfulAppStateForumCookies = @"kAwfulAppStateForumCookies";
+static NSString* kAwfulAppStateForumCookieData = @"kAwfulAppStateForumCookieData";
 
 
 @interface AwfulAppState : NSObject
@@ -28,7 +28,7 @@ static NSString* kAwfulAppStateForumCookies = @"kAwfulAppStateForumCookies";
 +(void) setScrollOffset:(CGFloat)scrollOffset atIndexPath:(NSIndexPath*)indexPath;
 
 @property (nonatomic,readonly) BOOL isLoggedIn;
-@property (nonatomic) NSArray* forumCookies;
+@property (nonatomic) NSArray* forumCookieData;
 -(void) syncForumCookies;
 
 -(NSURL *) iCloudDataDirectory;

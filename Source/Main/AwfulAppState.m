@@ -114,10 +114,15 @@
     
     
 }
-/*
+
 -(NSArray*) forumCookies
 {
-    return [self.awfulCloudDefaults objectForKey:kAwfulAppStateForumCookies];
+    NSData *encoded = [self.awfulCloudDefaults objectForKey:kAwfulAppStateForumCookieData];
+    if ([encoded isKindOfClass:[NSData class]]) {
+        NSArray *cookies = [NSKeyedUnarchiver unarchiveObjectWithData:encoded];
+        return cookies;
+    }
+    return nil;
 }
 
 -(void) syncForumCookies
@@ -130,10 +135,9 @@
     
     NSArray *combined = [cloudCookies arrayByAddingObjectsFromArray:localCookies];
     
-    NSCoder *encoder = [NSCoder new];
-    NSData *encoded = [combined encodeWithCoder:encoder];
+    NSData *encoded = [NSKeyedArchiver archivedDataWithRootObject:combined];
     
-    [self.awfulCloudDefaults setObject:combined forKey:kAwfulAppStateForumCookies];
+    [self.awfulCloudDefaults setObject:encoded forKey:kAwfulAppStateForumCookieData];
     
     for(NSHTTPCookie *cookie in combined)
     {
@@ -142,6 +146,6 @@
     
     [self.awfulCloudDefaults synchronize];
 }
-*/
+
 
 @end
