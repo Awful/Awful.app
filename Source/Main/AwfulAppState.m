@@ -34,6 +34,14 @@
     //return _awfulDefaults;
 }
 
+- (BOOL) isiCloudSignedIn {
+    
+    // Get token for iCloud user account
+    id currentToken = [[NSFileManager defaultManager] ubiquityIdentityToken];
+    BOOL isiCloudSignedIn = (currentToken != nil);
+    return isiCloudSignedIn;
+}
+
 -(NSUbiquitousKeyValueStore*) awfulCloudDefaults {
     if(_awfulCloudDefaults) return _awfulCloudDefaults;
     _awfulCloudDefaults = [NSUbiquitousKeyValueStore new];

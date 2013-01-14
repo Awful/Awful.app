@@ -73,6 +73,7 @@
             [info.author applyToObject:thread.author];
             existingUsers[thread.author.username] = thread.author;
             if (forum) thread.forum = forum;
+            if (!forumID) thread.isBookmarked = @YES;
             [threads addObject:thread];
         }
         NSError *error;

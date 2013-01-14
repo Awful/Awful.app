@@ -29,6 +29,8 @@ static NSString* kAwfulAppStateForumCookieData = @"kAwfulAppStateForumCookieData
 
 @property (nonatomic,readonly) BOOL isLoggedIn;
 @property (nonatomic) NSArray* forumCookieData;
+
+@property (nonatomic,readonly) BOOL isiCloudSignedIn;
 -(void) syncForumCookies;
 -(void) clearCloudCookies;
 

@@ -22,6 +22,7 @@ typedef enum {
 
 @property (readonly, strong, nonatomic) NSManagedObjectContext *context;
 @property (readonly, nonatomic) NSManagedObjectContext *newContextForThread;
+@property (readonly,nonatomic) NSURL* localStoreURL;
 
 @property (readonly, strong, nonatomic) NSManagedObjectModel *model;
 

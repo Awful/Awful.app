@@ -493,7 +493,7 @@ static AwfulAppDelegate *_instance;
 
 - (void)storeDidChange:(NSNotification*)notification
 {
-    NSLog(@"Got a KV change notification:%@", notification);
+    //NSLog(@"Got a KV change notification:%@", notification);
     [[AwfulAppState sharedAppState] syncForumCookies];
     
 }
