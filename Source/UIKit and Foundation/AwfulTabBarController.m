@@ -96,6 +96,9 @@
                                UIViewAutoresizingFlexibleTopMargin);
     [self.view addSubview:tabBar];
     self.tabBar = tabBar;
+    if (self.selectedViewController) {
+        [self addViewController:self.selectedViewController];
+    }
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
