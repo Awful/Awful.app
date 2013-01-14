@@ -40,33 +40,37 @@
 
 + (NSArray *)threadsCreatedOrUpdatedWithParsedInfo:(NSArray *)threadInfos
 {
-    NSMutableArray *threads = [[NSMutableArray alloc] init];
-    NSMutableDictionary *existingThreads = [NSMutableDictionary new];
-    NSArray *threadIDs = [threadInfos valueForKey:@"threadID"];
-    for (AwfulThread *thread in [self fetchAllMatchingPredicate:@"threadID IN %@", threadIDs]) {
-        existingThreads[thread.threadID] = thread;
-    }
-    NSMutableDictionary *existingUsers = [NSMutableDictionary new];
-    NSArray *usernames = [threadInfos valueForKeyPath:@"author.username"];
-    for (AwfulUser *user in [AwfulUser fetchAllMatchingPredicate:@"username IN %@", usernames]) {
-        existingUsers[user.username] = user;
-    }
-    
-    for (ThreadParsedInfo *info in threadInfos) {
-        if ([info.threadID length] == 0) {
-            NSLog(@"ignoring ID-less thread (announcement?)");
-            continue;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSManagedObjectContext *moc = AwfulDataStack.sharedDataStack.newContextForThread;
+        NSMutableArray *threads = [[NSMutableArray alloc] init];
+        NSMutableDictionary *existingThreads = [NSMutableDictionary new];
+        NSArray *threadIDs = [threadInfos valueForKey:@"threadID"];
+        for (AwfulThread *thread in [self fetchAllWithManagedObjectContext:moc matchingPredicate:@"threadID IN %@", threadIDs]) {
+            existingThreads[thread.threadID] = thread;
         }
-        AwfulThread *thread = existingThreads[info.threadID];
-        if (!thread) thread = [AwfulThread insertNew];
-        [info applyToObject:thread];
-        if (!thread.author) thread.author = [AwfulUser insertNew];
-        [info.author applyToObject:thread.author];
-        existingUsers[thread.author.username] = thread.author;
-        [threads addObject:thread];
-    }
-    [[AwfulDataStack sharedDataStack] save];
-    return threads;
+        NSMutableDictionary *existingUsers = [NSMutableDictionary new];
+        NSArray *usernames = [threadInfos valueForKeyPath:@"author.username"];
+        for (AwfulUser *user in [AwfulUser fetchAllWithManagedObjectContext:moc matchingPredicate:@"username IN %@", usernames]) {
+            existingUsers[user.username] = user;
+        }
+        
+        for (ThreadParsedInfo *info in threadInfos) {
+            if ([info.threadID length] == 0) {
+                NSLog(@"ignoring ID-less thread (announcement?)");
+                continue;
+            }
+            AwfulThread *thread = existingThreads[info.threadID];
+            if (!thread) thread = [AwfulThread insertInManagedObjectContext:moc];
+            [info applyToObject:thread];
+            if (!thread.author) thread.author = [AwfulUser insertInManagedObjectContext:moc];
+            [info.author applyToObject:thread.author];
+            existingUsers[thread.author.username] = thread.author;
+            [threads addObject:thread];
+        }
+        [moc save:nil];
+        //return threads;
+    });
+    return nil;
 }
 
 #pragma mark - _AwfulThread

@@ -93,7 +93,7 @@
     NSPersistentStoreCoordinator *psc = _coordinator;
     
     // Set up iCloud in another thread:
-    
+    /*
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
         // ** Note: if you adapt this code for your own use, you MUST change this variable:
@@ -146,7 +146,7 @@
             [options setObject:iCloudEnabledAppID            forKey:NSPersistentStoreUbiquitousContentNameKey];
             [options setObject:iCloudLogsPath                forKey:NSPersistentStoreUbiquitousContentURLKey];
             
-            [psc lock];
+            //[psc lock];
             
             [psc addPersistentStoreWithType:NSSQLiteStoreType
                               configuration:nil
@@ -154,30 +154,30 @@
                                     options:options
                                       error:nil];
             
-            [psc unlock];
+            //[psc unlock];
         }
-        else {
+        else { */
             NSLog(@"iCloud is NOT working - using a local store");
             NSMutableDictionary *options = [NSMutableDictionary dictionary];
             [options setObject:[NSNumber numberWithBool:YES] forKey:NSMigratePersistentStoresAutomaticallyOption];
             [options setObject:[NSNumber numberWithBool:YES] forKey:NSInferMappingModelAutomaticallyOption];
             
-            [psc lock];
+            //[psc lock];
             
             [psc addPersistentStoreWithType:NSSQLiteStoreType
                               configuration:nil
-                                        URL:localStore
+                                        URL:self.storeURL
                                     options:options
                                       error:nil];
-            [psc unlock];
+            //[psc unlock];
             
-        }
-        
+        //}
+        /*
         dispatch_async(dispatch_get_main_queue(), ^{
             [[NSNotificationCenter defaultCenter] postNotificationName:@"SomethingChanged" object:self userInfo:nil];
         });
     });
-    
+    */
     return _coordinator;
 }
 
@@ -226,7 +226,7 @@
 
 + (NSURL *)defaultStoreURL
 {
-    NSURL *caches = [[NSFileManager defaultManager] documentDirectory];
+    NSURL *caches = [[NSFileManager defaultManager] cachesDirectory];
     return [caches URLByAppendingPathComponent:@"AwfulData.sqlite"];
 }
 
@@ -243,6 +243,13 @@
         
         [[NSNotificationCenter defaultCenter] postNotification:refreshNotification];
     }];
+}
+
+//handle updates from different threads
+- (void) mergeChangesFromContextDidSaveNotification:(NSNotification*)notification
+{
+    if (notification.object != self.context)
+        [self.context mergeChangesFromContextDidSaveNotification:notification];
 }
 
 @end
