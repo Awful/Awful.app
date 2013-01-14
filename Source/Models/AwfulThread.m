@@ -6,10 +6,9 @@
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulThread.h"
+#import "AwfulModels.h"
 #import "AwfulDataStack.h"
 #import "AwfulParsing.h"
-#import "AwfulUser.h"
 #import "NSManagedObject+Awful.h"
 
 @implementation AwfulThread
@@ -38,10 +37,18 @@
     return [NSSet setWithObjects:@"isClosed", @"isLocked", nil];
 }
 
-+ (NSArray *)threadsCreatedOrUpdatedWithParsedInfo:(NSArray *)threadInfos
++ (NSArray *)threadsCreatedOrUpdatedWithParsedInfo:(NSArray *)threadInfos inForumID:(NSString*)forumID
 {
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSManagedObjectContext *moc = AwfulDataStack.sharedDataStack.newContextForThread;
+        
+        AwfulForum *forum;
+        if (forumID) {
+            forum = [AwfulForum fetchAllWithManagedObjectContext:moc
+                                               matchingPredicate:@"forumID = %@", forumID][0];
+        }
+        
         NSMutableArray *threads = [[NSMutableArray alloc] init];
         NSMutableDictionary *existingThreads = [NSMutableDictionary new];
         NSArray *threadIDs = [threadInfos valueForKey:@"threadID"];
@@ -65,9 +72,11 @@
             if (!thread.author) thread.author = [AwfulUser insertInManagedObjectContext:moc];
             [info.author applyToObject:thread.author];
             existingUsers[thread.author.username] = thread.author;
+            if (forum) thread.forum = forum;
             [threads addObject:thread];
         }
-        [moc save:nil];
+        NSError *error;
+        [moc save:&error];
         //return threads;
     });
     return nil;

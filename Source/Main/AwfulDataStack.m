@@ -248,8 +248,10 @@
 //handle updates from different threads
 - (void) mergeChangesFromContextDidSaveNotification:(NSNotification*)notification
 {
-    if (notification.object != self.context)
+    if (notification.object != self.context) {
         [self.context mergeChangesFromContextDidSaveNotification:notification];
+        [self.context save:nil];
+    }
 }
 
 @end
