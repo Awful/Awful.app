@@ -98,7 +98,7 @@
         case NSFetchedResultsChangeUpdate: {
             if (self.ignoreUpdates) return;
             [self configureCell:[self.tableView cellForRowAtIndexPath:indexPath]
-                    atIndexPath:indexPath];
+                    atIndexPath:newIndexPath];
             break;
         }
     }
