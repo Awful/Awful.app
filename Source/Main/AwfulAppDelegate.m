@@ -493,9 +493,15 @@ static AwfulAppDelegate *_instance;
 
 - (void)storeDidChange:(NSNotification*)notification
 {
+    BOOL loggedInBeforeSync = IsLoggedIn();
+    
     //NSLog(@"Got a KV change notification:%@", notification);
     [[AwfulAppState sharedAppState] syncForumCookies];
     
+    if(!loggedInBeforeSync && IsLoggedIn()) {
+        //just synced forum cookies, user doesn't need to log in now
+        [self loginControllerDidLogIn:nil];
+    }
 }
 
 @end
