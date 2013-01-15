@@ -18,6 +18,7 @@
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "AwfulThreadListController.h"
+#import "AwfulAppState.h"
 
 @interface AwfulForumsListController ()
 
@@ -90,6 +91,9 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
     NSIndexPath *indexPath = [self.tableView indexPathForCell:(UITableViewCell *)cell];
     AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
     forum.isFavoriteValue = button.selected;
+    
+    [[AwfulAppState sharedAppState] setForum:forum isFavorite:button.selected];
+    
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:
                                     [AwfulForum entityName]];
     fetchRequest.predicate = [NSPredicate predicateWithFormat:@"isFavorite == YES"];
@@ -123,6 +127,9 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
     } else {
         RecursivelyCollapseForum(forum);
     }
+    
+    [[AwfulAppState sharedAppState] setForum:forum isExpanded:button.selected];
+    
     [[AwfulDataStack sharedDataStack] save];
     
     // The fetched results controller won't pick up on changes to the keypath "parentForum.expanded"

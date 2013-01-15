@@ -21,7 +21,7 @@ typedef enum {
 + (AwfulDataStack *)sharedDataStack;
 
 @property (readonly, strong, nonatomic) NSManagedObjectContext *context;
-@property (readonly, nonatomic) NSManagedObjectContext *newContextForThread;
+@property (readonly, nonatomic) NSManagedObjectContext *newThreadContext;
 @property (readonly,nonatomic) NSURL* localStoreURL;
 
 @property (readonly, strong, nonatomic) NSManagedObjectModel *model;

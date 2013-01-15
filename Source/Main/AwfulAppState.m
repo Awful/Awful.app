@@ -62,17 +62,60 @@
     return [self.awfulCloudDefaults longLongForKey:kAwfulAppStateSelectedTab];
 }
 
+- (NSArray*) cloudFavorites {
+    NSArray *array = [self.awfulCloudDefaults arrayForKey:kAwfulAppStateFavoriteForums];
+    if (!array) array = [NSArray new];
+    return array;
+}
+
+- (NSArray*) cloudExpanded {
+    NSArray *array = [self.awfulCloudDefaults arrayForKey:kAwfulAppStateExpandedForums];
+    if (!array) array = [NSArray new];
+    return array;
+}
 
 #pragma mark Remember favorite forums
-+(void) setForum:(AwfulForum*)forum isFavorite:(BOOL)isFavorite
+- (BOOL) isFavoriteForum:(AwfulForum*)forum
 {
+    return [self.cloudFavorites containsObject:forum.forumID];
+}
+
+- (void)setForum:(AwfulForum*)forum isFavorite:(BOOL)isFavorite
+{
+    NSMutableArray *faves = [self.cloudFavorites mutableCopy];
     
+    if (isFavorite) {
+        [faves addObject:forum.forumID];
+    }
+    else {
+        [faves removeObject:forum.forumID];
+    }
     
+    [self.awfulCloudDefaults setArray:faves forKey:kAwfulAppStateFavoriteForums];
+    [self.awfulCloudDefaults synchronize];
 }
 
 
 #pragma mark Remember expanded forums
+- (BOOL) isExpandedForum:(AwfulForum*)forum
+{
+    return [self.cloudExpanded containsObject:forum.forumID];
+}
 
+- (void)setForum:(AwfulForum*)forum isExpanded:(BOOL)isExpanded
+{
+    NSMutableArray *expanded = [self.cloudExpanded mutableCopy];
+    
+    if (isExpanded) {
+        [expanded addObject:forum.forumID];
+    }
+    else {
+        [expanded removeObject:forum.forumID];
+    }
+    
+    [self.awfulCloudDefaults setArray:expanded forKey:kAwfulAppStateFavoriteForums];
+    [self.awfulCloudDefaults synchronize];
+}
 
 #pragma mark Remembering scroll position
 +(void) setScrollOffset:(CGFloat)scrollOffset atIndexPath:(NSIndexPath*)indexPath

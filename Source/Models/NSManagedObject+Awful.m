@@ -15,7 +15,7 @@
 + (void)fetchAllAndThen:(void (^)(NSError *error, NSArray *fetchedObjects, NSManagedObjectContext* threadContext))callback
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSManagedObjectContext *moc = [AwfulDataStack sharedDataStack].newContextForThread;
+        NSManagedObjectContext *moc = [AwfulDataStack sharedDataStack].newThreadContext;
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[(Class)self entityName]];
         NSError *error;
         NSArray *all = [moc executeFetchRequest:request error:&error];

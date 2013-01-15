@@ -41,7 +41,7 @@
 {
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSManagedObjectContext *moc = AwfulDataStack.sharedDataStack.newContextForThread;
+        NSManagedObjectContext *moc = AwfulDataStack.sharedDataStack.newThreadContext;
         
         AwfulForum *forum;
         if (forumID) {

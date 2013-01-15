@@ -13,4 +13,9 @@
 
 + (NSArray *)updateCategoriesAndForums:(ForumHierarchyParsedInfo *)info;
 
+-(void) setIsFavorite:(NSNumber *)isFavorite ;
+-(void) setExpanded:(NSNumber *)expanded;
+
++ (void)syncCloudFavorites;
++ (void)syncCloudExpanded;
 @end

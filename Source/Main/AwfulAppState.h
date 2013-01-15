@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+@class AwfulForum;
 
 static NSString* kAwfulAppStateSelectedTab = @"kAwfulAppStateSelectedTab";
 static NSString* kAwfulAppStateNavStack = @"kAwfulAppStateNavStack";
@@ -21,8 +22,18 @@ static NSString* kAwfulAppStateForumCookieData = @"kAwfulAppStateForumCookieData
 
 
 @interface AwfulAppState : NSObject
+
 + (AwfulAppState *)sharedAppState;
+
 @property (nonatomic) NSUInteger selectedTab;
+
+
+- (void)setForum:(AwfulForum*)forum isFavorite:(BOOL)isFavorite;
+- (void)setForum:(AwfulForum*)forum isExpanded:(BOOL)isExpanded;
+
+@property (nonatomic,readonly) NSArray* cloudFavorites;
+@property (nonatomic,readonly) NSArray* cloudExpanded;
+
 
 +(CGPoint) scrollOffsetAtIndexPath:(NSIndexPath*)indexPath;
 +(void) setScrollOffset:(CGFloat)scrollOffset atIndexPath:(NSIndexPath*)indexPath;
@@ -34,6 +45,6 @@ static NSString* kAwfulAppStateForumCookieData = @"kAwfulAppStateForumCookieData
 -(void) syncForumCookies;
 -(void) clearCloudCookies;
 
--(NSURL *) iCloudDataDirectory;
+//-(NSURL *) iCloudDataDirectory;
 
 @end

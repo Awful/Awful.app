@@ -11,13 +11,14 @@
 #import "AwfulDataStack.h"
 #import "AwfulThread.h"
 #import "NSManagedObject+Awful.h"
+#import "AwfulAppState.h"
 
 @implementation AwfulForum
 
 + (NSArray *)updateCategoriesAndForums:(ForumHierarchyParsedInfo *)info
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSManagedObjectContext *moc = AwfulDataStack.sharedDataStack.newContextForThread;
+        NSManagedObjectContext *moc = AwfulDataStack.sharedDataStack.newThreadContext;
         NSArray *forums = [AwfulForum fetchAllWithContext:moc];
         NSMutableDictionary *existingForums = [NSMutableDictionary new];
         for (AwfulForum *f in forums) {
@@ -72,6 +73,33 @@
     });
     return nil;
     //return [allForums count] > 0 ? allForums : [existingForums allValues];
+}
+
++ (void)syncCloudFavorites {
+    NSManagedObjectContext *context = [AwfulDataStack sharedDataStack].newThreadContext;
+    NSArray *cloudFaves = [[AwfulAppState sharedAppState] cloudFavorites];
+    NSArray *allForums = [AwfulForum fetchAllWithContext:context];
+    
+    for(AwfulForum* f in allForums)
+    {
+        f.isFavoriteValue = [cloudFaves containsObject:f.forumID];
+    }
+    
+    [context save:nil];
+    
+}
+
++ (void)syncCloudExpanded {
+    NSManagedObjectContext *context = [AwfulDataStack sharedDataStack].newThreadContext;
+    NSArray *cloudExpanded = [[AwfulAppState sharedAppState] cloudExpanded];
+    NSArray *allForums = [AwfulForum fetchAllWithContext:context];
+    
+    for(AwfulForum* f in allForums)
+    {
+        f.expandedValue = [cloudExpanded containsObject:f.forumID];
+    }
+    
+    [context save:nil];
 }
 
 @end

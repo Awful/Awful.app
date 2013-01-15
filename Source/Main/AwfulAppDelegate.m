@@ -489,19 +489,31 @@ static AwfulAppDelegate *_instance;
     // instance of your app wasn't running
     [[NSUbiquitousKeyValueStore defaultStore] synchronize];
     [[AwfulAppState sharedAppState] syncForumCookies];
+    
+    //[[AwfulDataStack sharedDataStack] loadPersistentStores];
 }
 
 - (void)storeDidChange:(NSNotification*)notification
 {
-    BOOL loggedInBeforeSync = IsLoggedIn();
-    
-    //NSLog(@"Got a KV change notification:%@", notification);
-    [[AwfulAppState sharedAppState] syncForumCookies];
-    
-    if(!loggedInBeforeSync && IsLoggedIn()) {
-        //just synced forum cookies, user doesn't need to log in now
-        [self loginControllerDidLogIn:nil];
+    NSArray *changes = [notification.userInfo objectForKey:NSUbiquitousKeyValueStoreChangedKeysKey];
+    NSLog(@"changes=%@",changes);
+    if ([changes containsObject:kAwfulAppStateForumCookieData]) {
+        BOOL loggedInBeforeSync = IsLoggedIn();
+        [[AwfulAppState sharedAppState] syncForumCookies];
+        if(!loggedInBeforeSync && IsLoggedIn()) {
+            //just synced forum cookies, user doesn't need to log in now
+            [self loginControllerDidLogIn:nil];
+        }
     }
+    
+    if ([changes containsObject:kAwfulAppStateFavoriteForums]) {
+        [AwfulForum syncCloudFavorites];
+    }
+    
+    if ([changes containsObject:kAwfulAppStateExpandedForums]) {
+        [AwfulForum syncCloudExpanded];
+    }
+    
 }
 
 @end
