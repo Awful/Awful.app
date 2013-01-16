@@ -13,7 +13,6 @@
 #import "NSManagedObject+Awful.h"
 
 @interface AwfulAppState ()
-@property (nonatomic) NSUbiquitousKeyValueStore *awfulCloudStore;
 @end
 
 @implementation AwfulAppState

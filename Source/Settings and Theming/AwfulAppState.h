@@ -14,6 +14,7 @@
 
 + (AwfulAppState *)sharedAppState;
 
+@property (nonatomic) NSUbiquitousKeyValueStore *awfulCloudStore;
 @property (nonatomic) NSUInteger selectedTab;
 
 //forums

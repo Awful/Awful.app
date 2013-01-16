@@ -212,6 +212,17 @@
 			</array>
 		</dict>
 		<dict>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Action</key>
+					<string>ShowCloud</string>
+					<key>Title</key>
+					<string>Cloud Data</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
 			<key>Explanation</key>
 			<string>Awful uses these third-party libraries.</string>
 			<key>Settings</key>
