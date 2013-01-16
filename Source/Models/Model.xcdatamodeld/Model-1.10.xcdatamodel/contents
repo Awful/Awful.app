@@ -78,10 +78,6 @@
         <relationship name="posts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulPost" inverseName="author" inverseEntity="AwfulPost" syncable="YES"/>
         <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="author" inverseEntity="AwfulThread" syncable="YES"/>
     </entity>
-    <configuration name="CloudConfig">
-        <memberEntity name="AwfulCategory"/>
-        <memberEntity name="AwfulForum"/>
-    </configuration>
     <elements>
         <element name="AwfulCategory" positionX="160" positionY="192" width="128" height="105"/>
         <element name="AwfulForum" positionX="205" positionY="285" width="128" height="210"/>
