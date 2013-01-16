@@ -496,8 +496,8 @@ static AwfulAppDelegate *_instance;
 - (void)storeDidChange:(NSNotification*)notification
 {
     NSArray *changes = [notification.userInfo objectForKey:NSUbiquitousKeyValueStoreChangedKeysKey];
-    NSLog(@"changes=%@",changes);
-    if ([changes containsObject:kAwfulAppStateForumCookieData]) {
+    NSLog(@"cloud change keys =%@",changes);
+    if ([changes containsObject:kAwfulAppStateForumCookieDataKey]) {
         BOOL loggedInBeforeSync = IsLoggedIn();
         [[AwfulAppState sharedAppState] syncForumCookies];
         if(!loggedInBeforeSync && IsLoggedIn()) {
@@ -506,11 +506,11 @@ static AwfulAppDelegate *_instance;
         }
     }
     
-    if ([changes containsObject:kAwfulAppStateFavoriteForums]) {
+    if ([changes containsObject:kAwfulAppStateFavoriteForumsKey]) {
         [[AwfulAppState sharedAppState] syncCloudFavorites];
     }
     
-    if ([changes containsObject:kAwfulAppStateExpandedForums]) {
+    if ([changes containsObject:kAwfulAppStateExpandedForumsKey]) {
         [[AwfulAppState sharedAppState] syncCloudExpanded];
     }
     

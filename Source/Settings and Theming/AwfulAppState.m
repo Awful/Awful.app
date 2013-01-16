@@ -13,12 +13,11 @@
 #import "NSManagedObject+Awful.h"
 
 @interface AwfulAppState ()
-@property (nonatomic) NSUserDefaults *awfulDefaults;
-@property (nonatomic) NSUbiquitousKeyValueStore *awfulCloudDefaults;
+@property (nonatomic) NSUbiquitousKeyValueStore *awfulCloudStore;
 @end
 
 @implementation AwfulAppState
-
+#pragma mark init
 + (AwfulAppState *)sharedAppState
 {
     static AwfulAppState *instance = nil;
@@ -29,55 +28,31 @@
     return instance;
 }
 
--(NSUserDefaults*) awfulDefaults
-{
-    return nil;
-    //if (_awfulDefaults) return _awfulDefaults;
-    //_awfulDefaults = [NSUserDefaults standardUserDefaults];
-    //return _awfulDefaults;
-}
-
-- (BOOL) isiCloudSignedIn {
-    
-    // Get token for iCloud user account
-    id currentToken = [[NSFileManager defaultManager] ubiquityIdentityToken];
-    BOOL isiCloudSignedIn = (currentToken != nil);
-    return isiCloudSignedIn;
-}
-
 -(NSUbiquitousKeyValueStore*) awfulCloudDefaults {
-    if(_awfulCloudDefaults) return _awfulCloudDefaults;
-    _awfulCloudDefaults = [NSUbiquitousKeyValueStore new];
-    return _awfulCloudDefaults;
+    if(_awfulCloudStore) return _awfulCloudStore;
+    _awfulCloudStore = [NSUbiquitousKeyValueStore new];
+    return _awfulCloudStore;
 }
 
 #pragma mark Remembering selected tab
 -(void)setSelectedTab:(NSUInteger)selectedTab
 {
-    //[self.awfulDefaults setInteger:selectedTab forKey:kAwfulAppStateSelectedTab];
-    //[self.awfulDefaults synchronize];
-    
-    [self.awfulCloudDefaults setLongLong:selectedTab forKey:kAwfulAppStateSelectedTab];
-    [self.awfulCloudDefaults synchronize];
+    [self.awfulCloudStore setLongLong:selectedTab forKey:kAwfulAppStateSelectedTabKey];
+    [self.awfulCloudStore synchronize];
 }
 
 -(NSUInteger) selectedTab {
-    return [self.awfulCloudDefaults longLongForKey:kAwfulAppStateSelectedTab];
-}
-
-- (NSArray*) cloudFavorites {
-    NSArray *array = [self.awfulCloudDefaults arrayForKey:kAwfulAppStateFavoriteForums];
-    if (!array) array = [NSArray new];
-    return array;
-}
-
-- (NSArray*) cloudExpanded {
-    NSArray *array = [self.awfulCloudDefaults arrayForKey:kAwfulAppStateExpandedForums];
-    if (!array) array = [NSArray new];
-    return array;
+    return [self.awfulCloudStore longLongForKey:kAwfulAppStateSelectedTabKey];
 }
 
 #pragma mark Remember favorite forums
+
+- (NSArray*) cloudFavorites {
+    NSArray *array = [self.awfulCloudStore arrayForKey:kAwfulAppStateFavoriteForumsKey];
+    if (!array) array = [NSArray new];
+    return array;
+}
+
 - (BOOL) isFavoriteForum:(AwfulForum*)forum
 {
     return [self.cloudFavorites containsObject:forum.forumID];
@@ -94,12 +69,32 @@
         [faves removeObject:forum.forumID];
     }
     
-    [self.awfulCloudDefaults setArray:faves forKey:kAwfulAppStateFavoriteForums];
-    [self.awfulCloudDefaults synchronize];
+    [self.awfulCloudStore setArray:faves forKey:kAwfulAppStateFavoriteForumsKey];
+    [self.awfulCloudStore synchronize];
+}
+
+- (void)syncCloudFavorites {
+    NSManagedObjectContext *context = [AwfulDataStack sharedDataStack].newThreadContext;
+    NSArray *cloudFaves = [[AwfulAppState sharedAppState] cloudFavorites];
+    NSArray *allForums = [AwfulForum fetchAllWithContext:context];
+    
+    for(AwfulForum* f in allForums)
+    {
+        f.isFavoriteValue = [cloudFaves containsObject:f.forumID];
+    }
+    
+    [context save:nil];
+    
 }
 
 
 #pragma mark Remember expanded forums
+
+- (NSArray*) cloudExpanded {
+    NSArray *array = [self.awfulCloudStore arrayForKey:kAwfulAppStateExpandedForumsKey];
+    if (!array) array = [NSArray new];
+    return array;
+}
 - (BOOL) isExpandedForum:(AwfulForum*)forum
 {
     return [self.cloudExpanded containsObject:forum.forumID];
@@ -116,12 +111,25 @@
         [expanded removeObject:forum.forumID];
     }
     
-    [self.awfulCloudDefaults setArray:expanded forKey:kAwfulAppStateExpandedForums];
-    [self.awfulCloudDefaults synchronize];
+    [self.awfulCloudStore setArray:expanded forKey:kAwfulAppStateExpandedForumsKey];
+    [self.awfulCloudStore synchronize];
 }
 
-#pragma mark Remembering scroll position
-+(void) setScrollOffset:(CGFloat)scrollOffset atIndexPath:(NSIndexPath*)indexPath
+- (void)syncCloudExpanded {
+    NSManagedObjectContext *context = [AwfulDataStack sharedDataStack].newThreadContext;
+    NSArray *cloudExpanded = [[AwfulAppState sharedAppState] cloudExpanded];
+    NSArray *allForums = [AwfulForum fetchAllWithContext:context];
+    
+    for(AwfulForum* f in allForums)
+    {
+        f.expandedValue = [cloudExpanded containsObject:f.forumID];
+    }
+    
+    [context save:nil];
+}
+
+#pragma mark scroll positions
+-(void) setScrollOffset:(CGFloat)scrollOffset atIndexPath:(NSIndexPath*)indexPath
 {
     //probably want to save the current width too?
     //an ipad scroll position will be much lower than the same point on a phone
@@ -152,7 +160,7 @@
      */
 }
 
-+(CGPoint) scrollOffsetAtIndexPath:(NSIndexPath*)indexPath
+- (CGPoint) scrollOffsetAtIndexPath:(NSIndexPath*)indexPath
 {
     /*
     NSArray *array = [AwfulAppState.awfulDefaults arrayForKey:kAwfulAppStateNavStack];
@@ -169,9 +177,11 @@
     
 }
 
+
+#pragma mark cookies
 -(NSArray*) forumCookies
 {
-    NSData *encoded = [self.awfulCloudDefaults objectForKey:kAwfulAppStateForumCookieData];
+    NSData *encoded = [self.awfulCloudStore objectForKey:kAwfulAppStateForumCookieDataKey];
     if ([encoded isKindOfClass:[NSData class]]) {
         NSArray *cookies = [NSKeyedUnarchiver unarchiveObjectWithData:encoded];
         return cookies;
@@ -190,49 +200,31 @@
     NSArray *combined = [cloudCookies arrayByAddingObjectsFromArray:localCookies];
     
     NSData *encoded = [NSKeyedArchiver archivedDataWithRootObject:combined];
+    [self.awfulCloudStore setObject:encoded forKey:kAwfulAppStateForumCookieDataKey];
     
-    [self.awfulCloudDefaults setObject:encoded forKey:kAwfulAppStateForumCookieData];
-    
-    for(NSHTTPCookie *cookie in combined)
-    {
+    for(NSHTTPCookie *cookie in combined) {
         [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:cookie];
     }
     
-    [self.awfulCloudDefaults synchronize];
+    [self.awfulCloudStore synchronize];
 }
 
 -(void) clearCloudCookies {
-    [self.awfulCloudDefaults removeObjectForKey:kAwfulAppStateForumCookieData];
-    [self.awfulCloudDefaults synchronize];
+    [self.awfulCloudStore removeObjectForKey:kAwfulAppStateForumCookieDataKey];
+    [self.awfulCloudStore synchronize];
 }
 
-- (void)syncCloudFavorites {
-    NSManagedObjectContext *context = [AwfulDataStack sharedDataStack].newThreadContext;
-    NSArray *cloudFaves = [[AwfulAppState sharedAppState] cloudFavorites];
-    NSArray *allForums = [AwfulForum fetchAllWithContext:context];
-    
-    for(AwfulForum* f in allForums)
-    {
-        f.isFavoriteValue = [cloudFaves containsObject:f.forumID];
-    }
-    
-    [context save:nil];
-    
+#pragma mark misc
+
+- (id)objectForKeyedSubscript:(id)key
+{
+    return [self.awfulCloudStore objectForKey:key];
 }
 
-- (void)syncCloudExpanded {
-    NSManagedObjectContext *context = [AwfulDataStack sharedDataStack].newThreadContext;
-    NSArray *cloudExpanded = [[AwfulAppState sharedAppState] cloudExpanded];
-    NSArray *allForums = [AwfulForum fetchAllWithContext:context];
-    
-    for(AwfulForum* f in allForums)
-    {
-        f.expandedValue = [cloudExpanded containsObject:f.forumID];
-    }
-    
-    [context save:nil];
+- (void)setObject:(id)object forKeyedSubscript:(id)key
+{
+    NSParameterAssert(key);
+    [self.awfulCloudStore setObject:object forKey:key];
 }
-
-
 
 @end
