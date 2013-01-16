@@ -162,6 +162,46 @@ struct {
     self[AwfulSettingsKeys.yosposStyle] = val;
 }
 
+struct {
+    __unsafe_unretained NSString *Never;
+    __unsafe_unretained NSString *InLandscape;
+    __unsafe_unretained NSString *InPortrait;
+    __unsafe_unretained NSString *Always;
+} AwfulKeepSidebarOpenValues = {
+    @"never",
+    @"landscape",
+    @"portrait",
+    @"always",
+};
+
+- (AwfulKeepSidebarOpenWhen)keepSidebarOpen
+{
+    NSString *value = self[AwfulSettingsKeys.keepSidebarOpen];
+    if ([value isEqualToString:AwfulKeepSidebarOpenValues.Never]) {
+        return AwfulKeepSidebarOpenNever;
+    } else if ([value isEqualToString:AwfulKeepSidebarOpenValues.InLandscape]) {
+        return AwfulKeepSidebarOpenInLandscape;
+    } else if ([value isEqualToString:AwfulKeepSidebarOpenValues.InPortrait]) {
+        return AwfulKeepSidebarOpenInPortrait;
+    } else if ([value isEqualToString:AwfulKeepSidebarOpenValues.Always]) {
+        return AwfulKeepSidebarOpenAlways;
+    } else {
+        return AwfulKeepSidebarOpenNever;
+    }
+}
+
+- (void)setKeepSidebarOpen:(AwfulKeepSidebarOpenWhen)keepSidebarOpen
+{
+    NSString *value;
+    switch (keepSidebarOpen) {
+        case AwfulKeepSidebarOpenNever:       value = AwfulKeepSidebarOpenValues.Never;       break;
+        case AwfulKeepSidebarOpenInLandscape: value = AwfulKeepSidebarOpenValues.InLandscape; break;
+        case AwfulKeepSidebarOpenInPortrait:  value = AwfulKeepSidebarOpenValues.InPortrait;  break;
+        case AwfulKeepSidebarOpenAlways:      value = AwfulKeepSidebarOpenValues.Always;      break;
+    }
+    self[AwfulSettingsKeys.keepSidebarOpen] = value;
+}
+
 BOOL_PROPERTY(highlightOwnQuotes, setHighlightOwnQuotes)
 
 BOOL_PROPERTY(highlightOwnMentions, setHighlightOwnMentions)
@@ -235,4 +275,5 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .username = @"username",
     .showThreadTags = @"show_thread_tags",
     .yosposStyle = @"yospos_style",
+    .keepSidebarOpen = @"keep_sidebar_open",
 };
