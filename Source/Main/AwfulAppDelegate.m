@@ -507,11 +507,13 @@ static AwfulAppDelegate *_instance;
     }
     
     if ([changes containsObject:kAwfulAppStateFavoriteForumsKey]) {
-        //[[AwfulAppState sharedAppState] syncCloudFavorites];
+        [[NSNotificationCenter defaultCenter] postNotificationName:AwfulAppStateDidUpdateFavoriteForums
+                                                            object:nil];
     }
     
     if ([changes containsObject:kAwfulAppStateExpandedForumsKey]) {
-        //[[AwfulAppState sharedAppState] syncCloudExpanded];
+        [[NSNotificationCenter defaultCenter] postNotificationName:AwfulAppStateDidUpdateExpandedForums
+                                                            object:nil];
     }
     
 }

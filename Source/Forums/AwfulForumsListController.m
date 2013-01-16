@@ -47,6 +47,19 @@
     if (self) {
         self.title = @"Forums";
         self.tabBarItem.image = [UIImage imageNamed:@"list_icon.png"];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(refreshFetchedResults)
+                                                     name:AwfulAppStateDidUpdateFavoriteForums
+                                                   object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(refreshFetchedResults)
+                                                     name:AwfulAppStateDidUpdateExpandedForums
+                                                   object:nil];
+        
+        
+        
     }
     return self;
 }
@@ -54,6 +67,7 @@
 - (void)dealloc
 {
     [self stopObservingReachabilityChanges];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (NSFetchedResultsController *)createFetchedResultsController
@@ -71,6 +85,12 @@
                                                managedObjectContext:[AwfulDataStack sharedDataStack].context
                                                  sectionNameKeyPath:@"category.index"
                                                           cacheName:nil];
+}
+
+- (void)refreshFetchedResults
+{
+    [self createFetchedResultsController];
+    [self.tableView reloadData];
 }
 
 - (NSDate *)lastRefresh
@@ -96,25 +116,6 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
     forum.isFavoriteValue = button.selected;
     
     [[AwfulAppState sharedAppState] setForum:forum isFavorite:button.selected];
-    
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:
-                                    [AwfulForum entityName]];
-    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"isFavorite == YES"];
-    NSError *error;
-    if (forum.isFavoriteValue) {
-        NSUInteger count = [[AwfulDataStack sharedDataStack].context
-                            countForFetchRequest:fetchRequest error:&error];
-        if (count == NSNotFound) NSLog(@"Error setting favorite index: %@", error);
-        forum.favoriteIndexValue = count;
-    } else {
-        NSArray *renumber = [[AwfulDataStack sharedDataStack].context
-                             executeFetchRequest:fetchRequest error:&error];
-        if (!renumber) NSLog(@"Error renumbering favorites: %@", error);
-        [renumber enumerateObjectsUsingBlock:^(AwfulForum *favorite, NSUInteger i, BOOL *stop) {
-            favorite.favoriteIndexValue = i;
-        }];
-    }
-    [[AwfulDataStack sharedDataStack] save];
 }
 
 - (void)toggleExpanded:(UIButton *)button

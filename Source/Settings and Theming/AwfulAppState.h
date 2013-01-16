@@ -57,3 +57,7 @@ static NSString* const kAwfulAppStateFavoriteForumsKey    = @"kAwfulAppStateFavo
 static NSString* const kAwfulAppStateExpandedForumsKey    = @"kAwfulAppStateExpandedForums";
 
 static NSString* const kAwfulAppStateForumCookieDataKey   = @"kAwfulAppStateForumCookieData";
+
+
+static NSString* const AwfulAppStateDidUpdateFavoriteForums   = @"AwfulAppStateDidUpdateFavoriteForums";
+static NSString* const AwfulAppStateDidUpdateExpandedForums   = @"AwfulAppStateDidUpdateExpandedForums";
