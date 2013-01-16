@@ -280,7 +280,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         if (self.splitViewController) {
             AwfulSplitViewController *split = (AwfulSplitViewController *)self.splitViewController;
             UINavigationController *nav = split.viewControllers[1];
-            [nav setViewControllers:@[ page ] animated:YES];
+            [nav setViewControllers:@[ page ] animated:NO];
             [split.masterPopoverController dismissPopoverAnimated:YES];
         } else {
             [self.navigationController pushViewController:page animated:YES];
