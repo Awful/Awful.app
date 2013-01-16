@@ -75,31 +75,4 @@
     //return [allForums count] > 0 ? allForums : [existingForums allValues];
 }
 
-+ (void)syncCloudFavorites {
-    NSManagedObjectContext *context = [AwfulDataStack sharedDataStack].newThreadContext;
-    NSArray *cloudFaves = [[AwfulAppState sharedAppState] cloudFavorites];
-    NSArray *allForums = [AwfulForum fetchAllWithContext:context];
-    
-    for(AwfulForum* f in allForums)
-    {
-        f.isFavoriteValue = [cloudFaves containsObject:f.forumID];
-    }
-    
-    [context save:nil];
-    
-}
-
-+ (void)syncCloudExpanded {
-    NSManagedObjectContext *context = [AwfulDataStack sharedDataStack].newThreadContext;
-    NSArray *cloudExpanded = [[AwfulAppState sharedAppState] cloudExpanded];
-    NSArray *allForums = [AwfulForum fetchAllWithContext:context];
-    
-    for(AwfulForum* f in allForums)
-    {
-        f.expandedValue = [cloudExpanded containsObject:f.forumID];
-    }
-    
-    [context save:nil];
-}
-
 @end

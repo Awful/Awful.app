@@ -8,6 +8,9 @@
 
 #import "AwfulAppState.h"
 #import "AwfulModels.h"
+#import "AwfulForum.h"
+#import "AwfulDataStack.h"
+#import "NSManagedObject+Awful.h"
 
 @interface AwfulAppState ()
 @property (nonatomic) NSUserDefaults *awfulDefaults;
@@ -113,7 +116,7 @@
         [expanded removeObject:forum.forumID];
     }
     
-    [self.awfulCloudDefaults setArray:expanded forKey:kAwfulAppStateFavoriteForums];
+    [self.awfulCloudDefaults setArray:expanded forKey:kAwfulAppStateExpandedForums];
     [self.awfulCloudDefaults synchronize];
 }
 
@@ -202,6 +205,34 @@
     [self.awfulCloudDefaults removeObjectForKey:kAwfulAppStateForumCookieData];
     [self.awfulCloudDefaults synchronize];
 }
+
+- (void)syncCloudFavorites {
+    NSManagedObjectContext *context = [AwfulDataStack sharedDataStack].newThreadContext;
+    NSArray *cloudFaves = [[AwfulAppState sharedAppState] cloudFavorites];
+    NSArray *allForums = [AwfulForum fetchAllWithContext:context];
+    
+    for(AwfulForum* f in allForums)
+    {
+        f.isFavoriteValue = [cloudFaves containsObject:f.forumID];
+    }
+    
+    [context save:nil];
+    
+}
+
+- (void)syncCloudExpanded {
+    NSManagedObjectContext *context = [AwfulDataStack sharedDataStack].newThreadContext;
+    NSArray *cloudExpanded = [[AwfulAppState sharedAppState] cloudExpanded];
+    NSArray *allForums = [AwfulForum fetchAllWithContext:context];
+    
+    for(AwfulForum* f in allForums)
+    {
+        f.expandedValue = [cloudExpanded containsObject:f.forumID];
+    }
+    
+    [context save:nil];
+}
+
 
 
 @end

@@ -45,6 +45,9 @@ static NSString* kAwfulAppStateForumCookieData = @"kAwfulAppStateForumCookieData
 -(void) syncForumCookies;
 -(void) clearCloudCookies;
 
+- (void)syncCloudFavorites;
+- (void)syncCloudExpanded;
+
 //-(NSURL *) iCloudDataDirectory;
 
 @end
