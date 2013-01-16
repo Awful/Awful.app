@@ -47,7 +47,9 @@
 - (void)addViewController:(UIViewController *)coming
 {
     [self addChildViewController:coming];
-    [self insertDetailViewForViewController:coming];
+    if ([self isViewLoaded]) {
+        [self insertDetailViewForViewController:coming];
+    }
     [coming didMoveToParentViewController:self];
 }
 
@@ -62,13 +64,17 @@
 {
     [going willMoveToParentViewController:nil];
     [self addChildViewController:coming];
-    coming.view.frame = [self frameForContainedViewController:coming];
+    if ([self isViewLoaded]) {
+        coming.view.frame = [self frameForContainedViewController:coming];
+    }
     [self transitionFromViewController:going toViewController:coming duration:0 options:0
                             animations:nil completion:^(BOOL finished)
     {
         [going removeFromParentViewController];
         [coming didMoveToParentViewController:self];
-        [self.view bringSubviewToFront:self.tabBar];
+        if ([self isViewLoaded]) {
+            [self.view bringSubviewToFront:self.tabBar];
+        }
     }];
 }
 
