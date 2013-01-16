@@ -133,6 +133,8 @@
 			<string>Sidebar</string>
 			<key>Explanation</key>
 			<string>Rotate your device after setting.</string>
+			<key>Explanation~ios5</key>
+			<string>Quit and relaunch Awful after setting.</string>
 			<key>Device</key>
 			<string>iPad</string>
 			<key>Settings</key>

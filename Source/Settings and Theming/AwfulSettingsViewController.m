@@ -345,7 +345,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
 {
-    return self.sections[section][@"Explanation"];
+    NSDictionary *sectionInfo = self.sections[section];
+    NSString *iOSVersion = [UIDevice currentDevice].systemVersion;
+    if ([iOSVersion compare:@"6.0" options:NSNumericSearch] == NSOrderedAscending) {
+        return sectionInfo[@"Explanation~ios5"] ?: sectionInfo[@"Explanation"];
+    }
+    return sectionInfo[@"Explanation"];
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
