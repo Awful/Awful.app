@@ -10,6 +10,7 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulTheme.h"
 #import "SVPullToRefresh.h"
+#import "AwfulAppState.h"
 
 @interface AwfulTableViewController ()
 
@@ -26,6 +27,7 @@
                                              selector:@selector(themeChanged:)
                                                  name:AwfulThemeDidChangeNotification
                                                object:nil];
+    
     return self;
 }
 
@@ -61,6 +63,12 @@
     [self retheme];
     [self refreshIfNeededOnAppear];
     [self startObservingApplicationDidBecomeActive];
+    
+    int row = [self.navigationController.viewControllers indexOfObject:self];
+    [self.tableView setContentOffset:[AwfulAppState scrollOffsetAtIndexPath:
+                                            [NSIndexPath indexPathForRow:row
+                                                                inSection:0]]
+                            animated:NO];
 }
 
 - (void)becameActive
@@ -171,5 +179,15 @@
         self.tableView.infiniteScrollingView.activityIndicatorViewStyle = style;
     }
 }
+
+#pragma mark scroll delegate
+-(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    int row = [self.navigationController.viewControllers indexOfObject:self];
+    
+    [AwfulAppState setScrollOffset:scrollView.contentOffset.y
+                       atIndexPath:[NSIndexPath indexPathForRow:row inSection:0]
+     ];
+}
+
 
 @end

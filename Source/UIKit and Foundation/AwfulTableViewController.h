@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AwfulTableViewController : UITableViewController
+@interface AwfulTableViewController : UITableViewController <UIScrollViewDelegate>
 
 @property (nonatomic) NSOperation *networkOperation;
 

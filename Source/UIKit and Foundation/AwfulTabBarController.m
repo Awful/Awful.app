@@ -8,6 +8,7 @@
 
 #import "AwfulTabBarController.h"
 #import "AwfulTabBar.h"
+#import "AwfulAppState.h"
 
 @interface AwfulTabBarController () <AwfulTabBarDelegate, UINavigationControllerDelegate>
 
@@ -27,7 +28,8 @@
         nav.delegate = self;
     }
     self.tabBar.items = [self.viewControllers valueForKey:@"tabBarItem"];
-    self.selectedViewController = self.viewControllers[0];
+    
+    self.selectedViewController = self.viewControllers[[AwfulAppState selectedTab]];
 }
 
 - (void)setSelectedViewController:(UIViewController *)selectedViewController
@@ -42,6 +44,7 @@
     }
     _selectedViewController = selectedViewController;
     self.tabBar.selectedItem = selectedViewController.tabBarItem;
+    [AwfulAppState setSelectedTab:[self.viewControllers indexOfObject:_selectedViewController]];
 }
 
 - (void)addViewController:(UIViewController *)coming
