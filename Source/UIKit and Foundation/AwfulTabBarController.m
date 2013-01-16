@@ -47,9 +47,14 @@
 - (void)addViewController:(UIViewController *)coming
 {
     [self addChildViewController:coming];
+    [self insertDetailViewForViewController:coming];
+    [coming didMoveToParentViewController:self];
+}
+
+- (void)insertDetailViewForViewController:(UIViewController *)coming
+{
     coming.view.frame = [self frameForContainedViewController:coming];
     [self.view insertSubview:coming.view belowSubview:self.tabBar];
-    [coming didMoveToParentViewController:self];
 }
 
 - (void)replaceViewController:(UIViewController *)going
@@ -97,7 +102,7 @@
     [self.view addSubview:tabBar];
     self.tabBar = tabBar;
     if (self.selectedViewController) {
-        [self addViewController:self.selectedViewController];
+        [self insertDetailViewForViewController:self.selectedViewController];
     }
 }
 
