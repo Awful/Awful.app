@@ -8,7 +8,6 @@
 
 #import "AwfulSplitViewController.h"
 #import "AwfulLoginController.h"
-#import "AwfulSettings.h"
 
 @interface AwfulSplitViewController () <UISplitViewControllerDelegate>
 
@@ -66,12 +65,7 @@
    shouldHideViewController:(UIViewController *)vc
               inOrientation:(UIInterfaceOrientation)orientation
 {
-    switch ([AwfulSettings settings].keepSidebarOpen) {
-        case AwfulKeepSidebarOpenAlways: return NO;
-        case AwfulKeepSidebarOpenInLandscape: return UIInterfaceOrientationIsPortrait(orientation);
-        case AwfulKeepSidebarOpenInPortrait: return UIInterfaceOrientationIsLandscape(orientation);
-        case AwfulKeepSidebarOpenNever: default: return YES;
-    }
+    return UIInterfaceOrientationIsPortrait(orientation);
 }
 
 - (void)splitViewController:(UISplitViewController*)svc

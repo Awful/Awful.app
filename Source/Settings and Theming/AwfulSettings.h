@@ -51,15 +51,6 @@ typedef enum {
 
 @property (assign, nonatomic) AwfulYOSPOSStyle yosposStyle;
 
-typedef enum {
-    AwfulKeepSidebarOpenNever,
-    AwfulKeepSidebarOpenInLandscape,
-    AwfulKeepSidebarOpenInPortrait,
-    AwfulKeepSidebarOpenAlways,
-} AwfulKeepSidebarOpenWhen;
-
-@property (assign, nonatomic) AwfulKeepSidebarOpenWhen keepSidebarOpen;
-
 - (id)objectForKeyedSubscript:(id)key;
 
 - (void)setObject:(id)object forKeyedSubscript:(id <NSCopying>)key;
@@ -85,5 +76,4 @@ extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *username;
     __unsafe_unretained NSString *showThreadTags;
     __unsafe_unretained NSString *yosposStyle;
-    __unsafe_unretained NSString *keepSidebarOpen;
 } AwfulSettingsKeys;
