@@ -11,6 +11,7 @@
 @interface NSManagedObject (Awful)
 
 + (NSArray *)fetchAll;
++ (NSArray*) fetchAllWithContext:(NSManagedObjectContext*)context;
 
 + (NSArray *)fetchAllMatchingPredicate:(id)formatOrPredicate, ...;
 
