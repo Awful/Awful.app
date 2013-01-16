@@ -75,4 +75,28 @@
     //return [allForums count] > 0 ? allForums : [existingForums allValues];
 }
 
+-(BOOL) expandedValue {
+    return [[AwfulAppState sharedAppState] isExpandedForum:self];
+}
+
+-(BOOL) isFavoriteValue {
+    return [[AwfulAppState sharedAppState] isFavoriteForum:self];
+}
+
+-(NSUInteger) favoriteIndexValue {
+    return 0;
+}
+
+-(void) setIsFavoriteValue:(BOOL)isFavoriteValue {
+    [[AwfulAppState sharedAppState] setForum:self isFavorite:isFavoriteValue];
+}
+
+-(void) setExpandedValue:(BOOL)expandedValue {
+    [[AwfulAppState sharedAppState] setForum:self isExpanded:expandedValue];
+}
+
+-(void) setFavoriteIndexValue:(NSUInteger)favoriteIndexValue {
+    
+}
+
 @end

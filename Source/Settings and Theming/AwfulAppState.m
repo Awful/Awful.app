@@ -28,7 +28,7 @@
     return instance;
 }
 
--(NSUbiquitousKeyValueStore*) awfulCloudDefaults {
+-(NSUbiquitousKeyValueStore*) awfulCloudStore {
     if(_awfulCloudStore) return _awfulCloudStore;
     _awfulCloudStore = [NSUbiquitousKeyValueStore new];
     return _awfulCloudStore;
@@ -47,7 +47,7 @@
 
 #pragma mark Remember favorite forums
 
-- (NSArray*) cloudFavorites {
+- (NSArray*) favoriteForums {
     NSArray *array = [self.awfulCloudStore arrayForKey:kAwfulAppStateFavoriteForumsKey];
     if (!array) array = [NSArray new];
     return array;
@@ -55,12 +55,12 @@
 
 - (BOOL) isFavoriteForum:(AwfulForum*)forum
 {
-    return [self.cloudFavorites containsObject:forum.forumID];
+    return [self.favoriteForums containsObject:forum.forumID];
 }
 
 - (void)setForum:(AwfulForum*)forum isFavorite:(BOOL)isFavorite
 {
-    NSMutableArray *faves = [self.cloudFavorites mutableCopy];
+    NSMutableArray *faves = [self.favoriteForums mutableCopy];
     
     if (isFavorite) {
         [faves addObject:forum.forumID];
@@ -73,36 +73,22 @@
     [self.awfulCloudStore synchronize];
 }
 
-- (void)syncCloudFavorites {
-    NSManagedObjectContext *context = [AwfulDataStack sharedDataStack].newThreadContext;
-    NSArray *cloudFaves = [[AwfulAppState sharedAppState] cloudFavorites];
-    NSArray *allForums = [AwfulForum fetchAllWithContext:context];
-    
-    for(AwfulForum* f in allForums)
-    {
-        f.isFavoriteValue = [cloudFaves containsObject:f.forumID];
-    }
-    
-    [context save:nil];
-    
-}
-
 
 #pragma mark Remember expanded forums
 
-- (NSArray*) cloudExpanded {
-    NSArray *array = [self.awfulCloudStore arrayForKey:kAwfulAppStateExpandedForumsKey];
+- (NSArray*) expandedForums {
+    NSArray *array = [self.awfulCloudStore objectForKey:kAwfulAppStateExpandedForumsKey];
     if (!array) array = [NSArray new];
     return array;
 }
 - (BOOL) isExpandedForum:(AwfulForum*)forum
 {
-    return [self.cloudExpanded containsObject:forum.forumID];
+    return [self.expandedForums containsObject:forum.forumID];
 }
 
 - (void)setForum:(AwfulForum*)forum isExpanded:(BOOL)isExpanded
 {
-    NSMutableArray *expanded = [self.cloudExpanded mutableCopy];
+    NSMutableArray *expanded = [self.expandedForums mutableCopy];
     
     if (isExpanded) {
         [expanded addObject:forum.forumID];
@@ -111,21 +97,8 @@
         [expanded removeObject:forum.forumID];
     }
     
-    [self.awfulCloudStore setArray:expanded forKey:kAwfulAppStateExpandedForumsKey];
+    [self.awfulCloudStore setObject:expanded forKey:kAwfulAppStateExpandedForumsKey];
     [self.awfulCloudStore synchronize];
-}
-
-- (void)syncCloudExpanded {
-    NSManagedObjectContext *context = [AwfulDataStack sharedDataStack].newThreadContext;
-    NSArray *cloudExpanded = [[AwfulAppState sharedAppState] cloudExpanded];
-    NSArray *allForums = [AwfulForum fetchAllWithContext:context];
-    
-    for(AwfulForum* f in allForums)
-    {
-        f.expandedValue = [cloudExpanded containsObject:f.forumID];
-    }
-    
-    [context save:nil];
 }
 
 #pragma mark scroll positions

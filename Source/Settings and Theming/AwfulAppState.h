@@ -17,12 +17,12 @@
 @property (nonatomic) NSUInteger selectedTab;
 
 //forums
-@property (nonatomic,readonly) NSArray* cloudFavorites;
-@property (nonatomic,readonly) NSArray* cloudExpanded;
+@property (nonatomic,readonly) NSArray* favoriteForums;
+@property (nonatomic,readonly) NSArray* expandedForums;
 - (void)setForum:(AwfulForum*)forum isFavorite:(BOOL)isFavorite;
 - (void)setForum:(AwfulForum*)forum isExpanded:(BOOL)isExpanded;
-- (void)syncCloudFavorites;
-- (void)syncCloudExpanded;
+- (BOOL) isFavoriteForum:(AwfulForum*)forum;
+- (BOOL) isExpandedForum:(AwfulForum*)forum;
 
 //cookies
 //@property (nonatomic,readonly) BOOL isLoggedIn;
@@ -31,8 +31,8 @@
 -(void) clearCloudCookies;
 
 //scrolling
-+(CGPoint) scrollOffsetAtIndexPath:(NSIndexPath*)indexPath;
-+(void) setScrollOffset:(CGFloat)scrollOffset atIndexPath:(NSIndexPath*)indexPath;
+- (CGPoint) scrollOffsetAtIndexPath:(NSIndexPath*)indexPath;
+- (void) setScrollOffset:(CGFloat)scrollOffset atIndexPath:(NSIndexPath*)indexPath;
 
 
 
@@ -47,13 +47,13 @@ extern const struct AwfulStateKeys {
     __unsafe_unretained NSString *cookieData;
 } AwfulStateKeys;
 
-static NSString* kAwfulAppStateSelectedTabKey       = @"kAwfulAppStateSelectedTab";
-static NSString* kAwfulAppStateNavStackKey          = @"kAwfulAppStateNavStack";
+static NSString* const kAwfulAppStateSelectedTabKey       = @"kAwfulAppStateSelectedTab";
+static NSString* const kAwfulAppStateNavStackKey          = @"kAwfulAppStateNavStack";
 
-static NSString* kAwfulScreenStateScrollOffsetKey   = @"kAwfulScreenStateScrollOffsetKey";
-static NSString* kAwfulScreenStateScreenKey         = @"kAwfulScreenStateScreenIDKey";
+static NSString* const kAwfulScreenStateScrollOffsetKey   = @"kAwfulScreenStateScrollOffsetKey";
+static NSString* const kAwfulScreenStateScreenKey         = @"kAwfulScreenStateScreenIDKey";
 
-static NSString* kAwfulAppStateFavoriteForumsKey    = @"kAwfulAppStateFavoriteForums";
-static NSString* kAwfulAppStateExpandedForumsKey    = @"kAwfulAppStateExpandedForums";
+static NSString* const kAwfulAppStateFavoriteForumsKey    = @"kAwfulAppStateFavoriteForums";
+static NSString* const kAwfulAppStateExpandedForumsKey    = @"kAwfulAppStateExpandedForums";
 
-static NSString* kAwfulAppStateForumCookieDataKey   = @"kAwfulAppStateForumCookieData";
+static NSString* const kAwfulAppStateForumCookieDataKey   = @"kAwfulAppStateForumCookieData";

@@ -507,11 +507,11 @@ static AwfulAppDelegate *_instance;
     }
     
     if ([changes containsObject:kAwfulAppStateFavoriteForumsKey]) {
-        [[AwfulAppState sharedAppState] syncCloudFavorites];
+        //[[AwfulAppState sharedAppState] syncCloudFavorites];
     }
     
     if ([changes containsObject:kAwfulAppStateExpandedForumsKey]) {
-        [[AwfulAppState sharedAppState] syncCloudExpanded];
+        //[[AwfulAppState sharedAppState] syncCloudExpanded];
     }
     
 }

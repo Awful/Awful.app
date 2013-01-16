@@ -226,7 +226,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
-        forum.isFavoriteValue = NO;
+        //forum.isFavoriteValue = NO;
         NSArray *reindex = [self.fetchedResultsController fetchedObjects];
         [reindex enumerateObjectsUsingBlock:^(AwfulForum *f, NSUInteger i, BOOL *stop) {
             if (f.isFavoriteValue) f.favoriteIndexValue = i;
