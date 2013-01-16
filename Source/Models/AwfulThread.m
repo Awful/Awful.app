@@ -40,13 +40,13 @@
 + (NSArray *)threadsCreatedOrUpdatedWithParsedInfo:(NSArray *)threadInfos inForumID:(NSString*)forumID
 {
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSManagedObjectContext *moc = AwfulDataStack.sharedDataStack.newThreadContext;
-        
+    //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        //NSManagedObjectContext *moc = AwfulDataStack.sharedDataStack.newThreadContext;
+        NSManagedObjectContext *moc = [[AwfulDataStack sharedDataStack] context];
+    
         AwfulForum *forum;
         if (forumID) {
-            forum = [AwfulForum fetchAllWithManagedObjectContext:moc
-                                               matchingPredicate:@"forumID = %@", forumID][0];
+            forum = [AwfulForum fetchAllMatchingPredicate:@"forumID = %@", forumID][0];
         }
         
         NSMutableArray *threads = [[NSMutableArray alloc] init];
@@ -79,7 +79,7 @@
         NSError *error;
         [moc save:&error];
         //return threads;
-    });
+    //});
     return nil;
 }
 

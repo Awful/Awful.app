@@ -21,8 +21,6 @@ typedef enum {
 + (AwfulDataStack *)sharedDataStack;
 
 @property (readonly, strong, nonatomic) NSManagedObjectContext *context;
-@property (readonly, nonatomic) NSManagedObjectContext *newThreadContext;
-@property (readonly,nonatomic) NSURL* localStoreURL;
 
 @property (readonly, strong, nonatomic) NSManagedObjectModel *model;
 
@@ -43,6 +41,3 @@ typedef enum {
 // This might be a good time to recreate fetched results controllers or anything else that refers
 // to a stack's managed object context.
 extern NSString * const AwfulDataStackDidResetNotification;
-
-// Sent after data is updated from iCloud.  FetchedResultsControllers, etc need to refresh themselves.  AwfulFetchedTableViewController listens for this, other things will need to themselves
-extern NSString * const AwfulDataStackDidRemoteChangeNotification;

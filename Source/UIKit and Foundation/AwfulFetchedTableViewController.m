@@ -20,12 +20,6 @@
                                              selector:@selector(getFetchedResultsController:)
                                                  name:AwfulDataStackDidResetNotification
                                                object:[AwfulDataStack sharedDataStack]];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(refreshForRemoteChange:)
-                                                 name:AwfulDataStackDidRemoteChangeNotification
-                                               object:AwfulDataStack.sharedDataStack
-     ];
 }
 
 - (void)getFetchedResultsController:(NSNotification *)note

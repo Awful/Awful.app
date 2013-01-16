@@ -10,7 +10,7 @@
 #import "AwfulAppState.h"
 
 @interface AwfulCloudDataVisualizerViewController ()
-@property (nonatomic) NSDictionary *store;
+@property (nonatomic) NSUbiquitousKeyValueStore *store;
 @end
 
 @implementation AwfulCloudDataVisualizerViewController
@@ -19,7 +19,7 @@
 {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
-        _store = [[AwfulAppState sharedAppState] awfulCloudStore].dictionaryRepresentation;
+        _store = [[AwfulAppState sharedAppState] awfulCloudStore];
         self.tableView.editing = YES;
     }
     return self;
@@ -46,15 +46,14 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-#warning Potentially incomplete method implementation.
     // Return the number of sections.
-    return self.store.allKeys.count;
+    return self.store.dictionaryRepresentation.allKeys.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    NSArray *keys = self.store.allKeys;
+    NSArray *keys = self.store.dictionaryRepresentation.allKeys;
     id obj = [self.store objectForKey:keys[section]];
     
     if ([obj isKindOfClass:[NSArray class]]) {
@@ -69,7 +68,7 @@
     //static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:(UITableViewCellStyleValue1) reuseIdentifier:@"Cell"];
     
-    NSArray *keys = self.store.allKeys;
+    NSArray *keys = self.store.dictionaryRepresentation.allKeys;
     id obj = [self.store objectForKey:keys[indexPath.section]];
     
     if ([obj isKindOfClass:[NSArray class]]) {
@@ -86,7 +85,7 @@
 }
 
 - (NSString*) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    NSArray *keys = self.store.allKeys;
+    NSArray *keys = self.store.dictionaryRepresentation.allKeys;
     return keys[section];
 }
 
@@ -97,7 +96,7 @@
 -(void) tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle != UITableViewCellEditingStyleDelete) return;
     
-    NSString *key = self.store.allKeys[indexPath.section];
+    NSString *key = self.store.dictionaryRepresentation.allKeys[indexPath.section];
     [[[AwfulAppState sharedAppState] awfulCloudStore] removeObjectForKey:key];
     [[[AwfulAppState sharedAppState] awfulCloudStore] synchronize];
     [self.tableView reloadData];

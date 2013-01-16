@@ -17,8 +17,9 @@
 
 + (NSArray *)updateCategoriesAndForums:(ForumHierarchyParsedInfo *)info
 {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSManagedObjectContext *moc = AwfulDataStack.sharedDataStack.newThreadContext;
+    //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        //NSManagedObjectContext *moc = AwfulDataStack.sharedDataStack.newThreadContext;
+        NSManagedObjectContext *moc = [AwfulDataStack sharedDataStack].context;
         NSArray *forums = [AwfulForum fetchAllWithContext:moc];
         NSMutableDictionary *existingForums = [NSMutableDictionary new];
         for (AwfulForum *f in forums) {
@@ -70,7 +71,7 @@
         }
         */
         [moc save:nil];
-    });
+    //});
     return nil;
     //return [allForums count] > 0 ? allForums : [existingForums allValues];
 }

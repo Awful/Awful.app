@@ -15,7 +15,7 @@
 @property (strong, nonatomic) NSManagedObjectModel *model;
 @property (strong, nonatomic) NSPersistentStoreCoordinator *coordinator;
 
-//@property (nonatomic) NSURL *storeURL;
+@property (nonatomic) NSURL *storeURL;
 
 @end
 
@@ -26,15 +26,14 @@
 {
     self = [super init];
     if (self) {
-        //_storeURL = storeURL;
-        [self context]; //initialize this here
+        _storeURL = storeURL;
     }
     return self;
 }
 
 - (id)init
 {
-    return [self initWithStoreURL:nil];
+    return [self initWithStoreURL:[[self class] defaultStoreURL]];
 }
 
 + (AwfulDataStack *)sharedDataStack
@@ -49,39 +48,11 @@
 
 - (NSManagedObjectContext *)context
 {
-    if ([NSThread currentThread] != [NSThread mainThread]) {
-        [NSException raise:@"YOU FUCKED UP"
-                    format:@"Accessing main thread managedobjectcontext from a different thread."];
-    }
-    
-    //NSLog(@"Main managed context");
     if (_context) return _context;
-    
-    _context = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
-    //[_context performBlockAndWait:^{
-        [_context setPersistentStoreCoordinator:self.coordinator];
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(mergeChangesFrom_iCloud:)
-                                                     name:NSPersistentStoreDidImportUbiquitousContentChangesNotification
-                                                   object:self.coordinator
-         ];
-        
-        //listen for changes on other threads
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(mergeChangesFromContextDidSaveNotification:)
-                                                     name:NSManagedObjectContextDidSaveNotification
-                                                   object:nil
-         ];
-    //}];
-
+    _context = [NSManagedObjectContext new];
+    [_context setPersistentStoreCoordinator:self.coordinator];
+    [_context setUndoManager:nil];
     return _context;
-}
-
-- (NSManagedObjectContext*) newThreadContext {
-    //NSLog(@"new thread managed context");
-    NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSConfinementConcurrencyType];
-    moc.persistentStoreCoordinator = self.coordinator;
-    return moc;
 }
 
 - (NSManagedObjectModel *)model
@@ -93,102 +64,33 @@
 
 - (NSPersistentStoreCoordinator *)coordinator
 {
-    if((_coordinator != nil)) {
-        return _coordinator;
-    }
+    if (_coordinator) return _coordinator;
     
+    NSError *error;
     _coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.model];
-    NSPersistentStoreCoordinator *psc = _coordinator;
-    
-    
-    //[self loadiCloudStore];
-    [self loadLocalStore];
-
-    
-    /*
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"SomethingChanged" object:self userInfo:nil];
-        });
-     */
-    //});
-            
-    
-    return _coordinator;
-}
-
-- (BOOL)loadiCloudStore {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSPersistentStoreCoordinator *psc = _coordinator;
-        NSString *iCloudEnabledAppID = @"com.awfulapp.awful";
-        NSString *dataFileName = @"AwfulData2.sqlite";
-     
-        NSString *iCloudDataDirectoryName = @"Data.nosync";
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        NSURL *iCloud = [fileManager URLForUbiquityContainerIdentifier:@"X2D4TQTBCQ.com.awfulapp.awful"];
-        
-        if (iCloud) {
-            NSLog(@"iCloud is working");
-            
-            NSURL *iCloudLogsPath = [iCloud URLByAppendingPathComponent:@"Logs"];
-
-            /*
-            if([fileManager fileExistsAtPath:[[iCloud path] stringByAppendingPathComponent:iCloudDataDirectoryName]] == NO) {
-                NSError *fileSystemError;
-                [fileManager createDirectoryAtPath:[[iCloud path] stringByAppendingPathComponent:iCloudDataDirectoryName]
-                       withIntermediateDirectories:YES
-                                        attributes:nil
-                                             error:&fileSystemError];
-                if(fileSystemError != nil) {
-                    NSLog(@"Error creating database directory %@", fileSystemError);
-                }
-            }
-             */
-            
-            NSURL *iCloudData = [[iCloud URLByAppendingPathComponent:iCloudDataDirectoryName]
-                                    URLByAppendingPathComponent:dataFileName];
-            
-            NSDictionary *options = @{
-                NSMigratePersistentStoresAutomaticallyOption: @YES,
-                NSInferMappingModelAutomaticallyOption: @YES,
-                NSPersistentStoreUbiquitousContentNameKey:iCloudEnabledAppID,
-                NSPersistentStoreUbiquitousContentURLKey:iCloudLogsPath
-            };
-            [psc lock];
-            
-            NSError *error;
-            [psc addPersistentStoreWithType:NSSQLiteStoreType
-                              configuration:@"CloudConfig"
-                                        URL:iCloudData
-                                    options:options
-                                      error:&error];
-            NSLog(@"error=%@",error);
-            [psc unlock];
-            //return YES;
+    NSDictionary *options = @{
+NSMigratePersistentStoresAutomaticallyOption: @YES,
+NSInferMappingModelAutomaticallyOption: @YES
+    };
+    id ok = [_coordinator addPersistentStoreWithType:NSSQLiteStoreType
+                                       configuration:nil
+                                                 URL:self.storeURL
+                                             options:options
+                                               error:&error];
+    if (!ok) {
+        if (self.initFailureAction == AwfulDataStackInitFailureDelete) {
+            [self deleteAllData];
+            ok = [_coordinator addPersistentStoreWithType:NSSQLiteStoreType
+                                            configuration:nil
+                                                      URL:self.storeURL
+                                                  options:options
+                                                    error:&error];
+            if (ok) return _coordinator;
         }
-        //return NO;
-    });
-    return NO;
-}
-
-- (BOOL)loadLocalStore {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSPersistentStoreCoordinator *psc = _coordinator;
-        NSDictionary *options = @{
-            NSMigratePersistentStoresAutomaticallyOption: @YES,
-            NSInferMappingModelAutomaticallyOption:@YES
-        };
-        
-        [psc lock];
-        
-        id store = [psc addPersistentStoreWithType:NSSQLiteStoreType
-                                     configuration:nil
-                                               URL:self.localStoreURL
-                                           options:options
-                                             error:nil
-                    ];
-        [psc unlock];
-    });
-    return NO;
+        NSLog(@"error loading persistent store at %@: %@", self.storeURL, error);
+        abort();
+    }
+    return _coordinator;
 }
 
 - (void)deleteAllData
@@ -234,40 +136,13 @@
                                                         object:self];
 }
 
-- (NSURL *)localStoreURL
++ (NSURL *)defaultStoreURL
 {
     NSURL *caches = [[NSFileManager defaultManager] cachesDirectory];
     return [caches URLByAppendingPathComponent:@"AwfulData.sqlite"];
-}
-
-- (void)mergeChangesFrom_iCloud:(NSNotification *)notification {
-    
-	NSLog(@"Merging in changes from iCloud...");
-    [self.context performBlock:^{
-        
-        [self.context mergeChangesFromContextDidSaveNotification:notification];
-        
-        NSNotification* refreshNotification = [NSNotification notificationWithName:AwfulDataStackDidRemoteChangeNotification
-                                                                            object:self
-                                                                          userInfo:[notification userInfo]];
-        
-        [[NSNotificationCenter defaultCenter] postNotification:refreshNotification];
-    }];
-}
-
-//handle updates from different threads
-- (void) mergeChangesFromContextDidSaveNotification:(NSNotification*)notification
-{
-    if (notification.object != _context) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.context mergeChangesFromContextDidSaveNotification:notification];
-            [self.context save:nil];
-        });
-    }
 }
 
 @end
 
 
 NSString * const AwfulDataStackDidResetNotification = @"AwfulDataStackDidResetNotification";
-NSString * const AwfulDataStackDidRemoteChangeNotification = @"AwfulDataStackDidRemoteChangeNotification";

@@ -12,6 +12,7 @@
 
 @implementation NSManagedObject (Awful)
 
+/*
 + (void)fetchAllAndThen:(void (^)(NSError *error, NSArray *fetchedObjects, NSManagedObjectContext* threadContext))callback
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -33,12 +34,19 @@
     }
     return all;
 }
-
+*/
 + (NSArray *)fetchAll
 {
-    return [self fetchAllWithContext:AwfulDataStack.sharedDataStack.context];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[(Class)self entityName]];
+    NSError *error;
+    NSArray *all = [[AwfulDataStack sharedDataStack].context executeFetchRequest:request
+                                                                           error:&error];
+    if (!all) {
+        NSLog(@"error fetching all %@: %@", self, error);
+    }
+    return all;
 }
-
+/*
 
 + (NSArray *)fetchAllWithManagedObjectContext:(NSManagedObjectContext*)context matchingPredicate:(id)format, ... {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[(Class)self entityName]];
@@ -58,7 +66,7 @@
     }
     return matches;
 }
-
+*/
 
 + (NSArray *)fetchAllMatchingPredicate:(id)format, ...
 {    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[(Class)self entityName]];
