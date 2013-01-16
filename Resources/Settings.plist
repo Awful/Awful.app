@@ -170,7 +170,7 @@
 						</dict>
 					</array>
 					<key>Default</key>
-					<string>never</string>
+					<string>landscape</string>
 					<key>Key</key>
 					<string>keep_sidebar_open</string>
 				</dict>
