@@ -27,13 +27,14 @@
     self = [super init];
     if (self) {
         _storeURL = storeURL;
+        [self context]; //initialize this here
     }
     return self;
 }
 
 - (id)init
 {
-    return [self initWithStoreURL:[[self class] defaultStoreURL]];
+    return [self initWithStoreURL:[AwfulDataStack defaultStoreURL]];
 }
 
 + (AwfulDataStack *)sharedDataStack
@@ -48,11 +49,34 @@
 
 - (NSManagedObjectContext *)context
 {
+    if ([NSThread currentThread] != [NSThread mainThread]) {
+        [NSException raise:@"YOU FUCKED UP"
+                    format:@"Accessing main thread managedobjectcontext from a different thread."];
+    }
+    
+    //NSLog(@"Main managed context");
     if (_context) return _context;
-    _context = [NSManagedObjectContext new];
+    
+    _context = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+    //[_context performBlockAndWait:^{
     [_context setPersistentStoreCoordinator:self.coordinator];
-    [_context setUndoManager:nil];
+
+    //listen for changes on other threads
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(mergeChangesFromContextDidSaveNotification:)
+                                                 name:NSManagedObjectContextDidSaveNotification
+                                               object:nil
+     ];
+    //}];
+    
     return _context;
+}
+
+- (NSManagedObjectContext*) newThreadContext {
+    //NSLog(@"new thread managed context");
+    NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSConfinementConcurrencyType];
+    moc.persistentStoreCoordinator = self.coordinator;
+    return moc;
 }
 
 - (NSManagedObjectModel *)model
@@ -64,33 +88,38 @@
 
 - (NSPersistentStoreCoordinator *)coordinator
 {
-    if (_coordinator) return _coordinator;
-    
-    NSError *error;
-    _coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.model];
-    NSDictionary *options = @{
-        NSMigratePersistentStoresAutomaticallyOption: @YES,
-        NSInferMappingModelAutomaticallyOption: @YES
-    };
-    id ok = [_coordinator addPersistentStoreWithType:NSSQLiteStoreType
-                                       configuration:nil
-                                                 URL:self.storeURL
-                                             options:options
-                                               error:&error];
-    if (!ok) {
-        if (self.initFailureAction == AwfulDataStackInitFailureDelete) {
-            [self deleteAllData];
-            ok = [_coordinator addPersistentStoreWithType:NSSQLiteStoreType
-                                            configuration:nil
-                                                      URL:self.storeURL
-                                                  options:options
-                                                    error:&error];
-            if (ok) return _coordinator;
-        }
-        NSLog(@"error loading persistent store at %@: %@", self.storeURL, error);
-        abort();
+    if((_coordinator != nil)) {
+        return _coordinator;
     }
+    
+    _coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.model];
+    
+    //[self loadiCloudStore];
+    [self loadLocalStore];
+
     return _coordinator;
+}
+
+
+- (BOOL)loadLocalStore {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSPersistentStoreCoordinator *psc = _coordinator;
+        NSDictionary *options = @{
+    NSMigratePersistentStoresAutomaticallyOption: @YES,
+    NSInferMappingModelAutomaticallyOption:@YES
+        };
+        
+        [psc lock];
+        
+        [psc addPersistentStoreWithType:NSSQLiteStoreType
+                          configuration:nil
+                                    URL:self.storeURL
+                                options:options
+                                  error:nil
+                    ];
+        [psc unlock];
+    });
+    return NO;
 }
 
 - (void)deleteAllData
@@ -142,7 +171,20 @@
     return [caches URLByAppendingPathComponent:@"AwfulData.sqlite"];
 }
 
+
+//handle updates from different threads
+- (void) mergeChangesFromContextDidSaveNotification:(NSNotification*)notification
+{
+    if (notification.object != _context) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.context mergeChangesFromContextDidSaveNotification:notification];
+            [self.context save:nil];
+        });
+    }
+}
+
 @end
 
 
 NSString * const AwfulDataStackDidResetNotification = @"AwfulDataStackDidResetNotification";
+NSString * const AwfulDataStackDidRemoteChangeNotification = @"AwfulDataStackDidRemoteChangeNotification";
