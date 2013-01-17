@@ -9,6 +9,7 @@
 #import "AwfulPrivateMessage.h"
 #import "AwfulPrivateMessageListController.h"
 #import "AwfulPrivateMessageViewController.h"
+#import "AwfulUser.h"
 #import "AwfulDataStack.h"
 #import "AwfulHTTPClient+PrivateMessages.h"
 #import "AwfulThreadCell.h"
@@ -43,7 +44,7 @@
 -(void) viewDidLoad {
     [super viewDidLoad];
     
-    self.tableView.rowHeight = 75;
+    self.tableView.rowHeight = 50;
     self.title = @"Private Messages";
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:(UIBarButtonSystemItemCompose)
                                                                                            target:self
@@ -57,23 +58,15 @@
                                             ];
 }
 
--(BOOL)shouldReloadOnViewLoad
+-(BOOL)refreshOnAppear
 {
-    //check date on last thread we've got, if older than 10? min reload
-    NSFetchRequest *req = [NSFetchRequest fetchRequestWithEntityName:@"AwfulPM"];
-    req.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"sent" ascending:NO]];
-    req.fetchLimit = 1;
-    
-    /*
-    NSArray* newestPM = [ApplicationDelegate.managedObjectContext executeFetchRequest:req error:nil];
-    if (newestPM.count == 1) {
-        NSDate *date = [[newestPM objectAtIndex:0] sent];
-        
-        if (-[date timeIntervalSinceNow] > (60*10.0)+60*60) { //dst issue here or something, thread date an hour behind
-            return YES;
-        }
+    //check date on last message we've got, if older than 10? min reload
+    AwfulPrivateMessage *newestPM = [AwfulPrivateMessage firstSortedBy:
+                               @[[NSSortDescriptor sortDescriptorWithKey:@"sent" ascending:NO]]
+                               ];
+    if (-[newestPM.sent timeIntervalSinceNow] > (10*60*60) ) {  //10 min
+        return YES;
     }
-     */
     return NO;
 }
 
@@ -138,7 +131,7 @@
     cell.textLabel.text = pm.subject;
     cell.textLabel.textColor = theme.threadCellTextColor;
     
-    cell.detailTextLabel.text = pm.from;
+    cell.detailTextLabel.text = pm.from.username;
     cell.detailTextLabel.textColor = theme.threadCellPagesTextColor;
     
     cell.backgroundColor = theme.threadCellBackgroundColor;

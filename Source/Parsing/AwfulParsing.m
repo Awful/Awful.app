@@ -497,7 +497,7 @@ static NSString * DeEntitify(NSString *withEntities)
 
 @interface UserParsedInfo ()
 
-@property (copy, nonatomic) NSString *username;
+//@property (copy, nonatomic) NSString *username;
 
 @property (copy, nonatomic) NSString *userID;
 

@@ -88,7 +88,7 @@
                      [NSArray arrayWithObjects:
                       [NSDictionary dictionaryWithObjectsAndKeys:
                        @"From:", AwfulPostCellTextKey,
-                       self.privateMessage.from, AwfulPostCellDetailTextKey,
+                       self.privateMessage.from.username, AwfulPostCellDetailTextKey,
                        nil
                        ],
                       

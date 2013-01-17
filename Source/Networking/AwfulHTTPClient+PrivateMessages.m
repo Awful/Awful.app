@@ -8,7 +8,7 @@
 
 #import "AwfulHTTPClient+PrivateMessages.h"
 #import "AwfulParsing+PrivateMessages.h"
-//#import "AwfulDraft.h"
+#import "AwfulDataStack.h"
 
 @implementation AwfulHTTPClient (PrivateMessages)
 
@@ -18,23 +18,24 @@
     NSString *path = [NSString stringWithFormat:@"private.php"];
     NSMutableURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
     //urlRequest.timeoutInterval = NetworkTimeoutInterval;
-    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
-                                                               success:^(AFHTTPRequestOperation *operation, id response) {
-                                                                   //NetworkLogInfo(@"completed %@", THIS_METHOD);
-                                                                   NSData *responseData = (NSData *)response;
-                                                                   NSMutableArray *msgs = [PrivateMessageParsedInfo parsePMListWithData:responseData];
-                                                                   
-                                                                   NSError *error;
-                                                                   callback(error, msgs);
-                                                               } 
-                                                               failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                                                   //NetworkLogInfo(@"erred %@", THIS_METHOD);
-                                                                   callback(error, nil);
-                                                               }];
+    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
+                                                               success:^(id _, id data)
+                                  {
+                                      dispatch_async(self.parseQueue, ^{
+                                          NSArray *infos = [PrivateMessageParsedInfo messagesWithHTMLData:data];
+                                          dispatch_async(dispatch_get_main_queue(), ^{
+                                              NSArray *pms = [AwfulPrivateMessage privateMessagesCreatedOrUpdatedWithParsedInfo:infos];
+                                              [[AwfulDataStack sharedDataStack] save];
+                                              if (callback) callback(nil, pms);
+                                          });
+                                      });
+                                  } failure:^(id _, NSError *error) {
+                                      if (callback) callback(error, nil);
+                                  }];
+
     [self enqueueHTTPRequestOperation:op];
     return (NSOperation *)op;
 }
-
 
 -(NSOperation *)loadPrivateMessage:(AwfulPrivateMessage*)message
                            andThen:(void (^)(NSError *error, AwfulPrivateMessage *message))callback
@@ -45,10 +46,10 @@
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
                                                                success:^(AFHTTPRequestOperation *operation, id response) {
                                                                    //NetworkLogInfo(@"completed %@", THIS_METHOD);
-                                                                   NSData *responseData = (NSData *)response;
-                                                                   [PrivateMessageParsedInfo parsePM:message withData:responseData];
+                                                                   //NSData *responseData = (NSData *)response;
+                                                                   //[PrivateMessageParsedInfo parsePM:message withData:responseData];
                                                                    //[ApplicationDelegate saveContext];
-                                                                   callback(nil, message);
+                                                                   //callback(nil, message);
                                                                }
                                                                failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                                                                    callback(error, nil);

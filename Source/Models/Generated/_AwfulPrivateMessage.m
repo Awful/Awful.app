@@ -5,16 +5,17 @@
 
 const struct AwfulPrivateMessageAttributes AwfulPrivateMessageAttributes = {
 	.content = @"content",
-	.from = @"from",
 	.messageID = @"messageID",
+	.messageIconImageURL = @"messageIconImageURL",
 	.replied = @"replied",
+	.seen = @"seen",
 	.sent = @"sent",
 	.subject = @"subject",
-	.threadIconImageURL = @"threadIconImageURL",
 	.to = @"to",
 };
 
 const struct AwfulPrivateMessageRelationships AwfulPrivateMessageRelationships = {
+	.from = @"from",
 };
 
 const struct AwfulPrivateMessageFetchedProperties AwfulPrivateMessageFetchedProperties = {
@@ -46,13 +47,13 @@ const struct AwfulPrivateMessageFetchedProperties AwfulPrivateMessageFetchedProp
 + (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 	
-	if ([key isEqualToString:@"messageIDValue"]) {
-		NSSet *affectingKey = [NSSet setWithObject:@"messageID"];
+	if ([key isEqualToString:@"repliedValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"replied"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
-	if ([key isEqualToString:@"repliedValue"]) {
-		NSSet *affectingKey = [NSSet setWithObject:@"replied"];
+	if ([key isEqualToString:@"seenValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"seen"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
@@ -70,34 +71,15 @@ const struct AwfulPrivateMessageFetchedProperties AwfulPrivateMessageFetchedProp
 
 
 
-@dynamic from;
-
-
-
-
-
-
 @dynamic messageID;
 
 
 
-- (int32_t)messageIDValue {
-	NSNumber *result = [self messageID];
-	return [result intValue];
-}
 
-- (void)setMessageIDValue:(int32_t)value_ {
-	[self setMessageID:[NSNumber numberWithInt:value_]];
-}
 
-- (int32_t)primitiveMessageIDValue {
-	NSNumber *result = [self primitiveMessageID];
-	return [result intValue];
-}
 
-- (void)setPrimitiveMessageIDValue:(int32_t)value_ {
-	[self setPrimitiveMessageID:[NSNumber numberWithInt:value_]];
-}
+@dynamic messageIconImageURL;
+
 
 
 
@@ -129,6 +111,32 @@ const struct AwfulPrivateMessageFetchedProperties AwfulPrivateMessageFetchedProp
 
 
 
+@dynamic seen;
+
+
+
+- (BOOL)seenValue {
+	NSNumber *result = [self seen];
+	return [result boolValue];
+}
+
+- (void)setSeenValue:(BOOL)value_ {
+	[self setSeen:[NSNumber numberWithBool:value_]];
+}
+
+- (BOOL)primitiveSeenValue {
+	NSNumber *result = [self primitiveSeen];
+	return [result boolValue];
+}
+
+- (void)setPrimitiveSeenValue:(BOOL)value_ {
+	[self setPrimitiveSeen:[NSNumber numberWithBool:value_]];
+}
+
+
+
+
+
 @dynamic sent;
 
 
@@ -143,19 +151,16 @@ const struct AwfulPrivateMessageFetchedProperties AwfulPrivateMessageFetchedProp
 
 
 
-@dynamic threadIconImageURL;
-
-
-
-
-
-
 @dynamic to;
 
 
 
 
 
+
+@dynamic from;
+
+	
 
 
 

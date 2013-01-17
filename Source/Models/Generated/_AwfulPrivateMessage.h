@@ -6,29 +6,31 @@
 
 extern const struct AwfulPrivateMessageAttributes {
 	__unsafe_unretained NSString *content;
-	__unsafe_unretained NSString *from;
 	__unsafe_unretained NSString *messageID;
+	__unsafe_unretained NSString *messageIconImageURL;
 	__unsafe_unretained NSString *replied;
+	__unsafe_unretained NSString *seen;
 	__unsafe_unretained NSString *sent;
 	__unsafe_unretained NSString *subject;
-	__unsafe_unretained NSString *threadIconImageURL;
 	__unsafe_unretained NSString *to;
 } AwfulPrivateMessageAttributes;
 
 extern const struct AwfulPrivateMessageRelationships {
+	__unsafe_unretained NSString *from;
 } AwfulPrivateMessageRelationships;
 
 extern const struct AwfulPrivateMessageFetchedProperties {
 } AwfulPrivateMessageFetchedProperties;
 
-
-
-
-
+@class AwfulUser;
 
 
 
 @class NSObject;
+
+
+
+
 
 
 @interface AwfulPrivateMessageID : NSManagedObjectID {}
@@ -54,25 +56,21 @@ extern const struct AwfulPrivateMessageFetchedProperties {
 
 
 
-@property (nonatomic, strong) NSString* from;
+@property (nonatomic, strong) NSString* messageID;
 
 
-
-//- (BOOL)validateFrom:(id*)value_ error:(NSError**)error_;
-
-
-
-
-
-@property (nonatomic, strong) NSNumber* messageID;
-
-
-
-@property int32_t messageIDValue;
-- (int32_t)messageIDValue;
-- (void)setMessageIDValue:(int32_t)value_;
 
 //- (BOOL)validateMessageID:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
+@property (nonatomic, strong) id messageIconImageURL;
+
+
+
+//- (BOOL)validateMessageIconImageURL:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -87,6 +85,20 @@ extern const struct AwfulPrivateMessageFetchedProperties {
 - (void)setRepliedValue:(BOOL)value_;
 
 //- (BOOL)validateReplied:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
+@property (nonatomic, strong) NSNumber* seen;
+
+
+
+@property BOOL seenValue;
+- (BOOL)seenValue;
+- (void)setSeenValue:(BOOL)value_;
+
+//- (BOOL)validateSeen:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -112,22 +124,19 @@ extern const struct AwfulPrivateMessageFetchedProperties {
 
 
 
-@property (nonatomic, strong) id threadIconImageURL;
-
-
-
-//- (BOOL)validateThreadIconImageURL:(id*)value_ error:(NSError**)error_;
-
-
-
-
-
 @property (nonatomic, strong) NSString* to;
 
 
 
 //- (BOOL)validateTo:(id*)value_ error:(NSError**)error_;
 
+
+
+
+
+@property (nonatomic, strong) AwfulUser *from;
+
+//- (BOOL)validateFrom:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -148,17 +157,14 @@ extern const struct AwfulPrivateMessageFetchedProperties {
 
 
 
-- (NSString*)primitiveFrom;
-- (void)setPrimitiveFrom:(NSString*)value;
+- (NSString*)primitiveMessageID;
+- (void)setPrimitiveMessageID:(NSString*)value;
 
 
 
 
-- (NSNumber*)primitiveMessageID;
-- (void)setPrimitiveMessageID:(NSNumber*)value;
-
-- (int32_t)primitiveMessageIDValue;
-- (void)setPrimitiveMessageIDValue:(int32_t)value_;
+- (id)primitiveMessageIconImageURL;
+- (void)setPrimitiveMessageIconImageURL:(id)value;
 
 
 
@@ -168,6 +174,15 @@ extern const struct AwfulPrivateMessageFetchedProperties {
 
 - (BOOL)primitiveRepliedValue;
 - (void)setPrimitiveRepliedValue:(BOOL)value_;
+
+
+
+
+- (NSNumber*)primitiveSeen;
+- (void)setPrimitiveSeen:(NSNumber*)value;
+
+- (BOOL)primitiveSeenValue;
+- (void)setPrimitiveSeenValue:(BOOL)value_;
 
 
 
@@ -184,16 +199,15 @@ extern const struct AwfulPrivateMessageFetchedProperties {
 
 
 
-- (id)primitiveThreadIconImageURL;
-- (void)setPrimitiveThreadIconImageURL:(id)value;
-
-
-
-
 - (NSString*)primitiveTo;
 - (void)setPrimitiveTo:(NSString*)value;
 
 
+
+
+
+- (AwfulUser*)primitiveFrom;
+- (void)setPrimitiveFrom:(AwfulUser*)value;
 
 
 @end

@@ -64,6 +64,19 @@
     return [matches count] > 0 ? matches[0] : nil;
 }
 
+
++ (instancetype)firstSortedBy:(NSArray*)sortDescriptors {
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[(Class)self entityName]];
+    request.sortDescriptors = sortDescriptors;
+    NSError *error;
+    NSArray *matches = [[AwfulDataStack sharedDataStack].context executeFetchRequest:request
+                                                                               error:&error];
+    if (!matches) {
+        NSLog(@"error fetching %@ matching %@: %@", self, [request predicate], error);
+    }
+    return [matches count] > 0 ? matches[0] : nil;
+}
+
 + (void)deleteAllMatchingPredicate:(NSString *)format, ...
 {
     va_list args;

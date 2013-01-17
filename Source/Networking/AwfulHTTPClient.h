@@ -11,6 +11,9 @@
 
 @interface AwfulHTTPClient : AFHTTPClient
 
+@property (readonly,nonatomic) dispatch_queue_t parseQueue;
+
+
 // Singleton instance.
 + (AwfulHTTPClient *)client;
 

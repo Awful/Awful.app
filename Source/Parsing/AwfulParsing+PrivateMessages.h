@@ -10,6 +10,14 @@
 #import "AwfulPrivateMessage.h"
 
 @interface PrivateMessageParsedInfo : ParsedInfo
-+(NSMutableArray *)parsePMListWithData:(NSData*)data;
-+(void)parsePM:(AwfulPrivateMessage*)message withData:(NSData*)data;
+@property (readonly, copy, nonatomic) NSString *messageID;
+@property (readonly, copy, nonatomic) NSString *subject;
+@property (readonly, nonatomic) NSDate* sent;
+@property (readonly, nonatomic) NSURL *messageIconImageURL;
+@property (readonly, nonatomic) UserParsedInfo *from;
+@property (readonly, nonatomic) BOOL seen;
+@property (readonly, nonatomic) BOOL replied;
+@property (readonly, nonatomic) NSString *content;
+
++ (NSArray *)messagesWithHTMLData:(NSData *)htmlData;
 @end
