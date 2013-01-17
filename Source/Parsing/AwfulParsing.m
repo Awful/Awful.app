@@ -32,6 +32,15 @@
     self = [super init];
     if (self) {
         _htmlData = [htmlData copy];
+        
+        if ([NSThread currentThread] == [NSThread mainThread]) {
+            NSLog(@"Warning: parsing %@ on main thread.", [[self class] description]);
+        }
+        else {
+            [[NSThread currentThread] setName:[NSString stringWithFormat:@"com.awfulapp.awful.parse.%@",
+                                               [[self class] description]]];
+        }
+        
         [self parseHTMLData];
     }
     return self;
