@@ -15,7 +15,7 @@
 
 @property (readonly, nonatomic) BOOL canReply;
 
-+ (NSArray *)threadsCreatedOrUpdatedWithParsedInfo:(NSArray *)threadInfos;
++ (NSArray *)threadsCreatedOrUpdatedWithParsedInfo:(NSArray *)threadInfos inForumID:(NSString*)forumID;
 
 @end
 

@@ -20,6 +20,14 @@
                                              selector:@selector(getFetchedResultsController:)
                                                  name:AwfulDataStackDidResetNotification
                                                object:[AwfulDataStack sharedDataStack]];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(refreshForRemoteChange:)
+                                                 name:AwfulDataStackDidRemoteChangeNotification
+                                               object:AwfulDataStack.sharedDataStack
+     ];
+
+    
 }
 
 - (void)getFetchedResultsController:(NSNotification *)note
@@ -42,6 +50,12 @@
     [NSException raise:NSInternalInconsistencyException
                 format:@"Subclasses must implement %@", NSStringFromSelector(_cmd)];
     return nil;
+}
+
+- (void)refreshForRemoteChange:(NSNotification*)notification
+{
+    NSLog(@"remote data change, refreshing");
+    [self.fetchedResultsController performFetch:nil];
 }
 
 #pragma mark - UITableViewDataSource and UITableViewDelegate

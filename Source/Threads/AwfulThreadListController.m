@@ -65,7 +65,7 @@ typedef enum {
 - (NSFetchedResultsController *)createFetchedResultsController
 {
     NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulThread entityName]];
-    request.predicate = [NSPredicate predicateWithFormat:@"hideFromList == NO AND forum == %@",
+    request.predicate = [NSPredicate predicateWithFormat:@"forum == %@",
                          self.forum];
     request.sortDescriptors = @[
         [NSSortDescriptor sortDescriptorWithKey:@"stickyIndex" ascending:YES],

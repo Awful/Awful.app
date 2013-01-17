@@ -14,6 +14,7 @@
 + (NSArray*) fetchAllWithContext:(NSManagedObjectContext*)context;
 
 + (NSArray *)fetchAllMatchingPredicate:(id)formatOrPredicate, ...;
++ (NSArray *)fetchAllWithManagedObjectContext:(NSManagedObjectContext*)context matchingPredicate:(id)format, ...;
 
 + (instancetype)firstMatchingPredicate:(id)formatOrPredicate, ...;
 

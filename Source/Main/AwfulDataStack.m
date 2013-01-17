@@ -73,7 +73,7 @@
 }
 
 - (NSManagedObjectContext*) newThreadContext {
-    //NSLog(@"new thread managed context");
+    NSLog(@"new thread managed context");
     NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSConfinementConcurrencyType];
     moc.persistentStoreCoordinator = self.coordinator;
     return moc;
