@@ -133,6 +133,8 @@
 			<string>Sidebar</string>
 			<key>Explanation</key>
 			<string>Rotate your device after setting.</string>
+			<key>Explanation~ios5</key>
+			<string>Quit and relaunch Awful after setting.</string>
 			<key>Device</key>
 			<string>iPad</string>
 			<key>Settings</key>
@@ -168,7 +170,7 @@
 						</dict>
 					</array>
 					<key>Default</key>
-					<string>never</string>
+					<string>landscape</string>
 					<key>Key</key>
 					<string>keep_sidebar_open</string>
 				</dict>

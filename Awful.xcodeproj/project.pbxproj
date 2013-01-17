@@ -584,6 +584,7 @@
 		8C700297169C78C800FC0B78 /* AwfulComposerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C700296169C78C800FC0B78 /* AwfulComposerViewController.m */; };
 		8C70029B169C7AF200FC0B78 /* AwfulEditPostComposerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C70029A169C7AF200FC0B78 /* AwfulEditPostComposerViewController.m */; };
 		8C70029E169C7B0D00FC0B78 /* AwfulThreadComposerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C70029D169C7B0C00FC0B78 /* AwfulThreadComposerViewController.m */; };
+		8C70028A169C6EFA00FC0B78 /* FVGifAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C700289169C6EFA00FC0B78 /* FVGifAnimation.m */; };
 		8C87428E1655FD990018AC6C /* byob.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C87428D1655FD990018AC6C /* byob.png */; };
 		8C8742911655FDAE0018AC6C /* trp-laliga.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8742901655FDAE0018AC6C /* trp-laliga.png */; };
 		8C8742931655FDC10018AC6C /* mods-expert.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8742921655FDC10018AC6C /* mods-expert.png */; };
@@ -1244,6 +1245,8 @@
 		8C70029A169C7AF200FC0B78 /* AwfulEditPostComposerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulEditPostComposerViewController.m; sourceTree = "<group>"; };
 		8C70029C169C7B0C00FC0B78 /* AwfulThreadComposerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadComposerViewController.h; sourceTree = "<group>"; };
 		8C70029D169C7B0C00FC0B78 /* AwfulThreadComposerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadComposerViewController.m; sourceTree = "<group>"; };
+		8C700288169C6EFA00FC0B78 /* FVGifAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FVGifAnimation.h; sourceTree = "<group>"; };
+		8C700289169C6EFA00FC0B78 /* FVGifAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FVGifAnimation.m; sourceTree = "<group>"; };
 		8C87428D1655FD990018AC6C /* byob.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = byob.png; sourceTree = "<group>"; };
 		8C8742901655FDAE0018AC6C /* trp-laliga.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trp-laliga.png"; sourceTree = "<group>"; };
 		8C8742921655FDC10018AC6C /* mods-expert.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mods-expert.png"; sourceTree = "<group>"; };
@@ -1812,6 +1815,7 @@
 			isa = PBXGroup;
 			children = (
 				110FABC415745C1E00ECF535 /* AFNetworking */,
+				8C700287169C6EFA00FC0B78 /* AnimatedGif */,
 				1190F7BF13BE4ECB00B9D271 /* Hpple */,
 				1C4D7BD6167A5C7C00CF3659 /* PSMenuItem */,
 				1C05ED40162299DE00FE567F /* SVProgressHUD */,
@@ -2259,6 +2263,15 @@
 			name = Compose;
 			sourceTree = "<group>";
 		};
+		8C700287169C6EFA00FC0B78 /* AnimatedGif */ = {
+			isa = PBXGroup;
+			children = (
+				8C700288169C6EFA00FC0B78 /* FVGifAnimation.h */,
+				8C700289169C6EFA00FC0B78 /* FVGifAnimation.m */,
+			);
+			path = AnimatedGif;
+            sourceTree = "<group>";
+        };
 		8CCD498115B497A700E5893B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -3905,6 +3918,7 @@
 				8C700297169C78C800FC0B78 /* AwfulComposerViewController.m in Sources */,
 				8C70029B169C7AF200FC0B78 /* AwfulEditPostComposerViewController.m in Sources */,
 				8C70029E169C7B0D00FC0B78 /* AwfulThreadComposerViewController.m in Sources */,
+				8C70028A169C6EFA00FC0B78 /* FVGifAnimation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

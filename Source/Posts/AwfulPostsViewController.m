@@ -124,6 +124,7 @@
     [noteCenter removeObserver:self name:AwfulThemeDidChangeNotification object:nil];
     [self stopObserving];
     self.postsView.scrollView.delegate = nil;
+    self.fetchedResultsController.delegate = nil;
 }
 
 - (void)currentThemeChanged:(NSNotification *)note
