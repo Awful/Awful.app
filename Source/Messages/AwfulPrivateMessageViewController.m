@@ -12,7 +12,6 @@
 #import "AwfulPMComposerViewController.h"
 #import "AwfulDataStack.h"
 #import "AwfulHTTPClient+PrivateMessages.h"
-//#import "AwfulPostCell.h"
 
 #define AwfulPostCellTextKey @"AwfulPostCellTextKey"
 #define AwfulPostCellDetailTextKey @"AwfulPostCellDetailTextKey"
@@ -63,6 +62,7 @@
                                  self.refreshing = NO;
                                  [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:1]]
                                                        withRowAnimation:(UITableViewRowAnimationFade)];
+                                 
                              }];
     
 }
@@ -87,10 +87,12 @@
     } else {
         cell = [tableView dequeueReusableCellWithIdentifier:@"test"];
         if (!cell) {
-            cell = [[AwfulPrivateMessageContentCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"test"];
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"test"];
+            
+            cell.textLabel.text = self.privateMessage.innerHTML;
+            cell.textLabel.font = [UIFont systemFontOfSize:12];
+            cell.textLabel.numberOfLines = 0;
         }
-        AwfulPrivateMessageContentCell *pmCell = (AwfulPrivateMessageContentCell*)cell;
-        pmCell.messageContentView.delegate = self;
         
         
     }
@@ -139,6 +141,8 @@
 -(int) numberOfPostsInPostsView:(AwfulPostsView *)postsView {
     if (self.privateMessage.innerHTML != nil)
         return 1;
+    
+    postsView.loadingMessage = @"loading...";
     
     return 0;
 }

@@ -536,7 +536,6 @@
 		8C299D7216877AE9001B9D96 /* winpos95-heading-left.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C299D6F16877AE9001B9D96 /* winpos95-heading-left.png */; };
 		8C299D7316877AE9001B9D96 /* winpos95-heading-right.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C299D7016877AE9001B9D96 /* winpos95-heading-right.png */; };
 		8C299D7416877AE9001B9D96 /* winpos95-heading.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C299D7116877AE9001B9D96 /* winpos95-heading.png */; };
-		8C2A07FF16A8A2C500CDBC23 /* AwfulPrivateMessageContentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C2A07FE16A8A2C500CDBC23 /* AwfulPrivateMessageContentCell.m */; };
 		8C33C21A168173E1005782F9 /* happymac.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C33C219168173E1005782F9 /* happymac.png */; };
 		8C3CCD4016533B1E00C28342 /* fyad-yourrights.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C3CCD3A16533B1D00C28342 /* fyad-yourrights.png */; };
 		8C3CCD4116533B1E00C28342 /* fyad-tree.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C3CCD3B16533B1E00C28342 /* fyad-tree.png */; };
@@ -1187,8 +1186,6 @@
 		8C299D6F16877AE9001B9D96 /* winpos95-heading-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading-left.png"; sourceTree = "<group>"; };
 		8C299D7016877AE9001B9D96 /* winpos95-heading-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading-right.png"; sourceTree = "<group>"; };
 		8C299D7116877AE9001B9D96 /* winpos95-heading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading.png"; sourceTree = "<group>"; };
-		8C2A07FD16A8A2C500CDBC23 /* AwfulPrivateMessageContentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessageContentCell.h; sourceTree = "<group>"; };
-		8C2A07FE16A8A2C500CDBC23 /* AwfulPrivateMessageContentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessageContentCell.m; sourceTree = "<group>"; };
 		8C33C219168173E1005782F9 /* happymac.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = happymac.png; sourceTree = "<group>"; };
 		8C3CCD3A16533B1D00C28342 /* fyad-yourrights.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-yourrights.png"; sourceTree = "<group>"; };
 		8C3CCD3B16533B1E00C28342 /* fyad-tree.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-tree.png"; sourceTree = "<group>"; };
@@ -2247,8 +2244,6 @@
 				8C700263169B2FE700FC0B78 /* AwfulPrivateMessageViewController.m */,
 				8C700291169C73A500FC0B78 /* AwfulPMComposerViewController.h */,
 				8C700292169C73A500FC0B78 /* AwfulPMComposerViewController.m */,
-				8C2A07FD16A8A2C500CDBC23 /* AwfulPrivateMessageContentCell.h */,
-				8C2A07FE16A8A2C500CDBC23 /* AwfulPrivateMessageContentCell.m */,
 			);
 			path = Messages;
 			sourceTree = "<group>";
@@ -3924,7 +3919,6 @@
 				8C70029B169C7AF200FC0B78 /* AwfulEditPostComposerViewController.m in Sources */,
 				8C70029E169C7B0D00FC0B78 /* AwfulThreadComposerViewController.m in Sources */,
 				8C70028A169C6EFA00FC0B78 /* FVGifAnimation.m in Sources */,
-				8C2A07FF16A8A2C500CDBC23 /* AwfulPrivateMessageContentCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
