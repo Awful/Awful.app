@@ -101,6 +101,7 @@
 		1C6ED638169104150015CDD5 /* profile-view.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C6ED636169104150015CDD5 /* profile-view.html */; };
 		1C6ED63A169104340015CDD5 /* profile-view.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C6ED639169104340015CDD5 /* profile-view.js */; };
 		1C6ED63D1691055E0015CDD5 /* AwfulProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6ED63C1691055E0015CDD5 /* AwfulProfileViewController.m */; };
+		1C7487F116A88BAD0068B8A3 /* AwfulKeyboardBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7487F016A88BAD0068B8A3 /* AwfulKeyboardBar.m */; };
 		1C83DB54161FF48600E53CFA /* ImgurHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */; };
 		1C8BE4FA169115020022B331 /* profile-view.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C8BE4F9169115020022B331 /* profile-view.css */; };
 		1C8BE51B16917FB60022B331 /* posts-view-25.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C8BE51A16917FB60022B331 /* posts-view-25.css */; };
@@ -942,6 +943,8 @@
 		1C6ED639169104340015CDD5 /* profile-view.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "profile-view.js"; sourceTree = "<group>"; };
 		1C6ED63B1691055E0015CDD5 /* AwfulProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulProfileViewController.h; sourceTree = "<group>"; };
 		1C6ED63C1691055E0015CDD5 /* AwfulProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulProfileViewController.m; sourceTree = "<group>"; };
+		1C7487EF16A88BAD0068B8A3 /* AwfulKeyboardBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulKeyboardBar.h; sourceTree = "<group>"; };
+		1C7487F016A88BAD0068B8A3 /* AwfulKeyboardBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulKeyboardBar.m; sourceTree = "<group>"; };
 		1C83DB52161FF48600E53CFA /* ImgurHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImgurHTTPClient.h; sourceTree = "<group>"; };
 		1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImgurHTTPClient.m; sourceTree = "<group>"; };
 		1C8BE4F9169115020022B331 /* profile-view.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "profile-view.css"; sourceTree = "<group>"; };
@@ -2053,6 +2056,8 @@
 				1C1015FC165414AE00302B19 /* AwfulImagePreviewViewController.m */,
 				1CC7802B1612D9DE002AF958 /* AwfulReplyViewController.h */,
 				1CC7802C1612D9DE002AF958 /* AwfulReplyViewController.m */,
+				1C7487EF16A88BAD0068B8A3 /* AwfulKeyboardBar.h */,
+				1C7487F016A88BAD0068B8A3 /* AwfulKeyboardBar.m */,
 				1CC7802D1612D9DE002AF958 /* AwfulSpecificPageController.h */,
 				1CC7802E1612D9DE002AF958 /* AwfulSpecificPageController.m */,
 				1C23A0A0163E6C40006C7F39 /* AwfulPostsView.h */,
@@ -3842,6 +3847,7 @@
 				1C6D3EEB168D7B1E00B91A65 /* AwfulUser.m in Sources */,
 				1C6ED63D1691055E0015CDD5 /* AwfulProfileViewController.m in Sources */,
 				8C70028A169C6EFA00FC0B78 /* FVGifAnimation.m in Sources */,
+				1C7487F116A88BAD0068B8A3 /* AwfulKeyboardBar.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
