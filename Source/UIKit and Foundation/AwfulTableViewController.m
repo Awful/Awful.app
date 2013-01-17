@@ -65,10 +65,11 @@
     [self startObservingApplicationDidBecomeActive];
     
     int row = [self.navigationController.viewControllers indexOfObject:self];
-    [self.tableView setContentOffset:[[AwfulAppState sharedAppState] scrollOffsetAtIndexPath:
+    
+    NSDictionary *info = [[AwfulAppState sharedAppState] screenInfoForIndexPath:
                                             [NSIndexPath indexPathForRow:row
-                                                                inSection:0]]
-                            animated:NO];
+                                                               inSection:0]];
+
 }
 
 - (void)becameActive
@@ -185,8 +186,9 @@
     int row = [self.navigationController.viewControllers indexOfObject:self];
     
     [[AwfulAppState sharedAppState] setScrollOffset:scrollView.contentOffset.y
-                       atIndexPath:[NSIndexPath indexPathForRow:row inSection:0]
-     ];
+                                          forScreen:nil //fixme
+                                           forWidth:scrollView.frame.size.width
+                                        atIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
 }
 
 

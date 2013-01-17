@@ -32,9 +32,11 @@
 -(void) clearCloudCookies;
 
 //scrolling
-- (CGPoint) scrollOffsetAtIndexPath:(NSIndexPath*)indexPath;
-- (void) setScrollOffset:(CGFloat)scrollOffset atIndexPath:(NSIndexPath*)indexPath;
-
+-(NSDictionary*) screenInfoForIndexPath:(NSIndexPath*)indexPath ;
+-(void) setScrollOffset:(CGFloat)scrollOffset
+              forScreen:(NSURL*)awfulURL
+               forWidth:(CGFloat)width
+            atIndexPath:(NSIndexPath*)indexPath;
 
 
 @end
@@ -53,6 +55,7 @@ static NSString* const kAwfulAppStateNavStackKey          = @"kAwfulAppStateNavS
 
 static NSString* const kAwfulScreenStateScrollOffsetKey   = @"kAwfulScreenStateScrollOffsetKey";
 static NSString* const kAwfulScreenStateScreenKey         = @"kAwfulScreenStateScreenIDKey";
+static NSString* const kAwfulScreenStateWidthKey          = @"kAwfulScreenStateWidthKey";
 
 static NSString* const kAwfulAppStateFavoriteForumsKey    = @"kAwfulAppStateFavoriteForums";
 static NSString* const kAwfulAppStateExpandedForumsKey    = @"kAwfulAppStateExpandedForums";

@@ -101,13 +101,43 @@
 }
 
 #pragma mark scroll positions
--(void) setScrollOffset:(CGFloat)scrollOffset atIndexPath:(NSIndexPath*)indexPath
+-(void) setScrollOffset:(CGFloat)scrollOffset
+              forScreen:(NSURL*)awfulURL
+               forWidth:(CGFloat)width
+            atIndexPath:(NSIndexPath*)indexPath
 {
-    //probably want to save the current width too?
-    //an ipad scroll position will be much lower than the same point on a phone
-    //plus orientation differences too
-    /*
-    NSMutableArray *array = [[AwfulAppState.awfulDefaults arrayForKey:kAwfulAppStateNavStack] mutableCopy];
+    //AppStateNavStack = Array, one item for each tab
+    //each item is an array
+    //each of those is a dictionary containing screen url, scroll offset, width
+    
+    
+    NSMutableArray *array = [[self.awfulCloudStore arrayForKey:kAwfulAppStateNavStackKey] mutableCopy];
+    if (!array) array = [NSMutableArray new];
+    
+    NSMutableArray *stack;
+    if (indexPath.section < (int)array.count)
+        stack = [array[indexPath.section] mutableCopy];
+    else stack = [NSMutableArray new];
+    
+    NSMutableDictionary *screenState = [[self screenInfoForIndexPath:indexPath] mutableCopy];
+    if (!screenState) screenState = [NSMutableDictionary new];
+    
+    screenState[kAwfulScreenStateScrollOffsetKey] = [NSNumber numberWithFloat:scrollOffset];
+    screenState[kAwfulScreenStateScreenKey] = awfulURL;
+    screenState[kAwfulScreenStateWidthKey] = [NSNumber numberWithFloat:width];
+    
+    stack[indexPath.row] = screenState;
+    array[indexPath.section] = stack;
+    
+    [self.awfulCloudStore setObject:array forKey:kAwfulAppStateNavStackKey];
+    
+    NSLog(@"Saving scroll position:%f for %i.%i", scrollOffset, indexPath.section, indexPath.row);
+    [self.awfulCloudStore synchronize];
+}
+
+
+-(NSDictionary*) screenInfoForIndexPath:(NSIndexPath*)indexPath {
+    NSArray *array = [self.awfulCloudStore arrayForKey:kAwfulAppStateNavStackKey];
     if (!array) array = [NSMutableArray new];
     
     NSMutableArray *stack;
@@ -118,35 +148,8 @@
     NSMutableDictionary *screenState;
     if (indexPath.row < (int)stack.count)
         screenState = [stack[indexPath.row] mutableCopy];
-    else screenState = [NSMutableDictionary new];
     
-    screenState[kAwfulScreenStateScrollOffsetKey] = [NSNumber numberWithFloat:scrollOffset];
-    
-    stack[indexPath.row] = screenState;
-    array[indexPath.section] = stack;
-    
-    [AwfulAppState.awfulDefaults setObject:array forKey:kAwfulAppStateNavStack];
-    
-    NSLog(@"Saving scroll position:%f for %i.%i", scrollOffset, indexPath.section, indexPath.row);
-    [AwfulAppState.awfulDefaults synchronize];
-     */
-}
-
-- (CGPoint) scrollOffsetAtIndexPath:(NSIndexPath*)indexPath
-{
-    /*
-    NSArray *array = [AwfulAppState.awfulDefaults arrayForKey:kAwfulAppStateNavStack];
-    if (indexPath.section < (int)array.count) {
-        if (indexPath.row < (int)[array[indexPath.section] count]) {
-            NSDictionary *screenState = array[indexPath.section][indexPath.row];
-            NSLog(@"Reading scroll position:%f for %i.%i", [[screenState objectForKey:kAwfulScreenStateScrollOffsetKey] floatValue], indexPath.section, indexPath.row);
-            return CGPointMake(0, [[screenState objectForKey:kAwfulScreenStateScrollOffsetKey] floatValue]);
-        }
-    }
-        */
-    return CGPointZero;
-    
-    
+    return screenState;
 }
 
 
