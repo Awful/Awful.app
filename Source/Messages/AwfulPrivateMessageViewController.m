@@ -8,7 +8,6 @@
 
 #import "AwfulPrivateMessageViewController.h"
 #import "AwfulPrivateMessage.h"
-#import "AwfulPrivateMessageContentCell.h"
 #import "AwfulPMComposerViewController.h"
 #import "AwfulDataStack.h"
 #import "AwfulHTTPClient+PrivateMessages.h"

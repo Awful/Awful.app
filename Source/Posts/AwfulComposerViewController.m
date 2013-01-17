@@ -7,6 +7,10 @@
 //
 
 #import "AwfulComposerViewController.h"
+#import "AwfulAlertView.h"
+#import "AwfulHTTPClient.h"
+#import "AwfulKeyboardBar.h"
+#import "AwfulModels.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "PSMenuItem.h"
@@ -236,33 +240,6 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
     [NSException raise:@"Subclass must override" format:nil];
 }
 
-#define ImplementInsertCharacterButton(PROPERTY, CHARACTER) \
-- (UIBarButtonItem *)insert ## PROPERTY ## Button \
-{ \
-    if (_insert ## PROPERTY ## Button) return _insert ## PROPERTY ## Button; \
-    _insert ## PROPERTY ## Button = [[UIBarButtonItem alloc] initWithTitle:CHARACTER \
-                                                             style:UIBarButtonItemStyleBordered \
-                                                            target:self \
-                                                            action:@selector(insertCharacter:)]; \
-    _insert ## PROPERTY ## Button.width = 44; \
-    return _insert ## PROPERTY ## Button; \
-}
-
-ImplementInsertCharacterButton(OpenBracket, @"[")
-
-ImplementInsertCharacterButton(CloseBracket, @"]")
-
-ImplementInsertCharacterButton(Equals, @"=")
-
-ImplementInsertCharacterButton(Slash, @"/")
-
-ImplementInsertCharacterButton(Colon, @":")
-
-- (void)insertCharacter:(UIBarButtonItem *)buttonItem
-{
-    [self.composerTextView insertText:buttonItem.title];
-}
-
 #pragma mark - Menu items
 
 - (void)configureTopLevelMenuItems
@@ -437,27 +414,14 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
 
 - (void)loadView
 {
-    UITextView *textView = [UITextView new];
+    UITextView *textView = [[UITextView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
     textView.font = [UIFont systemFontOfSize:17];
-    UIToolbar *bbCodeBar = [UIToolbar new];
-    bbCodeBar.frame = CGRectMake(0, 0, 0, 44);
-    bbCodeBar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    bbCodeBar.barStyle = UIBarStyleBlack;
-    bbCodeBar.translucent = YES;
-    UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
-                                                                           target:nil action:NULL];
-    UIBarButtonItem *anotherSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
-                                                                                  target:nil action:NULL];
-    bbCodeBar.items = @[
-        self.insertOpenBracketButton,
-        self.insertEqualsButton,
-        space,
-        self.insertColonButton,
-        anotherSpace,
-        self.insertSlashButton,
-        self.insertCloseBracketButton
-    ];
-    textView.inputAccessoryView = bbCodeBar;
+    AwfulKeyboardBar *bbcodeBar = [[AwfulKeyboardBar alloc] initWithFrame:
+                                   CGRectMake(0, 0, CGRectGetWidth(textView.bounds),
+                                              UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 63 : 36)];
+    bbcodeBar.characters = @[ @"[", @"=", @":", @"/", @"]" ];
+    bbcodeBar.keyInputView = textView;
+    textView.inputAccessoryView = bbcodeBar;
     self.view = textView;
     [PSMenuItem installMenuHandlerForObject:self.view];
 }
