@@ -42,6 +42,7 @@
 {
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [[NSThread currentThread] setName:@"com.awfulapp.awful.threads.update"];
         NSManagedObjectContext *moc = AwfulDataStack.sharedDataStack.newThreadContext;
         
         AwfulForum *forum;

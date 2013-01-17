@@ -40,7 +40,7 @@
     self = [super initWithBaseURL:url];
     if (self) {
         self.stringEncoding = NSWindowsCP1252StringEncoding;
-        _parseQueue = dispatch_queue_create("com.awfulapp.Awful.parsing", NULL);
+        _parseQueue = dispatch_queue_create("com.awfulapp.Awful.parsing", DISPATCH_QUEUE_CONCURRENT);
         [self setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
             self.reachable = status != AFNetworkReachabilityStatusNotReachable;
         }];

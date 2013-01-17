@@ -17,6 +17,7 @@
 + (NSArray *)fetchAllWithManagedObjectContext:(NSManagedObjectContext*)context matchingPredicate:(id)format, ...;
 
 + (instancetype)firstMatchingPredicate:(id)formatOrPredicate, ...;
++ (instancetype)firstWithManagedObjectContext:(NSManagedObjectContext*)context matchingPredicate:(id)formatOrPredicate, ...;
 
 + (void)deleteAllMatchingPredicate:(NSString *)format, ...;
 

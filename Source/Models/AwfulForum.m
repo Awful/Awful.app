@@ -17,6 +17,7 @@
 + (NSArray *)updateCategoriesAndForums:(ForumHierarchyParsedInfo *)info
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [[NSThread currentThread] setName:@"com.awfulapp.awful.forums.update"];
         NSManagedObjectContext *moc = AwfulDataStack.sharedDataStack.newThreadContext;
         NSArray *forums = [AwfulForum fetchAllWithContext:moc];
         NSMutableDictionary *existingForums = [NSMutableDictionary new];

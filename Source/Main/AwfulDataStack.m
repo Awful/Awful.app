@@ -51,7 +51,8 @@
 {
     if ([NSThread currentThread] != [NSThread mainThread]) {
         [NSException raise:@"YOU FUCKED UP"
-                    format:@"Accessing main thread managedobjectcontext from a different thread."];
+                    format:@"Accessing main thread managedobjectcontext from a different thread: %@",
+                            [NSThread currentThread].name];
     }
     
     //NSLog(@"Main managed context");
@@ -73,7 +74,7 @@
 }
 
 - (NSManagedObjectContext*) newThreadContext {
-    NSLog(@"new thread managed context");
+    NSLog(@"new thread managed context for: %@", [[NSThread currentThread] name]);
     NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSConfinementConcurrencyType];
     moc.persistentStoreCoordinator = self.coordinator;
     return moc;

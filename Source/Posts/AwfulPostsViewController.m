@@ -113,14 +113,18 @@
                    selector:@selector(settingChanged:)
                        name:AwfulSettingsDidChangeNotification
                      object:nil];
+    [noteCenter addObserver:self
+                   selector:@selector(refreshForRemoteChange:)
+                       name:AwfulDataStackDidRemoteChangeNotification
+                     object:AwfulDataStack.sharedDataStack
+     ];
     return self;
 }
 
 - (void)dealloc
 {
     NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
-    [noteCenter removeObserver:self name:AwfulSettingsDidChangeNotification object:nil];
-    [noteCenter removeObserver:self name:AwfulThemeDidChangeNotification object:nil];
+    [noteCenter removeObserver:self];
     [self stopObserving];
     self.postsView.scrollView.delegate = nil;
 }
@@ -227,6 +231,12 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     if (!ok) {
         NSLog(@"error fetching posts: %@", error);
     }
+}
+
+- (void)refreshForRemoteChange:(NSNotification*)notification
+{
+    NSLog(@"remote data change, refreshing");
+    [self.fetchedResultsController performFetch:nil];
 }
 
 - (void)updatePullForNextPageLabel
