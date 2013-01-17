@@ -17,7 +17,8 @@
 @property (readonly, nonatomic) UserParsedInfo *from;
 @property (readonly, nonatomic) BOOL seen;
 @property (readonly, nonatomic) BOOL replied;
-@property (readonly, nonatomic) NSString *content;
+@property (readonly, nonatomic) NSString *innerHTML;
 
 + (NSArray *)messagesWithHTMLData:(NSData *)htmlData;
++ (void)parsePM:(AwfulPrivateMessage*)message withData:(NSData*)data;
 @end

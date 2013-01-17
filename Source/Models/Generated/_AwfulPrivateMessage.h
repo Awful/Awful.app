@@ -5,7 +5,7 @@
 
 
 extern const struct AwfulPrivateMessageAttributes {
-	__unsafe_unretained NSString *content;
+	__unsafe_unretained NSString *innerHTML;
 	__unsafe_unretained NSString *messageID;
 	__unsafe_unretained NSString *messageIconImageURL;
 	__unsafe_unretained NSString *replied;
@@ -46,11 +46,11 @@ extern const struct AwfulPrivateMessageFetchedProperties {
 
 
 
-@property (nonatomic, strong) NSString* content;
+@property (nonatomic, strong) NSString* innerHTML;
 
 
 
-//- (BOOL)validateContent:(id*)value_ error:(NSError**)error_;
+//- (BOOL)validateInnerHTML:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -151,8 +151,8 @@ extern const struct AwfulPrivateMessageFetchedProperties {
 @interface _AwfulPrivateMessage (CoreDataGeneratedPrimitiveAccessors)
 
 
-- (NSString*)primitiveContent;
-- (void)setPrimitiveContent:(NSString*)value;
+- (NSString*)primitiveInnerHTML;
+- (void)setPrimitiveInnerHTML:(NSString*)value;
 
 
 

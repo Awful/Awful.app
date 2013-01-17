@@ -46,10 +46,9 @@
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
                                                                success:^(AFHTTPRequestOperation *operation, id response) {
                                                                    //NetworkLogInfo(@"completed %@", THIS_METHOD);
-                                                                   //NSData *responseData = (NSData *)response;
-                                                                   //[PrivateMessageParsedInfo parsePM:message withData:responseData];
-                                                                   //[ApplicationDelegate saveContext];
-                                                                   //callback(nil, message);
+                                                                   NSData *responseData = (NSData *)response;
+                                                                   [PrivateMessageParsedInfo parsePM:message withData:responseData];
+                                                                   callback(nil, message);
                                                                }
                                                                failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                                                                    callback(error, nil);

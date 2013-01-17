@@ -31,7 +31,7 @@
         <relationship name="thread" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="posts" inverseEntity="AwfulThread" syncable="YES"/>
     </entity>
     <entity name="AwfulPrivateMessage" representedClassName="AwfulPrivateMessage" syncable="YES">
-        <attribute name="content" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="innerHTML" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="messageIconImageURL" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="messageID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="replied" optional="YES" attributeType="Boolean" syncable="YES"/>

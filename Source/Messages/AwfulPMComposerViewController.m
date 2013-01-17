@@ -22,7 +22,7 @@
 
 - (void)replyToPrivateMessage:(AwfulPrivateMessage *)message
 {
-    self.composerTextView.text = message.content;
+    self.composerTextView.text = message.innerHTML;
     self.title = [message.subject stringByCollapsingWhitespace];
     self.navigationItem.titleLabel.text = self.title;
     //self.images = [NSMutableDictionary new];
@@ -33,7 +33,7 @@
     self.draft = draft;
     //self.thread = thread;
     //self.post = nil;
-    self.composerTextView.text = draft.content;
+    self.composerTextView.text = draft.innerHTML;
     self.title = [draft.subject stringByCollapsingWhitespace];
     self.navigationItem.titleLabel.text = self.title;
     //self.images = [NSMutableDictionary new];
@@ -57,7 +57,7 @@
 }
 
 -(void) didReplaceImagePlaceholders:(NSString *)newMessageString {
-    self.draft.content = newMessageString;
+    self.draft.innerHTML = newMessageString;
     [super didReplaceImagePlaceholders:newMessageString];
 }
 

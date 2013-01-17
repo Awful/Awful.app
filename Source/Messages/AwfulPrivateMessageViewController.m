@@ -8,6 +8,7 @@
 
 #import "AwfulPrivateMessageViewController.h"
 #import "AwfulPrivateMessage.h"
+#import "AwfulPrivateMessageContentCell.h"
 #import "AwfulPMComposerViewController.h"
 #import "AwfulDataStack.h"
 #import "AwfulHTTPClient+PrivateMessages.h"
@@ -16,12 +17,13 @@
 #define AwfulPostCellTextKey @"AwfulPostCellTextKey"
 #define AwfulPostCellDetailTextKey @"AwfulPostCellDetailTextKey"
 
+
 @implementation AwfulPrivateMessageViewController
 @synthesize privateMessage = _privateMessage;
 @synthesize sections = _sections;
 
 -(id) initWithPrivateMessage:(AwfulPrivateMessage*)pm {
-    self = [super init];
+    self = [super initWithStyle:UITableViewStyleGrouped];
     _privateMessage = pm;
     return self;
 }
@@ -35,10 +37,20 @@
                                                                   target:self
                                                                   action:@selector(reply)
                                               ];
+    self.title = self.privateMessage.subject;
 }
 
+-(BOOL) canPullForNextPage {
+    return NO;
+}
+
+-(BOOL) canPullToRefresh {
+    return NO;
+}
+
+
 -(BOOL) refreshOnAppear {
-    return (self.privateMessage.content == nil);
+    return (self.privateMessage.innerHTML == nil);
 }
 
 - (void)refresh
@@ -49,74 +61,64 @@
     self.networkOperation = [[AwfulHTTPClient client]
                              loadPrivateMessage:self.privateMessage andThen:^(NSError *error, AwfulPrivateMessage *message) {
                                  self.refreshing = NO;
-                                 [self.tableView reloadData];
+                                 [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:1]]
+                                                       withRowAnimation:(UITableViewRowAnimationFade)];
                              }];
     
 }
 
 -(NSInteger) numberOfSectionsInTableView:(UITableView *)tableView {
-    return self.sections.count;
+    return 2;
 }
 
 -(NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [[self.sections objectAtIndex:section] count];
+    return section == 0? 3: 1;
 }
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString * const Identifier = @"AwfulPrivateMessageCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:Identifier];
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:Identifier];
+    UITableViewCell *cell;
+    if (indexPath.section == 0) {
+        static NSString * const Identifier = @"AwfulPrivateMessageCell";
+        cell = [tableView dequeueReusableCellWithIdentifier:Identifier];
+        if (!cell) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2 reuseIdentifier:Identifier];
+        }
+        [self configureCell:cell atIndexPath:indexPath];
+    } else {
+        cell = [tableView dequeueReusableCellWithIdentifier:@"test"];
+        if (!cell) {
+            cell = [[AwfulPrivateMessageContentCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"test"];
+        }
+        AwfulPrivateMessageContentCell *pmCell = (AwfulPrivateMessageContentCell*)cell;
+        pmCell.messageContentView.delegate = self;
+        
+        
     }
-    [self configureCell:cell atIndexPath:indexPath];
+    
+    
     return cell;
 }
 
 -(void) configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
-    NSDictionary *d = [[self.sections objectAtIndex:indexPath.section]
-                       objectAtIndex:indexPath.row];
     
-    cell.textLabel.text = [d objectForKey:AwfulPostCellTextKey];
-    cell.detailTextLabel.text = [d objectForKey:AwfulPostCellDetailTextKey];
-    
-}
-
--(NSArray*) sections {
-    if (!_sections) {
-        _sections = [NSArray arrayWithObjects:
-                     //section 0
-                     [NSArray arrayWithObjects:
-                      [NSDictionary dictionaryWithObjectsAndKeys:
-                       @"From:", AwfulPostCellTextKey,
-                       self.privateMessage.from.username, AwfulPostCellDetailTextKey,
-                       nil
-                       ],
-                      
-                      [NSDictionary dictionaryWithObjectsAndKeys:
-                       @"Subject:", AwfulPostCellTextKey,
-                       self.privateMessage.subject, AwfulPostCellDetailTextKey,
-                       nil
-                       ],
-                      
-                      [NSDictionary dictionaryWithObjectsAndKeys:
-                       @"Sent", AwfulPostCellTextKey,
-                       @"self.privateMessage.sent", AwfulPostCellDetailTextKey,
-                       nil
-                       ],
-                      [NSDictionary dictionaryWithObjectsAndKeys:
-                       @"AwfulPMContentCell", AwfulPostCellTextKey,
-                       self.privateMessage.content, AwfulPostCellDetailTextKey,
-                       nil
-                       ],
-                      nil
-                      ],
-                     
-                     nil
-                     ];
+    switch (indexPath.row) {
+        case 0:
+            cell.textLabel.text = @"From:";
+            cell.detailTextLabel.text = self.privateMessage.from.username;
+            break;
+            
+        case 1:
+            cell.textLabel.text = @"Subject:";
+            cell.detailTextLabel.text = self.privateMessage.subject;
+            break;
+            
+        case 2:
+            cell.textLabel.text = @"Sent:";
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"%@", self.privateMessage.sent];
+            break;  
     }
-    return _sections;
-}
 
+}
 
 -(NSString*)submitString {
     return nil;
@@ -128,6 +130,23 @@
     
     [self.navigationController pushViewController:writer animated:YES];
 
+}
+
+-(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return indexPath.section == 0? 44: 500;
+}
+
+-(int) numberOfPostsInPostsView:(AwfulPostsView *)postsView {
+    if (self.privateMessage.innerHTML != nil)
+        return 1;
+    
+    return 0;
+}
+
+- (NSDictionary *)postsView:(AwfulPostsView *)postsView postAtIndex:(NSInteger)index
+{
+    return @{@"innerHTML": self.privateMessage.innerHTML};
+    
 }
 
 

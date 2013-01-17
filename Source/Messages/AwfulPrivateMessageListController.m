@@ -17,6 +17,7 @@
 #import "AwfulSettings.h"
 #import "AwfulThreadTags.h"
 #import "AwfulTheme.h"
+#import "AwfulSplitViewController.h"
 
 //#import "AwfulNewPostComposeController.h"
 //#import "AwfulNewPMComposeController.h"
@@ -43,7 +44,7 @@
 
 -(void) viewDidLoad {
     [super viewDidLoad];
-    
+
     self.tableView.rowHeight = 50;
     self.title = @"Private Messages";
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:(UIBarButtonSystemItemCompose)
@@ -136,9 +137,21 @@
     
     cell.backgroundColor = theme.threadCellBackgroundColor;
     cell.selectionStyle = theme.cellSelectionStyle;
+    
+    if (!pm.seenValue) {
+        cell.showsUnread = YES;
+        cell.unreadCountBadgeView.badgeText = @"New";
+    } else {
+        cell.showsUnread = NO;
+    }
+    
+    //todo: add accessory icon for forward/replied
+    
+    /*
     AwfulDisclosureIndicatorView *disclosure = (AwfulDisclosureIndicatorView *)cell.accessoryView;
     disclosure.color = theme.disclosureIndicatorColor;
     disclosure.highlightedColor = theme.disclosureIndicatorHighlightedColor;
+     */
 }
 
 - (void)updateThreadTag:(NSString *)threadTagName forCellAtIndexPath:(NSIndexPath *)indexPath
@@ -166,20 +179,15 @@
     
     AwfulPrivateMessage* msg = [self.fetchedResultsController objectAtIndexPath:indexPath];
     AwfulPrivateMessageViewController *vc = [[AwfulPrivateMessageViewController alloc] initWithPrivateMessage:msg];
-    
-    [self.navigationController pushViewController:vc animated:YES];
-     
-}
-/*
--(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    AwfulPrivateMessageViewReplyComboController *pmView = segue.destinationViewController;
-    pmView.privateMessage = (AwfulPM*)sender;
-}
 
--(void) didTapCompose:(UIBarButtonItem*)button {
-    UINavigationController *test = [[UINavigationController alloc] initWithRootViewController:[AwfulNewPMComposeController new]];
-    test.modalPresentationStyle = UIModalPresentationFormSheet;
-    [self.splitViewController presentModalViewController:test animated:YES];
+    AwfulSplitViewController *split = (AwfulSplitViewController *)self.splitViewController;
+    if (!split) {
+        [self.navigationController pushViewController:vc animated:YES];
+    } else {
+        UINavigationController *nav = (UINavigationController *)split.viewControllers[1];
+        nav.viewControllers = @[ vc ];
+        [split.masterPopoverController dismissPopoverAnimated:YES];
+    }
+    
 }
- */
 @end

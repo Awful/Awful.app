@@ -21,7 +21,7 @@
 @property (nonatomic) UserParsedInfo *from;
 @property (nonatomic) BOOL seen;
 @property (nonatomic) BOOL replied;
-@property (nonatomic) NSString* content;
+@property (nonatomic) NSString* innerHTML;
 @end
 
 @implementation PrivateMessageParsedInfo
@@ -51,6 +51,7 @@
                 case 0: //image
                     element = [cell searchForSingle:@"//img"];
                     self.replied = [[element objectForKey:@"src"] rangeOfString:@"replied"].location != NSNotFound;
+                    self.seen = [[element objectForKey:@"src"] rangeOfString:@"newpm"].location == NSNotFound;
                     break;
                     
                 case 1: //tag image
@@ -111,7 +112,7 @@
 {
     NSArray *rows = PerformRawHTMLXPathQuery(data, @"//td[@class='postbody']");
     for (NSString* r in rows) {
-        message.content = r;
+        message.innerHTML = r;
     }
     [[AwfulDataStack sharedDataStack] save];
 }
@@ -120,7 +121,7 @@
 {
     return @[
     @"messageID", @"subject", @"messageIconImageURL",
-    @"seen", @"replied", @"sent", @"content"
+    @"seen", @"replied", @"sent", @"innerHTML"
     ];
 }
 

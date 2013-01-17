@@ -4,7 +4,7 @@
 #import "_AwfulPrivateMessage.h"
 
 const struct AwfulPrivateMessageAttributes AwfulPrivateMessageAttributes = {
-	.content = @"content",
+	.innerHTML = @"innerHTML",
 	.messageID = @"messageID",
 	.messageIconImageURL = @"messageIconImageURL",
 	.replied = @"replied",
@@ -64,7 +64,7 @@ const struct AwfulPrivateMessageFetchedProperties AwfulPrivateMessageFetchedProp
 
 
 
-@dynamic content;
+@dynamic innerHTML;
 
 
 
