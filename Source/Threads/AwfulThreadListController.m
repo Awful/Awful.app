@@ -16,6 +16,7 @@
 #import "AwfulLoginController.h"
 #import "AwfulModels.h"
 #import "AwfulPostsViewController.h"
+#import "AwfulProfileViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulSplitViewController.h"
 #import "AwfulTabBarController.h"
@@ -37,7 +38,7 @@ typedef enum {
 
 @property (nonatomic) NSMutableDictionary *cellsWithoutThreadTags;
 
-@property (nonatomic) BOOL listeningForNewThreadTags;
+@property (nonatomic, getter=threadTagObserver) id newThreadTagObserver;
 
 @end
 
@@ -49,17 +50,17 @@ typedef enum {
     self = [super init];
     if (!(self = [super init])) return nil;
     _cellsWithoutThreadTags = [NSMutableDictionary new];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(settingsChanged:)
-                                                 name:AwfulSettingsDidChangeNotification
-                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserverForName:AwfulSettingsDidChangeNotification
+                                                      object:nil
+                                                       queue:[NSOperationQueue mainQueue]
+                                                  usingBlock:^(NSNotification *note)
+     { [self settingsChanged:note]; }];
     return self;
 }
 
 - (void)dealloc
 {
-    NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
-    [noteCenter removeObserver:self name:AwfulSettingsDidChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (NSFetchedResultsController *)createFetchedResultsController
@@ -198,12 +199,27 @@ typedef enum {
             [self markThreadUnseen:thread];
         }];
     }
+    [sheet addButtonWithTitle:@"View OP's Profile" block:^{
+        AwfulProfileViewController *profile = [AwfulProfileViewController new];
+        profile.hidesBottomBarWhenPushed = YES;
+        profile.userID = thread.author.userID;
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                  target:self action:@selector(doneWithProfile)];
+            profile.navigationItem.leftBarButtonItem = done;
+            UINavigationController *nav = [profile enclosingNavigationController];
+            nav.modalPresentationStyle = UIModalPresentationFormSheet;
+            [self presentViewController:nav animated:YES completion:nil];
+        } else {
+            [self.navigationController pushViewController:profile animated:YES];
+        }
+    }];
     [sheet addCancelButtonWithTitle:@"Cancel"];
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         [sheet showFromRect:self.awfulTabBarController.tabBar.frame
                      inView:self.awfulTabBarController.view
                    animated:YES];
-    } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    } else if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         NSUInteger index = [self.fetchedResultsController.fetchedObjects indexOfObject:thread];
         if (index != NSNotFound) {
             NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
@@ -361,25 +377,30 @@ typedef enum {
         self.cellsWithoutThreadTags[indexPath] = [NSMutableArray new];
     }
     [self.cellsWithoutThreadTags[indexPath] addObject:threadTagName];
-    if (self.listeningForNewThreadTags) return;
-    self.listeningForNewThreadTags = YES;
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(newThreadTags:)
-                                                 name:AwfulNewThreadTagsAvailableNotification
-                                               object:nil];
+    if (self.newThreadTagObserver) return;
+    NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
+    self.newThreadTagObserver = [noteCenter addObserverForName:AwfulNewThreadTagsAvailableNotification
+                                                        object:nil
+                                                         queue:[NSOperationQueue mainQueue]
+                                                    usingBlock:^(NSNotification *note)
+                                 { [self newThreadTags:note]; }];
 }
 
 - (void)newThreadTags:(NSNotification *)note
 {
     NSMutableArray *updated = [NSMutableArray new];
     for (NSIndexPath *indexPath in self.cellsWithoutThreadTags) {
+        UITableViewCell *genericCell = [self.tableView cellForRowAtIndexPath:indexPath];
+        AwfulThreadCell *cell = (AwfulThreadCell *)genericCell;
+        if (!cell) {
+            self.cellsWithoutThreadTags[indexPath] = @[];
+            continue;
+        }
+        AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
         NSMutableArray *listOfTags = self.cellsWithoutThreadTags[indexPath];
         for (NSString *tag in [listOfTags copy]) {
             UIImage *image = [[AwfulThreadTags sharedThreadTags] threadTagNamed:tag];
             if (!image) continue;
-            UITableViewCell *genericCell = [self.tableView cellForRowAtIndexPath:indexPath];
-            AwfulThreadCell *cell = (AwfulThreadCell *)genericCell;
-            AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
             if ([tag isEqualToString:thread.firstIconName]) {
                 cell.imageView.image = image;
             } else if ([tag isEqualToString:thread.secondIconName]) {
@@ -396,10 +417,8 @@ typedef enum {
         }
     }
     if ([self.cellsWithoutThreadTags count] == 0) {
-        self.listeningForNewThreadTags = NO;
-        [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name:AwfulNewThreadTagsAvailableNotification
-                                                      object:nil];
+        [[NSNotificationCenter defaultCenter] removeObserver:self.newThreadTagObserver];
+        self.newThreadTagObserver = nil;
     }
 }
 
@@ -449,6 +468,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     page.thread = thread;
     [page loadPage:thread.seenValue ? AwfulPageNextUnread : 1];
     [self displayPage:page];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 @end

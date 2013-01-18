@@ -12,12 +12,15 @@
 #import "SVProgressHUD.h"
 #import "UIImageView+AFNetworking.h"
 #import "UINavigationItem+TwoLineTitle.h"
+#import "FVGifAnimation.h"
 
 @interface AwfulImagePreviewViewController () <UIScrollViewDelegate>
 
 @property (weak, nonatomic) UIScrollView *scrollView;
 
 @property (weak, nonatomic) UIImageView *imageView;
+
+@property (nonatomic) NSOperationQueue *queue;
 
 @property (nonatomic) UIStatusBarStyle statusBarStyle;
 
@@ -40,6 +43,8 @@
         self.wantsFullScreenLayout = YES;
         self.navigationItem.leftBarButtonItem = self.doneButton;
         self.navigationItem.rightBarButtonItem = self.actionButton;
+        _queue = [NSOperationQueue new];
+        _queue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount;
     }
     return self;
 }
@@ -72,30 +77,29 @@
 - (void)updateImageView
 {
     if (!self.imageURL) return;
-    // Manually construct the request so cookies get sent. This is needed for images attached to
-    // posts.
-    NSURLRequest *request = [NSURLRequest requestWithURL:self.imageURL];
-    [self.imageView setImageWithURLRequest:request
-                          placeholderImage:nil
-                                   success:^(NSURLRequest *request, NSHTTPURLResponse *response,
-                                             UIImage *image)
-     {
-         // AFNetworking helpfully sets the image scale to the main screen's scale.
-         image = [UIImage imageWithCGImage:image.CGImage
-                                     scale:1
-                               orientation:image.imageOrientation];
-         self.imageView.image = image;
-         self.imageView.backgroundColor = [UIColor whiteColor];
-         [self.imageView sizeToFit];
-         self.scrollView.contentSize = self.imageView.bounds.size;
-         self.scrollView.minimumZoomScale = [self minimumZoomScale];
-         self.scrollView.zoomScale = [self minimumZoomScale];
-         self.scrollView.maximumZoomScale = 40;
-         [self centerImageInScrollView];
-     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error)
-     {
-         [AwfulAlertView showWithTitle:@"Could Not Load Image" error:error buttonTitle:@"OK"];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.imageURL];
+    [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
+    AFHTTPRequestOperation *op = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    [op setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseData) {
+        FVGifAnimation *animation = [[FVGifAnimation alloc] initWithData:responseData];
+        if ([animation canAnimate]) {
+            [animation setAnimationToImageView:self.imageView];
+            [self.imageView startAnimating];
+        } else {
+            self.imageView.image = [UIImage imageWithData:responseData];
+        }
+        
+        self.imageView.backgroundColor = [UIColor whiteColor];
+        [self.imageView sizeToFit];
+        self.scrollView.contentSize = self.imageView.bounds.size;
+        self.scrollView.minimumZoomScale = [self minimumZoomScale];
+        self.scrollView.zoomScale = [self minimumZoomScale];
+        self.scrollView.maximumZoomScale = 40;
+        [self centerImageInScrollView];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        [AwfulAlertView showWithTitle:@"Could Not Load Image" error:error buttonTitle:@"OK"];
     }];
+    [self.queue addOperation:op];
 }
 
 - (CGFloat)minimumZoomScale
@@ -145,8 +149,8 @@
     }];
     [sheet addButtonWithTitle:@"Copy Image URL" block:^{
         [UIPasteboard generalPasteboard].items = @[ @{
-            (id)kUTTypeURL: self.imageURL,
-            (id)kUTTypePlainText: [self.imageURL absoluteString]
+        (id)kUTTypeURL: self.imageURL,
+        (id)kUTTypePlainText: [self.imageURL absoluteString]
         }];
         [self hideBarsAfterShortDuration];
     }];

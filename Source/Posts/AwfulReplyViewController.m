@@ -9,6 +9,7 @@
 #import "AwfulReplyViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulHTTPClient.h"
+#import "AwfulKeyboardBar.h"
 #import "AwfulModels.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
@@ -41,7 +42,20 @@
 
 @property (nonatomic) id <ImgurHTTPClientCancelToken> imageUploadCancelToken;
 
+@property (readonly, nonatomic) UIBarButtonItem *insertOpenBracketButton;
+
+@property (readonly, nonatomic) UIBarButtonItem *insertCloseBracketButton;
+
+@property (readonly, nonatomic) UIBarButtonItem *insertEqualsButton;
+
+@property (readonly, nonatomic) UIBarButtonItem *insertSlashButton;
+
+@property (readonly, nonatomic) UIBarButtonItem *insertColonButton;
+
+@property (readonly, nonatomic) UIBarButtonItem *insertAnotherColonButton;
+
 @end
+
 
 @implementation AwfulReplyViewController
 
@@ -462,8 +476,14 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
 
 - (void)loadView
 {
-    UITextView *textView = [UITextView new];
+    UITextView *textView = [[UITextView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
     textView.font = [UIFont systemFontOfSize:17];
+    AwfulKeyboardBar *bbcodeBar = [[AwfulKeyboardBar alloc] initWithFrame:
+                                   CGRectMake(0, 0, CGRectGetWidth(textView.bounds),
+                                              UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 63 : 36)];
+    bbcodeBar.characters = @[ @"[", @"=", @":", @"/", @"]" ];
+    bbcodeBar.keyInputView = textView;
+    textView.inputAccessoryView = bbcodeBar;
     self.view = textView;
     [PSMenuItem installMenuHandlerForObject:self.view];
 }

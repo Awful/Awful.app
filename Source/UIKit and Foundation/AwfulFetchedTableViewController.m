@@ -44,6 +44,11 @@
     return nil;
 }
 
+- (void)dealloc
+{
+    self.fetchedResultsController.delegate = nil;
+}
+
 #pragma mark - UITableViewDataSource and UITableViewDelegate
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -101,7 +106,7 @@
         case NSFetchedResultsChangeUpdate: {
             if (self.ignoreUpdates) return;
             [self configureCell:[self.tableView cellForRowAtIndexPath:indexPath]
-                    atIndexPath:indexPath];
+                    atIndexPath:(newIndexPath ?: indexPath)];
             break;
         }
     }

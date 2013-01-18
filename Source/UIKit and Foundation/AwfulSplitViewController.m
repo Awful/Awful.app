@@ -99,4 +99,16 @@
     self.rootPopoverButtonItem = nil;
 }
 
+- (void)splitViewController:(UISplitViewController *)svc
+          popoverController:(UIPopoverController *)pc
+  willPresentViewController:(UIViewController *)aViewController
+{
+    // There's a bug in iOS 5.1, fixed in iOS 6, in UISplitViewController: if the master view is
+    // hidden when a memory warning occurs, it loses its frame. The next time it's shown, it takes
+    // on a frame whose width seems to be the device's portrait width. Here we fix that.
+    CGRect frame = aViewController.view.frame;
+    frame.size.width = 320;
+    aViewController.view.frame = frame;
+}
+
 @end

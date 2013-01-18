@@ -70,6 +70,10 @@
         }
     }
     [posts setValue:@(pageInfo.pageNumber) forKey:AwfulPostAttributes.threadPage];
+    if (pageInfo.pageNumber == thread.numberOfPagesValue) {
+        thread.lastPostAuthorName = [[posts lastObject] author].username;
+        thread.lastPostDate = [[posts lastObject] postDate];
+    }
     [[AwfulDataStack sharedDataStack] save];
     return posts;
 }

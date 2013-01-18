@@ -3,85 +3,123 @@
 }
 
 body {
-    background: #dde0e5;
+    margin: 0;
+    background: #fff;
     font-family: Helvetica, sans-serif;
     font-size: 14px;
+}
+body.dark {
+    background: #000;
+    color: #fff;
 }
 
 img {
     max-width: 100%;
 }
 
+/* First section: avatar, custom title, "about me", profile image. */
+
+/* Avatar and custom title. */
 header {
-    margin-bottom: 1em;
+    margin: 1em;
 }
 
+/* Avatar. */
 header img {
     float: left;
-    margin-right: 5px;
-    margin-bottom: 5px;
+    margin-right: 1em;
 }
 
-hr {
+header::after {
+    content: "";
+    display: block;
+    visibility: hidden;
     clear: both;
 }
-.dark hr {
-    border-color: #303030;
-}
 
+/* About me. */
 p {
-    clear: both;
-}
-table {
-    background: #fff;
-    border: 1px solid #aeb2b9;
-    border-radius: 15px;
-    border-spacing: 0;
-    width: 100%;
-    margin: 1em 0;
-}
-.dark table {
-    background: #000;
-    border-color: #303030;
+    margin: 1em;
 }
 
-table caption {
-    text-align: left;
-    font-size: 1.5em;
-}
-
-table tr td, table tr th {
-    border-top: 1px solid #ababab;
-    padding-top: 15px;
-    padding-bottom: 15px;
-}
-.dark table tr td, .dark table tr th {
-    border-color: #303030;
-}
-table tr:first-child td, table tr:first-child th {
-    border-top: none;
-}
-
-th {
-    color: #516691;
-    width: 100px;
-    font-weight: bold;
-    text-align: right;
-    text-transform: lowercase;
-    font-size: 0.85em;
-    padding-right: 5px;
-}
-
-td {
-    font-weight: bold;
-    font-size: 0.85em;
-}
-
-#profile > img {
+/* Profile image (users with plat can include one). */
+section > img {
+    display: block;
     margin: 1em auto;
 }
 
-body.dark {
-    color: white;
-    background-color: #131313;
+/* Second section: contact and additional info. */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Use table captions like UITableView headers (à la Forums tab). */
+table caption {
+    text-align: left;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: #000 0 1px;
+    background: url("forum-header-light.png") hsl(200, 2%, 69%) repeat-x;
+    padding: 0.2em 0.5em;
+}
+.dark table caption {
+    background-image: url("forum-header-dark.png");
+}
+
+/* Retina table header backgrounds. */
+@media all and (-webkit-min-device-pixel-ratio: 2) {
+    table caption {
+        background-image: url("forum-header-light@2x.png");
+    }
+    .dark table caption {
+        background-image: url("forum-header-dark@2x.png");
+    }
+}
+
+tr {
+    height: 3em;
+}
+
+th {
+    text-align: left;
+    padding-left: 1em;
+}
+
+/* Blue Settings.app-like text for the current value. */
+td {
+    color: hsl(217, 40%, 37%);
+}
+.dark td {
+    color: hsl(209, 100%, 72%);
+}
+
+/* Cell separator. */
+th, td {
+    border-bottom: 1px solid hsl(200, 2%, 95%);
+}
+tr:last-child th, tr:last-child td {
+    border-bottom: 0;
+}
+
+/* On iPad the sections stack left-to-right. */
+@media all and (device-aspect-ratio: 3/4) {
+  section {
+    float: left;
+    width: 50%;
+  }
+  
+  /* Sections should extend at least the full visible height. */
+  html, body, #profile { height: 100%; }
+  section { min-height: 100%; }
+  
+  /* Left section casts a little shadow over right section. */
+  section:first-child {
+      box-shadow: 5px 0 20px -5px #ccc;
+  }
+  .dark section:first-child {
+      box-shadow: 5px 0 20px -5px #333;
+  }
 }
