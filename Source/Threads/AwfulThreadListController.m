@@ -16,6 +16,7 @@
 #import "AwfulLoginController.h"
 #import "AwfulModels.h"
 #import "AwfulPostsViewController.h"
+#import "AwfulProfileViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulSplitViewController.h"
 #import "AwfulTabBarController.h"
@@ -197,6 +198,21 @@ typedef enum {
             [self markThreadUnseen:thread];
         }];
     }
+    [sheet addButtonWithTitle:@"View OP's Profile" block:^{
+        AwfulProfileViewController *profile = [AwfulProfileViewController new];
+        profile.hidesBottomBarWhenPushed = YES;
+        profile.userID = thread.author.userID;
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                  target:self action:@selector(doneWithProfile)];
+            profile.navigationItem.leftBarButtonItem = done;
+            UINavigationController *nav = [profile enclosingNavigationController];
+            nav.modalPresentationStyle = UIModalPresentationFormSheet;
+            [self presentViewController:nav animated:YES completion:nil];
+        } else {
+            [self.navigationController pushViewController:profile animated:YES];
+        }
+    }];
     [sheet addCancelButtonWithTitle:@"Cancel"];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         [sheet showFromRect:self.awfulTabBarController.tabBar.frame
