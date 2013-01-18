@@ -82,12 +82,14 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
             NSArray *infos = [ThreadParsedInfo threadsWithHTMLData:
                               ConvertFromWindows1252ToUTF8(data)];
             dispatch_async(dispatch_get_main_queue(), ^{
-                NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:infos inForumID:forumID];
+                NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:infos];
                 NSInteger stickyIndex = -(NSInteger)[threads count];
+                NSArray *forums = [AwfulForum fetchAllMatchingPredicate:@"forumID = %@", forumID];
                 for (AwfulThread *thread in threads) {
+                    if ([forums count] > 0) thread.forum = forums[0];
                     thread.stickyIndexValue = thread.isStickyValue ? stickyIndex++ : 0;
                 }
-                //[[AwfulDataStack sharedDataStack] save];
+                [[AwfulDataStack sharedDataStack] save];
                 if (callback) callback(nil, threads);
             });
         });
@@ -112,9 +114,9 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
             NSArray *threadInfos = [ThreadParsedInfo threadsWithHTMLData:
                                     ConvertFromWindows1252ToUTF8(data)];
             dispatch_async(dispatch_get_main_queue(), ^{
-                NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:threadInfos inForumID:nil];
-                //[threads setValue:@YES forKey:AwfulThreadAttributes.isBookmarked];
-                //[[AwfulDataStack sharedDataStack] save];
+                NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:threadInfos];
+                [threads setValue:@YES forKey:AwfulThreadAttributes.isBookmarked];
+                [[AwfulDataStack sharedDataStack] save];
                 if (callback) callback(nil, threads);
             });
         });
