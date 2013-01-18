@@ -13,4 +13,12 @@
 
 + (NSArray *)updateCategoriesAndForums:(ForumHierarchyParsedInfo *)info;
 
+@property (nonatomic) BOOL isFavoriteValue;
+@property (nonatomic) NSUInteger favoriteIndexValue;
+@property (nonatomic) BOOL expandedValue;
+
+
+
+
+
 @end

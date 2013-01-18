@@ -21,13 +21,13 @@
 
 @property (assign, nonatomic) BOOL showImages;
 
-typedef enum {
-    AwfulFirstTabForums,
-    AwfulFirstTabFavorites,
-    AwfulFirstTabBookmarks,
-} AwfulFirstTab;
+//typedef enum {
+//    AwfulFirstTabForums,
+//    AwfulFirstTabFavorites,
+//    AwfulFirstTabBookmarks,
+//} AwfulFirstTab;
 
-@property (assign, nonatomic) AwfulFirstTab firstTab;
+//@property (assign, nonatomic) AwfulFirstTab firstTab;
 
 @property (assign, nonatomic) BOOL highlightOwnQuotes;
 

@@ -27,6 +27,7 @@
 #import "NSManagedObject+Awful.h"
 #import "SVProgressHUD.h"
 #import "UIViewController+NavigationEnclosure.h"
+#import "AwfulAppState.h"
 
 @interface AwfulAppDelegate () <AwfulTabBarControllerDelegate, UINavigationControllerDelegate,
                                 AwfulLoginControllerDelegate>
@@ -71,6 +72,8 @@ static AwfulAppDelegate *_instance;
     for (NSHTTPCookie *cookie in cookies) {
         [[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteCookie:cookie];
     }
+    [AwfulAppState.sharedAppState clearCloudCookies];
+    
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
     
     AwfulSettings.settings.username = nil;
@@ -142,6 +145,8 @@ static AwfulAppDelegate *_instance;
         [[NSURLCache sharedURLCache] setDiskCapacity:sixtyMB];
     }
     
+    [self iCloudSetup];
+    
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     
     AwfulTabBarController *tabBar = [AwfulTabBarController new];
@@ -151,7 +156,7 @@ static AwfulAppDelegate *_instance;
         [[AwfulBookmarksController new] enclosingNavigationController],
         [[AwfulSettingsViewController new] enclosingNavigationController]
     ];
-    tabBar.selectedViewController = tabBar.viewControllers[[[AwfulSettings settings] firstTab]];
+    //tabBar.selectedViewController = tabBar.viewControllers[[[AwfulSettings settings] firstTab]];
     tabBar.delegate = self;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         AwfulSplitViewController *splitController = [AwfulSplitViewController new];
@@ -357,6 +362,28 @@ static AwfulAppDelegate *_instance;
     return YES;
 }
 
+- (void)applicationWillResignActive:(UIApplication *)application
+{
+    [[AwfulDataStack sharedDataStack] save];
+}
+
+- (void)applicationDidEnterBackground:(UIApplication *)application
+{
+    [[AwfulDataStack sharedDataStack] save];
+}
+
+- (void)applicationWillEnterForeground:(UIApplication *)application
+{
+    [[AwfulDataStack sharedDataStack] save];
+}
+
+- (void)applicationWillTerminate:(UIApplication *)application
+{
+    [[AwfulDataStack sharedDataStack] save];
+}
+
+#pragma mark navigation
+
 - (void)pushPostsViewForPostWithID:(NSString *)postID
                             onPage:(NSInteger)page
                     ofThreadWithID:(NSString *)threadID
@@ -422,6 +449,7 @@ static AwfulAppDelegate *_instance;
 
 - (void)loginControllerDidLogIn:(AwfulLoginController *)login
 {
+    [[AwfulAppState sharedAppState] syncForumCookies];
     [[AwfulHTTPClient client] learnUserInfoAndThen:^(NSError *error, NSDictionary *userInfo) {
         if (error) {
             NSLog(@"error fetching username: %@", error);
@@ -444,6 +472,50 @@ static AwfulAppDelegate *_instance;
                           message:@"Double-check your username and password, then try again."
                       buttonTitle:@"Alright"
                        completion:nil];
+}
+
+#pragma mark iCloud Sync Handlers
+
+- (void)iCloudSetup
+{
+    // register to observe notifications from the store
+    [[NSNotificationCenter defaultCenter]
+     addObserver: self
+     selector: @selector (storeDidChange:)
+     name: NSUbiquitousKeyValueStoreDidChangeExternallyNotification
+     object: [NSUbiquitousKeyValueStore defaultStore]];
+    
+    // get changes that might have happened while this
+    // instance of your app wasn't running
+    [[NSUbiquitousKeyValueStore defaultStore] synchronize];
+    [[AwfulAppState sharedAppState] syncForumCookies];
+    
+    //[[AwfulDataStack sharedDataStack] loadPersistentStores];
+}
+
+- (void)storeDidChange:(NSNotification*)notification
+{
+    NSArray *changes = [notification.userInfo objectForKey:NSUbiquitousKeyValueStoreChangedKeysKey];
+    NSLog(@"cloud change keys =%@",changes);
+    if ([changes containsObject:kAwfulAppStateForumCookieDataKey]) {
+        BOOL loggedInBeforeSync = IsLoggedIn();
+        [[AwfulAppState sharedAppState] syncForumCookies];
+        if(!loggedInBeforeSync && IsLoggedIn()) {
+            //just synced forum cookies, user doesn't need to log in now
+            [self loginControllerDidLogIn:nil];
+        }
+    }
+    
+    if ([changes containsObject:kAwfulAppStateFavoriteForumsKey]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:AwfulAppStateDidUpdateFavoriteForums
+                                                            object:nil];
+    }
+    
+    if ([changes containsObject:kAwfulAppStateExpandedForumsKey]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:AwfulAppStateDidUpdateExpandedForums
+                                                            object:nil];
+    }
+    
 }
 
 @end

@@ -69,8 +69,8 @@
     NSError *error;
     _coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.model];
     NSDictionary *options = @{
-        NSMigratePersistentStoresAutomaticallyOption: @YES,
-        NSInferMappingModelAutomaticallyOption: @YES
+NSMigratePersistentStoresAutomaticallyOption: @YES,
+NSInferMappingModelAutomaticallyOption: @YES
     };
     id ok = [_coordinator addPersistentStoreWithType:NSSQLiteStoreType
                                        configuration:nil

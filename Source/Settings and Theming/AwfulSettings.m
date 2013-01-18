@@ -69,6 +69,7 @@ BOOL_PROPERTY(showAvatars, setShowAvatars)
 
 BOOL_PROPERTY(showImages, setShowImages)
 
+/*
 struct {
     __unsafe_unretained NSString *Forums;
     __unsafe_unretained NSString *Favorites;
@@ -78,7 +79,8 @@ struct {
     @"favorites",
     @"bookmarks",
 };
-
+ */
+/*
 - (AwfulFirstTab)firstTab
 {
     NSString *value = self[AwfulSettingsKeys.firstTab];
@@ -102,7 +104,7 @@ struct {
     }
     self[AwfulSettingsKeys.firstTab] = value;
 }
-
+*/
 struct {
     __unsafe_unretained NSString *None;
     __unsafe_unretained NSString *Green;
@@ -267,7 +269,7 @@ NSString * const AwfulSettingsDidChangeSettingsKey = @"settings";
 const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .showAvatars = @"show_avatars",
     .showImages = @"show_images",
-    .firstTab = @"default_load",
+    //.firstTab = @"default_load",
     .highlightOwnQuotes = @"highlight_own_quotes",
     .highlightOwnMentions = @"highlight_own_mentions",
     .confirmBeforeReplying = @"confirm_before_replying",

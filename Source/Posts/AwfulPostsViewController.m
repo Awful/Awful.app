@@ -33,6 +33,7 @@
 #import "SVProgressHUD.h"
 #import "UINavigationItem+TwoLineTitle.h"
 #import "UIViewController+NavigationEnclosure.h"
+#import "AwfulAppState.h"
 
 @interface TopBarView : UIView
 
@@ -759,6 +760,16 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     self.postsView.stylesheetURL = StylesheetURLForForumWithID(self.thread.forum.forumID);
 }
 
+- (NSURL*)awfulScreenURL
+{
+    NSIndexPath *selfIndexPath = [[AwfulAppState sharedAppState] indexPathForViewController:self];
+    NSIndexPath *parentIndexPath = [NSIndexPath indexPathForRow:selfIndexPath.row-1 inSection:selfIndexPath.section];
+    
+    NSURL *parentURL = [[AwfulAppState sharedAppState] screenURLAtIndexPath:parentIndexPath];
+    return [parentURL URLByAppendingPathComponent:self.thread.threadID];
+}
+
+
 #pragma mark - UIViewController
 
 - (void)setTitle:(NSString *)title
@@ -832,6 +843,9 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 {
     [super viewWillAppear:animated];
     [self retheme];
+    
+    [[AwfulAppState sharedAppState] setScreenURL:self.awfulScreenURL
+                                     atIndexPath:[[AwfulAppState sharedAppState] indexPathForViewController:self]];
 }
 
 - (void)viewDidAppear:(BOOL)animated

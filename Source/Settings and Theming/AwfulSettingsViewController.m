@@ -21,6 +21,8 @@
 #import "AwfulTheme.h"
 #import "NSManagedObject+Awful.h"
 #import "UIViewController+NavigationEnclosure.h"
+#import "AwfulAppState.h"
+#import "AwfulCloudDataVisualizerViewController.h"
 
 @interface AwfulSettingsViewController ()
 
@@ -84,6 +86,11 @@
     [super retheme];
     self.tableView.backgroundColor = [AwfulTheme currentTheme].settingsViewBackgroundColor;
     self.tableView.separatorColor = [AwfulTheme currentTheme].settingsCellSeparatorColor;
+}
+
+- (NSURL*)awfulScreenURL
+{
+    return [NSURL URLWithString:@"awful://settings"];
 }
 
 #pragma mark - UIViewController
@@ -294,6 +301,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         UINavigationController *nav = [licenses enclosingNavigationController];
         nav.modalPresentationStyle = UIModalPresentationFormSheet;
         [self presentViewController:nav animated:YES completion:nil];
+    }  else if ([action isEqualToString:@"ShowCloud"]) {
+        UIViewController *debug = [AwfulCloudDataVisualizerViewController new];
+        [self.navigationController pushViewController:debug animated:YES];
     } else {
         AwfulSettingsChoiceViewController *choiceViewController;
         choiceViewController = [[AwfulSettingsChoiceViewController alloc] initWithSetting:setting];

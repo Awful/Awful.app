@@ -18,6 +18,7 @@
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "AwfulThreadListController.h"
+#import "AwfulAppState.h"
 
 @interface AwfulForumsListController ()
 
@@ -46,6 +47,19 @@
     if (self) {
         self.title = @"Forums";
         self.tabBarItem.image = [UIImage imageNamed:@"list_icon.png"];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(refreshFetchedResults)
+                                                     name:AwfulAppStateDidUpdateFavoriteForums
+                                                   object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(refreshFetchedResults)
+                                                     name:AwfulAppStateDidUpdateExpandedForums
+                                                   object:nil];
+        
+        
+        
     }
     return self;
 }
@@ -53,12 +67,16 @@
 - (void)dealloc
 {
     [self stopObservingReachabilityChanges];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (NSFetchedResultsController *)createFetchedResultsController
 {
     NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulForum entityName]];
-    request.predicate = [NSPredicate predicateWithFormat:@"parentForum == nil or parentForum.expanded == YES"];
+    
+    NSArray *expandedForumIDs = [[AwfulAppState sharedAppState] expandedForums];
+    request.predicate = [NSPredicate predicateWithFormat:@"parentForum == nil or %@ contains parentForum.forumID", expandedForumIDs];
+    
     request.sortDescriptors = @[
         [NSSortDescriptor sortDescriptorWithKey:@"category.index" ascending:YES],
         [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES]
@@ -67,6 +85,12 @@
                                                managedObjectContext:[AwfulDataStack sharedDataStack].context
                                                  sectionNameKeyPath:@"category.index"
                                                           cacheName:nil];
+}
+
+- (void)refreshFetchedResults
+{
+    [self createFetchedResultsController];
+    [self.tableView reloadData];
 }
 
 - (NSDate *)lastRefresh
@@ -90,24 +114,8 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
     NSIndexPath *indexPath = [self.tableView indexPathForCell:(UITableViewCell *)cell];
     AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
     forum.isFavoriteValue = button.selected;
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:
-                                    [AwfulForum entityName]];
-    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"isFavorite == YES"];
-    NSError *error;
-    if (forum.isFavoriteValue) {
-        NSUInteger count = [[AwfulDataStack sharedDataStack].context
-                            countForFetchRequest:fetchRequest error:&error];
-        if (count == NSNotFound) NSLog(@"Error setting favorite index: %@", error);
-        forum.favoriteIndexValue = count;
-    } else {
-        NSArray *renumber = [[AwfulDataStack sharedDataStack].context
-                             executeFetchRequest:fetchRequest error:&error];
-        if (!renumber) NSLog(@"Error renumbering favorites: %@", error);
-        [renumber enumerateObjectsUsingBlock:^(AwfulForum *favorite, NSUInteger i, BOOL *stop) {
-            favorite.favoriteIndexValue = i;
-        }];
-    }
-    [[AwfulDataStack sharedDataStack] save];
+    
+    [[AwfulAppState sharedAppState] setForum:forum isFavorite:button.selected];
 }
 
 - (void)toggleExpanded:(UIButton *)button
@@ -123,6 +131,9 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
     } else {
         RecursivelyCollapseForum(forum);
     }
+    
+    [[AwfulAppState sharedAppState] setForum:forum isExpanded:button.selected];
+    
     [[AwfulDataStack sharedDataStack] save];
     
     // The fetched results controller won't pick up on changes to the keypath "parentForum.expanded"
@@ -212,6 +223,11 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
         willDisplayCell:cell
       forRowAtIndexPath:[self.tableView indexPathForCell:cell]];
     }
+}
+
+- (NSURL*)awfulScreenURL
+{
+    return [NSURL URLWithString:@"awful://forums"];
 }
 
 #pragma mark - UIViewController

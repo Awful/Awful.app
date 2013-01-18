@@ -582,7 +582,10 @@
 		8C5159E1163DB796000114F6 /* AICA-TAG-race.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C5159D7163DB796000114F6 /* AICA-TAG-race.png */; };
 		8C5159E2163DB796000114F6 /* RP-20a6zc0.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C5159D8163DB796000114F6 /* RP-20a6zc0.png */; };
 		8C5159E3163DB796000114F6 /* fyad-zounds.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C5159D9163DB796000114F6 /* fyad-zounds.png */; };
+		8C5DCBB416A35FE1006FCFE7 /* Awful.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 8C5DCBB316A35FE1006FCFE7 /* Awful.entitlements */; };
 		8C6F084A1653498F00B43251 /* byob-anti.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C6F08491653498F00B43251 /* byob-anti.png */; };
+		8C7A0E8A16A702A9004ED364 /* AwfulAppState.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7A0E8916A702A9004ED364 /* AwfulAppState.m */; };
+		8C7A0E8E16A723A8004ED364 /* AwfulCloudDataVisualizerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7A0E8D16A723A8004ED364 /* AwfulCloudDataVisualizerViewController.m */; };
 		8C70028A169C6EFA00FC0B78 /* FVGifAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C700289169C6EFA00FC0B78 /* FVGifAnimation.m */; };
 		8C87428E1655FD990018AC6C /* byob.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C87428D1655FD990018AC6C /* byob.png */; };
 		8C8742911655FDAE0018AC6C /* trp-laliga.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8742901655FDAE0018AC6C /* trp-laliga.png */; };
@@ -1222,7 +1225,13 @@
 		8C5159D7163DB796000114F6 /* AICA-TAG-race.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AICA-TAG-race.png"; sourceTree = "<group>"; };
 		8C5159D8163DB796000114F6 /* RP-20a6zc0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "RP-20a6zc0.png"; sourceTree = "<group>"; };
 		8C5159D9163DB796000114F6 /* fyad-zounds.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-zounds.png"; sourceTree = "<group>"; };
+		8C5DCBB316A35FE1006FCFE7 /* Awful.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Awful.entitlements; sourceTree = "<group>"; };
 		8C6F08491653498F00B43251 /* byob-anti.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "byob-anti.png"; sourceTree = "<group>"; };
+		8C7A0E8816A702A9004ED364 /* AwfulAppState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAppState.h; sourceTree = "<group>"; };
+		8C7A0E8916A702A9004ED364 /* AwfulAppState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAppState.m; sourceTree = "<group>"; };
+		8C7A0E8B16A70F63004ED364 /* Model-1.11.4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Model-1.11.4.xcdatamodel"; sourceTree = "<group>"; };
+		8C7A0E8C16A723A8004ED364 /* AwfulCloudDataVisualizerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCloudDataVisualizerViewController.h; sourceTree = "<group>"; };
+		8C7A0E8D16A723A8004ED364 /* AwfulCloudDataVisualizerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCloudDataVisualizerViewController.m; sourceTree = "<group>"; };
 		8C700288169C6EFA00FC0B78 /* FVGifAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FVGifAnimation.h; sourceTree = "<group>"; };
 		8C700289169C6EFA00FC0B78 /* FVGifAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FVGifAnimation.m; sourceTree = "<group>"; };
 		8C87428D1655FD990018AC6C /* byob.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = byob.png; sourceTree = "<group>"; };
@@ -2107,6 +2116,8 @@
 		1CDD51951542949600326C7B /* Settings and Theming */ = {
 			isa = PBXGroup;
 			children = (
+				8C7A0E8816A702A9004ED364 /* AwfulAppState.h */,
+				8C7A0E8916A702A9004ED364 /* AwfulAppState.m */,
 				1CDD5197154294D400326C7B /* AwfulSettings.h */,
 				1CDD5198154294D400326C7B /* AwfulSettings.m */,
 				11FDA294151018600014FDCD /* AwfulSettingsViewController.h */,
@@ -2117,6 +2128,8 @@
 				1CFBED071631C068008AF641 /* AwfulLicensesViewController.m */,
 				1CE2D97E165EEC1F0024AC1C /* AwfulTheme.h */,
 				1CE2D97F165EEC1F0024AC1C /* AwfulTheme.m */,
+				8C7A0E8C16A723A8004ED364 /* AwfulCloudDataVisualizerViewController.h */,
+				8C7A0E8D16A723A8004ED364 /* AwfulCloudDataVisualizerViewController.m */,
 			);
 			path = "Settings and Theming";
 			sourceTree = "<group>";
@@ -2209,6 +2222,7 @@
 		8CCD498115B497A700E5893B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				8C5DCBB316A35FE1006FCFE7 /* Awful.entitlements */,
 				8CCD498215B497A700E5893B /* Awful-Info.plist */,
 				1C96D0B61682BBF10043B194 /* Browsers.plist */,
 				1CBD5243162B5C2500928740 /* Custom CSS README.txt */,
@@ -3622,6 +3636,7 @@
 				8C9834E2169091CE009F0CD6 /* fyad-bubble.png in Resources */,
 				1C8BE51B16917FB60022B331 /* posts-view-25.css in Resources */,
 				1C0B4FE9169E331F00261F28 /* tviv-bluray.png in Resources */,
+				8C5DCBB416A35FE1006FCFE7 /* Awful.entitlements in Resources */,
 				1C74880116A99BC30068B8A3 /* Icon-72.png in Resources */,
 				1C74880216A99BC30068B8A3 /* Icon-72@2x.png in Resources */,
 				1C74880316A99BC30068B8A3 /* Icon-Small-50.png in Resources */,
@@ -3838,6 +3853,8 @@
 				1C6D3EE8168D7B1400B91A65 /* _AwfulUser.m in Sources */,
 				1C6D3EEB168D7B1E00B91A65 /* AwfulUser.m in Sources */,
 				1C6ED63D1691055E0015CDD5 /* AwfulProfileViewController.m in Sources */,
+				8C7A0E8A16A702A9004ED364 /* AwfulAppState.m in Sources */,
+				8C7A0E8E16A723A8004ED364 /* AwfulCloudDataVisualizerViewController.m in Sources */,
 				8C70028A169C6EFA00FC0B78 /* FVGifAnimation.m in Sources */,
 				1C7487F116A88BAD0068B8A3 /* AwfulKeyboardBar.m in Sources */,
 			);
@@ -4008,12 +4025,13 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_ENTITLEMENTS = Resources/Awful.entitlements;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Main/Awful_Prefix.pch;
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				INFOPLIST_FILE = "Resources/Awful-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
@@ -4038,6 +4056,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_ENTITLEMENTS = Resources/Awful.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = NO;
@@ -4159,12 +4178,13 @@
 		1C5B99B8166FFA4F004C5D0E /* Model.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				8C7A0E8B16A70F63004ED364 /* Model-1.11.4.xcdatamodel */,
 				1C5B99B9166FFA4F004C5D0E /* Model-1.8.1.xcdatamodel */,
 				1C5B99BA166FFA4F004C5D0E /* Model-1.8.xcdatamodel */,
 				1C5B99BB166FFA4F004C5D0E /* Model-1.9.1.xcdatamodel */,
 				1C6D3EE4168D798200B91A65 /* Model-1.10.xcdatamodel */,
 			);
-			currentVersion = 1C6D3EE4168D798200B91A65 /* Model-1.10.xcdatamodel */;
+			currentVersion = 8C7A0E8B16A70F63004ED364 /* Model-1.11.4.xcdatamodel */;
 			path = Model.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

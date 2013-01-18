@@ -61,6 +61,14 @@
     return [self.fetchedResultsController.sections[section] numberOfObjects];
 }
 
+#pragma mark refresh on remote updates
+
+- (void)refreshForRemoteChange:(NSNotification*)notification
+{
+    NSLog(@"remote data change, refreshing");
+    [self.fetchedResultsController performFetch:nil];
+}
+
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller

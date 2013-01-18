@@ -116,6 +116,12 @@
                                               forKey:kLastBookmarksRefreshDate];
 }
 
+#pragma mark AwfulTableView
+- (NSURL*)awfulScreenURL
+{
+    return [NSURL URLWithString:@"awful://bookmarks"];
+}
+
 static NSString * const kLastBookmarksRefreshDate = @"com.awfulapp.Awful.LastBookmarksRefreshDate";
 
 #pragma mark - Table view data source and delegate
