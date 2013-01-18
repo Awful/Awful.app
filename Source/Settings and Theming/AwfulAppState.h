@@ -33,10 +33,9 @@
 
 //scrolling
 -(NSDictionary*) screenInfoForIndexPath:(NSIndexPath*)indexPath ;
--(void) setScrollOffset:(CGFloat)scrollOffset
-              forScreen:(NSURL*)awfulURL
-               forWidth:(CGFloat)width
-            atIndexPath:(NSIndexPath*)indexPath;
+-(void) setScrollOffsetPercentage:(CGFloat)scrollOffset
+                        forScreen:(NSURL*)awfulURL
+                      atIndexPath:(NSIndexPath*)indexPath;
 
 
 @end
@@ -53,9 +52,8 @@ extern const struct AwfulStateKeys {
 static NSString* const kAwfulAppStateSelectedTabKey       = @"kAwfulAppStateSelectedTab";
 static NSString* const kAwfulAppStateNavStackKey          = @"kAwfulAppStateNavStack";
 
-static NSString* const kAwfulScreenStateScrollOffsetKey   = @"kAwfulScreenStateScrollOffsetKey";
+static NSString* const kAwfulScreenStateScrollOffsetPctKey   = @"kAwfulScreenStateScrollOffsetKey";
 static NSString* const kAwfulScreenStateScreenKey         = @"kAwfulScreenStateScreenIDKey";
-static NSString* const kAwfulScreenStateWidthKey          = @"kAwfulScreenStateWidthKey";
 
 static NSString* const kAwfulAppStateFavoriteForumsKey    = @"kAwfulAppStateFavoriteForums";
 static NSString* const kAwfulAppStateExpandedForumsKey    = @"kAwfulAppStateExpandedForums";

@@ -80,7 +80,7 @@
     } else {
         cell.detailTextLabel.text = [NSString stringWithFormat:@"%@", obj];
     }
-    
+    cell.textLabel.numberOfLines = 0;
     return cell;
 }
 
@@ -101,6 +101,10 @@
     [[[AwfulAppState sharedAppState] awfulCloudStore] synchronize];
     [self.tableView reloadData];
     
+}
+
+-(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 300;
 }
 
 @end

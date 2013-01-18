@@ -101,10 +101,9 @@
 }
 
 #pragma mark scroll positions
--(void) setScrollOffset:(CGFloat)scrollOffset
-              forScreen:(NSURL*)awfulURL
-               forWidth:(CGFloat)width
-            atIndexPath:(NSIndexPath*)indexPath
+-(void) setScrollOffsetPercentage:(CGFloat)scrollOffset
+                        forScreen:(NSURL*)awfulURL
+                      atIndexPath:(NSIndexPath*)indexPath
 {
     //AppStateNavStack = Array, one item for each tab
     //each item is an array
@@ -122,22 +121,21 @@
     NSMutableDictionary *screenState = [[self screenInfoForIndexPath:indexPath] mutableCopy];
     if (!screenState) screenState = [NSMutableDictionary new];
     
-    screenState[kAwfulScreenStateScrollOffsetKey] = [NSNumber numberWithFloat:scrollOffset];
-    screenState[kAwfulScreenStateScreenKey] = awfulURL;
-    screenState[kAwfulScreenStateWidthKey] = [NSNumber numberWithFloat:width];
+    screenState[kAwfulScreenStateScrollOffsetPctKey] = [NSNumber numberWithFloat:scrollOffset];
+    //screenState[kAwfulScreenStateScreenKey] = awfulURL;
     
     stack[indexPath.row] = screenState;
     array[indexPath.section] = stack;
     
     [self.awfulCloudStore setObject:array forKey:kAwfulAppStateNavStackKey];
     
-    NSLog(@"Saving scroll position:%f for %i.%i", scrollOffset, indexPath.section, indexPath.row);
+    NSLog(@"Saving scroll%%: %f for %i.%i", scrollOffset, indexPath.section, indexPath.row);
     [self.awfulCloudStore synchronize];
 }
 
 
 -(NSDictionary*) screenInfoForIndexPath:(NSIndexPath*)indexPath {
-    NSArray *array = [self.awfulCloudStore arrayForKey:kAwfulAppStateNavStackKey];
+    NSArray *array = [self.awfulCloudStore objectForKey:kAwfulAppStateNavStackKey];
     if (!array) array = [NSMutableArray new];
     
     NSMutableArray *stack;

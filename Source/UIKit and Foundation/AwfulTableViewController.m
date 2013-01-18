@@ -15,7 +15,7 @@
 @interface AwfulTableViewController ()
 
 @property (nonatomic, getter=isObserving) BOOL observing;
-
+@property (nonatomic) CGFloat contentOffsetPercentage;
 @end
 
 @implementation AwfulTableViewController
@@ -69,6 +69,9 @@
     NSDictionary *info = [[AwfulAppState sharedAppState] screenInfoForIndexPath:
                                             [NSIndexPath indexPathForRow:row
                                                                inSection:0]];
+    
+    CGFloat pct = [info[kAwfulScreenStateScrollOffsetPctKey] floatValue];
+    [self setContentOffsetPercentage:pct];
 
 }
 
@@ -185,10 +188,31 @@
 -(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     int row = [self.navigationController.viewControllers indexOfObject:self];
     
-    [[AwfulAppState sharedAppState] setScrollOffset:scrollView.contentOffset.y
+    [[AwfulAppState sharedAppState] setScrollOffsetPercentage:self.contentOffsetPercentage
                                           forScreen:nil //fixme
-                                           forWidth:scrollView.frame.size.width
                                         atIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
+}
+
+- (CGFloat)contentOffsetPercentage
+{
+    CGFloat contentHeight = self.tableView.contentSize.height;
+    CGFloat frameHeight = self.tableView.frame.size.height;
+    CGFloat scrollMax = contentHeight - frameHeight;
+    
+    CGFloat scrollOffset = self.tableView.contentOffset.y;
+    
+    return ((scrollOffset / scrollMax) < 1)? (scrollOffset / scrollMax) : 1 ;
+}
+
+- (void)setContentOffsetPercentage:(CGFloat)contentOffsetPercentage
+{
+    CGFloat contentHeight = self.tableView.contentSize.height;
+    CGFloat frameHeight = self.tableView.frame.size.height;
+    CGFloat scrollMax = contentHeight - frameHeight;
+    
+    CGFloat offset = contentOffsetPercentage * scrollMax;
+    
+    self.tableView.contentOffset = CGPointMake(0, offset);
 }
 
 

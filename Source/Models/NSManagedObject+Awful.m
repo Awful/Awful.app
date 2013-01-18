@@ -24,6 +24,7 @@
     });
 }
 
+*/
 +(NSArray*) fetchAllWithContext:(NSManagedObjectContext*)context {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[(Class)self entityName]];
     NSError *error;
@@ -34,7 +35,6 @@
     }
     return all;
 }
-*/
 + (NSArray *)fetchAll
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[(Class)self entityName]];
