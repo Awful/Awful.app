@@ -597,10 +597,11 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 - (void)showActionsForPost:(AwfulPost *)post fromRect:(CGRect)rect inView:(UIView *)view
 {
     [self dismissPopoverAnimated:YES];
-    NSString *title = [NSString stringWithFormat:@"%@'s Post", post.author.username];
+    NSString *possessiveUsername = [NSString stringWithFormat:@"%@'s", post.author.username];
     if ([post.author.username isEqualToString:[AwfulSettings settings].username]) {
-        title = @"Your Post";
+        possessiveUsername = @"Your";
     }
+    NSString *title = [NSString stringWithFormat:@"%@ Post", possessiveUsername];
     AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:title];
     if (post.editableValue) {
         [sheet addButtonWithTitle:@"Edit" block:^{
@@ -665,6 +666,20 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                  [self markPostsAsBeenSeenUpToPost:post];
              }
          }];
+    }];
+    [sheet addButtonWithTitle:[NSString stringWithFormat:@"%@ Profile", possessiveUsername] block:^{
+        AwfulProfileViewController *profile = [AwfulProfileViewController new];
+        profile.userID = post.author.userID;
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                  target:self action:@selector(doneWithProfile)];
+            profile.navigationItem.leftBarButtonItem = done;
+            UINavigationController *nav = [profile enclosingNavigationController];
+            nav.modalPresentationStyle = UIModalPresentationFormSheet;
+            [self presentViewController:nav animated:YES completion:nil];
+        } else {
+            [self.navigationController pushViewController:profile animated:YES];
+        }
     }];
     [sheet addCancelButtonWithTitle:@"Cancel"];
     [sheet showFromRect:rect inView:view animated:YES];
@@ -967,8 +982,7 @@ static char KVOContext;
     return @[
         @"showActionsForPostAtIndex:fromRectDictionary:",
         @"previewImageAtURLString:",
-        @"showMenuForLinkWithURLString:fromRectDictionary:",
-        @"showProfileForPostAtIndex:fromRectDictionary:"
+        @"showMenuForLinkWithURLString:fromRectDictionary:"
     ];
 }
 
@@ -1058,30 +1072,6 @@ static char KVOContext;
     _postDateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
     _postDateFormatter.dateFormat = @"MMM d, yyyy HH:mm";
     return _postDateFormatter;
-}
-
-- (void)showProfileForPostAtIndex:(NSNumber *)index fromRectDictionary:(NSDictionary *)rectDict
-{
-    NSInteger unboxed = [index integerValue] + self.hiddenPosts;
-    AwfulPost *post = self.fetchedResultsController.fetchedObjects[unboxed];
-    AwfulProfileViewController *profile = [AwfulProfileViewController new];
-    profile.userID = post.author.userID;
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                                                              target:self action:@selector(doneWithProfile)];
-        profile.navigationItem.leftBarButtonItem = done;
-        UINavigationController *nav = [profile enclosingNavigationController];
-        nav.modalPresentationStyle = UIModalPresentationFormSheet;
-        [self presentViewController:nav animated:YES completion:nil];
-    } else {
-        profile.hidesBottomBarWhenPushed = YES;
-        UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithTitle:@"Back"
-                                                                 style:UIBarButtonItemStyleBordered
-                                                                target:nil
-                                                                action:NULL];
-        self.navigationItem.backBarButtonItem = back;
-        [self.navigationController pushViewController:profile animated:YES];
-    }
 }
 
 - (void)doneWithProfile
