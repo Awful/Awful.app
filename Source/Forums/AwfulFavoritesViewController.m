@@ -145,6 +145,11 @@
     self.coverView.tapAStarLabel.textColor = [AwfulTheme currentTheme].noFavoritesTextColor;
 }
 
+- (NSURL*)awfulScreenURL
+{
+    return [NSURL URLWithString:@"awful://favorites"];
+}
+
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controller:(NSFetchedResultsController *)controller

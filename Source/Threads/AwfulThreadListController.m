@@ -245,6 +245,11 @@ typedef enum {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+- (NSURL*)awfulScreenURL
+{
+    return [[NSURL URLWithString:@"awful://forums/"] URLByAppendingPathComponent:self.forum.forumID];
+}
+
 #pragma mark - UITableViewDataSource and UITableViewDelegate
 
 - (UITableViewCell *)tableView:(UITableView *)tableView

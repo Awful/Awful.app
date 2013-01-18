@@ -78,7 +78,7 @@
         cell.textLabel.text = @"NSData";
         cell.detailTextLabel.text = [NSString stringWithFormat:@"%i", [obj length]];
     } else {
-        cell.detailTextLabel.text = [NSString stringWithFormat:@"%@", obj];
+        cell.textLabel.text = [NSString stringWithFormat:@"%@", obj];
     }
     cell.textLabel.numberOfLines = 0;
     return cell;

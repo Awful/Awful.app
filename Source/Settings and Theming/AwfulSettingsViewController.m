@@ -88,6 +88,11 @@
     self.tableView.separatorColor = [AwfulTheme currentTheme].settingsCellSeparatorColor;
 }
 
+- (NSURL*)awfulScreenURL
+{
+    return [NSURL URLWithString:@"awful://settings"];
+}
+
 #pragma mark - UIViewController
 
 - (void)viewDidLoad

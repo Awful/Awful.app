@@ -225,6 +225,11 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
     }
 }
 
+- (NSURL*)awfulScreenURL
+{
+    return [NSURL URLWithString:@"awful://forums"];
+}
+
 #pragma mark - UIViewController
 
 - (void)viewDidLoad

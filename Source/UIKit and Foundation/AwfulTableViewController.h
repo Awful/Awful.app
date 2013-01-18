@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface AwfulTableViewController : UITableViewController <UIScrollViewDelegate>
-
+@property (nonatomic,readonly) NSURL *awfulScreenURL;
 @property (nonatomic) NSOperation *networkOperation;
 
 @property (nonatomic) BOOL refreshing;

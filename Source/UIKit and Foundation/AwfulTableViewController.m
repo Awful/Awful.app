@@ -11,11 +11,13 @@
 #import "AwfulTheme.h"
 #import "SVPullToRefresh.h"
 #import "AwfulAppState.h"
+#import "AwfulAppDelegate.h"
 
 @interface AwfulTableViewController ()
 
 @property (nonatomic, getter=isObserving) BOOL observing;
-@property (nonatomic) CGFloat contentOffsetPercentage;
+@property (nonatomic,readonly) CGFloat contentOffsetPercentage;
+@property (nonatomic,readonly) NSIndexPath* screenIndexPath;
 @end
 
 @implementation AwfulTableViewController
@@ -64,15 +66,11 @@
     [self refreshIfNeededOnAppear];
     [self startObservingApplicationDidBecomeActive];
     
-    int row = [self.navigationController.viewControllers indexOfObject:self];
+    self.contentOffsetPercentage = [[AwfulAppState sharedAppState]
+                                    scrollOffsetPercentageForScreen:self.awfulScreenURL];
     
-    NSDictionary *info = [[AwfulAppState sharedAppState] screenInfoForIndexPath:
-                                            [NSIndexPath indexPathForRow:row
-                                                               inSection:0]];
-    
-    CGFloat pct = [info[kAwfulScreenStateScrollOffsetPctKey] floatValue];
-    [self setContentOffsetPercentage:pct];
-
+    [[AwfulAppState sharedAppState] setScreenURL:self.awfulScreenURL
+                                     atIndexPath:self.screenIndexPath];
 }
 
 - (void)becameActive
@@ -184,13 +182,18 @@
     }
 }
 
+- (NSURL*)awfulScreenURL
+{
+    NSLog(@"subclass %@ does not override awfulScreenURL", [[self class] description]);
+    return nil;
+}
+
 #pragma mark scroll delegate
 -(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    int row = [self.navigationController.viewControllers indexOfObject:self];
-    
-    [[AwfulAppState sharedAppState] setScrollOffsetPercentage:self.contentOffsetPercentage
-                                          forScreen:nil //fixme
-                                        atIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+       [[AwfulAppState sharedAppState] setScrollOffsetPercentage:self.contentOffsetPercentage
+                                                       forScreen:self.awfulScreenURL];
+    });
 }
 
 - (CGFloat)contentOffsetPercentage
@@ -209,10 +212,16 @@
     CGFloat contentHeight = self.tableView.contentSize.height;
     CGFloat frameHeight = self.tableView.frame.size.height;
     CGFloat scrollMax = contentHeight - frameHeight;
+    scrollMax = (scrollMax < 0)? 0 : scrollMax;
     
     CGFloat offset = contentOffsetPercentage * scrollMax;
     
     self.tableView.contentOffset = CGPointMake(0, offset);
+}
+
+- (NSIndexPath*)screenIndexPath
+{
+    return [[AwfulAppState sharedAppState] indexPathForViewController:self];
 }
 
 

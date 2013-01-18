@@ -11,6 +11,7 @@
 #import "AwfulForum.h"
 #import "AwfulDataStack.h"
 #import "NSManagedObject+Awful.h"
+#import "AwfulAppDelegate.h"
 
 @interface AwfulAppState ()
 @end
@@ -103,51 +104,67 @@
 #pragma mark scroll positions
 -(void) setScrollOffsetPercentage:(CGFloat)scrollOffset
                         forScreen:(NSURL*)awfulURL
-                      atIndexPath:(NSIndexPath*)indexPath
 {
-    //AppStateNavStack = Array, one item for each tab
-    //each item is an array
-    //each of those is a dictionary containing screen url, scroll offset, width
+    NSMutableDictionary *screens = [[self.awfulCloudStore objectForKey:kAwfulAppStateScrollOffsetsKey] mutableCopy];
+    if (!screens) screens = [NSMutableDictionary new];
     
+    screens[awfulURL.absoluteString] = [NSNumber numberWithFloat:scrollOffset];
     
-    NSMutableArray *array = [[self.awfulCloudStore arrayForKey:kAwfulAppStateNavStackKey] mutableCopy];
-    if (!array) array = [NSMutableArray new];
+    NSLog(@"Saving scroll%%: %f for %@", scrollOffset, awfulURL.absoluteString);
     
-    NSMutableArray *stack;
-    if (indexPath.section < (int)array.count)
-        stack = [array[indexPath.section] mutableCopy];
-    else stack = [NSMutableArray new];
-    
-    NSMutableDictionary *screenState = [[self screenInfoForIndexPath:indexPath] mutableCopy];
-    if (!screenState) screenState = [NSMutableDictionary new];
-    
-    screenState[kAwfulScreenStateScrollOffsetPctKey] = [NSNumber numberWithFloat:scrollOffset];
-    //screenState[kAwfulScreenStateScreenKey] = awfulURL;
-    
-    stack[indexPath.row] = screenState;
-    array[indexPath.section] = stack;
-    
-    [self.awfulCloudStore setObject:array forKey:kAwfulAppStateNavStackKey];
-    
-    NSLog(@"Saving scroll%%: %f for %i.%i", scrollOffset, indexPath.section, indexPath.row);
+    [self.awfulCloudStore setObject:screens forKey:kAwfulAppStateScrollOffsetsKey];
     [self.awfulCloudStore synchronize];
 }
 
+- (CGFloat) scrollOffsetPercentageForScreen:(NSURL*)awfulURL {
+    NSMutableDictionary *screens = [self.awfulCloudStore objectForKey:kAwfulAppStateScrollOffsetsKey];
+    if (!screens) return 0;
+    if (!screens[awfulURL.absoluteString]) return 0;
+    return [screens[awfulURL.absoluteString] floatValue];
+}
 
--(NSDictionary*) screenInfoForIndexPath:(NSIndexPath*)indexPath {
-    NSArray *array = [self.awfulCloudStore objectForKey:kAwfulAppStateNavStackKey];
-    if (!array) array = [NSMutableArray new];
+#pragma mark nav stack
+- (NSURL*)screenURLAtIndexPath:(NSIndexPath *)indexPath {
+    NSArray *nav = [self.awfulCloudStore objectForKey:kAwfulAppStateNavStackKey];
+    if (!nav) return nil;
+    if (!nav[indexPath.section]) return nil;
     
-    NSMutableArray *stack;
-    if (indexPath.section < (int)array.count)
-        stack = [array[indexPath.section] mutableCopy];
-    else stack = [NSMutableArray new];
+    return [NSURL URLWithString:nav[indexPath.section][indexPath.row]];
+}
+
+- (void) setScreenURL:(NSURL *)screenURL atIndexPath:(NSIndexPath *)indexPath {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        NSLog(@"set %@ to %i.%i", screenURL.absoluteString, indexPath.section, indexPath.row);
+        NSMutableArray *nav = [[self.awfulCloudStore objectForKey:kAwfulAppStateNavStackKey] mutableCopy];
+        if (!nav) nav = [NSMutableArray new];
+        
+        while (nav.count <= (uint)indexPath.section) {
+            [nav addObject:@""];
+        }
+        
+        NSMutableArray *stack = nav[indexPath.section];
+        if (!stack || [stack isKindOfClass:[NSString class]]) stack = [NSMutableArray new];
+        else stack = [stack mutableCopy];
+        
+        if ((uint)indexPath.row < stack.count) {
+            [stack removeObjectsInRange:NSMakeRange(indexPath.row, stack.count-indexPath.row)];
+        }
+        [stack addObject:screenURL.absoluteString];
+        nav[indexPath.section] = stack;
+        
+        [self.awfulCloudStore setObject:nav forKey:kAwfulAppStateNavStackKey];
+        [self.awfulCloudStore synchronize];
+    });
+}
+
+- (NSIndexPath*)indexPathForViewController:(UIViewController *)viewController
+{
+    int row = [viewController.navigationController.viewControllers indexOfObject:viewController];
     
-    NSMutableDictionary *screenState;
-    if (indexPath.row < (int)stack.count)
-        screenState = [stack[indexPath.row] mutableCopy];
+    UITabBarController *tabs = (UITabBarController*)[AwfulAppDelegate instance].tabBarController;
+    int section = [tabs.viewControllers indexOfObject:viewController.navigationController];
     
-    return screenState;
+    return [NSIndexPath indexPathForRow:row inSection:section];
 }
 
 

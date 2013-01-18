@@ -46,7 +46,6 @@
     }
     return all;
 }
-/*
 
 + (NSArray *)fetchAllWithManagedObjectContext:(NSManagedObjectContext*)context matchingPredicate:(id)format, ... {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[(Class)self entityName]];
@@ -66,7 +65,6 @@
     }
     return matches;
 }
-*/
 
 + (NSArray *)fetchAllMatchingPredicate:(id)format, ...
 {    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[(Class)self entityName]];

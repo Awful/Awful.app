@@ -32,11 +32,14 @@
 -(void) clearCloudCookies;
 
 //scrolling
--(NSDictionary*) screenInfoForIndexPath:(NSIndexPath*)indexPath ;
+- (CGFloat) scrollOffsetPercentageForScreen:(NSURL*)awfulURL;
 -(void) setScrollOffsetPercentage:(CGFloat)scrollOffset
-                        forScreen:(NSURL*)awfulURL
-                      atIndexPath:(NSIndexPath*)indexPath;
+                        forScreen:(NSURL*)awfulURL;
 
+//nav stack
+- (NSURL*)screenURLAtIndexPath:(NSIndexPath*)indexPath;
+- (void)setScreenURL:(NSURL*)screenURL atIndexPath:(NSIndexPath*)indexPath;
+- (NSIndexPath*)indexPathForViewController:(UIViewController*)viewController;
 
 @end
 
@@ -51,9 +54,7 @@ extern const struct AwfulStateKeys {
 
 static NSString* const kAwfulAppStateSelectedTabKey       = @"kAwfulAppStateSelectedTab";
 static NSString* const kAwfulAppStateNavStackKey          = @"kAwfulAppStateNavStack";
-
-static NSString* const kAwfulScreenStateScrollOffsetPctKey   = @"kAwfulScreenStateScrollOffsetKey";
-static NSString* const kAwfulScreenStateScreenKey         = @"kAwfulScreenStateScreenIDKey";
+static NSString* const kAwfulAppStateScrollOffsetsKey     = @"kAwfulAppStateScrollOffsetsKey";
 
 static NSString* const kAwfulAppStateFavoriteForumsKey    = @"kAwfulAppStateFavoriteForums";
 static NSString* const kAwfulAppStateExpandedForumsKey    = @"kAwfulAppStateExpandedForums";
