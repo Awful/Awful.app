@@ -15,6 +15,8 @@
 + (NSArray *)fetchAllMatchingPredicate:(id)formatOrPredicate, ...;
 
 + (instancetype)firstMatchingPredicate:(id)formatOrPredicate, ...;
++ (instancetype)firstSortedBy:(NSArray*)sortDescriptors;
+
 
 + (void)deleteAllMatchingPredicate:(NSString *)format, ...;
 

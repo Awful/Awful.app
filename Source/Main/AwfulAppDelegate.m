@@ -22,6 +22,7 @@
 #import "AwfulSplitViewController.h"
 #import "AwfulStartViewController.h"
 #import "AwfulTabBarController.h"
+#import "AwfulPrivateMessageListController.h"
 #import "AFNetworking.h"
 #import "NSFileManager+UserDirectories.h"
 #import "NSManagedObject+Awful.h"
@@ -149,6 +150,7 @@ static AwfulAppDelegate *_instance;
         [[AwfulForumsListController new] enclosingNavigationController],
         [[AwfulFavoritesViewController new] enclosingNavigationController],
         [[AwfulBookmarksController new] enclosingNavigationController],
+        [[AwfulPrivateMessageListController new] enclosingNavigationController],
         [[AwfulSettingsViewController new] enclosingNavigationController]
     ];
     tabBar.selectedViewController = tabBar.viewControllers[[[AwfulSettings settings] firstTab]];

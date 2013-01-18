@@ -11,7 +11,7 @@
 #import "AwfulDataStack.h"
 
 @implementation AwfulFetchedTableViewController
-
+@synthesize fetchedResultsController = _fetchedResultsController;
 - (void)viewDidLoad
 {
     [super viewDidLoad];

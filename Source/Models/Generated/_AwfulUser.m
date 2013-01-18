@@ -28,6 +28,7 @@ const struct AwfulUserAttributes AwfulUserAttributes = {
 
 const struct AwfulUserRelationships AwfulUserRelationships = {
 	.posts = @"posts",
+	.privateMessages = @"privateMessages",
 	.threads = @"threads",
 };
 
@@ -288,6 +289,19 @@ const struct AwfulUserFetchedProperties AwfulUserFetchedProperties = {
 	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"posts"];
   
 	[self didAccessValueForKey:@"posts"];
+	return result;
+}
+	
+
+@dynamic privateMessages;
+
+	
+- (NSMutableSet*)privateMessagesSet {
+	[self willAccessValueForKey:@"privateMessages"];
+  
+	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"privateMessages"];
+  
+	[self didAccessValueForKey:@"privateMessages"];
 	return result;
 }
 	
