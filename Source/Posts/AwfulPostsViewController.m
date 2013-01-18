@@ -93,8 +93,6 @@
 
 @property (copy, nonatomic) NSString *jumpToPostAfterLoad;
 
-@property (nonatomic) UIPopoverController *profilePopover;
-
 @end
 
 
@@ -1069,15 +1067,12 @@ static char KVOContext;
     AwfulProfileViewController *profile = [AwfulProfileViewController new];
     profile.userID = post.author.userID;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:profile];
-        self.profilePopover = [[UIPopoverController alloc] initWithContentViewController:nav];
-        self.profilePopover.popoverContentSize = CGSizeMake(320, 460);
-        CGRect rect = CGRectMake([rectDict[@"left"] floatValue], [rectDict[@"top"] floatValue],
-                                 [rectDict[@"width"] floatValue], [rectDict[@"height"] floatValue]);
-        [self.profilePopover presentPopoverFromRect:rect
-                                             inView:self.postsView
-                           permittedArrowDirections:UIPopoverArrowDirectionAny
-                                           animated:YES];
+        UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                              target:self action:@selector(doneWithProfile)];
+        profile.navigationItem.leftBarButtonItem = done;
+        UINavigationController *nav = [profile enclosingNavigationController];
+        nav.modalPresentationStyle = UIModalPresentationFormSheet;
+        [self presentViewController:nav animated:YES completion:nil];
     } else {
         profile.hidesBottomBarWhenPushed = YES;
         UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithTitle:@"Back"
@@ -1087,6 +1082,11 @@ static char KVOContext;
         self.navigationItem.backBarButtonItem = back;
         [self.navigationController pushViewController:profile animated:YES];
     }
+}
+
+- (void)doneWithProfile
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

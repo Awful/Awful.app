@@ -6,17 +6,23 @@
 <div id="profile"></div>
 
 <script id="template" type="text/html">
+<section>
+{{#avatarOrTitle}}
 <header>
 {{#avatarURL}}<img src="{{avatarURL}}" alt="">{{/avatarURL}}
 {{{customTitle}}}
 </header>
-<hr />
+{{/avatarOrTitle}}
 <p>
 There have been <b>{{postCount}}</b> posts made by <i>{{username}}</i>, an average of {{postRate}}, since registering on <b>{{regdate}}</b>. <i>{{username}}</i> claims to be a {{gender}}.
 </p>
 
 <p>{{aboutMe}}</p>
 
+{{#profilePictureURL}}<img src="{{profilePictureURL}}" alt="">{{/profilePictureURL}}
+</section>
+
+<section>
 {{#anyContactInformation}}
 <table>
   <caption>Contact Information</caption>
@@ -27,7 +33,7 @@ There have been <b>{{postCount}}</b> posts made by <i>{{username}}</i>, an avera
 {{/anyContactInformation}}
 
 <table>
-  <caption>Additional Info</caption>
+  <caption>Additional Information</caption>
   {{#regdate}}<tr><th>Member Since</th><td>{{regdate}}</td></tr>{{/regdate}}
   {{#postCount}}<tr><th>Post Count</th><td>{{postCount}}</td></tr>{{/postCount}}
   {{#postRate}}<tr><th>Post Rate</th><td>{{postRate}}</td></tr>{{/postRate}}
@@ -36,8 +42,7 @@ There have been <b>{{postCount}}</b> posts made by <i>{{username}}</i>, an avera
   <tr><th>{{kind}}</th><td>{{info}}</td></tr>
   {{/additionalInfo}}
 </table>
-
-{{#profilePictureURL}}<img src="{{profilePictureURL}}" alt="">{{/profilePictureURL}}
+</section>
 </script>
 
 <script src="profile-view.js"></script>
