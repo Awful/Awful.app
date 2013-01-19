@@ -68,7 +68,7 @@
     if ([self.user.occupation length] > 0) {
         [additionalInfo addObject:@{ @"kind": @"Occupation", @"info": self.user.occupation }];
     }
-    NSDictionary *userDict = @{
+    NSMutableDictionary *userDict = [@{
         @"avatarURL": self.user.avatarURL ?: [NSNull null],
         @"customTitle": self.user.customTitle ?: [NSNull null],
         @"postCount": self.user.postCount ?: @0,
@@ -82,7 +82,10 @@
         @"contactInformation": contactInfo,
         @"additionalInformation": additionalInfo,
         @"profilePictureURL": self.user.profilePictureURL ?: [NSNull null],
-    };
+    } mutableCopy];
+    if ([userDict[@"customTitle"] isEqual:@"<br/>"]) userDict[@"customTitle"] = [NSNull null];
+    userDict[@"avatarOrTitle"] = @(!([userDict[@"avatarURL"] isEqual:[NSNull null]] &&
+                                     [userDict[@"customTitle"] isEqual:[NSNull null]]));
     NSError *error;
     NSData *data = [NSJSONSerialization dataWithJSONObject:userDict options:0 error:&error];
     if (!data) {
@@ -134,7 +137,6 @@
     webView.delegate = self;
     webView.scalesPageToFit = YES;
     webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
-    webView.scrollView.bounces = NO;
     webView.dataDetectorTypes = UIDataDetectorTypeNone;
     NSURL *url = [[NSBundle mainBundle] URLForResource:@"profile-view" withExtension:@"html"];
     NSError *error;
