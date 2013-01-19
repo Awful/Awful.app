@@ -484,7 +484,6 @@
 		1CC7801C1612D8AF002AF958 /* AwfulForumsListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780171612D8AF002AF958 /* AwfulForumsListController.m */; };
 		1CC780231612D989002AF958 /* AwfulHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780211612D989002AF958 /* AwfulHTTPClient.m */; };
 		1CC780321612D9DE002AF958 /* AwfulPostsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780281612D9DE002AF958 /* AwfulPostsViewController.m */; };
-		1CC780341612D9DE002AF958 /* AwfulReplyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7802C1612D9DE002AF958 /* AwfulReplyViewController.m */; };
 		1CC780351612D9DE002AF958 /* AwfulSpecificPageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7802E1612D9DE002AF958 /* AwfulSpecificPageController.m */; };
 		1CC7804E1612DA8E002AF958 /* AwfulBookmarksController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780491612DA8E002AF958 /* AwfulBookmarksController.m */; };
 		1CC780501612DA8E002AF958 /* AwfulThreadListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7804D1612DA8E002AF958 /* AwfulThreadListController.m */; };
@@ -545,6 +544,10 @@
 		8C299D7216877AE9001B9D96 /* winpos95-heading-left.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C299D6F16877AE9001B9D96 /* winpos95-heading-left.png */; };
 		8C299D7316877AE9001B9D96 /* winpos95-heading-right.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C299D7016877AE9001B9D96 /* winpos95-heading-right.png */; };
 		8C299D7416877AE9001B9D96 /* winpos95-heading.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C299D7116877AE9001B9D96 /* winpos95-heading.png */; };
+		8C2A08A116AAD00800CDBC23 /* AwfulComposerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C2A089A16AAD00800CDBC23 /* AwfulComposerViewController.m */; };
+		8C2A08A216AAD00800CDBC23 /* AwfulEditPostComposerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C2A089C16AAD00800CDBC23 /* AwfulEditPostComposerViewController.m */; };
+		8C2A08A316AAD00800CDBC23 /* AwfulReplyComposerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C2A089E16AAD00800CDBC23 /* AwfulReplyComposerViewController.m */; };
+		8C2A08A416AAD00800CDBC23 /* AwfulThreadComposerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C2A08A016AAD00800CDBC23 /* AwfulThreadComposerViewController.m */; };
 		8C33C21A168173E1005782F9 /* happymac.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C33C219168173E1005782F9 /* happymac.png */; };
 		8C3CCD4016533B1E00C28342 /* fyad-yourrights.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C3CCD3A16533B1D00C28342 /* fyad-yourrights.png */; };
 		8C3CCD4116533B1E00C28342 /* fyad-tree.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C3CCD3B16533B1E00C28342 /* fyad-tree.png */; };
@@ -1185,6 +1188,14 @@
 		8C299D6F16877AE9001B9D96 /* winpos95-heading-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading-left.png"; sourceTree = "<group>"; };
 		8C299D7016877AE9001B9D96 /* winpos95-heading-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading-right.png"; sourceTree = "<group>"; };
 		8C299D7116877AE9001B9D96 /* winpos95-heading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading.png"; sourceTree = "<group>"; };
+		8C2A089916AAD00800CDBC23 /* AwfulComposerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulComposerViewController.h; sourceTree = "<group>"; };
+		8C2A089A16AAD00800CDBC23 /* AwfulComposerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulComposerViewController.m; sourceTree = "<group>"; };
+		8C2A089B16AAD00800CDBC23 /* AwfulEditPostComposerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulEditPostComposerViewController.h; sourceTree = "<group>"; };
+		8C2A089C16AAD00800CDBC23 /* AwfulEditPostComposerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulEditPostComposerViewController.m; sourceTree = "<group>"; };
+		8C2A089D16AAD00800CDBC23 /* AwfulReplyComposerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulReplyComposerViewController.h; sourceTree = "<group>"; };
+		8C2A089E16AAD00800CDBC23 /* AwfulReplyComposerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulReplyComposerViewController.m; sourceTree = "<group>"; };
+		8C2A089F16AAD00800CDBC23 /* AwfulThreadComposerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadComposerViewController.h; sourceTree = "<group>"; };
+		8C2A08A016AAD00800CDBC23 /* AwfulThreadComposerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadComposerViewController.m; sourceTree = "<group>"; };
 		8C33C219168173E1005782F9 /* happymac.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = happymac.png; sourceTree = "<group>"; };
 		8C3CCD3A16533B1D00C28342 /* fyad-yourrights.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-yourrights.png"; sourceTree = "<group>"; };
 		8C3CCD3B16533B1E00C28342 /* fyad-tree.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-tree.png"; sourceTree = "<group>"; };
@@ -1851,6 +1862,7 @@
 		1C3857A115675AFE0078AF95 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				8C2A089816AAD00800CDBC23 /* Composer */,
 				1CC7800E1612D8AE002AF958 /* Forums */,
 				1C83DB50161FF45200E53CFA /* Imgur API */,
 				1190F71813BE4EA900B9D271 /* Login */,
@@ -2195,6 +2207,21 @@
 				1CBDB5BD16259C6C0004BDF4 /* SenTestingKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		8C2A089816AAD00800CDBC23 /* Composer */ = {
+			isa = PBXGroup;
+			children = (
+				8C2A089916AAD00800CDBC23 /* AwfulComposerViewController.h */,
+				8C2A089A16AAD00800CDBC23 /* AwfulComposerViewController.m */,
+				8C2A089B16AAD00800CDBC23 /* AwfulEditPostComposerViewController.h */,
+				8C2A089C16AAD00800CDBC23 /* AwfulEditPostComposerViewController.m */,
+				8C2A089D16AAD00800CDBC23 /* AwfulReplyComposerViewController.h */,
+				8C2A089E16AAD00800CDBC23 /* AwfulReplyComposerViewController.m */,
+				8C2A089F16AAD00800CDBC23 /* AwfulThreadComposerViewController.h */,
+				8C2A08A016AAD00800CDBC23 /* AwfulThreadComposerViewController.m */,
+			);
+			path = Composer;
 			sourceTree = "<group>";
 		};
 		8C700287169C6EFA00FC0B78 /* AnimatedGif */ = {
@@ -3782,7 +3809,6 @@
 				1CC7801C1612D8AF002AF958 /* AwfulForumsListController.m in Sources */,
 				1CC780231612D989002AF958 /* AwfulHTTPClient.m in Sources */,
 				1CC780321612D9DE002AF958 /* AwfulPostsViewController.m in Sources */,
-				1CC780341612D9DE002AF958 /* AwfulReplyViewController.m in Sources */,
 				1CC780351612D9DE002AF958 /* AwfulSpecificPageController.m in Sources */,
 				1CC7804E1612DA8E002AF958 /* AwfulBookmarksController.m in Sources */,
 				1CC780501612DA8E002AF958 /* AwfulThreadListController.m in Sources */,
@@ -3840,6 +3866,10 @@
 				1C6ED63D1691055E0015CDD5 /* AwfulProfileViewController.m in Sources */,
 				8C70028A169C6EFA00FC0B78 /* FVGifAnimation.m in Sources */,
 				1C7487F116A88BAD0068B8A3 /* AwfulKeyboardBar.m in Sources */,
+				8C2A08A116AAD00800CDBC23 /* AwfulComposerViewController.m in Sources */,
+				8C2A08A216AAD00800CDBC23 /* AwfulEditPostComposerViewController.m in Sources */,
+				8C2A08A316AAD00800CDBC23 /* AwfulReplyComposerViewController.m in Sources */,
+				8C2A08A416AAD00800CDBC23 /* AwfulThreadComposerViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
