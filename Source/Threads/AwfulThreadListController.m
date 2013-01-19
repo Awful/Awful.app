@@ -228,6 +228,11 @@ typedef enum {
     }
 }
 
+- (void)doneWithProfile
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 - (void)markThreadUnseen:(AwfulThread *)thread
 {
     [[AwfulHTTPClient client] forgetReadPostsInThreadWithID:thread.threadID
