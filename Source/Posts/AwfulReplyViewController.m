@@ -146,7 +146,10 @@
         alert.message = @"Does my reply offer any significant advice or help "
                          "contribute to the conversation in any fashion?";
         [alert addCancelButtonWithTitle:@"Nope"
-                                  block:^{ [self.replyTextView becomeFirstResponder]; }];
+                                  block:^{
+                                      self.replyTextView.userInteractionEnabled = YES;
+                                      [self.replyTextView becomeFirstResponder];
+                                  }];
         [alert addButtonWithTitle:self.sendButton.title block:^{ [self send]; }];
         [alert show];
     } else {
@@ -202,6 +205,7 @@ withImagePlaceholderResults:placeholderResults
          [AwfulAlertView showWithTitle:@"Image Uploading Failed"
                                  error:error
                            buttonTitle:@"Fiddlesticks"];
+         self.replyTextView.userInteractionEnabled = YES;
      }];
 }
 
@@ -252,6 +256,7 @@ withImagePlaceholderResults:placeholderResults
                  if (error) {
                      [SVProgressHUD dismiss];
                      [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+                     self.replyTextView.userInteractionEnabled = YES;
                      return;
                  }
                  [SVProgressHUD showSuccessWithStatus:@"Replied"];
@@ -269,6 +274,7 @@ withImagePlaceholderResults:placeholderResults
                  if (error) {
                      [SVProgressHUD dismiss];
                      [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+                     self.replyTextView.userInteractionEnabled = YES;
                      return;
                  }
                  [SVProgressHUD showSuccessWithStatus:@"Edited"];
