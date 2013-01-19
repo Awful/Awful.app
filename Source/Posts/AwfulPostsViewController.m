@@ -591,8 +591,14 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     AwfulReplyComposerViewController *reply = [AwfulReplyComposerViewController new];
     reply.delegate = self;
     [reply replyToThread:self.thread withInitialContents:nil];
-    UINavigationController *nav = [reply enclosingNavigationController];
-    [self presentViewController:nav animated:YES completion:nil];
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        reply.modalPresentationStyle = UIModalPresentationFormSheet;
+        [self presentModalViewController:reply animated:YES];
+    } else {
+        UINavigationController *nav = [reply enclosingNavigationController];
+        [self presentViewController:nav animated:YES completion:nil];
+    }
 }
 
 - (void)showActionsForPost:(AwfulPost *)post fromRect:(CGRect)rect inView:(UIView *)view

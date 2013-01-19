@@ -388,6 +388,16 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
 
 - (void)wrapSelectionInTag:(NSString *)tag
 {
+    NSMutableAttributedString *text = [self.composerTextView.attributedText mutableCopy];
+    
+    [text setAttributes:@{NSFontAttributeName: [UIFont boldSystemFontOfSize:14]}
+                  range:self.composerTextView.selectedRange];
+    
+    self.composerTextView.attributedText = text;
+    return;
+    
+    
+    
     NSMutableString *closingTag = [tag mutableCopy];
     [closingTag insertString:@"/" atIndex:1];
     [closingTag replaceOccurrencesOfString:@"="

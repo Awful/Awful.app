@@ -658,6 +658,7 @@
 		8CCD558815B783FD00E5893B /* rating4.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD526015B783FC00E5893B /* rating4.png */; };
 		8CCD558915B783FD00E5893B /* rating5.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD526115B783FC00E5893B /* rating5.png */; };
 		8CCD559E15B783FD00E5893B /* sticky.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD527715B783FC00E5893B /* sticky.png */; };
+		8CD3B3DB16AB5C15007FE63D /* NSAttributedString+BBCode.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CD3B3DA16AB5C15007FE63D /* NSAttributedString+BBCode.m */; };
 		8CEB405916877D2A00BFA9A8 /* winpos95-heading-seen.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEB405816877D2A00BFA9A8 /* winpos95-heading-seen.png */; };
 		8CEB405C16877E1600BFA9A8 /* winpos95-heading-left-seen.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEB405B16877E1600BFA9A8 /* winpos95-heading-left-seen.png */; };
 		8CEB405E1687865300BFA9A8 /* hourglass.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8CEB405D1687865300BFA9A8 /* hourglass.gif */; };
@@ -1106,8 +1107,6 @@
 		1CC780211612D989002AF958 /* AwfulHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulHTTPClient.m; sourceTree = "<group>"; };
 		1CC780271612D9DE002AF958 /* AwfulPostsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostsViewController.h; sourceTree = "<group>"; };
 		1CC780281612D9DE002AF958 /* AwfulPostsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostsViewController.m; sourceTree = "<group>"; };
-		1CC7802B1612D9DE002AF958 /* AwfulReplyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulReplyViewController.h; sourceTree = "<group>"; };
-		1CC7802C1612D9DE002AF958 /* AwfulReplyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulReplyViewController.m; sourceTree = "<group>"; };
 		1CC7802D1612D9DE002AF958 /* AwfulSpecificPageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSpecificPageController.h; sourceTree = "<group>"; };
 		1CC7802E1612D9DE002AF958 /* AwfulSpecificPageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSpecificPageController.m; sourceTree = "<group>"; };
 		1CC780481612DA8E002AF958 /* AwfulBookmarksController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulBookmarksController.h; sourceTree = "<group>"; };
@@ -1537,6 +1536,8 @@
 		8CCD536315B783FD00E5893B /* yp-gnugpl.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yp-gnugpl.png"; sourceTree = "<group>"; };
 		8CCD536415B783FD00E5893B /* yp-snowcrash971.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yp-snowcrash971.png"; sourceTree = "<group>"; };
 		8CCD536515B783FD00E5893B /* yp-tubes296.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yp-tubes296.png"; sourceTree = "<group>"; };
+		8CD3B3D916AB5C15007FE63D /* NSAttributedString+BBCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+BBCode.h"; sourceTree = "<group>"; };
+		8CD3B3DA16AB5C15007FE63D /* NSAttributedString+BBCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSAttributedString+BBCode.m"; sourceTree = "<group>"; };
 		8CEB405816877D2A00BFA9A8 /* winpos95-heading-seen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading-seen.png"; sourceTree = "<group>"; };
 		8CEB405B16877E1600BFA9A8 /* winpos95-heading-left-seen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading-left-seen.png"; sourceTree = "<group>"; };
 		8CEB405D1687865300BFA9A8 /* hourglass.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = hourglass.gif; sourceTree = "<group>"; };
@@ -2062,8 +2063,6 @@
 				1CFBECED163076F1008AF641 /* AwfulPageBar.m */,
 				1C1015FB165414AE00302B19 /* AwfulImagePreviewViewController.h */,
 				1C1015FC165414AE00302B19 /* AwfulImagePreviewViewController.m */,
-				1CC7802B1612D9DE002AF958 /* AwfulReplyViewController.h */,
-				1CC7802C1612D9DE002AF958 /* AwfulReplyViewController.m */,
 				1C7487EF16A88BAD0068B8A3 /* AwfulKeyboardBar.h */,
 				1C7487F016A88BAD0068B8A3 /* AwfulKeyboardBar.m */,
 				1CC7802D1612D9DE002AF958 /* AwfulSpecificPageController.h */,
@@ -2220,6 +2219,8 @@
 				8C2A089E16AAD00800CDBC23 /* AwfulReplyComposerViewController.m */,
 				8C2A089F16AAD00800CDBC23 /* AwfulThreadComposerViewController.h */,
 				8C2A08A016AAD00800CDBC23 /* AwfulThreadComposerViewController.m */,
+				8CD3B3D916AB5C15007FE63D /* NSAttributedString+BBCode.h */,
+				8CD3B3DA16AB5C15007FE63D /* NSAttributedString+BBCode.m */,
 			);
 			path = Composer;
 			sourceTree = "<group>";
@@ -3870,6 +3871,7 @@
 				8C2A08A216AAD00800CDBC23 /* AwfulEditPostComposerViewController.m in Sources */,
 				8C2A08A316AAD00800CDBC23 /* AwfulReplyComposerViewController.m in Sources */,
 				8C2A08A416AAD00800CDBC23 /* AwfulThreadComposerViewController.m in Sources */,
+				8CD3B3DB16AB5C15007FE63D /* NSAttributedString+BBCode.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
