@@ -6,12 +6,12 @@
 //  Copyright (c) 2013 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulComposerViewController.h"
+//#import "AwfulComposerViewController.h"
 
 #import "AwfulModels.h"
-@interface AwfulPMComposerViewController : AwfulComposerViewController
+@interface AwfulPMComposerViewController : UIViewController
 @property (nonatomic,strong) AwfulPrivateMessage* draft;
 
--(void) continueDraft:(AwfulPrivateMessage*) draft;
--(void) replyToPrivateMessage:(AwfulPrivateMessage *)message;
+//-(void) continueDraft:(AwfulPrivateMessage*) draft;
+//-(void) replyToPrivateMessage:(AwfulPrivateMessage *)message;
 @end

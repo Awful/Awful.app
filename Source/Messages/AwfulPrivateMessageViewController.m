@@ -126,31 +126,15 @@
 }
 
 -(void) reply {
-    AwfulPMComposerViewController *writer = [AwfulPMComposerViewController new];
-    [writer replyToPrivateMessage:self.privateMessage];
+    //AwfulPMComposerViewController *writer = [AwfulPMComposerViewController new];
+    //[writer replyToPrivateMessage:self.privateMessage];
     
-    [self.navigationController pushViewController:writer animated:YES];
+    //[self.navigationController pushViewController:writer animated:YES];
 
 }
 
 -(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return indexPath.section == 0? 44: 500;
 }
-
--(int) numberOfPostsInPostsView:(AwfulPostsView *)postsView {
-    if (self.privateMessage.innerHTML != nil)
-        return 1;
-    
-    postsView.loadingMessage = @"loading...";
-    
-    return 0;
-}
-
-- (NSDictionary *)postsView:(AwfulPostsView *)postsView postAtIndex:(NSInteger)index
-{
-    return @{@"innerHTML": self.privateMessage.innerHTML};
-    
-}
-
 
 @end

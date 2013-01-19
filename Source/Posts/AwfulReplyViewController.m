@@ -1,22 +1,46 @@
 //
-//  AwfulEditorViewController.m
+//  AwfulReplyViewController.m
 //  Awful
 //
-//  Created by me on 1/8/13.
-//  Copyright (c) 2013 Regular Berry Software LLC. All rights reserved.
+//  Created by Sean Berry on 11/21/10.
+//  Copyright 2010 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulComposerViewController.h"
+#import "AwfulReplyViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulKeyboardBar.h"
 #import "AwfulModels.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
+#import "ImgurHTTPClient.h"
+#import "NSString+CollapseWhitespace.h"
 #import "PSMenuItem.h"
+#import "SVProgressHUD.h"
+#import "UINavigationItem+TwoLineTitle.h"
 
-@interface AwfulComposerViewController () <UIImagePickerControllerDelegate,
-UINavigationControllerDelegate, UIPopoverControllerDelegate>
+@interface AwfulReplyViewController () <UIImagePickerControllerDelegate,
+                                        UINavigationControllerDelegate, UIPopoverControllerDelegate>
+
+@property (strong, nonatomic) UIBarButtonItem *sendButton;
+
+@property (strong, nonatomic) UIBarButtonItem *cancelButton;
+
+@property (readonly, nonatomic) UITextView *replyTextView;
+
+@property (weak, nonatomic) NSOperation *networkOperation;
+
+@property (nonatomic) id observerToken;
+
+@property (nonatomic) UIPopoverController *pickerPopover;
+
+@property (nonatomic) NSMutableDictionary *images;
+
+@property (nonatomic) AwfulThread *thread;
+
+@property (nonatomic) AwfulPost *post;
+
+@property (nonatomic) id <ImgurHTTPClientCancelToken> imageUploadCancelToken;
 
 @property (readonly, nonatomic) UIBarButtonItem *insertOpenBracketButton;
 
@@ -32,14 +56,8 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
 
 @end
 
-@implementation AwfulComposerViewController
-{
-    UIBarButtonItem *_insertOpenBracketButton;
-    UIBarButtonItem *_insertCloseBracketButton;
-    UIBarButtonItem *_insertEqualsButton;
-    UIBarButtonItem *_insertSlashButton;
-    UIBarButtonItem *_insertColonButton;
-}
+
+@implementation AwfulReplyViewController
 
 - (void)dealloc
 {
@@ -52,7 +70,7 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
                                                   object:nil];
 }
 
-- (UITextView *)composerTextView
+- (UITextView *)replyTextView
 {
     return (UITextView *)self.view;
 }
@@ -73,81 +91,74 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
     _cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel"
                                                      style:UIBarButtonItemStyleBordered
                                                     target:self
-                                                    action:@selector(hitCancel)];
+                                                    action:@selector(cancel)];
     return _cancelButton;
+}
+
+- (void)editPost:(AwfulPost *)post text:(NSString *)text
+{
+    self.post = post;
+    self.thread = nil;
+    self.replyTextView.text = text;
+    self.title = [post.thread.title stringByCollapsingWhitespace];
+    self.navigationItem.titleLabel.text = self.title;
+    self.sendButton.title = @"Save";
+    self.images = [NSMutableDictionary new];
+}
+
+- (void)replyToThread:(AwfulThread *)thread withInitialContents:(NSString *)contents
+{
+    self.thread = thread;
+    self.post = nil;
+    self.replyTextView.text = contents;
+    self.title = [thread.title stringByCollapsingWhitespace];
+    self.navigationItem.titleLabel.text = self.title;
+    self.sendButton.title = @"Reply";
+    self.images = [NSMutableDictionary new];
 }
 
 - (void)keyboardDidShow:(NSNotification *)note
 {
     CGRect keyboardFrame = [note.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    CGRect relativeKeyboardFrame = [self.composerTextView convertRect:keyboardFrame fromView:nil];
-    CGRect overlap = CGRectIntersection(relativeKeyboardFrame, self.composerTextView.bounds);
+    CGRect relativeKeyboardFrame = [self.replyTextView convertRect:keyboardFrame fromView:nil];
+    CGRect overlap = CGRectIntersection(relativeKeyboardFrame, self.replyTextView.bounds);
     // The 2 isn't strictly necessary, I just like a little cushion between the cursor and keyboard.
     UIEdgeInsets insets = (UIEdgeInsets){ .bottom = overlap.size.height + 2 };
-    self.composerTextView.contentInset = insets;
-    self.composerTextView.scrollIndicatorInsets = insets;
-    [self.composerTextView scrollRangeToVisible:self.composerTextView.selectedRange];
+    self.replyTextView.contentInset = insets;
+    self.replyTextView.scrollIndicatorInsets = insets;
+    [self.replyTextView scrollRangeToVisible:self.replyTextView.selectedRange];
 }
 
 - (void)keyboardWillHide:(NSNotification *)note
 {
-    self.composerTextView.contentInset = UIEdgeInsetsZero;
-    self.composerTextView.scrollIndicatorInsets = UIEdgeInsetsZero;
-}
-
-- (void)cancel
-{
-    [SVProgressHUD dismiss];
-    if (self.imageUploadCancelToken) {
-        [self.imageUploadCancelToken cancel];
-        self.imageUploadCancelToken = nil;
-        self.composerTextView.userInteractionEnabled = YES;
-        [self.composerTextView becomeFirstResponder];
-    } else {
-        [self.delegate composerViewControllerDidCancel:self];
-    }
-}
-
-- (void)retheme
-{
-    self.composerTextView.textColor = [AwfulTheme currentTheme].replyViewTextColor;
-    self.composerTextView.backgroundColor = [AwfulTheme currentTheme].replyViewBackgroundColor;
-    self.composerTextView.keyboardAppearance = UIKeyboardAppearanceAlert;
-}
-
-- (void)currentThemeChanged:(NSNotification *)note
-{
-    [self retheme];
-}
-
--(AwfulAlertView*) confirmationAlert
-{
-    AwfulAlertView *alert = [AwfulAlertView new];
-    alert.title = @"Really send";
-    alert.message = @"Really send?";
-    [alert addCancelButtonWithTitle:@"Nope"
-                              block:^{ [self.composerTextView becomeFirstResponder]; }];
-    [alert addButtonWithTitle:self.sendButton.title block:^{ }];
-    return alert;
+    self.replyTextView.contentInset = UIEdgeInsetsZero;
+    self.replyTextView.scrollIndicatorInsets = UIEdgeInsetsZero;
 }
 
 - (void)hitSend
 {
     if (self.imageUploadCancelToken) return;
-    [self.composerTextView resignFirstResponder];
-    self.composerTextView.userInteractionEnabled = NO;
+    [self.replyTextView resignFirstResponder];
+    self.replyTextView.userInteractionEnabled = NO;
     if (AwfulSettings.settings.confirmBeforeReplying) {
-        [self.confirmationAlert show];
+        AwfulAlertView *alert = [AwfulAlertView new];
+        alert.title = @"Incoming Forums Superstar";
+        alert.message = @"Does my reply offer any significant advice or help "
+                         "contribute to the conversation in any fashion?";
+        [alert addCancelButtonWithTitle:@"Nope"
+                                  block:^{ [self.replyTextView becomeFirstResponder]; }];
+        [alert addButtonWithTitle:self.sendButton.title block:^{ [self send]; }];
+        [alert show];
     } else {
-        [self prepareToSend];
+        [self send];
     }
 }
 
-- (void)prepareToSend
+- (void)send
 {
     [self.networkOperation cancel];
     
-    NSString *reply = self.composerTextView.text;
+    NSString *reply = self.replyTextView.text;
     NSMutableArray *imageKeys = [NSMutableArray new];
     NSString *pattern = @"\\[(t?img)\\](imgur://(.+)\\.png)\\[/\\1\\]";
     NSError *error;
@@ -168,9 +179,9 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
     }
     
     if ([imageKeys count] == 0) {
-        [self replaceImagePlaceholdersForString:reply
-                    withImagePlaceholderResults:placeholderResults
-                                replacementURLs:nil];
+        [self completeReply:reply
+withImagePlaceholderResults:placeholderResults
+            replacementURLs:nil];
         return;
     }
     [SVProgressHUD showWithStatus:@"Uploading images…"];
@@ -179,28 +190,27 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
     self.imageUploadCancelToken = [[ImgurHTTPClient client] uploadImages:images
                                                                  andThen:^(NSError *error,
                                                                            NSArray *urls)
-                                   {
-                                       self.imageUploadCancelToken = nil;
-                                       if (!error) {
-                                           [self replaceImagePlaceholdersForString:reply
-                                   withImagePlaceholderResults:placeholderResults
-                                               replacementURLs:[NSDictionary dictionaryWithObjects:urls forKeys:imageKeys]];
-                                           return;
-                                       }
-                                       [SVProgressHUD dismiss];
-                                       [AwfulAlertView showWithTitle:@"Image Uploading Failed"
-                                                               error:error
-                                                         buttonTitle:@"Fiddlesticks"];
-                                   }];
-     
+     {
+         self.imageUploadCancelToken = nil;
+         if (!error) {
+             [self completeReply:reply
+     withImagePlaceholderResults:placeholderResults
+                 replacementURLs:[NSDictionary dictionaryWithObjects:urls forKeys:imageKeys]];
+             return;
+         }
+         [SVProgressHUD dismiss];
+         [AwfulAlertView showWithTitle:@"Image Uploading Failed"
+                                 error:error
+                           buttonTitle:@"Fiddlesticks"];
+     }];
 }
 
-- (void)replaceImagePlaceholdersForString:(NSString *)reply
-     withImagePlaceholderResults:(NSArray *)placeholderResults
-                 replacementURLs:(NSDictionary *)replacementURLs
+- (void)completeReply:(NSString *)reply
+    withImagePlaceholderResults:(NSArray *)placeholderResults
+    replacementURLs:(NSDictionary *)replacementURLs
 {
-    //[SVProgressHUD showWithStatus:self.thread ? @"Replying…" : @"Editing…"
-    //                     maskType:SVProgressHUDMaskTypeClear];
+    [SVProgressHUD showWithStatus:self.thread ? @"Replying…" : @"Editing…"
+                         maskType:SVProgressHUDMaskTypeClear];
     
     if ([placeholderResults count] > 0) {
         NSMutableString *replacedReply = [reply mutableCopy];
@@ -225,19 +235,71 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
         reply = replacedReply;
     }
     
-    [self.composerTextView resignFirstResponder];
-    
-    [self didReplaceImagePlaceholders:reply];
+    if (self.thread) {
+        [self sendReply:reply];
+    } else if (self.post) {
+        [self sendEdit:reply];
+    }
+    [self.replyTextView resignFirstResponder];
 }
 
-- (void)didReplaceImagePlaceholders:(NSString *)newMessageString {
-    //subclasses need handle the new message string
-    [self send];
+- (void)sendReply:(NSString *)reply
+{
+    id op = [[AwfulHTTPClient client] replyToThreadWithID:self.thread.threadID
+                                                     text:reply
+                                                  andThen:^(NSError *error, NSString *postID)
+             {
+                 if (error) {
+                     [SVProgressHUD dismiss];
+                     [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+                     return;
+                 }
+                 [SVProgressHUD showSuccessWithStatus:@"Replied"];
+                 [self.delegate replyViewController:self didReplyToThread:self.thread];
+             }];
+    self.networkOperation = op;
 }
 
+- (void)sendEdit:(NSString *)edit
+{
+    id op = [[AwfulHTTPClient client] editPostWithID:self.post.postID
+                                                text:edit
+                                             andThen:^(NSError *error)
+             {
+                 if (error) {
+                     [SVProgressHUD dismiss];
+                     [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+                     return;
+                 }
+                 [SVProgressHUD showSuccessWithStatus:@"Edited"];
+                 [self.delegate replyViewController:self didEditPost:self.post];
+             }];
+    self.networkOperation = op;
+}
 
--(void) send {
-    [NSException raise:@"Subclass must override" format:nil];
+- (void)cancel
+{
+    [SVProgressHUD dismiss];
+    if (self.imageUploadCancelToken) {
+        [self.imageUploadCancelToken cancel];
+        self.imageUploadCancelToken = nil;
+        self.replyTextView.userInteractionEnabled = YES;
+        [self.replyTextView becomeFirstResponder];
+    } else {
+        [self.delegate replyViewControllerDidCancel:self];
+    }
+}
+
+- (void)retheme
+{
+    self.replyTextView.textColor = [AwfulTheme currentTheme].replyViewTextColor;
+    self.replyTextView.backgroundColor = [AwfulTheme currentTheme].replyViewBackgroundColor;
+    self.replyTextView.keyboardAppearance = UIKeyboardAppearanceAlert;
+}
+
+- (void)currentThemeChanged:(NSNotification *)note
+{
+    [self retheme];
 }
 
 #pragma mark - Menu items
@@ -245,9 +307,9 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
 - (void)configureTopLevelMenuItems
 {
     [UIMenuController sharedMenuController].menuItems = @[
-    [[PSMenuItem alloc] initWithTitle:@"[url]" block:^{ [self linkifySelection]; }],
-    [[PSMenuItem alloc] initWithTitle:@"[img]" block:^{ [self insertImage]; }],
-    [[PSMenuItem alloc] initWithTitle:@"Format" block:^{ [self showFormattingSubmenu]; }]
+        [[PSMenuItem alloc] initWithTitle:@"[url]" block:^{ [self linkifySelection]; }],
+        [[PSMenuItem alloc] initWithTitle:@"[img]" block:^{ [self insertImage]; }],
+        [[PSMenuItem alloc] initWithTitle:@"Format" block:^{ [self showFormattingSubmenu]; }]
     ];
 }
 
@@ -270,18 +332,18 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
 - (void)configureFormattingSubmenuItems
 {
     [UIMenuController sharedMenuController].menuItems = @[
-    [[PSMenuItem alloc] initWithTitle:@"[b]" block:^{ [self wrapSelectionInTag:@"[b]"]; }],
-    [[PSMenuItem alloc] initWithTitle:@"[s]" block:^{ [self wrapSelectionInTag:@"[s]"]; }],
-    [[PSMenuItem alloc] initWithTitle:@"[u]" block:^{ [self wrapSelectionInTag:@"[u]"]; }],
-    [[PSMenuItem alloc] initWithTitle:@"[i]" block:^{ [self wrapSelectionInTag:@"[i]"]; }],
-    [[PSMenuItem alloc] initWithTitle:@"[spoiler]"
-                                block:^{ [self wrapSelectionInTag:@"[spoiler]"]; }],
-    [[PSMenuItem alloc] initWithTitle:@"[fixed]"
-                                block:^{ [self wrapSelectionInTag:@"[fixed]"]; }],
-    [[PSMenuItem alloc] initWithTitle:@"[quote]"
-                                block:^{ [self wrapSelectionInTag:@"[quote=]\n"]; }],
-    [[PSMenuItem alloc] initWithTitle:@"[code]"
-                                block:^{ [self wrapSelectionInTag:@"[code]\n"]; }],
+        [[PSMenuItem alloc] initWithTitle:@"[b]" block:^{ [self wrapSelectionInTag:@"[b]"]; }],
+        [[PSMenuItem alloc] initWithTitle:@"[s]" block:^{ [self wrapSelectionInTag:@"[s]"]; }],
+        [[PSMenuItem alloc] initWithTitle:@"[u]" block:^{ [self wrapSelectionInTag:@"[u]"]; }],
+        [[PSMenuItem alloc] initWithTitle:@"[i]" block:^{ [self wrapSelectionInTag:@"[i]"]; }],
+        [[PSMenuItem alloc] initWithTitle:@"[spoiler]"
+                                    block:^{ [self wrapSelectionInTag:@"[spoiler]"]; }],
+        [[PSMenuItem alloc] initWithTitle:@"[fixed]"
+                                    block:^{ [self wrapSelectionInTag:@"[fixed]"]; }],
+        [[PSMenuItem alloc] initWithTitle:@"[quote]"
+                                    block:^{ [self wrapSelectionInTag:@"[quote=]\n"]; }],
+        [[PSMenuItem alloc] initWithTitle:@"[code]"
+                                    block:^{ [self wrapSelectionInTag:@"[code]\n"]; }],
     ];
 }
 
@@ -294,8 +356,8 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
         NSLog(@"error creating link data detector: %@", linkDetector);
         return;
     }
-    NSRange selectedRange = self.composerTextView.selectedRange;
-    NSString *selection = [self.composerTextView.text substringWithRange:selectedRange];
+    NSRange selectedRange = self.replyTextView.selectedRange;
+    NSString *selection = [self.replyTextView.text substringWithRange:selectedRange];
     NSRange everything = NSMakeRange(0, [selection length]);
     NSArray *matches = [linkDetector matchesInString:selection
                                              options:0
@@ -315,9 +377,9 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
 
 - (CGRect)selectedTextRect
 {
-    UITextRange *selection = self.composerTextView.selectedTextRange;
-    CGRect startRect = [self.composerTextView caretRectForPosition:selection.start];
-    CGRect endRect = [self.composerTextView caretRectForPosition:selection.end];
+    UITextRange *selection = self.replyTextView.selectedTextRange;
+    CGRect startRect = [self.replyTextView caretRectForPosition:selection.start];
+    CGRect endRect = [self.replyTextView caretRectForPosition:selection.end];
     return CGRectUnion(startRect, endRect);
 }
 
@@ -360,7 +422,7 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
         self.pickerPopover = [[UIPopoverController alloc] initWithContentViewController:picker];
         self.pickerPopover.delegate = self;
         [self.pickerPopover presentPopoverFromRect:[self selectedTextRect]
-                                            inView:self.composerTextView
+                                            inView:self.replyTextView
                           permittedArrowDirections:UIPopoverArrowDirectionAny
                                           animated:YES];
     } else {
@@ -397,17 +459,17 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
     if ([tag hasSuffix:@"\n"]) {
         [closingTag insertString:@"\n" atIndex:0];
     }
-    NSRange range = self.composerTextView.selectedRange;
-    NSString *selection = [self.composerTextView.text substringWithRange:range];
+    NSRange range = self.replyTextView.selectedRange;
+    NSString *selection = [self.replyTextView.text substringWithRange:range];
     NSString *tagged = [NSString stringWithFormat:@"%@%@%@", tag, selection, closingTag];
-    [self.composerTextView replaceRange:self.composerTextView.selectedTextRange withText:tagged];
+    [self.replyTextView replaceRange:self.replyTextView.selectedTextRange withText:tagged];
     NSRange equalsSign = [tag rangeOfString:@"="];
     if (equalsSign.location == NSNotFound && ![tag hasSuffix:@"\n"]) {
-        self.composerTextView.selectedRange = NSMakeRange(range.location + [tag length], range.length);
+        self.replyTextView.selectedRange = NSMakeRange(range.location + [tag length], range.length);
     } else {
-        self.composerTextView.selectedRange = NSMakeRange(range.location + equalsSign.location + 1, 0);
+        self.replyTextView.selectedRange = NSMakeRange(range.location + equalsSign.location + 1, 0);
     }
-    [self.composerTextView becomeFirstResponder];
+    [self.replyTextView becomeFirstResponder];
 }
 
 #pragma mark - UIViewController
@@ -445,13 +507,13 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
 {
     [super viewWillAppear:animated];
     [self configureTopLevelMenuItems];
-    [self.composerTextView becomeFirstResponder];
+    [self.replyTextView becomeFirstResponder];
     [self retheme];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(currentThemeChanged:)
                                                  name:AwfulThemeDidChangeNotification
                                                object:nil];
-    self.composerTextView.userInteractionEnabled = YES;
+    self.replyTextView.userInteractionEnabled = YES;
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -487,7 +549,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
         // "Keep all images smaller than **800 pixels horizontal and 600 pixels vertical.**"
         // http://www.somethingawful.com/d/forum-rules/forum-rules.php?page=2
         BOOL shouldThumbnail = image.size.width > 800 || image.size.height > 600;
-        [self.composerTextView replaceRange:self.composerTextView.selectedTextRange
+        [self.replyTextView replaceRange:self.replyTextView.selectedTextRange
                                 withText:ImageKeyToPlaceholder(key, shouldThumbnail)];
     }
     if (self.pickerPopover) {
@@ -496,7 +558,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     } else {
         [picker dismissViewControllerAnimated:YES completion:nil];
     }
-    [self.composerTextView becomeFirstResponder];
+    [self.replyTextView becomeFirstResponder];
 }
 
 static NSString *ImageKeyToPlaceholder(NSString *key, BOOL thumbnail)
@@ -510,7 +572,7 @@ static NSString *ImageKeyToPlaceholder(NSString *key, BOOL thumbnail)
     // This seemingly never gets called when the picker is in a popover, so we can just blindly
     // dismiss it.
     [self dismissViewControllerAnimated:YES completion:nil];
-    [self.composerTextView becomeFirstResponder];
+    [self.replyTextView becomeFirstResponder];
 }
 
 #pragma mark - UINavigationControllerDelegate
@@ -530,7 +592,7 @@ static NSString *ImageKeyToPlaceholder(NSString *key, BOOL thumbnail)
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
 {
     if (![popoverController isEqual:self.pickerPopover]) return;
-    [self.composerTextView becomeFirstResponder];
+    [self.replyTextView becomeFirstResponder];
 }
 
 @end

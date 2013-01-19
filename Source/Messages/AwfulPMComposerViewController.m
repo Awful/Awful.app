@@ -5,7 +5,6 @@
 //  Created by me on 1/8/13.
 //  Copyright (c) 2013 Regular Berry Software LLC. All rights reserved.
 //
-
 #import "AwfulPMComposerViewController.h"
 #import "NSString+CollapseWhitespace.h"
 #import "UINavigationItem+TwoLineTitle.h"
@@ -20,6 +19,7 @@
 
 @implementation AwfulPMComposerViewController
 
+/*
 - (void)replyToPrivateMessage:(AwfulPrivateMessage *)message
 {
     self.composerTextView.text = message.innerHTML;
@@ -90,4 +90,5 @@
     [alert addButtonWithTitle:self.sendButton.title block:^{  }];
     return alert;
 }
+ */
 @end

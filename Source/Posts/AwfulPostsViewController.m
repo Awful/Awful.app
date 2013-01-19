@@ -19,8 +19,7 @@
 #import "AwfulPostsView.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulPullToRefreshControl.h"
-#import "AwfulReplyComposerViewController.h"
-#import "AwfulEditPostComposerViewController.h"
+#import "AwfulReplyViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulSpecificPageController.h"
 #import "AwfulTheme.h"
@@ -47,10 +46,10 @@
 
 
 @interface AwfulPostsViewController () <AwfulPostsViewDelegate, UIPopoverControllerDelegate,
-                                        AwfulSpecificPageControllerDelegate,
-                                        NSFetchedResultsControllerDelegate,
-                                        AwfulComposerViewControllerDelegate,
-                                        UIScrollViewDelegate>
+AwfulSpecificPageControllerDelegate,
+NSFetchedResultsControllerDelegate,
+AwfulReplyViewControllerDelegate,
+UIScrollViewDelegate>
 
 @property (nonatomic) NSFetchedResultsController *fetchedResultsController;
 
@@ -137,12 +136,12 @@
 {
     if (![self isViewLoaded]) return;
     NSArray *importantKeys = @[
-        AwfulSettingsKeys.highlightOwnMentions,
-        AwfulSettingsKeys.highlightOwnQuotes,
-        AwfulSettingsKeys.showAvatars,
-        AwfulSettingsKeys.showImages,
-        AwfulSettingsKeys.username,
-        AwfulSettingsKeys.yosposStyle
+    AwfulSettingsKeys.highlightOwnMentions,
+    AwfulSettingsKeys.highlightOwnQuotes,
+    AwfulSettingsKeys.showAvatars,
+    AwfulSettingsKeys.showImages,
+    AwfulSettingsKeys.username,
+    AwfulSettingsKeys.yosposStyle
     ];
     NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
     if ([keys firstObjectCommonWithArray:importantKeys]) [self configurePostsViewSettings];
@@ -211,8 +210,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     if (!request) {
         request = [NSFetchRequest fetchRequestWithEntityName:[AwfulPost entityName]];
         [request setSortDescriptors:@[
-            [NSSortDescriptor sortDescriptorWithKey:AwfulPostAttributes.threadIndex ascending:YES]
-        ]];
+         [NSSortDescriptor sortDescriptorWithKey:AwfulPostAttributes.threadIndex ascending:YES]
+         ]];
         NSManagedObjectContext *context = self.thread.managedObjectContext;
         NSFetchedResultsController *controller;
         controller = [[NSFetchedResultsController alloc] initWithFetchRequest:request
@@ -310,64 +309,64 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                                                       andThen:^(NSError *error, NSArray *posts,
                                                                 NSUInteger firstUnreadPost,
                                                                 NSString *advertisementHTML)
-    {
-        // Since we load cached pages where possible, things can get out of order if we change
-        // pages quickly. If the callback comes in after we've moved away from the requested page,
-        // just don't bother going any further. We have the data for later.
-        if (page != self.currentPage) return;
-        BOOL wasLoading = !!self.postsView.loadingMessage;
-        if (error) {
-            if (wasLoading) {
-                self.postsView.loadingMessage = nil;
-                if (![[self.pageBar.jumpToPageButton titleForState:UIControlStateNormal] length]) {
-                    if (self.thread.numberOfPagesValue > 0) {
-                        NSString *title = [NSString stringWithFormat:@"Page ? of %@",
-                                           self.thread.numberOfPages];
-                        [self.pageBar.jumpToPageButton setTitle:title
-                                                       forState:UIControlStateNormal];
-                    } else {
-                        [self.pageBar.jumpToPageButton setTitle:@"Page ? of ?"
-                                                       forState:UIControlStateNormal];
-                    }
-                }
-            }
-            // Poor man's offline mode.
-            if (!wasLoading && !refreshingSamePage
-                && [error.domain isEqualToString:NSURLErrorDomain]) {
-                return;
-            }
-            [AwfulAlertView showWithTitle:@"Could Not Load Page" error:error buttonTitle:@"OK"];
-            self.pullUpToRefreshControl.refreshing = NO;
-            return;
-        }
-        if ([posts count] > 0) {
-            self.thread = [[posts lastObject] thread];
-            self.currentPage = [[posts lastObject] threadPageValue];
-        }
-        self.advertisementHTML = advertisementHTML;
-        if (page == AwfulPageNextUnread && firstUnreadPost != NSNotFound) {
-            self.hiddenPosts = firstUnreadPost;
-        }
-        if (!self.fetchedResultsController) [self updateFetchedResultsController];
-        if (wasLoading) {
-            [self.postsView reloadData];
-        } else {
-            [self.postsView reloadAdvertisementHTML];
-        }
-        [self updateLoadingMessage];
-        [self updatePageBar];
-        [self updateTopBar];
-        [self updateEndMessage];
-        [self updatePullForNextPageLabel];
-        if (self.jumpToPostAfterLoad) {
-            [self jumpToPostWithID:self.jumpToPostAfterLoad];
-            self.jumpToPostAfterLoad = nil;
-        } else if (wasLoading) {
-            CGFloat inset = self.postsView.scrollView.contentInset.top;
-            [self.postsView.scrollView setContentOffset:CGPointMake(0, -inset) animated:NO];
-        }
-        [blockSelf markPostsAsBeenSeen];
-    }];
+             {
+                 // Since we load cached pages where possible, things can get out of order if we change
+                 // pages quickly. If the callback comes in after we've moved away from the requested page,
+                 // just don't bother going any further. We have the data for later.
+                 if (page != self.currentPage) return;
+                 BOOL wasLoading = !!self.postsView.loadingMessage;
+                 if (error) {
+                     if (wasLoading) {
+                         self.postsView.loadingMessage = nil;
+                         if (![[self.pageBar.jumpToPageButton titleForState:UIControlStateNormal] length]) {
+                             if (self.thread.numberOfPagesValue > 0) {
+                                 NSString *title = [NSString stringWithFormat:@"Page ? of %@",
+                                                    self.thread.numberOfPages];
+                                 [self.pageBar.jumpToPageButton setTitle:title
+                                                                forState:UIControlStateNormal];
+                             } else {
+                                 [self.pageBar.jumpToPageButton setTitle:@"Page ? of ?"
+                                                                forState:UIControlStateNormal];
+                             }
+                         }
+                     }
+                     // Poor man's offline mode.
+                     if (!wasLoading && !refreshingSamePage
+                         && [error.domain isEqualToString:NSURLErrorDomain]) {
+                         return;
+                     }
+                     [AwfulAlertView showWithTitle:@"Could Not Load Page" error:error buttonTitle:@"OK"];
+                     self.pullUpToRefreshControl.refreshing = NO;
+                     return;
+                 }
+                 if ([posts count] > 0) {
+                     self.thread = [[posts lastObject] thread];
+                     self.currentPage = [[posts lastObject] threadPageValue];
+                 }
+                 self.advertisementHTML = advertisementHTML;
+                 if (page == AwfulPageNextUnread && firstUnreadPost != NSNotFound) {
+                     self.hiddenPosts = firstUnreadPost;
+                 }
+                 if (!self.fetchedResultsController) [self updateFetchedResultsController];
+                 if (wasLoading) {
+                     [self.postsView reloadData];
+                 } else {
+                     [self.postsView reloadAdvertisementHTML];
+                 }
+                 [self updateLoadingMessage];
+                 [self updatePageBar];
+                 [self updateTopBar];
+                 [self updateEndMessage];
+                 [self updatePullForNextPageLabel];
+                 if (self.jumpToPostAfterLoad) {
+                     [self jumpToPostWithID:self.jumpToPostAfterLoad];
+                     self.jumpToPostAfterLoad = nil;
+                 } else if (wasLoading) {
+                     CGFloat inset = self.postsView.scrollView.contentInset.top;
+                     [self.postsView.scrollView setContentOffset:CGPointMake(0, -inset) animated:NO];
+                 }
+                 [blockSelf markPostsAsBeenSeen];
+             }];
     self.networkOperation = op;
 }
 
@@ -379,9 +378,9 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         if (self.hiddenPosts > 0) {
             NSUInteger i = [self.posts indexOfObjectPassingTest:^BOOL(AwfulPost *post,
                                                                       NSUInteger _, BOOL *__)
-            {
-                return [post.postID isEqualToString:postID];
-            }];
+                            {
+                                return [post.postID isEqualToString:postID];
+                            }];
             if (i < (NSUInteger)self.hiddenPosts) [self showHiddenSeenPosts];
         }
         [self.postsView jumpToElementWithID:postID];
@@ -517,8 +516,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                          "showthread.php?threadid=%@&perpage=40&pagenumber=%@",
                          self.thread.threadID, @(self.currentPage)];
         [UIPasteboard generalPasteboard].items = @[ @{
-            (id)kUTTypeURL: [NSURL URLWithString:url],
-            (id)kUTTypePlainText: url
+        (id)kUTTypeURL: [NSURL URLWithString:url],
+        (id)kUTTypePlainText: url
         }];
     }];
     [sheet addButtonWithTitle:@"Vote" block:^{
@@ -590,7 +589,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 - (void)tappedCompose
 {
     [self dismissPopoverAnimated:YES];
-    AwfulReplyComposerViewController *reply = [AwfulReplyComposerViewController new];
+    AwfulReplyViewController *reply = [AwfulReplyViewController new];
     reply.delegate = self;
     [reply replyToThread:self.thread withInitialContents:nil];
     UINavigationController *nav = [reply enclosingNavigationController];
@@ -616,10 +615,10 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                                        buttonTitle:@"Alright"];
                      return;
                  }
-                 AwfulEditPostComposerViewController *edit = [AwfulEditPostComposerViewController new];
-                 edit.delegate = self;
-                 [edit editPost:post text:text];
-                 UINavigationController *nav = [edit enclosingNavigationController];
+                 AwfulReplyViewController *reply = [AwfulReplyViewController new];
+                 reply.delegate = self;
+                 [reply editPost:post text:text];
+                 UINavigationController *nav = [reply enclosingNavigationController];
                  [self presentViewController:nav animated:YES completion:nil];
              }];
         }];
@@ -635,7 +634,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                                        buttonTitle:@"Alright"];
                      return;
                  }
-                 AwfulReplyComposerViewController *reply = [AwfulReplyComposerViewController new];
+                 AwfulReplyViewController *reply = [AwfulReplyViewController new];
                  reply.delegate = self;
                  [reply replyToThread:self.thread
                   withInitialContents:[quotedText stringByAppendingString:@"\n\n"]];
@@ -649,8 +648,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                          "showthread.php?threadid=%@&perpage=40&pagenumber=%@#post%@",
                          self.thread.threadID, @(self.currentPage), post.postID];
         [UIPasteboard generalPasteboard].items = @[ @{
-            (id)kUTTypeURL: [NSURL URLWithString:url],
-            (id)kUTTypePlainText: url
+        (id)kUTTypeURL: [NSURL URLWithString:url],
+        (id)kUTTypePlainText: url
         }];
     }];
     [sheet addButtonWithTitle:@"Mark Read to Here" block:^{
@@ -716,7 +715,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     self.view.backgroundColor = theme.postsViewBackgroundColor;
     self.topBar.backgroundColor = theme.postsViewTopBarMarginColor;
     NSArray *buttons = @[ self.topBar.goToForumButton, self.topBar.loadReadPostsButton,
-                          self.topBar.scrollToBottomButton ];
+    self.topBar.scrollToBottomButton ];
     for (UIButton *button in buttons) {
         [button setTitleColor:theme.postsViewTopBarButtonTextColor forState:UIControlStateNormal];
         [button setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -831,7 +830,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 }
 
 - (void)viewDidDisappear:(BOOL)animated
-{    
+{
     // Blank the web view if we're leaving for good. Otherwise we get weirdness like videos
     // continuing to play their sound after the user switches to a different thread.
     if (!self.navigationController) {
@@ -968,10 +967,10 @@ static char KVOContext;
 - (NSArray *)whitelistedSelectorsForPostsView:(AwfulPostsView *)postsView
 {
     return @[
-        @"showActionsForPostAtIndex:fromRectDictionary:",
-        @"previewImageAtURLString:",
-        @"showMenuForLinkWithURLString:fromRectDictionary:",
-        @"showProfileForPostAtIndex:fromRectDictionary:"
+    @"showActionsForPostAtIndex:fromRectDictionary:",
+    @"previewImageAtURLString:",
+    @"showMenuForLinkWithURLString:fromRectDictionary:",
+    @"showProfileForPostAtIndex:fromRectDictionary:"
     ];
 }
 
@@ -1035,8 +1034,8 @@ static char KVOContext;
     }
     [sheet addButtonWithTitle:@"Copy URL" block:^{
         [UIPasteboard generalPasteboard].items = @[ @{
-            (id)kUTTypeURL: url,
-            (id)kUTTypePlainText: urlString
+        (id)kUTTypeURL: url,
+        (id)kUTTypePlainText: urlString
         } ];
     }];
     [sheet addCancelButtonWithTitle:@"Cancel"];
@@ -1192,22 +1191,24 @@ static char KVOContext;
 
 #pragma mark - AwfulReplyViewControllerDelegate
 
-- (void)composerViewController:(AwfulComposerViewController *)composerViewController didSend:(id)obj {
+- (void)replyViewController:(AwfulReplyViewController *)replyViewController
+           didReplyToThread:(AwfulThread *)thread
+{
     [self dismissViewControllerAnimated:YES completion:^{
-        if ([composerViewController isMemberOfClass:[AwfulReplyComposerViewController class]])
-        {
-            [self loadPage:AwfulPageNextUnread];
-        }
-        else if ([composerViewController isMemberOfClass:[AwfulEditPostComposerViewController class]])
-        {
-            AwfulPost* post = (AwfulPost*)obj;
-            [self loadPage:post.threadPageValue];
-            [self jumpToPostWithID:post.postID];
-        }
+        [self loadPage:AwfulPageNextUnread];
     }];
 }
 
-- (void)composerViewControllerDidCancel:(AwfulComposerViewController *)composerViewController
+- (void)replyViewController:(AwfulReplyViewController *)replyViewController
+                didEditPost:(AwfulPost *)post
+{
+    [self dismissViewControllerAnimated:YES completion:^{
+        [self loadPage:post.threadPageValue];
+        [self jumpToPostWithID:post.postID];
+    }];
+}
+
+- (void)replyViewControllerDidCancel:(AwfulReplyViewController *)replyViewController
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
