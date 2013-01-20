@@ -30,7 +30,8 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         instance = [[AwfulHTTPClient alloc] initWithBaseURL:
-                    [NSURL URLWithString:@"http://forums.somethingawful.com/"]];
+                    // TODO switch this back!!
+                    [NSURL URLWithString:@"http://dev.forums.somethingawful.com/"]];
     });
     return instance;
 }
