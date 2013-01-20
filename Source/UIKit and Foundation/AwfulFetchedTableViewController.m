@@ -8,6 +8,7 @@
 
 #import "AwfulFetchedTableViewController.h"
 #import "AwfulFetchedTableViewControllerSubclass.h"
+#import "AFNetworking.h"
 #import "AwfulDataStack.h"
 
 @interface AwfulFetchedTableViewController ()
@@ -26,6 +27,11 @@
 
 @implementation AwfulFetchedTableViewController
 
+- (void)reachabilityChanged:(NSNotification *)note
+{
+    if ([self refreshOnAppear]) [self refresh];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -43,6 +49,18 @@
         [self.tableView reloadData];
     }
     self.hasEverAppeared = YES;
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(reachabilityChanged:)
+                                                 name:AFNetworkingReachabilityDidChangeNotification
+                                               object:nil];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:AFNetworkingReachabilityDidChangeNotification
+                                                  object:nil];
 }
 
 - (void)getFetchedResultsController:(NSNotification *)note
@@ -70,6 +88,7 @@
 - (void)dealloc
 {
     self.fetchedResultsController.delegate = nil;
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - UITableViewDataSource and UITableViewDelegate
