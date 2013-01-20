@@ -19,6 +19,13 @@
 #import "SVProgressHUD.h"
 #import "UINavigationItem+TwoLineTitle.h"
 
+@interface AwfulTextView : UITextView
+
+@property (nonatomic) BOOL showStandardMenuItems;
+
+@end
+
+
 @interface AwfulReplyViewController () <UIImagePickerControllerDelegate,
                                         UINavigationControllerDelegate, UIPopoverControllerDelegate>
 
@@ -26,7 +33,7 @@
 
 @property (strong, nonatomic) UIBarButtonItem *cancelButton;
 
-@property (readonly, nonatomic) UITextView *replyTextView;
+@property (readonly, nonatomic) AwfulTextView *replyTextView;
 
 @property (weak, nonatomic) NSOperation *networkOperation;
 
@@ -70,9 +77,9 @@
                                                   object:nil];
 }
 
-- (UITextView *)replyTextView
+- (AwfulTextView *)replyTextView
 {
-    return (UITextView *)self.view;
+    return (AwfulTextView *)self.view;
 }
 
 - (UIBarButtonItem *)sendButton
@@ -317,6 +324,7 @@ withImagePlaceholderResults:placeholderResults
         [[PSMenuItem alloc] initWithTitle:@"[img]" block:^{ [self insertImage]; }],
         [[PSMenuItem alloc] initWithTitle:@"Format" block:^{ [self showFormattingSubmenu]; }]
     ];
+    self.replyTextView.showStandardMenuItems = YES;
 }
 
 - (void)configureImageSourceSubmenuItems
@@ -333,6 +341,7 @@ withImagePlaceholderResults:placeholderResults
     [menuItems addObject:[[PSMenuItem alloc] initWithTitle:@"[img]"
                                                      block:^{ [self wrapSelectionInTag:@"[img]"]; }]];
     [UIMenuController sharedMenuController].menuItems = menuItems;
+    self.replyTextView.showStandardMenuItems = NO;
 }
 
 - (void)configureFormattingSubmenuItems
@@ -351,6 +360,7 @@ withImagePlaceholderResults:placeholderResults
         [[PSMenuItem alloc] initWithTitle:@"[code]"
                                     block:^{ [self wrapSelectionInTag:@"[code]\n"]; }],
     ];
+    self.replyTextView.showStandardMenuItems = NO;
 }
 
 - (void)linkifySelection
@@ -483,7 +493,7 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
 
 - (void)loadView
 {
-    UITextView *textView = [[UITextView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
+    AwfulTextView *textView = [[AwfulTextView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
     textView.font = [UIFont systemFontOfSize:17];
     AwfulKeyboardBar *bbcodeBar = [[AwfulKeyboardBar alloc] initWithFrame:
                                    CGRectMake(0, 0, CGRectGetWidth(textView.bounds),
@@ -600,6 +610,16 @@ static NSString *ImageKeyToPlaceholder(NSString *key, BOOL thumbnail)
 {
     if (![popoverController isEqual:self.pickerPopover]) return;
     [self.replyTextView becomeFirstResponder];
+}
+
+@end
+
+
+@implementation AwfulTextView : UITextView
+
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender
+{
+    return self.showStandardMenuItems && [super canPerformAction:action withSender:sender];
 }
 
 @end
