@@ -10,10 +10,10 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "AwfulActionSheet.h"
 #import "AwfulAlertView.h"
+#import "FVGifAnimation.h"
 #import "SVProgressHUD.h"
 #import "UIImageView+AFNetworking.h"
 #import "UINavigationItem+TwoLineTitle.h"
-#import "FVGifAnimation.h"
 
 @interface AwfulImagePreviewViewController () <UIScrollViewDelegate>
 
@@ -167,8 +167,8 @@
     }];
     [sheet addButtonWithTitle:@"Copy Image URL" block:^{
         [UIPasteboard generalPasteboard].items = @[ @{
-        (id)kUTTypeURL: self.imageURL,
-        (id)kUTTypePlainText: [self.imageURL absoluteString]
+            (id)kUTTypeURL: self.imageURL,
+            (id)kUTTypePlainText: [self.imageURL absoluteString]
         }];
         [self hideBarsAfterShortDuration];
     }];
