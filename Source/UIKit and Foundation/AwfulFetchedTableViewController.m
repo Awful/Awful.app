@@ -10,6 +10,20 @@
 #import "AwfulFetchedTableViewControllerSubclass.h"
 #import "AwfulDataStack.h"
 
+@interface AwfulFetchedTableViewController ()
+
+// We had a problem after launching the app where the fetched results controller would load but the
+// table view doesn't call its data source. As subsequent changes come in through the FRC, the
+// table view gets wise and calls its data source, resulting in invalid numbers of sections or rows.
+// With this property we skip change processing while we're off the screen, i.e. the table view
+// hasn't fully loaded.
+//
+// TODO take another look at this and make this property unnecessary.
+@property (nonatomic) BOOL hasEverAppeared;
+
+@end
+
+
 @implementation AwfulFetchedTableViewController
 
 - (void)viewDidLoad
@@ -20,6 +34,15 @@
                                              selector:@selector(getFetchedResultsController:)
                                                  name:AwfulDataStackDidResetNotification
                                                object:[AwfulDataStack sharedDataStack]];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    if (!self.hasEverAppeared) {
+        [self.tableView reloadData];
+    }
+    self.hasEverAppeared = YES;
 }
 
 - (void)getFetchedResultsController:(NSNotification *)note
@@ -65,7 +88,7 @@
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
-    if (self.userDrivenChange) return;
+    if (self.userDrivenChange || !self.hasEverAppeared) return;
     [self.tableView beginUpdates];
 }
 
@@ -76,7 +99,7 @@
      forChangeType:(NSFetchedResultsChangeType)type
       newIndexPath:(NSIndexPath *)newIndexPath
 {
-    if (self.userDrivenChange) return;
+    if (self.userDrivenChange || !self.hasEverAppeared) return;
     switch (type) {
         case NSFetchedResultsChangeInsert: {
             [self.tableView insertRowsAtIndexPaths:@[newIndexPath]
@@ -109,6 +132,7 @@
            atIndex:(NSUInteger)sectionIndex
      forChangeType:(NSFetchedResultsChangeType)type
 {
+    if (self.userDrivenChange || !self.hasEverAppeared) return;
     switch (type) {
         case NSFetchedResultsChangeInsert: {
             [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex]
@@ -125,7 +149,7 @@
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
-    if (self.userDrivenChange) return;
+    if (self.userDrivenChange || !self.hasEverAppeared) return;
     [self.tableView endUpdates];
 }
 
