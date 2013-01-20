@@ -391,6 +391,7 @@ withImagePlaceholderResults:placeholderResults
 
 - (void)showSubmenuThenResetToTopLevelMenuOnHide
 {
+    [[UIMenuController sharedMenuController] setMenuVisible:NO];
     [[UIMenuController sharedMenuController] setTargetRect:[self selectedTextRect]
                                                     inView:self.view];
     [[UIMenuController sharedMenuController] setMenuVisible:YES animated:YES];
