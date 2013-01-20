@@ -174,7 +174,7 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
 
 - (BOOL)refreshOnAppear
 {
-    if (!IsLoggedIn()) return NO;
+    if (![AwfulHTTPClient client].loggedIn) return NO;
     if (![AwfulHTTPClient client].reachable) return NO;
     if (!self.lastRefresh) return YES;
     if ([[NSDate date] timeIntervalSinceDate:self.lastRefresh] > 60 * 60 * 20) return YES;

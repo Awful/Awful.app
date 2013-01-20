@@ -35,6 +35,12 @@
     return instance;
 }
 
+- (BOOL)isLoggedIn
+{
+    NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:self.baseURL];
+    return [[cookies valueForKey:@"name"] containsObject:@"bbuserid"];
+}
+
 - (id)initWithBaseURL:(NSURL *)url
 {
     self = [super initWithBaseURL:url];
