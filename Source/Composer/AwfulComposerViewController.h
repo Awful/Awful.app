@@ -15,6 +15,8 @@
 #import "SVProgressHUD.h"
 #import "UINavigationItem+TwoLineTitle.h"
 
+#define RICH_TEXT_EDITOR_SUPPORT ([[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0f)
+
 @protocol AwfulComposerViewControllerDelegate;
 
 @interface AwfulComposerViewController : UIViewController

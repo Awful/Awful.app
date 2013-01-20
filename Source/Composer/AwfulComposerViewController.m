@@ -14,6 +14,7 @@
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "PSMenuItem.h"
+#import "NSAttributedString+BBCode.h"
 
 @interface AwfulComposerViewController () <UIImagePickerControllerDelegate,
 UINavigationControllerDelegate, UIPopoverControllerDelegate>
@@ -139,7 +140,8 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
     if (AwfulSettings.settings.confirmBeforeReplying) {
         [self.confirmationAlert show];
     } else {
-        [self prepareToSend];
+        //fixme: disabling this just to be safe during dev
+        //[self prepareToSend];
     }
 }
 
@@ -270,14 +272,14 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
 - (void)configureFormattingSubmenuItems
 {
     [UIMenuController sharedMenuController].menuItems = @[
-    [[PSMenuItem alloc] initWithTitle:@"[b]" block:^{ [self wrapSelectionInTag:@"[b]"]; }],
-    [[PSMenuItem alloc] initWithTitle:@"[s]" block:^{ [self wrapSelectionInTag:@"[s]"]; }],
-    [[PSMenuItem alloc] initWithTitle:@"[u]" block:^{ [self wrapSelectionInTag:@"[u]"]; }],
-    [[PSMenuItem alloc] initWithTitle:@"[i]" block:^{ [self wrapSelectionInTag:@"[i]"]; }],
+    [[PSMenuItem alloc] initWithTitle:@"[b]" block:^{ [self formatSelectionWithTag:@"b"]; }],
+    [[PSMenuItem alloc] initWithTitle:@"[s]" block:^{ [self formatSelectionWithTag:@"s"]; }],
+    [[PSMenuItem alloc] initWithTitle:@"[u]" block:^{ [self formatSelectionWithTag:@"u"]; }],
+    [[PSMenuItem alloc] initWithTitle:@"[i]" block:^{ [self formatSelectionWithTag:@"i"]; }],
     [[PSMenuItem alloc] initWithTitle:@"[spoiler]"
-                                block:^{ [self wrapSelectionInTag:@"[spoiler]"]; }],
+                                block:^{ [self formatSelectionWithTag:@"[spoiler]"]; }],
     [[PSMenuItem alloc] initWithTitle:@"[fixed]"
-                                block:^{ [self wrapSelectionInTag:@"[fixed]"]; }],
+                                block:^{ [self formatSelectionWithTag:@"[fixed]"]; }],
     [[PSMenuItem alloc] initWithTitle:@"[quote]"
                                 block:^{ [self wrapSelectionInTag:@"[quote=]\n"]; }],
     [[PSMenuItem alloc] initWithTitle:@"[code]"
@@ -386,18 +388,27 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
     [self showSubmenuThenResetToTopLevelMenuOnHide];
 }
 
-- (void)wrapSelectionInTag:(NSString *)tag
+- (void)formatSelectionWithTag:(NSString*)tag
 {
+    if(!RICH_TEXT_EDITOR_SUPPORT) {
+        [self wrapSelectionInTag:tag];
+        return;
+    }
+    
     NSMutableAttributedString *text = [self.composerTextView.attributedText mutableCopy];
     
-    [text setAttributes:@{NSFontAttributeName: [UIFont boldSystemFontOfSize:14]}
+    [text setAttributes:[NSDictionary attributeDictionaryWithTag:tag]
                   range:self.composerTextView.selectedRange];
     
     self.composerTextView.attributedText = text;
+    
+    NSLog(@"BBCode version:%@", text.BBCode);
     return;
-    
-    
-    
+}
+     
+
+- (void)wrapSelectionInTag:(NSString *)tag
+{
     NSMutableString *closingTag = [tag mutableCopy];
     [closingTag insertString:@"/" atIndex:1];
     [closingTag replaceOccurrencesOfString:@"="
@@ -462,6 +473,8 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
                                                  name:AwfulThemeDidChangeNotification
                                                object:nil];
     self.composerTextView.userInteractionEnabled = YES;
+    
+        self.composerTextView.text = @"Ut nulla. Vivamus bibendum, nulla ut congue fringilla, lorem ipsum ultricies risus, ut rutrum velit tortor vel purus. In hac habitasse platea dictumst. Duis fermentum, metus sed congue gravida, arcu dui ornare urna, ut imperdiet enim odio dignissim ipsum. Nulla facilisi. Cras magna ante, bibendum sit amet, porta vitae, laoreet ut, justo. Nam tortor sapien, pulvinar nec, malesuada in, ultrices in, tortor. Cras ultricies placerat eros. Quisque odio eros, feugiat non, iaculis nec, lobortis sed, arcu. Pellentesque sit amet sem et purus pretium consectetuer.";
 }
 
 - (void)viewDidDisappear:(BOOL)animated

@@ -15,3 +15,11 @@
 - (NSString*) BBCode;
 
 @end
+
+@interface NSDictionary (AwfulAttributedString)
+
++ (NSDictionary*)attributeDictionaryWithTag:(NSString*)tag;
+
+@end
+
+static NSString* kAwfulFormatTagKey = @"kAwfulFormatTagKey";
