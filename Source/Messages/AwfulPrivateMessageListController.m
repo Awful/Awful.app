@@ -65,7 +65,7 @@
     AwfulPrivateMessage *newestPM = [AwfulPrivateMessage firstSortedBy:
                                @[[NSSortDescriptor sortDescriptorWithKey:@"sent" ascending:NO]]
                                ];
-    if (-[newestPM.sent timeIntervalSinceNow] > (10*60*60) ) {  //10 min
+    if (!newestPM || -[newestPM.sent timeIntervalSinceNow] > (10*60*60) ) {  //10 min
         return YES;
     }
     return NO;
