@@ -13,14 +13,12 @@
 
 @interface AwfulFetchedTableViewController ()
 
-// We had a problem after launching the app where the fetched results controller would load but the
-// table view doesn't call its data source. As subsequent changes come in through the FRC, the
-// table view gets wise and calls its data source, resulting in invalid numbers of sections or rows.
-// With this property we skip change processing while we're off the screen, i.e. the table view
-// hasn't fully loaded.
-//
-// TODO take another look at this and make this property unnecessary.
-@property (nonatomic) BOOL hasEverAppeared;
+// We've had problems updating table views that aren't currently visible.
+// Here we avoid updates to specific sections or rows while not visible, then reload the table
+// later if we skipped some changes.
+@property (getter=isViewVisible, nonatomic) BOOL viewVisible;
+
+@property (nonatomic) BOOL changedWhileNotVisible;
 
 @end
 
@@ -45,10 +43,11 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    if (!self.hasEverAppeared) {
+    self.viewVisible = YES;
+    if (self.changedWhileNotVisible) {
         [self.tableView reloadData];
     }
-    self.hasEverAppeared = YES;
+    self.changedWhileNotVisible = NO;
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(reachabilityChanged:)
                                                  name:AFNetworkingReachabilityDidChangeNotification
@@ -58,6 +57,7 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
+    self.viewVisible = NO;
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:AFNetworkingReachabilityDidChangeNotification
                                                   object:nil];
@@ -107,7 +107,11 @@
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
-    if (self.userDrivenChange || !self.hasEverAppeared) return;
+    if (self.userDrivenChange) return;
+    if (!self.viewVisible) {
+        self.changedWhileNotVisible = YES;
+        return;
+    }
     [self.tableView beginUpdates];
 }
 
@@ -118,7 +122,7 @@
      forChangeType:(NSFetchedResultsChangeType)type
       newIndexPath:(NSIndexPath *)newIndexPath
 {
-    if (self.userDrivenChange || !self.hasEverAppeared) return;
+    if (self.userDrivenChange || !self.viewVisible) return;
     switch (type) {
         case NSFetchedResultsChangeInsert: {
             [self.tableView insertRowsAtIndexPaths:@[newIndexPath]
@@ -151,7 +155,7 @@
            atIndex:(NSUInteger)sectionIndex
      forChangeType:(NSFetchedResultsChangeType)type
 {
-    if (self.userDrivenChange || !self.hasEverAppeared) return;
+    if (self.userDrivenChange || !self.viewVisible) return;
     switch (type) {
         case NSFetchedResultsChangeInsert: {
             [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex]
@@ -168,7 +172,7 @@
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
-    if (self.userDrivenChange || !self.hasEverAppeared) return;
+    if (self.userDrivenChange || !self.viewVisible) return;
     [self.tableView endUpdates];
 }
 
