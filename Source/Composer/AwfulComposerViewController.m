@@ -277,7 +277,7 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
     [[PSMenuItem alloc] initWithTitle:@"[u]" block:^{ [self formatSelectionWithTag:@"u"]; }],
     [[PSMenuItem alloc] initWithTitle:@"[i]" block:^{ [self formatSelectionWithTag:@"i"]; }],
     [[PSMenuItem alloc] initWithTitle:@"[spoiler]"
-                                block:^{ [self formatSelectionWithTag:@"[spoiler]"]; }],
+                                block:^{ [self formatSelectionWithTag:@"spoiler"]; }],
     [[PSMenuItem alloc] initWithTitle:@"[fixed]"
                                 block:^{ [self formatSelectionWithTag:@"[fixed]"]; }],
     [[PSMenuItem alloc] initWithTitle:@"[quote]"

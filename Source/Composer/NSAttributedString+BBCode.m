@@ -8,6 +8,10 @@
 
 #import "NSAttributedString+BBCode.h"
 
+#define FONT_DEFAULT [UIFont systemFontOfSize:17]
+#define FONT_BOLD [UIFont boldSystemFontOfSize:17]
+#define FONT_ITALIC [UIFont italicSystemFontOfSize:17]
+
 @implementation NSAttributedString (BBCode)
 
 + (NSAttributedString*)attributedStringWithBBCodeString:(NSString *)bbCodeString
@@ -57,25 +61,41 @@
 
 @end
 
+
 @implementation NSDictionary (AwfulAttributedString)
 
 + (NSDictionary*)attributeDictionaryWithTag:(NSString *)tag {
-    NSMutableDictionary *dict = [NSMutableDictionary new];
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithDictionary:@{
+                                                             kAwfulFormatTagKey: tag}
+                                 ];
 
     if ([tag isEqualToString:@"b"]) {
-        [dict setObject:[UIFont boldSystemFontOfSize:17]
+        [dict setObject:FONT_BOLD
                  forKey:NSFontAttributeName];
     }
     else if ([tag isEqualToString:@"i"]) {
-        [dict setObject:[UIFont italicSystemFontOfSize:17]
+        [dict setObject:FONT_ITALIC
                  forKey:NSFontAttributeName];
     }
     else if ([tag isEqualToString:@"u"]) {
-        [dict setObject:[NSNumber numberWithInt:NSUnderlineStyleSingle]
-                 forKey:NSUnderlineStyleAttributeName];
+        [dict addEntriesFromDictionary:@{
+                   NSFontAttributeName: FONT_DEFAULT,
+                   NSUnderlineStyleAttributeName:[NSNumber numberWithInt:NSUnderlineStyleSingle]}
+         ];
     }
-    
-    [dict setObject:tag forKey:kAwfulFormatTagKey];
+    else if ([tag isEqualToString:@"s"]) {
+        [dict addEntriesFromDictionary:@{
+                    NSFontAttributeName: FONT_DEFAULT,
+                    NSStrikethroughStyleAttributeName:[NSNumber numberWithInt:1]}
+         ];
+    }
+    else if ([tag isEqualToString:@"spoiler"]) {
+        [dict addEntriesFromDictionary:@{
+                    NSFontAttributeName: FONT_DEFAULT,
+                    NSBackgroundColorAttributeName:[UIColor blackColor],
+                    NSForegroundColorAttributeName:[UIColor whiteColor]}
+         ];
+    }
     
     return dict;
 }
