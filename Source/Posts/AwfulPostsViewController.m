@@ -592,13 +592,16 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     reply.delegate = self;
     [reply replyToThread:self.thread withInitialContents:nil];
     
+    /*
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         reply.modalPresentationStyle = UIModalPresentationFormSheet;
         [self presentModalViewController:reply animated:YES];
     } else {
         UINavigationController *nav = [reply enclosingNavigationController];
         [self presentViewController:nav animated:YES completion:nil];
-    }
+    }*/
+    
+    [self addChildViewController:reply];
 }
 
 - (void)showActionsForPost:(AwfulPost *)post fromRect:(CGRect)rect inView:(UIView *)view
@@ -928,6 +931,21 @@ static char KVOContext;
     }
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
+
+- (void)addChildViewController:(UIViewController *)childController {
+    [super addChildViewController:childController];
+    //inline replying
+    
+    self.postsView.scrollView.contentInset = UIEdgeInsetsMake(0, 0, 500, 0);
+    
+    CGSize size = self.postsView.scrollView.contentSize;
+    CGRect frame = CGRectMake(0, size.height, size.width, 400);
+    
+    childController.view.frame = frame;
+    [self.postsView.scrollView addSubview:childController.view];
+    
+}
+
 
 #pragma mark - AwfulPostsViewDelegate
 
