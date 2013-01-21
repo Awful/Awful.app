@@ -678,6 +678,10 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
             nav.modalPresentationStyle = UIModalPresentationFormSheet;
             [self presentViewController:nav animated:YES completion:nil];
         } else {
+            UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithTitle:@"Back"
+                                                                     style:UIBarButtonItemStyleBordered
+                                                                    target:nil action:NULL];
+            self.navigationItem.backBarButtonItem = back;
             [self.navigationController pushViewController:profile animated:YES];
         }
     }];
