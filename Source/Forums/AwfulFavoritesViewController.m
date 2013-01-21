@@ -147,17 +147,9 @@
 
 #pragma mark - NSFetchedResultsControllerDelegate
 
-- (void)controller:(NSFetchedResultsController *)controller
-   didChangeObject:(id)object
-       atIndexPath:(NSIndexPath *)indexPath
-     forChangeType:(NSFetchedResultsChangeType)type
-      newIndexPath:(NSIndexPath *)newIndexPath
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
-    [super controller:controller
-      didChangeObject:object
-          atIndexPath:indexPath
-        forChangeType:type
-         newIndexPath:newIndexPath];
+    [super controllerDidChangeContent:controller];
     if ([controller.fetchedObjects count] == 0) {
         [self showNoFavoritesCoverAnimated:YES];
     }
@@ -225,6 +217,10 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
+        self.userDrivenChange = YES;
+        [tableView beginUpdates];
+        [tableView deleteRowsAtIndexPaths:@[ indexPath ]
+                         withRowAnimation:UITableViewRowAnimationAutomatic];
         AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
         forum.isFavoriteValue = NO;
         NSArray *reindex = [self.fetchedResultsController fetchedObjects];
@@ -237,6 +233,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
             [[AwfulDataStack sharedDataStack] save];
             [self updateCoverAndEditButtonAnimated:YES];
         }
+        [tableView endUpdates];
+        self.userDrivenChange = NO;
     }
 }
 
