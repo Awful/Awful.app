@@ -31,6 +31,8 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
 
 @property (readonly, nonatomic) UIBarButtonItem *insertAnotherColonButton;
 
+@property (nonatomic) NSMutableAttributedString *attributedString;
+
 @end
 
 @implementation AwfulComposerViewController
@@ -395,14 +397,17 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
         return;
     }
     
-    NSMutableAttributedString *text = [self.composerTextView.attributedText mutableCopy];
+    //UITextView seems to lose custom attributes :(
+    //so need to keep own copy
+    if (!self.attributedString)
+        self.attributedString = [self.composerTextView.attributedText mutableCopy];
     
-    [text setAttributes:[NSDictionary attributeDictionaryWithTag:tag]
-                  range:self.composerTextView.selectedRange];
+    [self.attributedString setAttributes:[NSDictionary attributeDictionaryWithTag:tag]
+                                   range:self.composerTextView.selectedRange];
     
-    self.composerTextView.attributedText = text;
+    self.composerTextView.attributedText = self.attributedString;
     
-    NSLog(@"BBCode version:%@", text.BBCode);
+    NSLog(@"BBCode version:%@", self.attributedString.BBCode);
     return;
 }
      
