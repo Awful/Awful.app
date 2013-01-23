@@ -45,10 +45,8 @@
 -(UIView*)keyboardInputAccessory {
     if (!_keyboardInputAccessory) {
         _keyboardInputAccessory = [[AwfulComposerInputAccessoryView alloc] initWithFrame:CGRectMake(0, 0, 400, 44)];
+        [(AwfulComposerInputAccessoryView*)_keyboardInputAccessory setDelegate:self];
     }
-    [_keyboardInputAccessory addTarget:self action:@selector(keyboardInputAccessoryFormat:) forControlEvents:AwfulControlEventComposerFormat];
-    [_keyboardInputAccessory addTarget:self action:@selector(keyboardInputAccessoryInsertKey:) forControlEvents:AwfulControlEventComposerKey];
-    
  
     return _keyboardInputAccessory;
 }
@@ -61,8 +59,8 @@
 
 #pragma mark formatting
 
--(void) keyboardInputAccessoryFormat:(AwfulComposerInputAccessoryView*)postComposerAccessory {
-    switch (postComposerAccessory.formatState) {
+-(void) setFormat:(AwfulPostFormatStyle)format {
+    switch (format) {
         case AwfulPostFormatBold:
             [self format:@"Bold"];
             break;
@@ -85,15 +83,29 @@
     [self.innerWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"document.execCommand(\"%@\")", format]];
 }
 
--(void)keyboardInputAccessoryInsertKey:(AwfulComposerInputAccessoryView*)composerAccessory {
-    NSString* key = [composerAccessory.extraKeysControl titleForSegmentAtIndex:composerAccessory.extraKeysControl.selectedSegmentIndex];
-    [self.innerWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"document.execCommand(\"insertText\", false, \"%@\")", key]];
+-(void)insertString:(NSString *)string {
+    [self.innerWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"document.execCommand(\"insertText\", false, \"%@\")", string]];
+}
+
+-(void)insertImage:(int)imageType {
+    switch (imageType) {
+        case 0: //image
+            [(id<AwfulComposerViewDelegate>)self.delegate insertImage];
+            break;
+            
+        case 1: //emoticon
+            break;
+    }
 }
 
 #pragma mark accessing user input
 -(NSString*) html {
     NSString* html = [self.innerWebView stringByEvaluatingJavaScriptFromString:@"document.getElementById('content').innerHTML"];
     return html;
+}
+
+- (NSString*)text {
+    return self.html;
 }
 
 

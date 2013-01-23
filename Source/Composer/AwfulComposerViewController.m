@@ -313,6 +313,11 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
     [self showSubmenuThenResetToTopLevelMenuOnHide];
 }
 
+- (void)insertEmoticon
+{
+    //todo
+}
+
 - (CGRect)selectedTextRect
 {
     UITextRange *selection = self.composerTextView.selectedTextRange;
@@ -386,7 +391,7 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
     [self showSubmenuThenResetToTopLevelMenuOnHide];
 }
 
-- (void)formatSelectionWithTag:(NSString*)tag
+- (void)formatSelectionWithTag:(NSString*)tagful
 {/*
     if(!RICH_TEXT_EDITOR_SUPPORT) {
         [self wrapSelectionInTag:tag];
@@ -450,6 +455,7 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
     self.navigationItem.leftBarButtonItem = self.cancelButton;
     
     _composerTextView = [AwfulComposerView new];
+    _composerTextView.delegate = self;
     AwfulKeyboardBar *bbcodeBar = [[AwfulKeyboardBar alloc] initWithFrame:
                                    CGRectMake(0, 0, CGRectGetWidth(self.composerTextView.bounds),
                                               UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 63 : 36)];

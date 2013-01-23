@@ -19,7 +19,7 @@
 @protocol AwfulComposerViewControllerDelegate;
 
 
-@interface AwfulComposerViewController : UIViewController
+@interface AwfulComposerViewController : UIViewController <AwfulComposerViewDelegate>
 
 @property (weak, nonatomic) id <AwfulComposerViewControllerDelegate> delegate;
 @property (readonly, nonatomic) AwfulComposerView *composerTextView;

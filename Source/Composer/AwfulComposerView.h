@@ -7,20 +7,21 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AwfulComposerInputAccessoryView.h"
 
-@interface AwfulComposerView : UITextView {
+@protocol AwfulComposerViewDelegate <UITextViewDelegate>
+
+- (void)insertImage;
+- (void)insertEmoticon;
+
+@end
+
+@interface AwfulComposerView : UITextView <AwfulComposerInputAccessoryViewDelegate>{
     @protected
     UIWebView *_innerWebView;
     UIControl* _keyboardInputAccessory;
 }
-/*
--(void) bold;
--(void) italic;
--(void) underline;
--(void) strike;
--(void) spoiler;
--(void) format:(NSString*)format;
-*/
+
 @property (nonatomic, readonly) NSString* html;
 @property (nonatomic, readonly) NSString* bbcode;
 @property (nonatomic, readonly,strong) UIControl* keyboardInputAccessory;

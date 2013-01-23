@@ -75,7 +75,7 @@
                UITextAttributeTextShadowColor:[UIColor clearColor]}
                                       forState:UIControlStateNormal];
     [_insertionControl addTarget:self
-                              action:@selector(insertControlChanged:)
+                              action:@selector(insertionControlChanged:)
                     forControlEvents:UIControlEventValueChanged];
     return _insertionControl;
 }
@@ -94,38 +94,24 @@
     [_extraKeysControl addTarget:self
                               action:@selector(extraKeysControlChanged:)
                     forControlEvents:UIControlEventValueChanged];
+    
+    for(uint i=0;i<_extraKeysControl.numberOfSegments;i++) {
+        [_extraKeysControl setWidth:44 forSegmentAtIndex:i];
+    }
     return _extraKeysControl;
 }
 
 
-//-(void) insertControlChanged:(UISegmentedControl*)segmentedControl {
-//    if (segmentedControl.selectedSegmentIndex == 1) {
-//        AwfulEmotePickerController *chooser = [AwfulEmotePickerController new];
-//        pop = [[UIPopoverController alloc] initWithContentViewController:chooser];
-//        [pop setPopoverContentSize:CGSizeMake(125*4, 768)];
-//        [pop presentPopoverFromRect:segmentedControl.frame inView:self permittedArrowDirections:(UIPopoverArrowDirectionDown) animated:YES];
-//    }
-//    else if (segmentedControl.selectedSegmentIndex == 0) {
-//        UIImagePickerController *picker = [UIImagePickerController new];
-//        pop = [[UIPopoverController alloc] initWithContentViewController:picker];
-//        [pop setPopoverContentSize:CGSizeMake(320, 768)];  
-//    }
-//    
-//    CGFloat width = segmentedControl.fsW/segmentedControl.numberOfSegments;
-//    CGRect frame = CGRectMake(segmentedControl.foX+width*segmentedControl.selectedSegmentIndex, 0, width, segmentedControl.fsH);
-//    
-//    [pop presentPopoverFromRect:frame inView:self permittedArrowDirections:(UIPopoverArrowDirectionDown) animated:YES];
-//    
-//}
+-(void) insertionControlChanged:(UISegmentedControl*)segmentedControl {
+    [self.delegate insertImage:segmentedControl.selectedSegmentIndex];
+}
 
 -(void) formattingControlChanged:(UISegmentedControl*)segmentedControl {
-    NSLog(@"tapped %i", segmentedControl.selectedSegmentIndex);
-    [self sendActionsForControlEvents:AwfulControlEventComposerFormat];
+    [self.delegate setFormat:segmentedControl.selectedSegmentIndex];
 }
 
 -(void) extraKeysControlChanged:(UISegmentedControl*)segmentedControl {
-    NSLog(@"tapped %i", segmentedControl.selectedSegmentIndex);
-    [self sendActionsForControlEvents:AwfulControlEventComposerKey];
+    [self.delegate insertString:[segmentedControl titleForSegmentAtIndex:segmentedControl.selectedSegmentIndex]];
 }
 
 //-(void) didChooseEmoticon:(NSNotification*)notification {

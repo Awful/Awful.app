@@ -15,18 +15,22 @@ typedef enum {
     AwfulPostFormatStrike
 } AwfulPostFormatStyle;
 
+@protocol AwfulComposerInputAccessoryViewDelegate <NSObject>
 
-static int AwfulControlEventComposerFormat = UIControlEventApplicationReserved | (1<<0);
-//static int AwfulControlEventComposerInsert = UIControlEventApplicationReserved | (1<<1);
-static int AwfulControlEventComposerKey = UIControlEventApplicationReserved | (1<<2);
+- (void)setFormat:(AwfulPostFormatStyle)format;
+- (void)insertString:(NSString*)string;
+- (void)insertImage:(int)imageType;
+
+@end
 
 @interface AwfulComposerInputAccessoryView : UIControl {
     UIPopoverController *pop;
 }
 
 @property (readonly) AwfulPostFormatStyle formatState;
-@property (readonly,nonatomic) UISegmentedControl* formattingControl;
-@property (readonly,nonatomic) UISegmentedControl* insertionControl;
-@property (readonly,nonatomic) UISegmentedControl* extraKeysControl;
+@property (readonly,nonatomic,strong) UISegmentedControl* formattingControl;
+@property (readonly,nonatomic,strong) UISegmentedControl* insertionControl;
+@property (readonly,nonatomic,strong) UISegmentedControl* extraKeysControl;
+@property (nonatomic) id<AwfulComposerInputAccessoryViewDelegate> delegate;
 
 @end
