@@ -14,15 +14,15 @@
 #import "ImgurHTTPClient.h"
 #import "SVProgressHUD.h"
 #import "UINavigationItem+TwoLineTitle.h"
-
-#define RICH_TEXT_EDITOR_SUPPORT ([[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0f)
+#import "AwfulComposerView.h"
 
 @protocol AwfulComposerViewControllerDelegate;
+
 
 @interface AwfulComposerViewController : UIViewController
 
 @property (weak, nonatomic) id <AwfulComposerViewControllerDelegate> delegate;
-@property (readonly, nonatomic) UITextView *composerTextView;
+@property (readonly, nonatomic) AwfulComposerView *composerTextView;
 @property (nonatomic) id <ImgurHTTPClientCancelToken> imageUploadCancelToken;
 @property (strong, nonatomic) UIBarButtonItem *sendButton;
 @property (strong, nonatomic) UIBarButtonItem *cancelButton;

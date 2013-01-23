@@ -7,6 +7,7 @@
 //
 
 #import "AwfulComposerViewController.h"
+#import "AwfulComposerView.h"
 #import "AwfulAlertView.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulKeyboardBar.h"
@@ -53,11 +54,6 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIKeyboardWillHideNotification
                                                   object:nil];
-}
-
-- (UITextView *)composerTextView
-{
-    return (UITextView *)self.view;
 }
 
 - (UIBarButtonItem *)sendButton
@@ -391,7 +387,7 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
 }
 
 - (void)formatSelectionWithTag:(NSString*)tag
-{
+{/*
     if(!RICH_TEXT_EDITOR_SUPPORT) {
         [self wrapSelectionInTag:tag];
         return;
@@ -409,6 +405,7 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
     
     NSLog(@"BBCode version:%@", self.attributedString.BBCode);
     return;
+  */
 }
      
 
@@ -438,20 +435,6 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
 
 #pragma mark - UIViewController
 
-- (void)loadView
-{
-    UITextView *textView = [[UITextView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
-    textView.font = [UIFont systemFontOfSize:17];
-    AwfulKeyboardBar *bbcodeBar = [[AwfulKeyboardBar alloc] initWithFrame:
-                                   CGRectMake(0, 0, CGRectGetWidth(textView.bounds),
-                                              UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 63 : 36)];
-    bbcodeBar.characters = @[ @"[", @"=", @":", @"/", @"]" ];
-    bbcodeBar.keyInputView = textView;
-    textView.inputAccessoryView = bbcodeBar;
-    self.view = textView;
-    [PSMenuItem installMenuHandlerForObject:self.view];
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -465,6 +448,24 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
                                                object:nil];
     self.navigationItem.rightBarButtonItem = self.sendButton;
     self.navigationItem.leftBarButtonItem = self.cancelButton;
+    
+    _composerTextView = [AwfulComposerView new];
+    AwfulKeyboardBar *bbcodeBar = [[AwfulKeyboardBar alloc] initWithFrame:
+                                   CGRectMake(0, 0, CGRectGetWidth(self.composerTextView.bounds),
+                                              UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 63 : 36)];
+    bbcodeBar.characters = @[ @"[", @"=", @":", @"/", @"]" ];
+    bbcodeBar.keyInputView = self.composerTextView;
+    self.composerTextView.inputAccessoryView = bbcodeBar;
+    self.view.backgroundColor = [UIColor blueColor];
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+    
+    CGRect frame = self.view.frame;
+    frame.origin.y = 0;
+    self.composerTextView.frame = frame;
+    self.composerTextView.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+    
+    [self.view addSubview:self.composerTextView];
+    [PSMenuItem installMenuHandlerForObject:self.composerTextView];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -479,7 +480,7 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
                                                object:nil];
     self.composerTextView.userInteractionEnabled = YES;
     
-        self.composerTextView.text = @"Ut nulla. Vivamus bibendum, nulla ut congue fringilla, lorem ipsum ultricies risus, ut rutrum velit tortor vel purus. In hac habitasse platea dictumst. Duis fermentum, metus sed congue gravida, arcu dui ornare urna, ut imperdiet enim odio dignissim ipsum. Nulla facilisi. Cras magna ante, bibendum sit amet, porta vitae, laoreet ut, justo. Nam tortor sapien, pulvinar nec, malesuada in, ultrices in, tortor. Cras ultricies placerat eros. Quisque odio eros, feugiat non, iaculis nec, lobortis sed, arcu. Pellentesque sit amet sem et purus pretium consectetuer.";
+    self.composerTextView.text = @"Ut nulla. Vivamus bibendum, nulla ut congue fringilla, lorem ipsum ultricies risus, ut rutrum velit tortor vel purus. In hac habitasse platea dictumst. Duis fermentum, metus sed congue gravida, arcu dui ornare urna, ut imperdiet enim odio dignissim ipsum. Nulla facilisi. Cras magna ante, bibendum sit amet, porta vitae, laoreet ut, justo. Nam tortor sapien, pulvinar nec, malesuada in, ultrices in, tortor. Cras ultricies placerat eros. Quisque odio eros, feugiat non, iaculis nec, lobortis sed, arcu. Pellentesque sit amet sem et purus pretium consectetuer.";
 }
 
 - (void)viewDidDisappear:(BOOL)animated

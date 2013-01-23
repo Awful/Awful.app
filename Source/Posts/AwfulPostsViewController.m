@@ -586,22 +586,22 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 }
 
 - (void)tappedCompose
-{
+{   
     [self dismissPopoverAnimated:YES];
-    AwfulReplyComposerViewController *reply = [AwfulReplyComposerViewController new];
+    AwfulComposerViewController *reply = [AwfulComposerViewController new];
     reply.delegate = self;
-    [reply replyToThread:self.thread withInitialContents:nil];
+    //[reply replyToThread:self.thread withInitialContents:nil];
     
-    /*
+    
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         reply.modalPresentationStyle = UIModalPresentationFormSheet;
         [self presentModalViewController:reply animated:YES];
     } else {
         UINavigationController *nav = [reply enclosingNavigationController];
         [self presentViewController:nav animated:YES completion:nil];
-    }*/
+    }
     
-    [self addChildViewController:reply];
+    //[self addChildViewController:reply];
 }
 
 - (void)showActionsForPost:(AwfulPost *)post fromRect:(CGRect)rect inView:(UIView *)view

@@ -585,6 +585,11 @@
 		8C5159E1163DB796000114F6 /* AICA-TAG-race.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C5159D7163DB796000114F6 /* AICA-TAG-race.png */; };
 		8C5159E2163DB796000114F6 /* RP-20a6zc0.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C5159D8163DB796000114F6 /* RP-20a6zc0.png */; };
 		8C5159E3163DB796000114F6 /* fyad-zounds.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C5159D9163DB796000114F6 /* fyad-zounds.png */; };
+		8C5CC4BC16AE345400BEBA9D /* AwfulComposerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C5CC4BB16AE345400BEBA9D /* AwfulComposerView.m */; };
+		8C5CC4BE16AE366700BEBA9D /* editor.html in Resources */ = {isa = PBXBuildFile; fileRef = 8C5CC4BD16AE366700BEBA9D /* editor.html */; };
+		8C5CC4C216AE3DE900BEBA9D /* AwfulComposerInputAccessoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C5CC4C116AE3DE900BEBA9D /* AwfulComposerInputAccessoryView.m */; };
+		8C5CC4C416AF663C00BEBA9D /* emot-v.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C5CC4C316AF663C00BEBA9D /* emot-v.gif */; };
+		8C5CC4C616AF666100BEBA9D /* emot-v@2x.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8C5CC4C516AF666100BEBA9D /* emot-v@2x.gif */; };
 		8C6F084A1653498F00B43251 /* byob-anti.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C6F08491653498F00B43251 /* byob-anti.png */; };
 		8C70028A169C6EFA00FC0B78 /* FVGifAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C700289169C6EFA00FC0B78 /* FVGifAnimation.m */; };
 		8C87428E1655FD990018AC6C /* byob.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C87428D1655FD990018AC6C /* byob.png */; };
@@ -1232,6 +1237,13 @@
 		8C5159D7163DB796000114F6 /* AICA-TAG-race.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AICA-TAG-race.png"; sourceTree = "<group>"; };
 		8C5159D8163DB796000114F6 /* RP-20a6zc0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "RP-20a6zc0.png"; sourceTree = "<group>"; };
 		8C5159D9163DB796000114F6 /* fyad-zounds.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-zounds.png"; sourceTree = "<group>"; };
+		8C5CC4BA16AE345300BEBA9D /* AwfulComposerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulComposerView.h; sourceTree = "<group>"; };
+		8C5CC4BB16AE345400BEBA9D /* AwfulComposerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulComposerView.m; sourceTree = "<group>"; };
+		8C5CC4BD16AE366700BEBA9D /* editor.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = editor.html; sourceTree = "<group>"; };
+		8C5CC4C016AE3DE900BEBA9D /* AwfulComposerInputAccessoryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulComposerInputAccessoryView.h; sourceTree = "<group>"; };
+		8C5CC4C116AE3DE900BEBA9D /* AwfulComposerInputAccessoryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulComposerInputAccessoryView.m; sourceTree = "<group>"; };
+		8C5CC4C316AF663C00BEBA9D /* emot-v.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "emot-v.gif"; sourceTree = "<group>"; };
+		8C5CC4C516AF666100BEBA9D /* emot-v@2x.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "emot-v@2x.gif"; sourceTree = "<group>"; };
 		8C6F08491653498F00B43251 /* byob-anti.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "byob-anti.png"; sourceTree = "<group>"; };
 		8C700288169C6EFA00FC0B78 /* FVGifAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FVGifAnimation.h; sourceTree = "<group>"; };
 		8C700289169C6EFA00FC0B78 /* FVGifAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FVGifAnimation.m; sourceTree = "<group>"; };
@@ -2211,6 +2223,7 @@
 		8C2A089816AAD00800CDBC23 /* Composer */ = {
 			isa = PBXGroup;
 			children = (
+				8C5CC4BF16AE3DBD00BEBA9D /* Components */,
 				8C2A089916AAD00800CDBC23 /* AwfulComposerViewController.h */,
 				8C2A089A16AAD00800CDBC23 /* AwfulComposerViewController.m */,
 				8C2A089B16AAD00800CDBC23 /* AwfulEditPostComposerViewController.h */,
@@ -2225,6 +2238,17 @@
 			path = Composer;
 			sourceTree = "<group>";
 		};
+		8C5CC4BF16AE3DBD00BEBA9D /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				8C5CC4C016AE3DE900BEBA9D /* AwfulComposerInputAccessoryView.h */,
+				8C5CC4C116AE3DE900BEBA9D /* AwfulComposerInputAccessoryView.m */,
+				8C5CC4BA16AE345300BEBA9D /* AwfulComposerView.h */,
+				8C5CC4BB16AE345400BEBA9D /* AwfulComposerView.m */,
+			);
+			name = Components;
+			sourceTree = "<group>";
+		};
 		8C700287169C6EFA00FC0B78 /* AnimatedGif */ = {
 			isa = PBXGroup;
 			children = (
@@ -2237,6 +2261,7 @@
 		8CCD498115B497A700E5893B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				8C5CC4BD16AE366700BEBA9D /* editor.html */,
 				8CCD498215B497A700E5893B /* Awful-Info.plist */,
 				1C96D0B61682BBF10043B194 /* Browsers.plist */,
 				1CBD5243162B5C2500928740 /* Custom CSS README.txt */,
@@ -2269,6 +2294,8 @@
 		8CCD503B15B783FC00E5893B /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				8C5CC4C516AF666100BEBA9D /* emot-v@2x.gif */,
+				8C5CC4C316AF663C00BEBA9D /* emot-v.gif */,
 				1CBDB5841624B26B0004BDF4 /* 0.0stars.png */,
 				8CEB405D1687865300BFA9A8 /* hourglass.gif */,
 				8CFB175E168145B5007C70D5 /* macinyos-adminstar.png */,
@@ -3658,6 +3685,9 @@
 				1C74880616A99BC30068B8A3 /* Icon-Small@2x.png in Resources */,
 				1C74880716A99BC30068B8A3 /* Icon.png in Resources */,
 				1C74880816A99BC30068B8A3 /* Icon@2x.png in Resources */,
+				8C5CC4BE16AE366700BEBA9D /* editor.html in Resources */,
+				8C5CC4C416AF663C00BEBA9D /* emot-v.gif in Resources */,
+				8C5CC4C616AF666100BEBA9D /* emot-v@2x.gif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3872,6 +3902,8 @@
 				8C2A08A316AAD00800CDBC23 /* AwfulReplyComposerViewController.m in Sources */,
 				8C2A08A416AAD00800CDBC23 /* AwfulThreadComposerViewController.m in Sources */,
 				8CD3B3DB16AB5C15007FE63D /* NSAttributedString+BBCode.m in Sources */,
+				8C5CC4BC16AE345400BEBA9D /* AwfulComposerView.m in Sources */,
+				8C5CC4C216AE3DE900BEBA9D /* AwfulComposerInputAccessoryView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
