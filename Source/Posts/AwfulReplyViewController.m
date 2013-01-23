@@ -61,6 +61,10 @@
 
 @property (readonly, nonatomic) UIBarButtonItem *insertAnotherColonButton;
 
+@property (copy, nonatomic) NSString *savedReplyContents;
+
+@property (nonatomic) NSRange savedSelectedRange;
+
 @end
 
 
@@ -106,6 +110,8 @@
     self.navigationItem.titleLabel.text = self.title;
     self.sendButton.title = @"Save";
     self.images = [NSMutableDictionary new];
+    self.savedReplyContents = nil;
+    self.savedSelectedRange = NSMakeRange(0, 0);
 }
 
 - (void)replyToThread:(AwfulThread *)thread withInitialContents:(NSString *)contents
@@ -117,6 +123,8 @@
     self.navigationItem.titleLabel.text = self.title;
     self.sendButton.title = @"Reply";
     self.images = [NSMutableDictionary new];
+    self.savedReplyContents = nil;
+    self.savedSelectedRange = NSMakeRange(0, 0);
 }
 
 - (void)keyboardDidShow:(NSNotification *)note
@@ -310,6 +318,20 @@ withImagePlaceholderResults:placeholderResults
     [self retheme];
 }
 
+// This save/load text view is only necessary on iOS 5, as UITextView throws everything out on a
+// memory warning. It's fixed on iOS 6.
+- (void)saveTextView
+{
+    self.savedReplyContents = self.replyTextView.text;
+    self.savedSelectedRange = self.replyTextView.selectedRange;
+}
+
+- (void)loadTextView
+{
+    self.replyTextView.text = self.savedReplyContents;
+    self.replyTextView.selectedRange = self.savedSelectedRange;
+}
+
 #pragma mark - Menu items
 
 - (void)configureTopLevelMenuItems
@@ -421,6 +443,7 @@ withImagePlaceholderResults:placeholderResults
     picker = ImagePickerForSourceType(UIImagePickerControllerSourceTypeCamera);
     if (!picker) return;
     picker.delegate = self;
+    [self saveTextView];
     [self presentModalViewController:picker animated:YES];
 }
 
@@ -438,6 +461,7 @@ withImagePlaceholderResults:placeholderResults
                           permittedArrowDirections:UIPopoverArrowDirectionAny
                                           animated:YES];
     } else {
+        [self saveTextView];
         [self presentModalViewController:picker animated:YES];
     }
 }
@@ -528,6 +552,12 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
     self.replyTextView.userInteractionEnabled = YES;
 }
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    NSLog(@"%s nav controller is %@", __PRETTY_FUNCTION__, self.navigationController);
+}
+
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
@@ -552,6 +582,7 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
 - (void)imagePickerController:(UIImagePickerController *)picker
 didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
+    [self loadTextView];
     if ([info[UIImagePickerControllerMediaType] isEqual:(NSString *)kUTTypeImage]) {
         UIImage *image = info[UIImagePickerControllerEditedImage];
         if (!image) image = info[UIImagePickerControllerOriginalImage];
@@ -584,6 +615,7 @@ static NSString *ImageKeyToPlaceholder(NSString *key, BOOL thumbnail)
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
 {
+    [self loadTextView];
     // This seemingly never gets called when the picker is in a popover, so we can just blindly
     // dismiss it.
     [self dismissViewControllerAnimated:YES completion:nil];
