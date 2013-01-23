@@ -1040,7 +1040,7 @@ static char KVOContext;
     }
     AwfulActionSheet *sheet = [AwfulActionSheet new];
     sheet.title = urlString;
-    [sheet addButtonWithTitle:@"Open in Awful" block:^{ [self openURLInBuiltInBrowser:url]; }];
+    [sheet addButtonWithTitle:@"Open" block:^{ [self openURLInBuiltInBrowser:url]; }];
     [sheet addButtonWithTitle:@"Open in Safari"
                         block:^{ [[UIApplication sharedApplication] openURL:url]; }];
     for (AwfulExternalBrowser *browser in [AwfulExternalBrowser installedBrowsers]) {
