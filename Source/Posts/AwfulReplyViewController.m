@@ -69,12 +69,7 @@
 - (void)dealloc
 {
     if (_observerToken) [[NSNotificationCenter defaultCenter] removeObserver:_observerToken];
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:UIKeyboardDidShowNotification
-                                                  object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:UIKeyboardWillHideNotification
-                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (AwfulTextView *)replyTextView
@@ -508,6 +503,13 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.navigationItem.rightBarButtonItem = self.sendButton;
+    self.navigationItem.leftBarButtonItem = self.cancelButton;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardDidShow:)
                                                  name:UIKeyboardDidShowNotification
@@ -516,13 +518,6 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
                                              selector:@selector(keyboardWillHide:)
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
-    self.navigationItem.rightBarButtonItem = self.sendButton;
-    self.navigationItem.leftBarButtonItem = self.cancelButton;
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
     [self configureTopLevelMenuItems];
     [self.replyTextView becomeFirstResponder];
     [self retheme];
@@ -536,8 +531,11 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:AwfulThemeDidChangeNotification
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:AwfulThemeDidChangeNotification
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardDidShowNotification
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardDidHideNotification
                                                   object:nil];
 }
 
