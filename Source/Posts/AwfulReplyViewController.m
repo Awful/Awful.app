@@ -552,12 +552,6 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
     self.replyTextView.userInteractionEnabled = YES;
 }
 
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-    NSLog(@"%s nav controller is %@", __PRETTY_FUNCTION__, self.navigationController);
-}
-
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
