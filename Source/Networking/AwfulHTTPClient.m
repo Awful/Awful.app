@@ -12,6 +12,10 @@
 #import "AwfulParsing.h"
 #import "AwfulSettings.h"
 #import "NSManagedObject+Awful.h"
+#import "NSURL+QueryDictionary.h"
+
+@interface AwfulJSONRequestOperation : AFJSONRequestOperation @end
+
 
 @interface AwfulHTTPClient ()
 
@@ -52,6 +56,7 @@
         [self setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
             weakSelf.reachable = status != AFNetworkReachabilityStatusNotReachable;
         }];
+        [self registerHTTPOperationClass:[AwfulJSONRequestOperation class]];
     }
     return self;
 }
@@ -79,28 +84,27 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
                                    onPage:(NSInteger)page
                                   andThen:(void (^)(NSError *error, NSArray *threads))callback
 {
-    NSDictionary *parameters = @{ @"forumid": forumID, @"perpage": @40, @"pagenumber": @(page) };
+    NSDictionary *parameters = @{
+        @"forumid": forumID,
+        @"perpage": @40,
+        @"pagenumber": @(page),
+        @"json": @1
+    };
     NSURLRequest *request = [self requestWithMethod:@"GET"
                                                path:@"forumdisplay.php"
                                          parameters:parameters];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
-                                                               success:^(id _, id data)
+                                                               success:^(id _, NSDictionary *json)
     {
-        dispatch_async(self.parseQueue, ^{
-            NSArray *infos = [ThreadParsedInfo threadsWithHTMLData:
-                              ConvertFromWindows1252ToUTF8(data)];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:infos];
-                NSInteger stickyIndex = -(NSInteger)[threads count];
-                NSArray *forums = [AwfulForum fetchAllMatchingPredicate:@"forumID = %@", forumID];
-                for (AwfulThread *thread in threads) {
-                    if ([forums count] > 0) thread.forum = forums[0];
-                    thread.stickyIndexValue = thread.isStickyValue ? stickyIndex++ : 0;
-                }
-                [[AwfulDataStack sharedDataStack] save];
-                if (callback) callback(nil, threads);
-            });
-        });
+        NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithJSON:json];
+        NSInteger stickyIndex = -(NSInteger)[threads count];
+        NSArray *forums = [AwfulForum fetchAllMatchingPredicate:@"forumID = %@", forumID];
+        for (AwfulThread *thread in threads) {
+            if ([forums count] > 0) thread.forum = forums[0];
+            thread.stickyIndexValue = thread.isStickyValue ? stickyIndex++ : 0;
+        }
+        [[AwfulDataStack sharedDataStack] save];
+        if (callback) callback(nil, threads);
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
     }];
@@ -111,21 +115,20 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
 - (NSOperation *)listBookmarkedThreadsOnPage:(NSInteger)page
                                      andThen:(void (^)(NSError *error, NSArray *threads))callback
 {
-    NSDictionary *parameters = @{ @"action": @"view", @"perpage": @40, @"pagenumber": @(page) };
+    NSDictionary *parameters = @{
+        @"action": @"view",
+        @"perpage": @40,
+        @"pagenumber": @(page),
+        @"json": @1
+    };
     NSURLRequest *request = [self requestWithMethod:@"GET"
                                                path:@"bookmarkthreads.php"
                                          parameters:parameters];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
-                                                               success:^(id _, id data)
+                                                               success:^(id _, NSDictionary *json)
     {
-        dispatch_async(self.parseQueue, ^{
-            NSArray *threadInfos = [ThreadParsedInfo threadsWithHTMLData:
-                                    ConvertFromWindows1252ToUTF8(data)];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:threadInfos];
-                if (callback) callback(nil, threads);
-            });
-        });
+        NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithJSON:json];
+        if (callback) callback(nil, threads);
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
     }];
@@ -630,6 +633,17 @@ static NSString * Entitify(NSString *noEntities)
     }];
     [self enqueueHTTPRequestOperation:op];
     return op;
+}
+
+@end
+
+
+@implementation AwfulJSONRequestOperation
+
++ (BOOL)canProcessRequest:(NSURLRequest *)urlRequest
+{
+    if ([super canProcessRequest:urlRequest]) return YES;
+    return [[urlRequest.URL queryDictionary][@"json"] isEqual:@"1"];
 }
 
 @end

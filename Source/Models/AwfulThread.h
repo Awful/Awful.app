@@ -17,6 +17,8 @@
 
 + (NSArray *)threadsCreatedOrUpdatedWithParsedInfo:(NSArray *)threadInfos;
 
++ (NSArray *)threadsCreatedOrUpdatedWithJSON:(NSDictionary *)json;
+
 @end
 
 

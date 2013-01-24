@@ -114,6 +114,7 @@
 		1C83DB54161FF48600E53CFA /* ImgurHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */; };
 		1C8BE4FA169115020022B331 /* profile-view.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C8BE4F9169115020022B331 /* profile-view.css */; };
 		1C8BE51B16917FB60022B331 /* posts-view-25.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C8BE51A16917FB60022B331 /* posts-view-25.css */; };
+		1C90F8FC16B0C2940015A071 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C90F8FB16B0C2940015A071 /* GTMNSString+HTML.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		1C96D057167FDEA60043B194 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		1C96D058167FDEA60043B194 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1C96D059167FDEA60043B194 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765070DF74369002DB57D /* CoreGraphics.framework */; };
@@ -961,6 +962,8 @@
 		1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImgurHTTPClient.m; sourceTree = "<group>"; };
 		1C8BE4F9169115020022B331 /* profile-view.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "profile-view.css"; sourceTree = "<group>"; };
 		1C8BE51A16917FB60022B331 /* posts-view-25.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-25.css"; sourceTree = "<group>"; };
+		1C90F8FA16B0C2940015A071 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
+		1C90F8FB16B0C2940015A071 /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
 		1C96D055167FDEA60043B194 /* Imgur API Test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Imgur API Test.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C96D05C167FDEA60043B194 /* Imgur API Test-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Imgur API Test-Info.plist"; sourceTree = "<group>"; };
 		1C96D05E167FDEA60043B194 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -1796,6 +1799,8 @@
 			children = (
 				110FABC415745C1E00ECF535 /* AFNetworking */,
 				8C700287169C6EFA00FC0B78 /* AnimatedGif */,
+				1C90F8FA16B0C2940015A071 /* GTMNSString+HTML.h */,
+				1C90F8FB16B0C2940015A071 /* GTMNSString+HTML.m */,
 				1190F7BF13BE4ECB00B9D271 /* Hpple */,
 				1C4D7BD6167A5C7C00CF3659 /* PSMenuItem */,
 				1C05ED40162299DE00FE567F /* SVProgressHUD */,
@@ -3864,6 +3869,7 @@
 				1C7487F116A88BAD0068B8A3 /* AwfulKeyboardBar.m in Sources */,
 				8CCA272D16B8C1EF00A4952A /* AwfulLepersViewController.m in Sources */,
 				1C09963C16C0AECA00A62D5E /* AwfulLeperCell.m in Sources */,
+				1C90F8FC16B0C2940015A071 /* GTMNSString+HTML.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
