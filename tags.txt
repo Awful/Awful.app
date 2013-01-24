@@ -373,6 +373,7 @@ psp-itstime.png
 psp-k1.png
 psp-mma.png
 psp-pride.png
+psp-rumble.png
 psp-thonglor.png
 psp-tuf.png
 psp-ufc.png
