@@ -636,8 +636,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                  }
                  AwfulReplyViewController *reply = [AwfulReplyViewController new];
                  reply.delegate = self;
-                 [reply replyToThread:self.thread
-                  withInitialContents:[quotedText stringByAppendingString:@"\n\n"]];
+                 [reply replyToThread:self.thread withInitialContents:quotedText];
                  UINavigationController *nav = [reply enclosingNavigationController];
                  [self presentViewController:nav animated:YES completion:nil];
              }];

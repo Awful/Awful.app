@@ -372,31 +372,33 @@ static NSString * Entitify(NSString *noEntities)
     NSURLRequest *request = [self requestWithMethod:@"GET"
                                                path:@"editpost.php"
                                          parameters:@{ @"action": @"editpost", @"postid": postID }];
-    return [self textOfPostWithRequest:request andThen:callback];
+    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
+                                                               success:^(id _, id data)
+                                  {
+                                      dispatch_async(self.parseQueue, ^{
+                                          ReplyFormParsedInfo *formInfo = [[ReplyFormParsedInfo alloc] initWithHTMLData:
+                                                                           ConvertFromWindows1252ToUTF8(data)];
+                                          dispatch_async(dispatch_get_main_queue(), ^{
+                                              if (callback) callback(nil, formInfo.text);
+                                          });
+                                      });
+                                  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                      if (callback) callback(error, nil);
+                                  }];
+    [self enqueueHTTPRequestOperation:op];
+    return op;
 }
 
 - (NSOperation *)quoteTextOfPostWithID:(NSString *)postID
                                andThen:(void (^)(NSError *error, NSString *quotedText))callback
 {
-    NSURLRequest *request = [self requestWithMethod:@"GET"
-                                               path:@"newreply.php"
-                                         parameters:@{ @"action": @"newreply", @"postid": postID }];
-    return [self textOfPostWithRequest:request andThen:callback];
-}
-
-- (NSOperation *)textOfPostWithRequest:(NSURLRequest *)request
-                               andThen:(void (^)(NSError *, NSString *))callback
-{
+    NSDictionary *parameters = @{ @"action": @"newreply", @"postid": postID, @"json": @1 };
+    NSURLRequest *request = [self requestWithMethod:@"GET" path:@"newreply.php"
+                                         parameters:parameters];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
-                                                               success:^(id _, id data)
+                                                               success:^(id _, NSDictionary *json)
     {
-        dispatch_async(self.parseQueue, ^{
-            ReplyFormParsedInfo *formInfo = [[ReplyFormParsedInfo alloc] initWithHTMLData:
-                                             ConvertFromWindows1252ToUTF8(data)];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (callback) callback(nil, formInfo.text);
-            });
-        });
+        if (callback) callback(nil, json[@"body"]);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (callback) callback(error, nil);
     }];
