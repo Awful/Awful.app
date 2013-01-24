@@ -181,19 +181,18 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
 
 - (NSOperation *)learnUserInfoAndThen:(void (^)(NSError *error, NSDictionary *userInfo))callback
 {
-    NSDictionary *parameters = @{ @"action": @"editprofile" };
+    NSDictionary *parameters = @{ @"action": @"getinfo", @"json": @1 };
     NSURLRequest *urlRequest = [self requestWithMethod:@"GET"
                                                   path:@"member.php"
                                             parameters:parameters];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
-                                                               success:^(id _, id data)
+                                                               success:^(id _, NSDictionary *json)
     {
-        dispatch_async(self.parseQueue, ^{
-            ProfileParsedInfo *parsed = [[ProfileParsedInfo alloc] initWithHTMLData:
-                                      ConvertFromWindows1252ToUTF8(data)];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (callback) callback(nil, @{ @"userID": parsed.userID, @"username": parsed.username });
-            });
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (callback) callback(nil, @{
+                                    @"userID": [json[@"userid"] stringValue],
+                                    @"username": json[@"username"]
+                                   });
         });
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
