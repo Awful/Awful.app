@@ -2725,6 +2725,7 @@
 				8CF02DE416484CCE0059BC56 /* psp-thonglor.png */,
 				8CF02DE516484CCE0059BC56 /* psp-tuf.png */,
 				8CF02DE616484CCE0059BC56 /* psp-ufc.png */,
+				8CDB2A2116B0F3840091AE53 /* psp-rumble.png */,
 				8CCD531715B783FC00E5893B /* question.png */,
 				8CCD531815B783FC00E5893B /* rant.png */,
 				8CCD531915B783FC00E5893B /* repeat.png */,
