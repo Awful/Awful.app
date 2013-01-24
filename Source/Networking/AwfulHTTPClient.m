@@ -143,7 +143,7 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
                                                    NSUInteger firstUnreadPost,
                                                    NSString *advertisementHTML))callback
 {
-    NSMutableDictionary *parameters = [@{ @"threadid": threadID } mutableCopy];
+    NSMutableDictionary *parameters = [@{ @"threadid": threadID, @"json": @1 } mutableCopy];
     parameters[@"perpage"] = @40;
     if (page == AwfulPageNextUnread) parameters[@"goto"] = @"newpost";
     else if (page == AwfulPageLast) parameters[@"goto"] = @"lastpost";
@@ -152,26 +152,22 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
                                                path:@"showthread.php"
                                          parameters:parameters];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
-                                                               success:^(id op, id data)
+                                                               success:^(id op, NSDictionary *json)
     {
-        dispatch_async(self.parseQueue, ^{
-            PageParsedInfo *info = [[PageParsedInfo alloc] initWithHTMLData:
-                                    ConvertFromWindows1252ToUTF8(data)];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSArray *posts = [AwfulPost postsCreatedOrUpdatedFromPageInfo:info];
-                if (callback) {
-                    NSInteger firstUnreadPost = NSNotFound;
-                    if (page == AwfulPageNextUnread) {
-                        NSString *fragment = [[[op response] URL] fragment];
-                        if ([fragment hasPrefix:@"pti"]) {
-                            firstUnreadPost = [[fragment substringFromIndex:3] integerValue] - 1;
-                            if (firstUnreadPost < 0) firstUnreadPost = NSNotFound;
-                        }
-                    }
-                    callback(nil, posts, firstUnreadPost, info.advertisementHTML);
+        NSArray *posts = [AwfulPost postsCreatedOrUpdatedFromJSON:json];
+        if (callback) {
+            NSInteger firstUnreadPost = NSNotFound;
+            if (page == AwfulPageNextUnread) {
+                NSString *fragment = [[[op response] URL] fragment];
+                if ([fragment hasPrefix:@"pti"]) {
+                    firstUnreadPost = [[fragment substringFromIndex:3] integerValue] - 1;
+                    if (firstUnreadPost < 0) firstUnreadPost = NSNotFound;
                 }
-            });
-        });
+            }
+            NSString *ad = json[@"goon_banner"];
+            if ([ad isEqual:[NSNull null]]) ad = nil;
+            callback(nil, posts, firstUnreadPost, ad);
+        }
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil, NSNotFound, nil);
     }];

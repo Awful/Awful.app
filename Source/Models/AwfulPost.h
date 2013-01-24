@@ -13,4 +13,6 @@
 
 + (NSArray *)postsCreatedOrUpdatedFromPageInfo:(PageParsedInfo *)pageInfo;
 
++ (NSArray *)postsCreatedOrUpdatedFromJSON:(NSDictionary *)json;
+
 @end
