@@ -316,6 +316,7 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
 - (void)insertEmoticon
 {
     //todo
+    //show emoticon picker
 }
 
 - (CGRect)selectedTextRect

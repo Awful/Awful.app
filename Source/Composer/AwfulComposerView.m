@@ -94,8 +94,24 @@
             break;
             
         case 1: //emoticon
+            [self showEmoticonPicker];
             break;
     }
+}
+
+- (void)showEmoticonPicker
+{
+    //todo
+    [self didChooseEmoticon:nil];
+    ((AwfulComposerInputAccessoryView*)self.keyboardInputAccessory).insertionControl.selectedSegmentIndex = -1;
+    
+}
+
+- (void)didChooseEmoticon:(id)emoticon
+{
+    NSString *localURL = [[NSBundle mainBundle] pathForResource:@"emot-v" ofType:@"gif"];
+    [self.innerWebView stringByEvaluatingJavaScriptFromString:
+     [NSString stringWithFormat:@"document.execCommand(\"insertHTML\", false, \"<img src='%@' title='title'/>\")", localURL]];
 }
 
 #pragma mark accessing user input
