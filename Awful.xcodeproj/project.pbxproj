@@ -591,6 +591,7 @@
 		8C700272169B37F800FC0B78 /* AwfulParsing+PrivateMessages.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C700271169B37F800FC0B78 /* AwfulParsing+PrivateMessages.m */; };
 		8C70028A169C6EFA00FC0B78 /* FVGifAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C700289169C6EFA00FC0B78 /* FVGifAnimation.m */; };
 		8C700293169C73A500FC0B78 /* AwfulPMComposerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C700292169C73A500FC0B78 /* AwfulPMComposerViewController.m */; };
+		8C804B9816B42110007655D5 /* AwfulNewPMNotifierAgent.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C804B9716B42110007655D5 /* AwfulNewPMNotifierAgent.m */; };
 		8C87428E1655FD990018AC6C /* byob.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C87428D1655FD990018AC6C /* byob.png */; };
 		8C8742911655FDAE0018AC6C /* trp-laliga.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8742901655FDAE0018AC6C /* trp-laliga.png */; };
 		8C8742931655FDC10018AC6C /* mods-expert.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8742921655FDC10018AC6C /* mods-expert.png */; };
@@ -1247,6 +1248,8 @@
 		8C700289169C6EFA00FC0B78 /* FVGifAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FVGifAnimation.m; sourceTree = "<group>"; };
 		8C700291169C73A500FC0B78 /* AwfulPMComposerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPMComposerViewController.h; sourceTree = "<group>"; };
 		8C700292169C73A500FC0B78 /* AwfulPMComposerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPMComposerViewController.m; sourceTree = "<group>"; };
+		8C804B9616B42110007655D5 /* AwfulNewPMNotifierAgent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewPMNotifierAgent.h; sourceTree = "<group>"; };
+		8C804B9716B42110007655D5 /* AwfulNewPMNotifierAgent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNewPMNotifierAgent.m; sourceTree = "<group>"; };
 		8C87428D1655FD990018AC6C /* byob.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = byob.png; sourceTree = "<group>"; };
 		8C8742901655FDAE0018AC6C /* trp-laliga.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trp-laliga.png"; sourceTree = "<group>"; };
 		8C8742921655FDC10018AC6C /* mods-expert.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mods-expert.png"; sourceTree = "<group>"; };
@@ -2237,6 +2240,8 @@
 				8C700263169B2FE700FC0B78 /* AwfulPrivateMessageViewController.m */,
 				8C700291169C73A500FC0B78 /* AwfulPMComposerViewController.h */,
 				8C700292169C73A500FC0B78 /* AwfulPMComposerViewController.m */,
+				8C804B9616B42110007655D5 /* AwfulNewPMNotifierAgent.h */,
+				8C804B9716B42110007655D5 /* AwfulNewPMNotifierAgent.m */,
 			);
 			path = Messages;
 			sourceTree = "<group>";
@@ -3891,6 +3896,7 @@
 				8C70028A169C6EFA00FC0B78 /* FVGifAnimation.m in Sources */,
 				1C7487F116A88BAD0068B8A3 /* AwfulKeyboardBar.m in Sources */,
 				8C2A08AE16AAD45C00CDBC23 /* AwfulReplyViewController.m in Sources */,
+				8C804B9816B42110007655D5 /* AwfulNewPMNotifierAgent.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

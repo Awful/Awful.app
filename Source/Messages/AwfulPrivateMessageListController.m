@@ -18,6 +18,7 @@
 #import "AwfulThreadTags.h"
 #import "AwfulTheme.h"
 #import "AwfulSplitViewController.h"
+#import "AwfulNewPMNotifierAgent.h"
 
 //#import "AwfulNewPostComposeController.h"
 //#import "AwfulNewPMComposeController.h"
@@ -30,6 +31,18 @@
 
 @implementation AwfulPrivateMessageListController
 
+- (id)init {
+    self = [super init];
+    
+    self.title = @"Private Messages";
+    self.tabBarItem.image = [UIImage imageNamed:@"pm-icon.png"];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didGetNewPMCount:)
+                                                 name:AwfulNewPrivateMessagesNotification
+                                               object:nil];
+    return self;
+    
+}
 - (NSFetchedResultsController *)createFetchedResultsController
 {
     NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulPrivateMessage entityName]];
@@ -44,9 +57,7 @@
 
 -(void) viewDidLoad {
     [super viewDidLoad];
-
     self.tableView.rowHeight = 50;
-    self.title = @"Private Messages";
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:(UIBarButtonSystemItemCompose)
                                                                                            target:self
                                                                                            action:@selector(didTapCompose:)
@@ -57,6 +68,14 @@
                                                                             target:nil
                                                                             action: nil
                                             ];
+    
+
+}
+
+- (void)didGetNewPMCount:(NSNotification*)notification
+{
+    NSNumber* count = notification.userInfo[kAwfulNewPrivateMessageCountKey];
+    self.tabBarItem.badgeValue = [NSString stringWithFormat:@"%@",count];
 }
 
 -(BOOL)refreshOnAppear

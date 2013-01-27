@@ -28,6 +28,7 @@
 #import "NSManagedObject+Awful.h"
 #import "SVProgressHUD.h"
 #import "UIViewController+NavigationEnclosure.h"
+#import "AwfulNewPMNotifierAgent.h"
 
 @interface AwfulAppDelegate () <AwfulTabBarControllerDelegate, UINavigationControllerDelegate,
                                 AwfulLoginControllerDelegate>
@@ -35,6 +36,7 @@
 @property (weak, nonatomic) AwfulSplitViewController *splitViewController;
 
 @property (weak, nonatomic) AwfulTabBarController *tabBarController;
+@property (strong, nonatomic) AwfulNewPMNotifierAgent *newPMAgent;
 
 @end
 
@@ -129,6 +131,12 @@ static AwfulAppDelegate *_instance;
                                   barMetrics:UIBarMetricsLandscapePhone];
 }
 
+- (AwfulNewPMNotifierAgent*)newPMAgent {
+    if (_newPMAgent) return _newPMAgent;
+    _newPMAgent = [AwfulNewPMNotifierAgent new];
+    return _newPMAgent;
+}
+
 #pragma mark - UIApplicationDelegate
 
 - (BOOL)application:(UIApplication *)application
@@ -142,6 +150,7 @@ static AwfulAppDelegate *_instance;
     if ([[NSURLCache sharedURLCache] diskCapacity] < sixtyMB) {
         [[NSURLCache sharedURLCache] setDiskCapacity:sixtyMB];
     }
+    [self.newPMAgent checkForNewMessages];
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     
@@ -357,6 +366,10 @@ static AwfulAppDelegate *_instance;
     }
     
     return YES;
+}
+
+- (void)applicationWillEnterForeground:(UIApplication *)application {
+    [self.newPMAgent checkForNewMessages];
 }
 
 - (void)pushPostsViewForPostWithID:(NSString *)postID

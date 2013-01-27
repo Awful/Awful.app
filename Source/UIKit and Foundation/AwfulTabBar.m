@@ -55,6 +55,13 @@
     _items = [items copy];
     [self updateSegments];
     self.selectedItem = items[0];
+    
+    for (id item in items) {
+        [item addObserver:self
+               forKeyPath:@"badgeValue"
+                  options:(NSKeyValueObservingOptionNew)
+                  context:nil];
+    }
 }
 
 - (void)setSelectedItem:(UITabBarItem *)selectedItem
@@ -89,6 +96,27 @@
     }
 }
 
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    
+    for(uint i=0; i<self.items.count; i++) {
+        UITabBarItem *item = self.items[i];
+        if (item.badgeValue) {
+            UILabel *label = [UILabel new];
+            label.text = item.badgeValue;
+            [label sizeToFit];
+            label.backgroundColor = [UIColor redColor];
+            label.textColor = [UIColor whiteColor];
+            
+            CGRect frame = label.frame;
+            frame.origin.x = ((self.frame.size.width) / self.items.count * (i+1))-frame.size.width;
+            label.frame = frame;
+            [self addSubview:label];
+        }
+    }
+}
+
 UIImage * MakeNormalImageForSelectedImage(UIImage *image)
 {
     UIGraphicsBeginImageContextWithOptions(image.size, NO, image.scale);
@@ -102,6 +130,12 @@ UIImage * MakeNormalImageForSelectedImage(UIImage *image)
     UIGraphicsEndImageContext();
     normal.accessibilityLabel = image.accessibilityLabel;
     return normal;
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if (![keyPath isEqualToString:@"badgeValue"]) return;
+    [self setNeedsLayout];
 }
 
 @end
