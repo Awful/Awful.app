@@ -105,10 +105,16 @@
         thread.isClosedValue = ![info[@"open"] boolValue];
         thread.isStickyValue = [info[@"sticky"] boolValue];
         thread.threadID = [info[@"threadid"] stringValue];
+        thread.threadVotes = info[@"vote_count"];
+        if (![info[@"vote_score_sum"] isEqual:[NSNull null]]) {
+            NSDecimal rating = [info[@"vote_score_average"] decimalValue];
+            thread.threadRating = [NSDecimalNumber decimalNumberWithDecimal:rating];
+        } else {
+            thread.threadRating = nil;
+        }
         thread.title = [info[@"title"] gtm_stringByUnescapingFromHTML];
         thread.totalReplies = info[@"replycount"];
         thread.totalUnreadPosts = info[@"newpostcount"] ?: @(-1);
-        // TODO ratings
         
         AwfulUser *author = existingUsers[info[@"postusername"]] ?: [AwfulUser insertNew];
         author.userID = [info[@"postuserid"] stringValue];
