@@ -10,7 +10,7 @@
 
 @interface AwfulAppDelegate : NSObject <UIApplicationDelegate>
 
-+ (AwfulAppDelegate *)instance;
++ (instancetype)instance;
 
 @property (strong, nonatomic) UIWindow *window;
 

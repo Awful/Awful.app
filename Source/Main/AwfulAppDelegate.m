@@ -40,9 +40,9 @@
 
 @implementation AwfulAppDelegate
 
-static AwfulAppDelegate *_instance;
+static id _instance;
 
-+ (AwfulAppDelegate *)instance
++ (instancetype)instance
 {
     return _instance;
 }
