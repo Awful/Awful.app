@@ -208,7 +208,7 @@ static AwfulAppDelegate *_instance;
     
     [self.window makeKeyAndVisible];
     
-    if (!IsLoggedIn()) {
+    if (![AwfulHTTPClient client].loggedIn) {
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             [self performSelector:@selector(showLoginFormAtLaunch) withObject:nil afterDelay:0];
         } else {
@@ -216,7 +216,7 @@ static AwfulAppDelegate *_instance;
         }
     }
     
-    if (IsLoggedIn() && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    if ([AwfulHTTPClient client].loggedIn && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         AwfulSplitViewController *split = (AwfulSplitViewController *)self.window.rootViewController;
         [split performSelector:@selector(showMasterView) withObject:nil afterDelay:0.1];
     }
@@ -230,7 +230,7 @@ static AwfulAppDelegate *_instance;
          annotation:(id)annotation
 {
     if ([[url scheme] compare:@"awful" options:NSCaseInsensitiveSearch] != NSOrderedSame) return NO;
-    if (!IsLoggedIn()) return NO;
+    if (![AwfulHTTPClient client].loggedIn) return NO;
     
     NSString *section = [url host];
     
@@ -421,7 +421,7 @@ static AwfulAppDelegate *_instance;
 - (BOOL)tabBarController:(AwfulTabBarController *)tabBarController
     shouldSelectViewController:(UIViewController *)viewController
 {
-    return IsLoggedIn();
+    return [AwfulHTTPClient client].loggedIn;
 }
 
 #pragma mark - UINavigationControllerDelegate

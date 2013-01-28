@@ -913,10 +913,8 @@ static NSString * DeEntitify(NSString *withEntities)
     NSArray *ads = [doc rawSearch:@"(//div[@id = 'ad_banner_user']/a)[1]"];
     if ([ads count] > 0) self.advertisementHTML = ads[0];
     
-    TFHppleElement *mark = [doc searchForSingle:@"//img[@id = 'button_bookmark']"];
-    NSCharacterSet *space = [NSCharacterSet whitespaceCharacterSet];
-    NSArray *classes = [[mark objectForKey:@"class"] componentsSeparatedByCharactersInSet:space];
-    self.threadBookmarked = [classes containsObject:@"unbookmark"];
+    TFHppleElement *mark = [doc searchForSingle:@"//img[" HAS_CLASS(thread_bookmark) " and " HAS_CLASS(unbookmark) "]"];
+    self.threadBookmarked = !!mark;
     
     NSMutableArray *posts = [NSMutableArray new];
     NSString *path = @"//table[" HAS_CLASS(post) "]";

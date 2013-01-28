@@ -30,7 +30,6 @@
 		10D34FB1128F413C0026C7C2 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10D34FB0128F413C0026C7C2 /* SystemConfiguration.framework */; };
 		10D34FB7128F414E0026C7C2 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 10D34FB6128F414E0026C7C2 /* libz.dylib */; };
 		11099067134B86FD0013444C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11099066134B86FC0013444C /* QuartzCore.framework */; };
-		110FAC0415745CE700ECF535 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 110FAC0315745CE700ECF535 /* MessageUI.framework */; };
 		1172A62E14F5DB160026CDA8 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1172A62D14F5DB160026CDA8 /* Security.framework */; };
 		117DBE3B1522A39A007125EF /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 117DBE3A1522A39A007125EF /* CoreData.framework */; };
 		1190F75C13BE4EA900B9D271 /* AwfulLoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F71A13BE4EA900B9D271 /* AwfulLoginController.m */; };
@@ -110,6 +109,7 @@
 		1C74880616A99BC30068B8A3 /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C7487FE16A99BC30068B8A3 /* Icon-Small@2x.png */; };
 		1C74880716A99BC30068B8A3 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C7487FF16A99BC30068B8A3 /* Icon.png */; };
 		1C74880816A99BC30068B8A3 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C74880016A99BC30068B8A3 /* Icon@2x.png */; };
+		1C74880A16AC4B710068B8A3 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C74880916AC4B710068B8A3 /* AssetsLibrary.framework */; };
 		1C83DB54161FF48600E53CFA /* ImgurHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */; };
 		1C8BE4FA169115020022B331 /* profile-view.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C8BE4F9169115020022B331 /* profile-view.css */; };
 		1C8BE51B16917FB60022B331 /* posts-view-25.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C8BE51A16917FB60022B331 /* posts-view-25.css */; };
@@ -664,6 +664,7 @@
 		8CCD558815B783FD00E5893B /* rating4.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD526015B783FC00E5893B /* rating4.png */; };
 		8CCD558915B783FD00E5893B /* rating5.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD526115B783FC00E5893B /* rating5.png */; };
 		8CCD559E15B783FD00E5893B /* sticky.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD527715B783FC00E5893B /* sticky.png */; };
+		8CDB2A2216B0F3840091AE53 /* psp-rumble.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CDB2A2116B0F3840091AE53 /* psp-rumble.png */; };
 		8CEB405916877D2A00BFA9A8 /* winpos95-heading-seen.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEB405816877D2A00BFA9A8 /* winpos95-heading-seen.png */; };
 		8CEB405C16877E1600BFA9A8 /* winpos95-heading-left-seen.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEB405B16877E1600BFA9A8 /* winpos95-heading-left-seen.png */; };
 		8CEB405E1687865300BFA9A8 /* hourglass.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8CEB405D1687865300BFA9A8 /* hourglass.gif */; };
@@ -829,14 +830,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		107CF9A211FF7776007C16F4 /* libxml2.2.7.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.2.7.3.dylib; path = usr/lib/libxml2.2.7.3.dylib; sourceTree = SDKROOT; };
-		107CF9E011FF79D5007C16F4 /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
 		10D34FA8128F41160026C7C2 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		10D34FAE128F413C0026C7C2 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		10D34FB0128F413C0026C7C2 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		10D34FB6128F414E0026C7C2 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		11099066134B86FC0013444C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		110FAC0315745CE700ECF535 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		1172A62D14F5DB160026CDA8 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		117DBE3A1522A39A007125EF /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		1190F71913BE4EA900B9D271 /* AwfulLoginController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLoginController.h; sourceTree = "<group>"; };
@@ -960,6 +958,7 @@
 		1C7487FE16A99BC30068B8A3 /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small@2x.png"; sourceTree = "<group>"; };
 		1C7487FF16A99BC30068B8A3 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		1C74880016A99BC30068B8A3 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
+		1C74880916AC4B710068B8A3 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		1C83DB52161FF48600E53CFA /* ImgurHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImgurHTTPClient.h; sourceTree = "<group>"; };
 		1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImgurHTTPClient.m; sourceTree = "<group>"; };
 		1C8BE4F9169115020022B331 /* profile-view.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "profile-view.css"; sourceTree = "<group>"; };
@@ -1554,6 +1553,7 @@
 		8CCD536315B783FD00E5893B /* yp-gnugpl.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yp-gnugpl.png"; sourceTree = "<group>"; };
 		8CCD536415B783FD00E5893B /* yp-snowcrash971.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yp-snowcrash971.png"; sourceTree = "<group>"; };
 		8CCD536515B783FD00E5893B /* yp-tubes296.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yp-tubes296.png"; sourceTree = "<group>"; };
+		8CDB2A2116B0F3840091AE53 /* psp-rumble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "psp-rumble.png"; sourceTree = "<group>"; };
 		8CEB405816877D2A00BFA9A8 /* winpos95-heading-seen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading-seen.png"; sourceTree = "<group>"; };
 		8CEB405B16877E1600BFA9A8 /* winpos95-heading-left-seen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading-left-seen.png"; sourceTree = "<group>"; };
 		8CEB405D1687865300BFA9A8 /* hourglass.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = hourglass.gif; sourceTree = "<group>"; };
@@ -1736,8 +1736,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C74880A16AC4B710068B8A3 /* AssetsLibrary.framework in Frameworks */,
 				8CB5468D15BD936600E8BEC1 /* ImageIO.framework in Frameworks */,
-				110FAC0415745CE700ECF535 /* MessageUI.framework in Frameworks */,
 				10D34FA9128F41160026C7C2 /* CFNetwork.framework in Frameworks */,
 				117DBE3B1522A39A007125EF /* CoreData.framework in Frameworks */,
 				288765080DF74369002DB57D /* CoreGraphics.framework in Frameworks */,
@@ -2215,17 +2215,15 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1C74880916AC4B710068B8A3 /* AssetsLibrary.framework */,
 				8CB5468C15BD936600E8BEC1 /* ImageIO.framework */,
-				110FAC0315745CE700ECF535 /* MessageUI.framework */,
 				117DBE3A1522A39A007125EF /* CoreData.framework */,
 				1172A62D14F5DB160026CDA8 /* Security.framework */,
 				11099066134B86FC0013444C /* QuartzCore.framework */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
 				288765070DF74369002DB57D /* CoreGraphics.framework */,
-				107CF9A211FF7776007C16F4 /* libxml2.2.7.3.dylib */,
 				1CAB36B01548F0FE00A4A362 /* libxml2.dylib */,
-				107CF9E011FF79D5007C16F4 /* libsqlite3.0.dylib */,
 				10D34FA8128F41160026C7C2 /* CFNetwork.framework */,
 				10D34FAE128F413C0026C7C2 /* MobileCoreServices.framework */,
 				10D34FB0128F413C0026C7C2 /* SystemConfiguration.framework */,
@@ -2785,6 +2783,7 @@
 				8CF02DE116484CCE0059BC56 /* psp-k1.png */,
 				8CF02DE216484CCE0059BC56 /* psp-mma.png */,
 				8CF02DE316484CCE0059BC56 /* psp-pride.png */,
+				8CDB2A2116B0F3840091AE53 /* psp-rumble.png */,
 				8CF02DE416484CCE0059BC56 /* psp-thonglor.png */,
 				8CF02DE516484CCE0059BC56 /* psp-tuf.png */,
 				8CF02DE616484CCE0059BC56 /* psp-ufc.png */,
@@ -3692,6 +3691,7 @@
 				1C74880616A99BC30068B8A3 /* Icon-Small@2x.png in Resources */,
 				1C74880716A99BC30068B8A3 /* Icon.png in Resources */,
 				1C74880816A99BC30068B8A3 /* Icon@2x.png in Resources */,
+				8CDB2A2216B0F3840091AE53 /* psp-rumble.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

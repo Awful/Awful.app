@@ -678,6 +678,10 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
             nav.modalPresentationStyle = UIModalPresentationFormSheet;
             [self presentViewController:nav animated:YES completion:nil];
         } else {
+            UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithTitle:@"Back"
+                                                                     style:UIBarButtonItemStyleBordered
+                                                                    target:nil action:NULL];
+            self.navigationItem.backBarButtonItem = back;
             [self.navigationController pushViewController:profile animated:YES];
         }
     }];
@@ -1036,7 +1040,7 @@ static char KVOContext;
     }
     AwfulActionSheet *sheet = [AwfulActionSheet new];
     sheet.title = urlString;
-    [sheet addButtonWithTitle:@"Open in Awful" block:^{ [self openURLInBuiltInBrowser:url]; }];
+    [sheet addButtonWithTitle:@"Open" block:^{ [self openURLInBuiltInBrowser:url]; }];
     [sheet addButtonWithTitle:@"Open in Safari"
                         block:^{ [[UIApplication sharedApplication] openURL:url]; }];
     for (AwfulExternalBrowser *browser in [AwfulExternalBrowser installedBrowsers]) {
@@ -1324,14 +1328,16 @@ static char KVOContext;
 
 - (void)layoutSubviews
 {
-    CGFloat buttonWidth = floorf((self.bounds.size.width - 2) / 3);
-    CGFloat x = floorf(self.bounds.size.width - buttonWidth * 3) / 2;
-    
-    self.goToForumButton.frame = CGRectMake(x, 0, buttonWidth, self.bounds.size.height - 1);
-    x += buttonWidth + 1;
-    self.loadReadPostsButton.frame = CGRectMake(x, 0, buttonWidth, self.bounds.size.height - 1);
-    x += buttonWidth + 1;
-    self.scrollToBottomButton.frame = CGRectMake(x, 0, buttonWidth, self.bounds.size.height - 1);
+    CGSize buttonSize = CGSizeMake(floorf((CGRectGetWidth(self.bounds) - 2) / 3),
+                                   CGRectGetHeight(self.bounds) - 1);
+    CGFloat extraMiddleWidth = CGRectGetWidth(self.bounds) - buttonSize.width * 3 - 2;
+    self.goToForumButton.frame = (CGRect){ .size = buttonSize };
+    self.loadReadPostsButton.frame = CGRectMake(CGRectGetMaxX(self.goToForumButton.frame) + 1, 0,
+                                                buttonSize.width + extraMiddleWidth, buttonSize.height);
+    self.scrollToBottomButton.frame = (CGRect){
+        .origin.x = CGRectGetMaxX(self.loadReadPostsButton.frame) + 1,
+        .size = buttonSize
+    };
 }
 
 @end

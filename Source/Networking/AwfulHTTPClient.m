@@ -35,6 +35,12 @@
     return instance;
 }
 
+- (BOOL)isLoggedIn
+{
+    NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:self.baseURL];
+    return [[cookies valueForKey:@"name"] containsObject:@"bbuserid"];
+}
+
 - (id)initWithBaseURL:(NSURL *)url
 {
     self = [super initWithBaseURL:url];
@@ -220,11 +226,10 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
 - (NSOperation *)listForumsAndThen:(void (^)(NSError *error, NSArray *forums))callback
 {
     // Seems like only forumdisplay.php and showthread.php have the <select> with a complete list
-    // of forums. We'll use the Comedy Goldmine as it's generally available and hopefully it's not
-    // much of a burden since threads rarely get goldmined.
+    // of forums. We'll use the Main "forum" as it's the smallest page with the drop-down list.
     NSURLRequest *urlRequest = [self requestWithMethod:@"GET"
                                                   path:@"forumdisplay.php"
-                                            parameters:@{ @"forumid": @"21" }];
+                                            parameters:@{ @"forumid": @"48" }];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
                                                                success:^(id _, id data)
     {

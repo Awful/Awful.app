@@ -20,6 +20,9 @@
 // Returns YES if the forums are reachable through current network settings.
 @property (readonly, getter=isReachable, nonatomic) BOOL reachable;
 
+// Returns YES if someone is currently logged in to the SA Forums.
+@property (readonly, getter=isLoggedIn, nonatomic) BOOL loggedIn;
+
 // Gets the threads in a forum on a given page.
 //
 // forumID  - The ID of the forum with the threads.
