@@ -265,8 +265,8 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (!(formInfo.formkey && formInfo.formCookie)) {
                     NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : @"Thread is closed" };
-                    NSError *error = [NSError errorWithDomain:NSCocoaErrorDomain
-                                                         code:-1
+                    NSError *error = [NSError errorWithDomain:AwfulErrorDomain
+                                                         code:AwfulErrorCodes.threadIsClosed
                                                      userInfo:userInfo];
                     if (callback) callback(error, nil);
                     return;
@@ -514,18 +514,20 @@ static NSString * Entitify(NSString *noEntities)
                                                path:@"account.php"
                                          parameters:parameters];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
-                                                               success:^(id _, id data)
+                                                               success:^(id _, id __)
     {
-        NSString *response = [[NSString alloc] initWithData:data encoding:self.stringEncoding];
-        if ([response rangeOfString:@"GLLLUUUUUEEEEEE"].location != NSNotFound) {
-            if (callback) callback(nil);
-        } else {
-            if (callback) callback([NSError errorWithDomain:NSCocoaErrorDomain
-                                                       code:-1
-                                                   userInfo:nil]);
-        }
+        if (callback) callback(nil);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error)
     {
+        if (operation.response.statusCode == 401) {
+            NSDictionary *userInfo = @{
+                NSLocalizedDescriptionKey: @"Invalid username or password",
+                NSUnderlyingErrorKey: error
+            };
+            error = [NSError errorWithDomain:AwfulErrorDomain
+                                        code:AwfulErrorCodes.badUsernameOrPassword
+                                    userInfo:userInfo];
+        }
         if (callback) callback(error);
     }];
     [self enqueueHTTPRequestOperation:op];
@@ -602,3 +604,11 @@ static NSString * Entitify(NSString *noEntities)
 }
 
 @end
+
+
+NSString * const AwfulErrorDomain = @"AwfulErrorDomain";
+
+const struct AwfulErrorCodes AwfulErrorCodes = {
+    .badUsernameOrPassword = -1000,
+    .threadIsClosed = -1001
+};

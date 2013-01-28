@@ -426,7 +426,7 @@ static id _instance;
 {
     [[AwfulHTTPClient client] learnUserInfoAndThen:^(NSError *error, NSDictionary *userInfo) {
         if (error) {
-            NSLog(@"error fetching username: %@", error);
+            NSLog(@"Error finding logged-in user's name: %@", error);
         } else {
             [AwfulSettings settings].username = userInfo[@"username"];
         }
