@@ -201,12 +201,12 @@
     self.tableView.userInteractionEnabled = NO;
     [[AwfulHTTPClient client] logInAsUsername:self.username
                                  withPassword:self.password
-                                      andThen:^(NSError *error)
+                                      andThen:^(NSError *error, NSDictionary *userInfo)
     {
         if (error) {
             [self.delegate loginController:self didFailToLogInWithError:error];
         } else {
-            [self.delegate loginControllerDidLogIn:self];
+            [self.delegate loginController:self didLogInAsUserWithInfo:userInfo];
         }
         self.loggingIn = NO;
         self.tableView.userInteractionEnabled = YES;

@@ -505,24 +505,26 @@ static NSString * Entitify(NSString *noEntities)
 
 - (NSOperation *)logInAsUsername:(NSString *)username
                     withPassword:(NSString *)password
-                         andThen:(void (^)(NSError *error))callback
+                         andThen:(void (^)(NSError *error, NSDictionary *userInfo))callback
 {
-    // TODO this can now handle a redirect on login. So we could do something like add a parameter
-    // "next": "/member.php?action=getinfo&json=1"
-    // and get the logged-in user's name and info right away, passing it to the callback.
     NSDictionary *parameters = @{
         @"action" : @"login",
         @"username" : username,
-        @"password" : password
+        @"password" : password,
+        @"next": @"/member.php?action=getinfo&json=1"
     };
     NSMutableURLRequest *request = [self requestWithMethod:@"POST"
-                                                      path:@"account.php"
+                                                      path:@"account.php?json=1"
                                                 parameters:parameters];
-    request.URL = [NSURL URLWithString:@"https://forums.somethingawful.com/account.php"];
+    request.URL = [NSURL URLWithString:@"https://forums.somethingawful.com/account.php?json=1"];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
-                                                               success:^(id _, id __)
+                                                               success:^(id _, NSDictionary *json)
     {
-        if (callback) callback(nil);
+        NSDictionary *userInfo = @{
+            @"userID": [json[@"userid"] stringValue],
+            @"username": json[@"username"]
+        };
+        if (callback) callback(nil, userInfo);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error)
     {
         if (operation.response.statusCode == 401) {
@@ -534,7 +536,7 @@ static NSString * Entitify(NSString *noEntities)
                                         code:AwfulErrorCodes.badUsernameOrPassword
                                     userInfo:userInfo];
         }
-        if (callback) callback(error);
+        if (callback) callback(error, nil);
     }];
     [self enqueueHTTPRequestOperation:op];
     return op;
