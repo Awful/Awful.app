@@ -505,6 +505,9 @@ static NSString * Entitify(NSString *noEntities)
                     withPassword:(NSString *)password
                          andThen:(void (^)(NSError *error))callback
 {
+    // TODO this can now handle a redirect on login. So we could do something like add a parameter
+    // "next": "/member.php?action=getinfo&json=1"
+    // and get the logged-in user's name and info right away, passing it to the callback.
     NSDictionary *parameters = @{
         @"action" : @"login",
         @"username" : username,
