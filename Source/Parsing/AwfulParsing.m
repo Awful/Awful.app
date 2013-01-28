@@ -794,7 +794,7 @@ static NSString * DeEntitify(NSString *withEntities)
     } else {
         self.author.avatarURL = nil;
     }
-    TFHppleElement *profile = [doc searchForSingle:@"//ul[" HAS_CLASS(profilelinks) "]//a"];
+    TFHppleElement *showPostsByUser = [doc searchForSingle:@"//a[" HAS_CLASS(user_jump) "]"];
     NSError *profileError;
     NSRegularExpression *profileRegex = [NSRegularExpression regularExpressionWithPattern:@"userid=(\\d+)"
                                                                                   options:0
@@ -802,11 +802,14 @@ static NSString * DeEntitify(NSString *withEntities)
     if (!profileRegex) {
         NSLog(@"error creating userid regex: %@", profileError);
     }
-    NSString *profileLink = [profile objectForKey:@"href"];
-    NSTextCheckingResult *match = [profileRegex firstMatchInString:profileLink
-                                                           options:0
-                                                             range:NSMakeRange(0, [profileLink length])];
-    if (match) self.author.userID = [profileLink substringWithRange:[match rangeAtIndex:1]];
+    NSString *profileLink = [showPostsByUser objectForKey:@"href"];
+    if (profileLink) {
+        NSRange wholeRange = NSMakeRange(0, [profileLink length]);
+        NSTextCheckingResult *match = [profileRegex firstMatchInString:profileLink
+                                                               options:0
+                                                                 range:wholeRange];
+        if (match) self.author.userID = [profileLink substringWithRange:[match rangeAtIndex:1]];
+    }
     
     self.editable = !![doc searchForSingle:
                        @"//ul[" HAS_CLASS(postbuttons) "]//a[contains(@href, 'editpost')]"];
