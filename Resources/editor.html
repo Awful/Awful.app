@@ -6,8 +6,22 @@
         </div>
     </body>
     <script>
-        //document.getElementById('content').addEventListener("input", function(e) {
-        //                           alert(e);
-        //                               }, false);
+        var content = document.getElementById('content');
+        content.onpaste = function(e) {
+            var pastedText = undefined;
+            if (e.clipboardData && e.clipboardData.getData) {
+                pastedText = e.clipboardData.getData('text/plain');
+            }
+            
+            var regex = /^https?.*?youtube.*?v=([\w\d]*)/;
+            var youtube = regex.exec(pastedText);
+            if (youtube && youtube.length == 2) {
+                //got a youtube link, replace with video tag
+                var replacement = '[video type="youtube"]' + youtube[1] + '[/video]';
+                document.execCommand('insertText', false, replacement);
+                return false; // Prevent the default handler from running.
+            }
+            //return true;
+        };
     </script>
 </html>
