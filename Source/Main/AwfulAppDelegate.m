@@ -83,6 +83,8 @@ static AwfulAppDelegate *_instance;
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             AwfulSplitViewController *split = (AwfulSplitViewController *)self.window.rootViewController;
             tabBar = split.viewControllers[0];
+            UINavigationController *posts = split.viewControllers[1];
+            posts.viewControllers = @[ [AwfulStartViewController new] ];
         } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
             tabBar = (AwfulTabBarController *)self.window.rootViewController;
         }

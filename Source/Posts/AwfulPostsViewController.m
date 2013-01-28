@@ -103,22 +103,18 @@
     if (!(self = [super initWithNibName:nil bundle:nil])) return nil;
     self.hidesBottomBarWhenPushed = YES;
     NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
-    [noteCenter addObserver:self
-                   selector:@selector(currentThemeChanged:)
-                       name:AwfulThemeDidChangeNotification
-                     object:nil];
-    [noteCenter addObserver:self
-                   selector:@selector(settingChanged:)
-                       name:AwfulSettingsDidChangeNotification
-                     object:nil];
+    [noteCenter addObserver:self selector:@selector(currentThemeChanged:)
+                       name:AwfulThemeDidChangeNotification object:nil];
+    [noteCenter addObserver:self selector:@selector(settingChanged:)
+                       name:AwfulSettingsDidChangeNotification object:nil];
+    [noteCenter addObserver:self selector:@selector(didResetDataStack:)
+                       name:AwfulDataStackDidResetNotification object:nil];
     return self;
 }
 
 - (void)dealloc
 {
-    NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
-    [noteCenter removeObserver:self name:AwfulSettingsDidChangeNotification object:nil];
-    [noteCenter removeObserver:self name:AwfulThemeDidChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self stopObserving];
     self.postsView.scrollView.delegate = nil;
     self.fetchedResultsController.delegate = nil;
@@ -143,6 +139,11 @@
     ];
     NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
     if ([keys firstObjectCommonWithArray:importantKeys]) [self configurePostsViewSettings];
+}
+
+- (void)didResetDataStack:(NSNotification *)note
+{
+    self.fetchedResultsController = nil;
 }
 
 - (void)setThread:(AwfulThread *)thread
