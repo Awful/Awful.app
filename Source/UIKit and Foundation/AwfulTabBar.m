@@ -7,6 +7,7 @@
 //
 
 #import "AwfulTabBar.h"
+#import "CustomBadge.h"
 
 @interface AwfulSegmentedControl : UISegmentedControl @end
 
@@ -103,16 +104,13 @@
     for(uint i=0; i<self.items.count; i++) {
         UITabBarItem *item = self.items[i];
         if (item.badgeValue) {
-            UILabel *label = [UILabel new];
-            label.text = item.badgeValue;
-            [label sizeToFit];
-            label.backgroundColor = [UIColor redColor];
-            label.textColor = [UIColor whiteColor];
+            CustomBadge *badge = [CustomBadge customBadgeWithString:item.badgeValue];
+            badge.userInteractionEnabled = NO;
             
-            CGRect frame = label.frame;
+            CGRect frame = badge.frame;
             frame.origin.x = ((self.frame.size.width) / self.items.count * (i+1))-frame.size.width;
-            label.frame = frame;
-            [self addSubview:label];
+            badge.frame = frame;
+            [self addSubview:badge];
         }
     }
 }
