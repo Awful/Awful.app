@@ -9,6 +9,7 @@
 #import "AwfulComposerInputAccessoryView.h"
 //#import "AwfulEmotePickerController.h"
 //#import "UIBarButtonItem+Lazy.h"
+#import "AwfulEmoticonChooserViewController.h"
 
 @implementation AwfulComposerInputAccessoryView
 @synthesize formattingControl = _formattingControl;
@@ -21,22 +22,22 @@
     if (self) {
         self.backgroundColor = [UIColor greenColor];
         
-        UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:self.frame];
-        toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-        toolbar.tintColor = [UIColor colorWithRed:.61 green:.61 blue:.65 alpha:1];
+        _toolbar = [[UIToolbar alloc] initWithFrame:self.frame];
+        _toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+        _toolbar.tintColor = [UIColor colorWithRed:.61 green:.61 blue:.65 alpha:1];
 
                 
 
          
         
-        toolbar.items = @[
+        _toolbar.items = @[
             [[UIBarButtonItem alloc] initWithCustomView:self.formattingControl],
             [[UIBarButtonItem alloc] initWithBarButtonSystemItem:(UIBarButtonSystemItemFlexibleSpace) target:nil action:nil],
             [[UIBarButtonItem alloc] initWithCustomView:self.insertionControl],
             [[UIBarButtonItem alloc] initWithBarButtonSystemItem:(UIBarButtonSystemItemFlexibleSpace) target:nil action:nil],
             [[UIBarButtonItem alloc] initWithCustomView:self.extraKeysControl]
         ];
-        [self addSubview:toolbar];
+        [self addSubview:_toolbar];
         
 //        [[NSNotificationCenter defaultCenter] addObserver:self 
 //                                                 selector:@selector(didChooseEmoticon:) 
@@ -102,22 +103,31 @@
 }
 
 
--(void) insertionControlChanged:(UISegmentedControl*)segmentedControl {
-    [self.delegate insertImage:segmentedControl.selectedSegmentIndex];
+- (void)insertionControlChanged:(UISegmentedControl*)segmentedControl {
+    if (segmentedControl.selectedSegmentIndex == 0)
+        [self.delegate insertImage:segmentedControl.selectedSegmentIndex];
+    else
+        [self showEmoticonChooser];
 }
 
--(void) formattingControlChanged:(UISegmentedControl*)segmentedControl {
+- (void)formattingControlChanged:(UISegmentedControl*)segmentedControl {
     [self.delegate setFormat:segmentedControl.selectedSegmentIndex];
 }
 
--(void) extraKeysControlChanged:(UISegmentedControl*)segmentedControl {
+- (void)extraKeysControlChanged:(UISegmentedControl*)segmentedControl {
     [self.delegate insertString:[segmentedControl titleForSegmentAtIndex:segmentedControl.selectedSegmentIndex]];
 }
 
-//-(void) didChooseEmoticon:(NSNotification*)notification {
-//    self.insertionControl.selectedSegmentIndex = -1;
-//    [pop dismissPopoverAnimated:YES];
-//}
+- (void)showEmoticonChooser {
+    AwfulEmoticonKeyboardController* chooser = [AwfulEmoticonKeyboardController new];
+    chooser.delegate = self.delegate;
+    
+    pop = [[UIPopoverController alloc] initWithContentViewController:chooser];
+    [pop presentPopoverFromRect:self.insertionControl.frame
+                         inView:self.toolbar
+                permittedArrowDirections:(UIPopoverArrowDirectionDown)
+                                animated:YES];
+}
 
 -(AwfulPostFormatStyle) formatState {
     return self.formattingControl.selectedSegmentIndex;

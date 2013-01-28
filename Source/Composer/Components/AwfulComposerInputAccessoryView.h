@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AwfulEmoticonChooserViewController.h"
 
 typedef enum {
     AwfulPostFormatBold = 0,
@@ -20,7 +21,6 @@ typedef enum {
 - (void)setFormat:(AwfulPostFormatStyle)format;
 - (void)insertString:(NSString*)string;
 - (void)insertImage:(int)imageType;
-
 @end
 
 @interface AwfulComposerInputAccessoryView : UIControl {
@@ -31,6 +31,7 @@ typedef enum {
 @property (readonly,nonatomic,strong) UISegmentedControl* formattingControl;
 @property (readonly,nonatomic,strong) UISegmentedControl* insertionControl;
 @property (readonly,nonatomic,strong) UISegmentedControl* extraKeysControl;
-@property (nonatomic) id<AwfulComposerInputAccessoryViewDelegate> delegate;
+@property (nonatomic,strong) UIToolbar* toolbar;
+@property (nonatomic) id<AwfulComposerInputAccessoryViewDelegate,AwfulEmoticonChooserDelegate> delegate;
 
 @end

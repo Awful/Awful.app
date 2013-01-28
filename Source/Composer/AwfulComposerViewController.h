@@ -15,6 +15,7 @@
 #import "SVProgressHUD.h"
 #import "UINavigationItem+TwoLineTitle.h"
 #import "AwfulComposerView.h"
+//#import "AwfulEmoticonKeyboardController.h"
 
 @protocol AwfulComposerViewControllerDelegate;
 
@@ -31,6 +32,7 @@
 @property (nonatomic) UIPopoverController *pickerPopover;
 @property (nonatomic) NSMutableDictionary *images;
 @property (nonatomic,weak) AwfulAlertView* confirmationAlert;
+@property (nonatomic,strong) AwfulEmoticonKeyboardController* emoticonChooser;
 
 - (void)cancel;
 - (void)send;

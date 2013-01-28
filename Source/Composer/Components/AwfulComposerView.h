@@ -8,15 +8,17 @@
 
 #import <UIKit/UIKit.h>
 #import "AwfulComposerInputAccessoryView.h"
+@class AwfulEmoticonKeyboardController;
 
 @protocol AwfulComposerViewDelegate <UITextViewDelegate>
 
 - (void)insertImage;
 - (void)insertEmoticon;
+- (AwfulEmoticonKeyboardController*)emoticonChooser;
 
 @end
 
-@interface AwfulComposerView : UITextView <AwfulComposerInputAccessoryViewDelegate>{
+@interface AwfulComposerView : UITextView <AwfulComposerInputAccessoryViewDelegate,AwfulEmoticonChooserDelegate>{
     @protected
     UIWebView *_innerWebView;
     UIControl* _keyboardInputAccessory;

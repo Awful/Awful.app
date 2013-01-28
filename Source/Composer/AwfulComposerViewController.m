@@ -240,6 +240,12 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
     [NSException raise:@"Subclass must override" format:nil];
 }
 
+- (AwfulEmoticonKeyboardController*)emoticonChooser {
+    if (_emoticonChooser) return _emoticonChooser;
+    _emoticonChooser = [AwfulEmoticonKeyboardController new];
+    return _emoticonChooser;
+}
+
 #pragma mark - Menu items
 
 - (void)configureTopLevelMenuItems
@@ -315,8 +321,6 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
 
 - (void)insertEmoticon
 {
-    //todo
-    //show emoticon picker
 }
 
 - (CGRect)selectedTextRect

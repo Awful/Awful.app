@@ -535,7 +535,7 @@
 		8C1F62CF16B60A9300FAF625 /* AwfulComposerInputAccessoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1F62C816B60A9300FAF625 /* AwfulComposerInputAccessoryView.m */; };
 		8C1F62D016B60A9300FAF625 /* AwfulComposerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1F62CA16B60A9300FAF625 /* AwfulComposerView.m */; };
 		8C1F62D116B60A9300FAF625 /* AwfulEmoticonChooserCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1F62CC16B60A9300FAF625 /* AwfulEmoticonChooserCellView.m */; };
-		8C1F62D216B60A9300FAF625 /* AwfulEmoticonKeyboardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1F62CE16B60A9300FAF625 /* AwfulEmoticonKeyboardController.m */; };
+		8C1F62D516B61BA600FAF625 /* AwfulEmoticonChooserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C1F62D416B61BA600FAF625 /* AwfulEmoticonChooserViewController.m */; };
 		8C2450F91666F76900D3079C /* forum-header-dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C2450F51666F76900D3079C /* forum-header-dark.png */; };
 		8C2450FA1666F76900D3079C /* forum-header-dark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C2450F61666F76900D3079C /* forum-header-dark@2x.png */; };
 		8C2450FB1666F76900D3079C /* forum-header-light.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C2450F71666F76900D3079C /* forum-header-light.png */; };
@@ -1194,8 +1194,8 @@
 		8C1F62CA16B60A9300FAF625 /* AwfulComposerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AwfulComposerView.m; path = Components/AwfulComposerView.m; sourceTree = "<group>"; };
 		8C1F62CB16B60A9300FAF625 /* AwfulEmoticonChooserCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AwfulEmoticonChooserCellView.h; path = Components/AwfulEmoticonChooserCellView.h; sourceTree = "<group>"; };
 		8C1F62CC16B60A9300FAF625 /* AwfulEmoticonChooserCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AwfulEmoticonChooserCellView.m; path = Components/AwfulEmoticonChooserCellView.m; sourceTree = "<group>"; };
-		8C1F62CD16B60A9300FAF625 /* AwfulEmoticonKeyboardController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AwfulEmoticonKeyboardController.h; path = Components/AwfulEmoticonKeyboardController.h; sourceTree = "<group>"; };
-		8C1F62CE16B60A9300FAF625 /* AwfulEmoticonKeyboardController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AwfulEmoticonKeyboardController.m; path = Components/AwfulEmoticonKeyboardController.m; sourceTree = "<group>"; };
+		8C1F62D316B61BA600FAF625 /* AwfulEmoticonChooserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AwfulEmoticonChooserViewController.h; path = Components/AwfulEmoticonChooserViewController.h; sourceTree = "<group>"; };
+		8C1F62D416B61BA600FAF625 /* AwfulEmoticonChooserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AwfulEmoticonChooserViewController.m; path = Components/AwfulEmoticonChooserViewController.m; sourceTree = "<group>"; };
 		8C2450F51666F76900D3079C /* forum-header-dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forum-header-dark.png"; sourceTree = "<group>"; };
 		8C2450F61666F76900D3079C /* forum-header-dark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forum-header-dark@2x.png"; sourceTree = "<group>"; };
 		8C2450F71666F76900D3079C /* forum-header-light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forum-header-light.png"; sourceTree = "<group>"; };
@@ -2278,14 +2278,14 @@
 		8C5CC4BF16AE3DBD00BEBA9D /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				8C1F62D316B61BA600FAF625 /* AwfulEmoticonChooserViewController.h */,
+				8C1F62D416B61BA600FAF625 /* AwfulEmoticonChooserViewController.m */,
 				8C1F62C716B60A9300FAF625 /* AwfulComposerInputAccessoryView.h */,
 				8C1F62C816B60A9300FAF625 /* AwfulComposerInputAccessoryView.m */,
 				8C1F62C916B60A9300FAF625 /* AwfulComposerView.h */,
 				8C1F62CA16B60A9300FAF625 /* AwfulComposerView.m */,
 				8C1F62CB16B60A9300FAF625 /* AwfulEmoticonChooserCellView.h */,
 				8C1F62CC16B60A9300FAF625 /* AwfulEmoticonChooserCellView.m */,
-				8C1F62CD16B60A9300FAF625 /* AwfulEmoticonKeyboardController.h */,
-				8C1F62CE16B60A9300FAF625 /* AwfulEmoticonKeyboardController.m */,
 			);
 			name = Components;
 			sourceTree = "<group>";
@@ -3952,7 +3952,7 @@
 				8C1F62CF16B60A9300FAF625 /* AwfulComposerInputAccessoryView.m in Sources */,
 				8C1F62D016B60A9300FAF625 /* AwfulComposerView.m in Sources */,
 				8C1F62D116B60A9300FAF625 /* AwfulEmoticonChooserCellView.m in Sources */,
-				8C1F62D216B60A9300FAF625 /* AwfulEmoticonKeyboardController.m in Sources */,
+				8C1F62D516B61BA600FAF625 /* AwfulEmoticonChooserViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

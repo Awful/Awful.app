@@ -8,6 +8,8 @@
 
 #import "AwfulComposerView.h"
 #import "AwfulComposerInputAccessoryView.h"
+#import "AwfulEmoticonChooserViewController.h"
+#import "AwfulComposerViewController.h"
 
 @implementation AwfulComposerView
 @synthesize keyboardInputAccessory = _keyboardInputAccessory;
@@ -94,17 +96,9 @@
             break;
             
         case 1: //emoticon
-            [self showEmoticonPicker];
+            //[self showEmoticonChooser];
             break;
     }
-}
-
-- (void)showEmoticonPicker
-{
-    //todo
-    [self didChooseEmoticon:nil];
-    ((AwfulComposerInputAccessoryView*)self.keyboardInputAccessory).insertionControl.selectedSegmentIndex = -1;
-    
 }
 
 - (void)didChooseEmoticon:(id)emoticon

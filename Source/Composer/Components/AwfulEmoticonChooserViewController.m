@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulEmoticonKeyboardController.h"
+#import "AwfulEmoticonChooserViewController.h"
 #import "AwfulEmoticonChooserCellView.h"
 #import "AwfulModels.h"
 #import "AwfulDataStack.h"
@@ -162,6 +162,11 @@
 -(UIEdgeInsets) collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
 
     return UIEdgeInsetsMake(1,1,1,1);
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    AwfulEmoticon *emoticon = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    [self.delegate didChooseEmoticon:emoticon];
 }
 
 
