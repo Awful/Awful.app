@@ -232,6 +232,16 @@ struct {
     self[AwfulSettingsKeys.username] = username;
 }
 
+- (NSString *)userID
+{
+    return self[AwfulSettingsKeys.userID];
+}
+
+- (void)setUserID:(NSString *)userID
+{
+    self[AwfulSettingsKeys.userID] = userID;
+}
+
 BOOL_PROPERTY(showThreadTags, setShowThreadTags)
 
 - (id)objectForKeyedSubscript:(id)key
@@ -275,6 +285,7 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .confirmBeforeReplying = @"confirm_before_replying",
 	.darkTheme = @"dark_theme",
     .username = @"username",
+    .userID = @"userID",
     .showThreadTags = @"show_thread_tags",
     .yosposStyle = @"yospos_style",
     .keepSidebarOpen = @"keep_sidebar_open",

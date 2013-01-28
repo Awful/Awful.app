@@ -1129,6 +1129,7 @@
 		1CC7806B1612DBB2002AF958 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		1CC7806C1612DBB2002AF958 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		1CD2C3BD16B8508F002DBF66 /* chooch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = chooch.png; sourceTree = "<group>"; };
+		1CD2C3B616B6E1C8002DBF66 /* Model-1.10.2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Model-1.10.2.xcdatamodel"; sourceTree = "<group>"; };
 		1CDD5197154294D400326C7B /* AwfulSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettings.h; sourceTree = "<group>"; };
 		1CDD5198154294D400326C7B /* AwfulSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettings.m; sourceTree = "<group>"; };
 		1CE2D97E165EEC1F0024AC1C /* AwfulTheme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTheme.h; sourceTree = "<group>"; };
@@ -4203,8 +4204,9 @@
 				1C5B99BA166FFA4F004C5D0E /* Model-1.8.xcdatamodel */,
 				1C5B99BB166FFA4F004C5D0E /* Model-1.9.1.xcdatamodel */,
 				1C6D3EE4168D798200B91A65 /* Model-1.10.xcdatamodel */,
+				1CD2C3B616B6E1C8002DBF66 /* Model-1.10.2.xcdatamodel */,
 			);
-			currentVersion = 1C6D3EE4168D798200B91A65 /* Model-1.10.xcdatamodel */;
+			currentVersion = 1CD2C3B616B6E1C8002DBF66 /* Model-1.10.2.xcdatamodel */;
 			path = Model.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

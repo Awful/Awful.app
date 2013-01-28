@@ -11,8 +11,12 @@
 
 @interface AwfulPost : _AwfulPost
 
+@property (readonly, nonatomic) BOOL beenSeen;
+
 + (NSArray *)postsCreatedOrUpdatedFromPageInfo:(PageParsedInfo *)pageInfo;
 
 + (NSArray *)postsCreatedOrUpdatedFromJSON:(NSDictionary *)json;
+
+- (BOOL)editableByUserWithID:(NSString *)userID;
 
 @end

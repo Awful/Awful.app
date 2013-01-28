@@ -29,14 +29,14 @@
     return [basename stringByAppendingPathExtension:@"png"];
 }
 
-- (BOOL)canReply
+- (BOOL)beenSeen
 {
-    return !(self.isClosedValue || self.isLockedValue);
+    return self.totalUnreadPostsValue > -1;
 }
 
-+ (NSSet *)keyPathsForValuesAffectingCanReply
++ (NSSet *)keyPathsForValuesAffectingBeenSeen
 {
-    return [NSSet setWithObjects:@"isClosed", @"isLocked", nil];
+    return [NSSet setWithObject:@"totalUnreadPosts"];
 }
 
 + (NSArray *)threadsCreatedOrUpdatedWithParsedInfo:(NSArray *)threadInfos
@@ -102,7 +102,7 @@
             thread.isBookmarkedValue = YES;
             thread.starCategoryValue = (AwfulStarCategory)[starCategory integerValue];
         }
-        thread.isLockedValue = ![info[@"open"] boolValue];
+        thread.isClosedValue = ![info[@"open"] boolValue];
         thread.isStickyValue = [info[@"sticky"] boolValue];
         thread.threadID = [info[@"threadid"] stringValue];
         thread.title = [info[@"title"] gtm_stringByUnescapingFromHTML];

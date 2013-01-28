@@ -182,7 +182,7 @@
         [self displayPage:page];
         [page loadPage:AwfulPageLast];
     }];
-    if (thread.seenValue) {
+    if (thread.beenSeen) {
         [sheet addButtonWithTitle:@"Mark as Unread" block:^{
             [self markThreadUnseen:thread];
         }];
@@ -231,7 +231,6 @@
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
         } else {
             thread.totalUnreadPostsValue = -1;
-            thread.seenValue = NO;
             [[AwfulDataStack sharedDataStack] save];
         }
     }];
@@ -301,13 +300,6 @@
         } else {
             cell.rating = [thread.threadRating floatValue];
         }
-        if (!thread.isClosedValue) {
-            cell.imageView.alpha = 1;
-            cell.ratingImageView.alpha = 1;
-        } else {
-            cell.imageView.alpha = 0.5;
-            cell.ratingImageView.alpha = 0.5;
-        }
     } else {
         cell.imageView.image = nil;
         cell.imageView.hidden = YES;
@@ -318,9 +310,13 @@
         cell.rating = 0;
     }
     cell.textLabel.text = [thread.title stringByCollapsingWhitespace];
-    if (!thread.isClosedValue) {
+    if (thread.isStickyValue || !thread.isClosedValue) {
+        cell.imageView.alpha = 1;
+        cell.ratingImageView.alpha = 1;
         cell.textLabel.textColor = [AwfulTheme currentTheme].threadCellTextColor;
     } else {
+        cell.imageView.alpha = 0.5;
+        cell.ratingImageView.alpha = 0.5;
         cell.textLabel.textColor = [AwfulTheme currentTheme].threadCellClosedThreadColor;
     }
     NSNumberFormatterStyle numberStyle = NSNumberFormatterDecimalStyle;
@@ -329,7 +325,7 @@
     NSString *plural = thread.numberOfPagesValue == 1 ? @"" : @"s";
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ page%@", pagesFormatted, plural];
     cell.detailTextLabel.textColor = [AwfulTheme currentTheme].threadCellPagesTextColor;
-    if (thread.seenValue) {
+    if (thread.beenSeen) {
         cell.originalPosterTextLabel.text = [NSString stringWithFormat:@"Killed by %@",
                                              thread.lastPostAuthorName];
     } else {
@@ -424,7 +420,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     AwfulPostsViewController *page = [AwfulPostsViewController new];
     AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
     page.thread = thread;
-    [page loadPage:thread.seenValue ? AwfulPageNextUnread : 1];
+    [page loadPage:thread.beenSeen ? AwfulPageNextUnread : 1];
     [self displayPage:page];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }

@@ -429,6 +429,7 @@ static id _instance;
             NSLog(@"Error finding logged-in user's name: %@", error);
         } else {
             [AwfulSettings settings].username = userInfo[@"username"];
+            [AwfulSettings settings].userID = userInfo[@"userID"];
         }
     }];
     [self.window.rootViewController dismissViewControllerAnimated:YES completion:^{

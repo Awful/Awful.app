@@ -4,15 +4,14 @@
 #import "_AwfulThread.h"
 
 const struct AwfulThreadAttributes AwfulThreadAttributes = {
+	.archived = @"archived",
 	.hideFromList = @"hideFromList",
 	.isBookmarked = @"isBookmarked",
 	.isClosed = @"isClosed",
-	.isLocked = @"isLocked",
 	.isSticky = @"isSticky",
 	.lastPostAuthorName = @"lastPostAuthorName",
 	.lastPostDate = @"lastPostDate",
 	.numberOfPages = @"numberOfPages",
-	.seen = @"seen",
 	.starCategory = @"starCategory",
 	.stickyIndex = @"stickyIndex",
 	.threadID = @"threadID",
@@ -60,6 +59,11 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 + (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 	
+	if ([key isEqualToString:@"archivedValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"archived"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
 	if ([key isEqualToString:@"hideFromListValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"hideFromList"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
@@ -75,11 +79,6 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
-	if ([key isEqualToString:@"isLockedValue"]) {
-		NSSet *affectingKey = [NSSet setWithObject:@"isLocked"];
-		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
-	}
 	if ([key isEqualToString:@"isStickyValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"isSticky"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
@@ -87,11 +86,6 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 	}
 	if ([key isEqualToString:@"numberOfPagesValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"numberOfPages"];
-		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
-	}
-	if ([key isEqualToString:@"seenValue"]) {
-		NSSet *affectingKey = [NSSet setWithObject:@"seen"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
@@ -123,6 +117,32 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 
 	return keyPaths;
 }
+
+
+
+
+@dynamic archived;
+
+
+
+- (BOOL)archivedValue {
+	NSNumber *result = [self archived];
+	return [result boolValue];
+}
+
+- (void)setArchivedValue:(BOOL)value_ {
+	[self setArchived:[NSNumber numberWithBool:value_]];
+}
+
+- (BOOL)primitiveArchivedValue {
+	NSNumber *result = [self primitiveArchived];
+	return [result boolValue];
+}
+
+- (void)setPrimitiveArchivedValue:(BOOL)value_ {
+	[self setPrimitiveArchived:[NSNumber numberWithBool:value_]];
+}
+
 
 
 
@@ -205,32 +225,6 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 
 
 
-@dynamic isLocked;
-
-
-
-- (BOOL)isLockedValue {
-	NSNumber *result = [self isLocked];
-	return [result boolValue];
-}
-
-- (void)setIsLockedValue:(BOOL)value_ {
-	[self setIsLocked:[NSNumber numberWithBool:value_]];
-}
-
-- (BOOL)primitiveIsLockedValue {
-	NSNumber *result = [self primitiveIsLocked];
-	return [result boolValue];
-}
-
-- (void)setPrimitiveIsLockedValue:(BOOL)value_ {
-	[self setPrimitiveIsLocked:[NSNumber numberWithBool:value_]];
-}
-
-
-
-
-
 @dynamic isSticky;
 
 
@@ -291,32 +285,6 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 
 - (void)setPrimitiveNumberOfPagesValue:(int32_t)value_ {
 	[self setPrimitiveNumberOfPages:[NSNumber numberWithInt:value_]];
-}
-
-
-
-
-
-@dynamic seen;
-
-
-
-- (BOOL)seenValue {
-	NSNumber *result = [self seen];
-	return [result boolValue];
-}
-
-- (void)setSeenValue:(BOOL)value_ {
-	[self setSeen:[NSNumber numberWithBool:value_]];
-}
-
-- (BOOL)primitiveSeenValue {
-	NSNumber *result = [self primitiveSeen];
-	return [result boolValue];
-}
-
-- (void)setPrimitiveSeenValue:(BOOL)value_ {
-	[self setPrimitiveSeen:[NSNumber numberWithBool:value_]];
 }
 
 

@@ -393,27 +393,24 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         return;
     }
     AwfulPost *lastPost = [[self.fetchedResultsController fetchedObjects] lastObject];
-    if (!lastPost || lastPost.beenSeenValue) return;
+    if (!lastPost) return;
     [self markPostsAsBeenSeenUpToPost:lastPost];
 }
 
 - (void)markPostsAsBeenSeenUpToPost:(AwfulPost *)post
 {
     self.markingPostsAsBeenSeen = YES;
-    NSArray *posts = [self.fetchedResultsController fetchedObjects];
-    NSUInteger lastSeen = [posts indexOfObject:post];
-    if (lastSeen == NSNotFound) return;
-    for (NSUInteger i = 0; i < [posts count]; i++) {
-        [posts[i] setBeenSeenValue:i <= lastSeen];
-    }
     NSInteger readPosts = post.threadIndexValue - 1;
     if (self.thread.totalRepliesValue < readPosts) {
         // This can happen if new replies appear in between times we parse the total number of
         // replies in the thread.
         self.thread.totalRepliesValue = readPosts;
     }
-    self.thread.totalUnreadPostsValue = self.thread.totalRepliesValue - readPosts;
-    self.thread.seenValue = YES;
+    NSInteger maximumUnreadPosts = self.thread.totalRepliesValue - readPosts;
+    if (self.thread.totalUnreadPostsValue == -1 ||
+        self.thread.totalUnreadPostsValue > maximumUnreadPosts) {
+        self.thread.totalUnreadPostsValue = maximumUnreadPosts;
+    }
     [[AwfulDataStack sharedDataStack] save];
     self.markingPostsAsBeenSeen = NO;
 }
@@ -456,7 +453,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     } else {
         [self.pageBar.jumpToPageButton setTitle:@"" forState:UIControlStateNormal];
     }
-    [self.pageBar.actionsComposeControl setEnabled:self.thread.canReply forSegmentAtIndex:1];
+    [self.pageBar.actionsComposeControl setEnabled:!self.thread.isClosedValue forSegmentAtIndex:1];
 }
 
 - (void)updateTopBar
@@ -604,7 +601,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     }
     NSString *title = [NSString stringWithFormat:@"%@ Post", possessiveUsername];
     AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:title];
-    if (post.editableValue) {
+    if ([post editableByUserWithID:[AwfulSettings settings].userID]) {
         [sheet addButtonWithTitle:@"Edit" block:^{
             [[AwfulHTTPClient client] getTextOfPostWithID:post.postID
                                                   andThen:^(NSError *error, NSString *text)
@@ -623,7 +620,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
              }];
         }];
     }
-    if (!self.thread.isLockedValue) {
+    if (!self.thread.isClosedValue) {
         [sheet addButtonWithTitle:@"Quote" block:^{
             [[AwfulHTTPClient client] quoteTextOfPostWithID:post.postID
                                                     andThen:^(NSError *error, NSString *quotedText)
@@ -936,19 +933,20 @@ static char KVOContext;
 - (NSDictionary *)postsView:(AwfulPostsView *)postsView postAtIndex:(NSInteger)index
 {
     AwfulPost *post = self.fetchedResultsController.fetchedObjects[index + self.hiddenPosts];
-    NSArray *keys = @[ @"postID", @"beenSeen", @"innerHTML" ];
+    NSArray *keys = @[ @"postID", @"innerHTML" ];
     NSMutableDictionary *dict = [[post dictionaryWithValuesForKeys:keys] mutableCopy];
     if (post.postDate) {
         dict[@"postDate"] = [self.postDateFormatter stringFromDate:post.postDate];
     }
     if (post.author.username) dict[@"authorName"] = post.author.username;
-    if (post.author.avatarURL) dict[@"authorAvatarURL"] = post.author.avatarURL;
+    if (post.author.avatarURL) dict[@"authorAvatarURL"] = [post.author.avatarURL absoluteString];
     if ([post.author isEqual:post.thread.author]) dict[@"authorIsOriginalPoster"] = @YES;
     if (post.author.moderatorValue) dict[@"authorIsAModerator"] = @YES;
     if (post.author.administratorValue) dict[@"authorIsAnAdministrator"] = @YES;
     if (post.author.regdate) {
         dict[@"authorRegDate"] = [self.regDateFormatter stringFromDate:post.author.regdate];
     }
+    dict[@"beenSeen"] = @(post.beenSeen);
     return dict;
 }
 

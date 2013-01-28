@@ -5,15 +5,14 @@
 
 
 extern const struct AwfulThreadAttributes {
+	__unsafe_unretained NSString *archived;
 	__unsafe_unretained NSString *hideFromList;
 	__unsafe_unretained NSString *isBookmarked;
 	__unsafe_unretained NSString *isClosed;
-	__unsafe_unretained NSString *isLocked;
 	__unsafe_unretained NSString *isSticky;
 	__unsafe_unretained NSString *lastPostAuthorName;
 	__unsafe_unretained NSString *lastPostDate;
 	__unsafe_unretained NSString *numberOfPages;
-	__unsafe_unretained NSString *seen;
 	__unsafe_unretained NSString *starCategory;
 	__unsafe_unretained NSString *stickyIndex;
 	__unsafe_unretained NSString *threadID;
@@ -50,7 +49,6 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
-
 @class NSObject;
 @class NSObject;
 
@@ -67,6 +65,20 @@ extern const struct AwfulThreadFetchedProperties {
 + (NSString*)entityName;
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
 - (AwfulThreadID*)objectID;
+
+
+
+
+
+@property (nonatomic, strong) NSNumber* archived;
+
+
+
+@property BOOL archivedValue;
+- (BOOL)archivedValue;
+- (void)setArchivedValue:(BOOL)value_;
+
+//- (BOOL)validateArchived:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -109,20 +121,6 @@ extern const struct AwfulThreadFetchedProperties {
 - (void)setIsClosedValue:(BOOL)value_;
 
 //- (BOOL)validateIsClosed:(id*)value_ error:(NSError**)error_;
-
-
-
-
-
-@property (nonatomic, strong) NSNumber* isLocked;
-
-
-
-@property BOOL isLockedValue;
-- (BOOL)isLockedValue;
-- (void)setIsLockedValue:(BOOL)value_;
-
-//- (BOOL)validateIsLocked:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -171,20 +169,6 @@ extern const struct AwfulThreadFetchedProperties {
 - (void)setNumberOfPagesValue:(int32_t)value_;
 
 //- (BOOL)validateNumberOfPages:(id*)value_ error:(NSError**)error_;
-
-
-
-
-
-@property (nonatomic, strong) NSNumber* seen;
-
-
-
-@property BOOL seenValue;
-- (BOOL)seenValue;
-- (void)setSeenValue:(BOOL)value_;
-
-//- (BOOL)validateSeen:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -346,6 +330,15 @@ extern const struct AwfulThreadFetchedProperties {
 @interface _AwfulThread (CoreDataGeneratedPrimitiveAccessors)
 
 
+- (NSNumber*)primitiveArchived;
+- (void)setPrimitiveArchived:(NSNumber*)value;
+
+- (BOOL)primitiveArchivedValue;
+- (void)setPrimitiveArchivedValue:(BOOL)value_;
+
+
+
+
 - (NSNumber*)primitiveHideFromList;
 - (void)setPrimitiveHideFromList:(NSNumber*)value;
 
@@ -369,15 +362,6 @@ extern const struct AwfulThreadFetchedProperties {
 
 - (BOOL)primitiveIsClosedValue;
 - (void)setPrimitiveIsClosedValue:(BOOL)value_;
-
-
-
-
-- (NSNumber*)primitiveIsLocked;
-- (void)setPrimitiveIsLocked:(NSNumber*)value;
-
-- (BOOL)primitiveIsLockedValue;
-- (void)setPrimitiveIsLockedValue:(BOOL)value_;
 
 
 
@@ -408,15 +392,6 @@ extern const struct AwfulThreadFetchedProperties {
 
 - (int32_t)primitiveNumberOfPagesValue;
 - (void)setPrimitiveNumberOfPagesValue:(int32_t)value_;
-
-
-
-
-- (NSNumber*)primitiveSeen;
-- (void)setPrimitiveSeen:(NSNumber*)value;
-
-- (BOOL)primitiveSeenValue;
-- (void)setPrimitiveSeenValue:(BOOL)value_;
 
 
 

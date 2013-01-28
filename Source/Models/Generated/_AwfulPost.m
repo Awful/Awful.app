@@ -4,8 +4,8 @@
 #import "_AwfulPost.h"
 
 const struct AwfulPostAttributes AwfulPostAttributes = {
-	.beenSeen = @"beenSeen",
-	.editable = @"editable",
+	.attachmentID = @"attachmentID",
+	.editDate = @"editDate",
 	.innerHTML = @"innerHTML",
 	.postDate = @"postDate",
 	.postID = @"postID",
@@ -15,6 +15,7 @@ const struct AwfulPostAttributes AwfulPostAttributes = {
 
 const struct AwfulPostRelationships AwfulPostRelationships = {
 	.author = @"author",
+	.editor = @"editor",
 	.thread = @"thread",
 };
 
@@ -47,16 +48,6 @@ const struct AwfulPostFetchedProperties AwfulPostFetchedProperties = {
 + (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 	
-	if ([key isEqualToString:@"beenSeenValue"]) {
-		NSSet *affectingKey = [NSSet setWithObject:@"beenSeen"];
-		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
-	}
-	if ([key isEqualToString:@"editableValue"]) {
-		NSSet *affectingKey = [NSSet setWithObject:@"editable"];
-		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
-	}
 	if ([key isEqualToString:@"threadIndexValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"threadIndex"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
@@ -74,53 +65,15 @@ const struct AwfulPostFetchedProperties AwfulPostFetchedProperties = {
 
 
 
-@dynamic beenSeen;
-
-
-
-- (BOOL)beenSeenValue {
-	NSNumber *result = [self beenSeen];
-	return [result boolValue];
-}
-
-- (void)setBeenSeenValue:(BOOL)value_ {
-	[self setBeenSeen:[NSNumber numberWithBool:value_]];
-}
-
-- (BOOL)primitiveBeenSeenValue {
-	NSNumber *result = [self primitiveBeenSeen];
-	return [result boolValue];
-}
-
-- (void)setPrimitiveBeenSeenValue:(BOOL)value_ {
-	[self setPrimitiveBeenSeen:[NSNumber numberWithBool:value_]];
-}
+@dynamic attachmentID;
 
 
 
 
 
-@dynamic editable;
 
+@dynamic editDate;
 
-
-- (BOOL)editableValue {
-	NSNumber *result = [self editable];
-	return [result boolValue];
-}
-
-- (void)setEditableValue:(BOOL)value_ {
-	[self setEditable:[NSNumber numberWithBool:value_]];
-}
-
-- (BOOL)primitiveEditableValue {
-	NSNumber *result = [self primitiveEditable];
-	return [result boolValue];
-}
-
-- (void)setPrimitiveEditableValue:(BOOL)value_ {
-	[self setPrimitiveEditable:[NSNumber numberWithBool:value_]];
-}
 
 
 
@@ -200,6 +153,10 @@ const struct AwfulPostFetchedProperties AwfulPostFetchedProperties = {
 
 
 @dynamic author;
+
+	
+
+@dynamic editor;
 
 	
 

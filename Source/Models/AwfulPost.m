@@ -17,6 +17,20 @@
 
 @implementation AwfulPost
 
+- (BOOL)beenSeen
+{
+    if (!self.thread || self.thread.totalUnreadPostsValue == -1) return NO;
+    if (self.threadIndexValue == 0) return NO;
+    NSInteger lastReadPostIndex = (self.thread.totalRepliesValue -
+                                   self.thread.totalUnreadPostsValue + 1);
+    return self.threadIndexValue <= lastReadPostIndex;
+}
+
++ (NSSet *)keyPathsForValuesAffectingBeenSeen
+{
+    return [NSSet setWithArray:@[ @"thread.totalUnreadPosts", @"thread.totalRepliesValue" ]];
+}
+
 + (NSArray *)postsCreatedOrUpdatedFromPageInfo:(PageParsedInfo *)pageInfo
 {
     if ([pageInfo.forumID length] == 0 || [pageInfo.threadID length] == 0) return nil;
@@ -34,7 +48,7 @@
     thread.forum = forum;
     thread.title = pageInfo.threadTitle;
     thread.isBookmarkedValue = pageInfo.threadBookmarked;
-    thread.isLockedValue = pageInfo.threadLocked;
+    thread.isClosedValue = pageInfo.threadClosed;
     thread.numberOfPagesValue = pageInfo.pagesInThread;
     
     NSArray *allPosts = [thread.posts allObjects];
@@ -63,7 +77,6 @@
             post.author = existingUsers[postInfo.author.username] ?: [AwfulUser insertNew];
         }
         [postInfo.author applyToObject:post.author];
-        post.author.avatarURL = [postInfo.author.avatarURL absoluteString];
         existingUsers[post.author.username] = post.author;
         [posts addObject:post];
         if (postInfo.author.originalPoster) {
@@ -109,13 +122,32 @@
         NSDictionary *info = json[@"posts"][postID];
         AwfulPost *post = existingPosts[postID] ?: [AwfulPost insertNew];
         post.postID = postID;
+        if (![info[@"attachmentid"] isEqual:[NSNull null]] && [info[@"attachmentid"] integerValue]) {
+            post.attachmentID = [info[@"attachmentid"] stringValue];
+        } else {
+            post.attachmentID = nil;
+        }
+        if (![info[@"editdate"] isEqual:[NSNull null]]) {
+            post.editDate = [NSDate dateWithTimeIntervalSince1970:[info[@"editdate"] doubleValue]];
+        } else {
+            post.editDate = nil;
+        }
+        if (![info[@"edituserid"] isEqual:[NSNull null]]) {
+            NSString *editorUserID = [info[@"edituserid"] stringValue];
+            AwfulUser *editor = [AwfulUser firstMatchingPredicate:@"userID = %@", editorUserID];
+            if (!editor) {
+                editor = [AwfulUser insertNew];
+                editor.userID = editorUserID;
+            }
+            post.editor = editor;
+        } else {
+            post.editor = nil;
+        }
         post.innerHTML = info[@"message"];
         post.postDate = [NSDate dateWithTimeIntervalSince1970:[info[@"date"] doubleValue]];
         post.thread = thread;
         post.threadIndex = info[@"post_index"];
         post.threadPage = json[@"page"][0];
-        // TODO attachments (no longer built into markup)
-        // TODO edits (ditto)
         
         NSString *userID = [info[@"userid"] stringValue];
         AwfulUser *author = [AwfulUser firstMatchingPredicate:@"userID = %@", userID];
@@ -139,6 +171,12 @@
     
     [[AwfulDataStack sharedDataStack] save];
     return [existingPosts allValues];
+}
+
+- (BOOL)editableByUserWithID:(NSString *)userID
+{
+    if (!self.thread || self.thread.archivedValue) return NO;
+    return [self.author.userID isEqual:userID];
 }
 
 @end
