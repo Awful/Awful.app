@@ -513,9 +513,10 @@ static NSString * Entitify(NSString *noEntities)
         @"username" : username,
         @"password" : password
     };
-    NSURLRequest *request = [self requestWithMethod:@"POST"
-                                               path:@"account.php"
-                                         parameters:parameters];
+    NSMutableURLRequest *request = [self requestWithMethod:@"POST"
+                                                      path:@"account.php"
+                                                parameters:parameters];
+    request.URL = [NSURL URLWithString:@"https://forums.somethingawful.com/account.php"];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
                                                                success:^(id _, id __)
     {
