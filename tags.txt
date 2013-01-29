@@ -52,6 +52,7 @@ byob-slax.png
 byob-slayer.png
 byob-soulja.png
 byob-treasure.png
+byob-xfile.png
 byob.png
 CA-TAG-CA-atb.png
 CA-TAG-CA-dirtmoto.png
