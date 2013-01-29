@@ -78,6 +78,7 @@ cd_hype.png
 cd_scifi.png
 cell-cdma.png
 cell-gsm.png
+chooch.png
 coc-binbash.png
 coc-c.png
 coc-db.png
