@@ -27,13 +27,6 @@
 #import "SVPullToRefresh.h"
 #import "UIViewController+NavigationEnclosure.h"
 
-typedef enum {
-    AwfulThreadListActionsTypeFirstPage = 0,
-    AwfulThreadListActionsTypeLastPage,
-    AwfulThreadListActionsTypeUnread
-} AwfulThreadListActionsType;
-
-
 @interface AwfulThreadListController ()
 
 @property (nonatomic) NSMutableSet *cellsMissingThreadTags;
