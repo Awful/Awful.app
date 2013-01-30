@@ -59,8 +59,8 @@ static NSString * const kNewThreadTagURLKey = @"AwfulNewThreadTagURL";
 {
     if (self.downloadingNewTags) return;
     NSDate *checked = [self lastCheck];
-    // One check every eighteen hours.
-    if (checked && [checked timeIntervalSinceNow] > -60 * 60 * 18) return;
+    // At most one check every six hours.
+    if (checked && [checked timeIntervalSinceNow] > -60 * 60 * 6) return;
     self.downloadingNewTags = YES;
     
     [self ensureCacheFolder];
