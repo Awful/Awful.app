@@ -25,6 +25,7 @@
 
 @end
 
+
 @implementation ParsedInfo
 
 - (id)initWithHTMLData:(NSData *)htmlData
@@ -121,25 +122,42 @@ static NSDate * RegdateFromString(NSString *s)
 static NSDate * PostDateFromString(NSString *s)
 {
     static NSDateFormatter *df = nil;
-    if (df == nil) {
+    static NSArray *formats = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
         df = [[NSDateFormatter alloc] init];
         [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
-    }
+        
+        formats = @[
+            @"h:mm a MMM d, yyyy",
+            @"MMM d, yyyy h:mm a",
+            @"HH:mm MMM d, yyyy",
+            @"MMM d, yyyy HH:mm",
+            @"MM/dd/yy hh:mma"
+        ];
+    });
+    
     [df setTimeZone:[NSTimeZone localTimeZone]];
-    static NSString *formats[] = {
-        @"h:mm a MMM d, yyyy",
-        @"MMM d, yyyy h:mm a",
-        @"HH:mm MMM d, yyyy",
-        @"MMM d, yyyy HH:mm",
-    };
-    for (size_t i = 0; i < sizeof(formats) / sizeof(formats[0]); i++) {
-        [df setDateFormat:formats[i]];
+    
+    for (NSString *format in formats) {
+        [df setDateFormat:format];
         NSDate *parsedDate = [df dateFromString:s];
         if (parsedDate) return parsedDate;
     }
     return nil;
 }
 
+NSString * UserIDFromURLString(NSString *s)
+{
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"userid=(\\d+)"
+                                                                           options:0
+                                                                             error:nil];
+    NSTextCheckingResult *match = [regex firstMatchInString:s
+                                                    options:0
+                                                      range:NSMakeRange(0, [s length])];
+    if (match) return [s substringWithRange:[match rangeAtIndex:1]];
+    return nil;
+}
 
 static NSString * FixSAAndlibxmlHTMLSerialization(NSString *html)
 {
@@ -959,6 +977,106 @@ static NSString * DeEntitify(NSString *withEntities)
         a = [doc searchForSingle:@"//a[contains(@href, 'goto=lastpost')]"];
         if (a) self.lastPage = YES;
     }
+}
+
+@end
+
+
+@interface BanParsedInfo ()
+
+@property (nonatomic) AwfulBanType banType;
+
+@property (copy, nonatomic) NSString *postID;
+
+@property (nonatomic) NSDate *banDate;
+
+@property (copy, nonatomic) NSString *bannedUserID;
+
+@property (copy, nonatomic) NSString *bannedUserName;
+
+@property (copy, nonatomic) NSString *banReason;
+
+@property (copy, nonatomic) NSString *requesterUserID;
+
+@property (copy, nonatomic) NSString *requesterUserName;
+
+@property (copy, nonatomic) NSString *approverUserID;
+
+@property (copy, nonatomic) NSString *approverUserName;
+
+@end
+
+
+
+@implementation BanParsedInfo
+
++ (NSArray*)bansWithHTMLData:(NSData *)htmlData
+{
+    NSMutableArray *bans = [NSMutableArray new];
+    NSArray *rows = PerformRawHTMLXPathQuery(htmlData, @"//table[" HAS_CLASS(standard) " and " HAS_CLASS(full) "]//tr[position() > 1]");
+    for (NSString *row in rows) {
+        NSData *rowData = [row dataUsingEncoding:NSUTF8StringEncoding];
+        BanParsedInfo *info = [[self alloc] initWithHTMLData:rowData];
+        [bans addObject:info];
+    }
+    return bans;
+}
+
+typedef enum {
+    LepersColonyColumnType = 0,
+    LepersColonyColumnDate,
+    LepersColonyColumnJerk,
+    LepersColonyColumnReason,
+    LepersColonyColumnRequester,
+    LepersColonyColumnApprover
+} LepersColonyColumn;
+
+- (void)parseHTMLData
+{
+    TFHpple *doc = [[TFHpple alloc] initWithHTMLData:self.htmlData];
+    NSArray *tds = [doc search:@"//td"];
+    if (tds.count != 6) return;
+    
+    TFHppleElement *b = [tds[LepersColonyColumnType] firstChildWithTagName:@"b"];
+    TFHppleElement *a = [b firstChildWithTagName:@"a"];
+    if (a) {
+        NSURL *url = [NSURL URLWithString:a.attributes[@"href"]];
+        self.postID = [url queryDictionary][@"postid"];
+    }
+    self.banDate = PostDateFromString([tds[LepersColonyColumnDate] content]);
+    self.banType = BanTypeWithString(a ? a.content : b.content);
+    
+    b = [tds[LepersColonyColumnJerk] firstChildWithTagName:@"b"];
+    a = [b firstChildWithTagName:@"a"];
+    if (a) {
+        self.bannedUserID = UserIDFromURLString(a.attributes[@"href"]);
+        self.bannedUserName = a.content;
+    }
+    
+    self.banReason = [tds[LepersColonyColumnReason] content];
+    
+    a = [tds[LepersColonyColumnRequester] childrenWithTagName:@"a"][0];
+    self.requesterUserID = UserIDFromURLString(a.attributes[@"href"]);
+    self.requesterUserName = a.content;
+    
+    a = [tds[LepersColonyColumnApprover] childrenWithTagName:@"a"][0];
+    self.approverUserID = UserIDFromURLString(a.attributes[@"href"]);
+    self.approverUserName = a.content;
+}
+
+static AwfulBanType BanTypeWithString(NSString *s)
+{
+    static NSDictionary *banTypes;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        banTypes = @{
+            @"PROBATION": @(AwfulBanTypeProbation),
+            @"BAN": @(AwfulBanTypeBan),
+            @"AUTOBAN": @(AwfulBanTypeAutoban),
+            @"PERMABAN": @(AwfulBanTypePermaban),
+        };
+    });
+    return [banTypes[s] integerValue];
 }
 
 @end

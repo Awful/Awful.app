@@ -608,6 +608,29 @@ static NSString * Entitify(NSString *noEntities)
     return op;
 }
 
+- (NSOperation *)listBansOnPage:(NSInteger)page
+                        andThen:(void (^)(NSError *error, NSArray *bans))callback
+{
+    NSDictionary *parameters = @{ @"pagenumber": @(page) };
+    NSURLRequest *request = [self requestWithMethod:@"GET"
+                                               path:@"banlist.php"
+                                         parameters:parameters];
+    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
+                                                               success:^(id _, id data)
+    {
+        dispatch_async(self.parseQueue, ^{
+            NSArray *infos = [BanParsedInfo bansWithHTMLData:data];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (callback) callback(nil, infos);
+            });
+        });
+    } failure:^(id _, NSError *error) {
+        if (callback) callback(error, nil);
+    }];
+    [self enqueueHTTPRequestOperation:op];
+    return op;
+}
+
 @end
 
 

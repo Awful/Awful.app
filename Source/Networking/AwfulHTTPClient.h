@@ -220,6 +220,17 @@ enum {
 - (NSOperation *)profileUserWithID:(NSString *)userID
                            andThen:(void (^)(NSError *error, AwfulUser *user))callback;
 
+// List probations, bans, and permabans from the Leper's Colony.
+//
+// page - Which page of the Leper's Colony to list. First page is page 1.
+// callback - A block to call after listing punishment, which takes as parameters:
+//              error - An error on failure, or nil on success.
+//              bans  - An array of BanParsedInfo instances on success, or nil on failure.
+//
+// Returns the enqueued network operation.
+- (NSOperation *)listBansOnPage:(NSInteger)page
+                        andThen:(void (^)(NSError *error, NSArray *bans))callback;
+
 @end
 
 
