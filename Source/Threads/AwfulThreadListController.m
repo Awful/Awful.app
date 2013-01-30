@@ -38,8 +38,6 @@ typedef enum {
 
 @property (nonatomic) NSMutableDictionary *cellsWithoutThreadTags;
 
-@property (nonatomic, getter=threadTagObserver) id newThreadTagObserver;
-
 @end
 
 
@@ -50,11 +48,9 @@ typedef enum {
     self = [super init];
     if (!(self = [super init])) return nil;
     _cellsWithoutThreadTags = [NSMutableDictionary new];
-    [[NSNotificationCenter defaultCenter] addObserverForName:AwfulSettingsDidChangeNotification
-                                                      object:nil
-                                                       queue:[NSOperationQueue mainQueue]
-                                                  usingBlock:^(NSNotification *note)
-     { [self settingsChanged:note]; }];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsChanged:)
+                                                 name:AwfulSettingsDidChangeNotification
+                                               object:nil];
     return self;
 }
 
@@ -372,17 +368,15 @@ typedef enum {
 
 - (void)updateThreadTag:(NSString *)threadTagName forCellAtIndexPath:(NSIndexPath *)indexPath
 {
+    if ([self.cellsWithoutThreadTags count] == 0) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newThreadTags:)
+                                                     name:AwfulNewThreadTagsAvailableNotification
+                                                   object:nil];
+    }
     if (!self.cellsWithoutThreadTags[indexPath]) {
         self.cellsWithoutThreadTags[indexPath] = [NSMutableArray new];
     }
     [self.cellsWithoutThreadTags[indexPath] addObject:threadTagName];
-    if (self.newThreadTagObserver) return;
-    NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
-    self.newThreadTagObserver = [noteCenter addObserverForName:AwfulNewThreadTagsAvailableNotification
-                                                        object:nil
-                                                         queue:[NSOperationQueue mainQueue]
-                                                    usingBlock:^(NSNotification *note)
-                                 { [self newThreadTags:note]; }];
 }
 
 - (void)newThreadTags:(NSNotification *)note
@@ -416,8 +410,9 @@ typedef enum {
         }
     }
     if ([self.cellsWithoutThreadTags count] == 0) {
-        [[NSNotificationCenter defaultCenter] removeObserver:self.newThreadTagObserver];
-        self.newThreadTagObserver = nil;
+        [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                        name:AwfulNewThreadTagsAvailableNotification
+                                                      object:nil];
     }
 }
 
