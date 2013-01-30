@@ -108,8 +108,10 @@ static NSString * const kNewThreadTagURLKey = @"AwfulNewThreadTagURL";
             }
         }
         if ([newlyAvailableTagNames count] == 0) return;
-        [[NSNotificationCenter defaultCenter] postNotificationName:AwfulNewThreadTagsAvailableNotification
-                                                            object:newlyAvailableTagNames];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:AwfulNewThreadTagsAvailableNotification
+                                                                object:newlyAvailableTagNames];
+        });
     }];
 }
 
