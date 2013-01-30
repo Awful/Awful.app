@@ -631,6 +631,11 @@
 		8CBD8E1D16548AFC00749A8F /* fyad-hogyanker.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CBD8E1816548AFC00749A8F /* fyad-hogyanker.png */; };
 		8CBD8E1E16548AFC00749A8F /* fyad-yuck.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CBD8E1916548AFC00749A8F /* fyad-yuck.png */; };
 		8CC4AD6316907DD100639C80 /* posts-view-26.css in Resources */ = {isa = PBXBuildFile; fileRef = 8CC4AD6216907DD100639C80 /* posts-view-26.css */; };
+		8CCA272316B8BF3000A4952A /* AwfulParsing+Lepers.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CCA272216B8BF3000A4952A /* AwfulParsing+Lepers.m */; };
+		8CCA272616B8BFAC00A4952A /* AwfulLeper.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CCA272516B8BFAC00A4952A /* AwfulLeper.m */; };
+		8CCA272916B8BFB400A4952A /* _AwfulLeper.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CCA272816B8BFB400A4952A /* _AwfulLeper.m */; };
+		8CCA272D16B8C1EF00A4952A /* AwfulLepersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CCA272C16B8C1EF00A4952A /* AwfulLepersViewController.m */; };
+		8CCA273016B8C3C700A4952A /* AwfulHTTPClient+Lepers.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CCA272F16B8C3C700A4952A /* AwfulHTTPClient+Lepers.m */; };
 		8CCD500615B497A900E5893B /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC315B497A800E5893B /* Settings.plist */; };
 		8CCD536E15B783FD00E5893B /* action.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD504215B783FC00E5893B /* action.png */; };
 		8CCD536F15B783FD00E5893B /* action@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD504315B783FC00E5893B /* action@2x.png */; };
@@ -1273,6 +1278,17 @@
 		8CBD8E1816548AFC00749A8F /* fyad-hogyanker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-hogyanker.png"; sourceTree = "<group>"; };
 		8CBD8E1916548AFC00749A8F /* fyad-yuck.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-yuck.png"; sourceTree = "<group>"; };
 		8CC4AD6216907DD100639C80 /* posts-view-26.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-26.css"; sourceTree = "<group>"; };
+		8CCA272016B8BD4200A4952A /* Model-1.11-Lepers.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Model-1.11-Lepers.xcdatamodel"; sourceTree = "<group>"; };
+		8CCA272116B8BF3000A4952A /* AwfulParsing+Lepers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AwfulParsing+Lepers.h"; sourceTree = "<group>"; };
+		8CCA272216B8BF3000A4952A /* AwfulParsing+Lepers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AwfulParsing+Lepers.m"; sourceTree = "<group>"; };
+		8CCA272416B8BFAC00A4952A /* AwfulLeper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLeper.h; sourceTree = "<group>"; };
+		8CCA272516B8BFAC00A4952A /* AwfulLeper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLeper.m; sourceTree = "<group>"; };
+		8CCA272716B8BFB400A4952A /* _AwfulLeper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _AwfulLeper.h; sourceTree = "<group>"; };
+		8CCA272816B8BFB400A4952A /* _AwfulLeper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulLeper.m; sourceTree = "<group>"; };
+		8CCA272B16B8C1EF00A4952A /* AwfulLepersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLepersViewController.h; sourceTree = "<group>"; };
+		8CCA272C16B8C1EF00A4952A /* AwfulLepersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLepersViewController.m; sourceTree = "<group>"; };
+		8CCA272E16B8C3C700A4952A /* AwfulHTTPClient+Lepers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AwfulHTTPClient+Lepers.h"; sourceTree = "<group>"; };
+		8CCA272F16B8C3C700A4952A /* AwfulHTTPClient+Lepers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AwfulHTTPClient+Lepers.m"; sourceTree = "<group>"; };
 		8CCD498215B497A700E5893B /* Awful-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Awful-Info.plist"; sourceTree = "<group>"; };
 		8CCD4CC315B497A800E5893B /* Settings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Settings.plist; sourceTree = "<group>"; };
 		8CCD504215B783FC00E5893B /* action.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = action.png; sourceTree = "<group>"; };
@@ -1837,6 +1853,8 @@
 			children = (
 				1C05EDAE16230C1700FE567F /* AwfulParsing.h */,
 				1CBDB5F51625BACE0004BDF4 /* AwfulParsing.m */,
+				8CCA272116B8BF3000A4952A /* AwfulParsing+Lepers.h */,
+				8CCA272216B8BF3000A4952A /* AwfulParsing+Lepers.m */,
 			);
 			path = Parsing;
 			sourceTree = "<group>";
@@ -1868,6 +1886,7 @@
 				1CC780471612DA8D002AF958 /* Threads */,
 				1CE2D99D16688AC40024AC1C /* UIKit and Foundation */,
 				1C6ED634169103FE0015CDD5 /* Users */,
+				8CCA272A16B8C1B300A4952A /* Lepers */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -1884,6 +1903,8 @@
 		1C6474A61569989800C72657 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				8CCA272416B8BFAC00A4952A /* AwfulLeper.h */,
+				8CCA272516B8BFAC00A4952A /* AwfulLeper.m */,
 				1CC38BB1160D8C5800C35A11 /* AwfulCategory.h */,
 				1CC38BB2160D8C5800C35A11 /* AwfulCategory.m */,
 				1C6474AB1569989800C72657 /* AwfulForum.h */,
@@ -1906,6 +1927,8 @@
 		1C6474BA1569989800C72657 /* Generated */ = {
 			isa = PBXGroup;
 			children = (
+				8CCA272716B8BFB400A4952A /* _AwfulLeper.h */,
+				8CCA272816B8BFB400A4952A /* _AwfulLeper.m */,
 				1CC38BB4160D8C6000C35A11 /* _AwfulCategory.h */,
 				1CC38BB5160D8C6000C35A11 /* _AwfulCategory.m */,
 				1C6474BD1569989800C72657 /* _AwfulForum.h */,
@@ -2041,6 +2064,8 @@
 				1CC780211612D989002AF958 /* AwfulHTTPClient.m */,
 				1CAED9D916373F91001F5F04 /* AwfulThreadTags.h */,
 				1CAED9DA16373F91001F5F04 /* AwfulThreadTags.m */,
+				8CCA272E16B8C3C700A4952A /* AwfulHTTPClient+Lepers.h */,
+				8CCA272F16B8C3C700A4952A /* AwfulHTTPClient+Lepers.m */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -2206,6 +2231,15 @@
 				8C700289169C6EFA00FC0B78 /* FVGifAnimation.m */,
 			);
 			path = AnimatedGif;
+			sourceTree = "<group>";
+		};
+		8CCA272A16B8C1B300A4952A /* Lepers */ = {
+			isa = PBXGroup;
+			children = (
+				8CCA272B16B8C1EF00A4952A /* AwfulLepersViewController.h */,
+				8CCA272C16B8C1EF00A4952A /* AwfulLepersViewController.m */,
+			);
+			path = Lepers;
 			sourceTree = "<group>";
 		};
 		8CCD498115B497A700E5893B /* Resources */ = {
@@ -3848,6 +3882,11 @@
 				1C6ED63D1691055E0015CDD5 /* AwfulProfileViewController.m in Sources */,
 				8C70028A169C6EFA00FC0B78 /* FVGifAnimation.m in Sources */,
 				1C7487F116A88BAD0068B8A3 /* AwfulKeyboardBar.m in Sources */,
+				8CCA272316B8BF3000A4952A /* AwfulParsing+Lepers.m in Sources */,
+				8CCA272616B8BFAC00A4952A /* AwfulLeper.m in Sources */,
+				8CCA272916B8BFB400A4952A /* _AwfulLeper.m in Sources */,
+				8CCA272D16B8C1EF00A4952A /* AwfulLepersViewController.m in Sources */,
+				8CCA273016B8C3C700A4952A /* AwfulHTTPClient+Lepers.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4167,12 +4206,13 @@
 		1C5B99B8166FFA4F004C5D0E /* Model.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				8CCA272016B8BD4200A4952A /* Model-1.11-Lepers.xcdatamodel */,
 				1C5B99B9166FFA4F004C5D0E /* Model-1.8.1.xcdatamodel */,
 				1C5B99BA166FFA4F004C5D0E /* Model-1.8.xcdatamodel */,
 				1C5B99BB166FFA4F004C5D0E /* Model-1.9.1.xcdatamodel */,
 				1C6D3EE4168D798200B91A65 /* Model-1.10.xcdatamodel */,
 			);
-			currentVersion = 1C6D3EE4168D798200B91A65 /* Model-1.10.xcdatamodel */;
+			currentVersion = 8CCA272016B8BD4200A4952A /* Model-1.11-Lepers.xcdatamodel */;
 			path = Model.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

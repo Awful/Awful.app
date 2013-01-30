@@ -17,7 +17,6 @@
 
 @property (getter=isReachable, nonatomic) BOOL reachable;
 
-@property (nonatomic) dispatch_queue_t parseQueue;
 
 @end
 
