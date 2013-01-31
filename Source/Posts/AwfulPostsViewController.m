@@ -677,6 +677,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
             nav.modalPresentationStyle = UIModalPresentationFormSheet;
             [self presentViewController:nav animated:YES completion:nil];
         } else {
+            profile.hidesBottomBarWhenPushed = YES;
             UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithTitle:@"Back"
                                                                      style:UIBarButtonItemStyleBordered
                                                                     target:nil action:NULL];
