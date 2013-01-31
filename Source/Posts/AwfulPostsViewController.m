@@ -79,6 +79,8 @@
 
 @property (nonatomic) NSDateFormatter *postDateFormatter;
 
+@property (nonatomic) NSDateFormatter *editDateFormatter;
+
 @property (nonatomic) UIPopoverController *popover;
 
 @property (nonatomic) BOOL markingPostsAsBeenSeen;
@@ -946,6 +948,13 @@ static char KVOContext;
     if (post.author.regdate) {
         dict[@"authorRegDate"] = [self.regDateFormatter stringFromDate:post.author.regdate];
     }
+    dict[@"hasAttachment"] = @([post.attachmentID length] > 0);
+    if (post.editDate) {
+        NSString *editor = post.editor ? post.editor.username : @"Somebody";
+        NSString *editDate = [self.editDateFormatter stringFromDate:post.editDate];
+        dict[@"editMessage"] = [NSString stringWithFormat:@"%@ fucked around with this message on %@",
+                                editor, editDate];
+    }
     dict[@"beenSeen"] = @(post.beenSeen);
     return dict;
 }
@@ -1074,6 +1083,16 @@ static char KVOContext;
     _postDateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
     _postDateFormatter.dateFormat = @"MMM d, yyyy HH:mm";
     return _postDateFormatter;
+}
+
+- (NSDateFormatter *)editDateFormatter
+{
+    if (_editDateFormatter) return _editDateFormatter;
+    _editDateFormatter = [NSDateFormatter new];
+    // Jan 2, 2003 around 4:05
+    _editDateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+    _editDateFormatter.dateFormat = @"MMM d, yyy 'around' HH:mm";
+    return _editDateFormatter;
 }
 
 - (void)doneWithProfile

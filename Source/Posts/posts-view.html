@@ -34,6 +34,16 @@
   
   <section>
     {{{innerHTML}}}
+    {{#hasAttachment}}
+    <p class="attachment">
+      <img src="http://forums.somethingawful.com/attachment.php?postid={{postID}}" alt="">
+    </p>
+    {{/hasAttachment}}
+    {{#editMessage}}
+    <p class="editedby">
+      <span>{{editMessage}}</span>
+    </p>
+    {{/editMessage}}
   </section>
 </article>
 </script>
