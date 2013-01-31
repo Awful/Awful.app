@@ -70,7 +70,7 @@
         [additionalInfo addObject:@{ @"kind": @"Occupation", @"info": self.user.occupation }];
     }
     NSMutableDictionary *userDict = [@{
-        @"avatarURL": self.user.avatarURL ?: [NSNull null],
+        @"avatarURL": [self.user.avatarURL absoluteString] ?: [NSNull null],
         @"customTitle": self.user.customTitle ?: [NSNull null],
         @"postCount": self.user.postCount ?: @0,
         @"username": self.user.username ?: @"",
