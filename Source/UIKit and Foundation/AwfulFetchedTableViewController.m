@@ -27,7 +27,7 @@
 
 - (void)reachabilityChanged:(NSNotification *)note
 {
-    if ([self refreshOnAppear]) [self refresh];
+    if (!self.refreshing && [self refreshOnAppear]) [self refresh];
 }
 
 - (void)viewDidLoad

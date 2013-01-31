@@ -46,8 +46,9 @@
     if (self) {
         self.stringEncoding = NSWindowsCP1252StringEncoding;
         _parseQueue = dispatch_queue_create("com.awfulapp.Awful.parsing", NULL);
+        __weak AwfulHTTPClient *weakSelf = self;
         [self setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
-            self.reachable = status != AFNetworkReachabilityStatusNotReachable;
+            weakSelf.reachable = status != AFNetworkReachabilityStatusNotReachable;
         }];
     }
     return self;

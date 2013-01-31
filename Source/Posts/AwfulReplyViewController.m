@@ -383,7 +383,7 @@ withImagePlaceholderResults:placeholderResults
 - (void)linkifySelection
 {
     NSError *error;
-    NSDataDetector *linkDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink
+    NSDataDetector *linkDetector = [NSDataDetector dataDetectorWithTypes:(NSTextCheckingTypes)NSTextCheckingTypeLink
                                                                    error:&error];
     if (!linkDetector) {
         NSLog(@"error creating link data detector: %@", linkDetector);

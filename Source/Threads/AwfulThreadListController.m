@@ -27,18 +27,9 @@
 #import "SVPullToRefresh.h"
 #import "UIViewController+NavigationEnclosure.h"
 
-typedef enum {
-    AwfulThreadListActionsTypeFirstPage = 0,
-    AwfulThreadListActionsTypeLastPage,
-    AwfulThreadListActionsTypeUnread
-} AwfulThreadListActionsType;
-
-
 @interface AwfulThreadListController ()
 
-@property (nonatomic) NSMutableDictionary *cellsWithoutThreadTags;
-
-@property (nonatomic, getter=threadTagObserver) id newThreadTagObserver;
+@property (nonatomic) NSMutableSet *cellsMissingThreadTags;
 
 @end
 
@@ -49,12 +40,10 @@ typedef enum {
 {
     self = [super init];
     if (!(self = [super init])) return nil;
-    _cellsWithoutThreadTags = [NSMutableDictionary new];
-    [[NSNotificationCenter defaultCenter] addObserverForName:AwfulSettingsDidChangeNotification
-                                                      object:nil
-                                                       queue:[NSOperationQueue mainQueue]
-                                                  usingBlock:^(NSNotification *note)
-     { [self settingsChanged:note]; }];
+    _cellsMissingThreadTags = [NSMutableSet new];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsChanged:)
+                                                 name:AwfulSettingsDidChangeNotification
+                                               object:nil];
     return self;
 }
 
@@ -113,7 +102,7 @@ typedef enum {
 - (void)refresh
 {
     [super refresh];
-    [self.cellsWithoutThreadTags removeAllObjects];
+    [self.cellsMissingThreadTags removeAllObjects];
     [self loadPageNum:1];
     CGFloat refreshViewHeight = self.tableView.pullToRefreshView.bounds.size.height;
     [self.tableView setContentOffset:CGPointMake(0, -refreshViewHeight)];
@@ -297,13 +286,13 @@ typedef enum {
         cell.imageView.image = [[AwfulThreadTags sharedThreadTags]
                                 threadTagNamed:thread.firstIconName];
         if (!cell.imageView.image && thread.firstIconName) {
-            [self updateThreadTag:thread.firstIconName forCellAtIndexPath:indexPath];
+            [self updateThreadTagsForCellAtIndexPath:indexPath];
         }
         cell.secondaryTagImageView.hidden = NO;
         cell.secondaryTagImageView.image = [[AwfulThreadTags sharedThreadTags]
                                             threadTagNamed:thread.secondIconName];
         if (thread.secondIconName && !cell.secondaryTagImageView.image) {
-            [self updateThreadTag:thread.secondIconName forCellAtIndexPath:indexPath];
+            [self updateThreadTagsForCellAtIndexPath:indexPath];
         }
         cell.sticky = thread.isStickyValue;
         // Hardcode Film Dump to never show ratings; its thread tags are the ratings.
@@ -370,55 +359,25 @@ typedef enum {
     disclosure.highlightedColor = theme.disclosureIndicatorHighlightedColor;
 }
 
-- (void)updateThreadTag:(NSString *)threadTagName forCellAtIndexPath:(NSIndexPath *)indexPath
+- (void)updateThreadTagsForCellAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (!self.cellsWithoutThreadTags[indexPath]) {
-        self.cellsWithoutThreadTags[indexPath] = [NSMutableArray new];
+    if ([self.cellsMissingThreadTags count] == 0) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newThreadTags:)
+                                                     name:AwfulNewThreadTagsAvailableNotification
+                                                   object:nil];
     }
-    [self.cellsWithoutThreadTags[indexPath] addObject:threadTagName];
-    if (self.newThreadTagObserver) return;
-    NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
-    self.newThreadTagObserver = [noteCenter addObserverForName:AwfulNewThreadTagsAvailableNotification
-                                                        object:nil
-                                                         queue:[NSOperationQueue mainQueue]
-                                                    usingBlock:^(NSNotification *note)
-                                 { [self newThreadTags:note]; }];
+    [self.cellsMissingThreadTags addObject:indexPath];
 }
 
 - (void)newThreadTags:(NSNotification *)note
 {
-    NSMutableArray *updated = [NSMutableArray new];
-    for (NSIndexPath *indexPath in self.cellsWithoutThreadTags) {
-        UITableViewCell *genericCell = [self.tableView cellForRowAtIndexPath:indexPath];
-        AwfulThreadCell *cell = (AwfulThreadCell *)genericCell;
-        if (!cell) {
-            self.cellsWithoutThreadTags[indexPath] = @[];
-            continue;
-        }
-        AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
-        NSMutableArray *listOfTags = self.cellsWithoutThreadTags[indexPath];
-        for (NSString *tag in [listOfTags copy]) {
-            UIImage *image = [[AwfulThreadTags sharedThreadTags] threadTagNamed:tag];
-            if (!image) continue;
-            if ([tag isEqualToString:thread.firstIconName]) {
-                cell.imageView.image = image;
-            } else if ([tag isEqualToString:thread.secondIconName]) {
-                cell.secondaryTagImageView.image = image;
-            }
-            [updated addObject:indexPath];
-            [listOfTags removeObject:tag];
-        }
-    }
-    [self.tableView reloadRowsAtIndexPaths:updated withRowAnimation:UITableViewRowAnimationNone];
-    for (id key in updated) {
-        if ([self.cellsWithoutThreadTags[key] count] == 0) {
-            [self.cellsWithoutThreadTags removeObjectForKey:key];
-        }
-    }
-    if ([self.cellsWithoutThreadTags count] == 0) {
-        [[NSNotificationCenter defaultCenter] removeObserver:self.newThreadTagObserver];
-        self.newThreadTagObserver = nil;
-    }
+    if ([self.cellsMissingThreadTags count] == 0) return;
+    [self.cellsMissingThreadTags removeAllObjects];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:AwfulNewThreadTagsAvailableNotification
+                                                  object:nil];
+    [self.tableView reloadRowsAtIndexPaths:[self.cellsMissingThreadTags allObjects]
+                          withRowAnimation:UITableViewRowAnimationNone];
 }
 
 - (void)showThreadActions:(UILongPressGestureRecognizer *)longPress
