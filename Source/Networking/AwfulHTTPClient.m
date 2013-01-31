@@ -269,14 +269,14 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
                     return;
                 }
                 NSMutableDictionary *postParameters = [@{
-                                                       @"threadid" : threadID,
-                                                       @"formkey" : formInfo.formkey,
-                                                       @"form_cookie" : formInfo.formCookie,
-                                                       @"action" : @"postreply",
-                                                       @"message" : Entitify(text),
-                                                       @"parseurl" : @"yes",
-                                                       @"submit" : @"Submit Reply",
-                                                       } mutableCopy];
+                    @"threadid" : threadID,
+                    @"formkey" : formInfo.formkey,
+                    @"form_cookie" : formInfo.formCookie,
+                    @"action" : @"postreply",
+                    @"message" : Entitify(text),
+                    @"parseurl" : @"yes",
+                    @"submit" : @"Submit Reply",
+                } mutableCopy];
                 if (formInfo.bookmark) {
                     postParameters[@"bookmark"] = formInfo.bookmark;
                 }
