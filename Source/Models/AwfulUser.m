@@ -42,4 +42,51 @@
     return user;
 }
 
++ (instancetype)userCreatedOrUpdatedFromJSON:(NSDictionary *)json
+{
+    NSString *userID = [json[@"userid"] stringValue];
+    if (!userID) return nil;
+    AwfulUser *user = [self firstMatchingPredicate:@"userID = %@", userID];
+    if (!user) {
+        user = [self insertNew];
+        user.userID = userID;
+    }
+    // Username and user ID (above) always appear.
+    user.username = json[@"username"];
+    
+    #define ObjOrNilIfEmpty(obj) ([(obj) length] > 0 ? (obj) : nil)
+    
+    // Everything else is optional.
+    if (json[@"aim"]) user.aimName = ObjOrNilIfEmpty(json[@"aim"]);
+    if (json[@"biography"]) user.aboutMe = ObjOrNilIfEmpty(json[@"biography"]);
+    if (json[@"gender"]) {
+        if ([json[@"gender"] isEqual:@"F"]) user.gender = @"female";
+        else if ([json[@"gender"] isEqual:@"M"]) user.gender = @"male";
+        else user.gender = @"porpoise";
+    }
+    if (json[@"homepage"]) user.homepageURL = ObjOrNilIfEmpty(json[@"homepage"]);
+    if (json[@"icq"]) user.icqName = ObjOrNilIfEmpty(json[@"icq"]);
+    if (json[@"interests"]) user.interests = ObjOrNilIfEmpty(json[@"interests"]);
+    if (json[@"joindate"]) {
+        user.regdate = [NSDate dateWithTimeIntervalSince1970:[json[@"joindate"] doubleValue]];
+    }
+    if (json[@"lastpost"]) {
+        user.lastPost = [NSDate dateWithTimeIntervalSince1970:[json[@"lastpost"] doubleValue]];
+    }
+    if (json[@"location"]) user.location = ObjOrNilIfEmpty(json[@"location"]);
+    if (json[@"occupation"]) user.occupation = ObjOrNilIfEmpty(json[@"occupation"]);
+    if (json[@"picture"]) user.profilePictureURL = ObjOrNilIfEmpty(json[@"picture"]);
+    if (json[@"posts"]) user.postCount = json[@"posts"];
+    if (json[@"postsperday"]) user.postRate = [json[@"postsperday"] stringValue];
+    if (json[@"role"]) {
+        user.administratorValue = [json[@"role"] isEqual:@"A"];
+        user.moderatorValue = [json[@"role"] isEqual:@"M"];        
+    }
+    if (json[@"usertitle"]) user.customTitle = json[@"usertitle"];
+    if (json[@"yahoo"]) user.yahooName = ObjOrNilIfEmpty(json[@"yahoo"]);
+    
+    [[AwfulDataStack sharedDataStack] save];
+    return user;
+}
+
 @end

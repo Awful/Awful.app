@@ -150,18 +150,7 @@
         post.threadPage = json[@"page"][0];
         
         NSString *userID = [info[@"userid"] stringValue];
-        AwfulUser *author = [AwfulUser firstMatchingPredicate:@"userID = %@", userID];
-        if (!author) {
-            author = [AwfulUser insertNew];
-            author.userID = userID;
-        }
-        NSDictionary *authorInfo = json[@"userids"][userID];
-        author.administratorValue = [authorInfo[@"role"] isEqual:@"A"];
-        author.customTitle = authorInfo[@"usertitle"];
-        author.moderatorValue = [authorInfo[@"role"] isEqual:@"M"];
-        author.regdate = [NSDate dateWithTimeIntervalSince1970:[authorInfo[@"joindate"] doubleValue]];
-        author.username = authorInfo[@"username"];
-        post.author = author;
+        post.author = [AwfulUser userCreatedOrUpdatedFromJSON:json[@"userids"][userID]];
         if ([info[@"op"] boolValue]) {
             thread.author = post.author;
         }

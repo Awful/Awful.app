@@ -75,11 +75,6 @@
     for (AwfulThread *thread in [self fetchAllMatchingPredicate:@"threadID in %@", threadIDs]) {
         existingThreads[thread.threadID] = thread;
     }
-    NSMutableDictionary *existingUsers = [NSMutableDictionary new];
-    NSArray *usernames = [json valueForKeyPath:@"threads.postusername"];
-    for (AwfulUser *user in [AwfulUser fetchAllMatchingPredicate:@"username IN %@", usernames]) {
-        existingUsers[user.username] = user;
-    }
     
     for (NSDictionary *info in json[@"threads"]) {
         NSString *threadID = [info[@"threadid"] stringValue];
@@ -116,11 +111,11 @@
         thread.totalReplies = info[@"replycount"];
         thread.totalUnreadPosts = info[@"newpostcount"] ?: @(-1);
         
-        AwfulUser *author = existingUsers[info[@"postusername"]] ?: [AwfulUser insertNew];
-        author.userID = [info[@"postuserid"] stringValue];
-        author.username = info[@"postusername"];
-        thread.author = author;
-        existingUsers[author.userID] = author;
+        NSDictionary *authorJSON = @{
+            @"userid": info[@"postuserid"],
+            @"username": info[@"postusername"]
+        };
+        thread.author = [AwfulUser userCreatedOrUpdatedFromJSON:authorJSON];
         
         existingThreads[thread.threadID] = thread;
     }

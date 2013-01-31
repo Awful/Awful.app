@@ -184,12 +184,8 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
                                                                success:^(id _, NSDictionary *json)
     {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (callback) callback(nil, @{
-                                    @"userID": [json[@"userid"] stringValue],
-                                    @"username": json[@"username"]
-                                   });
-        });
+        AwfulUser *user = [AwfulUser userCreatedOrUpdatedFromJSON:json];
+        if (callback) callback(nil, [user dictionaryWithValuesForKeys:@[ @"userID", @"username" ]]);
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
     }];

@@ -15,4 +15,6 @@
 
 + (instancetype)userCreatedOrUpdatedFromProfileInfo:(ProfileParsedInfo *)profileInfo;
 
++ (instancetype)userCreatedOrUpdatedFromJSON:(NSDictionary *)json;
+
 @end
