@@ -179,7 +179,7 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
     if (![AwfulHTTPClient client].loggedIn) return NO;
     if (![AwfulHTTPClient client].reachable) return NO;
     if (!self.lastRefresh) return YES;
-    if ([[NSDate date] timeIntervalSinceDate:self.lastRefresh] > 60 * 60 * 20) return YES;
+    if ([[NSDate date] timeIntervalSinceDate:self.lastRefresh] > 60 * 60 * 6) return YES;
     if ([self.fetchedResultsController.fetchedObjects count] == 0) return YES;
     if ([AwfulForum firstMatchingPredicate:@"index = -1"]) return YES;
     return NO;
