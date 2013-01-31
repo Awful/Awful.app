@@ -225,22 +225,14 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
 
 - (NSOperation *)listForumsAndThen:(void (^)(NSError *error, NSArray *forums))callback
 {
-    // Seems like only forumdisplay.php and showthread.php have the <select> with a complete list
-    // of forums. We'll use the Main "forum" as it's the smallest page with the drop-down list.
     NSURLRequest *urlRequest = [self requestWithMethod:@"GET"
-                                                  path:@"forumdisplay.php"
-                                            parameters:@{ @"forumid": @"48" }];
+                                                  path:@""
+                                            parameters:@{ @"json": @1 }];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
-                                                               success:^(id _, id data)
+                                                               success:^(id _, NSDictionary *json)
     {
-        dispatch_async(self.parseQueue, ^{
-            ForumHierarchyParsedInfo *info = [[ForumHierarchyParsedInfo alloc] initWithHTMLData:
-                                              ConvertFromWindows1252ToUTF8(data)];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSArray *forums = [AwfulForum updateCategoriesAndForums:info];
-                if (callback) callback(nil, forums);
-            });
-        });
+        NSArray *forums = [AwfulForum updateCategoriesAndForumsWithJSON:json[@"forums"]];
+        if (callback) callback(nil, forums);
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
     }];
@@ -511,6 +503,8 @@ static NSString * Entitify(NSString *noEntities)
         @"action" : @"login",
         @"username" : username,
         @"password" : password,
+        // TODO when /?json=1 hits the live forums, redirect there instead to get forum hierarchy
+        //      as well as logged-in user's info.
         @"next": @"/member.php?action=getinfo&json=1"
     };
     NSMutableURLRequest *request = [self requestWithMethod:@"POST"

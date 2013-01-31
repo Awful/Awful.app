@@ -13,4 +13,6 @@
 
 + (NSArray *)updateCategoriesAndForums:(ForumHierarchyParsedInfo *)info;
 
++ (NSArray *)updateCategoriesAndForumsWithJSON:(NSArray *)json;
+
 @end
