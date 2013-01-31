@@ -227,6 +227,15 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
                                                                success:^(id _, NSDictionary *json)
     {
+        if (![json[@"forums"] isKindOfClass:[NSArray class]]) {
+            NSDictionary *userInfo = @{
+                NSLocalizedDescriptionKey: @"The forums list could not be parsed"
+            };
+            NSError *error = [NSError errorWithDomain:AwfulErrorDomain
+                                                 code:AwfulErrorCodes.parseError userInfo:userInfo];
+            if (callback) callback(error, nil);
+            return;
+        }
         NSArray *forums = [AwfulForum updateCategoriesAndForumsWithJSON:json[@"forums"]];
         if (callback) callback(nil, forums);
     } failure:^(id _, NSError *error) {
@@ -642,5 +651,6 @@ NSString * const AwfulErrorDomain = @"AwfulErrorDomain";
 
 const struct AwfulErrorCodes AwfulErrorCodes = {
     .badUsernameOrPassword = -1000,
-    .threadIsClosed = -1001
+    .threadIsClosed = -1001,
+    .parseError = -1002,
 };

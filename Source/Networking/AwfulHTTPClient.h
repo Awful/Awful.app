@@ -247,4 +247,7 @@ extern const struct AwfulErrorCodes
     
     // Some action isn't allowed because the thread is closed.
     NSInteger threadIsClosed;
+    
+    // Could not parse the response from SA.
+    NSInteger parseError;
 } AwfulErrorCodes;
