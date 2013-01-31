@@ -11,6 +11,7 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
 #import "AwfulSettings.h"
+#import "NSManagedObject+Awful.h"
 #import "SVProgressHUD.h"
 
 @interface AwfulProfileViewController () <UIWebViewDelegate>

@@ -9,6 +9,7 @@
 #import "AwfulUser.h"
 #import "AwfulDataStack.h"
 #import "AwfulParsing.h"
+#import "NSManagedObject+Awful.h"
 #import "TFHpple.h"
 
 @implementation AwfulUser
