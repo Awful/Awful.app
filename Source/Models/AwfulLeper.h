@@ -7,7 +7,8 @@
 @end
 
 typedef enum {
-    AwfulLeperProbation,
-    AwfulLeperBan,
-    AwfulLeperPermaban
+    AwfulLeperTypeUnknown = -1,
+    AwfulLeperTypeProbation,
+    AwfulLeperTypeBan,
+    AwfulLeperTypePermaban
 } AwfulLeperType;

@@ -20,6 +20,7 @@
         <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="forum" inverseEntity="AwfulThread" syncable="YES"/>
     </entity>
     <entity name="AwfulLeper" representedClassName="AwfulLeper" syncable="YES">
+        <attribute name="banID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="banType" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="reason" optional="YES" attributeType="String" syncable="YES"/>
@@ -92,7 +93,7 @@
     <elements>
         <element name="AwfulCategory" positionX="160" positionY="192" width="128" height="105"/>
         <element name="AwfulForum" positionX="205" positionY="285" width="128" height="210"/>
-        <element name="AwfulLeper" positionX="160" positionY="192" width="128" height="135"/>
+        <element name="AwfulLeper" positionX="160" positionY="192" width="128" height="150"/>
         <element name="AwfulPost" positionX="160" positionY="192" width="128" height="180"/>
         <element name="AwfulThread" positionX="25" positionY="210" width="128" height="375"/>
         <element name="AwfulUser" positionX="160" positionY="192" width="128" height="420"/>

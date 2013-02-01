@@ -4,6 +4,7 @@
 #import "_AwfulLeper.h"
 
 const struct AwfulLeperAttributes AwfulLeperAttributes = {
+	.banID = @"banID",
 	.banType = @"banType",
 	.date = @"date",
 	.reason = @"reason",
@@ -52,6 +53,13 @@ const struct AwfulLeperFetchedProperties AwfulLeperFetchedProperties = {
 
 	return keyPaths;
 }
+
+
+
+
+@dynamic banID;
+
+
 
 
 

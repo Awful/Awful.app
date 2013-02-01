@@ -5,6 +5,7 @@
 
 
 extern const struct AwfulLeperAttributes {
+	__unsafe_unretained NSString *banID;
 	__unsafe_unretained NSString *banType;
 	__unsafe_unretained NSString *date;
 	__unsafe_unretained NSString *reason;
@@ -27,6 +28,7 @@ extern const struct AwfulLeperFetchedProperties {
 
 
 
+
 @interface AwfulLeperID : NSManagedObjectID {}
 @end
 
@@ -35,6 +37,16 @@ extern const struct AwfulLeperFetchedProperties {
 + (NSString*)entityName;
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
 - (AwfulLeperID*)objectID;
+
+
+
+
+
+@property (nonatomic, strong) NSString* banID;
+
+
+
+//- (BOOL)validateBanID:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -103,6 +115,12 @@ extern const struct AwfulLeperFetchedProperties {
 @end
 
 @interface _AwfulLeper (CoreDataGeneratedPrimitiveAccessors)
+
+
+- (NSString*)primitiveBanID;
+- (void)setPrimitiveBanID:(NSString*)value;
+
+
 
 
 - (NSNumber*)primitiveBanType;

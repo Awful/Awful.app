@@ -14,9 +14,14 @@
 @property (readonly, copy, nonatomic) NSString *postID;
 @property (readonly, nonatomic) NSDate *banDate;
 @property (readonly, copy, nonatomic) NSString *bannedUserID;
+@property (readonly, copy, nonatomic) NSString *bannedUserName;
 @property (readonly, copy, nonatomic) NSString *banReason;
 @property (readonly, copy, nonatomic) NSString *modUserID;
+@property (readonly, copy, nonatomic) NSString *modUserName;
 @property (readonly, copy, nonatomic) NSString *adminUserID;
+@property (readonly, copy, nonatomic) NSString *adminUserName;
+
+@property (readonly, nonatomic) NSString *banID;
 
 + (NSArray*)lepersWithHTMLData:(NSData*)data;
 @end
@@ -30,3 +35,5 @@ typedef enum {
     LeperTableColumnMod,
     LeperTableColumnAdmin
 } LeperTableColumn;
+
+extern AwfulLeperType BanTypeFromString(NSString* s);
