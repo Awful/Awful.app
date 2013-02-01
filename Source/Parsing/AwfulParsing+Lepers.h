@@ -20,3 +20,13 @@
 
 + (NSArray*)lepersWithHTMLData:(NSData*)data;
 @end
+
+
+typedef enum {
+    LeperTableColumnType = 0,
+    LeperTableColumnDate,
+    LeperTableColumnJerk,
+    LeperTableColumnReason,
+    LeperTableColumnMod,
+    LeperTableColumnAdmin
+} LeperTableColumn;

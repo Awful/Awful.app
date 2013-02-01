@@ -118,7 +118,7 @@ static NSDate * RegdateFromString(NSString *s)
 }
 
 
-static NSDate * PostDateFromString(NSString *s)
+NSDate * PostDateFromString(NSString *s)
 {
     static NSDateFormatter *df = nil;
     if (df == nil) {
@@ -140,6 +140,17 @@ static NSDate * PostDateFromString(NSString *s)
     return nil;
 }
 
+NSString * UserIDFromURLString(NSString *s)
+{
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"userid=(\\d+)"
+                                                                           options:0
+                                                                             error:nil];
+    NSTextCheckingResult *match = [regex firstMatchInString:s
+                                                    options:0
+                                                      range:NSMakeRange(0, [s length])];
+    if (match) return [s substringWithRange:[match rangeAtIndex:1]];
+    return nil;
+}
 
 static NSString * FixSAAndlibxmlHTMLSerialization(NSString *html)
 {

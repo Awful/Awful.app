@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
+extern NSDate * PostDateFromString(NSString *s);
+extern NSString* UserIDFromURLString(NSString* s);
+
 @interface ParsedInfo : NSObject
 
 // Designated initializer.

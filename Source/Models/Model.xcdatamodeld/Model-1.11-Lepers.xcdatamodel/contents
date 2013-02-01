@@ -23,9 +23,9 @@
         <attribute name="banType" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="reason" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="admin" optional="YES" minCount="1" maxCount="1" deletionRule="No Action" destinationEntity="AwfulUser" inverseName="banApprovals" inverseEntity="AwfulUser" syncable="YES"/>
-        <relationship name="jerk" optional="YES" minCount="1" maxCount="1" deletionRule="No Action" destinationEntity="AwfulUser" inverseName="bans" inverseEntity="AwfulUser" syncable="YES"/>
-        <relationship name="mod" optional="YES" minCount="1" maxCount="1" deletionRule="No Action" destinationEntity="AwfulUser" inverseName="banRequests" inverseEntity="AwfulUser" syncable="YES"/>
+        <relationship name="admin" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulUser" inverseName="banApprovals" inverseEntity="AwfulUser" syncable="YES"/>
+        <relationship name="jerk" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulUser" inverseName="bans" inverseEntity="AwfulUser" syncable="YES"/>
+        <relationship name="mod" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulUser" inverseName="banRequests" inverseEntity="AwfulUser" syncable="YES"/>
     </entity>
     <entity name="AwfulPost" representedClassName="AwfulPost" syncable="YES">
         <attribute name="beenSeen" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
@@ -92,9 +92,9 @@
     <elements>
         <element name="AwfulCategory" positionX="160" positionY="192" width="128" height="105"/>
         <element name="AwfulForum" positionX="205" positionY="285" width="128" height="210"/>
+        <element name="AwfulLeper" positionX="160" positionY="192" width="128" height="135"/>
         <element name="AwfulPost" positionX="160" positionY="192" width="128" height="180"/>
         <element name="AwfulThread" positionX="25" positionY="210" width="128" height="375"/>
         <element name="AwfulUser" positionX="160" positionY="192" width="128" height="420"/>
-        <element name="AwfulLeper" positionX="160" positionY="192" width="128" height="135"/>
     </elements>
 </model>
