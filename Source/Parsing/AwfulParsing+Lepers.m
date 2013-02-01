@@ -14,10 +14,10 @@
 
 @property (nonatomic) AwfulLeperType banType;
 @property (copy, nonatomic) NSString *postID;
-@property (nonatomic) NSDate *banDate;
+@property (nonatomic) NSDate *date;
 @property (copy, nonatomic) NSString *bannedUserID;
 @property (copy, nonatomic) NSString *bannedUserName;
-@property (copy, nonatomic) NSString *banReason;
+@property (copy, nonatomic) NSString *reason;
 @property (copy, nonatomic) NSString *modUserID;
 @property (copy, nonatomic) NSString *modUserName;
 @property (copy, nonatomic) NSString *adminUserID;
@@ -30,11 +30,12 @@
 
 + (NSArray*)lepersWithHTMLData:(NSData *)htmlData {
     NSMutableArray *assholes = [NSMutableArray new];
-    NSArray *rawAssholes = PerformRawHTMLXPathQuery(htmlData, @"//table.standard.full//tbody//tr");
+    NSArray *rawAssholes = PerformRawHTMLXPathQuery(htmlData, @"//table//tr");
     for (NSString *ass in rawAssholes) {
         NSData *dataForOneLeper = [ass dataUsingEncoding:NSUTF8StringEncoding];
-        ThreadParsedInfo *info = [[self alloc] initWithHTMLData:dataForOneLeper];
-        [assholes addObject:info];
+        LepersParsedInfo *info = [[self alloc] initWithHTMLData:dataForOneLeper];
+        if (info.bannedUserID != nil)
+            [assholes addObject:info];
     }
     return assholes;
 }
@@ -49,23 +50,32 @@
     
     if (tds.count == 6)
     {
-        TFHppleElement *a = [tds[LeperTableColumnType] childrenWithTagName:@"a"][0];
-        self.postID = a.attributes[@"href"];
-        self.banType = BanTypeFromString(a.content);
+        TFHppleElement *b = [tds[LeperTableColumnType] firstChildWithTagName:@"b"];
+        TFHppleElement *a = [b firstChild];
+        if (a != nil) {
+            //sometimes permabans don't have a post link, handle that
+            NSURL *url = [NSURL URLWithString:a.attributes[@"href"]];
+            self.postID = [url queryDictionary][@"postid"];
+            self.banType = BanTypeFromString(a.content);
+        } else {
+            self.banType = BanTypeFromString(b.content);
+        }
         
-        self.banDate = PostDateFromString([tds[LeperTableColumnDate] content]);
+
+        
+        self.date = PostDateFromString([tds[LeperTableColumnDate] content]);
     
-        a = [tds[LeperTableColumnJerk] childrenWithTagName:@"a"][0];
+        a = [[tds[LeperTableColumnJerk] firstChildWithTagName:@"b"] firstChild];
         self.bannedUserID = UserIDFromURLString(a.attributes[@"href"]);
         self.bannedUserName = a.content;
         
-        self.banReason = [tds[LeperTableColumnReason] content];
+        self.reason = [tds[LeperTableColumnReason] content];
         
-        a = [tds[LeperTableColumnMod] childrenWithTagName:@"a"][0];
+        a = [tds[LeperTableColumnMod] firstChildWithTagName:@"a"];
         self.modUserID = UserIDFromURLString(a.attributes[@"href"]);
         self.modUserName = a.content;
         
-        a = [tds[LeperTableColumnAdmin] childrenWithTagName:@"a"][0];
+        a = [tds[LeperTableColumnAdmin] firstChildWithTagName:@"a"];
         self.adminUserID = UserIDFromURLString(a.attributes[@"href"]);
         self.adminUserName = a.content;
     }
@@ -78,7 +88,12 @@
     //looks like they get approved in batches so there's a lot of identical dates
     //i think "bantype.userid.date" should be unique
     
-    return [NSString stringWithFormat:@"%@.%@.%f", @"bantype", self.bannedUserID, self.banDate.timeIntervalSince1970];
+    return [NSString stringWithFormat:@"%i.%@.%i", self.banType, self.bannedUserID, (int)self.date.timeIntervalSince1970];
+}
+
++ (NSArray *)keysToApplyToObject
+{
+    return @[ AwfulLeperAttributes.reason, AwfulLeperAttributes.date, AwfulLeperAttributes.banType, AwfulLeperAttributes.banID];
 }
 
 @end

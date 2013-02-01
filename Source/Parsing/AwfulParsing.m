@@ -13,10 +13,7 @@
 #import "XPathQuery.h"
 
 
-// XPath boilerplate to handle HTML class attribute.
-//
-//   NSString *xpath = @"//div[" HAS_CLASS(breadcrumbs) "]";
-#define HAS_CLASS(name) "contains(concat(' ', normalize-space(@class), ' '), ' " #name " ')"
+
 
 
 @interface ParsedInfo ()
@@ -126,14 +123,15 @@ NSDate * PostDateFromString(NSString *s)
         [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
     }
     [df setTimeZone:[NSTimeZone localTimeZone]];
-    static NSString *formats[] = {
+    NSArray *formats = @[
         @"h:mm a MMM d, yyyy",
         @"MMM d, yyyy h:mm a",
         @"HH:mm MMM d, yyyy",
         @"MMM d, yyyy HH:mm",
-    };
-    for (size_t i = 0; i < sizeof(formats) / sizeof(formats[0]); i++) {
-        [df setDateFormat:formats[i]];
+        @"MM/dd/yy hh:mma"
+    ];
+    for (NSString *format in formats) {
+        [df setDateFormat:format];
         NSDate *parsedDate = [df dateFromString:s];
         if (parsedDate) return parsedDate;
     }

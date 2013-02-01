@@ -15,6 +15,7 @@ const struct AwfulPostAttributes AwfulPostAttributes = {
 
 const struct AwfulPostRelationships AwfulPostRelationships = {
 	.author = @"author",
+	.bans = @"bans",
 	.thread = @"thread",
 };
 
@@ -201,6 +202,19 @@ const struct AwfulPostFetchedProperties AwfulPostFetchedProperties = {
 
 @dynamic author;
 
+	
+
+@dynamic bans;
+
+	
+- (NSMutableSet*)bansSet {
+	[self willAccessValueForKey:@"bans"];
+  
+	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"bans"];
+  
+	[self didAccessValueForKey:@"bans"];
+	return result;
+}
 	
 
 @dynamic thread;

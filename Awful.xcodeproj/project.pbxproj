@@ -636,6 +636,7 @@
 		8CCA272916B8BFB400A4952A /* _AwfulLeper.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CCA272816B8BFB400A4952A /* _AwfulLeper.m */; };
 		8CCA272D16B8C1EF00A4952A /* AwfulLepersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CCA272C16B8C1EF00A4952A /* AwfulLepersViewController.m */; };
 		8CCA273016B8C3C700A4952A /* AwfulHTTPClient+Lepers.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CCA272F16B8C3C700A4952A /* AwfulHTTPClient+Lepers.m */; };
+		8CCA273316BC220F00A4952A /* AwfulLeperCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CCA273216BC220F00A4952A /* AwfulLeperCell.m */; };
 		8CCD500615B497A900E5893B /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC315B497A800E5893B /* Settings.plist */; };
 		8CCD536E15B783FD00E5893B /* action.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD504215B783FC00E5893B /* action.png */; };
 		8CCD536F15B783FD00E5893B /* action@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD504315B783FC00E5893B /* action@2x.png */; };
@@ -1278,7 +1279,7 @@
 		8CBD8E1816548AFC00749A8F /* fyad-hogyanker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-hogyanker.png"; sourceTree = "<group>"; };
 		8CBD8E1916548AFC00749A8F /* fyad-yuck.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-yuck.png"; sourceTree = "<group>"; };
 		8CC4AD6216907DD100639C80 /* posts-view-26.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-26.css"; sourceTree = "<group>"; };
-		8CCA272016B8BD4200A4952A /* Model-1.11-Lepers.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Model-1.11-Lepers.xcdatamodel"; sourceTree = "<group>"; };
+		8CCA272016B8BD4200A4952A /* Model-1.11-Lepers.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model-1.11-Lepers.xcdatamodel"; sourceTree = "<group>"; };
 		8CCA272116B8BF3000A4952A /* AwfulParsing+Lepers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AwfulParsing+Lepers.h"; sourceTree = "<group>"; };
 		8CCA272216B8BF3000A4952A /* AwfulParsing+Lepers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AwfulParsing+Lepers.m"; sourceTree = "<group>"; };
 		8CCA272416B8BFAC00A4952A /* AwfulLeper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLeper.h; sourceTree = "<group>"; };
@@ -1289,6 +1290,8 @@
 		8CCA272C16B8C1EF00A4952A /* AwfulLepersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLepersViewController.m; sourceTree = "<group>"; };
 		8CCA272E16B8C3C700A4952A /* AwfulHTTPClient+Lepers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AwfulHTTPClient+Lepers.h"; sourceTree = "<group>"; };
 		8CCA272F16B8C3C700A4952A /* AwfulHTTPClient+Lepers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AwfulHTTPClient+Lepers.m"; sourceTree = "<group>"; };
+		8CCA273116BC220F00A4952A /* AwfulLeperCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLeperCell.h; sourceTree = "<group>"; };
+		8CCA273216BC220F00A4952A /* AwfulLeperCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLeperCell.m; sourceTree = "<group>"; };
 		8CCD498215B497A700E5893B /* Awful-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Awful-Info.plist"; sourceTree = "<group>"; };
 		8CCD4CC315B497A800E5893B /* Settings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Settings.plist; sourceTree = "<group>"; };
 		8CCD504215B783FC00E5893B /* action.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = action.png; sourceTree = "<group>"; };
@@ -2238,6 +2241,8 @@
 			children = (
 				8CCA272B16B8C1EF00A4952A /* AwfulLepersViewController.h */,
 				8CCA272C16B8C1EF00A4952A /* AwfulLepersViewController.m */,
+				8CCA273116BC220F00A4952A /* AwfulLeperCell.h */,
+				8CCA273216BC220F00A4952A /* AwfulLeperCell.m */,
 			);
 			path = Lepers;
 			sourceTree = "<group>";
@@ -3887,6 +3892,7 @@
 				8CCA272916B8BFB400A4952A /* _AwfulLeper.m in Sources */,
 				8CCA272D16B8C1EF00A4952A /* AwfulLepersViewController.m in Sources */,
 				8CCA273016B8C3C700A4952A /* AwfulHTTPClient+Lepers.m in Sources */,
+				8CCA273316BC220F00A4952A /* AwfulLeperCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,6 +7,7 @@
 //
 
 #import "AwfulFetchedTableViewController.h"
+#import "AwfulFetchedTableViewControllerSubclass.h"
 
 @interface AwfulLepersViewController : AwfulFetchedTableViewController
 

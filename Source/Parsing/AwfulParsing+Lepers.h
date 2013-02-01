@@ -12,10 +12,10 @@
 @interface LepersParsedInfo : ParsedInfo
 @property (readonly, nonatomic) AwfulLeperType banType;
 @property (readonly, copy, nonatomic) NSString *postID;
-@property (readonly, nonatomic) NSDate *banDate;
+@property (readonly, nonatomic) NSDate *date;
 @property (readonly, copy, nonatomic) NSString *bannedUserID;
 @property (readonly, copy, nonatomic) NSString *bannedUserName;
-@property (readonly, copy, nonatomic) NSString *banReason;
+@property (readonly, copy, nonatomic) NSString *reason;
 @property (readonly, copy, nonatomic) NSString *modUserID;
 @property (readonly, copy, nonatomic) NSString *modUserName;
 @property (readonly, copy, nonatomic) NSString *adminUserID;

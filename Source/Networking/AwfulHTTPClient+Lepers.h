@@ -9,5 +9,6 @@
 #import "AwfulHTTPClient.h"
 
 @interface AwfulHTTPClient (Lepers)
-
+- (NSOperation *)listBansOnPage:(NSInteger)page
+                        andThen:(void (^)(NSError *error, NSArray *bans))callback;
 @end

@@ -22,7 +22,7 @@
         existingJerks[leper.banID] = leper;
     }
     
-    NSMutableArray *usernames;
+    NSMutableArray *usernames = [NSMutableArray new];
     [usernames addObjectsFromArray:[info valueForKeyPath:@"bannedUserName"]];
     [usernames addObjectsFromArray:[info valueForKeyPath:@"modUserName"]];
     [usernames addObjectsFromArray:[info valueForKeyPath:@"adminUserName"]];
@@ -38,19 +38,22 @@
         [parsed applyToObject:leper];
         
         NSArray *types = @[@"jerk", @"mod", @"admin"];
-        NSArray *ids = @[@"bannedUserID", @"modUserID", @"adminUserID"];
+        NSArray *ids = @[@"banned", @"mod", @"admin"];
         for (uint i=0; i<types.count; i++)
         {
-            NSString *userID = [parsed valueForKey:ids[i]];
+            NSString *idKey = [ids[i] stringByAppendingString:@"UserID"];
+            NSString *NameKey = [ids[i] stringByAppendingString:@"UserName"];
+            
+            NSString *userID = [parsed valueForKey:idKey];
             AwfulUser *user = existingUsers[userID];
             if (!user) user = [AwfulUser insertInManagedObjectContext:moc];
-            [user setValue:existingUsers[userID] forKey:AwfulUserAttributes.userID];
-            [user setValue:existingUsers[userID] forKey:AwfulUserAttributes.username];
+            
+            [user setValue:[parsed valueForKey:idKey] forKey:AwfulUserAttributes.userID];
+            [user setValue:[parsed valueForKey:NameKey] forKey:AwfulUserAttributes.username];
 
             [leper setValue:user forKey:types[i]];
-            
-            existingJerks[leper.banID] = leper;
         }
+        existingJerks[leper.banID] = leper;
         
     }
     

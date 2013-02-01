@@ -16,6 +16,7 @@ extern const struct AwfulPostAttributes {
 
 extern const struct AwfulPostRelationships {
 	__unsafe_unretained NSString *author;
+	__unsafe_unretained NSString *bans;
 	__unsafe_unretained NSString *thread;
 } AwfulPostRelationships;
 
@@ -23,6 +24,7 @@ extern const struct AwfulPostFetchedProperties {
 } AwfulPostFetchedProperties;
 
 @class AwfulUser;
+@class AwfulLeper;
 @class AwfulThread;
 
 
@@ -139,6 +141,13 @@ extern const struct AwfulPostFetchedProperties {
 
 
 
+@property (nonatomic, strong) NSSet *bans;
+
+- (NSMutableSet*)bansSet;
+
+
+
+
 @property (nonatomic, strong) AwfulThread *thread;
 
 //- (BOOL)validateThread:(id*)value_ error:(NSError**)error_;
@@ -150,6 +159,11 @@ extern const struct AwfulPostFetchedProperties {
 @end
 
 @interface _AwfulPost (CoreDataGeneratedAccessors)
+
+- (void)addBans:(NSSet*)value_;
+- (void)removeBans:(NSSet*)value_;
+- (void)addBansObject:(AwfulLeper*)value_;
+- (void)removeBansObject:(AwfulLeper*)value_;
 
 @end
 
@@ -213,6 +227,11 @@ extern const struct AwfulPostFetchedProperties {
 
 - (AwfulUser*)primitiveAuthor;
 - (void)setPrimitiveAuthor:(AwfulUser*)value;
+
+
+
+- (NSMutableSet*)primitiveBans;
+- (void)setPrimitiveBans:(NSMutableSet*)value;
 
 
 

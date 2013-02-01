@@ -8,6 +8,7 @@ extern const struct AwfulLeperAttributes {
 	__unsafe_unretained NSString *banID;
 	__unsafe_unretained NSString *banType;
 	__unsafe_unretained NSString *date;
+	__unsafe_unretained NSString *postID;
 	__unsafe_unretained NSString *reason;
 } AwfulLeperAttributes;
 
@@ -15,6 +16,7 @@ extern const struct AwfulLeperRelationships {
 	__unsafe_unretained NSString *admin;
 	__unsafe_unretained NSString *jerk;
 	__unsafe_unretained NSString *mod;
+	__unsafe_unretained NSString *post;
 } AwfulLeperRelationships;
 
 extern const struct AwfulLeperFetchedProperties {
@@ -23,6 +25,8 @@ extern const struct AwfulLeperFetchedProperties {
 @class AwfulUser;
 @class AwfulUser;
 @class AwfulUser;
+@class AwfulPost;
+
 
 
 
@@ -76,6 +80,20 @@ extern const struct AwfulLeperFetchedProperties {
 
 
 
+@property (nonatomic, strong) NSNumber* postID;
+
+
+
+@property int32_t postIDValue;
+- (int32_t)postIDValue;
+- (void)setPostIDValue:(int32_t)value_;
+
+//- (BOOL)validatePostID:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
 @property (nonatomic, strong) NSString* reason;
 
 
@@ -103,6 +121,13 @@ extern const struct AwfulLeperFetchedProperties {
 @property (nonatomic, strong) AwfulUser *mod;
 
 //- (BOOL)validateMod:(id*)value_ error:(NSError**)error_;
+
+
+
+
+@property (nonatomic, strong) AwfulPost *post;
+
+//- (BOOL)validatePost:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -138,6 +163,15 @@ extern const struct AwfulLeperFetchedProperties {
 
 
 
+- (NSNumber*)primitivePostID;
+- (void)setPrimitivePostID:(NSNumber*)value;
+
+- (int32_t)primitivePostIDValue;
+- (void)setPrimitivePostIDValue:(int32_t)value_;
+
+
+
+
 - (NSString*)primitiveReason;
 - (void)setPrimitiveReason:(NSString*)value;
 
@@ -157,6 +191,11 @@ extern const struct AwfulLeperFetchedProperties {
 
 - (AwfulUser*)primitiveMod;
 - (void)setPrimitiveMod:(AwfulUser*)value;
+
+
+
+- (AwfulPost*)primitivePost;
+- (void)setPrimitivePost:(AwfulPost*)value;
 
 
 @end

@@ -7,6 +7,7 @@ const struct AwfulLeperAttributes AwfulLeperAttributes = {
 	.banID = @"banID",
 	.banType = @"banType",
 	.date = @"date",
+	.postID = @"postID",
 	.reason = @"reason",
 };
 
@@ -14,6 +15,7 @@ const struct AwfulLeperRelationships AwfulLeperRelationships = {
 	.admin = @"admin",
 	.jerk = @"jerk",
 	.mod = @"mod",
+	.post = @"post",
 };
 
 const struct AwfulLeperFetchedProperties AwfulLeperFetchedProperties = {
@@ -47,6 +49,11 @@ const struct AwfulLeperFetchedProperties AwfulLeperFetchedProperties = {
 	
 	if ([key isEqualToString:@"banTypeValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"banType"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
+	if ([key isEqualToString:@"postIDValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"postID"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
@@ -97,6 +104,32 @@ const struct AwfulLeperFetchedProperties AwfulLeperFetchedProperties = {
 
 
 
+@dynamic postID;
+
+
+
+- (int32_t)postIDValue {
+	NSNumber *result = [self postID];
+	return [result intValue];
+}
+
+- (void)setPostIDValue:(int32_t)value_ {
+	[self setPostID:[NSNumber numberWithInt:value_]];
+}
+
+- (int32_t)primitivePostIDValue {
+	NSNumber *result = [self primitivePostID];
+	return [result intValue];
+}
+
+- (void)setPrimitivePostIDValue:(int32_t)value_ {
+	[self setPrimitivePostID:[NSNumber numberWithInt:value_]];
+}
+
+
+
+
+
 @dynamic reason;
 
 
@@ -113,6 +146,10 @@ const struct AwfulLeperFetchedProperties AwfulLeperFetchedProperties = {
 	
 
 @dynamic mod;
+
+	
+
+@dynamic post;
 
 	
 

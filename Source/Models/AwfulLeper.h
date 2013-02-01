@@ -9,6 +9,7 @@
 typedef enum {
     AwfulLeperTypeUnknown = -1,
     AwfulLeperTypeProbation,
+    AwfulLeperTypeAutoban,
     AwfulLeperTypeBan,
     AwfulLeperTypePermaban
 } AwfulLeperType;
