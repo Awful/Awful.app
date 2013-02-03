@@ -272,6 +272,7 @@ lf-arecountry.png
 LF-article.png
 LF-BiCurious.png
 lf-choom.png
+LF-dad.png
 lf-dji.png
 lf-eu.png
 lf-eurabia.png
