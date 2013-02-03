@@ -594,6 +594,7 @@
 		8C8742991655FDF60018AC6C /* YCS-01.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8742981655FDF60018AC6C /* YCS-01.png */; };
 		8C87429B1655FE120018AC6C /* phiz-robojax.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C87429A1655FE120018AC6C /* phiz-robojax.png */; };
 		8C87429D1655FE1C0018AC6C /* phiz-ant.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C87429C1655FE1C0018AC6C /* phiz-ant.png */; };
+		8C88D1F716BEBF56009DC854 /* LF-dad.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C88D1F616BEBF56009DC854 /* LF-dad.png */; };
 		8C9834E2169091CE009F0CD6 /* fyad-bubble.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9834E1169091CE009F0CD6 /* fyad-bubble.png */; };
 		8C9B02C51623630F00676B98 /* downArrowDark.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B02BF1623630F00676B98 /* downArrowDark.png */; };
 		8CAAE2EC1651CC52004C8C8A /* phiz-rap.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CAAE2D61651CC52004C8C8A /* phiz-rap.png */; };
@@ -1236,6 +1237,7 @@
 		8C8742981655FDF60018AC6C /* YCS-01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "YCS-01.png"; sourceTree = "<group>"; };
 		8C87429A1655FE120018AC6C /* phiz-robojax.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phiz-robojax.png"; sourceTree = "<group>"; };
 		8C87429C1655FE1C0018AC6C /* phiz-ant.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phiz-ant.png"; sourceTree = "<group>"; };
+		8C88D1F616BEBF56009DC854 /* LF-dad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LF-dad.png"; sourceTree = "<group>"; };
 		8C9834E1169091CE009F0CD6 /* fyad-bubble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-bubble.png"; sourceTree = "<group>"; };
 		8C9B02BF1623630F00676B98 /* downArrowDark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = downArrowDark.png; path = Resources/images/downArrowDark.png; sourceTree = SOURCE_ROOT; };
 		8CAAE2D61651CC52004C8C8A /* phiz-rap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phiz-rap.png"; sourceTree = "<group>"; };
@@ -2624,6 +2626,7 @@
 				8CCD52F415B783FC00E5893B /* LF-article.png */,
 				8CCD52F515B783FC00E5893B /* LF-BiCurious.png */,
 				8CAAE2E01651CC52004C8C8A /* lf-choom.png */,
+				8C88D1F616BEBF56009DC854 /* LF-dad.png */,
 				1CAED9DD16375F52001F5F04 /* lf-dji.png */,
 				8C3CCD4F16533B9E00C28342 /* lf-eu.png */,
 				8CCD52F615B783FC00E5893B /* lf-eurabia.png */,
@@ -3638,6 +3641,7 @@
 				8CDB2A2216B0F3840091AE53 /* psp-rumble.png in Resources */,
 				1CD2C3BE16B8508F002DBF66 /* chooch.png in Resources */,
 				1CB13AC916B86452003708DC /* byob-xfile.png in Resources */,
+				8C88D1F716BEBF56009DC854 /* LF-dad.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
