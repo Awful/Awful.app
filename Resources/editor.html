@@ -24,6 +24,22 @@
                     }
                 }
             }
+            
+            function getCaretClientPosition() {
+                var x = 0, y = 0;
+                var sel = window.getSelection();
+                if (sel.rangeCount) {
+                    var range = sel.getRangeAt(0);
+                    if (range.getClientRects) {
+                        var rects = range.getClientRects();
+                        if (rects.length > 0) {
+                            x = rects[0].left;
+                            y = rects[0].top;
+                        }
+                    }
+                }
+                return "[" + x + "," + y + "]";
+            }
         </script>
     </head>
     <body style="height:100%">

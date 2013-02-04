@@ -119,6 +119,8 @@
 }
 
 - (void)showEmoticonChooser {
+    [self.delegate showEmoticonChooser];
+    /*
     AwfulEmoticonKeyboardController* chooser = [AwfulEmoticonKeyboardController new];
     chooser.delegate = self.delegate;
     
@@ -127,6 +129,7 @@
                          inView:self.toolbar
                 permittedArrowDirections:(UIPopoverArrowDirectionDown)
                                 animated:YES];
+     */
 }
 
 -(AwfulPostFormatStyle) formatState {

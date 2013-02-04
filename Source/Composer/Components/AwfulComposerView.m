@@ -110,6 +110,24 @@
     }
 }
 
+- (void)showEmoticonChooser {
+    AwfulEmoticonKeyboardController* chooser = [AwfulEmoticonKeyboardController new];
+    chooser.delegate = self;
+    NSError *error;
+    NSString* position = [self.innerWebView stringByEvaluatingJavaScriptFromString:@"getCaretClientPosition()"];
+    NSArray *pos = [NSJSONSerialization JSONObjectWithData:[position dataUsingEncoding:NSUTF8StringEncoding]
+                                                        options:0
+                                                          error:&error];
+    
+    _pop = [[UIPopoverController alloc] initWithContentViewController:chooser];
+    [_pop presentPopoverFromRect:CGRectMake([pos[0] intValue], [pos[1] intValue], 10, 10)
+                         inView:self.innerWebView
+       permittedArrowDirections:(UIPopoverArrowDirectionAny)
+                       animated:YES];
+    
+    
+}
+
 - (void)didChooseEmoticon:(id)emoticon
 {
     NSString *localURL = [[NSBundle mainBundle] pathForResource:@"emot-v" ofType:@"gif"];

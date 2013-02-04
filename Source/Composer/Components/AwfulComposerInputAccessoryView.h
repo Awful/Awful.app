@@ -22,6 +22,7 @@ typedef enum {
 - (void)setFormat:(AwfulPostFormatStyle)format;
 - (void)insertString:(NSString*)string;
 - (void)insertImage:(int)imageType;
+- (void)showEmoticonChooser;
 @end
 
 @interface AwfulComposerInputAccessoryView : UIControl {

@@ -22,6 +22,7 @@
     @protected
     UIWebView *_innerWebView;
     UIControl* _keyboardInputAccessory;
+    UIPopoverController *_pop;
 }
 
 @property (nonatomic, readonly) NSString* html;
