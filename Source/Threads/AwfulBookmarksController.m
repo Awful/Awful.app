@@ -74,10 +74,11 @@
 - (void)loadPageNum:(NSUInteger)pageNum
 {   
     [self.networkOperation cancel];
-    id op = [[AwfulHTTPClient client] listBookmarkedThreadsOnPage:pageNum
-                                                          andThen:^(NSError *error,
-                                                                    NSArray *threads)
+    __block id op;
+    op = [[AwfulHTTPClient client] listBookmarkedThreadsOnPage:pageNum
+                                                       andThen:^(NSError *error, NSArray *threads)
     {
+        if (![self.networkOperation isEqual:op]) return;
         if (error) {
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
         } else {

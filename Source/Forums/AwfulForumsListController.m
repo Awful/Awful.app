@@ -157,15 +157,17 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
 {
     [super refresh];
     [self.networkOperation cancel];
-    id op = [[AwfulHTTPClient client] listForumsAndThen:^(NSError *error, NSArray *forums)
-             {
-                 if (error) {
-                     [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
-                 } else {
-                     self.lastRefresh = [NSDate date];
-                 }
-                 self.refreshing = NO;
-             }];
+    __block id op;
+    op = [[AwfulHTTPClient client] listForumsAndThen:^(NSError *error, NSArray *forums)
+    {
+        if (![self.networkOperation isEqual:op]) return;
+        if (error) {
+            [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+        } else {
+            self.lastRefresh = [NSDate date];
+        }
+        self.refreshing = NO;
+    }];
     self.networkOperation = op;
 }
 
