@@ -8,6 +8,7 @@
 
 #import "AwfulTitleEntryCell.h"
 #import "AwfulThreadTags.h"
+#import "AwfulEmoticonChooserViewController.h"
 
 @implementation AwfulTitleEntryCell
 
@@ -16,20 +17,19 @@
     self = [super initWithReuseIdentifier:reuseIdentifier];
     if (self) {
         self.textField.placeholder = @"Thread title";
-        
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
         
         self.imageView.image = [UIImage threadTagNamed:@"shitpost.png"];
+        self.imageView.userInteractionEnabled = YES;
+        
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapThreadTag:)];
+        [self.imageView addGestureRecognizer:tap];
     }
     return self;
 }
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
+- (void)didTapThreadTag:(UIGestureRecognizer*)tap {
+    [self.delegate chooseThreadTag:self.imageView];
 }
-*/
 
 @end

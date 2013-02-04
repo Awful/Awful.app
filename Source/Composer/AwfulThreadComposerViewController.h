@@ -8,8 +8,9 @@
 
 #import "AwfulComposerViewController.h"
 #import "AwfulModels.h"
+#import "AwfulTitleEntryCell.h"
 
-@interface AwfulThreadComposerViewController : AwfulComposerViewController
+@interface AwfulThreadComposerViewController : AwfulComposerViewController <AwfulTitleEntryCellDelegate>
 - (id)initWithForum:(AwfulForum*)forum;
 
 @property (nonatomic,readonly) AwfulForum* forum;

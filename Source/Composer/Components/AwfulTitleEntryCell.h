@@ -8,6 +8,11 @@
 
 #import "AwfulTextEntryCell.h"
 
-@interface AwfulTitleEntryCell : AwfulTextEntryCell
+@protocol AwfulTitleEntryCellDelegate <NSObject>
+- (void)chooseThreadTag:(UIImageView*)imageView;
 
+@end
+
+@interface AwfulTitleEntryCell : AwfulTextEntryCell
+@property (nonatomic) id<AwfulTitleEntryCellDelegate> delegate;
 @end

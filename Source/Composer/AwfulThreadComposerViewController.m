@@ -39,13 +39,21 @@
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.row == 1) [super configureCell:cell atIndexPath:indexPath];
-    
+    else
+        ((AwfulTitleEntryCell*)cell).delegate = self;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.row == 1) return [super tableView:tableView heightForRowAtIndexPath:indexPath];
     
     return 50;
+}
+
+- (void)chooseThreadTag:(UIImageView *)imageView {
+    AwfulEmoticonKeyboardController *picker = [AwfulEmoticonKeyboardController new];
+    
+    self.pickerPopover = [[UIPopoverController alloc] initWithContentViewController:picker];
+    [self.pickerPopover presentPopoverFromRect:imageView.frame inView:self.view permittedArrowDirections:(UIPopoverArrowDirectionAny) animated:YES];
 }
 
 
