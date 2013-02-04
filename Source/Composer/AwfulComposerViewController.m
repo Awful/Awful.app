@@ -48,11 +48,19 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
 {
     if (_observerToken) [[NSNotificationCenter defaultCenter] removeObserver:_observerToken];
     [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:UIKeyboardDidShowNotification
+                                                    name:UIKeyboardWillShowNotification
                                                   object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIKeyboardWillHideNotification
                                                   object:nil];
+}
+
+- (BOOL)canPullForNextPage {
+    return NO;
+}
+
+- (BOOL)canPullToRefresh {
+    return NO;
 }
 
 - (UIBarButtonItem *)sendButton
@@ -75,18 +83,16 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
     return _cancelButton;
 }
 
+- (void)keyboardWillShow:(NSNotification *)note
+{
+    UIEdgeInsets inset = self.tableView.contentInset;
+    //self.tableView.contentInset = UIEdgeInsetsZero;
+}
+
 - (void)keyboardDidShow:(NSNotification *)note
 {
-    /*
-    CGRect keyboardFrame = [note.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    CGRect relativeKeyboardFrame = [self.composerTextView convertRect:keyboardFrame fromView:nil];
-    CGRect overlap = CGRectIntersection(relativeKeyboardFrame, self.composerTextView.bounds);
-    // The 2 isn't strictly necessary, I just like a little cushion between the cursor and keyboard.
-    UIEdgeInsets insets = (UIEdgeInsets){ .bottom = overlap.size.height + 2 };
-    self.composerTextView.contentInset = insets;
-    self.composerTextView.scrollIndicatorInsets = insets;
-    [self.composerTextView scrollRangeToVisible:self.composerTextView.selectedRange];
-     */
+    UIEdgeInsets inset = self.tableView.contentInset;
+    //self.tableView.contentInset = UIEdgeInsetsZero;
 }
 
 - (void)keyboardWillHide:(NSNotification *)note
@@ -275,7 +281,7 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return self.view.frame.size.height;
+    return self.view.frame.size.height - 200;
 }
 
 
@@ -482,6 +488,11 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardDidShow:)
                                                  name:UIKeyboardDidShowNotification
@@ -517,7 +528,6 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
 {
     [super viewWillAppear:animated];
     [self configureTopLevelMenuItems];
-    [self.composerTextView becomeFirstResponder];
     [self retheme];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(currentThemeChanged:)
@@ -526,6 +536,11 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
     self.composerTextView.userInteractionEnabled = YES;
     
     self.composerTextView.text = @"Ut nulla. Vivamus bibendum, nulla ut congue fringilla, lorem ipsum ultricies risus, ut rutrum velit tortor vel purus. In hac habitasse platea dictumst. Duis fermentum, metus sed congue gravida, arcu dui ornare urna, ut imperdiet enim odio dignissim ipsum. Nulla facilisi. Cras magna ante, bibendum sit amet, porta vitae, laoreet ut, justo. Nam tortor sapien, pulvinar nec, malesuada in, ultrices in, tortor. Cras ultricies placerat eros. Quisque odio eros, feugiat non, iaculis nec, lobortis sed, arcu. Pellentesque sit amet sem et purus pretium consectetuer.";
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [self.composerTextView becomeFirstResponder];
 }
 
 - (void)viewDidDisappear:(BOOL)animated

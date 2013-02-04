@@ -17,9 +17,10 @@
 - (id) initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
-    _innerWebView = [[UIWebView alloc] initWithFrame:frame];
+    _innerWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
     _innerWebView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     _innerWebView.backgroundColor = [UIColor magentaColor];
+    _innerWebView.scrollView.scrollEnabled = NO;
     
     [self addSubview:_innerWebView];
     NSBundle *bundle = [NSBundle mainBundle];
