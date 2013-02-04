@@ -14,7 +14,9 @@ typedef enum {
     AwfulPostFormatItalic,
     AwfulPostFormatUnderline,
     AwfulPostFormatStrike,
-    AwfulPostFormatSpoil
+    AwfulPostFormatSpoil,
+    AwfulPostFormatSub,
+    AwfulPostFormatSuper
 } AwfulPostFormatStyle;
 
 @protocol AwfulComposerInputAccessoryViewDelegate <NSObject>

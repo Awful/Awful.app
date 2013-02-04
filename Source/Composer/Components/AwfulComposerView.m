@@ -75,6 +75,18 @@
             [self format:@"Underline"];
             break;
             
+        case AwfulPostFormatStrike:
+            [self format:@"strikeThrough"];
+            break;
+            
+        case AwfulPostFormatSub:
+            [self format:@"subscript"];
+            break;
+            
+        case AwfulPostFormatSuper:
+            [self format:@"superscript"];
+            break;
+            
         case AwfulPostFormatSpoil:
             [self spoil];
             break;
@@ -150,13 +162,22 @@
     NSMutableString *html = [NSMutableString stringWithString:self.html];
     
     //replace html formatting
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"<(/?)([buis])>" 
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"<(/?)([bui]|sub|sup)>" 
                                                                            options:0 
                                                                              error:nil];
     [regex replaceMatchesInString:html
                           options:0
                             range:NSMakeRange(0, html.length)
                      withTemplate:@"[$1$2]"];
+    
+    //replace html formatting - strikethru handler
+    regex = [NSRegularExpression regularExpressionWithPattern:@"<(/?)strike>"
+                                                      options:0
+                                                        error:nil];
+    [regex replaceMatchesInString:html
+                          options:0
+                            range:NSMakeRange(0, html.length)
+                     withTemplate:@"[$1s]"];
     
     //replace spoilers
     regex = [NSRegularExpression regularExpressionWithPattern:@"<span class=\"spoiler\">(.*?)</span>"
