@@ -13,6 +13,7 @@
 @property (nonatomic) AwfulThread *thread;
 @property (nonatomic) AwfulPost *post;
 @property (nonatomic,strong) NSString* reply;
+@property (nonatomic) NSArray* cellBlocks;
 
 - (void)replyToThread:(AwfulThread *)thread withInitialContents:(NSString *)contents;
 

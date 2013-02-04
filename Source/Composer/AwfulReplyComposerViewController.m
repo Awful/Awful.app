@@ -67,4 +67,62 @@
     return alert;
 }
 
+#pragma mark TableView
+//Subclasses may need to add more cells, ie Thread title, thread icon, etc
+
+- (int)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.cellBlocks.count + 1;
+}
+
+- (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.row == 0) return [super tableView:tableView cellForRowAtIndexPath:indexPath];
+    
+    static NSString* identifier = @"PostOptionCell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    if (!cell) cell = [[UITableViewCell alloc] initWithStyle:(UITableViewCellStyleSubtitle) reuseIdentifier:@"PostOptionCell"];
+    
+    [self configureCell:cell atIndexPath:indexPath];
+    return cell;
+}
+
+- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.row == 0) {
+        [super configureCell:cell atIndexPath:indexPath];
+        return;
+    }
+    
+    void (^cellBlock)(UITableViewCell*) = self.cellBlocks[indexPath.row-1];
+    cellBlock(cell);
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.row == 0) return [super tableView:tableView heightForRowAtIndexPath:indexPath];
+    return 44;
+}
+
+- (void) viewDidLoad {
+    [super viewDidLoad];
+    self.cellBlocks = @[
+                             ^(UITableViewCell* cell) {
+                                 cell.textLabel.text = @"Auto parse URLs";
+                                 cell.detailTextLabel.text = @"Adds [url][/url] around internet addresses";
+                                 cell.accessoryType = UITableViewCellAccessoryCheckmark;
+                             },
+                             ^(UITableViewCell* cell) {
+                                 cell.textLabel.text = @"Bookmark thread";
+                                 cell.detailTextLabel.text = @"Adds thread to your bookmarks";
+                                 cell.accessoryType = UITableViewCellAccessoryCheckmark;
+                             },
+                             ^(UITableViewCell* cell) {
+                                 cell.textLabel.text = @"Disable smilies in this post";
+                             },
+                             ^(UITableViewCell* cell) {
+                                 cell.textLabel.text = @"Show signature";
+                                 cell.detailTextLabel.text = @"Include your profile signature";
+                             },
+                             
+                             ];
+}
+
+
 @end

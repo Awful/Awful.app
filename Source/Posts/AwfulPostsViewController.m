@@ -589,7 +589,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 - (void)tappedCompose
 {   
     [self dismissPopoverAnimated:YES];
-    AwfulComposerViewController *reply = [AwfulComposerViewController new];
+    AwfulReplyComposerViewController *reply = [AwfulReplyComposerViewController new];
     reply.delegate = self;
     //[reply replyToThread:self.thread withInitialContents:nil];
     
