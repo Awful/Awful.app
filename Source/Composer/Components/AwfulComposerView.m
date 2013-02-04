@@ -208,3 +208,19 @@
 }
 
 @end
+
+@implementation AwfulComposerTableViewCell
+
+- (id)init {
+    self = [super initWithStyle:(UITableViewCellStyleDefault) reuseIdentifier:[self.class description]];
+    //_composerView = [AwfulComposerView new];
+    return self;
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    self.composerView.frame = self.contentView.frame;
+    [self.contentView addSubview:self.composerView];
+}
+
+@end

@@ -246,6 +246,37 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
     return _emoticonChooser;
 }
 
+#pragma mark TableView
+//Subclasses may need to add more cells, ie Thread title, thread icon, etc
+
+- (int)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return 1;
+}
+
+- (int)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    static NSString* identifier = @"ComposerCell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    if (!cell) cell = [AwfulComposerTableViewCell new];
+    
+    [self configureCell:cell atIndexPath:indexPath];
+    return cell;
+}
+
+- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    AwfulComposerTableViewCell *composerCell = (AwfulComposerTableViewCell*)cell;
+    composerCell.composerView = self.composerTextView;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return self.view.frame.size.height;
+}
+
+
+
 #pragma mark - Menu items
 
 - (void)configureTopLevelMenuItems
@@ -475,7 +506,7 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
     self.composerTextView.frame = frame;
     self.composerTextView.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
     
-    [self.view addSubview:self.composerTextView];
+    //[self.view addSubview:self.composerTextView];
     [PSMenuItem installMenuHandlerForObject:self.composerTextView];
 }
 

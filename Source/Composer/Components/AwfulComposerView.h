@@ -30,3 +30,7 @@
 @property (nonatomic, readonly) UIWebView* innerWebView;
 
 @end
+
+@interface AwfulComposerTableViewCell : UITableViewCell
+@property (nonatomic,strong) AwfulComposerView* composerView;
+@end
