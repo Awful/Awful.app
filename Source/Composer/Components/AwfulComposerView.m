@@ -21,6 +21,7 @@
     _innerWebView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     _innerWebView.backgroundColor = [UIColor magentaColor];
     _innerWebView.scrollView.scrollEnabled = NO;
+    _innerWebView.delegate = self;
     
     [self addSubview:_innerWebView];
     NSBundle *bundle = [NSBundle mainBundle];
@@ -264,6 +265,27 @@
 #pragma mark AwfulWebViewDelegate Protocol
 -(void) webView:(UIWebView *)webView pageDidRequestAction:(NSString *)action infoDictionary:(NSDictionary *)infoDictionary {
     NSLog(@"here");
+}
+
+- (BOOL)webView:(UIWebView *)webView
+shouldStartLoadWithRequest:(NSURLRequest *)request
+ navigationType:(UIWebViewNavigationType)navigationType
+{
+    if ([request.URL.scheme isEqualToString:@"objc"]) {
+        NSArray *components = [request.URL.absoluteString componentsSeparatedByString:@":"];
+        NSString *function = [components objectAtIndex:1];
+        
+        if ([function isEqualToString:@"didChangeContents"])
+            [self didChangeContents];
+        
+        // Cancel the location change
+        return NO;
+    }
+    return YES;
+}
+
+- (void)didChangeContents {
+    [self.delegate textViewDidChange:self];
 }
 
 @end

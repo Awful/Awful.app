@@ -281,9 +281,18 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return self.view.frame.size.height - 200;
+    
+    NSString *output = [self.composerTextView.innerWebView stringByEvaluatingJavaScriptFromString:@"document.getElementById('content').offsetHeight;"];
+    return MAX(output.floatValue + 10, 200);
 }
 
+#pragma mark textview
+- (void)textViewDidChange:(UITextView *)textView {
+    //call these to force table to recalculate height
+    //for dynamically growing input cell
+    [self.tableView beginUpdates];
+    [self.tableView endUpdates];
+}
 
 
 #pragma mark - Menu items
@@ -355,6 +364,9 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
 
 - (void)insertImage
 {
+    [self.tableView beginUpdates];
+    [self.tableView endUpdates];
+    
     [self configureImageSourceSubmenuItems];
     [self showSubmenuThenResetToTopLevelMenuOnHide];
 }
