@@ -76,6 +76,7 @@
         existingThreads[thread.threadID] = thread;
     }
     
+    NSMutableArray *parsedThreads = [NSMutableArray new];
     for (NSDictionary *info in json[@"threads"]) {
         NSString *threadID = [info[@"threadid"] stringValue];
         AwfulThread *thread = existingThreads[threadID] ?: [AwfulThread insertNew];
@@ -124,9 +125,10 @@
         thread.author = [AwfulUser userCreatedOrUpdatedFromJSON:authorJSON];
         
         existingThreads[thread.threadID] = thread;
+        [parsedThreads addObject:thread];
     }
     [[AwfulDataStack sharedDataStack] save];
-    return [existingThreads allValues];
+    return parsedThreads;
 }
 
 static NSURL * SecondaryIconURLForType(NSString *type)
