@@ -183,20 +183,22 @@ static NSString * FixSAAndlibxmlHTMLSerialization(NSString *html)
 {
     NSString *usernameNode = [[doc searchForSingle:
                                @"//th[starts-with(., 'Edit Profile')]/text()[1]"] content];
-    NSString *namePattern = @"Edit Profile - (.*)\\s$";
-    NSError *error;
-    NSRegularExpression *nameRegex = [NSRegularExpression regularExpressionWithPattern:namePattern
-                                                                               options:0
-                                                                                 error:&error];
-    if (!nameRegex) {
-        NSLog(@"error creating username regex: %@", error);
-    }
-    NSRange allName = NSMakeRange(0, [usernameNode length]);
-    NSTextCheckingResult *nameMatch = [nameRegex firstMatchInString:usernameNode
-                                                            options:0
-                                                              range:allName];
-    if ([nameMatch rangeAtIndex:1].location != NSNotFound) {
-        self.username = [usernameNode substringWithRange:[nameMatch rangeAtIndex:1]];
+    if (usernameNode) {
+        NSString *namePattern = @"Edit Profile - (.*)\\s$";
+        NSError *error;
+        NSRegularExpression *nameRegex = [NSRegularExpression regularExpressionWithPattern:namePattern
+                                                                                   options:0
+                                                                                     error:&error];
+        if (!nameRegex) {
+            NSLog(@"error creating username regex: %@", error);
+        }
+        NSRange allName = NSMakeRange(0, [usernameNode length]);
+        NSTextCheckingResult *nameMatch = [nameRegex firstMatchInString:usernameNode
+                                                                options:0
+                                                                  range:allName];
+        if ([nameMatch rangeAtIndex:1].location != NSNotFound) {
+            self.username = [usernameNode substringWithRange:[nameMatch rangeAtIndex:1]];
+        }
     }
     
     TFHppleElement *infoLink = [doc searchForSingle:@"//a[contains(@href, 'userid')]"];
@@ -316,7 +318,7 @@ static NSString * FixSAAndlibxmlHTMLSerialization(NSString *html)
         self.bookmark = [bookmark objectForKey:@"value"];
     }
     NSString *withEntities = [[document searchForSingle:@"//textarea[@name = 'message']"] content];
-    self.text = DeEntitify(withEntities);
+    if (withEntities) self.text = DeEntitify(withEntities);
 }
 
 static NSString * DeEntitify(NSString *withEntities)
@@ -582,7 +584,8 @@ static NSString * DeEntitify(NSString *withEntities)
     NSString *forumID;
     TFHppleElement *forum = [doc searchForSingle:@"(//div[" HAS_CLASS(breadcrumbs) "]//"
                              "a[contains(@href, 'forumid')])[last()]"];
-    if (forum) {
+    NSString *href = [forum objectForKey:@"href"];
+    if (href) {
         NSError *error;
         NSString *pattern = @"forumid=(\\d+)";
         NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
@@ -591,7 +594,6 @@ static NSString * DeEntitify(NSString *withEntities)
         if (!regex) {
             NSLog(@"error creating forumid regex: %@", error);
         }
-        NSString *href = [forum objectForKey:@"href"];
         NSTextCheckingResult *match = [regex firstMatchInString:href options:0 range:NSMakeRange(0, [href length])];
         if (match) {
             forumID = [href substringWithRange:[match rangeAtIndex:1]];
@@ -639,19 +641,21 @@ static NSString * DeEntitify(NSString *withEntities)
     
     self.author = [UserParsedInfo new];
     TFHppleElement *author = [doc searchForSingle:@"//td[" HAS_CLASS(author) "]/a"];
-    self.author.username = [author content];
-    NSError *error;
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"userid=(\\d+)"
-                                                                           options:0
-                                                                             error:&error];
-    if (!regex) {
-        NSLog(@"error creating userid regex: %@", error);
-    }
+    if (author) self.author.username = [author content];
     NSString *profileLink = [author objectForKey:@"href"];
-    NSTextCheckingResult *match = [regex firstMatchInString:profileLink
-                                                    options:0
-                                                      range:NSMakeRange(0, [profileLink length])];
-    if (match) self.author.userID = [profileLink substringWithRange:[match rangeAtIndex:1]];
+    if (profileLink) {
+        NSError *error;
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"userid=(\\d+)"
+                                                                               options:0
+                                                                                 error:&error];
+        if (!regex) {
+            NSLog(@"error creating userid regex: %@", error);
+        }
+        NSTextCheckingResult *match = [regex firstMatchInString:profileLink
+                                                        options:0
+                                                          range:NSMakeRange(0, [profileLink length])];
+        if (match) self.author.userID = [profileLink substringWithRange:[match rangeAtIndex:1]];
+    }
     
     TFHppleElement *seen = [doc searchForSingle:@"//div[" HAS_CLASS(lastseen) "]"];
     self.seen = !!seen;
@@ -794,7 +798,7 @@ static NSString * DeEntitify(NSString *withEntities)
     } else {
         self.author.avatarURL = nil;
     }
-    TFHppleElement *profile = [doc searchForSingle:@"//ul[" HAS_CLASS(profilelinks) "]//a"];
+    TFHppleElement *showPostsByUser = [doc searchForSingle:@"//a[" HAS_CLASS(user_jump) "]"];
     NSError *profileError;
     NSRegularExpression *profileRegex = [NSRegularExpression regularExpressionWithPattern:@"userid=(\\d+)"
                                                                                   options:0
@@ -802,11 +806,14 @@ static NSString * DeEntitify(NSString *withEntities)
     if (!profileRegex) {
         NSLog(@"error creating userid regex: %@", profileError);
     }
-    NSString *profileLink = [profile objectForKey:@"href"];
-    NSTextCheckingResult *match = [profileRegex firstMatchInString:profileLink
-                                                           options:0
-                                                             range:NSMakeRange(0, [profileLink length])];
-    if (match) self.author.userID = [profileLink substringWithRange:[match rangeAtIndex:1]];
+    NSString *profileLink = [showPostsByUser objectForKey:@"href"];
+    if (profileLink) {
+        NSRange wholeRange = NSMakeRange(0, [profileLink length]);
+        NSTextCheckingResult *match = [profileRegex firstMatchInString:profileLink
+                                                               options:0
+                                                                 range:wholeRange];
+        if (match) self.author.userID = [profileLink substringWithRange:[match rangeAtIndex:1]];
+    }
     
     self.editable = !![doc searchForSingle:
                        @"//ul[" HAS_CLASS(postbuttons) "]//a[contains(@href, 'editpost')]"];
@@ -913,10 +920,8 @@ static NSString * DeEntitify(NSString *withEntities)
     NSArray *ads = [doc rawSearch:@"(//div[@id = 'ad_banner_user']/a)[1]"];
     if ([ads count] > 0) self.advertisementHTML = ads[0];
     
-    TFHppleElement *mark = [doc searchForSingle:@"//img[@id = 'button_bookmark']"];
-    NSCharacterSet *space = [NSCharacterSet whitespaceCharacterSet];
-    NSArray *classes = [[mark objectForKey:@"class"] componentsSeparatedByCharactersInSet:space];
-    self.threadBookmarked = [classes containsObject:@"unbookmark"];
+    TFHppleElement *mark = [doc searchForSingle:@"//img[" HAS_CLASS(thread_bookmark) " and " HAS_CLASS(unbookmark) "]"];
+    self.threadBookmarked = !!mark;
     
     NSMutableArray *posts = [NSMutableArray new];
     NSString *path = @"//table[" HAS_CLASS(post) "]";

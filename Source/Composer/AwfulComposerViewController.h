@@ -15,19 +15,18 @@
 #import "SVProgressHUD.h"
 #import "UINavigationItem+TwoLineTitle.h"
 #import "AwfulComposerView.h"
-//#import "AwfulEmoticonKeyboardController.h"
+#import "AwfulTableViewController.h"
 
 @protocol AwfulComposerViewControllerDelegate;
 
 
-@interface AwfulComposerViewController : UIViewController <AwfulComposerViewDelegate>
+@interface AwfulComposerViewController : AwfulTableViewController <AwfulComposerViewDelegate>
 
 @property (weak, nonatomic) id <AwfulComposerViewControllerDelegate> delegate;
 @property (readonly, nonatomic) AwfulComposerView *composerTextView;
 @property (nonatomic) id <ImgurHTTPClientCancelToken> imageUploadCancelToken;
 @property (strong, nonatomic) UIBarButtonItem *sendButton;
 @property (strong, nonatomic) UIBarButtonItem *cancelButton;
-@property (weak, nonatomic) NSOperation *networkOperation;
 @property (nonatomic) id observerToken;
 @property (nonatomic) UIPopoverController *pickerPopover;
 @property (nonatomic) NSMutableDictionary *images;

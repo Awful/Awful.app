@@ -97,6 +97,7 @@
 - (void)loadView
 {
     self.view = [[UIView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
+    self.view.clipsToBounds = YES;
     CGRect tabBarFrame;
     CGRectDivide(self.view.bounds, &tabBarFrame, &(CGRect){}, 40, CGRectMaxYEdge);
     AwfulTabBar *tabBar = [[AwfulTabBar alloc] initWithFrame:tabBarFrame];

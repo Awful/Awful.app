@@ -222,11 +222,3 @@
 }
 
 @end
-
-
-BOOL IsLoggedIn()
-{
-    NSURL *sa = [NSURL URLWithString:@"http://forums.somethingawful.com"];
-    NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:sa];
-    return [[cookies valueForKey:@"name"] containsObject:@"bbuserid"];
-}

@@ -35,14 +35,21 @@
     return instance;
 }
 
+- (BOOL)isLoggedIn
+{
+    NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:self.baseURL];
+    return [[cookies valueForKey:@"name"] containsObject:@"bbuserid"];
+}
+
 - (id)initWithBaseURL:(NSURL *)url
 {
     self = [super initWithBaseURL:url];
     if (self) {
         self.stringEncoding = NSWindowsCP1252StringEncoding;
         _parseQueue = dispatch_queue_create("com.awfulapp.Awful.parsing", NULL);
+        __weak AwfulHTTPClient *weakSelf = self;
         [self setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
-            self.reachable = status != AFNetworkReachabilityStatusNotReachable;
+            weakSelf.reachable = status != AFNetworkReachabilityStatusNotReachable;
         }];
     }
     return self;
@@ -220,11 +227,10 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
 - (NSOperation *)listForumsAndThen:(void (^)(NSError *error, NSArray *forums))callback
 {
     // Seems like only forumdisplay.php and showthread.php have the <select> with a complete list
-    // of forums. We'll use the Comedy Goldmine as it's generally available and hopefully it's not
-    // much of a burden since threads rarely get goldmined.
+    // of forums. We'll use the Main "forum" as it's the smallest page with the drop-down list.
     NSURLRequest *urlRequest = [self requestWithMethod:@"GET"
                                                   path:@"forumdisplay.php"
-                                            parameters:@{ @"forumid": @"21" }];
+                                            parameters:@{ @"forumid": @"48" }];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
                                                                success:^(id _, id data)
     {
@@ -260,8 +266,8 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (!(formInfo.formkey && formInfo.formCookie)) {
                     NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : @"Thread is closed" };
-                    NSError *error = [NSError errorWithDomain:NSCocoaErrorDomain
-                                                         code:-1
+                    NSError *error = [NSError errorWithDomain:AwfulErrorDomain
+                                                         code:AwfulErrorCodes.threadIsClosed
                                                      userInfo:userInfo];
                     if (callback) callback(error, nil);
                     return;
@@ -500,27 +506,33 @@ static NSString * Entitify(NSString *noEntities)
                     withPassword:(NSString *)password
                          andThen:(void (^)(NSError *error))callback
 {
+    // TODO this can now handle a redirect on login. So we could do something like add a parameter
+    // "next": "/member.php?action=getinfo&json=1"
+    // and get the logged-in user's name and info right away, passing it to the callback.
     NSDictionary *parameters = @{
         @"action" : @"login",
         @"username" : username,
         @"password" : password
     };
-    NSURLRequest *request = [self requestWithMethod:@"POST"
-                                               path:@"account.php"
-                                         parameters:parameters];
+    NSMutableURLRequest *request = [self requestWithMethod:@"POST"
+                                                      path:@"account.php"
+                                                parameters:parameters];
+    request.URL = [NSURL URLWithString:@"https://forums.somethingawful.com/account.php"];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
-                                                               success:^(id _, id data)
+                                                               success:^(id _, id __)
     {
-        NSString *response = [[NSString alloc] initWithData:data encoding:self.stringEncoding];
-        if ([response rangeOfString:@"GLLLUUUUUEEEEEE"].location != NSNotFound) {
-            if (callback) callback(nil);
-        } else {
-            if (callback) callback([NSError errorWithDomain:NSCocoaErrorDomain
-                                                       code:-1
-                                                   userInfo:nil]);
-        }
+        if (callback) callback(nil);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error)
     {
+        if (operation.response.statusCode == 401) {
+            NSDictionary *userInfo = @{
+                NSLocalizedDescriptionKey: @"Invalid username or password",
+                NSUnderlyingErrorKey: error
+            };
+            error = [NSError errorWithDomain:AwfulErrorDomain
+                                        code:AwfulErrorCodes.badUsernameOrPassword
+                                    userInfo:userInfo];
+        }
         if (callback) callback(error);
     }];
     [self enqueueHTTPRequestOperation:op];
@@ -597,3 +609,11 @@ static NSString * Entitify(NSString *noEntities)
 }
 
 @end
+
+
+NSString * const AwfulErrorDomain = @"AwfulErrorDomain";
+
+const struct AwfulErrorCodes AwfulErrorCodes = {
+    .badUsernameOrPassword = -1000,
+    .threadIsClosed = -1001
+};

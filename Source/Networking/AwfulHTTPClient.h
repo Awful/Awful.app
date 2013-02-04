@@ -17,6 +17,9 @@
 // Returns YES if the forums are reachable through current network settings.
 @property (readonly, getter=isReachable, nonatomic) BOOL reachable;
 
+// Returns YES if someone is currently logged in to the SA Forums.
+@property (readonly, getter=isLoggedIn, nonatomic) BOOL loggedIn;
+
 // Gets the threads in a forum on a given page.
 //
 // forumID  - The ID of the forum with the threads.
@@ -218,3 +221,17 @@ enum {
                            andThen:(void (^)(NSError *error, AwfulUser *user))callback;
 
 @end
+
+
+// All Awful-specific errors have this domain and an error code specified under AwfulErrorCodes.
+extern NSString * const AwfulErrorDomain;
+
+extern const struct AwfulErrorCodes
+{
+    // When an attempt to log in fails because of the username or password.
+    // There may be an underlying error in the AFNetworkingErrorDomain.
+    NSInteger badUsernameOrPassword;
+    
+    // Some action isn't allowed because the thread is closed.
+    NSInteger threadIsClosed;
+} AwfulErrorCodes;

@@ -7,12 +7,13 @@
 //
 
 #import "AwfulImagePreviewViewController.h"
+#import <AssetsLibrary/AssetsLibrary.h>
 #import "AwfulActionSheet.h"
 #import "AwfulAlertView.h"
+#import "FVGifAnimation.h"
 #import "SVProgressHUD.h"
 #import "UIImageView+AFNetworking.h"
 #import "UINavigationItem+TwoLineTitle.h"
-#import "FVGifAnimation.h"
 
 @interface AwfulImagePreviewViewController () <UIScrollViewDelegate>
 
@@ -21,6 +22,8 @@
 @property (weak, nonatomic) UIImageView *imageView;
 
 @property (nonatomic) NSOperationQueue *queue;
+
+@property (nonatomic) NSData *imageData;
 
 @property (nonatomic) UIStatusBarStyle statusBarStyle;
 
@@ -81,6 +84,7 @@
     [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
     AFHTTPRequestOperation *op = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     [op setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseData) {
+        self.imageData = responseData;
         FVGifAnimation *animation = [[FVGifAnimation alloc] initWithData:responseData];
         if ([animation canAnimate]) {
             [animation setAnimationToImageView:self.imageView];
@@ -142,15 +146,29 @@
     [sheet addButtonWithTitle:@"Save to Photos" block:^{
         [SVProgressHUD showWithStatus:@"Saving…" maskType:SVProgressHUDMaskTypeGradient];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            UIImage *image = self.imageView.image;
-            UIImageWriteToSavedPhotosAlbum(image, self, @selector(didSaveImage:error:contextInfo:),
-                                           NULL);
+            ALAssetsLibrary *assets = [ALAssetsLibrary new];
+            [assets writeImageDataToSavedPhotosAlbum:self.imageData
+                                            metadata:nil
+                                     completionBlock:^(NSURL *assetURL, NSError *error)
+            {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (error) {
+                        [SVProgressHUD dismiss];
+                        [AwfulAlertView showWithTitle:@"Could Not Save Image"
+                                                error:error
+                                          buttonTitle:@"OK"
+                                           completion:^{ [self hideBarsAfterShortDuration]; }];
+                    } else {
+                        [SVProgressHUD showSuccessWithStatus:@"Saved"];
+                    }
+                });
+            }];
         });
     }];
     [sheet addButtonWithTitle:@"Copy Image URL" block:^{
         [UIPasteboard generalPasteboard].items = @[ @{
-        (id)kUTTypeURL: self.imageURL,
-        (id)kUTTypePlainText: [self.imageURL absoluteString]
+            (id)kUTTypeURL: self.imageURL,
+            (id)kUTTypePlainText: [self.imageURL absoluteString]
         }];
         [self hideBarsAfterShortDuration];
     }];
@@ -158,22 +176,6 @@
         [self hideBarsAfterShortDuration];
     }];
     [sheet showFromBarButtonItem:self.actionButton animated:YES];
-}
-
-- (void)didSaveImage:(UIImage *)image error:(NSError *)error contextInfo:(void *)contextInfo
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (error) {
-            [SVProgressHUD dismiss];
-            [AwfulAlertView showWithTitle:@"Could Not Save Image"
-                                    error:error
-                              buttonTitle:@"OK"
-                               completion:^{ [self hideBarsAfterShortDuration]; }];
-        } else {
-            [SVProgressHUD showSuccessWithStatus:@"Saved"];
-            [self hideBarsAfterShortDuration];
-        }
-    });
 }
 
 - (void)hideBarsAfterShortDuration

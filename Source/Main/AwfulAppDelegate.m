@@ -40,9 +40,9 @@
 
 @implementation AwfulAppDelegate
 
-static AwfulAppDelegate *_instance;
+static id _instance;
 
-+ (AwfulAppDelegate *)instance
++ (instancetype)instance
 {
     return _instance;
 }
@@ -83,6 +83,8 @@ static AwfulAppDelegate *_instance;
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             AwfulSplitViewController *split = (AwfulSplitViewController *)self.window.rootViewController;
             tabBar = split.viewControllers[0];
+            UINavigationController *posts = split.viewControllers[1];
+            posts.viewControllers = @[ [AwfulStartViewController new] ];
         } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
             tabBar = (AwfulTabBarController *)self.window.rootViewController;
         }
@@ -197,7 +199,7 @@ static AwfulAppDelegate *_instance;
     
     [self.window makeKeyAndVisible];
     
-    if (!IsLoggedIn()) {
+    if (![AwfulHTTPClient client].loggedIn) {
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             [self performSelector:@selector(showLoginFormAtLaunch) withObject:nil afterDelay:0];
         } else {
@@ -205,7 +207,7 @@ static AwfulAppDelegate *_instance;
         }
     }
     
-    if (IsLoggedIn() && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    if ([AwfulHTTPClient client].loggedIn && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         AwfulSplitViewController *split = (AwfulSplitViewController *)self.window.rootViewController;
         [split performSelector:@selector(showMasterView) withObject:nil afterDelay:0.1];
     }
@@ -219,7 +221,7 @@ static AwfulAppDelegate *_instance;
          annotation:(id)annotation
 {
     if ([[url scheme] compare:@"awful" options:NSCaseInsensitiveSearch] != NSOrderedSame) return NO;
-    if (!IsLoggedIn()) return NO;
+    if (![AwfulHTTPClient client].loggedIn) return NO;
     
     NSString *section = [url host];
     
@@ -406,7 +408,7 @@ static AwfulAppDelegate *_instance;
 - (BOOL)tabBarController:(AwfulTabBarController *)tabBarController
     shouldSelectViewController:(UIViewController *)viewController
 {
-    return IsLoggedIn();
+    return [AwfulHTTPClient client].loggedIn;
 }
 
 #pragma mark - UINavigationControllerDelegate
@@ -424,7 +426,7 @@ static AwfulAppDelegate *_instance;
 {
     [[AwfulHTTPClient client] learnUserInfoAndThen:^(NSError *error, NSDictionary *userInfo) {
         if (error) {
-            NSLog(@"error fetching username: %@", error);
+            NSLog(@"Error finding logged-in user's name: %@", error);
         } else {
             [AwfulSettings settings].username = userInfo[@"username"];
         }

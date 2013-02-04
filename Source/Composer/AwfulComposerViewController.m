@@ -183,8 +183,8 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
                                        self.imageUploadCancelToken = nil;
                                        if (!error) {
                                            [self replaceImagePlaceholdersForString:reply
-                                   withImagePlaceholderResults:placeholderResults
-                                               replacementURLs:[NSDictionary dictionaryWithObjects:urls forKeys:imageKeys]];
+                                                       withImagePlaceholderResults:placeholderResults
+                                                                   replacementURLs:[NSDictionary dictionaryWithObjects:urls forKeys:imageKeys]];
                                            return;
                                        }
                                        [SVProgressHUD dismiss];
@@ -192,12 +192,12 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
                                                                error:error
                                                          buttonTitle:@"Fiddlesticks"];
                                    }];
-     
+    
 }
 
 - (void)replaceImagePlaceholdersForString:(NSString *)reply
-     withImagePlaceholderResults:(NSArray *)placeholderResults
-                 replacementURLs:(NSDictionary *)replacementURLs
+              withImagePlaceholderResults:(NSArray *)placeholderResults
+                          replacementURLs:(NSDictionary *)replacementURLs
 {
     //[SVProgressHUD showWithStatus:self.thread ? @"Replying…" : @"Editing…"
     //                     maskType:SVProgressHUDMaskTypeClear];
@@ -251,10 +251,10 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
 - (void)configureTopLevelMenuItems
 {
     [UIMenuController sharedMenuController].menuItems = @[
-    [[PSMenuItem alloc] initWithTitle:@"[url]" block:^{ [self linkifySelection]; }],
-    [[PSMenuItem alloc] initWithTitle:@"[img]" block:^{ [self insertImage]; }],
-    [[PSMenuItem alloc] initWithTitle:@"Format" block:^{ [self showFormattingSubmenu]; }]
-    ];
+                                                          [[PSMenuItem alloc] initWithTitle:@"[url]" block:^{ [self linkifySelection]; }],
+                                                          [[PSMenuItem alloc] initWithTitle:@"[img]" block:^{ [self insertImage]; }],
+                                                          [[PSMenuItem alloc] initWithTitle:@"Format" block:^{ [self showFormattingSubmenu]; }]
+                                                          ];
 }
 
 - (void)configureImageSourceSubmenuItems
@@ -276,19 +276,19 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
 - (void)configureFormattingSubmenuItems
 {
     [UIMenuController sharedMenuController].menuItems = @[
-    [[PSMenuItem alloc] initWithTitle:@"[b]" block:^{ [self formatSelectionWithTag:@"b"]; }],
-    [[PSMenuItem alloc] initWithTitle:@"[s]" block:^{ [self formatSelectionWithTag:@"s"]; }],
-    [[PSMenuItem alloc] initWithTitle:@"[u]" block:^{ [self formatSelectionWithTag:@"u"]; }],
-    [[PSMenuItem alloc] initWithTitle:@"[i]" block:^{ [self formatSelectionWithTag:@"i"]; }],
-    [[PSMenuItem alloc] initWithTitle:@"[spoiler]"
-                                block:^{ [self formatSelectionWithTag:@"spoiler"]; }],
-    [[PSMenuItem alloc] initWithTitle:@"[fixed]"
-                                block:^{ [self formatSelectionWithTag:@"[fixed]"]; }],
-    [[PSMenuItem alloc] initWithTitle:@"[quote]"
-                                block:^{ [self wrapSelectionInTag:@"[quote=]\n"]; }],
-    [[PSMenuItem alloc] initWithTitle:@"[code]"
-                                block:^{ [self wrapSelectionInTag:@"[code]\n"]; }],
-    ];
+                                                          [[PSMenuItem alloc] initWithTitle:@"[b]" block:^{ [self formatSelectionWithTag:@"b"]; }],
+                                                          [[PSMenuItem alloc] initWithTitle:@"[s]" block:^{ [self formatSelectionWithTag:@"s"]; }],
+                                                          [[PSMenuItem alloc] initWithTitle:@"[u]" block:^{ [self formatSelectionWithTag:@"u"]; }],
+                                                          [[PSMenuItem alloc] initWithTitle:@"[i]" block:^{ [self formatSelectionWithTag:@"i"]; }],
+                                                          [[PSMenuItem alloc] initWithTitle:@"[spoiler]"
+                                                                                      block:^{ [self formatSelectionWithTag:@"spoiler"]; }],
+                                                          [[PSMenuItem alloc] initWithTitle:@"[fixed]"
+                                                                                      block:^{ [self formatSelectionWithTag:@"[fixed]"]; }],
+                                                          [[PSMenuItem alloc] initWithTitle:@"[quote]"
+                                                                                      block:^{ [self wrapSelectionInTag:@"[quote=]\n"]; }],
+                                                          [[PSMenuItem alloc] initWithTitle:@"[code]"
+                                                                                      block:^{ [self wrapSelectionInTag:@"[code]\n"]; }],
+                                                          ];
 }
 
 - (void)linkifySelection
@@ -398,26 +398,26 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
 
 - (void)formatSelectionWithTag:(NSString*)tagful
 {/*
-    if(!RICH_TEXT_EDITOR_SUPPORT) {
-        [self wrapSelectionInTag:tag];
-        return;
-    }
-    
-    //UITextView seems to lose custom attributes :(
-    //so need to keep own copy
-    if (!self.attributedString)
-        self.attributedString = [self.composerTextView.attributedText mutableCopy];
-    
-    [self.attributedString setAttributes:[NSDictionary attributeDictionaryWithTag:tag]
-                                   range:self.composerTextView.selectedRange];
-    
-    self.composerTextView.attributedText = self.attributedString;
-    
-    NSLog(@"BBCode version:%@", self.attributedString.BBCode);
-    return;
+  if(!RICH_TEXT_EDITOR_SUPPORT) {
+  [self wrapSelectionInTag:tag];
+  return;
+  }
+  
+  //UITextView seems to lose custom attributes :(
+  //so need to keep own copy
+  if (!self.attributedString)
+  self.attributedString = [self.composerTextView.attributedText mutableCopy];
+  
+  [self.attributedString setAttributes:[NSDictionary attributeDictionaryWithTag:tag]
+  range:self.composerTextView.selectedRange];
+  
+  self.composerTextView.attributedText = self.attributedString;
+  
+  NSLog(@"BBCode version:%@", self.attributedString.BBCode);
+  return;
   */
 }
-     
+
 
 - (void)wrapSelectionInTag:(NSString *)tag
 {
@@ -528,7 +528,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
         // http://www.somethingawful.com/d/forum-rules/forum-rules.php?page=2
         BOOL shouldThumbnail = image.size.width > 800 || image.size.height > 600;
         [self.composerTextView replaceRange:self.composerTextView.selectedTextRange
-                                withText:ImageKeyToPlaceholder(key, shouldThumbnail)];
+                                   withText:ImageKeyToPlaceholder(key, shouldThumbnail)];
     }
     if (self.pickerPopover) {
         [self.pickerPopover dismissPopoverAnimated:YES];
