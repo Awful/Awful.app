@@ -557,7 +557,11 @@ static NSString * Entitify(NSString *noEntities)
         if (callback) callback(nil, nil, 0);
     } failure:^(id _, NSError *error)
     {
-        if (callback) callback(error, nil, 0);
+        // Once we get the redirect we need, we call the callback then cancel the operation.
+        // So there's no need to do anything if we get a "cancelled" error.
+        if (!([error.domain isEqualToString:NSURLErrorDomain] && error.code == NSURLErrorCancelled)) {
+            if (callback) callback(error, nil, 0);
+        }
     }];
     __weak AFHTTPRequestOperation *blockOp = op;
     [op setRedirectResponseBlock:^NSURLRequest *(id _, NSURLRequest *request, NSURLResponse *response)
@@ -566,8 +570,7 @@ static NSString * Entitify(NSString *noEntities)
         [blockOp cancel];
         NSDictionary *query = [[request URL] queryDictionary];
         if (callback) {
-            dispatch_queue_t queue = blockOp.successCallbackQueue;
-            if (!queue) queue = dispatch_get_main_queue();
+            dispatch_queue_t queue = blockOp.successCallbackQueue ?: dispatch_get_main_queue();
             dispatch_async(queue, ^{
                 callback(nil, query[@"threadid"], [query[@"pagenumber"] integerValue]);
             });
