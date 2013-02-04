@@ -112,6 +112,7 @@
         thread.threadIconImageURL = [NSURL URLWithString:json[@"thread_icon"][@"iconpath"]];
     }
     thread.forum = forum;
+    thread.numberOfPages = json[@"page"][1];
     
     NSArray *postIDs = [json[@"posts"] allKeys];
     NSMutableDictionary *existingPosts = [NSMutableDictionary new];
