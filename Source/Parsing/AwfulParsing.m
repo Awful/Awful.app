@@ -13,10 +13,7 @@
 #import "XPathQuery.h"
 
 
-// XPath boilerplate to handle HTML class attribute.
-//
-//   NSString *xpath = @"//div[" HAS_CLASS(breadcrumbs) "]";
-#define HAS_CLASS(name) "contains(concat(' ', normalize-space(@class), ' '), ' " #name " ')"
+
 
 
 @interface ParsedInfo ()
@@ -118,7 +115,7 @@ static NSDate * RegdateFromString(NSString *s)
 }
 
 
-static NSDate * PostDateFromString(NSString *s)
+NSDate * PostDateFromString(NSString *s)
 {
     static NSDateFormatter *df = nil;
     if (df == nil) {
@@ -126,20 +123,32 @@ static NSDate * PostDateFromString(NSString *s)
         [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
     }
     [df setTimeZone:[NSTimeZone localTimeZone]];
-    static NSString *formats[] = {
+    NSArray *formats = @[
         @"h:mm a MMM d, yyyy",
         @"MMM d, yyyy h:mm a",
         @"HH:mm MMM d, yyyy",
         @"MMM d, yyyy HH:mm",
-    };
-    for (size_t i = 0; i < sizeof(formats) / sizeof(formats[0]); i++) {
-        [df setDateFormat:formats[i]];
+        @"MM/dd/yy hh:mma"
+    ];
+    for (NSString *format in formats) {
+        [df setDateFormat:format];
         NSDate *parsedDate = [df dateFromString:s];
         if (parsedDate) return parsedDate;
     }
     return nil;
 }
 
+NSString * UserIDFromURLString(NSString *s)
+{
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"userid=(\\d+)"
+                                                                           options:0
+                                                                             error:nil];
+    NSTextCheckingResult *match = [regex firstMatchInString:s
+                                                    options:0
+                                                      range:NSMakeRange(0, [s length])];
+    if (match) return [s substringWithRange:[match rangeAtIndex:1]];
+    return nil;
+}
 
 static NSString * FixSAAndlibxmlHTMLSerialization(NSString *html)
 {

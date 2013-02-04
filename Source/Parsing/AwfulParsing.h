@@ -8,6 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
+extern NSDate * PostDateFromString(NSString *s);
+extern NSString* UserIDFromURLString(NSString* s);
+
+// XPath boilerplate to handle HTML class attribute.
+//
+//   NSString *xpath = @"//div[" HAS_CLASS(breadcrumbs) "]";
+#define HAS_CLASS(name) "contains(concat(' ', normalize-space(@class), ' '), ' " #name " ')"
+
 @interface ParsedInfo : NSObject
 
 // Designated initializer.

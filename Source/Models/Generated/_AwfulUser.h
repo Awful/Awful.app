@@ -28,6 +28,9 @@ extern const struct AwfulUserAttributes {
 } AwfulUserAttributes;
 
 extern const struct AwfulUserRelationships {
+	__unsafe_unretained NSString *banApprovals;
+	__unsafe_unretained NSString *banRequests;
+	__unsafe_unretained NSString *bans;
 	__unsafe_unretained NSString *posts;
 	__unsafe_unretained NSString *threads;
 } AwfulUserRelationships;
@@ -35,6 +38,9 @@ extern const struct AwfulUserRelationships {
 extern const struct AwfulUserFetchedProperties {
 } AwfulUserFetchedProperties;
 
+@class AwfulLeper;
+@class AwfulLeper;
+@class AwfulLeper;
 @class AwfulPost;
 @class AwfulThread;
 
@@ -284,6 +290,27 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
+@property (nonatomic, strong) AwfulLeper *banApprovals;
+
+//- (BOOL)validateBanApprovals:(id*)value_ error:(NSError**)error_;
+
+
+
+
+@property (nonatomic, strong) AwfulLeper *banRequests;
+
+//- (BOOL)validateBanRequests:(id*)value_ error:(NSError**)error_;
+
+
+
+
+@property (nonatomic, strong) NSSet *bans;
+
+- (NSMutableSet*)bansSet;
+
+
+
+
 @property (nonatomic, strong) NSSet *posts;
 
 - (NSMutableSet*)postsSet;
@@ -302,6 +329,11 @@ extern const struct AwfulUserFetchedProperties {
 @end
 
 @interface _AwfulUser (CoreDataGeneratedAccessors)
+
+- (void)addBans:(NSSet*)value_;
+- (void)removeBans:(NSSet*)value_;
+- (void)addBansObject:(AwfulLeper*)value_;
+- (void)removeBansObject:(AwfulLeper*)value_;
 
 - (void)addPosts:(NSSet*)value_;
 - (void)removePosts:(NSSet*)value_;
@@ -445,6 +477,21 @@ extern const struct AwfulUserFetchedProperties {
 - (void)setPrimitiveYahooName:(NSString*)value;
 
 
+
+
+
+- (AwfulLeper*)primitiveBanApprovals;
+- (void)setPrimitiveBanApprovals:(AwfulLeper*)value;
+
+
+
+- (AwfulLeper*)primitiveBanRequests;
+- (void)setPrimitiveBanRequests:(AwfulLeper*)value;
+
+
+
+- (NSMutableSet*)primitiveBans;
+- (void)setPrimitiveBans:(NSMutableSet*)value;
 
 
 

@@ -14,6 +14,8 @@
 // Singleton instance.
 + (AwfulHTTPClient *)client;
 
+@property (nonatomic) dispatch_queue_t parseQueue;
+
 // Returns YES if the forums are reachable through current network settings.
 @property (readonly, getter=isReachable, nonatomic) BOOL reachable;
 

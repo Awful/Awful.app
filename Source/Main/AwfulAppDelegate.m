@@ -27,6 +27,7 @@
 #import "NSManagedObject+Awful.h"
 #import "SVProgressHUD.h"
 #import "UIViewController+NavigationEnclosure.h"
+#import "AwfulLepersViewController.h"
 
 @interface AwfulAppDelegate () <AwfulTabBarControllerDelegate, UINavigationControllerDelegate,
                                 AwfulLoginControllerDelegate>
@@ -151,6 +152,7 @@ static id _instance;
         [[AwfulForumsListController new] enclosingNavigationController],
         [[AwfulFavoritesViewController new] enclosingNavigationController],
         [[AwfulBookmarksController new] enclosingNavigationController],
+        [[AwfulLepersViewController new] enclosingNavigationController],
         [[AwfulSettingsViewController new] enclosingNavigationController]
     ];
     tabBar.selectedViewController = tabBar.viewControllers[[[AwfulSettings settings] firstTab]];

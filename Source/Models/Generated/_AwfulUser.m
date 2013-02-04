@@ -27,6 +27,9 @@ const struct AwfulUserAttributes AwfulUserAttributes = {
 };
 
 const struct AwfulUserRelationships AwfulUserRelationships = {
+	.banApprovals = @"banApprovals",
+	.banRequests = @"banRequests",
+	.bans = @"bans",
 	.posts = @"posts",
 	.threads = @"threads",
 };
@@ -278,6 +281,27 @@ const struct AwfulUserFetchedProperties AwfulUserFetchedProperties = {
 
 
 
+
+@dynamic banApprovals;
+
+	
+
+@dynamic banRequests;
+
+	
+
+@dynamic bans;
+
+	
+- (NSMutableSet*)bansSet {
+	[self willAccessValueForKey:@"bans"];
+  
+	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"bans"];
+  
+	[self didAccessValueForKey:@"bans"];
+	return result;
+}
+	
 
 @dynamic posts;
 
