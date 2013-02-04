@@ -42,12 +42,18 @@ static NSString * const kNewThreadTagURLKey = @"AwfulNewThreadTagURL";
 - (UIImage *)threadTagNamed:(NSString *)threadTagName
 {
     if ([threadTagName length] == 0) return nil;
-    UIImage *shipped = [UIImage imageNamed:threadTagName];
-    if (shipped) return shipped;
+    
+    NSString* path = [[NSBundle mainBundle] pathForResource:threadTagName ofType:nil];
+    if (path) {
+        NSData *shipped = [NSData dataWithContentsOfFile:path];
+        return [UIImage imageWithData:shipped scale:2];
+    }
     
     NSURL *url = [[self cacheFolder] URLByAppendingPathComponent:threadTagName];
-    UIImage *cached = [UIImage imageWithContentsOfFile:[url path]];
-    if (cached) return cached;
+    NSData *cached = [NSData dataWithContentsOfURL:url];
+    if (cached) {
+        return [UIImage imageWithData:cached scale:2];
+    }
     
     [self downloadNewThreadTags];
     return nil;
@@ -193,3 +199,10 @@ static NSString * const kNewThreadTagURLKey = @"AwfulNewThreadTagURL";
 
 NSString * const AwfulNewThreadTagsAvailableNotification
     = @"com.awfulapp.Awful.NewThreadTagsAvailable";
+
+@implementation UIImage (AwfulThreadTags)
++ (UIImage*)threadTagNamed:(NSString *)name {
+    return [[AwfulThreadTags sharedThreadTags] threadTagNamed:name];
+}
+
+@end

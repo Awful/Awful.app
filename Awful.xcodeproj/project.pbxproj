@@ -674,6 +674,7 @@
 		8CCD558815B783FD00E5893B /* rating4.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD526015B783FC00E5893B /* rating4.png */; };
 		8CCD558915B783FD00E5893B /* rating5.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD526115B783FC00E5893B /* rating5.png */; };
 		8CCD559E15B783FD00E5893B /* sticky.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD527715B783FC00E5893B /* sticky.png */; };
+		8CDB21E016C0156E008B5535 /* AwfulTitleEntryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CDB21DF16C0156E008B5535 /* AwfulTitleEntryCell.m */; };
 		8CDB2A2216B0F3840091AE53 /* psp-rumble.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CDB2A2116B0F3840091AE53 /* psp-rumble.png */; };
 		8CEB405916877D2A00BFA9A8 /* winpos95-heading-seen.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEB405816877D2A00BFA9A8 /* winpos95-heading-seen.png */; };
 		8CEB405C16877E1600BFA9A8 /* winpos95-heading-left-seen.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEB405B16877E1600BFA9A8 /* winpos95-heading-left-seen.png */; };
@@ -1577,6 +1578,8 @@
 		8CCD536315B783FD00E5893B /* yp-gnugpl.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yp-gnugpl.png"; sourceTree = "<group>"; };
 		8CCD536415B783FD00E5893B /* yp-snowcrash971.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yp-snowcrash971.png"; sourceTree = "<group>"; };
 		8CCD536515B783FD00E5893B /* yp-tubes296.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yp-tubes296.png"; sourceTree = "<group>"; };
+		8CDB21DE16C0156E008B5535 /* AwfulTitleEntryCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AwfulTitleEntryCell.h; path = Components/AwfulTitleEntryCell.h; sourceTree = "<group>"; };
+		8CDB21DF16C0156E008B5535 /* AwfulTitleEntryCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AwfulTitleEntryCell.m; path = Components/AwfulTitleEntryCell.m; sourceTree = "<group>"; };
 		8CDB2A2116B0F3840091AE53 /* psp-rumble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "psp-rumble.png"; sourceTree = "<group>"; };
 		8CEB405816877D2A00BFA9A8 /* winpos95-heading-seen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading-seen.png"; sourceTree = "<group>"; };
 		8CEB405B16877E1600BFA9A8 /* winpos95-heading-left-seen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading-left-seen.png"; sourceTree = "<group>"; };
@@ -2277,6 +2280,8 @@
 		8C5CC4BF16AE3DBD00BEBA9D /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				8CDB21DE16C0156E008B5535 /* AwfulTitleEntryCell.h */,
+				8CDB21DF16C0156E008B5535 /* AwfulTitleEntryCell.m */,
 				8C1F62D316B61BA600FAF625 /* AwfulEmoticonChooserViewController.h */,
 				8C1F62D416B61BA600FAF625 /* AwfulEmoticonChooserViewController.m */,
 				8C1F62C716B60A9300FAF625 /* AwfulComposerInputAccessoryView.h */,
@@ -3959,6 +3964,7 @@
 				8C1F62D016B60A9300FAF625 /* AwfulComposerView.m in Sources */,
 				8C1F62D116B60A9300FAF625 /* AwfulEmoticonChooserCellView.m in Sources */,
 				8C1F62D516B61BA600FAF625 /* AwfulEmoticonChooserViewController.m in Sources */,
+				8CDB21E016C0156E008B5535 /* AwfulTitleEntryCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,7 +7,10 @@
 //
 
 #import "AwfulComposerViewController.h"
+#import "AwfulModels.h"
 
 @interface AwfulThreadComposerViewController : AwfulComposerViewController
+- (id)initWithForum:(AwfulForum*)forum;
 
+@property (nonatomic,readonly) AwfulForum* forum;
 @end

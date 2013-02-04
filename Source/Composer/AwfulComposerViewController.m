@@ -512,7 +512,7 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
     bbcodeBar.characters = @[ @"[", @"=", @":", @"/", @"]" ];
     bbcodeBar.keyInputView = self.composerTextView;
     self.composerTextView.inputAccessoryView = bbcodeBar;
-    self.view.backgroundColor = [UIColor blueColor];
+    //self.view.backgroundColor = [UIColor blueColor];
     self.view.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
     
     CGRect frame = self.view.frame;
