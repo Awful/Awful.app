@@ -103,7 +103,7 @@
                                                                    self.view.frame.size.width,
                                                                    10)
                     ];
-    _pageControl.pageIndicatorTintColor = [UIColor darkGrayColor];
+    //_pageControl.pageIndicatorTintColor = [UIColor darkGrayColor];
     _pageControl.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     _pageControl.numberOfPages = self.emoticonCollection.numberOfSections;
     

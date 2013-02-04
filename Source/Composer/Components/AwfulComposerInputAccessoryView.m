@@ -52,7 +52,7 @@
 - (UISegmentedControl*)formattingControl {
     if (_formattingControl) return _formattingControl;
     _formattingControl = [[UISegmentedControl alloc] initWithItems:
-                          @[@"B",@"I",@"U"/*@,"S",@"Sup",@"Sub",*/]
+                          @[@"B",@"I",@"U", @"S", @"Spoil"/*,@"Sup",@"Sub",*/]
                           ];
     _formattingControl.segmentedControlStyle = UISegmentedControlStyleBar;
     [_formattingControl addTarget:self

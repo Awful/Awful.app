@@ -75,6 +75,10 @@
             [self format:@"Underline"];
             break;
             
+        case AwfulPostFormatSpoil:
+            [self spoil];
+            break;
+            
             
         default:
             break;
@@ -89,9 +93,14 @@
     [self.innerWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"document.execCommand(\"insertText\", false, \"%@\")", string]];
 }
 
+- (void)spoil {
+    [self.innerWebView stringByEvaluatingJavaScriptFromString:@"spoilerSelectedText()"];
+}
+
 -(void)insertImage:(int)imageType {
     switch (imageType) {
         case 0: //image
+            NSLog(@"text:%@", self.bbcode);
             [(id<AwfulComposerViewDelegate>)self.delegate insertImage];
             break;
             
@@ -130,6 +139,16 @@
                           options:0
                             range:NSMakeRange(0, html.length)
                      withTemplate:@"[$1$2]"];
+    
+    //replace spoilers
+    regex = [NSRegularExpression regularExpressionWithPattern:@"<span class=\"spoiler\">(.*?)</span>"
+                                                      options:0
+                                                        error:nil];
+    [regex replaceMatchesInString:html
+                          options:0
+                            range:NSMakeRange(0, html.length)
+                     withTemplate:@"[spoiler]$1[/spoiler]"];
+    
     
     
     //replace emotes

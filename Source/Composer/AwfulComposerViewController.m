@@ -15,7 +15,6 @@
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "PSMenuItem.h"
-#import "NSAttributedString+BBCode.h"
 
 @interface AwfulComposerViewController () <UIImagePickerControllerDelegate,
 UINavigationControllerDelegate, UIPopoverControllerDelegate>
@@ -78,6 +77,7 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
 
 - (void)keyboardDidShow:(NSNotification *)note
 {
+    /*
     CGRect keyboardFrame = [note.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
     CGRect relativeKeyboardFrame = [self.composerTextView convertRect:keyboardFrame fromView:nil];
     CGRect overlap = CGRectIntersection(relativeKeyboardFrame, self.composerTextView.bounds);
@@ -86,12 +86,15 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
     self.composerTextView.contentInset = insets;
     self.composerTextView.scrollIndicatorInsets = insets;
     [self.composerTextView scrollRangeToVisible:self.composerTextView.selectedRange];
+     */
 }
 
 - (void)keyboardWillHide:(NSNotification *)note
 {
+    /*
     self.composerTextView.contentInset = UIEdgeInsetsZero;
     self.composerTextView.scrollIndicatorInsets = UIEdgeInsetsZero;
+     */
 }
 
 - (void)cancel
@@ -147,7 +150,7 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
 {
     [self.networkOperation cancel];
     
-    NSString *reply = self.composerTextView.text;
+    NSString *reply = self.composerTextView.bbcode;
     NSMutableArray *imageKeys = [NSMutableArray new];
     NSString *pattern = @"\\[(t?img)\\](imgur://(.+)\\.png)\\[/\\1\\]";
     NSError *error;

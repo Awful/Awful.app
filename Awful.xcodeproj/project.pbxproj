@@ -674,7 +674,6 @@
 		8CCD558815B783FD00E5893B /* rating4.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD526015B783FC00E5893B /* rating4.png */; };
 		8CCD558915B783FD00E5893B /* rating5.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD526115B783FC00E5893B /* rating5.png */; };
 		8CCD559E15B783FD00E5893B /* sticky.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD527715B783FC00E5893B /* sticky.png */; };
-		8CD3B3DB16AB5C15007FE63D /* NSAttributedString+BBCode.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CD3B3DA16AB5C15007FE63D /* NSAttributedString+BBCode.m */; };
 		8CDB2A2216B0F3840091AE53 /* psp-rumble.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CDB2A2116B0F3840091AE53 /* psp-rumble.png */; };
 		8CEB405916877D2A00BFA9A8 /* winpos95-heading-seen.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEB405816877D2A00BFA9A8 /* winpos95-heading-seen.png */; };
 		8CEB405C16877E1600BFA9A8 /* winpos95-heading-left-seen.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEB405B16877E1600BFA9A8 /* winpos95-heading-left-seen.png */; };
@@ -1578,8 +1577,6 @@
 		8CCD536315B783FD00E5893B /* yp-gnugpl.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yp-gnugpl.png"; sourceTree = "<group>"; };
 		8CCD536415B783FD00E5893B /* yp-snowcrash971.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yp-snowcrash971.png"; sourceTree = "<group>"; };
 		8CCD536515B783FD00E5893B /* yp-tubes296.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yp-tubes296.png"; sourceTree = "<group>"; };
-		8CD3B3D916AB5C15007FE63D /* NSAttributedString+BBCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+BBCode.h"; sourceTree = "<group>"; };
-		8CD3B3DA16AB5C15007FE63D /* NSAttributedString+BBCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSAttributedString+BBCode.m"; sourceTree = "<group>"; };
 		8CDB2A2116B0F3840091AE53 /* psp-rumble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "psp-rumble.png"; sourceTree = "<group>"; };
 		8CEB405816877D2A00BFA9A8 /* winpos95-heading-seen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading-seen.png"; sourceTree = "<group>"; };
 		8CEB405B16877E1600BFA9A8 /* winpos95-heading-left-seen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading-left-seen.png"; sourceTree = "<group>"; };
@@ -2273,8 +2270,6 @@
 				8C2A089E16AAD00800CDBC23 /* AwfulReplyComposerViewController.m */,
 				8C2A089F16AAD00800CDBC23 /* AwfulThreadComposerViewController.h */,
 				8C2A08A016AAD00800CDBC23 /* AwfulThreadComposerViewController.m */,
-				8CD3B3D916AB5C15007FE63D /* NSAttributedString+BBCode.h */,
-				8CD3B3DA16AB5C15007FE63D /* NSAttributedString+BBCode.m */,
 			);
 			path = Composer;
 			sourceTree = "<group>";
@@ -3954,7 +3949,6 @@
 				8C2A08A216AAD00800CDBC23 /* AwfulEditPostComposerViewController.m in Sources */,
 				8C2A08A316AAD00800CDBC23 /* AwfulReplyComposerViewController.m in Sources */,
 				8C2A08A416AAD00800CDBC23 /* AwfulThreadComposerViewController.m in Sources */,
-				8CD3B3DB16AB5C15007FE63D /* NSAttributedString+BBCode.m in Sources */,
 				8C70056216A076FF00FC0B78 /* AwfulEmoticon.m in Sources */,
 				8C70056316A076FF00FC0B78 /* AwfulEmoticonGroup.m in Sources */,
 				8C70056816A0770A00FC0B78 /* _AwfulEmoticon.m in Sources */,
