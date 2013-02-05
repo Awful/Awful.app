@@ -43,14 +43,20 @@ static NSString * const kNewThreadTagURLKey = @"AwfulNewThreadTagURL";
 {
     if ([threadTagName length] == 0) return nil;
     UIImage *shipped = [UIImage imageNamed:threadTagName];
-    if (shipped) return shipped;
+    if (shipped) return EnsureDoubleScaledImage(shipped);
     
     NSURL *url = [[self cacheFolder] URLByAppendingPathComponent:threadTagName];
     UIImage *cached = [UIImage imageWithContentsOfFile:[url path]];
-    if (cached) return cached;
+    if (cached) return EnsureDoubleScaledImage(cached);
     
     [self downloadNewThreadTags];
     return nil;
+}
+
+static UIImage *EnsureDoubleScaledImage(UIImage *image)
+{
+    if (image.scale == 2) return image;
+    return [UIImage imageWithCGImage:image.CGImage scale:2 orientation:image.imageOrientation];
 }
 
 #pragma mark - Downloading tags
