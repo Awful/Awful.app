@@ -73,7 +73,6 @@
     
     NSError *error;
 	if (![self.fetchedResultsController performFetch:&error]) {
-		// Update to handle the error appropriately.
 		NSLog(@"error fetching: %@", error);
 	}
 }
