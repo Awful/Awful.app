@@ -15,6 +15,6 @@
 @property (nonatomic,strong) NSString* reply;
 @property (nonatomic) NSArray* cellBlocks;
 
-- (void)replyToThread:(AwfulThread *)thread withInitialContents:(NSString *)contents;
+- (id)initWithThread:(AwfulThread *)thread initialContents:(NSString *)contents;
 
 @end

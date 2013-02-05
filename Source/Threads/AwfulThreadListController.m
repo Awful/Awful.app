@@ -101,9 +101,10 @@
 - (void)didTapCompose:(UIBarButtonItem*)button
 {
     AwfulThreadComposerViewController *threadComposer = [[AwfulThreadComposerViewController alloc] initWithForum:self.forum];
-    threadComposer.modalPresentationStyle = UIModalPresentationFormSheet;
+    UINavigationController *wrapper = [threadComposer enclosingNavigationController];
+    wrapper.modalPresentationStyle = UIModalPresentationFormSheet;
     
-    [self presentModalViewController:threadComposer animated:YES];
+    [self presentModalViewController:wrapper animated:YES];
     
 }
 

@@ -589,16 +589,14 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 - (void)tappedCompose
 {   
     [self dismissPopoverAnimated:YES];
-    AwfulReplyComposerViewController *reply = [AwfulReplyComposerViewController new];
-    reply.delegate = self;
-    //[reply replyToThread:self.thread withInitialContents:nil];
+    AwfulReplyComposerViewController *reply = [[AwfulReplyComposerViewController alloc] initWithThread:self.thread initialContents:nil];
+    UINavigationController *nav = [reply enclosingNavigationController];
     
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        reply.modalPresentationStyle = UIModalPresentationFormSheet;
-        [self presentModalViewController:reply animated:YES];
+        nav.modalPresentationStyle = UIModalPresentationFormSheet;
+        [self presentModalViewController:nav animated:YES];
     } else {
-        UINavigationController *nav = [reply enclosingNavigationController];
         [self presentViewController:nav animated:YES completion:nil];
     }
     
@@ -625,9 +623,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                                        buttonTitle:@"Alright"];
                      return;
                  }
-                 AwfulEditPostComposerViewController *edit = [AwfulEditPostComposerViewController new];
+                 AwfulEditPostComposerViewController *edit = [[AwfulEditPostComposerViewController alloc] initWithPost:post bbCode:text];
                  edit.delegate = self;
-                 [edit editPost:post text:text];
                  UINavigationController *nav = [edit enclosingNavigationController];
                  [self presentViewController:nav animated:YES completion:nil];
              }];
@@ -644,10 +641,9 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                                        buttonTitle:@"Alright"];
                      return;
                  }
-                 AwfulReplyComposerViewController *reply = [AwfulReplyComposerViewController new];
+                 AwfulReplyComposerViewController *reply = [[AwfulReplyComposerViewController alloc] initWithThread:self.thread
+                                                                                                    initialContents:[quotedText stringByAppendingString:@"\n\n"]];
                  reply.delegate = self;
-                 [reply replyToThread:self.thread
-                  withInitialContents:[quotedText stringByAppendingString:@"\n\n"]];
                  UINavigationController *nav = [reply enclosingNavigationController];
                  [self presentViewController:nav animated:YES completion:nil];
              }];

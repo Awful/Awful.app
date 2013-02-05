@@ -10,15 +10,17 @@
 
 @implementation AwfulEditPostComposerViewController
 
-- (void)editPost:(AwfulPost *)post text:(NSString *)text
+- (id)initWithPost:(AwfulPost *)post bbCode:(NSString *)bbCode
 {
+    self = [super init];
     self.post = post;
     self.thread = nil;
-    self.composerTextView.text = text;
+    self.composerTextView.text = bbCode;
     self.title = [post.thread.title stringByCollapsingWhitespace];
     self.navigationItem.titleLabel.text = self.title;
     self.sendButton.title = @"Save";
     self.images = [NSMutableDictionary new];
+    return self;
 }
 
 

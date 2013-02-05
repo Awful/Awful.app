@@ -21,8 +21,9 @@
 
 
 
-- (void)replyToThread:(AwfulThread *)thread withInitialContents:(NSString *)contents
+- (id)initWithThread:(AwfulThread *)thread initialContents:(NSString *)contents
 {
+    self = [super init];
     self.thread = thread;
     self.post = nil;
     self.composerTextView.text = contents;
@@ -30,6 +31,7 @@
     self.navigationItem.titleLabel.text = self.title;
     self.sendButton.title = @"Reply";
     self.images = [NSMutableDictionary new];
+    return self;
 }
 
 -(void) didReplaceImagePlaceholders:(NSString *)newMessageString {

@@ -11,6 +11,6 @@
 #import "AwfulModels.h"
 @interface AwfulEditPostComposerViewController : AwfulReplyComposerViewController
 
-- (void)editPost:(AwfulPost *)post text:(NSString *)text;
+- (id)initWithPost:(AwfulPost *)post bbCode:(NSString *)bbCode;
 
 @end

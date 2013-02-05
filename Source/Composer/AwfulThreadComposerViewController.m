@@ -14,7 +14,7 @@
 - (id)initWithForum:(AwfulForum *)forum {
     self = [super init];
     _forum = forum;
-    
+    self.navigationItem.title = @"New Thread";
     return self;
 }
 
