@@ -20,6 +20,8 @@
 
 @property (nonatomic) NSMutableArray *bans;
 
+@property (nonatomic) NSMutableSet *banIDs;
+
 @end
 
 
@@ -30,6 +32,7 @@
     if (!(self = [super initWithStyle:UITableViewStylePlain])) return nil;
     self.title = @"Leper's Colony";
     _bans = [NSMutableArray new];
+    _banIDs = [NSMutableSet new];
     return self;
 }
 
@@ -83,8 +86,16 @@
             self.currentPage = pageNum;
             if (pageNum == 1) {
                 self.bans = [bans mutableCopy];
+                [self.banIDs removeAllObjects];
                 [self.tableView reloadData];
             } else {
+                NSIndexSet *newBans = [bans indexesOfObjectsPassingTest:^BOOL(BanParsedInfo *ban,
+                                                                              NSUInteger i,
+                                                                              BOOL *_)
+                {
+                    return ![self.banIDs containsObject:CreateBanIDForBan(ban)];
+                }];
+                bans = [bans objectsAtIndexes:newBans];
                 [self.bans addObjectsFromArray:bans];
                 NSMutableArray *indexPaths = [NSMutableArray new];
                 NSUInteger start = [self.tableView numberOfRowsInSection:0];
@@ -95,10 +106,19 @@
                 [self.tableView insertRowsAtIndexPaths:indexPaths
                                       withRowAnimation:UITableViewRowAnimationAutomatic];
             }
+            for (BanParsedInfo *ban in bans) {
+                [self.banIDs addObject:CreateBanIDForBan(ban)];
+            }
         }
         self.refreshing = NO;
     }];
     self.networkOperation = op;
+}
+
+static NSString * CreateBanIDForBan(BanParsedInfo *ban)
+{
+    return [NSString stringWithFormat:@"%@.%.2f.%@",
+            @(ban.banType), [ban.banDate timeIntervalSinceReferenceDate], ban.bannedUserID];
 }
 
 - (void)nextPage
