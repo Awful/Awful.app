@@ -271,6 +271,8 @@
 shouldStartLoadWithRequest:(NSURLRequest *)request
  navigationType:(UIWebViewNavigationType)navigationType
 {
+    //editor.html calls a javascript that sets window.location to "objc:didChangeContents" when
+    //the input changes, catch that here and tell the delegate the contents changed
     if ([request.URL.scheme isEqualToString:@"objc"]) {
         NSArray *components = [request.URL.absoluteString componentsSeparatedByString:@":"];
         NSString *function = [components objectAtIndex:1];
@@ -282,6 +284,10 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         return NO;
     }
     return YES;
+}
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
+    [self.delegate textViewDidChange:self];
 }
 
 - (void)didChangeContents {
