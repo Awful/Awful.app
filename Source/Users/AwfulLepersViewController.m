@@ -8,8 +8,10 @@
 
 #import "AwfulLepersViewController.h"
 #import "AwfulAlertView.h"
+#import "AwfulDisclosureIndicatorView.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulLeperCell.h"
+#import "AwfulTheme.h"
 #import "AwfulThreadTags.h"
 
 @interface AwfulLepersViewController ()
@@ -48,6 +50,19 @@
 {
     return [self.bans count] == 0;
 }
+
+- (void)retheme
+{
+    [super retheme];
+    self.view.backgroundColor = [AwfulTheme currentTheme].threadListBackgroundColor;
+    self.tableView.separatorColor = [AwfulTheme currentTheme].threadListSeparatorColor;
+    for (AwfulLeperCell *cell in [self.tableView visibleCells]) {
+        [self tableView:self.tableView
+        willDisplayCell:cell
+      forRowAtIndexPath:[self.tableView indexPathForCell:cell]];
+    }
+}
+
 
 - (BOOL)canPullForNextPage
 {
@@ -106,6 +121,9 @@
         cell = [[AwfulLeperCell alloc] initWithReuseIdentifier:Identifier];
         cell.textLabel.numberOfLines = 0;
         cell.detailTextLabel.numberOfLines = 0;
+        AwfulDisclosureIndicatorView *disclosure = [AwfulDisclosureIndicatorView new];
+        disclosure.cell = cell;
+        cell.accessoryView = disclosure;
     }
     
     [self configureCell:cell atIndexPath:indexPath];
@@ -115,6 +133,14 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return [AwfulLeperCell heightWithBan:self.bans[indexPath.row] inTableView:tableView];
+}
+
+- (void)tableView:(UITableView *)tableView
+  willDisplayCell:(UITableViewCell *)cell
+forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    cell.textLabel.textColor = [AwfulTheme currentTheme].forumCellTextColor;
+    cell.backgroundColor = [AwfulTheme currentTheme].forumCellBackgroundColor;
 }
 
 - (void)configureCell:(UITableViewCell *)baseCell atIndexPath:(NSIndexPath *)indexPath
@@ -131,6 +157,10 @@
         cell.accessoryType = UITableViewCellAccessoryNone;
     }
     cell.imageView.image = [[AwfulThreadTags sharedThreadTags] threadTagNamed:@"icon23-banme"];
+    
+    AwfulDisclosureIndicatorView *disclosure = (id)cell.accessoryView;
+    disclosure.color = [AwfulTheme currentTheme].disclosureIndicatorColor;
+    disclosure.highlightedColor = [AwfulTheme currentTheme].disclosureIndicatorHighlightedColor;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
