@@ -43,14 +43,20 @@ static NSString * const kNewThreadTagURLKey = @"AwfulNewThreadTagURL";
 {
     if ([threadTagName length] == 0) return nil;
     UIImage *shipped = [UIImage imageNamed:threadTagName];
-    if (shipped) return shipped;
+    if (shipped) return EnsureDoubleScaledImage(shipped);
     
     NSURL *url = [[self cacheFolder] URLByAppendingPathComponent:threadTagName];
     UIImage *cached = [UIImage imageWithContentsOfFile:[url path]];
-    if (cached) return cached;
+    if (cached) return EnsureDoubleScaledImage(cached);
     
     [self downloadNewThreadTags];
     return nil;
+}
+
+static UIImage *EnsureDoubleScaledImage(UIImage *image)
+{
+    if (image.scale == 2) return image;
+    return [UIImage imageWithCGImage:image.CGImage scale:2 orientation:image.imageOrientation];
 }
 
 #pragma mark - Downloading tags
@@ -59,8 +65,8 @@ static NSString * const kNewThreadTagURLKey = @"AwfulNewThreadTagURL";
 {
     if (self.downloadingNewTags) return;
     NSDate *checked = [self lastCheck];
-    // One check every eighteen hours.
-    if (checked && [checked timeIntervalSinceNow] > -60 * 60 * 18) return;
+    // At most one check every six hours.
+    if (checked && [checked timeIntervalSinceNow] > -60 * 60 * 6) return;
     self.downloadingNewTags = YES;
     
     [self ensureCacheFolder];
@@ -108,8 +114,10 @@ static NSString * const kNewThreadTagURLKey = @"AwfulNewThreadTagURL";
             }
         }
         if ([newlyAvailableTagNames count] == 0) return;
-        [[NSNotificationCenter defaultCenter] postNotificationName:AwfulNewThreadTagsAvailableNotification
-                                                            object:newlyAvailableTagNames];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:AwfulNewThreadTagsAvailableNotification
+                                                                object:newlyAvailableTagNames];
+        });
     }];
 }
 

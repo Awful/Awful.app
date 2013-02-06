@@ -25,6 +25,3 @@
 - (void)loginController:(AwfulLoginController *)login didFailToLogInWithError:(NSError *)error;
 
 @end
-
-
-extern BOOL IsLoggedIn();

@@ -18,15 +18,21 @@
 {
     NSArray *threads = [ThreadParsedInfo threadsWithHTMLData:self.fixture];
     STAssertTrue([threads count] == 11, nil);
+    ThreadParsedInfo *second = threads[1];
+    STAssertEqualObjects(second.title, @"Awful Android app", nil);
+    STAssertTrue(second.totalUnreadPosts == 0, nil);
+    STAssertEqualObjects(second.lastPostAuthorName, @"spankmeister", nil);
+    STAssertFalse(second.isClosed, nil);
+    STAssertFalse(second.isSticky, nil);
+    STAssertTrue(second.seen, nil);
+    STAssertTrue(second.starCategory == AwfulStarCategoryRed, nil);
+    STAssertEqualObjects([second.threadIconImageURL lastPathComponent], @"cps-android.gif", nil);
+    
     ThreadParsedInfo *third = threads[2];
-    STAssertEqualObjects(third.title, @"Awful Android app", nil);
-    STAssertTrue(third.totalUnreadPosts == 0, nil);
-    STAssertEqualObjects(third.lastPostAuthorName, @"AlexMoron", nil);
-    STAssertFalse(third.isClosed, nil);
-    STAssertFalse(third.isSticky, nil);
-    STAssertTrue(third.seen, nil);
-    STAssertTrue(third.starCategory == AwfulStarCategoryNone, nil);
-    STAssertEqualObjects([third.threadIconImageURL lastPathComponent], @"cps-android.gif", nil);
+    STAssertTrue(third.starCategory == AwfulStarCategoryBlue, nil);
+    
+    ThreadParsedInfo *fifth = threads[4];
+    STAssertTrue(fifth.starCategory == AwfulStarCategoryYellow, nil);
 }
 
 @end

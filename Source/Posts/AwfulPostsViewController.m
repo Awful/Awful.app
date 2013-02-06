@@ -93,8 +93,6 @@
 
 @property (copy, nonatomic) NSString *jumpToPostAfterLoad;
 
-@property (nonatomic) UIPopoverController *profilePopover;
-
 @end
 
 
@@ -105,24 +103,21 @@
     if (!(self = [super initWithNibName:nil bundle:nil])) return nil;
     self.hidesBottomBarWhenPushed = YES;
     NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
-    [noteCenter addObserver:self
-                   selector:@selector(currentThemeChanged:)
-                       name:AwfulThemeDidChangeNotification
-                     object:nil];
-    [noteCenter addObserver:self
-                   selector:@selector(settingChanged:)
-                       name:AwfulSettingsDidChangeNotification
-                     object:nil];
+    [noteCenter addObserver:self selector:@selector(currentThemeChanged:)
+                       name:AwfulThemeDidChangeNotification object:nil];
+    [noteCenter addObserver:self selector:@selector(settingChanged:)
+                       name:AwfulSettingsDidChangeNotification object:nil];
+    [noteCenter addObserver:self selector:@selector(didResetDataStack:)
+                       name:AwfulDataStackDidResetNotification object:nil];
     return self;
 }
 
 - (void)dealloc
 {
-    NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
-    [noteCenter removeObserver:self name:AwfulSettingsDidChangeNotification object:nil];
-    [noteCenter removeObserver:self name:AwfulThemeDidChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self stopObserving];
     self.postsView.scrollView.delegate = nil;
+    self.fetchedResultsController.delegate = nil;
 }
 
 - (void)currentThemeChanged:(NSNotification *)note
@@ -144,6 +139,11 @@
     ];
     NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
     if ([keys firstObjectCommonWithArray:importantKeys]) [self configurePostsViewSettings];
+}
+
+- (void)didResetDataStack:(NSNotification *)note
+{
+    self.fetchedResultsController = nil;
 }
 
 - (void)setThread:(AwfulThread *)thread
@@ -598,10 +598,11 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 - (void)showActionsForPost:(AwfulPost *)post fromRect:(CGRect)rect inView:(UIView *)view
 {
     [self dismissPopoverAnimated:YES];
-    NSString *title = [NSString stringWithFormat:@"%@'s Post", post.author.username];
+    NSString *possessiveUsername = [NSString stringWithFormat:@"%@'s", post.author.username];
     if ([post.author.username isEqualToString:[AwfulSettings settings].username]) {
-        title = @"Your Post";
+        possessiveUsername = @"Your";
     }
+    NSString *title = [NSString stringWithFormat:@"%@ Post", possessiveUsername];
     AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:title];
     if (post.editableValue) {
         [sheet addButtonWithTitle:@"Edit" block:^{
@@ -666,6 +667,24 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                  [self markPostsAsBeenSeenUpToPost:post];
              }
          }];
+    }];
+    [sheet addButtonWithTitle:[NSString stringWithFormat:@"%@ Profile", possessiveUsername] block:^{
+        AwfulProfileViewController *profile = [AwfulProfileViewController new];
+        profile.userID = post.author.userID;
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                  target:self action:@selector(doneWithProfile)];
+            profile.navigationItem.leftBarButtonItem = done;
+            UINavigationController *nav = [profile enclosingNavigationController];
+            nav.modalPresentationStyle = UIModalPresentationFormSheet;
+            [self presentViewController:nav animated:YES completion:nil];
+        } else {
+            UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithTitle:@"Back"
+                                                                     style:UIBarButtonItemStyleBordered
+                                                                    target:nil action:NULL];
+            self.navigationItem.backBarButtonItem = back;
+            [self.navigationController pushViewController:profile animated:YES];
+        }
     }];
     [sheet addCancelButtonWithTitle:@"Cancel"];
     [sheet showFromRect:rect inView:view animated:YES];
@@ -968,8 +987,7 @@ static char KVOContext;
     return @[
         @"showActionsForPostAtIndex:fromRectDictionary:",
         @"previewImageAtURLString:",
-        @"showMenuForLinkWithURLString:fromRectDictionary:",
-        @"showProfileForPostAtIndex:fromRectDictionary:"
+        @"showMenuForLinkWithURLString:fromRectDictionary:"
     ];
 }
 
@@ -1023,7 +1041,7 @@ static char KVOContext;
     }
     AwfulActionSheet *sheet = [AwfulActionSheet new];
     sheet.title = urlString;
-    [sheet addButtonWithTitle:@"Open in Awful" block:^{ [self openURLInBuiltInBrowser:url]; }];
+    [sheet addButtonWithTitle:@"Open" block:^{ [self openURLInBuiltInBrowser:url]; }];
     [sheet addButtonWithTitle:@"Open in Safari"
                         block:^{ [[UIApplication sharedApplication] openURL:url]; }];
     for (AwfulExternalBrowser *browser in [AwfulExternalBrowser installedBrowsers]) {
@@ -1061,31 +1079,9 @@ static char KVOContext;
     return _postDateFormatter;
 }
 
-- (void)showProfileForPostAtIndex:(NSNumber *)index fromRectDictionary:(NSDictionary *)rectDict
+- (void)doneWithProfile
 {
-    NSInteger unboxed = [index integerValue] + self.hiddenPosts;
-    AwfulPost *post = self.fetchedResultsController.fetchedObjects[unboxed];
-    AwfulProfileViewController *profile = [AwfulProfileViewController new];
-    profile.userID = post.author.userID;
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:profile];
-        self.profilePopover = [[UIPopoverController alloc] initWithContentViewController:nav];
-        self.profilePopover.popoverContentSize = CGSizeMake(320, 460);
-        CGRect rect = CGRectMake([rectDict[@"left"] floatValue], [rectDict[@"top"] floatValue],
-                                 [rectDict[@"width"] floatValue], [rectDict[@"height"] floatValue]);
-        [self.profilePopover presentPopoverFromRect:rect
-                                             inView:self.postsView
-                           permittedArrowDirections:UIPopoverArrowDirectionAny
-                                           animated:YES];
-    } else {
-        profile.hidesBottomBarWhenPushed = YES;
-        UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithTitle:@"Back"
-                                                                 style:UIBarButtonItemStyleBordered
-                                                                target:nil
-                                                                action:NULL];
-        self.navigationItem.backBarButtonItem = back;
-        [self.navigationController pushViewController:profile animated:YES];
-    }
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate
@@ -1333,14 +1329,16 @@ static char KVOContext;
 
 - (void)layoutSubviews
 {
-    CGFloat buttonWidth = floorf((self.bounds.size.width - 2) / 3);
-    CGFloat x = floorf(self.bounds.size.width - buttonWidth * 3) / 2;
-    
-    self.goToForumButton.frame = CGRectMake(x, 0, buttonWidth, self.bounds.size.height - 1);
-    x += buttonWidth + 1;
-    self.loadReadPostsButton.frame = CGRectMake(x, 0, buttonWidth, self.bounds.size.height - 1);
-    x += buttonWidth + 1;
-    self.scrollToBottomButton.frame = CGRectMake(x, 0, buttonWidth, self.bounds.size.height - 1);
+    CGSize buttonSize = CGSizeMake(floorf((CGRectGetWidth(self.bounds) - 2) / 3),
+                                   CGRectGetHeight(self.bounds) - 1);
+    CGFloat extraMiddleWidth = CGRectGetWidth(self.bounds) - buttonSize.width * 3 - 2;
+    self.goToForumButton.frame = (CGRect){ .size = buttonSize };
+    self.loadReadPostsButton.frame = CGRectMake(CGRectGetMaxX(self.goToForumButton.frame) + 1, 0,
+                                                buttonSize.width + extraMiddleWidth, buttonSize.height);
+    self.scrollToBottomButton.frame = (CGRect){
+        .origin.x = CGRectGetMaxX(self.loadReadPostsButton.frame) + 1,
+        .size = buttonSize
+    };
 }
 
 @end

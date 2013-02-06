@@ -44,8 +44,10 @@
     NSArray *changed = note.userInfo[AwfulSettingsDidChangeSettingsKey];
     if ([changed containsObject:AwfulSettingsKeys.darkTheme]) {
         self.dark = [AwfulSettings settings].darkTheme;
-        [[NSNotificationCenter defaultCenter] postNotificationName:AwfulThemeDidChangeNotification
-                                                            object:self];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:AwfulThemeDidChangeNotification
+                                                                object:self];
+        });
     }
 }
 

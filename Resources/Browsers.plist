@@ -4,11 +4,57 @@
 <array>
 	<dict>
 		<key>Title</key>
+		<string>1Password</string>
+		<key>http</key>
+		<string>ophttp</string>
+		<key>https</key>
+		<string>ophttps</string>
+	</dict>
+	<dict>
+		<key>Title</key>
+		<string>Atomic</string>
+		<key>http</key>
+		<string>atomic://http</string>
+		<key>https</key>
+		<string>atomic://https</string>
+	</dict>
+	<dict>
+		<key>Title</key>
+		<string>Axis</string>
+		<key>http</key>
+		<string>yaxis://load?url=http</string>
+		<key>https</key>
+		<string>yaxis://load?url=https</string>
+	</dict>
+	<dict>
+		<key>Title</key>
 		<string>Chrome</string>
 		<key>http</key>
 		<string>googlechrome</string>
 		<key>https</key>
 		<string>googlechromes</string>
+	</dict>
+	<dict>
+		<key>Title</key>
+		<string>Diigo</string>
+		<key>http</key>
+		<string>ichromy://http</string>
+		<key>https</key>
+		<string>ichromy://https</string>
+	</dict>
+	<dict>
+		<key>Title</key>
+		<string>Dolphin</string>
+		<key>http</key>
+		<string>dolphin://http</string>
+		<key>https</key>
+		<string>dolphin://https</string>
+	</dict>
+	<dict>
+		<key>Title</key>
+		<string>Dual Browser</string>
+		<key>http</key>
+		<string>dualbrowser</string>
 	</dict>
 	<dict>
 		<key>Title</key>
@@ -41,6 +87,30 @@
 		<string>ohttps</string>
 		<key>ftp</key>
 		<string>oftp</string>
+	</dict>
+	<dict>
+		<key>Title</key>
+		<string>Puffin</string>
+		<key>http</key>
+		<string>puffin</string>
+		<key>https</key>
+		<string>puffins</string>
+	</dict>
+	<dict>
+		<key>Title</key>
+		<string>Sleipnir</string>
+		<key>http</key>
+		<string>sleipnir</string>
+		<key>https</key>
+		<string>sleipnirs</string>
+	</dict>
+	<dict>
+		<key>Title</key>
+		<string>Terra</string>
+		<key>http</key>
+		<string>terra</string>
+		<key>https</key>
+		<string>terras</string>
 	</dict>
 </array>
 </plist>

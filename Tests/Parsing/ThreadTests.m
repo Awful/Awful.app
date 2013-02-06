@@ -24,7 +24,7 @@
 {
     PageParsedInfo *info = [[PageParsedInfo alloc] initWithHTMLData:self.fixture];
     STAssertEquals(info.pageNumber, 5, nil);
-    STAssertEquals(info.pagesInThread, 110, nil);
+    STAssertEquals(info.pagesInThread, 117, nil);
     STAssertEqualObjects(info.forumID, @"46", nil);
     STAssertEqualObjects(info.forumName, @"Debate & Discussion", nil);
     STAssertEqualObjects(info.threadID, @"3507451", nil);

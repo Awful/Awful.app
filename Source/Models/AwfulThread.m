@@ -40,7 +40,6 @@
 
 + (NSArray *)threadsCreatedOrUpdatedWithParsedInfo:(NSArray *)threadInfos
 {
-    NSMutableArray *threads = [[NSMutableArray alloc] init];
     NSMutableDictionary *existingThreads = [NSMutableDictionary new];
     NSArray *threadIDs = [threadInfos valueForKey:@"threadID"];
     for (AwfulThread *thread in [self fetchAllMatchingPredicate:@"threadID IN %@", threadIDs]) {
@@ -57,16 +56,15 @@
             NSLog(@"ignoring ID-less thread (announcement?)");
             continue;
         }
-        AwfulThread *thread = existingThreads[info.threadID];
-        if (!thread) thread = [AwfulThread insertNew];
+        AwfulThread *thread = existingThreads[info.threadID] ?: [AwfulThread insertNew];
         [info applyToObject:thread];
         if (!thread.author) thread.author = [AwfulUser insertNew];
         [info.author applyToObject:thread.author];
         existingUsers[thread.author.username] = thread.author;
-        [threads addObject:thread];
+        existingThreads[thread.threadID] = thread;
     }
     [[AwfulDataStack sharedDataStack] save];
-    return threads;
+    return [existingThreads allValues];
 }
 
 #pragma mark - _AwfulThread

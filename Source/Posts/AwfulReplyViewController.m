@@ -9,6 +9,7 @@
 #import "AwfulReplyViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulHTTPClient.h"
+#import "AwfulKeyboardBar.h"
 #import "AwfulModels.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
@@ -18,6 +19,13 @@
 #import "SVProgressHUD.h"
 #import "UINavigationItem+TwoLineTitle.h"
 
+@interface AwfulTextView : UITextView
+
+@property (nonatomic) BOOL showStandardMenuItems;
+
+@end
+
+
 @interface AwfulReplyViewController () <UIImagePickerControllerDelegate,
                                         UINavigationControllerDelegate, UIPopoverControllerDelegate>
 
@@ -25,7 +33,7 @@
 
 @property (strong, nonatomic) UIBarButtonItem *cancelButton;
 
-@property (readonly, nonatomic) UITextView *replyTextView;
+@property (readonly, nonatomic) AwfulTextView *replyTextView;
 
 @property (weak, nonatomic) NSOperation *networkOperation;
 
@@ -41,24 +49,36 @@
 
 @property (nonatomic) id <ImgurHTTPClientCancelToken> imageUploadCancelToken;
 
+@property (readonly, nonatomic) UIBarButtonItem *insertOpenBracketButton;
+
+@property (readonly, nonatomic) UIBarButtonItem *insertCloseBracketButton;
+
+@property (readonly, nonatomic) UIBarButtonItem *insertEqualsButton;
+
+@property (readonly, nonatomic) UIBarButtonItem *insertSlashButton;
+
+@property (readonly, nonatomic) UIBarButtonItem *insertColonButton;
+
+@property (readonly, nonatomic) UIBarButtonItem *insertAnotherColonButton;
+
+@property (copy, nonatomic) NSString *savedReplyContents;
+
+@property (nonatomic) NSRange savedSelectedRange;
+
 @end
+
 
 @implementation AwfulReplyViewController
 
 - (void)dealloc
 {
     if (_observerToken) [[NSNotificationCenter defaultCenter] removeObserver:_observerToken];
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:UIKeyboardDidShowNotification
-                                                  object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:UIKeyboardWillHideNotification
-                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (UITextView *)replyTextView
+- (AwfulTextView *)replyTextView
 {
-    return (UITextView *)self.view;
+    return (AwfulTextView *)self.view;
 }
 
 - (UIBarButtonItem *)sendButton
@@ -90,6 +110,8 @@
     self.navigationItem.titleLabel.text = self.title;
     self.sendButton.title = @"Save";
     self.images = [NSMutableDictionary new];
+    self.savedReplyContents = nil;
+    self.savedSelectedRange = NSMakeRange(0, 0);
 }
 
 - (void)replyToThread:(AwfulThread *)thread withInitialContents:(NSString *)contents
@@ -101,6 +123,8 @@
     self.navigationItem.titleLabel.text = self.title;
     self.sendButton.title = @"Reply";
     self.images = [NSMutableDictionary new];
+    self.savedReplyContents = nil;
+    self.savedSelectedRange = NSMakeRange(0, 0);
 }
 
 - (void)keyboardDidShow:(NSNotification *)note
@@ -132,7 +156,10 @@
         alert.message = @"Does my reply offer any significant advice or help "
                          "contribute to the conversation in any fashion?";
         [alert addCancelButtonWithTitle:@"Nope"
-                                  block:^{ [self.replyTextView becomeFirstResponder]; }];
+                                  block:^{
+                                      self.replyTextView.userInteractionEnabled = YES;
+                                      [self.replyTextView becomeFirstResponder];
+                                  }];
         [alert addButtonWithTitle:self.sendButton.title block:^{ [self send]; }];
         [alert show];
     } else {
@@ -188,6 +215,7 @@ withImagePlaceholderResults:placeholderResults
          [AwfulAlertView showWithTitle:@"Image Uploading Failed"
                                  error:error
                            buttonTitle:@"Fiddlesticks"];
+         self.replyTextView.userInteractionEnabled = YES;
      }];
 }
 
@@ -238,6 +266,7 @@ withImagePlaceholderResults:placeholderResults
                  if (error) {
                      [SVProgressHUD dismiss];
                      [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+                     self.replyTextView.userInteractionEnabled = YES;
                      return;
                  }
                  [SVProgressHUD showSuccessWithStatus:@"Replied"];
@@ -255,6 +284,7 @@ withImagePlaceholderResults:placeholderResults
                  if (error) {
                      [SVProgressHUD dismiss];
                      [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+                     self.replyTextView.userInteractionEnabled = YES;
                      return;
                  }
                  [SVProgressHUD showSuccessWithStatus:@"Edited"];
@@ -288,6 +318,20 @@ withImagePlaceholderResults:placeholderResults
     [self retheme];
 }
 
+// This save/load text view is only necessary on iOS 5, as UITextView throws everything out on a
+// memory warning. It's fixed on iOS 6.
+- (void)saveTextView
+{
+    self.savedReplyContents = self.replyTextView.text;
+    self.savedSelectedRange = self.replyTextView.selectedRange;
+}
+
+- (void)loadTextView
+{
+    self.replyTextView.text = self.savedReplyContents;
+    self.replyTextView.selectedRange = self.savedSelectedRange;
+}
+
 #pragma mark - Menu items
 
 - (void)configureTopLevelMenuItems
@@ -297,6 +341,7 @@ withImagePlaceholderResults:placeholderResults
         [[PSMenuItem alloc] initWithTitle:@"[img]" block:^{ [self insertImage]; }],
         [[PSMenuItem alloc] initWithTitle:@"Format" block:^{ [self showFormattingSubmenu]; }]
     ];
+    self.replyTextView.showStandardMenuItems = YES;
 }
 
 - (void)configureImageSourceSubmenuItems
@@ -313,6 +358,7 @@ withImagePlaceholderResults:placeholderResults
     [menuItems addObject:[[PSMenuItem alloc] initWithTitle:@"[img]"
                                                      block:^{ [self wrapSelectionInTag:@"[img]"]; }]];
     [UIMenuController sharedMenuController].menuItems = menuItems;
+    self.replyTextView.showStandardMenuItems = NO;
 }
 
 - (void)configureFormattingSubmenuItems
@@ -331,12 +377,13 @@ withImagePlaceholderResults:placeholderResults
         [[PSMenuItem alloc] initWithTitle:@"[code]"
                                     block:^{ [self wrapSelectionInTag:@"[code]\n"]; }],
     ];
+    self.replyTextView.showStandardMenuItems = NO;
 }
 
 - (void)linkifySelection
 {
     NSError *error;
-    NSDataDetector *linkDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink
+    NSDataDetector *linkDetector = [NSDataDetector dataDetectorWithTypes:(NSTextCheckingTypes)NSTextCheckingTypeLink
                                                                    error:&error];
     if (!linkDetector) {
         NSLog(@"error creating link data detector: %@", linkDetector);
@@ -371,6 +418,7 @@ withImagePlaceholderResults:placeholderResults
 
 - (void)showSubmenuThenResetToTopLevelMenuOnHide
 {
+    [[UIMenuController sharedMenuController] setMenuVisible:NO];
     [[UIMenuController sharedMenuController] setTargetRect:[self selectedTextRect]
                                                     inView:self.view];
     [[UIMenuController sharedMenuController] setMenuVisible:YES animated:YES];
@@ -395,6 +443,7 @@ withImagePlaceholderResults:placeholderResults
     picker = ImagePickerForSourceType(UIImagePickerControllerSourceTypeCamera);
     if (!picker) return;
     picker.delegate = self;
+    [self saveTextView];
     [self presentModalViewController:picker animated:YES];
 }
 
@@ -412,6 +461,7 @@ withImagePlaceholderResults:placeholderResults
                           permittedArrowDirections:UIPopoverArrowDirectionAny
                                           animated:YES];
     } else {
+        [self saveTextView];
         [self presentModalViewController:picker animated:YES];
     }
 }
@@ -462,8 +512,14 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
 
 - (void)loadView
 {
-    UITextView *textView = [UITextView new];
+    AwfulTextView *textView = [[AwfulTextView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
     textView.font = [UIFont systemFontOfSize:17];
+    AwfulKeyboardBar *bbcodeBar = [[AwfulKeyboardBar alloc] initWithFrame:
+                                   CGRectMake(0, 0, CGRectGetWidth(textView.bounds),
+                                              UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 63 : 36)];
+    bbcodeBar.characters = @[ @"[", @"=", @":", @"/", @"]" ];
+    bbcodeBar.keyInputView = textView;
+    textView.inputAccessoryView = bbcodeBar;
     self.view = textView;
     [PSMenuItem installMenuHandlerForObject:self.view];
 }
@@ -471,6 +527,13 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.navigationItem.rightBarButtonItem = self.sendButton;
+    self.navigationItem.leftBarButtonItem = self.cancelButton;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardDidShow:)
                                                  name:UIKeyboardDidShowNotification
@@ -479,13 +542,6 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
                                              selector:@selector(keyboardWillHide:)
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
-    self.navigationItem.rightBarButtonItem = self.sendButton;
-    self.navigationItem.leftBarButtonItem = self.cancelButton;
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
     [self configureTopLevelMenuItems];
     [self.replyTextView becomeFirstResponder];
     [self retheme];
@@ -499,8 +555,11 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:AwfulThemeDidChangeNotification
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:AwfulThemeDidChangeNotification
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardDidShowNotification
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardDidHideNotification
                                                   object:nil];
 }
 
@@ -517,6 +576,7 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
 - (void)imagePickerController:(UIImagePickerController *)picker
 didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
+    [self loadTextView];
     if ([info[UIImagePickerControllerMediaType] isEqual:(NSString *)kUTTypeImage]) {
         UIImage *image = info[UIImagePickerControllerEditedImage];
         if (!image) image = info[UIImagePickerControllerOriginalImage];
@@ -549,6 +609,7 @@ static NSString *ImageKeyToPlaceholder(NSString *key, BOOL thumbnail)
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
 {
+    [self loadTextView];
     // This seemingly never gets called when the picker is in a popover, so we can just blindly
     // dismiss it.
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -573,6 +634,16 @@ static NSString *ImageKeyToPlaceholder(NSString *key, BOOL thumbnail)
 {
     if (![popoverController isEqual:self.pickerPopover]) return;
     [self.replyTextView becomeFirstResponder];
+}
+
+@end
+
+
+@implementation AwfulTextView : UITextView
+
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender
+{
+    return self.showStandardMenuItems && [super canPerformAction:action withSender:sender];
 }
 
 @end

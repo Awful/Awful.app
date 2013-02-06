@@ -12,7 +12,7 @@ Build
 -----
 
 1. Grab code: `git clone https://github.com/AwfulDevs/Awful.git`
-2. Open Xcode project and build away: `cd Awful && Awful.xcodeproj`
+2. Open Xcode project and build away: `cd Awful && open Awful.xcodeproj`
 
 Contribute
 ----------

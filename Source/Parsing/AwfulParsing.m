@@ -25,6 +25,7 @@
 
 @end
 
+
 @implementation ParsedInfo
 
 - (id)initWithHTMLData:(NSData *)htmlData
@@ -121,25 +122,42 @@ static NSDate * RegdateFromString(NSString *s)
 static NSDate * PostDateFromString(NSString *s)
 {
     static NSDateFormatter *df = nil;
-    if (df == nil) {
+    static NSArray *formats = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
         df = [[NSDateFormatter alloc] init];
         [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
-    }
+        
+        formats = @[
+            @"h:mm a MMM d, yyyy",
+            @"MMM d, yyyy h:mm a",
+            @"HH:mm MMM d, yyyy",
+            @"MMM d, yyyy HH:mm",
+            @"MM/dd/yy hh:mma"
+        ];
+    });
+    
     [df setTimeZone:[NSTimeZone localTimeZone]];
-    static NSString *formats[] = {
-        @"h:mm a MMM d, yyyy",
-        @"MMM d, yyyy h:mm a",
-        @"HH:mm MMM d, yyyy",
-        @"MMM d, yyyy HH:mm",
-    };
-    for (size_t i = 0; i < sizeof(formats) / sizeof(formats[0]); i++) {
-        [df setDateFormat:formats[i]];
+    
+    for (NSString *format in formats) {
+        [df setDateFormat:format];
         NSDate *parsedDate = [df dateFromString:s];
         if (parsedDate) return parsedDate;
     }
     return nil;
 }
 
+NSString * UserIDFromURLString(NSString *s)
+{
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"userid=(\\d+)"
+                                                                           options:0
+                                                                             error:nil];
+    NSTextCheckingResult *match = [regex firstMatchInString:s
+                                                    options:0
+                                                      range:NSMakeRange(0, [s length])];
+    if (match) return [s substringWithRange:[match rangeAtIndex:1]];
+    return nil;
+}
 
 static NSString * FixSAAndlibxmlHTMLSerialization(NSString *html)
 {
@@ -183,20 +201,22 @@ static NSString * FixSAAndlibxmlHTMLSerialization(NSString *html)
 {
     NSString *usernameNode = [[doc searchForSingle:
                                @"//th[starts-with(., 'Edit Profile')]/text()[1]"] content];
-    NSString *namePattern = @"Edit Profile - (.*)\\s$";
-    NSError *error;
-    NSRegularExpression *nameRegex = [NSRegularExpression regularExpressionWithPattern:namePattern
-                                                                               options:0
-                                                                                 error:&error];
-    if (!nameRegex) {
-        NSLog(@"error creating username regex: %@", error);
-    }
-    NSRange allName = NSMakeRange(0, [usernameNode length]);
-    NSTextCheckingResult *nameMatch = [nameRegex firstMatchInString:usernameNode
-                                                            options:0
-                                                              range:allName];
-    if ([nameMatch rangeAtIndex:1].location != NSNotFound) {
-        self.username = [usernameNode substringWithRange:[nameMatch rangeAtIndex:1]];
+    if (usernameNode) {
+        NSString *namePattern = @"Edit Profile - (.*)\\s$";
+        NSError *error;
+        NSRegularExpression *nameRegex = [NSRegularExpression regularExpressionWithPattern:namePattern
+                                                                                   options:0
+                                                                                     error:&error];
+        if (!nameRegex) {
+            NSLog(@"error creating username regex: %@", error);
+        }
+        NSRange allName = NSMakeRange(0, [usernameNode length]);
+        NSTextCheckingResult *nameMatch = [nameRegex firstMatchInString:usernameNode
+                                                                options:0
+                                                                  range:allName];
+        if ([nameMatch rangeAtIndex:1].location != NSNotFound) {
+            self.username = [usernameNode substringWithRange:[nameMatch rangeAtIndex:1]];
+        }
     }
     
     TFHppleElement *infoLink = [doc searchForSingle:@"//a[contains(@href, 'userid')]"];
@@ -316,7 +336,7 @@ static NSString * FixSAAndlibxmlHTMLSerialization(NSString *html)
         self.bookmark = [bookmark objectForKey:@"value"];
     }
     NSString *withEntities = [[document searchForSingle:@"//textarea[@name = 'message']"] content];
-    self.text = DeEntitify(withEntities);
+    if (withEntities) self.text = DeEntitify(withEntities);
 }
 
 static NSString * DeEntitify(NSString *withEntities)
@@ -582,7 +602,8 @@ static NSString * DeEntitify(NSString *withEntities)
     NSString *forumID;
     TFHppleElement *forum = [doc searchForSingle:@"(//div[" HAS_CLASS(breadcrumbs) "]//"
                              "a[contains(@href, 'forumid')])[last()]"];
-    if (forum) {
+    NSString *href = [forum objectForKey:@"href"];
+    if (href) {
         NSError *error;
         NSString *pattern = @"forumid=(\\d+)";
         NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
@@ -591,7 +612,6 @@ static NSString * DeEntitify(NSString *withEntities)
         if (!regex) {
             NSLog(@"error creating forumid regex: %@", error);
         }
-        NSString *href = [forum objectForKey:@"href"];
         NSTextCheckingResult *match = [regex firstMatchInString:href options:0 range:NSMakeRange(0, [href length])];
         if (match) {
             forumID = [href substringWithRange:[match rangeAtIndex:1]];
@@ -639,19 +659,21 @@ static NSString * DeEntitify(NSString *withEntities)
     
     self.author = [UserParsedInfo new];
     TFHppleElement *author = [doc searchForSingle:@"//td[" HAS_CLASS(author) "]/a"];
-    self.author.username = [author content];
-    NSError *error;
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"userid=(\\d+)"
-                                                                           options:0
-                                                                             error:&error];
-    if (!regex) {
-        NSLog(@"error creating userid regex: %@", error);
-    }
+    if (author) self.author.username = [author content];
     NSString *profileLink = [author objectForKey:@"href"];
-    NSTextCheckingResult *match = [regex firstMatchInString:profileLink
-                                                    options:0
-                                                      range:NSMakeRange(0, [profileLink length])];
-    if (match) self.author.userID = [profileLink substringWithRange:[match rangeAtIndex:1]];
+    if (profileLink) {
+        NSError *error;
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"userid=(\\d+)"
+                                                                               options:0
+                                                                                 error:&error];
+        if (!regex) {
+            NSLog(@"error creating userid regex: %@", error);
+        }
+        NSTextCheckingResult *match = [regex firstMatchInString:profileLink
+                                                        options:0
+                                                          range:NSMakeRange(0, [profileLink length])];
+        if (match) self.author.userID = [profileLink substringWithRange:[match rangeAtIndex:1]];
+    }
     
     TFHppleElement *seen = [doc searchForSingle:@"//div[" HAS_CLASS(lastseen) "]"];
     self.seen = !!seen;
@@ -659,14 +681,14 @@ static NSString * DeEntitify(NSString *withEntities)
     TFHppleElement *closed = [doc searchForSingle:@"//tr[" HAS_CLASS(closed) "]"];
     self.isClosed = !!closed;
     
-    TFHppleElement *star = [doc searchForSingle:
-                            @"//td[" HAS_CLASS(star) "]//img[contains(@src, 'star')]"];
-    NSURL *starURL = [NSURL URLWithString:[star objectForKey:@"src"]];
-    if ([[starURL lastPathComponent] hasSuffix:@"star0.gif"]) {
+    TFHppleElement *star = [doc searchForSingle:@"//td[" HAS_CLASS(star) "]"];
+    NSCharacterSet *white = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+    NSArray *classes = [[star objectForKey:@"class"] componentsSeparatedByCharactersInSet:white];
+    if ([classes containsObject:@"bm0"]) {
         self.starCategory = AwfulStarCategoryBlue;
-    } else if ([[starURL lastPathComponent] hasSuffix:@"star1.gif"]) {
+    } else if ([classes containsObject:@"bm1"]) {
         self.starCategory = AwfulStarCategoryRed;
-    } else if ([[starURL lastPathComponent] hasSuffix:@"star2.gif"]) {
+    } else if ([classes containsObject:@"bm2"]) {
         self.starCategory = AwfulStarCategoryYellow;
     } else {
         self.starCategory = AwfulStarCategoryNone;
@@ -794,7 +816,7 @@ static NSString * DeEntitify(NSString *withEntities)
     } else {
         self.author.avatarURL = nil;
     }
-    TFHppleElement *profile = [doc searchForSingle:@"//ul[" HAS_CLASS(profilelinks) "]//a"];
+    TFHppleElement *showPostsByUser = [doc searchForSingle:@"//a[" HAS_CLASS(user_jump) "]"];
     NSError *profileError;
     NSRegularExpression *profileRegex = [NSRegularExpression regularExpressionWithPattern:@"userid=(\\d+)"
                                                                                   options:0
@@ -802,11 +824,14 @@ static NSString * DeEntitify(NSString *withEntities)
     if (!profileRegex) {
         NSLog(@"error creating userid regex: %@", profileError);
     }
-    NSString *profileLink = [profile objectForKey:@"href"];
-    NSTextCheckingResult *match = [profileRegex firstMatchInString:profileLink
-                                                           options:0
-                                                             range:NSMakeRange(0, [profileLink length])];
-    if (match) self.author.userID = [profileLink substringWithRange:[match rangeAtIndex:1]];
+    NSString *profileLink = [showPostsByUser objectForKey:@"href"];
+    if (profileLink) {
+        NSRange wholeRange = NSMakeRange(0, [profileLink length]);
+        NSTextCheckingResult *match = [profileRegex firstMatchInString:profileLink
+                                                               options:0
+                                                                 range:wholeRange];
+        if (match) self.author.userID = [profileLink substringWithRange:[match rangeAtIndex:1]];
+    }
     
     self.editable = !![doc searchForSingle:
                        @"//ul[" HAS_CLASS(postbuttons) "]//a[contains(@href, 'editpost')]"];
@@ -913,10 +938,8 @@ static NSString * DeEntitify(NSString *withEntities)
     NSArray *ads = [doc rawSearch:@"(//div[@id = 'ad_banner_user']/a)[1]"];
     if ([ads count] > 0) self.advertisementHTML = ads[0];
     
-    TFHppleElement *mark = [doc searchForSingle:@"//img[@id = 'button_bookmark']"];
-    NSCharacterSet *space = [NSCharacterSet whitespaceCharacterSet];
-    NSArray *classes = [[mark objectForKey:@"class"] componentsSeparatedByCharactersInSet:space];
-    self.threadBookmarked = [classes containsObject:@"unbookmark"];
+    TFHppleElement *mark = [doc searchForSingle:@"//img[" HAS_CLASS(thread_bookmark) " and " HAS_CLASS(unbookmark) "]"];
+    self.threadBookmarked = !!mark;
     
     NSMutableArray *posts = [NSMutableArray new];
     NSString *path = @"//table[" HAS_CLASS(post) "]";
@@ -954,6 +977,106 @@ static NSString * DeEntitify(NSString *withEntities)
         a = [doc searchForSingle:@"//a[contains(@href, 'goto=lastpost')]"];
         if (a) self.lastPage = YES;
     }
+}
+
+@end
+
+
+@interface BanParsedInfo ()
+
+@property (nonatomic) AwfulBanType banType;
+
+@property (copy, nonatomic) NSString *postID;
+
+@property (nonatomic) NSDate *banDate;
+
+@property (copy, nonatomic) NSString *bannedUserID;
+
+@property (copy, nonatomic) NSString *bannedUserName;
+
+@property (copy, nonatomic) NSString *banReason;
+
+@property (copy, nonatomic) NSString *requesterUserID;
+
+@property (copy, nonatomic) NSString *requesterUserName;
+
+@property (copy, nonatomic) NSString *approverUserID;
+
+@property (copy, nonatomic) NSString *approverUserName;
+
+@end
+
+
+
+@implementation BanParsedInfo
+
++ (NSArray*)bansWithHTMLData:(NSData *)htmlData
+{
+    NSMutableArray *bans = [NSMutableArray new];
+    NSArray *rows = PerformRawHTMLXPathQuery(htmlData, @"//table[" HAS_CLASS(standard) " and " HAS_CLASS(full) "]//tr[position() > 1]");
+    for (NSString *row in rows) {
+        NSData *rowData = [row dataUsingEncoding:NSUTF8StringEncoding];
+        BanParsedInfo *info = [[self alloc] initWithHTMLData:rowData];
+        [bans addObject:info];
+    }
+    return bans;
+}
+
+typedef enum {
+    LepersColonyColumnType = 0,
+    LepersColonyColumnDate,
+    LepersColonyColumnJerk,
+    LepersColonyColumnReason,
+    LepersColonyColumnRequester,
+    LepersColonyColumnApprover
+} LepersColonyColumn;
+
+- (void)parseHTMLData
+{
+    TFHpple *doc = [[TFHpple alloc] initWithHTMLData:self.htmlData];
+    NSArray *tds = [doc search:@"//td"];
+    if (tds.count != 6) return;
+    
+    TFHppleElement *b = [tds[LepersColonyColumnType] firstChildWithTagName:@"b"];
+    TFHppleElement *a = [b firstChildWithTagName:@"a"];
+    if (a) {
+        NSURL *url = [NSURL URLWithString:a.attributes[@"href"]];
+        self.postID = [url queryDictionary][@"postid"];
+    }
+    self.banDate = PostDateFromString([tds[LepersColonyColumnDate] content]);
+    self.banType = BanTypeWithString(a ? a.content : b.content);
+    
+    b = [tds[LepersColonyColumnJerk] firstChildWithTagName:@"b"];
+    a = [b firstChildWithTagName:@"a"];
+    if (a) {
+        self.bannedUserID = UserIDFromURLString(a.attributes[@"href"]);
+        self.bannedUserName = a.content;
+    }
+    
+    self.banReason = [tds[LepersColonyColumnReason] content];
+    
+    a = [tds[LepersColonyColumnRequester] childrenWithTagName:@"a"][0];
+    self.requesterUserID = UserIDFromURLString(a.attributes[@"href"]);
+    self.requesterUserName = a.content;
+    
+    a = [tds[LepersColonyColumnApprover] childrenWithTagName:@"a"][0];
+    self.approverUserID = UserIDFromURLString(a.attributes[@"href"]);
+    self.approverUserName = a.content;
+}
+
+static AwfulBanType BanTypeWithString(NSString *s)
+{
+    static NSDictionary *banTypes;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        banTypes = @{
+            @"PROBATION": @(AwfulBanTypeProbation),
+            @"BAN": @(AwfulBanTypeBan),
+            @"AUTOBAN": @(AwfulBanTypeAutoban),
+            @"PERMABAN": @(AwfulBanTypePermaban),
+        };
+    });
+    return [banTypes[s] integerValue];
 }
 
 @end

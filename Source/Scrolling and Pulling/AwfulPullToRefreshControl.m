@@ -281,13 +281,13 @@
         self.observer = [[AwfulScrollViewPullObserver alloc] initWithScrollView:scrollView
                                                                       direction:self.direction
                                                                   triggerOffset:triggerOffset];
-        self.observer.willTrigger = ^{ self.selected = YES; };
-        self.observer.willNotTrigger = ^{ self.selected = NO; };
-        __weak id blockSelf = self;
+        __weak AwfulPullToRefreshControl *weakSelf = self;
+        self.observer.willTrigger = ^{ weakSelf.selected = YES; };
+        self.observer.willNotTrigger = ^{ weakSelf.selected = NO; };
         self.observer.didTrigger = ^
         {
-            [blockSelf setRefreshing:YES animated:YES];
-            [blockSelf sendActionsForControlEvents:UIControlEventValueChanged];
+            [weakSelf setRefreshing:YES animated:YES];
+            [weakSelf sendActionsForControlEvents:UIControlEventValueChanged];
         };
     } else {
         if (self.direction == AwfulScrollViewPullUp) {
