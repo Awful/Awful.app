@@ -12,7 +12,9 @@ Build
 -----
 
 1. Grab code: `git clone https://github.com/AwfulDevs/Awful.git`
-2. Open Xcode project and build away: `cd Awful && open Awful.xcodeproj`
+2. Open directory: `cd Awful`
+3. Get modules: `git submodule init && git submodule update`
+2. Open Xcode project and build away: `open Awful.xcodeproj`
 
 Contribute
 ----------

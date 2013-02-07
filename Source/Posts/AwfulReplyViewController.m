@@ -18,6 +18,7 @@
 #import "PSMenuItem.h"
 #import "SVProgressHUD.h"
 #import "UINavigationItem+TwoLineTitle.h"
+#import "AwfulEmoticonKeyboardController.h"
 
 @interface AwfulTextView : UITextView
 
@@ -119,6 +120,7 @@
     self.thread = thread;
     self.post = nil;
     self.replyTextView.text = contents;
+    self.replyTextView.inputView = [AwfulEmoticonKeyboardController new].view;
     self.title = [thread.title stringByCollapsingWhitespace];
     self.navigationItem.titleLabel.text = self.title;
     self.sendButton.title = @"Reply";

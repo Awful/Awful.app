@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PSTCollectionViewCell.h"
 
-@interface AwfulEmoticonChooserCellView : UICollectionViewCell
+@interface AwfulEmoticonChooserCellView : PSTCollectionViewCell
 @property (nonatomic,strong,readonly) UILabel* textLabel;
 @property (nonatomic,strong,readonly) UIImageView* imageView;
 @end

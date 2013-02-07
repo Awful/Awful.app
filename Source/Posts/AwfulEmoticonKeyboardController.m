@@ -66,15 +66,15 @@
 }
 
 
-- (UICollectionView*) emoticonCollection {
+- (PSTCollectionView*) emoticonCollection {
     if (_emoticonCollection) return _emoticonCollection;
     
-    UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
+    PSTCollectionViewFlowLayout *flowLayout = [[PSTCollectionViewFlowLayout alloc] init];
     //[flowLayout setItemSize:CGSizeMake(100, 44)];
-    [flowLayout setScrollDirection:UICollectionViewScrollDirectionHorizontal];
+    [flowLayout setScrollDirection:PSTCollectionViewScrollDirectionHorizontal];
     
-    _emoticonCollection = [[UICollectionView alloc] initWithFrame:self.view.frame
-                                             collectionViewLayout:flowLayout
+    _emoticonCollection = [[PSTCollectionView alloc] initWithFrame:self.view.frame
+                                              collectionViewLayout:flowLayout
                            ];
     
     _emoticonCollection.backgroundColor = [UIColor clearColor];
@@ -103,7 +103,7 @@
                                                                    self.view.frame.size.width,
                                                                    10)
                     ];
-    _pageControl.pageIndicatorTintColor = [UIColor darkGrayColor];
+    //_pageControl.pageIndicatorTintColor = [UIColor darkGrayColor];
     _pageControl.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     _pageControl.numberOfPages = self.emoticonCollection.numberOfSections;
     

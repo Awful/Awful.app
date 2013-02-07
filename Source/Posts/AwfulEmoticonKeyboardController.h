@@ -7,11 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PSTCollectionView.h"
 
-@interface AwfulEmoticonKeyboardController : UIViewController <UICollectionViewDataSource,
-                                                                UICollectionViewDelegateFlowLayout,
+@interface AwfulEmoticonKeyboardController : UIViewController <PSTCollectionViewDataSource,
+                                                                PSTCollectionViewDelegateFlowLayout,
                                                                 UIScrollViewDelegate>
-@property (nonatomic,strong) UICollectionView* emoticonCollection;
+@property (nonatomic,strong) PSTCollectionView* emoticonCollection;
 @property (nonatomic,strong) UIPageControl* pageControl;
 @property (nonatomic,strong) NSFetchedResultsController* fetchedResultsController;
 @end
