@@ -125,15 +125,15 @@
 }
 
 - (void)showEmoticonChooser {
-    AwfulEmoticonKeyboardController* chooser = [AwfulEmoticonKeyboardController new];
-    chooser.delegate = self;
+    _emoticonPicker =  [AwfulEmoticonKeyboardController new];
+    _emoticonPicker.delegate = self;
     NSError *error;
     NSString* position = [self.innerWebView stringByEvaluatingJavaScriptFromString:@"getCaretClientPosition()"];
     NSArray *pos = [NSJSONSerialization JSONObjectWithData:[position dataUsingEncoding:NSUTF8StringEncoding]
                                                         options:0
                                                           error:&error];
     
-    _pop = [[UIPopoverController alloc] initWithContentViewController:chooser];
+    _pop = [[UIPopoverController alloc] initWithContentViewController:_emoticonPicker];
     [_pop presentPopoverFromRect:CGRectMake([pos[0] intValue], [pos[1] intValue], 10, 10)
                          inView:self.innerWebView
        permittedArrowDirections:(UIPopoverArrowDirectionAny)
@@ -142,11 +142,11 @@
     
 }
 
-- (void)didChooseEmoticon:(id)emoticon
+- (void)didChooseEmoticon:(AwfulEmoticon*)emoticon
 {
-    NSString *localURL = [[NSBundle mainBundle] pathForResource:@"emot-v" ofType:@"gif"];
     [self.innerWebView stringByEvaluatingJavaScriptFromString:
-     [NSString stringWithFormat:@"document.execCommand(\"insertHTML\", false, \"<img src='%@' title='title'/>\")", localURL]];
+     [NSString stringWithFormat:@"document.execCommand(\"insertHTML\", false, \"<img src='%@' title='title'/>\")", emoticon.cachedPath]
+     ];
 }
 
 #pragma mark accessing user input
@@ -306,7 +306,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    self.composerView.frame = self.contentView.frame;
+    self.composerView.frame = self.contentView.bounds;
     [self.contentView addSubview:self.composerView];
 }
 

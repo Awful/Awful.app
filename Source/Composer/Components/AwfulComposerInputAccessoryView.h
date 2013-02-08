@@ -36,6 +36,6 @@ typedef enum {
 @property (readonly,nonatomic,strong) UISegmentedControl* insertionControl;
 @property (readonly,nonatomic,strong) UISegmentedControl* extraKeysControl;
 @property (nonatomic,strong) UIToolbar* toolbar;
-@property (nonatomic) id<AwfulComposerInputAccessoryViewDelegate,AwfulEmoticonChooserDelegate> delegate;
+@property (nonatomic) id<AwfulComposerInputAccessoryViewDelegate,AwfulEmoticonPickerDelegate> delegate;
 
 @end

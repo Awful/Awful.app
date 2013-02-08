@@ -7,19 +7,22 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PSTCollectionView.h"
 @class AwfulEmoticon;
 
-@protocol AwfulEmoticonChooserDelegate <NSObject>
-@required
+
+@protocol AwfulEmoticonPickerDelegate <NSObject>
 - (void)didChooseEmoticon:(AwfulEmoticon*)emoticon;
 @end
 
-@interface AwfulEmoticonKeyboardController : UIViewController <UICollectionViewDataSource,
-                                                                UICollectionViewDelegateFlowLayout,
-                                                                UIScrollViewDelegate>
-@property (nonatomic,strong) UICollectionView* emoticonCollection;
+@interface AwfulEmoticonKeyboardController : UIViewController <PSTCollectionViewDataSource,
+                                                                PSTCollectionViewDelegateFlowLayout,
+                                                                UIScrollViewDelegate,
+                                                                NSFetchedResultsControllerDelegate>
+@property (nonatomic,strong) PSTCollectionView* emoticonCollection;
 @property (nonatomic,strong) UIPageControl* pageControl;
 @property (nonatomic,strong) NSFetchedResultsController* fetchedResultsController;
-@property (nonatomic,strong) id<AwfulEmoticonChooserDelegate> delegate;
+@property (nonatomic) id<AwfulEmoticonPickerDelegate> delegate;
+
 @end
 

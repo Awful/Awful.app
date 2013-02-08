@@ -10,11 +10,14 @@
 #import "AwfulComposerView.h"
 #import "AwfulAlertView.h"
 #import "AwfulHTTPClient.h"
-#import "AwfulKeyboardBar.h"
+//#import "AwfulKeyboardBar.h"
 #import "AwfulModels.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "PSMenuItem.h"
+#import "SVProgressHUD.h"
+#import "UINavigationItem+TwoLineTitle.h"
+#import "AwfulEmoticonChooserViewController.h"
 
 @interface AwfulComposerViewController () <UIImagePickerControllerDelegate,
 UINavigationControllerDelegate, UIPopoverControllerDelegate>
@@ -85,13 +88,13 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
 
 - (void)keyboardWillShow:(NSNotification *)note
 {
-    UIEdgeInsets inset = self.tableView.contentInset;
+    //UIEdgeInsets inset = self.tableView.contentInset;
     //self.tableView.contentInset = UIEdgeInsetsZero;
 }
 
 - (void)keyboardDidShow:(NSNotification *)note
 {
-    UIEdgeInsets inset = self.tableView.contentInset;
+    //UIEdgeInsets inset = self.tableView.contentInset;
     //self.tableView.contentInset = UIEdgeInsetsZero;
 }
 
@@ -495,6 +498,10 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
     [self.composerTextView becomeFirstResponder];
 }
 
+- (void)didChooseEmoticon:(AwfulEmoticon *)emoticon {
+    //[self.replyTextView insertText:emoticon.code];
+}
+
 #pragma mark - UIViewController
 
 - (void)viewDidLoad
@@ -518,12 +525,12 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
     
     _composerTextView = [AwfulComposerView new];
     _composerTextView.delegate = self;
-    AwfulKeyboardBar *bbcodeBar = [[AwfulKeyboardBar alloc] initWithFrame:
-                                   CGRectMake(0, 0, CGRectGetWidth(self.composerTextView.bounds),
-                                              UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 63 : 36)];
-    bbcodeBar.characters = @[ @"[", @"=", @":", @"/", @"]" ];
-    bbcodeBar.keyInputView = self.composerTextView;
-    self.composerTextView.inputAccessoryView = bbcodeBar;
+    //AwfulKeyboardBar *bbcodeBar = [[AwfulKeyboardBar alloc] initWithFrame:
+     //                              CGRectMake(0, 0, CGRectGetWidth(self.composerTextView.bounds),
+     //                                         UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 63 : 36)];
+    //bbcodeBar.characters = @[ @"[", @"=", @":", @"/", @"]" ];
+    //bbcodeBar.keyInputView = self.composerTextView;
+    //self.composerTextView.inputAccessoryView = bbcodeBar;
     //self.view.backgroundColor = [UIColor blueColor];
     self.view.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
     

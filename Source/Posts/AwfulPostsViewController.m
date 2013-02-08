@@ -837,12 +837,28 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     [self updatePullUpTriggerOffset];
     
     [self.view bringSubviewToFront:self.pageBar];
+    
+#warning fixme: remove debug code
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:(UIBarButtonSystemItemTrash)
+                                                                                           target:self
+                                                                                           action:@selector(deleteEmotes)];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self retheme];
+    
+}
+
+#warning fixme: remove debug code
+- (void)deleteEmotes {
+    NSArray *emotes = [AwfulEmoticon fetchAll];
+    for (AwfulEmoticon* emote in emotes) {
+        [[[AwfulDataStack sharedDataStack] context] deleteObject:emote];
+    }
+    
+    [[[AwfulDataStack sharedDataStack] context] save:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated

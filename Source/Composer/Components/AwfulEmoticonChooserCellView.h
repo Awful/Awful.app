@@ -7,8 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PSTCollectionViewCell.h"
+#import "AwfulEmoticon.h"
 
-@interface AwfulEmoticonChooserCellView : UICollectionViewCell
+@interface AwfulEmoticonChooserCellView : PSTCollectionViewCell
 @property (nonatomic,strong,readonly) UILabel* textLabel;
 @property (nonatomic,strong,readonly) UIImageView* imageView;
+@property (nonatomic) AwfulEmoticon* emoticon;
 @end
