@@ -24,6 +24,7 @@
                                                                    NSData *responseData = (NSData *)response;
                                                                    EmoticonParsedInfo *parsedInfo = [[EmoticonParsedInfo alloc] initWithHTMLData:responseData];
                                                                    NSLog(@"parsedinfo%@",parsedInfo);
+                                                                   callback(nil);
                                                                    //NSArray *msgs = [AwfulEmote parseEmoticonsWithData:responseData];
                                                                    //[ApplicationDelegate saveContext];
                                                                    //EmoticonListResponseBlock(msgs);

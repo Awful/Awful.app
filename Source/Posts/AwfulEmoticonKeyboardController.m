@@ -13,7 +13,7 @@
 #import "AwfulHTTPClient+Emoticons.h"
 
 @interface AwfulEmoticonKeyboardController ()
-
+@property (nonatomic) NSMutableArray *changeset;
 @end
 
 @implementation AwfulEmoticonKeyboardController
@@ -36,7 +36,7 @@
                          if (error) {
                          }
                          else {
-                             
+                             [self.fetchedResultsController performFetch:nil];
                          }
                      }];
         NSLog(@"op%@",op);
@@ -44,8 +44,6 @@
     
     [self.view addSubview:self.emoticonCollection];
     [self.view addSubview:self.pageControl];
-    
-    [[AwfulHTTPClient client] downloadUncachedEmoticons];
 }
 
 - (NSFetchedResultsController *)fetchedResultsController
@@ -62,6 +60,7 @@
                                                managedObjectContext:[AwfulDataStack sharedDataStack].context
                                                  sectionNameKeyPath:@"group"
                                                           cacheName:nil];
+    _fetchedResultsController.delegate = self;
     return _fetchedResultsController;
 }
 
@@ -111,7 +110,7 @@
 }
 
 #pragma mark Collection View Data Source
--(int) collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+-(int) collectionView:(PSTCollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     int test = [self.fetchedResultsController.sections[section] numberOfObjects];
     return test;
     
@@ -124,11 +123,11 @@
     
 }
 
--(int) numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+-(int) numberOfSectionsInCollectionView:(PSTCollectionView *)collectionView {
     return self.fetchedResultsController.sections.count;
 }
 
--(UICollectionViewCell*) collectionView:(UICollectionView *)collectionView
+-(PSTCollectionViewCell*) collectionView:(PSTCollectionView *)collectionView
                  cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
 
@@ -136,32 +135,99 @@
     AwfulEmoticonChooserCellView* cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell"
                                                                            forIndexPath:indexPath];
     
-    cell.textLabel.text = emoticon.code;
-    
-    cell.imageView.image = [UIImage imageWithContentsOfFile:emoticon.cachedPath];
+    cell.emoticon = emoticon;
     
     
-    return (UICollectionViewCell*)cell;
+    return (PSTCollectionViewCell*)cell;
 }
 
-#pragma mark – UICollectionViewDelegateFlowLayout
--(CGSize) collectionView:(UICollectionView *)collectionView
-                  layout:(UICollectionViewLayout *)collectionViewLayout
+#pragma mark – PSTCollectionViewDelegateFlowLayout
+-(CGSize) collectionView:(PSTCollectionView *)collectionView
+                  layout:(PSTCollectionView *)collectionViewLayout
   sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     AwfulEmoticon *emoticon = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    if (CGSizeEqualToSize(emoticon.size, CGSizeZero))
-        return CGSizeMake(100, 40);
-    
+
     CGSize minSize = [emoticon.code sizeWithFont:[UIFont systemFontOfSize:10]];
+    CGSize size = CGSizeMake(MAX(emoticon.size.width,minSize.width+5), 44);
     
-    return CGSizeMake(MAX(MAX(emoticon.size.width,minSize.width+5),44), 44);
+    return size;
     
 }
 
--(UIEdgeInsets) collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+-(UIEdgeInsets) collectionView:(PSTCollectionView *)collectionView layout:(PSTCollectionView *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
 
     return UIEdgeInsetsMake(1,1,1,1);
+}
+
+
+#pragma mark - NSFetchedResultsControllerDelegate
+
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
+{
+    self.changeset = [NSMutableArray new];
+}
+
+
+- (void)controller:(NSFetchedResultsController *)controller
+   didChangeObject:(id)anObject
+       atIndexPath:(NSIndexPath *)indexPath
+     forChangeType:(NSFetchedResultsChangeType)type
+      newIndexPath:(NSIndexPath *)newIndexPath
+{
+    [self.changeset addObject:^(PSTCollectionView* collectionView) {
+        switch (type) {
+            case NSFetchedResultsChangeInsert: {
+                [collectionView insertItemsAtIndexPaths:@[newIndexPath]];
+                break;
+            }
+            case NSFetchedResultsChangeDelete: {
+                [collectionView deleteItemsAtIndexPaths:@[indexPath]];
+                break;
+            }
+            case NSFetchedResultsChangeMove: {
+                [collectionView moveItemAtIndexPath:indexPath
+                                                  toIndexPath:newIndexPath];
+                break;
+            }
+            case NSFetchedResultsChangeUpdate: {
+                [collectionView reloadItemsAtIndexPaths:@[indexPath]];
+                break;
+            }
+        }
+     }];
+}
+
+- (void)controller:(NSFetchedResultsController *)controller
+  didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
+           atIndex:(NSUInteger)sectionIndex
+     forChangeType:(NSFetchedResultsChangeType)type
+{
+    [self.changeset addObject:^(PSTCollectionView* collectionView) {
+        switch (type) {
+            case NSFetchedResultsChangeInsert: {
+                [collectionView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex]];
+                break;
+            }
+            case NSFetchedResultsChangeDelete: {
+                [collectionView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex]];
+                break;
+            }
+        }
+    }];
+}
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+{
+    [self.emoticonCollection performBatchUpdates:^{
+        for(void(^block)(PSTCollectionView*) in self.changeset) {
+            block(self.emoticonCollection);
+        }
+        
+    }
+                                      completion:^(BOOL finished) {
+                                          
+                                      }];
 }
 
 

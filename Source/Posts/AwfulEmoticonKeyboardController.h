@@ -11,7 +11,8 @@
 
 @interface AwfulEmoticonKeyboardController : UIViewController <PSTCollectionViewDataSource,
                                                                 PSTCollectionViewDelegateFlowLayout,
-                                                                UIScrollViewDelegate>
+                                                                UIScrollViewDelegate,
+                                                                NSFetchedResultsControllerDelegate>
 @property (nonatomic,strong) PSTCollectionView* emoticonCollection;
 @property (nonatomic,strong) UIPageControl* pageControl;
 @property (nonatomic,strong) NSFetchedResultsController* fetchedResultsController;
