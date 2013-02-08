@@ -62,7 +62,7 @@
     
     [[AwfulDataStack sharedDataStack] save];
     
-    //[[AwfulHTTPClient client] downloadUncachedEmoticons];
+    [[AwfulHTTPClient client] downloadUncachedEmoticons];
 }
 
 @end

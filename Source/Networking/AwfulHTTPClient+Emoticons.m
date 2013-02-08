@@ -84,6 +84,10 @@
                                                                          contents:data attributes:nil];
                                                                        downloadMe.cachedPath = path;
                                                                        
+                                                                       //[[AwfulDataStack sharedDataStack] save];
+                                                                       //[[NSNotificationCenter defaultCenter] postNotificationName:@"AwfulNewEmoticonsCachedNotification"
+                                                                       //                                                    object:nil];
+                                                                       
                                                                    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                                                                        //code
                                                                    }];
@@ -108,8 +112,6 @@
          if ([newlyCachedEmoticons count] == 0) return;
          
          [[AwfulDataStack sharedDataStack] save];
-         //[[NSNotificationCenter defaultCenter] postNotificationName:AwfulNewThreadTagsAvailableNotification
-         //                                                    object:newlyAvailableTagNames];
      }];
 }
 

@@ -26,7 +26,6 @@
     self.view.frame = CGRectMake(0, 0, 768, 264);
     self.view.backgroundColor = [UIColor whiteColor];
     
-    
     [self.fetchedResultsController performFetch:nil];
     
     if (self.fetchedResultsController.fetchedObjects.count == 0) {
@@ -36,7 +35,7 @@
                          if (error) {
                          }
                          else {
-                             [self.fetchedResultsController performFetch:nil];
+                             //[self.fetchedResultsController performFetch:nil];
                          }
                      }];
         NSLog(@"op%@",op);
@@ -44,6 +43,8 @@
     
     [self.view addSubview:self.emoticonCollection];
     [self.view addSubview:self.pageControl];
+    
+
 }
 
 - (NSFetchedResultsController *)fetchedResultsController
@@ -52,13 +53,13 @@
     
     NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulEmoticon entityName]];
     request.sortDescriptors = @[
-    [NSSortDescriptor sortDescriptorWithKey:@"width" ascending:YES],
+    [NSSortDescriptor sortDescriptorWithKey:@"group.desc" ascending:YES],
     [NSSortDescriptor sortDescriptorWithKey:@"code" ascending:YES]
     ];
     
     _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                managedObjectContext:[AwfulDataStack sharedDataStack].context
-                                                 sectionNameKeyPath:@"group"
+                                                 sectionNameKeyPath:@"group.desc"
                                                           cacheName:nil];
     _fetchedResultsController.delegate = self;
     return _fetchedResultsController;
@@ -113,14 +114,6 @@
 -(int) collectionView:(PSTCollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     int test = [self.fetchedResultsController.sections[section] numberOfObjects];
     return test;
-    
-    int width = self.emoticonCollection.frame.size.width ;
-    int height = self.emoticonCollection.frame.size.height;
-    int numAcross = width / 100;
-    int numDown = height / 40;
-    
-    return numAcross*numDown;
-    
 }
 
 -(int) numberOfSectionsInCollectionView:(PSTCollectionView *)collectionView {

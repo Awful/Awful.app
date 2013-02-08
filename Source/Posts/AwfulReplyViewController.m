@@ -36,6 +36,8 @@
 
 @property (readonly, nonatomic) AwfulTextView *replyTextView;
 
+@property (strong,nonatomic) AwfulEmoticonKeyboardController* emoticonChooser;
+
 @property (weak, nonatomic) NSOperation *networkOperation;
 
 @property (nonatomic) id observerToken;
@@ -120,7 +122,9 @@
     self.thread = thread;
     self.post = nil;
     self.replyTextView.text = contents;
-    self.replyTextView.inputView = [AwfulEmoticonKeyboardController new].view;
+    
+    _emoticonChooser = [AwfulEmoticonKeyboardController new];
+    self.replyTextView.inputView = self.emoticonChooser.view;
     self.title = [thread.title stringByCollapsingWhitespace];
     self.navigationItem.titleLabel.text = self.title;
     self.sendButton.title = @"Reply";

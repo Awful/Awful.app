@@ -7,6 +7,11 @@
 //
 
 #import "AwfulEmoticonChooserCellView.h"
+#import "FVGifAnimation.h"
+
+@interface AwfulEmoticonChooserCellView ()
+@property (nonatomic) FVGifAnimation* animator;
+@end
 
 @implementation AwfulEmoticonChooserCellView
 @synthesize textLabel = _textLabel;
@@ -26,9 +31,24 @@
 - (void)setEmoticon:(AwfulEmoticon *)emoticon {
     _emoticon = emoticon;
     self.textLabel.text = emoticon.code;
+    self.imageView.animationImages = nil;
     
-    if (emoticon.cachedPath != nil)
+    if (emoticon.cachedPath != nil) {
         self.imageView.image = [UIImage imageWithContentsOfFile:emoticon.cachedPath];
+        if ([emoticon.cachedPath hasSuffix:@".gif"]) {
+            NSData *gifData = [NSData dataWithContentsOfFile:emoticon.cachedPath];
+            if ([FVGifAnimation canAnimateImageData:gifData]) {
+                self.animator = [[FVGifAnimation alloc] initWithData:gifData];
+                [self.animator setAnimationToImageView:self.imageView];
+                [self.imageView startAnimating];
+            }
+        }
+        
+        //if (!self.animator || !self.imageView.image) {
+        //    NSLog(@"%@ not animated", emoticon.code);
+        //}
+        
+    }
     
 }
 
