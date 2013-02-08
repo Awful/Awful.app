@@ -43,11 +43,6 @@
                 [self.imageView startAnimating];
             }
         }
-        
-        //if (!self.animator || !self.imageView.image) {
-        //    NSLog(@"%@ not animated", emoticon.code);
-        //}
-        
     }
     
 }

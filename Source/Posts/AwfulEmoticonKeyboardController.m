@@ -110,6 +110,12 @@
     return _pageControl;
 }
 
+#pragma mark collection view delegate
+- (void)collectionView:(PSTCollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    AwfulEmoticon *emoticon = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    [self.delegate didChooseEmoticon:emoticon];
+}
+
 #pragma mark Collection View Data Source
 -(int) collectionView:(PSTCollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     int test = [self.fetchedResultsController.sections[section] numberOfObjects];

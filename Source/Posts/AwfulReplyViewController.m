@@ -124,6 +124,7 @@
     self.replyTextView.text = contents;
     
     _emoticonChooser = [AwfulEmoticonKeyboardController new];
+    _emoticonChooser.delegate = self;
     self.replyTextView.inputView = self.emoticonChooser.view;
     self.title = [thread.title stringByCollapsingWhitespace];
     self.navigationItem.titleLabel.text = self.title;
@@ -512,6 +513,10 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
         self.replyTextView.selectedRange = NSMakeRange(range.location + equalsSign.location + 1, 0);
     }
     [self.replyTextView becomeFirstResponder];
+}
+
+- (void)didChooseEmoticon:(AwfulEmoticon *)emoticon {
+    [self.replyTextView insertText:emoticon.code];
 }
 
 #pragma mark - UIViewController
