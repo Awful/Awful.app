@@ -42,6 +42,7 @@ static NSString * const kNewThreadTagURLKey = @"AwfulNewThreadTagURL";
 - (UIImage *)threadTagNamed:(NSString *)threadTagName
 {
     if ([threadTagName length] == 0) return nil;
+
     UIImage *shipped = [UIImage imageNamed:threadTagName];
     if (shipped) return EnsureDoubleScaledImage(shipped);
     
@@ -199,3 +200,10 @@ static UIImage *EnsureDoubleScaledImage(UIImage *image)
 
 NSString * const AwfulNewThreadTagsAvailableNotification
     = @"com.awfulapp.Awful.NewThreadTagsAvailable";
+
+@implementation UIImage (AwfulThreadTags)
++ (UIImage*)threadTagNamed:(NSString *)name {
+    return [[AwfulThreadTags sharedThreadTags] threadTagNamed:name];
+}
+
+@end

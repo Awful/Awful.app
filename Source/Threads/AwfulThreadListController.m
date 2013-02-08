@@ -26,6 +26,7 @@
 #import "NSString+CollapseWhitespace.h"
 #import "SVPullToRefresh.h"
 #import "UIViewController+NavigationEnclosure.h"
+#import "AwfulThreadComposerViewController.h"
 
 @interface AwfulThreadListController ()
 
@@ -97,6 +98,16 @@
     }
 }
 
+- (void)didTapCompose:(UIBarButtonItem*)button
+{
+    AwfulThreadComposerViewController *threadComposer = [[AwfulThreadComposerViewController alloc] initWithForum:self.forum];
+    UINavigationController *wrapper = [threadComposer enclosingNavigationController];
+    wrapper.modalPresentationStyle = UIModalPresentationFormSheet;
+    
+    [self presentModalViewController:wrapper animated:YES];
+    
+}
+
 #pragma mark - Table view controller
 
 - (void)refresh
@@ -164,6 +175,10 @@
     [super viewDidLoad];
     self.currentPage = 1;
     self.tableView.rowHeight = 75;
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:(UIBarButtonSystemItemCompose)
+                                                                                           target:self
+                                                                                           action:@selector(didTapCompose:)];
 }
 
 - (void)showThreadActionsForThread:(AwfulThread *)thread

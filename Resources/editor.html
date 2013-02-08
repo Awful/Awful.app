@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+    <head>
+        <style>
+            span.spoiler {
+                background-color:black;
+                color:white;
+            }
+        </style>
+        <script>
+            function spoilerSelectedText() {
+                var sel, range;
+                if (window.getSelection) {
+                    sel = window.getSelection();
+                    if (sel.rangeCount) {
+                        range = sel.getRangeAt(0);
+                        var content = range.cloneContents().textContent;
+                        range.deleteContents();
+                        var span = document.createElement('span');
+                        span.className = 'spoiler';
+                        span.textContent = content;
+                        
+                        range.insertNode(span);
+                    }
+                }
+            }
+            
+            function getCaretClientPosition() {
+                var x = 0, y = 0;
+                var sel = window.getSelection();
+                if (sel.rangeCount) {
+                    var range = sel.getRangeAt(0);
+                    if (range.getClientRects) {
+                        var rects = range.getClientRects();
+                        if (rects.length > 0) {
+                            x = rects[0].left;
+                            y = rects[0].top;
+                        }
+                    }
+                }
+                return "[" + x + "," + y + "]";
+            }
+        </script>
+    </head>
+    <body style="height:100%">
+        <div id="content" contenteditable="true" style="font-family: Helvetica; height:100%">Your shitty post... facilisis erat a dui. <b>Nam malesuada ornare dolor. Cras gravida, diam sit amet rhoncus ornare, erat elit consectetuer erat, id egestas pede nibh eget odio.</b> Proin tincidunt, velit vel porta elementum, magna diam molestie sapien, non aliquet massa pede eu diam. Aliquam iaculis. Fusce et ipsum et nulla tristique facilisis. <i>Donec eget sem sit amet ligula viverra gravida. Etiam vehicula urna vel turpis.</i> Suspendisse sagittis ante a urna. Morbi a est quis orci consequat rutrum. Nullam egestas feugiat felis. Integer adipiscing semper ligula. Nunc molestie, nisl sit amet cursus convallis, sapien lectus pretium metus, vitae pretium enim wisi id lectus. Donec vestibulum. Etiam vel nibh. Nulla facilisi. Mauris pharetra. Donec augue. Fusce ultrices, neque id dignissim ultrices, <u>tellus mauris dictum elit</u>, vel lacinia enim metus eu nunc.
+            
+        </div>
+    </body>
+    <script>
+        var content = document.getElementById('content');
+        content.onpaste = function(e) {
+            var pastedText = undefined;
+            if (e.clipboardData && e.clipboardData.getData) {
+                pastedText = e.clipboardData.getData('text/plain');
+            }
+            
+            var regex = /^https?.*?youtube.*?v=([\w\d]*)/;
+            var youtube = regex.exec(pastedText);
+            if (youtube && youtube.length == 2) {
+                //got a youtube link, replace with video tag
+                var replacement = '[video type="youtube"]' + youtube[1] + '[/video]';
+                document.execCommand('insertText', false, replacement);
+                return false; // Prevent the default handler from running.
+            }
+            //return true;
+        };
+        
+        content.addEventListener("input", function(e) {
+                                 window.location = "objc:didChangeContents";
+                                 });
+    </script>
+</html>
