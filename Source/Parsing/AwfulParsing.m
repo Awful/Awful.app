@@ -797,6 +797,8 @@ static NSString * DeEntitify(NSString *withEntities)
     self.author.originalPoster = [authorClasses containsObject:@"op"];
     NSString *regdate = [[doc searchForSingle:@"//dd[" HAS_CLASS(registered) "]"] content];
     if (regdate) self.author.regdate = RegdateFromString(regdate);
+    NSArray *customTitleNodes = [doc rawSearch:@"//dl[" HAS_CLASS(userinfo) "]//dd[" HAS_CLASS(title) "]//node()"];
+    self.author.customTitle = [customTitleNodes componentsJoinedByString:@""];
     TFHppleElement *showPostsByUser = [doc searchForSingle:@"//a[" HAS_CLASS(user_jump) "]"];
     NSError *profileError;
     NSRegularExpression *profileRegex = [NSRegularExpression regularExpressionWithPattern:@"userid=(\\d+)"
@@ -828,7 +830,7 @@ static NSString * DeEntitify(NSString *withEntities)
 
 + (NSArray *)keysToApplyToObject
 {
-    return @[ @"postID", @"editable", @"beenSeen", @"innerHTML", @"postDate" ];
+    return @[ @"postID", @"innerHTML", @"postDate" ];
 }
 
 @end
