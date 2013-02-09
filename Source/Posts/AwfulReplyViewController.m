@@ -576,7 +576,9 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
 - (void)imagePickerController:(UIImagePickerController *)picker
 didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
-    [self loadTextView];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        [self loadTextView];
+    }
     if ([info[UIImagePickerControllerMediaType] isEqual:(NSString *)kUTTypeImage]) {
         UIImage *image = info[UIImagePickerControllerEditedImage];
         if (!image) image = info[UIImagePickerControllerOriginalImage];
