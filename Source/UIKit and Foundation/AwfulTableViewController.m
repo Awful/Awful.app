@@ -90,8 +90,6 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [self.networkOperation cancel];
-    self.refreshing = NO;
     [self stopObservingApplicationDidBecomeActive];
     [super viewWillDisappear:animated];
 }
