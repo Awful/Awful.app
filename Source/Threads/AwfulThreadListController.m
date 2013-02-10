@@ -24,6 +24,7 @@
 #import "AwfulThreadCell.h"
 #import "AwfulThreadTags.h"
 #import "NSString+CollapseWhitespace.h"
+#import "SVProgressHUD.h"
 #import "SVPullToRefresh.h"
 #import "UIViewController+NavigationEnclosure.h"
 
@@ -189,6 +190,21 @@
             [self markThreadUnseen:thread];
         }];
     }
+    NSString *bookmarkTitle = [NSString stringWithFormat:@"%@ Thread",
+                               thread.isBookmarkedValue ? @"Unbookmark" : @"Bookmark"];
+    [sheet addButtonWithTitle:bookmarkTitle block:^{
+        [[AwfulHTTPClient client] setThreadWithID:thread.threadID
+                                     isBookmarked:!thread.isBookmarkedValue
+                                          andThen:^(NSError *error)
+        {
+            if (error) {
+                [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+            } else {
+                NSString *status = thread.isBookmarkedValue ? @"Bookmarked" : @"Unbookmarked";
+                [SVProgressHUD showSuccessWithStatus:status];
+            }
+        }];
+    }];
     [sheet addButtonWithTitle:@"View OP's Profile" block:^{
         AwfulProfileViewController *profile = [AwfulProfileViewController new];
         profile.hidesBottomBarWhenPushed = YES;
