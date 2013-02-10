@@ -25,7 +25,7 @@
 
 + (NSSet *)keyPathsForValuesAffectingBeenSeen
 {
-    return [NSSet setWithArray:@[ @"threadIndexValue", @"thread.seenPostsValue" ]];
+    return [NSSet setWithArray:@[ @"threadIndex", @"thread.seenPosts" ]];
 }
 
 - (NSInteger)page
