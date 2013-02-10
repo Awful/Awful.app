@@ -16,22 +16,15 @@
 
 @property (weak, nonatomic) UIWebView *webView;
 
-@property (readonly, nonatomic) UIBarButtonItem *actionButton;
-
-@property (readonly, nonatomic) UIBarButtonItem *backBrowserButton;
-
-@property (readonly, nonatomic) UIBarButtonItem *forwardBrowserButton;
+@property (nonatomic) UIBarButtonItem *actionButton;
+@property (nonatomic) UIBarButtonItem *backBrowserButton;
+@property (nonatomic) UIBarButtonItem *forwardBrowserButton;
 
 @property (weak, nonatomic) UIToolbar *toolbar;
 
 @end
 
 @implementation AwfulBrowserViewController
-{
-    UIBarButtonItem *_actionButton;
-    UIBarButtonItem *_backBrowserButton;
-    UIBarButtonItem *_forwardBrowserButton;
-}
 
 - (void)actOnCurrentPage
 {
