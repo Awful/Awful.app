@@ -166,9 +166,20 @@
         
         existingPosts[post.postID] = post;
     }
+    NSArray *posts = [existingPosts allValues];
+    if ([json[@"page"][0] isEqual:json[@"page"][1]] /* on last page of thread */) {
+        AwfulPost *last;
+        for (AwfulPost *post in posts) {
+            if (!last || last.threadIndexValue < post.threadIndexValue) {
+                last = post;
+            }
+        }
+        thread.lastPostAuthorName = last.author.username;
+        thread.lastPostDate = last.postDate;
+    }
     
     [[AwfulDataStack sharedDataStack] save];
-    return [existingPosts allValues];
+    return posts;
 }
 
 - (BOOL)editableByUserWithID:(NSString *)userID
