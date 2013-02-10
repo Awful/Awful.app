@@ -1869,9 +1869,21 @@
 			path = "Scrolling and Pulling";
 			sourceTree = "<group>";
 		};
+		1C304BD216C78B6E0022AF15 /* Browsing */ = {
+			isa = PBXGroup;
+			children = (
+				1C96D0A0168298BF0043B194 /* AwfulBrowserViewController.h */,
+				1C96D0A1168298BF0043B194 /* AwfulBrowserViewController.m */,
+				1C96D0B31682BBA80043B194 /* AwfulExternalBrowser.h */,
+				1C96D0B41682BBA80043B194 /* AwfulExternalBrowser.m */,
+			);
+			path = Browsing;
+			sourceTree = "<group>";
+		};
 		1C3857A115675AFE0078AF95 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				1C304BD216C78B6E0022AF15 /* Browsing */,
 				1CC7800E1612D8AE002AF958 /* Forums */,
 				1C83DB50161FF45200E53CFA /* Imgur API */,
 				1190F71813BE4EA900B9D271 /* Login */,
@@ -2094,10 +2106,6 @@
 				1C6D3EF2168D89FC00B91A65 /* posts-view-219-amber.css */,
 				8CEBABE7167FFE2500680935 /* posts-view-219-macinyos.css */,
 				8C299D6616877330001B9D96 /* posts-view-219-winpos95.css */,
-				1C96D0A0168298BF0043B194 /* AwfulBrowserViewController.h */,
-				1C96D0A1168298BF0043B194 /* AwfulBrowserViewController.m */,
-				1C96D0B31682BBA80043B194 /* AwfulExternalBrowser.h */,
-				1C96D0B41682BBA80043B194 /* AwfulExternalBrowser.m */,
 			);
 			path = Posts;
 			sourceTree = "<group>";
