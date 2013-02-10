@@ -14,7 +14,4 @@
 
 @property (nonatomic) UIColor *highlightedColor;
 
-// We draw differently when the cell is highlighted.
-@property (weak, nonatomic) UITableViewCell *cell;
-
 @end

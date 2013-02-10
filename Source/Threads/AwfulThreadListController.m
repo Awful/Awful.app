@@ -269,9 +269,7 @@
         [longPress addTarget:self action:@selector(showThreadActions:)];
         [cell addGestureRecognizer:longPress];
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-            AwfulDisclosureIndicatorView *accessory = [AwfulDisclosureIndicatorView new];
-            accessory.cell = cell;
-            cell.accessoryView = accessory;
+            cell.accessoryView = [AwfulDisclosureIndicatorView new];
         }
     }
     [self configureCell:cell atIndexPath:indexPath];

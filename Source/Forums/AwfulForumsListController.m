@@ -270,9 +270,7 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
     AwfulForumCell *cell = [tableView dequeueReusableCellWithIdentifier:Identifier];
     if (!cell) {
         cell = [[AwfulForumCell alloc] initWithReuseIdentifier:Identifier];
-        AwfulDisclosureIndicatorView *disclosure = [AwfulDisclosureIndicatorView new];
-        disclosure.cell = cell;
-        cell.accessoryView = disclosure;
+        cell.accessoryView = [AwfulDisclosureIndicatorView new];
         [cell.expandButton addTarget:self
                               action:@selector(toggleExpanded:)
                     forControlEvents:UIControlEventTouchUpInside];

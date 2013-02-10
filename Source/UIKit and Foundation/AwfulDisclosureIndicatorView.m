@@ -8,6 +8,13 @@
 
 #import "AwfulDisclosureIndicatorView.h"
 
+@interface AwfulDisclosureIndicatorView ()
+
+@property (weak, nonatomic) UITableViewCell *cell;
+
+@end
+
+
 @implementation AwfulDisclosureIndicatorView
 
 - (id)init
@@ -39,6 +46,15 @@
     self.backgroundColor = [UIColor clearColor];
     self.opaque = NO;
     return self;
+}
+
+- (void)willMoveToSuperview:(UIView *)newSuperview
+{
+    UIView *cell = newSuperview;
+    while (cell && ![cell isKindOfClass:[UITableViewCell class]]) {
+        cell = cell.superview;
+    }
+    self.cell = (id)cell;
 }
 
 - (void)drawRect:(CGRect)rect
