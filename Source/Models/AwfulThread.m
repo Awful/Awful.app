@@ -81,13 +81,7 @@
         NSString *threadID = [info[@"threadid"] stringValue];
         AwfulThread *thread = existingThreads[threadID] ?: [AwfulThread insertNew];
         thread.threadID = threadID;
-        // TODO fix for numeric-looking usernames coming in as JSON numbers. Remove when fixed
-        // server-side.
-        if ([info[@"lastposter"] respondsToSelector:@selector(stringValue)]) {
-            thread.lastPostAuthorName = [info[@"lastposter"] stringValue];
-        } else {
-            thread.lastPostAuthorName = info[@"lastposter"];
-        }
+        thread.lastPostAuthorName = info[@"lastposter"];
         thread.lastPostDate = [NSDate dateWithTimeIntervalSince1970:[info[@"lastpost"] doubleValue]];
         NSDictionary *icon = json[@"icons"][[info[@"iconid"] stringValue]];
         thread.threadIconImageURL = [NSURL URLWithString:icon[@"iconpath"]];

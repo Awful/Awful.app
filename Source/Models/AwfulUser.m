@@ -53,13 +53,7 @@
         user.userID = userID;
     }
     // Username and user ID (above) always appear.
-    // TODO fix for numeric-looking usernames coming in as JSON numbers. Remove when fixed
-    // server-side.
-    if ([json[@"username"] respondsToSelector:@selector(stringValue)]) {
-        user.username = [json[@"username"] stringValue];
-    } else {
-        user.username = json[@"username"];
-    }
+    user.username = json[@"username"];
     
     #define ObjOrNilIfEmpty(obj) ([(obj) length] > 0 ? (obj) : nil)
     
