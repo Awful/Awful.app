@@ -213,6 +213,8 @@ static UIButton * MakeBorderlessButton(UIImage *image, id target, SEL action)
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
+    webView.backgroundColor = [UIColor whiteColor];
+    webView.opaque = YES;
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     _URL = webView.request.URL;
     self.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
