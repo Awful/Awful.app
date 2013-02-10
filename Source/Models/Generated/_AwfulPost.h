@@ -5,7 +5,9 @@
 
 
 extern const struct AwfulPostAttributes {
+	__unsafe_unretained NSString *attachmentID;
 	__unsafe_unretained NSString *beenSeen;
+	__unsafe_unretained NSString *editDate;
 	__unsafe_unretained NSString *editable;
 	__unsafe_unretained NSString *innerHTML;
 	__unsafe_unretained NSString *postDate;
@@ -16,6 +18,7 @@ extern const struct AwfulPostAttributes {
 
 extern const struct AwfulPostRelationships {
 	__unsafe_unretained NSString *author;
+	__unsafe_unretained NSString *editor;
 	__unsafe_unretained NSString *thread;
 } AwfulPostRelationships;
 
@@ -23,7 +26,10 @@ extern const struct AwfulPostFetchedProperties {
 } AwfulPostFetchedProperties;
 
 @class AwfulUser;
+@class AwfulUser;
 @class AwfulThread;
+
+
 
 
 
@@ -46,6 +52,16 @@ extern const struct AwfulPostFetchedProperties {
 
 
 
+@property (nonatomic, strong) NSString* attachmentID;
+
+
+
+//- (BOOL)validateAttachmentID:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
 @property (nonatomic, strong) NSNumber* beenSeen;
 
 
@@ -55,6 +71,16 @@ extern const struct AwfulPostFetchedProperties {
 - (void)setBeenSeenValue:(BOOL)value_;
 
 //- (BOOL)validateBeenSeen:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
+@property (nonatomic, strong) NSDate* editDate;
+
+
+
+//- (BOOL)validateEditDate:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -139,6 +165,13 @@ extern const struct AwfulPostFetchedProperties {
 
 
 
+@property (nonatomic, strong) AwfulUser *editor;
+
+//- (BOOL)validateEditor:(id*)value_ error:(NSError**)error_;
+
+
+
+
 @property (nonatomic, strong) AwfulThread *thread;
 
 //- (BOOL)validateThread:(id*)value_ error:(NSError**)error_;
@@ -156,11 +189,23 @@ extern const struct AwfulPostFetchedProperties {
 @interface _AwfulPost (CoreDataGeneratedPrimitiveAccessors)
 
 
+- (NSString*)primitiveAttachmentID;
+- (void)setPrimitiveAttachmentID:(NSString*)value;
+
+
+
+
 - (NSNumber*)primitiveBeenSeen;
 - (void)setPrimitiveBeenSeen:(NSNumber*)value;
 
 - (BOOL)primitiveBeenSeenValue;
 - (void)setPrimitiveBeenSeenValue:(BOOL)value_;
+
+
+
+
+- (NSDate*)primitiveEditDate;
+- (void)setPrimitiveEditDate:(NSDate*)value;
 
 
 
@@ -213,6 +258,11 @@ extern const struct AwfulPostFetchedProperties {
 
 - (AwfulUser*)primitiveAuthor;
 - (void)setPrimitiveAuthor:(AwfulUser*)value;
+
+
+
+- (AwfulUser*)primitiveEditor;
+- (void)setPrimitiveEditor:(AwfulUser*)value;
 
 
 

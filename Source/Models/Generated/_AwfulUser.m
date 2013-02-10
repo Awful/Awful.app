@@ -27,6 +27,7 @@ const struct AwfulUserAttributes AwfulUserAttributes = {
 };
 
 const struct AwfulUserRelationships AwfulUserRelationships = {
+	.editedPosts = @"editedPosts",
 	.posts = @"posts",
 	.privateMessages = @"privateMessages",
 	.threads = @"threads",
@@ -279,6 +280,19 @@ const struct AwfulUserFetchedProperties AwfulUserFetchedProperties = {
 
 
 
+
+@dynamic editedPosts;
+
+	
+- (NSMutableSet*)editedPostsSet {
+	[self willAccessValueForKey:@"editedPosts"];
+  
+	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"editedPosts"];
+  
+	[self didAccessValueForKey:@"editedPosts"];
+	return result;
+}
+	
 
 @dynamic posts;
 

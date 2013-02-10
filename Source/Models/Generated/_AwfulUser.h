@@ -28,6 +28,7 @@ extern const struct AwfulUserAttributes {
 } AwfulUserAttributes;
 
 extern const struct AwfulUserRelationships {
+	__unsafe_unretained NSString *editedPosts;
 	__unsafe_unretained NSString *posts;
 	__unsafe_unretained NSString *privateMessages;
 	__unsafe_unretained NSString *threads;
@@ -36,6 +37,7 @@ extern const struct AwfulUserRelationships {
 extern const struct AwfulUserFetchedProperties {
 } AwfulUserFetchedProperties;
 
+@class AwfulPost;
 @class AwfulPost;
 @class AwfulPrivateMessage;
 @class AwfulThread;
@@ -286,6 +288,13 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
+@property (nonatomic, strong) NSSet *editedPosts;
+
+- (NSMutableSet*)editedPostsSet;
+
+
+
+
 @property (nonatomic, strong) NSSet *posts;
 
 - (NSMutableSet*)postsSet;
@@ -311,6 +320,11 @@ extern const struct AwfulUserFetchedProperties {
 @end
 
 @interface _AwfulUser (CoreDataGeneratedAccessors)
+
+- (void)addEditedPosts:(NSSet*)value_;
+- (void)removeEditedPosts:(NSSet*)value_;
+- (void)addEditedPostsObject:(AwfulPost*)value_;
+- (void)removeEditedPostsObject:(AwfulPost*)value_;
 
 - (void)addPosts:(NSSet*)value_;
 - (void)removePosts:(NSSet*)value_;
@@ -459,6 +473,11 @@ extern const struct AwfulUserFetchedProperties {
 - (void)setPrimitiveYahooName:(NSString*)value;
 
 
+
+
+
+- (NSMutableSet*)primitiveEditedPosts;
+- (void)setPrimitiveEditedPosts:(NSMutableSet*)value;
 
 
 

@@ -11,6 +11,7 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
 #import "AwfulSettings.h"
+#import "NSManagedObject+Awful.h"
 #import "SVProgressHUD.h"
 
 @interface AwfulProfileViewController () <UIWebViewDelegate>
@@ -69,7 +70,6 @@
         [additionalInfo addObject:@{ @"kind": @"Occupation", @"info": self.user.occupation }];
     }
     NSMutableDictionary *userDict = [@{
-        @"avatarURL": self.user.avatarURL ?: [NSNull null],
         @"customTitle": self.user.customTitle ?: [NSNull null],
         @"postCount": self.user.postCount ?: @0,
         @"username": self.user.username ?: @"",
@@ -84,8 +84,6 @@
         @"profilePictureURL": self.user.profilePictureURL ?: [NSNull null],
     } mutableCopy];
     if ([userDict[@"customTitle"] isEqual:@"<br/>"]) userDict[@"customTitle"] = [NSNull null];
-    userDict[@"avatarOrTitle"] = @(!([userDict[@"avatarURL"] isEqual:[NSNull null]] &&
-                                     [userDict[@"customTitle"] isEqual:[NSNull null]]));
     NSError *error;
     NSData *data = [NSJSONSerialization dataWithJSONObject:userDict options:0 error:&error];
     if (!data) {

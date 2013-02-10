@@ -39,6 +39,8 @@ typedef enum {
 
 @property (copy, nonatomic) NSString *username;
 
+@property (copy, nonatomic) NSString *userID;
+
 @property (assign, nonatomic) BOOL showThreadTags;
 
 typedef enum {
@@ -83,6 +85,7 @@ extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *confirmBeforeReplying;
 	__unsafe_unretained NSString *darkTheme;
     __unsafe_unretained NSString *username;
+    __unsafe_unretained NSString *userID;
     __unsafe_unretained NSString *showThreadTags;
     __unsafe_unretained NSString *yosposStyle;
     __unsafe_unretained NSString *keepSidebarOpen;

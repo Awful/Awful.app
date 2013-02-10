@@ -24,6 +24,7 @@
 #import "AwfulThreadCell.h"
 #import "AwfulThreadTags.h"
 #import "NSString+CollapseWhitespace.h"
+#import "SVProgressHUD.h"
 #import "SVPullToRefresh.h"
 #import "UIViewController+NavigationEnclosure.h"
 #import "AwfulThreadComposerViewController.h"
@@ -148,10 +149,12 @@
 - (void)loadPageNum:(NSUInteger)pageNum
 {    
     [self.networkOperation cancel];
-    id op = [[AwfulHTTPClient client] listThreadsInForumWithID:self.forum.forumID
-                                                        onPage:pageNum
-                                                       andThen:^(NSError *error, NSArray *threads)
+    __block id op;
+    op = [[AwfulHTTPClient client] listThreadsInForumWithID:self.forum.forumID
+                                                     onPage:pageNum
+                                                    andThen:^(NSError *error, NSArray *threads)
     {
+        if (![self.networkOperation isEqual:op]) return;
         if (error) {
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
         } else {
@@ -197,11 +200,26 @@
         [self displayPage:page];
         [page loadPage:AwfulPageLast];
     }];
-    if (thread.seenValue) {
+    if (thread.beenSeen) {
         [sheet addButtonWithTitle:@"Mark as Unread" block:^{
             [self markThreadUnseen:thread];
         }];
     }
+    NSString *bookmarkTitle = [NSString stringWithFormat:@"%@ Thread",
+                               thread.isBookmarkedValue ? @"Unbookmark" : @"Bookmark"];
+    [sheet addButtonWithTitle:bookmarkTitle block:^{
+        [[AwfulHTTPClient client] setThreadWithID:thread.threadID
+                                     isBookmarked:!thread.isBookmarkedValue
+                                          andThen:^(NSError *error)
+        {
+            if (error) {
+                [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+            } else {
+                NSString *status = thread.isBookmarkedValue ? @"Bookmarked" : @"Unbookmarked";
+                [SVProgressHUD showSuccessWithStatus:status];
+            }
+        }];
+    }];
     [sheet addButtonWithTitle:@"View OP's Profile" block:^{
         AwfulProfileViewController *profile = [AwfulProfileViewController new];
         profile.hidesBottomBarWhenPushed = YES;
@@ -245,8 +263,7 @@
         if (error) {
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
         } else {
-            thread.totalUnreadPostsValue = -1;
-            thread.seenValue = NO;
+            thread.seenPostsValue = 0;
             [[AwfulDataStack sharedDataStack] save];
         }
     }];
@@ -283,9 +300,7 @@
         [longPress addTarget:self action:@selector(showThreadActions:)];
         [cell addGestureRecognizer:longPress];
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-            AwfulDisclosureIndicatorView *accessory = [AwfulDisclosureIndicatorView new];
-            accessory.cell = cell;
-            cell.accessoryView = accessory;
+            cell.accessoryView = [AwfulDisclosureIndicatorView new];
         }
     }
     [self configureCell:cell atIndexPath:indexPath];
@@ -316,13 +331,6 @@
         } else {
             cell.rating = [thread.threadRating floatValue];
         }
-        if (!thread.isClosedValue) {
-            cell.imageView.alpha = 1;
-            cell.ratingImageView.alpha = 1;
-        } else {
-            cell.imageView.alpha = 0.5;
-            cell.ratingImageView.alpha = 0.5;
-        }
     } else {
         cell.imageView.image = nil;
         cell.imageView.hidden = YES;
@@ -333,9 +341,13 @@
         cell.rating = 0;
     }
     cell.textLabel.text = [thread.title stringByCollapsingWhitespace];
-    if (!thread.isClosedValue) {
+    if (thread.isStickyValue || !thread.isClosedValue) {
+        cell.imageView.alpha = 1;
+        cell.ratingImageView.alpha = 1;
         cell.textLabel.textColor = [AwfulTheme currentTheme].threadCellTextColor;
     } else {
+        cell.imageView.alpha = 0.5;
+        cell.ratingImageView.alpha = 0.5;
         cell.textLabel.textColor = [AwfulTheme currentTheme].threadCellClosedThreadColor;
     }
     NSNumberFormatterStyle numberStyle = NSNumberFormatterDecimalStyle;
@@ -344,7 +356,7 @@
     NSString *plural = thread.numberOfPagesValue == 1 ? @"" : @"s";
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ page%@", pagesFormatted, plural];
     cell.detailTextLabel.textColor = [AwfulTheme currentTheme].threadCellPagesTextColor;
-    if (thread.seenValue) {
+    if (thread.beenSeen) {
         cell.originalPosterTextLabel.text = [NSString stringWithFormat:@"Killed by %@",
                                              thread.lastPostAuthorName];
     } else {
@@ -364,9 +376,10 @@
         cell.unreadCountBadgeView.offBadgeColor = theme.threadListUnreadBadgeBlueOffColor;
     }
     cell.unreadCountBadgeView.highlightedBadgeColor = theme.threadListUnreadBadgeHighlightedColor;
-    cell.unreadCountBadgeView.badgeText = [thread.totalUnreadPosts stringValue];
-    cell.unreadCountBadgeView.on = thread.totalUnreadPostsValue > 0;
-    cell.showsUnread = thread.totalUnreadPostsValue != -1;
+    NSInteger unreadPosts = thread.totalRepliesValue + 1 - thread.seenPostsValue;
+    cell.unreadCountBadgeView.badgeText = [@(unreadPosts) stringValue];
+    cell.unreadCountBadgeView.on = unreadPosts > 0;
+    cell.showsUnread = thread.seenPostsValue > 0;
     cell.backgroundColor = theme.threadCellBackgroundColor;
     cell.selectionStyle = theme.cellSelectionStyle;
     AwfulDisclosureIndicatorView *disclosure = (AwfulDisclosureIndicatorView *)cell.accessoryView;
@@ -415,7 +428,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
     AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    return (thread.totalUnreadPostsValue >= 0);
+    return thread.seenPostsValue > 0;
 }
 
 - (NSString *)tableView:(UITableView *)tableView
@@ -439,7 +452,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     AwfulPostsViewController *page = [AwfulPostsViewController new];
     AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
     page.thread = thread;
-    [page loadPage:thread.seenValue ? AwfulPageNextUnread : 1];
+    [page loadPage:thread.beenSeen ? AwfulPageNextUnread : 1];
     [self displayPage:page];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }

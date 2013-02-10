@@ -44,9 +44,8 @@
 {
     ProfileParsedInfo *profile = [[ProfileParsedInfo alloc] initWithHTMLData:self.fixture];
     STAssertEqualObjects(profile.username, @"pokeyman", nil);
-    STAssertNotNil(profile.avatar, nil);
     STAssertStringContainsSubstringOnce(profile.customTitle, @"play?", nil);
-    STAssertStringDoesNotContain(profile.customTitle, @"title-pokeyman", nil);
+    STAssertStringContainsSubstringOnce(profile.customTitle, @"title-pokeyman", nil);
     STAssertEqualObjects(profile.icqName, @"1234", nil);
     STAssertNil(profile.aimName, nil);
     STAssertEquals(profile.postCount, 1954, nil);
@@ -67,9 +66,9 @@
     ProfileParsedInfo *profile = [[ProfileParsedInfo alloc] initWithHTMLData:self.fixture];
     STAssertEqualObjects(profile.username, @"Ronald Raiden", nil);
     STAssertEqualObjects(profile.location, @"San Francisco", nil);
-    STAssertStringContainsSubstringOnce([profile.avatar absoluteString], @"safs/titles", nil);
+    STAssertTrue([profile.customTitle rangeOfString:@"safs/titles"].length > 0, nil);
     STAssertStringContainsSubstringOnce(profile.customTitle, @"dd/68", nil);
-    STAssertStringDoesNotContain(profile.customTitle, @"01/df", nil);
+    STAssertStringContainsSubstringOnce(profile.customTitle, @"01/df", nil);
 }
 
 @end
@@ -86,7 +85,7 @@
     STAssertEqualObjects(profile.username, @"Rinkles", nil);
     STAssertStringContainsSubstringOnce(profile.customTitle, @"<i>", nil);
     STAssertStringContainsSubstringOnce(profile.customTitle, @"I'm getting at is", nil);
-    STAssertStringDoesNotContain(profile.customTitle, @"safs/titles", nil);
+    STAssertStringContainsSubstringOnce(profile.customTitle, @"safs/titles", nil);
 }
 
 @end
@@ -100,7 +99,7 @@
 {
     ProfileParsedInfo *profile = [[ProfileParsedInfo alloc] initWithHTMLData:self.fixture];
     STAssertEqualObjects(profile.username, @"Cryptic Edge", nil);
-    STAssertNil(profile.avatar, nil);
+    STAssertStringContainsSubstringOnce(profile.customTitle, @"<br", nil);
 }
 
 @end
@@ -115,8 +114,7 @@
 {
     ProfileParsedInfo *profile = [[ProfileParsedInfo alloc] initWithHTMLData:self.fixture];
     STAssertEqualObjects(profile.username, @"Grim Up North", nil);
-    STAssertStringContainsSubstringOnce([profile.avatar absoluteString], @"newbie.gif", nil);
-    STAssertStringDoesNotContain(profile.customTitle, @"newbie.gif", nil);
+    STAssertStringContainsSubstringOnce(profile.customTitle, @"newbie.gif", nil);
 }
 
 @end
@@ -131,7 +129,6 @@
 {
     ProfileParsedInfo *profile = [[ProfileParsedInfo alloc] initWithHTMLData:self.fixture];
     STAssertEqualObjects(profile.username, @"The Gripper", nil);
-    STAssertNil(profile.avatar, nil);
     STAssertStringContainsSubstringOnce(profile.customTitle, @"i am winner", nil);
     STAssertStringContainsSubstringOnce(profile.customTitle, @"tccburnouts.png", nil);
 }

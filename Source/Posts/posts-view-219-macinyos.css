@@ -305,6 +305,7 @@ body {
 #posts > article > section .bbc-spoiler,
 #posts > article > section .bbc-spoiler li {
     color: black;
+    background-color: black;
 }
 #posts > article > section .bbc-spoiler a:link,
 #posts > article > section .bbc-spoiler a:visited,
@@ -313,8 +314,9 @@ body {
 }
 
 /* Tapping a spoiler tag reveals its contents. */
-#posts > article > section .bbc-spoiler.spoiled {
-    background: transparent;
+#posts > article > section .bbc-spoiler.spoiled,
+#posts > article > section .bbc-spoiler.spoiled li {
+  background: transparent;
 }
 
 /* All block headings, like 'quote' or 'code', ain't inline. */

@@ -4,7 +4,9 @@
 #import "_AwfulPost.h"
 
 const struct AwfulPostAttributes AwfulPostAttributes = {
+	.attachmentID = @"attachmentID",
 	.beenSeen = @"beenSeen",
+	.editDate = @"editDate",
 	.editable = @"editable",
 	.innerHTML = @"innerHTML",
 	.postDate = @"postDate",
@@ -15,6 +17,7 @@ const struct AwfulPostAttributes AwfulPostAttributes = {
 
 const struct AwfulPostRelationships AwfulPostRelationships = {
 	.author = @"author",
+	.editor = @"editor",
 	.thread = @"thread",
 };
 
@@ -74,6 +77,13 @@ const struct AwfulPostFetchedProperties AwfulPostFetchedProperties = {
 
 
 
+@dynamic attachmentID;
+
+
+
+
+
+
 @dynamic beenSeen;
 
 
@@ -95,6 +105,13 @@ const struct AwfulPostFetchedProperties AwfulPostFetchedProperties = {
 - (void)setPrimitiveBeenSeenValue:(BOOL)value_ {
 	[self setPrimitiveBeenSeen:[NSNumber numberWithBool:value_]];
 }
+
+
+
+
+
+@dynamic editDate;
+
 
 
 
@@ -200,6 +217,10 @@ const struct AwfulPostFetchedProperties AwfulPostFetchedProperties = {
 
 
 @dynamic author;
+
+	
+
+@dynamic editor;
 
 	
 

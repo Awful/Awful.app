@@ -157,15 +157,17 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
 {
     [super refresh];
     [self.networkOperation cancel];
-    id op = [[AwfulHTTPClient client] listForumsAndThen:^(NSError *error, NSArray *forums)
-             {
-                 if (error) {
-                     [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
-                 } else {
-                     self.lastRefresh = [NSDate date];
-                 }
-                 self.refreshing = NO;
-             }];
+    __block id op;
+    op = [[AwfulHTTPClient client] listForumsAndThen:^(NSError *error, NSArray *forums)
+    {
+        if (![self.networkOperation isEqual:op]) return;
+        if (error) {
+            [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+        } else {
+            self.lastRefresh = [NSDate date];
+        }
+        self.refreshing = NO;
+    }];
     self.networkOperation = op;
 }
 
@@ -179,7 +181,7 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
     if (![AwfulHTTPClient client].loggedIn) return NO;
     if (![AwfulHTTPClient client].reachable) return NO;
     if (!self.lastRefresh) return YES;
-    if ([[NSDate date] timeIntervalSinceDate:self.lastRefresh] > 60 * 60 * 20) return YES;
+    if ([[NSDate date] timeIntervalSinceDate:self.lastRefresh] > 60 * 60 * 6) return YES;
     if ([self.fetchedResultsController.fetchedObjects count] == 0) return YES;
     if ([AwfulForum firstMatchingPredicate:@"index = -1"]) return YES;
     return NO;
@@ -268,9 +270,7 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
     AwfulForumCell *cell = [tableView dequeueReusableCellWithIdentifier:Identifier];
     if (!cell) {
         cell = [[AwfulForumCell alloc] initWithReuseIdentifier:Identifier];
-        AwfulDisclosureIndicatorView *disclosure = [AwfulDisclosureIndicatorView new];
-        disclosure.cell = cell;
-        cell.accessoryView = disclosure;
+        cell.accessoryView = [AwfulDisclosureIndicatorView new];
         [cell.expandButton addTarget:self
                               action:@selector(toggleExpanded:)
                     forControlEvents:UIControlEventTouchUpInside];

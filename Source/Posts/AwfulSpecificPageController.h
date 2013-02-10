@@ -18,7 +18,7 @@
 
 - (void)showInView:(UIView *)view animated:(BOOL)animated;
 
-- (void)hideAnimated:(BOOL)animated;
+- (void)hideAnimated:(BOOL)animated completion:(void (^)(void))completionBlock;
 
 @end
 

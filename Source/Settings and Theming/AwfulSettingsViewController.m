@@ -69,10 +69,9 @@
         if (error) {
             NSLog(@"failed refreshing user info: %@", error);
         } else {
-            if (![userInfo[@"username"] isEqual:[AwfulSettings settings].username]) {
-                [AwfulSettings settings].username = userInfo[@"username"];
-                [self.tableView reloadData];
-            }
+            [AwfulSettings settings].username = userInfo[@"username"];
+            [AwfulSettings settings].userID = userInfo[@"userID"];
+            [self.tableView reloadData];
             self.refreshing = NO;
         }
     }];

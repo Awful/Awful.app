@@ -74,8 +74,6 @@
 
 @property (nonatomic) NSDate *regdate;
 
-@property (nonatomic) NSURL *avatar;
-
 @property (copy, nonatomic) NSString *customTitle;
 
 @property (copy, nonatomic) NSString *aboutMe;
@@ -229,17 +227,8 @@ static NSString * FixSAAndlibxmlHTMLSerialization(NSString *html)
     self.username = [[doc searchForSingle:@"//dt[" HAS_CLASS(author) "]"] content];
     TFHppleElement *regdate = [doc searchForSingle:@"//dd[" HAS_CLASS(registered) "]"];
     if (regdate) self.regdate = RegdateFromString([regdate content]);
-    TFHppleElement *avatar = [doc searchForSingle:
-                              @"//dd[" HAS_CLASS(title) "]//img[count(preceding-sibling::*) = 0 and (parent::div or parent::dd)]"];
-    if (avatar) {
-        self.avatar = [NSURL URLWithString:[avatar objectForKey:@"src"]];
-        NSArray *nodesAfterAvatar = [doc rawSearch:@"//dd[" HAS_CLASS(title) "]//img[count(preceding-sibling::*) = 0 and (parent::div or parent::dd)]/following-sibling::node()"];
-        NSString *customTitleHTML = [nodesAfterAvatar componentsJoinedByString:@""];
-        self.customTitle = FixSAAndlibxmlHTMLSerialization(customTitleHTML);
-    } else {
-        NSArray *titleNodes = [doc rawSearch:@"//dd[" HAS_CLASS(title) "]/node()"];
-        self.customTitle = [titleNodes componentsJoinedByString:@""];
-    }
+    NSArray *titleNodes = [doc rawSearch:@"//dd[" HAS_CLASS(title) "]/node()"];
+    self.customTitle = [titleNodes componentsJoinedByString:@""];
     self.aboutMe = [[doc searchForSingle:@"//td[" HAS_CLASS(info) "]/p[2]"] content];
     NSString *imFormat = @"//dl[" HAS_CLASS(contacts) "]/dt[" HAS_CLASS(%@) "]/following-sibling::dd[not(span)]";
     for (NSString *im in @[ @"aim", @"icq", @"yahoo" ]) {
@@ -531,8 +520,6 @@ static NSString * DeEntitify(NSString *withEntities)
 
 @property (copy, nonatomic) NSString *customTitle;
 
-@property (nonatomic) NSURL *avatarURL;
-
 @end
 
 
@@ -573,7 +560,7 @@ static NSString * DeEntitify(NSString *withEntities)
 
 @property (nonatomic) NSInteger starCategory;
 
-@property (nonatomic) NSInteger totalUnreadPosts;
+@property (nonatomic) NSInteger seenPosts;
 
 @property (nonatomic) NSInteger totalReplies;
 
@@ -694,21 +681,20 @@ static NSString * DeEntitify(NSString *withEntities)
         self.starCategory = AwfulStarCategoryNone;
     }
     
-    self.totalUnreadPosts = -1;
-    TFHppleElement *unread = [doc searchForSingle:@"//a[" HAS_CLASS(count) "]/b"];
-    if (unread) {
-        self.totalUnreadPosts = [[unread content] intValue];
-    } else {
-        if ([doc searchForSingle:@"//a[" HAS_CLASS(x) "]"]) {
-            self.totalUnreadPosts = 0;
-        }
-    }
-    
     TFHppleElement *total = [doc searchForSingle:@"//td[" HAS_CLASS(replies) "]/a"];
     if (!total) {
         total = [doc searchForSingle:@"//td[" HAS_CLASS(replies) "]"];
     }
     self.totalReplies = [[total content] intValue];
+    
+    TFHppleElement *unread = [doc searchForSingle:@"//a[" HAS_CLASS(count) "]/b"];
+    if (unread) {
+        self.seenPosts = self.totalReplies + 1 - [[unread content] intValue];
+    } else {
+        if ([doc searchForSingle:@"//a[" HAS_CLASS(x) "]"]) {
+            self.seenPosts = self.totalReplies + 1;
+        }
+    }
     
     TFHppleElement *rating = [doc searchForSingle:@"//td[" HAS_CLASS(rating) "]/img"];
     if (rating) {
@@ -740,8 +726,8 @@ static NSString * DeEntitify(NSString *withEntities)
 {
     return @[
         @"threadID", @"title", @"threadIconImageURL", @"threadIconImageURL2", @"isSticky",
-        @"seen", @"isClosed", @"starCategory", @"totalUnreadPosts", @"totalReplies",
-        @"threadVotes", @"threadRating", @"lastPostAuthorName", @"lastPostDate", @"isBookmarked"
+        @"isClosed", @"starCategory", @"totalReplies", @"seenPosts", @"threadVotes",
+        @"threadRating", @"lastPostAuthorName", @"lastPostDate", @"isBookmarked"
     ];
 }
 
@@ -810,12 +796,8 @@ static NSString * DeEntitify(NSString *withEntities)
     self.author.originalPoster = [authorClasses containsObject:@"op"];
     NSString *regdate = [[doc searchForSingle:@"//dd[" HAS_CLASS(registered) "]"] content];
     if (regdate) self.author.regdate = RegdateFromString(regdate);
-    TFHppleElement *avatar = [doc searchForSingle:@"//dd[" HAS_CLASS(title) "]//img[count(preceding-sibling::*) = 0 and (parent::div or parent::dd)]"];
-    if (avatar) {
-        self.author.avatarURL = [NSURL URLWithString:[avatar objectForKey:@"src"]];
-    } else {
-        self.author.avatarURL = nil;
-    }
+    NSArray *customTitleNodes = [doc rawSearch:@"//dl[" HAS_CLASS(userinfo) "]//dd[" HAS_CLASS(title) "]//node()"];
+    self.author.customTitle = [customTitleNodes componentsJoinedByString:@""];
     TFHppleElement *showPostsByUser = [doc searchForSingle:@"//a[" HAS_CLASS(user_jump) "]"];
     NSError *profileError;
     NSRegularExpression *profileRegex = [NSRegularExpression regularExpressionWithPattern:@"userid=(\\d+)"
@@ -847,7 +829,7 @@ static NSString * DeEntitify(NSString *withEntities)
 
 + (NSArray *)keysToApplyToObject
 {
-    return @[ @"postID", @"editable", @"beenSeen", @"innerHTML", @"postDate" ];
+    return @[ @"postID", @"innerHTML", @"postDate" ];
 }
 
 @end
@@ -871,7 +853,7 @@ static NSString * DeEntitify(NSString *withEntities)
 
 @property (copy, nonatomic) NSString *threadTitle;
 
-@property (getter=isThreadLocked, nonatomic) BOOL threadLocked;
+@property (getter=isThthreadClosed, nonatomic) BOOL threadClosed;
 
 @property (getter=isThreadBookmarked, nonatomic) BOOL threadBookmarked;
 
@@ -896,7 +878,7 @@ static NSString * DeEntitify(NSString *withEntities)
     NSURL *threadURL = [NSURL URLWithString:[threadLink objectForKey:@"href"]];
     self.threadID = [threadURL queryDictionary][@"threadid"];
     
-    self.threadLocked = !![doc searchForSingle:
+    self.threadClosed = !![doc searchForSingle:
                            @"//a[contains(@href, 'newreply')]/img[contains(@src, 'closed')]"];
     
     TFHppleElement *forumLink = [doc searchForSingle:

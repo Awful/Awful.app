@@ -28,8 +28,6 @@
 
 @property (readonly, nonatomic) NSDate *regdate;
 
-@property (readonly, nonatomic) NSURL *avatar;
-
 @property (readonly, copy, nonatomic) NSString *customTitle;
 
 @property (readonly, copy, nonatomic) NSString *aboutMe;
@@ -123,8 +121,6 @@
 
 @property (readonly, copy, nonatomic) NSString *customTitle;
 
-@property (readonly, nonatomic) NSURL *avatarURL;
-
 @end
 
 
@@ -152,8 +148,7 @@
 
 @property (readonly, nonatomic) BOOL isBookmarked;
 
-// Defaults to -1.
-@property (readonly, nonatomic) NSInteger totalUnreadPosts;
+@property (readonly, nonatomic) NSInteger seenPosts;
 
 @property (readonly, nonatomic) NSInteger totalReplies;
 
@@ -207,7 +202,7 @@
 
 @property (readonly, copy, nonatomic) NSString *threadTitle;
 
-@property (readonly, getter=isThreadLocked, nonatomic) BOOL threadLocked;
+@property (readonly, getter=isThreadClosed, nonatomic) BOOL threadClosed;
 
 @property (readonly, getter=isThreadBookmarked, nonatomic) BOOL threadBookmarked;
 

@@ -283,19 +283,21 @@ body {
   text-decoration: none;
 }
 
-/* Everything in spoiler tags is black. */
+/* Everything in spoiler tags is amber. */
 #posts > article > section .bbc-spoiler,
 #posts > article > section .bbc-spoiler li {
-  color: black;
+  color: #eacf4c;
+  background: #eacf4c;
 }
 #posts > article > section .bbc-spoiler a:link,
 #posts > article > section .bbc-spoiler a:visited,
 #posts > article > section .bbc-spoiler a:active {
-  color: black;
+  color: #eacf4c;
 }
 
 /* Tapping a spoiler tag reveals its contents. */
-#posts > article > section .bbc-spoiler.spoiled {
+#posts > article > section .bbc-spoiler.spoiled,
+#posts > article > section .bbc-spoiler.spoiled li {
   background: transparent;
 }
 

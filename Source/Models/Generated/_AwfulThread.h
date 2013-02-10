@@ -5,6 +5,8 @@
 
 
 extern const struct AwfulThreadAttributes {
+	__unsafe_unretained NSString *archived;
+	__unsafe_unretained NSString *attachmentID;
 	__unsafe_unretained NSString *hideFromList;
 	__unsafe_unretained NSString *isBookmarked;
 	__unsafe_unretained NSString *isClosed;
@@ -14,6 +16,7 @@ extern const struct AwfulThreadAttributes {
 	__unsafe_unretained NSString *lastPostDate;
 	__unsafe_unretained NSString *numberOfPages;
 	__unsafe_unretained NSString *seen;
+	__unsafe_unretained NSString *seenPosts;
 	__unsafe_unretained NSString *starCategory;
 	__unsafe_unretained NSString *stickyIndex;
 	__unsafe_unretained NSString *threadID;
@@ -51,6 +54,9 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
+
+
+
 @class NSObject;
 @class NSObject;
 
@@ -67,6 +73,30 @@ extern const struct AwfulThreadFetchedProperties {
 + (NSString*)entityName;
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
 - (AwfulThreadID*)objectID;
+
+
+
+
+
+@property (nonatomic, strong) NSNumber* archived;
+
+
+
+@property BOOL archivedValue;
+- (BOOL)archivedValue;
+- (void)setArchivedValue:(BOOL)value_;
+
+//- (BOOL)validateArchived:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
+@property (nonatomic, strong) NSString* attachmentID;
+
+
+
+//- (BOOL)validateAttachmentID:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -185,6 +215,20 @@ extern const struct AwfulThreadFetchedProperties {
 - (void)setSeenValue:(BOOL)value_;
 
 //- (BOOL)validateSeen:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
+@property (nonatomic, strong) NSNumber* seenPosts;
+
+
+
+@property int32_t seenPostsValue;
+- (int32_t)seenPostsValue;
+- (void)setSeenPostsValue:(int32_t)value_;
+
+//- (BOOL)validateSeenPosts:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -346,6 +390,21 @@ extern const struct AwfulThreadFetchedProperties {
 @interface _AwfulThread (CoreDataGeneratedPrimitiveAccessors)
 
 
+- (NSNumber*)primitiveArchived;
+- (void)setPrimitiveArchived:(NSNumber*)value;
+
+- (BOOL)primitiveArchivedValue;
+- (void)setPrimitiveArchivedValue:(BOOL)value_;
+
+
+
+
+- (NSString*)primitiveAttachmentID;
+- (void)setPrimitiveAttachmentID:(NSString*)value;
+
+
+
+
 - (NSNumber*)primitiveHideFromList;
 - (void)setPrimitiveHideFromList:(NSNumber*)value;
 
@@ -417,6 +476,15 @@ extern const struct AwfulThreadFetchedProperties {
 
 - (BOOL)primitiveSeenValue;
 - (void)setPrimitiveSeenValue:(BOOL)value_;
+
+
+
+
+- (NSNumber*)primitiveSeenPosts;
+- (void)setPrimitiveSeenPosts:(NSNumber*)value;
+
+- (int32_t)primitiveSeenPostsValue;
+- (void)setPrimitiveSeenPostsValue:(int32_t)value_;
 
 
 

@@ -81,6 +81,8 @@
 
 @property (nonatomic) NSDateFormatter *postDateFormatter;
 
+@property (nonatomic) NSDateFormatter *editDateFormatter;
+
 @property (nonatomic) UIPopoverController *popover;
 
 @property (nonatomic) BOOL markingPostsAsBeenSeen;
@@ -94,6 +96,8 @@
 @property (nonatomic) BOOL scrollingUp;
 
 @property (copy, nonatomic) NSString *jumpToPostAfterLoad;
+
+@property (weak, nonatomic) UIView *pageNavBackingView;
 
 @end
 
@@ -222,8 +226,10 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         controller.delegate = self;
         self.fetchedResultsController = controller;
     }
-    request.predicate = [NSPredicate predicateWithFormat:@"thread == %@ AND threadPage = %d",
-                         self.thread, self.currentPage];
+    NSInteger lowIndex = (self.currentPage - 1) * 40 + 1;
+    NSInteger highIndex = self.currentPage * 40;
+    request.predicate = [NSPredicate predicateWithFormat:@"thread == %@ AND %d <= threadIndex AND threadIndex <= %d",
+                         self.thread, lowIndex, highIndex];
     NSError *error;
     BOOL ok = [self.fetchedResultsController performFetch:&error];
     if (!ok) {
@@ -366,8 +372,9 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                      CGFloat inset = self.postsView.scrollView.contentInset.top;
                      [self.postsView.scrollView setContentOffset:CGPointMake(0, -inset) animated:NO];
                  }
-                 [blockSelf markPostsAsBeenSeen];
+                 //[blockSelf markPostsAsBeenSeen];
              }];
+
     self.networkOperation = op;
 }
 
@@ -388,35 +395,12 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     }
 }
 
-- (void)markPostsAsBeenSeen
-{
-    if (self.didJustMarkAsReadToHere) {
-        self.didJustMarkAsReadToHere = NO;
-        return;
-    }
-    AwfulPost *lastPost = [[self.fetchedResultsController fetchedObjects] lastObject];
-    if (!lastPost || lastPost.beenSeenValue) return;
-    [self markPostsAsBeenSeenUpToPost:lastPost];
-}
-
 - (void)markPostsAsBeenSeenUpToPost:(AwfulPost *)post
 {
     self.markingPostsAsBeenSeen = YES;
-    NSArray *posts = [self.fetchedResultsController fetchedObjects];
-    NSUInteger lastSeen = [posts indexOfObject:post];
-    if (lastSeen == NSNotFound) return;
-    for (NSUInteger i = 0; i < [posts count]; i++) {
-        [posts[i] setBeenSeenValue:i <= lastSeen];
-    }
-    NSInteger readPosts = post.threadIndexValue - 1;
-    if (self.thread.totalRepliesValue < readPosts) {
-        // This can happen if new replies appear in between times we parse the total number of
-        // replies in the thread.
-        self.thread.totalRepliesValue = readPosts;
-    }
-    self.thread.totalUnreadPostsValue = self.thread.totalRepliesValue - readPosts;
-    self.thread.seenValue = YES;
+    post.thread.seenPosts = post.threadIndex;
     [[AwfulDataStack sharedDataStack] save];
+    [self.postsView reloadData];
     self.markingPostsAsBeenSeen = NO;
 }
 
@@ -458,7 +442,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     } else {
         [self.pageBar.jumpToPageButton setTitle:@"" forState:UIControlStateNormal];
     }
-    [self.pageBar.actionsComposeControl setEnabled:self.thread.canReply forSegmentAtIndex:1];
+    [self.pageBar.actionsComposeControl setEnabled:!self.thread.isClosedValue forSegmentAtIndex:1];
 }
 
 - (void)updateTopBar
@@ -529,7 +513,12 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                                                     rating:i
                                                    andThen:^(NSError *error)
                  {
-                     NSLog(@"error casting vote on thread %@: %@", self.thread.threadID, error);
+                     if (error) {
+                         [AwfulAlertView showWithTitle:@"Vote Failed" error:error buttonTitle:@"OK"];
+                     } else {
+                         NSString *status = [NSString stringWithFormat:@"Voted %d", i];
+                         [SVProgressHUD showSuccessWithStatus:status];
+                     }
                  }];
             }];
         }
@@ -560,7 +549,9 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     if (self.specificPageController) {
         [self dismissPopoverAnimated:YES];
         [self.specificPageController willMoveToParentViewController:nil];
-        [self.specificPageController hideAnimated:YES];
+        [self.specificPageController hideAnimated:YES completion:^{
+            [self.pageNavBackingView removeFromSuperview];
+        }];
         [self.specificPageController removeFromParentViewController];
         self.specificPageController = nil;
         return;
@@ -581,10 +572,27 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                     permittedArrowDirections:UIPopoverArrowDirectionAny
                                     animated:YES];
     } else {
+        UIView *halfBlack = [UIView new];
+        halfBlack.frame = (CGRect){ .size = self.postsView.bounds.size };
+        halfBlack.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+        halfBlack.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                      UIViewAutoresizingFlexibleHeight);
+        UITapGestureRecognizer *tap = [UITapGestureRecognizer new];
+        [tap addTarget:self action:@selector(didTapPageNavBackground:)];
+        [halfBlack addGestureRecognizer:tap];
+        [self.view addSubview:halfBlack];
+        [self.view bringSubviewToFront:self.pageBar];
+        self.pageNavBackingView = halfBlack;
         [self addChildViewController:self.specificPageController];
-        [self.specificPageController showInView:self.postsView animated:YES];
+        [self.specificPageController showInView:self.pageNavBackingView animated:YES];
         [self.specificPageController didMoveToParentViewController:self];
     }
+}
+
+- (void)didTapPageNavBackground:(UITapGestureRecognizer *)tap
+{
+    if (tap.state != UIGestureRecognizerStateEnded) return;
+    [self tappedPageNav:nil];
 }
 
 - (void)tappedCompose
@@ -613,7 +621,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     }
     NSString *title = [NSString stringWithFormat:@"%@ Post", possessiveUsername];
     AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:title];
-    if (post.editableValue) {
+    if ([post editableByUserWithID:[AwfulSettings settings].userID]) {
         [sheet addButtonWithTitle:@"Edit" block:^{
             [[AwfulHTTPClient client] getTextOfPostWithID:post.postID
                                                   andThen:^(NSError *error, NSString *text)
@@ -631,7 +639,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
              }];
         }];
     }
-    if (!self.thread.isLockedValue) {
+    if (!self.thread.isClosedValue) {
         [sheet addButtonWithTitle:@"Quote" block:^{
             [[AwfulHTTPClient client] quoteTextOfPostWithID:post.postID
                                                     andThen:^(NSError *error, NSString *quotedText)
@@ -686,6 +694,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
             nav.modalPresentationStyle = UIModalPresentationFormSheet;
             [self presentViewController:nav animated:YES completion:nil];
         } else {
+            profile.hidesBottomBarWhenPushed = YES;
             UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithTitle:@"Back"
                                                                      style:UIBarButtonItemStyleBordered
                                                                     target:nil action:NULL];
@@ -876,7 +885,6 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     // continuing to play their sound after the user switches to a different thread.
     if (!self.navigationController) {
         [self.postsView clearAllPosts];
-        [self markPostsAsBeenSeen];
     }
     [super viewDidDisappear:animated];
 }
@@ -975,7 +983,7 @@ static char KVOContext;
 - (NSDictionary *)postsView:(AwfulPostsView *)postsView postAtIndex:(NSInteger)index
 {
     AwfulPost *post = self.fetchedResultsController.fetchedObjects[index + self.hiddenPosts];
-    NSArray *keys = @[ @"postID", @"beenSeen", @"innerHTML" ];
+    NSArray *keys = @[ @"postID", @"innerHTML" ];
     NSMutableDictionary *dict = [[post dictionaryWithValuesForKeys:keys] mutableCopy];
     if (post.postDate) {
         dict[@"postDate"] = [self.postDateFormatter stringFromDate:post.postDate];
@@ -988,6 +996,14 @@ static char KVOContext;
     if (post.author.regdate) {
         dict[@"authorRegDate"] = [self.regDateFormatter stringFromDate:post.author.regdate];
     }
+    dict[@"hasAttachment"] = @([post.attachmentID length] > 0);
+    if (post.editDate) {
+        NSString *editor = post.editor ? post.editor.username : @"Somebody";
+        NSString *editDate = [self.editDateFormatter stringFromDate:post.editDate];
+        dict[@"editMessage"] = [NSString stringWithFormat:@"%@ fucked around with this message on %@",
+                                editor, editDate];
+    }
+    dict[@"beenSeen"] = post.beenSeen;
     return dict;
 }
 
@@ -1117,6 +1133,16 @@ static char KVOContext;
     return _postDateFormatter;
 }
 
+- (NSDateFormatter *)editDateFormatter
+{
+    if (_editDateFormatter) return _editDateFormatter;
+    _editDateFormatter = [NSDateFormatter new];
+    // Jan 2, 2003 around 4:05
+    _editDateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+    _editDateFormatter.dateFormat = @"MMM d, yyy 'around' HH:mm";
+    return _editDateFormatter;
+}
+
 - (void)doneWithProfile
 {
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -1200,7 +1226,9 @@ static char KVOContext;
     if (self.popover) {
         [self dismissPopoverAnimated:YES];
     } else {
-        [self.specificPageController hideAnimated:YES];
+        [self.specificPageController hideAnimated:YES completion:^{
+            [self.pageNavBackingView removeFromSuperview];
+        }];
         self.specificPageController = nil;
     }
     [self loadPage:page];
@@ -1210,6 +1238,7 @@ static char KVOContext;
 {
     [self dismissPopoverAnimated:YES];
     self.specificPageController = nil;
+    [self.pageNavBackingView removeFromSuperview];
 }
 
 #pragma mark - UIPopoverControllerDelegate
@@ -1236,7 +1265,7 @@ static char KVOContext;
                 didEditPost:(AwfulPost *)post
 {
     [self dismissViewControllerAnimated:YES completion:^{
-        [self loadPage:post.threadPageValue];
+        [self loadPage:post.page];
         [self jumpToPostWithID:post.postID];
     }];
 }

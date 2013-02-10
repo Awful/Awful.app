@@ -220,12 +220,11 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
         for (__strong NSTextCheckingResult *result in placeholderResults) {
             result = [result resultByAdjustingRangesWithOffset:offset];
             if ([result rangeAtIndex:3].location == NSNotFound) return;
-            NSString *key = [reply substringWithRange:[result rangeAtIndex:3]];
+            NSString *key = [replacedReply substringWithRange:[result rangeAtIndex:3]];
             NSString *url = [replacementURLs[key] absoluteString];
             NSUInteger priorLength = [replacedReply length];
             if (url) {
                 NSRange rangeOfURL = [result rangeAtIndex:2];
-                rangeOfURL.location += offset;
                 [replacedReply replaceCharactersInRange:rangeOfURL withString:url];
             } else {
                 NSLog(@"found no associated image URL, so stripping tag %@",
@@ -583,6 +582,9 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
 - (void)imagePickerController:(UIImagePickerController *)picker
 didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        //[self loadTextView];
+    }
     if ([info[UIImagePickerControllerMediaType] isEqual:(NSString *)kUTTypeImage]) {
         UIImage *image = info[UIImagePickerControllerEditedImage];
         if (!image) image = info[UIImagePickerControllerOriginalImage];

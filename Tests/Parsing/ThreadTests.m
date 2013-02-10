@@ -31,7 +31,7 @@
     STAssertEqualObjects(info.threadTitle,
                          @"Canadian Politics Thread: Revenge of Trudeaumania: Brawl Me, Maybe",
                          nil);
-    STAssertFalse(info.threadLocked, nil);
+    STAssertFalse(info.threadClosed, nil);
     STAssertTrue(info.threadBookmarked, nil);
     STAssertEquals([info.posts count], 40U, nil);
 }
@@ -54,8 +54,7 @@
     STAssertEqualObjects(tenth.threadIndex, @"171", nil);
     STAssertEqualObjects(tenth.author.username, @"JayMax", nil);
     STAssertTrue([tenth.innerHTML rangeOfString:@"Québec"].location != NSNotFound, nil);
-    STAssertTrue([tenth.author.customTitle rangeOfString:@"gentleman"].location != NSNotFound,
-                 nil);
+    STAssertTrue([tenth.author.customTitle rangeOfString:@"gentleman"].location != NSNotFound, nil);
     STAssertTrue(tenth.beenSeen, nil);
     STAssertFalse(tenth.editable, nil);
     
@@ -74,7 +73,7 @@
     STAssertEqualObjects(fourteenth.author.username, @"angerbot", nil);
     STAssertTrue(fourteenth.author.administrator, nil);
     STAssertFalse(fourteenth.author.moderator, nil);
-    STAssertEqualObjects([fourteenth.author.avatarURL path], @"/images/angerbrat.jpg" , nil);
+    STAssertTrue([fourteenth.author.customTitle rangeOfString:@"/images/angerbrat.jpg"].length != 0, nil);
     STAssertFalse(fourteenth.beenSeen, nil);
     STAssertFalse(fourteenth.editable, nil);
     

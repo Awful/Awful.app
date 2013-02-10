@@ -4,6 +4,8 @@
 #import "_AwfulThread.h"
 
 const struct AwfulThreadAttributes AwfulThreadAttributes = {
+	.archived = @"archived",
+	.attachmentID = @"attachmentID",
 	.hideFromList = @"hideFromList",
 	.isBookmarked = @"isBookmarked",
 	.isClosed = @"isClosed",
@@ -13,6 +15,7 @@ const struct AwfulThreadAttributes AwfulThreadAttributes = {
 	.lastPostDate = @"lastPostDate",
 	.numberOfPages = @"numberOfPages",
 	.seen = @"seen",
+	.seenPosts = @"seenPosts",
 	.starCategory = @"starCategory",
 	.stickyIndex = @"stickyIndex",
 	.threadID = @"threadID",
@@ -60,6 +63,11 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 + (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 	
+	if ([key isEqualToString:@"archivedValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"archived"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
 	if ([key isEqualToString:@"hideFromListValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"hideFromList"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
@@ -95,6 +103,11 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
+	if ([key isEqualToString:@"seenPostsValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"seenPosts"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
 	if ([key isEqualToString:@"starCategoryValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"starCategory"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
@@ -123,6 +136,39 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 
 	return keyPaths;
 }
+
+
+
+
+@dynamic archived;
+
+
+
+- (BOOL)archivedValue {
+	NSNumber *result = [self archived];
+	return [result boolValue];
+}
+
+- (void)setArchivedValue:(BOOL)value_ {
+	[self setArchived:[NSNumber numberWithBool:value_]];
+}
+
+- (BOOL)primitiveArchivedValue {
+	NSNumber *result = [self primitiveArchived];
+	return [result boolValue];
+}
+
+- (void)setPrimitiveArchivedValue:(BOOL)value_ {
+	[self setPrimitiveArchived:[NSNumber numberWithBool:value_]];
+}
+
+
+
+
+
+@dynamic attachmentID;
+
+
 
 
 
@@ -317,6 +363,32 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 
 - (void)setPrimitiveSeenValue:(BOOL)value_ {
 	[self setPrimitiveSeen:[NSNumber numberWithBool:value_]];
+}
+
+
+
+
+
+@dynamic seenPosts;
+
+
+
+- (int32_t)seenPostsValue {
+	NSNumber *result = [self seenPosts];
+	return [result intValue];
+}
+
+- (void)setSeenPostsValue:(int32_t)value_ {
+	[self setSeenPosts:[NSNumber numberWithInt:value_]];
+}
+
+- (int32_t)primitiveSeenPostsValue {
+	NSNumber *result = [self primitiveSeenPosts];
+	return [result intValue];
+}
+
+- (void)setPrimitiveSeenPostsValue:(int32_t)value_ {
+	[self setPrimitiveSeenPosts:[NSNumber numberWithInt:value_]];
 }
 
 

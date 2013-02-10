@@ -8,16 +8,17 @@
 
 #import "AwfulHTTPClient.h"
 #import "AwfulDataStack.h"
+#import "AwfulJSONOrScrapeOperation.h"
 #import "AwfulModels.h"
 #import "AwfulParsing.h"
 #import "AwfulSettings.h"
 #import "NSManagedObject+Awful.h"
+#import "NSURL+QueryDictionary.h"
+
 
 @interface AwfulHTTPClient ()
 
 @property (getter=isReachable, nonatomic) BOOL reachable;
-
-@property (nonatomic) dispatch_queue_t parseQueue;
 
 @end
 
@@ -29,8 +30,10 @@
     static AwfulHTTPClient *instance;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        instance = [[AwfulHTTPClient alloc] initWithBaseURL:
-                    [NSURL URLWithString:@"http://forums.somethingawful.com/"]];
+        // Anyone without access to dev.forums is nicely redirected.
+        // TODO when we're done with testing, switch this back (or do something smarter).
+        NSURL *baseURL = [NSURL URLWithString:@"http://dev.forums.somethingawful.com/"];
+        instance = [[AwfulHTTPClient alloc] initWithBaseURL:baseURL];
     });
     return instance;
 }
@@ -46,62 +49,49 @@
     self = [super initWithBaseURL:url];
     if (self) {
         self.stringEncoding = NSWindowsCP1252StringEncoding;
-        _parseQueue = dispatch_queue_create("com.awfulapp.Awful.parsing", NULL);
         __weak AwfulHTTPClient *weakSelf = self;
         [self setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
             weakSelf.reachable = status != AFNetworkReachabilityStatusNotReachable;
         }];
+        [self registerHTTPOperationClass:[AwfulJSONOrScrapeOperation class]];
     }
     return self;
-}
-
-- (void)dealloc
-{
-    dispatch_release(_parseQueue);
-}
-
-static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
-{
-    NSString *ugh = [[NSString alloc] initWithData:windows1252
-                                          encoding:NSWindowsCP1252StringEncoding];
-    // Sometimes it isn't windows-1252 and is actually what's sent in headers: ISO-8859-1.
-    // Example: http://forums.somethingawful.com/showthread.php?threadid=2357406&pagenumber=2
-    // Maybe it's just old posts; the example is from 2007. And we definitely get some mojibake,
-    // but at least it's something.
-    if (!ugh) {
-        ugh = [[NSString alloc] initWithData:windows1252 encoding:NSISOLatin1StringEncoding];
-    }
-    return [ugh dataUsingEncoding:NSUTF8StringEncoding];
 }
 
 - (NSOperation *)listThreadsInForumWithID:(NSString *)forumID
                                    onPage:(NSInteger)page
                                   andThen:(void (^)(NSError *error, NSArray *threads))callback
 {
-    NSDictionary *parameters = @{ @"forumid": forumID, @"perpage": @40, @"pagenumber": @(page) };
-    NSURLRequest *request = [self requestWithMethod:@"GET"
-                                               path:@"forumdisplay.php"
+    NSDictionary *parameters = @{
+        @"forumid": forumID,
+        @"perpage": @40,
+        @"pagenumber": @(page),
+        @"json": @1
+    };
+    NSURLRequest *request = [self requestWithMethod:@"GET" path:@"forumdisplay.php"
                                          parameters:parameters];
-    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
-                                                               success:^(id _, id data)
+    id op = [self HTTPRequestOperationWithRequest:request
+                                          success:^(id _, id responseObject)
     {
-        dispatch_async(self.parseQueue, ^{
-            NSArray *infos = [ThreadParsedInfo threadsWithHTMLData:
-                              ConvertFromWindows1252ToUTF8(data)];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:infos];
-                NSInteger stickyIndex = -(NSInteger)[threads count];
-                NSArray *forums = [AwfulForum fetchAllMatchingPredicate:@"forumID = %@", forumID];
-                for (AwfulThread *thread in threads) {
-                    if ([forums count] > 0) thread.forum = forums[0];
-                    thread.stickyIndexValue = thread.isStickyValue ? stickyIndex++ : 0;
-                }
-                [[AwfulDataStack sharedDataStack] save];
-                if (callback) callback(nil, threads);
-            });
-        });
+        NSArray *threads;
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            threads = [AwfulThread threadsCreatedOrUpdatedWithJSON:responseObject];
+        } else {
+            threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:responseObject];
+        }
+        NSInteger stickyIndex = -(NSInteger)[threads count];
+        NSArray *forums = [AwfulForum fetchAllMatchingPredicate:@"forumID = %@", forumID];
+        for (AwfulThread *thread in threads) {
+            if ([forums count] > 0) thread.forum = forums[0];
+            thread.stickyIndexValue = thread.isStickyValue ? stickyIndex++ : 0;
+        }
+        [[AwfulDataStack sharedDataStack] save];
+        if (callback) callback(nil, threads);
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
+    }];
+    [op setCreateParsedInfoBlock:^id(NSData *data) {
+        return [ThreadParsedInfo threadsWithHTMLData:data];
     }];
     [self enqueueHTTPRequestOperation:op];
     return op;
@@ -110,23 +100,29 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
 - (NSOperation *)listBookmarkedThreadsOnPage:(NSInteger)page
                                      andThen:(void (^)(NSError *error, NSArray *threads))callback
 {
-    NSDictionary *parameters = @{ @"action": @"view", @"perpage": @40, @"pagenumber": @(page) };
-    NSURLRequest *request = [self requestWithMethod:@"GET"
-                                               path:@"bookmarkthreads.php"
+    NSDictionary *parameters = @{
+        @"action": @"view",
+        @"perpage": @40,
+        @"pagenumber": @(page),
+        @"json": @1
+    };
+    NSURLRequest *request = [self requestWithMethod:@"GET" path:@"bookmarkthreads.php"
                                          parameters:parameters];
-    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
-                                                               success:^(id _, id data)
+    id op = [self HTTPRequestOperationWithRequest:request
+                                          success:^(id _, id responseObject)
     {
-        dispatch_async(self.parseQueue, ^{
-            NSArray *threadInfos = [ThreadParsedInfo threadsWithHTMLData:
-                                    ConvertFromWindows1252ToUTF8(data)];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:threadInfos];
-                if (callback) callback(nil, threads);
-            });
-        });
+        NSArray *threads;
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            threads = [AwfulThread threadsCreatedOrUpdatedWithJSON:responseObject];
+        } else {
+            threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:responseObject];
+        }
+        if (callback) callback(nil, threads);
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
+    }];
+    [op setCreateParsedInfoBlock:^id(NSData *data) {
+        return [ThreadParsedInfo threadsWithHTMLData:data];
     }];
     [self enqueueHTTPRequestOperation:op];
     return op;
@@ -139,37 +135,42 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
                                                    NSUInteger firstUnreadPost,
                                                    NSString *advertisementHTML))callback
 {
-    NSMutableDictionary *parameters = [@{ @"threadid": threadID } mutableCopy];
+    NSMutableDictionary *parameters = [@{ @"threadid": threadID, @"json": @1 } mutableCopy];
     parameters[@"perpage"] = @40;
     if (page == AwfulPageNextUnread) parameters[@"goto"] = @"newpost";
     else if (page == AwfulPageLast) parameters[@"goto"] = @"lastpost";
     else parameters[@"pagenumber"] = @(page);
-    NSURLRequest *request = [self requestWithMethod:@"GET"
-                                               path:@"showthread.php"
+    NSURLRequest *request = [self requestWithMethod:@"GET" path:@"showthread.php"
                                          parameters:parameters];
-    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
-                                                               success:^(id op, id data)
+    id op = [self HTTPRequestOperationWithRequest:request
+                                          success:^(id op, id responseObject)
     {
-        dispatch_async(self.parseQueue, ^{
-            PageParsedInfo *info = [[PageParsedInfo alloc] initWithHTMLData:
-                                    ConvertFromWindows1252ToUTF8(data)];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSArray *posts = [AwfulPost postsCreatedOrUpdatedFromPageInfo:info];
-                if (callback) {
-                    NSInteger firstUnreadPost = NSNotFound;
-                    if (page == AwfulPageNextUnread) {
-                        NSString *fragment = [[[op response] URL] fragment];
-                        if ([fragment hasPrefix:@"pti"]) {
-                            firstUnreadPost = [[fragment substringFromIndex:3] integerValue] - 1;
-                            if (firstUnreadPost < 0) firstUnreadPost = NSNotFound;
-                        }
-                    }
-                    callback(nil, posts, firstUnreadPost, info.advertisementHTML);
+        NSArray *posts;
+        NSString *ad;
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            posts = [AwfulPost postsCreatedOrUpdatedFromJSON:responseObject];
+            ad = [responseObject valueForKey:@"goon_banner"];
+            if ([ad isEqual:[NSNull null]]) ad = nil;
+        } else {
+            posts = [AwfulPost postsCreatedOrUpdatedFromPageInfo:responseObject];
+            ad = [responseObject advertisementHTML];
+        }
+        if (callback) {
+            NSInteger firstUnreadPost = NSNotFound;
+            if (page == AwfulPageNextUnread) {
+                NSString *fragment = [[[op response] URL] fragment];
+                if ([fragment hasPrefix:@"pti"]) {
+                    firstUnreadPost = [[fragment substringFromIndex:3] integerValue] - 1;
+                    if (firstUnreadPost < 0) firstUnreadPost = NSNotFound;
                 }
-            });
-        });
+            }
+            callback(nil, posts, firstUnreadPost, ad);
+        }
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil, NSNotFound, nil);
+    }];
+    [op setCreateParsedInfoBlock:^id(NSData *data) {
+        return [[PageParsedInfo alloc] initWithHTMLData:data];
     }];
     [self enqueueHTTPRequestOperation:op];
     return op;
@@ -177,22 +178,24 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
 
 - (NSOperation *)learnUserInfoAndThen:(void (^)(NSError *error, NSDictionary *userInfo))callback
 {
-    NSDictionary *parameters = @{ @"action": @"editprofile" };
-    NSURLRequest *urlRequest = [self requestWithMethod:@"GET"
-                                                  path:@"member.php"
+    NSDictionary *parameters = @{ @"action": @"getinfo", @"json": @1 };
+    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:@"member.php"
                                             parameters:parameters];
-    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest 
-                                                               success:^(id _, id data)
+    id op = [self HTTPRequestOperationWithRequest:urlRequest
+                                          success:^(id _, id responseObject)
     {
-        dispatch_async(self.parseQueue, ^{
-            ProfileParsedInfo *parsed = [[ProfileParsedInfo alloc] initWithHTMLData:
-                                      ConvertFromWindows1252ToUTF8(data)];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (callback) callback(nil, @{ @"userID": parsed.userID, @"username": parsed.username });
-            });
-        });
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            AwfulUser *user = [AwfulUser userCreatedOrUpdatedFromJSON:responseObject];
+            if (callback) callback(nil, [user dictionaryWithValuesForKeys:@[ @"userID", @"username" ]]);
+        } else {
+            ProfileParsedInfo *profile = responseObject;
+            if (callback) callback(nil, @{ @"userID": profile.userID, @"username": profile.username });
+        }
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
+    }];
+    [op setCreateParsedInfoBlock:^id(NSData *data) {
+        return [[ProfileParsedInfo alloc] initWithHTMLData:data];
     }];
     [self enqueueHTTPRequestOperation:op];
     return op;
@@ -207,8 +210,7 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
         @"action": isBookmarked ? @"add" : @"remove",
         @"threadid": threadID
     };
-    NSURLRequest *request = [self requestWithMethod:@"POST"
-                                               path:@"bookmarkthreads.php"
+    NSURLRequest *request = [self requestWithMethod:@"POST" path:@"bookmarkthreads.php"
                                          parameters:parameters];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
                                                                success:^(id _, id __)
@@ -231,22 +233,43 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
     NSURLRequest *urlRequest = [self requestWithMethod:@"GET"
                                                   path:@"forumdisplay.php"
                                             parameters:@{ @"forumid": @"48" }];
-    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
-                                                               success:^(id _, id data)
+    id op = [self HTTPRequestOperationWithRequest:urlRequest
+                                          success:^(id _, ForumHierarchyParsedInfo *info)
     {
-        dispatch_async(self.parseQueue, ^{
-            ForumHierarchyParsedInfo *info = [[ForumHierarchyParsedInfo alloc] initWithHTMLData:
-                                              ConvertFromWindows1252ToUTF8(data)];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSArray *forums = [AwfulForum updateCategoriesAndForums:info];
-                if (callback) callback(nil, forums);
-            });
-        });
+        NSArray *forums = [AwfulForum updateCategoriesAndForums:info];
+        if (callback) callback(nil, forums);
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
     }];
+    [op setCreateParsedInfoBlock:^id(NSData *data) {
+        return [[ForumHierarchyParsedInfo alloc] initWithHTMLData:data];
+    }];
     [self enqueueHTTPRequestOperation:op];
     return op;
+    
+    // TODO when JSON output from index.php hits production, or we can otherwise tell whether we're
+    // on dev.forums, use this code instead.
+//    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:@""
+//                                            parameters:@{ @"json": @1 }];
+//    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
+//                                                               success:^(id _, NSDictionary *json)
+//    {
+//        if (![json[@"forums"] isKindOfClass:[NSArray class]]) {
+//            NSDictionary *userInfo = @{
+//                NSLocalizedDescriptionKey: @"The forums list could not be parsed"
+//            };
+//            NSError *error = [NSError errorWithDomain:AwfulErrorDomain
+//                                                 code:AwfulErrorCodes.parseError userInfo:userInfo];
+//            if (callback) callback(error, nil);
+//            return;
+//        }
+//        NSArray *forums = [AwfulForum updateCategoriesAndForumsWithJSON:json[@"forums"]];
+//        if (callback) callback(nil, forums);
+//    } failure:^(id _, NSError *error) {
+//        if (callback) callback(error, nil);
+//    }];
+//    [self enqueueHTTPRequestOperation:op];
+//    return op;
 }
 
 - (NSOperation *)replyToThreadWithID:(NSString *)threadID
@@ -254,63 +277,53 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
                              andThen:(void (^)(NSError *error, NSString *postID))callback
 {
     NSDictionary *parameters = @{ @"action" : @"newreply", @"threadid" : threadID };
-    NSURLRequest *urlRequest = [self requestWithMethod:@"GET"
-                                                  path:@"newreply.php"
+    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:@"newreply.php"
                                             parameters:parameters];
-    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
-                                                               success:^(id _, id data)
+    id op = [self HTTPRequestOperationWithRequest:urlRequest
+                                          success:^(id _, ReplyFormParsedInfo *formInfo)
     {
-        dispatch_async(self.parseQueue, ^{
-            ReplyFormParsedInfo *formInfo = [[ReplyFormParsedInfo alloc] initWithHTMLData:
-                                             ConvertFromWindows1252ToUTF8(data)];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (!(formInfo.formkey && formInfo.formCookie)) {
-                    NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : @"Thread is closed" };
-                    NSError *error = [NSError errorWithDomain:AwfulErrorDomain
-                                                         code:AwfulErrorCodes.threadIsClosed
-                                                     userInfo:userInfo];
-                    if (callback) callback(error, nil);
-                    return;
-                }
-                NSMutableDictionary *postParameters = [@{
-                                                       @"threadid" : threadID,
-                                                       @"formkey" : formInfo.formkey,
-                                                       @"form_cookie" : formInfo.formCookie,
-                                                       @"action" : @"postreply",
-                                                       @"message" : Entitify(text),
-                                                       @"parseurl" : @"yes",
-                                                       @"submit" : @"Submit Reply",
-                                                       } mutableCopy];
-                if (formInfo.bookmark) {
-                    postParameters[@"bookmark"] = formInfo.bookmark;
-                }
-                
-                NSURLRequest *postRequest = [self requestWithMethod:@"POST"
-                                                               path:@"newreply.php"
-                                                         parameters:postParameters];
-                AFHTTPRequestOperation *opTwo;
-                opTwo = [self HTTPRequestOperationWithRequest:postRequest
-                                                      success:^(id _, id data)
-                         {
-                             dispatch_async(self.parseQueue, ^{
-                                 SuccessfulReplyInfo *replyInfo;
-                                 replyInfo = [[SuccessfulReplyInfo alloc] initWithHTMLData:
-                                              ConvertFromWindows1252ToUTF8(data)];
-                                 dispatch_async(dispatch_get_main_queue(), ^{
-                                     NSString *postID = replyInfo.lastPage ? nil : replyInfo.postID;
-                                     if (callback) callback(nil, postID);
-                                 });
-                             });
-                         } failure:^(id _, NSError *error)
-                         {
-                             if (callback) callback(error, nil);
-                         }];
-                [self enqueueHTTPRequestOperation:opTwo];
-            });
-        });
+        if (!(formInfo.formkey && formInfo.formCookie)) {
+            NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : @"Thread is closed" };
+            NSError *error = [NSError errorWithDomain:AwfulErrorDomain
+                                                 code:AwfulErrorCodes.threadIsClosed
+                                             userInfo:userInfo];
+            if (callback) callback(error, nil);
+            return;
+        }
+        NSMutableDictionary *postParameters = [@{
+                                               @"threadid" : threadID,
+                                               @"formkey" : formInfo.formkey,
+                                               @"form_cookie" : formInfo.formCookie,
+                                               @"action" : @"postreply",
+                                               @"message" : Entitify(text),
+                                               @"parseurl" : @"yes",
+                                               @"submit" : @"Submit Reply",
+                                               } mutableCopy];
+        if (formInfo.bookmark) {
+            postParameters[@"bookmark"] = formInfo.bookmark;
+        }
+        
+        NSURLRequest *postRequest = [self requestWithMethod:@"POST" path:@"newreply.php"
+                                                 parameters:postParameters];
+        id opTwo = [self HTTPRequestOperationWithRequest:postRequest
+                                                 success:^(id _, SuccessfulReplyInfo *replyInfo)
+                 {
+                     NSString *postID = replyInfo.lastPage ? nil : replyInfo.postID;
+                     if (callback) callback(nil, postID);
+                 } failure:^(id _, NSError *error)
+                 {
+                     if (callback) callback(error, nil);
+                 }];
+        [opTwo setCreateParsedInfoBlock:^id(NSData *data) {
+            return [[SuccessfulReplyInfo alloc] initWithHTMLData:data];
+        }];
+        [self enqueueHTTPRequestOperation:opTwo];
     } failure:^(id _, NSError *error)
     {
         if (callback) callback(error, nil);
+    }];
+    [op setCreateParsedInfoBlock:^id(NSData *data) {
+        return [[ReplyFormParsedInfo alloc] initWithHTMLData:data];
     }];
     [self enqueueHTTPRequestOperation:op];
     return op;
@@ -366,34 +379,32 @@ static NSString * Entitify(NSString *noEntities)
 - (NSOperation *)getTextOfPostWithID:(NSString *)postID
                              andThen:(void (^)(NSError *error, NSString *text))callback
 {
-    NSURLRequest *request = [self requestWithMethod:@"GET"
-                                               path:@"editpost.php"
+    NSURLRequest *request = [self requestWithMethod:@"GET" path:@"editpost.php"
                                          parameters:@{ @"action": @"editpost", @"postid": postID }];
-    return [self textOfPostWithRequest:request andThen:callback];
+    id op = [self HTTPRequestOperationWithRequest:request
+                                          success:^(id _, ReplyFormParsedInfo *formInfo)
+    {
+        if (callback) callback(nil, formInfo.text);
+    } failure:^(id _, NSError *error) {
+        if (callback) callback(error, nil);
+    }];
+    [op setCreateParsedInfoBlock:^id(NSData *data) {
+        return [[ReplyFormParsedInfo alloc] initWithHTMLData:data];
+    }];
+    [self enqueueHTTPRequestOperation:op];
+    return op;
 }
 
 - (NSOperation *)quoteTextOfPostWithID:(NSString *)postID
                                andThen:(void (^)(NSError *error, NSString *quotedText))callback
 {
-    NSURLRequest *request = [self requestWithMethod:@"GET"
-                                               path:@"newreply.php"
-                                         parameters:@{ @"action": @"newreply", @"postid": postID }];
-    return [self textOfPostWithRequest:request andThen:callback];
-}
-
-- (NSOperation *)textOfPostWithRequest:(NSURLRequest *)request
-                               andThen:(void (^)(NSError *, NSString *))callback
-{
+    NSDictionary *parameters = @{ @"action": @"newreply", @"postid": postID, @"json": @1 };
+    NSURLRequest *request = [self requestWithMethod:@"GET" path:@"newreply.php"
+                                         parameters:parameters];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
-                                                               success:^(id _, id data)
+                                                               success:^(id _, NSDictionary *json)
     {
-        dispatch_async(self.parseQueue, ^{
-            ReplyFormParsedInfo *formInfo = [[ReplyFormParsedInfo alloc] initWithHTMLData:
-                                             ConvertFromWindows1252ToUTF8(data)];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (callback) callback(nil, formInfo.text);
-            });
-        });
+        if (callback) callback(nil, json[@"body"]);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (callback) callback(error, nil);
     }];
@@ -406,11 +417,10 @@ static NSString * Entitify(NSString *noEntities)
                         andThen:(void (^)(NSError *error))callback
 {
     NSDictionary *parameters = @{ @"action": @"editpost", @"postid": postID };
-    NSURLRequest *request = [self requestWithMethod:@"GET"
-                                               path:@"editpost.php"
+    NSURLRequest *request = [self requestWithMethod:@"GET" path:@"editpost.php"
                                          parameters:parameters];
-    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
-                                                               success:^(id _, id data)
+    id op = [self HTTPRequestOperationWithRequest:request
+                                          success:^(id _, ReplyFormParsedInfo *formInfo)
     {
         NSMutableDictionary *moreParameters = [@{
              @"action": @"updatepost",
@@ -418,29 +428,25 @@ static NSString * Entitify(NSString *noEntities)
              @"postid": postID,
              @"message": Entitify(text)
          } mutableCopy];
-        dispatch_async(self.parseQueue, ^{
-            ReplyFormParsedInfo *formInfo = [[ReplyFormParsedInfo alloc] initWithHTMLData:
-                                             ConvertFromWindows1252ToUTF8(data)];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (formInfo.bookmark) {
-                    moreParameters[@"bookmark"] = formInfo.bookmark;
-                }
-                NSURLRequest *anotherRequest = [self requestWithMethod:@"POST"
-                                                                  path:@"editpost.php"
-                                                            parameters:moreParameters];
-                AFHTTPRequestOperation *finalOp;
-                finalOp = [self HTTPRequestOperationWithRequest:anotherRequest
-                                                        success:^(id _, id __)
-                           {
-                               if (callback) callback(nil);
-                           } failure:^(id _, NSError *error) {
-                               if (callback) callback(error);
-                           }];
-                [self enqueueHTTPRequestOperation:finalOp];
-            });
-        });
+        if (formInfo.bookmark) {
+            moreParameters[@"bookmark"] = formInfo.bookmark;
+        }
+        NSURLRequest *anotherRequest = [self requestWithMethod:@"POST" path:@"editpost.php"
+                                                    parameters:moreParameters];
+        AFHTTPRequestOperation *finalOp;
+        finalOp = [self HTTPRequestOperationWithRequest:anotherRequest
+                                                success:^(id _, id __)
+                   {
+                       if (callback) callback(nil);
+                   } failure:^(id _, NSError *error) {
+                       if (callback) callback(error);
+                   }];
+        [self enqueueHTTPRequestOperation:finalOp];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (callback) callback(error);
+    }];
+    [op setCreateParsedInfoBlock:^id(NSData *data) {
+        return [[ReplyFormParsedInfo alloc] initWithHTMLData:data];
     }];
     [self enqueueHTTPRequestOperation:op];
     return op;
@@ -451,8 +457,7 @@ static NSString * Entitify(NSString *noEntities)
                           andThen:(void (^)(NSError *error))callback
 {
     NSDictionary *parameters = @{ @"vote": @(MAX(5, MIN(1, rating))), @"threadid": threadID };
-    NSURLRequest *request = [self requestWithMethod:@"POST"
-                                               path:@"threadrate.php"
+    NSURLRequest *request = [self requestWithMethod:@"POST" path:@"threadrate.php"
                                          parameters:parameters];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
                                                                success:^(id _, id __)
@@ -470,8 +475,7 @@ static NSString * Entitify(NSString *noEntities)
                           andThen:(void (^)(NSError *error))callback
 {
     NSDictionary *parameters = @{ @"action": @"setseen", @"threadid": threadID, @"index": index };
-    NSURLRequest *request = [self requestWithMethod:@"GET"
-                                               path:@"showthread.php"
+    NSURLRequest *request = [self requestWithMethod:@"GET" path:@"showthread.php"
                                          parameters:parameters];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
                                                                success:^(id _, id __)
@@ -488,8 +492,7 @@ static NSString * Entitify(NSString *noEntities)
                                        andThen:(void (^)(NSError *error))callback
 {
     NSDictionary *parameters = @{ @"threadid": threadID, @"action": @"resetseen", @"json": @"1" };
-    NSURLRequest *request = [self requestWithMethod:@"POST"
-                                               path:@"showthread.php"
+    NSURLRequest *request = [self requestWithMethod:@"POST" path:@"showthread.php"
                                          parameters:parameters];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
                                                                success:^(id _, id __)
@@ -504,24 +507,28 @@ static NSString * Entitify(NSString *noEntities)
 
 - (NSOperation *)logInAsUsername:(NSString *)username
                     withPassword:(NSString *)password
-                         andThen:(void (^)(NSError *error))callback
+                         andThen:(void (^)(NSError *error, NSDictionary *userInfo))callback
 {
-    // TODO this can now handle a redirect on login. So we could do something like add a parameter
-    // "next": "/member.php?action=getinfo&json=1"
-    // and get the logged-in user's name and info right away, passing it to the callback.
     NSDictionary *parameters = @{
         @"action" : @"login",
         @"username" : username,
-        @"password" : password
+        @"password" : password,
+        // TODO when /?json=1 hits the live forums, redirect there instead to get forum hierarchy
+        //      as well as logged-in user's info.
+        @"next": @"/member.php?action=getinfo&json=1"
     };
-    NSMutableURLRequest *request = [self requestWithMethod:@"POST"
-                                                      path:@"account.php"
+    // Logging in does not work via dev.forums.somethingawful.com, so force production site.
+    NSMutableURLRequest *request = [self requestWithMethod:@"POST" path:@"account.php?json=1"
                                                 parameters:parameters];
-    request.URL = [NSURL URLWithString:@"https://forums.somethingawful.com/account.php"];
+    request.URL = [NSURL URLWithString:@"https://forums.somethingawful.com/account.php?json=1"];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
-                                                               success:^(id _, id __)
+                                                               success:^(id _, NSDictionary *json)
     {
-        if (callback) callback(nil);
+        NSDictionary *userInfo = @{
+            @"userID": [json[@"userid"] stringValue],
+            @"username": json[@"username"]
+        };
+        if (callback) callback(nil, userInfo);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error)
     {
         if (operation.response.statusCode == 401) {
@@ -533,7 +540,7 @@ static NSString * Entitify(NSString *noEntities)
                                         code:AwfulErrorCodes.badUsernameOrPassword
                                     userInfo:userInfo];
         }
-        if (callback) callback(error);
+        if (callback) callback(error, nil);
     }];
     [self enqueueHTTPRequestOperation:op];
     return op;
@@ -544,8 +551,7 @@ static NSString * Entitify(NSString *noEntities)
 {
     // The SA Forums will direct a certain URL to the thread with a given post. We'll wait for that
     // redirect, then parse out the info we need.
-    NSURLRequest *request = [self requestWithMethod:@"GET"
-                                               path:@"showthread.php"
+    NSURLRequest *request = [self requestWithMethod:@"GET" path:@"showthread.php"
                                          parameters:@{ @"goto" : @"post", @"postid" : postID }];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
                                                                success:^(id _, id __)
@@ -555,7 +561,11 @@ static NSString * Entitify(NSString *noEntities)
         if (callback) callback(nil, nil, 0);
     } failure:^(id _, NSError *error)
     {
-        if (callback) callback(error, nil, 0);
+        // Once we get the redirect we need, we call the callback then cancel the operation.
+        // So there's no need to do anything if we get a "cancelled" error.
+        if (!([error.domain isEqualToString:NSURLErrorDomain] && error.code == NSURLErrorCancelled)) {
+            if (callback) callback(error, nil, 0);
+        }
     }];
     __weak AFHTTPRequestOperation *blockOp = op;
     [op setRedirectResponseBlock:^NSURLRequest *(id _, NSURLRequest *request, NSURLResponse *response)
@@ -564,8 +574,7 @@ static NSString * Entitify(NSString *noEntities)
         [blockOp cancel];
         NSDictionary *query = [[request URL] queryDictionary];
         if (callback) {
-            dispatch_queue_t queue = blockOp.successCallbackQueue;
-            if (!queue) queue = dispatch_get_main_queue();
+            dispatch_queue_t queue = blockOp.successCallbackQueue ?: dispatch_get_main_queue();
             dispatch_async(queue, ^{
                 callback(nil, query[@"threadid"], [query[@"pagenumber"] integerValue]);
             });
@@ -579,28 +588,29 @@ static NSString * Entitify(NSString *noEntities)
 - (NSOperation *)profileUserWithID:(NSString *)userID
                            andThen:(void (^)(NSError *error, AwfulUser *user))callback
 {
-    NSDictionary *parameters = @{ @"action": @"getinfo", @"userid": userID };
-    NSURLRequest *request = [self requestWithMethod:@"GET"
-                                               path:@"member.php"
+    NSDictionary *parameters = @{ @"action": @"getinfo", @"userid": userID, @"json": @1 };
+    NSURLRequest *request = [self requestWithMethod:@"GET" path:@"member.php"
                                          parameters:parameters];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
-                                                               success:^(id op, id data)
+                                                               success:^(id op, NSDictionary *json)
     {
-        dispatch_async(self.parseQueue, ^{
-            ProfileParsedInfo *info = [[ProfileParsedInfo alloc] initWithHTMLData:
-                                       ConvertFromWindows1252ToUTF8(data)];
-            info.userID = userID;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                AwfulUser *user = [AwfulUser userCreatedOrUpdatedFromProfileInfo:info];
-                if (user.profilePictureURL && [user.profilePictureURL hasPrefix:@"/"]) {
-                    NSString *base = [self.baseURL absoluteString];
-                    base = [base substringToIndex:[base length] - 1];
-                    user.profilePictureURL = [base stringByAppendingString:user.profilePictureURL];
-                    [[AwfulDataStack sharedDataStack] save];
-                }
-                if (callback) callback(nil, user);
-            });
-        });
+        AwfulUser *user = [AwfulUser userCreatedOrUpdatedFromJSON:json];
+        if (user.profilePictureURL && [user.profilePictureURL hasPrefix:@"/"]) {
+            NSString *base = [self.baseURL absoluteString];
+            NSString *devPrefix = @"dev.forums.somethingawful.com";
+            if ([self.baseURL.host hasPrefix:devPrefix]) {
+                NSRange approximateHostRange = NSMakeRange([self.baseURL.scheme length],
+                                                           [devPrefix length] + 5);
+                base = [base stringByReplacingOccurrencesOfString:devPrefix
+                                                       withString:@"forums.somethingawful.com"
+                                                          options:0
+                                                            range:approximateHostRange];
+            }
+            base = [base substringToIndex:[base length] - 1];
+            user.profilePictureURL = [base stringByAppendingString:user.profilePictureURL];
+            [[AwfulDataStack sharedDataStack] save];
+        }
+        if (callback) callback(nil, user);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (callback) callback(error, nil);
     }];
@@ -612,20 +622,17 @@ static NSString * Entitify(NSString *noEntities)
                         andThen:(void (^)(NSError *error, NSArray *bans))callback
 {
     NSDictionary *parameters = @{ @"pagenumber": @(page) };
-    NSURLRequest *request = [self requestWithMethod:@"GET"
-                                               path:@"banlist.php"
+    NSURLRequest *request = [self requestWithMethod:@"GET" path:@"banlist.php"
                                          parameters:parameters];
-    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
-                                                               success:^(id _, id data)
+    id op = [self HTTPRequestOperationWithRequest:request
+                                          success:^(id _, NSArray *bans)
     {
-        dispatch_async(self.parseQueue, ^{
-            NSArray *infos = [BanParsedInfo bansWithHTMLData:data];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (callback) callback(nil, infos);
-            });
-        });
+        if (callback) callback(nil, bans);
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
+    }];
+    [op setCreateParsedInfoBlock:^id(NSData *data) {
+        return [BanParsedInfo bansWithHTMLData:data];
     }];
     [self enqueueHTTPRequestOperation:op];
     return op;
@@ -638,5 +645,6 @@ NSString * const AwfulErrorDomain = @"AwfulErrorDomain";
 
 const struct AwfulErrorCodes AwfulErrorCodes = {
     .badUsernameOrPassword = -1000,
-    .threadIsClosed = -1001
+    .threadIsClosed = -1001,
+    .parseError = -1002,
 };

@@ -115,7 +115,7 @@
         //[cell addGestureRecognizer:longPress];
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
             AwfulDisclosureIndicatorView *accessory = [AwfulDisclosureIndicatorView new];
-            accessory.cell = cell;
+            //accessory.cell = cell;
             cell.accessoryView = accessory;
         }
     }

@@ -347,7 +347,7 @@ static id _instance;
         AwfulPost *post = [AwfulPost firstMatchingPredicate:@"postID = %@", postID];
         if (post) {
             [self pushPostsViewForPostWithID:post.postID
-                                      onPage:post.threadPageValue
+                                      onPage:post.page
                               ofThreadWithID:post.thread.threadID];
             return YES;
         }
@@ -437,15 +437,10 @@ static id _instance;
 
 #pragma mark - AwfulLoginControllerDelegate
 
-- (void)loginControllerDidLogIn:(AwfulLoginController *)login
+- (void)loginController:(AwfulLoginController *)login didLogInAsUserWithInfo:(NSDictionary *)userInfo
 {
-    [[AwfulHTTPClient client] learnUserInfoAndThen:^(NSError *error, NSDictionary *userInfo) {
-        if (error) {
-            NSLog(@"Error finding logged-in user's name: %@", error);
-        } else {
-            [AwfulSettings settings].username = userInfo[@"username"];
-        }
-    }];
+    [AwfulSettings settings].username = userInfo[@"username"];
+    [AwfulSettings settings].userID = userInfo[@"userID"];
     [self.window.rootViewController dismissViewControllerAnimated:YES completion:^{
         [[AwfulHTTPClient client] listForumsAndThen:nil];
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {

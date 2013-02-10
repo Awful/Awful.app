@@ -20,7 +20,9 @@
 
 @protocol AwfulLoginControllerDelegate <NSObject>
 
-- (void)loginControllerDidLogIn:(AwfulLoginController *)login;
+// userInfo has keys "userID" and "username".
+- (void)loginController:(AwfulLoginController *)login
+ didLogInAsUserWithInfo:(NSDictionary *)userInfo;
 
 - (void)loginController:(AwfulLoginController *)login didFailToLogInWithError:(NSError *)error;
 

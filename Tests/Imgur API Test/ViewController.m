@@ -13,6 +13,7 @@
 @interface ViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @property (nonatomic) IBOutlet UILabel *urlLabel;
+@property (nonatomic) NSMutableArray *images;
 
 @end
 
@@ -26,6 +27,23 @@
 - (IBAction)fromLibrary
 {
     [self showPickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+}
+
+- (IBAction)upload
+{
+    self.urlLabel.text = @"Uploading images…";
+    [[ImgurHTTPClient client] uploadImages:self.images
+                                   andThen:^(NSError *error, NSArray *urls)
+     {
+         if (error) {
+             self.urlLabel.text = [NSString stringWithFormat:@"upload error: %@ (inner: %@)\n"
+                                   "tap Upload to retry",
+                                   error, [error userInfo][NSUnderlyingErrorKey]];
+         } else {
+             self.urlLabel.text = [[urls valueForKey:@"absoluteString"] componentsJoinedByString:@"\n"];
+             [self.images removeAllObjects];
+         }
+     }];
 }
 
 - (void)showPickerForSourceType:(UIImagePickerControllerSourceType)sourceType
@@ -48,20 +66,11 @@
 - (void)imagePickerController:(UIImagePickerController *)picker
 didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
-    [self dismissViewControllerAnimated:YES completion:^{
-        [SVProgressHUD showWithStatus:@"Uploading image…" maskType:SVProgressHUDMaskTypeBlack];
-    }];
-    [[ImgurHTTPClient client] uploadImages:@[ info[UIImagePickerControllerOriginalImage] ]
-                                         andThen:^(NSError *error, NSArray *urls)
-    {
-        if (error) {
-            [SVProgressHUD showErrorWithStatus:@"Upload failed"];
-            NSLog(@"upload error: %@ (inner: %@)", error, [error userInfo][NSUnderlyingErrorKey]);
-            return;
-        }
-        self.urlLabel.text = [urls[0] absoluteString];
-        [SVProgressHUD showSuccessWithStatus:@"Uploaded image"];
-    }];
+    if (!self.images) self.images = [NSMutableArray new];
+    [self.images addObject:info[UIImagePickerControllerOriginalImage]];
+    self.urlLabel.text = [NSString stringWithFormat:@"Ready to upload %d image%@",
+                          [self.images count], [self.images count] == 1 ? @"" : @"s"];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

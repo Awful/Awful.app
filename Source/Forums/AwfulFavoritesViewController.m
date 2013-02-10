@@ -164,9 +164,7 @@
     AwfulForumCell *cell = [tableView dequeueReusableCellWithIdentifier:Identifier];
     if (!cell) {
         cell = [[AwfulForumCell alloc] initWithReuseIdentifier:Identifier];
-        AwfulDisclosureIndicatorView *disclosure = [AwfulDisclosureIndicatorView new];
-        disclosure.cell = cell;
-        cell.accessoryView = disclosure;
+        cell.accessoryView = [AwfulDisclosureIndicatorView new];
     }
     [self configureCell:cell atIndexPath:indexPath];
     return cell;

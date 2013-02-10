@@ -10,6 +10,7 @@
 #import "AwfulDataStack.h"
 #import "AwfulParsing.h"
 #import "AwfulUser.h"
+#import "GTMNSString+HTML.h"
 #import "NSManagedObject+Awful.h"
 
 @implementation AwfulThread
@@ -28,14 +29,14 @@
     return [basename stringByAppendingPathExtension:@"png"];
 }
 
-- (BOOL)canReply
+- (BOOL)beenSeen
 {
-    return !(self.isClosedValue || self.isLockedValue);
+    return self.seenValue > 0;
 }
 
-+ (NSSet *)keyPathsForValuesAffectingCanReply
++ (NSSet *)keyPathsForValuesAffectingBeenSeen
 {
-    return [NSSet setWithObjects:@"isClosed", @"isLocked", nil];
+    return [NSSet setWithObject:@"seenPosts"];
 }
 
 + (NSArray *)threadsCreatedOrUpdatedWithParsedInfo:(NSArray *)threadInfos
@@ -67,6 +68,90 @@
     return [existingThreads allValues];
 }
 
++ (NSArray *)threadsCreatedOrUpdatedWithJSON:(NSDictionary *)json
+{
+    NSMutableDictionary *existingThreads = [NSMutableDictionary new];
+    NSArray *threadIDs = [json valueForKeyPath:@"threads.threadid.stringValue"];
+    for (AwfulThread *thread in [self fetchAllMatchingPredicate:@"threadID in %@", threadIDs]) {
+        existingThreads[thread.threadID] = thread;
+    }
+    
+    NSMutableArray *parsedThreads = [NSMutableArray new];
+    for (NSDictionary *info in json[@"threads"]) {
+        NSString *threadID = [info[@"threadid"] stringValue];
+        AwfulThread *thread = existingThreads[threadID] ?: [AwfulThread insertNew];
+        thread.threadID = threadID;
+        // TODO fix for numeric-looking usernames coming in as JSON numbers. Remove when fixed
+        // server-side.
+        if ([info[@"lastposter"] respondsToSelector:@selector(stringValue)]) {
+            thread.lastPostAuthorName = [info[@"lastposter"] stringValue];
+        } else {
+            thread.lastPostAuthorName = info[@"lastposter"];
+        }
+        thread.lastPostDate = [NSDate dateWithTimeIntervalSince1970:[info[@"lastpost"] doubleValue]];
+        NSDictionary *icon = json[@"icons"][[info[@"iconid"] stringValue]];
+        thread.threadIconImageURL = [NSURL URLWithString:icon[@"iconpath"]];
+        if (info[@"type"]) {
+            thread.threadIconImageURL2 = SecondaryIconURLForType(info[@"type"]);
+        } else {
+            thread.threadIconImageURL2 = nil;
+        }
+        NSNumber *starCategory = info[@"bookmark_category"];
+        if ([starCategory isEqual:[NSNull null]]) {
+            thread.isBookmarkedValue = NO;
+            thread.starCategoryValue = AwfulStarCategoryNone;
+        } else {
+            thread.isBookmarkedValue = YES;
+            thread.starCategoryValue = (AwfulStarCategory)[starCategory integerValue];
+        }
+        thread.isClosedValue = ![info[@"open"] boolValue];
+        thread.isStickyValue = [info[@"sticky"] boolValue];
+        thread.threadID = [info[@"threadid"] stringValue];
+        thread.threadVotes = info[@"vote_count"];
+        if (![info[@"vote_score_sum"] isEqual:[NSNull null]]) {
+            NSDecimal rating = [info[@"vote_score_average"] decimalValue];
+            thread.threadRating = [NSDecimalNumber decimalNumberWithDecimal:rating];
+        } else {
+            thread.threadRating = nil;
+        }
+        thread.title = [info[@"title"] gtm_stringByUnescapingFromHTML];
+        thread.totalReplies = info[@"replycount"];
+        id seenPosts = info[@"seen_posts"];
+        if (!seenPosts || [[NSNull null] isEqual:seenPosts]) {
+            seenPosts = @0;
+        }
+        thread.seenPosts = seenPosts;
+        
+        NSDictionary *authorJSON = @{
+            @"userid": info[@"postuserid"],
+            @"username": info[@"postusername"]
+        };
+        thread.author = [AwfulUser userCreatedOrUpdatedFromJSON:authorJSON];
+        
+        existingThreads[thread.threadID] = thread;
+        [parsedThreads addObject:thread];
+    }
+    [[AwfulDataStack sharedDataStack] save];
+    return parsedThreads;
+}
+
+static NSURL * SecondaryIconURLForType(NSString *type)
+{
+    static NSDictionary *types;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        types = @{
+            @"ASK": @"http://fi.somethingawful.com/ama.gif",
+            @"TELL": @"http://fi.somethingawful.com/tma.gif",
+            @"BUY": @"http://fi.somethingawful.com/forums/posticons/icon-38-buying.gif",
+            @"TRADE": @"http://fi.somethingawful.com/forums/posticons/icon-46-trading.gif",
+            @"AUCTION": @"http://fi.somethingawful.com/forums/posticons/icon-52-trading.gif",
+            @"SELL": @"http://fi.somethingawful.com/forums/posticons/icon-37-selling.gif"
+        };
+    });
+    return [NSURL URLWithString:types[type]];
+}
+
 #pragma mark - _AwfulThread
 
 - (void)setTotalReplies:(NSNumber *)totalReplies
@@ -78,6 +163,16 @@
     if (minimumNumberOfPages > self.numberOfPagesValue) {
         self.numberOfPagesValue = minimumNumberOfPages;
     }
+}
+
+- (void)setSeenPosts:(NSNumber *)seenPosts
+{
+//    [self willChangeValueForKey:AwfulThreadAttributes.seenPosts];
+//    self.primitiveSeenPosts = seenPosts;
+//    [self didChangeValueForKey:AwfulThreadAttributes.seenPosts];
+//    if (self.seenPostsValue > self.totalRepliesValue + 1) {
+//        self.totalRepliesValue = self.seenPostsValue - 1;
+//    }
 }
 
 @end

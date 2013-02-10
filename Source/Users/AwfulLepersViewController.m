@@ -141,9 +141,7 @@ static NSString * CreateBanIDForBan(BanParsedInfo *ban)
         cell = [[AwfulLeperCell alloc] initWithReuseIdentifier:Identifier];
         cell.textLabel.numberOfLines = 0;
         cell.detailTextLabel.numberOfLines = 0;
-        AwfulDisclosureIndicatorView *disclosure = [AwfulDisclosureIndicatorView new];
-        disclosure.cell = cell;
-        cell.accessoryView = disclosure;
+        cell.accessoryView = [AwfulDisclosureIndicatorView new];
     }
     
     [self configureCell:cell atIndexPath:indexPath];

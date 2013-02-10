@@ -12,9 +12,26 @@
 #import "AwfulParsing.h"
 #import "AwfulThread.h"
 #import "AwfulUser.h"
+#import "GTMNSString+HTML.h"
 #import "NSManagedObject+Awful.h"
 
 @implementation AwfulPost
+
+- (BOOL)beenSeen
+{
+    if (!self.thread || self.threadIndexValue == 0) return NO;
+    return self.threadIndexValue <= self.thread.seenPostsValue;
+}
+
++ (NSSet *)keyPathsForValuesAffectingBeenSeen
+{
+    return [NSSet setWithArray:@[ @"threadIndex", @"thread.seenPosts" ]];
+}
+
+- (NSInteger)page
+{
+    return (self.threadIndexValue - 1) / 40 + 1;
+}
 
 + (NSArray *)postsCreatedOrUpdatedFromPageInfo:(PageParsedInfo *)pageInfo
 {
@@ -33,7 +50,7 @@
     thread.forum = forum;
     thread.title = pageInfo.threadTitle;
     thread.isBookmarkedValue = pageInfo.threadBookmarked;
-    thread.isLockedValue = pageInfo.threadLocked;
+    thread.isClosedValue = pageInfo.threadClosed;
     thread.numberOfPagesValue = pageInfo.pagesInThread;
     
     NSArray *allPosts = [thread.posts allObjects];
@@ -62,20 +79,117 @@
             post.author = existingUsers[postInfo.author.username] ?: [AwfulUser insertNew];
         }
         [postInfo.author applyToObject:post.author];
-        post.author.avatarURL = [postInfo.author.avatarURL absoluteString];
         existingUsers[post.author.username] = post.author;
         [posts addObject:post];
         if (postInfo.author.originalPoster) {
             thread.author = post.author;
         }
     }
-    [posts setValue:@(pageInfo.pageNumber) forKey:AwfulPostAttributes.threadPage];
     if (pageInfo.pageNumber == thread.numberOfPagesValue) {
         thread.lastPostAuthorName = [[posts lastObject] author].username;
         thread.lastPostDate = [[posts lastObject] postDate];
     }
     [[AwfulDataStack sharedDataStack] save];
     return posts;
+}
+
++ (NSArray *)postsCreatedOrUpdatedFromJSON:(NSDictionary *)json
+{
+    NSString *forumID = [json[@"forumid"] stringValue];
+    AwfulForum *forum = [AwfulForum firstMatchingPredicate:@"forumID = %@", forumID];
+    if (!forum) {
+        forum = [AwfulForum insertNew];
+        forum.forumID = forumID;
+    }
+    NSString *threadID = [json[@"thread_info"][@"threadid"] stringValue];
+    AwfulThread *thread = [AwfulThread firstMatchingPredicate:@"threadID = %@", threadID];
+    if (!thread) {
+        thread = [AwfulThread insertNew];
+        thread.threadID = threadID;
+    }
+    thread.title = [json[@"thread_info"][@"title"] gtm_stringByUnescapingFromHTML];
+    thread.archivedValue = [json[@"archived"] boolValue];
+    if (![json[@"thread_icon"] isEqual:[NSNull null]]) {
+        thread.threadIconImageURL = [NSURL URLWithString:json[@"thread_icon"][@"iconpath"]];
+    }
+    thread.forum = forum;
+    thread.numberOfPages = json[@"page"][1];
+    id seenPosts = json[@"seen_posts"];
+    if (!seenPosts || [seenPosts isEqual:[NSNull null]]) {
+        seenPosts = @0;
+    }
+    thread.seenPosts = seenPosts;
+    if (thread.seenPostsValue > thread.totalRepliesValue + 1) {
+        thread.totalRepliesValue = thread.seenPostsValue - 1;
+    }
+    
+    NSArray *postIDs = [json[@"posts"] allKeys];
+    NSMutableDictionary *existingPosts = [NSMutableDictionary new];
+    for (AwfulPost *post in [AwfulPost fetchAllMatchingPredicate:@"postID IN %@", postIDs]) {
+        existingPosts[post.postID] = post;
+    }
+    for (NSString *postID in json[@"posts"]) {
+        NSDictionary *info = json[@"posts"][postID];
+        AwfulPost *post = existingPosts[postID] ?: [AwfulPost insertNew];
+        post.postID = postID;
+        if (![info[@"attachmentid"] isEqual:[NSNull null]] && [info[@"attachmentid"] integerValue]) {
+            post.attachmentID = [info[@"attachmentid"] stringValue];
+        } else {
+            post.attachmentID = nil;
+        }
+        if (![info[@"editdate"] isEqual:[NSNull null]]) {
+            post.editDate = [NSDate dateWithTimeIntervalSince1970:[info[@"editdate"] doubleValue]];
+        } else {
+            post.editDate = nil;
+        }
+        if (![info[@"edituserid"] isEqual:[NSNull null]]) {
+            NSString *editorUserID = [info[@"edituserid"] stringValue];
+            AwfulUser *editor = [AwfulUser firstMatchingPredicate:@"userID = %@", editorUserID];
+            if (!editor) {
+                editor = [AwfulUser insertNew];
+                editor.userID = editorUserID;
+            }
+            post.editor = editor;
+        } else {
+            post.editor = nil;
+        }
+        id message = info[@"message"];
+        if ([message respondsToSelector:@selector(stringValue)]) {
+            message = [message stringValue];
+        }
+        post.innerHTML = message;
+        post.postDate = [NSDate dateWithTimeIntervalSince1970:[info[@"date"] doubleValue]];
+        post.thread = thread;
+        post.threadIndex = info[@"post_index"];
+        
+        NSString *userID = [info[@"userid"] stringValue];
+        post.author = [AwfulUser userCreatedOrUpdatedFromJSON:json[@"userids"][userID]];
+        if ([info[@"op"] boolValue]) {
+            thread.author = post.author;
+        }
+        
+        existingPosts[post.postID] = post;
+    }
+    NSArray *posts = [existingPosts allValues];
+    if ([json[@"page"][0] isEqual:json[@"page"][1]] /* on last page of thread */) {
+        AwfulPost *last;
+        for (AwfulPost *post in posts) {
+            if (!last || last.threadIndexValue < post.threadIndexValue) {
+                last = post;
+            }
+        }
+        thread.lastPostAuthorName = last.author.username;
+        thread.lastPostDate = last.postDate;
+    }
+    
+    [[AwfulDataStack sharedDataStack] save];
+    return posts;
+}
+
+- (BOOL)editableByUserWithID:(NSString *)userID
+{
+    if (!self.thread || self.thread.archivedValue) return NO;
+    return [self.author.userID isEqual:userID];
 }
 
 @end
