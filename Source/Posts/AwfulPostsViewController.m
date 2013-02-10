@@ -406,6 +406,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     self.markingPostsAsBeenSeen = YES;
     post.thread.seenPosts = post.threadIndex;
     [[AwfulDataStack sharedDataStack] save];
+    [self.postsView reloadData];
     self.markingPostsAsBeenSeen = NO;
 }
 
