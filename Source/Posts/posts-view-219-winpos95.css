@@ -298,6 +298,7 @@ body {
 #posts > article > section .bbc-spoiler,
 #posts > article > section .bbc-spoiler li {
     color: black;
+    background: black;
 }
 #posts > article > section .bbc-spoiler a:link,
 #posts > article > section .bbc-spoiler a:visited,
