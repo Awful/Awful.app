@@ -59,7 +59,7 @@
     }
 }
 
-- (void)hideAnimated:(BOOL)animated
+- (void)hideAnimated:(BOOL)animated completion:(void (^)(void))completionBlock
 {
     if (animated) {
         [UIView animateWithDuration:0.3 animations:^
@@ -70,6 +70,7 @@
         } completion:^(BOOL _)
         {
             [self.view removeFromSuperview];
+            if (completionBlock) completionBlock();
         }];
     } else {
         [self.view removeFromSuperview];

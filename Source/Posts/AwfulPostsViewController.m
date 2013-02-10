@@ -95,6 +95,8 @@
 
 @property (copy, nonatomic) NSString *jumpToPostAfterLoad;
 
+@property (weak, nonatomic) UIView *pageNavBackingView;
+
 @end
 
 
@@ -544,7 +546,9 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     if (self.specificPageController) {
         [self dismissPopoverAnimated:YES];
         [self.specificPageController willMoveToParentViewController:nil];
-        [self.specificPageController hideAnimated:YES];
+        [self.specificPageController hideAnimated:YES completion:^{
+            [self.pageNavBackingView removeFromSuperview];
+        }];
         [self.specificPageController removeFromParentViewController];
         self.specificPageController = nil;
         return;
@@ -565,10 +569,27 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                     permittedArrowDirections:UIPopoverArrowDirectionAny
                                     animated:YES];
     } else {
+        UIView *halfBlack = [UIView new];
+        halfBlack.frame = (CGRect){ .size = self.postsView.bounds.size };
+        halfBlack.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+        halfBlack.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                      UIViewAutoresizingFlexibleHeight);
+        UITapGestureRecognizer *tap = [UITapGestureRecognizer new];
+        [tap addTarget:self action:@selector(didTapPageNavBackground:)];
+        [halfBlack addGestureRecognizer:tap];
+        [self.view addSubview:halfBlack];
+        [self.view bringSubviewToFront:self.pageBar];
+        self.pageNavBackingView = halfBlack;
         [self addChildViewController:self.specificPageController];
-        [self.specificPageController showInView:self.postsView animated:YES];
+        [self.specificPageController showInView:self.pageNavBackingView animated:YES];
         [self.specificPageController didMoveToParentViewController:self];
     }
+}
+
+- (void)didTapPageNavBackground:(UITapGestureRecognizer *)tap
+{
+    if (tap.state != UIGestureRecognizerStateEnded) return;
+    [self tappedPageNav:nil];
 }
 
 - (void)tappedCompose
@@ -1165,7 +1186,9 @@ static char KVOContext;
     if (self.popover) {
         [self dismissPopoverAnimated:YES];
     } else {
-        [self.specificPageController hideAnimated:YES];
+        [self.specificPageController hideAnimated:YES completion:^{
+            [self.pageNavBackingView removeFromSuperview];
+        }];
         self.specificPageController = nil;
     }
     [self loadPage:page];
@@ -1175,6 +1198,7 @@ static char KVOContext;
 {
     [self dismissPopoverAnimated:YES];
     self.specificPageController = nil;
+    [self.pageNavBackingView removeFromSuperview];
 }
 
 #pragma mark - UIPopoverControllerDelegate
