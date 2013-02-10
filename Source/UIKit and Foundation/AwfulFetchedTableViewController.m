@@ -28,7 +28,7 @@
 
 - (void)reachabilityChanged:(NSNotification *)note
 {
-    if ([self refreshOnAppear]) [self refresh];
+    if (!self.refreshing && [self refreshOnAppear]) [self refresh];
 }
 
 - (void)viewDidLoad
@@ -74,7 +74,6 @@
     
     NSError *error;
 	if (![self.fetchedResultsController performFetch:&error]) {
-		// Update to handle the error appropriately.
 		NSLog(@"error fetching: %@", error);
 	}
 }

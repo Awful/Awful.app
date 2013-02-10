@@ -132,8 +132,10 @@
     self.coordinator = nil;
     self.model = nil;
     self.context = nil;
-    [[NSNotificationCenter defaultCenter] postNotificationName:AwfulDataStackDidResetNotification
-                                                        object:self];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:AwfulDataStackDidResetNotification
+                                                            object:self];
+    });
 }
 
 + (NSURL *)defaultStoreURL

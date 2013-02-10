@@ -52,6 +52,7 @@ byob-slax.png
 byob-slayer.png
 byob-soulja.png
 byob-treasure.png
+byob-xfile.png
 byob.png
 CA-TAG-CA-atb.png
 CA-TAG-CA-dirtmoto.png
@@ -78,6 +79,7 @@ cd_hype.png
 cd_scifi.png
 cell-cdma.png
 cell-gsm.png
+chooch.png
 coc-binbash.png
 coc-c.png
 coc-db.png
@@ -270,6 +272,7 @@ lf-arecountry.png
 LF-article.png
 LF-BiCurious.png
 lf-choom.png
+LF-dad.png
 lf-dji.png
 lf-eu.png
 lf-eurabia.png

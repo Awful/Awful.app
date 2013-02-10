@@ -8,11 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import "AwfulModels.h"
+#import "AwfulEmoticonKeyboardController.h"
 
 @protocol AwfulReplyViewControllerDelegate;
 
 
-@interface AwfulReplyViewController : UIViewController
+@interface AwfulReplyViewController : UIViewController <AwfulEmoticonPickerDelegate>
 
 @property (weak, nonatomic) id <AwfulReplyViewControllerDelegate> delegate;
 

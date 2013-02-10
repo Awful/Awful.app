@@ -19,7 +19,8 @@
 #import "AwfulPostsView.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulPullToRefreshControl.h"
-#import "AwfulReplyViewController.h"
+#import "AwfulReplyComposerViewController.h"
+#import "AwfulEditPostComposerViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulSpecificPageController.h"
 #import "AwfulTheme.h"
@@ -46,10 +47,11 @@
 
 
 @interface AwfulPostsViewController () <AwfulPostsViewDelegate, UIPopoverControllerDelegate,
-AwfulSpecificPageControllerDelegate,
-NSFetchedResultsControllerDelegate,
-AwfulReplyViewControllerDelegate,
-UIScrollViewDelegate>
+
+                                        AwfulSpecificPageControllerDelegate,
+                                        NSFetchedResultsControllerDelegate,
+                                        AwfulComposerViewControllerDelegate,
+                                        UIScrollViewDelegate>
 
 @property (nonatomic) NSFetchedResultsController *fetchedResultsController;
 
@@ -103,22 +105,18 @@ UIScrollViewDelegate>
     if (!(self = [super initWithNibName:nil bundle:nil])) return nil;
     self.hidesBottomBarWhenPushed = YES;
     NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
-    [noteCenter addObserver:self
-                   selector:@selector(currentThemeChanged:)
-                       name:AwfulThemeDidChangeNotification
-                     object:nil];
-    [noteCenter addObserver:self
-                   selector:@selector(settingChanged:)
-                       name:AwfulSettingsDidChangeNotification
-                     object:nil];
+    [noteCenter addObserver:self selector:@selector(currentThemeChanged:)
+                       name:AwfulThemeDidChangeNotification object:nil];
+    [noteCenter addObserver:self selector:@selector(settingChanged:)
+                       name:AwfulSettingsDidChangeNotification object:nil];
+    [noteCenter addObserver:self selector:@selector(didResetDataStack:)
+                       name:AwfulDataStackDidResetNotification object:nil];
     return self;
 }
 
 - (void)dealloc
 {
-    NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
-    [noteCenter removeObserver:self name:AwfulSettingsDidChangeNotification object:nil];
-    [noteCenter removeObserver:self name:AwfulThemeDidChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self stopObserving];
     self.postsView.scrollView.delegate = nil;
     self.fetchedResultsController.delegate = nil;
@@ -143,6 +141,11 @@ UIScrollViewDelegate>
     ];
     NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
     if ([keys firstObjectCommonWithArray:importantKeys]) [self configurePostsViewSettings];
+}
+
+- (void)didResetDataStack:(NSNotification *)note
+{
+    self.fetchedResultsController = nil;
 }
 
 - (void)setThread:(AwfulThread *)thread
@@ -585,13 +588,20 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 }
 
 - (void)tappedCompose
-{
+{   
     [self dismissPopoverAnimated:YES];
-    AwfulReplyViewController *reply = [AwfulReplyViewController new];
-    reply.delegate = self;
-    [reply replyToThread:self.thread withInitialContents:nil];
+    AwfulReplyComposerViewController *reply = [[AwfulReplyComposerViewController alloc] initWithThread:self.thread initialContents:nil];
     UINavigationController *nav = [reply enclosingNavigationController];
-    [self presentViewController:nav animated:YES completion:nil];
+    
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        nav.modalPresentationStyle = UIModalPresentationFormSheet;
+        [self presentModalViewController:nav animated:YES];
+    } else {
+        [self presentViewController:nav animated:YES completion:nil];
+    }
+    
+    //[self addChildViewController:reply];
 }
 
 - (void)showActionsForPost:(AwfulPost *)post fromRect:(CGRect)rect inView:(UIView *)view
@@ -614,10 +624,9 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                                        buttonTitle:@"Alright"];
                      return;
                  }
-                 AwfulReplyViewController *reply = [AwfulReplyViewController new];
-                 reply.delegate = self;
-                 [reply editPost:post text:text];
-                 UINavigationController *nav = [reply enclosingNavigationController];
+                 AwfulEditPostComposerViewController *edit = [[AwfulEditPostComposerViewController alloc] initWithPost:post bbCode:text];
+                 edit.delegate = self;
+                 UINavigationController *nav = [edit enclosingNavigationController];
                  [self presentViewController:nav animated:YES completion:nil];
              }];
         }];
@@ -633,10 +642,9 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                                        buttonTitle:@"Alright"];
                      return;
                  }
-                 AwfulReplyViewController *reply = [AwfulReplyViewController new];
+                 AwfulReplyComposerViewController *reply = [[AwfulReplyComposerViewController alloc] initWithThread:self.thread
+                                                                                                    initialContents:[quotedText stringByAppendingString:@"\n\n"]];
                  reply.delegate = self;
-                 [reply replyToThread:self.thread
-                  withInitialContents:[quotedText stringByAppendingString:@"\n\n"]];
                  UINavigationController *nav = [reply enclosingNavigationController];
                  [self presentViewController:nav animated:YES completion:nil];
              }];
@@ -830,12 +838,28 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     [self updatePullUpTriggerOffset];
     
     [self.view bringSubviewToFront:self.pageBar];
+    
+#warning fixme: remove debug code
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:(UIBarButtonSystemItemTrash)
+                                                                                           target:self
+                                                                                           action:@selector(deleteEmotes)];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self retheme];
+    
+}
+
+#warning fixme: remove debug code
+- (void)deleteEmotes {
+    NSArray *emotes = [AwfulEmoticon fetchAll];
+    for (AwfulEmoticon* emote in emotes) {
+        [[[AwfulDataStack sharedDataStack] context] deleteObject:emote];
+    }
+    
+    [[[AwfulDataStack sharedDataStack] context] save:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -925,6 +949,21 @@ static char KVOContext;
     }
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
+
+- (void)addChildViewController:(UIViewController *)childController {
+    [super addChildViewController:childController];
+    //inline replying
+    
+    self.postsView.scrollView.contentInset = UIEdgeInsetsMake(0, 0, 500, 0);
+    
+    CGSize size = self.postsView.scrollView.contentSize;
+    CGRect frame = CGRectMake(0, size.height, size.width, 400);
+    
+    childController.view.frame = frame;
+    [self.postsView.scrollView addSubview:childController.view];
+    
+}
+
 
 #pragma mark - AwfulPostsViewDelegate
 
@@ -1183,17 +1222,17 @@ static char KVOContext;
     }
 }
 
-#pragma mark - AwfulReplyViewControllerDelegate
+#pragma mark - AwfulComposerViewControllerDelegate
 
-- (void)replyViewController:(AwfulReplyViewController *)replyViewController
-           didReplyToThread:(AwfulThread *)thread
+- (void)composerViewController:(AwfulComposerViewController *)composerViewController
+           didSend:(id)post
 {
     [self dismissViewControllerAnimated:YES completion:^{
         [self loadPage:AwfulPageNextUnread];
     }];
 }
 
-- (void)replyViewController:(AwfulReplyViewController *)replyViewController
+- (void)replyViewController:(AwfulComposerViewController *)replyViewController
                 didEditPost:(AwfulPost *)post
 {
     [self dismissViewControllerAnimated:YES completion:^{
@@ -1202,7 +1241,7 @@ static char KVOContext;
     }];
 }
 
-- (void)replyViewControllerDidCancel:(AwfulReplyViewController *)replyViewController
+- (void)composerViewControllerDidCancel:(AwfulComposerViewController *)composerViewController
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }

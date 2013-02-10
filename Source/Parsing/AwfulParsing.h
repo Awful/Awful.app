@@ -221,3 +221,39 @@
 @property (readonly, nonatomic) BOOL lastPage;
 
 @end
+
+
+typedef enum {
+    AwfulBanTypeUnknown = 0,
+    AwfulBanTypeProbation,
+    AwfulBanTypeBan,
+    AwfulBanTypeAutoban,
+    AwfulBanTypePermaban
+} AwfulBanType;
+
+
+@interface BanParsedInfo : ParsedInfo
+
+@property (readonly, nonatomic) AwfulBanType banType;
+
+@property (readonly, copy, nonatomic) NSString *postID;
+
+@property (readonly, nonatomic) NSDate *banDate;
+
+@property (readonly, copy, nonatomic) NSString *bannedUserID;
+
+@property (readonly, copy, nonatomic) NSString *bannedUserName;
+
+@property (readonly, copy, nonatomic) NSString *banReason;
+
+@property (readonly, copy, nonatomic) NSString *requesterUserID;
+
+@property (readonly, copy, nonatomic) NSString *requesterUserName;
+
+@property (readonly, copy, nonatomic) NSString *approverUserID;
+
+@property (readonly, copy, nonatomic) NSString *approverUserName;
+
++ (NSArray *)bansWithHTMLData:(NSData *)htmlData;
+
+@end

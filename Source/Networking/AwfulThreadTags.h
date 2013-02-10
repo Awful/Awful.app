@@ -28,3 +28,7 @@
 //
 // The notification's object is a collection of thread tag names that responds to -containsObject:.
 extern NSString * const AwfulNewThreadTagsAvailableNotification;
+
+@interface UIImage (AwfulThreadTags)
++ (UIImage*) threadTagNamed:(NSString*)name;
+@end

@@ -4,3 +4,5 @@
 #import "AwfulThread.h"
 #import "AwfulUser.h"
 #import "AwfulPrivateMessage.h"
+#import "AwfulEmoticon.h"
+#import "AwfulEmoticonGroup.h"

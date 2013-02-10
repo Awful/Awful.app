@@ -43,9 +43,9 @@
 
 @implementation AwfulAppDelegate
 
-static AwfulAppDelegate *_instance;
+static id _instance;
 
-+ (AwfulAppDelegate *)instance
++ (instancetype)instance
 {
     return _instance;
 }
@@ -86,6 +86,8 @@ static AwfulAppDelegate *_instance;
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             AwfulSplitViewController *split = (AwfulSplitViewController *)self.window.rootViewController;
             tabBar = split.viewControllers[0];
+            UINavigationController *posts = split.viewControllers[1];
+            posts.viewControllers = @[ [AwfulStartViewController new] ];
         } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
             tabBar = (AwfulTabBarController *)self.window.rootViewController;
         }
@@ -439,7 +441,7 @@ static AwfulAppDelegate *_instance;
 {
     [[AwfulHTTPClient client] learnUserInfoAndThen:^(NSError *error, NSDictionary *userInfo) {
         if (error) {
-            NSLog(@"error fetching username: %@", error);
+            NSLog(@"Error finding logged-in user's name: %@", error);
         } else {
             [AwfulSettings settings].username = userInfo[@"username"];
         }

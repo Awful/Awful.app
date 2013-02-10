@@ -117,6 +117,7 @@
 
 UIImage * MakeNormalImageForSelectedImage(UIImage *image)
 {
+    if (!image) return nil;
     UIGraphicsBeginImageContextWithOptions(image.size, NO, image.scale);
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextScaleCTM(context, 1, -1);
