@@ -304,9 +304,6 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         self.hiddenPosts = 0;
         [self.postsView reloadData];
     }
-    // This blockSelf exists entirely so we capture self in the block, which allows its use while
-    // debugging. Otherwise lldb/gdb don't know anything about "self".
-    __block AwfulPostsViewController *blockSelf = self;
     id op = [[AwfulHTTPClient client] listPostsInThreadWithID:self.threadID
                                                        onPage:page
                                                       andThen:^(NSError *error, NSArray *posts,
@@ -343,8 +340,12 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
             return;
         }
         if ([posts count] > 0) {
-            self.thread = [[posts lastObject] thread];
+            AwfulPost *lastPost = [posts lastObject];
+            self.thread = [lastPost thread];
             self.currentPage = [[posts lastObject] page];
+            if (self.thread.seenPostsValue < lastPost.threadIndexValue) {
+                self.thread.seenPostsValue = lastPost.threadIndexValue;
+            }
         }
         self.advertisementHTML = advertisementHTML;
         if (page == AwfulPageNextUnread && firstUnreadPost != NSNotFound) {
@@ -368,7 +369,6 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
             CGFloat inset = self.postsView.scrollView.contentInset.top;
             [self.postsView.scrollView setContentOffset:CGPointMake(0, -inset) animated:NO];
         }
-        [blockSelf markPostsAsBeenSeen];
     }];
     self.networkOperation = op;
 }
@@ -388,17 +388,6 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         }
         [self.postsView jumpToElementWithID:postID];
     }
-}
-
-- (void)markPostsAsBeenSeen
-{
-    if (self.didJustMarkAsReadToHere) {
-        self.didJustMarkAsReadToHere = NO;
-        return;
-    }
-    AwfulPost *lastPost = [[self.fetchedResultsController fetchedObjects] lastObject];
-    if (!lastPost) return;
-    [self markPostsAsBeenSeenUpToPost:lastPost];
 }
 
 - (void)markPostsAsBeenSeenUpToPost:(AwfulPost *)post
@@ -850,7 +839,6 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     // continuing to play their sound after the user switches to a different thread.
     if (!self.navigationController) {
         [self.postsView clearAllPosts];
-        [self markPostsAsBeenSeen];
     }
     [super viewDidDisappear:animated];
 }
