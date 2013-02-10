@@ -79,7 +79,7 @@
                 });
                 return;
             }
-            if (!JSON) {
+            if (!JSON && self.createParsedInfoBlock) {
                 NSData *UTF8Data = ConvertFromWindows1252ToUTF8(self.responseData);
                 self.responseParsedInfo = self.createParsedInfoBlock(UTF8Data);
             }
