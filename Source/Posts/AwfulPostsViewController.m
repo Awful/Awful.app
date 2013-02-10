@@ -518,7 +518,12 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                                                     rating:i
                                                    andThen:^(NSError *error)
                  {
-                     NSLog(@"error casting vote on thread %@: %@", self.thread.threadID, error);
+                     if (error) {
+                         [AwfulAlertView showWithTitle:@"Vote Failed" error:error buttonTitle:@"OK"];
+                     } else {
+                         NSString *status = [NSString stringWithFormat:@"Voted %d", i];
+                         [SVProgressHUD showSuccessWithStatus:status];
+                     }
                  }];
             }];
         }
