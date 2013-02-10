@@ -942,7 +942,7 @@ function showLinkedImage(e) {
 }
 
 function toggleSpoiled(e) {
-  $(e.target).toggleClass('spoiled')
+  $(e.target).closest('.bbc-spoiler').toggleClass('spoiled')
 }
 
 function cancelUnspoiledLinks(e) {

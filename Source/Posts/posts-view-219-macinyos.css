@@ -313,8 +313,9 @@ body {
 }
 
 /* Tapping a spoiler tag reveals its contents. */
-#posts > article > section .bbc-spoiler.spoiled {
-    background: transparent;
+#posts > article > section .bbc-spoiler.spoiled,
+#posts > article > section .bbc-spoiler.spoiled li {
+  background: transparent;
 }
 
 /* All block headings, like 'quote' or 'code', ain't inline. */

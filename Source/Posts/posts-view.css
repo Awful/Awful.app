@@ -359,7 +359,8 @@ body.dark {
 }
 
 /* Tapping a spoiler tag reveals its contents. */
-#posts > article > section .bbc-spoiler.spoiled {
+#posts > article > section .bbc-spoiler.spoiled,
+#posts > article > section .bbc-spoiler.spoiled li {
   background: transparent;
 }
 
