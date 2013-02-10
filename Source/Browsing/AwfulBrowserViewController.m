@@ -122,6 +122,12 @@ static UIButton * MakeBorderlessButton(UIImage *image, id target, SEL action)
     self.forwardBrowserButton.enabled = [self.webView canGoForward];
 }
 
+- (void)retheme:(NSNotification *)note
+{
+    if (![self isViewLoaded]) return;
+    self.view.backgroundColor = [AwfulTheme currentTheme].postsViewBackgroundColor;
+}
+
 #pragma mark - UIViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -134,6 +140,8 @@ static UIButton * MakeBorderlessButton(UIImage *image, id target, SEL action)
         ];
     }
     self.forwardBrowserButton.enabled = self.backBrowserButton.enabled = NO;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(retheme:)
+                                                 name:AwfulThemeDidChangeNotification object:nil];
     return self;
 }
 
@@ -186,12 +194,13 @@ static UIButton * MakeBorderlessButton(UIImage *image, id target, SEL action)
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    self.webView.backgroundColor = [AwfulTheme currentTheme].postsViewBackgroundColor;
+    [self retheme:nil];
 }
 
 - (void)dealloc
 {
     self.webView.delegate = nil;
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - UIWebViewDelegate
