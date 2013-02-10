@@ -148,8 +148,7 @@
 
 @property (readonly, nonatomic) BOOL isBookmarked;
 
-// Defaults to -1.
-@property (readonly, nonatomic) NSInteger totalUnreadPosts;
+@property (readonly, nonatomic) NSInteger seenPosts;
 
 @property (readonly, nonatomic) NSInteger totalReplies;
 

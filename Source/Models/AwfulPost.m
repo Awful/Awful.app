@@ -19,16 +19,13 @@
 
 - (BOOL)beenSeen
 {
-    if (!self.thread || self.thread.totalUnreadPostsValue == -1) return NO;
-    if (self.threadIndexValue == 0) return NO;
-    NSInteger lastReadPostIndex = (self.thread.totalRepliesValue -
-                                   self.thread.totalUnreadPostsValue + 1);
-    return self.threadIndexValue <= lastReadPostIndex;
+    if (!self.thread || self.threadIndexValue == 0) return NO;
+    return self.threadIndexValue <= self.thread.seenPostsValue;
 }
 
 + (NSSet *)keyPathsForValuesAffectingBeenSeen
 {
-    return [NSSet setWithArray:@[ @"thread.totalUnreadPosts", @"thread.totalRepliesValue" ]];
+    return [NSSet setWithArray:@[ @"threadIndexValue", @"thread.seenPostsValue" ]];
 }
 
 + (NSArray *)postsCreatedOrUpdatedFromPageInfo:(PageParsedInfo *)pageInfo
@@ -113,6 +110,14 @@
     }
     thread.forum = forum;
     thread.numberOfPages = json[@"page"][1];
+    id seenPosts = json[@"seen_posts"];
+    if (!seenPosts || [seenPosts isEqual:[NSNull null]]) {
+        seenPosts = @0;
+    }
+    thread.seenPosts = seenPosts;
+    if (thread.seenPostsValue > thread.totalRepliesValue + 1) {
+        thread.totalRepliesValue = thread.seenPostsValue - 1;
+    }
     
     NSArray *postIDs = [json[@"posts"] allKeys];
     NSMutableDictionary *existingPosts = [NSMutableDictionary new];

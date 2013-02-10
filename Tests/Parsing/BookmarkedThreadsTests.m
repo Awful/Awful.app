@@ -20,7 +20,7 @@
     STAssertTrue([threads count] == 11, nil);
     ThreadParsedInfo *second = threads[1];
     STAssertEqualObjects(second.title, @"Awful Android app", nil);
-    STAssertTrue(second.totalUnreadPosts == 0, nil);
+    STAssertTrue(second.seenPosts == 7955, nil);
     STAssertEqualObjects(second.lastPostAuthorName, @"spankmeister", nil);
     STAssertFalse(second.isClosed, nil);
     STAssertFalse(second.isSticky, nil);

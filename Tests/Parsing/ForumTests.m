@@ -70,9 +70,9 @@
     
     STAssertEquals([threadInfos[0] starCategory], 3, nil);
     
-    STAssertEquals([threadInfos[0] totalUnreadPosts], 0, nil);
-    STAssertEquals([threadInfos[1] totalUnreadPosts], -1, nil);
-    STAssertEquals([threadInfos[11] totalUnreadPosts], 2272, nil);
+    STAssertEquals([threadInfos[0] seenPosts], 12, nil);
+    STAssertEquals([threadInfos[1] seenPosts], 0, nil);
+    STAssertEquals([threadInfos[11] seenPosts], 33440, nil);
     
     STAssertEquals([threadInfos[38] totalReplies], 343, nil);
     

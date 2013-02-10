@@ -232,7 +232,7 @@
         if (error) {
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
         } else {
-            thread.totalUnreadPostsValue = -1;
+            thread.seenPostsValue = 0;
             [[AwfulDataStack sharedDataStack] save];
         }
     }];
@@ -347,9 +347,10 @@
         cell.unreadCountBadgeView.offBadgeColor = theme.threadListUnreadBadgeBlueOffColor;
     }
     cell.unreadCountBadgeView.highlightedBadgeColor = theme.threadListUnreadBadgeHighlightedColor;
-    cell.unreadCountBadgeView.badgeText = [thread.totalUnreadPosts stringValue];
-    cell.unreadCountBadgeView.on = thread.totalUnreadPostsValue > 0;
-    cell.showsUnread = thread.totalUnreadPostsValue != -1;
+    NSInteger unreadPosts = thread.totalRepliesValue + 1 - thread.seenPostsValue;
+    cell.unreadCountBadgeView.badgeText = [@(unreadPosts) stringValue];
+    cell.unreadCountBadgeView.on = unreadPosts > 0;
+    cell.showsUnread = thread.seenPostsValue > 0;
     cell.backgroundColor = theme.threadCellBackgroundColor;
     cell.selectionStyle = theme.cellSelectionStyle;
     AwfulDisclosureIndicatorView *disclosure = (AwfulDisclosureIndicatorView *)cell.accessoryView;
@@ -398,7 +399,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
     AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    return (thread.totalUnreadPostsValue >= 0);
+    return thread.seenPostsValue > 0;
 }
 
 - (NSString *)tableView:(UITableView *)tableView

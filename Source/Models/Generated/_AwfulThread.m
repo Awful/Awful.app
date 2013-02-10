@@ -12,6 +12,7 @@ const struct AwfulThreadAttributes AwfulThreadAttributes = {
 	.lastPostAuthorName = @"lastPostAuthorName",
 	.lastPostDate = @"lastPostDate",
 	.numberOfPages = @"numberOfPages",
+	.seenPosts = @"seenPosts",
 	.starCategory = @"starCategory",
 	.stickyIndex = @"stickyIndex",
 	.threadID = @"threadID",
@@ -21,7 +22,6 @@ const struct AwfulThreadAttributes AwfulThreadAttributes = {
 	.threadVotes = @"threadVotes",
 	.title = @"title",
 	.totalReplies = @"totalReplies",
-	.totalUnreadPosts = @"totalUnreadPosts",
 };
 
 const struct AwfulThreadRelationships AwfulThreadRelationships = {
@@ -89,6 +89,11 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
+	if ([key isEqualToString:@"seenPostsValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"seenPosts"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
 	if ([key isEqualToString:@"starCategoryValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"starCategory"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
@@ -106,11 +111,6 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 	}
 	if ([key isEqualToString:@"totalRepliesValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"totalReplies"];
-		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
-	}
-	if ([key isEqualToString:@"totalUnreadPostsValue"]) {
-		NSSet *affectingKey = [NSSet setWithObject:@"totalUnreadPosts"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
@@ -291,6 +291,32 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 
 
 
+@dynamic seenPosts;
+
+
+
+- (int32_t)seenPostsValue {
+	NSNumber *result = [self seenPosts];
+	return [result intValue];
+}
+
+- (void)setSeenPostsValue:(int32_t)value_ {
+	[self setSeenPosts:[NSNumber numberWithInt:value_]];
+}
+
+- (int32_t)primitiveSeenPostsValue {
+	NSNumber *result = [self primitiveSeenPosts];
+	return [result intValue];
+}
+
+- (void)setPrimitiveSeenPostsValue:(int32_t)value_ {
+	[self setPrimitiveSeenPosts:[NSNumber numberWithInt:value_]];
+}
+
+
+
+
+
 @dynamic starCategory;
 
 
@@ -424,32 +450,6 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 
 - (void)setPrimitiveTotalRepliesValue:(int32_t)value_ {
 	[self setPrimitiveTotalReplies:[NSNumber numberWithInt:value_]];
-}
-
-
-
-
-
-@dynamic totalUnreadPosts;
-
-
-
-- (int32_t)totalUnreadPostsValue {
-	NSNumber *result = [self totalUnreadPosts];
-	return [result intValue];
-}
-
-- (void)setTotalUnreadPostsValue:(int32_t)value_ {
-	[self setTotalUnreadPosts:[NSNumber numberWithInt:value_]];
-}
-
-- (int32_t)primitiveTotalUnreadPostsValue {
-	NSNumber *result = [self primitiveTotalUnreadPosts];
-	return [result intValue];
-}
-
-- (void)setPrimitiveTotalUnreadPostsValue:(int32_t)value_ {
-	[self setPrimitiveTotalUnreadPosts:[NSNumber numberWithInt:value_]];
 }
 
 

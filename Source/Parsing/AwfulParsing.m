@@ -560,7 +560,7 @@ static NSString * DeEntitify(NSString *withEntities)
 
 @property (nonatomic) NSInteger starCategory;
 
-@property (nonatomic) NSInteger totalUnreadPosts;
+@property (nonatomic) NSInteger seenPosts;
 
 @property (nonatomic) NSInteger totalReplies;
 
@@ -681,21 +681,20 @@ static NSString * DeEntitify(NSString *withEntities)
         self.starCategory = AwfulStarCategoryNone;
     }
     
-    self.totalUnreadPosts = -1;
-    TFHppleElement *unread = [doc searchForSingle:@"//a[" HAS_CLASS(count) "]/b"];
-    if (unread) {
-        self.totalUnreadPosts = [[unread content] intValue];
-    } else {
-        if ([doc searchForSingle:@"//a[" HAS_CLASS(x) "]"]) {
-            self.totalUnreadPosts = 0;
-        }
-    }
-    
     TFHppleElement *total = [doc searchForSingle:@"//td[" HAS_CLASS(replies) "]/a"];
     if (!total) {
         total = [doc searchForSingle:@"//td[" HAS_CLASS(replies) "]"];
     }
     self.totalReplies = [[total content] intValue];
+    
+    TFHppleElement *unread = [doc searchForSingle:@"//a[" HAS_CLASS(count) "]/b"];
+    if (unread) {
+        self.seenPosts = self.totalReplies + 1 - [[unread content] intValue];
+    } else {
+        if ([doc searchForSingle:@"//a[" HAS_CLASS(x) "]"]) {
+            self.seenPosts = self.totalReplies + 1;
+        }
+    }
     
     TFHppleElement *rating = [doc searchForSingle:@"//td[" HAS_CLASS(rating) "]/img"];
     if (rating) {
@@ -727,8 +726,8 @@ static NSString * DeEntitify(NSString *withEntities)
 {
     return @[
         @"threadID", @"title", @"threadIconImageURL", @"threadIconImageURL2", @"isSticky",
-        @"seen", @"isClosed", @"starCategory", @"totalUnreadPosts", @"totalReplies",
-        @"threadVotes", @"threadRating", @"lastPostAuthorName", @"lastPostDate", @"isBookmarked"
+        @"isClosed", @"starCategory", @"totalReplies", @"seenPosts", @"threadVotes",
+        @"threadRating", @"lastPostAuthorName", @"lastPostDate", @"isBookmarked"
     ];
 }
 

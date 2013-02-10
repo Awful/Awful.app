@@ -31,12 +31,12 @@
 
 - (BOOL)beenSeen
 {
-    return self.totalUnreadPostsValue > -1;
+    return self.seenPostsValue > 0;
 }
 
 + (NSSet *)keyPathsForValuesAffectingBeenSeen
 {
-    return [NSSet setWithObject:@"totalUnreadPosts"];
+    return [NSSet setWithObject:@"seenPosts"];
 }
 
 + (NSArray *)threadsCreatedOrUpdatedWithParsedInfo:(NSArray *)threadInfos
@@ -116,7 +116,11 @@
         }
         thread.title = [info[@"title"] gtm_stringByUnescapingFromHTML];
         thread.totalReplies = info[@"replycount"];
-        thread.totalUnreadPosts = info[@"newpostcount"] ?: @(-1);
+        id seenPosts = info[@"seen_posts"];
+        if (!seenPosts || [[NSNull null] isEqual:seenPosts]) {
+            seenPosts = @0;
+        }
+        thread.seenPosts = seenPosts;
         
         NSDictionary *authorJSON = @{
             @"userid": info[@"postuserid"],
@@ -158,6 +162,16 @@ static NSURL * SecondaryIconURLForType(NSString *type)
     NSInteger minimumNumberOfPages = 1 + [totalReplies integerValue] / 40;
     if (minimumNumberOfPages > self.numberOfPagesValue) {
         self.numberOfPagesValue = minimumNumberOfPages;
+    }
+}
+
+- (void)setSeenPosts:(NSNumber *)seenPosts
+{
+    [self willChangeValueForKey:AwfulThreadAttributes.seenPosts];
+    self.primitiveSeenPosts = seenPosts;
+    [self didChangeValueForKey:AwfulThreadAttributes.seenPosts];
+    if (self.seenPostsValue > self.totalRepliesValue + 1) {
+        self.totalRepliesValue = self.seenPostsValue - 1;
     }
 }
 

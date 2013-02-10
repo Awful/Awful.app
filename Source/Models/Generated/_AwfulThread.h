@@ -13,6 +13,7 @@ extern const struct AwfulThreadAttributes {
 	__unsafe_unretained NSString *lastPostAuthorName;
 	__unsafe_unretained NSString *lastPostDate;
 	__unsafe_unretained NSString *numberOfPages;
+	__unsafe_unretained NSString *seenPosts;
 	__unsafe_unretained NSString *starCategory;
 	__unsafe_unretained NSString *stickyIndex;
 	__unsafe_unretained NSString *threadID;
@@ -22,7 +23,6 @@ extern const struct AwfulThreadAttributes {
 	__unsafe_unretained NSString *threadVotes;
 	__unsafe_unretained NSString *title;
 	__unsafe_unretained NSString *totalReplies;
-	__unsafe_unretained NSString *totalUnreadPosts;
 } AwfulThreadAttributes;
 
 extern const struct AwfulThreadRelationships {
@@ -49,9 +49,9 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
-@class NSObject;
-@class NSObject;
 
+@class NSObject;
+@class NSObject;
 
 
 
@@ -174,6 +174,20 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
+@property (nonatomic, strong) NSNumber* seenPosts;
+
+
+
+@property int32_t seenPostsValue;
+- (int32_t)seenPostsValue;
+- (void)setSeenPostsValue:(int32_t)value_;
+
+//- (BOOL)validateSeenPosts:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
 @property (nonatomic, strong) NSNumber* starCategory;
 
 
@@ -275,20 +289,6 @@ extern const struct AwfulThreadFetchedProperties {
 - (void)setTotalRepliesValue:(int32_t)value_;
 
 //- (BOOL)validateTotalReplies:(id*)value_ error:(NSError**)error_;
-
-
-
-
-
-@property (nonatomic, strong) NSNumber* totalUnreadPosts;
-
-
-
-@property int32_t totalUnreadPostsValue;
-- (int32_t)totalUnreadPostsValue;
-- (void)setTotalUnreadPostsValue:(int32_t)value_;
-
-//- (BOOL)validateTotalUnreadPosts:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -396,6 +396,15 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
+- (NSNumber*)primitiveSeenPosts;
+- (void)setPrimitiveSeenPosts:(NSNumber*)value;
+
+- (int32_t)primitiveSeenPostsValue;
+- (void)setPrimitiveSeenPostsValue:(int32_t)value_;
+
+
+
+
 - (NSNumber*)primitiveStarCategory;
 - (void)setPrimitiveStarCategory:(NSNumber*)value;
 
@@ -458,15 +467,6 @@ extern const struct AwfulThreadFetchedProperties {
 
 - (int32_t)primitiveTotalRepliesValue;
 - (void)setPrimitiveTotalRepliesValue:(int32_t)value_;
-
-
-
-
-- (NSNumber*)primitiveTotalUnreadPosts;
-- (void)setPrimitiveTotalUnreadPosts:(NSNumber*)value;
-
-- (int32_t)primitiveTotalUnreadPostsValue;
-- (void)setPrimitiveTotalUnreadPostsValue:(int32_t)value_;
 
 
 

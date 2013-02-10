@@ -402,17 +402,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 - (void)markPostsAsBeenSeenUpToPost:(AwfulPost *)post
 {
     self.markingPostsAsBeenSeen = YES;
-    NSInteger readPosts = post.threadIndexValue - 1;
-    if (self.thread.totalRepliesValue < readPosts) {
-        // This can happen if new replies appear in between times we parse the total number of
-        // replies in the thread.
-        self.thread.totalRepliesValue = readPosts;
-    }
-    NSInteger maximumUnreadPosts = self.thread.totalRepliesValue - readPosts;
-    if (self.thread.totalUnreadPostsValue == -1 ||
-        self.thread.totalUnreadPostsValue > maximumUnreadPosts) {
-        self.thread.totalUnreadPostsValue = maximumUnreadPosts;
-    }
+    post.thread.seenPosts = post.threadIndex;
     [[AwfulDataStack sharedDataStack] save];
     self.markingPostsAsBeenSeen = NO;
 }

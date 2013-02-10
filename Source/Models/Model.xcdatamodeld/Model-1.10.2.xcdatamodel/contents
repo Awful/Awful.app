@@ -40,6 +40,7 @@
         <attribute name="lastPostAuthorName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="lastPostDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="numberOfPages" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="seenPosts" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="starCategory" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="stickyIndex" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="threadIconImageURL" optional="YES" attributeType="Transformable" syncable="YES"/>
@@ -49,7 +50,6 @@
         <attribute name="threadVotes" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="totalReplies" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <attribute name="totalUnreadPosts" optional="YES" attributeType="Integer 32" defaultValueString="-1" syncable="YES"/>
         <relationship name="author" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulUser" inverseName="threads" inverseEntity="AwfulUser" syncable="YES"/>
         <relationship name="forum" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="threads" inverseEntity="AwfulForum" syncable="YES"/>
         <relationship name="posts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulPost" inverseName="thread" inverseEntity="AwfulPost" syncable="YES"/>
