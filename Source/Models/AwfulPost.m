@@ -153,7 +153,11 @@
         } else {
             post.editor = nil;
         }
-        post.innerHTML = info[@"message"];
+        id message = info[@"message"];
+        if ([message respondsToSelector:@selector(stringValue)]) {
+            message = [message stringValue];
+        }
+        post.innerHTML = message;
         post.postDate = [NSDate dateWithTimeIntervalSince1970:[info[@"date"] doubleValue]];
         post.thread = thread;
         post.threadIndex = info[@"post_index"];
