@@ -28,6 +28,11 @@
     return [NSSet setWithArray:@[ @"threadIndexValue", @"thread.seenPostsValue" ]];
 }
 
+- (NSInteger)page
+{
+    return (self.threadIndexValue - 1) / 40 + 1;
+}
+
 + (NSArray *)postsCreatedOrUpdatedFromPageInfo:(PageParsedInfo *)pageInfo
 {
     if ([pageInfo.forumID length] == 0 || [pageInfo.threadID length] == 0) return nil;
@@ -80,7 +85,6 @@
             thread.author = post.author;
         }
     }
-    [posts setValue:@(pageInfo.pageNumber) forKey:AwfulPostAttributes.threadPage];
     if (pageInfo.pageNumber == thread.numberOfPagesValue) {
         thread.lastPostAuthorName = [[posts lastObject] author].username;
         thread.lastPostDate = [[posts lastObject] postDate];
@@ -153,7 +157,6 @@
         post.postDate = [NSDate dateWithTimeIntervalSince1970:[info[@"date"] doubleValue]];
         post.thread = thread;
         post.threadIndex = info[@"post_index"];
-        post.threadPage = json[@"page"][0];
         
         NSString *userID = [info[@"userid"] stringValue];
         post.author = [AwfulUser userCreatedOrUpdatedFromJSON:json[@"userids"][userID]];

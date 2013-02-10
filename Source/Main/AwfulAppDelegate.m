@@ -336,7 +336,7 @@ static id _instance;
         AwfulPost *post = [AwfulPost firstMatchingPredicate:@"postID = %@", postID];
         if (post) {
             [self pushPostsViewForPostWithID:post.postID
-                                      onPage:post.threadPageValue
+                                      onPage:post.page
                               ofThreadWithID:post.thread.threadID];
             return YES;
         }

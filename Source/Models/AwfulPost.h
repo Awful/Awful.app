@@ -13,6 +13,8 @@
 
 @property (readonly, nonatomic) BOOL beenSeen;
 
+@property (readonly, nonatomic) NSInteger page;
+
 + (NSArray *)postsCreatedOrUpdatedFromPageInfo:(PageParsedInfo *)pageInfo;
 
 + (NSArray *)postsCreatedOrUpdatedFromJSON:(NSDictionary *)json;

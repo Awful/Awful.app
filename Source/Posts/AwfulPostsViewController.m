@@ -222,8 +222,10 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         controller.delegate = self;
         self.fetchedResultsController = controller;
     }
-    request.predicate = [NSPredicate predicateWithFormat:@"thread == %@ AND threadPage = %d",
-                         self.thread, self.currentPage];
+    NSInteger lowIndex = (self.currentPage - 1) * 40 + 1;
+    NSInteger highIndex = self.currentPage * 40;
+    request.predicate = [NSPredicate predicateWithFormat:@"thread == %@ AND %d <= threadIndex AND threadIndex <= %d",
+                         self.thread, lowIndex, highIndex];
     NSError *error;
     BOOL ok = [self.fetchedResultsController performFetch:&error];
     if (!ok) {
@@ -342,7 +344,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         }
         if ([posts count] > 0) {
             self.thread = [[posts lastObject] thread];
-            self.currentPage = [[posts lastObject] threadPageValue];
+            self.currentPage = [[posts lastObject] page];
         }
         self.advertisementHTML = advertisementHTML;
         if (page == AwfulPageNextUnread && firstUnreadPost != NSNotFound) {
@@ -1205,7 +1207,7 @@ static char KVOContext;
                 didEditPost:(AwfulPost *)post
 {
     [self dismissViewControllerAnimated:YES completion:^{
-        [self loadPage:post.threadPageValue];
+        [self loadPage:post.page];
         [self jumpToPostWithID:post.postID];
     }];
 }

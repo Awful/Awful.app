@@ -11,7 +11,6 @@ extern const struct AwfulPostAttributes {
 	__unsafe_unretained NSString *postDate;
 	__unsafe_unretained NSString *postID;
 	__unsafe_unretained NSString *threadIndex;
-	__unsafe_unretained NSString *threadPage;
 } AwfulPostAttributes;
 
 extern const struct AwfulPostRelationships {
@@ -26,7 +25,6 @@ extern const struct AwfulPostFetchedProperties {
 @class AwfulUser;
 @class AwfulUser;
 @class AwfulThread;
-
 
 
 
@@ -112,20 +110,6 @@ extern const struct AwfulPostFetchedProperties {
 
 
 
-@property (nonatomic, strong) NSNumber* threadPage;
-
-
-
-@property int32_t threadPageValue;
-- (int32_t)threadPageValue;
-- (void)setThreadPageValue:(int32_t)value_;
-
-//- (BOOL)validateThreadPage:(id*)value_ error:(NSError**)error_;
-
-
-
-
-
 @property (nonatomic, strong) AwfulUser *author;
 
 //- (BOOL)validateAuthor:(id*)value_ error:(NSError**)error_;
@@ -192,15 +176,6 @@ extern const struct AwfulPostFetchedProperties {
 
 - (int32_t)primitiveThreadIndexValue;
 - (void)setPrimitiveThreadIndexValue:(int32_t)value_;
-
-
-
-
-- (NSNumber*)primitiveThreadPage;
-- (void)setPrimitiveThreadPage:(NSNumber*)value;
-
-- (int32_t)primitiveThreadPageValue;
-- (void)setPrimitiveThreadPageValue:(int32_t)value_;
 
 
 
