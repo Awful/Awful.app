@@ -148,11 +148,11 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
     [self.composerTextView resignFirstResponder];
     self.composerTextView.userInteractionEnabled = NO;
     if (AwfulSettings.settings.confirmBeforeReplying) {
-        [self.confirmationAlert show];
+        //[self.confirmationAlert show];
     } else {
         //fixme: disabling this just to be safe during dev
-        //[self prepareToSend];
     }
+    [self prepareToSend];
 }
 
 - (void)prepareToSend

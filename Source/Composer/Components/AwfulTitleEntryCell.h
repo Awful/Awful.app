@@ -8,7 +8,7 @@
 
 #import "AwfulTextEntryCell.h"
 
-@protocol AwfulTitleEntryCellDelegate <NSObject>
+@protocol AwfulTitleEntryCellDelegate <UITextFieldDelegate>
 - (void)chooseThreadTag:(UIImageView*)imageView;
 
 @end

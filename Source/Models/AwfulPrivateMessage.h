@@ -4,4 +4,5 @@
 - (NSString *)firstIconName;
 
 + (NSArray *)privateMessagesCreatedOrUpdatedWithParsedInfo:(NSArray *)messageInfos;
+
 @end

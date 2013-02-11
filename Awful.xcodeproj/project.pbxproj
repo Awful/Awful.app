@@ -606,7 +606,6 @@
 		8C70026C169B32F400FC0B78 /* AwfulPrivateMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C70026B169B32F400FC0B78 /* AwfulPrivateMessage.m */; };
 		8C70026F169B373600FC0B78 /* AwfulHTTPClient+PrivateMessages.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C70026E169B373600FC0B78 /* AwfulHTTPClient+PrivateMessages.m */; };
 		8C700272169B37F800FC0B78 /* AwfulParsing+PrivateMessages.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C700271169B37F800FC0B78 /* AwfulParsing+PrivateMessages.m */; };
-		8C700293169C73A500FC0B78 /* AwfulPMComposerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C700292169C73A500FC0B78 /* AwfulPMComposerViewController.m */; };
 		8C70056216A076FF00FC0B78 /* AwfulEmoticon.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C70055F16A076FF00FC0B78 /* AwfulEmoticon.m */; };
 		8C70056316A076FF00FC0B78 /* AwfulEmoticonGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C70056116A076FF00FC0B78 /* AwfulEmoticonGroup.m */; };
 		8C70056816A0770A00FC0B78 /* _AwfulEmoticon.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C70056516A0770A00FC0B78 /* _AwfulEmoticon.m */; };
@@ -701,6 +700,7 @@
 		8CDF9DE516C44CC700C1F250 /* PSTGridLayoutRow.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CDF9DD716C44CC700C1F250 /* PSTGridLayoutRow.m */; };
 		8CDF9DE616C44CC700C1F250 /* PSTGridLayoutSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CDF9DD916C44CC700C1F250 /* PSTGridLayoutSection.m */; };
 		8CE7FD9B16C857FD00C611A0 /* FVGifAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C700289169C6EFA00FC0B78 /* FVGifAnimation.m */; };
+		8CE7FDA216C86E7800C611A0 /* AwfulPMComposerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CE7FDA116C86E7800C611A0 /* AwfulPMComposerViewController.m */; };
 		8CEB405916877D2A00BFA9A8 /* winpos95-heading-seen.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEB405816877D2A00BFA9A8 /* winpos95-heading-seen.png */; };
 		8CEB405C16877E1600BFA9A8 /* winpos95-heading-left-seen.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEB405B16877E1600BFA9A8 /* winpos95-heading-left-seen.png */; };
 		8CEB405E1687865300BFA9A8 /* hourglass.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8CEB405D1687865300BFA9A8 /* hourglass.gif */; };
@@ -1310,8 +1310,6 @@
 		8C700271169B37F800FC0B78 /* AwfulParsing+PrivateMessages.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AwfulParsing+PrivateMessages.m"; sourceTree = "<group>"; };
 		8C700288169C6EFA00FC0B78 /* FVGifAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FVGifAnimation.h; sourceTree = "<group>"; };
 		8C700289169C6EFA00FC0B78 /* FVGifAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FVGifAnimation.m; sourceTree = "<group>"; };
-		8C700291169C73A500FC0B78 /* AwfulPMComposerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPMComposerViewController.h; sourceTree = "<group>"; };
-		8C700292169C73A500FC0B78 /* AwfulPMComposerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPMComposerViewController.m; sourceTree = "<group>"; };
 		8C70055816A075A200FC0B78 /* Model-1.11.1.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model-1.11.1.xcdatamodel"; sourceTree = "<group>"; };
 		8C70055E16A076FF00FC0B78 /* AwfulEmoticon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulEmoticon.h; sourceTree = "<group>"; };
 		8C70055F16A076FF00FC0B78 /* AwfulEmoticon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulEmoticon.m; sourceTree = "<group>"; };
@@ -1659,7 +1657,10 @@
 		8CDF9DD716C44CC700C1F250 /* PSTGridLayoutRow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PSTGridLayoutRow.m; path = PSTCollectionView/PSTGridLayoutRow.m; sourceTree = "<group>"; };
 		8CDF9DD816C44CC700C1F250 /* PSTGridLayoutSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PSTGridLayoutSection.h; path = PSTCollectionView/PSTGridLayoutSection.h; sourceTree = "<group>"; };
 		8CDF9DD916C44CC700C1F250 /* PSTGridLayoutSection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PSTGridLayoutSection.m; path = PSTCollectionView/PSTGridLayoutSection.m; sourceTree = "<group>"; };
-		8CE7FD9A16C84F0600C611A0 /* Model-1.12.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Model-1.12.xcdatamodel"; sourceTree = "<group>"; };
+		8CE7FD9A16C84F0600C611A0 /* Model-1.12.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model-1.12.xcdatamodel"; sourceTree = "<group>"; };
+		8CE7FDA016C86E7800C611A0 /* AwfulPMComposerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPMComposerViewController.h; sourceTree = "<group>"; };
+		8CE7FDA116C86E7800C611A0 /* AwfulPMComposerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPMComposerViewController.m; sourceTree = "<group>"; };
+		8CE7FDA316C8748900C611A0 /* Model-1.12.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model-1.12.xcdatamodel"; sourceTree = "<group>"; };
 		8CEB405816877D2A00BFA9A8 /* winpos95-heading-seen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading-seen.png"; sourceTree = "<group>"; };
 		8CEB405B16877E1600BFA9A8 /* winpos95-heading-left-seen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading-left-seen.png"; sourceTree = "<group>"; };
 		8CEB405D1687865300BFA9A8 /* hourglass.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = hourglass.gif; sourceTree = "<group>"; };
@@ -2385,6 +2386,8 @@
 				8C36CECB16C59ADB00F48F15 /* AwfulReplyComposerViewController.m */,
 				8C36CECC16C59ADB00F48F15 /* AwfulThreadComposerViewController.h */,
 				8C36CECD16C59ADB00F48F15 /* AwfulThreadComposerViewController.m */,
+				8CE7FDA016C86E7800C611A0 /* AwfulPMComposerViewController.h */,
+				8CE7FDA116C86E7800C611A0 /* AwfulPMComposerViewController.m */,
 				8C36CECE16C59ADB00F48F15 /* Components */,
 			);
 			path = Composer;
@@ -2414,8 +2417,6 @@
 				8C700261169B2FE700FC0B78 /* AwfulPrivateMessageListController.m */,
 				8C700262169B2FE700FC0B78 /* AwfulPrivateMessageViewController.h */,
 				8C700263169B2FE700FC0B78 /* AwfulPrivateMessageViewController.m */,
-				8C700291169C73A500FC0B78 /* AwfulPMComposerViewController.h */,
-				8C700292169C73A500FC0B78 /* AwfulPMComposerViewController.m */,
 				8C804B9616B42110007655D5 /* AwfulNewPMNotifierAgent.h */,
 				8C804B9716B42110007655D5 /* AwfulNewPMNotifierAgent.m */,
 			);
@@ -4119,7 +4120,6 @@
 				8C70026C169B32F400FC0B78 /* AwfulPrivateMessage.m in Sources */,
 				8C70026F169B373600FC0B78 /* AwfulHTTPClient+PrivateMessages.m in Sources */,
 				8C700272169B37F800FC0B78 /* AwfulParsing+PrivateMessages.m in Sources */,
-				8C700293169C73A500FC0B78 /* AwfulPMComposerViewController.m in Sources */,
 				8C804B9816B42110007655D5 /* AwfulNewPMNotifierAgent.m in Sources */,
 				8C1F62E316B6C8E200FAF625 /* CustomBadge.m in Sources */,
 				8C70056216A076FF00FC0B78 /* AwfulEmoticon.m in Sources */,
@@ -4152,6 +4152,7 @@
 				8C36CEE116C59ADB00F48F15 /* AwfulTitleEntryCell.m in Sources */,
 				1C90F8FC16B0C2940015A071 /* GTMNSString+HTML.m in Sources */,
 				1CDD00E116C63C2800E72D62 /* AwfulJSONOrScrapeOperation.m in Sources */,
+				8CE7FDA216C86E7800C611A0 /* AwfulPMComposerViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4481,6 +4482,7 @@
 		1C5B99B8166FFA4F004C5D0E /* Model.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				8CE7FDA316C8748900C611A0 /* Model-1.12.xcdatamodel */,
 				8C700266169B317500FC0B78 /* Model-1.11.xcdatamodel */,
 				8C70055816A075A200FC0B78 /* Model-1.11.1.xcdatamodel */,
 				8CE7FD9A16C84F0600C611A0 /* Model-1.12.xcdatamodel */,
@@ -4490,7 +4492,7 @@
 				1C5B99B9166FFA4F004C5D0E /* Model-1.8.1.xcdatamodel */,
 				1C5B99BA166FFA4F004C5D0E /* Model-1.8.xcdatamodel */,
 			);
-			currentVersion = 8CE7FD9A16C84F0600C611A0 /* Model-1.12.xcdatamodel */;
+			currentVersion = 8CE7FDA316C8748900C611A0 /* Model-1.12.xcdatamodel */;
 			path = Model.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

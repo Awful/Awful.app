@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1811" systemVersion="12C3012" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="2057" systemVersion="12C3012" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="AwfulCategory" representedClassName="AwfulCategory" syncable="YES">
         <attribute name="categoryID" attributeType="String" syncable="YES"/>
         <attribute name="index" attributeType="Integer 32" defaultValueString="-1" syncable="YES"/>
@@ -94,11 +94,11 @@
     </entity>
     <elements>
         <element name="AwfulCategory" positionX="160" positionY="192" width="128" height="105"/>
+        <element name="AwfulEmoticon" positionX="160" positionY="192" width="128" height="165"/>
+        <element name="AwfulEmoticonGroup" positionX="160" positionY="192" width="128" height="75"/>
         <element name="AwfulForum" positionX="205" positionY="285" width="128" height="210"/>
         <element name="AwfulPost" positionX="160" positionY="192" width="128" height="180"/>
         <element name="AwfulThread" positionX="25" positionY="210" width="128" height="375"/>
         <element name="AwfulUser" positionX="160" positionY="192" width="128" height="375"/>
-        <element name="AwfulEmoticon" positionX="160" positionY="192" width="128" height="165"/>
-        <element name="AwfulEmoticonGroup" positionX="160" positionY="192" width="128" height="75"/>
     </elements>
 </model>

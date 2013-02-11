@@ -9,6 +9,8 @@
 #import "AwfulHTTPClient+PrivateMessages.h"
 #import "AwfulParsing+PrivateMessages.h"
 #import "AwfulDataStack.h"
+#import "AwfulModels.h"
+#import "AwfulThreadTags.h"
 
 @implementation AwfulHTTPClient (PrivateMessages)
 
@@ -58,30 +60,39 @@
     return (NSOperation *)op;
 }
 
--(NSOperation *)sendPrivateMessage:(AwfulPrivateMessage*)draft
-                           andThen:(void (^)(NSError *error, AwfulPrivateMessage* message))callback
+-(NSOperation *)sendPrivateMessageTo:(NSString*)username
+                             subject:(NSString*)subject
+                                icon:(NSString*)iconName
+                                text:(NSString*)contentBBCode
+                             andThen:(void (^)(NSError *error, AwfulPrivateMessage *message))callback
 {
-    //NetworkLogInfo(@"%@", THIS_METHOD);
-    //NSString *path = [NSString stringWithFormat:@"newreply.php?s=&action=newreply&threadid=%@", thread.threadID];
-    //NSMutableDictionary *params = [msg dictionaryWithValuesForKeys:nil];
-    NSLog(@"%@",draft.entity.attributesByName.allKeys);
-    return nil;
-    /*
-    NSURLRequest *postRequest = [self requestWithMethod:@"POST" path:@"private.php" parameters:nil];
+    #warning fixme need to pass in id of thread tag
+    NSDictionary *params = @{
+                             @"touser": username,
+                             @"title": subject,
+                             //@"iconid": iconName,
+                             @"message": contentBBCode,
+                             @"action": @"dosend",
+                             @"submit": @"Send Message",
+                             @"client": @"awful iOS test"
+                             };
+    //return nil;
+    
+    
+    NSURLRequest *postRequest = [self requestWithMethod:@"POST" path:@"private.php" parameters:params];
     
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:postRequest
                                                                     success:^(AFHTTPRequestOperation *operation, id response) {
-                                                                        //if (completionBlock) completionBlock();
+                                                                        if (callback) callback(nil,nil);
                                                                     } 
                                                                     failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                                                        //if (errorBlock) errorBlock(error);
+                                                                        if (callback) callback(error,nil);
                                                                     }
                                        ];
        
     [self enqueueHTTPRequestOperation:op];
 
     return (NSOperation *)op;
-     */
 }
 
 @end
