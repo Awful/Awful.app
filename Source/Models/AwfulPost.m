@@ -173,7 +173,9 @@
         existingPosts[post.postID] = post;
     }
     NSArray *posts = [existingPosts allValues];
-    if ([json[@"page"][0] isEqual:json[@"page"][1]] /* on last page of thread */) {
+    NSNumber *currentPage = json[@"page"][0];
+    NSNumber *lastPage = json[@"page"][1];
+    if ([currentPage isEqual:lastPage]) {
         AwfulPost *last;
         for (AwfulPost *post in posts) {
             if (!last || last.threadIndexValue < post.threadIndexValue) {
