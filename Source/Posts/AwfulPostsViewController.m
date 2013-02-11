@@ -83,8 +83,6 @@
 
 @property (nonatomic) UIPopoverController *popover;
 
-@property (nonatomic) BOOL markingPostsAsBeenSeen;
-
 @property (nonatomic) BOOL observingScrollViewSize;
 
 @property (nonatomic) NSMutableArray *cachedUpdatesWhileScrolling;
@@ -415,10 +413,8 @@ static char KVOContext;
 
 - (void)markPostsAsBeenSeenUpToPost:(AwfulPost *)post
 {
-    self.markingPostsAsBeenSeen = YES;
     post.thread.seenPosts = post.threadIndex;
     [[AwfulDataStack sharedDataStack] save];
-    self.markingPostsAsBeenSeen = NO;
 }
 
 - (void)goToParentForum
@@ -1143,7 +1139,6 @@ static char KVOContext;
      forChangeType:(NSFetchedResultsChangeType)type
       newIndexPath:(NSIndexPath *)newIndexPath
 {
-    if (self.markingPostsAsBeenSeen) return;
     if (self.cachedUpdatesWhileScrolling) {
         NSMethodSignature *signature = [self methodSignatureForSelector:_cmd];
         NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
