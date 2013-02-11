@@ -16,6 +16,7 @@
 
 -(NSOperation *)privateMessageListAndThen:(void (^)(NSError *error, NSArray *messages))callback
 {
+    return nil;
     //NetworkLogInfo(@"%@", THIS_METHOD);
     NSString *path = [NSString stringWithFormat:@"private.php"];
     NSMutableURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];

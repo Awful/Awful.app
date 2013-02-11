@@ -14,18 +14,18 @@
 
 @implementation AwfulUser
 
-- (NSURL *)avatarURL
-{
-    if ([self.customTitle length] == 0) return nil;
-    NSData *data = [self.customTitle dataUsingEncoding:NSUTF8StringEncoding];
-    TFHpple *html = [[TFHpple alloc] initWithHTMLData:data];
-    // The avatar is an image that's the first child of its parent, which is either a <div>, an
-    // <a>, or the implied <body>.
-    TFHppleElement *avatar = [html searchForSingle:@"//img[count(preceding-sibling::*) = 0 and (parent::div or parent::body or parent::a)]"];
-    NSString *src = [avatar objectForKey:@"src"];
-    if ([src length] == 0) return nil;
-    return [NSURL URLWithString:src];
-}
+//- (NSURL *)avatarURL
+//{
+//    if ([self.customTitle length] == 0) return nil;
+//    NSData *data = [self.customTitle dataUsingEncoding:NSUTF8StringEncoding];
+//    TFHpple *html = [[TFHpple alloc] initWithHTMLData:data];
+//    // The avatar is an image that's the first child of its parent, which is either a <div>, an
+//    // <a>, or the implied <body>.
+//    TFHppleElement *avatar = [html searchForSingle:@"//img[count(preceding-sibling::*) = 0 and (parent::div or parent::body or parent::a)]"];
+//    NSString *src = [avatar objectForKey:@"src"];
+//    if ([src length] == 0) return nil;
+//    return [NSURL URLWithString:src];
+//}
 
 + (NSSet *)keyPathsForValuesAffectingAvatarURL
 {

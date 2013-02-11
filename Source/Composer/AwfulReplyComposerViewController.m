@@ -42,7 +42,7 @@
 - (void)send
 {
     id op = [[AwfulHTTPClient client] replyToThreadWithID:self.thread.threadID
-                                                     text:self.reply
+                                                     text:self.composerTextView.bbcode
                                                   andThen:^(NSError *error, NSString *postID)
              {
                  if (error) {

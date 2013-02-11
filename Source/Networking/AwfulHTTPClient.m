@@ -31,7 +31,7 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         // Anyone without access to dev.forums is nicely redirected.
-        // TODO when we're done with testing, switch this back (or do something smarter).
+        #warning TODO when we're done with testing, switch this back (or do something smarter).
         NSURL *baseURL = [NSURL URLWithString:@"http://dev.forums.somethingawful.com/"];
         instance = [[AwfulHTTPClient alloc] initWithBaseURL:baseURL];
     });
@@ -230,46 +230,46 @@
 {
     // Seems like only forumdisplay.php and showthread.php have the <select> with a complete list
     // of forums. We'll use the Main "forum" as it's the smallest page with the drop-down list.
-    NSURLRequest *urlRequest = [self requestWithMethod:@"GET"
-                                                  path:@"forumdisplay.php"
-                                            parameters:@{ @"forumid": @"48" }];
-    id op = [self HTTPRequestOperationWithRequest:urlRequest
-                                          success:^(id _, ForumHierarchyParsedInfo *info)
-    {
-        NSArray *forums = [AwfulForum updateCategoriesAndForums:info];
-        if (callback) callback(nil, forums);
-    } failure:^(id _, NSError *error) {
-        if (callback) callback(error, nil);
-    }];
-    [op setCreateParsedInfoBlock:^id(NSData *data) {
-        return [[ForumHierarchyParsedInfo alloc] initWithHTMLData:data];
-    }];
-    [self enqueueHTTPRequestOperation:op];
-    return op;
-    
-    // TODO when JSON output from index.php hits production, or we can otherwise tell whether we're
-    // on dev.forums, use this code instead.
-//    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:@""
-//                                            parameters:@{ @"json": @1 }];
-//    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
-//                                                               success:^(id _, NSDictionary *json)
+//    NSURLRequest *urlRequest = [self requestWithMethod:@"GET"
+//                                                  path:@"forumdisplay.php"
+//                                            parameters:@{ @"forumid": @"48" }];
+//    id op = [self HTTPRequestOperationWithRequest:urlRequest
+//                                          success:^(id _, ForumHierarchyParsedInfo *info)
 //    {
-//        if (![json[@"forums"] isKindOfClass:[NSArray class]]) {
-//            NSDictionary *userInfo = @{
-//                NSLocalizedDescriptionKey: @"The forums list could not be parsed"
-//            };
-//            NSError *error = [NSError errorWithDomain:AwfulErrorDomain
-//                                                 code:AwfulErrorCodes.parseError userInfo:userInfo];
-//            if (callback) callback(error, nil);
-//            return;
-//        }
-//        NSArray *forums = [AwfulForum updateCategoriesAndForumsWithJSON:json[@"forums"]];
+//        NSArray *forums = [AwfulForum updateCategoriesAndForums:info];
 //        if (callback) callback(nil, forums);
 //    } failure:^(id _, NSError *error) {
 //        if (callback) callback(error, nil);
 //    }];
+//    [op setCreateParsedInfoBlock:^id(NSData *data) {
+//        return [[ForumHierarchyParsedInfo alloc] initWithHTMLData:data];
+//    }];
 //    [self enqueueHTTPRequestOperation:op];
 //    return op;
+    
+    // TODO when JSON output from index.php hits production, or we can otherwise tell whether we're
+    // on dev.forums, use this code instead.
+    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:@""
+                                            parameters:@{ @"json": @1 }];
+    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
+                                                               success:^(id _, NSDictionary *json)
+    {
+        if (![json[@"forums"] isKindOfClass:[NSArray class]]) {
+            NSDictionary *userInfo = @{
+                NSLocalizedDescriptionKey: @"The forums list could not be parsed"
+            };
+            NSError *error = [NSError errorWithDomain:AwfulErrorDomain
+                                                 code:AwfulErrorCodes.parseError userInfo:userInfo];
+            if (callback) callback(error, nil);
+            return;
+        }
+        NSArray *forums = [AwfulForum updateCategoriesAndForumsWithJSON:json[@"forums"]];
+        if (callback) callback(nil, forums);
+    } failure:^(id _, NSError *error) {
+        if (callback) callback(error, nil);
+    }];
+    [self enqueueHTTPRequestOperation:op];
+    return op;
 }
 
 - (NSOperation *)replyToThreadWithID:(NSString *)threadID

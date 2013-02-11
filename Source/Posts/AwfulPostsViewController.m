@@ -1003,7 +1003,7 @@ static char KVOContext;
         dict[@"editMessage"] = [NSString stringWithFormat:@"%@ fucked around with this message on %@",
                                 editor, editDate];
     }
-    dict[@"beenSeen"] = post.beenSeen;
+    dict[@"beenSeen"] = @(post.beenSeenValue);
     return dict;
 }
 
