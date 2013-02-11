@@ -10,6 +10,7 @@
 #import "AwfulDataStack.h"
 #import "AwfulForum.h"
 #import "AwfulParsing.h"
+#import "AwfulSettings.h"
 #import "AwfulThread.h"
 #import "AwfulUser.h"
 #import "GTMNSString+HTML.h"
@@ -86,6 +87,9 @@
         }
         if (postInfo.beenSeen && thread.seenPostsValue < post.threadIndexValue) {
             thread.seenPostsValue = post.threadIndexValue;
+        }
+        if (postInfo.editable) {
+            [AwfulSettings settings].username = postInfo.author.username;
         }
     }
     if (pageInfo.pageNumber == thread.numberOfPagesValue) {
