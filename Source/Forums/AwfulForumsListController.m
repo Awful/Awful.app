@@ -221,7 +221,7 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    if ([self.tableView numberOfSections] == 1) [self.tableView reloadData];
+    if ([self.tableView numberOfSections] == 0) [self.tableView reloadData];
 }
 
 #pragma mark - UITableViewDataSource
@@ -230,15 +230,16 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return [super numberOfSectionsInTableView:tableView] + 1;
+    NSInteger lepersColony = [AwfulHTTPClient client].isLoggedIn ? 1 : 0;
+    return [super numberOfSectionsInTableView:tableView] + lepersColony;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (section + 1 < [tableView numberOfSections]) {
-        return [super tableView:tableView numberOfRowsInSection:section];
+    if ([AwfulHTTPClient client].isLoggedIn && section + 1 == [tableView numberOfSections]) {
+        return 1;
     }
-    return 1;
+    return [super tableView:tableView numberOfRowsInSection:section];
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -249,11 +250,11 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
     header.textColor = [AwfulTheme currentTheme].forumListHeaderTextColor;
     header.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     header.backgroundColor = [AwfulTheme currentTheme].forumListHeaderBackgroundColor;
-    if (section + 1 < [tableView numberOfSections]) {
+    if ([AwfulHTTPClient client].isLoggedIn && section + 1 == [tableView numberOfSections]) {
+        header.text = @"Awful";
+    } else {
         AwfulForum *anyForum = [[self.fetchedResultsController.sections[section] objects] lastObject];
         header.text = anyForum.category.name;
-    } else {
-        header.text = @"Awful";
     }
     return header;
 }
@@ -290,7 +291,11 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
     AwfulDisclosureIndicatorView *disclosure = (AwfulDisclosureIndicatorView *)cell.accessoryView;
     disclosure.color = [AwfulTheme currentTheme].disclosureIndicatorColor;
     disclosure.highlightedColor = [AwfulTheme currentTheme].disclosureIndicatorHighlightedColor;
-    if (indexPath.section + 1 < [self.tableView numberOfSections]) {
+    if ([AwfulHTTPClient client].isLoggedIn && indexPath.section + 1 == [self.tableView numberOfSections]) {
+        cell.textLabel.text = @"Leper's Colony";
+        cell.showsFavorite = NO;
+        cell.showsExpanded = AwfulForumCellShowsExpandedLeavesRoom;
+    } else {
         AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
         cell.textLabel.text = forum.name;
         [self setCellImagesForCell:cell];
@@ -302,10 +307,6 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
         } else {
             cell.showsExpanded = AwfulForumCellShowsExpandedLeavesRoom;
         }
-    } else {
-        cell.textLabel.text = @"Leper's Colony";
-        cell.showsFavorite = NO;
-        cell.showsExpanded = AwfulForumCellShowsExpandedLeavesRoom;
     }
 }
 
@@ -313,28 +314,28 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
   willDisplayCell:(UITableViewCell *)cell
 forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section + 1 < [tableView numberOfSections]) {
+    if ([AwfulHTTPClient client].isLoggedIn && indexPath.section + 1 == [tableView numberOfSections]) {
+        cell.backgroundColor = [AwfulTheme currentTheme].forumCellBackgroundColor;
+    } else {
         AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
         if (forum.parentForum) {
             cell.backgroundColor = [AwfulTheme currentTheme].forumCellSubforumBackgroundColor;
         } else {
             cell.backgroundColor = [AwfulTheme currentTheme].forumCellBackgroundColor;
         }
-    } else {
-        cell.backgroundColor = [AwfulTheme currentTheme].forumCellBackgroundColor;
     }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section + 1 < [tableView numberOfSections]) {
+    if ([AwfulHTTPClient client].isLoggedIn && indexPath.section + 1 == [tableView numberOfSections]) {
+        AwfulLepersViewController *lepersColony = [AwfulLepersViewController new];
+        [self.navigationController pushViewController:lepersColony animated:YES];
+    } else {
         AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
         AwfulThreadListController *threadList = [AwfulThreadListController new];
         threadList.forum = forum;
         [self.navigationController pushViewController:threadList animated:YES];
-    } else {
-        AwfulLepersViewController *lepersColony = [AwfulLepersViewController new];
-        [self.navigationController pushViewController:lepersColony animated:YES];
     }
 }
 
