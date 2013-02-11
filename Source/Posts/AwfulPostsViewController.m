@@ -97,6 +97,8 @@
 
 @property (weak, nonatomic) UIView *pageNavBackingView;
 
+@property (nonatomic) BOOL observingThreadSeenPosts;
+
 @end
 
 
@@ -122,6 +124,7 @@
     [self stopObserving];
     self.postsView.scrollView.delegate = nil;
     self.fetchedResultsController.delegate = nil;
+    [self stopObservingThreadSeenPosts];
 }
 
 - (void)currentThemeChanged:(NSNotification *)note
@@ -287,6 +290,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 
 - (void)loadPage:(NSInteger)page
 {
+    [self stopObservingThreadSeenPosts];
     [self.networkOperation cancel];
     self.jumpToPostAfterLoad = nil;
     NSInteger oldPage = self.currentPage;
@@ -371,8 +375,25 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         if (self.thread.seenPostsValue < lastPost.threadIndexValue) {
             self.thread.seenPostsValue = lastPost.threadIndexValue;
         }
+        [self startObservingThreadSeenPosts];
     }];
     self.networkOperation = op;
+}
+
+- (void)startObservingThreadSeenPosts
+{
+    if (self.observingThreadSeenPosts) return;
+    [self.thread addObserver:self forKeyPath:@"seenPosts" options:0 context:&KVOContext];
+}
+
+static char KVOContext;
+
+- (void)stopObservingThreadSeenPosts
+{
+    if (self.observingThreadSeenPosts) {
+        [self.thread removeObserver:self forKeyPath:@"seenPosts" context:&KVOContext];
+    }
+    self.observingThreadSeenPosts = NO;
 }
 
 - (void)jumpToPostWithID:(NSString *)postID
@@ -397,7 +418,6 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     self.markingPostsAsBeenSeen = YES;
     post.thread.seenPosts = post.threadIndex;
     [[AwfulDataStack sharedDataStack] save];
-    [self.postsView reloadData];
     self.markingPostsAsBeenSeen = NO;
 }
 
@@ -891,6 +911,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         [object setContentOffset:contentOffset];
         [object removeObserver:self forKeyPath:keyPath context:context];
         _observingScrollViewSize = NO;
+    } else if ([keyPath isEqualToString:@"seenPosts"]) {
+        [self.postsView reloadData];
     }
 }
 
