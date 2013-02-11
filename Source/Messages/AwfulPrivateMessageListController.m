@@ -107,8 +107,18 @@
 {
     AwfulPMComposerViewController *composer = [AwfulPMComposerViewController new];
     composer.modalPresentationStyle = UIModalPresentationFormSheet;
+    composer.delegate = self;
     
     [self pushOrPresentModalViewController:composer animated:YES];
+}
+
+#pragma mark composer delegate
+- (void)composerViewController:(AwfulComposerViewController *)composerViewController didSend:(id)post {
+    [self dismissModalViewControllerAnimated:YES];
+}
+
+- (void)composerViewControllerDidCancel:(AwfulComposerViewController *)composerViewController {
+    [self dismissModalViewControllerAnimated:YES];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView

@@ -11,4 +11,6 @@
 
 @interface AwfulPMComposerViewController : AwfulComposerViewController <AwfulTitleEntryCellDelegate,UITextFieldDelegate>
 
+@property (nonatomic,readonly) NSString* sendTo;
+@property (nonatomic,readonly) NSString* subject;
 @end

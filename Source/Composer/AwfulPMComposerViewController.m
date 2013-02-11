@@ -9,6 +9,7 @@
 #import "AwfulPMComposerViewController.h"
 #import "AwfulTitleEntryCell.h"
 #import "AwfulTextEntryCell.h"
+#import "AwfulHTTPClient+PrivateMessages.h"
 
 @interface AwfulPMComposerViewController ()
 
@@ -29,6 +30,48 @@
     //_forum = forum;
     self.navigationItem.title = @"Reply";
     return self;
+}
+
+- (NSString*)sendTo {
+    AwfulTextEntryCell* cell = (AwfulTextEntryCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    return cell.textField.text;
+}
+
+- (NSString*)subject {
+    AwfulTextEntryCell* cell = (AwfulTextEntryCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+    return cell.textField.text;
+}
+
+- (void)send
+{
+    id op = [[AwfulHTTPClient client] sendPrivateMessageTo:self.sendTo
+                                                   subject:self.subject
+                                                      icon:nil
+                                                      text:self.composerTextView.bbcode
+                                                   andThen:^(NSError *error, AwfulPrivateMessage *message)
+             {
+                 if (error) {
+                     [SVProgressHUD dismiss];
+                     [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+                     return;
+                 }
+                 [SVProgressHUD showSuccessWithStatus:@"Message Sent"];
+                 [self.delegate composerViewController:self didSend:nil];
+             }];
+    self.networkOperation = op;
+}
+
+
+-(AwfulAlertView*) confirmationAlert
+{
+    AwfulAlertView *alert = [AwfulAlertView new];
+    alert.title = @"Send message";
+    alert.message = @"Nobody cares about your stupid opinions, you should "
+    "delete this. Send anyway?";
+    [alert addCancelButtonWithTitle:@"Nope"
+                              block:^{ [self.composerTextView becomeFirstResponder]; }];
+    [alert addButtonWithTitle:self.sendButton.title block:^{ }];
+    return alert;
 }
 
 #pragma mark TableView
@@ -73,6 +116,8 @@
         textEntryCell.textField.delegate = self;
     }
     else if (indexPath.row == 1) {
+        textEntryCell.textField.placeholder = @"Subject";
+        textEntryCell.textField.text = @"test.....";
         ((AwfulTitleEntryCell*)cell).delegate = self;
     }
 }

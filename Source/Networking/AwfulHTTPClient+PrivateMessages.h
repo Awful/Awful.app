@@ -13,8 +13,11 @@
 
 -(NSOperation *)privateMessageListAndThen:(void (^)(NSError *error, NSArray *messages))callback;
 
--(NSOperation *)sendPrivateMessage:(AwfulPrivateMessage*)draft
-                           andThen:(void (^)(NSError *error, AwfulPrivateMessage *message))callback;
+-(NSOperation *)sendPrivateMessageTo:(NSString*)username
+                             subject:(NSString*)subject
+                                icon:(NSString*)iconName
+                                text:(NSString*)contentBBCode
+                             andThen:(void (^)(NSError *error, AwfulPrivateMessage *message))callback;
 
 -(NSOperation *)loadPrivateMessage:(AwfulPrivateMessage*)message
                            andThen:(void (^)(NSError *error, AwfulPrivateMessage* message))callback;
