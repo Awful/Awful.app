@@ -399,6 +399,7 @@ RP-nonleague.png
 RP-seriea.png
 RP-spl.png
 RP-uefa_tag.png
+sadev-bugs.png
 sam-clothing.png
 samartd-interestcheck.png
 samartd-organs.png
