@@ -236,6 +236,23 @@ enum {
 - (NSOperation *)listBansOnPage:(NSInteger)page
                         andThen:(void (^)(NSError *error, NSArray *bans))callback;
 
+// Posts a new thread.
+//
+// forumID - The ID of the thread to reply to.
+// title    - subject
+// icon     - the id of the thread tag
+// text     - The bbcode-formatted content.
+// callback - A block to call after sending, which takes as parameters:
+//              error  - An error on failure, or nil on success.
+//              threadID - The ID of the new thread, or nil if it's the last post in the thread.
+//
+// Returns the enqueued network operation.
+- (NSOperation *)postNewThreadInForumWithID:(NSString *)forumID
+                                      title:(NSString*)title
+                                       icon:(NSString*)threadTagID
+                                       text:(NSString *)text
+                                    andThen:(void (^)(NSError *error, NSString *threadID))callback;
+
 @end
 
 

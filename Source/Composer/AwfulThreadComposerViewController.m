@@ -18,6 +18,25 @@
     return self;
 }
 
+- (void)send
+{
+    id op = [[AwfulHTTPClient client] postNewThreadInForumWithID:self.forum.forumID
+                                                           title:nil
+                                                            icon:nil
+                                                            text:self.composerTextView.bbcode
+                                                         andThen:^(NSError *error, NSString *threadID) 
+             {
+                 if (error) {
+                     [SVProgressHUD dismiss];
+                     [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+                     return;
+                 }
+                 [SVProgressHUD showSuccessWithStatus:@"Replied"];
+                 [self.delegate composerViewController:self didSend:nil];
+             }];
+    self.networkOperation = op;
+}
+
 #pragma mark TableView
 //Subclasses may need to add more cells, ie Thread title, thread icon, etc
 
