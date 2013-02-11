@@ -546,7 +546,6 @@
 		8C299D7216877AE9001B9D96 /* winpos95-heading-left.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C299D6F16877AE9001B9D96 /* winpos95-heading-left.png */; };
 		8C299D7316877AE9001B9D96 /* winpos95-heading-right.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C299D7016877AE9001B9D96 /* winpos95-heading-right.png */; };
 		8C299D7416877AE9001B9D96 /* winpos95-heading.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C299D7116877AE9001B9D96 /* winpos95-heading.png */; };
-		8C2A08AE16AAD45C00CDBC23 /* AwfulReplyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C2A08AD16AAD45C00CDBC23 /* AwfulReplyViewController.m */; };
 		8C33C21A168173E1005782F9 /* happymac.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C33C219168173E1005782F9 /* happymac.png */; };
 		8C36CED916C59ADB00F48F15 /* AwfulComposerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C36CEC716C59ADB00F48F15 /* AwfulComposerViewController.m */; };
 		8C36CEDA16C59ADB00F48F15 /* AwfulEditPostComposerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C36CEC916C59ADB00F48F15 /* AwfulEditPostComposerViewController.m */; };
@@ -557,7 +556,6 @@
 		8C36CEDF16C59ADB00F48F15 /* AwfulEmoticonChooserCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C36CED416C59ADB00F48F15 /* AwfulEmoticonChooserCellView.m */; };
 		8C36CEE016C59ADB00F48F15 /* AwfulEmoticonChooserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C36CED616C59ADB00F48F15 /* AwfulEmoticonChooserViewController.m */; };
 		8C36CEE116C59ADB00F48F15 /* AwfulTitleEntryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C36CED816C59ADB00F48F15 /* AwfulTitleEntryCell.m */; };
-		8C36CEE216C59CFA00F48F15 /* FVGifAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C700289169C6EFA00FC0B78 /* FVGifAnimation.m */; };
 		8C36CEE316C59EE800F48F15 /* AwfulLepersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CCA272C16B8C1EF00A4952A /* AwfulLepersViewController.m */; };
 		8C36CEE416C59EE800F48F15 /* AwfulLeperCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C09963B16C0AECA00A62D5E /* AwfulLeperCell.m */; };
 		8C3CCD4016533B1E00C28342 /* fyad-yourrights.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C3CCD3A16533B1D00C28342 /* fyad-yourrights.png */; };
@@ -606,15 +604,13 @@
 		8C70026C169B32F400FC0B78 /* AwfulPrivateMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C70026B169B32F400FC0B78 /* AwfulPrivateMessage.m */; };
 		8C70026F169B373600FC0B78 /* AwfulHTTPClient+PrivateMessages.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C70026E169B373600FC0B78 /* AwfulHTTPClient+PrivateMessages.m */; };
 		8C700272169B37F800FC0B78 /* AwfulParsing+PrivateMessages.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C700271169B37F800FC0B78 /* AwfulParsing+PrivateMessages.m */; };
-		8C70028A169C6EFA00FC0B78 /* FVGifAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C700289169C6EFA00FC0B78 /* FVGifAnimation.m */; };
-		8C700293169C73A500FC0B78 /* AwfulPMComposerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C700292169C73A500FC0B78 /* AwfulPMComposerViewController.m */; };
-		8C804B9816B42110007655D5 /* AwfulNewPMNotifierAgent.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C804B9716B42110007655D5 /* AwfulNewPMNotifierAgent.m */; };
 		8C70056216A076FF00FC0B78 /* AwfulEmoticon.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C70055F16A076FF00FC0B78 /* AwfulEmoticon.m */; };
 		8C70056316A076FF00FC0B78 /* AwfulEmoticonGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C70056116A076FF00FC0B78 /* AwfulEmoticonGroup.m */; };
 		8C70056816A0770A00FC0B78 /* _AwfulEmoticon.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C70056516A0770A00FC0B78 /* _AwfulEmoticon.m */; };
 		8C70056916A0770A00FC0B78 /* _AwfulEmoticonGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C70056716A0770A00FC0B78 /* _AwfulEmoticonGroup.m */; };
 		8C70057116A079A700FC0B78 /* AwfulHTTPClient+Emoticons.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C70057016A079A700FC0B78 /* AwfulHTTPClient+Emoticons.m */; };
 		8C70057416A07A9000FC0B78 /* AwfulParsing+Emoticons.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C70057316A07A9000FC0B78 /* AwfulParsing+Emoticons.m */; };
+		8C804B9816B42110007655D5 /* AwfulNewPMNotifierAgent.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C804B9716B42110007655D5 /* AwfulNewPMNotifierAgent.m */; };
 		8C87428E1655FD990018AC6C /* byob.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C87428D1655FD990018AC6C /* byob.png */; };
 		8C8742911655FDAE0018AC6C /* trp-laliga.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8742901655FDAE0018AC6C /* trp-laliga.png */; };
 		8C8742931655FDC10018AC6C /* mods-expert.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8742921655FDC10018AC6C /* mods-expert.png */; };
@@ -701,6 +697,8 @@
 		8CDF9DE416C44CC700C1F250 /* PSTGridLayoutItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CDF9DD516C44CC700C1F250 /* PSTGridLayoutItem.m */; };
 		8CDF9DE516C44CC700C1F250 /* PSTGridLayoutRow.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CDF9DD716C44CC700C1F250 /* PSTGridLayoutRow.m */; };
 		8CDF9DE616C44CC700C1F250 /* PSTGridLayoutSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CDF9DD916C44CC700C1F250 /* PSTGridLayoutSection.m */; };
+		8CE7FD9F16C86E0600C611A0 /* FVGifAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C700289169C6EFA00FC0B78 /* FVGifAnimation.m */; };
+		8CE7FDA216C86E7800C611A0 /* AwfulPMComposerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CE7FDA116C86E7800C611A0 /* AwfulPMComposerViewController.m */; };
 		8CEB405916877D2A00BFA9A8 /* winpos95-heading-seen.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEB405816877D2A00BFA9A8 /* winpos95-heading-seen.png */; };
 		8CEB405C16877E1600BFA9A8 /* winpos95-heading-left-seen.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEB405B16877E1600BFA9A8 /* winpos95-heading-left-seen.png */; };
 		8CEB405E1687865300BFA9A8 /* hourglass.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8CEB405D1687865300BFA9A8 /* hourglass.gif */; };
@@ -1307,10 +1305,6 @@
 		8C700271169B37F800FC0B78 /* AwfulParsing+PrivateMessages.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AwfulParsing+PrivateMessages.m"; sourceTree = "<group>"; };
 		8C700288169C6EFA00FC0B78 /* FVGifAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FVGifAnimation.h; sourceTree = "<group>"; };
 		8C700289169C6EFA00FC0B78 /* FVGifAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FVGifAnimation.m; sourceTree = "<group>"; };
-		8C700291169C73A500FC0B78 /* AwfulPMComposerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPMComposerViewController.h; sourceTree = "<group>"; };
-		8C700292169C73A500FC0B78 /* AwfulPMComposerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPMComposerViewController.m; sourceTree = "<group>"; };
-		8C804B9616B42110007655D5 /* AwfulNewPMNotifierAgent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewPMNotifierAgent.h; sourceTree = "<group>"; };
-		8C804B9716B42110007655D5 /* AwfulNewPMNotifierAgent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNewPMNotifierAgent.m; sourceTree = "<group>"; };
 		8C70055816A075A200FC0B78 /* Model-1.11.1.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model-1.11.1.xcdatamodel"; sourceTree = "<group>"; };
 		8C70055E16A076FF00FC0B78 /* AwfulEmoticon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulEmoticon.h; sourceTree = "<group>"; };
 		8C70055F16A076FF00FC0B78 /* AwfulEmoticon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulEmoticon.m; sourceTree = "<group>"; };
@@ -1324,6 +1318,8 @@
 		8C70057016A079A700FC0B78 /* AwfulHTTPClient+Emoticons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AwfulHTTPClient+Emoticons.m"; sourceTree = "<group>"; };
 		8C70057216A07A9000FC0B78 /* AwfulParsing+Emoticons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AwfulParsing+Emoticons.h"; sourceTree = "<group>"; };
 		8C70057316A07A9000FC0B78 /* AwfulParsing+Emoticons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AwfulParsing+Emoticons.m"; sourceTree = "<group>"; };
+		8C804B9616B42110007655D5 /* AwfulNewPMNotifierAgent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewPMNotifierAgent.h; sourceTree = "<group>"; };
+		8C804B9716B42110007655D5 /* AwfulNewPMNotifierAgent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNewPMNotifierAgent.m; sourceTree = "<group>"; };
 		8C87428D1655FD990018AC6C /* byob.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = byob.png; sourceTree = "<group>"; };
 		8C8742901655FDAE0018AC6C /* trp-laliga.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trp-laliga.png"; sourceTree = "<group>"; };
 		8C8742921655FDC10018AC6C /* mods-expert.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mods-expert.png"; sourceTree = "<group>"; };
@@ -1656,6 +1652,9 @@
 		8CDF9DD716C44CC700C1F250 /* PSTGridLayoutRow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PSTGridLayoutRow.m; path = PSTCollectionView/PSTGridLayoutRow.m; sourceTree = "<group>"; };
 		8CDF9DD816C44CC700C1F250 /* PSTGridLayoutSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PSTGridLayoutSection.h; path = PSTCollectionView/PSTGridLayoutSection.h; sourceTree = "<group>"; };
 		8CDF9DD916C44CC700C1F250 /* PSTGridLayoutSection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PSTGridLayoutSection.m; path = PSTCollectionView/PSTGridLayoutSection.m; sourceTree = "<group>"; };
+		8CE7FDA016C86E7800C611A0 /* AwfulPMComposerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPMComposerViewController.h; sourceTree = "<group>"; };
+		8CE7FDA116C86E7800C611A0 /* AwfulPMComposerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPMComposerViewController.m; sourceTree = "<group>"; };
+		8CE7FDA316C8748900C611A0 /* Model-1.12.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Model-1.12.xcdatamodel"; sourceTree = "<group>"; };
 		8CEB405816877D2A00BFA9A8 /* winpos95-heading-seen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading-seen.png"; sourceTree = "<group>"; };
 		8CEB405B16877E1600BFA9A8 /* winpos95-heading-left-seen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading-left-seen.png"; sourceTree = "<group>"; };
 		8CEB405D1687865300BFA9A8 /* hourglass.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = hourglass.gif; sourceTree = "<group>"; };
@@ -2360,21 +2359,6 @@
 			path = CustomBadge;
 			sourceTree = "<group>";
 		};
-		8C700259169B2F7700FC0B78 /* Messages */ = {
-			isa = PBXGroup;
-			children = (
-				8C700260169B2FE700FC0B78 /* AwfulPrivateMessageListController.h */,
-				8C700261169B2FE700FC0B78 /* AwfulPrivateMessageListController.m */,
-				8C700262169B2FE700FC0B78 /* AwfulPrivateMessageViewController.h */,
-				8C700263169B2FE700FC0B78 /* AwfulPrivateMessageViewController.m */,
-				8C700291169C73A500FC0B78 /* AwfulPMComposerViewController.h */,
-				8C700292169C73A500FC0B78 /* AwfulPMComposerViewController.m */,
-				8C804B9616B42110007655D5 /* AwfulNewPMNotifierAgent.h */,
-				8C804B9716B42110007655D5 /* AwfulNewPMNotifierAgent.m */,
-			);
-			path = Messages;
-			sourceTree = "<group>";
-        };
 		8C36CEC516C59ADB00F48F15 /* Composer */ = {
 			isa = PBXGroup;
 			children = (
@@ -2386,6 +2370,8 @@
 				8C36CECB16C59ADB00F48F15 /* AwfulReplyComposerViewController.m */,
 				8C36CECC16C59ADB00F48F15 /* AwfulThreadComposerViewController.h */,
 				8C36CECD16C59ADB00F48F15 /* AwfulThreadComposerViewController.m */,
+				8CE7FDA016C86E7800C611A0 /* AwfulPMComposerViewController.h */,
+				8CE7FDA116C86E7800C611A0 /* AwfulPMComposerViewController.m */,
 				8C36CECE16C59ADB00F48F15 /* Components */,
 			);
 			path = Composer;
@@ -2406,6 +2392,19 @@
 				8C36CED816C59ADB00F48F15 /* AwfulTitleEntryCell.m */,
 			);
 			path = Components;
+			sourceTree = "<group>";
+		};
+		8C700259169B2F7700FC0B78 /* Messages */ = {
+			isa = PBXGroup;
+			children = (
+				8C700260169B2FE700FC0B78 /* AwfulPrivateMessageListController.h */,
+				8C700261169B2FE700FC0B78 /* AwfulPrivateMessageListController.m */,
+				8C700262169B2FE700FC0B78 /* AwfulPrivateMessageViewController.h */,
+				8C700263169B2FE700FC0B78 /* AwfulPrivateMessageViewController.m */,
+				8C804B9616B42110007655D5 /* AwfulNewPMNotifierAgent.h */,
+				8C804B9716B42110007655D5 /* AwfulNewPMNotifierAgent.m */,
+			);
+			path = Messages;
 			sourceTree = "<group>";
 		};
 		8C700287169C6EFA00FC0B78 /* AnimatedGif */ = {
@@ -4020,9 +4019,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8CE7FD9F16C86E0600C611A0 /* FVGifAnimation.m in Sources */,
 				8C36CEE316C59EE800F48F15 /* AwfulLepersViewController.m in Sources */,
 				8C36CEE416C59EE800F48F15 /* AwfulLeperCell.m in Sources */,
-				8C36CEE216C59CFA00F48F15 /* FVGifAnimation.m in Sources */,
 				1190F75C13BE4EA900B9D271 /* AwfulLoginController.m in Sources */,
 				1190F75E13BE4EA900B9D271 /* AwfulAppDelegate.m in Sources */,
 				1190F7EE13BE4ECB00B9D271 /* TFHpple.m in Sources */,
@@ -4105,10 +4104,6 @@
 				8C70026C169B32F400FC0B78 /* AwfulPrivateMessage.m in Sources */,
 				8C70026F169B373600FC0B78 /* AwfulHTTPClient+PrivateMessages.m in Sources */,
 				8C700272169B37F800FC0B78 /* AwfulParsing+PrivateMessages.m in Sources */,
-				8C700293169C73A500FC0B78 /* AwfulPMComposerViewController.m in Sources */,
-				8C70028A169C6EFA00FC0B78 /* FVGifAnimation.m in Sources */,
-				1C7487F116A88BAD0068B8A3 /* AwfulKeyboardBar.m in Sources */,
-				8C2A08AE16AAD45C00CDBC23 /* AwfulReplyViewController.m in Sources */,
 				8C804B9816B42110007655D5 /* AwfulNewPMNotifierAgent.m in Sources */,
 				8C1F62E316B6C8E200FAF625 /* CustomBadge.m in Sources */,
 				8C70056216A076FF00FC0B78 /* AwfulEmoticon.m in Sources */,
@@ -4139,6 +4134,7 @@
 				8C36CEDF16C59ADB00F48F15 /* AwfulEmoticonChooserCellView.m in Sources */,
 				8C36CEE016C59ADB00F48F15 /* AwfulEmoticonChooserViewController.m in Sources */,
 				8C36CEE116C59ADB00F48F15 /* AwfulTitleEntryCell.m in Sources */,
+				8CE7FDA216C86E7800C611A0 /* AwfulPMComposerViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4468,6 +4464,7 @@
 		1C5B99B8166FFA4F004C5D0E /* Model.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				8CE7FDA316C8748900C611A0 /* Model-1.12.xcdatamodel */,
 				8C700266169B317500FC0B78 /* Model-1.11.xcdatamodel */,
 				8C70055816A075A200FC0B78 /* Model-1.11.1.xcdatamodel */,
 				1C5B99B9166FFA4F004C5D0E /* Model-1.8.1.xcdatamodel */,
@@ -4475,7 +4472,7 @@
 				1C5B99BB166FFA4F004C5D0E /* Model-1.9.1.xcdatamodel */,
 				1C6D3EE4168D798200B91A65 /* Model-1.10.xcdatamodel */,
 			);
-			currentVersion = 8C700266169B317500FC0B78 /* Model-1.11.xcdatamodel */;
+			currentVersion = 8CE7FDA316C8748900C611A0 /* Model-1.12.xcdatamodel */;
 			path = Model.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

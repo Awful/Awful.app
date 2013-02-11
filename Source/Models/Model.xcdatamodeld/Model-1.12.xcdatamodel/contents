@@ -14,11 +14,11 @@
         <attribute name="urlString" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="usageCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="width" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <relationship name="group" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulEmoticonGroup" inverseName="emoticons" inverseEntity="AwfulEmoticonGroup" syncable="YES"/>
+        <relationship name="group" optional="YES" minCount="1" maxCount="1" deletionRule="No Action" destinationEntity="AwfulEmoticonGroup" syncable="YES"/>
     </entity>
     <entity name="AwfulEmoticonGroup" representedClassName="AwfulEmoticonGroup" syncable="YES">
         <attribute name="desc" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="emoticons" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulEmoticon" inverseName="group" inverseEntity="AwfulEmoticon" syncable="YES"/>
+        <relationship name="emoticons" optional="YES" toMany="YES" deletionRule="No Action" destinationEntity="AwfulEmoticon" syncable="YES"/>
     </entity>
     <entity name="AwfulForum" representedClassName="AwfulForum" syncable="YES">
         <attribute name="expanded" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
@@ -43,6 +43,17 @@
         <attribute name="threadPage" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="author" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulUser" inverseName="posts" inverseEntity="AwfulUser" syncable="YES"/>
         <relationship name="thread" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="posts" inverseEntity="AwfulThread" syncable="YES"/>
+    </entity>
+    <entity name="AwfulPrivateMessage" representedClassName="AwfulPrivateMessage" syncable="YES">
+        <attribute name="innerHTML" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="messageIconImageURL" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="messageID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="replied" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="seen" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="sent" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="subject" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="to" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="from" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulUser" inverseName="privateMessages" inverseEntity="AwfulUser" syncable="YES"/>
     </entity>
     <entity name="AwfulThread" representedClassName="AwfulThread" syncable="YES">
         <attribute name="hideFromList" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
@@ -90,15 +101,17 @@
         <attribute name="username" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="yahooName" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="posts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulPost" inverseName="author" inverseEntity="AwfulPost" syncable="YES"/>
+        <relationship name="privateMessages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulPrivateMessage" inverseName="from" inverseEntity="AwfulPrivateMessage" syncable="YES"/>
         <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="author" inverseEntity="AwfulThread" syncable="YES"/>
     </entity>
     <elements>
         <element name="AwfulCategory" positionX="160" positionY="192" width="128" height="105"/>
-        <element name="AwfulEmoticon" positionX="160" positionY="192" width="128" height="165"/>
-        <element name="AwfulEmoticonGroup" positionX="160" positionY="192" width="128" height="75"/>
         <element name="AwfulForum" positionX="205" positionY="285" width="128" height="210"/>
         <element name="AwfulPost" positionX="160" positionY="192" width="128" height="180"/>
+        <element name="AwfulPrivateMessage" positionX="160" positionY="192" width="128" height="180"/>
         <element name="AwfulThread" positionX="25" positionY="210" width="128" height="375"/>
-        <element name="AwfulUser" positionX="160" positionY="192" width="128" height="375"/>
+        <element name="AwfulUser" positionX="160" positionY="192" width="128" height="390"/>
+        <element name="AwfulEmoticon" positionX="160" positionY="192" width="128" height="165"/>
+        <element name="AwfulEmoticonGroup" positionX="160" positionY="192" width="128" height="75"/>
     </elements>
 </model>

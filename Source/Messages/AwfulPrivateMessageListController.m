@@ -19,6 +19,8 @@
 #import "AwfulTheme.h"
 #import "AwfulSplitViewController.h"
 #import "AwfulNewPMNotifierAgent.h"
+#import "AwfulPMComposerViewController.h"
+#import "UIViewController+NavigationEnclosure.h"
 
 //#import "AwfulNewPostComposeController.h"
 //#import "AwfulNewPMComposeController.h"
@@ -99,7 +101,14 @@
                              privateMessageListAndThen:^(NSError *error, NSArray *messages) {
                                  self.refreshing = NO;
     }];
-     
+}
+
+- (void)didTapCompose:(id)sender
+{
+    AwfulPMComposerViewController *composer = [AwfulPMComposerViewController new];
+    composer.modalPresentationStyle = UIModalPresentationFormSheet;
+    
+    [self pushOrPresentModalViewController:composer animated:YES];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
