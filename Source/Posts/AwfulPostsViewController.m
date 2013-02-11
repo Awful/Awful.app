@@ -341,13 +341,10 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
             self.pullUpToRefreshControl.refreshing = NO;
             return;
         }
-        if ([posts count] > 0) {
-            AwfulPost *lastPost = [posts lastObject];
+        AwfulPost *lastPost = [posts lastObject];
+        if (lastPost) {
             self.thread = [lastPost thread];
-            self.currentPage = [[posts lastObject] page];
-            if (self.thread.seenPostsValue < lastPost.threadIndexValue) {
-                self.thread.seenPostsValue = lastPost.threadIndexValue;
-            }
+            self.currentPage = [lastPost page];
         }
         self.advertisementHTML = advertisementHTML;
         if (page == AwfulPageNextUnread && firstUnreadPost != NSNotFound) {
@@ -370,6 +367,9 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         } else if (wasLoading) {
             CGFloat inset = self.postsView.scrollView.contentInset.top;
             [self.postsView.scrollView setContentOffset:CGPointMake(0, -inset) animated:NO];
+        }
+        if (self.thread.seenPostsValue < lastPost.threadIndexValue) {
+            self.thread.seenPostsValue = lastPost.threadIndexValue;
         }
     }];
     self.networkOperation = op;
