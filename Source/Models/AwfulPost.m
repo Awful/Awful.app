@@ -84,6 +84,9 @@
         if (postInfo.author.originalPoster) {
             thread.author = post.author;
         }
+        if (postInfo.beenSeen && thread.seenPostsValue < post.threadIndexValue) {
+            thread.seenPostsValue = post.threadIndexValue;
+        }
     }
     if (pageInfo.pageNumber == thread.numberOfPagesValue) {
         thread.lastPostAuthorName = [[posts lastObject] author].username;
@@ -115,12 +118,11 @@
     thread.forum = forum;
     thread.numberOfPages = json[@"page"][1];
     id seenPosts = json[@"seen_posts"];
-    if (!seenPosts || [seenPosts isEqual:[NSNull null]]) {
+    if ([seenPosts isEqual:[NSNull null]]) {
         seenPosts = @0;
     }
-    thread.seenPosts = seenPosts;
-    if (thread.seenPostsValue > thread.totalRepliesValue + 1) {
-        thread.totalRepliesValue = thread.seenPostsValue - 1;
+    if (seenPosts) {
+        thread.seenPosts = seenPosts;
     }
     
     NSArray *postIDs = [json[@"posts"] allKeys];
