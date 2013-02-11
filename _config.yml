@@ -1,0 +1,18 @@
+exclude:
+  - Awful.xcodeproj
+  - CNAME
+  - README.md
+  - Rakefile
+  - Source
+  - Tests
+  - Vendor
+  # Lame way to exclude Resources except Resources/Thread Tags
+  - Awful-Info.plist
+  - Browsers.plist
+  - Custom CSS README.txt
+  - Default
+  - Forum Abbreviations.plist
+  - Icons
+  - Images
+  - Settings.plist
+  - licenses.html
