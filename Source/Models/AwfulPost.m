@@ -172,7 +172,11 @@
         
         existingPosts[post.postID] = post;
     }
-    NSArray *posts = [existingPosts allValues];
+    NSArray *posts = [[existingPosts allValues]
+                      sortedArrayUsingComparator:^NSComparisonResult(AwfulPost *a, AwfulPost *b)
+    {
+        return [a.threadIndex compare:b.threadIndex];
+    }];
     NSNumber *currentPage = json[@"page"][0];
     NSNumber *lastPage = json[@"page"][1];
     if ([currentPage isEqual:lastPage]) {
