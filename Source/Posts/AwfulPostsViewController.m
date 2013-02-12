@@ -51,6 +51,8 @@
                                         AwfulReplyViewControllerDelegate,
                                         UIScrollViewDelegate>
 
+@property (nonatomic) AwfulThreadPage currentPage;
+
 @property (nonatomic) NSFetchedResultsController *fetchedResultsController;
 
 @property (nonatomic) NSInteger hiddenPosts;

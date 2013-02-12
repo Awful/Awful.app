@@ -14,7 +14,7 @@
 
 @property (strong, nonatomic) AwfulThread *thread;
 
-@property (assign, nonatomic) AwfulThreadPage currentPage;
+@property (readonly, nonatomic) AwfulThreadPage currentPage;
 
 - (void)loadPage:(AwfulThreadPage)page;
 
