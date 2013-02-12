@@ -16,7 +16,7 @@
 
 -(NSOperation *)privateMessageListAndThen:(void (^)(NSError *error, NSArray *messages))callback
 {
-    return nil;
+    //return nil;
     //NetworkLogInfo(@"%@", THIS_METHOD);
     NSString *path = [NSString stringWithFormat:@"private.php"];
     NSMutableURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
@@ -24,14 +24,15 @@
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
                                                                success:^(id _, id data)
                                   {
-                                      dispatch_async(self.parseQueue, ^{
+                                        #warning fixme there is no self.parsequeue
+                                      //dispatch_async(self.parseQueue, ^{
                                           NSArray *infos = [PrivateMessageParsedInfo messagesWithHTMLData:data];
                                           dispatch_async(dispatch_get_main_queue(), ^{
                                               NSArray *pms = [AwfulPrivateMessage privateMessagesCreatedOrUpdatedWithParsedInfo:infos];
                                               [[AwfulDataStack sharedDataStack] save];
                                               if (callback) callback(nil, pms);
                                           });
-                                      });
+                                      //});
                                   } failure:^(id _, NSError *error) {
                                       if (callback) callback(error, nil);
                                   }];

@@ -85,8 +85,6 @@
 
 @property (nonatomic) UIPopoverController *popover;
 
-@property (nonatomic) BOOL markingPostsAsBeenSeen;
-
 @property (nonatomic) BOOL observingScrollViewSize;
 
 @property (nonatomic) NSMutableArray *cachedUpdatesWhileScrolling;
@@ -98,6 +96,8 @@
 @property (copy, nonatomic) NSString *jumpToPostAfterLoad;
 
 @property (weak, nonatomic) UIView *pageNavBackingView;
+
+@property (nonatomic) BOOL observingThreadSeenPosts;
 
 @end
 
@@ -124,6 +124,7 @@
     [self stopObserving];
     self.postsView.scrollView.delegate = nil;
     self.fetchedResultsController.delegate = nil;
+    [self stopObservingThreadSeenPosts];
 }
 
 - (void)currentThemeChanged:(NSNotification *)note
@@ -155,7 +156,9 @@
 - (void)setThread:(AwfulThread *)thread
 {
     if ([_thread isEqual:thread]) return;
+    [self willChangeValueForKey:@"thread"];
     _thread = thread;
+    [self didChangeValueForKey:@"thread"];
     _threadID = [thread.threadID copy];
     self.title = [thread.title stringByCollapsingWhitespace];
     [self updatePageBar];
@@ -289,6 +292,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 
 - (void)loadPage:(NSInteger)page
 {
+    [self stopObservingThreadSeenPosts];
     [self.networkOperation cancel];
     self.jumpToPostAfterLoad = nil;
     NSInteger oldPage = self.currentPage;
@@ -316,66 +320,85 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                                                       andThen:^(NSError *error, NSArray *posts,
                                                                 NSUInteger firstUnreadPost,
                                                                 NSString *advertisementHTML)
-             {
-                 // Since we load cached pages where possible, things can get out of order if we change
-                 // pages quickly. If the callback comes in after we've moved away from the requested page,
-                 // just don't bother going any further. We have the data for later.
-                 if (page != self.currentPage) return;
-                 BOOL wasLoading = !!self.postsView.loadingMessage;
-                 if (error) {
-                     if (wasLoading) {
-                         self.postsView.loadingMessage = nil;
-                         if (![[self.pageBar.jumpToPageButton titleForState:UIControlStateNormal] length]) {
-                             if (self.thread.numberOfPagesValue > 0) {
-                                 NSString *title = [NSString stringWithFormat:@"Page ? of %@",
-                                                    self.thread.numberOfPages];
-                                 [self.pageBar.jumpToPageButton setTitle:title
-                                                                forState:UIControlStateNormal];
-                             } else {
-                                 [self.pageBar.jumpToPageButton setTitle:@"Page ? of ?"
-                                                                forState:UIControlStateNormal];
-                             }
-                         }
-                     }
-                     // Poor man's offline mode.
-                     if (!wasLoading && !refreshingSamePage
-                         && [error.domain isEqualToString:NSURLErrorDomain]) {
-                         return;
-                     }
-                     [AwfulAlertView showWithTitle:@"Could Not Load Page" error:error buttonTitle:@"OK"];
-                     self.pullUpToRefreshControl.refreshing = NO;
-                     return;
-                 }
-                 if ([posts count] > 0) {
-                     self.thread = [[posts lastObject] thread];
-                     self.currentPage = [[posts lastObject] threadPageValue];
-                 }
-                 self.advertisementHTML = advertisementHTML;
-                 if (page == AwfulPageNextUnread && firstUnreadPost != NSNotFound) {
-                     self.hiddenPosts = firstUnreadPost;
-                 }
-                 if (!self.fetchedResultsController) [self updateFetchedResultsController];
-                 if (wasLoading) {
-                     [self.postsView reloadData];
-                 } else {
-                     [self.postsView reloadAdvertisementHTML];
-                 }
-                 [self updateLoadingMessage];
-                 [self updatePageBar];
-                 [self updateTopBar];
-                 [self updateEndMessage];
-                 [self updatePullForNextPageLabel];
-                 if (self.jumpToPostAfterLoad) {
-                     [self jumpToPostWithID:self.jumpToPostAfterLoad];
-                     self.jumpToPostAfterLoad = nil;
-                 } else if (wasLoading) {
-                     CGFloat inset = self.postsView.scrollView.contentInset.top;
-                     [self.postsView.scrollView setContentOffset:CGPointMake(0, -inset) animated:NO];
-                 }
-                 //[blockSelf markPostsAsBeenSeen];
-             }];
-
+    {
+        // Since we load cached pages where possible, things can get out of order if we change
+        // pages quickly. If the callback comes in after we've moved away from the requested page,
+        // just don't bother going any further. We have the data for later.
+        if (page != self.currentPage) return;
+        BOOL wasLoading = !!self.postsView.loadingMessage;
+        if (error) {
+            if (wasLoading) {
+                self.postsView.loadingMessage = nil;
+                if (![[self.pageBar.jumpToPageButton titleForState:UIControlStateNormal] length]) {
+                    if (self.thread.numberOfPagesValue > 0) {
+                        NSString *title = [NSString stringWithFormat:@"Page ? of %@",
+                                           self.thread.numberOfPages];
+                        [self.pageBar.jumpToPageButton setTitle:title
+                                                       forState:UIControlStateNormal];
+                    } else {
+                        [self.pageBar.jumpToPageButton setTitle:@"Page ? of ?"
+                                                       forState:UIControlStateNormal];
+                    }
+                }
+            }
+            // Poor man's offline mode.
+            if (!wasLoading && !refreshingSamePage
+                && [error.domain isEqualToString:NSURLErrorDomain]) {
+                return;
+            }
+            [AwfulAlertView showWithTitle:@"Could Not Load Page" error:error buttonTitle:@"OK"];
+            self.pullUpToRefreshControl.refreshing = NO;
+            return;
+        }
+        AwfulPost *lastPost = [posts lastObject];
+        if (lastPost) {
+            self.thread = [lastPost thread];
+            self.currentPage = [lastPost page];
+        }
+        self.advertisementHTML = advertisementHTML;
+        if (page == AwfulPageNextUnread && firstUnreadPost != NSNotFound) {
+            self.hiddenPosts = firstUnreadPost;
+        }
+        if (!self.fetchedResultsController) [self updateFetchedResultsController];
+        if (wasLoading) {
+            [self.postsView reloadData];
+        } else {
+            [self.postsView reloadAdvertisementHTML];
+        }
+        [self updateLoadingMessage];
+        [self updatePageBar];
+        [self updateTopBar];
+        [self updateEndMessage];
+        [self updatePullForNextPageLabel];
+        if (self.jumpToPostAfterLoad) {
+            [self jumpToPostWithID:self.jumpToPostAfterLoad];
+            self.jumpToPostAfterLoad = nil;
+        } else if (wasLoading) {
+            CGFloat inset = self.postsView.scrollView.contentInset.top;
+            [self.postsView.scrollView setContentOffset:CGPointMake(0, -inset) animated:NO];
+        }
+        if (self.thread.seenPostsValue < lastPost.threadIndexValue) {
+            self.thread.seenPostsValue = lastPost.threadIndexValue;
+        }
+        [self startObservingThreadSeenPosts];
+    }];
     self.networkOperation = op;
+}
+
+- (void)startObservingThreadSeenPosts
+{
+    if (self.observingThreadSeenPosts) return;
+    [self addObserver:self forKeyPath:@"thread.seenPosts" options:0 context:&KVOContext];
+}
+
+static char KVOContext;
+
+- (void)stopObservingThreadSeenPosts
+{
+    if (self.observingThreadSeenPosts) {
+        [self removeObserver:self forKeyPath:@"thread.seenPosts" context:&KVOContext];
+    }
+    self.observingThreadSeenPosts = NO;
 }
 
 - (void)jumpToPostWithID:(NSString *)postID
@@ -397,11 +420,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 
 - (void)markPostsAsBeenSeenUpToPost:(AwfulPost *)post
 {
-    self.markingPostsAsBeenSeen = YES;
     post.thread.seenPosts = post.threadIndex;
     [[AwfulDataStack sharedDataStack] save];
-    [self.postsView reloadData];
-    self.markingPostsAsBeenSeen = NO;
 }
 
 - (void)goToParentForum
@@ -916,6 +936,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         [object setContentOffset:contentOffset];
         [object removeObserver:self forKeyPath:keyPath context:context];
         _observingScrollViewSize = NO;
+    } else if ([keyPath isEqualToString:@"thread.seenPosts"]) {
+        [self.postsView reloadData];
     }
 }
 
@@ -1161,7 +1183,6 @@ static char KVOContext;
      forChangeType:(NSFetchedResultsChangeType)type
       newIndexPath:(NSIndexPath *)newIndexPath
 {
-    if (self.markingPostsAsBeenSeen) return;
     if (self.cachedUpdatesWhileScrolling) {
         NSMethodSignature *signature = [self methodSignatureForSelector:_cmd];
         NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];

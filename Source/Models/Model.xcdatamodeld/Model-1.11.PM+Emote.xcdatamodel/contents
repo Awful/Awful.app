@@ -14,11 +14,11 @@
         <attribute name="urlString" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="usageCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="width" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <relationship name="group" optional="YES" minCount="1" maxCount="1" deletionRule="No Action" destinationEntity="AwfulEmoticonGroup" inverseName="emoticons" inverseEntity="AwfulEmoticonGroup" syncable="YES"/>
+        <relationship name="group" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulEmoticonGroup" inverseName="emoticons" inverseEntity="AwfulEmoticonGroup" syncable="YES"/>
     </entity>
     <entity name="AwfulEmoticonGroup" representedClassName="AwfulEmoticonGroup" syncable="YES">
         <attribute name="desc" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="emoticons" optional="YES" toMany="YES" deletionRule="No Action" destinationEntity="AwfulEmoticon" inverseName="group" inverseEntity="AwfulEmoticon" syncable="YES"/>
+        <relationship name="emoticons" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulEmoticon" inverseName="group" inverseEntity="AwfulEmoticon" syncable="YES"/>
     </entity>
     <entity name="AwfulForum" representedClassName="AwfulForum" syncable="YES">
         <attribute name="expanded" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>

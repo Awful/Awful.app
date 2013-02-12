@@ -7,7 +7,8 @@
 //
 
 #import "AwfulFetchedTableViewController.h"
+#import "AwfulPMComposerViewController.h"
 
-@interface AwfulPrivateMessageListController : AwfulFetchedTableViewController
+@interface AwfulPrivateMessageListController : AwfulFetchedTableViewController <AwfulComposerViewControllerDelegate>
 
 @end

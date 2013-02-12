@@ -10,6 +10,7 @@
 #import "AwfulDataStack.h"
 #import "AwfulForum.h"
 #import "AwfulParsing.h"
+#import "AwfulSettings.h"
 #import "AwfulThread.h"
 #import "AwfulUser.h"
 #import "GTMNSString+HTML.h"
@@ -84,6 +85,12 @@
         if (postInfo.author.originalPoster) {
             thread.author = post.author;
         }
+        if (postInfo.beenSeen && thread.seenPostsValue < post.threadIndexValue) {
+            thread.seenPostsValue = post.threadIndexValue;
+        }
+        if (postInfo.editable) {
+            [AwfulSettings settings].username = postInfo.author.username;
+        }
     }
     if (pageInfo.pageNumber == thread.numberOfPagesValue) {
         thread.lastPostAuthorName = [[posts lastObject] author].username;
@@ -115,12 +122,11 @@
     thread.forum = forum;
     thread.numberOfPages = json[@"page"][1];
     id seenPosts = json[@"seen_posts"];
-    if (!seenPosts || [seenPosts isEqual:[NSNull null]]) {
+    if ([seenPosts isEqual:[NSNull null]]) {
         seenPosts = @0;
     }
-    thread.seenPosts = seenPosts;
-    if (thread.seenPostsValue > thread.totalRepliesValue + 1) {
-        thread.totalRepliesValue = thread.seenPostsValue - 1;
+    if (seenPosts) {
+        thread.seenPosts = seenPosts;
     }
     
     NSArray *postIDs = [json[@"posts"] allKeys];
@@ -170,8 +176,14 @@
         
         existingPosts[post.postID] = post;
     }
-    NSArray *posts = [existingPosts allValues];
-    if ([json[@"page"][0] isEqual:json[@"page"][1]] /* on last page of thread */) {
+    NSArray *posts = [[existingPosts allValues]
+                      sortedArrayUsingComparator:^NSComparisonResult(AwfulPost *a, AwfulPost *b)
+    {
+        return [a.threadIndex compare:b.threadIndex];
+    }];
+    NSNumber *currentPage = json[@"page"][0];
+    NSNumber *lastPage = json[@"page"][1];
+    if ([currentPage isEqual:lastPage]) {
         AwfulPost *last;
         for (AwfulPost *post in posts) {
             if (!last || last.threadIndexValue < post.threadIndexValue) {
