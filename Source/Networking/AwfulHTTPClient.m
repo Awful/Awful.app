@@ -502,9 +502,9 @@ static NSString * Entitify(NSString *noEntities)
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
                                                                success:^(id _, id __)
     {
-           if (callback) callback(nil);
+        if (callback) callback(nil);
     } failure:^(id _, NSError *error) {
-           if (callback) callback(error);
+        if (callback) callback(error);
     }];
     [self enqueueHTTPRequestOperation:op];
     return op;
