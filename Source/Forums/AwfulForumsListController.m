@@ -221,7 +221,7 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    if ([self.tableView numberOfSections] == 0) [self.tableView reloadData];
+    if ([self.tableView numberOfSections] <= 1) [self.tableView reloadData];
 }
 
 #pragma mark - UITableViewDataSource
