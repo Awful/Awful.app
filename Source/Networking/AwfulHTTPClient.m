@@ -15,7 +15,6 @@
 #import "NSManagedObject+Awful.h"
 #import "NSURL+QueryDictionary.h"
 
-
 @interface AwfulHTTPClient ()
 
 @property (getter=isReachable, nonatomic) BOOL reachable;
