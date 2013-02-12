@@ -1,14 +1,14 @@
 //
-//  AwfulPageBar.m
+//  AwfulPageBottomBar.m
 //  Awful
 //
 //  Created by Nolan Waite on 2012-10-18.
 //  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulPageBar.h"
+#import "AwfulPageBottomBar.h"
 
-@implementation AwfulPageBar
+@implementation AwfulPageBottomBar
 
 - (id)initWithFrame:(CGRect)frame
 {

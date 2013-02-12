@@ -1,5 +1,5 @@
 //
-//  AwfulPageBar.h
+//  AwfulPageBottomBar.h
 //  Awful
 //
 //  Created by Nolan Waite on 2012-10-18.
@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AwfulPageBar : UIView
+@interface AwfulPageBottomBar : UIView
 
 @property (readonly, weak, nonatomic) UISegmentedControl *backForwardControl;
 

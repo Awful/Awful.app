@@ -15,7 +15,8 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulImagePreviewViewController.h"
 #import "AwfulModels.h"
-#import "AwfulPageBar.h"
+#import "AwfulPageBottomBar.h"
+#import "AwfulPageTopBar.h"
 #import "AwfulPostsView.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulPullToRefreshControl.h"
@@ -34,17 +35,6 @@
 #import "UINavigationItem+TwoLineTitle.h"
 #import "UIViewController+NavigationEnclosure.h"
 
-@interface TopBarView : UIView
-
-@property (readonly, weak, nonatomic) UIButton *goToForumButton;
-
-@property (readonly, weak, nonatomic) UIButton *loadReadPostsButton;
-
-@property (readonly, weak, nonatomic) UIButton *scrollToBottomButton;
-
-@end
-
-
 @interface AwfulPostsViewController () <AwfulPostsViewDelegate, UIPopoverControllerDelegate,
                                         AwfulSpecificPageControllerDelegate,
                                         NSFetchedResultsControllerDelegate,
@@ -59,7 +49,7 @@
 
 @property (weak, nonatomic) NSOperation *networkOperation;
 
-@property (weak, nonatomic) AwfulPageBar *pageBar;
+@property (weak, nonatomic) AwfulPageBottomBar *pageBar;
 
 @property (nonatomic) AwfulSpecificPageController *specificPageController;
 
@@ -67,7 +57,7 @@
 
 @property (weak, nonatomic) AwfulPullToRefreshControl *pullUpToRefreshControl;
 
-@property (weak, nonatomic) TopBarView *topBar;
+@property (weak, nonatomic) AwfulPageTopBar *topBar;
 
 @property (copy, nonatomic) NSString *advertisementHTML;
 
@@ -316,14 +306,14 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         if (error) {
             if (wasLoading) {
                 self.postsView.loadingMessage = nil;
-                if (![[self.pageBar.jumpToPageButton titleForState:UIControlStateNormal] length]) {
+                if (![[self.bottomBar.jumpToPageButton titleForState:UIControlStateNormal] length]) {
                     if (self.thread.numberOfPagesValue > 0) {
                         NSString *title = [NSString stringWithFormat:@"Page ? of %@",
                                            self.thread.numberOfPages];
-                        [self.pageBar.jumpToPageButton setTitle:title
+                        [self.bottomBar.jumpToPageButton setTitle:title
                                                        forState:UIControlStateNormal];
                     } else {
-                        [self.pageBar.jumpToPageButton setTitle:@"Page ? of ?"
+                        [self.bottomBar.jumpToPageButton setTitle:@"Page ? of ?"
                                                        forState:UIControlStateNormal];
                     }
                 }
@@ -436,21 +426,21 @@ static char KVOContext;
 
 - (void)updatePageBar
 {
-    [self.pageBar.backForwardControl setEnabled:self.currentPage > 1
+    [self.bottomBar.backForwardControl setEnabled:self.currentPage > 1
                               forSegmentAtIndex:0];
     if (self.currentPage > 0 && self.currentPage < self.thread.numberOfPagesValue) {
-        [self.pageBar.backForwardControl setEnabled:YES forSegmentAtIndex:1];
+        [self.bottomBar.backForwardControl setEnabled:YES forSegmentAtIndex:1];
     } else {
-        [self.pageBar.backForwardControl setEnabled:NO forSegmentAtIndex:1];
+        [self.bottomBar.backForwardControl setEnabled:NO forSegmentAtIndex:1];
     }
     if (self.currentPage > 0 && self.thread.numberOfPagesValue > 0) {
-        [self.pageBar.jumpToPageButton setTitle:[NSString stringWithFormat:@"Page %d of %@",
+        [self.bottomBar.jumpToPageButton setTitle:[NSString stringWithFormat:@"Page %d of %@",
                                                  self.currentPage, self.thread.numberOfPages]
                                        forState:UIControlStateNormal];
     } else {
-        [self.pageBar.jumpToPageButton setTitle:@"" forState:UIControlStateNormal];
+        [self.bottomBar.jumpToPageButton setTitle:@"" forState:UIControlStateNormal];
     }
-    [self.pageBar.actionsComposeControl setEnabled:!self.thread.isClosedValue forSegmentAtIndex:1];
+    [self.bottomBar.actionsComposeControl setEnabled:!self.thread.isClosedValue forSegmentAtIndex:1];
 }
 
 - (void)updateTopBar
@@ -495,9 +485,9 @@ static char KVOContext;
 
 - (void)tappedActions
 {
-    CGRect rect = self.pageBar.actionsComposeControl.frame;
+    CGRect rect = self.bottomBar.actionsComposeControl.frame;
     rect.size.width /= 2;
-    rect = [self.view.superview convertRect:rect fromView:self.pageBar];
+    rect = [self.view.superview convertRect:rect fromView:self.bottomBar];
     [self showThreadActionsFromRect:rect inView:self.view.superview];
 }
 
@@ -575,8 +565,8 @@ static char KVOContext;
                         initWithContentViewController:self.specificPageController];
         self.popover.delegate = self;
         self.popover.popoverContentSize = self.specificPageController.view.bounds.size;
-        [self.popover presentPopoverFromRect:self.pageBar.jumpToPageButton.frame
-                                      inView:self.pageBar
+        [self.popover presentPopoverFromRect:self.bottomBar.jumpToPageButton.frame
+                                      inView:self.bottomBar
                     permittedArrowDirections:UIPopoverArrowDirectionAny
                                     animated:YES];
     } else {
@@ -589,7 +579,7 @@ static char KVOContext;
         [tap addTarget:self action:@selector(didTapPageNavBackground:)];
         [halfBlack addGestureRecognizer:tap];
         [self.view addSubview:halfBlack];
-        [self.view bringSubviewToFront:self.pageBar];
+        [self.view bringSubviewToFront:self.bottomBar];
         self.pageNavBackingView = halfBlack;
         [self addChildViewController:self.specificPageController];
         [self.specificPageController showInView:self.pageNavBackingView animated:YES];
@@ -797,7 +787,7 @@ static char KVOContext;
     CGRect postsFrame, pageBarFrame;
     CGRectDivide(self.view.bounds, &pageBarFrame, &postsFrame, 38, CGRectMaxYEdge);
     
-    AwfulPageBar *pageBar = [[AwfulPageBar alloc] initWithFrame:pageBarFrame];
+    AwfulPageBottomBar *pageBar = [[AwfulPageBottomBar alloc] initWithFrame:pageBarFrame];
     [pageBar.backForwardControl addTarget:self
                                    action:@selector(tappedPagesSegment:)
                          forControlEvents:UIControlEventValueChanged];
@@ -808,7 +798,7 @@ static char KVOContext;
                                       action:@selector(tappedActionsSegment:)
                             forControlEvents:UIControlEventValueChanged];
     [self.view addSubview:pageBar];
-    self.pageBar = pageBar;
+    self.bottomBar = pageBar;
     [self updatePageBar];
     
     AwfulPostsView *postsView = [[AwfulPostsView alloc] initWithFrame:postsFrame];
@@ -819,7 +809,7 @@ static char KVOContext;
     [self.view addSubview:postsView];
     [self configurePostsViewSettings];
     
-    TopBarView *topBar = [TopBarView new];
+    AwfulPageTopBar *topBar = [AwfulPageTopBar new];
     topBar.frame = CGRectMake(0, -40, self.view.frame.size.width, 40);
     topBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     [topBar.goToForumButton addTarget:self
@@ -848,7 +838,7 @@ static char KVOContext;
     self.pullUpToRefreshControl = refresh;
     [self updatePullUpTriggerOffset];
     
-    [self.view bringSubviewToFront:self.pageBar];
+    [self.view bringSubviewToFront:self.bottomBar];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -932,8 +922,8 @@ static char KVOContext;
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
-    [self.popover presentPopoverFromRect:self.pageBar.jumpToPageButton.frame
-                                  inView:self.pageBar
+    [self.popover presentPopoverFromRect:self.bottomBar.jumpToPageButton.frame
+                                  inView:self.bottomBar
                 permittedArrowDirections:UIPopoverArrowDirectionAny
                                 animated:NO];
 }
@@ -1318,66 +1308,6 @@ static char KVOContext;
     [self.postsView beginUpdates];
     [invocations makeObjectsPerformSelector:@selector(invokeWithTarget:) withObject:self];
     [self.postsView endUpdates];
-}
-
-@end
-
-
-@interface TopBarView ()
-
-@property (weak, nonatomic) UIButton *goToForumButton;
-
-@property (weak, nonatomic) UIButton *loadReadPostsButton;
-
-@property (weak, nonatomic) UIButton *scrollToBottomButton;
-
-@end
-
-
-@implementation TopBarView
-
-- (id)initWithFrame:(CGRect)frame
-{
-    if (!(self = [super initWithFrame:frame])) return nil;
-    UIButton *goToForumButton = [self makeButton];
-    [goToForumButton setTitle:@"Parent Forum" forState:UIControlStateNormal];
-    goToForumButton.accessibilityLabel = @"Parent forum";
-    goToForumButton.accessibilityHint = @"Opens this thread's forum";
-    _goToForumButton = goToForumButton;
-    
-    UIButton *loadReadPostsButton = [self makeButton];
-    [loadReadPostsButton setTitle:@"Previous Posts" forState:UIControlStateNormal];
-    loadReadPostsButton.accessibilityLabel = @"Previous posts";
-    _loadReadPostsButton = loadReadPostsButton;
-    
-    UIButton *scrollToBottomButton = [self makeButton];
-    [scrollToBottomButton setTitle:@"Scroll To End" forState:UIControlStateNormal];
-    scrollToBottomButton.accessibilityLabel = @"Scroll to end";
-    _scrollToBottomButton = scrollToBottomButton;
-    
-    return self;
-}
-
-- (UIButton *)makeButton
-{
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    button.titleLabel.font = [UIFont boldSystemFontOfSize:12];
-    [self addSubview:button];
-    return button;
-}
-
-- (void)layoutSubviews
-{
-    CGSize buttonSize = CGSizeMake(floorf((CGRectGetWidth(self.bounds) - 2) / 3),
-                                   CGRectGetHeight(self.bounds) - 1);
-    CGFloat extraMiddleWidth = CGRectGetWidth(self.bounds) - buttonSize.width * 3 - 2;
-    self.goToForumButton.frame = (CGRect){ .size = buttonSize };
-    self.loadReadPostsButton.frame = CGRectMake(CGRectGetMaxX(self.goToForumButton.frame) + 1, 0,
-                                                buttonSize.width + extraMiddleWidth, buttonSize.height);
-    self.scrollToBottomButton.frame = (CGRect){
-        .origin.x = CGRectGetMaxX(self.loadReadPostsButton.frame) + 1,
-        .size = buttonSize
-    };
 }
 
 @end
