@@ -7,7 +7,6 @@
 //
 
 #import "AwfulSpecificPageController.h"
-#import "AwfulHTTPClient.h"
 
 @interface SpecificTopBarView : UIView
 
@@ -82,7 +81,7 @@
     if (sender.selectedSegmentIndex == 0) {
         [self.delegate specificPageController:self didSelectPage:1];
     } else if (sender.selectedSegmentIndex == 1) {
-        [self.delegate specificPageController:self didSelectPage:AwfulPageLast];
+        [self.delegate specificPageController:self didSelectPage:AwfulThreadPageLast];
     }
     sender.selectedSegmentIndex = UISegmentedControlNoSegment;
 }

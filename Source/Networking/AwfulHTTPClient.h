@@ -7,6 +7,7 @@
 //
 
 #import "AFNetworking.h"
+#import "AwfulThreadPage.h"
 @class AwfulUser;
 
 @interface AwfulHTTPClient : AFHTTPClient
@@ -61,16 +62,11 @@
 //
 // Returns the enqueued network operation.
 - (NSOperation *)listPostsInThreadWithID:(NSString *)threadID
-                                  onPage:(NSInteger)page
+                                  onPage:(AwfulThreadPage)page
                                  andThen:(void (^)(NSError *error,
                                                    NSArray *posts,
                                                    NSUInteger firstUnreadPost,
                                                    NSString *advertisementHTML))callback;
-
-enum {
-    AwfulPageNextUnread = -1,
-    AwfulPageLast = -2
-};
 
 // Get the logged-in user's name and ID.
 //
@@ -209,7 +205,7 @@ enum {
 //
 // Returns the enqueued network operation.
 - (NSOperation *)locatePostWithID:(NSString *)postID
-    andThen:(void (^)(NSError *error, NSString *threadID, NSInteger page))callback;
+    andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))callback;
 
 // Find a user's profile.
 //

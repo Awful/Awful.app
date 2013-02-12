@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AwfulThreadPage.h"
 @protocol AwfulSpecificPageControllerDelegate;
 
 @interface AwfulSpecificPageController : UIViewController
@@ -27,14 +28,14 @@
 
 - (NSInteger)numberOfPagesInSpecificPageController:(AwfulSpecificPageController *)controller;
 
-- (NSInteger)currentPageForSpecificPageController:(AwfulSpecificPageController *)controller;
+- (AwfulThreadPage)currentPageForSpecificPageController:(AwfulSpecificPageController *)controller;
 
 // Sent when a page was chosen.
 //
 // controller - The specific page controller that accepted a choice.
 // page       - The chosen page number. Can be AwfulLast.
 - (void)specificPageController:(AwfulSpecificPageController *)controller
-                 didSelectPage:(NSInteger)page;
+                 didSelectPage:(AwfulThreadPage)page;
 
 // Sent when a page was not chosen and a touch occured in the containing view.
 - (void)specificPageControllerDidCancel:(AwfulSpecificPageController *)controller;

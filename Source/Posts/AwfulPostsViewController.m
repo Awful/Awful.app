@@ -250,9 +250,9 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 
 - (void)updateLoadingMessage
 {
-    if (self.currentPage == AwfulPageLast) {
+    if (self.currentPage == AwfulThreadPageLast) {
         self.postsView.loadingMessage = @"Loading last page";
-    } else if (self.currentPage == AwfulPageNextUnread) {
+    } else if (self.currentPage == AwfulThreadPageNextUnread) {
         self.postsView.loadingMessage = @"Loading unread posts";
     } else if ([self.fetchedResultsController.fetchedObjects count] == 0) {
         self.postsView.loadingMessage = [NSString stringWithFormat:
@@ -278,7 +278,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     [self updateTopBar];
 }
 
-- (void)loadPage:(NSInteger)page
+- (void)loadPage:(AwfulThreadPage)page
 {
     [self stopObservingThreadSeenPosts];
     [self.networkOperation cancel];
@@ -341,7 +341,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
             self.currentPage = [lastPost page];
         }
         self.advertisementHTML = advertisementHTML;
-        if (page == AwfulPageNextUnread && firstUnreadPost != NSNotFound) {
+        if (page == AwfulThreadPageNextUnread && firstUnreadPost != NSNotFound) {
             self.hiddenPosts = firstUnreadPost;
         }
         if (!self.fetchedResultsController) [self updateFetchedResultsController];
@@ -1178,12 +1178,12 @@ static char KVOContext;
     return self.thread.numberOfPagesValue;
 }
 
-- (NSInteger)currentPageForSpecificPageController:(AwfulSpecificPageController *)controller
+- (AwfulThreadPage)currentPageForSpecificPageController:(AwfulSpecificPageController *)controller
 {
     if (self.currentPage > 0) {
         return self.currentPage;
     }
-    else if (self.currentPage == AwfulPageLast && self.thread.numberOfPagesValue > 0) {
+    else if (self.currentPage == AwfulThreadPageLast && self.thread.numberOfPagesValue > 0) {
         return self.thread.numberOfPagesValue;
     } else {
         return 1;
@@ -1191,7 +1191,7 @@ static char KVOContext;
 }
 
 - (void)specificPageController:(AwfulSpecificPageController *)controller
-                 didSelectPage:(NSInteger)page
+                 didSelectPage:(AwfulThreadPage)page
 {
     if (self.popover) {
         [self dismissPopoverAnimated:YES];
@@ -1227,7 +1227,7 @@ static char KVOContext;
            didReplyToThread:(AwfulThread *)thread
 {
     [self dismissViewControllerAnimated:YES completion:^{
-        [self loadPage:AwfulPageNextUnread];
+        [self loadPage:AwfulThreadPageNextUnread];
     }];
 }
 

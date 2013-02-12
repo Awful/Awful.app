@@ -131,7 +131,7 @@
 }
 
 - (NSOperation *)listPostsInThreadWithID:(NSString *)threadID
-                                  onPage:(NSInteger)page
+                                  onPage:(AwfulThreadPage)page
                                  andThen:(void (^)(NSError *error,
                                                    NSArray *posts,
                                                    NSUInteger firstUnreadPost,
@@ -142,8 +142,8 @@
         parameters[@"json"] = @1;
     }
     parameters[@"perpage"] = @40;
-    if (page == AwfulPageNextUnread) parameters[@"goto"] = @"newpost";
-    else if (page == AwfulPageLast) parameters[@"goto"] = @"lastpost";
+    if (page == AwfulThreadPageNextUnread) parameters[@"goto"] = @"newpost";
+    else if (page == AwfulThreadPageLast) parameters[@"goto"] = @"lastpost";
     else parameters[@"pagenumber"] = @(page);
     NSURLRequest *request = [self requestWithMethod:@"GET" path:@"showthread.php"
                                          parameters:parameters];
@@ -162,7 +162,7 @@
         }
         if (callback) {
             NSInteger firstUnreadPost = NSNotFound;
-            if (page == AwfulPageNextUnread) {
+            if (page == AwfulThreadPageNextUnread) {
                 NSString *fragment = [[[op response] URL] fragment];
                 if ([fragment hasPrefix:@"pti"]) {
                     firstUnreadPost = [[fragment substringFromIndex:3] integerValue] - 1;
@@ -552,7 +552,7 @@ static NSString * Entitify(NSString *noEntities)
 }
 
 - (NSOperation *)locatePostWithID:(NSString *)postID
-    andThen:(void (^)(NSError *error, NSString *threadID, NSInteger page))callback
+    andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))callback
 {
     // The SA Forums will direct a certain URL to the thread with a given post. We'll wait for that
     // redirect, then parse out the info we need.

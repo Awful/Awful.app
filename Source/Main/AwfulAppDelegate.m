@@ -271,8 +271,8 @@ static id _instance;
         if ([[url pathComponents] count] >= 4) {
             if ([[url pathComponents][2] isEqualToString:@"pages"]) {
                 NSString *pageString = [url pathComponents][3];
-                if ([pageString isEqualToString:@"last"]) page = AwfulPageLast;
-                else if ([pageString isEqualToString:@"unread"]) page = AwfulPageNextUnread;
+                if ([pageString isEqualToString:@"last"]) page = AwfulThreadPageLast;
+                else if ([pageString isEqualToString:@"unread"]) page = AwfulThreadPageNextUnread;
                 else page = [pageString integerValue];
             }
         }
