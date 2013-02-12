@@ -1,12 +1,12 @@
 //
-//  AwfulSpecificPageController.m
+//  AwfulJumpToPageController.m
 //  Awful
 //
 //  Created by Sean Berry on 10/18/11.
 //  Copyright (c) 2011 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulSpecificPageController.h"
+#import "AwfulJumpToPageController.h"
 
 @interface SpecificTopBarView : UIView
 
@@ -17,14 +17,14 @@
 @end
 
 
-@interface AwfulSpecificPageController () <UIPickerViewDataSource, UIPickerViewDelegate>
+@interface AwfulJumpToPageController () <UIPickerViewDataSource, UIPickerViewDelegate>
 
 @property (weak, nonatomic) UIPickerView *pickerView;
 
 @end
 
 
-@implementation AwfulSpecificPageController
+@implementation AwfulJumpToPageController
 
 - (UIPickerView *)pickerView
 {
@@ -36,7 +36,7 @@
 - (void)reloadPages
 {
     [self.pickerView reloadAllComponents];
-    [self.pickerView selectRow:[self.delegate currentPageForSpecificPageController:self] - 1
+    [self.pickerView selectRow:[self.delegate currentPageForJumpToPageController:self] - 1
                    inComponent:0
                       animated:NO];
 }
@@ -79,9 +79,9 @@
 - (void)hitFirstLastSegment:(UISegmentedControl *)sender
 {
     if (sender.selectedSegmentIndex == 0) {
-        [self.delegate specificPageController:self didSelectPage:1];
+        [self.delegate jumpToPageController:self didSelectPage:1];
     } else if (sender.selectedSegmentIndex == 1) {
-        [self.delegate specificPageController:self didSelectPage:AwfulThreadPageLast];
+        [self.delegate jumpToPageController:self didSelectPage:AwfulThreadPageLast];
     }
     sender.selectedSegmentIndex = UISegmentedControlNoSegment;
 }
@@ -89,7 +89,7 @@
 - (void)hitJumpToPage
 {
     NSInteger page = [self.pickerView selectedRowInComponent:0] + 1;
-    [self.delegate specificPageController:self didSelectPage:page];
+    [self.delegate jumpToPageController:self didSelectPage:page];
 }
 
 #pragma mark - UIPickerViewDataSource and UIPickerViewDelegate
@@ -101,7 +101,7 @@
 
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
-    return [self.delegate numberOfPagesInSpecificPageController:self];
+    return [self.delegate numberOfPagesInJumpToPageController:self];
 }
 
 - (NSString *)pickerView:(UIPickerView *)pickerView

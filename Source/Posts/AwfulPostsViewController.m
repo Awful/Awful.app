@@ -22,7 +22,7 @@
 #import "AwfulPullToRefreshControl.h"
 #import "AwfulReplyViewController.h"
 #import "AwfulSettings.h"
-#import "AwfulSpecificPageController.h"
+#import "AwfulJumpToPageController.h"
 #import "AwfulTheme.h"
 #import "NSFileManager+UserDirectories.h"
 #import "NSManagedObject+Awful.h"
@@ -36,7 +36,7 @@
 #import "UIViewController+NavigationEnclosure.h"
 
 @interface AwfulPostsViewController () <AwfulPostsViewDelegate, UIPopoverControllerDelegate,
-                                        AwfulSpecificPageControllerDelegate,
+                                        AwfulJumpToPageControllerDelegate,
                                         NSFetchedResultsControllerDelegate,
                                         AwfulReplyViewControllerDelegate,
                                         UIScrollViewDelegate>
@@ -54,7 +54,7 @@
 @property (weak, nonatomic) AwfulPageBottomBar *bottomBar;
 @property (weak, nonatomic) AwfulPullToRefreshControl *pullUpToRefreshControl;
 
-@property (nonatomic) AwfulSpecificPageController *specificPageController;
+@property (nonatomic) AwfulJumpToPageController *jumpToPageController;
 @property (weak, nonatomic) UIView *pageNavBackingView;
 
 @property (copy, nonatomic) NSString *advertisementHTML;
@@ -536,27 +536,27 @@ static char KVOContext;
 
 - (void)tappedPageNav:(id)sender
 {
-    if (self.specificPageController) {
+    if (self.jumpToPageController) {
         [self dismissPopoverAnimated:YES];
-        [self.specificPageController willMoveToParentViewController:nil];
-        [self.specificPageController hideAnimated:YES completion:^{
+        [self.jumpToPageController willMoveToParentViewController:nil];
+        [self.jumpToPageController hideAnimated:YES completion:^{
             [self.pageNavBackingView removeFromSuperview];
         }];
-        [self.specificPageController removeFromParentViewController];
-        self.specificPageController = nil;
+        [self.jumpToPageController removeFromParentViewController];
+        self.jumpToPageController = nil;
         return;
     }
     if (self.postsView.loadingMessage) return;
     if (self.thread.numberOfPagesValue < 1) return;
-    self.specificPageController = [AwfulSpecificPageController new];
-    self.specificPageController.delegate = self;
-    [self.specificPageController reloadPages];
+    self.jumpToPageController = [AwfulJumpToPageController new];
+    self.jumpToPageController.delegate = self;
+    [self.jumpToPageController reloadPages];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [self.specificPageController reloadPages];
+        [self.jumpToPageController reloadPages];
         self.popover = [[UIPopoverController alloc]
-                        initWithContentViewController:self.specificPageController];
+                        initWithContentViewController:self.jumpToPageController];
         self.popover.delegate = self;
-        self.popover.popoverContentSize = self.specificPageController.view.bounds.size;
+        self.popover.popoverContentSize = self.jumpToPageController.view.bounds.size;
         [self.popover presentPopoverFromRect:self.bottomBar.jumpToPageButton.frame
                                       inView:self.bottomBar
                     permittedArrowDirections:UIPopoverArrowDirectionAny
@@ -573,9 +573,9 @@ static char KVOContext;
         [self.view addSubview:halfBlack];
         [self.view bringSubviewToFront:self.bottomBar];
         self.pageNavBackingView = halfBlack;
-        [self addChildViewController:self.specificPageController];
-        [self.specificPageController showInView:self.pageNavBackingView animated:YES];
-        [self.specificPageController didMoveToParentViewController:self];
+        [self addChildViewController:self.jumpToPageController];
+        [self.jumpToPageController showInView:self.pageNavBackingView animated:YES];
+        [self.jumpToPageController didMoveToParentViewController:self];
     }
 }
 
@@ -695,7 +695,7 @@ static char KVOContext;
     if (self.popover) {
         [self.popover dismissPopoverAnimated:animated];
         self.popover = nil;
-        if (self.specificPageController) self.specificPageController = nil;
+        if (self.jumpToPageController) self.jumpToPageController = nil;
     }
 }
 
@@ -904,11 +904,11 @@ static char KVOContext;
                                          duration:(NSTimeInterval)duration
 {
     [self updatePullUpTriggerOffset];
-    if (self.specificPageController && !self.popover) {
-        CGRect frame = self.specificPageController.view.frame;
+    if (self.jumpToPageController && !self.popover) {
+        CGRect frame = self.jumpToPageController.view.frame;
         frame.size.width = self.view.frame.size.width;
         frame.origin.y = self.postsView.frame.size.height - frame.size.height;
-        self.specificPageController.view.frame = frame;
+        self.jumpToPageController.view.frame = frame;
     }
 }
 
@@ -1157,12 +1157,12 @@ static char KVOContext;
 
 #pragma mark - AwfulSpecificPageControllerDelegate
 
-- (NSInteger)numberOfPagesInSpecificPageController:(AwfulSpecificPageController *)controller
+- (NSInteger)numberOfPagesInJumpToPageController:(AwfulJumpToPageController *)controller
 {
     return self.thread.numberOfPagesValue;
 }
 
-- (AwfulThreadPage)currentPageForSpecificPageController:(AwfulSpecificPageController *)controller
+- (AwfulThreadPage)currentPageForJumpToPageController:(AwfulJumpToPageController *)controller
 {
     if (self.currentPage > 0) {
         return self.currentPage;
@@ -1174,25 +1174,18 @@ static char KVOContext;
     }
 }
 
-- (void)specificPageController:(AwfulSpecificPageController *)controller
-                 didSelectPage:(AwfulThreadPage)page
+- (void)jumpToPageController:(AwfulJumpToPageController *)controller
+               didSelectPage:(AwfulThreadPage)page
 {
     if (self.popover) {
         [self dismissPopoverAnimated:YES];
     } else {
-        [self.specificPageController hideAnimated:YES completion:^{
+        [self.jumpToPageController hideAnimated:YES completion:^{
             [self.pageNavBackingView removeFromSuperview];
         }];
-        self.specificPageController = nil;
+        self.jumpToPageController = nil;
     }
     [self loadPage:page];
-}
-
-- (void)specificPageControllerDidCancel:(AwfulSpecificPageController *)controller
-{
-    [self dismissPopoverAnimated:YES];
-    self.specificPageController = nil;
-    [self.pageNavBackingView removeFromSuperview];
 }
 
 #pragma mark - UIPopoverControllerDelegate
@@ -1201,7 +1194,7 @@ static char KVOContext;
 {
     if (popover == self.popover) {
         self.popover = nil;
-        self.specificPageController = nil;
+        self.jumpToPageController = nil;
     }
 }
 
