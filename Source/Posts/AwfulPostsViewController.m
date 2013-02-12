@@ -154,7 +154,9 @@
 - (void)setThread:(AwfulThread *)thread
 {
     if ([_thread isEqual:thread]) return;
+    [self willChangeValueForKey:@"thread"];
     _thread = thread;
+    [self didChangeValueForKey:@"thread"];
     _threadID = [thread.threadID copy];
     self.title = [thread.title stringByCollapsingWhitespace];
     [self updatePageBar];
@@ -381,7 +383,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 - (void)startObservingThreadSeenPosts
 {
     if (self.observingThreadSeenPosts) return;
-    [self.thread addObserver:self forKeyPath:@"seenPosts" options:0 context:&KVOContext];
+    [self addObserver:self forKeyPath:@"thread.seenPosts" options:0 context:&KVOContext];
 }
 
 static char KVOContext;
@@ -389,7 +391,7 @@ static char KVOContext;
 - (void)stopObservingThreadSeenPosts
 {
     if (self.observingThreadSeenPosts) {
-        [self.thread removeObserver:self forKeyPath:@"seenPosts" context:&KVOContext];
+        [self removeObserver:self forKeyPath:@"thread.seenPosts" context:&KVOContext];
     }
     self.observingThreadSeenPosts = NO;
 }
@@ -907,7 +909,7 @@ static char KVOContext;
         [object setContentOffset:contentOffset];
         [object removeObserver:self forKeyPath:keyPath context:context];
         _observingScrollViewSize = NO;
-    } else if ([keyPath isEqualToString:@"seenPosts"]) {
+    } else if ([keyPath isEqualToString:@"thread.seenPosts"]) {
         [self.postsView reloadData];
     }
 }
