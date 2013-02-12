@@ -49,15 +49,13 @@
 
 @property (weak, nonatomic) NSOperation *networkOperation;
 
-@property (weak, nonatomic) AwfulPageBottomBar *pageBar;
-
-@property (nonatomic) AwfulSpecificPageController *specificPageController;
-
+@property (weak, nonatomic) AwfulPageTopBar *topBar;
 @property (weak, nonatomic) AwfulPostsView *postsView;
-
+@property (weak, nonatomic) AwfulPageBottomBar *bottomBar;
 @property (weak, nonatomic) AwfulPullToRefreshControl *pullUpToRefreshControl;
 
-@property (weak, nonatomic) AwfulPageTopBar *topBar;
+@property (nonatomic) AwfulSpecificPageController *specificPageController;
+@property (weak, nonatomic) UIView *pageNavBackingView;
 
 @property (copy, nonatomic) NSString *advertisementHTML;
 
@@ -68,26 +66,20 @@
 - (void)showActionsForPost:(AwfulPost *)post fromRect:(CGRect)rect inView:(UIView *)view;
 
 @property (nonatomic) NSDateFormatter *regDateFormatter;
-
 @property (nonatomic) NSDateFormatter *postDateFormatter;
-
 @property (nonatomic) NSDateFormatter *editDateFormatter;
 
 @property (nonatomic) UIPopoverController *popover;
 
 @property (nonatomic) BOOL observingScrollViewSize;
+@property (nonatomic) BOOL observingThreadSeenPosts;
 
 @property (nonatomic) NSMutableArray *cachedUpdatesWhileScrolling;
 
 @property (nonatomic) CGPoint lastContentOffset;
-
 @property (nonatomic) BOOL scrollingUp;
 
 @property (copy, nonatomic) NSString *jumpToPostAfterLoad;
-
-@property (weak, nonatomic) UIView *pageNavBackingView;
-
-@property (nonatomic) BOOL observingThreadSeenPosts;
 
 @end
 
