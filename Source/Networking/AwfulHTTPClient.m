@@ -30,9 +30,7 @@
     static AwfulHTTPClient *instance;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        // Anyone without access to dev.forums is nicely redirected.
-        // TODO when we're done with testing, switch this back (or do something smarter).
-        NSURL *baseURL = [NSURL URLWithString:@"http://dev.forums.somethingawful.com/"];
+        NSURL *baseURL = [NSURL URLWithString:@"http://forums.somethingawful.com/"];
         instance = [[AwfulHTTPClient alloc] initWithBaseURL:baseURL];
     });
     return instance;
@@ -62,12 +60,14 @@
                                    onPage:(NSInteger)page
                                   andThen:(void (^)(NSError *error, NSArray *threads))callback
 {
-    NSDictionary *parameters = @{
+    NSMutableDictionary *parameters = [@{
         @"forumid": forumID,
         @"perpage": @40,
         @"pagenumber": @(page),
-        @"json": @1
-    };
+    } mutableCopy];
+    if ([self.baseURL.host hasPrefix:@"dev.forums"]) {
+        parameters[@"json"] = @1;
+    }
     NSURLRequest *request = [self requestWithMethod:@"GET" path:@"forumdisplay.php"
                                          parameters:parameters];
     id op = [self HTTPRequestOperationWithRequest:request
@@ -100,12 +100,14 @@
 - (NSOperation *)listBookmarkedThreadsOnPage:(NSInteger)page
                                      andThen:(void (^)(NSError *error, NSArray *threads))callback
 {
-    NSDictionary *parameters = @{
+    NSMutableDictionary *parameters = [@{
         @"action": @"view",
         @"perpage": @40,
         @"pagenumber": @(page),
-        @"json": @1
-    };
+    } mutableCopy];
+    if ([self.baseURL.host hasPrefix:@"dev.forums"]) {
+        parameters[@"json"] = @1;
+    }
     NSURLRequest *request = [self requestWithMethod:@"GET" path:@"bookmarkthreads.php"
                                          parameters:parameters];
     id op = [self HTTPRequestOperationWithRequest:request
@@ -135,7 +137,10 @@
                                                    NSUInteger firstUnreadPost,
                                                    NSString *advertisementHTML))callback
 {
-    NSMutableDictionary *parameters = [@{ @"threadid": threadID, @"json": @1 } mutableCopy];
+    NSMutableDictionary *parameters = [@{ @"threadid": threadID } mutableCopy];
+    if ([self.baseURL.host hasPrefix:@"dev.forums"]) {
+        parameters[@"json"] = @1;
+    }
     parameters[@"perpage"] = @40;
     if (page == AwfulPageNextUnread) parameters[@"goto"] = @"newpost";
     else if (page == AwfulPageLast) parameters[@"goto"] = @"lastpost";
