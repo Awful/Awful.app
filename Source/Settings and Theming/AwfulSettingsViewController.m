@@ -264,17 +264,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         [alert addButtonWithTitle:@"Log Out" block:^{ [[AwfulAppDelegate instance] logOut]; }];
         [alert show];
     } else if ([action isEqualToString:@"GoToAwfulThread"]) {
-        NSString *threadID = setting[@"ThreadID"];
-        NSArray *threads = [AwfulThread fetchAllMatchingPredicate:@"threadID = %@", threadID];
-        AwfulThread *thread;
-        if ([threads count] < 1) {
-            thread = [AwfulThread insertNew];
-            thread.threadID = threadID;
-        } else {
-            thread = threads[0];
-        }
         AwfulPostsViewController *page = [AwfulPostsViewController new];
-        page.thread = thread;
+        NSString *threadID = setting[@"ThreadID"];
+        page.thread = [AwfulThread firstOrNewThreadWithThreadID:threadID];
         [page loadPage:AwfulPageNextUnread];
         if (self.splitViewController) {
             AwfulSplitViewController *split = (AwfulSplitViewController *)self.splitViewController;
