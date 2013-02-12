@@ -157,20 +157,10 @@
     [self willChangeValueForKey:@"thread"];
     _thread = thread;
     [self didChangeValueForKey:@"thread"];
-    _threadID = [thread.threadID copy];
     self.title = [thread.title stringByCollapsingWhitespace];
     [self updatePageBar];
     [self configurePostsViewSettings];
     [self updateFetchedResultsController];
-}
-
-- (void)setThreadID:(NSString *)threadID
-{
-    if (threadID == _threadID) return;
-    self.thread = [AwfulThread firstMatchingPredicate:@"threadID = %@", threadID];
-    if (!self.thread) {
-        _threadID = [threadID copy];
-    }
 }
 
 - (NSArray *)posts
@@ -310,7 +300,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         self.hiddenPosts = 0;
         [self.postsView reloadData];
     }
-    id op = [[AwfulHTTPClient client] listPostsInThreadWithID:self.threadID
+    id op = [[AwfulHTTPClient client] listPostsInThreadWithID:self.thread.threadID
                                                        onPage:page
                                                       andThen:^(NSError *error, NSArray *posts,
                                                                 NSUInteger firstUnreadPost,

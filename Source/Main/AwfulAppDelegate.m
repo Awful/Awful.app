@@ -285,7 +285,7 @@ static id _instance;
             UINavigationController *nav = (UINavigationController *)viewController;
             AwfulPostsViewController *top = (AwfulPostsViewController *)nav.topViewController;
             if (![top isKindOfClass:[AwfulPostsViewController class]]) continue;
-            if ([top.threadID isEqualToString:threadID]) {
+            if ([top.thread.threadID isEqualToString:threadID]) {
                 if (page == 0 || page == top.currentPage) {
                     if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
                         self.tabBarController.selectedViewController = nav;
@@ -296,7 +296,13 @@ static id _instance;
         }
         if (page == 0) page = 1;
         AwfulPostsViewController *postsView = [AwfulPostsViewController new];
-        postsView.threadID = threadID;
+        AwfulThread *thread = [AwfulThread firstMatchingPredicate:@"threadID = %@", threadID];
+        if (!thread) {
+            thread = [AwfulThread insertNew];
+            thread.threadID = threadID;
+            [[AwfulDataStack sharedDataStack] save];
+        }
+        postsView.thread = thread;
         [postsView loadPage:page];
         UINavigationController *nav;
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -364,7 +370,13 @@ static id _instance;
                     ofThreadWithID:(NSString *)threadID
 {
     AwfulPostsViewController *postsView = [AwfulPostsViewController new];
-    postsView.threadID = threadID;
+    AwfulThread *thread = [AwfulThread firstMatchingPredicate:@"threadID = %@", threadID];
+    if (!thread) {
+        thread = [AwfulThread insertNew];
+        thread.threadID = threadID;
+        [[AwfulDataStack sharedDataStack] save];
+    }
+    postsView.thread = thread;
     [postsView loadPage:page];
     [postsView jumpToPostWithID:postID];
     UINavigationController *nav;

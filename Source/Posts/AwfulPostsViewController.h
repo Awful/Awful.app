@@ -13,8 +13,6 @@
 
 @property (strong, nonatomic) AwfulThread *thread;
 
-@property (copy, nonatomic) NSString *threadID;
-
 @property (assign, nonatomic) NSInteger currentPage;
 
 - (void)loadPage:(NSInteger)page;
