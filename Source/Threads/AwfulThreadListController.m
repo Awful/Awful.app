@@ -437,6 +437,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     AwfulPostsViewController *page = [AwfulPostsViewController new];
     AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
     page.thread = thread;
+    // For an unread thread, the Forums will interpret "next unread page" to mean "last page",
+    // which is not very helpful.
     [page loadPage:thread.beenSeen ? AwfulThreadPageNextUnread : 1];
     [self displayPage:page];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
