@@ -374,6 +374,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 {
     if (self.observingThreadSeenPosts) return;
     [self addObserver:self forKeyPath:@"thread.seenPosts" options:0 context:&KVOContext];
+    self.observingThreadSeenPosts = YES;
 }
 
 static char KVOContext;
