@@ -30,7 +30,6 @@
 #import "NSURL+Awful.h"
 #import "NSURL+OpensInBrowser.h"
 #import "NSURL+QueryDictionary.h"
-#import <QuartzCore/QuartzCore.h>
 #import "SVProgressHUD.h"
 #import "UINavigationItem+TwoLineTitle.h"
 #import "UIViewController+NavigationEnclosure.h"

@@ -8,7 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "AwfulThreadPage.h"
+
 @protocol AwfulJumpToPageControllerDelegate;
+
 
 @interface AwfulJumpToPageController : UIViewController
 
@@ -30,10 +32,6 @@
 
 - (AwfulThreadPage)currentPageForJumpToPageController:(AwfulJumpToPageController *)controller;
 
-// Sent when a page was chosen.
-//
-// controller - The jump to page controller that accepted a choice.
-// page       - The chosen page number. Can be AwfulLast.
 - (void)jumpToPageController:(AwfulJumpToPageController *)controller
                didSelectPage:(AwfulThreadPage)page;
 
