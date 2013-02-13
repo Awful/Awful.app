@@ -44,8 +44,6 @@
 
 @property (nonatomic) NSFetchedResultsController *fetchedResultsController;
 
-@property (nonatomic) NSInteger hiddenPosts;
-
 @property (weak, nonatomic) NSOperation *networkOperation;
 
 @property (weak, nonatomic) AwfulPageTopBar *topBar;
@@ -55,13 +53,9 @@
 
 @property (nonatomic) AwfulJumpToPageSheet *jumpToPageSheet;
 
+@property (nonatomic) NSInteger hiddenPosts;
+@property (copy, nonatomic) NSString *jumpToPostAfterLoad;
 @property (copy, nonatomic) NSString *advertisementHTML;
-
-@property (nonatomic) BOOL didJustMarkAsReadToHere;
-
-- (void)showThreadActionsFromRect:(CGRect)rect inView:(UIView *)view;
-
-- (void)showActionsForPost:(AwfulPost *)post fromRect:(CGRect)rect inView:(UIView *)view;
 
 @property (nonatomic) NSDateFormatter *regDateFormatter;
 @property (nonatomic) NSDateFormatter *postDateFormatter;
@@ -71,8 +65,6 @@
 @property (nonatomic) BOOL observingThreadSeenPosts;
 
 @property (nonatomic) NSMutableArray *cachedUpdatesWhileScrolling;
-
-@property (copy, nonatomic) NSString *jumpToPostAfterLoad;
 
 @end
 
@@ -91,15 +83,6 @@
     [noteCenter addObserver:self selector:@selector(didResetDataStack:)
                        name:AwfulDataStackDidResetNotification object:nil];
     return self;
-}
-
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self stopObserving];
-    self.postsView.scrollView.delegate = nil;
-    self.fetchedResultsController.delegate = nil;
-    [self stopObservingThreadSeenPosts];
 }
 
 - (void)currentThemeChanged:(NSNotification *)note
@@ -128,6 +111,15 @@
     self.fetchedResultsController = nil;
 }
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self stopObservingScrollViewContentSize];
+    self.postsView.scrollView.delegate = nil;
+    self.fetchedResultsController.delegate = nil;
+    [self stopObservingThreadSeenPosts];
+}
+
 - (void)setThread:(AwfulThread *)thread
 {
     if ([_thread isEqual:thread]) return;
@@ -135,9 +127,9 @@
     _thread = thread;
     [self didChangeValueForKey:@"thread"];
     self.title = [thread.title stringByCollapsingWhitespace];
-    [self updatePageBar];
-    [self configurePostsViewSettings];
     [self updateFetchedResultsController];
+    [self updateUserInterface];
+    self.postsView.stylesheetURL = StylesheetURLForForumWithID(self.thread.forum.forumID);
 }
 
 - (NSArray *)posts
@@ -205,27 +197,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     }
 }
 
-- (void)updatePullForNextPageLabel
-{
-    AwfulPullToRefreshControl *refresh = self.pullUpToRefreshControl;
-    if (self.thread.numberOfPagesValue > self.currentPage) {
-        [refresh setTitle:@"Pull for next page…" forState:UIControlStateNormal];
-        [refresh setTitle:@"Release for next page…" forState:UIControlStateSelected];
-        [refresh setTitle:@"Loading next page…" forState:AwfulControlStateRefreshing];
-    } else {
-        [refresh setTitle:@"Pull to refresh…" forState:UIControlStateNormal];
-        [refresh setTitle:@"Release to refresh…" forState:UIControlStateSelected];
-        [refresh setTitle:@"Refreshing…" forState:AwfulControlStateRefreshing];
-    }
-}
-
-- (AwfulPostsView *)postsView
-{
-    if (!_postsView) [self view];
-    return _postsView;
-}
-
-- (void)updateLoadingMessage
+- (void)updateUserInterface
 {
     if (self.currentPage == AwfulThreadPageLast) {
         self.postsView.loadingMessage = @"Loading last page";
@@ -237,22 +209,93 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     } else {
         self.postsView.loadingMessage = nil;
     }
-}
-
-- (void)updateEndMessage
-{
+    
+    self.topBar.scrollToBottomButton.enabled = [self.posts count] > 0;
+    self.topBar.loadReadPostsButton.enabled = self.hiddenPosts > 0;
+    
     if (self.currentPage > 0 && self.currentPage >= self.thread.numberOfPagesValue) {
         self.postsView.endMessage = @"End of the thread";
     } else {
         self.postsView.endMessage = nil;
     }
+    
+    AwfulPullToRefreshControl *refresh = self.pullUpToRefreshControl;
+    if (self.thread.numberOfPagesValue > self.currentPage) {
+        [refresh setTitle:@"Pull for next page…" forState:UIControlStateNormal];
+        [refresh setTitle:@"Release for next page…" forState:UIControlStateSelected];
+        [refresh setTitle:@"Loading next page…" forState:AwfulControlStateRefreshing];
+    } else {
+        [refresh setTitle:@"Pull to refresh…" forState:UIControlStateNormal];
+        [refresh setTitle:@"Release to refresh…" forState:UIControlStateSelected];
+        [refresh setTitle:@"Refreshing…" forState:AwfulControlStateRefreshing];
+    }
+    
+    [self.bottomBar.backForwardControl setEnabled:self.currentPage > 1
+                                forSegmentAtIndex:0];
+    if (self.currentPage > 0 && self.currentPage < self.thread.numberOfPagesValue) {
+        [self.bottomBar.backForwardControl setEnabled:YES forSegmentAtIndex:1];
+    } else {
+        [self.bottomBar.backForwardControl setEnabled:NO forSegmentAtIndex:1];
+    }
+    if (self.currentPage > 0 && self.thread.numberOfPagesValue > 0) {
+        [self.bottomBar.jumpToPageButton setTitle:[NSString stringWithFormat:@"Page %d of %@",
+                                                   self.currentPage, self.thread.numberOfPages]
+                                         forState:UIControlStateNormal];
+    } else {
+        [self.bottomBar.jumpToPageButton setTitle:@"" forState:UIControlStateNormal];
+    }
+    [self.bottomBar.actionsComposeControl setEnabled:!self.thread.isClosedValue
+                                   forSegmentAtIndex:1];
+}
+
+- (void)retheme
+{
+    AwfulTheme *theme = [AwfulTheme currentTheme];
+    self.view.backgroundColor = theme.postsViewBackgroundColor;
+    self.topBar.backgroundColor = theme.postsViewTopBarMarginColor;
+    NSArray *buttons = @[ self.topBar.goToForumButton, self.topBar.loadReadPostsButton,
+                          self.topBar.scrollToBottomButton ];
+    for (UIButton *button in buttons) {
+        [button setTitleColor:theme.postsViewTopBarButtonTextColor forState:UIControlStateNormal];
+        [button setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [button setTitleColor:theme.postsViewTopBarButtonDisabledTextColor
+                     forState:UIControlStateDisabled];
+        button.backgroundColor = theme.postsViewTopBarButtonBackgroundColor;
+    }
+    self.pullUpToRefreshControl.spinnerStyle = theme.activityIndicatorViewStyle;
+    self.pullUpToRefreshControl.textColor = theme.postsViewPullUpForNextPageTextAndArrowColor;
+    self.pullUpToRefreshControl.arrowColor = theme.postsViewPullUpForNextPageTextAndArrowColor;
+    self.postsView.dark = [AwfulSettings settings].darkTheme;
+}
+
+- (void)configurePostsViewSettings
+{
+    self.postsView.showAvatars = [AwfulSettings settings].showAvatars;
+    self.postsView.showImages = [AwfulSettings settings].showImages;
+    if ([AwfulSettings settings].highlightOwnMentions) {
+        self.postsView.highlightMentionUsername = [AwfulSettings settings].username;
+    } else {
+        self.postsView.highlightMentionUsername = nil;
+    }
+    if ([AwfulSettings settings].highlightOwnQuotes) {
+        self.postsView.highlightQuoteUsername = [AwfulSettings settings].username;
+    } else {
+        self.postsView.highlightQuoteUsername = nil;
+    }
+    self.postsView.stylesheetURL = StylesheetURLForForumWithID(self.thread.forum.forumID);
+}
+
+- (AwfulPostsView *)postsView
+{
+    if (!_postsView) [self view];
+    return _postsView;
 }
 
 - (void)setHiddenPosts:(NSInteger)hiddenPosts
 {
     if (_hiddenPosts == hiddenPosts) return;
     _hiddenPosts = hiddenPosts;
-    [self updateTopBar];
+    [self updateUserInterface];
 }
 
 - (void)loadPage:(AwfulThreadPage)page
@@ -265,12 +308,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     BOOL refreshingSamePage = page > 0 && page == oldPage;
     if (!refreshingSamePage) {
         [self updateFetchedResultsController];
-        [self updateLoadingMessage];
-        [self updatePageBar];
-        [self updateTopBar];
-        [self updateEndMessage];
         self.pullUpToRefreshControl.refreshing = NO;
-        [self updatePullForNextPageLabel];
+        [self updateUserInterface];
         UIEdgeInsets inset = self.postsView.scrollView.contentInset;
         [self.postsView.scrollView setContentOffset:CGPointMake(0, -inset.top) animated:NO];
         self.advertisementHTML = nil;
@@ -327,11 +366,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         } else {
             [self.postsView reloadAdvertisementHTML];
         }
-        [self updateLoadingMessage];
-        [self updatePageBar];
-        [self updateTopBar];
-        [self updateEndMessage];
-        [self updatePullForNextPageLabel];
+        [self updateUserInterface];
         if (self.jumpToPostAfterLoad) {
             [self jumpToPostWithID:self.jumpToPostAfterLoad];
             self.jumpToPostAfterLoad = nil;
@@ -354,13 +389,10 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     self.observingThreadSeenPosts = YES;
 }
 
-static char KVOContext;
-
 - (void)stopObservingThreadSeenPosts
 {
-    if (self.observingThreadSeenPosts) {
-        [self removeObserver:self forKeyPath:@"thread.seenPosts" context:&KVOContext];
-    }
+    if (!self.observingThreadSeenPosts) return;
+    [self removeObserver:self forKeyPath:@"thread.seenPosts" context:&KVOContext];
     self.observingThreadSeenPosts = NO;
 }
 
@@ -381,25 +413,6 @@ static char KVOContext;
     }
 }
 
-- (void)markPostsAsBeenSeenUpToPost:(AwfulPost *)post
-{
-    post.thread.seenPosts = post.threadIndex;
-    [[AwfulDataStack sharedDataStack] save];
-}
-
-- (void)goToParentForum
-{
-    NSString *url = [NSString stringWithFormat:@"awful://forums/%@", self.thread.forum.forumID];
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
-}
-
-- (void)scrollToBottom
-{
-    UIScrollView *scrollView = self.postsView.scrollView;
-    [scrollView scrollRectToVisible:CGRectMake(0, scrollView.contentSize.height - 1, 1, 1)
-                           animated:YES];
-}
-
 - (void)loadNextPageOrRefresh
 {
     if (self.thread.numberOfPagesValue > self.currentPage) {
@@ -407,73 +420,6 @@ static char KVOContext;
     } else {
         [self loadPage:self.currentPage];
     }
-}
-
-- (void)updatePageBar
-{
-    [self.bottomBar.backForwardControl setEnabled:self.currentPage > 1
-                              forSegmentAtIndex:0];
-    if (self.currentPage > 0 && self.currentPage < self.thread.numberOfPagesValue) {
-        [self.bottomBar.backForwardControl setEnabled:YES forSegmentAtIndex:1];
-    } else {
-        [self.bottomBar.backForwardControl setEnabled:NO forSegmentAtIndex:1];
-    }
-    if (self.currentPage > 0 && self.thread.numberOfPagesValue > 0) {
-        [self.bottomBar.jumpToPageButton setTitle:[NSString stringWithFormat:@"Page %d of %@",
-                                                 self.currentPage, self.thread.numberOfPages]
-                                       forState:UIControlStateNormal];
-    } else {
-        [self.bottomBar.jumpToPageButton setTitle:@"" forState:UIControlStateNormal];
-    }
-    [self.bottomBar.actionsComposeControl setEnabled:!self.thread.isClosedValue forSegmentAtIndex:1];
-}
-
-- (void)updateTopBar
-{
-    self.topBar.scrollToBottomButton.enabled = [self.posts count] > 0;
-    self.topBar.loadReadPostsButton.enabled = self.hiddenPosts > 0;
-}
-
-- (void)tappedPagesSegment:(id)sender
-{
-    UISegmentedControl *backForward = sender;
-    if (backForward.selectedSegmentIndex == 0) {
-        [self prevPage];
-    } else if (backForward.selectedSegmentIndex == 1) {
-        [self nextPage];
-    }
-    backForward.selectedSegmentIndex = UISegmentedControlNoSegment;
-}
-
-- (void)tappedActionsSegment:(id)sender
-{
-    UISegmentedControl *actions = sender;
-    if (actions.selectedSegmentIndex == 0) {
-        [self tappedActions];
-    } else if (actions.selectedSegmentIndex == 1) {
-        [self tappedCompose];
-    }
-    actions.selectedSegmentIndex = UISegmentedControlNoSegment;
-}
-
-- (void)nextPage
-{
-    if (self.currentPage >= self.thread.numberOfPagesValue) return;
-    [self loadPage:self.currentPage + 1];
-}
-
-- (void)prevPage
-{
-    if (self.currentPage <= 1) return;
-    [self loadPage:self.currentPage - 1];
-}
-
-- (void)tappedActions
-{
-    CGRect rect = self.bottomBar.actionsComposeControl.frame;
-    rect.size.width /= 2;
-    rect = [self.view.superview convertRect:rect fromView:self.bottomBar];
-    [self showThreadActionsFromRect:rect inView:self.view.superview];
 }
 
 - (void)showThreadActionsFromRect:(CGRect)rect inView:(UIView *)view
@@ -527,185 +473,31 @@ static char KVOContext;
     [sheet showFromRect:rect inView:view animated:YES];
 }
 
-- (void)tappedPageNav:(id)sender
+- (void)showProfileWithUser:(AwfulUser *)user
 {
-    if (self.jumpToPageSheet) {
-        [self.jumpToPageSheet dismiss];
-        self.jumpToPageSheet = nil;
-        return;
-    }
-    if (self.postsView.loadingMessage) return;
-    if (self.thread.numberOfPagesValue < 1) return;
-    self.jumpToPageSheet = [[AwfulJumpToPageSheet alloc] initWithDelegate:self];
-    [self.jumpToPageSheet showInView:self.view behindSubview:self.bottomBar];
-}
-
-- (void)tappedCompose
-{
-    AwfulReplyViewController *reply = [AwfulReplyViewController new];
-    reply.delegate = self;
-    [reply replyToThread:self.thread withInitialContents:nil];
-    UINavigationController *nav = [reply enclosingNavigationController];
-    [self presentViewController:nav animated:YES completion:nil];
-}
-
-- (void)showActionsForPost:(AwfulPost *)post fromRect:(CGRect)rect inView:(UIView *)view
-{
-    NSString *possessiveUsername = [NSString stringWithFormat:@"%@'s", post.author.username];
-    if ([post.author.username isEqualToString:[AwfulSettings settings].username]) {
-        possessiveUsername = @"Your";
-    }
-    NSString *title = [NSString stringWithFormat:@"%@ Post", possessiveUsername];
-    AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:title];
-    if ([post editableByUserWithID:[AwfulSettings settings].userID]) {
-        [sheet addButtonWithTitle:@"Edit" block:^{
-            [[AwfulHTTPClient client] getTextOfPostWithID:post.postID
-                                                  andThen:^(NSError *error, NSString *text)
-             {
-                 if (error) {
-                     [AwfulAlertView showWithTitle:@"Could Not Edit Post"
-                                             error:error
-                                       buttonTitle:@"Alright"];
-                     return;
-                 }
-                 AwfulReplyViewController *reply = [AwfulReplyViewController new];
-                 reply.delegate = self;
-                 [reply editPost:post text:text];
-                 UINavigationController *nav = [reply enclosingNavigationController];
-                 [self presentViewController:nav animated:YES completion:nil];
-             }];
-        }];
-    }
-    if (!self.thread.isClosedValue) {
-        [sheet addButtonWithTitle:@"Quote" block:^{
-            [[AwfulHTTPClient client] quoteTextOfPostWithID:post.postID
-                                                    andThen:^(NSError *error, NSString *quotedText)
-             {
-                 if (error) {
-                     [AwfulAlertView showWithTitle:@"Could Not Quote Post"
-                                             error:error
-                                       buttonTitle:@"Alright"];
-                     return;
-                 }
-                 AwfulReplyViewController *reply = [AwfulReplyViewController new];
-                 reply.delegate = self;
-                 [reply replyToThread:self.thread withInitialContents:quotedText];
-                 UINavigationController *nav = [reply enclosingNavigationController];
-                 [self presentViewController:nav animated:YES completion:nil];
-             }];
-        }];
-    }
-    [sheet addButtonWithTitle:@"Copy Post URL" block:^{
-        NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
-                         "showthread.php?threadid=%@&perpage=40&pagenumber=%@#post%@",
-                         self.thread.threadID, @(self.currentPage), post.postID];
-        [UIPasteboard generalPasteboard].items = @[ @{
-            (id)kUTTypeURL: [NSURL URLWithString:url],
-            (id)kUTTypePlainText: url
-        }];
-    }];
-    [sheet addButtonWithTitle:@"Mark Read to Here" block:^{
-        [[AwfulHTTPClient client] markThreadWithID:self.thread.threadID
-                               readUpToPostAtIndex:[@(post.threadIndexValue) stringValue]
-                                           andThen:^(NSError *error)
-         {
-             if (error) {
-                 [AwfulAlertView showWithTitle:@"Could Not Mark Read"
-                                         error:error
-                                   buttonTitle:@"Alright"];
-             } else {
-                 [SVProgressHUD showSuccessWithStatus:@"Marked"];
-                 self.didJustMarkAsReadToHere = YES;
-                 [self markPostsAsBeenSeenUpToPost:post];
-             }
-         }];
-    }];
-    [sheet addButtonWithTitle:[NSString stringWithFormat:@"%@ Profile", possessiveUsername] block:^{
-        AwfulProfileViewController *profile = [AwfulProfileViewController new];
-        profile.userID = post.author.userID;
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                                                                  target:self action:@selector(doneWithProfile)];
-            profile.navigationItem.leftBarButtonItem = done;
-            UINavigationController *nav = [profile enclosingNavigationController];
-            nav.modalPresentationStyle = UIModalPresentationFormSheet;
-            [self presentViewController:nav animated:YES completion:nil];
-        } else {
-            profile.hidesBottomBarWhenPushed = YES;
-            UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithTitle:@"Back"
-                                                                     style:UIBarButtonItemStyleBordered
-                                                                    target:nil action:NULL];
-            self.navigationItem.backBarButtonItem = back;
-            [self.navigationController pushViewController:profile animated:YES];
-        }
-    }];
-    [sheet addCancelButtonWithTitle:@"Cancel"];
-    [sheet showFromRect:rect inView:view animated:YES];
-}
-
-- (void)updatePullUpTriggerOffset
-{
-    if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            self.pullUpToRefreshControl.triggerOffset = 45;
-        } else {
-            self.pullUpToRefreshControl.triggerOffset = 35;
-        }
+    AwfulProfileViewController *profile = [AwfulProfileViewController new];
+    profile.userID = user.userID;
+    UIBarButtonItem *item;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                             target:self
+                                                             action:@selector(doneWithProfile)];
+        profile.navigationItem.leftBarButtonItem = item;
+        UINavigationController *nav = [profile enclosingNavigationController];
+        nav.modalPresentationStyle = UIModalPresentationFormSheet;
+        [self presentViewController:nav animated:YES completion:nil];
     } else {
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            self.pullUpToRefreshControl.triggerOffset = 25;
-        } else {
-            self.pullUpToRefreshControl.triggerOffset = 0;
-        }
+        profile.hidesBottomBarWhenPushed = YES;
+        item = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleBordered
+                                               target:nil action:NULL];
+        self.navigationItem.backBarButtonItem = item;
+        [self.navigationController pushViewController:profile animated:YES];
     }
 }
 
-- (void)showHiddenSeenPosts
+- (void)doneWithProfile
 {
-    [self.postsView beginUpdates];
-    for (NSInteger i = 0; i < self.hiddenPosts; i++) {
-        [self.postsView insertPostAtIndex:i];
-    }
-    self.hiddenPosts = 0;
-    [self.postsView endUpdates];
-    [self maintainScrollOffsetAfterSizeChange];
-}
-
-- (void)retheme
-{
-    AwfulTheme *theme = [AwfulTheme currentTheme];
-    self.view.backgroundColor = theme.postsViewBackgroundColor;
-    self.topBar.backgroundColor = theme.postsViewTopBarMarginColor;
-    NSArray *buttons = @[ self.topBar.goToForumButton, self.topBar.loadReadPostsButton,
-                          self.topBar.scrollToBottomButton ];
-    for (UIButton *button in buttons) {
-        [button setTitleColor:theme.postsViewTopBarButtonTextColor forState:UIControlStateNormal];
-        [button setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [button setTitleColor:theme.postsViewTopBarButtonDisabledTextColor
-                     forState:UIControlStateDisabled];
-        button.backgroundColor = theme.postsViewTopBarButtonBackgroundColor;
-    }
-    self.pullUpToRefreshControl.spinnerStyle = theme.activityIndicatorViewStyle;
-    self.pullUpToRefreshControl.textColor = theme.postsViewPullUpForNextPageTextAndArrowColor;
-    self.pullUpToRefreshControl.arrowColor = theme.postsViewPullUpForNextPageTextAndArrowColor;
-    self.postsView.dark = [AwfulSettings settings].darkTheme;
-}
-
-- (void)configurePostsViewSettings
-{
-    self.postsView.showAvatars = [AwfulSettings settings].showAvatars;
-    self.postsView.showImages = [AwfulSettings settings].showImages;
-    if ([AwfulSettings settings].highlightOwnMentions) {
-        self.postsView.highlightMentionUsername = [AwfulSettings settings].username;
-    } else {
-        self.postsView.highlightMentionUsername = nil;
-    }
-    if ([AwfulSettings settings].highlightOwnQuotes) {
-        self.postsView.highlightQuoteUsername = [AwfulSettings settings].username;
-    } else {
-        self.postsView.highlightQuoteUsername = nil;
-    }
-    self.postsView.stylesheetURL = StylesheetURLForForumWithID(self.thread.forum.forumID);
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - UIViewController
@@ -725,17 +517,16 @@ static char KVOContext;
     
     AwfulPageBottomBar *pageBar = [[AwfulPageBottomBar alloc] initWithFrame:pageBarFrame];
     [pageBar.backForwardControl addTarget:self
-                                   action:@selector(tappedPagesSegment:)
+                                   action:@selector(didTapPreviousNextPageControl:)
                          forControlEvents:UIControlEventValueChanged];
     [pageBar.jumpToPageButton addTarget:self
-                                 action:@selector(tappedPageNav:)
+                                 action:@selector(toggleJumpToPageSheet)
                        forControlEvents:UIControlEventTouchUpInside];
     [pageBar.actionsComposeControl addTarget:self
-                                      action:@selector(tappedActionsSegment:)
+                                      action:@selector(didTapActComposeControl:)
                             forControlEvents:UIControlEventValueChanged];
     [self.view addSubview:pageBar];
     self.bottomBar = pageBar;
-    [self updatePageBar];
     
     AwfulPostsView *postsView = [[AwfulPostsView alloc] initWithFrame:postsFrame];
     postsView.delegate = self;
@@ -771,7 +562,104 @@ static char KVOContext;
     self.pullUpToRefreshControl = refresh;
     [self updatePullUpTriggerOffset];
     
+    [self updateUserInterface];
+    
     [self.view bringSubviewToFront:self.bottomBar];
+}
+
+- (void)updatePullUpTriggerOffset
+{
+    if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            self.pullUpToRefreshControl.triggerOffset = 45;
+        } else {
+            self.pullUpToRefreshControl.triggerOffset = 35;
+        }
+    } else {
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            self.pullUpToRefreshControl.triggerOffset = 25;
+        } else {
+            self.pullUpToRefreshControl.triggerOffset = 0;
+        }
+    }
+}
+
+- (void)didTapPreviousNextPageControl:(UISegmentedControl *)seg
+{
+    if (seg.selectedSegmentIndex == 0) {
+        if (self.currentPage > 1) {
+            [self loadPage:self.currentPage - 1];
+        }
+    } else if (seg.selectedSegmentIndex == 1) {
+        if (self.currentPage < self.thread.numberOfPagesValue) {
+            [self loadPage:self.currentPage + 1];
+        }
+    }
+    seg.selectedSegmentIndex = UISegmentedControlNoSegment;
+}
+
+- (void)toggleJumpToPageSheet
+{
+    if (self.jumpToPageSheet) {
+        [self.jumpToPageSheet dismiss];
+        self.jumpToPageSheet = nil;
+        return;
+    }
+    if (self.postsView.loadingMessage) return;
+    if (self.thread.numberOfPagesValue < 1) return;
+    self.jumpToPageSheet = [[AwfulJumpToPageSheet alloc] initWithDelegate:self];
+    [self.jumpToPageSheet showInView:self.view behindSubview:self.bottomBar];
+}
+
+- (void)didTapActComposeControl:(UISegmentedControl *)seg
+{
+    if (seg.selectedSegmentIndex == 0) {
+        CGRect rect = self.bottomBar.actionsComposeControl.frame;
+        rect.size.width /= 2;
+        rect = [self.view.superview convertRect:rect fromView:self.bottomBar];
+        [self showThreadActionsFromRect:rect inView:self.view.superview];
+    } else if (seg.selectedSegmentIndex == 1) {
+        AwfulReplyViewController *reply = [AwfulReplyViewController new];
+        reply.delegate = self;
+        [reply replyToThread:self.thread withInitialContents:nil];
+        UINavigationController *nav = [reply enclosingNavigationController];
+        [self presentViewController:nav animated:YES completion:nil];
+    }
+    seg.selectedSegmentIndex = UISegmentedControlNoSegment;
+}
+
+- (void)goToParentForum
+{
+    NSString *url = [NSString stringWithFormat:@"awful://forums/%@", self.thread.forum.forumID];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+}
+
+- (void)showHiddenSeenPosts
+{
+    [self.postsView beginUpdates];
+    for (NSInteger i = 0; i < self.hiddenPosts; i++) {
+        [self.postsView insertPostAtIndex:i];
+    }
+    self.hiddenPosts = 0;
+    [self.postsView endUpdates];
+    [self maintainScrollOffsetAfterSizeChange];
+}
+
+- (void)maintainScrollOffsetAfterSizeChange
+{
+    _observingScrollViewSize = YES;
+    [self.postsView.scrollView addObserver:self
+                                forKeyPath:@"contentSize"
+                                   options:(NSKeyValueObservingOptionOld |
+                                            NSKeyValueObservingOptionNew)
+                                   context:&KVOContext];
+}
+
+- (void)scrollToBottom
+{
+    UIScrollView *scrollView = self.postsView.scrollView;
+    [scrollView scrollRectToVisible:CGRectMake(0, scrollView.contentSize.height - 1, 1, 1)
+                           animated:YES];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -798,16 +686,6 @@ static char KVOContext;
     [super viewDidDisappear:animated];
 }
 
-- (void)maintainScrollOffsetAfterSizeChange
-{
-    _observingScrollViewSize = YES;
-    [self.postsView.scrollView addObserver:self
-                                forKeyPath:@"contentSize"
-                                   options:(NSKeyValueObservingOptionOld |
-                                            NSKeyValueObservingOptionNew)
-                                   context:&KVOContext];
-}
-
 - (void)observeValueForKeyPath:(NSString *)keyPath
                       ofObject:(id)object
                         change:(NSDictionary *)change
@@ -823,8 +701,7 @@ static char KVOContext;
         CGPoint contentOffset = [object contentOffset];
         contentOffset.y += newSize.height - oldSize.height;
         [object setContentOffset:contentOffset];
-        [object removeObserver:self forKeyPath:keyPath context:context];
-        _observingScrollViewSize = NO;
+        [self stopObservingScrollViewContentSize];
     } else if ([keyPath isEqualToString:@"thread.seenPosts"]) {
         [self.postsView reloadData];
     }
@@ -832,12 +709,13 @@ static char KVOContext;
 
 static char KVOContext;
 
-- (void)stopObserving
+- (void)stopObservingScrollViewContentSize
 {
     if (_observingScrollViewSize) {
         [self.postsView.scrollView removeObserver:self
                                        forKeyPath:@"contentSize"
                                           context:&KVOContext];
+        _observingScrollViewSize = NO;
     }
 }
 
@@ -890,6 +768,36 @@ static char KVOContext;
     return dict;
 }
 
+- (NSDateFormatter *)postDateFormatter
+{
+    if (_postDateFormatter) return _postDateFormatter;
+    _postDateFormatter = [NSDateFormatter new];
+    // Jan 2, 2003 16:05
+    _postDateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+    _postDateFormatter.dateFormat = @"MMM d, yyyy HH:mm";
+    return _postDateFormatter;
+}
+
+- (NSDateFormatter *)regDateFormatter
+{
+    if (_regDateFormatter) return _regDateFormatter;
+    _regDateFormatter = [NSDateFormatter new];
+    // Jan 2, 2003
+    _regDateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+    _regDateFormatter.dateFormat = @"MMM d, yyyy";
+    return _regDateFormatter;
+}
+
+- (NSDateFormatter *)editDateFormatter
+{
+    if (_editDateFormatter) return _editDateFormatter;
+    _editDateFormatter = [NSDateFormatter new];
+    // Jan 2, 2003 around 4:05
+    _editDateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+    _editDateFormatter.dateFormat = @"MMM d, yyy 'around' HH:mm";
+    return _editDateFormatter;
+}
+
 - (NSString *)advertisementHTMLForPostsView:(AwfulPostsView *)postsView
 {
     return self.advertisementHTML;
@@ -937,7 +845,80 @@ static char KVOContext;
     if (self.postsView.scrollView.contentOffset.y < 0) {
         rect.origin.y -= self.postsView.scrollView.contentOffset.y;
     }
-    [self showActionsForPost:post fromRect:rect inView:self.postsView];
+    NSString *possessiveUsername = [NSString stringWithFormat:@"%@'s", post.author.username];
+    if ([post.author.username isEqualToString:[AwfulSettings settings].username]) {
+        possessiveUsername = @"Your";
+    }
+    NSString *title = [NSString stringWithFormat:@"%@ Post", possessiveUsername];
+    AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:title];
+    if ([post editableByUserWithID:[AwfulSettings settings].userID]) {
+        [sheet addButtonWithTitle:@"Edit" block:^{
+            [[AwfulHTTPClient client] getTextOfPostWithID:post.postID
+                                                  andThen:^(NSError *error, NSString *text)
+             {
+                 if (error) {
+                     [AwfulAlertView showWithTitle:@"Could Not Edit Post"
+                                             error:error
+                                       buttonTitle:@"Alright"];
+                     return;
+                 }
+                 AwfulReplyViewController *reply = [AwfulReplyViewController new];
+                 reply.delegate = self;
+                 [reply editPost:post text:text];
+                 UINavigationController *nav = [reply enclosingNavigationController];
+                 [self presentViewController:nav animated:YES completion:nil];
+             }];
+        }];
+    }
+    if (!self.thread.isClosedValue) {
+        [sheet addButtonWithTitle:@"Quote" block:^{
+            [[AwfulHTTPClient client] quoteTextOfPostWithID:post.postID
+                                                    andThen:^(NSError *error, NSString *quotedText)
+             {
+                 if (error) {
+                     [AwfulAlertView showWithTitle:@"Could Not Quote Post"
+                                             error:error
+                                       buttonTitle:@"Alright"];
+                     return;
+                 }
+                 AwfulReplyViewController *reply = [AwfulReplyViewController new];
+                 reply.delegate = self;
+                 [reply replyToThread:self.thread withInitialContents:quotedText];
+                 UINavigationController *nav = [reply enclosingNavigationController];
+                 [self presentViewController:nav animated:YES completion:nil];
+             }];
+        }];
+    }
+    [sheet addButtonWithTitle:@"Copy Post URL" block:^{
+        NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
+                         "showthread.php?threadid=%@&perpage=40&pagenumber=%@#post%@",
+                         self.thread.threadID, @(self.currentPage), post.postID];
+        [UIPasteboard generalPasteboard].items = @[ @{
+                                                        (id)kUTTypeURL: [NSURL URLWithString:url],
+                                                        (id)kUTTypePlainText: url
+                                                        }];
+    }];
+    [sheet addButtonWithTitle:@"Mark Read to Here" block:^{
+        [[AwfulHTTPClient client] markThreadWithID:self.thread.threadID
+                               readUpToPostAtIndex:[@(post.threadIndexValue) stringValue]
+                                           andThen:^(NSError *error)
+         {
+             if (error) {
+                 [AwfulAlertView showWithTitle:@"Could Not Mark Read"
+                                         error:error
+                                   buttonTitle:@"Alright"];
+             } else {
+                 [SVProgressHUD showSuccessWithStatus:@"Marked"];
+                 post.thread.seenPosts = post.threadIndex;
+                 [[AwfulDataStack sharedDataStack] save];
+             }
+         }];
+    }];
+    [sheet addButtonWithTitle:[NSString stringWithFormat:@"%@ Profile", possessiveUsername] block:^{
+        [self showProfileWithUser:post.author];
+    }];
+    [sheet addCancelButtonWithTitle:@"Cancel"];
+    [sheet showFromRect:rect inView:self.postsView animated:YES];
 }
 
 - (void)previewImageAtURLString:(NSString *)urlString
@@ -996,41 +977,6 @@ static char KVOContext;
     [sheet showFromRect:rect inView:self.postsView animated:YES];
 }
 
-- (NSDateFormatter *)regDateFormatter
-{
-    if (_regDateFormatter) return _regDateFormatter;
-    _regDateFormatter = [NSDateFormatter new];
-    // Jan 2, 2003
-    _regDateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-    _regDateFormatter.dateFormat = @"MMM d, yyyy";
-    return _regDateFormatter;
-}
-
-- (NSDateFormatter *)postDateFormatter
-{
-    if (_postDateFormatter) return _postDateFormatter;
-    _postDateFormatter = [NSDateFormatter new];
-    // Jan 2, 2003 16:05
-    _postDateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-    _postDateFormatter.dateFormat = @"MMM d, yyyy HH:mm";
-    return _postDateFormatter;
-}
-
-- (NSDateFormatter *)editDateFormatter
-{
-    if (_editDateFormatter) return _editDateFormatter;
-    _editDateFormatter = [NSDateFormatter new];
-    // Jan 2, 2003 around 4:05
-    _editDateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-    _editDateFormatter.dateFormat = @"MMM d, yyy 'around' HH:mm";
-    return _editDateFormatter;
-}
-
-- (void)doneWithProfile
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
@@ -1080,7 +1026,7 @@ static char KVOContext;
 {
     if (!self.cachedUpdatesWhileScrolling) [self.postsView endUpdates];
     [self.pullUpToRefreshControl setRefreshing:NO animated:YES];
-    [self updatePullForNextPageLabel];
+    [self updateUserInterface];
 }
 
 #pragma mark - AwfulSpecificPageControllerDelegate
