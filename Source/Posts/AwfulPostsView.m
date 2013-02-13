@@ -330,14 +330,15 @@ static NSString * JSONize(id obj)
     shouldStartLoadWithRequest:(NSURLRequest *)request
     navigationType:(UIWebViewNavigationType)navigationType
 {
-    if ([[[request URL] scheme] isEqualToString:@"x-objc"]) {
-        [self bridgeJavaScriptToObjectiveCWithURL:[request URL]];
+    NSURL *url = request.URL;
+    if ([url.scheme isEqualToString:@"x-objc"]) {
+        [self bridgeJavaScriptToObjectiveCWithURL:url];
         return NO;
-    } else if ([[[request URL] scheme] isEqualToString:@"x-objc-postsview"]) {
-        [self bridgeJavaScriptToObjectiveCOnSelfWithURL:[request URL]];
+    } else if ([url.scheme isEqualToString:@"x-objc-postsview"]) {
+        [self bridgeJavaScriptToObjectiveCOnSelfWithURL:url];
     } else if (navigationType == UIWebViewNavigationTypeLinkClicked) {
         if ([self.delegate respondsToSelector:@selector(postsView:didTapLinkToURL:)]) {
-            [self.delegate postsView:self didTapLinkToURL:[request URL]];
+            [self.delegate postsView:self didTapLinkToURL:url];
         }
         return NO;
     }
