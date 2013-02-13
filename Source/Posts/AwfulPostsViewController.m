@@ -76,9 +76,6 @@
 
 @property (nonatomic) NSMutableArray *cachedUpdatesWhileScrolling;
 
-@property (nonatomic) CGPoint lastContentOffset;
-@property (nonatomic) BOOL scrollingUp;
-
 @property (copy, nonatomic) NSString *jumpToPostAfterLoad;
 
 @end
@@ -795,6 +792,7 @@ static char KVOContext;
     
     AwfulPostsView *postsView = [[AwfulPostsView alloc] initWithFrame:postsFrame];
     postsView.delegate = self;
+    postsView.scrollView.delegate = self;
     postsView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     postsView.backgroundColor = self.view.backgroundColor;
     self.postsView = postsView;
@@ -802,8 +800,7 @@ static char KVOContext;
     [self configurePostsViewSettings];
     
     AwfulPageTopBar *topBar = [AwfulPageTopBar new];
-    topBar.frame = CGRectMake(0, -40, self.view.frame.size.width, 40);
-    topBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    topBar.frame = CGRectMake(0, -40, CGRectGetWidth(self.view.frame), 40);
     [topBar.goToForumButton addTarget:self
                                action:@selector(goToParentForum)
                      forControlEvents:UIControlEventTouchUpInside];
@@ -816,9 +813,6 @@ static char KVOContext;
                           forControlEvents:UIControlEventTouchUpInside];
     [postsView.scrollView addSubview:topBar];
     self.topBar = topBar;
-    postsView.scrollView.contentInset = UIEdgeInsetsMake(topBar.bounds.size.height, 0, 0, 0);
-    postsView.scrollView.scrollIndicatorInsets = postsView.scrollView.contentInset;
-    postsView.scrollView.delegate = self;
     
     AwfulPullToRefreshControl *refresh;
     refresh = [[AwfulPullToRefreshControl alloc] initWithDirection:AwfulScrollViewPullUp];
@@ -1227,51 +1221,18 @@ static char KVOContext;
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
     if (!self.cachedUpdatesWhileScrolling) self.cachedUpdatesWhileScrolling = [NSMutableArray new];
-    
-    self.lastContentOffset = scrollView.contentOffset;
+    [self.topBar scrollViewWillBeginDragging:scrollView];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    CGRect topBarFrame = self.topBar.frame;
-    // Stick top bar underneath navigation bar; it shouldn't bounce.
-    if (scrollView.contentOffset.y <= -topBarFrame.size.height) {
-        topBarFrame.origin.y = scrollView.contentOffset.y;
-    } else {
-        // When we scroll down, the top bar stays perched atop the scroll view. Though we let it
-        // scroll out of view if needed
-        if (!self.scrollingUp) {
-            if (!CGRectIntersectsRect(topBarFrame, scrollView.bounds)) {
-                topBarFrame.origin.y = -topBarFrame.size.height;
-            }
-        }
-        // Anytime we scroll up, keep the top bar visible if it was already.
-        else if (topBarFrame.origin.y > scrollView.contentOffset.y) {
-            topBarFrame.origin.y = CGRectGetMinY(scrollView.bounds);
-        }
-    }
-    self.topBar.frame = topBarFrame;
-    if (!CGPointEqualToPoint(self.lastContentOffset, scrollView.contentOffset)) {
-        self.scrollingUp = scrollView.contentOffset.y < self.lastContentOffset.y;
-        self.lastContentOffset = scrollView.contentOffset;
-    }
+    [self.topBar scrollViewDidScroll:scrollView];
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)willDecelerate
 {
     if (!willDecelerate) [self processCachedUpdates];
-    
-    // If we're decelerating upwards and the top bar isn't already visible, put the top bar just
-    // out of view so it slides in.
-    CGRect topBarFrame = self.topBar.frame;
-    if (willDecelerate && self.scrollingUp && topBarFrame.origin.y >= -topBarFrame.size.height &&
-        topBarFrame.origin.y < CGRectGetMinY(scrollView.bounds) - topBarFrame.size.height) {
-        topBarFrame.origin.y = CGRectGetMinY(scrollView.bounds) - topBarFrame.size.height;
-        if (topBarFrame.origin.y < -topBarFrame.size.height) {
-            topBarFrame.origin.y = -topBarFrame.size.height;
-        }
-        self.topBar.frame = topBarFrame;
-    }
+    [self.topBar scrollViewDidEndDragging:scrollView willDecelerate:willDecelerate];
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView

@@ -6,9 +6,9 @@
 //  Copyright (c) 2013 Regular Berry Software LLC. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "AwfulScrollViewTopBar.h"
 
-@interface AwfulPageTopBar : UIView
+@interface AwfulPageTopBar : AwfulScrollViewTopBar
 
 @property (readonly, weak, nonatomic) UIButton *goToForumButton;
 
