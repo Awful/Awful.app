@@ -91,6 +91,8 @@
 		1C5B99BC166FFA4F004C5D0E /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B99B8166FFA4F004C5D0E /* Model.xcdatamodeld */; };
 		1C5BA3E716CA4D9400375A72 /* AwfulPageTopBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5BA3E616CA4D9400375A72 /* AwfulPageTopBar.m */; };
 		1C5BA3EA16CB886700375A72 /* AwfulScrollViewTopBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5BA3E916CB886600375A72 /* AwfulScrollViewTopBar.m */; };
+		1C5BA3EC16CBED3500375A72 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C5BA3EB16CBED3500375A72 /* AVFoundation.framework */; };
+		1C5BA3ED16CBEDA200375A72 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CB5468C15BD936600E8BEC1 /* ImageIO.framework */; };
 		1C6474C71569989800C72657 /* AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474AC1569989800C72657 /* AwfulForum.m */; };
 		1C6474CB1569989800C72657 /* AwfulThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474B51569989800C72657 /* AwfulThread.m */; };
 		1C6474CF1569989800C72657 /* _AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474BE1569989800C72657 /* _AwfulForum.m */; };
@@ -631,7 +633,6 @@
 		8CAB2839164B4FB0009BC24F /* tg-mafia.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CAB2832164B4FB0009BC24F /* tg-mafia.png */; };
 		8CAB283B164B4FB0009BC24F /* bs-diablo.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CAB2834164B4FB0009BC24F /* bs-diablo.png */; };
 		8CAB283C164B4FB0009BC24F /* bs-starcraft.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CAB2835164B4FB0009BC24F /* bs-starcraft.png */; };
-		8CB5468D15BD936600E8BEC1 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CB5468C15BD936600E8BEC1 /* ImageIO.framework */; };
 		8CBD8E1A16548AFC00749A8F /* ycs-link.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CBD8E1516548AFC00749A8F /* ycs-link.png */; };
 		8CBD8E1B16548AFC00749A8F /* LF-pcc6-2-32-576.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CBD8E1616548AFC00749A8F /* LF-pcc6-2-32-576.png */; };
 		8CBD8E1C16548AFC00749A8F /* fyad-starcraft.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CBD8E1716548AFC00749A8F /* fyad-starcraft.png */; };
@@ -935,6 +936,7 @@
 		1C5BA3E616CA4D9400375A72 /* AwfulPageTopBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPageTopBar.m; sourceTree = "<group>"; };
 		1C5BA3E816CB886600375A72 /* AwfulScrollViewTopBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScrollViewTopBar.h; sourceTree = "<group>"; };
 		1C5BA3E916CB886600375A72 /* AwfulScrollViewTopBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScrollViewTopBar.m; sourceTree = "<group>"; };
+		1C5BA3EB16CBED3500375A72 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		1C6474AB1569989800C72657 /* AwfulForum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForum.h; sourceTree = "<group>"; };
 		1C6474AC1569989800C72657 /* AwfulForum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForum.m; sourceTree = "<group>"; };
 		1C6474AD1569989800C72657 /* AwfulModels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulModels.h; sourceTree = "<group>"; };
@@ -1737,11 +1739,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C74880A16AC4B710068B8A3 /* AssetsLibrary.framework in Frameworks */,
-				8CB5468D15BD936600E8BEC1 /* ImageIO.framework in Frameworks */,
+				1C5BA3EC16CBED3500375A72 /* AVFoundation.framework in Frameworks */,
 				10D34FA9128F41160026C7C2 /* CFNetwork.framework in Frameworks */,
 				117DBE3B1522A39A007125EF /* CoreData.framework in Frameworks */,
 				288765080DF74369002DB57D /* CoreGraphics.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
+				1C5BA3ED16CBEDA200375A72 /* ImageIO.framework in Frameworks */,
 				10D34FAF128F413C0026C7C2 /* MobileCoreServices.framework in Frameworks */,
 				11099067134B86FD0013444C /* QuartzCore.framework in Frameworks */,
 				1172A62E14F5DB160026CDA8 /* Security.framework in Frameworks */,
@@ -2227,19 +2230,20 @@
 			isa = PBXGroup;
 			children = (
 				1C74880916AC4B710068B8A3 /* AssetsLibrary.framework */,
-				8CB5468C15BD936600E8BEC1 /* ImageIO.framework */,
-				117DBE3A1522A39A007125EF /* CoreData.framework */,
-				1172A62D14F5DB160026CDA8 /* Security.framework */,
-				11099066134B86FC0013444C /* QuartzCore.framework */,
-				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
-				1D30AB110D05D00D00671497 /* Foundation.framework */,
-				288765070DF74369002DB57D /* CoreGraphics.framework */,
-				1CAB36B01548F0FE00A4A362 /* libxml2.dylib */,
+				1C5BA3EB16CBED3500375A72 /* AVFoundation.framework */,
 				10D34FA8128F41160026C7C2 /* CFNetwork.framework */,
+				117DBE3A1522A39A007125EF /* CoreData.framework */,
+				288765070DF74369002DB57D /* CoreGraphics.framework */,
+				1D30AB110D05D00D00671497 /* Foundation.framework */,
+				8CB5468C15BD936600E8BEC1 /* ImageIO.framework */,
 				10D34FAE128F413C0026C7C2 /* MobileCoreServices.framework */,
-				10D34FB0128F413C0026C7C2 /* SystemConfiguration.framework */,
-				10D34FB6128F414E0026C7C2 /* libz.dylib */,
+				11099066134B86FC0013444C /* QuartzCore.framework */,
+				1172A62D14F5DB160026CDA8 /* Security.framework */,
 				1CBDB5BD16259C6C0004BDF4 /* SenTestingKit.framework */,
+				10D34FB0128F413C0026C7C2 /* SystemConfiguration.framework */,
+				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
+				1CAB36B01548F0FE00A4A362 /* libxml2.dylib */,
+				10D34FB6128F414E0026C7C2 /* libz.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

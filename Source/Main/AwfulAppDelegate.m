@@ -23,6 +23,7 @@
 #import "AwfulStartViewController.h"
 #import "AwfulTabBarController.h"
 #import "AFNetworking.h"
+#import <AVFoundation/AVFoundation.h>
 #import "NSFileManager+UserDirectories.h"
 #import "NSManagedObject+Awful.h"
 #import "SVProgressHUD.h"
@@ -144,6 +145,8 @@ static id _instance;
                                                              diskPath:nil];
     [NSURLCache setSharedURLCache:URLCache];
     
+    [self ignoreSilentSwitchWhenPlayingEmbeddedVideo];
+    
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     
     AwfulTabBarController *tabBar = [AwfulTabBarController new];
@@ -213,6 +216,16 @@ static id _instance;
     }
     
     return YES;
+}
+
+- (void)ignoreSilentSwitchWhenPlayingEmbeddedVideo
+{
+    NSError *error;
+    BOOL ok = [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback
+                                                     error:&error];
+    if (!ok) {
+        NSLog(@"error setting shared audio session category: %@", error);
+    }
 }
 
 - (BOOL)application:(UIApplication *)application
