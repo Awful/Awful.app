@@ -13,5 +13,8 @@ typedef enum {
     // The first page that has unread posts.
     AwfulThreadPageNextUnread = -1,
     
+    // An invalid thread page.
+    AwfulThreadPageNone = 0,
+    
     /* Implicitly include values for 1 to n, where n is the number of pages in the thread. */
 } AwfulThreadPage;

@@ -14,6 +14,7 @@
 #import "AwfulExternalBrowser.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulImagePreviewViewController.h"
+#import "AwfulJumpToPageSheet.h"
 #import "AwfulModels.h"
 #import "AwfulPageBottomBar.h"
 #import "AwfulPageTopBar.h"
@@ -22,7 +23,6 @@
 #import "AwfulPullToRefreshControl.h"
 #import "AwfulReplyViewController.h"
 #import "AwfulSettings.h"
-#import "AwfulJumpToPageController.h"
 #import "AwfulTheme.h"
 #import "NSFileManager+UserDirectories.h"
 #import "NSManagedObject+Awful.h"
@@ -34,8 +34,8 @@
 #import "UINavigationItem+TwoLineTitle.h"
 #import "UIViewController+NavigationEnclosure.h"
 
-@interface AwfulPostsViewController () <AwfulPostsViewDelegate, UIPopoverControllerDelegate,
-                                        AwfulJumpToPageControllerDelegate,
+@interface AwfulPostsViewController () <AwfulPostsViewDelegate,
+                                        AwfulJumpToPageSheetDelegate,
                                         NSFetchedResultsControllerDelegate,
                                         AwfulReplyViewControllerDelegate,
                                         UIScrollViewDelegate>
@@ -53,8 +53,7 @@
 @property (weak, nonatomic) AwfulPageBottomBar *bottomBar;
 @property (weak, nonatomic) AwfulPullToRefreshControl *pullUpToRefreshControl;
 
-@property (nonatomic) AwfulJumpToPageController *jumpToPageController;
-@property (weak, nonatomic) UIView *pageNavBackingView;
+@property (nonatomic) AwfulJumpToPageSheet *jumpToPageSheet;
 
 @property (copy, nonatomic) NSString *advertisementHTML;
 
@@ -67,8 +66,6 @@
 @property (nonatomic) NSDateFormatter *regDateFormatter;
 @property (nonatomic) NSDateFormatter *postDateFormatter;
 @property (nonatomic) NSDateFormatter *editDateFormatter;
-
-@property (nonatomic) UIPopoverController *popover;
 
 @property (nonatomic) BOOL observingScrollViewSize;
 @property (nonatomic) BOOL observingThreadSeenPosts;
@@ -532,58 +529,19 @@ static char KVOContext;
 
 - (void)tappedPageNav:(id)sender
 {
-    if (self.jumpToPageController) {
-        [self dismissPopoverAnimated:YES];
-        [self.jumpToPageController willMoveToParentViewController:nil];
-        [self.jumpToPageController hideAnimated:YES completion:^{
-            [self.pageNavBackingView removeFromSuperview];
-        }];
-        [self.jumpToPageController removeFromParentViewController];
-        self.jumpToPageController = nil;
+    if (self.jumpToPageSheet) {
+        [self.jumpToPageSheet dismiss];
+        self.jumpToPageSheet = nil;
         return;
     }
     if (self.postsView.loadingMessage) return;
     if (self.thread.numberOfPagesValue < 1) return;
-    self.jumpToPageController = [AwfulJumpToPageController new];
-    self.jumpToPageController.delegate = self;
-    [self.jumpToPageController reloadPages];
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [self.jumpToPageController reloadPages];
-        self.popover = [[UIPopoverController alloc]
-                        initWithContentViewController:self.jumpToPageController];
-        self.popover.delegate = self;
-        self.popover.popoverContentSize = self.jumpToPageController.view.bounds.size;
-        [self.popover presentPopoverFromRect:self.bottomBar.jumpToPageButton.frame
-                                      inView:self.bottomBar
-                    permittedArrowDirections:UIPopoverArrowDirectionAny
-                                    animated:YES];
-    } else {
-        UIView *halfBlack = [UIView new];
-        halfBlack.frame = (CGRect){ .size = self.postsView.bounds.size };
-        halfBlack.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
-        halfBlack.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
-                                      UIViewAutoresizingFlexibleHeight);
-        UITapGestureRecognizer *tap = [UITapGestureRecognizer new];
-        [tap addTarget:self action:@selector(didTapPageNavBackground:)];
-        [halfBlack addGestureRecognizer:tap];
-        [self.view addSubview:halfBlack];
-        [self.view bringSubviewToFront:self.bottomBar];
-        self.pageNavBackingView = halfBlack;
-        [self addChildViewController:self.jumpToPageController];
-        [self.jumpToPageController showInView:self.pageNavBackingView animated:YES];
-        [self.jumpToPageController didMoveToParentViewController:self];
-    }
-}
-
-- (void)didTapPageNavBackground:(UITapGestureRecognizer *)tap
-{
-    if (tap.state != UIGestureRecognizerStateEnded) return;
-    [self tappedPageNav:nil];
+    self.jumpToPageSheet = [[AwfulJumpToPageSheet alloc] initWithDelegate:self];
+    [self.jumpToPageSheet showInView:self.view behindSubview:self.bottomBar];
 }
 
 - (void)tappedCompose
 {
-    [self dismissPopoverAnimated:YES];
     AwfulReplyViewController *reply = [AwfulReplyViewController new];
     reply.delegate = self;
     [reply replyToThread:self.thread withInitialContents:nil];
@@ -593,7 +551,6 @@ static char KVOContext;
 
 - (void)showActionsForPost:(AwfulPost *)post fromRect:(CGRect)rect inView:(UIView *)view
 {
-    [self dismissPopoverAnimated:YES];
     NSString *possessiveUsername = [NSString stringWithFormat:@"%@'s", post.author.username];
     if ([post.author.username isEqualToString:[AwfulSettings settings].username]) {
         possessiveUsername = @"Your";
@@ -684,15 +641,6 @@ static char KVOContext;
     }];
     [sheet addCancelButtonWithTitle:@"Cancel"];
     [sheet showFromRect:rect inView:view animated:YES];
-}
-
-- (void)dismissPopoverAnimated:(BOOL)animated
-{
-    if (self.popover) {
-        [self.popover dismissPopoverAnimated:animated];
-        self.popover = nil;
-        if (self.jumpToPageController) self.jumpToPageController = nil;
-    }
 }
 
 - (void)updatePullUpTriggerOffset
@@ -897,20 +845,7 @@ static char KVOContext;
                                          duration:(NSTimeInterval)duration
 {
     [self updatePullUpTriggerOffset];
-    if (self.jumpToPageController && !self.popover) {
-        CGRect frame = self.jumpToPageController.view.frame;
-        frame.size.width = self.view.frame.size.width;
-        frame.origin.y = self.postsView.frame.size.height - frame.size.height;
-        self.jumpToPageController.view.frame = frame;
-    }
-}
-
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
-{
-    [self.popover presentPopoverFromRect:self.bottomBar.jumpToPageButton.frame
-                                  inView:self.bottomBar
-                permittedArrowDirections:UIPopoverArrowDirectionAny
-                                animated:NO];
+    [self.jumpToPageSheet showInView:self.view behindSubview:self.bottomBar];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -1150,12 +1085,12 @@ static char KVOContext;
 
 #pragma mark - AwfulSpecificPageControllerDelegate
 
-- (NSInteger)numberOfPagesInJumpToPageController:(AwfulJumpToPageController *)controller
+- (NSInteger)numberOfPagesInJumpToPageSheet:(AwfulJumpToPageSheet *)sheet
 {
     return self.thread.numberOfPagesValue;
 }
 
-- (AwfulThreadPage)currentPageForJumpToPageController:(AwfulJumpToPageController *)controller
+- (AwfulThreadPage)initialPageForJumpToPageSheet:(AwfulJumpToPageSheet *)sheet
 {
     if (self.currentPage > 0) {
         return self.currentPage;
@@ -1167,28 +1102,12 @@ static char KVOContext;
     }
 }
 
-- (void)jumpToPageController:(AwfulJumpToPageController *)controller
-               didSelectPage:(AwfulThreadPage)page
+- (void)jumpToPageSheet:(AwfulJumpToPageSheet *)sheet didSelectPage:(AwfulThreadPage)page
 {
-    if (self.popover) {
-        [self dismissPopoverAnimated:YES];
-    } else {
-        [self.jumpToPageController hideAnimated:YES completion:^{
-            [self.pageNavBackingView removeFromSuperview];
-        }];
-        self.jumpToPageController = nil;
+    if (page != AwfulThreadPageNone) {
+        [self loadPage:page];
     }
-    [self loadPage:page];
-}
-
-#pragma mark - UIPopoverControllerDelegate
-
-- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popover
-{
-    if (popover == self.popover) {
-        self.popover = nil;
-        self.jumpToPageController = nil;
-    }
+    self.jumpToPageSheet = nil;
 }
 
 #pragma mark - AwfulReplyViewControllerDelegate
