@@ -1222,13 +1222,6 @@ static char KVOContext;
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark - AwfulBrowserViewControllerDelegate
-
-- (void)browserDidClose:(AwfulBrowserViewController *)browser
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
 #pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
