@@ -188,7 +188,7 @@ static NSString * JSONize(id obj)
 
 - (void)setStylesheetURL:(NSURL *)stylesheetURL
 {
-    if (_stylesheetURL == stylesheetURL) return;
+    if ([_stylesheetURL isEqual:stylesheetURL]) return;
     _stylesheetURL = stylesheetURL;
     [self updateStylesheetURL];
 }
