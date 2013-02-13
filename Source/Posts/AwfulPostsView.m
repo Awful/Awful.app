@@ -341,6 +341,10 @@ static NSString * JSONize(id obj)
             [self.delegate postsView:self didTapLinkToURL:url];
         }
         return NO;
+    } else if ([url.host hasSuffix:@"www.youtube.com"] && [url.path hasPrefix:@"/watch"]) {
+        // Prevent YouTube embeds from taking over the whole frame. This would happen if you tap
+        // the title of the video in the embed.
+        return NO;
     }
     return YES;
 }
