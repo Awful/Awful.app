@@ -126,7 +126,6 @@
     [self willChangeValueForKey:@"thread"];
     _thread = thread;
     [self didChangeValueForKey:@"thread"];
-    self.title = [thread.title stringByCollapsingWhitespace];
     [self updateFetchedResultsController];
     [self updateUserInterface];
     self.postsView.stylesheetURL = StylesheetURLForForumWithID(self.thread.forum.forumID);
@@ -199,6 +198,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 
 - (void)updateUserInterface
 {
+    self.title = [self.thread.title stringByCollapsingWhitespace];
+    
     if (self.currentPage == AwfulThreadPageLast) {
         self.postsView.loadingMessage = @"Loading last page";
     } else if (self.currentPage == AwfulThreadPageNextUnread) {
