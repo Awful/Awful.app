@@ -250,7 +250,7 @@ static id _instance;
         }
         UINavigationController *nav = self.tabBarController.viewControllers[0];
         if ([section isEqualToString:@"favorites"]) {
-            if (!forum || forum.isFavoriteValue) {
+            if (!forum || [[AwfulSettings settings].favoriteForums containsObject:forum.forumID]) {
                 nav = self.tabBarController.viewControllers[1];
             }
         }

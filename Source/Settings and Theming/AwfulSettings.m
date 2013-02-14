@@ -244,6 +244,16 @@ struct {
 
 BOOL_PROPERTY(showThreadTags, setShowThreadTags)
 
+- (NSArray *)favoriteForums
+{
+    return self[AwfulSettingsKeys.favoriteForums];
+}
+
+- (void)setFavoriteForums:(NSArray *)favoriteForums
+{
+    self[AwfulSettingsKeys.favoriteForums] = favoriteForums;
+}
+
 - (id)objectForKeyedSubscript:(id)key
 {
     return [[NSUserDefaults standardUserDefaults] objectForKey:key];
@@ -289,4 +299,5 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .showThreadTags = @"show_thread_tags",
     .yosposStyle = @"yospos_style",
     .keepSidebarOpen = @"keep_sidebar_open",
+    .favoriteForums = @"favorite_forums",
 };

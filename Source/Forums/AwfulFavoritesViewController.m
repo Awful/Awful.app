@@ -7,14 +7,14 @@
 //
 
 #import "AwfulFavoritesViewController.h"
-#import "AwfulFetchedTableViewControllerSubclass.h"
 #import "AwfulDataStack.h"
 #import "AwfulDisclosureIndicatorView.h"
+#import "AwfulForumCell.h"
 #import "AwfulForumsListController.h"
 #import "AwfulModels.h"
-#import "AwfulThreadListController.h"
-#import "AwfulForumCell.h"
+#import "AwfulSettings.h"
 #import "AwfulTheme.h"
+#import "AwfulThreadListController.h"
 
 @interface CoverView : UIView
 
@@ -27,9 +27,11 @@
 
 @interface AwfulFavoritesViewController ()
 
-@property (readonly, strong, nonatomic) UIBarButtonItem *addButtonItem;
+@property (copy, nonatomic) NSMutableArray *favoriteForums;
 
-@property (assign, nonatomic) BOOL automaticallyAdded;
+@property (nonatomic) BOOL userUpdate;
+
+@property (readonly, strong, nonatomic) UIBarButtonItem *addButtonItem;
 
 @property (weak, nonatomic) CoverView *coverView;
 
@@ -40,12 +42,42 @@
 
 - (id)init
 {
-    self = [super initWithNibName:nil bundle:nil];
-    if (self) {
-        self.title = @"Favorites";
-        self.tabBarItem.image = [UIImage imageNamed:@"favorites-icon.png"];
-    }
+    if (!(self = [super initWithNibName:nil bundle:nil])) return nil;
+    self.title = @"Favorites";
+    self.tabBarItem.image = [UIImage imageNamed:@"favorites-icon.png"];
+    _favoriteForums = [NSMutableArray new];
+    [self fetchFavoriteForums];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDidChange:)
+                                                 name:AwfulSettingsDidChangeNotification object:nil];
     return self;
+}
+
+- (void)fetchFavoriteForums
+{
+    [self.favoriteForums removeAllObjects];
+    NSArray *forumIDs = [AwfulSettings settings].favoriteForums;
+    if ([forumIDs count] == 0) return;
+    NSArray *forums = [AwfulForum fetchAllMatchingPredicate:@"forumID IN %@", forumIDs];
+    [self.favoriteForums addObjectsFromArray:forums];
+    [self.favoriteForums sortUsingComparator:^NSComparisonResult(AwfulForum *a, AwfulForum *b) {
+        NSUInteger aIndex = [forumIDs indexOfObject:a.forumID];
+        NSUInteger bIndex = [forumIDs indexOfObject:b.forumID];
+        return [@(aIndex) compare:@(bIndex)];
+    }];
+}
+
+- (void)settingsDidChange:(NSNotification *)note
+{
+    if (self.userUpdate) return;
+    NSArray *changedSettings = note.userInfo[AwfulSettingsDidChangeSettingsKey];
+    if (![changedSettings containsObject:AwfulSettingsKeys.favoriteForums]) return;
+    [self fetchFavoriteForums];
+    [self.tableView reloadData];
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)showNoFavoritesCoverAnimated:(BOOL)animated
@@ -80,27 +112,13 @@
 
 - (void)updateCoverAndEditButtonAnimated:(BOOL)animated
 {
-    if ([self.fetchedResultsController.fetchedObjects count] > 0) {
+    if ([self.favoriteForums count] > 0) {
         self.navigationItem.rightBarButtonItem = self.editButtonItem;
         [self hideNoFavoritesCover];
     } else {
         self.navigationItem.rightBarButtonItem = nil;
         [self showNoFavoritesCoverAnimated:animated];
     }
-}
-
-#pragma mark - AwfulFetchedTableViewController
-
-- (NSFetchedResultsController *)createFetchedResultsController
-{
-    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulForum entityName]];
-    request.predicate = [NSPredicate predicateWithFormat:@"isFavorite = YES"];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"favoriteIndex"
-                                                              ascending:YES]];
-    return [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                               managedObjectContext:[AwfulDataStack sharedDataStack].context
-                                                 sectionNameKeyPath:nil
-                                                          cacheName:nil];
 }
 
 #pragma mark - UIViewController
@@ -124,7 +142,9 @@
 {
     [super setEditing:editing animated:animated];
     if (!editing) {
-        [[AwfulDataStack sharedDataStack] save];
+        self.userUpdate = YES;
+        [AwfulSettings settings].favoriteForums = [self.favoriteForums valueForKey:@"forumID"];
+        self.userUpdate = NO;
         [self updateCoverAndEditButtonAnimated:YES];
     }
 }
@@ -145,17 +165,12 @@
     self.coverView.tapAStarLabel.textColor = [AwfulTheme currentTheme].noFavoritesTextColor;
 }
 
-#pragma mark - NSFetchedResultsControllerDelegate
-
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
-{
-    [super controllerDidChangeContent:controller];
-    if ([controller.fetchedObjects count] == 0) {
-        [self showNoFavoritesCoverAnimated:YES];
-    }
-}
-
 #pragma mark - UITableViewDataSource and UITableViewDelegate
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return [self.favoriteForums count];
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -172,7 +187,7 @@
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
-    AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    AwfulForum *forum = self.favoriteForums[indexPath.row];
     cell.textLabel.text = forum.name;
     cell.textLabel.textColor = [AwfulTheme currentTheme].forumCellTextColor;
     cell.selectionStyle = [AwfulTheme currentTheme].cellSelectionStyle;
@@ -192,16 +207,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
     toIndexPath:(NSIndexPath *)destinationIndexPath
 {
-    self.userDrivenChange = YES;
-    NSMutableArray *reorder = [self.fetchedResultsController.fetchedObjects mutableCopy];
-    AwfulForum *move = [reorder objectAtIndex:sourceIndexPath.row];
-    [reorder removeObjectAtIndex:sourceIndexPath.row];
-    [reorder insertObject:move atIndex:destinationIndexPath.row];
-    [reorder enumerateObjectsUsingBlock:^(AwfulForum *forum, NSUInteger i, BOOL *stop) {
-        forum.favoriteIndexValue = i;
-    }];
-    [[AwfulDataStack sharedDataStack] save];
-    self.userDrivenChange = NO;
+    [self.favoriteForums exchangeObjectAtIndex:sourceIndexPath.row
+                             withObjectAtIndex:destinationIndexPath.row];
 }
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView
@@ -215,24 +222,17 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        self.userDrivenChange = YES;
-        [tableView beginUpdates];
+        self.userUpdate = YES;
+        [self.favoriteForums removeObjectAtIndex:indexPath.row];
+        [AwfulSettings settings].favoriteForums = [self.favoriteForums valueForKey:@"forumID"];
         [tableView deleteRowsAtIndexPaths:@[ indexPath ]
                          withRowAnimation:UITableViewRowAnimationAutomatic];
-        AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
-        forum.isFavoriteValue = NO;
-        NSArray *reindex = [self.fetchedResultsController fetchedObjects];
-        [reindex enumerateObjectsUsingBlock:^(AwfulForum *f, NSUInteger i, BOOL *stop) {
-            if (f.isFavoriteValue) f.favoriteIndexValue = i;
-        }];
-        if (self.editing && [self.fetchedResultsController.fetchedObjects count] == 0) {
+        if (self.editing && [self.favoriteForums count] == 0) {
             [self setEditing:NO animated:YES];
         } else {
-            [[AwfulDataStack sharedDataStack] save];
             [self updateCoverAndEditButtonAnimated:YES];
         }
-        [tableView endUpdates];
-        self.userDrivenChange = NO;
+        self.userUpdate = NO;
     }
 }
 
@@ -244,7 +244,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    AwfulForum *forum = self.favoriteForums[indexPath.row];
     AwfulThreadListController *threadList = [AwfulThreadListController new];
     threadList.forum = forum;
     [self.navigationController pushViewController:threadList animated:YES];
