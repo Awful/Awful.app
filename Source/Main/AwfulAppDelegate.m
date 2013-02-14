@@ -9,6 +9,7 @@
 #import "AwfulAppDelegate.h"
 #import "AwfulAlertView.h"
 #import "AwfulBookmarksController.h"
+#import "AwfulCrashlytics.h"
 #import "AwfulDataStack.h"
 #import "AwfulFavoritesViewController.h"
 #import "AwfulForumsListController.h"
@@ -24,6 +25,7 @@
 #import "AwfulTabBarController.h"
 #import "AFNetworking.h"
 #import <AVFoundation/AVFoundation.h>
+#import <Crashlytics/Crashlytics.h>
 #import "NSFileManager+UserDirectories.h"
 #import "NSManagedObject+Awful.h"
 #import "SVProgressHUD.h"
@@ -137,6 +139,9 @@ static id _instance;
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     _instance = self;
+    #if defined(CRASHLYTICS_API_KEY) && !DEBUG
+    [Crashlytics startWithAPIKey:CRASHLYTICS_API_KEY];
+    #endif
     [[AwfulSettings settings] registerDefaults];
     [AwfulDataStack sharedDataStack].initFailureAction = AwfulDataStackInitFailureDelete;
     // Migrate Core Data early to avoid problems later!

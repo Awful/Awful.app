@@ -82,6 +82,7 @@
 		1C41B89B16CD1B2E00718F79 /* title-banned.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C41B89916CD1B2E00718F79 /* title-banned.gif */; };
 		1C41B89C16CD1B2E00718F79 /* title-probation.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C41B89A16CD1B2E00718F79 /* title-probation.png */; };
 		1C41B89E16CD1B8200718F79 /* title-permabanned.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C41B89D16CD1B8200718F79 /* title-permabanned.gif */; };
+		1C41B8A116CD4C7600718F79 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C41B8A016CD4C7600718F79 /* Crashlytics.framework */; };
 		1C4D7BDB167A5C7C00CF3659 /* PSMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C4D7BD9167A5C7C00CF3659 /* PSMenuItem.m */; };
 		1C5B996C166E78F9004C5D0E /* AwfulDisclosureIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B996B166E78F9004C5D0E /* AwfulDisclosureIndicatorView.m */; };
 		1C5B9970166F565C004C5D0E /* AwfulTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B996F166F565C004C5D0E /* AwfulTabBarController.m */; };
@@ -923,6 +924,8 @@
 		1C41B89916CD1B2E00718F79 /* title-banned.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = "title-banned.gif"; path = "../../../../../Desktop/title-banned.gif"; sourceTree = "<group>"; };
 		1C41B89A16CD1B2E00718F79 /* title-probation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "title-probation.png"; path = "../../../../../Desktop/title-probation.png"; sourceTree = "<group>"; };
 		1C41B89D16CD1B8200718F79 /* title-permabanned.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = "title-permabanned.gif"; path = "../../../../../Desktop/title-permabanned.gif"; sourceTree = "<group>"; };
+		1C41B8A016CD4C7600718F79 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Crashlytics.framework; path = Vendor/Crashlytics.framework; sourceTree = "<group>"; };
+		1C41B8A216CD4F1900718F79 /* AwfulCrashlytics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AwfulCrashlytics.h; sourceTree = "<group>"; };
 		1C4D7BD8167A5C7C00CF3659 /* PSMenuItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSMenuItem.h; sourceTree = "<group>"; };
 		1C4D7BD9167A5C7C00CF3659 /* PSMenuItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSMenuItem.m; sourceTree = "<group>"; };
 		1C5B996A166E78F9004C5D0E /* AwfulDisclosureIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulDisclosureIndicatorView.h; sourceTree = "<group>"; };
@@ -1755,6 +1758,7 @@
 				10D34FA9128F41160026C7C2 /* CFNetwork.framework in Frameworks */,
 				117DBE3B1522A39A007125EF /* CoreData.framework in Frameworks */,
 				288765080DF74369002DB57D /* CoreGraphics.framework in Frameworks */,
+				1C41B8A116CD4C7600718F79 /* Crashlytics.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1C5BA3ED16CBEDA200375A72 /* ImageIO.framework in Frameworks */,
 				10D34FAF128F413C0026C7C2 /* MobileCoreServices.framework in Frameworks */,
@@ -1813,6 +1817,7 @@
 				1190F7F113BE4EDA00B9D271 /* Awful_Prefix.pch */,
 				1190F71D13BE4EA900B9D271 /* AwfulAppDelegate.h */,
 				1190F71E13BE4EA900B9D271 /* AwfulAppDelegate.m */,
+				1C41B8A216CD4F1900718F79 /* AwfulCrashlytics.h */,
 				1CBDB5E51625AA240004BDF4 /* AwfulDataStack.h */,
 				1CBDB5E61625AA240004BDF4 /* AwfulDataStack.m */,
 				1C10157A164E8B0A00302B19 /* AwfulStartViewController.h */,
@@ -2249,6 +2254,7 @@
 				10D34FA8128F41160026C7C2 /* CFNetwork.framework */,
 				117DBE3A1522A39A007125EF /* CoreData.framework */,
 				288765070DF74369002DB57D /* CoreGraphics.framework */,
+				1C41B8A016CD4C7600718F79 /* Crashlytics.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
 				8CB5468C15BD936600E8BEC1 /* ImageIO.framework */,
 				10D34FAE128F413C0026C7C2 /* MobileCoreServices.framework */,
@@ -2980,8 +2986,10 @@
 			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Awful" */;
 			buildPhases = (
 				1D60588D0D05DD3D006BFB54 /* Resources */,
+				1C41B8A316CD50E500718F79 /* Configure Crashlytics */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
 				1D60588F0D05DD3D006BFB54 /* Frameworks */,
+				1C41B89F16CD4C1D00718F79 /* Crashlytics */,
 			);
 			buildRules = (
 			);
@@ -3718,6 +3726,34 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		1C41B89F16CD4C1D00718F79 /* Crashlytics */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Crashlytics;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"${CONFIGURATION}\" = \"Release\" and -f crashlytics-api-key ]; then\n    ./Vendor/Crashlytics.framework/run $(head -n 1 crashlytics-api-key)\nfi\n";
+		};
+		1C41B8A316CD50E500718F79 /* Configure Crashlytics */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Configure Crashlytics";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "rake crashlytics\n";
+		};
 		1C6ED633169103B70015CDD5 /* Compile AwfulProfileViewController JavaScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -4099,6 +4135,10 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Vendor\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -4131,6 +4171,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Vendor\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Main/Awful_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=0";

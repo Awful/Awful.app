@@ -43,6 +43,18 @@ task :sort_tags do
   end
 end
 
+desc "Include Crashlytics API key"
+task :crashlytics do
+  api_key = begin
+    File.read('crashlytics-api-key').strip
+  rescue
+    nil
+  end
+  File.open("Source/Main/AwfulCrashlytics.h", "w") do |h|
+    h << %Q|#define CRASHLYTICS_API_KEY @"#{api_key}"| if api_key
+  end
+end
+
 # Compile all third-party licenses into a single HTML file for inclusion in
 # Awful. This file is displayed verbatim within the app when a button on the
 # Settings screen is tapped.
