@@ -15,6 +15,7 @@
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "AwfulThreadListController.h"
+#import "NSManagedObject+Awful.h"
 
 @interface CoverView : UIView
 
