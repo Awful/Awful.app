@@ -264,11 +264,16 @@ BOOL_PROPERTY(showThreadTags, setShowThreadTags)
     NSParameterAssert(key);
     [self setObject:object withoutNotifyingForKey:key];
     NSDictionary *userInfo = @{ AwfulSettingsDidChangeSettingsKey : @[ key ] };
-    dispatch_async(dispatch_get_main_queue(), ^{
+    void (^notify)(void) = ^{
         [[NSNotificationCenter defaultCenter] postNotificationName:AwfulSettingsDidChangeNotification
                                                             object:self
                                                           userInfo:userInfo];
-    });
+    };
+    if ([NSThread isMainThread]) {
+        notify();
+    } else {
+        dispatch_async(dispatch_get_main_queue(), notify);
+    }
 }
 
 - (void)setObject:(id)object withoutNotifyingForKey:(id)key
