@@ -139,6 +139,8 @@ static id _instance;
     _instance = self;
     [[AwfulSettings settings] registerDefaults];
     [AwfulDataStack sharedDataStack].initFailureAction = AwfulDataStackInitFailureDelete;
+    // Migrate Core Data early to avoid problems later!
+    [[AwfulDataStack sharedDataStack] context];
     [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
     NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:5 * 1024 * 1024
                                                          diskCapacity:50 * 1024 * 1024
