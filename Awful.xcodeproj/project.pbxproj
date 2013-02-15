@@ -83,6 +83,7 @@
 		1C41B8A716CD573D00718F79 /* title-banned.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C41B8A416CD573D00718F79 /* title-banned.gif */; };
 		1C41B8A816CD573D00718F79 /* title-permabanned.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C41B8A516CD573D00718F79 /* title-permabanned.gif */; };
 		1C41B8A916CD573D00718F79 /* title-probation.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C41B8A616CD573D00718F79 /* title-probation.png */; };
+		1C41B8AB16CE8FEB00718F79 /* showthread2.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C41B8AA16CE8FEB00718F79 /* showthread2.html */; };
 		1C4D7BDB167A5C7C00CF3659 /* PSMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C4D7BD9167A5C7C00CF3659 /* PSMenuItem.m */; };
 		1C5B996C166E78F9004C5D0E /* AwfulDisclosureIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B996B166E78F9004C5D0E /* AwfulDisclosureIndicatorView.m */; };
 		1C5B9970166F565C004C5D0E /* AwfulTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B996F166F565C004C5D0E /* AwfulTabBarController.m */; };
@@ -926,6 +927,7 @@
 		1C41B8A416CD573D00718F79 /* title-banned.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "title-banned.gif"; sourceTree = "<group>"; };
 		1C41B8A516CD573D00718F79 /* title-permabanned.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "title-permabanned.gif"; sourceTree = "<group>"; };
 		1C41B8A616CD573D00718F79 /* title-probation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "title-probation.png"; sourceTree = "<group>"; };
+		1C41B8AA16CE8FEB00718F79 /* showthread2.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = showthread2.html; sourceTree = "<group>"; };
 		1C4D7BD8167A5C7C00CF3659 /* PSMenuItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSMenuItem.h; sourceTree = "<group>"; };
 		1C4D7BD9167A5C7C00CF3659 /* PSMenuItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSMenuItem.m; sourceTree = "<group>"; };
 		1C5B996A166E78F9004C5D0E /* AwfulDisclosureIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulDisclosureIndicatorView.h; sourceTree = "<group>"; };
@@ -2073,6 +2075,7 @@
 				1CB9B8541694339E00A3CD16 /* profile5.html */,
 				1CB9B85616943F5E00A3CD16 /* profile6.html */,
 				1CBDB5EF1625B76F0004BDF4 /* showthread.html */,
+				1C41B8AA16CE8FEB00718F79 /* showthread2.html */,
 			);
 			path = Fixtures;
 			sourceTree = "<group>";
@@ -3062,6 +3065,7 @@
 				1CB9B8531694334500A3CD16 /* profile4.html in Resources */,
 				1CB9B8551694339E00A3CD16 /* profile5.html in Resources */,
 				1CB9B85716943F5E00A3CD16 /* profile6.html in Resources */,
+				1C41B8AB16CE8FEB00718F79 /* showthread2.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

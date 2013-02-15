@@ -91,3 +91,21 @@
 }
 
 @end
+
+
+@interface WeirdSizeTagTests : ParsingTests @end
+
+@implementation WeirdSizeTagTests
+
++ (NSString *)fixtureFilename { return @"showthread2.html"; }
+
+- (void)testPageInfo
+{
+    PageParsedInfo *info = [[PageParsedInfo alloc] initWithHTMLData:self.fixture];
+    PostParsedInfo *ganker = info.posts[24];
+    STAssertEqualObjects(ganker.author.username, @"Ganker", nil);
+    PostParsedInfo *afterGanker = info.posts[25];
+    STAssertEqualObjects(afterGanker.author.username, @"brylcreem", nil);
+}
+
+@end
