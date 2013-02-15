@@ -100,7 +100,8 @@
         AwfulSettingsKeys.showAvatars,
         AwfulSettingsKeys.showImages,
         AwfulSettingsKeys.username,
-        AwfulSettingsKeys.yosposStyle
+        AwfulSettingsKeys.yosposStyle,
+        AwfulSettingsKeys.fontScale,
     ];
     NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
     if ([keys firstObjectCommonWithArray:importantKeys]) [self configurePostsViewSettings];
@@ -273,6 +274,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 {
     self.postsView.showAvatars = [AwfulSettings settings].showAvatars;
     self.postsView.showImages = [AwfulSettings settings].showImages;
+    self.postsView.fontScale = [AwfulSettings settings].fontScale;
     if ([AwfulSettings settings].highlightOwnMentions) {
         self.postsView.highlightMentionUsername = [AwfulSettings settings].username;
     } else {

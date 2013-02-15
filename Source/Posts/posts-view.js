@@ -799,6 +799,12 @@ Awful.showImages = function(on){
   }
 }
 
+Awful.fontScale = function(percentage) {
+    Awful._fontScale = percentage
+    buf = document.getElementsByTagName('body')[0].style
+    buf.fontSize = Awful._fontScale + "%"
+}
+
 function render(post) {
   rendered = $('#postTemplate').mustache(post)
   // Some links and images come with relative URLs, which break as we set our

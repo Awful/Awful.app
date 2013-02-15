@@ -28,6 +28,8 @@
 
 @property (strong, nonatomic) NSMutableArray *switches;
 
+@property (strong, nonatomic) NSMutableArray *sliders;
+
 @end
 
 
@@ -91,6 +93,7 @@
 {
     [super viewDidLoad];
     self.switches = [NSMutableArray new];
+    self.sliders = [NSMutableArray new];
     NSString *device = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"iPad" : @"iPhone";
     NSPredicate *sectionPredicate = [NSPredicate predicateWithFormat:
                                      @"Device = nil OR Device = %@", device];
@@ -133,6 +136,7 @@ typedef enum SettingType
     OnOffSetting,
     ChoiceSetting,
     ButtonSetting,
+    SliderSetting,
 } SettingType;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
@@ -152,6 +156,9 @@ typedef enum SettingType
     } else if (setting[@"Action"]) {
         settingType = ButtonSetting;
         identifier = @"Action";
+    } else if ([setting[@"Type"] isEqual:@"Slider"]) {
+        settingType = SliderSetting;
+        identifier = @"Slider";
     }
     UITableViewCellStyle style = UITableViewCellStyleValue1;
     if (settingType == OnOffSetting || settingType == ButtonSetting) {
@@ -170,6 +177,12 @@ typedef enum SettingType
             cell.accessoryView = switchView;
         } else if (settingType == ChoiceSetting) {
             cell.accessoryView = [AwfulDisclosureIndicatorView new];
+        } else if (settingType == SliderSetting) {
+            UISlider *sliderView = [UISlider new];
+            [sliderView addTarget:self
+                           action:@selector(moveSlider:)
+                 forControlEvents:UIControlEventValueChanged];
+            cell.accessoryView = sliderView;
         }
     }
     if (style == UITableViewCellStyleValue1) {
@@ -210,6 +223,19 @@ typedef enum SettingType
                 break;
             }
         }
+    } else if (settingType == SliderSetting) {
+        UISlider *sliderView = (UISlider *)cell.accessoryView;
+        sliderView.minimumValue = [setting[@"Minimum"] floatValue];
+        sliderView.maximumValue = [setting[@"Maximum"] floatValue];
+        sliderView.value = [setting[@"Default"] floatValue];
+        sliderView.continuous = NO;
+        sliderView.value = [valueForSetting floatValue];
+        NSUInteger tag = [self.sliders indexOfObject:indexPath];
+        if (tag == NSNotFound) {
+            tag = self.sliders.count;
+            [self.sliders addObject:indexPath];
+        }
+        sliderView.tag = tag;
     }
     
     if (settingType == ChoiceSetting || settingType == ButtonSetting) {
@@ -233,6 +259,16 @@ typedef enum SettingType
     NSDictionary *setting = [self settingForIndexPath:indexPath];
     NSString *key = setting[@"Key"];
     [AwfulSettings settings][key] = @(switchView.on);
+    
+}
+
+- (void)moveSlider:(UISlider *)sliderView
+{
+    NSIndexPath *indexPath = self.sliders[sliderView.tag];
+    NSDictionary *setting = [self settingForIndexPath:indexPath];
+    NSString *key = setting[@"Key"];
+    //NSLog(@"setting slider '%@' to value: %f", key, sliderView.value);
+    [AwfulSettings settings][key] = @(sliderView.value);
 }
 
 - (void)tableView:(UITableView *)tableView

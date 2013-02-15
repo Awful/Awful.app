@@ -67,6 +67,20 @@
 			<array>
 				<dict>
 					<key>Title</key>
+					<string>Font Size</string>
+					<key>Type</key>
+					<string>Slider</string>
+					<key>Default</key>
+					<integer>100</integer>
+					<key>Minimum</key>
+					<integer>25</integer>
+					<key>Maximum</key>
+					<integer>250</integer>
+					<key>Key</key>
+					<string>font_scale</string>
+				</dict>
+				<dict>
+					<key>Title</key>
 					<string>Dark Theme</string>
 					<key>Type</key>
 					<string>Switch</string>
