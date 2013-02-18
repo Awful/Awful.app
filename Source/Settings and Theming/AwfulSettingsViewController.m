@@ -28,6 +28,8 @@
 
 @property (strong, nonatomic) NSMutableArray *switches;
 
+@property (nonatomic) BOOL canReachDevDotForums;
+
 @end
 
 
@@ -35,17 +37,34 @@
 
 - (id)init
 {
-    self = [super initWithStyle:UITableViewStyleGrouped];
-    if (self) {
-        self.title = @"Settings";
-        self.tabBarItem.image = [UIImage imageNamed:@"cog.png"];
-    }
+    if (!(self = [super initWithStyle:UITableViewStyleGrouped])) return nil;
+    self.title = @"Settings";
+    self.tabBarItem.image = [UIImage imageNamed:@"cog.png"];
     return self;
 }
 
 - (void)dismissLicenses
 {
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (BOOL)canReachDevDotForums
+{
+    if (_canReachDevDotForums) return _canReachDevDotForums;
+    if ([AwfulSettings settings].useDevDotForums) {
+        _canReachDevDotForums = YES;
+        return _canReachDevDotForums;
+    }
+    __weak AwfulSettingsViewController *weakSelf = self;
+    [[AwfulHTTPClient client] tryAccessingDevDotForumsAndThen:^(NSError *error, BOOL success) {
+        AwfulSettingsViewController *strongSelf = weakSelf;
+        strongSelf.canReachDevDotForums = success;
+        if (success) {
+            [strongSelf reloadSections];
+            [strongSelf.tableView reloadData];
+        }
+    }];
+    return _canReachDevDotForums;
 }
 
 #pragma mark - AwfulTableViewController

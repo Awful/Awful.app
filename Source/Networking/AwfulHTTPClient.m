@@ -24,15 +24,37 @@
 
 @implementation AwfulHTTPClient
 
+static AwfulHTTPClient *instance = nil;
+
 + (AwfulHTTPClient *)client
 {
-    static AwfulHTTPClient *instance;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        NSURL *baseURL = [NSURL URLWithString:@"http://forums.somethingawful.com/"];
-        instance = [[AwfulHTTPClient alloc] initWithBaseURL:baseURL];
-    });
+    @synchronized([AwfulHTTPClient class]) {
+        if (!instance) {
+            NSURL *baseURL = [NSURL URLWithString:@"http://forums.somethingawful.com/"];
+            if ([AwfulSettings settings].useDevDotForums) {
+                baseURL = [NSURL URLWithString:@"http://dev.forums.somethingawful.com/"];
+            }
+            instance = [[AwfulHTTPClient alloc] initWithBaseURL:baseURL];
+        }
+    }
     return instance;
+}
+
++ (void)initialize
+{
+    if (self != [AwfulHTTPClient class]) return;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDidChange:)
+                                                 name:AwfulSettingsDidChangeNotification
+                                               object:nil];
+}
+
++ (void)settingsDidChange:(NSNotification *)note
+{
+    NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
+    if (![keys containsObject:AwfulSettingsKeys.useDevDotForums]) return;
+    // Clear the singleton instance so it's recreated on next access.
+    // Not synchronizing; I don't really care if some last thread gets the old client.
+    instance = nil;
 }
 
 - (BOOL)isLoggedIn
@@ -637,6 +659,35 @@ static NSString * Entitify(NSString *noEntities)
     }];
     [op setCreateParsedInfoBlock:^id(NSData *data) {
         return [BanParsedInfo bansWithHTMLData:data];
+    }];
+    [self enqueueHTTPRequestOperation:op];
+    return op;
+}
+
+- (NSOperation *)tryAccessingDevDotForumsAndThen:(void (^)(NSError *error, BOOL success))callback
+{
+    NSURL *url = [NSURL URLWithString:@"http://dev.forums.somethingawful.com/"];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setHTTPMethod:@"HEAD"];
+    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
+                                                               success:^(id _, id __)
+    {
+        if (callback) callback(nil, YES);
+    } failure:^(id _, NSError *error) {
+        if (callback) callback(error, NO);
+    }];
+    // The Forums redirects users away from dev.forums if they don't have permission.
+    __weak AFHTTPRequestOperation *weakOp = op;
+    [op setRedirectResponseBlock:^NSURLRequest *(id _, NSURLRequest *request, NSURLResponse *response) {
+        if (!response) return request;
+        AFHTTPRequestOperation *strongOp = weakOp;
+        [strongOp cancel];
+        if (callback) {
+            dispatch_async(strongOp.successCallbackQueue ?: dispatch_get_main_queue(), ^{
+                callback(nil, NO);
+            });
+        }
+        return nil;
     }];
     [self enqueueHTTPRequestOperation:op];
     return op;

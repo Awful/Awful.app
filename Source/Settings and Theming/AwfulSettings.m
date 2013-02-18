@@ -254,6 +254,8 @@ BOOL_PROPERTY(showThreadTags, setShowThreadTags)
     self[AwfulSettingsKeys.favoriteForums] = favoriteForums;
 }
 
+BOOL_PROPERTY(useDevDotForums, setUseDevDotForums)
+
 - (id)objectForKeyedSubscript:(id)key
 {
     return [[NSUserDefaults standardUserDefaults] objectForKey:key];
@@ -305,4 +307,5 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .yosposStyle = @"yospos_style",
     .keepSidebarOpen = @"keep_sidebar_open",
     .favoriteForums = @"favorite_forums",
+    .useDevDotForums = @"use_dev_dot_forums",
 };
