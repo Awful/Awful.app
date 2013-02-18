@@ -19,7 +19,6 @@
 @property (nonatomic) NSInteger currentPage;
 
 @property (nonatomic) NSMutableArray *bans;
-
 @property (nonatomic) NSMutableSet *banIDs;
 
 @property (nonatomic) UIImage *cellBackgroundImage;
