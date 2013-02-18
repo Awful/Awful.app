@@ -356,6 +356,13 @@ withImagePlaceholderResults:placeholderResults
     }
     [menuItems addObject:[[PSMenuItem alloc] initWithTitle:@"[img]"
                                                      block:^{ [self wrapSelectionInTag:@"[img]"]; }]];
+    if ([UIPasteboard generalPasteboard].image) {
+        [menuItems addObject:[[PSMenuItem alloc] initWithTitle:@"Paste" block:^{
+            UIImage *image = [UIPasteboard generalPasteboard].image;
+            [self saveImageAndInsertPlaceholder:image];
+            [self.replyTextView becomeFirstResponder];
+        }]];
+    }
     [UIMenuController sharedMenuController].menuItems = menuItems;
     self.replyTextView.showStandardMenuItems = NO;
 }
@@ -581,17 +588,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     if ([info[UIImagePickerControllerMediaType] isEqual:(NSString *)kUTTypeImage]) {
         UIImage *image = info[UIImagePickerControllerEditedImage];
         if (!image) image = info[UIImagePickerControllerOriginalImage];
-        NSNumberFormatterStyle numberStyle = NSNumberFormatterSpellOutStyle;
-        NSString *key = [NSNumberFormatter localizedStringFromNumber:@([self.images count] + 1)
-                                                         numberStyle:numberStyle];
-        // TODO when we implement reloading state after termination, save images to Caches folder.
-        self.images[key] = image;
-        
-        // "Keep all images smaller than **800 pixels horizontal and 600 pixels vertical.**"
-        // http://www.somethingawful.com/d/forum-rules/forum-rules.php?page=2
-        BOOL shouldThumbnail = image.size.width > 800 || image.size.height > 600;
-        [self.replyTextView replaceRange:self.replyTextView.selectedTextRange
-                                withText:ImageKeyToPlaceholder(key, shouldThumbnail)];
+        [self saveImageAndInsertPlaceholder:image];
     }
     if (self.pickerPopover) {
         [self.pickerPopover dismissPopoverAnimated:YES];
@@ -600,6 +597,21 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
         [picker dismissViewControllerAnimated:YES completion:nil];
     }
     [self.replyTextView becomeFirstResponder];
+}
+
+- (void)saveImageAndInsertPlaceholder:(UIImage *)image
+{
+    NSNumberFormatterStyle numberStyle = NSNumberFormatterSpellOutStyle;
+    NSString *key = [NSNumberFormatter localizedStringFromNumber:@([self.images count] + 1)
+                                                     numberStyle:numberStyle];
+    // TODO when we implement reloading state after termination, save images to Caches folder.
+    self.images[key] = image;
+    
+    // "Keep all images smaller than **800 pixels horizontal and 600 pixels vertical.**"
+    // http://www.somethingawful.com/d/forum-rules/forum-rules.php?page=2
+    BOOL shouldThumbnail = image.size.width > 800 || image.size.height > 600;
+    [self.replyTextView replaceRange:self.replyTextView.selectedTextRange
+                            withText:ImageKeyToPlaceholder(key, shouldThumbnail)];
 }
 
 static NSString *ImageKeyToPlaceholder(NSString *key, BOOL thumbnail)
