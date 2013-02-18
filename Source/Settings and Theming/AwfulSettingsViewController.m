@@ -91,10 +91,7 @@
 {
     [super viewDidLoad];
     self.switches = [NSMutableArray new];
-    NSString *device = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"iPad" : @"iPhone";
-    NSPredicate *sectionPredicate = [NSPredicate predicateWithFormat:
-                                     @"Device = nil OR Device = %@", device];
-    self.sections = [AwfulSettings.settings.sections filteredArrayUsingPredicate:sectionPredicate];
+    
     self.tableView.backgroundView = nil;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
     
@@ -102,9 +99,28 @@
     self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 18, 0);
 }
 
+- (void)reloadSections
+{
+    NSString *currentDevice = @"iPhone";
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        currentDevice = @"iPad";
+    }
+    NSMutableArray *sections = [NSMutableArray new];
+    for (NSDictionary *section in [AwfulSettings settings].sections) {
+        if (section[@"Device"] && ![section[@"Device"] isEqual:currentDevice]) continue;
+        if (section[@"Predicate"]) {
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:section[@"Predicate"]];
+            if (![predicate evaluateWithObject:self]) continue;
+        }
+        [sections addObject:section];
+    }
+    self.sections = sections;
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    [self reloadSections];
     [self.tableView reloadData];
 }
 
