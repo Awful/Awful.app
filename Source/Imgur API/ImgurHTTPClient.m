@@ -36,14 +36,6 @@
 @end
 
 
-@interface AFHTTPRequestOperation (DoBadThings)
-
-// Don't do this.
-- (void)ignoreSecureSocketAuthenticationTHINKTWICEABOUTDOINGTHIS;
-
-@end
-
-
 @implementation ImgurHTTPClient
 
 + (ImgurHTTPClient *)client
@@ -94,16 +86,8 @@
                                 fileName:@"image.png"
                                 mimeType:@"image/png"];
         }];
-        AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request
-                                                                          success:nil
-                                                                          failure:nil];
-        // AFNetworking has a bug with multipart form uploads over https.
-        // https://github.com/AFNetworking/AFNetworking/issues/661
-        // We can work around it by skipping the authentication challenge, so our request is not
-        // restarted.
-        // TODO as soon as possible (i.e. when issue is fixed) take this out.
-        [operation ignoreSecureSocketAuthenticationTHINKTWICEABOUTDOINGTHIS];
-        [operations addObject:operation];
+        [operations addObject:[self HTTPRequestOperationWithRequest:request
+                                                            success:nil failure:nil]];
     }
     urlOp.uploadOperations = operations;
     [self enqueueBatchOfHTTPRequestOperations:operations progressBlock:nil completionBlock:nil];
@@ -253,33 +237,6 @@
 + (NSSet *)keyPathsForValuesAffectingIsReady
 {
     return [NSSet setWithObjects:@"resizeOperation", @"uploadOperations", nil];
-}
-
-@end
-
-
-@implementation AFHTTPRequestOperation (DoBadThings)
-
-- (void)ignoreSecureSocketAuthenticationTHINKTWICEABOUTDOINGTHIS
-{
-    // This is, in general, a bad idea.
-    // Make sure you need to do it.
-    // "I'm lazy" is not a need.
-    [self setAuthenticationAgainstProtectionSpaceBlock:^BOOL(NSURLConnection *connection,
-                                                             NSURLProtectionSpace *space)
-    {
-        return [space.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust];
-    }];
-    [self setAuthenticationChallengeBlock:^(NSURLConnection *connection,
-                                            NSURLAuthenticationChallenge *challenge)
-    {
-        NSURLProtectionSpace *space = challenge.protectionSpace;
-        if ([space.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
-            [challenge.sender useCredential:[NSURLCredential credentialForTrust:space.serverTrust]
-                 forAuthenticationChallenge:challenge];
-            return;
-        }
-    }];
 }
 
 @end
