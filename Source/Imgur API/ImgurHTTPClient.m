@@ -110,17 +110,9 @@
     NSMutableArray *imageDatas = [NSMutableArray new];
     for (__strong UIImage *image in _images) {
         if ([self isCancelled]) return;
-        CGSize newSize = image.size;
-        switch (image.imageOrientation) {
-            case UIImageOrientationLeft:
-            case UIImageOrientationLeftMirrored:
-            case UIImageOrientationRight:
-            case UIImageOrientationRightMirrored:
-                newSize = CGSizeMake(newSize.height, newSize.width);
-            default:
-                break;
-        }
-        image = [image resizedImage:newSize interpolationQuality:kCGInterpolationHigh];
+        // -resizedImage:interpolationQuality: will rotate the image data for us, so we call it
+        // once unconditionally.
+        image = [image resizedImage:image.size interpolationQuality:kCGInterpolationHigh];
         const NSUInteger TenMB = 10485760;
         NSData *data = UIImagePNGRepresentation(image);
         while ([data length] > TenMB && ![self isCancelled]) {
@@ -209,9 +201,7 @@
         }
         NSString *url = response[@"data"][@"link"];
         if (!url) {
-            NSDictionary *userInfo = @{
-                NSLocalizedDescriptionKey : @"Missing image URL"
-            };
+            NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : @"Missing image URL" };
             NSError *error = [NSError errorWithDomain:ImgurAPIErrorDomain
                                                  code:ImgurAPIErrorMissingImageURL
                                              userInfo:userInfo];
