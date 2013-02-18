@@ -140,7 +140,10 @@
     UIViewController *selected = self.viewControllers[[tabBar.items indexOfObject:item]];
     if ([self.delegate respondsToSelector:
          @selector(tabBarController:shouldSelectViewController:)]) {
-        if (![self.delegate tabBarController:self shouldSelectViewController:selected]) return;
+        if (![self.delegate tabBarController:self shouldSelectViewController:selected]) {
+            self.tabBar.selectedItem = self.selectedViewController.tabBarItem;
+            return;
+        }
     }
     if ([selected isEqual:self.selectedViewController]) {
         if ([selected isKindOfClass:[UINavigationController class]]) {
