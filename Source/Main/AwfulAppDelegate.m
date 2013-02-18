@@ -224,8 +224,8 @@ static id _instance;
     }
     
     if ([AwfulHTTPClient client].loggedIn && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        AwfulSplitViewController *split = (AwfulSplitViewController *)self.window.rootViewController;
-        [split performSelector:@selector(showMasterView) withObject:nil afterDelay:0.1];
+        [self.splitViewController performSelector:@selector(showMasterView) withObject:nil
+                                       afterDelay:0.1];
     }
     
     return YES;

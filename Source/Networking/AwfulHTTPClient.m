@@ -593,15 +593,15 @@ static NSString * Entitify(NSString *noEntities)
             if (callback) callback(error, nil, 0);
         }
     }];
-    __weak AFHTTPRequestOperation *blockOp = op;
+    __weak AFHTTPRequestOperation *weakOp = op;
     [op setRedirectResponseBlock:^NSURLRequest *(id _, NSURLRequest *request, NSURLResponse *response)
     {
+        AFHTTPRequestOperation *strongOp = weakOp;
         if (!response) return request;
-        [blockOp cancel];
+        [strongOp cancel];
         NSDictionary *query = [[request URL] queryDictionary];
         if (callback) {
-            dispatch_queue_t queue = blockOp.successCallbackQueue ?: dispatch_get_main_queue();
-            dispatch_async(queue, ^{
+            dispatch_async(strongOp.successCallbackQueue ?: dispatch_get_main_queue(), ^{
                 callback(nil, query[@"threadid"], [query[@"pagenumber"] integerValue]);
             });
         }
