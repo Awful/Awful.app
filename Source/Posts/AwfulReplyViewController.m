@@ -336,11 +336,36 @@ withImagePlaceholderResults:placeholderResults
 - (void)configureTopLevelMenuItems
 {
     [UIMenuController sharedMenuController].menuItems = @[
-        [[PSMenuItem alloc] initWithTitle:@"[url]" block:^{ [self linkifySelection]; }],
+        [[PSMenuItem alloc] initWithTitle:@"[url]" block:^{
+            [self showURLMenuOrLinkifySelection];
+        }],
         [[PSMenuItem alloc] initWithTitle:@"[img]" block:^{ [self insertImage]; }],
         [[PSMenuItem alloc] initWithTitle:@"Format" block:^{ [self showFormattingSubmenu]; }]
     ];
     self.replyTextView.showStandardMenuItems = YES;
+}
+
+- (void)showURLMenuOrLinkifySelection
+{
+    NSURL *copiedURL = [UIPasteboard generalPasteboard].URL;
+    if (!copiedURL) {
+        copiedURL = [NSURL URLWithString:[UIPasteboard generalPasteboard].string];
+    }
+    if (copiedURL) {
+        [self configureURLSubmenuItems];
+        [self showSubmenuThenResetToTopLevelMenuOnHide];
+    } else {
+        [self linkifySelection];
+    }
+}
+
+- (void)configureURLSubmenuItems
+{
+    PSMenuItem *tag = [[PSMenuItem alloc] initWithTitle:@"[url]"
+                                                  block:^{ [self linkifySelection]; }];
+    PSMenuItem *paste = [[PSMenuItem alloc] initWithTitle:@"Paste" block:^{ [self pasteURL]; }];
+    [UIMenuController sharedMenuController].menuItems = @[ tag, paste ];
+    self.replyTextView.showStandardMenuItems = NO;
 }
 
 - (void)configureImageSourceSubmenuItems
@@ -406,6 +431,19 @@ withImagePlaceholderResults:placeholderResults
     } else {
         [self wrapSelectionInTag:@"[url=]"];
     }
+}
+
+- (void)pasteURL
+{
+    // TODO grab reply text box selection.
+    // Wrap [url=url-from-pasteboard]...[/url] around it.
+    // if no selection, put cursor inside tag.
+    NSURL *copiedURL = [UIPasteboard generalPasteboard].URL;
+    if (!copiedURL) {
+        copiedURL = [NSURL URLWithString:[UIPasteboard generalPasteboard].string];
+    }
+    NSString *tag = [NSString stringWithFormat:@"[url=%@]", copiedURL.absoluteString];
+    [self wrapSelectionInTag:tag];
 }
 
 - (void)insertImage
@@ -492,12 +530,16 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
 
 - (void)wrapSelectionInTag:(NSString *)tag
 {
+    NSRange equalsPart = [tag rangeOfString:@"="];
+    NSRange end = [tag rangeOfString:@"]"];
+    if (equalsPart.location != NSNotFound) {
+        equalsPart.length = end.location - equalsPart.location;
+    }
     NSMutableString *closingTag = [tag mutableCopy];
+    if (equalsPart.location != NSNotFound) {
+        [closingTag deleteCharactersInRange:equalsPart];
+    }
     [closingTag insertString:@"/" atIndex:1];
-    [closingTag replaceOccurrencesOfString:@"="
-                                withString:@""
-                                   options:0
-                                     range:NSMakeRange(0, [closingTag length])];
     if ([tag hasSuffix:@"\n"]) {
         [closingTag insertString:@"\n" atIndex:0];
     }
@@ -505,11 +547,14 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
     NSString *selection = [self.replyTextView.text substringWithRange:range];
     NSString *tagged = [NSString stringWithFormat:@"%@%@%@", tag, selection, closingTag];
     [self.replyTextView replaceRange:self.replyTextView.selectedTextRange withText:tagged];
-    NSRange equalsSign = [tag rangeOfString:@"="];
-    if (equalsSign.location == NSNotFound && ![tag hasSuffix:@"\n"]) {
+    if (equalsPart.location == NSNotFound && ![tag hasSuffix:@"\n"]) {
         self.replyTextView.selectedRange = NSMakeRange(range.location + [tag length], range.length);
+    } else if (equalsPart.length == 1 || range.length == 0) {
+        self.replyTextView.selectedRange = NSMakeRange(range.location + equalsPart.location +
+                                                       equalsPart.length + 1, 0);
     } else {
-        self.replyTextView.selectedRange = NSMakeRange(range.location + equalsSign.location + 1, 0);
+        self.replyTextView.selectedRange = NSMakeRange(range.location + range.length +
+                                                       [tag length] + [closingTag length], 0);
     }
     [self.replyTextView becomeFirstResponder];
 }
