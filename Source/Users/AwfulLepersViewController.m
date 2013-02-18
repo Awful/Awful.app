@@ -265,6 +265,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     if (!ban.postID) return;
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"awful://posts/%@", ban.postID]];
     [[UIApplication sharedApplication] openURL:url];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 @end
