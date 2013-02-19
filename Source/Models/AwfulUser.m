@@ -52,37 +52,28 @@
         user = [self insertNew];
         user.userID = userID;
     }
-    // Username and user ID (above) always appear.
-    // TODO fix for numeric-looking usernames coming in as JSON numbers. Remove when fixed
-    // server-side.
-    if ([json[@"username"] respondsToSelector:@selector(stringValue)]) {
-        user.username = [json[@"username"] stringValue];
-    } else {
-        user.username = json[@"username"];
-    }
-    
-    #define ObjOrNilIfEmpty(obj) ([(obj) length] > 0 ? (obj) : nil)
+    user.username = Stringify(json[@"username"]);
     
     // Everything else is optional.
-    if (json[@"aim"]) user.aimName = ObjOrNilIfEmpty(json[@"aim"]);
-    if (json[@"biography"]) user.aboutMe = ObjOrNilIfEmpty(json[@"biography"]);
+    if (json[@"aim"]) user.aimName = StringOrNilIfEmpty(json[@"aim"]);
+    if (json[@"biography"]) user.aboutMe = StringOrNilIfEmpty(json[@"biography"]);
     if (json[@"gender"]) {
         if ([json[@"gender"] isEqual:@"F"]) user.gender = @"female";
         else if ([json[@"gender"] isEqual:@"M"]) user.gender = @"male";
         else user.gender = @"porpoise";
     }
-    if (json[@"homepage"]) user.homepageURL = ObjOrNilIfEmpty(json[@"homepage"]);
-    if (json[@"icq"]) user.icqName = ObjOrNilIfEmpty(json[@"icq"]);
-    if (json[@"interests"]) user.interests = ObjOrNilIfEmpty(json[@"interests"]);
+    if (json[@"homepage"]) user.homepageURL = StringOrNilIfEmpty(json[@"homepage"]);
+    if (json[@"icq"]) user.icqName = StringOrNilIfEmpty(json[@"icq"]);
+    if (json[@"interests"]) user.interests = StringOrNilIfEmpty(json[@"interests"]);
     if (json[@"joindate"]) {
         user.regdate = [NSDate dateWithTimeIntervalSince1970:[json[@"joindate"] doubleValue]];
     }
     if (json[@"lastpost"]) {
         user.lastPost = [NSDate dateWithTimeIntervalSince1970:[json[@"lastpost"] doubleValue]];
     }
-    if (json[@"location"]) user.location = ObjOrNilIfEmpty(json[@"location"]);
-    if (json[@"occupation"]) user.occupation = ObjOrNilIfEmpty(json[@"occupation"]);
-    if (json[@"picture"]) user.profilePictureURL = ObjOrNilIfEmpty(json[@"picture"]);
+    if (json[@"location"]) user.location = StringOrNilIfEmpty(json[@"location"]);
+    if (json[@"occupation"]) user.occupation = StringOrNilIfEmpty(json[@"occupation"]);
+    if (json[@"picture"]) user.profilePictureURL = StringOrNilIfEmpty(json[@"picture"]);
     if (json[@"posts"]) user.postCount = json[@"posts"];
     if (json[@"postsperday"]) user.postRate = [json[@"postsperday"] stringValue];
     if (json[@"role"]) {
@@ -90,10 +81,25 @@
         user.moderatorValue = [json[@"role"] isEqual:@"M"];        
     }
     if (json[@"usertitle"]) user.customTitle = json[@"usertitle"];
-    if (json[@"yahoo"]) user.yahooName = ObjOrNilIfEmpty(json[@"yahoo"]);
+    if (json[@"yahoo"]) user.yahooName = StringOrNilIfEmpty(json[@"yahoo"]);
     
     [[AwfulDataStack sharedDataStack] save];
     return user;
+}
+
+static id StringOrNilIfEmpty(const id obj)
+{
+    if (!obj || [obj isEqual:[NSNull null]]) return nil;
+    if ([obj respondsToSelector:@selector(length)] && [obj length] == 0) return nil;
+    return Stringify(obj);
+}
+
+static NSString * Stringify(const id obj)
+{
+    if (!obj || [obj isEqual:[NSNull null]]) return obj;
+    if ([obj isKindOfClass:[NSString class]]) return obj;
+    if ([obj respondsToSelector:@selector(stringValue)]) return [obj stringValue];
+    return [obj description];
 }
 
 @end
