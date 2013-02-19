@@ -19,6 +19,8 @@
 
 @property (getter=isReachable, nonatomic) BOOL reachable;
 
+@property (readonly, nonatomic) BOOL usingDevDotForums;
+
 @end
 
 
@@ -63,6 +65,11 @@ static AwfulHTTPClient *instance = nil;
     return [[cookies valueForKey:@"name"] containsObject:@"bbuserid"];
 }
 
+- (BOOL)usingDevDotForums
+{
+    return [self.baseURL.host hasPrefix:@"dev.forums"];
+}
+
 - (id)initWithBaseURL:(NSURL *)url
 {
     self = [super initWithBaseURL:url];
@@ -86,7 +93,7 @@ static AwfulHTTPClient *instance = nil;
         @"perpage": @40,
         @"pagenumber": @(page),
     } mutableCopy];
-    if ([self.baseURL.host hasPrefix:@"dev.forums"]) {
+    if (self.usingDevDotForums) {
         parameters[@"json"] = @1;
     }
     NSURLRequest *request = [self requestWithMethod:@"GET" path:@"forumdisplay.php"
@@ -126,7 +133,7 @@ static AwfulHTTPClient *instance = nil;
         @"perpage": @40,
         @"pagenumber": @(page),
     } mutableCopy];
-    if ([self.baseURL.host hasPrefix:@"dev.forums"]) {
+    if (self.usingDevDotForums) {
         parameters[@"json"] = @1;
     }
     NSURLRequest *request = [self requestWithMethod:@"GET" path:@"bookmarkthreads.php"
@@ -159,7 +166,7 @@ static AwfulHTTPClient *instance = nil;
                                                    NSString *advertisementHTML))callback
 {
     NSMutableDictionary *parameters = [@{ @"threadid": threadID } mutableCopy];
-    if ([self.baseURL.host hasPrefix:@"dev.forums"]) {
+    if (self.usingDevDotForums) {
         parameters[@"json"] = @1;
     }
     parameters[@"perpage"] = @40;
@@ -254,48 +261,50 @@ static AwfulHTTPClient *instance = nil;
 
 - (NSOperation *)listForumsAndThen:(void (^)(NSError *error, NSArray *forums))callback
 {
-    // Seems like only forumdisplay.php and showthread.php have the <select> with a complete list
-    // of forums. We'll use the Main "forum" as it's the smallest page with the drop-down list.
-    NSURLRequest *urlRequest = [self requestWithMethod:@"GET"
-                                                  path:@"forumdisplay.php"
-                                            parameters:@{ @"forumid": @"48" }];
-    id op = [self HTTPRequestOperationWithRequest:urlRequest
-                                          success:^(id _, ForumHierarchyParsedInfo *info)
-    {
-        NSArray *forums = [AwfulForum updateCategoriesAndForums:info];
-        if (callback) callback(nil, forums);
-    } failure:^(id _, NSError *error) {
-        if (callback) callback(error, nil);
-    }];
-    [op setCreateParsedInfoBlock:^id(NSData *data) {
-        return [[ForumHierarchyParsedInfo alloc] initWithHTMLData:data];
-    }];
-    [self enqueueHTTPRequestOperation:op];
-    return op;
-    
-    // TODO when JSON output from index.php hits production, or we can otherwise tell whether we're
-    // on dev.forums, use this code instead.
-//    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:@""
-//                                            parameters:@{ @"json": @1 }];
-//    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
-//                                                               success:^(id _, NSDictionary *json)
-//    {
-//        if (![json[@"forums"] isKindOfClass:[NSArray class]]) {
-//            NSDictionary *userInfo = @{
-//                NSLocalizedDescriptionKey: @"The forums list could not be parsed"
-//            };
-//            NSError *error = [NSError errorWithDomain:AwfulErrorDomain
-//                                                 code:AwfulErrorCodes.parseError userInfo:userInfo];
-//            if (callback) callback(error, nil);
-//            return;
-//        }
-//        NSArray *forums = [AwfulForum updateCategoriesAndForumsWithJSON:json[@"forums"]];
-//        if (callback) callback(nil, forums);
-//    } failure:^(id _, NSError *error) {
-//        if (callback) callback(error, nil);
-//    }];
-//    [self enqueueHTTPRequestOperation:op];
-//    return op;
+    if (self.usingDevDotForums) {
+        NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:@""
+                                                parameters:@{ @"json": @1 }];
+        AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
+                                                                   success:^(id _, NSDictionary *json)
+        {
+            if (![json[@"forums"] isKindOfClass:[NSArray class]]) {
+                NSDictionary *userInfo = @{
+                    NSLocalizedDescriptionKey: @"The forums list could not be parsed"
+                };
+                NSError *error = [NSError errorWithDomain:AwfulErrorDomain
+                                                     code:AwfulErrorCodes.parseError
+                                                 userInfo:userInfo];
+                if (callback) callback(error, nil);
+                return;
+            }
+            NSArray *forums = [AwfulForum updateCategoriesAndForumsWithJSON:json[@"forums"]];
+            if (callback) callback(nil, forums);
+        } failure:^(id _, NSError *error) {
+            if (callback) callback(error, nil);
+        }];
+        [self enqueueHTTPRequestOperation:op];
+        return op;
+    } else {
+        // Seems like only forumdisplay.php and showthread.php have the <select> with a complete
+        // list of forums. We'll use the Main "forum" as it's the smallest page with the drop-down
+        // list.
+        NSURLRequest *urlRequest = [self requestWithMethod:@"GET"
+                                                      path:@"forumdisplay.php"
+                                                parameters:@{ @"forumid": @"48" }];
+        id op = [self HTTPRequestOperationWithRequest:urlRequest
+                                              success:^(id _, ForumHierarchyParsedInfo *info)
+        {
+            NSArray *forums = [AwfulForum updateCategoriesAndForums:info];
+            if (callback) callback(nil, forums);
+        } failure:^(id _, NSError *error) {
+            if (callback) callback(error, nil);
+        }];
+        [op setCreateParsedInfoBlock:^id(NSData *data) {
+            return [[ForumHierarchyParsedInfo alloc] initWithHTMLData:data];
+        }];
+        [self enqueueHTTPRequestOperation:op];
+        return op;
+    }    
 }
 
 - (NSOperation *)replyToThreadWithID:(NSString *)threadID
@@ -623,8 +632,8 @@ static NSString * Entitify(NSString *noEntities)
         AwfulUser *user = [AwfulUser userCreatedOrUpdatedFromJSON:json];
         if (user.profilePictureURL && [user.profilePictureURL hasPrefix:@"/"]) {
             NSString *base = [self.baseURL absoluteString];
-            NSString *devPrefix = @"dev.forums.somethingawful.com";
-            if ([self.baseURL.host hasPrefix:devPrefix]) {
+            if (self.usingDevDotForums) {
+                NSString * const devPrefix = @"dev.forums.somethingawful.com";
                 NSRange approximateHostRange = NSMakeRange([self.baseURL.scheme length],
                                                            [devPrefix length] + 5);
                 base = [base stringByReplacingOccurrencesOfString:devPrefix
