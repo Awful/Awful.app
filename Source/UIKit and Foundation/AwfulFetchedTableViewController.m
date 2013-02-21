@@ -24,6 +24,7 @@
 
 
 @implementation AwfulFetchedTableViewController
+@synthesize fetchedResultsController = _fetchedResultsController;
 
 - (void)reachabilityChanged:(NSNotification *)note
 {

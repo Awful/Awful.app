@@ -5,13 +5,16 @@
 
 const struct AwfulThreadAttributes AwfulThreadAttributes = {
 	.archived = @"archived",
+	.attachmentID = @"attachmentID",
 	.hideFromList = @"hideFromList",
 	.isBookmarked = @"isBookmarked",
 	.isClosed = @"isClosed",
+	.isLocked = @"isLocked",
 	.isSticky = @"isSticky",
 	.lastPostAuthorName = @"lastPostAuthorName",
 	.lastPostDate = @"lastPostDate",
 	.numberOfPages = @"numberOfPages",
+	.seen = @"seen",
 	.seenPosts = @"seenPosts",
 	.starCategory = @"starCategory",
 	.stickyIndex = @"stickyIndex",
@@ -22,6 +25,7 @@ const struct AwfulThreadAttributes AwfulThreadAttributes = {
 	.threadVotes = @"threadVotes",
 	.title = @"title",
 	.totalReplies = @"totalReplies",
+	.totalUnreadPosts = @"totalUnreadPosts",
 };
 
 const struct AwfulThreadRelationships AwfulThreadRelationships = {
@@ -79,6 +83,11 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
+	if ([key isEqualToString:@"isLockedValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"isLocked"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
 	if ([key isEqualToString:@"isStickyValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"isSticky"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
@@ -86,6 +95,11 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 	}
 	if ([key isEqualToString:@"numberOfPagesValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"numberOfPages"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
+	if ([key isEqualToString:@"seenValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"seen"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
@@ -111,6 +125,11 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 	}
 	if ([key isEqualToString:@"totalRepliesValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"totalReplies"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
+	if ([key isEqualToString:@"totalUnreadPostsValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"totalUnreadPosts"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
@@ -142,6 +161,13 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 - (void)setPrimitiveArchivedValue:(BOOL)value_ {
 	[self setPrimitiveArchived:[NSNumber numberWithBool:value_]];
 }
+
+
+
+
+
+@dynamic attachmentID;
+
 
 
 
@@ -225,6 +251,32 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 
 
 
+@dynamic isLocked;
+
+
+
+- (BOOL)isLockedValue {
+	NSNumber *result = [self isLocked];
+	return [result boolValue];
+}
+
+- (void)setIsLockedValue:(BOOL)value_ {
+	[self setIsLocked:[NSNumber numberWithBool:value_]];
+}
+
+- (BOOL)primitiveIsLockedValue {
+	NSNumber *result = [self primitiveIsLocked];
+	return [result boolValue];
+}
+
+- (void)setPrimitiveIsLockedValue:(BOOL)value_ {
+	[self setPrimitiveIsLocked:[NSNumber numberWithBool:value_]];
+}
+
+
+
+
+
 @dynamic isSticky;
 
 
@@ -285,6 +337,32 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 
 - (void)setPrimitiveNumberOfPagesValue:(int32_t)value_ {
 	[self setPrimitiveNumberOfPages:[NSNumber numberWithInt:value_]];
+}
+
+
+
+
+
+@dynamic seen;
+
+
+
+- (BOOL)seenValue {
+	NSNumber *result = [self seen];
+	return [result boolValue];
+}
+
+- (void)setSeenValue:(BOOL)value_ {
+	[self setSeen:[NSNumber numberWithBool:value_]];
+}
+
+- (BOOL)primitiveSeenValue {
+	NSNumber *result = [self primitiveSeen];
+	return [result boolValue];
+}
+
+- (void)setPrimitiveSeenValue:(BOOL)value_ {
+	[self setPrimitiveSeen:[NSNumber numberWithBool:value_]];
 }
 
 
@@ -450,6 +528,32 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 
 - (void)setPrimitiveTotalRepliesValue:(int32_t)value_ {
 	[self setPrimitiveTotalReplies:[NSNumber numberWithInt:value_]];
+}
+
+
+
+
+
+@dynamic totalUnreadPosts;
+
+
+
+- (int32_t)totalUnreadPostsValue {
+	NSNumber *result = [self totalUnreadPosts];
+	return [result intValue];
+}
+
+- (void)setTotalUnreadPostsValue:(int32_t)value_ {
+	[self setTotalUnreadPosts:[NSNumber numberWithInt:value_]];
+}
+
+- (int32_t)primitiveTotalUnreadPostsValue {
+	NSNumber *result = [self primitiveTotalUnreadPosts];
+	return [result intValue];
+}
+
+- (void)setPrimitiveTotalUnreadPostsValue:(int32_t)value_ {
+	[self setPrimitiveTotalUnreadPosts:[NSNumber numberWithInt:value_]];
 }
 
 

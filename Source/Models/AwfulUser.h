@@ -11,7 +11,7 @@
 
 @interface AwfulUser : _AwfulUser
 
-@property (readonly, nonatomic) NSURL *avatarURL;
+//@property (readonly, nonatomic) NSURL *avatarURL;
 
 + (instancetype)userCreatedOrUpdatedFromProfileInfo:(ProfileParsedInfo *)profileInfo;
 

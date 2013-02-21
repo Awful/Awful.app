@@ -304,7 +304,7 @@ static AwfulHTTPClient *instance = nil;
         }];
         [self enqueueHTTPRequestOperation:op];
         return op;
-    }    
+    }
 }
 
 - (NSOperation *)replyToThreadWithID:(NSString *)threadID
@@ -673,6 +673,80 @@ static NSString * Entitify(NSString *noEntities)
     return op;
 }
 
+- (NSOperation *)postNewThreadInForumWithID:(NSString *)forumID
+                                      title:(NSString *)title
+                                       icon:(NSString *)threadTagID
+                                       text:(NSString *)text
+                                    andThen:(void (^)(NSError *, NSString *))callback
+{
+    /*
+     <input type="hidden" name="forumid" value="261">
+     <input type="hidden" name="action" value="postthread">
+     <input type="hidden" name="formkey" value="e825cfcfd84ae5139b087d5bfcf0e130">
+     <input type="hidden" name="form_cookie" value="754f3171ad91">
+     subject
+     iconid
+     <input type="checkbox" name="parseurl" value="yes" checked>
+     <input type="checkbox" name="bookmark" value="yes" checked>
+     <input type="submit" class="bginput" name="preview" value="Preview Post" tabindex="4" accesskey="s">
+     */
+    
+    NSDictionary *parameters = @{
+                                 @"action" : @"newthread",
+                                 @"forumid" : forumID
+                                 };
+    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:@"newthread.php"
+                                            parameters:parameters];
+    id op = [self HTTPRequestOperationWithRequest:urlRequest
+                                          success:^(id _, ReplyFormParsedInfo *formInfo)
+             {
+                 if (!(formInfo.formkey && formInfo.formCookie)) {
+                     NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : @"Thread is closed" };
+                     NSError *error = [NSError errorWithDomain:AwfulErrorDomain
+                                                          code:AwfulErrorCodes.threadIsClosed
+                                                      userInfo:userInfo];
+                     if (callback) callback(error, nil);
+                     return;
+                 }
+                 NSMutableDictionary *postParameters = [@{
+                                                        @"forumID" : forumID,
+                                                        @"formkey" : formInfo.formkey,
+                                                        @"form_cookie" : formInfo.formCookie,
+                                                        @"action" : @"postthread",
+                                                        @"message" : Entitify(text),
+                                                        @"parseurl" : @"yes",
+                                                        @"preview" : @"Preview Post",
+                                                        } mutableCopy];
+                 if (formInfo.bookmark) {
+                     postParameters[@"bookmark"] = formInfo.bookmark;
+                 }
+                 
+                 NSURLRequest *postRequest = [self requestWithMethod:@"POST" path:@"newthread.php"
+                                                          parameters:postParameters];
+                 id opTwo = [self HTTPRequestOperationWithRequest:postRequest
+                                                          success:^(id _, SuccessfulReplyInfo *replyInfo)
+                             {
+                                 NSString *postID = replyInfo.lastPage ? nil : replyInfo.postID;
+                                 if (callback) callback(nil, postID);
+                             } failure:^(id _, NSError *error)
+                             {
+                                 if (callback) callback(error, nil);
+                             }];
+                 [opTwo setCreateParsedInfoBlock:^id(NSData *data) {
+                     return [[SuccessfulReplyInfo alloc] initWithHTMLData:data];
+                 }];
+                 [self enqueueHTTPRequestOperation:opTwo];
+             } failure:^(id _, NSError *error)
+             {
+                 if (callback) callback(error, nil);
+             }];
+    [op setCreateParsedInfoBlock:^id(NSData *data) {
+        return [[ReplyFormParsedInfo alloc] initWithHTMLData:data];
+    }];
+    
+    return op;
+}
+
 - (NSOperation *)tryAccessingDevDotForumsAndThen:(void (^)(NSError *error, BOOL success))callback
 {
     NSURL *url = [NSURL URLWithString:@"http://dev.forums.somethingawful.com/"];
@@ -704,7 +778,6 @@ static NSString * Entitify(NSString *noEntities)
 
 @end
 
-
 NSString * const AwfulErrorDomain = @"AwfulErrorDomain";
 
 const struct AwfulErrorCodes AwfulErrorCodes = {
@@ -712,3 +785,4 @@ const struct AwfulErrorCodes AwfulErrorCodes = {
     .threadIsClosed = -1001,
     .parseError = -1002,
 };
+

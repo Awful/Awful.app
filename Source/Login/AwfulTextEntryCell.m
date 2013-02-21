@@ -22,6 +22,7 @@
         textField.textColor = [UIColor colorWithHue:0.606 saturation:0.450 brightness:0.549 alpha:1];
         [self.contentView addSubview:textField];
         _textField = textField;
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     return self;
 }
@@ -30,6 +31,10 @@
     reuseIdentifier:(NSString *)reuseIdentifier
 {
     return [self initWithReuseIdentifier:reuseIdentifier];
+}
+
+- (BOOL)becomeFirstResponder {
+    return [self.textField becomeFirstResponder];
 }
 
 #pragma mark - UIView

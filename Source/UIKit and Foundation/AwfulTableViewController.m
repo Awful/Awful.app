@@ -10,6 +10,7 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulTheme.h"
 #import "SVPullToRefresh.h"
+#import "UIViewController+NavigationEnclosure.h"
 
 @interface AwfulTableViewController ()
 
@@ -167,6 +168,18 @@
     }
     if ([self canPullForNextPage]) {
         self.tableView.infiniteScrollingView.activityIndicatorViewStyle = style;
+    }
+}
+
+- (void)pushOrPresentModalViewController:(UIViewController*)viewController animated:(BOOL)animated {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        UIViewController *wrapper = [viewController enclosingNavigationController];
+        wrapper.modalPresentationStyle = viewController.modalPresentationStyle;
+        wrapper.modalTransitionStyle = viewController.modalTransitionStyle;
+        [self presentModalViewController:wrapper animated:animated];
+    }
+    else {
+        [self.navigationController pushViewController:viewController animated:animated];
     }
 }
 

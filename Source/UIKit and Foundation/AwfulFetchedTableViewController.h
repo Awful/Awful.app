@@ -10,6 +10,8 @@
 
 @interface AwfulFetchedTableViewController : AwfulTableViewController <NSFetchedResultsControllerDelegate>
 
+@property (nonatomic,readonly,strong) NSFetchedResultsController *fetchedResultsController;
+
 // Subclasses must implement.
 - (NSFetchedResultsController *)createFetchedResultsController;
 

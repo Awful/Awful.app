@@ -11,7 +11,7 @@
 
 @interface AwfulPost : _AwfulPost
 
-@property (readonly, nonatomic) BOOL beenSeen;
+//@property (readonly, nonatomic) BOOL beenSeen;
 
 @property (readonly, nonatomic) NSInteger page;
 

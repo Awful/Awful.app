@@ -7,6 +7,7 @@
 //
 
 #import "AwfulTabBar.h"
+#import "CustomBadge.h"
 
 @interface AwfulSegmentedControl : UISegmentedControl @end
 
@@ -55,6 +56,13 @@
     _items = [items copy];
     [self updateSegments];
     self.selectedItem = items[0];
+    
+    for (id item in items) {
+        [item addObserver:self
+               forKeyPath:@"badgeValue"
+                  options:(NSKeyValueObservingOptionNew)
+                  context:nil];
+    }
 }
 
 - (void)setSelectedItem:(UITabBarItem *)selectedItem
@@ -89,6 +97,24 @@
     }
 }
 
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    
+    for(uint i=0; i<self.items.count; i++) {
+        UITabBarItem *item = self.items[i];
+        if (item.badgeValue) {
+            CustomBadge *badge = [CustomBadge customBadgeWithString:item.badgeValue];
+            badge.userInteractionEnabled = NO;
+            
+            CGRect frame = badge.frame;
+            frame.origin.x = ((self.frame.size.width) / self.items.count * (i+1))-frame.size.width;
+            badge.frame = frame;
+            [self addSubview:badge];
+        }
+    }
+}
+
 UIImage * MakeNormalImageForSelectedImage(UIImage *image)
 {
     if (!image) return nil;
@@ -103,6 +129,12 @@ UIImage * MakeNormalImageForSelectedImage(UIImage *image)
     UIGraphicsEndImageContext();
     normal.accessibilityLabel = image.accessibilityLabel;
     return normal;
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if (![keyPath isEqualToString:@"badgeValue"]) return;
+    [self setNeedsLayout];
 }
 
 @end

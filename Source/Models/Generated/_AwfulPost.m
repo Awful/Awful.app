@@ -5,11 +5,14 @@
 
 const struct AwfulPostAttributes AwfulPostAttributes = {
 	.attachmentID = @"attachmentID",
+	.beenSeen = @"beenSeen",
 	.editDate = @"editDate",
+	.editable = @"editable",
 	.innerHTML = @"innerHTML",
 	.postDate = @"postDate",
 	.postID = @"postID",
 	.threadIndex = @"threadIndex",
+	.threadPage = @"threadPage",
 };
 
 const struct AwfulPostRelationships AwfulPostRelationships = {
@@ -47,8 +50,23 @@ const struct AwfulPostFetchedProperties AwfulPostFetchedProperties = {
 + (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 	
+	if ([key isEqualToString:@"beenSeenValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"beenSeen"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
+	if ([key isEqualToString:@"editableValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"editable"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
 	if ([key isEqualToString:@"threadIndexValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"threadIndex"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
+	if ([key isEqualToString:@"threadPageValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"threadPage"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
@@ -66,8 +84,60 @@ const struct AwfulPostFetchedProperties AwfulPostFetchedProperties = {
 
 
 
+@dynamic beenSeen;
+
+
+
+- (BOOL)beenSeenValue {
+	NSNumber *result = [self beenSeen];
+	return [result boolValue];
+}
+
+- (void)setBeenSeenValue:(BOOL)value_ {
+	[self setBeenSeen:[NSNumber numberWithBool:value_]];
+}
+
+- (BOOL)primitiveBeenSeenValue {
+	NSNumber *result = [self primitiveBeenSeen];
+	return [result boolValue];
+}
+
+- (void)setPrimitiveBeenSeenValue:(BOOL)value_ {
+	[self setPrimitiveBeenSeen:[NSNumber numberWithBool:value_]];
+}
+
+
+
+
+
 @dynamic editDate;
 
+
+
+
+
+
+@dynamic editable;
+
+
+
+- (BOOL)editableValue {
+	NSNumber *result = [self editable];
+	return [result boolValue];
+}
+
+- (void)setEditableValue:(BOOL)value_ {
+	[self setEditable:[NSNumber numberWithBool:value_]];
+}
+
+- (BOOL)primitiveEditableValue {
+	NSNumber *result = [self primitiveEditable];
+	return [result boolValue];
+}
+
+- (void)setPrimitiveEditableValue:(BOOL)value_ {
+	[self setPrimitiveEditable:[NSNumber numberWithBool:value_]];
+}
 
 
 
@@ -114,6 +184,32 @@ const struct AwfulPostFetchedProperties AwfulPostFetchedProperties = {
 
 - (void)setPrimitiveThreadIndexValue:(int32_t)value_ {
 	[self setPrimitiveThreadIndex:[NSNumber numberWithInt:value_]];
+}
+
+
+
+
+
+@dynamic threadPage;
+
+
+
+- (int32_t)threadPageValue {
+	NSNumber *result = [self threadPage];
+	return [result intValue];
+}
+
+- (void)setThreadPageValue:(int32_t)value_ {
+	[self setThreadPage:[NSNumber numberWithInt:value_]];
+}
+
+- (int32_t)primitiveThreadPageValue {
+	NSNumber *result = [self primitiveThreadPage];
+	return [result intValue];
+}
+
+- (void)setPrimitiveThreadPageValue:(int32_t)value_ {
+	[self setPrimitiveThreadPage:[NSNumber numberWithInt:value_]];
 }
 
 

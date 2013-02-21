@@ -107,7 +107,7 @@
 
 @interface UserParsedInfo : ParsedInfo
 
-@property (readonly, copy, nonatomic) NSString *username;
+@property (copy, nonatomic) NSString *username;
 
 @property (readonly, copy, nonatomic) NSString *userID;
 

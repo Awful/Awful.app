@@ -31,7 +31,7 @@
 
 - (BOOL)beenSeen
 {
-    return self.seenPostsValue > 0;
+    return self.seenValue > 0;
 }
 
 + (NSSet *)keyPathsForValuesAffectingBeenSeen
@@ -177,12 +177,12 @@ static NSURL * SecondaryIconURLForType(NSString *type)
 
 - (void)setSeenPosts:(NSNumber *)seenPosts
 {
-    [self willChangeValueForKey:AwfulThreadAttributes.seenPosts];
-    self.primitiveSeenPosts = seenPosts;
-    [self didChangeValueForKey:AwfulThreadAttributes.seenPosts];
-    if (self.seenPostsValue > self.totalRepliesValue + 1) {
-        self.totalRepliesValue = self.seenPostsValue - 1;
-    }
+//    [self willChangeValueForKey:AwfulThreadAttributes.seenPosts];
+//    self.primitiveSeenPosts = seenPosts;
+//    [self didChangeValueForKey:AwfulThreadAttributes.seenPosts];
+//    if (self.seenPostsValue > self.totalRepliesValue + 1) {
+//        self.totalRepliesValue = self.seenPostsValue - 1;
+//    }
 }
 
 @end

@@ -18,11 +18,11 @@
 
 @implementation AwfulPost
 
-- (BOOL)beenSeen
-{
-    if (!self.thread || self.threadIndexValue == 0) return NO;
-    return self.threadIndexValue <= self.thread.seenPostsValue;
-}
+//- (BOOL)beenSeen
+//{
+//    if (!self.thread || self.threadIndexValue == 0) return NO;
+//    return self.threadIndexValue <= self.thread.seenPostsValue;
+//}
 
 + (NSSet *)keyPathsForValuesAffectingBeenSeen
 {

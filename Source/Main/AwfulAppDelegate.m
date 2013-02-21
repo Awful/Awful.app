@@ -23,6 +23,7 @@
 #import "AwfulSplitViewController.h"
 #import "AwfulStartViewController.h"
 #import "AwfulTabBarController.h"
+#import "AwfulPrivateMessageListController.h"
 #import "AFNetworking.h"
 #import <AVFoundation/AVFoundation.h>
 #import <Crashlytics/Crashlytics.h>
@@ -30,6 +31,7 @@
 #import "NSManagedObject+Awful.h"
 #import "SVProgressHUD.h"
 #import "UIViewController+NavigationEnclosure.h"
+#import "AwfulNewPMNotifierAgent.h"
 
 @interface AwfulAppDelegate () <AwfulTabBarControllerDelegate, UINavigationControllerDelegate,
                                 AwfulLoginControllerDelegate>
@@ -37,6 +39,7 @@
 @property (weak, nonatomic) AwfulSplitViewController *splitViewController;
 
 @property (weak, nonatomic) AwfulTabBarController *tabBarController;
+@property (strong, nonatomic) AwfulNewPMNotifierAgent *newPMAgent;
 
 @end
 
@@ -103,6 +106,7 @@ static id _instance;
         [[AwfulForumsListController new] enclosingNavigationController],
         [[AwfulFavoritesViewController new] enclosingNavigationController],
         [[AwfulBookmarksController new] enclosingNavigationController],
+        [[AwfulPrivateMessageListController new] enclosingNavigationController],
         [[AwfulSettingsViewController new] enclosingNavigationController]
     ];
     tabBar.selectedViewController = tabBar.viewControllers[[[AwfulSettings settings] firstTab]];
@@ -159,6 +163,12 @@ static id _instance;
                                   barMetrics:UIBarMetricsLandscapePhone];
 }
 
+- (AwfulNewPMNotifierAgent*)newPMAgent {
+    if (_newPMAgent) return _newPMAgent;
+    _newPMAgent = [AwfulNewPMNotifierAgent defaultAgent];
+    return _newPMAgent;
+}
+
 #pragma mark - UIApplicationDelegate
 
 - (BOOL)application:(UIApplication *)application
@@ -173,14 +183,39 @@ static id _instance;
     // Migrate Core Data early to avoid problems later!
     [[AwfulDataStack sharedDataStack] context];
     [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
+
     NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:5 * 1024 * 1024
                                                          diskCapacity:50 * 1024 * 1024
                                                              diskPath:nil];
     [NSURLCache setSharedURLCache:URLCache];
+    [self.newPMAgent checkForNewMessages];
     
     [self ignoreSilentSwitchWhenPlayingEmbeddedVideo];
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    
+    AwfulTabBarController *tabBar = [AwfulTabBarController new];
+    tabBar.viewControllers = @[
+        [[AwfulForumsListController new] enclosingNavigationController],
+        [[AwfulFavoritesViewController new] enclosingNavigationController],
+        [[AwfulBookmarksController new] enclosingNavigationController],
+        [[AwfulPrivateMessageListController new] enclosingNavigationController],
+        [[AwfulSettingsViewController new] enclosingNavigationController]
+    ];
+    tabBar.selectedViewController = tabBar.viewControllers[[[AwfulSettings settings] firstTab]];
+    tabBar.delegate = self;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        AwfulSplitViewController *splitController = [AwfulSplitViewController new];
+        AwfulStartViewController *start = [AwfulStartViewController new];
+        UINavigationController *nav = [start enclosingNavigationController];
+        nav.delegate = self;
+        splitController.viewControllers = @[ tabBar, nav ];
+        self.window.rootViewController = splitController;
+        self.splitViewController = splitController;
+    } else {
+        self.window.rootViewController = tabBar;
+    }
+    self.tabBarController = tabBar;
     
     [self setUpRootViewController];
         
@@ -383,6 +418,10 @@ static id _instance;
     }
     
     return YES;
+}
+
+- (void)applicationWillEnterForeground:(UIApplication *)application {
+    [self.newPMAgent checkForNewMessages];
 }
 
 - (void)pushPostsViewForPostWithID:(NSString *)postID

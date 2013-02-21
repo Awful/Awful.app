@@ -21,7 +21,8 @@
 #import "AwfulPostsView.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulPullToRefreshControl.h"
-#import "AwfulReplyViewController.h"
+#import "AwfulReplyComposerViewController.h"
+#import "AwfulEditPostComposerViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "NSFileManager+UserDirectories.h"
@@ -34,10 +35,22 @@
 #import "UINavigationItem+TwoLineTitle.h"
 #import "UIViewController+NavigationEnclosure.h"
 
-@interface AwfulPostsViewController () <AwfulPostsViewDelegate,
+@interface TopBarView : UIView
+
+@property (readonly, weak, nonatomic) UIButton *goToForumButton;
+
+@property (readonly, weak, nonatomic) UIButton *loadReadPostsButton;
+
+@property (readonly, weak, nonatomic) UIButton *scrollToBottomButton;
+
+@end
+
+
+@interface AwfulPostsViewController () <AwfulPostsViewDelegate, UIPopoverControllerDelegate,
+                                        //AwfulSpecificPageControllerDelegate,
                                         AwfulJumpToPageSheetDelegate,
                                         NSFetchedResultsControllerDelegate,
-                                        AwfulReplyViewControllerDelegate,
+                                        AwfulComposerViewControllerDelegate,
                                         UIScrollViewDelegate>
 
 @property (nonatomic) AwfulThreadPage currentPage;
@@ -95,12 +108,12 @@
 {
     if (![self isViewLoaded]) return;
     NSArray *importantKeys = @[
-        AwfulSettingsKeys.highlightOwnMentions,
-        AwfulSettingsKeys.highlightOwnQuotes,
-        AwfulSettingsKeys.showAvatars,
-        AwfulSettingsKeys.showImages,
-        AwfulSettingsKeys.username,
-        AwfulSettingsKeys.yosposStyle
+    AwfulSettingsKeys.highlightOwnMentions,
+    AwfulSettingsKeys.highlightOwnQuotes,
+    AwfulSettingsKeys.showAvatars,
+    AwfulSettingsKeys.showImages,
+    AwfulSettingsKeys.username,
+    AwfulSettingsKeys.yosposStyle
     ];
     NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
     if ([keys firstObjectCommonWithArray:importantKeys]) [self configurePostsViewSettings];
@@ -174,8 +187,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     if (!request) {
         request = [NSFetchRequest fetchRequestWithEntityName:[AwfulPost entityName]];
         [request setSortDescriptors:@[
-            [NSSortDescriptor sortDescriptorWithKey:AwfulPostAttributes.threadIndex ascending:YES]
-        ]];
+         [NSSortDescriptor sortDescriptorWithKey:AwfulPostAttributes.threadIndex ascending:YES]
+         ]];
         NSManagedObjectContext *context = self.thread.managedObjectContext;
         NSFetchedResultsController *controller;
         controller = [[NSFetchedResultsController alloc] initWithFetchRequest:request
@@ -317,6 +330,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         self.hiddenPosts = 0;
         [self.postsView reloadData];
     }
+
     id op = [[AwfulHTTPClient client] listPostsInThreadWithID:self.thread.threadID
                                                        onPage:page
                                                       andThen:^(NSError *error, NSArray *posts,
@@ -405,9 +419,9 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         if (self.hiddenPosts > 0) {
             NSUInteger i = [self.posts indexOfObjectPassingTest:^BOOL(AwfulPost *post,
                                                                       NSUInteger _, BOOL *__)
-            {
-                return [post.postID isEqualToString:postID];
-            }];
+                            {
+                                return [post.postID isEqualToString:postID];
+                            }];
             if (i < (NSUInteger)self.hiddenPosts) [self showHiddenSeenPosts];
         }
         [self.postsView jumpToElementWithID:postID];
@@ -431,8 +445,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
                          "showthread.php?threadid=%@&perpage=40&pagenumber=%@",
                          self.thread.threadID, @(self.currentPage)];
         [UIPasteboard generalPasteboard].items = @[ @{
-            (id)kUTTypeURL: [NSURL URLWithString:url],
-            (id)kUTTypePlainText: url
+        (id)kUTTypeURL: [NSURL URLWithString:url],
+        (id)kUTTypePlainText: url
         }];
     }];
     [sheet addButtonWithTitle:@"Vote" block:^{
@@ -501,6 +515,23 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (void)tappedCompose
+{   
+    //[self dismissPopoverAnimated:YES];
+    AwfulReplyComposerViewController *reply = [[AwfulReplyComposerViewController alloc] initWithThread:self.thread initialContents:nil];
+    UINavigationController *nav = [reply enclosingNavigationController];
+    
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        nav.modalPresentationStyle = UIModalPresentationFormSheet;
+        [self presentModalViewController:nav animated:YES];
+    } else {
+        [self presentViewController:nav animated:YES completion:nil];
+    }
+    
+    //[self addChildViewController:reply];
+}
+             
 #pragma mark - UIViewController
 
 - (void)setTitle:(NSString *)title
@@ -585,6 +616,101 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     }
 }
 
+- (void)showActionsForPost:(AwfulPost *)post fromRect:(CGRect)rect inView:(UIView *)view
+    {
+        //[self dismissPopoverAnimated:YES];
+        NSString *possessiveUsername = [NSString stringWithFormat:@"%@'s", post.author.username];
+        if ([post.author.username isEqualToString:[AwfulSettings settings].username]) {
+            possessiveUsername = @"Your";
+        }
+    NSString *title = [NSString stringWithFormat:@"%@ Post", possessiveUsername];
+    AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:title];
+    if ([post editableByUserWithID:[AwfulSettings settings].userID]) {
+        [sheet addButtonWithTitle:@"Edit" block:^{
+            [[AwfulHTTPClient client] getTextOfPostWithID:post.postID
+                                                  andThen:^(NSError *error, NSString *text)
+             {
+                 if (error) {
+                     [AwfulAlertView showWithTitle:@"Could Not Edit Post"
+                                             error:error
+                                       buttonTitle:@"Alright"];
+                     return;
+                 }
+                 AwfulEditPostComposerViewController *edit = [[AwfulEditPostComposerViewController alloc] initWithPost:post bbCode:text];
+                 edit.delegate = self;
+                 UINavigationController *nav = [edit enclosingNavigationController];
+                 [self presentViewController:nav animated:YES completion:nil];
+             }];
+        }];
+    }
+    if (!self.thread.isClosedValue) {
+        [sheet addButtonWithTitle:@"Quote" block:^{
+            [[AwfulHTTPClient client] quoteTextOfPostWithID:post.postID
+                                                    andThen:^(NSError *error, NSString *quotedText)
+             {
+                 if (error) {
+                     [AwfulAlertView showWithTitle:@"Could Not Quote Post"
+                                             error:error
+                                       buttonTitle:@"Alright"];
+                     return;
+                 }
+                 AwfulReplyComposerViewController *reply = [[AwfulReplyComposerViewController alloc] initWithThread:self.thread
+                                                                                                    initialContents:[quotedText stringByAppendingString:@"\n\n"]];
+                 reply.delegate = self;
+                 UINavigationController *nav = [reply enclosingNavigationController];
+                 [self presentViewController:nav animated:YES completion:nil];
+             }];
+        }];
+    }
+    [sheet addButtonWithTitle:@"Copy Post URL" block:^{
+        NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
+                         "showthread.php?threadid=%@&perpage=40&pagenumber=%@#post%@",
+                         self.thread.threadID, @(self.currentPage), post.postID];
+        [UIPasteboard generalPasteboard].items = @[ @{
+        (id)kUTTypeURL: [NSURL URLWithString:url],
+        (id)kUTTypePlainText: url
+        }];
+    }];
+    [sheet addButtonWithTitle:@"Mark Read to Here" block:^{
+        [[AwfulHTTPClient client] markThreadWithID:self.thread.threadID
+                               readUpToPostAtIndex:[@(post.threadIndexValue) stringValue]
+                                           andThen:^(NSError *error)
+         {
+             if (error) {
+                 [AwfulAlertView showWithTitle:@"Could Not Mark Read"
+                                         error:error
+                                   buttonTitle:@"Alright"];
+             } else {
+                 [SVProgressHUD showSuccessWithStatus:@"Marked"];
+                 //self.didJustMarkAsReadToHere = YES;
+                 //[self markPostsAsBeenSeenUpToPost:post];
+             }
+         }];
+    }];
+    [sheet addButtonWithTitle:[NSString stringWithFormat:@"%@ Profile", possessiveUsername] block:^{
+        AwfulProfileViewController *profile = [AwfulProfileViewController new];
+        profile.userID = post.author.userID;
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                  target:self action:@selector(doneWithProfile)];
+            profile.navigationItem.leftBarButtonItem = done;
+            UINavigationController *nav = [profile enclosingNavigationController];
+            nav.modalPresentationStyle = UIModalPresentationFormSheet;
+            [self presentViewController:nav animated:YES completion:nil];
+        } else {
+            profile.hidesBottomBarWhenPushed = YES;
+            UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithTitle:@"Back"
+                                                                     style:UIBarButtonItemStyleBordered
+                                                                    target:nil action:NULL];
+            self.navigationItem.backBarButtonItem = back;
+            [self.navigationController pushViewController:profile animated:YES];
+        }
+    }];
+    [sheet addCancelButtonWithTitle:@"Cancel"];
+    [sheet showFromRect:rect inView:view animated:YES];
+
+}
+
 - (void)didTapPreviousNextPageControl:(UISegmentedControl *)seg
 {
     if (seg.selectedSegmentIndex == 0) {
@@ -620,9 +746,9 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         rect = [self.view.superview convertRect:rect fromView:self.bottomBar];
         [self showThreadActionsFromRect:rect inView:self.view.superview];
     } else if (seg.selectedSegmentIndex == 1) {
-        AwfulReplyViewController *reply = [AwfulReplyViewController new];
+        AwfulReplyComposerViewController *reply = [AwfulReplyComposerViewController new];
         reply.delegate = self;
-        [reply replyToThread:self.thread withInitialContents:nil];
+        //[reply replyToThread:self.thread withInitialContents:nil];
         UINavigationController *nav = [reply enclosingNavigationController];
         [self presentViewController:nav animated:YES completion:nil];
     }
@@ -646,6 +772,9 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     [self maintainScrollOffsetAfterSizeChange];
 }
 
+
+#pragma mark - UIViewController
+
 - (void)maintainScrollOffsetAfterSizeChange
 {
     _observingScrollViewSize = YES;
@@ -657,7 +786,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 }
 
 - (void)scrollToBottom
-{
+    {
     UIScrollView *scrollView = self.postsView.scrollView;
     [scrollView scrollRectToVisible:CGRectMake(0, scrollView.contentSize.height - 1, 1, 1)
                            animated:YES];
@@ -667,6 +796,17 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 {
     [super viewWillAppear:animated];
     [self retheme];
+    
+}
+
+#warning fixme: remove debug code
+- (void)deleteEmotes {
+    NSArray *emotes = [AwfulEmoticon fetchAll];
+    for (AwfulEmoticon* emote in emotes) {
+        [[[AwfulDataStack sharedDataStack] context] deleteObject:emote];
+    }
+    
+    [[[AwfulDataStack sharedDataStack] context] save:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -678,7 +818,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
 }
 
 - (void)viewDidDisappear:(BOOL)animated
-{    
+{
     // Blank the web view if we're leaving for good. Otherwise we get weirdness like videos
     // continuing to play their sound after the user switches to a different thread.
     if (!self.navigationController) {
@@ -735,6 +875,21 @@ static char KVOContext;
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
+- (void)addChildViewController:(UIViewController *)childController {
+    [super addChildViewController:childController];
+    //inline replying
+    
+    self.postsView.scrollView.contentInset = UIEdgeInsetsMake(0, 0, 500, 0);
+    
+    CGSize size = self.postsView.scrollView.contentSize;
+    CGRect frame = CGRectMake(0, size.height, size.width, 400);
+    
+    childController.view.frame = frame;
+    [self.postsView.scrollView addSubview:childController.view];
+    
+}
+
+
 #pragma mark - AwfulPostsViewDelegate
 
 - (NSInteger)numberOfPostsInPostsView:(AwfulPostsView *)postsView
@@ -751,7 +906,7 @@ static char KVOContext;
         dict[@"postDate"] = [self.postDateFormatter stringFromDate:post.postDate];
     }
     if (post.author.username) dict[@"authorName"] = post.author.username;
-    if (post.author.avatarURL) dict[@"authorAvatarURL"] = [post.author.avatarURL absoluteString];
+    if (post.author.avatarURL) dict[@"authorAvatarURL"] = post.author.avatarURL;
     if ([post.author isEqual:post.thread.author]) dict[@"authorIsOriginalPoster"] = @YES;
     if (post.author.moderatorValue) dict[@"authorIsAModerator"] = @YES;
     if (post.author.administratorValue) dict[@"authorIsAnAdministrator"] = @YES;
@@ -765,7 +920,7 @@ static char KVOContext;
         dict[@"editMessage"] = [NSString stringWithFormat:@"%@ fucked around with this message on %@",
                                 editor, editDate];
     }
-    dict[@"beenSeen"] = @(post.beenSeen);
+    dict[@"beenSeen"] = @(post.beenSeenValue);
     return dict;
 }
 
@@ -863,9 +1018,8 @@ static char KVOContext;
                                        buttonTitle:@"Alright"];
                      return;
                  }
-                 AwfulReplyViewController *reply = [AwfulReplyViewController new];
+                 AwfulReplyComposerViewController *reply = [[AwfulEditPostComposerViewController alloc] initWithPost:post bbCode:text];
                  reply.delegate = self;
-                 [reply editPost:post text:text];
                  UINavigationController *nav = [reply enclosingNavigationController];
                  [self presentViewController:nav animated:YES completion:nil];
              }];
@@ -882,9 +1036,8 @@ static char KVOContext;
                                        buttonTitle:@"Alright"];
                      return;
                  }
-                 AwfulReplyViewController *reply = [AwfulReplyViewController new];
+                 AwfulReplyComposerViewController *reply = [[AwfulReplyComposerViewController alloc] initWithThread:self.thread initialContents:quotedText];
                  reply.delegate = self;
-                 [reply replyToThread:self.thread withInitialContents:quotedText];
                  UINavigationController *nav = [reply enclosingNavigationController];
                  [self presentViewController:nav animated:YES completion:nil];
              }];
@@ -970,8 +1123,8 @@ static char KVOContext;
     }
     [sheet addButtonWithTitle:@"Copy URL" block:^{
         [UIPasteboard generalPasteboard].items = @[ @{
-            (id)kUTTypeURL: url,
-            (id)kUTTypePlainText: urlString
+        (id)kUTTypeURL: url,
+        (id)kUTTypePlainText: urlString
         } ];
     }];
     [sheet addCancelButtonWithTitle:@"Cancel"];
@@ -1057,17 +1210,17 @@ static char KVOContext;
     self.jumpToPageSheet = nil;
 }
 
-#pragma mark - AwfulReplyViewControllerDelegate
+#pragma mark - AwfulComposerViewControllerDelegate
 
-- (void)replyViewController:(AwfulReplyViewController *)replyViewController
-           didReplyToThread:(AwfulThread *)thread
+- (void)composerViewController:(AwfulComposerViewController *)composerViewController
+           didSend:(id)post
 {
     [self dismissViewControllerAnimated:YES completion:^{
         [self loadPage:AwfulThreadPageNextUnread];
     }];
 }
 
-- (void)replyViewController:(AwfulReplyViewController *)replyViewController
+- (void)replyViewController:(AwfulComposerViewController *)replyViewController
                 didEditPost:(AwfulPost *)post
 {
     [self dismissViewControllerAnimated:YES completion:^{
@@ -1076,7 +1229,7 @@ static char KVOContext;
     }];
 }
 
-- (void)replyViewControllerDidCancel:(AwfulReplyViewController *)replyViewController
+- (void)composerViewControllerDidCancel:(AwfulComposerViewController *)composerViewController
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }

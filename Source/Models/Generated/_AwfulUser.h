@@ -8,6 +8,7 @@ extern const struct AwfulUserAttributes {
 	__unsafe_unretained NSString *aboutMe;
 	__unsafe_unretained NSString *administrator;
 	__unsafe_unretained NSString *aimName;
+	__unsafe_unretained NSString *avatarURL;
 	__unsafe_unretained NSString *customTitle;
 	__unsafe_unretained NSString *gender;
 	__unsafe_unretained NSString *homepageURL;
@@ -29,6 +30,7 @@ extern const struct AwfulUserAttributes {
 extern const struct AwfulUserRelationships {
 	__unsafe_unretained NSString *editedPosts;
 	__unsafe_unretained NSString *posts;
+	__unsafe_unretained NSString *privateMessages;
 	__unsafe_unretained NSString *threads;
 } AwfulUserRelationships;
 
@@ -37,7 +39,9 @@ extern const struct AwfulUserFetchedProperties {
 
 @class AwfulPost;
 @class AwfulPost;
+@class AwfulPrivateMessage;
 @class AwfulThread;
+
 
 
 
@@ -101,6 +105,16 @@ extern const struct AwfulUserFetchedProperties {
 
 
 //- (BOOL)validateAimName:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
+@property (nonatomic, strong) NSString* avatarURL;
+
+
+
+//- (BOOL)validateAvatarURL:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -288,6 +302,13 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
+@property (nonatomic, strong) NSSet *privateMessages;
+
+- (NSMutableSet*)privateMessagesSet;
+
+
+
+
 @property (nonatomic, strong) NSSet *threads;
 
 - (NSMutableSet*)threadsSet;
@@ -309,6 +330,11 @@ extern const struct AwfulUserFetchedProperties {
 - (void)removePosts:(NSSet*)value_;
 - (void)addPostsObject:(AwfulPost*)value_;
 - (void)removePostsObject:(AwfulPost*)value_;
+
+- (void)addPrivateMessages:(NSSet*)value_;
+- (void)removePrivateMessages:(NSSet*)value_;
+- (void)addPrivateMessagesObject:(AwfulPrivateMessage*)value_;
+- (void)removePrivateMessagesObject:(AwfulPrivateMessage*)value_;
 
 - (void)addThreads:(NSSet*)value_;
 - (void)removeThreads:(NSSet*)value_;
@@ -337,6 +363,12 @@ extern const struct AwfulUserFetchedProperties {
 
 - (NSString*)primitiveAimName;
 - (void)setPrimitiveAimName:(NSString*)value;
+
+
+
+
+- (NSString*)primitiveAvatarURL;
+- (void)setPrimitiveAvatarURL:(NSString*)value;
 
 
 
@@ -451,6 +483,11 @@ extern const struct AwfulUserFetchedProperties {
 
 - (NSMutableSet*)primitivePosts;
 - (void)setPrimitivePosts:(NSMutableSet*)value;
+
+
+
+- (NSMutableSet*)primitivePrivateMessages;
+- (void)setPrimitivePrivateMessages:(NSMutableSet*)value;
 
 
 

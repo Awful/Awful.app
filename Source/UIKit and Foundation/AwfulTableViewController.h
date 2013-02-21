@@ -36,4 +36,6 @@
 // This also gets called on viewWillAppear.
 - (void)retheme;
 
+- (void)pushOrPresentModalViewController:(UIViewController*)viewController animated:(BOOL)animated;
+
 @end
