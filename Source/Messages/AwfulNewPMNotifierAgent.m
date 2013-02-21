@@ -53,3 +53,6 @@
 
 
 @end
+
+NSString* AwfulNewPrivateMessagesNotification = @"AwfulNewPrivateMessagesNotification";
+NSString* kAwfulNewPrivateMessageCountKey = @"kAwfulNewPrivateMessageCountKey";

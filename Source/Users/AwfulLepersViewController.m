@@ -11,16 +11,17 @@
 #import "AwfulDisclosureIndicatorView.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulLeperCell.h"
+#import "AwfulParsing.h"
 #import "AwfulTheme.h"
-#import "AwfulThreadTags.h"
 
 @interface AwfulLepersViewController ()
 
 @property (nonatomic) NSInteger currentPage;
 
 @property (nonatomic) NSMutableArray *bans;
-
 @property (nonatomic) NSMutableSet *banIDs;
+
+@property (nonatomic) UIImage *cellBackgroundImage;
 
 @end
 
@@ -36,9 +37,45 @@
     return self;
 }
 
-- (id)initWithStyle:(UITableViewStyle)style
+- (UIImage *)cellBackgroundImage
 {
-    return [self init];
+    if (_cellBackgroundImage) return _cellBackgroundImage;
+    CGSize size = CGSizeMake(40, 56);
+    UIColor *topColor = [AwfulTheme currentTheme].lepersColonyCellBackgroundTopColor;
+    UIColor *shadowColor = [AwfulTheme currentTheme].lepersColonyCellBackgroundDividerShadowColor;
+    UIColor *bottomColor = [AwfulTheme currentTheme].lepersColonyCellBackgroundBottomColor;
+    
+    UIGraphicsBeginImageContextWithOptions(size, YES, 0);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    // Subtract 2: 1 for shadow, 1 for resizable part.
+    CGRect topHalf = CGRectMake(0, 0, size.width, size.height - 2);
+    
+    CGContextSaveGState(context);
+    CGContextSetFillColorWithColor(context, bottomColor.CGColor);
+    CGContextFillRect(context, (CGRect){ .size = size });
+    CGContextRestoreGState(context);
+    
+    CGContextSaveGState(context);
+    // For whatever reason drawing a shadow in the little triangular notch draws the shadow all the
+    // way down, like a stripe. We clip first to prevent the stripe.
+    CGContextClipToRect(context, CGRectInset(topHalf, 0, -1));
+    CGContextMoveToPoint(context, CGRectGetMinX(topHalf), CGRectGetMinY(topHalf));
+    CGContextAddLineToPoint(context, CGRectGetMinX(topHalf), CGRectGetMaxY(topHalf));
+    CGContextAddLineToPoint(context, CGRectGetMinX(topHalf) + 25, CGRectGetMaxY(topHalf));
+    CGContextAddLineToPoint(context, CGRectGetMinX(topHalf) + 31, CGRectGetMaxY(topHalf) - 4);
+    CGContextAddLineToPoint(context, CGRectGetMinX(topHalf) + 37, CGRectGetMaxY(topHalf));
+    CGContextAddLineToPoint(context, CGRectGetMaxX(topHalf), CGRectGetMaxY(topHalf));
+    CGContextAddLineToPoint(context, CGRectGetMaxX(topHalf), CGRectGetMinY(topHalf));
+    CGContextSetFillColorWithColor(context, topColor.CGColor);
+    CGContextSetShadowWithColor(context, CGSizeMake(0, 1), 1, shadowColor.CGColor);
+    CGContextFillPath(context);
+    CGContextRestoreGState(context);
+    
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    UIEdgeInsets capInsets = UIEdgeInsetsMake(size.height - 1, size.width - 1, 0, 0);
+    _cellBackgroundImage = [image resizableImageWithCapInsets:capInsets];
+    return _cellBackgroundImage;
 }
 
 #pragma mark - AwfulTableViewController
@@ -57,15 +94,16 @@
 - (void)retheme
 {
     [super retheme];
-    self.view.backgroundColor = [AwfulTheme currentTheme].threadListBackgroundColor;
-    self.tableView.separatorColor = [AwfulTheme currentTheme].threadListSeparatorColor;
-    for (AwfulLeperCell *cell in [self.tableView visibleCells]) {
-        [self tableView:self.tableView
-        willDisplayCell:cell
-      forRowAtIndexPath:[self.tableView indexPathForCell:cell]];
-    }
+    self.view.backgroundColor = [AwfulTheme currentTheme].lepersColonyBackgroundColor;
+    self.tableView.separatorColor = [AwfulTheme currentTheme].lepersColonySeparatorColor;
+    [self invalidateCellBackgroundImage];
+    [self.tableView reloadData];
 }
 
+- (void)invalidateCellBackgroundImage
+{
+    self.cellBackgroundImage = nil;
+}
 
 - (BOOL)canPullForNextPage
 {
@@ -127,6 +165,15 @@ static NSString * CreateBanIDForBan(BanParsedInfo *ban)
     [self loadPageNum:self.currentPage + 1];
 }
 
+#pragma mark - UITableViewController
+
+- (id)initWithStyle:(UITableViewStyle)style
+{
+    return [self init];
+}
+
+#pragma mark - UITableViewDataSource and UITableViewDelegate
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return [self.bans count];
@@ -142,23 +189,31 @@ static NSString * CreateBanIDForBan(BanParsedInfo *ban)
         cell.textLabel.numberOfLines = 0;
         cell.detailTextLabel.numberOfLines = 0;
         cell.accessoryView = [AwfulDisclosureIndicatorView new];
+        UIImageView *background = [[UIImageView alloc] initWithImage:self.cellBackgroundImage];
+        background.frame = cell.bounds;
+        background.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                       UIViewAutoresizingFlexibleHeight);
+        cell.backgroundView = background;
     }
-    
     [self configureCell:cell atIndexPath:indexPath];
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [AwfulLeperCell heightWithBan:self.bans[indexPath.row] inTableView:tableView];
+    BanParsedInfo *ban = self.bans[indexPath.row];
+    return [AwfulLeperCell rowHeightWithBanReason:ban.banReason
+                                            width:CGRectGetWidth(tableView.frame)];
 }
 
 - (void)tableView:(UITableView *)tableView
-  willDisplayCell:(UITableViewCell *)cell
+  willDisplayCell:(UITableViewCell *)baseCell
 forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    cell.textLabel.textColor = [AwfulTheme currentTheme].forumCellTextColor;
-    cell.backgroundColor = [AwfulTheme currentTheme].forumCellBackgroundColor;
+    AwfulLeperCell *cell = (id)baseCell;
+    cell.usernameLabel.textColor = [AwfulTheme currentTheme].lepersColonyTextColor;
+    cell.dateAndModLabel.textColor = [AwfulTheme currentTheme].lepersColonyTextColor;
+    cell.reasonLabel.textColor = [AwfulTheme currentTheme].lepersColonyTextColor;
 }
 
 - (void)configureCell:(UITableViewCell *)baseCell atIndexPath:(NSIndexPath *)indexPath
@@ -166,19 +221,42 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     AwfulLeperCell *cell = (id)baseCell;
     BanParsedInfo *ban = self.bans[indexPath.row];
     
-    cell.textLabel.text = ban.bannedUserName;
-    cell.detailTextLabel.text = ban.banReason;
+    UIImageView *background = (id)cell.backgroundView;
+    background.image = self.cellBackgroundImage;
+    cell.selectionStyle = [AwfulTheme currentTheme].cellSelectionStyle;
     
-    if (ban.postID) {
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    if (ban.banType == AwfulBanTypeProbation) {
+        cell.imageView.image = [UIImage imageNamed:@"title-probation.png"];
+    } else if (ban.banType == AwfulBanTypePermaban) {
+        cell.imageView.image = [UIImage imageNamed:@"title-permabanned.gif"];
     } else {
-        cell.accessoryType = UITableViewCellAccessoryNone;
+        cell.imageView.image = [UIImage imageNamed:@"title-banned.gif"];
     }
-    cell.imageView.image = [[AwfulThreadTags sharedThreadTags] threadTagNamed:@"icon23-banme"];
     
-    AwfulDisclosureIndicatorView *disclosure = (id)cell.accessoryView;
-    disclosure.color = [AwfulTheme currentTheme].disclosureIndicatorColor;
-    disclosure.highlightedColor = [AwfulTheme currentTheme].disclosureIndicatorHighlightedColor;
+    cell.usernameLabel.text = ban.bannedUserName;
+    static NSDateFormatter *df;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        df = [NSDateFormatter new];
+        [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+        [df setDateFormat:@"MM/dd/yy HH:mm"];
+    });
+    cell.dateAndModLabel.text = [NSString stringWithFormat:@"%@ by %@",
+                                 [df stringFromDate:ban.banDate], ban.requesterUserName];
+    cell.reasonLabel.text = ban.banReason;
+    cell.disclosureIndicator = ban.postID ? [AwfulDisclosureIndicatorView new] : nil;
+    cell.disclosureIndicator.color = [AwfulTheme currentTheme].disclosureIndicatorColor;
+    cell.disclosureIndicator.highlightedColor = [AwfulTheme currentTheme].disclosureIndicatorHighlightedColor;
+    
+    NSString *banDescription = @"banned";
+    if (ban.banType == AwfulBanTypeProbation) banDescription = @"probated";
+    else if (ban.banType == AwfulBanTypePermaban) banDescription = @"permabanned";
+    NSString *readableBanDate = [NSDateFormatter localizedStringFromDate:ban.banDate
+                                                               dateStyle:NSDateFormatterMediumStyle
+                                                               timeStyle:NSDateFormatterShortStyle];
+    cell.accessibilityLabel = [NSString stringWithFormat:@"%@ was %@ by %@ on %@: “%@”",
+                               ban.bannedUserName, banDescription, ban.requesterUserName,
+                               readableBanDate, ban.banReason];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -187,6 +265,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     if (!ban.postID) return;
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"awful://posts/%@", ban.postID]];
     [[UIApplication sharedApplication] openURL:url];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 @end

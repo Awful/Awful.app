@@ -167,6 +167,40 @@
     DEFAULT([UIImage imageNamed:@"star-on.png"]);
 }
 
+#pragma mark - Leper's Colony
+
+- (UIColor *)lepersColonyBackgroundColor
+{
+    DEFAULT(self.threadListBackgroundColor);
+}
+
+- (UIColor *)lepersColonySeparatorColor
+{
+    DEFAULT(self.threadListSeparatorColor);
+}
+
+- (UIColor *)lepersColonyTextColor
+{
+    DEFAULT(self.forumCellTextColor);
+}
+
+- (UIColor *)lepersColonyCellBackgroundTopColor
+{
+    LIGHT([UIColor whiteColor]);
+    DARK([UIColor colorWithWhite:0.192 alpha:1]);
+}
+
+- (UIColor *)lepersColonyCellBackgroundDividerShadowColor
+{
+    DEFAULT([UIColor colorWithWhite:0.5 alpha:0.2]);
+}
+
+- (UIColor *)lepersColonyCellBackgroundBottomColor
+{
+    LIGHT([UIColor colorWithWhite:0.969 alpha:1]);
+    DARK([UIColor colorWithWhite:0.07 alpha:1]);
+}
+
 #pragma mark - Favorites
 
 - (UIColor *)favoritesBackgroundColor

@@ -9,6 +9,7 @@
 #import "AwfulAppDelegate.h"
 #import "AwfulAlertView.h"
 #import "AwfulBookmarksController.h"
+#import "AwfulCrashlytics.h"
 #import "AwfulDataStack.h"
 #import "AwfulFavoritesViewController.h"
 #import "AwfulForumsListController.h"
@@ -24,6 +25,8 @@
 #import "AwfulTabBarController.h"
 #import "AwfulPrivateMessageListController.h"
 #import "AFNetworking.h"
+#import <AVFoundation/AVFoundation.h>
+#import <Crashlytics/Crashlytics.h>
 #import "NSFileManager+UserDirectories.h"
 #import "NSManagedObject+Awful.h"
 #import "SVProgressHUD.h"
@@ -76,10 +79,11 @@ static id _instance;
     }
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
     
-    AwfulSettings.settings.username = nil;
     NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
     [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
     [[AwfulDataStack sharedDataStack] deleteAllDataAndResetStack];
+    
+    [self setUpRootViewController];
     
     [self showLoginFormIsAtLaunch:NO andThen:^{
         AwfulTabBarController *tabBar;
@@ -93,6 +97,31 @@ static id _instance;
         }
         tabBar.selectedViewController = tabBar.viewControllers[0];
     }];
+}
+
+- (void)setUpRootViewController
+{
+    AwfulTabBarController *tabBar = [AwfulTabBarController new];
+    tabBar.viewControllers = @[
+        [[AwfulForumsListController new] enclosingNavigationController],
+        [[AwfulFavoritesViewController new] enclosingNavigationController],
+        [[AwfulBookmarksController new] enclosingNavigationController],
+        [[AwfulSettingsViewController new] enclosingNavigationController]
+    ];
+    tabBar.selectedViewController = tabBar.viewControllers[[[AwfulSettings settings] firstTab]];
+    tabBar.delegate = self;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        AwfulSplitViewController *splitController = [AwfulSplitViewController new];
+        AwfulStartViewController *start = [AwfulStartViewController new];
+        UINavigationController *nav = [start enclosingNavigationController];
+        nav.delegate = self;
+        splitController.viewControllers = @[ tabBar, nav ];
+        self.window.rootViewController = splitController;
+        self.splitViewController = splitController;
+    } else {
+        self.window.rootViewController = tabBar;
+    }
+    self.tabBarController = tabBar;
 }
 
 - (void)configureAppearance
@@ -145,14 +174,22 @@ static id _instance;
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     _instance = self;
+    #if defined(CRASHLYTICS_API_KEY) && !DEBUG
+    [Crashlytics startWithAPIKey:CRASHLYTICS_API_KEY];
+    #endif
     [[AwfulSettings settings] registerDefaults];
     [AwfulDataStack sharedDataStack].initFailureAction = AwfulDataStackInitFailureDelete;
+    // Migrate Core Data early to avoid problems later!
+    [[AwfulDataStack sharedDataStack] context];
     [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
-    NSUInteger sixtyMB = 1024 * 1024 * 60;
-    if ([[NSURLCache sharedURLCache] diskCapacity] < sixtyMB) {
-        [[NSURLCache sharedURLCache] setDiskCapacity:sixtyMB];
-    }
+
+    NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:5 * 1024 * 1024
+                                                         diskCapacity:50 * 1024 * 1024
+                                                             diskPath:nil];
+    [NSURLCache setSharedURLCache:URLCache];
     [self.newPMAgent checkForNewMessages];
+    
+    [self ignoreSilentSwitchWhenPlayingEmbeddedVideo];
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     
@@ -179,6 +216,8 @@ static id _instance;
     }
     self.tabBarController = tabBar;
     
+    [self setUpRootViewController];
+        
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         NSFileManager *fileman = [NSFileManager defaultManager];
         NSURL *cssReadme = [[NSBundle mainBundle] URLForResource:@"Custom CSS README"
@@ -219,11 +258,21 @@ static id _instance;
     }
     
     if ([AwfulHTTPClient client].loggedIn && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        AwfulSplitViewController *split = (AwfulSplitViewController *)self.window.rootViewController;
-        [split performSelector:@selector(showMasterView) withObject:nil afterDelay:0.1];
+        [self.splitViewController performSelector:@selector(showMasterView) withObject:nil
+                                       afterDelay:0.1];
     }
     
     return YES;
+}
+
+- (void)ignoreSilentSwitchWhenPlayingEmbeddedVideo
+{
+    NSError *error;
+    BOOL ok = [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback
+                                                     error:&error];
+    if (!ok) {
+        NSLog(@"error setting shared audio session category: %@", error);
+    }
 }
 
 - (BOOL)application:(UIApplication *)application
@@ -248,7 +297,7 @@ static id _instance;
         }
         UINavigationController *nav = self.tabBarController.viewControllers[0];
         if ([section isEqualToString:@"favorites"]) {
-            if (!forum || forum.isFavoriteValue) {
+            if (!forum || [[AwfulSettings settings].favoriteForums containsObject:forum.forumID]) {
                 nav = self.tabBarController.viewControllers[1];
             }
         }
@@ -282,8 +331,8 @@ static id _instance;
         if ([[url pathComponents] count] >= 4) {
             if ([[url pathComponents][2] isEqualToString:@"pages"]) {
                 NSString *pageString = [url pathComponents][3];
-                if ([pageString isEqualToString:@"last"]) page = AwfulPageLast;
-                else if ([pageString isEqualToString:@"unread"]) page = AwfulPageNextUnread;
+                if ([pageString isEqualToString:@"last"]) page = AwfulThreadPageLast;
+                else if ([pageString isEqualToString:@"unread"]) page = AwfulThreadPageNextUnread;
                 else page = [pageString integerValue];
             }
         }
@@ -296,7 +345,7 @@ static id _instance;
             UINavigationController *nav = (UINavigationController *)viewController;
             AwfulPostsViewController *top = (AwfulPostsViewController *)nav.topViewController;
             if (![top isKindOfClass:[AwfulPostsViewController class]]) continue;
-            if ([top.threadID isEqualToString:threadID]) {
+            if ([top.thread.threadID isEqualToString:threadID]) {
                 if (page == 0 || page == top.currentPage) {
                     if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
                         self.tabBarController.selectedViewController = nav;
@@ -307,7 +356,7 @@ static id _instance;
         }
         if (page == 0) page = 1;
         AwfulPostsViewController *postsView = [AwfulPostsViewController new];
-        postsView.threadID = threadID;
+        postsView.thread = [AwfulThread firstOrNewThreadWithThreadID:threadID];
         [postsView loadPage:page];
         UINavigationController *nav;
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -379,7 +428,7 @@ static id _instance;
                     ofThreadWithID:(NSString *)threadID
 {
     AwfulPostsViewController *postsView = [AwfulPostsViewController new];
-    postsView.threadID = threadID;
+    postsView.thread = [AwfulThread firstOrNewThreadWithThreadID:threadID];
     [postsView loadPage:page];
     [postsView jumpToPostWithID:postID];
     UINavigationController *nav;

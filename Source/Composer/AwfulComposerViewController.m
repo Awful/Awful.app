@@ -308,6 +308,29 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
                                                           ];
 }
 
+- (void)showURLMenuOrLinkifySelection
+{
+    NSURL *copiedURL = [UIPasteboard generalPasteboard].URL;
+    if (!copiedURL) {
+        copiedURL = [NSURL URLWithString:[UIPasteboard generalPasteboard].string];
+    }
+    if (copiedURL) {
+        [self configureURLSubmenuItems];
+        [self showSubmenuThenResetToTopLevelMenuOnHide];
+    } else {
+        [self linkifySelection];
+    }
+}
+
+- (void)configureURLSubmenuItems
+{
+    PSMenuItem *tag = [[PSMenuItem alloc] initWithTitle:@"[url]"
+                                                  block:^{ [self linkifySelection]; }];
+    PSMenuItem *paste = [[PSMenuItem alloc] initWithTitle:@"Paste" block:^{ [self pasteURL]; }];
+    [UIMenuController sharedMenuController].menuItems = @[ tag, paste ];
+    //self.replyTextView.showStandardMenuItems = NO;
+}
+
 - (void)configureImageSourceSubmenuItems
 {
     NSMutableArray *menuItems = [NSMutableArray new];
@@ -321,6 +344,13 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
     }
     [menuItems addObject:[[PSMenuItem alloc] initWithTitle:@"[img]"
                                                      block:^{ [self wrapSelectionInTag:@"[img]"]; }]];
+    if ([UIPasteboard generalPasteboard].image) {
+        [menuItems addObject:[[PSMenuItem alloc] initWithTitle:@"Paste" block:^{
+            UIImage *image = [UIPasteboard generalPasteboard].image;
+            [self saveImageAndInsertPlaceholder:image];
+            //[self.replyTextView becomeFirstResponder];
+        }]];
+    }
     [UIMenuController sharedMenuController].menuItems = menuItems;
 }
 
@@ -345,7 +375,7 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
 - (void)linkifySelection
 {
     NSError *error;
-    NSDataDetector *linkDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink
+    NSDataDetector *linkDetector = [NSDataDetector dataDetectorWithTypes:(NSTextCheckingTypes)NSTextCheckingTypeLink
                                                                    error:&error];
     if (!linkDetector) {
         NSLog(@"error creating link data detector: %@", linkDetector);
@@ -362,6 +392,19 @@ UINavigationControllerDelegate, UIPopoverControllerDelegate>
     } else {
         [self wrapSelectionInTag:@"[url=]"];
     }
+}
+
+- (void)pasteURL
+{
+    // TODO grab reply text box selection.
+    // Wrap [url=url-from-pasteboard]...[/url] around it.
+    // if no selection, put cursor inside tag.
+    NSURL *copiedURL = [UIPasteboard generalPasteboard].URL;
+    if (!copiedURL) {
+        copiedURL = [NSURL URLWithString:[UIPasteboard generalPasteboard].string];
+    }
+    NSString *tag = [NSString stringWithFormat:@"[url=%@]", copiedURL.absoluteString];
+    [self wrapSelectionInTag:tag];
 }
 
 - (void)insertImage
@@ -475,12 +518,16 @@ static UIImagePickerController *ImagePickerForSourceType(NSInteger sourceType)
 
 - (void)wrapSelectionInTag:(NSString *)tag
 {
+    NSRange equalsPart = [tag rangeOfString:@"="];
+    NSRange end = [tag rangeOfString:@"]"];
+    if (equalsPart.location != NSNotFound) {
+        equalsPart.length = end.location - equalsPart.location;
+    }
     NSMutableString *closingTag = [tag mutableCopy];
+    if (equalsPart.location != NSNotFound) {
+        [closingTag deleteCharactersInRange:equalsPart];
+    }
     [closingTag insertString:@"/" atIndex:1];
-    [closingTag replaceOccurrencesOfString:@"="
-                                withString:@""
-                                   options:0
-                                     range:NSMakeRange(0, [closingTag length])];
     if ([tag hasSuffix:@"\n"]) {
         [closingTag insertString:@"\n" atIndex:0];
     }
@@ -607,6 +654,21 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
         [picker dismissViewControllerAnimated:YES completion:nil];
     }
     [self.composerTextView becomeFirstResponder];
+}
+
+- (void)saveImageAndInsertPlaceholder:(UIImage *)image
+{
+    NSNumberFormatterStyle numberStyle = NSNumberFormatterSpellOutStyle;
+    NSString *key = [NSNumberFormatter localizedStringFromNumber:@([self.images count] + 1)
+                                                     numberStyle:numberStyle];
+    // TODO when we implement reloading state after termination, save images to Caches folder.
+    self.images[key] = image;
+    
+    // "Keep all images smaller than **800 pixels horizontal and 600 pixels vertical.**"
+    // http://www.somethingawful.com/d/forum-rules/forum-rules.php?page=2
+    BOOL shouldThumbnail = image.size.width > 800 || image.size.height > 600;
+    [self.composerTextView replaceRange:self.composerTextView.selectedTextRange
+                            withText:ImageKeyToPlaceholder(key, shouldThumbnail)];
 }
 
 static NSString *ImageKeyToPlaceholder(NSString *key, BOOL thumbnail)

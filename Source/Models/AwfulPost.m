@@ -18,11 +18,11 @@
 
 @implementation AwfulPost
 
-- (BOOL)beenSeen
-{
-    if (!self.thread || self.threadIndexValue == 0) return NO;
-    return self.threadIndexValue <= self.thread.seenPostsValue;
-}
+//- (BOOL)beenSeen
+//{
+//    if (!self.thread || self.threadIndexValue == 0) return NO;
+//    return self.threadIndexValue <= self.thread.seenPostsValue;
+//}
 
 + (NSSet *)keyPathsForValuesAffectingBeenSeen
 {
@@ -43,11 +43,7 @@
         forum.forumID = pageInfo.forumID;
     }
     forum.name = pageInfo.forumName;
-    AwfulThread *thread = [AwfulThread firstMatchingPredicate:@"threadID = %@", pageInfo.threadID];
-    if (!thread) {
-        thread = [AwfulThread insertNew];
-        thread.threadID = pageInfo.threadID;
-    }
+    AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:pageInfo.threadID];
     thread.forum = forum;
     thread.title = pageInfo.threadTitle;
     thread.isBookmarkedValue = pageInfo.threadBookmarked;
@@ -109,11 +105,7 @@
         forum.forumID = forumID;
     }
     NSString *threadID = [json[@"thread_info"][@"threadid"] stringValue];
-    AwfulThread *thread = [AwfulThread firstMatchingPredicate:@"threadID = %@", threadID];
-    if (!thread) {
-        thread = [AwfulThread insertNew];
-        thread.threadID = threadID;
-    }
+    AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:threadID];
     thread.title = [json[@"thread_info"][@"title"] gtm_stringByUnescapingFromHTML];
     thread.archivedValue = [json[@"archived"] boolValue];
     if (![json[@"thread_icon"] isEqual:[NSNull null]]) {

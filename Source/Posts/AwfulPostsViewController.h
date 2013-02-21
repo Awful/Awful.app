@@ -7,17 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AwfulThreadPage.h"
 @class AwfulThread;
 
 @interface AwfulPostsViewController : UIViewController
 
 @property (strong, nonatomic) AwfulThread *thread;
 
-@property (copy, nonatomic) NSString *threadID;
+@property (readonly, nonatomic) AwfulThreadPage currentPage;
 
-@property (assign, nonatomic) NSInteger currentPage;
-
-- (void)loadPage:(NSInteger)page;
+- (void)loadPage:(AwfulThreadPage)page;
 
 - (void)jumpToPostWithID:(NSString *)postID;
 

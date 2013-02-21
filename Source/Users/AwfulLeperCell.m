@@ -8,50 +8,119 @@
 
 #import "AwfulLeperCell.h"
 
+@interface AwfulLeperCell ()
+
+@property (weak, nonatomic) UILabel *reasonLabel;
+
+@end
+
+
 @implementation AwfulLeperCell
 
 - (id)initWithReuseIdentifier:(NSString *)reuseIdentifier
 {
-    return [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuseIdentifier];
+    if (!(self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuseIdentifier])) return nil;
+    
+    self.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    
+    self.usernameLabel.font = [UIFont boldSystemFontOfSize:15];
+    self.usernameLabel.backgroundColor = [UIColor clearColor];
+    self.dateAndModLabel.font = [UIFont systemFontOfSize:13];
+    self.dateAndModLabel.backgroundColor = [UIColor clearColor];
+    
+    UILabel *reasonLabel = [UILabel new];
+    reasonLabel.numberOfLines = 0;
+    reasonLabel.font = [UIFont systemFontOfSize:15];
+    reasonLabel.backgroundColor = [UIColor clearColor];
+    reasonLabel.highlightedTextColor = self.usernameLabel.highlightedTextColor;
+    [self.contentView addSubview:reasonLabel];
+    _reasonLabel = reasonLabel;
+    
+    return self;
 }
+
+- (UILabel *)usernameLabel
+{
+    return self.textLabel;
+}
+
+- (UILabel *)dateAndModLabel
+{
+    return self.detailTextLabel;
+}
+
+- (void)setDisclosureIndicator:(AwfulDisclosureIndicatorView *)disclosureIndicator
+{
+    if ([_disclosureIndicator isEqual:disclosureIndicator]) return;
+    [_disclosureIndicator removeFromSuperview];
+    _disclosureIndicator = disclosureIndicator;
+    [self.contentView addSubview:disclosureIndicator];
+}
+
++ (CGFloat)rowHeightWithBanReason:(NSString *)banReason width:(CGFloat)width
+{
+    const UIEdgeInsets reasonInsets = (UIEdgeInsets){
+        .left = 10, .right = 30,
+        .top = 63, .bottom = 10,
+    };
+    width -= reasonInsets.left + reasonInsets.right;
+    CGSize reasonLabelSize = [banReason sizeWithFont:[UIFont systemFontOfSize:15]
+                                   constrainedToSize:CGSizeMake(width, CGFLOAT_MAX)
+                                       lineBreakMode:UILineBreakModeWordWrap];
+    return reasonLabelSize.height + reasonInsets.top + reasonInsets.bottom;
+}
+
+#pragma mark - UITableViewCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     return [self initWithReuseIdentifier:reuseIdentifier];
 }
 
+#pragma mark - UIView
+
 - (void)layoutSubviews
 {
-    [super layoutSubviews];
-
-    //todo: add label for mod, admin, date
-    //image for ban type
-}
-
-+ (CGFloat)heightWithBan:(BanParsedInfo *)ban inTableView:(UITableView*)tableView
-{
-    CGFloat width = tableView.frame.size.width - 45 - 20;
+    const UIEdgeInsets cellMargin = (UIEdgeInsets){
+        .left = 10, .right = 10,
+        .top = 5, .bottom = 10,
+    };
     
-    // shrink width if accessory present
-    if (ban.postID && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) width -= 35;
+    // TODO maybe bump the image view up a couple points
+    self.imageView.frame = CGRectMake(cellMargin.left, cellMargin.top, 44, 44);
+    const CGFloat imageViewRightMargin = 10;
+    const CGFloat imageViewBottomMargin = 12;
     
-    CGSize textSize = CGSizeZero;
-    if (ban.bannedUserName) {
-        textSize = [ban.bannedUserName sizeWithFont:[UIFont boldSystemFontOfSize:17]
-                                  constrainedToSize:CGSizeMake(width, CGFLOAT_MAX)
-                                      lineBreakMode:UILineBreakModeWordWrap];
+    CGRect usernameFrame = (CGRect){
+        .origin = { CGRectGetMaxX(self.imageView.frame) + imageViewRightMargin, 9 },
+        .size.height = self.usernameLabel.font.lineHeight,
+    };
+    usernameFrame.size.width = (CGRectGetWidth(self.contentView.frame) -
+                                CGRectGetMinX(usernameFrame) - cellMargin.right);
+    self.usernameLabel.frame = usernameFrame;
+    
+    self.dateAndModLabel.frame = CGRectOffset(usernameFrame, 0, CGRectGetHeight(usernameFrame));
+    
+    const CGFloat reasonLabelRightMargin = 32;
+    CGRect reasonFrame = (CGRect){
+        .origin.x = cellMargin.left,
+        .origin.y = CGRectGetMaxY(self.imageView.frame) + imageViewBottomMargin,
+        .size.width = (CGRectGetWidth(self.contentView.frame) - cellMargin.left -
+                       reasonLabelRightMargin),
+    };
+    CGFloat cellHeight = [[self class] rowHeightWithBanReason:self.reasonLabel.text
+                                                        width:CGRectGetWidth(self.contentView.frame)];
+    reasonFrame.size.height = cellHeight - CGRectGetMinY(reasonFrame) - cellMargin.bottom;
+    self.reasonLabel.frame = reasonFrame;
+    
+    if (self.disclosureIndicator) {
+        const CGFloat disclosureCenterXFromRight = 15;
+        self.disclosureIndicator.center = (CGPoint){
+            .x = CGRectGetWidth(self.contentView.frame) - disclosureCenterXFromRight,
+            .y = CGRectGetMidY(reasonFrame),
+        };
+        self.disclosureIndicator.frame = CGRectIntegral(self.disclosureIndicator.frame);
     }
-    
-    CGSize detailSize = CGSizeZero;
-    if (ban.banReason) {
-        detailSize = [ban.banReason sizeWithFont:[UIFont systemFontOfSize:15]
-                               constrainedToSize:CGSizeMake(width, CGFLOAT_MAX)
-                                   lineBreakMode:UILineBreakModeWordWrap];
-    }
-    
-    CGFloat height = 14 + textSize.height + detailSize.height;
-    
-    return (height < 70 ? 70 : height);
 }
 
 @end

@@ -243,6 +243,27 @@
 			</array>
 		</dict>
 		<dict>
+			<key>Title</key>
+			<string>dev.forums</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Use dev.forums</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<false/>
+					<key>Key</key>
+					<string>use_dev_dot_forums</string>
+				</dict>
+			</array>
+			<key>Explanation</key>
+			<string>Awful can use features that are not yet widely available on the Forums.</string>
+			<key>Predicate</key>
+			<string>canReachDevDotForums = YES</string>
+		</dict>
+		<dict>
 			<key>Explanation</key>
 			<string>Awful uses these third-party libraries.</string>
 			<key>Settings</key>

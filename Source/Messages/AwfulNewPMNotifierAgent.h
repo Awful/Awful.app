@@ -8,8 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-static NSString* AwfulNewPrivateMessagesNotification = @"AwfulNewPrivateMessagesNotification";
-static NSString* kAwfulNewPrivateMessageCountKey = @"kAwfulNewPrivateMessageCountKey";
+extern NSString* AwfulNewPrivateMessagesNotification;
+extern NSString* kAwfulNewPrivateMessageCountKey;
 
 @interface AwfulNewPMNotifierAgent : NSObject
 

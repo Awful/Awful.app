@@ -14,6 +14,11 @@ Build
 1. Grab code: `git clone https://github.com/AwfulDevs/Awful.git`
 2. Open Xcode project and build away: `cd Awful && open Awful.xcodeproj`
 
+Extra Configuration
+-------------------
+
+If you want to use Crashlytics, create a file called `crashlytics-api-key` containing your API key.
+
 Contribute
 ----------
 

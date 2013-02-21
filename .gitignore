@@ -1,4 +1,7 @@
+# OS X and Xcode junk
 .DS_Store
-*.pbxuser
-Awful.xcodeproj/xcuserdata/*
-Awful.xcodeproj/project.xcworkspace/xcuserdata/*
+xcuserdata
+
+# Secret stuff
+crashlytics-api-key
+Source/Main/AwfulCrashlytics.h

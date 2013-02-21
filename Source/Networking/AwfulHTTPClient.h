@@ -7,6 +7,7 @@
 //
 
 #import "AFNetworking.h"
+#import "AwfulThreadPage.h"
 @class AwfulUser;
 
 @interface AwfulHTTPClient : AFHTTPClient
@@ -64,16 +65,11 @@
 //
 // Returns the enqueued network operation.
 - (NSOperation *)listPostsInThreadWithID:(NSString *)threadID
-                                  onPage:(NSInteger)page
+                                  onPage:(AwfulThreadPage)page
                                  andThen:(void (^)(NSError *error,
                                                    NSArray *posts,
                                                    NSUInteger firstUnreadPost,
                                                    NSString *advertisementHTML))callback;
-
-enum {
-    AwfulPageNextUnread = -1,
-    AwfulPageLast = -2
-};
 
 // Get the logged-in user's name and ID.
 //
@@ -212,7 +208,7 @@ enum {
 //
 // Returns the enqueued network operation.
 - (NSOperation *)locatePostWithID:(NSString *)postID
-    andThen:(void (^)(NSError *error, NSString *threadID, NSInteger page))callback;
+    andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))callback;
 
 // Find a user's profile.
 //
@@ -227,7 +223,7 @@ enum {
 
 // List probations, bans, and permabans from the Leper's Colony.
 //
-// page - Which page of the Leper's Colony to list. First page is page 1.
+// page     - Which page of the Leper's Colony to list. First page is page 1.
 // callback - A block to call after listing punishment, which takes as parameters:
 //              error - An error on failure, or nil on success.
 //              bans  - An array of BanParsedInfo instances on success, or nil on failure.
@@ -235,6 +231,7 @@ enum {
 // Returns the enqueued network operation.
 - (NSOperation *)listBansOnPage:(NSInteger)page
                         andThen:(void (^)(NSError *error, NSArray *bans))callback;
+
 
 // Posts a new thread.
 //
@@ -252,6 +249,15 @@ enum {
                                        icon:(NSString*)threadTagID
                                        text:(NSString *)text
                                     andThen:(void (^)(NSError *error, NSString *threadID))callback;
+
+// Attempt to access dev.forums.somethingawful.com.
+//
+// callback - A block to call after the access attempt, which takes as parameters:
+//              error   - An error on failure, or nil on success.
+//              success - YES if dev.forums was accessible, or NO on failure.
+//
+// Returns the enqueued network operation.
+- (NSOperation *)tryAccessingDevDotForumsAndThen:(void (^)(NSError *error, BOOL success))callback;
 
 @end
 

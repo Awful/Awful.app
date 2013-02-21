@@ -244,6 +244,18 @@ struct {
 
 BOOL_PROPERTY(showThreadTags, setShowThreadTags)
 
+- (NSArray *)favoriteForums
+{
+    return self[AwfulSettingsKeys.favoriteForums];
+}
+
+- (void)setFavoriteForums:(NSArray *)favoriteForums
+{
+    self[AwfulSettingsKeys.favoriteForums] = favoriteForums;
+}
+
+BOOL_PROPERTY(useDevDotForums, setUseDevDotForums)
+
 - (id)objectForKeyedSubscript:(id)key
 {
     return [[NSUserDefaults standardUserDefaults] objectForKey:key];
@@ -254,11 +266,16 @@ BOOL_PROPERTY(showThreadTags, setShowThreadTags)
     NSParameterAssert(key);
     [self setObject:object withoutNotifyingForKey:key];
     NSDictionary *userInfo = @{ AwfulSettingsDidChangeSettingsKey : @[ key ] };
-    dispatch_async(dispatch_get_main_queue(), ^{
+    void (^notify)(void) = ^{
         [[NSNotificationCenter defaultCenter] postNotificationName:AwfulSettingsDidChangeNotification
                                                             object:self
                                                           userInfo:userInfo];
-    });
+    };
+    if ([NSThread isMainThread]) {
+        notify();
+    } else {
+        dispatch_async(dispatch_get_main_queue(), notify);
+    }
 }
 
 - (void)setObject:(id)object withoutNotifyingForKey:(id)key
@@ -289,4 +306,6 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .showThreadTags = @"show_thread_tags",
     .yosposStyle = @"yospos_style",
     .keepSidebarOpen = @"keep_sidebar_open",
+    .favoriteForums = @"favorite_forums",
+    .useDevDotForums = @"use_dev_dot_forums",
 };

@@ -15,31 +15,59 @@
 #import "NSManagedObject+Awful.h"
 #import "NSURL+QueryDictionary.h"
 
-
 @interface AwfulHTTPClient ()
 
 @property (getter=isReachable, nonatomic) BOOL reachable;
+
+@property (readonly, nonatomic) BOOL usingDevDotForums;
 
 @end
 
 
 @implementation AwfulHTTPClient
 
+static AwfulHTTPClient *instance = nil;
+
 + (AwfulHTTPClient *)client
 {
-    static AwfulHTTPClient *instance;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        NSURL *baseURL = [NSURL URLWithString:@"http://forums.somethingawful.com/"];
-        instance = [[AwfulHTTPClient alloc] initWithBaseURL:baseURL];
-    });
+    @synchronized([AwfulHTTPClient class]) {
+        if (!instance) {
+            NSURL *baseURL = [NSURL URLWithString:@"http://forums.somethingawful.com/"];
+            if ([AwfulSettings settings].useDevDotForums) {
+                baseURL = [NSURL URLWithString:@"http://dev.forums.somethingawful.com/"];
+            }
+            instance = [[AwfulHTTPClient alloc] initWithBaseURL:baseURL];
+        }
+    }
     return instance;
+}
+
++ (void)initialize
+{
+    if (self != [AwfulHTTPClient class]) return;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDidChange:)
+                                                 name:AwfulSettingsDidChangeNotification
+                                               object:nil];
+}
+
++ (void)settingsDidChange:(NSNotification *)note
+{
+    NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
+    if (![keys containsObject:AwfulSettingsKeys.useDevDotForums]) return;
+    // Clear the singleton instance so it's recreated on next access.
+    // Not synchronizing; I don't really care if some last thread gets the old client.
+    instance = nil;
 }
 
 - (BOOL)isLoggedIn
 {
     NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:self.baseURL];
     return [[cookies valueForKey:@"name"] containsObject:@"bbuserid"];
+}
+
+- (BOOL)usingDevDotForums
+{
+    return [self.baseURL.host hasPrefix:@"dev.forums"];
 }
 
 - (id)initWithBaseURL:(NSURL *)url
@@ -65,7 +93,7 @@
         @"perpage": @40,
         @"pagenumber": @(page),
     } mutableCopy];
-    if ([self.baseURL.host hasPrefix:@"dev.forums"]) {
+    if (self.usingDevDotForums) {
         parameters[@"json"] = @1;
     }
     NSURLRequest *request = [self requestWithMethod:@"GET" path:@"forumdisplay.php"
@@ -105,7 +133,7 @@
         @"perpage": @40,
         @"pagenumber": @(page),
     } mutableCopy];
-    if ([self.baseURL.host hasPrefix:@"dev.forums"]) {
+    if (self.usingDevDotForums) {
         parameters[@"json"] = @1;
     }
     NSURLRequest *request = [self requestWithMethod:@"GET" path:@"bookmarkthreads.php"
@@ -131,19 +159,19 @@
 }
 
 - (NSOperation *)listPostsInThreadWithID:(NSString *)threadID
-                                  onPage:(NSInteger)page
+                                  onPage:(AwfulThreadPage)page
                                  andThen:(void (^)(NSError *error,
                                                    NSArray *posts,
                                                    NSUInteger firstUnreadPost,
                                                    NSString *advertisementHTML))callback
 {
     NSMutableDictionary *parameters = [@{ @"threadid": threadID } mutableCopy];
-    if ([self.baseURL.host hasPrefix:@"dev.forums"]) {
+    if (self.usingDevDotForums) {
         parameters[@"json"] = @1;
     }
     parameters[@"perpage"] = @40;
-    if (page == AwfulPageNextUnread) parameters[@"goto"] = @"newpost";
-    else if (page == AwfulPageLast) parameters[@"goto"] = @"lastpost";
+    if (page == AwfulThreadPageNextUnread) parameters[@"goto"] = @"newpost";
+    else if (page == AwfulThreadPageLast) parameters[@"goto"] = @"lastpost";
     else parameters[@"pagenumber"] = @(page);
     NSURLRequest *request = [self requestWithMethod:@"GET" path:@"showthread.php"
                                          parameters:parameters];
@@ -162,7 +190,7 @@
         }
         if (callback) {
             NSInteger firstUnreadPost = NSNotFound;
-            if (page == AwfulPageNextUnread) {
+            if (page == AwfulThreadPageNextUnread) {
                 NSString *fragment = [[[op response] URL] fragment];
                 if ([fragment hasPrefix:@"pti"]) {
                     firstUnreadPost = [[fragment substringFromIndex:3] integerValue] - 1;
@@ -233,48 +261,50 @@
 
 - (NSOperation *)listForumsAndThen:(void (^)(NSError *error, NSArray *forums))callback
 {
-    // Seems like only forumdisplay.php and showthread.php have the <select> with a complete list
-    // of forums. We'll use the Main "forum" as it's the smallest page with the drop-down list.
-//    NSURLRequest *urlRequest = [self requestWithMethod:@"GET"
-//                                                  path:@"forumdisplay.php"
-//                                            parameters:@{ @"forumid": @"48" }];
-//    id op = [self HTTPRequestOperationWithRequest:urlRequest
-//                                          success:^(id _, ForumHierarchyParsedInfo *info)
-//    {
-//        NSArray *forums = [AwfulForum updateCategoriesAndForums:info];
-//        if (callback) callback(nil, forums);
-//    } failure:^(id _, NSError *error) {
-//        if (callback) callback(error, nil);
-//    }];
-//    [op setCreateParsedInfoBlock:^id(NSData *data) {
-//        return [[ForumHierarchyParsedInfo alloc] initWithHTMLData:data];
-//    }];
-//    [self enqueueHTTPRequestOperation:op];
-//    return op;
-    
-    // TODO when JSON output from index.php hits production, or we can otherwise tell whether we're
-    // on dev.forums, use this code instead.
-    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:@""
-                                            parameters:@{ @"json": @1 }];
-    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
-                                                               success:^(id _, NSDictionary *json)
-    {
-        if (![json[@"forums"] isKindOfClass:[NSArray class]]) {
-            NSDictionary *userInfo = @{
-                NSLocalizedDescriptionKey: @"The forums list could not be parsed"
-            };
-            NSError *error = [NSError errorWithDomain:AwfulErrorDomain
-                                                 code:AwfulErrorCodes.parseError userInfo:userInfo];
+    if (self.usingDevDotForums) {
+        NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:@""
+                                                parameters:@{ @"json": @1 }];
+        AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
+                                                                   success:^(id _, NSDictionary *json)
+        {
+            if (![json[@"forums"] isKindOfClass:[NSArray class]]) {
+                NSDictionary *userInfo = @{
+                    NSLocalizedDescriptionKey: @"The forums list could not be parsed"
+                };
+                NSError *error = [NSError errorWithDomain:AwfulErrorDomain
+                                                     code:AwfulErrorCodes.parseError
+                                                 userInfo:userInfo];
+                if (callback) callback(error, nil);
+                return;
+            }
+            NSArray *forums = [AwfulForum updateCategoriesAndForumsWithJSON:json[@"forums"]];
+            if (callback) callback(nil, forums);
+        } failure:^(id _, NSError *error) {
             if (callback) callback(error, nil);
-            return;
-        }
-        NSArray *forums = [AwfulForum updateCategoriesAndForumsWithJSON:json[@"forums"]];
-        if (callback) callback(nil, forums);
-    } failure:^(id _, NSError *error) {
-        if (callback) callback(error, nil);
-    }];
-    [self enqueueHTTPRequestOperation:op];
-    return op;
+        }];
+        [self enqueueHTTPRequestOperation:op];
+        return op;
+    } else {
+        // Seems like only forumdisplay.php and showthread.php have the <select> with a complete
+        // list of forums. We'll use the Main "forum" as it's the smallest page with the drop-down
+        // list.
+        NSURLRequest *urlRequest = [self requestWithMethod:@"GET"
+                                                      path:@"forumdisplay.php"
+                                                parameters:@{ @"forumid": @"48" }];
+        id op = [self HTTPRequestOperationWithRequest:urlRequest
+                                              success:^(id _, ForumHierarchyParsedInfo *info)
+        {
+            NSArray *forums = [AwfulForum updateCategoriesAndForums:info];
+            if (callback) callback(nil, forums);
+        } failure:^(id _, NSError *error) {
+            if (callback) callback(error, nil);
+        }];
+        [op setCreateParsedInfoBlock:^id(NSData *data) {
+            return [[ForumHierarchyParsedInfo alloc] initWithHTMLData:data];
+        }];
+        [self enqueueHTTPRequestOperation:op];
+        return op;
+    }
 }
 
 - (NSOperation *)replyToThreadWithID:(NSString *)threadID
@@ -552,7 +582,7 @@ static NSString * Entitify(NSString *noEntities)
 }
 
 - (NSOperation *)locatePostWithID:(NSString *)postID
-    andThen:(void (^)(NSError *error, NSString *threadID, NSInteger page))callback
+    andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))callback
 {
     // The SA Forums will direct a certain URL to the thread with a given post. We'll wait for that
     // redirect, then parse out the info we need.
@@ -572,15 +602,15 @@ static NSString * Entitify(NSString *noEntities)
             if (callback) callback(error, nil, 0);
         }
     }];
-    __weak AFHTTPRequestOperation *blockOp = op;
+    __weak AFHTTPRequestOperation *weakOp = op;
     [op setRedirectResponseBlock:^NSURLRequest *(id _, NSURLRequest *request, NSURLResponse *response)
     {
+        AFHTTPRequestOperation *strongOp = weakOp;
         if (!response) return request;
-        [blockOp cancel];
+        [strongOp cancel];
         NSDictionary *query = [[request URL] queryDictionary];
         if (callback) {
-            dispatch_queue_t queue = blockOp.successCallbackQueue ?: dispatch_get_main_queue();
-            dispatch_async(queue, ^{
+            dispatch_async(strongOp.successCallbackQueue ?: dispatch_get_main_queue(), ^{
                 callback(nil, query[@"threadid"], [query[@"pagenumber"] integerValue]);
             });
         }
@@ -602,8 +632,8 @@ static NSString * Entitify(NSString *noEntities)
         AwfulUser *user = [AwfulUser userCreatedOrUpdatedFromJSON:json];
         if (user.profilePictureURL && [user.profilePictureURL hasPrefix:@"/"]) {
             NSString *base = [self.baseURL absoluteString];
-            NSString *devPrefix = @"dev.forums.somethingawful.com";
-            if ([self.baseURL.host hasPrefix:devPrefix]) {
+            if (self.usingDevDotForums) {
+                NSString * const devPrefix = @"dev.forums.somethingawful.com";
                 NSRange approximateHostRange = NSMakeRange([self.baseURL.scheme length],
                                                            [devPrefix length] + 5);
                 base = [base stringByReplacingOccurrencesOfString:devPrefix
@@ -713,13 +743,40 @@ static NSString * Entitify(NSString *noEntities)
     [op setCreateParsedInfoBlock:^id(NSData *data) {
         return [[ReplyFormParsedInfo alloc] initWithHTMLData:data];
     }];
+    
+    return op;
+}
+
+- (NSOperation *)tryAccessingDevDotForumsAndThen:(void (^)(NSError *error, BOOL success))callback
+{
+    NSURL *url = [NSURL URLWithString:@"http://dev.forums.somethingawful.com/"];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setHTTPMethod:@"HEAD"];
+    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
+                                                               success:^(id _, id __)
+    {
+        if (callback) callback(nil, YES);
+    } failure:^(id _, NSError *error) {
+        if (callback) callback(error, NO);
+    }];
+    // The Forums redirects users away from dev.forums if they don't have permission.
+    __weak AFHTTPRequestOperation *weakOp = op;
+    [op setRedirectResponseBlock:^NSURLRequest *(id _, NSURLRequest *request, NSURLResponse *response) {
+        if (!response) return request;
+        AFHTTPRequestOperation *strongOp = weakOp;
+        [strongOp cancel];
+        if (callback) {
+            dispatch_async(strongOp.successCallbackQueue ?: dispatch_get_main_queue(), ^{
+                callback(nil, NO);
+            });
+        }
+        return nil;
+    }];
     [self enqueueHTTPRequestOperation:op];
     return op;
 }
 
-
 @end
-
 
 NSString * const AwfulErrorDomain = @"AwfulErrorDomain";
 
@@ -728,3 +785,4 @@ const struct AwfulErrorCodes AwfulErrorCodes = {
     .threadIsClosed = -1001,
     .parseError = -1002,
 };
+

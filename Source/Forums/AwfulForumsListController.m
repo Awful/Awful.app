@@ -25,6 +25,8 @@
 
 @property (nonatomic) NSDate *lastRefresh;
 
+@property (nonatomic) NSMutableArray *favoriteForums;
+
 @end
 
 
@@ -44,12 +46,29 @@
 
 - (id)init
 {
-    self = [super initWithStyle:UITableViewStylePlain];
-    if (self) {
-        self.title = @"Forums";
-        self.tabBarItem.image = [UIImage imageNamed:@"list_icon.png"];
-    }
+    if (!(self = [super initWithStyle:UITableViewStylePlain])) return nil;
+    self.title = @"Forums";
+    self.tabBarItem.image = [UIImage imageNamed:@"list_icon.png"];
+    _favoriteForums = [NSMutableArray new];
+    [_favoriteForums addObjectsFromArray:[AwfulSettings settings].favoriteForums ?: @[]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDidChange:)
+                                                 name:AwfulSettingsDidChangeNotification object:nil];
     return self;
+}
+
+- (void)settingsDidChange:(NSNotification *)note
+{
+    if (self.userDrivenChange) return;
+    NSArray *changedSettings = note.userInfo[AwfulSettingsDidChangeSettingsKey];
+    if (![changedSettings containsObject:AwfulSettingsKeys.favoriteForums]) return;
+    [self.favoriteForums removeAllObjects];
+    [self.favoriteForums addObjectsFromArray:[AwfulSettings settings].favoriteForums];
+    [self.tableView reloadData];
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (NSFetchedResultsController *)createFetchedResultsController
@@ -86,25 +105,14 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
     if (!cell) return;
     NSIndexPath *indexPath = [self.tableView indexPathForCell:(UITableViewCell *)cell];
     AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    forum.isFavoriteValue = button.selected;
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:
-                                    [AwfulForum entityName]];
-    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"isFavorite == YES"];
-    NSError *error;
-    if (forum.isFavoriteValue) {
-        NSUInteger count = [[AwfulDataStack sharedDataStack].context
-                            countForFetchRequest:fetchRequest error:&error];
-        if (count == NSNotFound) NSLog(@"Error setting favorite index: %@", error);
-        forum.favoriteIndexValue = count;
+    if (button.selected) {
+        [self.favoriteForums addObject:forum.forumID];
     } else {
-        NSArray *renumber = [[AwfulDataStack sharedDataStack].context
-                             executeFetchRequest:fetchRequest error:&error];
-        if (!renumber) NSLog(@"Error renumbering favorites: %@", error);
-        [renumber enumerateObjectsUsingBlock:^(AwfulForum *favorite, NSUInteger i, BOOL *stop) {
-            favorite.favoriteIndexValue = i;
-        }];
+        [self.favoriteForums removeObject:forum.forumID];
     }
-    [[AwfulDataStack sharedDataStack] save];
+    self.userDrivenChange = YES;
+    [AwfulSettings settings].favoriteForums = self.favoriteForums;
+    self.userDrivenChange = NO;
 }
 
 - (void)toggleExpanded:(UIButton *)button
@@ -300,7 +308,7 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
         cell.textLabel.text = forum.name;
         [self setCellImagesForCell:cell];
         cell.showsFavorite = YES;
-        cell.favorite = forum.isFavoriteValue;
+        cell.favorite = [self.favoriteForums containsObject:forum.forumID];
         cell.expanded = forum.expandedValue;
         if ([forum.children count]) {
             cell.showsExpanded = AwfulForumCellShowsExpandedButton;

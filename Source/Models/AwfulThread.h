@@ -19,6 +19,8 @@
 
 + (NSArray *)threadsCreatedOrUpdatedWithJSON:(NSDictionary *)json;
 
++ (instancetype)firstOrNewThreadWithThreadID:(NSString *)threadID;
+
 @end
 
 

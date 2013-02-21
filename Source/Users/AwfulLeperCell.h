@@ -7,13 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "AwfulParsing.h"
+#import "AwfulDisclosureIndicatorView.h"
 
 @interface AwfulLeperCell : UITableViewCell
 
 // Designated initializer.
 - (id)initWithReuseIdentifier:(NSString *)reuseIdentifier;
 
-+ (CGFloat)heightWithBan:(BanParsedInfo *)ban inTableView:(UITableView*)tableView;
+@property (readonly, nonatomic) UILabel *usernameLabel;
+@property (readonly, nonatomic) UILabel *dateAndModLabel;
+@property (readonly, weak, nonatomic) UILabel *reasonLabel;
+@property (nonatomic) AwfulDisclosureIndicatorView *disclosureIndicator;
+
++ (CGFloat)rowHeightWithBanReason:(NSString *)banReason width:(CGFloat)width;
 
 @end

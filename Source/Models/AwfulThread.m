@@ -152,6 +152,16 @@ static NSURL * SecondaryIconURLForType(NSString *type)
     return [NSURL URLWithString:types[type]];
 }
 
++ (instancetype)firstOrNewThreadWithThreadID:(NSString *)threadID
+{
+    AwfulThread *thread = [self firstMatchingPredicate:@"threadID = %@", threadID];
+    if (thread) return thread;
+    thread = [self insertNew];
+    thread.threadID = threadID;
+    [[AwfulDataStack sharedDataStack] save];
+    return thread;
+}
+
 #pragma mark - _AwfulThread
 
 - (void)setTotalReplies:(NSNumber *)totalReplies

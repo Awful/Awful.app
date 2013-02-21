@@ -163,6 +163,7 @@ static NSString * FixSAAndlibxmlHTMLSerialization(NSString *html)
     // by the super-smart Forums non-Windows-1252 character conversion. This adds uncollapsible
     // whitespace to the start of lines.
     html = [html stringByReplacingOccurrencesOfString:@"&#13;" withString:@""];
+    
     // libxml collapses e.g. '<b></b>' into '<b/>'. WebKit then sees '<b/>', parses it as '<b>',
     // and the the rest of the document turns bold.
     NSError *error;
@@ -173,11 +174,9 @@ static NSString * FixSAAndlibxmlHTMLSerialization(NSString *html)
     if (!regex) {
         NSLog(@"error compiling self-closing HTML tag regex: %@", error);
     }
-    return [regex stringByReplacingMatchesInString:html
-                                           options:0
+    return [regex stringByReplacingMatchesInString:html options:0
                                              range:NSMakeRange(0, [html length])
                                       withTemplate:@"<$1></$1>"];
-    
 }
 
 
@@ -823,7 +822,9 @@ static NSString * DeEntitify(NSString *withEntities)
     // FYAD and subforums store the post text in a div within postbody.
     NSString *innerHTML = [[doc rawSearch:@"//div[" HAS_CLASS(complete_shit) "]"] lastObject];
     // Everything else just uses the postbody.
-    if (!innerHTML) innerHTML = [[doc rawSearch:@"//td[" HAS_CLASS(postbody) "]"] lastObject];
+    if (!innerHTML) {
+        innerHTML = [[doc rawSearch:@"//td[" HAS_CLASS(postbody) "]"] lastObject];
+    }
     self.innerHTML = FixSAAndlibxmlHTMLSerialization(innerHTML);
 }
 
@@ -871,7 +872,20 @@ static NSString * DeEntitify(NSString *withEntities)
 
 - (void)parseHTMLData
 {
-    TFHpple *doc = [[TFHpple alloc] initWithHTMLData:self.htmlData];
+    NSString *broken = [[NSString alloc] initWithData:self.htmlData encoding:NSUTF8StringEncoding];
+    // Sometimes we get weird pseudo-tags like '<size:8>' that wreck our day. Make them go away.
+    NSString *pattern = @"<\\/?size:\\d+>";
+    NSError *error;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:0
+                                                                             error:&error];
+    if (!regex) {
+        NSLog(@"error compiling <size:8> regex: %@", error);
+    }
+    NSString *fixedString = [regex stringByReplacingMatchesInString:broken options:0
+                                                              range:NSMakeRange(0, [broken length])
+                                                       withTemplate:@""];
+    NSData *fixed = [fixedString dataUsingEncoding:NSUTF8StringEncoding];
+    TFHpple *doc = [[TFHpple alloc] initWithHTMLData:fixed];
     
     TFHppleElement *threadLink = [doc searchForSingle:@"//a[" HAS_CLASS(bclast) "]"];
     self.threadTitle = [threadLink content];
@@ -925,7 +939,7 @@ static NSString * DeEntitify(NSString *withEntities)
     
     NSMutableArray *posts = [NSMutableArray new];
     NSString *path = @"//table[" HAS_CLASS(post) "]";
-    NSArray *listOfRawPosts = PerformRawHTMLXPathQuery(self.htmlData, path);
+    NSArray *listOfRawPosts = PerformRawHTMLXPathQuery(fixed, path);
     for (NSString *rawPost in listOfRawPosts) {
         NSData *postData = [rawPost dataUsingEncoding:NSUTF8StringEncoding];
         [posts addObject:[[PostParsedInfo alloc] initWithHTMLData:postData]];

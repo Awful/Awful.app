@@ -19,5 +19,5 @@
 
 - (void)loadPageNum:(NSUInteger)pageNum;
 
-- (void)updateThreadTag:(NSString *)threadTagName forCellAtIndexPath:(NSIndexPath *)indexPath;
+//- (void)updateThreadTag:(NSString *)threadTagName forCellAtIndexPath:(NSIndexPath *)indexPath;
 @end
