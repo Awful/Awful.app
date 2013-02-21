@@ -69,13 +69,15 @@
 					<key>Title</key>
 					<string>Font Size</string>
 					<key>Type</key>
-					<string>Slider</string>
+					<string>Stepper</string>
 					<key>Default</key>
 					<integer>100</integer>
 					<key>Minimum</key>
-					<integer>25</integer>
+					<integer>24</integer>
 					<key>Maximum</key>
-					<integer>250</integer>
+					<integer>240</integer>
+					<key>Increment</key>
+					<integer>2</integer>
 					<key>Key</key>
 					<string>font_scale</string>
 				</dict>

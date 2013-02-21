@@ -800,9 +800,7 @@ Awful.showImages = function(on){
 }
 
 Awful.fontScale = function(percentage) {
-    Awful._fontScale = percentage
-    buf = document.getElementsByTagName('body')[0].style
-    buf.fontSize = Awful._fontScale + "%"
+    $('body').css('font-size', percentage + "%")
 }
 
 function render(post) {

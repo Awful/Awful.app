@@ -28,7 +28,7 @@
 
 @property (strong, nonatomic) NSMutableArray *switches;
 
-@property (strong, nonatomic) NSMutableArray *sliders;
+@property (strong, nonatomic) NSMutableArray *steppers;
 
 @property (nonatomic) BOOL canReachDevDotForums;
 
@@ -112,7 +112,7 @@
 {
     [super viewDidLoad];
     self.switches = [NSMutableArray new];
-    self.sliders = [NSMutableArray new];
+    self.steppers = [NSMutableArray new];
     self.tableView.backgroundView = nil;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
     
@@ -170,7 +170,7 @@ typedef enum SettingType
     OnOffSetting,
     ChoiceSetting,
     ButtonSetting,
-    SliderSetting,
+    StepperSetting,
 } SettingType;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
@@ -190,9 +190,9 @@ typedef enum SettingType
     } else if (setting[@"Action"]) {
         settingType = ButtonSetting;
         identifier = @"Action";
-    } else if ([setting[@"Type"] isEqual:@"Slider"]) {
-        settingType = SliderSetting;
-        identifier = @"Slider";
+    } else if ([setting[@"Type"] isEqual:@"Stepper"]) {
+        settingType = StepperSetting;
+        identifier = @"Stepper";
     }
     UITableViewCellStyle style = UITableViewCellStyleValue1;
     if (settingType == OnOffSetting || settingType == ButtonSetting) {
@@ -211,12 +211,12 @@ typedef enum SettingType
             cell.accessoryView = switchView;
         } else if (settingType == ChoiceSetting) {
             cell.accessoryView = [AwfulDisclosureIndicatorView new];
-        } else if (settingType == SliderSetting) {
-            UISlider *sliderView = [UISlider new];
-            [sliderView addTarget:self
-                           action:@selector(moveSlider:)
+        } else if (settingType == StepperSetting) {
+            UIStepper *stepperView = [UIStepper new];
+            [stepperView addTarget:self
+                           action:@selector(stepperPressed:)
                  forControlEvents:UIControlEventValueChanged];
-            cell.accessoryView = sliderView;
+            cell.accessoryView = stepperView;
         }
     }
     if (style == UITableViewCellStyleValue1) {
@@ -257,19 +257,23 @@ typedef enum SettingType
                 break;
             }
         }
-    } else if (settingType == SliderSetting) {
-        UISlider *sliderView = (UISlider *)cell.accessoryView;
-        sliderView.minimumValue = [setting[@"Minimum"] floatValue];
-        sliderView.maximumValue = [setting[@"Maximum"] floatValue];
-        sliderView.value = [setting[@"Default"] floatValue];
-        sliderView.continuous = NO;
-        sliderView.value = [valueForSetting floatValue];
-        NSUInteger tag = [self.sliders indexOfObject:indexPath];
+    } else if (settingType == StepperSetting) {
+        UIStepper *stepperView = (UIStepper *)cell.accessoryView;
+        [stepperView setMinimumValue:[setting[@"Minimum"] integerValue]];
+        [stepperView setMaximumValue:[setting[@"Maximum"] integerValue]];
+        [stepperView setStepValue:[setting[@"Increment"] integerValue]];
+        [stepperView setValue:[valueForSetting integerValue]];
+        [stepperView setWraps:YES];
+        [stepperView setContinuous:YES];
+        
+        [cell.textLabel setText:[NSString stringWithFormat:@"%@: %d%%",setting[@"Title"],[valueForSetting integerValue]]];
+        
+        NSUInteger tag = [self.steppers indexOfObject:indexPath];
         if (tag == NSNotFound) {
-            tag = self.sliders.count;
-            [self.sliders addObject:indexPath];
+            tag = self.steppers.count;
+            [self.steppers addObject:indexPath];
         }
-        sliderView.tag = tag;
+        stepperView.tag = tag;
     }
     
     if (settingType == ChoiceSetting || settingType == ButtonSetting) {
@@ -296,13 +300,17 @@ typedef enum SettingType
     
 }
 
-- (void)moveSlider:(UISlider *)sliderView
+- (void)stepperPressed:(UIStepper *)stepperView
 {
-    NSIndexPath *indexPath = self.sliders[sliderView.tag];
+    NSIndexPath *indexPath = self.steppers[stepperView.tag];
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
     NSDictionary *setting = [self settingForIndexPath:indexPath];
     NSString *key = setting[@"Key"];
-    //NSLog(@"setting slider '%@' to value: %f", key, sliderView.value);
-    [AwfulSettings settings][key] = @(sliderView.value);
+    
+    [cell.textLabel setText:[NSString stringWithFormat:@"%@: %d%%",setting[@"Title"],(int)stepperView.value]];
+    [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+
+    [AwfulSettings settings][key] = @(stepperView.value);
 }
 
 - (void)tableView:(UITableView *)tableView
