@@ -106,6 +106,7 @@ static id _instance;
         [[AwfulForumsListController new] enclosingNavigationController],
         [[AwfulFavoritesViewController new] enclosingNavigationController],
         [[AwfulBookmarksController new] enclosingNavigationController],
+        [[AwfulPrivateMessageListController new] enclosingNavigationController],
         [[AwfulSettingsViewController new] enclosingNavigationController]
     ];
     tabBar.selectedViewController = tabBar.viewControllers[[[AwfulSettings settings] firstTab]];
@@ -164,7 +165,7 @@ static id _instance;
 
 - (AwfulNewPMNotifierAgent*)newPMAgent {
     if (_newPMAgent) return _newPMAgent;
-    _newPMAgent = [AwfulNewPMNotifierAgent new];
+    _newPMAgent = [AwfulNewPMNotifierAgent defaultAgent];
     return _newPMAgent;
 }
 

@@ -21,6 +21,7 @@
 #import "AwfulNewPMNotifierAgent.h"
 #import "AwfulPMComposerViewController.h"
 #import "UIViewController+NavigationEnclosure.h"
+#import "AwfulAppDelegate.h"
 
 //#import "AwfulNewPostComposeController.h"
 //#import "AwfulNewPMComposeController.h"
@@ -82,25 +83,29 @@
 
 -(BOOL)refreshOnAppear
 {
-    //check date on last message we've got, if older than 10? min reload
-    AwfulPrivateMessage *newestPM = [AwfulPrivateMessage firstSortedBy:
-                               @[[NSSortDescriptor sortDescriptorWithKey:@"sent" ascending:NO]]
-                               ];
-    if (!newestPM || -[newestPM.sent timeIntervalSinceNow] > (10*60*60) ) {  //10 min
-        return YES;
+    NSTimeInterval checkingThreshhold = 10*60*60.0; //10 min
+    AwfulNewPMNotifierAgent *agent = [AwfulNewPMNotifierAgent defaultAgent];
+    
+    //check cached last check date
+    if (agent.lastCheckDate) {
+        return (-[agent.lastCheckDate timeIntervalSinceNow] > checkingThreshhold);
     }
-    return NO;
+    
+    //if no objects force refresh
+    if (self.fetchedResultsController.fetchedObjects.count == 0) return YES;
+    
+    
+    //check date on last message we've got
+    AwfulPrivateMessage *newestPM = [self.fetchedResultsController objectAtIndexPath:
+                                     [NSIndexPath indexPathForRow:0 inSection:0]
+                                     ];
+    return (-[newestPM.sent timeIntervalSinceNow] > checkingThreshhold );
 }
 
 - (void)refresh
 {
     [super refresh];
-    
-    [self.networkOperation cancel];
-    self.networkOperation = [[AwfulHTTPClient client]
-                             privateMessageListAndThen:^(NSError *error, NSArray *messages) {
-                                 self.refreshing = NO;
-    }];
+    [[AwfulNewPMNotifierAgent defaultAgent] checkForNewMessages];
 }
 
 - (void)didTapCompose:(id)sender

@@ -15,4 +15,5 @@ extern NSString* kAwfulNewPrivateMessageCountKey;
 
 + (AwfulNewPMNotifierAgent*) defaultAgent;
 - (void)checkForNewMessages;
+@property (nonatomic,readonly) NSDate* lastCheckDate;
 @end

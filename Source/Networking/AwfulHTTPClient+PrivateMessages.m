@@ -11,6 +11,7 @@
 #import "AwfulDataStack.h"
 #import "AwfulModels.h"
 #import "AwfulThreadTags.h"
+#import "AwfulJSONOrScrapeOperation.h"
 
 @implementation AwfulHTTPClient (PrivateMessages)
 
@@ -18,17 +19,16 @@
 {
     //return nil;
     //NetworkLogInfo(@"%@", THIS_METHOD);
-    NSString *path = [NSString stringWithFormat:@"private.php"];
-    NSMutableURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
+    NSMutableURLRequest *urlRequest = [self requestWithMethod:@"GET" path:@"private.php" parameters:@{}];
     //urlRequest.timeoutInterval = NetworkTimeoutInterval;
-    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
+    AwfulJSONOrScrapeOperation *op = (AwfulJSONOrScrapeOperation*)[self HTTPRequestOperationWithRequest:urlRequest
                                                                success:^(id _, id data)
                                   {
                                         #warning fixme there is no self.parsequeue
                                       //dispatch_async(self.parseQueue, ^{
-                                          NSArray *infos = [PrivateMessageParsedInfo messagesWithHTMLData:data];
+                                          //NSArray *infos = [PrivateMessageParsedInfo messagesWithHTMLData:data];
                                           dispatch_async(dispatch_get_main_queue(), ^{
-                                              NSArray *pms = [AwfulPrivateMessage privateMessagesCreatedOrUpdatedWithParsedInfo:infos];
+                                              NSArray *pms = [AwfulPrivateMessage privateMessagesCreatedOrUpdatedWithParsedInfo:data];
                                               [[AwfulDataStack sharedDataStack] save];
                                               if (callback) callback(nil, pms);
                                           });
@@ -36,6 +36,10 @@
                                   } failure:^(id _, NSError *error) {
                                       if (callback) callback(error, nil);
                                   }];
+    
+    op.createParsedInfoBlock = ^id(NSData * data) {
+        return [PrivateMessageParsedInfo messagesWithHTMLData:data];
+    };
 
     [self enqueueHTTPRequestOperation:op];
     return (NSOperation *)op;

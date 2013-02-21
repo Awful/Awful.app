@@ -10,5 +10,4 @@
 #import "AwfulPMComposerViewController.h"
 
 @interface AwfulPrivateMessageListController : AwfulFetchedTableViewController <AwfulComposerViewControllerDelegate>
-
 @end

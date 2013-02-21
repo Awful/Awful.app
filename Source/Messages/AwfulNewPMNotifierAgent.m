@@ -34,6 +34,8 @@
     [[AwfulHTTPClient client] privateMessageListAndThen:^(NSError *error, NSArray *messages) {
         if (error) return;
         
+        _lastCheckDate = [NSDate date];
+        
         int newMessageCount = 0;
         
         for (AwfulPrivateMessage* msg in messages)
