@@ -76,10 +76,11 @@ static id _instance;
     }
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
     
-    AwfulSettings.settings.username = nil;
     NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
     [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
     [[AwfulDataStack sharedDataStack] deleteAllDataAndResetStack];
+    
+    [self setUpRootViewController];
     
     [self showLoginFormIsAtLaunch:NO andThen:^{
         AwfulTabBarController *tabBar;
@@ -93,6 +94,31 @@ static id _instance;
         }
         tabBar.selectedViewController = tabBar.viewControllers[0];
     }];
+}
+
+- (void)setUpRootViewController
+{
+    AwfulTabBarController *tabBar = [AwfulTabBarController new];
+    tabBar.viewControllers = @[
+        [[AwfulForumsListController new] enclosingNavigationController],
+        [[AwfulFavoritesViewController new] enclosingNavigationController],
+        [[AwfulBookmarksController new] enclosingNavigationController],
+        [[AwfulSettingsViewController new] enclosingNavigationController]
+    ];
+    tabBar.selectedViewController = tabBar.viewControllers[[[AwfulSettings settings] firstTab]];
+    tabBar.delegate = self;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        AwfulSplitViewController *splitController = [AwfulSplitViewController new];
+        AwfulStartViewController *start = [AwfulStartViewController new];
+        UINavigationController *nav = [start enclosingNavigationController];
+        nav.delegate = self;
+        splitController.viewControllers = @[ tabBar, nav ];
+        self.window.rootViewController = splitController;
+        self.splitViewController = splitController;
+    } else {
+        self.window.rootViewController = tabBar;
+    }
+    self.tabBarController = tabBar;
 }
 
 - (void)configureAppearance
@@ -156,28 +182,8 @@ static id _instance;
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     
-    AwfulTabBarController *tabBar = [AwfulTabBarController new];
-    tabBar.viewControllers = @[
-        [[AwfulForumsListController new] enclosingNavigationController],
-        [[AwfulFavoritesViewController new] enclosingNavigationController],
-        [[AwfulBookmarksController new] enclosingNavigationController],
-        [[AwfulSettingsViewController new] enclosingNavigationController]
-    ];
-    tabBar.selectedViewController = tabBar.viewControllers[[[AwfulSettings settings] firstTab]];
-    tabBar.delegate = self;
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        AwfulSplitViewController *splitController = [AwfulSplitViewController new];
-        AwfulStartViewController *start = [AwfulStartViewController new];
-        UINavigationController *nav = [start enclosingNavigationController];
-        nav.delegate = self;
-        splitController.viewControllers = @[ tabBar, nav ];
-        self.window.rootViewController = splitController;
-        self.splitViewController = splitController;
-    } else {
-        self.window.rootViewController = tabBar;
-    }
-    self.tabBarController = tabBar;
-    
+    [self setUpRootViewController];
+        
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         NSFileManager *fileman = [NSFileManager defaultManager];
         NSURL *cssReadme = [[NSBundle mainBundle] URLForResource:@"Custom CSS README"
@@ -218,8 +224,8 @@ static id _instance;
     }
     
     if ([AwfulHTTPClient client].loggedIn && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        AwfulSplitViewController *split = (AwfulSplitViewController *)self.window.rootViewController;
-        [split performSelector:@selector(showMasterView) withObject:nil afterDelay:0.1];
+        [self.splitViewController performSelector:@selector(showMasterView) withObject:nil
+                                       afterDelay:0.1];
     }
     
     return YES;

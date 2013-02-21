@@ -220,7 +220,7 @@
 
 // List probations, bans, and permabans from the Leper's Colony.
 //
-// page - Which page of the Leper's Colony to list. First page is page 1.
+// page     - Which page of the Leper's Colony to list. First page is page 1.
 // callback - A block to call after listing punishment, which takes as parameters:
 //              error - An error on failure, or nil on success.
 //              bans  - An array of BanParsedInfo instances on success, or nil on failure.
@@ -228,6 +228,15 @@
 // Returns the enqueued network operation.
 - (NSOperation *)listBansOnPage:(NSInteger)page
                         andThen:(void (^)(NSError *error, NSArray *bans))callback;
+
+// Attempt to access dev.forums.somethingawful.com.
+//
+// callback - A block to call after the access attempt, which takes as parameters:
+//              error   - An error on failure, or nil on success.
+//              success - YES if dev.forums was accessible, or NO on failure.
+//
+// Returns the enqueued network operation.
+- (NSOperation *)tryAccessingDevDotForumsAndThen:(void (^)(NSError *error, BOOL success))callback;
 
 @end
 

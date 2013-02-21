@@ -19,7 +19,6 @@
 @property (nonatomic) NSInteger currentPage;
 
 @property (nonatomic) NSMutableArray *bans;
-
 @property (nonatomic) NSMutableSet *banIDs;
 
 @property (nonatomic) UIImage *cellBackgroundImage;
@@ -42,9 +41,9 @@
 {
     if (_cellBackgroundImage) return _cellBackgroundImage;
     CGSize size = CGSizeMake(40, 56);
-    UIColor *topColor = [UIColor whiteColor];
-    UIColor *shadowColor = [UIColor colorWithWhite:0.5 alpha:0.2];
-    UIColor *bottomColor = [UIColor colorWithWhite:0.969 alpha:1];
+    UIColor *topColor = [AwfulTheme currentTheme].lepersColonyCellBackgroundTopColor;
+    UIColor *shadowColor = [AwfulTheme currentTheme].lepersColonyCellBackgroundDividerShadowColor;
+    UIColor *bottomColor = [AwfulTheme currentTheme].lepersColonyCellBackgroundBottomColor;
     
     UIGraphicsBeginImageContextWithOptions(size, YES, 0);
     CGContextRef context = UIGraphicsGetCurrentContext();
@@ -57,6 +56,9 @@
     CGContextRestoreGState(context);
     
     CGContextSaveGState(context);
+    // For whatever reason drawing a shadow in the little triangular notch draws the shadow all the
+    // way down, like a stripe. We clip first to prevent the stripe.
+    CGContextClipToRect(context, CGRectInset(topHalf, 0, -1));
     CGContextMoveToPoint(context, CGRectGetMinX(topHalf), CGRectGetMinY(topHalf));
     CGContextAddLineToPoint(context, CGRectGetMinX(topHalf), CGRectGetMaxY(topHalf));
     CGContextAddLineToPoint(context, CGRectGetMinX(topHalf) + 25, CGRectGetMaxY(topHalf));
@@ -92,15 +94,16 @@
 - (void)retheme
 {
     [super retheme];
-    self.view.backgroundColor = [AwfulTheme currentTheme].threadListBackgroundColor;
-    self.tableView.separatorColor = [AwfulTheme currentTheme].threadListSeparatorColor;
-    for (AwfulLeperCell *cell in [self.tableView visibleCells]) {
-        [self tableView:self.tableView
-        willDisplayCell:cell
-      forRowAtIndexPath:[self.tableView indexPathForCell:cell]];
-    }
+    self.view.backgroundColor = [AwfulTheme currentTheme].lepersColonyBackgroundColor;
+    self.tableView.separatorColor = [AwfulTheme currentTheme].lepersColonySeparatorColor;
+    [self invalidateCellBackgroundImage];
+    [self.tableView reloadData];
 }
 
+- (void)invalidateCellBackgroundImage
+{
+    self.cellBackgroundImage = nil;
+}
 
 - (BOOL)canPullForNextPage
 {
@@ -208,15 +211,19 @@ static NSString * CreateBanIDForBan(BanParsedInfo *ban)
 forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     AwfulLeperCell *cell = (id)baseCell;
-    cell.usernameLabel.textColor = [AwfulTheme currentTheme].forumCellTextColor;
-    cell.dateAndModLabel.textColor = [AwfulTheme currentTheme].forumCellTextColor;
-    cell.reasonLabel.textColor = [AwfulTheme currentTheme].forumCellTextColor;
+    cell.usernameLabel.textColor = [AwfulTheme currentTheme].lepersColonyTextColor;
+    cell.dateAndModLabel.textColor = [AwfulTheme currentTheme].lepersColonyTextColor;
+    cell.reasonLabel.textColor = [AwfulTheme currentTheme].lepersColonyTextColor;
 }
 
 - (void)configureCell:(UITableViewCell *)baseCell atIndexPath:(NSIndexPath *)indexPath
 {
     AwfulLeperCell *cell = (id)baseCell;
     BanParsedInfo *ban = self.bans[indexPath.row];
+    
+    UIImageView *background = (id)cell.backgroundView;
+    background.image = self.cellBackgroundImage;
+    cell.selectionStyle = [AwfulTheme currentTheme].cellSelectionStyle;
     
     if (ban.banType == AwfulBanTypeProbation) {
         cell.imageView.image = [UIImage imageNamed:@"title-probation.png"];
@@ -258,6 +265,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     if (!ban.postID) return;
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"awful://posts/%@", ban.postID]];
     [[UIApplication sharedApplication] openURL:url];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 @end

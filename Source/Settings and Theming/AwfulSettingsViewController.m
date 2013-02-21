@@ -30,6 +30,8 @@
 
 @property (strong, nonatomic) NSMutableArray *sliders;
 
+@property (nonatomic) BOOL canReachDevDotForums;
+
 @end
 
 
@@ -37,17 +39,34 @@
 
 - (id)init
 {
-    self = [super initWithStyle:UITableViewStyleGrouped];
-    if (self) {
-        self.title = @"Settings";
-        self.tabBarItem.image = [UIImage imageNamed:@"cog.png"];
-    }
+    if (!(self = [super initWithStyle:UITableViewStyleGrouped])) return nil;
+    self.title = @"Settings";
+    self.tabBarItem.image = [UIImage imageNamed:@"cog.png"];
     return self;
 }
 
 - (void)dismissLicenses
 {
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (BOOL)canReachDevDotForums
+{
+    if (_canReachDevDotForums) return _canReachDevDotForums;
+    if ([AwfulSettings settings].useDevDotForums) {
+        _canReachDevDotForums = YES;
+        return _canReachDevDotForums;
+    }
+    __weak AwfulSettingsViewController *weakSelf = self;
+    [[AwfulHTTPClient client] tryAccessingDevDotForumsAndThen:^(NSError *error, BOOL success) {
+        AwfulSettingsViewController *strongSelf = weakSelf;
+        strongSelf.canReachDevDotForums = success;
+        if (success) {
+            [strongSelf reloadSections];
+            [strongSelf.tableView reloadData];
+        }
+    }];
+    return _canReachDevDotForums;
 }
 
 #pragma mark - AwfulTableViewController
@@ -94,10 +113,6 @@
     [super viewDidLoad];
     self.switches = [NSMutableArray new];
     self.sliders = [NSMutableArray new];
-    NSString *device = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"iPad" : @"iPhone";
-    NSPredicate *sectionPredicate = [NSPredicate predicateWithFormat:
-                                     @"Device = nil OR Device = %@", device];
-    self.sections = [AwfulSettings.settings.sections filteredArrayUsingPredicate:sectionPredicate];
     self.tableView.backgroundView = nil;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
     
@@ -105,9 +120,28 @@
     self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 18, 0);
 }
 
+- (void)reloadSections
+{
+    NSString *currentDevice = @"iPhone";
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        currentDevice = @"iPad";
+    }
+    NSMutableArray *sections = [NSMutableArray new];
+    for (NSDictionary *section in [AwfulSettings settings].sections) {
+        if (section[@"Device"] && ![section[@"Device"] isEqual:currentDevice]) continue;
+        if (section[@"Predicate"]) {
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:section[@"Predicate"]];
+            if (![predicate evaluateWithObject:self]) continue;
+        }
+        [sections addObject:section];
+    }
+    self.sections = sections;
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    [self reloadSections];
     [self.tableView reloadData];
 }
 

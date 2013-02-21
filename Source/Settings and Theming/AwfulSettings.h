@@ -66,6 +66,8 @@ typedef enum {
 
 @property (assign, nonatomic) NSNumber *fontScale;
 
+@property (assign, nonatomic) BOOL useDevDotForums;
+
 - (id)objectForKeyedSubscript:(id)key;
 
 - (void)setObject:(id)object forKeyedSubscript:(id <NSCopying>)key;
@@ -95,4 +97,5 @@ extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *keepSidebarOpen;
     __unsafe_unretained NSString *favoriteForums;
     __unsafe_unretained NSString *fontScale;
+    __unsafe_unretained NSString *useDevDotForums;
 } AwfulSettingsKeys;

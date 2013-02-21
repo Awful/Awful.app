@@ -39,6 +39,15 @@
 @property (readonly, nonatomic) UIImage *forumCellFavoriteButtonNormalImage;
 @property (readonly, nonatomic) UIImage *forumCellFavoriteButtonSelectedImage;
 
+// Leper's Colony
+
+@property (readonly, nonatomic) UIColor *lepersColonyBackgroundColor;
+@property (readonly, nonatomic) UIColor *lepersColonySeparatorColor;
+@property (readonly, nonatomic) UIColor *lepersColonyTextColor;
+@property (readonly, nonatomic) UIColor *lepersColonyCellBackgroundTopColor;
+@property (readonly, nonatomic) UIColor *lepersColonyCellBackgroundDividerShadowColor;
+@property (readonly, nonatomic) UIColor *lepersColonyCellBackgroundBottomColor;
+
 // Favorites
 
 @property (readonly, nonatomic) UIColor *favoritesBackgroundColor;

@@ -89,10 +89,10 @@
     // TODO maybe bump the image view up a couple points
     self.imageView.frame = CGRectMake(cellMargin.left, cellMargin.top, 44, 44);
     const CGFloat imageViewRightMargin = 10;
-    const CGFloat imageViewBottomMargin = 10;
+    const CGFloat imageViewBottomMargin = 12;
     
     CGRect usernameFrame = (CGRect){
-        .origin = { CGRectGetMaxX(self.imageView.frame) + imageViewRightMargin, 12 },
+        .origin = { CGRectGetMaxX(self.imageView.frame) + imageViewRightMargin, 9 },
         .size.height = self.usernameLabel.font.lineHeight,
     };
     usernameFrame.size.width = (CGRectGetWidth(self.contentView.frame) -
@@ -103,8 +103,10 @@
     
     const CGFloat reasonLabelRightMargin = 32;
     CGRect reasonFrame = (CGRect){
-        .origin = { cellMargin.left, CGRectGetMaxY(self.dateAndModLabel.frame) + imageViewBottomMargin },
-        .size.width = CGRectGetWidth(self.contentView.frame) - cellMargin.left - reasonLabelRightMargin,
+        .origin.x = cellMargin.left,
+        .origin.y = CGRectGetMaxY(self.imageView.frame) + imageViewBottomMargin,
+        .size.width = (CGRectGetWidth(self.contentView.frame) - cellMargin.left -
+                       reasonLabelRightMargin),
     };
     CGFloat cellHeight = [[self class] rowHeightWithBanReason:self.reasonLabel.text
                                                         width:CGRectGetWidth(self.contentView.frame)];

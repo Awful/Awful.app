@@ -264,6 +264,8 @@ BOOL_PROPERTY(showThreadTags, setShowThreadTags)
     self[AwfulSettingsKeys.fontScale] = scale;
 }
 
+BOOL_PROPERTY(useDevDotForums, setUseDevDotForums)
+
 - (id)objectForKeyedSubscript:(id)key
 {
     return [[NSUserDefaults standardUserDefaults] objectForKey:key];
@@ -316,4 +318,5 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .keepSidebarOpen = @"keep_sidebar_open",
     .favoriteForums = @"favorite_forums",
     .fontScale = @"font_scale",
+    .useDevDotForums = @"use_dev_dot_forums",
 };
