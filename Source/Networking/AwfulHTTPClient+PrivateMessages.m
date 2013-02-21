@@ -51,17 +51,20 @@
     //NetworkLogInfo(@"%@", THIS_METHOD);
     NSString *path = [NSString stringWithFormat:@"private.php?action=show&privatemessageid=%@", message.messageID];
     NSMutableURLRequest *urlRequest = [self requestWithMethod:@"GET" path:path parameters:nil];
-    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
+    AwfulJSONOrScrapeOperation *op = (AwfulJSONOrScrapeOperation*)[self HTTPRequestOperationWithRequest:urlRequest
                                                                success:^(AFHTTPRequestOperation *operation, id response) {
                                                                    //NetworkLogInfo(@"completed %@", THIS_METHOD);
-                                                                   NSData *responseData = (NSData *)response;
-                                                                   [PrivateMessageParsedInfo parsePM:message withData:responseData];
+                                                                   
                                                                    callback(nil, message);
                                                                }
                                                                failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                                                                    callback(error, nil);
                                                                    
                                                                }];
+    op.createParsedInfoBlock = ^id(NSData* data) {
+        [PrivateMessageParsedInfo parsePM:message withData:data];
+        return nil;
+    };
     [self enqueueHTTPRequestOperation:op];
     return (NSOperation *)op;
 }
