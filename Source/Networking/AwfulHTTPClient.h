@@ -239,16 +239,43 @@
 // Returns the enqueued network operation.
 - (NSOperation *)tryAccessingDevDotForumsAndThen:(void (^)(NSError *error, BOOL success))callback;
 
+// List private messages in the logged-in user's Inbox.
+//
+// callback - A block to call after listing messages, which takes as parameters:
+//              error    - An error on failure, or nil on success.
+//              messages - An array of PrivateMessageParsedInfo instances on success, or nil on
+//                         failure.
+//
+// Returns the enqueued network operation.
 - (NSOperation *)listPrivateMessagesAndThen:(void (^)(NSError *error, NSArray *messages))callback;
 
+// Read a private message.
+//
+// messageID - The ID of the message to read.
+// callback  - A block to call after reading the message, which takes as parameters:
+//               error   - An error on failure, or nil on success.
+//               message - The message on success, or nil on failure.
+//
+// Returns the enqueued network operation.
 - (NSOperation *)readPrivateMessageWithID:(NSString *)messageID
                                   andThen:(void (^)(NSError *error,
-                                                    AwfulPrivateMessage* message))callback;
+                                                    AwfulPrivateMessage *message))callback;
 
+// Send a private message.
+//
+// username - The user who will receive the message.
+// subject  - The subject of the message.
+// iconName - The thread tag to use, or nil for no tag.
+// text     - The BBCode text of the message.
+// callback - A block to call after sending the message, which takes as parameters:
+//              error   - An error on failure, or nil on success.
+//              message - The sent message on success, or nil on failure.
+//
+// Returns the enqueued network operation.
 - (NSOperation *)sendPrivateMessageTo:(NSString *)username
                               subject:(NSString *)subject
                                  icon:(NSString *)iconName
-                                 text:(NSString *)contentBBCode
+                                 text:(NSString *)text
                               andThen:(void (^)(NSError *error,
                                                 AwfulPrivateMessage *message))callback;
 

@@ -745,20 +745,20 @@ static NSString * Entitify(NSString *noEntities)
 - (NSOperation *)sendPrivateMessageTo:(NSString*)username
                               subject:(NSString*)subject
                                  icon:(NSString*)iconName
-                                 text:(NSString*)contentBBCode
+                                 text:(NSString*)text
                               andThen:(void (^)(NSError *error,
                                                 AwfulPrivateMessage *message))callback
 {
     NSDictionary *parameters = @{
-                                 @"touser": username,
-                                 @"title": subject,
-                                 @"iconid": iconName,
-                                 @"message": contentBBCode,
-                                 @"action": @"dosend",
-                                 @"submit": @"Send Message",
-                                 // TODO what is client?
-                                 @"client": @"awful iOS test"
-                                 };
+        @"touser": username,
+        @"title": subject,
+        @"iconid": iconName,
+        @"message": text,
+        @"action": @"dosend",
+        @"submit": @"Send Message",
+        // TODO what is client?
+        @"client": @"awful iOS test"
+    };
     NSURLRequest *postRequest = [self requestWithMethod:@"POST" path:@"private.php"
                                              parameters:parameters];
     id op = [self HTTPRequestOperationWithRequest:postRequest
