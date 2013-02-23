@@ -272,6 +272,7 @@ static id _instance;
         [self jumpToForum:forum inNavigationController:nav];
         self.tabBarController.selectedViewController = nav;
         [self.splitViewController showMasterView];
+        return YES;
     }
     
     // Open bookmarks: awful://bookmarks
@@ -279,13 +280,23 @@ static id _instance;
         UINavigationController *nav = self.tabBarController.viewControllers[2];
         [nav popToRootViewControllerAnimated:YES];
         self.tabBarController.selectedViewController = nav;
+        return YES;
+    }
+    
+    // Open private messages: awful://messages
+    if ([section isEqualToString:@"messages"]) {
+        UINavigationController *nav = self.tabBarController.viewControllers[3];
+        [nav popToRootViewControllerAnimated:YES];
+        self.tabBarController.selectedViewController = nav;
+        return YES;
     }
     
     // Open settings: awful://settings
     if ([section isEqualToString:@"settings"]) {
-        UINavigationController *nav = self.tabBarController.viewControllers[3];
+        UINavigationController *nav = self.tabBarController.viewControllers[4];
         [nav popToRootViewControllerAnimated:YES];
         self.tabBarController.selectedViewController = nav;
+        return YES;
     }
     
     // Open a thread: awful://threads/:threadID
@@ -337,6 +348,7 @@ static id _instance;
             nav = (UINavigationController *)self.tabBarController.selectedViewController;
         }
         [nav pushViewController:postsView animated:YES];
+        return YES;
     }
     
     // Open a post: awful://posts/:postID
@@ -382,9 +394,9 @@ static id _instance;
              [SVProgressHUD dismiss];
              [self pushPostsViewForPostWithID:postID onPage:page ofThreadWithID:threadID];
          }];
+        return YES;
     }
-    
-    return YES;
+    return NO;
 }
 
 - (void)pushPostsViewForPostWithID:(NSString *)postID
