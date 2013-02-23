@@ -1076,3 +1076,100 @@ static AwfulBanType BanTypeWithString(NSString *s)
 }
 
 @end
+
+
+@interface PrivateMessageParsedInfo ()
+
+@property (copy, nonatomic) NSString *messageID;
+@property (copy, nonatomic) NSString *subject;
+@property (nonatomic) NSDate *sentDate;
+@property (nonatomic) NSURL *messageIconImageURL;
+@property (nonatomic) UserParsedInfo *from;
+@property (nonatomic) UserParsedInfo *to;
+@property (nonatomic) BOOL seen;
+@property (nonatomic) BOOL replied;
+@property (nonatomic) NSString *innerHTML;
+
+@end
+
+
+@implementation PrivateMessageParsedInfo
+
++ (NSArray *)messagesWithHTMLData:(NSData *)htmlData
+{
+    NSMutableArray *messages = [NSMutableArray new];
+    NSArray *rawPMs = PerformRawHTMLXPathQuery(htmlData, @"//tbody/tr");
+    for (NSString *onePM in rawPMs) {
+        NSData *dataForOnePM = [onePM dataUsingEncoding:NSUTF8StringEncoding];
+        [messages addObject:[[self alloc] initWithHTMLData:dataForOnePM]];
+    }
+    return messages;
+}
+
+- (void)parseHTMLData
+{
+    NSArray *postbody = PerformRawHTMLXPathQuery(self.htmlData, @"//td[@class='postbody']");
+    if ([postbody count] > 0) {
+        self.innerHTML = [postbody lastObject];
+        return;
+    }
+    
+    NSMutableArray *cells = [NSMutableArray new];
+    for (NSString *rawCell in PerformRawHTMLXPathQuery(self.htmlData, @"//td")) {
+        NSData *data = [rawCell dataUsingEncoding:NSUTF8StringEncoding];
+        [cells addObject:[[TFHpple alloc] initWithHTMLData:data]];
+    }
+    if ([cells count] < 5) {
+        NSLog(@"error parsing private message: too few table cells");
+        return;
+    }
+    
+    NSString *seenImageSrc = [[cells[0] searchForSingle:@"//img"] objectForKey:@"src"];
+    self.replied = [seenImageSrc rangeOfString:@"replied"].location != NSNotFound;
+    self.seen = [seenImageSrc rangeOfString:@"newpm"].location == NSNotFound;
+    
+    TFHppleElement *tag = [cells[1] searchForSingle:@"//img"];
+    self.messageIconImageURL = [NSURL URLWithString:[tag objectForKey:@"src"]];
+    
+    TFHppleElement *subject = [cells[2] searchForSingle:@"//a"];
+    if (subject) {
+        self.subject = subject.content;
+        NSError *error;
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"privatemessageid=([0-9]*)"
+                                                                               options:NSRegularExpressionCaseInsensitive
+                                                                                 error:&error];
+        if (!regex) {
+            NSLog(@"error parsing private message ID: %@", error);
+        }
+        NSString *href = [subject objectForKey:@"href"];
+        NSTextCheckingResult *result = [regex firstMatchInString:href options:0
+                                                           range:NSMakeRange(0, [href length])];
+        if ([result rangeAtIndex:1].location != NSNotFound) {
+            self.messageID = [href substringWithRange:[result rangeAtIndex:1]];
+        }
+    }
+    
+    TFHppleElement *fromCell = [cells[3] searchForSingle:@"//td"];
+    self.from = [UserParsedInfo new];
+    self.from.username = fromCell.content;
+    
+    TFHppleElement *sentDateCell = [cells[4] searchForSingle:@"//td"];
+    if (sentDateCell) {
+        // TODO does this format appear elsewhere?
+        static NSDateFormatter *df = nil;
+        if (!df) {
+            df = [[NSDateFormatter alloc] init];
+            [df setDateFormat:@"MMM d, yyyy 'at' HH:mm"];
+        }
+        [df setTimeZone:[NSTimeZone localTimeZone]];
+        self.sentDate = [df dateFromString:[sentDateCell content]];
+    }
+}
+
++ (NSArray *)keysToApplyToObject
+{
+    return @[ @"messageID", @"subject", @"messageIconImageURL", @"seen", @"replied", @"sentDate",
+              @"innerHTML" ];
+}
+
+@end

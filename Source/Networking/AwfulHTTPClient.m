@@ -702,6 +702,78 @@ static NSString * Entitify(NSString *noEntities)
     return op;
 }
 
+- (NSOperation *)listPrivateMessagesAndThen:(void (^)(NSError *error, NSArray *messages))callback
+{
+    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:@"private.php" parameters:nil];
+    id op = [self HTTPRequestOperationWithRequest:urlRequest success:^(id _, NSArray *infos)
+             {
+                 NSArray *pms = [AwfulPrivateMessage privateMessagesCreatedOrUpdatedWithParsedInfo:infos];
+                 if (callback) callback(nil, pms);
+             } failure:^(id _, NSError *error) {
+                 if (callback) callback(error, nil);
+             }];
+    [op setCreateParsedInfoBlock:^id(NSData * data) {
+        return [PrivateMessageParsedInfo messagesWithHTMLData:data];
+    }];
+    [self enqueueHTTPRequestOperation:op];
+    return op;
+}
+
+- (NSOperation *)readPrivateMessageWithID:(NSString *)messageID
+                                  andThen:(void (^)(NSError *error,
+                                                    AwfulPrivateMessage* message))callback
+{
+    NSDictionary *parameters = @{ @"action": @"show", @"privatemessageid": messageID };
+    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:@"private.php"
+                                            parameters:parameters];
+    id op = [self HTTPRequestOperationWithRequest:urlRequest
+                                          success:^(AFHTTPRequestOperation *operation,
+                                                    PrivateMessageParsedInfo *info)
+             {
+                 AwfulPrivateMessage *message = [AwfulPrivateMessage privateMessageCreatedOrUpdatedWithParsedInfo:info];
+                 if (callback) callback(nil, message);
+             } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                 if (callback) callback(error, nil);
+             }];
+    [op setCreateParsedInfoBlock:^id(NSData *data) {
+        return [[PrivateMessageParsedInfo alloc] initWithHTMLData:data];
+    }];
+    [self enqueueHTTPRequestOperation:op];
+    return op;
+}
+
+- (NSOperation *)sendPrivateMessageTo:(NSString*)username
+                              subject:(NSString*)subject
+                                 icon:(NSString*)iconName
+                                 text:(NSString*)contentBBCode
+                              andThen:(void (^)(NSError *error,
+                                                AwfulPrivateMessage *message))callback
+{
+    NSDictionary *parameters = @{
+                                 @"touser": username,
+                                 @"title": subject,
+                                 @"iconid": iconName,
+                                 @"message": contentBBCode,
+                                 @"action": @"dosend",
+                                 @"submit": @"Send Message",
+                                 // TODO what is client?
+                                 @"client": @"awful iOS test"
+                                 };
+    NSURLRequest *postRequest = [self requestWithMethod:@"POST" path:@"private.php"
+                                             parameters:parameters];
+    id op = [self HTTPRequestOperationWithRequest:postRequest
+                                          success:^(AFHTTPRequestOperation *operation, id response)
+             {
+                 // TODO parse response if that makes sense
+                 // TODO return message
+                 if (callback) callback(nil, nil);
+             } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                 if (callback) callback(error,nil);
+             }];
+    [self enqueueHTTPRequestOperation:op];
+    return op;
+}
+
 @end
 
 

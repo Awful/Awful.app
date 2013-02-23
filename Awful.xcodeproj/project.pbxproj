@@ -439,6 +439,11 @@
 		1CAEDB5C16377A43001F5F04 /* ycs-achieve.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CAEDB5B16377A43001F5F04 /* ycs-achieve.png */; };
 		1CB13AC916B86452003708DC /* byob-xfile.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CB13AC816B86452003708DC /* byob-xfile.png */; };
 		1CB52A6E1637B21700032AD3 /* AwfulThreadTags.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CAED9DA16373F91001F5F04 /* AwfulThreadTags.m */; };
+		1CB6010116D8266700CBEE22 /* AwfulPrivateMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010016D8266700CBEE22 /* AwfulPrivateMessage.m */; };
+		1CB6010416D8267300CBEE22 /* _AwfulPrivateMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010316D8267300CBEE22 /* _AwfulPrivateMessage.m */; };
+		1CB6010B16D826F000CBEE22 /* AwfulPrivateMessageListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010816D826F000CBEE22 /* AwfulPrivateMessageListController.m */; };
+		1CB6010C16D826F000CBEE22 /* AwfulPrivateMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010A16D826F000CBEE22 /* AwfulPrivateMessageViewController.m */; };
+		1CB6011516D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6011416D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m */; };
 		1CB9B84F1693D9F700A3CD16 /* profile2.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CB9B84C1693D9DC00A3CD16 /* profile2.html */; };
 		1CB9B8511693DC3800A3CD16 /* profile3.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CB9B8501693DC3800A3CD16 /* profile3.html */; };
 		1CB9B8531694334500A3CD16 /* profile4.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CB9B8521694334500A3CD16 /* profile4.html */; };
@@ -1072,6 +1077,17 @@
 		1CAEDB5916377A35001F5F04 /* tg-d20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tg-d20.png"; sourceTree = "<group>"; };
 		1CAEDB5B16377A43001F5F04 /* ycs-achieve.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ycs-achieve.png"; sourceTree = "<group>"; };
 		1CB13AC816B86452003708DC /* byob-xfile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "byob-xfile.png"; sourceTree = "<group>"; };
+		1CB600FE16D8256500CBEE22 /* Model-1.11.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Model-1.11.xcdatamodel"; sourceTree = "<group>"; };
+		1CB600FF16D8266700CBEE22 /* AwfulPrivateMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessage.h; sourceTree = "<group>"; };
+		1CB6010016D8266700CBEE22 /* AwfulPrivateMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessage.m; sourceTree = "<group>"; };
+		1CB6010216D8267300CBEE22 /* _AwfulPrivateMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _AwfulPrivateMessage.h; sourceTree = "<group>"; };
+		1CB6010316D8267300CBEE22 /* _AwfulPrivateMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulPrivateMessage.m; sourceTree = "<group>"; };
+		1CB6010716D826F000CBEE22 /* AwfulPrivateMessageListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessageListController.h; sourceTree = "<group>"; };
+		1CB6010816D826F000CBEE22 /* AwfulPrivateMessageListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessageListController.m; sourceTree = "<group>"; };
+		1CB6010916D826F000CBEE22 /* AwfulPrivateMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessageViewController.h; sourceTree = "<group>"; };
+		1CB6010A16D826F000CBEE22 /* AwfulPrivateMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessageViewController.m; sourceTree = "<group>"; };
+		1CB6011316D8376A00CBEE22 /* AwfulNewPMNotifierAgent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewPMNotifierAgent.h; sourceTree = "<group>"; };
+		1CB6011416D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNewPMNotifierAgent.m; sourceTree = "<group>"; };
 		1CB9B84C1693D9DC00A3CD16 /* profile2.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = profile2.html; sourceTree = "<group>"; };
 		1CB9B8501693DC3800A3CD16 /* profile3.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = profile3.html; sourceTree = "<group>"; };
 		1CB9B8521694334500A3CD16 /* profile4.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = profile4.html; sourceTree = "<group>"; };
@@ -1923,6 +1939,7 @@
 				1CC7801D1612D988002AF958 /* Networking */,
 				1C05EDAD16230BFE00FE567F /* Parsing */,
 				1CC780241612D9DD002AF958 /* Posts */,
+				1CB6010616D826DA00CBEE22 /* Private Messages */,
 				1C278A3316453296007D3CEC /* Scrolling and Pulling */,
 				1CDD51951542949600326C7B /* Settings and Theming */,
 				1CC780471612DA8D002AF958 /* Threads */,
@@ -1951,6 +1968,8 @@
 				1C6474AD1569989800C72657 /* AwfulModels.h */,
 				1C090FB8163A40C1003FD0A3 /* AwfulPost.h */,
 				1C090FB9163A40C1003FD0A3 /* AwfulPost.m */,
+				1CB600FF16D8266700CBEE22 /* AwfulPrivateMessage.h */,
+				1CB6010016D8266700CBEE22 /* AwfulPrivateMessage.m */,
 				1C6474B41569989800C72657 /* AwfulThread.h */,
 				1C6474B51569989800C72657 /* AwfulThread.m */,
 				1C6D3EE9168D7B1E00B91A65 /* AwfulUser.h */,
@@ -1975,6 +1994,8 @@
 				1C6474BE1569989800C72657 /* _AwfulForum.m */,
 				1C090FB5163A40A1003FD0A3 /* _AwfulPost.h */,
 				1C090FB6163A40A1003FD0A3 /* _AwfulPost.m */,
+				1CB6010216D8267300CBEE22 /* _AwfulPrivateMessage.h */,
+				1CB6010316D8267300CBEE22 /* _AwfulPrivateMessage.m */,
 				1C6474BF1569989800C72657 /* _AwfulThread.h */,
 				1C6474C01569989800C72657 /* _AwfulThread.m */,
 				1C6D3EE6168D7B1400B91A65 /* _AwfulUser.h */,
@@ -2033,6 +2054,19 @@
 				1C96D06A167FDEA60043B194 /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		1CB6010616D826DA00CBEE22 /* Private Messages */ = {
+			isa = PBXGroup;
+			children = (
+				1CB6011316D8376A00CBEE22 /* AwfulNewPMNotifierAgent.h */,
+				1CB6011416D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m */,
+				1CB6010716D826F000CBEE22 /* AwfulPrivateMessageListController.h */,
+				1CB6010816D826F000CBEE22 /* AwfulPrivateMessageListController.m */,
+				1CB6010916D826F000CBEE22 /* AwfulPrivateMessageViewController.h */,
+				1CB6010A16D826F000CBEE22 /* AwfulPrivateMessageViewController.m */,
+			);
+			path = "Private Messages";
 			sourceTree = "<group>";
 		};
 		1CBDB5C116259C6C0004BDF4 /* Parsing */ = {
@@ -3970,6 +4004,11 @@
 				1C5BA3EA16CB886700375A72 /* AwfulScrollViewTopBar.m in Sources */,
 				1CD52C6416CCE6F30078A9F2 /* ExtractFavorites.xcmappingmodel in Sources */,
 				1CD52C6716CCE7AD0078A9F2 /* ExtractFavoritesMigrationPolicy.m in Sources */,
+				1CB6010116D8266700CBEE22 /* AwfulPrivateMessage.m in Sources */,
+				1CB6010416D8267300CBEE22 /* _AwfulPrivateMessage.m in Sources */,
+				1CB6010B16D826F000CBEE22 /* AwfulPrivateMessageListController.m in Sources */,
+				1CB6010C16D826F000CBEE22 /* AwfulPrivateMessageViewController.m in Sources */,
+				1CB6011516D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4307,6 +4346,7 @@
 		1C5B99B8166FFA4F004C5D0E /* Model.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				1CB600FE16D8256500CBEE22 /* Model-1.11.xcdatamodel */,
 				1CD52C6216CCE6A50078A9F2 /* Model-1.10.2-favorites.xcdatamodel */,
 				1CD2C3B616B6E1C8002DBF66 /* Model-1.10.2.xcdatamodel */,
 				1C6D3EE4168D798200B91A65 /* Model-1.10.xcdatamodel */,
@@ -4314,7 +4354,7 @@
 				1C5B99B9166FFA4F004C5D0E /* Model-1.8.1.xcdatamodel */,
 				1C5B99BA166FFA4F004C5D0E /* Model-1.8.xcdatamodel */,
 			);
-			currentVersion = 1CD52C6216CCE6A50078A9F2 /* Model-1.10.2-favorites.xcdatamodel */;
+			currentVersion = 1CB600FE16D8256500CBEE22 /* Model-1.11.xcdatamodel */;
 			path = Model.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

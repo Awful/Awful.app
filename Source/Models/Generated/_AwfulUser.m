@@ -28,6 +28,8 @@ const struct AwfulUserAttributes AwfulUserAttributes = {
 const struct AwfulUserRelationships AwfulUserRelationships = {
 	.editedPosts = @"editedPosts",
 	.posts = @"posts",
+	.receivedPrivateMessages = @"receivedPrivateMessages",
+	.sentPrivateMessages = @"sentPrivateMessages",
 	.threads = @"threads",
 };
 
@@ -296,6 +298,14 @@ const struct AwfulUserFetchedProperties AwfulUserFetchedProperties = {
 	[self didAccessValueForKey:@"posts"];
 	return result;
 }
+	
+
+@dynamic receivedPrivateMessages;
+
+	
+
+@dynamic sentPrivateMessages;
+
 	
 
 @dynamic threads;

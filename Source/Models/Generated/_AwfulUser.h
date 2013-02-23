@@ -29,6 +29,8 @@ extern const struct AwfulUserAttributes {
 extern const struct AwfulUserRelationships {
 	__unsafe_unretained NSString *editedPosts;
 	__unsafe_unretained NSString *posts;
+	__unsafe_unretained NSString *receivedPrivateMessages;
+	__unsafe_unretained NSString *sentPrivateMessages;
 	__unsafe_unretained NSString *threads;
 } AwfulUserRelationships;
 
@@ -37,6 +39,8 @@ extern const struct AwfulUserFetchedProperties {
 
 @class AwfulPost;
 @class AwfulPost;
+@class AwfulPrivateMessage;
+@class AwfulPrivateMessage;
 @class AwfulThread;
 
 
@@ -288,6 +292,20 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
+@property (nonatomic, strong) AwfulPrivateMessage *receivedPrivateMessages;
+
+//- (BOOL)validateReceivedPrivateMessages:(id*)value_ error:(NSError**)error_;
+
+
+
+
+@property (nonatomic, strong) AwfulPrivateMessage *sentPrivateMessages;
+
+//- (BOOL)validateSentPrivateMessages:(id*)value_ error:(NSError**)error_;
+
+
+
+
 @property (nonatomic, strong) NSSet *threads;
 
 - (NSMutableSet*)threadsSet;
@@ -451,6 +469,16 @@ extern const struct AwfulUserFetchedProperties {
 
 - (NSMutableSet*)primitivePosts;
 - (void)setPrimitivePosts:(NSMutableSet*)value;
+
+
+
+- (AwfulPrivateMessage*)primitiveReceivedPrivateMessages;
+- (void)setPrimitiveReceivedPrivateMessages:(AwfulPrivateMessage*)value;
+
+
+
+- (AwfulPrivateMessage*)primitiveSentPrivateMessages;
+- (void)setPrimitiveSentPrivateMessages:(AwfulPrivateMessage*)value;
 
 
 

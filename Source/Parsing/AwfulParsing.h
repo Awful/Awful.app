@@ -252,3 +252,20 @@ typedef enum {
 + (NSArray *)bansWithHTMLData:(NSData *)htmlData;
 
 @end
+
+
+@interface PrivateMessageParsedInfo : ParsedInfo
+
+@property (readonly, copy, nonatomic) NSString *messageID;
+@property (readonly, copy, nonatomic) NSString *subject;
+@property (readonly, nonatomic) NSDate *sentDate;
+@property (readonly, nonatomic) NSURL *messageIconImageURL;
+@property (readonly, nonatomic) UserParsedInfo *from;
+@property (readonly, nonatomic) UserParsedInfo *to;
+@property (readonly, nonatomic) BOOL seen;
+@property (readonly, nonatomic) BOOL replied;
+@property (readonly, nonatomic) NSString *innerHTML;
+
++ (NSArray *)messagesWithHTMLData:(NSData *)htmlData;
+
+@end

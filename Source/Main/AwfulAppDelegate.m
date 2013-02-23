@@ -18,6 +18,7 @@
 #import "AwfulModels.h"
 #import "AwfulNavigationBar.h"
 #import "AwfulPostsViewController.h"
+#import "AwfulPrivateMessageListController.h"
 #import "AwfulSettings.h"
 #import "AwfulSettingsViewController.h"
 #import "AwfulSplitViewController.h"
@@ -103,6 +104,7 @@ static id _instance;
         [[AwfulForumsListController new] enclosingNavigationController],
         [[AwfulFavoritesViewController new] enclosingNavigationController],
         [[AwfulBookmarksController new] enclosingNavigationController],
+        [[AwfulPrivateMessageListController new] enclosingNavigationController],
         [[AwfulSettingsViewController new] enclosingNavigationController]
     ];
     tabBar.selectedViewController = tabBar.viewControllers[[[AwfulSettings settings] firstTab]];

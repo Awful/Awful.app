@@ -8,6 +8,7 @@
 
 #import "AFNetworking.h"
 #import "AwfulThreadPage.h"
+@class AwfulPrivateMessage;
 @class AwfulUser;
 
 @interface AwfulHTTPClient : AFHTTPClient
@@ -237,6 +238,19 @@
 //
 // Returns the enqueued network operation.
 - (NSOperation *)tryAccessingDevDotForumsAndThen:(void (^)(NSError *error, BOOL success))callback;
+
+- (NSOperation *)listPrivateMessagesAndThen:(void (^)(NSError *error, NSArray *messages))callback;
+
+- (NSOperation *)readPrivateMessageWithID:(NSString *)messageID
+                                  andThen:(void (^)(NSError *error,
+                                                    AwfulPrivateMessage* message))callback;
+
+- (NSOperation *)sendPrivateMessageTo:(NSString *)username
+                              subject:(NSString *)subject
+                                 icon:(NSString *)iconName
+                                 text:(NSString *)contentBBCode
+                              andThen:(void (^)(NSError *error,
+                                                AwfulPrivateMessage *message))callback;
 
 @end
 
