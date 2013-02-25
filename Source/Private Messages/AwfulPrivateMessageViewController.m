@@ -114,18 +114,20 @@
 - (NSDictionary *)postsView:(AwfulPostsView *)postsView postAtIndex:(NSInteger)index
 {
     NSMutableDictionary *dict = [NSMutableDictionary new];
-    dict[@"innerHTML"] = self.privateMessage.innerHTML ?: @"";
-    dict[@"beenSeen"] = self.privateMessage.seen ?: @NO;
+    dict[AwfulPostsViewKeys.innerHTML] = self.privateMessage.innerHTML ?: @"";
+    dict[AwfulPostsViewKeys.beenSeen] = self.privateMessage.seen ?: @NO;
     if (self.privateMessage.sentDate) {
         NSDateFormatter *formatter = [AwfulDateFormatters formatters].postDateFormatter;
-        dict[@"postDate"] = [formatter stringFromDate:self.privateMessage.sentDate];
+        dict[AwfulPostsViewKeys.postDate] = [formatter stringFromDate:self.privateMessage.sentDate];
     }
     AwfulUser *sender = self.privateMessage.from;
-    dict[@"authorName"] = sender.username ?: @"";
-    if (sender.avatarURL) dict[@"authorAvatarURL"] = [sender.avatarURL absoluteString];
+    dict[AwfulPostsViewKeys.authorName] = sender.username ?: @"";
+    if (sender.avatarURL) {
+        dict[AwfulPostsViewKeys.authorAvatarURL] = [sender.avatarURL absoluteString];
+    }
     if (sender.regdate) {
         NSDateFormatter *formatter = [AwfulDateFormatters formatters].regDateFormatter;
-        dict[@"authorRegDate"] = [formatter stringFromDate:sender.regdate];
+        dict[AwfulPostsViewKeys.authorRegDate] = [formatter stringFromDate:sender.regdate];
     }
     return dict;
 }

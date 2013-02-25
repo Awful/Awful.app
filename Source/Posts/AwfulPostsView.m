@@ -407,6 +407,22 @@ static void InvokeBridgedMethodWithURLAndTarget(NSURL *url, id target, NSArray *
 @end
 
 
+const struct AwfulPostsViewKeys AwfulPostsViewKeys = {
+    .innerHTML = @"innerHTML",
+    .postID = @"postID",
+    .postDate = @"postDate",
+    .authorName = @"authorName",
+    .authorAvatarURL = @"authorAvatarURL",
+    .authorIsOriginalPoster = @"authorIsOriginalPoster",
+    .authorIsAModerator = @"authorIsAModerator",
+    .authorIsAnAdministrator = @"authorIsAnAdministrator",
+    .authorRegDate = @"authorRegDate",
+    .hasAttachment = @"hasAttachment",
+    .editMessage = @"editMessage",
+    .beenSeen = @"beenSeen",
+};
+
+
 NSURL * StylesheetURLForForumWithIDAndSettings(NSString * const forumID, AwfulSettings *settings)
 {
     NSMutableArray *listOfFilenames = [@[ @"posts-view.css" ] mutableCopy];

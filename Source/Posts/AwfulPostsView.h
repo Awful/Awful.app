@@ -63,6 +63,7 @@
 
 - (NSInteger)numberOfPostsInPostsView:(AwfulPostsView *)postsView;
 
+// Returns a dictionary with values for keys in AwfulPostsViewKeys. All keys are optional.
 - (NSDictionary *)postsView:(AwfulPostsView *)postsView postAtIndex:(NSInteger)index;
 
 @optional
@@ -86,6 +87,48 @@
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector;
 
 @end
+
+
+extern const struct AwfulPostsViewKeys
+{
+    // NSString: The HTML contents of the post.
+    __unsafe_unretained NSString *innerHTML;
+    
+    // NSString: The post's ID, for the post HTML element's `id` attribute and for locating an
+    // attachment.
+    __unsafe_unretained NSString *postID;
+    
+    // NSString: When the post was made.
+    __unsafe_unretained NSString *postDate;
+    
+    // NSString: The author's username.
+    __unsafe_unretained NSString *authorName;
+    
+    // NSString: The absolute URL to the author's avatar.
+    __unsafe_unretained NSString *authorAvatarURL;
+    
+    // NSNumber(BOOL): YES if the author is the thread's original poster.
+    __unsafe_unretained NSString *authorIsOriginalPoster;
+    
+    // NSNumber(BOOL): YES if the author is a moderator of any forum.
+    __unsafe_unretained NSString *authorIsAModerator;
+    
+    // NSNumber(BOOL): YES if the author is an administrator.
+    __unsafe_unretained NSString *authorIsAnAdministrator;
+    
+    // NSString: When the author registered their account.
+    __unsafe_unretained NSString *authorRegDate;
+    
+    // NSNumber(BOOL): YES if the post has an attached image. The postID is used to retrieve the
+    // image.
+    __unsafe_unretained NSString *hasAttachment;
+    
+    // NSString: If the post has been edited, a message including the editor and edit date.
+    __unsafe_unretained NSString *editMessage;
+    
+    // NSNumber(BOOL): YES if the post has been seen.
+    __unsafe_unretained NSString *beenSeen;
+} AwfulPostsViewKeys;
 
 
 extern NSURL * StylesheetURLForForumWithIDAndSettings(NSString * const forumID,

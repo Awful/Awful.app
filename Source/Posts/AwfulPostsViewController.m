@@ -719,29 +719,34 @@ static char KVOContext;
 - (NSDictionary *)postsView:(AwfulPostsView *)postsView postAtIndex:(NSInteger)index
 {
     AwfulPost *post = self.fetchedResultsController.fetchedObjects[index + self.hiddenPosts];
-    NSArray *keys = @[ @"postID", @"innerHTML" ];
+    NSArray *keys = @[ AwfulPostsViewKeys.postID, AwfulPostsViewKeys.innerHTML ];
     NSMutableDictionary *dict = [[post dictionaryWithValuesForKeys:keys] mutableCopy];
     if (post.postDate) {
         NSDateFormatter *formatter = [AwfulDateFormatters formatters].postDateFormatter;
-        dict[@"postDate"] = [formatter stringFromDate:post.postDate];
+        dict[AwfulPostsViewKeys.postDate] = [formatter stringFromDate:post.postDate];
     }
-    if (post.author.username) dict[@"authorName"] = post.author.username;
-    if (post.author.avatarURL) dict[@"authorAvatarURL"] = [post.author.avatarURL absoluteString];
-    if ([post.author isEqual:post.thread.author]) dict[@"authorIsOriginalPoster"] = @YES;
-    if (post.author.moderatorValue) dict[@"authorIsAModerator"] = @YES;
-    if (post.author.administratorValue) dict[@"authorIsAnAdministrator"] = @YES;
+    if (post.author.username) dict[AwfulPostsViewKeys.authorName] = post.author.username;
+    if (post.author.avatarURL) {
+        dict[AwfulPostsViewKeys.authorAvatarURL] = [post.author.avatarURL absoluteString];
+    }
+    if ([post.author isEqual:post.thread.author]) {
+        dict[AwfulPostsViewKeys.authorIsOriginalPoster] = @YES;
+    }
+    if (post.author.moderatorValue) dict[AwfulPostsViewKeys.authorIsAModerator] = @YES;
+    if (post.author.administratorValue) dict[AwfulPostsViewKeys.authorIsAnAdministrator] = @YES;
     if (post.author.regdate) {
         NSDateFormatter *formatter = [AwfulDateFormatters formatters].regDateFormatter;
-        dict[@"authorRegDate"] = [formatter stringFromDate:post.author.regdate];
+        dict[AwfulPostsViewKeys.authorRegDate] = [formatter stringFromDate:post.author.regdate];
     }
-    dict[@"hasAttachment"] = @([post.attachmentID length] > 0);
+    dict[AwfulPostsViewKeys.hasAttachment] = @([post.attachmentID length] > 0);
     if (post.editDate) {
         NSString *editor = post.editor ? post.editor.username : @"Somebody";
         NSString *editDate = [self.editDateFormatter stringFromDate:post.editDate];
-        dict[@"editMessage"] = [NSString stringWithFormat:@"%@ fucked around with this message on %@",
-                                editor, editDate];
+        NSString *message = [NSString stringWithFormat:@"%@ fucked around with this message on %@",
+                             editor, editDate];
+        dict[AwfulPostsViewKeys.editMessage] = message;
     }
-    dict[@"beenSeen"] = @(post.beenSeen);
+    dict[AwfulPostsViewKeys.beenSeen] = @(post.beenSeen);
     return dict;
 }
 
