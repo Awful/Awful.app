@@ -10,139 +10,129 @@
 #import "AwfulDataStack.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
+#import "AwfulPostsView.h"
+#import "AwfulSettings.h"
+#import "NSFileManager+UserDirectories.h"
 
-// TODO constants
-#define AwfulPostCellTextKey @"AwfulPostCellTextKey"
-#define AwfulPostCellDetailTextKey @"AwfulPostCellDetailTextKey"
+@interface AwfulPrivateMessageViewController () <AwfulPostsViewDelegate>
 
+@property (nonatomic) AwfulPrivateMessage *privateMessage;
 
-@interface AwfulPrivateMessageViewController ()
+@property (readonly) AwfulPostsView *postsView;
 
-@property (nonatomic, strong) AwfulPrivateMessage* privateMessage;
+@property (nonatomic) NSDateFormatter *regDateFormatter;
+
+@property (nonatomic) NSDateFormatter *postDateFormatter;
 
 @end
 
 
 @implementation AwfulPrivateMessageViewController
-@synthesize sections = _sections;
 
--(id) initWithPrivateMessage:(AwfulPrivateMessage*)pm {
-    self = [super initWithStyle:UITableViewStyleGrouped];
-    _privateMessage = pm;
+- (instancetype)initWithPrivateMessage:(AwfulPrivateMessage *)privateMessage
+{
+    if (!(self = [super initWithNibName:nil bundle:nil])) return nil;;
+    _privateMessage = privateMessage;
+    self.title = privateMessage.subject;
     return self;
 }
 
--(void) viewDidLoad {
-    [super viewDidLoad];
-    self.navigationItem.leftBarButtonItem = nil;
-    
-    self.navigationItem.rightBarButtonItem =[[UIBarButtonItem alloc]
-                                             initWithBarButtonSystemItem:(UIBarButtonSystemItemReply)
-                                                                  target:self
-                                                                  action:@selector(reply)
-                                              ];
-    self.title = self.privateMessage.subject;
-}
-
--(BOOL) canPullForNextPage {
-    return NO;
-}
-
--(BOOL) canPullToRefresh {
-    return NO;
-}
-
-
--(BOOL) refreshOnAppear {
-    return (self.privateMessage.innerHTML == nil);
-}
-
-- (void)refresh
+- (AwfulPostsView *)postsView
 {
-    [super refresh];
-    
-    [self.networkOperation cancel];
-    self.networkOperation = [[AwfulHTTPClient client]
-                             readPrivateMessageWithID:self.privateMessage.messageID
-                             andThen:^(NSError *error, AwfulPrivateMessage *message)
+    return (id)self.view;
+}
+
+#pragma mark - UIViewController
+
+- (void)loadView
+{
+    AwfulPostsView *view = [AwfulPostsView new];
+    view.frame = [UIScreen mainScreen].applicationFrame;
+    view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    view.delegate = self;
+    self.view = view;
+    [self configurePostsViewSettings];
+}
+
+- (void)configurePostsViewSettings
+{
+    self.postsView.showImages = [AwfulSettings settings].showImages;
+    // TODO DRY this up (AwfulPostsViewController does a similar thing)
+    self.postsView.stylesheetURL = StylesheetURL();
+}
+
+static NSURL * StylesheetURL(void)
+{
+    NSURL *documents = [[NSFileManager defaultManager] documentDirectory];
+    NSURL *url = [documents URLByAppendingPathComponent:@"posts-view.css"];
+    if ([url checkResourceIsReachableAndReturnError:NULL]) return url;
+    return [[NSBundle mainBundle] URLForResource:@"posts-view" withExtension:@"css"];
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    UIBarButtonItem *reply;
+    reply = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply
+                                                          target:self action:@selector(reply)];
+    self.navigationItem.rightBarButtonItem = reply;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [[AwfulHTTPClient client] readPrivateMessageWithID:self.privateMessage.messageID
+                                               andThen:^(NSError *error,
+                                                         AwfulPrivateMessage *message)
     {
-        self.privateMessage = message;
-        self.refreshing = NO;
-        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:1]]
-                              withRowAnimation:(UITableViewRowAnimationFade)];
-        
+        [self.postsView reloadPostAtIndex:0];
     }];
 }
 
--(NSInteger) numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+#pragma mark - AwfulPostsViewDelegate
+
+- (NSInteger)numberOfPostsInPostsView:(AwfulPostsView *)postsView
+{
+    return 1;
 }
 
--(NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return section == 0? 3: 1;
-}
-
--(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell;
-    if (indexPath.section == 0) {
-        static NSString * const Identifier = @"AwfulPrivateMessageCell";
-        cell = [tableView dequeueReusableCellWithIdentifier:Identifier];
-        if (!cell) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2 reuseIdentifier:Identifier];
-        }
-        [self configureCell:cell atIndexPath:indexPath];
-    } else {
-        cell = [tableView dequeueReusableCellWithIdentifier:@"test"];
-        if (!cell) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"test"];
-            
-            cell.textLabel.text = self.privateMessage.innerHTML;
-            cell.textLabel.font = [UIFont systemFontOfSize:12];
-            cell.textLabel.numberOfLines = 0;
-        }
-        
-        
+- (NSDictionary *)postsView:(AwfulPostsView *)postsView postAtIndex:(NSInteger)index
+{
+    NSMutableDictionary *dict = [NSMutableDictionary new];
+    dict[@"innerHTML"] = self.privateMessage.innerHTML ?: @"";
+    dict[@"beenSeen"] = self.privateMessage.seen ?: @NO;
+    if (self.privateMessage.sentDate) {
+        dict[@"postDate"] = [self.postDateFormatter stringFromDate:self.privateMessage.sentDate];
     }
-    
-    
-    return cell;
-}
-
--(void) configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
-    
-    switch (indexPath.row) {
-        case 0:
-            cell.textLabel.text = @"From:";
-            cell.detailTextLabel.text = self.privateMessage.from.username;
-            break;
-            
-        case 1:
-            cell.textLabel.text = @"Subject:";
-            cell.detailTextLabel.text = self.privateMessage.subject;
-            break;
-            
-        case 2:
-            cell.textLabel.text = @"Sent:";
-            cell.detailTextLabel.text = [NSString stringWithFormat:@"%@", self.privateMessage.sentDate];
-            break;  
+    AwfulUser *sender = self.privateMessage.from;
+    dict[@"authorName"] = sender.username ?: @"";
+    if (sender.avatarURL) dict[@"authorAvatarURL"] = [sender.avatarURL absoluteString];
+    if (sender.regdate) {
+        dict[@"authorRegDate"] = [self.regDateFormatter stringFromDate:sender.regdate];
     }
-
+    return dict;
 }
 
--(NSString*)submitString {
-    return nil;
+// TODO DRY these up (AwfulPostsViewController has same formatters)
+
+- (NSDateFormatter *)postDateFormatter
+{
+    if (_postDateFormatter) return _postDateFormatter;
+    _postDateFormatter = [NSDateFormatter new];
+    // Jan 2, 2003 16:05
+    _postDateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+    _postDateFormatter.dateFormat = @"MMM d, yyyy HH:mm";
+    return _postDateFormatter;
 }
 
--(void) reply {
-    //AwfulPMComposerViewController *writer = [AwfulPMComposerViewController new];
-    //[writer replyToPrivateMessage:self.privateMessage];
-    
-    //[self.navigationController pushViewController:writer animated:YES];
-
-}
-
--(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return indexPath.section == 0? 44: 500;
+- (NSDateFormatter *)regDateFormatter
+{
+    if (_regDateFormatter) return _regDateFormatter;
+    _regDateFormatter = [NSDateFormatter new];
+    // Jan 2, 2003
+    _regDateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+    _regDateFormatter.dateFormat = @"MMM d, yyyy";
+    return _regDateFormatter;
 }
 
 @end

@@ -8,11 +8,11 @@
 
 #import "AwfulTableViewController.h"
 #import "AwfulPrivateMessage.h"
-#import "AwfulPostsView.h"
 
-@interface AwfulPrivateMessageViewController : AwfulTableViewController
+@interface AwfulPrivateMessageViewController : UIViewController
 
--(id) initWithPrivateMessage:(AwfulPrivateMessage*)pm;
-@property (nonatomic, readonly, strong) AwfulPrivateMessage* privateMessage;
-@property (nonatomic, readonly, strong) NSArray* sections;
+- (instancetype)initWithPrivateMessage:(AwfulPrivateMessage *)privateMessage;
+
+@property (readonly, nonatomic) AwfulPrivateMessage *privateMessage;
+
 @end
