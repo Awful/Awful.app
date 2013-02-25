@@ -43,6 +43,7 @@
         [info.to applyToObject:to];
         message.to = to;
     }
+    [[AwfulDataStack sharedDataStack] save];
     return message;
 }
 
