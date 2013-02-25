@@ -9,6 +9,7 @@
 #import "AwfulPrivateMessageViewController.h"
 #import "AwfulActionSheet.h"
 #import "AwfulDataStack.h"
+#import "AwfulDateFormatters.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
 #import "AwfulPostsView.h"
@@ -21,10 +22,6 @@
 @property (nonatomic) AwfulPrivateMessage *privateMessage;
 
 @property (readonly) AwfulPostsView *postsView;
-
-@property (nonatomic) NSDateFormatter *regDateFormatter;
-
-@property (nonatomic) NSDateFormatter *postDateFormatter;
 
 @end
 
@@ -120,13 +117,15 @@
     dict[@"innerHTML"] = self.privateMessage.innerHTML ?: @"";
     dict[@"beenSeen"] = self.privateMessage.seen ?: @NO;
     if (self.privateMessage.sentDate) {
-        dict[@"postDate"] = [self.postDateFormatter stringFromDate:self.privateMessage.sentDate];
+        NSDateFormatter *formatter = [AwfulDateFormatters formatters].postDateFormatter;
+        dict[@"postDate"] = [formatter stringFromDate:self.privateMessage.sentDate];
     }
     AwfulUser *sender = self.privateMessage.from;
     dict[@"authorName"] = sender.username ?: @"";
     if (sender.avatarURL) dict[@"authorAvatarURL"] = [sender.avatarURL absoluteString];
     if (sender.regdate) {
-        dict[@"authorRegDate"] = [self.regDateFormatter stringFromDate:sender.regdate];
+        NSDateFormatter *formatter = [AwfulDateFormatters formatters].regDateFormatter;
+        dict[@"authorRegDate"] = [formatter stringFromDate:sender.regdate];
     }
     return dict;
 }
@@ -152,28 +151,6 @@
     }];
     [sheet addCancelButtonWithTitle:@"Cancel"];
     [sheet showFromRect:rect inView:self.postsView.window animated:YES];
-}
-
-// TODO DRY these up (AwfulPostsViewController has same formatters)
-
-- (NSDateFormatter *)postDateFormatter
-{
-    if (_postDateFormatter) return _postDateFormatter;
-    _postDateFormatter = [NSDateFormatter new];
-    // Jan 2, 2003 16:05
-    _postDateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-    _postDateFormatter.dateFormat = @"MMM d, yyyy HH:mm";
-    return _postDateFormatter;
-}
-
-- (NSDateFormatter *)regDateFormatter
-{
-    if (_regDateFormatter) return _regDateFormatter;
-    _regDateFormatter = [NSDateFormatter new];
-    // Jan 2, 2003
-    _regDateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-    _regDateFormatter.dateFormat = @"MMM d, yyyy";
-    return _regDateFormatter;
 }
 
 @end

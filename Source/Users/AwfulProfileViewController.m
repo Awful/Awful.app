@@ -8,6 +8,7 @@
 
 #import "AwfulProfileViewController.h"
 #import "AwfulAlertView.h"
+#import "AwfulDateFormatters.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
 #import "AwfulSettings.h"
@@ -40,9 +41,7 @@
 {
     if (!self.user) return;
     self.title = self.user.username;
-    NSDateFormatter *regdateFormatter = [NSDateFormatter new];
-    regdateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-    regdateFormatter.dateFormat = @"MMM d, yyyy";
+    NSDateFormatter *regdateFormatter = [AwfulDateFormatters formatters].regDateFormatter;
     NSDateFormatter *lastPostFormatter = [NSDateFormatter new];
     lastPostFormatter.locale = regdateFormatter.locale;
     lastPostFormatter.dateFormat = @"MMM d, yyyy HH:mm";

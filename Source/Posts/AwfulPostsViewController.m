@@ -11,6 +11,7 @@
 #import "AwfulAlertView.h"
 #import "AwfulBrowserViewController.h"
 #import "AwfulDataStack.h"
+#import "AwfulDateFormatters.h"
 #import "AwfulExternalBrowser.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulImagePreviewViewController.h"
@@ -57,8 +58,6 @@
 @property (copy, nonatomic) NSString *jumpToPostAfterLoad;
 @property (copy, nonatomic) NSString *advertisementHTML;
 
-@property (nonatomic) NSDateFormatter *regDateFormatter;
-@property (nonatomic) NSDateFormatter *postDateFormatter;
 @property (nonatomic) NSDateFormatter *editDateFormatter;
 
 @property (nonatomic) BOOL observingScrollViewSize;
@@ -723,7 +722,8 @@ static char KVOContext;
     NSArray *keys = @[ @"postID", @"innerHTML" ];
     NSMutableDictionary *dict = [[post dictionaryWithValuesForKeys:keys] mutableCopy];
     if (post.postDate) {
-        dict[@"postDate"] = [self.postDateFormatter stringFromDate:post.postDate];
+        NSDateFormatter *formatter = [AwfulDateFormatters formatters].postDateFormatter;
+        dict[@"postDate"] = [formatter stringFromDate:post.postDate];
     }
     if (post.author.username) dict[@"authorName"] = post.author.username;
     if (post.author.avatarURL) dict[@"authorAvatarURL"] = [post.author.avatarURL absoluteString];
@@ -731,7 +731,8 @@ static char KVOContext;
     if (post.author.moderatorValue) dict[@"authorIsAModerator"] = @YES;
     if (post.author.administratorValue) dict[@"authorIsAnAdministrator"] = @YES;
     if (post.author.regdate) {
-        dict[@"authorRegDate"] = [self.regDateFormatter stringFromDate:post.author.regdate];
+        NSDateFormatter *formatter = [AwfulDateFormatters formatters].regDateFormatter;
+        dict[@"authorRegDate"] = [formatter stringFromDate:post.author.regdate];
     }
     dict[@"hasAttachment"] = @([post.attachmentID length] > 0);
     if (post.editDate) {
@@ -742,26 +743,6 @@ static char KVOContext;
     }
     dict[@"beenSeen"] = @(post.beenSeen);
     return dict;
-}
-
-- (NSDateFormatter *)postDateFormatter
-{
-    if (_postDateFormatter) return _postDateFormatter;
-    _postDateFormatter = [NSDateFormatter new];
-    // Jan 2, 2003 16:05
-    _postDateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-    _postDateFormatter.dateFormat = @"MMM d, yyyy HH:mm";
-    return _postDateFormatter;
-}
-
-- (NSDateFormatter *)regDateFormatter
-{
-    if (_regDateFormatter) return _regDateFormatter;
-    _regDateFormatter = [NSDateFormatter new];
-    // Jan 2, 2003
-    _regDateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-    _regDateFormatter.dateFormat = @"MMM d, yyyy";
-    return _regDateFormatter;
 }
 
 - (NSDateFormatter *)editDateFormatter

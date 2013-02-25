@@ -444,6 +444,7 @@
 		1CB6010B16D826F000CBEE22 /* AwfulPrivateMessageListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010816D826F000CBEE22 /* AwfulPrivateMessageListController.m */; };
 		1CB6010C16D826F000CBEE22 /* AwfulPrivateMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010A16D826F000CBEE22 /* AwfulPrivateMessageViewController.m */; };
 		1CB6011516D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6011416D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m */; };
+		1CB6011916DBFB7B00CBEE22 /* AwfulDateFormatters.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6011816DBFB7B00CBEE22 /* AwfulDateFormatters.m */; };
 		1CB9B84F1693D9F700A3CD16 /* profile2.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CB9B84C1693D9DC00A3CD16 /* profile2.html */; };
 		1CB9B8511693DC3800A3CD16 /* profile3.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CB9B8501693DC3800A3CD16 /* profile3.html */; };
 		1CB9B8531694334500A3CD16 /* profile4.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CB9B8521694334500A3CD16 /* profile4.html */; };
@@ -1088,6 +1089,8 @@
 		1CB6010A16D826F000CBEE22 /* AwfulPrivateMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessageViewController.m; sourceTree = "<group>"; };
 		1CB6011316D8376A00CBEE22 /* AwfulNewPMNotifierAgent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewPMNotifierAgent.h; sourceTree = "<group>"; };
 		1CB6011416D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNewPMNotifierAgent.m; sourceTree = "<group>"; };
+		1CB6011716DBFB7B00CBEE22 /* AwfulDateFormatters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulDateFormatters.h; sourceTree = "<group>"; };
+		1CB6011816DBFB7B00CBEE22 /* AwfulDateFormatters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulDateFormatters.m; sourceTree = "<group>"; };
 		1CB9B84C1693D9DC00A3CD16 /* profile2.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = profile2.html; sourceTree = "<group>"; };
 		1CB9B8501693DC3800A3CD16 /* profile3.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = profile3.html; sourceTree = "<group>"; };
 		1CB9B8521694334500A3CD16 /* profile4.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = profile4.html; sourceTree = "<group>"; };
@@ -2226,6 +2229,8 @@
 				1CFBED071631C068008AF641 /* AwfulLicensesViewController.m */,
 				1CE2D97E165EEC1F0024AC1C /* AwfulTheme.h */,
 				1CE2D97F165EEC1F0024AC1C /* AwfulTheme.m */,
+				1CB6011716DBFB7B00CBEE22 /* AwfulDateFormatters.h */,
+				1CB6011816DBFB7B00CBEE22 /* AwfulDateFormatters.m */,
 			);
 			path = "Settings and Theming";
 			sourceTree = "<group>";
@@ -4009,6 +4014,7 @@
 				1CB6010B16D826F000CBEE22 /* AwfulPrivateMessageListController.m in Sources */,
 				1CB6010C16D826F000CBEE22 /* AwfulPrivateMessageViewController.m in Sources */,
 				1CB6011516D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m in Sources */,
+				1CB6011916DBFB7B00CBEE22 /* AwfulDateFormatters.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
