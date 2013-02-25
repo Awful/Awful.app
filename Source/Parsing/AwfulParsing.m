@@ -1134,6 +1134,7 @@ static AwfulBanType BanTypeWithString(NSString *s)
     TFHppleElement *subject = [cells[2] searchForSingle:@"//a"];
     if (subject) {
         self.subject = subject.content;
+        // TODO NSScanner should be perfectly adequate here.
         NSError *error;
         NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"privatemessageid=([0-9]*)"
                                                                                options:NSRegularExpressionCaseInsensitive
