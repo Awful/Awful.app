@@ -7,6 +7,7 @@
 //
 
 #import "AwfulPrivateMessageViewController.h"
+#import "AwfulActionSheet.h"
 #import "AwfulDataStack.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
@@ -92,10 +93,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    UIBarButtonItem *reply;
-    reply = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply
-                                                          target:self action:@selector(reply)];
-    self.navigationItem.rightBarButtonItem = reply;
     [self retheme];
 }
 
@@ -132,6 +129,29 @@
         dict[@"authorRegDate"] = [self.regDateFormatter stringFromDate:sender.regdate];
     }
     return dict;
+}
+
+- (NSArray *)whitelistedSelectorsForPostsView:(AwfulPostsView *)postsView
+{
+    return @[ @"showActionsForPostAtIndex:fromRectDictionary:" ];
+}
+
+- (void)showActionsForPostAtIndex:(NSNumber *)index fromRectDictionary:(NSDictionary *)rectDict
+{
+    CGRect rect = CGRectMake([rectDict[@"left"] floatValue], [rectDict[@"top"] floatValue],
+                             [rectDict[@"width"] floatValue], [rectDict[@"height"] floatValue]);
+    if (self.postsView.scrollView.contentOffset.y < 0) {
+        rect.origin.y -= self.postsView.scrollView.contentOffset.y;
+    }
+    rect = [self.postsView convertRect:rect toView:nil];
+    NSString *title = [NSString stringWithFormat:@"%@'s Message",
+                       self.privateMessage.from.username];
+    AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:title];
+    [sheet addButtonWithTitle:@"Reply" block:^{
+        // TODO
+    }];
+    [sheet addCancelButtonWithTitle:@"Cancel"];
+    [sheet showFromRect:rect inView:self.postsView.window animated:YES];
 }
 
 // TODO DRY these up (AwfulPostsViewController has same formatters)
