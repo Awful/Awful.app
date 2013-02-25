@@ -128,39 +128,13 @@
     [self didChangeValueForKey:@"thread"];
     [self updateFetchedResultsController];
     [self updateUserInterface];
-    self.postsView.stylesheetURL = StylesheetURLForForumWithID(self.thread.forum.forumID);
+    self.postsView.stylesheetURL = StylesheetURLForForumWithIDAndSettings(self.thread.forum.forumID,
+                                                                          [AwfulSettings settings]);
 }
 
 - (NSArray *)posts
 {
     return self.fetchedResultsController.fetchedObjects;
-}
-
-static NSURL* StylesheetURLForForumWithID(NSString *forumID)
-{
-    NSMutableArray *listOfFilenames = [@[ @"posts-view.css" ] mutableCopy];
-    if (forumID) {
-        NSString *filename = [NSString stringWithFormat:@"posts-view-%@.css", forumID];
-        if ([forumID isEqualToString:@"219"]) {
-            AwfulYOSPOSStyle style = [AwfulSettings settings].yosposStyle;
-            if (style == AwfulYOSPOSStyleAmber) filename = @"posts-view-219-amber.css";
-            else if (style == AwfulYOSPOSStyleMacinyos) filename = @"posts-view-219-macinyos.css";
-            else if (style == AwfulYOSPOSStyleWinpos95) filename = @"posts-view-219-winpos95.css";
-            else if (style == AwfulYOSPOSStyleNone) filename = nil;
-        }
-        if (filename) [listOfFilenames insertObject:filename atIndex:0];
-    }
-    NSURL *documents = [[NSFileManager defaultManager] documentDirectory];
-    for (NSString *filename in listOfFilenames) {
-        NSURL *url = [documents URLByAppendingPathComponent:filename];
-        if ([url checkResourceIsReachableAndReturnError:NULL]) return url;
-    }
-    for (NSString *filename in listOfFilenames) {
-        NSURL *url = [[NSBundle mainBundle] URLForResource:filename
-                                             withExtension:nil];
-        if ([url checkResourceIsReachableAndReturnError:NULL]) return url;
-    }
-    return nil;
 }
 
 - (void)updateFetchedResultsController
@@ -283,7 +257,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     } else {
         self.postsView.highlightQuoteUsername = nil;
     }
-    self.postsView.stylesheetURL = StylesheetURLForForumWithID(self.thread.forum.forumID);
+    self.postsView.stylesheetURL = StylesheetURLForForumWithIDAndSettings(self.thread.forum.forumID,
+                                                                          [AwfulSettings settings]);
 }
 
 - (AwfulPostsView *)postsView

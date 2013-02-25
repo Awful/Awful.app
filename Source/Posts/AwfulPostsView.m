@@ -7,6 +7,8 @@
 //
 
 #import "AwfulPostsView.h"
+#import "AwfulSettings.h"
+#import "NSFileManager+UserDirectories.h"
 
 @interface AwfulPostsView () <UIWebViewDelegate>
 
@@ -403,3 +405,31 @@ static void InvokeBridgedMethodWithURLAndTarget(NSURL *url, id target, NSArray *
 }
 
 @end
+
+
+NSURL * StylesheetURLForForumWithIDAndSettings(NSString * const forumID, AwfulSettings *settings)
+{
+    NSMutableArray *listOfFilenames = [@[ @"posts-view.css" ] mutableCopy];
+    if (forumID) {
+        NSString *filename = [NSString stringWithFormat:@"posts-view-%@.css", forumID];
+        if ([forumID isEqualToString:@"219"]) {
+            AwfulYOSPOSStyle style = settings.yosposStyle;
+            if (style == AwfulYOSPOSStyleAmber) filename = @"posts-view-219-amber.css";
+            else if (style == AwfulYOSPOSStyleMacinyos) filename = @"posts-view-219-macinyos.css";
+            else if (style == AwfulYOSPOSStyleWinpos95) filename = @"posts-view-219-winpos95.css";
+            else if (style == AwfulYOSPOSStyleNone) filename = nil;
+        }
+        if (filename) [listOfFilenames insertObject:filename atIndex:0];
+    }
+    NSURL *documents = [[NSFileManager defaultManager] documentDirectory];
+    for (NSString *filename in listOfFilenames) {
+        NSURL *url = [documents URLByAppendingPathComponent:filename];
+        if ([url checkResourceIsReachableAndReturnError:NULL]) return url;
+    }
+    for (NSString *filename in listOfFilenames) {
+        NSURL *url = [[NSBundle mainBundle] URLForResource:filename
+                                             withExtension:nil];
+        if ([url checkResourceIsReachableAndReturnError:NULL]) return url;
+    }
+    return nil;
+}

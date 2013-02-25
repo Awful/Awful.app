@@ -57,16 +57,7 @@
 - (void)configurePostsViewSettings
 {
     self.postsView.showImages = [AwfulSettings settings].showImages;
-    // TODO DRY this up (AwfulPostsViewController does a similar thing)
-    self.postsView.stylesheetURL = StylesheetURL();
-}
-
-static NSURL * StylesheetURL(void)
-{
-    NSURL *documents = [[NSFileManager defaultManager] documentDirectory];
-    NSURL *url = [documents URLByAppendingPathComponent:@"posts-view.css"];
-    if ([url checkResourceIsReachableAndReturnError:NULL]) return url;
-    return [[NSBundle mainBundle] URLForResource:@"posts-view" withExtension:@"css"];
+    self.postsView.stylesheetURL = StylesheetURLForForumWithIDAndSettings(nil, nil);
 }
 
 - (void)viewDidLoad

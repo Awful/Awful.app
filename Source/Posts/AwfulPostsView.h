@@ -7,9 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-
 @protocol AwfulPostsViewDelegate;
-
+@class AwfulSettings;
 
 @interface AwfulPostsView : UIView
 
@@ -87,3 +86,7 @@
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector;
 
 @end
+
+
+extern NSURL * StylesheetURLForForumWithIDAndSettings(NSString * const forumID,
+                                                      AwfulSettings *settings);
