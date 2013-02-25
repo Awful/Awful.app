@@ -12,6 +12,7 @@
 #import "AwfulModels.h"
 #import "AwfulPostsView.h"
 #import "AwfulSettings.h"
+#import "AwfulTheme.h"
 #import "NSFileManager+UserDirectories.h"
 
 @interface AwfulPrivateMessageViewController () <AwfulPostsViewDelegate>
@@ -34,12 +35,40 @@
     if (!(self = [super initWithNibName:nil bundle:nil])) return nil;;
     _privateMessage = privateMessage;
     self.title = privateMessage.subject;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDidChange:)
+                                                 name:AwfulSettingsDidChangeNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(themeDidChange:)
+                                                 name:AwfulThemeDidChangeNotification object:nil];
     return self;
+}
+
+- (void)settingsDidChange:(NSNotification *)note
+{
+    if (![self isViewLoaded]) return;
+    [self configurePostsViewSettings];
+}
+
+- (void)themeDidChange:(NSNotification *)note
+{
+    if (![self isViewLoaded]) return;
+    [self retheme];
+}
+
+- (void)retheme
+{
+    self.view.backgroundColor = [AwfulTheme currentTheme].postsViewBackgroundColor;
+    self.postsView.dark = [AwfulSettings settings].darkTheme;
 }
 
 - (AwfulPostsView *)postsView
 {
     return (id)self.view;
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - UIViewController
@@ -50,6 +79,7 @@
     view.frame = [UIScreen mainScreen].applicationFrame;
     view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     view.delegate = self;
+    view.stylesheetURL = StylesheetURLForForumWithIDAndSettings(nil, nil);
     self.view = view;
     [self configurePostsViewSettings];
 }
@@ -57,7 +87,6 @@
 - (void)configurePostsViewSettings
 {
     self.postsView.showImages = [AwfulSettings settings].showImages;
-    self.postsView.stylesheetURL = StylesheetURLForForumWithIDAndSettings(nil, nil);
 }
 
 - (void)viewDidLoad
@@ -67,6 +96,7 @@
     reply = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply
                                                           target:self action:@selector(reply)];
     self.navigationItem.rightBarButtonItem = reply;
+    [self retheme];
 }
 
 - (void)viewWillAppear:(BOOL)animated
