@@ -1077,7 +1077,7 @@
 		1CAEDB5916377A35001F5F04 /* tg-d20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tg-d20.png"; sourceTree = "<group>"; };
 		1CAEDB5B16377A43001F5F04 /* ycs-achieve.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ycs-achieve.png"; sourceTree = "<group>"; };
 		1CB13AC816B86452003708DC /* byob-xfile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "byob-xfile.png"; sourceTree = "<group>"; };
-		1CB600FE16D8256500CBEE22 /* Model-1.11.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Model-1.11.xcdatamodel"; sourceTree = "<group>"; };
+		1CB600FE16D8256500CBEE22 /* Model-1.11.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model-1.11.xcdatamodel"; sourceTree = "<group>"; };
 		1CB600FF16D8266700CBEE22 /* AwfulPrivateMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessage.h; sourceTree = "<group>"; };
 		1CB6010016D8266700CBEE22 /* AwfulPrivateMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessage.m; sourceTree = "<group>"; };
 		1CB6010216D8267300CBEE22 /* _AwfulPrivateMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _AwfulPrivateMessage.h; sourceTree = "<group>"; };
