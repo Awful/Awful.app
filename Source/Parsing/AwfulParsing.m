@@ -1108,9 +1108,9 @@ static AwfulBanType BanTypeWithString(NSString *s)
 
 - (void)parseHTMLData
 {
-    NSArray *postbody = PerformRawHTMLXPathQuery(self.htmlData, @"//td[@class='postbody']");
+    NSArray *postbody = PerformRawHTMLXPathQuery(self.htmlData, @"//td[@class='postbody']/node()");
     if ([postbody count] > 0) {
-        self.innerHTML = [postbody lastObject];
+        self.innerHTML = [postbody componentsJoinedByString:@""];
         return;
     }
     
@@ -1169,8 +1169,16 @@ static AwfulBanType BanTypeWithString(NSString *s)
 
 + (NSArray *)keysToApplyToObject
 {
-    return @[ @"messageID", @"subject", @"messageIconImageURL", @"seen", @"replied", @"sentDate",
-              @"innerHTML" ];
+    return @[ @"messageID", @"subject", @"messageIconImageURL", @"seen", @"replied", @"sentDate" ];
+}
+
+- (void)applyToObject:(id)object
+{
+    if (self.innerHTML) {
+        [object setValue:self.innerHTML forKey:@"innerHTML"];
+    } else {
+        [super applyToObject:object];
+    }
 }
 
 @end
