@@ -615,6 +615,7 @@
 		8C87429B1655FE120018AC6C /* phiz-robojax.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C87429A1655FE120018AC6C /* phiz-robojax.png */; };
 		8C87429D1655FE1C0018AC6C /* phiz-ant.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C87429C1655FE1C0018AC6C /* phiz-ant.png */; };
 		8C88D1F716BEBF56009DC854 /* LF-dad.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C88D1F616BEBF56009DC854 /* LF-dad.png */; };
+		8C8AB95016DC49BA00D85404 /* CustomBadge.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C8AB94F16DC49BA00D85404 /* CustomBadge.m */; };
 		8C9834E2169091CE009F0CD6 /* fyad-bubble.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9834E1169091CE009F0CD6 /* fyad-bubble.png */; };
 		8C9B02C51623630F00676B98 /* downArrowDark.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B02BF1623630F00676B98 /* downArrowDark.png */; };
 		8CAAE2EC1651CC52004C8C8A /* phiz-rap.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CAAE2D61651CC52004C8C8A /* phiz-rap.png */; };
@@ -1293,6 +1294,8 @@
 		8C87429A1655FE120018AC6C /* phiz-robojax.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phiz-robojax.png"; sourceTree = "<group>"; };
 		8C87429C1655FE1C0018AC6C /* phiz-ant.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phiz-ant.png"; sourceTree = "<group>"; };
 		8C88D1F616BEBF56009DC854 /* LF-dad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LF-dad.png"; sourceTree = "<group>"; };
+		8C8AB94E16DC49BA00D85404 /* CustomBadge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomBadge.h; sourceTree = "<group>"; };
+		8C8AB94F16DC49BA00D85404 /* CustomBadge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomBadge.m; sourceTree = "<group>"; };
 		8C9834E1169091CE009F0CD6 /* fyad-bubble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-bubble.png"; sourceTree = "<group>"; };
 		8C9B02BF1623630F00676B98 /* downArrowDark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = downArrowDark.png; path = Resources/images/downArrowDark.png; sourceTree = SOURCE_ROOT; };
 		8CAAE2D61651CC52004C8C8A /* phiz-rap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phiz-rap.png"; sourceTree = "<group>"; };
@@ -1848,6 +1851,7 @@
 		1190F76913BE4ECB00B9D271 /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				8C8AB94A16DC499400D85404 /* CustomBadge */,
 				110FABC415745C1E00ECF535 /* AFNetworking */,
 				8C700287169C6EFA00FC0B78 /* AnimatedGif */,
 				1C90F8FA16B0C2940015A071 /* GTMNSString+HTML.h */,
@@ -2313,6 +2317,15 @@
 				8C700289169C6EFA00FC0B78 /* FVGifAnimation.m */,
 			);
 			path = AnimatedGif;
+			sourceTree = "<group>";
+		};
+		8C8AB94A16DC499400D85404 /* CustomBadge */ = {
+			isa = PBXGroup;
+			children = (
+				8C8AB94E16DC49BA00D85404 /* CustomBadge.h */,
+				8C8AB94F16DC49BA00D85404 /* CustomBadge.m */,
+			);
+			path = CustomBadge;
 			sourceTree = "<group>";
 		};
 		8CCD498115B497A700E5893B /* Resources */ = {
@@ -4009,6 +4022,7 @@
 				1CB6010B16D826F000CBEE22 /* AwfulPrivateMessageListController.m in Sources */,
 				1CB6010C16D826F000CBEE22 /* AwfulPrivateMessageViewController.m in Sources */,
 				1CB6011516D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m in Sources */,
+				8C8AB95016DC49BA00D85404 /* CustomBadge.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,6 +7,7 @@
 //
 
 #import "AwfulTabBar.h"
+#import "CustomBadge.h"
 
 @interface AwfulSegmentedControl : UISegmentedControl @end
 
@@ -55,6 +56,14 @@
     _items = [items copy];
     [self updateSegments];
     self.selectedItem = items[0];
+    
+    //Setup observer to watch badge values to catch updates
+    for (id item in items) {
+        [item addObserver:self
+               forKeyPath:@"badgeValue"
+                  options:(NSKeyValueObservingOptionNew)
+                  context:nil];
+    }
 }
 
 - (void)setSelectedItem:(UITabBarItem *)selectedItem
@@ -87,6 +96,30 @@
         UIImage *image = i == 0 ? item.image : MakeNormalImageForSelectedImage(item.image);
         [self.segmentedControl insertSegmentWithImage:image atIndex:i animated:NO];
     }
+}
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    
+    for(uint i=0; i<self.items.count; i++) {
+        UITabBarItem *item = self.items[i];
+        if (item.badgeValue) {
+            CustomBadge *badge = [CustomBadge customBadgeWithString:item.badgeValue];
+            badge.userInteractionEnabled = NO;
+            
+            CGRect frame = badge.frame;
+            frame.origin.x = ((self.frame.size.width) / self.items.count * (i+1))-frame.size.width;
+            badge.frame = frame;
+            [self addSubview:badge];
+        }
+    }
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if (![keyPath isEqualToString:@"badgeValue"]) return;
+    [self setNeedsLayout];
 }
 
 UIImage * MakeNormalImageForSelectedImage(UIImage *image)
