@@ -536,6 +536,9 @@
 		1CE2D9DF166ABD0D0024AC1C /* UINavigationItem+TwoLineTitle.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9D3166ABD0D0024AC1C /* UINavigationItem+TwoLineTitle.m */; };
 		1CE2D9E0166ABD0D0024AC1C /* UIViewController+NavigationEnclosure.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9D5166ABD0D0024AC1C /* UIViewController+NavigationEnclosure.m */; };
 		1CF0D619164B0A7C00CFA137 /* Forum Abbreviations.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CF0D618164B0A7C00CFA137 /* Forum Abbreviations.plist */; };
+		1CF2461616DC1B4600C75E05 /* PrivateMessageTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF2461516DC1B4600C75E05 /* PrivateMessageTests.m */; };
+		1CF2461B16DC286A00C75E05 /* private-list.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CF2461916DC286A00C75E05 /* private-list.html */; };
+		1CF2461C16DC286A00C75E05 /* private-one.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CF2461A16DC286A00C75E05 /* private-one.html */; };
 		1CFBECDB162F4ED7008AF641 /* pagebar-button-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CFBECCB162F4ED7008AF641 /* pagebar-button-selected.png */; };
 		1CFBECDC162F4ED7008AF641 /* pagebar-button-selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CFBECCC162F4ED7008AF641 /* pagebar-button-selected@2x.png */; };
 		1CFBECDD162F4ED7008AF641 /* pagebar-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CFBECCD162F4ED7008AF641 /* pagebar-button.png */; };
@@ -1212,6 +1215,9 @@
 		1CE2D9D4166ABD0D0024AC1C /* UIViewController+NavigationEnclosure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+NavigationEnclosure.h"; sourceTree = "<group>"; };
 		1CE2D9D5166ABD0D0024AC1C /* UIViewController+NavigationEnclosure.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+NavigationEnclosure.m"; sourceTree = "<group>"; };
 		1CF0D618164B0A7C00CFA137 /* Forum Abbreviations.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Forum Abbreviations.plist"; sourceTree = "<group>"; };
+		1CF2461516DC1B4600C75E05 /* PrivateMessageTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrivateMessageTests.m; sourceTree = "<group>"; };
+		1CF2461916DC286A00C75E05 /* private-list.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "private-list.html"; sourceTree = "<group>"; };
+		1CF2461A16DC286A00C75E05 /* private-one.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "private-one.html"; sourceTree = "<group>"; };
 		1CFBECCB162F4ED7008AF641 /* pagebar-button-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pagebar-button-selected.png"; sourceTree = "<group>"; };
 		1CFBECCC162F4ED7008AF641 /* pagebar-button-selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pagebar-button-selected@2x.png"; sourceTree = "<group>"; };
 		1CFBECCD162F4ED7008AF641 /* pagebar-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pagebar-button.png"; sourceTree = "<group>"; };
@@ -2083,6 +2089,7 @@
 				1CBDB5D61625A0A70004BDF4 /* BookmarkedThreadsTests.m */,
 				1CBDB5D31625A08F0004BDF4 /* ForumTests.m */,
 				1CBDB5DC1625A0C10004BDF4 /* NewReplyTests.m */,
+				1CF2461516DC1B4600C75E05 /* PrivateMessageTests.m */,
 				1CBDB5D91625A0B60004BDF4 /* ProfileTests.m */,
 				1CBDB5DF1625A0D00004BDF4 /* ThreadTests.m */,
 			);
@@ -2105,6 +2112,8 @@
 				1CBDB5EC1625B76F0004BDF4 /* forumdisplay.html */,
 				1CBDB5ED1625B76F0004BDF4 /* member.html */,
 				1CBDB5EE1625B76F0004BDF4 /* newreply.html */,
+				1CF2461916DC286A00C75E05 /* private-list.html */,
+				1CF2461A16DC286A00C75E05 /* private-one.html */,
 				1C6D3EF5168D97B900B91A65 /* profile.html */,
 				1CB9B84C1693D9DC00A3CD16 /* profile2.html */,
 				1CB9B8501693DC3800A3CD16 /* profile3.html */,
@@ -3105,6 +3114,8 @@
 				1CB9B8551694339E00A3CD16 /* profile5.html in Resources */,
 				1CB9B85716943F5E00A3CD16 /* profile6.html in Resources */,
 				1C41B8AB16CE8FEB00718F79 /* showthread2.html in Resources */,
+				1CF2461B16DC286A00C75E05 /* private-list.html in Resources */,
+				1CF2461C16DC286A00C75E05 /* private-one.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3915,6 +3926,7 @@
 				1CBDB5FA1625E7320004BDF4 /* TFHppleElement.m in Sources */,
 				1CBDB5FB1625E7320004BDF4 /* XPathQuery.m in Sources */,
 				1C410D3B169257F100E4A14E /* NSURL+QueryDictionary.m in Sources */,
+				1CF2461616DC1B4600C75E05 /* PrivateMessageTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4134,6 +4146,11 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-Wno-unused-parameter",
+				);
 				WRAPPER_EXTENSION = octest;
 			};
 			name = Debug;
@@ -4160,6 +4177,11 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALIDATE_PRODUCT = YES;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-Wno-unused-parameter",
+				);
 				WRAPPER_EXTENSION = octest;
 			};
 			name = Release;

@@ -10,6 +10,7 @@
 #import "AwfulDataStack.h"
 #import "AwfulParsing.h"
 #import "AwfulUser.h"
+#import "NSManagedObject+Awful.h"
 
 @implementation AwfulPrivateMessage
 
@@ -20,7 +21,7 @@
     return [basename stringByAppendingPathExtension:@"png"];
 }
 
-+ (instancetype)privateMessageCreatedOrUpdatedWithParsedInfo:(PrivateMessageParsedInfo *)info
++ (instancetype)privateMessageWithParsedInfo:(PrivateMessageParsedInfo *)info
 {
     AwfulPrivateMessage *message = [self firstMatchingPredicate:@"messageID = %@", info.messageID];
     if (!message) {
@@ -28,7 +29,13 @@
     }
     [info applyToObject:message];
     if (info.from) {
-        AwfulUser *from = [AwfulUser firstMatchingPredicate:@"username = %@", info.from.username];
+        AwfulUser *from;
+        if (info.from.userID) {
+            from = [AwfulUser firstMatchingPredicate:@"userID = %@", info.from.userID];
+        }
+        if (!from && info.from.username) {
+            from = [AwfulUser firstMatchingPredicate:@"username = %@", info.from.username];
+        }
         if (!from) {
             from = [AwfulUser insertNew];
         }
@@ -36,7 +43,7 @@
         message.from = from;
     }
     if (info.to) {
-        AwfulUser *to = [AwfulUser firstMatchingPredicate:@"username = %@", info.to.username];
+        AwfulUser *to = [AwfulUser firstMatchingPredicate:@"userID = %@", info.to.username];
         if (!to) {
             to = [AwfulUser insertNew];
         }
@@ -47,24 +54,24 @@
     return message;
 }
 
-+ (NSArray *)privateMessagesCreatedOrUpdatedWithParsedInfo:(NSArray *)messageInfos
++ (NSArray *)privateMessagesWithFolderParsedInfo:(PrivateMessageFolderParsedInfo *)info
 {
     NSMutableDictionary *existingPMs = [NSMutableDictionary new];
-    NSArray *messageIDs = [messageInfos valueForKey:@"messageID"];
+    NSArray *messageIDs = [info.privateMessages valueForKey:@"messageID"];
     for (AwfulPrivateMessage *msg in [self fetchAllMatchingPredicate:@"messageID IN %@", messageIDs]) {
         existingPMs[msg.messageID] = msg;
     }
     NSMutableDictionary *existingUsers = [NSMutableDictionary new];
-    NSArray *usernames = [messageInfos valueForKeyPath:@"from"];
+    NSArray *usernames = [info.privateMessages valueForKeyPath:@"from.username"];
     for (AwfulUser *user in [AwfulUser fetchAllMatchingPredicate:@"username IN %@", usernames]) {
         existingUsers[user.username] = user;
     }
     
-    for (PrivateMessageParsedInfo *info in messageInfos) {
-        AwfulPrivateMessage *msg = existingPMs[info.messageID] ?: [AwfulPrivateMessage insertNew];
-        [info applyToObject:msg];
+    for (PrivateMessageParsedInfo *pmInfo in info.privateMessages) {
+        AwfulPrivateMessage *msg = existingPMs[pmInfo.messageID] ?: [AwfulPrivateMessage insertNew];
+        [pmInfo applyToObject:msg];
         if (!msg.from) msg.from = [AwfulUser insertNew];
-        [info.from applyToObject:msg.from];
+        [pmInfo.from applyToObject:msg.from];
         existingUsers[msg.from.username] = msg.from;
         existingPMs[msg.messageID] = msg;
     }

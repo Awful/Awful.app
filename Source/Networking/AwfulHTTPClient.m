@@ -707,15 +707,16 @@ static NSString * Entitify(NSString *noEntities)
 - (NSOperation *)listPrivateMessagesAndThen:(void (^)(NSError *error, NSArray *messages))callback
 {
     NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:@"private.php" parameters:nil];
-    id op = [self HTTPRequestOperationWithRequest:urlRequest success:^(id _, NSArray *infos)
+    id op = [self HTTPRequestOperationWithRequest:urlRequest
+                                          success:^(id _, PrivateMessageFolderParsedInfo *info)
     {
-        NSArray *pms = [AwfulPrivateMessage privateMessagesCreatedOrUpdatedWithParsedInfo:infos];
-        if (callback) callback(nil, pms);
+        NSArray *messages = [AwfulPrivateMessage privateMessagesWithFolderParsedInfo:info];
+        if (callback) callback(nil, messages);
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
     }];
     [op setCreateParsedInfoBlock:^id(NSData * data) {
-        return [PrivateMessageParsedInfo messagesWithHTMLData:data];
+        return [[PrivateMessageFolderParsedInfo alloc] initWithHTMLData:data];
     }];
     [self enqueueHTTPRequestOperation:op];
     return op;
@@ -731,9 +732,7 @@ static NSString * Entitify(NSString *noEntities)
     id op = [self HTTPRequestOperationWithRequest:urlRequest
                                           success:^(id _, PrivateMessageParsedInfo *info)
     {
-        AwfulPrivateMessage *message;
-        [info setValue:messageID forKey:@"messageID"];
-        message = [AwfulPrivateMessage privateMessageCreatedOrUpdatedWithParsedInfo:info];
+        AwfulPrivateMessage *message = [AwfulPrivateMessage privateMessageWithParsedInfo:info];
         if (callback) callback(nil, message);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (callback) callback(error, nil);

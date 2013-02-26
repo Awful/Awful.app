@@ -147,7 +147,7 @@
         cell.showsUnread = NO;
     }
     
-    // TODO add accessory icon for forward/replied
+    // TODO indicate forwarded/replied/seen
     
     AwfulDisclosureIndicatorView *disclosure = (AwfulDisclosureIndicatorView *)cell.accessoryView;
     disclosure.color = theme.disclosureIndicatorColor;

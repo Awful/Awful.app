@@ -8,13 +8,14 @@
 
 #import "_AwfulPrivateMessage.h"
 @class PrivateMessageParsedInfo;
+@class PrivateMessageFolderParsedInfo;
 
 @interface AwfulPrivateMessage : _AwfulPrivateMessage {}
 
 @property (readonly, nonatomic) NSString *firstIconName;
 
-+ (instancetype)privateMessageCreatedOrUpdatedWithParsedInfo:(PrivateMessageParsedInfo *)info;
++ (instancetype)privateMessageWithParsedInfo:(PrivateMessageParsedInfo *)info;
 
-+ (NSArray *)privateMessagesCreatedOrUpdatedWithParsedInfo:(NSArray *)messageInfos;
++ (NSArray *)privateMessagesWithFolderParsedInfo:(PrivateMessageFolderParsedInfo *)info;
 
 @end

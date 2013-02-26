@@ -1078,6 +1078,18 @@ static AwfulBanType BanTypeWithString(NSString *s)
 @end
 
 
+static BOOL PrivateMessageIconReplied(NSString *src)
+{
+    return [src rangeOfString:@"replied"].location != NSNotFound;
+}
+
+
+static BOOL PrivateMessageIconSeen(NSString *src)
+{
+    return [src rangeOfString:@"newpm"].location == NSNotFound;
+}
+
+
 @interface PrivateMessageParsedInfo ()
 
 @property (copy, nonatomic) NSString *messageID;
@@ -1095,90 +1107,127 @@ static AwfulBanType BanTypeWithString(NSString *s)
 
 @implementation PrivateMessageParsedInfo
 
-+ (NSArray *)messagesWithHTMLData:(NSData *)htmlData
-{
-    NSMutableArray *messages = [NSMutableArray new];
-    NSArray *rawPMs = PerformRawHTMLXPathQuery(htmlData, @"//tbody/tr");
-    for (NSString *onePM in rawPMs) {
-        NSData *dataForOnePM = [onePM dataUsingEncoding:NSUTF8StringEncoding];
-        [messages addObject:[[self alloc] initWithHTMLData:dataForOnePM]];
-    }
-    return messages;
-}
-
 - (void)parseHTMLData
 {
-    NSArray *postbody = PerformRawHTMLXPathQuery(self.htmlData, @"//td[@class='postbody']/node()");
-    if ([postbody count] > 0) {
-        self.innerHTML = [postbody componentsJoinedByString:@""];
-        return;
-    }
-    
-    NSMutableArray *cells = [NSMutableArray new];
-    for (NSString *rawCell in PerformRawHTMLXPathQuery(self.htmlData, @"//td")) {
-        NSData *data = [rawCell dataUsingEncoding:NSUTF8StringEncoding];
-        [cells addObject:[[TFHpple alloc] initWithHTMLData:data]];
-    }
-    if ([cells count] < 5) {
-        NSLog(@"error parsing private message: too few table cells");
-        return;
-    }
-    
-    NSString *seenImageSrc = [[cells[0] searchForSingle:@"//img"] objectForKey:@"src"];
-    self.replied = [seenImageSrc rangeOfString:@"replied"].location != NSNotFound;
-    self.seen = [seenImageSrc rangeOfString:@"newpm"].location == NSNotFound;
-    
-    TFHppleElement *tag = [cells[1] searchForSingle:@"//img"];
-    self.messageIconImageURL = [NSURL URLWithString:[tag objectForKey:@"src"]];
-    
-    TFHppleElement *subject = [cells[2] searchForSingle:@"//a"];
-    if (subject) {
-        self.subject = subject.content;
-        // TODO NSScanner should be perfectly adequate here.
-        NSError *error;
-        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"privatemessageid=([0-9]*)"
-                                                                               options:NSRegularExpressionCaseInsensitive
-                                                                                 error:&error];
-        if (!regex) {
-            NSLog(@"error parsing private message ID: %@", error);
-        }
-        NSString *href = [subject objectForKey:@"href"];
-        NSTextCheckingResult *result = [regex firstMatchInString:href options:0
-                                                           range:NSMakeRange(0, [href length])];
-        if ([result rangeAtIndex:1].location != NSNotFound) {
-            self.messageID = [href substringWithRange:[result rangeAtIndex:1]];
-        }
-    }
-    
-    TFHppleElement *fromCell = [cells[3] searchForSingle:@"//td"];
+    if (!self.htmlData) return;
     self.from = [UserParsedInfo new];
-    self.from.username = fromCell.content;
-    
-    TFHppleElement *sentDateCell = [cells[4] searchForSingle:@"//td"];
-    if (sentDateCell) {
-        // TODO does this format appear elsewhere?
-        static NSDateFormatter *df = nil;
-        if (!df) {
-            df = [[NSDateFormatter alloc] init];
-            [df setDateFormat:@"MMM d, yyyy 'at' HH:mm"];
+    TFHpple *doc = [[TFHpple alloc] initWithHTMLData:self.htmlData];
+    TFHppleElement *profile = [doc searchForSingle:@"//ul[" HAS_CLASS(profilelinks) "]//a"];
+    if (profile) {
+        NSScanner *scanner = [NSScanner scannerWithString:[profile objectForKey:@"href"]];
+        [scanner scanUpToString:@"userid=" intoString:NULL];
+        [scanner scanString:@"userid=" intoString:NULL];
+        NSInteger userID;
+        BOOL ok = [scanner scanInteger:&userID];
+        if (ok) {
+            self.from.userID = [@(userID) stringValue];
+        } else {
+            NSLog(@"could not parse user ID from %@", scanner.string);
         }
-        [df setTimeZone:[NSTimeZone localTimeZone]];
-        self.sentDate = [df dateFromString:[sentDateCell content]];
     }
+    TFHppleElement *username = [doc searchForSingle:@"//dl[" HAS_CLASS(userinfo)
+                                "]//dt[" HAS_CLASS(author) "]"];
+    self.from.username = [username content];
+    TFHppleElement *regdate = [doc searchForSingle:@"//dl[" HAS_CLASS(userinfo)
+                               "]//dd[" HAS_CLASS(registered) "]"];
+    self.from.regdate = RegdateFromString([regdate content]);
+    NSArray *customTitle = PerformRawHTMLXPathQuery(self.htmlData, @"//dl[" HAS_CLASS(userinfo)
+                                                    "]//dd[" HAS_CLASS(title) "][1]/node()");
+    self.from.customTitle = [customTitle componentsJoinedByString:@""];
+    TFHppleElement *reply = [doc searchForSingle:@"//div[" HAS_CLASS(buttons) "]//a"];
+    if (reply) {
+        NSScanner *scanner = [NSScanner scannerWithString:[reply objectForKey:@"href"]];
+        [scanner scanUpToString:@"privatemessageid=" intoString:NULL];
+        [scanner scanString:@"privatemessageid=" intoString:NULL];
+        NSInteger messageID;
+        BOOL ok = [scanner scanInteger:&messageID];
+        if (ok) {
+            self.messageID = [@(messageID) stringValue];
+        } else {
+            NSLog(@"could not parse message ID from %@", scanner.string);
+        }
+    }
+    TFHppleElement *subject = [doc searchForSingle:@"//div[" HAS_CLASS(breadcrumbs)
+                               "]//a[last()]/following-sibling::node()"];
+    self.subject = [subject content];
+    TFHppleElement *seenIcon = [doc searchForSingle:@"//td[" HAS_CLASS(postdate) "]//img"];
+    if (seenIcon) {
+        self.replied = PrivateMessageIconReplied([seenIcon objectForKey:@"src"]);
+        self.seen = PrivateMessageIconSeen([seenIcon objectForKey:@"src"]);
+    }
+    TFHppleElement *sentDate = [doc searchForSingle:@"//td[" HAS_CLASS(postdate) "]/text()"];
+    self.sentDate = PostDateFromString([sentDate content]);
+    NSArray *postbody = PerformRawHTMLXPathQuery(self.htmlData,
+                                                 @"//td[" HAS_CLASS(postbody) "][1]/node()");
+    self.innerHTML = FixSAAndlibxmlHTMLSerialization([postbody componentsJoinedByString:@""]);
 }
 
 + (NSArray *)keysToApplyToObject
 {
-    return @[ @"messageID", @"subject", @"messageIconImageURL", @"seen", @"replied", @"sentDate" ];
+    return @[ @"messageID", @"subject", @"messageIconImageURL", @"seen", @"replied", @"sentDate",
+              @"innerHTML" ];
 }
 
-- (void)applyToObject:(id)object
+@end
+
+
+@interface PrivateMessageFolderParsedInfo ()
+
+@property (copy, nonatomic) NSArray *privateMessages;
+
+@end
+
+
+@implementation PrivateMessageFolderParsedInfo
+
+- (void)parseHTMLData
 {
-    if (self.innerHTML) {
-        [object setValue:self.innerHTML forKey:@"innerHTML"];
-    } else {
-        [super applyToObject:object];
+    NSMutableArray *messages = [NSMutableArray new];
+    for (NSString *rawRow in PerformRawHTMLXPathQuery(self.htmlData, @"//tbody/tr")) {
+        NSData *rowData = [rawRow dataUsingEncoding:NSUTF8StringEncoding];
+        TFHpple *row = [[TFHpple alloc] initWithHTMLData:rowData];
+        PrivateMessageParsedInfo *info = [PrivateMessageParsedInfo new];
+        NSString *seenImageSrc = [[row searchForSingle:@"//td[1]//img"] objectForKey:@"src"];
+        info.replied = PrivateMessageIconReplied(seenImageSrc);
+        info.seen = PrivateMessageIconSeen(seenImageSrc);
+        
+        TFHppleElement *tag = [row searchForSingle:@"//td[2]//img"];
+        info.messageIconImageURL = [NSURL URLWithString:[tag objectForKey:@"src"]];
+        
+        TFHppleElement *subject = [row searchForSingle:@"//td[3]//a"];
+        if (subject) {
+            info.subject = subject.content;
+            NSScanner *scanner = [NSScanner scannerWithString:[subject objectForKey:@"href"]];
+            NSString *numberFollows = @"privatemessageid=";
+            [scanner scanUpToString:numberFollows intoString:NULL];
+            [scanner scanString:numberFollows intoString:NULL];
+            NSInteger messageID;
+            BOOL ok = [scanner scanInteger:&messageID];
+            if (ok) {
+                info.messageID = [@(messageID) stringValue];
+            } else {
+                NSLog(@"could not parse private message ID from %@", scanner.string);
+            }
+        }
+        
+        TFHppleElement *fromCell = [row searchForSingle:@"//td[4]"];
+        info.from = [UserParsedInfo new];
+        info.from.username = fromCell.content;
+        
+        TFHppleElement *sentDateCell = [row searchForSingle:@"//td[5]"];
+        if (sentDateCell) {
+            // TODO does this format appear elsewhere?
+            static NSDateFormatter *df = nil;
+            if (!df) {
+                df = [[NSDateFormatter alloc] init];
+                [df setDateFormat:@"MMM d, yyyy 'at' HH:mm"];
+            }
+            [df setTimeZone:[NSTimeZone localTimeZone]];
+            info.sentDate = [df dateFromString:[sentDateCell content]];
+        }
+        [messages addObject:info];
     }
+    self.privateMessages = messages;
 }
 
 @end

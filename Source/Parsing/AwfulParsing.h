@@ -266,6 +266,11 @@ typedef enum {
 @property (readonly, nonatomic) BOOL replied;
 @property (readonly, nonatomic) NSString *innerHTML;
 
-+ (NSArray *)messagesWithHTMLData:(NSData *)htmlData;
+@end
+
+
+@interface PrivateMessageFolderParsedInfo : ParsedInfo
+
+@property (readonly, copy, nonatomic) NSArray *privateMessages;
 
 @end
