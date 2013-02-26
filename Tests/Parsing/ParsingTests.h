@@ -18,6 +18,7 @@
 @end
 
 #define STAssertStringContainsSubstringOnce(s, sub, ...) do { \
+    STAssertNotNil(s, __VA_ARGS__); \
     NSRange __a = [s rangeOfString:sub]; \
     STAssertTrue(__a.location != NSNotFound, __VA_ARGS__); \
     NSRange __b = [s rangeOfString:sub options:NSBackwardsSearch]; \
