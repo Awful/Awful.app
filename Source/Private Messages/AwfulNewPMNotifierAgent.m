@@ -10,15 +10,16 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulPrivateMessage.h"
 
+@interface AwfulNewPMNotifierAgent ()
+
+@property (nonatomic) NSDate *lastCheckDate;
+
+@end
+
+
 @implementation AwfulNewPMNotifierAgent
 
-- (id) init
-{
-    self = [super init];
-    return self;
-}
-
-+ (AwfulNewPMNotifierAgent *)defaultAgent
++ (instancetype)agent
 {
     static AwfulNewPMNotifierAgent *instance = nil;
     static dispatch_once_t onceToken;
@@ -28,33 +29,39 @@
     return instance;
 }
 
+- (NSDate *)lastCheckDate
+{
+    return [[NSUserDefaults standardUserDefaults] objectForKey:kLastMessageCheckDate];
+}
+
+- (void)setLastCheckDate:(NSDate *)lastCheckDate
+{
+    [[NSUserDefaults standardUserDefaults] setObject:lastCheckDate forKey:kLastMessageCheckDate];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+static NSString * const kLastMessageCheckDate = @"com.awfulapp.Awful.LastMessageCheckDate";
+
 - (void)checkForNewMessages
 {
-    [[AwfulHTTPClient client] listPrivateMessagesAndThen:^(NSError *error, NSArray *messages) {
-        // TODO handle error
-        if (error) return;
-        
-        _lastCheckDate = [NSDate date];
-        
-        int newMessageCount = 0;
-        
-        for (AwfulPrivateMessage* msg in messages)
-        {
-            if (msg.seen.boolValue == NO) {
-                newMessageCount++;
-            }
+    [[AwfulHTTPClient client] listPrivateMessagesAndThen:^(NSError *error, NSArray *messages)
+    {
+        if (error) {
+            NSLog(@"error checking for new private messages: %@", error);
+            return;
         }
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:AwfulNewPrivateMessagesNotification
-                                                            object:self
-                                                          userInfo:@{kAwfulNewPrivateMessageCountKey:
-                                                                [NSNumber numberWithInt:newMessageCount]}
-         ];
+        self.lastCheckDate = [NSDate date];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"seen = NO"];
+        NSArray *unseen = [messages filteredArrayUsingPredicate:predicate];
+        NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
+        [noteCenter postNotificationName:AwfulNewPrivateMessagesNotification object:self
+                                userInfo:@{ AwfulNewPrivateMessageCountKey: @([unseen count]) }];
     }];
 }
 
 
 @end
 
-NSString* AwfulNewPrivateMessagesNotification = @"AwfulNewPrivateMessagesNotification";
-NSString* kAwfulNewPrivateMessageCountKey = @"kAwfulNewPrivateMessageCountKey";
+
+NSString * const AwfulNewPrivateMessagesNotification = @"AwfulNewPrivateMessagesNotification";
+NSString * const AwfulNewPrivateMessageCountKey = @"AwfulNewPrivateMessageCountKey";

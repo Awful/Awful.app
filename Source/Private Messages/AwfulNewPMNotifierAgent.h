@@ -8,12 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
-extern NSString* AwfulNewPrivateMessagesNotification;
-extern NSString* kAwfulNewPrivateMessageCountKey;
-
 @interface AwfulNewPMNotifierAgent : NSObject
 
-+ (AwfulNewPMNotifierAgent*) defaultAgent;
++ (instancetype)agent;
+
 - (void)checkForNewMessages;
-@property (nonatomic,readonly) NSDate* lastCheckDate;
+
+@property (readonly, nonatomic) NSDate *lastCheckDate;
+
 @end
+
+// After a successful check for new messages, this notification is sent out.
+extern NSString * const AwfulNewPrivateMessagesNotification;
+
+// An NSNumber indicating how many messages remain unseen.
+extern NSString * const AwfulNewPrivateMessageCountKey;

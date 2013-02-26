@@ -231,13 +231,13 @@ static id _instance;
                                        afterDelay:0.1];
     }
     
-    [[AwfulNewPMNotifierAgent defaultAgent] checkForNewMessages];
+    [[AwfulNewPMNotifierAgent agent] checkForNewMessages];
     return YES;
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
-    [[AwfulNewPMNotifierAgent defaultAgent] checkForNewMessages];
+    [[AwfulNewPMNotifierAgent agent] checkForNewMessages];
 }
 
 - (void)ignoreSilentSwitchWhenPlayingEmbeddedVideo

@@ -32,7 +32,7 @@
     UIBarButtonItem *compose;
     compose = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
                                                             target:self
-                                                            action:@selector(didTapCompose:)];
+                                                            action:@selector(didTapCompose)];
     self.navigationItem.rightBarButtonItem = compose;
     UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithTitle:@"PMs"
                                                              style:UIBarButtonItemStyleBordered
@@ -44,14 +44,14 @@
     return self;
 }
 
-- (void)didTapCompose:(id)sender
+- (void)didTapCompose
 {
     // TODO
 }
 
-- (void)didGetNewPMCount:(NSNotification*)notification
+- (void)didGetNewPMCount:(NSNotification *)notification
 {
-    NSNumber *count = notification.userInfo[kAwfulNewPrivateMessageCountKey];
+    NSNumber *count = notification.userInfo[AwfulNewPrivateMessageCountKey];
     self.tabBarItem.badgeValue = [count integerValue] ? [count stringValue] : nil;
     self.refreshing = NO;
 }
@@ -74,19 +74,19 @@
     self.tableView.rowHeight = 75;
 }
 
--(BOOL)refreshOnAppear
+- (BOOL)refreshOnAppear
 {
     if ([self.fetchedResultsController.fetchedObjects count] == 0) return YES;
-    AwfulNewPMNotifierAgent *agent = [AwfulNewPMNotifierAgent defaultAgent];
-    if (!agent.lastCheckDate) return YES;
+    NSDate *lastCheckDate = [AwfulNewPMNotifierAgent agent].lastCheckDate;
+    if (!lastCheckDate) return YES;
     const NSTimeInterval checkingThreshhold = 10 * 60;
-    return (-[agent.lastCheckDate timeIntervalSinceNow] > checkingThreshhold);
+    return (-[lastCheckDate timeIntervalSinceNow] > checkingThreshhold);
 }
 
 - (void)refresh
 {
     [super refresh];
-    [[AwfulNewPMNotifierAgent defaultAgent] checkForNewMessages];
+    [[AwfulNewPMNotifierAgent agent] checkForNewMessages];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
