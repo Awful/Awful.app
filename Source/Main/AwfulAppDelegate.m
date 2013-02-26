@@ -31,6 +31,7 @@
 #import "NSManagedObject+Awful.h"
 #import "SVProgressHUD.h"
 #import "UIViewController+NavigationEnclosure.h"
+#import "AwfulNewPMNotifierAgent.h"
 
 @interface AwfulAppDelegate () <AwfulTabBarControllerDelegate, UINavigationControllerDelegate,
                                 AwfulLoginControllerDelegate>
@@ -230,7 +231,13 @@ static id _instance;
                                        afterDelay:0.1];
     }
     
+    [[AwfulNewPMNotifierAgent defaultAgent] checkForNewMessages];
     return YES;
+}
+
+- (void)applicationWillEnterForeground:(UIApplication *)application
+{
+    [[AwfulNewPMNotifierAgent defaultAgent] checkForNewMessages];
 }
 
 - (void)ignoreSilentSwitchWhenPlayingEmbeddedVideo
@@ -462,7 +469,8 @@ static id _instance;
 
 #pragma mark - AwfulLoginControllerDelegate
 
-- (void)loginController:(AwfulLoginController *)login didLogInAsUserWithInfo:(NSDictionary *)userInfo
+- (void)loginController:(AwfulLoginController *)login
+ didLogInAsUserWithInfo:(NSDictionary *)userInfo
 {
     [AwfulSettings settings].username = userInfo[@"username"];
     [AwfulSettings settings].userID = userInfo[@"userID"];
