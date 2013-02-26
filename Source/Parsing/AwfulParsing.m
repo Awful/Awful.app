@@ -113,6 +113,7 @@ static NSDate * RegdateFromString(NSString *s)
         [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
         [df setDateFormat:@"MMM d, yyyy"];
     }
+    [df setTimeZone:[NSTimeZone localTimeZone]];
     return [df dateFromString:s];
 }
 
