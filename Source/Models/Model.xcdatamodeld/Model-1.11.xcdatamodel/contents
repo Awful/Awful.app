@@ -84,16 +84,16 @@
         <attribute name="yahooName" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="editedPosts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulPost" inverseName="editor" inverseEntity="AwfulPost" syncable="YES"/>
         <relationship name="posts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulPost" inverseName="author" inverseEntity="AwfulPost" syncable="YES"/>
-        <relationship name="receivedPrivateMessages" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulPrivateMessage" inverseName="to" inverseEntity="AwfulPrivateMessage" syncable="YES"/>
-        <relationship name="sentPrivateMessages" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulPrivateMessage" inverseName="from" inverseEntity="AwfulPrivateMessage" syncable="YES"/>
+        <relationship name="receivedPrivateMessages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulPrivateMessage" inverseName="to" inverseEntity="AwfulPrivateMessage" syncable="YES"/>
+        <relationship name="sentPrivateMessages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulPrivateMessage" inverseName="from" inverseEntity="AwfulPrivateMessage" syncable="YES"/>
         <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="author" inverseEntity="AwfulThread" syncable="YES"/>
     </entity>
     <elements>
         <element name="AwfulCategory" positionX="160" positionY="192" width="128" height="105"/>
         <element name="AwfulForum" positionX="205" positionY="285" width="128" height="180"/>
         <element name="AwfulPost" positionX="160" positionY="192" width="128" height="180"/>
+        <element name="AwfulPrivateMessage" positionX="160" positionY="192" width="128" height="180"/>
         <element name="AwfulThread" positionX="25" positionY="210" width="128" height="360"/>
         <element name="AwfulUser" positionX="160" positionY="192" width="128" height="405"/>
-        <element name="AwfulPrivateMessage" positionX="160" positionY="192" width="128" height="180"/>
     </elements>
 </model>

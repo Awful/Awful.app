@@ -303,9 +303,27 @@ const struct AwfulUserFetchedProperties AwfulUserFetchedProperties = {
 @dynamic receivedPrivateMessages;
 
 	
+- (NSMutableSet*)receivedPrivateMessagesSet {
+	[self willAccessValueForKey:@"receivedPrivateMessages"];
+  
+	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"receivedPrivateMessages"];
+  
+	[self didAccessValueForKey:@"receivedPrivateMessages"];
+	return result;
+}
+	
 
 @dynamic sentPrivateMessages;
 
+	
+- (NSMutableSet*)sentPrivateMessagesSet {
+	[self willAccessValueForKey:@"sentPrivateMessages"];
+  
+	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"sentPrivateMessages"];
+  
+	[self didAccessValueForKey:@"sentPrivateMessages"];
+	return result;
+}
 	
 
 @dynamic threads;
