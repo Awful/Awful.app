@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AwfulTextView.h"
 
-@interface AwfulComposeViewController : UIViewController
+@interface AwfulComposeViewController : UIViewController <AwfulTextViewDelegate, UITextViewDelegate>
+
+@property (readonly, nonatomic) AwfulTextView *textView;
 
 @end

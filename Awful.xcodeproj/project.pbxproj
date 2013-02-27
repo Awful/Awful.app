@@ -541,6 +541,7 @@
 		1CF2461C16DC286A00C75E05 /* private-one.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CF2461A16DC286A00C75E05 /* private-one.html */; };
 		1CF2461F16DD848100C75E05 /* AwfulTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF2461E16DD848100C75E05 /* AwfulTextView.m */; };
 		1CF2462316DD95F400C75E05 /* AwfulComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF2462216DD95F400C75E05 /* AwfulComposeViewController.m */; };
+		1CF2462616DD969000C75E05 /* AwfulPrivateMessageComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF2462516DD969000C75E05 /* AwfulPrivateMessageComposeViewController.m */; };
 		1CFBECDB162F4ED7008AF641 /* pagebar-button-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CFBECCB162F4ED7008AF641 /* pagebar-button-selected.png */; };
 		1CFBECDC162F4ED7008AF641 /* pagebar-button-selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CFBECCC162F4ED7008AF641 /* pagebar-button-selected@2x.png */; };
 		1CFBECDD162F4ED7008AF641 /* pagebar-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CFBECCD162F4ED7008AF641 /* pagebar-button.png */; };
@@ -1225,6 +1226,9 @@
 		1CF2461E16DD848100C75E05 /* AwfulTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTextView.m; sourceTree = "<group>"; };
 		1CF2462116DD95F400C75E05 /* AwfulComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulComposeViewController.h; sourceTree = "<group>"; };
 		1CF2462216DD95F400C75E05 /* AwfulComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulComposeViewController.m; sourceTree = "<group>"; };
+		1CF2462416DD969000C75E05 /* AwfulPrivateMessageComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessageComposeViewController.h; sourceTree = "<group>"; };
+		1CF2462516DD969000C75E05 /* AwfulPrivateMessageComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessageComposeViewController.m; sourceTree = "<group>"; };
+		1CF2462716DD9FBF00C75E05 /* AwfulComposeViewControllerSubclass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulComposeViewControllerSubclass.h; sourceTree = "<group>"; };
 		1CFBECCB162F4ED7008AF641 /* pagebar-button-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pagebar-button-selected.png"; sourceTree = "<group>"; };
 		1CFBECCC162F4ED7008AF641 /* pagebar-button-selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pagebar-button-selected@2x.png"; sourceTree = "<group>"; };
 		1CFBECCD162F4ED7008AF641 /* pagebar-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pagebar-button.png"; sourceTree = "<group>"; };
@@ -2085,6 +2089,8 @@
 				1CB6010816D826F000CBEE22 /* AwfulPrivateMessageListController.m */,
 				1CB6010916D826F000CBEE22 /* AwfulPrivateMessageViewController.h */,
 				1CB6010A16D826F000CBEE22 /* AwfulPrivateMessageViewController.m */,
+				1CF2462416DD969000C75E05 /* AwfulPrivateMessageComposeViewController.h */,
+				1CF2462516DD969000C75E05 /* AwfulPrivateMessageComposeViewController.m */,
 			);
 			path = "Private Messages";
 			sourceTree = "<group>";
@@ -2298,6 +2304,7 @@
 			children = (
 				1CF2462116DD95F400C75E05 /* AwfulComposeViewController.h */,
 				1CF2462216DD95F400C75E05 /* AwfulComposeViewController.m */,
+				1CF2462716DD9FBF00C75E05 /* AwfulComposeViewControllerSubclass.h */,
 				1CF2461D16DD848100C75E05 /* AwfulTextView.h */,
 				1CF2461E16DD848100C75E05 /* AwfulTextView.m */,
 				1C7487EF16A88BAD0068B8A3 /* AwfulKeyboardBar.h */,
@@ -4061,6 +4068,7 @@
 				8C8AB95016DC49BA00D85404 /* CustomBadge.m in Sources */,
 				1CF2461F16DD848100C75E05 /* AwfulTextView.m in Sources */,
 				1CF2462316DD95F400C75E05 /* AwfulComposeViewController.m in Sources */,
+				1CF2462616DD969000C75E05 /* AwfulPrivateMessageComposeViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

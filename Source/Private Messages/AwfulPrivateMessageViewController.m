@@ -13,11 +13,14 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
 #import "AwfulPostsView.h"
+#import "AwfulPrivateMessageComposeViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "NSFileManager+UserDirectories.h"
+#import "UIViewController+NavigationEnclosure.h"
 
-@interface AwfulPrivateMessageViewController () <AwfulPostsViewDelegate>
+@interface AwfulPrivateMessageViewController () <AwfulPostsViewDelegate,
+                                                 AwfulPrivateMessageComposeViewControllerDelegate>
 
 @property (nonatomic) AwfulPrivateMessage *privateMessage;
 
@@ -149,10 +152,31 @@
                        self.privateMessage.from.username];
     AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:title];
     [sheet addButtonWithTitle:@"Reply" block:^{
-        // TODO
+        AwfulPrivateMessageComposeViewController *compose;
+        compose = [AwfulPrivateMessageComposeViewController new];
+        compose.delegate = self;
+        [compose setRegardingMessage:self.privateMessage];
+        // TODO get bbcode for quote
+        [self presentViewController:[compose enclosingNavigationController] animated:YES
+                         completion:nil];
     }];
     [sheet addCancelButtonWithTitle:@"Cancel"];
     [sheet showFromRect:rect inView:self.postsView.window animated:YES];
+}
+
+#pragma mark - AwfulPrivateMessageComposeViewControllerDelegate
+
+- (void)privateMessageComposeController:(AwfulPrivateMessageComposeViewController *)controller
+                      didReplyToMessage:(AwfulPrivateMessage *)message
+{
+    [self dismissViewControllerAnimated:YES completion:^{
+        [self.navigationController popViewControllerAnimated:YES]; 
+    }];
+}
+
+- (void)privateMessageComposeControllerDidCancel:(AwfulPrivateMessageComposeViewController *)controller
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

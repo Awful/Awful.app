@@ -7,6 +7,7 @@
 //
 
 #import "AwfulReplyComposeViewController.h"
+#import "AwfulComposeViewControllerSubclass.h"
 #import "AwfulAlertView.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulKeyboardBar.h"
@@ -23,9 +24,6 @@
                                                UINavigationControllerDelegate,
                                                UIPopoverControllerDelegate, AwfulTextViewDelegate,
                                                UITextViewDelegate>
-
-@property (strong, nonatomic) UIBarButtonItem *sendButton;
-@property (strong, nonatomic) UIBarButtonItem *cancelButton;
 
 @property (weak, nonatomic) NSOperation *networkOperation;
 
@@ -45,29 +43,18 @@
 
 @implementation AwfulReplyComposeViewController
 
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    if (!(self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) return nil;
+    self.sendButton.target = self.cancelButton.target = self;
+    self.sendButton.action = @selector(hitSend);
+    self.cancelButton.action = @selector(cancel);
+    return self;
+}
+
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (UIBarButtonItem *)sendButton
-{
-    if (_sendButton) return _sendButton;
-    _sendButton = [[UIBarButtonItem alloc] initWithTitle:@"Reply"
-                                                   style:UIBarButtonItemStyleDone
-                                                  target:self
-                                                  action:@selector(hitSend)];
-    return _sendButton;
-}
-
-- (UIBarButtonItem *)cancelButton
-{
-    if (_cancelButton) return _cancelButton;
-    _cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel"
-                                                     style:UIBarButtonItemStyleBordered
-                                                    target:self
-                                                    action:@selector(cancel)];
-    return _cancelButton;
 }
 
 - (void)editPost:(AwfulPost *)post text:(NSString *)text
@@ -285,13 +272,6 @@ withImagePlaceholderResults:placeholderResults
 - (void)loadView
 {
     self.view = self.textView;
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    self.navigationItem.rightBarButtonItem = self.sendButton;
-    self.navigationItem.leftBarButtonItem = self.cancelButton;
 }
 
 - (void)viewWillAppear:(BOOL)animated

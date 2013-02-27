@@ -12,6 +12,7 @@
 #import "AwfulDisclosureIndicatorView.h"
 #import "AwfulModels.h"
 #import "AwfulNewPMNotifierAgent.h"
+#import "AwfulPrivateMessageComposeViewController.h"
 #import "AwfulPrivateMessageViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulSplitViewController.h"
@@ -19,6 +20,11 @@
 #import "AwfulThreadCell.h"
 #import "AwfulThreadTags.h"
 #import "UIViewController+NavigationEnclosure.h"
+
+@interface AwfulPrivateMessageListController () <AwfulPrivateMessageComposeViewControllerDelegate>
+
+@end
+
 
 @implementation AwfulPrivateMessageListController
 
@@ -46,7 +52,11 @@
 
 - (void)didTapCompose
 {
-    // TODO
+    AwfulPrivateMessageComposeViewController *compose;
+    compose = [AwfulPrivateMessageComposeViewController new];
+    compose.delegate = self;
+    [self presentViewController:[compose enclosingNavigationController] animated:YES
+                     completion:nil];
 }
 
 - (void)didGetNewPMCount:(NSNotification *)notification
@@ -172,6 +182,18 @@
         nav.viewControllers = @[ vc ];
         [split.masterPopoverController dismissPopoverAnimated:YES];
     }
+}
+
+#pragma mark - AwfulPrivateMessageComposeViewControllerDelegate
+
+- (void)privateMessageComposeControllerDidSendMessage:(AwfulPrivateMessageComposeViewController *)controller
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)privateMessageComposeControllerDidCancel:(AwfulPrivateMessageComposeViewController *)controller
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end
