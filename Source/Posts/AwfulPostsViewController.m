@@ -22,7 +22,7 @@
 #import "AwfulPostsView.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulPullToRefreshControl.h"
-#import "AwfulReplyViewController.h"
+#import "AwfulReplyComposeViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "NSFileManager+UserDirectories.h"
@@ -38,7 +38,7 @@
 @interface AwfulPostsViewController () <AwfulPostsViewDelegate,
                                         AwfulJumpToPageSheetDelegate,
                                         NSFetchedResultsControllerDelegate,
-                                        AwfulReplyViewControllerDelegate,
+                                        AwfulReplyComposeViewControllerDelegate,
                                         UIScrollViewDelegate>
 
 @property (nonatomic) AwfulThreadPage currentPage;
@@ -594,7 +594,7 @@
         rect = [self.view.superview convertRect:rect fromView:self.bottomBar];
         [self showThreadActionsFromRect:rect inView:self.view.superview];
     } else if (seg.selectedSegmentIndex == 1) {
-        AwfulReplyViewController *reply = [AwfulReplyViewController new];
+        AwfulReplyComposeViewController *reply = [AwfulReplyComposeViewController new];
         reply.delegate = self;
         [reply replyToThread:self.thread withInitialContents:nil];
         UINavigationController *nav = [reply enclosingNavigationController];
@@ -824,7 +824,7 @@ static char KVOContext;
                                        buttonTitle:@"Alright"];
                      return;
                  }
-                 AwfulReplyViewController *reply = [AwfulReplyViewController new];
+                 AwfulReplyComposeViewController *reply = [AwfulReplyComposeViewController new];
                  reply.delegate = self;
                  [reply editPost:post text:text];
                  UINavigationController *nav = [reply enclosingNavigationController];
@@ -843,7 +843,7 @@ static char KVOContext;
                                        buttonTitle:@"Alright"];
                      return;
                  }
-                 AwfulReplyViewController *reply = [AwfulReplyViewController new];
+                 AwfulReplyComposeViewController *reply = [AwfulReplyComposeViewController new];
                  reply.delegate = self;
                  [reply replyToThread:self.thread withInitialContents:quotedText];
                  UINavigationController *nav = [reply enclosingNavigationController];
@@ -1018,18 +1018,18 @@ static char KVOContext;
     self.jumpToPageSheet = nil;
 }
 
-#pragma mark - AwfulReplyViewControllerDelegate
+#pragma mark - AwfulReplyComposeViewControllerDelegate
 
-- (void)replyViewController:(AwfulReplyViewController *)replyViewController
-           didReplyToThread:(AwfulThread *)thread
+- (void)replyComposeController:(AwfulReplyComposeViewController *)controller
+              didReplyToThread:(AwfulThread *)thread
 {
     [self dismissViewControllerAnimated:YES completion:^{
         [self loadPage:AwfulThreadPageNextUnread];
     }];
 }
 
-- (void)replyViewController:(AwfulReplyViewController *)replyViewController
-                didEditPost:(AwfulPost *)post
+- (void)replyComposeController:(AwfulReplyComposeViewController *)controller
+                   didEditPost:(AwfulPost *)post
 {
     [self dismissViewControllerAnimated:YES completion:^{
         [self loadPage:post.page];
@@ -1037,7 +1037,7 @@ static char KVOContext;
     }];
 }
 
-- (void)replyViewControllerDidCancel:(AwfulReplyViewController *)replyViewController
+- (void)replyComposeControllerDidCancel:(AwfulReplyComposeViewController *)controller
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }

@@ -1,12 +1,12 @@
 //
-//  AwfulReplyViewController.m
+//  AwfulReplyComposeViewController.m
 //  Awful
 //
 //  Created by Sean Berry on 11/21/10.
 //  Copyright 2010 Regular Berry Software LLC. All rights reserved.
 //
 
-#import "AwfulReplyViewController.h"
+#import "AwfulReplyComposeViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulKeyboardBar.h"
@@ -19,14 +19,13 @@
 #import "SVProgressHUD.h"
 #import "UINavigationItem+TwoLineTitle.h"
 
-@interface AwfulReplyViewController () <UIImagePickerControllerDelegate,
-                                        UINavigationControllerDelegate, UIPopoverControllerDelegate,
-                                        AwfulTextViewDelegate, UITextViewDelegate>
+@interface AwfulReplyComposeViewController () <UIImagePickerControllerDelegate,
+                                               UINavigationControllerDelegate,
+                                               UIPopoverControllerDelegate, AwfulTextViewDelegate,
+                                               UITextViewDelegate>
 
 @property (strong, nonatomic) UIBarButtonItem *sendButton;
 @property (strong, nonatomic) UIBarButtonItem *cancelButton;
-
-@property (readonly, nonatomic) AwfulTextView *textView;
 
 @property (weak, nonatomic) NSOperation *networkOperation;
 
@@ -44,16 +43,11 @@
 @end
 
 
-@implementation AwfulReplyViewController
+@implementation AwfulReplyComposeViewController
 
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (AwfulTextView *)textView
-{
-    return (AwfulTextView *)self.view;
 }
 
 - (UIBarButtonItem *)sendButton
@@ -100,24 +94,6 @@
     self.images = [NSMutableDictionary new];
     self.savedReplyContents = nil;
     self.savedSelectedRange = NSMakeRange(0, 0);
-}
-
-- (void)keyboardDidShow:(NSNotification *)note
-{
-    CGRect keyboardFrame = [note.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    CGRect relativeKeyboardFrame = [self.textView convertRect:keyboardFrame fromView:nil];
-    CGRect overlap = CGRectIntersection(relativeKeyboardFrame, self.textView.bounds);
-    // The 2 isn't strictly necessary, I just like a little cushion between the cursor and keyboard.
-    UIEdgeInsets insets = (UIEdgeInsets){ .bottom = overlap.size.height + 2 };
-    self.textView.contentInset = insets;
-    self.textView.scrollIndicatorInsets = insets;
-    [self.textView scrollRangeToVisible:self.textView.selectedRange];
-}
-
-- (void)keyboardWillHide:(NSNotification *)note
-{
-    self.textView.contentInset = UIEdgeInsetsZero;
-    self.textView.scrollIndicatorInsets = UIEdgeInsetsZero;
 }
 
 - (void)hitSend
@@ -242,7 +218,7 @@ withImagePlaceholderResults:placeholderResults
                      return;
                  }
                  [SVProgressHUD showSuccessWithStatus:@"Replied"];
-                 [self.delegate replyViewController:self didReplyToThread:self.thread];
+                 [self.delegate replyComposeController:self didReplyToThread:self.thread];
              }];
     self.networkOperation = op;
 }
@@ -260,7 +236,7 @@ withImagePlaceholderResults:placeholderResults
                      return;
                  }
                  [SVProgressHUD showSuccessWithStatus:@"Edited"];
-                 [self.delegate replyViewController:self didEditPost:self.post];
+                 [self.delegate replyComposeController:self didEditPost:self.post];
              }];
     self.networkOperation = op;
 }
@@ -274,7 +250,7 @@ withImagePlaceholderResults:placeholderResults
         self.textView.userInteractionEnabled = YES;
         [self.textView becomeFirstResponder];
     } else {
-        [self.delegate replyViewControllerDidCancel:self];
+        [self.delegate replyComposeControllerDidCancel:self];
     }
 }
 
@@ -308,17 +284,7 @@ withImagePlaceholderResults:placeholderResults
 
 - (void)loadView
 {
-    AwfulTextView *textView = [AwfulTextView new];
-    textView.delegate = self;
-    textView.frame = [UIScreen mainScreen].applicationFrame;
-    textView.font = [UIFont systemFontOfSize:17];
-    AwfulKeyboardBar *bbcodeBar = [AwfulKeyboardBar new];
-    bbcodeBar.frame = CGRectMake(0, 0, CGRectGetWidth(textView.bounds),
-                                 UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 63 : 36);
-    bbcodeBar.characters = @[ @"[", @"=", @":", @"/", @"]" ];
-    bbcodeBar.keyInputView = textView;
-    textView.inputAccessoryView = bbcodeBar;
-    self.view = textView;
+    self.view = self.textView;
 }
 
 - (void)viewDidLoad
@@ -331,14 +297,6 @@ withImagePlaceholderResults:placeholderResults
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardDidShow:)
-                                                 name:UIKeyboardDidShowNotification
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillHide:)
-                                                 name:UIKeyboardWillHideNotification
-                                               object:nil];
     [self.textView becomeFirstResponder];
     [self retheme];
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -353,18 +311,6 @@ withImagePlaceholderResults:placeholderResults
     [super viewDidDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:AwfulThemeDidChangeNotification
                                                   object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardDidShowNotification
-                                                  object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardDidHideNotification
-                                                  object:nil];
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        return YES;
-    }
-    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
 #pragma mark - AwfulTextViewDelegate
