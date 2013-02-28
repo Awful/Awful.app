@@ -8,6 +8,7 @@
 
 #import "AwfulPrivateMessageComposeViewController.h"
 #import "AwfulComposeViewControllerSubclass.h"
+#import "SVProgressHUD.h"
 
 @interface AwfulPrivateMessageComposeViewController ()
 
@@ -18,19 +19,13 @@
 
 @implementation AwfulPrivateMessageComposeViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (void)didTapSend
 {
-    if (!(self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) return nil;
-    self.title = @"Private Message";
-    self.sendButton.target = self.cancelButton.target = self;
-    self.sendButton.action = @selector(send);
-    self.cancelButton.action = @selector(cancel);
-    return self;
+    [self prepareToSendMessage];
 }
 
-- (void)send
+- (void)send:(NSString *)messageBody
 {
-    // TODO image uploads
     // TODO actually send
     if (self.regardingMessage) {
         SEL selector = @selector(privateMessageComposeController:didReplyToMessage:);
@@ -79,7 +74,37 @@
     // TODO set recipient and subject (and post icon?)
 }
 
+#pragma mark - AwfulComposeViewController
+
+- (void)willTransitionToState:(AwfulComposeViewControllerState)state
+{
+    if (state == AwfulComposeViewControllerStateReady) {
+        self.textView.userInteractionEnabled = YES;
+        [self.textView becomeFirstResponder];
+    } else {
+        self.textView.userInteractionEnabled = NO;
+        [self.textView resignFirstResponder];
+    }
+    
+    if (state == AwfulComposeViewControllerStateUploadingImages) {
+        [SVProgressHUD showWithStatus:@"Uploading images…"];
+    } else if (state == AwfulComposeViewControllerStateSending) {
+        [SVProgressHUD showWithStatus:@"Sending…"];
+    } else if (state == AwfulComposeViewControllerStateError) {
+        [SVProgressHUD dismiss];
+    }
+}
+
 #pragma mark - UIViewController
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    if (!(self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) return nil;
+    self.title = @"Private Message";
+    self.sendButton.target = self;
+    self.sendButton.action = @selector(didTapSend);
+    return self;
+}
 
 - (void)loadView
 {
