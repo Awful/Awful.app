@@ -25,7 +25,9 @@
 //
 // N.B. The callback is not called if the upload is cancelled.
 //
-// Returns an object that can cancel the upload if it receives -cancel.
+// Returns an object that can cancel the upload if it receives -cancel. This object is retained
+// until the upload operation succeeds or fails; holding a weak reference to it is OK (even
+// recommended).
 - (id <ImgurHTTPClientCancelToken>)uploadImages:(NSArray *)images
                                         andThen:(void(^)(NSError *error, NSArray *urls))callback;
 
