@@ -186,6 +186,7 @@ static NSArray * ImagePlaceholderResultsWithMessageBody(NSString *messageBody)
     self.navigationItem.leftBarButtonItem = self.cancelButton;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(themeDidChange:)
                                                  name:AwfulThemeDidChangeNotification object:nil];
+    self.modalPresentationStyle = UIModalPresentationPageSheet;
     return self;
 }
 

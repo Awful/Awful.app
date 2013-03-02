@@ -18,6 +18,7 @@
                                    initWithNavigationBarClass:[AwfulNavigationBar class]
                                    toolbarClass:nil];
     nav.viewControllers = @[ self ];
+    nav.modalPresentationStyle = self.modalPresentationStyle;
     return nav;
 }
 
