@@ -36,7 +36,10 @@
     _textView = [AwfulTextView new];
     _textView.delegate = self;
     _textView.frame = [UIScreen mainScreen].applicationFrame;
+    _textView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                  UIViewAutoresizingFlexibleHeight);
     _textView.font = [UIFont systemFontOfSize:17];
+    _textView.keyboardAppearance = UIKeyboardAppearanceAlert;
     AwfulKeyboardBar *bbcodeBar = [AwfulKeyboardBar new];
     bbcodeBar.frame = CGRectMake(0, 0, CGRectGetWidth(_textView.bounds),
                                  UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 63 : 36);
@@ -67,7 +70,6 @@
 {
     self.textView.textColor = [AwfulTheme currentTheme].replyViewTextColor;
     self.textView.backgroundColor = [AwfulTheme currentTheme].replyViewBackgroundColor;
-    self.textView.keyboardAppearance = UIKeyboardAppearanceAlert;
 }
 
 - (void)prepareToSendMessage
@@ -224,15 +226,18 @@ static NSArray * ImagePlaceholderResultsWithMessageBody(NSString *messageBody)
     CGRect relativeKeyboardFrame = [self.textView convertRect:keyboardFrame fromView:nil];
     CGRect overlap = CGRectIntersection(relativeKeyboardFrame, self.textView.bounds);
     // The 2 isn't strictly necessary, I just like a little cushion between the cursor and keyboard.
-    UIEdgeInsets insets = (UIEdgeInsets){ .bottom = overlap.size.height + 2 };
-    self.textView.contentInset = insets;
-    self.textView.scrollIndicatorInsets = insets;
+    UIEdgeInsets inset = self.textView.contentInset;
+    inset.bottom = overlap.size.height + 2;
+    self.textView.contentInset = inset;
+    self.textView.scrollIndicatorInsets = (UIEdgeInsets){ .bottom = inset.bottom };
     [self.textView scrollRangeToVisible:self.textView.selectedRange];
 }
 
 - (void)keyboardWillHide:(NSNotification *)note
 {
-    self.textView.contentInset = UIEdgeInsetsZero;
+    UIEdgeInsets inset = self.textView.contentInset;
+    inset.bottom = 0;
+    self.textView.contentInset = inset;
     self.textView.scrollIndicatorInsets = UIEdgeInsetsZero;
 }
 

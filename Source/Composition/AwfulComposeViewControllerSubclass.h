@@ -28,7 +28,8 @@ typedef NS_ENUM(NSInteger, AwfulComposeViewControllerState) {
 // properties. Its default title is "Send".
 @property (nonatomic) UIBarButtonItem *sendButton;
 
-// By default, the cancelButton targets this view controller and sends -cancel.
+// By default, the sendButton has no target or action. Subclasses should set both of these
+// properties. Its default title is "Cancel".
 @property (nonatomic) UIBarButtonItem *cancelButton;
 
 // Sent when the view appears and whenever the user changes the current theme. Subclasses can call

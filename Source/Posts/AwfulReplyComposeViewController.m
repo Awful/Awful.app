@@ -38,6 +38,8 @@
     if (!(self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) return nil;
     self.sendButton.target = self;
     self.sendButton.action = @selector(didTapSend);
+    self.cancelButton.target = self;
+    self.cancelButton.action = @selector(cancel);
     return self;
 }
 

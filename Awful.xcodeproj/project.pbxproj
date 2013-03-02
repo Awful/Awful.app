@@ -71,6 +71,7 @@
 		1C23A0A2163E6C40006C7F39 /* AwfulPostsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C23A0A1163E6C40006C7F39 /* AwfulPostsView.m */; };
 		1C23A0A5163E6E1D006C7F39 /* posts-view.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* posts-view.html */; };
 		1C23A0A7163E7D2B006C7F39 /* posts-view.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A6163E7D2B006C7F39 /* posts-view.js */; };
+		1C270ABE16E0773300883DAA /* AwfulComposeField.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C270ABD16E0773300883DAA /* AwfulComposeField.m */; };
 		1C277CA51543554700CD2CCE /* AwfulSettingsChoiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C277CA41543554700CD2CCE /* AwfulSettingsChoiceViewController.m */; };
 		1C278A4D1647A47F007D3CEC /* AwfulPullToRefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C278A481647A47F007D3CEC /* AwfulPullToRefreshControl.m */; };
 		1C278A4E1647A47F007D3CEC /* AwfulScrollViewPullObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C278A4A1647A47F007D3CEC /* AwfulScrollViewPullObserver.m */; };
@@ -925,6 +926,8 @@
 		1C23A0A1163E6C40006C7F39 /* AwfulPostsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostsView.m; sourceTree = "<group>"; };
 		1C23A0A4163E6E1D006C7F39 /* posts-view.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "posts-view.html"; sourceTree = "<group>"; };
 		1C23A0A6163E7D2B006C7F39 /* posts-view.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "posts-view.js"; sourceTree = "<group>"; };
+		1C270ABC16E0773300883DAA /* AwfulComposeField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulComposeField.h; sourceTree = "<group>"; };
+		1C270ABD16E0773300883DAA /* AwfulComposeField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulComposeField.m; sourceTree = "<group>"; };
 		1C277CA31543554700CD2CCE /* AwfulSettingsChoiceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettingsChoiceViewController.h; sourceTree = "<group>"; };
 		1C277CA41543554700CD2CCE /* AwfulSettingsChoiceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettingsChoiceViewController.m; sourceTree = "<group>"; };
 		1C278A471647A47F007D3CEC /* AwfulPullToRefreshControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPullToRefreshControl.h; sourceTree = "<group>"; };
@@ -2091,6 +2094,8 @@
 				1CB6010A16D826F000CBEE22 /* AwfulPrivateMessageViewController.m */,
 				1CF2462416DD969000C75E05 /* AwfulPrivateMessageComposeViewController.h */,
 				1CF2462516DD969000C75E05 /* AwfulPrivateMessageComposeViewController.m */,
+				1C270ABC16E0773300883DAA /* AwfulComposeField.h */,
+				1C270ABD16E0773300883DAA /* AwfulComposeField.m */,
 			);
 			path = "Private Messages";
 			sourceTree = "<group>";
@@ -4069,6 +4074,7 @@
 				1CF2461F16DD848100C75E05 /* AwfulTextView.m in Sources */,
 				1CF2462316DD95F400C75E05 /* AwfulComposeViewController.m in Sources */,
 				1CF2462616DD969000C75E05 /* AwfulPrivateMessageComposeViewController.m in Sources */,
+				1C270ABE16E0773300883DAA /* AwfulComposeField.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
