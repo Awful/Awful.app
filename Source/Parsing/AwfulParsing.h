@@ -274,3 +274,11 @@ typedef enum {
 @property (readonly, copy, nonatomic) NSArray *privateMessages;
 
 @end
+
+
+@interface ComposePrivateMessageParsedInfo : ParsedInfo
+
+@property (readonly, copy, nonatomic) NSDictionary *postIcons;
+@property (readonly, copy, nonatomic) NSArray *postIconIDs;
+
+@end

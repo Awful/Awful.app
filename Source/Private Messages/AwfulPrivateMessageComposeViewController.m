@@ -9,6 +9,7 @@
 #import "AwfulPrivateMessageComposeViewController.h"
 #import "AwfulComposeViewControllerSubclass.h"
 #import "AwfulComposeField.h"
+#import "AwfulHTTPClient.h"
 #import "SVProgressHUD.h"
 
 @interface AwfulPrivateMessageComposeViewController ()
@@ -18,6 +19,9 @@
 @property (copy, nonatomic) NSString *postIcon;
 @property (copy, nonatomic) NSString *messageBody;
 @property (nonatomic) AwfulPrivateMessage *regardingMessage;
+
+@property (copy, nonatomic) NSDictionary *availablePostIcons;
+@property (copy, nonatomic) NSArray *availablePostIconIDs;
 
 @property (weak, nonatomic) UIButton *postIconButton;
 @property (weak, nonatomic) AwfulComposeField *toField;
@@ -216,6 +220,11 @@
     [super viewDidLoad];
     self.toField.textField.text = self.recipient;
     self.subjectField.textField.text = self.subject;
+    [[AwfulHTTPClient client] listAvailablePrivateMessagePostIconsAndThen:^(NSError *error, NSDictionary *postIcons, NSArray *postIconIDs)
+    {
+        self.availablePostIcons = postIcons;
+        self.availablePostIconIDs = postIconIDs;
+    }];
 }
 
 - (void)viewWillAppear:(BOOL)animated

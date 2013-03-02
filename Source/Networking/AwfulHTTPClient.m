@@ -744,6 +744,24 @@ static NSString * Entitify(NSString *noEntities)
     return op;
 }
 
+- (NSOperation *)listAvailablePrivateMessagePostIconsAndThen:(void (^)(NSError *error, NSDictionary *postIcons, NSArray *postIconIDs))callback
+{
+    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:@"private.php"
+                                            parameters:@{ @"action": @"newmessage" }];
+    id op = [self HTTPRequestOperationWithRequest:urlRequest
+                                          success:^(id _, ComposePrivateMessageParsedInfo *info)
+    {
+        if (callback) callback(nil, info.postIcons, info.postIconIDs);
+    } failure:^(id _, NSError *error) {
+        if (callback) callback(error, nil, nil);
+    }];
+    [op setCreateParsedInfoBlock:^id(NSData *data) {
+        return [[ComposePrivateMessageParsedInfo alloc] initWithHTMLData:data];
+    }];
+    [self enqueueHTTPRequestOperation:op];
+    return op;
+}
+
 - (NSOperation *)sendPrivateMessageTo:(NSString *)username
                               subject:(NSString *)subject
                                  icon:(NSString *)iconName

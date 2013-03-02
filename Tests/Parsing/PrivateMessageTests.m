@@ -57,3 +57,20 @@
 }
 
 @end
+
+
+@interface PrivateMessageComposeTests : ParsingTests @end
+@implementation PrivateMessageComposeTests
+
++ (NSString *)fixtureFilename { return @"private-new.html"; }
+
+- (void)testComposePrivateMessageInfo
+{
+    ComposePrivateMessageParsedInfo *info = [[ComposePrivateMessageParsedInfo alloc]
+                                             initWithHTMLData:self.fixture];
+    STAssertTrue([info.postIcons count] == 49, nil);
+    NSURL *first = info.postIcons[@"692"];
+    STAssertEqualObjects([first lastPathComponent], @"dd-9-11.gif", nil);
+}
+
+@end

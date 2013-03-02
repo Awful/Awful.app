@@ -1232,3 +1232,48 @@ static BOOL PrivateMessageIconSeen(NSString *src)
 }
 
 @end
+
+
+@interface ComposePrivateMessageParsedInfo ()
+
+@property (nonatomic) NSMutableDictionary *mutablePostIcons;
+@property (nonatomic) NSMutableArray *mutablePostIconIDs;
+
+@end
+
+
+@implementation ComposePrivateMessageParsedInfo
+
+- (NSDictionary *)postIcons
+{
+    return self.mutablePostIcons;
+}
+
+- (NSArray *)postIconIDs
+{
+    return self.mutablePostIconIDs;
+}
+
+- (void)parseHTMLData
+{
+    self.mutablePostIcons = [NSMutableDictionary new];
+    self.mutablePostIconIDs = [NSMutableArray new];
+    TFHpple *doc = [[TFHpple alloc] initWithHTMLData:self.htmlData];
+    NSArray *inputs = [doc search:@"//div[" HAS_CLASS(posticon) "]//input[1]"];
+    NSArray *imgs = [doc search:@"//div[" HAS_CLASS(posticon) "]//img[1]"];
+    if ([inputs count] != [imgs count]) {
+        NSLog(@"could not parse available private message post icons");
+        return;
+    }
+    
+    for (NSUInteger i = 0; i < [inputs count]; i++) {
+        NSString *iconID = [inputs[i] objectForKey:@"value"];
+        NSURL *url = [NSURL URLWithString:[imgs[i] objectForKey:@"src"]];
+        if (iconID && url) {
+            self.mutablePostIcons[iconID] = url;
+            [self.mutablePostIconIDs addObject:iconID];
+        }
+    }
+}
+
+@end
