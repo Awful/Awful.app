@@ -154,6 +154,7 @@
 		1C96D0B71682BBF10043B194 /* Browsers.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1C96D0B61682BBF10043B194 /* Browsers.plist */; };
 		1C9C675F164C332F00478270 /* ww-denim.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C9C675E164C332F00478270 /* ww-denim.png */; };
 		1C9FDACC16E1EA8700C665B5 /* private-new.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C9FDACA16E1EA6600C665B5 /* private-new.html */; };
+		1C9FDACF16E4809300C665B5 /* AwfulPostIconPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9FDACE16E4809300C665B5 /* AwfulPostIconPickerController.m */; };
 		1C9FDAF016E4837800C665B5 /* NSIndexPath+PSTCollectionViewAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9FDAD416E4837800C665B5 /* NSIndexPath+PSTCollectionViewAdditions.m */; };
 		1C9FDAF116E4837800C665B5 /* PSTCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9FDAD616E4837800C665B5 /* PSTCollectionView.m */; };
 		1C9FDAF216E4837800C665B5 /* PSTCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9FDAD816E4837800C665B5 /* PSTCollectionViewCell.m */; };
@@ -167,6 +168,7 @@
 		1C9FDAFA16E4837800C665B5 /* PSTGridLayoutItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9FDAE916E4837800C665B5 /* PSTGridLayoutItem.m */; };
 		1C9FDAFB16E4837800C665B5 /* PSTGridLayoutRow.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9FDAEB16E4837800C665B5 /* PSTGridLayoutRow.m */; };
 		1C9FDAFC16E4837800C665B5 /* PSTGridLayoutSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9FDAED16E4837800C665B5 /* PSTGridLayoutSection.m */; };
+		1C9FDAFF16E486A600C665B5 /* AwfulImageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9FDAFE16E486A600C665B5 /* AwfulImageCollectionViewCell.m */; };
 		1CAB36B11548F0FE00A4A362 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
 		1CAEDA0F16376E56001F5F04 /* ai-cycles.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD527C15B783FC00E5893B /* ai-cycles.png */; };
 		1CAEDA1116376E56001F5F04 /* art.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD527E15B783FC00E5893B /* art.png */; };
@@ -1044,6 +1046,8 @@
 		1C96D0B61682BBF10043B194 /* Browsers.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Browsers.plist; sourceTree = "<group>"; };
 		1C9C675E164C332F00478270 /* ww-denim.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ww-denim.png"; sourceTree = "<group>"; };
 		1C9FDACA16E1EA6600C665B5 /* private-new.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "private-new.html"; sourceTree = "<group>"; };
+		1C9FDACD16E4809300C665B5 /* AwfulPostIconPickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostIconPickerController.h; sourceTree = "<group>"; };
+		1C9FDACE16E4809300C665B5 /* AwfulPostIconPickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostIconPickerController.m; sourceTree = "<group>"; };
 		1C9FDAD316E4837800C665B5 /* NSIndexPath+PSTCollectionViewAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexPath+PSTCollectionViewAdditions.h"; sourceTree = "<group>"; };
 		1C9FDAD416E4837800C665B5 /* NSIndexPath+PSTCollectionViewAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexPath+PSTCollectionViewAdditions.m"; sourceTree = "<group>"; };
 		1C9FDAD516E4837800C665B5 /* PSTCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSTCollectionView.h; sourceTree = "<group>"; };
@@ -1071,6 +1075,8 @@
 		1C9FDAEB16E4837800C665B5 /* PSTGridLayoutRow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSTGridLayoutRow.m; sourceTree = "<group>"; };
 		1C9FDAEC16E4837800C665B5 /* PSTGridLayoutSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSTGridLayoutSection.h; sourceTree = "<group>"; };
 		1C9FDAED16E4837800C665B5 /* PSTGridLayoutSection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSTGridLayoutSection.m; sourceTree = "<group>"; };
+		1C9FDAFD16E486A600C665B5 /* AwfulImageCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulImageCollectionViewCell.h; sourceTree = "<group>"; };
+		1C9FDAFE16E486A600C665B5 /* AwfulImageCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulImageCollectionViewCell.m; sourceTree = "<group>"; };
 		1CAB36B01548F0FE00A4A362 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		1CAED9D916373F91001F5F04 /* AwfulThreadTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTags.h; sourceTree = "<group>"; };
 		1CAED9DA16373F91001F5F04 /* AwfulThreadTags.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTags.m; sourceTree = "<group>"; };
@@ -2173,6 +2179,10 @@
 				1CF2462516DD969000C75E05 /* AwfulPrivateMessageComposeViewController.m */,
 				1C270ABC16E0773300883DAA /* AwfulComposeField.h */,
 				1C270ABD16E0773300883DAA /* AwfulComposeField.m */,
+				1C9FDACD16E4809300C665B5 /* AwfulPostIconPickerController.h */,
+				1C9FDACE16E4809300C665B5 /* AwfulPostIconPickerController.m */,
+				1C9FDAFD16E486A600C665B5 /* AwfulImageCollectionViewCell.h */,
+				1C9FDAFE16E486A600C665B5 /* AwfulImageCollectionViewCell.m */,
 			);
 			path = "Private Messages";
 			sourceTree = "<group>";
@@ -4154,6 +4164,7 @@
 				1CF2462316DD95F400C75E05 /* AwfulComposeViewController.m in Sources */,
 				1CF2462616DD969000C75E05 /* AwfulPrivateMessageComposeViewController.m in Sources */,
 				1C270ABE16E0773300883DAA /* AwfulComposeField.m in Sources */,
+				1C9FDACF16E4809300C665B5 /* AwfulPostIconPickerController.m in Sources */,
 				1C9FDAF016E4837800C665B5 /* NSIndexPath+PSTCollectionViewAdditions.m in Sources */,
 				1C9FDAF116E4837800C665B5 /* PSTCollectionView.m in Sources */,
 				1C9FDAF216E4837800C665B5 /* PSTCollectionViewCell.m in Sources */,
@@ -4167,6 +4178,7 @@
 				1C9FDAFA16E4837800C665B5 /* PSTGridLayoutItem.m in Sources */,
 				1C9FDAFB16E4837800C665B5 /* PSTGridLayoutRow.m in Sources */,
 				1C9FDAFC16E4837800C665B5 /* PSTGridLayoutSection.m in Sources */,
+				1C9FDAFF16E486A600C665B5 /* AwfulImageCollectionViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

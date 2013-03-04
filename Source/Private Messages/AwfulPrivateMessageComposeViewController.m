@@ -10,9 +10,12 @@
 #import "AwfulComposeViewControllerSubclass.h"
 #import "AwfulComposeField.h"
 #import "AwfulHTTPClient.h"
+#import "AwfulPostIconPickerController.h"
+#import "AwfulThreadTags.h"
 #import "SVProgressHUD.h"
+#import "UIViewController+NavigationEnclosure.h"
 
-@interface AwfulPrivateMessageComposeViewController ()
+@interface AwfulPrivateMessageComposeViewController () <AwfulPostIconPickerControllerDelegate>
 
 @property (copy, nonatomic) NSString *recipient;
 @property (copy, nonatomic) NSString *subject;
@@ -24,6 +27,7 @@
 @property (copy, nonatomic) NSArray *availablePostIconIDs;
 
 @property (weak, nonatomic) UIButton *postIconButton;
+@property (nonatomic) AwfulPostIconPickerController *postIconPicker;
 @property (weak, nonatomic) AwfulComposeField *toField;
 @property (weak, nonatomic) AwfulComposeField *subjectField;
 
@@ -82,7 +86,10 @@
 
 - (void)setPostIcon:(NSString *)postIcon
 {
-    // TODO
+    if (_postIcon == postIcon) return;
+    _postIcon = [postIcon copy];
+    [self.postIconButton setImage:[[AwfulThreadTags sharedThreadTags] threadTagNamed:postIcon]
+                         forState:UIControlStateNormal];
 }
 
 - (void)setMessageBody:(NSString *)messageBody
@@ -212,7 +219,28 @@
 
 - (void)didTapPostIcon
 {
-    // TODO show post icon selector
+    if (!self.postIconPicker) {
+        self.postIconPicker = [[AwfulPostIconPickerController alloc] initWithDelegate:self];
+    }
+    if (self.postIcon) {
+        for (id iconID in self.availablePostIcons) {
+            if ([self.availablePostIcons[iconID] isEqual:self.postIcon]) {
+                NSUInteger index = [self.availablePostIconIDs indexOfObject:iconID];
+                self.postIconPicker.selectedIndex = index + 1;
+                break;
+            }
+        }
+    }
+    if (self.postIconPicker.selectedIndex == NSNotFound) {
+        self.postIconPicker.selectedIndex = 0;
+    }
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [self.postIconPicker showFromRect:self.postIconButton.frame
+                                   inView:self.postIconButton.superview];
+    } else {
+        [self presentViewController:[self.postIconPicker enclosingNavigationController] animated:YES
+                         completion:nil];
+    }
 }
 
 - (void)viewDidLoad
@@ -220,17 +248,74 @@
     [super viewDidLoad];
     self.toField.textField.text = self.recipient;
     self.subjectField.textField.text = self.subject;
-    [[AwfulHTTPClient client] listAvailablePrivateMessagePostIconsAndThen:^(NSError *error, NSDictionary *postIcons, NSArray *postIconIDs)
+    [self.postIconButton setImage:[[AwfulThreadTags sharedThreadTags] threadTagNamed:self.postIcon]
+                         forState:UIControlStateNormal];
+    [[AwfulHTTPClient client] listAvailablePrivateMessagePostIconsAndThen:
+     ^(NSError *error, NSDictionary *postIcons, NSArray *postIconIDs)
     {
-        self.availablePostIcons = postIcons;
+        NSMutableDictionary *postIconNames = [NSMutableDictionary new];
+        for (id key in postIcons) {
+            postIconNames[key] = [[postIcons[key] lastPathComponent] stringByDeletingPathExtension];
+        }
+        self.availablePostIcons = postIconNames;
         self.availablePostIconIDs = postIconIDs;
+        [self.postIconPicker reloadData];
     }];
 }
 
-- (void)viewWillAppear:(BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
-    [super viewWillAppear:animated];
-    // TODO set post icon
+    [super viewWillDisappear:animated];
+    // In case the view gets unloaded (has been problem on iOS 5.)
+    // TODO: see if this is still a problem.
+    self.recipient = self.toField.textField.text;
+    self.subject = self.subjectField.textField.text;
+}
+
+#pragma mark - AwfulPostIconPickerControllerDelegate
+
+- (NSInteger)numberOfIconsInPostIconPicker:(AwfulPostIconPickerController *)picker
+{
+    return [self.availablePostIconIDs count] + 1;
+}
+
+- (UIImage *)postIconPicker:(AwfulPostIconPickerController *)picker postIconAtIndex:(NSInteger)index
+{
+    if (index == 0) {
+        return nil; // TODO proper "no icon" icon
+    }
+    index -= 1;
+    NSString *iconName = self.availablePostIcons[self.availablePostIconIDs[index]];
+    // TODO handle downloading new thread tags
+    return [[AwfulThreadTags sharedThreadTags] threadTagNamed:iconName];
+}
+
+- (void)postIconPickerDidComplete:(AwfulPostIconPickerController *)picker
+{
+    if (picker.selectedIndex == 0) {
+        [self setPostIcon:nil];
+    } else {
+        id selectedIconID = self.availablePostIconIDs[picker.selectedIndex - 1];
+        [self setPostIcon:self.availablePostIcons[selectedIconID]];
+    }
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)postIconPickerDidCancel:(AwfulPostIconPickerController *)picker
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)postIconPicker:(AwfulPostIconPickerController *)picker didSelectIconAtIndex:(NSInteger)index
+{
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        if (index == 0) {
+            [self setPostIcon:nil];
+        } else {
+            id selectedIconID = self.availablePostIconIDs[index - 1];
+            [self setPostIcon:self.availablePostIcons[selectedIconID]];
+        }
+    }
 }
 
 @end
