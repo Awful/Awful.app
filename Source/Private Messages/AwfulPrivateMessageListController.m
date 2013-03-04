@@ -55,8 +55,17 @@
     AwfulPrivateMessageComposeViewController *compose;
     compose = [AwfulPrivateMessageComposeViewController new];
     compose.delegate = self;
-    [self presentViewController:[compose enclosingNavigationController] animated:YES
-                     completion:nil];
+    // If the following is true:
+    //
+    //   1. We're first, or a child of the first, in self.splitViewController.viewControllers.
+    //   2. We present a view controller as a page sheet.
+    //   3. The split view controller hides its first view controller in the current orientation.
+    //
+    // Then the presented view controller will be rudely dismissed when the device orientation
+    // changes. The workaround is to present from the split view controller itself.
+    UIViewController *presenter = self.splitViewController ?: self;
+    [presenter presentViewController:[compose enclosingNavigationController] animated:YES
+                          completion:nil];
 }
 
 - (void)didGetNewPMCount:(NSNotification *)notification
@@ -188,12 +197,12 @@
 
 - (void)privateMessageComposeControllerDidSendMessage:(AwfulPrivateMessageComposeViewController *)controller
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [controller dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)privateMessageComposeControllerDidCancel:(AwfulPrivateMessageComposeViewController *)controller
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [controller dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end
