@@ -272,6 +272,12 @@
     self.subject = self.subjectField.textField.text;
 }
 
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    [self.postIconPicker showFromRect:self.postIconButton.frame
+                               inView:self.postIconButton.superview];
+}
+
 #pragma mark - AwfulPostIconPickerControllerDelegate
 
 - (NSInteger)numberOfIconsInPostIconPicker:(AwfulPostIconPickerController *)picker
@@ -298,11 +304,13 @@
         id selectedIconID = self.availablePostIconIDs[picker.selectedIndex - 1];
         [self setPostIcon:self.availablePostIcons[selectedIconID]];
     }
+    self.postIconPicker = nil;
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)postIconPickerDidCancel:(AwfulPostIconPickerController *)picker
 {
+    self.postIconPicker = nil;
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

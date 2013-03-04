@@ -83,8 +83,11 @@ static NSString * const TagCellIdentifier = @"Tag Cell";
 
 - (void)showFromRect:(CGRect)rect inView:(UIView *)view
 {
-    self.popover = [[UIPopoverController alloc] initWithContentViewController:self];
-    self.popover.delegate = self;
+    if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) return;
+    if (!self.popover) {
+        self.popover = [[UIPopoverController alloc] initWithContentViewController:self];
+        self.popover.delegate = self;
+    }
     [self.popover presentPopoverFromRect:rect inView:view
                 permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
 }
