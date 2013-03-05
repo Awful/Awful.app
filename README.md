@@ -32,7 +32,7 @@ License
 Credit
 ------
 
-Awful development is led by [pokeyman][], was started by [OHIO][], and gets or got a ton of help from [Diabolik900][], [enigma105][], [hardstyle][], [Malcolm XML][], and [The Dave][].
+Awful development is led by [pokeyman][], was started by [OHIO][], and gets or got a ton of help from [Diabolik900][], [enigma105][], [hardstyle][], [Malcolm XML][], [The Dave][], and [xzzy][].
 
 
 [forums]: http://forums.somethingawful.com
@@ -49,3 +49,4 @@ Awful development is led by [pokeyman][], was started by [OHIO][], and gets or g
 [OHIO]: http://forums.somethingawful.com/member.php?action=getinfo&userid=82915
 [pokeyman]: http://forums.somethingawful.com/member.php?action=getinfo&userid=106125
 [The Dave]: http://forums.somethingawful.com/member.php?action=getinfo&userid=41741
+[xzzy]: http://forums.somethingawful.com/member.php?action=getinfo&userid=148096
