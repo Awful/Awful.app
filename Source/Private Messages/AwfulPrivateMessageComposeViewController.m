@@ -248,6 +248,10 @@
     toField.textField.keyboardAppearance = self.textView.keyboardAppearance;
     toField.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     toField.textField.autocorrectionType = UITextAutocorrectionTypeNo;
+    [toField.textField addTarget:self action:@selector(toFieldDidChange:)
+                forControlEvents:UIControlEventEditingDidEnd];
+    [toField.textField addTarget:self action:@selector(updateSendButtonWithToField:)
+                forControlEvents:UIControlEventEditingChanged];
     [topView addSubview:toField];
     self.toField = toField;
     
@@ -257,6 +261,10 @@
     subjectField.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin |
                                      UIViewAutoresizingFlexibleWidth);
     subjectField.textField.keyboardAppearance = self.textView.keyboardAppearance;
+    [subjectField.textField addTarget:self action:@selector(subjectFieldDidChange:)
+                     forControlEvents:UIControlEventEditingDidEnd];
+    [subjectField.textField addTarget:self action:@selector(updateTitleWithSubjectField:)
+                     forControlEvents:UIControlEventEditingChanged];
     [topView addSubview:subjectField];
     self.subjectField = subjectField;
 }
@@ -287,11 +295,37 @@
     }
 }
 
+- (void)toFieldDidChange:(UITextField *)toField
+{
+    self.recipient = toField.text;
+}
+
+- (void)updateSendButtonWithToField:(UITextField *)toField
+{
+    self.sendButton.enabled = [toField.text length] > 0;
+}
+
+- (void)subjectFieldDidChange:(UITextField *)subjectField
+{
+    self.subject = subjectField.text;
+}
+
+- (void)updateTitleWithSubjectField:(UITextField *)subjectField
+{
+    if ([subjectField.text length] > 0) {
+        self.title = subjectField.text;
+    } else {
+        self.title = @"Private Message";
+    }
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     self.toField.textField.text = self.recipient;
+    [self updateSendButtonWithToField:self.toField.textField];
     self.subjectField.textField.text = self.subject;
+    [self updateTitleWithSubjectField:self.subjectField.textField];
     [self.postIconButton setImage:[[AwfulThreadTags sharedThreadTags] threadTagNamed:self.postIcon]
                          forState:UIControlStateNormal];
     [[AwfulHTTPClient client] listAvailablePrivateMessagePostIconsAndThen:
