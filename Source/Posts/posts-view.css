@@ -14,31 +14,15 @@
 /* Leave spacing up to posts. */
 body {
   margin: 0;
-}
-
-/* Default font and size. */
-body {
   font-family: Helvetica, sans-serif;
-  font-size: 14px;
-}
-
-/* Don't change text size when the device's orientation changes. */
-body {
-  /* (Only works when combined with viewport settings in markup.) */
-  -webkit-text-size-adjust: 100%;
-}
-
-/* Text, images, and embedded videos should never "break tables". */
-body {
   word-wrap: break-word;
+  -webkit-touch-callout: none;
+  -webkit-text-size-adjust: 100%;
+  background-color: #d1d1d1;
 }
+
 img, iframe {
   max-width: 100%;
-}
-
-/* Don't show default menu when long-tapping links. */
-body {
-  -webkit-touch-callout: none;
 }
 
 /* Don't show selection when long-tapping images. We handle that ourselves. */
@@ -56,10 +40,6 @@ body {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
-/* Solid grey background. */
-body {
-  background-color: #d1d1d1;
-}
 
 /* Solid dark background in dark mode. */
 body.dark {
@@ -227,6 +207,7 @@ body.dark {
   padding-left: 50px;
 }
 .iphone #posts > article.no-avatar > header {
+  font-size: 0.75em;
   padding-left: 5px;
 }
 
@@ -258,7 +239,7 @@ body.dark {
   top: -5px; right: 0;
   text-align: center;
   color: #d5d5d5;
-  font-size: 40px;
+  font-size: 2em;
   width: 50px;
 }
 .dark #posts > article > header > button:after {
@@ -268,7 +249,7 @@ body.dark {
     color: #536879;
 }
 .ipad #posts > article > header > button:after {
-  font-size: 30px;
+  font-size: 2em;
   width: 38px;
   top: -7px;
 }
@@ -295,7 +276,7 @@ body.dark {
 
 /* iPad posts show regdate smaller, under author's name, on its own line. */
 .ipad #posts > article > header > time.regdate {
-  font-size: 12px;
+  font-size: 0.75em;
   display: block;
 }
 
@@ -306,7 +287,7 @@ body.dark {
 
 /* Post bodies' text is a bit larger. */
 #posts > article > section {
-  font-size: 15px;
+  font-size: 1em;
 }
 
 /* iPhone post bodies have a bit of padding. */
@@ -359,8 +340,7 @@ body.dark {
 }
 
 /* Tapping a spoiler tag reveals its contents. */
-#posts > article > section .bbc-spoiler.spoiled,
-#posts > article > section .bbc-spoiler.spoiled li {
+#posts > article > section .bbc-spoiler.spoiled {
   background: transparent;
 }
 
@@ -385,7 +365,7 @@ body.dark {
 
 /* Block headings like 'quote' are smaller and go in italics. */
 #posts > article > section .bbc-block h4 {
-  font-size: 13px;
+  font-size: 0.80em;
   font-style: italic;
   margin: 0;
   padding: 1px 0 2px 0;
@@ -393,7 +373,7 @@ body.dark {
 
 /* Block headings like 'code' are even smaller but not in italics. */
 #posts > article > section .bbc-block h5 {
-  font-size: 12px;
+  font-size: 0.75em;
 }
 
 /* Highlighted blocks (because they mention the user) get a green background. */
@@ -403,7 +383,7 @@ body.dark {
 
 /* Quotes are smaller and have a left border. */
 #posts > article > section blockquote {
-  font-size: 12px;
+  font-size: 0.75em;
   border-left: 1px solid #999;
   margin: 0;
   padding: 0 10px;
@@ -450,7 +430,7 @@ body.dark {
 
 /* The little "edited by" blurb at the end of a post is smaller and in italics. */
 #posts > article > section p.editedby {
-  font-size: 0.75em;
+  font-size: 0.70em;
   font-style: italic;
   margin-top: 5px;
 }
