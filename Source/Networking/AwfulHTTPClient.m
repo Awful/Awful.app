@@ -687,7 +687,9 @@ static NSString * Entitify(NSString *noEntities)
     }];
     // The Forums redirects users away from dev.forums if they don't have permission.
     __weak AFHTTPRequestOperation *weakOp = op;
-    [op setRedirectResponseBlock:^NSURLRequest *(id _, NSURLRequest *request, NSURLResponse *response) {
+    [op setRedirectResponseBlock:^NSURLRequest *(id _, NSURLRequest *request,
+                                                 NSURLResponse *response)
+    {
         if (!response) return request;
         AFHTTPRequestOperation *strongOp = weakOp;
         [strongOp cancel];
@@ -697,6 +699,139 @@ static NSString * Entitify(NSString *noEntities)
             });
         }
         return nil;
+    }];
+    [self enqueueHTTPRequestOperation:op];
+    return op;
+}
+
+- (NSOperation *)listPrivateMessagesAndThen:(void (^)(NSError *error, NSArray *messages))callback
+{
+    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:@"private.php" parameters:nil];
+    id op = [self HTTPRequestOperationWithRequest:urlRequest
+                                          success:^(id _, PrivateMessageFolderParsedInfo *info)
+    {
+        NSArray *messages = [AwfulPrivateMessage privateMessagesWithFolderParsedInfo:info];
+        if (callback) callback(nil, messages);
+    } failure:^(id _, NSError *error) {
+        if (callback) callback(error, nil);
+    }];
+    [op setCreateParsedInfoBlock:^id(NSData * data) {
+        return [[PrivateMessageFolderParsedInfo alloc] initWithHTMLData:data];
+    }];
+    [self enqueueHTTPRequestOperation:op];
+    return op;
+}
+
+- (NSOperation *)deletePrivateMessageWithID:(NSString *)messageID
+                                    andThen:(void (^)(NSError *error))callback
+{
+    NSDictionary *parameters = @{
+        @"action": @"dodelete",
+        @"privatemessageid": messageID,
+        @"delete": @"yes"
+    };
+    NSURLRequest *request = [self requestWithMethod:@"POST" path:@"private.php"
+                                         parameters:parameters];
+    id op = [self HTTPRequestOperationWithRequest:request success:^(id _, id __) {
+        if (callback) callback(nil);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error);
+    }];
+    [self enqueueHTTPRequestOperation:op];
+    return op;
+}
+
+- (NSOperation *)readPrivateMessageWithID:(NSString *)messageID
+                                  andThen:(void (^)(NSError *error,
+                                                    AwfulPrivateMessage *message))callback
+{
+    NSDictionary *parameters = @{ @"action": @"show", @"privatemessageid": messageID };
+    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:@"private.php"
+                                            parameters:parameters];
+    id op = [self HTTPRequestOperationWithRequest:urlRequest
+                                          success:^(id _, PrivateMessageParsedInfo *info)
+    {
+        AwfulPrivateMessage *message = [AwfulPrivateMessage privateMessageWithParsedInfo:info];
+        if (callback) callback(nil, message);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error, nil);
+    }];
+    [op setCreateParsedInfoBlock:^id(NSData *data) {
+        return [[PrivateMessageParsedInfo alloc] initWithHTMLData:data];
+    }];
+    [self enqueueHTTPRequestOperation:op];
+    return op;
+}
+
+- (NSOperation *)quotePrivateMessageWithID:(NSString *)messageID
+                                   andThen:(void (^)(NSError *error, NSString *bbcode))callback
+{
+    NSDictionary *parameters = @{ @"action": @"newmessage", @"privatemessageid": messageID };
+    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:@"private.php"
+                                            parameters:parameters];
+    id op = [self HTTPRequestOperationWithRequest:urlRequest
+                                          success:^(id _, ComposePrivateMessageParsedInfo *info)
+    {
+        if (callback) callback(nil, info.text);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error, nil);
+    }];
+    [op setCreateParsedInfoBlock:^id(NSData *data) {
+        return [[ComposePrivateMessageParsedInfo alloc] initWithHTMLData:data];
+    }];
+    [self enqueueHTTPRequestOperation:op];
+    return op;
+}
+
+- (NSOperation *)listAvailablePrivateMessagePostIconsAndThen:(void (^)(NSError *error, NSDictionary *postIcons, NSArray *postIconIDs))callback
+{
+    NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:@"private.php"
+                                            parameters:@{ @"action": @"newmessage" }];
+    id op = [self HTTPRequestOperationWithRequest:urlRequest
+                                          success:^(id _, ComposePrivateMessageParsedInfo *info)
+    {
+        if (callback) callback(nil, info.postIcons, info.postIconIDs);
+    } failure:^(id _, NSError *error) {
+        if (callback) callback(error, nil, nil);
+    }];
+    [op setCreateParsedInfoBlock:^id(NSData *data) {
+        return [[ComposePrivateMessageParsedInfo alloc] initWithHTMLData:data];
+    }];
+    [self enqueueHTTPRequestOperation:op];
+    return op;
+}
+
+- (NSOperation *)sendPrivateMessageTo:(NSString *)username
+                              subject:(NSString *)subject
+                                 icon:(NSString *)iconID
+                                 text:(NSString *)text
+               asReplyToMessageWithID:(NSString *)replyMessageID
+           forwardedFromMessageWithID:(NSString *)forwardMessageID
+                              andThen:(void (^)(NSError *error,
+                                                AwfulPrivateMessage *message))callback
+{
+    NSMutableDictionary *parameters = [@{
+        @"touser": username,
+        @"title": subject,
+        @"iconid": iconID ?: @"0",
+        @"message": text,
+        @"action": @"dosend",
+        @"forward": forwardMessageID ? @"true" : @"",
+        @"submit": @"Send Message",
+    } mutableCopy];
+    if (replyMessageID || forwardMessageID) {
+        parameters[@"prevmessageid"] = replyMessageID ?: forwardMessageID;
+    }
+    NSURLRequest *urlRequest = [self requestWithMethod:@"POST" path:@"private.php"
+                                            parameters:parameters];
+    id op = [self HTTPRequestOperationWithRequest:urlRequest
+                                          success:^(id _, id __)
+    {
+        // TODO parse response if that makes sense (e.g. user can't receive messages or unknown user)
+        // TODO return message
+        if (callback) callback(nil, nil);
+    } failure:^(id _, NSError *error) {
+        if (callback) callback(error, nil);
     }];
     [self enqueueHTTPRequestOperation:op];
     return op;

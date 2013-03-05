@@ -18,6 +18,7 @@
 #import "AwfulModels.h"
 #import "AwfulNavigationBar.h"
 #import "AwfulPostsViewController.h"
+#import "AwfulPrivateMessageListController.h"
 #import "AwfulSettings.h"
 #import "AwfulSettingsViewController.h"
 #import "AwfulSplitViewController.h"
@@ -30,6 +31,7 @@
 #import "NSManagedObject+Awful.h"
 #import "SVProgressHUD.h"
 #import "UIViewController+NavigationEnclosure.h"
+#import "AwfulNewPMNotifierAgent.h"
 
 @interface AwfulAppDelegate () <AwfulTabBarControllerDelegate, UINavigationControllerDelegate,
                                 AwfulLoginControllerDelegate>
@@ -103,6 +105,7 @@ static id _instance;
         [[AwfulForumsListController new] enclosingNavigationController],
         [[AwfulFavoritesViewController new] enclosingNavigationController],
         [[AwfulBookmarksController new] enclosingNavigationController],
+        [[AwfulPrivateMessageListController new] enclosingNavigationController],
         [[AwfulSettingsViewController new] enclosingNavigationController]
     ];
     tabBar.selectedViewController = tabBar.viewControllers[[[AwfulSettings settings] firstTab]];
@@ -228,7 +231,13 @@ static id _instance;
                                        afterDelay:0.1];
     }
     
+    [[AwfulNewPMNotifierAgent agent] checkForNewMessages];
     return YES;
+}
+
+- (void)applicationWillEnterForeground:(UIApplication *)application
+{
+    [[AwfulNewPMNotifierAgent agent] checkForNewMessages];
 }
 
 - (void)ignoreSilentSwitchWhenPlayingEmbeddedVideo
@@ -270,6 +279,7 @@ static id _instance;
         [self jumpToForum:forum inNavigationController:nav];
         self.tabBarController.selectedViewController = nav;
         [self.splitViewController showMasterView];
+        return YES;
     }
     
     // Open bookmarks: awful://bookmarks
@@ -277,13 +287,23 @@ static id _instance;
         UINavigationController *nav = self.tabBarController.viewControllers[2];
         [nav popToRootViewControllerAnimated:YES];
         self.tabBarController.selectedViewController = nav;
+        return YES;
+    }
+    
+    // Open private messages: awful://messages
+    if ([section isEqualToString:@"messages"]) {
+        UINavigationController *nav = self.tabBarController.viewControllers[3];
+        [nav popToRootViewControllerAnimated:YES];
+        self.tabBarController.selectedViewController = nav;
+        return YES;
     }
     
     // Open settings: awful://settings
     if ([section isEqualToString:@"settings"]) {
-        UINavigationController *nav = self.tabBarController.viewControllers[3];
+        UINavigationController *nav = self.tabBarController.viewControllers[4];
         [nav popToRootViewControllerAnimated:YES];
         self.tabBarController.selectedViewController = nav;
+        return YES;
     }
     
     // Open a thread: awful://threads/:threadID
@@ -335,6 +355,7 @@ static id _instance;
             nav = (UINavigationController *)self.tabBarController.selectedViewController;
         }
         [nav pushViewController:postsView animated:YES];
+        return YES;
     }
     
     // Open a post: awful://posts/:postID
@@ -380,9 +401,9 @@ static id _instance;
              [SVProgressHUD dismiss];
              [self pushPostsViewForPostWithID:postID onPage:page ofThreadWithID:threadID];
          }];
+        return YES;
     }
-    
-    return YES;
+    return NO;
 }
 
 - (void)pushPostsViewForPostWithID:(NSString *)postID
@@ -448,7 +469,8 @@ static id _instance;
 
 #pragma mark - AwfulLoginControllerDelegate
 
-- (void)loginController:(AwfulLoginController *)login didLogInAsUserWithInfo:(NSDictionary *)userInfo
+- (void)loginController:(AwfulLoginController *)login
+ didLogInAsUserWithInfo:(NSDictionary *)userInfo
 {
     [AwfulSettings settings].username = userInfo[@"username"];
     [AwfulSettings settings].userID = userInfo[@"userID"];

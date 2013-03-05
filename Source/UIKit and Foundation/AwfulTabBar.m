@@ -7,6 +7,7 @@
 //
 
 #import "AwfulTabBar.h"
+#import "CustomBadge.h"
 
 @interface AwfulSegmentedControl : UISegmentedControl @end
 
@@ -14,6 +15,8 @@
 @interface AwfulTabBar ()
 
 @property (weak, nonatomic) AwfulSegmentedControl *segmentedControl;
+
+@property (nonatomic) NSMutableDictionary *badgeViews;
 
 @end
 
@@ -46,15 +49,58 @@
                            barMetrics:UIBarMetricsDefault];
     [self addSubview:segmentedControl];
     _segmentedControl = segmentedControl;
+    _badgeViews = [NSMutableDictionary new];
     return self;
+}
+
+- (void)dealloc
+{
+    [self stopObservingItems];
 }
 
 - (void)setItems:(NSArray *)items
 {
     if (_items == items) return;
+    [self stopObservingItems];
+    [[self.badgeViews allValues] makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    [self.badgeViews removeAllObjects];
     _items = [items copy];
     [self updateSegments];
     self.selectedItem = items[0];
+    NSIndexSet *all = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [items count])];
+    [items addObserver:self toObjectsAtIndexes:all forKeyPath:@"badgeValue"
+               options:NSKeyValueObservingOptionInitial context:&KVOContext];
+}
+
+- (void)stopObservingItems
+{
+    NSIndexSet *all = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [_items count])];
+    [_items removeObserver:self fromObjectsAtIndexes:all forKeyPath:@"badgeValue"
+                   context:&KVOContext];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
+                        change:(NSDictionary *)change context:(void *)context
+{
+    if (context != &KVOContext) {
+        return [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+    [self updateBadgeViewForItem:object];
+}
+
+static char KVOContext;
+
+- (void)updateBadgeViewForItem:(UITabBarItem *)item
+{
+    NSUInteger i = [self.items indexOfObject:item];
+    if (i == NSNotFound) return;
+    [self.badgeViews[@(i)] removeFromSuperview];
+    if ([item.badgeValue length] == 0) return;
+    CustomBadge *badge = [CustomBadge customBadgeWithString:item.badgeValue];
+    badge.userInteractionEnabled = NO;
+    [self addSubview:badge];
+    self.badgeViews[@(i)] = badge;
+    [self setNeedsLayout];
 }
 
 - (void)setSelectedItem:(UITabBarItem *)selectedItem
@@ -86,6 +132,19 @@
         item.image.accessibilityLabel = item.title;
         UIImage *image = i == 0 ? item.image : MakeNormalImageForSelectedImage(item.image);
         [self.segmentedControl insertSegmentWithImage:image atIndex:i animated:NO];
+    }
+}
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    for (NSNumber *i in self.badgeViews) {
+        CustomBadge *badge = self.badgeViews[i];
+        CGRect frame = badge.frame;
+        frame.origin.x = ((CGRectGetWidth(self.frame) / [self.items count]) *
+                          ([i integerValue] + 1)) - CGRectGetWidth(frame);
+        frame.origin.y = CGRectGetHeight(frame) / -3;
+        badge.frame = frame;
     }
 }
 

@@ -8,6 +8,7 @@
 
 #import "AFNetworking.h"
 #import "AwfulThreadPage.h"
+@class AwfulPrivateMessage;
 @class AwfulUser;
 
 @interface AwfulHTTPClient : AFHTTPClient
@@ -237,6 +238,81 @@
 //
 // Returns the enqueued network operation.
 - (NSOperation *)tryAccessingDevDotForumsAndThen:(void (^)(NSError *error, BOOL success))callback;
+
+// List private messages in the logged-in user's Inbox.
+//
+// callback - A block to call after listing messages, which takes as parameters:
+//              error    - An error on failure, or nil on success.
+//              messages - An array of PrivateMessageParsedInfo instances on success, or nil on
+//                         failure.
+//
+// Returns the enqueued network operation.
+- (NSOperation *)listPrivateMessagesAndThen:(void (^)(NSError *error, NSArray *messages))callback;
+
+// Delete a private message.
+//
+// messageID - The ID of the message to delete.
+// callback  - A block to call after deleting the message, which takes as parameters:
+//               error - An error on failure, or nil on success.
+//
+// Returns the enqueued network operation.
+- (NSOperation *)deletePrivateMessageWithID:(NSString *)messageID
+                                    andThen:(void (^)(NSError *error))callback;
+
+// Read a private message.
+//
+// messageID - The ID of the message to read.
+// callback  - A block to call after reading the message, which takes as parameters:
+//               error   - An error on failure, or nil on success.
+//               message - The message on success, or nil on failure.
+//
+// Returns the enqueued network operation.
+- (NSOperation *)readPrivateMessageWithID:(NSString *)messageID
+                                  andThen:(void (^)(NSError *error,
+                                                    AwfulPrivateMessage *message))callback;
+
+// Quote a private message.
+//
+// messageID - The ID of the message to quote.
+// callback  - A block to call after quoting the message, which takes as parameters:
+//               error  - An error on failure, or nil on success.
+//               bbcode - The quoted message on success, or nil on failure.
+//
+// Returns the enqueued network operation.
+- (NSOperation *)quotePrivateMessageWithID:(NSString *)messageID
+                                   andThen:(void (^)(NSError *error, NSString *bbcode))callback;
+
+// List post icons usable for private messages.
+//
+// callback - A block to call after listing post icons, which takes as parameters:
+//              error       - An error on failure, or nil on success.
+//              postIcons   - A dictionary mapping icon IDs to URLs on success, or nil on failure.
+//              postIconIDs - An ordered list of icon IDs on success, or nil on failure.
+//
+// Returns the enqueued network operation.
+- (NSOperation *)listAvailablePrivateMessagePostIconsAndThen:(void (^)(NSError *error, NSDictionary *postIcons, NSArray *postIconIDs))callback;
+
+// Send a private message.
+//
+// username         - The user who will receive the message.
+// subject          - The subject of the message.
+// iconID           - The ID of the post icon to use, or nil for no icon.
+// text             - The BBCode text of the message.
+// replyMessageID   - The message ID of the message this is regarding, or nil if not a reply.
+// forwardMessageID - The message ID of the message this is a forward of, or nil of not a forward.
+// callback         - A block to call after sending the message, which takes as parameters:
+//                      error   - An error on failure, or nil on success.
+//                      message - The sent message on success, or nil on failure.
+//
+// Returns the enqueued network operation.
+- (NSOperation *)sendPrivateMessageTo:(NSString *)username
+                              subject:(NSString *)subject
+                                 icon:(NSString *)iconID
+                                 text:(NSString *)text
+               asReplyToMessageWithID:(NSString *)replyMessageID
+           forwardedFromMessageWithID:(NSString *)forwardMessageID
+                              andThen:(void (^)(NSError *error,
+                                                AwfulPrivateMessage *message))callback;
 
 @end
 

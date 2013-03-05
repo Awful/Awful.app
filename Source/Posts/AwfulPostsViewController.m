@@ -11,6 +11,7 @@
 #import "AwfulAlertView.h"
 #import "AwfulBrowserViewController.h"
 #import "AwfulDataStack.h"
+#import "AwfulDateFormatters.h"
 #import "AwfulExternalBrowser.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulImagePreviewViewController.h"
@@ -21,7 +22,7 @@
 #import "AwfulPostsView.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulPullToRefreshControl.h"
-#import "AwfulReplyViewController.h"
+#import "AwfulReplyComposeViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "NSFileManager+UserDirectories.h"
@@ -37,7 +38,7 @@
 @interface AwfulPostsViewController () <AwfulPostsViewDelegate,
                                         AwfulJumpToPageSheetDelegate,
                                         NSFetchedResultsControllerDelegate,
-                                        AwfulReplyViewControllerDelegate,
+                                        AwfulReplyComposeViewControllerDelegate,
                                         UIScrollViewDelegate>
 
 @property (nonatomic) AwfulThreadPage currentPage;
@@ -57,8 +58,6 @@
 @property (copy, nonatomic) NSString *jumpToPostAfterLoad;
 @property (copy, nonatomic) NSString *advertisementHTML;
 
-@property (nonatomic) NSDateFormatter *regDateFormatter;
-@property (nonatomic) NSDateFormatter *postDateFormatter;
 @property (nonatomic) NSDateFormatter *editDateFormatter;
 
 @property (nonatomic) BOOL observingScrollViewSize;
@@ -128,39 +127,13 @@
     [self didChangeValueForKey:@"thread"];
     [self updateFetchedResultsController];
     [self updateUserInterface];
-    self.postsView.stylesheetURL = StylesheetURLForForumWithID(self.thread.forum.forumID);
+    self.postsView.stylesheetURL = StylesheetURLForForumWithIDAndSettings(self.thread.forum.forumID,
+                                                                          [AwfulSettings settings]);
 }
 
 - (NSArray *)posts
 {
     return self.fetchedResultsController.fetchedObjects;
-}
-
-static NSURL* StylesheetURLForForumWithID(NSString *forumID)
-{
-    NSMutableArray *listOfFilenames = [@[ @"posts-view.css" ] mutableCopy];
-    if (forumID) {
-        NSString *filename = [NSString stringWithFormat:@"posts-view-%@.css", forumID];
-        if ([forumID isEqualToString:@"219"]) {
-            AwfulYOSPOSStyle style = [AwfulSettings settings].yosposStyle;
-            if (style == AwfulYOSPOSStyleAmber) filename = @"posts-view-219-amber.css";
-            else if (style == AwfulYOSPOSStyleMacinyos) filename = @"posts-view-219-macinyos.css";
-            else if (style == AwfulYOSPOSStyleWinpos95) filename = @"posts-view-219-winpos95.css";
-            else if (style == AwfulYOSPOSStyleNone) filename = nil;
-        }
-        if (filename) [listOfFilenames insertObject:filename atIndex:0];
-    }
-    NSURL *documents = [[NSFileManager defaultManager] documentDirectory];
-    for (NSString *filename in listOfFilenames) {
-        NSURL *url = [documents URLByAppendingPathComponent:filename];
-        if ([url checkResourceIsReachableAndReturnError:NULL]) return url;
-    }
-    for (NSString *filename in listOfFilenames) {
-        NSURL *url = [[NSBundle mainBundle] URLForResource:filename
-                                             withExtension:nil];
-        if ([url checkResourceIsReachableAndReturnError:NULL]) return url;
-    }
-    return nil;
 }
 
 - (void)updateFetchedResultsController
@@ -283,7 +256,8 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
     } else {
         self.postsView.highlightQuoteUsername = nil;
     }
-    self.postsView.stylesheetURL = StylesheetURLForForumWithID(self.thread.forum.forumID);
+    self.postsView.stylesheetURL = StylesheetURLForForumWithIDAndSettings(self.thread.forum.forumID,
+                                                                          [AwfulSettings settings]);
 }
 
 - (AwfulPostsView *)postsView
@@ -620,7 +594,7 @@ static NSURL* StylesheetURLForForumWithID(NSString *forumID)
         rect = [self.view.superview convertRect:rect fromView:self.bottomBar];
         [self showThreadActionsFromRect:rect inView:self.view.superview];
     } else if (seg.selectedSegmentIndex == 1) {
-        AwfulReplyViewController *reply = [AwfulReplyViewController new];
+        AwfulReplyComposeViewController *reply = [AwfulReplyComposeViewController new];
         reply.delegate = self;
         [reply replyToThread:self.thread withInitialContents:nil];
         UINavigationController *nav = [reply enclosingNavigationController];
@@ -745,48 +719,35 @@ static char KVOContext;
 - (NSDictionary *)postsView:(AwfulPostsView *)postsView postAtIndex:(NSInteger)index
 {
     AwfulPost *post = self.fetchedResultsController.fetchedObjects[index + self.hiddenPosts];
-    NSArray *keys = @[ @"postID", @"innerHTML" ];
+    NSArray *keys = @[ AwfulPostsViewKeys.postID, AwfulPostsViewKeys.innerHTML ];
     NSMutableDictionary *dict = [[post dictionaryWithValuesForKeys:keys] mutableCopy];
     if (post.postDate) {
-        dict[@"postDate"] = [self.postDateFormatter stringFromDate:post.postDate];
+        NSDateFormatter *formatter = [AwfulDateFormatters formatters].postDateFormatter;
+        dict[AwfulPostsViewKeys.postDate] = [formatter stringFromDate:post.postDate];
     }
-    if (post.author.username) dict[@"authorName"] = post.author.username;
-    if (post.author.avatarURL) dict[@"authorAvatarURL"] = [post.author.avatarURL absoluteString];
-    if ([post.author isEqual:post.thread.author]) dict[@"authorIsOriginalPoster"] = @YES;
-    if (post.author.moderatorValue) dict[@"authorIsAModerator"] = @YES;
-    if (post.author.administratorValue) dict[@"authorIsAnAdministrator"] = @YES;
+    if (post.author.username) dict[AwfulPostsViewKeys.authorName] = post.author.username;
+    if (post.author.avatarURL) {
+        dict[AwfulPostsViewKeys.authorAvatarURL] = [post.author.avatarURL absoluteString];
+    }
+    if ([post.author isEqual:post.thread.author]) {
+        dict[AwfulPostsViewKeys.authorIsOriginalPoster] = @YES;
+    }
+    if (post.author.moderatorValue) dict[AwfulPostsViewKeys.authorIsAModerator] = @YES;
+    if (post.author.administratorValue) dict[AwfulPostsViewKeys.authorIsAnAdministrator] = @YES;
     if (post.author.regdate) {
-        dict[@"authorRegDate"] = [self.regDateFormatter stringFromDate:post.author.regdate];
+        NSDateFormatter *formatter = [AwfulDateFormatters formatters].regDateFormatter;
+        dict[AwfulPostsViewKeys.authorRegDate] = [formatter stringFromDate:post.author.regdate];
     }
-    dict[@"hasAttachment"] = @([post.attachmentID length] > 0);
+    dict[AwfulPostsViewKeys.hasAttachment] = @([post.attachmentID length] > 0);
     if (post.editDate) {
         NSString *editor = post.editor ? post.editor.username : @"Somebody";
         NSString *editDate = [self.editDateFormatter stringFromDate:post.editDate];
-        dict[@"editMessage"] = [NSString stringWithFormat:@"%@ fucked around with this message on %@",
-                                editor, editDate];
+        NSString *message = [NSString stringWithFormat:@"%@ fucked around with this message on %@",
+                             editor, editDate];
+        dict[AwfulPostsViewKeys.editMessage] = message;
     }
-    dict[@"beenSeen"] = @(post.beenSeen);
+    dict[AwfulPostsViewKeys.beenSeen] = @(post.beenSeen);
     return dict;
-}
-
-- (NSDateFormatter *)postDateFormatter
-{
-    if (_postDateFormatter) return _postDateFormatter;
-    _postDateFormatter = [NSDateFormatter new];
-    // Jan 2, 2003 16:05
-    _postDateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-    _postDateFormatter.dateFormat = @"MMM d, yyyy HH:mm";
-    return _postDateFormatter;
-}
-
-- (NSDateFormatter *)regDateFormatter
-{
-    if (_regDateFormatter) return _regDateFormatter;
-    _regDateFormatter = [NSDateFormatter new];
-    // Jan 2, 2003
-    _regDateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-    _regDateFormatter.dateFormat = @"MMM d, yyyy";
-    return _regDateFormatter;
 }
 
 - (NSDateFormatter *)editDateFormatter
@@ -863,7 +824,7 @@ static char KVOContext;
                                        buttonTitle:@"Alright"];
                      return;
                  }
-                 AwfulReplyViewController *reply = [AwfulReplyViewController new];
+                 AwfulReplyComposeViewController *reply = [AwfulReplyComposeViewController new];
                  reply.delegate = self;
                  [reply editPost:post text:text];
                  UINavigationController *nav = [reply enclosingNavigationController];
@@ -882,7 +843,7 @@ static char KVOContext;
                                        buttonTitle:@"Alright"];
                      return;
                  }
-                 AwfulReplyViewController *reply = [AwfulReplyViewController new];
+                 AwfulReplyComposeViewController *reply = [AwfulReplyComposeViewController new];
                  reply.delegate = self;
                  [reply replyToThread:self.thread withInitialContents:quotedText];
                  UINavigationController *nav = [reply enclosingNavigationController];
@@ -1057,18 +1018,18 @@ static char KVOContext;
     self.jumpToPageSheet = nil;
 }
 
-#pragma mark - AwfulReplyViewControllerDelegate
+#pragma mark - AwfulReplyComposeViewControllerDelegate
 
-- (void)replyViewController:(AwfulReplyViewController *)replyViewController
-           didReplyToThread:(AwfulThread *)thread
+- (void)replyComposeController:(AwfulReplyComposeViewController *)controller
+              didReplyToThread:(AwfulThread *)thread
 {
     [self dismissViewControllerAnimated:YES completion:^{
         [self loadPage:AwfulThreadPageNextUnread];
     }];
 }
 
-- (void)replyViewController:(AwfulReplyViewController *)replyViewController
-                didEditPost:(AwfulPost *)post
+- (void)replyComposeController:(AwfulReplyComposeViewController *)controller
+                   didEditPost:(AwfulPost *)post
 {
     [self dismissViewControllerAnimated:YES completion:^{
         [self loadPage:post.page];
@@ -1076,7 +1037,7 @@ static char KVOContext;
     }];
 }
 
-- (void)replyViewControllerDidCancel:(AwfulReplyViewController *)replyViewController
+- (void)replyComposeControllerDidCancel:(AwfulReplyComposeViewController *)controller
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }

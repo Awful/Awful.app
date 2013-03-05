@@ -29,6 +29,8 @@ extern const struct AwfulUserAttributes {
 extern const struct AwfulUserRelationships {
 	__unsafe_unretained NSString *editedPosts;
 	__unsafe_unretained NSString *posts;
+	__unsafe_unretained NSString *receivedPrivateMessages;
+	__unsafe_unretained NSString *sentPrivateMessages;
 	__unsafe_unretained NSString *threads;
 } AwfulUserRelationships;
 
@@ -37,6 +39,8 @@ extern const struct AwfulUserFetchedProperties {
 
 @class AwfulPost;
 @class AwfulPost;
+@class AwfulPrivateMessage;
+@class AwfulPrivateMessage;
 @class AwfulThread;
 
 
@@ -288,6 +292,20 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
+@property (nonatomic, strong) NSSet *receivedPrivateMessages;
+
+- (NSMutableSet*)receivedPrivateMessagesSet;
+
+
+
+
+@property (nonatomic, strong) NSSet *sentPrivateMessages;
+
+- (NSMutableSet*)sentPrivateMessagesSet;
+
+
+
+
 @property (nonatomic, strong) NSSet *threads;
 
 - (NSMutableSet*)threadsSet;
@@ -309,6 +327,16 @@ extern const struct AwfulUserFetchedProperties {
 - (void)removePosts:(NSSet*)value_;
 - (void)addPostsObject:(AwfulPost*)value_;
 - (void)removePostsObject:(AwfulPost*)value_;
+
+- (void)addReceivedPrivateMessages:(NSSet*)value_;
+- (void)removeReceivedPrivateMessages:(NSSet*)value_;
+- (void)addReceivedPrivateMessagesObject:(AwfulPrivateMessage*)value_;
+- (void)removeReceivedPrivateMessagesObject:(AwfulPrivateMessage*)value_;
+
+- (void)addSentPrivateMessages:(NSSet*)value_;
+- (void)removeSentPrivateMessages:(NSSet*)value_;
+- (void)addSentPrivateMessagesObject:(AwfulPrivateMessage*)value_;
+- (void)removeSentPrivateMessagesObject:(AwfulPrivateMessage*)value_;
 
 - (void)addThreads:(NSSet*)value_;
 - (void)removeThreads:(NSSet*)value_;
@@ -451,6 +479,16 @@ extern const struct AwfulUserFetchedProperties {
 
 - (NSMutableSet*)primitivePosts;
 - (void)setPrimitivePosts:(NSMutableSet*)value;
+
+
+
+- (NSMutableSet*)primitiveReceivedPrivateMessages;
+- (void)setPrimitiveReceivedPrivateMessages:(NSMutableSet*)value;
+
+
+
+- (NSMutableSet*)primitiveSentPrivateMessages;
+- (void)setPrimitiveSentPrivateMessages:(NSMutableSet*)value;
 
 
 
