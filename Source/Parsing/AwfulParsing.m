@@ -1238,6 +1238,7 @@ static BOOL PrivateMessageIconSeen(NSString *src)
 
 @property (nonatomic) NSMutableDictionary *mutablePostIcons;
 @property (nonatomic) NSMutableArray *mutablePostIconIDs;
+@property (copy, nonatomic) NSString *text;
 
 @end
 
@@ -1274,6 +1275,9 @@ static BOOL PrivateMessageIconSeen(NSString *src)
             [self.mutablePostIconIDs addObject:iconID];
         }
     }
+    NSArray *textNodes = [doc rawSearch:@"//textarea[@name = 'message']/text()"];
+    NSString *text = [textNodes componentsJoinedByString:@""];
+    self.text = DeEntitify(text ?: @"");
 }
 
 @end

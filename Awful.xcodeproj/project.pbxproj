@@ -169,6 +169,7 @@
 		1C9FDAFB16E4837800C665B5 /* PSTGridLayoutRow.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9FDAEB16E4837800C665B5 /* PSTGridLayoutRow.m */; };
 		1C9FDAFC16E4837800C665B5 /* PSTGridLayoutSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9FDAED16E4837800C665B5 /* PSTGridLayoutSection.m */; };
 		1C9FDAFF16E486A600C665B5 /* AwfulImageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9FDAFE16E486A600C665B5 /* AwfulImageCollectionViewCell.m */; };
+		1C9FDB6E16E5DCBA00C665B5 /* private-reply.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C9FDB6D16E5DCBA00C665B5 /* private-reply.html */; };
 		1CAB36B11548F0FE00A4A362 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
 		1CAEDA0F16376E56001F5F04 /* ai-cycles.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD527C15B783FC00E5893B /* ai-cycles.png */; };
 		1CAEDA1116376E56001F5F04 /* art.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD527E15B783FC00E5893B /* art.png */; };
@@ -1077,6 +1078,7 @@
 		1C9FDAED16E4837800C665B5 /* PSTGridLayoutSection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSTGridLayoutSection.m; sourceTree = "<group>"; };
 		1C9FDAFD16E486A600C665B5 /* AwfulImageCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulImageCollectionViewCell.h; sourceTree = "<group>"; };
 		1C9FDAFE16E486A600C665B5 /* AwfulImageCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulImageCollectionViewCell.m; sourceTree = "<group>"; };
+		1C9FDB6D16E5DCBA00C665B5 /* private-reply.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "private-reply.html"; sourceTree = "<group>"; };
 		1CAB36B01548F0FE00A4A362 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		1CAED9D916373F91001F5F04 /* AwfulThreadTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTags.h; sourceTree = "<group>"; };
 		1CAED9DA16373F91001F5F04 /* AwfulThreadTags.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTags.m; sourceTree = "<group>"; };
@@ -2224,6 +2226,7 @@
 				1CF2461916DC286A00C75E05 /* private-list.html */,
 				1C9FDACA16E1EA6600C665B5 /* private-new.html */,
 				1CF2461A16DC286A00C75E05 /* private-one.html */,
+				1C9FDB6D16E5DCBA00C665B5 /* private-reply.html */,
 				1C6D3EF5168D97B900B91A65 /* profile.html */,
 				1CB9B84C1693D9DC00A3CD16 /* profile2.html */,
 				1CB9B8501693DC3800A3CD16 /* profile3.html */,
@@ -3248,6 +3251,7 @@
 				1CF2461B16DC286A00C75E05 /* private-list.html in Resources */,
 				1CF2461C16DC286A00C75E05 /* private-one.html in Resources */,
 				1C9FDACC16E1EA8700C665B5 /* private-new.html in Resources */,
+				1C9FDB6E16E5DCBA00C665B5 /* private-reply.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

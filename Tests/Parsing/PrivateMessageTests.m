@@ -71,6 +71,23 @@
     STAssertTrue([info.postIcons count] == 49, nil);
     NSURL *first = info.postIcons[@"692"];
     STAssertEqualObjects([first lastPathComponent], @"dd-9-11.gif", nil);
+    STAssertEqualObjects(info.text, @"", nil);
+}
+
+@end
+
+
+@interface PrivateMessageReplyTests : ParsingTests @end
+@implementation PrivateMessageReplyTests
+
++ (NSString *)fixtureFilename { return @"private-reply.html"; }
+
+- (void)testReplyInfo
+{
+    ComposePrivateMessageParsedInfo *info = [[ComposePrivateMessageParsedInfo alloc]
+                                             initWithHTMLData:self.fixture];
+    NSString *prefix = [info.text substringToIndex:27];
+    STAssertEqualObjects(prefix, @"\n\n[quote]\nInFlames235 wrote", nil);
 }
 
 @end

@@ -8,6 +8,7 @@
 
 #import "AwfulPrivateMessageViewController.h"
 #import "AwfulActionSheet.h"
+#import "AwfulAlertView.h"
 #import "AwfulDataStack.h"
 #import "AwfulDateFormatters.h"
 #import "AwfulHTTPClient.h"
@@ -152,13 +153,40 @@
                        self.privateMessage.from.username];
     AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:title];
     [sheet addButtonWithTitle:@"Reply" block:^{
-        AwfulPrivateMessageComposeViewController *compose;
-        compose = [AwfulPrivateMessageComposeViewController new];
-        compose.delegate = self;
-        [compose setRegardingMessage:self.privateMessage];
-        // TODO get bbcode for quote
-        [self presentViewController:[compose enclosingNavigationController] animated:YES
-                         completion:nil];
+        [[AwfulHTTPClient client] quotePrivateMessageWithID:self.privateMessage.messageID
+                                                    andThen:^(NSError *error, NSString *bbcode)
+        {
+            if (error) {
+                [AwfulAlertView showWithTitle:@"Could Not Quote Message" error:error
+                                  buttonTitle:@"OK"];
+            } else {
+                AwfulPrivateMessageComposeViewController *compose;
+                compose = [AwfulPrivateMessageComposeViewController new];
+                compose.delegate = self;
+                [compose setRegardingMessage:self.privateMessage];
+                [compose setMessageBody:bbcode];
+                [self presentViewController:[compose enclosingNavigationController] animated:YES
+                                 completion:nil];
+            }
+        }];
+    }];
+    [sheet addButtonWithTitle:@"Forward" block:^{
+        [[AwfulHTTPClient client] quotePrivateMessageWithID:self.privateMessage.messageID
+                                                    andThen:^(NSError *error, NSString *bbcode)
+        {
+            if (error) {
+                [AwfulAlertView showWithTitle:@"Could Not Quote Message" error:error
+                                  buttonTitle:@"OK"];
+            } else {
+                AwfulPrivateMessageComposeViewController *compose;
+                compose = [AwfulPrivateMessageComposeViewController new];
+                compose.delegate = self;
+                [compose setForwardedMessage:self.privateMessage];
+                [compose setMessageBody:bbcode];
+                [self presentViewController:[compose enclosingNavigationController] animated:YES
+                                 completion:nil];
+            }
+        }];
     }];
     [sheet addCancelButtonWithTitle:@"Cancel"];
     [sheet showFromRect:rect inView:self.postsView.window animated:YES];

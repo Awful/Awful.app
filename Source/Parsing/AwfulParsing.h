@@ -280,5 +280,6 @@ typedef enum {
 
 @property (readonly, copy, nonatomic) NSDictionary *postIcons;
 @property (readonly, copy, nonatomic) NSArray *postIconIDs;
+@property (readonly, copy, nonatomic) NSString *text;
 
 @end

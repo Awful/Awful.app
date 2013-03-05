@@ -261,6 +261,17 @@
                                   andThen:(void (^)(NSError *error,
                                                     AwfulPrivateMessage *message))callback;
 
+// Quote a private message.
+//
+// messageID - The ID of the message to quote.
+// callback  - A block to call after quoting the message, which takes as parameters:
+//               error  - An error on failure, or nil on success.
+//               bbcode - The quoted message on success, or nil on failure.
+//
+// Returns the enqueued network operation.
+- (NSOperation *)quotePrivateMessageWithID:(NSString *)messageID
+                                   andThen:(void (^)(NSError *error, NSString *bbcode))callback;
+
 // List post icons usable for private messages.
 //
 // callback - A block to call after listing post icons, which takes as parameters:
