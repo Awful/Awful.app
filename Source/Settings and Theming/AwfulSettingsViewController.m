@@ -297,19 +297,13 @@ typedef enum SettingType
     NSDictionary *setting = [self settingForIndexPath:indexPath];
     NSString *key = setting[@"Key"];
     [AwfulSettings settings][key] = @(switchView.on);
-    
 }
 
 - (void)stepperPressed:(UIStepper *)stepperView
 {
     NSIndexPath *indexPath = self.steppers[stepperView.tag];
-    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
     NSDictionary *setting = [self settingForIndexPath:indexPath];
     NSString *key = setting[@"Key"];
-    
-    [cell.textLabel setText:[NSString stringWithFormat:@"%@: %d%%",setting[@"Title"],(int)stepperView.value]];
-    [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
-
     [AwfulSettings settings][key] = @(stepperView.value);
 }
 
