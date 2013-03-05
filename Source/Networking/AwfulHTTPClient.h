@@ -273,19 +273,23 @@
 
 // Send a private message.
 //
-// username - The user who will receive the message.
-// subject  - The subject of the message.
-// iconName - The thread tag to use, or nil for no tag.
-// text     - The BBCode text of the message.
-// callback - A block to call after sending the message, which takes as parameters:
-//              error   - An error on failure, or nil on success.
-//              message - The sent message on success, or nil on failure.
+// username         - The user who will receive the message.
+// subject          - The subject of the message.
+// iconID           - The ID of the post icon to use, or nil for no icon.
+// text             - The BBCode text of the message.
+// replyMessageID   - The message ID of the message this is regarding, or nil if not a reply.
+// forwardMessageID - The message ID of the message this is a forward of, or nil of not a forward.
+// callback         - A block to call after sending the message, which takes as parameters:
+//                      error   - An error on failure, or nil on success.
+//                      message - The sent message on success, or nil on failure.
 //
 // Returns the enqueued network operation.
 - (NSOperation *)sendPrivateMessageTo:(NSString *)username
                               subject:(NSString *)subject
-                                 icon:(NSString *)iconName
+                                 icon:(NSString *)iconID
                                  text:(NSString *)text
+               asReplyToMessageWithID:(NSString *)replyMessageID
+           forwardedFromMessageWithID:(NSString *)forwardMessageID
                               andThen:(void (^)(NSError *error,
                                                 AwfulPrivateMessage *message))callback;
 

@@ -764,25 +764,31 @@ static NSString * Entitify(NSString *noEntities)
 
 - (NSOperation *)sendPrivateMessageTo:(NSString *)username
                               subject:(NSString *)subject
-                                 icon:(NSString *)iconName
+                                 icon:(NSString *)iconID
                                  text:(NSString *)text
+               asReplyToMessageWithID:(NSString *)replyMessageID
+           forwardedFromMessageWithID:(NSString *)forwardMessageID
                               andThen:(void (^)(NSError *error,
                                                 AwfulPrivateMessage *message))callback
 {
-    NSDictionary *parameters = @{
+    NSMutableDictionary *parameters = [@{
         @"touser": username,
         @"title": subject,
-        @"iconid": iconName,
+        @"iconid": iconID ?: @"0",
         @"message": text,
         @"action": @"dosend",
+        @"forward": forwardMessageID ? @"true" : @"",
         @"submit": @"Send Message",
-    };
+    } mutableCopy];
+    if (replyMessageID || forwardMessageID) {
+        parameters[@"prevmessageid"] = replyMessageID ?: forwardMessageID;
+    }
     NSURLRequest *urlRequest = [self requestWithMethod:@"POST" path:@"private.php"
                                             parameters:parameters];
     id op = [self HTTPRequestOperationWithRequest:urlRequest
                                           success:^(id _, id __)
     {
-        // TODO parse response if that makes sense (e.g. user can't receive messages)
+        // TODO parse response if that makes sense (e.g. user can't receive messages or unknown user)
         // TODO return message
         if (callback) callback(nil, nil);
     } failure:^(id _, NSError *error) {

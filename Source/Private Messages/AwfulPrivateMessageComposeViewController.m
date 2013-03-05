@@ -8,6 +8,7 @@
 
 #import "AwfulPrivateMessageComposeViewController.h"
 #import "AwfulComposeViewControllerSubclass.h"
+#import "AwfulAlertView.h"
 #import "AwfulComposeField.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulPostIconPickerController.h"
@@ -22,6 +23,9 @@
 @property (copy, nonatomic) NSString *postIcon;
 @property (copy, nonatomic) NSString *messageBody;
 @property (nonatomic) AwfulPrivateMessage *regardingMessage;
+@property (nonatomic) AwfulPrivateMessage *forwardedMessage;
+
+- (NSString *)postIconIDForName:(NSString *)name;
 
 @property (copy, nonatomic) NSDictionary *availablePostIcons;
 @property (copy, nonatomic) NSArray *availablePostIconIDs;
@@ -30,6 +34,8 @@
 @property (nonatomic) AwfulPostIconPickerController *postIconPicker;
 @property (weak, nonatomic) AwfulComposeField *toField;
 @property (weak, nonatomic) AwfulComposeField *subjectField;
+
+@property (weak, nonatomic) NSOperation *networkOperation;
 
 @end
 
@@ -47,26 +53,53 @@
 
 - (void)send:(NSString *)messageBody
 {
-    // TODO actually send
-    if (self.regardingMessage) {
-        SEL selector = @selector(privateMessageComposeController:didReplyToMessage:);
-        if ([self.delegate respondsToSelector:selector]) {
-            [self.delegate privateMessageComposeController:self
-                                         didReplyToMessage:self.regardingMessage];
+    id op = [[AwfulHTTPClient client] sendPrivateMessageTo:self.recipient
+                                                   subject:self.subject
+                                                      icon:[self postIconIDForName:self.postIcon]
+                                                      text:self.textView.text
+                                    asReplyToMessageWithID:self.regardingMessage.messageID
+                                forwardedFromMessageWithID:self.forwardedMessage.messageID
+                                                   andThen:^(NSError *error,
+                                                             AwfulPrivateMessage *message)
+    {
+        if (error) {
+            [SVProgressHUD dismiss];
+            [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"
+                               completion:^{
+                self.textView.userInteractionEnabled = YES;
+            }];
+            return;
         }
-    } else {
-        SEL selector = @selector(privateMessageComposeControllerDidSendMessage:);
-        if ([self.delegate respondsToSelector:selector]) {
-            [self.delegate privateMessageComposeControllerDidSendMessage:self];
+        [SVProgressHUD showSuccessWithStatus:@"Sent"];
+        [self.delegate privateMessageComposeControllerDidSendMessage:self];
+    }];
+    self.networkOperation = op;
+}
+
+- (NSString *)postIconIDForName:(NSString *)name
+{
+    if ([name length] == 0) return nil;
+    for (NSString *key in self.availablePostIcons) {
+        if ([self.availablePostIcons[key] isEqualToString:name]) {
+            return key;
         }
     }
+    return nil;
 }
 
 - (void)cancel
 {
     [super cancel];
-    if ([self.delegate respondsToSelector:@selector(privateMessageComposeControllerDidCancel:)]) {
-        [self.delegate privateMessageComposeControllerDidCancel:self];
+    [self.networkOperation cancel];
+    if ([SVProgressHUD isVisible]) {
+        [SVProgressHUD dismiss];
+        self.textView.userInteractionEnabled = YES;
+        [self.textView becomeFirstResponder];
+    } else {
+        SEL selector = @selector(privateMessageComposeControllerDidCancel:);
+        if ([self.delegate respondsToSelector:selector]) {
+            [self.delegate privateMessageComposeControllerDidCancel:self];
+        }
     }
 }
 
@@ -103,12 +136,23 @@
 {
     if (_regardingMessage == regardingMessage) return;
     _regardingMessage = regardingMessage;
+    if (!regardingMessage) return;
+    self.forwardedMessage = nil;
     self.recipient = regardingMessage.from.username;
     if ([regardingMessage.subject hasPrefix:@"Re: "]) {
         self.subject = regardingMessage.subject;
     } else {
         self.subject = [NSString stringWithFormat:@"Re: %@", regardingMessage.subject];
     }
+}
+
+- (void)setForwardedMessage:(AwfulPrivateMessage *)forwardedMessage
+{
+    if (_forwardedMessage == forwardedMessage) return;
+    _forwardedMessage = forwardedMessage;
+    if (!forwardedMessage) return;
+    self.regardingMessage = nil;
+    self.subject = [NSString stringWithFormat:@"Fw: %@", forwardedMessage.subject];
 }
 
 #pragma mark - AwfulComposeViewController

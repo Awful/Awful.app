@@ -19,8 +19,13 @@
 - (void)setPostIcon:(NSString *)postIcon;
 - (void)setMessageBody:(NSString *)messageBody;
 
-// If this is a reply to another message, send this to prepopulate the recipient and subject.
+// If this is a reply to another message, send this to prepopulate the recipient and subject, and
+// link the new message as a reply to the regardingMessage.
 - (void)setRegardingMessage:(AwfulPrivateMessage *)regardingMessage;
+
+// To forward a message, send this to prepopulate the subject and link the new message as a forward
+// of the forwardedMessage.
+- (void)setForwardedMessage:(AwfulPrivateMessage *)forwardedMessage;
 
 @end
 
