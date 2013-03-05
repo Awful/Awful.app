@@ -85,7 +85,9 @@
 					<key>Minimum</key>
 					<integer>24</integer>
 					<key>Maximum</key>
-					<integer>240</integer>
+					<integer>2000</integer>
+					<key>Maximum~ipad</key>
+					<integer>5000</integer>
 					<key>Increment</key>
 					<integer>2</integer>
 					<key>Key</key>

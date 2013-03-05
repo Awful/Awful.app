@@ -258,15 +258,15 @@ typedef enum SettingType
             }
         }
     } else if (settingType == StepperSetting) {
-        UIStepper *stepperView = (UIStepper *)cell.accessoryView;
-        [stepperView setMinimumValue:[setting[@"Minimum"] integerValue]];
-        [stepperView setMaximumValue:[setting[@"Maximum"] integerValue]];
-        [stepperView setStepValue:[setting[@"Increment"] integerValue]];
-        [stepperView setValue:[valueForSetting integerValue]];
-        [stepperView setWraps:YES];
-        [stepperView setContinuous:YES];
-        
-        [cell.textLabel setText:[NSString stringWithFormat:@"%@: %d%%",setting[@"Title"],[valueForSetting integerValue]]];
+        UIStepper *stepperView = (id)cell.accessoryView;
+        stepperView.minimumValue = [setting[@"Minimum"] integerValue];
+        NSNumber *maximum = setting[@"Maximum"];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            maximum = setting[@"Maximum~ipad"] ?: setting[@"Maximum"];
+        }
+        stepperView.maximumValue = [maximum integerValue];
+        stepperView.stepValue = [setting[@"Increment"] integerValue];
+        stepperView.value = [valueForSetting integerValue];
         
         NSUInteger tag = [self.steppers indexOfObject:indexPath];
         if (tag == NSNotFound) {
