@@ -254,6 +254,16 @@ BOOL_PROPERTY(showThreadTags, setShowThreadTags)
     self[AwfulSettingsKeys.favoriteForums] = favoriteForums;
 }
 
+- (NSNumber *)fontScale
+{
+    return self[AwfulSettingsKeys.fontScale];
+}
+
+- (void)setfontScale:(NSNumber *)scale
+{
+    self[AwfulSettingsKeys.fontScale] = scale;
+}
+
 BOOL_PROPERTY(useDevDotForums, setUseDevDotForums)
 
 - (id)objectForKeyedSubscript:(id)key
@@ -307,5 +317,6 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .yosposStyle = @"yospos_style",
     .keepSidebarOpen = @"keep_sidebar_open",
     .favoriteForums = @"favorite_forums",
+    .fontScale = @"font_scale",
     .useDevDotForums = @"use_dev_dot_forums",
 };

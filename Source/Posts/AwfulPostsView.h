@@ -40,6 +40,8 @@
 
 @property (nonatomic) BOOL showImages;
 
+@property (nonatomic) NSNumber *fontScale;
+
 // Set to nil to highlight no quotes.
 @property (copy, nonatomic) NSString *highlightQuoteUsername;
 
