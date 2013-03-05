@@ -14,15 +14,31 @@
 /* Leave spacing up to posts. */
 body {
   margin: 0;
-  font-family: Helvetica, sans-serif;
-  word-wrap: break-word;
-  -webkit-touch-callout: none;
-  -webkit-text-size-adjust: 100%;
-  background-color: #d1d1d1;
 }
 
+/* Default font and size. */
+html {
+  font-family: Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+/* Don't change text size when the device's orientation changes. */
+body {
+  /* (Only works when combined with viewport settings in markup.) */
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Text, images, and embedded videos should never "break tables". */
+body {
+  word-wrap: break-word;
+}
 img, iframe {
   max-width: 100%;
+}
+
+/* Don't show default menu when long-tapping links. */
+body {
+  -webkit-touch-callout: none;
 }
 
 /* Don't show selection when long-tapping images. We handle that ourselves. */
@@ -40,6 +56,10 @@ img, iframe {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
+/* Solid grey background. */
+body {
+  background-color: #d1d1d1;
+}
 
 /* Solid dark background in dark mode. */
 body.dark {
@@ -340,7 +360,8 @@ body.dark {
 }
 
 /* Tapping a spoiler tag reveals its contents. */
-#posts > article > section .bbc-spoiler.spoiled {
+#posts > article > section.bbc-spoiler.spoiled, 
+#posts > article > section.bbc-spoiler.spoiled li {
   background: transparent;
 }
 
