@@ -722,6 +722,25 @@ static NSString * Entitify(NSString *noEntities)
     return op;
 }
 
+- (NSOperation *)deletePrivateMessageWithID:(NSString *)messageID
+                                    andThen:(void (^)(NSError *error))callback
+{
+    NSDictionary *parameters = @{
+        @"action": @"dodelete",
+        @"privatemessageid": messageID,
+        @"delete": @"yes"
+    };
+    NSURLRequest *request = [self requestWithMethod:@"POST" path:@"private.php"
+                                         parameters:parameters];
+    id op = [self HTTPRequestOperationWithRequest:request success:^(id _, id __) {
+        if (callback) callback(nil);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error);
+    }];
+    [self enqueueHTTPRequestOperation:op];
+    return op;
+}
+
 - (NSOperation *)readPrivateMessageWithID:(NSString *)messageID
                                   andThen:(void (^)(NSError *error,
                                                     AwfulPrivateMessage *message))callback

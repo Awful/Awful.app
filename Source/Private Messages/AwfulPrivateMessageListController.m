@@ -8,8 +8,10 @@
 
 #import "AwfulPrivateMessageListController.h"
 #import "AwfulFetchedTableViewControllerSubclass.h"
+#import "AwfulAlertView.h"
 #import "AwfulDataStack.h"
 #import "AwfulDisclosureIndicatorView.h"
+#import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
 #import "AwfulNewPMNotifierAgent.h"
 #import "AwfulPrivateMessageComposeViewController.h"
@@ -39,7 +41,8 @@
     compose = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
                                                             target:self
                                                             action:@selector(didTapCompose)];
-    self.navigationItem.rightBarButtonItem = compose;
+    self.navigationItem.leftBarButtonItem = compose;
+    self.navigationItem.rightBarButtonItem = self.editButtonItem;
     UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithTitle:@"PMs"
                                                              style:UIBarButtonItemStyleBordered
                                                             target:nil action:NULL];
@@ -106,6 +109,12 @@
 {
     [super refresh];
     [[AwfulNewPMNotifierAgent agent] checkForNewMessages];
+}
+
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated
+{
+    [super setEditing:editing animated:animated];
+    self.navigationItem.leftBarButtonItem.enabled = !editing;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
@@ -191,6 +200,25 @@
         nav.viewControllers = @[ vc ];
         [split.masterPopoverController dismissPopoverAnimated:YES];
     }
+}
+
+- (void)tableView:(UITableView *)tableView
+    commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
+    forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle != UITableViewCellEditingStyleDelete) return;
+    AwfulPrivateMessage *message = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    [[AwfulHTTPClient client] deletePrivateMessageWithID:message.messageID
+                                                 andThen:^(NSError *error)
+    {
+        if (error) {
+            [AwfulAlertView showWithTitle:@"Could Not Delete Message" error:error
+                              buttonTitle:@"OK"];
+        } else {
+            [message.managedObjectContext deleteObject:message];
+            [[AwfulDataStack sharedDataStack] save];
+        }
+    }];
 }
 
 #pragma mark - AwfulPrivateMessageComposeViewControllerDelegate

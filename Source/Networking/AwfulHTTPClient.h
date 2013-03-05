@@ -249,6 +249,16 @@
 // Returns the enqueued network operation.
 - (NSOperation *)listPrivateMessagesAndThen:(void (^)(NSError *error, NSArray *messages))callback;
 
+// Delete a private message.
+//
+// messageID - The ID of the message to delete.
+// callback  - A block to call after deleting the message, which takes as parameters:
+//               error - An error on failure, or nil on success.
+//
+// Returns the enqueued network operation.
+- (NSOperation *)deletePrivateMessageWithID:(NSString *)messageID
+                                    andThen:(void (^)(NSError *error))callback;
+
 // Read a private message.
 //
 // messageID - The ID of the message to read.
