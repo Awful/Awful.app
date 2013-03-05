@@ -36,11 +36,7 @@
 // Sent after successfully sending a new message.
 - (void)privateMessageComposeControllerDidSendMessage:(AwfulPrivateMessageComposeViewController *)controller;
 
-// Sent after successfully sending a reply.
-- (void)privateMessageComposeController:(AwfulPrivateMessageComposeViewController *)controller
-                      didReplyToMessage:(AwfulPrivateMessage *)message;
-
-// Sent if the user cancels sending any kind of message.
+// Sent if the user cancels the message.
 - (void)privateMessageComposeControllerDidCancel:(AwfulPrivateMessageComposeViewController *)controller;
 
 @end

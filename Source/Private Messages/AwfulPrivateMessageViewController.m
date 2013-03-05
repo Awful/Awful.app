@@ -166,8 +166,7 @@
 
 #pragma mark - AwfulPrivateMessageComposeViewControllerDelegate
 
-- (void)privateMessageComposeController:(AwfulPrivateMessageComposeViewController *)controller
-                      didReplyToMessage:(AwfulPrivateMessage *)message
+- (void)privateMessageComposeControllerDidSendMessage:(AwfulPrivateMessageComposeViewController *)controller
 {
     [self dismissViewControllerAnimated:YES completion:^{
         [self.navigationController popViewControllerAnimated:YES]; 
