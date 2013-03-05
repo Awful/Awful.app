@@ -130,6 +130,7 @@
     if (_messageBody == messageBody) return;
     _messageBody = [messageBody copy];
     self.textView.text = _messageBody;
+    self.textView.selectedRange = NSMakeRange(0, 0);
 }
 
 - (void)setRegardingMessage:(AwfulPrivateMessage *)regardingMessage
@@ -162,9 +163,11 @@
     if (state == AwfulComposeViewControllerStateReady) {
         [self setTextFieldsAndViewUserInteractionEnabled:YES];
         if ([self.recipient length] == 0) {
+            [self.textView setContentOffset:CGPointZero animated:YES];
             [self.toField.textField becomeFirstResponder];
         } else if ([self.subject length] == 0) {
-            [self.subjectField.textField becomeFirstResponder];
+            [self.textView scrollRectToVisible:self.subjectField.frame animated:YES];
+            [self.textView setContentOffset:CGPointZero animated:YES];
         } else {
             [self.textView becomeFirstResponder];
         }
