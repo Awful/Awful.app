@@ -84,9 +84,6 @@
         if (postInfo.beenSeen && thread.seenPostsValue < post.threadIndexValue) {
             thread.seenPostsValue = post.threadIndexValue;
         }
-        if (postInfo.editable) {
-            [AwfulSettings settings].username = postInfo.author.username;
-        }
     }
     if (pageInfo.pageNumber == thread.numberOfPagesValue) {
         thread.lastPostAuthorName = [[posts lastObject] author].username;

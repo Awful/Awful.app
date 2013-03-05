@@ -73,7 +73,13 @@
     }
     if (json[@"location"]) user.location = StringOrNilIfEmpty(json[@"location"]);
     if (json[@"occupation"]) user.occupation = StringOrNilIfEmpty(json[@"occupation"]);
-    if (json[@"picture"]) user.profilePictureURL = StringOrNilIfEmpty(json[@"picture"]);
+    if (json[@"picture"]) {
+        NSString *url = StringOrNilIfEmpty(json[@"picture"]);
+        if (![[NSURL URLWithString:url] host]) {
+            url = [NSString stringWithFormat:@"http://forums.somethingawful.com%@", url];
+        }
+        user.profilePictureURL = url;
+    }
     if (json[@"posts"]) user.postCount = json[@"posts"];
     if (json[@"postsperday"]) user.postRate = [json[@"postsperday"] stringValue];
     if (json[@"role"]) {
