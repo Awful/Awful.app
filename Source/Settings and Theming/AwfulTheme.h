@@ -96,6 +96,13 @@
 @property (readonly, nonatomic) UIColor *messageListCellSeparatorColor;
 @property (readonly, nonatomic) UIColor *messageListBackgroundColor;
 
+// Private Message compose view
+
+@property (readonly, nonatomic) UIColor *messageComposeFieldLabelColor;
+@property (readonly, nonatomic) UIColor *messageComposeFieldTextColor;
+@property (readonly, nonatomic) UIColor *messageComposeFieldBackgroundColor;
+@property (readonly, nonatomic) UIColor *messageComposeFieldSeparatorColor;
+
 // Settings view
 
 @property (readonly, nonatomic) UIColor *settingsViewBackgroundColor;

@@ -371,6 +371,31 @@
     DEFAULT(self.threadListBackgroundColor);
 }
 
+#pragma mark - Private Message compose view
+
+- (UIColor *)messageComposeFieldLabelColor
+{
+    LIGHT([UIColor grayColor]);
+    DARK([UIColor lightGrayColor]);
+}
+
+- (UIColor *)messageComposeFieldTextColor
+{
+    LIGHT([UIColor blackColor]);
+    DARK([UIColor whiteColor]);
+}
+
+- (UIColor *)messageComposeFieldBackgroundColor
+{
+    LIGHT([UIColor whiteColor]);
+    DARK([UIColor blackColor]);
+}
+
+- (UIColor *)messageComposeFieldSeparatorColor
+{
+    DEFAULT([UIColor colorWithWhite:0.8 alpha:1]);
+}
+
 #pragma mark - Settings view
 
 - (UIColor *)settingsViewBackgroundColor

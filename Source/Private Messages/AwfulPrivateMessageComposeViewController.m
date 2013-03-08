@@ -12,6 +12,7 @@
 #import "AwfulComposeField.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulPostIconPickerController.h"
+#import "AwfulTheme.h"
 #import "AwfulThreadTags.h"
 #import "SVProgressHUD.h"
 #import "UIViewController+NavigationEnclosure.h"
@@ -30,6 +31,7 @@
 @property (copy, nonatomic) NSDictionary *availablePostIcons;
 @property (copy, nonatomic) NSArray *availablePostIconIDs;
 
+@property (weak, nonatomic) UIView *topView;
 @property (weak, nonatomic) UIButton *postIconButton;
 @property (nonatomic) AwfulPostIconPickerController *postIconPicker;
 @property (weak, nonatomic) AwfulComposeField *toField;
@@ -221,14 +223,13 @@
     UIView *topView = [UIView new];
     topView.frame = CGRectMake(0, -fieldHeight, CGRectGetWidth(self.textView.frame), fieldHeight);
     topView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    topView.backgroundColor = [UIColor colorWithWhite:0.8 alpha:1];
     [self.textView addSubview:topView];
+    self.topView = topView;
     
     CGRect postIconFrame, fieldsFrame;
     CGRectDivide(topView.bounds, &postIconFrame, &fieldsFrame, 54, CGRectMinXEdge);
     postIconFrame.size.height -= 1;
     UIButton *postIconButton = [[UIButton alloc] initWithFrame:postIconFrame];
-    postIconButton.backgroundColor = [UIColor whiteColor];
     postIconButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
     [postIconButton addTarget:self action:@selector(didTapPostIcon)
              forControlEvents:UIControlEventTouchUpInside];
@@ -241,7 +242,6 @@
     subjectFrame.origin.y += 1;
     subjectFrame.size.height -= 2;
     AwfulComposeField *toField = [[AwfulComposeField alloc] initWithFrame:toFrame];
-    toField.backgroundColor = [UIColor whiteColor];
     toField.label.text = @"To:";
     toField.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin |
                                 UIViewAutoresizingFlexibleWidth);
@@ -256,7 +256,6 @@
     self.toField = toField;
     
     AwfulComposeField *subjectField = [[AwfulComposeField alloc] initWithFrame:subjectFrame];
-    subjectField.backgroundColor = toField.backgroundColor;
     subjectField.label.text = @"Subject:";
     subjectField.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin |
                                      UIViewAutoresizingFlexibleWidth);
@@ -359,6 +358,22 @@
 {
     [self.postIconPicker showFromRect:self.postIconButton.frame
                                inView:self.postIconButton.superview];
+}
+
+- (void)retheme
+{
+    [super retheme];
+    AwfulTheme *theme = [AwfulTheme currentTheme];
+    self.topView.backgroundColor = theme.messageComposeFieldSeparatorColor;
+    self.postIconButton.backgroundColor = theme.messageComposeFieldBackgroundColor;
+    self.toField.backgroundColor = theme.messageComposeFieldBackgroundColor;
+    self.toField.label.textColor = theme.messageComposeFieldLabelColor;
+    self.toField.label.backgroundColor = theme.messageComposeFieldBackgroundColor;
+    self.toField.textField.textColor = theme.messageComposeFieldTextColor;
+    self.subjectField.backgroundColor = theme.messageComposeFieldBackgroundColor;
+    self.subjectField.label.textColor = theme.messageComposeFieldLabelColor;
+    self.subjectField.label.backgroundColor = theme.messageComposeFieldBackgroundColor;
+    self.subjectField.textField.textColor = theme.messageComposeFieldTextColor;
 }
 
 #pragma mark - AwfulPostIconPickerControllerDelegate
