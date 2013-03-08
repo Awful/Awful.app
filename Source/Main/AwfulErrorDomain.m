@@ -14,4 +14,5 @@ const struct AwfulErrorCodes AwfulErrorCodes = {
     .badUsernameOrPassword = -1000,
     .threadIsClosed = -1001,
     .parseError = -1002,
+    .dataMigrationError = -1003,
 };

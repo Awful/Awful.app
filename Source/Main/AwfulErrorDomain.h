@@ -22,4 +22,7 @@ extern const struct AwfulErrorCodes
     
     // Could not parse the response from SA.
     NSInteger parseError;
+    
+    // Migrating the Core Data store failed.
+    NSInteger dataMigrationError;
 } AwfulErrorCodes;
