@@ -354,7 +354,8 @@
     self.subject = self.subjectField.textField.text;
 }
 
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
+                                         duration:(NSTimeInterval)duration
 {
     [self.postIconPicker showFromRect:self.postIconButton.frame
                                inView:self.postIconButton.superview];
