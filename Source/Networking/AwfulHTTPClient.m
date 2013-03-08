@@ -13,6 +13,7 @@
 #import "AwfulModels.h"
 #import "AwfulParsing.h"
 #import "AwfulSettings.h"
+#import "GTMNSString+HTML.h"
 #import "NSManagedObject+Awful.h"
 #import "NSURL+QueryDictionary.h"
 
@@ -331,7 +332,7 @@ static AwfulHTTPClient *instance = nil;
                                                @"formkey" : formInfo.formkey,
                                                @"form_cookie" : formInfo.formCookie,
                                                @"action" : @"postreply",
-                                               @"message" : Entitify(text),
+                                               @"message" : PreparePostText(text),
                                                @"parseurl" : @"yes",
                                                @"submit" : @"Submit Reply",
                                                } mutableCopy];
@@ -365,8 +366,9 @@ static AwfulHTTPClient *instance = nil;
     return op;
 }
 
-static NSString * Entitify(NSString *noEntities)
+static NSString * PreparePostText(NSString *noEntities)
 {
+    noEntities = [noEntities gtm_stringByEscapingForHTML];
     // Replace all characters outside windows-1252 with XML entities.
     noEntities = [noEntities precomposedStringWithCanonicalMapping];
     NSMutableString *withEntities = [noEntities mutableCopy];
@@ -462,7 +464,7 @@ static NSString * Entitify(NSString *noEntities)
              @"action": @"updatepost",
              @"submit": @"Save Changes",
              @"postid": postID,
-             @"message": Entitify(text)
+             @"message": PreparePostText(text)
          } mutableCopy];
         if (formInfo.bookmark) {
             moreParameters[@"bookmark"] = formInfo.bookmark;
