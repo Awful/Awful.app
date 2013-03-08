@@ -396,6 +396,14 @@
     DEFAULT([UIColor colorWithWhite:0.8 alpha:1]);
 }
 
+#pragma mark - Post icon picker
+
+- (UIColor *)postIconPickerBackgroundColor
+{
+    LIGHT([UIColor colorWithWhite:0.788 alpha:1]);
+    DARK([UIColor colorWithWhite:0.442 alpha:1]);
+}
+
 #pragma mark - Settings view
 
 - (UIColor *)settingsViewBackgroundColor

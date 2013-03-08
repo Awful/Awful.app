@@ -8,6 +8,7 @@
 
 #import "AwfulPostIconPickerController.h"
 #import "AwfulImageCollectionViewCell.h"
+#import "AwfulTheme.h"
 #import "AwfulThreadTags.h"
 #import "UIViewController+NavigationEnclosure.h"
 
@@ -38,10 +39,6 @@
     self.title = @"Choose Post Icon";
     self.navigationItem.rightBarButtonItem = self.pickButtonItem;
     self.navigationItem.leftBarButtonItem = self.cancelButtonItem;
-    self.collectionView.backgroundColor = [UIColor colorWithWhite:0.788 alpha:1];
-    [self.collectionView registerClass:[AwfulImageCollectionViewCell class]
-            forCellWithReuseIdentifier:TagCellIdentifier];
-    [self reloadData];
     return self;
 }
 
@@ -157,6 +154,17 @@ static NSString * const TagCellIdentifier = @"Tag Cell";
     if ([self.delegate respondsToSelector:@selector(postIconPicker:didSelectIconAtIndex:)]) {
         [self.delegate postIconPicker:self didSelectIconAtIndex:indexPath.item];
     }
+}
+
+#pragma mark - UIViewController
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    self.collectionView.backgroundColor = [AwfulTheme currentTheme].postIconPickerBackgroundColor;
+    [self.collectionView registerClass:[AwfulImageCollectionViewCell class]
+            forCellWithReuseIdentifier:TagCellIdentifier];
+    [self reloadData];
 }
 
 #pragma mark - UIPopoverControllerDelegate

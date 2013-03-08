@@ -103,6 +103,10 @@
 @property (readonly, nonatomic) UIColor *messageComposeFieldBackgroundColor;
 @property (readonly, nonatomic) UIColor *messageComposeFieldSeparatorColor;
 
+// Post icon picker
+
+@property (readonly, nonatomic) UIColor *postIconPickerBackgroundColor;
+
 // Settings view
 
 @property (readonly, nonatomic) UIColor *settingsViewBackgroundColor;
