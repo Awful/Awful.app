@@ -121,8 +121,13 @@
 {
     if (_postIcon == postIcon) return;
     _postIcon = [postIcon copy];
-    [self.postIconButton setImage:[[AwfulThreadTags sharedThreadTags] threadTagNamed:postIcon]
-                         forState:UIControlStateNormal];
+    UIImage *image;
+    if (postIcon) {
+        image = [[AwfulThreadTags sharedThreadTags] threadTagNamed:postIcon];
+    } else {
+        image = [UIImage imageNamed:@"empty-pm-tag.png"];
+    }
+    [self.postIconButton setImage:image forState:UIControlStateNormal];
 }
 
 - (void)setMessageBody:(NSString *)messageBody
@@ -220,19 +225,11 @@
     [self.textView addSubview:topView];
     
     CGRect postIconFrame, fieldsFrame;
-    CGRectDivide(topView.bounds, &postIconFrame, &fieldsFrame, 54, CGRectMaxXEdge);
-    postIconFrame.origin.x += 1;
-    postIconFrame.size.width -= 1;
+    CGRectDivide(topView.bounds, &postIconFrame, &fieldsFrame, 54, CGRectMinXEdge);
     postIconFrame.size.height -= 1;
     UIButton *postIconButton = [[UIButton alloc] initWithFrame:postIconFrame];
     postIconButton.backgroundColor = [UIColor whiteColor];
-    [postIconButton setTitle:@"Post Icon" forState:UIControlStateNormal];
-    [postIconButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-    postIconButton.titleLabel.font = [UIFont systemFontOfSize:14];
-    postIconButton.titleLabel.numberOfLines = 0;
-    postIconButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    postIconButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-    postIconButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+    postIconButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
     [postIconButton addTarget:self action:@selector(didTapPostIcon)
              forControlEvents:UIControlEventTouchUpInside];
     [topView addSubview:postIconButton];
@@ -329,8 +326,13 @@
     [self updateSendButtonWithToField:self.toField.textField];
     self.subjectField.textField.text = self.subject;
     [self updateTitleWithSubjectField:self.subjectField.textField];
-    [self.postIconButton setImage:[[AwfulThreadTags sharedThreadTags] threadTagNamed:self.postIcon]
-                         forState:UIControlStateNormal];
+    UIImage *image;
+    if (self.postIcon) {
+        image = [[AwfulThreadTags sharedThreadTags] threadTagNamed:self.postIcon];
+    } else {
+        image = [UIImage imageNamed:@"empty-pm-tag.png"];
+    }
+    [self.postIconButton setImage:image forState:UIControlStateNormal];
     [[AwfulHTTPClient client] listAvailablePrivateMessagePostIconsAndThen:
      ^(NSError *error, NSDictionary *postIcons, NSArray *postIconIDs)
     {
