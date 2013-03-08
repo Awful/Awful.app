@@ -369,7 +369,7 @@
 - (UIImage *)postIconPicker:(AwfulPostIconPickerController *)picker postIconAtIndex:(NSInteger)index
 {
     if (index == 0) {
-        return nil; // TODO proper "no icon" icon
+        return [UIImage imageNamed:@"empty-pm-tag.png"];
     }
     index -= 1;
     NSString *iconName = self.availablePostIcons[self.availablePostIconIDs[index]];

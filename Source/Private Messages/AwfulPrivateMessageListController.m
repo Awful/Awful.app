@@ -141,9 +141,11 @@
         cell.imageView.hidden = NO;
         cell.imageView.image = [[AwfulThreadTags sharedThreadTags]
                                 threadTagNamed:pm.firstIconName];
-        if (!cell.imageView.image && pm.firstIconName) {
-            // TODO handle missing thread tag updates
-//            [self updateThreadTag:pm.firstIconName forCellAtIndexPath:indexPath];
+        if (!cell.imageView.image) {
+            if (pm.firstIconName) {
+                // TODO handle missing thread tag updates
+            }
+            cell.imageView.image = [UIImage imageNamed:@"empty-pm-tag.png"];
         }
         cell.secondaryTagImageView.hidden = YES;
         cell.sticky = NO;
