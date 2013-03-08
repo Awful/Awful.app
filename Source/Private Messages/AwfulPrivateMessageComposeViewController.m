@@ -53,10 +53,10 @@
 
 - (void)send:(NSString *)messageBody
 {
-    id op = [[AwfulHTTPClient client] sendPrivateMessageTo:self.recipient
-                                                   subject:self.subject
+    id op = [[AwfulHTTPClient client] sendPrivateMessageTo:self.recipient ?: @""
+                                                   subject:self.subject ?: @""
                                                       icon:[self postIconIDForName:self.postIcon]
-                                                      text:self.textView.text
+                                                      text:self.textView.text ?: @""
                                     asReplyToMessageWithID:self.regardingMessage.messageID
                                 forwardedFromMessageWithID:self.forwardedMessage.messageID
                                                    andThen:^(NSError *error,
