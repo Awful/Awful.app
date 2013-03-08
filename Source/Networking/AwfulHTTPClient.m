@@ -8,6 +8,7 @@
 
 #import "AwfulHTTPClient.h"
 #import "AwfulDataStack.h"
+#import "AwfulErrorDomain.h"
 #import "AwfulJSONOrScrapeOperation.h"
 #import "AwfulModels.h"
 #import "AwfulParsing.h"
@@ -838,12 +839,3 @@ static NSString * Entitify(NSString *noEntities)
 }
 
 @end
-
-
-NSString * const AwfulErrorDomain = @"AwfulErrorDomain";
-
-const struct AwfulErrorCodes AwfulErrorCodes = {
-    .badUsernameOrPassword = -1000,
-    .threadIsClosed = -1001,
-    .parseError = -1002,
-};
