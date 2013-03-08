@@ -16,7 +16,9 @@
 
 @property (readonly, weak, nonatomic) UIImageView *secondaryTagImageView;
 
-@property (getter=isSticky, nonatomic) BOOL sticky;
+@property (readonly, weak, nonatomic) UIImageView *stickyImageView;
+
+@property (nonatomic) CGSize stickyImageViewOffset;
 
 @property (nonatomic) CGFloat rating;
 

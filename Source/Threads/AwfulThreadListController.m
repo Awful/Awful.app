@@ -281,6 +281,7 @@
     if (!cell) {
         cell = [[AwfulThreadCell alloc] initWithStyle:UITableViewCellStyleSubtitle
                                       reuseIdentifier:Identifier];
+        cell.stickyImageViewOffset = CGSizeMake(1, 1);
         UILongPressGestureRecognizer *longPress = [UILongPressGestureRecognizer new];
         [longPress addTarget:self action:@selector(showThreadActions:)];
         [cell addGestureRecognizer:longPress];
@@ -309,7 +310,12 @@
         if (thread.secondIconName && !cell.secondaryTagImageView.image) {
             [self updateThreadTagsForCellAtIndexPath:indexPath];
         }
-        cell.sticky = thread.isStickyValue;
+        if (thread.isStickyValue) {
+            cell.stickyImageView.hidden = NO;
+            cell.stickyImageView.image = [UIImage imageNamed:@"sticky.png"];
+        } else {
+            cell.stickyImageView.hidden = YES;
+        }
         // Hardcode Film Dump to never show ratings; its thread tags are the ratings.
         if ([thread.forum.forumID isEqualToString:@"133"]) {
             cell.rating = 0;
@@ -321,7 +327,7 @@
         cell.imageView.hidden = YES;
         cell.secondaryTagImageView.image = nil;
         cell.secondaryTagImageView.hidden = YES;
-        cell.sticky = NO;
+        cell.stickyImageView.hidden = YES;
         cell.closed = thread.isClosedValue;
         cell.rating = 0;
     }

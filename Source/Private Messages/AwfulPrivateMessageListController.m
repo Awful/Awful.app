@@ -125,6 +125,7 @@
     if (!cell) {
         cell = [[AwfulThreadCell alloc] initWithStyle:UITableViewCellStyleSubtitle
                                       reuseIdentifier:Identifier];
+        cell.stickyImageViewOffset = CGSizeMake(1, 2);
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
             cell.accessoryView = [AwfulDisclosureIndicatorView new];
         }
@@ -148,14 +149,25 @@
             cell.imageView.image = [UIImage imageNamed:@"empty-pm-tag.png"];
         }
         cell.secondaryTagImageView.hidden = YES;
-        cell.sticky = NO;
+        if (pm.repliedValue || pm.forwardedValue || !pm.seenValue) {
+            cell.stickyImageView.hidden = NO;
+            if (pm.repliedValue) {
+                cell.stickyImageView.image = [UIImage imageNamed:@"pmreplied.gif"];
+            } else if (pm.forwardedValue) {
+                cell.stickyImageView.image = [UIImage imageNamed:@"pmforwarded.gif"];
+            } else if (!pm.seenValue) {
+                cell.stickyImageView.image = [UIImage imageNamed:@"newpm.gif"];
+            }
+        } else {
+            cell.stickyImageView.hidden = YES;
+        }
         cell.rating = 0;
     } else {
         cell.imageView.image = nil;
         cell.imageView.hidden = YES;
         cell.secondaryTagImageView.image = nil;
         cell.secondaryTagImageView.hidden = YES;
-        cell.sticky = NO;
+        cell.stickyImageView.hidden = YES;
         cell.closed = NO;
         cell.rating = 0;
     }
@@ -169,15 +181,7 @@
     
     cell.backgroundColor = theme.threadCellBackgroundColor;
     cell.selectionStyle = theme.cellSelectionStyle;
-    
-    if (!pm.seenValue) {
-        cell.showsUnread = YES;
-        cell.unreadCountBadgeView.badgeText = @"New";
-    } else {
-        cell.showsUnread = NO;
-    }
-    
-    // TODO indicate forwarded/replied/seen
+    cell.showsUnread = NO;
     
     AwfulDisclosureIndicatorView *disclosure = (AwfulDisclosureIndicatorView *)cell.accessoryView;
     disclosure.color = theme.disclosureIndicatorColor;

@@ -38,8 +38,7 @@
         [self.contentView addSubview:secondaryTagImageView];
         _secondaryTagImageView = secondaryTagImageView;
         
-        UIImageView *stickyImageView = [[UIImageView alloc] initWithImage:
-                                        [UIImage imageNamed:@"sticky.png"]];
+        UIImageView *stickyImageView = [UIImageView new];
         [self.contentView addSubview:stickyImageView];
         _stickyImageView = stickyImageView;
         
@@ -64,13 +63,6 @@
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     return [self initWithReuseIdentifier:reuseIdentifier];
-}
-
-- (void)setSticky:(BOOL)sticky
-{
-    _sticky = sticky;
-    self.stickyImageView.hidden = !sticky;
-    if (sticky) [self.contentView bringSubviewToFront:self.stickyImageView];
 }
 
 - (void)setRating:(CGFloat)rating
@@ -127,11 +119,12 @@
         self.secondaryTagImageView.frame = secondaryTagFrame;
         [self.contentView insertSubview:self.secondaryTagImageView aboveSubview:self.imageView];
         if (!self.stickyImageView.hidden) {
+            [self.stickyImageView sizeToFit];
             CGRect stickyImageFrame = self.stickyImageView.frame;
             stickyImageFrame.origin.x = CGRectGetMaxX(self.imageView.frame) -
-            stickyImageFrame.size.width + 1;
+            stickyImageFrame.size.width + self.stickyImageViewOffset.width;
             stickyImageFrame.origin.y = CGRectGetMaxY(self.imageView.frame) -
-            stickyImageFrame.size.height + 1;
+            stickyImageFrame.size.height + self.stickyImageViewOffset.height;
             self.stickyImageView.frame = stickyImageFrame;
             [self.contentView insertSubview:self.stickyImageView aboveSubview:self.imageView];
         }
@@ -246,7 +239,7 @@
 {
     NSMutableArray *parts = [NSMutableArray new];
     [parts addObject:self.textLabel.accessibilityLabel];
-    if (self.sticky) {
+    if (!self.stickyImageView.hidden) {
         [parts addObject:@"sticky"];
     }
     if (self.closed) {
