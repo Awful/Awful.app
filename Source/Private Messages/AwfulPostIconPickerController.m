@@ -29,13 +29,16 @@
 {
     PSUICollectionViewFlowLayout *layout = [PSUICollectionViewFlowLayout new];
     layout.itemSize = CGSizeMake(47, 47);
+    layout.minimumInteritemSpacing = 15;
+    layout.minimumLineSpacing = 11;
+    layout.sectionInset = UIEdgeInsetsMake(12, 12, 12, 12);
     if (!(self = [super initWithCollectionViewLayout:layout])) return nil;
     _delegate = delegate;
     self.clearsSelectionOnViewWillAppear = NO;
     self.title = @"Choose Post Icon";
     self.navigationItem.rightBarButtonItem = self.pickButtonItem;
     self.navigationItem.leftBarButtonItem = self.cancelButtonItem;
-    self.collectionView.backgroundColor = [UIColor whiteColor];
+    self.collectionView.backgroundColor = [UIColor colorWithWhite:0.788 alpha:1];
     [self.collectionView registerClass:[AwfulImageCollectionViewCell class]
             forCellWithReuseIdentifier:TagCellIdentifier];
     [self reloadData];
@@ -129,11 +132,22 @@ static NSString * const TagCellIdentifier = @"Tag Cell";
     AwfulImageCollectionViewCell *cell;
     cell = (id)[collectionView dequeueReusableCellWithReuseIdentifier:TagCellIdentifier
                                                          forIndexPath:indexPath];
+    cell.backgroundColor = [UIColor whiteColor];
+    cell.layer.cornerRadius = 2;
+    cell.layer.shadowOpacity = 0.5;
+    cell.layer.shadowOffset = CGSizeZero;
+    cell.layer.shadowRadius = 1;
     cell.imageView.image = [self.delegate postIconPicker:self postIconAtIndex:indexPath.item];
     if (!cell.selectedBackgroundView) {
         cell.selectedBackgroundView = [UIView new];
+        cell.selectedBackgroundView.layer.cornerRadius = cell.layer.cornerRadius;
+        cell.selectedBackgroundView.layer.shadowRadius = 1.5;
+        cell.selectedBackgroundView.layer.shadowOpacity = 0.25;
+        cell.selectedBackgroundView.layer.shadowOffset = CGSizeZero;
+        cell.selectedBackgroundView.backgroundColor = [UIColor colorWithHue:0.526
+                                                                 saturation:0.561
+                                                                 brightness:1 alpha:1];
     }
-    cell.selectedBackgroundView.backgroundColor = [UIColor blueColor];
     return cell;
 }
 
