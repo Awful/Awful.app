@@ -5,6 +5,7 @@
 
 
 extern const struct AwfulPrivateMessageAttributes {
+	__unsafe_unretained NSString *forwarded;
 	__unsafe_unretained NSString *innerHTML;
 	__unsafe_unretained NSString *messageID;
 	__unsafe_unretained NSString *messageIconImageURL;
@@ -27,6 +28,7 @@ extern const struct AwfulPrivateMessageFetchedProperties {
 
 
 
+
 @class NSObject;
 
 
@@ -41,6 +43,20 @@ extern const struct AwfulPrivateMessageFetchedProperties {
 + (NSString*)entityName;
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
 - (AwfulPrivateMessageID*)objectID;
+
+
+
+
+
+@property (nonatomic, strong) NSNumber* forwarded;
+
+
+
+@property BOOL forwardedValue;
+- (BOOL)forwardedValue;
+- (void)setForwardedValue:(BOOL)value_;
+
+//- (BOOL)validateForwarded:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -146,6 +162,15 @@ extern const struct AwfulPrivateMessageFetchedProperties {
 @end
 
 @interface _AwfulPrivateMessage (CoreDataGeneratedPrimitiveAccessors)
+
+
+- (NSNumber*)primitiveForwarded;
+- (void)setPrimitiveForwarded:(NSNumber*)value;
+
+- (BOOL)primitiveForwardedValue;
+- (void)setPrimitiveForwardedValue:(BOOL)value_;
+
+
 
 
 - (NSString*)primitiveInnerHTML;

@@ -1085,6 +1085,12 @@ static BOOL PrivateMessageIconReplied(NSString *src)
 }
 
 
+static BOOL PrivateMessageIconForwarded(NSString *src)
+{
+    return [src rangeOfString:@"forwarded"].location != NSNotFound;
+}
+
+
 static BOOL PrivateMessageIconSeen(NSString *src)
 {
     return [src rangeOfString:@"newpm"].location == NSNotFound;
@@ -1101,6 +1107,7 @@ static BOOL PrivateMessageIconSeen(NSString *src)
 @property (nonatomic) UserParsedInfo *to;
 @property (nonatomic) BOOL seen;
 @property (nonatomic) BOOL replied;
+@property (nonatomic) BOOL forwarded;
 @property (nonatomic) NSString *innerHTML;
 
 @end
@@ -1154,6 +1161,7 @@ static BOOL PrivateMessageIconSeen(NSString *src)
     TFHppleElement *seenIcon = [doc searchForSingle:@"//td[" HAS_CLASS(postdate) "]//img"];
     if (seenIcon) {
         self.replied = PrivateMessageIconReplied([seenIcon objectForKey:@"src"]);
+        self.forwarded = PrivateMessageIconForwarded([seenIcon objectForKey:@"src"]);
         self.seen = PrivateMessageIconSeen([seenIcon objectForKey:@"src"]);
     }
     TFHppleElement *sentDate = [doc searchForSingle:@"//td[" HAS_CLASS(postdate) "]/text()"];
@@ -1165,8 +1173,8 @@ static BOOL PrivateMessageIconSeen(NSString *src)
 
 + (NSArray *)keysToApplyToObject
 {
-    return @[ @"messageID", @"subject", @"messageIconImageURL", @"seen", @"replied", @"sentDate",
-              @"innerHTML" ];
+    return @[ @"messageID", @"subject", @"messageIconImageURL", @"seen", @"replied", @"forwarded",
+              @"sentDate", @"innerHTML" ];
 }
 
 @end
@@ -1190,6 +1198,7 @@ static BOOL PrivateMessageIconSeen(NSString *src)
         PrivateMessageParsedInfo *info = [PrivateMessageParsedInfo new];
         NSString *seenImageSrc = [[row searchForSingle:@"//td[1]//img"] objectForKey:@"src"];
         info.replied = PrivateMessageIconReplied(seenImageSrc);
+        info.forwarded = PrivateMessageIconForwarded(seenImageSrc);
         info.seen = PrivateMessageIconSeen(seenImageSrc);
         
         TFHppleElement *tag = [row searchForSingle:@"//td[2]//img"];

@@ -264,6 +264,7 @@ typedef enum {
 @property (readonly, nonatomic) UserParsedInfo *to;
 @property (readonly, nonatomic) BOOL seen;
 @property (readonly, nonatomic) BOOL replied;
+@property (readonly, nonatomic) BOOL forwarded;
 @property (readonly, nonatomic) NSString *innerHTML;
 
 @end

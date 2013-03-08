@@ -4,6 +4,7 @@
 #import "_AwfulPrivateMessage.h"
 
 const struct AwfulPrivateMessageAttributes AwfulPrivateMessageAttributes = {
+	.forwarded = @"forwarded",
 	.innerHTML = @"innerHTML",
 	.messageID = @"messageID",
 	.messageIconImageURL = @"messageIconImageURL",
@@ -47,6 +48,11 @@ const struct AwfulPrivateMessageFetchedProperties AwfulPrivateMessageFetchedProp
 + (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 	
+	if ([key isEqualToString:@"forwardedValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"forwarded"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
 	if ([key isEqualToString:@"repliedValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"replied"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
@@ -60,6 +66,32 @@ const struct AwfulPrivateMessageFetchedProperties AwfulPrivateMessageFetchedProp
 
 	return keyPaths;
 }
+
+
+
+
+@dynamic forwarded;
+
+
+
+- (BOOL)forwardedValue {
+	NSNumber *result = [self forwarded];
+	return [result boolValue];
+}
+
+- (void)setForwardedValue:(BOOL)value_ {
+	[self setForwarded:[NSNumber numberWithBool:value_]];
+}
+
+- (BOOL)primitiveForwardedValue {
+	NSNumber *result = [self primitiveForwarded];
+	return [result boolValue];
+}
+
+- (void)setPrimitiveForwardedValue:(BOOL)value_ {
+	[self setPrimitiveForwarded:[NSNumber numberWithBool:value_]];
+}
+
 
 
 
