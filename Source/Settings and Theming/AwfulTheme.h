@@ -88,6 +88,14 @@
 @property (readonly, nonatomic) UIColor *replyViewBackgroundColor;
 @property (readonly, nonatomic) UIColor *replyViewTextColor;
 
+// Private Messages list
+
+@property (readonly, nonatomic) UIColor *messageListSubjectTextColor;
+@property (readonly, nonatomic) UIColor *messageListUsernameTextColor;
+@property (readonly, nonatomic) UIColor *messageListCellBackgroundColor;
+@property (readonly, nonatomic) UIColor *messageListCellSeparatorColor;
+@property (readonly, nonatomic) UIColor *messageListBackgroundColor;
+
 // Settings view
 
 @property (readonly, nonatomic) UIColor *settingsViewBackgroundColor;

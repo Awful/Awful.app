@@ -344,6 +344,33 @@
     DARK([UIColor whiteColor]);
 }
 
+#pragma mark - Private Messages list
+
+- (UIColor *)messageListSubjectTextColor
+{
+    DEFAULT(self.threadCellTextColor);
+}
+
+- (UIColor *)messageListUsernameTextColor
+{
+    DEFAULT(self.threadCellPagesTextColor);
+}
+
+- (UIColor *)messageListCellBackgroundColor
+{
+    DEFAULT(self.threadCellBackgroundColor);
+}
+
+- (UIColor *)messageListCellSeparatorColor
+{
+    DEFAULT(self.threadListSeparatorColor);
+}
+
+- (UIColor *)messageListBackgroundColor
+{
+    DEFAULT(self.threadListBackgroundColor);
+}
+
 #pragma mark - Settings view
 
 - (UIColor *)settingsViewBackgroundColor

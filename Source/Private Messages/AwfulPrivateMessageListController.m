@@ -174,18 +174,25 @@
     
     AwfulTheme *theme = [AwfulTheme currentTheme];
     cell.textLabel.text = pm.subject;
-    cell.textLabel.textColor = theme.threadCellTextColor;
+    cell.textLabel.textColor = theme.messageListSubjectTextColor;
     
     cell.detailTextLabel.text = pm.from.username;
-    cell.detailTextLabel.textColor = theme.threadCellPagesTextColor;
+    cell.detailTextLabel.textColor = theme.messageListUsernameTextColor;
     
-    cell.backgroundColor = theme.threadCellBackgroundColor;
+    cell.backgroundColor = theme.messageListCellBackgroundColor;
     cell.selectionStyle = theme.cellSelectionStyle;
     cell.showsUnread = NO;
     
     AwfulDisclosureIndicatorView *disclosure = (AwfulDisclosureIndicatorView *)cell.accessoryView;
     disclosure.color = theme.disclosureIndicatorColor;
     disclosure.highlightedColor = theme.disclosureIndicatorHighlightedColor;
+}
+
+- (void)tableView:(UITableView *)tableView
+  willDisplayCell:(UITableViewCell *)cell
+forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    cell.backgroundColor = [AwfulTheme currentTheme].messageListCellBackgroundColor;
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
@@ -225,6 +232,13 @@
             [[AwfulDataStack sharedDataStack] save];
         }
     }];
+}
+
+- (void)retheme
+{
+    [super retheme];
+    self.tableView.separatorColor = [AwfulTheme currentTheme].messageListCellSeparatorColor;
+    self.view.backgroundColor = [AwfulTheme currentTheme].messageListBackgroundColor;
 }
 
 #pragma mark - AwfulPrivateMessageComposeViewControllerDelegate
