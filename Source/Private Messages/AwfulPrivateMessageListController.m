@@ -41,8 +41,8 @@
     compose = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
                                                             target:self
                                                             action:@selector(didTapCompose)];
-    self.navigationItem.leftBarButtonItem = compose;
-    self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    self.navigationItem.rightBarButtonItem = compose;
+    self.navigationItem.leftBarButtonItem = self.editButtonItem;
     UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithTitle:@"PMs"
                                                              style:UIBarButtonItemStyleBordered
                                                             target:nil action:NULL];
