@@ -156,7 +156,7 @@
 		1C9FDACC16E1EA8700C665B5 /* private-new.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C9FDACA16E1EA6600C665B5 /* private-new.html */; };
 		1C9FDACF16E4809300C665B5 /* AwfulPostIconPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9FDACE16E4809300C665B5 /* AwfulPostIconPickerController.m */; };
 		1C9FDAF016E4837800C665B5 /* NSIndexPath+PSTCollectionViewAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9FDAD416E4837800C665B5 /* NSIndexPath+PSTCollectionViewAdditions.m */; };
-		1C9FDAF116E4837800C665B5 /* PSTCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9FDAD616E4837800C665B5 /* PSTCollectionView.m */; };
+		1C9FDAF116E4837800C665B5 /* PSTCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9FDAD616E4837800C665B5 /* PSTCollectionView.m */; settings = {COMPILER_FLAGS = "-Wno-extra"; }; };
 		1C9FDAF216E4837800C665B5 /* PSTCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9FDAD816E4837800C665B5 /* PSTCollectionViewCell.m */; };
 		1C9FDAF316E4837800C665B5 /* PSTCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9FDADB16E4837800C665B5 /* PSTCollectionViewController.m */; };
 		1C9FDAF416E4837800C665B5 /* PSTCollectionViewData.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9FDADD16E4837800C665B5 /* PSTCollectionViewData.m */; };
@@ -3201,7 +3201,6 @@
 				1D60588E0D05DD3D006BFB54 /* Sources */,
 				1D60588F0D05DD3D006BFB54 /* Frameworks */,
 				1C41B89F16CD4C1D00718F79 /* Crashlytics */,
-				3F99807D16CEBE3100D60AEF /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -4058,19 +4057,6 @@
 			shellPath = /bin/sh;
 			shellScript = "rake tags\n";
 		};
-		3F99807D16CEBE3100D60AEF /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "export CODESIGN_ALLOCATE=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/codesign_allocate\n\nif [ \"${PLATFORM_NAME}\" == \"iphoneos\" ]; then\n/Users/sether/iphoneentitlements/gen_entitlements.py \"my.company.${PROJECT_NAME}\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent\";\ncodesign -f -s \"xzzy\" --entitlements \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\nfi";
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -4406,38 +4392,31 @@
 		1D6058940D05DD3E006BFB54 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Vendor\"",
 				);
-				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Main/Awful_Prefix.pch;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = "Resources/Awful-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = Awful;
-				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				WARNING_CFLAGS = "-Wno-unused-parameter";
+				WARNING_CFLAGS = (
+					"$(inherited)",
+					"-Wno-unused-parameter",
+				);
 			};
 			name = Debug;
 		};
 		1D6058950D05DD3E006BFB54 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				COPY_PHASE_STRIP = NO;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Vendor\"",
@@ -4448,12 +4427,14 @@
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = "Resources/Awful-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = Awful;
-				SDKROOT = iphoneos;
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
-				WARNING_CFLAGS = "-Wno-unused-parameter";
+				WARNING_CFLAGS = (
+					"$(inherited)",
+					"-Wno-unused-parameter",
+				);
 			};
 			name = Release;
 		};
@@ -4465,20 +4446,15 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "${SDKROOT}/usr/include/libxml2";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_LDFLAGS = "";
-				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				WARNING_CFLAGS = (
 					"-Wall",
@@ -4495,8 +4471,6 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -4505,8 +4479,6 @@
 				HEADER_SEARCH_PATHS = "${SDKROOT}/usr/include/libxml2";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_CFLAGS = "";
-				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				WARNING_CFLAGS = (
 					"-Wall",
