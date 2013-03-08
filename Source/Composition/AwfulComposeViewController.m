@@ -10,11 +10,13 @@
 #import "AwfulAlertView.h"
 #import "AwfulKeyboardBar.h"
 #import "AwfulTheme.h"
+#import "AwfulThemingViewController.h"
 #import "ImgurHTTPClient.h"
 
 @interface AwfulComposeViewController () <UIImagePickerControllerDelegate,
                                           UINavigationControllerDelegate,
-                                          UIPopoverControllerDelegate>
+                                          UIPopoverControllerDelegate,
+                                          AwfulThemingViewController>
 
 @property (nonatomic) AwfulTextView *textView;
 
@@ -64,12 +66,6 @@
                                                      style:UIBarButtonItemStyleBordered
                                                     target:nil action:NULL];
     return _cancelButton;
-}
-
-- (void)retheme
-{
-    self.textView.textColor = [AwfulTheme currentTheme].replyViewTextColor;
-    self.textView.backgroundColor = [AwfulTheme currentTheme].replyViewBackgroundColor;
 }
 
 - (void)prepareToSendMessage
@@ -176,6 +172,14 @@ static NSArray * ImagePlaceholderResultsWithMessageBody(NSString *messageBody)
     // noop; subclasses are free to implement
 }
 
+#pragma mark - AwfulThemingViewController
+
+- (void)retheme
+{
+    self.textView.textColor = [AwfulTheme currentTheme].replyViewTextColor;
+    self.textView.backgroundColor = [AwfulTheme currentTheme].replyViewBackgroundColor;
+}
+
 #pragma mark - UIViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -184,17 +188,14 @@ static NSArray * ImagePlaceholderResultsWithMessageBody(NSString *messageBody)
     _images = [NSMutableDictionary new];
     self.navigationItem.rightBarButtonItem = self.sendButton;
     self.navigationItem.leftBarButtonItem = self.cancelButton;
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(themeDidChange:)
-                                                 name:AwfulThemeDidChangeNotification object:nil];
     self.modalPresentationStyle = UIModalPresentationPageSheet;
     return self;
 }
 
-- (void)themeDidChange:(NSNotification *)note
+- (void)viewDidLoad
 {
-    if ([self isViewLoaded]) {
-        [self retheme];
-    }
+    [super viewDidLoad];
+    [self retheme];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -204,7 +205,6 @@ static NSArray * ImagePlaceholderResultsWithMessageBody(NSString *messageBody)
                                                  name:UIKeyboardDidShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:)
                                                  name:UIKeyboardWillHideNotification object:nil];
-    [self retheme];
     [self willTransitionToState:AwfulComposeViewControllerStateReady];
     self.state = AwfulComposeViewControllerStateReady;
 }

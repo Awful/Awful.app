@@ -7,6 +7,7 @@
 //
 
 #import "AwfulComposeViewController.h"
+#import "AwfulThemingViewController.h"
 
 typedef NS_ENUM(NSInteger, AwfulComposeViewControllerState) {
     // The compose controller isn't doing anything.
@@ -22,7 +23,7 @@ typedef NS_ENUM(NSInteger, AwfulComposeViewControllerState) {
     AwfulComposeViewControllerStateError,
 };
 
-@interface AwfulComposeViewController ()
+@interface AwfulComposeViewController () <AwfulThemingViewController>
 
 // By default, the sendButton has no target or action. Subclasses should set both of these
 // properties. Its default title is "Send".
@@ -31,10 +32,6 @@ typedef NS_ENUM(NSInteger, AwfulComposeViewControllerState) {
 // By default, the sendButton has no target or action. Subclasses should set both of these
 // properties. Its default title is "Cancel".
 @property (nonatomic) UIBarButtonItem *cancelButton;
-
-// Sent when the view appears and whenever the user changes the current theme. Subclasses can call
-// super to get default light/dark theme changes.
-- (void)retheme;
 
 // Subclasses should send -prepareToSendMessage so the compose controller can upload images and do
 // any other preparatory work. When complete, your subclass will receive a -send message to perform

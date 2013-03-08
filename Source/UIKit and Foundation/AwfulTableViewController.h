@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AwfulThemingViewController.h"
 
-@interface AwfulTableViewController : UITableViewController
+@interface AwfulTableViewController : UITableViewController <AwfulThemingViewController>
 
 @property (nonatomic) NSOperation *networkOperation;
 
@@ -31,9 +32,5 @@
 
 // Subclasses must implement this method and must not call super.
 - (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath;
-
-// Subclasses can implement to update any colors etc. when the current theme changes. Call super!
-// This also gets called on viewWillAppear.
-- (void)retheme;
 
 @end

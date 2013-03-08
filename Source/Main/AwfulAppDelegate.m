@@ -17,6 +17,7 @@
 #import "AwfulLoginController.h"
 #import "AwfulModels.h"
 #import "AwfulNavigationBar.h"
+#import "AwfulNewPMNotifierAgent.h"
 #import "AwfulPostsViewController.h"
 #import "AwfulPrivateMessageListController.h"
 #import "AwfulSettings.h"
@@ -24,14 +25,15 @@
 #import "AwfulSplitViewController.h"
 #import "AwfulStartViewController.h"
 #import "AwfulTabBarController.h"
+#import "AwfulTheme.h"
 #import "AFNetworking.h"
 #import <AVFoundation/AVFoundation.h>
 #import <Crashlytics/Crashlytics.h>
 #import "NSFileManager+UserDirectories.h"
 #import "NSManagedObject+Awful.h"
 #import "SVProgressHUD.h"
+#import "UIViewController+AwfulTheming.h"
 #import "UIViewController+NavigationEnclosure.h"
-#import "AwfulNewPMNotifierAgent.h"
 
 @interface AwfulAppDelegate () <AwfulTabBarControllerDelegate, UINavigationControllerDelegate,
                                 AwfulLoginControllerDelegate>
@@ -232,7 +234,14 @@ static id _instance;
     }
     
     [[AwfulNewPMNotifierAgent agent] checkForNewMessages];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(themeDidChange:)
+                                                 name:AwfulThemeDidChangeNotification object:nil];
     return YES;
+}
+
+- (void)themeDidChange:(NSNotification *)note
+{
+    [self.window.rootViewController recursivelyRetheme];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application

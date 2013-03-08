@@ -19,28 +19,21 @@
 
 @implementation AwfulTableViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    if (!(self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) return nil;
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(themeChanged:)
-                                                 name:AwfulThemeDidChangeNotification
-                                               object:nil];
-    return self;
-}
-
 - (void)dealloc
 {
     [self stopObservingApplicationDidBecomeActive];
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:AwfulThemeDidChangeNotification
-                                                  object:nil];
 }
 
 - (void)themeChanged:(NSNotification *)note
 {
     if (![self isViewLoaded]) return;
     [self.tableView reloadData];
+    [self retheme];
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
     [self retheme];
 }
 
@@ -58,7 +51,6 @@
             [blockSelf nextPage];
         }];
     }
-    [self retheme];
     [self refreshIfNeededOnAppear];
     [self startObservingApplicationDidBecomeActive];
 }
@@ -159,6 +151,8 @@
                 format:@"Subclasses must implement %@", NSStringFromSelector(_cmd)];
 }
 
+#pragma mark - AwfulThemingViewController
+
 - (void)retheme
 {
     UIActivityIndicatorViewStyle style = [AwfulTheme currentTheme].activityIndicatorViewStyle;
@@ -168,6 +162,7 @@
     if ([self canPullForNextPage]) {
         self.tableView.infiniteScrollingView.activityIndicatorViewStyle = style;
     }
+    [self.tableView reloadData];
 }
 
 @end

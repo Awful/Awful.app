@@ -8,21 +8,18 @@
 
 #import "AwfulLicensesViewController.h"
 #import "AwfulTheme.h"
+#import "AwfulThemingViewController.h"
 
-@interface AwfulLicensesViewController () <UIWebViewDelegate>
+@interface AwfulLicensesViewController () <UIWebViewDelegate, AwfulThemingViewController>
 
 @property (weak, nonatomic) UIWebView *webView;
 
 @end
 
+
 @implementation AwfulLicensesViewController
 
-- (id)init
-{
-    if (!(self = [super initWithNibName:nil bundle:nil])) return nil;
-    self.title = @"Licenses";
-    return self;
-}
+#pragma mark - AwfulThemingViewController
 
 - (void)retheme
 {
@@ -40,7 +37,9 @@
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-    return [self init];
+    if (!(self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) return nil;
+    self.title = @"Licenses";
+    return self;
 }
 
 - (void)loadView

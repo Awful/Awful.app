@@ -17,10 +17,11 @@
 #import "AwfulPrivateMessageComposeViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
+#import "AwfulThemingViewController.h"
 #import "NSFileManager+UserDirectories.h"
 #import "UIViewController+NavigationEnclosure.h"
 
-@interface AwfulPrivateMessageViewController () <AwfulPostsViewDelegate,
+@interface AwfulPrivateMessageViewController () <AwfulPostsViewDelegate, AwfulThemingViewController,
                                                  AwfulPrivateMessageComposeViewControllerDelegate>
 
 @property (nonatomic) AwfulPrivateMessage *privateMessage;
@@ -40,8 +41,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDidChange:)
                                                  name:AwfulSettingsDidChangeNotification
                                                object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(themeDidChange:)
-                                                 name:AwfulThemeDidChangeNotification object:nil];
     return self;
 }
 
@@ -49,18 +48,6 @@
 {
     if (![self isViewLoaded]) return;
     [self configurePostsViewSettings];
-}
-
-- (void)themeDidChange:(NSNotification *)note
-{
-    if (![self isViewLoaded]) return;
-    [self retheme];
-}
-
-- (void)retheme
-{
-    self.view.backgroundColor = [AwfulTheme currentTheme].postsViewBackgroundColor;
-    self.postsView.dark = [AwfulSettings settings].darkTheme;
 }
 
 - (AwfulPostsView *)postsView
@@ -71,6 +58,14 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+#pragma mark - AwfulThemingViewController
+
+- (void)retheme
+{
+    self.view.backgroundColor = [AwfulTheme currentTheme].postsViewBackgroundColor;
+    self.postsView.dark = [AwfulSettings settings].darkTheme;
 }
 
 #pragma mark - UIViewController

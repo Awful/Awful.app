@@ -200,12 +200,6 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
     [super retheme];
     self.tableView.separatorColor = [AwfulTheme currentTheme].forumListSeparatorColor;
     self.view.backgroundColor = [AwfulTheme currentTheme].forumListBackgroundColor;
-    for (AwfulForumCell *cell in [self.tableView visibleCells]) {
-        [self setCellImagesForCell:cell];
-        [self tableView:self.tableView
-        willDisplayCell:cell
-      forRowAtIndexPath:[self.tableView indexPathForCell:cell]];
-    }
 }
 
 #pragma mark - UIViewController

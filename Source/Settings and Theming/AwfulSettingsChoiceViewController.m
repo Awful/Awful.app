@@ -9,13 +9,12 @@
 #import "AwfulSettingsChoiceViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
+#import "AwfulThemingViewController.h"
 
-@interface AwfulSettingsChoiceViewController ()
+@interface AwfulSettingsChoiceViewController () <AwfulThemingViewController>
 
 @property (strong) NSDictionary *setting;
-
 @property (weak) id selectedValue;
-
 @property (strong) NSIndexPath *currentIndexPath;
 
 @end
@@ -32,23 +31,13 @@
     return self;
 }
 
+#pragma mark - AwfulThemingViewController
+
 - (void)retheme
 {
     self.tableView.backgroundColor = [AwfulTheme currentTheme].settingsViewBackgroundColor;
     self.tableView.separatorColor = [AwfulTheme currentTheme].settingsCellSeparatorColor;
-}
-
-- (void)themeChanged:(NSNotification *)note
-{
-    [self retheme];
     [self.tableView reloadData];
-}
-
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:AwfulThemeDidChangeNotification
-                                                  object:nil];
 }
 
 #pragma mark - UITableViewController
@@ -63,18 +52,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self retheme];
     self.tableView.backgroundView = nil;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(themeChanged:)
-                                                 name:AwfulThemeDidChangeNotification
-                                               object:nil];
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    [self retheme];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

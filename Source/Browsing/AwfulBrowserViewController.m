@@ -10,9 +10,10 @@
 #import "AwfulActionSheet.h"
 #import "AwfulExternalBrowser.h"
 #import "AwfulTheme.h"
+#import "AwfulThemingViewController.h"
 #import "UINavigationItem+TwoLineTitle.h"
 
-@interface AwfulBrowserViewController () <UIWebViewDelegate>
+@interface AwfulBrowserViewController () <UIWebViewDelegate, AwfulThemingViewController>
 
 @property (weak, nonatomic) UIWebView *webView;
 
@@ -143,9 +144,10 @@ static UIButton * MakeBorderlessButton(UIImage *image, id target, SEL action)
     [self.backForwardControl setEnabled:[self.webView canGoForward] forSegmentAtIndex:1];
 }
 
-- (void)retheme:(NSNotification *)note
+#pragma mark - AwfulThemingViewController
+
+- (void)retheme
 {
-    if (![self isViewLoaded]) return;
     self.view.backgroundColor = [AwfulTheme currentTheme].postsViewBackgroundColor;
 }
 
@@ -161,8 +163,6 @@ static UIButton * MakeBorderlessButton(UIImage *image, id target, SEL action)
         ];
     }
     self.forwardBrowserButton.enabled = self.backBrowserButton.enabled = NO;
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(retheme:)
-                                                 name:AwfulThemeDidChangeNotification object:nil];
     return self;
 }
 
@@ -242,21 +242,15 @@ static UISegmentedControl * MakeSegmentedBarButton(NSArray *items)
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self retheme];
     if (self.URL) {
         [self.webView loadRequest:[NSURLRequest requestWithURL:self.URL]];
     }
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    [self retheme:nil];
-}
-
 - (void)dealloc
 {
     self.webView.delegate = nil;
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - UIWebViewDelegate

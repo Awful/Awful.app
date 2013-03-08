@@ -176,6 +176,7 @@
 		1C9FDE6216EA030800C665B5 /* newpm.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C9FDE5F16EA030700C665B5 /* newpm.gif */; };
 		1C9FDE6316EA030800C665B5 /* pmforwarded.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C9FDE6016EA030700C665B5 /* pmforwarded.gif */; };
 		1C9FDE6416EA030800C665B5 /* pmreplied.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C9FDE6116EA030700C665B5 /* pmreplied.gif */; };
+		1C9FDE7016EA13B900C665B5 /* UIViewController+AwfulTheming.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9FDE6F16EA13B900C665B5 /* UIViewController+AwfulTheming.m */; };
 		1CAB36B11548F0FE00A4A362 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
 		1CAEDA0F16376E56001F5F04 /* ai-cycles.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD527C15B783FC00E5893B /* ai-cycles.png */; };
 		1CAEDA1116376E56001F5F04 /* art.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD527E15B783FC00E5893B /* art.png */; };
@@ -1091,7 +1092,10 @@
 		1C9FDE5F16EA030700C665B5 /* newpm.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = newpm.gif; sourceTree = "<group>"; };
 		1C9FDE6016EA030700C665B5 /* pmforwarded.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = pmforwarded.gif; sourceTree = "<group>"; };
 		1C9FDE6116EA030700C665B5 /* pmreplied.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = pmreplied.gif; sourceTree = "<group>"; };
-		1C9FDE6516EA05CF00C665B5 /* Model-1.11-encore.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Model-1.11-encore.xcdatamodel"; sourceTree = "<group>"; };
+		1C9FDE6516EA05CF00C665B5 /* Model-1.11-encore.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model-1.11-encore.xcdatamodel"; sourceTree = "<group>"; };
+		1C9FDE6A16EA137200C665B5 /* AwfulThemingViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AwfulThemingViewController.h; sourceTree = "<group>"; };
+		1C9FDE6E16EA13B900C665B5 /* UIViewController+AwfulTheming.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+AwfulTheming.h"; sourceTree = "<group>"; };
+		1C9FDE6F16EA13B900C665B5 /* UIViewController+AwfulTheming.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+AwfulTheming.m"; sourceTree = "<group>"; };
 		1CAB36B01548F0FE00A4A362 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		1CAED9D916373F91001F5F04 /* AwfulThreadTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTags.h; sourceTree = "<group>"; };
 		1CAED9DA16373F91001F5F04 /* AwfulThreadTags.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTags.m; sourceTree = "<group>"; };
@@ -2364,6 +2368,9 @@
 				1CFBED071631C068008AF641 /* AwfulLicensesViewController.m */,
 				1CE2D97E165EEC1F0024AC1C /* AwfulTheme.h */,
 				1CE2D97F165EEC1F0024AC1C /* AwfulTheme.m */,
+				1C9FDE6A16EA137200C665B5 /* AwfulThemingViewController.h */,
+				1C9FDE6E16EA13B900C665B5 /* UIViewController+AwfulTheming.h */,
+				1C9FDE6F16EA13B900C665B5 /* UIViewController+AwfulTheming.m */,
 				1CB6011716DBFB7B00CBEE22 /* AwfulDateFormatters.h */,
 				1CB6011816DBFB7B00CBEE22 /* AwfulDateFormatters.m */,
 			);
@@ -4222,6 +4229,7 @@
 				1C9FDAFC16E4837800C665B5 /* PSTGridLayoutSection.m in Sources */,
 				1C9FDAFF16E486A600C665B5 /* AwfulImageCollectionViewCell.m in Sources */,
 				1C9FDE5B16E9CF5B00C665B5 /* AwfulErrorDomain.m in Sources */,
+				1C9FDE7016EA13B900C665B5 /* UIViewController+AwfulTheming.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

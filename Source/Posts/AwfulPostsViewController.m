@@ -25,6 +25,7 @@
 #import "AwfulReplyComposeViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
+#import "AwfulThemingViewController.h"
 #import "NSFileManager+UserDirectories.h"
 #import "NSManagedObject+Awful.h"
 #import "NSString+CollapseWhitespace.h"
@@ -39,7 +40,8 @@
                                         AwfulJumpToPageSheetDelegate,
                                         NSFetchedResultsControllerDelegate,
                                         AwfulReplyComposeViewControllerDelegate,
-                                        UIScrollViewDelegate>
+                                        UIScrollViewDelegate,
+                                        AwfulThemingViewController>
 
 @property (nonatomic) AwfulThreadPage currentPage;
 
@@ -75,19 +77,11 @@
     if (!(self = [super initWithNibName:nil bundle:nil])) return nil;
     self.hidesBottomBarWhenPushed = YES;
     NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
-    [noteCenter addObserver:self selector:@selector(currentThemeChanged:)
-                       name:AwfulThemeDidChangeNotification object:nil];
     [noteCenter addObserver:self selector:@selector(settingChanged:)
                        name:AwfulSettingsDidChangeNotification object:nil];
     [noteCenter addObserver:self selector:@selector(didResetDataStack:)
                        name:AwfulDataStackDidResetNotification object:nil];
     return self;
-}
-
-- (void)currentThemeChanged:(NSNotification *)note
-{
-    if (![self isViewLoaded]) return;
-    [self retheme];
 }
 
 - (void)settingChanged:(NSNotification *)note
@@ -221,26 +215,6 @@
     }
     [self.bottomBar.actionsComposeControl setEnabled:!self.thread.isClosedValue
                                    forSegmentAtIndex:1];
-}
-
-- (void)retheme
-{
-    AwfulTheme *theme = [AwfulTheme currentTheme];
-    self.view.backgroundColor = theme.postsViewBackgroundColor;
-    self.topBar.backgroundColor = theme.postsViewTopBarMarginColor;
-    NSArray *buttons = @[ self.topBar.goToForumButton, self.topBar.loadReadPostsButton,
-                          self.topBar.scrollToBottomButton ];
-    for (UIButton *button in buttons) {
-        [button setTitleColor:theme.postsViewTopBarButtonTextColor forState:UIControlStateNormal];
-        [button setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [button setTitleColor:theme.postsViewTopBarButtonDisabledTextColor
-                     forState:UIControlStateDisabled];
-        button.backgroundColor = theme.postsViewTopBarButtonBackgroundColor;
-    }
-    self.pullUpToRefreshControl.spinnerStyle = theme.activityIndicatorViewStyle;
-    self.pullUpToRefreshControl.textColor = theme.postsViewPullUpForNextPageTextAndArrowColor;
-    self.pullUpToRefreshControl.arrowColor = theme.postsViewPullUpForNextPageTextAndArrowColor;
-    self.postsView.dark = [AwfulSettings settings].darkTheme;
 }
 
 - (void)configurePostsViewSettings
@@ -477,6 +451,28 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+#pragma mark - AwfulThemingViewController
+
+- (void)retheme
+{
+    AwfulTheme *theme = [AwfulTheme currentTheme];
+    self.view.backgroundColor = theme.postsViewBackgroundColor;
+    self.topBar.backgroundColor = theme.postsViewTopBarMarginColor;
+    NSArray *buttons = @[ self.topBar.goToForumButton, self.topBar.loadReadPostsButton,
+                          self.topBar.scrollToBottomButton ];
+    for (UIButton *button in buttons) {
+        [button setTitleColor:theme.postsViewTopBarButtonTextColor forState:UIControlStateNormal];
+        [button setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [button setTitleColor:theme.postsViewTopBarButtonDisabledTextColor
+                     forState:UIControlStateDisabled];
+        button.backgroundColor = theme.postsViewTopBarButtonBackgroundColor;
+    }
+    self.pullUpToRefreshControl.spinnerStyle = theme.activityIndicatorViewStyle;
+    self.pullUpToRefreshControl.textColor = theme.postsViewPullUpForNextPageTextAndArrowColor;
+    self.pullUpToRefreshControl.arrowColor = theme.postsViewPullUpForNextPageTextAndArrowColor;
+    self.postsView.dark = [AwfulSettings settings].darkTheme;
+}
+
 #pragma mark - UIViewController
 
 - (void)setTitle:(NSString *)title
@@ -639,9 +635,9 @@
                            animated:YES];
 }
 
-- (void)viewWillAppear:(BOOL)animated
+- (void)viewDidLoad
 {
-    [super viewWillAppear:animated];
+    [super viewDidLoad];
     [self retheme];
 }
 

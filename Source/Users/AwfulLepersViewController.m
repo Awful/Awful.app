@@ -97,7 +97,6 @@
     self.view.backgroundColor = [AwfulTheme currentTheme].lepersColonyBackgroundColor;
     self.tableView.separatorColor = [AwfulTheme currentTheme].lepersColonySeparatorColor;
     [self invalidateCellBackgroundImage];
-    [self.tableView reloadData];
 }
 
 - (void)invalidateCellBackgroundImage
