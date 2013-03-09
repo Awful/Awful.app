@@ -13,7 +13,6 @@
 #import "AwfulModels.h"
 #import "AwfulParsing.h"
 #import "AwfulSettings.h"
-#import "GTMNSString+HTML.h"
 #import "NSManagedObject+Awful.h"
 #import "NSURL+QueryDictionary.h"
 
@@ -368,7 +367,6 @@ static AwfulHTTPClient *instance = nil;
 
 static NSString * PreparePostText(NSString *noEntities)
 {
-    noEntities = [noEntities gtm_stringByEscapingForHTML];
     // Replace all characters outside windows-1252 with XML entities.
     noEntities = [noEntities precomposedStringWithCanonicalMapping];
     NSMutableString *withEntities = [noEntities mutableCopy];
