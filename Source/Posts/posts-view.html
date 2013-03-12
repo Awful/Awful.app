@@ -16,13 +16,13 @@
 </div>
 
 <script id="postTemplate" type="text/html">
-<article id="{{postID}}" class="{{#beenSeen}}seen{{/beenSeen}}
+<article id="{{postID}}" class="post {{#beenSeen}}seen{{/beenSeen}}
                                 {{#authorIsOriginalPoster}}role-op{{/authorIsOriginalPoster}}
                                 {{#authorIsAModerator}}role-mod{{/authorIsAModerator}}
                                 {{#authorIsAnAdministrator}}role-admin{{/authorIsAnAdministrator}}
                                 {{^authorAvatarURL}}no-avatar{{/authorAvatarURL}}">
   <header>
-    <h1>{{authorName}}</h1>
+    <h1 class="username">{{authorName}}</h1>
     
     <time class="postdate">{{postDate}}</time>
     <time class="regdate">{{authorRegDate}}</time>
@@ -32,7 +32,7 @@
     <button title="Post actions" />
   </header>
   
-  <section>
+  <section class="postbody">
     {{{innerHTML}}}
     {{#hasAttachment}}
     <p class="attachment">

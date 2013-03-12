@@ -6,55 +6,7 @@
  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 */
 
-/* Width and height include padding and border. */
-* {
-  box-sizing: border-box;
-}
-
-/* Leave spacing up to posts. */
-body {
-  margin: 0;
-}
-
-/* Default font and size. */
-html {
-  font-family: Helvetica, sans-serif;
-  font-size: 14px;
-}
-
-/* Don't change text size when the device's orientation changes. */
-body {
-  /* (Only works when combined with viewport settings in markup.) */
-  -webkit-text-size-adjust: 100%;
-}
-
-/* Text, images, and embedded videos should never "break tables". */
-body {
-  word-wrap: break-word;
-}
-img, iframe {
-  max-width: 100%;
-}
-
-/* Don't show default menu when long-tapping links. */
-body {
-  -webkit-touch-callout: none;
-}
-
-/* Don't show selection when long-tapping images. We handle that ourselves. */
-#posts > article > section img {
-  -webkit-user-select: none;
-}
-
-/* Don't show selection when long-tapping header. */
-#posts > article > header {
-  -webkit-user-select: none;
-}
-
-/* Don't show rectangle around tapped links. */
-#posts > article a {
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-}
+@import "base.less";
 
 /* Solid grey background. */
 body {
@@ -110,20 +62,6 @@ body.dark {
   padding: 15px;
 }
 
-/* iPad posts with avatars have a minimum height. */
-.ipad #posts > article {
-  min-height: 150px;
-}
-.ipad #posts > article.no-avatar {
-  min-height: auto;
-}
-
-/* iPhone post header goes across the screen. */
-.iphone #posts > article > header {
-  width: 100%;
-  height: 44px;
-}
-
 /* iPad post header sits in the top left corner. */
 .ipad #posts > article > header {
   width: 136px;
@@ -160,21 +98,6 @@ body.dark {
   border-bottom: 1px solid #536879;
 }
 
-/* iPhone posts show author's avatar to the left of their name. */
-.iphone #posts > article > header > img {
-  position: absolute;
-  top: 9px;
-  left: 10px;
-  max-width: 33px;
-  max-height: 33px;
-}
-
-/* iPad posts show author's avatar below the author's regdate. */
-.ipad #posts > article > header > img {
-  max-width: 80px;
-  max-height: 80px;
-}
-
 /* iPhone posts show author's name. */
 .iphone #posts > article > header > h1 {
   font-size: 1em;
@@ -182,14 +105,6 @@ body.dark {
   padding-top: 4px;
   display: inline-block;
   vertical-align: middle;
-}
-
-/* iPad posts show author's name too. */
-.ipad #posts > article > header > h1 {
-  font-size: 1em;
-  width: 100%;
-  margin: 0;
-  display: block;
 }
 
 /* Mods and admins get a little star by their name. */
@@ -207,28 +122,8 @@ body.dark {
   padding-left: 18px;
 }
 
-/* iPhone posts show post date a little smaller. */
-.iphone #posts > article > header > time.postdate {
-  font-size: 0.85em;
-  display: block;
-}
-
-/* iPad posts show post date in the bottom right corner. */
-.ipad #posts > article > header > time.postdate {
-  font-size: 0.85em;
+.ipad .postdate {
   color: #999;
-  position: absolute;
-  bottom: 10px;
-  right: 55px;
-}
-
-/* Move author's name and the post date out from the avatar. */
-.iphone #posts > article > header {
-  padding-left: 50px;
-}
-.iphone #posts > article.no-avatar > header {
-  font-size: 0.75em;
-  padding-left: 5px;
 }
 
 /* iPhone posts have a "show post actions" button in the top right. */
@@ -279,35 +174,9 @@ body.dark {
   color: #9cb2c7;
 }
 
-/* "Show post actions" button is not selectable. */
-#posts > article > header > button {
-  -webkit-user-select: none;
-}
-
-/* Move author's name and the post date out from the "show post actions" button. */
-.iphone #posts > article > header {
-  padding-right: 50px;
-}
-
-/* iPhone posts don't show regdates. */
-.iphone #posts > article > header > time.regdate {
-  display: none;
-}
-
-/* iPad posts show regdate smaller, under author's name, on its own line. */
-.ipad #posts > article > header > time.regdate {
-  font-size: 0.75em;
-  display: block;
-}
-
 /* Highlight original poster. */
 #posts > article.role-op > header > h1 {
   color: #199ed7;
-}
-
-/* Post bodies' text is a bit larger. */
-#posts > article > section {
-  font-size: 1em;
 }
 
 /* iPhone post bodies have a bit of padding. */
@@ -330,45 +199,12 @@ body.dark {
   color: #93daff;
 }
 
-/* Links to quoted posts should look a bit different. */
-#posts > article > section a.quote_link {
-  text-decoration: none;
-}
-
-/* Everything in spoiler tags is black. */
-#posts > article > section .bbc-spoiler,
-#posts > article > section .bbc-spoiler li {
-  color: black;
-  background: black;
-}
-#posts > article > section .bbc-spoiler a:link,
-#posts > article > section .bbc-spoiler a:visited,
-#posts > article > section .bbc-spoiler a:active {
-  color: black;
-}
-
-/* Everything in dark mode spoiler tags is white. */
-.dark #posts > article > section .bbc-spoiler,
-.dark #posts > article > section .bbc-spoiler li {
-  color: white;
-  background: white;
-}
-.dark #posts > article > section .bbc-spoiler a:link,
-.dark #posts > article > section .bbc-spoiler a:visited,
-.dark #posts > article > section .bbc-spoiler a:active {
-  color: white;
-}
-
-/* Tapping a spoiler tag reveals its contents. */
-#posts > article > section .bbc-spoiler.spoiled, 
-#posts > article > section .bbc-spoiler.spoiled li {
-  background: transparent;
-}
+@import "spoilers.less";
+.spoilers(#000, #fff);
 
 /* All block headings, like 'quote' or 'code', are grey. */
 #posts > article > section .bbc-block h4,
 #posts > article > section .bbc-block h5 {
-  display: block;
   color: #555;
 }
 
@@ -378,70 +214,9 @@ body.dark {
   color: #999;
 }
 
-/* Block headings have no top or bottom margin. */
-#posts > article > section .bbc-block h4,
-#posts > article > section .bbc-block h5 {
-  margin: 0;
-}
-
-/* Block headings like 'quote' are smaller and go in italics. */
-#posts > article > section .bbc-block h4 {
-  font-size: 0.80em;
-  font-style: italic;
-  margin: 0;
-  padding: 1px 0 2px 0;
-}
-
-/* Block headings like 'code' are even smaller but not in italics. */
-#posts > article > section .bbc-block h5 {
-  font-size: 0.75em;
-}
-
 /* Highlighted blocks (because they mention the user) get a green background. */
 #posts > article > section .bbc-block.highlight {
   background-color: rgba(162, 205, 90, 0.5);
-}
-
-/* Quotes are smaller and have a left border. */
-#posts > article > section blockquote {
-  font-size: 0.75em;
-  border-left: 1px solid #999;
-  margin: 0;
-  padding: 0 10px;
-}
-
-/* Dark mode quotes have a darker left border. */
-.dark #posts > article > section blockquote {
-  border-left-color: #555;
-}
-
-/* Quote, code, etc. blocks on iPad get some margin. */
-.ipad #posts > article > section .bbc-block {
-  margin: 0 10px 1em 10px;
-}
-
-/* Quote, code, etc. blocks on iPad shouldn't hide behind the floating header. */
-.ipad #posts > article > section .bbc-block {
-  overflow: hidden;
-}
-
-/* Shrink quoted images. We can always long-tap to see a preview. */
-#posts > article > section blockquote img {
-  max-width: 160px;
-  max-height: 100px;
-}
-
-/* Lists on iPhone shan't be indented; it wastes too much space. */
-.iphone #posts > article > section ul,
-.iphone #posts > article > section ol {
-  margin: 0;
-  padding-left: 1.5em;
-}
-
-/* Code blocks need no margin and have a smaller font size. */
-#posts > article > section .bbc-block.code pre {
-  margin: 0;
-  font-size: 0.75em;
 }
 
 /* Mentions of the user's name are highlighted in purple. */
@@ -449,46 +224,19 @@ body.dark {
   color: hsl(268, 96%, 72%);
 }
 
-/* The little "edited by" blurb at the end of a post is smaller and in italics. */
-#posts > article > section p.editedby {
-  font-size: 0.70em;
-  font-style: italic;
-  margin-top: 5px;
-}
-
 /* The "end of the thread" message is white in dark mode and dark grey in light mode, with a bit of a shadow. */
 #end {
-  text-align: center;
   line-height: 3em;
   color: #636363;
   text-shadow: white 0 1px;
 }
 .dark #end {
-    text-align: center;
-    line-height: 3em;
     color: white;
     text-shadow: black 0 1px;
 }
 
-/* Center the ad. */
-#ad {
-  text-align: center;
-}
-
-/* The loading view takes up the whole screen. */
-#loading {
-  position: fixed;
-  top: 0; right: 0; bottom: 0; left: 0;
-}
-
-/* The progress bar and loading text go in the middle. */
 #loading .container {
   color: #636363;
-  position: absolute;
-  top: 50%;
-  margin-top: -30px;
-  left: 0; right: 0;
-  height: 60px;
 }
 
 /* If the progress bar is hidden, we'll show a spinner of this color from spin.js instead. */
@@ -498,11 +246,6 @@ body.dark {
 }
 .dark > #loading .progress-bar {
   color: #fff;
-}
-
-/* Position the spinner. */
-#loading .spinner {
-  margin: 0 auto;
 }
 
 /* The loading text is centered with a little shadow. */

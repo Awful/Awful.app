@@ -4022,7 +4022,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/usr/bin/env bash";
-			shellScript = "hash lessc 2>/dev/null || { echo \"Please install less! npm install less -g\"; exit 0; }\n\nmtime() {\n    echo `stat -f %m \"${1}\"`\n}\n\nfor f in \"${PROJECT_DIR}/Source/Theming/*.less\"; do\n    if [[ ! -e \"${f}\" ]]; then continue; fi # empty glob\n\n    # less ain't quick so only compile what's changed\n    g=\"${f%.less}.css\"\n    if [[ ! -e \"${g}\" || $(mtime \"${f}\") -gt $(mtime \"${g}\") ]]; then\n        lessc \"${f}\" \"${g}\"\n    fi\ndone\n";
+			shellScript = "set -e\n\nhash lessc 2>/dev/null || { echo \"Please install less! npm install less -g\"; exit 0; }\n\nmtime() {\n    echo `stat -f %m \"${1}\"`\n}\n\ncd \"${PROJECT_DIR}/Source/Theming\"\n\n# lessc ain't quick so we'll only compile what's changed.\n# Updating any imported LESS files should also trigger recompilation.\nIMPORTED=$(find . -name \"*.less\" -not -name \"posts-view*\" -exec stat -f %m {} \\; | sort -n -r | head -n 1)\n\nfor s in posts-view*.less; do\n    if [[ ! -e \"${s}\" ]]; then continue; fi # empty glob\n\n    c=\"${s%.less}.css\"\n    smodified=$(mtime \"${s}\")\n    cmodified=$(mtime \"${c}\")\n    if [[ ! -e \"${c}\" || smodified -gt cmodified || IMPORTED -gt cmodified ]]; then\n        echo \"Compiling ${s}\"\n        lessc \"${s}\" \"${c}\"\n    fi\ndone\n";
 		};
 		1CE2D9A616688C810024AC1C /* Compile third-party licenses */ = {
 			isa = PBXShellScriptBuildPhase;

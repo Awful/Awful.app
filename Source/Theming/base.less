@@ -1,0 +1,219 @@
+// Common style for all posts views.
+// -------------------------
+
+// Width and height include padding and border.
+* {
+  box-sizing: border-box;
+}
+
+// Base font. Size other text using ems so the font size setting works in the
+// app.
+html {
+  font: 14px "Helvetica Neue", sans-serif;
+}
+
+// Body reset
+body {
+  margin: 0;
+  // Maintain text size on orientation change.
+  -webkit-text-size-adjust: 100%;
+  // Hide UIWebView's long-tap link menu.
+  -webkit-touch-callout: none;
+  // Don't break tables.
+  word-wrap: break-word;
+}
+
+// Posts
+// -------------------------
+
+// Ensure avatar fits in posts on iPad.
+.ipad .post {
+  min-height: 150px;
+  
+  &.no-avatar {
+    min-height: auto;
+  }
+}
+
+// Post header
+// -------------------------
+
+.iphone header {
+  width: 100%;
+  height: 44px;
+  padding: 0 50px;
+}
+
+.no-avatar header {
+  padding-left: 5px;
+}
+
+.ipad header .username {
+  width: 100%;
+  display: block;
+  margin: 0;
+  font-size: 1em;
+}
+
+// Avatar.
+header img {
+  .iphone & {
+    position: absolute;
+    top: 9px;
+    left: 10px;
+    max-width: 33px;
+    max-height: 33px;
+  }
+  .ipad & {
+    max-width: 80px;
+    max-height: 80px;
+  }
+}
+
+// Prevent selecting the whole header when laying on the action button.
+header button {
+  -webkit-user-select: none;
+}
+
+.regdate {
+  .iphone & {
+    display: none;
+  }
+  
+  .ipad & {
+    display: block;
+    font-size: 0.8em;
+  }
+}
+
+.postdate {
+  font-size: 0.85em;
+  
+  .iphone & {
+    display: block;
+  }
+  .ipad & {
+    position: absolute;
+    right: 55px;
+    bottom: 10px;
+  }
+}
+
+// Post body
+// -------------------------
+
+// We don't control the markup in the post body; that comes directly from the
+// Forums. So we make do.
+
+// Hide UIWebView's long-tap image menu.
+.postbody img {
+  -webkit-user-select: none;
+}
+
+// Don't break tables. iframes are embedded videos.
+.postbody {
+  img,
+  iframe {
+    max-width: 100%;
+  }
+}
+
+// A bbc-block is [quote], [code], etc.
+// h4 is "pokeyman posted:" above a quote.
+// h5 is "code" above a code block.
+.bbc-block {
+  h4 {
+    margin: 0;
+    padding: 1px 0 2px;
+    font-size: 0.85em;
+    font-style: italic;
+  }
+  h5 {
+    margin: 0;
+    font-size: 0.8em;
+  }
+  
+  .ipad & {
+    margin: 0 10px 1em 10px;
+    // Keep blocks out from under the floating avatar.
+    overflow: hidden;
+  }
+}
+
+// .quote_link is "pokeyman posted:" above a quote, a link to the quoted post.
+.quote_link {
+  text-decoration: none;
+}
+
+blockquote {
+  margin: 0;
+  padding: 0 10px;
+  font-size: 0.85em;
+  border-left: 1px solid #999;
+  
+  .dark & {
+    border-left-color: #555;
+  }
+  
+  // Shrink quoted images. You can always long-tap to see the real thing.
+  img {
+    max-width: 160px;
+    max-height: 100px;
+  }
+}
+
+// No rectangle around tapped links.
+.postbody a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+// Indenting lists on iPhone wastes too much space.
+.iphone .postbody {
+  ol,
+  ul {
+    margin: 0;
+    padding-left: 1.5em;
+  }
+}
+
+.bbc-block.code pre {
+  margin: 0;
+  font-size: 0.75em;
+}
+
+.editedby {
+  margin-top: 5px;
+  font-size: 0.75em;
+  font-style: italic;
+}
+
+// Bottom of the page
+// -------------------------
+
+#ad {
+  text-align: center;
+}
+
+#end {
+  text-align: center;
+  line-height: 2em;
+}
+
+// Loading screen
+// -------------------------
+
+#loading {
+  position: fixed;
+  top: 0; right: 0; bottom: 0; left: 0;
+  
+  .container {
+    position: absolute;
+    top: 50%; left: 0; right: 0;
+    height: 60px;
+    margin-top: -30px;
+  }
+  
+  .spinner {
+    margin: 0 auto;
+  }
+}
