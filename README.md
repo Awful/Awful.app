@@ -35,8 +35,8 @@ Contribute
 You can help! Head over to [Awful's thread][current thread] and tell us about any issues you're having. Send in some lovingly crafted [thread tags][]. Or [fork the code][fork] and send [pull requests][]. If you're curious about anything at all, stop by the [thread][current thread] and say hi.
 
 [thread tags]: https://github.com/AwfulDevs/Awful/blob/master/Resources/Thread%20Tags/README.md#thread-tags
-[fork]: fork_select
-[pull requests]: pulls
+[fork]: https://github.com/AwfulDevs/Awful/fork_select
+[pull requests]: https://github.com/AwfulDevs/Awful/pulls
 
 License
 -------
