@@ -16,6 +16,7 @@
 				1C6ED633169103B70015CDD5 /* Compile AwfulProfileViewController JavaScript */,
 				1CE2D9A816688CC20024AC1C /* mogenerator */,
 				1CE2D9A916688CDE0024AC1C /* Update image tag list */,
+				1CD33EA016EF7C550059587E /* Compile CSS */,
 			);
 			dependencies = (
 			);
@@ -4008,6 +4009,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+		1CD33EA016EF7C550059587E /* Compile CSS */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Compile CSS";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = "/usr/bin/env bash";
+			shellScript = "hash lessc 2>/dev/null || { echo \"Please install less! npm install less -g\"; exit 0; }\n\nmtime() {\n    echo `stat -f %m \"${1}\"`\n}\n\nfor f in \"${PROJECT_DIR}/Source/Theming/*.less\"; do\n    if [[ ! -e \"${f}\" ]]; then continue; fi # empty glob\n\n    # less ain't quick so only compile what's changed\n    g=\"${f%.less}.css\"\n    if [[ ! -e \"${g}\" || $(mtime \"${f}\") -gt $(mtime \"${g}\") ]]; then\n        lessc \"${f}\" \"${g}\"\n    fi\ndone\n";
 		};
 		1CE2D9A616688C810024AC1C /* Compile third-party licenses */ = {
 			isa = PBXShellScriptBuildPhase;
