@@ -18,38 +18,82 @@ body {
   word-wrap: break-word;
 }
 .ipad .post {
+  padding: 15px;
   min-height: 150px;
 }
-.ipad .post.no-avatar {
+.ipad .post .no-avatar {
   min-height: auto;
+}
+.no-avatar header {
+  padding-left: 5px;
 }
 .iphone header {
   width: 100%;
   height: 44px;
   padding: 0 50px;
 }
-.no-avatar header {
-  padding-left: 5px;
+.ipad header {
+  float: left;
+  width: 136px;
+  height: 135px;
+  margin: 0 5px 0 0;
+  padding: 0;
 }
-.ipad header .username {
+.role-admin .username {
+  background-image: url('adminstar.png');
+}
+.role-mod .username {
+  background-image: url('modstar.png');
+}
+.role-admin .username, .role-mod .username {
+  padding-left: 18px;
+  background-position: 0 center;
+  background-repeat: no-repeat;
+  background-size: auto 1em;
+}
+.role-op .username {
+  color: #199ed7;
+}
+.ipad .username {
   width: 100%;
   display: block;
   margin: 0;
   font-size: 1em;
 }
-.iphone header img {
+.iphone .avatar {
   position: absolute;
   top: 9px;
   left: 10px;
   max-width: 33px;
   max-height: 33px;
 }
-.ipad header img {
+.ipad .avatar {
   max-width: 80px;
   max-height: 80px;
 }
-header button {
+.action-button {
+  position: absolute;
+  border: none;
   -webkit-user-select: none;
+}
+.iphone .action-button {
+  top: 9px;
+  right: 10px;
+  width: 48px;
+  height: 34px;
+}
+.ipad .action-button {
+  right: 12px;
+  bottom: 5px;
+  width: 38px;
+  height: 24px;
+}
+.action-button:after {
+  position: absolute;
+  top: -5px;
+  right: 0;
+  width: 50px;
+  text-align: center;
 }
 .iphone .regdate {
   display: none;
@@ -58,17 +102,48 @@ header button {
   display: block;
   font-size: 0.8em;
 }
+.postdate {
+  font-size: 0.85em;
+}
+.iphone .postdate {
+  display: block;
+}
+.ipad .postdate {
+  position: absolute;
+  right: 55px;
+  bottom: 10px;
+}
 .postbody img {
   -webkit-user-select: none;
 }
 .postbody img, .postbody iframe {
   max-width: 100%;
 }
-.bbc-block h4, .bbc-block h5 {
+.iphone .postbody {
+  padding: 5px;
+}
+.ipad .postbody {
+  padding: 0 0 15px 0;
+}
+.bbc-block h4 {
   margin: 0;
+  padding: 1px 0 2px;
+  font-size: 0.85em;
+  font-style: italic;
+}
+.bbc-block h5 {
+  margin: 0;
+  font-size: 0.8em;
 }
 .ipad .bbc-block {
+  margin: 0 10px 1em 10px;
   overflow: hidden;
+}
+.bbc-block.mention {
+  background-color: rgba(162, 205, 90, 0.5);
+}
+span.mention {
+  color: #b373fc;
 }
 .quote_link {
   text-decoration: none;
@@ -88,6 +163,10 @@ blockquote img {
 }
 .postbody a {
   -webkit-tap-highlight-color: transparent;
+}
+.iphone .postbody ol, .iphone .postbody ul {
+  margin: 0;
+  padding-left: 1.5em;
 }
 .bbc-block.code pre {
   margin: 0;
@@ -112,187 +191,137 @@ blockquote img {
   bottom: 0;
   left: 0;
 }
+#loading .container {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 60px;
+  margin-top: -30px;
+}
 #loading .spinner {
   margin: 0 auto;
 }
-/* Pinkish background. */
 body {
   background-color: #f99;
 }
-/* Posts hover nicely above the background and are offset parents. */
-#posts > article {
-  margin: 10px 5px;
+.post {
   position: relative;
+  margin: 10px 5px;
 }
-/* Post bodies have a white background, rounded corners, and a thick black border separate from the post header. */
-#posts > article > section {
-  background-color: white;
-  padding: 5px;
+.postbody {
+  background-color: #fff;
   border-radius: 10px;
   border: 3px solid #000;
 }
-/* Post header goes across the screen. It's also given a background image and positioned slightly lower to make the post look like a speech bubble */
-#posts > article > header {
+.ipad .postbody {
+  padding: 5px;
+}
+header {
+  position: relative;
+  top: 3px;
   width: 100%;
   height: 69px;
   background: 40px bottom no-repeat url('fyad-bubble.png');
   background-size: 70px 26px;
-  position: relative;
-  top: 3px;
-}
-.ipad #posts > article > header {
-  background: 65px bottom no-repeat url('fyad-bubble.png');
-}
-/* Avatars are bigger on iPad. */
-.ipad #posts > article > header > img {
-  max-width: 55px;
-  max-height: 55px;
-}
-/* Posts show author's name. */
-#posts > article > header > h1 {
-  width: auto;
-  font-size: 1em;
-  margin: 0;
-  padding-top: 4px;
-  display: inline-block;
-  vertical-align: middle;
-}
-/* Mods and admins get a little star by their name. */
-#posts > article.role-admin > header > h1 {
-  background-image: url('adminstar.png');
-}
-#posts > article.role-mod > header > h1 {
-  background-image: url('modstar.png');
-}
-#posts > article.role-admin > header > h1, #posts > article.role-mod > header > h1 {
-  background-repeat: no-repeat;
-  background-position: 0 center;
-  background-size: auto 1em;
-  padding-left: 18px;
-}
-/* Show post date a little smaller. */
-#posts > article > header > time.postdate {
-  font-size: 0.85em;
-  display: block;
 }
 .ipad header {
   padding-left: 75px;
+  background: 65px bottom no-repeat url('fyad-bubble.png');
 }
-/* Posts have a "show post actions" button in the top right. */
-#posts > article > header > button {
-  width: 48px;
-  height: 34px;
-  position: absolute;
+.username {
+  display: inline-block;
+  width: auto;
+  margin: 0;
+  padding-top: 4px;
+  vertical-align: middle;
+  font-size: 1em;
+}
+.avatar {
+  max-width: 55px;
+  max-height: 55px;
+}
+.ipad .postdate {
+  display: block;
+}
+.iphone .action-button, .ipad .action-button {
   top: 9px;
   right: 10px;
+  width: 48px;
+  height: 34px;
 }
-/* "Show post actions" button is a centered ellipsis. */
-#posts > article > header > button {
-  border: none;
-}
-#posts > article > header > button:after {
+.action-button:after {
   content: "•••";
-  position: absolute;
-  top: -5px;
-  right: 0;
-  text-align: center;
   color: #f39;
   font-size: 40px;
-  width: 50px;
 }
 .ipad .regdate {
   display: none;
 }
-/* Highlight original poster. */
-#posts > article.role-op > header > h1 {
+.role-op .username {
   color: #f39;
 }
-/* Post bodies' text is a bit larger. */
-#posts > article > section {
-  font-size: 15px;
-}
-/* Post bodies have a bit of padding. */
-#posts > article > section {
-  padding: 5px;
-}
-/* Make links in post bodies pretty. */
-#posts > article > section a {
+.postbody a {
   color: #f39;
 }
-/* Everything in spoiler tags is black. */
-#posts > article > section .bbc-spoiler, #posts > article > section .bbc-spoiler li {
-  color: black;
-  background: black;
+.bbc-spoiler {
+  color: #000000;
+  background: #000000;
 }
-#posts > article > section .bbc-spoiler a:link, #posts > article > section .bbc-spoiler a:visited, #posts > article > section .bbc-spoiler a:active {
-  color: black;
+.bbc-spoiler li {
+  color: #000000;
+  background: #000000;
+  list-style: none;
 }
-/* Everything in dark mode spoiler tags is white. */
-.dark #posts > article > section .bbc-spoiler, .dark #posts > article > section .bbc-spoiler li {
-  color: white;
-  background: white;
+.bbc-spoiler img {
+  visibility: hidden;
 }
-/* Tapping a spoiler tag reveals its contents. */
-#posts > article > section .bbc-spoiler.spoiled, #posts > article > section .bbc-spoiler.spoiled li {
+.bbc-spoiler a:link, .bbc-spoiler a:visited, .bbc-spoiler a:active {
+  color: #000000;
+}
+.dark  .bbc-spoiler {
+  color: #ffffff;
+  background: #ffffff;
+}
+.dark  .bbc-spoiler li {
+  color: #ffffff;
+  background: #ffffff;
+  list-style: none;
+}
+.dark  .bbc-spoiler img {
+  visibility: hidden;
+}
+.dark  .bbc-spoiler a:link, .dark  .bbc-spoiler a:visited, .dark  .bbc-spoiler a:active {
+  color: #ffffff;
+}
+.bbc-spoiler.spoiled {
   background: transparent;
 }
-/* All block headings, like 'quote' or 'code', are grey. */
-#posts > article > section .bbc-block h4, #posts > article > section .bbc-block h5 {
+.bbc-spoiler.spoiled li {
+  background: transparent;
+  list-style: inherit;
+}
+.bbc-spoiler.spoiled img {
+  visibility: visible;
+}
+.bbc-block h4, .bbc-block h5 {
   color: #555;
-}
-/* Block headings like 'quote' are smaller and go in italics. */
-#posts > article > section .bbc-block h4 {
-  font-size: 13px;
-  font-style: italic;
-  margin: 0;
-  padding: 1px 0 2px 0;
-}
-/* Block headings like 'code' are even smaller but not in italics. */
-#posts > article > section .bbc-block h5 {
-  font-size: 12px;
-}
-/* Highlighted blocks (because they mention the user) get a green background. */
-#posts > article > section .bbc-block.highlight {
-  background-color: rgba(162, 205, 90, 0.5);
-}
-/* Quote, code, etc. blocks on iPad get some margin. */
-.ipad #posts > article > section .bbc-block {
-  margin: 0 10px 1em 10px;
-}
-/* Lists on iPhone shan't be indented; it wastes too much space. */
-.iphone #posts > article > section ul, .iphone #posts > article > section ol {
-  margin: 0;
-  padding-left: 1.5em;
 }
 .dark blockquote {
   border-left-color: #999;
 }
-/* Mentions of the user's name are highlighted in purple. */
-#posts > article > section span.highlight {
-  color: #b373fc;
-}
-/* The "end of the thread" message is white in dark mode and dark grey in light mode, with a bit of a shadow. */
 #end {
   line-height: 3em;
   color: #000;
 }
-/* The progress bar and loading text go in the middle. */
 #loading .container {
   color: #000;
-  position: absolute;
-  top: 50%;
-  margin-top: -30px;
-  left: 0;
-  right: 0;
-  height: 60px;
 }
-/* If the progress bar is hidden, we'll show a spinner of this color from spin.js instead. */
 #loading .progress-bar {
   display: none;
   color: #000;
 }
-/* The loading text is centered with a little shadow. */
 #loading p {
-  text-align: center;
   padding-top: 30px;
+  text-align: center;
 }

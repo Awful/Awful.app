@@ -98,9 +98,9 @@ Awful.endMessage = function(end){
 Awful.highlightQuoteUsername = function(username){
   Awful._highlightQuoteUsername = username
   if (nullOrUndefined(username)) {
-    $('div.bbc-block.highlight').removeClass('highlight')
+    $('.bbc-block.mention').removeClass('mention')
   } else {
-    $('#posts > article > section').each(function(){
+    $('.postbody').each(function(){
       highlightQuotes(this)
     })
   }
@@ -109,12 +109,12 @@ Awful.highlightQuoteUsername = function(username){
 Awful.highlightMentionUsername = function(username){
   Awful._highlightMentionUsername = username
   if (nullOrUndefined(username)) {
-    $('#posts > article > section span.highlight').each(function(){
+    $('span.mention').each(function(){
       this.parentNode.replaceChild(this.firstChild, this)
       this.parentNode.normalize()
     })
   } else {
-    $('#posts > article > section').each(function(){ highlightMentions(this) })
+    $('.postbody').each(function(){ highlightMentions(this) })
   }
 }
 
@@ -186,9 +186,9 @@ function nullOrUndefined(arg) {
 function highlightQuotes(post) {
   var username = Awful._highlightQuoteUsername
   if (nullOrUndefined(username)) return
-  $(post).find('div.bbc-block a.quote_link').each(function(){
+  $(post).find('.bbc-block a.quote_link').each(function(){
     if ($(this).text().indexOf(username) === 0) {
-      $(this).closest('div.bbc-block').addClass('highlight')
+      $(this).closest('div.bbc-block').addClass('mention')
     }
   })
 }
@@ -206,13 +206,13 @@ function highlightMentions(post) {
     }
   }
   function replaceAll(node) {
-    if ($(node.parentNode).filter('span.highlight').length > 0) return
+    if ($(node.parentNode).filter('span.mention').length > 0) return
     var match = node.data.match(regex)
     if (match === null) return
     var nameNode = node.splitText(match.index)
     var rest = nameNode.splitText(username.length)
     var span = node.ownerDocument.createElement('span')
-    span.className = 'highlight'
+    span.className = 'mention'
     span.appendChild(nameNode.cloneNode(true))
     node.parentNode.replaceChild(span, nameNode)
     replaceAll(rest)

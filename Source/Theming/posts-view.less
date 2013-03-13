@@ -8,252 +8,152 @@
 
 @import "base.less";
 
-/* Solid grey background. */
 body {
   background-color: #d1d1d1;
+  
+  &.dark {
+    color: white;
+    background-color: #131313;
+  }
 }
 
-/* Solid dark background in dark mode. */
-body.dark {
-  background-color: #131313;
-}
-
-/* White text in dark mode. */
-body.dark {
-  color: white;
-}
-
-/* Posts hover nicely above the background and are offset parents. */
-#posts > article {
+.post {
+  position: relative;
   margin: 10px 5px;
   padding: 5px;
+  background-color: white;
   border-radius: 5px;
   box-shadow: 0 0 5px 5px #c1c1c1;
-  position: relative;
+  
+  &.seen {
+    background-color: #dbe8f5;
+  }
+  
+  .dark & {
+    background-color: #313131;
+    box-shadow: none;
+    
+    &.seen {
+      background-color: #121e2e;
+    }
+  }
 }
 
-/* No shadow in dark mode. */
-.dark #posts > article {
-  box-shadow: none;
+header {
+  .iphone & {
+    border-bottom: 1px solid #f0f0f0;
+    .dark& {
+      border-bottom: 1px solid #4e4e4e;
+    }
+  }
+  .iphone .seen & {
+    border-bottom-color: #d5dfe9;
+    .dark& {
+      border-bottom: 1px solid #536879;
+    }
+  }
+  
+  .ipad & {
+    background: -webkit-linear-gradient(left top, transparent 50%, rgba(0, 0, 0, 0.035));
+    border-bottom-right-radius: 4px;
+  
+    .dark& {
+      text-shadow: 0 1px black;
+    }
+  }
 }
 
-/* Posts have a white background. */
-#posts > article {
-  background-color: white;
-}
-
-/* Posts in dark mode have a very dark grey background. */
-.dark #posts > article {
-  background-color: #313131;
-}
-
-/* Posts already seen have a light blue background. */
-#posts > article.seen {
-  background-color: #dbe8f5;
-}
-
-/* Posts already seen in dark mode have a dark blue background. */
-.dark #posts > article.seen {
-  background-color: #121e2e;
-}
-
-/* iPad posts need some more padding. */
-.ipad #posts > article {
-  padding: 15px;
-}
-
-/* iPad post header sits in the top left corner. */
-.ipad #posts > article > header {
-  width: 136px;
-  height: 135px;
-  float: left;
-  margin: 0 5px 0 0;
-  padding: 0;
-}
-
-/* iPad post header has a small gradient background. */
-.ipad #posts > article > header {
-  background: -webkit-linear-gradient(left top, transparent 50%, rgba(0, 0, 0, 0.035));
-  border-bottom-right-radius: 4px;
-}
-
-/* iPad post header text in dark mode has a shadow. */
-.ipad.dark #posts > article > header {
-  text-shadow: 0 1px black;
-}
-
-/* iPhone posts have a horizontal divider between header and post. */
-.iphone #posts > article > header {
-  border-bottom: 1px solid #f0f0f0;
-}
-.iphone #posts > article.seen > header {
-  border-bottom-color: #d5dfe9;
-}
-
-/* iPhone posts have a different horizontal divider in dark mode. */
-.iphone.dark #posts > article > header {
-  border-bottom: 1px solid #4e4e4e;
-}
-.iphone.dark #posts > article.seen > header {
-  border-bottom: 1px solid #536879;
-}
-
-/* iPhone posts show author's name. */
-.iphone #posts > article > header > h1 {
-  font-size: 1em;
-  margin: 0;
-  padding-top: 4px;
-  display: inline-block;
-  vertical-align: middle;
-}
-
-/* Mods and admins get a little star by their name. */
-#posts > article.role-admin > header > h1 {
-  background-image: url('adminstar.png');
-}
-#posts > article.role-mod > header > h1 {
-  background-image: url('modstar.png');
-}
-#posts > article.role-admin > header > h1,
-#posts > article.role-mod > header > h1 {
-  background-repeat: no-repeat;
-  background-position: 0 center;
-  background-size: auto 1em;
-  padding-left: 18px;
+.username {
+  .iphone & {
+    display: inline-block;
+    margin: 0;
+    padding-top: 4px;
+    vertical-align: middle;
+    font-size: 1em;
+  }
 }
 
 .ipad .postdate {
   color: #999;
 }
 
-/* iPhone posts have a "show post actions" button in the top right. */
-.iphone #posts > article > header > button {
-  width: 48px;
-  height: 34px;
-  position: absolute;
-  top: 9px;
-  right: 10px;
-}
-
-/* iPad posts are similar. */
-.ipad #posts > article > header > button {
-  width: 38px;
-  height: 24px;
-  position: absolute;
-  bottom: 5px;
-  right: 12px;
-}
-
 /* "Show post actions" button is a centered ellipsis. */
-#posts > article > header > button {
-  border: none;
-}
-#posts > article > header > button:after {
+.action-button:after {
   content: "•••";
-  position: absolute;
-  top: -5px; right: 0;
   text-align: center;
   color: #d5d5d5;
-  font-size: 2em;
-  width: 50px;
-}
-.dark #posts > article > header > button:after {
+  font-size: 40px;
+  
+  .dark & {
     color: #777777;
-}
-.dark #posts > article.seen > header > button:after {
+  }
+  .dark .seen & {
     color: #536879;
-}
-.ipad #posts > article > header > button:after {
-  font-size: 2em;
-  width: 38px;
-  top: -7px;
-}
-
-/* "Show post actions" button is blue on read posts. */
-#posts > article.seen > header > button:after {
-  color: #9cb2c7;
-}
-
-/* Highlight original poster. */
-#posts > article.role-op > header > h1 {
-  color: #199ed7;
+  }
+  
+  .seen & {
+    color: #9cb2c7;
+  }
+  
+  .ipad & {
+    top: -7px;
+    width: 38px;
+    font-size: 2em;
+  }
 }
 
-/* iPhone post bodies have a bit of padding. */
-.iphone #posts > article > section {
-  padding: 5px;
-}
-
-/* iPad post bodies have only bottom padding. */
-.ipad #posts > article > section {
-  padding: 0 0 15px 0;
-}
-
-/* Make links in post bodies pretty. */
-#posts > article > section a {
+.postbody a {
   color: #003366;
-}
-
-/* Make links in dark mode pretty. */
-.dark #posts > article > section a {
-  color: #93daff;
+  
+  .dark & {
+    color: #93daff;
+  }
 }
 
 @import "spoilers.less";
 .spoilers(#000, #fff);
 
-/* All block headings, like 'quote' or 'code', are grey. */
-#posts > article > section .bbc-block h4,
-#posts > article > section .bbc-block h5 {
-  color: #555;
+.bbc-block {
+  h4,
+  h5 {
+    color: #555;
+    .dark & {
+      color: #999;
+    }
+  }
 }
 
-/* In dark mode, all block headings are a lighter grey. */
-.dark #posts > article > section .bbc-block h4,
-.dark #posts > article > section .bbc-block h5 {
-  color: #999;
-}
-
-/* Highlighted blocks (because they mention the user) get a green background. */
-#posts > article > section .bbc-block.highlight {
-  background-color: rgba(162, 205, 90, 0.5);
-}
-
-/* Mentions of the user's name are highlighted in purple. */
-#posts > article > section span.highlight {
-  color: hsl(268, 96%, 72%);
-}
-
-/* The "end of the thread" message is white in dark mode and dark grey in light mode, with a bit of a shadow. */
 #end {
-  line-height: 3em;
   color: #636363;
+  line-height: 3em;
   text-shadow: white 0 1px;
-}
-.dark #end {
+  
+  .dark & {
     color: white;
     text-shadow: black 0 1px;
+  }
 }
 
-#loading .container {
-  color: #636363;
-}
+#loading {
+  .container {
+    color: #636363;
+  }
 
-/* If the progress bar is hidden, we'll show a spinner of this color from spin.js instead. */
-#loading .progress-bar {
-  display: none;
-  color: #636363;
-}
-.dark > #loading .progress-bar {
-  color: #fff;
-}
-
-/* The loading text is centered with a little shadow. */
-#loading p {
-  text-align: center;
-  padding-top: 30px;
-  text-shadow: #ddd 0 -1px;
-}
-.dark > #loading p {
-  text-shadow: #555 0 -1px;
+  // Hidden progress bar means spinner.
+  .progress-bar {
+    display: none;
+    color: #636363;
+    .dark & {
+      color: #fff;      
+    }
+  }
+  
+  p {
+    padding-top: 30px;
+    text-align: center;
+    text-shadow: #ddd 0 -1px;
+    .dark & {
+      text-shadow: #555 0 -1px;
+    }
+  } 
 }

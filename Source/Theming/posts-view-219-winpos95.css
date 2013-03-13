@@ -18,38 +18,82 @@ body {
   word-wrap: break-word;
 }
 .ipad .post {
+  padding: 15px;
   min-height: 150px;
 }
-.ipad .post.no-avatar {
+.ipad .post .no-avatar {
   min-height: auto;
+}
+.no-avatar header {
+  padding-left: 5px;
 }
 .iphone header {
   width: 100%;
   height: 44px;
   padding: 0 50px;
 }
-.no-avatar header {
-  padding-left: 5px;
+.ipad header {
+  float: left;
+  width: 136px;
+  height: 135px;
+  margin: 0 5px 0 0;
+  padding: 0;
 }
-.ipad header .username {
+.role-admin .username {
+  background-image: url('adminstar.png');
+}
+.role-mod .username {
+  background-image: url('modstar.png');
+}
+.role-admin .username, .role-mod .username {
+  padding-left: 18px;
+  background-position: 0 center;
+  background-repeat: no-repeat;
+  background-size: auto 1em;
+}
+.role-op .username {
+  color: #199ed7;
+}
+.ipad .username {
   width: 100%;
   display: block;
   margin: 0;
   font-size: 1em;
 }
-.iphone header img {
+.iphone .avatar {
   position: absolute;
   top: 9px;
   left: 10px;
   max-width: 33px;
   max-height: 33px;
 }
-.ipad header img {
+.ipad .avatar {
   max-width: 80px;
   max-height: 80px;
 }
-header button {
+.action-button {
+  position: absolute;
+  border: none;
   -webkit-user-select: none;
+}
+.iphone .action-button {
+  top: 9px;
+  right: 10px;
+  width: 48px;
+  height: 34px;
+}
+.ipad .action-button {
+  right: 12px;
+  bottom: 5px;
+  width: 38px;
+  height: 24px;
+}
+.action-button:after {
+  position: absolute;
+  top: -5px;
+  right: 0;
+  width: 50px;
+  text-align: center;
 }
 .iphone .regdate {
   display: none;
@@ -58,17 +102,48 @@ header button {
   display: block;
   font-size: 0.8em;
 }
+.postdate {
+  font-size: 0.85em;
+}
+.iphone .postdate {
+  display: block;
+}
+.ipad .postdate {
+  position: absolute;
+  right: 55px;
+  bottom: 10px;
+}
 .postbody img {
   -webkit-user-select: none;
 }
 .postbody img, .postbody iframe {
   max-width: 100%;
 }
-.bbc-block h4, .bbc-block h5 {
+.iphone .postbody {
+  padding: 5px;
+}
+.ipad .postbody {
+  padding: 0 0 15px 0;
+}
+.bbc-block h4 {
   margin: 0;
+  padding: 1px 0 2px;
+  font-size: 0.85em;
+  font-style: italic;
+}
+.bbc-block h5 {
+  margin: 0;
+  font-size: 0.8em;
 }
 .ipad .bbc-block {
+  margin: 0 10px 1em 10px;
   overflow: hidden;
+}
+.bbc-block.mention {
+  background-color: rgba(162, 205, 90, 0.5);
+}
+span.mention {
+  color: #b373fc;
 }
 .quote_link {
   text-decoration: none;
@@ -88,6 +163,10 @@ blockquote img {
 }
 .postbody a {
   -webkit-tap-highlight-color: transparent;
+}
+.iphone .postbody ol, .iphone .postbody ul {
+  margin: 0;
+  padding-left: 1.5em;
 }
 .bbc-block.code pre {
   margin: 0;
@@ -112,138 +191,80 @@ blockquote img {
   bottom: 0;
   left: 0;
 }
+#loading .container {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 60px;
+  margin-top: -30px;
+}
 #loading .spinner {
   margin: 0 auto;
 }
-/* Default font. */
-body {
+html {
   font-family: arial, sans-serif;
   -webkit-font-smoothing: none;
 }
-/* Ugly green background. */
-body {
-  background: #008080;
-}
-/* Black text. */
 body {
   color: #000;
+  background: #008080;
 }
-/* Posts hover nicely above the background and are offset parents. */
-#posts > article {
-  margin: 0 5px;
-  padding: 0;
+.post {
   position: relative;
-  border-style: groove;
-  border-width: 2px;
+  margin: 5px;
+  padding: 0;
+  border: 2px groove #808080;
   border-top-color: #dfdfdf;
-  border-right-color: #808080;
-  border-bottom-color: #808080;
   border-left-color: #dfdfdf;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  background-repeat: no-repeat, no-repeat, repeat-x;
   background-color: #c0c0c0;
   background-image: url('winpos95-heading-left.png'), url('winpos95-heading-right.png'), url('winpos95-heading.png');
   background-position: top left, top right, top left;
+  background-repeat: no-repeat, no-repeat, repeat-x;
   background-size: 77px 18px, 52px 18px, 1px 18px;
 }
-/* Posts already seen have a dark green background. */
-#posts > article.seen {
+.post.seen {
   background-image: url('winpos95-heading-left-seen.png'), url('winpos95-heading-right.png'), url('winpos95-heading-seen.png');
 }
-/* iPad posts need some more padding. */
-.ipad #posts > article {
+.ipad .post {
+  min-height: 178px;
   padding: 25px 5px 40px 5px;
 }
-/* iPad posts with avatars have a minimum height. */
-.ipad #posts > article {
-  min-height: 178px;
-}
-/* iPhone post header goes across the screen. */
-.iphone #posts > article > header {
+.iphone header {
   height: 65px;
   padding-top: 18px;
-}
-/* iPad post header sits in the top left corner. */
-.ipad #posts > article > header {
-  width: 160px;
-  height: 100%;
-  float: left;
-  margin: 0 5px 5px 0;
-  padding: 5px;
-}
-/* iPad post header has a small gradient background. */
-.ipad #posts > article > header {
-  border: 1px none solid solid none #000;
-}
-/* iPhone posts have a horizontal divider between header and post. */
-.iphone #posts > article > header {
   border-top: 1px solid #444;
   border-bottom: 1px solid #444;
 }
-.iphone #posts > article.seen > header {
+.iphone .seen header {
   border-top-color: #395339;
   border-bottom-color: #395339;
 }
-/* iPhone posts show author's avatar to the left of their name. */
-.iphone #posts > article > header > img {
+.ipad header {
+  width: 160px;
+  height: 100%;
+  margin-bottom: 5px;
+  padding: 5px;
+  border: 1px none solid solid none #000;
+}
+.iphone .avatar {
   top: 28px;
 }
-/* iPhone posts show author's name. */
-.iphone #posts > article > header > h1 {
-  font-size: 1em;
+.iphone .username {
+  display: inline-block;
   margin: 0;
   padding-top: 4px;
-  display: inline-block;
   vertical-align: middle;
+  font-size: 1em;
 }
-/* iPad posts show author's name too. */
-.ipad #posts > article > header > h1 {
+.ipad .username {
   font-size: 0.85em;
 }
-/* Mods and admins get a little star by their name. */
-#posts > article.role-admin > header > h1 {
-  background-image: url('adminstar.png');
-}
-#posts > article.role-mod > header > h1 {
-  background-image: url('modstar.png');
-}
-#posts > article.role-admin > header > h1, #posts > article.role-mod > header > h1 {
-  background-repeat: no-repeat;
-  background-position: 0 center;
-  background-size: auto 1em;
-  padding-left: 18px;
-}
-/* iPhone posts show post date a little smaller. */
-.iphone #posts > article > header > time.postdate {
-  font-size: 0.85em;
-  display: block;
-}
-/* iPad posts show post date in the bottom right corner. */
-.ipad #posts > article > header > time.postdate {
-  font-size: 0.85em;
-  position: absolute;
-  bottom: 10px;
+.ipad .postdate {
   right: 85px;
 }
-/* iPhone posts have a "show post actions" button in the top right. */
-.iphone #posts > article > header > button {
-  width: 70px;
-  height: 34px;
-  position: absolute;
-  top: 26px;
-  right: 10px;
-}
-/* iPad posts are similar. */
-.ipad #posts > article > header > button {
-  width: 60px;
-  height: 34px;
-  position: absolute;
-  bottom: 5px;
-  right: 12px;
-}
-/* "Show post actions" button is a centered ellipsis. */
-#posts > article > header > button {
+.action-button {
+  height: 38px;
   background: #c0c0c0;
   border-width: 2px;
   border-style: groove;
@@ -251,30 +272,28 @@ body {
   border-right-color: #808080;
   border-bottom-color: #808080;
   border-left-color: #dfdfdf;
-  height: 38px;
 }
-#posts > article > header > button:after {
+.iphone .action-button {
+  top: 26px;
+  width: 70px;
+}
+.ipad .action-button {
+  width: 60px;
+  height: 34px;
+}
+.action-button:after {
   content: "Start";
-  text-align: right;
+  position: static;
   color: #000;
   font-size: 14px;
   font-weight: bold;
+  text-align: right;
 }
-/* Highlight original poster. */
-#posts > article.role-op > header > h1 {
+.role-op .username {
   color: #000;
   text-transform: italic;
 }
-/* iPhone post bodies have a bit of padding. */
-.iphone #posts > article > section {
-  padding: 5px;
-}
-/* iPad post bodies have only bottom padding. */
-.ipad #posts > article > section {
-  padding: 0 0 15px 0;
-}
-/* Make links in post bodies pretty. */
-#posts > article > section a {
+.postbody a {
   color: #000;
 }
 .bbc-spoiler {
@@ -302,64 +321,35 @@ body {
 .bbc-spoiler.spoiled img {
   visibility: visible;
 }
-/* Block headings like 'quote' are smaller and go in italics. */
-#posts > article > section .bbc-block h4 {
-  font-size: 13px;
-  font-style: italic;
-  margin: 0;
-  padding: 1px 0 2px 0;
-}
-/* Block headings like 'code' are even smaller but not in italics. */
-#posts > article > section .bbc-block h5 {
-  font-size: 12px;
-}
 blockquote, .dark blockquote {
   border-left-color: #000;
 }
-/* Quote, code, etc. blocks on iPad get some margin. */
-.ipad #posts > article > section .bbc-block {
-  margin: 0 10px 1em 10px;
-}
-/* Lists on iPhone shan't be indented; it wastes too much space. */
-.iphone #posts > article > section ul, .iphone #posts > article > section ol {
-  margin: 0;
-  padding-left: 1.5em;
-}
-/* The loading view has the hourglass animation. */
 #loading {
   background: center center no-repeat url('hourglass.gif');
 }
-/* The progress bar and loading text go in the middle. */
-body > #loading .container {
-  position: absolute;
+#loading .container {
   top: 60%;
   margin-top: -10px;
-  left: 0;
-  right: 0;
 }
-body.ipad > #loading .container {
+.ipad #loading .container {
   margin-top: -50px;
 }
-/* The loading progress bar is centered with a green border. */
-body > #loading .progress-bar {
-  border: none;
+#loading .progress-bar {
+  position: relative;
   width: 50px;
   height: 50px;
   margin: 0 auto;
   line-height: 50px;
-  position: relative;
+  border: none;
 }
-/* The loading progress bar is a spinner. */
-body > #loading .progress-bar > div {
+#loading .progress-bar  > div {
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  -webkit-animation: spin 0.5s step-end infinite;
 }
-/* The loading text is centered and bold. */
-body > #loading p {
-  text-align: center;
+#loading p {
   font-weight: bold;
+  text-align: center;
 }

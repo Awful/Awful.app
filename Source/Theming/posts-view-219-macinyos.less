@@ -8,248 +8,193 @@
 
 @import "base.less";
 
-/* Default font. */
+html {
+  font-family: 'Geeza Pro', sans-serif;
+  -webkit-font-smoothing: none;
+}
+
 body {
-    font-family: 'Geeza Pro', sans-serif;
-    -webkit-font-smoothing: none;
+  color: #000;
+  background-attachment: fixed;
+  background-image: url('macinyos-wallpaper.png');
+  background-size: 2px;
 }
 
-/* Black and white checked background. */
-body {
-    background-image: url('macinyos-wallpaper.png');
-    background-attachment: fixed;
-    background-size: 2px;
-}
-
-/* Black text. */
-body {
-    color: #000;
-}
-
-/* Posts hover nicely above the background and are offset parents. */
-#posts > article {
-    border: solid #000;
-    border-width: 1px 2px 2px 1px;
-    margin: 0 5px;
-    padding: 0;
-    border-radius: 2px;
-    position: relative;
-}
-
-/* Posts have a white background. */
-#posts > article {
-    margin-top: 5px;
-    margin-bottom: 5px;
-    background-repeat: no-repeat, no-repeat, no-repeat, repeat-x;
-    background-color: #fff;
-    background-image: url('macinyos-heading-left.png'), url('macinyos-heading-center.png'), url('macinyos-heading-right.png'), url('macinyos-heading.png');
-    background-position: top left, top center, top right, top left;
-    background-size: 20px 17px, 56px 17px, 20px 17px, 1px 18px;
-}
-
-/* Posts already seen have a dark green background. */
-#posts > article.seen {
+.post {
+  position: relative;
+  margin: 5px;
+  padding: 0;
+  background-color: #fff;
+  background-image: url('macinyos-heading-left.png'), url('macinyos-heading-center.png'), url('macinyos-heading-right.png'), url('macinyos-heading.png');
+  background-position: top left, top center, top right, top left;
+  background-repeat: no-repeat, no-repeat, no-repeat, repeat-x;
+  background-size: 20px 17px, 56px 17px, 20px 17px, 1px 18px;
+  border: solid #000;
+  border-radius: 2px;
+  border-width: 1px 2px 2px 1px;
+  
+  &.seen {
     background-color: #f1f1f1;
+  }
 }
 
-/* iPad posts need some more padding. */
-.ipad #posts > article {
-    padding: 18px 5px 40px 5px;
+.ipad .post {
+  min-height: 178px; // For posts with avatars.
+  padding: 18px 5px 40px 5px;
 }
 
-/* iPad posts with avatars have a minimum height. */
-.ipad #posts > article {
-    min-height: 178px;
-}
-
-/* iPhone post header goes across the screen. */
-.iphone #posts > article > header {
+header {
+  .iphone & {
     height: 65px;
     padding-top: 18px;
-}
-
-/* iPad post header sits in the top left corner. */
-.ipad #posts > article > header {
-    width: 160px;
-    height: 100%;
-    float: left;
-    margin: 0 5px 5px 0;
-    padding: 5px;
-}
-
-/* iPad post header has a small gradient background. */
-.ipad #posts > article > header {
-    border: 1px none solid solid none #000;
-}
-
-/* iPhone posts have a horizontal divider between header and post. */
-.iphone #posts > article > header {
     border-top: 1px solid #444;
     border-bottom: 1px solid #444;
-}
-.iphone #posts > article.seen > header {
+  }
+  
+  .iphone .seen & {
     border-top-color: #395339;
     border-bottom-color: #395339;
+  }
+  
+  .ipad & {
+    width: 160px;
+    height: 100%;
+    margin-bottom: 5px;
+    padding: 5px;
+    border: 1px none solid solid none #000;
+  }
 }
 
-/* iPhone posts show author's avatar to the left of their name. */
-.iphone #posts > article > header > img {
-    top: 28px;
+.iphone .avatar {
+  top: 28px;
 }
 
-/* iPhone posts show author's name. */
-.iphone #posts > article > header > h1 {
-    font-size: 1em;
+.username {
+  .iphone & {
+    display: inline-block;
     margin: 0;
     padding-top: 4px;
-    display: inline-block;
     vertical-align: middle;
-}
-
-/* iPad posts show author's name too. */
-.ipad #posts > article > header > h1 {
+    font-size: 1em;
+  }
+   
+  .ipad & {
     font-size: 0.85em;
+  }
 }
 
-/* Mods and admins get a little star by their name. */
-#posts > article.role-admin > header > h1 {
+.username {
+  .role-admin & {
     background-image: url('macinyos-adminstar.png');
-}
-#posts > article.role-mod > header > h1 {
+  }
+  .role-mod & {
     background-image: url('macinyos-modstar.png');
-}
-#posts > article.role-admin > header > h1,
-#posts > article.role-mod > header > h1 {
-    background-repeat: no-repeat;
-    background-position: 0 center;
-    padding-left: 18px;
+  }
 }
 
-// Override iPad post date position.
-.ipad .postdate {
+.postdate {
+  .ipad & {
     right: 85px;
+  }
 }
 
-/* iPhone posts have a "show post actions" button in the top right. */
-.iphone #posts > article > header > button {
-    width: 48px;
-    height: 34px;
-    position: absolute;
+.action-button {
+  .iphone & {
     top: 26px;
-    right: 10px;
-}
-
-/* iPad posts are similar. */
-.ipad #posts > article > header > button {
+  }
+  
+  .ipad & {
     width: 58px;
     height: 34px;
-    position: absolute;
-    bottom: 5px;
-    right: 12px;
+  }
 }
 
-/* "Show post actions" button is a centered ellipsis. */
-#posts > article > header > button {
-    background: top left no-repeat url('macinyos-postactions-bg.png') #fff;
-    background-size: 31px;
-    border: 1px solid black;
-    border-radius: 4px;
-    height: 38px;
-    width: 70px;
-}
-#posts > article > header > button:after {
+.action-button {
+  width: 70px;
+  height: 38px;
+  background: top left no-repeat url('macinyos-postactions-bg.png') #fff;
+  background-size: 31px;
+  border: 1px solid black;
+  border-radius: 4px;
+  
+  &:after {
     content: "⋯";
-    position: absolute;
-    top: 10px; right: 0px;
-    text-align: center;
+    top: 10px;
     color: #000;
     font-size: 20px;
     font-weight: bold;
-    text-align: right
-}
-.ipad #posts > article > header > button:after {
-    font-size: 30px;
-    top: -7px;
-}
-
-/* Highlight original poster. */
-#posts > article.role-op > header > h1 {
-    color: #000;
-    text-transform: italic;
+    text-align: right;
+    
+    .ipad & {
+      font-size: 30px;
+      top: -7px;
+    }
+  }
 }
 
-/* iPhone post bodies have a bit of padding. */
-.iphone #posts > article > section {
-    padding: 5px;
+.role-op .username {
+  color: #000;
+  text-transform: italic;
 }
 
-/* iPad post bodies have only bottom padding. */
-.ipad #posts > article > section {
-    padding: 0 0 15px 0;
-}
-
-/* Make links in post bodies pretty. */
-#posts > article > section a {
-    color: #000;
+.postbody a {
+  color: #000;
 }
 
 @import "spoilers.less";
 .spoilers(#000);
 
-// Override quote border.
 blockquote,
 .dark blockquote {
   border-left-color: #000;
 }
 
-/* The loading view looks like the old bootscreen. */
 #loading {
-    background: center 45% no-repeat url('macinyos-loading.png') #fff;
-    background-size: 221px 141px;
-    border: 1px solid #000;
-    position: fixed;
-    top: 30px; right: 10px; bottom: 30px; left: 10px;
-}
-/* Need to adjust size of loading screen when phone is in landscape, so we use a media query */
-@media only screen and (min-width: 480px) and (max-width: 767px) {
-	body.iphone > #loading {
-        top: 5px; right: 40px; bottom: 5px; left: 40px;
+  position: fixed;
+  top: 30px; right: 10px; bottom: 30px; left: 10px;
+  background: center 45% no-repeat url('macinyos-loading.png') #fff;
+  background-size: 221px 141px;
+  border: 1px solid #000;
+  
+  .iphone & {
+    // Adjust size in landscape.
+    @media only screen and (min-width: 480px) and (max-width: 767px) {
+      top: 5px; right: 40px; bottom: 5px; left: 40px;
     }
-}
-body.ipad > #loading {
+  }
+  
+  .ipad & {
+    top: 50px; right: 20px; bottom: 50px; left: 20px;
     background: center 45% no-repeat url('macinyos-loading.png') #fff;
     background-size: 221px 141px;
     border: 1px solid #000;
-    top: 50px; right: 20px; bottom: 50px; left: 20px;
-}
-// Override loading container position and margin.
-#loading .container {
+  }
+  
+  .container {
     top: 60%;
     margin-top: -10px;
     .ipad & {
       margin-top: -50px;
     }
-}
-
-/* The loading progress bar is centered with a green border. */
-body > #loading .progress-bar {
-    border: none;
+  }
+  
+  .progress-bar {
+    position: relative;
     width: 50px;
     height: 50px;
     margin: 0 auto;
+    border: none;
     line-height: 50px;
-    position: relative;
-}
+    
+    div {
+      position: absolute;
+      top: 0; right: 0; bottom: 0; left: 0;
+      -webkit-animation: spin 0.5s step-end infinite;
+    }
+  }
 
-/* The loading progress bar is a spinner. */
-body > #loading .progress-bar > div {
-    position: absolute;
-    top: 0; right: 0; bottom: 0; left: 0;
-    -webkit-animation: spin 0.5s step-end infinite;
-}
-
-/* The loading text is centered and bold. */
-body > #loading p {
-    text-align: center;
+  p {
     font-weight: bold;
+    text-align: center;
+  }
 }

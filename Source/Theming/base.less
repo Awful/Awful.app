@@ -6,13 +6,11 @@
   box-sizing: border-box;
 }
 
-// Base font. Size other text using ems so the font size setting works in the
-// app.
+// Base font. Size other text using ems so the font size setting works.
 html {
   font: 14px "Helvetica Neue", sans-serif;
 }
 
-// Body reset
 body {
   margin: 0;
   // Maintain text size on orientation change.
@@ -26,37 +24,68 @@ body {
 // Posts
 // -------------------------
 
-// Ensure avatar fits in posts on iPad.
-.ipad .post {
-  min-height: 150px;
-  
-  &.no-avatar {
-    min-height: auto;
+.post {
+  .ipad & {
+    padding: 15px;
+    // Ensure avatar fits in posts.
+    min-height: 150px;
+    &.no-avatar {
+      min-height: auto;
+    }
   }
 }
 
 // Post header
 // -------------------------
 
-.iphone header {
-  width: 100%;
-  height: 44px;
-  padding: 0 50px;
+header {
+  .no-avatar & {
+    padding-left: 5px;
+  }
+  
+  .iphone & {
+    width: 100%;
+    height: 44px;
+    padding: 0 50px;
+  }
+  
+  .ipad & {
+    float: left;
+    width: 136px;
+    height: 135px;
+    margin: 0 5px 0 0;
+    padding: 0;
+  }
 }
 
-.no-avatar header {
-  padding-left: 5px;
+.username {
+  .role-admin & {
+    background-image: url('adminstar.png');
+  }
+  .role-mod & {
+    background-image: url('modstar.png');
+  }
+  .role-admin &,
+  .role-mod & {
+    padding-left: 18px;
+    background-position: 0 center;
+    background-repeat: no-repeat;
+    background-size: auto 1em;
+  }
+  
+  .role-op & {
+    color: #199ed7;
+  }
+  
+  .ipad & {
+    width: 100%;
+    display: block;
+    margin: 0;
+    font-size: 1em;
+  }
 }
 
-.ipad header .username {
-  width: 100%;
-  display: block;
-  margin: 0;
-  font-size: 1em;
-}
-
-// Avatar.
-header img {
+.avatar {
   .iphone & {
     position: absolute;
     top: 9px;
@@ -64,15 +93,38 @@ header img {
     max-width: 33px;
     max-height: 33px;
   }
+  
   .ipad & {
     max-width: 80px;
     max-height: 80px;
   }
 }
 
-// Prevent selecting the whole header when laying on the action button.
-header button {
+.action-button {
+  position: absolute;
+  border: none;
+  // Prevent selecting the whole header on long-tap.
   -webkit-user-select: none;
+  
+  .iphone & {
+    top: 9px;
+    right: 10px;
+    width: 48px;
+    height: 34px;
+  }
+  .ipad & {
+    right: 12px;
+    bottom: 5px;
+    width: 38px;
+    height: 24px;
+  }
+  
+  &:after {
+    position: absolute;
+    top: -5px; right: 0;
+    width: 50px;
+    text-align: center;
+  }
 }
 
 .regdate {
@@ -102,19 +154,25 @@ header button {
 // Post body
 // -------------------------
 
-// We don't control the markup in the post body; that comes directly from the
-// Forums. So we make do.
+// We don't generally control the markup in the post body, so we make do.
 
-// Hide UIWebView's long-tap image menu.
-.postbody img {
-  -webkit-user-select: none;
-}
-
-// Don't break tables. iframes are embedded videos.
 .postbody {
+  // Hide UIWebView's long-tap image menu.
+  img {
+    -webkit-user-select: none;
+  }
+  
+  // Don't break tables. iframes are embedded videos.
   img,
   iframe {
     max-width: 100%;
+  }
+  
+  .iphone & {
+    padding: 5px;
+  }
+  .ipad & {
+    padding: 0 0 15px 0;
   }
 }
 
@@ -138,6 +196,14 @@ header button {
     // Keep blocks out from under the floating avatar.
     overflow: hidden;
   }
+  
+  &.mention {
+    background-color: fade(#a2cd5a, 50%);
+  }
+}
+
+span.mention {
+  color: #b373fc;
 }
 
 // .quote_link is "pokeyman posted:" above a quote, a link to the quoted post.

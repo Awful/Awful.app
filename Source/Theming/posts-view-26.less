@@ -8,186 +8,116 @@
 
 @import "base.less";
 
-/* Pinkish background. */
 body {
   background-color: #f99;
 }
 
-/* Posts hover nicely above the background and are offset parents. */
-#posts > article {
-  margin: 10px 5px;
+.post {
   position: relative;
-}
-/* Post bodies have a white background, rounded corners, and a thick black border separate from the post header. */
-#posts > article > section {
-    background-color: white;
-    padding: 5px;
-    border-radius: 10px;
-    border:3px solid #000;
+  margin: 10px 5px;
 }
 
-/* Post header goes across the screen. It's also given a background image and positioned slightly lower to make the post look like a speech bubble */
-#posts > article > header {
+.postbody {
+  background-color: #fff;
+  border-radius: 10px;
+  border:3px solid #000;
+  
+  .ipad & {
+    padding: 5px;
+  }
+}
+
+header {
+  position: relative;
+  top: 3px;
   width: 100%;
   height: 69px;
   background: 40px bottom no-repeat url('fyad-bubble.png');
-    background-size: 70px 26px;
-    position: relative;
-    top: 3px;
-}
-.ipad #posts > article > header {
+  background-size: 70px 26px;
+  
+  .ipad & {
+    padding-left: 75px;
     background: 65px bottom no-repeat url('fyad-bubble.png');
+  }
 }
 
-/* Avatars are bigger on iPad. */
-.ipad #posts > article > header > img {
-    max-width: 55px;
-    max-height: 55px;
-}
-
-/* Posts show author's name. */
-#posts > article > header > h1 {
+.username {
+  display: inline-block;
   width: auto;
-  font-size: 1em;
   margin: 0;
   padding-top: 4px;
-  display: inline-block;
   vertical-align: middle;
+  font-size: 1em;
 }
 
-
-/* Mods and admins get a little star by their name. */
-#posts > article.role-admin > header > h1 {
-  background-image: url('adminstar.png');
-}
-#posts > article.role-mod > header > h1 {
-  background-image: url('modstar.png');
-}
-#posts > article.role-admin > header > h1,
-#posts > article.role-mod > header > h1 {
-  background-repeat: no-repeat;
-  background-position: 0 center;
-  background-size: auto 1em;
-  padding-left: 18px;
+.avatar {
+  max-width: 55px;
+  max-height: 55px;
 }
 
-// Override iPad header padding.
-.ipad header {
-    padding-left: 75px;
-}
-
-// Override iPad postdate display.
 .ipad .postdate {
   display: block;
 }
 
-/* Posts have a "show post actions" button in the top right. */
-#posts > article > header > button {
-  width: 48px;
-  height: 34px;
-  position: absolute;
-  top: 9px;
-  right: 10px;
+.action-button {
+  .iphone &,
+  .ipad & {
+    top: 9px;
+    right: 10px;
+    width: 48px;
+    height: 34px;
+  }
+  
+  &:after {
+    content: "•••";
+    color: #f39;
+    font-size: 40px;
+  }
 }
 
-/* "Show post actions" button is a centered ellipsis. */
-#posts > article > header > button {
-  border: none;
-}
-#posts > article > header > button:after {
-  content: "•••";
-  position: absolute;
-  top: -5px; right: 0;
-  text-align: center;
-  color: #f39;
-  font-size: 40px;
-  width: 50px;
-}
-
-// Hide regdates on iPad too.
 .ipad .regdate {
   display: none;
 }
 
-/* Highlight original poster. */
-#posts > article.role-op > header > h1 {
+.role-op .username {
   color: #f39;
 }
 
-/* Post bodies have a bit of padding. */
-#posts > article > section {
-  padding: 5px;
-}
-
-/* Make links in post bodies pretty. */
-#posts > article > section a {
+.postbody a {
   color: #f39;
 }
 
-/* Everything in spoiler tags is black. */
-#posts > article > section .bbc-spoiler,
-#posts > article > section .bbc-spoiler li {
-  color: black;
-  background: black;
-}
-#posts > article > section .bbc-spoiler a:link,
-#posts > article > section .bbc-spoiler a:visited,
-#posts > article > section .bbc-spoiler a:active {
-  color: black;
+@import "spoilers.less";
+.spoilers(#000, #fff);
+
+.bbc-block {
+  h4,
+  h5 {
+    color: #555;
+  }
 }
 
-/* Everything in dark mode spoiler tags is white. */
-.dark #posts > article > section .bbc-spoiler,
-.dark #posts > article > section .bbc-spoiler li {
-  color: white;
-  background: white;
-}
-
-/* Tapping a spoiler tag reveals its contents. */
-#posts > article > section .bbc-spoiler.spoiled,
-#posts > article > section .bbc-spoiler.spoiled li {
-  background: transparent;
-}
-
-/* All block headings, like 'quote' or 'code', are grey. */
-#posts > article > section .bbc-block h4,
-#posts > article > section .bbc-block h5 {
-  color: #555;
-}
-
-/* Highlighted blocks (because they mention the user) get a green background. */
-#posts > article > section .bbc-block.highlight {
-  background-color: rgba(162, 205, 90, 0.5);
-}
-
-// Override dark-mode quote border.
 .dark blockquote {
   border-left-color: #999;
 }
 
-/* Mentions of the user's name are highlighted in purple. */
-#posts > article > section span.highlight {
-  color: hsl(268, 96%, 72%);
-}
-
-/* The "end of the thread" message is white in dark mode and dark grey in light mode, with a bit of a shadow. */
 #end {
   line-height: 3em;
   color: #000;
 }
 
-#loading .container {
-  color: #000;
-}
+#loading {
+  .container {
+    color: #000;
+  }
 
-/* If the progress bar is hidden, we'll show a spinner of this color from spin.js instead. */
-#loading .progress-bar {
-  display: none;
-  color: #000;
-}
-
-/* The loading text is centered with a little shadow. */
-#loading p {
-  text-align: center;
-  padding-top: 30px;
+  .progress-bar {
+    display: none;
+    color: #000;
+  }
+  
+  p {
+    padding-top: 30px;
+    text-align: center;
+  }
 }
