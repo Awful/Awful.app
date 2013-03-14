@@ -17,9 +17,15 @@ body {
   -webkit-touch-callout: none;
   word-wrap: break-word;
 }
+.post {
+  position: relative;
+  margin: 10px 5px;
+  padding: 5px;
+  border-radius: 5px;
+}
 .ipad .post {
-  padding: 15px;
   min-height: 150px;
+  padding: 15px;
 }
 .ipad .post .no-avatar {
   min-height: auto;
@@ -209,11 +215,7 @@ body.dark {
   color: #6c0;
 }
 .post {
-  position: relative;
-  margin: 10px 5px;
-  padding: 5px;
   background-color: #6c0;
-  border-radius: 5px;
 }
 .dark .post {
   background-color: #000;

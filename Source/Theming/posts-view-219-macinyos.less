@@ -21,7 +21,6 @@ body {
 }
 
 .post {
-  position: relative;
   margin: 5px;
   padding: 0;
   background-color: #fff;
@@ -36,11 +35,11 @@ body {
   &.seen {
     background-color: #f1f1f1;
   }
-}
-
-.ipad .post {
-  min-height: 178px; // For posts with avatars.
-  padding: 18px 5px 40px 5px;
+  
+  .ipad & {
+    min-height: 178px; // For posts with avatars.
+    padding: 18px 5px 40px 5px;
+  }
 }
 
 header {
@@ -65,8 +64,10 @@ header {
   }
 }
 
-.iphone .avatar {
-  top: 28px;
+.avatar {
+  .iphone & {
+    top: 28px;
+  }
 }
 
 .username {
@@ -81,14 +82,18 @@ header {
   .ipad & {
     font-size: 0.85em;
   }
-}
-
-.username {
+  
   .role-admin & {
     background-image: url('macinyos-adminstar.png');
   }
+  
   .role-mod & {
     background-image: url('macinyos-modstar.png');
+  }
+  
+  .role-op & {
+    color: #000;
+    text-transform: italic;
   }
 }
 
@@ -99,23 +104,21 @@ header {
 }
 
 .action-button {
+  background: top left no-repeat url('macinyos-postactions-bg.png') #fff;
+  background-size: 31px;
+  border: 1px solid black;
+  border-radius: 4px;
+  
   .iphone & {
     top: 26px;
+    width: 70px;
+    height: 38px;
   }
   
   .ipad & {
     width: 58px;
     height: 34px;
   }
-}
-
-.action-button {
-  width: 70px;
-  height: 38px;
-  background: top left no-repeat url('macinyos-postactions-bg.png') #fff;
-  background-size: 31px;
-  border: 1px solid black;
-  border-radius: 4px;
   
   &:after {
     content: "⋯";
@@ -130,11 +133,6 @@ header {
       top: -7px;
     }
   }
-}
-
-.role-op .username {
-  color: #000;
-  text-transform: italic;
 }
 
 .postbody a {

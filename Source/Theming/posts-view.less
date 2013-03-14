@@ -18,11 +18,7 @@ body {
 }
 
 .post {
-  position: relative;
-  margin: 10px 5px;
-  padding: 5px;
   background-color: white;
-  border-radius: 5px;
   box-shadow: 0 0 5px 5px #c1c1c1;
   
   &.seen {
@@ -73,8 +69,10 @@ header {
   }
 }
 
-.ipad .postdate {
-  color: #999;
+.postdate {
+  .ipad & {
+    color: #999;
+  }
 }
 
 /* "Show post actions" button is a centered ellipsis. */

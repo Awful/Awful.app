@@ -17,9 +17,15 @@ body {
   -webkit-touch-callout: none;
   word-wrap: break-word;
 }
+.post {
+  position: relative;
+  margin: 10px 5px;
+  padding: 5px;
+  border-radius: 5px;
+}
 .ipad .post {
-  padding: 15px;
   min-height: 150px;
+  padding: 15px;
 }
 .ipad .post .no-avatar {
   min-height: auto;
@@ -213,7 +219,6 @@ body {
   background-size: 2px;
 }
 .post {
-  position: relative;
   margin: 5px;
   padding: 0;
   background-color: #fff;
@@ -268,23 +273,27 @@ body {
 .role-mod .username {
   background-image: url('macinyos-modstar.png');
 }
+.role-op .username {
+  color: #000;
+  text-transform: italic;
+}
 .ipad .postdate {
   right: 85px;
 }
-.iphone .action-button {
-  top: 26px;
-}
-.ipad .action-button {
-  width: 58px;
-  height: 34px;
-}
 .action-button {
-  width: 70px;
-  height: 38px;
   background: top left no-repeat url('macinyos-postactions-bg.png') #ffffff;
   background-size: 31px;
   border: 1px solid black;
   border-radius: 4px;
+}
+.iphone .action-button {
+  top: 26px;
+  width: 70px;
+  height: 38px;
+}
+.ipad .action-button {
+  width: 58px;
+  height: 34px;
 }
 .action-button:after {
   content: "⋯";
@@ -297,10 +306,6 @@ body {
 .ipad .action-button:after {
   font-size: 30px;
   top: -7px;
-}
-.role-op .username {
-  color: #000;
-  text-transform: italic;
 }
 .postbody a {
   color: #000;

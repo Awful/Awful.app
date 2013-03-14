@@ -17,9 +17,15 @@ body {
   -webkit-touch-callout: none;
   word-wrap: break-word;
 }
+.post {
+  position: relative;
+  margin: 10px 5px;
+  padding: 5px;
+  border-radius: 5px;
+}
 .ipad .post {
-  padding: 15px;
   min-height: 150px;
+  padding: 15px;
 }
 .ipad .post .no-avatar {
   min-height: auto;
@@ -205,9 +211,8 @@ blockquote img {
 body {
   background-color: #f99;
 }
-.post {
-  position: relative;
-  margin: 10px 5px;
+.post, .ipad .post {
+  padding: 0;
 }
 .postbody {
   background-color: #fff;
@@ -222,8 +227,10 @@ header {
   top: 3px;
   width: 100%;
   height: 69px;
-  background: 40px bottom no-repeat url('fyad-bubble.png');
   background-size: 70px 26px;
+}
+.iphone header {
+  background: 40px bottom no-repeat url('fyad-bubble.png');
 }
 .ipad header {
   padding-left: 75px;
@@ -236,6 +243,9 @@ header {
   padding-top: 4px;
   vertical-align: middle;
   font-size: 1em;
+}
+.role-op .username {
+  color: #f39;
 }
 .avatar {
   max-width: 55px;
@@ -257,9 +267,6 @@ header {
 }
 .ipad .regdate {
   display: none;
-}
-.role-op .username {
-  color: #f39;
 }
 .postbody a {
   color: #f39;

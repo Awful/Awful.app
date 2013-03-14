@@ -17,9 +17,15 @@ body {
   -webkit-touch-callout: none;
   word-wrap: break-word;
 }
+.post {
+  position: relative;
+  margin: 10px 5px;
+  padding: 5px;
+  border-radius: 5px;
+}
 .ipad .post {
-  padding: 15px;
   min-height: 150px;
+  padding: 15px;
 }
 .ipad .post .no-avatar {
   min-height: auto;
@@ -211,7 +217,6 @@ body {
   background: #008080;
 }
 .post {
-  position: relative;
   margin: 5px;
   padding: 0;
   border: 2px groove #808080;
@@ -222,6 +227,7 @@ body {
   background-position: top left, top right, top left;
   background-repeat: no-repeat, no-repeat, repeat-x;
   background-size: 77px 18px, 52px 18px, 1px 18px;
+  border-radius: 0;
 }
 .post.seen {
   background-image: url('winpos95-heading-left-seen.png'), url('winpos95-heading-right.png'), url('winpos95-heading-seen.png');
@@ -260,6 +266,10 @@ body {
 .ipad .username {
   font-size: 0.85em;
 }
+.role-op .username {
+  color: #000;
+  text-transform: italic;
+}
 .ipad .postdate {
   right: 85px;
 }
@@ -288,10 +298,6 @@ body {
   font-size: 14px;
   font-weight: bold;
   text-align: right;
-}
-.role-op .username {
-  color: #000;
-  text-transform: italic;
 }
 .postbody a {
   color: #000;

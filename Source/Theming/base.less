@@ -25,10 +25,15 @@ body {
 // -------------------------
 
 .post {
+  position: relative;
+  margin: 10px 5px;
+  padding: 5px;
+  border-radius: 5px;
+  
   .ipad & {
+    min-height: 150px; // Ensure avatar fits in posts.
     padding: 15px;
-    // Ensure avatar fits in posts.
-    min-height: 150px;
+    
     &.no-avatar {
       min-height: auto;
     }

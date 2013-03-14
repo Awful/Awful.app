@@ -19,7 +19,6 @@ body {
 }
 
 .post {
-  position: relative;
   margin: 5px;
   padding: 0;
   border: 2px groove #808080;
@@ -30,6 +29,7 @@ body {
   background-position: top left, top right, top left;
   background-repeat: no-repeat, no-repeat, repeat-x;
   background-size: 77px 18px, 52px 18px, 1px 18px;
+  border-radius: 0;
   
   &.seen {
     background-image: url('winpos95-heading-left-seen.png'), url('winpos95-heading-right.png'), url('winpos95-heading-seen.png');
@@ -62,8 +62,10 @@ header {
   }
 }
 
-.iphone .avatar {
-  top: 28px;
+.avatar {
+  .iphone & {
+    top: 28px;
+  }
 }
 
 .username {
@@ -77,6 +79,11 @@ header {
   
   .ipad & {
     font-size: 0.85em;
+  }
+  
+  .role-op & {
+    color: #000;
+    text-transform: italic;
   }
 }
 
@@ -115,11 +122,6 @@ header {
   }
 }
 
-.role-op .username {
-  color: #000;
-  text-transform: italic;
-}
-
 .postbody a {
   color: #000;
 }
@@ -138,6 +140,7 @@ blockquote,
   .container {
     top: 60%;
     margin-top: -10px;
+    
     .ipad & {
       margin-top: -50px;
     }

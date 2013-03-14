@@ -17,11 +17,7 @@ body {
 }
 
 .post {
-  position: relative;
-  margin: 10px 5px;
-  padding: 5px;
   background-color: #6c0;
-  border-radius: 5px;
   
   .dark & {
     background-color: #000;
@@ -48,16 +44,20 @@ header {
   }
 }
 
-.iphone .username {
-  display: inline-block;
-  margin: 0;
-  padding-top: 4px;
-  vertical-align: middle;
-  font-size: 1em;
+.username {
+  .iphone & {
+    display: inline-block;
+    margin: 0;
+    padding-top: 4px;
+    vertical-align: middle;
+    font-size: 1em;
+  }
 }
 
-.ipad .postdate {
-  color: #000;
+.postdate {
+  .ipad & {
+    color: #000;
+  }
 }
 
 .action-button:after {
@@ -96,8 +96,10 @@ header {
   }
 }
 
-.dark blockquote {
-  border-left-color: #555;
+blockquote {
+  .dark & {
+    border-left-color: #555;
+  }
 }
 
 #end {

@@ -15,11 +15,7 @@ body {
 }
 
 .post {
-  position: relative;
-  margin: 10px 5px;
-  padding: 5px;
   background-color: #191919;
-  border-radius: 5px;
   
   &.seen {
     background-color: @seencolor;
@@ -37,29 +33,32 @@ header {
   }
 }
 
-.iphone .username {
-  display: inline-block;
-  margin: 0;
-  padding-top: 4px;
-  vertical-align: middle;
-  font-size: 1em;
+.username {
+  .iphone & {
+    display: inline-block;
+    margin: 0;
+    padding-top: 4px;
+    vertical-align: middle;
+    font-size: 1em;
+  }
 }
 
-.ipad .action-button {
-  bottom: 12px;
-}
-
-// Action button is a centered ellipsis.
-.action-button:after {
-  content: "⋯";
-  color: @color;
-  font-size: 40px;
-  font-weight: bold;
-  
+.action-button {
   .ipad & {
-    font-size: 30px;
-    width: 38px;
-    top: -7px;
+    bottom: 12px;
+  }
+  
+  &:after {
+    content: "⋯";
+    color: @color;
+    font-size: 40px;
+    font-weight: bold;
+  
+    .ipad & {
+      font-size: 30px;
+      width: 38px;
+      top: -7px;
+    }
   }
 }
 
