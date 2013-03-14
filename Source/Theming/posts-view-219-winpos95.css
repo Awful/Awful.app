@@ -5,9 +5,6 @@
  Created by Jim Murtha on 12-10-26.
  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
  */
-* {
-  box-sizing: border-box;
-}
 html {
   font: 14px "Helvetica Neue", sans-serif;
 }
@@ -18,32 +15,52 @@ body {
   word-wrap: break-word;
 }
 .post {
-  position: relative;
   margin: 10px 5px;
-  padding: 5px;
   border-radius: 5px;
 }
+.iphone .post {
+  padding: 5px;
+}
 .ipad .post {
-  min-height: 150px;
   padding: 15px;
 }
-.ipad .post .no-avatar {
-  min-height: auto;
+header {
+  margin-left: 5px;
 }
-.no-avatar header {
-  padding-left: 5px;
+header:after {
+  content: "";
+  clear: both;
 }
-.iphone header {
-  width: 100%;
-  height: 44px;
-  padding: 0 50px;
-}
-.ipad header {
+.avatar {
   float: left;
-  width: 136px;
-  height: 135px;
-  margin: 0 5px 0 0;
-  padding: 0;
+  margin: 3px 5px 0 0;
+}
+.iphone .avatar {
+  max-width: 2em;
+  max-height: 2em;
+}
+.ipad .avatar {
+  max-width: 4em;
+  max-height: 4em;
+}
+.action-button {
+  float: right;
+}
+.username {
+  margin: 0;
+}
+.postdate {
+  display: block;
+}
+.regdate {
+  display: none;
+}
+header {
+  padding-bottom: 5px;
+  border-bottom: 1px solid;
+}
+.username {
+  font-size: 1em;
 }
 .role-admin .username {
   background-image: url('adminstar.png');
@@ -60,64 +77,17 @@ body {
 .role-op .username {
   color: #199ed7;
 }
-.ipad .username {
-  width: 100%;
-  display: block;
-  margin: 0;
-  font-size: 1em;
-}
-.iphone .avatar {
-  position: absolute;
-  top: 9px;
-  left: 10px;
-  max-width: 33px;
-  max-height: 33px;
-}
-.ipad .avatar {
-  max-width: 80px;
-  max-height: 80px;
-}
 .action-button {
-  position: absolute;
+  margin: 0;
+  padding: 0;
   border: none;
+  font-family: inherit;
+  font-size: 2.85em;
+  -webkit-tap-highlight-color: transparent;
   -webkit-user-select: none;
-}
-.iphone .action-button {
-  top: 9px;
-  right: 10px;
-  width: 48px;
-  height: 34px;
-}
-.ipad .action-button {
-  right: 12px;
-  bottom: 5px;
-  width: 38px;
-  height: 24px;
-}
-.action-button:after {
-  position: absolute;
-  top: -5px;
-  right: 0;
-  width: 50px;
-  text-align: center;
-}
-.iphone .regdate {
-  display: none;
-}
-.ipad .regdate {
-  display: block;
-  font-size: 0.8em;
 }
 .postdate {
   font-size: 0.85em;
-}
-.iphone .postdate {
-  display: block;
-}
-.ipad .postdate {
-  position: absolute;
-  right: 55px;
-  bottom: 10px;
 }
 .postbody img {
   -webkit-user-select: none;
@@ -143,7 +113,6 @@ body {
 }
 .ipad .bbc-block {
   margin: 0 10px 1em 10px;
-  overflow: hidden;
 }
 .bbc-block.mention {
   background-color: rgba(162, 205, 90, 0.5);
@@ -209,7 +178,7 @@ blockquote img {
   margin: 0 auto;
 }
 html {
-  font-family: arial, sans-serif;
+  font-family: Arial;
   -webkit-font-smoothing: none;
 }
 body {
@@ -236,68 +205,33 @@ body {
   min-height: 178px;
   padding: 25px 5px 40px 5px;
 }
-.iphone header {
-  height: 65px;
-  padding-top: 18px;
-  border-top: 1px solid #444;
-  border-bottom: 1px solid #444;
-}
-.iphone .seen header {
-  border-top-color: #395339;
-  border-bottom-color: #395339;
-}
-.ipad header {
-  width: 160px;
-  height: 100%;
-  margin-bottom: 5px;
-  padding: 5px;
-  border: 1px none solid solid none #000;
-}
-.iphone .avatar {
-  top: 28px;
-}
-.iphone .username {
-  display: inline-block;
-  margin: 0;
-  padding-top: 4px;
-  vertical-align: middle;
-  font-size: 1em;
-}
-.ipad .username {
-  font-size: 0.85em;
+header {
+  margin: 18px 0 0 0;
+  border-bottom: 1px solid #ccc;
 }
 .role-op .username {
   color: #000;
   text-transform: italic;
 }
-.ipad .postdate {
-  right: 85px;
-}
 .action-button {
-  height: 38px;
+  position: relative;
+  width: 52px;
+  height: 30px;
+  font-size: 14px;
   background: #c0c0c0;
-  border-width: 2px;
-  border-style: groove;
+  border: 2px groove #808080;
   border-top-color: #dfdfdf;
-  border-right-color: #808080;
-  border-bottom-color: #808080;
   border-left-color: #dfdfdf;
-}
-.iphone .action-button {
-  top: 26px;
-  width: 70px;
-}
-.ipad .action-button {
-  width: 60px;
-  height: 34px;
+  text-indent: 100%;
+  white-space: nowrap;
 }
 .action-button:after {
   content: "Start";
-  position: static;
+  position: absolute;
+  right: 0;
+  padding-right: 2px;
   color: #000;
-  font-size: 14px;
   font-weight: bold;
-  text-align: right;
 }
 .postbody a {
   color: #000;

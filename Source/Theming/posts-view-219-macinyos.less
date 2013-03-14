@@ -9,7 +9,7 @@
 @import "base.less";
 
 html {
-  font-family: 'Geeza Pro', sans-serif;
+  font-family: "Geeza Pro";
   -webkit-font-smoothing: none;
 }
 
@@ -37,52 +37,15 @@ body {
   }
   
   .ipad & {
-    min-height: 178px; // For posts with avatars.
     padding: 18px 5px 40px 5px;
   }
 }
 
 header {
-  .iphone & {
-    height: 65px;
-    padding-top: 18px;
-    border-top: 1px solid #444;
-    border-bottom: 1px solid #444;
-  }
-  
-  .iphone .seen & {
-    border-top-color: #395339;
-    border-bottom-color: #395339;
-  }
-  
-  .ipad & {
-    width: 160px;
-    height: 100%;
-    margin-bottom: 5px;
-    padding: 5px;
-    border: 1px none solid solid none #000;
-  }
-}
-
-.avatar {
-  .iphone & {
-    top: 28px;
-  }
+  margin: 18px 0 0 0;
 }
 
 .username {
-  .iphone & {
-    display: inline-block;
-    margin: 0;
-    padding-top: 4px;
-    vertical-align: middle;
-    font-size: 1em;
-  }
-   
-  .ipad & {
-    font-size: 0.85em;
-  }
-  
   .role-admin & {
     background-image: url('macinyos-adminstar.png');
   }
@@ -93,46 +56,20 @@ header {
   
   .role-op & {
     color: #000;
-    text-transform: italic;
-  }
-}
-
-.postdate {
-  .ipad & {
-    right: 85px;
+    font-style: italic;
   }
 }
 
 .action-button {
+  width: 70px;
+  height: 34px;
+  padding-right: 6px;
+  font-size: 28px;
+  text-align: right;
   background: top left no-repeat url('macinyos-postactions-bg.png') #fff;
   background-size: 31px;
   border: 1px solid black;
   border-radius: 4px;
-  
-  .iphone & {
-    top: 26px;
-    width: 70px;
-    height: 38px;
-  }
-  
-  .ipad & {
-    width: 58px;
-    height: 34px;
-  }
-  
-  &:after {
-    content: "⋯";
-    top: 10px;
-    color: #000;
-    font-size: 20px;
-    font-weight: bold;
-    text-align: right;
-    
-    .ipad & {
-      font-size: 30px;
-      top: -7px;
-    }
-  }
 }
 
 .postbody a {

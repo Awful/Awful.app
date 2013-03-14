@@ -27,52 +27,22 @@ body {
 header {
   background: -webkit-linear-gradient(left top, transparent 50%, rgba(0, 0, 0, 0.035));
   border-bottom-right-radius: 4px;
-  .iphone & {
+  & {
     border-bottom: 1px solid #000;
     .dark& {
       border-bottom: 1px solid #6c0;
     }
   }
-  .iphone .seen & {
+  .seen & {
     border-bottom: 1px solid #000;
   }
-  
-  .ipad & {
-    .dark& {
-      text-shadow: 0 1px black;
-    }
-  }
 }
 
-.username {
-  .iphone & {
-    display: inline-block;
-    margin: 0;
-    padding-top: 4px;
-    vertical-align: middle;
-    font-size: 1em;
-  }
-}
-
-.postdate {
-  .ipad & {
-    color: #000;
-  }
-}
-
-.action-button:after {
-  content: "•••";
-  color: #000;
-  font-size: 40px;
+.action-button {  
+  color: #3e7d00;
   
   .dark & {
     color: #6c0;
-  }
-  
-  .ipad & {
-    font-size: 30px;
-    width: 38px;
-    top: -7px;
   }
 }
 

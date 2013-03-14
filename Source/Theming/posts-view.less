@@ -36,55 +36,30 @@ body {
 }
 
 header {
-  .iphone & {
-    border-bottom: 1px solid #f0f0f0;
-    .dark& {
-      border-bottom: 1px solid #4e4e4e;
-    }
-  }
-  .iphone .seen & {
-    border-bottom-color: #d5dfe9;
-    .dark& {
-      border-bottom: 1px solid #536879;
-    }
-  }
-  
-  .ipad & {
-    background: -webkit-linear-gradient(left top, transparent 50%, rgba(0, 0, 0, 0.035));
-    border-bottom-right-radius: 4px;
-  
-    .dark& {
-      text-shadow: 0 1px black;
-    }
-  }
-}
-
-.username {
-  .iphone & {
-    display: inline-block;
-    margin: 0;
-    padding-top: 4px;
-    vertical-align: middle;
-    font-size: 1em;
-  }
-}
-
-.postdate {
-  .ipad & {
-    color: #999;
-  }
-}
-
-/* "Show post actions" button is a centered ellipsis. */
-.action-button:after {
-  content: "•••";
-  text-align: center;
-  color: #d5d5d5;
-  font-size: 40px;
+  border-bottom-color: #f0f0f0;
   
   .dark & {
-    color: #777777;
+    border-bottom-color: #4e4e4e;
   }
+  
+  .seen & {
+    border-bottom-color: #d5dfe9;
+    
+    .dark & {
+      border-bottom-color: #536879;
+    }
+  }
+}
+
+.action-button {
+  position: relative;
+  top: -0.1em;
+  color: #d5d5d5;
+  
+  .dark & {
+    color: #777;
+  }
+  
   .dark .seen & {
     color: #536879;
   }
@@ -92,16 +67,10 @@ header {
   .seen & {
     color: #9cb2c7;
   }
-  
-  .ipad & {
-    top: -7px;
-    width: 38px;
-    font-size: 2em;
-  }
 }
 
 .postbody a {
-  color: #003366;
+  color: #036;
   
   .dark & {
     color: #93daff;

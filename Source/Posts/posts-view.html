@@ -22,14 +22,16 @@
                                 {{#authorIsAnAdministrator}}role-admin{{/authorIsAnAdministrator}}
                                 {{^authorAvatarURL}}no-avatar{{/authorAvatarURL}}">
   <header>
+    {{#authorAvatarURL}}
+      <img class="avatar" src="{{authorAvatarURL}}" alt="">
+    {{/authorAvatarURL}}
+      
+    <button class="action-button" title="Post actions">•••</button>
+    
     <h1 class="username">{{authorName}}</h1>
     
     <time class="postdate">{{postDate}}</time>
     <time class="regdate">{{authorRegDate}}</time>
-    
-    {{#authorAvatarURL}}<img class="avatar" src="{{authorAvatarURL}}" alt="">{{/authorAvatarURL}}
-    
-    <button class="action-button" title="Post actions" />
   </header>
   
   <section class="postbody">

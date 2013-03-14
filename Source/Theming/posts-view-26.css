@@ -5,9 +5,6 @@
  Created by Jim Murtha on 12-12-30.
  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
 */
-* {
-  box-sizing: border-box;
-}
 html {
   font: 14px "Helvetica Neue", sans-serif;
 }
@@ -18,32 +15,52 @@ body {
   word-wrap: break-word;
 }
 .post {
-  position: relative;
   margin: 10px 5px;
-  padding: 5px;
   border-radius: 5px;
 }
+.iphone .post {
+  padding: 5px;
+}
 .ipad .post {
-  min-height: 150px;
   padding: 15px;
 }
-.ipad .post .no-avatar {
-  min-height: auto;
+header {
+  margin-left: 5px;
 }
-.no-avatar header {
-  padding-left: 5px;
+header:after {
+  content: "";
+  clear: both;
 }
-.iphone header {
-  width: 100%;
-  height: 44px;
-  padding: 0 50px;
-}
-.ipad header {
+.avatar {
   float: left;
-  width: 136px;
-  height: 135px;
-  margin: 0 5px 0 0;
-  padding: 0;
+  margin: 3px 5px 0 0;
+}
+.iphone .avatar {
+  max-width: 2em;
+  max-height: 2em;
+}
+.ipad .avatar {
+  max-width: 4em;
+  max-height: 4em;
+}
+.action-button {
+  float: right;
+}
+.username {
+  margin: 0;
+}
+.postdate {
+  display: block;
+}
+.regdate {
+  display: none;
+}
+header {
+  padding-bottom: 5px;
+  border-bottom: 1px solid;
+}
+.username {
+  font-size: 1em;
 }
 .role-admin .username {
   background-image: url('adminstar.png');
@@ -60,64 +77,17 @@ body {
 .role-op .username {
   color: #199ed7;
 }
-.ipad .username {
-  width: 100%;
-  display: block;
-  margin: 0;
-  font-size: 1em;
-}
-.iphone .avatar {
-  position: absolute;
-  top: 9px;
-  left: 10px;
-  max-width: 33px;
-  max-height: 33px;
-}
-.ipad .avatar {
-  max-width: 80px;
-  max-height: 80px;
-}
 .action-button {
-  position: absolute;
+  margin: 0;
+  padding: 0;
   border: none;
+  font-family: inherit;
+  font-size: 2.85em;
+  -webkit-tap-highlight-color: transparent;
   -webkit-user-select: none;
-}
-.iphone .action-button {
-  top: 9px;
-  right: 10px;
-  width: 48px;
-  height: 34px;
-}
-.ipad .action-button {
-  right: 12px;
-  bottom: 5px;
-  width: 38px;
-  height: 24px;
-}
-.action-button:after {
-  position: absolute;
-  top: -5px;
-  right: 0;
-  width: 50px;
-  text-align: center;
-}
-.iphone .regdate {
-  display: none;
-}
-.ipad .regdate {
-  display: block;
-  font-size: 0.8em;
 }
 .postdate {
   font-size: 0.85em;
-}
-.iphone .postdate {
-  display: block;
-}
-.ipad .postdate {
-  position: absolute;
-  right: 55px;
-  bottom: 10px;
 }
 .postbody img {
   -webkit-user-select: none;
@@ -143,7 +113,6 @@ body {
 }
 .ipad .bbc-block {
   margin: 0 10px 1em 10px;
-  overflow: hidden;
 }
 .bbc-block.mention {
   background-color: rgba(162, 205, 90, 0.5);
@@ -211,7 +180,7 @@ blockquote img {
 body {
   background-color: #f99;
 }
-.post, .ipad .post {
+.iphone .post, .ipad .post {
   padding: 0;
 }
 .postbody {
@@ -225,9 +194,10 @@ body {
 header {
   position: relative;
   top: 3px;
-  width: 100%;
   height: 69px;
+  margin-left: 0;
   background-size: 70px 26px;
+  border-bottom-width: 0px;
 }
 .iphone header {
   background: 40px bottom no-repeat url('fyad-bubble.png');
@@ -236,37 +206,19 @@ header {
   padding-left: 75px;
   background: 65px bottom no-repeat url('fyad-bubble.png');
 }
-.username {
-  display: inline-block;
-  width: auto;
-  margin: 0;
-  padding-top: 4px;
-  vertical-align: middle;
-  font-size: 1em;
+.iphone .avatar {
+  max-width: 50px;
+  max-height: 50px;
 }
 .role-op .username {
   color: #f39;
 }
-.avatar {
-  max-width: 55px;
-  max-height: 55px;
-}
 .ipad .postdate {
   display: block;
 }
-.iphone .action-button, .ipad .action-button {
-  top: 9px;
-  right: 10px;
-  width: 48px;
-  height: 34px;
-}
-.action-button:after {
-  content: "•••";
+.action-button {
   color: #f39;
-  font-size: 40px;
-}
-.ipad .regdate {
-  display: none;
+  font-size: 2.5em;
 }
 .postbody a {
   color: #f39;

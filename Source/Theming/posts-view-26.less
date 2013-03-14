@@ -12,9 +12,11 @@ body {
   background-color: #f99;
 }
 
-.post,
-.ipad .post {
-  padding: 0;
+.post {
+  .iphone &,
+  .ipad & {
+    padding: 0;
+  }
 }
 
 .postbody {
@@ -30,9 +32,10 @@ body {
 header {
   position: relative;
   top: 3px;
-  width: 100%;
   height: 69px;
+  margin-left: 0;
   background-size: 70px 26px;
+  border-bottom-width: 0px;
   
   .iphone & {
     background: 40px bottom no-repeat url('fyad-bubble.png');
@@ -44,22 +47,17 @@ header {
   }
 }
 
-.username {
-  display: inline-block;
-  width: auto;
-  margin: 0;
-  padding-top: 4px;
-  vertical-align: middle;
-  font-size: 1em;
-  
-  .role-op & {
-    color: #f39;
+.avatar {
+  .iphone & {
+    max-width: 50px;
+    max-height: 50px;
   }
 }
 
-.avatar {
-  max-width: 55px;
-  max-height: 55px;
+.username {
+  .role-op & {
+    color: #f39;
+  }
 }
 
 .postdate {
@@ -69,25 +67,8 @@ header {
 }
 
 .action-button {
-  .iphone &,
-  .ipad & {
-    top: 9px;
-    right: 10px;
-    width: 48px;
-    height: 34px;
-  }
-  
-  &:after {
-    content: "•••";
-    color: #f39;
-    font-size: 40px;
-  }
-}
-
-.regdate {
-  .ipad & {
-    display: none;
-  }
+  color: #f39;
+  font-size: 2.5em;
 }
 
 .postbody a {

@@ -9,7 +9,7 @@
 @import "base.less";
 
 html {
-  font-family: arial, sans-serif;
+  font-family: Arial;
   -webkit-font-smoothing: none;
 }
 
@@ -42,83 +42,38 @@ body {
 }
 
 header {
-  .iphone & {
-    height: 65px;
-    padding-top: 18px;
-    border-top: 1px solid #444;
-    border-bottom: 1px solid #444;
-  }
-  .iphone .seen & {
-    border-top-color: #395339;
-    border-bottom-color: #395339;
-  }
-  
-  .ipad & {
-    width: 160px;
-    height: 100%;
-    margin-bottom: 5px;
-    padding: 5px;
-    border: 1px none solid solid none #000;
-  }
-}
-
-.avatar {
-  .iphone & {
-    top: 28px;
-  }
+  margin: 18px 0 0 0;
+  border-bottom: 1px solid #ccc;
 }
 
 .username {
-  .iphone & {
-    display: inline-block;
-    margin: 0;
-    padding-top: 4px;
-    vertical-align: middle;
-    font-size: 1em;
-  }
-  
-  .ipad & {
-    font-size: 0.85em;
-  }
-  
   .role-op & {
     color: #000;
     text-transform: italic;
   }
 }
 
-.postdate {
-  .ipad & {
-    right: 85px;
-  }
-}
-
 .action-button {
-  height: 38px;
+  position: relative;
+  width: 52px;
+  height: 30px;
+  font-size: 14px;
   background: #c0c0c0;
-  border-width: 2px;
-  border-style: groove;
+  border: 2px groove #808080;
   border-top-color: #dfdfdf;
-  border-right-color: #808080;
-  border-bottom-color: #808080;
   border-left-color: #dfdfdf;
   
-  .iphone & {
-    top: 26px;
-    width: 70px;
-  }
-  .ipad & {
-    width: 60px;
-    height: 34px;
-  }
+  // Move the "ellipsis" off the screen.
+  text-indent: 100%;
+  white-space: nowrap;
   
   &:after {
     content: "Start";
-    position: static;
+    position: absolute;
+    right: 0;
+    padding-right: 2px;
     color: #000;
-    font-size: 14px;
     font-weight: bold;
-    text-align: right;
   }
 }
 

@@ -23,43 +23,16 @@ body {
 }
 
 header {
-  background: -webkit-linear-gradient(left top, transparent 50%, rgba(0, 0, 0, 0.035));
+  border-bottom-color: #444;
   
-  .iphone & {
-    border-bottom: 1px solid #444;
-  }
-  .iphone .seen & {
+  .seen & {
     border-bottom-color: @bordercolor;
   }
 }
 
-.username {
-  .iphone & {
-    display: inline-block;
-    margin: 0;
-    padding-top: 4px;
-    vertical-align: middle;
-    font-size: 1em;
-  }
-}
-
 .action-button {
-  .ipad & {
-    bottom: 12px;
-  }
-  
-  &:after {
-    content: "⋯";
-    color: @color;
-    font-size: 40px;
-    font-weight: bold;
-  
-    .ipad & {
-      font-size: 30px;
-      width: 38px;
-      top: -7px;
-    }
-  }
+  color: @color;
+  font-size: 2em;
 }
 
 .postbody a {
