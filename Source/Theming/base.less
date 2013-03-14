@@ -38,26 +38,30 @@ body {
 // Layout
 
 header {
-  margin-left: 5px;
+  .ipad & {
+    margin-bottom: 8px;
+  }
   
   &:after {
     content: "";
+    display: block;
     clear: both;
   }
 }
 
 .avatar {
   float: left;
-  margin: 3px 5px 0 0;
   
   .iphone & {
     max-width: 2em;
     max-height: 2em;
+    margin: 3px 5px 0 0;
   }
   
   .ipad & {
     max-width: 4em;
     max-height: 4em;
+    margin-right: 8px;
   }
 }
 
@@ -67,6 +71,10 @@ header {
 
 .username {
   margin: 0;
+  
+  .ipad & {
+    padding-top: 5px;
+  }
 }
 
 .postdate {
@@ -141,9 +149,6 @@ header {
   
   .iphone & {
     padding: 5px;
-  }
-  .ipad & {
-    padding: 0 0 15px 0;
   }
 }
 

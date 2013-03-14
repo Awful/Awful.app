@@ -17,30 +17,35 @@ body {
 .ipad .post {
   padding: 15px;
 }
-header {
-  margin-left: 5px;
+.ipad header {
+  margin-bottom: 8px;
 }
 header:after {
   content: "";
+  display: block;
   clear: both;
 }
 .avatar {
   float: left;
-  margin: 3px 5px 0 0;
 }
 .iphone .avatar {
   max-width: 2em;
   max-height: 2em;
+  margin: 3px 5px 0 0;
 }
 .ipad .avatar {
   max-width: 4em;
   max-height: 4em;
+  margin-right: 8px;
 }
 .action-button {
   float: right;
 }
 .username {
   margin: 0;
+}
+.ipad .username {
+  padding-top: 5px;
 }
 .postdate {
   display: block;
@@ -90,9 +95,6 @@ header {
 }
 .iphone .postbody {
   padding: 5px;
-}
-.ipad .postbody {
-  padding: 0 0 15px 0;
 }
 .bbc-block h4 {
   margin: 0;
