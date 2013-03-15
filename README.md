@@ -21,7 +21,10 @@ Build
 
 There are optional dependencies for building Awful. You only need them if you're working on the relevant part of the app. Once a dependency is installed, simply build the Xcode project and the relevant files will be regenerated.
 
-* [LESS][] helps us write CSS. If you're modifying the themes for displaying posts (these are files like `posts-view*.less`), please [install LESS][LESS].
+* [LESS][] helps us write CSS. If you're modifying the themes for displaying posts (these are files like `posts-view*.less`), please [install LESS][LESS]:
+    1. [Install homebrew](http://mxcl.github.com/homebrew/).
+    2. Open Terminal and install node: `brew install node` (prepend `sudo` to avoid permissions errors).
+    3. In Terminal, install less: `npm install less -g` (prepend `sudo` to avoid permissions errors).
 * [mogenerator][] makes Objective-C classes from our Core Data model. If you're modifying the Core Data model (aka `Model.xcdatamodeld`), please [install mogenerator][mogenerator].
 
 If you want to use Crashlytics, create a file called `crashlytics-api-key` containing your API key.
