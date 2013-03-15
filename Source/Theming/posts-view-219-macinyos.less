@@ -16,7 +16,8 @@ html {
 body {
   color: #000;
   background-attachment: fixed;
-  background-image: url('macinyos-wallpaper.png');
+  // Pass URLs through LESS to avoid rewriting them to absolute URLs.
+  background-image: ~"url('macinyos-wallpaper.png')";
   background-size: 2px;
 }
 
@@ -24,7 +25,7 @@ body {
   margin: 5px;
   padding: 0;
   background-color: #fff;
-  background-image: url('macinyos-heading-left.png'), url('macinyos-heading-center.png'), url('macinyos-heading-right.png'), url('macinyos-heading.png');
+  background-image: ~"url('macinyos-heading-left.png'), url('macinyos-heading-center.png'), url('macinyos-heading-right.png'), url('macinyos-heading.png')";
   background-position: top left, top center, top right, top left;
   background-repeat: no-repeat, no-repeat, no-repeat, repeat-x;
   background-size: 20px 17px, 56px 17px, 20px 17px, 1px 18px;
@@ -54,11 +55,11 @@ header {
 
 .username {
   .role-admin & {
-    background-image: url('macinyos-adminstar.png');
+    background-image: ~"url('macinyos-adminstar.png')";
   }
   
   .role-mod & {
-    background-image: url('macinyos-modstar.png');
+    background-image: ~"url('macinyos-modstar.png')";
   }
   
   .role-op & {
@@ -73,7 +74,7 @@ header {
   padding-right: 6px;
   font-size: 28px;
   text-align: right;
-  background: top left no-repeat url('macinyos-postactions-bg.png') #fff;
+  background: top left no-repeat ~"url('macinyos-postactions-bg.png')" #fff;
   background-size: 31px;
   border: 1px solid black;
   border-radius: 4px;
@@ -94,7 +95,7 @@ blockquote,
 #loading {
   position: fixed;
   top: 30px; right: 10px; bottom: 30px; left: 10px;
-  background: center 45% no-repeat url('macinyos-loading.png') #fff;
+  background: center 45% no-repeat ~"url('macinyos-loading.png')" #fff;
   background-size: 221px 141px;
   border: 1px solid #000;
   
@@ -107,7 +108,7 @@ blockquote,
   
   .ipad & {
     top: 50px; right: 20px; bottom: 50px; left: 20px;
-    background: center 45% no-repeat url('macinyos-loading.png') #fff;
+    background: center 45% no-repeat ~"url('macinyos-loading.png')" #fff;
     background-size: 221px 141px;
     border: 1px solid #000;
   }

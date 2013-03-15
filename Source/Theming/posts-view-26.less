@@ -37,13 +37,14 @@ header {
   
   .iphone & {
     top: 3px;
-    background: 40px bottom no-repeat url('fyad-bubble.png');
+    // Pass URLs through LESS to avoid rewriting them to absolute URLs.
+    background: 40px bottom no-repeat ~"url('fyad-bubble.png')";
   }
   
   .ipad & {
     top: 11px;
     padding: 0 15px 15px 15px;
-    background: 65px bottom no-repeat url('fyad-bubble.png');
+    background: 65px bottom no-repeat ~"url('fyad-bubble.png')";
   }
 }
 

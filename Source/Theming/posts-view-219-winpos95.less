@@ -25,14 +25,15 @@ body {
   border-top-color: #dfdfdf;
   border-left-color: #dfdfdf;
   background-color: #c0c0c0;
-  background-image: url('winpos95-heading-left.png'), url('winpos95-heading-right.png'), url('winpos95-heading.png');
+  // Pass URLs through LESS to avoid rewriting them to absolute URLs.
+  background-image: ~"url('winpos95-heading-left.png'), url('winpos95-heading-right.png'), url('winpos95-heading.png')";
   background-position: top left, top right, top left;
   background-repeat: no-repeat, no-repeat, repeat-x;
   background-size: 77px 18px, 52px 18px, 1px 18px;
   border-radius: 0;
   
   &.seen {
-    background-image: url('winpos95-heading-left-seen.png'), url('winpos95-heading-right.png'), url('winpos95-heading-seen.png');
+    background-image: ~"url('winpos95-heading-left-seen.png'), url('winpos95-heading-right.png'), url('winpos95-heading-seen.png')";
   }
   
   .ipad & {
@@ -98,7 +99,7 @@ blockquote,
 }
 
 #loading {
-  background: center center no-repeat url('hourglass.gif');
+  background: center center no-repeat ~"url('hourglass.gif')";
   
   .container {
     top: 60%;

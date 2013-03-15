@@ -5,3 +5,4 @@ xcuserdata
 # Secret stuff
 crashlytics-api-key
 Source/Main/AwfulCrashlytics.h
+Tests/CSS Tweaker/LessFilesPath.h

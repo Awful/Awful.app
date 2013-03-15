@@ -96,11 +96,12 @@ header {
   font-size: 1em;
   
   .role-admin & {
-    background-image: url('adminstar.png');
+    // Pass URLs through LESS to avoid rewriting them to absolute URLs.
+    background-image: ~"url('adminstar.png')";
   }
   
   .role-mod & {
-    background-image: url('modstar.png');
+    background-image: ~"url('modstar.png')";
   }
   
   .role-admin &,
