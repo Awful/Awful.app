@@ -19,6 +19,8 @@ Build
 1. Clone the repository: `git clone https://github.com/AwfulDevs/Awful.git`
 2. Open Xcode project and build away: `cd Awful && open Awful.xcodeproj`
 
+There are no required dependencies for building Awful; all third-party libraries are included.
+
 There are optional dependencies for building Awful. You only need them if you're working on the relevant part of the app. Once a dependency is installed, simply build the Xcode project and the relevant files will be regenerated.
 
 * [LESS][] helps us write CSS. If you're modifying the themes for displaying posts (these are files like `posts-view*.less`), please [install LESS][LESS]:
@@ -40,6 +42,36 @@ You can help! Head over to [Awful's thread][current thread] and tell us about an
 [thread tags]: https://github.com/AwfulDevs/Awful/blob/master/Resources/Thread%20Tags/README.md#thread-tags
 [fork]: https://github.com/AwfulDevs/Awful/fork_select
 [pull requests]: https://github.com/AwfulDevs/Awful/pulls
+
+Data Flow
+---------
+
+The [HTTP client][] connects to the Something Awful Forums and parses its contents, saving those contents as [entities in a Core Data store][entities]. Various screens show the [forums][], [threads][], [posts][], [private messages][], and [users][] saved to the Core Data store.
+
+Awful's Core Data store is a cache of content from the Forums. Any user info specific to the app is stored in [user defaults][]. The Core Data store can be (and may be, since it's stored in the application's Caches directory) deleted at any time.
+
+[HTTP client]: Source/Networking/AwfulHTTPClient.h
+[entities]: Source/Models
+[forums]: Source/Forums
+[threads]: Source/Threads
+[posts]: Source/Posts
+[private messages]: Source/Private%20Messages
+[users]: Source/Users
+[user defaults]: Source/Settings/AwfulSettings.h
+
+Theming
+-------
+
+Awful's [posts view][] is fully customizable using CSS. There's a [default theme][], as well as themes for specific forums such as [YOSPOS][YOSPOS CSS theme] and [FYAD][FYAD CSS theme]. Users can include their own custom themes by adding specially-named CSS files to the application Documents directory; [more info][custom CSS readme]. Internally, we use LESS to generate our CSS, so if you are editing built-in themes please edit the `.less` files. (LESS installation instructions are above.)
+
+The rest of Awful's screens support much more limited theming for the "dark mode" setting. The color schemes are set in [AwfulTheme][]; there is no way to override them.
+
+[posts view]: Source/Posts/AwfulPostsView.h
+[default theme]: Source/Theming/posts-view.css
+[YOSPOS CSS theme]: Source/Theming/posts-view-219.less
+[FYAD CSS theme]: Source/Theming/posts-view-26.less
+[custom CSS readme]: Resources/Custom%20CSS%20README.txt
+[AwfulTheme]: Source/Theming/AwfulTheme.h
 
 License
 -------
