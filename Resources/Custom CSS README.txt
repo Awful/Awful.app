@@ -14,11 +14,11 @@ point for your own stylesheet.
 But that's not all! You can tell Awful to use your stylesheet only in certain
 forums. For example, notice that the URL for YOSPOS is:
 http://forums.somethingawful.com/forumdisplay.php?forumid=219
-If you place a file called "page-view-219.css" here, it will be used for all
+If you place a file called "posts-view-219.css" here, it will be used for all
 threads in YOSPOS, but not for any other threads.
 
 The <body> tag will have the "dark" class if the dark theme is enabled. It will
-have the "iphone" class on an iPhone, and the "iPad" class on an iPad. Have a
+have the "iphone" class on an iPhone, and the "ipad" class on an iPad. Have a
 look at the example to see how we use these classes.
 
 Once again, if you need any help, please come say hi.
