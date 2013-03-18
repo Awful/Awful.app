@@ -18,6 +18,12 @@
            completion:(void (^)(void))block;
 
 + (void)showWithTitle:(NSString *)title
+              message:(NSString *)message
+	   yesButtonTitle:(NSString *)affirmativeTitle
+		noButtonTitle:(NSString *)negativeTitle
+		 onAcceptance:(void (^)(void))block;
+
++ (void)showWithTitle:(NSString *)title
                 error:(NSError *)error
           buttonTitle:(NSString *)buttonTitle
            completion:(void (^)(void))block;

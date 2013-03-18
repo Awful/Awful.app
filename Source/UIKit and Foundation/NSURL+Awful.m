@@ -12,6 +12,9 @@
 
 - (NSURL *)awfulURL
 {
+	if ([self scheme] == nil) {
+		return nil;
+	}
     if ([[self scheme] compare:@"awful" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
         return self;
     }

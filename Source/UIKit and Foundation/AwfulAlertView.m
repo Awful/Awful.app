@@ -37,6 +37,20 @@
 }
 
 + (void)showWithTitle:(NSString *)title
+              message:(NSString *)message
+	   yesButtonTitle:(NSString *)affirmativeTitle
+		noButtonTitle:(NSString *)negativeTitle
+		 onAcceptance:(void (^)(void))block
+{
+    AwfulAlertView *alert = [[self alloc] initWithTitle:title];
+    alert.message = message;
+    [alert addButtonWithTitle:affirmativeTitle block:block];
+	[alert addButtonWithTitle:negativeTitle block:nil];
+    [alert show];
+}
+
+
++ (void)showWithTitle:(NSString *)title
                 error:(NSError *)error
           buttonTitle:(NSString *)buttonTitle
            completion:(void (^)(void))block

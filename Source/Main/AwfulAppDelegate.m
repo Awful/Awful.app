@@ -30,6 +30,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import <Crashlytics/Crashlytics.h>
 #import "NSFileManager+UserDirectories.h"
+#import "NSURL+Awful.h"
 #import "NSManagedObject+Awful.h"
 #import "SVProgressHUD.h"
 #import "UIViewController+AwfulTheming.h"
@@ -257,6 +258,28 @@ static id _instance;
     if (!ok) {
         NSLog(@"error setting shared audio session category: %@", error);
     }
+}
+
+-(void)applicationDidBecomeActive:(UIApplication *)application
+{
+	//Get a URL from the pasteboard, and fallback to checking the string pasteboard
+	//in case some app is a big jerk and only sets a string value
+	id url = [[UIPasteboard generalPasteboard] URL] ?: [NSURL URLWithString:[[UIPasteboard generalPasteboard] string]];
+	
+	NSURL *awfulUrl = [url awfulURL];
+	
+	if ([AwfulHTTPClient client].loggedIn && awfulUrl != nil) {
+		[AwfulAlertView showWithTitle:@"Copied URL"
+							  message:@"Forums link found in clipboard"
+					   yesButtonTitle:@"Show"
+						noButtonTitle:@"No Thanks"
+						 onAcceptance:^{
+							 							 
+							 [[UIApplication sharedApplication] openURL:awfulUrl];
+							 
+						 }];
+	}
+
 }
 
 - (BOOL)application:(UIApplication *)application
