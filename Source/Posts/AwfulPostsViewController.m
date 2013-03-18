@@ -31,6 +31,7 @@
 #import "NSString+CollapseWhitespace.h"
 #import "NSURL+Awful.h"
 #import "NSURL+OpensInBrowser.h"
+#import "NSURL+Punycode.h"
 #import "NSURL+QueryDictionary.h"
 #import "SVProgressHUD.h"
 #import "UINavigationItem+TwoLineTitle.h"
@@ -883,7 +884,7 @@ static char KVOContext;
 
 - (void)previewImageAtURLString:(NSString *)urlString
 {
-    NSURL *url = [NSURL URLWithString:urlString];
+    NSURL *url = [NSURL awful_URLWithString:urlString];
     if (!url) {
         NSLog(@"could not parse URL for image preview: %@", urlString);
         return;
@@ -899,7 +900,7 @@ static char KVOContext;
 - (void)showMenuForLinkWithURLString:(NSString *)urlString
                   fromRectDictionary:(NSDictionary *)rectDict
 {
-    NSURL *url = [NSURL URLWithString:urlString];
+    NSURL *url = [NSURL awful_URLWithString:urlString];
     if (!url) {
         NSLog(@"could not parse URL for link long tap menu: %@", urlString);
         return;

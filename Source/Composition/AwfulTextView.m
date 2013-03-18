@@ -7,6 +7,7 @@
 //
 
 #import "AwfulTextView.h"
+#import "NSURL+Punycode.h"
 #import "PSMenuItem.h"
 
 @interface AwfulTextView ()
@@ -33,7 +34,7 @@
 {
     NSURL *copiedURL = [UIPasteboard generalPasteboard].URL;
     if (!copiedURL) {
-        copiedURL = [NSURL URLWithString:[UIPasteboard generalPasteboard].string];
+        copiedURL = [NSURL awful_URLWithString:[UIPasteboard generalPasteboard].string];
     }
     if (copiedURL) {
         [self configureURLSubmenuItems];
@@ -109,7 +110,7 @@
 {
     NSURL *copiedURL = [UIPasteboard generalPasteboard].URL;
     if (!copiedURL) {
-        copiedURL = [NSURL URLWithString:[UIPasteboard generalPasteboard].string];
+        copiedURL = [NSURL awful_URLWithString:[UIPasteboard generalPasteboard].string];
     }
     NSString *tag = [NSString stringWithFormat:@"[url=%@]", copiedURL.absoluteString];
     [self wrapSelectionInTag:tag];

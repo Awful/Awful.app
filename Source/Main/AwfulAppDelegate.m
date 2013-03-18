@@ -31,6 +31,7 @@
 #import <Crashlytics/Crashlytics.h>
 #import "NSFileManager+UserDirectories.h"
 #import "NSURL+Awful.h"
+#import "NSURL+Punycode.h"
 #import "NSManagedObject+Awful.h"
 #import "SVProgressHUD.h"
 #import "UIViewController+AwfulTheming.h"
@@ -267,7 +268,7 @@ static id _instance;
 	// in case some app is a big jerk and only sets a string value.
     NSURL *url = [UIPasteboard generalPasteboard].URL;
     if (!url) {
-        url = [NSURL URLWithString:[UIPasteboard generalPasteboard].string];
+        url = [NSURL awful_URLWithString:[UIPasteboard generalPasteboard].string];
     }
     if (![url awfulURL]) return;
     // Don't ask about the same URL over and over.
@@ -275,7 +276,7 @@ static id _instance;
         return;
     }
     [AwfulSettings settings].lastOfferedPasteboardURL = [url absoluteString];
-    NSMutableString *abbreviatedURL = [[url absoluteString] mutableCopy];
+    NSMutableString *abbreviatedURL = [[url awful_absoluteUnicodeString] mutableCopy];
     NSRange upToHost = [abbreviatedURL rangeOfString:@"://"];
     if (upToHost.location == NSNotFound) {
         upToHost = [abbreviatedURL rangeOfString:@":"];
