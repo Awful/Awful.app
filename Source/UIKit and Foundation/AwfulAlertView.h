@@ -19,8 +19,8 @@
 
 + (void)showWithTitle:(NSString *)title
               message:(NSString *)message
-	   yesButtonTitle:(NSString *)affirmativeTitle
 		noButtonTitle:(NSString *)negativeTitle
+	   yesButtonTitle:(NSString *)affirmativeTitle
 		 onAcceptance:(void (^)(void))block;
 
 + (void)showWithTitle:(NSString *)title

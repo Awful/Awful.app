@@ -11,10 +11,10 @@
 @interface AwfulAlertView () <UIAlertViewDelegate>
 
 @property (weak, nonatomic) id <UIAlertViewDelegate> actualDelegate;
-
 @property (readonly, nonatomic) NSMutableDictionary *blocks;
 
 @end
+
 
 @implementation AwfulAlertView
 
@@ -38,17 +38,16 @@
 
 + (void)showWithTitle:(NSString *)title
               message:(NSString *)message
-	   yesButtonTitle:(NSString *)affirmativeTitle
 		noButtonTitle:(NSString *)negativeTitle
+	   yesButtonTitle:(NSString *)affirmativeTitle
 		 onAcceptance:(void (^)(void))block
 {
     AwfulAlertView *alert = [[self alloc] initWithTitle:title];
     alert.message = message;
+    [alert addCancelButtonWithTitle:negativeTitle block:nil];
     [alert addButtonWithTitle:affirmativeTitle block:block];
-	[alert addButtonWithTitle:negativeTitle block:nil];
     [alert show];
 }
-
 
 + (void)showWithTitle:(NSString *)title
                 error:(NSError *)error
