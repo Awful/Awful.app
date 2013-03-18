@@ -92,6 +92,7 @@ Awful includes contributions from:
 - [Malcolm XML](http://forums.somethingawful.com/member.php?action=getinfo&userid=154586)
 - [OHIO](http://forums.somethingawful.com/member.php?action=getinfo&userid=82915)
 - [The Dave](http://forums.somethingawful.com/member.php?action=getinfo&userid=41741)
+- [ultramiraculous](http://forums.somethingawful.com/member.php?action=getinfo&userid=44504)
 - [xzzy](http://forums.somethingawful.com/member.php?action=getinfo&userid=148096)
 
 [pokeyman]: http://forums.somethingawful.com/member.php?action=getinfo&userid=106125
