@@ -266,6 +266,16 @@ BOOL_PROPERTY(showThreadTags, setShowThreadTags)
 
 BOOL_PROPERTY(useDevDotForums, setUseDevDotForums)
 
+- (NSString *)lastOfferedPasteboardURL
+{
+    return self[AwfulSettingsKeys.lastOfferedPasteboardURL];
+}
+
+- (void)setLastOfferedPasteboardURL:(NSString *)lastOfferedPasteboardURL
+{
+    self[AwfulSettingsKeys.lastOfferedPasteboardURL] = lastOfferedPasteboardURL;
+}
+
 - (id)objectForKeyedSubscript:(id)key
 {
     return [[NSUserDefaults standardUserDefaults] objectForKey:key];
@@ -319,4 +329,5 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .favoriteForums = @"favorite_forums",
     .fontScale = @"font_scale",
     .useDevDotForums = @"use_dev_dot_forums",
+    .lastOfferedPasteboardURL = @"last_offered_pasteboard_URL",
 };

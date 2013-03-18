@@ -68,6 +68,8 @@ typedef enum {
 
 @property (assign, nonatomic) BOOL useDevDotForums;
 
+@property (copy, nonatomic) NSString *lastOfferedPasteboardURL;
+
 - (id)objectForKeyedSubscript:(id)key;
 
 - (void)setObject:(id)object forKeyedSubscript:(id <NSCopying>)key;
@@ -98,4 +100,5 @@ extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *favoriteForums;
     __unsafe_unretained NSString *fontScale;
     __unsafe_unretained NSString *useDevDotForums;
+    __unsafe_unretained NSString *lastOfferedPasteboardURL;
 } AwfulSettingsKeys;

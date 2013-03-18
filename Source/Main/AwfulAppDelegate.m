@@ -260,26 +260,41 @@ static id _instance;
     }
 }
 
--(void)applicationDidBecomeActive:(UIApplication *)application
+- (void)applicationDidBecomeActive:(UIApplication *)application
 {
-	//Get a URL from the pasteboard, and fallback to checking the string pasteboard
-	//in case some app is a big jerk and only sets a string value
-	id url = [[UIPasteboard generalPasteboard] URL] ?: [NSURL URLWithString:[[UIPasteboard generalPasteboard] string]];
-	
-	NSURL *awfulUrl = [url awfulURL];
-	
-	if ([AwfulHTTPClient client].loggedIn && awfulUrl != nil) {
-		[AwfulAlertView showWithTitle:@"Copied URL"
-							  message:@"Forums link found in clipboard"
-					   yesButtonTitle:@"Show"
-						noButtonTitle:@"No Thanks"
-						 onAcceptance:^{
-							 							 
-							 [[UIApplication sharedApplication] openURL:awfulUrl];
-							 
-						 }];
-	}
-
+    if (![AwfulHTTPClient client].loggedIn) return;
+	// Get a URL from the pasteboard, and fallback to checking the string pasteboard
+	// in case some app is a big jerk and only sets a string value.
+    NSURL *url = [UIPasteboard generalPasteboard].URL;
+    if (!url) {
+        url = [NSURL URLWithString:[UIPasteboard generalPasteboard].string];
+    }
+    if (![url awfulURL]) return;
+    // Don't ask about the same URL over and over.
+    if ([[AwfulSettings settings].lastOfferedPasteboardURL isEqualToString:[url absoluteString]]) {
+        return;
+    }
+    [AwfulSettings settings].lastOfferedPasteboardURL = [url absoluteString];
+    NSMutableString *abbreviatedURL = [[url absoluteString] mutableCopy];
+    NSRange upToHost = [abbreviatedURL rangeOfString:@"://"];
+    if (upToHost.location == NSNotFound) {
+        upToHost = [abbreviatedURL rangeOfString:@":"];
+    }
+    if (upToHost.location != NSNotFound) {
+        upToHost.length += upToHost.location;
+        upToHost.location = 0;
+        [abbreviatedURL deleteCharactersInRange:upToHost];
+    }
+    if ([abbreviatedURL length] > 60) {
+        [abbreviatedURL replaceCharactersInRange:NSMakeRange(55, [abbreviatedURL length] - 55)
+                                      withString:@"…"];
+    }
+    NSString *message = [NSString stringWithFormat:@"Would you like to open this URL in Awful?\n\n%@", abbreviatedURL];
+		[AwfulAlertView showWithTitle:@"Open in Awful"
+                              message:message
+                        noButtonTitle:@"Cancel"
+                       yesButtonTitle:@"Open"
+                         onAcceptance:^{ [[UIApplication sharedApplication] openURL:[url awfulURL]]; }];
 }
 
 - (BOOL)application:(UIApplication *)application
