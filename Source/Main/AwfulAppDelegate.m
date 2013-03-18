@@ -250,15 +250,18 @@ static id _instance;
 	
 	NSURL *awfulUrl = [url awfulURL];
 	
-	[AwfulAlertView showWithTitle:@"Copied URL"
-						  message:@"Forums link found in clipboard"
-				   yesButtonTitle:@"Show"
-					noButtonTitle:@"No Thanks"
-					 onAcceptance:^{
-						
-						 [[UIApplication sharedApplication] openURL:awfulUrl];
-						 
-					 }];
+	if ([AwfulHTTPClient client].loggedIn && awfulUrl != nil) {
+		[AwfulAlertView showWithTitle:@"Copied URL"
+							  message:@"Forums link found in clipboard"
+					   yesButtonTitle:@"Show"
+						noButtonTitle:@"No Thanks"
+						 onAcceptance:^{
+							 							 
+							 [[UIApplication sharedApplication] openURL:awfulUrl];
+							 
+						 }];
+	}
+
 }
 
 - (BOOL)application:(UIApplication *)application
