@@ -2,8 +2,7 @@
 //  AwfulFavoritesViewController.h
 //  Awful
 //
-//  Created by Nolan Waite on 12-04-21.
-//  Copyright (c) 2012 Regular Berry Software LLC. All rights reserved.
+//  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US http://github.com/AwfulDevs/Awful
 //
 
 #import "AwfulTableViewController.h"

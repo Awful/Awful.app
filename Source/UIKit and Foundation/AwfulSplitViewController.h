@@ -2,8 +2,7 @@
 //  AwfulSplitViewController.h
 //  Awful
 //
-//  Created by Sean Berry on 10/18/11.
-//  Copyright (c) 2011 Regular Berry Software LLC. All rights reserved.
+//  Copyright 2011 Awful Contributors. CC BY-NC-SA 3.0 US http://github.com/AwfulDevs/Awful
 //
 
 @interface AwfulSplitViewController : UISplitViewController

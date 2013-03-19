@@ -2,8 +2,7 @@
 //  AwfulForumsListController.m
 //  Awful
 //
-//  Created by Sean Berry on 7/27/10.
-//  Copyright 2010 Regular Berry Software LLC. All rights reserved.
+//  Copyright 2010 Awful Contributors. CC BY-NC-SA 3.0 US http://github.com/AwfulDevs/Awful
 //
 
 #import "AwfulForumsListController.h"

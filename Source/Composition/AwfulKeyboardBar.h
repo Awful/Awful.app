@@ -2,8 +2,7 @@
 //  AwfulKeyboardBar.h
 //  Awful
 //
-//  Created by Nolan Waite on 2013-01-17.
-//  Copyright (c) 2013 Regular Berry Software LLC. All rights reserved.
+//  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US http://github.com/AwfulDevs/Awful
 //
 
 #import <UIKit/UIKit.h>
