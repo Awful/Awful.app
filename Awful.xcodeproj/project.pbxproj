@@ -3361,7 +3361,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0460;
-				ORGANIZATIONNAME = "Regular Berry Software LLC";
+				ORGANIZATIONNAME = "Nolan Waite";
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Awful" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -4788,6 +4788,7 @@
 				1CD33EC616F367B80059587E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
 		};
 		1CE2D9A116688C640024AC1C /* Build configuration list for PBXAggregateTarget "Build Resources" */ = {
 			isa = XCConfigurationList;
