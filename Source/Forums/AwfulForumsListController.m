@@ -372,13 +372,15 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
                                 action:@selector(toggleFavorite:)
                       forControlEvents:UIControlEventTouchUpInside];
     }
-    [self configureCell:cell atIndexPath:indexPath];
+    [self configureCell:cell withObject:nil atIndexPath:indexPath];
     return cell;
 }
 
-- (void)configureCell:(UITableViewCell *)plainCell atIndexPath:(NSIndexPath*)indexPath
+- (void)configureCell:(UITableViewCell *)genericCell
+           withObject:(id)anObject
+          atIndexPath:(NSIndexPath*)indexPath
 {
-    AwfulForumCell *cell = (AwfulForumCell *)plainCell;
+    AwfulForumCell *cell = (id)genericCell;
     cell.textLabel.textColor = [AwfulTheme currentTheme].forumCellTextColor;
     cell.selectionStyle = [AwfulTheme currentTheme].cellSelectionStyle;
     AwfulDisclosureIndicatorView *disclosure = (AwfulDisclosureIndicatorView *)cell.accessoryView;
@@ -390,7 +392,7 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
         cell.showsExpanded = AwfulForumCellShowsExpandedLeavesRoom;
         return;
     }
-    AwfulForum *forum;
+    AwfulForum *forum = anObject;
     BOOL favoritesSection = NO;
     if ([self.favoriteForums count] > 0 && indexPath.section == 0) {
         forum = self.favoriteForums[indexPath.row];
@@ -399,7 +401,9 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
         if ([self.favoriteForums count] > 0) {
             indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section - 1];
         }
-        forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+        if (!forum) {
+            forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+        }
     }
     cell.textLabel.text = forum.name;
     [self setCellImagesForCell:cell];

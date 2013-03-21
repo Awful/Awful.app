@@ -193,7 +193,7 @@ static NSString * CreateBanIDForBan(BanParsedInfo *ban)
                                        UIViewAutoresizingFlexibleHeight);
         cell.backgroundView = background;
     }
-    [self configureCell:cell atIndexPath:indexPath];
+    [self configureCell:cell withObject:nil atIndexPath:indexPath];
     return cell;
 }
 
@@ -214,10 +214,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     cell.reasonLabel.textColor = [AwfulTheme currentTheme].lepersColonyTextColor;
 }
 
-- (void)configureCell:(UITableViewCell *)baseCell atIndexPath:(NSIndexPath *)indexPath
+- (void)configureCell:(UITableViewCell *)genericCell
+           withObject:(id)anObject
+          atIndexPath:(NSIndexPath *)indexPath
 {
-    AwfulLeperCell *cell = (id)baseCell;
-    BanParsedInfo *ban = self.bans[indexPath.row];
+    AwfulLeperCell *cell = (id)genericCell;
+    BanParsedInfo *ban = anObject ?: self.bans[indexPath.row];
     
     UIImageView *background = (id)cell.backgroundView;
     background.image = self.cellBackgroundImage;

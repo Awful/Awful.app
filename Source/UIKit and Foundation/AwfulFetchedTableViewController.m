@@ -141,11 +141,9 @@
         }
         case NSFetchedResultsChangeUpdate: {
             if (self.ignoreUpdates) return;
-            // The documentation suggests a call to -configureCell:atIndexPath:, but that can
-            // update the right cell with the wrong data.
-            // http://oleb.net/blog/2013/02/nsfetchedresultscontroller-documentation-bug/
-            [self.tableView reloadRowsAtIndexPaths:@[indexPath]
-                                  withRowAnimation:UITableViewRowAnimationNone];
+            [self configureCell:[self.tableView cellForRowAtIndexPath:indexPath]
+                     withObject:anObject
+                    atIndexPath:indexPath];
             break;
         }
     }

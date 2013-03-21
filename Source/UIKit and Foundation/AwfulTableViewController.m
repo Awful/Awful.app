@@ -144,10 +144,11 @@
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
-- (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath
+- (void)configureCell:(UITableViewCell*)cell
+           withObject:(id)anObject
+          atIndexPath:(NSIndexPath *)indexPath
 {
-    [NSException raise:NSInternalInconsistencyException
-                format:@"Subclasses must implement %@", NSStringFromSelector(_cmd)];
+    [self doesNotRecognizeSelector:_cmd];
 }
 
 #pragma mark - AwfulThemingViewController

@@ -288,14 +288,16 @@
             cell.accessoryView = [AwfulDisclosureIndicatorView new];
         }
     }
-    [self configureCell:cell atIndexPath:indexPath];
+    [self configureCell:cell withObject:nil atIndexPath:indexPath];
     return cell;
 }
 
-- (void)configureCell:(UITableViewCell *)genericCell atIndexPath:(NSIndexPath *)indexPath
+- (void)configureCell:(UITableViewCell *)genericCell
+           withObject:(id)anObject
+          atIndexPath:(NSIndexPath *)indexPath
 {
-    AwfulThreadCell *cell = (AwfulThreadCell *)genericCell;
-    AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    AwfulThreadCell *cell = (id)genericCell;
+    AwfulThread *thread = anObject ?: [self.fetchedResultsController objectAtIndexPath:indexPath];
     if ([AwfulSettings settings].showThreadTags) {
         cell.imageView.hidden = NO;
         cell.imageView.image = [[AwfulThreadTags sharedThreadTags]

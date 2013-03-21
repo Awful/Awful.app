@@ -118,12 +118,14 @@
 
 static NSString * const kLastBookmarksRefreshDate = @"com.awfulapp.Awful.LastBookmarksRefreshDate";
 
-#pragma mark - Table view data source and delegate
+#pragma mark - AwfulTableViewController
 
-- (void)configureCell:(UITableViewCell *)genericCell atIndexPath:(NSIndexPath *)indexPath
+- (void)configureCell:(UITableViewCell *)genericCell
+           withObject:(id)anObject
+          atIndexPath:(NSIndexPath *)indexPath
 {
-    [super configureCell:genericCell atIndexPath:indexPath];
-    AwfulThreadCell *cell = (AwfulThreadCell *)genericCell;
+    [super configureCell:genericCell withObject:anObject atIndexPath:indexPath];
+    AwfulThreadCell *cell = (id)genericCell;
     if (!cell.showsUnread) {
         cell.unreadCountBadgeView.badgeText = @"∞";
         cell.unreadCountBadgeView.on = YES;
