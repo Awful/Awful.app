@@ -152,4 +152,17 @@ static const CGFloat StarLeftMargin = 11;
     self.textLabel.frame = textFrame;
 }
 
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+{
+    if (!self.favoriteButton.hidden) {
+        CGRect buttonRect = [self convertRect:self.favoriteButton.frame
+                                     fromView:self.favoriteButton.superview];
+        buttonRect = CGRectInset(buttonRect, -CGRectGetMaxX(self.bounds) + CGRectGetMaxX(buttonRect), 0);
+        if (CGRectContainsPoint(buttonRect, point)) {
+            return self.favoriteButton;
+        }
+    }
+    return [super hitTest:point withEvent:event];
+}
+
 @end
