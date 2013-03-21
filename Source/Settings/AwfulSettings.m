@@ -253,14 +253,14 @@ BOOL_PROPERTY(showThreadTags, setShowThreadTags)
     self[AwfulSettingsKeys.favoriteForums] = favoriteForums;
 }
 
-- (NSNumber *)fontScale
+- (NSNumber *)fontSize
 {
-    return self[AwfulSettingsKeys.fontScale];
+    return self[AwfulSettingsKeys.fontSize];
 }
 
-- (void)setfontScale:(NSNumber *)scale
+- (void)setFontSize:(NSNumber *)size
 {
-    self[AwfulSettingsKeys.fontScale] = scale;
+    self[AwfulSettingsKeys.fontSize] = size;
 }
 
 BOOL_PROPERTY(useDevDotForums, setUseDevDotForums)
@@ -326,7 +326,7 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .yosposStyle = @"yospos_style",
     .keepSidebarOpen = @"keep_sidebar_open",
     .favoriteForums = @"favorite_forums",
-    .fontScale = @"font_scale",
+    .fontSize = @"font_size",
     .useDevDotForums = @"use_dev_dot_forums",
     .lastOfferedPasteboardURL = @"last_offered_pasteboard_URL",
 };

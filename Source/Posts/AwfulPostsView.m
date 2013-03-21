@@ -236,16 +236,16 @@ static NSString * JSONize(id obj)
     [self evalJavaScript:@"Awful.showImages(%@)", self.showImages ? @"true" : @"false"];
 }
 
-- (void)setFontScale:(NSNumber *)percentage
+- (void)setFontSize:(NSNumber *)size
 {
-    if (_fontScale == percentage) return;
-    _fontScale = percentage;
-    [self updateFontScale];
+    if ([_fontSize isEqual:size]) return;
+    _fontSize = size;
+    [self updateFontSize];
 }
 
-- (void)updateFontScale
+- (void)updateFontSize
 {
-    [self evalJavaScript:@"Awful.fontScale(%@)", self.fontScale];
+    [self evalJavaScript:@"Awful.fontSize(%@)", self.fontSize];
 }
 
 - (void)setHighlightQuoteUsername:(NSString *)highlightQuoteUsername
@@ -330,7 +330,7 @@ static NSString * JSONize(id obj)
         [self updateHighlightQuoteUsername];
         [self updateHighlightMentionUsername];
         [self updateEndMessage];
-        [self updateFontScale];
+        [self updateFontSize];
         self.hasLoaded = YES;
         [self reloadData];
         if (self.jumpToElementAfterLoading) {

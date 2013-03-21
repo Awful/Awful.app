@@ -39,7 +39,8 @@
 
 @property (nonatomic) BOOL showImages;
 
-@property (nonatomic) NSNumber *fontScale;
+// Font size in pixels. Default is 15.
+@property (nonatomic) NSNumber *fontSize;
 
 // Set to nil to highlight no quotes.
 @property (copy, nonatomic) NSString *highlightQuoteUsername;

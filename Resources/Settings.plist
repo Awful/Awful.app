@@ -81,17 +81,17 @@
 					<key>Type</key>
 					<string>Stepper</string>
 					<key>Default</key>
-					<integer>100</integer>
+					<integer>15</integer>
 					<key>Minimum</key>
-					<integer>24</integer>
+					<integer>3</integer>
 					<key>Maximum</key>
-					<integer>2000</integer>
+					<integer>200</integer>
 					<key>Maximum~ipad</key>
-					<integer>5000</integer>
+					<integer>550</integer>
 					<key>Increment</key>
-					<integer>2</integer>
+					<integer>1</integer>
 					<key>Key</key>
-					<string>font_scale</string>
+					<string>font_size</string>
 				</dict>
 				<dict>
 					<key>Title</key>

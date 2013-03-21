@@ -146,8 +146,8 @@ Awful.showImages = function(on){
   }
 }
 
-Awful.fontScale = function(percentage) {
-    $('body').css('font-size', percentage + "%")
+Awful.fontSize = function(size) {
+    $('body').css('font-size', size + "px")
 }
 
 function render(post) {

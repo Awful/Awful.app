@@ -94,7 +94,7 @@
         AwfulSettingsKeys.showImages,
         AwfulSettingsKeys.username,
         AwfulSettingsKeys.yosposStyle,
-        AwfulSettingsKeys.fontScale,
+        AwfulSettingsKeys.fontSize,
     ];
     NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
     if ([keys firstObjectCommonWithArray:importantKeys]) [self configurePostsViewSettings];
@@ -221,7 +221,7 @@
 {
     self.postsView.showAvatars = [AwfulSettings settings].showAvatars;
     self.postsView.showImages = [AwfulSettings settings].showImages;
-    self.postsView.fontScale = [AwfulSettings settings].fontScale;
+    self.postsView.fontSize = [AwfulSettings settings].fontSize;
     if ([AwfulSettings settings].highlightOwnMentions) {
         self.postsView.highlightMentionUsername = [AwfulSettings settings].username;
     } else {
