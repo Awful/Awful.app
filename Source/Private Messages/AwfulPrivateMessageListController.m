@@ -24,10 +24,28 @@
 
 @interface AwfulPrivateMessageListController () <AwfulPrivateMessageComposeViewControllerDelegate>
 
+@property (nonatomic) UIBarButtonItem *composeItem;
+
 @end
 
 
 @implementation AwfulPrivateMessageListController
+
+- (UIBarButtonItem *)composeItem
+{
+    if (_composeItem) return _composeItem;
+    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 25, 25)];
+    [button setImage:[UIImage imageNamed:@"compose.png"] forState:UIControlStateNormal];
+    button.layer.shadowOffset = CGSizeMake(0, -1);
+    button.layer.shadowOpacity = 1;
+    button.layer.shadowRadius = 0;
+    button.showsTouchWhenHighlighted = YES;
+    button.adjustsImageWhenHighlighted = NO;
+    [button addTarget:self action:@selector(didTapCompose)
+     forControlEvents:UIControlEventTouchUpInside];
+    _composeItem = [[UIBarButtonItem alloc] initWithCustomView:button];
+    return _composeItem;
+}
 
 #pragma mark - AwfulFetchedTableViewController
 
@@ -36,11 +54,7 @@
     if (!(self = [super init])) return nil;
     self.title = @"Private Messages";
     self.tabBarItem.image = [UIImage imageNamed:@"pm-icon.png"];
-    UIBarButtonItem *compose;
-    compose = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
-                                                            target:self
-                                                            action:@selector(didTapCompose)];
-    self.navigationItem.rightBarButtonItem = compose;
+    self.navigationItem.rightBarButtonItem = self.composeItem;
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
     UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithTitle:@"PMs"
                                                              style:UIBarButtonItemStyleBordered
@@ -113,7 +127,8 @@
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated
 {
     [super setEditing:editing animated:animated];
-    self.navigationItem.leftBarButtonItem.enabled = !editing;
+    [self.navigationItem setRightBarButtonItem:editing ? nil : self.composeItem
+                                      animated:animated];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
