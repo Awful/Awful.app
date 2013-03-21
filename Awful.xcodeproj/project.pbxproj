@@ -523,7 +523,6 @@
 		1CC38B8D160C0A5D00C35A11 /* SVPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC38B89160C0A5D00C35A11 /* SVPullToRefresh.m */; };
 		1CC38BB3160D8C5900C35A11 /* AwfulCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC38BB2160D8C5800C35A11 /* AwfulCategory.m */; };
 		1CC38BB6160D8C6000C35A11 /* _AwfulCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC38BB5160D8C6000C35A11 /* _AwfulCategory.m */; };
-		1CC780181612D8AF002AF958 /* AwfulFavoritesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780101612D8AF002AF958 /* AwfulFavoritesViewController.m */; };
 		1CC780191612D8AF002AF958 /* AwfulForumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780121612D8AF002AF958 /* AwfulForumCell.m */; };
 		1CC7801C1612D8AF002AF958 /* AwfulForumsListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780171612D8AF002AF958 /* AwfulForumsListController.m */; };
 		1CC780231612D989002AF958 /* AwfulHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780211612D989002AF958 /* AwfulHTTPClient.m */; };
@@ -1270,8 +1269,6 @@
 		1CC38BB2160D8C5800C35A11 /* AwfulCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCategory.m; sourceTree = "<group>"; };
 		1CC38BB4160D8C6000C35A11 /* _AwfulCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _AwfulCategory.h; sourceTree = "<group>"; };
 		1CC38BB5160D8C6000C35A11 /* _AwfulCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulCategory.m; sourceTree = "<group>"; };
-		1CC7800F1612D8AF002AF958 /* AwfulFavoritesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFavoritesViewController.h; sourceTree = "<group>"; };
-		1CC780101612D8AF002AF958 /* AwfulFavoritesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulFavoritesViewController.m; sourceTree = "<group>"; };
 		1CC780111612D8AF002AF958 /* AwfulForumCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumCell.h; sourceTree = "<group>"; };
 		1CC780121612D8AF002AF958 /* AwfulForumCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumCell.m; sourceTree = "<group>"; };
 		1CC780161612D8AF002AF958 /* AwfulForumsListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumsListController.h; sourceTree = "<group>"; };
@@ -2368,8 +2365,6 @@
 			children = (
 				1CC780161612D8AF002AF958 /* AwfulForumsListController.h */,
 				1CC780171612D8AF002AF958 /* AwfulForumsListController.m */,
-				1CC7800F1612D8AF002AF958 /* AwfulFavoritesViewController.h */,
-				1CC780101612D8AF002AF958 /* AwfulFavoritesViewController.m */,
 				1CC780111612D8AF002AF958 /* AwfulForumCell.h */,
 				1CC780121612D8AF002AF958 /* AwfulForumCell.m */,
 			);
@@ -4337,7 +4332,6 @@
 				1CC38B8D160C0A5D00C35A11 /* SVPullToRefresh.m in Sources */,
 				1CC38BB3160D8C5900C35A11 /* AwfulCategory.m in Sources */,
 				1CC38BB6160D8C6000C35A11 /* _AwfulCategory.m in Sources */,
-				1CC780181612D8AF002AF958 /* AwfulFavoritesViewController.m in Sources */,
 				1CC780191612D8AF002AF958 /* AwfulForumCell.m in Sources */,
 				1CC7801C1612D8AF002AF958 /* AwfulForumsListController.m in Sources */,
 				1CC780231612D989002AF958 /* AwfulHTTPClient.m in Sources */,

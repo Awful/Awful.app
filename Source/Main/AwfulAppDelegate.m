@@ -10,7 +10,6 @@
 #import "AwfulBookmarksController.h"
 #import "AwfulCrashlytics.h"
 #import "AwfulDataStack.h"
-#import "AwfulFavoritesViewController.h"
 #import "AwfulForumsListController.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulLoginController.h"
@@ -106,9 +105,8 @@ static id _instance;
     AwfulTabBarController *tabBar = [AwfulTabBarController new];
     tabBar.viewControllers = @[
         [[AwfulForumsListController new] enclosingNavigationController],
-        [[AwfulFavoritesViewController new] enclosingNavigationController],
-        [[AwfulBookmarksController new] enclosingNavigationController],
         [[AwfulPrivateMessageListController new] enclosingNavigationController],
+        [[AwfulBookmarksController new] enclosingNavigationController],
         [[AwfulSettingsViewController new] enclosingNavigationController]
     ];
     tabBar.selectedViewController = tabBar.viewControllers[[[AwfulSettings settings] firstTab]];

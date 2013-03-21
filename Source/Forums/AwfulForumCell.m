@@ -53,7 +53,6 @@
 
 - (void)setFavorite:(BOOL)isFavorite
 {
-    if (_favorite == isFavorite) return;
     _favorite = isFavorite;
     self.favoriteButton.selected = isFavorite;
     [self updateFavoriteButtonAccessibilityLabel];

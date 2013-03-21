@@ -64,16 +64,16 @@
 
 - (void)getFetchedResultsController:(NSNotification *)note
 {
+    // NSFetchedResultsController is quite sensitive to setting its delegate.
+    // It might be less sensitive on iOS 6, so maybe check back when we drop iOS 5.
     self.fetchedResultsController.delegate = nil;
-    self.fetchedResultsController = nil;
     [self.tableView reloadData];
     self.fetchedResultsController = [self createFetchedResultsController];
     self.fetchedResultsController.delegate = self;
-    
     NSError *error;
-	if (![self.fetchedResultsController performFetch:&error]) {
-		NSLog(@"error fetching: %@", error);
-	}
+    if (![self.fetchedResultsController performFetch:&error]) {
+        NSLog(@"%@ error fetching: %@", [self class], error);
+    }
 }
 
 - (NSFetchedResultsController *)createFetchedResultsController
@@ -124,12 +124,12 @@
     switch (type) {
         case NSFetchedResultsChangeInsert: {
             [self.tableView insertRowsAtIndexPaths:@[newIndexPath]
-                                  withRowAnimation:UITableViewRowAnimationAutomatic];
+                                  withRowAnimation:UITableViewRowAnimationTop];
             break;
         }
         case NSFetchedResultsChangeDelete: {
             [self.tableView deleteRowsAtIndexPaths:@[indexPath]
-                                  withRowAnimation:UITableViewRowAnimationAutomatic];
+                                  withRowAnimation:UITableViewRowAnimationTop];
             break;
         }
         case NSFetchedResultsChangeMove: {
@@ -145,7 +145,7 @@
             // update the right cell with the wrong data.
             // http://oleb.net/blog/2013/02/nsfetchedresultscontroller-documentation-bug/
             [self.tableView reloadRowsAtIndexPaths:@[indexPath]
-                                  withRowAnimation:UITableViewRowAnimationAutomatic];
+                                  withRowAnimation:UITableViewRowAnimationNone];
             break;
         }
     }
