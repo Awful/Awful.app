@@ -259,7 +259,7 @@
     if (!split) {
         [self.navigationController pushViewController:page animated:YES];
     } else {
-        UINavigationController *nav = (UINavigationController *)split.viewControllers[1];
+        UINavigationController *nav = (id)split.viewControllers[1];
         nav.viewControllers = @[ page ];
         [split.masterPopoverController dismissPopoverAnimated:YES];
     }

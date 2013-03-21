@@ -16,7 +16,6 @@
 // Here we avoid updates to specific sections or rows while not visible, then reload the table
 // later if we skipped some changes.
 @property (getter=isViewVisible, nonatomic) BOOL viewVisible;
-
 @property (nonatomic) BOOL changedWhileNotVisible;
 
 @end
@@ -24,10 +23,13 @@
 
 @implementation AwfulFetchedTableViewController
 
-- (void)reachabilityChanged:(NSNotification *)note
+- (NSFetchedResultsController *)createFetchedResultsController
 {
-    if (!self.refreshing && [self refreshOnAppear]) [self refresh];
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
 }
+
+#pragma mark - UIViewController
 
 - (void)viewDidLoad
 {
@@ -37,6 +39,18 @@
                                              selector:@selector(getFetchedResultsController:)
                                                  name:AwfulDataStackDidResetNotification
                                                object:[AwfulDataStack sharedDataStack]];
+}
+
+- (void)getFetchedResultsController:(NSNotification *)note
+{
+    self.fetchedResultsController.delegate = nil;
+    [self.tableView reloadData];
+    self.fetchedResultsController = [self createFetchedResultsController];
+    self.fetchedResultsController.delegate = self;
+    NSError *error;
+    if (![self.fetchedResultsController performFetch:&error]) {
+        NSLog(@"%@ error fetching: %@", [self class], error);
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -53,6 +67,11 @@
                                                object:nil];
 }
 
+- (void)reachabilityChanged:(NSNotification *)note
+{
+    if (!self.refreshing && [self refreshOnAppear]) [self refresh];
+}
+
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
@@ -60,27 +79,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:AFNetworkingReachabilityDidChangeNotification
                                                   object:nil];
-}
-
-- (void)getFetchedResultsController:(NSNotification *)note
-{
-    // NSFetchedResultsController is quite sensitive to setting its delegate.
-    // It might be less sensitive on iOS 6, so maybe check back when we drop iOS 5.
-    self.fetchedResultsController.delegate = nil;
-    [self.tableView reloadData];
-    self.fetchedResultsController = [self createFetchedResultsController];
-    self.fetchedResultsController.delegate = self;
-    NSError *error;
-    if (![self.fetchedResultsController performFetch:&error]) {
-        NSLog(@"%@ error fetching: %@", [self class], error);
-    }
-}
-
-- (NSFetchedResultsController *)createFetchedResultsController
-{
-    [NSException raise:NSInternalInconsistencyException
-                format:@"Subclasses must implement %@", NSStringFromSelector(_cmd)];
-    return nil;
 }
 
 - (void)dealloc
