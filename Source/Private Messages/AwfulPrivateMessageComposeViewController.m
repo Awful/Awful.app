@@ -57,7 +57,7 @@
     id op = [[AwfulHTTPClient client] sendPrivateMessageTo:self.recipient ?: @""
                                                    subject:self.subject ?: @""
                                                       icon:[self postIconIDForName:self.postIcon]
-                                                      text:self.textView.text ?: @""
+                                                      text:messageBody ?: @""
                                     asReplyToMessageWithID:self.regardingMessage.messageID
                                 forwardedFromMessageWithID:self.forwardedMessage.messageID
                                                    andThen:^(NSError *error,
