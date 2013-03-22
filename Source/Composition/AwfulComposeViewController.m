@@ -78,7 +78,9 @@
             if (range.location == NSNotFound) continue;
             [imageKeys addObject:[self.textView.text substringWithRange:range]];
         }
-        NSArray *images = [self.images objectsForKeys:imageKeys notFoundMarker:[NSNull null]];
+        NSMutableArray *images = [[self.images objectsForKeys:imageKeys
+                                               notFoundMarker:[NSNull null]] mutableCopy];
+        [images removeObject:[NSNull null]];
         if ([images count] > 0) {
             [self willTransitionToState:AwfulComposeViewControllerStateUploadingImages];
             self.state = AwfulComposeViewControllerStateUploadingImages;
