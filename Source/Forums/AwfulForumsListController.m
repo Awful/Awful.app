@@ -8,6 +8,7 @@
 #import "AwfulForumsListController.h"
 #import "AwfulFetchedTableViewControllerSubclass.h"
 #import "AwfulAlertView.h"
+#import "AwfulAppDelegate.h"
 #import "AwfulDataStack.h"
 #import "AwfulDisclosureIndicatorView.h"
 #import "AwfulForumCell.h"
@@ -282,6 +283,25 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
     
     // Don't show cell separators after last cell.
     self.tableView.tableFooterView = [UIView new];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didLogIn:)
+                                                 name:AwfulUserDidLogInNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didLogOut:)
+                                                 name:AwfulUserDidLogOutNotification object:nil];
+}
+
+- (void)didLogIn:(NSNotification *)note
+{
+    [self.tableView insertSections:[NSIndexSet indexSetWithIndex:self.tableView.numberOfSections]
+                  withRowAnimation:UITableViewRowAnimationAutomatic];
+}
+
+- (void)didLogOut:(NSNotification *)note
+{
+    if (self.tableView.numberOfSections == 0) return;
+    NSUInteger section = self.tableView.numberOfSections - 1;
+    [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:section]
+                  withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 - (void)viewWillAppear:(BOOL)animated

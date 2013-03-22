@@ -194,6 +194,9 @@
                     withPassword:(NSString *)password
                          andThen:(void (^)(NSError *error, NSDictionary *userInfo))callback;
 
+// Sent when someone logs in.
+extern NSString * const AwfulUserDidLogInNotification;
+
 // Finds the thread and page where a post appears.
 //
 // postID   - The ID of the post to locate.

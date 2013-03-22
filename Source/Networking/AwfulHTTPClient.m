@@ -563,6 +563,8 @@ static NSString * PreparePostText(NSString *noEntities)
             @"userID": [json[@"userid"] stringValue],
             @"username": json[@"username"]
         };
+        [[NSNotificationCenter defaultCenter] postNotificationName:AwfulUserDidLogInNotification
+                                                            object:nil];
         if (callback) callback(nil, userInfo);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error)
     {
@@ -580,6 +582,8 @@ static NSString * PreparePostText(NSString *noEntities)
     [self enqueueHTTPRequestOperation:op];
     return op;
 }
+
+NSString * const AwfulUserDidLogInNotification = @"com.awfulapp.Awful.UserDidLogInNotification";
 
 - (NSOperation *)locatePostWithID:(NSString *)postID
     andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))callback

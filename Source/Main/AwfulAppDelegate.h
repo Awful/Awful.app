@@ -15,4 +15,7 @@
 
 - (void)logOut;
 
+// Sent when the user logs out.
+extern NSString * const AwfulUserDidLogOutNotification;
+
 @end
