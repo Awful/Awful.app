@@ -349,6 +349,7 @@ static NSString * DeEntitify(NSString *withEntities)
 @property (nonatomic) BOOL administrator;
 @property (nonatomic) BOOL originalPoster;
 @property (copy, nonatomic) NSString *customTitle;
+@property (nonatomic) BOOL canReceivePrivateMessages;
 
 @end
 
@@ -362,7 +363,8 @@ static NSString * DeEntitify(NSString *withEntities)
 
 + (NSArray *)keysToApplyToObject
 {
-    return @[ @"username", @"userID", @"regdate", @"moderator", @"administrator", @"customTitle" ];
+    return @[ @"username", @"userID", @"regdate", @"moderator", @"administrator", @"customTitle",
+              @"canReceivePrivateMessages" ];
 }
 
 @end
@@ -607,6 +609,8 @@ static NSString * DeEntitify(NSString *withEntities)
     if (regdate) self.author.regdate = RegdateFromString(regdate);
     NSArray *customTitleNodes = [doc rawSearch:@"//dl[" HAS_CLASS(userinfo) "]//dd[" HAS_CLASS(title) "]//node()"];
     self.author.customTitle = [customTitleNodes componentsJoinedByString:@""];
+    TFHppleElement *messageLink = [doc searchForSingle:@"//ul[" HAS_CLASS(profilelinks) "]//a[contains(@href, 'private.php')]"];
+    self.author.canReceivePrivateMessages = !!messageLink;
     TFHppleElement *showPostsByUser = [doc searchForSingle:@"//a[" HAS_CLASS(user_jump) "]"];
     NSError *profileError;
     NSRegularExpression *profileRegex = [NSRegularExpression regularExpressionWithPattern:@"userid=(\\d+)"

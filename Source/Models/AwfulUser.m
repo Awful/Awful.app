@@ -72,8 +72,9 @@
     if (json[@"postsperday"]) user.postRate = [json[@"postsperday"] stringValue];
     if (json[@"role"]) {
         user.administratorValue = [json[@"role"] isEqual:@"A"];
-        user.moderatorValue = [json[@"role"] isEqual:@"M"];        
+        user.moderatorValue = [json[@"role"] isEqual:@"M"];
     }
+    user.canReceivePrivateMessagesValue = [json[@"receivepm"] boolValue];
     if (json[@"usertitle"]) user.customTitle = json[@"usertitle"];
     if (json[@"yahoo"]) user.yahooName = StringOrNilIfEmpty(json[@"yahoo"]);
     

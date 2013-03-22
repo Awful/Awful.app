@@ -7,6 +7,7 @@ const struct AwfulUserAttributes AwfulUserAttributes = {
 	.aboutMe = @"aboutMe",
 	.administrator = @"administrator",
 	.aimName = @"aimName",
+	.canReceivePrivateMessages = @"canReceivePrivateMessages",
 	.customTitle = @"customTitle",
 	.gender = @"gender",
 	.homepageURL = @"homepageURL",
@@ -67,6 +68,11 @@ const struct AwfulUserFetchedProperties AwfulUserFetchedProperties = {
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
+	if ([key isEqualToString:@"canReceivePrivateMessagesValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"canReceivePrivateMessages"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
 	if ([key isEqualToString:@"moderatorValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"moderator"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
@@ -119,6 +125,32 @@ const struct AwfulUserFetchedProperties AwfulUserFetchedProperties = {
 
 @dynamic aimName;
 
+
+
+
+
+
+@dynamic canReceivePrivateMessages;
+
+
+
+- (BOOL)canReceivePrivateMessagesValue {
+	NSNumber *result = [self canReceivePrivateMessages];
+	return [result boolValue];
+}
+
+- (void)setCanReceivePrivateMessagesValue:(BOOL)value_ {
+	[self setCanReceivePrivateMessages:[NSNumber numberWithBool:value_]];
+}
+
+- (BOOL)primitiveCanReceivePrivateMessagesValue {
+	NSNumber *result = [self primitiveCanReceivePrivateMessages];
+	return [result boolValue];
+}
+
+- (void)setPrimitiveCanReceivePrivateMessagesValue:(BOOL)value_ {
+	[self setPrimitiveCanReceivePrivateMessages:[NSNumber numberWithBool:value_]];
+}
 
 
 

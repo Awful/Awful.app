@@ -8,6 +8,7 @@ extern const struct AwfulUserAttributes {
 	__unsafe_unretained NSString *aboutMe;
 	__unsafe_unretained NSString *administrator;
 	__unsafe_unretained NSString *aimName;
+	__unsafe_unretained NSString *canReceivePrivateMessages;
 	__unsafe_unretained NSString *customTitle;
 	__unsafe_unretained NSString *gender;
 	__unsafe_unretained NSString *homepageURL;
@@ -42,6 +43,7 @@ extern const struct AwfulUserFetchedProperties {
 @class AwfulPrivateMessage;
 @class AwfulPrivateMessage;
 @class AwfulThread;
+
 
 
 
@@ -105,6 +107,20 @@ extern const struct AwfulUserFetchedProperties {
 
 
 //- (BOOL)validateAimName:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
+@property (nonatomic, strong) NSNumber* canReceivePrivateMessages;
+
+
+
+@property BOOL canReceivePrivateMessagesValue;
+- (BOOL)canReceivePrivateMessagesValue;
+- (void)setCanReceivePrivateMessagesValue:(BOOL)value_;
+
+//- (BOOL)validateCanReceivePrivateMessages:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -365,6 +381,15 @@ extern const struct AwfulUserFetchedProperties {
 
 - (NSString*)primitiveAimName;
 - (void)setPrimitiveAimName:(NSString*)value;
+
+
+
+
+- (NSNumber*)primitiveCanReceivePrivateMessages;
+- (void)setPrimitiveCanReceivePrivateMessages:(NSNumber*)value;
+
+- (BOOL)primitiveCanReceivePrivateMessagesValue;
+- (void)setPrimitiveCanReceivePrivateMessagesValue:(BOOL)value_;
 
 
 

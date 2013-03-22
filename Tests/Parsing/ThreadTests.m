@@ -23,7 +23,7 @@
 {
     PageParsedInfo *info = [[PageParsedInfo alloc] initWithHTMLData:self.fixture];
     STAssertEquals(info.pageNumber, 5, nil);
-    STAssertEquals(info.pagesInThread, 117, nil);
+    STAssertEquals(info.pagesInThread, 151, nil);
     STAssertEqualObjects(info.forumID, @"46", nil);
     STAssertEqualObjects(info.forumName, @"Debate & Discussion", nil);
     STAssertEqualObjects(info.threadID, @"3507451", nil);
@@ -39,6 +39,7 @@
 {
     PageParsedInfo *info = [[PageParsedInfo alloc] initWithHTMLData:self.fixture];
     NSDateFormatter *formatter = [NSDateFormatter new];
+    formatter.timeZone = [NSTimeZone timeZoneWithName:@"America/Edmonton"];
     
     PostParsedInfo *first = info.posts[0];
     STAssertEqualObjects(first.postID, @"407741839", nil);
@@ -56,6 +57,10 @@
     STAssertTrue([tenth.author.customTitle rangeOfString:@"gentleman"].location != NSNotFound, nil);
     STAssertTrue(tenth.beenSeen, nil);
     STAssertFalse(tenth.editable, nil);
+    STAssertTrue(tenth.author.canReceivePrivateMessages, nil);
+    
+    PostParsedInfo *eleventh = info.posts[11];
+    STAssertFalse(eleventh.author.canReceivePrivateMessages, nil);
     
     PostParsedInfo *twelfth = info.posts[12];
     STAssertEqualObjects(twelfth.postID, @"407751956", nil);
@@ -83,6 +88,7 @@
     PostParsedInfo *last = [info.posts lastObject];
     STAssertEqualObjects(last.postID, @"407769816", nil);
     STAssertEqualObjects(last.threadIndex, @"200", nil);
+    formatter.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
     [formatter setDateFormat:@"MMM dd, yyyy"];
     STAssertEqualObjects([formatter stringFromDate:last.author.regdate], @"Aug 25, 2009", nil);
     STAssertFalse(last.beenSeen, nil);
@@ -92,6 +98,9 @@
 @end
 
 
+// Some posts end up with a pseudo-HTML tag that looks something like <size:2></size:2>. libxml
+// gagged on this, so now we clean it out. The error was spotted when all posts after one with a
+// <size> tag weren't parsed at all.
 @interface WeirdSizeTagTests : ParsingTests @end
 
 @implementation WeirdSizeTagTests
