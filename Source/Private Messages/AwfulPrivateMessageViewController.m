@@ -24,7 +24,6 @@
                                                  AwfulPrivateMessageComposeViewControllerDelegate>
 
 @property (nonatomic) AwfulPrivateMessage *privateMessage;
-
 @property (readonly) AwfulPostsView *postsView;
 
 @end
@@ -94,12 +93,16 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [[AwfulHTTPClient client] readPrivateMessageWithID:self.privateMessage.messageID
-                                               andThen:^(NSError *error,
-                                                         AwfulPrivateMessage *message)
-    {
-        [self.postsView reloadPostAtIndex:0];
-    }];
+    if ([self.privateMessage.innerHTML length] == 0) {
+        self.postsView.loadingMessage = @"Loading…";
+        [[AwfulHTTPClient client] readPrivateMessageWithID:self.privateMessage.messageID
+                                                   andThen:^(NSError *error,
+                                                             AwfulPrivateMessage *message)
+         {
+             [self.postsView reloadPostAtIndex:0];
+             self.postsView.loadingMessage = nil;
+         }];
+    }
 }
 
 #pragma mark - AwfulPostsViewDelegate
