@@ -310,16 +310,17 @@ static id _instance;
     // Open the favorites list: awful://favorites
     // Open a specific forum from the favorites: awful://favorites/:forumID
     if ([section isEqualToString:@"forums"] || [section isEqualToString:@"favorites"]) {
+        UINavigationController *nav = self.tabBarController.viewControllers[0];
+        if ([section isEqualToString:@"favorites"]) {
+            UIScrollView *scrollView = (id)nav.topViewController.view;
+            self.tabBarController.selectedViewController = nav;
+            [scrollView scrollRectToVisible:CGRectZero animated:YES];
+            return YES;
+        }
         AwfulForum *forum;
         // First path component is the /
         if ([[url pathComponents] count] > 1) {
             forum = [AwfulForum firstMatchingPredicate:@"forumID = %@", [url pathComponents][1]];
-        }
-        UINavigationController *nav = self.tabBarController.viewControllers[0];
-        if ([section isEqualToString:@"favorites"]) {
-            if (!forum || [[AwfulSettings settings].favoriteForums containsObject:forum.forumID]) {
-                nav = self.tabBarController.viewControllers[1];
-            }
         }
         [self jumpToForum:forum inNavigationController:nav];
         self.tabBarController.selectedViewController = nav;
