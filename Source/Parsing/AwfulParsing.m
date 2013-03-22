@@ -70,35 +70,20 @@
 @interface ProfileParsedInfo ()
 
 @property (copy, nonatomic) NSString *username;
-
 @property (nonatomic) NSDate *regdate;
-
 @property (copy, nonatomic) NSString *customTitle;
-
 @property (copy, nonatomic) NSString *aboutMe;
-
 @property (copy, nonatomic) NSString *aimName;
-
 @property (copy, nonatomic) NSString *gender;
-
 @property (nonatomic) NSURL *homepage;
-
 @property (copy, nonatomic) NSString *icqName;
-
 @property (copy, nonatomic) NSString *interests;
-
 @property (nonatomic) NSDate *lastPost;
-
 @property (copy, nonatomic) NSString *location;
-
 @property (copy, nonatomic) NSString *occupation;
-
 @property (nonatomic) NSInteger postCount;
-
 @property (copy, nonatomic) NSString *postRate;
-
 @property (nonatomic) NSURL *profilePicture;
-
 @property (copy, nonatomic) NSString *yahooName;
 
 @end
@@ -300,11 +285,8 @@ static NSString * FixSAAndlibxmlHTMLSerialization(NSString *html)
 @interface ReplyFormParsedInfo ()
 
 @property (copy, nonatomic) NSString *formkey;
-
 @property (copy, nonatomic) NSString *formCookie;
-
 @property (copy, nonatomic) NSString *bookmark;
-
 @property (copy, nonatomic) NSString *text;
 
 @end
@@ -376,9 +358,7 @@ static NSString * DeEntitify(NSString *withEntities)
 @interface CategoryParsedInfo ()
 
 @property (readonly, nonatomic) NSMutableArray *mutableForums;
-
 @property (copy, nonatomic) NSString *name;
-
 @property (copy, nonatomic) NSString *categoryID;
 
 @end
@@ -387,13 +367,9 @@ static NSString * DeEntitify(NSString *withEntities)
 @interface ForumParsedInfo ()
 
 @property (weak, nonatomic) CategoryParsedInfo *category;
-
 @property (readonly, nonatomic) NSMutableArray *mutableSubforums;
-
 @property (weak, nonatomic) ForumParsedInfo *parentForum;
-
 @property (copy, nonatomic) NSString *name;
-
 @property (copy, nonatomic) NSString *forumID;
 
 @end
@@ -506,17 +482,11 @@ static NSString * DeEntitify(NSString *withEntities)
 @interface UserParsedInfo ()
 
 @property (copy, nonatomic) NSString *username;
-
 @property (copy, nonatomic) NSString *userID;
-
 @property (nonatomic) NSDate *regdate;
-
 @property (nonatomic) BOOL moderator;
-
 @property (nonatomic) BOOL administrator;
-
 @property (nonatomic) BOOL originalPoster;
-
 @property (copy, nonatomic) NSString *customTitle;
 
 @end
@@ -540,35 +510,20 @@ static NSString * DeEntitify(NSString *withEntities)
 @interface ThreadParsedInfo ()
 
 @property (copy, nonatomic) NSString *forumID;
-
 @property (copy, nonatomic) NSString *threadID;
-
 @property (copy, nonatomic) NSString *title;
-
 @property (nonatomic) BOOL isSticky;
-
 @property (nonatomic) NSURL *threadIconImageURL;
-
 @property (nonatomic) NSURL *threadIconImageURL2;
-
 @property (nonatomic) UserParsedInfo *author;
-
 @property (nonatomic) BOOL seen;
-
 @property (nonatomic) BOOL isClosed;
-
 @property (nonatomic) NSInteger starCategory;
-
 @property (nonatomic) NSInteger seenPosts;
-
 @property (nonatomic) NSInteger totalReplies;
-
 @property (nonatomic) NSInteger threadVotes;
-
 @property (nonatomic) NSDecimalNumber *threadRating;
-
 @property (copy, nonatomic) NSString *lastPostAuthorName;
-
 @property (nonatomic) NSDate *lastPostDate;
 
 @end
@@ -736,17 +691,11 @@ static NSString * DeEntitify(NSString *withEntities)
 @interface PostParsedInfo ()
 
 @property (copy, nonatomic) NSString *postID;
-
 @property (copy, nonatomic) NSString *threadIndex;
-
 @property (nonatomic) NSDate *postDate;
-
 @property (nonatomic) UserParsedInfo *author;
-
 @property (getter=isEditable, nonatomic) BOOL editable;
-
 @property (nonatomic) BOOL beenSeen;
-
 @property (copy, nonatomic) NSString *innerHTML;
 
 @end
@@ -839,23 +788,14 @@ static NSString * DeEntitify(NSString *withEntities)
 @interface PageParsedInfo ()
 
 @property (copy, nonatomic) NSArray *posts;
-
 @property (nonatomic) NSInteger pageNumber;
-
 @property (nonatomic) NSInteger pagesInThread;
-
 @property (copy, nonatomic) NSString *advertisementHTML;
-
 @property (copy, nonatomic) NSString *forumID;
-
 @property (copy, nonatomic) NSString *forumName;
-
 @property (copy, nonatomic) NSString *threadID;
-
 @property (copy, nonatomic) NSString *threadTitle;
-
 @property (getter=isThthreadClosed, nonatomic) BOOL threadClosed;
-
 @property (getter=isThreadBookmarked, nonatomic) BOOL threadBookmarked;
 
 @end
@@ -953,7 +893,6 @@ static NSString * DeEntitify(NSString *withEntities)
 @interface SuccessfulReplyInfo ()
 
 @property (copy, nonatomic) NSString *postID;
-
 @property (nonatomic) BOOL lastPage;
 
 @end
@@ -981,23 +920,14 @@ static NSString * DeEntitify(NSString *withEntities)
 @interface BanParsedInfo ()
 
 @property (nonatomic) AwfulBanType banType;
-
 @property (copy, nonatomic) NSString *postID;
-
 @property (nonatomic) NSDate *banDate;
-
 @property (copy, nonatomic) NSString *bannedUserID;
-
 @property (copy, nonatomic) NSString *bannedUserName;
-
 @property (copy, nonatomic) NSString *banReason;
-
 @property (copy, nonatomic) NSString *requesterUserID;
-
 @property (copy, nonatomic) NSString *requesterUserName;
-
 @property (copy, nonatomic) NSString *approverUserID;
-
 @property (copy, nonatomic) NSString *approverUserName;
 
 @end
