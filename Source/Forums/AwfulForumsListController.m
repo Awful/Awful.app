@@ -48,9 +48,9 @@
     self.title = @"Forums";
     self.tabBarItem.image = [UIImage imageNamed:@"list_icon.png"];
     _favoriteForums = [[self fetchFavoriteForumsWithIDsFromSettings] mutableCopy];
+    [self showOrHideEditButton];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDidChange:)
                                                  name:AwfulSettingsDidChangeNotification object:nil];
-    self.navigationItem.rightBarButtonItem = self.editButtonItem;
     return self;
 }
 
@@ -71,8 +71,15 @@
     NSArray *changedSettings = note.userInfo[AwfulSettingsDidChangeSettingsKey];
     if ([changedSettings containsObject:AwfulSettingsKeys.favoriteForums]) {
         [self.favoriteForums setArray:[self fetchFavoriteForumsWithIDsFromSettings]];
+        [self showOrHideEditButton];
         [self.tableView reloadData];
     }
+}
+
+- (void)showOrHideEditButton
+{
+    UIBarButtonItem *item = [self.favoriteForums count] > 0 ? self.editButtonItem : nil;
+    [self.navigationItem setRightBarButtonItem:item animated:YES];
 }
 
 - (void)dealloc
@@ -133,6 +140,7 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
         if ([self.favoriteForums count] == 1) {
             [self.tableView insertSections:[NSIndexSet indexSetWithIndex:0]
                           withRowAnimation:UITableViewRowAnimationTop];
+            [self showOrHideEditButton];
         } else {
             NSIndexPath *newRow = [NSIndexPath indexPathForRow:[self.favoriteForums count] - 1
                                                      inSection:0];
@@ -145,6 +153,8 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
         if ([self.favoriteForums count] == 0) {
             [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:0]
                           withRowAnimation:UITableViewRowAnimationTop];
+            [self showOrHideEditButton];
+            self.editing = NO;
         } else {
             NSIndexPath *oldRow = [NSIndexPath indexPathForRow:row inSection:0];
             [self.tableView deleteRowsAtIndexPaths:@[ oldRow ]
@@ -492,6 +502,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     if ([self.favoriteForums count] == 0) {
         [tableView deleteSections:[NSIndexSet indexSetWithIndex:0]
                  withRowAnimation:UITableViewRowAnimationTop];
+        [self showOrHideEditButton];
+        self.editing = NO;
     } else {
         [tableView deleteRowsAtIndexPaths:@[ indexPath ]
                          withRowAnimation:UITableViewRowAnimationAutomatic];
