@@ -14,4 +14,5 @@ const struct AwfulErrorCodes AwfulErrorCodes = {
     .threadIsClosed = -1001,
     .parseError = -1002,
     .dataMigrationError = -1003,
+    .missingDataStore = -1004,
 };

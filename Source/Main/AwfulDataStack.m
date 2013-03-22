@@ -98,6 +98,12 @@
     NSURL *url = [[self class] defaultStoreURL];
     NSError *error;
     NSURL *sourceModelURL = [self modelURLForStoreAtURL:url error:&error];
+    if (!sourceModelURL &&
+        [error.domain isEqualToString:AwfulErrorDomain] &&
+        error.code == AwfulErrorCodes.missingDataStore) {
+        // No point migrating a nonexistent store!
+        return;
+    }
     NSAssert(sourceModelURL, @"could not find source model for %@: %@", url, error);
     NSString *sourceModelVersion = ModelNameWithURL(sourceModelURL);
     
@@ -141,7 +147,16 @@
     NSDictionary *metadata;
     metadata = [NSPersistentStoreCoordinator metadataForPersistentStoreOfType:NSSQLiteStoreType
                                                                           URL:url error:error];
-    if (!metadata) return nil;
+    if (!metadata) {
+        NSDictionary *userInfo = @{ NSLocalizedDescriptionKey: @"Data migration error",
+                                    NSLocalizedFailureReasonErrorKey: @"Could not read metadata." };
+        // Despite the documentation suggesting otherwise,
+        // +metadataForPersistentStoreOfType:URL:error: has been spotted not bothering to pass along
+        // an appropriate error when the store is missing. We'll assume that's the cause of failure.
+        *error = [NSError errorWithDomain:AwfulErrorDomain code:AwfulErrorCodes.missingDataStore
+                                 userInfo:userInfo];
+        return nil;
+    }
     
     for (NSURL *url in [self bundledModelURLs]) {
         NSManagedObjectModel *model = [[NSManagedObjectModel alloc] initWithContentsOfURL:url];

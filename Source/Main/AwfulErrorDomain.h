@@ -24,4 +24,7 @@ extern const struct AwfulErrorCodes
     
     // Migrating the Core Data store failed.
     NSInteger dataMigrationError;
+    
+    // Could not find the Core Data store.
+    NSInteger missingDataStore;
 } AwfulErrorCodes;
