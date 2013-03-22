@@ -31,17 +31,6 @@
     return [NSSet setWithObject:@"customTitle"];
 }
 
-+ (instancetype)userCreatedOrUpdatedFromProfileInfo:(ProfileParsedInfo *)profileInfo
-{
-    AwfulUser *user = [self firstMatchingPredicate:@"userID = %@", profileInfo.userID];
-    if (!user) user = [AwfulUser insertNew];
-    [profileInfo applyToObject:user];
-    user.homepageURL = [profileInfo.homepage absoluteString];
-    user.profilePictureURL = [profileInfo.profilePicture absoluteString];
-    [[AwfulDataStack sharedDataStack] save];
-    return user;
-}
-
 + (instancetype)userCreatedOrUpdatedFromJSON:(NSDictionary *)json
 {
     NSString *userID = [json[@"userid"] stringValue];

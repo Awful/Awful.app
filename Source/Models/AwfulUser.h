@@ -6,13 +6,10 @@
 //
 
 #import "_AwfulUser.h"
-@class ProfileParsedInfo;
 
 @interface AwfulUser : _AwfulUser
 
 @property (readonly, nonatomic) NSURL *avatarURL;
-
-+ (instancetype)userCreatedOrUpdatedFromProfileInfo:(ProfileParsedInfo *)profileInfo;
 
 + (instancetype)userCreatedOrUpdatedFromJSON:(NSDictionary *)json;
 

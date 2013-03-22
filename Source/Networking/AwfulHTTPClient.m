@@ -217,18 +217,10 @@ static AwfulHTTPClient *instance = nil;
     id op = [self HTTPRequestOperationWithRequest:urlRequest
                                           success:^(id _, id responseObject)
     {
-        if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            AwfulUser *user = [AwfulUser userCreatedOrUpdatedFromJSON:responseObject];
-            if (callback) callback(nil, [user dictionaryWithValuesForKeys:@[ @"userID", @"username" ]]);
-        } else {
-            ProfileParsedInfo *profile = responseObject;
-            if (callback) callback(nil, @{ @"userID": profile.userID, @"username": profile.username });
-        }
+        AwfulUser *user = [AwfulUser userCreatedOrUpdatedFromJSON:responseObject];
+        if (callback) callback(nil, [user dictionaryWithValuesForKeys:@[ @"userID", @"username" ]]);
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
-    }];
-    [op setCreateParsedInfoBlock:^id(NSData *data) {
-        return [[ProfileParsedInfo alloc] initWithHTMLData:data];
     }];
     [self enqueueHTTPRequestOperation:op];
     return op;
