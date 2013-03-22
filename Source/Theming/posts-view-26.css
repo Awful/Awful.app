@@ -153,8 +153,14 @@ blockquote img {
   font-size: 0.75em;
   font-style: italic;
 }
+.attachment {
+  margin: 0;
+}
 #ad {
   text-align: center;
+}
+#ad img {
+  max-width: 100%;
 }
 #end {
   text-align: center;
@@ -269,9 +275,6 @@ header {
 }
 .dark blockquote {
   border-left-color: #999;
-}
-.attachment {
-  margin: 0;
 }
 #end {
   line-height: 3em;
