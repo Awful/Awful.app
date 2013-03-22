@@ -11,6 +11,7 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulLeperCell.h"
 #import "AwfulParsing.h"
+#import "AwfulSplitViewController.h"
 #import "AwfulTheme.h"
 
 @interface AwfulLepersViewController ()
@@ -265,7 +266,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     if (!ban.postID) return;
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"awful://posts/%@", ban.postID]];
     [[UIApplication sharedApplication] openURL:url];
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    AwfulSplitViewController *split = (id)self.splitViewController;
+    if (split) {
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        [split.masterPopoverController dismissPopoverAnimated:YES];
+    }
 }
 
 @end
