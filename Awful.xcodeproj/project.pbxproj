@@ -997,7 +997,7 @@
 		1C278A481647A47F007D3CEC /* AwfulPullToRefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPullToRefreshControl.m; sourceTree = "<group>"; };
 		1C278A491647A47F007D3CEC /* AwfulScrollViewPullObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScrollViewPullObserver.h; sourceTree = "<group>"; };
 		1C278A4A1647A47F007D3CEC /* AwfulScrollViewPullObserver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScrollViewPullObserver.m; sourceTree = "<group>"; };
-		1C382CA816FCF92700EF9A8E /* Model-1.11-onemoretime.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Model-1.11-onemoretime.xcdatamodel"; sourceTree = "<group>"; };
+		1C382CA816FCF92700EF9A8E /* Model-1.11-onemoretime.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model-1.11-onemoretime.xcdatamodel"; sourceTree = "<group>"; };
 		1C3CC797162876AE00088AA8 /* adminstar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = adminstar.png; sourceTree = "<group>"; };
 		1C3CC798162876AE00088AA8 /* modstar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = modstar.png; sourceTree = "<group>"; };
 		1C40E5B11640FC2C004AAFA6 /* posts-view.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view.css"; sourceTree = "<group>"; };
@@ -4106,7 +4106,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e\n\nif [ \"${CONFIGURATION}\" -eq \"Release\" and -f crashlytics-api-key ]; then\n    ./Vendor/Crashlytics.framework/run $(head -n 1 crashlytics-api-key)\nfi\n";
+			shellScript = "set -e\n\nif [ \"${CONFIGURATION}\" = \"Release\" ] &&  [ -f crashlytics-api-key ]; then\n    ./Vendor/Crashlytics.framework/run $(head -n 1 crashlytics-api-key)\nfi\n";
 		};
 		1C41B8A316CD50E500718F79 /* Configure Crashlytics */ = {
 			isa = PBXShellScriptBuildPhase;
