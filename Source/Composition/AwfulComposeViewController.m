@@ -221,26 +221,50 @@ static NSArray * ImagePlaceholderResultsWithMessageBody(NSString *messageBody)
 
 - (void)keyboardDidShow:(NSNotification *)note
 {
-    // TODO this is a bad way to do things, as the text view still puts stuff under the keyboard.
-    // (for example, autocorrection suggestions)
-    // Change the frame of the text view instead.
     CGRect keyboardFrame = [note.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    CGRect relativeKeyboardFrame = [self.textView convertRect:keyboardFrame fromView:nil];
-    CGRect overlap = CGRectIntersection(relativeKeyboardFrame, self.textView.bounds);
-    // The 2 isn't strictly necessary, I just like a little cushion between the cursor and keyboard.
-    UIEdgeInsets inset = self.textView.contentInset;
-    inset.bottom = overlap.size.height + 2;
-    self.textView.contentInset = inset;
-    self.textView.scrollIndicatorInsets = (UIEdgeInsets){ .bottom = inset.bottom };
-    [self.textView scrollRangeToVisible:self.textView.selectedRange];
+    keyboardFrame = [self.view.window convertRect:keyboardFrame fromWindow:nil];
+    CGRect relativeKeyboardFrame = [self.textView.superview convertRect:keyboardFrame fromView:nil];
+    CGRect textViewFrame = self.textView.frame;
+    textViewFrame.size.height += CGRectGetMinY(relativeKeyboardFrame) - CGRectGetMaxY(textViewFrame);
+    [self animateWithKeyboardUserInfo:note.userInfo animations:^{
+        self.textView.frame = textViewFrame;
+    } completion:^(BOOL finished) {
+        [self.textView scrollRangeToVisible:self.textView.selectedRange];
+    }];
 }
 
 - (void)keyboardWillHide:(NSNotification *)note
 {
-    UIEdgeInsets inset = self.textView.contentInset;
-    inset.bottom = 0;
-    self.textView.contentInset = inset;
-    self.textView.scrollIndicatorInsets = UIEdgeInsetsZero;
+    CGRect keyboardFrame = [note.userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue];
+    keyboardFrame = [self.view.window convertRect:keyboardFrame fromWindow:nil];
+    CGRect relativeKeyboardFrame = [self.textView.superview convertRect:keyboardFrame fromView:nil];
+    [self animateWithKeyboardUserInfo:note.userInfo animations:^{
+        self.textView.frame = CGRectUnion(self.textView.frame, relativeKeyboardFrame);
+    } completion:^(BOOL finished) {
+        [self.textView scrollRangeToVisible:self.textView.selectedRange];
+    }];
+}
+
+static UIViewAnimationOptions AnimationOptionsWithAnimationCurve(UIViewAnimationCurve curve)
+{
+    switch (curve) {
+        case UIViewAnimationCurveEaseInOut: return UIViewAnimationOptionCurveEaseInOut;
+        case UIViewAnimationCurveEaseIn: return UIViewAnimationOptionCurveEaseIn;
+        case UIViewAnimationCurveEaseOut: return UIViewAnimationOptionCurveEaseOut;
+        case UIViewAnimationCurveLinear: return UIViewAnimationOptionCurveLinear;
+    }
+}
+
+- (void)animateWithKeyboardUserInfo:(NSDictionary *)userInfo
+                         animations:(void (^)(void))animations
+                         completion:(void (^)(BOOL finished))completion
+{
+    UIViewAnimationCurve curve = [userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
+    [UIView animateWithDuration:[userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue]
+                          delay:0
+                        options:AnimationOptionsWithAnimationCurve(curve)
+                     animations:animations
+                     completion:completion];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
