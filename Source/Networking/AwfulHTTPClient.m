@@ -218,7 +218,12 @@ static AwfulHTTPClient *instance = nil;
                                           success:^(id _, id responseObject)
     {
         AwfulUser *user = [AwfulUser userCreatedOrUpdatedFromJSON:responseObject];
-        if (callback) callback(nil, [user dictionaryWithValuesForKeys:@[ @"userID", @"username" ]]);
+        NSDictionary *userInfo = @{
+            @"userID": user.userID,
+            @"username": user.username,
+            @"canSendPrivateMessages": user.canReceivePrivateMessages,
+        };
+        if (callback) callback(nil, userInfo);
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
     }];
@@ -553,7 +558,8 @@ static NSString * PreparePostText(NSString *noEntities)
     {
         NSDictionary *userInfo = @{
             @"userID": [json[@"userid"] stringValue],
-            @"username": json[@"username"]
+            @"username": json[@"username"],
+            @"canSendPrivateMessages": json[@"receivepm"],
         };
         [[NSNotificationCenter defaultCenter] postNotificationName:AwfulUserDidLogInNotification
                                                             object:nil];

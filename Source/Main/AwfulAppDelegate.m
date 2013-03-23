@@ -524,6 +524,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
 {
     [AwfulSettings settings].username = userInfo[@"username"];
     [AwfulSettings settings].userID = userInfo[@"userID"];
+    [AwfulSettings settings].canSendPrivateMessages = [userInfo[@"canSendPrivateMessages"] boolValue];
     [self.window.rootViewController dismissViewControllerAnimated:YES completion:^{
         [[AwfulHTTPClient client] listForumsAndThen:nil];
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {

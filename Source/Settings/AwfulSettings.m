@@ -241,6 +241,8 @@ struct {
     self[AwfulSettingsKeys.userID] = userID;
 }
 
+BOOL_PROPERTY(canSendPrivateMessages, setCanSendPrivateMessages)
+
 BOOL_PROPERTY(showThreadTags, setShowThreadTags)
 
 - (NSArray *)favoriteForums
@@ -322,6 +324,7 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
 	.darkTheme = @"dark_theme",
     .username = @"username",
     .userID = @"userID",
+    .canSendPrivateMessages = @"can_send_private_messages",
     .showThreadTags = @"show_thread_tags",
     .yosposStyle = @"yospos_style",
     .keepSidebarOpen = @"keep_sidebar_open",

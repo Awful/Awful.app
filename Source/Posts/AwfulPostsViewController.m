@@ -851,7 +851,8 @@ static char KVOContext;
              }];
         }];
     }
-    if (post.author.canReceivePrivateMessagesValue &&
+    if ([AwfulSettings settings].canSendPrivateMessages &&
+        post.author.canReceivePrivateMessagesValue &&
         ![post.author.userID isEqual:[AwfulSettings settings].userID]) {
         NSString *title = [NSString stringWithFormat:@"PM %@", post.author.username];
         [sheet addButtonWithTitle:title block:^{

@@ -91,6 +91,7 @@
         } else {
             [AwfulSettings settings].username = userInfo[@"username"];
             [AwfulSettings settings].userID = userInfo[@"userID"];
+            [AwfulSettings settings].canSendPrivateMessages = [userInfo[@"canSendPrivateMessages"] boolValue];
             [self.tableView reloadData];
             self.refreshing = NO;
         }
