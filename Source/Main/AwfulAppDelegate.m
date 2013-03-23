@@ -237,6 +237,28 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
                                        afterDelay:0.1];
     }
     
+    // Sometimes new features depend on the currently logged in user's info. We update that info on
+    // login, and when visiting the Settings tab. But that leaves out people who update to a new
+    // version of Awful and don't visit the Settings tab. For example, when adding PM support, we'd
+    // erroneously assume they can't send PMs because we'd simply never checked. This will ensure
+    // we update user info at least once for each new version of Awful.
+    if ([AwfulHTTPClient client].loggedIn) {
+        NSString *appVersion = [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"];
+        NSString *lastCheck = [AwfulSettings settings].lastForcedUserInfoUpdateVersion;
+        if ([appVersion compare:lastCheck options:NSNumericSearch] == NSOrderedDescending) {
+            [[AwfulHTTPClient client] learnUserInfoAndThen:^(NSError *error, NSDictionary *userInfo) {
+                if (error) {
+                    NSLog(@"error forcing user info update: %@", error);
+                    return;
+                }
+                [AwfulSettings settings].lastForcedUserInfoUpdateVersion = appVersion;
+                [AwfulSettings settings].userID = userInfo[@"userID"];
+                [AwfulSettings settings].username = userInfo[@"username"];
+                [AwfulSettings settings].canSendPrivateMessages = [userInfo[@"canSendPrivateMessages"] boolValue];
+            }];
+        }
+    }
+    
     [[AwfulNewPMNotifierAgent agent] checkForNewMessages];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(themeDidChange:)
                                                  name:AwfulThemeDidChangeNotification object:nil];
@@ -522,6 +544,8 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
 - (void)loginController:(AwfulLoginController *)login
  didLogInAsUserWithInfo:(NSDictionary *)userInfo
 {
+    NSString *appVersion = [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"];
+    [AwfulSettings settings].lastForcedUserInfoUpdateVersion = appVersion;
     [AwfulSettings settings].username = userInfo[@"username"];
     [AwfulSettings settings].userID = userInfo[@"userID"];
     [AwfulSettings settings].canSendPrivateMessages = [userInfo[@"canSendPrivateMessages"] boolValue];

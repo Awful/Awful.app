@@ -89,6 +89,8 @@
         if (error) {
             NSLog(@"failed refreshing user info: %@", error);
         } else {
+            NSString *appVersion = [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"];
+            [AwfulSettings settings].lastForcedUserInfoUpdateVersion = appVersion;
             [AwfulSettings settings].username = userInfo[@"username"];
             [AwfulSettings settings].userID = userInfo[@"userID"];
             [AwfulSettings settings].canSendPrivateMessages = [userInfo[@"canSendPrivateMessages"] boolValue];
