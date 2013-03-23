@@ -20,6 +20,7 @@
 #import "AwfulPageTopBar.h"
 #import "AwfulPostsView.h"
 #import "AwfulProfileViewController.h"
+#import "AwfulPrivateMessageComposeViewController.h"
 #import "AwfulPullToRefreshControl.h"
 #import "AwfulReplyComposeViewController.h"
 #import "AwfulSettings.h"
@@ -41,7 +42,8 @@
                                         NSFetchedResultsControllerDelegate,
                                         AwfulReplyComposeViewControllerDelegate,
                                         UIScrollViewDelegate,
-                                        AwfulThemingViewController>
+                                        AwfulThemingViewController,
+                                        AwfulPrivateMessageComposeViewControllerDelegate>
 
 @property (nonatomic) AwfulThreadPage currentPage;
 
@@ -849,6 +851,18 @@ static char KVOContext;
              }];
         }];
     }
+    if (post.author.canReceivePrivateMessagesValue &&
+        ![post.author.userID isEqual:[AwfulSettings settings].userID]) {
+        NSString *title = [NSString stringWithFormat:@"PM %@", post.author.username];
+        [sheet addButtonWithTitle:title block:^{
+            AwfulPrivateMessageComposeViewController *compose;
+            compose = [AwfulPrivateMessageComposeViewController new];
+            compose.delegate = self;
+            [compose setRecipient:post.author.username];
+            [self presentViewController:[compose enclosingNavigationController]
+                               animated:YES completion:nil];
+        }];
+    }
     [sheet addButtonWithTitle:@"Copy Post URL" block:^{
         NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
                          "showthread.php?threadid=%@&perpage=40&pagenumber=%@#post%@",
@@ -1071,6 +1085,18 @@ static char KVOContext;
     [self.postsView beginUpdates];
     [invocations makeObjectsPerformSelector:@selector(invokeWithTarget:) withObject:self];
     [self.postsView endUpdates];
+}
+
+#pragma mark - AwfulPrivateMessageComposeViewControllerDelegate
+
+- (void)privateMessageComposeControllerDidSendMessage:(AwfulPrivateMessageComposeViewController *)controller
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)privateMessageComposeControllerDidCancel:(AwfulPrivateMessageComposeViewController *)controller
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end
