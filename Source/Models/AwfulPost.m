@@ -157,6 +157,10 @@
         post.threadIndex = info[@"post_index"];
         
         NSString *userID = [info[@"userid"] stringValue];
+        // TODO this isn't quite how SA works. Admins can edit every post (except posts by other
+        // admins), archived posts can't be edited by their authors (?). Maybe one day the JSON
+        // will get an "editable" key. For now, fake it.
+        post.editableValue = [[AwfulSettings settings].userID isEqual:userID];
         post.author = [AwfulUser userCreatedOrUpdatedFromJSON:json[@"userids"][userID]];
         if ([info[@"op"] boolValue]) {
             thread.author = post.author;
@@ -184,12 +188,6 @@
     
     [[AwfulDataStack sharedDataStack] save];
     return posts;
-}
-
-- (BOOL)editableByUserWithID:(NSString *)userID
-{
-    if (!self.thread || self.thread.archivedValue) return NO;
-    return [self.author.userID isEqual:userID];
 }
 
 @end

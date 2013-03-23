@@ -6,6 +6,7 @@
 const struct AwfulPostAttributes AwfulPostAttributes = {
 	.attachmentID = @"attachmentID",
 	.editDate = @"editDate",
+	.editable = @"editable",
 	.innerHTML = @"innerHTML",
 	.postDate = @"postDate",
 	.postID = @"postID",
@@ -47,6 +48,11 @@ const struct AwfulPostFetchedProperties AwfulPostFetchedProperties = {
 + (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 	
+	if ([key isEqualToString:@"editableValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"editable"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
 	if ([key isEqualToString:@"threadIndexValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"threadIndex"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
@@ -68,6 +74,32 @@ const struct AwfulPostFetchedProperties AwfulPostFetchedProperties = {
 
 @dynamic editDate;
 
+
+
+
+
+
+@dynamic editable;
+
+
+
+- (BOOL)editableValue {
+	NSNumber *result = [self editable];
+	return [result boolValue];
+}
+
+- (void)setEditableValue:(BOOL)value_ {
+	[self setEditable:[NSNumber numberWithBool:value_]];
+}
+
+- (BOOL)primitiveEditableValue {
+	NSNumber *result = [self primitiveEditable];
+	return [result boolValue];
+}
+
+- (void)setPrimitiveEditableValue:(BOOL)value_ {
+	[self setPrimitiveEditable:[NSNumber numberWithBool:value_]];
+}
 
 
 

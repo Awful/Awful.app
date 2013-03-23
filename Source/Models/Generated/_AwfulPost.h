@@ -7,6 +7,7 @@
 extern const struct AwfulPostAttributes {
 	__unsafe_unretained NSString *attachmentID;
 	__unsafe_unretained NSString *editDate;
+	__unsafe_unretained NSString *editable;
 	__unsafe_unretained NSString *innerHTML;
 	__unsafe_unretained NSString *postDate;
 	__unsafe_unretained NSString *postID;
@@ -25,6 +26,7 @@ extern const struct AwfulPostFetchedProperties {
 @class AwfulUser;
 @class AwfulUser;
 @class AwfulThread;
+
 
 
 
@@ -61,6 +63,20 @@ extern const struct AwfulPostFetchedProperties {
 
 
 //- (BOOL)validateEditDate:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
+@property (nonatomic, strong) NSNumber* editable;
+
+
+
+@property BOOL editableValue;
+- (BOOL)editableValue;
+- (void)setEditableValue:(BOOL)value_;
+
+//- (BOOL)validateEditable:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -149,6 +165,15 @@ extern const struct AwfulPostFetchedProperties {
 
 - (NSDate*)primitiveEditDate;
 - (void)setPrimitiveEditDate:(NSDate*)value;
+
+
+
+
+- (NSNumber*)primitiveEditable;
+- (void)setPrimitiveEditable:(NSNumber*)value;
+
+- (BOOL)primitiveEditableValue;
+- (void)setPrimitiveEditableValue:(BOOL)value_;
 
 
 

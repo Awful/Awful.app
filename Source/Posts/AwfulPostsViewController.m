@@ -811,7 +811,7 @@ static char KVOContext;
     }
     NSString *title = [NSString stringWithFormat:@"%@ Post", possessiveUsername];
     AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:title];
-    if ([post editableByUserWithID:[AwfulSettings settings].userID]) {
+    if (post.editableValue) {
         [sheet addButtonWithTitle:@"Edit" block:^{
             [[AwfulHTTPClient client] getTextOfPostWithID:post.postID
                                                   andThen:^(NSError *error, NSString *text)

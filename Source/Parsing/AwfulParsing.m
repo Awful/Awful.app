@@ -644,7 +644,7 @@ static NSString * DeEntitify(NSString *withEntities)
 
 + (NSArray *)keysToApplyToObject
 {
-    return @[ @"postID", @"innerHTML", @"postDate" ];
+    return @[ @"postID", @"innerHTML", @"postDate", @"editable" ];
 }
 
 @end

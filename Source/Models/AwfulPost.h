@@ -18,6 +18,4 @@
 
 + (NSArray *)postsCreatedOrUpdatedFromJSON:(NSDictionary *)json;
 
-- (BOOL)editableByUserWithID:(NSString *)userID;
-
 @end
