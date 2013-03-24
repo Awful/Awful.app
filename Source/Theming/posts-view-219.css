@@ -18,7 +18,7 @@ body {
   border-radius: 2px;
 }
 .iphone .post {
-  padding: .36em;
+  padding: .4em;
 }
 .ipad .post {
   padding: 1.07em;
@@ -37,7 +37,7 @@ header:after {
 .iphone .avatar {
   max-width: 2em;
   max-height: 2em;
-  margin: 3px 5px 0 0;
+  margin: 4px 5px 0 0;
 }
 .ipad .avatar {
   max-width: 4em;
@@ -60,7 +60,7 @@ header:after {
   display: none;
 }
 header {
-  padding-bottom: 5px;
+  padding-bottom: 0;
   border-bottom: 1px solid;
 }
 .username {
@@ -88,6 +88,7 @@ header {
   border: none;
   font-family: inherit;
   font-size: 2.85em;
+  line-height: 1em;
   -webkit-tap-highlight-color: transparent;
   -webkit-user-select: none;
 }
@@ -102,7 +103,7 @@ header {
   max-width: 100%;
 }
 .iphone .postbody {
-  padding: 5px;
+  padding: .36em 0;
 }
 .bbc-block h4 {
   margin: 0;
@@ -209,6 +210,7 @@ header {
 .action-button {
   color: #57ff57;
   font-size: 2em;
+  line-height: 1.25;
 }
 .postbody a {
   color: #57ff57;
