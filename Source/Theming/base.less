@@ -21,14 +21,14 @@ body {
 
 .post {
   margin: 10px 5px;
-  border-radius: 5px;
+  border-radius: 2px;
   
   .iphone & {
-    padding: 5px;
+    padding: .4em;
   }
   
   .ipad & {
-    padding: 15px;
+    padding: 1.07em;
   }
 }
 
@@ -38,6 +38,7 @@ body {
 // Layout
 
 header {
+
   .ipad & {
     margin-bottom: 8px;
   }
@@ -55,7 +56,7 @@ header {
   .iphone & {
     max-width: 2em;
     max-height: 2em;
-    margin: 3px 5px 0 0;
+    margin: 4px 5px 0 0;
   }
   
   .ipad & {
@@ -88,7 +89,7 @@ header {
 // Non-layout
 
 header {
-  padding-bottom: 5px;
+  padding-bottom: 0;
   border-bottom: 1px solid;
 }
 
@@ -123,6 +124,7 @@ header {
   border: none;
   font-family: inherit; // UIWebView base style sets Helvetica.
   font-size: 2.85em;
+  line-height: 1em;
   -webkit-tap-highlight-color: transparent;
   -webkit-user-select: none; // Prevent selecting the whole header on long-tap.
 }
@@ -149,7 +151,7 @@ header {
   }
   
   .iphone & {
-    padding: 5px;
+    padding: .36em 0;
   }
 }
 

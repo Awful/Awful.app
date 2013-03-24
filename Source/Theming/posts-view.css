@@ -15,13 +15,13 @@ body {
 }
 .post {
   margin: 10px 5px;
-  border-radius: 5px;
+  border-radius: 2px;
 }
 .iphone .post {
-  padding: 5px;
+  padding: .36em;
 }
 .ipad .post {
-  padding: 15px;
+  padding: 1.07em;
 }
 .ipad header {
   margin-bottom: 8px;
@@ -72,7 +72,8 @@ header {
 .role-mod .username {
   background-image: url('modstar.png');
 }
-.role-admin .username, .role-mod .username {
+.role-admin .username,
+.role-mod .username {
   padding-left: 18px;
   background-position: 0 center;
   background-repeat: no-repeat;
@@ -96,7 +97,8 @@ header {
 .postbody img {
   -webkit-user-select: none;
 }
-.postbody img, .postbody iframe {
+.postbody img,
+.postbody iframe {
   max-width: 100%;
 }
 .iphone .postbody {
@@ -140,7 +142,8 @@ blockquote img {
 .postbody a {
   -webkit-tap-highlight-color: transparent;
 }
-.iphone .postbody ol, .iphone .postbody ul {
+.iphone .postbody ol,
+.iphone .postbody ul {
   margin: 0;
   padding-left: 1.5em;
 }
@@ -193,16 +196,16 @@ body.dark {
 }
 .post {
   background-color: white;
-  box-shadow: 0 0 5px 5px #c1c1c1;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.75);
 }
 .post.seen {
-  background-color: #dbe8f5;
+  background-color: #f3f7ff;
 }
 .dark .post {
   background-color: #313131;
   box-shadow: none;
 }
-.dark .post .seen {
+.dark .post.seen {
   background-color: #121e2e;
 }
 header {
@@ -249,7 +252,9 @@ header {
 .bbc-spoiler img {
   visibility: hidden;
 }
-.bbc-spoiler a:link, .bbc-spoiler a:visited, .bbc-spoiler a:active {
+.bbc-spoiler a:link,
+.bbc-spoiler a:visited,
+.bbc-spoiler a:active {
   color: #000000;
 }
 .dark  .bbc-spoiler {
@@ -264,7 +269,9 @@ header {
 .dark  .bbc-spoiler img {
   visibility: hidden;
 }
-.dark  .bbc-spoiler a:link, .dark  .bbc-spoiler a:visited, .dark  .bbc-spoiler a:active {
+.dark  .bbc-spoiler a:link,
+.dark  .bbc-spoiler a:visited,
+.dark  .bbc-spoiler a:active {
   color: #ffffff;
 }
 .bbc-spoiler.spoiled {
@@ -277,10 +284,12 @@ header {
 .bbc-spoiler.spoiled img {
   visibility: visible;
 }
-.bbc-block h4, .bbc-block h5 {
+.bbc-block h4,
+.bbc-block h5 {
   color: #555;
 }
-.dark .bbc-block h4, .dark .bbc-block h5 {
+.dark .bbc-block h4,
+.dark .bbc-block h5 {
   color: #999;
 }
 #end {
