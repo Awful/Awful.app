@@ -43,6 +43,7 @@ header:after {
   max-width: 4em;
   max-height: 4em;
   margin-right: 8px;
+  margin-bottom: .5em;
 }
 .action-button {
   float: right;
@@ -51,10 +52,13 @@ header:after {
   margin: 0;
 }
 .ipad .username {
-  padding-top: 5px;
+  padding-top: .5em;
 }
 .postdate {
   display: block;
+}
+.ipad .postdate {
+  padding-bottom: .75em;
 }
 .regdate {
   display: none;
@@ -88,9 +92,14 @@ header {
   border: none;
   font-family: inherit;
   font-size: 2.85em;
-  line-height: 1em;
   -webkit-tap-highlight-color: transparent;
   -webkit-user-select: none;
+}
+.iphone .action-button {
+  line-height: 1em;
+}
+.ipad .action-button {
+  line-height: 1.5em;
 }
 .postdate {
   font-size: 0.85em;

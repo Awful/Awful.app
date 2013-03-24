@@ -63,6 +63,7 @@ header {
     max-width: 4em;
     max-height: 4em;
     margin-right: 8px;
+    margin-bottom: .5em;
   }
 }
 
@@ -74,12 +75,17 @@ header {
   margin: 0;
   
   .ipad & {
-    padding-top: 5px;
+    padding-top: .5em;
   }
 }
 
 .postdate {
   display: block;
+  
+  .ipad & {
+    padding-bottom: .75em;
+  }
+  
 }
 
 .regdate {
@@ -124,9 +130,17 @@ header {
   border: none;
   font-family: inherit; // UIWebView base style sets Helvetica.
   font-size: 2.85em;
-  line-height: 1em;
   -webkit-tap-highlight-color: transparent;
   -webkit-user-select: none; // Prevent selecting the whole header on long-tap.
+  
+  .iphone & {
+  	line-height: 1em;  
+  }
+
+  .ipad & {
+  	line-height: 1.5em;  
+  }
+  
 }
 
 .postdate {
