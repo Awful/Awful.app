@@ -23,6 +23,9 @@ body {
 .ipad .post {
   padding: 1.07em;
 }
+.post:last-child {
+  margin-bottom: 0;
+}
 .ipad header {
   margin-bottom: 8px;
 }
@@ -176,6 +179,7 @@ blockquote img {
   max-width: 100%;
 }
 #end {
+  font-weight: bold;
   text-align: center;
   line-height: 2em;
 }
