@@ -72,6 +72,7 @@ header {
 }
 .username {
   font-size: 1em;
+  display: inline-block;
 }
 .role-admin .username {
   background-image: url('adminstar.png');
