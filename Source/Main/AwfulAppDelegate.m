@@ -337,16 +337,21 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     // Open the favorites list: awful://favorites
     // Open a specific forum from the favorites: awful://favorites/:forumID
     if ([section isEqualToString:@"forums"] || [section isEqualToString:@"favorites"]) {
+        UINavigationController *nav = self.tabBarController.viewControllers[0];
+        if ([[url pathComponents] count] <= 1) {
+            self.tabBarController.selectedViewController = nav;
+            if ([section isEqualToString:@"favorites"]) {
+                UIScrollView *scrollView = (id)nav.topViewController.view;
+                if ([scrollView respondsToSelector:@selector(setContentOffset:animated:)]) {
+                    [scrollView setContentOffset:CGPointZero animated:YES];
+                }
+            }
+            return YES;
+        }
         AwfulForum *forum;
         // First path component is the /
         if ([[url pathComponents] count] > 1) {
             forum = [AwfulForum firstMatchingPredicate:@"forumID = %@", [url pathComponents][1]];
-        }
-        UINavigationController *nav = self.tabBarController.viewControllers[0];
-        if ([section isEqualToString:@"favorites"]) {
-            if (!forum || [[AwfulSettings settings].favoriteForums containsObject:forum.forumID]) {
-                nav = self.tabBarController.viewControllers[1];
-            }
         }
         [self jumpToForum:forum inNavigationController:nav];
         self.tabBarController.selectedViewController = nav;
@@ -364,7 +369,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     
     // Open private messages: awful://messages
     if ([section isEqualToString:@"messages"]) {
-        UINavigationController *nav = self.tabBarController.viewControllers[3];
+        UINavigationController *nav = self.tabBarController.viewControllers[1];
         [nav popToRootViewControllerAnimated:YES];
         self.tabBarController.selectedViewController = nav;
         return YES;
@@ -372,7 +377,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     
     // Open settings: awful://settings
     if ([section isEqualToString:@"settings"]) {
-        UINavigationController *nav = self.tabBarController.viewControllers[4];
+        UINavigationController *nav = self.tabBarController.viewControllers[3];
         [nav popToRootViewControllerAnimated:YES];
         self.tabBarController.selectedViewController = nav;
         return YES;
