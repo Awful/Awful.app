@@ -382,6 +382,7 @@
         NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
                          "showthread.php?threadid=%@&perpage=40&pagenumber=%@",
                          self.thread.threadID, @(self.currentPage)];
+        [AwfulSettings settings].lastOfferedPasteboardURL = url;
         [UIPasteboard generalPasteboard].items = @[ @{
             (id)kUTTypeURL: [NSURL URLWithString:url],
             (id)kUTTypePlainText: url
@@ -868,10 +869,11 @@ static char KVOContext;
         NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
                          "showthread.php?threadid=%@&perpage=40&pagenumber=%@#post%@",
                          self.thread.threadID, @(self.currentPage), post.postID];
+        [AwfulSettings settings].lastOfferedPasteboardURL = url;
         [UIPasteboard generalPasteboard].items = @[ @{
-                                                        (id)kUTTypeURL: [NSURL URLWithString:url],
-                                                        (id)kUTTypePlainText: url
-                                                        }];
+            (id)kUTTypeURL: [NSURL URLWithString:url],
+            (id)kUTTypePlainText: url,
+        }];
     }];
     [sheet addButtonWithTitle:@"Mark Read to Here" block:^{
         [[AwfulHTTPClient client] markThreadWithID:self.thread.threadID

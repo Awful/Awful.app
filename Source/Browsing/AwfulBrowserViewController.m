@@ -8,6 +8,7 @@
 #import "AwfulBrowserViewController.h"
 #import "AwfulActionSheet.h"
 #import "AwfulExternalBrowser.h"
+#import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "AwfulThemingViewController.h"
 #import "UINavigationItem+TwoLineTitle.h"
@@ -40,9 +41,11 @@
                             block:^{ [browser openURL:url]; }];
     }
     [sheet addButtonWithTitle:@"Copy URL" block:^{
+        NSURL *url = self.webView.request.URL;
+        [AwfulSettings settings].lastOfferedPasteboardURL = [url absoluteString];
         [UIPasteboard generalPasteboard].items = @[ @{
-            (id)kUTTypeURL: self.webView.request.URL,
-            (id)kUTTypePlainText: [self.webView.request.URL absoluteString]
+            (id)kUTTypeURL: url,
+            (id)kUTTypePlainText: [url absoluteString]
         } ];
     }];
     [sheet addCancelButtonWithTitle:@"Cancel"];

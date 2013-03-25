@@ -9,6 +9,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "AwfulActionSheet.h"
 #import "AwfulAlertView.h"
+#import "AwfulSettings.h"
 #import "FVGifAnimation.h"
 #import "SVProgressHUD.h"
 #import "UIImageView+AFNetworking.h"
@@ -165,6 +166,7 @@
         });
     }];
     [sheet addButtonWithTitle:@"Copy Image URL" block:^{
+        [AwfulSettings settings].lastOfferedPasteboardURL = [self.imageURL absoluteString];
         [UIPasteboard generalPasteboard].items = @[ @{
             (id)kUTTypeURL: self.imageURL,
             (id)kUTTypePlainText: [self.imageURL absoluteString]
