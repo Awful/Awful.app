@@ -79,7 +79,7 @@ header {
 }
 .role-admin .username,
 .role-mod .username {
-  padding-left: 18px;
+  padding-left: 1.125em;
   background-position: 0 center;
   background-repeat: no-repeat;
   background-size: auto 1em;
