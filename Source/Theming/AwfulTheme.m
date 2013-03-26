@@ -275,6 +275,11 @@
     DARK([UIColor colorWithHue:0.166 saturation:0.778 brightness:0.741 alpha:1]);
 }
 
+- (UIColor *)threadListUnreadBadgeBlueColor
+{
+    DEFAULT([UIColor colorWithHue:0.580 saturation:0.639 brightness:0.576 alpha:1]);
+}
+
 - (UIColor *)threadListUnreadBadgeHighlightedColor
 {
     DEFAULT([UIColor whiteColor]);
@@ -293,6 +298,11 @@
 - (UIColor *)threadListUnreadBadgeYellowOffColor
 {
     DEFAULT([self.threadListUnreadBadgeYellowColor colorWithAlphaComponent:0.5]);
+}
+
+- (UIColor *)threadListUnreadBadgeBlueOffColor
+{
+    DEFAULT([self.threadListUnreadBadgeBlueColor colorWithAlphaComponent:0.5]);
 }
 
 #pragma mark - Posts view

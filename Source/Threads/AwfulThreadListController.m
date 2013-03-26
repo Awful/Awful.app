@@ -363,9 +363,12 @@
     } else if (thread.starCategoryValue == AwfulStarCategoryYellow) {
         cell.unreadCountBadgeView.badgeColor = theme.threadListUnreadBadgeYellowColor;
         cell.unreadCountBadgeView.offBadgeColor = theme.threadListUnreadBadgeYellowOffColor;
-    } else {
+    } else if (thread.starCategoryValue == AwfulStarCategoryOrange) {
         cell.unreadCountBadgeView.badgeColor = theme.threadListUnreadBadgeOrangeColor;
         cell.unreadCountBadgeView.offBadgeColor = theme.threadListUnreadBadgeOrangeOffColor;
+    } else {
+        cell.unreadCountBadgeView.badgeColor = theme.threadListUnreadBadgeBlueColor;
+        cell.unreadCountBadgeView.offBadgeColor = theme.threadListUnreadBadgeBlueOffColor;
     }
     cell.unreadCountBadgeView.highlightedBadgeColor = theme.threadListUnreadBadgeHighlightedColor;
     NSInteger unreadPosts = thread.totalRepliesValue + 1 - thread.seenPostsValue;
