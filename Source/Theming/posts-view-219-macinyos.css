@@ -257,6 +257,9 @@ body {
   border-radius: 4px;
   -webkit-font-smoothing: antialiased;
 }
+.ipad .action-button {
+  margin-top: 12px;
+}
 .postbody a {
   color: #000;
 }
