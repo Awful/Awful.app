@@ -24,7 +24,7 @@
 
 
 typedef enum {
-    AwfulStarCategoryBlue = 0,
+    AwfulStarCategoryOrange = 0,
     AwfulStarCategoryRed,
     AwfulStarCategoryYellow,
     AwfulStarCategoryNone

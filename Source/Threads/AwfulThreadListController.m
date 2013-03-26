@@ -364,8 +364,8 @@
         cell.unreadCountBadgeView.badgeColor = theme.threadListUnreadBadgeYellowColor;
         cell.unreadCountBadgeView.offBadgeColor = theme.threadListUnreadBadgeYellowOffColor;
     } else {
-        cell.unreadCountBadgeView.badgeColor = theme.threadListUnreadBadgeBlueColor;
-        cell.unreadCountBadgeView.offBadgeColor = theme.threadListUnreadBadgeBlueOffColor;
+        cell.unreadCountBadgeView.badgeColor = theme.threadListUnreadBadgeOrangeColor;
+        cell.unreadCountBadgeView.offBadgeColor = theme.threadListUnreadBadgeOrangeOffColor;
     }
     cell.unreadCountBadgeView.highlightedBadgeColor = theme.threadListUnreadBadgeHighlightedColor;
     NSInteger unreadPosts = thread.totalRepliesValue + 1 - thread.seenPostsValue;

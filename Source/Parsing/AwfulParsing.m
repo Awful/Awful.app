@@ -489,7 +489,7 @@ static NSString * DeEntitify(NSString *withEntities)
     NSCharacterSet *white = [NSCharacterSet whitespaceAndNewlineCharacterSet];
     NSArray *classes = [[star objectForKey:@"class"] componentsSeparatedByCharactersInSet:white];
     if ([classes containsObject:@"bm0"]) {
-        self.starCategory = AwfulStarCategoryBlue;
+        self.starCategory = AwfulStarCategoryOrange;
     } else if ([classes containsObject:@"bm1"]) {
         self.starCategory = AwfulStarCategoryRed;
     } else if ([classes containsObject:@"bm2"]) {

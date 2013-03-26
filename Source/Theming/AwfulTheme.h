@@ -65,11 +65,11 @@
 @property (readonly, nonatomic) UIColor *threadCellPagesTextColor;
 @property (readonly, nonatomic) UIColor *threadCellOriginalPosterTextColor;
 @property (readonly, nonatomic) UIColor *threadListSeparatorColor;
-@property (readonly, nonatomic) UIColor *threadListUnreadBadgeBlueColor;
+@property (readonly, nonatomic) UIColor *threadListUnreadBadgeOrangeColor;
 @property (readonly, nonatomic) UIColor *threadListUnreadBadgeRedColor;
 @property (readonly, nonatomic) UIColor *threadListUnreadBadgeYellowColor;
 @property (readonly, nonatomic) UIColor *threadListUnreadBadgeHighlightedColor;
-@property (readonly, nonatomic) UIColor *threadListUnreadBadgeBlueOffColor;
+@property (readonly, nonatomic) UIColor *threadListUnreadBadgeOrangeOffColor;
 @property (readonly, nonatomic) UIColor *threadListUnreadBadgeRedOffColor;
 @property (readonly, nonatomic) UIColor *threadListUnreadBadgeYellowOffColor;
 

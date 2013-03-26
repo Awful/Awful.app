@@ -28,7 +28,7 @@
     STAssertEqualObjects([second.threadIconImageURL lastPathComponent], @"cps-android.gif", nil);
     
     ThreadParsedInfo *third = threads[2];
-    STAssertTrue(third.starCategory == AwfulStarCategoryBlue, nil);
+    STAssertTrue(third.starCategory == AwfulStarCategoryOrange, nil);
     
     ThreadParsedInfo *fifth = threads[4];
     STAssertTrue(fifth.starCategory == AwfulStarCategoryYellow, nil);

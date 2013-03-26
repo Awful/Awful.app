@@ -259,9 +259,9 @@
     DEFAULT(self.disclosureIndicatorColor);
 }
 
-- (UIColor *)threadListUnreadBadgeBlueColor
+- (UIColor *)threadListUnreadBadgeOrangeColor
 {
-    DEFAULT([UIColor colorWithHue:0.580 saturation:0.639 brightness:0.576 alpha:1]);
+    DEFAULT([UIColor colorWithHue:0.104 saturation:1 brightness:0.886 alpha:1]);
 }
 
 - (UIColor *)threadListUnreadBadgeRedColor
@@ -280,9 +280,9 @@
     DEFAULT([UIColor whiteColor]);
 }
 
-- (UIColor *)threadListUnreadBadgeBlueOffColor
+- (UIColor *)threadListUnreadBadgeOrangeOffColor
 {
-    DEFAULT([self.threadListUnreadBadgeBlueColor colorWithAlphaComponent:0.5]);
+    DEFAULT([self.threadListUnreadBadgeOrangeColor colorWithAlphaComponent:0.5]);
 }
 
 - (UIColor *)threadListUnreadBadgeRedOffColor
