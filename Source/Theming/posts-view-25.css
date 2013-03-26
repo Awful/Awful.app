@@ -95,6 +95,7 @@ header {
   font-size: 2.85em;
   -webkit-tap-highlight-color: transparent;
   -webkit-user-select: none;
+  background-color: transparent;
 }
 .iphone .action-button {
   line-height: 1em;
