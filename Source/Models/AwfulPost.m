@@ -116,6 +116,7 @@
     if (seenPosts) {
         thread.seenPosts = seenPosts;
     }
+    thread.totalReplies = json[@"thread_info"][@"replycount"];
     
     NSArray *postIDs = [json[@"posts"] allKeys];
     NSMutableDictionary *existingPosts = [NSMutableDictionary new];
