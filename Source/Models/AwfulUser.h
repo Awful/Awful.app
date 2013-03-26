@@ -11,6 +11,7 @@
 
 @property (readonly, nonatomic) NSURL *avatarURL;
 
+// Does not save the managed object context.
 + (instancetype)userCreatedOrUpdatedFromJSON:(NSDictionary *)json;
 
 @end

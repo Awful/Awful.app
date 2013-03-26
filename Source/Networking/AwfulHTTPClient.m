@@ -218,6 +218,7 @@ static AwfulHTTPClient *instance = nil;
                                           success:^(id _, id responseObject)
     {
         AwfulUser *user = [AwfulUser userCreatedOrUpdatedFromJSON:responseObject];
+        [[AwfulDataStack sharedDataStack] save];
         NSDictionary *userInfo = @{
             @"userID": user.userID,
             @"username": user.username,
@@ -645,8 +646,8 @@ NSString * const AwfulUserDidLogInNotification = @"com.awfulapp.Awful.UserDidLog
             }
             base = [base substringToIndex:[base length] - 1];
             user.profilePictureURL = [base stringByAppendingString:user.profilePictureURL];
-            [[AwfulDataStack sharedDataStack] save];
         }
+        [[AwfulDataStack sharedDataStack] save];
         if (callback) callback(nil, user);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (callback) callback(error, nil);

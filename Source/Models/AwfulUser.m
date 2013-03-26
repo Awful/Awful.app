@@ -77,8 +77,6 @@
     user.canReceivePrivateMessagesValue = [json[@"receivepm"] boolValue];
     if (json[@"usertitle"]) user.customTitle = json[@"usertitle"];
     if (json[@"yahoo"]) user.yahooName = StringOrNilIfEmpty(json[@"yahoo"]);
-    
-    [[AwfulDataStack sharedDataStack] save];
     return user;
 }
 
