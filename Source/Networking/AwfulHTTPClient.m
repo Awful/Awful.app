@@ -215,9 +215,22 @@ static AwfulHTTPClient *instance = nil;
     NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:@"member.php"
                                             parameters:parameters];
     id op = [self HTTPRequestOperationWithRequest:urlRequest
-                                          success:^(id _, id responseObject)
+                                          success:^(id _, NSDictionary *responseObject)
     {
+        NSDictionary *errorInfo = @{ NSLocalizedDescriptionKey: @"User info could not be parsed" };
+        NSError *error = [NSError errorWithDomain:AwfulErrorDomain
+                                             code:AwfulErrorCodes.parseError
+                                         userInfo:errorInfo];
+        
+        if (![responseObject isKindOfClass:[NSDictionary class]]) {
+            if (callback) callback(error, nil);
+            return;
+        }
         AwfulUser *user = [AwfulUser userCreatedOrUpdatedFromJSON:responseObject];
+        if (!user.userID || !user.username) {
+            if (callback) callback(error, nil);
+            return;
+        }
         [[AwfulDataStack sharedDataStack] save];
         NSDictionary *userInfo = @{
             @"userID": user.userID,
