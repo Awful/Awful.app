@@ -14,7 +14,7 @@
 #import "AwfulExternalBrowser.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulImagePreviewViewController.h"
-#import "AwfulJumpToPageSheet.h"
+#import "AwfulJumpToPageController.h"
 #import "AwfulModels.h"
 #import "AwfulPageBottomBar.h"
 #import "AwfulPageTopBar.h"
@@ -38,7 +38,7 @@
 #import "UIViewController+NavigationEnclosure.h"
 
 @interface AwfulPostsViewController () <AwfulPostsViewDelegate,
-                                        AwfulJumpToPageSheetDelegate,
+                                        AwfulJumpToPageControllerDelegate,
                                         NSFetchedResultsControllerDelegate,
                                         AwfulReplyComposeViewControllerDelegate,
                                         UIScrollViewDelegate,
@@ -55,8 +55,6 @@
 @property (weak, nonatomic) AwfulPostsView *postsView;
 @property (weak, nonatomic) AwfulPageBottomBar *bottomBar;
 @property (weak, nonatomic) AwfulPullToRefreshControl *pullUpToRefreshControl;
-
-@property (nonatomic) AwfulJumpToPageSheet *jumpToPageSheet;
 
 @property (nonatomic) NSInteger hiddenPosts;
 @property (copy, nonatomic) NSString *jumpToPostAfterLoad;
@@ -496,7 +494,7 @@
                                    action:@selector(didTapPreviousNextPageControl:)
                          forControlEvents:UIControlEventValueChanged];
     [pageBar.jumpToPageButton addTarget:self
-                                 action:@selector(toggleJumpToPageSheet)
+                                 action:@selector(showJumpToPageSheet)
                        forControlEvents:UIControlEventTouchUpInside];
     [pageBar.actionsComposeControl addTarget:self
                                       action:@selector(didTapActComposeControl:)
@@ -574,17 +572,19 @@
     seg.selectedSegmentIndex = UISegmentedControlNoSegment;
 }
 
-- (void)toggleJumpToPageSheet
+- (void)showJumpToPageSheet
 {
-    if (self.jumpToPageSheet) {
-        [self.jumpToPageSheet dismiss];
-        self.jumpToPageSheet = nil;
-        return;
-    }
     if (self.postsView.loadingMessage) return;
     if (self.thread.numberOfPagesValue < 1) return;
-    self.jumpToPageSheet = [[AwfulJumpToPageSheet alloc] initWithDelegate:self];
-    [self.jumpToPageSheet showInView:self.view behindSubview:self.bottomBar];
+    AwfulJumpToPageController *jump = [[AwfulJumpToPageController alloc] initWithDelegate:self];
+    jump.numberOfPages = self.thread.numberOfPagesValue;
+    if (self.currentPage > 0) {
+        jump.selectedPage = self.currentPage;
+    }
+    else if (self.currentPage == AwfulThreadPageLast && self.thread.numberOfPagesValue > 0) {
+        jump.selectedPage = self.thread.numberOfPagesValue;
+    }
+    [jump presentFromViewController:self fromView:self.bottomBar];
 }
 
 - (void)didTapActComposeControl:(UISegmentedControl *)seg
@@ -699,7 +699,6 @@ static char KVOContext;
                                          duration:(NSTimeInterval)duration
 {
     [self updatePullUpTriggerOffset];
-    [self.jumpToPageSheet showInView:self.view behindSubview:self.bottomBar];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -1006,31 +1005,14 @@ static char KVOContext;
     [self updateUserInterface];
 }
 
-#pragma mark - AwfulSpecificPageControllerDelegate
+#pragma mark - AwfulJumpToPageControllerDelegate
 
-- (NSInteger)numberOfPagesInJumpToPageSheet:(AwfulJumpToPageSheet *)sheet
-{
-    return self.thread.numberOfPagesValue;
-}
-
-- (AwfulThreadPage)initialPageForJumpToPageSheet:(AwfulJumpToPageSheet *)sheet
-{
-    if (self.currentPage > 0) {
-        return self.currentPage;
-    }
-    else if (self.currentPage == AwfulThreadPageLast && self.thread.numberOfPagesValue > 0) {
-        return self.thread.numberOfPagesValue;
-    } else {
-        return 1;
-    }
-}
-
-- (void)jumpToPageSheet:(AwfulJumpToPageSheet *)sheet didSelectPage:(AwfulThreadPage)page
+- (void)jumpToPageController:(AwfulJumpToPageController *)jump didSelectPage:(AwfulThreadPage)page
 {
     if (page != AwfulThreadPageNone) {
         [self loadPage:page];
     }
-    self.jumpToPageSheet = nil;
+    [jump dismiss];
 }
 
 #pragma mark - AwfulReplyComposeViewControllerDelegate
