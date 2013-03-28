@@ -220,6 +220,12 @@ header {
 .seen header {
   border-bottom-color: #395339;
 }
+.role-op .username {
+  color: #57ff57;
+}
+.role-op .username:before {
+  content: "⌨ ";
+}
 .action-button {
   color: #57ff57;
   font-size: 2em;
