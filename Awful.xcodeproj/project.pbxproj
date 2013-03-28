@@ -559,8 +559,6 @@
 		1CD33EDF16F399870059587E /* macinyos-heading-left.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C4F06B41686C1CB003CE53C /* macinyos-heading-left.png */; };
 		1CD33EE016F399870059587E /* macinyos-heading-center.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C0F4F541682CCFA00E25D7E /* macinyos-heading-center.png */; };
 		1CD33EE116F399870059587E /* macinyos-heading-right.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C0F4F551682CCFA00E25D7E /* macinyos-heading-right.png */; };
-		1CD33EE216F399870059587E /* macinyos-adminstar.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CFB175E168145B5007C70D5 /* macinyos-adminstar.png */; };
-		1CD33EE316F399870059587E /* macinyos-modstar.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CFB175F168145B5007C70D5 /* macinyos-modstar.png */; };
 		1CD33EE416F399870059587E /* macinyos-postactions-bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEBABEC16800A9300680935 /* macinyos-postactions-bg.png */; };
 		1CD33EE516F399870059587E /* macinyos-loading.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C483FC116852E5D00D02482 /* macinyos-loading.png */; };
 		1CD33EE616F399870059587E /* macinyos-wallpaper.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEBABEA168000B800680935 /* macinyos-wallpaper.png */; };
@@ -894,8 +892,6 @@
 		8CF95CA71653276000060F19 /* gip-money.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF95C831653276000060F19 /* gip-money.png */; };
 		8CF95CA81653276000060F19 /* gip-marines.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF95C841653276000060F19 /* gip-marines.png */; };
 		8CF95CA91653276000060F19 /* gip-airforce.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF95C851653276000060F19 /* gip-airforce.png */; };
-		8CFB1760168145B5007C70D5 /* macinyos-adminstar.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CFB175E168145B5007C70D5 /* macinyos-adminstar.png */; };
-		8CFB1761168145B5007C70D5 /* macinyos-modstar.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CFB175F168145B5007C70D5 /* macinyos-modstar.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1879,8 +1875,6 @@
 		8CF95C831653276000060F19 /* gip-money.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gip-money.png"; sourceTree = "<group>"; };
 		8CF95C841653276000060F19 /* gip-marines.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gip-marines.png"; sourceTree = "<group>"; };
 		8CF95C851653276000060F19 /* gip-airforce.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gip-airforce.png"; sourceTree = "<group>"; };
-		8CFB175E168145B5007C70D5 /* macinyos-adminstar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-adminstar.png"; sourceTree = "<group>"; };
-		8CFB175F168145B5007C70D5 /* macinyos-modstar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-modstar.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2456,8 +2450,6 @@
 				8C4F06B41686C1CB003CE53C /* macinyos-heading-left.png */,
 				8C0F4F541682CCFA00E25D7E /* macinyos-heading-center.png */,
 				8C0F4F551682CCFA00E25D7E /* macinyos-heading-right.png */,
-				8CFB175E168145B5007C70D5 /* macinyos-adminstar.png */,
-				8CFB175F168145B5007C70D5 /* macinyos-modstar.png */,
 				8CEBABEC16800A9300680935 /* macinyos-postactions-bg.png */,
 				8C483FC116852E5D00D02482 /* macinyos-loading.png */,
 				8CEBABEA168000B800680935 /* macinyos-wallpaper.png */,
@@ -3417,8 +3409,6 @@
 				1CD33EDF16F399870059587E /* macinyos-heading-left.png in Resources */,
 				1CD33EE016F399870059587E /* macinyos-heading-center.png in Resources */,
 				1CD33EE116F399870059587E /* macinyos-heading-right.png in Resources */,
-				1CD33EE216F399870059587E /* macinyos-adminstar.png in Resources */,
-				1CD33EE316F399870059587E /* macinyos-modstar.png in Resources */,
 				1CD33EE416F399870059587E /* macinyos-postactions-bg.png in Resources */,
 				1CD33EE516F399870059587E /* macinyos-loading.png in Resources */,
 				1CD33EE616F399870059587E /* macinyos-wallpaper.png in Resources */,
@@ -4046,8 +4036,6 @@
 				8CEBABEB168000B800680935 /* macinyos-wallpaper.png in Resources */,
 				8CEBABED16800A9300680935 /* macinyos-postactions-bg.png in Resources */,
 				8CF740EF1681376600C219E4 /* macinyos-heading.png in Resources */,
-				8CFB1760168145B5007C70D5 /* macinyos-adminstar.png in Resources */,
-				8CFB1761168145B5007C70D5 /* macinyos-modstar.png in Resources */,
 				8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */,
 				8C0F4F571682CCFA00E25D7E /* macinyos-heading-right.png in Resources */,
 				1C96D0B71682BBF10043B194 /* Browsers.plist in Resources */,

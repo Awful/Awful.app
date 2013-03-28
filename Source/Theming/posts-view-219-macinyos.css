@@ -237,10 +237,21 @@ body {
   padding-bottom: 8px;
 }
 .role-admin .username {
-  background-image: url('macinyos-adminstar.png');
+  background-image: none;
+  padding: 0;
+}
+.role-admin .username:before {
+  content: " ";
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #71c457), color-stop(0.35, #71c457), color-stop(0.351, #fec331), color-stop(0.48, #fec331), color-stop(0.481, #f99527), color-stop(0.61, #f99527), color-stop(0.611, #e8524e), color-stop(0.74, #e8524e), color-stop(0.741, #a856a8), color-stop(0.87, #a856a8), color-stop(0.871, #00ade3), color-stop(1, #00ade3));
+  color: transparent;
+  -webkit-background-clip: text;
 }
 .role-mod .username {
-  background-image: url('macinyos-modstar.png');
+  background-image: none;
+  padding: 0;
+}
+.role-mod .username:before {
+  content: " ";
 }
 .role-op .username {
   color: #000;
