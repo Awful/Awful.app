@@ -30,14 +30,29 @@ header {
   }
   
 }
+
+.username {
+  .role-admin &:before {
+    content: '★';
+  }
   
-.role-op .username {
+  .role-mod &:before {
+    content: '☆';
+  }
+  
+  .role-admin &,
+  .role-mod & {
+    background-image: none;
+    padding-left: 0;
+  } 
+   
+  .role-op & {
 	color: @color;
 
 	&:before {
 	  content: "⌨ ";
 	}
-
+  }
 }
 
 .action-button {

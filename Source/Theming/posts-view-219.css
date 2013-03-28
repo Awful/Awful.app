@@ -220,6 +220,17 @@ header {
 .seen header {
   border-bottom-color: #395339;
 }
+.role-admin .username:before {
+  content: '★';
+}
+.role-mod .username:before {
+  content: '☆';
+}
+.role-admin .username,
+.role-mod .username {
+  background-image: none;
+  padding-left: 0;
+}
 .role-op .username {
   color: #57ff57;
 }
