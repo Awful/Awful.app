@@ -179,8 +179,10 @@
 {
     if (seg.selectedSegmentIndex == 0) {
         [self.delegate jumpToPageController:self didSelectPage:1];
-    } else if (seg.selectedSegmentIndex == 1) {
+    } else if (seg.selectedSegmentIndex == 1 && self.delegate.userID == nil) {
         [self.delegate jumpToPageController:self didSelectPage:AwfulThreadPageLast];
+    } else if (seg.selectedSegmentIndex == 1 ) {
+        [self.delegate jumpToPageController:self didSelectPage:self.numberOfPages];
     }
     seg.selectedSegmentIndex = UISegmentedControlNoSegment;
 }

@@ -165,6 +165,20 @@ static AwfulHTTPClient *instance = nil;
                                                    NSUInteger firstUnreadPost,
                                                    NSString *advertisementHTML))callback
 {
+    return [self listPostsInThreadWithID:threadID
+                                  onPage:page
+                                  userID:nil
+                                 andThen:callback];
+}
+
+- (NSOperation *)listPostsInThreadWithID:(NSString *)threadID
+                                  onPage:(AwfulThreadPage)page
+                                  userID:(NSString *)user
+                                 andThen:(void (^)(NSError *error,
+                                                   NSArray *posts,
+                                                   NSUInteger firstUnreadPost,
+                                                   NSString *advertisementHTML))callback
+{
     NSMutableDictionary *parameters = [@{ @"threadid": threadID } mutableCopy];
     if (self.usingDevDotForums) {
         parameters[@"json"] = @1;
@@ -173,6 +187,9 @@ static AwfulHTTPClient *instance = nil;
     if (page == AwfulThreadPageNextUnread) parameters[@"goto"] = @"newpost";
     else if (page == AwfulThreadPageLast) parameters[@"goto"] = @"lastpost";
     else parameters[@"pagenumber"] = @(page);
+    
+    if (user != nil) parameters[@"userid"] = user;
+    
     NSURLRequest *request = [self requestWithMethod:@"GET" path:@"showthread.php"
                                          parameters:parameters];
     id op = [self HTTPRequestOperationWithRequest:request
@@ -185,7 +202,7 @@ static AwfulHTTPClient *instance = nil;
             ad = [responseObject valueForKey:@"goon_banner"];
             if ([ad isEqual:[NSNull null]]) ad = nil;
         } else {
-            posts = [AwfulPost postsCreatedOrUpdatedFromPageInfo:responseObject];
+            posts = [AwfulPost postsCreatedOrUpdatedFromPageInfo:responseObject userID:user];
             ad = [responseObject advertisementHTML];
         }
         if (callback) {

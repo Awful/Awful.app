@@ -155,8 +155,19 @@
     }
     NSInteger lowIndex = (self.currentPage - 1) * 40 + 1;
     NSInteger highIndex = self.currentPage * 40;
+    
     request.predicate = [NSPredicate predicateWithFormat:@"thread == %@ AND %d <= threadIndex AND threadIndex <= %d",
                          self.thread, lowIndex, highIndex];
+    
+    if(self.userID!=nil) {
+        request.predicate = [NSPredicate predicateWithFormat:@"thread == %@ AND %d <= threadIndex AND threadIndex <= %d AND author.userID == %@ AND userOnlyPost == %@",
+                             self.thread, lowIndex, highIndex, self.userID, [NSNumber numberWithBool:YES]];
+    }
+    else {
+        request.predicate = [NSPredicate predicateWithFormat:@"thread == %@ AND %d <= threadIndex AND threadIndex <= %d AND userOnlyPost == %@",
+                             self.thread, lowIndex, highIndex,[NSNumber numberWithBool:NO]];
+    }
+
     NSError *error;
     BOOL ok = [self.fetchedResultsController performFetch:&error];
     if (!ok) {
@@ -251,13 +262,21 @@
 
 - (void)loadPage:(AwfulThreadPage)page
 {
+    [self loadPage:page userID:nil];
+}
+
+- (void)loadPage:(AwfulThreadPage)page
+          userID:(NSString *)user
+{
+
     [self stopObservingThreadSeenPosts];
     [self.networkOperation cancel];
     self.jumpToPostAfterLoad = nil;
     NSInteger oldPage = self.currentPage;
     self.currentPage = page;
     BOOL refreshingSamePage = page > 0 && page == oldPage;
-    if (!refreshingSamePage) {
+    if (!refreshingSamePage || user != self.userID) {
+        self.userID = user;
         [self updateFetchedResultsController];
         self.pullUpToRefreshControl.refreshing = NO;
         [self updateUserInterface];
@@ -267,8 +286,12 @@
         self.hiddenPosts = 0;
         [self.postsView reloadData];
     }
+    else {
+        self.userID = user;
+    }
     id op = [[AwfulHTTPClient client] listPostsInThreadWithID:self.thread.threadID
                                                        onPage:page
+                                                       userID:user
                                                       andThen:^(NSError *error, NSArray *posts,
                                                                 NSUInteger firstUnreadPost,
                                                                 NSString *advertisementHTML)
@@ -367,9 +390,9 @@
 - (void)loadNextPageOrRefresh
 {
     if (self.thread.numberOfPagesValue > self.currentPage) {
-        [self loadPage:self.currentPage + 1];
+        [self loadPage:self.currentPage + 1 userID:self.userID];
     } else {
-        [self loadPage:self.currentPage];
+        [self loadPage:self.currentPage userID:self.userID];
     }
 }
 
@@ -562,11 +585,11 @@
 {
     if (seg.selectedSegmentIndex == 0) {
         if (self.currentPage > 1) {
-            [self loadPage:self.currentPage - 1];
+            [self loadPage:self.currentPage - 1 userID:self.userID];
         }
     } else if (seg.selectedSegmentIndex == 1) {
         if (self.currentPage < self.thread.numberOfPagesValue) {
-            [self loadPage:self.currentPage + 1];
+            [self loadPage:self.currentPage + 1 userID:self.userID];
         }
     }
     seg.selectedSegmentIndex = UISegmentedControlNoSegment;
@@ -893,6 +916,17 @@ static char KVOContext;
     [sheet addButtonWithTitle:[NSString stringWithFormat:@"%@ Profile", possessiveUsername] block:^{
         [self showProfileWithUser:post.author];
     }];
+    if( self.userID == nil) {
+        [sheet addButtonWithTitle:[NSString stringWithFormat:@"%@ Posts", possessiveUsername] block:^{
+            [self loadPage:1 userID:post.author.userID];
+        }];
+    }
+    else {
+        [sheet addButtonWithTitle:@"All Posts" block:^{
+            [self loadPage:1];
+        }];
+    }
+
     [sheet addCancelButtonWithTitle:@"Cancel"];
     [sheet showFromRect:rect inView:self.postsView animated:YES];
 }
@@ -1010,7 +1044,7 @@ static char KVOContext;
 - (void)jumpToPageController:(AwfulJumpToPageController *)jump didSelectPage:(AwfulThreadPage)page
 {
     if (page != AwfulThreadPageNone) {
-        [self loadPage:page];
+        [self loadPage:page userID:self.userID];
     }
     [jump dismiss];
 }
