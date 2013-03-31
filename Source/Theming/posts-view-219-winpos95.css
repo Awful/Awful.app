@@ -77,8 +77,7 @@ header {
 .role-mod .username {
   background-image: url('modstar.png');
 }
-.role-admin .username,
-.role-mod .username {
+.role-admin .username, .role-mod .username {
   padding-left: 1.125em;
   background-position: 0 center;
   background-repeat: no-repeat;
@@ -109,8 +108,7 @@ header {
 .postbody img {
   -webkit-user-select: none;
 }
-.postbody img,
-.postbody iframe {
+.postbody img, .postbody iframe {
   max-width: 100%;
 }
 .iphone .postbody {
@@ -154,8 +152,7 @@ blockquote img {
 .postbody a {
   -webkit-tap-highlight-color: transparent;
 }
-.iphone .postbody ol,
-.iphone .postbody ul {
+.iphone .postbody ol, .iphone .postbody ul {
   margin: 0;
   padding-left: 1.5em;
 }
@@ -281,9 +278,7 @@ header {
 .bbc-spoiler img {
   visibility: hidden;
 }
-.bbc-spoiler a:link,
-.bbc-spoiler a:visited,
-.bbc-spoiler a:active {
+.bbc-spoiler a:link, .bbc-spoiler a:visited, .bbc-spoiler a:active {
   color: #000000;
 }
 .bbc-spoiler.spoiled {
@@ -296,8 +291,7 @@ header {
 .bbc-spoiler.spoiled img {
   visibility: visible;
 }
-blockquote,
-.dark blockquote {
+blockquote, .dark blockquote {
   border-left-color: #000;
 }
 #loading {
@@ -318,7 +312,7 @@ blockquote,
   line-height: 50px;
   border: none;
 }
-#loading .progress-bar > div {
+#loading .progress-bar  > div {
   position: absolute;
   top: 0;
   right: 0;

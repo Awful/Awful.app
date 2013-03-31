@@ -77,8 +77,7 @@ header {
 .role-mod .username {
   background-image: url('modstar.png');
 }
-.role-admin .username,
-.role-mod .username {
+.role-admin .username, .role-mod .username {
   padding-left: 1.125em;
   background-position: 0 center;
   background-repeat: no-repeat;
@@ -109,8 +108,7 @@ header {
 .postbody img {
   -webkit-user-select: none;
 }
-.postbody img,
-.postbody iframe {
+.postbody img, .postbody iframe {
   max-width: 100%;
 }
 .iphone .postbody {
@@ -154,8 +152,7 @@ blockquote img {
 .postbody a {
   -webkit-tap-highlight-color: transparent;
 }
-.iphone .postbody ol,
-.iphone .postbody ul {
+.iphone .postbody ol, .iphone .postbody ul {
   margin: 0;
   padding-left: 1.5em;
 }
@@ -240,7 +237,7 @@ body {
   background-image: none;
   padding: 0;
 }
-.role-admin .username:before {
+.role-admin .username :before {
   content: " ";
   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #71c457), color-stop(0.35, #71c457), color-stop(0.351, #fec331), color-stop(0.48, #fec331), color-stop(0.481, #f99527), color-stop(0.61, #f99527), color-stop(0.611, #e8524e), color-stop(0.74, #e8524e), color-stop(0.741, #a856a8), color-stop(0.87, #a856a8), color-stop(0.871, #00ade3), color-stop(1, #00ade3));
   color: transparent;
@@ -250,7 +247,7 @@ body {
   background-image: none;
   padding: 0;
 }
-.role-mod .username:before {
+.role-mod .username :before {
   content: " ";
 }
 .role-op .username {
@@ -287,9 +284,7 @@ body {
 .bbc-spoiler img {
   visibility: hidden;
 }
-.bbc-spoiler a:link,
-.bbc-spoiler a:visited,
-.bbc-spoiler a:active {
+.bbc-spoiler a:link, .bbc-spoiler a:visited, .bbc-spoiler a:active {
   color: #000000;
 }
 .bbc-spoiler.spoiled {
@@ -302,8 +297,7 @@ body {
 .bbc-spoiler.spoiled img {
   visibility: visible;
 }
-blockquote,
-.dark blockquote {
+blockquote, .dark blockquote {
   border-left-color: #000;
 }
 #loading {
@@ -317,12 +311,10 @@ blockquote,
   border: 1px solid #000;
 }
 @media only screen and (min-width: 480px) and (max-width: 767px) {
-  .iphone #loading {
-    top: 5px;
-    right: 40px;
-    bottom: 5px;
-    left: 40px;
-  }
+  top: 5px;
+  right: 40px;
+  bottom: 5px;
+  left: 40px;
 }
 .ipad #loading {
   top: 50px;

@@ -77,8 +77,7 @@ header {
 .role-mod .username {
   background-image: url('modstar.png');
 }
-.role-admin .username,
-.role-mod .username {
+.role-admin .username, .role-mod .username {
   padding-left: 1.125em;
   background-position: 0 center;
   background-repeat: no-repeat;
@@ -109,8 +108,7 @@ header {
 .postbody img {
   -webkit-user-select: none;
 }
-.postbody img,
-.postbody iframe {
+.postbody img, .postbody iframe {
   max-width: 100%;
 }
 .iphone .postbody {
@@ -154,8 +152,7 @@ blockquote img {
 .postbody a {
   -webkit-tap-highlight-color: transparent;
 }
-.iphone .postbody ol,
-.iphone .postbody ul {
+.iphone .postbody ol, .iphone .postbody ul {
   margin: 0;
   padding-left: 1.5em;
 }
@@ -204,8 +201,7 @@ blockquote img {
 body {
   background-color: #f99;
 }
-.iphone .post,
-.ipad .post {
+.iphone .post, .ipad .post {
   padding: 0;
 }
 .postbody {
@@ -263,9 +259,7 @@ header {
 .bbc-spoiler img {
   visibility: hidden;
 }
-.bbc-spoiler a:link,
-.bbc-spoiler a:visited,
-.bbc-spoiler a:active {
+.bbc-spoiler a:link, .bbc-spoiler a:visited, .bbc-spoiler a:active {
   color: #000000;
 }
 .dark  .bbc-spoiler {
@@ -280,9 +274,7 @@ header {
 .dark  .bbc-spoiler img {
   visibility: hidden;
 }
-.dark  .bbc-spoiler a:link,
-.dark  .bbc-spoiler a:visited,
-.dark  .bbc-spoiler a:active {
+.dark  .bbc-spoiler a:link, .dark  .bbc-spoiler a:visited, .dark  .bbc-spoiler a:active {
   color: #ffffff;
 }
 .bbc-spoiler.spoiled {
@@ -295,8 +287,7 @@ header {
 .bbc-spoiler.spoiled img {
   visibility: visible;
 }
-.bbc-block h4,
-.bbc-block h5 {
+.bbc-block h4, .bbc-block h5 {
   color: #555;
 }
 .dark blockquote {
