@@ -393,15 +393,17 @@ static char UIScrollViewInfiniteScrollingView;
 
 @dynamic pullToRefreshView, showsPullToRefresh, infiniteScrollingView, showsInfiniteScrolling;
 
-- (void)willMoveToSuperview:(UIView *)newSuperview {
-    if(!newSuperview) {
-        [self.pullToRefreshView removeFromSuperview];
-        self.pullToRefreshView = nil;
-        
-        [self.infiniteScrollingView removeFromSuperview];
-        self.infiniteScrollingView = nil;
-    }
-}
+// (nolan) I'm not sure what the intent was here, but I don't actually want any attached views to
+//         disappear when the scroll view leaves a view hierarchy.
+//- (void)willMoveToSuperview:(UIView *)newSuperview {
+//    if(!newSuperview) {
+//        [self.pullToRefreshView removeFromSuperview];
+//        self.pullToRefreshView = nil;
+//        
+//        [self.infiniteScrollingView removeFromSuperview];
+//        self.infiniteScrollingView = nil;
+//    }
+//}
 
 - (void)addPullToRefreshWithActionHandler:(void (^)(void))actionHandler {
     self.pullToRefreshView.pullToRefreshActionHandler = actionHandler;

@@ -104,8 +104,6 @@
     [super refresh];
     [self.cellsMissingThreadTags removeAllObjects];
     [self loadPageNum:1];
-    CGFloat refreshViewHeight = self.tableView.pullToRefreshView.bounds.size.height;
-    [self.tableView setContentOffset:CGPointMake(0, -refreshViewHeight)];
 }
 
 - (BOOL)canPullForNextPage
