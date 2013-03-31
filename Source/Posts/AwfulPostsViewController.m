@@ -19,6 +19,7 @@
 #import "AwfulPageBottomBar.h"
 #import "AwfulPageTopBar.h"
 #import "AwfulPostsView.h"
+#import "AwfulPostsViewSettingsController.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulPrivateMessageComposeViewController.h"
 #import "AwfulPullToRefreshControl.h"
@@ -43,7 +44,8 @@
                                         AwfulReplyComposeViewControllerDelegate,
                                         UIScrollViewDelegate,
                                         AwfulThemingViewController,
-                                        AwfulPrivateMessageComposeViewControllerDelegate>
+                                        AwfulPrivateMessageComposeViewControllerDelegate,
+                                        AwfulPostsViewSettingsControllerDelegate>
 
 @property (nonatomic) AwfulThreadPage currentPage;
 
@@ -55,6 +57,8 @@
 @property (weak, nonatomic) AwfulPostsView *postsView;
 @property (weak, nonatomic) AwfulPageBottomBar *bottomBar;
 @property (weak, nonatomic) AwfulPullToRefreshControl *pullUpToRefreshControl;
+@property (nonatomic) UIBarButtonItem *fontSizeItem;
+@property (nonatomic) AwfulPostsViewSettingsController *settingsViewController;
 
 @property (nonatomic) NSInteger hiddenPosts;
 @property (copy, nonatomic) NSString *jumpToPostAfterLoad;
@@ -76,12 +80,42 @@
 {
     if (!(self = [super initWithNibName:nil bundle:nil])) return nil;
     self.hidesBottomBarWhenPushed = YES;
+    self.navigationItem.rightBarButtonItem = self.fontSizeItem;
     NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
     [noteCenter addObserver:self selector:@selector(settingChanged:)
                        name:AwfulSettingsDidChangeNotification object:nil];
     [noteCenter addObserver:self selector:@selector(didResetDataStack:)
                        name:AwfulDataStackDidResetNotification object:nil];
     return self;
+}
+
+- (UIBarButtonItem *)fontSizeItem
+{
+    if (!_fontSizeItem) {
+        UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 38, 32)];
+        [button setImage:[UIImage imageNamed:@"font-size.png"] forState:UIControlStateNormal];
+        button.layer.shadowOffset = CGSizeMake(0, -1);
+        button.layer.shadowOpacity = 1;
+        button.layer.shadowRadius = 0;
+        button.showsTouchWhenHighlighted = YES;
+        button.adjustsImageWhenHighlighted = NO;
+        [button addTarget:self action:@selector(didTapFontSizeButton:)
+         forControlEvents:UIControlEventTouchUpInside];
+        _fontSizeItem = [[UIBarButtonItem alloc] initWithCustomView:button];
+    }
+    return _fontSizeItem;
+}
+
+- (void)didTapFontSizeButton:(UIButton *)button
+{
+    if (self.settingsViewController) {
+        [self.settingsViewController dismiss];
+        self.settingsViewController = nil;
+    } else {
+        self.settingsViewController = [AwfulPostsViewSettingsController new];
+        self.settingsViewController.delegate = self;
+        [self.settingsViewController presentFromViewController:self fromView:button];
+    }
 }
 
 - (void)settingChanged:(NSNotification *)note
@@ -1082,6 +1116,13 @@ static char KVOContext;
 - (void)privateMessageComposeControllerDidCancel:(AwfulPrivateMessageComposeViewController *)controller
 {
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - AwfulPostsViewSettingsControllerDelegate
+
+- (void)userDidDismissPostsViewSettings:(AwfulPostsViewSettingsController *)settings
+{
+    self.settingsViewController = nil;
 }
 
 @end

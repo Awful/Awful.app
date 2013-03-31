@@ -15,11 +15,7 @@
 @end
 
 
-@interface AwfulJumpToPageController () <UIPopoverControllerDelegate, UIPickerViewDataSource, UIPickerViewDelegate>
-
-@property (weak, nonatomic) UIView *coverView;
-@property (nonatomic) UIPopoverController *popover;
-@property (weak, nonatomic) UIView *viewPresentingPopover;
+@interface AwfulJumpToPageController () <UIPickerViewDataSource, UIPickerViewDelegate>
 
 @property (weak, nonatomic) UIPickerView *picker;
 
@@ -37,98 +33,12 @@
     return self;
 }
 
+#pragma mark - AwfulSemiModalViewController
+
 - (void)presentFromViewController:(UIViewController *)viewController fromView:(UIView *)view
 {
     [self.picker selectRow:self.selectedPage - 1 inComponent:0 animated:NO];
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [self presentInPopoverFromView:view];
-    } else {
-        [self slideUpFromBottomOverViewController:viewController];
-    }
-}
-
-- (void)presentInPopoverFromView:(UIView *)view
-{
-    if (!self.popover) {
-        self.popover = [[UIPopoverController alloc] initWithContentViewController:self];
-        self.popover.delegate = self;
-        self.popover.popoverContentSize = self.view.frame.size;
-    }
-    self.viewPresentingPopover = view;
-    [self.popover presentPopoverFromRect:view.bounds inView:view
-                permittedArrowDirections:UIPopoverArrowDirectionAny
-                                animated:NO];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(deviceOrientationDidChange:)
-                                                 name:UIDeviceOrientationDidChangeNotification
-                                               object:nil];
-}
-
-- (void)deviceOrientationDidChange:(NSNotification *)note
-{
-    if (self.viewPresentingPopover.window) {
-        [self.popover presentPopoverFromRect:self.viewPresentingPopover.bounds
-                                      inView:self.viewPresentingPopover
-                    permittedArrowDirections:UIPopoverArrowDirectionAny
-                                    animated:NO];
-    } else {
-        [self dismiss];
-    }
-}
-
-- (void)slideUpFromBottomOverViewController:(UIViewController *)viewController
-{
-    UIView *backView = viewController.view;
-    UIView *coverView = [[UIView alloc] initWithFrame:(CGRect){ .size = backView.bounds.size }];
-    self.coverView = coverView;
-    coverView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    coverView.backgroundColor = [UIColor blackColor];
-    coverView.alpha = 0;
-    UITapGestureRecognizer *tap = [UITapGestureRecognizer new];
-    [tap addTarget:self action:@selector(didTapCoverView:)];
-    [coverView addGestureRecognizer:tap];
-    // (Ab)use the view controller container to keep us around, and so we rotate.
-    [viewController addChildViewController:self];
-    self.view.frame = (CGRect){
-        .origin.y = CGRectGetMaxY(backView.bounds),
-        .size.width = CGRectGetWidth(backView.bounds),
-        .size.height = CGRectGetHeight(self.view.frame),
-    };
-    [backView addSubview:self.coverView];
-    [backView addSubview:self.view];
-    [self didMoveToParentViewController:viewController];
-    [UIView animateWithDuration:0.3 animations:^{
-        self.coverView.alpha = 0.5;
-        self.view.frame = CGRectOffset(self.view.frame, 0, -CGRectGetHeight(self.view.frame));
-    }];
-}
-
-- (void)didTapCoverView:(UITapGestureRecognizer *)tap
-{
-    if (tap.state == UIGestureRecognizerStateEnded) {
-        [self.delegate jumpToPageController:self didSelectPage:AwfulThreadPageNone];
-    }
-}
-
-- (void)dismiss
-{
-    if (self.popover) {
-        [self.popover dismissPopoverAnimated:NO];
-        self.popover = nil;
-        [[NSNotificationCenter defaultCenter] removeObserver:self];
-    }
-    if (self.coverView) {
-        [UIView animateWithDuration:0.3 animations:^{
-            self.coverView.alpha = 0;
-            self.view.frame = CGRectOffset(self.view.frame, 0, CGRectGetHeight(self.view.frame));
-        } completion:^(BOOL finished) {
-            [self willMoveToParentViewController:nil];
-            [self.view removeFromSuperview];
-            [self.coverView removeFromSuperview];
-            self.coverView = nil;
-            [self removeFromParentViewController];
-        }];
-    }
+    [super presentFromViewController:viewController fromView:view];
 }
 
 - (UIPickerView *)picker
@@ -139,11 +49,9 @@
     return _picker;
 }
 
-#pragma mark - UIPopoverControllerDelegate
-
-- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
+- (void)userDismiss
 {
-    [self dismiss];
+    [self.delegate jumpToPageController:self didSelectPage:AwfulThreadPageNone];
 }
 
 #pragma mark - UIViewController

@@ -16,6 +16,8 @@
 
 @property (readonly, strong) NSArray *sections;
 
+- (NSDictionary *)infoForSettingWithKey:(NSString *)key;
+
 @property (assign, nonatomic) BOOL showAvatars;
 
 @property (assign, nonatomic) BOOL showImages;

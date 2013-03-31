@@ -24,9 +24,7 @@
 @interface AwfulSettingsViewController ()
 
 @property (strong, nonatomic) NSArray *sections;
-
 @property (strong, nonatomic) NSMutableArray *switches;
-
 @property (strong, nonatomic) NSMutableArray *steppers;
 
 @property (nonatomic) BOOL canReachDevDotForums;

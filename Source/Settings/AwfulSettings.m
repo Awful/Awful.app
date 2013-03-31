@@ -53,6 +53,18 @@
 
 @synthesize sections = _sections;
 
+- (NSDictionary *)infoForSettingWithKey:(NSString *)key
+{
+    for (NSDictionary *section in self.sections) {
+        for (NSDictionary *setting in section[@"Settings"]) {
+            if ([setting[@"Key"] isEqual:key]) {
+                return setting;
+            }
+        }
+    }
+    return nil;
+}
+
 #define BOOL_PROPERTY(__get, __set) \
 - (BOOL)__get \
 { \
