@@ -60,10 +60,21 @@
                                                              style:UIBarButtonItemStyleBordered
                                                             target:nil action:NULL];
     self.navigationItem.backBarButtonItem = back;
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didGetNewPMCount:)
-                                                 name:AwfulNewPrivateMessagesNotification
-                                               object:nil];
+    NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
+    [noteCenter addObserver:self selector:@selector(didGetNewPMCount:)
+                       name:AwfulNewPrivateMessagesNotification object:nil];
+    [noteCenter addObserver:self selector:@selector(settingsDidChange:)
+                       name:AwfulSettingsDidChangeNotification object:nil];
     return self;
+}
+
+- (void)settingsDidChange:(NSNotification *)note
+{
+    if (![self isViewLoaded]) return;
+    NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
+    if ([keys containsObject:AwfulSettingsKeys.showThreadTags]) {
+        [self.tableView reloadData];
+    }
 }
 
 - (void)didTapCompose
