@@ -24,7 +24,7 @@
 
 typedef enum {
     AwfulFirstTabForums,
-    AwfulFirstTabFavorites,
+    AwfulFirstTabPrivateMessages,
     AwfulFirstTabBookmarks,
 } AwfulFirstTab;
 

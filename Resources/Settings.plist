@@ -28,9 +28,9 @@
 						</dict>
 						<dict>
 							<key>Title</key>
-							<string>Favorites</string>
+							<string>Private Messages</string>
 							<key>Value</key>
-							<string>favorites</string>
+							<string>pms</string>
 						</dict>
 						<dict>
 							<key>Title</key>
