@@ -12,6 +12,7 @@
 #import "AwfulDisclosureIndicatorView.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
+#import "AwfulNeedPlatinumView.h"
 #import "AwfulNewPMNotifierAgent.h"
 #import "AwfulPrivateMessageComposeViewController.h"
 #import "AwfulPrivateMessageViewController.h"
@@ -25,6 +26,7 @@
 @interface AwfulPrivateMessageListController () <AwfulPrivateMessageComposeViewControllerDelegate>
 
 @property (nonatomic) UIBarButtonItem *composeItem;
+@property (weak, nonatomic) AwfulNeedPlatinumView *needPlatinumView;
 
 @end
 
@@ -54,12 +56,11 @@
     if (!(self = [super init])) return nil;
     self.title = @"Private Messages";
     self.tabBarItem.image = [UIImage imageNamed:@"pm-icon.png"];
-    self.navigationItem.rightBarButtonItem = self.composeItem;
-    self.navigationItem.leftBarButtonItem = self.editButtonItem;
     UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithTitle:@"PMs"
                                                              style:UIBarButtonItemStyleBordered
                                                             target:nil action:NULL];
     self.navigationItem.backBarButtonItem = back;
+    [self configureWhetherUserHasPlatinum];
     NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
     [noteCenter addObserver:self selector:@selector(didGetNewPMCount:)
                        name:AwfulNewPrivateMessagesNotification object:nil];
@@ -74,6 +75,35 @@
     NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
     if ([keys containsObject:AwfulSettingsKeys.showThreadTags]) {
         [self.tableView reloadData];
+    }
+    if ([keys containsObject:AwfulSettingsKeys.canSendPrivateMessages]) {
+        [self configureWhetherUserHasPlatinum];
+    }
+}
+
+- (void)configureWhetherUserHasPlatinum
+{
+    if ([AwfulSettings settings].canSendPrivateMessages) {
+        [self.needPlatinumView removeFromSuperview];
+        if (!self.navigationItem.rightBarButtonItem) {
+            [self.navigationItem setRightBarButtonItem:self.composeItem animated:YES];
+        }
+        if (!self.navigationItem.leftBarButtonItem) {
+            [self.navigationItem setLeftBarButtonItem:self.editButtonItem animated:YES];
+        }
+    } else {
+        if ([self isViewLoaded]) {
+            AwfulNeedPlatinumView *needPlatinumView = [AwfulNeedPlatinumView new];
+            self.needPlatinumView = needPlatinumView;
+            needPlatinumView.frame = self.view.bounds;
+            needPlatinumView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                                 UIViewAutoresizingFlexibleHeight);
+            needPlatinumView.headerLabel.text = @"No Platinum";
+            needPlatinumView.explanationLabel.text = @"You need Platinum to send and receive private messages.";
+            [self.view addSubview:needPlatinumView];
+        }
+        [self.navigationItem setRightBarButtonItem:nil animated:YES];
+        [self.navigationItem setLeftBarButtonItem:nil animated:YES];
     }
 }
 
@@ -116,6 +146,9 @@
 
 - (void)viewDidLoad
 {
+    // -configureWhetherUserHasPlatinum needs to happen before -[super viewDidLoad] so that the no
+    // platinum view gets themed.
+    [self configureWhetherUserHasPlatinum];
     [super viewDidLoad];
     self.tableView.rowHeight = 75;
 }
@@ -264,8 +297,18 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (void)retheme
 {
     [super retheme];
-    self.tableView.separatorColor = [AwfulTheme currentTheme].messageListCellSeparatorColor;
-    self.view.backgroundColor = [AwfulTheme currentTheme].messageListBackgroundColor;
+    AwfulTheme *theme = [AwfulTheme currentTheme];
+    self.tableView.separatorColor = theme.messageListCellSeparatorColor;
+    self.view.backgroundColor = theme.messageListBackgroundColor;
+    if (self.needPlatinumView) {
+        NSArray *labels = @[ self.needPlatinumView.headerLabel,
+                             self.needPlatinumView.explanationLabel ];
+        [labels makeObjectsPerformSelector:@selector(setTextColor:)
+                                withObject:theme.messageListNeedPlatinumTextColor];
+        [labels makeObjectsPerformSelector:@selector(setBackgroundColor:)
+                                withObject:theme.messageListNeedPlatinumBackgroundColor];
+    }
+    self.needPlatinumView.backgroundColor = theme.messageListNeedPlatinumBackgroundColor;
 }
 
 #pragma mark - AwfulPrivateMessageComposeViewControllerDelegate

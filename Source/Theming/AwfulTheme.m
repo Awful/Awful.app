@@ -380,6 +380,16 @@
     DEFAULT(self.threadListBackgroundColor);
 }
 
+- (UIColor *)messageListNeedPlatinumTextColor
+{
+    DEFAULT(self.forumListHeaderTextColor);
+}
+
+- (UIColor *)messageListNeedPlatinumBackgroundColor
+{
+    DEFAULT(self.messageListBackgroundColor);
+}
+
 #pragma mark - Private Message compose view
 
 - (UIColor *)messageComposeFieldLabelColor

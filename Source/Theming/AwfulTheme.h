@@ -96,6 +96,8 @@
 @property (readonly, nonatomic) UIColor *messageListCellBackgroundColor;
 @property (readonly, nonatomic) UIColor *messageListCellSeparatorColor;
 @property (readonly, nonatomic) UIColor *messageListBackgroundColor;
+@property (readonly, nonatomic) UIColor *messageListNeedPlatinumTextColor;
+@property (readonly, nonatomic) UIColor *messageListNeedPlatinumBackgroundColor;
 
 // Private Message compose view
 
