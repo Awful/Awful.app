@@ -216,7 +216,7 @@ body.dark {
   background-color: #313131;
   box-shadow: none;
 }
-.dark .post .seen {
+.dark .post.seen {
   background-color: #121e2e;
 }
 header {
