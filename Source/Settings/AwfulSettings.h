@@ -22,11 +22,11 @@
 
 @property (assign, nonatomic) BOOL showImages;
 
-typedef enum {
+typedef NS_ENUM(NSInteger, AwfulFirstTab) {
     AwfulFirstTabForums,
     AwfulFirstTabPrivateMessages,
     AwfulFirstTabBookmarks,
-} AwfulFirstTab;
+};
 
 @property (assign, nonatomic) AwfulFirstTab firstTab;
 
@@ -46,22 +46,36 @@ typedef enum {
 
 @property (assign, nonatomic) BOOL showThreadTags;
 
-typedef enum {
+typedef NS_ENUM(NSInteger, AwfulYOSPOSStyle) {
     AwfulYOSPOSStyleNone,
     AwfulYOSPOSStyleGreen,
     AwfulYOSPOSStyleAmber,
     AwfulYOSPOSStyleMacinyos,
     AwfulYOSPOSStyleWinpos95,
-} AwfulYOSPOSStyle;
+};
 
 @property (assign, nonatomic) AwfulYOSPOSStyle yosposStyle;
 
-typedef enum {
+typedef NS_ENUM(NSInteger, AwfulFYADStyle) {
+    AwfulFYADStyleNone,
+    AwfulFYADStylePink,
+};
+
+@property (assign, nonatomic) AwfulFYADStyle fyadStyle;
+
+typedef NS_ENUM(NSInteger, AwfulGasChamberStyle) {
+    AwfulGasChamberStyleNone,
+    AwfulGasChamberStyleSickly,
+};
+
+@property (assign, nonatomic) AwfulGasChamberStyle gasChamberStyle;
+
+typedef NS_ENUM(NSInteger, AwfulKeepSidebarOpenWhen) {
     AwfulKeepSidebarOpenNever,
     AwfulKeepSidebarOpenInLandscape,
     AwfulKeepSidebarOpenInPortrait,
     AwfulKeepSidebarOpenAlways,
-} AwfulKeepSidebarOpenWhen;
+};
 
 @property (assign, nonatomic) AwfulKeepSidebarOpenWhen keepSidebarOpen;
 
@@ -104,6 +118,8 @@ extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *canSendPrivateMessages;
     __unsafe_unretained NSString *showThreadTags;
     __unsafe_unretained NSString *yosposStyle;
+    __unsafe_unretained NSString *fyadStyle;
+    __unsafe_unretained NSString *gasChamberStyle;
     __unsafe_unretained NSString *keepSidebarOpen;
     __unsafe_unretained NSString *favoriteForums;
     __unsafe_unretained NSString *fontSize;

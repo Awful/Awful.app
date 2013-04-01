@@ -110,6 +110,9 @@
     NSMutableArray *sections = [NSMutableArray new];
     for (NSDictionary *section in [AwfulSettings settings].sections) {
         if (section[@"Device"] && ![section[@"Device"] isEqual:currentDevice]) continue;
+        if (section[@"VisibleInSettingsTab"] && ![section[@"VisibleInSettingsTab"] boolValue]) {
+            continue;
+        }
         [sections addObject:section];
     }
     self.sections = sections;

@@ -174,6 +174,60 @@ struct {
 }
 
 struct {
+    __unsafe_unretained NSString *None;
+    __unsafe_unretained NSString *Pink;
+} AwfulFYADStyles = {
+    @"none",
+    @"pink",
+};
+
+- (AwfulFYADStyle)fyadStyle
+{
+    NSString *val = self[AwfulSettingsKeys.fyadStyle];
+    if ([val isEqual:AwfulFYADStyles.None]) {
+        return AwfulFYADStyleNone;
+    } else {
+        return AwfulFYADStylePink;
+    }
+}
+
+- (void)setFyadStyle:(AwfulFYADStyle)fyadStyle
+{
+    switch (fyadStyle) {
+        case AwfulFYADStyleNone: self[AwfulSettingsKeys.fyadStyle] = AwfulFYADStyles.None; break;
+        case AwfulFYADStylePink: self[AwfulSettingsKeys.fyadStyle] = AwfulFYADStyles.Pink; break;
+    }
+}
+
+struct {
+    __unsafe_unretained NSString *None;
+    __unsafe_unretained NSString *Sickly;
+} AwfulGasChamberStyles = {
+    @"none",
+    @"sickly",
+};
+
+- (AwfulGasChamberStyle)gasChamberStyle
+{
+    NSString *val = self[AwfulSettingsKeys.gasChamberStyle];
+    if ([val isEqualToString:AwfulGasChamberStyles.None]) {
+        return AwfulGasChamberStyleNone;
+    } else {
+        return AwfulGasChamberStyleSickly;
+    }
+}
+
+- (void)setGasChamberStyle:(AwfulGasChamberStyle)gasChamberStyle
+{
+    switch (gasChamberStyle) {
+        case AwfulGasChamberStyleNone:
+            self[AwfulSettingsKeys.gasChamberStyle] = AwfulGasChamberStyles.None; break;
+        case AwfulGasChamberStyleSickly:
+            self[AwfulSettingsKeys.gasChamberStyle] = AwfulGasChamberStyles.Sickly; break;
+    }
+}
+
+struct {
     __unsafe_unretained NSString *Never;
     __unsafe_unretained NSString *InLandscape;
     __unsafe_unretained NSString *InPortrait;
@@ -359,6 +413,8 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .canSendPrivateMessages = @"can_send_private_messages",
     .showThreadTags = @"show_thread_tags",
     .yosposStyle = @"yospos_style",
+    .fyadStyle = @"fyad_style",
+    .gasChamberStyle = @"gas_chamber_style",
     .keepSidebarOpen = @"keep_sidebar_open",
     .favoriteForums = @"favorite_forums",
     .fontSize = @"font_size",

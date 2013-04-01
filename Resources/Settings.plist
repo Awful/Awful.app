@@ -62,12 +62,12 @@
 		</dict>
 		<dict>
 			<key>Title</key>
-			<string>Appearance</string>
+			<string>Themes</string>
 			<key>Settings</key>
 			<array>
 				<dict>
 					<key>Title</key>
-					<string>Dark Theme</string>
+					<string>Dark Mode</string>
 					<key>Type</key>
 					<string>Switch</string>
 					<key>Default</key>
@@ -77,31 +77,49 @@
 				</dict>
 				<dict>
 					<key>Title</key>
-					<string>Font Size</string>
-					<key>Type</key>
-					<string>Stepper</string>
+					<string>Gas Chamber</string>
+					<key>Choices</key>
+					<array>
+						<dict>
+							<key>Title</key>
+							<string>Boring</string>
+							<key>Value</key>
+							<string>none</string>
+						</dict>
+						<dict>
+							<key>Title</key>
+							<string>Sickly</string>
+							<key>Value</key>
+							<string>sickly</string>
+						</dict>
+					</array>
 					<key>Default</key>
-					<integer>15</integer>
-					<key>Minimum</key>
-					<integer>3</integer>
-					<key>Maximum</key>
-					<integer>200</integer>
-					<key>Maximum~ipad</key>
-					<integer>550</integer>
-					<key>Increment</key>
-					<integer>1</integer>
+					<string>sickly</string>
 					<key>Key</key>
-					<string>font_size</string>
+					<string>gas_chamber_style</string>
 				</dict>
 				<dict>
 					<key>Title</key>
-					<string>Show Thread Tags</string>
-					<key>Type</key>
-					<string>Switch</string>
+					<string>FYAD</string>
+					<key>Choices</key>
+					<array>
+						<dict>
+							<key>Title</key>
+							<string>Boring</string>
+							<key>Value</key>
+							<string>none</string>
+						</dict>
+						<dict>
+							<key>Title</key>
+							<string>Pink</string>
+							<key>Value</key>
+							<string>pink</string>
+						</dict>
+					</array>
 					<key>Default</key>
-					<true/>
+					<string>pink</string>
 					<key>Key</key>
-					<string>show_thread_tags</string>
+					<string>fyad_style</string>
 				</dict>
 				<dict>
 					<key>Title</key>
@@ -245,6 +263,23 @@
 		</dict>
 		<dict>
 			<key>Title</key>
+			<string>Threads and Messages</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Show Thread Tags</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>show_thread_tags</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Title</key>
 			<string>Posting</string>
 			<key>Settings</key>
 			<array>
@@ -289,6 +324,31 @@
 					<string>Licenses</string>
 					<key>Action</key>
 					<string>ShowLicenses</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>VisibleInSettingsTab</key>
+			<false/>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Font Size</string>
+					<key>Type</key>
+					<string>Stepper</string>
+					<key>Default</key>
+					<integer>15</integer>
+					<key>Minimum</key>
+					<integer>3</integer>
+					<key>Maximum</key>
+					<integer>200</integer>
+					<key>Maximum~ipad</key>
+					<integer>550</integer>
+					<key>Increment</key>
+					<integer>1</integer>
+					<key>Key</key>
+					<string>font_size</string>
 				</dict>
 			</array>
 		</dict>

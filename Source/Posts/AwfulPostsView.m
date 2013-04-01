@@ -439,15 +439,28 @@ NSURL * StylesheetURLForForumWithIDAndSettings(NSString * const forumID, AwfulSe
 {
     NSMutableArray *listOfFilenames = [@[ @"posts-view.css" ] mutableCopy];
     if (forumID) {
-        NSString *filename = [NSString stringWithFormat:@"posts-view-%@.css", forumID];
+        NSString *specificCSS = [NSString stringWithFormat:@"posts-view-%@.css", forumID];
         if ([forumID isEqualToString:@"219"]) {
+            [listOfFilenames insertObject:specificCSS atIndex:0];
             AwfulYOSPOSStyle style = settings.yosposStyle;
-            if (style == AwfulYOSPOSStyleAmber) filename = @"posts-view-219-amber.css";
-            else if (style == AwfulYOSPOSStyleMacinyos) filename = @"posts-view-219-macinyos.css";
-            else if (style == AwfulYOSPOSStyleWinpos95) filename = @"posts-view-219-winpos95.css";
-            else if (style == AwfulYOSPOSStyleNone) filename = nil;
+            if (style == AwfulYOSPOSStyleAmber) {
+                [listOfFilenames insertObject:@"posts-view-219-amber.css" atIndex:0];
+            } else if (style == AwfulYOSPOSStyleMacinyos) {
+                [listOfFilenames insertObject:@"posts-view-219-macinyos.css" atIndex:0];
+            } else if (style == AwfulYOSPOSStyleWinpos95) {
+                [listOfFilenames insertObject:@"posts-view-219-winpos95.css" atIndex:0];
+            }
+        } else if ([forumID isEqualToString:@"26"]) {
+            if (settings.fyadStyle == AwfulFYADStylePink) {
+                [listOfFilenames insertObject:specificCSS atIndex:0];
+            }
+        } else if ([forumID isEqualToString:@"25"]) {
+            if (settings.gasChamberStyle == AwfulGasChamberStyleSickly) {
+                [listOfFilenames insertObject:specificCSS atIndex:0];
+            }
+        } else {
+            [listOfFilenames insertObject:specificCSS atIndex:0];
         }
-        if (filename) [listOfFilenames insertObject:filename atIndex:0];
     }
     NSURL *documents = [[NSFileManager defaultManager] documentDirectory];
     for (NSString *filename in listOfFilenames) {
