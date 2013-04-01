@@ -67,11 +67,15 @@
     if ([self.user.occupation length] > 0) {
         [additionalInfo addObject:@{ @"kind": @"Occupation", @"info": self.user.occupation }];
     }
+    NSString *postRate = @"";
+    if (self.user.postRate) {
+        postRate = [NSString stringWithFormat:@"%@ posts per day", self.user.postRate];
+    }
     NSMutableDictionary *userDict = [@{
         @"customTitle": self.user.customTitle ?: [NSNull null],
         @"postCount": self.user.postCount ?: @0,
         @"username": self.user.username ?: @"",
-        @"postRate": self.user.postRate ?: @"",
+        @"postRate": postRate,
         @"lastPost": [lastPostFormatter stringFromDate:self.user.lastPost] ?: [NSNull null],
         @"regdate": [regdateFormatter stringFromDate:self.user.regdate] ?: [NSNull null],
         @"gender": self.user.gender ?: @"porpoise",
