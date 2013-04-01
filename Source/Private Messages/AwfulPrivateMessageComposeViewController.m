@@ -248,7 +248,7 @@
     toField.textField.autocorrectionType = UITextAutocorrectionTypeNo;
     [toField.textField addTarget:self action:@selector(toFieldDidChange:)
                 forControlEvents:UIControlEventEditingDidEnd];
-    [toField.textField addTarget:self action:@selector(updateSendButtonWithToField:)
+    [toField.textField addTarget:self action:@selector(updateSendButton)
                 forControlEvents:UIControlEventEditingChanged];
     [topView addSubview:toField];
     self.toField = toField;
@@ -261,6 +261,8 @@
     [subjectField.textField addTarget:self action:@selector(subjectFieldDidChange:)
                      forControlEvents:UIControlEventEditingDidEnd];
     [subjectField.textField addTarget:self action:@selector(updateTitleWithSubjectField:)
+                     forControlEvents:UIControlEventEditingChanged];
+    [subjectField.textField addTarget:self action:@selector(updateSendButton)
                      forControlEvents:UIControlEventEditingChanged];
     [topView addSubview:subjectField];
     self.subjectField = subjectField;
@@ -297,9 +299,11 @@
     self.recipient = toField.text;
 }
 
-- (void)updateSendButtonWithToField:(UITextField *)toField
+- (void)updateSendButton
 {
-    self.sendButton.enabled = [toField.text length] > 0;
+    NSString *to = self.toField.textField.text;
+    NSString *subject = self.subjectField.textField.text;
+    self.sendButton.enabled = [to length] > 0 && [subject length] > 0;
 }
 
 - (void)subjectFieldDidChange:(UITextField *)subjectField
@@ -320,8 +324,8 @@
 {
     [super viewDidLoad];
     self.toField.textField.text = self.recipient;
-    [self updateSendButtonWithToField:self.toField.textField];
     self.subjectField.textField.text = self.subject;
+    [self updateSendButton];
     [self updateTitleWithSubjectField:self.subjectField.textField];
     UIImage *image;
     if (self.postIcon) {
