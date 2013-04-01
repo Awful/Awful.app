@@ -841,8 +841,7 @@ NSString * const AwfulUserDidLogInNotification = @"com.awfulapp.Awful.UserDidLog
                                  text:(NSString *)text
                asReplyToMessageWithID:(NSString *)replyMessageID
            forwardedFromMessageWithID:(NSString *)forwardMessageID
-                              andThen:(void (^)(NSError *error,
-                                                AwfulPrivateMessage *message))callback
+                              andThen:(void (^)(NSError *error))callback
 {
     NSMutableDictionary *parameters = [@{
         @"touser": username,
@@ -862,10 +861,9 @@ NSString * const AwfulUserDidLogInNotification = @"com.awfulapp.Awful.UserDidLog
                                           success:^(id _, id __)
     {
         // TODO parse response if that makes sense (e.g. user can't receive messages or unknown user)
-        // TODO return message
-        if (callback) callback(nil, nil);
+        if (callback) callback(nil);
     } failure:^(id _, NSError *error) {
-        if (callback) callback(error, nil);
+        if (callback) callback(error);
     }];
     [self enqueueHTTPRequestOperation:op];
     return op;

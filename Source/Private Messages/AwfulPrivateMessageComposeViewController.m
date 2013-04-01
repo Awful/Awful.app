@@ -60,8 +60,7 @@
                                                       text:messageBody ?: @""
                                     asReplyToMessageWithID:self.regardingMessage.messageID
                                 forwardedFromMessageWithID:self.forwardedMessage.messageID
-                                                   andThen:^(NSError *error,
-                                                             AwfulPrivateMessage *message)
+                                                   andThen:^(NSError *error)
     {
         if (error) {
             [SVProgressHUD dismiss];
