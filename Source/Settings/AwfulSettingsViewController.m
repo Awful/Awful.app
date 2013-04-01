@@ -47,25 +47,6 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (BOOL)canReachDevDotForums
-{
-    if (_canReachDevDotForums) return _canReachDevDotForums;
-    if ([AwfulSettings settings].useDevDotForums) {
-        _canReachDevDotForums = YES;
-        return _canReachDevDotForums;
-    }
-    __weak AwfulSettingsViewController *weakSelf = self;
-    [[AwfulHTTPClient client] tryAccessingDevDotForumsAndThen:^(NSError *error, BOOL success) {
-        AwfulSettingsViewController *strongSelf = weakSelf;
-        strongSelf.canReachDevDotForums = success;
-        if (success) {
-            [strongSelf reloadSections];
-            [strongSelf.tableView reloadData];
-        }
-    }];
-    return _canReachDevDotForums;
-}
-
 #pragma mark - AwfulTableViewController
 
 - (BOOL)canPullToRefresh
@@ -129,10 +110,6 @@
     NSMutableArray *sections = [NSMutableArray new];
     for (NSDictionary *section in [AwfulSettings settings].sections) {
         if (section[@"Device"] && ![section[@"Device"] isEqual:currentDevice]) continue;
-        if (section[@"Predicate"]) {
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:section[@"Predicate"]];
-            if (![predicate evaluateWithObject:self]) continue;
-        }
         [sections addObject:section];
     }
     self.sections = sections;
@@ -251,10 +228,15 @@ typedef enum SettingType
         AwfulDisclosureIndicatorView *disclosure = (AwfulDisclosureIndicatorView *)cell.accessoryView;
         disclosure.color = [AwfulTheme currentTheme].disclosureIndicatorColor;
         disclosure.highlightedColor = [AwfulTheme currentTheme].disclosureIndicatorHighlightedColor;
-        for (NSDictionary *choice in setting[@"Choices"]) {
-            if ([choice[@"Value"] isEqual:valueForSetting]) {
-                cell.detailTextLabel.text = choice[@"Title"];
-                break;
+        if (setting[@"DisplayTransformer"]) {
+            NSValueTransformer *transformer = [NSClassFromString(setting[@"DisplayTransformer"]) new];
+            cell.detailTextLabel.text = [transformer transformedValue:[AwfulSettings settings]];
+        } else {
+            for (NSDictionary *choice in setting[@"Choices"]) {
+                if ([choice[@"Value"] isEqual:valueForSetting]) {
+                    cell.detailTextLabel.text = choice[@"Title"];
+                    break;
+                }
             }
         }
     } else if (settingType == StepperSetting) {
@@ -358,9 +340,13 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         nav.modalPresentationStyle = UIModalPresentationFormSheet;
         [self presentViewController:nav animated:YES completion:nil];
     } else {
-        AwfulSettingsChoiceViewController *choiceViewController;
-        choiceViewController = [[AwfulSettingsChoiceViewController alloc] initWithSetting:setting];
-        [self.navigationController pushViewController:choiceViewController animated:YES];
+        UIViewController *viewController;
+        if (setting[@"ViewController"]) {
+            viewController = [NSClassFromString(setting[@"ViewController"]) new];
+        } else {
+            viewController = [[AwfulSettingsChoiceViewController alloc] initWithSetting:setting];
+        }
+        [self.navigationController pushViewController:viewController animated:YES];
     }
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }

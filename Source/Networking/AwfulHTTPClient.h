@@ -15,6 +15,9 @@
 // Singleton instance.
 + (AwfulHTTPClient *)client;
 
+// Clear singleton instance.
++ (void)reset;
+
 // Returns YES if the forums are reachable through current network settings.
 @property (readonly, getter=isReachable, nonatomic) BOOL reachable;
 

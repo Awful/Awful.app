@@ -32,14 +32,30 @@ static AwfulHTTPClient *instance = nil;
 {
     @synchronized([AwfulHTTPClient class]) {
         if (!instance) {
-            NSURL *baseURL = [NSURL URLWithString:@"http://forums.somethingawful.com/"];
-            if ([AwfulSettings settings].useDevDotForums) {
-                baseURL = [NSURL URLWithString:@"http://dev.forums.somethingawful.com/"];
+            NSString *urlString = [AwfulSettings settings].customBaseURL;
+            if (urlString) {
+                NSURL *url = [NSURL URLWithString:urlString];
+                if (!url.scheme) {
+                    urlString = [NSString stringWithFormat:@"http://%@", urlString];
+                }
+            } else {
+                if ([AwfulSettings settings].useDevDotForums) {
+                    urlString = @"http://dev.forums.somethingawful.com/";
+                } else {
+                    urlString = @"http://forums.somethingawful.com/";
+                }
             }
-            instance = [[AwfulHTTPClient alloc] initWithBaseURL:baseURL];
+            instance = [[AwfulHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:urlString]];
         }
     }
     return instance;
+}
+
++ (void)reset
+{
+    // Clear the singleton instance so it's recreated on next access.
+    // Not synchronizing; I don't really care if some last thread gets the old client.
+    instance = nil;
 }
 
 + (void)initialize
@@ -53,16 +69,16 @@ static AwfulHTTPClient *instance = nil;
 + (void)settingsDidChange:(NSNotification *)note
 {
     NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
-    if (![keys containsObject:AwfulSettingsKeys.useDevDotForums]) return;
-    // Clear the singleton instance so it's recreated on next access.
-    // Not synchronizing; I don't really care if some last thread gets the old client.
-    instance = nil;
+    NSArray *relevant = @[ AwfulSettingsKeys.useDevDotForums, AwfulSettingsKeys.customBaseURL ];
+    if ([keys firstObjectCommonWithArray:relevant]) {
+        [self reset];
+    }
 }
 
 - (BOOL)isLoggedIn
 {
     NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:self.baseURL];
-    return [[cookies valueForKey:@"name"] containsObject:@"bbuserid"];
+    return [[cookies valueForKey:NSHTTPCookieName] containsObject:@"bbuserid"];
 }
 
 - (BOOL)usingDevDotForums
@@ -563,10 +579,12 @@ static NSString * PreparePostText(NSString *noEntities)
         //      as well as logged-in user's info.
         @"next": @"/member.php?action=getinfo&json=1"
     };
-    // Logging in does not work via dev.forums.somethingawful.com, so force production site.
     NSMutableURLRequest *request = [self requestWithMethod:@"POST" path:@"account.php?json=1"
                                                 parameters:parameters];
-    request.URL = [NSURL URLWithString:@"https://forums.somethingawful.com/account.php?json=1"];
+    // Logging in does not work via dev.forums.somethingawful.com, so force production site.
+    if ([self.baseURL.host isEqual:@"dev.forums.somethingawful.com"]) {
+        request.URL = [NSURL URLWithString:@"https://forums.somethingawful.com/account.php?json=1"];
+    }
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
                                                                success:^(id _, NSDictionary *json)
     {

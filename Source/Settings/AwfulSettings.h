@@ -75,6 +75,8 @@ typedef enum {
 
 @property (copy, nonatomic) NSString *lastForcedUserInfoUpdateVersion;
 
+@property (copy, nonatomic) NSString *customBaseURL;
+
 - (id)objectForKeyedSubscript:(id)key;
 
 - (void)setObject:(id)object forKeyedSubscript:(id <NSCopying>)key;
@@ -85,7 +87,7 @@ typedef enum {
 // AwfulSettingsDidChangeSettingsKey.
 extern NSString * const AwfulSettingsDidChangeNotification;
 
-// A collection (responds to -containsObject:) of settings that changed.
+// An NSArray of settings keys (see AwfulSettingsKeys) that changed.
 extern NSString * const AwfulSettingsDidChangeSettingsKey;
 
 // Possible values in the AwfulSettingsDidChangeSettingsKey collection, and keys for subscripting.
@@ -108,4 +110,5 @@ extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *useDevDotForums;
     __unsafe_unretained NSString *lastOfferedPasteboardURL;
     __unsafe_unretained NSString *lastForcedUserInfoUpdateVersion;
+    __unsafe_unretained NSString *customBaseURL;
 } AwfulSettingsKeys;

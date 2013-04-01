@@ -73,14 +73,24 @@ static id _instance;
 
 - (void)logOut
 {
+    // Reset the HTTP client so it gets remade (if necessary) with the default URL.
+    [AwfulHTTPClient reset];
+    
+    // Delete all cookies, both from SA and possibly accrued from using Awful Browser.
     NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
     for (NSHTTPCookie *cookie in [cookieStorage cookies]) {
         [cookieStorage deleteCookie:cookie];
     }
+    
+    // Empty the URL cache.
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
     
+    // Reset all preferences.
     NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
     [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
+    
+    // Delete cached post info. The next user might see things differently than the one logging out.
+    // And this lets logging out double as a "delete all data" button.
     [[AwfulDataStack sharedDataStack] deleteAllDataAndResetStack];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:AwfulUserDidLogOutNotification

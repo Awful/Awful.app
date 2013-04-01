@@ -299,6 +299,16 @@ BOOL_PROPERTY(useDevDotForums, setUseDevDotForums)
     self[AwfulSettingsKeys.lastForcedUserInfoUpdateVersion] = lastForcedUserInfoUpdateVersion;
 }
 
+- (NSString *)customBaseURL
+{
+    return self[AwfulSettingsKeys.customBaseURL];
+}
+
+- (void)setCustomBaseURL:(NSString *)customBaseURL
+{
+    self[AwfulSettingsKeys.customBaseURL] = customBaseURL;
+}
+
 - (id)objectForKeyedSubscript:(id)key
 {
     return [[NSUserDefaults standardUserDefaults] objectForKey:key];
@@ -355,4 +365,5 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .useDevDotForums = @"use_dev_dot_forums",
     .lastOfferedPasteboardURL = @"last_offered_pasteboard_URL",
     .lastForcedUserInfoUpdateVersion = @"last_forced_user_info_update_version",
+    .customBaseURL = @"custom_base_URL",
 };
