@@ -131,7 +131,20 @@
         AwfulSettingsKeys.fontSize,
     ];
     NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
-    if ([keys firstObjectCommonWithArray:importantKeys]) [self configurePostsViewSettings];
+    if ([keys firstObjectCommonWithArray:importantKeys]) {
+        return [self configurePostsViewSettings];
+    }
+    NSString *themeKey = nil;
+    if ([self.thread.forum.forumID isEqualToString:@"219"]) {
+        themeKey = AwfulSettingsKeys.yosposStyle;
+    } else if ([self.thread.forum.forumID isEqualToString:@"25"]) {
+        themeKey = AwfulSettingsKeys.gasChamberStyle;
+    } else if ([self.thread.forum.forumID isEqualToString:@"26"]) {
+        themeKey = AwfulSettingsKeys.fyadStyle;
+    }
+    if (themeKey && [keys containsObject:themeKey]) {
+        [self configurePostsViewSettings];
+    }
 }
 
 - (void)didResetDataStack:(NSNotification *)note
