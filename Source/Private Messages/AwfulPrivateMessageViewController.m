@@ -133,6 +133,8 @@
     if (sender.avatarURL) {
         dict[AwfulPostsViewKeys.authorAvatarURL] = [sender.avatarURL absoluteString];
     }
+    if (sender.moderatorValue) dict[AwfulPostsViewKeys.authorIsAModerator] = @YES;
+    if (sender.administratorValue) dict[AwfulPostsViewKeys.authorIsAnAdministrator] = @YES;
     if (sender.regdate) {
         NSDateFormatter *formatter = [AwfulDateFormatters formatters].regDateFormatter;
         dict[AwfulPostsViewKeys.authorRegDate] = [formatter stringFromDate:sender.regdate];

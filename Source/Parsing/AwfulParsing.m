@@ -936,6 +936,18 @@ static BOOL PrivateMessageIconSeen(NSString *src)
     NSArray *customTitle = PerformRawHTMLXPathQuery(self.htmlData, @"//dl[" HAS_CLASS(userinfo)
                                                     "]//dd[" HAS_CLASS(title) "][1]/node()");
     self.from.customTitle = [customTitle componentsJoinedByString:@""];
+    TFHppleElement *roleHolder = [doc searchForSingle:@"//dl[" HAS_CLASS(userinfo) "]//dt[" HAS_CLASS(author) "]"];
+    if (roleHolder) {
+        NSString *classAttribute = [roleHolder objectForKey:@"class"];
+        NSCharacterSet *whitespace = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+        NSArray *classes = [classAttribute componentsSeparatedByCharactersInSet:whitespace];
+        if ([classes containsObject:@"role-admin"]) {
+            self.from.administrator = YES;
+        }
+        if ([classes containsObject:@"role-mod"]) {
+            self.from.moderator = YES;
+        }
+    }
     TFHppleElement *reply = [doc searchForSingle:@"//div[" HAS_CLASS(buttons) "]//a"];
     if (reply) {
         NSScanner *scanner = [NSScanner scannerWithString:[reply objectForKey:@"href"]];
