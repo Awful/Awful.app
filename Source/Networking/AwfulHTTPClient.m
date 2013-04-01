@@ -850,6 +850,7 @@ NSString * const AwfulUserDidLogInNotification = @"com.awfulapp.Awful.UserDidLog
         @"message": text,
         @"action": @"dosend",
         @"forward": forwardMessageID ? @"true" : @"",
+        @"savecopy": @"yes",
         @"submit": @"Send Message",
     } mutableCopy];
     if (replyMessageID || forwardMessageID) {
