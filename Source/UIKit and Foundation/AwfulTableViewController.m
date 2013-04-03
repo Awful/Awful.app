@@ -144,9 +144,7 @@
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
-- (void)configureCell:(UITableViewCell*)cell
-           withObject:(id)anObject
-          atIndexPath:(NSIndexPath *)indexPath
+- (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath
 {
     [self doesNotRecognizeSelector:_cmd];
 }

@@ -399,13 +399,11 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
                                 action:@selector(toggleFavorite:)
                       forControlEvents:UIControlEventTouchUpInside];
     }
-    [self configureCell:cell withObject:nil atIndexPath:indexPath];
+    [self configureCell:cell atIndexPath:indexPath];
     return cell;
 }
 
-- (void)configureCell:(UITableViewCell *)genericCell
-           withObject:(id)anObject
-          atIndexPath:(NSIndexPath*)indexPath
+- (void)configureCell:(UITableViewCell *)genericCell atIndexPath:(NSIndexPath*)indexPath
 {
     AwfulForumCell *cell = (id)genericCell;
     cell.textLabel.textColor = [AwfulTheme currentTheme].forumCellTextColor;
@@ -419,7 +417,7 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
         cell.showsExpanded = AwfulForumCellShowsExpandedLeavesRoom;
         return;
     }
-    AwfulForum *forum = anObject;
+    AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
     BOOL favoritesSection = NO;
     if ([self.favoriteForums count] > 0 && indexPath.section == 0) {
         forum = self.favoriteForums[indexPath.row];

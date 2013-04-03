@@ -30,9 +30,6 @@
 - (BOOL)refreshOnAppear;
 
 // Subclasses must implement this method and must not call super.
-// anObject may be nil, in which case it's up to the subclass to find the relevant object.
-- (void)configureCell:(UITableViewCell*)cell
-           withObject:(id)anObject
-          atIndexPath:(NSIndexPath *)indexPath;
+- (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath;
 
 @end

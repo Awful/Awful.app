@@ -155,9 +155,13 @@
         }
         case NSFetchedResultsChangeUpdate: {
             if (self.ignoreUpdates) return;
-            [self configureCell:[self.tableView cellForRowAtIndexPath:indexPath]
-                     withObject:anObject
-                    atIndexPath:indexPath];
+            // The NSFetchedResultsControllerDelegate docs get this wrong; sending
+            // -configureCell:atIndexPath: now can result in the right cell filled with the wrong
+            // object's data if there are inserts or deletes in this table view update block.
+            // Reloading the cell fixes this ordering issue.
+            // http://oleb.net/blog/2013/02/nsfetchedresultscontroller-documentation-bug/
+            [self.tableView reloadRowsAtIndexPaths:@[ indexPath ]
+                                  withRowAnimation:UITableViewRowAnimationAutomatic];
             break;
         }
     }
