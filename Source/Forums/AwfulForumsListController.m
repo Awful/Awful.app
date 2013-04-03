@@ -417,7 +417,7 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
         cell.showsExpanded = AwfulForumCellShowsExpandedLeavesRoom;
         return;
     }
-    AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    AwfulForum *forum;
     BOOL favoritesSection = NO;
     if ([self.favoriteForums count] > 0 && indexPath.section == 0) {
         forum = self.favoriteForums[indexPath.row];
