@@ -13,12 +13,14 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
 #import "AwfulPostsView.h"
+#import "AwfulPrivateMessageComposeViewController.h"
 #import "AwfulSettings.h"
 #import "NSManagedObject+Awful.h"
 #import "NSURL+Punycode.h"
 #import "SVProgressHUD.h"
+#import "UIViewController+NavigationEnclosure.h"
 
-@interface AwfulProfileViewController () <UIWebViewDelegate>
+@interface AwfulProfileViewController () <UIWebViewDelegate, AwfulPrivateMessageComposeViewControllerDelegate>
 
 @property (readonly, nonatomic) UIWebView *webView;
 @property (nonatomic) AwfulUser *user;
@@ -40,6 +42,9 @@
     self.user = [AwfulUser firstMatchingPredicate:@"userID = %@", _userID];
 }
 
+NSString * const AwfulServiceHomepage = @"Homepage";
+NSString * const AwfulServicePrivateMessage = @"Private Message";
+
 - (void)renderUser
 {
     if (!self.user) return;
@@ -49,6 +54,12 @@
     lastPostFormatter.locale = regdateFormatter.locale;
     lastPostFormatter.dateFormat = @"MMM d, yyyy HH:mm";
     NSMutableArray *contactInfo = [NSMutableArray new];
+    if (self.user.canReceivePrivateMessagesValue && [AwfulSettings settings].canSendPrivateMessages) {
+        [contactInfo addObject:@{
+            @"service": AwfulServicePrivateMessage,
+            @"address": self.user.username,
+        }];
+    }
     if ([self.user.aimName length] > 0) {
         [contactInfo addObject:@{ @"service": @"AIM", @"address": self.user.aimName }];
     }
@@ -59,7 +70,10 @@
         [contactInfo addObject:@{ @"service": @"Yahoo!", @"address": self.user.yahooName }];
     }
     if ([self.user.homepageURL length] > 0) {
-        [contactInfo addObject:@{ @"service": @"Homepage", @"address": self.user.homepageURL }];
+        [contactInfo addObject:@{
+            @"service": AwfulServiceHomepage,
+            @"address": self.user.homepageURL,
+        }];
     }
     self.services = contactInfo;
     NSMutableArray *additionalInfo = [NSMutableArray new];
@@ -224,31 +238,45 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     NSDictionary *service = self.services[i];
     CGRect rect = CGRectMake([rectDict[@"left"] floatValue], [rectDict[@"top"] floatValue],
                              [rectDict[@"width"] floatValue], [rectDict[@"height"] floatValue]);
-    if ([service[@"service"] isEqual:@"Homepage"]) {
+    if ([service[@"service"] isEqual:AwfulServiceHomepage]) {
         NSURL *url = [NSURL awful_URLWithString:service[@"address"]];
-        if (!url) return;
-        AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:[url absoluteString]];
-        [sheet addButtonWithTitle:@"Open in Safari" block:^{
-            [[UIApplication sharedApplication] openURL:url];
-        }];
-        for (AwfulExternalBrowser *browser in [AwfulExternalBrowser installedBrowsers]) {
-            if (![browser canOpenURL:url]) continue;
-            [sheet addButtonWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title]
-                                block:^{ [browser openURL:url]; }];
+        if (url) {
+            [self showActionsForHomepage:url atRect:rect];
         }
-        [sheet addButtonWithTitle:@"Copy URL" block:^{
-            [AwfulSettings settings].lastOfferedPasteboardURL = [url absoluteString];
-            [UIPasteboard generalPasteboard].items = @[ @{
-                (id)kUTTypeURL: url,
-                (id)kUTTypePlainText: [url absoluteString],
-            } ];
-        }];
-        [sheet addCancelButtonWithTitle:@"Cancel"];
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            [sheet showFromRect:rect inView:self.view animated:YES];
-        } else {
-            [sheet showInView:self.view];
-        }
+    } else if ([service[@"service"] isEqual:AwfulServicePrivateMessage]) {
+        AwfulPrivateMessageComposeViewController *compose;
+        compose = [AwfulPrivateMessageComposeViewController new];
+        compose.delegate = self;
+        [compose setRecipient:self.user.username];
+        UINavigationController *nav = [compose enclosingNavigationController];
+        nav.modalPresentationStyle = UIModalPresentationPageSheet;
+        [self presentViewController:nav animated:YES completion:nil];
+    }
+}
+
+- (void)showActionsForHomepage:(NSURL *)homepage atRect:(CGRect)rect
+{
+    AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:[homepage absoluteString]];
+    [sheet addButtonWithTitle:@"Open in Safari" block:^{
+        [[UIApplication sharedApplication] openURL:homepage];
+    }];
+    for (AwfulExternalBrowser *browser in [AwfulExternalBrowser installedBrowsers]) {
+        if (![browser canOpenURL:homepage]) continue;
+        [sheet addButtonWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title]
+                            block:^{ [browser openURL:homepage]; }];
+    }
+    [sheet addButtonWithTitle:@"Copy URL" block:^{
+        [AwfulSettings settings].lastOfferedPasteboardURL = [homepage absoluteString];
+        [UIPasteboard generalPasteboard].items = @[ @{
+            (id)kUTTypeURL: homepage,
+            (id)kUTTypePlainText: [homepage absoluteString],
+        } ];
+    }];
+    [sheet addCancelButtonWithTitle:@"Cancel"];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [sheet showFromRect:rect inView:self.view animated:YES];
+    } else {
+        [sheet showInView:self.view];
     }
 }
 
@@ -256,6 +284,18 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 {
     [self updateDarkTheme];
     [self renderUser];
+}
+
+#pragma mark - AwfulPrivateMessageComposeViewControllerDelegate
+
+- (void)privateMessageComposeControllerDidCancel:(AwfulPrivateMessageComposeViewController *)controller
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)privateMessageComposeControllerDidSendMessage:(AwfulPrivateMessageComposeViewController *)controller
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end
