@@ -37,7 +37,6 @@
 
 - (id)init
 {
-    self = [super init];
     if (!(self = [super init])) return nil;
     _cellsMissingThreadTags = [NSMutableSet new];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsChanged:)
