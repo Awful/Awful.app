@@ -310,14 +310,13 @@ static NSString * ModelNameWithURL(NSURL *url) {
 
 - (void)deleteAllDataAndResetStack
 {
+    NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
+    [noteCenter postNotificationName:AwfulDataStackWillResetNotification object:self];
     [self deleteAllData];
     self.coordinator = nil;
     self.model = nil;
     self.context = nil;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:AwfulDataStackDidResetNotification
-                                                            object:self];
-    });
+    [noteCenter postNotificationName:AwfulDataStackDidResetNotification object:self];
 }
 
 + (NSURL *)defaultStoreURL
@@ -328,5 +327,5 @@ static NSString * ModelNameWithURL(NSURL *url) {
 
 @end
 
-
+NSString * const AwfulDataStackWillResetNotification = @"AwfulDataStackWillResetNotification";
 NSString * const AwfulDataStackDidResetNotification = @"AwfulDataStackDidResetNotification";

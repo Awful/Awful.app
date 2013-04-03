@@ -36,7 +36,10 @@ typedef enum {
 @end
 
 
+// Sent after receiving -deleteAllDataAndResetStack. The notification's object is the data stack.
+// This is an opportune time to nil out any fetched results controllers.
+extern NSString * const AwfulDataStackWillResetNotification;
+
 // Sent after -deleteAllDataAndResetStack completes. The notification's object is the data stack.
-// This might be a good time to recreate fetched results controllers or anything else that refers
-// to a stack's managed object context.
+// This is an opportune time to recreate any fetched results controllers.
 extern NSString * const AwfulDataStackDidResetNotification;

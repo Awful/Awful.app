@@ -34,22 +34,38 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self getFetchedResultsController:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(getFetchedResultsController:)
-                                                 name:AwfulDataStackDidResetNotification
-                                               object:[AwfulDataStack sharedDataStack]];
+    [self createFetchedResultsControllerIfNecessary];
+    NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
+    [noteCenter addObserver:self selector:@selector(dataStackWillReset:)
+                       name:AwfulDataStackWillResetNotification
+                     object:[AwfulDataStack sharedDataStack]];
+    [noteCenter addObserver:self selector:@selector(dataStackDidReset:)
+                       name:AwfulDataStackDidResetNotification
+                     object:[AwfulDataStack sharedDataStack]];
 }
 
-- (void)getFetchedResultsController:(NSNotification *)note
+- (void)createFetchedResultsControllerIfNecessary
 {
-    self.fetchedResultsController.delegate = nil;
-    [self.tableView reloadData];
+    if (self.fetchedResultsController) return;
     self.fetchedResultsController = [self createFetchedResultsController];
     self.fetchedResultsController.delegate = self;
     NSError *error;
     if (![self.fetchedResultsController performFetch:&error]) {
         NSLog(@"%@ error fetching: %@", [self class], error);
+    }
+}
+
+- (void)dataStackWillReset:(NSNotification *)note
+{
+    self.fetchedResultsController.delegate = nil;
+    self.fetchedResultsController = nil;
+    [self.tableView reloadData];
+}
+
+- (void)dataStackDidReset:(NSNotification *)note
+{
+    if ([self isViewLoaded]) {
+        [self createFetchedResultsControllerIfNecessary];
     }
 }
 

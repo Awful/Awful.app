@@ -84,8 +84,8 @@
     NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
     [noteCenter addObserver:self selector:@selector(settingChanged:)
                        name:AwfulSettingsDidChangeNotification object:nil];
-    [noteCenter addObserver:self selector:@selector(didResetDataStack:)
-                       name:AwfulDataStackDidResetNotification object:nil];
+    [noteCenter addObserver:self selector:@selector(willResetDataStack:)
+                       name:AwfulDataStackWillResetNotification object:nil];
     return self;
 }
 
@@ -147,7 +147,7 @@
     }
 }
 
-- (void)didResetDataStack:(NSNotification *)note
+- (void)willResetDataStack:(NSNotification *)note
 {
     self.fetchedResultsController = nil;
 }
