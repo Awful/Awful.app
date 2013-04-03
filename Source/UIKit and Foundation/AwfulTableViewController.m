@@ -21,14 +21,7 @@
 
 - (void)dealloc
 {
-    [self stopObservingApplicationDidBecomeActive];
-}
-
-- (void)themeChanged:(NSNotification *)note
-{
-    if (![self isViewLoaded]) return;
-    [self.tableView reloadData];
-    [self retheme];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)viewDidLoad

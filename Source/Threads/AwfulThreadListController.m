@@ -262,11 +262,6 @@
     }
 }
 
-- (void)pop
-{
-    [self.navigationController popViewControllerAnimated:YES];
-}
-
 #pragma mark - UITableViewDataSource and UITableViewDelegate
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
