@@ -24,7 +24,6 @@
 #import "AwfulThreadTags.h"
 #import "NSString+CollapseWhitespace.h"
 #import "SVProgressHUD.h"
-#import "SVPullToRefresh.h"
 #import "UIViewController+NavigationEnclosure.h"
 
 @interface AwfulThreadListController ()

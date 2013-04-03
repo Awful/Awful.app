@@ -8,7 +8,8 @@
 #import "AwfulTableViewController.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulTheme.h"
-#import "SVPullToRefresh.h"
+#import "UIScrollView+SVInfiniteScrolling.h"
+#import "UIScrollView+SVPullToRefresh.h"
 
 @interface AwfulTableViewController ()
 
@@ -63,7 +64,7 @@
 {
     if (![self refreshOnAppear]) return;
     if ([self canPullToRefresh]) {
-        [self.tableView.pullToRefreshView triggerRefresh];
+        [self.tableView triggerPullToRefresh];
     } else {
         [self refresh];
     }

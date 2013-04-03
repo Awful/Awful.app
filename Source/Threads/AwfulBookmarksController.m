@@ -13,7 +13,7 @@
 #import "AwfulModels.h"
 #import "AwfulThreadCell.h"
 #import "NSManagedObject+Awful.h"
-#import "SVPullToRefresh.h"
+#import "UIScrollView+SVInfiniteScrolling.h"
 
 @interface AwfulBookmarksController ()
 
