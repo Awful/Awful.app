@@ -68,10 +68,11 @@
 - (void)setForum:(AwfulForum *)forum
 {
     if (_forum == forum) return;
+    self.fetchedResultsController.delegate = nil;
+    self.fetchedResultsController = nil;
     _forum = forum;
     self.title = _forum.name;
     self.navigationItem.backBarButtonItem = [self abbreviatedBackBarButtonItem];
-    self.fetchedResultsController = [self createFetchedResultsController];
 }
 
 - (UIBarButtonItem *)abbreviatedBackBarButtonItem
