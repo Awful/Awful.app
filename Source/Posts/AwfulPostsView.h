@@ -56,6 +56,9 @@
 // Set to nil to hide end of thread message.
 @property (copy, nonatomic) NSString *endMessage;
 
+// Extract an Objective-C invocation from a URL and send it if the selector is in the whitelist.
+extern void InvokeBridgedMethodWithURLAndTarget(NSURL *url, id target, NSArray *whitelist);
+
 @end
 
 

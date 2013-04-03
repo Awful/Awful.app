@@ -6,19 +6,23 @@
 //
 
 #import "AwfulProfileViewController.h"
+#import "AwfulActionSheet.h"
 #import "AwfulAlertView.h"
 #import "AwfulDateFormatters.h"
+#import "AwfulExternalBrowser.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
+#import "AwfulPostsView.h"
 #import "AwfulSettings.h"
 #import "NSManagedObject+Awful.h"
+#import "NSURL+Punycode.h"
 #import "SVProgressHUD.h"
 
 @interface AwfulProfileViewController () <UIWebViewDelegate>
 
 @property (readonly, nonatomic) UIWebView *webView;
-
 @property (nonatomic) AwfulUser *user;
+@property (copy, nonatomic) NSArray *services;
 
 @end
 
@@ -57,6 +61,7 @@
     if ([self.user.homepageURL length] > 0) {
         [contactInfo addObject:@{ @"service": @"Homepage", @"address": self.user.homepageURL }];
     }
+    self.services = contactInfo;
     NSMutableArray *additionalInfo = [NSMutableArray new];
     if ([self.user.location length] > 0) {
         [additionalInfo addObject:@{ @"kind": @"Location", @"info": self.user.location }];
@@ -200,6 +205,52 @@
 }
 
 #pragma mark - UIWebViewDelegate
+
+- (BOOL)webView:(UIWebView *)webView
+shouldStartLoadWithRequest:(NSURLRequest *)request
+ navigationType:(UIWebViewNavigationType)navigationType
+{
+    if ([request.URL.scheme isEqualToString:@"x-objc"]) {
+        NSArray *whitelist = @[ @"showActionsForServiceAtIndex:fromRectDictionary:" ];
+        InvokeBridgedMethodWithURLAndTarget(request.URL, self, whitelist);
+    }
+    return YES;
+}
+
+- (void)showActionsForServiceAtIndex:(NSNumber *)boxedi fromRectDictionary:(NSDictionary *)rectDict
+{
+    NSUInteger i = [boxedi unsignedIntegerValue];
+    if (i >= [self.services count]) return;
+    NSDictionary *service = self.services[i];
+    CGRect rect = CGRectMake([rectDict[@"left"] floatValue], [rectDict[@"top"] floatValue],
+                             [rectDict[@"width"] floatValue], [rectDict[@"height"] floatValue]);
+    if ([service[@"service"] isEqual:@"Homepage"]) {
+        NSURL *url = [NSURL awful_URLWithString:service[@"address"]];
+        if (!url) return;
+        AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:[url absoluteString]];
+        [sheet addButtonWithTitle:@"Open in Safari" block:^{
+            [[UIApplication sharedApplication] openURL:url];
+        }];
+        for (AwfulExternalBrowser *browser in [AwfulExternalBrowser installedBrowsers]) {
+            if (![browser canOpenURL:url]) continue;
+            [sheet addButtonWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title]
+                                block:^{ [browser openURL:url]; }];
+        }
+        [sheet addButtonWithTitle:@"Copy URL" block:^{
+            [AwfulSettings settings].lastOfferedPasteboardURL = [url absoluteString];
+            [UIPasteboard generalPasteboard].items = @[ @{
+                (id)kUTTypeURL: url,
+                (id)kUTTypePlainText: [url absoluteString],
+            } ];
+        }];
+        [sheet addCancelButtonWithTitle:@"Cancel"];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            [sheet showFromRect:rect inView:self.view animated:YES];
+        } else {
+            [sheet showInView:self.view];
+        }
+    }
+}
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {

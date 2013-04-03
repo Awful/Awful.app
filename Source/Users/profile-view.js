@@ -662,5 +662,22 @@ Awful.dark = function(dark){
   if (dark) $('body').addClass('dark')
   else $('body').removeClass('dark')
 }
-  
+
+Awful.invoke = function(selector /*, varargs */){
+  var stem = "x-objc:///" + selector + "/"
+  var args = Array.prototype.slice.call(arguments, 1)
+  window.location.href = stem + encodeURIComponent(JSON.stringify(args))
+}
+
+$(function(){
+  $('#profile').on('tap', '#contact', function(e){
+    var row = $(e.target).closest('tr')
+    if (row.length == 0) return
+    var rect = row.offset()
+    rect.left -= window.pageXOffset
+    rect.top -= window.pageYOffset
+    Awful.invoke("showActionsForServiceAtIndex:fromRectDictionary:", row.index(), rect)
+  })
+})
+
 })(window)
