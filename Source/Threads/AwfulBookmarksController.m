@@ -11,6 +11,7 @@
 #import "AwfulDataStack.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
+#import "AwfulTheme.h"
 #import "AwfulThreadCell.h"
 #import "NSManagedObject+Awful.h"
 #import "UIScrollView+SVInfiniteScrolling.h"
@@ -18,6 +19,7 @@
 @interface AwfulBookmarksController ()
 
 @property (nonatomic) NSDate *lastRefreshDate;
+@property (nonatomic) BOOL showBookmarkColors;
 
 @end
 
@@ -85,11 +87,23 @@
                 NSArray *bookmarks = [AwfulThread fetchAllMatchingPredicate:@"isBookmarked = YES"];
                 [bookmarks setValue:@NO forKey:AwfulThreadAttributes.isBookmarked];
                 [threads setValue:@YES forKey:AwfulThreadAttributes.isBookmarked];
+                BOOL wasShowingBookmarkColors = self.showBookmarkColors;
+                self.showBookmarkColors = NO;
+                for (NSNumber *star in [bookmarks valueForKey:AwfulThreadAttributes.starCategory]) {
+                    NSInteger category = [star integerValue];
+                    if (category == AwfulStarCategoryRed || category == AwfulStarCategoryYellow) {
+                        self.showBookmarkColors = YES;
+                        break;
+                    }
+                }
                 self.ignoreUpdates = YES;
                 [[AwfulDataStack sharedDataStack] save];
                 self.ignoreUpdates = NO;
                 self.lastRefreshDate = [NSDate date];
                 self.tableView.showsInfiniteScrolling = [threads count] >= 40;
+                if (self.showBookmarkColors != wasShowingBookmarkColors) {
+                    [self.tableView reloadData];
+                }
             }
             self.currentPage = pageNum;
         }
@@ -128,6 +142,11 @@ static NSString * const kLastBookmarksRefreshDate = @"com.awfulapp.Awful.LastBoo
         cell.unreadCountBadgeView.badgeText = @"∞";
         cell.unreadCountBadgeView.on = YES;
         cell.showsUnread = YES;
+    }
+    if (!self.showBookmarkColors) {
+        AwfulTheme *theme = [AwfulTheme currentTheme];
+        cell.unreadCountBadgeView.badgeColor = theme.threadListUnreadBadgeBlueColor;
+        cell.unreadCountBadgeView.offBadgeColor = theme.threadListUnreadBadgeBlueOffColor;
     }
 }
 
