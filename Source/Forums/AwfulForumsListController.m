@@ -298,10 +298,7 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
 
 - (void)didLogOut:(NSNotification *)note
 {
-    if (self.tableView.numberOfSections == 0) return;
-    NSUInteger section = self.tableView.numberOfSections - 1;
-    [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:section]
-                  withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self.tableView reloadData];
 }
 
 - (void)viewWillAppear:(BOOL)animated
