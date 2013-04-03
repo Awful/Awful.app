@@ -27,12 +27,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self retheme];
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
     __weak AwfulTableViewController *blockSelf = self;
     if ([self canPullToRefresh]) {
         [self.tableView addPullToRefreshWithActionHandler:^{
@@ -44,6 +38,12 @@
             [blockSelf nextPage];
         }];
     }
+    [self retheme];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
     [self refreshIfNeededOnAppear];
     [self startObservingApplicationDidBecomeActive];
 }
