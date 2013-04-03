@@ -7,8 +7,7 @@ Awful.render = function(profile){
 }
 
 Awful.dark = function(dark){
-  if (dark) $('body').addClass('dark')
-  else $('body').removeClass('dark')
+  $('body').toggleClass('dark', dark)
 }
 
 Awful.invoke = function(selector /*, varargs */){
