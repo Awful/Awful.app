@@ -899,11 +899,13 @@ static char KVOContext;
                                        buttonTitle:@"Alright"];
                      return;
                  }
+                 NSString *contents = self.ongoingReplyText ?: @"";
+                 contents = [contents stringByAppendingString:quotedText];
                  AwfulReplyComposeViewController *reply = [AwfulReplyComposeViewController new];
                  reply.delegate = self;
                  [reply replyToThread:self.thread
-                  withInitialContents:quotedText
-                 imageCacheIdentifier:nil];
+                  withInitialContents:contents
+                 imageCacheIdentifier:self.ongoingReplyImageCacheIdentifier];
                  UINavigationController *nav = [reply enclosingNavigationController];
                  [self presentViewController:nav animated:YES completion:nil];
              }];
