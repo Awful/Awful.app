@@ -55,4 +55,6 @@ typedef NS_ENUM(NSInteger, AwfulComposeViewControllerState) {
 // TODO mark as readonly, privately mark as readwrite.
 @property (nonatomic) AwfulComposeViewControllerState state;
 
+@property (nonatomic) NSMutableDictionary *images;
+
 @end

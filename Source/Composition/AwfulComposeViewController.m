@@ -19,7 +19,6 @@
 
 @property (nonatomic) AwfulTextView *textView;
 
-@property (nonatomic) NSMutableDictionary *images;
 @property (weak, nonatomic) id <ImgurHTTPClientCancelToken> imageUploadCancelToken;
 @property (nonatomic) UIPopoverController *pickerPopover;
 
@@ -69,7 +68,6 @@
 
 - (void)prepareToSendMessage
 {
-    // TODO upload images, etc.
     NSArray *imagePlaceholderResults = ImagePlaceholderResultsWithMessageBody(self.textView.text);
     if ([imagePlaceholderResults count] > 0) {
         NSMutableArray *imageKeys = [NSMutableArray new];

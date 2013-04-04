@@ -14,6 +14,7 @@
 #import "AwfulSettings.h"
 #import "AwfulTextView.h"
 #import "ImgurHTTPClient.h"
+#import "NSFileManager+UserDirectories.h"
 #import "NSString+CollapseWhitespace.h"
 #import "SVProgressHUD.h"
 #import "UINavigationItem+TwoLineTitle.h"
@@ -26,6 +27,8 @@
 
 @property (nonatomic) AwfulThread *thread;
 @property (nonatomic) AwfulPost *post;
+@property (copy, nonatomic) NSString *imageCacheIdentifier;
+@property (nonatomic) NSMutableSet *cachedImages;
 
 @end
 
@@ -35,6 +38,7 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     if (!(self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) return nil;
+    self.cachedImages = [NSMutableSet new];
     self.sendButton.target = self;
     self.sendButton.action = @selector(didTapSend);
     self.cancelButton.target = self;
@@ -52,7 +56,9 @@
     self.sendButton.title = @"Save";
 }
 
-- (void)replyToThread:(AwfulThread *)thread withInitialContents:(NSString *)contents
+- (void)replyToThread:(AwfulThread *)thread
+  withInitialContents:(NSString *)contents
+ imageCacheIdentifier:(id)imageCacheIdentifier
 {
     self.thread = thread;
     self.post = nil;
@@ -60,6 +66,31 @@
     self.title = [thread.title stringByCollapsingWhitespace];
     self.navigationItem.titleLabel.text = self.title;
     self.sendButton.title = @"Reply";
+    if (imageCacheIdentifier) {
+        self.imageCacheIdentifier = imageCacheIdentifier;
+        [self holdPlacesForCachedImages];
+    }
+}
+
+- (void)holdPlacesForCachedImages
+{
+    if (!self.imageCacheIdentifier) return;
+    NSURL *cacheDirectory = CachedImageDirectoryForIdentifier(self.imageCacheIdentifier);
+    NSError *error;
+    NSArray *urls = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:cacheDirectory
+                                                  includingPropertiesForKeys:nil
+                                                                     options:0
+                                                                       error:&error];
+    if (!urls) {
+        NSLog(@"error holding places for cached images in %@: %@", cacheDirectory, error);
+        return;
+    }
+    for (NSURL *url in urls) {
+        if (![[url pathExtension] isEqualToString:@"png"]) continue;
+        NSString *key = [[url lastPathComponent] stringByDeletingPathExtension];
+        self.images[key] = [NSNull null];
+        [self.cachedImages addObject:key];
+    }
 }
 
 - (void)didTapSend
@@ -82,6 +113,24 @@
     } else {
         [self prepareToSendMessage];
     }
+}
+
+- (void)prepareToSendMessage
+{
+    // Need to load any cached images before superclass tries to upload them.
+    if (self.imageCacheIdentifier) {
+        NSURL *cacheDirectory = CachedImageDirectoryForIdentifier(self.imageCacheIdentifier);
+        for (NSString *key in [self.images allKeys]) {
+            if (![self.images[key] isEqual:[NSNull null]]) continue;
+            NSURL *url = [cacheDirectory URLByAppendingPathComponent:key];
+            url = [url URLByAppendingPathExtension:@"png"];
+            UIImage *image = [UIImage imageWithContentsOfFile:[url path]];
+            if (image) {
+                self.images[key] = image;
+            }
+        }
+    }
+    [super prepareToSendMessage];
 }
 
 - (void)willTransitionToState:(AwfulComposeViewControllerState)state
@@ -143,6 +192,59 @@
         [self.textView becomeFirstResponder];
     } else {
         [self.delegate replyComposeControllerDidCancel:self];
+    }
+}
+
+- (id)imageCacheIdentifier
+{
+    if ([self.images count] == 0 || [self.cachedImages count] == [self.images count]) {
+        return _imageCacheIdentifier;
+    }
+    if (!_imageCacheIdentifier) {
+        _imageCacheIdentifier = [[NSProcessInfo processInfo] globallyUniqueString];
+    }
+    NSURL *cacheDirectory = CachedImageDirectoryForIdentifier(_imageCacheIdentifier);
+    NSError *error;
+    BOOL ok = [[NSFileManager defaultManager] createDirectoryAtURL:cacheDirectory
+                                       withIntermediateDirectories:YES
+                                                        attributes:nil
+                                                             error:&error];
+    if (!ok) {
+        NSLog(@"failed creating image cache folder %@: %@", cacheDirectory, error);
+        return nil;
+    }
+    for (id imageKey in self.images) {
+        if ([self.cachedImages containsObject:imageKey]) continue;
+        NSData *imageData = UIImagePNGRepresentation(self.images[imageKey]);
+        NSURL *url = [cacheDirectory URLByAppendingPathComponent:imageKey];
+        url = [url URLByAppendingPathExtension:@"png"];
+        ok = [imageData writeToURL:url options:0 error:&error];
+        if (!ok) {
+            NSLog(@"error caching image %@: %@", imageKey, error);
+        }
+        if (ok) {
+            [self.cachedImages addObject:imageKey];
+        }
+    }
+    return _imageCacheIdentifier;
+}
+
+static NSURL *CachedImageDirectoryForIdentifier(id identifier)
+{
+    NSURL *cacheDirectory = [[NSFileManager defaultManager] cachesDirectory];
+    return [cacheDirectory URLByAppendingPathComponent:identifier];
+}
+
++ (void)deleteImageCacheWithIdentifier:(id)imageCacheIdentifier
+{
+    NSURL *cacheDirectory = [[NSFileManager defaultManager] cachesDirectory];
+    NSURL *imageCache = [cacheDirectory URLByAppendingPathComponent:imageCacheIdentifier];
+    imageCache = [imageCache URLByStandardizingPath];
+    if ([[imageCache pathComponents] count] <= [[cacheDirectory pathComponents] count]) return;
+    NSError *error;
+    BOOL ok = [[NSFileManager defaultManager] removeItemAtURL:imageCache error:&error];
+    if (!ok) {
+        NSLog(@"error deleting image cache %@: %@", imageCache, error);
     }
 }
 
