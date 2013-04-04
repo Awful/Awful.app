@@ -235,9 +235,11 @@ static NSArray * ImagePlaceholderResultsWithMessageBody(NSString *messageBody)
 {
     CGRect keyboardFrame = [note.userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue];
     keyboardFrame = [self.view.window convertRect:keyboardFrame fromWindow:nil];
-    CGRect relativeKeyboardFrame = [self.textView.superview convertRect:keyboardFrame fromView:nil];
+    CGRect relativeKeyboardFrame = [self.textView convertRect:keyboardFrame fromView:nil];
+    CGRect textViewFrame = self.textView.frame;
+    textViewFrame.size.height = CGRectGetMaxY(relativeKeyboardFrame) - CGRectGetMinY(textViewFrame);
     [self animateWithKeyboardUserInfo:note.userInfo animations:^{
-        self.textView.frame = CGRectUnion(self.textView.frame, relativeKeyboardFrame);
+        self.textView.frame = textViewFrame;
     } completion:^(BOOL finished) {
         [self.textView scrollRangeToVisible:self.textView.selectedRange];
     }];
