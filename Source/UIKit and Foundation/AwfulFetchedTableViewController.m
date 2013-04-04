@@ -161,7 +161,7 @@
             // Reloading the cell fixes this ordering issue.
             // http://oleb.net/blog/2013/02/nsfetchedresultscontroller-documentation-bug/
             [self.tableView reloadRowsAtIndexPaths:@[ indexPath ]
-                                  withRowAnimation:UITableViewRowAnimationAutomatic];
+                                  withRowAnimation:UITableViewRowAnimationNone];
             break;
         }
     }
