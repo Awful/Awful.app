@@ -33,12 +33,12 @@
         
         UIImage *action = [UIImage imageNamed:@"action.png"];
         action.accessibilityLabel = @"Thread actions";
-        UIImage *reply = [UIImage imageNamed:@"compose.png"];
-        reply.accessibilityLabel = @"Reply to thread";
-        UISegmentedControl *actionsCompose = [[UISegmentedControl alloc]
-                                              initWithItems:@[ action, reply ]];
-        [self addSubview:actionsCompose];
-        _actionsComposeControl = actionsCompose;
+        UIImage *fontSize = [UIImage imageNamed:@"font-size.png"];
+        fontSize.accessibilityLabel = @"Adjust style";
+        UISegmentedControl *actionsFontSize = [[UISegmentedControl alloc]
+                                               initWithItems:@[ action, fontSize ]];
+        [self addSubview:actionsFontSize];
+        _actionsFontSizeControl = actionsFontSize;
         
         [self configureAppearance];
     }
@@ -55,7 +55,7 @@
                        resizableImageWithCapInsets:UIEdgeInsetsMake(0, 3, 0, 3)];
     UIImage *selected = [[UIImage imageNamed:@"pagebar-button-selected.png"]
                          resizableImageWithCapInsets:UIEdgeInsetsMake(0, 3, 0, 3)];
-    for (UISegmentedControl *seg in @[ self.backForwardControl, self.actionsComposeControl ]) {
+    for (UISegmentedControl *seg in @[ self.backForwardControl, self.actionsFontSizeControl ]) {
         [seg setBackgroundImage:button
                        forState:UIControlStateNormal
                      barMetrics:UIBarMetricsDefault];
@@ -89,11 +89,11 @@
                                                CGRectGetMidY(self.bounds) + topOffset);
     self.jumpToPageButton.frame = CGRectIntegral(self.jumpToPageButton.frame);
     
-    self.actionsComposeControl.frame = CGRectMake(CGRectGetMaxX(self.bounds) - horizontalMargin - segWidth, 0,
+    self.actionsFontSizeControl.frame = CGRectMake(CGRectGetMaxX(self.bounds) - horizontalMargin - segWidth, 0,
                                                   segWidth, itemHeight);
-    self.actionsComposeControl.center = CGPointMake(self.actionsComposeControl.center.x,
-                                                    CGRectGetMidY(self.bounds) + topOffset);
-    self.actionsComposeControl.frame = CGRectIntegral(self.actionsComposeControl.frame);
+    self.actionsFontSizeControl.center = CGPointMake(self.actionsFontSizeControl.center.x,
+                                                     CGRectGetMidY(self.bounds) + topOffset);
+    self.actionsFontSizeControl.frame = CGRectIntegral(self.actionsFontSizeControl.frame);
 }
 
 @end

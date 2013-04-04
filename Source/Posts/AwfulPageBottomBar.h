@@ -10,9 +10,7 @@
 @interface AwfulPageBottomBar : UIView
 
 @property (readonly, weak, nonatomic) UISegmentedControl *backForwardControl;
-
 @property (readonly, weak, nonatomic) UIButton *jumpToPageButton;
-
-@property (readonly, weak, nonatomic) UISegmentedControl *actionsComposeControl;
+@property (readonly, weak, nonatomic) UISegmentedControl *actionsFontSizeControl;
 
 @end

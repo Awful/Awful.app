@@ -57,7 +57,7 @@
 @property (weak, nonatomic) AwfulPostsView *postsView;
 @property (weak, nonatomic) AwfulPageBottomBar *bottomBar;
 @property (weak, nonatomic) AwfulPullToRefreshControl *pullUpToRefreshControl;
-@property (nonatomic) UIBarButtonItem *fontSizeItem;
+@property (nonatomic) UIBarButtonItem *replyItem;
 @property (nonatomic) AwfulPostsViewSettingsController *settingsViewController;
 
 @property (nonatomic) NSInteger hiddenPosts;
@@ -80,7 +80,7 @@
 {
     if (!(self = [super initWithNibName:nil bundle:nil])) return nil;
     self.hidesBottomBarWhenPushed = YES;
-    self.navigationItem.rightBarButtonItem = self.fontSizeItem;
+    self.navigationItem.rightBarButtonItem = self.replyItem;
     NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
     [noteCenter addObserver:self selector:@selector(settingChanged:)
                        name:AwfulSettingsDidChangeNotification object:nil];
@@ -89,33 +89,23 @@
     return self;
 }
 
-- (UIBarButtonItem *)fontSizeItem
+- (UIBarButtonItem *)replyItem
 {
-    if (!_fontSizeItem) {
-        UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 38, 32)];
-        [button setImage:[UIImage imageNamed:@"font-size.png"] forState:UIControlStateNormal];
-        button.layer.shadowOffset = CGSizeMake(0, -1);
-        button.layer.shadowOpacity = 1;
-        button.layer.shadowRadius = 0;
-        button.showsTouchWhenHighlighted = YES;
-        button.adjustsImageWhenHighlighted = NO;
-        [button addTarget:self action:@selector(didTapFontSizeButton:)
-         forControlEvents:UIControlEventTouchUpInside];
-        _fontSizeItem = [[UIBarButtonItem alloc] initWithCustomView:button];
+    if (!_replyItem) {
+        _replyItem = [[UIBarButtonItem alloc] initWithTitle:@"Reply"
+                                                      style:UIBarButtonItemStyleBordered
+                                                     target:self action:@selector(didTapReply)];
     }
-    return _fontSizeItem;
+    return _replyItem;
 }
 
-- (void)didTapFontSizeButton:(UIButton *)button
+- (void)didTapReply
 {
-    if (self.settingsViewController) {
-        [self.settingsViewController dismiss];
-        self.settingsViewController = nil;
-    } else {
-        self.settingsViewController = [AwfulPostsViewSettingsController new];
-        self.settingsViewController.delegate = self;
-        [self.settingsViewController presentFromViewController:self fromView:button];
-    }
+    AwfulReplyComposeViewController *reply = [AwfulReplyComposeViewController new];
+    reply.delegate = self;
+    [reply replyToThread:self.thread withInitialContents:nil];
+    UINavigationController *nav = [reply enclosingNavigationController];
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (void)settingChanged:(NSNotification *)note
@@ -260,8 +250,7 @@
     } else {
         [self.bottomBar.jumpToPageButton setTitle:@"" forState:UIControlStateNormal];
     }
-    [self.bottomBar.actionsComposeControl setEnabled:!self.thread.isClosedValue
-                                   forSegmentAtIndex:1];
+    self.replyItem.enabled = !self.thread.isClosedValue;
 }
 
 - (void)configurePostsViewSettings
@@ -543,9 +532,9 @@
     [pageBar.jumpToPageButton addTarget:self
                                  action:@selector(showJumpToPageSheet)
                        forControlEvents:UIControlEventTouchUpInside];
-    [pageBar.actionsComposeControl addTarget:self
-                                      action:@selector(didTapActComposeControl:)
-                            forControlEvents:UIControlEventValueChanged];
+    [pageBar.actionsFontSizeControl addTarget:self
+                                       action:@selector(didTapActionFontSizeControl:)
+                             forControlEvents:UIControlEventValueChanged];
     [self.view addSubview:pageBar];
     self.bottomBar = pageBar;
     
@@ -634,19 +623,22 @@
     [jump presentFromViewController:self fromView:self.bottomBar];
 }
 
-- (void)didTapActComposeControl:(UISegmentedControl *)seg
+- (void)didTapActionFontSizeControl:(UISegmentedControl *)seg
 {
     if (seg.selectedSegmentIndex == 0) {
-        CGRect rect = self.bottomBar.actionsComposeControl.frame;
+        CGRect rect = self.bottomBar.actionsFontSizeControl.frame;
         rect.size.width /= 2;
         rect = [self.view.superview convertRect:rect fromView:self.bottomBar];
         [self showThreadActionsFromRect:rect inView:self.view.superview];
     } else if (seg.selectedSegmentIndex == 1) {
-        AwfulReplyComposeViewController *reply = [AwfulReplyComposeViewController new];
-        reply.delegate = self;
-        [reply replyToThread:self.thread withInitialContents:nil];
-        UINavigationController *nav = [reply enclosingNavigationController];
-        [self presentViewController:nav animated:YES completion:nil];
+        if (self.settingsViewController) {
+            [self.settingsViewController dismiss];
+            self.settingsViewController = nil;
+        } else {
+            self.settingsViewController = [AwfulPostsViewSettingsController new];
+            self.settingsViewController.delegate = self;
+            [self.settingsViewController presentFromViewController:self fromView:seg];
+        }
     }
     seg.selectedSegmentIndex = UISegmentedControlNoSegment;
 }
