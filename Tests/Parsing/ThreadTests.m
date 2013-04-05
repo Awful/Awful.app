@@ -39,13 +39,12 @@
 {
     PageParsedInfo *info = [[PageParsedInfo alloc] initWithHTMLData:self.fixture];
     NSDateFormatter *formatter = [NSDateFormatter new];
-    formatter.timeZone = [NSTimeZone timeZoneWithName:@"America/Edmonton"];
     
     PostParsedInfo *first = info.posts[0];
     STAssertEqualObjects(first.postID, @"407741839", nil);
     STAssertEqualObjects(first.threadIndex, @"161", nil);
     [formatter setDateFormat:@"MMM dd, yyyy  h:mm a"];
-    STAssertEqualObjects([formatter stringFromDate:first.postDate], @"Sep 20, 2012  8:16 AM", nil);
+    STAssertEqualObjects([formatter stringFromDate:first.postDate], @"Sep 20, 2012  11:16 AM", nil);
     STAssertTrue(first.beenSeen, nil);
     STAssertFalse(first.editable, nil);
     
