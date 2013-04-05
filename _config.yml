@@ -3,6 +3,7 @@ exclude:
   - CNAME
   - README.md
   - Rakefile
+  - Scripts
   - Source
   - Tests
   - Vendor

@@ -16,6 +16,8 @@ This app is not endorsed by Something Awful.
 Build
 -----
 
+[![Build Status](https://travis-ci.org/AwfulDevs/Awful.png)](https://travis-ci.org/AwfulDevs/Awful)
+
 1. Clone the repository: `git clone https://github.com/AwfulDevs/Awful.git`
 2. Open Xcode project and build away: `cd Awful && open Awful.xcodeproj`
 
