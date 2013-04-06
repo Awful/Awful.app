@@ -279,7 +279,6 @@ $(function(){
   
   $('#posts').on('click', '.bbc-spoiler', toggleSpoiled)
   
-  $('#posts').on('click', '.bbc-spoiler a', cancelUnspoiledLinks)
   
   $('#posts').on('longTap', 'article > section a', showLinkMenu)
 })
@@ -311,7 +310,12 @@ function showLinkedImage(e) {
 }
 
 function toggleSpoiled(e) {
-  $(e.target).closest('.bbc-spoiler').toggleClass('spoiled')
+  var target = $(e.target)
+  var spoiler = target.closest('.bbc-spoiler')
+  if (!spoiler.hasClass('spoiled') && target.filter('a').length > 0) {
+    e.preventDefault()
+  }
+  spoiler.toggleClass('spoiled')
 }
 
 function cancelUnspoiledLinks(e) {
@@ -325,10 +329,13 @@ function cancelUnspoiledLinks(e) {
 
 function showLinkMenu(e) {
   var link = $(e.target).closest('a')
-  var rect = link.offset()
-  rect.left -= window.pageXOffset
-  rect.top -= window.pageYOffset
-  Awful.invoke("showMenuForLinkWithURLString:fromRectDictionary:", link.attr('href'), rect)
+  var spoiler = link.closest('.bbc-spoiler')
+  if (spoiler.length == 0 || spoiler.hasClass('spoiled')) {
+    var rect = link.offset()
+    rect.left -= window.pageXOffset
+    rect.top -= window.pageYOffset
+    Awful.invoke("showMenuForLinkWithURLString:fromRectDictionary:", link.attr('href'), rect)
+  }
   e.preventDefault()
 }
 
