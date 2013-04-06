@@ -271,16 +271,15 @@ window.Awful = Awful
 $(function(){
   $('body').addClass($.os.ipad ? 'ipad' : 'iphone')
   
-  $('#posts').on('tap', 'article > header > button', showPostActions)
+  $('#posts').on('tap', '.action-button', showPostActions)
   
-  $('#posts').on('longTap', 'article > section img', previewImage)
+  $('#posts').on('longTap', 'section img', previewImage)
   
   $('#posts').on('click', 'a[data-awful="image"]', showLinkedImage)
   
   $('#posts').on('click', '.bbc-spoiler', toggleSpoiled)
   
-  
-  $('#posts').on('longTap', 'article > section a', showLinkMenu)
+  $('#posts').on('longTap', 'section a', showLinkMenu)
 })
 
 function showPostActions(e) {
