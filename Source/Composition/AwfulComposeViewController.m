@@ -200,8 +200,8 @@ static NSArray * ImagePlaceholderResultsWithMessageBody(NSString *messageBody)
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:)
-                                                 name:UIKeyboardDidShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:)
                                                  name:UIKeyboardWillHideNotification object:nil];
     [self willTransitionToState:AwfulComposeViewControllerStateReady];
@@ -217,7 +217,7 @@ static NSArray * ImagePlaceholderResultsWithMessageBody(NSString *messageBody)
                                                   object:nil];
 }
 
-- (void)keyboardDidShow:(NSNotification *)note
+- (void)keyboardWillShow:(NSNotification *)note
 {
     CGRect keyboardFrame = [note.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
     keyboardFrame = [self.view.window convertRect:keyboardFrame fromWindow:nil];
