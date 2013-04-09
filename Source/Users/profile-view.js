@@ -665,7 +665,7 @@ Awful.dark = function(dark){
 Awful.invoke = function(selector /*, varargs */){
   var stem = "x-objc:///" + selector + "/"
   var args = Array.prototype.slice.call(arguments, 1)
-  window.location.href = stem + encodeURIComponent(JSON.stringify(args))
+  $('<iframe>', { src: stem + encodeURIComponent(JSON.stringify(args)) }).appendTo($('html')).remove()
 }
 
 $(function(){

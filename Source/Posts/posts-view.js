@@ -680,16 +680,20 @@ Awful.post = function(i, post){
   $('#posts > article').eq(i).replaceWith(render(post))
 }
 
-Awful.invoke = function(selector, varargs){
+Awful.invoke = function(selector /*, varargs */){
   var stem = "x-objc:///" + selector + "/"
   var args = Array.prototype.slice.call(arguments, 1)
-  window.location.href = stem + encodeURIComponent(JSON.stringify(args))
+  sendViaIframe(stem + encodeURIComponent(JSON.stringify(args)))
 }
 
 Awful.invokeOnView = function(selector, varargs){
   var stem = "x-objc-postsview:///" + selector + "/"
   var args = Array.prototype.slice.call(arguments, 1)
-  window.location.href = stem + encodeURIComponent(JSON.stringify(args))
+  sendViaIframe(stem + encodeURIComponent(JSON.stringify(args)))
+}
+
+function sendViaIframe(url) {
+  $('<iframe>', { src: url }).appendTo($('html')).remove()
 }
 
 Awful.stylesheetURL = function(url){
