@@ -466,7 +466,18 @@ static NSString * PreparePostText(NSString *noEntities)
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
                                                                success:^(id _, NSDictionary *json)
     {
-        if (callback) callback(nil, json[@"body"]);
+        if (!callback) return;
+        // If you quote a post from a thread that's been moved to the Gas Chamber, you don't get a
+        // post body. That's an error, even though the HTTP operation succeeded.
+        if (json[@"body"]) {
+            callback(nil, json[@"body"]);
+        } else {
+            NSDictionary *userInfo = @{ NSLocalizedDescriptionKey: @"Missing quoted post body" };
+            NSError *error = [NSError errorWithDomain:AwfulErrorDomain
+                                                 code:AwfulErrorCodes.parseError
+                                             userInfo:userInfo];
+            callback(error, nil);
+        }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (callback) callback(error, nil);
     }];
