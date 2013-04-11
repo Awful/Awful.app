@@ -600,6 +600,7 @@
 		1CE8FE04170A2FD5006A3B84 /* AwfulNeedPlatinumView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE03170A2FD4006A3B84 /* AwfulNeedPlatinumView.m */; };
 		1CE8FE09170C5906006A3B84 /* UIScrollView+SVInfiniteScrolling.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE06170C5906006A3B84 /* UIScrollView+SVInfiniteScrolling.m */; };
 		1CE8FE0A170C5906006A3B84 /* UIScrollView+SVPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE08170C5906006A3B84 /* UIScrollView+SVPullToRefresh.m */; };
+		1CE8FE41171692D1006A3B84 /* AwfulPostsSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE40171692D0006A3B84 /* AwfulPostsSettingsView.m */; };
 		1CF0D619164B0A7C00CFA137 /* Forum Abbreviations.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CF0D618164B0A7C00CFA137 /* Forum Abbreviations.plist */; };
 		1CF2461616DC1B4600C75E05 /* PrivateMessageTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF2461516DC1B4600C75E05 /* PrivateMessageTests.m */; };
 		1CF2461B16DC286A00C75E05 /* private-list.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CF2461916DC286A00C75E05 /* private-list.html */; };
@@ -1357,6 +1358,8 @@
 		1CE8FE06170C5906006A3B84 /* UIScrollView+SVInfiniteScrolling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+SVInfiniteScrolling.m"; sourceTree = "<group>"; };
 		1CE8FE07170C5906006A3B84 /* UIScrollView+SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+SVPullToRefresh.h"; sourceTree = "<group>"; };
 		1CE8FE08170C5906006A3B84 /* UIScrollView+SVPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+SVPullToRefresh.m"; sourceTree = "<group>"; };
+		1CE8FE3F171692D0006A3B84 /* AwfulPostsSettingsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostsSettingsView.h; sourceTree = "<group>"; };
+		1CE8FE40171692D0006A3B84 /* AwfulPostsSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostsSettingsView.m; sourceTree = "<group>"; };
 		1CF0D618164B0A7C00CFA137 /* Forum Abbreviations.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Forum Abbreviations.plist"; sourceTree = "<group>"; };
 		1CF2461516DC1B4600C75E05 /* PrivateMessageTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrivateMessageTests.m; sourceTree = "<group>"; };
 		1CF2461916DC286A00C75E05 /* private-list.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "private-list.html"; sourceTree = "<group>"; };
@@ -2403,6 +2406,8 @@
 				1CE8FDEE17027725006A3B84 /* AwfulJumpToPageController.m */,
 				1CE8FDF21703D622006A3B84 /* AwfulPostsViewSettingsController.h */,
 				1CE8FDF31703D622006A3B84 /* AwfulPostsViewSettingsController.m */,
+				1CE8FE3F171692D0006A3B84 /* AwfulPostsSettingsView.h */,
+				1CE8FE40171692D0006A3B84 /* AwfulPostsSettingsView.m */,
 				1C5BA3E516CA4D9400375A72 /* AwfulPageTopBar.h */,
 				1C5BA3E616CA4D9400375A72 /* AwfulPageTopBar.m */,
 				1C5BA3E816CB886600375A72 /* AwfulScrollViewTopBar.h */,
@@ -4441,6 +4446,7 @@
 				1CE8FE04170A2FD5006A3B84 /* AwfulNeedPlatinumView.m in Sources */,
 				1CE8FE09170C5906006A3B84 /* UIScrollView+SVInfiniteScrolling.m in Sources */,
 				1CE8FE0A170C5906006A3B84 /* UIScrollView+SVPullToRefresh.m in Sources */,
+				1CE8FE41171692D1006A3B84 /* AwfulPostsSettingsView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -662,6 +662,13 @@
         } else {
             self.settingsViewController = [AwfulPostsViewSettingsController new];
             self.settingsViewController.delegate = self;
+            if ([self.thread.forum.forumID isEqualToString:@"25"]) {
+                self.settingsViewController.availableThemes = AwfulPostsViewSettingsControllerThemesGasChamber;
+            } else if ([self.thread.forum.forumID isEqualToString:@"26"]) {
+                self.settingsViewController.availableThemes = AwfulPostsViewSettingsControllerThemesFYAD;
+            } else if ([self.thread.forum.forumID isEqualToString:@"219"]) {
+                self.settingsViewController.availableThemes = AwfulPostsViewSettingsControllerThemesYOSPOS;
+            }
             [self.settingsViewController presentFromViewController:self fromView:seg];
         }
     }
