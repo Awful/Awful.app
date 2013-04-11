@@ -601,6 +601,7 @@
 		1CE8FE09170C5906006A3B84 /* UIScrollView+SVInfiniteScrolling.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE06170C5906006A3B84 /* UIScrollView+SVInfiniteScrolling.m */; };
 		1CE8FE0A170C5906006A3B84 /* UIScrollView+SVPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE08170C5906006A3B84 /* UIScrollView+SVPullToRefresh.m */; };
 		1CE8FE41171692D1006A3B84 /* AwfulPostsSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE40171692D0006A3B84 /* AwfulPostsSettingsView.m */; };
+		1CE8FE4417174B34006A3B84 /* AwfulPlainBarButtonItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE4317174B34006A3B84 /* AwfulPlainBarButtonItem.m */; };
 		1CF0D619164B0A7C00CFA137 /* Forum Abbreviations.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CF0D618164B0A7C00CFA137 /* Forum Abbreviations.plist */; };
 		1CF2461616DC1B4600C75E05 /* PrivateMessageTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF2461516DC1B4600C75E05 /* PrivateMessageTests.m */; };
 		1CF2461B16DC286A00C75E05 /* private-list.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CF2461916DC286A00C75E05 /* private-list.html */; };
@@ -1360,6 +1361,8 @@
 		1CE8FE08170C5906006A3B84 /* UIScrollView+SVPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+SVPullToRefresh.m"; sourceTree = "<group>"; };
 		1CE8FE3F171692D0006A3B84 /* AwfulPostsSettingsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostsSettingsView.h; sourceTree = "<group>"; };
 		1CE8FE40171692D0006A3B84 /* AwfulPostsSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostsSettingsView.m; sourceTree = "<group>"; };
+		1CE8FE4217174B34006A3B84 /* AwfulPlainBarButtonItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPlainBarButtonItem.h; sourceTree = "<group>"; };
+		1CE8FE4317174B34006A3B84 /* AwfulPlainBarButtonItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPlainBarButtonItem.m; sourceTree = "<group>"; };
 		1CF0D618164B0A7C00CFA137 /* Forum Abbreviations.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Forum Abbreviations.plist"; sourceTree = "<group>"; };
 		1CF2461516DC1B4600C75E05 /* PrivateMessageTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrivateMessageTests.m; sourceTree = "<group>"; };
 		1CF2461916DC286A00C75E05 /* private-list.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "private-list.html"; sourceTree = "<group>"; };
@@ -2398,6 +2401,8 @@
 			children = (
 				1CC780271612D9DE002AF958 /* AwfulPostsViewController.h */,
 				1CC780281612D9DE002AF958 /* AwfulPostsViewController.m */,
+				1CE8FE4217174B34006A3B84 /* AwfulPlainBarButtonItem.h */,
+				1CE8FE4317174B34006A3B84 /* AwfulPlainBarButtonItem.m */,
 				1CFBECEC163076F1008AF641 /* AwfulPageBottomBar.h */,
 				1CFBECED163076F1008AF641 /* AwfulPageBottomBar.m */,
 				1CE8FDF51703D648006A3B84 /* AwfulSemiModalViewController.h */,
@@ -4447,6 +4452,7 @@
 				1CE8FE09170C5906006A3B84 /* UIScrollView+SVInfiniteScrolling.m in Sources */,
 				1CE8FE0A170C5906006A3B84 /* UIScrollView+SVPullToRefresh.m in Sources */,
 				1CE8FE41171692D1006A3B84 /* AwfulPostsSettingsView.m in Sources */,
+				1CE8FE4417174B34006A3B84 /* AwfulPlainBarButtonItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
