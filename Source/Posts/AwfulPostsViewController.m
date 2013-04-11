@@ -93,11 +93,19 @@
 
 - (UIBarButtonItem *)replyItem
 {
-    if (!_replyItem) {
-        _replyItem = [[UIBarButtonItem alloc] initWithTitle:@"Reply"
-                                                      style:UIBarButtonItemStyleBordered
-                                                     target:self action:@selector(didTapReply)];
-    }
+    if (_replyItem) return _replyItem;
+    // This is a cruel joke to force the system reply item into using the Plain style in a
+    // navigation bar: stuff it into a transparent toolbar.
+    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
+    [toolbar setBackgroundImage:[UIImage new]
+             forToolbarPosition:UIToolbarPositionAny
+                     barMetrics:UIBarMetricsDefault];
+    UIBarButtonItem *toolbarReplyItem;
+    toolbarReplyItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply
+                                                                     target:self
+                                                                     action:@selector(didTapReply)];
+    toolbar.items = @[ toolbarReplyItem ];
+    _replyItem = [[UIBarButtonItem alloc] initWithCustomView:toolbar];
     return _replyItem;
 }
 
