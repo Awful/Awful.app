@@ -98,6 +98,8 @@
     _replyItem = [[AwfulPlainBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply
                                                                        target:self
                                                                        action:@selector(didTapReply)];
+    // On iPad, the default plain tint color is a dark grey.
+    _replyItem.tintColor = [UIColor whiteColor];
     return _replyItem;
 }
 

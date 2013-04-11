@@ -8,15 +8,21 @@
 
 #import "AwfulPlainBarButtonItem.h"
 
+// Some system items (e.g. UIBarButtonSystemItemReply) unconditionally render with a bordered
+// style in a navigation bar. Embed them in a toolbar first and they're plain. This class simply
+// does this trick and forwards relevant methods to the inner toolbar's item.
 @implementation AwfulPlainBarButtonItem
+
+- (UIToolbar *)toolbar
+{
+    return (id)self.customView;
+}
 
 #pragma mark - UIBarButtonItem
 
 - (id)initWithBarButtonSystemItem:(UIBarButtonSystemItem)systemItem
                            target:(id)target action:(SEL)action
 {
-    // Some system items (e.g. UIBarButtonSystemItemReply) unconditionally render with a bordered
-    // style in a navigation bar. Embed them in a toolbar first and they're plain.
     UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
     [toolbar setBackgroundImage:[UIImage new]
              forToolbarPosition:UIToolbarPositionAny
@@ -31,8 +37,13 @@
 - (void)setEnabled:(BOOL)enabled
 {
     [super setEnabled:enabled];
-    UIToolbar *toolbar = (id)self.customView;
-    [toolbar.items setValue:@(enabled) forKey:@"enabled"];
+    [self.toolbar.items setValue:@(enabled) forKey:@"enabled"];
+}
+
+- (void)setTintColor:(UIColor *)tintColor
+{
+    [super setTintColor:tintColor];
+    [self.toolbar.items setValue:tintColor forKey:@"tintColor"];
 }
 
 @end
