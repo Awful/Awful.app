@@ -881,4 +881,32 @@ NSString * const AwfulUserDidLogInNotification = @"com.awfulapp.Awful.UserDidLog
     return op;
 }
 
+#pragma mark - AFHTTPClient
+
+- (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest
+                                                    success:(void (^)(AFHTTPRequestOperation *, id))success
+                                                    failure:(void (^)(AFHTTPRequestOperation *, NSError *))failure
+{
+    // NSURLConnection will, absent relevant HTTP headers, cache responses for an unknown and
+    // unfortunately long time. http://blackpixel.com/blog/2012/05/caching-and-nsurlconnection.html
+    // This came up when using Awful from some public wi-fi that redirected to a login page. Six
+    // hours and a different network later, the same login page was being served up from the cache.
+    AFHTTPRequestOperation *op = [super HTTPRequestOperationWithRequest:urlRequest
+                                                                success:success failure:failure];
+    if ([[urlRequest HTTPMethod] compare:@"GET" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
+        [op setCacheResponseBlock:^NSCachedURLResponse *(NSURLConnection *connection, NSCachedURLResponse *cachedResponse) {
+            if ([connection currentRequest].cachePolicy == NSURLRequestUseProtocolCachePolicy) {
+                NSHTTPURLResponse *response = (id)[cachedResponse response];
+                NSDictionary *headers = [response allHeaderFields];
+                if (!(headers[@"Cache-Control"] || headers[@"Expires"])) {
+                    NSLog(@"refusing to cache response to %@", urlRequest.URL);
+                    return nil;
+                }
+            }
+            return cachedResponse;
+        }];
+    }
+    return op;
+}
+
 @end
