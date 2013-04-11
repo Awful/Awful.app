@@ -75,6 +75,154 @@
 					<key>Key</key>
 					<string>dark_theme</string>
 				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>Sidebar</string>
+			<key>Explanation</key>
+			<string>Rotate your device after setting.</string>
+			<key>Explanation~ios5</key>
+			<string>Quit and relaunch Awful after setting.</string>
+			<key>Device</key>
+			<string>iPad</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Keep Sidebar Open</string>
+					<key>Choices</key>
+					<array>
+						<dict>
+							<key>Title</key>
+							<string>Never</string>
+							<key>Value</key>
+							<string>never</string>
+						</dict>
+						<dict>
+							<key>Title</key>
+							<string>Landscape</string>
+							<key>Value</key>
+							<string>landscape</string>
+						</dict>
+						<dict>
+							<key>Title</key>
+							<string>Portrait</string>
+							<key>Value</key>
+							<string>portrait</string>
+						</dict>
+						<dict>
+							<key>Title</key>
+							<string>Always</string>
+							<key>Value</key>
+							<string>always</string>
+						</dict>
+					</array>
+					<key>Default</key>
+					<string>landscape</string>
+					<key>Key</key>
+					<string>keep_sidebar_open</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>Posts</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Highlight Mentions</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<false/>
+					<key>Key</key>
+					<string>highlight_own_mentions</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Highlight Quotes</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<false/>
+					<key>Key</key>
+					<string>highlight_own_quotes</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>Posting</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Confirm Replies</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>confirm_before_replying</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>Threads and Messages</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Show Thread Tags</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>show_thread_tags</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>Alternate Server</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Server</string>
+					<key>Choices</key>
+					<array/>
+					<key>ViewController</key>
+					<string>AwfulSettingsAlternateServerController</string>
+					<key>Key</key>
+					<string>custom_base_URL</string>
+					<key>DisplayTransformer</key>
+					<string>AwfulCustomBaseURLTransformer</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Explanation</key>
+			<string>Awful uses these third-party libraries.</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Licenses</string>
+					<key>Action</key>
+					<string>ShowLicenses</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>VisibleInSettingsTab</key>
+			<false/>
+			<key>Settings</key>
+			<array>
 				<dict>
 					<key>Title</key>
 					<string>Gas Chamber</string>
@@ -162,82 +310,15 @@
 					<key>Key</key>
 					<string>yospos_style</string>
 				</dict>
-			</array>
-		</dict>
-		<dict>
-			<key>Title</key>
-			<string>Sidebar</string>
-			<key>Explanation</key>
-			<string>Rotate your device after setting.</string>
-			<key>Explanation~ios5</key>
-			<string>Quit and relaunch Awful after setting.</string>
-			<key>Device</key>
-			<string>iPad</string>
-			<key>Settings</key>
-			<array>
 				<dict>
 					<key>Title</key>
-					<string>Keep Sidebar Open</string>
-					<key>Choices</key>
-					<array>
-						<dict>
-							<key>Title</key>
-							<string>Never</string>
-							<key>Value</key>
-							<string>never</string>
-						</dict>
-						<dict>
-							<key>Title</key>
-							<string>Landscape</string>
-							<key>Value</key>
-							<string>landscape</string>
-						</dict>
-						<dict>
-							<key>Title</key>
-							<string>Portrait</string>
-							<key>Value</key>
-							<string>portrait</string>
-						</dict>
-						<dict>
-							<key>Title</key>
-							<string>Always</string>
-							<key>Value</key>
-							<string>always</string>
-						</dict>
-					</array>
-					<key>Default</key>
-					<string>landscape</string>
-					<key>Key</key>
-					<string>keep_sidebar_open</string>
-				</dict>
-			</array>
-		</dict>
-		<dict>
-			<key>Title</key>
-			<string>Posts</string>
-			<key>Explanation</key>
-			<string>Hidden images turn into a link.</string>
-			<key>Settings</key>
-			<array>
-				<dict>
-					<key>Title</key>
-					<string>Highlight Mentions</string>
+					<string>Show Images</string>
 					<key>Type</key>
 					<string>Switch</string>
 					<key>Default</key>
-					<false/>
+					<true/>
 					<key>Key</key>
-					<string>highlight_own_mentions</string>
-				</dict>
-				<dict>
-					<key>Title</key>
-					<string>Highlight Quotes</string>
-					<key>Type</key>
-					<string>Switch</string>
-					<key>Default</key>
-					<false/>
-					<key>Key</key>
-					<string>highlight_own_quotes</string>
+					<string>show_images</string>
 				</dict>
 				<dict>
 					<key>Title</key>
@@ -249,89 +330,6 @@
 					<key>Key</key>
 					<string>show_avatars</string>
 				</dict>
-				<dict>
-					<key>Title</key>
-					<string>Show Images</string>
-					<key>Type</key>
-					<string>Switch</string>
-					<key>Default</key>
-					<true/>
-					<key>Key</key>
-					<string>show_images</string>
-				</dict>
-			</array>
-		</dict>
-		<dict>
-			<key>Title</key>
-			<string>Threads and Messages</string>
-			<key>Settings</key>
-			<array>
-				<dict>
-					<key>Title</key>
-					<string>Show Thread Tags</string>
-					<key>Type</key>
-					<string>Switch</string>
-					<key>Default</key>
-					<true/>
-					<key>Key</key>
-					<string>show_thread_tags</string>
-				</dict>
-			</array>
-		</dict>
-		<dict>
-			<key>Title</key>
-			<string>Posting</string>
-			<key>Settings</key>
-			<array>
-				<dict>
-					<key>Title</key>
-					<string>Confirm Replies</string>
-					<key>Type</key>
-					<string>Switch</string>
-					<key>Default</key>
-					<true/>
-					<key>Key</key>
-					<string>confirm_before_replying</string>
-				</dict>
-			</array>
-		</dict>
-		<dict>
-			<key>Title</key>
-			<string>Alternate Server</string>
-			<key>Settings</key>
-			<array>
-				<dict>
-					<key>Title</key>
-					<string>Server</string>
-					<key>Choices</key>
-					<array/>
-					<key>ViewController</key>
-					<string>AwfulSettingsAlternateServerController</string>
-					<key>Key</key>
-					<string>custom_base_URL</string>
-					<key>DisplayTransformer</key>
-					<string>AwfulCustomBaseURLTransformer</string>
-				</dict>
-			</array>
-		</dict>
-		<dict>
-			<key>Explanation</key>
-			<string>Awful uses these third-party libraries.</string>
-			<key>Settings</key>
-			<array>
-				<dict>
-					<key>Title</key>
-					<string>Licenses</string>
-					<key>Action</key>
-					<string>ShowLicenses</string>
-				</dict>
-			</array>
-		</dict>
-		<dict>
-			<key>VisibleInSettingsTab</key>
-			<false/>
-			<key>Settings</key>
-			<array>
 				<dict>
 					<key>Title</key>
 					<string>Font Size</string>
