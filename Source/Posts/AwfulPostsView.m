@@ -441,8 +441,9 @@ NSURL * StylesheetURLForForumWithIDAndSettings(NSString * const forumID, AwfulSe
     if (forumID) {
         NSString *specificCSS = [NSString stringWithFormat:@"posts-view-%@.css", forumID];
         if ([forumID isEqualToString:@"219"]) {
-            [listOfFilenames insertObject:specificCSS atIndex:0];
             AwfulYOSPOSStyle style = settings.yosposStyle;
+            [listOfFilenames insertObject:specificCSS
+                                  atIndex:style == AwfulYOSPOSStyleGreen ? 0 : 1];
             if (style == AwfulYOSPOSStyleAmber) {
                 [listOfFilenames insertObject:@"posts-view-219-amber.css" atIndex:0];
             } else if (style == AwfulYOSPOSStyleMacinyos) {
