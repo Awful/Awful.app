@@ -262,16 +262,6 @@ static NSArray * ImagePlaceholderResultsWithMessageBody(NSString *messageBody)
     }];
 }
 
-static UIViewAnimationOptions AnimationOptionsWithAnimationCurve(UIViewAnimationCurve curve)
-{
-    switch (curve) {
-        case UIViewAnimationCurveEaseInOut: return UIViewAnimationOptionCurveEaseInOut;
-        case UIViewAnimationCurveEaseIn: return UIViewAnimationOptionCurveEaseIn;
-        case UIViewAnimationCurveEaseOut: return UIViewAnimationOptionCurveEaseOut;
-        case UIViewAnimationCurveLinear: return UIViewAnimationOptionCurveLinear;
-    }
-}
-
 - (void)animateWithKeyboardUserInfo:(NSDictionary *)userInfo
                          animations:(void (^)(void))animations
                          completion:(void (^)(BOOL finished))completion
@@ -282,6 +272,16 @@ static UIViewAnimationOptions AnimationOptionsWithAnimationCurve(UIViewAnimation
                         options:AnimationOptionsWithAnimationCurve(curve)
                      animations:animations
                      completion:completion];
+}
+
+static UIViewAnimationOptions AnimationOptionsWithAnimationCurve(UIViewAnimationCurve curve)
+{
+    switch (curve) {
+        case UIViewAnimationCurveEaseInOut: return UIViewAnimationOptionCurveEaseInOut;
+        case UIViewAnimationCurveEaseIn: return UIViewAnimationOptionCurveEaseIn;
+        case UIViewAnimationCurveEaseOut: return UIViewAnimationOptionCurveEaseOut;
+        case UIViewAnimationCurveLinear: return UIViewAnimationOptionCurveLinear;
+    }
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
