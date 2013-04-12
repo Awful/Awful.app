@@ -74,7 +74,15 @@
         user.administratorValue = [json[@"role"] isEqual:@"A"];
         user.moderatorValue = [json[@"role"] isEqual:@"M"];
     }
-    user.canReceivePrivateMessagesValue = [json[@"receivepm"] boolValue];
+    if (json[@"receivepm"]) {
+        user.canReceivePrivateMessagesValue = [json[@"receivepm"] boolValue];
+    } else {
+        if (user.administratorValue || user.moderatorValue) {
+            user.canReceivePrivateMessagesValue = YES;
+        } else {
+            user.canReceivePrivateMessagesValue = [json[@"role"] isEqual:@"PL"];
+        }
+    }
     if (json[@"usertitle"]) user.customTitle = json[@"usertitle"];
     if (json[@"yahoo"]) user.yahooName = StringOrNilIfEmpty(json[@"yahoo"]);
     return user;
