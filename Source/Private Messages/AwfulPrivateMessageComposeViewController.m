@@ -214,9 +214,9 @@
 
 - (void)loadView
 {
+    [super loadView];
     const CGFloat fieldHeight = 88;
     self.textView.contentInset = UIEdgeInsetsMake(fieldHeight, 0, 0, 0);
-    self.view = self.textView;
     
     UIView *topView = [UIView new];
     topView.frame = CGRectMake(0, -fieldHeight, CGRectGetWidth(self.textView.frame), fieldHeight);

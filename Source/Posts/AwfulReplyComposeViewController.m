@@ -248,11 +248,4 @@ static NSURL *CachedImageDirectoryForIdentifier(id identifier)
     }
 }
 
-#pragma mark - UIViewController
-
-- (void)loadView
-{
-    self.view = self.textView;
-}
-
 @end

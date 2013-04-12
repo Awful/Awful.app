@@ -35,7 +35,7 @@
     if (_textView) return _textView;
     _textView = [AwfulTextView new];
     _textView.delegate = self;
-    _textView.frame = [UIScreen mainScreen].applicationFrame;
+    _textView.frame = (CGRect){ .size = self.view.bounds.size };
     _textView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                   UIViewAutoresizingFlexibleHeight);
     _textView.font = [UIFont systemFontOfSize:17];
@@ -189,6 +189,13 @@ static NSArray * ImagePlaceholderResultsWithMessageBody(NSString *messageBody)
     self.navigationItem.leftBarButtonItem = self.cancelButton;
     self.modalPresentationStyle = UIModalPresentationPageSheet;
     return self;
+}
+
+- (void)loadView
+{
+    self.view = [[UIView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [self.view addSubview:self.textView];
 }
 
 - (void)viewDidLoad
