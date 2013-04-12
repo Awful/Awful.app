@@ -42,7 +42,7 @@
 
 - (void)loadView
 {
-    AwfulPostsSettingsView *view = [[AwfulPostsSettingsView alloc] initWithFrame:CGRectMake(0, 0, 320, 140)];
+    AwfulPostsSettingsView *view = [[AwfulPostsSettingsView alloc] initWithFrame:CGRectMake(0, 0, 320, 152)];
     [view.showAvatarsSwitch addTarget:self action:@selector(didTapShowAvatarsSwitch:)
                      forControlEvents:UIControlEventValueChanged];
     [view.showImagesSwitch addTarget:self action:@selector(didTapShowImagesSwitch:)
