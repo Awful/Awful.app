@@ -7,13 +7,12 @@ exclude:
   - Source
   - Tests
   - Vendor
-  # Lame way to exclude Resources except Resources/Thread Tags
+  # Lame way to exclude Resources except Resources/{Thread Tags,Icons}
   - Awful-Info.plist
   - Browsers.plist
   - Custom CSS README.txt
   - Default
   - Forum Abbreviations.plist
-  - Icons
   - Images
   - Settings.plist
   - Theming
