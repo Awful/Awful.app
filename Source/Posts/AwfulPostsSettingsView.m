@@ -14,8 +14,10 @@
 @property (weak, nonatomic) UISwitch *showAvatarsSwitch;
 @property (weak, nonatomic) UILabel *showImagesLabel;
 @property (weak, nonatomic) UISwitch *showImagesSwitch;
-@property (weak, nonatomic) UISegmentedControl *fontSizeControl;
-@property (weak, nonatomic) UITableView *themeTableView;
+@property (weak, nonatomic) UILabel *fontSizeLabel;
+@property (weak, nonatomic) UIStepper *fontSizeStepper;
+@property (weak, nonatomic) UILabel *themeLabel;
+@property (weak, nonatomic) AwfulThemePicker *themePicker;
 
 @end
 
@@ -28,7 +30,10 @@
 {
     if (!(self = [super initWithFrame:frame])) return nil;
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
-    self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.8];
+    self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.6];
+    self.layer.shadowOffset = CGSizeMake(0, -3);
+    self.layer.shadowOpacity = 1;
+    self.clipsToBounds = NO;
     
     #define AddAndSetSubview(viewClass, ivar) do { \
         viewClass *ivar = [viewClass new]; \
@@ -36,56 +41,69 @@
         _##ivar = ivar; \
     } while (0)
     AddAndSetSubview(UILabel, showAvatarsLabel);
-    self.showAvatarsLabel.backgroundColor = [UIColor clearColor];
-    self.showAvatarsLabel.textColor = [UIColor whiteColor];
+    self.showAvatarsLabel.text = @"Avatars";
+    ConfigureLabel(self.showAvatarsLabel);
     AddAndSetSubview(UISwitch, showAvatarsSwitch);
     AddAndSetSubview(UILabel, showImagesLabel);
-    self.showImagesLabel.backgroundColor = [UIColor clearColor];
-    self.showImagesLabel.textColor = [UIColor whiteColor];
+    self.showImagesLabel.text = @"Images";
+    ConfigureLabel(self.showImagesLabel);
     AddAndSetSubview(UISwitch, showImagesSwitch);
-    AddAndSetSubview(UITableView, themeTableView);
-    
-    UIImage *smallerFontSize = [UIImage imageNamed:@"font-size-smaller.png"];
-    smallerFontSize.accessibilityLabel = @"Shrink font size";
-    UIImage *largerFontSize = [UIImage imageNamed:@"font-size-larger.png"];
-    largerFontSize.accessibilityLabel = @"Embiggen font size";
-    NSArray *fontSizeItems = @[ smallerFontSize, largerFontSize ];
-    UISegmentedControl *fontSizeControl = [[UISegmentedControl alloc] initWithItems:fontSizeItems];
-    [self addSubview:fontSizeControl];
-    _fontSizeControl = fontSizeControl;
+    AddAndSetSubview(UILabel, fontSizeLabel);
+    self.fontSizeLabel.text = @"Font Size";
+    ConfigureLabel(self.fontSizeLabel);
+    self.fontSizeLabel.textAlignment = NSTextAlignmentRight;
+    AddAndSetSubview(UIStepper, fontSizeStepper);
+    AddAndSetSubview(UILabel, themeLabel);
+    self.themeLabel.text = @"Theme";
+    ConfigureLabel(self.themeLabel);
+    AddAndSetSubview(AwfulThemePicker, themePicker);
     return self;
+}
+
+static void ConfigureLabel(UILabel *label)
+{
+    label.backgroundColor = [UIColor clearColor];
+    label.textColor = [UIColor whiteColor];
+    label.font = [UIFont boldSystemFontOfSize:16];
 }
 
 - (void)layoutSubviews
 {
-    CGRect leftHalf, rightHalf;
-    CGRectDivide(self.bounds, &leftHalf, &rightHalf, floorf(CGRectGetWidth(self.bounds) / 2), CGRectMinXEdge);
-    leftHalf = CGRectInset(leftHalf, 5, 10);
-    rightHalf = CGRectInset(rightHalf, 5, 10);
+    CGRect bounds = CGRectInset(self.bounds, 8, 0);
+    CGRect topThird, middleThird, bottomThird;
+    CGRectDivide(bounds, &topThird, &middleThird, floorf(CGRectGetHeight(bounds) / 3), CGRectMinYEdge);
+    CGRectDivide(middleThird, &middleThird, &bottomThird, CGRectGetHeight(topThird), CGRectMinYEdge);
     
-    CGRect avatarsSixth, remainder, imagesSixth, fontSizeSixth;
-    CGRectDivide(leftHalf, &avatarsSixth, &remainder, floorf(CGRectGetHeight(leftHalf) / 3), CGRectMinYEdge);
-    CGRectDivide(remainder, &imagesSixth, &fontSizeSixth, CGRectGetHeight(avatarsSixth), CGRectMinYEdge);
-    
-    CGFloat switchHeight = CGRectGetHeight(self.showAvatarsSwitch.bounds);
+    CGRect avatarsSixth, imagesSixth;
+    CGRectDivide(topThird, &avatarsSixth, &imagesSixth, floorf(CGRectGetWidth(topThird) / 2), CGRectMinXEdge);
+    avatarsSixth.size.width -= 8;
+    imagesSixth.origin.x += 8;
+    imagesSixth.size.width -= 8;
     CGRect avatarsLabelFrame, avatarsSwitchFrame;
-    CGRectDivide(avatarsSixth, &avatarsSwitchFrame, &avatarsLabelFrame, CGRectGetWidth(self.showAvatarsSwitch.bounds), CGRectMaxXEdge);
+    CGSize switchSize = self.showAvatarsSwitch.bounds.size;
+    CGRectDivide(avatarsSixth, &avatarsSwitchFrame, &avatarsLabelFrame, switchSize.width, CGRectMaxXEdge);
+    self.showAvatarsSwitch.center = CGPointMake(CGRectGetMidX(avatarsSwitchFrame), CGRectGetMidY(avatarsSwitchFrame));
     self.showAvatarsLabel.frame = avatarsLabelFrame;
-    avatarsSwitchFrame.origin.y = CGRectGetMidY(avatarsSwitchFrame) - switchHeight / 2;
-    avatarsSwitchFrame.size.height = switchHeight;
-    self.showAvatarsSwitch.frame = avatarsSwitchFrame;
-    
     CGRect imagesLabelFrame, imagesSwitchFrame;
-    CGRectDivide(imagesSixth, &imagesSwitchFrame, &imagesLabelFrame, CGRectGetWidth(self.showImagesSwitch.bounds), CGRectMaxXEdge);
+    CGRectDivide(imagesSixth, &imagesSwitchFrame, &imagesLabelFrame, switchSize.width, CGRectMaxXEdge);
+    self.showImagesSwitch.center = CGPointMake(CGRectGetMidX(imagesSwitchFrame), CGRectGetMidY(imagesSwitchFrame));
     self.showImagesLabel.frame = imagesLabelFrame;
-    imagesSwitchFrame.origin.y = CGRectGetMidY(imagesSwitchFrame) - switchHeight / 2;
-    imagesSwitchFrame.size.height = switchHeight;
-    self.showImagesSwitch.frame = imagesSwitchFrame;
     
-    self.fontSizeControl.frame = CGRectMake(0, 0, 90, 34);
-    self.fontSizeControl.center = CGPointMake(CGRectGetMidX(fontSizeSixth), CGRectGetMidY(fontSizeSixth));
+    CGRect fontSizeLabelFrame, fontSizeStepperFrame;
+    CGRectDivide(middleThird, &fontSizeLabelFrame, &fontSizeStepperFrame, floorf(CGRectGetWidth(middleThird) / 2), CGRectMinXEdge);
+    fontSizeLabelFrame.size.width -= 4;
+    fontSizeStepperFrame.origin.x += 4;
+    fontSizeStepperFrame.size.width -= 4;
+    self.fontSizeLabel.frame = fontSizeLabelFrame;
+    self.fontSizeStepper.center = CGPointMake(CGRectGetMinX(fontSizeStepperFrame) + CGRectGetWidth(self.fontSizeStepper.bounds) / 2, CGRectGetMidY(fontSizeStepperFrame));
     
-    self.themeTableView.frame = CGRectInset(rightHalf, 5, 5);
+    [self.themeLabel sizeToFit];
+    CGRect themeLabelFrame, themePickerFrame;
+    CGRectDivide(bottomThird, &themeLabelFrame, &themePickerFrame, CGRectGetWidth(self.themeLabel.bounds), CGRectMinXEdge);
+    self.themeLabel.frame = themeLabelFrame;
+    themePickerFrame.origin.x += 16;
+    themePickerFrame.size.width -= 16;
+    self.themePicker.frame = themePickerFrame;
 }
 
 @end

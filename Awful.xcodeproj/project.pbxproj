@@ -602,6 +602,8 @@
 		1CE8FE0A170C5906006A3B84 /* UIScrollView+SVPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE08170C5906006A3B84 /* UIScrollView+SVPullToRefresh.m */; };
 		1CE8FE41171692D1006A3B84 /* AwfulPostsSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE40171692D0006A3B84 /* AwfulPostsSettingsView.m */; };
 		1CE8FE4417174B34006A3B84 /* AwfulPlainBarButtonItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE4317174B34006A3B84 /* AwfulPlainBarButtonItem.m */; };
+		1CE8FE471717B981006A3B84 /* AwfulThemePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE461717B97F006A3B84 /* AwfulThemePicker.m */; };
+		1CE8FE4A1717C372006A3B84 /* AwfulThemeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE491717C372006A3B84 /* AwfulThemeButton.m */; };
 		1CF0D619164B0A7C00CFA137 /* Forum Abbreviations.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CF0D618164B0A7C00CFA137 /* Forum Abbreviations.plist */; };
 		1CF2461616DC1B4600C75E05 /* PrivateMessageTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF2461516DC1B4600C75E05 /* PrivateMessageTests.m */; };
 		1CF2461B16DC286A00C75E05 /* private-list.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CF2461916DC286A00C75E05 /* private-list.html */; };
@@ -1363,6 +1365,10 @@
 		1CE8FE40171692D0006A3B84 /* AwfulPostsSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostsSettingsView.m; sourceTree = "<group>"; };
 		1CE8FE4217174B34006A3B84 /* AwfulPlainBarButtonItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPlainBarButtonItem.h; sourceTree = "<group>"; };
 		1CE8FE4317174B34006A3B84 /* AwfulPlainBarButtonItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPlainBarButtonItem.m; sourceTree = "<group>"; };
+		1CE8FE451717B97F006A3B84 /* AwfulThemePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThemePicker.h; sourceTree = "<group>"; };
+		1CE8FE461717B97F006A3B84 /* AwfulThemePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThemePicker.m; sourceTree = "<group>"; };
+		1CE8FE481717C371006A3B84 /* AwfulThemeButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThemeButton.h; sourceTree = "<group>"; };
+		1CE8FE491717C372006A3B84 /* AwfulThemeButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThemeButton.m; sourceTree = "<group>"; };
 		1CF0D618164B0A7C00CFA137 /* Forum Abbreviations.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Forum Abbreviations.plist"; sourceTree = "<group>"; };
 		1CF2461516DC1B4600C75E05 /* PrivateMessageTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrivateMessageTests.m; sourceTree = "<group>"; };
 		1CF2461916DC286A00C75E05 /* private-list.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "private-list.html"; sourceTree = "<group>"; };
@@ -2413,6 +2419,10 @@
 				1CE8FDF31703D622006A3B84 /* AwfulPostsViewSettingsController.m */,
 				1CE8FE3F171692D0006A3B84 /* AwfulPostsSettingsView.h */,
 				1CE8FE40171692D0006A3B84 /* AwfulPostsSettingsView.m */,
+				1CE8FE451717B97F006A3B84 /* AwfulThemePicker.h */,
+				1CE8FE461717B97F006A3B84 /* AwfulThemePicker.m */,
+				1CE8FE481717C371006A3B84 /* AwfulThemeButton.h */,
+				1CE8FE491717C372006A3B84 /* AwfulThemeButton.m */,
 				1C5BA3E516CA4D9400375A72 /* AwfulPageTopBar.h */,
 				1C5BA3E616CA4D9400375A72 /* AwfulPageTopBar.m */,
 				1C5BA3E816CB886600375A72 /* AwfulScrollViewTopBar.h */,
@@ -4453,6 +4463,8 @@
 				1CE8FE0A170C5906006A3B84 /* UIScrollView+SVPullToRefresh.m in Sources */,
 				1CE8FE41171692D1006A3B84 /* AwfulPostsSettingsView.m in Sources */,
 				1CE8FE4417174B34006A3B84 /* AwfulPlainBarButtonItem.m in Sources */,
+				1CE8FE471717B981006A3B84 /* AwfulThemePicker.m in Sources */,
+				1CE8FE4A1717C372006A3B84 /* AwfulThemeButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

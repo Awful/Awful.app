@@ -10,7 +10,7 @@
 #import "AwfulPostsSettingsView.h"
 #import "AwfulSettings.h"
 
-@interface AwfulPostsViewSettingsController () <UITableViewDataSource, UITableViewDelegate>
+@interface AwfulPostsViewSettingsController ()
 
 @property (readonly, nonatomic) AwfulPostsSettingsView *settingsView;
 
@@ -42,18 +42,43 @@
 
 - (void)loadView
 {
-    AwfulPostsSettingsView *view = [[AwfulPostsSettingsView alloc] initWithFrame:CGRectMake(0, 0, 320, 180)];
-    view.showAvatarsLabel.text = @"Avatars";
+    AwfulPostsSettingsView *view = [[AwfulPostsSettingsView alloc] initWithFrame:CGRectMake(0, 0, 320, 140)];
     [view.showAvatarsSwitch addTarget:self action:@selector(didTapShowAvatarsSwitch:)
                      forControlEvents:UIControlEventValueChanged];
-    view.showImagesLabel.text = @"Images";
     [view.showImagesSwitch addTarget:self action:@selector(didTapShowImagesSwitch:)
                     forControlEvents:UIControlEventValueChanged];
-    [view.fontSizeControl addTarget:self action:@selector(didTapFontSizeSegment:)
+    [view.fontSizeStepper addTarget:self action:@selector(didTapFontSizeStepper:)
                    forControlEvents:UIControlEventValueChanged];
-    view.themeTableView.dataSource = self;
-    view.themeTableView.delegate = self;
-    view.themeTableView.rowHeight = 32;
+    [view.themePicker addTarget:self action:@selector(didSelectThemeFromPicker:)
+               forControlEvents:UIControlEventValueChanged];
+    UIColor *light = [UIColor whiteColor];
+    light.accessibilityLabel = @"Light";
+    [view.themePicker insertThemeWithColor:light atIndex:0];
+    UIColor *dark = [UIColor blackColor];
+    dark.accessibilityLabel = @"Dark";
+    [view.themePicker insertThemeWithColor:dark atIndex:1];
+    if (self.availableThemes == AwfulPostsViewSettingsControllerThemesGasChamber) {
+        UIColor *sickly = [UIColor colorWithHue:0.268 saturation:0.819 brightness:0.8 alpha:1];
+        sickly.accessibilityLabel = @"Sickly";
+        [view.themePicker insertThemeWithColor:sickly atIndex:2];
+    } else if (self.availableThemes == AwfulPostsViewSettingsControllerThemesFYAD) {
+        UIColor *pink = [UIColor colorWithHue:1 saturation:0.395 brightness:0.992 alpha:1];
+        pink.accessibilityLabel = @"Pink";
+        [view.themePicker insertThemeWithColor:pink atIndex:2];
+    } else if (self.availableThemes == AwfulPostsViewSettingsControllerThemesYOSPOS) {
+        UIColor *green = [UIColor colorWithHue:0.333 saturation:0.656 brightness:0.992 alpha:1];
+        green.accessibilityLabel = @"Green console";
+        [view.themePicker insertThemeWithColor:green atIndex:2];
+        UIColor *amber = [UIColor colorWithHue:0.138 saturation:0.675 brightness:0.918 alpha:1];
+        amber.accessibilityLabel = @"Amber console";
+        [view.themePicker insertThemeWithColor:amber atIndex:3];
+        UIColor *finder = [UIColor colorWithWhite:0.945 alpha:1];
+        finder.accessibilityLabel = @"Macinyos";
+        [view.themePicker insertThemeWithColor:finder atIndex:4];
+        UIColor *windows = [UIColor colorWithHue:0.5 saturation:0.867 brightness:0.502 alpha:1];
+        windows.accessibilityLabel = @"Winpos 95";
+        [view.themePicker insertThemeWithColor:windows atIndex:5];
+    }
     self.view = view;
 }
 
@@ -67,37 +92,45 @@
     [AwfulSettings settings].showImages = showImagesSwitch.on;
 }
 
-- (void)didTapFontSizeSegment:(UISegmentedControl *)seg
+- (void)didTapFontSizeStepper:(UIStepper *)stepper
 {
-    NSDictionary *info = [[AwfulSettings settings] infoForSettingWithKey:@"font_size"];
-    NSInteger fontSize = [[AwfulSettings settings].fontSize integerValue];
-    if (seg.selectedSegmentIndex == 0) {
-        NSNumber *minimum = info[@"Minimum"];
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && info[@"Minimum~ipad"]) {
-            minimum = info[@"Minimum~ipad"];
-        }
-        if (fontSize > [minimum integerValue]) {
-            fontSize -= 1;
-        }
-    } else if (seg.selectedSegmentIndex == 1) {
-        NSNumber *maximum = info[@"Maximum"];
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && info[@"Maximum~ipad"]) {
-            maximum = info[@"Maximum~ipad"];
-        }
-        if (fontSize < [maximum integerValue]) {
-            fontSize += 1;
-        }
-    }
-    [AwfulSettings settings].fontSize = @(fontSize);
-    seg.selectedSegmentIndex = UISegmentedControlNoSegment;
+    [AwfulSettings settings].fontSize = @(stepper.value);
 }
 
-- (void)didTapDarkModeSegment:(UISegmentedControl *)seg
+- (void)didSelectThemeFromPicker:(AwfulThemePicker *)picker
 {
-    if (seg.selectedSegmentIndex == 0) {
-        [AwfulSettings settings].darkTheme = NO;
-    } else if (seg.selectedSegmentIndex == 1) {
-        [AwfulSettings settings].darkTheme = YES;
+    if (picker.selectedThemeIndex < 2) {
+        [AwfulSettings settings].darkTheme = picker.selectedThemeIndex == 1;
+    }
+    switch (self.availableThemes) {
+        case AwfulPostsViewSettingsControllerThemesDefault: break;
+        case AwfulPostsViewSettingsControllerThemesGasChamber:
+            switch (picker.selectedThemeIndex) {
+                case 0: case 1:
+                    [AwfulSettings settings].gasChamberStyle = AwfulGasChamberStyleNone; break;
+                case 2:
+                    [AwfulSettings settings].gasChamberStyle = AwfulGasChamberStyleSickly; break;
+            }
+        case AwfulPostsViewSettingsControllerThemesFYAD:
+            switch (picker.selectedThemeIndex) {
+                case 0: case 1:
+                    [AwfulSettings settings].fyadStyle = AwfulFYADStyleNone; break;
+                case 2:
+                    [AwfulSettings settings].fyadStyle = AwfulFYADStylePink; break;
+            }
+        case AwfulPostsViewSettingsControllerThemesYOSPOS:
+            switch (picker.selectedThemeIndex) {
+                case 0: case 1:
+                    [AwfulSettings settings].yosposStyle = AwfulYOSPOSStyleNone; break;
+                case 2:
+                    [AwfulSettings settings].yosposStyle = AwfulYOSPOSStyleGreen; break;
+                case 3:
+                    [AwfulSettings settings].yosposStyle = AwfulYOSPOSStyleAmber; break;
+                case 4:
+                    [AwfulSettings settings].yosposStyle = AwfulYOSPOSStyleMacinyos; break;
+                case 5:
+                    [AwfulSettings settings].yosposStyle = AwfulYOSPOSStyleWinpos95; break;
+            }
     }
 }
 
@@ -106,60 +139,25 @@
     [super viewWillAppear:animated];
     self.settingsView.showAvatarsSwitch.on = [AwfulSettings settings].showAvatars;
     self.settingsView.showImagesSwitch.on = [AwfulSettings settings].showImages;
-    NSIndexPath *markedIndexPath = [NSIndexPath indexPathForRow:[self selectedThemeIndex]
-                                                      inSection:0];
-    [self.settingsView.themeTableView scrollToRowAtIndexPath:markedIndexPath
-                                            atScrollPosition:UITableViewScrollPositionBottom
-                                                    animated:NO];
+    [self configureFontSizeStepper];
+    self.settingsView.fontSizeStepper.value = [[AwfulSettings settings].fontSize doubleValue];
+    self.settingsView.themePicker.selectedThemeIndex = [self selectedThemeIndex];
 }
 
-#pragma mark - UITableViewDataSource and UITableViewDelegate
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (void)configureFontSizeStepper
 {
-    switch (self.availableThemes) {
-        case AwfulPostsViewSettingsControllerThemesDefault: return 2;
-        case AwfulPostsViewSettingsControllerThemesGasChamber: return 3;
-        case AwfulPostsViewSettingsControllerThemesFYAD: return 3;
-        case AwfulPostsViewSettingsControllerThemesYOSPOS: return 6;
+    NSDictionary *info = [[AwfulSettings settings] infoForSettingWithKey:@"font_size"];
+    NSNumber *minimum = info[@"Minimum"];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && info[@"Minimum~ipad"]) {
+        minimum = info[@"Minimum~ipad"];
     }
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    static NSString * const Identifier = @"CellIdentifier";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:Identifier];
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                      reuseIdentifier:Identifier];
-        cell.textLabel.font = [UIFont systemFontOfSize:18];
+    self.settingsView.fontSizeStepper.minimumValue = [minimum doubleValue];
+    NSNumber *maximum = info[@"Maximum"];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && info[@"Maximum~ipad"]) {
+        maximum = info[@"Maximum~ipad"];
     }
-    if (indexPath.row == 0) {
-        cell.textLabel.text = @"Light";
-    } else if (indexPath.row == 1) {
-        cell.textLabel.text = @"Dark";
-    } else if (self.availableThemes == AwfulPostsViewSettingsControllerThemesGasChamber) {
-        if (indexPath.row == 2) {
-            cell.textLabel.text = @"Sickly";
-        }
-    } else if (self.availableThemes == AwfulPostsViewSettingsControllerThemesFYAD) {
-        if (indexPath.row == 2) {
-            cell.textLabel.text = @"Pink";
-        }
-    } else if (self.availableThemes == AwfulPostsViewSettingsControllerThemesYOSPOS) {
-        switch (indexPath.row) {
-            case 2: cell.textLabel.text = @"Green"; break;
-            case 3: cell.textLabel.text = @"Amber"; break;
-            case 4: cell.textLabel.text = @"Macinyos"; break;
-            case 5: cell.textLabel.text = @"Winpos 95"; break;
-        }
-    }
-    if (indexPath.row == [self selectedThemeIndex]) {
-        cell.accessoryType = UITableViewCellAccessoryCheckmark;
-    } else {
-        cell.accessoryType = UITableViewCellAccessoryNone;
-    }
-    return cell;
+    self.settingsView.fontSizeStepper.maximumValue = [maximum doubleValue];
+    self.settingsView.fontSizeStepper.stepValue = [info[@"Increment"] doubleValue];
 }
 
 - (NSInteger)selectedThemeIndex
@@ -186,57 +184,6 @@
                 case AwfulYOSPOSStyleWinpos95: return 5;
             }
     }
-}
-
-- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (indexPath.row == [self selectedThemeIndex]) return nil;
-    return indexPath;
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (indexPath.row == [self selectedThemeIndex]) return;
-    NSIndexPath *markedIndexPath = [NSIndexPath indexPathForRow:[self selectedThemeIndex]
-                                                      inSection:0];
-    UITableViewCell *hadCheckmark = [tableView cellForRowAtIndexPath:markedIndexPath];
-    hadCheckmark.accessoryType = UITableViewCellAccessoryNone;
-    if (indexPath.row < 2) {
-        [AwfulSettings settings].darkTheme = indexPath.row == 1;
-    }
-    switch (self.availableThemes) {
-        case AwfulPostsViewSettingsControllerThemesDefault: break;
-        case AwfulPostsViewSettingsControllerThemesGasChamber:
-            switch (indexPath.row) {
-                case 0: case 1:
-                    [AwfulSettings settings].gasChamberStyle = AwfulGasChamberStyleNone; break;
-                case 2:
-                    [AwfulSettings settings].gasChamberStyle = AwfulGasChamberStyleSickly; break;
-            }
-        case AwfulPostsViewSettingsControllerThemesFYAD:
-            switch (indexPath.row) {
-                case 0: case 1:
-                    [AwfulSettings settings].fyadStyle = AwfulFYADStyleNone; break;
-                case 2:
-                    [AwfulSettings settings].fyadStyle = AwfulFYADStylePink; break;
-            }
-        case AwfulPostsViewSettingsControllerThemesYOSPOS:
-            switch (indexPath.row) {
-                case 0: case 1:
-                    [AwfulSettings settings].yosposStyle = AwfulYOSPOSStyleNone; break;
-                case 2:
-                    [AwfulSettings settings].yosposStyle = AwfulYOSPOSStyleGreen; break;
-                case 3:
-                    [AwfulSettings settings].yosposStyle = AwfulYOSPOSStyleAmber; break;
-                case 4:
-                    [AwfulSettings settings].yosposStyle = AwfulYOSPOSStyleMacinyos; break;
-                case 5:
-                    [AwfulSettings settings].yosposStyle = AwfulYOSPOSStyleWinpos95; break;
-            }
-    }
-    UITableViewCell *nowHasCheckmark = [tableView cellForRowAtIndexPath:indexPath];
-    nowHasCheckmark.accessoryType = UITableViewCellAccessoryCheckmark;
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 @end

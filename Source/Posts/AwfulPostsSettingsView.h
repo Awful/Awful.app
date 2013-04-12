@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AwfulThemePicker.h"
 
 @interface AwfulPostsSettingsView : UIView
 
@@ -14,7 +15,9 @@
 @property (readonly, weak, nonatomic) UISwitch *showAvatarsSwitch;
 @property (readonly, weak, nonatomic) UILabel *showImagesLabel;
 @property (readonly, weak, nonatomic) UISwitch *showImagesSwitch;
-@property (readonly, weak, nonatomic) UISegmentedControl *fontSizeControl;
-@property (readonly, weak, nonatomic) UITableView *themeTableView;
+@property (readonly, weak, nonatomic) UILabel *fontSizeLabel;
+@property (readonly, weak, nonatomic) UIStepper *fontSizeStepper;
+@property (readonly, weak, nonatomic) UILabel *themeLabel;
+@property (readonly, weak, nonatomic) AwfulThemePicker *themePicker;
 
 @end
