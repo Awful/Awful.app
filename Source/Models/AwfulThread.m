@@ -75,6 +75,17 @@
         existingThreads[thread.threadID] = thread;
     }
     
+    // TODO gas chamber JSON has an array of icons, instead of a dictionary. Everywhere else it's a
+    // dictionary. When consistent server-side, remove the irrelevant path.
+    NSDictionary *icons = json[@"icons"];
+    if ([icons isKindOfClass:[NSArray class]]) {
+        NSMutableDictionary *actualIcons = [NSMutableDictionary new];
+        for (NSDictionary *icon in icons) {
+            actualIcons[[icon[@"iconid"] stringValue]] = icon;
+        }
+        icons = actualIcons;
+    }
+    
     NSMutableArray *parsedThreads = [NSMutableArray new];
     for (NSDictionary *info in json[@"threads"]) {
         NSString *threadID = [info[@"threadid"] stringValue];
@@ -88,7 +99,7 @@
             thread.lastPostAuthorName = info[@"lastposter"];
         }
         thread.lastPostDate = [NSDate dateWithTimeIntervalSince1970:[info[@"lastpost"] doubleValue]];
-        NSDictionary *icon = json[@"icons"][[info[@"iconid"] stringValue]];
+        NSDictionary *icon = icons[[info[@"iconid"] stringValue]];
         thread.threadIconImageURL = [NSURL URLWithString:icon[@"iconpath"]];
         if (info[@"type"]) {
             thread.threadIconImageURL2 = SecondaryIconURLForType(info[@"type"]);
