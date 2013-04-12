@@ -25,6 +25,8 @@
 @property (copy, nonatomic) NSString *savedReplyContents;
 @property (nonatomic) NSRange savedSelectedRange;
 
+@property (nonatomic) BOOL viewIsDisappearing;
+
 @end
 
 
@@ -215,6 +217,12 @@ static NSArray * ImagePlaceholderResultsWithMessageBody(NSString *messageBody)
     self.state = AwfulComposeViewControllerStateReady;
 }
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    self.viewIsDisappearing = YES;
+}
+
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
@@ -222,6 +230,7 @@ static NSArray * ImagePlaceholderResultsWithMessageBody(NSString *messageBody)
                                                   object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification
                                                   object:nil];
+    self.viewIsDisappearing = NO;
 }
 
 - (void)keyboardWillShow:(NSNotification *)note
@@ -240,6 +249,7 @@ static NSArray * ImagePlaceholderResultsWithMessageBody(NSString *messageBody)
 
 - (void)keyboardWillHide:(NSNotification *)note
 {
+    if (self.viewIsDisappearing) return;
     CGRect keyboardFrame = [note.userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue];
     keyboardFrame = [self.view.window convertRect:keyboardFrame fromWindow:nil];
     CGRect relativeKeyboardFrame = [self.textView convertRect:keyboardFrame fromView:nil];
