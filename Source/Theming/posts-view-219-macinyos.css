@@ -237,7 +237,7 @@ body {
   background-image: none;
   padding: 0;
 }
-.role-admin .username :before {
+.role-admin .username:before {
   content: " ";
   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #71c457), color-stop(0.35, #71c457), color-stop(0.351, #fec331), color-stop(0.48, #fec331), color-stop(0.481, #f99527), color-stop(0.61, #f99527), color-stop(0.611, #e8524e), color-stop(0.74, #e8524e), color-stop(0.741, #a856a8), color-stop(0.87, #a856a8), color-stop(0.871, #00ade3), color-stop(1, #00ade3));
   color: transparent;
@@ -247,7 +247,7 @@ body {
   background-image: none;
   padding: 0;
 }
-.role-mod .username :before {
+.role-mod .username:before {
   content: " ";
 }
 .role-op .username {
@@ -311,10 +311,12 @@ blockquote, .dark blockquote {
   border: 1px solid #000;
 }
 @media only screen and (min-width: 480px) and (max-width: 767px) {
-  top: 5px;
-  right: 40px;
-  bottom: 5px;
-  left: 40px;
+  .iphone #loading {
+    top: 5px;
+    right: 40px;
+    bottom: 5px;
+    left: 40px;
+  }
 }
 .ipad #loading {
   top: 50px;
