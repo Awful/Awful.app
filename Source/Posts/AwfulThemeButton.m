@@ -44,7 +44,7 @@ static UIColor * SelectedColor()
         frame = CGRectMake(0, 0, 0, 32);
     }
     if (!(self = [super initWithFrame:frame])) return nil;
-    self.layer.cornerRadius = 14;
+    self.layer.cornerRadius = 10;
     self.layer.borderColor = NormalColor().CGColor;
     self.layer.borderWidth = 1;
     self.layer.shadowColor = SelectedColor().CGColor;
