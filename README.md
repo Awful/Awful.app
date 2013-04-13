@@ -21,6 +21,8 @@ Build
 1. Clone the repository: `git clone https://github.com/AwfulDevs/Awful.git`
 2. Open Xcode project and build away: `cd Awful && open Awful.xcodeproj`
 
+Debug builds, beta builds, and release builds each appear as separate apps (they have different bundle identifiers and display names). To build for the App Store, change the scheme to "Awful App Store", then choose `Archive` from the `Product` menu.
+
 There are no required dependencies for building Awful; all third-party libraries are included.
 
 There are optional dependencies for building Awful. You only need them if you're working on the relevant part of the app. Once a dependency is installed, simply build the Xcode project and the relevant files will be regenerated.
