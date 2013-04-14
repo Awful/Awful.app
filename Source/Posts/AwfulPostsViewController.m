@@ -964,22 +964,24 @@ static char KVOContext;
             (id)kUTTypePlainText: url,
         }];
     }];
-    [sheet addButtonWithTitle:@"Mark Read to Here" block:^{
-        [[AwfulHTTPClient client] markThreadWithID:self.thread.threadID
-                               readUpToPostAtIndex:[@(post.threadIndexValue) stringValue]
-                                           andThen:^(NSError *error)
-         {
-             if (error) {
-                 [AwfulAlertView showWithTitle:@"Could Not Mark Read"
-                                         error:error
-                                   buttonTitle:@"Alright"];
-             } else {
-                 [SVProgressHUD showSuccessWithStatus:@"Marked"];
-                 post.thread.seenPosts = post.threadIndex;
-                 [[AwfulDataStack sharedDataStack] save];
-             }
-         }];
-    }];
+    if (!self.singleUserID) {
+        [sheet addButtonWithTitle:@"Mark Read to Here" block:^{
+            [[AwfulHTTPClient client] markThreadWithID:self.thread.threadID
+                                   readUpToPostAtIndex:[post.threadIndex stringValue]
+                                               andThen:^(NSError *error)
+             {
+                 if (error) {
+                     [AwfulAlertView showWithTitle:@"Could Not Mark Read"
+                                             error:error
+                                       buttonTitle:@"Alright"];
+                 } else {
+                     [SVProgressHUD showSuccessWithStatus:@"Marked"];
+                     post.thread.seenPosts = post.threadIndex;
+                     [[AwfulDataStack sharedDataStack] save];
+                 }
+             }];
+        }];
+    }
     [sheet addButtonWithTitle:[NSString stringWithFormat:@"%@ Profile", possessiveUsername] block:^{
         [self showProfileWithUser:post.author];
     }];
