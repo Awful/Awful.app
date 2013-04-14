@@ -2,5 +2,6 @@
 #import "AwfulForum.h"
 #import "AwfulPost.h"
 #import "AwfulPrivateMessage.h"
+#import "AwfulSingleUserThreadInfo.h"
 #import "AwfulThread.h"
 #import "AwfulUser.h"

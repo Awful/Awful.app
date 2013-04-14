@@ -8,6 +8,7 @@
 #import "AwfulThread.h"
 #import "AwfulDataStack.h"
 #import "AwfulParsing.h"
+#import "AwfulSingleUserThreadInfo.h"
 #import "AwfulUser.h"
 #import "GTMNSString+HTML.h"
 #import "NSManagedObject+Awful.h"
@@ -170,6 +171,25 @@ static NSURL * SecondaryIconURLForType(NSString *type)
     thread.threadID = threadID;
     [[AwfulDataStack sharedDataStack] save];
     return thread;
+}
+
+- (NSInteger)numberOfPagesForSingleUser:(AwfulUser *)singleUser
+{
+    AwfulSingleUserThreadInfo *info = [AwfulSingleUserThreadInfo firstMatchingPredicate:
+                                       @"thread = %@ AND author = %@", self, singleUser];
+    return info.numberOfPagesValue;
+}
+
+- (void)setNumberOfPages:(NSInteger)numberOfPages forSingleUser:(AwfulUser *)singleUser
+{
+    AwfulSingleUserThreadInfo *info = [AwfulSingleUserThreadInfo firstMatchingPredicate:
+                                       @"thread = %@ AND author = %@", self, singleUser];
+    if (!info) {
+        info = [AwfulSingleUserThreadInfo insertNew];
+        info.thread = self;
+        info.author = singleUser;
+    }
+    info.numberOfPagesValue = numberOfPages;
 }
 
 #pragma mark - _AwfulThread

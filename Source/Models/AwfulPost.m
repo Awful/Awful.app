@@ -10,6 +10,7 @@
 #import "AwfulForum.h"
 #import "AwfulParsing.h"
 #import "AwfulSettings.h"
+#import "AwfulSingleUserThreadInfo.h"
 #import "AwfulThread.h"
 #import "AwfulUser.h"
 #import "GTMNSString+HTML.h"
@@ -52,9 +53,6 @@
     thread.title = pageInfo.threadTitle;
     thread.isBookmarkedValue = pageInfo.threadBookmarked;
     thread.isClosedValue = pageInfo.threadClosed;
-    if (!pageInfo.singleUserID) {
-        thread.numberOfPagesValue = pageInfo.pagesInThread;
-    }
     
     NSArray *allPosts = [thread.posts allObjects];
     NSArray *allPostIDs = [allPosts valueForKey:@"postID"];
@@ -96,6 +94,12 @@
         if (postInfo.beenSeen && thread.seenPostsValue < post.threadIndexValue) {
             thread.seenPostsValue = post.threadIndexValue;
         }
+    }
+    if (pageInfo.singleUserID) {
+        AwfulUser *singleUser = [[posts lastObject] author];
+        [thread setNumberOfPages:pageInfo.pagesInThread forSingleUser:singleUser];
+    } else {
+        thread.numberOfPagesValue = pageInfo.pagesInThread;
     }
     if (pageInfo.pageNumber == thread.numberOfPagesValue && !pageInfo.singleUserID) {
         thread.lastPostAuthorName = [[posts lastObject] author].username;

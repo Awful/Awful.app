@@ -42,6 +42,11 @@
         <relationship name="from" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulUser" inverseName="sentPrivateMessages" inverseEntity="AwfulUser" syncable="YES"/>
         <relationship name="to" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulUser" inverseName="receivedPrivateMessages" inverseEntity="AwfulUser" syncable="YES"/>
     </entity>
+    <entity name="AwfulSingleUserThreadInfo" representedClassName="AwfulSingleUserThreadInfo" syncable="YES">
+        <attribute name="numberOfPages" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <relationship name="author" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulUser" inverseName="singleUserThreadInfos" inverseEntity="AwfulUser" syncable="YES"/>
+        <relationship name="thread" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="singleUserThreadInfos" inverseEntity="AwfulThread" syncable="YES"/>
+    </entity>
     <entity name="AwfulThread" representedClassName="AwfulThread" syncable="YES">
         <attribute name="archived" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="hideFromList" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
@@ -64,6 +69,7 @@
         <relationship name="author" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulUser" inverseName="threads" inverseEntity="AwfulUser" syncable="YES"/>
         <relationship name="forum" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="threads" inverseEntity="AwfulForum" syncable="YES"/>
         <relationship name="posts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulPost" inverseName="thread" inverseEntity="AwfulPost" syncable="YES"/>
+        <relationship name="singleUserThreadInfos" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulSingleUserThreadInfo" inverseName="thread" inverseEntity="AwfulSingleUserThreadInfo" syncable="YES"/>
     </entity>
     <entity name="AwfulUser" representedClassName="AwfulUser" syncable="YES">
         <attribute name="aboutMe" optional="YES" attributeType="String" syncable="YES"/>
@@ -90,6 +96,7 @@
         <relationship name="posts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulPost" inverseName="author" inverseEntity="AwfulPost" syncable="YES"/>
         <relationship name="receivedPrivateMessages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulPrivateMessage" inverseName="to" inverseEntity="AwfulPrivateMessage" syncable="YES"/>
         <relationship name="sentPrivateMessages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulPrivateMessage" inverseName="from" inverseEntity="AwfulPrivateMessage" syncable="YES"/>
+        <relationship name="singleUserThreadInfos" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulSingleUserThreadInfo" inverseName="author" inverseEntity="AwfulSingleUserThreadInfo" syncable="YES"/>
         <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="author" inverseEntity="AwfulThread" syncable="YES"/>
     </entity>
     <elements>
@@ -97,7 +104,8 @@
         <element name="AwfulForum" positionX="205" positionY="285" width="128" height="180"/>
         <element name="AwfulPost" positionX="160" positionY="192" width="128" height="210"/>
         <element name="AwfulPrivateMessage" positionX="160" positionY="192" width="128" height="195"/>
-        <element name="AwfulThread" positionX="25" positionY="210" width="128" height="360"/>
-        <element name="AwfulUser" positionX="160" positionY="192" width="128" height="420"/>
+        <element name="AwfulThread" positionX="25" positionY="210" width="128" height="375"/>
+        <element name="AwfulUser" positionX="160" positionY="192" width="128" height="435"/>
+        <element name="AwfulSingleUserThreadInfo" positionX="160" positionY="192" width="128" height="90"/>
     </elements>
 </model>

@@ -20,6 +20,9 @@
 
 + (instancetype)firstOrNewThreadWithThreadID:(NSString *)threadID;
 
+- (NSInteger)numberOfPagesForSingleUser:(AwfulUser *)singleUser;
+- (void)setNumberOfPages:(NSInteger)numberOfPages forSingleUser:(AwfulUser *)singleUser;
+
 @end
 
 

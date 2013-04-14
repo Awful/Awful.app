@@ -28,6 +28,7 @@ const struct AwfulThreadRelationships AwfulThreadRelationships = {
 	.author = @"author",
 	.forum = @"forum",
 	.posts = @"posts",
+	.singleUserThreadInfos = @"singleUserThreadInfos",
 };
 
 const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
@@ -473,6 +474,19 @@ const struct AwfulThreadFetchedProperties AwfulThreadFetchedProperties = {
 	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"posts"];
   
 	[self didAccessValueForKey:@"posts"];
+	return result;
+}
+	
+
+@dynamic singleUserThreadInfos;
+
+	
+- (NSMutableSet*)singleUserThreadInfosSet {
+	[self willAccessValueForKey:@"singleUserThreadInfos"];
+  
+	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"singleUserThreadInfos"];
+  
+	[self didAccessValueForKey:@"singleUserThreadInfos"];
 	return result;
 }
 	

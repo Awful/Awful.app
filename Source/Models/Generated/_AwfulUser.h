@@ -32,6 +32,7 @@ extern const struct AwfulUserRelationships {
 	__unsafe_unretained NSString *posts;
 	__unsafe_unretained NSString *receivedPrivateMessages;
 	__unsafe_unretained NSString *sentPrivateMessages;
+	__unsafe_unretained NSString *singleUserThreadInfos;
 	__unsafe_unretained NSString *threads;
 } AwfulUserRelationships;
 
@@ -42,6 +43,7 @@ extern const struct AwfulUserFetchedProperties {
 @class AwfulPost;
 @class AwfulPrivateMessage;
 @class AwfulPrivateMessage;
+@class AwfulSingleUserThreadInfo;
 @class AwfulThread;
 
 
@@ -322,6 +324,13 @@ extern const struct AwfulUserFetchedProperties {
 
 
 
+@property (nonatomic, strong) NSSet *singleUserThreadInfos;
+
+- (NSMutableSet*)singleUserThreadInfosSet;
+
+
+
+
 @property (nonatomic, strong) NSSet *threads;
 
 - (NSMutableSet*)threadsSet;
@@ -353,6 +362,11 @@ extern const struct AwfulUserFetchedProperties {
 - (void)removeSentPrivateMessages:(NSSet*)value_;
 - (void)addSentPrivateMessagesObject:(AwfulPrivateMessage*)value_;
 - (void)removeSentPrivateMessagesObject:(AwfulPrivateMessage*)value_;
+
+- (void)addSingleUserThreadInfos:(NSSet*)value_;
+- (void)removeSingleUserThreadInfos:(NSSet*)value_;
+- (void)addSingleUserThreadInfosObject:(AwfulSingleUserThreadInfo*)value_;
+- (void)removeSingleUserThreadInfosObject:(AwfulSingleUserThreadInfo*)value_;
 
 - (void)addThreads:(NSSet*)value_;
 - (void)removeThreads:(NSSet*)value_;
@@ -514,6 +528,11 @@ extern const struct AwfulUserFetchedProperties {
 
 - (NSMutableSet*)primitiveSentPrivateMessages;
 - (void)setPrimitiveSentPrivateMessages:(NSMutableSet*)value;
+
+
+
+- (NSMutableSet*)primitiveSingleUserThreadInfos;
+- (void)setPrimitiveSingleUserThreadInfos:(NSMutableSet*)value;
 
 
 

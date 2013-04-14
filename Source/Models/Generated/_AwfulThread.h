@@ -29,6 +29,7 @@ extern const struct AwfulThreadRelationships {
 	__unsafe_unretained NSString *author;
 	__unsafe_unretained NSString *forum;
 	__unsafe_unretained NSString *posts;
+	__unsafe_unretained NSString *singleUserThreadInfos;
 } AwfulThreadRelationships;
 
 extern const struct AwfulThreadFetchedProperties {
@@ -37,6 +38,7 @@ extern const struct AwfulThreadFetchedProperties {
 @class AwfulUser;
 @class AwfulForum;
 @class AwfulPost;
+@class AwfulSingleUserThreadInfo;
 
 
 
@@ -315,6 +317,13 @@ extern const struct AwfulThreadFetchedProperties {
 
 
 
+@property (nonatomic, strong) NSSet *singleUserThreadInfos;
+
+- (NSMutableSet*)singleUserThreadInfosSet;
+
+
+
+
 
 @end
 
@@ -324,6 +333,11 @@ extern const struct AwfulThreadFetchedProperties {
 - (void)removePosts:(NSSet*)value_;
 - (void)addPostsObject:(AwfulPost*)value_;
 - (void)removePostsObject:(AwfulPost*)value_;
+
+- (void)addSingleUserThreadInfos:(NSSet*)value_;
+- (void)removeSingleUserThreadInfos:(NSSet*)value_;
+- (void)addSingleUserThreadInfosObject:(AwfulSingleUserThreadInfo*)value_;
+- (void)removeSingleUserThreadInfosObject:(AwfulSingleUserThreadInfo*)value_;
 
 @end
 
@@ -484,6 +498,11 @@ extern const struct AwfulThreadFetchedProperties {
 
 - (NSMutableSet*)primitivePosts;
 - (void)setPrimitivePosts:(NSMutableSet*)value;
+
+
+
+- (NSMutableSet*)primitiveSingleUserThreadInfos;
+- (void)setPrimitiveSingleUserThreadInfos:(NSMutableSet*)value;
 
 
 @end

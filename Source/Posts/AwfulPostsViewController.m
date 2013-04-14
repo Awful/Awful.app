@@ -247,14 +247,21 @@
     self.topBar.scrollToBottomButton.enabled = [self.posts count] > 0;
     self.topBar.loadReadPostsButton.enabled = self.hiddenPosts > 0;
     
-    if (self.currentPage > 0 && self.currentPage >= self.thread.numberOfPagesValue) {
+    NSInteger relevantNumberOfPages = 0;
+    if (self.singleUserID) {
+        relevantNumberOfPages = [self.thread numberOfPagesForSingleUser:
+                                 [AwfulUser firstMatchingPredicate:@"userID = %@", self.singleUserID]];
+    } else {
+        relevantNumberOfPages = self.thread.numberOfPagesValue;
+    }
+    if (self.currentPage > 0 && self.currentPage >= relevantNumberOfPages) {
         self.postsView.endMessage = @"End of the thread";
     } else {
         self.postsView.endMessage = nil;
     }
     
     AwfulPullToRefreshControl *refresh = self.pullUpToRefreshControl;
-    if (self.thread.numberOfPagesValue > self.currentPage) {
+    if (relevantNumberOfPages > self.currentPage) {
         [refresh setTitle:@"Pull for next page…" forState:UIControlStateNormal];
         [refresh setTitle:@"Release for next page…" forState:UIControlStateSelected];
         [refresh setTitle:@"Loading next page…" forState:AwfulControlStateRefreshing];
@@ -266,14 +273,14 @@
     
     [self.bottomBar.backForwardControl setEnabled:self.currentPage > 1
                                 forSegmentAtIndex:0];
-    if (self.currentPage > 0 && self.currentPage < self.thread.numberOfPagesValue) {
+    if (self.currentPage > 0 && self.currentPage < relevantNumberOfPages) {
         [self.bottomBar.backForwardControl setEnabled:YES forSegmentAtIndex:1];
     } else {
         [self.bottomBar.backForwardControl setEnabled:NO forSegmentAtIndex:1];
     }
-    if (self.currentPage > 0 && self.thread.numberOfPagesValue > 0) {
-        [self.bottomBar.jumpToPageButton setTitle:[NSString stringWithFormat:@"Page %d of %@",
-                                                   self.currentPage, self.thread.numberOfPages]
+    if (self.currentPage > 0 && relevantNumberOfPages > 0) {
+        [self.bottomBar.jumpToPageButton setTitle:[NSString stringWithFormat:@"Page %d of %d",
+                                                   self.currentPage, relevantNumberOfPages]
                                          forState:UIControlStateNormal];
     } else {
         [self.bottomBar.jumpToPageButton setTitle:@"" forState:UIControlStateNormal];
@@ -1101,6 +1108,10 @@ static char KVOContext;
 - (void)jumpToPageController:(AwfulJumpToPageController *)jump didSelectPage:(AwfulThreadPage)page
 {
     if (page != AwfulThreadPageNone) {
+        if (self.singleUserID && page == AwfulThreadPageLast) {
+            page = [self.thread numberOfPagesForSingleUser:
+                    [AwfulUser firstMatchingPredicate:@"userID = %@", self.singleUserID]];
+        }
         [self loadPage:page singleUserID:self.singleUserID];
     }
     [jump dismiss];
