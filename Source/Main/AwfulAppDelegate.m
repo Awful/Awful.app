@@ -27,6 +27,7 @@
 #import "AFNetworking.h"
 #import <AVFoundation/AVFoundation.h>
 #import <Crashlytics/Crashlytics.h>
+#import "JLRoutes.h"
 #import "NSFileManager+UserDirectories.h"
 #import "NSURL+Awful.h"
 #import "NSURL+Punycode.h"
@@ -198,6 +199,8 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     
     [self ignoreSilentSwitchWhenPlayingEmbeddedVideo];
     
+    [self routeAwfulURLs];
+    
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     
     [self setUpRootViewController];
@@ -331,6 +334,8 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
                          onAcceptance:^{ [[UIApplication sharedApplication] openURL:[url awfulURL]]; }];
 }
 
+#pragma mark - awful:// URL scheme
+
 - (BOOL)application:(UIApplication *)application
             openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication
@@ -338,158 +343,179 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
 {
     if ([[url scheme] compare:@"awful" options:NSCaseInsensitiveSearch] != NSOrderedSame) return NO;
     if (![AwfulHTTPClient client].loggedIn) return NO;
-    
-    NSString *section = [url host];
-    
-    // Open the forums list: awful://forums
-    // Open a specific forum from the list: awful://forums/:forumID
-    // Open the favorites list: awful://favorites
-    // Open a specific forum from the favorites: awful://favorites/:forumID
-    if ([section isEqualToString:@"forums"] || [section isEqualToString:@"favorites"]) {
+    return [JLRoutes routeURL:url];
+}
+
+- (void)routeAwfulURLs
+{
+    void (^jumpToForum)(NSString *) = ^(NSString *forumID) {
+        AwfulForum *forum = [AwfulForum firstMatchingPredicate:@"forumID = %@", forumID];
         UINavigationController *nav = self.tabBarController.viewControllers[0];
-        if ([[url pathComponents] count] <= 1) {
-            self.tabBarController.selectedViewController = nav;
-            if ([section isEqualToString:@"favorites"]) {
-                UIScrollView *scrollView = (id)nav.topViewController.view;
-                if ([scrollView respondsToSelector:@selector(setContentOffset:animated:)]) {
-                    [scrollView setContentOffset:CGPointZero animated:YES];
-                }
-            }
-            return YES;
-        }
-        AwfulForum *forum;
-        // First path component is the /
-        if ([[url pathComponents] count] > 1) {
-            forum = [AwfulForum firstMatchingPredicate:@"forumID = %@", [url pathComponents][1]];
-        }
         [self jumpToForum:forum inNavigationController:nav];
-        self.tabBarController.selectedViewController = nav;
+        [self.splitViewController showMasterView];
+    };
+    
+    [JLRoutes addRoute:@"/forums/:forumID" handler:^(NSDictionary *params) {
+        jumpToForum(params[@"forumID"]);
+        return YES;
+    }];
+    
+    [JLRoutes addRoute:@"/forums" handler:^(id _) {
+        self.tabBarController.selectedViewController = self.tabBarController.viewControllers[0];
         [self.splitViewController showMasterView];
         return YES;
-    }
+    }];
     
-    // Open bookmarks: awful://bookmarks
-    if ([section isEqualToString:@"bookmarks"]) {
-        UINavigationController *nav = self.tabBarController.viewControllers[2];
+    void (^selectAndPopViewControllerAtIndex)(NSInteger) = ^(NSInteger i) {
+        UINavigationController *nav = self.tabBarController.viewControllers[i];
         [nav popToRootViewControllerAnimated:YES];
         self.tabBarController.selectedViewController = nav;
-        return YES;
-    }
+        [self.splitViewController showMasterView];
+    };
     
-    // Open private messages: awful://messages
-    if ([section isEqualToString:@"messages"]) {
-        UINavigationController *nav = self.tabBarController.viewControllers[1];
-        [nav popToRootViewControllerAnimated:YES];
-        self.tabBarController.selectedViewController = nav;
+    [JLRoutes addRoute:@"/messages" handler:^(id _) {
+        selectAndPopViewControllerAtIndex(1);
         return YES;
-    }
+    }];
     
-    // Open settings: awful://settings
-    if ([section isEqualToString:@"settings"]) {
-        UINavigationController *nav = self.tabBarController.viewControllers[3];
-        [nav popToRootViewControllerAnimated:YES];
-        self.tabBarController.selectedViewController = nav;
+    [JLRoutes addRoute:@"/bookmarks" handler:^(id _) {
+        selectAndPopViewControllerAtIndex(2);
         return YES;
-    }
+    }];
     
-    // Open a thread: awful://threads/:threadID
-    // Open a specific page of a thread: awful://threads/:threadID/pages/:page
-    //     :page may be a positive integer, the text "last", or the text "unread".
-    if ([section isEqualToString:@"threads"]) {
-        // First path component is the /
-        if ([[url pathComponents] count] < 2) return NO;
-        NSString *threadID = [url pathComponents][1];
+    [JLRoutes addRoute:@"/settings" handler:^(id _) {
+        selectAndPopViewControllerAtIndex(3);
+        return YES;
+    }];
+    
+    void (^openThread)(NSDictionary *) = ^(NSDictionary *params) {
         NSInteger page = 0;
-        if ([[url pathComponents] count] >= 4) {
-            if ([[url pathComponents][2] isEqualToString:@"pages"]) {
-                NSString *pageString = [url pathComponents][3];
-                if ([pageString isEqualToString:@"last"]) page = AwfulThreadPageLast;
-                else if ([pageString isEqualToString:@"unread"]) page = AwfulThreadPageNextUnread;
-                else page = [pageString integerValue];
-            }
+        if ([params[@"page"] isEqual:@"last"]) {
+            page = AwfulThreadPageLast;
+        } else if ([params[@"page"] isEqual:@"unread"]) {
+            page = AwfulThreadPageNextUnread;
+        } else {
+            page = [params[@"page"] integerValue];
         }
+        
         // Maybe the thread is already open.
+        // On iPhone, could be in any tab, but on iPad, there's only one navigation controller for
+        // posts view controllers.
         NSArray *maybes = self.tabBarController.viewControllers;
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        if (self.splitViewController) {
             maybes = @[ self.splitViewController.viewControllers[1] ];
         }
-        for (UIViewController *viewController in maybes) {
-            UINavigationController *nav = (UINavigationController *)viewController;
-            AwfulPostsViewController *top = (AwfulPostsViewController *)nav.topViewController;
+        for (UINavigationController *nav in maybes) {
+            AwfulPostsViewController *top = (id)nav.topViewController;
             if (![top isKindOfClass:[AwfulPostsViewController class]]) continue;
-            if ([top.thread.threadID isEqualToString:threadID]) {
-                if (page == 0 || page == top.currentPage) {
-                    if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+            if ([top.thread.threadID isEqual:params[@"threadID"]]) {
+                if ((page == 0 || page == top.currentPage) &&
+                    top.singleUserID == params[@"userid"]) {
+                    if ([maybes count] > 1) {
                         self.tabBarController.selectedViewController = nav;
                     }
-                    return YES;
+                    return;
                 }
             }
         }
-        if (page == 0) page = 1;
+        
+        // Load the thread in a new posts view.
         AwfulPostsViewController *postsView = [AwfulPostsViewController new];
-        postsView.thread = [AwfulThread firstOrNewThreadWithThreadID:threadID];
-        [postsView loadPage:page singleUserID:nil];
-        UINavigationController *nav;
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            nav = self.splitViewController.viewControllers[1];
-            if (![nav.topViewController isKindOfClass:[AwfulPostsViewController class]]) {
-                [nav setViewControllers:@[ postsView ] animated:YES];
-                return YES;
-            }
-        } else {
-            nav = (UINavigationController *)self.tabBarController.selectedViewController;
+        postsView.thread = [AwfulThread firstOrNewThreadWithThreadID:params[@"threadID"]];
+        if (page == 0) {
+            page = 1;
         }
-        [nav pushViewController:postsView animated:YES];
-        return YES;
-    }
+        [postsView loadPage:page singleUserID:params[@"userid"]];
+        UINavigationController *nav;
+        if (self.splitViewController) {
+            nav = self.splitViewController.viewControllers[1];
+        } else {
+            nav = (id)self.tabBarController.selectedViewController;
+        }
+        
+        // On iPad, the app launches with a tag collage as its detail view. A posts view needs to
+        // replace this collage, not be pushed on top.
+        if (self.splitViewController &&
+            ![nav.topViewController isKindOfClass:[AwfulPostsViewController class]]) {
+            [nav setViewControllers:@[ postsView ] animated:YES];
+        } else {
+            [nav pushViewController:postsView animated:YES];
+        }
+    };
     
-    // Open a post: awful://posts/:postID
-    if ([section isEqualToString:@"posts"]) {
-        if ([[url pathComponents] count] < 2) return NO;
-        NSString *postID = [url pathComponents][1];
-        // Is the post in a thread that's already open?
+    [JLRoutes addRoute:@"/threads/:threadID/pages/:page" handler:^(NSDictionary *params) {
+        openThread(params);
+        return YES;
+    }];
+    
+    [JLRoutes addRoute:@"/threads/:threadID" handler:^(NSDictionary *params) {
+        openThread(params);
+        return YES;
+    }];
+    
+    [JLRoutes addRoute:@"/posts/:postID" handler:^(NSDictionary *params) {
+        // Maybe the post is already visible.
         NSArray *maybes = self.tabBarController.viewControllers;
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        if (self.splitViewController) {
             maybes = @[ self.splitViewController.viewControllers[1] ];
         }
-        for (UIViewController *viewController in maybes) {
-            UINavigationController *nav = (UINavigationController *)viewController;
-            AwfulPostsViewController *top = (AwfulPostsViewController *)nav.topViewController;
+        for (UINavigationController *nav in maybes) {
+            AwfulPostsViewController *top = (id)nav.topViewController;
             if (![top isKindOfClass:[AwfulPostsViewController class]]) continue;
-            if ([[top.posts valueForKey:@"postID"] containsObject:postID]) {
-                if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+            if ([[top.posts valueForKey:@"postID"] containsObject:params[@"postID"]]) {
+                if (!self.splitViewController) {
                     self.tabBarController.selectedViewController = nav;
                 }
-                [top jumpToPostWithID:postID];
+                [top jumpToPostWithID:params[@"postID"]];
                 return YES;
             }
         }
-        // Have we seen the post before?
-        AwfulPost *post = [AwfulPost firstMatchingPredicate:@"postID = %@", postID];
+        
+        // Do we know which thread the post comes from?
+        AwfulPost *post = [AwfulPost firstMatchingPredicate:@"postID = %@", params[@"postID"]];
         if (post) {
             [self pushPostsViewForPostWithID:post.postID
                                       onPage:post.page
                               ofThreadWithID:post.thread.threadID];
             return YES;
         }
-        // Gotta go find it then.
+        
+        // Go find the thread.
         [SVProgressHUD showWithStatus:@"Locating Post"];
-        [[AwfulHTTPClient client] locatePostWithID:postID andThen:^(NSError *error,
-                                                                    NSString *threadID,
-                                                                    NSInteger page)
-         {
-             if (error) {
-                 [SVProgressHUD showErrorWithStatus:@"Post Not Found"];
-                 NSLog(@"couldn't find post for tapped link %@: %@", url, error);
-                 return;
-             }
-             [SVProgressHUD dismiss];
-             [self pushPostsViewForPostWithID:postID onPage:page ofThreadWithID:threadID];
-         }];
+        [[AwfulHTTPClient client] locatePostWithID:params[@"postID"]
+                                           andThen:^(NSError *error, NSString *threadID,
+                                                     AwfulThreadPage page)
+        {
+            if (error) {
+                [SVProgressHUD showErrorWithStatus:@"Post Not Found"];
+                NSLog(@"couldn't resolve post at %@: %@", params[kJLRouteURLKey], error);
+            } else {
+                [SVProgressHUD dismiss];
+                [self pushPostsViewForPostWithID:params[@"postID"]
+                                          onPage:page
+                                  ofThreadWithID:threadID];
+            }
+        }];
         return YES;
-    }
-    return NO;
+    }];
+    
+    #pragma mark Legacy routes
+    
+    [JLRoutes addRoute:@"/favorites/:forumID" handler:^(NSDictionary *params) {
+        jumpToForum(params[@"forumID"]);
+        return YES;
+    }];
+    
+    [JLRoutes addRoute:@"/favorites" handler:^(NSDictionary *parameters) {
+        UINavigationController *nav = self.tabBarController.viewControllers[0];
+        self.tabBarController.selectedViewController = nav;
+        UIScrollView *scrollView = (id)nav.topViewController.view;
+        if ([scrollView respondsToSelector:@selector(setContentOffset:animated:)]) {
+            [scrollView setContentOffset:CGPointMake(0, -scrollView.contentInset.top) animated:YES];
+        }
+        [self.splitViewController showMasterView];
+        return YES;
+    }];
 }
 
 - (void)pushPostsViewForPostWithID:(NSString *)postID
