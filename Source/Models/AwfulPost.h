@@ -11,7 +11,11 @@
 @interface AwfulPost : _AwfulPost
 
 @property (readonly, nonatomic) BOOL beenSeen;
+
+// Returns 0 if the page is unknown.
 @property (readonly, nonatomic) NSInteger page;
+
+// Returns 0 if the page is unknown.
 @property (readonly, nonatomic) NSInteger singleUserPage;
 
 + (NSArray *)postsCreatedOrUpdatedFromPageInfo:(PageParsedInfo *)pageInfo;

@@ -31,12 +31,20 @@
 
 - (NSInteger)page
 {
-    return (self.threadIndexValue - 1) / 40 + 1;
+    if (self.threadIndexValue == 0) {
+        return 0;
+    } else {
+        return (self.threadIndexValue - 1) / 40 + 1;
+    }
 }
 
 - (NSInteger)singleUserPage
 {
-    return (self.singleUserIndexValue - 1) / 40 + 1;
+    if (self.singleUserIndexValue == 0) {
+        return 0;
+    } else {
+        return (self.singleUserIndexValue - 1) / 40 + 1;
+    }
 }
 
 + (NSArray *)postsCreatedOrUpdatedFromPageInfo:(PageParsedInfo *)pageInfo

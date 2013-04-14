@@ -247,13 +247,7 @@
     self.topBar.scrollToBottomButton.enabled = [self.posts count] > 0;
     self.topBar.loadReadPostsButton.enabled = self.hiddenPosts > 0;
     
-    NSInteger relevantNumberOfPages = 0;
-    if (self.singleUserID) {
-        relevantNumberOfPages = [self.thread numberOfPagesForSingleUser:
-                                 [AwfulUser firstMatchingPredicate:@"userID = %@", self.singleUserID]];
-    } else {
-        relevantNumberOfPages = self.thread.numberOfPagesValue;
-    }
+    NSInteger relevantNumberOfPages = [self relevantNumberOfPagesInThread];
     if (self.currentPage > 0 && self.currentPage >= relevantNumberOfPages) {
         self.postsView.endMessage = @"End of the thread";
     } else {
@@ -358,9 +352,9 @@
             if (wasLoading) {
                 self.postsView.loadingMessage = nil;
                 if (![[self.bottomBar.jumpToPageButton titleForState:UIControlStateNormal] length]) {
-                    if (self.thread.numberOfPagesValue > 0) {
-                        NSString *title = [NSString stringWithFormat:@"Page ? of %@",
-                                           self.thread.numberOfPages];
+                    if ([self relevantNumberOfPagesInThread] > 0) {
+                        NSString *title = [NSString stringWithFormat:@"Page ? of %d",
+                                           [self relevantNumberOfPagesInThread]];
                         [self.bottomBar.jumpToPageButton setTitle:title
                                                        forState:UIControlStateNormal];
                     } else {
@@ -442,7 +436,7 @@
 
 - (void)loadNextPageOrRefresh
 {
-    if (self.thread.numberOfPagesValue > self.currentPage) {
+    if ([self relevantNumberOfPagesInThread] > self.currentPage) {
         [self loadPage:self.currentPage + 1 singleUserID:self.singleUserID];
     } else {
         [self loadPage:self.currentPage singleUserID:self.singleUserID];
@@ -641,24 +635,35 @@
             [self loadPage:self.currentPage - 1 singleUserID:self.singleUserID];
         }
     } else if (seg.selectedSegmentIndex == 1) {
-        if (self.currentPage < self.thread.numberOfPagesValue) {
+        if (self.currentPage < [self relevantNumberOfPagesInThread]) {
             [self loadPage:self.currentPage + 1 singleUserID:self.singleUserID];
         }
     }
     seg.selectedSegmentIndex = UISegmentedControlNoSegment;
 }
 
+- (NSInteger)relevantNumberOfPagesInThread
+{
+    if (self.singleUserID) {
+        return [self.thread numberOfPagesForSingleUser:
+                [AwfulUser firstMatchingPredicate:@"userID = %@", self.singleUserID]];
+    } else {
+        return self.thread.numberOfPagesValue;
+    }
+}
+
 - (void)showJumpToPageSheet
 {
     if (self.postsView.loadingMessage) return;
-    if (self.thread.numberOfPagesValue < 1) return;
+    NSInteger relevantNumberOfPages = [self relevantNumberOfPagesInThread];
+    if (relevantNumberOfPages < 1) return;
     AwfulJumpToPageController *jump = [[AwfulJumpToPageController alloc] initWithDelegate:self];
-    jump.numberOfPages = self.thread.numberOfPagesValue;
+    jump.numberOfPages = relevantNumberOfPages;
     if (self.currentPage > 0) {
         jump.selectedPage = self.currentPage;
     }
-    else if (self.currentPage == AwfulThreadPageLast && self.thread.numberOfPagesValue > 0) {
-        jump.selectedPage = self.thread.numberOfPagesValue;
+    else if (self.currentPage == AwfulThreadPageLast && relevantNumberOfPages > 0) {
+        jump.selectedPage = relevantNumberOfPages;
     }
     [jump presentFromViewController:self fromView:self.bottomBar];
 }
@@ -987,7 +992,8 @@ static char KVOContext;
     }];
     if (self.singleUserID) {
         [sheet addButtonWithTitle:@"All Users' Posts" block:^{
-            [self loadPage:1 singleUserID:nil];
+            [self loadPage:(post.page ?: 1) singleUserID:nil];
+            [self jumpToPostWithID:post.postID];
         }];
     } else {
         [sheet addButtonWithTitle:[NSString stringWithFormat:@"%@ Posts", possessiveUsername]
