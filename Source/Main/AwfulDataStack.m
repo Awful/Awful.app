@@ -104,6 +104,10 @@
         // No point migrating a nonexistent store!
         return;
     }
+    if (DEBUG) {
+        NSLog(@"not migrating debug store with unknown model");
+        return;
+    }
     NSAssert(sourceModelURL, @"could not find source model for %@: %@", url, error);
     NSString *sourceModelVersion = ModelNameWithURL(sourceModelURL);
     
