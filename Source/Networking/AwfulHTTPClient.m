@@ -201,7 +201,8 @@ static AwfulHTTPClient *instance = nil;
         NSArray *posts;
         NSString *ad;
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            posts = [AwfulPost postsCreatedOrUpdatedFromJSON:responseObject];
+            posts = [AwfulPost postsCreatedOrUpdatedFromJSON:responseObject
+                                                singleUserID:singleUserID];
             ad = [responseObject valueForKey:@"goon_banner"];
             if ([ad isEqual:[NSNull null]]) ad = nil;
         } else {

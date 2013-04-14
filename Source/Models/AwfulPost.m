@@ -110,12 +110,7 @@
 }
 
 + (NSArray *)postsCreatedOrUpdatedFromJSON:(NSDictionary *)json
-{
-    return [self postsCreatedOrUpdatedFromJSON:json userID:nil];
-}
-
-+ (NSArray *)postsCreatedOrUpdatedFromJSON:(NSDictionary *)json
-                                    userID:(NSString *)user
+                              singleUserID:(NSString *)singleUserID
 {
     NSString *forumID = [json[@"forumid"] stringValue];
     AwfulForum *forum = [AwfulForum firstMatchingPredicate:@"forumID = %@", forumID];
@@ -131,29 +126,21 @@
         thread.threadIconImageURL = [NSURL URLWithString:json[@"thread_icon"][@"iconpath"]];
     }
     thread.forum = forum;
-    thread.numberOfPages = json[@"page"][1];
-    id seenPosts = json[@"seen_posts"];
-    if ([seenPosts isEqual:[NSNull null]]) {
-        seenPosts = @0;
+    if (!singleUserID) {
+        id seenPosts = json[@"seen_posts"];
+        if ([seenPosts isEqual:[NSNull null]]) {
+            seenPosts = @0;
+        }
+        if (seenPosts) {
+            thread.seenPosts = seenPosts;
+        }
+        thread.totalReplies = json[@"thread_info"][@"replycount"];
     }
-    if (seenPosts) {
-        thread.seenPosts = seenPosts;
-    }
-    thread.totalReplies = json[@"thread_info"][@"replycount"];
     
     NSArray *postIDs = [json[@"posts"] allKeys];
     NSMutableDictionary *existingPosts = [NSMutableDictionary new];
-    if( user != nil) {
-        for (AwfulPost *post in [AwfulPost fetchAllMatchingPredicate:@"postID IN %@ AND userOnlyPost == %@", postIDs, [NSNumber numberWithBool:NO]]) {
-            existingPosts[post.postID] = post;
-        }
-    }
-    else {
-        for (AwfulPost *post in [AwfulPost fetchAllMatchingPredicate:@"postID IN %@ AND userOnlyPost == %@ AND author.userID == %@",
-                                 postIDs, [NSNumber numberWithBool:YES],user]) {
-            existingPosts[post.postID] = post;
-        }
-        
+    for (AwfulPost *post in [AwfulPost fetchAllMatchingPredicate:@"postID IN %@", postIDs]) {
+        existingPosts[post.postID] = post;
     }
     for (NSString *postID in json[@"posts"]) {
         NSDictionary *info = json[@"posts"][postID];
@@ -187,7 +174,11 @@
         post.innerHTML = message;
         post.postDate = [NSDate dateWithTimeIntervalSince1970:[info[@"date"] doubleValue]];
         post.thread = thread;
-        post.threadIndex = info[@"post_index"];
+        if (singleUserID) {
+            post.singleUserIndex = info[@"post_index"];
+        } else {
+            post.threadIndex = info[@"post_index"];
+        }
         
         NSString *userID = [info[@"userid"] stringValue];
         // TODO this isn't quite how SA works. Admins can edit every post (except posts by other
@@ -206,17 +197,25 @@
     {
         return [a.threadIndex compare:b.threadIndex];
     }];
-    NSNumber *currentPage = json[@"page"][0];
-    NSNumber *lastPage = json[@"page"][1];
-    if ([currentPage isEqual:lastPage]) {
-        AwfulPost *last;
-        for (AwfulPost *post in posts) {
-            if (!last || last.threadIndexValue < post.threadIndexValue) {
-                last = post;
+    if (singleUserID) {
+        [thread setNumberOfPages:[json[@"page"][1] integerValue]
+                   forSingleUser:[[posts lastObject] author]];
+    } else {
+        thread.numberOfPages = json[@"page"][1];
+    }
+    if (!singleUserID) {
+        NSNumber *currentPage = json[@"page"][0];
+        NSNumber *lastPage = json[@"page"][1];
+        if ([currentPage isEqual:lastPage]) {
+            AwfulPost *last;
+            for (AwfulPost *post in posts) {
+                if (!last || last.threadIndexValue < post.threadIndexValue) {
+                    last = post;
+                }
             }
+            thread.lastPostAuthorName = last.author.username;
+            thread.lastPostDate = last.postDate;
         }
-        thread.lastPostAuthorName = last.author.username;
-        thread.lastPostDate = last.postDate;
     }
     
     [[AwfulDataStack sharedDataStack] save];
