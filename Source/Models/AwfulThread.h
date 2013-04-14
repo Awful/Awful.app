@@ -6,6 +6,7 @@
 //
 
 #import "_AwfulThread.h"
+@class AwfulUser;
 
 @interface AwfulThread : _AwfulThread
 
@@ -15,7 +16,6 @@
 @property (readonly, nonatomic) BOOL beenSeen;
 
 + (NSArray *)threadsCreatedOrUpdatedWithParsedInfo:(NSArray *)threadInfos;
-
 + (NSArray *)threadsCreatedOrUpdatedWithJSON:(NSDictionary *)json;
 
 + (instancetype)firstOrNewThreadWithThreadID:(NSString *)threadID;
