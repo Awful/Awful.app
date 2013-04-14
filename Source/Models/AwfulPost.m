@@ -35,6 +35,12 @@
 
 + (NSArray *)postsCreatedOrUpdatedFromPageInfo:(PageParsedInfo *)pageInfo
 {
+    return [self postsCreatedOrUpdatedFromPageInfo:pageInfo userID:nil];
+}
+
++ (NSArray *)postsCreatedOrUpdatedFromPageInfo:(PageParsedInfo *)pageInfo
+                                        userID:(NSString *)user
+{
     if ([pageInfo.forumID length] == 0 || [pageInfo.threadID length] == 0) return nil;
     AwfulForum *forum = [AwfulForum firstMatchingPredicate:@"forumID = %@", pageInfo.forumID];
     if (!forum) {
@@ -76,7 +82,17 @@
         }
         [postInfo.author applyToObject:post.author];
         existingUsers[post.author.username] = post.author;
-        [posts addObject:post];
+        NSString* userID = post.author.userID;
+        
+        if( userID == user  ) {
+            post.userOnlyPostValue = true;
+        }
+        else {
+            post.userOnlyPostValue = false;
+        }
+        if(user == nil || post.author.userID == user) {
+            [posts addObject:post];
+        }
         if (postInfo.author.originalPoster) {
             thread.author = post.author;
         }
@@ -93,6 +109,12 @@
 }
 
 + (NSArray *)postsCreatedOrUpdatedFromJSON:(NSDictionary *)json
+{
+    return [self postsCreatedOrUpdatedFromJSON:json userID:nil];
+}
+
++ (NSArray *)postsCreatedOrUpdatedFromJSON:(NSDictionary *)json
+                                    userID:(NSString *)user
 {
     NSString *forumID = [json[@"forumid"] stringValue];
     AwfulForum *forum = [AwfulForum firstMatchingPredicate:@"forumID = %@", forumID];
@@ -120,8 +142,17 @@
     
     NSArray *postIDs = [json[@"posts"] allKeys];
     NSMutableDictionary *existingPosts = [NSMutableDictionary new];
-    for (AwfulPost *post in [AwfulPost fetchAllMatchingPredicate:@"postID IN %@", postIDs]) {
-        existingPosts[post.postID] = post;
+    if( user != nil) {
+        for (AwfulPost *post in [AwfulPost fetchAllMatchingPredicate:@"postID IN %@ AND userOnlyPost == %@", postIDs, [NSNumber numberWithBool:NO]]) {
+            existingPosts[post.postID] = post;
+        }
+    }
+    else {
+        for (AwfulPost *post in [AwfulPost fetchAllMatchingPredicate:@"postID IN %@ AND userOnlyPost == %@ AND author.userID == %@",
+                                 postIDs, [NSNumber numberWithBool:YES],user]) {
+            existingPosts[post.postID] = post;
+        }
+        
     }
     for (NSString *postID in json[@"posts"]) {
         NSDictionary *info = json[@"posts"][postID];

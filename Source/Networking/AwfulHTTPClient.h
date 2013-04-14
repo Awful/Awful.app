@@ -71,6 +71,31 @@
                                                    NSUInteger firstUnreadPost,
                                                    NSString *advertisementHTML))callback;
 
+// Gets the posts in a thread on a given page for a given user.
+//
+// threadID - Which thread to list.
+// page     - Which page to get. First page is 1; AwfulPageNextUnread and AwfulPageLast are also
+//            available.
+// userID   - Which user to get content for
+// callback - A block to call after listing the posts, which takes as parameters:
+//              error             - An error on failure, or nil on success.
+//              posts             - The posts gleaned from the page.
+//              firstUnreadPost   - Which post in the posts array is the first unread.
+//                                  Only set if the page requested was AwfulPageNextUnread.
+//              advertisementHTML - The ad at the bottom of the page.
+//
+// N.B. If you've never read a thread before (or marked it unread), the "next unread" page is the
+//      last page of the thread. (It's an SA thing, I don't get it either.)
+//
+// Returns the enqueued network operation.
+- (NSOperation *)listPostsInThreadWithID:(NSString *)threadID
+                                  onPage:(AwfulThreadPage)page
+                                  userID:(NSString *)user
+                                 andThen:(void (^)(NSError *error,
+                                                   NSArray *posts,
+                                                   NSUInteger firstUnreadPost,
+                                                   NSString *advertisementHTML))callback;
+
 // Get the logged-in user's name and ID.
 //
 // callback - A block to call after getting the user's info, which takes as parameters:

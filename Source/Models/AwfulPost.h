@@ -15,6 +15,9 @@
 @property (readonly, nonatomic) NSInteger page;
 
 + (NSArray *)postsCreatedOrUpdatedFromPageInfo:(PageParsedInfo *)pageInfo;
++ (NSArray *)postsCreatedOrUpdatedFromPageInfo:(PageParsedInfo *)pageInfo
+                                        userID:(NSString *)user;
+
 
 + (NSArray *)postsCreatedOrUpdatedFromJSON:(NSDictionary *)json;
 

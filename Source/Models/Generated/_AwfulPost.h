@@ -12,6 +12,7 @@ extern const struct AwfulPostAttributes {
 	__unsafe_unretained NSString *postDate;
 	__unsafe_unretained NSString *postID;
 	__unsafe_unretained NSString *threadIndex;
+	__unsafe_unretained NSString *userOnlyPost;
 } AwfulPostAttributes;
 
 extern const struct AwfulPostRelationships {
@@ -26,6 +27,7 @@ extern const struct AwfulPostFetchedProperties {
 @class AwfulUser;
 @class AwfulUser;
 @class AwfulThread;
+
 
 
 
@@ -126,6 +128,20 @@ extern const struct AwfulPostFetchedProperties {
 
 
 
+@property (nonatomic, strong) NSNumber* userOnlyPost;
+
+
+
+@property BOOL userOnlyPostValue;
+- (BOOL)userOnlyPostValue;
+- (void)setUserOnlyPostValue:(BOOL)value_;
+
+//- (BOOL)validateUserOnlyPost:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
 @property (nonatomic, strong) AwfulUser *author;
 
 //- (BOOL)validateAuthor:(id*)value_ error:(NSError**)error_;
@@ -201,6 +217,15 @@ extern const struct AwfulPostFetchedProperties {
 
 - (int32_t)primitiveThreadIndexValue;
 - (void)setPrimitiveThreadIndexValue:(int32_t)value_;
+
+
+
+
+- (NSNumber*)primitiveUserOnlyPost;
+- (void)setPrimitiveUserOnlyPost:(NSNumber*)value;
+
+- (BOOL)primitiveUserOnlyPostValue;
+- (void)setPrimitiveUserOnlyPostValue:(BOOL)value_;
 
 
 

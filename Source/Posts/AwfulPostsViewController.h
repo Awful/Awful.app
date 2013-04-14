@@ -15,7 +15,10 @@
 
 @property (readonly, nonatomic) AwfulThreadPage currentPage;
 
+@property (copy, nonatomic) NSString *userID;
+
 - (void)loadPage:(AwfulThreadPage)page;
+- (void)loadPage:(AwfulThreadPage)page userID:(NSString*) user;
 
 - (void)jumpToPostWithID:(NSString *)postID;
 

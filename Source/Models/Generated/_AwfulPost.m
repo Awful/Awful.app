@@ -11,6 +11,7 @@ const struct AwfulPostAttributes AwfulPostAttributes = {
 	.postDate = @"postDate",
 	.postID = @"postID",
 	.threadIndex = @"threadIndex",
+	.userOnlyPost = @"userOnlyPost",
 };
 
 const struct AwfulPostRelationships AwfulPostRelationships = {
@@ -55,6 +56,11 @@ const struct AwfulPostFetchedProperties AwfulPostFetchedProperties = {
 	}
 	if ([key isEqualToString:@"threadIndexValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"threadIndex"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
+	if ([key isEqualToString:@"userOnlyPostValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"userOnlyPost"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
@@ -146,6 +152,32 @@ const struct AwfulPostFetchedProperties AwfulPostFetchedProperties = {
 
 - (void)setPrimitiveThreadIndexValue:(int32_t)value_ {
 	[self setPrimitiveThreadIndex:[NSNumber numberWithInt:value_]];
+}
+
+
+
+
+
+@dynamic userOnlyPost;
+
+
+
+- (BOOL)userOnlyPostValue {
+	NSNumber *result = [self userOnlyPost];
+	return [result boolValue];
+}
+
+- (void)setUserOnlyPostValue:(BOOL)value_ {
+	[self setUserOnlyPost:[NSNumber numberWithBool:value_]];
+}
+
+- (BOOL)primitiveUserOnlyPostValue {
+	NSNumber *result = [self primitiveUserOnlyPost];
+	return [result boolValue];
+}
+
+- (void)setPrimitiveUserOnlyPostValue:(BOOL)value_ {
+	[self setPrimitiveUserOnlyPost:[NSNumber numberWithBool:value_]];
 }
 
 
