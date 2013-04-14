@@ -104,7 +104,7 @@
         // No point migrating a nonexistent store!
         return;
     }
-    if (DEBUG) {
+    if (DEBUG && !sourceModelURL) {
         NSLog(@"not migrating debug store with unknown model");
         return;
     }
