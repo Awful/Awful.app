@@ -59,7 +59,9 @@
         }
         AwfulThread *thread = existingThreads[info.threadID] ?: [AwfulThread insertNew];
         [info applyToObject:thread];
-        if (!thread.author) thread.author = [AwfulUser insertNew];
+        if (!thread.author) {
+            thread.author = existingUsers[info.author.username] ?: [AwfulUser insertNew];
+        }
         [info.author applyToObject:thread.author];
         existingUsers[thread.author.username] = thread.author;
         existingThreads[thread.threadID] = thread;
