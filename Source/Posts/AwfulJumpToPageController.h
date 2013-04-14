@@ -24,7 +24,7 @@
 
 
 @protocol AwfulJumpToPageControllerDelegate <NSObject>
-
+@property (copy, nonatomic) NSString *userID;
 - (void)jumpToPageController:(AwfulJumpToPageController *)jump didSelectPage:(AwfulThreadPage)page;
 
 @end

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="2061" systemVersion="12D78" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="2057" systemVersion="12C60" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="AwfulCategory" representedClassName="AwfulCategory" syncable="YES">
         <attribute name="categoryID" attributeType="String" syncable="YES"/>
         <attribute name="index" attributeType="Integer 32" defaultValueString="-1" syncable="YES"/>
@@ -25,6 +25,7 @@
         <attribute name="postDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="postID" attributeType="String" syncable="YES"/>
         <attribute name="threadIndex" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="userOnlyPost" optional="YES" attributeType="Boolean" syncable="YES"/>
         <relationship name="author" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulUser" inverseName="posts" inverseEntity="AwfulUser" syncable="YES"/>
         <relationship name="editor" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulUser" inverseName="editedPosts" inverseEntity="AwfulUser" syncable="YES"/>
         <relationship name="thread" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="posts" inverseEntity="AwfulThread" syncable="YES"/>
@@ -94,7 +95,7 @@
     <elements>
         <element name="AwfulCategory" positionX="160" positionY="192" width="128" height="105"/>
         <element name="AwfulForum" positionX="205" positionY="285" width="128" height="180"/>
-        <element name="AwfulPost" positionX="160" positionY="192" width="128" height="195"/>
+        <element name="AwfulPost" positionX="160" positionY="192" width="128" height="210"/>
         <element name="AwfulPrivateMessage" positionX="160" positionY="192" width="128" height="195"/>
         <element name="AwfulThread" positionX="25" positionY="210" width="128" height="360"/>
         <element name="AwfulUser" positionX="160" positionY="192" width="128" height="420"/>
