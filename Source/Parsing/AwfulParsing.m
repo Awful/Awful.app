@@ -612,20 +612,22 @@ static NSString * DeEntitify(NSString *withEntities)
     TFHppleElement *messageLink = [doc searchForSingle:@"//ul[" HAS_CLASS(profilelinks) "]//a[contains(@href, 'private.php')]"];
     self.author.canReceivePrivateMessages = !!messageLink;
     TFHppleElement *showPostsByUser = [doc searchForSingle:@"//a[" HAS_CLASS(user_jump) "]"];
-    NSError *profileError;
-    NSRegularExpression *profileRegex = [NSRegularExpression regularExpressionWithPattern:@"userid=(\\d+)"
-                                                                                  options:0
-                                                                                    error:&profileError];
-    if (!profileRegex) {
-        NSLog(@"error creating userid regex: %@", profileError);
+    NSString *linkWithUserid = [showPostsByUser objectForKey:@"href"];
+    if ([linkWithUserid rangeOfString:@"userid"].location == NSNotFound) {
+        TFHppleElement *profileLink = [doc searchForSingle:@"//ul[" HAS_CLASS(profilelinks) "]//a"];
+        linkWithUserid = [profileLink objectForKey:@"href"];
     }
-    NSString *profileLink = [showPostsByUser objectForKey:@"href"];
-    if (profileLink) {
-        NSRange wholeRange = NSMakeRange(0, [profileLink length]);
-        NSTextCheckingResult *match = [profileRegex firstMatchInString:profileLink
-                                                               options:0
-                                                                 range:wholeRange];
-        if (match) self.author.userID = [profileLink substringWithRange:[match rangeAtIndex:1]];
+    if (linkWithUserid) {
+        NSScanner *scanner = [NSScanner scannerWithString:linkWithUserid];
+        [scanner scanUpToString:@"userid=" intoString:NULL];
+        [scanner scanString:@"userid=" intoString:NULL];
+        NSInteger userID;
+        BOOL ok = [scanner scanInteger:&userID];
+        if (ok) {
+            self.author.userID = [@(userID) stringValue];
+        } else {
+            NSLog(@"could not parse post author ID from %@", scanner.string);
+        }
     }
     
     self.editable = !![doc searchForSingle:
