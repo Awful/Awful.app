@@ -173,13 +173,13 @@
         AwfulPostsViewController *page = [AwfulPostsViewController new];
         page.thread = thread;
         [self displayPage:page];
-        [page loadPage:1];
+        [page loadPage:1 singleUserID:nil];
     }];
     [sheet addButtonWithTitle:@"Jump to Last Page" block:^{
         AwfulPostsViewController *page = [AwfulPostsViewController new];
         page.thread = thread;
         [self displayPage:page];
-        [page loadPage:AwfulThreadPageLast];
+        [page loadPage:AwfulThreadPageLast singleUserID:nil];
     }];
     if (thread.beenSeen) {
         [sheet addButtonWithTitle:@"Mark as Unread" block:^{
@@ -439,7 +439,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     page.thread = thread;
     // For an unread thread, the Forums will interpret "next unread page" to mean "last page",
     // which is not very helpful.
-    [page loadPage:thread.beenSeen ? AwfulThreadPageNextUnread : 1];
+    [page loadPage:thread.beenSeen ? AwfulThreadPageNextUnread : 1
+      singleUserID:nil];
     [self displayPage:page];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }

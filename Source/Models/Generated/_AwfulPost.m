@@ -10,8 +10,8 @@ const struct AwfulPostAttributes AwfulPostAttributes = {
 	.innerHTML = @"innerHTML",
 	.postDate = @"postDate",
 	.postID = @"postID",
+	.singleUserIndex = @"singleUserIndex",
 	.threadIndex = @"threadIndex",
-	.userOnlyPost = @"userOnlyPost",
 };
 
 const struct AwfulPostRelationships AwfulPostRelationships = {
@@ -54,13 +54,13 @@ const struct AwfulPostFetchedProperties AwfulPostFetchedProperties = {
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
-	if ([key isEqualToString:@"threadIndexValue"]) {
-		NSSet *affectingKey = [NSSet setWithObject:@"threadIndex"];
+	if ([key isEqualToString:@"singleUserIndexValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"singleUserIndex"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
-	if ([key isEqualToString:@"userOnlyPostValue"]) {
-		NSSet *affectingKey = [NSSet setWithObject:@"userOnlyPost"];
+	if ([key isEqualToString:@"threadIndexValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"threadIndex"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
@@ -132,6 +132,32 @@ const struct AwfulPostFetchedProperties AwfulPostFetchedProperties = {
 
 
 
+@dynamic singleUserIndex;
+
+
+
+- (int32_t)singleUserIndexValue {
+	NSNumber *result = [self singleUserIndex];
+	return [result intValue];
+}
+
+- (void)setSingleUserIndexValue:(int32_t)value_ {
+	[self setSingleUserIndex:[NSNumber numberWithInt:value_]];
+}
+
+- (int32_t)primitiveSingleUserIndexValue {
+	NSNumber *result = [self primitiveSingleUserIndex];
+	return [result intValue];
+}
+
+- (void)setPrimitiveSingleUserIndexValue:(int32_t)value_ {
+	[self setPrimitiveSingleUserIndex:[NSNumber numberWithInt:value_]];
+}
+
+
+
+
+
 @dynamic threadIndex;
 
 
@@ -152,32 +178,6 @@ const struct AwfulPostFetchedProperties AwfulPostFetchedProperties = {
 
 - (void)setPrimitiveThreadIndexValue:(int32_t)value_ {
 	[self setPrimitiveThreadIndex:[NSNumber numberWithInt:value_]];
-}
-
-
-
-
-
-@dynamic userOnlyPost;
-
-
-
-- (BOOL)userOnlyPostValue {
-	NSNumber *result = [self userOnlyPost];
-	return [result boolValue];
-}
-
-- (void)setUserOnlyPostValue:(BOOL)value_ {
-	[self setUserOnlyPost:[NSNumber numberWithBool:value_]];
-}
-
-- (BOOL)primitiveUserOnlyPostValue {
-	NSNumber *result = [self primitiveUserOnlyPost];
-	return [result boolValue];
-}
-
-- (void)setPrimitiveUserOnlyPostValue:(BOOL)value_ {
-	[self setPrimitiveUserOnlyPost:[NSNumber numberWithBool:value_]];
 }
 
 

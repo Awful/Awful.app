@@ -11,14 +11,10 @@
 @interface AwfulPost : _AwfulPost
 
 @property (readonly, nonatomic) BOOL beenSeen;
-
 @property (readonly, nonatomic) NSInteger page;
+@property (readonly, nonatomic) NSInteger singleUserPage;
 
 + (NSArray *)postsCreatedOrUpdatedFromPageInfo:(PageParsedInfo *)pageInfo;
-+ (NSArray *)postsCreatedOrUpdatedFromPageInfo:(PageParsedInfo *)pageInfo
-                                        userID:(NSString *)user;
-
-
 + (NSArray *)postsCreatedOrUpdatedFromJSON:(NSDictionary *)json;
 
 @end

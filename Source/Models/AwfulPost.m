@@ -33,13 +33,12 @@
     return (self.threadIndexValue - 1) / 40 + 1;
 }
 
-+ (NSArray *)postsCreatedOrUpdatedFromPageInfo:(PageParsedInfo *)pageInfo
+- (NSInteger)singleUserPage
 {
-    return [self postsCreatedOrUpdatedFromPageInfo:pageInfo userID:nil];
+    return (self.singleUserIndexValue - 1) / 40 + 1;
 }
 
 + (NSArray *)postsCreatedOrUpdatedFromPageInfo:(PageParsedInfo *)pageInfo
-                                        userID:(NSString *)user
 {
     if ([pageInfo.forumID length] == 0 || [pageInfo.threadID length] == 0) return nil;
     AwfulForum *forum = [AwfulForum firstMatchingPredicate:@"forumID = %@", pageInfo.forumID];
@@ -53,7 +52,9 @@
     thread.title = pageInfo.threadTitle;
     thread.isBookmarkedValue = pageInfo.threadBookmarked;
     thread.isClosedValue = pageInfo.threadClosed;
-    thread.numberOfPagesValue = pageInfo.pagesInThread;
+    if (!pageInfo.singleUserID) {
+        thread.numberOfPagesValue = pageInfo.pagesInThread;
+    }
     
     NSArray *allPosts = [thread.posts allObjects];
     NSArray *allPostIDs = [allPosts valueForKey:@"postID"];
@@ -72,27 +73,23 @@
             post.thread = thread;
         }
         [postInfo applyToObject:post];
+        NSInteger threadIndex = 0;
         if ([postInfo.threadIndex length] > 0) {
-            post.threadIndexValue = [postInfo.threadIndex integerValue];
+            threadIndex = [postInfo.threadIndex integerValue];
         } else {
-            post.threadIndexValue = (pageInfo.pageNumber - 1) * 40 + i + 1;
+            threadIndex = (pageInfo.pageNumber - 1) * 40 + i + 1;
+        }
+        if ([pageInfo.singleUserID length] > 0) {
+            post.singleUserIndexValue = threadIndex;
+        } else {
+            post.threadIndexValue = threadIndex;
         }
         if (!post.author) {
             post.author = existingUsers[postInfo.author.username] ?: [AwfulUser insertNew];
         }
         [postInfo.author applyToObject:post.author];
         existingUsers[post.author.username] = post.author;
-        NSString* userID = post.author.userID;
-        
-        if( userID == user  ) {
-            post.userOnlyPostValue = true;
-        }
-        else {
-            post.userOnlyPostValue = false;
-        }
-        if(user == nil || post.author.userID == user) {
-            [posts addObject:post];
-        }
+        [posts addObject:post];
         if (postInfo.author.originalPoster) {
             thread.author = post.author;
         }
@@ -100,7 +97,7 @@
             thread.seenPostsValue = post.threadIndexValue;
         }
     }
-    if (pageInfo.pageNumber == thread.numberOfPagesValue) {
+    if (pageInfo.pageNumber == thread.numberOfPagesValue && !pageInfo.singleUserID) {
         thread.lastPostAuthorName = [[posts lastObject] author].username;
         thread.lastPostDate = [[posts lastObject] postDate];
     }

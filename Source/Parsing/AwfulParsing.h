@@ -121,6 +121,7 @@
 @property (readonly, copy, nonatomic) NSString *threadTitle;
 @property (readonly, getter=isThreadClosed, nonatomic) BOOL threadClosed;
 @property (readonly, getter=isThreadBookmarked, nonatomic) BOOL threadBookmarked;
+@property (copy, nonatomic) NSString *singleUserID;
 
 @end
 

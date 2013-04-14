@@ -194,12 +194,24 @@
         self.fetchedResultsController = nil;
         return;
     }
+    
     NSFetchRequest *request = self.fetchedResultsController.fetchRequest;
     if (!request) {
         request = [NSFetchRequest fetchRequestWithEntityName:[AwfulPost entityName]];
-        [request setSortDescriptors:@[
-            [NSSortDescriptor sortDescriptorWithKey:AwfulPostAttributes.threadIndex ascending:YES]
-        ]];
+    }
+    NSInteger lowIndex = (self.currentPage - 1) * 40 + 1;
+    NSInteger highIndex = self.currentPage * 40;
+    NSString *indexKey;
+    if (self.singleUserID) {
+        indexKey = AwfulPostAttributes.singleUserIndex;
+    } else {
+        indexKey = AwfulPostAttributes.threadIndex;
+    }
+    request.predicate = [NSPredicate predicateWithFormat:
+                         @"thread = %@ AND %d <= %K AND %K <= %d",
+                         self.thread, lowIndex, indexKey, indexKey, highIndex];
+    request.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:indexKey ascending:YES] ];
+    if (!self.fetchedResultsController) {
         NSManagedObjectContext *context = self.thread.managedObjectContext;
         NSFetchedResultsController *controller;
         controller = [[NSFetchedResultsController alloc] initWithFetchRequest:request
@@ -209,21 +221,7 @@
         controller.delegate = self;
         self.fetchedResultsController = controller;
     }
-    NSInteger lowIndex = (self.currentPage - 1) * 40 + 1;
-    NSInteger highIndex = self.currentPage * 40;
     
-    request.predicate = [NSPredicate predicateWithFormat:@"thread == %@ AND %d <= threadIndex AND threadIndex <= %d",
-                         self.thread, lowIndex, highIndex];
-    
-    if(self.userID!=nil) {
-        request.predicate = [NSPredicate predicateWithFormat:@"thread == %@ AND %d <= threadIndex AND threadIndex <= %d AND author.userID == %@ AND userOnlyPost == %@",
-                             self.thread, lowIndex, highIndex, self.userID, [NSNumber numberWithBool:YES]];
-    }
-    else {
-        request.predicate = [NSPredicate predicateWithFormat:@"thread == %@ AND %d <= threadIndex AND threadIndex <= %d AND userOnlyPost == %@",
-                             self.thread, lowIndex, highIndex,[NSNumber numberWithBool:NO]];
-    }
-
     NSError *error;
     BOOL ok = [self.fetchedResultsController performFetch:&error];
     if (!ok) {
@@ -315,23 +313,16 @@
     [self updateUserInterface];
 }
 
-- (void)loadPage:(AwfulThreadPage)page
+- (void)loadPage:(AwfulThreadPage)page singleUserID:(NSString *)singleUserID
 {
-    [self loadPage:page userID:nil];
-}
-
-- (void)loadPage:(AwfulThreadPage)page
-          userID:(NSString *)user
-{
-
     [self stopObservingThreadSeenPosts];
     [self.networkOperation cancel];
     self.jumpToPostAfterLoad = nil;
     NSInteger oldPage = self.currentPage;
     self.currentPage = page;
     BOOL refreshingSamePage = page > 0 && page == oldPage;
-    if (!refreshingSamePage || user != self.userID) {
-        self.userID = user;
+    if (!refreshingSamePage || ![singleUserID isEqual:self.singleUserID]) {
+        self.singleUserID = singleUserID;
         [self updateFetchedResultsController];
         self.pullUpToRefreshControl.refreshing = NO;
         [self updateUserInterface];
@@ -342,11 +333,11 @@
         [self.postsView reloadData];
     }
     else {
-        self.userID = user;
+        self.singleUserID = singleUserID;
     }
     id op = [[AwfulHTTPClient client] listPostsInThreadWithID:self.thread.threadID
                                                        onPage:page
-                                                       userID:user
+                                                 singleUserID:singleUserID
                                                       andThen:^(NSError *error, NSArray *posts,
                                                                 NSUInteger firstUnreadPost,
                                                                 NSString *advertisementHTML)
@@ -383,7 +374,7 @@
         AwfulPost *lastPost = [posts lastObject];
         if (lastPost) {
             self.thread = [lastPost thread];
-            self.currentPage = [lastPost page];
+            self.currentPage = singleUserID ? lastPost.singleUserPage : lastPost.page;
         }
         self.advertisementHTML = advertisementHTML;
         if (page == AwfulThreadPageNextUnread && firstUnreadPost != NSNotFound) {
@@ -445,9 +436,9 @@
 - (void)loadNextPageOrRefresh
 {
     if (self.thread.numberOfPagesValue > self.currentPage) {
-        [self loadPage:self.currentPage + 1 userID:self.userID];
+        [self loadPage:self.currentPage + 1 singleUserID:self.singleUserID];
     } else {
-        [self loadPage:self.currentPage userID:self.userID];
+        [self loadPage:self.currentPage singleUserID:self.singleUserID];
     }
 }
 
@@ -640,11 +631,11 @@
 {
     if (seg.selectedSegmentIndex == 0) {
         if (self.currentPage > 1) {
-            [self loadPage:self.currentPage - 1 userID:self.userID];
+            [self loadPage:self.currentPage - 1 singleUserID:self.singleUserID];
         }
     } else if (seg.selectedSegmentIndex == 1) {
         if (self.currentPage < self.thread.numberOfPagesValue) {
-            [self loadPage:self.currentPage + 1 userID:self.userID];
+            [self loadPage:self.currentPage + 1 singleUserID:self.singleUserID];
         }
     }
     seg.selectedSegmentIndex = UISegmentedControlNoSegment;
@@ -985,17 +976,14 @@ static char KVOContext;
     [sheet addButtonWithTitle:[NSString stringWithFormat:@"%@ Profile", possessiveUsername] block:^{
         [self showProfileWithUser:post.author];
     }];
-    if( self.userID == nil) {
-        [sheet addButtonWithTitle:[NSString stringWithFormat:@"%@ Posts", possessiveUsername] block:^{
-            [self loadPage:1 userID:post.author.userID];
+    if (self.singleUserID) {
+        [sheet addButtonWithTitle:@"All Users' Posts" block:^{
+            [self loadPage:1 singleUserID:nil];
         }];
+    } else {
+        [sheet addButtonWithTitle:[NSString stringWithFormat:@"%@ Posts", possessiveUsername]
+                            block:^{ [self loadPage:1 singleUserID:post.author.userID]; }];
     }
-    else {
-        [sheet addButtonWithTitle:@"All Posts" block:^{
-            [self loadPage:1];
-        }];
-    }
-
     [sheet addCancelButtonWithTitle:@"Cancel"];
     [sheet showFromRect:rect inView:self.postsView animated:YES];
 }
@@ -1113,7 +1101,7 @@ static char KVOContext;
 - (void)jumpToPageController:(AwfulJumpToPageController *)jump didSelectPage:(AwfulThreadPage)page
 {
     if (page != AwfulThreadPageNone) {
-        [self loadPage:page userID:self.userID];
+        [self loadPage:page singleUserID:self.singleUserID];
     }
     [jump dismiss];
 }
@@ -1125,7 +1113,7 @@ static char KVOContext;
 {
     [self clearOngoingReplyInfo];
     [self dismissViewControllerAnimated:YES completion:^{
-        [self loadPage:AwfulThreadPageNextUnread];
+        [self loadPage:AwfulThreadPageNextUnread singleUserID:nil];
     }];
 }
 
@@ -1134,7 +1122,8 @@ static char KVOContext;
 {
     [self clearOngoingReplyInfo];
     [self dismissViewControllerAnimated:YES completion:^{
-        [self loadPage:post.page];
+        [self loadPage:self.singleUserID ? post.singleUserPage : post.page
+          singleUserID:self.singleUserID];
         [self jumpToPostWithID:post.postID];
     }];
 }

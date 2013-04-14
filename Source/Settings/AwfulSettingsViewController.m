@@ -324,7 +324,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         AwfulPostsViewController *page = [AwfulPostsViewController new];
         NSString *threadID = setting[@"ThreadID"];
         page.thread = [AwfulThread firstOrNewThreadWithThreadID:threadID];
-        [page loadPage:AwfulThreadPageNextUnread];
+        [page loadPage:AwfulThreadPageNextUnread singleUserID:nil];
         if (self.splitViewController) {
             AwfulSplitViewController *split = (AwfulSplitViewController *)self.splitViewController;
             UINavigationController *nav = split.viewControllers[1];

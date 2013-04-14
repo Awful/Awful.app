@@ -11,8 +11,8 @@ extern const struct AwfulPostAttributes {
 	__unsafe_unretained NSString *innerHTML;
 	__unsafe_unretained NSString *postDate;
 	__unsafe_unretained NSString *postID;
+	__unsafe_unretained NSString *singleUserIndex;
 	__unsafe_unretained NSString *threadIndex;
-	__unsafe_unretained NSString *userOnlyPost;
 } AwfulPostAttributes;
 
 extern const struct AwfulPostRelationships {
@@ -114,6 +114,20 @@ extern const struct AwfulPostFetchedProperties {
 
 
 
+@property (nonatomic, strong) NSNumber* singleUserIndex;
+
+
+
+@property int32_t singleUserIndexValue;
+- (int32_t)singleUserIndexValue;
+- (void)setSingleUserIndexValue:(int32_t)value_;
+
+//- (BOOL)validateSingleUserIndex:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
 @property (nonatomic, strong) NSNumber* threadIndex;
 
 
@@ -123,20 +137,6 @@ extern const struct AwfulPostFetchedProperties {
 - (void)setThreadIndexValue:(int32_t)value_;
 
 //- (BOOL)validateThreadIndex:(id*)value_ error:(NSError**)error_;
-
-
-
-
-
-@property (nonatomic, strong) NSNumber* userOnlyPost;
-
-
-
-@property BOOL userOnlyPostValue;
-- (BOOL)userOnlyPostValue;
-- (void)setUserOnlyPostValue:(BOOL)value_;
-
-//- (BOOL)validateUserOnlyPost:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -212,20 +212,20 @@ extern const struct AwfulPostFetchedProperties {
 
 
 
+- (NSNumber*)primitiveSingleUserIndex;
+- (void)setPrimitiveSingleUserIndex:(NSNumber*)value;
+
+- (int32_t)primitiveSingleUserIndexValue;
+- (void)setPrimitiveSingleUserIndexValue:(int32_t)value_;
+
+
+
+
 - (NSNumber*)primitiveThreadIndex;
 - (void)setPrimitiveThreadIndex:(NSNumber*)value;
 
 - (int32_t)primitiveThreadIndexValue;
 - (void)setPrimitiveThreadIndexValue:(int32_t)value_;
-
-
-
-
-- (NSNumber*)primitiveUserOnlyPost;
-- (void)setPrimitiveUserOnlyPost:(NSNumber*)value;
-
-- (BOOL)primitiveUserOnlyPostValue;
-- (void)setPrimitiveUserOnlyPostValue:(BOOL)value_;
 
 
 

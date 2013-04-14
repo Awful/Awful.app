@@ -429,7 +429,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         if (page == 0) page = 1;
         AwfulPostsViewController *postsView = [AwfulPostsViewController new];
         postsView.thread = [AwfulThread firstOrNewThreadWithThreadID:threadID];
-        [postsView loadPage:page];
+        [postsView loadPage:page singleUserID:nil];
         UINavigationController *nav;
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             nav = self.splitViewController.viewControllers[1];
@@ -498,7 +498,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
 {
     AwfulPostsViewController *postsView = [AwfulPostsViewController new];
     postsView.thread = [AwfulThread firstOrNewThreadWithThreadID:threadID];
-    [postsView loadPage:page];
+    [postsView loadPage:page singleUserID:nil];
     [postsView jumpToPostWithID:postID];
     UINavigationController *nav;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {

@@ -176,20 +176,7 @@ static AwfulHTTPClient *instance = nil;
 
 - (NSOperation *)listPostsInThreadWithID:(NSString *)threadID
                                   onPage:(AwfulThreadPage)page
-                                 andThen:(void (^)(NSError *error,
-                                                   NSArray *posts,
-                                                   NSUInteger firstUnreadPost,
-                                                   NSString *advertisementHTML))callback
-{
-    return [self listPostsInThreadWithID:threadID
-                                  onPage:page
-                                  userID:nil
-                                 andThen:callback];
-}
-
-- (NSOperation *)listPostsInThreadWithID:(NSString *)threadID
-                                  onPage:(AwfulThreadPage)page
-                                  userID:(NSString *)user
+                            singleUserID:(NSString *)singleUserID
                                  andThen:(void (^)(NSError *error,
                                                    NSArray *posts,
                                                    NSUInteger firstUnreadPost,
@@ -204,7 +191,7 @@ static AwfulHTTPClient *instance = nil;
     else if (page == AwfulThreadPageLast) parameters[@"goto"] = @"lastpost";
     else parameters[@"pagenumber"] = @(page);
     
-    if (user != nil) parameters[@"userid"] = user;
+    if (singleUserID) parameters[@"userid"] = singleUserID;
     
     NSURLRequest *request = [self requestWithMethod:@"GET" path:@"showthread.php"
                                          parameters:parameters];
@@ -218,7 +205,9 @@ static AwfulHTTPClient *instance = nil;
             ad = [responseObject valueForKey:@"goon_banner"];
             if ([ad isEqual:[NSNull null]]) ad = nil;
         } else {
-            posts = [AwfulPost postsCreatedOrUpdatedFromPageInfo:responseObject userID:user];
+            PageParsedInfo *pageInfo = responseObject;
+            pageInfo.singleUserID = singleUserID;
+            posts = [AwfulPost postsCreatedOrUpdatedFromPageInfo:responseObject];
             ad = [responseObject advertisementHTML];
         }
         if (callback) {
