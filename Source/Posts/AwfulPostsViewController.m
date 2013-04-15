@@ -996,14 +996,14 @@ static char KVOContext;
     [sheet addButtonWithTitle:[NSString stringWithFormat:@"%@ Profile", possessiveUsername] block:^{
         [self showProfileWithUser:post.author];
     }];
-    if (self.singleUserID) {
-        [sheet addButtonWithTitle:@"All Users' Posts" block:^{
-            [self loadPage:(post.page ?: 1) singleUserID:nil];
-            [self jumpToPostWithID:post.postID];
-        }];
-    } else {
-        [sheet addButtonWithTitle:[NSString stringWithFormat:@"%@ Posts", possessiveUsername]
-                            block:^{ [self loadPage:1 singleUserID:post.author.userID]; }];
+    if (!self.singleUserID) {
+        [sheet addButtonWithTitle:[NSString stringWithFormat:@"%@ Posts", possessiveUsername] block:^
+         {
+             AwfulPostsViewController *postsView = [AwfulPostsViewController new];
+             postsView.thread = self.thread;
+             [postsView loadPage:1 singleUserID:post.author.userID];
+             [self.navigationController pushViewController:postsView animated:YES];
+         }];
     }
     [sheet addCancelButtonWithTitle:@"Cancel"];
     [sheet showFromRect:rect inView:self.postsView animated:YES];
