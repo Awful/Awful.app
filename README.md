@@ -52,7 +52,7 @@ Data Flow
 
 The [HTTP client][] connects to the Something Awful Forums and parses its contents, saving those contents as [entities in a Core Data store][entities]. Various screens show the [forums][], [threads][], [posts][], [private messages][], and [users][] saved to the Core Data store.
 
-Awful's Core Data store is a cache of content from the Forums. Any user info specific to the app is stored in [user defaults][]. The Core Data store can be (and may be, since it's stored in the application's Caches directory) deleted at any time.
+Awful's Core Data store is a cache of content from the Forums. Any user info specific to the app is stored in [user defaults][]. The Core Data store may be (and can be, since it's stored in the application's Caches directory) deleted at any time.
 
 [HTTP client]: Source/Networking/AwfulHTTPClient.h
 [entities]: Source/Models
@@ -92,9 +92,10 @@ Awful includes contributions from:
 - [Diabolik900](http://forums.somethingawful.com/member.php?action=getinfo&userid=113215)
 - [enigma105](http://forums.somethingawful.com/member.php?action=getinfo&userid=51258)
 - [hardstyle](http://forums.somethingawful.com/member.php?action=getinfo&userid=51070)
-- [pokeyman][]
+- [Jose Valasquez](http://forums.somethingawful.com/member.php?action=getinfo&userid=77039)
 - [Malcolm XML](http://forums.somethingawful.com/member.php?action=getinfo&userid=154586)
 - [OHIO](http://forums.somethingawful.com/member.php?action=getinfo&userid=82915)
+- [pokeyman][]
 - [The Dave](http://forums.somethingawful.com/member.php?action=getinfo&userid=41741)
 - [ultramiraculous](http://forums.somethingawful.com/member.php?action=getinfo&userid=44504)
 - [xzzy](http://forums.somethingawful.com/member.php?action=getinfo&userid=148096)
