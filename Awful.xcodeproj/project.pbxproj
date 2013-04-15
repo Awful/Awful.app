@@ -2112,6 +2112,19 @@
 			path = JLRoutes;
 			sourceTree = "<group>";
 		};
+		1C1D2FE6171BA1C200AC6387 /* URLs */ = {
+			isa = PBXGroup;
+			children = (
+				1C96D0B31682BBA80043B194 /* AwfulExternalBrowser.h */,
+				1C96D0B41682BBA80043B194 /* AwfulExternalBrowser.m */,
+				1C96D0AA1682B1140043B194 /* NSURL+Awful.h */,
+				1C96D0AB1682B1140043B194 /* NSURL+Awful.m */,
+				1C96D0AD1682B25A0043B194 /* NSURL+OpensInBrowser.h */,
+				1C96D0AE1682B25A0043B194 /* NSURL+OpensInBrowser.m */,
+			);
+			path = URLs;
+			sourceTree = "<group>";
+		};
 		1C278A3316453296007D3CEC /* Scrolling and Pulling */ = {
 			isa = PBXGroup;
 			children = (
@@ -2128,8 +2141,6 @@
 			children = (
 				1C96D0A0168298BF0043B194 /* AwfulBrowserViewController.h */,
 				1C96D0A1168298BF0043B194 /* AwfulBrowserViewController.m */,
-				1C96D0B31682BBA80043B194 /* AwfulExternalBrowser.h */,
-				1C96D0B41682BBA80043B194 /* AwfulExternalBrowser.m */,
 			);
 			path = Browsing;
 			sourceTree = "<group>";
@@ -2153,6 +2164,7 @@
 				1CDD51951542949600326C7B /* Theming */,
 				1CC780471612DA8D002AF958 /* Threads */,
 				1CE2D99D16688AC40024AC1C /* UIKit and Foundation */,
+				1C1D2FE6171BA1C200AC6387 /* URLs */,
 				1C6ED634169103FE0015CDD5 /* Users */,
 			);
 			path = Source;
@@ -2587,10 +2599,6 @@
 				1CE2D9CD166ABD0D0024AC1C /* NSFileManager+UserDirectories.m */,
 				1CE2D9CE166ABD0D0024AC1C /* NSString+CollapseWhitespace.h */,
 				1CE2D9CF166ABD0D0024AC1C /* NSString+CollapseWhitespace.m */,
-				1C96D0AA1682B1140043B194 /* NSURL+Awful.h */,
-				1C96D0AB1682B1140043B194 /* NSURL+Awful.m */,
-				1C96D0AD1682B25A0043B194 /* NSURL+OpensInBrowser.h */,
-				1C96D0AE1682B25A0043B194 /* NSURL+OpensInBrowser.m */,
 				1CE68BD716F7C18E003D56C9 /* NSURL+Punycode.h */,
 				1CE68BD816F7C18E003D56C9 /* NSURL+Punycode.m */,
 				1CE2D9D0166ABD0D0024AC1C /* NSURL+QueryDictionary.h */,

@@ -37,13 +37,21 @@
         }
         // Link to page on specific thread.
         else if (query[@"threadid"] && query[@"pagenumber"]) {
-            return [NSURL URLWithString:[NSString stringWithFormat:
-                    @"awful://threads/%@/pages/%@", query[@"threadid"], query[@"pagenumber"]]];
+            NSString *extra = @"";
+            if (query[@"userid"]) {
+                extra = [NSString stringWithFormat:@"?userid=%@", query[@"userid"]];
+            }
+            return [NSURL URLWithString:[NSString stringWithFormat:@"awful://threads/%@/pages/%@%@",
+                                         query[@"threadid"], query[@"pagenumber"], extra]];
         }
         // Link to specific thread.
         else if (query[@"threadid"]) {
+            NSString *extra = @"";
+            if (query[@"userid"]) {
+                extra = [NSString stringWithFormat:@"?userid=%@", query[@"userid"]];
+            }
             return [NSURL URLWithString:[NSString stringWithFormat:
-                    @"awful://threads/%@/pages/1", query[@"threadid"]]];
+                    @"awful://threads/%@/pages/1%@", query[@"threadid"], extra]];
         }
     }
     // Forum.
