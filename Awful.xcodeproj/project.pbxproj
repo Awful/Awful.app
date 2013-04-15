@@ -682,6 +682,7 @@
 		8C5159E1163DB796000114F6 /* AICA-TAG-race.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C5159D7163DB796000114F6 /* AICA-TAG-race.png */; };
 		8C5159E2163DB796000114F6 /* RP-20a6zc0.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C5159D8163DB796000114F6 /* RP-20a6zc0.png */; };
 		8C5159E3163DB796000114F6 /* fyad-zounds.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C5159D9163DB796000114F6 /* fyad-zounds.png */; };
+		8C51975D171CC5C800997E43 /* tg-starwars.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C51975C171CC5C800997E43 /* tg-starwars.png */; };
 		8C6F084A1653498F00B43251 /* byob-anti.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C6F08491653498F00B43251 /* byob-anti.png */; };
 		8C70028A169C6EFA00FC0B78 /* FVGifAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C700289169C6EFA00FC0B78 /* FVGifAnimation.m */; };
 		8C87428E1655FD990018AC6C /* byob.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C87428D1655FD990018AC6C /* byob.png */; };
@@ -1461,6 +1462,7 @@
 		8C5159D7163DB796000114F6 /* AICA-TAG-race.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AICA-TAG-race.png"; sourceTree = "<group>"; };
 		8C5159D8163DB796000114F6 /* RP-20a6zc0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "RP-20a6zc0.png"; sourceTree = "<group>"; };
 		8C5159D9163DB796000114F6 /* fyad-zounds.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-zounds.png"; sourceTree = "<group>"; };
+		8C51975C171CC5C800997E43 /* tg-starwars.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tg-starwars.png"; sourceTree = "<group>"; };
 		8C6F08491653498F00B43251 /* byob-anti.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "byob-anti.png"; sourceTree = "<group>"; };
 		8C700288169C6EFA00FC0B78 /* FVGifAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FVGifAnimation.h; sourceTree = "<group>"; };
 		8C700289169C6EFA00FC0B78 /* FVGifAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FVGifAnimation.m; sourceTree = "<group>"; };
@@ -3283,6 +3285,7 @@
 				8CAB2832164B4FB0009BC24F /* tg-mafia.png */,
 				8CAAE2EB1651CC52004C8C8A /* tg-poker.png */,
 				8CF02DFB16484CCE0059BC56 /* tg-recruiting.png */,
+				8C51975C171CC5C800997E43 /* tg-starwars.png */,
 				8CAAE2D71651CC52004C8C8A /* tg-story.png */,
 				8CF02DFC16484CCE0059BC56 /* tg-wargames.png */,
 				8CCD534515B783FC00E5893B /* tma.png */,
@@ -4170,6 +4173,7 @@
 				1CE8FDF11703CEAC006A3B84 /* font-size@2x.png in Resources */,
 				1CE8FDFA1708BB2F006A3B84 /* font-size-smaller@2x.png in Resources */,
 				1CE8FDFB1708BB2F006A3B84 /* font-size-larger@2x.png in Resources */,
+				8C51975D171CC5C800997E43 /* tg-starwars.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

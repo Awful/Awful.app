@@ -466,6 +466,7 @@ tg-gurps.png
 tg-mafia.png
 tg-poker.png
 tg-recruiting.png
+tg-starwars.png
 tg-story.png
 tg-wargames.png
 tma.png
