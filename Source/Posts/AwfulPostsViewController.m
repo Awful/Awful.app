@@ -210,6 +210,12 @@
     request.predicate = [NSPredicate predicateWithFormat:
                          @"thread = %@ AND %d <= %K AND %K <= %d",
                          self.thread, lowIndex, indexKey, indexKey, highIndex];
+    if (self.singleUserID) {
+        NSPredicate *and = [NSPredicate predicateWithFormat:
+                            @"author.userID = %@", self.singleUserID];
+        request.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:
+                             @[ request.predicate, and ]];
+    }
     request.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:indexKey ascending:YES] ];
     if (!self.fetchedResultsController) {
         NSManagedObjectContext *context = self.thread.managedObjectContext;
