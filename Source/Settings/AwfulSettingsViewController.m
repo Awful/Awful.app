@@ -325,11 +325,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         NSString *threadID = setting[@"ThreadID"];
         page.thread = [AwfulThread firstOrNewThreadWithThreadID:threadID];
         [page loadPage:AwfulThreadPageNextUnread singleUserID:nil];
-        if (self.splitViewController) {
-            AwfulSplitViewController *split = (AwfulSplitViewController *)self.splitViewController;
-            UINavigationController *nav = split.viewControllers[1];
+        AwfulSplitViewController *split = self.awfulSplitViewController;
+        if (split) {
+            UINavigationController *nav = (id)split.mainViewController;
             [nav setViewControllers:@[ page ] animated:NO];
-            [split.masterPopoverController dismissPopoverAnimated:YES];
+            [split setSidebarVisible:NO animated:YES];
         } else {
             [self.navigationController pushViewController:page animated:YES];
         }
@@ -398,10 +398,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
 {
     NSDictionary *sectionInfo = self.sections[section];
-    NSString *iOSVersion = [UIDevice currentDevice].systemVersion;
-    if ([iOSVersion compare:@"6.0" options:NSNumericSearch] == NSOrderedAscending) {
-        return sectionInfo[@"Explanation~ios5"] ?: sectionInfo[@"Explanation"];
-    }
     return sectionInfo[@"Explanation"];
 }
 

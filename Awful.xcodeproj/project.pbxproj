@@ -72,6 +72,7 @@
 		1C1D2FDC171A75CB00AC6387 /* AwfulSingleUserThreadInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1D2FDB171A75CB00AC6387 /* AwfulSingleUserThreadInfo.m */; };
 		1C1D2FDF171A75D400AC6387 /* _AwfulSingleUserThreadInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1D2FDE171A75D400AC6387 /* _AwfulSingleUserThreadInfo.m */; };
 		1C1D2FE4171A87ED00AC6387 /* JLRoutes.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1D2FE2171A87ED00AC6387 /* JLRoutes.m */; };
+		1C1D2FEC171BAADE00AC6387 /* AwfulSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1D2FEB171BAADE00AC6387 /* AwfulSplitViewController.m */; };
 		1C23A0A2163E6C40006C7F39 /* AwfulPostsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C23A0A1163E6C40006C7F39 /* AwfulPostsView.m */; };
 		1C23A0A5163E6E1D006C7F39 /* posts-view.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* posts-view.html */; };
 		1C23A0A7163E7D2B006C7F39 /* posts-view.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A6163E7D2B006C7F39 /* posts-view.js */; };
@@ -583,7 +584,6 @@
 		1CE2D9D7166ABD0D0024AC1C /* AwfulAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9C2166ABD0D0024AC1C /* AwfulAlertView.m */; };
 		1CE2D9D8166ABD0D0024AC1C /* AwfulFetchedTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9C4166ABD0D0024AC1C /* AwfulFetchedTableViewController.m */; };
 		1CE2D9D9166ABD0D0024AC1C /* AwfulNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9C7166ABD0D0024AC1C /* AwfulNavigationBar.m */; };
-		1CE2D9DA166ABD0D0024AC1C /* AwfulSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9C9166ABD0D0024AC1C /* AwfulSplitViewController.m */; };
 		1CE2D9DB166ABD0D0024AC1C /* AwfulTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9CB166ABD0D0024AC1C /* AwfulTableViewController.m */; };
 		1CE2D9DC166ABD0D0024AC1C /* NSFileManager+UserDirectories.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9CD166ABD0D0024AC1C /* NSFileManager+UserDirectories.m */; };
 		1CE2D9DD166ABD0D0024AC1C /* NSString+CollapseWhitespace.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9CF166ABD0D0024AC1C /* NSString+CollapseWhitespace.m */; };
@@ -1003,6 +1003,8 @@
 		1C1D2FDE171A75D400AC6387 /* _AwfulSingleUserThreadInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulSingleUserThreadInfo.m; sourceTree = "<group>"; };
 		1C1D2FE1171A87ED00AC6387 /* JLRoutes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JLRoutes.h; sourceTree = "<group>"; };
 		1C1D2FE2171A87ED00AC6387 /* JLRoutes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JLRoutes.m; sourceTree = "<group>"; };
+		1C1D2FEA171BAADE00AC6387 /* AwfulSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSplitViewController.h; sourceTree = "<group>"; };
+		1C1D2FEB171BAADE00AC6387 /* AwfulSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSplitViewController.m; sourceTree = "<group>"; };
 		1C23A0A0163E6C40006C7F39 /* AwfulPostsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostsView.h; sourceTree = "<group>"; };
 		1C23A0A1163E6C40006C7F39 /* AwfulPostsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostsView.m; sourceTree = "<group>"; };
 		1C23A0A4163E6E1D006C7F39 /* posts-view.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "posts-view.html"; sourceTree = "<group>"; };
@@ -1333,8 +1335,6 @@
 		1CE2D9C5166ABD0D0024AC1C /* AwfulFetchedTableViewControllerSubclass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFetchedTableViewControllerSubclass.h; sourceTree = "<group>"; };
 		1CE2D9C6166ABD0D0024AC1C /* AwfulNavigationBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNavigationBar.h; sourceTree = "<group>"; };
 		1CE2D9C7166ABD0D0024AC1C /* AwfulNavigationBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNavigationBar.m; sourceTree = "<group>"; };
-		1CE2D9C8166ABD0D0024AC1C /* AwfulSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSplitViewController.h; sourceTree = "<group>"; };
-		1CE2D9C9166ABD0D0024AC1C /* AwfulSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSplitViewController.m; sourceTree = "<group>"; };
 		1CE2D9CA166ABD0D0024AC1C /* AwfulTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTableViewController.h; sourceTree = "<group>"; };
 		1CE2D9CB166ABD0D0024AC1C /* AwfulTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTableViewController.m; sourceTree = "<group>"; };
 		1CE2D9CC166ABD0D0024AC1C /* NSFileManager+UserDirectories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+UserDirectories.h"; sourceTree = "<group>"; };
@@ -2030,6 +2030,8 @@
 				1CBDB5E61625AA240004BDF4 /* AwfulDataStack.m */,
 				1C9FDE5916E9CF5A00C665B5 /* AwfulErrorDomain.h */,
 				1C9FDE5A16E9CF5A00C665B5 /* AwfulErrorDomain.m */,
+				1C1D2FEA171BAADE00AC6387 /* AwfulSplitViewController.h */,
+				1C1D2FEB171BAADE00AC6387 /* AwfulSplitViewController.m */,
 				1C10157A164E8B0A00302B19 /* AwfulStartViewController.h */,
 				1C10157B164E8B0A00302B19 /* AwfulStartViewController.m */,
 				1190F7F213BE4EDA00B9D271 /* main.m */,
@@ -2587,8 +2589,6 @@
 				1CE2D9C5166ABD0D0024AC1C /* AwfulFetchedTableViewControllerSubclass.h */,
 				1CE2D9C6166ABD0D0024AC1C /* AwfulNavigationBar.h */,
 				1CE2D9C7166ABD0D0024AC1C /* AwfulNavigationBar.m */,
-				1CE2D9C8166ABD0D0024AC1C /* AwfulSplitViewController.h */,
-				1CE2D9C9166ABD0D0024AC1C /* AwfulSplitViewController.m */,
 				1C5B996E166F565C004C5D0E /* AwfulTabBarController.h */,
 				1C5B996F166F565C004C5D0E /* AwfulTabBarController.m */,
 				1C5B9971166F5835004C5D0E /* AwfulTabBar.h */,
@@ -4425,7 +4425,6 @@
 				1CE2D9D7166ABD0D0024AC1C /* AwfulAlertView.m in Sources */,
 				1CE2D9D8166ABD0D0024AC1C /* AwfulFetchedTableViewController.m in Sources */,
 				1CE2D9D9166ABD0D0024AC1C /* AwfulNavigationBar.m in Sources */,
-				1CE2D9DA166ABD0D0024AC1C /* AwfulSplitViewController.m in Sources */,
 				1CE2D9DB166ABD0D0024AC1C /* AwfulTableViewController.m in Sources */,
 				1CE2D9DC166ABD0D0024AC1C /* NSFileManager+UserDirectories.m in Sources */,
 				1CE2D9DD166ABD0D0024AC1C /* NSString+CollapseWhitespace.m in Sources */,
@@ -4500,6 +4499,7 @@
 				1C1D2FDC171A75CB00AC6387 /* AwfulSingleUserThreadInfo.m in Sources */,
 				1C1D2FDF171A75D400AC6387 /* _AwfulSingleUserThreadInfo.m in Sources */,
 				1C1D2FE4171A87ED00AC6387 /* JLRoutes.m in Sources */,
+				1C1D2FEC171BAADE00AC6387 /* AwfulSplitViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

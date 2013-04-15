@@ -264,10 +264,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     if (!ban.postID) return;
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"awful://posts/%@", ban.postID]];
     [[UIApplication sharedApplication] openURL:url];
-    AwfulSplitViewController *split = (id)self.splitViewController;
-    if (split) {
+    if (self.awfulSplitViewController) {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
-        [split.masterPopoverController dismissPopoverAnimated:YES];
+        [self.awfulSplitViewController setSidebarVisible:NO animated:YES];
     }
 }
 

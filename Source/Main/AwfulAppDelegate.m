@@ -37,10 +37,10 @@
 #import "UIViewController+NavigationEnclosure.h"
 
 @interface AwfulAppDelegate () <AwfulTabBarControllerDelegate, UINavigationControllerDelegate,
-                                AwfulLoginControllerDelegate>
+                                AwfulLoginControllerDelegate, AwfulSplitViewControllerDelegate>
 
 @property (weak, nonatomic) AwfulSplitViewController *splitViewController;
-
+@property (nonatomic) UIBarButtonItem *showSidebarButtonItem;
 @property (weak, nonatomic) AwfulTabBarController *tabBarController;
 
 @end
@@ -100,20 +100,33 @@ static id _instance;
     [self setUpRootViewController];
     
     [self showLoginFormIsAtLaunch:NO andThen:^{
-        AwfulTabBarController *tabBar;
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            AwfulSplitViewController *split = (AwfulSplitViewController *)self.window.rootViewController;
-            tabBar = split.viewControllers[0];
-            UINavigationController *posts = split.viewControllers[1];
-            posts.viewControllers = @[ [AwfulStartViewController new] ];
-        } else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-            tabBar = (AwfulTabBarController *)self.window.rootViewController;
-        }
+        AwfulTabBarController *tabBar = self.tabBarController;
         tabBar.selectedViewController = tabBar.viewControllers[0];
+        if (self.splitViewController) {
+            UINavigationController *main = (id)self.splitViewController.mainViewController;
+            main.viewControllers = @[ [AwfulStartViewController new] ];
+        }
     }];
 }
 
 NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLogOutNotification";
+
+- (UIBarButtonItem *)showSidebarButtonItem
+{
+    if (_showSidebarButtonItem) return _showSidebarButtonItem;
+    UIImage *listIcon = [UIImage imageNamed:@"list_icon.png"];
+    _showSidebarButtonItem = [[UIBarButtonItem alloc] initWithImage:listIcon
+                                                                style:UIBarButtonItemStyleBordered
+                                                               target:self
+                                                               action:@selector(didTapShowSidebar)];
+    _showSidebarButtonItem.accessibilityLabel = @"Sidebar";
+    return _showSidebarButtonItem;
+}
+
+- (void)didTapShowSidebar
+{
+    [self.splitViewController setSidebarVisible:YES animated:YES];
+}
 
 - (void)setUpRootViewController
 {
@@ -127,13 +140,15 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     tabBar.selectedViewController = tabBar.viewControllers[[[AwfulSettings settings] firstTab]];
     tabBar.delegate = self;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        AwfulSplitViewController *splitController = [AwfulSplitViewController new];
         AwfulStartViewController *start = [AwfulStartViewController new];
-        UINavigationController *nav = [start enclosingNavigationController];
-        nav.delegate = self;
-        splitController.viewControllers = @[ tabBar, nav ];
-        self.window.rootViewController = splitController;
-        self.splitViewController = splitController;
+        UINavigationController *main = [start enclosingNavigationController];
+        main.delegate = self;
+        AwfulSplitViewController *split;
+        split = [[AwfulSplitViewController alloc] initWithSidebarViewController:tabBar
+                                                             mainViewController:main];
+        split.delegate = self;
+        self.window.rootViewController = split;
+        self.splitViewController = split;
     } else {
         self.window.rootViewController = tabBar;
     }
@@ -244,9 +259,8 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         }
     }
     
-    if ([AwfulHTTPClient client].loggedIn && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [self.splitViewController performSelector:@selector(showMasterView) withObject:nil
-                                       afterDelay:0.1];
+    if ([AwfulHTTPClient client].loggedIn) {
+        [self.splitViewController setSidebarVisible:YES animated:YES];
     }
     
     // Sometimes new features depend on the currently logged in user's info. We update that info on
@@ -272,14 +286,30 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     }
     
     [[AwfulNewPMNotifierAgent agent] checkForNewMessages];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(themeDidChange:)
-                                                 name:AwfulThemeDidChangeNotification object:nil];
+    NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
+    [noteCenter addObserver:self selector:@selector(themeDidChange:)
+                       name:AwfulThemeDidChangeNotification object:nil];
+    if (self.splitViewController) {
+        [noteCenter addObserver:self selector:@selector(settingsDidChange:)
+                           name:AwfulSettingsDidChangeNotification object:nil];
+    }
     return YES;
 }
 
 - (void)themeDidChange:(NSNotification *)note
 {
     [self.window.rootViewController recursivelyRetheme];
+}
+
+- (void)settingsDidChange:(NSNotification *)note
+{
+    NSArray *settings = note.userInfo[AwfulSettingsDidChangeSettingsKey];
+    if ([settings containsObject:AwfulSettingsKeys.keepSidebarOpen]) {
+        AwfulSplitViewController *split = self.splitViewController;
+        split.sidebarCanHide = [self awfulSplitViewController:split
+                               shouldHideSidebarInOrientation:split.interfaceOrientation];
+        [self ensureShowSidebarButtonInMainViewController];
+    }
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -352,7 +382,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         AwfulForum *forum = [AwfulForum firstMatchingPredicate:@"forumID = %@", forumID];
         UINavigationController *nav = self.tabBarController.viewControllers[0];
         [self jumpToForum:forum inNavigationController:nav];
-        [self.splitViewController showMasterView];
+        [self.splitViewController setSidebarVisible:YES animated:YES];
     };
     
     [JLRoutes addRoute:@"/forums/:forumID" handler:^(NSDictionary *params) {
@@ -362,7 +392,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     
     [JLRoutes addRoute:@"/forums" handler:^(id _) {
         self.tabBarController.selectedViewController = self.tabBarController.viewControllers[0];
-        [self.splitViewController showMasterView];
+        [self.splitViewController setSidebarVisible:YES animated:YES];
         return YES;
     }];
     
@@ -370,7 +400,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         UINavigationController *nav = self.tabBarController.viewControllers[i];
         [nav popToRootViewControllerAnimated:YES];
         self.tabBarController.selectedViewController = nav;
-        [self.splitViewController showMasterView];
+        [self.splitViewController setSidebarVisible:YES animated:YES];
     };
     
     [JLRoutes addRoute:@"/messages" handler:^(id _) {
@@ -403,7 +433,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         // posts view controllers.
         NSArray *maybes = self.tabBarController.viewControllers;
         if (self.splitViewController) {
-            maybes = @[ self.splitViewController.viewControllers[1] ];
+            maybes = @[ self.splitViewController.mainViewController ];
         }
         for (UINavigationController *nav in maybes) {
             AwfulPostsViewController *top = (id)nav.topViewController;
@@ -428,7 +458,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         [postsView loadPage:page singleUserID:params[@"userid"]];
         UINavigationController *nav;
         if (self.splitViewController) {
-            nav = self.splitViewController.viewControllers[1];
+            nav = (id)self.splitViewController.mainViewController;
         } else {
             nav = (id)self.tabBarController.selectedViewController;
         }
@@ -457,7 +487,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         // Maybe the post is already visible.
         NSArray *maybes = self.tabBarController.viewControllers;
         if (self.splitViewController) {
-            maybes = @[ self.splitViewController.viewControllers[1] ];
+            maybes = @[ self.splitViewController.mainViewController ];
         }
         for (UINavigationController *nav in maybes) {
             AwfulPostsViewController *top = (id)nav.topViewController;
@@ -513,7 +543,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         if ([scrollView respondsToSelector:@selector(setContentOffset:animated:)]) {
             [scrollView setContentOffset:CGPointMake(0, -scrollView.contentInset.top) animated:YES];
         }
-        [self.splitViewController showMasterView];
+        [self.splitViewController setSidebarVisible:YES animated:YES];
         return YES;
     }];
 }
@@ -528,7 +558,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     [postsView jumpToPostWithID:postID];
     UINavigationController *nav;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        nav = self.splitViewController.viewControllers[1];
+        nav = (id)self.splitViewController.mainViewController;
         if (![nav.topViewController isKindOfClass:[AwfulPostsViewController class]]) {
             [nav setViewControllers:@[ postsView ] animated:YES];
             return;
@@ -576,7 +606,20 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
       willShowViewController:(UIViewController *)viewController
                     animated:(BOOL)animated
 {
-    [self.splitViewController ensureLeftBarButtonItemOnDetailView];
+    if ([navigationController isEqual:self.splitViewController.mainViewController]) {
+        [self ensureShowSidebarButtonInMainViewController];
+    }
+}
+
+- (void)ensureShowSidebarButtonInMainViewController
+{
+    UINavigationController *nav = (id)self.splitViewController.mainViewController;
+    UIViewController *bottom = nav.viewControllers[0];
+    if (self.splitViewController.sidebarCanHide) {
+        bottom.navigationItem.leftBarButtonItem = self.showSidebarButtonItem;
+    } else {
+        bottom.navigationItem.leftBarButtonItem = nil;
+    }
 }
 
 #pragma mark - AwfulLoginControllerDelegate
@@ -592,8 +635,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     [self.window.rootViewController dismissViewControllerAnimated:YES completion:^{
         [[AwfulHTTPClient client] listForumsAndThen:nil];
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            AwfulSplitViewController *split = (AwfulSplitViewController *)self.window.rootViewController;
-            [split showMasterView];
+            [self.splitViewController setSidebarVisible:YES animated:YES];
         }
     }];
 }
@@ -604,6 +646,25 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
                           message:@"Double-check your username and password, then try again."
                       buttonTitle:@"Alright"
                        completion:nil];
+}
+
+#pragma mark - AwfulSplitViewControllerDelegate
+
+- (BOOL)awfulSplitViewController:(AwfulSplitViewController *)controller
+  shouldHideSidebarInOrientation:(UIInterfaceOrientation)orientation
+{
+    switch ([AwfulSettings settings].keepSidebarOpen) {
+        case AwfulKeepSidebarOpenAlways: return NO;
+        case AwfulKeepSidebarOpenInLandscape: return UIInterfaceOrientationIsPortrait(orientation);
+        case AwfulKeepSidebarOpenInPortrait: return UIInterfaceOrientationIsLandscape(orientation);
+        case AwfulKeepSidebarOpenNever: default: return YES;
+    }
+}
+
+- (void)awfulSplitViewController:(AwfulSplitViewController *)controller
+                 willHideSidebar:(BOOL)willHideSidebar
+{
+    [self ensureShowSidebarButtonInMainViewController];
 }
 
 @end

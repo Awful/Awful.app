@@ -252,13 +252,13 @@
 
 - (void)displayPage:(AwfulPostsViewController *)page
 {
-    AwfulSplitViewController *split = (AwfulSplitViewController *)self.splitViewController;
-    if (!split) {
-        [self.navigationController pushViewController:page animated:YES];
-    } else {
-        UINavigationController *nav = (id)split.viewControllers[1];
+    AwfulSplitViewController *split = self.awfulSplitViewController;
+    if (split) {
+        UINavigationController *nav = (id)split.mainViewController;
         nav.viewControllers = @[ page ];
-        [split.masterPopoverController dismissPopoverAnimated:YES];
+        [split setSidebarVisible:NO animated:YES];
+    } else {
+        [self.navigationController pushViewController:page animated:YES];
     }
 }
 

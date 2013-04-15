@@ -120,7 +120,7 @@
     //
     // Then the presented view controller will be rudely dismissed when the device orientation
     // changes. The workaround is to present from the split view controller itself.
-    UIViewController *presenter = self.splitViewController ?: self;
+    UIViewController *presenter = self.awfulSplitViewController ?: self;
     [presenter presentViewController:[compose enclosingNavigationController] animated:YES
                           completion:nil];
 }
@@ -263,13 +263,13 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     AwfulPrivateMessage *pm = [self.fetchedResultsController objectAtIndexPath:indexPath];
     AwfulPrivateMessageViewController *vc;
     vc = [[AwfulPrivateMessageViewController alloc] initWithPrivateMessage:pm];
-    AwfulSplitViewController *split = (AwfulSplitViewController *)self.splitViewController;
-    if (!split) {
-        [self.navigationController pushViewController:vc animated:YES];
-    } else {
-        UINavigationController *nav = (id)split.viewControllers[1];
+    AwfulSplitViewController *split = self.awfulSplitViewController;
+    if (split) {
+        UINavigationController *nav = (id)split.mainViewController;
         nav.viewControllers = @[ vc ];
-        [split.masterPopoverController dismissPopoverAnimated:YES];
+        [split setSidebarVisible:NO animated:YES];
+    } else {
+        [self.navigationController pushViewController:vc animated:YES];
     }
 }
 
