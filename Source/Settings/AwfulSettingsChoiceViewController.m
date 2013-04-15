@@ -107,9 +107,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([indexPath isEqual:self.currentIndexPath]) {
-        return;
-    }
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    if ([indexPath isEqual:self.currentIndexPath]) return;
     NSDictionary *choice = self.setting[@"Choices"][indexPath.row];
     self.selectedValue = choice[@"Value"];
     [AwfulSettings settings][self.setting[@"Key"]] = self.selectedValue;
@@ -118,7 +117,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     UITableViewCell *newCell = [tableView cellForRowAtIndexPath:indexPath];
     newCell.accessoryType = UITableViewCellAccessoryCheckmark;
     self.currentIndexPath = indexPath;
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 @end
