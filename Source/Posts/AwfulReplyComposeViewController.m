@@ -7,10 +7,12 @@
 
 #import "AwfulReplyComposeViewController.h"
 #import "AwfulComposeViewControllerSubclass.h"
+#import "AwfulActionSheet.h"
 #import "AwfulAlertView.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulKeyboardBar.h"
 #import "AwfulModels.h"
+#import "AwfulNavigationBar.h"
 #import "AwfulSettings.h"
 #import "AwfulTextView.h"
 #import "ImgurHTTPClient.h"
@@ -53,9 +55,7 @@ imageCacheIdentifier:(id)imageCacheIdentifier
     self.editedPost = post;
     self.thread = nil;
     self.textView.text = text;
-    self.title = [post.thread.title stringByCollapsingWhitespace];
-    self.navigationItem.titleLabel.text = self.title;
-    self.sendButton.title = @"Save";
+    [self updateUserInterface];
     if (imageCacheIdentifier) {
         self.imageCacheIdentifier = imageCacheIdentifier;
         [self holdPlacesForCachedImages];
@@ -69,13 +69,23 @@ imageCacheIdentifier:(id)imageCacheIdentifier
     self.thread = thread;
     self.editedPost = nil;
     self.textView.text = contents;
-    self.title = [thread.title stringByCollapsingWhitespace];
-    self.navigationItem.titleLabel.text = self.title;
-    self.sendButton.title = @"Reply";
+    [self updateUserInterface];
     if (imageCacheIdentifier) {
         self.imageCacheIdentifier = imageCacheIdentifier;
         [self holdPlacesForCachedImages];
     }
+}
+
+- (void)updateUserInterface
+{
+    if (self.editedPost) {
+        self.title = [self.editedPost.thread.title stringByCollapsingWhitespace];
+        self.sendButton.title = @"Save";
+    } else {
+        self.title = [self.thread.title stringByCollapsingWhitespace];
+        self.sendButton.title = @"Reply";
+    }
+    self.navigationItem.titleLabel.text = self.title;
 }
 
 - (void)holdPlacesForCachedImages
@@ -120,6 +130,8 @@ imageCacheIdentifier:(id)imageCacheIdentifier
         [self prepareToSendMessage];
     }
 }
+
+#pragma mark - AwfulComposeViewController
 
 - (void)prepareToSendMessage
 {
@@ -253,6 +265,43 @@ static NSURL *CachedImageDirectoryForIdentifier(id identifier)
     if (!ok) {
         NSLog(@"error deleting image cache %@: %@", imageCache, error);
     }
+}
+
+#pragma mark - UIViewController
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    AwfulNavigationBar *bar = (id)self.navigationController.navigationBar;
+    bar.leftButtonLongTapAction = ^{
+        if (!self.editedPost && [self.textView.text length] == 0) return;
+        AwfulActionSheet *sheet = [AwfulActionSheet new];
+        [sheet addDestructiveButtonWithTitle:@"Delete Draft" block:^{
+            if (!self.thread) {
+                self.thread = self.editedPost.thread;
+            }
+            self.textView.text = nil;
+            self.editedPost = nil;
+            [self.cachedImages removeAllObjects];
+            if (self.imageCacheIdentifier) {
+                id localIdentifier = self.imageCacheIdentifier;
+                self.imageCacheIdentifier = nil;
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+                    [AwfulReplyComposeViewController deleteImageCacheWithIdentifier:localIdentifier];
+                });
+            }
+            [self updateUserInterface];
+        }];
+        [sheet addCancelButtonWithTitle:@"Cancel"];
+        [sheet showFromBarButtonItem:self.navigationItem.leftBarButtonItem animated:YES];
+    };
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    AwfulNavigationBar *bar = (id)self.navigationController.navigationBar;
+    bar.leftButtonLongTapAction = nil;
 }
 
 @end

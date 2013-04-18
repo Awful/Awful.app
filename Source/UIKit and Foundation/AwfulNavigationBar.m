@@ -21,6 +21,9 @@
 - (void)longPress:(UILongPressGestureRecognizer *)recognizer
 {
     if (recognizer.state != UIGestureRecognizerStateBegan) return;
+    if (self.leftButtonLongTapAction) {
+        return self.leftButtonLongTapAction();
+    }
     if (!self.backItem) return;
     UINavigationController *nav = self.delegate;
     if (![nav isKindOfClass:[UINavigationController class]]) return;
