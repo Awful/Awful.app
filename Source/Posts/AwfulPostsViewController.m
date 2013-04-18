@@ -61,6 +61,7 @@
 @property (nonatomic) UIBarButtonItem *replyItem;
 @property (copy, nonatomic) NSString *ongoingReplyText;
 @property (nonatomic) id ongoingReplyImageCacheIdentifier;
+@property (nonatomic) AwfulPost *ongoingEditedPost;
 @property (nonatomic) AwfulPostsViewSettingsController *settingsViewController;
 
 @property (nonatomic) NSInteger hiddenPosts;
@@ -107,9 +108,15 @@
 {
     AwfulReplyComposeViewController *reply = [AwfulReplyComposeViewController new];
     reply.delegate = self;
-    [reply replyToThread:self.thread
-     withInitialContents:self.ongoingReplyText
-    imageCacheIdentifier:self.ongoingReplyImageCacheIdentifier];
+    if (self.ongoingEditedPost) {
+        [reply editPost:self.ongoingEditedPost
+                   text:self.ongoingReplyText
+   imageCacheIdentifier:self.ongoingReplyImageCacheIdentifier];
+    } else {
+        [reply replyToThread:self.thread
+         withInitialContents:self.ongoingReplyText
+        imageCacheIdentifier:self.ongoingReplyImageCacheIdentifier];
+    }
     UINavigationController *nav = [reply enclosingNavigationController];
     [self presentViewController:nav animated:YES completion:nil];
 }
@@ -168,8 +175,14 @@
     [self updateUserInterface];
     self.postsView.stylesheetURL = StylesheetURLForForumWithIDAndSettings(self.thread.forum.forumID,
                                                                           [AwfulSettings settings]);
+    [self forgetOngoingReply];
+}
+
+- (void)forgetOngoingReply
+{
     self.ongoingReplyText = nil;
     [self deleteReplyImageCacheInBackground];
+    self.ongoingEditedPost = nil;
 }
 
 - (void)deleteReplyImageCacheInBackground
@@ -919,9 +932,10 @@ static char KVOContext;
                                        buttonTitle:@"Alright"];
                      return;
                  }
+                 [self forgetOngoingReply];
                  AwfulReplyComposeViewController *reply = [AwfulReplyComposeViewController new];
                  reply.delegate = self;
-                 [reply editPost:post text:text];
+                 [reply editPost:post text:text imageCacheIdentifier:nil];
                  UINavigationController *nav = [reply enclosingNavigationController];
                  [self presentViewController:nav animated:YES completion:nil];
              }];
@@ -1134,7 +1148,7 @@ static char KVOContext;
 - (void)replyComposeController:(AwfulReplyComposeViewController *)controller
               didReplyToThread:(AwfulThread *)thread
 {
-    [self clearOngoingReplyInfo];
+    [self forgetOngoingReply];
     [self dismissViewControllerAnimated:YES completion:^{
         [self loadPage:AwfulThreadPageNextUnread singleUserID:nil];
     }];
@@ -1143,7 +1157,7 @@ static char KVOContext;
 - (void)replyComposeController:(AwfulReplyComposeViewController *)controller
                    didEditPost:(AwfulPost *)post
 {
-    [self clearOngoingReplyInfo];
+    [self forgetOngoingReply];
     [self dismissViewControllerAnimated:YES completion:^{
         [self loadPage:self.singleUserID ? post.singleUserPage : post.page
           singleUserID:self.singleUserID];
@@ -1151,16 +1165,11 @@ static char KVOContext;
     }];
 }
 
-- (void)clearOngoingReplyInfo
-{
-    self.ongoingReplyText = nil;
-    [self deleteReplyImageCacheInBackground];
-}
-
 - (void)replyComposeControllerDidCancel:(AwfulReplyComposeViewController *)controller
 {
     self.ongoingReplyText = controller.textView.text;
     self.ongoingReplyImageCacheIdentifier = [controller imageCacheIdentifier];
+    self.ongoingEditedPost = controller.editedPost;
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

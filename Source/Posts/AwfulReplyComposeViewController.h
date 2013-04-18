@@ -15,7 +15,11 @@
 
 @property (weak, nonatomic) id <AwfulReplyComposeViewControllerDelegate> delegate;
 
-- (void)editPost:(AwfulPost *)post text:(NSString *)text;
+- (void)editPost:(AwfulPost *)post
+            text:(NSString *)text
+imageCacheIdentifier:(id)imageCacheIdentifier;
+
+@property (readonly, nonatomic) AwfulPost *editedPost;
 
 // Create a new reply to a thread.
 //

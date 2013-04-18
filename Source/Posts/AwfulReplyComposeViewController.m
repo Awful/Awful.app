@@ -26,7 +26,7 @@
 @property (weak, nonatomic) NSOperation *networkOperation;
 
 @property (nonatomic) AwfulThread *thread;
-@property (nonatomic) AwfulPost *post;
+@property (nonatomic) AwfulPost *editedPost;
 @property (copy, nonatomic) NSString *imageCacheIdentifier;
 @property (nonatomic) NSMutableSet *cachedImages;
 
@@ -46,14 +46,20 @@
     return self;
 }
 
-- (void)editPost:(AwfulPost *)post text:(NSString *)text
+- (void)editPost:(AwfulPost *)post
+            text:(NSString *)text
+imageCacheIdentifier:(id)imageCacheIdentifier
 {
-    self.post = post;
+    self.editedPost = post;
     self.thread = nil;
     self.textView.text = text;
     self.title = [post.thread.title stringByCollapsingWhitespace];
     self.navigationItem.titleLabel.text = self.title;
     self.sendButton.title = @"Save";
+    if (imageCacheIdentifier) {
+        self.imageCacheIdentifier = imageCacheIdentifier;
+        [self holdPlacesForCachedImages];
+    }
 }
 
 - (void)replyToThread:(AwfulThread *)thread
@@ -61,7 +67,7 @@
  imageCacheIdentifier:(id)imageCacheIdentifier
 {
     self.thread = thread;
-    self.post = nil;
+    self.editedPost = nil;
     self.textView.text = contents;
     self.title = [thread.title stringByCollapsingWhitespace];
     self.navigationItem.titleLabel.text = self.title;
@@ -171,12 +177,13 @@
             [self.delegate replyComposeController:self didReplyToThread:self.thread];
         }];
     } else {
-        op = [[AwfulHTTPClient client] editPostWithID:self.post.postID text:messageBody
+        op = [[AwfulHTTPClient client] editPostWithID:self.editedPost.postID
+                                                 text:messageBody
                                               andThen:^(NSError *error)
         {
             if (error) return errorHandler(error);
             [SVProgressHUD showSuccessWithStatus:@"Edited"];
-            [self.delegate replyComposeController:self didEditPost:self.post];
+            [self.delegate replyComposeController:self didEditPost:self.editedPost];
         }];
     }
     self.networkOperation = op;
