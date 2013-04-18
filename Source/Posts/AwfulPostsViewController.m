@@ -328,7 +328,8 @@
     NSInteger oldPage = self.currentPage;
     self.currentPage = page;
     BOOL refreshingSamePage = page > 0 && page == oldPage;
-    if (!refreshingSamePage || ![singleUserID isEqual:self.singleUserID]) {
+    if (!refreshingSamePage ||
+        (singleUserID != self.singleUserID && [singleUserID isEqual:self.singleUserID])) {
         self.singleUserID = singleUserID;
         [self updateFetchedResultsController];
         self.pullUpToRefreshControl.refreshing = NO;
@@ -338,9 +339,6 @@
         self.advertisementHTML = nil;
         self.hiddenPosts = 0;
         [self.postsView reloadData];
-    }
-    else {
-        self.singleUserID = singleUserID;
     }
     id op = [[AwfulHTTPClient client] listPostsInThreadWithID:self.thread.threadID
                                                        onPage:page
