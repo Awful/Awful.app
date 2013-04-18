@@ -10,8 +10,9 @@
 
 @interface AwfulForum : _AwfulForum {}
 
-+ (NSArray *)updateCategoriesAndForums:(ForumHierarchyParsedInfo *)info;
++ (instancetype)fetchOrInsertForumWithID:(NSString *)forumID;
 
++ (NSArray *)updateCategoriesAndForums:(ForumHierarchyParsedInfo *)info;
 + (NSArray *)updateCategoriesAndForumsWithJSON:(NSArray *)json;
 
 @end

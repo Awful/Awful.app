@@ -13,6 +13,17 @@
 
 @implementation AwfulForum
 
++ (instancetype)fetchOrInsertForumWithID:(NSString *)forumID
+{
+    AwfulForum *forum = [self firstMatchingPredicate:@"forumID = %@", forumID];
+    if (!forum) {
+        forum = [AwfulForum insertNew];
+        forum.forumID = forumID;
+        [[AwfulDataStack sharedDataStack] save];
+    }
+    return forum;
+}
+
 + (NSArray *)updateCategoriesAndForums:(ForumHierarchyParsedInfo *)info
 {
     NSMutableDictionary *existingForums = [NSMutableDictionary new];

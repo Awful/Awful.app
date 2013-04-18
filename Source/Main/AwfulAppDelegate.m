@@ -379,7 +379,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
 - (void)routeAwfulURLs
 {
     void (^jumpToForum)(NSString *) = ^(NSString *forumID) {
-        AwfulForum *forum = [AwfulForum firstMatchingPredicate:@"forumID = %@", forumID];
+        AwfulForum *forum = [AwfulForum fetchOrInsertForumWithID:forumID];
         UINavigationController *nav = self.tabBarController.viewControllers[0];
         [self jumpToForum:forum inNavigationController:nav];
         [self.splitViewController setSidebarVisible:YES animated:YES];
@@ -583,6 +583,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         if (![viewController isKindOfClass:[AwfulThreadListController class]]) continue;
         if ([viewController.forum isEqual:forum]) {
             [nav popToViewController:viewController animated:YES];
+            self.tabBarController.selectedViewController = nav;
             return;
         }
     }
@@ -590,6 +591,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     AwfulThreadListController *threadList = [AwfulThreadListController new];
     threadList.forum = forum;
     [nav pushViewController:threadList animated:YES];
+    self.tabBarController.selectedViewController = nav;
 }
 
 #pragma mark - AwfulTabBarControllerDelegate
