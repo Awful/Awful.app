@@ -65,17 +65,20 @@
     for (AwfulUser *user in [AwfulUser fetchAllMatchingPredicate:@"username IN %@", usernames]) {
         existingUsers[user.username] = user;
     }
-    
+    NSMutableArray *messages = [NSMutableArray new];
     for (PrivateMessageParsedInfo *pmInfo in info.privateMessages) {
         AwfulPrivateMessage *msg = existingPMs[pmInfo.messageID] ?: [AwfulPrivateMessage insertNew];
         [pmInfo applyToObject:msg];
         if (!msg.from) msg.from = [AwfulUser insertNew];
         [pmInfo.from applyToObject:msg.from];
-        existingUsers[msg.from.username] = msg.from;
+        if (pmInfo.from.username) {
+            existingUsers[msg.from.username] = msg.from;
+        }
+        [messages addObject:msg];
         existingPMs[msg.messageID] = msg;
     }
     [[AwfulDataStack sharedDataStack] save];
-    return [existingPMs allValues];
+    return messages;
 }
 
 @end
