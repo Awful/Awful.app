@@ -714,8 +714,7 @@ Awful.firstStylesheetDidLoad = function(){
 }
 
 Awful.dark = function(dark){
-  if (dark) $('body').addClass('dark')
-  else $('body').removeClass('dark')
+  $('body').toggleClass('dark', dark)
   if (spinner) {
     spinner.stop()
     spinner = null
@@ -804,7 +803,7 @@ Awful.showImages = function(on){
 }
 
 Awful.fontSize = function(size) {
-    $('body').css('font-size', size + "px")
+  $('body').css('font-size', size + "px")
 }
 
 function render(post) {
