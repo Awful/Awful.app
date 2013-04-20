@@ -344,6 +344,7 @@
     if (!refreshingSamePage ||
         (singleUserID != self.singleUserID && [singleUserID isEqual:self.singleUserID])) {
         self.singleUserID = singleUserID;
+        self.cachedUpdatesWhileScrolling = nil;
         [self updateFetchedResultsController];
         self.pullUpToRefreshControl.refreshing = NO;
         [self updateUserInterface];
