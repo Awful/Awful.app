@@ -693,7 +693,7 @@ Awful.invokeOnView = function(selector, varargs){
 }
 
 function sendViaIframe(url) {
-  $('<iframe>', { src: url }).appendTo($('html')).remove()
+  $('<iframe>', { src: url, style: 'display: none' }).appendTo($('html')).remove()
 }
 
 Awful.stylesheetURL = function(url){
