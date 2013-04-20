@@ -117,6 +117,7 @@
         self.sidebarHolder.layer.shadowOpacity = 0;
         self.sidebarVisible = YES;
         [self.mainViewController.view removeGestureRecognizer:self.mainSwipeRight];
+        [self.coverView removeFromSuperview];
     }
 }
 
