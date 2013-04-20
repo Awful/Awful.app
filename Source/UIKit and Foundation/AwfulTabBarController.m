@@ -81,12 +81,12 @@
 {
     CGRect frame = self.view.bounds;
     if ([viewController isKindOfClass:[UINavigationController class]]) {
-        UINavigationController *nav = (UINavigationController *)viewController;
+        UINavigationController *nav = (id)viewController;
         if (!nav.topViewController.hidesBottomBarWhenPushed) {
-            frame.size.height -= self.tabBar.bounds.size.height;
+            frame.size.height -= CGRectGetHeight(self.tabBar.bounds);
         }
     } else if (!self.tabBar.hidden) {
-        frame.size.height -= self.tabBar.bounds.size.height;
+        frame.size.height -= CGRectGetHeight(self.tabBar.bounds);
     }
     return frame;
 }
