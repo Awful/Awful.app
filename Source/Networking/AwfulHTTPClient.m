@@ -660,10 +660,22 @@ NSString * const AwfulUserDidLogInNotification = @"com.awfulapp.Awful.UserDidLog
         AFHTTPRequestOperation *strongOp = weakOp;
         if (!response) return request;
         [strongOp cancel];
-        NSDictionary *query = [[request URL] queryDictionary];
-        if (callback) {
+        if (!callback) return nil;
+        NSDictionary *query = [request.URL queryDictionary];
+        if (query[@"threadid"] && [query[@"pagenumber"] integerValue] != 0) {
             dispatch_async(strongOp.successCallbackQueue ?: dispatch_get_main_queue(), ^{
                 callback(nil, query[@"threadid"], [query[@"pagenumber"] integerValue]);
+            });
+        } else {
+            NSDictionary *query = [request.URL queryDictionary];
+            NSString *missingInfo = query[@"thread ID"] ? @"page number" : @"threadid";
+            NSString *message = [NSString stringWithFormat:@"The %@ could not be found",
+                                 missingInfo];
+            NSError *error = [NSError errorWithDomain:AwfulErrorDomain
+                                                 code:AwfulErrorCodes.parseError
+                                             userInfo:@{ NSLocalizedDescriptionKey: message }];
+            dispatch_async(strongOp.failureCallbackQueue ?: dispatch_get_main_queue(), ^{
+                callback(error, nil, 0);
             });
         }
         return nil;
