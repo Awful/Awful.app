@@ -222,9 +222,8 @@
                      inView:self.awfulTabBarController.view
                    animated:YES];
     } else if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        NSUInteger index = [self.fetchedResultsController.fetchedObjects indexOfObject:thread];
-        if (index != NSNotFound) {
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+        NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:thread];
+        if (index) {
             UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
             [sheet showFromRect:cell.frame inView:self.tableView animated:YES];
         }
