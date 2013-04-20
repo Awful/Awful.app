@@ -153,12 +153,20 @@ static const CGFloat StarLeftMargin = 11;
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
 {
-    if (!self.hidden && !self.favoriteButton.hidden) {
-        CGRect buttonRect = [self convertRect:self.favoriteButton.frame
-                                     fromView:self.favoriteButton.superview];
-        buttonRect = CGRectInset(buttonRect, -CGRectGetMaxX(self.bounds) + CGRectGetMaxX(buttonRect), 0);
-        if (CGRectContainsPoint(buttonRect, point)) {
+    if (self.hidden) return [super hitTest:point withEvent:event];
+    if (!self.favoriteButton.hidden) {
+        CGRect hitbox = self.bounds;
+        hitbox.origin.x = CGRectGetMinX(self.favoriteButton.frame);
+        hitbox.size.width = CGRectGetWidth(self.bounds) - CGRectGetMinX(hitbox);
+        if (CGRectContainsPoint(hitbox, point)) {
             return self.favoriteButton;
+        }
+    } else if (!self.expandButton.hidden) {
+        CGRect hitbox = self.bounds;
+        hitbox.size.width = CGRectGetMaxX(self.expandButton.frame);
+        hitbox.origin.x = 0;
+        if (CGRectContainsPoint(hitbox, point)) {
+            return self.expandButton;
         }
     }
     return [super hitTest:point withEvent:event];
