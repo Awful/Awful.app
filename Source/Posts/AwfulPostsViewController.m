@@ -641,7 +641,7 @@
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             self.pullUpToRefreshControl.triggerOffset = 25;
         } else {
-            self.pullUpToRefreshControl.triggerOffset = 0;
+            self.pullUpToRefreshControl.triggerOffset = -10;
         }
     }
 }
