@@ -121,19 +121,14 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
     while (cell && ![cell isKindOfClass:[UITableViewCell class]]) cell = cell.superview;
     if (!cell) return;
     AwfulForum *forum;
-    NSIndexPath *indexPath = [self.tableView indexPathForCell:(UITableViewCell *)cell];
-    if ([self.favoriteForums count] > 0 && indexPath.section == 0) {
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:(id)cell];
+    if ([self.favoriteForums count] > 0) {
+        indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section - 1];
+    }
+    if (indexPath.section == -1) {
         forum = self.favoriteForums[indexPath.row];
     } else {
-        if ([self.favoriteForums count] > 0) {
-            indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section - 1];
-        }
         forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    }
-    NSIndexPath *nonfavoriteIndexPath = [self.fetchedResultsController indexPathForObject:forum];
-    if ([self.favoriteForums count] > 0) {
-        nonfavoriteIndexPath = [NSIndexPath indexPathForRow:nonfavoriteIndexPath.row
-                                                  inSection:nonfavoriteIndexPath.section + 1];
     }
     [self.tableView beginUpdates];
     if (button.selected) {
@@ -163,6 +158,11 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
         }
     }
     if (button.selected) {
+        NSIndexPath *nonfavoriteIndexPath = [self.fetchedResultsController indexPathForObject:forum];
+        if ([self.favoriteForums count] > 0) {
+            nonfavoriteIndexPath = [NSIndexPath indexPathForRow:nonfavoriteIndexPath.row
+                                                      inSection:nonfavoriteIndexPath.section + 1];
+        }
         [self.tableView reloadRowsAtIndexPaths:@[ nonfavoriteIndexPath ]
                               withRowAnimation:UITableViewRowAnimationNone];
     }
@@ -419,16 +419,14 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
     }
     AwfulForum *forum;
     BOOL favoritesSection = NO;
-    if ([self.favoriteForums count] > 0 && indexPath.section == 0) {
+    if ([self.favoriteForums count] > 0) {
+        indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section - 1];
+    }
+    if (indexPath.section == -1) {
         forum = self.favoriteForums[indexPath.row];
         favoritesSection = YES;
     } else {
-        if ([self.favoriteForums count] > 0) {
-            indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section - 1];
-        }
-        if (!forum) {
-            forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
-        }
+        forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
     }
     cell.textLabel.text = forum.name;
     [self setCellImagesForCell:cell];
