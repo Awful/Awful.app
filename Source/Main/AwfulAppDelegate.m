@@ -418,7 +418,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         return YES;
     }];
     
-    void (^openThread)(NSDictionary *) = ^(NSDictionary *params) {
+    BOOL (^openThread)(NSDictionary *) = ^(NSDictionary *params) {
         NSInteger page = 0;
         if ([params[@"page"] isEqual:@"last"]) {
             page = AwfulThreadPageLast;
@@ -444,7 +444,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
                     if ([maybes count] > 1) {
                         self.tabBarController.selectedViewController = nav;
                     }
-                    return;
+                    return YES;
                 }
             }
         }
@@ -471,16 +471,15 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         } else {
             [nav pushViewController:postsView animated:YES];
         }
+        return YES;
     };
     
     [JLRoutes addRoute:@"/threads/:threadID/pages/:page" handler:^(NSDictionary *params) {
-        openThread(params);
-        return YES;
+        return openThread(params);
     }];
     
     [JLRoutes addRoute:@"/threads/:threadID" handler:^(NSDictionary *params) {
-        openThread(params);
-        return YES;
+        return openThread(params);
     }];
     
     [JLRoutes addRoute:@"/posts/:postID" handler:^(NSDictionary *params) {

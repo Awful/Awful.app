@@ -646,16 +646,17 @@ NSString * const AwfulUserDidLogInNotification = @"com.awfulapp.Awful.UserDidLog
         // Once we have the redirect we want, we cancel the operation. So if this "success" callback
         // gets called, we've actually failed.
         if (callback) callback(nil, nil, 0);
-    } failure:^(id _, NSError *error)
-    {
+    } failure:^(id _, NSError *error) {
         // Once we get the redirect we need, we call the callback then cancel the operation.
         // So there's no need to do anything if we get a "cancelled" error.
-        if (!([error.domain isEqualToString:NSURLErrorDomain] && error.code == NSURLErrorCancelled)) {
+        if (!([error.domain isEqualToString:NSURLErrorDomain] &&
+              error.code == NSURLErrorCancelled)) {
             if (callback) callback(error, nil, 0);
         }
     }];
     __weak AFHTTPRequestOperation *weakOp = op;
-    [op setRedirectResponseBlock:^NSURLRequest *(id _, NSURLRequest *request, NSURLResponse *response)
+    [op setRedirectResponseBlock:^NSURLRequest *(id _, NSURLRequest *request,
+                                                 NSURLResponse *response)
     {
         AFHTTPRequestOperation *strongOp = weakOp;
         if (!response) return request;
