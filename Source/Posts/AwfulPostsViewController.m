@@ -58,7 +58,7 @@
 @property (weak, nonatomic) AwfulPostsView *postsView;
 @property (weak, nonatomic) AwfulPageBottomBar *bottomBar;
 @property (weak, nonatomic) AwfulPullToRefreshControl *pullUpToRefreshControl;
-@property (nonatomic) UIBarButtonItem *replyItem;
+@property (nonatomic) UIBarButtonItem *composeItem;
 @property (copy, nonatomic) NSString *ongoingReplyText;
 @property (nonatomic) id ongoingReplyImageCacheIdentifier;
 @property (nonatomic) AwfulPost *ongoingEditedPost;
@@ -84,7 +84,7 @@
 {
     if (!(self = [super initWithNibName:nil bundle:nil])) return nil;
     self.hidesBottomBarWhenPushed = YES;
-    self.navigationItem.rightBarButtonItem = self.replyItem;
+    self.navigationItem.rightBarButtonItem = self.composeItem;
     NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
     [noteCenter addObserver:self selector:@selector(settingChanged:)
                        name:AwfulSettingsDidChangeNotification object:nil];
@@ -93,18 +93,18 @@
     return self;
 }
 
-- (UIBarButtonItem *)replyItem
+- (UIBarButtonItem *)composeItem
 {
-    if (_replyItem) return _replyItem;
-    _replyItem = [[AwfulPlainBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply
-                                                                       target:self
-                                                                       action:@selector(didTapReply)];
+    if (_composeItem) return _composeItem;
+    _composeItem = [[AwfulPlainBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
+                                                                         target:self
+                                                                         action:@selector(didTapCompose)];
     // On iPad, the default plain tint color is a dark grey.
-    _replyItem.tintColor = [UIColor whiteColor];
-    return _replyItem;
+    _composeItem.tintColor = [UIColor whiteColor];
+    return _composeItem;
 }
 
-- (void)didTapReply
+- (void)didTapCompose
 {
     AwfulReplyComposeViewController *reply = [AwfulReplyComposeViewController new];
     reply.delegate = self;
@@ -298,7 +298,7 @@
     } else {
         [self.bottomBar.jumpToPageButton setTitle:@"" forState:UIControlStateNormal];
     }
-    self.replyItem.enabled = !self.thread.isClosedValue;
+    self.composeItem.enabled = !self.thread.isClosedValue;
 }
 
 - (void)configurePostsViewSettings
