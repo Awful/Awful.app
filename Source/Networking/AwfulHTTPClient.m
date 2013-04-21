@@ -776,6 +776,8 @@ NSString * const AwfulUserDidLogInNotification = @"com.awfulapp.Awful.UserDidLog
                                           success:^(id _, PrivateMessageFolderParsedInfo *info)
     {
         NSArray *messages = [AwfulPrivateMessage privateMessagesWithFolderParsedInfo:info];
+        [AwfulPrivateMessage deleteAllMatchingPredicate:@"NOT(self IN %@)", messages];
+        [[AwfulDataStack sharedDataStack] save];
         if (callback) callback(nil, messages);
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
