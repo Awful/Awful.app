@@ -115,6 +115,7 @@
 		1C6ED638169104150015CDD5 /* profile-view.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C6ED636169104150015CDD5 /* profile-view.html */; };
 		1C6ED63A169104340015CDD5 /* profile-view.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C6ED639169104340015CDD5 /* profile-view.js */; };
 		1C6ED63D1691055E0015CDD5 /* AwfulProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6ED63C1691055E0015CDD5 /* AwfulProfileViewController.m */; };
+		1C741F931724B2DC00E7C61E /* font-size.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C741F921724B2DC00E7C61E /* font-size.png */; };
 		1C7487F116A88BAD0068B8A3 /* AwfulKeyboardBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7487F016A88BAD0068B8A3 /* AwfulKeyboardBar.m */; };
 		1C74880116A99BC30068B8A3 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C7487F916A99BC30068B8A3 /* Icon-72.png */; };
 		1C74880216A99BC30068B8A3 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C7487FA16A99BC30068B8A3 /* Icon-72@2x.png */; };
@@ -1071,6 +1072,7 @@
 		1C6ED639169104340015CDD5 /* profile-view.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "profile-view.js"; sourceTree = "<group>"; };
 		1C6ED63B1691055E0015CDD5 /* AwfulProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulProfileViewController.h; sourceTree = "<group>"; };
 		1C6ED63C1691055E0015CDD5 /* AwfulProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulProfileViewController.m; sourceTree = "<group>"; };
+		1C741F921724B2DC00E7C61E /* font-size.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "font-size.png"; sourceTree = "<group>"; };
 		1C7487EF16A88BAD0068B8A3 /* AwfulKeyboardBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulKeyboardBar.h; sourceTree = "<group>"; };
 		1C7487F016A88BAD0068B8A3 /* AwfulKeyboardBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulKeyboardBar.m; sourceTree = "<group>"; };
 		1C7487F916A99BC30068B8A3 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
@@ -2746,6 +2748,7 @@
 				8C9B02BF1623630F00676B98 /* downArrowDark.png */,
 				1C9FDE5D16EA008400C665B5 /* empty-pm-tag@2x.png */,
 				1C5B9978166F6E4B004C5D0E /* favorites-icon@2x.png */,
+				1C741F921724B2DC00E7C61E /* font-size.png */,
 				1CE8FDF01703CEAC006A3B84 /* font-size@2x.png */,
 				1CE8FDF91708BB2F006A3B84 /* font-size-larger@2x.png */,
 				1CE8FDF81708BB2F006A3B84 /* font-size-smaller@2x.png */,
@@ -4174,6 +4177,7 @@
 				1CE8FDFA1708BB2F006A3B84 /* font-size-smaller@2x.png in Resources */,
 				1CE8FDFB1708BB2F006A3B84 /* font-size-larger@2x.png in Resources */,
 				8C51975D171CC5C800997E43 /* tg-starwars.png in Resources */,
+				1C741F931724B2DC00E7C61E /* font-size.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
