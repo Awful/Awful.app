@@ -122,6 +122,8 @@ NSString * UserIDFromURLString(NSString *s)
 
 static NSString * FixSAAndlibxmlHTMLSerialization(NSString *html)
 {
+    if (!html) return html;
+    
     // Carriage returns sneak into posts (maybe from Windows users?) and get converted into &#13;
     // by the super-smart Forums non-Windows-1252 character conversion. This adds uncollapsible
     // whitespace to the start of lines.
