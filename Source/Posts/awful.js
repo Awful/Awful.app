@@ -103,9 +103,7 @@ Awful.highlightQuoteUsername = function(username){
   if (nullOrUndefined(username)) {
     $('.bbc-block.mention').removeClass('mention')
   } else {
-    $('.postbody').each(function(){
-      highlightQuotes(this)
-    })
+    $('.postbody').each(function(){ highlightQuotes(this) })
   }
 }
 
