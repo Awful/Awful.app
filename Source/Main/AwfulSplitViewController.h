@@ -24,6 +24,10 @@
 // The main view controller is on the right.
 @property (readonly, nonatomic) UIViewController *mainViewController;
 
+// An array of the sidebar view controller and the main view controller. Exists for
+// -[AwfulTheming recursivelyRetheme].
+@property (readonly, nonatomic) NSArray *viewControllers;
+
 // Show or hide the sidebar. If the sidebar cannot hide in the current interface orientation,
 // setting this property does nothing.
 @property (getter=isSidebarVisible, nonatomic) BOOL sidebarVisible;

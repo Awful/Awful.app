@@ -31,6 +31,11 @@
     return self;
 }
 
+- (NSArray *)viewControllers
+{
+    return @[ self.sidebarViewController, self.mainViewController ];
+}
+
 - (void)setSidebarVisible:(BOOL)show
 {
     [self setSidebarVisible:show animated:NO];
