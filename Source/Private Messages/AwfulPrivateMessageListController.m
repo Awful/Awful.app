@@ -279,6 +279,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle != UITableViewCellEditingStyleDelete) return;
     AwfulPrivateMessage *message = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    if (!message.messageID) {
+        NSLog(@"deleting message \"%@\" with no ID", message.subject);
+        [message.managedObjectContext deleteObject:message];
+        [[AwfulDataStack sharedDataStack] save];
+        return;
+    }
     [[AwfulHTTPClient client] deletePrivateMessageWithID:message.messageID
                                                  andThen:^(NSError *error)
     {
