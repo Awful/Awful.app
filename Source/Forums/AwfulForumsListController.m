@@ -51,7 +51,8 @@
     _favoriteForums = [[self fetchFavoriteForumsWithIDsFromSettings] mutableCopy];
     [self showOrHideEditButton];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDidChange:)
-                                                 name:AwfulSettingsDidChangeNotification object:nil];
+                                                 name:AwfulSettingsDidChangeNotification
+                                               object:nil];
     return self;
 }
 
@@ -338,14 +339,19 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     NSInteger extra = 0;
-    if ([AwfulHTTPClient client].isLoggedIn) extra += 1; // Leper's Colony
+    if ([self shouldShowLepersColony]) extra += 1;
     if ([self.favoriteForums count] > 0) extra += 1;
     return [super numberOfSectionsInTableView:tableView] + extra;
 }
 
+- (BOOL)shouldShowLepersColony
+{
+    return [AwfulHTTPClient client].isLoggedIn;
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if ([AwfulHTTPClient client].isLoggedIn && section + 1 == [tableView numberOfSections]) {
+    if ([self shouldShowLepersColony] && section + 1 == [tableView numberOfSections]) {
         return 1;
     } else if ([self.favoriteForums count] > 0 && section == 0) {
         return [self.favoriteForums count];
@@ -365,7 +371,7 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
     header.textColor = [AwfulTheme currentTheme].forumListHeaderTextColor;
     header.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     header.backgroundColor = [AwfulTheme currentTheme].forumListHeaderBackgroundColor;
-    if ([AwfulHTTPClient client].isLoggedIn && section + 1 == [tableView numberOfSections]) {
+    if ([self shouldShowLepersColony] && section + 1 == [tableView numberOfSections]) {
         header.text = @"Awful";
     } else if ([self.favoriteForums count] > 0 && section == 0) {
         header.text = @"Favorites";
@@ -411,7 +417,8 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
     AwfulDisclosureIndicatorView *disclosure = (AwfulDisclosureIndicatorView *)cell.accessoryView;
     disclosure.color = [AwfulTheme currentTheme].disclosureIndicatorColor;
     disclosure.highlightedColor = [AwfulTheme currentTheme].disclosureIndicatorHighlightedColor;
-    if ([AwfulHTTPClient client].isLoggedIn && indexPath.section + 1 == [self.tableView numberOfSections]) {
+    if ([self shouldShowLepersColony] &&
+        indexPath.section + 1 == [self.tableView numberOfSections]) {
         cell.textLabel.text = @"Leper's Colony";
         cell.showsFavorite = NO;
         cell.showsExpanded = AwfulForumCellShowsExpandedLeavesRoom;
@@ -449,14 +456,14 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
   willDisplayCell:(UITableViewCell *)cell
 forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([AwfulHTTPClient client].isLoggedIn && indexPath.section + 1 == [tableView numberOfSections]) {
+    if ([self.favoriteForums count] > 0) {
+        indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section - 1];
+    }
+    if (indexPath.section == (NSInteger)[self.fetchedResultsController.sections count]) {
         cell.backgroundColor = [AwfulTheme currentTheme].forumCellBackgroundColor;
-    } else if ([self.favoriteForums count] > 0 && indexPath.section == 0) {
+    } else if (indexPath.section == -1) {
         cell.backgroundColor = [AwfulTheme currentTheme].forumCellBackgroundColor;
     } else {
-        if ([self.favoriteForums count] > 0) {
-            indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section - 1];
-        }
         AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
         if (forum.parentForum) {
             cell.backgroundColor = [AwfulTheme currentTheme].forumCellSubforumBackgroundColor;
@@ -468,18 +475,17 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([AwfulHTTPClient client].isLoggedIn && indexPath.section + 1 == [tableView numberOfSections]) {
+    if ([self.favoriteForums count] > 0) {
+        indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section - 1];
+    }
+    if (indexPath.section == (NSInteger)[self.fetchedResultsController.sections count]) {
         AwfulLepersViewController *lepersColony = [AwfulLepersViewController new];
-        [self.navigationController pushViewController:lepersColony animated:YES];
-        return;
+        return [self.navigationController pushViewController:lepersColony animated:YES];
     }
     AwfulForum *forum;
-    if ([self.favoriteForums count] > 0 && indexPath.section == 0) {
+    if (indexPath.section == -1) {
         forum = self.favoriteForums[indexPath.row];
     } else {
-        if ([self.favoriteForums count] > 0) {
-            indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section - 1];
-        }
         forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
     }
     AwfulThreadListController *threadList = [AwfulThreadListController new];
@@ -490,8 +496,10 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView
            editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([self.favoriteForums count] == 0) return UITableViewCellEditingStyleNone;
-    if (indexPath.section == 0) {
+    if ([self.favoriteForums count] > 0) {
+        indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section - 1];
+    }
+    if (indexPath.section == -1) {
         return UITableViewCellEditingStyleDelete;
     } else {
         return UITableViewCellEditingStyleNone;
@@ -505,8 +513,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 - (void)tableView:(UITableView *)tableView
-    commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
-    forRowAtIndexPath:(NSIndexPath *)indexPath
+commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
+forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle != UITableViewCellEditingStyleDelete) return;
     if ([self.favoriteForums count] == 0 || indexPath.section != 0) return;
@@ -534,7 +542,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 - (BOOL)tableView:(UITableView *)tableView
-    shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath
+shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return [self.favoriteForums count] > 0 && indexPath.section == 0;
 }
@@ -545,7 +553,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView
-    targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
+targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
        toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath
 {
     if (proposedDestinationIndexPath.section == 0) return proposedDestinationIndexPath;
