@@ -823,8 +823,8 @@ function render(post) {
           .removeAttr('style')
   if (!Awful._showAvatars) hideAvatar(rendered)
   if (!Awful._showImages) hideImages(rendered)
-  highlightQuotes(rendered)
-  highlightMentions(rendered)
+  highlightQuotes(rendered.find('.postbody'))
+  highlightMentions(rendered.find('.postbody'))
   fixVimeoEmbeds(rendered)
   return rendered
 }
