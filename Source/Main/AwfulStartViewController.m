@@ -44,6 +44,15 @@
     [self setImageForOrientation:self.interfaceOrientation];
 }
 
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
+{
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        return YES;
+    } else {
+        return toInterfaceOrientation != UIInterfaceOrientationPortraitUpsideDown;
+    }
+}
+
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)orientation
                                          duration:(NSTimeInterval)duration
 {
