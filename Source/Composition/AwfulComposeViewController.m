@@ -195,7 +195,7 @@ static NSArray * ImagePlaceholderResultsWithMessageBody(NSString *messageBody)
 
 - (void)loadView
 {
-    self.view = [[UIView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
+    self.view = [UIView new];
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.textView];
 }
