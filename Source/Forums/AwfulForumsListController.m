@@ -63,7 +63,7 @@
     NSArray *favoriteForums = [AwfulForum fetchAllMatchingPredicate:@"forumID IN %@",
                                [AwfulSettings settings].favoriteForums];
     return [favoriteForums sortedArrayUsingComparator:^NSComparisonResult(AwfulForum *a, AwfulForum *b) {
-        return [@([favoriteForums indexOfObject:a]) compare:@([favoriteForums indexOfObject:b])];
+        return [@([forumIDs indexOfObject:a.forumID]) compare:@([forumIDs indexOfObject:b.forumID])];
     }];
 }
 
@@ -562,11 +562,12 @@ targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
 }
 
 - (void)tableView:(UITableView *)tableView
-    moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
+moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
       toIndexPath:(NSIndexPath *)destinationIndexPath
 {
-    [self.favoriteForums exchangeObjectAtIndex:sourceIndexPath.row
-                             withObjectAtIndex:destinationIndexPath.row];
+    id forum = self.favoriteForums[sourceIndexPath.row];
+    [self.favoriteForums removeObjectAtIndex:sourceIndexPath.row];
+    [self.favoriteForums insertObject:forum atIndex:destinationIndexPath.row];
     self.userDrivenChange = YES;
     [AwfulSettings settings].favoriteForums = [self.favoriteForums valueForKey:@"forumID"];
     self.userDrivenChange = NO;
