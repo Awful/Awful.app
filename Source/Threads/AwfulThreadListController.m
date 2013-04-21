@@ -237,6 +237,9 @@
 
 - (void)markThreadUnseen:(AwfulThread *)thread
 {
+    if (!thread.threadID) {
+        return NSLog(@"thread %@ is missing a thread ID; cannot mark unseen", thread.title);
+    }
     [[AwfulHTTPClient client] forgetReadPostsInThreadWithID:thread.threadID
                                                     andThen:^(NSError *error)
     {
