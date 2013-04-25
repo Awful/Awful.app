@@ -1036,14 +1036,20 @@ static BOOL PrivateMessageIconSeen(NSString *src)
         
         TFHppleElement *sentDateCell = [row searchForSingle:@"//td[5]"];
         if (sentDateCell) {
-            // TODO does this format appear elsewhere?
             static NSDateFormatter *df = nil;
             if (!df) {
                 df = [[NSDateFormatter alloc] init];
-                [df setDateFormat:@"MMM d, yyyy 'at' HH:mm"];
+                [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
             }
             [df setTimeZone:[NSTimeZone localTimeZone]];
-            info.sentDate = [df dateFromString:[sentDateCell content]];
+            NSString *dateString = [sentDateCell content];
+            [df setDateFormat:@"MMM d, yyyy 'at' HH:mm"];
+            NSDate *date = [df dateFromString:dateString];
+            if (!date) {
+                [df setDateFormat:@"MMM d, yyyy 'at' h:mm a"];
+                date = [df dateFromString:dateString];
+            }
+            info.sentDate = date;
         }
         [messages addObject:info];
     }
