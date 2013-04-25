@@ -97,8 +97,6 @@ static id _instance;
     [[NSNotificationCenter defaultCenter] postNotificationName:AwfulUserDidLogOutNotification
                                                         object:nil];
     
-    [self setUpRootViewController];
-    
     [self showLoginFormIsAtLaunch:NO andThen:^{
         AwfulTabBarController *tabBar = self.tabBarController;
         tabBar.selectedViewController = tabBar.viewControllers[0];
