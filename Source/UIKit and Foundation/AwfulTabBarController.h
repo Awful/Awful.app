@@ -35,10 +35,9 @@
 
 
 @protocol AwfulTabBarControllerDelegate <NSObject>
-@optional
 
 - (BOOL)tabBarController:(AwfulTabBarController *)controller
-    shouldSelectViewController:(UIViewController *)viewController;
+shouldSelectViewController:(UIViewController *)viewController;
 
 @end
 

@@ -32,7 +32,6 @@
 - (void)setSelectedViewController:(UIViewController *)selectedViewController
 {
     if (_selectedViewController == selectedViewController) return;
-    if (![self.viewControllers containsObject:selectedViewController]) return;
     if (_selectedViewController) {
         [self replaceViewController:_selectedViewController
                  withViewController:selectedViewController];
@@ -46,16 +45,9 @@
 - (void)addViewController:(UIViewController *)coming
 {
     [self addChildViewController:coming];
-    if ([self isViewLoaded]) {
-        [self insertDetailViewForViewController:coming];
-    }
-    [coming didMoveToParentViewController:self];
-}
-
-- (void)insertDetailViewForViewController:(UIViewController *)coming
-{
     coming.view.frame = [self frameForContainedViewController:coming];
     [self.view insertSubview:coming.view belowSubview:self.tabBar];
+    [coming didMoveToParentViewController:self];
 }
 
 - (void)replaceViewController:(UIViewController *)going
@@ -63,18 +55,11 @@
 {
     [going willMoveToParentViewController:nil];
     [self addChildViewController:coming];
-    if ([self isViewLoaded]) {
-        coming.view.frame = [self frameForContainedViewController:coming];
-    }
-    [self transitionFromViewController:going toViewController:coming duration:0 options:0
-                            animations:nil completion:^(BOOL finished)
-    {
-        [going removeFromParentViewController];
-        [coming didMoveToParentViewController:self];
-        if ([self isViewLoaded]) {
-            [self.view bringSubviewToFront:self.tabBar];
-        }
-    }];
+    coming.view.frame = [self frameForContainedViewController:coming];
+    [self.view insertSubview:coming.view belowSubview:going.view];
+    [going.view removeFromSuperview];
+    [going removeFromParentViewController];
+    [coming didMoveToParentViewController:self];
 }
 
 - (CGRect)frameForContainedViewController:(UIViewController *)viewController
@@ -107,9 +92,6 @@
                                UIViewAutoresizingFlexibleTopMargin);
     [self.view addSubview:tabBar];
     self.tabBar = tabBar;
-    if (self.selectedViewController) {
-        [self insertDetailViewForViewController:self.selectedViewController];
-    }
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
@@ -137,12 +119,9 @@
 - (void)tabBar:(AwfulTabBar *)tabBar didSelectItem:(UITabBarItem *)item
 {
     UIViewController *selected = self.viewControllers[[tabBar.items indexOfObject:item]];
-    if ([self.delegate respondsToSelector:
-         @selector(tabBarController:shouldSelectViewController:)]) {
-        if (![self.delegate tabBarController:self shouldSelectViewController:selected]) {
-            self.tabBar.selectedItem = self.selectedViewController.tabBarItem;
-            return;
-        }
+    if (![self.delegate tabBarController:self shouldSelectViewController:selected]) {
+        self.tabBar.selectedItem = self.selectedViewController.tabBarItem;
+        return;
     }
     if ([selected isEqual:self.selectedViewController]) {
         if ([selected isKindOfClass:[UINavigationController class]]) {
