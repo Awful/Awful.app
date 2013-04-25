@@ -293,8 +293,7 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
 
 - (void)didLogIn:(NSNotification *)note
 {
-    [self.tableView insertSections:[NSIndexSet indexSetWithIndex:self.tableView.numberOfSections]
-                  withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self.tableView reloadData];
 }
 
 - (void)didLogOut:(NSNotification *)note
