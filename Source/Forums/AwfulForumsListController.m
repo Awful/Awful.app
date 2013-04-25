@@ -371,14 +371,15 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
     header.textColor = [AwfulTheme currentTheme].forumListHeaderTextColor;
     header.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     header.backgroundColor = [AwfulTheme currentTheme].forumListHeaderBackgroundColor;
-    if ([self shouldShowLepersColony] && section + 1 == [tableView numberOfSections]) {
+    if ([self.favoriteForums count] > 0) {
+        section -= 1;
+    }
+    if ([self shouldShowLepersColony] &&
+        section == (NSInteger)[self.fetchedResultsController.sections count]) {
         header.text = @"Awful";
-    } else if ([self.favoriteForums count] > 0 && section == 0) {
+    } else if (section == -1) {
         header.text = @"Favorites";
     } else {
-        if ([self.favoriteForums count] > 0) {
-            section -= 1;
-        }
         AwfulForum *anyForum = [[self.fetchedResultsController.sections[section] objects] lastObject];
         header.text = anyForum.category.name;
     }
