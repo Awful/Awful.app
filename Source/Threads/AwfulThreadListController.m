@@ -247,6 +247,20 @@
         [self displayPage:page];
         [page loadPage:AwfulThreadPageLast singleUserID:nil];
     }]];
+    [sheet addItem:[[AwfulIconActionItem alloc] initWithTitle:@"Copy URL"
+                                                         icon:[UIImage imageNamed:@"copy-url"]
+                                                    tintColor:[UIColor colorWithHue:0.590
+                                                                         saturation:0.630
+                                                                         brightness:0.890
+                                                                              alpha:1]
+                                                       action:^{
+        NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/showthread.php?threadid=%@", thread.threadID];
+        [AwfulSettings settings].lastOfferedPasteboardURL = url;
+        [UIPasteboard generalPasteboard].items = @[ @{
+            (id)kUTTypeURL: [NSURL URLWithString:url],
+            (id)kUTTypePlainText: url
+        }];
+    }]];
     if (thread.beenSeen) {
         [sheet addItem:[[AwfulIconActionItem alloc] initWithTitle:@"Mark as Unread"
                                                              icon:nil
