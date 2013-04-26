@@ -1019,6 +1019,7 @@
 		1C278A481647A47F007D3CEC /* AwfulPullToRefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPullToRefreshControl.m; sourceTree = "<group>"; };
 		1C278A491647A47F007D3CEC /* AwfulScrollViewPullObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScrollViewPullObserver.h; sourceTree = "<group>"; };
 		1C278A4A1647A47F007D3CEC /* AwfulScrollViewPullObserver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScrollViewPullObserver.m; sourceTree = "<group>"; };
+		1C28B35A172A004F00254EE7 /* PSTCollectionViewLayout+Internals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PSTCollectionViewLayout+Internals.h"; sourceTree = "<group>"; };
 		1C382CA816FCF92700EF9A8E /* Model-1.11-onemoretime.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model-1.11-onemoretime.xcdatamodel"; sourceTree = "<group>"; };
 		1C3CC797162876AE00088AA8 /* adminstar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = adminstar.png; sourceTree = "<group>"; };
 		1C3CC798162876AE00088AA8 /* modstar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = modstar.png; sourceTree = "<group>"; };
@@ -2328,6 +2329,7 @@
 				1C9FDAE116E4837800C665B5 /* PSTCollectionViewItemKey.m */,
 				1C9FDAE216E4837800C665B5 /* PSTCollectionViewLayout.h */,
 				1C9FDAE316E4837800C665B5 /* PSTCollectionViewLayout.m */,
+				1C28B35A172A004F00254EE7 /* PSTCollectionViewLayout+Internals.h */,
 				1C9FDAE416E4837800C665B5 /* PSTCollectionViewUpdateItem.h */,
 				1C9FDAE516E4837800C665B5 /* PSTCollectionViewUpdateItem.m */,
 				1C9FDAE616E4837800C665B5 /* PSTGridLayoutInfo.h */,
