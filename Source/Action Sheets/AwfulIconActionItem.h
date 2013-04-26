@@ -17,6 +17,7 @@ typedef NS_ENUM(NSInteger, AwfulIconActionItemType)
     AwfulIconActionItemTypeMarkAsUnread,
     AwfulIconActionItemTypeRemoveBookmark,
     AwfulIconActionItemTypeUserProfile,
+    AwfulIconActionItemTypeVote,
 };
 
 

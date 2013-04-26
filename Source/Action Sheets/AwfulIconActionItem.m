@@ -71,9 +71,10 @@
             icon = [UIImage imageNamed:@"user-profile"];
             break;
         
-        default:
-            NSLog(@"unknown icon action item type %d", type);
-            return nil;
+        case AwfulIconActionItemTypeVote:
+            title = @"Vote";
+            tintColor = [UIColor colorWithHue:0.081 saturation:0.843 brightness:0.898 alpha:1];
+            icon = [UIImage imageNamed:@"vote"];
             break;
     }
     return [[self alloc] initWithTitle:title icon:icon tintColor:tintColor action:action];

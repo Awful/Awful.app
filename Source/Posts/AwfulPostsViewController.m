@@ -13,6 +13,7 @@
 #import "AwfulDateFormatters.h"
 #import "AwfulExternalBrowser.h"
 #import "AwfulHTTPClient.h"
+#import "AwfulIconActionSheet.h"
 #import "AwfulImagePreviewViewController.h"
 #import "AwfulJumpToPageController.h"
 #import "AwfulModels.h"
@@ -463,8 +464,8 @@
 
 - (void)showThreadActionsFromRect:(CGRect)rect inView:(UIView *)view
 {
-    AwfulActionSheet *sheet = [AwfulActionSheet new];
-    [sheet addButtonWithTitle:@"Copy Thread URL" block:^{
+    AwfulIconActionSheet *sheet = [AwfulIconActionSheet new];
+    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
         NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
                          "showthread.php?threadid=%@&perpage=40&pagenumber=%@",
                          self.thread.threadID, @(self.currentPage)];
@@ -473,8 +474,8 @@
             (id)kUTTypeURL: [NSURL URLWithString:url],
             (id)kUTTypePlainText: url
         }];
-    }];
-    [sheet addButtonWithTitle:@"Vote" block:^{
+    }]];
+    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeVote action:^{
         AwfulActionSheet *vote = [AwfulActionSheet new];
         for (int i = 5; i >= 1; i--) {
             [vote addButtonWithTitle:[@(i) stringValue] block:^{
@@ -493,9 +494,14 @@
         }
         [vote addCancelButtonWithTitle:@"Cancel"];
         [vote showFromRect:rect inView:view animated:YES];
-    }];
-    NSString *bookmark = self.thread.isBookmarkedValue ? @"Unbookmark Thread" : @"Bookmark Thread";
-    [sheet addButtonWithTitle:bookmark block:^{
+    }]];
+    AwfulIconActionItemType bookmarkItemType;
+    if (self.thread.isBookmarkedValue) {
+        bookmarkItemType = AwfulIconActionItemTypeRemoveBookmark;
+    } else {
+        bookmarkItemType = AwfulIconActionItemTypeAddBookmark;
+    }
+    [sheet addItem:[AwfulIconActionItem itemWithType:bookmarkItemType action:^{
         [[AwfulHTTPClient client] setThreadWithID:self.thread.threadID
                                      isBookmarked:!self.thread.isBookmarkedValue
                                           andThen:^(NSError *error)
@@ -508,9 +514,8 @@
                  [SVProgressHUD showSuccessWithStatus:status];
              }
          }];
-    }];
-    [sheet addCancelButtonWithTitle:@"Cancel"];
-    [sheet showFromRect:rect inView:view animated:YES];
+    }]];
+    [sheet presentFromViewController:self fromView:view];
 }
 
 - (void)showProfileWithUser:(AwfulUser *)user
