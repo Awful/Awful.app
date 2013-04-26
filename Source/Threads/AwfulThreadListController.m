@@ -182,29 +182,6 @@
         [self displayPage:page];
         [page loadPage:1 singleUserID:nil];
     }]];
-    [sheet addItem:[[AwfulIconActionItem alloc] initWithTitle:@"Jump to Last Page"
-                                                         icon:nil
-                                                    tintColor:[UIColor colorWithHue:0.115
-                                                                         saturation:0.113
-                                                                         brightness:0.451
-                                                                              alpha:1]
-                                                       action:^{
-        AwfulPostsViewController *page = [AwfulPostsViewController new];
-        page.thread = thread;
-        [self displayPage:page];
-        [page loadPage:AwfulThreadPageLast singleUserID:nil];
-    }]];
-    if (thread.beenSeen) {
-        [sheet addItem:[[AwfulIconActionItem alloc] initWithTitle:@"Mark as Unread"
-                                                             icon:nil
-                                                        tintColor:[UIColor colorWithHue:0.762
-                                                                             saturation:0.821
-                                                                             brightness:0.831
-                                                                                  alpha:1]
-                                                           action:^{
-            [self markThreadUnseen:thread];
-        }]];
-    }
     NSString *bookmarkTitle;
     UIColor *bookmarkColor;
     UIImage *bookmarkIcon;
@@ -257,6 +234,30 @@
             [self.navigationController pushViewController:profile animated:YES];
         }
     }]];
+    [sheet addItem:[[AwfulIconActionItem alloc] initWithTitle:@"Jump to Last Page"
+                                                         icon:nil
+                                                    tintColor:[UIColor colorWithHue:0.115
+                                                                         saturation:0.113
+                                                                         brightness:0.451
+                                                                              alpha:1]
+                                                       action:^
+    {
+        AwfulPostsViewController *page = [AwfulPostsViewController new];
+        page.thread = thread;
+        [self displayPage:page];
+        [page loadPage:AwfulThreadPageLast singleUserID:nil];
+    }]];
+    if (thread.beenSeen) {
+        [sheet addItem:[[AwfulIconActionItem alloc] initWithTitle:@"Mark as Unread"
+                                                             icon:nil
+                                                        tintColor:[UIColor colorWithHue:0.762
+                                                                             saturation:0.821
+                                                                             brightness:0.831
+                                                                                  alpha:1]
+                                                           action:^{
+            [self markThreadUnseen:thread];
+        }]];
+    }
     NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:thread];
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
     [sheet presentFromViewController:self.awfulTabBarController fromView:cell];
