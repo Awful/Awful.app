@@ -12,6 +12,7 @@
 #import "AwfulDataStack.h"
 #import "AwfulDisclosureIndicatorView.h"
 #import "AwfulHTTPClient.h"
+#import "AwfulIconActionSheet.h"
 #import "AwfulLoginController.h"
 #import "AwfulModels.h"
 #import "AwfulPostsViewController.h"
@@ -167,47 +168,87 @@
 
 - (void)showThreadActionsForThread:(AwfulThread *)thread
 {
-    AwfulActionSheet *sheet = [AwfulActionSheet new];
+    AwfulIconActionSheet *sheet = [AwfulIconActionSheet new];
     sheet.title = [thread.title stringByCollapsingWhitespace];
-    [sheet addButtonWithTitle:@"Jump to First Page" block:^{
+    [sheet addItem:[[AwfulIconActionItem alloc] initWithTitle:@"Jump to First Page"
+                                                         icon:[UIImage imageNamed:@"jump-to-first-page.png"]
+                                                    tintColor:[UIColor colorWithHue:0.153
+                                                                         saturation:0.111
+                                                                         brightness:0.882
+                                                                              alpha:1]
+                                                       action:^{
         AwfulPostsViewController *page = [AwfulPostsViewController new];
         page.thread = thread;
         [self displayPage:page];
         [page loadPage:1 singleUserID:nil];
-    }];
-    [sheet addButtonWithTitle:@"Jump to Last Page" block:^{
+    }]];
+    [sheet addItem:[[AwfulIconActionItem alloc] initWithTitle:@"Jump to Last Page"
+                                                         icon:nil
+                                                    tintColor:[UIColor colorWithHue:0.115
+                                                                         saturation:0.113
+                                                                         brightness:0.451
+                                                                              alpha:1]
+                                                       action:^{
         AwfulPostsViewController *page = [AwfulPostsViewController new];
         page.thread = thread;
         [self displayPage:page];
         [page loadPage:AwfulThreadPageLast singleUserID:nil];
-    }];
+    }]];
     if (thread.beenSeen) {
-        [sheet addButtonWithTitle:@"Mark as Unread" block:^{
+        [sheet addItem:[[AwfulIconActionItem alloc] initWithTitle:@"Mark as Unread"
+                                                             icon:nil
+                                                        tintColor:[UIColor colorWithHue:0.762
+                                                                             saturation:0.821
+                                                                             brightness:0.831
+                                                                                  alpha:1]
+                                                           action:^{
             [self markThreadUnseen:thread];
-        }];
+        }]];
     }
-    NSString *bookmarkTitle = [NSString stringWithFormat:@"%@ Thread",
-                               thread.isBookmarkedValue ? @"Unbookmark" : @"Bookmark"];
-    [sheet addButtonWithTitle:bookmarkTitle block:^{
+    NSString *bookmarkTitle;
+    UIColor *bookmarkColor;
+    UIImage *bookmarkIcon;
+    if (thread.isBookmarkedValue) {
+        bookmarkTitle = @"Remove";
+        bookmarkColor = [UIColor colorWithHue:0.023 saturation:0.845 brightness:0.835 alpha:1];
+        bookmarkIcon = [UIImage imageNamed:@"remove-bookmark"];
+    } else {
+        bookmarkTitle = @"Add";
+        bookmarkColor = [UIColor colorWithHue:0.206 saturation:0.816 brightness:0.639 alpha:1];
+        bookmarkIcon = [UIImage imageNamed:@"add-bookmark"];
+    }
+    bookmarkTitle = [NSString stringWithFormat:@"%@ Bookmark", bookmarkTitle];
+    [sheet addItem:[[AwfulIconActionItem alloc] initWithTitle:bookmarkTitle
+                                                         icon:bookmarkIcon
+                                                    tintColor:bookmarkColor
+                                                       action:^{
         [[AwfulHTTPClient client] setThreadWithID:thread.threadID
                                      isBookmarked:!thread.isBookmarkedValue
                                           andThen:^(NSError *error)
-        {
-            if (error) {
-                [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
-            } else {
-                NSString *status = thread.isBookmarkedValue ? @"Bookmarked" : @"Unbookmarked";
-                [SVProgressHUD showSuccessWithStatus:status];
-            }
-        }];
-    }];
-    [sheet addButtonWithTitle:@"View OP's Profile" block:^{
+         {
+             if (error) {
+                 [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+             } else {
+                 NSString *status = thread.isBookmarkedValue ? @"Bookmark Added" : @"Bookmark Removed";
+                 [SVProgressHUD showSuccessWithStatus:status];
+             }
+         }];
+    }]];
+    [sheet addItem:[[AwfulIconActionItem alloc] initWithTitle:@"View OP's Profile"
+                                                         icon:[UIImage imageNamed:@"user-profile"]
+                                                    tintColor:[UIColor colorWithHue:0.633
+                                                                         saturation:0.055
+                                                                         brightness:0.718
+                                                                              alpha:1]
+                                                       action:^{
         AwfulProfileViewController *profile = [AwfulProfileViewController new];
         profile.hidesBottomBarWhenPushed = YES;
         profile.userID = thread.author.userID;
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                                                                  target:self action:@selector(doneWithProfile)];
+            UIBarButtonItem *done;
+            done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                 target:self
+                                                                 action:@selector(doneWithProfile)];
             profile.navigationItem.leftBarButtonItem = done;
             UINavigationController *nav = [profile enclosingNavigationController];
             nav.modalPresentationStyle = UIModalPresentationFormSheet;
@@ -215,19 +256,10 @@
         } else {
             [self.navigationController pushViewController:profile animated:YES];
         }
-    }];
-    [sheet addCancelButtonWithTitle:@"Cancel"];
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        [sheet showFromRect:self.awfulTabBarController.tabBar.frame
-                     inView:self.awfulTabBarController.view
-                   animated:YES];
-    } else if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:thread];
-        if (index) {
-            UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-            [sheet showFromRect:cell.frame inView:self.tableView animated:YES];
-        }
-    }
+    }]];
+    NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:thread];
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    [sheet presentFromViewController:self.awfulTabBarController fromView:cell];
 }
 
 - (void)doneWithProfile
