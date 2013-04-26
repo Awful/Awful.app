@@ -23,4 +23,60 @@
     return self;
 }
 
++ (instancetype)itemWithType:(AwfulIconActionItemType)type action:(void (^)(void))action
+{
+    NSString *title;
+    UIColor *tintColor;
+    UIImage *icon;
+    switch (type) {
+        case AwfulIconActionItemTypeAddBookmark:
+            title = @"Add Bookmark";
+            tintColor = [UIColor colorWithHue:0.206 saturation:0.816 brightness:0.639 alpha:1];
+            icon = [UIImage imageNamed:@"add-bookmark"];
+            break;
+        
+        case AwfulIconActionItemTypeCopyURL:
+            title = @"Copy URL";
+            tintColor = [UIColor colorWithHue:0.590 saturation:0.630 brightness:0.890 alpha:1];
+            icon = [UIImage imageNamed:@"copy-url"];
+            break;
+        
+        case AwfulIconActionItemTypeJumpToFirstPage:
+            title = @"Jump to First Page";
+            tintColor = [UIColor colorWithHue:0.153 saturation:0.111 brightness:0.882 alpha:1];
+            icon = [UIImage imageNamed:@"jump-to-first-page.png"];
+            break;
+        
+        case AwfulIconActionItemTypeJumpToLastPage:
+            title = @"Jump to Last Page";
+            tintColor = [UIColor colorWithHue:0.115 saturation:0.113 brightness:0.451 alpha:1];
+            icon = [UIImage imageNamed:@"jump-to-last-page"];
+            break;
+        
+        case AwfulIconActionItemTypeMarkAsUnread:
+            title = @"Mark as Unread";
+            tintColor = [UIColor colorWithHue:0.762 saturation:0.821 brightness:0.831 alpha:1];
+            icon = [UIImage imageNamed:@"mark-as-unread"];
+            break;
+        
+        case AwfulIconActionItemTypeRemoveBookmark:
+            title = @"Remove Bookmark";
+            tintColor = [UIColor colorWithHue:0.023 saturation:0.845 brightness:0.835 alpha:1];
+            icon = [UIImage imageNamed:@"remove-bookmark"];
+            break;
+        
+        case AwfulIconActionItemTypeUserProfile:
+            title = @"User Profile";
+            tintColor = [UIColor colorWithHue:0.633 saturation:0.055 brightness:0.718 alpha:1];
+            icon = [UIImage imageNamed:@"user-profile"];
+            break;
+        
+        default:
+            NSLog(@"unknown icon action item type %d", type);
+            return nil;
+            break;
+    }
+    return [[self alloc] initWithTitle:title icon:icon tintColor:tintColor action:action];
+}
+
 @end

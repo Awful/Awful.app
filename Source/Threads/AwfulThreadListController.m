@@ -170,35 +170,20 @@
 {
     AwfulIconActionSheet *sheet = [AwfulIconActionSheet new];
     sheet.title = [thread.title stringByCollapsingWhitespace];
-    [sheet addItem:[[AwfulIconActionItem alloc] initWithTitle:@"Jump to First Page"
-                                                         icon:[UIImage imageNamed:@"jump-to-first-page.png"]
-                                                    tintColor:[UIColor colorWithHue:0.153
-                                                                         saturation:0.111
-                                                                         brightness:0.882
-                                                                              alpha:1]
-                                                       action:^{
+    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeJumpToFirstPage
+                                              action:^{
         AwfulPostsViewController *page = [AwfulPostsViewController new];
         page.thread = thread;
         [self displayPage:page];
         [page loadPage:1 singleUserID:nil];
     }]];
-    NSString *bookmarkTitle;
-    UIColor *bookmarkColor;
-    UIImage *bookmarkIcon;
+    AwfulIconActionItemType bookmarkItemType;
     if (thread.isBookmarkedValue) {
-        bookmarkTitle = @"Remove";
-        bookmarkColor = [UIColor colorWithHue:0.023 saturation:0.845 brightness:0.835 alpha:1];
-        bookmarkIcon = [UIImage imageNamed:@"remove-bookmark"];
+        bookmarkItemType = AwfulIconActionItemTypeRemoveBookmark;
     } else {
-        bookmarkTitle = @"Add";
-        bookmarkColor = [UIColor colorWithHue:0.206 saturation:0.816 brightness:0.639 alpha:1];
-        bookmarkIcon = [UIImage imageNamed:@"add-bookmark"];
+        bookmarkItemType = AwfulIconActionItemTypeAddBookmark;
     }
-    bookmarkTitle = [NSString stringWithFormat:@"%@ Bookmark", bookmarkTitle];
-    [sheet addItem:[[AwfulIconActionItem alloc] initWithTitle:bookmarkTitle
-                                                         icon:bookmarkIcon
-                                                    tintColor:bookmarkColor
-                                                       action:^{
+    [sheet addItem:[AwfulIconActionItem itemWithType:bookmarkItemType action:^{
         [[AwfulHTTPClient client] setThreadWithID:thread.threadID
                                      isBookmarked:!thread.isBookmarkedValue
                                           andThen:^(NSError *error)
@@ -211,13 +196,8 @@
              }
          }];
     }]];
-    [sheet addItem:[[AwfulIconActionItem alloc] initWithTitle:@"View OP's Profile"
-                                                         icon:[UIImage imageNamed:@"user-profile"]
-                                                    tintColor:[UIColor colorWithHue:0.633
-                                                                         saturation:0.055
-                                                                         brightness:0.718
-                                                                              alpha:1]
-                                                       action:^{
+    AwfulIconActionItem *profileItem = [AwfulIconActionItem itemWithType:
+                                        AwfulIconActionItemTypeUserProfile action:^{
         AwfulProfileViewController *profile = [AwfulProfileViewController new];
         profile.hidesBottomBarWhenPushed = YES;
         profile.userID = thread.author.userID;
@@ -233,28 +213,18 @@
         } else {
             [self.navigationController pushViewController:profile animated:YES];
         }
-    }]];
-    [sheet addItem:[[AwfulIconActionItem alloc] initWithTitle:@"Jump to Last Page"
-                                                         icon:nil
-                                                    tintColor:[UIColor colorWithHue:0.115
-                                                                         saturation:0.113
-                                                                         brightness:0.451
-                                                                              alpha:1]
-                                                       action:^
-    {
+    }];
+    profileItem.title = @"View OP's Profile";
+    [sheet addItem:profileItem];
+    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeJumpToLastPage action:^{
         AwfulPostsViewController *page = [AwfulPostsViewController new];
         page.thread = thread;
         [self displayPage:page];
         [page loadPage:AwfulThreadPageLast singleUserID:nil];
     }]];
-    [sheet addItem:[[AwfulIconActionItem alloc] initWithTitle:@"Copy URL"
-                                                         icon:[UIImage imageNamed:@"copy-url"]
-                                                    tintColor:[UIColor colorWithHue:0.590
-                                                                         saturation:0.630
-                                                                         brightness:0.890
-                                                                              alpha:1]
-                                                       action:^{
-        NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/showthread.php?threadid=%@", thread.threadID];
+    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
+        NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
+                         "showthread.php?threadid=%@", thread.threadID];
         [AwfulSettings settings].lastOfferedPasteboardURL = url;
         [UIPasteboard generalPasteboard].items = @[ @{
             (id)kUTTypeURL: [NSURL URLWithString:url],
@@ -262,13 +232,8 @@
         }];
     }]];
     if (thread.beenSeen) {
-        [sheet addItem:[[AwfulIconActionItem alloc] initWithTitle:@"Mark as Unread"
-                                                             icon:nil
-                                                        tintColor:[UIColor colorWithHue:0.762
-                                                                             saturation:0.821
-                                                                             brightness:0.831
-                                                                                  alpha:1]
-                                                           action:^{
+        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkAsUnread
+                                                  action:^{
             [self markThreadUnseen:thread];
         }]];
     }

@@ -8,6 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
+typedef NS_ENUM(NSInteger, AwfulIconActionItemType)
+{
+    AwfulIconActionItemTypeAddBookmark,
+    AwfulIconActionItemTypeCopyURL,
+    AwfulIconActionItemTypeJumpToFirstPage,
+    AwfulIconActionItemTypeJumpToLastPage,
+    AwfulIconActionItemTypeMarkAsUnread,
+    AwfulIconActionItemTypeRemoveBookmark,
+    AwfulIconActionItemTypeUserProfile,
+};
+
+
 @interface AwfulIconActionItem : NSObject
 
 - (id)initWithTitle:(NSString *)title
@@ -19,5 +31,7 @@
 @property (nonatomic) UIImage *icon;
 @property (nonatomic) UIColor *tintColor;
 @property (copy, nonatomic) void (^action)(void);
+
++ (instancetype)itemWithType:(AwfulIconActionItemType)type action:(void (^)(void))action;
 
 @end
