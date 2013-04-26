@@ -2143,6 +2143,15 @@
 			path = "Scrolling and Pulling";
 			sourceTree = "<group>";
 		};
+		1C28B34A1729DC9700254EE7 /* Action Sheets */ = {
+			isa = PBXGroup;
+			children = (
+				1CE2D9BF166ABD0D0024AC1C /* AwfulActionSheet.h */,
+				1CE2D9C0166ABD0D0024AC1C /* AwfulActionSheet.m */,
+			);
+			path = "Action Sheets";
+			sourceTree = "<group>";
+		};
 		1C304BD216C78B6E0022AF15 /* Browsing */ = {
 			isa = PBXGroup;
 			children = (
@@ -2155,6 +2164,7 @@
 		1C3857A115675AFE0078AF95 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				1C28B34A1729DC9700254EE7 /* Action Sheets */,
 				1C304BD216C78B6E0022AF15 /* Browsing */,
 				1CF2462016DD957300C75E05 /* Composition */,
 				1CC7800E1612D8AE002AF958 /* Forums */,
@@ -2584,8 +2594,6 @@
 		1CE2D99D16688AC40024AC1C /* UIKit and Foundation */ = {
 			isa = PBXGroup;
 			children = (
-				1CE2D9BF166ABD0D0024AC1C /* AwfulActionSheet.h */,
-				1CE2D9C0166ABD0D0024AC1C /* AwfulActionSheet.m */,
 				1CE2D9C1166ABD0D0024AC1C /* AwfulAlertView.h */,
 				1CE2D9C2166ABD0D0024AC1C /* AwfulAlertView.m */,
 				1C5B996A166E78F9004C5D0E /* AwfulDisclosureIndicatorView.h */,
