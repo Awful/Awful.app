@@ -665,7 +665,10 @@ Awful.dark = function(dark){
 Awful.invoke = function(selector /*, varargs */){
   var stem = "x-objc:///" + selector + "/"
   var args = Array.prototype.slice.call(arguments, 1)
-  $('<iframe>', { src: stem + encodeURIComponent(JSON.stringify(args)) }).appendTo($('html')).remove()
+  $('<iframe>', {
+    src: stem + encodeURIComponent(JSON.stringify(args)),
+    style: 'display: none'
+  }).appendTo($('html')).remove()
 }
 
 $(function(){

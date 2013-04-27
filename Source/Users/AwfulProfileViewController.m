@@ -227,6 +227,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     if ([request.URL.scheme isEqualToString:@"x-objc"]) {
         NSArray *whitelist = @[ @"showActionsForServiceAtIndex:fromRectDictionary:" ];
         InvokeBridgedMethodWithURLAndTarget(request.URL, self, whitelist);
+        return NO;
     }
     return YES;
 }
