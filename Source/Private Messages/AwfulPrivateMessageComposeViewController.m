@@ -167,12 +167,13 @@
 {
     if (state == AwfulComposeViewControllerStateReady) {
         [self setTextFieldsAndViewUserInteractionEnabled:YES];
+        CGPoint topOffset = CGPointMake(0, -self.textView.contentInset.top);
         if ([self.recipient length] == 0) {
-            [self.textView setContentOffset:CGPointZero animated:YES];
             [self.toField.textField becomeFirstResponder];
+            self.textView.contentOffset = topOffset;
         } else if ([self.subject length] == 0) {
-            [self.textView scrollRectToVisible:self.subjectField.frame animated:YES];
-            [self.textView setContentOffset:CGPointZero animated:YES];
+            [self.subjectField.textField becomeFirstResponder];
+            self.textView.contentOffset = topOffset;
         } else {
             [self.textView becomeFirstResponder];
         }
@@ -220,7 +221,8 @@
     
     UIView *topView = [UIView new];
     topView.frame = CGRectMake(0, -fieldHeight, CGRectGetWidth(self.textView.frame), fieldHeight);
-    topView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    topView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                UIViewAutoresizingFlexibleBottomMargin);
     [self.textView addSubview:topView];
     self.topView = topView;
     
@@ -241,8 +243,7 @@
     subjectFrame.size.height -= 2;
     AwfulComposeField *toField = [[AwfulComposeField alloc] initWithFrame:toFrame];
     toField.label.text = @"To:";
-    toField.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin |
-                                UIViewAutoresizingFlexibleWidth);
+    toField.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     toField.textField.keyboardAppearance = self.textView.keyboardAppearance;
     toField.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     toField.textField.autocorrectionType = UITextAutocorrectionTypeNo;
@@ -255,8 +256,7 @@
     
     AwfulComposeField *subjectField = [[AwfulComposeField alloc] initWithFrame:subjectFrame];
     subjectField.label.text = @"Subject:";
-    subjectField.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin |
-                                     UIViewAutoresizingFlexibleWidth);
+    subjectField.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     subjectField.textField.keyboardAppearance = self.textView.keyboardAppearance;
     [subjectField.textField addTarget:self action:@selector(subjectFieldDidChange:)
                      forControlEvents:UIControlEventEditingDidEnd];
@@ -351,7 +351,6 @@
 {
     [super viewWillDisappear:animated];
     // In case the view gets unloaded (has been problem on iOS 5.)
-    // TODO: see if this is still a problem.
     self.recipient = self.toField.textField.text;
     self.subject = self.subjectField.textField.text;
 }

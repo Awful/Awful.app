@@ -195,7 +195,7 @@ static NSArray * ImagePlaceholderResultsWithMessageBody(NSString *messageBody)
 
 - (void)loadView
 {
-    self.view = [UIView new];
+    self.view = [[UIView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.textView];
 }
@@ -226,7 +226,7 @@ static NSArray * ImagePlaceholderResultsWithMessageBody(NSString *messageBody)
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardDidShowNotification
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification
                                                   object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification
                                                   object:nil];
