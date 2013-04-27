@@ -40,6 +40,12 @@
             tintColor = [UIColor colorWithHue:0.590 saturation:0.630 brightness:0.890 alpha:1];
             icon = [UIImage imageNamed:@"copy-url"];
             break;
+            
+        case AwfulIconActionItemTypeEditPost:
+            title = @"Edit Post";
+            tintColor = [UIColor colorWithHue:0.068 saturation:0.808 brightness:0.573 alpha:1];
+            icon = [UIImage imageNamed:@"edit-post"];
+            break;
         
         case AwfulIconActionItemTypeJumpToFirstPage:
             title = @"Jump to First Page";
@@ -58,11 +64,35 @@
             tintColor = [UIColor colorWithHue:0.762 saturation:0.821 brightness:0.831 alpha:1];
             icon = [UIImage imageNamed:@"mark-as-unread"];
             break;
+            
+        case AwfulIconActionItemTypeMarkReadUpToHere:
+            title = @"Mark Read Up to Here";
+            tintColor = [UIColor colorWithHue:0.340 saturation:0.750 brightness:0.690 alpha:1];
+            icon = [UIImage imageNamed:@"mark-read-up-to-here"];
+            break;
+            
+        case AwfulIconActionItemTypeQuotePost:
+            title = @"Quote";
+            tintColor = [UIColor colorWithWhite:0.325 alpha:1];
+            icon = [UIImage imageNamed:@"quote-post"];
+            break;
         
         case AwfulIconActionItemTypeRemoveBookmark:
             title = @"Remove Bookmark";
             tintColor = [UIColor colorWithHue:0.023 saturation:0.845 brightness:0.835 alpha:1];
             icon = [UIImage imageNamed:@"remove-bookmark"];
+            break;
+            
+        case AwfulIconActionItemTypeSendPrivateMessage:
+            title = @"PM Author";
+            tintColor = [UIColor colorWithHue:0.133 saturation:0.767 brightness:0.808 alpha:1];
+            icon = [UIImage imageNamed:@"send-private-message"];
+            break;
+            
+        case AwfulIconActionItemTypeSingleUsersPosts:
+            title = @"Filter by this User";
+            tintColor = [UIColor colorWithHue:0.523 saturation:0.831 brightness:0.675 alpha:1];
+            icon = [UIImage imageNamed:@"single-users-posts"];
             break;
         
         case AwfulIconActionItemTypeUserProfile:

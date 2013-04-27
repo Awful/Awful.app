@@ -12,10 +12,15 @@ typedef NS_ENUM(NSInteger, AwfulIconActionItemType)
 {
     AwfulIconActionItemTypeAddBookmark,
     AwfulIconActionItemTypeCopyURL,
+    AwfulIconActionItemTypeEditPost,
     AwfulIconActionItemTypeJumpToFirstPage,
     AwfulIconActionItemTypeJumpToLastPage,
     AwfulIconActionItemTypeMarkAsUnread,
+    AwfulIconActionItemTypeMarkReadUpToHere,
+    AwfulIconActionItemTypeQuotePost,
     AwfulIconActionItemTypeRemoveBookmark,
+    AwfulIconActionItemTypeSendPrivateMessage,
+    AwfulIconActionItemTypeSingleUsersPosts,
     AwfulIconActionItemTypeUserProfile,
     AwfulIconActionItemTypeVote,
 };

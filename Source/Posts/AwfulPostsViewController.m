@@ -925,10 +925,10 @@ static char KVOContext;
     if ([post.author.username isEqualToString:[AwfulSettings settings].username]) {
         possessiveUsername = @"Your";
     }
-    NSString *title = [NSString stringWithFormat:@"%@ Post", possessiveUsername];
-    AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:title];
+    AwfulIconActionSheet *sheet = [AwfulIconActionSheet new];
+    sheet.title = [NSString stringWithFormat:@"%@ Post", possessiveUsername];
     if (post.editableValue) {
-        [sheet addButtonWithTitle:@"Edit" block:^{
+        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeEditPost action:^{
             [[AwfulHTTPClient client] getTextOfPostWithID:post.postID
                                                   andThen:^(NSError *error, NSString *text)
              {
@@ -945,10 +945,10 @@ static char KVOContext;
                  UINavigationController *nav = [reply enclosingNavigationController];
                  [self presentViewController:nav animated:YES completion:nil];
              }];
-        }];
+        }]];
     }
     if (!self.thread.isClosedValue) {
-        [sheet addButtonWithTitle:@"Quote" block:^{
+        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeQuotePost action:^{
             [[AwfulHTTPClient client] quoteTextOfPostWithID:post.postID
                                                     andThen:^(NSError *error, NSString *quotedText)
              {
@@ -968,22 +968,9 @@ static char KVOContext;
                  UINavigationController *nav = [reply enclosingNavigationController];
                  [self presentViewController:nav animated:YES completion:nil];
              }];
-        }];
+        }]];
     }
-    if ([AwfulSettings settings].canSendPrivateMessages &&
-        post.author.canReceivePrivateMessagesValue &&
-        ![post.author.userID isEqual:[AwfulSettings settings].userID]) {
-        NSString *title = [NSString stringWithFormat:@"PM %@", post.author.username];
-        [sheet addButtonWithTitle:title block:^{
-            AwfulPrivateMessageComposeViewController *compose;
-            compose = [AwfulPrivateMessageComposeViewController new];
-            compose.delegate = self;
-            [compose setRecipient:post.author.username];
-            [self presentViewController:[compose enclosingNavigationController]
-                               animated:YES completion:nil];
-        }];
-    }
-    [sheet addButtonWithTitle:@"Copy Post URL" block:^{
+    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
         NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
                          "showthread.php?threadid=%@&perpage=40&pagenumber=%@#post%@",
                          self.thread.threadID, @(self.currentPage), post.postID];
@@ -992,9 +979,10 @@ static char KVOContext;
             (id)kUTTypeURL: [NSURL URLWithString:url],
             (id)kUTTypePlainText: url,
         }];
-    }];
+    }]];
     if (!self.singleUserID) {
-        [sheet addButtonWithTitle:@"Mark Read to Here" block:^{
+        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkReadUpToHere
+                                                  action:^{
             [[AwfulHTTPClient client] markThreadWithID:self.thread.threadID
                                    readUpToPostAtIndex:[post.threadIndex stringValue]
                                                andThen:^(NSError *error)
@@ -1009,22 +997,35 @@ static char KVOContext;
                      [[AwfulDataStack sharedDataStack] save];
                  }
              }];
-        }];
+        }]];
     }
-    [sheet addButtonWithTitle:[NSString stringWithFormat:@"%@ Profile", possessiveUsername] block:^{
+    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
         [self showProfileWithUser:post.author];
-    }];
+    }]];
     if (!self.singleUserID) {
-        [sheet addButtonWithTitle:[NSString stringWithFormat:@"%@ Posts", possessiveUsername] block:^
-         {
+        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSingleUsersPosts
+                                                  action:^{
              AwfulPostsViewController *postsView = [AwfulPostsViewController new];
              postsView.thread = self.thread;
              [postsView loadPage:1 singleUserID:post.author.userID];
              [self.navigationController pushViewController:postsView animated:YES];
-         }];
+         }]];
     }
-    [sheet addCancelButtonWithTitle:@"Cancel"];
-    [sheet showFromRect:rect inView:self.postsView animated:YES];
+    
+    if ([AwfulSettings settings].canSendPrivateMessages &&
+        post.author.canReceivePrivateMessagesValue &&
+        ![post.author.userID isEqual:[AwfulSettings settings].userID]) {
+        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSendPrivateMessage
+                                                  action:^{
+            AwfulPrivateMessageComposeViewController *compose;
+            compose = [AwfulPrivateMessageComposeViewController new];
+            compose.delegate = self;
+            [compose setRecipient:post.author.username];
+            [self presentViewController:[compose enclosingNavigationController]
+                               animated:YES completion:nil];
+        }]];
+    }
+    [sheet presentFromViewController:self fromView:self.postsView];
 }
 
 - (void)previewImageAtURLString:(NSString *)urlString
