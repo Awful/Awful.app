@@ -234,6 +234,10 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         NSURL *exampleCSS = [[NSBundle mainBundle] URLForResource:@"posts-view"
                                                     withExtension:@"css"];
         NSURL *cssDestination = [documents URLByAppendingPathComponent:@"example-posts-view.css"];
+        ok = [fileman removeItemAtURL:cssDestination error:&error];
+        if (!ok) {
+            NSLog(@"error deleting example-posts-view.css: %@", error);
+        }
         ok = [fileman copyItemAtURL:exampleCSS toURL:cssDestination error:&error];
         if (!ok && [error code] != NSFileWriteFileExistsError) {
             NSLog(@"error copying example-posts-view.css to documents: %@", error);
