@@ -465,6 +465,7 @@
 - (void)showThreadActionsFromRect:(CGRect)rect inView:(UIView *)view
 {
     AwfulIconActionSheet *sheet = [AwfulIconActionSheet new];
+    sheet.title = [self.thread.title stringByCollapsingWhitespace];
     [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
         NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
                          "showthread.php?threadid=%@&perpage=40&pagenumber=%@",
