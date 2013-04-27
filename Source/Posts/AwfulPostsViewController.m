@@ -1017,13 +1017,15 @@ static char KVOContext;
         post.author.canReceivePrivateMessagesValue &&
         ![post.author.userID isEqual:[AwfulSettings settings].userID]) {
         [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSendPrivateMessage
-                                                  action:^{
+                                                  action:^
+        {
             AwfulPrivateMessageComposeViewController *compose;
             compose = [AwfulPrivateMessageComposeViewController new];
             compose.delegate = self;
             [compose setRecipient:post.author.username];
-            [self presentViewController:[compose enclosingNavigationController]
-                               animated:YES completion:nil];
+            UINavigationController *nav = [compose enclosingNavigationController];
+            nav.modalPresentationStyle = UIModalPresentationPageSheet;
+            [self presentViewController:nav animated:YES completion:nil];
         }]];
     }
     [sheet presentFromViewController:self fromView:self.postsView];
