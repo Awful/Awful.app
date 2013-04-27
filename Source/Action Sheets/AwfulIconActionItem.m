@@ -84,7 +84,7 @@
             break;
             
         case AwfulIconActionItemTypeSendPrivateMessage:
-            title = @"PM Author";
+            title = @"Send PM";
             tintColor = [UIColor colorWithHue:0.133 saturation:0.767 brightness:0.808 alpha:1];
             icon = [UIImage imageNamed:@"send-private-message"];
             break;
