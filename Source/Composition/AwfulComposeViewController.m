@@ -55,7 +55,7 @@
 {
     if (_sendButton) return _sendButton;
     _sendButton = [[UIBarButtonItem alloc] initWithTitle:@"Send" style:UIBarButtonItemStyleDone
-                                                  target:self action:@selector(cancel)];
+                                                  target:nil action:NULL];
     return _sendButton;
 }
 
