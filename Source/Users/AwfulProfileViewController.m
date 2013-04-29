@@ -251,7 +251,28 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         [compose setRecipient:self.user.username];
         UINavigationController *nav = [compose enclosingNavigationController];
         nav.modalPresentationStyle = UIModalPresentationPageSheet;
-        [self presentViewController:nav animated:YES completion:nil];
+        
+        // Try setting the delay to 0 then causing this to run. That is, as a user who can send PMs,
+        // view the profile of a user who can receive PMs, and tap the "Private Message" row.
+        //
+        // On both iOS 5 and iOS 6, the keyboard is visible while presenting but immediately hides,
+        // and the view is in an inconsistent state. The problem does not occur when presenting a
+        // compose view from other screens such as the posts view or the PM list.
+        //
+        // In AwfulPrivateMessageComposeViewController, if you do not send -becomeFirstResponder
+        // in response to entering the "Ready" state, then the problem goes away (but the keyboard
+        // is not visible while or after presenting). If you send -becomeFirstResponder in an
+        // implementation of -viewDidAppear: (as opposed to (indirectly) in -viewWillAppear:), the
+        // problem again disappears (but the keyboard is not visible while presenting, and lamely
+        // animates into view after presenting). Neither of these workarounds are desirable, as
+        // they're only needed for presenting from this profile view.
+        //
+        // I cannot figure out why this happens, so that lamest of all Cocoa workarounds makes its
+        // appearance here.
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.45 * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            [self presentViewController:nav animated:YES completion:nil];
+        });
     }
 }
 
