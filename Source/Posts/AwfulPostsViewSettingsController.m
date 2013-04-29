@@ -26,10 +26,12 @@
 
 #pragma mark - AwfulSemiModalViewController
 
-- (void)presentFromViewController:(UIViewController *)viewController fromView:(UIView *)view
+- (void)presentFromViewController:(UIViewController *)viewController
+                         fromRect:(CGRect)rect
+                           inView:(UIView *)view
 {
     self.coverView.backgroundColor = nil;
-    [super presentFromViewController:viewController fromView:view];
+    [super presentFromViewController:viewController fromRect:rect inView:view];
 }
 
 - (void)userDismiss

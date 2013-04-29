@@ -35,10 +35,12 @@
 
 #pragma mark - AwfulSemiModalViewController
 
-- (void)presentFromViewController:(UIViewController *)viewController fromView:(UIView *)view
+- (void)presentFromViewController:(UIViewController *)viewController
+                         fromRect:(CGRect)rect
+                           inView:(UIView *)view
 {
     [self.picker selectRow:self.selectedPage - 1 inComponent:0 animated:NO];
-    [super presentFromViewController:viewController fromView:view];
+    [super presentFromViewController:viewController fromRect:rect inView:view];
 }
 
 - (UIPickerView *)picker

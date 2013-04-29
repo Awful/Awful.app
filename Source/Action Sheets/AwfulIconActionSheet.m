@@ -22,6 +22,7 @@
 @interface AwfulIconActionSheetSectionHeader : PSUICollectionReusableView
 
 @property (copy, nonatomic) NSString *title;
+@property (nonatomic) UIEdgeInsets titleInsets;
 
 + (UIFont *)titleLabelFont;
 
@@ -77,6 +78,7 @@ static NSString * const CellIdentifier = @"IconActionCell";
                                                 withReuseIdentifier:HeaderIdentifier
                                                        forIndexPath:indexPath];
     header.title = self.title;
+    header.titleInsets = UIEdgeInsetsMake(0, SectionInsets.left, 0, SectionInsets.right);
     return header;
 }
 
@@ -92,7 +94,9 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 
 #pragma mark - AwfulSemiModalViewController
 
-- (void)presentFromViewController:(UIViewController *)viewController fromView:(UIView *)view
+- (void)presentFromViewController:(UIViewController *)viewController
+                         fromRect:(CGRect)rect
+                           inView:(UIView *)view
 {
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         self.coverView.backgroundColor = nil;
@@ -105,14 +109,15 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath
         self.collectionView.contentInset = UIEdgeInsetsZero;
     } else {
         UIFont *font = [AwfulIconActionSheetSectionHeader titleLabelFont];
-        CGSize textSize = [self.title sizeWithFont:font constrainedToSize:
-                           CGSizeMake(CGRectGetWidth(frame), CGFLOAT_MAX)];
+        CGFloat availableWidth = CGRectGetWidth(frame) - SectionInsets.left - SectionInsets.right;
+        CGSize textSize = [self.title sizeWithFont:font
+                                 constrainedToSize:CGSizeMake(availableWidth, CGFLOAT_MAX)];
         layout.headerReferenceSize = textSize;
         frame.size.height += textSize.height;
         self.collectionView.contentInset = UIEdgeInsetsMake(12, 0, 0, 0);
     }
     self.view.frame = frame;
-    [super presentFromViewController:viewController fromView:view];
+    [super presentFromViewController:viewController fromRect:rect inView:view];
 }
 
 - (void)userDismiss
@@ -132,9 +137,9 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 - (void)loadView
 {
     PSUICollectionViewFlowLayout *layout = [PSUICollectionViewFlowLayout new];
-    layout.itemSize = CGSizeMake(60, 90);
-    layout.sectionInset = UIEdgeInsetsMake(15, 30, 5, 30);
-    layout.minimumInteritemSpacing = 40;
+    layout.itemSize = CGSizeMake(64, 90);
+    layout.sectionInset = SectionInsets;
+    layout.minimumInteritemSpacing = 30;
     layout.minimumLineSpacing = 12;
     PSUICollectionView *collectionView;
     collectionView = [[PSUICollectionView alloc] initWithFrame:CGRectMake(0, 0, 320, 215)
@@ -149,9 +154,12 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath
     collectionView.delegate = self;
     collectionView.bounces = NO;
     self.view = collectionView;
-    self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    self.view.backgroundColor = [UIColor colorWithWhite:0 alpha:0.75];
+    self.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                  UIViewAutoresizingFlexibleTopMargin);
+    self.view.backgroundColor = [UIColor colorWithWhite:0 alpha:0.85];
 }
+
+const UIEdgeInsets SectionInsets = {15, 23, 5, 23};
 
 @end
 
@@ -179,10 +187,17 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath
     bounds.size.height = size.height;
     self.bounds = bounds;
 }
+
+- (void)setTitleInsets:(UIEdgeInsets)titleInsets
+{
+    if (UIEdgeInsetsEqualToEdgeInsets(_titleInsets, titleInsets)) return;
+    _titleInsets = titleInsets;
+    [self setNeedsLayout];
+}
                                       
 + (UIFont *)titleLabelFont
 {
-    return [UIFont systemFontOfSize:13];
+    return [UIFont systemFontOfSize:14];
 }
 
 #pragma mark - UIView
@@ -201,6 +216,11 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath
     self.titleLabel.backgroundColor = [UIColor clearColor];
     [self addSubview:self.titleLabel];
     return self;
+}
+
+- (void)layoutSubviews
+{
+    self.titleLabel.frame = UIEdgeInsetsInsetRect(self.bounds, self.titleInsets);
 }
 
 @end

@@ -13,22 +13,25 @@
 @property (nonatomic) UIPopoverController *popover;
 @property (nonatomic) UIView *coverView;
 @property (weak, nonatomic) UIView *viewPresentingPopover;
+@property (nonatomic) CGRect rectInViewPresentingPopover;
 
 @end
 
 
 @implementation AwfulSemiModalViewController
 
-- (void)presentFromViewController:(UIViewController *)viewController fromView:(UIView *)view
+- (void)presentFromViewController:(UIViewController *)viewController
+                         fromRect:(CGRect)rect
+                           inView:(UIView *)view
 {
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [self presentInPopoverFromView:view];
+        [self presentInPopoverFromRect:rect inView:view];
     } else {
         [self slideUpFromBottomOverViewController:viewController];
     }
 }
 
-- (void)presentInPopoverFromView:(UIView *)view
+- (void)presentInPopoverFromRect:(CGRect)rect inView:(UIView *)view
 {
     if (!self.popover) {
         self.popover = [[UIPopoverController alloc] initWithContentViewController:self];
@@ -36,7 +39,11 @@
         self.popover.popoverContentSize = self.view.frame.size;
     }
     self.viewPresentingPopover = view;
-    [self.popover presentPopoverFromRect:view.bounds inView:view
+    self.rectInViewPresentingPopover = rect;
+    if (CGRectEqualToRect(rect, CGRectZero)) {
+        rect = view.bounds;
+    }
+    [self.popover presentPopoverFromRect:rect inView:view
                 permittedArrowDirections:UIPopoverArrowDirectionAny
                                 animated:NO];
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -47,11 +54,14 @@
 
 - (void)deviceOrientationDidChange:(NSNotification *)note
 {
-    if (self.viewPresentingPopover.window) {
+    CGRect rect = self.rectInViewPresentingPopover;
+    if (self.viewPresentingPopover.window && CGRectEqualToRect(rect, CGRectZero)) {
         [self.popover presentPopoverFromRect:self.viewPresentingPopover.bounds
                                       inView:self.viewPresentingPopover
                     permittedArrowDirections:UIPopoverArrowDirectionAny
                                     animated:NO];
+    } else {
+        [self dismiss];
     }
 }
 

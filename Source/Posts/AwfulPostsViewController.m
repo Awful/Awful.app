@@ -517,7 +517,7 @@
              }
          }];
     }]];
-    [sheet presentFromViewController:self fromView:view];
+    [sheet presentFromViewController:self fromRect:rect inView:view];
 }
 
 - (void)showProfileWithUser:(AwfulUser *)user
@@ -690,16 +690,16 @@
     else if (self.currentPage == AwfulThreadPageLast && relevantNumberOfPages > 0) {
         jump.selectedPage = relevantNumberOfPages;
     }
-    [jump presentFromViewController:self fromView:self.bottomBar];
+    [jump presentFromViewController:self fromRect:CGRectZero inView:self.bottomBar];
 }
 
 - (void)didTapActionFontSizeControl:(UISegmentedControl *)seg
 {
+    CGRect rect = seg.bounds;
+    rect.size.width /= 2;
+    rect.origin.x += CGRectGetWidth(rect) * seg.selectedSegmentIndex;
     if (seg.selectedSegmentIndex == 0) {
-        CGRect rect = self.bottomBar.actionsFontSizeControl.frame;
-        rect.size.width /= 2;
-        rect = [self.view.superview convertRect:rect fromView:self.bottomBar];
-        [self showThreadActionsFromRect:rect inView:self.view.superview];
+        [self showThreadActionsFromRect:rect inView:seg];
     } else if (seg.selectedSegmentIndex == 1) {
         if (self.settingsViewController) {
             [self.settingsViewController dismiss];
@@ -714,7 +714,7 @@
             } else if ([self.thread.forum.forumID isEqualToString:@"219"]) {
                 self.settingsViewController.availableThemes = AwfulPostsViewSettingsControllerThemesYOSPOS;
             }
-            [self.settingsViewController presentFromViewController:self fromView:seg];
+            [self.settingsViewController presentFromViewController:self fromRect:rect inView:seg];
         }
     }
     seg.selectedSegmentIndex = UISegmentedControlNoSegment;
@@ -1031,7 +1031,7 @@ static char KVOContext;
             [self presentViewController:nav animated:YES completion:nil];
         }]];
     }
-    [sheet presentFromViewController:self fromView:self.postsView];
+    [sheet presentFromViewController:self fromRect:rect inView:self.postsView];
 }
 
 - (void)previewImageAtURLString:(NSString *)urlString

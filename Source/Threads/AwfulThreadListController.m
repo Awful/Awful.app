@@ -239,7 +239,7 @@
     }
     NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:thread];
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-    [sheet presentFromViewController:self.awfulTabBarController fromView:cell];
+    [sheet presentFromViewController:self.awfulTabBarController fromRect:CGRectZero inView:cell];
 }
 
 - (void)doneWithProfile

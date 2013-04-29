@@ -10,11 +10,19 @@
 
 @interface AwfulSemiModalViewController : UIViewController
 
+// viewController - The view controller that will present this semi-modal view.
+// rect           - The portion of the view that originated this modal view. Can be CGRectZero
+//                  to use the bounds of the given view.
+// view           - The view that originated this model view.
+//
 // On iPhone, darkens the viewController's view and slides the semi-modal view up from the bottom.
 //
 // On iPad, shows the semi-modal view in a popover pointing at the given view. If the interface
-// orientation changes, the popover is repositioned to continue pointing at the given view.
-- (void)presentFromViewController:(UIViewController *)viewController fromView:(UIView *)view;
+// orientation changes and rect is CGRectZero, the popover is repositioned to continue pointing at
+// the given view.
+- (void)presentFromViewController:(UIViewController *)viewController
+                         fromRect:(CGRect)rect
+                           inView:(UIView *)view;
 
 // Sent when a user taps outside the semi-modal view. Subclasses should send -dismiss to the semi-
 // modal view in response to this message. The only reason not to is if, say, the semi-modal view
