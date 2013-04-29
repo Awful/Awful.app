@@ -171,8 +171,9 @@
                 compose.delegate = self;
                 [compose setRegardingMessage:self.privateMessage];
                 [compose setMessageBody:bbcode];
-                [self presentViewController:[compose enclosingNavigationController] animated:YES
-                                 completion:nil];
+                UINavigationController *nav = [compose enclosingNavigationController];
+                nav.modalPresentationStyle = UIModalPresentationPageSheet;
+                [self presentViewController:nav animated:YES completion:nil];
             }
         }];
     }];
@@ -189,8 +190,9 @@
                 compose.delegate = self;
                 [compose setForwardedMessage:self.privateMessage];
                 [compose setMessageBody:bbcode];
-                [self presentViewController:[compose enclosingNavigationController] animated:YES
-                                 completion:nil];
+                UINavigationController *nav = [compose enclosingNavigationController];
+                nav.modalPresentationStyle = UIModalPresentationPageSheet;
+                [self presentViewController:nav animated:YES completion:nil];
             }
         }];
     }];

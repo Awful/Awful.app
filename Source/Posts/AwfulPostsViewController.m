@@ -119,6 +119,7 @@
         imageCacheIdentifier:self.ongoingReplyImageCacheIdentifier];
     }
     UINavigationController *nav = [reply enclosingNavigationController];
+    nav.modalPresentationStyle = UIModalPresentationPageSheet;
     [self presentViewController:nav animated:YES completion:nil];
 }
 
@@ -944,6 +945,7 @@ static char KVOContext;
                  reply.delegate = self;
                  [reply editPost:post text:text imageCacheIdentifier:nil];
                  UINavigationController *nav = [reply enclosingNavigationController];
+                 nav.modalPresentationStyle = UIModalPresentationPageSheet;
                  [self presentViewController:nav animated:YES completion:nil];
              }];
         }]];
@@ -967,6 +969,7 @@ static char KVOContext;
                   withInitialContents:contents
                  imageCacheIdentifier:self.ongoingReplyImageCacheIdentifier];
                  UINavigationController *nav = [reply enclosingNavigationController];
+                 nav.modalPresentationStyle = UIModalPresentationPageSheet;
                  [self presentViewController:nav animated:YES completion:nil];
              }];
         }]];
