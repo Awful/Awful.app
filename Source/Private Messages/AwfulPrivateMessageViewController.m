@@ -8,9 +8,12 @@
 #import "AwfulPrivateMessageViewController.h"
 #import "AwfulActionSheet.h"
 #import "AwfulAlertView.h"
+#import "AwfulBrowserViewController.h"
 #import "AwfulDataStack.h"
 #import "AwfulDateFormatters.h"
+#import "AwfulExternalBrowser.h"
 #import "AwfulHTTPClient.h"
+#import "AwfulImagePreviewViewController.h"
 #import "AwfulModels.h"
 #import "AwfulPostsView.h"
 #import "AwfulPrivateMessageComposeViewController.h"
@@ -18,6 +21,9 @@
 #import "AwfulTheme.h"
 #import "AwfulThemingViewController.h"
 #import "NSFileManager+UserDirectories.h"
+#import "NSURL+Awful.h"
+#import "NSURL+OpensInBrowser.h"
+#import "NSURL+Punycode.h"
 #import "UIViewController+NavigationEnclosure.h"
 
 @interface AwfulPrivateMessageViewController () <AwfulPostsViewDelegate, AwfulThemingViewController,
@@ -144,7 +150,11 @@
 
 - (NSArray *)whitelistedSelectorsForPostsView:(AwfulPostsView *)postsView
 {
-    return @[ @"showActionsForPostAtIndex:fromRectDictionary:" ];
+    return @[
+        NSStringFromSelector(@selector(showActionsForPostAtIndex:fromRectDictionary:)),
+        NSStringFromSelector(@selector(showMenuForLinkWithURLString:fromRectDictionary:)),
+        NSStringFromSelector(@selector(previewImageAtURLString:)),
+    ];
 }
 
 - (void)showActionsForPostAtIndex:(NSNumber *)index fromRectDictionary:(NSDictionary *)rectDict
@@ -198,6 +208,87 @@
     }];
     [sheet addCancelButtonWithTitle:@"Cancel"];
     [sheet showFromRect:rect inView:self.postsView.window animated:YES];
+}
+
+- (void)showMenuForLinkWithURLString:(NSString *)urlString
+                  fromRectDictionary:(NSDictionary *)rectDict
+{
+    NSURL *url = [NSURL awful_URLWithString:urlString];
+    if (!url) {
+        NSLog(@"could not parse URL for link long tap menu: %@", urlString);
+        return;
+    }
+    if ([url awfulURL]) {
+        [[UIApplication sharedApplication] openURL:[url awfulURL]];
+        return;
+    }
+    if (![url opensInBrowser]) {
+        [[UIApplication sharedApplication] openURL:url];
+        return;
+    }
+    CGRect rect = CGRectMake([rectDict[@"left"] floatValue], [rectDict[@"top"] floatValue],
+                             [rectDict[@"width"] floatValue], [rectDict[@"height"] floatValue]);
+    if (self.postsView.scrollView.contentOffset.y < 0) {
+        rect.origin.y -= self.postsView.scrollView.contentOffset.y;
+    }
+    AwfulActionSheet *sheet = [AwfulActionSheet new];
+    sheet.title = urlString;
+    [sheet addButtonWithTitle:@"Open" block:^{ [self openURLInBuiltInBrowser:url]; }];
+    [sheet addButtonWithTitle:@"Open in Safari"
+                        block:^{ [[UIApplication sharedApplication] openURL:url]; }];
+    for (AwfulExternalBrowser *browser in [AwfulExternalBrowser installedBrowsers]) {
+        if (![browser canOpenURL:url]) continue;
+        [sheet addButtonWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title]
+                            block:^{ [browser openURL:url]; }];
+    }
+    [sheet addButtonWithTitle:@"Copy URL" block:^{
+        [UIPasteboard generalPasteboard].items = @[ @{
+                                                        (id)kUTTypeURL: url,
+                                                        (id)kUTTypePlainText: urlString
+                                                        } ];
+    }];
+    [sheet addCancelButtonWithTitle:@"Cancel"];
+    rect = [self.postsView.superview convertRect:rect fromView:self.postsView];
+    [sheet showFromRect:rect inView:self.postsView.superview animated:YES];
+}
+
+- (void)openURLInBuiltInBrowser:(NSURL *)url
+{
+    AwfulBrowserViewController *browser = [AwfulBrowserViewController new];
+    browser.URL = url;
+    browser.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:browser animated:YES];
+    UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithTitle:@"Back"
+                                                             style:UIBarButtonItemStyleBordered
+                                                            target:nil
+                                                            action:NULL];
+    self.navigationItem.backBarButtonItem = back;
+}
+
+- (void)previewImageAtURLString:(NSString *)urlString
+{
+    NSURL *url = [NSURL awful_URLWithString:urlString];
+    if (!url) {
+        NSLog(@"could not parse URL for image preview: %@", urlString);
+        return;
+    }
+    AwfulImagePreviewViewController *preview = [[AwfulImagePreviewViewController alloc]
+                                                initWithURL:url];
+    preview.title = self.title;
+    UINavigationController *nav = [preview enclosingNavigationController];
+    nav.navigationBar.translucent = YES;
+    [self presentViewController:nav animated:YES completion:nil];
+}
+
+- (void)postsView:(AwfulPostsView *)postsView didTapLinkToURL:(NSURL *)url
+{
+    if ([url awfulURL]) {
+        [[UIApplication sharedApplication] openURL:[url awfulURL]];
+    } else if (![url opensInBrowser]) {
+        [[UIApplication sharedApplication] openURL:url];
+    } else {
+        [self openURLInBuiltInBrowser:url];
+    }
 }
 
 #pragma mark - AwfulPrivateMessageComposeViewControllerDelegate
