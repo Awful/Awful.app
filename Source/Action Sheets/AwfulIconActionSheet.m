@@ -142,7 +142,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath
     [collectionView registerClass:[AwfulIconActionCell class]
        forCellWithReuseIdentifier:CellIdentifier];
     [collectionView registerClass:[AwfulIconActionSheetSectionHeader class]
-       forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+       forSupplementaryViewOfKind:PSTCollectionElementKindSectionHeader
               withReuseIdentifier:HeaderIdentifier];
     collectionView.collectionViewLayout = layout;
     collectionView.dataSource = self;
