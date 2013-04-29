@@ -170,7 +170,7 @@ static NSString * const kLastBookmarksRefreshDate = @"com.awfulapp.Awful.LastBoo
             if (!error) return;
             thread.isBookmarkedValue = YES;
             [[AwfulDataStack sharedDataStack] save];
-            [AwfulAlertView showWithTitle:@"Could Not Unbookmark"
+            [AwfulAlertView showWithTitle:@"Error Removing Bbookmark"
                                     error:error
                               buttonTitle:@"Whatever"];
         }];

@@ -83,10 +83,10 @@
 // Returns the enqueued network operation.
 - (NSOperation *)learnUserInfoAndThen:(void (^)(NSError *error, NSDictionary *userInfo))callback;
 
-// Add or remove a thread from the user's bookmarks.
+// Add or remove a bookmark for a thread.
 //
 // threadID     - The ID of the thread to add.
-// isBookmarked - YES if the thread should be added to the user's bookmarks, or NO otherwise.
+// isBookmarked - YES if a bookmark should be added for the thread, or NO if it should be removed.
 // callback     - A block to call after removing the thread, which takes as parameters:
 //                  error - An error on failure, or nil on success.
 //

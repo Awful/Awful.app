@@ -191,7 +191,10 @@
              if (error) {
                  [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
              } else {
-                 NSString *status = thread.isBookmarkedValue ? @"Bookmark Added" : @"Bookmark Removed";
+                 NSString *status = @"Removed Bookmark";
+                 if (thread.isBookmarkedValue) {
+                     status = @"Added Bookmark";
+                 }
                  [SVProgressHUD showSuccessWithStatus:status];
              }
          }];

@@ -512,7 +512,10 @@
                  NSLog(@"error %@bookmarking thread %@: %@",
                        self.thread.isBookmarkedValue ? @"un" : @"", self.thread.threadID, error);
              } else {
-                 NSString *status = self.thread.isBookmarkedValue ? @"Bookmarked" : @"Unbookmarked";
+                 NSString *status = @"Removed Bookmark";
+                 if (self.thread.isBookmarkedValue) {
+                     status = @"Added Bookmark";
+                 }
                  [SVProgressHUD showSuccessWithStatus:status];
              }
          }];
