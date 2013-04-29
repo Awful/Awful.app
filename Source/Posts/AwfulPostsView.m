@@ -350,6 +350,7 @@ static NSString * JSONize(id obj)
         return NO;
     } else if ([url.scheme isEqualToString:@"x-objc-postsview"]) {
         [self bridgeJavaScriptToObjectiveCOnSelfWithURL:url];
+        return NO;
     } else if (navigationType == UIWebViewNavigationTypeLinkClicked) {
         if ([self.delegate respondsToSelector:@selector(postsView:didTapLinkToURL:)]) {
             [self.delegate postsView:self didTapLinkToURL:url];
