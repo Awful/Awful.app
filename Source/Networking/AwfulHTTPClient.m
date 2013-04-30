@@ -606,6 +606,21 @@ static NSString * PreparePostText(NSString *noEntities)
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
                                                                success:^(id _, NSDictionary *json)
     {
+        if (!json[@"userid"] || !json[@"username"] || !json[@"receivepm"]) {
+            if (callback) {
+                NSString *message = @"Could not parse user info";
+                NSError *error = [NSError errorWithDomain:AwfulErrorDomain
+                                                     code:AwfulErrorCodes.parseError
+                                                 userInfo:@{ NSLocalizedDescriptionKey: message }];
+                callback(error, nil);
+            }
+            // Don't want this failed login attempt to be taken as successful.
+            NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+            for (NSHTTPCookie *cookie in [cookieStorage cookies]) {
+                [cookieStorage deleteCookie:cookie];
+            }
+            return;
+        }
         NSDictionary *userInfo = @{
             @"userID": [json[@"userid"] stringValue],
             @"username": json[@"username"],
