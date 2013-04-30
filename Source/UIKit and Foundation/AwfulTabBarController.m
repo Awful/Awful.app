@@ -125,7 +125,14 @@
     }
     if ([selected isEqual:self.selectedViewController]) {
         if ([selected isKindOfClass:[UINavigationController class]]) {
-            [(UINavigationController *)selected popToRootViewControllerAnimated:YES];
+            UINavigationController *nav = (id)selected;
+            if ([nav.viewControllers count] > 1) {
+                [(UINavigationController *)selected popToRootViewControllerAnimated:YES];
+            } else if ([nav.topViewController.view isKindOfClass:[UIScrollView class]]) {
+                UIScrollView *scrollView = (id)nav.topViewController.view;
+                [scrollView setContentOffset:CGPointMake(0, -scrollView.contentInset.top)
+                                    animated:YES];
+            }
         }
     } else {
         self.selectedViewController = selected;
