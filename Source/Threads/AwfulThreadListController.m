@@ -199,26 +199,28 @@
              }
          }];
     }]];
-    AwfulIconActionItem *profileItem = [AwfulIconActionItem itemWithType:
-                                        AwfulIconActionItemTypeUserProfile action:^{
-        AwfulProfileViewController *profile = [AwfulProfileViewController new];
-        profile.hidesBottomBarWhenPushed = YES;
-        profile.userID = thread.author.userID;
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            UIBarButtonItem *done;
-            done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                                                 target:self
-                                                                 action:@selector(doneWithProfile)];
-            profile.navigationItem.leftBarButtonItem = done;
-            UINavigationController *nav = [profile enclosingNavigationController];
-            nav.modalPresentationStyle = UIModalPresentationFormSheet;
-            [self presentViewController:nav animated:YES completion:nil];
-        } else {
-            [self.navigationController pushViewController:profile animated:YES];
-        }
-    }];
-    profileItem.title = @"View OP's Profile";
-    [sheet addItem:profileItem];
+    if ([thread.author.userID length] > 0) {
+        AwfulIconActionItem *profileItem = [AwfulIconActionItem itemWithType:
+                                            AwfulIconActionItemTypeUserProfile action:^{
+            AwfulProfileViewController *profile = [AwfulProfileViewController new];
+            profile.hidesBottomBarWhenPushed = YES;
+            profile.userID = thread.author.userID;
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+                UIBarButtonItem *done;
+                done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                     target:self
+                                                                     action:@selector(doneWithProfile)];
+                profile.navigationItem.leftBarButtonItem = done;
+                UINavigationController *nav = [profile enclosingNavigationController];
+                nav.modalPresentationStyle = UIModalPresentationFormSheet;
+                [self presentViewController:nav animated:YES completion:nil];
+            } else {
+                [self.navigationController pushViewController:profile animated:YES];
+            }
+        }];
+        profileItem.title = @"View OP's Profile";
+        [sheet addItem:profileItem];
+    }
     [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeJumpToLastPage action:^{
         AwfulPostsViewController *page = [AwfulPostsViewController new];
         page.thread = thread;
