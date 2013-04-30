@@ -634,7 +634,7 @@ static NSString * PreparePostText(NSString *noEntities)
 NSString * const AwfulUserDidLogInNotification = @"com.awfulapp.Awful.UserDidLogInNotification";
 
 - (NSOperation *)locatePostWithID:(NSString *)postID
-    andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))callback
+andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))callback
 {
     // The SA Forums will direct a certain URL to the thread with a given post. We'll wait for that
     // redirect, then parse out the info we need.
@@ -645,7 +645,13 @@ NSString * const AwfulUserDidLogInNotification = @"com.awfulapp.Awful.UserDidLog
     {
         // Once we have the redirect we want, we cancel the operation. So if this "success" callback
         // gets called, we've actually failed.
-        if (callback) callback(nil, nil, 0);
+        if (callback) {
+            NSString *message = @"The post could not be found";
+            NSError *error = [NSError errorWithDomain:AwfulErrorDomain
+                                                 code:AwfulErrorCodes.parseError
+                                             userInfo:@{ NSLocalizedDescriptionKey: message }];
+            callback(error, nil, 0);
+        }
     } failure:^(id _, NSError *error) {
         // Once we get the redirect we need, we call the callback then cancel the operation.
         // So there's no need to do anything if we get a "cancelled" error.
@@ -663,13 +669,13 @@ NSString * const AwfulUserDidLogInNotification = @"com.awfulapp.Awful.UserDidLog
         [strongOp cancel];
         if (!callback) return nil;
         NSDictionary *query = [request.URL queryDictionary];
-        if (query[@"threadid"] && [query[@"pagenumber"] integerValue] != 0) {
+        if ([query[@"threadid"] length] > 0 && [query[@"pagenumber"] integerValue] != 0) {
             dispatch_async(strongOp.successCallbackQueue ?: dispatch_get_main_queue(), ^{
                 callback(nil, query[@"threadid"], [query[@"pagenumber"] integerValue]);
             });
         } else {
             NSDictionary *query = [request.URL queryDictionary];
-            NSString *missingInfo = query[@"thread ID"] ? @"page number" : @"threadid";
+            NSString *missingInfo = query[@"threadid"] ? @"page number" : @"thread ID";
             NSString *message = [NSString stringWithFormat:@"The %@ could not be found",
                                  missingInfo];
             NSError *error = [NSError errorWithDomain:AwfulErrorDomain
