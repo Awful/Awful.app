@@ -269,7 +269,8 @@ static UISegmentedControl * MakeSegmentedBarButton(NSArray *items)
     webView.opaque = YES;
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     _URL = webView.request.URL;
-    self.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+    NSString *title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+    self.title = [title length] > 0 ? title : @"Awful Browser";
     [self preventDefaultLongTapMenu];
     [self updateBackForwardButtonEnabledState];
 }
