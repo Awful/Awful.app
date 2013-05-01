@@ -112,16 +112,19 @@
 
 - (void)setSidebarCanHide:(BOOL)canHide
 {
-    if (_sidebarCanHide == canHide) return;
     _sidebarCanHide = canHide;
     [self layoutViewControllers];
     if (canHide) {
         self.sidebarHolder.layer.shadowOpacity = 0.5;
-        [self.mainViewController.view addGestureRecognizer:self.mainSwipeRight];
+        if (!self.mainSwipeRight.view) {
+            [self.mainViewController.view addGestureRecognizer:self.mainSwipeRight];
+        }
     } else {
         self.sidebarHolder.layer.shadowOpacity = 0;
         self.sidebarVisible = YES;
-        [self.mainViewController.view removeGestureRecognizer:self.mainSwipeRight];
+        if (self.mainSwipeRight.view) {
+            [self.mainViewController.view removeGestureRecognizer:self.mainSwipeRight];
+        }
         [self.coverView removeFromSuperview];
     }
 }
