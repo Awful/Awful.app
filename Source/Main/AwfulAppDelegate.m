@@ -235,7 +235,8 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
                                                     withExtension:@"css"];
         NSURL *cssDestination = [documents URLByAppendingPathComponent:@"example-posts-view.css"];
         ok = [fileman removeItemAtURL:cssDestination error:&error];
-        if (!ok) {
+        if (!ok && !([error.domain isEqualToString:NSCocoaErrorDomain] &&
+                     error.code == NSFileNoSuchFileError)) {
             NSLog(@"error deleting example-posts-view.css: %@", error);
         }
         ok = [fileman copyItemAtURL:exampleCSS toURL:cssDestination error:&error];
