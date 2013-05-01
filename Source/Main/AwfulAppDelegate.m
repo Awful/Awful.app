@@ -55,11 +55,6 @@ static id _instance;
     return _instance;
 }
 
-- (void)showLoginFormAtLaunch
-{
-    [self showLoginFormIsAtLaunch:YES andThen:nil];
-}
-
 - (void)showLoginFormIsAtLaunch:(BOOL)isAtLaunch andThen:(void (^)(void))callback
 {
     AwfulLoginController *login = [AwfulLoginController new];
@@ -100,10 +95,8 @@ static id _instance;
     [self showLoginFormIsAtLaunch:NO andThen:^{
         AwfulTabBarController *tabBar = self.tabBarController;
         tabBar.selectedViewController = tabBar.viewControllers[0];
-        if (self.splitViewController) {
-            UINavigationController *main = (id)self.splitViewController.mainViewController;
-            main.viewControllers = @[ [AwfulStartViewController new] ];
-        }
+        UINavigationController *main = (id)self.splitViewController.mainViewController;
+        main.viewControllers = @[ [AwfulStartViewController new] ];
     }];
 }
 
@@ -254,16 +247,10 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     
     [self.window makeKeyAndVisible];
     
-    if (![AwfulHTTPClient client].loggedIn) {
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            [self performSelector:@selector(showLoginFormAtLaunch) withObject:nil afterDelay:0];
-        } else {
-            [self showLoginFormAtLaunch];
-        }
-    }
-    
     if ([AwfulHTTPClient client].loggedIn) {
         [self.splitViewController setSidebarVisible:YES animated:YES];
+    } else {
+        [self showLoginFormIsAtLaunch:YES andThen:nil];
     }
     
     // Sometimes new features depend on the currently logged in user's info. We update that info on
