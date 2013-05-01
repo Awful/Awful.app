@@ -143,23 +143,24 @@
     [self setSidebarVisible:YES animated:YES];
 }
 
+const CGFloat SidebarWidth = 320;
+
 - (void)layoutViewControllers
 {
-    const CGFloat sidebarWidth = 320;
     CALayer *sidebarLayer = self.sidebarHolder.layer;
     if (sidebarLayer.shadowOpacity > 0) {
         sidebarLayer.shadowPath = [UIBezierPath bezierPathWithRect:sidebarLayer.bounds].CGPath;
     }
     if (self.sidebarCanHide) {
         self.mainViewController.view.frame = self.view.bounds;
-        CGRect sidebarFrame = CGRectMake(0, 0, sidebarWidth, CGRectGetHeight(self.view.bounds));
+        CGRect sidebarFrame = CGRectMake(0, 0, SidebarWidth, CGRectGetHeight(self.view.bounds));
         if (!self.sidebarVisible) {
             sidebarFrame.origin.x -= CGRectGetWidth(sidebarFrame) + 3;
         }
         self.sidebarHolder.frame = sidebarFrame;
     } else {
         CGRect sidebarFrame, mainFrame;
-        CGRectDivide(self.view.bounds, &sidebarFrame, &mainFrame, sidebarWidth, CGRectMinXEdge);
+        CGRectDivide(self.view.bounds, &sidebarFrame, &mainFrame, SidebarWidth, CGRectMinXEdge);
         mainFrame.origin.x += 1;
         mainFrame.size.width -= 1;
         self.sidebarHolder.frame = sidebarFrame;
@@ -177,21 +178,29 @@
     
     const CGFloat cornerRadius = 4;
     
-    self.sidebarHolder = [UIView new];
+    self.sidebarHolder = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SidebarWidth, 0)];
     self.sidebarHolder.layer.shadowOffset = CGSizeMake(3, 0);
-    self.sidebarViewController.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
-                                                        UIViewAutoresizingFlexibleHeight);
-    self.sidebarViewController.view.frame = self.sidebarHolder.bounds;
-    self.sidebarViewController.view.layer.cornerRadius = cornerRadius;
-    [self.sidebarHolder addSubview:self.sidebarViewController.view];
-    
-    [self layoutViewControllers];
+    self.sidebarHolder.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    UIView *sidebarView = self.sidebarViewController.view;
+    sidebarView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                    UIViewAutoresizingFlexibleHeight);
+    sidebarView.frame = self.sidebarHolder.bounds;
+    sidebarView.layer.cornerRadius = cornerRadius;
+    [self.sidebarHolder addSubview:sidebarView];
     
     [self addChildViewController:self.mainViewController];
+    self.mainViewController.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                                     UIViewAutoresizingFlexibleHeight);
     self.mainViewController.view.layer.cornerRadius = cornerRadius;
     self.mainViewController.view.clipsToBounds = YES;
     [self.view addSubview:self.mainViewController.view];
     [self.mainViewController didMoveToParentViewController:self];
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    [self layoutViewControllers];
 }
 
 - (void)viewWillAppear:(BOOL)animated
