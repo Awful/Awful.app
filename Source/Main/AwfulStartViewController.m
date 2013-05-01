@@ -23,9 +23,9 @@
 - (void)setImageForOrientation:(UIInterfaceOrientation)orientation
 {
     if (UIInterfaceOrientationIsPortrait(orientation)) {
-        self.imageView.image = [UIImage imageNamed:@"tag-collage-Portrait.png"];
+        self.imageView.image = [UIImage imageNamed:@"Default-Portrait"];
     } else {
-        self.imageView.image = [UIImage imageNamed:@"tag-collage-Landscape.png"];
+        self.imageView.image = [UIImage imageNamed:@"Default-Landscape"];
     }
 }
 
@@ -35,7 +35,7 @@
 {
     self.view = [[UIImageView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
     self.view.backgroundColor = [UIColor darkGrayColor];
-    self.view.contentMode = UIViewContentModeTopLeft;
+    self.view.contentMode = UIViewContentModeBottomRight;
 }
 
 - (void)viewDidLoad

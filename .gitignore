@@ -2,7 +2,10 @@
 .DS_Store
 xcuserdata
 
-# Secret stuff
+# Secret/generated stuff
 crashlytics-api-key
 Source/Main/AwfulCrashlytics.h
 Tests/CSS Tweaker/LessFilesPath.h
+
+# Temporary stuff
+Scripts/*.png
