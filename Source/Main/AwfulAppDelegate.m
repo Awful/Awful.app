@@ -198,18 +198,18 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     // Migrate Core Data early to avoid problems later!
     [[AwfulDataStack sharedDataStack] context];
     [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
-    NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:5 * 1024 * 1024
-                                                         diskCapacity:50 * 1024 * 1024
-                                                             diskPath:nil];
-    [NSURLCache setSharedURLCache:URLCache];
+    [NSURLCache setSharedURLCache:[[NSURLCache alloc] initWithMemoryCapacity:5 * 1024 * 1024
+                                                                diskCapacity:50 * 1024 * 1024
+                                                                    diskPath:nil]];
     
     [self ignoreSilentSwitchWhenPlayingEmbeddedVideo];
     
     [self routeAwfulURLs];
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    
+    [self configureAppearance];
     [self setUpRootViewController];
+    [self.window makeKeyAndVisible];
         
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         NSFileManager *fileman = [NSFileManager defaultManager];
@@ -243,10 +243,6 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         }
     });
     
-    [self configureAppearance];
-    
-    [self.window makeKeyAndVisible];
-    
     if ([AwfulHTTPClient client].loggedIn) {
         [self.splitViewController setSidebarVisible:YES animated:YES];
     } else {
@@ -279,10 +275,8 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
     [noteCenter addObserver:self selector:@selector(themeDidChange:)
                        name:AwfulThemeDidChangeNotification object:nil];
-    if (self.splitViewController) {
-        [noteCenter addObserver:self selector:@selector(settingsDidChange:)
-                           name:AwfulSettingsDidChangeNotification object:nil];
-    }
+    [noteCenter addObserver:self selector:@selector(settingsDidChange:)
+                       name:AwfulSettingsDidChangeNotification object:nil];
     return YES;
 }
 
@@ -294,12 +288,11 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
 - (void)settingsDidChange:(NSNotification *)note
 {
     NSArray *settings = note.userInfo[AwfulSettingsDidChangeSettingsKey];
-    if ([settings containsObject:AwfulSettingsKeys.keepSidebarOpen]) {
-        AwfulSplitViewController *split = self.splitViewController;
-        split.sidebarCanHide = [self awfulSplitViewController:split
-                               shouldHideSidebarInOrientation:split.interfaceOrientation];
-        [self ensureShowSidebarButtonInMainViewController];
-    }
+    if (![settings containsObject:AwfulSettingsKeys.keepSidebarOpen]) return;
+    AwfulSplitViewController *split = self.splitViewController;
+    split.sidebarCanHide = [self awfulSplitViewController:split
+                           shouldHideSidebarInOrientation:split.interfaceOrientation];
+    [self ensureShowSidebarButtonInMainViewController];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application

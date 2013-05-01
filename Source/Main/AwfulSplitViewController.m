@@ -74,17 +74,21 @@
 {
     if (_coverView) return _coverView;
     _coverView = [UIView new];
+    
     UISwipeGestureRecognizer *swipeLeft = [UISwipeGestureRecognizer new];
     swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
     [swipeLeft addTarget:self action:@selector(didSwipeLeftOnCoverView)];
     [_coverView addGestureRecognizer:swipeLeft];
+    
     UISwipeGestureRecognizer *swipeRight = [UISwipeGestureRecognizer new];
     swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
     [swipeRight addTarget:self action:@selector(didSwipeRightOnCoverView)];
     [_coverView addGestureRecognizer:swipeRight];
+    
     UITapGestureRecognizer *tap = [UITapGestureRecognizer new];
     [tap addTarget:self action:@selector(didTapCoverView:)];
     [_coverView addGestureRecognizer:tap];
+    
     return _coverView;
 }
 
@@ -147,15 +151,11 @@ const CGFloat SidebarWidth = 320;
 
 - (void)layoutViewControllers
 {
-    CALayer *sidebarLayer = self.sidebarHolder.layer;
-    if (sidebarLayer.shadowOpacity > 0) {
-        sidebarLayer.shadowPath = [UIBezierPath bezierPathWithRect:sidebarLayer.bounds].CGPath;
-    }
     if (self.sidebarCanHide) {
         self.mainViewController.view.frame = self.view.bounds;
         CGRect sidebarFrame = CGRectMake(0, 0, SidebarWidth, CGRectGetHeight(self.view.bounds));
         if (!self.sidebarVisible) {
-            sidebarFrame.origin.x -= CGRectGetWidth(sidebarFrame) + 3;
+            sidebarFrame = CGRectOffset(sidebarFrame, -CGRectGetWidth(sidebarFrame) - 1, 0);
         }
         self.sidebarHolder.frame = sidebarFrame;
     } else {
@@ -165,6 +165,10 @@ const CGFloat SidebarWidth = 320;
         mainFrame.size.width -= 1;
         self.sidebarHolder.frame = sidebarFrame;
         self.mainViewController.view.frame = mainFrame;
+    }
+    CALayer *sidebarLayer = self.sidebarHolder.layer;
+    if (sidebarLayer.shadowOpacity > 0) {
+        sidebarLayer.shadowPath = [UIBezierPath bezierPathWithRect:sidebarLayer.bounds].CGPath;
     }
 }
 
