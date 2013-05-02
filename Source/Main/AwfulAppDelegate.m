@@ -149,14 +149,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
 
 - (void)configureAppearance
 {
-    // Including a navbar.png (i.e. @1x), or setting a background image for
-    // UIBarMetricsLandscapePhone, makes the background come out completely different for some
-    // unknown reason on non-retina devices and in landscape on the phone. I'm out of ideas.
-    // Simply setting UIBarMetricsDefault and only including navbar@2x.png works great on retina
-    // and non-retina devices alike, so that's where I'm leaving it.
     AwfulNavigationBar *navBar = [AwfulNavigationBar appearance];
-    UIImage *barImage = [UIImage imageNamed:@"navbar.png"];
-    [navBar setBackgroundImage:barImage forBarMetrics:UIBarMetricsDefault];
     [navBar setTitleTextAttributes:@{
         UITextAttributeTextColor : [UIColor whiteColor],
         UITextAttributeTextShadowColor : [UIColor colorWithWhite:0 alpha:0.5]
