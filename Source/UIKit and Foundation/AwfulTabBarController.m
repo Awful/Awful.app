@@ -115,7 +115,7 @@
 
 - (UIView *)rotatingFooterView
 {
-    return self.tabBar.hidden ? self.selectedViewController.rotatingFooterView : self.tabBar;
+    return self.tabBar.hidden ? nil : self.tabBar;
 }
 
 #pragma mark - AwfulTabBarDelegate
