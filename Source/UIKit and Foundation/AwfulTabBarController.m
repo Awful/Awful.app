@@ -16,6 +16,13 @@
 @end
 
 
+@interface AwfulTabBarControllerContentView : UIView
+
+@property (weak, nonatomic) UIView *tabBar;
+
+@end
+
+
 @implementation AwfulTabBarController
 
 - (id)initWithViewControllers:(NSArray *)viewControllers
@@ -70,7 +77,9 @@
 
 - (void)loadView
 {
-    self.view = [[UIView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
+    AwfulTabBarControllerContentView *contentView = [AwfulTabBarControllerContentView new];
+    self.view = contentView;
+    self.view.frame = [UIScreen mainScreen].applicationFrame;
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.view.clipsToBounds = YES;
     
@@ -81,6 +90,7 @@
     self.tabBar.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                     UIViewAutoresizingFlexibleTopMargin);
     [self.view addSubview:self.tabBar];
+    contentView.tabBar = self.tabBar;
 }
 
 - (void)viewDidLoad
@@ -194,6 +204,31 @@
             self.selectedViewController.view.frame = containedFrame;
         }
     }
+}
+
+@end
+
+
+@implementation AwfulTabBarControllerContentView
+
+#pragma mark - UIView
+
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+{
+    // Give the tab bar a 44pt tall hitbox.
+    if (self.tabBar && !self.tabBar.hidden && self.tabBar.alpha >= 0.01) {
+        CGRect hitbox = self.tabBar.frame;
+        CGFloat delta = 44 - CGRectGetHeight(hitbox);
+        if (delta > 0) {
+            hitbox.origin.y -= delta;
+            hitbox.size.height += delta;
+        }
+        if (CGRectContainsPoint(hitbox, point)) {
+            return [self.tabBar hitTest:[self.tabBar convertPoint:point fromView:self]
+                              withEvent:event];
+        }
+    }
+    return [super hitTest:point withEvent:event];
 }
 
 @end

@@ -148,6 +148,22 @@ UIImage * MakeNormalImageForSelectedImage(UIImage *image)
     return normal;
 }
 
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+{
+    // 44pt tall hitbox.
+    CGRect hitbox = self.bounds;
+    CGFloat delta = 44 - CGRectGetHeight(hitbox);
+    if (delta > 0) {
+        hitbox.origin.y -= delta;
+        hitbox.size.height += delta;
+    }
+    if (CGRectContainsPoint(hitbox, point)) {
+        return self.segmentedControl;
+    } else {
+        return [super hitTest:point withEvent:event];
+    }
+}
+
 @end
 
 
