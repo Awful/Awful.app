@@ -9,6 +9,6 @@
 
 @interface UINavigationItem (TwoLineTitle)
 
-@property (nonatomic) UILabel *titleLabel;
+@property (readonly, nonatomic) UILabel *titleLabel;
 
 @end

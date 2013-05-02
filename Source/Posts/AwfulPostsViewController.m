@@ -575,7 +575,6 @@
 {
     [super setTitle:title];
     self.navigationItem.titleLabel.text = title;
-    [self.navigationItem.titleView setNeedsLayout];
 }
 
 - (void)loadView
