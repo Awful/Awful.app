@@ -147,37 +147,6 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     }
 }
 
-- (void)configureAppearance
-{
-    AwfulNavigationBar *navBar = [AwfulNavigationBar appearance];
-    [navBar setTitleTextAttributes:@{
-        UITextAttributeTextColor : [UIColor whiteColor],
-        UITextAttributeTextShadowColor : [UIColor colorWithWhite:0 alpha:0.5]
-    }];
-    
-    UIBarButtonItem *navBarItem = [UIBarButtonItem appearanceWhenContainedIn:
-                                   [AwfulNavigationBar class], nil];
-    UIImage *navBarButton = [UIImage imageNamed:@"navbar-button.png"];
-    [navBarItem setBackgroundImage:navBarButton
-                          forState:UIControlStateNormal
-                        barMetrics:UIBarMetricsDefault];
-    UIImage *navBarLandscapeButton = [[UIImage imageNamed:@"navbar-button-landscape.png"]
-                                      resizableImageWithCapInsets:UIEdgeInsetsMake(0, 6, 0, 6)];
-    [navBarItem setBackgroundImage:navBarLandscapeButton
-                          forState:UIControlStateNormal
-                        barMetrics:UIBarMetricsLandscapePhone];
-    UIImage *backButton = [[UIImage imageNamed:@"navbar-back.png"]
-                           resizableImageWithCapInsets:UIEdgeInsetsMake(0, 13, 0, 6)];
-    [navBarItem setBackButtonBackgroundImage:backButton
-                                    forState:UIControlStateNormal
-                                  barMetrics:UIBarMetricsDefault];
-    UIImage *landscapeBackButton = [[UIImage imageNamed:@"navbar-back-landscape.png"]
-                                    resizableImageWithCapInsets:UIEdgeInsetsMake(0, 13, 0, 6)];
-    [navBarItem setBackButtonBackgroundImage:landscapeBackButton
-                                    forState:UIControlStateNormal
-                                  barMetrics:UIBarMetricsLandscapePhone];
-}
-
 #pragma mark - UIApplicationDelegate
 
 - (BOOL)application:(UIApplication *)application
@@ -201,7 +170,6 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     [self routeAwfulURLs];
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    [self configureAppearance];
     [self setUpRootViewController];
     [self.window makeKeyAndVisible];
         
