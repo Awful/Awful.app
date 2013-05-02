@@ -8,13 +8,12 @@
 #import "AwfulTabBar.h"
 #import "CustomBadge.h"
 
-@interface AwfulSegmentedControl : UISegmentedControl @end
+@interface AwfulTabBarSegmentedControl : UISegmentedControl @end
 
 
 @interface AwfulTabBar ()
 
-@property (weak, nonatomic) AwfulSegmentedControl *segmentedControl;
-
+@property (weak, nonatomic) AwfulTabBarSegmentedControl *segmentedControl;
 @property (nonatomic) NSMutableDictionary *badgeViews;
 
 @end
@@ -25,27 +24,13 @@
 - (id)initWithFrame:(CGRect)frame
 {
     if (!(self = [super initWithFrame:frame])) return nil;
-    AwfulSegmentedControl *segmentedControl = [AwfulSegmentedControl new];
+    AwfulTabBarSegmentedControl *segmentedControl = [AwfulTabBarSegmentedControl new];
     segmentedControl.frame = (CGRect){ .size = frame.size };
     [segmentedControl addTarget:self
                          action:@selector(selectTab:)
                forControlEvents:UIControlEventValueChanged];
     segmentedControl.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                          UIViewAutoresizingFlexibleHeight);
-    UIImage *back = [[UIImage imageNamed:@"tab-background.png"]
-                     resizableImageWithCapInsets:UIEdgeInsetsZero];
-    [segmentedControl setBackgroundImage:back
-                                forState:UIControlStateNormal
-                              barMetrics:UIBarMetricsDefault];
-    UIImage *selected = [[UIImage imageNamed:@"tab-selected.png"]
-                         resizableImageWithCapInsets:UIEdgeInsetsMake(0, 4, 0, 4)];
-    [segmentedControl setBackgroundImage:selected
-                                forState:UIControlStateSelected
-                              barMetrics:UIBarMetricsDefault];
-    [segmentedControl setDividerImage:[UIImage imageNamed:@"tab-divider.png"]
-                  forLeftSegmentState:UIControlStateNormal
-                    rightSegmentState:UIControlStateNormal
-                           barMetrics:UIBarMetricsDefault];
     [self addSubview:segmentedControl];
     _segmentedControl = segmentedControl;
     _badgeViews = [NSMutableDictionary new];
@@ -166,15 +151,37 @@ UIImage * MakeNormalImageForSelectedImage(UIImage *image)
 @end
 
 
-@implementation AwfulSegmentedControl
+@implementation AwfulTabBarSegmentedControl
+
+#pragma mark - UIView
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    // UISegmentedControl doesn't send its action message when tapping the selected segment, even
+    // though we want it to.
     NSInteger old = self.selectedSegmentIndex;
     [super touchesBegan:touches withEvent:event];
     if (self.selectedSegmentIndex == old) {
         [self sendActionsForControlEvents:UIControlEventValueChanged];
     }
+}
+
+#pragma mark - NSObject
+
++ (void)initialize
+{
+    if (self != [AwfulTabBarSegmentedControl class]) return;
+    AwfulTabBarSegmentedControl *seg = [AwfulTabBarSegmentedControl appearance];
+    UIControlState normal = UIControlStateNormal, selected = UIControlStateSelected;
+    UIBarMetrics metrics = UIBarMetricsDefault;
+    [seg setBackgroundImage:[UIImage imageNamed:@"tabbar"] forState:normal barMetrics:metrics];
+    UIImage *selectedBack = [[UIImage imageNamed:@"tabbar-selected"]
+                             resizableImageWithCapInsets:UIEdgeInsetsMake(0, 17, 0, 17)];
+    [seg setBackgroundImage:selectedBack forState:selected barMetrics:metrics];
+    [seg setDividerImage:[UIImage imageNamed:@"tabbar-divider"]
+     forLeftSegmentState:normal rightSegmentState:normal
+              barMetrics:metrics];
+
 }
 
 @end

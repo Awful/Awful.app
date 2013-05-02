@@ -74,7 +74,7 @@
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.view.clipsToBounds = YES;
     
-    self.tabBar = [[AwfulTabBar alloc] initWithFrame:CGRectMake(0, 0, 0, 40)];
+    self.tabBar = [[AwfulTabBar alloc] initWithFrame:CGRectMake(0, 0, 0, 38)];
     self.tabBar.items = [self.viewControllers valueForKey:@"tabBarItem"];
     self.tabBar.selectedItem = self.selectedViewController.tabBarItem;
     self.tabBar.delegate = self;
