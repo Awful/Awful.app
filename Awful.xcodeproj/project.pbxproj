@@ -2463,6 +2463,8 @@
 		1CBEE23C1732F0E000C4884A /* Tab Bar */ = {
 			isa = PBXGroup;
 			children = (
+				8CCD504D15B783FC00E5893B /* cog.png */,
+				8CCD504E15B783FC00E5893B /* cog@2x.png */,
 				1CBEE2381732F0CC00C4884A /* tabbar.png */,
 				1CBEE2391732F0CC00C4884A /* tabbar@2x.png */,
 				1CBEE23D1732F3BE00C4884A /* tabbar-divider.png */,
@@ -2471,6 +2473,96 @@
 				1CBEE2411732F78E00C4884A /* tabbar-selected@2x.png */,
 			);
 			name = "Tab Bar";
+			sourceTree = "<group>";
+		};
+		1CBEE2451733004100C4884A /* Navbar */ = {
+			isa = PBXGroup;
+			children = (
+				1CBD5271162DCB1B00928740 /* navbar-back-landscape.png */,
+				1CBD5272162DCB1B00928740 /* navbar-back-landscape@2x.png */,
+				1CBD5273162DCB1B00928740 /* navbar-back.png */,
+				1CBD5274162DCB1B00928740 /* navbar-back@2x.png */,
+				1CBD5275162DCB1B00928740 /* navbar-button-landscape.png */,
+				1CBD5276162DCB1B00928740 /* navbar-button-landscape@2x.png */,
+				1CBD5277162DCB1B00928740 /* navbar-button.png */,
+				1CBD5278162DCB1B00928740 /* navbar-button@2x.png */,
+			);
+			name = Navbar;
+			sourceTree = "<group>";
+		};
+		1CBEE2461733005400C4884A /* Posts View */ = {
+			isa = PBXGroup;
+			children = (
+				1C3CC797162876AE00088AA8 /* adminstar.png */,
+				8CCD504415B783FC00E5893B /* arrowleft.png */,
+				8CCD504515B783FC00E5893B /* arrowleft@2x.png */,
+				8CCD504615B783FC00E5893B /* arrowright.png */,
+				8CCD504715B783FC00E5893B /* arrowright@2x.png */,
+				1C741F921724B2DC00E7C61E /* font-size.png */,
+				1CE8FDF01703CEAC006A3B84 /* font-size@2x.png */,
+				1CE8FDF91708BB2F006A3B84 /* font-size-larger@2x.png */,
+				1CE8FDF81708BB2F006A3B84 /* font-size-smaller@2x.png */,
+				1C3CC798162876AE00088AA8 /* modstar.png */,
+				1CFBECCB162F4ED7008AF641 /* pagebar-button-selected.png */,
+				1CFBECCC162F4ED7008AF641 /* pagebar-button-selected@2x.png */,
+				1CFBECCD162F4ED7008AF641 /* pagebar-button.png */,
+				1CFBECCE162F4ED7008AF641 /* pagebar-button@2x.png */,
+				1CFBECE5162F526A008AF641 /* pagebar-segmented-divider.png */,
+				1CFBECE6162F526A008AF641 /* pagebar-segmented-divider@2x.png */,
+				8CCD525C15B783FC00E5893B /* rating0.png */,
+				8CCD525D15B783FC00E5893B /* rating1.png */,
+				8CCD525E15B783FC00E5893B /* rating2.png */,
+				8CCD525F15B783FC00E5893B /* rating3.png */,
+				8CCD526015B783FC00E5893B /* rating4.png */,
+				8CCD526115B783FC00E5893B /* rating5.png */,
+			);
+			name = "Posts View";
+			sourceTree = "<group>";
+		};
+		1CBEE248173300A200C4884A /* Forums List */ = {
+			isa = PBXGroup;
+			children = (
+				8CCD524215B783FC00E5893B /* forum-arrow-down.png */,
+				8CCD524315B783FC00E5893B /* forum-arrow-down@2x.png */,
+				8C2450FE1666FDA300D3079C /* forum-arrow-down-dark.png */,
+				8C2450FF1666FDA300D3079C /* forum-arrow-down-dark@2x.png */,
+				8CCD524415B783FC00E5893B /* forum-arrow-right.png */,
+				8CCD524515B783FC00E5893B /* forum-arrow-right@2x.png */,
+				8C2451021666FDAE00D3079C /* forum-arrow-right-dark.png */,
+				8C2451031666FDAE00D3079C /* forum-arrow-right-dark@2x.png */,
+				8C2450F51666F76900D3079C /* forum-header-dark.png */,
+				8C2450F61666F76900D3079C /* forum-header-dark@2x.png */,
+				8C2450F71666F76900D3079C /* forum-header-light.png */,
+				8C2450F81666F76900D3079C /* forum-header-light@2x.png */,
+				1CFBECFC1631A6EA008AF641 /* star-off.png */,
+				1CFBECFD1631A6EA008AF641 /* star-off@2x.png */,
+				1CE2D981165F8B8D0024AC1C /* star-off-dark.png */,
+				1CE2D982165F8B8D0024AC1C /* star-off-dark@2x.png */,
+				1CFBECFE1631A6EA008AF641 /* star-on.png */,
+				1CFBECFF1631A6EA008AF641 /* star-on@2x.png */,
+			);
+			name = "Forums List";
+			sourceTree = "<group>";
+		};
+		1CBEE2491733012E00C4884A /* Private Messages */ = {
+			isa = PBXGroup;
+			children = (
+				1C9FDE5D16EA008400C665B5 /* empty-pm-tag@2x.png */,
+				1C9FDE5F16EA030700C665B5 /* newpm.gif */,
+				1C9FDE6016EA030700C665B5 /* pmforwarded.gif */,
+				1C9FDE6116EA030700C665B5 /* pmreplied.gif */,
+			);
+			name = "Private Messages";
+			sourceTree = "<group>";
+		};
+		1CBEE24A1733025300C4884A /* Leper's Colony */ = {
+			isa = PBXGroup;
+			children = (
+				1C41B8A416CD573D00718F79 /* title-banned.gif */,
+				1C41B8A516CD573D00718F79 /* title-permabanned.gif */,
+				1C41B8A616CD573D00718F79 /* title-probation.png */,
+			);
+			name = "Leper's Colony";
 			sourceTree = "<group>";
 		};
 		1CC38B84160C0A5D00C35A11 /* SVPullToRefresh */ = {
@@ -2780,75 +2872,23 @@
 			children = (
 				8CCD504215B783FC00E5893B /* action.png */,
 				8CCD504315B783FC00E5893B /* action@2x.png */,
-				1C3CC797162876AE00088AA8 /* adminstar.png */,
-				8CCD504415B783FC00E5893B /* arrowleft.png */,
-				8CCD504515B783FC00E5893B /* arrowleft@2x.png */,
-				8CCD504615B783FC00E5893B /* arrowright.png */,
 				1C13FF90161CDDD3000ED2B1 /* bookmarks-landscape.png */,
 				1C13FF91161CDDD4000ED2B1 /* bookmarks-landscape@2x.png */,
 				1C13FF92161CDDD4000ED2B1 /* bookmarks.png */,
 				1C13FF93161CDDD4000ED2B1 /* bookmarks@2x.png */,
-				8CCD504715B783FC00E5893B /* arrowright@2x.png */,
-				8CCD504D15B783FC00E5893B /* cog.png */,
-				8CCD504E15B783FC00E5893B /* cog@2x.png */,
 				8CCD504F15B783FC00E5893B /* compose.png */,
 				8CCD505015B783FC00E5893B /* compose@2x.png */,
-				1C9FDE5D16EA008400C665B5 /* empty-pm-tag@2x.png */,
-				1C741F921724B2DC00E7C61E /* font-size.png */,
-				1CE8FDF01703CEAC006A3B84 /* font-size@2x.png */,
-				1CE8FDF91708BB2F006A3B84 /* font-size-larger@2x.png */,
-				1CE8FDF81708BB2F006A3B84 /* font-size-smaller@2x.png */,
-				8CCD524215B783FC00E5893B /* forum-arrow-down.png */,
-				8CCD524315B783FC00E5893B /* forum-arrow-down@2x.png */,
-				8C2450FE1666FDA300D3079C /* forum-arrow-down-dark.png */,
-				8C2450FF1666FDA300D3079C /* forum-arrow-down-dark@2x.png */,
-				8CCD524415B783FC00E5893B /* forum-arrow-right.png */,
-				8CCD524515B783FC00E5893B /* forum-arrow-right@2x.png */,
-				8C2451021666FDAE00D3079C /* forum-arrow-right-dark.png */,
-				8C2451031666FDAE00D3079C /* forum-arrow-right-dark@2x.png */,
-				8C2450F51666F76900D3079C /* forum-header-dark.png */,
-				8C2450F61666F76900D3079C /* forum-header-dark@2x.png */,
-				8C2450F71666F76900D3079C /* forum-header-light.png */,
-				8C2450F81666F76900D3079C /* forum-header-light@2x.png */,
+				1CBEE248173300A200C4884A /* Forums List */,
 				1C28B35D172A111B00254EE7 /* Icon Action Items */,
+				1CBEE24A1733025300C4884A /* Leper's Colony */,
 				8CCD525115B783FC00E5893B /* list_icon.png */,
 				8CCD525215B783FC00E5893B /* list_icon@2x.png */,
-				1C3CC798162876AE00088AA8 /* modstar.png */,
-				1CBD5271162DCB1B00928740 /* navbar-back-landscape.png */,
-				1CBD5272162DCB1B00928740 /* navbar-back-landscape@2x.png */,
-				1CBD5273162DCB1B00928740 /* navbar-back.png */,
-				1CBD5274162DCB1B00928740 /* navbar-back@2x.png */,
-				1CBD5275162DCB1B00928740 /* navbar-button-landscape.png */,
-				1CBD5276162DCB1B00928740 /* navbar-button-landscape@2x.png */,
-				1CBD5277162DCB1B00928740 /* navbar-button.png */,
-				1CBD5278162DCB1B00928740 /* navbar-button@2x.png */,
-				1CFBECCB162F4ED7008AF641 /* pagebar-button-selected.png */,
-				1CFBECCC162F4ED7008AF641 /* pagebar-button-selected@2x.png */,
-				1CFBECCD162F4ED7008AF641 /* pagebar-button.png */,
-				1CFBECCE162F4ED7008AF641 /* pagebar-button@2x.png */,
-				1CFBECE5162F526A008AF641 /* pagebar-segmented-divider.png */,
-				1CFBECE6162F526A008AF641 /* pagebar-segmented-divider@2x.png */,
+				1CBEE2451733004100C4884A /* Navbar */,
 				1C5B997A166F6E54004C5D0E /* pm-icon@2x.png */,
-				1C9FDE5F16EA030700C665B5 /* newpm.gif */,
-				1C9FDE6016EA030700C665B5 /* pmforwarded.gif */,
-				1C9FDE6116EA030700C665B5 /* pmreplied.gif */,
-				8CCD525C15B783FC00E5893B /* rating0.png */,
-				8CCD525D15B783FC00E5893B /* rating1.png */,
-				8CCD525E15B783FC00E5893B /* rating2.png */,
-				8CCD525F15B783FC00E5893B /* rating3.png */,
-				8CCD526015B783FC00E5893B /* rating4.png */,
-				8CCD526115B783FC00E5893B /* rating5.png */,
-				1CFBECFC1631A6EA008AF641 /* star-off.png */,
-				1CFBECFD1631A6EA008AF641 /* star-off@2x.png */,
-				1CE2D981165F8B8D0024AC1C /* star-off-dark.png */,
-				1CE2D982165F8B8D0024AC1C /* star-off-dark@2x.png */,
-				1CFBECFE1631A6EA008AF641 /* star-on.png */,
-				1CFBECFF1631A6EA008AF641 /* star-on@2x.png */,
+				1CBEE2461733005400C4884A /* Posts View */,
+				1CBEE2491733012E00C4884A /* Private Messages */,
 				8CCD527715B783FC00E5893B /* sticky.png */,
 				1CBEE23C1732F0E000C4884A /* Tab Bar */,
-				1C41B8A416CD573D00718F79 /* title-banned.gif */,
-				1C41B8A516CD573D00718F79 /* title-permabanned.gif */,
-				1C41B8A616CD573D00718F79 /* title-probation.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
