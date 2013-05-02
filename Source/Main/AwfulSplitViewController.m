@@ -202,12 +202,6 @@ const CGFloat SidebarWidth = 320;
     [self.mainViewController didMoveToParentViewController:self];
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    [self layoutViewControllers];
-}
-
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
@@ -229,11 +223,8 @@ const CGFloat SidebarWidth = 320;
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)orientation
                                          duration:(NSTimeInterval)duration
 {
-    [self setSidebarCanHide:[self shouldHideSidebar]];
-    if (self.sidebarCanHide) {
-        self.sidebarVisible = NO;
-    }
-    [self layoutViewControllers];
+    self.sidebarCanHide = [self shouldHideSidebar];
+    self.sidebarVisible = NO;
     [self.delegate awfulSplitViewController:self willHideSidebar:self.sidebarCanHide];
 }
 
