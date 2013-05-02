@@ -1,4 +1,15 @@
 Resources/Thread%20Tags
+0.0stars.png
+0.5stars.png
+1.0stars.png
+1.5stars.png
+2.0stars.png
+2.5stars.png
+3.0stars.png
+3.5stars.png
+4.0stars.png
+4.5stars.png
+5.0stars.png
 adtrw-hokutonoken.png
 ai-cycles.png
 ai-mods.png

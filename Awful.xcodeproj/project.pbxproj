@@ -2786,17 +2786,6 @@
 		8CCD503B15B783FC00E5893B /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				1CBDB5841624B26B0004BDF4 /* 0.0stars.png */,
-				1CBDB5851624B26B0004BDF4 /* 0.5stars.png */,
-				1CBDB5861624B26B0004BDF4 /* 1.0stars.png */,
-				1CBDB5871624B26B0004BDF4 /* 1.5stars.png */,
-				1CBDB5881624B26B0004BDF4 /* 2.0stars.png */,
-				1CBDB5891624B26B0004BDF4 /* 2.5stars.png */,
-				1CBDB58A1624B26B0004BDF4 /* 3.0stars.png */,
-				1CBDB58B1624B26B0004BDF4 /* 3.5stars.png */,
-				1CBDB58C1624B26B0004BDF4 /* 4.0stars.png */,
-				1CBDB58D1624B26B0004BDF4 /* 4.5stars.png */,
-				1CBDB58E1624B26B0004BDF4 /* 5.0stars.png */,
 				8CCD504215B783FC00E5893B /* action.png */,
 				8CCD504315B783FC00E5893B /* action@2x.png */,
 				1C3CC797162876AE00088AA8 /* adminstar.png */,
@@ -2879,6 +2868,17 @@
 		8CCD527B15B783FC00E5893B /* Thread Tags */ = {
 			isa = PBXGroup;
 			children = (
+				1CBDB5841624B26B0004BDF4 /* 0.0stars.png */,
+				1CBDB5851624B26B0004BDF4 /* 0.5stars.png */,
+				1CBDB5861624B26B0004BDF4 /* 1.0stars.png */,
+				1CBDB5871624B26B0004BDF4 /* 1.5stars.png */,
+				1CBDB5881624B26B0004BDF4 /* 2.0stars.png */,
+				1CBDB5891624B26B0004BDF4 /* 2.5stars.png */,
+				1CBDB58A1624B26B0004BDF4 /* 3.0stars.png */,
+				1CBDB58B1624B26B0004BDF4 /* 3.5stars.png */,
+				1CBDB58C1624B26B0004BDF4 /* 4.0stars.png */,
+				1CBDB58D1624B26B0004BDF4 /* 4.5stars.png */,
+				1CBDB58E1624B26B0004BDF4 /* 5.0stars.png */,
 				8C5159D0163DB796000114F6 /* adtrw-hokutonoken.png */,
 				8CCD527C15B783FC00E5893B /* ai-cycles.png */,
 				8C5159D5163DB796000114F6 /* ai-mods.png */,
