@@ -211,9 +211,8 @@
                                                                      target:self
                                                                      action:@selector(doneWithProfile)];
                 profile.navigationItem.leftBarButtonItem = done;
-                UINavigationController *nav = [profile enclosingNavigationController];
-                nav.modalPresentationStyle = UIModalPresentationFormSheet;
-                [self presentViewController:nav animated:YES completion:nil];
+                [self presentViewController:[profile enclosingNavigationController]
+                                   animated:YES completion:nil];
             } else {
                 [self.navigationController pushViewController:profile animated:YES];
             }

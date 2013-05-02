@@ -38,6 +38,7 @@
 {
     if (!(self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) return nil;
     self.title = @"Licenses";
+    self.modalPresentationStyle = UIModalPresentationFormSheet;
     return self;
 }
 

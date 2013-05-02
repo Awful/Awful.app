@@ -112,8 +112,7 @@
     AwfulPrivateMessageComposeViewController *compose;
     compose = [AwfulPrivateMessageComposeViewController new];
     compose.delegate = self;
-    UINavigationController *nav = [compose enclosingNavigationController];
-    nav.modalPresentationStyle = UIModalPresentationPageSheet;
+    
     // If the following is true:
     //
     //   1. We're first, or a child of the first, in self.splitViewController.viewControllers.
@@ -123,7 +122,8 @@
     // Then the presented view controller will be rudely dismissed when the device orientation
     // changes. The workaround is to present from the split view controller itself.
     UIViewController *presenter = self.awfulSplitViewController ?: self;
-    [presenter presentViewController:nav animated:YES completion:nil];
+    [presenter presentViewController:[compose enclosingNavigationController]
+                            animated:YES completion:nil];
 }
 
 - (void)didGetNewPMCount:(NSNotification *)notification

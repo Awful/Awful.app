@@ -59,10 +59,8 @@ static id _instance;
 {
     AwfulLoginController *login = [AwfulLoginController new];
     login.delegate = self;
-    UINavigationController *nav = [login enclosingNavigationController];
-    nav.modalPresentationStyle = UIModalPresentationFormSheet;
     BOOL animated = !isAtLaunch || UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
-    [self.window.rootViewController presentViewController:nav
+    [self.window.rootViewController presentViewController:[login enclosingNavigationController]
                                                  animated:animated
                                                completion:callback];
 }

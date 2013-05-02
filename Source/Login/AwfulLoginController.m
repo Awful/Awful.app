@@ -26,7 +26,9 @@
 
 - (id)init
 {
-    return [super initWithStyle:UITableViewStyleGrouped];
+    if (!(self = [super initWithStyle:UITableViewStyleGrouped])) return nil;
+    self.modalPresentationStyle = UIModalPresentationFormSheet;
+    return self;
 }
 
 #pragma mark - UIViewController

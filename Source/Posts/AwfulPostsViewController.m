@@ -118,9 +118,7 @@
          withInitialContents:self.ongoingReplyText
         imageCacheIdentifier:self.ongoingReplyImageCacheIdentifier];
     }
-    UINavigationController *nav = [reply enclosingNavigationController];
-    nav.modalPresentationStyle = UIModalPresentationPageSheet;
-    [self presentViewController:nav animated:YES completion:nil];
+    [self presentViewController:[reply enclosingNavigationController] animated:YES completion:nil];
 }
 
 - (void)settingChanged:(NSNotification *)note
@@ -533,9 +531,8 @@
                                                              target:self
                                                              action:@selector(doneWithProfile)];
         profile.navigationItem.leftBarButtonItem = item;
-        UINavigationController *nav = [profile enclosingNavigationController];
-        nav.modalPresentationStyle = UIModalPresentationFormSheet;
-        [self presentViewController:nav animated:YES completion:nil];
+        [self presentViewController:[profile enclosingNavigationController]
+                           animated:YES completion:nil];
     } else {
         profile.hidesBottomBarWhenPushed = YES;
         item = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleBordered
@@ -947,9 +944,8 @@ static char KVOContext;
                  AwfulReplyComposeViewController *reply = [AwfulReplyComposeViewController new];
                  reply.delegate = self;
                  [reply editPost:post text:text imageCacheIdentifier:nil];
-                 UINavigationController *nav = [reply enclosingNavigationController];
-                 nav.modalPresentationStyle = UIModalPresentationPageSheet;
-                 [self presentViewController:nav animated:YES completion:nil];
+                 [self presentViewController:[reply enclosingNavigationController]
+                                    animated:YES completion:nil];
              }];
         }]];
     }
@@ -971,9 +967,8 @@ static char KVOContext;
                  [reply replyToThread:self.thread
                   withInitialContents:contents
                  imageCacheIdentifier:self.ongoingReplyImageCacheIdentifier];
-                 UINavigationController *nav = [reply enclosingNavigationController];
-                 nav.modalPresentationStyle = UIModalPresentationPageSheet;
-                 [self presentViewController:nav animated:YES completion:nil];
+                 [self presentViewController:[reply enclosingNavigationController]
+                                    animated:YES completion:nil];
              }];
         }]];
     }
@@ -1029,9 +1024,8 @@ static char KVOContext;
             compose = [AwfulPrivateMessageComposeViewController new];
             compose.delegate = self;
             [compose setRecipient:post.author.username];
-            UINavigationController *nav = [compose enclosingNavigationController];
-            nav.modalPresentationStyle = UIModalPresentationPageSheet;
-            [self presentViewController:nav animated:YES completion:nil];
+            [self presentViewController:[compose enclosingNavigationController]
+                               animated:YES completion:nil];
         }]];
     }
     [sheet presentFromViewController:self fromRect:rect inView:self.postsView];

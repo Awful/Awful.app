@@ -339,9 +339,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                                      initWithBarButtonSystemItem:UIBarButtonSystemItemDone
                                      target:self action:@selector(dismissLicenses)];
         licenses.navigationItem.rightBarButtonItem = doneItem;
-        UINavigationController *nav = [licenses enclosingNavigationController];
-        nav.modalPresentationStyle = UIModalPresentationFormSheet;
-        [self presentViewController:nav animated:YES completion:nil];
+        [self presentViewController:[licenses enclosingNavigationController]
+                           animated:YES completion:nil];
     } else {
         UIViewController *viewController;
         if (setting[@"ViewController"]) {

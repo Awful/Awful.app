@@ -147,6 +147,7 @@ NSString * const AwfulServicePrivateMessage = @"Private Message";
 {
     if (!(self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) return nil;
     self.title = @"Profile";
+    self.modalPresentationStyle = UIModalPresentationFormSheet;
     return self;
 }
 
@@ -249,8 +250,6 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         compose = [AwfulPrivateMessageComposeViewController new];
         compose.delegate = self;
         [compose setRecipient:self.user.username];
-        UINavigationController *nav = [compose enclosingNavigationController];
-        nav.modalPresentationStyle = UIModalPresentationPageSheet;
         
         // Try setting the delay to 0 then causing this to run. That is, as a user who can send PMs,
         // view the profile of a user who can receive PMs, and tap the "Private Message" row.
@@ -271,7 +270,8 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         // appearance here.
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.45 * NSEC_PER_SEC));
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-            [self presentViewController:nav animated:YES completion:nil];
+            [self presentViewController:[compose enclosingNavigationController]
+                               animated:YES completion:nil];
         });
     }
 }
