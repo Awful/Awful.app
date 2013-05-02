@@ -22,14 +22,17 @@
 //       - The animation when hiding or showing the tab bar after popping a view controller looks
 //         shitty because we don't know whether the view controller is being popped or pushed.
 
-@property (copy, nonatomic) NSArray *viewControllers;
+// Designated initializer.
+- (id)initWithViewControllers:(NSArray *)viewControllers;
+
+@property (readonly, copy, nonatomic) NSArray *viewControllers;
 
 @property (weak, nonatomic) UIViewController *selectedViewController;
 
 @property (weak, nonatomic) id <AwfulTabBarControllerDelegate> delegate;
 
 // For presenting action sheets.
-@property (readonly, weak, nonatomic) AwfulTabBar *tabBar;
+@property (readonly, nonatomic) AwfulTabBar *tabBar;
 
 @end
 

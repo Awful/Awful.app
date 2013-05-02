@@ -121,15 +121,17 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
 
 - (void)setUpRootViewController
 {
-    AwfulTabBarController *tabBar = [AwfulTabBarController new];
-    tabBar.viewControllers = @[
+    NSArray *vcs = @[
         [[AwfulForumsListController new] enclosingNavigationController],
         [[AwfulPrivateMessageListController new] enclosingNavigationController],
         [[AwfulBookmarksController new] enclosingNavigationController],
-        [[AwfulSettingsViewController new] enclosingNavigationController]
+        [[AwfulSettingsViewController new] enclosingNavigationController],
     ];
-    tabBar.selectedViewController = tabBar.viewControllers[[[AwfulSettings settings] firstTab]];
+    AwfulTabBarController *tabBar = [[AwfulTabBarController alloc] initWithViewControllers:vcs];
+    tabBar.selectedViewController = vcs[[AwfulSettings settings].firstTab];
     tabBar.delegate = self;
+    self.tabBarController = tabBar;
+    
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         AwfulStartViewController *start = [AwfulStartViewController new];
         UINavigationController *main = [start enclosingNavigationController];
@@ -143,7 +145,6 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     } else {
         self.window.rootViewController = tabBar;
     }
-    self.tabBarController = tabBar;
 }
 
 - (void)configureAppearance

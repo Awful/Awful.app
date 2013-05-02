@@ -10,70 +10,60 @@
 
 @interface AwfulTabBarController () <AwfulTabBarDelegate, UINavigationControllerDelegate>
 
-@property (weak, nonatomic) AwfulTabBar *tabBar;
+@property (copy, nonatomic) NSArray *viewControllers;
+@property (nonatomic) AwfulTabBar *tabBar;
 
 @end
 
 
 @implementation AwfulTabBarController
 
-- (void)setViewControllers:(NSArray *)viewControllers
+- (id)initWithViewControllers:(NSArray *)viewControllers
 {
-    if (_viewControllers == viewControllers) return;
-    _viewControllers = [viewControllers copy];
-    for (UINavigationController *nav in _viewControllers) {
-        if (![nav isKindOfClass:[UINavigationController class]]) return;
-        nav.delegate = self;
+    if (!(self = [super initWithNibName:nil bundle:nil])) return nil;
+    self.viewControllers = [viewControllers copy];
+    for (UINavigationController *nav in self.viewControllers) {
+        if ([nav isKindOfClass:[UINavigationController class]]) {
+            nav.delegate = self;
+        }
     }
-    self.tabBar.items = [self.viewControllers valueForKey:@"tabBarItem"];
     self.selectedViewController = self.viewControllers[0];
+    return self;
 }
 
 - (void)setSelectedViewController:(UIViewController *)selectedViewController
 {
     if (_selectedViewController == selectedViewController) return;
-    if (_selectedViewController) {
-        [self replaceViewController:_selectedViewController
-                 withViewController:selectedViewController];
-    } else {
-        [self addViewController:selectedViewController];
-    }
+    UIViewController *old = _selectedViewController;
     _selectedViewController = selectedViewController;
     self.tabBar.selectedItem = selectedViewController.tabBarItem;
+    if (![self isViewLoaded]) return;
+    [old willMoveToParentViewController:nil];
+    [self addViewController:selectedViewController];
+    [old.view removeFromSuperview];
+    [old removeFromParentViewController];
 }
 
 - (void)addViewController:(UIViewController *)coming
 {
     [self addChildViewController:coming];
-    coming.view.frame = [self frameForContainedViewController:coming];
+    coming.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                    UIViewAutoresizingFlexibleHeight);
     [self.view insertSubview:coming.view belowSubview:self.tabBar];
+    [self layoutSelectedViewControllerViewAndTabBar];
     [coming didMoveToParentViewController:self];
 }
 
-- (void)replaceViewController:(UIViewController *)going
-           withViewController:(UIViewController *)coming
+- (void)layoutSelectedViewControllerViewAndTabBar
 {
-    [going willMoveToParentViewController:nil];
-    [self addChildViewController:coming];
-    coming.view.frame = [self frameForContainedViewController:coming];
-    [self.view insertSubview:coming.view belowSubview:going.view];
-    [going.view removeFromSuperview];
-    [going removeFromParentViewController];
-    [coming didMoveToParentViewController:self];
-}
-
-- (CGRect)frameForContainedViewController:(UIViewController *)viewController
-{
-    CGRect frame = self.view.bounds;
-    if ([viewController isKindOfClass:[UINavigationController class]]) {
-        UINavigationController *nav = (id)viewController;
-        if (!nav.topViewController.hidesBottomBarWhenPushed) {
-            frame.size.height -= CGRectGetHeight(self.tabBar.bounds);
-        }
-    } else if (!self.tabBar.hidden) {
-        frame.size.height -= CGRectGetHeight(self.tabBar.bounds);
+    CGRect viewFrame, tabBarFrame;
+    CGRectDivide(self.view.bounds, &tabBarFrame, &viewFrame, CGRectGetHeight(self.tabBar.bounds),
+                 CGRectMaxYEdge);
+    if (self.tabBar.hidden) {
+        viewFrame = CGRectUnion(viewFrame, tabBarFrame);
     }
-    return frame;
+    self.selectedViewController.view.frame = viewFrame;
+    self.tabBar.frame = tabBarFrame;
 }
 
 #pragma mark - UIViewController
@@ -81,17 +71,30 @@
 - (void)loadView
 {
     self.view = [[UIView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.view.clipsToBounds = YES;
-    CGRect tabBarFrame;
-    CGRectDivide(self.view.bounds, &tabBarFrame, &(CGRect){}, 40, CGRectMaxYEdge);
-    AwfulTabBar *tabBar = [[AwfulTabBar alloc] initWithFrame:tabBarFrame];
-    tabBar.items = [self.viewControllers valueForKey:@"tabBarItem"];
-    tabBar.selectedItem = self.selectedViewController.tabBarItem;
-    tabBar.delegate = self;
-    tabBar.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
-                               UIViewAutoresizingFlexibleTopMargin);
-    [self.view addSubview:tabBar];
-    self.tabBar = tabBar;
+    
+    self.tabBar = [[AwfulTabBar alloc] initWithFrame:CGRectMake(0, 0, 0, 40)];
+    self.tabBar.items = [self.viewControllers valueForKey:@"tabBarItem"];
+    self.tabBar.selectedItem = self.selectedViewController.tabBarItem;
+    self.tabBar.delegate = self;
+    self.tabBar.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                    UIViewAutoresizingFlexibleTopMargin);
+    [self.view addSubview:self.tabBar];
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    if (self.selectedViewController) {
+        [self addViewController:self.selectedViewController];
+    }
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self layoutSelectedViewControllerViewAndTabBar];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
@@ -104,9 +107,10 @@
     return YES;
 }
 
-- (UIView *)rotatingHeaderView
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
+                                         duration:(NSTimeInterval)duration
 {
-    return self.selectedViewController.rotatingHeaderView;
+    [self layoutSelectedViewControllerViewAndTabBar];
 }
 
 - (UIView *)rotatingFooterView
