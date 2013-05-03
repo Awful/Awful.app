@@ -921,8 +921,6 @@
 		F432C2D1173456C600012A88 /* SFHFKeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = F432C2CD173456C600012A88 /* SFHFKeychainUtils.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		F432C2D61734570600012A88 /* AwfulPocketHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F432C2D51734570600012A88 /* AwfulPocketHelper.m */; };
 		F432C2D91734572000012A88 /* AwfulPocketStatusTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = F432C2D81734572000012A88 /* AwfulPocketStatusTransformer.m */; };
-		F432C2DC1734576000012A88 /* pocket.png in Resources */ = {isa = PBXBuildFile; fileRef = F432C2DA1734576000012A88 /* pocket.png */; };
-		F432C2DD1734576000012A88 /* pocket@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F432C2DB1734576000012A88 /* pocket@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1961,8 +1959,6 @@
 		F432C2D51734570600012A88 /* AwfulPocketHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AwfulPocketHelper.m; path = PocketHelper/AwfulPocketHelper.m; sourceTree = "<group>"; };
 		F432C2D71734572000012A88 /* AwfulPocketStatusTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPocketStatusTransformer.h; sourceTree = "<group>"; };
 		F432C2D81734572000012A88 /* AwfulPocketStatusTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPocketStatusTransformer.m; sourceTree = "<group>"; };
-		F432C2DA1734576000012A88 /* pocket.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pocket.png; sourceTree = "<group>"; };
-		F432C2DB1734576000012A88 /* pocket@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pocket@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2206,8 +2202,6 @@
 				1C28B364172A14A400254EE7 /* jump-to-last-page@2x.png */,
 				1C28B366172A151B00254EE7 /* mark-as-unread@2x.png */,
 				1CAAE105172C652100D2AE6E /* mark-read-up-to-here@2x.png */,
-				F432C2DA1734576000012A88 /* pocket.png */,
-				F432C2DB1734576000012A88 /* pocket@2x.png */,
 				1CAAE103172C09EF00D2AE6E /* quote-post@2x.png */,
 				1C28B360172A119B00254EE7 /* remove-bookmark@2x.png */,
 				1CAAE107172C658F00D2AE6E /* send-private-message@2x.png */,
@@ -4323,8 +4317,6 @@
 				1CBEE2401732F3BE00C4884A /* tabbar-divider@2x.png in Resources */,
 				1CBEE2421732F78E00C4884A /* tabbar-selected@2x.png in Resources */,
 				1CBEE2441732F85000C4884A /* tabbar-selected.png in Resources */,
-				F432C2DC1734576000012A88 /* pocket.png in Resources */,
-				F432C2DD1734576000012A88 /* pocket@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

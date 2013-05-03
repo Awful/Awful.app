@@ -496,14 +496,6 @@
         [vote addCancelButtonWithTitle:@"Cancel"];
         [vote showFromRect:rect inView:view animated:YES];
     }]];
-    if ([AwfulPocketHelper isLoggedIn]) {
-        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypePocket action:^{
-            NSString *threadURL = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
-                                   "showthread.php?threadid=%@&perpage=40&pagenumber=%@",
-                                   self.thread.threadID, @(self.currentPage)];
-            [AwfulPocketHelper attemptToSaveURL:[NSURL URLWithString:threadURL]];
-        }]];
-    }
     
     AwfulIconActionItemType bookmarkItemType;
     if (self.thread.isBookmarkedValue) {
