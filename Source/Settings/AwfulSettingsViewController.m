@@ -19,6 +19,8 @@
 #import "AwfulSplitViewController.h"
 #import "AwfulTheme.h"
 #import "NSManagedObject+Awful.h"
+#import "PocketAPI.h"
+#import "SVProgressHUD.h"
 #import "UIViewController+NavigationEnclosure.h"
 
 @interface AwfulSettingsViewController ()
@@ -206,12 +208,21 @@ typedef enum SettingType
     
     // Set it up as we like it.
     
-    cell.textLabel.text = setting[@"Title"];
+    if (setting[@"DisplayTransformer"]) {
+        NSValueTransformer *transformer = [NSClassFromString(setting[@"DisplayTransformer"]) new];
+        cell.textLabel.text = [transformer transformedValue:[AwfulSettings settings]];
+    } else {
+        cell.textLabel.text = setting[@"Title"];
+    }
     cell.textLabel.textColor = [AwfulTheme currentTheme].settingsCellTextColor;
     
     if (settingType == ImmutableSetting) {
-        // This only works because there's one immutable setting here.
-        cell.detailTextLabel.text = [AwfulSettings settings].username;
+        NSString *valueID = setting[@"ValueIdentifier"];
+        if ([valueID isEqualToString:@"Username"]) {
+            cell.detailTextLabel.text = [AwfulSettings settings].username;
+        } else if ([valueID isEqualToString:@"PocketUsername"]) {
+            cell.detailTextLabel.text = [AwfulSettings settings].pocketUsername;
+        }
     }
     
     NSString *key = setting[@"Key"];
@@ -332,6 +343,29 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
             [split setSidebarVisible:NO animated:YES];
         } else {
             [self.navigationController pushViewController:page animated:YES];
+        }
+    } else if ([action isEqualToString:@"PocketLogIn"]) {
+        if ([[PocketAPI sharedAPI] isLoggedIn]) {
+            [[PocketAPI sharedAPI] logout];
+            NSRange range = NSMakeRange(indexPath.section, 1);
+            NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
+            [tableView reloadSections:section withRowAnimation:UITableViewRowAnimationNone];
+            [SVProgressHUD showSuccessWithStatus:@"Logged out"];
+        } else {
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+            [[PocketAPI sharedAPI] loginWithHandler: ^(PocketAPI *API, NSError *error){
+                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                if (error != nil) {
+                    [AwfulAlertView showWithTitle:@"Could Not Log in"
+                                            error:error
+                                      buttonTitle:@"Alright"];
+                } else {
+                    NSRange range = NSMakeRange(indexPath.section, 1);
+                    NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
+                    [tableView reloadSections:section withRowAnimation:UITableViewRowAnimationNone];
+                    [SVProgressHUD showSuccessWithStatus:@"Logged in"];
+                }
+            }];
         }
     } else if ([action isEqualToString:@"ShowLicenses"]) {
         AwfulLicensesViewController *licenses = [AwfulLicensesViewController new];

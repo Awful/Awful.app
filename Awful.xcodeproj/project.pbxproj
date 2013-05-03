@@ -915,6 +915,12 @@
 		8CF95CA71653276000060F19 /* gip-money.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF95C831653276000060F19 /* gip-money.png */; };
 		8CF95CA81653276000060F19 /* gip-marines.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF95C841653276000060F19 /* gip-marines.png */; };
 		8CF95CA91653276000060F19 /* gip-airforce.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF95C851653276000060F19 /* gip-airforce.png */; };
+		F432C2CE173456C600012A88 /* PocketAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = F432C2C5173456C600012A88 /* PocketAPI.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F432C2CF173456C600012A88 /* PocketAPILogin.m in Sources */ = {isa = PBXBuildFile; fileRef = F432C2C8173456C600012A88 /* PocketAPILogin.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F432C2D0173456C600012A88 /* PocketAPIOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F432C2CA173456C600012A88 /* PocketAPIOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F432C2D1173456C600012A88 /* SFHFKeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = F432C2CD173456C600012A88 /* SFHFKeychainUtils.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F432C2D61734570600012A88 /* AwfulPocketHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F432C2D51734570600012A88 /* AwfulPocketHelper.m */; };
+		F432C2D91734572000012A88 /* AwfulPocketStatusTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = F432C2D81734572000012A88 /* AwfulPocketStatusTransformer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1939,6 +1945,20 @@
 		8CF95C831653276000060F19 /* gip-money.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gip-money.png"; sourceTree = "<group>"; };
 		8CF95C841653276000060F19 /* gip-marines.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gip-marines.png"; sourceTree = "<group>"; };
 		8CF95C851653276000060F19 /* gip-airforce.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gip-airforce.png"; sourceTree = "<group>"; };
+		F432C2C4173456C600012A88 /* PocketAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PocketAPI.h; path = PocketSDK/PocketAPI.h; sourceTree = "<group>"; };
+		F432C2C5173456C600012A88 /* PocketAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PocketAPI.m; path = PocketSDK/PocketAPI.m; sourceTree = "<group>"; };
+		F432C2C6173456C600012A88 /* PocketAPI+NSOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PocketAPI+NSOperation.h"; path = "PocketSDK/PocketAPI+NSOperation.h"; sourceTree = "<group>"; };
+		F432C2C7173456C600012A88 /* PocketAPILogin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PocketAPILogin.h; path = PocketSDK/PocketAPILogin.h; sourceTree = "<group>"; };
+		F432C2C8173456C600012A88 /* PocketAPILogin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PocketAPILogin.m; path = PocketSDK/PocketAPILogin.m; sourceTree = "<group>"; };
+		F432C2C9173456C600012A88 /* PocketAPIOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PocketAPIOperation.h; path = PocketSDK/PocketAPIOperation.h; sourceTree = "<group>"; };
+		F432C2CA173456C600012A88 /* PocketAPIOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PocketAPIOperation.m; path = PocketSDK/PocketAPIOperation.m; sourceTree = "<group>"; };
+		F432C2CB173456C600012A88 /* PocketAPITypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PocketAPITypes.h; path = PocketSDK/PocketAPITypes.h; sourceTree = "<group>"; };
+		F432C2CC173456C600012A88 /* SFHFKeychainUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SFHFKeychainUtils.h; path = PocketSDK/SFHFKeychainUtils.h; sourceTree = "<group>"; };
+		F432C2CD173456C600012A88 /* SFHFKeychainUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SFHFKeychainUtils.m; path = PocketSDK/SFHFKeychainUtils.m; sourceTree = "<group>"; };
+		F432C2D41734570600012A88 /* AwfulPocketHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AwfulPocketHelper.h; path = PocketHelper/AwfulPocketHelper.h; sourceTree = "<group>"; };
+		F432C2D51734570600012A88 /* AwfulPocketHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AwfulPocketHelper.m; path = PocketHelper/AwfulPocketHelper.m; sourceTree = "<group>"; };
+		F432C2D71734572000012A88 /* AwfulPocketStatusTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPocketStatusTransformer.h; sourceTree = "<group>"; };
+		F432C2D81734572000012A88 /* AwfulPocketStatusTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPocketStatusTransformer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2069,6 +2089,7 @@
 				1C1D2FE0171A87ED00AC6387 /* JLRoutes */,
 				1CE68BDA16F7C62B003D56C9 /* ONHost.h */,
 				1CE68BDB16F7C62B003D56C9 /* ONHost.m */,
+				F432C2C3173456B800012A88 /* PocketSDK */,
 				1C4D7BD6167A5C7C00CF3659 /* PSMenuItem */,
 				1C9FDAD016E4837800C665B5 /* PSTCollectionView */,
 				1C05ED40162299DE00FE567F /* SVProgressHUD */,
@@ -2213,6 +2234,7 @@
 				1C6474A61569989800C72657 /* Models */,
 				1CC7801D1612D988002AF958 /* Networking */,
 				1C05EDAD16230BFE00FE567F /* Parsing */,
+				F432C2D2173456F700012A88 /* Pocket Helper */,
 				1CC780241612D9DD002AF958 /* Posts */,
 				1CB6010616D826DA00CBEE22 /* Private Messages */,
 				1C278A3316453296007D3CEC /* Scrolling and Pulling */,
@@ -2321,6 +2343,8 @@
 				1C277CA41543554700CD2CCE /* AwfulSettingsChoiceViewController.m */,
 				1CE8FDFC1709E534006A3B84 /* AwfulCustomBaseURLTransformer.h */,
 				1CE8FDFD1709E535006A3B84 /* AwfulCustomBaseURLTransformer.m */,
+				F432C2D71734572000012A88 /* AwfulPocketStatusTransformer.h */,
+				F432C2D81734572000012A88 /* AwfulPocketStatusTransformer.m */,
 				1CE8FDFF1709E728006A3B84 /* AwfulSettingsAlternateServerController.h */,
 				1CE8FE001709E728006A3B84 /* AwfulSettingsAlternateServerController.m */,
 				1CFBED061631C068008AF641 /* AwfulLicensesViewController.h */,
@@ -3426,6 +3450,32 @@
 				8CCD536515B783FD00E5893B /* yp-tubes296.png */,
 			);
 			path = "Thread Tags";
+			sourceTree = "<group>";
+		};
+		F432C2C3173456B800012A88 /* PocketSDK */ = {
+			isa = PBXGroup;
+			children = (
+				F432C2C4173456C600012A88 /* PocketAPI.h */,
+				F432C2C5173456C600012A88 /* PocketAPI.m */,
+				F432C2C6173456C600012A88 /* PocketAPI+NSOperation.h */,
+				F432C2C7173456C600012A88 /* PocketAPILogin.h */,
+				F432C2C8173456C600012A88 /* PocketAPILogin.m */,
+				F432C2C9173456C600012A88 /* PocketAPIOperation.h */,
+				F432C2CA173456C600012A88 /* PocketAPIOperation.m */,
+				F432C2CB173456C600012A88 /* PocketAPITypes.h */,
+				F432C2CC173456C600012A88 /* SFHFKeychainUtils.h */,
+				F432C2CD173456C600012A88 /* SFHFKeychainUtils.m */,
+			);
+			name = PocketSDK;
+			sourceTree = "<group>";
+		};
+		F432C2D2173456F700012A88 /* Pocket Helper */ = {
+			isa = PBXGroup;
+			children = (
+				F432C2D41734570600012A88 /* AwfulPocketHelper.h */,
+				F432C2D51734570600012A88 /* AwfulPocketHelper.m */,
+			);
+			name = "Pocket Helper";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -4600,6 +4650,12 @@
 				1C28B34D1729DD3F00254EE7 /* AwfulIconActionSheet.m in Sources */,
 				1C28B3501729DDDA00254EE7 /* AwfulIconActionItem.m in Sources */,
 				1C28B3591729F38400254EE7 /* AwfulIconActionCell.m in Sources */,
+				F432C2CE173456C600012A88 /* PocketAPI.m in Sources */,
+				F432C2CF173456C600012A88 /* PocketAPILogin.m in Sources */,
+				F432C2D0173456C600012A88 /* PocketAPIOperation.m in Sources */,
+				F432C2D1173456C600012A88 /* SFHFKeychainUtils.m in Sources */,
+				F432C2D61734570600012A88 /* AwfulPocketHelper.m in Sources */,
+				F432C2D91734572000012A88 /* AwfulPocketStatusTransformer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

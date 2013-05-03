@@ -70,7 +70,7 @@
             tintColor = [UIColor colorWithHue:0.340 saturation:0.750 brightness:0.690 alpha:1];
             icon = [UIImage imageNamed:@"mark-read-up-to-here"];
             break;
-            
+
         case AwfulIconActionItemTypeQuotePost:
             title = @"Quote";
             tintColor = [UIColor colorWithWhite:0.325 alpha:1];
