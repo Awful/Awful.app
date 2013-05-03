@@ -69,8 +69,16 @@
 
 - (void)settingsDidChange:(NSNotification *)note
 {
-    if (self.userDrivenChange) return;
     NSArray *changedSettings = note.userInfo[AwfulSettingsDidChangeSettingsKey];
+    
+    // Refresh the forum list after changing servers.
+    if ([changedSettings containsObject:AwfulSettingsKeys.useDevDotForums] ||
+        [changedSettings containsObject:AwfulSettingsKeys.customBaseURL]) {
+        self.lastRefresh = nil;
+    }
+    
+    if (self.userDrivenChange) return;
+    
     if ([changedSettings containsObject:AwfulSettingsKeys.favoriteForums]) {
         [self.favoriteForums setArray:[self fetchFavoriteForumsWithIDsFromSettings]];
         [self showOrHideEditButton];
