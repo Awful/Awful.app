@@ -208,7 +208,12 @@ typedef enum SettingType
     
     // Set it up as we like it.
     
-    cell.textLabel.text = setting[@"Title"];
+    if (setting[@"DisplayTransformer"]) {
+        NSValueTransformer *transformer = [NSClassFromString(setting[@"DisplayTransformer"]) new];
+        cell.textLabel.text = [transformer transformedValue:[AwfulSettings settings]];
+    } else {
+        cell.textLabel.text = setting[@"Title"];
+    }
     cell.textLabel.textColor = [AwfulTheme currentTheme].settingsCellTextColor;
     
     if (settingType == ImmutableSetting) {
@@ -275,10 +280,6 @@ typedef enum SettingType
     
     if (settingType == ButtonSetting) {
         cell.textLabel.textAlignment = UITextAlignmentCenter;
-        if (setting[@"DisplayTransformer"]) {
-            NSValueTransformer *transformer = [NSClassFromString(setting[@"DisplayTransformer"]) new];
-            cell.textLabel.text = [transformer transformedValue:[AwfulSettings settings]];
-        }
     } else {
         cell.textLabel.textAlignment = UITextAlignmentLeft;
     }
