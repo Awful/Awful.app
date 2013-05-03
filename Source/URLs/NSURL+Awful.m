@@ -6,6 +6,7 @@
 //
 
 #import "NSURL+Awful.h"
+#import "NSURL+QueryDictionary.h"
 
 @implementation NSURL (Awful)
 
@@ -38,7 +39,10 @@
         // Link to page on specific thread.
         else if (query[@"threadid"] && query[@"pagenumber"]) {
             NSString *extra = @"";
-            if (query[@"userid"]) {
+            
+            // Oftentimes a copied SA URL will have `&userid=0` tacked on, which appears to mean
+            // "don't filter by author". Awful handles this by simply not specifying a userid.
+            if (query[@"userid"] && ![query[@"userid"] isEqualToString:@"0"]) {
                 extra = [NSString stringWithFormat:@"?userid=%@", query[@"userid"]];
             }
             return [NSURL URLWithString:[NSString stringWithFormat:@"awful://threads/%@/pages/%@%@",

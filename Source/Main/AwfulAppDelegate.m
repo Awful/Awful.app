@@ -383,7 +383,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
             if (![top isKindOfClass:[AwfulPostsViewController class]]) continue;
             if ([top.thread.threadID isEqual:params[@"threadID"]]) {
                 if ((page == 0 || page == top.currentPage) &&
-                    top.singleUserID == params[@"userid"]) {
+                    [top.singleUserID isEqualToString:params[@"userID"]]) {
                     if ([maybes count] > 1) {
                         self.tabBarController.selectedViewController = nav;
                     }
@@ -398,7 +398,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         if (page == 0) {
             page = 1;
         }
-        [postsView loadPage:page singleUserID:params[@"userid"]];
+        [postsView loadPage:page singleUserID:params[@"userID"]];
         UINavigationController *nav;
         if (self.splitViewController) {
             nav = (id)self.splitViewController.mainViewController;
