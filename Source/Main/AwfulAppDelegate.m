@@ -32,6 +32,7 @@
 #import "NSURL+Awful.h"
 #import "NSURL+Punycode.h"
 #import "NSManagedObject+Awful.h"
+#import "PocketAPI.h"
 #import "SVProgressHUD.h"
 #import "UIViewController+AwfulTheming.h"
 #import "UIViewController+NavigationEnclosure.h"
@@ -82,6 +83,9 @@ static id _instance;
     // Reset all preferences.
     NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
     [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
+    
+    // Clear any stored logins for other services
+    [[PocketAPI sharedAPI] logout];
     
     // Delete cached post info. The next user might see things differently than the one logging out.
     // And this lets logging out double as a "delete all data" button.
@@ -237,6 +241,10 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
                        name:AwfulThemeDidChangeNotification object:nil];
     [noteCenter addObserver:self selector:@selector(settingsDidChange:)
                        name:AwfulSettingsDidChangeNotification object:nil];
+    
+    [[PocketAPI sharedAPI] setURLScheme:@"awful"];
+    [[PocketAPI sharedAPI] setConsumerKey:@"13890-9e69d4d40af58edc2ef13ca0"];
+    
     return YES;
 }
 
@@ -314,6 +322,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
   sourceApplication:(NSString *)sourceApplication
          annotation:(id)annotation
 {
+    if ([[PocketAPI sharedAPI] handleOpenURL:url]) return YES;
     if ([[url scheme] compare:@"awful" options:NSCaseInsensitiveSearch] != NSOrderedSame) return NO;
     if (![AwfulHTTPClient client].loggedIn) return NO;
     return [JLRoutes routeURL:url];

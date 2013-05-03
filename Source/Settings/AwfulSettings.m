@@ -6,6 +6,7 @@
 //
 
 #import "AwfulSettings.h"
+#import "PocketAPI.h"
 
 @interface AwfulSettings ()
 
@@ -305,6 +306,15 @@ struct {
 - (void)setUserID:(NSString *)userID
 {
     self[AwfulSettingsKeys.userID] = userID;
+}
+
+- (NSString *)pocketUsername
+{
+    if ([[PocketAPI sharedAPI] isLoggedIn]) {
+        return [[PocketAPI sharedAPI] username];
+    } else {
+        return @"[Not logged in]";
+    }
 }
 
 BOOL_PROPERTY(canSendPrivateMessages, setCanSendPrivateMessages)

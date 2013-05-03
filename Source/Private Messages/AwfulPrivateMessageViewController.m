@@ -15,6 +15,7 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulImagePreviewViewController.h"
 #import "AwfulModels.h"
+#import "AwfulPocketHelper.h"
 #import "AwfulPostsView.h"
 #import "AwfulPrivateMessageComposeViewController.h"
 #import "AwfulSettings.h"
@@ -238,6 +239,11 @@
         if (![browser canOpenURL:url]) continue;
         [sheet addButtonWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title]
                             block:^{ [browser openURL:url]; }];
+    }
+    if ([AwfulPocketHelper isLoggedIn]) {
+        [sheet addButtonWithTitle:@"Save to Pocket" block:^{
+            [AwfulPocketHelper attemptToSaveURL:url];
+        }];
     }
     [sheet addButtonWithTitle:@"Copy URL" block:^{
         [UIPasteboard generalPasteboard].items = @[ @{

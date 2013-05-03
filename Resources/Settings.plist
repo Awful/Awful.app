@@ -202,6 +202,27 @@
 			</array>
 		</dict>
 		<dict>
+			<key>Title</key>
+			<string>Pocket</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Logged In As</string>
+					<key>ValueIdentifier</key>
+					<string>PocketUsername</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Log In</string>
+					<key>Action</key>
+					<string>PocketLogIn</string>
+					<key>DisplayTransformer</key>
+					<string>AwfulPocketStatusTransformer</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
 			<key>Explanation</key>
 			<string>Awful uses these third-party libraries.</string>
 			<key>Settings</key>

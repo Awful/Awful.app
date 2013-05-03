@@ -20,6 +20,7 @@
 #import "AwfulPageBottomBar.h"
 #import "AwfulPageTopBar.h"
 #import "AwfulPlainBarButtonItem.h"
+#import "AwfulPocketHelper.h"
 #import "AwfulPostsView.h"
 #import "AwfulPostsViewSettingsController.h"
 #import "AwfulProfileViewController.h"
@@ -495,6 +496,7 @@
         [vote addCancelButtonWithTitle:@"Cancel"];
         [vote showFromRect:rect inView:view animated:YES];
     }]];
+    
     AwfulIconActionItemType bookmarkItemType;
     if (self.thread.isBookmarkedValue) {
         bookmarkItemType = AwfulIconActionItemTypeRemoveBookmark;
@@ -1075,6 +1077,11 @@ static char KVOContext;
         if (![browser canOpenURL:url]) continue;
         [sheet addButtonWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title]
                             block:^{ [browser openURL:url]; }];
+    }
+    if ([AwfulPocketHelper isLoggedIn]) {
+        [sheet addButtonWithTitle:@"Save to Pocket" block:^{
+            [AwfulPocketHelper attemptToSaveURL:url];
+        }];
     }
     [sheet addButtonWithTitle:@"Copy URL" block:^{
         [UIPasteboard generalPasteboard].items = @[ @{
