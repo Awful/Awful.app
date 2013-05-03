@@ -71,6 +71,12 @@
             icon = [UIImage imageNamed:@"mark-read-up-to-here"];
             break;
             
+        case AwfulIconActionItemTypePocket:
+            title = @"Save to Pocket";
+            tintColor = [UIColor colorWithHue:0.981 saturation:0.74 brightness:0.94 alpha:1];
+            icon = [UIImage imageNamed:@"pocket"];
+            break;
+
         case AwfulIconActionItemTypeQuotePost:
             title = @"Quote";
             tintColor = [UIColor colorWithWhite:0.325 alpha:1];

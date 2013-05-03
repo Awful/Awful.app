@@ -42,6 +42,8 @@ typedef NS_ENUM(NSInteger, AwfulFirstTab) {
 
 @property (copy, nonatomic) NSString *userID;
 
+@property (nonatomic, readonly) NSString *pocketUsername;
+
 @property (assign, nonatomic) BOOL canSendPrivateMessages;
 
 @property (assign, nonatomic) BOOL showThreadTags;

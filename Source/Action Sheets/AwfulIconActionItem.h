@@ -17,6 +17,7 @@ typedef NS_ENUM(NSInteger, AwfulIconActionItemType)
     AwfulIconActionItemTypeJumpToLastPage,
     AwfulIconActionItemTypeMarkAsUnread,
     AwfulIconActionItemTypeMarkReadUpToHere,
+    AwfulIconActionItemTypePocket,
     AwfulIconActionItemTypeQuotePost,
     AwfulIconActionItemTypeRemoveBookmark,
     AwfulIconActionItemTypeSendPrivateMessage,

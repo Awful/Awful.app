@@ -8,6 +8,7 @@
 #import "AwfulBrowserViewController.h"
 #import "AwfulActionSheet.h"
 #import "AwfulExternalBrowser.h"
+#import "AwfulPocketHelper.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "AwfulThemingViewController.h"
@@ -39,6 +40,11 @@
         if (![browser canOpenURL:url]) continue;
         [sheet addButtonWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title]
                             block:^{ [browser openURL:url]; }];
+    }
+    if ([AwfulPocketHelper isLoggedIn]) {
+        [sheet addButtonWithTitle:@"Save to Pocket" block:^{
+            [AwfulPocketHelper attemptToSaveURL:url];
+        }];
     }
     [sheet addButtonWithTitle:@"Copy URL" block:^{
         NSURL *url = self.webView.request.URL;
