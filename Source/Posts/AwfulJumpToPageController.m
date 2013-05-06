@@ -9,7 +9,6 @@
 
 @interface SpecificTopBarView : UIView
 
-@property (weak, nonatomic) UISegmentedControl *firstLastControl;
 @property (weak, nonatomic) UIButton *jumpButton;
 
 @end
@@ -71,8 +70,6 @@
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
     SpecificTopBarView *topBar = [[SpecificTopBarView alloc] initWithFrame:CGRectMake(0, 0, 320, 38)];
     topBar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
-    [topBar.firstLastControl addTarget:self action:@selector(didTapFirstLastControl:)
-                      forControlEvents:UIControlEventValueChanged];
     [topBar.jumpButton addTarget:self action:@selector(didTapJumpToPage)
                 forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:topBar];
@@ -85,15 +82,6 @@
     [self.view addSubview:picker];
 }
 
-- (void)didTapFirstLastControl:(UISegmentedControl *)seg
-{
-    if (seg.selectedSegmentIndex == 0) {
-        [self.delegate jumpToPageController:self didSelectPage:1];
-    } else if (seg.selectedSegmentIndex == 1) {
-        [self.delegate jumpToPageController:self didSelectPage:AwfulThreadPageLast];
-    }
-    seg.selectedSegmentIndex = UISegmentedControlNoSegment;
-}
 
 - (void)didTapJumpToPage
 {
@@ -138,39 +126,13 @@
                      resizableImageWithCapInsets:UIEdgeInsetsZero];
     self.backgroundColor = [UIColor colorWithPatternImage:back];
     
-    UIImage *button = [[UIImage imageNamed:@"pagebar-button.png"]
-                       resizableImageWithCapInsets:UIEdgeInsetsMake(0, 3, 0, 3)];
-    UIImage *selected = [[UIImage imageNamed:@"pagebar-button-selected.png"]
-                         resizableImageWithCapInsets:UIEdgeInsetsMake(0, 3, 0, 3)];
-    
-    UISegmentedControl *firstLastControl = [[UISegmentedControl alloc]
-                                            initWithItems:@[ @"First", @"Last" ]];
-    CGSize contentOffset = CGSizeMake(0, 1);
-    for (NSUInteger i = 0; i < firstLastControl.numberOfSegments; i++) {
-        [firstLastControl setContentOffset:contentOffset forSegmentAtIndex:i];
-    }
-    NSDictionary *titleAttributes = @{
-                                      UITextAttributeFont: [UIFont boldSystemFontOfSize:11],
-                                      UITextAttributeTextColor: [UIColor whiteColor],
-                                      UITextAttributeTextShadowOffset: [NSValue valueWithUIOffset:UIOffsetZero],
-                                      };
-    [firstLastControl setTitleTextAttributes:titleAttributes forState:UIControlStateNormal];
-    [firstLastControl setBackgroundImage:button
-                                forState:UIControlStateNormal
-                              barMetrics:UIBarMetricsDefault];
-    [firstLastControl setBackgroundImage:selected
-                                forState:UIControlStateSelected
-                              barMetrics:UIBarMetricsDefault];
-    [firstLastControl setDividerImage:[UIImage imageNamed:@"pagebar-segmented-divider.png"]
-                  forLeftSegmentState:UIControlStateNormal
-                    rightSegmentState:UIControlStateNormal
-                           barMetrics:UIBarMetricsDefault];
-    [self addSubview:firstLastControl];
-    _firstLastControl = firstLastControl;
-    
     UIButton *jumpButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [jumpButton setTitle:@"Jump to Page" forState:UIControlStateNormal];
+    UIImage *button = [[UIImage imageNamed:@"pagebar-button.png"]
+                       resizableImageWithCapInsets:UIEdgeInsetsMake(0, 3, 0, 3)];
     [jumpButton setBackgroundImage:button forState:UIControlStateNormal];
+    UIImage *selected = [[UIImage imageNamed:@"pagebar-button-selected.png"]
+                         resizableImageWithCapInsets:UIEdgeInsetsMake(0, 3, 0, 3)];
     [jumpButton setBackgroundImage:selected forState:UIControlStateSelected];
     jumpButton.titleLabel.font = [UIFont boldSystemFontOfSize:11];
     [self addSubview:jumpButton];
@@ -180,15 +142,6 @@
 
 - (void)layoutSubviews
 {
-    CGRect segFrame = self.firstLastControl.frame;
-    segFrame.origin.x = 7;
-    segFrame.size.width = 115;
-    segFrame.size.height = 29;
-    self.firstLastControl.frame = segFrame;
-    self.firstLastControl.center = CGPointMake(self.firstLastControl.center.x,
-                                               CGRectGetMidY(self.bounds));
-    self.firstLastControl.frame = CGRectIntegral(self.firstLastControl.frame);
-    
     CGRect buttonFrame = self.jumpButton.frame;
     buttonFrame.size.width = 115;
     buttonFrame.size.height = 29;
