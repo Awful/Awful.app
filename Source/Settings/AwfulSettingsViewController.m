@@ -381,7 +381,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                     [self reloadSections];
                     [tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section]
                              withRowAnimation:UITableViewRowAnimationNone];
-                    [SVProgressHUD showSuccessWithStatus:@"Logged in"];
+                    [SVProgressHUD showSuccessWithStatus:@"Logged in to Pocket"];
                 }
             }];
         }
