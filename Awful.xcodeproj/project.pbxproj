@@ -2234,7 +2234,7 @@
 				1C6474A61569989800C72657 /* Models */,
 				1CC7801D1612D988002AF958 /* Networking */,
 				1C05EDAD16230BFE00FE567F /* Parsing */,
-				F432C2D2173456F700012A88 /* Pocket Helper */,
+				F432C2D2173456F700012A88 /* Pocket */,
 				1CC780241612D9DD002AF958 /* Posts */,
 				1CB6010616D826DA00CBEE22 /* Private Messages */,
 				1C278A3316453296007D3CEC /* Scrolling and Pulling */,
@@ -3469,13 +3469,13 @@
 			name = PocketSDK;
 			sourceTree = "<group>";
 		};
-		F432C2D2173456F700012A88 /* Pocket Helper */ = {
+		F432C2D2173456F700012A88 /* Pocket */ = {
 			isa = PBXGroup;
 			children = (
 				F432C2D41734570600012A88 /* AwfulPocketHelper.h */,
 				F432C2D51734570600012A88 /* AwfulPocketHelper.m */,
 			);
-			name = "Pocket Helper";
+			name = Pocket;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
