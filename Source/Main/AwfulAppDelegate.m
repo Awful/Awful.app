@@ -242,7 +242,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     [noteCenter addObserver:self selector:@selector(settingsDidChange:)
                        name:AwfulSettingsDidChangeNotification object:nil];
     
-    [[PocketAPI sharedAPI] setURLScheme:@"awful"];
+    [[PocketAPI sharedAPI] setURLScheme:@"awful-pocket-login"];
     [[PocketAPI sharedAPI] setConsumerKey:@"13890-9e69d4d40af58edc2ef13ca0"];
     
     return YES;
@@ -581,10 +581,11 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
  didLogInAsUserWithInfo:(NSDictionary *)userInfo
 {
     NSString *appVersion = [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"];
-    [AwfulSettings settings].lastForcedUserInfoUpdateVersion = appVersion;
-    [AwfulSettings settings].username = userInfo[@"username"];
-    [AwfulSettings settings].userID = userInfo[@"userID"];
-    [AwfulSettings settings].canSendPrivateMessages = [userInfo[@"canSendPrivateMessages"] boolValue];
+    AwfulSettings *settings = [AwfulSettings settings];
+    settings.lastForcedUserInfoUpdateVersion = appVersion;
+    settings.username = userInfo[@"username"];
+    settings.userID = userInfo[@"userID"];
+    settings.canSendPrivateMessages = [userInfo[@"canSendPrivateMessages"] boolValue];
     [self.window.rootViewController dismissViewControllerAnimated:YES completion:^{
         [[AwfulHTTPClient client] listForumsAndThen:nil];
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
