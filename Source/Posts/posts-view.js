@@ -878,7 +878,7 @@ function regexEscape(s) {
 }
 
 function fixVimeoEmbeds(post) {
-  $('div.bbcode_video object param[value^="http://vimeo.com"]').each(function(){
+  $(post).find('div.bbcode_video object param[value^="http://vimeo.com"]').each(function(){
     var videoID = $(this).attr('value').match(/clip_id=(\d+)/)
     if (videoID === null) return
     videoID = videoID[1]
