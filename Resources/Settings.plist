@@ -211,6 +211,8 @@
 					<string>Logged In As</string>
 					<key>ValueIdentifier</key>
 					<string>PocketUsername</string>
+					<key>PredicateKeyPath</key>
+					<string>isLoggedInToPocket</string>
 				</dict>
 				<dict>
 					<key>Title</key>

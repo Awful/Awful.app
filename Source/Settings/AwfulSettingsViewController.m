@@ -49,6 +49,13 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+#pragma mark - Settings predicates
+
+- (BOOL)isLoggedInToPocket
+{
+    return [PocketAPI sharedAPI].isLoggedIn;
+}
+
 #pragma mark - AwfulTableViewController
 
 - (BOOL)canPullToRefresh
@@ -70,11 +77,13 @@
         if (error) {
             NSLog(@"failed refreshing user info: %@", error);
         } else {
-            NSString *appVersion = [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"];
+            NSString *appVersion = [[NSBundle mainBundle]
+                                    infoDictionary][@"CFBundleShortVersionString"];
             [AwfulSettings settings].lastForcedUserInfoUpdateVersion = appVersion;
             [AwfulSettings settings].username = userInfo[@"username"];
             [AwfulSettings settings].userID = userInfo[@"userID"];
-            [AwfulSettings settings].canSendPrivateMessages = [userInfo[@"canSendPrivateMessages"] boolValue];
+            [AwfulSettings settings].canSendPrivateMessages = [userInfo[@"canSendPrivateMessages"]
+                                                               boolValue];
             [self.tableView reloadData];
             self.refreshing = NO;
         }
@@ -115,7 +124,15 @@
         if (section[@"VisibleInSettingsTab"] && ![section[@"VisibleInSettingsTab"] boolValue]) {
             continue;
         }
-        [sections addObject:section];
+        NSMutableDictionary *filteredSection = [section mutableCopy];
+        NSArray *settings = filteredSection[@"Settings"];
+        NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(NSDictionary *setting, id _)
+        {
+            if (!setting[@"PredicateKeyPath"]) return YES;
+            return [[self valueForKeyPath:setting[@"PredicateKeyPath"]] boolValue];
+        }];
+        filteredSection[@"Settings"] = [settings filteredArrayUsingPredicate:predicate];
+        [sections addObject:filteredSection];
     }
     self.sections = sections;
 }
@@ -239,11 +256,12 @@ typedef enum SettingType
         }
         switchView.tag = tag;
     } else if (settingType == ChoiceSetting) {
-        AwfulDisclosureIndicatorView *disclosure = (AwfulDisclosureIndicatorView *)cell.accessoryView;
+        AwfulDisclosureIndicatorView *disclosure = (id)cell.accessoryView;
         disclosure.color = [AwfulTheme currentTheme].disclosureIndicatorColor;
         disclosure.highlightedColor = [AwfulTheme currentTheme].disclosureIndicatorHighlightedColor;
         if (setting[@"DisplayTransformer"]) {
-            NSValueTransformer *transformer = [NSClassFromString(setting[@"DisplayTransformer"]) new];
+            NSValueTransformer *transformer = [NSClassFromString(setting[@"DisplayTransformer"])
+                                               new];
             cell.detailTextLabel.text = [transformer transformedValue:[AwfulSettings settings]];
         } else {
             for (NSDictionary *choice in setting[@"Choices"]) {
@@ -347,9 +365,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     } else if ([action isEqualToString:@"PocketLogIn"]) {
         if ([[PocketAPI sharedAPI] isLoggedIn]) {
             [[PocketAPI sharedAPI] logout];
-            NSRange range = NSMakeRange(indexPath.section, 1);
-            NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
-            [tableView reloadSections:section withRowAnimation:UITableViewRowAnimationNone];
+            [self reloadSections];
+            [tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section]
+                     withRowAnimation:UITableViewRowAnimationNone];
             [SVProgressHUD showSuccessWithStatus:@"Logged out"];
         } else {
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
@@ -360,9 +378,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                                             error:error
                                       buttonTitle:@"Alright"];
                 } else {
-                    NSRange range = NSMakeRange(indexPath.section, 1);
-                    NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
-                    [tableView reloadSections:section withRowAnimation:UITableViewRowAnimationNone];
+                    [self reloadSections];
+                    [tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section]
+                             withRowAnimation:UITableViewRowAnimationNone];
                     [SVProgressHUD showSuccessWithStatus:@"Logged in"];
                 }
             }];
