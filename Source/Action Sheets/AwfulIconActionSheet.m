@@ -134,9 +134,9 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 - (void)loadView
 {
     PSUICollectionViewFlowLayout *layout = [PSUICollectionViewFlowLayout new];
-    layout.itemSize = CGSizeMake(64, 90);
+    layout.itemSize = CGSizeMake(70, 90);
     layout.sectionInset = SectionInsets;
-    layout.minimumInteritemSpacing = 30;
+    layout.minimumInteritemSpacing = 27;
     layout.minimumLineSpacing = 12;
     PSUICollectionView *collectionView;
     collectionView = [[PSUICollectionView alloc] initWithFrame:CGRectMake(0, 0, 320, 215)

@@ -468,17 +468,19 @@
 - (void)showThreadActionsFromRect:(CGRect)rect inView:(UIView *)view
 {
     AwfulIconActionSheet *sheet = [AwfulIconActionSheet new];
-    sheet.title = [self.thread.title stringByCollapsingWhitespace];
-    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
+    AwfulIconActionItem *copyURL = [AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL
+                                                              action:^{
         NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
                          "showthread.php?threadid=%@&perpage=40&pagenumber=%@",
                          self.thread.threadID, @(self.currentPage)];
         [AwfulSettings settings].lastOfferedPasteboardURL = url;
         [UIPasteboard generalPasteboard].items = @[ @{
-            (id)kUTTypeURL: [NSURL URLWithString:url],
-            (id)kUTTypePlainText: url
-        }];
-    }]];
+                                                        (id)kUTTypeURL: [NSURL URLWithString:url],
+                                                        (id)kUTTypePlainText: url
+                                                        }];
+    }];
+    copyURL.title = @"Copy Thread URL";
+    [sheet addItem:copyURL];
     [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeVote action:^{
         AwfulActionSheet *vote = [AwfulActionSheet new];
         for (int i = 5; i >= 1; i--) {
