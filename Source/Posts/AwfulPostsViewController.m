@@ -534,7 +534,7 @@
             [self loadPage:AwfulThreadPageLast singleUserID:self.singleUserID];
         }]];
     }
-    [sheet presentFromViewController:self fromRect:rect inView:view];
+    [sheet presentFromViewController:self.view.window.rootViewController fromRect:rect inView:view];
 }
 
 - (void)showProfileWithUser:(AwfulUser *)user
