@@ -98,9 +98,6 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath
                          fromRect:(CGRect)rect
                            inView:(UIView *)view
 {
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        self.coverView.backgroundColor = nil;
-    }
     PSUICollectionViewFlowLayout *layout = (id)self.collectionView.collectionViewLayout;
     CGRect frame = self.view.frame;
     frame.size.height = 225;

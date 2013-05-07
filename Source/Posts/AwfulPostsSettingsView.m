@@ -32,9 +32,7 @@
 {
     if (!(self = [super initWithFrame:frame])) return nil;
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
-    self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.6];
-    self.layer.shadowOffset = CGSizeMake(0, -3);
-    self.layer.shadowOpacity = 1;
+    self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.8];
     self.clipsToBounds = NO;
     
     #define AddAndSetSubview(viewClass, ivar) do { \

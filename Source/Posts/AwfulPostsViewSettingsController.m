@@ -26,14 +26,6 @@
 
 #pragma mark - AwfulSemiModalViewController
 
-- (void)presentFromViewController:(UIViewController *)viewController
-                         fromRect:(CGRect)rect
-                           inView:(UIView *)view
-{
-    self.coverView.backgroundColor = nil;
-    [super presentFromViewController:viewController fromRect:rect inView:view];
-}
-
 - (void)userDismiss
 {
     [self.delegate userDidDismissPostsViewSettings:self];
