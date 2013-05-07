@@ -534,7 +534,7 @@
             [self loadPage:AwfulThreadPageLast singleUserID:self.singleUserID];
         }]];
     }
-    [sheet presentFromViewController:self.view.window.rootViewController fromRect:rect inView:view];
+    [sheet presentFromViewController:self fromRect:rect inView:view];
 }
 
 - (void)showProfileWithUser:(AwfulUser *)user
@@ -710,10 +710,9 @@
                                   initWithContentViewController:jump];
         self.jumpToPagePopover.delegate = self;
     }
-    UIView *presentingView = self.bottomBar.jumpToPageButton;
-    [self.jumpToPagePopover presentPopoverFromRect:presentingView.bounds
-                                            inView:presentingView
-                                          animated:NO];
+    CGRect rect = [self.view convertRect:self.bottomBar.jumpToPageButton.bounds
+                                fromView:self.bottomBar.jumpToPageButton];
+    [self.jumpToPagePopover presentPopoverFromRect:rect inView:self.view animated:NO];
 }
 
 - (void)didTapActionFontSizeControl:(UISegmentedControl *)seg
@@ -721,12 +720,12 @@
     CGRect rect = seg.bounds;
     rect.size.width /= 2;
     rect.origin.x += CGRectGetWidth(rect) * seg.selectedSegmentIndex;
+    UIView *inView = seg;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        inView = self.bottomBar;
+        rect = inView.bounds;
+    }
     if (seg.selectedSegmentIndex == 0) {
-        UIView *inView = seg;
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-            inView = self.bottomBar;
-            rect = inView.bounds;
-        }
         [self showThreadActionsFromRect:rect inView:inView];
     } else if (seg.selectedSegmentIndex == 1) {
         if (self.settingsViewController) {
@@ -742,7 +741,9 @@
             } else if ([self.thread.forum.forumID isEqualToString:@"219"]) {
                 self.settingsViewController.availableThemes = AwfulPostsViewSettingsControllerThemesYOSPOS;
             }
-            [self.settingsViewController presentFromViewController:self fromRect:rect inView:seg];
+            [self.settingsViewController presentFromViewController:self
+                                                          fromRect:rect
+                                                            inView:inView];
         }
     }
     seg.selectedSegmentIndex = UISegmentedControlNoSegment;

@@ -7,6 +7,7 @@
 //
 
 #import "AwfulPopoverController.h"
+#import "AwfulScreenCoverView.h"
 
 // Draws a popover on behalf of an AwfulPopoverController.
 @interface AwfulPopoverView : UIView
@@ -20,8 +21,8 @@
 @interface AwfulPopoverController ()
 
 @property (nonatomic) UIViewController *contentViewController;
-@property (weak, nonatomic) AwfulPopoverView *popoverView;
-@property (weak, nonatomic) UIView *coverView;
+@property (nonatomic) AwfulScreenCoverView *coverView;
+@property (nonatomic) AwfulPopoverView *popoverView;
 
 @end
 
@@ -44,32 +45,25 @@
                         inView:(UIView *)view
                       animated:(BOOL)animated
 {
-    UIView *windowContentView = self.coverView.superview ?: [view.window.subviews lastObject];
-    
-    if (!self.coverView) {
+    if (!self.popoverView) {
         CGSize contentSize = self.contentViewController.contentSizeForViewInPopover;
-        AwfulPopoverView *popover = [[AwfulPopoverView alloc] initWithContentSize:contentSize];
-        self.popoverView = popover;
+        self.popoverView = [[AwfulPopoverView alloc] initWithContentSize:contentSize];
         [self.popoverView addSubview:self.contentViewController.view];
-        UIView *coverView = [[UIView alloc] initWithFrame:windowContentView.bounds];
-        self.coverView = coverView;
-        self.coverView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
-                                           UIViewAutoresizingFlexibleHeight);
-        UITapGestureRecognizer *tap = [UITapGestureRecognizer new];
-        [tap addTarget:self action:@selector(didTapCoverView)];
-        [self.coverView addGestureRecognizer:tap];
+    }
+    if (!self.coverView) {
+        self.coverView = [[AwfulScreenCoverView alloc] initWithWindow:view.window];
+        [self.coverView setTarget:self action:@selector(didTapCoverView)];
+        self.coverView.passthroughViews = @[ self.popoverView ];
     }
     
-    CGRect rectInCoverView = [windowContentView convertRect:rect fromView:view];
     CGRect popoverFrame = self.popoverView.frame;
-    popoverFrame.origin.x = CGRectGetMidX(rectInCoverView) - (CGRectGetWidth(popoverFrame) / 2);
-    popoverFrame.origin.y = CGRectGetMinY(rectInCoverView) - CGRectGetHeight(popoverFrame);
+    popoverFrame.origin.x = CGRectGetMidX(rect) - (CGRectGetWidth(popoverFrame) / 2);
+    popoverFrame.origin.y = CGRectGetMinY(rect) - CGRectGetHeight(popoverFrame);
     self.popoverView.frame = popoverFrame;
     
-    if (!self.coverView.superview) {
+    if (!self.popoverView.superview) {
         [self.contentViewController viewWillAppear:animated];
-        [self.coverView addSubview:self.popoverView];
-        [windowContentView addSubview:self.coverView];
+        [view addSubview:self.popoverView];
         [self.contentViewController viewDidAppear:animated];
     }
 }
@@ -83,7 +77,9 @@
 - (void)dismissPopoverAnimated:(BOOL)animated
 {
     [self.contentViewController viewWillDisappear:animated];
+    [self.popoverView removeFromSuperview];
     [self.coverView removeFromSuperview];
+    self.coverView = nil;
     [self.contentViewController viewDidDisappear:animated];
 }
 

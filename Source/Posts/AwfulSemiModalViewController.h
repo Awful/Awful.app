@@ -35,8 +35,4 @@
 // The popover the semi-modal view is currently being shown in.
 @property (readonly, nonatomic) UIPopoverController *popover;
 
-// The view covering the background on iPhone; its alpha is animated from 0 to 0.5 as the semi-
-// modal view appears. By default its background color is black.
-@property (readonly, nonatomic) UIView *coverView;
-
 @end

@@ -7,11 +7,12 @@
 //
 
 #import "AwfulSemiModalViewController.h"
+#import "AwfulScreenCoverView.h"
 
 @interface AwfulSemiModalViewController () <UIPopoverControllerDelegate>
 
 @property (nonatomic) UIPopoverController *popover;
-@property (nonatomic) UIView *coverView;
+@property (nonatomic) AwfulScreenCoverView *coverView;
 @property (weak, nonatomic) UIView *viewPresentingPopover;
 @property (nonatomic) CGRect rectInViewPresentingPopover;
 
@@ -69,45 +70,28 @@
                                    atopRect:(CGRect)rect
                                      inView:(UIView *)view
 {
-    UIView *backView = viewController.view;
-    self.coverView.frame = (CGRect){ .size = backView.bounds.size };
-    self.coverView.alpha = 0;
-    UITapGestureRecognizer *tap = [UITapGestureRecognizer new];
-    [tap addTarget:self action:@selector(didTapCoverView:)];
-    [self.coverView addGestureRecognizer:tap];
+    self.coverView = [[AwfulScreenCoverView alloc] initWithWindow:view.window];
+    self.coverView.passthroughViews = @[ self.view ];
+    [self.coverView setTarget:self action:@selector(didTapCoverView)];
+    UIView *backView = view.superview;
     // (Ab)use the view controller container to keep us around, and so we rotate.
     [viewController addChildViewController:self];
+    CGRect localBackViewRect = [backView convertRect:rect fromView:view];
     self.view.frame = (CGRect){
-        .origin.y = CGRectGetMaxY(backView.bounds),
+        .origin.y = CGRectGetMinY(localBackViewRect),
         .size.width = CGRectGetWidth(backView.bounds),
         .size.height = CGRectGetHeight(self.view.frame),
     };
-    [backView addSubview:self.coverView];
-    [backView addSubview:self.view];
+    [backView insertSubview:self.view belowSubview:view];
     [self didMoveToParentViewController:viewController];
     [UIView animateWithDuration:0.3 animations:^{
-        self.coverView.alpha = 0.5;
-        self.view.frame = CGRectOffset(self.view.frame, 0,
-                                       -CGRectGetHeight(self.view.frame) - CGRectGetHeight(rect));
+        self.view.frame = CGRectOffset(self.view.frame, 0, -CGRectGetHeight(self.view.frame));
     }];
 }
 
-- (UIView *)coverView
+- (void)didTapCoverView
 {
-    if (!_coverView) {
-        _coverView = [UIView new];
-        _coverView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
-                                       UIViewAutoresizingFlexibleHeight);
-        _coverView.backgroundColor = [UIColor blackColor];
-    }
-    return _coverView;
-}
-
-- (void)didTapCoverView:(UITapGestureRecognizer *)tap
-{
-    if (tap.state == UIGestureRecognizerStateEnded) {
-        [self userDismiss];
-    }
+    [self userDismiss];
 }
 
 - (void)userDismiss
