@@ -27,7 +27,7 @@
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         [self presentInPopoverFromRect:rect inView:view];
     } else {
-        [self slideUpFromBottomOverViewController:viewController];
+        [self slideUpFromBottomOverViewController:viewController atopRect:rect inView:view];
     }
 }
 
@@ -66,6 +66,8 @@
 }
 
 - (void)slideUpFromBottomOverViewController:(UIViewController *)viewController
+                                   atopRect:(CGRect)rect
+                                     inView:(UIView *)view
 {
     UIView *backView = viewController.view;
     self.coverView.frame = (CGRect){ .size = backView.bounds.size };
@@ -85,7 +87,8 @@
     [self didMoveToParentViewController:viewController];
     [UIView animateWithDuration:0.3 animations:^{
         self.coverView.alpha = 0.5;
-        self.view.frame = CGRectOffset(self.view.frame, 0, -CGRectGetHeight(self.view.frame));
+        self.view.frame = CGRectOffset(self.view.frame, 0,
+                                       -CGRectGetHeight(self.view.frame) - CGRectGetHeight(rect));
     }];
 }
 

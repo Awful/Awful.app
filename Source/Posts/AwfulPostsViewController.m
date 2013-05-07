@@ -722,7 +722,12 @@
     rect.size.width /= 2;
     rect.origin.x += CGRectGetWidth(rect) * seg.selectedSegmentIndex;
     if (seg.selectedSegmentIndex == 0) {
-        [self showThreadActionsFromRect:rect inView:seg];
+        UIView *inView = seg;
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            inView = self.bottomBar;
+            rect = inView.bounds;
+        }
+        [self showThreadActionsFromRect:rect inView:inView];
     } else if (seg.selectedSegmentIndex == 1) {
         if (self.settingsViewController) {
             [self.settingsViewController dismiss];
