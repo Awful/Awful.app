@@ -531,6 +531,7 @@
 		1CBEE2401732F3BE00C4884A /* tabbar-divider@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CBEE23E1732F3BE00C4884A /* tabbar-divider@2x.png */; };
 		1CBEE2421732F78E00C4884A /* tabbar-selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CBEE2411732F78E00C4884A /* tabbar-selected@2x.png */; };
 		1CBEE2441732F85000C4884A /* tabbar-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CBEE2431732F85000C4884A /* tabbar-selected.png */; };
+		1CBEE26317389DB300C4884A /* AwfulPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBEE26217389DB300C4884A /* AwfulPopoverController.m */; };
 		1CC38BB3160D8C5900C35A11 /* AwfulCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC38BB2160D8C5800C35A11 /* AwfulCategory.m */; };
 		1CC38BB6160D8C6000C35A11 /* _AwfulCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC38BB5160D8C6000C35A11 /* _AwfulCategory.m */; };
 		1CC780191612D8AF002AF958 /* AwfulForumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780121612D8AF002AF958 /* AwfulForumCell.m */; };
@@ -1301,6 +1302,8 @@
 		1CBEE23E1732F3BE00C4884A /* tabbar-divider@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tabbar-divider@2x.png"; sourceTree = "<group>"; };
 		1CBEE2411732F78E00C4884A /* tabbar-selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tabbar-selected@2x.png"; sourceTree = "<group>"; };
 		1CBEE2431732F85000C4884A /* tabbar-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tabbar-selected.png"; sourceTree = "<group>"; };
+		1CBEE26117389DB300C4884A /* AwfulPopoverController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPopoverController.h; sourceTree = "<group>"; };
+		1CBEE26217389DB300C4884A /* AwfulPopoverController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPopoverController.m; sourceTree = "<group>"; };
 		1CC38BB1160D8C5800C35A11 /* AwfulCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCategory.h; sourceTree = "<group>"; };
 		1CC38BB2160D8C5800C35A11 /* AwfulCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCategory.m; sourceTree = "<group>"; };
 		1CC38BB4160D8C6000C35A11 /* _AwfulCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _AwfulCategory.h; sourceTree = "<group>"; };
@@ -2768,6 +2771,8 @@
 				1CE2D9C5166ABD0D0024AC1C /* AwfulFetchedTableViewControllerSubclass.h */,
 				1CE2D9C6166ABD0D0024AC1C /* AwfulNavigationBar.h */,
 				1CE2D9C7166ABD0D0024AC1C /* AwfulNavigationBar.m */,
+				1CBEE26117389DB300C4884A /* AwfulPopoverController.h */,
+				1CBEE26217389DB300C4884A /* AwfulPopoverController.m */,
 				1C5B996E166F565C004C5D0E /* AwfulTabBarController.h */,
 				1C5B996F166F565C004C5D0E /* AwfulTabBarController.m */,
 				1C5B9971166F5835004C5D0E /* AwfulTabBar.h */,
@@ -4656,6 +4661,7 @@
 				F432C2D1173456C600012A88 /* SFHFKeychainUtils.m in Sources */,
 				F432C2D61734570600012A88 /* AwfulPocketHelper.m in Sources */,
 				F432C2D91734572000012A88 /* AwfulPocketStatusTransformer.m in Sources */,
+				1CBEE26317389DB300C4884A /* AwfulPopoverController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
