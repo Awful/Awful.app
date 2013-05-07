@@ -68,6 +68,7 @@
                  CGRectMaxYEdge);
     if (self.tabBar.hidden) {
         viewFrame = CGRectUnion(viewFrame, tabBarFrame);
+        tabBarFrame.origin.x -= CGRectGetWidth(tabBarFrame);
     }
     self.selectedViewController.view.frame = viewFrame;
     self.tabBar.frame = tabBarFrame;
