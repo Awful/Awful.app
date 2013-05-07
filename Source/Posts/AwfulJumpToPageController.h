@@ -5,14 +5,14 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US http://github.com/AwfulDevs/Awful
 //
 
-#import "AwfulSemiModalViewController.h"
+#import <UIKit/UIKit.h>
 #import "AwfulThreadPage.h"
 @protocol AwfulJumpToPageControllerDelegate;
 
-@interface AwfulJumpToPageController : AwfulSemiModalViewController
+@interface AwfulJumpToPageController : UIViewController
 
 // Designated initializer.
-- (instancetype)initWithDelegate:(id <AwfulJumpToPageControllerDelegate>)delegate;
+- (id)initWithDelegate:(id <AwfulJumpToPageControllerDelegate>)delegate;
 
 @property (weak, nonatomic) id <AwfulJumpToPageControllerDelegate> delegate;
 

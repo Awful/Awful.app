@@ -23,36 +23,21 @@
 
 @implementation AwfulJumpToPageController
 
-- (instancetype)initWithDelegate:(id <AwfulJumpToPageControllerDelegate>)delegate
+- (id)initWithDelegate:(id <AwfulJumpToPageControllerDelegate>)delegate
 {
     if (!(self = [super initWithNibName:nil bundle:nil])) return self;
     self.delegate = delegate;
     self.numberOfPages = 1;
     self.selectedPage = 1;
+    self.contentSizeForViewInPopover = CGSizeMake(130, 38 + pickerHeight);
     return self;
 }
 
-#pragma mark - AwfulSemiModalViewController
-
-- (void)presentFromViewController:(UIViewController *)viewController
-                         fromRect:(CGRect)rect
-                           inView:(UIView *)view
+- (void)setSelectedPage:(NSInteger)selectedPage
 {
-    [self.picker selectRow:self.selectedPage - 1 inComponent:0 animated:NO];
-    [super presentFromViewController:viewController fromRect:rect inView:view];
-}
-
-- (UIPickerView *)picker
-{
-    if (!_picker) {
-        [self view];
-    }
-    return _picker;
-}
-
-- (void)userDismiss
-{
-    [self.delegate jumpToPageController:self didSelectPage:AwfulThreadPageNone];
+    if (_selectedPage == selectedPage) return;
+    _selectedPage = selectedPage;
+    [self.picker selectRow:selectedPage - 1 inComponent:0 animated:YES];
 }
 
 #pragma mark - UIViewController
@@ -64,8 +49,6 @@
 
 - (void)loadView
 {
-    // UIPickerView is rather picky (lol) about its height. Make sure you pick a value it likes.
-    const CGFloat pickerHeight = 162;
     self.view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 38 + pickerHeight)];
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
     SpecificTopBarView *topBar = [[SpecificTopBarView alloc] initWithFrame:CGRectMake(0, 0, 320, 38)];
@@ -82,10 +65,18 @@
     [self.view addSubview:picker];
 }
 
+// UIPickerView is rather picky (lol) about its height. Make sure you pick a value it likes.
+const CGFloat pickerHeight = 162;
 
 - (void)didTapJumpToPage
 {
     [self.delegate jumpToPageController:self didSelectPage:self.selectedPage];
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    [self.picker selectRow:self.selectedPage - 1 inComponent:0 animated:NO];
 }
 
 #pragma mark - UIPickerViewDataSource and UIPickerViewDelegate
@@ -127,6 +118,7 @@
     self.backgroundColor = [UIColor colorWithPatternImage:back];
     
     UIButton *jumpButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    jumpButton.frame = CGRectMake(0, 0, 110, 29);
     [jumpButton setTitle:@"Jump to Page" forState:UIControlStateNormal];
     UIImage *button = [[UIImage imageNamed:@"pagebar-button.png"]
                        resizableImageWithCapInsets:UIEdgeInsetsMake(0, 3, 0, 3)];
@@ -142,13 +134,7 @@
 
 - (void)layoutSubviews
 {
-    CGRect buttonFrame = self.jumpButton.frame;
-    buttonFrame.size.width = 115;
-    buttonFrame.size.height = 29;
-    buttonFrame.origin.x = self.bounds.size.width - buttonFrame.size.width - 7;
-    self.jumpButton.frame = buttonFrame;
-    self.jumpButton.center = CGPointMake(self.jumpButton.center.x, CGRectGetMidY(self.bounds));
-    self.jumpButton.frame = CGRectIntegral(self.jumpButton.frame);
+    self.jumpButton.center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
 }
 
 @end

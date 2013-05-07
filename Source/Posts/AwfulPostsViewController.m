@@ -21,6 +21,7 @@
 #import "AwfulPageTopBar.h"
 #import "AwfulPlainBarButtonItem.h"
 #import "AwfulPocketHelper.h"
+#import "AwfulPopoverController.h"
 #import "AwfulPostsView.h"
 #import "AwfulPostsViewSettingsController.h"
 #import "AwfulProfileViewController.h"
@@ -48,7 +49,8 @@
                                         UIScrollViewDelegate,
                                         AwfulThemingViewController,
                                         AwfulPrivateMessageComposeViewControllerDelegate,
-                                        AwfulPostsViewSettingsControllerDelegate>
+                                        AwfulPostsViewSettingsControllerDelegate,
+                                        AwfulPopoverControllerDelegate>
 
 @property (nonatomic) AwfulThreadPage currentPage;
 
@@ -59,6 +61,7 @@
 @property (weak, nonatomic) AwfulPageTopBar *topBar;
 @property (weak, nonatomic) AwfulPostsView *postsView;
 @property (weak, nonatomic) AwfulPageBottomBar *bottomBar;
+@property (nonatomic) AwfulPopoverController *jumpToPagePopover;
 @property (weak, nonatomic) AwfulPullToRefreshControl *pullUpToRefreshControl;
 @property (nonatomic) UIBarButtonItem *composeItem;
 @property (copy, nonatomic) NSString *ongoingReplyText;
@@ -692,17 +695,25 @@
 - (void)showJumpToPageSheet
 {
     if (self.postsView.loadingMessage) return;
-    NSInteger relevantNumberOfPages = [self relevantNumberOfPagesInThread];
-    if (relevantNumberOfPages < 1) return;
-    AwfulJumpToPageController *jump = [[AwfulJumpToPageController alloc] initWithDelegate:self];
-    jump.numberOfPages = relevantNumberOfPages;
-    if (self.currentPage > 0) {
-        jump.selectedPage = self.currentPage;
+    if (!self.jumpToPagePopover) {
+        NSInteger relevantNumberOfPages = [self relevantNumberOfPagesInThread];
+        if (relevantNumberOfPages < 1) return;
+        AwfulJumpToPageController *jump = [[AwfulJumpToPageController alloc] initWithDelegate:self];
+        jump.numberOfPages = relevantNumberOfPages;
+        if (self.currentPage > 0) {
+            jump.selectedPage = self.currentPage;
+        }
+        else if (self.currentPage == AwfulThreadPageLast && relevantNumberOfPages > 0) {
+            jump.selectedPage = relevantNumberOfPages;
+        }
+        self.jumpToPagePopover = [[AwfulPopoverController alloc]
+                                  initWithContentViewController:jump];
+        self.jumpToPagePopover.delegate = self;
     }
-    else if (self.currentPage == AwfulThreadPageLast && relevantNumberOfPages > 0) {
-        jump.selectedPage = relevantNumberOfPages;
-    }
-    [jump presentFromViewController:self fromRect:CGRectZero inView:self.bottomBar];
+    UIView *presentingView = self.bottomBar.jumpToPageButton;
+    [self.jumpToPagePopover presentPopoverFromRect:presentingView.bounds
+                                            inView:presentingView
+                                          animated:NO];
 }
 
 - (void)didTapActionFontSizeControl:(UISegmentedControl *)seg
@@ -823,10 +834,23 @@ static char KVOContext;
     }
 }
 
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
+                                duration:(NSTimeInterval)duration
+{
+    [self.jumpToPagePopover dismissPopoverAnimated:NO];
+}
+
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
                                          duration:(NSTimeInterval)duration
 {
     [self updatePullUpTriggerOffset];
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    if (self.jumpToPagePopover) {
+        [self showJumpToPageSheet];
+    }
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -1167,7 +1191,15 @@ static char KVOContext;
         }
         [self loadPage:page singleUserID:self.singleUserID];
     }
-    [jump dismiss];
+    [self.jumpToPagePopover dismissPopoverAnimated:NO];
+    self.jumpToPagePopover = nil;
+}
+
+#pragma mark - AwfulPopoverControllerDelegate
+
+- (void)popoverControllerDidDismissPopover:(AwfulPopoverController *)popover
+{
+    self.jumpToPagePopover = nil;
 }
 
 #pragma mark - AwfulReplyComposeViewControllerDelegate
