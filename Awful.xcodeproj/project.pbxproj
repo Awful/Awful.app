@@ -2080,8 +2080,6 @@
 				1CBDB5E61625AA240004BDF4 /* AwfulDataStack.m */,
 				1C9FDE5916E9CF5A00C665B5 /* AwfulErrorDomain.h */,
 				1C9FDE5A16E9CF5A00C665B5 /* AwfulErrorDomain.m */,
-				1C1D2FEA171BAADE00AC6387 /* AwfulSplitViewController.h */,
-				1C1D2FEB171BAADE00AC6387 /* AwfulSplitViewController.m */,
 				1C10157A164E8B0A00302B19 /* AwfulStartViewController.h */,
 				1C10157B164E8B0A00302B19 /* AwfulStartViewController.m */,
 				1190F7F213BE4EDA00B9D271 /* main.m */,
@@ -2140,10 +2138,40 @@
 		1C00E0A71739F8BB008895E7 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				1CE2D9C1166ABD0D0024AC1C /* AwfulAlertView.h */,
+				1CE2D9C2166ABD0D0024AC1C /* AwfulAlertView.m */,
+				1C5B996A166E78F9004C5D0E /* AwfulDisclosureIndicatorView.h */,
+				1C5B996B166E78F9004C5D0E /* AwfulDisclosureIndicatorView.m */,
+				1CE2D9C6166ABD0D0024AC1C /* AwfulNavigationBar.h */,
+				1CE2D9C7166ABD0D0024AC1C /* AwfulNavigationBar.m */,
 				1C00E0A81739F91E008895E7 /* AwfulPageBarBackgroundView.h */,
 				1C00E0A91739F91E008895E7 /* AwfulPageBarBackgroundView.m */,
+				1C00E0A1173973FA008895E7 /* AwfulScreenCoverView.h */,
+				1C00E0A2173973FA008895E7 /* AwfulScreenCoverView.m */,
+				1C5B9971166F5835004C5D0E /* AwfulTabBar.h */,
+				1C5B9972166F5835004C5D0E /* AwfulTabBar.m */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		1C00E0AB173A006B008895E7 /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				1CE2D9C3166ABD0D0024AC1C /* AwfulFetchedTableViewController.h */,
+				1CE2D9C4166ABD0D0024AC1C /* AwfulFetchedTableViewController.m */,
+				1CE2D9C5166ABD0D0024AC1C /* AwfulFetchedTableViewControllerSubclass.h */,
+				1CBEE26117389DB300C4884A /* AwfulPopoverController.h */,
+				1CBEE26217389DB300C4884A /* AwfulPopoverController.m */,
+				1CE8FDF51703D648006A3B84 /* AwfulSemiModalViewController.h */,
+				1CE8FDF61703D648006A3B84 /* AwfulSemiModalViewController.m */,
+				1C1D2FEA171BAADE00AC6387 /* AwfulSplitViewController.h */,
+				1C1D2FEB171BAADE00AC6387 /* AwfulSplitViewController.m */,
+				1C5B996E166F565C004C5D0E /* AwfulTabBarController.h */,
+				1C5B996F166F565C004C5D0E /* AwfulTabBarController.m */,
+				1CE2D9CA166ABD0D0024AC1C /* AwfulTableViewController.h */,
+				1CE2D9CB166ABD0D0024AC1C /* AwfulTableViewController.m */,
+			);
+			path = "View Controllers";
 			sourceTree = "<group>";
 		};
 		1C05ED40162299DE00FE567F /* SVProgressHUD */ = {
@@ -2265,6 +2293,7 @@
 				1CE2D99D16688AC40024AC1C /* UIKit and Foundation */,
 				1C1D2FE6171BA1C200AC6387 /* URLs */,
 				1C6ED634169103FE0015CDD5 /* Users */,
+				1C00E0AB173A006B008895E7 /* View Controllers */,
 				1C00E0A71739F8BB008895E7 /* Views */,
 			);
 			path = Source;
@@ -2657,8 +2686,6 @@
 				1CFBECED163076F1008AF641 /* AwfulPageBottomBar.m */,
 				1CE8FDED17027724006A3B84 /* AwfulJumpToPageController.h */,
 				1CE8FDEE17027725006A3B84 /* AwfulJumpToPageController.m */,
-				1CE8FDF51703D648006A3B84 /* AwfulSemiModalViewController.h */,
-				1CE8FDF61703D648006A3B84 /* AwfulSemiModalViewController.m */,
 				1CE8FDF21703D622006A3B84 /* AwfulPostsViewSettingsController.h */,
 				1CE8FDF31703D622006A3B84 /* AwfulPostsViewSettingsController.m */,
 				1CE8FE3F171692D0006A3B84 /* AwfulPostsSettingsView.h */,
@@ -2781,25 +2808,6 @@
 		1CE2D99D16688AC40024AC1C /* UIKit and Foundation */ = {
 			isa = PBXGroup;
 			children = (
-				1CE2D9C1166ABD0D0024AC1C /* AwfulAlertView.h */,
-				1CE2D9C2166ABD0D0024AC1C /* AwfulAlertView.m */,
-				1C5B996A166E78F9004C5D0E /* AwfulDisclosureIndicatorView.h */,
-				1C5B996B166E78F9004C5D0E /* AwfulDisclosureIndicatorView.m */,
-				1CE2D9C3166ABD0D0024AC1C /* AwfulFetchedTableViewController.h */,
-				1CE2D9C4166ABD0D0024AC1C /* AwfulFetchedTableViewController.m */,
-				1CE2D9C5166ABD0D0024AC1C /* AwfulFetchedTableViewControllerSubclass.h */,
-				1CE2D9C6166ABD0D0024AC1C /* AwfulNavigationBar.h */,
-				1CE2D9C7166ABD0D0024AC1C /* AwfulNavigationBar.m */,
-				1CBEE26117389DB300C4884A /* AwfulPopoverController.h */,
-				1CBEE26217389DB300C4884A /* AwfulPopoverController.m */,
-				1C00E0A1173973FA008895E7 /* AwfulScreenCoverView.h */,
-				1C00E0A2173973FA008895E7 /* AwfulScreenCoverView.m */,
-				1C5B996E166F565C004C5D0E /* AwfulTabBarController.h */,
-				1C5B996F166F565C004C5D0E /* AwfulTabBarController.m */,
-				1C5B9971166F5835004C5D0E /* AwfulTabBar.h */,
-				1C5B9972166F5835004C5D0E /* AwfulTabBar.m */,
-				1CE2D9CA166ABD0D0024AC1C /* AwfulTableViewController.h */,
-				1CE2D9CB166ABD0D0024AC1C /* AwfulTableViewController.m */,
 				1CE2D9CC166ABD0D0024AC1C /* NSFileManager+UserDirectories.h */,
 				1CE2D9CD166ABD0D0024AC1C /* NSFileManager+UserDirectories.m */,
 				1CE2D9CE166ABD0D0024AC1C /* NSString+CollapseWhitespace.h */,
