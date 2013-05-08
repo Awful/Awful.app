@@ -5,9 +5,9 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US http://github.com/AwfulDevs/Awful
 //
 
-#import <UIKit/UIKit.h>
+#import "AwfulPageBarBackgroundView.h"
 
-@interface AwfulPageBottomBar : UIView
+@interface AwfulPageBottomBar : AwfulPageBarBackgroundView
 
 @property (readonly, weak, nonatomic) UISegmentedControl *backForwardControl;
 @property (readonly, weak, nonatomic) UIButton *jumpToPageButton;

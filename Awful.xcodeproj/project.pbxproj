@@ -42,6 +42,7 @@
 		11FDA296151018600014FDCD /* AwfulSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA295151018600014FDCD /* AwfulSettingsViewController.m */; };
 		1C00E0A3173973FA008895E7 /* AwfulScreenCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C00E0A2173973FA008895E7 /* AwfulScreenCoverView.m */; };
 		1C00E0A61739E5E4008895E7 /* UIDevice+OperatingSystemVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C00E0A51739E5E4008895E7 /* UIDevice+OperatingSystemVersion.m */; };
+		1C00E0AA1739F91E008895E7 /* AwfulPageBarBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C00E0A91739F91E008895E7 /* AwfulPageBarBackgroundView.m */; };
 		1C05ED4F162299DE00FE567F /* SVProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C05ED48162299DE00FE567F /* SVProgressHUD.m */; };
 		1C05ED5A16229CDD00FE567F /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1C05ED5916229CDD00FE567F /* SVProgressHUD.bundle */; };
 		1C090FB7163A40A1003FD0A3 /* _AwfulPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C090FB6163A40A1003FD0A3 /* _AwfulPost.m */; };
@@ -969,6 +970,8 @@
 		1C00E0A2173973FA008895E7 /* AwfulScreenCoverView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScreenCoverView.m; sourceTree = "<group>"; };
 		1C00E0A41739E5E4008895E7 /* UIDevice+OperatingSystemVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice+OperatingSystemVersion.h"; sourceTree = "<group>"; };
 		1C00E0A51739E5E4008895E7 /* UIDevice+OperatingSystemVersion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+OperatingSystemVersion.m"; sourceTree = "<group>"; };
+		1C00E0A81739F91E008895E7 /* AwfulPageBarBackgroundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPageBarBackgroundView.h; sourceTree = "<group>"; };
+		1C00E0A91739F91E008895E7 /* AwfulPageBarBackgroundView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPageBarBackgroundView.m; sourceTree = "<group>"; };
 		1C05ED47162299DE00FE567F /* SVProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVProgressHUD.h; sourceTree = "<group>"; };
 		1C05ED48162299DE00FE567F /* SVProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVProgressHUD.m; sourceTree = "<group>"; };
 		1C05ED5916229CDD00FE567F /* SVProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = SVProgressHUD.bundle; path = Vendor/SVProgressHUD/SVProgressHUD.bundle; sourceTree = SOURCE_ROOT; };
@@ -2134,6 +2137,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		1C00E0A71739F8BB008895E7 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				1C00E0A81739F91E008895E7 /* AwfulPageBarBackgroundView.h */,
+				1C00E0A91739F91E008895E7 /* AwfulPageBarBackgroundView.m */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		1C05ED40162299DE00FE567F /* SVProgressHUD */ = {
 			isa = PBXGroup;
 			children = (
@@ -2253,6 +2265,7 @@
 				1CE2D99D16688AC40024AC1C /* UIKit and Foundation */,
 				1C1D2FE6171BA1C200AC6387 /* URLs */,
 				1C6ED634169103FE0015CDD5 /* Users */,
+				1C00E0A71739F8BB008895E7 /* Views */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -4674,6 +4687,7 @@
 				1CBEE26317389DB300C4884A /* AwfulPopoverController.m in Sources */,
 				1C00E0A3173973FA008895E7 /* AwfulScreenCoverView.m in Sources */,
 				1C00E0A61739E5E4008895E7 /* UIDevice+OperatingSystemVersion.m in Sources */,
+				1C00E0AA1739F91E008895E7 /* AwfulPageBarBackgroundView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

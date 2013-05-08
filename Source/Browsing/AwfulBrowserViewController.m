@@ -8,6 +8,7 @@
 #import "AwfulBrowserViewController.h"
 #import "AwfulActionSheet.h"
 #import "AwfulExternalBrowser.h"
+#import "AwfulPageBarBackgroundView.h"
 #import "AwfulPocketHelper.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
@@ -194,10 +195,11 @@ static UIButton * MakeBorderlessButton(UIImage *image, id target, SEL action)
         toolbar.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                     UIViewAutoresizingFlexibleTopMargin);
         toolbar.barStyle = UIBarStyleBlack;
-        UIImage *background = [[UIImage imageNamed:@"pagebar.png"]
-                               resizableImageWithCapInsets:UIEdgeInsetsZero];
-        [toolbar setBackgroundImage:background
-                 forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
+        AwfulPageBarBackgroundView *background = [AwfulPageBarBackgroundView new];
+        background.frame = toolbar.bounds;
+        background.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                       UIViewAutoresizingFlexibleHeight);
+        [toolbar insertSubview:background atIndex:1];
         UIImage *back = [UIImage imageNamed:@"arrowleft.png"];
         back.accessibilityLabel = @"Browser-back";
         UIImage *forward = [UIImage imageNamed:@"arrowright.png"];

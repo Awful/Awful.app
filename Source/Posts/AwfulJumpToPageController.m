@@ -6,8 +6,9 @@
 //
 
 #import "AwfulJumpToPageController.h"
+#import "AwfulPageBarBackgroundView.h"
 
-@interface SpecificTopBarView : UIView
+@interface SpecificTopBarView : AwfulPageBarBackgroundView
 
 @property (weak, nonatomic) UIButton *jumpButton;
 
