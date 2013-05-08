@@ -52,6 +52,11 @@
     return self;
 }
 
+- (void)dealloc
+{
+    _scrollView.delegate = nil;
+}
+
 - (void)setImageURL:(NSURL *)imageURL
 {
     if ([_imageURL isEqual:imageURL]) return;
