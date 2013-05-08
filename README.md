@@ -1,8 +1,9 @@
 Awful
 =====
 
-Awful is an iOS app that's *Better Than Safari* for browsing the [Something Awful Forums][forums]. Its story is told in [its thread][current thread] (and [its older thread][second thread] (and [its first thread][first thread])).
+[Awful][App Store] is an iOS app that's *Better Than Safari* for browsing the [Something Awful Forums][forums]. Its story is told in [its thread][current thread] (and [its older thread][second thread] (and [its first thread][first thread])).
 
+[App Store]: https://itunes.apple.com/app/awful-unofficial-something/id567936609
 [forums]: http://forums.somethingawful.com
 [current thread]: http://forums.somethingawful.com/showthread.php?threadid=3510131
 [second thread]: http://forums.somethingawful.com/showthread.php?threadid=3381510
