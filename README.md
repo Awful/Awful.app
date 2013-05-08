@@ -122,6 +122,20 @@ These get combined along with Awful's JavaScript code into `Source/Posts/posts-v
 [mustache.js]: https://github.com/janl/mustache.js
 [zepto]: https://github.com/madrobby/zepto
 
+Compatibility
+-------------
+
+Awful is loosely compatible with iOS 5. That means:
+
+- It shouldn't crash. Use the [version category on UIDevice][UIDevice+OperatingSystemVersion] or feature detection to run code on certain versions of iOS.
+- It should be usable. A toolbar has the wrong background? Not a big deal. The toolbar doesn't appear at all? We'll fix that.
+- Polyfills/shims are great! (e.g. [PSTCollectionView][] provides UICollectionView on iOS 5.)
+
+That said, if a compelling new feature requires iOS 6, and no polyfill is available, it's probably worth requiring iOS 6. So don't be afraid of suggesting/implementing such a feature!
+
+[PSTCollectionView]: Vendor/PSTCollectionView
+[UIDevice+OperatingSystemVersion]: Source/UIKit%20and%20Foundation/UIDevice+OperatingSystemVersion.h
+
 License
 -------
 
