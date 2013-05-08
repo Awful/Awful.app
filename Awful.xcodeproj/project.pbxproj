@@ -41,6 +41,7 @@
 		1190F7F313BE4EDA00B9D271 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7F213BE4EDA00B9D271 /* main.m */; };
 		11FDA296151018600014FDCD /* AwfulSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA295151018600014FDCD /* AwfulSettingsViewController.m */; };
 		1C00E0A3173973FA008895E7 /* AwfulScreenCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C00E0A2173973FA008895E7 /* AwfulScreenCoverView.m */; };
+		1C00E0A61739E5E4008895E7 /* UIDevice+OperatingSystemVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C00E0A51739E5E4008895E7 /* UIDevice+OperatingSystemVersion.m */; };
 		1C05ED4F162299DE00FE567F /* SVProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C05ED48162299DE00FE567F /* SVProgressHUD.m */; };
 		1C05ED5A16229CDD00FE567F /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1C05ED5916229CDD00FE567F /* SVProgressHUD.bundle */; };
 		1C090FB7163A40A1003FD0A3 /* _AwfulPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C090FB6163A40A1003FD0A3 /* _AwfulPost.m */; };
@@ -966,6 +967,8 @@
 		11FDA295151018600014FDCD /* AwfulSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AwfulSettingsViewController.m; path = Source/Settings/AwfulSettingsViewController.m; sourceTree = SOURCE_ROOT; };
 		1C00E0A1173973FA008895E7 /* AwfulScreenCoverView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScreenCoverView.h; sourceTree = "<group>"; };
 		1C00E0A2173973FA008895E7 /* AwfulScreenCoverView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScreenCoverView.m; sourceTree = "<group>"; };
+		1C00E0A41739E5E4008895E7 /* UIDevice+OperatingSystemVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice+OperatingSystemVersion.h"; sourceTree = "<group>"; };
+		1C00E0A51739E5E4008895E7 /* UIDevice+OperatingSystemVersion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+OperatingSystemVersion.m"; sourceTree = "<group>"; };
 		1C05ED47162299DE00FE567F /* SVProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVProgressHUD.h; sourceTree = "<group>"; };
 		1C05ED48162299DE00FE567F /* SVProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVProgressHUD.m; sourceTree = "<group>"; };
 		1C05ED5916229CDD00FE567F /* SVProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = SVProgressHUD.bundle; path = Vendor/SVProgressHUD/SVProgressHUD.bundle; sourceTree = SOURCE_ROOT; };
@@ -2792,6 +2795,8 @@
 				1CE68BD816F7C18E003D56C9 /* NSURL+Punycode.m */,
 				1CE2D9D0166ABD0D0024AC1C /* NSURL+QueryDictionary.h */,
 				1CE2D9D1166ABD0D0024AC1C /* NSURL+QueryDictionary.m */,
+				1C00E0A41739E5E4008895E7 /* UIDevice+OperatingSystemVersion.h */,
+				1C00E0A51739E5E4008895E7 /* UIDevice+OperatingSystemVersion.m */,
 				1CE2D9D2166ABD0D0024AC1C /* UINavigationItem+TwoLineTitle.h */,
 				1CE2D9D3166ABD0D0024AC1C /* UINavigationItem+TwoLineTitle.m */,
 				1CE2D9D4166ABD0D0024AC1C /* UIViewController+NavigationEnclosure.h */,
@@ -4668,6 +4673,7 @@
 				F432C2D91734572000012A88 /* AwfulPocketStatusTransformer.m in Sources */,
 				1CBEE26317389DB300C4884A /* AwfulPopoverController.m in Sources */,
 				1C00E0A3173973FA008895E7 /* AwfulScreenCoverView.m in Sources */,
+				1C00E0A61739E5E4008895E7 /* UIDevice+OperatingSystemVersion.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

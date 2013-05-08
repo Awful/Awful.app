@@ -6,6 +6,7 @@
 //
 
 #import "UINavigationItem+TwoLineTitle.h"
+#import "UIDevice+OperatingSystemVersion.h"
 
 @interface UINavigationItem ()
 
@@ -32,7 +33,9 @@
     label.textColor = [UIColor whiteColor];
     label.backgroundColor = [UIColor clearColor];
     label.shadowColor = [UIColor colorWithWhite:0 alpha:0.5];
-    label.accessibilityTraits |= UIAccessibilityTraitHeader;
+    if ([[UIDevice currentDevice] awful_iOS6OrLater]) {
+        label.accessibilityTraits |= UIAccessibilityTraitHeader;
+    }
     self.titleView = label;
     return label;
 }
