@@ -10,6 +10,9 @@
 
 @interface UIDevice (OperatingSystemVersion)
 
+// Returns YES if this device is running any version of iOS 5.
+- (BOOL)awful_iOS5;
+
 // Returns YES if this device is running iOS 6.0 or a later version.
 - (BOOL)awful_iOS6OrLater;
 

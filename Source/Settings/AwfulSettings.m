@@ -7,6 +7,7 @@
 
 #import "AwfulSettings.h"
 #import "PocketAPI.h"
+#import "UIDevice+OperatingSystemVersion.h"
 
 @interface AwfulSettings ()
 
@@ -401,6 +402,26 @@ BOOL_PROPERTY(useDevDotForums, setUseDevDotForums)
     if (object) [defaults setObject:object forKey:(NSString *)key];
     else [defaults removeObjectForKey:(NSString *)key];
     [defaults synchronize];
+}
+
+- (void)reset
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSDictionary *empty = @{};
+    
+    // UIWebView in iOS 5.1 will crash if initialized after clearing user defaults.
+    // http://stackoverflow.com/a/9729450
+    if ([[UIDevice currentDevice] awful_iOS5]) {
+        NSString *OffendingKey = @"WebKitLocalStorageDatabasePathPreferenceKey";
+        id workaround = [userDefaults objectForKey:OffendingKey];
+        if (workaround) {
+            empty = @{ OffendingKey: workaround };
+        }
+    }
+    
+    NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
+    [userDefaults setPersistentDomain:empty forName:appDomain];
+    [userDefaults synchronize];
 }
 
 @end

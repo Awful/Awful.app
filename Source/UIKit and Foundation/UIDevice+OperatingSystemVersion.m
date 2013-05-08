@@ -10,6 +10,13 @@
 
 @implementation UIDevice (OperatingSystemVersion)
 
+- (BOOL)awful_iOS5
+{
+    NSString *systemVersion = self.systemVersion;
+    if ([systemVersion compare:@"5.0" options:NSNumericSearch] == NSOrderedAscending) return NO;
+    return [systemVersion compare:@"6.0" options:NSNumericSearch] == NSOrderedAscending;
+}
+
 - (BOOL)awful_iOS6OrLater
 {
     NSString *systemVersion = self.systemVersion;

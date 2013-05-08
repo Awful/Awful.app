@@ -97,6 +97,9 @@ typedef NS_ENUM(NSInteger, AwfulKeepSidebarOpenWhen) {
 
 - (void)setObject:(id)object forKeyedSubscript:(id <NSCopying>)key;
 
+// Clears all settings.
+- (void)reset;
+
 @end
 
 // Sent to default center whenever a setting changes. The userInfo dictionary has a value for

@@ -81,8 +81,7 @@ static id _instance;
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
     
     // Reset all preferences.
-    NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
-    [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
+    [[AwfulSettings settings] reset];
     
     // Clear any stored logins for other services
     [[PocketAPI sharedAPI] logout];
