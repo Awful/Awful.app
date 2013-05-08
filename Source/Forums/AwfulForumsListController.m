@@ -19,6 +19,7 @@
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "AwfulThreadListController.h"
+#import <Crashlytics/Crashlytics.h>
 #import "NSManagedObject+Awful.h"
 
 @interface AwfulForumsListController ()
@@ -141,14 +142,18 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
     }
     [self.tableView beginUpdates];
     if (button.selected) {
+        CLSLog(@"adding forum %@ to favorites (currently %@)",
+               forum.forumID, [self.favoriteForums valueForKey:@"forumID"]);
         [self.favoriteForums addObject:forum];
         if ([self.favoriteForums count] == 1) {
-            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:0]
-                          withRowAnimation:UITableViewRowAnimationTop];
+            NSIndexSet *toInsert = [NSIndexSet indexSetWithIndex:0];
+            CLSLog(@"inserting sections at %@", toInsert);
+            [self.tableView insertSections:toInsert withRowAnimation:UITableViewRowAnimationTop];
             [self showOrHideEditButton];
         } else {
             NSIndexPath *newRow = [NSIndexPath indexPathForRow:[self.favoriteForums count] - 1
                                                      inSection:0];
+            CLSLog(@"inserting row at path %@", newRow);
             [self.tableView insertRowsAtIndexPaths:@[ newRow ]
                                   withRowAnimation:UITableViewRowAnimationAutomatic];
         }
@@ -156,12 +161,14 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
         NSInteger row = [self.favoriteForums indexOfObject:forum];
         [self.favoriteForums removeObjectAtIndex:row];
         if ([self.favoriteForums count] == 0) {
-            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:0]
-                          withRowAnimation:UITableViewRowAnimationTop];
+            NSIndexSet *toDelete = [NSIndexSet indexSetWithIndex:0];
+            CLSLog(@"deleting sections at %@", toDelete);
+            [self.tableView deleteSections:toDelete withRowAnimation:UITableViewRowAnimationTop];
             [self showOrHideEditButton];
             self.editing = NO;
         } else {
             NSIndexPath *oldRow = [NSIndexPath indexPathForRow:row inSection:0];
+            CLSLog(@"deleting row at path %@", oldRow);
             [self.tableView deleteRowsAtIndexPaths:@[ oldRow ]
                                   withRowAnimation:UITableViewRowAnimationTop];
         }
@@ -172,6 +179,7 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
             nonfavoriteIndexPath = [NSIndexPath indexPathForRow:nonfavoriteIndexPath.row
                                                       inSection:nonfavoriteIndexPath.section + 1];
         }
+        CLSLog(@"reloading row at path %@", nonfavoriteIndexPath);
         [self.tableView reloadRowsAtIndexPaths:@[ nonfavoriteIndexPath ]
                               withRowAnimation:UITableViewRowAnimationNone];
     }
