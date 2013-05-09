@@ -106,7 +106,7 @@ static void ConfigureSeparator(UIView *separator)
     
     [self.fontSizeLabel sizeToFit];
     self.fontSizeLabel.center = CGPointMake(CGRectGetMinX(middleThird) + CGRectGetWidth(self.fontSizeLabel.bounds) / 2, CGRectGetMidY(middleThird));
-    self.fontSizeStepper.center = CGPointMake(CGRectGetMaxX(self.fontSizeStepper.frame) + CGRectGetWidth(self.fontSizeStepper.bounds) / 2, self.fontSizeLabel.center.y);
+    self.fontSizeStepper.center = CGPointMake(CGRectGetMaxX(self.fontSizeLabel.frame) + CGRectGetWidth(self.fontSizeStepper.bounds) / 2 + 8, self.fontSizeLabel.center.y);
     
     self.lowerSeparator.frame = CGRectMake(0, CGRectGetMaxY(middleThird) + 1, CGRectGetWidth(self.bounds), 1);
     
