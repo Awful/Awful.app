@@ -243,7 +243,13 @@
     }
     NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:thread];
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-    [sheet presentFromViewController:self.awfulTabBarController fromRect:CGRectZero inView:cell];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [sheet presentFromViewController:self fromRect:CGRectZero inView:cell];
+    } else {
+        AwfulTabBar *tabBar = self.awfulTabBarController.tabBar;
+        [sheet presentFromViewController:self.awfulTabBarController
+                                fromRect:tabBar.bounds inView:tabBar];
+    }
 }
 
 - (void)doneWithProfile
