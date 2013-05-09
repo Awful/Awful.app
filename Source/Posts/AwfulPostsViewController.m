@@ -1072,7 +1072,11 @@ static char KVOContext;
                                animated:YES completion:nil];
         }]];
     }
-    [sheet presentFromViewController:self fromRect:rect inView:self.postsView];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [sheet presentFromViewController:self fromRect:rect inView:self.postsView];
+    } else {
+        [sheet presentFromViewController:self fromRect:self.bottomBar.bounds inView:self.bottomBar];
+    }
 }
 
 - (void)previewImageAtURLString:(NSString *)urlString
