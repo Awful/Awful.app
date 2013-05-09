@@ -79,13 +79,13 @@
         
         case AwfulIconActionItemTypeRemoveBookmark:
             title = @"Remove Bookmark";
-            tintColor = [UIColor colorWithHue:0.023 saturation:0.845 brightness:0.835 alpha:1];
+            tintColor = [UIColor colorWithHue:0.023 saturation:0.85 brightness:0.835 alpha:1];
             icon = [UIImage imageNamed:@"remove-bookmark"];
             break;
             
         case AwfulIconActionItemTypeSendPrivateMessage:
             title = @"Send PM";
-            tintColor = [UIColor colorWithHue:0.133 saturation:0.767 brightness:0.808 alpha:1];
+            tintColor = [UIColor colorWithHue:0.133 saturation:0.78 brightness:0.89 alpha:1];
             icon = [UIImage imageNamed:@"send-private-message"];
             break;
             

@@ -58,17 +58,20 @@
     path.lineWidth = 4;
     [path addClip];
     
-    CGFloat hue, saturation, brightness, alpha;
-    [self.tintColor getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha];
-    brightness *= 0.8;
-    UIColor *darkerColor = [UIColor colorWithHue:hue saturation:saturation brightness:brightness
-                                           alpha:alpha];
-    NSArray *colors = @[ (id)self.tintColor.CGColor, (id)darkerColor.CGColor ];
-    CGGradientRef gradient = CGGradientCreateWithColors(CGColorGetColorSpace(darkerColor.CGColor),
-                                                        (__bridge CFArrayRef)(colors), NULL);
+    [self.tintColor setFill];
+    [path fill];
+    
+    CGContextSaveGState(context);
+    UIColor *white = [UIColor whiteColor];
+    UIColor *gray = [UIColor colorWithWhite:0.6 alpha:1];
+    NSArray *colors = @[ (id)white.CGColor, (id)gray.CGColor ];
+    CGGradientRef gradient = CGGradientCreateWithColors(CGColorGetColorSpace(gray.CGColor),
+                                                        (__bridge CFArrayRef)colors, NULL);
+    CGContextSetBlendMode(context, kCGBlendModeColorBurn);
     CGContextDrawLinearGradient(context, gradient, CGPointZero, CGPointMake(0, ImageSize.height),
                                 0);
-    CGGradientRelease(gradient), gradient = NULL;
+    CGGradientRelease(gradient);
+    CGContextRestoreGState(context);
     
     [self.tintColor set];
     [path stroke];
