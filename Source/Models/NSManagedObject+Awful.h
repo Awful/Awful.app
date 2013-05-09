@@ -15,7 +15,7 @@
 
 + (instancetype)firstMatchingPredicate:(id)formatOrPredicate, ...;
 
-+ (void)deleteAllMatchingPredicate:(NSString *)format, ...;
++ (void)deleteAllMatchingPredicate:(NSString *)format, ... NS_FORMAT_FUNCTION(1, 2);
 
 + (instancetype)insertNew;
 
