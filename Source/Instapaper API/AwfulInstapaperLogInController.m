@@ -116,15 +116,11 @@
             entryCell.textField.placeholder = @"Email or username";
             entryCell.textField.text = self.username;
             entryCell.textField.secureTextEntry = NO;
-            entryCell.textField.returnKeyType = ([self.password length] > 0 ? UIReturnKeyGo :
-                                                 UIReturnKeyNext);
         } else if (indexPath.row == 1) {
             entryCell.textLabel.text = @"Password";
             entryCell.textField.placeholder = @"If you have one";
             entryCell.textField.text = self.password;
             entryCell.textField.secureTextEntry = YES;
-            entryCell.textField.returnKeyType = ([self.username length] > 0 ? UIReturnKeyGo :
-                                                 UIReturnKeyNext);
         }
     } else if (indexPath.section == 1) {
         cell.textLabel.text = @"Log in";
@@ -177,23 +173,33 @@
                                           password:self.password
                                            andThen:^(NSError *error)
     {
+        self.loggingIn = NO;
         if (error) {
             [AwfulAlertView showWithTitle:@"Could Not Log In to Instapaper"
                                     error:error
                               buttonTitle:@"OK"];
-            self.tableView.userInteractionEnabled = YES;
-            [self.tableView reloadData];
         } else {
             [self.delegate instapaperLogInControllerDidSucceed:self];
         }
+        self.tableView.userInteractionEnabled = YES;
+        [self.tableView reloadData];
     }];
 }
 
 #pragma mark - UITextFieldDelegate
 
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    if (textField.tag == 0) {
+        textField.returnKeyType = ([self.password length] > 0 ? UIReturnKeyGo : UIReturnKeyNext);
+    } else {
+        textField.returnKeyType = ([self.username length] > 0 ? UIReturnKeyGo : UIReturnKeyNext);
+    }
+}
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    if ([self formIsValid]) {
+    if ([self formIsValid] && ([self.password length] > 0 || textField.tag == 1)) {
         [textField resignFirstResponder];
         [self login];
     } else {

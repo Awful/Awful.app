@@ -35,12 +35,18 @@
         if (callback) callback(nil);
     } failure:^(AFHTTPRequestOperation *operation, NSError *underlyingError) {
         if (callback) {
+            NSInteger errorCode = InstapaperAPIErrorCodes.unknownError;
+            NSString *description = @"An unknown error occurred";
+            if (operation.response.statusCode == 403) {
+                errorCode = InstapaperAPIErrorCodes.invalidUsernameOrPassword;
+                description = @"Invalid username or password";
+            }
             NSDictionary *userInfo = @{
                 NSUnderlyingErrorKey: underlyingError,
-                NSLocalizedDescriptionKey: @"An unknown error occurred",
+                NSLocalizedDescriptionKey: description,
             };
             NSError *error = [NSError errorWithDomain:InstapaperAPIErrorDomain
-                                                 code:InstapaperAPIErrorCodes.unknownError
+                                                 code:errorCode
                                              userInfo:userInfo];
             callback(error);
         }
