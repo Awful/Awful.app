@@ -258,6 +258,15 @@ static UISegmentedControl * MakeSegmentedBarButton(NSArray *items)
     }
 }
 
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
+{
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        return YES;
+    } else {
+        return toInterfaceOrientation != UIInterfaceOrientationPortraitUpsideDown;
+    }
+}
+
 - (void)dealloc
 {
     self.webView.delegate = nil;
