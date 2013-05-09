@@ -15,9 +15,9 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulImagePreviewViewController.h"
 #import "AwfulModels.h"
-#import "AwfulPocketHelper.h"
 #import "AwfulPostsView.h"
 #import "AwfulPrivateMessageComposeViewController.h"
+#import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "AwfulThemingViewController.h"
@@ -240,9 +240,9 @@
         [sheet addButtonWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title]
                             block:^{ [browser openURL:url]; }];
     }
-    if ([AwfulPocketHelper isLoggedIn]) {
-        [sheet addButtonWithTitle:@"Save to Pocket" block:^{
-            [AwfulPocketHelper attemptToSaveURL:url];
+    for (AwfulReadLaterService *service in [AwfulReadLaterService availableServices]) {
+        [sheet addButtonWithTitle:service.callToAction block:^{
+            [service saveURL:url];
         }];
     }
     [sheet addButtonWithTitle:@"Copy URL" block:^{

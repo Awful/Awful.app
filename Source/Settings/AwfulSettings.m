@@ -7,6 +7,7 @@
 
 #import "AwfulSettings.h"
 #import "PocketAPI.h"
+#import "SFHFKeychainUtils.h"
 #import "UIDevice+OperatingSystemVersion.h"
 
 @interface AwfulSettings ()
@@ -374,6 +375,54 @@ BOOL_PROPERTY(useDevDotForums, setUseDevDotForums)
     self[AwfulSettingsKeys.customBaseURL] = customBaseURL;
 }
 
+- (NSString *)instapaperUsername
+{
+    return self[AwfulSettingsKeys.instapaperUsername];
+}
+
+- (void)setInstapaperUsername:(NSString *)instapaperUsername
+{
+    self[AwfulSettingsKeys.instapaperUsername] = instapaperUsername;
+}
+
+static NSString * const InstapaperServiceName = @"InstapaperAPI";
+static NSString * const InstapaperUsernameKey = @"username";
+
+- (NSString *)instapaperPassword
+{
+    // Note nonstandard use of the NSError reference here: it's nilled out if the item could not be
+    // found in the keychain.
+    NSError *error;
+    NSString *password = [SFHFKeychainUtils getPasswordForUsername:InstapaperUsernameKey
+                                                    andServiceName:InstapaperServiceName
+                                                             error:&error];
+    if (error) {
+        NSLog(@"error retrieving Instapaper API password from keychain: %@", error);
+    }
+    return password;
+}
+
+- (void)setInstapaperPassword:(NSString *)instapaperPassword
+{
+    BOOL ok;
+    NSError *error;
+    if (instapaperPassword) {
+        ok = [SFHFKeychainUtils storeUsername:InstapaperUsernameKey
+                                  andPassword:instapaperPassword
+                               forServiceName:InstapaperServiceName
+                               updateExisting:YES
+                                        error:&error];
+    } else {
+        ok = [SFHFKeychainUtils deleteItemForUsername:InstapaperUsernameKey
+                                       andServiceName:InstapaperServiceName
+                                                error:&error];
+    }
+    if (!ok) {
+        NSLog(@"error %@ Instapaper API password: %@",
+              instapaperPassword ? @"setting" : @"clearing", error);
+    }
+}
+
 - (id)objectForKeyedSubscript:(id)key
 {
     return [[NSUserDefaults standardUserDefaults] objectForKey:key];
@@ -422,6 +471,9 @@ BOOL_PROPERTY(useDevDotForums, setUseDevDotForums)
     NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
     [userDefaults setPersistentDomain:empty forName:appDomain];
     [userDefaults synchronize];
+    
+    // Keychain.
+    self.instapaperPassword = nil;
 }
 
 @end
@@ -453,4 +505,5 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .lastOfferedPasteboardURL = @"last_offered_pasteboard_URL",
     .lastForcedUserInfoUpdateVersion = @"last_forced_user_info_update_version",
     .customBaseURL = @"custom_base_URL",
+    .instapaperUsername = @"instapaper_username",
 };

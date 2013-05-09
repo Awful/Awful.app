@@ -93,6 +93,10 @@ typedef NS_ENUM(NSInteger, AwfulKeepSidebarOpenWhen) {
 
 @property (copy, nonatomic) NSString *customBaseURL;
 
+@property (copy, nonatomic) NSString *instapaperUsername;
+
+@property (copy, nonatomic) NSString *instapaperPassword;
+
 - (id)objectForKeyedSubscript:(id)key;
 
 - (void)setObject:(id)object forKeyedSubscript:(id <NSCopying>)key;
@@ -132,4 +136,5 @@ extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *lastOfferedPasteboardURL;
     __unsafe_unretained NSString *lastForcedUserInfoUpdateVersion;
     __unsafe_unretained NSString *customBaseURL;
+    __unsafe_unretained NSString *instapaperUsername;
 } AwfulSettingsKeys;

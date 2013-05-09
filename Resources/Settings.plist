@@ -203,12 +203,28 @@
 		</dict>
 		<dict>
 			<key>Title</key>
-			<string>Pocket</string>
+			<string>&quot;Read Later&quot; Services</string>
 			<key>Settings</key>
 			<array>
 				<dict>
 					<key>Title</key>
-					<string>Logged In As</string>
+					<string>Instapaper</string>
+					<key>ValueIdentifier</key>
+					<string>InstapaperUsername</string>
+					<key>PredicateKeyPath</key>
+					<string>isLoggedInToInstapaper</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Log In</string>
+					<key>Action</key>
+					<string>InstapaperLogIn</string>
+					<key>DisplayTransformer</key>
+					<string>AwfulInstapaperStatusTransformer</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Pocket</string>
 					<key>ValueIdentifier</key>
 					<string>PocketUsername</string>
 					<key>PredicateKeyPath</key>

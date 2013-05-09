@@ -12,9 +12,9 @@
 #import "AwfulExternalBrowser.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
-#import "AwfulPocketHelper.h"
 #import "AwfulPostsView.h"
 #import "AwfulPrivateMessageComposeViewController.h"
+#import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
 #import "NSManagedObject+Awful.h"
 #import "NSURL+Punycode.h"
@@ -288,9 +288,9 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         [sheet addButtonWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title]
                             block:^{ [browser openURL:homepage]; }];
     }
-    if ([AwfulPocketHelper isLoggedIn]) {
-        [sheet addButtonWithTitle:@"Save to Pocket" block:^{
-            [AwfulPocketHelper attemptToSaveURL:homepage];
+    for (AwfulReadLaterService *service in [AwfulReadLaterService availableServices]) {
+        [sheet addButtonWithTitle:service.callToAction block:^{
+            [service saveURL:homepage];
         }];
     }
     [sheet addButtonWithTitle:@"Copy URL" block:^{

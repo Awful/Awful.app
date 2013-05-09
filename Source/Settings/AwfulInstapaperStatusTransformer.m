@@ -1,16 +1,15 @@
 //
-//  AwfulPocketStatusTransformer.m
+//  AwfulInstapaperStatusTransformer.m
 //  Awful
 //
-//  Created by Simon Frost on 03/05/2013.
+//  Created by Nolan Waite on 2013-05-09.
 //  Copyright (c) 2013 Awful Contributors. All rights reserved.
 //
 
-#import "AwfulPocketStatusTransformer.h"
+#import "AwfulInstapaperStatusTransformer.h"
 #import "AwfulSettings.h"
-#import "PocketAPI.h"
 
-@implementation AwfulPocketStatusTransformer
+@implementation AwfulInstapaperStatusTransformer
 
 + (Class)transformedValueClass
 {
@@ -24,10 +23,10 @@
 
 - (id)transformedValue:(AwfulSettings *)settings
 {
-    if ([[PocketAPI sharedAPI] isLoggedIn]) {
-        return @"Log Out of Pocket";
+    if (settings.instapaperUsername) {
+        return @"Log Out of Instapaper";
     } else {
-        return @"Log In to Pocket";
+        return @"Log In to Instapaper";
     }
 }
 

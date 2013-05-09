@@ -10,6 +10,7 @@
 #import "AwfulAppDelegate.h"
 #import "AwfulDisclosureIndicatorView.h"
 #import "AwfulHTTPClient.h"
+#import "AwfulInstapaperLogInController.h"
 #import "AwfulLicensesViewController.h"
 #import "AwfulLoginController.h"
 #import "AwfulModels.h"
@@ -18,12 +19,13 @@
 #import "AwfulSettingsChoiceViewController.h"
 #import "AwfulSplitViewController.h"
 #import "AwfulTheme.h"
+#import "InstapaperAPIClient.h"
 #import "NSManagedObject+Awful.h"
 #import "PocketAPI.h"
 #import "SVProgressHUD.h"
 #import "UIViewController+NavigationEnclosure.h"
 
-@interface AwfulSettingsViewController ()
+@interface AwfulSettingsViewController () <AwfulInstapaperLogInControllerDelegate>
 
 @property (strong, nonatomic) NSArray *sections;
 @property (strong, nonatomic) NSMutableArray *switches;
@@ -50,6 +52,11 @@
 }
 
 #pragma mark - Settings predicates
+
+- (BOOL)isLoggedInToInstapaper
+{
+    return !![AwfulSettings settings].instapaperUsername;
+}
 
 - (BOOL)isLoggedInToPocket
 {
@@ -237,6 +244,8 @@ typedef enum SettingType
         NSString *valueID = setting[@"ValueIdentifier"];
         if ([valueID isEqualToString:@"Username"]) {
             cell.detailTextLabel.text = [AwfulSettings settings].username;
+        } else if ([valueID isEqualToString:@"InstapaperUsername"]) {
+            cell.detailTextLabel.text = [AwfulSettings settings].instapaperUsername;
         } else if ([valueID isEqualToString:@"PocketUsername"]) {
             cell.detailTextLabel.text = [AwfulSettings settings].pocketUsername;
         }
@@ -361,6 +370,19 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
             [split setSidebarVisible:NO animated:YES];
         } else {
             [self.navigationController pushViewController:page animated:YES];
+        }
+    } else if ([action isEqualToString:@"InstapaperLogIn"]) {
+        if ([AwfulSettings settings].instapaperUsername) {
+            [AwfulSettings settings].instapaperUsername = nil;
+            [AwfulSettings settings].instapaperPassword = nil;
+            [self reloadSections];
+            [tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section]
+                     withRowAnimation:UITableViewRowAnimationNone];
+        } else {
+            AwfulInstapaperLogInController *logIn = [AwfulInstapaperLogInController new];
+            logIn.delegate = self;
+            [self presentViewController:[logIn enclosingNavigationController]
+                               animated:YES completion:nil];
         }
     } else if ([action isEqualToString:@"PocketLogIn"]) {
         if ([[PocketAPI sharedAPI] isLoggedIn]) {
@@ -490,6 +512,22 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     CGSize expected = [text sizeWithFont:[UIFont systemFontOfSize:15]
                                 constrainedToSize:max];
     return expected.height + margin;
+}
+
+#pragma mark - AwfulInstapaperLogInControllerDelegate
+
+- (void)instapaperLogInControllerDidSucceed:(AwfulInstapaperLogInController *)logIn
+{
+    [AwfulSettings settings].instapaperUsername = logIn.username;
+    [AwfulSettings settings].instapaperPassword = logIn.password;
+    [self reloadSections];
+    [self.tableView reloadData];
+    [logIn dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)instapaperLogInControllerDidCancel:(AwfulInstapaperLogInController *)logIn
+{
+    [logIn dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

@@ -20,13 +20,13 @@
 #import "AwfulPageBottomBar.h"
 #import "AwfulPageTopBar.h"
 #import "AwfulPlainBarButtonItem.h"
-#import "AwfulPocketHelper.h"
 #import "AwfulPopoverController.h"
 #import "AwfulPostsView.h"
 #import "AwfulPostsViewSettingsController.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulPrivateMessageComposeViewController.h"
 #import "AwfulPullToRefreshControl.h"
+#import "AwfulReadLaterService.h"
 #import "AwfulReplyComposeViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
@@ -1125,9 +1125,9 @@ static char KVOContext;
         [sheet addButtonWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title]
                             block:^{ [browser openURL:url]; }];
     }
-    if ([AwfulPocketHelper isLoggedIn]) {
-        [sheet addButtonWithTitle:@"Save to Pocket" block:^{
-            [AwfulPocketHelper attemptToSaveURL:url];
+    for (AwfulReadLaterService *service in [AwfulReadLaterService availableServices]) {
+        [sheet addButtonWithTitle:service.callToAction block:^{
+            [service saveURL:url];
         }];
     }
     [sheet addButtonWithTitle:@"Copy URL" block:^{

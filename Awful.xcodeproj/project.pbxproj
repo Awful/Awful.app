@@ -132,6 +132,10 @@
 		1C74880716A99BC30068B8A3 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C7487FF16A99BC30068B8A3 /* Icon.png */; };
 		1C74880816A99BC30068B8A3 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C74880016A99BC30068B8A3 /* Icon@2x.png */; };
 		1C74880A16AC4B710068B8A3 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C74880916AC4B710068B8A3 /* AssetsLibrary.framework */; };
+		1C7D22EF173B3335008A802C /* InstapaperAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7D22EE173B3335008A802C /* InstapaperAPIClient.m */; };
+		1C7D22F2173B553B008A802C /* AwfulInstapaperStatusTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7D22F1173B553A008A802C /* AwfulInstapaperStatusTransformer.m */; };
+		1C7D22F5173B5D1A008A802C /* AwfulInstapaperLogInController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7D22F4173B5D1A008A802C /* AwfulInstapaperLogInController.m */; };
+		1C7D22F9173B66F7008A802C /* AwfulReadLaterService.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7D22F8173B66F7008A802C /* AwfulReadLaterService.m */; };
 		1C83DB54161FF48600E53CFA /* ImgurHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */; };
 		1C8BE4FA169115020022B331 /* profile-view.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C8BE4F9169115020022B331 /* profile-view.css */; };
 		1C8BE51B16917FB60022B331 /* posts-view-25.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C8BE51A16917FB60022B331 /* posts-view-25.css */; };
@@ -923,7 +927,6 @@
 		F432C2CF173456C600012A88 /* PocketAPILogin.m in Sources */ = {isa = PBXBuildFile; fileRef = F432C2C8173456C600012A88 /* PocketAPILogin.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		F432C2D0173456C600012A88 /* PocketAPIOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F432C2CA173456C600012A88 /* PocketAPIOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		F432C2D1173456C600012A88 /* SFHFKeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = F432C2CD173456C600012A88 /* SFHFKeychainUtils.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		F432C2D61734570600012A88 /* AwfulPocketHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F432C2D51734570600012A88 /* AwfulPocketHelper.m */; };
 		F432C2D91734572000012A88 /* AwfulPocketStatusTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = F432C2D81734572000012A88 /* AwfulPocketStatusTransformer.m */; };
 /* End PBXBuildFile section */
 
@@ -1112,6 +1115,14 @@
 		1C7487FF16A99BC30068B8A3 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		1C74880016A99BC30068B8A3 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		1C74880916AC4B710068B8A3 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
+		1C7D22ED173B3335008A802C /* InstapaperAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InstapaperAPIClient.h; sourceTree = "<group>"; };
+		1C7D22EE173B3335008A802C /* InstapaperAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InstapaperAPIClient.m; sourceTree = "<group>"; };
+		1C7D22F0173B553A008A802C /* AwfulInstapaperStatusTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulInstapaperStatusTransformer.h; sourceTree = "<group>"; };
+		1C7D22F1173B553A008A802C /* AwfulInstapaperStatusTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulInstapaperStatusTransformer.m; sourceTree = "<group>"; };
+		1C7D22F3173B5D1A008A802C /* AwfulInstapaperLogInController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulInstapaperLogInController.h; sourceTree = "<group>"; };
+		1C7D22F4173B5D1A008A802C /* AwfulInstapaperLogInController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulInstapaperLogInController.m; sourceTree = "<group>"; };
+		1C7D22F7173B66F7008A802C /* AwfulReadLaterService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulReadLaterService.h; sourceTree = "<group>"; };
+		1C7D22F8173B66F7008A802C /* AwfulReadLaterService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulReadLaterService.m; sourceTree = "<group>"; };
 		1C83DB52161FF48600E53CFA /* ImgurHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImgurHTTPClient.h; sourceTree = "<group>"; };
 		1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImgurHTTPClient.m; sourceTree = "<group>"; };
 		1C8BE4F9169115020022B331 /* profile-view.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "profile-view.css"; sourceTree = "<group>"; };
@@ -1967,8 +1978,6 @@
 		F432C2CB173456C600012A88 /* PocketAPITypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PocketAPITypes.h; path = PocketSDK/PocketAPITypes.h; sourceTree = "<group>"; };
 		F432C2CC173456C600012A88 /* SFHFKeychainUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SFHFKeychainUtils.h; path = PocketSDK/SFHFKeychainUtils.h; sourceTree = "<group>"; };
 		F432C2CD173456C600012A88 /* SFHFKeychainUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SFHFKeychainUtils.m; path = PocketSDK/SFHFKeychainUtils.m; sourceTree = "<group>"; };
-		F432C2D41734570600012A88 /* AwfulPocketHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPocketHelper.h; sourceTree = "<group>"; };
-		F432C2D51734570600012A88 /* AwfulPocketHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPocketHelper.m; sourceTree = "<group>"; };
 		F432C2D71734572000012A88 /* AwfulPocketStatusTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPocketStatusTransformer.h; sourceTree = "<group>"; };
 		F432C2D81734572000012A88 /* AwfulPocketStatusTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPocketStatusTransformer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -2278,14 +2287,15 @@
 				1CF2462016DD957300C75E05 /* Composition */,
 				1CC7800E1612D8AE002AF958 /* Forums */,
 				1C83DB50161FF45200E53CFA /* Imgur API */,
+				1C7D22EC173B330E008A802C /* Instapaper API */,
 				1190F71813BE4EA900B9D271 /* Login */,
 				1190F71C13BE4EA900B9D271 /* Main */,
 				1C6474A61569989800C72657 /* Models */,
 				1CC7801D1612D988002AF958 /* Networking */,
 				1C05EDAD16230BFE00FE567F /* Parsing */,
-				F432C2D2173456F700012A88 /* Pocket */,
 				1CC780241612D9DD002AF958 /* Posts */,
 				1CB6010616D826DA00CBEE22 /* Private Messages */,
+				1C7D22F6173B66B3008A802C /* Read Later Services */,
 				1C278A3316453296007D3CEC /* Scrolling and Pulling */,
 				1C8694A216EF78D3003FE89E /* Settings */,
 				1CDD51951542949600326C7B /* Theming */,
@@ -2374,6 +2384,26 @@
 			path = Users;
 			sourceTree = "<group>";
 		};
+		1C7D22EC173B330E008A802C /* Instapaper API */ = {
+			isa = PBXGroup;
+			children = (
+				1C7D22ED173B3335008A802C /* InstapaperAPIClient.h */,
+				1C7D22EE173B3335008A802C /* InstapaperAPIClient.m */,
+				1C7D22F3173B5D1A008A802C /* AwfulInstapaperLogInController.h */,
+				1C7D22F4173B5D1A008A802C /* AwfulInstapaperLogInController.m */,
+			);
+			path = "Instapaper API";
+			sourceTree = "<group>";
+		};
+		1C7D22F6173B66B3008A802C /* Read Later Services */ = {
+			isa = PBXGroup;
+			children = (
+				1C7D22F7173B66F7008A802C /* AwfulReadLaterService.h */,
+				1C7D22F8173B66F7008A802C /* AwfulReadLaterService.m */,
+			);
+			path = "Read Later Services";
+			sourceTree = "<group>";
+		};
 		1C83DB50161FF45200E53CFA /* Imgur API */ = {
 			isa = PBXGroup;
 			children = (
@@ -2394,6 +2424,8 @@
 				1C277CA41543554700CD2CCE /* AwfulSettingsChoiceViewController.m */,
 				1CE8FDFC1709E534006A3B84 /* AwfulCustomBaseURLTransformer.h */,
 				1CE8FDFD1709E535006A3B84 /* AwfulCustomBaseURLTransformer.m */,
+				1C7D22F0173B553A008A802C /* AwfulInstapaperStatusTransformer.h */,
+				1C7D22F1173B553A008A802C /* AwfulInstapaperStatusTransformer.m */,
 				F432C2D71734572000012A88 /* AwfulPocketStatusTransformer.h */,
 				F432C2D81734572000012A88 /* AwfulPocketStatusTransformer.m */,
 				1CE8FDFF1709E728006A3B84 /* AwfulSettingsAlternateServerController.h */,
@@ -3503,15 +3535,6 @@
 				F432C2CD173456C600012A88 /* SFHFKeychainUtils.m */,
 			);
 			name = PocketSDK;
-			sourceTree = "<group>";
-		};
-		F432C2D2173456F700012A88 /* Pocket */ = {
-			isa = PBXGroup;
-			children = (
-				F432C2D41734570600012A88 /* AwfulPocketHelper.h */,
-				F432C2D51734570600012A88 /* AwfulPocketHelper.m */,
-			);
-			path = Pocket;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -4690,12 +4713,15 @@
 				F432C2CF173456C600012A88 /* PocketAPILogin.m in Sources */,
 				F432C2D0173456C600012A88 /* PocketAPIOperation.m in Sources */,
 				F432C2D1173456C600012A88 /* SFHFKeychainUtils.m in Sources */,
-				F432C2D61734570600012A88 /* AwfulPocketHelper.m in Sources */,
 				F432C2D91734572000012A88 /* AwfulPocketStatusTransformer.m in Sources */,
 				1CBEE26317389DB300C4884A /* AwfulPopoverController.m in Sources */,
 				1C00E0A3173973FA008895E7 /* AwfulScreenCoverView.m in Sources */,
 				1C00E0A61739E5E4008895E7 /* UIDevice+OperatingSystemVersion.m in Sources */,
 				1C00E0AA1739F91E008895E7 /* AwfulPageBarBackgroundView.m in Sources */,
+				1C7D22EF173B3335008A802C /* InstapaperAPIClient.m in Sources */,
+				1C7D22F2173B553B008A802C /* AwfulInstapaperStatusTransformer.m in Sources */,
+				1C7D22F5173B5D1A008A802C /* AwfulInstapaperLogInController.m in Sources */,
+				1C7D22F9173B66F7008A802C /* AwfulReadLaterService.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
