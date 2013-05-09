@@ -50,10 +50,10 @@
         return;
     }
     
-    UIGraphicsBeginImageContextWithOptions(imageSize, NO, 0);
+    UIGraphicsBeginImageContextWithOptions(ImageSize, NO, 0);
     CGContextRef context = UIGraphicsGetCurrentContext();
     
-    UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:(CGRect){ .size = imageSize }
+    UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:(CGRect){ .size = ImageSize }
                                                      cornerRadius:10];
     path.lineWidth = 4;
     [path addClip];
@@ -66,7 +66,7 @@
     NSArray *colors = @[ (id)self.tintColor.CGColor, (id)darkerColor.CGColor ];
     CGGradientRef gradient = CGGradientCreateWithColors(CGColorGetColorSpace(darkerColor.CGColor),
                                                         (__bridge CFArrayRef)(colors), NULL);
-    CGContextDrawLinearGradient(context, gradient, CGPointZero, CGPointMake(0, imageSize.height),
+    CGContextDrawLinearGradient(context, gradient, CGPointZero, CGPointMake(0, ImageSize.height),
                                 0);
     CGGradientRelease(gradient), gradient = NULL;
     
@@ -75,8 +75,8 @@
     
     if (self.icon) {
         CGRect rect = (CGRect){ .size = self.icon.size };
-        rect.origin.x = (imageSize.width - CGRectGetWidth(rect)) / 2;
-        rect.origin.y = (imageSize.height - CGRectGetHeight(rect)) / 2;
+        rect.origin.x = (ImageSize.width - CGRectGetWidth(rect)) / 2;
+        rect.origin.y = (ImageSize.height - CGRectGetHeight(rect)) / 2;
         [self.icon drawInRect:rect];
     }
     
@@ -89,7 +89,7 @@
     UIGraphicsEndImageContext();
 }
 
-const CGSize imageSize = {56, 56};
+const CGSize ImageSize = {56, 56};
 
 #pragma mark - PSUICollectionViewCell
 
