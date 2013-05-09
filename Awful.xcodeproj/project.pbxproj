@@ -1967,8 +1967,8 @@
 		F432C2CB173456C600012A88 /* PocketAPITypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PocketAPITypes.h; path = PocketSDK/PocketAPITypes.h; sourceTree = "<group>"; };
 		F432C2CC173456C600012A88 /* SFHFKeychainUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SFHFKeychainUtils.h; path = PocketSDK/SFHFKeychainUtils.h; sourceTree = "<group>"; };
 		F432C2CD173456C600012A88 /* SFHFKeychainUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SFHFKeychainUtils.m; path = PocketSDK/SFHFKeychainUtils.m; sourceTree = "<group>"; };
-		F432C2D41734570600012A88 /* AwfulPocketHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AwfulPocketHelper.h; path = PocketHelper/AwfulPocketHelper.h; sourceTree = "<group>"; };
-		F432C2D51734570600012A88 /* AwfulPocketHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AwfulPocketHelper.m; path = PocketHelper/AwfulPocketHelper.m; sourceTree = "<group>"; };
+		F432C2D41734570600012A88 /* AwfulPocketHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPocketHelper.h; sourceTree = "<group>"; };
+		F432C2D51734570600012A88 /* AwfulPocketHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPocketHelper.m; sourceTree = "<group>"; };
 		F432C2D71734572000012A88 /* AwfulPocketStatusTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPocketStatusTransformer.h; sourceTree = "<group>"; };
 		F432C2D81734572000012A88 /* AwfulPocketStatusTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPocketStatusTransformer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -3511,7 +3511,7 @@
 				F432C2D41734570600012A88 /* AwfulPocketHelper.h */,
 				F432C2D51734570600012A88 /* AwfulPocketHelper.m */,
 			);
-			name = Pocket;
+			path = Pocket;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
