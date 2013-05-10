@@ -30,7 +30,7 @@
     self.delegate = delegate;
     self.numberOfPages = 1;
     self.selectedPage = 1;
-    self.contentSizeForViewInPopover = CGSizeMake(130, 38 + pickerHeight);
+    self.contentSizeForViewInPopover = CGSizeMake(180, 38 + pickerHeight);
     return self;
 }
 
