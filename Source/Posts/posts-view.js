@@ -840,8 +840,9 @@ function nullOrUndefined(arg) {
 function highlightQuotes(post) {
   var username = Awful._highlightQuoteUsername
   if (nullOrUndefined(username)) return
-  $(post).find('.bbc-block a.quote_link').each(function(){
-    if ($(this).text().indexOf(username) === 0) {
+  $(post).find('.bbc-block h4').each(function(){
+    var text = $(this).text()
+    if (text.indexOf(username) === 0 && text.indexOf("posted") !== -1) {
       $(this).closest('div.bbc-block').addClass('mention')
     }
   })
