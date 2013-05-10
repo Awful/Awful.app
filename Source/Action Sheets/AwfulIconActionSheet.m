@@ -64,6 +64,9 @@
     cell.title = item.title;
     cell.icon = item.icon;
     cell.tintColor = item.tintColor;
+    cell.isAccessibilityElement = YES;
+    cell.accessibilityLabel = item.title;
+    cell.accessibilityTraits = UIAccessibilityTraitButton;
     return cell;
 }
 

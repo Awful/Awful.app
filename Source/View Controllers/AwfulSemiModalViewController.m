@@ -82,10 +82,12 @@
         .size.width = CGRectGetWidth(backView.bounds),
         .size.height = CGRectGetHeight(self.view.frame),
     };
+    self.view.accessibilityViewIsModal = YES;
     [backView insertSubview:self.view belowSubview:view];
     [self didMoveToParentViewController:viewController];
     [UIView animateWithDuration:0.3 animations:^{
         self.view.frame = CGRectOffset(self.view.frame, 0, -CGRectGetHeight(self.view.frame));
+        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.view);
     }];
 }
 

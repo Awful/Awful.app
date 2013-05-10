@@ -21,6 +21,10 @@
 - (id)initWithWindow:(UIWindow *)window
 {
     if (!(self = [super initWithFrame:CGRectZero])) return nil;
+    self.isAccessibilityElement = YES;
+    self.accessibilityLabel = @"Dismiss";
+    self.accessibilityHint = @"Double-tap to dismiss actions window";
+    self.accessibilityTraits = UIAccessibilityTraitButton;
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [window addSubview:self];
     return self;
