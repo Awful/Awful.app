@@ -18,4 +18,9 @@
 // Sent when the user logs out.
 extern NSString * const AwfulUserDidLogOutNotification;
 
+// Handles an awful:// URL.
+//
+// Returns YES if the awful:// URL made sense, or NO otherwise.
+- (BOOL)openAwfulURL:(NSURL *)url;
+
 @end

@@ -307,11 +307,11 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
                                       withString:@"…"];
     }
     NSString *message = [NSString stringWithFormat:@"Would you like to open this URL in Awful?\n\n%@", abbreviatedURL];
-		[AwfulAlertView showWithTitle:@"Open in Awful"
-                              message:message
-                        noButtonTitle:@"Cancel"
-                       yesButtonTitle:@"Open"
-                         onAcceptance:^{ [[UIApplication sharedApplication] openURL:[url awfulURL]]; }];
+    [AwfulAlertView showWithTitle:@"Open in Awful"
+                          message:message
+                    noButtonTitle:@"Cancel"
+                   yesButtonTitle:@"Open"
+                     onAcceptance:^{ [self openAwfulURL:[url awfulURL]]; }];
 }
 
 #pragma mark - awful:// URL scheme
@@ -324,6 +324,11 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     if ([[PocketAPI sharedAPI] handleOpenURL:url]) return YES;
     if ([[url scheme] compare:@"awful" options:NSCaseInsensitiveSearch] != NSOrderedSame) return NO;
     if (![AwfulHTTPClient client].loggedIn) return NO;
+    return [self openAwfulURL:url];
+}
+
+- (BOOL)openAwfulURL:(NSURL *)url
+{
     return [JLRoutes routeURL:url];
 }
 

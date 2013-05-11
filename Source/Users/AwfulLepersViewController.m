@@ -7,6 +7,7 @@
 
 #import "AwfulLepersViewController.h"
 #import "AwfulAlertView.h"
+#import "AwfulAppDelegate.h"
 #import "AwfulDisclosureIndicatorView.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulLeperCell.h"
@@ -263,11 +264,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     BanParsedInfo *ban = self.bans[indexPath.row];
     if (!ban.postID) return;
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"awful://posts/%@", ban.postID]];
-    [[UIApplication sharedApplication] openURL:url];
-    if (self.awfulSplitViewController) {
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
-        [self.awfulSplitViewController setSidebarVisible:NO animated:YES];
-    }
+    [[AwfulAppDelegate instance] openAwfulURL:url];
 }
 
 @end

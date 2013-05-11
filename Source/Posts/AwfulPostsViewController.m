@@ -8,6 +8,7 @@
 #import "AwfulPostsViewController.h"
 #import "AwfulActionSheet.h"
 #import "AwfulAlertView.h"
+#import "AwfulAppDelegate.h"
 #import "AwfulBrowserViewController.h"
 #import "AwfulDataStack.h"
 #import "AwfulDateFormatters.h"
@@ -754,7 +755,7 @@
 - (void)goToParentForum
 {
     NSString *url = [NSString stringWithFormat:@"awful://forums/%@", self.thread.forum.forumID];
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+    [[AwfulAppDelegate instance] openAwfulURL:[NSURL URLWithString:url]];
 }
 
 - (void)showHiddenSeenPosts
@@ -928,11 +929,11 @@ static char KVOContext;
 - (void)postsView:(AwfulPostsView *)postsView didTapLinkToURL:(NSURL *)url
 {
     if ([url awfulURL]) {
-        [[UIApplication sharedApplication] openURL:[url awfulURL]];
-    } else if (![url opensInBrowser]) {
-        [[UIApplication sharedApplication] openURL:url];
-    } else {
+        [[AwfulAppDelegate instance] openAwfulURL:[url awfulURL]];
+    } else if ([url opensInBrowser]) {
         [self openURLInBuiltInBrowser:url];
+    } else {
+        [[UIApplication sharedApplication] openURL:url];
     }
 }
 
@@ -1102,10 +1103,6 @@ static char KVOContext;
         NSLog(@"could not parse URL for link long tap menu: %@", urlString);
         return;
     }
-    if ([url awfulURL]) {
-        [[UIApplication sharedApplication] openURL:[url awfulURL]];
-        return;
-    }
     if (![url opensInBrowser]) {
         [[UIApplication sharedApplication] openURL:url];
         return;
@@ -1117,7 +1114,13 @@ static char KVOContext;
     }
     AwfulActionSheet *sheet = [AwfulActionSheet new];
     sheet.title = urlString;
-    [sheet addButtonWithTitle:@"Open" block:^{ [self openURLInBuiltInBrowser:url]; }];
+    [sheet addButtonWithTitle:@"Open" block:^{
+        if ([url awfulURL]) {
+            [[AwfulAppDelegate instance] openAwfulURL:[url awfulURL]];
+        } else {
+            [self openURLInBuiltInBrowser:url];
+        }
+    }];
     [sheet addButtonWithTitle:@"Open in Safari"
                         block:^{ [[UIApplication sharedApplication] openURL:url]; }];
     for (AwfulExternalBrowser *browser in [AwfulExternalBrowser installedBrowsers]) {
