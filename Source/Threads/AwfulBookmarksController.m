@@ -64,14 +64,6 @@
     self.tableView.tableFooterView.backgroundColor = [UIColor clearColor];
 }
 
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    if ([self.fetchedResultsController.fetchedObjects count] < 40) {
-        self.tableView.showsInfiniteScrolling = NO;
-    }
-}
-
 - (void)loadPageNum:(NSUInteger)pageNum
 {   
     [self.networkOperation cancel];
@@ -100,12 +92,12 @@
                 [[AwfulDataStack sharedDataStack] save];
                 self.ignoreUpdates = NO;
                 self.lastRefreshDate = [NSDate date];
-                self.tableView.showsInfiniteScrolling = [threads count] >= 40;
                 if (self.showBookmarkColors != wasShowingBookmarkColors) {
                     [self.tableView reloadData];
                 }
             }
             self.currentPage = pageNum;
+            self.tableView.showsInfiniteScrolling = [threads count] >= 40;
         }
         self.refreshing = NO;
     }];
