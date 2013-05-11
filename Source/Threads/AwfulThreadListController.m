@@ -164,6 +164,10 @@
     [super viewDidLoad];
     self.currentPage = 1;
     self.tableView.rowHeight = 75;
+    
+    // Hide separators after the last cell.
+    self.tableView.tableFooterView = [UIView new];
+    self.tableView.tableFooterView.backgroundColor = [UIColor clearColor];
 }
 
 - (void)showThreadActionsForThread:(AwfulThread *)thread

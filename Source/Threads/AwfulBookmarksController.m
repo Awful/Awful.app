@@ -55,15 +55,6 @@
                                                           cacheName:nil];
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    
-    // Hide separators after the last cell.
-    self.tableView.tableFooterView = [UIView new];
-    self.tableView.tableFooterView.backgroundColor = [UIColor clearColor];
-}
-
 - (void)loadPageNum:(NSUInteger)pageNum
 {   
     [self.networkOperation cancel];
