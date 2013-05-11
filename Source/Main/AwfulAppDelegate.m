@@ -427,6 +427,8 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         } else {
             [nav pushViewController:postsView animated:YES];
         }
+        
+        [self.splitViewController setSidebarVisible:NO animated:YES];
         return YES;
     };
     
@@ -452,6 +454,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
                     self.tabBarController.selectedViewController = nav;
                 }
                 [top jumpToPostWithID:params[@"postID"]];
+                [self.splitViewController setSidebarVisible:NO animated:YES];
                 return YES;
             }
         }
@@ -507,6 +510,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
                             onPage:(NSInteger)page
                     ofThreadWithID:(NSString *)threadID
 {
+    [self.splitViewController setSidebarVisible:NO animated:YES];
     AwfulPostsViewController *postsView = [AwfulPostsViewController new];
     postsView.thread = [AwfulThread firstOrNewThreadWithThreadID:threadID];
     [postsView loadPage:page singleUserID:nil];
