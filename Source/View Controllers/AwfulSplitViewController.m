@@ -15,7 +15,7 @@
 @property (nonatomic) UIViewController *mainViewController;
 @property (nonatomic) UIView *sidebarHolder;
 @property (nonatomic) UIView *coverView;
-@property (nonatomic) UISwipeGestureRecognizer *mainSwipeRight;
+@property (nonatomic) UIPanGestureRecognizer *revealSidebarGesture;
 
 @end
 
@@ -75,29 +75,32 @@
     if (_coverView) return _coverView;
     _coverView = [UIView new];
     
-    UISwipeGestureRecognizer *swipeLeft = [UISwipeGestureRecognizer new];
-    swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
-    [swipeLeft addTarget:self action:@selector(didSwipeLeftOnCoverView)];
-    [_coverView addGestureRecognizer:swipeLeft];
-    
-    UISwipeGestureRecognizer *swipeRight = [UISwipeGestureRecognizer new];
-    swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
-    [swipeRight addTarget:self action:@selector(didSwipeRightOnCoverView)];
-    [_coverView addGestureRecognizer:swipeRight];
+    UISwipeGestureRecognizer *hideSidebarGesture = [UISwipeGestureRecognizer new];
+    hideSidebarGesture.direction = UISwipeGestureRecognizerDirectionLeft;
+    [hideSidebarGesture addTarget:self action:@selector(didTriggerHideSidebarGesture:)];
+    [_coverView addGestureRecognizer:hideSidebarGesture];
     
     UITapGestureRecognizer *tap = [UITapGestureRecognizer new];
-    [tap addTarget:self action:@selector(didTapCoverView:)];
+    [tap addTarget:self action:@selector(didTriggerHideSidebarGesture:)];
     [_coverView addGestureRecognizer:tap];
+    
+    UISwipeGestureRecognizer *popViewControllerGesture = [UISwipeGestureRecognizer new];
+    popViewControllerGesture.direction = UISwipeGestureRecognizerDirectionRight;
+    [popViewControllerGesture addTarget:self action:@selector(didTriggerPopViewControllerGesture)];
+    [_coverView addGestureRecognizer:popViewControllerGesture];
+
     
     return _coverView;
 }
 
-- (void)didSwipeLeftOnCoverView
+- (void)didTriggerHideSidebarGesture:(UIGestureRecognizer *)recognizer
 {
-    [self setSidebarVisible:NO animated:YES];
+    if (recognizer.state == UIGestureRecognizerStateEnded) {
+        [self setSidebarVisible:NO animated:YES];
+    }
 }
 
-- (void)didSwipeRightOnCoverView
+- (void)didTriggerPopViewControllerGesture
 {
     UINavigationController *nav = (id)self.sidebarViewController;
     if ([nav isKindOfClass:[AwfulTabBarController class]]) {
@@ -106,12 +109,6 @@
     if ([nav isKindOfClass:[UINavigationController class]]) {
         [nav popViewControllerAnimated:YES];
     }
-}
-
-- (void)didTapCoverView:(UITapGestureRecognizer *)tap
-{
-    if (tap.state != UIGestureRecognizerStateEnded) return;
-    [self setSidebarVisible:NO animated:YES];
 }
 
 - (void)setSidebarCanHide:(BOOL)canHide
@@ -127,25 +124,40 @@
     
     [self layoutViewControllers];
     
-    if (canHide && !self.mainSwipeRight.view) {
-        [self.mainViewController.view addGestureRecognizer:self.mainSwipeRight];
-    } else if (!canHide && self.mainSwipeRight.view) {
-        [self.mainViewController.view removeGestureRecognizer:self.mainSwipeRight];
+    if (canHide && !self.revealSidebarGesture.view) {
+        [self.mainViewController.view addGestureRecognizer:self.revealSidebarGesture];
+    } else if (!canHide && self.revealSidebarGesture.view) {
+        [self.mainViewController.view removeGestureRecognizer:self.revealSidebarGesture];
     }
 }
 
-- (UISwipeGestureRecognizer *)mainSwipeRight
+- (UIPanGestureRecognizer *)revealSidebarGesture
 {
-    if (_mainSwipeRight) return _mainSwipeRight;
-    _mainSwipeRight = [UISwipeGestureRecognizer new];
-    _mainSwipeRight.direction = UISwipeGestureRecognizerDirectionRight;
-    [_mainSwipeRight addTarget:self action:@selector(didSwipeRightOnMainView)];
-    return _mainSwipeRight;
+    if (_revealSidebarGesture) return _revealSidebarGesture;
+    _revealSidebarGesture = [UIPanGestureRecognizer new];
+    [_revealSidebarGesture addTarget:self action:@selector(didPanRightOnMainView:)];
+    return _revealSidebarGesture;
 }
 
-- (void)didSwipeRightOnMainView
+- (void)didPanRightOnMainView:(UIPanGestureRecognizer *)pan
 {
-    [self setSidebarVisible:YES animated:YES];
+    CGPoint translation = [pan translationInView:pan.view];
+    if (pan.state == UIGestureRecognizerStateBegan) {
+        
+        // Only consider horizontal pans that start moving right; otherwise cancel the pan.
+        if (fabsf(translation.x) < fabs(translation.y) || translation.x <= 0) {
+            pan.enabled = NO;
+            pan.enabled = YES;
+        }
+        
+        [self setSidebarVisible:YES animated:YES];
+        [pan setTranslation:CGPointZero inView:pan.view];
+    } else if (pan.state == UIGestureRecognizerStateChanged) {
+        if (fabsf(translation.x) > 10) {
+            [self setSidebarVisible:(translation.x > 0) animated:YES];
+            [pan setTranslation:CGPointZero inView:pan.view];
+        }
+    }
 }
 
 const CGFloat SidebarWidth = 320;
