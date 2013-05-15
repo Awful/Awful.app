@@ -699,18 +699,9 @@ function sendViaIframe(url) {
 Awful.stylesheetURL = function(url){
   if ($('link').length) {
     $('link').attr('href', url)
-    return
+  } else {
+    $('head').append($('<link>', { rel: 'stylesheet', href: url }))
   }
-  $('head').append($('<link>', { rel: 'stylesheet', href: url }))
-  var img = $('<img>', { src: url })[0]
-  img.onerror = function(){
-    Awful.firstStylesheetDidLoad()
-  }
-}
-
-Awful.firstStylesheetDidLoad = function(){
-  addSpinnerIfNecessary()
-  Awful.invokeOnView('firstStylesheetDidLoad')
 }
 
 Awful.dark = function(dark){

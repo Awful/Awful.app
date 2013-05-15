@@ -319,12 +319,6 @@ static NSString * JSONizeBool(BOOL aBool)
     [self evalJavaScript:@"Awful.endMessage(%@)", JSONizeValue(self.endMessage)];
 }
 
-- (void)firstStylesheetDidLoad
-{
-    self.webView.frame = (CGRect){ .size = self.bounds.size };
-    [self addSubview:self.webView];
-}
-
 #pragma mark - UIWebViewDelegate
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
@@ -341,6 +335,8 @@ static NSString * JSONizeBool(BOOL aBool)
         [self updateFontSize];
         self.hasLoaded = YES;
         [self reloadData];
+        self.webView.frame = (CGRect){ .size = self.bounds.size };
+        [self addSubview:self.webView];
         if (self.jumpToElementAfterLoading) {
             [self jumpToElementWithID:self.jumpToElementAfterLoading];
             self.jumpToElementAfterLoading = nil;
@@ -355,9 +351,6 @@ static NSString * JSONizeBool(BOOL aBool)
     NSURL *url = request.URL;
     if ([url.scheme isEqualToString:@"x-objc"]) {
         [self bridgeJavaScriptToObjectiveCWithURL:url];
-        return NO;
-    } else if ([url.scheme isEqualToString:@"x-objc-postsview"]) {
-        [self bridgeJavaScriptToObjectiveCOnSelfWithURL:url];
         return NO;
     } else if (navigationType == UIWebViewNavigationTypeLinkClicked) {
         if ([self.delegate respondsToSelector:@selector(postsView:didTapLinkToURL:)]) {
@@ -377,12 +370,6 @@ static NSString * JSONizeBool(BOOL aBool)
     if (![self.delegate respondsToSelector:@selector(whitelistedSelectorsForPostsView:)]) return;
     NSArray *whitelist = [self.delegate whitelistedSelectorsForPostsView:self];
     InvokeBridgedMethodWithURLAndTarget(url, self.delegate, whitelist);
-}
-
-- (void)bridgeJavaScriptToObjectiveCOnSelfWithURL:(NSURL *)url
-{
-    NSArray *whitelist = @[ @"firstStylesheetDidLoad" ];
-    InvokeBridgedMethodWithURLAndTarget(url, self, whitelist);
 }
 
 void InvokeBridgedMethodWithURLAndTarget(NSURL *url, id target, NSArray *whitelist)
