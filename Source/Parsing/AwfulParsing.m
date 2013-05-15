@@ -7,6 +7,7 @@
 
 #import "AwfulParsing.h"
 #import "AwfulThread.h"
+#import "GTMNSString+HTML.h"
 #import "NSURL+QueryDictionary.h"
 #import "TFHpple.h"
 #import "XPathQuery.h"
@@ -465,7 +466,7 @@ static NSString * DeEntitify(NSString *withEntities)
     
     self.author = [UserParsedInfo new];
     TFHppleElement *author = [doc searchForSingle:@"//td[" HAS_CLASS(author) "]/a"];
-    if (author) self.author.username = [author content];
+    if (author) self.author.username = [[author content] gtm_stringByUnescapingFromHTML];
     NSString *profileLink = [author objectForKey:@"href"];
     if (profileLink) {
         NSError *error;
@@ -600,7 +601,7 @@ static NSString * DeEntitify(NSString *withEntities)
     
     self.author = [UserParsedInfo new];
     TFHppleElement *author = [doc searchForSingle:@"//dt[" HAS_CLASS(author) "]"];
-    self.author.username = [author content];
+    self.author.username = [[author content] gtm_stringByUnescapingFromHTML];
     NSCharacterSet *space = [NSCharacterSet whitespaceCharacterSet];
     NSArray *authorClasses = [[author objectForKey:@"class"]
                               componentsSeparatedByCharactersInSet:space];
@@ -933,7 +934,7 @@ static BOOL PrivateMessageIconSeen(NSString *src)
     }
     TFHppleElement *username = [doc searchForSingle:@"//dl[" HAS_CLASS(userinfo)
                                 "]//dt[" HAS_CLASS(author) "]"];
-    self.from.username = [username content];
+    self.from.username = [[username content] gtm_stringByUnescapingFromHTML];
     TFHppleElement *regdate = [doc searchForSingle:@"//dl[" HAS_CLASS(userinfo)
                                "]//dd[" HAS_CLASS(registered) "]"];
     self.from.regdate = RegdateFromString([regdate content]);
@@ -1032,7 +1033,7 @@ static BOOL PrivateMessageIconSeen(NSString *src)
         
         TFHppleElement *fromCell = [row searchForSingle:@"//td[4]"];
         info.from = [UserParsedInfo new];
-        info.from.username = fromCell.content;
+        info.from.username = [fromCell.content gtm_stringByUnescapingFromHTML];
         
         TFHppleElement *sentDateCell = [row searchForSingle:@"//td[5]"];
         if (sentDateCell) {

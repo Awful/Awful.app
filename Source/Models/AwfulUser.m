@@ -8,6 +8,7 @@
 #import "AwfulUser.h"
 #import "AwfulDataStack.h"
 #import "AwfulParsing.h"
+#import "GTMNSString+HTML.h"
 #import "NSManagedObject+Awful.h"
 #import "TFHpple.h"
 
@@ -40,7 +41,7 @@
         user = [self insertNew];
         user.userID = userID;
     }
-    user.username = Stringify(json[@"username"]);
+    user.username = [Stringify(json[@"username"]) gtm_stringByUnescapingFromHTML];
     
     // Everything else is optional.
     if (json[@"aim"]) user.aimName = StringOrNilIfEmpty(json[@"aim"]);
