@@ -48,6 +48,7 @@ Awful.stylesheetURL = function(url){
     $('link').attr('href', url)
   } else {
     $('head').append($('<link>', { rel: 'stylesheet', href: url }))
+    $('#awful-inline-style').remove()
   }
 }
 

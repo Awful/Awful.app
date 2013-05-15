@@ -13,6 +13,7 @@
 
 @property (nonatomic) UIWebView *webView;
 
+@property (nonatomic) BOOL didLoadHTML;
 @property (nonatomic) BOOL hasLoaded;
 
 @property (nonatomic) NSMutableIndexSet *toDelete;
@@ -43,17 +44,6 @@
     webView.backgroundColor = [UIColor clearColor];
     webView.opaque = NO;
     RemoveShadowFromAboveAndBelowWebView(webView);
-    NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
-    NSURL *postsViewURL = [thisBundle URLForResource:@"posts-view" withExtension:@"html"];
-    NSError *error;
-    NSString *html = [NSString stringWithContentsOfURL:postsViewURL
-                                              encoding:NSUTF8StringEncoding
-                                                 error:&error];
-    if (!html) {
-        NSLog(@"error loading html for %@: %@", [self class], error);
-        return nil;
-    }
-    [webView loadHTMLString:html baseURL:[thisBundle resourceURL]];
     _webView = webView;
     return self;
 }
@@ -204,10 +194,41 @@ static NSString * JSONizeBool(BOOL aBool)
     [self updateStylesheetURL];
 }
 
+- (void)loadHTML
+{
+    NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
+    NSURL *postsViewURL = [thisBundle URLForResource:@"posts-view" withExtension:@"html"];
+    NSError *error;
+    NSString *html = [NSString stringWithContentsOfURL:postsViewURL
+                                              encoding:NSUTF8StringEncoding
+                                                 error:&error];
+    if (!html) {
+        NSLog(@"error loading html for %@: %@", [self class], error);
+        return;
+    }
+    NSString *css = @"";
+    if (self.stylesheetURL) {
+        css = [NSString stringWithContentsOfURL:self.stylesheetURL
+                                       encoding:NSUTF8StringEncoding
+                                          error:&error];
+        if (!css) {
+            NSLog(@"error loading CSS from %@: %@", self.stylesheetURL, error);
+            return;
+        }
+    }
+    [self.webView loadHTMLString:[NSString stringWithFormat:html, css]
+                         baseURL:[thisBundle resourceURL]];
+    self.didLoadHTML = YES;
+}
+
 - (void)updateStylesheetURL
 {
-    NSString *url = [self.stylesheetURL absoluteString];
-    [self evalJavaScript:@"Awful.stylesheetURL(%@)", JSONizeValue(url ?: @"")];
+    if (self.didLoadHTML) {
+        NSString *url = [self.stylesheetURL absoluteString];
+        [self evalJavaScript:@"Awful.stylesheetURL(%@)", JSONizeValue(url ?: @"")];
+    } else {
+        [self loadHTML];
+    }
 }
 
 - (void)setDark:(BOOL)dark
@@ -324,7 +345,6 @@ static NSString * JSONizeBool(BOOL aBool)
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
     dispatch_once(&_onceOnFirstLoad, ^{
-        [self updateStylesheetURL];
         [self updateDark];
         [self updateShowAvatars];
         [self updateShowImages];
