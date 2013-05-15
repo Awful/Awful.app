@@ -90,8 +90,7 @@ static void RemoveShadowFromAboveAndBelowWebView(UIWebView *webView)
         ad = [self.delegate advertisementHTMLForPostsView:self];
         if ([ad length] == 0) ad = @"";
     }
-    // Foundation's JSON serializer only does arrays and objects at the top level.
-    [self evalJavaScript:@"Awful.ad(%@[0])", JSONize(@[ ad ])];
+    [self evalJavaScript:@"Awful.ad(%@)", JSONizeValue(ad)];
 }
 
 - (void)beginUpdates
@@ -160,6 +159,17 @@ static NSString * JSONize(id obj)
     return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 }
 
+static NSString * JSONizeValue(id value)
+{
+    // Foundation's JSON serializer only does arrays and objects at the top level.
+    return [JSONize(@[ value ?: [NSNull null] ]) stringByAppendingString:@"[0]"];
+}
+
+static NSString * JSONizeBool(BOOL aBool)
+{
+    return aBool ? @"true" : @"false";
+}
+
 - (void)clearAllPosts
 {
     [self evalJavaScript:@"Awful.posts([])"];
@@ -174,7 +184,7 @@ static NSString * JSONize(id obj)
     // Clear the hash first in case we're jumping again to the same place as last time.
     [self evalJavaScript:@"window.location.hash = ''"];
     if ([elementID length] > 0) {
-        [self evalJavaScript:@"window.location.hash = '#' + %@[0]", JSONize(@[ elementID ])];
+        [self evalJavaScript:@"window.location.hash = '#' + %@", JSONizeValue(elementID)];
     }
 }
 
@@ -197,7 +207,7 @@ static NSString * JSONize(id obj)
 - (void)updateStylesheetURL
 {
     NSString *url = [self.stylesheetURL absoluteString];
-    [self evalJavaScript:@"Awful.stylesheetURL('%@')", url ? url : @""];
+    [self evalJavaScript:@"Awful.stylesheetURL(%@)", JSONizeValue(url ?: @"")];
 }
 
 - (void)setDark:(BOOL)dark
@@ -209,7 +219,7 @@ static NSString * JSONize(id obj)
 
 - (void)updateDark
 {
-    [self evalJavaScript:@"Awful.dark(%@)", self.dark ? @"true" : @"false"];
+    [self evalJavaScript:@"Awful.dark(%@)", JSONizeBool(self.dark)];
 }
 
 - (void)setShowAvatars:(BOOL)showAvatars
@@ -221,7 +231,7 @@ static NSString * JSONize(id obj)
 
 - (void)updateShowAvatars
 {
-    [self evalJavaScript:@"Awful.showAvatars(%@)", self.showAvatars ? @"true" : @"false"];
+    [self evalJavaScript:@"Awful.showAvatars(%@)", JSONizeBool(self.showAvatars)];
 }
 
 - (void)setShowImages:(BOOL)showImages
@@ -233,7 +243,7 @@ static NSString * JSONize(id obj)
 
 - (void)updateShowImages
 {
-    [self evalJavaScript:@"Awful.showImages(%@)", self.showImages ? @"true" : @"false"];
+    [self evalJavaScript:@"Awful.showImages(%@)", JSONizeBool(self.showImages)];
 }
 
 - (void)setFontSize:(NSNumber *)size
@@ -257,8 +267,8 @@ static NSString * JSONize(id obj)
 
 - (void)updateHighlightQuoteUsername
 {
-    NSString *json = JSONize(@[ self.highlightQuoteUsername ?: [NSNull null] ]);
-    [self evalJavaScript:@"Awful.highlightQuoteUsername(%@[0])", json];
+    [self evalJavaScript:@"Awful.highlightQuoteUsername(%@)",
+     JSONizeValue(self.highlightQuoteUsername)];
 }
 
 - (void)setHighlightMentionUsername:(NSString *)highlightMentionUsername
@@ -270,8 +280,8 @@ static NSString * JSONize(id obj)
 
 - (void)updateHighlightMentionUsername
 {
-    NSString *json = JSONize(@[ self.highlightMentionUsername ?: [NSNull null] ]);
-    [self evalJavaScript:@"Awful.highlightMentionUsername(%@[0])", json];
+    [self evalJavaScript:@"Awful.highlightMentionUsername(%@)",
+     JSONizeValue(self.highlightMentionUsername)];
 }
 
 - (UIScrollView *)scrollView
@@ -288,8 +298,7 @@ static NSString * JSONize(id obj)
 
 - (void)updateLoadingMessage
 {
-    NSString *json = JSONize(@[ self.loadingMessage ?: [NSNull null] ]);
-    [self evalJavaScript:@"Awful.loading(%@[0])", json];
+    [self evalJavaScript:@"Awful.loading(%@)", JSONizeValue(self.loadingMessage)];
     if (self.loadingMessage) {
         self.scrollView.contentOffset = CGPointZero;
         self.scrollView.scrollEnabled = NO;
@@ -307,8 +316,7 @@ static NSString * JSONize(id obj)
 
 - (void)updateEndMessage
 {
-    NSString *json = JSONize(@[ self.endMessage ?: [NSNull null] ]);
-    [self evalJavaScript:@"Awful.endMessage(%@[0])", json];
+    [self evalJavaScript:@"Awful.endMessage(%@)", JSONizeValue(self.endMessage)];
 }
 
 - (void)firstStylesheetDidLoad
