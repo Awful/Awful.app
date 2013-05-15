@@ -234,7 +234,12 @@ typedef enum SettingType
     
     if (setting[@"DisplayTransformer"]) {
         NSValueTransformer *transformer = [NSClassFromString(setting[@"DisplayTransformer"]) new];
-        cell.textLabel.text = [transformer transformedValue:[AwfulSettings settings]];
+        if (settingType == ChoiceSetting) {
+            cell.textLabel.text = setting[@"Title"];
+            cell.detailTextLabel.text = [transformer transformedValue:[AwfulSettings settings]];
+        } else {
+            cell.textLabel.text = [transformer transformedValue:[AwfulSettings settings]];
+        }
     } else {
         cell.textLabel.text = setting[@"Title"];
     }
