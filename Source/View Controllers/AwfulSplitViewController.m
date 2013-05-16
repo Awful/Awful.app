@@ -148,6 +148,7 @@
         if (fabsf(translation.x) < fabs(translation.y) || translation.x <= 0) {
             pan.enabled = NO;
             pan.enabled = YES;
+            return;
         }
         
         [self setSidebarVisible:YES animated:YES];
