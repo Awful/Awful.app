@@ -655,6 +655,7 @@ andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))call
     // redirect, then parse out the info we need.
     NSURLRequest *request = [self requestWithMethod:@"GET" path:@"showthread.php"
                                          parameters:@{ @"goto" : @"post", @"postid" : postID }];
+    __block BOOL didSucceed = NO;
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
                                                                success:^(id _, id __)
     {
@@ -667,11 +668,8 @@ andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))call
                                              userInfo:@{ NSLocalizedDescriptionKey: message }];
             callback(error, nil, 0);
         }
-    } failure:^(id _, NSError *error) {
-        // Once we get the redirect we need, we call the callback then cancel the operation.
-        // So there's no need to do anything if we get a "cancelled" error.
-        if (!([error.domain isEqualToString:NSURLErrorDomain] &&
-              error.code == NSURLErrorCancelled)) {
+    } failure:^(AFHTTPRequestOperation *op, NSError *error) {
+        if (!didSucceed) {
             if (callback) callback(error, nil, 0);
         }
     }];
@@ -680,6 +678,7 @@ andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))call
                                                  NSURLResponse *response)
     {
         AFHTTPRequestOperation *strongOp = weakOp;
+        didSucceed = YES;
         if (!response) return request;
         [strongOp cancel];
         if (!callback) return nil;
