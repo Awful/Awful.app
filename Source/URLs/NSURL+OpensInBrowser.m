@@ -17,7 +17,7 @@
     NSString *host = [[self host] lowercaseString];
     if ([host hasSuffix:@"itunes.apple.com"]) return NO;
     if ([host hasSuffix:@"phobos.apple.com"]) return NO;
-    if ([[UIDevice currentDevice] awful_iOS6OrLater]) {
+    if ([[UIDevice currentDevice] awful_iOS5]) {
         if ([host hasSuffix:@"www.youtube.com"]) return NO;
     }
     return YES;
