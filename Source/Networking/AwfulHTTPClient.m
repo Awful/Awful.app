@@ -62,9 +62,11 @@ static AwfulHTTPClient *instance = nil;
 + (void)initialize
 {
     if (self != [AwfulHTTPClient class]) return;
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDidChange:)
-                                                 name:AwfulSettingsDidChangeNotification
-                                               object:nil];
+    NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
+    [noteCenter addObserver:self selector:@selector(settingsDidChange:)
+                       name:AwfulSettingsDidChangeNotification object:nil];
+    [noteCenter addObserver:self selector:@selector(didLogOut:)
+                       name:AwfulUserDidLogOutNotification object:nil];
 }
 
 + (void)settingsDidChange:(NSNotification *)note
@@ -74,6 +76,11 @@ static AwfulHTTPClient *instance = nil;
     if ([keys firstObjectCommonWithArray:relevant]) {
         [self reset];
     }
+}
+
++ (void)didLogOut:(NSNotification *)note
+{
+    [self reset];
 }
 
 - (BOOL)isLoggedIn
