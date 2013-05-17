@@ -469,6 +469,7 @@
 - (void)showThreadActionsFromRect:(CGRect)rect inView:(UIView *)view
 {
     AwfulIconActionSheet *sheet = [AwfulIconActionSheet new];
+    sheet.title = self.title;
     AwfulIconActionItem *copyURL = [AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL
                                                               action:^{
         NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
