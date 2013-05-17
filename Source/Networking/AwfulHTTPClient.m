@@ -6,6 +6,7 @@
 //
 
 #import "AwfulHTTPClient.h"
+#import "AwfulAppDelegate.h"
 #import "AwfulDataStack.h"
 #import "AwfulErrorDomain.h"
 #import "AwfulJSONOrScrapeOperation.h"
@@ -96,8 +97,44 @@ static AwfulHTTPClient *instance = nil;
             weakSelf.reachable = status != AFNetworkReachabilityStatusNotReachable;
         }];
         [self registerHTTPOperationClass:[AwfulJSONOrScrapeOperation class]];
+        
+        // When a user changes their password, subsequent HTTP operations will come back without a
+        // login cookie. So any operation might bear the news that we've been logged out.
+        NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
+        [noteCenter addObserver:self selector:@selector(networkingOperationDidStart:)
+                           name:AFNetworkingOperationDidStartNotification object:nil];
     }
     return self;
+}
+
+- (void)networkingOperationDidStart:(NSNotification *)note
+{
+    // Only subscribe for notifications if we're logged in.
+    if (!self.loggedIn) return;
+    AFURLConnectionOperation *op = note.object;
+    if (![op.request.URL.absoluteString hasPrefix:self.baseURL.absoluteString]) return;
+    NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
+    [noteCenter addObserver:self selector:@selector(networkingOperationDidFinish:)
+                       name:AFNetworkingOperationDidFinishNotification object:op];
+}
+
+- (void)networkingOperationDidFinish:(NSNotification *)note
+{
+    AFHTTPRequestOperation *op = note.object;
+    NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
+    [noteCenter removeObserver:self name:AFNetworkingOperationDidFinishNotification object:op];
+    if (![op isKindOfClass:[AFHTTPRequestOperation class]]) return;
+    
+    // We only subscribed for this notification if we were logged in at the time. If we aren't
+    // logged in now, the cookies changed, and we need to finish logging out.
+    if (op.hasAcceptableStatusCode && !self.loggedIn) {
+        [[AwfulAppDelegate instance] logOut];
+    }
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (NSOperation *)listThreadsInForumWithID:(NSString *)forumID
