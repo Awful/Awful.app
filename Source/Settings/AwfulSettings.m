@@ -416,6 +416,9 @@ static NSString * const InstapaperUsernameKey = @"username";
         ok = [SFHFKeychainUtils deleteItemForUsername:InstapaperUsernameKey
                                        andServiceName:InstapaperServiceName
                                                 error:&error];
+        if (!ok && error.code == errSecItemNotFound) {
+            ok = YES;
+        }
     }
     if (!ok) {
         NSLog(@"error %@ Instapaper API password: %@",
