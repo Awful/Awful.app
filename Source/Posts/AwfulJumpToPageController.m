@@ -10,6 +10,7 @@
 
 @interface SpecificTopBarView : AwfulPageBarBackgroundView
 
+@property (weak, nonatomic) UISegmentedControl *firstLastControl;
 @property (weak, nonatomic) UIButton *jumpButton;
 
 @end
@@ -30,7 +31,7 @@
     self.delegate = delegate;
     self.numberOfPages = 1;
     self.selectedPage = 1;
-    self.contentSizeForViewInPopover = CGSizeMake(180, 38 + pickerHeight);
+    self.contentSizeForViewInPopover = CGSizeMake(300, 38 + pickerHeight);
     return self;
 }
 
@@ -54,6 +55,8 @@
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
     SpecificTopBarView *topBar = [[SpecificTopBarView alloc] initWithFrame:CGRectMake(0, 0, 320, 38)];
     topBar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
+    [topBar.firstLastControl addTarget:self action:@selector(didTapFirstLastControl:)
+                      forControlEvents:UIControlEventValueChanged];
     [topBar.jumpButton addTarget:self action:@selector(didTapJumpToPage)
                 forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:topBar];
@@ -68,6 +71,16 @@
 
 // UIPickerView is rather picky (lol) about its height. Make sure you pick a value it likes.
 const CGFloat pickerHeight = 162;
+
+- (void)didTapFirstLastControl:(UISegmentedControl *)seg
+{
+    if (seg.selectedSegmentIndex == 0) {
+        [self.delegate jumpToPageController:self didSelectPage:1];
+    } else if (seg.selectedSegmentIndex == 1) {
+        [self.delegate jumpToPageController:self didSelectPage:AwfulThreadPageLast];
+    }
+    seg.selectedSegmentIndex = UISegmentedControlNoSegment;
+}
 
 - (void)didTapJumpToPage
 {
@@ -118,14 +131,45 @@ const CGFloat pickerHeight = 162;
                      resizableImageWithCapInsets:UIEdgeInsetsZero];
     self.backgroundColor = [UIColor colorWithPatternImage:back];
     
+    UIImage *button = [[UIImage imageNamed:@"pagebar-button.png"]
+                       resizableImageWithCapInsets:UIEdgeInsetsMake(0, 3, 0, 3)];
+    UIImage *selected = [[UIImage imageNamed:@"pagebar-button-selected.png"]
+                         resizableImageWithCapInsets:UIEdgeInsetsMake(0, 3, 0, 3)];
+    
+    NSString *firstPageItem = @"First";
+    firstPageItem.accessibilityLabel = @"Jump to first page";
+    NSString *lastPageItem = @"Last";
+    lastPageItem.accessibilityLabel = @"Jump to last page";
+    NSArray *items = @[ firstPageItem, lastPageItem ];
+    UISegmentedControl *firstLastControl = [[UISegmentedControl alloc] initWithItems:items];
+    firstLastControl.frame = CGRectMake(0, 0, 115, 29);
+    CGSize contentOffset = CGSizeMake(0, 1);
+    for (NSUInteger i = 0; i < firstLastControl.numberOfSegments; i++) {
+        [firstLastControl setContentOffset:contentOffset forSegmentAtIndex:i];
+    }
+    NSDictionary *titleAttributes = @{
+        UITextAttributeFont: [UIFont boldSystemFontOfSize:11],
+        UITextAttributeTextColor: [UIColor whiteColor],
+        UITextAttributeTextShadowOffset: [NSValue valueWithUIOffset:UIOffsetZero],
+    };
+    [firstLastControl setTitleTextAttributes:titleAttributes forState:UIControlStateNormal];
+    [firstLastControl setBackgroundImage:button
+                                forState:UIControlStateNormal
+                              barMetrics:UIBarMetricsDefault];
+    [firstLastControl setBackgroundImage:selected
+                                forState:UIControlStateSelected
+                              barMetrics:UIBarMetricsDefault];
+    [firstLastControl setDividerImage:[UIImage imageNamed:@"pagebar-segmented-divider.png"]
+                  forLeftSegmentState:UIControlStateNormal
+                    rightSegmentState:UIControlStateNormal
+                           barMetrics:UIBarMetricsDefault];
+    [self addSubview:firstLastControl];
+    _firstLastControl = firstLastControl;
+    
     UIButton *jumpButton = [UIButton buttonWithType:UIButtonTypeCustom];
     jumpButton.frame = CGRectMake(0, 0, 110, 29);
     [jumpButton setTitle:@"Jump to Page" forState:UIControlStateNormal];
-    UIImage *button = [[UIImage imageNamed:@"pagebar-button.png"]
-                       resizableImageWithCapInsets:UIEdgeInsetsMake(0, 3, 0, 3)];
     [jumpButton setBackgroundImage:button forState:UIControlStateNormal];
-    UIImage *selected = [[UIImage imageNamed:@"pagebar-button-selected.png"]
-                         resizableImageWithCapInsets:UIEdgeInsetsMake(0, 3, 0, 3)];
     [jumpButton setBackgroundImage:selected forState:UIControlStateSelected];
     jumpButton.titleLabel.font = [UIFont boldSystemFontOfSize:11];
     [self addSubview:jumpButton];
@@ -135,7 +179,12 @@ const CGFloat pickerHeight = 162;
 
 - (void)layoutSubviews
 {
-    self.jumpButton.center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
+    const CGFloat margin = 8;
+    self.firstLastControl.center = CGPointMake(CGRectGetMidX(self.firstLastControl.bounds) + margin,
+                                               CGRectGetMidY(self.bounds));
+    self.jumpButton.center = CGPointMake(CGRectGetMaxX(self.bounds) -
+                                         CGRectGetMidX(self.jumpButton.bounds) - margin,
+                                         CGRectGetMidY(self.bounds));
 }
 
 @end

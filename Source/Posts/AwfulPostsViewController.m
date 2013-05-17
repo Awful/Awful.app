@@ -527,17 +527,6 @@
              }
          }];
     }]];
-    
-    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeJumpToFirstPage
-                                              action:^{
-        [self loadPage:1 singleUserID:self.singleUserID];
-    }]];
-    if (!self.singleUserID) {
-        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeJumpToLastPage
-                                                  action:^{
-            [self loadPage:AwfulThreadPageLast singleUserID:self.singleUserID];
-        }]];
-    }
     [sheet presentFromViewController:self fromRect:rect inView:view];
 }
 
