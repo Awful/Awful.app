@@ -309,7 +309,7 @@ extern NSString * const AwfulUserDidLogInNotification;
 // replyMessageID   - The message ID of the message this is regarding, or nil if not a reply.
 // forwardMessageID - The message ID of the message this is a forward of, or nil of not a forward.
 // callback         - A block to call after sending the message, which takes as parameters:
-//                      error   - An error on failure, or nil on success.
+//                      error - An error on failure, or nil on success.
 //
 // Returns the enqueued network operation.
 - (NSOperation *)sendPrivateMessageTo:(NSString *)username

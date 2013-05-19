@@ -404,14 +404,14 @@ static AwfulHTTPClient *instance = nil;
             return;
         }
         NSMutableDictionary *postParameters = [@{
-                                               @"threadid" : threadID,
-                                               @"formkey" : formInfo.formkey,
-                                               @"form_cookie" : formInfo.formCookie,
-                                               @"action" : @"postreply",
-                                               @"message" : PreparePostText(text),
-                                               @"parseurl" : @"yes",
-                                               @"submit" : @"Submit Reply",
-                                               } mutableCopy];
+            @"threadid" : threadID,
+            @"formkey" : formInfo.formkey,
+            @"form_cookie" : formInfo.formCookie,
+            @"action" : @"postreply",
+            @"message" : PreparePostText(text),
+            @"parseurl" : @"yes",
+            @"submit" : @"Submit Reply",
+        } mutableCopy];
         if (formInfo.bookmark) {
             postParameters[@"bookmark"] = formInfo.bookmark;
         }
@@ -420,13 +420,12 @@ static AwfulHTTPClient *instance = nil;
                                                  parameters:postParameters];
         id opTwo = [self HTTPRequestOperationWithRequest:postRequest
                                                  success:^(id _, SuccessfulReplyInfo *replyInfo)
-                 {
-                     NSString *postID = replyInfo.lastPage ? nil : replyInfo.postID;
-                     if (callback) callback(nil, postID);
-                 } failure:^(id _, NSError *error)
-                 {
-                     if (callback) callback(error, nil);
-                 }];
+        {
+            NSString *postID = replyInfo.lastPage ? nil : replyInfo.postID;
+            if (callback) callback(nil, postID);
+        } failure:^(id _, NSError *error) {
+            if (callback) callback(error, nil);
+        }];
         [opTwo setCreateParsedInfoBlock:^id(NSData *data) {
             return [[SuccessfulReplyInfo alloc] initWithHTMLData:data];
         }];
