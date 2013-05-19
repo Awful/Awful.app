@@ -973,6 +973,26 @@ andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))call
     return op;
 }
 
+- (NSOperation *)listAvailablePostIconsForForumWithID:(NSString *)forumID
+    andThen:(void (^)(NSError *error, NSDictionary *postIcons, NSArray *postIconIDs))callback
+{
+    NSDictionary *parameters = @{ @"action": @"newthread", @"forumid": forumID };
+    NSURLRequest *request = [self requestWithMethod:@"GET" path:@"newthread.php"
+                                         parameters:parameters];
+    id op = [self HTTPRequestOperationWithRequest:request
+                                          success:^(id _, ComposePrivateMessageParsedInfo *info)
+    {
+        if (callback) callback(nil, info.postIcons, info.postIconIDs);
+    } failure:^(id _, NSError *error) {
+        if (callback) callback(error, nil, nil);
+    }];
+    [op setCreateParsedInfoBlock:^id(NSData *data) {
+        return [[ComposePrivateMessageParsedInfo alloc] initWithHTMLData:data];
+    }];
+    [self enqueueHTTPRequestOperation:op];
+    return op;
+}
+
 #pragma mark - AFHTTPClient
 
 - (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest

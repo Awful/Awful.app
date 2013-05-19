@@ -9,6 +9,7 @@
 #import "AwfulThreadComposeViewController.h"
 #import "AwfulComposeViewControllerSubclass.h"
 #import "AwfulComposeField.h"
+#import "AwfulHTTPClient.h"
 #import "AwfulPostIconPickerController.h"
 #import "AwfulTheme.h"
 #import "AwfulThreadTags.h"
@@ -226,7 +227,16 @@
 {
     [super viewDidLoad];
     [self updatePostIconButtonImage];
-    // TODO fetch available post icons and remember them.
+    [[AwfulHTTPClient client] listAvailablePostIconsForForumWithID:self.forum.forumID
+     andThen:^(NSError *error, NSDictionary *postIcons, NSArray *postIconIDs) {
+         NSMutableDictionary *postIconNames = [NSMutableDictionary new];
+         for (id key in postIcons) {
+             postIconNames[key] = [[postIcons[key] lastPathComponent] stringByDeletingPathExtension];
+         }
+         self.availablePostIcons = postIconNames;
+         self.availablePostIconIDs = postIconIDs;
+         [self.postIconPicker reloadData];
+    }];
 }
 
 - (void)viewWillAppear:(BOOL)animated

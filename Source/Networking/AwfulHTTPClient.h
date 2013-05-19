@@ -297,7 +297,8 @@ extern NSString * const AwfulUserDidLogInNotification;
 //              postIconIDs - An ordered list of icon IDs on success, or nil on failure.
 //
 // Returns the enqueued network operation.
-- (NSOperation *)listAvailablePrivateMessagePostIconsAndThen:(void (^)(NSError *error, NSDictionary *postIcons, NSArray *postIconIDs))callback;
+- (NSOperation *)listAvailablePrivateMessagePostIconsAndThen:
+    (void (^)(NSError *error, NSDictionary *postIcons, NSArray *postIconIDs))callback;
 
 // Send a private message.
 //
@@ -318,5 +319,17 @@ extern NSString * const AwfulUserDidLogInNotification;
                asReplyToMessageWithID:(NSString *)replyMessageID
            forwardedFromMessageWithID:(NSString *)forwardMessageID
                               andThen:(void (^)(NSError *error))callback;
+
+// List post icons usable for a new thread in a forum.
+//
+// forumID  - Which forum to list icons for.
+// callback - A block to call after listing post icons, which takes as parameters:
+//              error - An error on failure, or nil on success.
+//              postIcons - A dicitonary mapping icon IDs to URLs on success, or nil on failure.
+//              postIconIDs - An ordered list of icon IDs on success, or nil on failure;
+//
+// Returns the enqueued network operation.
+- (NSOperation *)listAvailablePostIconsForForumWithID:(NSString *)forumID
+    andThen:(void (^)(NSError *error, NSDictionary *postIcons, NSArray *postIconIDs))callback;
 
 @end
