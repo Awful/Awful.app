@@ -65,8 +65,10 @@
         if (error) {
             [SVProgressHUD dismiss];
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"
-                               completion:^{
-                self.textView.userInteractionEnabled = YES;
+                               completion:^
+            {
+                [self setTextFieldsAndViewUserInteractionEnabled:YES];
+                [self.textView becomeFirstResponder];
             }];
             return;
         }
@@ -93,7 +95,7 @@
     [self.networkOperation cancel];
     if ([SVProgressHUD isVisible]) {
         [SVProgressHUD dismiss];
-        self.textView.userInteractionEnabled = YES;
+        [self setTextFieldsAndViewUserInteractionEnabled:YES];
         [self.textView becomeFirstResponder];
     } else {
         SEL selector = @selector(privateMessageComposeControllerDidCancel:);
