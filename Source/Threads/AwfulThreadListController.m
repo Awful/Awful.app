@@ -23,12 +23,13 @@
 #import "AwfulTabBarController.h"
 #import "AwfulTheme.h"
 #import "AwfulThreadCell.h"
+#import "AwfulThreadComposeViewController.h"
 #import "AwfulThreadTags.h"
 #import "NSString+CollapseWhitespace.h"
 #import "SVProgressHUD.h"
 #import "UIViewController+NavigationEnclosure.h"
 
-@interface AwfulThreadListController ()
+@interface AwfulThreadListController () <AwfulThreadComposeViewControllerDelegate>
 
 @property (nonatomic) NSMutableSet *cellsMissingThreadTags;
 @property (nonatomic) UIBarButtonItem *newThreadButtonItem;
@@ -60,6 +61,11 @@
 
 - (void)didTapNewThreadButtonItem
 {
+    AwfulThreadComposeViewController *compose = [[AwfulThreadComposeViewController alloc]
+                                                 initWithForum:self.forum];
+    compose.delegate = self;
+    [self presentViewController:[compose enclosingNavigationController] animated:YES
+                     completion:nil];
 }
 
 - (void)dealloc
@@ -487,6 +493,20 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
       singleUserID:nil];
     [self displayPage:page];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+#pragma mark - AwfulThreadComposeViewControllerDelegate
+
+- (void)threadComposeControllerDidPostThread:(AwfulThreadComposeViewController *)controller
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+    // TODO push newly-posted thread in posts view
+}
+
+- (void)threadComposeControllerDidCancel:(AwfulThreadComposeViewController *)controller
+{
+    // TODO save draft?
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end
