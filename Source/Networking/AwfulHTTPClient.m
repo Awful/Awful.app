@@ -665,9 +665,15 @@ static NSString * PreparePostText(NSString *noEntities)
             }
             return;
         }
+        NSString *username = json[@"username"];
+        if (![username isKindOfClass:[NSString class]] &&
+            [username respondsToSelector:@selector(stringValue)])
+        {
+            username = [(id)username stringValue];
+        }
         NSDictionary *userInfo = @{
             @"userID": [json[@"userid"] stringValue],
-            @"username": json[@"username"],
+            @"username": username,
             @"canSendPrivateMessages": json[@"receivepm"],
         };
         [[NSNotificationCenter defaultCenter] postNotificationName:AwfulUserDidLogInNotification
