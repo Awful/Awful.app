@@ -2713,8 +2713,6 @@
 			children = (
 				1CC780271612D9DE002AF958 /* AwfulPostsViewController.h */,
 				1CC780281612D9DE002AF958 /* AwfulPostsViewController.m */,
-				1CE8FE4217174B34006A3B84 /* AwfulPlainBarButtonItem.h */,
-				1CE8FE4317174B34006A3B84 /* AwfulPlainBarButtonItem.m */,
 				1CFBECEC163076F1008AF641 /* AwfulPageBottomBar.h */,
 				1CFBECED163076F1008AF641 /* AwfulPageBottomBar.m */,
 				1CE8FDED17027724006A3B84 /* AwfulJumpToPageController.h */,
@@ -2841,6 +2839,8 @@
 		1CE2D99D16688AC40024AC1C /* UIKit and Foundation */ = {
 			isa = PBXGroup;
 			children = (
+				1CE8FE4217174B34006A3B84 /* AwfulPlainBarButtonItem.h */,
+				1CE8FE4317174B34006A3B84 /* AwfulPlainBarButtonItem.m */,
 				1CE2D9CC166ABD0D0024AC1C /* NSFileManager+UserDirectories.h */,
 				1CE2D9CD166ABD0D0024AC1C /* NSFileManager+UserDirectories.m */,
 				1CE2D9CE166ABD0D0024AC1C /* NSString+CollapseWhitespace.h */,
