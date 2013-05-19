@@ -39,6 +39,7 @@
                                                              target:nil
                                                              action:NULL];
     self.navigationItem.backBarButtonItem = marks;
+    self.navigationItem.rightBarButtonItem = nil;
     return self;
 }
 
