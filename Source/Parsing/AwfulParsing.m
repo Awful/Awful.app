@@ -1107,3 +1107,51 @@ static BOOL PrivateMessageIconSeen(NSString *src)
 }
 
 @end
+
+
+@interface NewThreadFormParsedInfo ()
+
+@property (copy, nonatomic) NSString *formkey;
+@property (copy, nonatomic) NSString *formCookie;
+@property (copy, nonatomic) NSString *automaticallyParseURLs;
+@property (copy, nonatomic) NSString *bookmarkThread;
+
+@end
+
+@implementation NewThreadFormParsedInfo
+
+- (void)parseHTMLData
+{
+    TFHpple *doc = [[TFHpple alloc] initWithHTMLData:self.htmlData];
+    TFHppleElement *formkey = [doc searchForSingle:@"//input[@name = 'formkey']"];
+    self.formkey = [formkey objectForKey:@"value"];
+    TFHppleElement *formCookie = [doc searchForSingle:@"//input[@name = 'form_cookie']"];
+    self.formCookie = [formCookie objectForKey:@"value"];
+    TFHppleElement *parseURLs = [doc searchForSingle:
+                                 @"//input[@name = 'parseurl' and @checked = 'checked']"];
+    self.automaticallyParseURLs = [parseURLs objectForKey:@"value"];
+    TFHppleElement *bookmarkThread = [doc searchForSingle:
+                                      @"//input[@name = 'bookmark' and @checked = 'checked']"];
+    self.bookmarkThread = [bookmarkThread objectForKey:@"value"];
+}
+
+@end
+
+
+@interface SuccessfulNewThreadParsedInfo ()
+
+@property (copy, nonatomic) NSString *threadID;
+
+@end
+
+@implementation SuccessfulNewThreadParsedInfo
+
+- (void)parseHTMLData
+{
+    TFHpple *doc = [[TFHpple alloc] initWithHTMLData:self.htmlData];
+    TFHppleElement *threadLink = [doc searchForSingle:@"//a[contains(@href, 'showthread')]"];
+    NSURL *url = [NSURL URLWithString:[threadLink objectForKey:@"href"]];
+    self.threadID = url.queryDictionary[@"threadid"];
+}
+
+@end

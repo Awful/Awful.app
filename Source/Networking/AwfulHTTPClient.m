@@ -992,6 +992,64 @@ andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))call
     return op;
 }
 
+- (NSOperation *)postThreadInForumWithID:(NSString *)forumID
+                                 subject:(NSString *)subject
+                                    icon:(NSString *)iconID
+                                    text:(NSString *)text
+                                 andThen:(void (^)(NSError *error, NSString *threadID))callback
+{
+    NSParameterAssert([forumID length] > 0);
+    NSParameterAssert([subject length] > 0);
+    NSParameterAssert([text length] > 0);
+    
+    NSDictionary *parameters = @{ @"action": @"newthread", @"forumid": forumID };
+    NSURLRequest *request = [self requestWithMethod:@"GET" path:@"newthread.php"
+                                         parameters:parameters];
+    id op = [self HTTPRequestOperationWithRequest:request
+                                          success:^(id _, NewThreadFormParsedInfo *info)
+    {
+        NSMutableDictionary *postParameters = [@{
+            @"forumid": forumID,
+            @"action": @"postthread",
+            @"formkey": info.formkey,
+            @"form_cookie": info.formCookie,
+            // I'm not sure if the subject needs any particular escapes, or what's allowed. This
+            // is a total guess.
+            @"subject": PreparePostText(subject),
+            @"iconid": iconID ?: @"0",
+            @"message": PreparePostText(text),
+            @"polloptions": @"4",
+            @"submit": @"Submit New Thread",
+        } mutableCopy];
+        if (info.automaticallyParseURLs) {
+            postParameters[@"parseurl"] = info.automaticallyParseURLs;
+        }
+        if (info.bookmarkThread) {
+            postParameters[@"bookmark"] = info.bookmarkThread;
+        }
+        NSURLRequest *postRequest = [self requestWithMethod:@"POST" path:@"newthread.php"
+                                                 parameters:postParameters];
+        id postOp = [self HTTPRequestOperationWithRequest:postRequest
+                                                  success:^(id _, SuccessfulNewThreadParsedInfo *info)
+        {
+            if (callback) callback(nil, info.threadID);
+        } failure:^(id _, NSError *error) {
+            if (callback) callback(error, nil);
+        }];
+        [postOp setCreateParsedInfoBlock:^id(NSData *data) {
+            return [[SuccessfulNewThreadParsedInfo alloc] initWithHTMLData:data];
+        }];
+        [self enqueueHTTPRequestOperation:postOp];
+    } failure:^(id _, NSError *error) {
+        if (callback) callback(error, nil);
+    }];
+    [op setCreateParsedInfoBlock:^id(NSData *data) {
+        return [[NewThreadFormParsedInfo alloc] initWithHTMLData:data];
+    }];
+    [self enqueueHTTPRequestOperation:op];
+    return op;
+}
+
 #pragma mark - AFHTTPClient
 
 - (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest

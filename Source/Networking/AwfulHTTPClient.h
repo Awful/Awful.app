@@ -332,4 +332,21 @@ extern NSString * const AwfulUserDidLogInNotification;
 - (NSOperation *)listAvailablePostIconsForForumWithID:(NSString *)forumID
     andThen:(void (^)(NSError *error, NSDictionary *postIcons, NSArray *postIconIDs))callback;
 
+// Post a new thread in a forum.
+//
+// forumID  - Which forum to post in. Cannot be nil.
+// subject  - What the thread is about. Cannot be nil.
+// iconID   - The ID of the post icon to use, or nil for the default icon.
+// text     - The contents of the original post. Cannot be nil.
+// callback - A block to call after posting the thread, which takes as parameters:
+//              error    - An error on failure, or nil on success.
+//              threadID - The ID of the newly-created thread on success, or nil on failure.
+//
+// Returns the enqueued network operation.
+- (NSOperation *)postThreadInForumWithID:(NSString *)forumID
+                                 subject:(NSString *)subject
+                                    icon:(NSString *)iconID
+                                    text:(NSString *)text
+                                 andThen:(void (^)(NSError *error, NSString *threadID))callback;
+
 @end

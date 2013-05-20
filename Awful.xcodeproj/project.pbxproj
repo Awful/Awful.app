@@ -138,6 +138,7 @@
 		1C7D22F9173B66F7008A802C /* AwfulReadLaterService.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7D22F8173B66F7008A802C /* AwfulReadLaterService.m */; };
 		1C7D232917447428008A802C /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C90F8FB16B0C2940015A071 /* GTMNSString+HTML.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		1C7D232C1747CE5F008A802C /* AwfulThreadComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7D232B1747CE5F008A802C /* AwfulThreadComposeViewController.m */; };
+		1C7D232E174AA9BF008A802C /* newthread.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C7D232D174AA9BF008A802C /* newthread.html */; };
 		1C83DB54161FF48600E53CFA /* ImgurHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */; };
 		1C8BE4FA169115020022B331 /* profile-view.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C8BE4F9169115020022B331 /* profile-view.css */; };
 		1C8BE51B16917FB60022B331 /* posts-view-25.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C8BE51A16917FB60022B331 /* posts-view-25.css */; };
@@ -1127,6 +1128,7 @@
 		1C7D22F8173B66F7008A802C /* AwfulReadLaterService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulReadLaterService.m; sourceTree = "<group>"; };
 		1C7D232A1747CE5F008A802C /* AwfulThreadComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadComposeViewController.h; sourceTree = "<group>"; };
 		1C7D232B1747CE5F008A802C /* AwfulThreadComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadComposeViewController.m; sourceTree = "<group>"; };
+		1C7D232D174AA9BF008A802C /* newthread.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = newthread.html; sourceTree = "<group>"; };
 		1C83DB52161FF48600E53CFA /* ImgurHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImgurHTTPClient.h; sourceTree = "<group>"; };
 		1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImgurHTTPClient.m; sourceTree = "<group>"; };
 		1C8BE4F9169115020022B331 /* profile-view.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "profile-view.css"; sourceTree = "<group>"; };
@@ -2561,6 +2563,7 @@
 				1CBDB5EC1625B76F0004BDF4 /* forumdisplay.html */,
 				1CBDB5ED1625B76F0004BDF4 /* member.html */,
 				1CBDB5EE1625B76F0004BDF4 /* newreply.html */,
+				1C7D232D174AA9BF008A802C /* newthread.html */,
 				1CF2461916DC286A00C75E05 /* private-list.html */,
 				1C9FDACA16E1EA6600C665B5 /* private-new.html */,
 				1CF2461A16DC286A00C75E05 /* private-one.html */,
@@ -3681,6 +3684,7 @@
 				1CF2461C16DC286A00C75E05 /* private-one.html in Resources */,
 				1C9FDACC16E1EA8700C665B5 /* private-new.html in Resources */,
 				1C9FDB6E16E5DCBA00C665B5 /* private-reply.html in Resources */,
+				1C7D232E174AA9BF008A802C /* newthread.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

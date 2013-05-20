@@ -116,3 +116,19 @@
 }
 
 @end
+
+
+@interface NewThreadTests : ParsingTests @end
+
+@implementation NewThreadTests
+
++ (NSString *)fixtureFilename { return @"newthread.html"; }
+
+- (void)testNewThreadID
+{
+    SuccessfulNewThreadParsedInfo *info = [[SuccessfulNewThreadParsedInfo alloc]
+                                           initWithHTMLData:self.fixture];
+    STAssertEqualObjects(info.threadID, @"3550424", nil);
+}
+
+@end

@@ -8,6 +8,7 @@
 
 #import "AwfulThreadComposeViewController.h"
 #import "AwfulComposeViewControllerSubclass.h"
+#import "AwfulAlertView.h"
 #import "AwfulComposeField.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulPostIconPickerController.h"
@@ -131,7 +132,36 @@
 
 - (void)send:(NSString *)messageBody
 {
-    // TODO AwfulHTTPClient calls!
+    id op = [[AwfulHTTPClient client] postThreadInForumWithID:self.forum.forumID
+                                                      subject:self.subject
+                                                         icon:self.postIconID
+                                                         text:messageBody
+                                                      andThen:^(NSError *error, NSString *threadID)
+    {
+        if (error) {
+            [SVProgressHUD dismiss];
+            [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"
+                               completion:^
+            {
+                [self setTextFieldAndViewUserInteractionEnabled:YES];
+                [self.textView becomeFirstResponder];
+            }];
+            return;
+        }
+        [SVProgressHUD showSuccessWithStatus:@"Posted"];
+    }];
+    self.networkOperation = op;
+}
+
+- (NSString *)postIconID
+{
+    if ([self.postIcon length] == 0) return nil;
+    for (NSString *key in self.availablePostIcons) {
+        if ([self.availablePostIcons[key] isEqualToString:self.postIcon]) {
+            return key;
+        }
+    }
+    return nil;
 }
 
 - (void)retheme

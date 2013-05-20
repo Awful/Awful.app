@@ -191,3 +191,20 @@ typedef enum {
 @property (readonly, copy, nonatomic) NSString *text;
 
 @end
+
+
+@interface NewThreadFormParsedInfo : ParsedInfo
+
+@property (readonly, copy, nonatomic) NSString *formkey;
+@property (readonly, copy, nonatomic) NSString *formCookie;
+@property (readonly, copy, nonatomic) NSString *automaticallyParseURLs;
+@property (readonly, copy, nonatomic) NSString *bookmarkThread;
+
+@end
+
+
+@interface SuccessfulNewThreadParsedInfo : ParsedInfo
+
+@property (readonly, copy, nonatomic) NSString *threadID;
+
+@end
