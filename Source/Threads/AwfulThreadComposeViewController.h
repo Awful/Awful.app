@@ -25,7 +25,8 @@
 @protocol AwfulThreadComposeViewControllerDelegate <NSObject>
 
 // Sent after successfully posting the thread.
-- (void)threadComposeControllerDidPostThread:(AwfulThreadComposeViewController *)controller;
+- (void)threadComposeController:(AwfulThreadComposeViewController *)controller
+            didPostThreadWithID:(NSString *)threadID;
 
 // Sent if the user cancels writing the OP.
 - (void)threadComposeControllerDidCancel:(AwfulThreadComposeViewController *)controller;

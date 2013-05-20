@@ -497,10 +497,14 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 #pragma mark - AwfulThreadComposeViewControllerDelegate
 
-- (void)threadComposeControllerDidPostThread:(AwfulThreadComposeViewController *)controller
+- (void)threadComposeController:(AwfulThreadComposeViewController *)controller
+            didPostThreadWithID:(NSString *)threadID
 {
     [self dismissViewControllerAnimated:YES completion:nil];
-    // TODO push newly-posted thread in posts view
+    AwfulPostsViewController *page = [AwfulPostsViewController new];
+    page.thread = [AwfulThread firstOrNewThreadWithThreadID:threadID];
+    [page loadPage:1 singleUserID:nil];
+    [self displayPage:page];
 }
 
 - (void)threadComposeControllerDidCancel:(AwfulThreadComposeViewController *)controller

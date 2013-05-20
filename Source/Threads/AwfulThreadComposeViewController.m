@@ -149,6 +149,7 @@
             return;
         }
         [SVProgressHUD showSuccessWithStatus:@"Posted"];
+        [self.delegate threadComposeController:self didPostThreadWithID:threadID];
     }];
     self.networkOperation = op;
 }
