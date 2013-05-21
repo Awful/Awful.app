@@ -141,6 +141,7 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
         forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
     }
     [self.tableView beginUpdates];
+    BOOL considerFavoritesSectionWhenReloading = YES;
     if (button.selected) {
         CLSLog(@"adding forum %@ to favorites (currently %@)",
                forum.forumID, [self.favoriteForums valueForKey:@"forumID"]);
@@ -149,6 +150,7 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
             NSIndexSet *toInsert = [NSIndexSet indexSetWithIndex:0];
             CLSLog(@"inserting sections at %@", toInsert);
             [self.tableView insertSections:toInsert withRowAnimation:UITableViewRowAnimationTop];
+            considerFavoritesSectionWhenReloading = NO;
             [self showOrHideEditButton];
         } else {
             NSIndexPath *newRow = [NSIndexPath indexPathForRow:[self.favoriteForums count] - 1
@@ -175,7 +177,7 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
     }
     if (button.selected) {
         NSIndexPath *nonfavoriteIndexPath = [self.fetchedResultsController indexPathForObject:forum];
-        if ([self.favoriteForums count] > 0) {
+        if (considerFavoritesSectionWhenReloading) {
             nonfavoriteIndexPath = [NSIndexPath indexPathForRow:nonfavoriteIndexPath.row
                                                       inSection:nonfavoriteIndexPath.section + 1];
         }
