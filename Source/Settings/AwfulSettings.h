@@ -34,7 +34,7 @@ typedef NS_ENUM(NSInteger, AwfulFirstTab) {
 
 @property (assign, nonatomic) BOOL highlightOwnMentions;
 
-@property (assign, nonatomic) BOOL confirmBeforeReplying;
+@property (assign, nonatomic) BOOL confirmNewPosts;
 
 @property (assign, nonatomic) BOOL darkTheme;
 
@@ -120,8 +120,8 @@ extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *firstTab;
     __unsafe_unretained NSString *highlightOwnQuotes;
     __unsafe_unretained NSString *highlightOwnMentions;
-    __unsafe_unretained NSString *confirmBeforeReplying;
-	__unsafe_unretained NSString *darkTheme;
+    __unsafe_unretained NSString *confirmNewPosts;
+    __unsafe_unretained NSString *darkTheme;
     __unsafe_unretained NSString *username;
     __unsafe_unretained NSString *userID;
     __unsafe_unretained NSString *canSendPrivateMessages;

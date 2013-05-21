@@ -13,6 +13,7 @@
 #import "AwfulComposeField.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulPostIconPickerController.h"
+#import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "AwfulThreadTags.h"
 #import "SVProgressHUD.h"
@@ -61,6 +62,19 @@
 {
     if ([self.subject length] == 0) {
         [self.subjectField.textField becomeFirstResponder];
+    } else if ([AwfulSettings settings].confirmNewPosts) {
+        AwfulAlertView *alert = [AwfulAlertView new];
+        alert.title = @"Incoming Forums Superstar";
+        alert.message = @"Am I making a post which is either funny, informative, or interesting "
+                        @"on any level?";
+        [alert addCancelButtonWithTitle:@"Nope" block:^{
+            [self setTextFieldAndViewUserInteractionEnabled:YES];
+            [self.textView becomeFirstResponder];
+        }];
+        [alert addButtonWithTitle:self.sendButton.title block:^{
+            [self prepareToSendMessage];
+        }];
+        [alert show];
     } else {
         [self prepareToSendMessage];
     }

@@ -115,7 +115,7 @@ imageCacheIdentifier:(id)imageCacheIdentifier
     [self.networkOperation cancel];
     [self.textView resignFirstResponder];
     self.textView.userInteractionEnabled = NO;
-    if ([AwfulSettings settings].confirmBeforeReplying) {
+    if ([AwfulSettings settings].confirmNewPosts) {
         AwfulAlertView *alert = [AwfulAlertView new];
         alert.title = @"Incoming Forums Superstar";
         alert.message = @"Does my reply offer any significant advice or help "

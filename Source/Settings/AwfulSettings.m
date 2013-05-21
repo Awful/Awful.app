@@ -274,7 +274,7 @@ BOOL_PROPERTY(highlightOwnQuotes, setHighlightOwnQuotes)
 
 BOOL_PROPERTY(highlightOwnMentions, setHighlightOwnMentions)
 
-BOOL_PROPERTY(confirmBeforeReplying, setConfirmBeforeReplying)
+BOOL_PROPERTY(confirmNewPosts, setConfirmNewPosts)
 
 BOOL_PROPERTY(darkTheme, setDarkTheme)
 
@@ -492,7 +492,7 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .firstTab = @"default_load",
     .highlightOwnQuotes = @"highlight_own_quotes",
     .highlightOwnMentions = @"highlight_own_mentions",
-    .confirmBeforeReplying = @"confirm_before_replying",
+    .confirmNewPosts = @"confirm_before_replying",
 	.darkTheme = @"dark_theme",
     .username = @"username",
     .userID = @"userID",
