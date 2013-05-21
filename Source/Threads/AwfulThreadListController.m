@@ -267,10 +267,12 @@
             [self markThreadUnseen:thread];
         }]];
     }
-    NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:thread];
-    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [sheet presentFromViewController:self fromRect:CGRectZero inView:cell];
+        NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:thread];
+        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+        // We've seen the occasional crash result from the cell being nil, i.e. invisible or out of
+        // range. Fall back to pointing at the table view.
+        [sheet presentFromViewController:self fromRect:CGRectZero inView:cell ?: self.tableView];
     } else {
         AwfulTabBar *tabBar = self.awfulTabBarController.tabBar;
         [sheet presentFromViewController:self.awfulTabBarController
