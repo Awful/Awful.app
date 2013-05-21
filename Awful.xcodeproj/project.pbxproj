@@ -139,6 +139,7 @@
 		1C7D232917447428008A802C /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C90F8FB16B0C2940015A071 /* GTMNSString+HTML.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		1C7D232C1747CE5F008A802C /* AwfulThreadComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7D232B1747CE5F008A802C /* AwfulThreadComposeViewController.m */; };
 		1C7D232E174AA9BF008A802C /* newthread.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C7D232D174AA9BF008A802C /* newthread.html */; };
+		1C7D2330174BA010008A802C /* empty-thread-tag@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C7D232F174BA010008A802C /* empty-thread-tag@2x.png */; };
 		1C83DB54161FF48600E53CFA /* ImgurHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */; };
 		1C8BE4FA169115020022B331 /* profile-view.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C8BE4F9169115020022B331 /* profile-view.css */; };
 		1C8BE51B16917FB60022B331 /* posts-view-25.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C8BE51A16917FB60022B331 /* posts-view-25.css */; };
@@ -1129,6 +1130,7 @@
 		1C7D232A1747CE5F008A802C /* AwfulThreadComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadComposeViewController.h; sourceTree = "<group>"; };
 		1C7D232B1747CE5F008A802C /* AwfulThreadComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadComposeViewController.m; sourceTree = "<group>"; };
 		1C7D232D174AA9BF008A802C /* newthread.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = newthread.html; sourceTree = "<group>"; };
+		1C7D232F174BA010008A802C /* empty-thread-tag@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "empty-thread-tag@2x.png"; sourceTree = "<group>"; };
 		1C83DB52161FF48600E53CFA /* ImgurHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImgurHTTPClient.h; sourceTree = "<group>"; };
 		1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImgurHTTPClient.m; sourceTree = "<group>"; };
 		1C8BE4F9169115020022B331 /* profile-view.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "profile-view.css"; sourceTree = "<group>"; };
@@ -2979,6 +2981,7 @@
 				1C13FF93161CDDD4000ED2B1 /* bookmarks@2x.png */,
 				8CCD504F15B783FC00E5893B /* compose.png */,
 				8CCD505015B783FC00E5893B /* compose@2x.png */,
+				1C7D232F174BA010008A802C /* empty-thread-tag@2x.png */,
 				1CBEE248173300A200C4884A /* Forums List */,
 				1C28B35D172A111B00254EE7 /* Icon Action Items */,
 				1CBEE24A1733025300C4884A /* Leper's Colony */,
@@ -4386,6 +4389,7 @@
 				1CBEE2401732F3BE00C4884A /* tabbar-divider@2x.png in Resources */,
 				1CBEE2421732F78E00C4884A /* tabbar-selected@2x.png in Resources */,
 				1CBEE2441732F85000C4884A /* tabbar-selected.png in Resources */,
+				1C7D2330174BA010008A802C /* empty-thread-tag@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

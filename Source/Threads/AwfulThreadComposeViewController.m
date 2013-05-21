@@ -112,7 +112,7 @@
     if (self.postIcon) {
         image = [[AwfulThreadTags sharedThreadTags] threadTagNamed:self.postIcon];
     } else {
-        image = [UIImage imageNamed:@"empty-pm-tag"];
+        image = [UIImage imageNamed:@"empty-thread-tag"];
     }
     [self.postIconButton setImage:image forState:UIControlStateNormal];
 }
@@ -310,8 +310,7 @@
     // -1 for the "empty thread" tag.
     index -= 1;
     if (index < 0) {
-        // TODO empty *thread* tag
-        return [UIImage imageNamed:@"empty-pm-tag"];
+        return [UIImage imageNamed:@"empty-thread-tag"];
     } else {
         NSString *iconName = self.availablePostIcons[self.availablePostIconIDs[index]];
         return [[AwfulThreadTags sharedThreadTags] threadTagNamed:iconName];

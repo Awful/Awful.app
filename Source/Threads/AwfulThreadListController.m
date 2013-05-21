@@ -346,6 +346,7 @@
                                 threadTagNamed:thread.firstIconName];
         if (!cell.imageView.image && thread.firstIconName) {
             [self updateThreadTagsForCellAtIndexPath:indexPath];
+            cell.imageView.image = [UIImage imageNamed:@"empty-thread-tag"];
         }
         cell.secondaryTagImageView.hidden = NO;
         cell.secondaryTagImageView.image = [[AwfulThreadTags sharedThreadTags]
