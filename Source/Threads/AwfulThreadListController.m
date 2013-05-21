@@ -435,12 +435,12 @@
 - (void)newThreadTags:(NSNotification *)note
 {
     if ([self.cellsMissingThreadTags count] == 0) return;
-    [self.cellsMissingThreadTags removeAllObjects];
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:AwfulNewThreadTagsAvailableNotification
                                                   object:nil];
     [self.tableView reloadRowsAtIndexPaths:[self.cellsMissingThreadTags allObjects]
                           withRowAnimation:UITableViewRowAnimationNone];
+    [self.cellsMissingThreadTags removeAllObjects];
 }
 
 - (void)showThreadActions:(UILongPressGestureRecognizer *)longPress
