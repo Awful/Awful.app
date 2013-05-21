@@ -204,6 +204,8 @@
 		<dict>
 			<key>Title</key>
 			<string>&quot;Read Later&quot; Services</string>
+			<key>Explanation</key>
+			<string>Save off-Forums links for later reading.</string>
 			<key>Settings</key>
 			<array>
 				<dict>
