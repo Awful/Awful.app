@@ -14,6 +14,7 @@
 #import "AwfulModels.h"
 #import "AwfulNeedPlatinumView.h"
 #import "AwfulNewPMNotifierAgent.h"
+#import "AwfulPlainBarButtonItem.h"
 #import "AwfulPrivateMessageComposeViewController.h"
 #import "AwfulPrivateMessageViewController.h"
 #import "AwfulSettings.h"
@@ -36,16 +37,9 @@
 - (UIBarButtonItem *)composeItem
 {
     if (_composeItem) return _composeItem;
-    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 25, 25)];
-    [button setImage:[UIImage imageNamed:@"compose.png"] forState:UIControlStateNormal];
-    button.layer.shadowOffset = CGSizeMake(0, -1);
-    button.layer.shadowOpacity = 1;
-    button.layer.shadowRadius = 0;
-    button.showsTouchWhenHighlighted = YES;
-    button.adjustsImageWhenHighlighted = NO;
-    [button addTarget:self action:@selector(didTapCompose)
-     forControlEvents:UIControlEventTouchUpInside];
-    _composeItem = [[UIBarButtonItem alloc] initWithCustomView:button];
+    _composeItem = [[AwfulPlainBarButtonItem alloc]
+                    initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
+                    target:self action:@selector(didTapCompose)];
     return _composeItem;
 }
 
