@@ -250,13 +250,8 @@ static NSArray * ImagePlaceholderResultsWithMessageBody(NSString *messageBody)
 - (void)keyboardWillHide:(NSNotification *)note
 {
     if (self.viewIsDisappearing) return;
-    CGRect keyboardFrame = [note.userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue];
-    keyboardFrame = [self.view.window convertRect:keyboardFrame fromWindow:nil];
-    CGRect relativeKeyboardFrame = [self.textView convertRect:keyboardFrame fromView:nil];
-    CGRect textViewFrame = self.textView.frame;
-    textViewFrame.size.height = CGRectGetMaxY(relativeKeyboardFrame) - CGRectGetMinY(textViewFrame);
     [self animateWithKeyboardUserInfo:note.userInfo animations:^{
-        self.textView.frame = textViewFrame;
+        self.textView.frame = (CGRect){ .size = self.view.bounds.size };
     } completion:^(BOOL finished) {
         [self.textView scrollRangeToVisible:self.textView.selectedRange];
     }];
