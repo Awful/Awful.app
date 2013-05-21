@@ -8,6 +8,7 @@
 
 #import "AwfulThreadComposeViewController.h"
 #import "AwfulComposeViewControllerSubclass.h"
+#import "AwfulActionSheet.h"
 #import "AwfulAlertView.h"
 #import "AwfulComposeField.h"
 #import "AwfulHTTPClient.h"
@@ -47,7 +48,7 @@
     self.sendButton.target = self;
     self.sendButton.action = @selector(didTapPost);
     self.cancelButton.target = self;
-    self.cancelButton.action = @selector(cancel);
+    self.cancelButton.action = @selector(didTapCancel:);
     return self;
 }
 
@@ -63,6 +64,19 @@
     } else {
         [self prepareToSendMessage];
     }
+}
+
+- (void)didTapCancel:(UIBarButtonItem *)cancelButtonItem
+{
+    if ([self.subject length] == 0 && [self.textView.text length] == 0) {
+        return [self cancel];
+    }
+    AwfulActionSheet *sheet = [[AwfulActionSheet alloc] init];
+    [sheet addDestructiveButtonWithTitle:@"Delete OP" block:^{
+        [self cancel];
+    }];
+    [sheet addCancelButtonWithTitle:@"Cancel"];
+    [sheet showFromBarButtonItem:cancelButtonItem animated:YES];
 }
 
 - (void)cancel
