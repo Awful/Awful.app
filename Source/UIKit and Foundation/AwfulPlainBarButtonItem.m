@@ -31,7 +31,12 @@
                                                                                target:target
                                                                                action:action];
     toolbar.items = @[ innerItem ];
-    return [self initWithCustomView:toolbar];
+    AwfulPlainBarButtonItem *item = [self initWithCustomView:toolbar];
+    if (item) {
+        // On iPad, toolbar items default to a grey tint color.
+        [self setTintColor:[UIColor whiteColor]];
+    }
+    return item;
 }
 
 - (void)setEnabled:(BOOL)enabled

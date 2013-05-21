@@ -102,11 +102,9 @@
 - (UIBarButtonItem *)composeItem
 {
     if (_composeItem) return _composeItem;
-    _composeItem = [[AwfulPlainBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
-                                                                         target:self
-                                                                         action:@selector(didTapCompose)];
-    // On iPad, the default plain tint color is a dark grey.
-    _composeItem.tintColor = [UIColor whiteColor];
+    _composeItem = [[AwfulPlainBarButtonItem alloc]
+                    initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
+                    target:self action:@selector(didTapCompose)];
     return _composeItem;
 }
 
