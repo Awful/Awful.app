@@ -11,5 +11,6 @@
 @interface AwfulImageCollectionViewCell : PSUICollectionViewCell
 
 @property (readonly, nonatomic) UIImageView *imageView;
+@property (nonatomic) UIImage *secondaryIcon;
 
 @end

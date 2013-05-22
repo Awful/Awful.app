@@ -14,6 +14,7 @@
 @interface AwfulPostIconPickerController () <UIPopoverControllerDelegate>
 
 @property (nonatomic) NSInteger numberOfIcons;
+@property (nonatomic) NSInteger numberOfSecondaryIcons;
 
 @property (nonatomic) UIBarButtonItem *pickButtonItem;
 @property (nonatomic) UIBarButtonItem *cancelButtonItem;
@@ -77,6 +78,11 @@ static NSString * const TagCellIdentifier = @"Tag Cell";
 - (void)reloadData
 {
     self.numberOfIcons = [self.delegate numberOfIconsInPostIconPicker:self];
+    if ([self.delegate respondsToSelector:@selector(numberOfSecondaryIconsInPostIconPicker:)]) {
+        self.numberOfSecondaryIcons = [self.delegate numberOfSecondaryIconsInPostIconPicker:self];
+    } else {
+        self.numberOfSecondaryIcons = 0;
+    }
     [self.collectionView reloadData];
 }
 
@@ -100,25 +106,92 @@ static NSString * const TagCellIdentifier = @"Tag Cell";
 - (NSInteger)selectedIndex
 {
     NSArray *selectedItems = [self.collectionView indexPathsForSelectedItems];
-    if ([selectedItems count] == 0) {
-        return NSNotFound;
+    if ([selectedItems count] == 1) {
+        NSIndexPath *indexPath = selectedItems[0];
+        return indexPath.item;
+    } else if ([selectedItems count] > 1) {
+        for (NSIndexPath *indexPath in selectedItems) {
+            if (indexPath.section == 1) {
+                return indexPath.item;
+            }
+        }
     }
-    NSIndexPath *indexPath = selectedItems[0];
-    return indexPath.item;
+    return NSNotFound;
 }
 
 - (void)setSelectedIndex:(NSInteger)selectedIndex
 {
-    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:selectedIndex inSection:0];
+    NSInteger section = self.numberOfSecondaryIcons > 0 ? 1 : 0;
     PSTCollectionViewScrollPosition scroll = PSTCollectionViewScrollPositionCenteredVertically;
-    [self.collectionView selectItemAtIndexPath:indexPath animated:YES scrollPosition:scroll];
+    for (NSIndexPath *indexPath in [self.collectionView indexPathsForSelectedItems]) {
+        if (indexPath.section == section) {
+            [self.collectionView deselectItemAtIndexPath:indexPath animated:NO];
+        }
+    }
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:selectedIndex inSection:section];
+    [self.collectionView selectItemAtIndexPath:indexPath animated:NO scrollPosition:scroll];
+    if (self.numberOfSecondaryIcons > 0) [self updateVisibleSecondaryTagCellsIcon];
+}
+
+- (NSInteger)secondarySelectedIndex
+{
+    if (self.numberOfSecondaryIcons == 0) return NSNotFound;
+    for (NSIndexPath *indexPath in [self.collectionView indexPathsForSelectedItems]) {
+        if (indexPath.section == 0) return indexPath.item;
+    }
+    return NSNotFound;
+}
+
+- (void)setSecondarySelectedIndex:(NSInteger)secondarySelectedIndex
+{
+    if (self.numberOfSecondaryIcons == 0) return;
+    for (NSIndexPath *indexPath in [self.collectionView indexPathsForSelectedItems]) {
+        if (indexPath.section == 0) {
+            [self.collectionView deselectItemAtIndexPath:indexPath animated:NO];
+        }
+    }
+    NSIndexPath *toSelect = [NSIndexPath indexPathForItem:secondarySelectedIndex inSection:0];
+    [self.collectionView selectItemAtIndexPath:toSelect
+                                      animated:NO
+                                scrollPosition:PSTCollectionViewScrollPositionCenteredVertically];
+}
+
+- (void)updateVisibleSecondaryTagCellsIcon
+{
+    UIImage *selectedIconImage = [self selectedIconImage];
+    for (NSIndexPath *indexPath in [self.collectionView indexPathsForVisibleItems]) {
+        if (indexPath.section == 0) {
+            AwfulImageCollectionViewCell *cell = (id)[self.collectionView cellForItemAtIndexPath:
+                                                      indexPath];
+            cell.imageView.image = selectedIconImage;
+        }
+    }
+}
+
+- (UIImage *)selectedIconImage
+{
+    NSInteger section = self.numberOfSecondaryIcons > 0 ? 1 : 0;
+    for (NSIndexPath *indexPath in [self.collectionView indexPathsForSelectedItems]) {
+        if (indexPath.section == section) {
+            return [self.delegate postIconPicker:self postIconAtIndex:indexPath.item];
+        }
+    }
+    return nil;
 }
 
 #pragma mark - PSUICollectionViewDataSource and PSUICollectionViewDelegate
 
-- (NSInteger)collectionView:(PSTCollectionView *)collectionView
+- (NSInteger)numberOfSectionsInCollectionView:(PSUICollectionView *)collectionView
+{
+    return self.numberOfSecondaryIcons > 0 ? 2 : 1;
+}
+
+- (NSInteger)collectionView:(PSUICollectionView *)collectionView
      numberOfItemsInSection:(NSInteger)section
 {
+    if (self.numberOfSecondaryIcons > 0 && section == 0) {
+        return self.numberOfSecondaryIcons;
+    }
     return self.numberOfIcons;
 }
 
@@ -133,7 +206,17 @@ static NSString * const TagCellIdentifier = @"Tag Cell";
     cell.layer.shadowOpacity = 0.5;
     cell.layer.shadowOffset = CGSizeZero;
     cell.layer.shadowRadius = 1;
-    cell.imageView.image = [self.delegate postIconPicker:self postIconAtIndex:indexPath.item];
+    if (self.numberOfSecondaryIcons > 0 && indexPath.section == 0) {
+        cell.imageView.image = [self selectedIconImage];
+    } else {
+        cell.imageView.image = [self.delegate postIconPicker:self postIconAtIndex:indexPath.item];
+    }
+    if (self.numberOfSecondaryIcons > 0 && indexPath.section == 0) {
+        cell.secondaryIcon = [self.delegate postIconPicker:self
+                                      secondaryIconAtIndex:indexPath.item];
+    } else {
+        cell.secondaryIcon = nil;
+    }
     if (!cell.selectedBackgroundView) {
         cell.selectedBackgroundView = [UIView new];
         cell.selectedBackgroundView.layer.cornerRadius = cell.layer.cornerRadius;
@@ -147,11 +230,26 @@ static NSString * const TagCellIdentifier = @"Tag Cell";
     return cell;
 }
 
-- (void)collectionView:(PSTCollectionView *)collectionView
-    didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+- (void)collectionView:(PSUICollectionView *)collectionView
+didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([self.delegate respondsToSelector:@selector(postIconPicker:didSelectIconAtIndex:)]) {
-        [self.delegate postIconPicker:self didSelectIconAtIndex:indexPath.item];
+    for (NSIndexPath *selected in [collectionView indexPathsForSelectedItems]) {
+        if (selected.section == indexPath.section && selected.item != indexPath.item) {
+            [collectionView deselectItemAtIndexPath:selected animated:NO];
+        }
+    }
+    if (self.numberOfSecondaryIcons > 0 && indexPath.section == 1) {
+        [self updateVisibleSecondaryTagCellsIcon];
+    }
+    if (self.numberOfSecondaryIcons > 0 && indexPath.section == 0) {
+        SEL selector = @selector(postIconPicker:didSelectSecondaryIconAtIndex:);
+        if ([self.delegate respondsToSelector:selector]) {
+            [self.delegate postIconPicker:self didSelectSecondaryIconAtIndex:indexPath.item];
+        }
+    } else {
+        if ([self.delegate respondsToSelector:@selector(postIconPicker:didSelectIconAtIndex:)]) {
+            [self.delegate postIconPicker:self didSelectIconAtIndex:indexPath.item];
+        }
     }
 }
 
@@ -163,6 +261,7 @@ static NSString * const TagCellIdentifier = @"Tag Cell";
     self.collectionView.backgroundColor = [AwfulTheme currentTheme].postIconPickerBackgroundColor;
     [self.collectionView registerClass:[AwfulImageCollectionViewCell class]
             forCellWithReuseIdentifier:TagCellIdentifier];
+    self.collectionView.allowsMultipleSelection = YES;
     [self reloadData];
 }
 
