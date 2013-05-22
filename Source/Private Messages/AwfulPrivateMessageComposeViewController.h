@@ -15,7 +15,6 @@
 
 - (void)setRecipient:(NSString *)recipient;
 - (void)setSubject:(NSString *)subject;
-- (void)setPostIcon:(NSString *)postIcon;
 - (void)setMessageBody:(NSString *)messageBody;
 
 // If this is a reply to another message, send this to prepopulate the recipient and subject, and

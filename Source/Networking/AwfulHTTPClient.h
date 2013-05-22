@@ -292,13 +292,12 @@ extern NSString * const AwfulUserDidLogInNotification;
 // List post icons usable for private messages.
 //
 // callback - A block to call after listing post icons, which takes as parameters:
-//              error       - An error on failure, or nil on success.
-//              postIcons   - A dictionary mapping icon IDs to URLs on success, or nil on failure.
-//              postIconIDs - An ordered list of icon IDs on success, or nil on failure.
+//              error     - An error on failure, or nil on success.
+//              postIcons - An array of AwfulThreadTag instances on success, or nil on failure.
 //
 // Returns the enqueued network operation.
-- (NSOperation *)listAvailablePrivateMessagePostIconsAndThen:
-    (void (^)(NSError *error, NSDictionary *postIcons, NSArray *postIconIDs))callback;
+- (NSOperation *)listAvailablePrivateMessagePostIconsAndThen:(void (^)(NSError *error,
+                                                                       NSArray *postIcons))callback;
 
 // Send a private message.
 //

@@ -13,6 +13,7 @@
 #import "AwfulModels.h"
 #import "AwfulParsing.h"
 #import "AwfulSettings.h"
+#import "AwfulThreadTag.h"
 #import "NSManagedObject+Awful.h"
 #import "NSURL+QueryDictionary.h"
 
@@ -919,16 +920,27 @@ andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))call
     return op;
 }
 
-- (NSOperation *)listAvailablePrivateMessagePostIconsAndThen:(void (^)(NSError *error, NSDictionary *postIcons, NSArray *postIconIDs))callback
+- (NSOperation *)listAvailablePrivateMessagePostIconsAndThen:(void (^)(NSError *error,
+                                                                       NSArray *postIcons))callback
 {
     NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:@"private.php"
                                             parameters:@{ @"action": @"newmessage" }];
     id op = [self HTTPRequestOperationWithRequest:urlRequest
                                           success:^(id _, ComposePrivateMessageParsedInfo *info)
     {
-        if (callback) callback(nil, info.postIcons, info.postIconIDs);
+        if (callback) {
+            NSMutableArray *postIcons = [NSMutableArray new];
+            for (NSString *iconID in info.postIconIDs) {
+                AwfulThreadTag *tag = [AwfulThreadTag new];
+                tag.composeID = iconID;
+                tag.imageName = [[info.postIcons[iconID] lastPathComponent]
+                                 stringByDeletingPathExtension];
+                [postIcons addObject:tag];
+            }
+            callback(nil, postIcons);
+        }
     } failure:^(id _, NSError *error) {
-        if (callback) callback(error, nil, nil);
+        if (callback) callback(error, nil);
     }];
     [op setCreateParsedInfoBlock:^id(NSData *data) {
         return [[ComposePrivateMessageParsedInfo alloc] initWithHTMLData:data];

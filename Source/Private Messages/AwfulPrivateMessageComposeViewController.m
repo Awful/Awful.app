@@ -12,6 +12,7 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulPostIconPickerController.h"
 #import "AwfulTheme.h"
+#import "AwfulThreadTag.h"
 #import "AwfulThreadTags.h"
 #import "SVProgressHUD.h"
 #import "UIViewController+NavigationEnclosure.h"
@@ -20,15 +21,12 @@
 
 @property (copy, nonatomic) NSString *recipient;
 @property (copy, nonatomic) NSString *subject;
-@property (copy, nonatomic) NSString *postIcon;
 @property (copy, nonatomic) NSString *messageBody;
 @property (nonatomic) AwfulPrivateMessage *regardingMessage;
 @property (nonatomic) AwfulPrivateMessage *forwardedMessage;
 
-- (NSString *)postIconIDForName:(NSString *)name;
-
-@property (copy, nonatomic) NSDictionary *availablePostIcons;
-@property (copy, nonatomic) NSArray *availablePostIconIDs;
+@property (copy, nonatomic) NSArray *availablePostIcons;
+@property (nonatomic) AwfulThreadTag *postIcon;
 
 @property (weak, nonatomic) UIView *topView;
 @property (weak, nonatomic) UIButton *postIconButton;
@@ -56,7 +54,7 @@
 {
     id op = [[AwfulHTTPClient client] sendPrivateMessageTo:self.recipient ?: @""
                                                    subject:self.subject ?: @""
-                                                      icon:[self postIconIDForName:self.postIcon]
+                                                      icon:self.postIcon.composeID
                                                       text:messageBody ?: @""
                                     asReplyToMessageWithID:self.regardingMessage.messageID
                                 forwardedFromMessageWithID:self.forwardedMessage.messageID
@@ -76,17 +74,6 @@
         [self.delegate privateMessageComposeControllerDidSendMessage:self];
     }];
     self.networkOperation = op;
-}
-
-- (NSString *)postIconIDForName:(NSString *)name
-{
-    if ([name length] == 0) return nil;
-    for (NSString *key in self.availablePostIcons) {
-        if ([self.availablePostIcons[key] isEqualToString:name]) {
-            return key;
-        }
-    }
-    return nil;
 }
 
 - (void)cancel
@@ -119,13 +106,13 @@
     self.subjectField.textField.text = _subject;
 }
 
-- (void)setPostIcon:(NSString *)postIcon
+- (void)setPostIcon:(AwfulThreadTag *)postIcon
 {
     if (_postIcon == postIcon) return;
-    _postIcon = [postIcon copy];
+    _postIcon = postIcon;
     UIImage *image;
     if (postIcon) {
-        image = [[AwfulThreadTags sharedThreadTags] threadTagNamed:postIcon];
+        image = [[AwfulThreadTags sharedThreadTags] threadTagNamed:postIcon.imageName];
     } else {
         image = [UIImage imageNamed:@"empty-pm-tag.png"];
     }
@@ -276,22 +263,17 @@
         self.postIconPicker = [[AwfulPostIconPickerController alloc] initWithDelegate:self];
     }
     if (self.postIcon) {
-        for (id iconID in self.availablePostIcons) {
-            if ([self.availablePostIcons[iconID] isEqual:self.postIcon]) {
-                NSUInteger index = [self.availablePostIconIDs indexOfObject:iconID];
-                self.postIconPicker.selectedIndex = index + 1;
-                break;
-            }
-        }
-    }
-    if (self.postIconPicker.selectedIndex == NSNotFound) {
+        NSUInteger index = [self.availablePostIcons indexOfObject:self.postIcon];
+        self.postIconPicker.selectedIndex = index + 1;
+    } else {
         self.postIconPicker.selectedIndex = 0;
     }
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         [self.postIconPicker showFromRect:self.postIconButton.frame
                                    inView:self.postIconButton.superview];
     } else {
-        [self presentViewController:[self.postIconPicker enclosingNavigationController] animated:YES
+        [self presentViewController:[self.postIconPicker enclosingNavigationController]
+                           animated:YES
                          completion:nil];
     }
 }
@@ -329,24 +311,14 @@
     self.subjectField.textField.text = self.subject;
     [self updateSendButton];
     [self updateTitleWithSubjectField:self.subjectField.textField];
-    UIImage *image;
-    if (self.postIcon) {
-        image = [[AwfulThreadTags sharedThreadTags] threadTagNamed:self.postIcon];
-    } else {
-        image = [UIImage imageNamed:@"empty-pm-tag.png"];
-    }
-    [self.postIconButton setImage:image forState:UIControlStateNormal];
-    [[AwfulHTTPClient client] listAvailablePrivateMessagePostIconsAndThen:
-     ^(NSError *error, NSDictionary *postIcons, NSArray *postIconIDs)
-    {
-        NSMutableDictionary *postIconNames = [NSMutableDictionary new];
-        for (id key in postIcons) {
-            postIconNames[key] = [[postIcons[key] lastPathComponent] stringByDeletingPathExtension];
-        }
-        self.availablePostIcons = postIconNames;
-        self.availablePostIconIDs = postIconIDs;
-        [self.postIconPicker reloadData];
-    }];
+    [self.postIconButton setImage:[UIImage imageNamed:@"empty-pm-tag.png"]
+                         forState:UIControlStateNormal];
+    [[AwfulHTTPClient client] listAvailablePrivateMessagePostIconsAndThen:^(NSError *error,
+                                                                            NSArray *postIcons)
+     {
+         self.availablePostIcons = postIcons;
+         [self.postIconPicker reloadData];
+     }];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -384,7 +356,7 @@
 
 - (NSInteger)numberOfIconsInPostIconPicker:(AwfulPostIconPickerController *)picker
 {
-    return [self.availablePostIconIDs count] + 1;
+    return [self.availablePostIcons count] + 1;
 }
 
 - (UIImage *)postIconPicker:(AwfulPostIconPickerController *)picker postIconAtIndex:(NSInteger)index
@@ -393,7 +365,7 @@
         return [UIImage imageNamed:@"empty-pm-tag.png"];
     }
     index -= 1;
-    NSString *iconName = self.availablePostIcons[self.availablePostIconIDs[index]];
+    NSString *iconName = [self.availablePostIcons[index] imageName];
     // TODO handle downloading new thread tags
     return [[AwfulThreadTags sharedThreadTags] threadTagNamed:iconName];
 }
@@ -403,8 +375,7 @@
     if (picker.selectedIndex == 0) {
         [self setPostIcon:nil];
     } else {
-        id selectedIconID = self.availablePostIconIDs[picker.selectedIndex - 1];
-        [self setPostIcon:self.availablePostIcons[selectedIconID]];
+        self.postIcon = self.availablePostIcons[picker.selectedIndex - 1];
     }
     self.postIconPicker = nil;
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -422,8 +393,7 @@
         if (index == 0) {
             [self setPostIcon:nil];
         } else {
-            id selectedIconID = self.availablePostIconIDs[index - 1];
-            [self setPostIcon:self.availablePostIcons[selectedIconID]];
+            self.postIcon = self.availablePostIcons[index - 1];
         }
     }
 }

@@ -93,6 +93,7 @@
 		1C3447C3174D59AF007377C5 /* newthread-at.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C3447C2174D59AF007377C5 /* newthread-at.html */; };
 		1C3447C5174D6DF2007377C5 /* newthread-samart.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C3447C4174D6DF2007377C5 /* newthread-samart.html */; };
 		1C3447C9174D728B007377C5 /* AwfulThreadTagView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3447C7174D7284007377C5 /* AwfulThreadTagView.m */; };
+		1C3447CF174D8D7A007377C5 /* AwfulThreadTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3447CE174D8D7A007377C5 /* AwfulThreadTag.m */; };
 		1C3CC799162876AE00088AA8 /* adminstar.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3CC797162876AE00088AA8 /* adminstar.png */; };
 		1C3CC79A162876AE00088AA8 /* modstar.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3CC798162876AE00088AA8 /* modstar.png */; };
 		1C40E5B21640FC2D004AAFA6 /* posts-view.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C40E5B11640FC2C004AAFA6 /* posts-view.css */; };
@@ -1063,6 +1064,8 @@
 		1C3447C4174D6DF2007377C5 /* newthread-samart.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "newthread-samart.html"; sourceTree = "<group>"; };
 		1C3447C6174D7284007377C5 /* AwfulThreadTagView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTagView.h; sourceTree = "<group>"; };
 		1C3447C7174D7284007377C5 /* AwfulThreadTagView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTagView.m; sourceTree = "<group>"; };
+		1C3447CD174D8D7A007377C5 /* AwfulThreadTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTag.h; sourceTree = "<group>"; };
+		1C3447CE174D8D7A007377C5 /* AwfulThreadTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTag.m; sourceTree = "<group>"; };
 		1C382CA816FCF92700EF9A8E /* Model-1.11-onemoretime.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model-1.11-onemoretime.xcdatamodel"; sourceTree = "<group>"; };
 		1C3CC797162876AE00088AA8 /* adminstar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = adminstar.png; sourceTree = "<group>"; };
 		1C3CC798162876AE00088AA8 /* modstar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = modstar.png; sourceTree = "<group>"; };
@@ -2293,6 +2296,8 @@
 		1C3447C1174D4B4F007377C5 /* Thread Tags */ = {
 			isa = PBXGroup;
 			children = (
+				1C3447CD174D8D7A007377C5 /* AwfulThreadTag.h */,
+				1C3447CE174D8D7A007377C5 /* AwfulThreadTag.m */,
 				1CAED9D916373F91001F5F04 /* AwfulThreadTags.h */,
 				1CAED9DA16373F91001F5F04 /* AwfulThreadTags.m */,
 				1C9FDACD16E4809300C665B5 /* AwfulPostIconPickerController.h */,
@@ -4752,6 +4757,7 @@
 				1C7D22F9173B66F7008A802C /* AwfulReadLaterService.m in Sources */,
 				1C7D232C1747CE5F008A802C /* AwfulThreadComposeViewController.m in Sources */,
 				1C3447C9174D728B007377C5 /* AwfulThreadTagView.m in Sources */,
+				1C3447CF174D8D7A007377C5 /* AwfulThreadTag.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
