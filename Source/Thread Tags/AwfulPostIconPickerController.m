@@ -163,7 +163,7 @@ static NSString * const TagCellIdentifier = @"Tag Cell";
         if (indexPath.section == 0) {
             AwfulImageCollectionViewCell *cell = (id)[self.collectionView cellForItemAtIndexPath:
                                                       indexPath];
-            cell.imageView.image = selectedIconImage;
+            cell.icon = selectedIconImage;
         }
     }
 }
@@ -207,9 +207,9 @@ static NSString * const TagCellIdentifier = @"Tag Cell";
     cell.layer.shadowOffset = CGSizeZero;
     cell.layer.shadowRadius = 1;
     if (self.numberOfSecondaryIcons > 0 && indexPath.section == 0) {
-        cell.imageView.image = [self selectedIconImage];
+        cell.icon = [self selectedIconImage];
     } else {
-        cell.imageView.image = [self.delegate postIconPicker:self postIconAtIndex:indexPath.item];
+        cell.icon = [self.delegate postIconPicker:self postIconAtIndex:indexPath.item];
     }
     if (self.numberOfSecondaryIcons > 0 && indexPath.section == 0) {
         cell.secondaryIcon = [self.delegate postIconPicker:self

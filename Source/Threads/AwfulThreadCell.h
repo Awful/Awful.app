@@ -13,7 +13,9 @@
 // Designated initializer.
 - (id)initWithReuseIdentifier:(NSString *)reuseIdentifier;
 
-@property (readonly, weak, nonatomic) UIImageView *secondaryTagImageView;
+@property (nonatomic) UIImage *icon;
+@property (nonatomic) UIImage *secondaryIcon;
+@property (nonatomic) CGFloat iconAlpha;
 
 @property (readonly, weak, nonatomic) UIImageView *stickyImageView;
 

@@ -192,16 +192,11 @@
     AwfulThreadCell *cell = (id)genericCell;
     AwfulPrivateMessage *pm = [self.fetchedResultsController objectAtIndexPath:indexPath];
     if ([AwfulSettings settings].showThreadTags) {
-        cell.imageView.hidden = NO;
-        cell.imageView.image = [[AwfulThreadTags sharedThreadTags]
-                                threadTagNamed:pm.firstIconName];
-        if (!cell.imageView.image) {
-            if (pm.firstIconName) {
-                // TODO handle missing thread tag updates
-            }
-            cell.imageView.image = [UIImage imageNamed:@"empty-pm-tag.png"];
+        cell.icon = [[AwfulThreadTags sharedThreadTags] threadTagNamed:pm.firstIconName];
+        if (!cell.icon) {
+            // TODO handle updated thread tags
+            cell.icon = [UIImage imageNamed:@"empty-pm-tag"];
         }
-        cell.secondaryTagImageView.hidden = YES;
         if (pm.repliedValue || pm.forwardedValue || !pm.seenValue) {
             cell.stickyImageView.hidden = NO;
             if (pm.repliedValue) {
@@ -216,10 +211,7 @@
         }
         cell.rating = 0;
     } else {
-        cell.imageView.image = nil;
-        cell.imageView.hidden = YES;
-        cell.secondaryTagImageView.image = nil;
-        cell.secondaryTagImageView.hidden = YES;
+        cell.icon = nil;
         cell.stickyImageView.hidden = YES;
         cell.closed = NO;
         cell.rating = 0;

@@ -6,18 +6,18 @@
 //
 
 #import "AwfulThreadCell.h"
+#import "AwfulThreadTagView.h"
 
 @interface AwfulThreadCell ()
 
-@property (weak, nonatomic) UIImageView *secondaryTagImageView;
-
+@property (nonatomic) AwfulThreadTagView *tagView;
 @property (weak, nonatomic) UIImageView *stickyImageView;
-
 @property (weak, nonatomic) UIImageView *ratingImageView;
 
 @property (nonatomic) UIColor *oldOriginalPosterTextColor;
 
 @end
+
 
 @implementation AwfulThreadCell
 
@@ -28,14 +28,10 @@
         self.textLabel.numberOfLines = 2;
         self.textLabel.font = [UIFont systemFontOfSize:15];
         self.detailTextLabel.font = [UIFont systemFontOfSize:11];
-        self.imageView.layer.borderColor = [UIColor blackColor].CGColor;
-        self.imageView.layer.borderWidth = 1;
-        self.imageView.contentMode = UIViewContentModeScaleAspectFit;
-        
-        UIImageView *secondaryTagImageView = [UIImageView new];
-        secondaryTagImageView.contentMode = UIViewContentModeScaleAspectFit;
-        [self.contentView addSubview:secondaryTagImageView];
-        _secondaryTagImageView = secondaryTagImageView;
+        self.tagView = [AwfulThreadTagView new];
+        self.tagView.layer.borderColor = [UIColor blackColor].CGColor;
+        self.tagView.layer.borderWidth = 1;
+        [self.contentView addSubview:self.tagView];
         
         UIImageView *stickyImageView = [UIImageView new];
         [self.contentView addSubview:stickyImageView];
@@ -57,6 +53,38 @@
         _showsUnread = YES;
     }
     return self;
+}
+
+- (UIImage *)icon
+{
+    return self.tagView.tagImage;
+}
+
+- (void)setIcon:(UIImage *)icon
+{
+    self.tagView.tagImage = icon;
+    self.tagView.hidden = !icon;
+    [self setNeedsLayout];
+}
+
+- (UIImage *)secondaryIcon
+{
+    return self.tagView.secondaryTagImage;
+}
+
+- (void)setSecondaryIcon:(UIImage *)secondaryIcon
+{
+    self.tagView.secondaryTagImage = secondaryIcon;
+}
+
+- (CGFloat)iconAlpha
+{
+    return self.tagView.alpha;
+}
+
+- (void)setIconAlpha:(CGFloat)iconAlpha
+{
+    self.tagView.alpha = iconAlpha;
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -100,37 +128,32 @@
     
     CGSize cellSize = self.contentView.bounds.size;
     
-    if (!self.imageView.hidden) {
+    if (self.tagView.tagImage) {
         // Center tag image view and rating image view (if visible) as a unit and align them on the
         // left. Sticky goes over bottom right corner of tag.
         CGRect ratingImageFrame = self.ratingImageView.frame;
         CGFloat effectiveRatingHeight = self.ratingImageView.hidden ? 0 :
         ratingImageFrame.size.height + 2;
         static const CGFloat tagWidth = 45;
-        self.imageView.frame = (CGRect){
+        self.tagView.frame = (CGRect){
             .origin.x = 4,
             .origin.y = (cellSize.height - tagWidth - effectiveRatingHeight) / 2,
             .size = CGSizeMake(tagWidth, tagWidth)
         };
-        CGRect secondaryTagFrame = self.imageView.frame;
-        secondaryTagFrame.size.width /= 2;
-        secondaryTagFrame.size.height /= 2;
-        self.secondaryTagImageView.frame = secondaryTagFrame;
-        [self.contentView insertSubview:self.secondaryTagImageView aboveSubview:self.imageView];
         if (!self.stickyImageView.hidden) {
             [self.stickyImageView sizeToFit];
             CGRect stickyImageFrame = self.stickyImageView.frame;
-            stickyImageFrame.origin.x = CGRectGetMaxX(self.imageView.frame) -
+            stickyImageFrame.origin.x = CGRectGetMaxX(self.tagView.frame) -
             stickyImageFrame.size.width + self.stickyImageViewOffset.width;
-            stickyImageFrame.origin.y = CGRectGetMaxY(self.imageView.frame) -
+            stickyImageFrame.origin.y = CGRectGetMaxY(self.tagView.frame) -
             stickyImageFrame.size.height + self.stickyImageViewOffset.height;
             self.stickyImageView.frame = stickyImageFrame;
-            [self.contentView insertSubview:self.stickyImageView aboveSubview:self.imageView];
+            [self.contentView insertSubview:self.stickyImageView aboveSubview:self.tagView];
         }
         if (!self.ratingImageView.hidden) {
-            ratingImageFrame.origin.x = CGRectGetMidX(self.imageView.frame) -
+            ratingImageFrame.origin.x = CGRectGetMidX(self.tagView.frame) -
             ratingImageFrame.size.width / 2;
-            ratingImageFrame.origin.y = CGRectGetMaxY(self.imageView.frame) + 2;
+            ratingImageFrame.origin.y = CGRectGetMaxY(self.tagView.frame) + 2;
             self.ratingImageView.frame = ratingImageFrame;
         }
     }
@@ -148,7 +171,7 @@
     CGRect detailTextLabelFrame = self.detailTextLabel.frame;
     static const CGFloat tagRightMargin = 9;
     CGFloat textOriginX = 5;
-    if (!self.imageView.hidden) textOriginX = CGRectGetMaxX(self.imageView.frame) + tagRightMargin;
+    if (self.tagView.tagImage) textOriginX = CGRectGetMaxX(self.tagView.frame) + tagRightMargin;
     CGFloat badgeViewEffectiveWidth = CGRectGetWidth(unreadCountFrame) + tagRightMargin;
     if (self.editing || self.showingDeleteConfirmation || !self.showsUnread) {
         badgeViewEffectiveWidth = tagRightMargin;

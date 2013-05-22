@@ -341,17 +341,14 @@
     AwfulThreadCell *cell = (id)genericCell;
     AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
     if ([AwfulSettings settings].showThreadTags) {
-        cell.imageView.hidden = NO;
-        cell.imageView.image = [[AwfulThreadTags sharedThreadTags]
-                                threadTagNamed:thread.firstIconName];
-        if (!cell.imageView.image && thread.firstIconName) {
+        cell.icon = [[AwfulThreadTags sharedThreadTags] threadTagNamed:thread.firstIconName];
+        if (!cell.icon && thread.firstIconName) {
             [self updateThreadTagsForCellAtIndexPath:indexPath];
-            cell.imageView.image = [UIImage imageNamed:@"empty-thread-tag"];
+            cell.icon = [UIImage imageNamed:@"empty-thread-tag"];
         }
-        cell.secondaryTagImageView.hidden = NO;
-        cell.secondaryTagImageView.image = [[AwfulThreadTags sharedThreadTags]
-                                            threadTagNamed:thread.secondIconName];
-        if (thread.secondIconName && !cell.secondaryTagImageView.image) {
+        cell.secondaryIcon = [[AwfulThreadTags sharedThreadTags]
+                              threadTagNamed:thread.secondIconName];
+        if (thread.secondIconName && !cell.secondaryIcon) {
             [self updateThreadTagsForCellAtIndexPath:indexPath];
         }
         if (thread.isStickyValue) {
@@ -367,21 +364,19 @@
             cell.rating = [thread.threadRating floatValue];
         }
     } else {
-        cell.imageView.image = nil;
-        cell.imageView.hidden = YES;
-        cell.secondaryTagImageView.image = nil;
-        cell.secondaryTagImageView.hidden = YES;
+        cell.icon = nil;
+        cell.secondaryIcon = nil;
         cell.stickyImageView.hidden = YES;
         cell.closed = thread.isClosedValue;
         cell.rating = 0;
     }
     cell.textLabel.text = [thread.title stringByCollapsingWhitespace];
     if (thread.isStickyValue || !thread.isClosedValue) {
-        cell.imageView.alpha = 1;
+        cell.iconAlpha = 1;
         cell.ratingImageView.alpha = 1;
         cell.textLabel.textColor = [AwfulTheme currentTheme].threadCellTextColor;
     } else {
-        cell.imageView.alpha = 0.5;
+        cell.iconAlpha = 0.5;
         cell.ratingImageView.alpha = 0.5;
         cell.textLabel.textColor = [AwfulTheme currentTheme].threadCellClosedThreadColor;
     }

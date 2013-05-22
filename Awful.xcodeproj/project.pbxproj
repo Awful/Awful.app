@@ -92,6 +92,7 @@
 		1C28B36D172A3B3300254EE7 /* vote@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C28B36C172A3B3300254EE7 /* vote@2x.png */; };
 		1C3447C3174D59AF007377C5 /* newthread-at.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C3447C2174D59AF007377C5 /* newthread-at.html */; };
 		1C3447C5174D6DF2007377C5 /* newthread-samart.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C3447C4174D6DF2007377C5 /* newthread-samart.html */; };
+		1C3447C9174D728B007377C5 /* AwfulThreadTagView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3447C7174D7284007377C5 /* AwfulThreadTagView.m */; };
 		1C3CC799162876AE00088AA8 /* adminstar.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3CC797162876AE00088AA8 /* adminstar.png */; };
 		1C3CC79A162876AE00088AA8 /* modstar.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3CC798162876AE00088AA8 /* modstar.png */; };
 		1C40E5B21640FC2D004AAFA6 /* posts-view.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C40E5B11640FC2C004AAFA6 /* posts-view.css */; };
@@ -1060,6 +1061,8 @@
 		1C28B36C172A3B3300254EE7 /* vote@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "vote@2x.png"; sourceTree = "<group>"; };
 		1C3447C2174D59AF007377C5 /* newthread-at.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "newthread-at.html"; sourceTree = "<group>"; };
 		1C3447C4174D6DF2007377C5 /* newthread-samart.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "newthread-samart.html"; sourceTree = "<group>"; };
+		1C3447C6174D7284007377C5 /* AwfulThreadTagView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTagView.h; sourceTree = "<group>"; };
+		1C3447C7174D7284007377C5 /* AwfulThreadTagView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTagView.m; sourceTree = "<group>"; };
 		1C382CA816FCF92700EF9A8E /* Model-1.11-onemoretime.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model-1.11-onemoretime.xcdatamodel"; sourceTree = "<group>"; };
 		1C3CC797162876AE00088AA8 /* adminstar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = adminstar.png; sourceTree = "<group>"; };
 		1C3CC798162876AE00088AA8 /* modstar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = modstar.png; sourceTree = "<group>"; };
@@ -2296,6 +2299,8 @@
 				1C9FDACE16E4809300C665B5 /* AwfulPostIconPickerController.m */,
 				1C9FDAFD16E486A600C665B5 /* AwfulImageCollectionViewCell.h */,
 				1C9FDAFE16E486A600C665B5 /* AwfulImageCollectionViewCell.m */,
+				1C3447C6174D7284007377C5 /* AwfulThreadTagView.h */,
+				1C3447C7174D7284007377C5 /* AwfulThreadTagView.m */,
 			);
 			path = "Thread Tags";
 			sourceTree = "<group>";
@@ -4746,6 +4751,7 @@
 				1C7D22F5173B5D1A008A802C /* AwfulInstapaperLogInController.m in Sources */,
 				1C7D22F9173B66F7008A802C /* AwfulReadLaterService.m in Sources */,
 				1C7D232C1747CE5F008A802C /* AwfulThreadComposeViewController.m in Sources */,
+				1C3447C9174D728B007377C5 /* AwfulThreadTagView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
