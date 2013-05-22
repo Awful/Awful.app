@@ -2283,6 +2283,19 @@
 			path = Browsing;
 			sourceTree = "<group>";
 		};
+		1C3447C1174D4B4F007377C5 /* Thread Tags */ = {
+			isa = PBXGroup;
+			children = (
+				1CAED9D916373F91001F5F04 /* AwfulThreadTags.h */,
+				1CAED9DA16373F91001F5F04 /* AwfulThreadTags.m */,
+				1C9FDACD16E4809300C665B5 /* AwfulPostIconPickerController.h */,
+				1C9FDACE16E4809300C665B5 /* AwfulPostIconPickerController.m */,
+				1C9FDAFD16E486A600C665B5 /* AwfulImageCollectionViewCell.h */,
+				1C9FDAFE16E486A600C665B5 /* AwfulImageCollectionViewCell.m */,
+			);
+			path = "Thread Tags";
+			sourceTree = "<group>";
+		};
 		1C3857A115675AFE0078AF95 /* Source */ = {
 			isa = PBXGroup;
 			children = (
@@ -2303,6 +2316,7 @@
 				1C278A3316453296007D3CEC /* Scrolling and Pulling */,
 				1C8694A216EF78D3003FE89E /* Settings */,
 				1CDD51951542949600326C7B /* Theming */,
+				1C3447C1174D4B4F007377C5 /* Thread Tags */,
 				1CC780471612DA8D002AF958 /* Threads */,
 				1CE2D99D16688AC40024AC1C /* UIKit and Foundation */,
 				1C1D2FE6171BA1C200AC6387 /* URLs */,
@@ -2517,10 +2531,6 @@
 				1CF2462516DD969000C75E05 /* AwfulPrivateMessageComposeViewController.m */,
 				1C270ABC16E0773300883DAA /* AwfulComposeField.h */,
 				1C270ABD16E0773300883DAA /* AwfulComposeField.m */,
-				1C9FDACD16E4809300C665B5 /* AwfulPostIconPickerController.h */,
-				1C9FDACE16E4809300C665B5 /* AwfulPostIconPickerController.m */,
-				1C9FDAFD16E486A600C665B5 /* AwfulImageCollectionViewCell.h */,
-				1C9FDAFE16E486A600C665B5 /* AwfulImageCollectionViewCell.m */,
 				1CE8FE02170A2FD4006A3B84 /* AwfulNeedPlatinumView.h */,
 				1CE8FE03170A2FD4006A3B84 /* AwfulNeedPlatinumView.m */,
 			);
@@ -2706,8 +2716,6 @@
 				1CC780211612D989002AF958 /* AwfulHTTPClient.m */,
 				1CDD00DF16C63C2800E72D62 /* AwfulJSONOrScrapeOperation.h */,
 				1CDD00E016C63C2800E72D62 /* AwfulJSONOrScrapeOperation.m */,
-				1CAED9D916373F91001F5F04 /* AwfulThreadTags.h */,
-				1CAED9DA16373F91001F5F04 /* AwfulThreadTags.m */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
