@@ -1064,6 +1064,10 @@ static BOOL PrivateMessageIconSeen(NSString *src)
 
 @property (nonatomic) NSMutableDictionary *mutablePostIcons;
 @property (nonatomic) NSMutableArray *mutablePostIconIDs;
+@property (nonatomic) NSMutableDictionary *mutableSecondaryIcons;
+@property (nonatomic) NSMutableArray *mutableSecondaryIconIDs;
+@property (copy, nonatomic) NSString *secondaryIconKey;
+@property (copy, nonatomic) NSString *selectedSecondaryIconID;
 @property (copy, nonatomic) NSString *text;
 
 @end
@@ -1081,6 +1085,16 @@ static BOOL PrivateMessageIconSeen(NSString *src)
     return self.mutablePostIconIDs;
 }
 
+- (NSDictionary *)secondaryIcons
+{
+    return self.mutableSecondaryIcons;
+}
+
+- (NSArray *)secondaryIconIDs
+{
+    return self.mutableSecondaryIconIDs;
+}
+
 - (void)parseHTMLData
 {
     self.mutablePostIcons = [NSMutableDictionary new];
@@ -1092,7 +1106,6 @@ static BOOL PrivateMessageIconSeen(NSString *src)
         NSLog(@"could not parse available private message post icons");
         return;
     }
-    
     for (NSUInteger i = 0; i < [inputs count]; i++) {
         NSString *iconID = [inputs[i] objectForKey:@"value"];
         NSURL *url = [NSURL URLWithString:[imgs[i] objectForKey:@"src"]];
@@ -1101,6 +1114,39 @@ static BOOL PrivateMessageIconSeen(NSString *src)
             [self.mutablePostIconIDs addObject:iconID];
         }
     }
+    
+    NSArray *secondaryInputs = [doc search:@"//input[@name = 'tma_ama']"];
+    NSArray *secondaryImages;
+    if ([secondaryInputs count] > 0) {
+        secondaryImages = [doc search:@"//img[preceding-sibling::input[@name = 'tma_ama']]"];
+        self.secondaryIconKey = @"tma_ama";
+    } else {
+        secondaryInputs = [doc search:@"//input[@name = 'samart_tag']"];
+        if ([secondaryInputs count] > 0) {
+            secondaryImages = [doc search:@"//img[preceding-sibling::input[@name = 'samart_tag']]"];
+            self.secondaryIconKey = @"samart_tag";
+        }
+    }
+    if ([secondaryInputs count] != [secondaryImages count]) {
+        NSLog(@"could not parse available secondary post icons");
+        return;
+    }
+    if ([secondaryInputs count] > 0) {
+        self.mutableSecondaryIcons = [NSMutableDictionary new];
+        self.mutableSecondaryIconIDs = [NSMutableArray new];
+    }
+    for (NSUInteger i = 0; i < [secondaryInputs count]; i++) {
+        NSString *iconID = [secondaryInputs[i] objectForKey:@"value"];
+        NSURL *url = [NSURL URLWithString:[secondaryImages[i] objectForKey:@"src"]];
+        if (iconID && url) {
+            self.mutableSecondaryIcons[iconID] = url;
+            [self.mutableSecondaryIconIDs addObject:iconID];
+            if ([secondaryInputs[i] objectForKey:@"checked"]) {
+                self.selectedSecondaryIconID = iconID;
+            }
+        }
+    }
+    
     NSArray *textNodes = [doc rawSearch:@"//textarea[@name = 'message']/text()"];
     NSString *text = [textNodes componentsJoinedByString:@""];
     self.text = DeEntitify(text ?: @"");

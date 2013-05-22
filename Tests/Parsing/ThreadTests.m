@@ -132,3 +132,54 @@
 }
 
 @end
+
+
+@interface NewAskTellThreadTests : ParsingTests @end
+
+@implementation NewAskTellThreadTests
+
++ (NSString *)fixtureFilename { return @"newthread-at.html"; }
+
+- (void)testNewThreadForm
+{
+    NewThreadFormParsedInfo *info = [[NewThreadFormParsedInfo alloc] initWithHTMLData:self.fixture];
+    STAssertEqualObjects(info.formkey, @"abc123", nil);
+    STAssertEqualObjects(info.formCookie, @"heyhey", nil);
+    STAssertEqualObjects(info.automaticallyParseURLs, @"yes", nil);
+    STAssertNil(info.bookmarkThread, nil);
+}
+
+- (void)testIconIDs
+{
+    ComposePrivateMessageParsedInfo *info = [[ComposePrivateMessageParsedInfo alloc]
+                                             initWithHTMLData:self.fixture];
+    STAssertEqualObjects([[info.postIcons[@"526"] lastPathComponent] stringByDeletingPathExtension],
+                         @"lf-9287", nil);
+    STAssertTrue([info.postIconIDs containsObject:@"322"], nil);
+    
+    STAssertEqualObjects([info.secondaryIcons[@"0"] lastPathComponent], @"tma.gif", nil);
+    STAssertTrue([info.secondaryIconIDs containsObject:@"1"], nil);
+    STAssertEqualObjects(info.secondaryIconKey, @"tma_ama", nil);
+    STAssertEqualObjects(info.selectedSecondaryIconID, @"0", nil);
+}
+
+@end
+
+@interface NewSAMartThreadTests : ParsingTests @end
+
+@implementation NewSAMartThreadTests
+
++ (NSString *)fixtureFilename { return @"newthread-samart.html"; }
+
+- (void)testIconIDs
+{
+    ComposePrivateMessageParsedInfo *info = [[ComposePrivateMessageParsedInfo alloc]
+                                             initWithHTMLData:self.fixture];
+    STAssertEqualObjects(info.secondaryIconKey, @"samart_tag", nil);
+    STAssertTrue([info.secondaryIconIDs containsObject:@"4"], nil);
+    STAssertEqualObjects([info.secondaryIcons[@"1"] lastPathComponent], @"icon-37-selling.gif",
+                         nil);
+    STAssertEqualObjects(info.selectedSecondaryIconID, @"1", nil);
+}
+
+@end

@@ -188,6 +188,10 @@ typedef enum {
 
 @property (readonly, copy, nonatomic) NSDictionary *postIcons;
 @property (readonly, copy, nonatomic) NSArray *postIconIDs;
+@property (readonly, copy, nonatomic) NSDictionary *secondaryIcons;
+@property (readonly, copy, nonatomic) NSArray *secondaryIconIDs;
+@property (readonly, copy, nonatomic) NSString *secondaryIconKey;
+@property (readonly, copy, nonatomic) NSString *selectedSecondaryIconID;
 @property (readonly, copy, nonatomic) NSString *text;
 
 @end
