@@ -10,4 +10,13 @@
 
 @implementation AwfulThreadTag
 
++ (NSString *)emptyThreadTagImageName
+{
+    return @"empty-thread-tag";
+}
++ (NSString *)emptyPrivateMessageTagImageName
+{
+    return @"empty-pm-tag";
+}
+
 @end

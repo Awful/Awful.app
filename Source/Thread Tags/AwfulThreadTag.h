@@ -13,4 +13,7 @@
 @property (copy, nonatomic) NSString *imageName;
 @property (copy, nonatomic) NSString *composeID;
 
++ (NSString *)emptyThreadTagImageName;
++ (NSString *)emptyPrivateMessageTagImageName;
+
 @end

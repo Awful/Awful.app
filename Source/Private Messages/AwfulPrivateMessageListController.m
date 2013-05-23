@@ -21,6 +21,7 @@
 #import "AwfulSplitViewController.h"
 #import "AwfulTheme.h"
 #import "AwfulThreadCell.h"
+#import "AwfulThreadTag.h"
 #import "AwfulThreadTags.h"
 #import "UIViewController+NavigationEnclosure.h"
 
@@ -195,7 +196,7 @@
         cell.icon = [[AwfulThreadTags sharedThreadTags] threadTagNamed:pm.firstIconName];
         if (!cell.icon) {
             // TODO handle updated thread tags
-            cell.icon = [UIImage imageNamed:@"empty-pm-tag"];
+            cell.icon = [UIImage imageNamed:[AwfulThreadTag emptyPrivateMessageTagImageName]];
         }
         if (pm.repliedValue || pm.forwardedValue || !pm.seenValue) {
             cell.stickyImageView.hidden = NO;

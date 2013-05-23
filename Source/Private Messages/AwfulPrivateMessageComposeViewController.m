@@ -114,7 +114,7 @@
     if (postIcon) {
         image = [[AwfulThreadTags sharedThreadTags] threadTagNamed:postIcon.imageName];
     } else {
-        image = [UIImage imageNamed:@"empty-pm-tag.png"];
+        image = [UIImage imageNamed:[AwfulThreadTag emptyPrivateMessageTagImageName]];
     }
     [self.postIconButton setImage:image forState:UIControlStateNormal];
 }
@@ -311,8 +311,8 @@
     self.subjectField.textField.text = self.subject;
     [self updateSendButton];
     [self updateTitleWithSubjectField:self.subjectField.textField];
-    [self.postIconButton setImage:[UIImage imageNamed:@"empty-pm-tag.png"]
-                         forState:UIControlStateNormal];
+    UIImage *emptyImage = [UIImage imageNamed:[AwfulThreadTag emptyPrivateMessageTagImageName]];
+    [self.postIconButton setImage:emptyImage forState:UIControlStateNormal];
     [[AwfulHTTPClient client] listAvailablePrivateMessagePostIconsAndThen:^(NSError *error,
                                                                             NSArray *postIcons)
      {
@@ -362,7 +362,7 @@
 - (UIImage *)postIconPicker:(AwfulPostIconPickerController *)picker postIconAtIndex:(NSInteger)index
 {
     if (index == 0) {
-        return [UIImage imageNamed:@"empty-pm-tag.png"];
+        return [UIImage imageNamed:[AwfulThreadTag emptyPrivateMessageTagImageName]];
     }
     index -= 1;
     NSString *iconName = [self.availablePostIcons[index] imageName];

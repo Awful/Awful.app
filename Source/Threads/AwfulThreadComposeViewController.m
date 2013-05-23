@@ -304,7 +304,7 @@
     // -1 for the "empty thread" tag.
     index -= 1;
     if (index < 0) {
-        return [UIImage imageNamed:@"empty-thread-tag"];
+        return [UIImage imageNamed:[AwfulThreadTag emptyThreadTagImageName]];
     } else {
         NSString *iconName = [self.availablePostIcons[index] imageName];
         return [[AwfulThreadTags sharedThreadTags] threadTagNamed:iconName];
