@@ -328,28 +328,36 @@ extern NSString * const AwfulUserDidLogInNotification;
 //                                   failure.
 //              secondaryPostIcons - An array of AwfulThreadTag instances on success, or nil if
 //                                   the forum doesn't use secondary thread tags, or nil on failure.
+//              secondaryIconKey   - Pass this to -postThreadInForumWithID... along with the ID of
+//                                   the selected secondary icon.
 //
 // Returns the enqueued network operation.
 - (NSOperation *)listAvailablePostIconsForForumWithID:(NSString *)forumID
                                               andThen:(void (^)(NSError *error,
                                                                 NSArray *postIcons,
-                                                                NSArray *secondaryPostIcons
+                                                                NSArray *secondaryPostIcons,
+                                                                NSString *secondaryIconKey
                                                                 ))callback;
 
 // Post a new thread in a forum.
 //
-// forumID  - Which forum to post in. Cannot be nil.
-// subject  - What the thread is about. Cannot be nil.
-// iconID   - The ID of the post icon to use, or nil for the default icon.
-// text     - The contents of the original post. Cannot be nil.
-// callback - A block to call after posting the thread, which takes as parameters:
-//              error    - An error on failure, or nil on success.
-//              threadID - The ID of the newly-created thread on success, or nil on failure.
+// forumID          - Which forum to post in. Cannot be nil.
+// subject          - What the thread is about. Cannot be nil.
+// iconID           - The ID of the post icon to use, or nil for the default icon.
+// secondaryIconID  - The ID of the secondary post icon to use, or nil if no icon is required.
+// secondaryIconKey - The key passed in to the callback block of
+//                    -listAvailablePostIconsForForumWithID..., or nil if no icon is required.
+// text             - The contents of the original post. Cannot be nil.
+// callback         - A block to call after posting the thread, which takes as parameters:
+//                      error    - An error on failure, or nil on success.
+//                      threadID - The ID of the newly-created thread on success, or nil on failure.
 //
 // Returns the enqueued network operation.
 - (NSOperation *)postThreadInForumWithID:(NSString *)forumID
                                  subject:(NSString *)subject
                                     icon:(NSString *)iconID
+                           secondaryIcon:(NSString *)secondaryIconID
+                        secondaryIconKey:(NSString *)secondaryIconKey
                                     text:(NSString *)text
                                  andThen:(void (^)(NSError *error, NSString *threadID))callback;
 

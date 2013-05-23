@@ -991,7 +991,8 @@ static NSArray * CollectPostIcons(NSArray *postIconIDs, NSDictionary *postIcons)
 - (NSOperation *)listAvailablePostIconsForForumWithID:(NSString *)forumID
                                               andThen:(void (^)(NSError *error,
                                                                 NSArray *postIcons,
-                                                                NSArray *secondaryPostIcons
+                                                                NSArray *secondaryPostIcons,
+                                                                NSString *secondaryIconKey
                                                                 ))callback
 {
     NSDictionary *parameters = @{ @"action": @"newthread", @"forumid": forumID };
@@ -1001,9 +1002,10 @@ static NSArray * CollectPostIcons(NSArray *postIconIDs, NSDictionary *postIcons)
                                           success:^(id _, ComposePrivateMessageParsedInfo *info)
     {
         if (callback) callback(nil, CollectPostIcons(info.postIconIDs, info.postIcons),
-                               CollectPostIcons(info.secondaryIconIDs, info.secondaryIcons));
+                               CollectPostIcons(info.secondaryIconIDs, info.secondaryIcons),
+                               info.secondaryIconKey);
     } failure:^(id _, NSError *error) {
-        if (callback) callback(error, nil, nil);
+        if (callback) callback(error, nil, nil, nil);
     }];
     [op setCreateParsedInfoBlock:^id(NSData *data) {
         return [[ComposePrivateMessageParsedInfo alloc] initWithHTMLData:data];
@@ -1015,6 +1017,8 @@ static NSArray * CollectPostIcons(NSArray *postIconIDs, NSDictionary *postIcons)
 - (NSOperation *)postThreadInForumWithID:(NSString *)forumID
                                  subject:(NSString *)subject
                                     icon:(NSString *)iconID
+                           secondaryIcon:(NSString *)secondaryIconID
+                        secondaryIconKey:(NSString *)secondaryIconKey
                                     text:(NSString *)text
                                  andThen:(void (^)(NSError *error, NSString *threadID))callback
 {
@@ -1041,6 +1045,9 @@ static NSArray * CollectPostIcons(NSArray *postIconIDs, NSDictionary *postIcons)
             @"polloptions": @"4",
             @"submit": @"Submit New Thread",
         } mutableCopy];
+        if ([secondaryIconID length] > 0 && [secondaryIconKey length] > 0) {
+            postParameters[secondaryIconKey] = secondaryIconID;
+        }
         if (info.automaticallyParseURLs) {
             postParameters[@"parseurl"] = info.automaticallyParseURLs;
         }

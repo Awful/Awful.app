@@ -32,6 +32,7 @@
 @property (nonatomic) AwfulThreadTag *postIcon;
 @property (copy, nonatomic) NSArray *availableSecondaryPostIcons;
 @property (nonatomic) AwfulThreadTag *secondaryPostIcon;
+@property (copy, nonatomic) NSString *secondaryIconKey;
 
 @property (copy, nonatomic) NSString *subject;
 @property (nonatomic) AwfulComposeField *subjectField;
@@ -179,6 +180,8 @@
     id op = [[AwfulHTTPClient client] postThreadInForumWithID:self.forum.forumID
                                                       subject:self.subject
                                                          icon:self.postIcon.composeID
+                                                secondaryIcon:self.secondaryPostIcon.composeID
+                                             secondaryIconKey:self.secondaryIconKey
                                                          text:messageBody
                                                       andThen:^(NSError *error, NSString *threadID)
     {
@@ -296,11 +299,13 @@
     [[AwfulHTTPClient client] listAvailablePostIconsForForumWithID:self.forum.forumID
                                                            andThen:^(NSError *error,
                                                                      NSArray *postIcons,
-                                                                     NSArray *secondaryPostIcons)
+                                                                     NSArray *secondaryPostIcons,
+                                                                     NSString *secondaryIconKey)
      {
          self.availablePostIcons = postIcons;
          self.availableSecondaryPostIcons = secondaryPostIcons;
          self.secondaryPostIcon = self.availableSecondaryPostIcons[0];
+         self.secondaryIconKey = secondaryIconKey;
          [self.postIconPicker reloadData];
     }];
 }
