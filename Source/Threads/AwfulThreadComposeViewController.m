@@ -15,6 +15,7 @@
 #import "AwfulPostIconPickerController.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
+#import "AwfulThreadTag.h"
 #import "AwfulThreadTags.h"
 #import "SVProgressHUD.h"
 #import "UIViewController+NavigationEnclosure.h"
@@ -24,11 +25,10 @@
 @property (nonatomic) AwfulForum *forum;
 @property (nonatomic) UIView *topView;
 
-@property (copy, nonatomic) NSString *postIcon;
 @property (nonatomic) UIButton *postIconButton;
 @property (nonatomic) AwfulPostIconPickerController *postIconPicker;
-@property (copy, nonatomic) NSDictionary *availablePostIcons;
-@property (copy, nonatomic) NSArray *availablePostIconIDs;
+@property (copy, nonatomic) NSArray *availablePostIcons;
+@property (nonatomic) AwfulThreadTag *postIcon;
 
 @property (copy, nonatomic) NSString *subject;
 @property (nonatomic) AwfulComposeField *subjectField;
@@ -113,10 +113,10 @@
     self.subjectField.textField.userInteractionEnabled = enabled;
 }
 
-- (void)setPostIcon:(NSString *)postIcon
+- (void)setPostIcon:(AwfulThreadTag *)postIcon
 {
     if (_postIcon == postIcon) return;
-    _postIcon = [postIcon copy];
+    _postIcon = postIcon;
     [self updatePostIconButtonImage];
 }
 
@@ -124,7 +124,7 @@
 {
     UIImage *image;
     if (self.postIcon) {
-        image = [[AwfulThreadTags sharedThreadTags] threadTagNamed:self.postIcon];
+        image = [[AwfulThreadTags sharedThreadTags] threadTagNamed:self.postIcon.imageName];
     } else {
         image = [UIImage imageNamed:@"empty-thread-tag"];
     }
@@ -162,7 +162,7 @@
 {
     id op = [[AwfulHTTPClient client] postThreadInForumWithID:self.forum.forumID
                                                       subject:self.subject
-                                                         icon:self.postIconID
+                                                         icon:self.postIcon.composeID
                                                          text:messageBody
                                                       andThen:^(NSError *error, NSString *threadID)
     {
@@ -180,17 +180,6 @@
         [self.delegate threadComposeController:self didPostThreadWithID:threadID];
     }];
     self.networkOperation = op;
-}
-
-- (NSString *)postIconID
-{
-    if ([self.postIcon length] == 0) return nil;
-    for (NSString *key in self.availablePostIcons) {
-        if ([self.availablePostIcons[key] isEqualToString:self.postIcon]) {
-            return key;
-        }
-    }
-    return nil;
 }
 
 - (void)retheme
@@ -246,15 +235,9 @@
         self.postIconPicker = [[AwfulPostIconPickerController alloc] initWithDelegate:self];
     }
     if (self.postIcon) {
-        for (id iconID in self.availablePostIcons) {
-            if ([self.availablePostIcons[iconID] isEqual:self.postIcon]) {
-                NSUInteger index = [self.availablePostIconIDs indexOfObject:iconID];
-                self.postIconPicker.selectedIndex = index + 1;
-                break;
-            }
-        }
-    }
-    if (self.postIconPicker.selectedIndex == NSNotFound) {
+        NSUInteger index = [self.availablePostIcons indexOfObject:self.postIcon];
+        self.postIconPicker.selectedIndex = index;
+    } else {
         self.postIconPicker.selectedIndex = 0;
     }
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -287,13 +270,10 @@
     [super viewDidLoad];
     [self updatePostIconButtonImage];
     [[AwfulHTTPClient client] listAvailablePostIconsForForumWithID:self.forum.forumID
-     andThen:^(NSError *error, NSDictionary *postIcons, NSArray *postIconIDs) {
-         NSMutableDictionary *postIconNames = [NSMutableDictionary new];
-         for (id key in postIcons) {
-             postIconNames[key] = [[postIcons[key] lastPathComponent] stringByDeletingPathExtension];
-         }
-         self.availablePostIcons = postIconNames;
-         self.availablePostIconIDs = postIconIDs;
+                                                           andThen:^(NSError *error,
+                                                                     NSArray *postIcons)
+     {
+         self.availablePostIcons = postIcons;
          [self.postIconPicker reloadData];
     }];
 }
@@ -316,7 +296,7 @@
 - (NSInteger)numberOfIconsInPostIconPicker:(AwfulPostIconPickerController *)picker
 {
     // +1 for the empty thread tag.
-    return [self.availablePostIconIDs count] + 1;
+    return [self.availablePostIcons count] + 1;
 }
 
 - (UIImage *)postIconPicker:(AwfulPostIconPickerController *)picker postIconAtIndex:(NSInteger)index
@@ -326,18 +306,18 @@
     if (index < 0) {
         return [UIImage imageNamed:@"empty-thread-tag"];
     } else {
-        NSString *iconName = self.availablePostIcons[self.availablePostIconIDs[index]];
+        NSString *iconName = [self.availablePostIcons[index] imageName];
         return [[AwfulThreadTags sharedThreadTags] threadTagNamed:iconName];
     }
 }
 
 - (void)postIconPickerDidComplete:(AwfulPostIconPickerController *)picker
 {
-    if (picker.selectedIndex == 0) {
+    NSInteger index = picker.selectedIndex - 1;
+    if (index < 0) {
         self.postIcon = nil;
     } else {
-        id selectedIconID = self.availablePostIconIDs[picker.selectedIndex - 1];
-        self.postIcon = self.availablePostIcons[selectedIconID];
+        self.postIcon = self.availablePostIcons[index];
     }
     self.postIconPicker = nil;
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -356,8 +336,7 @@
         if (index < 0) {
             self.postIcon = nil;
         } else {
-            id selectedIconID = self.availablePostIconIDs[index];
-            self.postIcon = self.availablePostIcons[selectedIconID];
+            self.postIcon = self.availablePostIcons[index];
         }
     }
 }

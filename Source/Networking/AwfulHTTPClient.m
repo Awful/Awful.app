@@ -928,17 +928,7 @@ andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))call
     id op = [self HTTPRequestOperationWithRequest:urlRequest
                                           success:^(id _, ComposePrivateMessageParsedInfo *info)
     {
-        if (callback) {
-            NSMutableArray *postIcons = [NSMutableArray new];
-            for (NSString *iconID in info.postIconIDs) {
-                AwfulThreadTag *tag = [AwfulThreadTag new];
-                tag.composeID = iconID;
-                tag.imageName = [[info.postIcons[iconID] lastPathComponent]
-                                 stringByDeletingPathExtension];
-                [postIcons addObject:tag];
-            }
-            callback(nil, postIcons);
-        }
+        if (callback) callback(nil, CollectPostIcons(info.postIconIDs, info.postIcons));
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
     }];
@@ -947,6 +937,18 @@ andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))call
     }];
     [self enqueueHTTPRequestOperation:op];
     return op;
+}
+
+static NSArray * CollectPostIcons(NSArray *postIconIDs, NSDictionary *postIcons)
+{
+    NSMutableArray *collection = [NSMutableArray new];
+    for (NSString *iconID in postIconIDs) {
+        AwfulThreadTag *tag = [AwfulThreadTag new];
+        tag.composeID = iconID;
+        tag.imageName = [[postIcons[iconID] lastPathComponent] stringByDeletingPathExtension];
+        [collection addObject:tag];
+    }
+    return collection;
 }
 
 - (NSOperation *)sendPrivateMessageTo:(NSString *)username
@@ -975,7 +977,8 @@ andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))call
     id op = [self HTTPRequestOperationWithRequest:urlRequest
                                           success:^(id _, id __)
     {
-        // TODO parse response if that makes sense (e.g. user can't receive messages or unknown user)
+        // TODO parse response if that makes sense (e.g. user can't receive messages or unknown
+        //      user)
         if (callback) callback(nil);
     } failure:^(id _, NSError *error) {
         if (callback) callback(error);
@@ -985,7 +988,8 @@ andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))call
 }
 
 - (NSOperation *)listAvailablePostIconsForForumWithID:(NSString *)forumID
-    andThen:(void (^)(NSError *error, NSDictionary *postIcons, NSArray *postIconIDs))callback
+                                              andThen:(void (^)(NSError *error,
+                                                                NSArray *postIcons))callback
 {
     NSDictionary *parameters = @{ @"action": @"newthread", @"forumid": forumID };
     NSURLRequest *request = [self requestWithMethod:@"GET" path:@"newthread.php"
@@ -993,9 +997,9 @@ andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))call
     id op = [self HTTPRequestOperationWithRequest:request
                                           success:^(id _, ComposePrivateMessageParsedInfo *info)
     {
-        if (callback) callback(nil, info.postIcons, info.postIconIDs);
+        if (callback) callback(nil, CollectPostIcons(info.postIconIDs, info.postIcons));
     } failure:^(id _, NSError *error) {
-        if (callback) callback(error, nil, nil);
+        if (callback) callback(error, nil);
     }];
     [op setCreateParsedInfoBlock:^id(NSData *data) {
         return [[ComposePrivateMessageParsedInfo alloc] initWithHTMLData:data];

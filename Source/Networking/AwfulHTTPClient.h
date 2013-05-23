@@ -324,12 +324,12 @@ extern NSString * const AwfulUserDidLogInNotification;
 // forumID  - Which forum to list icons for.
 // callback - A block to call after listing post icons, which takes as parameters:
 //              error - An error on failure, or nil on success.
-//              postIcons - A dicitonary mapping icon IDs to URLs on success, or nil on failure.
-//              postIconIDs - An ordered list of icon IDs on success, or nil on failure;
+//              postIcons - An array of AwfulThreadTag instances on success, or nil on failure.
 //
 // Returns the enqueued network operation.
 - (NSOperation *)listAvailablePostIconsForForumWithID:(NSString *)forumID
-    andThen:(void (^)(NSError *error, NSDictionary *postIcons, NSArray *postIconIDs))callback;
+                                              andThen:(void (^)(NSError *error,
+                                                                NSArray *postIcons))callback;
 
 // Post a new thread in a forum.
 //
