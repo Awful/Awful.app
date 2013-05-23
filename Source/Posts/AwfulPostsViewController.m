@@ -59,11 +59,11 @@
 
 @property (weak, nonatomic) NSOperation *networkOperation;
 
-@property (weak, nonatomic) AwfulPageTopBar *topBar;
-@property (weak, nonatomic) AwfulPostsView *postsView;
-@property (weak, nonatomic) AwfulPageBottomBar *bottomBar;
+@property (nonatomic) AwfulPageTopBar *topBar;
+@property (nonatomic) AwfulPostsView *postsView;
+@property (nonatomic) AwfulPageBottomBar *bottomBar;
 @property (nonatomic) AwfulPopoverController *jumpToPagePopover;
-@property (weak, nonatomic) AwfulPullToRefreshControl *pullUpToRefreshControl;
+@property (nonatomic) AwfulPullToRefreshControl *pullUpToRefreshControl;
 @property (nonatomic) UIBarButtonItem *composeItem;
 @property (copy, nonatomic) NSString *ongoingReplyText;
 @property (nonatomic) id ongoingReplyImageCacheIdentifier;
@@ -603,38 +603,32 @@
     [self.view addSubview:pageBar];
     self.bottomBar = pageBar;
     
-    AwfulPostsView *postsView = [[AwfulPostsView alloc] initWithFrame:postsFrame];
-    postsView.delegate = self;
-    postsView.scrollView.delegate = self;
-    postsView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    postsView.backgroundColor = self.view.backgroundColor;
-    self.postsView = postsView;
-    [self.view addSubview:postsView];
+    self.postsView = [[AwfulPostsView alloc] initWithFrame:postsFrame];
+    self.postsView.delegate = self;
+    self.postsView.scrollView.delegate = self;
+    self.postsView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                       UIViewAutoresizingFlexibleHeight);
+    self.postsView.backgroundColor = self.view.backgroundColor;
+    [self.view addSubview:self.postsView];
     [self configurePostsViewSettings];
     
-    AwfulPageTopBar *topBar = [AwfulPageTopBar new];
-    topBar.frame = CGRectMake(0, -40, CGRectGetWidth(self.view.frame), 40);
-    [topBar.goToForumButton addTarget:self
-                               action:@selector(goToParentForum)
-                     forControlEvents:UIControlEventTouchUpInside];
-    [topBar.loadReadPostsButton addTarget:self
-                                   action:@selector(showHiddenSeenPosts)
-                         forControlEvents:UIControlEventTouchUpInside];
-    topBar.loadReadPostsButton.enabled = self.hiddenPosts > 0;
-    [topBar.scrollToBottomButton addTarget:self
-                                    action:@selector(scrollToBottom)
+    self.topBar = [AwfulPageTopBar new];
+    self.topBar.frame = CGRectMake(0, -40, CGRectGetWidth(self.view.frame), 40);
+    [self.topBar.goToForumButton addTarget:self action:@selector(goToParentForum)
                           forControlEvents:UIControlEventTouchUpInside];
-    [postsView.scrollView addSubview:topBar];
-    self.topBar = topBar;
+    [self.topBar.loadReadPostsButton addTarget:self action:@selector(showHiddenSeenPosts)
+                              forControlEvents:UIControlEventTouchUpInside];
+    self.topBar.loadReadPostsButton.enabled = self.hiddenPosts > 0;
+    [self.topBar.scrollToBottomButton addTarget:self action:@selector(scrollToBottom)
+                               forControlEvents:UIControlEventTouchUpInside];
+    [self.postsView.scrollView addSubview:self.topBar];
     
-    AwfulPullToRefreshControl *refresh;
-    refresh = [[AwfulPullToRefreshControl alloc] initWithDirection:AwfulScrollViewPullUp];
-    [refresh addTarget:self
-                action:@selector(loadNextPageOrRefresh)
-      forControlEvents:UIControlEventValueChanged];
-    refresh.backgroundColor = postsView.backgroundColor;
-    [self.postsView.scrollView addSubview:refresh];
-    self.pullUpToRefreshControl = refresh;
+    self.pullUpToRefreshControl = [[AwfulPullToRefreshControl alloc]
+                                   initWithDirection:AwfulScrollViewPullUp];
+    [self.pullUpToRefreshControl addTarget:self action:@selector(loadNextPageOrRefresh)
+                          forControlEvents:UIControlEventValueChanged];
+    self.pullUpToRefreshControl.backgroundColor = self.postsView.backgroundColor;
+    [self.postsView.scrollView addSubview:self.pullUpToRefreshControl];
     [self updatePullUpTriggerOffset];
     
     [self updateUserInterface];
@@ -823,7 +817,7 @@ static char KVOContext;
 
 - (void)stopObservingScrollViewContentSize
 {
-    if (_observingScrollViewSize) {
+    if (_observingScrollViewSize && [self isViewLoaded]) {
         [self.postsView.scrollView removeObserver:self
                                        forKeyPath:@"contentSize"
                                           context:&KVOContext];
