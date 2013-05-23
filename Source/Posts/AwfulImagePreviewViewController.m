@@ -17,20 +17,16 @@
 
 @interface AwfulImagePreviewViewController () <UIScrollViewDelegate>
 
-@property (weak, nonatomic) UIScrollView *scrollView;
-
-@property (weak, nonatomic) UIImageView *imageView;
+@property (nonatomic) UIScrollView *scrollView;
+@property (nonatomic) UIImageView *imageView;
+@property (nonatomic) NSData *imageData;
 
 @property (nonatomic) NSOperationQueue *queue;
 
-@property (nonatomic) NSData *imageData;
-
 @property (nonatomic) UIStatusBarStyle statusBarStyle;
-
 @property (nonatomic) NSTimer *automaticallyHideBarsTimer;
 
 @property (nonatomic) UIBarButtonItem *doneButton;
-
 @property (nonatomic) UIBarButtonItem *actionButton;
 
 @end
@@ -222,22 +218,20 @@
 
 - (void)loadView
 {
-    UIScrollView *scrollView = [UIScrollView new];
-    self.scrollView = scrollView;
-    scrollView.frame = [UIScreen mainScreen].bounds;
-    scrollView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
-                                   UIViewAutoresizingFlexibleHeight);
-    scrollView.delegate = self;
-    scrollView.backgroundColor = [UIColor blackColor];
-    UIImageView *imageView = [UIImageView new];
-    imageView.frame = (CGRect){ .size = scrollView.frame.size };
-    [scrollView addSubview:imageView];
-    self.imageView = imageView;
+    self.scrollView = [UIScrollView new];
+    self.scrollView.frame = [UIScreen mainScreen].bounds;
+    self.scrollView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                        UIViewAutoresizingFlexibleHeight);
+    self.scrollView.delegate = self;
+    self.scrollView.backgroundColor = [UIColor blackColor];
+    self.imageView = [UIImageView new];
+    self.imageView.frame = (CGRect){ .size = self.scrollView.frame.size };
+    [self.scrollView addSubview:self.imageView];
     
     UIView *parent = [UIView new];
-    parent.frame = scrollView.frame;
-    parent.autoresizingMask = scrollView.autoresizingMask;
-    [parent addSubview:scrollView];
+    parent.frame = self.scrollView.frame;
+    parent.autoresizingMask = self.scrollView.autoresizingMask;
+    [parent addSubview:self.scrollView];
     self.view = parent;
     
     UITapGestureRecognizer *tap = [UITapGestureRecognizer new];
