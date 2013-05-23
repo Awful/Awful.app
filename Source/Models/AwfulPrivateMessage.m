@@ -67,6 +67,10 @@
     }
     NSMutableArray *messages = [NSMutableArray new];
     for (PrivateMessageParsedInfo *pmInfo in info.privateMessages) {
+        if ([pmInfo.messageID length] == 0) {
+            NSLog(@"error parsing private message; skipping");
+            continue;
+        }
         AwfulPrivateMessage *msg = existingPMs[pmInfo.messageID] ?: [AwfulPrivateMessage insertNew];
         [pmInfo applyToObject:msg];
         if (!msg.from) msg.from = [AwfulUser insertNew];
