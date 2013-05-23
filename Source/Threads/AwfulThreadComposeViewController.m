@@ -295,9 +295,12 @@
     [self updatePostIconButtonImage];
     [[AwfulHTTPClient client] listAvailablePostIconsForForumWithID:self.forum.forumID
                                                            andThen:^(NSError *error,
-                                                                     NSArray *postIcons)
+                                                                     NSArray *postIcons,
+                                                                     NSArray *secondaryPostIcons)
      {
          self.availablePostIcons = postIcons;
+         self.availableSecondaryPostIcons = secondaryPostIcons;
+         self.secondaryPostIcon = self.availableSecondaryPostIcons[0];
          [self.postIconPicker reloadData];
     }];
 }

@@ -941,6 +941,7 @@ andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))call
 
 static NSArray * CollectPostIcons(NSArray *postIconIDs, NSDictionary *postIcons)
 {
+    if ([postIconIDs count] == 0) return nil;
     NSMutableArray *collection = [NSMutableArray new];
     for (NSString *iconID in postIconIDs) {
         AwfulThreadTag *tag = [AwfulThreadTag new];
@@ -989,7 +990,9 @@ static NSArray * CollectPostIcons(NSArray *postIconIDs, NSDictionary *postIcons)
 
 - (NSOperation *)listAvailablePostIconsForForumWithID:(NSString *)forumID
                                               andThen:(void (^)(NSError *error,
-                                                                NSArray *postIcons))callback
+                                                                NSArray *postIcons,
+                                                                NSArray *secondaryPostIcons
+                                                                ))callback
 {
     NSDictionary *parameters = @{ @"action": @"newthread", @"forumid": forumID };
     NSURLRequest *request = [self requestWithMethod:@"GET" path:@"newthread.php"
@@ -997,9 +1000,10 @@ static NSArray * CollectPostIcons(NSArray *postIconIDs, NSDictionary *postIcons)
     id op = [self HTTPRequestOperationWithRequest:request
                                           success:^(id _, ComposePrivateMessageParsedInfo *info)
     {
-        if (callback) callback(nil, CollectPostIcons(info.postIconIDs, info.postIcons));
+        if (callback) callback(nil, CollectPostIcons(info.postIconIDs, info.postIcons),
+                               CollectPostIcons(info.secondaryIconIDs, info.secondaryIcons));
     } failure:^(id _, NSError *error) {
-        if (callback) callback(error, nil);
+        if (callback) callback(error, nil, nil);
     }];
     [op setCreateParsedInfoBlock:^id(NSData *data) {
         return [[ComposePrivateMessageParsedInfo alloc] initWithHTMLData:data];
