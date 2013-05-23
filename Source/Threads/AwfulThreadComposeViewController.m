@@ -30,6 +30,8 @@
 @property (nonatomic) AwfulPostIconPickerController *postIconPicker;
 @property (copy, nonatomic) NSArray *availablePostIcons;
 @property (nonatomic) AwfulThreadTag *postIcon;
+@property (copy, nonatomic) NSArray *availableSecondaryPostIcons;
+@property (nonatomic) AwfulThreadTag *secondaryPostIcon;
 
 @property (copy, nonatomic) NSString *subject;
 @property (nonatomic) AwfulComposeField *subjectField;
@@ -121,6 +123,13 @@
     [self updatePostIconButtonImage];
 }
 
+- (void)setSecondaryPostIcon:(AwfulThreadTag *)secondaryPostIcon
+{
+    if (_secondaryPostIcon == secondaryPostIcon) return;
+    _secondaryPostIcon = secondaryPostIcon;
+    [self updatePostIconButtonImage];
+}
+
 - (void)updatePostIconButtonImage
 {
     UIImage *image;
@@ -130,6 +139,12 @@
         image = [UIImage imageNamed:@"empty-thread-tag"];
     }
     [self.postIconButton setImage:image forState:UIControlStateNormal];
+    if (self.secondaryPostIcon) {
+        self.postIconButton.secondaryTagImage = [[AwfulThreadTags sharedThreadTags]
+                                                 threadTagNamed:self.secondaryPostIcon.imageName];
+    } else {
+        self.postIconButton.secondaryTagImage = nil;
+    }
 }
 
 #pragma mark - AwfulComposeViewController
@@ -234,6 +249,7 @@
 {
     if (!self.postIconPicker) {
         self.postIconPicker = [[AwfulPostIconPickerController alloc] initWithDelegate:self];
+        [self.postIconPicker reloadData];
     }
     if (self.postIcon) {
         NSUInteger index = [self.availablePostIcons indexOfObject:self.postIcon];
@@ -241,11 +257,18 @@
     } else {
         self.postIconPicker.selectedIndex = 0;
     }
+    if (self.secondaryPostIcon) {
+        NSUInteger index = [self.availableSecondaryPostIcons indexOfObject:self.secondaryPostIcon];
+        self.postIconPicker.secondarySelectedIndex = index;
+    } else if ([self.availableSecondaryPostIcons count] > 0) {
+        self.postIconPicker.secondarySelectedIndex = 0;
+    }
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         [self.postIconPicker showFromRect:self.postIconButton.frame
                                    inView:self.postIconButton.superview];
     } else {
-        [self presentViewController:[self.postIconPicker enclosingNavigationController] animated:YES
+        [self presentViewController:[self.postIconPicker enclosingNavigationController]
+                           animated:YES
                          completion:nil];
     }
 }
@@ -312,6 +335,18 @@
     }
 }
 
+- (NSInteger)numberOfSecondaryIconsInPostIconPicker:(AwfulPostIconPickerController *)picker
+{
+    return [self.availableSecondaryPostIcons count];
+}
+
+- (UIImage *)postIconPicker:(AwfulPostIconPickerController *)picker
+       secondaryIconAtIndex:(NSInteger)index
+{
+    NSString *iconName = [self.availableSecondaryPostIcons[index] imageName];
+    return [[AwfulThreadTags sharedThreadTags] threadTagNamed:iconName];
+}
+
 - (void)postIconPickerDidComplete:(AwfulPostIconPickerController *)picker
 {
     NSInteger index = picker.selectedIndex - 1;
@@ -319,6 +354,9 @@
         self.postIcon = nil;
     } else {
         self.postIcon = self.availablePostIcons[index];
+    }
+    if ([self.availableSecondaryPostIcons count] > 0) {
+        self.secondaryPostIcon = self.availableSecondaryPostIcons[picker.secondarySelectedIndex];
     }
     self.postIconPicker = nil;
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -339,6 +377,14 @@
         } else {
             self.postIcon = self.availablePostIcons[index];
         }
+    }
+}
+
+- (void)postIconPicker:(AwfulPostIconPickerController *)picker
+didSelectSecondaryIconAtIndex:(NSInteger)index
+{
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        self.secondaryPostIcon = self.availableSecondaryPostIcons[index];
     }
 }
 
