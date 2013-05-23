@@ -16,6 +16,7 @@
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "AwfulThreadTag.h"
+#import "AwfulThreadTagButton.h"
 #import "AwfulThreadTags.h"
 #import "SVProgressHUD.h"
 #import "UIViewController+NavigationEnclosure.h"
@@ -25,7 +26,7 @@
 @property (nonatomic) AwfulForum *forum;
 @property (nonatomic) UIView *topView;
 
-@property (nonatomic) UIButton *postIconButton;
+@property (nonatomic) AwfulThreadTagButton *postIconButton;
 @property (nonatomic) AwfulPostIconPickerController *postIconPicker;
 @property (copy, nonatomic) NSArray *availablePostIcons;
 @property (nonatomic) AwfulThreadTag *postIcon;
@@ -213,7 +214,7 @@
     CGRectDivide(self.topView.bounds, &postIconFrame, &subjectFieldFrame,
                  fieldHeight, CGRectMinXEdge);
     postIconFrame.size.height -= 1;
-    self.postIconButton = [[UIButton alloc] initWithFrame:postIconFrame];
+    self.postIconButton = [[AwfulThreadTagButton alloc] initWithFrame:postIconFrame];
     self.postIconButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
     [self.postIconButton addTarget:self action:@selector(didTapPostIconButton)
                   forControlEvents:UIControlEventTouchUpInside];

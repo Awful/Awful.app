@@ -13,6 +13,7 @@
 #import "AwfulPostIconPickerController.h"
 #import "AwfulTheme.h"
 #import "AwfulThreadTag.h"
+#import "AwfulThreadTagButton.h"
 #import "AwfulThreadTags.h"
 #import "SVProgressHUD.h"
 #import "UIViewController+NavigationEnclosure.h"
@@ -29,7 +30,7 @@
 @property (nonatomic) AwfulThreadTag *postIcon;
 
 @property (weak, nonatomic) UIView *topView;
-@property (weak, nonatomic) UIButton *postIconButton;
+@property (weak, nonatomic) AwfulThreadTagButton *postIconButton;
 @property (nonatomic) AwfulPostIconPickerController *postIconPicker;
 @property (weak, nonatomic) AwfulComposeField *toField;
 @property (weak, nonatomic) AwfulComposeField *subjectField;
@@ -218,7 +219,8 @@
     CGRect postIconFrame, fieldsFrame;
     CGRectDivide(topView.bounds, &postIconFrame, &fieldsFrame, 54, CGRectMinXEdge);
     postIconFrame.size.height -= 1;
-    UIButton *postIconButton = [[UIButton alloc] initWithFrame:postIconFrame];
+    AwfulThreadTagButton *postIconButton = [[AwfulThreadTagButton alloc]
+                                            initWithFrame:postIconFrame];
     postIconButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
     [postIconButton addTarget:self action:@selector(didTapPostIcon)
              forControlEvents:UIControlEventTouchUpInside];
