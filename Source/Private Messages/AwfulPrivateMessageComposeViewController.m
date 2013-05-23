@@ -18,7 +18,8 @@
 #import "SVProgressHUD.h"
 #import "UIViewController+NavigationEnclosure.h"
 
-@interface AwfulPrivateMessageComposeViewController () <AwfulPostIconPickerControllerDelegate>
+@interface AwfulPrivateMessageComposeViewController () <AwfulPostIconPickerControllerDelegate,
+                                                        UITextFieldDelegate>
 
 @property (copy, nonatomic) NSString *recipient;
 @property (copy, nonatomic) NSString *subject;
@@ -236,6 +237,7 @@
     toField.label.text = @"To:";
     toField.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     toField.textField.keyboardAppearance = self.textView.keyboardAppearance;
+    toField.textField.delegate = self;
     toField.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     toField.textField.autocorrectionType = UITextAutocorrectionTypeNo;
     [toField.textField addTarget:self action:@selector(toFieldDidChange:)
@@ -249,6 +251,7 @@
     subjectField.label.text = @"Subject:";
     subjectField.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     subjectField.textField.keyboardAppearance = self.textView.keyboardAppearance;
+    subjectField.textField.delegate = self;
     [subjectField.textField addTarget:self action:@selector(subjectFieldDidChange:)
                      forControlEvents:UIControlEventEditingDidEnd];
     [subjectField.textField addTarget:self action:@selector(updateTitleWithSubjectField:)
@@ -398,6 +401,16 @@
             self.postIcon = self.availablePostIcons[index - 1];
         }
     }
+}
+
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+{
+    // For reasons passing my understanding, it is impossible to nil out the text *field*'s input
+    // accessory view. However, nil-ing out the text *view*'s input accessory view works great!
+    self.textView.inputAccessoryView = nil;
+    return YES;
 }
 
 @end

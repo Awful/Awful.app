@@ -18,6 +18,7 @@
                                           AwfulThemingViewController>
 
 @property (nonatomic) AwfulTextView *textView;
+@property (nonatomic) AwfulKeyboardBar *bbcodeBar;
 
 @property (weak, nonatomic) id <ImgurHTTPClientCancelToken> imageUploadCancelToken;
 @property (nonatomic) UIPopoverController *pickerPopover;
@@ -42,13 +43,17 @@
                                   UIViewAutoresizingFlexibleHeight);
     _textView.font = [UIFont systemFontOfSize:17];
     _textView.keyboardAppearance = UIKeyboardAppearanceAlert;
-    AwfulKeyboardBar *bbcodeBar = [AwfulKeyboardBar new];
-    bbcodeBar.frame = CGRectMake(0, 0, CGRectGetWidth(_textView.bounds),
-                                 UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 63 : 36);
-    bbcodeBar.characters = @[ @"[", @"=", @":", @"/", @"]" ];
-    bbcodeBar.keyInputView = _textView;
-    _textView.inputAccessoryView = bbcodeBar;
     return _textView;
+}
+
+- (AwfulKeyboardBar *)bbcodeBar
+{
+    if (_bbcodeBar) return _bbcodeBar;
+    _bbcodeBar = [AwfulKeyboardBar new];
+    _bbcodeBar.frame = CGRectMake(0, 0, CGRectGetWidth(_textView.bounds),
+                                 UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 63 : 36);
+    _bbcodeBar.characters = @[ @"[", @"=", @":", @"/", @"]" ];
+    return _bbcodeBar;
 }
 
 - (UIBarButtonItem *)sendButton
@@ -291,6 +296,13 @@ static UIViewAnimationOptions AnimationOptionsWithAnimationCurve(UIViewAnimation
 }
 
 #pragma mark - AwfulTextViewDelegate
+
+- (BOOL)textViewShouldBeginEditing:(UITextView *)textView
+{
+    self.bbcodeBar.keyInputView = _textView;
+    self.textView.inputAccessoryView = self.bbcodeBar;
+    return YES;
+}
 
 - (void)textView:(AwfulTextView *)textView
 showImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType

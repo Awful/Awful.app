@@ -21,7 +21,8 @@
 #import "SVProgressHUD.h"
 #import "UIViewController+NavigationEnclosure.h"
 
-@interface AwfulThreadComposeViewController () <AwfulPostIconPickerControllerDelegate>
+@interface AwfulThreadComposeViewController () <AwfulPostIconPickerControllerDelegate,
+                                                UITextFieldDelegate>
 
 @property (nonatomic) AwfulForum *forum;
 @property (nonatomic) UIView *topView;
@@ -243,6 +244,7 @@
     self.subjectField.label.text = @"Subject";
     self.subjectField.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     self.subjectField.textField.keyboardAppearance = self.textView.keyboardAppearance;
+    self.subjectField.textField.delegate = self;
     [self.subjectField.textField addTarget:self action:@selector(subjectFieldDidChange:)
                           forControlEvents:UIControlEventEditingChanged];
     [self.topView addSubview:self.subjectField];
@@ -394,6 +396,16 @@ didSelectSecondaryIconAtIndex:(NSInteger)index
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         self.secondaryPostIcon = self.availableSecondaryPostIcons[index];
     }
+}
+
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+{
+    // For reasons passing my understanding, it is impossible to nil out the text *field*'s input
+    // accessory view. However, nil-ing out the text *view*'s input accessory view works great!
+    self.textView.inputAccessoryView = nil;
+    return YES;
 }
 
 @end
