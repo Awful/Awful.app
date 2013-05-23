@@ -269,6 +269,12 @@ static NSURL *CachedImageDirectoryForIdentifier(id identifier)
 
 #pragma mark - UIViewController
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self enableSendButtonIfReady];
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
@@ -297,11 +303,23 @@ static NSURL *CachedImageDirectoryForIdentifier(id identifier)
     };
 }
 
+- (void)enableSendButtonIfReady
+{
+    self.sendButton.enabled = [self.textView.text length] > 0;
+}
+
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
     AwfulNavigationBar *bar = (id)self.navigationController.navigationBar;
     bar.leftButtonLongTapAction = nil;
+}
+
+#pragma mark - UITextViewDelegate
+
+- (void)textViewDidChange:(UITextView *)textView
+{
+    [self enableSendButtonIfReady];
 }
 
 @end

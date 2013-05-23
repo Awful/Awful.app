@@ -291,7 +291,7 @@
 
 - (void)enableSendButtonIfReady
 {
-    self.sendButton.enabled = [self.subject length] > 0;
+    self.sendButton.enabled = [self.subject length] > 0 && [self.textView.text length] > 0;
 }
 
 - (void)viewDidLoad
@@ -406,6 +406,13 @@ didSelectSecondaryIconAtIndex:(NSInteger)index
     // accessory view. However, nil-ing out the text *view*'s input accessory view works great!
     self.textView.inputAccessoryView = nil;
     return YES;
+}
+
+#pragma mark - UITextViewDelegate
+
+- (void)textViewDidChange:(UITextView *)textView
+{
+    [self enableSendButtonIfReady];
 }
 
 @end

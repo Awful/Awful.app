@@ -292,7 +292,8 @@
 {
     NSString *to = self.toField.textField.text;
     NSString *subject = self.subjectField.textField.text;
-    self.sendButton.enabled = [to length] > 0 && [subject length] > 0;
+    NSString *body = self.textView.text;
+    self.sendButton.enabled = [to length] > 0 && [subject length] > 0 && [body length] > 0;
 }
 
 - (void)subjectFieldDidChange:(UITextField *)subjectField
@@ -411,6 +412,13 @@
     // accessory view. However, nil-ing out the text *view*'s input accessory view works great!
     self.textView.inputAccessoryView = nil;
     return YES;
+}
+
+#pragma mark - UITextViewDelegate
+
+- (void)textViewDidChange:(UITextView *)textView
+{
+    [self updateSendButton];
 }
 
 @end
