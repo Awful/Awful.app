@@ -660,6 +660,8 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765080DF74369002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765070DF74369002DB57D /* CoreGraphics.framework */; };
+		8C0F392A174F9A8C00E87A7A /* ps4.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C0F3928174F9A8C00E87A7A /* ps4.png */; };
+		8C0F392B174F9A8C00E87A7A /* xbone.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C0F3929174F9A8C00E87A7A /* xbone.png */; };
 		8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C0F4F541682CCFA00E25D7E /* macinyos-heading-center.png */; };
 		8C0F4F571682CCFA00E25D7E /* macinyos-heading-right.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C0F4F551682CCFA00E25D7E /* macinyos-heading-right.png */; };
 		8C2450F91666F76900D3079C /* forum-header-dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C2450F51666F76900D3079C /* forum-header-dark.png */; };
@@ -1483,6 +1485,8 @@
 		1D6058910D05DD3D006BFB54 /* Awful.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Awful.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765070DF74369002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		8C0F3928174F9A8C00E87A7A /* ps4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ps4.png; sourceTree = "<group>"; };
+		8C0F3929174F9A8C00E87A7A /* xbone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = xbone.png; sourceTree = "<group>"; };
 		8C0F4F541682CCFA00E25D7E /* macinyos-heading-center.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading-center.png"; sourceTree = "<group>"; };
 		8C0F4F551682CCFA00E25D7E /* macinyos-heading-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading-right.png"; sourceTree = "<group>"; };
 		8C2450F51666F76900D3079C /* forum-header-dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forum-header-dark.png"; sourceTree = "<group>"; };
@@ -3412,6 +3416,7 @@
 				8CF02DDF16484CCE0059BC56 /* pi-herps.png */,
 				8CCD531515B783FC00E5893B /* politics.png */,
 				8CCD531615B783FC00E5893B /* poll.png */,
+				8C0F3928174F9A8C00E87A7A /* ps4.png */,
 				1CAEDB4F16377A06001F5F04 /* psp-grappling.png */,
 				8CF02DE016484CCE0059BC56 /* psp-itstime.png */,
 				8CF02DE116484CCE0059BC56 /* psp-k1.png */,
@@ -3536,6 +3541,7 @@
 				8CCD535515B783FD00E5893B /* wrestling-roh.png */,
 				8CCD535615B783FD00E5893B /* wrestling-sd.png */,
 				1C9C675E164C332F00478270 /* ww-denim.png */,
+				8C0F3929174F9A8C00E87A7A /* xbone.png */,
 				8C8742981655FDF60018AC6C /* YCS-01.png */,
 				1CAEDB5B16377A43001F5F04 /* ycs-achieve.png */,
 				8CF02E0016484CCE0059BC56 /* ycs-girl.png */,
@@ -4421,6 +4427,8 @@
 				1C7D2330174BA010008A802C /* empty-thread-tag@2x.png in Resources */,
 				1C3447D4174F151F007377C5 /* ouya.png in Resources */,
 				1C3447D6174F152A007377C5 /* steam.png in Resources */,
+				8C0F392A174F9A8C00E87A7A /* ps4.png in Resources */,
+				8C0F392B174F9A8C00E87A7A /* xbone.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
