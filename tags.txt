@@ -196,10 +196,12 @@ games-3ds.png
 games-ds.png
 games-letsplay.png
 games-ps3.png
+games-ps4.png
 games-psp.png
 Games-vita.png
 games-wii.png
 games-wiiu.png
+games-xbone.png
 games.png
 gip-airforce.png
 gip-army.png
@@ -383,7 +385,6 @@ pi-fish.png
 pi-herps.png
 politics.png
 poll.png
-ps4.png
 psp-grappling.png
 psp-itstime.png
 psp-k1.png
@@ -508,7 +509,6 @@ wrestling-raw.png
 wrestling-roh.png
 wrestling-sd.png
 ww-denim.png
-xbone.png
 YCS-01.png
 ycs-achieve.png
 ycs-girl.png
