@@ -29,8 +29,8 @@
 - (instancetype)initWithDelegate:(id <AwfulPostIconPickerControllerDelegate>)delegate
 {
     PSUICollectionViewFlowLayout *layout = [PSUICollectionViewFlowLayout new];
-    layout.itemSize = CGSizeMake(47, 47);
-    layout.minimumInteritemSpacing = 15;
+    layout.itemSize = CGSizeMake(49, 49);
+    layout.minimumInteritemSpacing = 13;
     layout.minimumLineSpacing = 11;
     layout.sectionInset = UIEdgeInsetsMake(12, 12, 12, 12);
     if (!(self = [super initWithCollectionViewLayout:layout])) return nil;
