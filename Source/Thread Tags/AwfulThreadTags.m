@@ -45,6 +45,9 @@ static NSString * const kNewThreadTagURLKey = @"AwfulNewThreadTagURL";
     if (shipped) return EnsureDoubleScaledImage(shipped);
     
     NSURL *url = [[self cacheFolder] URLByAppendingPathComponent:threadTagName];
+    if ([url.pathExtension length] == 0) {
+        url = [url URLByAppendingPathExtension:@"png"];
+    }
     UIImage *cached = [UIImage imageWithContentsOfFile:[url path]];
     if (cached) return EnsureDoubleScaledImage(cached);
     
