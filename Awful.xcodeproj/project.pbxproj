@@ -676,6 +676,7 @@
 		8C299D7216877AE9001B9D96 /* winpos95-heading-left.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C299D6F16877AE9001B9D96 /* winpos95-heading-left.png */; };
 		8C299D7316877AE9001B9D96 /* winpos95-heading-right.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C299D7016877AE9001B9D96 /* winpos95-heading-right.png */; };
 		8C299D7416877AE9001B9D96 /* winpos95-heading.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C299D7116877AE9001B9D96 /* winpos95-heading.png */; };
+		8C3BEF7F175BD7FF00F96083 /* lf-burden.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C3BEF7E175BD7FF00F96083 /* lf-burden.png */; };
 		8C3CCD4016533B1E00C28342 /* fyad-yourrights.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C3CCD3A16533B1D00C28342 /* fyad-yourrights.png */; };
 		8C3CCD4116533B1E00C28342 /* fyad-tree.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C3CCD3B16533B1E00C28342 /* fyad-tree.png */; };
 		8C3CCD4216533B1E00C28342 /* fyad-moof.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C3CCD3C16533B1E00C28342 /* fyad-moof.png */; };
@@ -1503,6 +1504,7 @@
 		8C299D6F16877AE9001B9D96 /* winpos95-heading-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading-left.png"; sourceTree = "<group>"; };
 		8C299D7016877AE9001B9D96 /* winpos95-heading-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading-right.png"; sourceTree = "<group>"; };
 		8C299D7116877AE9001B9D96 /* winpos95-heading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading.png"; sourceTree = "<group>"; };
+		8C3BEF7E175BD7FF00F96083 /* lf-burden.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lf-burden.png"; sourceTree = "<group>"; };
 		8C3CCD3A16533B1D00C28342 /* fyad-yourrights.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-yourrights.png"; sourceTree = "<group>"; };
 		8C3CCD3B16533B1E00C28342 /* fyad-tree.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-tree.png"; sourceTree = "<group>"; };
 		8C3CCD3C16533B1E00C28342 /* fyad-moof.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-moof.png"; sourceTree = "<group>"; };
@@ -3322,6 +3324,7 @@
 				8CCD52F315B783FC00E5893B /* lf-arecountry.png */,
 				8CCD52F415B783FC00E5893B /* LF-article.png */,
 				8CCD52F515B783FC00E5893B /* LF-BiCurious.png */,
+				8C3BEF7E175BD7FF00F96083 /* lf-burden.png */,
 				8CAAE2E01651CC52004C8C8A /* lf-choom.png */,
 				8C88D1F616BEBF56009DC854 /* LF-dad.png */,
 				1CAED9DD16375F52001F5F04 /* lf-dji.png */,
@@ -4437,6 +4440,7 @@
 				8C0F392B174F9A8C00E87A7A /* games-xbone.png in Resources */,
 				8C82EEB4175AE64900031E31 /* gip.png in Resources */,
 				8C82EEB6175AE65A00031E31 /* sas-hockey2.png in Resources */,
+				8C3BEF7F175BD7FF00F96083 /* lf-burden.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

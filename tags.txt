@@ -285,6 +285,7 @@ lf-amerika.png
 lf-arecountry.png
 LF-article.png
 LF-BiCurious.png
+lf-burden.png
 lf-choom.png
 LF-dad.png
 lf-dji.png
