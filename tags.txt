@@ -213,6 +213,7 @@ gip-navy2.png
 gip-pew.png
 gip-police3.png
 gip-uscg.png
+gip.png
 goonmeet.png
 gross.png
 guns-airsoft.png
@@ -421,6 +422,7 @@ samartd-potions.png
 samartd-water.png
 sap-language.png
 sas-fantasy.png
+sas-hockey2.png
 school.png
 science.png
 serious.png

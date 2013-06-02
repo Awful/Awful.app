@@ -715,6 +715,8 @@
 		8C51975D171CC5C800997E43 /* tg-starwars.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C51975C171CC5C800997E43 /* tg-starwars.png */; };
 		8C6F084A1653498F00B43251 /* byob-anti.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C6F08491653498F00B43251 /* byob-anti.png */; };
 		8C70028A169C6EFA00FC0B78 /* FVGifAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C700289169C6EFA00FC0B78 /* FVGifAnimation.m */; };
+		8C82EEB4175AE64900031E31 /* gip.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C82EEB3175AE64900031E31 /* gip.png */; };
+		8C82EEB6175AE65A00031E31 /* sas-hockey2.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C82EEB5175AE65A00031E31 /* sas-hockey2.png */; };
 		8C87428E1655FD990018AC6C /* byob.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C87428D1655FD990018AC6C /* byob.png */; };
 		8C8742911655FDAE0018AC6C /* trp-laliga.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8742901655FDAE0018AC6C /* trp-laliga.png */; };
 		8C8742931655FDC10018AC6C /* mods-expert.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8742921655FDC10018AC6C /* mods-expert.png */; };
@@ -1541,6 +1543,8 @@
 		8C6F08491653498F00B43251 /* byob-anti.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "byob-anti.png"; sourceTree = "<group>"; };
 		8C700288169C6EFA00FC0B78 /* FVGifAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FVGifAnimation.h; sourceTree = "<group>"; };
 		8C700289169C6EFA00FC0B78 /* FVGifAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FVGifAnimation.m; sourceTree = "<group>"; };
+		8C82EEB3175AE64900031E31 /* gip.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gip.png; sourceTree = "<group>"; };
+		8C82EEB5175AE65A00031E31 /* sas-hockey2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sas-hockey2.png"; sourceTree = "<group>"; };
 		8C87428D1655FD990018AC6C /* byob.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = byob.png; sourceTree = "<group>"; };
 		8C8742901655FDAE0018AC6C /* trp-laliga.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trp-laliga.png"; sourceTree = "<group>"; };
 		8C8742921655FDC10018AC6C /* mods-expert.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mods-expert.png"; sourceTree = "<group>"; };
@@ -3236,6 +3240,7 @@
 				1CE2D98D16632E610024AC1C /* games-wiiu.png */,
 				8C0F3929174F9A8C00E87A7A /* games-xbone.png */,
 				8CCD52CB15B783FC00E5893B /* games.png */,
+				8C82EEB3175AE64900031E31 /* gip.png */,
 				8CF95C851653276000060F19 /* gip-airforce.png */,
 				1CAED9E316375F91001F5F04 /* gip-army.png */,
 				8CCD52CC15B783FC00E5893B /* gip-EMT4.png */,
@@ -3454,6 +3459,7 @@
 				8CF02DF116484CCE0059BC56 /* samartd-water.png */,
 				8CF02DA516484CCE0059BC56 /* sap-language.png */,
 				8CCD531D15B783FC00E5893B /* sas-fantasy.png */,
+				8C82EEB5175AE65A00031E31 /* sas-hockey2.png */,
 				8CCD531E15B783FC00E5893B /* school.png */,
 				8CCD531F15B783FC00E5893B /* science.png */,
 				8CCD532015B783FC00E5893B /* serious.png */,
@@ -4429,6 +4435,8 @@
 				1C3447D6174F152A007377C5 /* steam.png in Resources */,
 				8C0F392A174F9A8C00E87A7A /* games-ps4.png in Resources */,
 				8C0F392B174F9A8C00E87A7A /* games-xbone.png in Resources */,
+				8C82EEB4175AE64900031E31 /* gip.png in Resources */,
+				8C82EEB6175AE65A00031E31 /* sas-hockey2.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
