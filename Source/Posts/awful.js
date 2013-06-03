@@ -30,16 +30,6 @@ Awful.post = function(i, post){
 Awful.invoke = function(selector /*, varargs */){
   var stem = "x-objc:///" + selector + "/"
   var args = Array.prototype.slice.call(arguments, 1)
-  sendViaIframe(stem + encodeURIComponent(JSON.stringify(args)))
-}
-
-Awful.invokeOnView = function(selector, varargs){
-  var stem = "x-objc-postsview:///" + selector + "/"
-  var args = Array.prototype.slice.call(arguments, 1)
-  sendViaIframe(stem + encodeURIComponent(JSON.stringify(args)))
-}
-
-function sendViaIframe(url) {
   $('<iframe>', { src: url, style: 'display: none' }).appendTo($('html')).remove()
 }
 
