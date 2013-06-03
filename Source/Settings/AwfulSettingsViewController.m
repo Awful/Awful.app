@@ -11,7 +11,6 @@
 #import "AwfulDisclosureIndicatorView.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulInstapaperLogInController.h"
-#import "AwfulLicensesViewController.h"
 #import "AwfulLoginController.h"
 #import "AwfulModels.h"
 #import "AwfulPostsViewController.h"
@@ -44,11 +43,6 @@
     self.title = @"Settings";
     self.tabBarItem.image = [UIImage imageNamed:@"cog.png"];
     return self;
-}
-
-- (void)dismissLicenses
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Settings predicates
@@ -412,14 +406,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                 }
             }];
         }
-    } else if ([action isEqualToString:@"ShowLicenses"]) {
-        AwfulLicensesViewController *licenses = [AwfulLicensesViewController new];
-        UIBarButtonItem *doneItem = [[UIBarButtonItem alloc]
-                                     initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                     target:self action:@selector(dismissLicenses)];
-        licenses.navigationItem.rightBarButtonItem = doneItem;
-        [self presentViewController:[licenses enclosingNavigationController]
-                           animated:YES completion:nil];
     } else {
         UIViewController *viewController;
         if (setting[@"ViewController"]) {

@@ -11,7 +11,6 @@
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 1CE2D9A116688C640024AC1C /* Build configuration list for PBXAggregateTarget "Build Resources" */;
 			buildPhases = (
-				1CE2D9A616688C810024AC1C /* Compile third-party licenses */,
 				1CE2D9A716688C950024AC1C /* Compile AwfulPostsView JavaScript */,
 				1C6ED633169103B70015CDD5 /* Compile AwfulProfileViewController JavaScript */,
 				1CE2D9A816688CC20024AC1C /* mogenerator */,
@@ -85,6 +84,7 @@
 		1C3447D2174D9B01007377C5 /* AwfulThreadTagButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3447D1174D9B01007377C5 /* AwfulThreadTagButton.m */; };
 		1C3447D4174F151F007377C5 /* ouya.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3447D3174F151F007377C5 /* ouya.png */; };
 		1C3447D6174F152A007377C5 /* steam.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3447D5174F152A007377C5 /* steam.png */; };
+		1C3447DD175D2D5E007377C5 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1C3447DC175D2D5E007377C5 /* Settings.bundle */; };
 		1C3CC799162876AE00088AA8 /* adminstar.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3CC797162876AE00088AA8 /* adminstar.png */; };
 		1C3CC79A162876AE00088AA8 /* modstar.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3CC798162876AE00088AA8 /* modstar.png */; };
 		1C40E5B21640FC2D004AAFA6 /* posts-view.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C40E5B11640FC2C004AAFA6 /* posts-view.css */; };
@@ -586,8 +586,6 @@
 		1CFBED011631A6EA008AF641 /* star-off@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CFBECFD1631A6EA008AF641 /* star-off@2x.png */; };
 		1CFBED021631A6EA008AF641 /* star-on.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CFBECFE1631A6EA008AF641 /* star-on.png */; };
 		1CFBED031631A6EA008AF641 /* star-on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CFBECFF1631A6EA008AF641 /* star-on@2x.png */; };
-		1CFBED051631BF53008AF641 /* licenses.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CFBED041631BF53008AF641 /* licenses.html */; };
-		1CFBED081631C068008AF641 /* AwfulLicensesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFBED071631C068008AF641 /* AwfulLicensesViewController.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765080DF74369002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765070DF74369002DB57D /* CoreGraphics.framework */; };
@@ -976,6 +974,7 @@
 		1C3447D3174F151F007377C5 /* ouya.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ouya.png; sourceTree = "<group>"; };
 		1C3447D5174F152A007377C5 /* steam.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = steam.png; sourceTree = "<group>"; };
 		1C3447D7175D151E007377C5 /* SFHFKeychainUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SFHFKeychainUtils.h; path = ../Pods/PocketAPI/SDK/SFHFKeychainUtils.h; sourceTree = "<group>"; };
+		1C3447DC175D2D5E007377C5 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		1C382CA816FCF92700EF9A8E /* Model-1.11-onemoretime.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model-1.11-onemoretime.xcdatamodel"; sourceTree = "<group>"; };
 		1C3CC797162876AE00088AA8 /* adminstar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = adminstar.png; sourceTree = "<group>"; };
 		1C3CC798162876AE00088AA8 /* modstar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = modstar.png; sourceTree = "<group>"; };
@@ -1334,9 +1333,6 @@
 		1CFBECFD1631A6EA008AF641 /* star-off@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "star-off@2x.png"; sourceTree = "<group>"; };
 		1CFBECFE1631A6EA008AF641 /* star-on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "star-on.png"; sourceTree = "<group>"; };
 		1CFBECFF1631A6EA008AF641 /* star-on@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "star-on@2x.png"; sourceTree = "<group>"; };
-		1CFBED041631BF53008AF641 /* licenses.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = licenses.html; sourceTree = "<group>"; };
-		1CFBED061631C068008AF641 /* AwfulLicensesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLicensesViewController.h; sourceTree = "<group>"; };
-		1CFBED071631C068008AF641 /* AwfulLicensesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLicensesViewController.m; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* Awful.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Awful.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -2272,8 +2268,6 @@
 				F432C2D81734572000012A88 /* AwfulPocketStatusTransformer.m */,
 				1CE8FDFF1709E728006A3B84 /* AwfulSettingsAlternateServerController.h */,
 				1CE8FE001709E728006A3B84 /* AwfulSettingsAlternateServerController.m */,
-				1CFBED061631C068008AF641 /* AwfulLicensesViewController.h */,
-				1CFBED071631C068008AF641 /* AwfulLicensesViewController.m */,
 				1CB6011716DBFB7B00CBEE22 /* AwfulDateFormatters.h */,
 				1CB6011816DBFB7B00CBEE22 /* AwfulDateFormatters.m */,
 			);
@@ -2707,7 +2701,7 @@
 				1CF0D618164B0A7C00CFA137 /* Forum Abbreviations.plist */,
 				8CCD498915B497A700E5893B /* Icons */,
 				8CCD503B15B783FC00E5893B /* Images */,
-				1CFBED041631BF53008AF641 /* licenses.html */,
+				1C3447DC175D2D5E007377C5 /* Settings.bundle */,
 				8CCD4CC315B497A800E5893B /* Settings.plist */,
 				1CD33EDB16F397FC0059587E /* Theming */,
 				8CCD527B15B783FC00E5893B /* Thread Tags */,
@@ -3492,7 +3486,6 @@
 				1CFBED011631A6EA008AF641 /* star-off@2x.png in Resources */,
 				1CFBED021631A6EA008AF641 /* star-on.png in Resources */,
 				1CFBED031631A6EA008AF641 /* star-on@2x.png in Resources */,
-				1CFBED051631BF53008AF641 /* licenses.html in Resources */,
 				1CAEDA0F16376E56001F5F04 /* ai-cycles.png in Resources */,
 				1CAEDA1116376E56001F5F04 /* art.png in Resources */,
 				1CAEDA1216376E56001F5F04 /* asktell-jobs.png in Resources */,
@@ -4093,6 +4086,7 @@
 				8C82EEB4175AE64900031E31 /* gip.png in Resources */,
 				8C82EEB6175AE65A00031E31 /* sas-hockey2.png in Resources */,
 				8C3BEF7F175BD7FF00F96083 /* lf-burden.png in Resources */,
+				1C3447DD175D2D5E007377C5 /* Settings.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4181,20 +4175,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/usr/bin/env bash";
 			shellScript = "set -e\n\nPATH=\"${PATH}:/usr/local/bin\"\nhash lessc 2>/dev/null || { echo \"Please install less! npm install less -g\"; exit 0; }\n\nmtime() {\n    echo `stat -f %m \"${1}\" 2>/dev/null`\n}\n\ncd \"${PROJECT_DIR}/../Source/Theming\"\n\n# lessc ain't quick so we'll only compile what's changed.\n# Updating any imported LESS files should also trigger recompilation.\nIMPORTED=$(find . -name \"*.less\" -not -name \"posts-view*\" -exec stat -f %m {} \\; | sort -n -r | head -n 1)\n\nfor s in posts-view*.less; do\n    if [[ ! -e \"${s}\" ]]; then continue; fi # empty glob\n\n    c=\"${s%.less}.css\"\n    smodified=$(mtime \"${s}\")\n    cmodified=$(mtime \"${c}\")\n    if [[ ! -e \"${c}\" || smodified -gt cmodified || IMPORTED -gt cmodified ]]; then\n        echo \"Compiling ${s}\"\n        lessc \"${s}\" \"${c}\"\n    fi\ndone\n";
-		};
-		1CE2D9A616688C810024AC1C /* Compile third-party licenses */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Compile third-party licenses";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "rake licenses\n";
 		};
 		1CE2D9A716688C950024AC1C /* Compile AwfulPostsView JavaScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -4349,7 +4329,6 @@
 				1CBDB5FF162600D40004BDF4 /* NSManagedObject+Awful.m in Sources */,
 				1CBD5247162B66BC00928740 /* AwfulTextEntryCell.m in Sources */,
 				1CFBECEE163076F1008AF641 /* AwfulPageBottomBar.m in Sources */,
-				1CFBED081631C068008AF641 /* AwfulLicensesViewController.m in Sources */,
 				1CB52A6E1637B21700032AD3 /* AwfulThreadTags.m in Sources */,
 				1C090FB7163A40A1003FD0A3 /* _AwfulPost.m in Sources */,
 				1C090FBA163A40C1003FD0A3 /* AwfulPost.m in Sources */,

@@ -27,6 +27,7 @@ There are no required dependencies for building Awful; all third-party libraries
 There are optional dependencies for building Awful. You only need them if you're working on the relevant part of the app. Once a dependency is installed, simply build the Xcode project and the relevant files will be regenerated.
 
 * [CocoaPods][] manages Objective-C library dependencies. If you're updating, adding, or removing a dependency, please [install CocoaPods][CocoaPods].
+    * **Even if you add a dependency directly to the Xcode project**, you need to run `pod install` to update the acknowledgements section in the Settings screen. Licenses are added from the `Vendor` directory, either as a `LICENSE.txt` file or a properly-formatted comment atop a `.h` file.
 * [LESS][] helps us write CSS. If you're modifying the themes for displaying posts (these are files like `posts-view*.less`), please [install LESS][LESS]:
     1. [Install homebrew](http://mxcl.github.com/homebrew/).
     2. Open Terminal and install node: `brew install node` (prepend `sudo` to avoid permissions errors).

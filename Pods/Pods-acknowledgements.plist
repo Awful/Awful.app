@@ -6,7 +6,7 @@
 	<array>
 		<dict>
 			<key>FooterText</key>
-			<string>This application makes use of the following third party libraries:</string>
+			<string>Awful uses these third-party libraries:</string>
 			<key>Title</key>
 			<string>Acknowledgements</string>
 			<key>Type</key>
