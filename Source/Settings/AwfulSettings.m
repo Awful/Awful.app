@@ -6,7 +6,7 @@
 //
 
 #import "AwfulSettings.h"
-#import "PocketAPI.h"
+#import <PocketAPI/PocketAPI.h>
 #import "SFHFKeychainUtils.h"
 #import "UIDevice+OperatingSystemVersion.h"
 

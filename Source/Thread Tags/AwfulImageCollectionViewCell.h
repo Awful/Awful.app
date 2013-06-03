@@ -6,7 +6,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "PSTCollectionView.h"
+#import <PSTCollectionView/PSTCollectionView.h>
 
 @interface AwfulImageCollectionViewCell : PSUICollectionViewCell
 

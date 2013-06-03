@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Awful Contributors. All rights reserved.
 //
 
-#import "PSTCollectionView.h"
+#import <PSTCollectionView/PSTCollectionView.h>
 
 @interface AwfulIconActionCell : PSUICollectionViewCell
 

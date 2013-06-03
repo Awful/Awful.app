@@ -39,7 +39,7 @@
 #import "NSURL+OpensInBrowser.h"
 #import "NSURL+Punycode.h"
 #import "NSURL+QueryDictionary.h"
-#import "SVProgressHUD.h"
+#import <SVProgressHUD/SVProgressHUD.h>
 #import "UINavigationItem+TwoLineTitle.h"
 #import "UIViewController+NavigationEnclosure.h"
 

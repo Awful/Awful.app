@@ -8,7 +8,7 @@
 
 #import "AwfulPocketStatusTransformer.h"
 #import "AwfulSettings.h"
-#import "PocketAPI.h"
+#import <PocketAPI/PocketAPI.h>
 
 @implementation AwfulPocketStatusTransformer
 

@@ -8,8 +8,7 @@
 #import "AwfulTableViewController.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulTheme.h"
-#import "UIScrollView+SVInfiniteScrolling.h"
-#import "UIScrollView+SVPullToRefresh.h"
+#import <SVPullToRefresh/SVPullToRefresh.h>
 
 @interface AwfulTableViewController ()
 

@@ -26,7 +26,7 @@
 #import "AwfulThreadComposeViewController.h"
 #import "AwfulThreadTags.h"
 #import "NSString+CollapseWhitespace.h"
-#import "SVProgressHUD.h"
+#import <SVProgressHUD/SVProgressHUD.h>
 #import "UIViewController+NavigationEnclosure.h"
 
 @interface AwfulThreadListController () <AwfulThreadComposeViewControllerDelegate>

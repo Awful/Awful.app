@@ -10,8 +10,8 @@
 #import "AwfulAlertView.h"
 #import "AwfulSettings.h"
 #import "InstapaperAPIClient.h"
-#import "PocketAPI.h"
-#import "SVProgressHUD.h"
+#import <PocketAPI/PocketAPI.h>
+#import <SVProgressHUD/SVProgressHUD.h>
 
 @interface InstapaperReadLaterService : AwfulReadLaterService @end
 @interface PocketReadLaterService : AwfulReadLaterService @end

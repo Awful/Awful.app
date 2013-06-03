@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -e
-SCRIPTDIR=$(dirname "$0")
+SCRIPTDIR=$( cd "$(dirname "$0")"; pwd -P )
+cd Xcode
 
 XCODEFLAGS=(-configuration "App Store" -sdk iphonesimulator TEST_AFTER_BUILD=YES)
 

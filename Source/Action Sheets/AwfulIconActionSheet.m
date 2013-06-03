@@ -9,7 +9,7 @@
 #import "AwfulIconActionSheet.h"
 #import "AwfulIconActionCell.h"
 #import "AwfulIconActionItem.h"
-#import "PSTCollectionView.h"
+#import <PSTCollectionView/PSTCollectionView.h>
 
 @interface AwfulIconActionSheet () <PSUICollectionViewDataSource, PSUICollectionViewDelegate>
 

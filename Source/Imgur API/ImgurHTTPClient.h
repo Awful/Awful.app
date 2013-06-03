@@ -5,7 +5,7 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US http://github.com/AwfulDevs/Awful
 //
 
-#import "AFNetworking.h"
+#import <AFNetworking/AFNetworking.h>
 @protocol ImgurHTTPClientCancelToken;
 
 // Client for the Imgur Anonymous API, version 3.

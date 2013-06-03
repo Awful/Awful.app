@@ -21,8 +21,8 @@
 #import "AwfulTheme.h"
 #import "InstapaperAPIClient.h"
 #import "NSManagedObject+Awful.h"
-#import "PocketAPI.h"
-#import "SVProgressHUD.h"
+#import <PocketAPI/PocketAPI.h>
+#import <SVProgressHUD/SVProgressHUD.h>
 #import "UIViewController+NavigationEnclosure.h"
 
 @interface AwfulSettingsViewController () <AwfulInstapaperLogInControllerDelegate>

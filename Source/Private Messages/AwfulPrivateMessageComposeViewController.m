@@ -15,7 +15,7 @@
 #import "AwfulThreadTag.h"
 #import "AwfulThreadTagButton.h"
 #import "AwfulThreadTags.h"
-#import "SVProgressHUD.h"
+#import <SVProgressHUD/SVProgressHUD.h>
 #import "UIViewController+NavigationEnclosure.h"
 
 @interface AwfulPrivateMessageComposeViewController () <AwfulPostIconPickerControllerDelegate,

@@ -18,7 +18,7 @@
 #import "ImgurHTTPClient.h"
 #import "NSFileManager+UserDirectories.h"
 #import "NSString+CollapseWhitespace.h"
-#import "SVProgressHUD.h"
+#import <SVProgressHUD/SVProgressHUD.h>
 #import "UINavigationItem+TwoLineTitle.h"
 
 @interface AwfulReplyComposeViewController () <UIImagePickerControllerDelegate,

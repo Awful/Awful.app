@@ -11,8 +11,8 @@
 #import "AwfulAlertView.h"
 #import "AwfulSettings.h"
 #import "FVGifAnimation.h"
-#import "SVProgressHUD.h"
-#import "UIImageView+AFNetworking.h"
+#import <SVProgressHUD/SVProgressHUD.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import "UINavigationItem+TwoLineTitle.h"
 
 @interface AwfulImagePreviewViewController () <UIScrollViewDelegate>

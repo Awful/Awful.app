@@ -18,7 +18,7 @@
 #import "AwfulSettings.h"
 #import "NSManagedObject+Awful.h"
 #import "NSURL+Punycode.h"
-#import "SVProgressHUD.h"
+#import <SVProgressHUD/SVProgressHUD.h>
 #import "UIViewController+NavigationEnclosure.h"
 
 @interface AwfulProfileViewController () <UIWebViewDelegate, AwfulPrivateMessageComposeViewControllerDelegate>

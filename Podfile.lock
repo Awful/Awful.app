@@ -1,0 +1,25 @@
+PODS:
+  - AFNetworking (1.3.0)
+  - JLRoutes (1.2)
+  - PocketAPI (1.0.2)
+  - PSTCollectionView (1.0.0)
+  - SVProgressHUD (0.9)
+  - SVPullToRefresh (0.4.1)
+
+DEPENDENCIES:
+  - AFNetworking (= 1.3.0)
+  - JLRoutes (= 1.2)
+  - PocketAPI (= 1.0.2)
+  - PSTCollectionView (= 1.0.0)
+  - SVProgressHUD (= 0.9)
+  - SVPullToRefresh (= 0.4.1)
+
+SPEC CHECKSUMS:
+  AFNetworking: e528f20d06b1b818c3571266fb5efa20031a8ace
+  JLRoutes: 890517ad0559502bdcee08fa0951dde2391627f4
+  PocketAPI: 2ed51391e6ea7a48c707528f782f5a2cb0eab80e
+  PSTCollectionView: ca2fc4e0b64143618f7a9ed15d74180e5fb8d875
+  SVProgressHUD: 03d4845ec8e64591726428a08236c6a5489d45f8
+  SVPullToRefresh: 61a0e4bd12bd6f8e3465909810b0fbeb1a28d5f2
+
+COCOAPODS: 0.20.2

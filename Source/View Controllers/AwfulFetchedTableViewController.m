@@ -7,7 +7,7 @@
 
 #import "AwfulFetchedTableViewController.h"
 #import "AwfulFetchedTableViewControllerSubclass.h"
-#import "AFNetworking.h"
+#import <AFNetworking/AFNetworking.h>
 #import "AwfulDataStack.h"
 
 @interface AwfulFetchedTableViewController ()

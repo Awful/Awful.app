@@ -17,10 +17,8 @@ This app is not endorsed by Something Awful.
 Build
 -----
 
-[![Build Status](https://travis-ci.org/AwfulDevs/Awful.png)](https://travis-ci.org/AwfulDevs/Awful)
-
 1. Clone the repository: `git clone https://github.com/AwfulDevs/Awful.git`
-2. Open Xcode project and build away: `cd Awful && open Awful.xcodeproj`
+2. Open Xcode project and build away: `cd Awful && open Awful.xcworkspace`
 
 Debug builds, beta builds, and release builds each appear as separate apps (they have different bundle identifiers and display names). For development, choose the `Awful Beta` scheme, and an app called `Awful Debug` will be run in the iOS Simulator and on your device.
 
@@ -28,6 +26,7 @@ There are no required dependencies for building Awful; all third-party libraries
 
 There are optional dependencies for building Awful. You only need them if you're working on the relevant part of the app. Once a dependency is installed, simply build the Xcode project and the relevant files will be regenerated.
 
+* [CocoaPods][] manages Objective-C library dependencies. If you're updating, adding, or removing a dependency, please [install CocoaPods][CocoaPods].
 * [LESS][] helps us write CSS. If you're modifying the themes for displaying posts (these are files like `posts-view*.less`), please [install LESS][LESS]:
     1. [Install homebrew](http://mxcl.github.com/homebrew/).
     2. Open Terminal and install node: `brew install node` (prepend `sudo` to avoid permissions errors).
@@ -36,6 +35,9 @@ There are optional dependencies for building Awful. You only need them if you're
 
 There are unit tests for the HTML parsing, to help us find problems when markup changes, running continuously via [Travis CI][].
 
+[![Build Status](https://travis-ci.org/AwfulDevs/Awful.png)](https://travis-ci.org/AwfulDevs/Awful)
+
+[CocoaPods]: http://cocoapods.org/
 [LESS]: http://lesscss.org/#usage
 [mogenerator]: http://rentzsch.github.com/mogenerator/
 [Travis CI]: https://travis-ci.org/AwfulDevs/Awful
