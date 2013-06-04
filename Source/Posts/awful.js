@@ -134,28 +134,31 @@ Awful.fontSize = function(size) {
 }
 
 function render(post) {
-  rendered = $('#postTemplate').mustache(post)
+  post = $(post)
+  
   // Some links and images come with relative URLs, which break as we set our
   // relative URL to the app's resource directory. Let's fix those up.
-  rendered.find('a:not([href *= ":"])').each(function(){
+  post.find('a:not([href *= ":"])').each(function(){
     var a = $(this)
     a.attr('href', prependBaseURL(a.attr('href')))
   })
-  rendered.find('img:not([src *= ":"])').each(function(){
+  post.find('img:not([src *= ":"])').each(function(){
     var img = $(this)
     img.attr('src', prependBaseURL(img.attr('src')))
   })
+  
   // We style spoilers ourselves.
-  rendered.find('span.bbc-spoiler')
-          .removeAttr('onmouseover')
-          .removeAttr('onmouseout')
-          .removeAttr('style')
-  if (!Awful._showAvatars) hideAvatar(rendered)
-  if (!Awful._showImages) hideImages(rendered)
-  highlightQuotes(rendered.find('.postbody'))
-  highlightMentions(rendered.find('.postbody'))
-  fixVimeoEmbeds(rendered)
-  return rendered
+  post.find('span.bbc-spoiler')
+      .removeAttr('onmouseover')
+      .removeAttr('onmouseout')
+      .removeAttr('style')
+  
+  if (!Awful._showAvatars) hideAvatar(post)
+  if (!Awful._showImages) hideImages(post)
+  highlightQuotes(post.find('.postbody'))
+  highlightMentions(post.find('.postbody'))
+  fixVimeoEmbeds(post)
+  return post
 }
 
 function prependBaseURL(relativeURL) {

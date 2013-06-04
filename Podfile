@@ -3,6 +3,7 @@ xcodeproj 'Xcode/Awful'
 link_with ['Awful', 'Imgur API Test']
 
 pod 'AFNetworking', '1.3.0'
+pod 'GRMustache', '6.7.3', :inhibit_warnings => true
 pod 'JLRoutes', '1.2'
 pod 'PocketAPI', '1.0.2'
 pod 'PSTCollectionView', '1.0.0'

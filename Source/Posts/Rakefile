@@ -1,6 +1,6 @@
 require 'open3'
 
-FILES = "- ../../Vendor/mustache.js/jquery.mustache.js spin.min.js awful.js"
+FILES = "- spin.min.js awful.js"
 
 task :default => [ :assemble ]
 
@@ -9,14 +9,6 @@ task :assemble do
   Open3.popen3("cat #{FILES} > posts-view.js") do |i, _, _|
     # Shorten long tap interval.
     i.print File.read("../../Vendor/zepto/zepto.min.js").gsub("750", "500")
-    i.puts <<-YO.gsub(/^ */, '')
-      
-      
-      // Alias Zepto as jQuery to keep plugins happy.
-      window.jQuery = Zepto
-      
-      
-    YO
     i.close
   end
 end

@@ -67,7 +67,7 @@ static void RemoveShadowFromAboveAndBelowWebView(UIWebView *webView)
     NSMutableArray *posts = [NSMutableArray new];
     NSInteger numberOfPosts = [self.delegate numberOfPostsInPostsView:self];
     for (NSInteger i = 0; i < numberOfPosts; i++) {
-        [posts addObject:[self.delegate postsView:self postAtIndex:i]];
+        [posts addObject:[self.delegate postsView:self renderedPostAtIndex:i]];
     }
     [self evalJavaScript:@"Awful.posts(%@)", JSONize(posts)];
     [self reloadAdvertisementHTML];
@@ -96,8 +96,8 @@ static void RemoveShadowFromAboveAndBelowWebView(UIWebView *webView)
         [self.toInsert addIndex:index];
         return;
     }
-    NSDictionary *post = [self.delegate postsView:self postAtIndex:index];
-    [self evalJavaScript:@"Awful.insertPost(%@, %d)", JSONize(post), index];
+    NSString *post = [self.delegate postsView:self renderedPostAtIndex:index];
+    [self evalJavaScript:@"Awful.insertPost(%@, %d)", JSONizeValue(post), index];
 }
 
 - (void)deletePostAtIndex:(NSInteger)index
@@ -115,8 +115,8 @@ static void RemoveShadowFromAboveAndBelowWebView(UIWebView *webView)
         [self.toReload addIndex:index];
         return;
     }
-    NSDictionary *post = [self.delegate postsView:self postAtIndex:index];
-    [self evalJavaScript:@"Awful.post(%d, %@)", index, JSONize(post)];
+    NSString *post = [self.delegate postsView:self renderedPostAtIndex:index];
+    [self evalJavaScript:@"Awful.post(%d, %@)", index, JSONizeValue(post)];
 }
 
 - (void)endUpdates
@@ -433,22 +433,6 @@ void InvokeBridgedMethodWithURLAndTarget(NSURL *url, id target, NSArray *whiteli
 }
 
 @end
-
-
-const struct AwfulPostsViewKeys AwfulPostsViewKeys = {
-    .innerHTML = @"innerHTML",
-    .postID = @"postID",
-    .postDate = @"postDate",
-    .authorName = @"authorName",
-    .authorAvatarURL = @"authorAvatarURL",
-    .authorIsOriginalPoster = @"authorIsOriginalPoster",
-    .authorIsAModerator = @"authorIsAModerator",
-    .authorIsAnAdministrator = @"authorIsAnAdministrator",
-    .authorRegDate = @"authorRegDate",
-    .hasAttachment = @"hasAttachment",
-    .editMessage = @"editMessage",
-    .beenSeen = @"beenSeen",
-};
 
 
 NSURL * StylesheetURLForForumWithIDAndSettings(NSString * const forumID, AwfulSettings *settings)

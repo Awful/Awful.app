@@ -1,0 +1,25 @@
+<article id="{{ postID }}" class="post {{# beenSeen }}seen{{/ }} {{# authorIsOP }}role-op{{/ }} {{# author.moderator }}role-mod{{/ }} {{# author.administrator }}role-admin{{/ }} {{^ author.avatarURL }}no-avatar{{/ }}">
+  <header>
+    {{# author.avatarURL }}<img class="avatar" src="{{ . }}" alt="">{{/}}
+    <button class="action-button" title="Post actions">•••</button>
+    <h1 class="username">{{ author.username }}</h1>
+    <time class="postdate">{{ postDateFormat(postDate) }}</time>
+    <time class="regdate">{{ regDateFormat(author.regdate) }}</time>
+  </header>
+  
+  <section class="postbody">
+    {{{ innerHTML }}}
+    {{# attachmentID }}
+      <p class="attachment">
+        <img src="http://forums.somethingawful.com/attachment.php?postid={{ postID }}" alt="">
+      </p>
+    {{/ }}
+    {{# editDate }}
+      <p class="editedby">
+        <span>
+          {{ editorUsername }} fucked around with this message on {{ editDateFormat(.) }}
+        </span>
+      </p>
+    {{/ }}
+  </section>
+</article>

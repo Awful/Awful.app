@@ -3,7 +3,7 @@
 var Awful = exports.Awful = {}
 
 Awful.render = function(profile){
-  $('#profile').html($('#template').mustache(profile))
+  $('#profile').html(profile)
 }
 
 Awful.dark = function(dark){

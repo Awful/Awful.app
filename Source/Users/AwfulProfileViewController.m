@@ -14,14 +14,17 @@
 #import "AwfulModels.h"
 #import "AwfulPostsView.h"
 #import "AwfulPrivateMessageComposeViewController.h"
+#import "AwfulProfileViewModel.h"
 #import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
+#import <GRMustache/GRMustache.h>
 #import "NSManagedObject+Awful.h"
 #import "NSURL+Punycode.h"
 #import <SVProgressHUD/SVProgressHUD.h>
 #import "UIViewController+NavigationEnclosure.h"
 
-@interface AwfulProfileViewController () <UIWebViewDelegate, AwfulPrivateMessageComposeViewControllerDelegate>
+@interface AwfulProfileViewController () <UIWebViewDelegate,
+                                          AwfulPrivateMessageComposeViewControllerDelegate>
 
 @property (readonly, nonatomic) UIWebView *webView;
 @property (nonatomic) AwfulUser *user;
@@ -43,77 +46,28 @@
     self.user = [AwfulUser firstMatchingPredicate:@"userID = %@", _userID];
 }
 
-NSString * const AwfulServiceHomepage = @"Homepage";
-NSString * const AwfulServicePrivateMessage = @"Private Message";
-
 - (void)renderUser
 {
     if (!self.user) return;
     self.title = self.user.username;
-    NSDateFormatter *regdateFormatter = [AwfulDateFormatters formatters].regDateFormatter;
-    NSDateFormatter *lastPostFormatter = [NSDateFormatter new];
-    lastPostFormatter.locale = regdateFormatter.locale;
-    lastPostFormatter.dateFormat = @"MMM d, yyyy HH:mm";
-    NSMutableArray *contactInfo = [NSMutableArray new];
-    if (self.user.canReceivePrivateMessagesValue && [AwfulSettings settings].canSendPrivateMessages) {
-        [contactInfo addObject:@{
-            @"service": AwfulServicePrivateMessage,
-            @"address": self.user.username,
-        }];
-    }
-    if ([self.user.aimName length] > 0) {
-        [contactInfo addObject:@{ @"service": @"AIM", @"address": self.user.aimName }];
-    }
-    if ([self.user.icqName length] > 0) {
-        [contactInfo addObject:@{ @"service": @"ICQ", @"address": self.user.icqName }];
-    }
-    if ([self.user.yahooName length] > 0) {
-        [contactInfo addObject:@{ @"service": @"Yahoo!", @"address": self.user.yahooName }];
-    }
-    if ([self.user.homepageURL length] > 0) {
-        [contactInfo addObject:@{
-            @"service": AwfulServiceHomepage,
-            @"address": self.user.homepageURL,
-        }];
-    }
-    self.services = contactInfo;
-    NSMutableArray *additionalInfo = [NSMutableArray new];
-    if ([self.user.location length] > 0) {
-        [additionalInfo addObject:@{ @"kind": @"Location", @"info": self.user.location }];
-    }
-    if ([self.user.interests length] > 0) {
-        [additionalInfo addObject:@{ @"kind": @"Interests", @"info": self.user.interests }];
-    }
-    if ([self.user.occupation length] > 0) {
-        [additionalInfo addObject:@{ @"kind": @"Occupation", @"info": self.user.occupation }];
-    }
-    NSString *postRate = @"";
-    if (self.user.postRate) {
-        postRate = [NSString stringWithFormat:@"%@ posts per day", self.user.postRate];
-    }
-    NSMutableDictionary *userDict = [@{
-        @"customTitle": self.user.customTitle ?: [NSNull null],
-        @"postCount": self.user.postCount ?: @0,
-        @"username": self.user.username ?: @"",
-        @"postRate": postRate,
-        @"lastPost": [lastPostFormatter stringFromDate:self.user.lastPost] ?: [NSNull null],
-        @"regdate": [regdateFormatter stringFromDate:self.user.regdate] ?: [NSNull null],
-        @"gender": self.user.gender ?: @"porpoise",
-        @"aboutMe": self.user.aboutMe ?: @"",
-        @"anyContactInformation": @([contactInfo count] > 0),
-        @"contactInformation": contactInfo,
-        @"additionalInformation": additionalInfo,
-        @"profilePictureURL": self.user.profilePictureURL ?: [NSNull null],
-    } mutableCopy];
-    if ([userDict[@"customTitle"] isEqual:@"<br/>"]) userDict[@"customTitle"] = [NSNull null];
+    AwfulProfileViewModel *viewModel = [AwfulProfileViewModel newWithUser:self.user];
+    self.services = viewModel.contactInfo;
     NSError *error;
-    NSData *data = [NSJSONSerialization dataWithJSONObject:userDict options:0 error:&error];
+    NSString *html = [GRMustacheTemplate renderObject:viewModel
+                                         fromResource:@"Profile"
+                                               bundle:nil
+                                                error:&error];
+    if (!html) {
+        NSLog(@"error rendering profile for %@: %@", self.user.username, error);
+        return;
+    }
+    NSData *data = [NSJSONSerialization dataWithJSONObject:@[ html ] options:0 error:&error];
     if (!data) {
-        NSLog(@"error serializing user dict %@: %@", userDict, error);
+        NSLog(@"error serializing profile json for %@: %@", self.user.username, error);
         return;
     }
     NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    NSString *js = [NSString stringWithFormat:@"Awful.render(%@)", json];
+    NSString *js = [NSString stringWithFormat:@"Awful.render(%@[0])", json];
     [self.webView stringByEvaluatingJavaScriptFromString:js];
 }
 

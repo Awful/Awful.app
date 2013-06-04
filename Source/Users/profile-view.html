@@ -5,43 +5,4 @@
 
 <div id="profile"></div>
 
-<script id="template" type="text/html">
-<section>
-{{#customTitle}}
-<header>
-{{{customTitle}}}
-</header>
-{{/customTitle}}
-<p>
-There have been <b>{{postCount}}</b> posts made by <i>{{username}}</i>, an average of {{postRate}}, since registering on <b>{{regdate}}</b>. <i>{{username}}</i> claims to be a {{gender}}.
-</p>
-
-<p>{{aboutMe}}</p>
-
-{{#profilePictureURL}}<img src="{{profilePictureURL}}" alt="">{{/profilePictureURL}}
-</section>
-
-<section>
-{{#anyContactInformation}}
-<table id="contact">
-  <caption>Contact Information</caption>
-  {{#contactInformation}}
-  <tr><th>{{service}}</th><td>{{address}}</td></tr>
-  {{/contactInformation}}
-</table>
-{{/anyContactInformation}}
-
-<table>
-  <caption>Additional Information</caption>
-  {{#regdate}}<tr><th>Member Since</th><td>{{regdate}}</td></tr>{{/regdate}}
-  {{#postCount}}<tr><th>Post Count</th><td>{{postCount}}</td></tr>{{/postCount}}
-  {{#postRate}}<tr><th>Post Rate</th><td>{{postRate}}</td></tr>{{/postRate}}
-  {{#lastPost}}<tr><th>Last Post</th><td>{{lastPost}}</td></tr>{{/lastPost}}
-  {{#additionalInfo}}
-  <tr><th>{{kind}}</th><td>{{info}}</td></tr>
-  {{/additionalInfo}}
-</table>
-</section>
-</script>
-
 <script src="profile-view.js"></script>

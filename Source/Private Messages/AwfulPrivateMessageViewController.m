@@ -22,6 +22,7 @@
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "AwfulThemingViewController.h"
+#import <GRMustache/GRMustache.h>
 #import "NSFileManager+UserDirectories.h"
 #import "NSURL+Awful.h"
 #import "NSURL+OpensInBrowser.h"
@@ -127,27 +128,24 @@
     return 1;
 }
 
-- (NSDictionary *)postsView:(AwfulPostsView *)postsView postAtIndex:(NSInteger)index
+- (NSString *)postsView:(AwfulPostsView *)postsView renderedPostAtIndex:(NSInteger)index
 {
     NSMutableDictionary *dict = [NSMutableDictionary new];
-    dict[AwfulPostsViewKeys.innerHTML] = self.privateMessage.innerHTML ?: @"";
-    dict[AwfulPostsViewKeys.beenSeen] = self.privateMessage.seen ?: @NO;
-    if (self.privateMessage.sentDate) {
-        NSDateFormatter *formatter = [AwfulDateFormatters formatters].postDateFormatter;
-        dict[AwfulPostsViewKeys.postDate] = [formatter stringFromDate:self.privateMessage.sentDate];
+    dict[AwfulPostAttributes.innerHTML] = self.privateMessage.innerHTML ?: @"";
+    dict[@"beenSeen"] = self.privateMessage.seen ?: @NO;
+    dict[AwfulPostAttributes.postDate] = self.privateMessage.sentDate ?: [NSNull null];
+    dict[@"postDateFormat"] = AwfulDateFormatters.formatters.postDateFormatter;
+    dict[AwfulPostRelationships.author] = self.privateMessage.from;
+    dict[@"regDateFormat"] = AwfulDateFormatters.formatters.regDateFormatter;
+    NSError *error;
+    NSString *html = [GRMustacheTemplate renderObject:dict
+                                         fromResource:@"Post"
+                                               bundle:nil
+                                                error:&error];
+    if (!html) {
+        NSLog(@"error rendering private message: %@", error);
     }
-    AwfulUser *sender = self.privateMessage.from;
-    dict[AwfulPostsViewKeys.authorName] = sender.username ?: @"";
-    if (sender.avatarURL) {
-        dict[AwfulPostsViewKeys.authorAvatarURL] = [sender.avatarURL absoluteString];
-    }
-    if (sender.moderatorValue) dict[AwfulPostsViewKeys.authorIsAModerator] = @YES;
-    if (sender.administratorValue) dict[AwfulPostsViewKeys.authorIsAnAdministrator] = @YES;
-    if (sender.regdate) {
-        NSDateFormatter *formatter = [AwfulDateFormatters formatters].regDateFormatter;
-        dict[AwfulPostsViewKeys.authorRegDate] = [formatter stringFromDate:sender.regdate];
-    }
-    return dict;
+    return html;
 }
 
 - (NSArray *)whitelistedSelectorsForPostsView:(AwfulPostsView *)postsView

@@ -24,6 +24,7 @@
 #import "AwfulPopoverController.h"
 #import "AwfulPostsView.h"
 #import "AwfulPostsViewSettingsController.h"
+#import "AwfulPostViewModel.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulPrivateMessageComposeViewController.h"
 #import "AwfulPullToRefreshControl.h"
@@ -32,6 +33,7 @@
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "AwfulThemingViewController.h"
+#import <GRMustache/GRMustache.h>
 #import "NSFileManager+UserDirectories.h"
 #import "NSManagedObject+Awful.h"
 #import "NSString+CollapseWhitespace.h"
@@ -73,8 +75,7 @@
 @property (nonatomic) NSInteger hiddenPosts;
 @property (copy, nonatomic) NSString *jumpToPostAfterLoad;
 @property (copy, nonatomic) NSString *advertisementHTML;
-
-@property (nonatomic) NSDateFormatter *editDateFormatter;
+@property (nonatomic) GRMustacheTemplate *postTemplate;
 
 @property (nonatomic) BOOL observingScrollViewSize;
 @property (nonatomic) BOOL observingThreadSeenPosts;
@@ -859,48 +860,27 @@ static char KVOContext;
     return [[self.fetchedResultsController fetchedObjects] count] - self.hiddenPosts;
 }
 
-- (NSDictionary *)postsView:(AwfulPostsView *)postsView postAtIndex:(NSInteger)index
+- (NSString *)postsView:(AwfulPostsView *)postsView renderedPostAtIndex:(NSInteger)index
 {
     AwfulPost *post = self.fetchedResultsController.fetchedObjects[index + self.hiddenPosts];
-    NSArray *keys = @[ AwfulPostsViewKeys.postID, AwfulPostsViewKeys.innerHTML ];
-    NSMutableDictionary *dict = [[post dictionaryWithValuesForKeys:keys] mutableCopy];
-    if (post.postDate) {
-        NSDateFormatter *formatter = [AwfulDateFormatters formatters].postDateFormatter;
-        dict[AwfulPostsViewKeys.postDate] = [formatter stringFromDate:post.postDate];
+    NSError *error;
+    NSString *html = [self.postTemplate renderObject:[AwfulPostViewModel newWithPost:post]
+                                               error:&error];
+    if (!html) {
+        NSLog(@"error rendering post at index %@: %@", @(index), error);
     }
-    if (post.author.username) dict[AwfulPostsViewKeys.authorName] = post.author.username;
-    if (post.author.avatarURL) {
-        dict[AwfulPostsViewKeys.authorAvatarURL] = [post.author.avatarURL absoluteString];
-    }
-    if ([post.author isEqual:post.thread.author]) {
-        dict[AwfulPostsViewKeys.authorIsOriginalPoster] = @YES;
-    }
-    if (post.author.moderatorValue) dict[AwfulPostsViewKeys.authorIsAModerator] = @YES;
-    if (post.author.administratorValue) dict[AwfulPostsViewKeys.authorIsAnAdministrator] = @YES;
-    if (post.author.regdate) {
-        NSDateFormatter *formatter = [AwfulDateFormatters formatters].regDateFormatter;
-        dict[AwfulPostsViewKeys.authorRegDate] = [formatter stringFromDate:post.author.regdate];
-    }
-    dict[AwfulPostsViewKeys.hasAttachment] = @([post.attachmentID length] > 0);
-    if (post.editDate) {
-        NSString *editor = post.editor ? post.editor.username : @"Somebody";
-        NSString *editDate = [self.editDateFormatter stringFromDate:post.editDate];
-        NSString *message = [NSString stringWithFormat:@"%@ fucked around with this message on %@",
-                             editor, editDate];
-        dict[AwfulPostsViewKeys.editMessage] = message;
-    }
-    dict[AwfulPostsViewKeys.beenSeen] = @(post.beenSeen);
-    return dict;
+    return html;
 }
 
-- (NSDateFormatter *)editDateFormatter
+- (GRMustacheTemplate *)postTemplate
 {
-    if (_editDateFormatter) return _editDateFormatter;
-    _editDateFormatter = [NSDateFormatter new];
-    // Jan 2, 2003 around 4:05
-    _editDateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-    _editDateFormatter.dateFormat = @"MMM d, yyy 'around' HH:mm";
-    return _editDateFormatter;
+    if (_postTemplate) return _postTemplate;
+    NSError *error;
+    _postTemplate = [GRMustacheTemplate templateFromResource:@"Post" bundle:nil error:&error];
+    if (!_postTemplate) {
+        NSLog(@"error loading post template: %@", error);
+    }
+    return _postTemplate;
 }
 
 - (NSString *)advertisementHTMLForPostsView:(AwfulPostsView *)postsView

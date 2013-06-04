@@ -18,39 +18,4 @@
   </div>
 </div>
 
-<script id="postTemplate" type="text/html">
-<article id="{{postID}}" class="post {{#beenSeen}}seen{{/beenSeen}}
-                                {{#authorIsOriginalPoster}}role-op{{/authorIsOriginalPoster}}
-                                {{#authorIsAModerator}}role-mod{{/authorIsAModerator}}
-                                {{#authorIsAnAdministrator}}role-admin{{/authorIsAnAdministrator}}
-                                {{^authorAvatarURL}}no-avatar{{/authorAvatarURL}}">
-  <header>
-    {{#authorAvatarURL}}
-      <img class="avatar" src="{{authorAvatarURL}}" alt="">
-    {{/authorAvatarURL}}
-      
-    <button class="action-button" title="Post actions">•••</button>
-    
-    <h1 class="username">{{authorName}}</h1>
-    
-    <time class="postdate">{{postDate}}</time>
-    <time class="regdate">{{authorRegDate}}</time>
-  </header>
-  
-  <section class="postbody">
-    {{{innerHTML}}}
-    {{#hasAttachment}}
-    <p class="attachment">
-      <img src="http://forums.somethingawful.com/attachment.php?postid={{postID}}" alt="">
-    </p>
-    {{/hasAttachment}}
-    {{#editMessage}}
-    <p class="editedby">
-      <span>{{editMessage}}</span>
-    </p>
-    {{/editMessage}}
-  </section>
-</article>
-</script>
-
 <script src="posts-view.js"></script>
