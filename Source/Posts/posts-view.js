@@ -32,6 +32,7 @@ Awful.post = function(i, post){
 Awful.invoke = function(selector /*, varargs */){
   var stem = "x-objc:///" + selector + "/"
   var args = Array.prototype.slice.call(arguments, 1)
+  var url = stem + encodeURIComponent(JSON.stringify(args))
   $('<iframe>', { src: url, style: 'display: none' }).appendTo($('html')).remove()
 }
 
