@@ -89,6 +89,7 @@
 		1C3447E4175D9CCE007377C5 /* Post.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C3447E3175D9CCE007377C5 /* Post.mustache */; };
 		1C3447E7175DAAAD007377C5 /* AwfulProfileViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3447E6175DAAAD007377C5 /* AwfulProfileViewModel.m */; };
 		1C3447E9175DAED4007377C5 /* Profile.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C3447E8175DAED4007377C5 /* Profile.mustache */; };
+		1C3447EC175E5D78007377C5 /* AwfulLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3447EB175E5D78007377C5 /* AwfulLoadingView.m */; };
 		1C3CC799162876AE00088AA8 /* adminstar.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3CC797162876AE00088AA8 /* adminstar.png */; };
 		1C3CC79A162876AE00088AA8 /* modstar.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3CC798162876AE00088AA8 /* modstar.png */; };
 		1C40E5B21640FC2D004AAFA6 /* posts-view.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C40E5B11640FC2C004AAFA6 /* posts-view.css */; };
@@ -635,7 +636,7 @@
 		8C3CCD65165344C200C28342 /* fyad-smallthread.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C3CCD63165344C200C28342 /* fyad-smallthread.png */; };
 		8C3CCD67165344D500C28342 /* hell-tim.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C3CCD66165344D500C28342 /* hell-tim.png */; };
 		8C3CCD69165344E300C28342 /* lf-whites.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C3CCD68165344E200C28342 /* lf-whites.png */; };
-		8C483FC216852E5D00D02482 /* macinyos-loading.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C483FC116852E5D00D02482 /* macinyos-loading.png */; };
+		8C483FC216852E5D00D02482 /* macinyos-loading@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C483FC116852E5D00D02482 /* macinyos-loading@2x.png */; };
 		8C4F06B51686C1CB003CE53C /* macinyos-heading-left.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C4F06B41686C1CB003CE53C /* macinyos-heading-left.png */; };
 		8C5159DA163DB796000114F6 /* adtrw-hokutonoken.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C5159D0163DB796000114F6 /* adtrw-hokutonoken.png */; };
 		8C5159DB163DB796000114F6 /* AICA-TAG-60s.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C5159D1163DB796000114F6 /* AICA-TAG-60s.png */; };
@@ -725,7 +726,7 @@
 		8CEB405C16877E1600BFA9A8 /* winpos95-heading-left-seen.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEB405B16877E1600BFA9A8 /* winpos95-heading-left-seen.png */; };
 		8CEB405E1687865300BFA9A8 /* hourglass.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8CEB405D1687865300BFA9A8 /* hourglass.gif */; };
 		8CEBABE8167FFE2500680935 /* posts-view-219-macinyos.css in Resources */ = {isa = PBXBuildFile; fileRef = 8CEBABE7167FFE2500680935 /* posts-view-219-macinyos.css */; };
-		8CEBABEB168000B800680935 /* macinyos-wallpaper.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEBABEA168000B800680935 /* macinyos-wallpaper.png */; };
+		8CEBABEB168000B800680935 /* macinyos-wallpaper@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEBABEA168000B800680935 /* macinyos-wallpaper@2x.png */; };
 		8CEBABED16800A9300680935 /* macinyos-postactions-bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEBABEC16800A9300680935 /* macinyos-postactions-bg.png */; };
 		8CF02E0216484CCE0059BC56 /* lp-fps.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02D9716484CCE0059BC56 /* lp-fps.png */; };
 		8CF02E0316484CCE0059BC56 /* lp-romhack.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF02D9816484CCE0059BC56 /* lp-romhack.png */; };
@@ -985,6 +986,8 @@
 		1C3447E5175DAAAD007377C5 /* AwfulProfileViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulProfileViewModel.h; sourceTree = "<group>"; };
 		1C3447E6175DAAAD007377C5 /* AwfulProfileViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulProfileViewModel.m; sourceTree = "<group>"; };
 		1C3447E8175DAED4007377C5 /* Profile.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Profile.mustache; sourceTree = "<group>"; };
+		1C3447EA175E5D78007377C5 /* AwfulLoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLoadingView.h; sourceTree = "<group>"; };
+		1C3447EB175E5D78007377C5 /* AwfulLoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLoadingView.m; sourceTree = "<group>"; };
 		1C382CA816FCF92700EF9A8E /* Model-1.11-onemoretime.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model-1.11-onemoretime.xcdatamodel"; sourceTree = "<group>"; };
 		1C3CC797162876AE00088AA8 /* adminstar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = adminstar.png; sourceTree = "<group>"; };
 		1C3CC798162876AE00088AA8 /* modstar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = modstar.png; sourceTree = "<group>"; };
@@ -1390,7 +1393,7 @@
 		8C3CCD63165344C200C28342 /* fyad-smallthread.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-smallthread.png"; sourceTree = "<group>"; };
 		8C3CCD66165344D500C28342 /* hell-tim.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hell-tim.png"; sourceTree = "<group>"; };
 		8C3CCD68165344E200C28342 /* lf-whites.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lf-whites.png"; sourceTree = "<group>"; };
-		8C483FC116852E5D00D02482 /* macinyos-loading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-loading.png"; sourceTree = "<group>"; };
+		8C483FC116852E5D00D02482 /* macinyos-loading@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-loading@2x.png"; sourceTree = "<group>"; };
 		8C4F06B41686C1CB003CE53C /* macinyos-heading-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading-left.png"; sourceTree = "<group>"; };
 		8C5159D0163DB796000114F6 /* adtrw-hokutonoken.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "adtrw-hokutonoken.png"; sourceTree = "<group>"; };
 		8C5159D1163DB796000114F6 /* AICA-TAG-60s.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AICA-TAG-60s.png"; sourceTree = "<group>"; };
@@ -1714,7 +1717,7 @@
 		8CEB405B16877E1600BFA9A8 /* winpos95-heading-left-seen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading-left-seen.png"; sourceTree = "<group>"; };
 		8CEB405D1687865300BFA9A8 /* hourglass.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = hourglass.gif; sourceTree = "<group>"; };
 		8CEBABE7167FFE2500680935 /* posts-view-219-macinyos.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-219-macinyos.css"; sourceTree = "<group>"; };
-		8CEBABEA168000B800680935 /* macinyos-wallpaper.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-wallpaper.png"; sourceTree = "<group>"; };
+		8CEBABEA168000B800680935 /* macinyos-wallpaper@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-wallpaper@2x.png"; sourceTree = "<group>"; };
 		8CEBABEC16800A9300680935 /* macinyos-postactions-bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-postactions-bg.png"; sourceTree = "<group>"; };
 		8CF02D9716484CCE0059BC56 /* lp-fps.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lp-fps.png"; sourceTree = "<group>"; };
 		8CF02D9816484CCE0059BC56 /* lp-romhack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lp-romhack.png"; sourceTree = "<group>"; };
@@ -2555,6 +2558,8 @@
 				1C23A0A1163E6C40006C7F39 /* AwfulPostsView.m */,
 				1C23A0A4163E6E1D006C7F39 /* posts-view.html */,
 				1C23A0A6163E7D2B006C7F39 /* posts-view.js */,
+				1C3447EA175E5D78007377C5 /* AwfulLoadingView.h */,
+				1C3447EB175E5D78007377C5 /* AwfulLoadingView.m */,
 			);
 			path = Posts;
 			sourceTree = "<group>";
@@ -2598,8 +2603,8 @@
 				8C0F4F541682CCFA00E25D7E /* macinyos-heading-center.png */,
 				8C0F4F551682CCFA00E25D7E /* macinyos-heading-right.png */,
 				8CEBABEC16800A9300680935 /* macinyos-postactions-bg.png */,
-				8C483FC116852E5D00D02482 /* macinyos-loading.png */,
-				8CEBABEA168000B800680935 /* macinyos-wallpaper.png */,
+				8C483FC116852E5D00D02482 /* macinyos-loading@2x.png */,
+				8CEBABEA168000B800680935 /* macinyos-wallpaper@2x.png */,
 				8C299D7116877AE9001B9D96 /* winpos95-heading.png */,
 				8CEB405816877D2A00BFA9A8 /* winpos95-heading-seen.png */,
 				8C299D6F16877AE9001B9D96 /* winpos95-heading-left.png */,
@@ -4043,13 +4048,13 @@
 				1CE2D99F16688BA00024AC1C /* ama.png in Resources */,
 				1C5B997B166F6E54004C5D0E /* pm-icon@2x.png in Resources */,
 				8CEBABE8167FFE2500680935 /* posts-view-219-macinyos.css in Resources */,
-				8CEBABEB168000B800680935 /* macinyos-wallpaper.png in Resources */,
+				8CEBABEB168000B800680935 /* macinyos-wallpaper@2x.png in Resources */,
 				8CEBABED16800A9300680935 /* macinyos-postactions-bg.png in Resources */,
 				8CF740EF1681376600C219E4 /* macinyos-heading.png in Resources */,
 				8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */,
 				8C0F4F571682CCFA00E25D7E /* macinyos-heading-right.png in Resources */,
 				1C96D0B71682BBF10043B194 /* Browsers.plist in Resources */,
-				8C483FC216852E5D00D02482 /* macinyos-loading.png in Resources */,
+				8C483FC216852E5D00D02482 /* macinyos-loading@2x.png in Resources */,
 				8C4F06B51686C1CB003CE53C /* macinyos-heading-left.png in Resources */,
 				8C299D6716877330001B9D96 /* posts-view-219-winpos95.css in Resources */,
 				8C299D7216877AE9001B9D96 /* winpos95-heading-left.png in Resources */,
@@ -4453,6 +4458,7 @@
 				1C3447D2174D9B01007377C5 /* AwfulThreadTagButton.m in Sources */,
 				1C3447E1175D9991007377C5 /* AwfulPostViewModel.m in Sources */,
 				1C3447E7175DAAAD007377C5 /* AwfulProfileViewModel.m in Sources */,
+				1C3447EC175E5D78007377C5 /* AwfulLoadingView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

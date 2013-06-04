@@ -50,9 +50,6 @@
 
 @property (readonly, nonatomic) UIScrollView *scrollView;
 
-// Set to nil to hide loading screen.
-@property (copy, nonatomic) NSString *loadingMessage;
-
 // Set to nil to hide end of thread message.
 @property (copy, nonatomic) NSString *endMessage;
 

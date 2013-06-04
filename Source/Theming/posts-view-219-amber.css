@@ -77,7 +77,8 @@ header {
 .role-mod .username {
   background-image: url('modstar.png');
 }
-.role-admin .username, .role-mod .username {
+.role-admin .username,
+.role-mod .username {
   padding-left: 1.125em;
   background-position: 0 center;
   background-repeat: no-repeat;
@@ -108,7 +109,8 @@ header {
 .postbody img {
   -webkit-user-select: none;
 }
-.postbody img, .postbody iframe {
+.postbody img,
+.postbody iframe {
   max-width: 100%;
 }
 .iphone .postbody {
@@ -152,7 +154,8 @@ blockquote img {
 .postbody a {
   -webkit-tap-highlight-color: transparent;
 }
-.iphone .postbody ol, .iphone .postbody ul {
+.iphone .postbody ol,
+.iphone .postbody ul {
   margin: 0;
   padding-left: 1.5em;
 }
@@ -180,24 +183,6 @@ blockquote img {
   line-height: 1;
   margin-bottom: 10px;
 }
-#loading {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-}
-#loading .container {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 60px;
-  margin-top: -30px;
-}
-#loading .spinner {
-  margin: 0 auto;
-}
 html {
   font-family: monospace;
 }
@@ -223,14 +208,15 @@ header {
 .role-mod .username:before {
   content: '☆';
 }
-.role-admin .username, .role-mod .username {
+.role-admin .username,
+.role-mod .username {
   background-image: none;
   padding-left: 0;
 }
 .role-op .username {
   color: #eacf4c;
 }
-.role-op .username :before {
+.role-op .username:before {
   content: "⌨ ";
 }
 .action-button {
@@ -253,7 +239,9 @@ header {
 .bbc-spoiler img {
   visibility: hidden;
 }
-.bbc-spoiler a:link, .bbc-spoiler a:visited, .bbc-spoiler a:active {
+.bbc-spoiler a:link,
+.bbc-spoiler a:visited,
+.bbc-spoiler a:active {
   color: #eacf4c;
 }
 .bbc-spoiler.spoiled {
@@ -266,54 +254,7 @@ header {
 .bbc-spoiler.spoiled img {
   visibility: visible;
 }
-blockquote, .dark blockquote {
+blockquote,
+.dark blockquote {
   border-left-color: #eacf4c;
-}
-#loading .container {
-  margin-top: -25px;
-}
-#loading .progress-bar {
-  position: relative;
-  width: 50px;
-  height: 50px;
-  margin: 0 auto;
-  line-height: 50px;
-  border: 2px solid #eacf4c;
-}
-#loading .progress-bar  > div {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  -webkit-animation: spin 0.5s step-end infinite;
-}
-@-webkit-keyframes spin {
-  0% {
-    -webkit-transform: rotate(0deg);
-  }
-  25% {
-    -webkit-transform: rotate(25deg);
-  }
-  50% {
-    -webkit-transform: rotate(90deg);
-  }
-  75% {
-    -webkit-transform: rotate(155deg);
-  }
-}
-#loading .progress-bar  > div::after {
-  content: "|";
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  text-align: center;
-  font-size: 30px;
-  font-weight: bold;
-}
-#loading p {
-  text-align: center;
-  font-weight: bold;
 }

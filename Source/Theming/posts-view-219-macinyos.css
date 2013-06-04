@@ -77,7 +77,8 @@ header {
 .role-mod .username {
   background-image: url('modstar.png');
 }
-.role-admin .username, .role-mod .username {
+.role-admin .username,
+.role-mod .username {
   padding-left: 1.125em;
   background-position: 0 center;
   background-repeat: no-repeat;
@@ -108,7 +109,8 @@ header {
 .postbody img {
   -webkit-user-select: none;
 }
-.postbody img, .postbody iframe {
+.postbody img,
+.postbody iframe {
   max-width: 100%;
 }
 .iphone .postbody {
@@ -152,7 +154,8 @@ blockquote img {
 .postbody a {
   -webkit-tap-highlight-color: transparent;
 }
-.iphone .postbody ol, .iphone .postbody ul {
+.iphone .postbody ol,
+.iphone .postbody ul {
   margin: 0;
   padding-left: 1.5em;
 }
@@ -180,24 +183,6 @@ blockquote img {
   line-height: 1;
   margin-bottom: 10px;
 }
-#loading {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-}
-#loading .container {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 60px;
-  margin-top: -30px;
-}
-#loading .spinner {
-  margin: 0 auto;
-}
 html {
   font-family: "Geeza Pro";
   -webkit-font-smoothing: none;
@@ -205,7 +190,7 @@ html {
 body {
   color: #000;
   background-attachment: fixed;
-  background-image: url('macinyos-wallpaper.png');
+  background-image: url('macinyos-wallpaper@2x.png');
   background-size: 2px;
 }
 .post {
@@ -284,7 +269,9 @@ body {
 .bbc-spoiler img {
   visibility: hidden;
 }
-.bbc-spoiler a:link, .bbc-spoiler a:visited, .bbc-spoiler a:active {
+.bbc-spoiler a:link,
+.bbc-spoiler a:visited,
+.bbc-spoiler a:active {
   color: #000000;
 }
 .bbc-spoiler.spoiled {
@@ -297,60 +284,7 @@ body {
 .bbc-spoiler.spoiled img {
   visibility: visible;
 }
-blockquote, .dark blockquote {
+blockquote,
+.dark blockquote {
   border-left-color: #000;
-}
-#loading {
-  position: fixed;
-  top: 30px;
-  right: 10px;
-  bottom: 30px;
-  left: 10px;
-  background: center 45% no-repeat url('macinyos-loading.png') #ffffff;
-  background-size: 221px 141px;
-  border: 1px solid #000;
-}
-@media only screen and (min-width: 480px) and (max-width: 767px) {
-  .iphone #loading {
-    top: 5px;
-    right: 40px;
-    bottom: 5px;
-    left: 40px;
-  }
-}
-.ipad #loading {
-  top: 50px;
-  right: 20px;
-  bottom: 50px;
-  left: 20px;
-  background: center 45% no-repeat url('macinyos-loading.png') #ffffff;
-  background-size: 221px 141px;
-  border: 1px solid #000;
-}
-#loading .container {
-  top: 60%;
-  margin-top: -10px;
-}
-.ipad #loading .container {
-  margin-top: -50px;
-}
-#loading .progress-bar {
-  position: relative;
-  width: 50px;
-  height: 50px;
-  margin: 0 auto;
-  border: none;
-  line-height: 50px;
-}
-#loading .progress-bar div {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  -webkit-animation: spin 0.5s step-end infinite;
-}
-#loading p {
-  font-weight: bold;
-  text-align: center;
 }

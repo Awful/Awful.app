@@ -17,9 +17,7 @@
 @property (nonatomic) BOOL hasLoaded;
 
 @property (nonatomic) NSMutableIndexSet *toDelete;
-
 @property (nonatomic) NSMutableIndexSet *toInsert;
-
 @property (nonatomic) NSMutableIndexSet *toReload;
 
 @property (copy, nonatomic) NSString *jumpToElementAfterLoading;
@@ -44,7 +42,8 @@
     webView.backgroundColor = [UIColor clearColor];
     webView.opaque = NO;
     RemoveShadowFromAboveAndBelowWebView(webView);
-    _webView = webView;
+    self.webView = webView;
+    [self addSubview:self.webView];
     return self;
 }
 
@@ -310,24 +309,6 @@ static NSString * JSONizeBool(BOOL aBool)
     return self.webView.scrollView;
 }
 
-- (void)setLoadingMessage:(NSString *)loadingMessage
-{
-    if (_loadingMessage == loadingMessage) return;
-    _loadingMessage = [loadingMessage copy];
-    [self updateLoadingMessage];
-}
-
-- (void)updateLoadingMessage
-{
-    [self evalJavaScript:@"Awful.loading(%@)", JSONizeValue(self.loadingMessage)];
-    if (self.loadingMessage) {
-        self.scrollView.contentOffset = CGPointZero;
-        self.scrollView.scrollEnabled = NO;
-    } else {
-        self.scrollView.scrollEnabled = YES;
-    }
-}
-
 - (void)setEndMessage:(NSString *)endMessage
 {
     if (_endMessage == endMessage) return;
@@ -348,15 +329,12 @@ static NSString * JSONizeBool(BOOL aBool)
         [self updateDark];
         [self updateShowAvatars];
         [self updateShowImages];
-        [self updateLoadingMessage];
         [self updateHighlightQuoteUsername];
         [self updateHighlightMentionUsername];
         [self updateEndMessage];
         [self updateFontSize];
         self.hasLoaded = YES;
         [self reloadData];
-        self.webView.frame = (CGRect){ .size = self.bounds.size };
-        [self addSubview:self.webView];
         if (self.jumpToElementAfterLoading) {
             [self jumpToElementWithID:self.jumpToElementAfterLoading];
             self.jumpToElementAfterLoading = nil;

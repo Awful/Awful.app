@@ -15,6 +15,7 @@
 #import "AwfulExternalBrowser.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulImagePreviewViewController.h"
+#import "AwfulLoadingView.h"
 #import "AwfulModels.h"
 #import "AwfulPostsView.h"
 #import "AwfulPrivateMessageComposeViewController.h"
@@ -34,6 +35,7 @@
 
 @property (nonatomic) AwfulPrivateMessage *privateMessage;
 @property (readonly) AwfulPostsView *postsView;
+@property (nonatomic) AwfulLoadingView *loadingView;
 
 @end
 
@@ -78,6 +80,7 @@
 {
     self.view.backgroundColor = [AwfulTheme currentTheme].postsViewBackgroundColor;
     self.postsView.dark = [AwfulSettings settings].darkTheme;
+    self.loadingView.tintColor = self.view.backgroundColor;
 }
 
 #pragma mark - UIViewController
@@ -110,13 +113,17 @@
 {
     [super viewWillAppear:animated];
     if ([self.privateMessage.innerHTML length] == 0) {
-        self.postsView.loadingMessage = @"Loading…";
+        self.loadingView = [AwfulLoadingView loadingViewWithType:AwfulLoadingViewTypeDefault];
+        self.loadingView.tintColor = [AwfulTheme currentTheme].postsViewBackgroundColor;
+        self.loadingView.message = @"Loading…";
+        [self.postsView addSubview:self.loadingView];
         [[AwfulHTTPClient client] readPrivateMessageWithID:self.privateMessage.messageID
                                                    andThen:^(NSError *error,
                                                              AwfulPrivateMessage *message)
          {
              [self.postsView reloadPostAtIndex:0];
-             self.postsView.loadingMessage = nil;
+             [self.loadingView removeFromSuperview];
+             self.loadingView = nil;
          }];
     }
 }

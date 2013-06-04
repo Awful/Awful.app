@@ -17,6 +17,7 @@
 #import "AwfulIconActionSheet.h"
 #import "AwfulImagePreviewViewController.h"
 #import "AwfulJumpToPageController.h"
+#import "AwfulLoadingView.h"
 #import "AwfulModels.h"
 #import "AwfulPageBottomBar.h"
 #import "AwfulPageTopBar.h"
@@ -76,6 +77,7 @@
 @property (copy, nonatomic) NSString *jumpToPostAfterLoad;
 @property (copy, nonatomic) NSString *advertisementHTML;
 @property (nonatomic) GRMustacheTemplate *postTemplate;
+@property (nonatomic) AwfulLoadingView *loadingView;
 
 @property (nonatomic) BOOL observingScrollViewSize;
 @property (nonatomic) BOOL observingThreadSeenPosts;
@@ -256,15 +258,13 @@
 {
     self.title = [self.thread.title stringByCollapsingWhitespace];
     
-    if (self.currentPage == AwfulThreadPageLast) {
-        self.postsView.loadingMessage = @"Loading last page";
-    } else if (self.currentPage == AwfulThreadPageNextUnread) {
-        self.postsView.loadingMessage = @"Loading unread posts";
-    } else if ([self.fetchedResultsController.fetchedObjects count] == 0) {
-        self.postsView.loadingMessage = [NSString stringWithFormat:
-                                         @"Loading page %d", self.currentPage];
+    if (self.currentPage == AwfulThreadPageLast ||
+        self.currentPage == AwfulThreadPageNextUnread ||
+        [self.fetchedResultsController.fetchedObjects count] == 0)
+    {
+        [self setLoadingMessage:@"Loading…"];
     } else {
-        self.postsView.loadingMessage = nil;
+        [self clearLoadingMessage];
     }
     
     self.topBar.scrollToBottomButton.enabled = [self.posts count] > 0;
@@ -305,6 +305,52 @@
     self.composeItem.enabled = !self.thread.isClosedValue;
 }
 
+- (void)setLoadingMessage:(NSString *)message
+{
+    if (!self.loadingView) {
+        AwfulLoadingViewType loadingViewType = AwfulLoadingViewTypeDefault;
+        UIColor *tintColor = [AwfulTheme currentTheme].postsViewBackgroundColor;
+        if ([self.thread.forum.forumID isEqualToString:@"25"]) {
+            if ([AwfulSettings settings].gasChamberStyle == AwfulGasChamberStyleSickly) {
+                loadingViewType = AwfulLoadingViewTypeGasChamber;
+            }
+        } else if ([self.thread.forum.forumID isEqualToString:@"26"]) {
+            if ([AwfulSettings settings].fyadStyle == AwfulFYADStylePink) {
+                loadingViewType = AwfulLoadingViewTypeFYAD;
+            }
+        } else if ([self.thread.forum.forumID isEqualToString:@"219"]) {
+            switch ([AwfulSettings settings].yosposStyle) {
+                case AwfulYOSPOSStyleAmber:
+                    loadingViewType = AwfulLoadingViewTypeYOSPOS;
+                    tintColor = [UIColor colorWithRed:0.918 green:0.812 blue:0.298 alpha:1];
+                    break;
+                case AwfulYOSPOSStyleGreen:
+                    loadingViewType = AwfulLoadingViewTypeYOSPOS;
+                    tintColor = [UIColor colorWithRed:0.373 green:0.992 blue:0.38 alpha:1];
+                    break;
+                case AwfulYOSPOSStyleMacinyos:
+                    loadingViewType = AwfulLoadingViewTypeMacinyos;
+                    break;
+                case AwfulYOSPOSStyleWinpos95:
+                    loadingViewType = AwfulLoadingViewTypeWinpos95;
+                    break;
+                default:
+                    break;
+            }
+        }
+        self.loadingView = [AwfulLoadingView loadingViewWithType:loadingViewType];
+        if (tintColor) self.loadingView.tintColor = tintColor;
+    }
+    self.loadingView.message = message;
+    [self.postsView addSubview:self.loadingView];
+}
+
+- (void)clearLoadingMessage
+{
+    [self.loadingView removeFromSuperview];
+    self.loadingView = nil;
+}
+
 - (void)configurePostsViewSettings
 {
     self.postsView.showAvatars = [AwfulSettings settings].showAvatars;
@@ -322,6 +368,11 @@
     }
     self.postsView.stylesheetURL = StylesheetURLForForumWithIDAndSettings(self.thread.forum.forumID,
                                                                           [AwfulSettings settings]);
+    if (self.loadingView) {
+        NSString *message = self.loadingView.message;
+        [self clearLoadingMessage];
+        [self setLoadingMessage:message];
+    }
 }
 
 - (AwfulPostsView *)postsView
@@ -369,10 +420,10 @@
         // pages quickly. If the callback comes in after we've moved away from the requested page,
         // just don't bother going any further. We have the data for later.
         if (page != self.currentPage) return;
-        BOOL wasLoading = !!self.postsView.loadingMessage;
+        BOOL wasLoading = !!self.loadingView;
         if (error) {
             if (wasLoading) {
-                self.postsView.loadingMessage = nil;
+                [self clearLoadingMessage];
                 if (![[self.bottomBar.jumpToPageButton titleForState:UIControlStateNormal] length]) {
                     if ([self relevantNumberOfPagesInThread] > 0) {
                         NSString *title = [NSString stringWithFormat:@"Page ? of %d",
@@ -386,8 +437,8 @@
                 }
             }
             // Poor man's offline mode.
-            if (!wasLoading && !refreshingSamePage
-                && [error.domain isEqualToString:NSURLErrorDomain]) {
+            if (!wasLoading && !refreshingSamePage)
+            if ([error.domain isEqualToString:NSURLErrorDomain]) {
                 return;
             }
             [AwfulAlertView showWithTitle:@"Could Not Load Page" error:error buttonTitle:@"OK"];
@@ -441,7 +492,7 @@
 
 - (void)jumpToPostWithID:(NSString *)postID
 {
-    if (self.postsView.loadingMessage) {
+    if (self.loadingView) {
         self.jumpToPostAfterLoad = postID;
     } else {
         if (self.hiddenPosts > 0) {
@@ -575,6 +626,11 @@
     self.pullUpToRefreshControl.textColor = theme.postsViewPullUpForNextPageTextAndArrowColor;
     self.pullUpToRefreshControl.arrowColor = theme.postsViewPullUpForNextPageTextAndArrowColor;
     self.postsView.dark = [AwfulSettings settings].darkTheme;
+    if (self.loadingView) {
+        NSString *message = self.loadingView.message;
+        [self clearLoadingMessage];
+        [self setLoadingMessage:message];
+    }
 }
 
 #pragma mark - UIViewController
@@ -680,7 +736,7 @@
 
 - (void)showJumpToPageSheet
 {
-    if (self.postsView.loadingMessage) return;
+    if (self.loadingView) return;
     if (!self.jumpToPagePopover) {
         NSInteger relevantNumberOfPages = [self relevantNumberOfPagesInThread];
         if (relevantNumberOfPages < 1) return;

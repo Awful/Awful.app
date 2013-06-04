@@ -1,6 +1,5 @@
 ;(function(){
 var Awful = {}
-var spinner
 
 Awful.posts = function(posts){
   $('#posts').empty()
@@ -45,36 +44,10 @@ Awful.stylesheetURL = function(url){
 
 Awful.dark = function(dark){
   $('body').toggleClass('dark', dark)
-  if (spinner) {
-    spinner.stop()
-    spinner = null
-    addSpinnerIfNecessary()
-  }
 }
 
 Awful.ad = function(ad){
   $('#ad').html(ad)
-}
-
-Awful.loading = function(loading){
-  if (nullOrUndefined(loading)) {
-    $('#loading').hide().siblings('div').show()
-    if (spinner) {
-      spinner.stop()
-      spinner = null
-    }
-  } else {
-    $('#loading').show().siblings('div').hide()
-    addSpinnerIfNecessary()
-    $('#loading p').text(loading)
-  }
-}
-
-function addSpinnerIfNecessary() {
-  var $bar = $('#loading .progress-bar')
-  if ($bar.css('display') !== 'none') return
-  spinner = new Spinner({ color: $bar.css('color'), width: 3 }).spin()
-  $bar.parent().prepend(spinner.el)
 }
 
 Awful.endMessage = function(end){

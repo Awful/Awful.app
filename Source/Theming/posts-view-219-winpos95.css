@@ -77,7 +77,8 @@ header {
 .role-mod .username {
   background-image: url('modstar.png');
 }
-.role-admin .username, .role-mod .username {
+.role-admin .username,
+.role-mod .username {
   padding-left: 1.125em;
   background-position: 0 center;
   background-repeat: no-repeat;
@@ -108,7 +109,8 @@ header {
 .postbody img {
   -webkit-user-select: none;
 }
-.postbody img, .postbody iframe {
+.postbody img,
+.postbody iframe {
   max-width: 100%;
 }
 .iphone .postbody {
@@ -152,7 +154,8 @@ blockquote img {
 .postbody a {
   -webkit-tap-highlight-color: transparent;
 }
-.iphone .postbody ol, .iphone .postbody ul {
+.iphone .postbody ol,
+.iphone .postbody ul {
   margin: 0;
   padding-left: 1.5em;
 }
@@ -179,24 +182,6 @@ blockquote img {
   text-align: center;
   line-height: 1;
   margin-bottom: 10px;
-}
-#loading {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-}
-#loading .container {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 60px;
-  margin-top: -30px;
-}
-#loading .spinner {
-  margin: 0 auto;
 }
 html {
   font-family: Arial;
@@ -278,7 +263,9 @@ header {
 .bbc-spoiler img {
   visibility: hidden;
 }
-.bbc-spoiler a:link, .bbc-spoiler a:visited, .bbc-spoiler a:active {
+.bbc-spoiler a:link,
+.bbc-spoiler a:visited,
+.bbc-spoiler a:active {
   color: #000000;
 }
 .bbc-spoiler.spoiled {
@@ -291,35 +278,7 @@ header {
 .bbc-spoiler.spoiled img {
   visibility: visible;
 }
-blockquote, .dark blockquote {
+blockquote,
+.dark blockquote {
   border-left-color: #000;
-}
-#loading {
-  background: center center no-repeat url('hourglass.gif');
-}
-#loading .container {
-  top: 60%;
-  margin-top: -10px;
-}
-.ipad #loading .container {
-  margin-top: -50px;
-}
-#loading .progress-bar {
-  position: relative;
-  width: 50px;
-  height: 50px;
-  margin: 0 auto;
-  line-height: 50px;
-  border: none;
-}
-#loading .progress-bar  > div {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-}
-#loading p {
-  font-weight: bold;
-  text-align: center;
 }
