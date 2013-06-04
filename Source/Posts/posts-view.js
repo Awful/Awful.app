@@ -156,6 +156,9 @@ function render(post) {
       .removeAttr('onmouseout')
       .removeAttr('style')
   
+  // Remove empty "editedby" paragraphs; they make for ugly spacing.
+  post.find('.editedby').filter(function(){ return $(this).text().trim().length == 0 }).remove()
+  
   if (!Awful._showAvatars) hideAvatar(post)
   if (!Awful._showImages) hideImages(post)
   highlightQuotes(post.find('.postbody'))
