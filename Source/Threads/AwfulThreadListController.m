@@ -341,10 +341,17 @@
     AwfulThreadCell *cell = (id)genericCell;
     AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
     if ([AwfulSettings settings].showThreadTags) {
-        cell.icon = [[AwfulThreadTags sharedThreadTags] threadTagNamed:thread.firstIconName];
-        if (!cell.icon && thread.firstIconName) {
-            [self updateThreadTagsForCellAtIndexPath:indexPath];
+        // It's possible to pick the same tag for the first and second icons in e.g. SA Mart.
+        // Since it'd look ugly to show the e.g. "Selling" banner for each tag image, we just use
+        // the empty thread tag for anyone lame enough to pick the same tag twice.
+        if ([thread.firstIconName isEqualToString:thread.secondIconName]) {
             cell.icon = [UIImage imageNamed:@"empty-thread-tag"];
+        } else {
+            cell.icon = [[AwfulThreadTags sharedThreadTags] threadTagNamed:thread.firstIconName];
+            if (!cell.icon && thread.firstIconName) {
+                [self updateThreadTagsForCellAtIndexPath:indexPath];
+                cell.icon = [UIImage imageNamed:@"empty-thread-tag"];
+            }
         }
         cell.secondaryIcon = [[AwfulThreadTags sharedThreadTags]
                               threadTagNamed:thread.secondIconName];
