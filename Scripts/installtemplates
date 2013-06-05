@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -e
+SCRIPTDIR=$( cd "$(dirname "$0")"; pwd -P )
+USERTEMPLATEDIR="$HOME/Library/Developer/Xcode/Templates/File Templates"
+mkdir -p "$USERTEMPLATEDIR"
+cp -R "$SCRIPTDIR/../Xcode/Templates" "$USERTEMPLATEDIR/Awful"

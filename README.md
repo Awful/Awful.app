@@ -38,6 +38,8 @@ There are unit tests for the HTML parsing, to help us find problems when markup 
 
 [![Build Status](https://travis-ci.org/AwfulDevs/Awful.png)](https://travis-ci.org/AwfulDevs/Awful)
 
+To install Awful-specific templates into Xcode (for new classes, protocols, etc.), run `Scripts/installtemplates` in Terminal. They're identical to built-in Xcode templates except for the copyright line.
+
 [CocoaPods]: http://cocoapods.org/
 [LESS]: http://lesscss.org/#usage
 [mogenerator]: http://rentzsch.github.com/mogenerator/
