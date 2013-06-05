@@ -66,7 +66,7 @@
         UIColor *amber = [UIColor colorWithHue:0.138 saturation:0.675 brightness:0.918 alpha:1];
         amber.accessibilityLabel = @"Amber console";
         [view.themePicker insertThemeWithColor:amber atIndex:3];
-        UIColor *finder = [UIColor colorWithWhite:0.945 alpha:1];
+        UIColor *finder = [UIColor colorWithRed:0.376 green:0.369 blue:0.596 alpha:1];
         finder.accessibilityLabel = @"Macinyos";
         [view.themePicker insertThemeWithColor:finder atIndex:4];
         UIColor *windows = [UIColor colorWithHue:0.5 saturation:0.867 brightness:0.502 alpha:1];
