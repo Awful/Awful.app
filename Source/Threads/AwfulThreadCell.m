@@ -29,8 +29,7 @@
         self.textLabel.font = [UIFont systemFontOfSize:15];
         self.detailTextLabel.font = [UIFont systemFontOfSize:11];
         self.tagView = [AwfulThreadTagView new];
-        self.tagView.layer.borderColor = [UIColor blackColor].CGColor;
-        self.tagView.layer.borderWidth = 1;
+        [self.tagView setTagBorderColor:[UIColor blackColor] width:1];
         [self.contentView addSubview:self.tagView];
         
         UIImageView *stickyImageView = [UIImageView new];

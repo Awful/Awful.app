@@ -12,6 +12,8 @@
 
 @property (nonatomic) UIImage *tagImage;
 
+- (void)setTagBorderColor:(UIColor *)borderColor width:(CGFloat)width;
+
 // Occupies the top-left quadrant of the tag.
 @property (nonatomic) UIImage *secondaryTagImage;
 
