@@ -11,24 +11,15 @@ Awful.dark = function(dark){
   $('body').toggleClass('dark', dark)
 }
 
-Awful.invoke = function(selector /*, varargs */){
-  var stem = "x-objc:///" + selector + "/"
-  var args = Array.prototype.slice.call(arguments, 1)
-  $('<iframe>', {
-    src: stem + encodeURIComponent(JSON.stringify(args)),
-    style: 'display: none'
-  }).appendTo($('html')).remove()
-}
-
-$(function(){
-  $('#profile').on('tap', '#contact', function(e){
-    var row = $(e.target).closest('tr')
-    if (row.length == 0) return
-    var rect = row.offset()
+Awful.serviceFromPoint = function(x, y){
+  var el = document.elementFromPoint(x, y)
+  var tr = $(el).closest('tr')
+  if (tr.closest('#contact').length) {
+    var rect = tr.offset()
     rect.left -= window.pageXOffset
     rect.top -= window.pageYOffset
-    Awful.invoke("showActionsForServiceAtIndex:fromRectDictionary:", row.index(), rect)
-  })
-})
+    return JSON.stringify({ rect: rect, serviceIndex: tr.index() })
+  }
+}
 
 })(window)

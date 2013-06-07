@@ -23,7 +23,7 @@
 #import <SVProgressHUD/SVProgressHUD.h>
 #import "UIViewController+NavigationEnclosure.h"
 
-@interface AwfulProfileViewController () <UIWebViewDelegate,
+@interface AwfulProfileViewController () <UIWebViewDelegate, UIGestureRecognizerDelegate,
                                           AwfulPrivateMessageComposeViewControllerDelegate>
 
 @property (readonly, nonatomic) UIWebView *webView;
@@ -123,81 +123,37 @@
         return;
     }
     [webView loadHTMLString:html baseURL:[[NSBundle mainBundle] resourceURL]];
+    UITapGestureRecognizer *tap = [UITapGestureRecognizer new];
+    tap.delegate = self;
+    [tap addTarget:self action:@selector(didTap:)];
+    [webView addGestureRecognizer:tap];
     self.view = webView;
 }
 
-- (void)viewWillAppear:(BOOL)animated
+- (void)didTap:(UITapGestureRecognizer *)tap
 {
-    [super viewWillAppear:animated];
-    [self updateDarkTheme];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(settingsChanged:)
-                                                 name:AwfulSettingsDidChangeNotification
-                                               object:nil];
-    [self renderUser];
-    [[AwfulHTTPClient client] profileUserWithID:self.userID
-                                        andThen:^(NSError *error, AwfulUser *user)
-     {
-         if (error) {
-             NSLog(@"error fetching user profile for %@: %@", self.userID, error);
-             if (!self.user) {
-                 [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
-             }
-             return;
-         }
-         self.user = user;
-         [self renderUser];
-     }];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    [self.webView.scrollView flashScrollIndicators];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [self stopObserving];
-    [super viewWillDisappear:animated];
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
-{
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) return YES;
-    return toInterfaceOrientation != UIInterfaceOrientationPortraitUpsideDown;
-}
-
-- (void)dealloc
-{
-    if ([self isViewLoaded]) self.webView.delegate = nil;
-    [self stopObserving];
-}
-
-#pragma mark - UIWebViewDelegate
-
-- (BOOL)webView:(UIWebView *)webView
-shouldStartLoadWithRequest:(NSURLRequest *)request
- navigationType:(UIWebViewNavigationType)navigationType
-{
-    if ([request.URL.scheme isEqualToString:@"x-objc"]) {
-        NSArray *whitelist = @[ @"showActionsForServiceAtIndex:fromRectDictionary:" ];
-        InvokeBridgedMethodWithURLAndTarget(request.URL, self, whitelist);
-        return NO;
-    }
-    return YES;
-}
-
-- (void)showActionsForServiceAtIndex:(NSNumber *)boxedi fromRectDictionary:(NSDictionary *)rectDict
-{
-    NSUInteger i = [boxedi unsignedIntegerValue];
+    CGPoint location = [tap locationInView:self.webView];
+    NSString *js = [NSString stringWithFormat:@"Awful.serviceFromPoint(%d, %d)",
+                    (int)location.x, (int)location.y];
+    NSString *json = [self.webView stringByEvaluatingJavaScriptFromString:js];
+    NSData *jsonData = [json dataUsingEncoding:NSUTF8StringEncoding];
+    // JSON errors are irrelevant here; the JavaScript function returns undefined if no service
+    // was tapped.
+    NSDictionary *tappedService = [NSJSONSerialization JSONObjectWithData:jsonData options:0
+                                                                    error:nil];
+    if (![tappedService isKindOfClass:[NSDictionary class]]) return;
+    NSUInteger i = [tappedService[@"serviceIndex"] unsignedIntegerValue];
     if (i >= [self.services count]) return;
     NSDictionary *service = self.services[i];
-    CGRect rect = CGRectMake([rectDict[@"left"] floatValue], [rectDict[@"top"] floatValue],
-                             [rectDict[@"width"] floatValue], [rectDict[@"height"] floatValue]);
     if ([service[@"service"] isEqual:AwfulServiceHomepage]) {
         NSURL *url = [NSURL awful_URLWithString:service[@"address"]];
         if (url) {
+            NSDictionary *rectDict = tappedService[@"rect"];
+            CGRect rect = CGRectMake([rectDict[@"left"] floatValue],
+                                     [rectDict[@"top"] floatValue],
+                                     [rectDict[@"width"] floatValue],
+                                     [rectDict[@"height"] floatValue]);
+
             [self showActionsForHomepage:url atRect:rect];
         }
     } else if ([service[@"service"] isEqual:AwfulServicePrivateMessage]) {
@@ -252,7 +208,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         [UIPasteboard generalPasteboard].items = @[ @{
             (id)kUTTypeURL: homepage,
             (id)kUTTypePlainText: [homepage absoluteString],
-        } ];
+        }];
     }];
     [sheet addCancelButtonWithTitle:@"Cancel"];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -261,6 +217,56 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         [sheet showInView:self.view];
     }
 }
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self updateDarkTheme];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(settingsChanged:)
+                                                 name:AwfulSettingsDidChangeNotification
+                                               object:nil];
+    [self renderUser];
+    [[AwfulHTTPClient client] profileUserWithID:self.userID
+                                        andThen:^(NSError *error, AwfulUser *user)
+     {
+         if (error) {
+             NSLog(@"error fetching user profile for %@: %@", self.userID, error);
+             if (!self.user) {
+                 [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+             }
+             return;
+         }
+         self.user = user;
+         [self renderUser];
+     }];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self.webView.scrollView flashScrollIndicators];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [self stopObserving];
+    [super viewWillDisappear:animated];
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
+{
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) return YES;
+    return toInterfaceOrientation != UIInterfaceOrientationPortraitUpsideDown;
+}
+
+- (void)dealloc
+{
+    if ([self isViewLoaded]) self.webView.delegate = nil;
+    [self stopObserving];
+}
+
+#pragma mark - UIWebViewDelegate
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
@@ -278,6 +284,14 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 - (void)privateMessageComposeControllerDidSendMessage:(AwfulPrivateMessageComposeViewController *)controller
 {
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - UIGestureRecognizerDelegate
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
+shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return YES;
 }
 
 @end
