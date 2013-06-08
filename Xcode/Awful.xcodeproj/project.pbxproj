@@ -11,11 +11,10 @@
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 1CE2D9A116688C640024AC1C /* Build configuration list for PBXAggregateTarget "Build Resources" */;
 			buildPhases = (
-				1CE2D9A716688C950024AC1C /* Compile AwfulPostsView JavaScript */,
-				1C6ED633169103B70015CDD5 /* Compile AwfulProfileViewController JavaScript */,
 				1CE2D9A816688CC20024AC1C /* mogenerator */,
 				1CE2D9A916688CDE0024AC1C /* Update image tag list */,
 				1CD33EA016EF7C550059587E /* Compile CSS */,
+				1C4191941763CCB800EADE07 /* Concatenate JavaScript */,
 			);
 			dependencies = (
 			);
@@ -61,7 +60,6 @@
 		1C1D2FEC171BAADE00AC6387 /* AwfulSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1D2FEB171BAADE00AC6387 /* AwfulSplitViewController.m */; };
 		1C23A0A2163E6C40006C7F39 /* AwfulPostsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C23A0A1163E6C40006C7F39 /* AwfulPostsView.m */; };
 		1C23A0A5163E6E1D006C7F39 /* posts-view.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* posts-view.html */; };
-		1C23A0A7163E7D2B006C7F39 /* posts-view.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A6163E7D2B006C7F39 /* posts-view.js */; };
 		1C270ABE16E0773300883DAA /* AwfulComposeField.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C270ABD16E0773300883DAA /* AwfulComposeField.m */; };
 		1C277CA51543554700CD2CCE /* AwfulSettingsChoiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C277CA41543554700CD2CCE /* AwfulSettingsChoiceViewController.m */; };
 		1C278A4D1647A47F007D3CEC /* AwfulPullToRefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C278A481647A47F007D3CEC /* AwfulPullToRefreshControl.m */; };
@@ -95,6 +93,7 @@
 		1C40E5B21640FC2D004AAFA6 /* posts-view.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C40E5B11640FC2C004AAFA6 /* posts-view.css */; };
 		1C40E5B41640FDB9004AAFA6 /* posts-view-219.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C40E5B31640FDB8004AAFA6 /* posts-view-219.css */; };
 		1C410D3B169257F100E4A14E /* NSURL+QueryDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9D1166ABD0D0024AC1C /* NSURL+QueryDictionary.m */; };
+		1C41918E1763C88E00EADE07 /* combined.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C41918D1763C88E00EADE07 /* combined.js */; };
 		1C41B8A116CD4C7600718F79 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C41B8A016CD4C7600718F79 /* Crashlytics.framework */; };
 		1C41B8A716CD573D00718F79 /* title-banned.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C41B8A416CD573D00718F79 /* title-banned.gif */; };
 		1C41B8A816CD573D00718F79 /* title-permabanned.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C41B8A516CD573D00718F79 /* title-permabanned.gif */; };
@@ -119,7 +118,6 @@
 		1C6D3EEB168D7B1E00B91A65 /* AwfulUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D3EEA168D7B1E00B91A65 /* AwfulUser.m */; };
 		1C6D3EF3168D89FC00B91A65 /* posts-view-219-amber.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C6D3EF2168D89FC00B91A65 /* posts-view-219-amber.css */; };
 		1C6ED638169104150015CDD5 /* profile-view.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C6ED636169104150015CDD5 /* profile-view.html */; };
-		1C6ED63A169104340015CDD5 /* profile-view.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C6ED639169104340015CDD5 /* profile-view.js */; };
 		1C6ED63D1691055E0015CDD5 /* AwfulProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6ED63C1691055E0015CDD5 /* AwfulProfileViewController.m */; };
 		1C741F931724B2DC00E7C61E /* font-size.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C741F921724B2DC00E7C61E /* font-size.png */; };
 		1C7487F116A88BAD0068B8A3 /* AwfulKeyboardBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7487F016A88BAD0068B8A3 /* AwfulKeyboardBar.m */; };
@@ -945,7 +943,6 @@
 		1C23A0A0163E6C40006C7F39 /* AwfulPostsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostsView.h; sourceTree = "<group>"; };
 		1C23A0A1163E6C40006C7F39 /* AwfulPostsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostsView.m; sourceTree = "<group>"; };
 		1C23A0A4163E6E1D006C7F39 /* posts-view.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "posts-view.html"; sourceTree = "<group>"; };
-		1C23A0A6163E7D2B006C7F39 /* posts-view.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "posts-view.js"; sourceTree = "<group>"; };
 		1C270ABC16E0773300883DAA /* AwfulComposeField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulComposeField.h; sourceTree = "<group>"; };
 		1C270ABD16E0773300883DAA /* AwfulComposeField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulComposeField.m; sourceTree = "<group>"; };
 		1C277CA31543554700CD2CCE /* AwfulSettingsChoiceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettingsChoiceViewController.h; sourceTree = "<group>"; };
@@ -993,6 +990,8 @@
 		1C3CC798162876AE00088AA8 /* modstar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = modstar.png; sourceTree = "<group>"; };
 		1C40E5B11640FC2C004AAFA6 /* posts-view.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view.css"; sourceTree = "<group>"; };
 		1C40E5B31640FDB8004AAFA6 /* posts-view-219.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-219.css"; sourceTree = "<group>"; };
+		1C41918D1763C88E00EADE07 /* combined.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = combined.js; sourceTree = "<group>"; };
+		1C4191901763C8BD00EADE07 /* awful.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = awful.js; sourceTree = "<group>"; };
 		1C41B8A016CD4C7600718F79 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Crashlytics.framework; path = Vendor/Crashlytics.framework; sourceTree = "<group>"; };
 		1C41B8A216CD4F1900718F79 /* AwfulCrashlytics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AwfulCrashlytics.h; sourceTree = "<group>"; };
 		1C41B8A416CD573D00718F79 /* title-banned.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "title-banned.gif"; sourceTree = "<group>"; };
@@ -1034,7 +1033,6 @@
 		1C6D3EEA168D7B1E00B91A65 /* AwfulUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulUser.m; sourceTree = "<group>"; };
 		1C6D3EF2168D89FC00B91A65 /* posts-view-219-amber.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-219-amber.css"; sourceTree = "<group>"; };
 		1C6ED636169104150015CDD5 /* profile-view.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "profile-view.html"; sourceTree = "<group>"; };
-		1C6ED639169104340015CDD5 /* profile-view.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "profile-view.js"; sourceTree = "<group>"; };
 		1C6ED63B1691055E0015CDD5 /* AwfulProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulProfileViewController.h; sourceTree = "<group>"; };
 		1C6ED63C1691055E0015CDD5 /* AwfulProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulProfileViewController.m; sourceTree = "<group>"; };
 		1C741F921724B2DC00E7C61E /* font-size.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "font-size.png"; sourceTree = "<group>"; };
@@ -2181,6 +2179,15 @@
 			path = ../Source;
 			sourceTree = "<group>";
 		};
+		1C41918C1763C6EA00EADE07 /* JavaScript */ = {
+			isa = PBXGroup;
+			children = (
+				1C4191901763C8BD00EADE07 /* awful.js */,
+				1C41918D1763C88E00EADE07 /* combined.js */,
+			);
+			path = JavaScript;
+			sourceTree = "<group>";
+		};
 		1C4D7BD6167A5C7C00CF3659 /* PSMenuItem */ = {
 			isa = PBXGroup;
 			children = (
@@ -2251,7 +2258,6 @@
 				1C6ED63C1691055E0015CDD5 /* AwfulProfileViewController.m */,
 				1C8BE4F9169115020022B331 /* profile-view.css */,
 				1C6ED636169104150015CDD5 /* profile-view.html */,
-				1C6ED639169104340015CDD5 /* profile-view.js */,
 			);
 			path = Users;
 			sourceTree = "<group>";
@@ -2557,7 +2563,6 @@
 				1C23A0A0163E6C40006C7F39 /* AwfulPostsView.h */,
 				1C23A0A1163E6C40006C7F39 /* AwfulPostsView.m */,
 				1C23A0A4163E6E1D006C7F39 /* posts-view.html */,
-				1C23A0A6163E7D2B006C7F39 /* posts-view.js */,
 				1C3447EA175E5D78007377C5 /* AwfulLoadingView.h */,
 				1C3447EB175E5D78007377C5 /* AwfulLoadingView.m */,
 			);
@@ -2737,6 +2742,7 @@
 				1CF0D618164B0A7C00CFA137 /* Forum Abbreviations.plist */,
 				8CCD498915B497A700E5893B /* Icons */,
 				8CCD503B15B783FC00E5893B /* Images */,
+				1C41918C1763C6EA00EADE07 /* JavaScript */,
 				1C3447DC175D2D5E007377C5 /* Settings.bundle */,
 				8CCD4CC315B497A800E5893B /* Settings.plist */,
 				1C3447E2175D9CCE007377C5 /* Templates */,
@@ -3460,7 +3466,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1C23A0A7163E7D2B006C7F39 /* posts-view.js in Resources */,
+				1C41918E1763C88E00EADE07 /* combined.js in Resources */,
 				8CCD500615B497A900E5893B /* Settings.plist in Resources */,
 				8CCD536E15B783FD00E5893B /* action.png in Resources */,
 				8CCD536F15B783FD00E5893B /* action@2x.png in Resources */,
@@ -4064,7 +4070,6 @@
 				8CEB405C16877E1600BFA9A8 /* winpos95-heading-left-seen.png in Resources */,
 				8CEB405E1687865300BFA9A8 /* hourglass.gif in Resources */,
 				1C6D3EF3168D89FC00B91A65 /* posts-view-219-amber.css in Resources */,
-				1C6ED63A169104340015CDD5 /* profile-view.js in Resources */,
 				1C6ED638169104150015CDD5 /* profile-view.html in Resources */,
 				1C8BE4FA169115020022B331 /* profile-view.css in Resources */,
 				8CC4AD6316907DD100639C80 /* posts-view-26.css in Resources */,
@@ -4146,6 +4151,23 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/../Pods/Pods-resources.sh\"\n";
 		};
+		1C4191941763CCB800EADE07 /* Concatenate JavaScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/../Vendor/zepto/zepto.min.js",
+				"$(SRCROOT)/../Resources/JavaScript/awful.js",
+			);
+			name = "Concatenate JavaScript";
+			outputPaths = (
+				"$(SRCROOT)/../Resources/JavaScript/combined.js",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cat \"${SRCROOT}/../Vendor/zepto/zepto.min.js\" \"${SRCROOT}/../Resources/JavaScript/awful.js\" > \"${SRCROOT}/../Resources/JavaScript/combined.js\"\n";
+		};
 		1C41B89F16CD4C1D00718F79 /* Crashlytics */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -4174,20 +4196,6 @@
 			shellPath = /bin/sh;
 			shellScript = "rake crashlytics\n";
 		};
-		1C6ED633169103B70015CDD5 /* Compile AwfulProfileViewController JavaScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Compile AwfulProfileViewController JavaScript";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd ../Source/Users\nrake\n";
-		};
 		1CBDB5BA16259C6C0004BDF4 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -4214,20 +4222,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/usr/bin/env bash";
 			shellScript = "set -e\n\nPATH=\"${PATH}:/usr/local/bin\"\nhash lessc 2>/dev/null || { echo \"Please install less! npm install less -g\"; exit 0; }\n\nmtime() {\n    echo `stat -f %m \"${1}\" 2>/dev/null`\n}\n\ncd \"${PROJECT_DIR}/../Source/Theming\"\n\n# lessc ain't quick so we'll only compile what's changed.\n# Updating any imported LESS files should also trigger recompilation.\nIMPORTED=$(find . -name \"*.less\" -not -name \"posts-view*\" -exec stat -f %m {} \\; | sort -n -r | head -n 1)\n\nfor s in posts-view*.less; do\n    if [[ ! -e \"${s}\" ]]; then continue; fi # empty glob\n\n    c=\"${s%.less}.css\"\n    smodified=$(mtime \"${s}\")\n    cmodified=$(mtime \"${c}\")\n    if [[ ! -e \"${c}\" || smodified -gt cmodified || IMPORTED -gt cmodified ]]; then\n        echo \"Compiling ${s}\"\n        lessc \"${s}\" \"${c}\"\n    fi\ndone\n";
-		};
-		1CE2D9A716688C950024AC1C /* Compile AwfulPostsView JavaScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Compile AwfulPostsView JavaScript";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd ../Source/Posts\nrake\n";
 		};
 		1CE2D9A816688CC20024AC1C /* mogenerator */ = {
 			isa = PBXShellScriptBuildPhase;

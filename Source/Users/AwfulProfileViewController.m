@@ -67,7 +67,7 @@
         return;
     }
     NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    NSString *js = [NSString stringWithFormat:@"Awful.render(%@[0])", json];
+    NSString *js = [NSString stringWithFormat:@"Awful.profile.render(%@[0])", json];
     [self.webView stringByEvaluatingJavaScriptFromString:js];
 }
 
@@ -133,7 +133,7 @@
 - (void)didTap:(UITapGestureRecognizer *)tap
 {
     CGPoint location = [tap locationInView:self.webView];
-    NSString *js = [NSString stringWithFormat:@"Awful.serviceFromPoint(%d, %d)",
+    NSString *js = [NSString stringWithFormat:@"Awful.profile.serviceFromPoint(%d, %d)",
                     (int)location.x, (int)location.y];
     NSString *json = [self.webView stringByEvaluatingJavaScriptFromString:js];
     NSData *jsonData = [json dataUsingEncoding:NSUTF8StringEncoding];

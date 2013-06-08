@@ -254,6 +254,23 @@ function hideImages(post) {
   })
 }
 
+Awful.profile = {
+  render: function(profile){
+    $('#profile').html(profile)
+  },
+  
+  serviceFromPoint: function(x, y){
+    var el = document.elementFromPoint(x, y)
+    var tr = $(el).closest('tr')
+    if (tr.closest('#contact').length) {
+      var rect = tr.offset()
+      rect.left -= window.pageXOffset
+      rect.top -= window.pageYOffset
+      return JSON.stringify({ rect: rect, serviceIndex: tr.index() })
+    }
+  }
+}
+
 window.Awful = Awful
 })()
 
