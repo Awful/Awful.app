@@ -53,8 +53,26 @@
 // Set to nil to hide end of thread message.
 @property (copy, nonatomic) NSString *endMessage;
 
-// Extract an Objective-C invocation from a URL and send it if the selector is in the whitelist.
-extern void InvokeBridgedMethodWithURLAndTarget(NSURL *url, id target, NSArray *whitelist);
+// Returns the index of the post whose action button is at point, or NSNotFound on failure.
+//
+// point - A point in the posts view's frame coordinates.
+// rect  - A pointer to a CGRect that, if non-NULL, will contain the bounds of the action button in
+//         the posts view's frame coordinates on success.
+- (NSInteger)indexOfPostWithActionButtonAtPoint:(CGPoint)point rect:(CGRect *)rect;
+
+// Returns the URL of the first image in a post at point, or nil on failure.
+- (NSURL *)URLOfSpoiledImageForPoint:(CGPoint)point;
+
+// Returns the URL of the first link in a post at point, or nil on failure.
+//
+// point - A point in the posts view's frame coordinates.
+// rect  - A pointer to a CGRect that, if non-NULL, will contain the bounds of the link in the posts
+//         view's frame coordinates on success.
+//
+//if (self.postsView.scrollView.contentOffset.y < 0) {
+//    rect.origin.y -= self.postsView.scrollView.contentOffset.y;
+//}
+- (NSURL *)URLOfSpoiledLinkForPoint:(CGPoint)point rect:(CGRect *)rect;
 
 @end
 
@@ -72,21 +90,9 @@ extern void InvokeBridgedMethodWithURLAndTarget(NSURL *url, id target, NSArray *
 
 - (NSString *)advertisementHTMLForPostsView:(AwfulPostsView *)postsView;
 
-- (void)postsView:(AwfulPostsView *)postsView didTapLinkToURL:(NSURL *)url;
-
-// In addition to the methods listed in this protocol, the delegate can have arbitrary methods
-// called from JavaScript running in the posts view. Parameters to methods called this way will be
-// Foundation objects allowed in JSON.
-//
-// Only the methods whose selectors are in the whitelist will be called. If this method is not
-// implemented, nothing is called.
-- (NSArray *)whitelistedSelectorsForPostsView:(AwfulPostsView *)postsView;
-
-@required
-
-// This is part of the JavaScript to Objective-C one-way bridge. NSObject and NSProxy already
-// implement this method, so you probably don't need to do anything.
-- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector;
+- (void)postsView:(AwfulPostsView *)postsView willFollowLinkToURL:(NSURL *)url;
+- (void)postsView:(AwfulPostsView *)postsView didReceiveSingleTapAtPoint:(CGPoint)point;
+- (void)postsView:(AwfulPostsView *)postsView didReceiveLongTapAtPoint:(CGPoint)point;
 
 @end
 

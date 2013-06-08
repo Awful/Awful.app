@@ -26,13 +26,6 @@ Awful.post = function(i, post){
   $('#posts > article').eq(i).replaceWith(render(post))
 }
 
-Awful.invoke = function(selector /*, varargs */){
-  var stem = "x-objc:///" + selector + "/"
-  var args = Array.prototype.slice.call(arguments, 1)
-  var url = stem + encodeURIComponent(JSON.stringify(args))
-  $('<iframe>', { src: url, style: 'display: none' }).appendTo($('html')).remove()
-}
-
 Awful.stylesheetURL = function(url){
   if ($('link').length) {
     $('link').attr('href', url)
@@ -105,6 +98,41 @@ Awful.showImages = function(on){
 
 Awful.fontSize = function(size) {
   $('body').css('font-size', size + "px")
+}
+
+Awful.postWithButtonForPoint = function(x, y){
+  var button = $(document.elementFromPoint(x, y)).closest('button')
+  if (button.length) {
+    var post = button.closest('article')
+    return JSON.stringify({ rect: rectOf(button), postIndex: post.index() })
+  }
+}
+
+function rectOf(el) {
+  var rect = el.offset()
+  rect.left -= window.pageXOffset
+  rect.top -= window.pageYOffset
+  return rect
+}
+
+Awful.spoiledImageInPostForPoint = function(x, y){
+  var img = $(document.elementFromPoint(x, y)).closest('img')
+  if (img.length) {
+    var spoiler = img.closest('.bbc-spoiler')
+    if (spoiler.length == 0 || spoiler.hasClass('spoiled')) {
+      return JSON.stringify({ url: img.attr('src') })
+    }
+  }
+}
+
+Awful.spoiledLinkInPostForPoint = function(x, y){
+  var a = $(document.elementFromPoint(x, y)).closest('a')
+  if (a.length) {
+    var spoiler = a.closest('.bbc-spoiler')
+    if (spoiler.length == 0 || spoiler.hasClass('spoiled')) {
+      return JSON.stringify({ rect: rectOf(a), url: a.attr('href') })
+    }
+  }
 }
 
 function render(post) {
@@ -234,37 +262,9 @@ window.Awful = Awful
 
 $(function(){
   $('body').addClass($.os.ipad ? 'ipad' : 'iphone')
-  
-  $('#posts').on('tap', '.action-button', showPostActions)
-  
-  $('#posts').on('longTap', 'section img', previewImage)
-  
   $('#posts').on('click', 'a[data-awful="image"]', showLinkedImage)
-  
   $('#posts').on('click', '.bbc-spoiler', toggleSpoiled)
-  
-  $('#posts').on('longTap', 'section a', showLinkMenu)
 })
-
-function showPostActions(e) {
-  var button = $(e.target)
-  var post = button.closest('article')
-  var rect = button.offset()
-  rect.left -= window.pageXOffset
-  rect.top -= window.pageYOffset
-  Awful.invoke("showActionsForPostAtIndex:fromRectDictionary:", post.index(), rect)
-}
-
-function previewImage(e) {
-  var src = $(e.target).attr('src')
-  // Need to encode the URL to pass it through to Objective-C land. It may already be encoded, so we can't blindly encode it. It may also require encoding (a common one is spaces in image URLs for some reason) so we need to encode it at some point.
-  var skip = src.indexOf('://') != -1 ? 1 : 0
-  var decodedParts = $.map(src.split('/'), function(part, i){
-    return i < skip ? part : decodeURIComponent(part)
-  })
-  var url = encodeURI(decodedParts.join('/'))
-  Awful.invoke("previewImageAtURLString:", url)
-}
 
 function showLinkedImage(e) {
   var link = $(e.target)
@@ -288,18 +288,6 @@ function cancelUnspoiledLinks(e) {
     spoiler.addClass('spoiled')
     e.preventDefault()
   }
-}
-
-function showLinkMenu(e) {
-  var link = $(e.target).closest('a')
-  var spoiler = link.closest('.bbc-spoiler')
-  if (spoiler.length == 0 || spoiler.hasClass('spoiled')) {
-    var rect = link.offset()
-    rect.left -= window.pageXOffset
-    rect.top -= window.pageYOffset
-    Awful.invoke("showMenuForLinkWithURLString:fromRectDictionary:", link.attr('href'), rect)
-  }
-  e.preventDefault()
 }
 
 })()

@@ -944,7 +944,7 @@ static char KVOContext;
     return self.advertisementHTML;
 }
 
-- (void)postsView:(AwfulPostsView *)postsView didTapLinkToURL:(NSURL *)url
+- (void)postsView:(AwfulPostsView *)postsView willFollowLinkToURL:(NSURL *)url
 {
     if ([url awfulURL]) {
         [[AwfulAppDelegate instance] openAwfulURL:[url awfulURL]];
@@ -968,24 +968,17 @@ static char KVOContext;
     self.navigationItem.backBarButtonItem = back;
 }
 
-- (NSArray *)whitelistedSelectorsForPostsView:(AwfulPostsView *)postsView
+- (void)postsView:(AwfulPostsView *)postsView didReceiveSingleTapAtPoint:(CGPoint)point
 {
-    return @[
-        @"showActionsForPostAtIndex:fromRectDictionary:",
-        @"previewImageAtURLString:",
-        @"showMenuForLinkWithURLString:fromRectDictionary:"
-    ];
+    CGRect rect;
+    NSInteger postIndex = [postsView indexOfPostWithActionButtonAtPoint:point rect:&rect];
+    if (postIndex == NSNotFound) return;
+    AwfulPost *post = self.fetchedResultsController.fetchedObjects[postIndex + self.hiddenPosts];
+    [self showActionsForPost:post fromRect:rect];
 }
 
-- (void)showActionsForPostAtIndex:(NSNumber *)index fromRectDictionary:(NSDictionary *)rectDict
+- (void)showActionsForPost:(AwfulPost *)post fromRect:(CGRect)rect
 {
-    NSInteger unboxed = [index integerValue] + self.hiddenPosts;
-    AwfulPost *post = self.fetchedResultsController.fetchedObjects[unboxed];
-    CGRect rect = CGRectMake([rectDict[@"left"] floatValue], [rectDict[@"top"] floatValue],
-                             [rectDict[@"width"] floatValue], [rectDict[@"height"] floatValue]);
-    if (self.postsView.scrollView.contentOffset.y < 0) {
-        rect.origin.y -= self.postsView.scrollView.contentOffset.y;
-    }
     NSString *possessiveUsername = [NSString stringWithFormat:@"%@'s", post.author.username];
     if ([post.author.username isEqualToString:[AwfulSettings settings].username]) {
         possessiveUsername = @"Your";
@@ -1097,41 +1090,35 @@ static char KVOContext;
         [sheet presentFromViewController:self fromRect:self.bottomBar.bounds inView:self.bottomBar];
     }
 }
-
-- (void)previewImageAtURLString:(NSString *)urlString
+- (void)postsView:(AwfulPostsView *)postsView didReceiveLongTapAtPoint:(CGPoint)point
 {
-    NSURL *url = [NSURL awful_URLWithString:urlString];
-    if (!url) {
-        NSLog(@"could not parse URL for image preview: %@", urlString);
-        return;
+    // check if image or link (what to do about linked image??)
+    NSURL *url;
+    CGRect rect;
+    if ((url = [postsView URLOfSpoiledImageForPoint:point])) {
+        // TODO remember to do the punycode crap!
+        // TODO and to adjust rect!
+        AwfulImagePreviewViewController *preview = [[AwfulImagePreviewViewController alloc]
+                                                    initWithURL:url];
+        preview.title = self.title;
+        UINavigationController *nav = [preview enclosingNavigationController];
+        nav.navigationBar.translucent = YES;
+        [self presentViewController:nav animated:YES completion:nil];
+    } else if ((url = [postsView URLOfSpoiledLinkForPoint:point rect:&rect])) {
+        // TODO remember to do the punycode crap!
+        // TODO and to adjust rect!
+        [self showMenuForLinkToURL:url fromRect:rect];
     }
-    AwfulImagePreviewViewController *preview = [[AwfulImagePreviewViewController alloc]
-                                                initWithURL:url];
-    preview.title = self.title;
-    UINavigationController *nav = [preview enclosingNavigationController];
-    nav.navigationBar.translucent = YES;
-    [self presentViewController:nav animated:YES completion:nil];
 }
 
-- (void)showMenuForLinkWithURLString:(NSString *)urlString
-                  fromRectDictionary:(NSDictionary *)rectDict
+- (void)showMenuForLinkToURL:(NSURL *)url fromRect:(CGRect)rect
 {
-    NSURL *url = [NSURL awful_URLWithString:urlString];
-    if (!url) {
-        NSLog(@"could not parse URL for link long tap menu: %@", urlString);
-        return;
-    }
     if (![url opensInBrowser]) {
         [[UIApplication sharedApplication] openURL:url];
         return;
     }
-    CGRect rect = CGRectMake([rectDict[@"left"] floatValue], [rectDict[@"top"] floatValue],
-                             [rectDict[@"width"] floatValue], [rectDict[@"height"] floatValue]);
-    if (self.postsView.scrollView.contentOffset.y < 0) {
-        rect.origin.y -= self.postsView.scrollView.contentOffset.y;
-    }
     AwfulActionSheet *sheet = [AwfulActionSheet new];
-    sheet.title = urlString;
+    sheet.title = url.absoluteString;
     [sheet addButtonWithTitle:@"Open" block:^{
         if ([url awfulURL]) {
             [[AwfulAppDelegate instance] openAwfulURL:[url awfulURL]];
@@ -1154,7 +1141,7 @@ static char KVOContext;
     [sheet addButtonWithTitle:@"Copy URL" block:^{
         [UIPasteboard generalPasteboard].items = @[ @{
             (id)kUTTypeURL: url,
-            (id)kUTTypePlainText: urlString
+            (id)kUTTypePlainText: url.absoluteString,
         } ];
     }];
     [sheet addCancelButtonWithTitle:@"Cancel"];

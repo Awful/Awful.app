@@ -8,8 +8,9 @@
 #import "AwfulPostsView.h"
 #import "AwfulSettings.h"
 #import "NSFileManager+UserDirectories.h"
+#import "NSURL+Punycode.h"
 
-@interface AwfulPostsView () <UIWebViewDelegate>
+@interface AwfulPostsView () <UIWebViewDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic) UIWebView *webView;
 
@@ -44,7 +45,40 @@
     RemoveShadowFromAboveAndBelowWebView(webView);
     self.webView = webView;
     [self addSubview:self.webView];
+    
+    UITapGestureRecognizer *tap = [UITapGestureRecognizer new];
+    tap.delegate = self;
+    [tap addTarget:self action:@selector(didTapWebView:)];
+    [self addGestureRecognizer:tap];
+    UILongPressGestureRecognizer *longPress = [UILongPressGestureRecognizer new];
+    longPress.delegate = self;
+    [longPress addTarget:self action:@selector(didLongPressWebView:)];
+    [self addGestureRecognizer:longPress];
     return self;
+}
+
+- (void)didTapWebView:(UITapGestureRecognizer *)tap
+{
+    if (tap.state == UIGestureRecognizerStateEnded)
+    if ([self.delegate respondsToSelector:@selector(postsView:didReceiveSingleTapAtPoint:)]) {
+        CGPoint location = [tap locationInView:self.webView];
+        if (self.scrollView.contentOffset.y < 0) {
+            location.y += self.scrollView.contentOffset.y;
+        }
+        [self.delegate postsView:self didReceiveSingleTapAtPoint:location];
+    }
+}
+
+- (void)didLongPressWebView:(UILongPressGestureRecognizer *)longPress
+{
+    if (longPress.state == UIGestureRecognizerStateBegan)
+    if ([self.delegate respondsToSelector:@selector(postsView:didReceiveLongTapAtPoint:)]) {
+        CGPoint location = [longPress locationInView:self.webView];
+        if (self.scrollView.contentOffset.y < 0) {
+            location.y += self.scrollView.contentOffset.y;
+        }
+        [self.delegate postsView:self didReceiveLongTapAtPoint:location];
+    }
 }
 
 - (void)dealloc
@@ -321,6 +355,65 @@ static NSString * JSONizeBool(BOOL aBool)
     [self evalJavaScript:@"Awful.endMessage(%@)", JSONizeValue(self.endMessage)];
 }
 
+- (NSInteger)indexOfPostWithActionButtonAtPoint:(CGPoint)point rect:(CGRect *)rect
+{
+    NSDictionary *postInfo = [self evalJavaScriptWithJSONResponse:
+                              @"Awful.postWithButtonForPoint(%d, %d)", (int)point.x, (int)point.y];
+    if (![postInfo isKindOfClass:[NSDictionary class]]) return NSNotFound;
+    if (rect) {
+        *rect = [self rectOfElementWithRectDictionary:postInfo[@"rect"]];
+    }
+    return [postInfo[@"postIndex"] integerValue];
+}
+
+- (id)evalJavaScriptWithJSONResponse:(NSString *)script, ...
+{
+    va_list args;
+    va_start(args, script);
+    NSString *js = [[NSString alloc] initWithFormat:script arguments:args];
+    va_end(args);
+    NSString *response = [self.webView stringByEvaluatingJavaScriptFromString:js];
+    // No point recording the error; a JSON parse error simply means "no response".
+    return [NSJSONSerialization JSONObjectWithData:[response dataUsingEncoding:NSUTF8StringEncoding]
+                                           options:0
+                                             error:nil];
+}
+
+- (CGRect)rectOfElementWithRectDictionary:(NSDictionary *)rectDict
+{
+    CGRect rect = CGRectMake([rectDict[@"left"] floatValue], [rectDict[@"top"] floatValue],
+                             [rectDict[@"width"] floatValue], [rectDict[@"height"] floatValue]);
+    if (self.scrollView.contentOffset.y < 0) {
+        rect.origin.y -= self.scrollView.contentOffset.y;
+    }
+    return rect;
+}
+
+- (NSURL *)URLOfSpoiledImageForPoint:(CGPoint)point
+{
+    NSDictionary *imageInfo = [self evalJavaScriptWithJSONResponse:
+                               @"Awful.spoiledImageInPostForPoint(%d, %d)",
+                               (int)point.x, (int)point.y];
+    if ([imageInfo isKindOfClass:[NSDictionary class]]) {
+        return [NSURL awful_URLWithString:imageInfo[@"url"]];
+    } else {
+        return nil;
+    }
+}
+
+- (NSURL *)URLOfSpoiledLinkForPoint:(CGPoint)point rect:(CGRect *)rect
+{
+    NSDictionary *linkInfo = [self evalJavaScriptWithJSONResponse:
+                              @"Awful.spoiledLinkInPostForPoint(%d, %d)",
+                              (int)point.x, (int)point.y];
+    if (![linkInfo isKindOfClass:[NSDictionary class]]) return nil;
+    if (rect) {
+        *rect = [self rectOfElementWithRectDictionary:linkInfo[@"rect"]];
+    }
+    return [NSURL awful_URLWithString:linkInfo[@"url"]];
+}
+
+
 #pragma mark - UIWebViewDelegate
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
@@ -347,12 +440,9 @@ static NSString * JSONizeBool(BOOL aBool)
     navigationType:(UIWebViewNavigationType)navigationType
 {
     NSURL *url = request.URL;
-    if ([url.scheme isEqualToString:@"x-objc"]) {
-        [self bridgeJavaScriptToObjectiveCWithURL:url];
-        return NO;
-    } else if (navigationType == UIWebViewNavigationTypeLinkClicked) {
-        if ([self.delegate respondsToSelector:@selector(postsView:didTapLinkToURL:)]) {
-            [self.delegate postsView:self didTapLinkToURL:url];
+    if (navigationType == UIWebViewNavigationTypeLinkClicked) {
+        if ([self.delegate respondsToSelector:@selector(postsView:willFollowLinkToURL:)]) {
+            [self.delegate postsView:self willFollowLinkToURL:url];
         }
         return NO;
     } else if ([url.host hasSuffix:@"www.youtube.com"] && [url.path hasPrefix:@"/watch"]) {
@@ -363,51 +453,12 @@ static NSString * JSONizeBool(BOOL aBool)
     return YES;
 }
 
-- (void)bridgeJavaScriptToObjectiveCWithURL:(NSURL *)url
-{
-    if (![self.delegate respondsToSelector:@selector(whitelistedSelectorsForPostsView:)]) return;
-    NSArray *whitelist = [self.delegate whitelistedSelectorsForPostsView:self];
-    InvokeBridgedMethodWithURLAndTarget(url, self.delegate, whitelist);
-}
+#pragma mark - UIGestureRecognizerDelegate
 
-void InvokeBridgedMethodWithURLAndTarget(NSURL *url, id target, NSArray *whitelist)
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
+shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
 {
-    // Can't use [url pathComponents] because it can ignore multiple consecutive slashes.
-    NSArray *components = [[url path] componentsSeparatedByString:@"/"];
-    if ([components count] < 2) return;
-    
-    if (![whitelist containsObject:components[1]]) return;
-    SEL selector = NSSelectorFromString(components[1]);
-    if (![target respondsToSelector:selector]) return;
-    
-    NSArray *arguments;
-    if ([components count] >= 3) {
-        NSArray *args = [components subarrayWithRange:NSMakeRange(2, [components count] - 2)];
-        NSString *stringData = [args componentsJoinedByString:@"/"];
-        NSData *data = [stringData dataUsingEncoding:NSUTF8StringEncoding];
-        NSError *error;
-        arguments = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-        if (!arguments) {
-            NSLog(@"error deserializing arguments from JavaScript for method %@: %@",
-                  NSStringFromSelector(selector), error);
-        }
-    }
-    NSUInteger expectedArguments = [[components[1] componentsSeparatedByString:@":"] count] - 1;
-    if ([arguments count] != expectedArguments) {
-        NSLog(@"expecting %u arguments for %@, got %u instead",
-              expectedArguments, NSStringFromSelector(selector), [arguments count]);
-        return;
-    }
-    
-    NSMethodSignature *signature = [target methodSignatureForSelector:selector];
-    if (!signature) return;
-    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
-    [invocation setSelector:selector];
-    for (NSUInteger i = 0; i < [arguments count]; i++) {
-        id arg = arguments[i];
-        [invocation setArgument:&arg atIndex:i + 2];
-    }
-    [invocation invokeWithTarget:target];
+    return YES;
 }
 
 @end
