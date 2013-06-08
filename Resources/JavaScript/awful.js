@@ -292,19 +292,10 @@ function showLinkedImage(e) {
 function toggleSpoiled(e) {
   var target = $(e.target)
   var spoiler = target.closest('.bbc-spoiler')
-  if (!spoiler.hasClass('spoiled') && target.filter('a').length > 0) {
+  if (!spoiler.hasClass('spoiled') && target.filter('a').length) {
     e.preventDefault()
   }
   spoiler.toggleClass('spoiled')
-}
-
-function cancelUnspoiledLinks(e) {
-  var link = $(e.target)
-  var spoiler = link.closest('.bbc-spoiler')
-  if (!spoiler.hasClass('spoiled')) {
-    spoiler.addClass('spoiled')
-    e.preventDefault()
-  }
 }
 
 })()
