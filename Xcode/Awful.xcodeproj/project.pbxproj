@@ -4180,7 +4180,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e\nif [ ! -f crashlytics-api-key ]; then\n  echo \"Couldn't find Crashlytics API key; skipping dsym upload.\"\n  exit 0\nfi\ncase \"${CONFIGURATION}\" in\n  \"App Store\" | \"Beta\") ;;\n  *) echo \"Skipping Crashlytics configuration.\"; exit 0 ;;\nesac\n./Vendor/Crashlytics.framework/run $(head -n 1 crashlytics-api-key)\n";
+			shellScript = "set -e\nif [ ! -f ../crashlytics-api-key ]; then\n  echo \"Couldn't find Crashlytics API key; skipping dsym upload.\"\n  exit 0\nfi\ncase \"${CONFIGURATION}\" in\n  \"App Store\" | \"Beta\") ;;\n  *) echo \"Skipping Crashlytics configuration.\"; exit 0 ;;\nesac\n../Vendor/Crashlytics.framework/run $(head -n 1 crashlytics-api-key)\n";
 		};
 		1C41B8A316CD50E500718F79 /* Configure Crashlytics */ = {
 			isa = PBXShellScriptBuildPhase;
