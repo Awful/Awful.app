@@ -70,7 +70,11 @@
         user.profilePictureURL = url;
     }
     if (json[@"posts"]) user.postCount = json[@"posts"];
-    if (json[@"postsperday"]) user.postRate = [json[@"postsperday"] stringValue];
+    if (json[@"postsperday"]) {
+        NSNumberFormatter *postRateFormat = [NSNumberFormatter new];
+        postRateFormat.maximumFractionDigits = 2;
+        user.postRate = [postRateFormat stringFromNumber:json[@"postsperday"]];
+    }
     if (json[@"role"]) {
         user.administratorValue = [json[@"role"] isEqual:@"A"];
         user.moderatorValue = [json[@"role"] isEqual:@"M"];
