@@ -54,7 +54,11 @@ To build for the App Store, change the scheme to "Awful App Store".
 
 Either way, select "iOS Device", then in the `Product` menu, choose `Archive`.
 
-If you want to use [Crashlytics][] for reporting crashes, create a file called `crashlytics-api-key`, in the root folder of the repository, containing your API key.
+If you want to use [Crashlytics][] for reporting crashes, create a file called `api_keys`, in the root folder of the repository, that looks something like this:
+
+```
+CRASHLYTICS_API_KEY abc123abc123abc123
+```
 
 [Crashlytics]: https://www.crashlytics.com/
 [TestFlight]: http://testflightapp.com/
@@ -117,15 +121,9 @@ Thread tags are distributed with the app. New thread tags can also [appear in Aw
 Assembling the AwfulPostsView
 -----------------------------
 
-The posts view uses two JavaScript libraries that we build special. They are:
+The posts view uses [zepto.js][] (the default build) and some custom JavaScript, which get concatenated into `Resources/JavaScript/combined.js` during the Xcode build.
 
-- **[zepto][]**. Build with `rake concat[-polyfill:-fx:-form:touch] dist`, then move `dist/zepto.min.js` to `Source/Posts`.
-- **[mustache.js][]**. Build with `rake jquery`, then move `jquery.mustache.js` to `Source/Posts`.
-
-These get combined along with Awful's JavaScript code into `Source/Posts/posts-view.js` whenever the Xcode project is built. See `Source/Posts/Rakefile` for the exact process.
-
-[mustache.js]: https://github.com/janl/mustache.js
-[zepto]: https://github.com/madrobby/zepto
+[zepto.js]: http://zeptojs.com/
 
 Compatibility
 -------------
