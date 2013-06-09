@@ -1091,12 +1091,9 @@ static char KVOContext;
 }
 - (void)postsView:(AwfulPostsView *)postsView didReceiveLongTapAtPoint:(CGPoint)point
 {
-    // check if image or link (what to do about linked image??)
     NSURL *url;
     CGRect rect;
     if ((url = [postsView URLOfSpoiledImageForPoint:point])) {
-        // TODO remember to do the punycode crap!
-        // TODO and to adjust rect!
         AwfulImagePreviewViewController *preview = [[AwfulImagePreviewViewController alloc]
                                                     initWithURL:url];
         preview.title = self.title;
@@ -1104,8 +1101,6 @@ static char KVOContext;
         nav.navigationBar.translucent = YES;
         [self presentViewController:nav animated:YES completion:nil];
     } else if ((url = [postsView URLOfSpoiledLinkForPoint:point rect:&rect])) {
-        // TODO remember to do the punycode crap!
-        // TODO and to adjust rect!
         [self showMenuForLinkToURL:url fromRect:rect];
     }
 }
