@@ -464,7 +464,7 @@
         if (self.jumpToPostAfterLoad) {
             [self jumpToPostWithID:self.jumpToPostAfterLoad];
             self.jumpToPostAfterLoad = nil;
-        } else if (wasLoading) {
+        } else if (wasLoading && self.hiddenPosts > 0) {
             CGFloat inset = self.postsView.scrollView.contentInset.top;
             [self.postsView.scrollView setContentOffset:CGPointMake(0, -inset) animated:NO];
         }
