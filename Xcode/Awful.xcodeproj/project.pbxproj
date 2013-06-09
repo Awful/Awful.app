@@ -4196,7 +4196,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e\nset -- bleh $(grep -s CRASHLYTICS \"${SRCROOT}/../api_keys\")\nshift\necho \"#define CRASHLYTICS_API_KEY @\\\"$2\\\"\" > \"${SRCROOT}/../Source/Main/AwfulCrashlytics.h\"\n";
+			shellScript = "set -e\nHEADER=\"${SRCROOT}/../Source/Main/AwfulCrashlytics.h\"\nset -- bleh $(grep -s CRASHLYTICS \"${SRCROOT}/../api_keys\")\nshift\nif [ -n \"$2\" ]; then\n    echo \"#define CRASHLYTICS_API_KEY @\\\"$2\\\"\" > \"$HEADER\"\nelse\n    : > \"$HEADER\"\nfi\n";
 		};
 		1CBDB5BA16259C6C0004BDF4 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
