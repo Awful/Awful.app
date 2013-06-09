@@ -33,6 +33,9 @@
 - (void)actOnCurrentPage
 {
     NSURL *url = self.webView.request.URL;
+    if (url.absoluteString.length == 0) {
+        url = self.URL;
+    }
     AwfulActionSheet *sheet = [AwfulActionSheet new];
     [sheet addButtonWithTitle:@"Open in Safari" block:^{
         [[UIApplication sharedApplication] openURL:url];
