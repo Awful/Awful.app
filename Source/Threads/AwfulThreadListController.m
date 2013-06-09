@@ -203,6 +203,12 @@
         [self displayPage:page];
         [page loadPage:1 singleUserID:nil];
     }]];
+    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeJumpToLastPage action:^{
+        AwfulPostsViewController *page = [AwfulPostsViewController new];
+        page.thread = thread;
+        [self displayPage:page];
+        [page loadPage:AwfulThreadPageLast singleUserID:nil];
+    }]];
     AwfulIconActionItemType bookmarkItemType;
     if (thread.isBookmarkedValue) {
         bookmarkItemType = AwfulIconActionItemTypeRemoveBookmark;
@@ -246,12 +252,6 @@
         profileItem.title = @"View OP's Profile";
         [sheet addItem:profileItem];
     }
-    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeJumpToLastPage action:^{
-        AwfulPostsViewController *page = [AwfulPostsViewController new];
-        page.thread = thread;
-        [self displayPage:page];
-        [page loadPage:AwfulThreadPageLast singleUserID:nil];
-    }]];
     [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
         NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
                          "showthread.php?threadid=%@", thread.threadID];

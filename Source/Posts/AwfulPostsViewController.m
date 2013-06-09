@@ -985,6 +985,47 @@ static char KVOContext;
     }
     AwfulIconActionSheet *sheet = [AwfulIconActionSheet new];
     sheet.title = [NSString stringWithFormat:@"%@ Post", possessiveUsername];
+    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
+        NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
+                         "showthread.php?threadid=%@&perpage=40&pagenumber=%@#post%@",
+                         self.thread.threadID, @(self.currentPage), post.postID];
+        [AwfulSettings settings].lastOfferedPasteboardURL = url;
+        [UIPasteboard generalPasteboard].items = @[ @{
+            (id)kUTTypeURL: [NSURL URLWithString:url],
+            (id)kUTTypePlainText: url,
+        }];
+    }]];
+    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
+        [self showProfileWithUser:post.author];
+    }]];
+    if (!self.singleUserID) {
+        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkReadUpToHere
+                                                  action:^
+        {
+            [[AwfulHTTPClient client] markThreadWithID:self.thread.threadID
+                                   readUpToPostAtIndex:[post.threadIndex stringValue]
+                                               andThen:^(NSError *error)
+             {
+                 if (error) {
+                     [AwfulAlertView showWithTitle:@"Could Not Mark Read"
+                                             error:error
+                                       buttonTitle:@"Alright"];
+                 } else {
+                     [SVProgressHUD showSuccessWithStatus:@"Marked"];
+                     post.thread.seenPosts = post.threadIndex;
+                     [[AwfulDataStack sharedDataStack] save];
+                 }
+             }];
+        }]];
+        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSingleUsersPosts
+                                                  action:^
+        {
+            AwfulPostsViewController *postsView = [AwfulPostsViewController new];
+            postsView.thread = self.thread;
+            [postsView loadPage:1 singleUserID:post.author.userID];
+            [self.navigationController pushViewController:postsView animated:YES];
+        }]];
+    }
     if (post.editableValue) {
         [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeEditPost action:^{
             [[AwfulHTTPClient client] getTextOfPostWithID:post.postID
@@ -1028,48 +1069,6 @@ static char KVOContext;
              }];
         }]];
     }
-    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
-        NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
-                         "showthread.php?threadid=%@&perpage=40&pagenumber=%@#post%@",
-                         self.thread.threadID, @(self.currentPage), post.postID];
-        [AwfulSettings settings].lastOfferedPasteboardURL = url;
-        [UIPasteboard generalPasteboard].items = @[ @{
-            (id)kUTTypeURL: [NSURL URLWithString:url],
-            (id)kUTTypePlainText: url,
-        }];
-    }]];
-    if (!self.singleUserID) {
-        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkReadUpToHere
-                                                  action:^{
-            [[AwfulHTTPClient client] markThreadWithID:self.thread.threadID
-                                   readUpToPostAtIndex:[post.threadIndex stringValue]
-                                               andThen:^(NSError *error)
-             {
-                 if (error) {
-                     [AwfulAlertView showWithTitle:@"Could Not Mark Read"
-                                             error:error
-                                       buttonTitle:@"Alright"];
-                 } else {
-                     [SVProgressHUD showSuccessWithStatus:@"Marked"];
-                     post.thread.seenPosts = post.threadIndex;
-                     [[AwfulDataStack sharedDataStack] save];
-                 }
-             }];
-        }]];
-    }
-    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
-        [self showProfileWithUser:post.author];
-    }]];
-    if (!self.singleUserID) {
-        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSingleUsersPosts
-                                                  action:^{
-             AwfulPostsViewController *postsView = [AwfulPostsViewController new];
-             postsView.thread = self.thread;
-             [postsView loadPage:1 singleUserID:post.author.userID];
-             [self.navigationController pushViewController:postsView animated:YES];
-         }]];
-    }
-    
     if ([AwfulSettings settings].canSendPrivateMessages &&
         post.author.canReceivePrivateMessagesValue &&
         ![post.author.userID isEqual:[AwfulSettings settings].userID]) {
