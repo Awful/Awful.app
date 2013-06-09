@@ -42,15 +42,3 @@ task :sort_tags do
     project.each { |line| out << line }
   end
 end
-
-desc "Include Crashlytics API key"
-task :crashlytics do
-  api_key = begin
-    File.read('crashlytics-api-key').strip
-  rescue
-    nil
-  end
-  File.open("Source/Main/AwfulCrashlytics.h", "w") do |h|
-    h << %Q|#define CRASHLYTICS_API_KEY @"#{api_key}"| if api_key
-  end
-end

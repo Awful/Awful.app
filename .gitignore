@@ -3,7 +3,7 @@
 xcuserdata
 
 # Secret/generated stuff
-crashlytics-api-key
+api_keys
 Source/Main/AwfulCrashlytics.h
 Tests/CSS Tweaker/LessFilesPath.h
 
