@@ -238,6 +238,13 @@
     return YES;
 }
 
+- (BOOL)resignFirstResponder
+{
+    if (![super resignFirstResponder]) return NO;
+    [UIMenuController sharedMenuController].menuItems = nil;
+    return YES;
+}
+
 - (BOOL)canPerformAction:(SEL)action withSender:(id)sender
 {
     return self.showStandardMenuItems && [super canPerformAction:action withSender:sender];
