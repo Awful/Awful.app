@@ -115,7 +115,7 @@ Thread Tags
 
 To add a new thread tag to the app, drag it into the Xcode project, in the `Resources/Thread Tags` group. Tick the box that says "Copy items into destination group's folder (if needed)". Then build the Xcode project. Now commit all your changes (the new thread tags plus `Awful.xcodeproj` and `tags.txt`) and send a pull request!
 
-Thread tags are distributed with the app. New thread tags can also [appear in Awful][AwfulThreadTags] without us having to send an update through the App Store. This is done by hosting the icons via [GitHub Pages][], served at http://awfulapp.com. In order for this to work, ensure [tags.txt][] is up to date, then push to the `gh-pages` branch.
+Thread tags are distributed with the app. New thread tags can also [appear in Awful][AwfulThreadTags] without us having to send an update through the App Store. This is done by hosting the icons via [GitHub Pages][], served at http://awfulapp.com. In order for this to work, ensure [tags.txt][] is up to date (i.e. build an Awful target in Xcode), then push to the `gh-pages` branch.
 
 [AwfulThreadTags]: Source/Networking/AwfulThreadTags.m
 [GitHub Pages]: https://help.github.com/categories/20/articles
