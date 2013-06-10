@@ -29,6 +29,7 @@
 @property (readonly, nonatomic) UIWebView *webView;
 @property (nonatomic) AwfulUser *user;
 @property (copy, nonatomic) NSArray *services;
+@property (nonatomic) BOOL skipFetchingAndRenderingProfileOnAppear;
 
 @end
 
@@ -144,6 +145,7 @@
     if (![tappedService isKindOfClass:[NSDictionary class]]) return;
     NSUInteger i = [tappedService[@"serviceIndex"] unsignedIntegerValue];
     if (i >= [self.services count]) return;
+    self.skipFetchingAndRenderingProfileOnAppear = YES;
     NSDictionary *service = self.services[i];
     if ([service[@"service"] isEqual:AwfulServiceHomepage]) {
         NSURL *url = [NSURL awful_URLWithString:service[@"address"]];
@@ -184,6 +186,8 @@
             [self presentViewController:[compose enclosingNavigationController]
                                animated:YES completion:nil];
         });
+    } else {
+        self.skipFetchingAndRenderingProfileOnAppear = NO;
     }
 }
 
@@ -226,6 +230,7 @@
                                              selector:@selector(settingsChanged:)
                                                  name:AwfulSettingsDidChangeNotification
                                                object:nil];
+    if (self.skipFetchingAndRenderingProfileOnAppear) return;
     [self renderUser];
     [[AwfulHTTPClient client] profileUserWithID:self.userID
                                         andThen:^(NSError *error, AwfulUser *user)
