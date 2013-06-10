@@ -460,14 +460,18 @@
         } else {
             [self.postsView reloadAdvertisementHTML];
         }
-        [self updateUserInterface];
         if (self.jumpToPostAfterLoad) {
             [self jumpToPostWithID:self.jumpToPostAfterLoad];
             self.jumpToPostAfterLoad = nil;
-        } else if (wasLoading && self.hiddenPosts > 0) {
-            CGFloat inset = self.postsView.scrollView.contentInset.top;
-            [self.postsView.scrollView setContentOffset:CGPointMake(0, -inset) animated:NO];
+        } else if (wasLoading) {
+            if (self.hiddenPosts > 0) {
+                [self.postsView.scrollView setContentOffset:CGPointZero animated:NO];
+            } else {
+                CGFloat inset = self.postsView.scrollView.contentInset.top;
+                [self.postsView.scrollView setContentOffset:CGPointMake(0, -inset) animated:NO];
+            }
         }
+        [self updateUserInterface];
         if (self.thread.seenPostsValue < lastPost.threadIndexValue) {
             self.thread.seenPostsValue = lastPost.threadIndexValue;
         }
