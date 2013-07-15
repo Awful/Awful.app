@@ -14,9 +14,14 @@ DEPENDENCIES:
   - GRMustache (= 6.7.3)
   - JLRoutes (= 1.2)
   - PocketAPI (= 1.0.2)
-  - PSTCollectionView (= 1.0.0)
+  - PSTCollectionView (from `https://github.com/steipete/PSTCollectionView`, commit `af3ab758b9c02cd6f5feb1557604ee0ae9887cfd`)
   - SVProgressHUD (= 0.9)
   - SVPullToRefresh (= 0.4.1)
+
+EXTERNAL SOURCES:
+  PSTCollectionView:
+    :commit: af3ab758b9c02cd6f5feb1557604ee0ae9887cfd
+    :git: https://github.com/steipete/PSTCollectionView
 
 SPEC CHECKSUMS:
   AFNetworking: e528f20d06b1b818c3571266fb5efa20031a8ace

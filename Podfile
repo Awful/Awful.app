@@ -6,7 +6,7 @@ pod 'AFNetworking', '1.3.0'
 pod 'GRMustache', '6.7.3', :inhibit_warnings => true
 pod 'JLRoutes', '1.2'
 pod 'PocketAPI', '1.0.2'
-pod 'PSTCollectionView', '1.0.0'
+pod 'PSTCollectionView', :git => "https://github.com/steipete/PSTCollectionView", :commit => 'af3ab758b9c02cd6f5feb1557604ee0ae9887cfd'
 pod 'SVProgressHUD', '0.9'
 pod 'SVPullToRefresh', '0.4.1'
 
