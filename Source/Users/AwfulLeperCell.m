@@ -65,7 +65,7 @@
     width -= reasonInsets.left + reasonInsets.right;
     CGSize reasonLabelSize = [banReason sizeWithFont:[UIFont systemFontOfSize:15]
                                    constrainedToSize:CGSizeMake(width, CGFLOAT_MAX)
-                                       lineBreakMode:UILineBreakModeWordWrap];
+                                       lineBreakMode:NSLineBreakByWordWrapping];
     return reasonLabelSize.height + reasonInsets.top + reasonInsets.bottom;
 }
 
