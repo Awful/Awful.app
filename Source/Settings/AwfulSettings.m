@@ -343,8 +343,6 @@ BOOL_PROPERTY(showThreadTags, setShowThreadTags)
     self[AwfulSettingsKeys.fontSize] = size;
 }
 
-BOOL_PROPERTY(useDevDotForums, setUseDevDotForums)
-
 - (NSString *)lastOfferedPasteboardURL
 {
     return self[AwfulSettingsKeys.lastOfferedPasteboardURL];
@@ -504,7 +502,6 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .keepSidebarOpen = @"keep_sidebar_open",
     .favoriteForums = @"favorite_forums",
     .fontSize = @"font_size",
-    .useDevDotForums = @"use_dev_dot_forums",
     .lastOfferedPasteboardURL = @"last_offered_pasteboard_URL",
     .lastForcedUserInfoUpdateVersion = @"last_forced_user_info_update_version",
     .customBaseURL = @"custom_base_URL",

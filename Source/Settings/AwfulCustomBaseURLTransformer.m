@@ -23,13 +23,7 @@
 
 - (id)transformedValue:(AwfulSettings *)settings
 {
-    if (settings.customBaseURL) {
-        return settings.customBaseURL;
-    } else if (settings.useDevDotForums) {
-        return @"dev.forums";
-    } else {
-        return @"Default";
-    }
+    return settings.customBaseURL ?: @"Default";
 }
 
 @end

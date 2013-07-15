@@ -13,6 +13,5 @@
 + (instancetype)fetchOrInsertForumWithID:(NSString *)forumID;
 
 + (NSArray *)updateCategoriesAndForums:(ForumHierarchyParsedInfo *)info;
-+ (NSArray *)updateCategoriesAndForumsWithJSON:(NSArray *)json;
 
 @end

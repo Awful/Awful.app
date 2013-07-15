@@ -16,7 +16,6 @@
 @property (readonly, nonatomic) BOOL beenSeen;
 
 + (NSArray *)threadsCreatedOrUpdatedWithParsedInfo:(NSArray *)threadInfos;
-+ (NSArray *)threadsCreatedOrUpdatedWithJSON:(NSDictionary *)json;
 
 + (instancetype)firstOrNewThreadWithThreadID:(NSString *)threadID;
 

@@ -19,7 +19,5 @@
 @property (readonly, nonatomic) NSInteger singleUserPage;
 
 + (NSArray *)postsCreatedOrUpdatedFromPageInfo:(PageParsedInfo *)pageInfo;
-+ (NSArray *)postsCreatedOrUpdatedFromJSON:(NSDictionary *)json
-                              singleUserID:(NSString *)singleUserID;
 
 @end

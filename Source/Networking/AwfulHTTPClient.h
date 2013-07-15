@@ -237,15 +237,6 @@ extern NSString * const AwfulUserDidLogInNotification;
 - (NSOperation *)listBansOnPage:(NSInteger)page
                         andThen:(void (^)(NSError *error, NSArray *bans))callback;
 
-// Attempt to access dev.forums.somethingawful.com.
-//
-// callback - A block to call after the access attempt, which takes as parameters:
-//              error   - An error on failure, or nil on success.
-//              success - YES if dev.forums was accessible, or NO on failure.
-//
-// Returns the enqueued network operation.
-- (NSOperation *)tryAccessingDevDotForumsAndThen:(void (^)(NSError *error, BOOL success))callback;
-
 // List private messages in the logged-in user's Inbox.
 //
 // callback - A block to call after listing messages, which takes as parameters:

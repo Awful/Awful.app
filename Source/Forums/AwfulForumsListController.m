@@ -73,8 +73,7 @@
     NSArray *changedSettings = note.userInfo[AwfulSettingsDidChangeSettingsKey];
     
     // Refresh the forum list after changing servers.
-    if ([changedSettings containsObject:AwfulSettingsKeys.useDevDotForums] ||
-        [changedSettings containsObject:AwfulSettingsKeys.customBaseURL]) {
+    if ([changedSettings containsObject:AwfulSettingsKeys.customBaseURL]) {
         self.lastRefresh = nil;
     }
     

@@ -30,8 +30,6 @@
 @property (strong, nonatomic) NSMutableArray *switches;
 @property (strong, nonatomic) NSMutableArray *steppers;
 
-@property (nonatomic) BOOL canReachDevDotForums;
-
 @end
 
 

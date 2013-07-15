@@ -85,8 +85,6 @@ typedef NS_ENUM(NSInteger, AwfulKeepSidebarOpenWhen) {
 
 @property (nonatomic) NSNumber *fontSize;
 
-@property (assign, nonatomic) BOOL useDevDotForums;
-
 @property (copy, nonatomic) NSString *lastOfferedPasteboardURL;
 
 @property (copy, nonatomic) NSString *lastForcedUserInfoUpdateVersion;
@@ -132,7 +130,6 @@ extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *keepSidebarOpen;
     __unsafe_unretained NSString *favoriteForums;
     __unsafe_unretained NSString *fontSize;
-    __unsafe_unretained NSString *useDevDotForums;
     __unsafe_unretained NSString *lastOfferedPasteboardURL;
     __unsafe_unretained NSString *lastForcedUserInfoUpdateVersion;
     __unsafe_unretained NSString *customBaseURL;

@@ -21,8 +21,6 @@
 
 @property (getter=isReachable, nonatomic) BOOL reachable;
 
-@property (readonly, nonatomic) BOOL usingDevDotForums;
-
 @end
 
 
@@ -41,11 +39,7 @@ static AwfulHTTPClient *instance = nil;
                     urlString = [NSString stringWithFormat:@"http://%@", urlString];
                 }
             } else {
-                if ([AwfulSettings settings].useDevDotForums) {
-                    urlString = @"http://dev.forums.somethingawful.com/";
-                } else {
-                    urlString = @"http://forums.somethingawful.com/";
-                }
+                urlString = @"http://forums.somethingawful.com/";
             }
             instance = [[AwfulHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:urlString]];
         }
@@ -73,8 +67,7 @@ static AwfulHTTPClient *instance = nil;
 + (void)settingsDidChange:(NSNotification *)note
 {
     NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
-    NSArray *relevant = @[ AwfulSettingsKeys.useDevDotForums, AwfulSettingsKeys.customBaseURL ];
-    if ([keys firstObjectCommonWithArray:relevant]) {
+    if ([keys containsObject:AwfulSettingsKeys.customBaseURL]) {
         [self reset];
     }
 }
@@ -88,11 +81,6 @@ static AwfulHTTPClient *instance = nil;
 {
     NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:self.baseURL];
     return [[cookies valueForKey:NSHTTPCookieName] containsObject:@"bbuserid"];
-}
-
-- (BOOL)usingDevDotForums
-{
-    return [self.baseURL.host hasPrefix:@"dev.forums"];
 }
 
 - (id)initWithBaseURL:(NSURL *)url
@@ -149,25 +137,17 @@ static AwfulHTTPClient *instance = nil;
                                    onPage:(NSInteger)page
                                   andThen:(void (^)(NSError *error, NSArray *threads))callback
 {
-    NSMutableDictionary *parameters = [@{
+    NSDictionary *parameters = @{
         @"forumid": forumID,
         @"perpage": @40,
         @"pagenumber": @(page),
-    } mutableCopy];
-    if (self.usingDevDotForums) {
-        parameters[@"json"] = @1;
-    }
+    };
     NSURLRequest *request = [self requestWithMethod:@"GET" path:@"forumdisplay.php"
                                          parameters:parameters];
     id op = [self HTTPRequestOperationWithRequest:request
                                           success:^(id _, id responseObject)
     {
-        NSArray *threads;
-        if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            threads = [AwfulThread threadsCreatedOrUpdatedWithJSON:responseObject];
-        } else {
-            threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:responseObject];
-        }
+        NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:responseObject];
         NSInteger stickyIndex = -(NSInteger)[threads count];
         NSArray *forums = [AwfulForum fetchAllMatchingPredicate:@"forumID = %@", forumID];
         for (AwfulThread *thread in threads) {
@@ -189,25 +169,17 @@ static AwfulHTTPClient *instance = nil;
 - (NSOperation *)listBookmarkedThreadsOnPage:(NSInteger)page
                                      andThen:(void (^)(NSError *error, NSArray *threads))callback
 {
-    NSMutableDictionary *parameters = [@{
+    NSDictionary *parameters = @{
         @"action": @"view",
         @"perpage": @40,
         @"pagenumber": @(page),
-    } mutableCopy];
-    if (self.usingDevDotForums) {
-        parameters[@"json"] = @1;
-    }
+    };
     NSURLRequest *request = [self requestWithMethod:@"GET" path:@"bookmarkthreads.php"
                                          parameters:parameters];
     id op = [self HTTPRequestOperationWithRequest:request
                                           success:^(id _, id responseObject)
     {
-        NSArray *threads;
-        if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            threads = [AwfulThread threadsCreatedOrUpdatedWithJSON:responseObject];
-        } else {
-            threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:responseObject];
-        }
+        NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:responseObject];
         if (callback) callback(nil, threads);
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
@@ -227,11 +199,10 @@ static AwfulHTTPClient *instance = nil;
                                                    NSUInteger firstUnreadPost,
                                                    NSString *advertisementHTML))callback
 {
-    NSMutableDictionary *parameters = [@{ @"threadid": threadID } mutableCopy];
-    if (self.usingDevDotForums) {
-        parameters[@"json"] = @1;
-    }
-    parameters[@"perpage"] = @40;
+    NSMutableDictionary *parameters = [@{
+        @"threadid": threadID,
+        @"perpage": @40,
+    } mutableCopy];
     if (page == AwfulThreadPageNextUnread) parameters[@"goto"] = @"newpost";
     else if (page == AwfulThreadPageLast) parameters[@"goto"] = @"lastpost";
     else parameters[@"pagenumber"] = @(page);
@@ -243,19 +214,10 @@ static AwfulHTTPClient *instance = nil;
     id op = [self HTTPRequestOperationWithRequest:request
                                           success:^(id op, id responseObject)
     {
-        NSArray *posts;
-        NSString *ad;
-        if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            posts = [AwfulPost postsCreatedOrUpdatedFromJSON:responseObject
-                                                singleUserID:singleUserID];
-            ad = [responseObject valueForKey:@"goon_banner"];
-            if ([ad isEqual:[NSNull null]]) ad = nil;
-        } else {
-            PageParsedInfo *pageInfo = responseObject;
-            pageInfo.singleUserID = singleUserID;
-            posts = [AwfulPost postsCreatedOrUpdatedFromPageInfo:responseObject];
-            ad = [responseObject advertisementHTML];
-        }
+        PageParsedInfo *pageInfo = responseObject;
+        pageInfo.singleUserID = singleUserID;
+        NSArray *posts = [AwfulPost postsCreatedOrUpdatedFromPageInfo:responseObject];
+        NSString *ad = [responseObject advertisementHTML];
         if (callback) {
             NSInteger firstUnreadPost = NSNotFound;
             if (page == AwfulThreadPageNextUnread) {
@@ -340,50 +302,25 @@ static AwfulHTTPClient *instance = nil;
 
 - (NSOperation *)listForumsAndThen:(void (^)(NSError *error, NSArray *forums))callback
 {
-    if (self.usingDevDotForums) {
-        NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:@""
-                                                parameters:@{ @"json": @1 }];
-        AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:urlRequest
-                                                                   success:^(id _, NSDictionary *json)
-        {
-            if (![json[@"forums"] isKindOfClass:[NSArray class]]) {
-                NSDictionary *userInfo = @{
-                    NSLocalizedDescriptionKey: @"The forums list could not be parsed"
-                };
-                NSError *error = [NSError errorWithDomain:AwfulErrorDomain
-                                                     code:AwfulErrorCodes.parseError
-                                                 userInfo:userInfo];
-                if (callback) callback(error, nil);
-                return;
-            }
-            NSArray *forums = [AwfulForum updateCategoriesAndForumsWithJSON:json[@"forums"]];
-            if (callback) callback(nil, forums);
-        } failure:^(id _, NSError *error) {
-            if (callback) callback(error, nil);
-        }];
-        [self enqueueHTTPRequestOperation:op];
-        return op;
-    } else {
-        // Seems like only forumdisplay.php and showthread.php have the <select> with a complete
-        // list of forums. We'll use the Main "forum" as it's the smallest page with the drop-down
-        // list.
-        NSURLRequest *urlRequest = [self requestWithMethod:@"GET"
-                                                      path:@"forumdisplay.php"
-                                                parameters:@{ @"forumid": @"48" }];
-        id op = [self HTTPRequestOperationWithRequest:urlRequest
-                                              success:^(id _, ForumHierarchyParsedInfo *info)
-        {
-            NSArray *forums = [AwfulForum updateCategoriesAndForums:info];
-            if (callback) callback(nil, forums);
-        } failure:^(id _, NSError *error) {
-            if (callback) callback(error, nil);
-        }];
-        [op setCreateParsedInfoBlock:^id(NSData *data) {
-            return [[ForumHierarchyParsedInfo alloc] initWithHTMLData:data];
-        }];
-        [self enqueueHTTPRequestOperation:op];
-        return op;
-    }    
+    // Seems like only forumdisplay.php and showthread.php have the <select> with a complete
+    // list of forums. We'll use the Main "forum" as it's the smallest page with the drop-down
+    // list.
+    NSURLRequest *urlRequest = [self requestWithMethod:@"GET"
+                                                  path:@"forumdisplay.php"
+                                            parameters:@{ @"forumid": @"48" }];
+    id op = [self HTTPRequestOperationWithRequest:urlRequest
+                                          success:^(id _, ForumHierarchyParsedInfo *info)
+             {
+                 NSArray *forums = [AwfulForum updateCategoriesAndForums:info];
+                 if (callback) callback(nil, forums);
+             } failure:^(id _, NSError *error) {
+                 if (callback) callback(error, nil);
+             }];
+    [op setCreateParsedInfoBlock:^id(NSData *data) {
+        return [[ForumHierarchyParsedInfo alloc] initWithHTMLData:data];
+    }];
+    [self enqueueHTTPRequestOperation:op];
+    return op;
 }
 
 - (NSOperation *)replyToThreadWithID:(NSString *)threadID
@@ -637,16 +574,10 @@ static NSString * PreparePostText(NSString *noEntities)
         @"action" : @"login",
         @"username" : username,
         @"password" : password,
-        // TODO when /?json=1 hits the live forums, redirect there instead to get forum hierarchy
-        //      as well as logged-in user's info.
         @"next": @"/member.php?action=getinfo&json=1"
     };
-    NSMutableURLRequest *request = [self requestWithMethod:@"POST" path:@"account.php?json=1"
-                                                parameters:parameters];
-    // Logging in does not work via dev.forums.somethingawful.com, so force production site.
-    if ([self.baseURL.host isEqual:@"dev.forums.somethingawful.com"]) {
-        request.URL = [NSURL URLWithString:@"https://forums.somethingawful.com/account.php?json=1"];
-    }
+    NSURLRequest *request = [self requestWithMethod:@"POST" path:@"account.php?json=1"
+                                         parameters:parameters];
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
                                                                success:^(id _, NSDictionary *json)
     {
@@ -767,15 +698,6 @@ andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))call
         AwfulUser *user = [AwfulUser userCreatedOrUpdatedFromJSON:json];
         if (user.profilePictureURL && [user.profilePictureURL hasPrefix:@"/"]) {
             NSString *base = [self.baseURL absoluteString];
-            if (self.usingDevDotForums) {
-                NSString * const devPrefix = @"dev.forums.somethingawful.com";
-                NSRange approximateHostRange = NSMakeRange([self.baseURL.scheme length],
-                                                           [devPrefix length] + 5);
-                base = [base stringByReplacingOccurrencesOfString:devPrefix
-                                                       withString:@"forums.somethingawful.com"
-                                                          options:0
-                                                            range:approximateHostRange];
-            }
             base = [base substringToIndex:[base length] - 1];
             user.profilePictureURL = [base stringByAppendingString:user.profilePictureURL];
         }
@@ -803,37 +725,6 @@ andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))call
     }];
     [op setCreateParsedInfoBlock:^id(NSData *data) {
         return [BanParsedInfo bansWithHTMLData:data];
-    }];
-    [self enqueueHTTPRequestOperation:op];
-    return op;
-}
-
-- (NSOperation *)tryAccessingDevDotForumsAndThen:(void (^)(NSError *error, BOOL success))callback
-{
-    NSURL *url = [NSURL URLWithString:@"http://dev.forums.somethingawful.com/"];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    [request setHTTPMethod:@"HEAD"];
-    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
-                                                               success:^(id _, id __)
-    {
-        if (callback) callback(nil, YES);
-    } failure:^(id _, NSError *error) {
-        if (callback) callback(error, NO);
-    }];
-    // The Forums redirects users away from dev.forums if they don't have permission.
-    __weak AFHTTPRequestOperation *weakOp = op;
-    [op setRedirectResponseBlock:^NSURLRequest *(id _, NSURLRequest *request,
-                                                 NSURLResponse *response)
-    {
-        if (!response) return request;
-        AFHTTPRequestOperation *strongOp = weakOp;
-        [strongOp cancel];
-        if (callback) {
-            dispatch_async(strongOp.successCallbackQueue ?: dispatch_get_main_queue(), ^{
-                callback(nil, NO);
-            });
-        }
-        return nil;
     }];
     [self enqueueHTTPRequestOperation:op];
     return op;
