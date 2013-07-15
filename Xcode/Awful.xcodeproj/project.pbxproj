@@ -4676,8 +4676,8 @@
 				);
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
 					"${SDKROOT}/usr/include/libxml2",
-					"${PODS_HEADERS_SEARCH_PATHS}",
 				);
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
@@ -4769,8 +4769,8 @@
 				GCC_PREFIX_HEADER = Prefix.pch;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
 					"${SDKROOT}/usr/include/libxml2",
-					"${PODS_HEADERS_SEARCH_PATHS}",
 				);
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
@@ -4798,8 +4798,8 @@
 				);
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
 					"${SDKROOT}/usr/include/libxml2",
-					"${PODS_HEADERS_SEARCH_PATHS}",
 				);
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
