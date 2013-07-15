@@ -28,9 +28,9 @@ post_install do |i|
   # Standalone license files.
   Dir['Vendor/**/LICENSE.txt'].each do |path_to_license|
     licenses << {
-      FooterText: File.open(path_to_license).read,
-      Title: path_to_license.split(File::SEPARATOR)[1],
-      Type: "PSGroupSpecifier"
+      :FooterText => File.open(path_to_license).read,
+      :Title => path_to_license.split(File::SEPARATOR)[1],
+      :Type => "PSGroupSpecifier"
     }
   end
   
@@ -44,9 +44,9 @@ post_install do |i|
       end
     end
     licenses << {
-      FooterText: lines.join("\n"),
-      Title: File.basename(path_to_header, '.h'),
-      Type: "PSGroupSpecifier"
+      :FooterText => lines.join("\n"),
+      :Title => File.basename(path_to_header, '.h'),
+      :Type => "PSGroupSpecifier"
     }
   end
   Xcodeproj.write_plist(plist, 'Resources/Settings.bundle/Acknowledgements.plist')
