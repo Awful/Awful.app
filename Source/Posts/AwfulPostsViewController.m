@@ -1065,9 +1065,15 @@ static char KVOContext;
                  contents = [contents stringByAppendingString:quotedText];
                  AwfulReplyComposeViewController *reply = [AwfulReplyComposeViewController new];
                  reply.delegate = self;
-                 [reply replyToThread:self.thread
-                  withInitialContents:contents
-                 imageCacheIdentifier:self.ongoingReplyImageCacheIdentifier];
+                 if (self.ongoingEditedPost) {
+                     [reply editPost:self.ongoingEditedPost
+                                text:contents
+                imageCacheIdentifier:self.ongoingReplyImageCacheIdentifier];
+                 } else {
+                     [reply replyToThread:self.thread
+                      withInitialContents:contents
+                     imageCacheIdentifier:self.ongoingReplyImageCacheIdentifier];
+                 }
                  [self presentViewController:[reply enclosingNavigationController]
                                     animated:YES completion:nil];
              }];
