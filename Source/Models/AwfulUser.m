@@ -64,7 +64,7 @@
     if (json[@"occupation"]) user.occupation = StringOrNilIfEmpty(json[@"occupation"]);
     if (json[@"picture"]) {
         NSString *url = StringOrNilIfEmpty(json[@"picture"]);
-        if (![[NSURL URLWithString:url] host]) {
+        if (url && ![[NSURL URLWithString:url] host]) {
             url = [NSString stringWithFormat:@"http://forums.somethingawful.com%@", url];
         }
         user.profilePictureURL = url;
