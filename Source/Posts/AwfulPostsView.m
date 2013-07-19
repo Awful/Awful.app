@@ -500,14 +500,12 @@ NSURL * StylesheetURLForForumWithIDAndSettings(NSString * const forumID, AwfulSe
         }
     }
     NSURL *documents = [[NSFileManager defaultManager] documentDirectory];
+    NSBundle *mainBundle = [NSBundle mainBundle];
     for (NSString *filename in listOfFilenames) {
         NSURL *url = [documents URLByAppendingPathComponent:filename];
-        if ([url checkResourceIsReachableAndReturnError:NULL]) return url;
-    }
-    for (NSString *filename in listOfFilenames) {
-        NSURL *url = [[NSBundle mainBundle] URLForResource:filename
-                                             withExtension:nil];
-        if ([url checkResourceIsReachableAndReturnError:NULL]) return url;
+        if ([url checkResourceIsReachableAndReturnError:nil]) return url;
+        url = [mainBundle URLForResource:filename withExtension:nil];
+        if ([url checkResourceIsReachableAndReturnError:nil]) return url;
     }
     return nil;
 }
