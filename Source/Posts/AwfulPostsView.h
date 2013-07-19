@@ -58,7 +58,7 @@
 // point - A point in the posts view's frame coordinates.
 // rect  - A pointer to a CGRect that, if non-NULL, will contain the bounds of the action button in
 //         the posts view's frame coordinates on success.
-- (NSInteger)indexOfPostWithActionButtonAtPoint:(CGPoint)point rect:(CGRect *)rect;
+- (NSInteger)indexOfPostWithActionButtonAtPoint:(CGPoint)point rect:(out CGRect *)rect;
 
 // Returns the URL of the first image in a post at point, or nil on failure.
 - (NSURL *)URLOfSpoiledImageForPoint:(CGPoint)point;
@@ -68,13 +68,10 @@
 // point - A point in the posts view's frame coordinates.
 // rect  - A pointer to a CGRect that, if non-NULL, will contain the bounds of the link in the posts
 //         view's frame coordinates on success.
-//
-//if (self.postsView.scrollView.contentOffset.y < 0) {
-//    rect.origin.y -= self.postsView.scrollView.contentOffset.y;
-//}
-- (NSURL *)URLOfSpoiledLinkForPoint:(CGPoint)point rect:(CGRect *)rect;
+- (NSURL *)URLOfSpoiledLinkForPoint:(CGPoint)point rect:(out CGRect *)rect;
 
 // Returns the URL of the first video in a post at point, or nil on failure.
+//
 // point - A point in the posts view's frame coordinates.
 // rect  - A pointer to a CGRect that, if non-NULL, will contain the bounds of the embedded video
 //         in the posts view's frame coordinates on success.
