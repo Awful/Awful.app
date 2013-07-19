@@ -413,6 +413,17 @@ static NSString * JSONizeBool(BOOL aBool)
     return [NSURL awful_URLWithString:linkInfo[@"url"]];
 }
 
+- (NSURL *)URLOfSpoiledVideoForPoint:(CGPoint)point rect:(out CGRect *)rect
+{
+    NSDictionary *videoInfo = [self evalJavaScriptWithJSONResponse:
+                               @"Awful.spoiledVideoInPostForPoint(%d, %d)",
+                               (int)point.x, (int)point.y];
+    if (![videoInfo isKindOfClass:[NSDictionary class]]) return nil;
+    if (rect) {
+        *rect = [self rectOfElementWithRectDictionary:videoInfo[@"rect"]];
+    }
+    return [NSURL awful_URLWithString:videoInfo[@"url"]];
+}
 
 #pragma mark - UIWebViewDelegate
 

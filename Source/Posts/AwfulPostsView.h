@@ -74,6 +74,12 @@
 //}
 - (NSURL *)URLOfSpoiledLinkForPoint:(CGPoint)point rect:(CGRect *)rect;
 
+// Returns the URL of the first video in a post at point, or nil on failure.
+// point - A point in the posts view's frame coordinates.
+// rect  - A pointer to a CGRect that, if non-NULL, will contain the bounds of the embedded video
+//         in the posts view's frame coordinates on success.
+- (NSURL *)URLOfSpoiledVideoForPoint:(CGPoint)point rect:(out CGRect *)rect;
+
 @end
 
 

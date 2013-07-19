@@ -136,6 +136,16 @@ Awful.spoiledLinkInPostForPoint = function(x, y){
   }
 }
 
+Awful.spoiledVideoInPostForPoint = function(x, y){
+  var iframe = $(document.elementFromPoint(x, y)).closest('iframe')
+  if (iframe.length) {
+    var spoiler = iframe.closest('.bbc-spoiler')
+    if (spoiler.length == 0 || spoiler.hasClass('spoiled')) {
+      return JSON.stringify({ rect: rectOf(iframe), url: iframe.attr('src') })
+    }
+  }
+}
+
 function render(post) {
   post = $(post)
   
