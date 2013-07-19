@@ -1061,8 +1061,11 @@ static char KVOContext;
                                        buttonTitle:@"Alright"];
                      return;
                  }
-                 NSString *contents = self.ongoingReplyText ?: @"";
-                 contents = [contents stringByAppendingString:quotedText];
+                 NSMutableString *contents = [NSMutableString stringWithString:self.ongoingReplyText ?: @""];
+                 while (contents.length > 0 && ![contents hasSuffix:@"\n\n"]) {
+                     [contents appendString:@"\n"];
+                 }
+                 [contents appendString:quotedText];
                  AwfulReplyComposeViewController *reply = [AwfulReplyComposeViewController new];
                  reply.delegate = self;
                  if (self.ongoingEditedPost) {
