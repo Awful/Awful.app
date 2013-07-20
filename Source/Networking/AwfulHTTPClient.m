@@ -245,31 +245,20 @@ static AwfulHTTPClient *instance = nil;
     NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:@"member.php"
                                             parameters:parameters];
     id op = [self HTTPRequestOperationWithRequest:urlRequest
-                                          success:^(id _, NSDictionary *responseObject)
+                                          success:^(id _, id responseObject)
     {
-        NSDictionary *errorInfo = @{ NSLocalizedDescriptionKey: @"User info could not be parsed" };
-        NSError *error = [NSError errorWithDomain:AwfulErrorDomain
-                                             code:AwfulErrorCodes.parseError
-                                         userInfo:errorInfo];
-        
-        if (![responseObject isKindOfClass:[NSDictionary class]]) {
-            if (callback) callback(error, nil);
-            return;
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            AwfulUser *user = [AwfulUser userCreatedOrUpdatedFromJSON:responseObject];
+            if (callback) callback(nil, [user dictionaryWithValuesForKeys:@[ @"userID", @"username" ]]);
+        } else {
+            ProfileParsedInfo *profile = responseObject;
+            if (callback) callback(nil, @{ @"userID": profile.userID, @"username": profile.username });
         }
-        AwfulUser *user = [AwfulUser userCreatedOrUpdatedFromJSON:responseObject];
-        if (!user.userID || !user.username) {
-            if (callback) callback(error, nil);
-            return;
-        }
-        [[AwfulDataStack sharedDataStack] save];
-        NSDictionary *userInfo = @{
-            @"userID": user.userID,
-            @"username": user.username,
-            @"canSendPrivateMessages": user.canReceivePrivateMessages,
-        };
-        if (callback) callback(nil, userInfo);
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
+    }];
+    [op setCreateParsedInfoBlock:^id(NSData *data) {
+        return [[ProfileParsedInfo alloc] initWithHTMLData:data];
     }];
     [self enqueueHTTPRequestOperation:op];
     return op;

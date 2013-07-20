@@ -117,6 +117,7 @@
 		1C6D3EE8168D7B1400B91A65 /* _AwfulUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D3EE7168D7B1400B91A65 /* _AwfulUser.m */; };
 		1C6D3EEB168D7B1E00B91A65 /* AwfulUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D3EEA168D7B1E00B91A65 /* AwfulUser.m */; };
 		1C6D3EF3168D89FC00B91A65 /* posts-view-219-amber.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C6D3EF2168D89FC00B91A65 /* posts-view-219-amber.css */; };
+		1C6D3EF7168D97CB00B91A65 /* profile.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C6D3EF5168D97B900B91A65 /* profile.html */; };
 		1C6ED638169104150015CDD5 /* profile-view.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C6ED636169104150015CDD5 /* profile-view.html */; };
 		1C6ED63D1691055E0015CDD5 /* AwfulProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6ED63C1691055E0015CDD5 /* AwfulProfileViewController.m */; };
 		1C741F931724B2DC00E7C61E /* font-size.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C741F921724B2DC00E7C61E /* font-size.png */; };
@@ -473,6 +474,11 @@
 		1CB6010C16D826F000CBEE22 /* AwfulPrivateMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010A16D826F000CBEE22 /* AwfulPrivateMessageViewController.m */; };
 		1CB6011516D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6011416D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m */; };
 		1CB6011916DBFB7B00CBEE22 /* AwfulDateFormatters.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6011816DBFB7B00CBEE22 /* AwfulDateFormatters.m */; };
+		1CB9B84F1693D9F700A3CD16 /* profile2.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CB9B84C1693D9DC00A3CD16 /* profile2.html */; };
+		1CB9B8511693DC3800A3CD16 /* profile3.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CB9B8501693DC3800A3CD16 /* profile3.html */; };
+		1CB9B8531694334500A3CD16 /* profile4.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CB9B8521694334500A3CD16 /* profile4.html */; };
+		1CB9B8551694339E00A3CD16 /* profile5.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CB9B8541694339E00A3CD16 /* profile5.html */; };
+		1CB9B85716943F5E00A3CD16 /* profile6.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CB9B85616943F5E00A3CD16 /* profile6.html */; };
 		1CBD5244162B5C2500928740 /* Custom CSS README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1CBD5243162B5C2500928740 /* Custom CSS README.txt */; };
 		1CBD5247162B66BC00928740 /* AwfulTextEntryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBD5246162B66BC00928740 /* AwfulTextEntryCell.m */; };
 		1CBD527D162DCB1B00928740 /* navbar-back-landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CBD5271162DCB1B00928740 /* navbar-back-landscape.png */; };
@@ -499,6 +505,7 @@
 		1CBDB5C016259C6C0004BDF4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1CBDB5D41625A08F0004BDF4 /* ForumTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5D31625A08F0004BDF4 /* ForumTests.m */; };
 		1CBDB5D71625A0A70004BDF4 /* BookmarkedThreadsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5D61625A0A70004BDF4 /* BookmarkedThreadsTests.m */; };
+		1CBDB5DA1625A0B60004BDF4 /* ProfileTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5D91625A0B60004BDF4 /* ProfileTests.m */; };
 		1CBDB5DD1625A0C10004BDF4 /* NewReplyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5DC1625A0C10004BDF4 /* NewReplyTests.m */; };
 		1CBDB5E01625A0D00004BDF4 /* ThreadTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5DF1625A0D00004BDF4 /* ThreadTests.m */; };
 		1CBDB5E31625A7780004BDF4 /* ParsingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5E21625A7780004BDF4 /* ParsingTests.m */; };
@@ -1032,6 +1039,7 @@
 		1C6D3EE9168D7B1E00B91A65 /* AwfulUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulUser.h; sourceTree = "<group>"; };
 		1C6D3EEA168D7B1E00B91A65 /* AwfulUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulUser.m; sourceTree = "<group>"; };
 		1C6D3EF2168D89FC00B91A65 /* posts-view-219-amber.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-219-amber.css"; sourceTree = "<group>"; };
+		1C6D3EF5168D97B900B91A65 /* profile.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = profile.html; sourceTree = "<group>"; };
 		1C6ED636169104150015CDD5 /* profile-view.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "profile-view.html"; sourceTree = "<group>"; };
 		1C6ED63B1691055E0015CDD5 /* AwfulProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulProfileViewController.h; sourceTree = "<group>"; };
 		1C6ED63C1691055E0015CDD5 /* AwfulProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulProfileViewController.m; sourceTree = "<group>"; };
@@ -1183,6 +1191,11 @@
 		1CB6011416D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNewPMNotifierAgent.m; sourceTree = "<group>"; };
 		1CB6011716DBFB7B00CBEE22 /* AwfulDateFormatters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulDateFormatters.h; sourceTree = "<group>"; };
 		1CB6011816DBFB7B00CBEE22 /* AwfulDateFormatters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulDateFormatters.m; sourceTree = "<group>"; };
+		1CB9B84C1693D9DC00A3CD16 /* profile2.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = profile2.html; sourceTree = "<group>"; };
+		1CB9B8501693DC3800A3CD16 /* profile3.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = profile3.html; sourceTree = "<group>"; };
+		1CB9B8521694334500A3CD16 /* profile4.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = profile4.html; sourceTree = "<group>"; };
+		1CB9B8541694339E00A3CD16 /* profile5.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = profile5.html; sourceTree = "<group>"; };
+		1CB9B85616943F5E00A3CD16 /* profile6.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = profile6.html; sourceTree = "<group>"; };
 		1CBD5243162B5C2500928740 /* Custom CSS README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Custom CSS README.txt"; sourceTree = "<group>"; };
 		1CBD5245162B66BC00928740 /* AwfulTextEntryCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTextEntryCell.h; sourceTree = "<group>"; };
 		1CBD5246162B66BC00928740 /* AwfulTextEntryCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTextEntryCell.m; sourceTree = "<group>"; };
@@ -1211,6 +1224,7 @@
 		1CBDB5CA16259C6D0004BDF4 /* ParsingTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ParsingTests-Prefix.pch"; sourceTree = "<group>"; };
 		1CBDB5D31625A08F0004BDF4 /* ForumTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ForumTests.m; sourceTree = "<group>"; };
 		1CBDB5D61625A0A70004BDF4 /* BookmarkedThreadsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarkedThreadsTests.m; sourceTree = "<group>"; };
+		1CBDB5D91625A0B60004BDF4 /* ProfileTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileTests.m; sourceTree = "<group>"; };
 		1CBDB5DC1625A0C10004BDF4 /* NewReplyTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewReplyTests.m; sourceTree = "<group>"; };
 		1CBDB5DF1625A0D00004BDF4 /* ThreadTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreadTests.m; sourceTree = "<group>"; };
 		1CBDB5E11625A7780004BDF4 /* ParsingTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParsingTests.h; sourceTree = "<group>"; };
@@ -2373,6 +2387,7 @@
 				1CBDB5D31625A08F0004BDF4 /* ForumTests.m */,
 				1CBDB5DC1625A0C10004BDF4 /* NewReplyTests.m */,
 				1CF2461516DC1B4600C75E05 /* PrivateMessageTests.m */,
+				1CBDB5D91625A0B60004BDF4 /* ProfileTests.m */,
 				1CBDB5DF1625A0D00004BDF4 /* ThreadTests.m */,
 			);
 			path = Parsing;
@@ -2402,6 +2417,12 @@
 				1C9FDACA16E1EA6600C665B5 /* private-new.html */,
 				1CF2461A16DC286A00C75E05 /* private-one.html */,
 				1C9FDB6D16E5DCBA00C665B5 /* private-reply.html */,
+				1C6D3EF5168D97B900B91A65 /* profile.html */,
+				1CB9B84C1693D9DC00A3CD16 /* profile2.html */,
+				1CB9B8501693DC3800A3CD16 /* profile3.html */,
+				1CB9B8521694334500A3CD16 /* profile4.html */,
+				1CB9B8541694339E00A3CD16 /* profile5.html */,
+				1CB9B85616943F5E00A3CD16 /* profile6.html */,
 				1CBDB5EF1625B76F0004BDF4 /* showthread.html */,
 				1C41B8AA16CE8FEB00718F79 /* showthread2.html */,
 			);
@@ -3451,6 +3472,12 @@
 				1CBDB5F21625B76F0004BDF4 /* member.html in Resources */,
 				1CBDB5F31625B76F0004BDF4 /* newreply.html in Resources */,
 				1CBDB5F41625B76F0004BDF4 /* showthread.html in Resources */,
+				1C6D3EF7168D97CB00B91A65 /* profile.html in Resources */,
+				1CB9B84F1693D9F700A3CD16 /* profile2.html in Resources */,
+				1CB9B8511693DC3800A3CD16 /* profile3.html in Resources */,
+				1CB9B8531694334500A3CD16 /* profile4.html in Resources */,
+				1CB9B8551694339E00A3CD16 /* profile5.html in Resources */,
+				1CB9B85716943F5E00A3CD16 /* profile6.html in Resources */,
 				1C41B8AB16CE8FEB00718F79 /* showthread2.html in Resources */,
 				1CF2461B16DC286A00C75E05 /* private-list.html in Resources */,
 				1CF2461C16DC286A00C75E05 /* private-one.html in Resources */,
@@ -4316,6 +4343,7 @@
 			files = (
 				1CBDB5D41625A08F0004BDF4 /* ForumTests.m in Sources */,
 				1CBDB5D71625A0A70004BDF4 /* BookmarkedThreadsTests.m in Sources */,
+				1CBDB5DA1625A0B60004BDF4 /* ProfileTests.m in Sources */,
 				1CBDB5DD1625A0C10004BDF4 /* NewReplyTests.m in Sources */,
 				1CBDB5E01625A0D00004BDF4 /* ThreadTests.m in Sources */,
 				1CBDB5E31625A7780004BDF4 /* ParsingTests.m in Sources */,

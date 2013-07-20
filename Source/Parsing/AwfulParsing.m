@@ -68,6 +68,28 @@
 @end
 
 
+@interface ProfileParsedInfo ()
+
+@property (copy, nonatomic) NSString *username;
+@property (nonatomic) NSDate *regdate;
+@property (copy, nonatomic) NSString *customTitle;
+@property (copy, nonatomic) NSString *aboutMe;
+@property (copy, nonatomic) NSString *aimName;
+@property (copy, nonatomic) NSString *gender;
+@property (nonatomic) NSURL *homepage;
+@property (copy, nonatomic) NSString *icqName;
+@property (copy, nonatomic) NSString *interests;
+@property (nonatomic) NSDate *lastPost;
+@property (copy, nonatomic) NSString *location;
+@property (copy, nonatomic) NSString *occupation;
+@property (nonatomic) NSInteger postCount;
+@property (copy, nonatomic) NSString *postRate;
+@property (nonatomic) NSURL *profilePicture;
+@property (copy, nonatomic) NSString *yahooName;
+
+@end
+
+
 static NSDate * RegdateFromString(NSString *s)
 {
     static NSDateFormatter *df = nil;
@@ -144,6 +166,123 @@ static NSString * FixSAAndlibxmlHTMLSerialization(NSString *html)
                                              range:NSMakeRange(0, [html length])
                                       withTemplate:@"<$1></$1>"];
 }
+
+
+@implementation ProfileParsedInfo
+
+- (void)parseHTMLData
+{
+    TFHpple *doc = [[TFHpple alloc] initWithHTMLData:self.htmlData];
+    
+    TFHppleElement *editProfileNode = [doc searchForSingle:@"//th[starts-with(., 'Edit Profile')]"];
+    if (editProfileNode) {
+        [self parseHTMLDataFromEditProfilePage:doc];
+    } else {
+        [self parseHTMLDataFromViewProfilePage:doc];
+    }
+}
+
+- (void)parseHTMLDataFromEditProfilePage:(TFHpple *)doc
+{
+    NSString *usernameNode = [[doc searchForSingle:
+                               @"//th[starts-with(., 'Edit Profile')]/text()[1]"] content];
+    if (usernameNode) {
+        NSString *namePattern = @"Edit Profile - (.*)\\s$";
+        NSError *error;
+        NSRegularExpression *nameRegex = [NSRegularExpression regularExpressionWithPattern:namePattern
+                                                                                   options:0
+                                                                                     error:&error];
+        if (!nameRegex) {
+            NSLog(@"error creating username regex: %@", error);
+        }
+        NSRange allName = NSMakeRange(0, [usernameNode length]);
+        NSTextCheckingResult *nameMatch = [nameRegex firstMatchInString:usernameNode
+                                                                options:0
+                                                                  range:allName];
+        if ([nameMatch rangeAtIndex:1].location != NSNotFound) {
+            self.username = [usernameNode substringWithRange:[nameMatch rangeAtIndex:1]];
+        }
+    }
+    
+    TFHppleElement *infoLink = [doc searchForSingle:@"//a[contains(@href, 'userid')]"];
+    NSURL *infoURL = [NSURL URLWithString:[infoLink objectForKey:@"href"]];
+    self.userID = [infoURL queryDictionary][@"userid"];
+}
+
+- (void)parseHTMLDataFromViewProfilePage:(TFHpple *)doc
+{
+    self.username = [[doc searchForSingle:@"//dt[" HAS_CLASS(author) "]"] content];
+    TFHppleElement *regdate = [doc searchForSingle:@"//dd[" HAS_CLASS(registered) "]"];
+    if (regdate) self.regdate = RegdateFromString([regdate content]);
+    NSArray *titleNodes = [doc rawSearch:@"//dd[" HAS_CLASS(title) "]/node()"];
+    self.customTitle = [titleNodes componentsJoinedByString:@""];
+    self.aboutMe = [[doc searchForSingle:@"//td[" HAS_CLASS(info) "]/p[2]"] content];
+    NSString *imFormat = @"//dl[" HAS_CLASS(contacts) "]/dt[" HAS_CLASS(%@) "]/following-sibling::dd[not(span)]";
+    for (NSString *im in @[ @"aim", @"icq", @"yahoo" ]) {
+        TFHppleElement *imElement = [doc searchForSingle:[NSString stringWithFormat:imFormat, im]];
+        if (imElement) {
+            [self setValue:[imElement content] forKey:[NSString stringWithFormat:@"%@Name", im]];
+        }
+    }
+    TFHppleElement *postCount = [doc searchForSingle:@"//dl[" HAS_CLASS(additional) "]/dt[contains(text(), 'Post Count')]/following-sibling::dd"];
+    if (postCount && [[postCount content] integerValue]) {
+        self.postCount = [[postCount content] integerValue];
+    }
+    TFHppleElement *postRate = [doc searchForSingle:@"//dl[" HAS_CLASS(additional) "]/dt[contains(text(), 'Post Rate')]/following-sibling::dd"];
+    self.postRate = [postRate content];
+    TFHppleElement *about = [doc searchForSingle:@"//td[" HAS_CLASS(info) "]/p[1]"];
+    if (about) {
+        NSError *error;
+        NSRegularExpression *regex = [NSRegularExpression
+                                      regularExpressionWithPattern:@"claims to be a ([a-z]+)"
+                                      options:0
+                                      error:&error];
+        if (!regex) NSLog(@"error parsing profile gender regex: %@", error);
+        NSTextCheckingResult *result = [regex firstMatchInString:[about content]
+                                                         options:0
+                                                           range:NSMakeRange(0, [[about content] length])];
+        self.gender = [[about content] substringWithRange:[result rangeAtIndex:1]];
+    }
+    TFHppleElement *picture = [doc searchForSingle:@"//div[" HAS_CLASS(userpic) "]//img"];
+    if (picture) self.profilePicture = [NSURL URLWithString:[picture objectForKey:@"src"]];
+    TFHppleElement *location = [doc searchForSingle:@"//dl[" HAS_CLASS(additional) "]/dt[contains(text(), 'Location')]/following-sibling::dd"];
+    self.location = [location content];
+    TFHppleElement *interests = [doc searchForSingle:@"//dl[" HAS_CLASS(additional) "]/dt[contains(text(), 'Interests')]/following-sibling::dd"];
+    self.interests = [interests content];
+    TFHppleElement *occupation = [doc searchForSingle:@"//dl[" HAS_CLASS(additional) "]/dt[contains(text(), 'Occupation')]/following-sibling::dd"];
+    self.occupation = [occupation content];
+    TFHppleElement *lastPost = [doc searchForSingle:@"//dl[" HAS_CLASS(additional) "]/dt[contains(text(), 'Last Post')]/following-sibling::dd"];
+    if (lastPost) self.lastPost = PostDateFromString([lastPost content]);
+}
+
++ (NSArray *)keysToApplyToObject
+{
+    return @[
+        @"userID", @"username", @"regdate", @"customTitle", @"aboutMe", @"aimName", @"gender",
+        @"icqName", @"interests", @"lastPost", @"location", @"occupation", @"postCount",
+        @"yahooName", @"postRate"
+    ];
+}
+
++ (NSArray *)keysToNullifyIfNull
+{
+    return @[
+        @"customTitle", @"aboutMe", @"aimName", @"gender", @"icqName", @"interests", @"location",
+        @"occupation", @"yahooName"
+    ];
+}
+
+- (void)applyToObject:(id)object
+{
+    [super applyToObject:object];
+    for (NSString *key in [[self class] keysToNullifyIfNull]) {
+        if ([[self valueForKey:key] isEqual:[NSNull null]]) {
+            [object setValue:[NSNull null] forKey:key];
+        }
+    }
+}
+
+@end
 
 
 @interface ReplyFormParsedInfo ()
