@@ -241,23 +241,17 @@ static AwfulHTTPClient *instance = nil;
 
 - (NSOperation *)learnUserInfoAndThen:(void (^)(NSError *error, NSDictionary *userInfo))callback
 {
-    NSDictionary *parameters = @{ @"action": @"getinfo", @"json": @1 };
+    NSDictionary *parameters = @{ @"action": @"getinfo" };
     NSURLRequest *urlRequest = [self requestWithMethod:@"GET" path:@"member.php"
                                             parameters:parameters];
     id op = [self HTTPRequestOperationWithRequest:urlRequest
-                                          success:^(id _, id responseObject)
+                                          success:^(id _, ProfileParsedInfo *info)
     {
-        if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            AwfulUser *user = [AwfulUser userCreatedOrUpdatedFromJSON:responseObject];
-            if (callback) callback(nil, [user dictionaryWithValuesForKeys:@[ @"userID", @"username" ]]);
-        } else {
-            ProfileParsedInfo *profile = responseObject;
-            if (callback) callback(nil, @{ @"userID": profile.userID, @"username": profile.username });
-        }
+        if (callback) callback(nil, @{ @"userID": info.userID, @"username": info.username });
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
     }];
-    [op setCreateParsedInfoBlock:^id(NSData *data) {
+    [op setCreateParsedInfoBlock:^(NSData *data) {
         return [[ProfileParsedInfo alloc] initWithHTMLData:data];
     }];
     [self enqueueHTTPRequestOperation:op];
@@ -678,13 +672,13 @@ andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))call
 - (NSOperation *)profileUserWithID:(NSString *)userID
                            andThen:(void (^)(NSError *error, AwfulUser *user))callback
 {
-    NSDictionary *parameters = @{ @"action": @"getinfo", @"userid": userID, @"json": @1 };
+    NSDictionary *parameters = @{ @"action": @"getinfo", @"userid": userID };
     NSURLRequest *request = [self requestWithMethod:@"GET" path:@"member.php"
                                          parameters:parameters];
-    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
-                                                               success:^(id op, NSDictionary *json)
+    id op = [self HTTPRequestOperationWithRequest:request
+                                          success:^(id op, ProfileParsedInfo *info)
     {
-        AwfulUser *user = [AwfulUser userCreatedOrUpdatedFromJSON:json];
+        AwfulUser *user = [AwfulUser userCreatedOrUpdatedFromProfileInfo:info];
         if (user.profilePictureURL && [user.profilePictureURL hasPrefix:@"/"]) {
             NSString *base = [self.baseURL absoluteString];
             base = [base substringToIndex:[base length] - 1];
@@ -694,6 +688,9 @@ andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))call
         if (callback) callback(nil, user);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (callback) callback(error, nil);
+    }];
+    [op setCreateParsedInfoBlock:^(NSData *data) {
+        return [[ProfileParsedInfo alloc] initWithHTMLData:data];
     }];
     [self enqueueHTTPRequestOperation:op];
     return op;
