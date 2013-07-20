@@ -212,6 +212,7 @@ static NSString * FixSAAndlibxmlHTMLSerialization(NSString *html)
 - (void)parseHTMLDataFromViewProfilePage:(TFHpple *)doc
 {
     self.username = [[doc searchForSingle:@"//dt[" HAS_CLASS(author) "]"] content];
+    self.userID = [[doc searchForSingle:@"//input[@name = 'userid']"] objectForKey:@"value"];
     TFHppleElement *regdate = [doc searchForSingle:@"//dd[" HAS_CLASS(registered) "]"];
     if (regdate) self.regdate = RegdateFromString([regdate content]);
     NSArray *titleNodes = [doc rawSearch:@"//dd[" HAS_CLASS(title) "]/node()"];
@@ -229,7 +230,13 @@ static NSString * FixSAAndlibxmlHTMLSerialization(NSString *html)
         self.postCount = [[postCount content] integerValue];
     }
     TFHppleElement *postRate = [doc searchForSingle:@"//dl[" HAS_CLASS(additional) "]/dt[contains(text(), 'Post Rate')]/following-sibling::dd"];
-    self.postRate = [postRate content];
+    if (postRate) {
+        NSString *content = [postRate content];
+        NSScanner *scanner = [NSScanner scannerWithString:content];
+        if ([scanner scanFloat:nil]) {
+            self.postRate = [content substringToIndex:scanner.scanLocation];
+        }
+    }
     TFHppleElement *about = [doc searchForSingle:@"//td[" HAS_CLASS(info) "]/p[1]"];
     if (about) {
         NSError *error;
@@ -268,7 +275,7 @@ static NSString * FixSAAndlibxmlHTMLSerialization(NSString *html)
 {
     return @[
         @"customTitle", @"aboutMe", @"aimName", @"gender", @"icqName", @"interests", @"location",
-        @"occupation", @"yahooName"
+        @"occupation", @"yahooName", @"profilePicture",
     ];
 }
 
