@@ -19,6 +19,7 @@
 #import "AwfulModels.h"
 #import "AwfulPostsView.h"
 #import "AwfulPrivateMessageComposeViewController.h"
+#import "AwfulProfileViewController.h"
 #import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
@@ -205,8 +206,29 @@
             }
         }];
     }];
+    [sheet addButtonWithTitle:@"User Profile" block:^{
+        AwfulProfileViewController *profile = [AwfulProfileViewController new];
+        profile.userID = self.privateMessage.from.userID;
+        UIBarButtonItem *item;
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                 target:self
+                                                                 action:@selector(doneWithProfile)];
+            profile.navigationItem.leftBarButtonItem = item;
+            [self presentViewController:[profile enclosingNavigationController]
+                               animated:YES completion:nil];
+        } else {
+            profile.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:profile animated:YES];
+        }
+    }];
     [sheet addCancelButtonWithTitle:@"Cancel"];
     [sheet showFromRect:rect inView:self.postsView.window animated:YES];
+}
+
+- (void)doneWithProfile
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)postsView:(AwfulPostsView *)postsView didReceiveLongTapAtPoint:(CGPoint)point
