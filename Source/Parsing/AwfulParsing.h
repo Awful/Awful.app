@@ -38,6 +38,7 @@
 @property (readonly, copy, nonatomic) NSString *postRate;
 @property (readonly, nonatomic) NSURL *profilePicture;
 @property (readonly, copy, nonatomic) NSString *yahooName;
+@property (readonly, nonatomic) BOOL hasPlatinum;
 
 @end
 

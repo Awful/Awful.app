@@ -86,6 +86,7 @@
 @property (copy, nonatomic) NSString *postRate;
 @property (nonatomic) NSURL *profilePicture;
 @property (copy, nonatomic) NSString *yahooName;
+@property (nonatomic) BOOL hasPlatinum;
 
 @end
 
@@ -260,6 +261,7 @@ static NSString * FixSAAndlibxmlHTMLSerialization(NSString *html)
     self.occupation = [occupation content];
     TFHppleElement *lastPost = [doc searchForSingle:@"//dl[" HAS_CLASS(additional) "]/dt[contains(text(), 'Last Post')]/following-sibling::dd"];
     if (lastPost) self.lastPost = PostDateFromString([lastPost content]);
+    self.hasPlatinum = !![doc searchForSingle:@"//dl[" HAS_CLASS(contacts) "]/dt[" HAS_CLASS(pm) "]/following-sibling::dd//a"];
 }
 
 + (NSArray *)keysToApplyToObject

@@ -247,7 +247,11 @@ static AwfulHTTPClient *instance = nil;
     id op = [self HTTPRequestOperationWithRequest:urlRequest
                                           success:^(id _, ProfileParsedInfo *info)
     {
-        if (callback) callback(nil, @{ @"userID": info.userID, @"username": info.username });
+        if (callback) callback(nil, @{
+            @"userID": info.userID,
+            @"username": info.username,
+            @"canSendPrivateMessages": @(info.hasPlatinum)
+        });
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
     }];
