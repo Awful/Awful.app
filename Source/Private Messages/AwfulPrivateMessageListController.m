@@ -23,12 +23,13 @@
 #import "AwfulThreadCell.h"
 #import "AwfulThreadTag.h"
 #import "AwfulThreadTags.h"
+#import <SVPullToRefresh/SVPullToRefresh.h>
 #import "UIViewController+NavigationEnclosure.h"
 
 @interface AwfulPrivateMessageListController () <AwfulPrivateMessageComposeViewControllerDelegate>
 
 @property (nonatomic) UIBarButtonItem *composeItem;
-@property (weak, nonatomic) AwfulNeedPlatinumView *needPlatinumView;
+@property (nonatomic) AwfulNeedPlatinumView *needPlatinumView;
 
 @end
 
@@ -55,7 +56,6 @@
                                                              style:UIBarButtonItemStyleBordered
                                                             target:nil action:NULL];
     self.navigationItem.backBarButtonItem = back;
-    [self configureWhetherUserHasPlatinum];
     NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
     [noteCenter addObserver:self selector:@selector(didGetNewPMCount:)
                        name:AwfulNewPrivateMessagesNotification object:nil];
@@ -80,25 +80,30 @@
 {
     if ([AwfulSettings settings].canSendPrivateMessages) {
         [self.needPlatinumView removeFromSuperview];
+        self.needPlatinumView = nil;
         if (!self.navigationItem.rightBarButtonItem) {
             [self.navigationItem setRightBarButtonItem:self.composeItem animated:YES];
         }
         if (!self.navigationItem.leftBarButtonItem) {
             [self.navigationItem setLeftBarButtonItem:self.editButtonItem animated:YES];
         }
+        self.tableView.scrollEnabled = YES;
+        self.tableView.showsPullToRefresh = YES;
     } else {
-        if ([self isViewLoaded]) {
-            AwfulNeedPlatinumView *needPlatinumView = [AwfulNeedPlatinumView new];
-            self.needPlatinumView = needPlatinumView;
-            needPlatinumView.frame = self.view.bounds;
-            needPlatinumView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
-                                                 UIViewAutoresizingFlexibleHeight);
-            needPlatinumView.headerLabel.text = @"No Platinum";
-            needPlatinumView.explanationLabel.text = @"You need Platinum to send and receive private messages.";
-            [self.view addSubview:needPlatinumView];
+        if ([self isViewLoaded] && !self.needPlatinumView) {
+            self.needPlatinumView = [AwfulNeedPlatinumView new];
+            self.needPlatinumView.frame = self.view.bounds;
+            self.needPlatinumView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                                      UIViewAutoresizingFlexibleHeight);
+            self.needPlatinumView.headerLabel.text = @"No Platinum";
+            self.needPlatinumView.explanationLabel.text = @"You need Platinum to send and receive private messages.";
+            [self.view addSubview:self.needPlatinumView];
+            [self retheme];
         }
         [self.navigationItem setRightBarButtonItem:nil animated:YES];
         [self.navigationItem setLeftBarButtonItem:nil animated:YES];
+        self.tableView.scrollEnabled = NO;
+        self.tableView.showsPullToRefresh = NO;
     }
 }
 
@@ -142,15 +147,15 @@
 
 - (void)viewDidLoad
 {
-    // -configureWhetherUserHasPlatinum needs to happen before -[super viewDidLoad] so that the no
-    // platinum view gets themed.
-    [self configureWhetherUserHasPlatinum];
     [super viewDidLoad];
     self.tableView.rowHeight = 75;
+    self.tableView.tableFooterView = [UIView new];
+    [self configureWhetherUserHasPlatinum];
 }
 
 - (BOOL)refreshOnAppear
 {
+    if (![AwfulSettings settings].canSendPrivateMessages) return NO;
     if ([self.fetchedResultsController.fetchedObjects count] == 0) return YES;
     NSDate *lastCheckDate = [AwfulNewPMNotifierAgent agent].lastCheckDate;
     if (!lastCheckDate) return YES;
@@ -292,14 +297,10 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     AwfulTheme *theme = [AwfulTheme currentTheme];
     self.tableView.separatorColor = theme.messageListCellSeparatorColor;
     self.view.backgroundColor = theme.messageListBackgroundColor;
-    if (self.needPlatinumView) {
-        NSArray *labels = @[ self.needPlatinumView.headerLabel,
-                             self.needPlatinumView.explanationLabel ];
-        [labels makeObjectsPerformSelector:@selector(setTextColor:)
-                                withObject:theme.messageListNeedPlatinumTextColor];
-        [labels makeObjectsPerformSelector:@selector(setBackgroundColor:)
-                                withObject:theme.messageListNeedPlatinumBackgroundColor];
-    }
+    self.needPlatinumView.headerLabel.textColor = theme.messageListNeedPlatinumTextColor;
+    self.needPlatinumView.headerLabel.backgroundColor = theme.messageListNeedPlatinumBackgroundColor;
+    self.needPlatinumView.explanationLabel.textColor = theme.messageListNeedPlatinumTextColor;
+    self.needPlatinumView.explanationLabel.backgroundColor = theme.messageListNeedPlatinumBackgroundColor;
     self.needPlatinumView.backgroundColor = theme.messageListNeedPlatinumBackgroundColor;
 }
 

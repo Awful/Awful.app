@@ -382,7 +382,7 @@
 
 - (UIColor *)messageListNeedPlatinumTextColor
 {
-    DEFAULT(self.forumListHeaderTextColor);
+    DEFAULT(self.forumCellTextColor);
 }
 
 - (UIColor *)messageListNeedPlatinumBackgroundColor
