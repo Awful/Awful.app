@@ -79,7 +79,7 @@
                 return;
             }
             if (!JSON && self.createParsedInfoBlock) {
-                NSData *UTF8Data = ConvertFromWindows1252ToUTF8(self.responseData);
+                NSData *UTF8Data = ConvertFromWindows1252ToUTF8AndFixXMLParserGarbage(self.responseData);
                 self.responseParsedInfo = self.createParsedInfoBlock(UTF8Data);
             }
             if (success) {
@@ -92,7 +92,7 @@
     #pragma clang diagnostic pop
 }
 
-static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
+static NSData *ConvertFromWindows1252ToUTF8AndFixXMLParserGarbage(NSData *windows1252)
 {
     NSString *ugh = [[NSString alloc] initWithData:windows1252
                                           encoding:NSWindowsCP1252StringEncoding];
@@ -103,6 +103,28 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
     if (!ugh) {
         ugh = [[NSString alloc] initWithData:windows1252 encoding:NSISOLatin1StringEncoding];
     }
+    
+    // HTML parses some entities without semicolons. libxml will simply escape the ampersand.
+    NSString *pattern = (@"&(Aacute|aacute|Acirc|acirc|acute|AElig|aelig|Agrave|agrave|AMP|amp|"
+                         @"Aring|aring|Atilde|atilde|Auml|auml|brvbar|Ccedil|ccedil|cedil|cent|"
+                         @"COPY|copy|curren|deg|divide|Eacute|eacute|Ecirc|ecirc|Egrave|egrave|"
+                         @"ETH|eth|Euml|euml|frac12|frac14|frac34|GT|gt|Iacute|iacute|Icirc|"
+                         @"icirc|iexcl|Igrave|igrave|iquest|Iuml|iuml|laquo|LT|lt|macr|micro|"
+                         @"middot|nbsp|not|Ntilde|ntilde|Oacute|oacute|Ocirc|ocirc|Ograve|ograve|"
+                         @"ordf|ordm|Oslash|oslash|Otilde|otilde|Ouml|ouml|para|plusmn|pound|"
+                         @"QUOT|quot|raquo|REG|reg|sect|shy|sup1|sup2|sup3|szlig|THORN|thorn|"
+                         @"times|Uacute|uacute|Ucirc|ucirc|Ugrave|ugrave|uml|Uuml|uuml|Yacute|"
+                         @"yacute|yen|yuml)(?!;)");
+    NSError *error;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:0
+                                                                             error:&error];
+    if (!regex) {
+        NSLog(@"error compiling semicolon-free entities regex: %@", error);
+    }
+    ugh = [regex stringByReplacingMatchesInString:ugh options:0
+                                            range:NSMakeRange(0, [ugh length])
+                                     withTemplate:@"&$1;"];
+    
     return [ugh dataUsingEncoding:NSUTF8StringEncoding];
 }
 
