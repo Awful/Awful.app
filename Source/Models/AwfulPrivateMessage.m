@@ -73,7 +73,7 @@
         }
         AwfulPrivateMessage *msg = existingPMs[pmInfo.messageID] ?: [AwfulPrivateMessage insertNew];
         [pmInfo applyToObject:msg];
-        if (!msg.from) msg.from = [AwfulUser insertNew];
+        if (!msg.from) msg.from = existingUsers[pmInfo.from.username] ?: [AwfulUser insertNew];
         [pmInfo.from applyToObject:msg.from];
         if (pmInfo.from.username) {
             existingUsers[msg.from.username] = msg.from;
