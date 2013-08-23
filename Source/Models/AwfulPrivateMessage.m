@@ -42,7 +42,7 @@
         message.from = from;
     }
     if (info.to) {
-        AwfulUser *to = [AwfulUser firstMatchingPredicate:@"userID = %@", info.to.username];
+        AwfulUser *to = [AwfulUser firstMatchingPredicate:@"userID = %@", info.to.userID];
         if (!to) {
             to = [AwfulUser insertNew];
         }
