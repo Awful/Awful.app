@@ -105,10 +105,12 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath
     } else {
         UIFont *font = [AwfulIconActionSheetSectionHeader titleLabelFont];
         CGFloat availableWidth = CGRectGetWidth(frame) - SectionInsets.left - SectionInsets.right;
-        CGSize textSize = [self.title sizeWithFont:font
-                                 constrainedToSize:CGSizeMake(availableWidth, CGFLOAT_MAX)];
-        layout.headerReferenceSize = textSize;
-        frame.size.height += textSize.height;
+        CGRect textRect = [self.title boundingRectWithSize:CGSizeMake(availableWidth, CGFLOAT_MAX)
+                                                   options:NSStringDrawingUsesLineFragmentOrigin
+                                                attributes:@{ NSFontAttributeName: font }
+                                                   context:nil];
+        layout.headerReferenceSize = textRect.size;
+        frame.size.height += CGRectGetHeight(textRect);
         self.collectionView.contentInset = UIEdgeInsetsMake(12, 0, 0, 0);
     }
     self.view.frame = frame;

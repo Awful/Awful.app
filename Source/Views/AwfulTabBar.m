@@ -93,7 +93,7 @@ static char KVOContext;
     }
     _selectedItem = selectedItem;
     self.segmentedControl.selectedSegmentIndex = [self.items indexOfObject:selectedItem];
-    [self.segmentedControl setImage:selectedItem.image
+    [self.segmentedControl setImage:[selectedItem.image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
                   forSegmentAtIndex:self.segmentedControl.selectedSegmentIndex];
 }
 
@@ -111,7 +111,7 @@ static char KVOContext;
     for (NSUInteger i = 0; i < [self.items count]; i++) {
         UITabBarItem *item = self.items[i];
         item.image.accessibilityLabel = item.title;
-        UIImage *image = i == 0 ? item.image : MakeNormalImageForSelectedImage(item.image);
+        UIImage *image = i == 0 ? [item.image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] : MakeNormalImageForSelectedImage(item.image);
         [self.segmentedControl insertSegmentWithImage:image atIndex:i animated:NO];
     }
 }

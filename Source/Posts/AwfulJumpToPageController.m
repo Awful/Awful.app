@@ -28,8 +28,12 @@
     self.delegate = delegate;
     self.numberOfPages = 1;
     self.selectedPage = 1;
-    self.contentSizeForViewInPopover = CGSizeMake(300, 38 + pickerHeight);
     return self;
+}
+
+- (CGSize)preferredContentSize
+{
+    return CGSizeMake(300, 38 + pickerHeight);
 }
 
 - (void)setSelectedPage:(NSInteger)selectedPage
@@ -144,10 +148,12 @@ const CGFloat pickerHeight = 162;
     for (NSUInteger i = 0; i < firstLastControl.numberOfSegments; i++) {
         [firstLastControl setContentOffset:contentOffset forSegmentAtIndex:i];
     }
+    NSShadow *shadow = [NSShadow new];
+    shadow.shadowOffset = CGSizeZero;
     NSDictionary *titleAttributes = @{
-        UITextAttributeFont: [UIFont boldSystemFontOfSize:11],
-        UITextAttributeTextColor: [UIColor whiteColor],
-        UITextAttributeTextShadowOffset: [NSValue valueWithUIOffset:UIOffsetZero],
+        NSFontAttributeName: [UIFont boldSystemFontOfSize:11],
+        NSForegroundColorAttributeName: [UIColor whiteColor],
+        NSShadowAttributeName: shadow
     };
     [firstLastControl setTitleTextAttributes:titleAttributes forState:UIControlStateNormal];
     [firstLastControl setBackgroundImage:button

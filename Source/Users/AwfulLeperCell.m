@@ -60,10 +60,11 @@
         .top = 63, .bottom = 10,
     };
     width -= reasonInsets.left + reasonInsets.right;
-    CGSize reasonLabelSize = [banReason sizeWithFont:[UIFont systemFontOfSize:15]
-                                   constrainedToSize:CGSizeMake(width, CGFLOAT_MAX)
-                                       lineBreakMode:NSLineBreakByWordWrapping];
-    return reasonLabelSize.height + reasonInsets.top + reasonInsets.bottom;
+    CGRect reasonLabelRect = [banReason boundingRectWithSize:CGSizeMake(width, CGFLOAT_MAX)
+                                                     options:NSStringDrawingUsesLineFragmentOrigin
+                                                  attributes:@{ NSFontAttributeName: [UIFont systemFontOfSize:15] }
+                                                     context:nil];
+    return CGRectGetHeight(reasonLabelRect) + reasonInsets.top + reasonInsets.bottom;
 }
 
 #pragma mark - UITableViewCell

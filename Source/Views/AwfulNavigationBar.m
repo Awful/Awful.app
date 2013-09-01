@@ -70,9 +70,11 @@
 {
     if (self != [AwfulNavigationBar class]) return;
     AwfulNavigationBar *navBar = [AwfulNavigationBar appearance];
+    NSShadow *shadow = [NSShadow new];
+    shadow.shadowColor = [UIColor colorWithWhite:0 alpha:0.5];
     [navBar setTitleTextAttributes:@{
-        UITextAttributeTextColor : [UIColor whiteColor],
-        UITextAttributeTextShadowColor : [UIColor colorWithWhite:0 alpha:0.5],
+        NSForegroundColorAttributeName : [UIColor whiteColor],
+        NSShadowAttributeName: shadow
     }];
     
     UIBarButtonItem *navBarItem = [UIBarButtonItem appearanceWhenContainedIn:

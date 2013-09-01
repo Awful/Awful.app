@@ -268,7 +268,6 @@
 		1CE8FE011709E728006A3B84 /* AwfulSettingsAlternateServerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE001709E728006A3B84 /* AwfulSettingsAlternateServerController.m */; };
 		1CE8FE04170A2FD5006A3B84 /* AwfulNeedPlatinumView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE03170A2FD4006A3B84 /* AwfulNeedPlatinumView.m */; };
 		1CE8FE41171692D1006A3B84 /* AwfulPostsSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE40171692D0006A3B84 /* AwfulPostsSettingsView.m */; };
-		1CE8FE4417174B34006A3B84 /* AwfulPlainBarButtonItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE4317174B34006A3B84 /* AwfulPlainBarButtonItem.m */; };
 		1CE8FE471717B981006A3B84 /* AwfulThemePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE461717B97F006A3B84 /* AwfulThemePicker.m */; };
 		1CE8FE4A1717C372006A3B84 /* AwfulThemeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE491717C372006A3B84 /* AwfulThemeButton.m */; };
 		1CF0D619164B0A7C00CFA137 /* Forum Abbreviations.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CF0D618164B0A7C00CFA137 /* Forum Abbreviations.plist */; };
@@ -718,8 +717,6 @@
 		1CE8FE03170A2FD4006A3B84 /* AwfulNeedPlatinumView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNeedPlatinumView.m; sourceTree = "<group>"; };
 		1CE8FE3F171692D0006A3B84 /* AwfulPostsSettingsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostsSettingsView.h; sourceTree = "<group>"; };
 		1CE8FE40171692D0006A3B84 /* AwfulPostsSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostsSettingsView.m; sourceTree = "<group>"; };
-		1CE8FE4217174B34006A3B84 /* AwfulPlainBarButtonItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPlainBarButtonItem.h; sourceTree = "<group>"; };
-		1CE8FE4317174B34006A3B84 /* AwfulPlainBarButtonItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPlainBarButtonItem.m; sourceTree = "<group>"; };
 		1CE8FE451717B97F006A3B84 /* AwfulThemePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThemePicker.h; sourceTree = "<group>"; };
 		1CE8FE461717B97F006A3B84 /* AwfulThemePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThemePicker.m; sourceTree = "<group>"; };
 		1CE8FE481717C371006A3B84 /* AwfulThemeButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThemeButton.h; sourceTree = "<group>"; };
@@ -1598,8 +1595,6 @@
 		1CE2D99D16688AC40024AC1C /* UIKit and Foundation */ = {
 			isa = PBXGroup;
 			children = (
-				1CE8FE4217174B34006A3B84 /* AwfulPlainBarButtonItem.h */,
-				1CE8FE4317174B34006A3B84 /* AwfulPlainBarButtonItem.m */,
 				1CE2D9CC166ABD0D0024AC1C /* NSFileManager+UserDirectories.h */,
 				1CE2D9CD166ABD0D0024AC1C /* NSFileManager+UserDirectories.m */,
 				1CE2D9CE166ABD0D0024AC1C /* NSString+CollapseWhitespace.h */,
@@ -2306,7 +2301,6 @@
 				1CE8FE011709E728006A3B84 /* AwfulSettingsAlternateServerController.m in Sources */,
 				1CE8FE04170A2FD5006A3B84 /* AwfulNeedPlatinumView.m in Sources */,
 				1CE8FE41171692D1006A3B84 /* AwfulPostsSettingsView.m in Sources */,
-				1CE8FE4417174B34006A3B84 /* AwfulPlainBarButtonItem.m in Sources */,
 				1CE8FE471717B981006A3B84 /* AwfulThemePicker.m in Sources */,
 				1CE8FE4A1717C372006A3B84 /* AwfulThemeButton.m in Sources */,
 				1C1D2FDC171A75CB00AC6387 /* AwfulSingleUserThreadInfo.m in Sources */,
@@ -2519,7 +2513,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_CFLAGS = "";
 				SDKROOT = iphoneos;
 				WARNING_CFLAGS = (
@@ -2555,7 +2549,7 @@
 					"${SDKROOT}/usr/include/libxml2",
 				);
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = Awful;
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2648,7 +2642,7 @@
 					"${SDKROOT}/usr/include/libxml2",
 				);
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = Awful;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -2677,7 +2671,7 @@
 					"${SDKROOT}/usr/include/libxml2",
 				);
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = Awful;
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2699,7 +2693,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
 				SDKROOT = iphoneos;
@@ -2724,7 +2718,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_CFLAGS = "";
 				SDKROOT = iphoneos;
 				WARNING_CFLAGS = (

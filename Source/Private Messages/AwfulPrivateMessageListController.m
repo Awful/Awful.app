@@ -11,7 +11,6 @@
 #import "AwfulModels.h"
 #import "AwfulNeedPlatinumView.h"
 #import "AwfulNewPMNotifierAgent.h"
-#import "AwfulPlainBarButtonItem.h"
 #import "AwfulPrivateMessageComposeViewController.h"
 #import "AwfulPrivateMessageViewController.h"
 #import "AwfulSettings.h"
@@ -36,9 +35,9 @@
 - (UIBarButtonItem *)composeItem
 {
     if (_composeItem) return _composeItem;
-    _composeItem = [[AwfulPlainBarButtonItem alloc]
-                    initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
-                    target:self action:@selector(didTapCompose)];
+    _composeItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
+                                                                 target:self
+                                                                 action:@selector(didTapCompose)];
     return _composeItem;
 }
 
@@ -58,6 +57,7 @@
                        name:AwfulNewPrivateMessagesNotification object:nil];
     [noteCenter addObserver:self selector:@selector(settingsDidChange:)
                        name:AwfulSettingsDidChangeNotification object:nil];
+    self.edgesForExtendedLayout = UIRectEdgeNone;
     return self;
 }
 

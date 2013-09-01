@@ -52,14 +52,17 @@
                     self.bounds.size.height / 2, M_PI * 3 / 2, M_PI / 2, 1);
     CGContextDrawPath(context, kCGPathFill);
     CGContextSetFillColorWithColor(context, textColor.CGColor);
-    [self.badgeText drawInRect:CGRectInset(self.bounds, 7, 2) withFont:self.font];
+    [self.badgeText drawInRect:CGRectInset(self.bounds, 7, 2) withAttributes:@{ NSFontAttributeName: self.font }];
 }
 
 - (void)sizeToFit
 {
-    CGSize textSize = [self.badgeText sizeWithFont:self.font];
+    CGRect textRect = [self.badgeText boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)
+                                                   options:0
+                                                attributes:@{ NSFontAttributeName: self.font }
+                                                   context:nil];
     CGRect bounds = self.bounds;
-    bounds.size = CGSizeMake(textSize.width + 14, textSize.height + 4);
+    bounds.size = CGSizeMake(CGRectGetWidth(textRect) + 14, CGRectGetHeight(textRect) + 4);
     self.bounds = bounds;
 }
 

@@ -192,6 +192,7 @@ static NSArray * ImagePlaceholderResultsWithMessageBody(NSString *messageBody)
     self.navigationItem.rightBarButtonItem = self.sendButton;
     self.navigationItem.leftBarButtonItem = self.cancelButton;
     self.modalPresentationStyle = UIModalPresentationPageSheet;
+    self.edgesForExtendedLayout = UIRectEdgeNone;
     return self;
 }
 

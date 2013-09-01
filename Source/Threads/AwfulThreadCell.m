@@ -174,14 +174,15 @@
     }
     CGSize constraint = CGSizeMake(cellSize.width - textOriginX - badgeViewEffectiveWidth,
                                    self.textLabel.numberOfLines * self.textLabel.font.leading);
-    CGSize textSize = [self.textLabel.text sizeWithFont:self.textLabel.font
-                                      constrainedToSize:constraint];
-    CGFloat detailVerticalOffset = CGRectGetMinY(detailTextLabelFrame) -
-    CGRectGetMaxY(textLabelFrame);
+    CGRect textRect = [self.textLabel.text boundingRectWithSize:constraint
+                                                        options:NSStringDrawingUsesLineFragmentOrigin
+                                                     attributes:@{ NSFontAttributeName: self.textLabel.font }
+                                                        context:nil];
+    CGFloat detailVerticalOffset = CGRectGetMinY(detailTextLabelFrame) - CGRectGetMaxY(textLabelFrame);
     textLabelFrame.origin.x = textOriginX;
     detailTextLabelFrame.origin.x = textOriginX;
-    textLabelFrame.size = textSize;
-    textLabelFrame.origin.y = (self.contentView.bounds.size.height - textSize.height -
+    textLabelFrame.size = textRect.size;
+    textLabelFrame.origin.y = (self.contentView.bounds.size.height - CGRectGetHeight(textRect) -
                                detailTextLabelFrame.size.height) / 2 - detailVerticalOffset;
     textLabelFrame = CGRectIntegral(textLabelFrame);
     detailTextLabelFrame.origin.y = CGRectGetMaxY(textLabelFrame) + detailVerticalOffset;

@@ -37,6 +37,7 @@
     if (!(self = [super initWithStyle:UITableViewStyleGrouped])) return nil;
     self.title = @"Settings";
     self.tabBarItem.image = [UIImage imageNamed:@"cog.png"];
+    self.edgesForExtendedLayout = UIRectEdgeNone;
     return self;
 }
 
@@ -495,9 +496,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     NSString *text = [tableView.dataSource tableView:tableView titleForFooterInSection:section];
     if (!text) return margin;
     CGSize max = CGSizeMake(tableView.bounds.size.width - 40, CGFLOAT_MAX);
-    CGSize expected = [text sizeWithFont:[UIFont systemFontOfSize:15]
-                                constrainedToSize:max];
-    return expected.height + margin;
+    CGRect expected = [text boundingRectWithSize:max
+                                         options:NSStringDrawingUsesLineFragmentOrigin
+                                      attributes:@{ NSFontAttributeName: [UIFont systemFontOfSize:15] }
+                                         context:nil];
+    return CGRectGetHeight(expected) + margin;
 }
 
 #pragma mark - AwfulInstapaperLogInControllerDelegate

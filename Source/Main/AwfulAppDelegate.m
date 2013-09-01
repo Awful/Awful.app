@@ -167,7 +167,9 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     
     [self routeAwfulURLs];
     
+    application.statusBarStyle = UIStatusBarStyleLightContent;
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    self.window.tintColor = [UIColor whiteColor];
     [self setUpRootViewController];
     [self.window makeKeyAndVisible];
         

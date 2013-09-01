@@ -172,6 +172,7 @@ static UIButton * MakeBorderlessButton(UIImage *image, id target, SEL action)
         ];
     }
     self.forwardBrowserButton.enabled = self.backBrowserButton.enabled = NO;
+    self.edgesForExtendedLayout = UIRectEdgeNone;
     return self;
 }
 

@@ -12,7 +12,6 @@
 #import "AwfulIconActionSheet.h"
 #import "AwfulLoginController.h"
 #import "AwfulModels.h"
-#import "AwfulPlainBarButtonItem.h"
 #import "AwfulPostsViewController.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulSettings.h"
@@ -44,15 +43,16 @@
                                                  name:AwfulSettingsDidChangeNotification
                                                object:nil];
     self.navigationItem.rightBarButtonItem = self.newThreadButtonItem;
+    self.edgesForExtendedLayout = UIRectEdgeNone;
     return self;
 }
 
 - (UIBarButtonItem* )newThreadButtonItem
 {
     if (_newThreadButtonItem) return _newThreadButtonItem;
-    _newThreadButtonItem = [[AwfulPlainBarButtonItem alloc]
-                            initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
-                            target:self action:@selector(didTapNewThreadButtonItem)];
+    _newThreadButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
+                                                                         target:self
+                                                                         action:@selector(didTapNewThreadButtonItem)];
     return _newThreadButtonItem;
 }
 

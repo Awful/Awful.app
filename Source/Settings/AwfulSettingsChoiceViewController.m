@@ -24,6 +24,7 @@
     self.setting = setting;
     self.selectedValue = [[NSUserDefaults standardUserDefaults] valueForKey:self.setting[@"Key"]];
     self.title = setting[@"Title"];
+    self.edgesForExtendedLayout = UIRectEdgeNone;
     return self;
 }
 

@@ -42,7 +42,7 @@
                       animated:(BOOL)animated
 {
     if (!self.popoverView) {
-        CGSize contentSize = self.contentViewController.contentSizeForViewInPopover;
+        CGSize contentSize = self.contentViewController.preferredContentSize;
         self.popoverView = [[AwfulPopoverView alloc] initWithContentSize:contentSize];
         [self.popoverView addSubview:self.contentViewController.view];
     }

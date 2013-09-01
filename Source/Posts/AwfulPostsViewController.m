@@ -18,7 +18,6 @@
 #import "AwfulModels.h"
 #import "AwfulPageBottomBar.h"
 #import "AwfulPageTopBar.h"
-#import "AwfulPlainBarButtonItem.h"
 #import "AwfulPopoverController.h"
 #import "AwfulPostsView.h"
 #import "AwfulPostsViewSettingsController.h"
@@ -97,15 +96,16 @@
                        name:AwfulSettingsDidChangeNotification object:nil];
     [noteCenter addObserver:self selector:@selector(willResetDataStack:)
                        name:AwfulDataStackWillResetNotification object:nil];
+    self.edgesForExtendedLayout = UIRectEdgeNone;
     return self;
 }
 
 - (UIBarButtonItem *)composeItem
 {
     if (_composeItem) return _composeItem;
-    _composeItem = [[AwfulPlainBarButtonItem alloc]
-                    initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
-                    target:self action:@selector(didTapCompose)];
+    _composeItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
+                                                                 target:self
+                                                                 action:@selector(didTapCompose)];
     return _composeItem;
 }
 

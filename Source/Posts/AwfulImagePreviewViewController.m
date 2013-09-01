@@ -20,7 +20,6 @@
 
 @property (nonatomic) NSOperationQueue *queue;
 
-@property (nonatomic) UIStatusBarStyle statusBarStyle;
 @property (nonatomic) NSTimer *automaticallyHideBarsTimer;
 
 @property (nonatomic) UIBarButtonItem *doneButton;
@@ -36,7 +35,6 @@
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         _imageURL = imageURL;
-        self.wantsFullScreenLayout = YES;
         self.navigationItem.leftBarButtonItem = self.doneButton;
         self.navigationItem.rightBarButtonItem = self.actionButton;
         _queue = [NSOperationQueue new];
@@ -247,16 +245,6 @@
     [self updateImageView];
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
-        self.statusBarStyle = [UIApplication sharedApplication].statusBarStyle;
-        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent
-                                                    animated:YES];
-    }
-}
-
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
@@ -266,9 +254,6 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [self.automaticallyHideBarsTimer invalidate];
-    if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
-        [[UIApplication sharedApplication] setStatusBarStyle:self.statusBarStyle animated:YES];
-    }
     [[UIApplication sharedApplication] setStatusBarHidden:NO
                                             withAnimation:UIStatusBarAnimationNone];
     [super viewWillDisappear:animated];
