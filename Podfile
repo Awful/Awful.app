@@ -1,4 +1,4 @@
-platform :ios, '5.0'
+platform :ios, '6.0'
 xcodeproj 'Xcode/Awful'
 link_with ['Awful', 'Imgur API Test']
 
