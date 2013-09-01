@@ -1,10 +1,6 @@
-//
 //  AwfulProfileViewModel.m
-//  Awful
 //
-//  Created by Nolan Waite on 2013-06-04.
-//  Copyright (c) 2013 Awful Contributors. All rights reserved.
-//
+//  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulProfileViewModel.h"
 #import "AwfulDateFormatters.h"

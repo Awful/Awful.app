@@ -1,10 +1,6 @@
-//
 //  AwfulThreadTag.h
-//  Awful
 //
-//  Created by Nolan Waite on 2013-05-22.
-//  Copyright (c) 2013 Awful Contributors. All rights reserved.
-//
+//  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import <Foundation/Foundation.h>
 
