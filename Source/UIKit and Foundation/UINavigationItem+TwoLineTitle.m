@@ -19,7 +19,7 @@
     if (self.titleView) return (id)self.titleView;
     UILabel *label = [UILabel new];
     label.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    label.textAlignment = UITextAlignmentCenter;
+    label.textAlignment = NSTextAlignmentCenter;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         label.font = [UIFont boldSystemFontOfSize:17];
     } else {

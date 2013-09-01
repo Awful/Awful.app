@@ -321,7 +321,7 @@ showImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType
                           permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
     } else {
         [self saveTextView];
-        [self presentModalViewController:picker animated:YES];
+        [self presentViewController:picker animated:YES completion:nil];
     }
 }
 

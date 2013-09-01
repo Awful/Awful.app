@@ -300,9 +300,9 @@ typedef enum SettingType
     }
     
     if (settingType == ButtonSetting) {
-        cell.textLabel.textAlignment = UITextAlignmentCenter;
+        cell.textLabel.textAlignment = NSTextAlignmentCenter;
     } else {
-        cell.textLabel.textAlignment = UITextAlignmentLeft;
+        cell.textLabel.textAlignment = NSTextAlignmentLeft;
     }
     
     return cell;
