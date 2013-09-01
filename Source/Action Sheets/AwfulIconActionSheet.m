@@ -5,17 +5,16 @@
 #import "AwfulIconActionSheet.h"
 #import "AwfulIconActionCell.h"
 #import "AwfulIconActionItem.h"
-#import <PSTCollectionView/PSTCollectionView.h>
 
-@interface AwfulIconActionSheet () <PSUICollectionViewDataSource, PSUICollectionViewDelegate>
+@interface AwfulIconActionSheet () <UICollectionViewDataSource, UICollectionViewDelegate>
 
 @property (nonatomic) NSMutableArray *items;
-@property (readonly, nonatomic) PSUICollectionView *collectionView;
+@property (readonly, nonatomic) UICollectionView *collectionView;
 
 @end
 
 
-@interface AwfulIconActionSheetSectionHeader : PSUICollectionReusableView
+@interface AwfulIconActionSheetSectionHeader : UICollectionReusableView
 
 @property (copy, nonatomic) NSString *title;
 @property (nonatomic) UIEdgeInsets titleInsets;
@@ -37,21 +36,21 @@
     }
 }
 
-- (PSUICollectionView *)collectionView
+- (UICollectionView *)collectionView
 {
     return (id)self.view;
 }
 
-#pragma mark - PSUICollectionViewDataSource and PSUICollectionViewDelegate
+#pragma mark - UICollectionViewDataSource and UICollectionViewDelegate
 
-- (NSInteger)collectionView:(PSUICollectionView *)collectionView
+- (NSInteger)collectionView:(UICollectionView *)collectionView
      numberOfItemsInSection:(NSInteger)section
 {
     return [self.items count];
 }
 
-- (PSUICollectionViewCell *)collectionView:(PSUICollectionView *)collectionView
-                    cellForItemAtIndexPath:(NSIndexPath *)indexPath
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
+                  cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     AwfulIconActionCell *cell;
     cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier
@@ -68,9 +67,9 @@
 
 static NSString * const CellIdentifier = @"IconActionCell";
 
-- (PSUICollectionReusableView *)collectionView:(PSUICollectionView *)collectionView
-             viewForSupplementaryElementOfKind:(NSString *)kind
-                                   atIndexPath:(NSIndexPath *)indexPath
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView
+           viewForSupplementaryElementOfKind:(NSString *)kind
+                                 atIndexPath:(NSIndexPath *)indexPath
 {
     AwfulIconActionSheetSectionHeader *header;
     header = [collectionView dequeueReusableSupplementaryViewOfKind:kind
@@ -83,7 +82,7 @@ static NSString * const CellIdentifier = @"IconActionCell";
 
 static NSString * const HeaderIdentifier = @"IconActionSectionHeader";
 
-- (void)collectionView:(PSUICollectionView *)collectionView
+- (void)collectionView:(UICollectionView *)collectionView
 didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     AwfulIconActionItem *item = self.items[indexPath.item];
@@ -97,7 +96,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath
                          fromRect:(CGRect)rect
                            inView:(UIView *)view
 {
-    PSUICollectionViewFlowLayout *layout = (id)self.collectionView.collectionViewLayout;
+    UICollectionViewFlowLayout *layout = (id)self.collectionView.collectionViewLayout;
     CGRect frame = self.view.frame;
     frame.size.height = 225;
     if ([self.title length] == 0) {
@@ -132,18 +131,18 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 
 - (void)loadView
 {
-    PSUICollectionViewFlowLayout *layout = [PSUICollectionViewFlowLayout new];
+    UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
     layout.itemSize = CGSizeMake(70, 90);
     layout.sectionInset = SectionInsets;
     layout.minimumInteritemSpacing = 27;
     layout.minimumLineSpacing = 12;
-    PSUICollectionView *collectionView;
-    collectionView = [[PSUICollectionView alloc] initWithFrame:CGRectMake(0, 0, 320, 215)
-                                          collectionViewLayout:layout];
+    UICollectionView *collectionView;
+    collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, 320, 215)
+                                        collectionViewLayout:layout];
     [collectionView registerClass:[AwfulIconActionCell class]
        forCellWithReuseIdentifier:CellIdentifier];
     [collectionView registerClass:[AwfulIconActionSheetSectionHeader class]
-       forSupplementaryViewOfKind:PSTCollectionElementKindSectionHeader
+       forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
               withReuseIdentifier:HeaderIdentifier];
     collectionView.collectionViewLayout = layout;
     collectionView.dataSource = self;

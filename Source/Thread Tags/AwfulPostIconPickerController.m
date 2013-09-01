@@ -25,7 +25,7 @@
 
 - (instancetype)initWithDelegate:(id <AwfulPostIconPickerControllerDelegate>)delegate
 {
-    PSUICollectionViewFlowLayout *layout = [PSUICollectionViewFlowLayout new];
+    UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
     layout.itemSize = CGSizeMake(49, 49);
     layout.minimumInteritemSpacing = 13;
     layout.minimumLineSpacing = 11;
@@ -119,7 +119,7 @@ static NSString * const TagCellIdentifier = @"Tag Cell";
 - (void)setSelectedIndex:(NSInteger)selectedIndex
 {
     NSInteger section = self.numberOfSecondaryIcons > 0 ? 1 : 0;
-    PSTCollectionViewScrollPosition scroll = PSTCollectionViewScrollPositionCenteredVertically;
+    UICollectionViewScrollPosition scroll = UICollectionViewScrollPositionCenteredVertically;
     for (NSIndexPath *indexPath in [self.collectionView indexPathsForSelectedItems]) {
         if (indexPath.section == section) {
             [self.collectionView deselectItemAtIndexPath:indexPath animated:NO];
@@ -150,7 +150,7 @@ static NSString * const TagCellIdentifier = @"Tag Cell";
     NSIndexPath *toSelect = [NSIndexPath indexPathForItem:secondarySelectedIndex inSection:0];
     [self.collectionView selectItemAtIndexPath:toSelect
                                       animated:NO
-                                scrollPosition:PSTCollectionViewScrollPositionCenteredVertically];
+                                scrollPosition:UICollectionViewScrollPositionCenteredVertically];
 }
 
 - (void)updateVisibleSecondaryTagCellsIcon
@@ -176,14 +176,14 @@ static NSString * const TagCellIdentifier = @"Tag Cell";
     return nil;
 }
 
-#pragma mark - PSUICollectionViewDataSource and PSUICollectionViewDelegate
+#pragma mark - UICollectionViewDataSource and UICollectionViewDelegate
 
-- (NSInteger)numberOfSectionsInCollectionView:(PSUICollectionView *)collectionView
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
     return self.numberOfSecondaryIcons > 0 ? 2 : 1;
 }
 
-- (NSInteger)collectionView:(PSUICollectionView *)collectionView
+- (NSInteger)collectionView:(UICollectionView *)collectionView
      numberOfItemsInSection:(NSInteger)section
 {
     if (self.numberOfSecondaryIcons > 0 && section == 0) {
@@ -192,8 +192,8 @@ static NSString * const TagCellIdentifier = @"Tag Cell";
     return self.numberOfIcons;
 }
 
-- (PSUICollectionViewCell *)collectionView:(PSUICollectionView *)collectionView
-                    cellForItemAtIndexPath:(NSIndexPath *)indexPath
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
+                  cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     AwfulImageCollectionViewCell *cell;
     cell = (id)[collectionView dequeueReusableCellWithReuseIdentifier:TagCellIdentifier
@@ -227,7 +227,7 @@ static NSString * const TagCellIdentifier = @"Tag Cell";
     return cell;
 }
 
-- (void)collectionView:(PSUICollectionView *)collectionView
+- (void)collectionView:(UICollectionView *)collectionView
 didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     for (NSIndexPath *selected in [collectionView indexPathsForSelectedItems]) {
