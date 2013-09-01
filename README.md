@@ -21,7 +21,7 @@ This app is not endorsed by Something Awful.
 Build
 -----
 
-1. Clone the repository: `git clone https://github.com/AwfulDevs/Awful.git`
+1. Clone the repository: `git clone https://github.com/Awful/Awful.app`
 2. Open Xcode project and build away: `cd Awful && open Awful.xcworkspace`
 
 Debug builds, beta builds, and release builds each appear as separate apps (they have different bundle identifiers and display names). For development, choose the `Awful Beta` scheme, and an app called `Awful Debug` will be run in the iOS Simulator and on your device.
@@ -40,14 +40,14 @@ There are optional dependencies for building Awful. You only need them if you're
 
 There are unit tests for the HTML parsing, to help us find problems when markup changes, running continuously via [Travis CI][].
 
-[![Build Status](https://travis-ci.org/AwfulDevs/Awful.png)](https://travis-ci.org/AwfulDevs/Awful)
+[![Build Status](https://travis-ci.org/Awful/Awful.app.png)](https://travis-ci.org/Awful/Awful.app)
 
 To install Awful-specific templates into Xcode (for new classes, protocols, etc.), run `Scripts/installtemplates` in Terminal. They're identical to built-in Xcode templates except for the copyright line.
 
 [CocoaPods]: http://cocoapods.org/
 [LESS]: http://lesscss.org/#usage
 [mogenerator]: http://rentzsch.github.com/mogenerator/
-[Travis CI]: https://travis-ci.org/AwfulDevs/Awful
+[Travis CI]: https://travis-ci.org/Awful/Awful.app
 
 Distribute
 ----------
@@ -74,9 +74,9 @@ You can help! Head over to [Awful's thread][current thread] and tell us about an
 
 If you're curious about anything at all, stop by the [thread][current thread] and say hi.
 
-[thread tags]: https://github.com/AwfulDevs/Awful/blob/master/Resources/Thread%20Tags/README.md#thread-tags
-[fork]: https://github.com/AwfulDevs/Awful/fork_select
-[pull requests]: https://github.com/AwfulDevs/Awful/pulls
+[thread tags]: https://github.com/Awful/Awful.app/blob/master/Resources/Thread%20Tags/README.md#thread-tags
+[fork]: https://github.com/Awful/Awful.app/fork_select
+[pull requests]: https://github.com/Awful/Awful.app/pulls
 
 Data Flow
 ---------
