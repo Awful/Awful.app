@@ -3,7 +3,6 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "NSURL+OpensInBrowser.h"
-#import "UIDevice+OperatingSystemVersion.h"
 
 @implementation NSURL (OpensInBrowser)
 
@@ -14,9 +13,6 @@
     NSString *host = [[self host] lowercaseString];
     if ([host hasSuffix:@"itunes.apple.com"]) return NO;
     if ([host hasSuffix:@"phobos.apple.com"]) return NO;
-    if ([[UIDevice currentDevice] awful_iOS5]) {
-        if ([host hasSuffix:@"www.youtube.com"]) return NO;
-    }
     return YES;
 }
 

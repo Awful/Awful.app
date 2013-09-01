@@ -324,14 +324,6 @@
      }];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-    // In case the view gets unloaded (has been problem on iOS 5.)
-    self.recipient = self.toField.textField.text;
-    self.subject = self.subjectField.textField.text;
-}
-
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
                                          duration:(NSTimeInterval)duration
 {

@@ -3,7 +3,6 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "UINavigationItem+TwoLineTitle.h"
-#import "UIDevice+OperatingSystemVersion.h"
 
 @interface UINavigationItem ()
 
@@ -30,9 +29,7 @@
     label.textColor = [UIColor whiteColor];
     label.backgroundColor = [UIColor clearColor];
     label.shadowColor = [UIColor colorWithWhite:0 alpha:0.5];
-    if ([[UIDevice currentDevice] awful_iOS6OrLater]) {
-        label.accessibilityTraits |= UIAccessibilityTraitHeader;
-    }
+    label.accessibilityTraits |= UIAccessibilityTraitHeader;
     self.titleView = label;
     return label;
 }

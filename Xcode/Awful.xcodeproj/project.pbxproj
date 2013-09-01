@@ -38,7 +38,6 @@
 		1190F7F313BE4EDA00B9D271 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7F213BE4EDA00B9D271 /* main.m */; };
 		11FDA296151018600014FDCD /* AwfulSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA295151018600014FDCD /* AwfulSettingsViewController.m */; };
 		1C00E0A3173973FA008895E7 /* AwfulScreenCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C00E0A2173973FA008895E7 /* AwfulScreenCoverView.m */; };
-		1C00E0A61739E5E4008895E7 /* UIDevice+OperatingSystemVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C00E0A51739E5E4008895E7 /* UIDevice+OperatingSystemVersion.m */; };
 		1C00E0AA1739F91E008895E7 /* AwfulPageBarBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C00E0A91739F91E008895E7 /* AwfulPageBarBackgroundView.m */; };
 		1C090FB7163A40A1003FD0A3 /* _AwfulPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C090FB6163A40A1003FD0A3 /* _AwfulPost.m */; };
 		1C090FBA163A40C1003FD0A3 /* AwfulPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C090FB9163A40C1003FD0A3 /* AwfulPost.m */; };
@@ -381,8 +380,6 @@
 		11FDA295151018600014FDCD /* AwfulSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettingsViewController.m; sourceTree = "<group>"; };
 		1C00E0A1173973FA008895E7 /* AwfulScreenCoverView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScreenCoverView.h; sourceTree = "<group>"; };
 		1C00E0A2173973FA008895E7 /* AwfulScreenCoverView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScreenCoverView.m; sourceTree = "<group>"; };
-		1C00E0A41739E5E4008895E7 /* UIDevice+OperatingSystemVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice+OperatingSystemVersion.h"; sourceTree = "<group>"; };
-		1C00E0A51739E5E4008895E7 /* UIDevice+OperatingSystemVersion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+OperatingSystemVersion.m"; sourceTree = "<group>"; };
 		1C00E0A81739F91E008895E7 /* AwfulPageBarBackgroundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPageBarBackgroundView.h; sourceTree = "<group>"; };
 		1C00E0A91739F91E008895E7 /* AwfulPageBarBackgroundView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPageBarBackgroundView.m; sourceTree = "<group>"; };
 		1C05EDAE16230C1700FE567F /* AwfulParsing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulParsing.h; sourceTree = "<group>"; };
@@ -1603,8 +1600,6 @@
 				1CE68BD816F7C18E003D56C9 /* NSURL+Punycode.m */,
 				1CE2D9D0166ABD0D0024AC1C /* NSURL+QueryDictionary.h */,
 				1CE2D9D1166ABD0D0024AC1C /* NSURL+QueryDictionary.m */,
-				1C00E0A41739E5E4008895E7 /* UIDevice+OperatingSystemVersion.h */,
-				1C00E0A51739E5E4008895E7 /* UIDevice+OperatingSystemVersion.m */,
 				1CE2D9D2166ABD0D0024AC1C /* UINavigationItem+TwoLineTitle.h */,
 				1CE2D9D3166ABD0D0024AC1C /* UINavigationItem+TwoLineTitle.m */,
 				1CE2D9D4166ABD0D0024AC1C /* UIViewController+NavigationEnclosure.h */,
@@ -2312,7 +2307,6 @@
 				F432C2D91734572000012A88 /* AwfulPocketStatusTransformer.m in Sources */,
 				1CBEE26317389DB300C4884A /* AwfulPopoverController.m in Sources */,
 				1C00E0A3173973FA008895E7 /* AwfulScreenCoverView.m in Sources */,
-				1C00E0A61739E5E4008895E7 /* UIDevice+OperatingSystemVersion.m in Sources */,
 				1C00E0AA1739F91E008895E7 /* AwfulPageBarBackgroundView.m in Sources */,
 				1C7D22EF173B3335008A802C /* InstapaperAPIClient.m in Sources */,
 				1C7D22F2173B553B008A802C /* AwfulInstapaperStatusTransformer.m in Sources */,

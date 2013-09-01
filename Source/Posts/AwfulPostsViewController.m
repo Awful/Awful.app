@@ -39,7 +39,6 @@
 #import "NSURL+Punycode.h"
 #import "NSURL+QueryDictionary.h"
 #import <SVProgressHUD/SVProgressHUD.h>
-#import "UIDevice+OperatingSystemVersion.h"
 #import "UINavigationItem+TwoLineTitle.h"
 #import "UIViewController+NavigationEnclosure.h"
 
@@ -1115,14 +1114,10 @@ static char KVOContext;
         [self showMenuForLinkToURL:url fromRect:rect];
     } else if ((url = [postsView URLOfSpoiledVideoForPoint:point rect:&rect])) {
         NSURL *safariURL;
-        NSString *openInSafariTitle = @"Open in Safari";
         if ([url.host hasSuffix:@"youtube-nocookie.com"]) {
             NSString *youtubeVideoID = url.lastPathComponent;
             safariURL = [NSURL URLWithString:[NSString stringWithFormat:
                                               @"http://www.youtube.com/watch?v=%@", youtubeVideoID]];
-            if ([[UIDevice currentDevice] awful_iOS5]) {
-                openInSafariTitle = @"Open in YouTube";
-            }
         } else if ([url.host hasSuffix:@"player.vimeo.com"]) {
             NSString *vimeoVideoID = url.lastPathComponent;
             safariURL = [NSURL URLWithString:[NSString stringWithFormat:
@@ -1130,7 +1125,7 @@ static char KVOContext;
         }
         if (!safariURL) return;
         AwfulActionSheet *sheet = [AwfulActionSheet new];
-        [sheet addButtonWithTitle:openInSafariTitle block:^{
+        [sheet addButtonWithTitle:@"Open in Safari" block:^{
             [[UIApplication sharedApplication] openURL:safariURL];
         }];
         [sheet addCancelButtonWithTitle:@"Cancel"];

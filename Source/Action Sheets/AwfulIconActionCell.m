@@ -127,10 +127,7 @@ const CGSize ImageSize = {56, 56};
     imageFrame.size.width = imageWidth;
     self.imageView.frame = imageFrame;
     self.titleLabel.frame = titleFrame;
-    // On iOS 5, a UILabel won't respect its width in -sizeToFit if its numberOfLines = 2.
-    self.titleLabel.numberOfLines = 0;
     [self.titleLabel sizeToFit];
-    self.titleLabel.numberOfLines = 2;
     titleFrame.size.height = CGRectGetHeight(self.titleLabel.frame);
     self.titleLabel.frame = titleFrame;
 }

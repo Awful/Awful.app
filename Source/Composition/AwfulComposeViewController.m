@@ -321,23 +321,8 @@ showImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType
                                             inView:self.textView
                           permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
     } else {
-        [self saveTextView];
         [self presentViewController:picker animated:YES completion:nil];
     }
-}
-
-// This save/load text view is only necessary on iOS 5, as UITextView throws everything out on a
-// memory warning. It's fixed on iOS 6.
-- (void)saveTextView
-{
-    self.savedReplyContents = self.textView.text;
-    self.savedSelectedRange = self.textView.selectedRange;
-}
-
-- (void)loadTextView
-{
-    self.textView.text = self.savedReplyContents;
-    self.textView.selectedRange = self.savedSelectedRange;
 }
 
 - (void)textView:(AwfulTextView *)textView insertImage:(UIImage *)image
@@ -371,9 +356,6 @@ static NSString *ImageKeyToPlaceholder(NSString *key, BOOL thumbnail)
 - (void)imagePickerController:(UIImagePickerController *)picker
 didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        [self loadTextView];
-    }
     if ([info[UIImagePickerControllerMediaType] isEqual:(NSString *)kUTTypeImage]) {
         UIImage *image = info[UIImagePickerControllerEditedImage];
         if (!image) image = info[UIImagePickerControllerOriginalImage];
@@ -390,7 +372,6 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
 {
-    [self loadTextView];
     // This seemingly never gets called when the picker is in a popover, so we can just blindly
     // dismiss the picker.
     [self dismissViewControllerAnimated:YES completion:nil];

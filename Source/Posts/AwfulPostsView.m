@@ -469,13 +469,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     return !self.scrollView.dragging;
 }
 
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
-       shouldReceiveTouch:(UITouch *)touch
-{
-    // iOS 5: allow buttons in subviews to receive touches.
-    return ![touch.view isKindOfClass:[UIButton class]];
-}
-
 @end
 
 
