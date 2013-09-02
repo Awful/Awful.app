@@ -109,10 +109,10 @@ The rest of Awful's screens support much more limited theming for the "dark mode
 Thread Tags
 -----------
 
-[Diabolik900][] and [The Dave][] have fashioned Awful with its own [set of thread tags][thread tags] that look great on the iPhone and the iPad. They're distributed with the app. New thread tags can also [appear in Awful][AwfulThreadTags] without us having to send an update through the App Store. This is done by hosting the icons via [GitHub Pages][], served at http://awfulapp.com. In order for this to work, update the Thread Tags submodule, ensure [tags.txt][] is up to date (i.e. build an Awful target in Xcode), then push to the `gh-pages` branch.
+[Diabolik900][] and [The Dave][] have fashioned Awful with its own [set of thread tags][thread tags] that look great on the iPhone and the iPad. They're distributed with the app. New thread tags can also [appear in Awful][AwfulThreadTags] without us having to send an update through the App Store. This is done by hosting the icons via [GitHub Pages][awfulapp.com].
 
 [AwfulThreadTags]: Source/Networking/AwfulThreadTags.m
-[GitHub Pages]: https://help.github.com/categories/20/articles
+[awfulapp.com]: https://github.com/Awful/awful.github.io
 [tags.txt]: tags.txt
 [thread tags]: Resources/Thread%20Tags/
 

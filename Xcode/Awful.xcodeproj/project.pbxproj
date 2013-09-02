@@ -12,7 +12,6 @@
 			buildConfigurationList = 1CE2D9A116688C640024AC1C /* Build configuration list for PBXAggregateTarget "Build Resources" */;
 			buildPhases = (
 				1CE2D9A816688CC20024AC1C /* mogenerator */,
-				1CE2D9A916688CDE0024AC1C /* Update image tag list */,
 				1CD33EA016EF7C550059587E /* Compile CSS */,
 				1C4191941763CCB800EADE07 /* Concatenate JavaScript */,
 			);
@@ -2124,20 +2123,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "PATH=/usr/local/bin:$PATH\ncommand -v mogenerator >/dev/null 2>&1 || { echo >&2 \"Please install mogenerator! brew install mogenerator\"; exit 0; }\nMODELS=\"$PROJECT_DIR/../Source/Models\"\nmogenerator --model \"$MODELS/Model.xcdatamodeld\" --output-dir \"$MODELS\" --machine-dir \"$MODELS/Generated\" --template-var arc=true\n";
-		};
-		1CE2D9A916688CDE0024AC1C /* Update image tag list */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Update image tag list";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "rake tags\n";
 		};
 		712ECA8D897A4C93ABABE9AE /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
