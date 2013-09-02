@@ -21,8 +21,8 @@ This app is not endorsed by Something Awful.
 Build
 -----
 
-1. Clone the repository: `git clone https://github.com/Awful/Awful.app`
-2. Open Xcode project and build away: `cd Awful && open Awful.xcworkspace`
+1. Clone the repository: `git clone --recursive https://github.com/Awful/Awful.app Awful-app`
+2. Open Xcode project and build away: `open Awful-app/Awful.xcworkspace`
 
 Debug builds, beta builds, and release builds each appear as separate apps (they have different bundle identifiers and display names). For development, choose the `Awful Beta` scheme, and an app called `Awful Debug` will be run in the iOS Simulator and on your device.
 
@@ -72,7 +72,7 @@ You can help! Head over to [Awful's thread][current thread] and tell us about an
 
 If you're curious about anything at all, stop by the [thread][current thread] and say hi.
 
-[thread tags]: https://github.com/Awful/Awful.app/blob/master/Resources/Thread%20Tags/README.md#thread-tags
+[thread tags]: https://github.com/Awful/thread-tags#readme
 [fork]: https://github.com/Awful/Awful.app/fork_select
 [pull requests]: https://github.com/Awful/Awful.app/pulls
 
@@ -109,11 +109,7 @@ The rest of Awful's screens support much more limited theming for the "dark mode
 Thread Tags
 -----------
 
-[Diabolik900][] and [The Dave][] have fashioned Awful with its own [set of thread tags][thread tags] that look great on the iPhone and the iPad. They're 90px square PNG images (they're "retina", so they're displayed 45 points tall on the iPhone and iPad). Name them the same as the tag's filename on the Forums, but with `.png`. For example, the Apple tag is `shsc-apple.gif`, so call yours `shsc-apple.png`. Capitalization matters.
-
-To add a new thread tag to the app, drag it into the Xcode project, in the `Resources/Thread Tags` group. Tick the box that says "Copy items into destination group's folder (if needed)". Then build the Xcode project. Now commit all your changes (the new thread tags plus `Awful.xcodeproj` and `tags.txt`) and send a pull request!
-
-Thread tags are distributed with the app. New thread tags can also [appear in Awful][AwfulThreadTags] without us having to send an update through the App Store. This is done by hosting the icons via [GitHub Pages][], served at http://awfulapp.com. In order for this to work, ensure [tags.txt][] is up to date (i.e. build an Awful target in Xcode), then push to the `gh-pages` branch.
+[Diabolik900][] and [The Dave][] have fashioned Awful with its own [set of thread tags][thread tags] that look great on the iPhone and the iPad. They're distributed with the app. New thread tags can also [appear in Awful][AwfulThreadTags] without us having to send an update through the App Store. This is done by hosting the icons via [GitHub Pages][], served at http://awfulapp.com. In order for this to work, update the Thread Tags submodule, ensure [tags.txt][] is up to date (i.e. build an Awful target in Xcode), then push to the `gh-pages` branch.
 
 [AwfulThreadTags]: Source/Networking/AwfulThreadTags.m
 [GitHub Pages]: https://help.github.com/categories/20/articles

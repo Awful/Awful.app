@@ -38,7 +38,7 @@ static NSString * const kNewThreadTagURLKey = @"AwfulNewThreadTagURL";
 - (UIImage *)threadTagNamed:(NSString *)threadTagName
 {
     if ([threadTagName length] == 0) return nil;
-    UIImage *shipped = [UIImage imageNamed:threadTagName];
+    UIImage *shipped = [UIImage imageNamed:[NSString stringWithFormat:@"Thread Tags/%@", threadTagName]];
     if (shipped) return EnsureDoubleScaledImage(shipped);
     
     NSURL *url = [[self cacheFolder] URLByAppendingPathComponent:threadTagName];
