@@ -16,7 +16,6 @@
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "AwfulThreadListController.h"
-#import <Crashlytics/Crashlytics.h>
 #import "NSManagedObject+Awful.h"
 
 @interface AwfulForumsListController ()
