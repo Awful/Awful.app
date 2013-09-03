@@ -272,44 +272,9 @@ static NSURL *CachedImageDirectoryForIdentifier(id identifier)
     [self enableSendButtonIfReady];
 }
 
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    AwfulNavigationBar *bar = (id)self.navigationController.navigationBar;
-    bar.leftButtonLongTapAction = ^{
-        if (!self.editedPost && [self.textView.text length] == 0) return;
-        AwfulActionSheet *sheet = [AwfulActionSheet new];
-        [sheet addDestructiveButtonWithTitle:@"Delete Draft" block:^{
-            if (!self.thread) {
-                self.thread = self.editedPost.thread;
-            }
-            self.textView.text = nil;
-            self.editedPost = nil;
-            [self.cachedImages removeAllObjects];
-            if (self.imageCacheIdentifier) {
-                id localIdentifier = self.imageCacheIdentifier;
-                self.imageCacheIdentifier = nil;
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-                    [AwfulReplyComposeViewController deleteImageCacheWithIdentifier:localIdentifier];
-                });
-            }
-            [self updateUserInterface];
-        }];
-        [sheet addCancelButtonWithTitle:@"Cancel"];
-        [sheet showFromBarButtonItem:self.navigationItem.leftBarButtonItem animated:YES];
-    };
-}
-
 - (void)enableSendButtonIfReady
 {
     self.sendButton.enabled = [self.textView.text length] > 0;
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-    AwfulNavigationBar *bar = (id)self.navigationController.navigationBar;
-    bar.leftButtonLongTapAction = nil;
 }
 
 #pragma mark - UITextViewDelegate

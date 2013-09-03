@@ -4,12 +4,9 @@
 
 #import <UIKit/UIKit.h>
 
-// A navigation bar we can target for UIAppearance, it also pop to its navigation controller's root
-// when the back button is long-tapped.
+/**
+ * Long-tapping the back button of an AwfulNavigationBar will pop its navigation controller to its root view controller.
+ */
 @interface AwfulNavigationBar : UINavigationBar
-
-// If non-nil, this block gets called when long-tapping the left button.
-// If nil, the default pop to root action occurs.
-@property (nonatomic, copy) void (^leftButtonLongTapAction)(void);
 
 @end
