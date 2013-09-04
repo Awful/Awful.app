@@ -4,7 +4,6 @@
 #import "_AwfulForum.h"
 
 const struct AwfulForumAttributes AwfulForumAttributes = {
-	.expanded = @"expanded",
 	.forumID = @"forumID",
 	.index = @"index",
 	.lastRefresh = @"lastRefresh",
@@ -47,11 +46,6 @@ const struct AwfulForumFetchedProperties AwfulForumFetchedProperties = {
 + (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 	
-	if ([key isEqualToString:@"expandedValue"]) {
-		NSSet *affectingKey = [NSSet setWithObject:@"expanded"];
-		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
-	}
 	if ([key isEqualToString:@"indexValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"index"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
@@ -60,32 +54,6 @@ const struct AwfulForumFetchedProperties AwfulForumFetchedProperties = {
 
 	return keyPaths;
 }
-
-
-
-
-@dynamic expanded;
-
-
-
-- (BOOL)expandedValue {
-	NSNumber *result = [self expanded];
-	return [result boolValue];
-}
-
-- (void)setExpandedValue:(BOOL)value_ {
-	[self setExpanded:[NSNumber numberWithBool:value_]];
-}
-
-- (BOOL)primitiveExpandedValue {
-	NSNumber *result = [self primitiveExpanded];
-	return [result boolValue];
-}
-
-- (void)setPrimitiveExpandedValue:(BOOL)value_ {
-	[self setPrimitiveExpanded:[NSNumber numberWithBool:value_]];
-}
-
 
 
 

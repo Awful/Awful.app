@@ -3,30 +3,30 @@
 //  Copyright 2010 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulForumsListController.h"
-#import "AwfulFetchedTableViewControllerSubclass.h"
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulDataStack.h"
 #import "AwfulDisclosureIndicatorView.h"
 #import "AwfulForumCell.h"
+#import "AwfulForumTreeController.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulLepersViewController.h"
-#import "AwfulLoginController.h"
 #import "AwfulModels.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "AwfulThreadListController.h"
-#import "NSManagedObject+Awful.h"
 
-@interface AwfulForumsListController ()
+@interface AwfulForumsListController () <AwfulForumTreeControllerDelegate>
 
 @property (nonatomic) NSDate *lastRefresh;
 @property (nonatomic) NSMutableArray *favoriteForums;
+@property (nonatomic) AwfulForumTreeController *treeController;
+@property (nonatomic) BOOL userDrivenChange;
 
 @end
 
+@interface AwfulForumHeader : UILabel
 
-@interface AwfulForumHeader : UILabel @end
+@end
 
 @implementation AwfulForumHeader
 
@@ -36,7 +36,6 @@
 }
 
 @end
-
 
 @implementation AwfulForumsListController
 
@@ -51,16 +50,19 @@
                                                  name:AwfulSettingsDidChangeNotification
                                                object:nil];
     self.edgesForExtendedLayout = UIRectEdgeNone;
+    self.treeController = [AwfulForumTreeController new];
+    self.treeController.delegate = self;
     return self;
 }
 
 - (NSArray *)fetchFavoriteForumsWithIDsFromSettings
 {
     NSArray *forumIDs = [AwfulSettings settings].favoriteForums;
-    if ([forumIDs count] == 0) return @[];
-    NSArray *favoriteForums = [AwfulForum fetchAllMatchingPredicate:@"forumID IN %@",
-                               [AwfulSettings settings].favoriteForums];
-    return [favoriteForums sortedArrayUsingComparator:^NSComparisonResult(AwfulForum *a, AwfulForum *b) {
+    if (forumIDs.count == 0) {
+        return @[];
+    }
+    NSArray *favoriteForums = [AwfulForum fetchAllMatchingPredicate:@"forumID IN %@", forumIDs];
+    return [favoriteForums sortedArrayUsingComparator:^(AwfulForum *a, AwfulForum *b) {
         return [@([forumIDs indexOfObject:a.forumID]) compare:@([forumIDs indexOfObject:b.forumID])];
     }];
 }
@@ -85,27 +87,13 @@
 
 - (void)showOrHideEditButton
 {
-    UIBarButtonItem *item = [self.favoriteForums count] > 0 ? self.editButtonItem : nil;
+    UIBarButtonItem *item = self.favoriteForums.count > 0 ? self.editButtonItem : nil;
     [self.navigationItem setRightBarButtonItem:item animated:YES];
 }
 
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (NSFetchedResultsController *)createFetchedResultsController
-{
-    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulForum entityName]];
-    request.predicate = [NSPredicate predicateWithFormat:@"parentForum == nil or parentForum.expanded == YES"];
-    request.sortDescriptors = @[
-        [NSSortDescriptor sortDescriptorWithKey:@"category.index" ascending:YES],
-        [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES]
-    ];
-    return [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                               managedObjectContext:[AwfulDataStack sharedDataStack].context
-                                                 sectionNameKeyPath:@"category.index"
-                                                          cacheName:nil];
 }
 
 - (NSDate *)lastRefresh
@@ -124,29 +112,31 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
 {
     button.selected = !button.selected;
     UIView *cell = button.superview;
-    while (cell && ![cell isKindOfClass:[UITableViewCell class]]) cell = cell.superview;
+    while (cell && ![cell isKindOfClass:[UITableViewCell class]]) {
+        cell = cell.superview;
+    }
     if (!cell) return;
     AwfulForum *forum;
-    NSIndexPath *indexPath = [self.tableView indexPathForCell:(id)cell];
-    if ([self.favoriteForums count] > 0) {
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:(UITableViewCell *)cell];
+    if (self.favoriteForums.count > 0) {
         indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section - 1];
     }
     if (indexPath.section == -1) {
         forum = self.favoriteForums[indexPath.row];
     } else {
-        forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+        forum = [self.treeController visibleForumAtIndexPath:indexPath];
     }
     [self.tableView beginUpdates];
     BOOL considerFavoritesSectionWhenReloading = YES;
     if (button.selected) {
         [self.favoriteForums addObject:forum];
-        if ([self.favoriteForums count] == 1) {
+        if (self.favoriteForums.count == 1) {
             NSIndexSet *toInsert = [NSIndexSet indexSetWithIndex:0];
             [self.tableView insertSections:toInsert withRowAnimation:UITableViewRowAnimationTop];
             considerFavoritesSectionWhenReloading = NO;
             [self showOrHideEditButton];
         } else {
-            NSIndexPath *newRow = [NSIndexPath indexPathForRow:[self.favoriteForums count] - 1
+            NSIndexPath *newRow = [NSIndexPath indexPathForRow:self.favoriteForums.count - 1
                                                      inSection:0];
             [self.tableView insertRowsAtIndexPaths:@[ newRow ]
                                   withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -154,7 +144,7 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
     } else {
         NSInteger row = [self.favoriteForums indexOfObject:forum];
         [self.favoriteForums removeObjectAtIndex:row];
-        if ([self.favoriteForums count] == 0) {
+        if (self.favoriteForums.count == 0) {
             NSIndexSet *toDelete = [NSIndexSet indexSetWithIndex:0];
             [self.tableView deleteSections:toDelete withRowAnimation:UITableViewRowAnimationTop];
             [self showOrHideEditButton];
@@ -166,7 +156,7 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
         }
     }
     if (button.selected) {
-        NSIndexPath *nonfavoriteIndexPath = [self.fetchedResultsController indexPathForObject:forum];
+        NSIndexPath *nonfavoriteIndexPath = [self.treeController indexPathForVisibleForum:forum];
         if (considerFavoritesSectionWhenReloading) {
             nonfavoriteIndexPath = [NSIndexPath indexPathForRow:nonfavoriteIndexPath.row
                                                       inSection:nonfavoriteIndexPath.section + 1];
@@ -184,39 +174,15 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
 {
     button.selected = !button.selected;
     UIView *cell = button.superview;
-    while (cell && ![cell isKindOfClass:[UITableViewCell class]]) cell = cell.superview;
+    while (cell && ![cell isKindOfClass:[UITableViewCell class]]) {
+        cell = cell.superview;
+    }
     if (!cell) return;
-    AwfulForum *forum;
     NSIndexPath *indexPath = [self.tableView indexPathForCell:(UITableViewCell *)cell];
-    if ([self.favoriteForums count] > 0 && indexPath.section == 0) {
-        forum = self.favoriteForums[indexPath.row];
-    } else {
-        if ([self.favoriteForums count] > 0) {
-            indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section - 1];
-        }
-        forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    if (self.favoriteForums.count > 0) {
+        indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section - 1];
     }
-    if (button.selected) {
-        forum.expandedValue = YES;
-    } else {
-        RecursivelyCollapseForum(forum);
-    }
-    [[AwfulDataStack sharedDataStack] save];
-    
-    // The fetched results controller won't pick up on changes to the keypath "parentForum.expanded"
-    // for forums that should be newly visible (dunno why) so we need to help it along.
-    for (AwfulForum *child in forum.children) {
-        [child willChangeValueForKey:AwfulForumRelationships.parentForum];
-        [child didChangeValueForKey:AwfulForumRelationships.parentForum];
-    }
-}
-
-static void RecursivelyCollapseForum(AwfulForum *forum)
-{
-    forum.expandedValue = NO;
-    for (AwfulForum *child in forum.children) {
-        RecursivelyCollapseForum(child);
-    }
+    [self.treeController toggleVisibleForumExpandedAtIndexPath:indexPath];
 }
 
 - (void)setCellImagesForCell:(AwfulForumCell *)cell
@@ -263,7 +229,6 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
     if (![AwfulHTTPClient client].reachable) return NO;
     if (!self.lastRefresh) return YES;
     if ([[NSDate date] timeIntervalSinceDate:self.lastRefresh] > 60 * 60 * 6) return YES;
-    if ([self.fetchedResultsController.fetchedObjects count] == 0) return YES;
     if ([AwfulForum firstMatchingPredicate:@"index = -1"]) return YES;
     return NO;
 }
@@ -300,11 +265,14 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
 
 - (void)didLogIn:(NSNotification *)note
 {
+    self.treeController = [AwfulForumTreeController new];
+    self.treeController.delegate = self;
     [self.tableView reloadData];
 }
 
 - (void)didLogOut:(NSNotification *)note
 {
+    self.treeController = nil;
     [self.tableView reloadData];
 }
 
@@ -314,40 +282,16 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
     if ([self.tableView numberOfSections] <= 2) [self.tableView reloadData];
 }
 
-#pragma mark - NSFetchedResultsControllerDelegate
-
-- (void)controller:(NSFetchedResultsController *)controller
-   didChangeObject:(id)anObject
-       atIndexPath:(NSIndexPath *)indexPath
-     forChangeType:(NSFetchedResultsChangeType)type
-      newIndexPath:(NSIndexPath *)newIndexPath
-{
-    if ([self.favoriteForums count] > 0) {
-        if (indexPath) {
-            indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section + 1];
-        }
-        if (newIndexPath) {
-            newIndexPath = [NSIndexPath indexPathForRow:newIndexPath.row
-                                              inSection:newIndexPath.section + 1];
-        }
-    }
-    [super controller:controller
-      didChangeObject:anObject
-          atIndexPath:indexPath
-        forChangeType:type
-         newIndexPath:newIndexPath];
-}
-
 #pragma mark - UITableViewDataSource and UITableViewDelegate
 
 // Leper's Colony is shown as a pseudo-forum in its own section (the last section).
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    NSInteger extra = 0;
-    if ([self shouldShowLepersColony]) extra += 1;
-    if ([self.favoriteForums count] > 0) extra += 1;
-    return [super numberOfSectionsInTableView:tableView] + extra;
+    NSInteger sections = self.treeController.numberOfCategories;
+    if ([self shouldShowLepersColony]) sections += 1;
+    if (self.favoriteForums.count > 0) sections += 1;
+    return sections;
 }
 
 - (BOOL)shouldShowLepersColony
@@ -357,37 +301,34 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if ([self shouldShowLepersColony] && section + 1 == [tableView numberOfSections]) {
+    if ([self shouldShowLepersColony] && section + 1 == tableView.numberOfSections) {
         return 1;
-    } else if ([self.favoriteForums count] > 0 && section == 0) {
-        return [self.favoriteForums count];
+    } else if (self.favoriteForums.count > 0 && section == 0) {
+        return self.favoriteForums.count;
     } else {
-        if ([self.favoriteForums count] > 0) {
+        if (self.favoriteForums.count > 0) {
             section -= 1;
         }
-        return [super tableView:tableView numberOfRowsInSection:section];
+        return [self.treeController numberOfVisibleForumsInCategoryAtIndex:section];
     }
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     UILabel *header = [AwfulForumHeader new];
-    header.frame = (CGRect){ .size = { tableView.bounds.size.width, tableView.rowHeight } };
     header.font = [UIFont boldSystemFontOfSize:15];
     header.textColor = [AwfulTheme currentTheme].forumListHeaderTextColor;
-    header.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     header.backgroundColor = [AwfulTheme currentTheme].forumListHeaderBackgroundColor;
-    if ([self.favoriteForums count] > 0) {
+    if (self.favoriteForums.count > 0) {
         section -= 1;
     }
     if ([self shouldShowLepersColony] &&
-        section == (NSInteger)[self.fetchedResultsController.sections count]) {
+        section == (NSInteger)self.treeController.numberOfCategories) {
         header.text = @"Awful";
     } else if (section == -1) {
         header.text = @"Favorites";
     } else {
-        AwfulForum *anyForum = [[self.fetchedResultsController.sections[section] objects] lastObject];
-        header.text = anyForum.category.name;
+        header.text = [self.treeController categoryAtIndex:section].name;
     }
     return header;
 }
@@ -424,8 +365,7 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
     AwfulDisclosureIndicatorView *disclosure = (AwfulDisclosureIndicatorView *)cell.accessoryView;
     disclosure.color = [AwfulTheme currentTheme].disclosureIndicatorColor;
     disclosure.highlightedColor = [AwfulTheme currentTheme].disclosureIndicatorHighlightedColor;
-    if ([self shouldShowLepersColony] &&
-        indexPath.section + 1 == [self.tableView numberOfSections]) {
+    if ([self shouldShowLepersColony] && indexPath.section + 1 == self.tableView.numberOfSections) {
         cell.textLabel.text = @"Leper's Colony";
         cell.showsFavorite = NO;
         cell.showsExpanded = AwfulForumCellShowsExpandedLeavesRoom;
@@ -433,21 +373,23 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
     }
     AwfulForum *forum;
     BOOL favoritesSection = NO;
-    if ([self.favoriteForums count] > 0) {
-        indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section - 1];
+    if (self.favoriteForums.count > 0) {
+        if (indexPath.section == 0) {
+            forum = self.favoriteForums[indexPath.row];
+            favoritesSection = YES;
+        } else {
+            indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section - 1];
+        }
     }
-    if (indexPath.section == -1) {
-        forum = self.favoriteForums[indexPath.row];
-        favoritesSection = YES;
-    } else {
-        forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    if (!forum) {
+        forum = [self.treeController visibleForumAtIndexPath:indexPath];
     }
     cell.textLabel.text = forum.name;
     [self setCellImagesForCell:cell];
     cell.showsFavorite = !favoritesSection;
     cell.favorite = [self.favoriteForums containsObject:forum];
-    cell.expanded = forum.expandedValue && !favoritesSection;
-    if ([forum.children count]) {
+    cell.expanded = !favoritesSection && [self.treeController visibleForumExpandedAtIndexPath:indexPath];
+    if (forum.children.count) {
         if (favoritesSection) {
             cell.showsExpanded = AwfulForumCellShowsExpandedLeavesRoom;
         } else {
@@ -463,15 +405,15 @@ static void RecursivelyCollapseForum(AwfulForum *forum)
   willDisplayCell:(UITableViewCell *)cell
 forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([self.favoriteForums count] > 0) {
+    if (self.favoriteForums.count > 0) {
         indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section - 1];
     }
-    if (indexPath.section == (NSInteger)[self.fetchedResultsController.sections count]) {
+    if (indexPath.section == (NSInteger)self.treeController.numberOfCategories) {
         cell.backgroundColor = [AwfulTheme currentTheme].forumCellBackgroundColor;
     } else if (indexPath.section == -1) {
         cell.backgroundColor = [AwfulTheme currentTheme].forumCellBackgroundColor;
     } else {
-        AwfulForum *forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+        AwfulForum *forum = [self.treeController visibleForumAtIndexPath:indexPath];
         if (forum.parentForum) {
             cell.backgroundColor = [AwfulTheme currentTheme].forumCellSubforumBackgroundColor;
         } else {
@@ -482,10 +424,10 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([self.favoriteForums count] > 0) {
+    if (self.favoriteForums.count > 0) {
         indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section - 1];
     }
-    if (indexPath.section == (NSInteger)[self.fetchedResultsController.sections count]) {
+    if (indexPath.section == (NSInteger)self.treeController.numberOfCategories) {
         AwfulLepersViewController *lepersColony = [AwfulLepersViewController new];
         return [self.navigationController pushViewController:lepersColony animated:YES];
     }
@@ -493,7 +435,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     if (indexPath.section == -1) {
         forum = self.favoriteForums[indexPath.row];
     } else {
-        forum = [self.fetchedResultsController objectAtIndexPath:indexPath];
+        forum = [self.treeController visibleForumAtIndexPath:indexPath];
     }
     AwfulThreadListController *threadList = [AwfulThreadListController new];
     threadList.forum = forum;
@@ -503,7 +445,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView
            editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([self.favoriteForums count] > 0) {
+    if (self.favoriteForums.count > 0) {
         indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section - 1];
     }
     if (indexPath.section == -1) {
@@ -524,10 +466,10 @@ commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
 forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle != UITableViewCellEditingStyleDelete) return;
-    if ([self.favoriteForums count] == 0 || indexPath.section != 0) return;
+    if (self.favoriteForums.count == 0 || indexPath.section != 0) return;
     AwfulForum *forum = self.favoriteForums[indexPath.row];
     [self.favoriteForums removeObjectAtIndex:indexPath.row];
-    if ([self.favoriteForums count] == 0) {
+    if (self.favoriteForums.count == 0) {
         [tableView deleteSections:[NSIndexSet indexSetWithIndex:0]
                  withRowAnimation:UITableViewRowAnimationTop];
         [self showOrHideEditButton];
@@ -536,8 +478,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         [tableView deleteRowsAtIndexPaths:@[ indexPath ]
                          withRowAnimation:UITableViewRowAnimationAutomatic];
     }
-    NSIndexPath *nonfavoriteIndexPath = [self.fetchedResultsController indexPathForObject:forum];
-    if ([self.favoriteForums count] > 0) {
+    NSIndexPath *nonfavoriteIndexPath = [self.treeController indexPathForVisibleForum:forum];
+    if (self.favoriteForums.count > 0) {
         nonfavoriteIndexPath = [NSIndexPath indexPathForRow:nonfavoriteIndexPath.row
                                                   inSection:nonfavoriteIndexPath.section + 1];
     }
@@ -551,12 +493,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (BOOL)tableView:(UITableView *)tableView
 shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [self.favoriteForums count] > 0 && indexPath.section == 0;
+    return self.favoriteForums.count > 0 && indexPath.section == 0;
 }
 
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [self.favoriteForums count] > 0 && indexPath.section == 0;
+    return self.favoriteForums.count > 0 && indexPath.section == 0;
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView
@@ -578,6 +520,55 @@ moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
     self.userDrivenChange = YES;
     [AwfulSettings settings].favoriteForums = [self.favoriteForums valueForKey:@"forumID"];
     self.userDrivenChange = NO;
+}
+
+#pragma mark AwfulForumTreeControllerDelegate
+
+- (void)forumTreeControllerWillUpdate:(AwfulForumTreeController *)treeController
+{
+    [self.tableView beginUpdates];
+}
+
+- (void)forumTreeController:(AwfulForumTreeController *)treeController
+            categoryAtIndex:(NSInteger)index
+                  didChange:(AwfulForumTreeControllerChangeType)changeType
+{
+    if (self.favoriteForums.count > 0) {
+        index++;
+    }
+    NSIndexSet *sections = [NSIndexSet indexSetWithIndex:index];
+    if (changeType == AwfulForumTreeControllerChangeTypeDelete) {
+        [self.tableView deleteSections:sections withRowAnimation:UITableViewRowAnimationAutomatic];
+    } else if (changeType == AwfulForumTreeControllerChangeTypeInsert) {
+        [self.tableView insertSections:sections withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+}
+
+- (void)forumTreeController:(AwfulForumTreeController *)treeController
+    visibleForumAtIndexPath:(NSIndexPath *)indexPath
+                  didChange:(AwfulForumTreeControllerChangeType)changeType
+{
+    if (self.favoriteForums.count > 0) {
+        indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section + 1];
+    }
+    switch (changeType) {
+        case AwfulForumTreeControllerChangeTypeDelete:
+            [self.tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
+            break;
+            
+        case AwfulForumTreeControllerChangeTypeInsert:
+            [self.tableView insertRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
+            break;
+            
+        case AwfulForumTreeControllerChangeTypeUpdate:
+            [self.tableView reloadRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
+            break;
+    }
+}
+
+- (void)forumTreeControllerDidUpdate:(AwfulForumTreeController *)treeController
+{
+    [self.tableView endUpdates];
 }
 
 @end
