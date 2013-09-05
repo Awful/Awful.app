@@ -1,10 +1,8 @@
 <article id="{{ postID }}" class="post {{# beenSeen }}seen{{/ }} {{# authorIsOP }}role-op{{/ }} {{# author.moderator }}role-mod{{/ }} {{# author.administrator }}role-admin{{/ }} {{^ author.avatarURL }}no-avatar{{/ }}">
   <header>
     {{# author.avatarURL }}<img class="avatar" src="{{ . }}" alt="">{{/}}
-    <button class="action-button" title="Post actions">•••</button>
     <h1 class="username">{{ author.username }}</h1>
-    <time class="postdate">{{ postDateFormat(postDate) }}</time>
-    <time class="regdate">{{ regDateFormat(author.regdate) }}</time>
+    <time class="regdate">Joined {{ regDateFormat(author.regdate) }}</time>
   </header>
   
   <section class="postbody">
@@ -22,4 +20,10 @@
       </p>
     {{/ }}
   </section>
+	
+	<footer>
+		<time class="postdate">{{ postDateFormat(postDate) }}</time>
+    <button class="action-button" title="Post actions">•••</button>
+	</footer>
+
 </article>

@@ -14,14 +14,19 @@ body {
   word-wrap: break-word;
 }
 .post {
-  margin: 10px 5px;
-  border-radius: 2px;
+  margin: 0;
 }
 .iphone .post {
-  padding: .4em;
+  padding: .6em;
+  padding-bottom: 0;
 }
 .ipad .post {
   padding: 1.07em;
+  padding-bottom: 0;
+}
+header {
+  font-size: 1.125em;
+  margin: .25em;
 }
 .ipad header {
   margin-bottom: 8px;
@@ -55,13 +60,19 @@ header:after {
   padding-top: .5em;
 }
 .postdate {
-  display: block;
+  float: left;
+  margin: .7em 0;
 }
 .ipad .postdate {
   padding-bottom: .75em;
 }
 .regdate {
-  display: none;
+  display: block;
+  font-size: .85em;
+  font-weight: 300;
+}
+.ipad .regdate {
+  padding-bottom: .75em;
 }
 header {
   padding-bottom: 0;
@@ -69,6 +80,7 @@ header {
 }
 .username {
   font-size: 1em;
+  font-weight: 300;
   display: inline-block;
 }
 .role-admin .username {
@@ -92,7 +104,7 @@ header {
   padding: 0;
   border: none;
   font-family: inherit;
-  font-size: 2.85em;
+  font-size: 2.25em;
   -webkit-tap-highlight-color: transparent;
   -webkit-user-select: none;
   background-color: transparent;
@@ -104,7 +116,7 @@ header {
   line-height: 1.5em;
 }
 .postdate {
-  font-size: 0.85em;
+  font-size: 0.9em;
 }
 .postbody img {
   -webkit-user-select: none;
@@ -171,6 +183,14 @@ blockquote img {
 .attachment {
   margin: 0;
 }
+.ipad footer {
+  margin-bottom: 8px;
+}
+footer:after {
+  content: "";
+  display: block;
+  clear: both;
+}
 #ad {
   text-align: center;
 }
@@ -184,18 +204,19 @@ blockquote img {
   margin-bottom: 10px;
 }
 body {
-  background-color: #d1d1d1;
+  background-color: #fff;
 }
 body.dark {
   color: white;
   background-color: #131313;
 }
 .post {
-  background-color: white;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.75);
+  background-color: transparent;
+  border-bottom: 1px solid #c3c3c3;
 }
 .post.seen {
-  background-color: #ecf1fa;
+  /*background-color: #ecf1fa;*/
+
 }
 .dark .post {
   background-color: #313131;
@@ -205,36 +226,27 @@ body.dark {
   background-color: #121e2e;
 }
 header {
-  border-bottom-color: #f0f0f0;
+  border-bottom: none;
 }
 .dark header {
-  border-bottom-color: #4e4e4e;
+  /*border-bottom-color: #4e4e4e;*/
+
 }
 .seen header {
-  border-bottom-color: #d5dfe9;
+  /*border-bottom-color: #d5dfe9;*/
+
 }
 .dark .seen header {
-  border-bottom-color: #536879;
+  /*border-bottom-color: #536879;*/
+
 }
 .action-button {
   position: relative;
   top: -0.1em;
-  color: #d5d5d5;
-}
-.dark .action-button {
-  color: #777;
-}
-.dark .seen .action-button {
-  color: #536879;
-}
-.seen .action-button {
-  color: #9cb2c7;
+  color: #1682b2;
 }
 .postbody a {
-  color: #036;
-}
-.dark .postbody a {
-  color: #93daff;
+  color: #1682b2;
 }
 .bbc-spoiler {
   color: #000000;
@@ -287,6 +299,10 @@ header {
 .dark .bbc-block h4,
 .dark .bbc-block h5 {
   color: #999;
+}
+.postdate,
+.regdate {
+  color: #8e8e8e;
 }
 #end {
   color: #636363;

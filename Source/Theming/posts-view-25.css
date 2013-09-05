@@ -14,14 +14,19 @@ body {
   word-wrap: break-word;
 }
 .post {
-  margin: 10px 5px;
-  border-radius: 2px;
+  margin: 0;
 }
 .iphone .post {
-  padding: .4em;
+  padding: .6em;
+  padding-bottom: 0;
 }
 .ipad .post {
   padding: 1.07em;
+  padding-bottom: 0;
+}
+header {
+  font-size: 1.125em;
+  margin: .25em;
 }
 .ipad header {
   margin-bottom: 8px;
@@ -55,13 +60,19 @@ header:after {
   padding-top: .5em;
 }
 .postdate {
-  display: block;
+  float: left;
+  margin: .7em 0;
 }
 .ipad .postdate {
   padding-bottom: .75em;
 }
 .regdate {
-  display: none;
+  display: block;
+  font-size: .85em;
+  font-weight: 300;
+}
+.ipad .regdate {
+  padding-bottom: .75em;
 }
 header {
   padding-bottom: 0;
@@ -69,6 +80,7 @@ header {
 }
 .username {
   font-size: 1em;
+  font-weight: 300;
   display: inline-block;
 }
 .role-admin .username {
@@ -92,7 +104,7 @@ header {
   padding: 0;
   border: none;
   font-family: inherit;
-  font-size: 2.85em;
+  font-size: 2.25em;
   -webkit-tap-highlight-color: transparent;
   -webkit-user-select: none;
   background-color: transparent;
@@ -104,7 +116,7 @@ header {
   line-height: 1.5em;
 }
 .postdate {
-  font-size: 0.85em;
+  font-size: 0.9em;
 }
 .postbody img {
   -webkit-user-select: none;
@@ -170,6 +182,14 @@ blockquote img {
 }
 .attachment {
   margin: 0;
+}
+.ipad footer {
+  margin-bottom: 8px;
+}
+footer:after {
+  content: "";
+  display: block;
+  clear: both;
 }
 #ad {
   text-align: center;

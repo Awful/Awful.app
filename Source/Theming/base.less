@@ -20,15 +20,16 @@ body {
 // -------------------------
 
 .post {
-  margin: 10px 5px;
-  border-radius: 2px;
+  margin: 0;
   
   .iphone & {
-    padding: .4em;
+    padding: .6em;
+    padding-bottom: 0;
   }
   
   .ipad & {
     padding: 1.07em;
+    padding-bottom: 0;
   }
 
 }
@@ -39,7 +40,10 @@ body {
 // Layout
 
 header {
-
+  
+  font-size: 1.125em;
+  margin: .25em;
+  
   .ipad & {
     margin-bottom: 8px;
   }
@@ -81,7 +85,8 @@ header {
 }
 
 .postdate {
-  display: block;
+  float: left;
+  margin: .7em 0;
   
   .ipad & {
     padding-bottom: .75em;
@@ -90,7 +95,13 @@ header {
 }
 
 .regdate {
-  display: none;
+  display: block;
+  font-size: .85em;
+  font-weight: 300;
+  
+  .ipad & {
+    padding-bottom: .75em;
+  }
 }
 
 // Non-layout
@@ -102,6 +113,7 @@ header {
 
 .username {
   font-size: 1em;
+  font-weight: 300;
   display: inline-block;
   
   .role-admin & {
@@ -131,7 +143,7 @@ header {
   padding: 0;
   border: none;
   font-family: inherit; // UIWebView base style sets Helvetica.
-  font-size: 2.85em;
+  font-size: 2.25em;
   -webkit-tap-highlight-color: transparent;
   -webkit-user-select: none; // Prevent selecting the whole header on long-tap.
   background-color: transparent;
@@ -147,7 +159,7 @@ header {
 }
 
 .postdate {
-  font-size: 0.85em;
+  font-size: 0.9em;
 }
 
 // Post body
@@ -249,6 +261,19 @@ blockquote {
 
 .attachment {
   margin: 0;
+}
+
+footer {
+
+  .ipad & {
+    margin-bottom: 8px;
+  }
+  
+  &:after {
+    content: "";
+    display: block;
+    clear: both;
+  }
 }
 
 // Bottom of the page

@@ -8,7 +8,7 @@
 @import "base.less";
 
 body {
-  background-color: #d1d1d1;
+  background-color: #fff;
   
   &.dark {
     color: white;
@@ -17,11 +17,11 @@ body {
 }
 
 .post {
-  background-color: white;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, .75);
+  background-color: transparent;
+  border-bottom: 1px solid #c3c3c3;
   
   &.seen {
-    background-color: #ecf1fa;
+    /*background-color: #ecf1fa;*/
   }
   
   .dark & {
@@ -35,17 +35,17 @@ body {
 }
 
 header {
-  border-bottom-color: #f0f0f0;
+  border-bottom: none;
   
   .dark & {
-    border-bottom-color: #4e4e4e;
+    /*border-bottom-color: #4e4e4e;*/
   }
   
   .seen & {
-    border-bottom-color: #d5dfe9;
+    /*border-bottom-color: #d5dfe9;*/
     
     .dark & {
-      border-bottom-color: #536879;
+      /*border-bottom-color: #536879;*/
     }
   }
 }
@@ -53,27 +53,11 @@ header {
 .action-button {
   position: relative;
   top: -0.1em;
-  color: #d5d5d5;
-  
-  .dark & {
-    color: #777;
-  }
-  
-  .dark .seen & {
-    color: #536879;
-  }
-  
-  .seen & {
-    color: #9cb2c7;
-  }
+  color: #1682b2;
 }
 
 .postbody a {
-  color: #036;
-  
-  .dark & {
-    color: #93daff;
-  }
+  color: #1682b2;
 }
 
 @import "spoilers.less";
@@ -87,6 +71,10 @@ header {
       color: #999;
     }
   }
+}
+
+.postdate, .regdate {
+  color: #8e8e8e;
 }
 
 #end {
