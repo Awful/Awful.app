@@ -151,6 +151,7 @@ typedef NS_ENUM(NSInteger, AwfulBasementSidebarState)
 {
     UIViewController *old = _selectedViewController;
     _selectedViewController = selectedViewController;
+    self.sidebarViewController.selectedItem = _selectedViewController.tabBarItem;
     if ([self isViewLoaded] && ![old isEqual:selectedViewController]) {
         [self replaceMainViewController:old withViewController:selectedViewController];
     }
