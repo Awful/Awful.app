@@ -1,10 +1,6 @@
-//
 //  QuietAssertMacros.c
-//  Awful
 //
-//  Created by Nolan Waite on 2013-09-01.
-//  Copyright (c) 2013 Awful Contributors. All rights reserved.
-//
+//  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 // Xcode 5 DP5 and DP6 spam the console like crazy. This is a workaround.
 // https://gist.github.com/OdNairy/6219906
