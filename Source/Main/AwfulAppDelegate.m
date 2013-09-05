@@ -4,6 +4,7 @@
 
 #import "AwfulAppDelegate.h"
 #import "AwfulAlertView.h"
+#import "AwfulBasementViewController.h"
 #import "AwfulBookmarksController.h"
 #import "AwfulCrashlytics.h"
 #import "AwfulDataStack.h"
@@ -40,6 +41,7 @@
 @property (weak, nonatomic) AwfulSplitViewController *splitViewController;
 @property (nonatomic) UIBarButtonItem *showSidebarButtonItem;
 @property (weak, nonatomic) AwfulTabBarController *tabBarController;
+@property (weak, nonatomic) AwfulBasementViewController *basementViewController;
 
 @end
 
@@ -93,6 +95,7 @@ static id _instance;
     [self showLoginFormIsAtLaunch:NO andThen:^{
         AwfulTabBarController *tabBar = self.tabBarController;
         tabBar.selectedViewController = tabBar.viewControllers[0];
+        self.basementViewController.selectedViewController = self.basementViewController.viewControllers[0];
         UINavigationController *main = (id)self.splitViewController.mainViewController;
         main.viewControllers = @[ [AwfulStartViewController new] ];
     }];
@@ -125,15 +128,16 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         [[AwfulBookmarksController new] enclosingNavigationController],
         [[AwfulSettingsViewController new] enclosingNavigationController],
     ];
-    AwfulTabBarController *tabBar = [[AwfulTabBarController alloc] initWithViewControllers:vcs];
-    tabBar.selectedViewController = vcs[[AwfulSettings settings].firstTab];
-    tabBar.delegate = self;
-    self.tabBarController = tabBar;
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         AwfulStartViewController *start = [AwfulStartViewController new];
         UINavigationController *main = [start enclosingNavigationController];
         main.delegate = self;
+        
+        AwfulTabBarController *tabBar = [[AwfulTabBarController alloc] initWithViewControllers:vcs];
+        tabBar.selectedViewController = vcs[[AwfulSettings settings].firstTab];
+        tabBar.delegate = self;
+        self.tabBarController = tabBar;
         AwfulSplitViewController *split;
         split = [[AwfulSplitViewController alloc] initWithSidebarViewController:tabBar
                                                              mainViewController:main];
@@ -141,7 +145,10 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         self.window.rootViewController = split;
         self.splitViewController = split;
     } else {
-        self.window.rootViewController = tabBar;
+        AwfulBasementViewController *basement = [[AwfulBasementViewController alloc] initWithViewControllers:vcs];
+        basement.selectedViewController = vcs[[AwfulSettings settings].firstTab];
+        self.basementViewController = basement;
+        self.window.rootViewController = basement;
     }
 }
 
@@ -333,9 +340,10 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
 
 - (void)routeAwfulURLs
 {
+    UITabBarController *tabBar = (UITabBarController *)(self.basementViewController ?: self.tabBarController);
     void (^jumpToForum)(NSString *) = ^(NSString *forumID) {
         AwfulForum *forum = [AwfulForum fetchOrInsertForumWithID:forumID];
-        UINavigationController *nav = self.tabBarController.viewControllers[0];
+        UINavigationController *nav = tabBar.viewControllers[0];
         [self jumpToForum:forum inNavigationController:nav];
         [self.splitViewController setSidebarVisible:YES animated:YES];
     };
@@ -346,15 +354,15 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     }];
     
     [JLRoutes addRoute:@"/forums" handler:^(id _) {
-        self.tabBarController.selectedViewController = self.tabBarController.viewControllers[0];
+        tabBar.selectedViewController = tabBar.viewControllers[0];
         [self.splitViewController setSidebarVisible:YES animated:YES];
         return YES;
     }];
     
     void (^selectAndPopViewControllerAtIndex)(NSInteger) = ^(NSInteger i) {
-        UINavigationController *nav = self.tabBarController.viewControllers[i];
+        UINavigationController *nav = tabBar.viewControllers[i];
         [nav popToRootViewControllerAnimated:YES];
-        self.tabBarController.selectedViewController = nav;
+        tabBar.selectedViewController = nav;
         [self.splitViewController setSidebarVisible:YES animated:YES];
     };
     
@@ -386,7 +394,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         // Maybe the thread is already open.
         // On iPhone, could be in any tab, but on iPad, there's only one navigation controller for
         // posts view controllers.
-        NSArray *maybes = self.tabBarController.viewControllers;
+        NSArray *maybes = tabBar.viewControllers;
         if (self.splitViewController) {
             maybes = @[ self.splitViewController.mainViewController ];
         }
@@ -397,7 +405,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
                 if ((page == 0 || page == top.currentPage) &&
                     [top.singleUserID isEqualToString:params[@"userID"]]) {
                     if ([maybes count] > 1) {
-                        self.tabBarController.selectedViewController = nav;
+                        tabBar.selectedViewController = nav;
                     }
                     return YES;
                 }
@@ -415,7 +423,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         if (self.splitViewController) {
             nav = (id)self.splitViewController.mainViewController;
         } else {
-            nav = (id)self.tabBarController.selectedViewController;
+            nav = (id)tabBar.selectedViewController;
         }
         
         // On iPad, the app launches with a tag collage as its detail view. A posts view needs to
@@ -441,7 +449,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     
     [JLRoutes addRoute:@"/posts/:postID" handler:^(NSDictionary *params) {
         // Maybe the post is already visible.
-        NSArray *maybes = self.tabBarController.viewControllers;
+        NSArray *maybes = tabBar.viewControllers;
         if (self.splitViewController) {
             maybes = @[ self.splitViewController.mainViewController ];
         }
@@ -450,7 +458,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
             if (![top isKindOfClass:[AwfulPostsViewController class]]) continue;
             if ([[top.posts valueForKey:@"postID"] containsObject:params[@"postID"]]) {
                 if (!self.splitViewController) {
-                    self.tabBarController.selectedViewController = nav;
+                    tabBar.selectedViewController = nav;
                 }
                 [top jumpToPostWithID:params[@"postID"]];
                 [self.splitViewController setSidebarVisible:NO animated:YES];
@@ -494,8 +502,8 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     }];
     
     [JLRoutes addRoute:@"/favorites" handler:^(NSDictionary *parameters) {
-        UINavigationController *nav = self.tabBarController.viewControllers[0];
-        self.tabBarController.selectedViewController = nav;
+        UINavigationController *nav = tabBar.viewControllers[0];
+        tabBar.selectedViewController = nav;
         UIScrollView *scrollView = (id)nav.topViewController.view;
         if ([scrollView respondsToSelector:@selector(setContentOffset:animated:)]) {
             [scrollView setContentOffset:CGPointMake(0, -scrollView.contentInset.top) animated:YES];
@@ -522,7 +530,8 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
             return;
         }
     } else {
-        nav = (UINavigationController *)self.tabBarController.selectedViewController;
+        UITabBarController *tabBar = (UITabBarController *)(self.basementViewController ?: self.tabBarController);
+        nav = (UINavigationController *)tabBar.selectedViewController;
     }
     [nav pushViewController:postsView animated:YES];
 }
@@ -541,7 +550,8 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         if (![viewController isKindOfClass:[AwfulThreadListController class]]) continue;
         if ([viewController.forum isEqual:forum]) {
             [nav popToViewController:viewController animated:YES];
-            self.tabBarController.selectedViewController = nav;
+            UITabBarController *tabBar = (UITabBarController *)(self.basementViewController ?: self.tabBarController);
+            tabBar.selectedViewController = nav;
             return;
         }
     }
@@ -549,7 +559,8 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     AwfulThreadListController *threadList = [AwfulThreadListController new];
     threadList.forum = forum;
     [nav pushViewController:threadList animated:YES];
-    self.tabBarController.selectedViewController = nav;
+    UITabBarController *tabBar = (UITabBarController *)(self.basementViewController ?: self.tabBarController);
+    tabBar.selectedViewController = nav;
 }
 
 #pragma mark - AwfulTabBarControllerDelegate
