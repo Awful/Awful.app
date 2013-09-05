@@ -46,8 +46,6 @@ typedef NS_ENUM(NSInteger, AwfulBasementSidebarState)
 - (id)initWithViewControllers:(NSArray *)viewControllers
 {
     if (!(self = [super initWithNibName:nil bundle:nil])) return nil;
-    self.sidebarViewController = [AwfulBasementSidebarViewController new];
-    self.sidebarViewController.delegate = self;
     self.viewControllers = viewControllers;
     return self;
 }
@@ -85,6 +83,10 @@ typedef NS_ENUM(NSInteger, AwfulBasementSidebarState)
 - (void)loadView
 {
     self.view = [UIView new];
+    self.sidebarViewController = [AwfulBasementSidebarViewController new];
+    self.sidebarViewController.delegate = self;
+    self.sidebarViewController.items = [self.viewControllers valueForKey:@"tabBarItem"];
+    self.sidebarViewController.selectedItem = self.selectedViewController.tabBarItem;
     
     UIScreenEdgePanGestureRecognizer *pan = [UIScreenEdgePanGestureRecognizer new];
     pan.edges = UIRectEdgeLeft;
