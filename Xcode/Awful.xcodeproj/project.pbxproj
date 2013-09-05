@@ -487,7 +487,7 @@
 		1C5F6FBA17D2F3AC005ABD6F /* QuietAssertMacros.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = QuietAssertMacros.c; sourceTree = "<group>"; };
 		1C5F6FF217D731DC005ABD6F /* AwfulForumTreeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumTreeController.h; sourceTree = "<group>"; };
 		1C5F6FF317D731DC005ABD6F /* AwfulForumTreeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumTreeController.m; sourceTree = "<group>"; };
-		1C5F6FF517D738BF005ABD6F /* Model-2.0.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Model-2.0.xcdatamodel"; sourceTree = "<group>"; };
+		1C5F6FF517D738BF005ABD6F /* Model-2.0.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model-2.0.xcdatamodel"; sourceTree = "<group>"; };
 		1C5F6FFF17D8521F005ABD6F /* AwfulBasementViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulBasementViewController.h; sourceTree = "<group>"; };
 		1C5F700017D8521F005ABD6F /* AwfulBasementViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulBasementViewController.m; sourceTree = "<group>"; };
 		1C5F700217D853AA005ABD6F /* AwfulBasementSidebarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulBasementSidebarViewController.h; sourceTree = "<group>"; };
