@@ -68,6 +68,16 @@ typedef NS_ENUM(NSInteger, AwfulBasementSidebarState)
     }
 }
 
+- (NSUInteger)selectedIndex
+{
+    return [self.viewControllers indexOfObject:self.selectedViewController];
+}
+
+- (void)setSelectedIndex:(NSUInteger)selectedIndex
+{
+    self.selectedViewController = self.viewControllers[selectedIndex];
+}
+
 - (UIBarButtonItem *)createShowSidebarItem
 {
     return [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRewind

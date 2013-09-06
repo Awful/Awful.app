@@ -27,6 +27,11 @@
 @property (strong, nonatomic) UIViewController *selectedViewController;
 
 /**
+ * The index of the selectedViewController within the `viewControllers` array.
+ */
+@property (assign, nonatomic) NSUInteger selectedIndex;
+
+/**
  * YES if the sidebar is visible, or NO otherwise. Defaults to NO.
  *
  * Assigning a value is equivalent to sending `-setSidebarVisible:animated:` with NO for the `animated` parameter.
