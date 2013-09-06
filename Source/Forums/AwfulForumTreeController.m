@@ -193,12 +193,13 @@
     NSMutableIndexSet *hiddenForums = _hiddenForumsInCategory[indexPath.section];
     switch (changeType) {
         case NSFetchedResultsChangeDelete: {
-            [hiddenForums shiftIndexesStartingAtIndex:indexPath.row by:-1];
             NSIndexPath *visibleIndexPath = [self indexPathForVisibleForum:forum];
-            if (!visibleIndexPath) break;
-            [self.delegate forumTreeController:self
-                       visibleForumAtIndexPath:visibleIndexPath
-                                     didChange:AwfulForumTreeControllerChangeTypeDelete];
+            [hiddenForums shiftIndexesStartingAtIndex:(indexPath.row + 1) by:-1];
+            if (visibleIndexPath) {
+                [self.delegate forumTreeController:self
+                           visibleForumAtIndexPath:visibleIndexPath
+                                         didChange:AwfulForumTreeControllerChangeTypeDelete];
+            }
             break;
         }
             
@@ -227,13 +228,15 @@
                 newIndexPath:newIndexPath];
             break;
             
-        case NSFetchedResultsChangeUpdate:
-            if ([self indexPathForVisibleForum:forum]) {
+        case NSFetchedResultsChangeUpdate: {
+            NSIndexPath *visibleIndexPath = [self indexPathForVisibleForum:forum];
+            if (visibleIndexPath) {
                 [self.delegate forumTreeController:self
-                           visibleForumAtIndexPath:indexPath
+                           visibleForumAtIndexPath:visibleIndexPath
                                          didChange:AwfulForumTreeControllerChangeTypeUpdate];
             }
             break;
+        }
     }
 }
 
