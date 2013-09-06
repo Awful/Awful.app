@@ -8,6 +8,7 @@
 #import "AwfulAlertView.h"
 #import "AwfulDataStack.h"
 #import "AwfulDisclosureIndicatorView.h"
+#import "AwfulExpandingSplitViewController.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulIconActionSheet.h"
 #import "AwfulLoginController.h"
@@ -15,8 +16,6 @@
 #import "AwfulPostsViewController.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulSettings.h"
-#import "AwfulSplitViewController.h"
-#import "AwfulTabBarController.h"
 #import "AwfulTheme.h"
 #import "AwfulThreadCell.h"
 #import "AwfulThreadComposeViewController.h"
@@ -271,9 +270,7 @@
         // range. Fall back to pointing at the table view.
         [sheet presentFromViewController:self fromRect:CGRectZero inView:cell ?: self.tableView];
     } else {
-        AwfulTabBar *tabBar = self.awfulTabBarController.tabBar;
-        [sheet presentFromViewController:self.awfulTabBarController
-                                fromRect:tabBar.bounds inView:tabBar];
+        [sheet presentFromViewController:self fromRect:CGRectZero inView:self.view];
     }
 }
 
@@ -301,11 +298,8 @@
 
 - (void)displayPage:(AwfulPostsViewController *)page
 {
-    AwfulSplitViewController *split = self.awfulSplitViewController;
-    if (split) {
-        UINavigationController *nav = (id)split.mainViewController;
-        nav.viewControllers = @[ page ];
-        [split setSidebarVisible:NO animated:YES];
+    if (self.expandingSplitViewController) {
+        self.expandingSplitViewController.detailViewController = [page enclosingNavigationController];
     } else {
         [self.navigationController pushViewController:page animated:YES];
     }

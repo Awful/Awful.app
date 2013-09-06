@@ -114,9 +114,10 @@
     newDetailViewController.view.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:newDetailViewController.view];
     UIViewController *master = self.viewControllers[0];
-    NSDictionary *views = @{ @"master": master, @"detail": newDetailViewController.view };
+    NSDictionary *views = @{ @"master": master.view,
+                             @"detail": newDetailViewController.view };
     [_detailViewControllerConstraints addObjectsFromArray:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"H:[master]-4@500-[detail]|"
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:[master]-1@500-[detail]|"
                                              options:0
                                              metrics:nil
                                                views:views]];
@@ -159,7 +160,7 @@
         self.expandedDetailViewControllerConstraint = nil;
     }
     [UIView animateWithDuration:(animated ? 0.3 : 0) animations:^{
-        [self.view setNeedsLayout];
+        [self.view layoutIfNeeded];
     }];
 }
 
@@ -171,6 +172,12 @@
 - (void)setDetailViewController:(UIViewController *)detailViewController
 {
     self.viewControllers = @[ self.viewControllers[0], detailViewController ];
+}
+
+- (UITabBarItem *)tabBarItem
+{
+    UIViewController *masterViewController = self.viewControllers[0];
+    return masterViewController.tabBarItem;
 }
 
 @end

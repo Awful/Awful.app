@@ -8,6 +8,7 @@
 #import "AwfulBookmarksController.h"
 #import "AwfulCrashlytics.h"
 #import "AwfulDataStack.h"
+#import "AwfulExpandingSplitViewController.h"
 #import "AwfulForumsListController.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulLoginController.h"
@@ -18,33 +19,28 @@
 #import "AwfulPrivateMessageListController.h"
 #import "AwfulSettings.h"
 #import "AwfulSettingsViewController.h"
-#import "AwfulSplitViewController.h"
 #import "AwfulStartViewController.h"
-#import "AwfulTabBarController.h"
 #import "AwfulTheme.h"
+#import "AwfulVerticalTabBarController.h"
 #import <AFNetworking/AFNetworking.h>
 #import <AVFoundation/AVFoundation.h>
 #import <Crashlytics/Crashlytics.h>
 #import <JLRoutes/JLRoutes.h>
 #import "NSFileManager+UserDirectories.h"
+#import "NSManagedObject+Awful.h"
 #import "NSURL+Awful.h"
 #import "NSURL+Punycode.h"
-#import "NSManagedObject+Awful.h"
 #import <PocketAPI/PocketAPI.h>
 #import <SVProgressHUD/SVProgressHUD.h>
 #import "UIViewController+AwfulTheming.h"
 #import "UIViewController+NavigationEnclosure.h"
 
-@interface AwfulAppDelegate () <AwfulTabBarControllerDelegate, UINavigationControllerDelegate,
-                                AwfulLoginControllerDelegate, AwfulSplitViewControllerDelegate>
+@interface AwfulAppDelegate () <AwfulLoginControllerDelegate>
 
-@property (weak, nonatomic) AwfulSplitViewController *splitViewController;
-@property (nonatomic) UIBarButtonItem *showSidebarButtonItem;
-@property (weak, nonatomic) AwfulTabBarController *tabBarController;
-@property (weak, nonatomic) AwfulBasementViewController *basementViewController;
+@property (strong, nonatomic) AwfulBasementViewController *basementViewController;
+@property (strong, nonatomic) AwfulVerticalTabBarController *verticalTabBarController;
 
 @end
-
 
 @implementation AwfulAppDelegate
 
@@ -93,62 +89,34 @@ static id _instance;
                                                         object:nil];
     
     [self showLoginFormIsAtLaunch:NO andThen:^{
-        AwfulTabBarController *tabBar = self.tabBarController;
-        tabBar.selectedViewController = tabBar.viewControllers[0];
-        self.basementViewController.selectedViewController = self.basementViewController.viewControllers[0];
-        UINavigationController *main = (id)self.splitViewController.mainViewController;
-        main.viewControllers = @[ [AwfulStartViewController new] ];
+        self.basementViewController.selectedIndex = 0;
+        self.verticalTabBarController.selectedIndex = 0;
     }];
 }
 
 NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLogOutNotification";
 
-- (UIBarButtonItem *)showSidebarButtonItem
-{
-    if (_showSidebarButtonItem) return _showSidebarButtonItem;
-    UIImage *listIcon = [UIImage imageNamed:@"list_icon.png"];
-    _showSidebarButtonItem = [[UIBarButtonItem alloc] initWithImage:listIcon
-                                                                style:UIBarButtonItemStyleBordered
-                                                               target:self
-                                                               action:@selector(didTapShowSidebar)];
-    _showSidebarButtonItem.accessibilityLabel = @"Sidebar";
-    return _showSidebarButtonItem;
-}
-
-- (void)didTapShowSidebar
-{
-    [self.splitViewController setSidebarVisible:YES animated:YES];
-}
-
 - (void)setUpRootViewController
 {
-    NSArray *vcs = @[
-        [[AwfulForumsListController new] enclosingNavigationController],
-        [[AwfulPrivateMessageListController new] enclosingNavigationController],
-        [[AwfulBookmarksController new] enclosingNavigationController],
-        [[AwfulSettingsViewController new] enclosingNavigationController],
-    ];
+    NSArray *viewControllers = @[ [[AwfulForumsListController new] enclosingNavigationController],
+                                  [[AwfulPrivateMessageListController new] enclosingNavigationController],
+                                  [[AwfulBookmarksController new] enclosingNavigationController],
+                                  [[AwfulSettingsViewController new] enclosingNavigationController] ];
     
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        AwfulStartViewController *start = [AwfulStartViewController new];
-        UINavigationController *main = [start enclosingNavigationController];
-        main.delegate = self;
-        
-        AwfulTabBarController *tabBar = [[AwfulTabBarController alloc] initWithViewControllers:vcs];
-        tabBar.selectedViewController = vcs[[AwfulSettings settings].firstTab];
-        tabBar.delegate = self;
-        self.tabBarController = tabBar;
-        AwfulSplitViewController *split;
-        split = [[AwfulSplitViewController alloc] initWithSidebarViewController:tabBar
-                                                             mainViewController:main];
-        split.delegate = self;
-        self.window.rootViewController = split;
-        self.splitViewController = split;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        self.basementViewController = [[AwfulBasementViewController alloc] initWithViewControllers:viewControllers];
+        self.basementViewController.selectedIndex = [AwfulSettings settings].firstTab;
+        self.window.rootViewController = self.basementViewController;
     } else {
-        AwfulBasementViewController *basement = [[AwfulBasementViewController alloc] initWithViewControllers:vcs];
-        basement.selectedViewController = vcs[[AwfulSettings settings].firstTab];
-        self.basementViewController = basement;
-        self.window.rootViewController = basement;
+        NSMutableArray *splits = [NSMutableArray new];
+        for (UIViewController *viewController in viewControllers) {
+            AwfulExpandingSplitViewController *split;
+            split = [[AwfulExpandingSplitViewController alloc] initWithViewControllers:@[ viewController ]];
+            [splits addObject:split];
+        }
+        self.verticalTabBarController = [[AwfulVerticalTabBarController alloc] initWithViewControllers:splits];
+        self.verticalTabBarController.selectedIndex = [AwfulSettings settings].firstTab;
+        self.window.rootViewController = self.verticalTabBarController;
     }
 }
 
@@ -172,12 +140,13 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     
     [self ignoreSilentSwitchWhenPlayingEmbeddedVideo];
     
-    [self routeAwfulURLs];
-    
     application.statusBarStyle = UIStatusBarStyleLightContent;
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.tintColor = [UIColor whiteColor];
     [self setUpRootViewController];
+    
+    [self routeAwfulURLs];
+    
     [self.window makeKeyAndVisible];
         
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
@@ -212,9 +181,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         }
     });
     
-    if ([AwfulHTTPClient client].loggedIn) {
-        [self.splitViewController setSidebarVisible:YES animated:YES];
-    } else {
+    if (![AwfulHTTPClient client].loggedIn) {
         [self showLoginFormIsAtLaunch:YES andThen:nil];
     }
     
@@ -244,8 +211,6 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
     [noteCenter addObserver:self selector:@selector(themeDidChange:)
                        name:AwfulThemeDidChangeNotification object:nil];
-    [noteCenter addObserver:self selector:@selector(settingsDidChange:)
-                       name:AwfulSettingsDidChangeNotification object:nil];
     
     [[PocketAPI sharedAPI] setURLScheme:@"awful-pocket-login"];
     [[PocketAPI sharedAPI] setConsumerKey:@"13890-9e69d4d40af58edc2ef13ca0"];
@@ -256,16 +221,6 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
 - (void)themeDidChange:(NSNotification *)note
 {
     [self.window.rootViewController recursivelyRetheme];
-}
-
-- (void)settingsDidChange:(NSNotification *)note
-{
-    NSArray *settings = note.userInfo[AwfulSettingsDidChangeSettingsKey];
-    if (![settings containsObject:AwfulSettingsKeys.keepSidebarOpen]) return;
-    AwfulSplitViewController *split = self.splitViewController;
-    split.sidebarCanHide = [self awfulSplitViewController:split
-                           shouldHideSidebarInOrientation:split.interfaceOrientation];
-    [self ensureShowSidebarButtonInMainViewController];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -340,12 +295,12 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
 
 - (void)routeAwfulURLs
 {
-    UITabBarController *tabBar = (UITabBarController *)(self.basementViewController ?: self.tabBarController);
+    // TODO fix this for new iPhone, iPad root view controllers.
+    AwfulBasementViewController *tabBar = self.basementViewController;
     void (^jumpToForum)(NSString *) = ^(NSString *forumID) {
         AwfulForum *forum = [AwfulForum fetchOrInsertForumWithID:forumID];
         UINavigationController *nav = tabBar.viewControllers[0];
         [self jumpToForum:forum inNavigationController:nav];
-        [self.splitViewController setSidebarVisible:YES animated:YES];
     };
     
     [JLRoutes addRoute:@"/forums/:forumID" handler:^(NSDictionary *params) {
@@ -355,7 +310,6 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     
     [JLRoutes addRoute:@"/forums" handler:^(id _) {
         tabBar.selectedViewController = tabBar.viewControllers[0];
-        [self.splitViewController setSidebarVisible:YES animated:YES];
         return YES;
     }];
     
@@ -363,7 +317,6 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         UINavigationController *nav = tabBar.viewControllers[i];
         [nav popToRootViewControllerAnimated:YES];
         tabBar.selectedViewController = nav;
-        [self.splitViewController setSidebarVisible:YES animated:YES];
     };
     
     [JLRoutes addRoute:@"/messages" handler:^(id _) {
@@ -395,9 +348,6 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         // On iPhone, could be in any tab, but on iPad, there's only one navigation controller for
         // posts view controllers.
         NSArray *maybes = tabBar.viewControllers;
-        if (self.splitViewController) {
-            maybes = @[ self.splitViewController.mainViewController ];
-        }
         for (UINavigationController *nav in maybes) {
             AwfulPostsViewController *top = (id)nav.topViewController;
             if (![top isKindOfClass:[AwfulPostsViewController class]]) continue;
@@ -419,23 +369,12 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
             page = 1;
         }
         [postsView loadPage:page singleUserID:params[@"userID"]];
-        UINavigationController *nav;
-        if (self.splitViewController) {
-            nav = (id)self.splitViewController.mainViewController;
-        } else {
-            nav = (id)tabBar.selectedViewController;
-        }
+        UINavigationController *nav = (id)tabBar.selectedViewController;
         
         // On iPad, the app launches with a tag collage as its detail view. A posts view needs to
         // replace this collage, not be pushed on top.
-        if (self.splitViewController &&
-            ![nav.topViewController isKindOfClass:[AwfulPostsViewController class]]) {
-            [nav setViewControllers:@[ postsView ] animated:YES];
-        } else {
-            [nav pushViewController:postsView animated:YES];
-        }
+        [nav pushViewController:postsView animated:YES];
         
-        [self.splitViewController setSidebarVisible:NO animated:YES];
         return YES;
     };
     
@@ -450,18 +389,11 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     [JLRoutes addRoute:@"/posts/:postID" handler:^(NSDictionary *params) {
         // Maybe the post is already visible.
         NSArray *maybes = tabBar.viewControllers;
-        if (self.splitViewController) {
-            maybes = @[ self.splitViewController.mainViewController ];
-        }
         for (UINavigationController *nav in maybes) {
             AwfulPostsViewController *top = (id)nav.topViewController;
             if (![top isKindOfClass:[AwfulPostsViewController class]]) continue;
             if ([[top.posts valueForKey:@"postID"] containsObject:params[@"postID"]]) {
-                if (!self.splitViewController) {
-                    tabBar.selectedViewController = nav;
-                }
                 [top jumpToPostWithID:params[@"postID"]];
-                [self.splitViewController setSidebarVisible:NO animated:YES];
                 return YES;
             }
         }
@@ -508,7 +440,6 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         if ([scrollView respondsToSelector:@selector(setContentOffset:animated:)]) {
             [scrollView setContentOffset:CGPointMake(0, -scrollView.contentInset.top) animated:YES];
         }
-        [self.splitViewController setSidebarVisible:YES animated:YES];
         return YES;
     }];
 }
@@ -517,22 +448,13 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
                             onPage:(NSInteger)page
                     ofThreadWithID:(NSString *)threadID
 {
-    [self.splitViewController setSidebarVisible:NO animated:YES];
     AwfulPostsViewController *postsView = [AwfulPostsViewController new];
     postsView.thread = [AwfulThread firstOrNewThreadWithThreadID:threadID];
     [postsView loadPage:page singleUserID:nil];
     [postsView jumpToPostWithID:postID];
     UINavigationController *nav;
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        nav = (id)self.splitViewController.mainViewController;
-        if (![nav.topViewController isKindOfClass:[AwfulPostsViewController class]]) {
-            [nav setViewControllers:@[ postsView ] animated:YES];
-            return;
-        }
-    } else {
-        UITabBarController *tabBar = (UITabBarController *)(self.basementViewController ?: self.tabBarController);
-        nav = (UINavigationController *)tabBar.selectedViewController;
-    }
+    UITabBarController *tabBar = (UITabBarController *)(self.basementViewController);
+    nav = (UINavigationController *)tabBar.selectedViewController;
     [nav pushViewController:postsView animated:YES];
 }
 
@@ -550,7 +472,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         if (![viewController isKindOfClass:[AwfulThreadListController class]]) continue;
         if ([viewController.forum isEqual:forum]) {
             [nav popToViewController:viewController animated:YES];
-            UITabBarController *tabBar = (UITabBarController *)(self.basementViewController ?: self.tabBarController);
+            UITabBarController *tabBar = (UITabBarController *)(self.basementViewController);
             tabBar.selectedViewController = nav;
             return;
         }
@@ -559,38 +481,8 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     AwfulThreadListController *threadList = [AwfulThreadListController new];
     threadList.forum = forum;
     [nav pushViewController:threadList animated:YES];
-    UITabBarController *tabBar = (UITabBarController *)(self.basementViewController ?: self.tabBarController);
+    UITabBarController *tabBar = (UITabBarController *)(self.basementViewController);
     tabBar.selectedViewController = nav;
-}
-
-#pragma mark - AwfulTabBarControllerDelegate
-
-- (BOOL)tabBarController:(AwfulTabBarController *)tabBarController
-    shouldSelectViewController:(UIViewController *)viewController
-{
-    return [AwfulHTTPClient client].loggedIn;
-}
-
-#pragma mark - UINavigationControllerDelegate
-
-- (void)navigationController:(UINavigationController *)navigationController
-      willShowViewController:(UIViewController *)viewController
-                    animated:(BOOL)animated
-{
-    if ([navigationController isEqual:self.splitViewController.mainViewController]) {
-        [self ensureShowSidebarButtonInMainViewController];
-    }
-}
-
-- (void)ensureShowSidebarButtonInMainViewController
-{
-    UINavigationController *nav = (id)self.splitViewController.mainViewController;
-    UIViewController *bottom = nav.viewControllers[0];
-    if (self.splitViewController.sidebarCanHide) {
-        bottom.navigationItem.leftBarButtonItem = self.showSidebarButtonItem;
-    } else {
-        bottom.navigationItem.leftBarButtonItem = nil;
-    }
 }
 
 #pragma mark - AwfulLoginControllerDelegate
@@ -606,9 +498,6 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     settings.canSendPrivateMessages = [userInfo[@"canSendPrivateMessages"] boolValue];
     [self.window.rootViewController dismissViewControllerAnimated:YES completion:^{
         [[AwfulHTTPClient client] listForumsAndThen:nil];
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            [self.splitViewController setSidebarVisible:YES animated:YES];
-        }
     }];
 }
 
@@ -618,25 +507,6 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
                           message:@"Double-check your username and password, then try again."
                       buttonTitle:@"Alright"
                        completion:nil];
-}
-
-#pragma mark - AwfulSplitViewControllerDelegate
-
-- (BOOL)awfulSplitViewController:(AwfulSplitViewController *)controller
-  shouldHideSidebarInOrientation:(UIInterfaceOrientation)orientation
-{
-    switch ([AwfulSettings settings].keepSidebarOpen) {
-        case AwfulKeepSidebarOpenAlways: return NO;
-        case AwfulKeepSidebarOpenInLandscape: return UIInterfaceOrientationIsPortrait(orientation);
-        case AwfulKeepSidebarOpenInPortrait: return UIInterfaceOrientationIsLandscape(orientation);
-        case AwfulKeepSidebarOpenNever: default: return YES;
-    }
-}
-
-- (void)awfulSplitViewController:(AwfulSplitViewController *)controller
-                 willHideSidebar:(BOOL)willHideSidebar
-{
-    [self ensureShowSidebarButtonInMainViewController];
 }
 
 @end

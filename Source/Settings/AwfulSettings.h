@@ -69,15 +69,6 @@ typedef NS_ENUM(NSInteger, AwfulGasChamberStyle) {
 
 @property (assign, nonatomic) AwfulGasChamberStyle gasChamberStyle;
 
-typedef NS_ENUM(NSInteger, AwfulKeepSidebarOpenWhen) {
-    AwfulKeepSidebarOpenNever,
-    AwfulKeepSidebarOpenInLandscape,
-    AwfulKeepSidebarOpenInPortrait,
-    AwfulKeepSidebarOpenAlways,
-};
-
-@property (assign, nonatomic) AwfulKeepSidebarOpenWhen keepSidebarOpen;
-
 @property (copy, nonatomic) NSArray *favoriteForums;
 
 @property (nonatomic) NSNumber *fontSize;
@@ -124,7 +115,6 @@ extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *yosposStyle;
     __unsafe_unretained NSString *fyadStyle;
     __unsafe_unretained NSString *gasChamberStyle;
-    __unsafe_unretained NSString *keepSidebarOpen;
     __unsafe_unretained NSString *favoriteForums;
     __unsafe_unretained NSString *fontSize;
     __unsafe_unretained NSString *lastOfferedPasteboardURL;

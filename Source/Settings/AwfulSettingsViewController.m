@@ -6,6 +6,7 @@
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulDisclosureIndicatorView.h"
+#import "AwfulExpandingSplitViewController.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulInstapaperLogInController.h"
 #import "AwfulLoginController.h"
@@ -13,7 +14,6 @@
 #import "AwfulPostsViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulSettingsChoiceViewController.h"
-#import "AwfulSplitViewController.h"
 #import "AwfulTheme.h"
 #import "InstapaperAPIClient.h"
 #import "NSManagedObject+Awful.h"
@@ -358,11 +358,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         NSString *threadID = setting[@"ThreadID"];
         page.thread = [AwfulThread firstOrNewThreadWithThreadID:threadID];
         [page loadPage:AwfulThreadPageNextUnread singleUserID:nil];
-        AwfulSplitViewController *split = self.awfulSplitViewController;
-        if (split) {
-            UINavigationController *nav = (id)split.mainViewController;
-            [nav setViewControllers:@[ page ] animated:NO];
-            [split setSidebarVisible:NO animated:YES];
+        if (self.expandingSplitViewController) {
+            self.expandingSplitViewController.detailViewController = [page enclosingNavigationController];
         } else {
             [self.navigationController pushViewController:page animated:YES];
         }

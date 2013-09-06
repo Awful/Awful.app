@@ -7,6 +7,7 @@
 //
 
 #import "AwfulVerticalTabBar.h"
+#import "AwfulTabBarButton.h"
 
 @implementation AwfulVerticalTabBar
 {
@@ -17,9 +18,10 @@
 - (id)initWithItems:(NSArray *)items
 {
     if (!(self = [super init])) return nil;
-    self.items = items;
     _buttons = [NSMutableArray new];
     _buttonConstraints = [NSMutableArray new];
+    self.items = items;
+    self.backgroundColor = [UIColor blackColor];
     return self;
 }
 
@@ -33,13 +35,40 @@
         [_buttons removeLastObject];
     }
     while (_items.count > _buttons.count) {
-        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+        UIButton *button = [AwfulTabBarButton new];
+        button.translatesAutoresizingMaskIntoConstraints = NO;
+        [button addTarget:self action:@selector(didTapItemButton:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:button];
         [_buttons addObject:button];
     }
+    [_buttons enumerateObjectsUsingBlock:^(AwfulTabBarButton *button, NSUInteger i, BOOL *stop) {
+        UITabBarItem *item = _items[i];
+        [button setImage:item.image];
+    }];
     [self removeConstraints:_buttonConstraints];
     [_buttonConstraints removeAllObjects];
     [self setNeedsUpdateConstraints];
+    if (![_items containsObject:self.selectedItem]) {
+        self.selectedItem = _items[0];
+    }
+}
+
+- (void)setSelectedItem:(UITabBarItem *)selectedItem
+{
+    if (_selectedItem == selectedItem) return;
+    _selectedItem = selectedItem;
+    NSUInteger selectedIndex = [self.items indexOfObject:self.selectedItem];
+    [_buttons enumerateObjectsUsingBlock:^(UIButton *button, NSUInteger i, BOOL *stop) {
+        button.selected = (i == selectedIndex);
+    }];
+}
+
+- (void)didTapItemButton:(UIButton *)button
+{
+    NSUInteger i = [_buttons indexOfObject:button];
+    UITabBarItem *item = _items[i];
+    self.selectedItem = item;
+    [self.delegate tabBar:self didSelectItem:item];
 }
 
 - (void)updateConstraints
@@ -47,7 +76,6 @@
     [super updateConstraints];
     [_buttons enumerateObjectsUsingBlock:^(UITabBarItem *item, NSUInteger i, BOOL *stop) {
         UIButton *button = _buttons[i];
-        [button setImage:item.image forState:UIControlStateNormal];
         [_buttonConstraints addObjectsFromArray:
          [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[button]|"
                                                  options:0
@@ -55,13 +83,13 @@
                                                    views:@{ @"button": button }]];
         if (i == 0) {
             [_buttonConstraints addObjectsFromArray:
-             [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[button]"
+             [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[button(==44)]"
                                                      options:0
                                                      metrics:nil
                                                        views:@{ @"button": button }]];
         } else {
             [_buttonConstraints addObjectsFromArray:
-             [NSLayoutConstraint constraintsWithVisualFormat:@"V:[top]-4-[bottom]"
+             [NSLayoutConstraint constraintsWithVisualFormat:@"V:[top]-8-[bottom(==top)]"
                                                      options:0
                                                      metrics:nil
                                                        views:@{ @"top": _buttons[i - 1],

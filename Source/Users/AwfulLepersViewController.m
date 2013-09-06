@@ -9,7 +9,6 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulLeperCell.h"
 #import "AwfulParsing.h"
-#import "AwfulSplitViewController.h"
 #import "AwfulTheme.h"
 
 @interface AwfulLepersViewController ()

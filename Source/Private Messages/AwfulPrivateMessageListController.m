@@ -7,6 +7,7 @@
 #import "AwfulAlertView.h"
 #import "AwfulDataStack.h"
 #import "AwfulDisclosureIndicatorView.h"
+#import "AwfulExpandingSplitViewController.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
 #import "AwfulNeedPlatinumView.h"
@@ -14,7 +15,6 @@
 #import "AwfulPrivateMessageComposeViewController.h"
 #import "AwfulPrivateMessageViewController.h"
 #import "AwfulSettings.h"
-#import "AwfulSplitViewController.h"
 #import "AwfulTheme.h"
 #import "AwfulThreadCell.h"
 #import "AwfulThreadTag.h"
@@ -109,18 +109,7 @@
     AwfulPrivateMessageComposeViewController *compose;
     compose = [AwfulPrivateMessageComposeViewController new];
     compose.delegate = self;
-    
-    // If the following is true:
-    //
-    //   1. We're first, or a child of the first, in self.splitViewController.viewControllers.
-    //   2. We present a view controller as a page sheet.
-    //   3. The split view controller hides its first view controller in the current orientation.
-    //
-    // Then the presented view controller will be rudely dismissed when the device orientation
-    // changes. The workaround is to present from the split view controller itself.
-    UIViewController *presenter = self.awfulSplitViewController ?: self;
-    [presenter presentViewController:[compose enclosingNavigationController]
-                            animated:YES completion:nil];
+    [self presentViewController:[compose enclosingNavigationController] animated:YES completion:nil];
 }
 
 - (void)didGetNewPMCount:(NSNotification *)notification
@@ -253,11 +242,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     AwfulPrivateMessage *pm = [self.fetchedResultsController objectAtIndexPath:indexPath];
     AwfulPrivateMessageViewController *vc;
     vc = [[AwfulPrivateMessageViewController alloc] initWithPrivateMessage:pm];
-    AwfulSplitViewController *split = self.awfulSplitViewController;
-    if (split) {
-        UINavigationController *nav = (id)split.mainViewController;
-        nav.viewControllers = @[ vc ];
-        [split setSidebarVisible:NO animated:YES];
+    if (self.expandingSplitViewController) {
+        self.expandingSplitViewController.detailViewController = [vc enclosingNavigationController];
     } else {
         [self.navigationController pushViewController:vc animated:YES];
     }

@@ -30,4 +30,9 @@
  */
 @property (strong, nonatomic) UIViewController *selectedViewController;
 
+/**
+ * The index of the selected view controler in the `viewControllers` array.
+ */
+@property (assign, nonatomic) NSUInteger selectedIndex;
+
 @end

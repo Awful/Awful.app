@@ -79,50 +79,6 @@
 		</dict>
 		<dict>
 			<key>Title</key>
-			<string>Sidebar</string>
-			<key>Device</key>
-			<string>iPad</string>
-			<key>Settings</key>
-			<array>
-				<dict>
-					<key>Title</key>
-					<string>Keep Sidebar Open</string>
-					<key>Choices</key>
-					<array>
-						<dict>
-							<key>Title</key>
-							<string>Never</string>
-							<key>Value</key>
-							<string>never</string>
-						</dict>
-						<dict>
-							<key>Title</key>
-							<string>Landscape</string>
-							<key>Value</key>
-							<string>landscape</string>
-						</dict>
-						<dict>
-							<key>Title</key>
-							<string>Portrait</string>
-							<key>Value</key>
-							<string>portrait</string>
-						</dict>
-						<dict>
-							<key>Title</key>
-							<string>Always</string>
-							<key>Value</key>
-							<string>always</string>
-						</dict>
-					</array>
-					<key>Default</key>
-					<string>landscape</string>
-					<key>Key</key>
-					<string>keep_sidebar_open</string>
-				</dict>
-			</array>
-		</dict>
-		<dict>
-			<key>Title</key>
 			<string>Posts</string>
 			<key>Settings</key>
 			<array>
