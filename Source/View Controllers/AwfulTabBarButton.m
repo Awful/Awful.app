@@ -4,17 +4,36 @@
 
 #import "AwfulTabBarButton.h"
 
+@interface AwfulTabBarButton ()
+
+@property (strong, nonatomic) UIImage *image;
+
+@end
+
 @implementation AwfulTabBarButton
 
 - (void)setImage:(UIImage *)image
 {
-    CGRect all = (CGRect){ .size = image.size };
-    UIGraphicsBeginImageContextWithOptions(image.size, NO, image.scale);
+    if (_image == image) return;
+    _image = image;
+    [self updateImages];
+}
+
+- (void)updateImages
+{
+    if (!self.image) {
+        [self setImage:nil forState:UIControlStateNormal];
+        [self setImage:nil forState:UIControlStateSelected];
+        return;
+    }
+    
+    CGRect all = (CGRect){ .size = self.image.size };
+    UIGraphicsBeginImageContextWithOptions(self.image.size, NO, self.image.scale);
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     CGContextTranslateCTM(context, 0, CGRectGetHeight(all));
     CGContextScaleCTM(context, 1, -1);
-    CGContextClipToMask(context, all, image.CGImage);
+    CGContextClipToMask(context, all, self.image.CGImage);
     
     CGContextSaveGState(context);
     CGContextSetFillColorWithColor(context, [UIColor colorWithWhite:0.541 alpha:1].CGColor);
@@ -32,6 +51,11 @@
     
     [self setImage:normal forState:UIControlStateNormal];
     [self setImage:selected forState:UIControlStateSelected];
+}
+
+- (void)tintColorDidChange
+{
+    [self updateImages];
 }
 
 @end
