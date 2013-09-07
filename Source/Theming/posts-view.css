@@ -293,7 +293,7 @@ header {
   color: #999;
 }
 footer {
-  border-top: 1px solid #eeeeee;
+  margin-top: 0.6em;
 }
 .postdate {
   font-weight: 300;
