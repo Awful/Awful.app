@@ -216,11 +216,10 @@
 {
     [super loadView];
     const CGFloat fieldHeight = 45;
-    self.textView.contentInset = UIEdgeInsetsMake(fieldHeight, 0, 0, 0);
+    self.textView.textContainerInset = UIEdgeInsetsMake(fieldHeight + 5, 0, 0, 0);
     
     self.topView = [UIView new];
-    self.topView.frame = CGRectMake(0, -fieldHeight,
-                                    CGRectGetWidth(self.textView.frame), fieldHeight);
+    self.topView.frame = CGRectMake(0, 0, CGRectGetWidth(self.textView.frame), fieldHeight);
     self.topView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                      UIViewAutoresizingFlexibleBottomMargin);
     [self.textView addSubview:self.topView];
