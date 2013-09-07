@@ -63,9 +63,6 @@ header:after {
   float: left;
   margin: .6em 0;
 }
-.ipad .postdate {
-  padding-bottom: .75em;
-}
 .regdate {
   display: block;
   font-size: .85em;
@@ -108,12 +105,7 @@ header {
   -webkit-tap-highlight-color: transparent;
   -webkit-user-select: none;
   background-color: transparent;
-}
-.iphone .action-button {
   line-height: 1em;
-}
-.ipad .action-button {
-  line-height: 1.5em;
 }
 .postdate {
   font-size: 0.9em;
