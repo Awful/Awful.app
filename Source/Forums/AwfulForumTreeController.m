@@ -189,7 +189,7 @@
         [_hiddenForumsInCategory removeObjectAtIndex:index];
         [self.delegate forumTreeController:self
                            categoryAtIndex:index
-                                 didChange:AwfulForumTreeControllerChangeTypeInsert];
+                                 didChange:AwfulForumTreeControllerChangeTypeDelete];
     }
 }
 
