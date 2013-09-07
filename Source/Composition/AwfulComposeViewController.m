@@ -40,6 +40,7 @@
                                   UIViewAutoresizingFlexibleHeight);
     _textView.font = [UIFont systemFontOfSize:17];
     _textView.keyboardAppearance = UIKeyboardAppearanceAlert;
+    _textView.tintColor = [UIColor colorWithRed:0.118 green:0.518 blue:0.686 alpha:1];
     return _textView;
 }
 
