@@ -61,7 +61,7 @@ header:after {
 }
 .postdate {
   float: left;
-  margin: .7em 0;
+  margin: .6em 0;
 }
 .ipad .postdate {
   padding-bottom: .75em;
@@ -291,6 +291,12 @@ header {
 .dark .bbc-block h4,
 .dark .bbc-block h5 {
   color: #999;
+}
+footer {
+  border-top: 1px solid #eeeeee;
+}
+.postdate {
+  font-weight: 300;
 }
 .postdate,
 .regdate {
