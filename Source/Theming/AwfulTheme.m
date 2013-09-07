@@ -306,23 +306,23 @@
 
 - (UIColor *)postsViewBackgroundColor
 {
-    LIGHT([UIColor colorWithWhite:0.82 alpha:1]);
-    DARK([UIColor colorWithWhite:0.075 alpha:1]);
+    LIGHT([UIColor whiteColor]);
+    DARK([UIColor blackColor]);
 }
 
 - (UIColor *)postsViewTopBarMarginColor
 {
-    DEFAULT([UIColor colorWithWhite:0.714 alpha:1]);
+    DEFAULT([UIColor colorWithRed:0.973 green:0.973 blue:0.973 alpha:1]);
 }
 
 - (UIColor *)postsViewTopBarButtonBackgroundColor
 {
-    DEFAULT([UIColor colorWithWhite:0.902 alpha:1]);
+    DEFAULT([UIColor colorWithRed:0.973 green:0.973 blue:0.973 alpha:1]);
 }
 
 - (UIColor *)postsViewTopBarButtonTextColor
 {
-    DEFAULT([UIColor colorWithHue:0.590 saturation:0.771 brightness:0.376 alpha:1]);
+    DEFAULT([UIColor blackColor]);
 }
 
 - (UIColor *)postsViewTopBarButtonDisabledTextColor
@@ -332,8 +332,8 @@
 
 - (UIColor *)postsViewPullUpForNextPageTextAndArrowColor
 {
-    LIGHT([UIColor grayColor]);
-    DARK([UIColor lightGrayColor]);
+    LIGHT([UIColor blackColor]);
+    DARK([UIColor whiteColor]);
 }
 
 #pragma mark - Reply view
