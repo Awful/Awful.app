@@ -183,9 +183,6 @@ blockquote img {
 .attachment {
   margin: 0;
 }
-.ipad footer {
-  margin-bottom: 8px;
-}
 footer:after {
   content: "";
   display: block;
@@ -198,7 +195,7 @@ footer:after {
   max-width: 100%;
 }
 #end {
-  font-weight: bold;
+  font-weight: normal;
   text-align: center;
   line-height: 1;
   margin-bottom: 10px;
@@ -215,12 +212,6 @@ body {
 }
 .post.seen {
   background-color: #2d270c;
-}
-header {
-  border-bottom-color: #444;
-}
-.seen header {
-  border-bottom-color: #8c7b2e;
 }
 .role-admin .username:before {
   content: '★';
@@ -241,8 +232,6 @@ header {
 }
 .action-button {
   color: #eacf4c;
-  font-size: 2em;
-  line-height: 1.25;
 }
 .postbody a {
   color: #eacf4c;

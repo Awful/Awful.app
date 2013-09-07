@@ -183,9 +183,6 @@ blockquote img {
 .attachment {
   margin: 0;
 }
-.ipad footer {
-  margin-bottom: 8px;
-}
 footer:after {
   content: "";
   display: block;
@@ -198,7 +195,7 @@ footer:after {
   max-width: 100%;
 }
 #end {
-  font-weight: bold;
+  font-weight: normal;
   text-align: center;
   line-height: 1;
   margin-bottom: 10px;
@@ -207,8 +204,8 @@ body {
   background-color: #fff;
 }
 body.dark {
+  background-color: #000;
   color: white;
-  background-color: #131313;
 }
 .post {
   background-color: transparent;
@@ -219,11 +216,8 @@ body.dark {
 
 }
 .dark .post {
-  background-color: #313131;
   box-shadow: none;
-}
-.dark .post.seen {
-  background-color: #121e2e;
+  border-bottom-color: #131313;
 }
 header {
   border-bottom: none;
@@ -241,8 +235,6 @@ header {
 
 }
 .action-button {
-  position: relative;
-  top: -0.1em;
   color: #1682b2;
 }
 .postbody a {
@@ -305,11 +297,9 @@ header {
   color: #8e8e8e;
 }
 #end {
-  color: #636363;
+  color: #000;
   line-height: 3em;
-  text-shadow: white 0 1px;
 }
 .dark #end {
   color: white;
-  text-shadow: black 0 1px;
 }

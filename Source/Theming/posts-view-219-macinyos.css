@@ -183,9 +183,6 @@ blockquote img {
 .attachment {
   margin: 0;
 }
-.ipad footer {
-  margin-bottom: 8px;
-}
 footer:after {
   content: "";
   display: block;
@@ -198,7 +195,7 @@ footer:after {
   max-width: 100%;
 }
 #end {
-  font-weight: bold;
+  font-weight: normal;
   text-align: center;
   line-height: 1;
   margin-bottom: 10px;
