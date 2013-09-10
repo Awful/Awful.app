@@ -20,6 +20,7 @@
 {
     if (!(self = [super init])) return nil;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[AwfulForum entityName]];
+    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"category != nil"];
     fetchRequest.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"category.index" ascending:YES],
                                       [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES] ];
     _frc = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
