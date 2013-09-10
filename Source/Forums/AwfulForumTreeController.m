@@ -107,8 +107,10 @@
 - (BOOL)visibleForumExpandedAtIndexPath:(NSIndexPath *)indexPath
 {
     NSIndexPath *realIndexPath = [self realIndexPathForVisibleIndexPath:indexPath];
+    AwfulForum *forum = [_frc objectAtIndexPath:realIndexPath];
+    if (forum.children.count == 0) return NO;
     NSIndexSet *hiddenForums = _hiddenForumsInCategory[indexPath.section];
-    return [hiddenForums containsIndex:realIndexPath.row];
+    return ![hiddenForums containsIndex:realIndexPath.row + 1];
 }
 
 - (void)toggleVisibleForumExpandedAtIndexPath:(NSIndexPath *)indexPath
