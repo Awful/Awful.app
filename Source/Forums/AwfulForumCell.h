@@ -26,24 +26,15 @@
 @property (readonly, strong, nonatomic) UIButton *disclosureButton;
 
 /**
+ * A label to display the name of the forum. Inherited from UITableViewCell.
+ */
+@property (readonly, strong, nonatomic) UILabel *textLabel;
+
+/**
  * A forum cell can show a favorite button to add the forum to the user's favorites.
  *
  * The favoriteButton's `hidden` property is NO (the default) when the forum is not a favorite, and is YES otherwise.
  */
 @property (readonly, strong, nonatomic) UIButton *favoriteButton;
-
-@end
-
-/**
- * An AwfulFavoriteForumCell represents a forum in the "Favorites" section of a table view.
- */
-@interface AwfulFavoriteForumCell : UITableViewCell
-
-/**
- * Returns an initialized AwfulFavoriteForumCell. This is the designated initializer.
- *
- * @param reuseIdentifier A string used by the table view to identify the cell for reuse.
- */
-- (id)initWithReuseIdentifier:(NSString *)reuseIdentifier;
 
 @end

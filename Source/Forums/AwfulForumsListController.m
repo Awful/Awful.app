@@ -5,6 +5,7 @@
 #import "AwfulForumsListController.h"
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
+#import "AwfulFavoriteForumCell.h"
 #import "AwfulForumCell.h"
 #import "AwfulForumTreeController.h"
 #import "AwfulHTTPClient.h"
