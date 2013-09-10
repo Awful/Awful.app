@@ -9,7 +9,6 @@
 #import "AwfulForumCell.h"
 #import "AwfulForumTreeController.h"
 #import "AwfulHTTPClient.h"
-#import "AwfulLepersViewController.h"
 #import "AwfulModels.h"
 #import "AwfulSettings.h"
 #import "AwfulThreadListController.h"
@@ -255,37 +254,24 @@ static NSString * const FavoriteCellIdentifier = @"Favorite";
 
 #pragma mark - UITableViewDataSource and UITableViewDelegate
 
-// Leper's Colony is shown as a pseudo-forum in its own section (the last section).
-
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     NSInteger sections = self.treeController.numberOfCategories;
-    if (self.shouldShowLepersColony) {
-        sections++;
-    }
     if (self.favoriteForums.count > 0) {
         sections++;
     }
     return sections;
 }
 
-- (BOOL)shouldShowLepersColony
-{
-    return [AwfulHTTPClient client].isLoggedIn;
-}
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (self.shouldShowLepersColony && section == tableView.numberOfSections - 1) {
-        return 1;
-    } else if (self.favoriteForums.count > 0 && section == 0) {
+    if (self.favoriteForums.count > 0 && section == 0) {
         return self.favoriteForums.count;
-    } else {
-        if (self.favoriteForums.count > 0) {
-            section--;
-        }
-        return [self.treeController numberOfVisibleForumsInCategoryAtIndex:section];
     }
+    if (self.favoriteForums.count > 0) {
+        section--;
+    }
+    return [self.treeController numberOfVisibleForumsInCategoryAtIndex:section];
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -295,8 +281,6 @@ static NSString * const FavoriteCellIdentifier = @"Favorite";
     header.textLabel.textColor = [UIColor colorWithWhite:0.502 alpha:1];
     if (self.favoriteForums.count > 0 && section == 0) {
         header.textLabel.text = @"Favorites";
-    } else if (self.shouldShowLepersColony && section == tableView.numberOfSections - 1) {
-        header.textLabel.text = @"Awful";
     } else {
         if (self.favoriteForums.count > 0) {
             section--;
@@ -322,16 +306,10 @@ willDisplayHeaderView:(UITableViewHeaderFooterView *)header
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    BOOL isLastSection = (indexPath.section == tableView.numberOfSections - 1);
     if (self.favoriteForums.count > 0 && indexPath.section == 0) {
         AwfulFavoriteForumCell *cell = [tableView dequeueReusableCellWithIdentifier:FavoriteCellIdentifier
                                                                        forIndexPath:indexPath];
         [self configureFavoriteCell:cell atIndexPath:indexPath];
-        return cell;
-    } else if (self.shouldShowLepersColony && isLastSection) {
-        AwfulForumCell *cell = [tableView dequeueReusableCellWithIdentifier:ForumCellIdentifier
-                                                               forIndexPath:indexPath];
-        [self configureLepersColonyCell:cell];
         return cell;
     } else {
         AwfulForumCell *cell = [tableView dequeueReusableCellWithIdentifier:ForumCellIdentifier
@@ -350,13 +328,6 @@ willDisplayHeaderView:(UITableViewHeaderFooterView *)header
     AwfulForum *forum = self.favoriteForums[indexPath.row];
     cell.textLabel.text = forum.name;
     cell.separatorInset = UIEdgeInsetsZero;
-}
-
-- (void)configureLepersColonyCell:(AwfulForumCell *)cell
-{
-    cell.textLabel.text = @"Leper's Colony";
-    cell.disclosureButton.hidden = YES;
-    cell.favoriteButton.hidden = YES;
 }
 
 - (void)configureForumCell:(AwfulForumCell *)cell atAdjustedIndexPath:(NSIndexPath *)indexPath
@@ -382,11 +353,6 @@ willDisplayHeaderView:(UITableViewHeaderFooterView *)header
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == tableView.numberOfSections - 1) {
-        AwfulLepersViewController *lepersColony = [AwfulLepersViewController new];
-        [self.navigationController pushViewController:lepersColony animated:YES];
-        return;
-    }
     AwfulForum *forum;
     if (self.favoriteForums.count > 0 && indexPath.section == 0) {
         forum = self.favoriteForums[indexPath.row];

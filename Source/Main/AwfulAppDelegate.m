@@ -11,6 +11,7 @@
 #import "AwfulExpandingSplitViewController.h"
 #import "AwfulForumsListController.h"
 #import "AwfulHTTPClient.h"
+#import "AwfulLepersViewController.h"
 #import "AwfulLoginController.h"
 #import "AwfulModels.h"
 #import "AwfulNavigationBar.h"
@@ -99,8 +100,9 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
 - (void)setUpRootViewController
 {
     NSArray *viewControllers = @[ [[AwfulForumsListController new] enclosingNavigationController],
-                                  [[AwfulPrivateMessageListController new] enclosingNavigationController],
                                   [[AwfulBookmarksController new] enclosingNavigationController],
+                                  [[AwfulPrivateMessageListController new] enclosingNavigationController],
+                                  [[AwfulLepersViewController new] enclosingNavigationController],
                                   [[AwfulSettingsViewController new] enclosingNavigationController] ];
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
