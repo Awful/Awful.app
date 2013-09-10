@@ -54,9 +54,9 @@
                                                         @"name": self.textLabel,
                                                         @"favorite": self.favoriteButton }]];
     [self.contentView addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-_-[name]-_-|"
+     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0,==0@900)-[name]-(>=0,==0@900)-|"
                                              options:0
-                                             metrics:@{ @"_": @8 }
+                                             metrics:nil
                                                views:@{ @"name": self.textLabel }]];
 }
 
