@@ -80,40 +80,6 @@ BOOL_PROPERTY(showAvatars, setShowAvatars)
 BOOL_PROPERTY(showImages, setShowImages)
 
 struct {
-    __unsafe_unretained NSString *Forums;
-    __unsafe_unretained NSString *PrivateMessages;
-    __unsafe_unretained NSString *Bookmarks;
-} AwfulFirstTabs = {
-    @"forumslist",
-    @"pms",
-    @"bookmarks",
-};
-
-- (AwfulFirstTab)firstTab
-{
-    NSString *value = self[AwfulSettingsKeys.firstTab];
-    if ([value isEqualToString:AwfulFirstTabs.PrivateMessages]) {
-        return AwfulFirstTabPrivateMessages;
-    } else if ([value isEqualToString:AwfulFirstTabs.Bookmarks]) {
-        return AwfulFirstTabBookmarks;
-    } else {
-        return AwfulFirstTabForums;
-    }
-}
-
-- (void)setFirstTab:(AwfulFirstTab)firstTab
-{
-    NSString *value;
-    switch (firstTab) {
-        case AwfulFirstTabForums: value = AwfulFirstTabs.Forums; break;
-        case AwfulFirstTabBookmarks: value = AwfulFirstTabs.Bookmarks; break;
-        case AwfulFirstTabPrivateMessages: value = AwfulFirstTabs.PrivateMessages; break;
-        default: return;
-    }
-    self[AwfulSettingsKeys.firstTab] = value;
-}
-
-struct {
     __unsafe_unretained NSString *None;
     __unsafe_unretained NSString *Green;
     __unsafe_unretained NSString *Amber;
@@ -433,7 +399,6 @@ NSString * const AwfulSettingsDidChangeSettingsKey = @"settings";
 const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .showAvatars = @"show_avatars",
     .showImages = @"show_images",
-    .firstTab = @"default_load",
     .highlightOwnQuotes = @"highlight_own_quotes",
     .highlightOwnMentions = @"highlight_own_mentions",
     .confirmNewPosts = @"confirm_before_replying",

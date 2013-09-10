@@ -19,14 +19,6 @@
 
 @property (assign, nonatomic) BOOL showImages;
 
-typedef NS_ENUM(NSInteger, AwfulFirstTab) {
-    AwfulFirstTabForums,
-    AwfulFirstTabPrivateMessages,
-    AwfulFirstTabBookmarks,
-};
-
-@property (assign, nonatomic) AwfulFirstTab firstTab;
-
 @property (assign, nonatomic) BOOL highlightOwnQuotes;
 
 @property (assign, nonatomic) BOOL highlightOwnMentions;
@@ -103,7 +95,6 @@ extern NSString * const AwfulSettingsDidChangeSettingsKey;
 extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *showAvatars;
     __unsafe_unretained NSString *showImages;
-    __unsafe_unretained NSString *firstTab;
     __unsafe_unretained NSString *highlightOwnQuotes;
     __unsafe_unretained NSString *highlightOwnMentions;
     __unsafe_unretained NSString *confirmNewPosts;

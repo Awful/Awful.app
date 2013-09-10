@@ -105,7 +105,6 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         self.basementViewController = [[AwfulBasementViewController alloc] initWithViewControllers:viewControllers];
-        self.basementViewController.selectedIndex = [AwfulSettings settings].firstTab;
         self.window.rootViewController = self.basementViewController;
     } else {
         NSMutableArray *splits = [NSMutableArray new];
@@ -115,7 +114,6 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
             [splits addObject:split];
         }
         self.verticalTabBarController = [[AwfulVerticalTabBarController alloc] initWithViewControllers:splits];
-        self.verticalTabBarController.selectedIndex = [AwfulSettings settings].firstTab;
         self.window.rootViewController = self.verticalTabBarController;
     }
 }
