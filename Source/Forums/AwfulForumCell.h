@@ -1,32 +1,49 @@
 //  AwfulForumCell.h
 //
-//  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
+//  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import <UIKit/UIKit.h>
 
-typedef enum
-{
-    AwfulForumCellShowsExpandedNever,
-    AwfulForumCellShowsExpandedButton,
-    AwfulForumCellShowsExpandedLeavesRoom
-} AwfulForumCellShowsExpanded;
-
-
+/**
+ * An AwfulForumCell represents a forum in a table view.
+ */
 @interface AwfulForumCell : UITableViewCell
 
-// Designated initializer.
+/**
+ * Returns an initialized AwfulForumCell. This is the designated initializer.
+ *
+ * @param reuseIdentifier A string used by the table view to identify the cell for reuse.
+ */
 - (id)initWithReuseIdentifier:(NSString *)reuseIdentifier;
 
-@property (getter=isFavorite, nonatomic) BOOL favorite;
+/**
+ * A forum cell can have a disclosure button to show or hide the represented forum's subforums.
+ *
+ * The disclosureButton's `selected` property is YES when subforums are revealed, and is NO (the default) otherwise.
+ *
+ * The disclosureButton's `hidden` property is NO when the forum has subforums, and is YES (the default) otherwise.
+ */
+@property (readonly, strong, nonatomic) UIButton *disclosureButton;
 
-@property (nonatomic) BOOL showsFavorite;
+/**
+ * A forum cell can show a favorite button to add the forum to the user's favorites.
+ *
+ * The favoriteButton's `hidden` property is NO (the default) when the forum is not a favorite, and is YES otherwise.
+ */
+@property (readonly, strong, nonatomic) UIButton *favoriteButton;
 
-@property (readonly, weak, nonatomic) UIButton *favoriteButton;
+@end
 
-@property (getter=isExpanded, nonatomic) BOOL expanded;
+/**
+ * An AwfulFavoriteForumCell represents a forum in the "Favorites" section of a table view.
+ */
+@interface AwfulFavoriteForumCell : UITableViewCell
 
-@property (nonatomic) AwfulForumCellShowsExpanded showsExpanded;
-
-@property (readonly, weak, nonatomic) UIButton *expandButton;
+/**
+ * Returns an initialized AwfulFavoriteForumCell. This is the designated initializer.
+ *
+ * @param reuseIdentifier A string used by the table view to identify the cell for reuse.
+ */
+- (id)initWithReuseIdentifier:(NSString *)reuseIdentifier;
 
 @end

@@ -2,8 +2,8 @@
 //
 //  Copyright 2010 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulTableViewController.h"
+#import <UIKit/UIKit.h>
 
-@interface AwfulForumsListController : AwfulTableViewController
+@interface AwfulForumsListController : UITableViewController
 
 @end

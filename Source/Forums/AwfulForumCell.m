@@ -1,43 +1,40 @@
 //  AwfulForumCell.m
 //
-//  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
+//  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulForumCell.h"
-#import "AwfulTheme.h"
-
-@interface AwfulForumCell ()
-
-@property (weak, nonatomic) UIButton *expandButton;
-
-@property (weak, nonatomic) UIButton *favoriteButton;
-
-@end
-
 
 @implementation AwfulForumCell
 
-#pragma mark - Init
+// Redeclare textLabel so we can make our own which participates in auto layout.
+@synthesize textLabel = _textLabel;
 
 - (id)initWithReuseIdentifier:(NSString *)reuseIdentifier
 {
-    self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
-    if (self) {
-        UIButton *expandButton = [UIButton new];
-        expandButton.contentMode = UIViewContentModeCenter;
-        [self updateExpandButtonAccessibilityLabel];
-        [self.contentView addSubview:expandButton];
-        _expandButton = expandButton;
-        
-        UIButton *favoriteButton = [UIButton new];
-        favoriteButton.contentMode = UIViewContentModeCenter;
-        favoriteButton.hidden = YES;
-        [self updateFavoriteButtonAccessibilityLabel];
-        [self.contentView addSubview:favoriteButton];
-        _favoriteButton = favoriteButton;
-        
-        self.textLabel.font = [UIFont boldSystemFontOfSize:15];
-        self.textLabel.numberOfLines = 2;
-    }
+    if (!(self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier])) return nil;
+    
+    _disclosureButton = [UIButton new];
+    _disclosureButton.translatesAutoresizingMaskIntoConstraints = NO;
+    _disclosureButton.imageView.contentMode = UIViewContentModeCenter;
+    [_disclosureButton setImage:[UIImage imageNamed:@"forum-arrow-right"] forState:UIControlStateNormal];
+    [_disclosureButton setImage:[UIImage imageNamed:@"forum-arrow-down"] forState:UIControlStateSelected];
+    _disclosureButton.hidden = YES;
+    [self.contentView addSubview:_disclosureButton];
+    
+    _textLabel = [UILabel new];
+    _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    _textLabel.numberOfLines = 2;
+    _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    _textLabel.minimumScaleFactor = 0.5;
+    [self.contentView addSubview:_textLabel];
+    
+    _favoriteButton = [UIButton new];
+    _favoriteButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [_favoriteButton setImage:[UIImage imageNamed:@"star-off"] forState:UIControlStateNormal];
+    _favoriteButton.hidden = NO;
+    [self.contentView addSubview:_favoriteButton];
+    [self setNeedsUpdateConstraints];
+    
     return self;
 }
 
@@ -46,127 +43,74 @@
     return [self initWithReuseIdentifier:reuseIdentifier];
 }
 
-#pragma mark - Favorite
-
-- (void)setFavorite:(BOOL)isFavorite
+- (void)updateConstraints
 {
-    _favorite = isFavorite;
-    self.favoriteButton.selected = isFavorite;
-    [self updateFavoriteButtonAccessibilityLabel];
+    [super updateConstraints];
+    [self.contentView addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[disclosure(32)]-_-[name]-_-[favorite(disclosure)]|"
+                                             options:NSLayoutFormatAlignAllCenterY
+                                             metrics:@{ @"_": @4 }
+                                               views:@{ @"disclosure": self.disclosureButton,
+                                                        @"name": self.textLabel,
+                                                        @"favorite": self.favoriteButton }]];
+    [self.contentView addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-_-[name]-_-|"
+                                             options:0
+                                             metrics:@{ @"_": @8 }
+                                               views:@{ @"name": self.textLabel }]];
 }
 
-
-- (BOOL)showsFavorite
+- (void)willTransitionToState:(UITableViewCellStateMask)state
 {
-    return !self.favoriteButton.hidden;
+    
 }
 
-- (void)setShowsFavorite:(BOOL)showsFavorite
+@end
+
+@implementation AwfulFavoriteForumCell
+
+// Redeclare imageView and textLabel so we can make our own which participate in auto layout.
+@synthesize imageView = _imageView;
+@synthesize textLabel = _textLabel;
+
+- (id)initWithReuseIdentifier:(NSString *)reuseIdentifier
 {
-    if (showsFavorite == !self.favoriteButton.hidden) return;
-    self.favoriteButton.hidden = !showsFavorite;
-    [self setNeedsLayout];
+    if (!(self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier])) return nil;
+    
+    _imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"star-on"]];
+    _imageView.translatesAutoresizingMaskIntoConstraints = NO;
+    _imageView.contentMode = UIViewContentModeCenter;
+    [self.contentView addSubview:_imageView];
+    
+    _textLabel = [UILabel new];
+    _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    _textLabel.numberOfLines = 2;
+    _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    [self.contentView addSubview:_textLabel];
+    
+    [self setNeedsUpdateConstraints];
+    return self;
 }
 
-- (void)updateFavoriteButtonAccessibilityLabel
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
-    if (self.favoriteButton.selected) {
-        self.favoriteButton.accessibilityLabel = @"Remove from favorites";
-    } else {
-        self.favoriteButton.accessibilityLabel = @"Add to favorites";
-    }
+    return [self initWithReuseIdentifier:reuseIdentifier];
 }
 
-#pragma mark - Expanded
-
-- (BOOL)isExpanded
+- (void)updateConstraints
 {
-    return self.expandButton.selected;
-}
-
-- (void)setExpanded:(BOOL)expanded
-{
-    if (expanded == self.expandButton.selected) return;
-    self.expandButton.selected = expanded;
-}
-
-- (void)updateExpandButtonAccessibilityLabel
-{
-    if (self.expandButton.selected) {
-        self.expandButton.accessibilityLabel = @"Hide subforums";
-    } else {
-        self.expandButton.accessibilityLabel = @"List subforums";
-    }
-}
-
-- (void)setShowsExpanded:(AwfulForumCellShowsExpanded)showsExpanded
-{
-    if (_showsExpanded == showsExpanded) return;
-    _showsExpanded = showsExpanded;
-    self.expandButton.hidden = showsExpanded != AwfulForumCellShowsExpandedButton;
-}
-
-#pragma mark - UITableViewCell
-
-- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated
-{
-    [super setHighlighted:highlighted animated:animated];
-    [self.accessoryView setNeedsDisplay];
-}
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated
-{
-    [super setSelected:selected animated:animated];
-    [self.accessoryView setNeedsDisplay];
-}
-
-#pragma mark - UIView
-
-static const CGFloat StarLeftMargin = 11;
-
-- (void)layoutSubviews
-{
-    [super layoutSubviews];
-    CGRect textFrame = self.textLabel.frame;
-    if (self.showsExpanded == AwfulForumCellShowsExpandedNever) {
-        self.expandButton.frame = CGRectZero;
-    } else {
-        self.expandButton.frame = CGRectMake(0, 0, 40, self.contentView.bounds.size.height);
-        CGFloat newOriginX = CGRectGetMaxX(self.expandButton.frame) + 4;
-        textFrame.size.width -= newOriginX - textFrame.origin.x;
-        textFrame.origin.x = newOriginX;
-    }
-    if (self.showsFavorite) {
-        [self.favoriteButton sizeToFit];
-        CGRect bounds = self.favoriteButton.bounds;
-        bounds.size.width += 40;
-        self.favoriteButton.bounds = bounds;
-        self.favoriteButton.center = CGPointMake(CGRectGetMaxX(textFrame) - StarLeftMargin,
-                                                 CGRectGetMidY(textFrame));
-        textFrame.size.width -= self.favoriteButton.imageView.bounds.size.width + StarLeftMargin;
-    }
-    self.textLabel.frame = textFrame;
-}
-
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
-{
-    if (self.hidden) return [super hitTest:point withEvent:event];
-    if (!self.favoriteButton.hidden) {
-        CGRect hitbox = self.bounds;
-        hitbox.origin.x = CGRectGetMinX(self.favoriteButton.frame);
-        hitbox.size.width = CGRectGetWidth(self.bounds) - CGRectGetMinX(hitbox);
-        if (CGRectContainsPoint(hitbox, point)) {
-            return self.favoriteButton;
-        }
-    } else if (!self.expandButton.hidden) {
-        CGRect hitbox = self.bounds;
-        hitbox.size.width = CGRectGetMaxX(self.expandButton.frame);
-        hitbox.origin.x = 0;
-        if (CGRectContainsPoint(hitbox, point)) {
-            return self.expandButton;
-        }
-    }
-    return [super hitTest:point withEvent:event];
+    [super updateConstraints];
+    [self.contentView addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[favorite(width)]-[name]-width-|"
+                                             options:NSLayoutFormatAlignAllCenterY
+                                             metrics:@{ @"width": @32 }
+                                               views:@{ @"favorite": self.imageView,
+                                                        @"name": self.textLabel }]];
+    [self.contentView addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-margin-[name]-margin-|"
+                                             options:NSLayoutFormatAlignAllCenterY
+                                             metrics:@{ @"margin": @8 }
+                                               views:@{ @"name": self.textLabel }]];
 }
 
 @end
