@@ -391,8 +391,10 @@ willDisplayHeaderView:(UITableViewHeaderFooterView *)header
     if (self.favoriteForums.count > 0 && indexPath.section == 0) {
         forum = self.favoriteForums[indexPath.row];
     } else {
-        NSIndexPath *adjustedIndexPath = [NSIndexPath indexPathForRow:indexPath.row
-                                                            inSection:indexPath.section - 1];
+        NSIndexPath *adjustedIndexPath = indexPath;
+        if (self.favoriteForums.count > 0) {
+            adjustedIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section - 1];
+        }
         forum = [self.treeController visibleForumAtIndexPath:adjustedIndexPath];
     }
     AwfulThreadListController *threadList = [AwfulThreadListController new];
