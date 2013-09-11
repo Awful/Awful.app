@@ -265,6 +265,7 @@
 		1CF2461F16DD848100C75E05 /* AwfulTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF2461E16DD848100C75E05 /* AwfulTextView.m */; };
 		1CF2462316DD95F400C75E05 /* AwfulComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF2462216DD95F400C75E05 /* AwfulComposeViewController.m */; };
 		1CF2462616DD969000C75E05 /* AwfulPrivateMessageComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF2462516DD969000C75E05 /* AwfulPrivateMessageComposeViewController.m */; };
+		1CFA2EB617E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFA2EB517E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m */; };
 		1CFBECDB162F4ED7008AF641 /* pagebar-button-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CFBECCB162F4ED7008AF641 /* pagebar-button-selected.png */; };
 		1CFBECDC162F4ED7008AF641 /* pagebar-button-selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CFBECCC162F4ED7008AF641 /* pagebar-button-selected@2x.png */; };
 		1CFBECDD162F4ED7008AF641 /* pagebar-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CFBECCD162F4ED7008AF641 /* pagebar-button.png */; };
@@ -715,6 +716,8 @@
 		1CF2462416DD969000C75E05 /* AwfulPrivateMessageComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessageComposeViewController.h; sourceTree = "<group>"; };
 		1CF2462516DD969000C75E05 /* AwfulPrivateMessageComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessageComposeViewController.m; sourceTree = "<group>"; };
 		1CF2462716DD9FBF00C75E05 /* AwfulComposeViewControllerSubclass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulComposeViewControllerSubclass.h; sourceTree = "<group>"; };
+		1CFA2EB417E0A90F00DE5DE9 /* AwfulPrivateMessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessageCell.h; sourceTree = "<group>"; };
+		1CFA2EB517E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessageCell.m; sourceTree = "<group>"; };
 		1CFBECCB162F4ED7008AF641 /* pagebar-button-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pagebar-button-selected.png"; sourceTree = "<group>"; };
 		1CFBECCC162F4ED7008AF641 /* pagebar-button-selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pagebar-button-selected@2x.png"; sourceTree = "<group>"; };
 		1CFBECCD162F4ED7008AF641 /* pagebar-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pagebar-button.png"; sourceTree = "<group>"; };
@@ -1283,6 +1286,8 @@
 			children = (
 				1CB6011316D8376A00CBEE22 /* AwfulNewPMNotifierAgent.h */,
 				1CB6011416D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m */,
+				1CFA2EB417E0A90F00DE5DE9 /* AwfulPrivateMessageCell.h */,
+				1CFA2EB517E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m */,
 				1CB6010716D826F000CBEE22 /* AwfulPrivateMessageListController.h */,
 				1CB6010816D826F000CBEE22 /* AwfulPrivateMessageListController.m */,
 				1CB6010916D826F000CBEE22 /* AwfulPrivateMessageViewController.h */,
@@ -2153,6 +2158,7 @@
 				11FDA296151018600014FDCD /* AwfulSettingsViewController.m in Sources */,
 				1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */,
 				1C277CA51543554700CD2CCE /* AwfulSettingsChoiceViewController.m in Sources */,
+				1CFA2EB617E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m in Sources */,
 				1C6474C71569989800C72657 /* AwfulForum.m in Sources */,
 				1C6474CB1569989800C72657 /* AwfulThread.m in Sources */,
 				1C6474CF1569989800C72657 /* _AwfulForum.m in Sources */,

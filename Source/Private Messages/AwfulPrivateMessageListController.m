@@ -11,10 +11,10 @@
 #import "AwfulModels.h"
 #import "AwfulNeedPlatinumView.h"
 #import "AwfulNewPMNotifierAgent.h"
+#import "AwfulPrivateMessageCell.h"
 #import "AwfulPrivateMessageComposeViewController.h"
 #import "AwfulPrivateMessageViewController.h"
 #import "AwfulSettings.h"
-#import "AwfulThreadCell.h"
 #import "AwfulThreadTag.h"
 #import "AwfulThreadTags.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
@@ -129,6 +129,14 @@
                                                  sectionNameKeyPath:nil cacheName:nil];
 }
 
+- (void)loadView
+{
+    [super loadView];
+    [self.tableView registerClass:[AwfulPrivateMessageCell class] forCellReuseIdentifier:MessageCellIdentifier];
+}
+
+static NSString * const MessageCellIdentifier = @"Message cell";
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -163,19 +171,14 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString * const Identifier = @"AwfulPrivateMessageCell";
-    AwfulThreadCell *cell = [tableView dequeueReusableCellWithIdentifier:Identifier];
-    if (!cell) {
-        cell = [[AwfulThreadCell alloc] initWithStyle:UITableViewCellStyleSubtitle
-                                      reuseIdentifier:Identifier];
-    }
+    AwfulPrivateMessageCell *cell = [tableView dequeueReusableCellWithIdentifier:MessageCellIdentifier
+                                                                    forIndexPath:indexPath];
     [self configureCell:cell atIndexPath:indexPath];
     return cell;
 }
 
-- (void)configureCell:(UITableViewCell *)genericCell atIndexPath:(NSIndexPath *)indexPath
+- (void)configureCell:(AwfulPrivateMessageCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
-    AwfulThreadCell *cell = (id)genericCell;
     AwfulPrivateMessage *pm = [self.fetchedResultsController objectAtIndexPath:indexPath];
     if ([AwfulSettings settings].showThreadTags) {
         UIImage *threadTag = [[AwfulThreadTags sharedThreadTags] threadTagNamed:pm.firstIconName];
@@ -187,18 +190,18 @@
         }
         if (pm.repliedValue || pm.forwardedValue || !pm.seenValue) {
             if (pm.repliedValue) {
-                cell.stickyImageView.image = [UIImage imageNamed:@"pmreplied.gif"];
+                cell.overlayImageView.image = [UIImage imageNamed:@"pmreplied.gif"];
             } else if (pm.forwardedValue) {
-                cell.stickyImageView.image = [UIImage imageNamed:@"pmforwarded.gif"];
+                cell.overlayImageView.image = [UIImage imageNamed:@"pmforwarded.gif"];
             } else if (!pm.seenValue) {
-                cell.stickyImageView.image = [UIImage imageNamed:@"newpm.gif"];
+                cell.overlayImageView.image = [UIImage imageNamed:@"newpm.gif"];
             }
         } else {
-            cell.stickyImageView.hidden = YES;
+            cell.overlayImageView.image = nil;
         }
     } else {
         cell.imageView.image = nil;
-        cell.stickyImageView.image = nil;
+        cell.overlayImageView.image = nil;
     }
     cell.textLabel.text = pm.subject;
     cell.detailTextLabel.text = pm.from.username;
