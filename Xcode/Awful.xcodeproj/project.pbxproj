@@ -299,6 +299,8 @@
 		8C70028A169C6EFA00FC0B78 /* FVGifAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C700289169C6EFA00FC0B78 /* FVGifAnimation.m */; };
 		8C8AB95016DC49BA00D85404 /* CustomBadge.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C8AB94F16DC49BA00D85404 /* CustomBadge.m */; };
 		8C9834E2169091CE009F0CD6 /* fyad-bubble.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9834E1169091CE009F0CD6 /* fyad-bubble.png */; };
+		8CA6EFD617E00E9C0025F06C /* lepers_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CA6EFD517E00E9C0025F06C /* lepers_icon.png */; };
+		8CA6EFD817E00F0A0025F06C /* lepers_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CA6EFD717E00F0A0025F06C /* lepers_icon@2x.png */; };
 		8CC4AD6316907DD100639C80 /* posts-view-26.css in Resources */ = {isa = PBXBuildFile; fileRef = 8CC4AD6216907DD100639C80 /* posts-view-26.css */; };
 		8CCA272D16B8C1EF00A4952A /* AwfulLepersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CCA272C16B8C1EF00A4952A /* AwfulLepersViewController.m */; };
 		8CCD500615B497A900E5893B /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC315B497A800E5893B /* Settings.plist */; };
@@ -751,6 +753,8 @@
 		8C8AB94E16DC49BA00D85404 /* CustomBadge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomBadge.h; sourceTree = "<group>"; };
 		8C8AB94F16DC49BA00D85404 /* CustomBadge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomBadge.m; sourceTree = "<group>"; };
 		8C9834E1169091CE009F0CD6 /* fyad-bubble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-bubble.png"; sourceTree = "<group>"; };
+		8CA6EFD517E00E9C0025F06C /* lepers_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lepers_icon.png; sourceTree = "<group>"; };
+		8CA6EFD717E00F0A0025F06C /* lepers_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lepers_icon@2x.png"; sourceTree = "<group>"; };
 		8CB5468C15BD936600E8BEC1 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		8CC4AD6216907DD100639C80 /* posts-view-26.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-26.css"; sourceTree = "<group>"; };
 		8CCA272B16B8C1EF00A4952A /* AwfulLepersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLepersViewController.h; sourceTree = "<group>"; };
@@ -1677,6 +1681,8 @@
 				1CBEE248173300A200C4884A /* Forums List */,
 				1C28B35D172A111B00254EE7 /* Icon Action Items */,
 				1CBEE24A1733025300C4884A /* Leper's Colony */,
+				8CA6EFD717E00F0A0025F06C /* lepers_icon@2x.png */,
+				8CA6EFD517E00E9C0025F06C /* lepers_icon.png */,
 				8CCD525115B783FC00E5893B /* list_icon.png */,
 				8CCD525215B783FC00E5893B /* list_icon@2x.png */,
 				1CBEE2451733004100C4884A /* Navbar */,
@@ -1831,6 +1837,7 @@
 				8CCD536E15B783FD00E5893B /* action.png in Resources */,
 				8CCD536F15B783FD00E5893B /* action@2x.png in Resources */,
 				8CCD537015B783FD00E5893B /* arrowleft.png in Resources */,
+				8CA6EFD617E00E9C0025F06C /* lepers_icon.png in Resources */,
 				8CCD537115B783FD00E5893B /* arrowleft@2x.png in Resources */,
 				8CCD537215B783FD00E5893B /* arrowright.png in Resources */,
 				8CCD537315B783FD00E5893B /* arrowright@2x.png in Resources */,
@@ -1899,6 +1906,7 @@
 				8C483FC216852E5D00D02482 /* macinyos-loading@2x.png in Resources */,
 				8C4F06B51686C1CB003CE53C /* macinyos-heading-left.png in Resources */,
 				8C299D6716877330001B9D96 /* posts-view-219-winpos95.css in Resources */,
+				8CA6EFD817E00F0A0025F06C /* lepers_icon@2x.png in Resources */,
 				8C299D7216877AE9001B9D96 /* winpos95-heading-left.png in Resources */,
 				8C299D7316877AE9001B9D96 /* winpos95-heading-right.png in Resources */,
 				8C299D7416877AE9001B9D96 /* winpos95-heading.png in Resources */,

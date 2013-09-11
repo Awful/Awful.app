@@ -29,7 +29,7 @@
 {
     if (!(self = [super initWithStyle:UITableViewStylePlain])) return nil;
     self.title = @"Leper's Colony";
-    self.tabBarItem.image = [UIImage imageNamed:@"list_icon"];
+    self.tabBarItem.image = [UIImage imageNamed:@"lepers_icon"];
     _bans = [NSMutableArray new];
     _banIDs = [NSMutableSet new];
     return self;
