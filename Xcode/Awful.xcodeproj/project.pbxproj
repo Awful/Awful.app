@@ -301,6 +301,7 @@
 		8C9834E2169091CE009F0CD6 /* fyad-bubble.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9834E1169091CE009F0CD6 /* fyad-bubble.png */; };
 		8CA6EFD617E00E9C0025F06C /* lepers_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CA6EFD517E00E9C0025F06C /* lepers_icon.png */; };
 		8CA6EFD817E00F0A0025F06C /* lepers_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CA6EFD717E00F0A0025F06C /* lepers_icon@2x.png */; };
+		8CBDD2EA17E0140F0036AC4F /* sticky@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CBDD2E917E0140F0036AC4F /* sticky@2x.png */; };
 		8CC4AD6316907DD100639C80 /* posts-view-26.css in Resources */ = {isa = PBXBuildFile; fileRef = 8CC4AD6216907DD100639C80 /* posts-view-26.css */; };
 		8CCA272D16B8C1EF00A4952A /* AwfulLepersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CCA272C16B8C1EF00A4952A /* AwfulLepersViewController.m */; };
 		8CCD500615B497A900E5893B /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC315B497A800E5893B /* Settings.plist */; };
@@ -756,6 +757,7 @@
 		8CA6EFD517E00E9C0025F06C /* lepers_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lepers_icon.png; sourceTree = "<group>"; };
 		8CA6EFD717E00F0A0025F06C /* lepers_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lepers_icon@2x.png"; sourceTree = "<group>"; };
 		8CB5468C15BD936600E8BEC1 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		8CBDD2E917E0140F0036AC4F /* sticky@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sticky@2x.png"; sourceTree = "<group>"; };
 		8CC4AD6216907DD100639C80 /* posts-view-26.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-26.css"; sourceTree = "<group>"; };
 		8CCA272B16B8C1EF00A4952A /* AwfulLepersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLepersViewController.h; sourceTree = "<group>"; };
 		8CCA272C16B8C1EF00A4952A /* AwfulLepersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLepersViewController.m; sourceTree = "<group>"; };
@@ -1690,6 +1692,7 @@
 				1CBEE2461733005400C4884A /* Posts View */,
 				1CBEE2491733012E00C4884A /* Private Messages */,
 				8CCD527715B783FC00E5893B /* sticky.png */,
+				8CBDD2E917E0140F0036AC4F /* sticky@2x.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -1845,6 +1848,7 @@
 				8CCD537A15B783FD00E5893B /* cog@2x.png in Resources */,
 				8CCD556B15B783FD00E5893B /* forum-arrow-down.png in Resources */,
 				8CCD556C15B783FD00E5893B /* forum-arrow-down@2x.png in Resources */,
+				8CBDD2EA17E0140F0036AC4F /* sticky@2x.png in Resources */,
 				8CCD556D15B783FD00E5893B /* forum-arrow-right.png in Resources */,
 				8CCD556E15B783FD00E5893B /* forum-arrow-right@2x.png in Resources */,
 				8CCD557915B783FD00E5893B /* list_icon.png in Resources */,
