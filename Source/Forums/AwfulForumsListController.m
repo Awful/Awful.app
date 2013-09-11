@@ -186,8 +186,8 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
 - (BOOL)refreshOnAppear
 {
     if (![AwfulHTTPClient client].loggedIn) return NO;
-    if (![AwfulHTTPClient client].reachable) return NO;
     if (!self.lastRefresh) return YES;
+    if (self.tableView.numberOfSections < 2) return YES;
     if ([[NSDate date] timeIntervalSinceDate:self.lastRefresh] > 60 * 60 * 6) return YES;
     if ([AwfulForum firstMatchingPredicate:@"index = -1"]) return YES;
     return NO;
@@ -248,6 +248,19 @@ static NSString * const FavoriteCellIdentifier = @"Favorite";
 {
     [super viewWillAppear:animated];
     if ([self.tableView numberOfSections] <= 2) [self.tableView reloadData];
+    if ([self refreshOnAppear]) {
+        [self refresh];
+    }
+    if (![AwfulHTTPClient client].reachable) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(reachabilityChanged:)
+                                                     name:AFNetworkingReachabilityDidChangeNotification
+                                                   object:nil];
+    }
+}
+
+- (void)reachabilityChanged:(NSNotification *)note
+{
     if ([self refreshOnAppear]) {
         [self refresh];
     }
