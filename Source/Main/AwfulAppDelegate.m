@@ -150,38 +150,6 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     [self routeAwfulURLs];
     
     [self.window makeKeyAndVisible];
-        
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        NSFileManager *fileman = [NSFileManager defaultManager];
-        NSURL *cssReadme = [[NSBundle mainBundle] URLForResource:@"Custom CSS README"
-                                                   withExtension:@"txt"];
-        NSURL *documents = [fileman documentDirectory];
-        NSURL *readmeDestination = [documents URLByAppendingPathComponent:@"README.txt"];
-        NSError *error;
-        BOOL ok = [fileman copyItemAtURL:cssReadme
-                                   toURL:readmeDestination
-                                   error:&error];
-        if (!ok && [error code] != NSFileWriteFileExistsError) {
-            NSLog(@"error copying README.txt to documents: %@", error);
-        }
-        NSURL *exampleCSS = [[NSBundle mainBundle] URLForResource:@"posts-view"
-                                                    withExtension:@"css"];
-        NSURL *cssDestination = [documents URLByAppendingPathComponent:@"example-posts-view.css"];
-        ok = [fileman removeItemAtURL:cssDestination error:&error];
-        if (!ok && !([error.domain isEqualToString:NSCocoaErrorDomain] &&
-                     error.code == NSFileNoSuchFileError)) {
-            NSLog(@"error deleting example-posts-view.css: %@", error);
-        }
-        ok = [fileman copyItemAtURL:exampleCSS toURL:cssDestination error:&error];
-        if (!ok && [error code] != NSFileWriteFileExistsError) {
-            NSLog(@"error copying example-posts-view.css to documents: %@", error);
-        }
-        NSURL *oldData = [documents URLByAppendingPathComponent:@"AwfulData.sqlite"];
-        ok = [fileman removeItemAtURL:oldData error:&error];
-        if (!ok && [error code] != NSFileNoSuchFileError) {
-            NSLog(@"error deleting Documents/AwfulData.sqlite: %@", error);
-        }
-    });
     
     if (![AwfulHTTPClient client].loggedIn) {
         [self showLoginFormIsAtLaunch:YES andThen:nil];

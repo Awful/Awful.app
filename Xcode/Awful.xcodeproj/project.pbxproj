@@ -184,7 +184,6 @@
 		1CB9B8531694334500A3CD16 /* profile4.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CB9B8521694334500A3CD16 /* profile4.html */; };
 		1CB9B8551694339E00A3CD16 /* profile5.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CB9B8541694339E00A3CD16 /* profile5.html */; };
 		1CB9B85716943F5E00A3CD16 /* profile6.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CB9B85616943F5E00A3CD16 /* profile6.html */; };
-		1CBD5244162B5C2500928740 /* Custom CSS README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1CBD5243162B5C2500928740 /* Custom CSS README.txt */; };
 		1CBD5247162B66BC00928740 /* AwfulTextEntryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBD5246162B66BC00928740 /* AwfulTextEntryCell.m */; };
 		1CBD527D162DCB1B00928740 /* navbar-back-landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CBD5271162DCB1B00928740 /* navbar-back-landscape.png */; };
 		1CBD527E162DCB1B00928740 /* navbar-back-landscape@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CBD5272162DCB1B00928740 /* navbar-back-landscape@2x.png */; };
@@ -591,7 +590,6 @@
 		1CB9B8521694334500A3CD16 /* profile4.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = profile4.html; sourceTree = "<group>"; };
 		1CB9B8541694339E00A3CD16 /* profile5.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = profile5.html; sourceTree = "<group>"; };
 		1CB9B85616943F5E00A3CD16 /* profile6.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = profile6.html; sourceTree = "<group>"; };
-		1CBD5243162B5C2500928740 /* Custom CSS README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Custom CSS README.txt"; sourceTree = "<group>"; };
 		1CBD5245162B66BC00928740 /* AwfulTextEntryCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTextEntryCell.h; sourceTree = "<group>"; };
 		1CBD5246162B66BC00928740 /* AwfulTextEntryCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTextEntryCell.m; sourceTree = "<group>"; };
 		1CBD5271162DCB1B00928740 /* navbar-back-landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "navbar-back-landscape.png"; sourceTree = "<group>"; };
@@ -1649,7 +1647,6 @@
 			isa = PBXGroup;
 			children = (
 				1C96D0B61682BBF10043B194 /* Browsers.plist */,
-				1CBD5243162B5C2500928740 /* Custom CSS README.txt */,
 				1CF0D618164B0A7C00CFA137 /* Forum Abbreviations.plist */,
 				1C5F700517D86E0F005ABD6F /* Images.xcassets */,
 				8CCD503B15B783FC00E5893B /* Images */,
@@ -1862,7 +1859,6 @@
 				1C13FF97161CDDD4000ED2B1 /* bookmarks@2x.png in Resources */,
 				1C3CC799162876AE00088AA8 /* adminstar.png in Resources */,
 				1C3CC79A162876AE00088AA8 /* modstar.png in Resources */,
-				1CBD5244162B5C2500928740 /* Custom CSS README.txt in Resources */,
 				1CBD527D162DCB1B00928740 /* navbar-back-landscape.png in Resources */,
 				1CBD527E162DCB1B00928740 /* navbar-back-landscape@2x.png in Resources */,
 				1CBD527F162DCB1B00928740 /* navbar-back.png in Resources */,
