@@ -92,7 +92,7 @@
 {
     [super loadView];
     self.view.backgroundColor = [UIColor whiteColor];
-    self.tableView.separatorColor = [UIColor grayColor];
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 }
 
 - (void)invalidateCellBackgroundImage
