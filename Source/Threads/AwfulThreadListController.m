@@ -36,9 +36,6 @@
 {
     if (!(self = [super init])) return nil;
     _cellsMissingThreadTags = [NSMutableSet new];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsChanged:)
-                                                 name:AwfulSettingsDidChangeNotification
-                                               object:nil];
     self.navigationItem.rightBarButtonItem = self.newThreadButtonItem;
     self.edgesForExtendedLayout = UIRectEdgeNone;
     return self;
@@ -102,15 +99,6 @@
     return [[UIBarButtonItem alloc] initWithTitle:text style:UIBarButtonItemStyleBordered
                                            target:nil
                                            action:NULL];
-}
-
-- (void)settingsChanged:(NSNotification *)note
-{
-    if (![self isViewLoaded]) return;
-    NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
-    if ([keys containsObject:AwfulSettingsKeys.showThreadTags]) {
-        [self.tableView reloadData];
-    }
 }
 
 #pragma mark - Table view controller
@@ -321,45 +309,38 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     [longPress addTarget:self action:@selector(showThreadActions:)];
     [cell addGestureRecognizer:longPress];
     AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    if ([AwfulSettings settings].showThreadTags) {
-        // It's possible to pick the same tag for the first and second icons in e.g. SA Mart.
-        // Since it'd look ugly to show the e.g. "Selling" banner for each tag image, we just use
-        // the empty thread tag for anyone lame enough to pick the same tag twice.
-        UIImage *emptyTag = [UIImage imageNamed:@"empty-thread-tag"];
-        if ([thread.firstIconName isEqualToString:thread.secondIconName]) {
-            cell.tagAndRatingView.threadTag = emptyTag;
+    // It's possible to pick the same tag for the first and second icons in e.g. SA Mart.
+    // Since it'd look ugly to show the e.g. "Selling" banner for each tag image, we just use
+    // the empty thread tag for anyone lame enough to pick the same tag twice.
+    UIImage *emptyTag = [UIImage imageNamed:@"empty-thread-tag"];
+    if ([thread.firstIconName isEqualToString:thread.secondIconName]) {
+        cell.tagAndRatingView.threadTag = emptyTag;
+    } else {
+        UIImage *threadTag = [[AwfulThreadTags sharedThreadTags] threadTagNamed:thread.firstIconName];
+        if (threadTag) {
+            cell.tagAndRatingView.threadTag = threadTag;
         } else {
-            UIImage *threadTag = [[AwfulThreadTags sharedThreadTags] threadTagNamed:thread.firstIconName];
-            if (threadTag) {
-                cell.tagAndRatingView.threadTag = threadTag;
-            } else {
-                cell.tagAndRatingView.threadTag = emptyTag;
-                if (thread.firstIconName) {
-                    [self updateThreadTagsForCellAtIndexPath:indexPath];
-                }
+            cell.tagAndRatingView.threadTag = emptyTag;
+            if (thread.firstIconName) {
+                [self updateThreadTagsForCellAtIndexPath:indexPath];
             }
         }
-        UIImage *secondaryTag = [[AwfulThreadTags sharedThreadTags] threadTagNamed:thread.secondIconName];
-        cell.tagAndRatingView.secondaryThreadTag = secondaryTag;
-        if (!secondaryTag && thread.secondIconName) {
-            [self updateThreadTagsForCellAtIndexPath:indexPath];
-        }
-        if (thread.isStickyValue) {
-            cell.stickyImageView.image = [UIImage imageNamed:@"sticky"];
-        } else {
-            cell.stickyImageView.image = nil;
-        }
-        // Hardcode Film Dump to never show ratings; its thread tags are the ratings.
-        if ([thread.forum.forumID isEqualToString:@"133"]) {
-            cell.tagAndRatingView.ratingImage = nil;
-        } else {
-            cell.tagAndRatingView.ratingImage = ThreadRatingImageForRating(thread.threadRating);
-        }
+    }
+    UIImage *secondaryTag = [[AwfulThreadTags sharedThreadTags] threadTagNamed:thread.secondIconName];
+    cell.tagAndRatingView.secondaryThreadTag = secondaryTag;
+    if (!secondaryTag && thread.secondIconName) {
+        [self updateThreadTagsForCellAtIndexPath:indexPath];
+    }
+    if (thread.isStickyValue) {
+        cell.stickyImageView.image = [UIImage imageNamed:@"sticky"];
     } else {
-        cell.tagAndRatingView.threadTag = nil;
-        cell.tagAndRatingView.secondaryThreadTag = nil;
         cell.stickyImageView.image = nil;
+    }
+    // Hardcode Film Dump to never show ratings; its thread tags are the ratings.
+    if ([thread.forum.forumID isEqualToString:@"133"]) {
         cell.tagAndRatingView.ratingImage = nil;
+    } else {
+        cell.tagAndRatingView.ratingImage = ThreadRatingImageForRating(thread.threadRating);
     }
     cell.textLabel.text = [thread.title stringByCollapsingWhitespace];
     if (thread.isStickyValue || !thread.isClosedValue) {

@@ -53,19 +53,8 @@
     NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
     [noteCenter addObserver:self selector:@selector(didGetNewPMCount:)
                        name:AwfulNewPrivateMessagesNotification object:nil];
-    [noteCenter addObserver:self selector:@selector(settingsDidChange:)
-                       name:AwfulSettingsDidChangeNotification object:nil];
     self.edgesForExtendedLayout = UIRectEdgeNone;
     return self;
-}
-
-- (void)settingsDidChange:(NSNotification *)note
-{
-    if (![self isViewLoaded]) return;
-    NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
-    if ([keys containsObject:AwfulSettingsKeys.showThreadTags]) {
-        [self.tableView reloadData];
-    }
 }
 
 - (void)didTapCompose
@@ -145,27 +134,22 @@ static NSString * const MessageCellIdentifier = @"Message cell";
 - (void)configureCell:(AwfulPrivateMessageCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
     AwfulPrivateMessage *pm = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    if ([AwfulSettings settings].showThreadTags) {
-        UIImage *threadTag = [[AwfulThreadTags sharedThreadTags] threadTagNamed:pm.firstIconName];
-        if (threadTag) {
-            cell.imageView.image = threadTag;
-        } else {
-            // TODO handle updated thread tags
-            cell.imageView.image = [UIImage imageNamed:[AwfulThreadTag emptyPrivateMessageTagImageName]];
-        }
-        if (pm.repliedValue || pm.forwardedValue || !pm.seenValue) {
-            if (pm.repliedValue) {
-                cell.overlayImageView.image = [UIImage imageNamed:@"pmreplied.gif"];
-            } else if (pm.forwardedValue) {
-                cell.overlayImageView.image = [UIImage imageNamed:@"pmforwarded.gif"];
-            } else if (!pm.seenValue) {
-                cell.overlayImageView.image = [UIImage imageNamed:@"newpm.gif"];
-            }
-        } else {
-            cell.overlayImageView.image = nil;
+    UIImage *threadTag = [[AwfulThreadTags sharedThreadTags] threadTagNamed:pm.firstIconName];
+    if (threadTag) {
+        cell.imageView.image = threadTag;
+    } else {
+        // TODO handle updated thread tags
+        cell.imageView.image = [UIImage imageNamed:[AwfulThreadTag emptyPrivateMessageTagImageName]];
+    }
+    if (pm.repliedValue || pm.forwardedValue || !pm.seenValue) {
+        if (pm.repliedValue) {
+            cell.overlayImageView.image = [UIImage imageNamed:@"pmreplied.gif"];
+        } else if (pm.forwardedValue) {
+            cell.overlayImageView.image = [UIImage imageNamed:@"pmforwarded.gif"];
+        } else if (!pm.seenValue) {
+            cell.overlayImageView.image = [UIImage imageNamed:@"newpm.gif"];
         }
     } else {
-        cell.imageView.image = nil;
         cell.overlayImageView.image = nil;
     }
     cell.textLabel.text = pm.subject;
