@@ -240,6 +240,7 @@ static NSString * const FavoriteCellIdentifier = @"Favorite";
 - (void)didLogOut:(NSNotification *)note
 {
     self.treeController = nil;
+    [self.favoriteForums removeAllObjects];
     [self.tableView reloadData];
 }
 
