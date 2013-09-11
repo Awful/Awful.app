@@ -142,14 +142,12 @@
 
 - (UIImage *)forumCellExpandButtonNormalImage
 {
-    LIGHT([UIImage imageNamed:@"forum-arrow-right.png"]);
-    DARK([UIImage imageNamed:@"forum-arrow-right-dark.png"]);
+    DEFAULT([UIImage imageNamed:@"forum-arrow-right.png"]);
 }
 
 - (UIImage *)forumCellExpandButtonSelectedImage
 {
-    LIGHT([UIImage imageNamed:@"forum-arrow-down.png"]);
-    DARK([UIImage imageNamed:@"forum-arrow-down-dark.png"]);
+    DEFAULT([UIImage imageNamed:@"forum-arrow-down.png"]);
 }
 
 - (UIImage *)forumCellFavoriteButtonNormalImage
