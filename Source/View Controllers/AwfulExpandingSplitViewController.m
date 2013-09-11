@@ -26,6 +26,7 @@
 - (void)loadView
 {
     self.view = [UIView new];
+    self.view.backgroundColor = [UIColor colorWithRed:0.118 green:0.518 blue:0.686 alpha:1];
     _masterViewControllerConstraints = [NSMutableArray new];
     _detailViewControllerConstraints = [NSMutableArray new];
     if (self.viewControllers.count > 0) {
