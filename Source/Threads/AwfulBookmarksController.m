@@ -8,7 +8,6 @@
 #import "AwfulDataStack.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
-#import "AwfulTheme.h"
 #import "AwfulThreadCell.h"
 #import "NSManagedObject+Awful.h"
 #import "UIScrollView+SVInfiniteScrolling.h"
@@ -115,22 +114,6 @@
 static NSString * const kLastBookmarksRefreshDate = @"com.awfulapp.Awful.LastBookmarksRefreshDate";
 
 #pragma mark - AwfulTableViewController
-
-- (void)configureCell:(UITableViewCell *)genericCell atIndexPath:(NSIndexPath *)indexPath
-{
-    [super configureCell:genericCell atIndexPath:indexPath];
-    AwfulThreadCell *cell = (id)genericCell;
-    if (!cell.showsUnread) {
-        cell.unreadCountBadgeView.badgeText = @"∞";
-        cell.unreadCountBadgeView.on = YES;
-        cell.showsUnread = YES;
-    }
-    if (!self.showBookmarkColors) {
-        AwfulTheme *theme = [AwfulTheme currentTheme];
-        cell.unreadCountBadgeView.badgeColor = theme.threadListUnreadBadgeBlueColor;
-        cell.unreadCountBadgeView.offBadgeColor = theme.threadListUnreadBadgeBlueOffColor;
-    }
-}
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {

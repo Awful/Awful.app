@@ -6,7 +6,6 @@
 #import "AwfulFetchedTableViewControllerSubclass.h"
 #import "AwfulAlertView.h"
 #import "AwfulDataStack.h"
-#import "AwfulDisclosureIndicatorView.h"
 #import "AwfulExpandingSplitViewController.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
@@ -15,7 +14,6 @@
 #import "AwfulPrivateMessageComposeViewController.h"
 #import "AwfulPrivateMessageViewController.h"
 #import "AwfulSettings.h"
-#import "AwfulTheme.h"
 #import "AwfulThreadCell.h"
 #import "AwfulThreadTag.h"
 #import "AwfulThreadTags.h"
@@ -170,10 +168,6 @@
     if (!cell) {
         cell = [[AwfulThreadCell alloc] initWithStyle:UITableViewCellStyleSubtitle
                                       reuseIdentifier:Identifier];
-        cell.stickyImageViewOffset = CGSizeMake(1, 2);
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-            cell.accessoryView = [AwfulDisclosureIndicatorView new];
-        }
     }
     [self configureCell:cell atIndexPath:indexPath];
     return cell;
@@ -184,13 +178,14 @@
     AwfulThreadCell *cell = (id)genericCell;
     AwfulPrivateMessage *pm = [self.fetchedResultsController objectAtIndexPath:indexPath];
     if ([AwfulSettings settings].showThreadTags) {
-        cell.icon = [[AwfulThreadTags sharedThreadTags] threadTagNamed:pm.firstIconName];
-        if (!cell.icon) {
+        UIImage *threadTag = [[AwfulThreadTags sharedThreadTags] threadTagNamed:pm.firstIconName];
+        if (threadTag) {
+            cell.imageView.image = threadTag;
+        } else {
             // TODO handle updated thread tags
-            cell.icon = [UIImage imageNamed:[AwfulThreadTag emptyPrivateMessageTagImageName]];
+            cell.imageView.image = [UIImage imageNamed:[AwfulThreadTag emptyPrivateMessageTagImageName]];
         }
         if (pm.repliedValue || pm.forwardedValue || !pm.seenValue) {
-            cell.stickyImageView.hidden = NO;
             if (pm.repliedValue) {
                 cell.stickyImageView.image = [UIImage imageNamed:@"pmreplied.gif"];
             } else if (pm.forwardedValue) {
@@ -201,35 +196,12 @@
         } else {
             cell.stickyImageView.hidden = YES;
         }
-        cell.rating = 0;
     } else {
-        cell.icon = nil;
-        cell.stickyImageView.hidden = YES;
-        cell.closed = NO;
-        cell.rating = 0;
+        cell.imageView.image = nil;
+        cell.stickyImageView.image = nil;
     }
-    
-    AwfulTheme *theme = [AwfulTheme currentTheme];
     cell.textLabel.text = pm.subject;
-    cell.textLabel.textColor = theme.messageListSubjectTextColor;
-    
     cell.detailTextLabel.text = pm.from.username;
-    cell.detailTextLabel.textColor = theme.messageListUsernameTextColor;
-    
-    cell.backgroundColor = theme.messageListCellBackgroundColor;
-    cell.selectionStyle = theme.cellSelectionStyle;
-    cell.showsUnread = NO;
-    
-    AwfulDisclosureIndicatorView *disclosure = (AwfulDisclosureIndicatorView *)cell.accessoryView;
-    disclosure.color = theme.disclosureIndicatorColor;
-    disclosure.highlightedColor = theme.disclosureIndicatorHighlightedColor;
-}
-
-- (void)tableView:(UITableView *)tableView
-  willDisplayCell:(UITableViewCell *)cell
-forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    cell.backgroundColor = [AwfulTheme currentTheme].messageListCellBackgroundColor;
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
@@ -272,19 +244,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
             [[AwfulDataStack sharedDataStack] save];
         }
     }];
-}
-
-- (void)retheme
-{
-    [super retheme];
-    AwfulTheme *theme = [AwfulTheme currentTheme];
-    self.tableView.separatorColor = theme.messageListCellSeparatorColor;
-    self.view.backgroundColor = theme.messageListBackgroundColor;
-    self.needPlatinumView.headerLabel.textColor = theme.messageListNeedPlatinumTextColor;
-    self.needPlatinumView.headerLabel.backgroundColor = theme.messageListNeedPlatinumBackgroundColor;
-    self.needPlatinumView.explanationLabel.textColor = theme.messageListNeedPlatinumTextColor;
-    self.needPlatinumView.explanationLabel.backgroundColor = theme.messageListNeedPlatinumBackgroundColor;
-    self.needPlatinumView.backgroundColor = theme.messageListNeedPlatinumBackgroundColor;
 }
 
 #pragma mark - AwfulPrivateMessageComposeViewControllerDelegate
