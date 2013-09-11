@@ -253,7 +253,6 @@
 		1CE8FDFB1708BB2F006A3B84 /* font-size-larger@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CE8FDF91708BB2F006A3B84 /* font-size-larger@2x.png */; };
 		1CE8FDFE1709E535006A3B84 /* AwfulCustomBaseURLTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FDFD1709E535006A3B84 /* AwfulCustomBaseURLTransformer.m */; };
 		1CE8FE011709E728006A3B84 /* AwfulSettingsAlternateServerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE001709E728006A3B84 /* AwfulSettingsAlternateServerController.m */; };
-		1CE8FE04170A2FD5006A3B84 /* AwfulNeedPlatinumView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE03170A2FD4006A3B84 /* AwfulNeedPlatinumView.m */; };
 		1CE8FE41171692D1006A3B84 /* AwfulPostsSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE40171692D0006A3B84 /* AwfulPostsSettingsView.m */; };
 		1CE8FE471717B981006A3B84 /* AwfulThemePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE461717B97F006A3B84 /* AwfulThemePicker.m */; };
 		1CE8FE4A1717C372006A3B84 /* AwfulThemeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE491717C372006A3B84 /* AwfulThemeButton.m */; };
@@ -695,8 +694,6 @@
 		1CE8FDFD1709E535006A3B84 /* AwfulCustomBaseURLTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCustomBaseURLTransformer.m; sourceTree = "<group>"; };
 		1CE8FDFF1709E728006A3B84 /* AwfulSettingsAlternateServerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettingsAlternateServerController.h; sourceTree = "<group>"; };
 		1CE8FE001709E728006A3B84 /* AwfulSettingsAlternateServerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettingsAlternateServerController.m; sourceTree = "<group>"; };
-		1CE8FE02170A2FD4006A3B84 /* AwfulNeedPlatinumView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNeedPlatinumView.h; sourceTree = "<group>"; };
-		1CE8FE03170A2FD4006A3B84 /* AwfulNeedPlatinumView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNeedPlatinumView.m; sourceTree = "<group>"; };
 		1CE8FE3F171692D0006A3B84 /* AwfulPostsSettingsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostsSettingsView.h; sourceTree = "<group>"; };
 		1CE8FE40171692D0006A3B84 /* AwfulPostsSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostsSettingsView.m; sourceTree = "<group>"; };
 		1CE8FE451717B97F006A3B84 /* AwfulThemePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThemePicker.h; sourceTree = "<group>"; };
@@ -1296,8 +1293,6 @@
 				1CF2462516DD969000C75E05 /* AwfulPrivateMessageComposeViewController.m */,
 				1C270ABC16E0773300883DAA /* AwfulComposeField.h */,
 				1C270ABD16E0773300883DAA /* AwfulComposeField.m */,
-				1CE8FE02170A2FD4006A3B84 /* AwfulNeedPlatinumView.h */,
-				1CE8FE03170A2FD4006A3B84 /* AwfulNeedPlatinumView.m */,
 			);
 			path = "Private Messages";
 			sourceTree = "<group>";
@@ -2246,7 +2241,6 @@
 				1CE8FDF71703D648006A3B84 /* AwfulSemiModalViewController.m in Sources */,
 				1CE8FDFE1709E535006A3B84 /* AwfulCustomBaseURLTransformer.m in Sources */,
 				1CE8FE011709E728006A3B84 /* AwfulSettingsAlternateServerController.m in Sources */,
-				1CE8FE04170A2FD5006A3B84 /* AwfulNeedPlatinumView.m in Sources */,
 				1CE8FE41171692D1006A3B84 /* AwfulPostsSettingsView.m in Sources */,
 				1CE8FE471717B981006A3B84 /* AwfulThemePicker.m in Sources */,
 				1CE8FE4A1717C372006A3B84 /* AwfulThemeButton.m in Sources */,

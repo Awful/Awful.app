@@ -99,12 +99,14 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
 
 - (void)setUpRootViewController
 {
-    NSArray *viewControllers = @[ [[AwfulForumsListController new] enclosingNavigationController],
-                                  [[AwfulBookmarksController new] enclosingNavigationController],
-                                  [[AwfulPrivateMessageListController new] enclosingNavigationController],
-                                  [[AwfulLepersViewController new] enclosingNavigationController],
-                                  [[AwfulSettingsViewController new] enclosingNavigationController] ];
-    
+    NSMutableArray *viewControllers = [@[ [[AwfulForumsListController new] enclosingNavigationController],
+                                          [[AwfulBookmarksController new] enclosingNavigationController],
+                                          [[AwfulLepersViewController new] enclosingNavigationController],
+                                          [[AwfulSettingsViewController new] enclosingNavigationController] ] mutableCopy];
+    if ([AwfulSettings settings].canSendPrivateMessages) {
+        [viewControllers insertObject:[[AwfulPrivateMessageListController new] enclosingNavigationController]
+                              atIndex:2];
+    }
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         self.basementViewController = [[AwfulBasementViewController alloc] initWithViewControllers:viewControllers];
         self.window.rootViewController = self.basementViewController;
@@ -211,6 +213,10 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
     [noteCenter addObserver:self selector:@selector(themeDidChange:)
                        name:AwfulThemeDidChangeNotification object:nil];
+    [noteCenter addObserver:self
+                   selector:@selector(settingsDidChange:)
+                       name:AwfulSettingsDidChangeNotification
+                     object:nil];
     
     [[PocketAPI sharedAPI] setURLScheme:@"awful-pocket-login"];
     [[PocketAPI sharedAPI] setConsumerKey:@"13890-9e69d4d40af58edc2ef13ca0"];
@@ -221,6 +227,62 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
 - (void)themeDidChange:(NSNotification *)note
 {
     [self.window.rootViewController recursivelyRetheme];
+}
+
+- (void)settingsDidChange:(NSNotification *)note
+{
+    NSArray *changes = note.userInfo[AwfulSettingsDidChangeSettingsKey];
+    if ([changes containsObject:AwfulSettingsKeys.canSendPrivateMessages]) {
+        
+        // Add the private message list if it's needed, or remove it if it isn't.
+        NSArray *roots = [self rootViewControllersUncontained];
+        NSUInteger i = [[roots valueForKey:@"class"] indexOfObject:[AwfulPrivateMessageListController class]];
+        if ([AwfulSettings settings].canSendPrivateMessages) {
+            if (i == NSNotFound) {
+                UINavigationController *nav = [[AwfulPrivateMessageListController new] enclosingNavigationController];
+                if (self.basementViewController) {
+                    NSMutableArray *viewControllers = [self.basementViewController.viewControllers mutableCopy];
+                    [viewControllers insertObject:nav atIndex:2];
+                    self.basementViewController.viewControllers = viewControllers;
+                } else if (self.verticalTabBarController) {
+                    NSMutableArray *viewControllers = [self.verticalTabBarController.viewControllers mutableCopy];
+                    [viewControllers insertObject:[[AwfulExpandingSplitViewController alloc] initWithViewControllers:@[ nav ]]
+                                          atIndex:2];
+                    self.verticalTabBarController.viewControllers = viewControllers;
+                }
+            }
+        } else {
+            if (i != NSNotFound) {
+                if (self.basementViewController) {
+                    NSMutableArray *viewControllers = [self.basementViewController.viewControllers mutableCopy];
+                    [viewControllers removeObjectAtIndex:i];
+                    self.basementViewController.viewControllers = viewControllers;
+                } else if (self.verticalTabBarController) {
+                    NSMutableArray *viewControllers = [self.verticalTabBarController.viewControllers mutableCopy];
+                    [viewControllers removeObjectAtIndex:i];
+                    self.verticalTabBarController.viewControllers = viewControllers;
+                }
+            }
+        }
+    }
+}
+
+- (NSArray *)rootViewControllersUncontained
+{
+    NSMutableArray *roots = [NSMutableArray new];
+    for (UINavigationController *nav in self.basementViewController.viewControllers) {
+        [roots addObject:nav.viewControllers[0]];
+    }
+    for (id something in self.verticalTabBarController.viewControllers) {
+        UINavigationController *nav;
+        if ([something isKindOfClass:[AwfulExpandingSplitViewController class]]) {
+            nav = ((AwfulExpandingSplitViewController *)something).viewControllers[0];
+        } else {
+            nav = something;
+        }
+        [roots addObject:nav.viewControllers[0]];
+    }
+    return roots;
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -319,6 +381,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         tabBar.selectedViewController = nav;
     };
     
+    // TODO messages has changed positions, and may not even appear if the user doesn't support PMs.
     [JLRoutes addRoute:@"/messages" handler:^(id _) {
         selectAndPopViewControllerAtIndex(1);
         return YES;
