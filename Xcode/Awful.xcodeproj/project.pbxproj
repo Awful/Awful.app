@@ -97,7 +97,6 @@
 		1C5BA3EA16CB886700375A72 /* AwfulScrollViewTopBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5BA3E916CB886600375A72 /* AwfulScrollViewTopBar.m */; };
 		1C5BA3EC16CBED3500375A72 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C5BA3EB16CBED3500375A72 /* AVFoundation.framework */; };
 		1C5BA3ED16CBEDA200375A72 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CB5468C15BD936600E8BEC1 /* ImageIO.framework */; };
-		1C5F6FBB17D2F3AC005ABD6F /* QuietAssertMacros.c in Sources */ = {isa = PBXBuildFile; fileRef = 1C5F6FBA17D2F3AC005ABD6F /* QuietAssertMacros.c */; };
 		1C5F6FF417D731DC005ABD6F /* AwfulForumTreeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5F6FF317D731DC005ABD6F /* AwfulForumTreeController.m */; };
 		1C5F700117D8521F005ABD6F /* AwfulBasementViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5F700017D8521F005ABD6F /* AwfulBasementViewController.m */; };
 		1C5F700417D853AA005ABD6F /* AwfulBasementSidebarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5F700317D853AA005ABD6F /* AwfulBasementSidebarViewController.m */; };
@@ -461,7 +460,6 @@
 		1C5BA3E816CB886600375A72 /* AwfulScrollViewTopBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScrollViewTopBar.h; sourceTree = "<group>"; };
 		1C5BA3E916CB886600375A72 /* AwfulScrollViewTopBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScrollViewTopBar.m; sourceTree = "<group>"; };
 		1C5BA3EB16CBED3500375A72 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
-		1C5F6FBA17D2F3AC005ABD6F /* QuietAssertMacros.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = QuietAssertMacros.c; sourceTree = "<group>"; };
 		1C5F6FF217D731DC005ABD6F /* AwfulForumTreeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumTreeController.h; sourceTree = "<group>"; };
 		1C5F6FF317D731DC005ABD6F /* AwfulForumTreeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumTreeController.m; sourceTree = "<group>"; };
 		1C5F6FF517D738BF005ABD6F /* Model-2.0.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model-2.0.xcdatamodel"; sourceTree = "<group>"; };
@@ -872,7 +870,6 @@
 				1C10157A164E8B0A00302B19 /* AwfulStartViewController.h */,
 				1C10157B164E8B0A00302B19 /* AwfulStartViewController.m */,
 				1190F7F213BE4EDA00B9D271 /* main.m */,
-				1C5F6FBA17D2F3AC005ABD6F /* QuietAssertMacros.c */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -2143,7 +2140,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1190F75C13BE4EA900B9D271 /* AwfulLoginController.m in Sources */,
-				1C5F6FBB17D2F3AC005ABD6F /* QuietAssertMacros.c in Sources */,
 				1190F75E13BE4EA900B9D271 /* AwfulAppDelegate.m in Sources */,
 				1190F7EE13BE4ECB00B9D271 /* TFHpple.m in Sources */,
 				1190F7EF13BE4ECB00B9D271 /* TFHppleElement.m in Sources */,
