@@ -5,11 +5,9 @@
 #import "AwfulInstapaperLogInController.h"
 #import "AwfulAlertView.h"
 #import "AwfulTextEntryCell.h"
-#import "AwfulTheme.h"
-#import "AwfulThemingViewController.h"
 #import "InstapaperAPIClient.h"
 
-@interface AwfulInstapaperLogInController () <AwfulThemingViewController, UITextFieldDelegate>
+@interface AwfulInstapaperLogInController () <UITextFieldDelegate>
 
 @property (nonatomic) UIBarButtonItem *cancelButtonItem;
 @property (nonatomic) BOOL loggingIn;
@@ -47,7 +45,6 @@
 {
     [super viewDidLoad];
     self.tableView.backgroundView = nil;
-    [self retheme];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -204,13 +201,6 @@
         [cell.textField becomeFirstResponder];
     }
     return YES;
-}
-
-#pragma mark - AwfulThemingViewController
-
-- (void)retheme
-{
-    self.tableView.backgroundColor = [AwfulTheme currentTheme].loginViewBackgroundColor;
 }
 
 @end

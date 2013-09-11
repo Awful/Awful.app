@@ -4,7 +4,6 @@
 
 #import "AwfulTableViewController.h"
 #import "AwfulHTTPClient.h"
-#import "AwfulTheme.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
 
 @interface AwfulTableViewController ()
@@ -34,7 +33,6 @@
             [blockSelf nextPage];
         }];
     }
-    [self retheme];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -137,20 +135,6 @@
 - (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath
 {
     [self doesNotRecognizeSelector:_cmd];
-}
-
-#pragma mark - AwfulThemingViewController
-
-- (void)retheme
-{
-    UIActivityIndicatorViewStyle style = [AwfulTheme currentTheme].activityIndicatorViewStyle;
-    if ([self canPullToRefresh]) {
-        self.tableView.pullToRefreshView.activityIndicatorViewStyle = style;
-    }
-    if ([self canPullForNextPage]) {
-        self.tableView.infiniteScrollingView.activityIndicatorViewStyle = style;
-    }
-    [self.tableView reloadData];
 }
 
 @end

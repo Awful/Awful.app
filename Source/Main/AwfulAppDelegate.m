@@ -21,7 +21,6 @@
 #import "AwfulSettings.h"
 #import "AwfulSettingsViewController.h"
 #import "AwfulStartViewController.h"
-#import "AwfulTheme.h"
 #import "AwfulVerticalTabBarController.h"
 #import <AFNetworking/AFNetworking.h>
 #import <AVFoundation/AVFoundation.h>
@@ -33,7 +32,6 @@
 #import "NSURL+Punycode.h"
 #import <PocketAPI/PocketAPI.h>
 #import <SVProgressHUD/SVProgressHUD.h>
-#import "UIViewController+AwfulTheming.h"
 #import "UIViewController+NavigationEnclosure.h"
 
 @interface AwfulAppDelegate () <AwfulLoginControllerDelegate>
@@ -178,23 +176,15 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     }
     
     [[AwfulNewPMNotifierAgent agent] checkForNewMessages];
-    NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
-    [noteCenter addObserver:self selector:@selector(themeDidChange:)
-                       name:AwfulThemeDidChangeNotification object:nil];
-    [noteCenter addObserver:self
-                   selector:@selector(settingsDidChange:)
-                       name:AwfulSettingsDidChangeNotification
-                     object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(settingsDidChange:)
+                                                 name:AwfulSettingsDidChangeNotification
+                                               object:nil];
     
     [[PocketAPI sharedAPI] setURLScheme:@"awful-pocket-login"];
     [[PocketAPI sharedAPI] setConsumerKey:@"13890-9e69d4d40af58edc2ef13ca0"];
     
     return YES;
-}
-
-- (void)themeDidChange:(NSNotification *)note
-{
-    [self.window.rootViewController recursivelyRetheme];
 }
 
 - (void)settingsDidChange:(NSNotification *)note

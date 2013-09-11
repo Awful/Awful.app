@@ -5,14 +5,9 @@
 #import "AwfulComposeViewControllerSubclass.h"
 #import "AwfulAlertView.h"
 #import "AwfulKeyboardBar.h"
-#import "AwfulTheme.h"
-#import "AwfulThemingViewController.h"
 #import "ImgurHTTPClient.h"
 
-@interface AwfulComposeViewController () <UIImagePickerControllerDelegate,
-                                          UINavigationControllerDelegate,
-                                          UIPopoverControllerDelegate,
-                                          AwfulThemingViewController>
+@interface AwfulComposeViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPopoverControllerDelegate>
 
 @property (nonatomic) AwfulTextView *textView;
 @property (nonatomic) AwfulKeyboardBar *bbcodeBar;
@@ -176,14 +171,6 @@ static NSArray * ImagePlaceholderResultsWithMessageBody(NSString *messageBody)
     // noop; subclasses are free to implement
 }
 
-#pragma mark - AwfulThemingViewController
-
-- (void)retheme
-{
-    self.textView.textColor = [AwfulTheme currentTheme].replyViewTextColor;
-    self.textView.backgroundColor = [AwfulTheme currentTheme].replyViewBackgroundColor;
-}
-
 #pragma mark - UIViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -202,12 +189,6 @@ static NSArray * ImagePlaceholderResultsWithMessageBody(NSString *messageBody)
     self.view = [[UIView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.textView];
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    [self retheme];
 }
 
 - (void)viewWillAppear:(BOOL)animated

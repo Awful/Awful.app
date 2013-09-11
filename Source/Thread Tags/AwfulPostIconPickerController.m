@@ -4,7 +4,6 @@
 
 #import "AwfulPostIconPickerController.h"
 #import "AwfulImageCollectionViewCell.h"
-#import "AwfulTheme.h"
 #import "AwfulThreadTags.h"
 #import "UIViewController+NavigationEnclosure.h"
 
@@ -255,7 +254,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.collectionView.backgroundColor = [AwfulTheme currentTheme].postIconPickerBackgroundColor;
+    self.collectionView.backgroundColor = [UIColor colorWithWhite:0.788 alpha:1];
     [self.collectionView registerClass:[AwfulImageCollectionViewCell class]
             forCellWithReuseIdentifier:TagCellIdentifier];
     self.collectionView.allowsMultipleSelection = YES;

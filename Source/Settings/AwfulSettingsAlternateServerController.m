@@ -5,7 +5,6 @@
 #import "AwfulSettingsAlternateServerController.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulSettings.h"
-#import "AwfulTheme.h"
 
 @interface AwfulSettingsAlternateServerController ()
 
@@ -15,13 +14,6 @@
 
 
 @implementation AwfulSettingsAlternateServerController
-
-- (void)retheme
-{
-    self.tableView.backgroundColor = [AwfulTheme currentTheme].settingsViewBackgroundColor;
-    self.tableView.separatorColor = [AwfulTheme currentTheme].settingsCellSeparatorColor;
-    [self.tableView reloadData];
-}
 
 #pragma mark - UIViewController
 
@@ -35,7 +27,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self retheme];
     self.tableView.backgroundView = nil;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
 }
@@ -58,7 +49,6 @@ static NSString * const AgeOldSomethingAwfulIPAddress = @"216.86.148.111";
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                       reuseIdentifier:Identifier];
     }
-    cell.textLabel.textColor = [AwfulTheme currentTheme].settingsCellTextColor;
     if (indexPath.row == 0) {
         cell.textLabel.text = @"forums.somethingawful.com";
         if (![AwfulSettings settings].customBaseURL) {
@@ -77,13 +67,6 @@ static NSString * const AgeOldSomethingAwfulIPAddress = @"216.86.148.111";
         }
     }
     return cell;
-}
-
-- (void)tableView:(UITableView *)tableView
-  willDisplayCell:(UITableViewCell *)cell
-forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    cell.backgroundColor = [AwfulTheme currentTheme].settingsCellBackgroundColor;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

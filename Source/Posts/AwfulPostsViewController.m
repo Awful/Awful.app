@@ -28,8 +28,6 @@
 #import "AwfulReadLaterService.h"
 #import "AwfulReplyComposeViewController.h"
 #import "AwfulSettings.h"
-#import "AwfulTheme.h"
-#import "AwfulThemingViewController.h"
 #import <GRMustache/GRMustache.h>
 #import "NSFileManager+UserDirectories.h"
 #import "NSManagedObject+Awful.h"
@@ -47,7 +45,6 @@
                                         NSFetchedResultsControllerDelegate,
                                         AwfulReplyComposeViewControllerDelegate,
                                         UIScrollViewDelegate,
-                                        AwfulThemingViewController,
                                         AwfulPrivateMessageComposeViewControllerDelegate,
                                         AwfulPostsViewSettingsControllerDelegate,
                                         AwfulPopoverControllerDelegate>
@@ -135,6 +132,7 @@
         AwfulSettingsKeys.username,
         AwfulSettingsKeys.yosposStyle,
         AwfulSettingsKeys.fontSize,
+        AwfulSettingsKeys.darkTheme
     ];
     NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
     if ([keys firstObjectCommonWithArray:importantKeys]) {
@@ -306,7 +304,7 @@
 {
     if (!self.loadingView) {
         AwfulLoadingViewType loadingViewType = AwfulLoadingViewTypeDefault;
-        UIColor *tintColor = [AwfulTheme currentTheme].postsViewBackgroundColor;
+        UIColor *tintColor = [UIColor whiteColor];
         if ([self.thread.forum.forumID isEqualToString:@"25"]) {
             if ([AwfulSettings settings].gasChamberStyle == AwfulGasChamberStyleSickly) {
                 loadingViewType = AwfulLoadingViewTypeGasChamber;
@@ -350,6 +348,7 @@
 
 - (void)configurePostsViewSettings
 {
+    self.postsView.dark = [AwfulSettings settings].darkTheme;
     self.postsView.showAvatars = [AwfulSettings settings].showAvatars;
     self.postsView.showImages = [AwfulSettings settings].showImages;
     self.postsView.fontSize = [AwfulSettings settings].fontSize;
@@ -607,33 +606,6 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark - AwfulThemingViewController
-
-- (void)retheme
-{
-    AwfulTheme *theme = [AwfulTheme currentTheme];
-    self.view.backgroundColor = theme.postsViewBackgroundColor;
-    self.topBar.backgroundColor = theme.postsViewTopBarMarginColor;
-    NSArray *buttons = @[ self.topBar.goToForumButton, self.topBar.loadReadPostsButton,
-                          self.topBar.scrollToBottomButton ];
-    for (UIButton *button in buttons) {
-        [button setTitleColor:theme.postsViewTopBarButtonTextColor forState:UIControlStateNormal];
-        [button setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [button setTitleColor:theme.postsViewTopBarButtonDisabledTextColor
-                     forState:UIControlStateDisabled];
-        button.backgroundColor = theme.postsViewTopBarButtonBackgroundColor;
-    }
-    self.pullUpToRefreshControl.spinnerStyle = theme.activityIndicatorViewStyle;
-    self.pullUpToRefreshControl.textColor = theme.postsViewPullUpForNextPageTextAndArrowColor;
-    self.pullUpToRefreshControl.arrowColor = theme.postsViewPullUpForNextPageTextAndArrowColor;
-    self.postsView.dark = [AwfulSettings settings].darkTheme;
-    if (self.loadingView) {
-        NSString *message = self.loadingView.message;
-        [self clearLoadingMessage];
-        [self setLoadingMessage:message];
-    }
-}
-
 #pragma mark - UIViewController
 
 - (void)setTitle:(NSString *)title
@@ -692,6 +664,17 @@
     [self updateUserInterface];
     
     [self.view bringSubviewToFront:self.bottomBar];
+    
+    self.view.backgroundColor = [UIColor whiteColor];
+    self.topBar.backgroundColor = [UIColor colorWithRed:0.973 green:0.973 blue:0.973 alpha:1];
+    NSArray *buttons = @[ self.topBar.goToForumButton, self.topBar.loadReadPostsButton,
+                          self.topBar.scrollToBottomButton ];
+    for (UIButton *button in buttons) {
+        [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [button setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [button setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+        button.backgroundColor = [UIColor colorWithRed:0.973 green:0.973 blue:0.973 alpha:1];
+    }
 }
 
 - (void)updatePullUpTriggerOffset
@@ -824,12 +807,6 @@
     UIScrollView *scrollView = self.postsView.scrollView;
     [scrollView scrollRectToVisible:CGRectMake(0, scrollView.contentSize.height - 1, 1, 1)
                            animated:YES];
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    [self retheme];
 }
 
 - (void)viewDidAppear:(BOOL)animated

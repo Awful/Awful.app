@@ -6,7 +6,6 @@
 #import "AwfulAppDelegate.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulTextEntryCell.h"
-#import "AwfulTheme.h"
 
 @interface AwfulLoginController () <UITextFieldDelegate>
 
@@ -36,13 +35,13 @@
     
     self.title = @"Awful";
     self.tableView.backgroundView = nil;
-    self.tableView.backgroundColor = [AwfulTheme currentTheme].loginViewBackgroundColor;
+    self.tableView.backgroundColor = [UIColor colorWithHue:0.604 saturation:0.035 brightness:0.898 alpha:1];
     UIButton *forgotLink = [UIButton buttonWithType:UIButtonTypeCustom];
     [forgotLink addTarget:self
                    action:@selector(forgotPassword)
          forControlEvents:UIControlEventTouchUpInside];
     [forgotLink setTitle:@"Lost or forgot your password?" forState:UIControlStateNormal];
-    [forgotLink setTitleColor:[AwfulTheme currentTheme].loginViewForgotLinkTextColor
+    [forgotLink setTitleColor:[UIColor colorWithHue:0.584 saturation:0.960 brightness:0.388 alpha:1]
                      forState:UIControlStateNormal];
     forgotLink.titleLabel.font = [UIFont systemFontOfSize:15];
     [forgotLink sizeToFit];

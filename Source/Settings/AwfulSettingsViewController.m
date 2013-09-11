@@ -14,7 +14,6 @@
 #import "AwfulPostsViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulSettingsChoiceViewController.h"
-#import "AwfulTheme.h"
 #import "InstapaperAPIClient.h"
 #import "NSManagedObject+Awful.h"
 #import <PocketAPI/PocketAPI.h>
@@ -88,13 +87,6 @@
     self.networkOperation = op;
 }
 
-- (void)retheme
-{
-    [super retheme];
-    self.tableView.backgroundColor = [AwfulTheme currentTheme].settingsViewBackgroundColor;
-    self.tableView.separatorColor = [AwfulTheme currentTheme].settingsCellSeparatorColor;
-}
-
 #pragma mark - UIViewController
 
 - (void)viewDidLoad
@@ -103,6 +95,7 @@
     self.switches = [NSMutableArray new];
     self.steppers = [NSMutableArray new];
     self.tableView.backgroundView = nil;
+    self.tableView.backgroundColor = [UIColor colorWithHue:0.604 saturation:0.035 brightness:0.898 alpha:1];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
     
     // Make sure the bottom section's footer is visible.
@@ -216,7 +209,7 @@ typedef enum SettingType
         }
     }
     if (style == UITableViewCellStyleValue1) {
-        UIColor *color = [AwfulTheme currentTheme].settingsCellCurrentValueTextColor;
+        UIColor *color = [UIColor colorWithHue:0.607 saturation:0.568 brightness:0.518 alpha:1];
         cell.detailTextLabel.textColor = color;
     }
     
@@ -233,7 +226,7 @@ typedef enum SettingType
     } else {
         cell.textLabel.text = setting[@"Title"];
     }
-    cell.textLabel.textColor = [AwfulTheme currentTheme].settingsCellTextColor;
+    cell.textLabel.textColor = [UIColor blackColor];
     
     if (settingType == ImmutableSetting) {
         NSString *valueID = setting[@"ValueIdentifier"];
@@ -252,7 +245,6 @@ typedef enum SettingType
     if (settingType == OnOffSetting) {
         UISwitch *switchView = (UISwitch *)cell.accessoryView;
         switchView.on = [valueForSetting boolValue];
-        switchView.onTintColor = [AwfulTheme currentTheme].settingsCellSwitchOnTintColor;
         NSUInteger tag = [self.switches indexOfObject:indexPath];
         if (tag == NSNotFound) {
             tag = self.switches.count;
@@ -261,8 +253,8 @@ typedef enum SettingType
         switchView.tag = tag;
     } else if (settingType == ChoiceSetting) {
         AwfulDisclosureIndicatorView *disclosure = (id)cell.accessoryView;
-        disclosure.color = [AwfulTheme currentTheme].disclosureIndicatorColor;
-        disclosure.highlightedColor = [AwfulTheme currentTheme].disclosureIndicatorHighlightedColor;
+        disclosure.color = [UIColor grayColor];
+        disclosure.highlightedColor = [UIColor whiteColor];
         if (setting[@"DisplayTransformer"]) {
             NSValueTransformer *transformer = [NSClassFromString(setting[@"DisplayTransformer"])
                                                new];
@@ -295,7 +287,7 @@ typedef enum SettingType
     }
     
     if (settingType == ChoiceSetting || settingType == ButtonSetting) {
-        cell.selectionStyle = [AwfulTheme currentTheme].cellSelectionStyle;
+        cell.selectionStyle = UITableViewCellSelectionStyleBlue;
     } else {
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
@@ -323,13 +315,6 @@ typedef enum SettingType
     NSDictionary *setting = [self settingForIndexPath:indexPath];
     NSString *key = setting[@"Key"];
     [AwfulSettings settings][key] = @(stepperView.value);
-}
-
-- (void)tableView:(UITableView *)tableView
-  willDisplayCell:(UITableViewCell *)cell
-forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    cell.backgroundColor = [AwfulTheme currentTheme].settingsCellBackgroundColor;
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView
@@ -435,8 +420,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     label.font = [UIFont boldSystemFontOfSize:17];
     label.text = title;
     label.backgroundColor = [UIColor clearColor];
-    label.textColor = [AwfulTheme currentTheme].settingsViewHeaderTextColor;
-    label.shadowColor = [AwfulTheme currentTheme].settingsViewHeaderShadowColor;
+    label.textColor = [UIColor colorWithRed:0.265 green:0.294 blue:0.367 alpha:1];
+    label.shadowColor = [UIColor whiteColor];
     label.shadowOffset = CGSizeMake(-1, 1);
 
     UIView *wrapper = [UIView new];
@@ -471,8 +456,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     label.frame = CGRectMake(20, 5, width, 0);
     label.text = text;
     label.backgroundColor = [UIColor clearColor];
-    label.textColor = [AwfulTheme currentTheme].settingsViewFooterTextColor;
-    label.shadowColor = [AwfulTheme currentTheme].settingsViewFooterShadowColor;
+    label.textColor = [UIColor colorWithRed:0.298 green:0.337 blue:0.424 alpha:1];
+    label.shadowColor = [UIColor whiteColor];
     label.shadowOffset = CGSizeMake(0, 1);
     [label sizeToFit];
     CGRect frame = label.frame;

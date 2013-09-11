@@ -9,7 +9,6 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulLeperCell.h"
 #import "AwfulParsing.h"
-#import "AwfulTheme.h"
 
 @interface AwfulLepersViewController ()
 
@@ -39,9 +38,9 @@
 {
     if (_cellBackgroundImage) return _cellBackgroundImage;
     CGSize size = CGSizeMake(40, 56);
-    UIColor *topColor = [AwfulTheme currentTheme].lepersColonyCellBackgroundTopColor;
-    UIColor *shadowColor = [AwfulTheme currentTheme].lepersColonyCellBackgroundDividerShadowColor;
-    UIColor *bottomColor = [AwfulTheme currentTheme].lepersColonyCellBackgroundBottomColor;
+    UIColor *topColor = [UIColor whiteColor];
+    UIColor *shadowColor = [UIColor colorWithWhite:0.5 alpha:0.2];
+    UIColor *bottomColor = [UIColor colorWithWhite:0.969 alpha:1];
     
     UIGraphicsBeginImageContextWithOptions(size, YES, 0);
     CGContextRef context = UIGraphicsGetCurrentContext();
@@ -89,12 +88,11 @@
     return [self.bans count] == 0;
 }
 
-- (void)retheme
+- (void)loadView
 {
-    [super retheme];
-    self.view.backgroundColor = [AwfulTheme currentTheme].lepersColonyBackgroundColor;
-    self.tableView.separatorColor = [AwfulTheme currentTheme].lepersColonySeparatorColor;
-    [self invalidateCellBackgroundImage];
+    [super loadView];
+    self.view.backgroundColor = [UIColor whiteColor];
+    self.tableView.separatorColor = [UIColor grayColor];
 }
 
 - (void)invalidateCellBackgroundImage
@@ -203,16 +201,6 @@ static NSString * CreateBanIDForBan(BanParsedInfo *ban)
                                             width:CGRectGetWidth(tableView.frame)];
 }
 
-- (void)tableView:(UITableView *)tableView
-  willDisplayCell:(UITableViewCell *)baseCell
-forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    AwfulLeperCell *cell = (id)baseCell;
-    cell.usernameLabel.textColor = [AwfulTheme currentTheme].lepersColonyTextColor;
-    cell.dateAndModLabel.textColor = [AwfulTheme currentTheme].lepersColonyTextColor;
-    cell.reasonLabel.textColor = [AwfulTheme currentTheme].lepersColonyTextColor;
-}
-
 - (void)configureCell:(UITableViewCell *)genericCell atIndexPath:(NSIndexPath *)indexPath
 {
     AwfulLeperCell *cell = (id)genericCell;
@@ -220,7 +208,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     
     UIImageView *background = (id)cell.backgroundView;
     background.image = self.cellBackgroundImage;
-    cell.selectionStyle = [AwfulTheme currentTheme].cellSelectionStyle;
     
     if (ban.banType == AwfulBanTypeProbation) {
         cell.imageView.image = [UIImage imageNamed:@"title-probation.png"];
@@ -242,8 +229,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                                  [df stringFromDate:ban.banDate], ban.requesterUserName];
     cell.reasonLabel.text = ban.banReason;
     cell.disclosureIndicator = ban.postID ? [AwfulDisclosureIndicatorView new] : nil;
-    cell.disclosureIndicator.color = [AwfulTheme currentTheme].disclosureIndicatorColor;
-    cell.disclosureIndicator.highlightedColor = [AwfulTheme currentTheme].disclosureIndicatorHighlightedColor;
+    cell.disclosureIndicator.color = [UIColor grayColor];
+    cell.disclosureIndicator.highlightedColor = [UIColor whiteColor];
     
     NSString *banDescription = @"banned";
     if (ban.banType == AwfulBanTypeProbation) banDescription = @"probated";

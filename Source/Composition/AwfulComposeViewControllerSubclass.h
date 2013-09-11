@@ -3,7 +3,6 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulComposeViewController.h"
-#import "AwfulThemingViewController.h"
 
 typedef NS_ENUM(NSInteger, AwfulComposeViewControllerState) {
     // The compose controller isn't doing anything.
@@ -19,7 +18,7 @@ typedef NS_ENUM(NSInteger, AwfulComposeViewControllerState) {
     AwfulComposeViewControllerStateError,
 };
 
-@interface AwfulComposeViewController () <AwfulThemingViewController>
+@interface AwfulComposeViewController ()
 
 // By default, the sendButton has no target or action. Subclasses should set both of these
 // properties. Its default title is "Send".

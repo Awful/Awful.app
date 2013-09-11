@@ -10,15 +10,13 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulPostIconPickerController.h"
 #import "AwfulSettings.h"
-#import "AwfulTheme.h"
 #import "AwfulThreadTag.h"
 #import "AwfulThreadTagButton.h"
 #import "AwfulThreadTags.h"
 #import <SVProgressHUD/SVProgressHUD.h>
 #import "UIViewController+NavigationEnclosure.h"
 
-@interface AwfulThreadComposeViewController () <AwfulPostIconPickerControllerDelegate,
-                                                UITextFieldDelegate>
+@interface AwfulThreadComposeViewController () <AwfulPostIconPickerControllerDelegate, UITextFieldDelegate>
 
 @property (nonatomic) AwfulForum *forum;
 @property (nonatomic) UIView *topView;
@@ -198,18 +196,6 @@
     self.networkOperation = op;
 }
 
-- (void)retheme
-{
-    [super retheme];
-    AwfulTheme *theme = [AwfulTheme currentTheme];
-    self.topView.backgroundColor = theme.messageComposeFieldSeparatorColor;
-    self.postIconButton.backgroundColor = theme.messageComposeFieldBackgroundColor;
-    self.subjectField.backgroundColor = theme.messageComposeFieldBackgroundColor;
-    self.subjectField.label.textColor = theme.messageComposeFieldLabelColor;
-    self.subjectField.label.backgroundColor = theme.messageComposeFieldBackgroundColor;
-    self.subjectField.textField.textColor = theme.messageComposeFieldTextColor;
-}
-
 #pragma mark - UIViewController
 
 - (void)loadView
@@ -243,6 +229,12 @@
     [self.subjectField.textField addTarget:self action:@selector(subjectFieldDidChange:)
                           forControlEvents:UIControlEventEditingChanged];
     [self.topView addSubview:self.subjectField];
+    
+    self.topView.backgroundColor = [UIColor colorWithWhite:0.8 alpha:1];
+    self.postIconButton.backgroundColor = [UIColor whiteColor];
+    self.subjectField.backgroundColor = [UIColor whiteColor];
+    self.subjectField.label.textColor = [UIColor grayColor];
+    self.subjectField.label.backgroundColor = [UIColor whiteColor];
 }
 
 - (void)didTapPostIconButton

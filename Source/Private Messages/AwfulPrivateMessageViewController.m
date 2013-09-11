@@ -19,8 +19,6 @@
 #import "AwfulProfileViewController.h"
 #import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
-#import "AwfulTheme.h"
-#import "AwfulThemingViewController.h"
 #import <GRMustache/GRMustache.h>
 #import "NSFileManager+UserDirectories.h"
 #import "NSURL+Awful.h"
@@ -28,8 +26,7 @@
 #import "NSURL+Punycode.h"
 #import "UIViewController+NavigationEnclosure.h"
 
-@interface AwfulPrivateMessageViewController () <AwfulPostsViewDelegate, AwfulThemingViewController,
-                                                 AwfulPrivateMessageComposeViewControllerDelegate>
+@interface AwfulPrivateMessageViewController () <AwfulPostsViewDelegate, AwfulPrivateMessageComposeViewControllerDelegate>
 
 @property (nonatomic) AwfulPrivateMessage *privateMessage;
 @property (readonly) AwfulPostsView *postsView;
@@ -73,15 +70,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-#pragma mark - AwfulThemingViewController
-
-- (void)retheme
-{
-    self.view.backgroundColor = [AwfulTheme currentTheme].postsViewBackgroundColor;
-    self.postsView.dark = [AwfulSettings settings].darkTheme;
-    self.loadingView.tintColor = self.view.backgroundColor;
-}
-
 #pragma mark - UIViewController
 
 - (void)loadView
@@ -93,6 +81,9 @@
     view.stylesheetURL = StylesheetURLForForumWithIDAndSettings(nil, nil);
     self.view = view;
     [self configurePostsViewSettings];
+    self.view.backgroundColor = [UIColor whiteColor];
+    self.postsView.dark = [AwfulSettings settings].darkTheme;
+    self.loadingView.tintColor = self.view.backgroundColor;
 }
 
 - (void)configurePostsViewSettings
@@ -102,18 +93,12 @@
     self.postsView.fontSize = [AwfulSettings settings].fontSize;
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    [self retheme];
-}
-
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     if ([self.privateMessage.innerHTML length] == 0) {
         self.loadingView = [AwfulLoadingView loadingViewWithType:AwfulLoadingViewTypeDefault];
-        self.loadingView.tintColor = [AwfulTheme currentTheme].postsViewBackgroundColor;
+        self.loadingView.tintColor = [UIColor whiteColor];
         self.loadingView.message = @"Loading…";
         [self.postsView addSubview:self.loadingView];
         [[AwfulHTTPClient client] readPrivateMessageWithID:self.privateMessage.messageID

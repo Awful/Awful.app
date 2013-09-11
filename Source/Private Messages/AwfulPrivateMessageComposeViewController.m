@@ -8,7 +8,6 @@
 #import "AwfulComposeField.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulPostIconPickerController.h"
-#import "AwfulTheme.h"
 #import "AwfulThreadTag.h"
 #import "AwfulThreadTagButton.h"
 #import "AwfulThreadTags.h"
@@ -322,6 +321,16 @@
          self.availablePostIcons = postIcons;
          [self.postIconPicker reloadData];
      }];
+    self.topView.backgroundColor = [UIColor colorWithWhite:0.8 alpha:1];
+    self.postIconButton.backgroundColor = [UIColor whiteColor];
+    self.toField.backgroundColor = [UIColor whiteColor];
+    self.toField.label.textColor = [UIColor grayColor];
+    self.toField.label.backgroundColor = [UIColor whiteColor];
+    self.toField.textField.textColor = [UIColor blackColor];
+    self.subjectField.backgroundColor = [UIColor whiteColor];
+    self.subjectField.label.textColor = [UIColor grayColor];
+    self.subjectField.label.backgroundColor = [UIColor whiteColor];
+    self.subjectField.textField.textColor = [UIColor blackColor];
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
@@ -329,22 +338,6 @@
 {
     [self.postIconPicker showFromRect:self.postIconButton.frame
                                inView:self.postIconButton.superview];
-}
-
-- (void)retheme
-{
-    [super retheme];
-    AwfulTheme *theme = [AwfulTheme currentTheme];
-    self.topView.backgroundColor = theme.messageComposeFieldSeparatorColor;
-    self.postIconButton.backgroundColor = theme.messageComposeFieldBackgroundColor;
-    self.toField.backgroundColor = theme.messageComposeFieldBackgroundColor;
-    self.toField.label.textColor = theme.messageComposeFieldLabelColor;
-    self.toField.label.backgroundColor = theme.messageComposeFieldBackgroundColor;
-    self.toField.textField.textColor = theme.messageComposeFieldTextColor;
-    self.subjectField.backgroundColor = theme.messageComposeFieldBackgroundColor;
-    self.subjectField.label.textColor = theme.messageComposeFieldLabelColor;
-    self.subjectField.label.backgroundColor = theme.messageComposeFieldBackgroundColor;
-    self.subjectField.textField.textColor = theme.messageComposeFieldTextColor;
 }
 
 #pragma mark - AwfulPostIconPickerControllerDelegate

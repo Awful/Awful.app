@@ -8,11 +8,9 @@
 #import "AwfulPageBarBackgroundView.h"
 #import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
-#import "AwfulTheme.h"
-#import "AwfulThemingViewController.h"
 #import "UINavigationItem+TwoLineTitle.h"
 
-@interface AwfulBrowserViewController () <UIWebViewDelegate, AwfulThemingViewController>
+@interface AwfulBrowserViewController () <UIWebViewDelegate>
 
 @property (weak, nonatomic) UIWebView *webView;
 
@@ -153,13 +151,6 @@ static UIButton * MakeBorderlessButton(UIImage *image, id target, SEL action)
     [self.backForwardControl setEnabled:[self.webView canGoForward] forSegmentAtIndex:1];
 }
 
-#pragma mark - AwfulThemingViewController
-
-- (void)retheme
-{
-    self.view.backgroundColor = [AwfulTheme currentTheme].postsViewBackgroundColor;
-}
-
 #pragma mark - UIViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -188,6 +179,7 @@ static UIButton * MakeBorderlessButton(UIImage *image, id target, SEL action)
 - (void)loadView
 {
     self.view = [[UIView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
+    self.view.backgroundColor = [UIColor whiteColor];
     CGRect webViewFrame = (CGRect){ .size = self.view.frame.size };
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         CGRect toolbarFrame;
@@ -253,7 +245,6 @@ static UISegmentedControl * MakeSegmentedBarButton(NSArray *items)
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self retheme];
     if (self.URL) {
         [self.webView loadRequest:[NSURLRequest requestWithURL:self.URL]];
     }
