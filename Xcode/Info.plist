@@ -53,8 +53,6 @@
 	<string>20000</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>UIFileSharingEnabled</key>
-	<true/>
 	<key>UIInterfaceOrientation</key>
 	<string>UIInterfaceOrientationPortrait</string>
 	<key>UIInterfaceOrientation~ipad</key>
