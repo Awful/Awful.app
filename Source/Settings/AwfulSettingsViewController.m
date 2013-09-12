@@ -36,7 +36,6 @@
     if (!(self = [super initWithStyle:UITableViewStyleGrouped])) return nil;
     self.title = @"Settings";
     self.tabBarItem.image = [UIImage imageNamed:@"cog.png"];
-    self.edgesForExtendedLayout = UIRectEdgeNone;
     return self;
 }
 

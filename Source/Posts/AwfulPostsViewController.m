@@ -92,7 +92,6 @@
                        name:AwfulSettingsDidChangeNotification object:nil];
     [noteCenter addObserver:self selector:@selector(willResetDataStack:)
                        name:AwfulDataStackWillResetNotification object:nil];
-    self.edgesForExtendedLayout = UIRectEdgeNone;
     return self;
 }
 

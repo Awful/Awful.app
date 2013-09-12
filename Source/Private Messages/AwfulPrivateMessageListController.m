@@ -53,7 +53,6 @@
     NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
     [noteCenter addObserver:self selector:@selector(didGetNewPMCount:)
                        name:AwfulNewPrivateMessagesNotification object:nil];
-    self.edgesForExtendedLayout = UIRectEdgeNone;
     return self;
 }
 

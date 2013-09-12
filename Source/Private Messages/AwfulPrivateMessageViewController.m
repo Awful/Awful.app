@@ -45,7 +45,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDidChange:)
                                                  name:AwfulSettingsDidChangeNotification
                                                object:nil];
-    self.edgesForExtendedLayout = UIRectEdgeNone;
     return self;
 }
 

@@ -11,7 +11,6 @@
     if (!(self = [super initWithFrame:frame])) return nil;
     self.tintColor = [UIColor whiteColor];
     self.barTintColor = [UIColor colorWithRed:0.078 green:0.514 blue:0.694 alpha:1];
-    self.translucent = NO;
     self.titleTextAttributes = @{ NSForegroundColorAttributeName: [UIColor whiteColor] };
     
     // Setting the barStyle to UIBarStyleBlack results in an appropriate status bar style.

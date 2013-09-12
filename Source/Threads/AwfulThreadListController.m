@@ -37,7 +37,6 @@
     if (!(self = [super init])) return nil;
     _cellsMissingThreadTags = [NSMutableSet new];
     self.navigationItem.rightBarButtonItem = self.newThreadButtonItem;
-    self.edgesForExtendedLayout = UIRectEdgeNone;
     return self;
 }
 
