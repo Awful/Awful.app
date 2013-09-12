@@ -26,14 +26,28 @@
     if (!self.backItem) return;
     UINavigationController *nav = self.delegate;
     if (![nav isKindOfClass:[UINavigationController class]]) return;
-    UIView *leftmost;
-    for (UIView *subview in self.subviews) {
-        if (leftmost && CGRectGetMinX(leftmost.frame) < CGRectGetMinX(subview.frame)) continue;
-        if (CGRectGetWidth(subview.frame) > CGRectGetWidth(self.frame) / 2) continue;
-        leftmost = subview;
-    }
-    CGRect backFrame = leftmost ? leftmost.frame : CGRectMake(5, 0, 100, 40);
-    if (CGRectContainsPoint(backFrame, [recognizer locationInView:self])) {
+    
+    // Find the leftmost, widest subview whose width is less than half of the navbar's.
+    NSMutableArray *subviews = [self.subviews mutableCopy];
+    [subviews filterUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(UIView *view, NSDictionary *bindings) {
+        return CGRectGetWidth(view.frame) < CGRectGetWidth(self.frame) / 2;
+    }]];
+    [subviews sortUsingComparator:^(UIView *a, UIView *b) {
+        if (CGRectGetMinX(a.frame) < CGRectGetMinX(b.frame)) {
+            return NSOrderedAscending;
+        } else if (CGRectGetMinX(a.frame) > CGRectGetMinX(b.frame)) {
+            return NSOrderedDescending;
+        }
+        if (CGRectGetWidth(a.frame) > CGRectGetWidth(b.frame)) {
+            return NSOrderedAscending;
+        } else if (CGRectGetWidth(a.frame) < CGRectGetWidth(b.frame)) {
+            return NSOrderedDescending;
+        }
+        return NSOrderedSame;
+    }];
+    UIView *leftmost = subviews[0];
+    
+    if (CGRectContainsPoint(leftmost.frame, [recognizer locationInView:self])) {
         [nav popToRootViewControllerAnimated:YES];
     }
 }
