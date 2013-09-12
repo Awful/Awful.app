@@ -186,6 +186,12 @@ typedef NS_ENUM(NSInteger, AwfulBasementSidebarState)
     [self.mainContainerView addConstraints:constraints];
     [oldViewController removeFromParentViewController];
     [newViewController didMoveToParentViewController:self];
+    [self setNeedsStatusBarAppearanceUpdate];
+}
+
+- (UIViewController *)childViewControllerForStatusBarStyle
+{
+    return self.selectedViewController;
 }
 
 - (BOOL)sidebarVisible

@@ -94,6 +94,9 @@
     [self.view addConstraints:_masterViewControllerConstraints];
     [oldMasterViewController removeFromParentViewController];
     [newMasterViewController didMoveToParentViewController:self];
+    if (!self.detailExpanded) {
+        [self setNeedsStatusBarAppearanceUpdate];
+    }
 }
 
 - (void)replaceDetailViewController:(UIViewController *)oldDetailViewController
@@ -126,6 +129,9 @@
     }
     [oldDetailViewController removeFromParentViewController];
     [newDetailViewController didMoveToParentViewController:self];
+    if (self.detailExpanded) {
+        [self setNeedsStatusBarAppearanceUpdate];
+    }
 }
 
 - (void)constrainDetailViewExpanded
@@ -159,6 +165,7 @@
     [UIView animateWithDuration:(animated ? 0.3 : 0) animations:^{
         [self.view layoutIfNeeded];
     }];
+    [self setNeedsStatusBarAppearanceUpdate];
 }
 
 - (UIViewController *)detailViewController
@@ -175,6 +182,15 @@
 {
     UIViewController *masterViewController = self.viewControllers[0];
     return masterViewController.tabBarItem;
+}
+
+- (UIViewController *)childViewControllerForStatusBarStyle
+{
+    if (self.detailExpanded) {
+        return self.detailViewController;
+    } else {
+        return self.viewControllers[0];
+    }
 }
 
 @end

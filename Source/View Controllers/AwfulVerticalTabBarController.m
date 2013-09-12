@@ -96,6 +96,12 @@
     [self.view addConstraints:_selectedViewControllerConstraints];
     [oldViewController removeFromParentViewController];
     [newViewController didMoveToParentViewController:self];
+    [self setNeedsStatusBarAppearanceUpdate];
+}
+
+- (UIViewController *)childViewControllerForStatusBarStyle
+{
+    return self.selectedViewController;
 }
 
 #pragma mark AwfulVerticalTabBarControllerDelegate
