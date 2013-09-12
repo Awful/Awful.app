@@ -140,7 +140,6 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     
     [self ignoreSilentSwitchWhenPlayingEmbeddedVideo];
     
-    application.statusBarStyle = UIStatusBarStyleLightContent;
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.tintColor = [UIColor colorWithRed:0.118 green:0.518 blue:0.686 alpha:1];
     [self setUpRootViewController];
