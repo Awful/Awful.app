@@ -214,11 +214,11 @@ static NSString * const FavoriteCellIdentifier = @"Favorite";
     self.tableView.backgroundView = nil;
     self.tableView.separatorInset = UIEdgeInsetsMake(0, 37, 0, 0);
     
-    // This little ditty stops section headers from sticking.
-    CGRect headerFrame = (CGRect){ .size.height = self.tableView.rowHeight };
+    // This little ditty stops section headers from sticking. Double the row height to keep section headers out from under a transparent navbar.
+    CGRect headerFrame = CGRectMake(0, 0, 0, self.tableView.rowHeight * 2);
     self.tableView.tableHeaderView = [[UIView alloc] initWithFrame:headerFrame];
     UIEdgeInsets contentInset = self.tableView.contentInset;
-    contentInset.top -= self.tableView.rowHeight;
+    contentInset.top -= CGRectGetHeight(headerFrame);
     self.tableView.contentInset = contentInset;
     
     // Don't show cell separators after last cell.
