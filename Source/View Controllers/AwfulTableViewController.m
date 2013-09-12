@@ -4,7 +4,7 @@
 
 #import "AwfulTableViewController.h"
 #import "AwfulHTTPClient.h"
-#import <SVPullToRefresh/SVPullToRefresh.h>
+#import <SVPullToRefresh/UIScrollView+SVInfiniteScrolling.h>
 
 @interface AwfulTableViewController ()
 
@@ -22,15 +22,15 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    __weak AwfulTableViewController *blockSelf = self;
     if ([self canPullToRefresh]) {
-        [self.tableView addPullToRefreshWithActionHandler:^{
-            [blockSelf refresh];
-        }];
+        self.refreshControl = [UIRefreshControl new];
+        [self.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
     }
     if ([self canPullForNextPage]) {
+        __weak __typeof__(self) weakSelf = self;
         [self.tableView addInfiniteScrollingWithActionHandler:^{
-            [blockSelf nextPage];
+            __typeof__(self) self = weakSelf;
+            [self nextPage];
         }];
     }
 }
@@ -49,10 +49,7 @@
 
 - (void)refreshIfNeededOnAppear
 {
-    if (![self refreshOnAppear]) return;
-    if ([self canPullToRefresh]) {
-        [self.tableView triggerPullToRefresh];
-    } else {
+    if ([self refreshOnAppear]) {
         [self refresh];
     }
 }
@@ -102,9 +99,9 @@
     if (_refreshing == refreshing) return;
     _refreshing = refreshing;
     if (refreshing) {
-        if ([self canPullToRefresh]) [self.tableView.pullToRefreshView startAnimating];
+        [self.refreshControl beginRefreshing];
     } else {
-        if ([self canPullToRefresh]) [self.tableView.pullToRefreshView stopAnimating];
+        [self.refreshControl endRefreshing];
         if ([self canPullForNextPage]) [self.tableView.infiniteScrollingView stopAnimating];
     }
 }
