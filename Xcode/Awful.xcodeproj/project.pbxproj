@@ -253,6 +253,8 @@
 		1CF2462316DD95F400C75E05 /* AwfulComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF2462216DD95F400C75E05 /* AwfulComposeViewController.m */; };
 		1CF2462616DD969000C75E05 /* AwfulPrivateMessageComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF2462516DD969000C75E05 /* AwfulPrivateMessageComposeViewController.m */; };
 		1CFA2EB617E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFA2EB517E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m */; };
+		1CFA2EF917E1FD4700DE5DE9 /* pages@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CFA2EF817E1FD4700DE5DE9 /* pages@2x.png */; };
+		1CFA2EFB17E1FF5B00DE5DE9 /* pages.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CFA2EFA17E1FF5B00DE5DE9 /* pages.png */; };
 		1CFBECDB162F4ED7008AF641 /* pagebar-button-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CFBECCB162F4ED7008AF641 /* pagebar-button-selected.png */; };
 		1CFBECDC162F4ED7008AF641 /* pagebar-button-selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CFBECCC162F4ED7008AF641 /* pagebar-button-selected@2x.png */; };
 		1CFBECDD162F4ED7008AF641 /* pagebar-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CFBECCD162F4ED7008AF641 /* pagebar-button.png */; };
@@ -688,6 +690,8 @@
 		1CF2462716DD9FBF00C75E05 /* AwfulComposeViewControllerSubclass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulComposeViewControllerSubclass.h; sourceTree = "<group>"; };
 		1CFA2EB417E0A90F00DE5DE9 /* AwfulPrivateMessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessageCell.h; sourceTree = "<group>"; };
 		1CFA2EB517E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessageCell.m; sourceTree = "<group>"; };
+		1CFA2EF817E1FD4700DE5DE9 /* pages@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pages@2x.png"; sourceTree = "<group>"; };
+		1CFA2EFA17E1FF5B00DE5DE9 /* pages.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pages.png; sourceTree = "<group>"; };
 		1CFBECCB162F4ED7008AF641 /* pagebar-button-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pagebar-button-selected.png"; sourceTree = "<group>"; };
 		1CFBECCC162F4ED7008AF641 /* pagebar-button-selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pagebar-button-selected@2x.png"; sourceTree = "<group>"; };
 		1CFBECCD162F4ED7008AF641 /* pagebar-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pagebar-button.png"; sourceTree = "<group>"; };
@@ -1638,6 +1642,8 @@
 				8CA6EFD517E00E9C0025F06C /* lepers_icon.png */,
 				8CCD525115B783FC00E5893B /* list_icon.png */,
 				8CCD525215B783FC00E5893B /* list_icon@2x.png */,
+				1CFA2EFA17E1FF5B00DE5DE9 /* pages.png */,
+				1CFA2EF817E1FD4700DE5DE9 /* pages@2x.png */,
 				1C5B997A166F6E54004C5D0E /* pm-icon@2x.png */,
 				1CBEE2461733005400C4884A /* Posts View */,
 				1CBEE2491733012E00C4884A /* Private Messages */,
@@ -1802,6 +1808,7 @@
 				8CCD556D15B783FD00E5893B /* forum-arrow-right.png in Resources */,
 				8CCD556E15B783FD00E5893B /* forum-arrow-right@2x.png in Resources */,
 				8CCD557915B783FD00E5893B /* list_icon.png in Resources */,
+				1CFA2EF917E1FD4700DE5DE9 /* pages@2x.png in Resources */,
 				8CCD557A15B783FD00E5893B /* list_icon@2x.png in Resources */,
 				8CCD558515B783FD00E5893B /* rating1@2x.png in Resources */,
 				8CCD558615B783FD00E5893B /* rating2@2x.png in Resources */,
@@ -1816,6 +1823,7 @@
 				1C3CC799162876AE00088AA8 /* adminstar.png in Resources */,
 				1C3CC79A162876AE00088AA8 /* modstar.png in Resources */,
 				1CFBECDB162F4ED7008AF641 /* pagebar-button-selected.png in Resources */,
+				1CFA2EFB17E1FF5B00DE5DE9 /* pages.png in Resources */,
 				1CFBECDC162F4ED7008AF641 /* pagebar-button-selected@2x.png in Resources */,
 				1CFBECDD162F4ED7008AF641 /* pagebar-button.png in Resources */,
 				1CFBECDE162F4ED7008AF641 /* pagebar-button@2x.png in Resources */,

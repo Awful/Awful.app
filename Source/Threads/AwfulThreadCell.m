@@ -6,6 +6,7 @@
 
 @implementation AwfulThreadCell
 {
+    UIImageView *_pagesIconImageView;
     UIView *_topSpacer;
     UIView *_bottomSpacer;
 }
@@ -24,26 +25,31 @@
     
     _textLabel = [UILabel new];
     _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [_textLabel setContentCompressionResistancePriority:UILayoutPriorityDefaultLow forAxis:UILayoutConstraintAxisHorizontal];
     _textLabel.numberOfLines = 2;
-    _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
     [self.contentView addSubview:_textLabel];
     
     _numberOfPagesLabel = [UILabel new];
     _numberOfPagesLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _numberOfPagesLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
+    _numberOfPagesLabel.enabled = NO;
     [self.contentView addSubview:_numberOfPagesLabel];
+    
+    _pagesIconImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pages"]];
+    _pagesIconImageView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.contentView addSubview:_pagesIconImageView];
     
     _detailTextLabel = [UILabel new];
     _detailTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _detailTextLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
+    _detailTextLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption2];
+    _detailTextLabel.enabled = NO;
     [self.contentView addSubview:_detailTextLabel];
     
     _badgeLabel = [UILabel new];
     _badgeLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    UIFontDescriptor *normalBodyFont = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleBody];
-    UIFontDescriptor *boldBodyFont = [normalBodyFont fontDescriptorWithSymbolicTraits:normalBodyFont.symbolicTraits & UIFontDescriptorTraitBold];
-    _badgeLabel.font = [UIFont fontWithDescriptor:boldBodyFont size:0];
-    _badgeLabel.textAlignment = NSTextAlignmentCenter;
+    _badgeLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:_textLabel.font.pointSize];
+    _badgeLabel.textAlignment = NSTextAlignmentRight;
     [self.contentView addSubview:_badgeLabel];
     
     _stickyImageView = [UIImageView new];
@@ -73,6 +79,7 @@
     NSDictionary *views = @{ @"tag": self.tagAndRatingView,
                              @"name": self.textLabel,
                              @"pages": self.numberOfPagesLabel,
+                             @"pagesIcon": _pagesIconImageView,
                              @"detail": self.detailTextLabel,
                              @"badge": self.badgeLabel,
                              @"sticky": self.stickyImageView,
@@ -95,12 +102,12 @@
                                  multiplier:1
                                    constant:0]];
     [self.contentView addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[tag(45)]-9-[name]-8-[badge(>=tag,==tag@900)]-8-|"
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[tag(45)]-9-[name]-5-[badge]-5-|"
                                              options:0
                                              metrics:nil
                                                views:views]];
     [self.contentView addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[topSpacer(bottomSpacer)][name]-3-[pages][bottomSpacer(topSpacer)]|"
+     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[topSpacer(bottomSpacer)][name][pages][bottomSpacer(topSpacer)]|"
                                              options:0
                                              metrics:nil
                                                views:views]];
@@ -113,10 +120,26 @@
                                  multiplier:1
                                    constant:0]];
     [self.contentView addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"H:[pages]-4-[detail]"
-                                             options:NSLayoutFormatAlignAllBaseline
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:[pages]-2-[pagesIcon]-4-[detail]"
+                                             options:0
                                              metrics:nil
                                                views:views]];
+    [self.contentView addConstraint:
+     [NSLayoutConstraint constraintWithItem:views[@"pagesIcon"]
+                                  attribute:NSLayoutAttributeCenterY
+                                  relatedBy:NSLayoutRelationEqual
+                                     toItem:views[@"pages"]
+                                  attribute:NSLayoutAttributeCenterY
+                                 multiplier:1
+                                   constant:0]];
+    [self.contentView addConstraint:
+     [NSLayoutConstraint constraintWithItem:views[@"detail"]
+                                  attribute:NSLayoutAttributeBaseline
+                                  relatedBy:NSLayoutRelationEqual
+                                     toItem:views[@"pages"]
+                                  attribute:NSLayoutAttributeBaseline
+                                 multiplier:1
+                                   constant:0]];
     [self.contentView addConstraints:
      [NSLayoutConstraint constraintsWithVisualFormat:@"H:[sticky]|"
                                              options:0
