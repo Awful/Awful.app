@@ -30,12 +30,13 @@
     _textLabel = [UILabel new];
     _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _textLabel.numberOfLines = 2;
-    _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
     [self.contentView addSubview:_textLabel];
     
     _detailTextLabel = [UILabel new];
     _detailTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _detailTextLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
+    _detailTextLabel.enabled = NO;
     [self.contentView addSubview:_detailTextLabel];
     
     _topSpacer = [UIView new];
@@ -66,7 +67,7 @@
                              @"topSpacer": _topSpacer,
                              @"bottomSpacer": _bottomSpacer };
     [self.contentView addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-4-[tag(45)]-8-[subject]-(>=4,==4@900)-|"
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[tag(45)]-9-[subject]-(>=5,==5@900)-|"
                                              options:0
                                              metrics:nil
                                                views:views]];
@@ -95,7 +96,7 @@
                                  multiplier:1
                                    constant:0]];
     [self.contentView addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[topSpacer(bottomSpacer)][subject]-4-[sender][bottomSpacer(topSpacer)]|"
+     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[topSpacer(bottomSpacer)][subject][sender][bottomSpacer(topSpacer)]|"
                                              options:0
                                              metrics:nil
                                                views:views]];
