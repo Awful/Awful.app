@@ -20,15 +20,14 @@
     label.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     label.textAlignment = NSTextAlignmentCenter;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        label.font = [UIFont boldSystemFontOfSize:17];
+        label.font = [UIFont systemFontOfSize:17];
     } else {
-        label.font = [UIFont boldSystemFontOfSize:13];
+        label.font = [UIFont systemFontOfSize:13];
         label.numberOfLines = 2;
     }
     label.frame = CGRectMake(0, 0, 320, label.font.lineHeight * label.numberOfLines);
     label.textColor = [UIColor whiteColor];
     label.backgroundColor = [UIColor clearColor];
-    label.shadowColor = [UIColor colorWithWhite:0 alpha:0.5];
     label.accessibilityTraits |= UIAccessibilityTraitHeader;
     self.titleView = label;
     return label;
