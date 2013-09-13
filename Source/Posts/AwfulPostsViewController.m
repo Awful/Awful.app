@@ -16,7 +16,6 @@
 #import "AwfulJumpToPageController.h"
 #import "AwfulLoadingView.h"
 #import "AwfulModels.h"
-#import "AwfulPageBottomBar.h"
 #import "AwfulPageTopBar.h"
 #import "AwfulPopoverController.h"
 #import "AwfulPostsView.h"
@@ -56,8 +55,7 @@
 @property (weak, nonatomic) NSOperation *networkOperation;
 
 @property (nonatomic) AwfulPageTopBar *topBar;
-@property (nonatomic) AwfulPostsView *postsView;
-@property (nonatomic) AwfulPageBottomBar *bottomBar;
+@property (strong, nonatomic) AwfulPostsView *postsView;
 @property (nonatomic) AwfulPopoverController *jumpToPagePopover;
 @property (nonatomic) AwfulPullToRefreshControl *pullUpToRefreshControl;
 @property (nonatomic) UIBarButtonItem *composeItem;
@@ -65,6 +63,13 @@
 @property (nonatomic) id ongoingReplyImageCacheIdentifier;
 @property (nonatomic) AwfulPost *ongoingEditedPost;
 @property (nonatomic) AwfulPostsViewSettingsController *settingsViewController;
+@property (assign, nonatomic) BOOL toolbarWasHidden;
+
+@property (strong, nonatomic) UIBarButtonItem *settingsItem;
+@property (strong, nonatomic) UIBarButtonItem *backItem;
+@property (strong, nonatomic) UIBarButtonItem *currentPageItem;
+@property (strong, nonatomic) UIBarButtonItem *forwardItem;
+@property (strong, nonatomic) UIBarButtonItem *actionsItem;
 
 @property (nonatomic) NSInteger hiddenPosts;
 @property (copy, nonatomic) NSString *jumpToPostAfterLoad;
@@ -79,6 +84,14 @@
 
 @end
 
+@interface UIBarButtonItem (Awful)
+
+/**
+ * Returns a UIBarButtonItem of type UIBarButtonSystemItemFlexibleSpace configured with no target.
+ */
++ (instancetype)flexibleSpace;
+
+@end
 
 @implementation AwfulPostsViewController
 
@@ -92,6 +105,13 @@
                        name:AwfulSettingsDidChangeNotification object:nil];
     [noteCenter addObserver:self selector:@selector(willResetDataStack:)
                        name:AwfulDataStackWillResetNotification object:nil];
+    self.toolbarItems = @[ self.settingsItem,
+                           [UIBarButtonItem flexibleSpace],
+                           self.backItem,
+                           self.currentPageItem,
+                           self.forwardItem,
+                           [UIBarButtonItem flexibleSpace],
+                           self.actionsItem ];
     return self;
 }
 
@@ -118,6 +138,123 @@
         imageCacheIdentifier:self.ongoingReplyImageCacheIdentifier];
     }
     [self presentViewController:[reply enclosingNavigationController] animated:YES completion:nil];
+}
+
+- (UIBarButtonItem *)settingsItem
+{
+    if (_settingsItem) return _settingsItem;
+    _settingsItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"font-size"]
+                                                     style:UIBarButtonItemStylePlain
+                                                    target:self
+                                                    action:@selector(toggleSettings:)];
+    return _settingsItem;
+}
+
+- (void)toggleSettings:(UIBarButtonItem *)sender
+{
+    if (self.settingsViewController) {
+        [self.settingsViewController dismiss];
+        self.settingsViewController = nil;
+    } else {
+        self.settingsViewController = [AwfulPostsViewSettingsController new];
+        self.settingsViewController.delegate = self;
+        if ([self.thread.forum.forumID isEqualToString:@"25"]) {
+            self.settingsViewController.availableThemes = AwfulPostsViewSettingsControllerThemesGasChamber;
+        } else if ([self.thread.forum.forumID isEqualToString:@"26"]) {
+            self.settingsViewController.availableThemes = AwfulPostsViewSettingsControllerThemesFYAD;
+        } else if ([self.thread.forum.forumID isEqualToString:@"219"]) {
+            self.settingsViewController.availableThemes = AwfulPostsViewSettingsControllerThemesYOSPOS;
+        }
+        // TODO this is dumb, show it from the item.
+        UIToolbar *toolbar = self.navigationController.toolbar;
+        CGRect rect = toolbar.bounds;
+        rect.size.width = 40;
+        [self.settingsViewController presentFromViewController:self.navigationController fromRect:rect inView:toolbar];
+    }
+}
+
+- (UIBarButtonItem *)backItem
+{
+    if (_backItem) return _backItem;
+    _backItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrowleft"]
+                                                 style:UIBarButtonItemStylePlain
+                                                target:self
+                                                action:@selector(goToPreviousPage)];
+    return _backItem;
+}
+
+- (void)goToPreviousPage
+{
+    if (self.currentPage > 1) {
+        [self loadPage:(self.currentPage - 1) singleUserID:self.singleUserID];
+    }
+}
+
+- (UIBarButtonItem *)currentPageItem
+{
+    if (_currentPageItem) return _currentPageItem;
+    _currentPageItem = [[UIBarButtonItem alloc] initWithTitle:@""
+                                                        style:UIBarButtonItemStylePlain
+                                                       target:self
+                                                       action:@selector(toggleJumpToPageSheet:)];
+    _currentPageItem.possibleTitles = [NSSet setWithObject:@"2345 / 2345"];
+    return _currentPageItem;
+}
+
+- (void)toggleJumpToPageSheet:(UIBarButtonItem *)sender
+{
+    if (self.loadingView) return;
+    if (!self.jumpToPagePopover) {
+        NSInteger relevantNumberOfPages = [self relevantNumberOfPagesInThread];
+        if (relevantNumberOfPages < 1) return;
+        AwfulJumpToPageController *jump = [[AwfulJumpToPageController alloc] initWithDelegate:self];
+        jump.numberOfPages = relevantNumberOfPages;
+        if (self.currentPage > 0) {
+            jump.selectedPage = self.currentPage;
+        }
+        else if (self.currentPage == AwfulThreadPageLast && relevantNumberOfPages > 0) {
+            jump.selectedPage = relevantNumberOfPages;
+        }
+        self.jumpToPagePopover = [[AwfulPopoverController alloc]
+                                  initWithContentViewController:jump];
+        self.jumpToPagePopover.delegate = self;
+    }
+    // TODO this is dumb, present from the item.
+    UIToolbar *toolbar = self.navigationController.toolbar;
+    [self.jumpToPagePopover presentPopoverFromRect:toolbar.frame inView:toolbar.superview animated:NO];
+}
+
+- (UIBarButtonItem *)forwardItem
+{
+    if (_forwardItem) return _forwardItem;
+    _forwardItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrowright"]
+                                                    style:UIBarButtonItemStylePlain
+                                                   target:self
+                                                   action:@selector(goToNextPage)];
+    return _forwardItem;
+}
+
+- (void)goToNextPage
+{
+    if (self.currentPage < [self relevantNumberOfPagesInThread]) {
+        [self loadPage:(self.currentPage + 1) singleUserID:self.singleUserID];
+    }
+}
+
+- (UIBarButtonItem *)actionsItem
+{
+    if (_actionsItem) return _actionsItem;
+    _actionsItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+                                                                 target:self
+                                                                 action:@selector(toggleActions:)];
+    return _actionsItem;
+}
+
+- (void)toggleActions:(UIBarButtonItem *)sender
+{
+    // TODO this is stupid, show from item.
+    UIToolbar *toolbar = self.navigationController.toolbar;
+    [self showThreadActionsFromRect:toolbar.bounds inView:toolbar];
 }
 
 - (void)settingChanged:(NSNotification *)note
@@ -282,20 +419,13 @@
         [refresh setTitle:@"Refreshing…" forState:AwfulControlStateRefreshing];
     }
     
-    [self.bottomBar.backForwardControl setEnabled:self.currentPage > 1
-                                forSegmentAtIndex:0];
-    if (self.currentPage > 0 && self.currentPage < relevantNumberOfPages) {
-        [self.bottomBar.backForwardControl setEnabled:YES forSegmentAtIndex:1];
-    } else {
-        [self.bottomBar.backForwardControl setEnabled:NO forSegmentAtIndex:1];
-    }
+    self.backItem.enabled = self.currentPage > 1;
     if (self.currentPage > 0 && relevantNumberOfPages > 0) {
-        [self.bottomBar.jumpToPageButton setTitle:[NSString stringWithFormat:@"%d / %d",
-                                                   self.currentPage, relevantNumberOfPages]
-                                         forState:UIControlStateNormal];
+        self.currentPageItem.title = [NSString stringWithFormat:@"%d / %d", self.currentPage, relevantNumberOfPages];
     } else {
-        [self.bottomBar.jumpToPageButton setTitle:@"" forState:UIControlStateNormal];
+        self.currentPageItem.title = @"";
     }
+    self.forwardItem.enabled = self.currentPage > 0 && self.currentPage < relevantNumberOfPages;
     self.composeItem.enabled = !self.thread.isClosedValue;
 }
 
@@ -370,12 +500,6 @@
     }
 }
 
-- (AwfulPostsView *)postsView
-{
-    if (!_postsView) [self view];
-    return _postsView;
-}
-
 - (void)setHiddenPosts:(NSInteger)hiddenPosts
 {
     if (_hiddenPosts == hiddenPosts) return;
@@ -419,15 +543,13 @@
         if (error) {
             if (wasLoading) {
                 [self clearLoadingMessage];
-                if (![[self.bottomBar.jumpToPageButton titleForState:UIControlStateNormal] length]) {
+                // TODO this is stupid, relying on UI state
+                if (self.currentPageItem.title.length == 0) {
                     if ([self relevantNumberOfPagesInThread] > 0) {
-                        NSString *title = [NSString stringWithFormat:@"Page ? of %d",
-                                           [self relevantNumberOfPagesInThread]];
-                        [self.bottomBar.jumpToPageButton setTitle:title
-                                                       forState:UIControlStateNormal];
+                        NSString *title = [NSString stringWithFormat:@"Page ? of %d", [self relevantNumberOfPagesInThread]];
+                        self.currentPageItem.title = title;
                     } else {
-                        [self.bottomBar.jumpToPageButton setTitle:@"Page ? of ?"
-                                                       forState:UIControlStateNormal];
+                        self.currentPageItem.title = @"Page ? of ?";
                     }
                 }
             }
@@ -576,7 +698,7 @@
              }
          }];
     }]];
-    [sheet presentFromViewController:self fromRect:rect inView:view];
+    [sheet presentFromViewController:self.navigationController fromRect:rect inView:view];
 }
 
 - (void)showProfileWithUser:(AwfulUser *)user
@@ -615,30 +737,13 @@
 
 - (void)loadView
 {
-    self.view = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    CGRect postsFrame, pageBarFrame;
-    CGRectDivide(self.view.bounds, &pageBarFrame, &postsFrame, 38, CGRectMaxYEdge);
-    
-    AwfulPageBottomBar *pageBar = [[AwfulPageBottomBar alloc] initWithFrame:pageBarFrame];
-    [pageBar.backForwardControl addTarget:self
-                                   action:@selector(didTapPreviousNextPageControl:)
-                         forControlEvents:UIControlEventValueChanged];
-    [pageBar.jumpToPageButton addTarget:self
-                                 action:@selector(showJumpToPageSheet)
-                       forControlEvents:UIControlEventTouchUpInside];
-    [pageBar.actionsFontSizeControl addTarget:self
-                                       action:@selector(didTapActionFontSizeControl:)
-                             forControlEvents:UIControlEventValueChanged];
-    [self.view addSubview:pageBar];
-    self.bottomBar = pageBar;
-    
-    self.postsView = [[AwfulPostsView alloc] initWithFrame:postsFrame];
+    self.postsView = [AwfulPostsView new];
     self.postsView.delegate = self;
     self.postsView.scrollView.delegate = self;
     self.postsView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                        UIViewAutoresizingFlexibleHeight);
-    self.postsView.backgroundColor = self.view.backgroundColor;
-    [self.view addSubview:self.postsView];
+    self.postsView.backgroundColor = [UIColor whiteColor];
+    self.view = self.postsView;
     [self configurePostsViewSettings];
     
     self.topBar = [AwfulPageTopBar new];
@@ -661,8 +766,6 @@
     [self updatePullUpTriggerOffset];
     
     [self updateUserInterface];
-    
-    [self.view bringSubviewToFront:self.bottomBar];
     
     self.view.backgroundColor = [UIColor whiteColor];
     self.topBar.backgroundColor = [UIColor colorWithRed:0.973 green:0.973 blue:0.973 alpha:1];
@@ -693,20 +796,6 @@
     }
 }
 
-- (void)didTapPreviousNextPageControl:(UISegmentedControl *)seg
-{
-    if (seg.selectedSegmentIndex == 0) {
-        if (self.currentPage > 1) {
-            [self loadPage:self.currentPage - 1 singleUserID:self.singleUserID];
-        }
-    } else if (seg.selectedSegmentIndex == 1) {
-        if (self.currentPage < [self relevantNumberOfPagesInThread]) {
-            [self loadPage:self.currentPage + 1 singleUserID:self.singleUserID];
-        }
-    }
-    seg.selectedSegmentIndex = UISegmentedControlNoSegment;
-}
-
 - (NSInteger)relevantNumberOfPagesInThread
 {
     if (self.singleUserID) {
@@ -715,63 +804,6 @@
     } else {
         return self.thread.numberOfPagesValue;
     }
-}
-
-- (void)showJumpToPageSheet
-{
-    if (self.loadingView) return;
-    if (!self.jumpToPagePopover) {
-        NSInteger relevantNumberOfPages = [self relevantNumberOfPagesInThread];
-        if (relevantNumberOfPages < 1) return;
-        AwfulJumpToPageController *jump = [[AwfulJumpToPageController alloc] initWithDelegate:self];
-        jump.numberOfPages = relevantNumberOfPages;
-        if (self.currentPage > 0) {
-            jump.selectedPage = self.currentPage;
-        }
-        else if (self.currentPage == AwfulThreadPageLast && relevantNumberOfPages > 0) {
-            jump.selectedPage = relevantNumberOfPages;
-        }
-        self.jumpToPagePopover = [[AwfulPopoverController alloc]
-                                  initWithContentViewController:jump];
-        self.jumpToPagePopover.delegate = self;
-    }
-    CGRect rect = [self.view convertRect:self.bottomBar.jumpToPageButton.bounds
-                                fromView:self.bottomBar.jumpToPageButton];
-    [self.jumpToPagePopover presentPopoverFromRect:rect inView:self.view animated:NO];
-}
-
-- (void)didTapActionFontSizeControl:(UISegmentedControl *)seg
-{
-    CGRect rect = seg.bounds;
-    rect.size.width /= 2;
-    rect.origin.x += CGRectGetWidth(rect) * seg.selectedSegmentIndex;
-    UIView *inView = seg;
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        inView = self.bottomBar;
-        rect = inView.bounds;
-    }
-    if (seg.selectedSegmentIndex == 0) {
-        [self showThreadActionsFromRect:rect inView:inView];
-    } else if (seg.selectedSegmentIndex == 1) {
-        if (self.settingsViewController) {
-            [self.settingsViewController dismiss];
-            self.settingsViewController = nil;
-        } else {
-            self.settingsViewController = [AwfulPostsViewSettingsController new];
-            self.settingsViewController.delegate = self;
-            if ([self.thread.forum.forumID isEqualToString:@"25"]) {
-                self.settingsViewController.availableThemes = AwfulPostsViewSettingsControllerThemesGasChamber;
-            } else if ([self.thread.forum.forumID isEqualToString:@"26"]) {
-                self.settingsViewController.availableThemes = AwfulPostsViewSettingsControllerThemesFYAD;
-            } else if ([self.thread.forum.forumID isEqualToString:@"219"]) {
-                self.settingsViewController.availableThemes = AwfulPostsViewSettingsControllerThemesYOSPOS;
-            }
-            [self.settingsViewController presentFromViewController:self
-                                                          fromRect:rect
-                                                            inView:inView];
-        }
-    }
-    seg.selectedSegmentIndex = UISegmentedControlNoSegment;
 }
 
 - (void)goToParentForum
@@ -808,6 +840,13 @@
                            animated:YES];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    self.toolbarWasHidden = self.navigationController.toolbarHidden;
+    [self.navigationController setToolbarHidden:NO animated:YES];
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
@@ -823,6 +862,7 @@
     if (!self.navigationController) {
         [self.postsView clearAllPosts];
     }
+    [self.navigationController setToolbarHidden:self.toolbarWasHidden animated:YES];
     [super viewDidDisappear:animated];
 }
 
@@ -869,13 +909,6 @@ static char KVOContext;
                                          duration:(NSTimeInterval)duration
 {
     [self updatePullUpTriggerOffset];
-}
-
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
-{
-    if (self.jumpToPagePopover) {
-        [self showJumpToPageSheet];
-    }
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -1072,7 +1105,8 @@ static char KVOContext;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         [sheet presentFromViewController:self fromRect:rect inView:self.postsView];
     } else {
-        [sheet presentFromViewController:self fromRect:self.bottomBar.bounds inView:self.bottomBar];
+        UIToolbar *toolbar = self.navigationController.toolbar;
+        [sheet presentFromViewController:self fromRect:toolbar.bounds inView:toolbar];
     }
 }
 - (void)postsView:(AwfulPostsView *)postsView didReceiveLongTapAtPoint:(CGPoint)point
@@ -1300,6 +1334,17 @@ static char KVOContext;
 - (void)userDidDismissPostsViewSettings:(AwfulPostsViewSettingsController *)settings
 {
     self.settingsViewController = nil;
+}
+
+@end
+
+@implementation UIBarButtonItem (Awful)
+
++ (instancetype)flexibleSpace
+{
+    return [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+                                                         target:nil
+                                                         action:nil];
 }
 
 @end

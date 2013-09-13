@@ -4,15 +4,15 @@
 
 #import "UIViewController+NavigationEnclosure.h"
 #import "AwfulNavigationBar.h"
+#import "AwfulToolbar.h"
 
 @implementation UIViewController (NavigationEnclosure)
 
 - (UINavigationController *)enclosingNavigationController
 {
     if (self.navigationController) return self.navigationController;
-    UINavigationController *nav = [[UINavigationController alloc]
-                                   initWithNavigationBarClass:[AwfulNavigationBar class]
-                                   toolbarClass:nil];
+    UINavigationController *nav = [[UINavigationController alloc] initWithNavigationBarClass:[AwfulNavigationBar class]
+                                                                                toolbarClass:[AwfulToolbar class]];
     nav.viewControllers = @[ self ];
     nav.modalPresentationStyle = self.modalPresentationStyle;
     return nav;

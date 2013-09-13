@@ -83,7 +83,8 @@
     [self didMoveToParentViewController:viewController];
     [UIView animateWithDuration:0.3 animations:^{
         self.view.frame = CGRectOffset(self.view.frame, 0, -CGRectGetHeight(self.view.frame));
-        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.view);
+        // TODO this crashes for some reason on iOS 7.
+//        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.view);
     }];
 }
 
