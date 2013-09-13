@@ -82,7 +82,7 @@
     if (ratingImage && !_ratingImageView) {
         _ratingImageView = [[UIImageView alloc] initWithImage:ratingImage];
         _ratingImageView.translatesAutoresizingMaskIntoConstraints = NO;
-        _gap = 1;
+        _gap = 2;
         [self addSubview:_ratingImageView];
         [self setNeedsUpdateConstraints];
     } else if (!ratingImage && _ratingImageView) {
@@ -103,11 +103,14 @@
                                                  options:0
                                                  metrics:metrics
                                                    views:views]];
-        [self addConstraints:
-         [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[rating(tag)]|"
-                                                 options:0
-                                                 metrics:nil
-                                                   views:views]];
+        [self addConstraint:
+         [NSLayoutConstraint constraintWithItem:views[@"rating"]
+                                      attribute:NSLayoutAttributeCenterX
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:views[@"tag"]
+                                      attribute:NSLayoutAttributeCenterX
+                                     multiplier:1
+                                       constant:0]];
     }
 }
 
@@ -115,7 +118,7 @@
 {
     CGSize size = _tagImageView.intrinsicContentSize;
     if (_ratingImageView) {
-        size.height += 1 + _ratingImageView.intrinsicContentSize.height;
+        size.height += _gap + _ratingImageView.intrinsicContentSize.height;
     }
     return size;
 }
