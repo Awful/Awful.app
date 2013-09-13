@@ -24,7 +24,7 @@
     [self addSubview:_tagImageView];
     _secondaryTagImageView = [UIImageView new];
     _secondaryTagImageView.translatesAutoresizingMaskIntoConstraints = NO;
-//    [_tagImageView addSubview:_secondaryTagImageView];
+    [_tagImageView addSubview:_secondaryTagImageView];
 
     NSDictionary *views = @{ @"tag": _tagImageView,
                              @"secondary": _secondaryTagImageView };
@@ -38,16 +38,16 @@
                                              options:0
                                              metrics:nil
                                                views:views]];
-//    [_tagImageView addConstraints:
-//     [NSLayoutConstraint constraintsWithVisualFormat:@"H:[secondary]|"
-//                                             options:0
-//                                             metrics:nil
-//                                               views:views]];
-//    [_tagImageView addConstraints:
-//     [NSLayoutConstraint constraintsWithVisualFormat:@"V:[secondary]|"
-//                                             options:0
-//                                             metrics:nil
-//                                               views:views]];
+    [_tagImageView addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:[secondary]|"
+                                             options:0
+                                             metrics:nil
+                                               views:views]];
+    [_tagImageView addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"V:[secondary]|"
+                                             options:0
+                                             metrics:nil
+                                               views:views]];
     return self;
 }
 
