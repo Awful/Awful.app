@@ -238,8 +238,6 @@
 		1CE8FDF11703CEAC006A3B84 /* font-size@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CE8FDF01703CEAC006A3B84 /* font-size@2x.png */; };
 		1CE8FDF41703D623006A3B84 /* AwfulPostsViewSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FDF31703D622006A3B84 /* AwfulPostsViewSettingsController.m */; };
 		1CE8FDF71703D648006A3B84 /* AwfulSemiModalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FDF61703D648006A3B84 /* AwfulSemiModalViewController.m */; };
-		1CE8FDFA1708BB2F006A3B84 /* font-size-smaller@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CE8FDF81708BB2F006A3B84 /* font-size-smaller@2x.png */; };
-		1CE8FDFB1708BB2F006A3B84 /* font-size-larger@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CE8FDF91708BB2F006A3B84 /* font-size-larger@2x.png */; };
 		1CE8FDFE1709E535006A3B84 /* AwfulCustomBaseURLTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FDFD1709E535006A3B84 /* AwfulCustomBaseURLTransformer.m */; };
 		1CE8FE011709E728006A3B84 /* AwfulSettingsAlternateServerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE001709E728006A3B84 /* AwfulSettingsAlternateServerController.m */; };
 		1CE8FE41171692D1006A3B84 /* AwfulPostsSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE40171692D0006A3B84 /* AwfulPostsSettingsView.m */; };
@@ -665,8 +663,6 @@
 		1CE8FDF31703D622006A3B84 /* AwfulPostsViewSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostsViewSettingsController.m; sourceTree = "<group>"; };
 		1CE8FDF51703D648006A3B84 /* AwfulSemiModalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSemiModalViewController.h; sourceTree = "<group>"; };
 		1CE8FDF61703D648006A3B84 /* AwfulSemiModalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSemiModalViewController.m; sourceTree = "<group>"; };
-		1CE8FDF81708BB2F006A3B84 /* font-size-smaller@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "font-size-smaller@2x.png"; sourceTree = "<group>"; };
-		1CE8FDF91708BB2F006A3B84 /* font-size-larger@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "font-size-larger@2x.png"; sourceTree = "<group>"; };
 		1CE8FDFC1709E534006A3B84 /* AwfulCustomBaseURLTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCustomBaseURLTransformer.h; sourceTree = "<group>"; };
 		1CE8FDFD1709E535006A3B84 /* AwfulCustomBaseURLTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCustomBaseURLTransformer.m; sourceTree = "<group>"; };
 		1CE8FDFF1709E728006A3B84 /* AwfulSettingsAlternateServerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettingsAlternateServerController.h; sourceTree = "<group>"; };
@@ -1339,8 +1335,6 @@
 				8CCD504715B783FC00E5893B /* arrowright@2x.png */,
 				1C741F921724B2DC00E7C61E /* font-size.png */,
 				1CE8FDF01703CEAC006A3B84 /* font-size@2x.png */,
-				1CE8FDF91708BB2F006A3B84 /* font-size-larger@2x.png */,
-				1CE8FDF81708BB2F006A3B84 /* font-size-smaller@2x.png */,
 				1C3CC798162876AE00088AA8 /* modstar.png */,
 				1CFBECCB162F4ED7008AF641 /* pagebar-button-selected.png */,
 				1CFBECCC162F4ED7008AF641 /* pagebar-button-selected@2x.png */,
@@ -1880,8 +1874,6 @@
 				1C9FDE6316EA030800C665B5 /* pmforwarded.gif in Resources */,
 				1C9FDE6416EA030800C665B5 /* pmreplied.gif in Resources */,
 				1CE8FDF11703CEAC006A3B84 /* font-size@2x.png in Resources */,
-				1CE8FDFA1708BB2F006A3B84 /* font-size-smaller@2x.png in Resources */,
-				1CE8FDFB1708BB2F006A3B84 /* font-size-larger@2x.png in Resources */,
 				1C741F931724B2DC00E7C61E /* font-size.png in Resources */,
 				1C28B35C172A0DE800254EE7 /* jump-to-first-page@2x.png in Resources */,
 				1C28B361172A119B00254EE7 /* remove-bookmark@2x.png in Resources */,
