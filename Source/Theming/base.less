@@ -3,7 +3,7 @@
 
 // Base font. Size other text using ems so the font size setting works.
 html {
-  font: 15px "Helvetica Neue", sans-serif;
+  font-family: "Helvetica Neue", sans-serif;
 }
 
 body {
@@ -41,8 +41,7 @@ body {
 
 header {
   
-  font-size: 1.125em;
-  margin: .25em;
+  margin: .25em 0; 
   
   .ipad & {
     margin-bottom: 8px;
@@ -59,13 +58,11 @@ header {
   float: left;
   
   .iphone & {
-    max-width: 2em;
-    max-height: 2em;
-    margin: 4px 5px 0 0;
+    max-height: 2.5em;
+    margin: 6px 5px 0 0;
   }
   
   .ipad & {
-    max-width: 4em;
     max-height: 4em;
     margin-right: 8px;
     margin-bottom: .5em;
@@ -85,14 +82,14 @@ header {
 }
 
 .postdate {
+  font: -apple-system-subheadline;
   float: left;
   margin: .6em 0;  
 }
 
 .regdate {
   display: block;
-  font-size: .85em;
-  font-weight: 300;
+  font: -apple-system-subheadline;
   
   .ipad & {
     padding-bottom: .75em;
@@ -107,8 +104,8 @@ header {
 }
 
 .username {
-  font-size: 1em;
-  font-weight: 300;
+  
+  font: -apple-system-headline;
   display: inline-block;
   
   .role-admin & {
@@ -131,6 +128,7 @@ header {
   .role-op & {
     color: #199ed7;
   }
+  
 }
 
 .action-button {
@@ -145,16 +143,15 @@ header {
   line-height: 1em;  
 }
 
-.postdate {
-  font-size: 0.9em;
-}
-
 // Post body
 // -------------------------
 
 // We don't generally control the markup in the post body, so we make do.
 
 .postbody {
+	
+	font: -apple-system-body;
+
   // Hide UIWebView's long-tap image menu.
   img {
     -webkit-user-select: none;
@@ -178,12 +175,11 @@ header {
   h4 {
     margin: 0;
     padding: 1px 0 2px;
-    font-size: 0.85em;
-    font-style: italic;
+    font: -apple-system-footnote;
   }
   h5 {
     margin: 0;
-    font-size: 0.8em;
+    font: -apple-system-caption1;
   }
   
   .ipad & {
@@ -207,7 +203,7 @@ span.mention {
 blockquote {
   margin: 0;
   padding: 0 10px;
-  font-size: 0.85em;
+  font: -apple-system-caption1;
   border-left: 1px solid #999;
   
   .dark & {
@@ -237,12 +233,12 @@ blockquote {
 
 .bbc-block.code pre {
   margin: 0;
-  font-size: 0.75em;
+  font: -apple-system-caption1;
 }
 
 .editedby {
   margin-top: 5px;
-  font-size: 0.75em;
+  font: -apple-system-caption1;
   font-style: italic;
 }
 
@@ -251,6 +247,8 @@ blockquote {
 }
 
 footer {
+
+  font: -apple-system-subheadline2;
   
   &:after {
     content: "";

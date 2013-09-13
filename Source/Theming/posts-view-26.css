@@ -5,7 +5,7 @@
  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 */
 html {
-  font: 15px "Helvetica Neue", sans-serif;
+  font-family: "Helvetica Neue", sans-serif;
 }
 body {
   margin: 0;
@@ -25,8 +25,7 @@ body {
   padding-bottom: 0;
 }
 header {
-  font-size: 1.125em;
-  margin: .25em;
+  margin: .25em 0;
 }
 .ipad header {
   margin-bottom: 8px;
@@ -40,12 +39,10 @@ header:after {
   float: left;
 }
 .iphone .avatar {
-  max-width: 2em;
-  max-height: 2em;
-  margin: 4px 5px 0 0;
+  max-height: 2.5em;
+  margin: 6px 5px 0 0;
 }
 .ipad .avatar {
-  max-width: 4em;
   max-height: 4em;
   margin-right: 8px;
   margin-bottom: .5em;
@@ -60,13 +57,13 @@ header:after {
   padding-top: .5em;
 }
 .postdate {
+  font: -apple-system-subheadline;
   float: left;
   margin: .6em 0;
 }
 .regdate {
   display: block;
-  font-size: .85em;
-  font-weight: 300;
+  font: -apple-system-subheadline;
 }
 .ipad .regdate {
   padding-bottom: .75em;
@@ -76,8 +73,7 @@ header {
   border-bottom: 1px solid;
 }
 .username {
-  font-size: 1em;
-  font-weight: 300;
+  font: -apple-system-headline;
   display: inline-block;
 }
 .role-admin .username {
@@ -107,8 +103,8 @@ header {
   background-color: transparent;
   line-height: 1em;
 }
-.postdate {
-  font-size: 0.9em;
+.postbody {
+  font: -apple-system-body;
 }
 .postbody img {
   -webkit-user-select: none;
@@ -123,12 +119,11 @@ header {
 .bbc-block h4 {
   margin: 0;
   padding: 1px 0 2px;
-  font-size: 0.85em;
-  font-style: italic;
+  font: -apple-system-footnote;
 }
 .bbc-block h5 {
   margin: 0;
-  font-size: 0.8em;
+  font: -apple-system-caption1;
 }
 .ipad .bbc-block {
   margin: 0 10px 1em 10px;
@@ -145,7 +140,7 @@ span.mention {
 blockquote {
   margin: 0;
   padding: 0 10px;
-  font-size: 0.85em;
+  font: -apple-system-caption1;
   border-left: 1px solid #999;
 }
 .dark blockquote {
@@ -165,15 +160,18 @@ blockquote img {
 }
 .bbc-block.code pre {
   margin: 0;
-  font-size: 0.75em;
+  font: -apple-system-caption1;
 }
 .editedby {
   margin-top: 5px;
-  font-size: 0.75em;
+  font: -apple-system-caption1;
   font-style: italic;
 }
 .attachment {
   margin: 0;
+}
+footer {
+  font: -apple-system-subheadline2;
 }
 footer:after {
   content: "";
