@@ -40,7 +40,7 @@
 - (UIButton *)makeButton
 {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    button.titleLabel.font = [UIFont boldSystemFontOfSize:12];
+    button.titleLabel.font = [UIFont systemFontOfSize:12];
     [self addSubview:button];
     return button;
 }
