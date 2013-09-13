@@ -23,7 +23,7 @@
     _backForwardControl = backForwardControl;
     
     UIButton *jumpToPage = [UIButton buttonWithType:UIButtonTypeCustom];
-    jumpToPage.titleLabel.font = [UIFont boldSystemFontOfSize:11];
+    jumpToPage.titleLabel.font = [UIFont systemFontOfSize:14];
     jumpToPage.accessibilityHint = @"Jumps to a page";
     [self addSubview:jumpToPage];
     _jumpToPageButton = jumpToPage;

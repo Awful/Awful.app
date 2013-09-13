@@ -291,7 +291,7 @@
         [self.bottomBar.backForwardControl setEnabled:NO forSegmentAtIndex:1];
     }
     if (self.currentPage > 0 && relevantNumberOfPages > 0) {
-        [self.bottomBar.jumpToPageButton setTitle:[NSString stringWithFormat:@"Page %d of %d",
+        [self.bottomBar.jumpToPageButton setTitle:[NSString stringWithFormat:@"%d / %d",
                                                    self.currentPage, relevantNumberOfPages]
                                          forState:UIControlStateNormal];
     } else {
