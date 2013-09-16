@@ -96,10 +96,6 @@ Awful.showImages = function(on){
   }
 }
 
-Awful.fontSize = function(size) {
-  $('body').css('font-size', size + "px")
-}
-
 Awful.postWithButtonForPoint = function(x, y){
   var button = $(document.elementFromPoint(x, y)).closest('button')
   if (button.length) {

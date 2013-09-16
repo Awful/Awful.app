@@ -267,7 +267,6 @@
         AwfulSettingsKeys.showImages,
         AwfulSettingsKeys.username,
         AwfulSettingsKeys.yosposStyle,
-        AwfulSettingsKeys.fontSize,
         AwfulSettingsKeys.darkTheme
     ];
     NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
@@ -480,7 +479,6 @@
     self.postsView.dark = [AwfulSettings settings].darkTheme;
     self.postsView.showAvatars = [AwfulSettings settings].showAvatars;
     self.postsView.showImages = [AwfulSettings settings].showImages;
-    self.postsView.fontSize = [AwfulSettings settings].fontSize;
     if ([AwfulSettings settings].highlightOwnMentions) {
         self.postsView.highlightMentionUsername = [AwfulSettings settings].username;
     } else {

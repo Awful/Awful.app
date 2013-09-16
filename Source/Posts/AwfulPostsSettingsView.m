@@ -11,8 +11,6 @@
 @property (weak, nonatomic) UILabel *showImagesLabel;
 @property (weak, nonatomic) UISwitch *showImagesSwitch;
 @property (weak, nonatomic) UIView *upperSeparator;
-@property (weak, nonatomic) UILabel *fontSizeLabel;
-@property (weak, nonatomic) UIStepper *fontSizeStepper;
 @property (weak, nonatomic) UIView *lowerSeparator;
 @property (weak, nonatomic) UILabel *themeLabel;
 @property (weak, nonatomic) AwfulThemePicker *themePicker;
@@ -46,11 +44,6 @@
     AddAndSetSubview(UISwitch, showImagesSwitch);
     AddAndSetSubview(UIView, upperSeparator);
     ConfigureSeparator(self.upperSeparator);
-    AddAndSetSubview(UILabel, fontSizeLabel);
-    self.fontSizeLabel.text = @"Font Size";
-    ConfigureLabel(self.fontSizeLabel);
-    self.fontSizeLabel.textAlignment = NSTextAlignmentRight;
-    AddAndSetSubview(UIStepper, fontSizeStepper);
     AddAndSetSubview(UIView, lowerSeparator);
     ConfigureSeparator(self.lowerSeparator);
     AddAndSetSubview(UILabel, themeLabel);
@@ -99,11 +92,7 @@ static void ConfigureSeparator(UIView *separator)
     self.showImagesLabel.frame = imagesLabelFrame;
     
     self.upperSeparator.frame = CGRectMake(0, CGRectGetMaxY(topThird) + 1, CGRectGetWidth(self.bounds), 1);
-    
-    [self.fontSizeLabel sizeToFit];
-    self.fontSizeLabel.center = CGPointMake(CGRectGetMinX(middleThird) + CGRectGetWidth(self.fontSizeLabel.bounds) / 2, CGRectGetMidY(middleThird));
-    self.fontSizeStepper.center = CGPointMake(CGRectGetMaxX(self.fontSizeLabel.frame) + CGRectGetWidth(self.fontSizeStepper.bounds) / 2 + 8, self.fontSizeLabel.center.y);
-    
+        
     self.lowerSeparator.frame = CGRectMake(0, CGRectGetMaxY(middleThird) + 1, CGRectGetWidth(self.bounds), 1);
     
     [self.themeLabel sizeToFit];

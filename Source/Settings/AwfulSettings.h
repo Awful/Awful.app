@@ -63,8 +63,6 @@ typedef NS_ENUM(NSInteger, AwfulGasChamberStyle) {
 
 @property (copy, nonatomic) NSArray *favoriteForums;
 
-@property (nonatomic) NSNumber *fontSize;
-
 @property (copy, nonatomic) NSString *lastOfferedPasteboardURL;
 
 @property (copy, nonatomic) NSString *lastForcedUserInfoUpdateVersion;
@@ -107,7 +105,6 @@ extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *fyadStyle;
     __unsafe_unretained NSString *gasChamberStyle;
     __unsafe_unretained NSString *favoriteForums;
-    __unsafe_unretained NSString *fontSize;
     __unsafe_unretained NSString *lastOfferedPasteboardURL;
     __unsafe_unretained NSString *lastForcedUserInfoUpdateVersion;
     __unsafe_unretained NSString *customBaseURL;

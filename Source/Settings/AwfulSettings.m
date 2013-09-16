@@ -255,16 +255,6 @@ BOOL_PROPERTY(showThreadTags, setShowThreadTags)
     self[AwfulSettingsKeys.favoriteForums] = favoriteForums;
 }
 
-- (NSNumber *)fontSize
-{
-    return self[AwfulSettingsKeys.fontSize];
-}
-
-- (void)setFontSize:(NSNumber *)size
-{
-    self[AwfulSettingsKeys.fontSize] = size;
-}
-
 - (NSString *)lastOfferedPasteboardURL
 {
     return self[AwfulSettingsKeys.lastOfferedPasteboardURL];
@@ -411,7 +401,6 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .fyadStyle = @"fyad_style",
     .gasChamberStyle = @"gas_chamber_style",
     .favoriteForums = @"favorite_forums",
-    .fontSize = @"font_size",
     .lastOfferedPasteboardURL = @"last_offered_pasteboard_URL",
     .lastForcedUserInfoUpdateVersion = @"last_forced_user_info_update_version",
     .customBaseURL = @"custom_base_URL",

@@ -52,8 +52,7 @@
 {
     if (![self isViewLoaded]) return;
     NSArray *relevant = @[ AwfulSettingsKeys.showAvatars,
-                           AwfulSettingsKeys.showImages,
-                           AwfulSettingsKeys.fontSize ];
+                           AwfulSettingsKeys.showImages ];
     if ([note.userInfo[AwfulSettingsDidChangeSettingsKey] firstObjectCommonWithArray:relevant]) {
         [self configurePostsViewSettings];
     }
@@ -89,7 +88,6 @@
 {
     self.postsView.showAvatars = [AwfulSettings settings].showAvatars;
     self.postsView.showImages = [AwfulSettings settings].showImages;
-    self.postsView.fontSize = [AwfulSettings settings].fontSize;
 }
 
 - (void)viewWillAppear:(BOOL)animated

@@ -37,8 +37,6 @@
                      forControlEvents:UIControlEventValueChanged];
     [view.showImagesSwitch addTarget:self action:@selector(didTapShowImagesSwitch:)
                     forControlEvents:UIControlEventValueChanged];
-    [view.fontSizeStepper addTarget:self action:@selector(didTapFontSizeStepper:)
-                   forControlEvents:UIControlEventValueChanged];
     [view.themePicker addTarget:self action:@selector(didSelectThemeFromPicker:)
                forControlEvents:UIControlEventValueChanged];
     UIColor *light = [UIColor whiteColor];
@@ -83,11 +81,6 @@
     [AwfulSettings settings].showImages = showImagesSwitch.on;
 }
 
-- (void)didTapFontSizeStepper:(UIStepper *)stepper
-{
-    [AwfulSettings settings].fontSize = @(stepper.value);
-}
-
 - (void)didSelectThemeFromPicker:(AwfulThemePicker *)picker
 {
     if (picker.selectedThemeIndex < 2) {
@@ -130,25 +123,7 @@
     [super viewWillAppear:animated];
     self.settingsView.showAvatarsSwitch.on = [AwfulSettings settings].showAvatars;
     self.settingsView.showImagesSwitch.on = [AwfulSettings settings].showImages;
-    [self configureFontSizeStepper];
-    self.settingsView.fontSizeStepper.value = [[AwfulSettings settings].fontSize doubleValue];
     self.settingsView.themePicker.selectedThemeIndex = [self selectedThemeIndex];
-}
-
-- (void)configureFontSizeStepper
-{
-    NSDictionary *info = [[AwfulSettings settings] infoForSettingWithKey:@"font_size"];
-    NSNumber *minimum = info[@"Minimum"];
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && info[@"Minimum~ipad"]) {
-        minimum = info[@"Minimum~ipad"];
-    }
-    self.settingsView.fontSizeStepper.minimumValue = [minimum doubleValue];
-    NSNumber *maximum = info[@"Maximum"];
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && info[@"Maximum~ipad"]) {
-        maximum = info[@"Maximum~ipad"];
-    }
-    self.settingsView.fontSizeStepper.maximumValue = [maximum doubleValue];
-    self.settingsView.fontSizeStepper.stepValue = [info[@"Increment"] doubleValue];
 }
 
 - (NSInteger)selectedThemeIndex

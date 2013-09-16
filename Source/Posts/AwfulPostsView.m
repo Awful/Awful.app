@@ -297,18 +297,6 @@ static NSString * JSONizeBool(BOOL aBool)
     [self evalJavaScript:@"Awful.showImages(%@)", JSONizeBool(self.showImages)];
 }
 
-- (void)setFontSize:(NSNumber *)size
-{
-    if ([_fontSize isEqual:size]) return;
-    _fontSize = size;
-    [self updateFontSize];
-}
-
-- (void)updateFontSize
-{
-    [self evalJavaScript:@"Awful.fontSize(%@)", self.fontSize];
-}
-
 - (void)setHighlightQuoteUsername:(NSString *)highlightQuoteUsername
 {
     if (_highlightQuoteUsername == highlightQuoteUsername) return;
@@ -433,7 +421,6 @@ static NSString * JSONizeBool(BOOL aBool)
         [self updateHighlightQuoteUsername];
         [self updateHighlightMentionUsername];
         [self updateEndMessage];
-        [self updateFontSize];
         self.hasLoaded = YES;
         [self reloadData];
         if (self.jumpToElementAfterLoading) {

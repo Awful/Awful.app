@@ -11,8 +11,6 @@
 @property (readonly, weak, nonatomic) UISwitch *showAvatarsSwitch;
 @property (readonly, weak, nonatomic) UILabel *showImagesLabel;
 @property (readonly, weak, nonatomic) UISwitch *showImagesSwitch;
-@property (readonly, weak, nonatomic) UILabel *fontSizeLabel;
-@property (readonly, weak, nonatomic) UIStepper *fontSizeStepper;
 @property (readonly, weak, nonatomic) UILabel *themeLabel;
 @property (readonly, weak, nonatomic) AwfulThemePicker *themePicker;
 
