@@ -5,7 +5,6 @@
 #import "AwfulSettingsViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulDisclosureIndicatorView.h"
 #import "AwfulExpandingSplitViewController.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulInstapaperLogInController.h"
@@ -94,11 +93,8 @@
     self.switches = [NSMutableArray new];
     self.steppers = [NSMutableArray new];
     self.tableView.backgroundView = nil;
-    self.tableView.backgroundColor = [UIColor colorWithHue:0.604 saturation:0.035 brightness:0.898 alpha:1];
+    self.tableView.backgroundColor = [UIColor colorWithRed:0.937 green:0.937 blue:0.957 alpha:1];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-    
-    // Make sure the bottom section's footer is visible.
-    self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 18, 0);
 }
 
 - (void)reloadSections
@@ -198,7 +194,7 @@ typedef enum SettingType
                  forControlEvents:UIControlEventValueChanged];
             cell.accessoryView = switchView;
         } else if (settingType == ChoiceSetting) {
-            cell.accessoryView = [AwfulDisclosureIndicatorView new];
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         } else if (settingType == StepperSetting) {
             UIStepper *stepperView = [UIStepper new];
             [stepperView addTarget:self
@@ -208,8 +204,7 @@ typedef enum SettingType
         }
     }
     if (style == UITableViewCellStyleValue1) {
-        UIColor *color = [UIColor colorWithHue:0.607 saturation:0.568 brightness:0.518 alpha:1];
-        cell.detailTextLabel.textColor = color;
+        cell.detailTextLabel.textColor = [UIColor grayColor];
     }
     
     // Set it up as we like it.
@@ -251,12 +246,8 @@ typedef enum SettingType
         }
         switchView.tag = tag;
     } else if (settingType == ChoiceSetting) {
-        AwfulDisclosureIndicatorView *disclosure = (id)cell.accessoryView;
-        disclosure.color = [UIColor grayColor];
-        disclosure.highlightedColor = [UIColor whiteColor];
         if (setting[@"DisplayTransformer"]) {
-            NSValueTransformer *transformer = [NSClassFromString(setting[@"DisplayTransformer"])
-                                               new];
+            NSValueTransformer *transformer = [NSClassFromString(setting[@"DisplayTransformer"]) new];
             cell.detailTextLabel.text = [transformer transformedValue:[AwfulSettings settings]];
         } else {
             for (NSDictionary *choice in setting[@"Choices"]) {
@@ -267,7 +258,7 @@ typedef enum SettingType
             }
         }
     } else if (settingType == StepperSetting) {
-        UIStepper *stepperView = (id)cell.accessoryView;
+        UIStepper *stepperView = (UIStepper *)cell.accessoryView;
         stepperView.minimumValue = [setting[@"Minimum"] integerValue];
         NSNumber *maximum = setting[@"Maximum"];
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -289,12 +280,6 @@ typedef enum SettingType
         cell.selectionStyle = UITableViewCellSelectionStyleBlue;
     } else {
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }
-    
-    if (settingType == ButtonSetting) {
-        cell.textLabel.textAlignment = NSTextAlignmentCenter;
-    } else {
-        cell.textLabel.textAlignment = NSTextAlignmentLeft;
     }
     
     return cell;
@@ -402,38 +387,17 @@ typedef enum SettingType
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    return self.sections[section][@"Title"];
-}
-
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
-    NSString *title = [tableView.dataSource tableView:tableView titleForHeaderInSection:section];
-    if (!title && section == 0) {
-        NSDictionary *infoPlist = [[NSBundle mainBundle] infoDictionary];
-        title = [NSString stringWithFormat:@"Awful %@", infoPlist[@"CFBundleShortVersionString"]];
+    if (section == 0) {
+        NSDictionary *infoPlist = [NSBundle mainBundle].infoDictionary;
+        return [NSString stringWithFormat:@"Awful %@", infoPlist[@"CFBundleShortVersionString"]];
     }
-    if (!title) return nil;
-    
-    UILabel *label = [UILabel new];
-    label.frame = CGRectMake(20, 13, tableView.bounds.size.width - 40, 30);
-    label.font = [UIFont boldSystemFontOfSize:17];
-    label.text = title;
-    label.backgroundColor = [UIColor clearColor];
-    label.textColor = [UIColor colorWithRed:0.265 green:0.294 blue:0.367 alpha:1];
-    label.shadowColor = [UIColor whiteColor];
-    label.shadowOffset = CGSizeMake(-1, 1);
-
-    UIView *wrapper = [UIView new];
-    wrapper.frame = (CGRect){ .size = { 320, 40 } };
-    wrapper.backgroundColor = [UIColor clearColor];
-    [wrapper addSubview:label];
-    return wrapper;
+    return self.sections[section][@"Title"];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     NSString *title = [tableView.dataSource tableView:tableView titleForHeaderInSection:section];
-    return title || section == 0 ? 47 : 0;
+    return title ? 42 : 0;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
@@ -442,45 +406,16 @@ typedef enum SettingType
     return sectionInfo[@"Explanation"];
 }
 
-- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
-{
-    NSString *text = [tableView.dataSource tableView:tableView titleForFooterInSection:section];
-    if (!text) return nil;
-    
-    UILabel *label = [UILabel new];
-    label.numberOfLines = 0;
-    label.textAlignment = NSTextAlignmentCenter;
-    label.font = [UIFont systemFontOfSize:15];
-    CGFloat width = self.tableView.bounds.size.width - 40;
-    label.frame = CGRectMake(20, 5, width, 0);
-    label.text = text;
-    label.backgroundColor = [UIColor clearColor];
-    label.textColor = [UIColor colorWithRed:0.298 green:0.337 blue:0.424 alpha:1];
-    label.shadowColor = [UIColor whiteColor];
-    label.shadowOffset = CGSizeMake(0, 1);
-    [label sizeToFit];
-    CGRect frame = label.frame;
-    frame.size.width = width;
-    label.frame = frame;
-    
-    UIView *wrapper = [UIView new];
-    wrapper.frame = (CGRect){ .size = { 320, label.bounds.size.height + 5 } };
-    wrapper.backgroundColor = [UIColor clearColor];
-    [wrapper addSubview:label];
-    return wrapper;
-}
-
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
-    CGFloat margin = 22;
-    if (section + 1 == tableView.numberOfSections) margin = 0;
     NSString *text = [tableView.dataSource tableView:tableView titleForFooterInSection:section];
-    if (!text) return margin;
+    if (!text) return 0;
     CGSize max = CGSizeMake(tableView.bounds.size.width - 40, CGFLOAT_MAX);
     CGRect expected = [text boundingRectWithSize:max
                                          options:NSStringDrawingUsesLineFragmentOrigin
-                                      attributes:@{ NSFontAttributeName: [UIFont systemFontOfSize:15] }
+                                      attributes:@{ NSFontAttributeName: [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1] }
                                          context:nil];
+    const CGFloat margin = 14;
     return CGRectGetHeight(expected) + margin;
 }
 
