@@ -261,8 +261,6 @@
 {
     if (![self isViewLoaded]) return;
     NSArray *importantKeys = @[
-        AwfulSettingsKeys.highlightOwnMentions,
-        AwfulSettingsKeys.highlightOwnQuotes,
         AwfulSettingsKeys.showAvatars,
         AwfulSettingsKeys.showImages,
         AwfulSettingsKeys.username,
@@ -479,16 +477,8 @@
     self.postsView.dark = [AwfulSettings settings].darkTheme;
     self.postsView.showAvatars = [AwfulSettings settings].showAvatars;
     self.postsView.showImages = [AwfulSettings settings].showImages;
-    if ([AwfulSettings settings].highlightOwnMentions) {
-        self.postsView.highlightMentionUsername = [AwfulSettings settings].username;
-    } else {
-        self.postsView.highlightMentionUsername = nil;
-    }
-    if ([AwfulSettings settings].highlightOwnQuotes) {
-        self.postsView.highlightQuoteUsername = [AwfulSettings settings].username;
-    } else {
-        self.postsView.highlightQuoteUsername = nil;
-    }
+    self.postsView.highlightMentionUsername = [AwfulSettings settings].username;
+    self.postsView.highlightQuoteUsername = [AwfulSettings settings].username;
     self.postsView.stylesheetURL = StylesheetURLForForumWithIDAndSettings(self.thread.forum.forumID,
                                                                           [AwfulSettings settings]);
     if (self.loadingView) {

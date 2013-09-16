@@ -79,33 +79,6 @@
 		</dict>
 		<dict>
 			<key>Title</key>
-			<string>Posts</string>
-			<key>Settings</key>
-			<array>
-				<dict>
-					<key>Title</key>
-					<string>Highlight Mentions</string>
-					<key>Type</key>
-					<string>Switch</string>
-					<key>Default</key>
-					<false/>
-					<key>Key</key>
-					<string>highlight_own_mentions</string>
-				</dict>
-				<dict>
-					<key>Title</key>
-					<string>Highlight Quotes</string>
-					<key>Type</key>
-					<string>Switch</string>
-					<key>Default</key>
-					<false/>
-					<key>Key</key>
-					<string>highlight_own_quotes</string>
-				</dict>
-			</array>
-		</dict>
-		<dict>
-			<key>Title</key>
 			<string>Posting</string>
 			<key>Settings</key>
 			<array>

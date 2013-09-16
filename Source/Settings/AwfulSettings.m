@@ -192,10 +192,6 @@ struct {
     }
 }
 
-BOOL_PROPERTY(highlightOwnQuotes, setHighlightOwnQuotes)
-
-BOOL_PROPERTY(highlightOwnMentions, setHighlightOwnMentions)
-
 BOOL_PROPERTY(confirmNewPosts, setConfirmNewPosts)
 
 BOOL_PROPERTY(darkTheme, setDarkTheme)
@@ -389,8 +385,6 @@ NSString * const AwfulSettingsDidChangeSettingsKey = @"settings";
 const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .showAvatars = @"show_avatars",
     .showImages = @"show_images",
-    .highlightOwnQuotes = @"highlight_own_quotes",
-    .highlightOwnMentions = @"highlight_own_mentions",
     .confirmNewPosts = @"confirm_before_replying",
 	.darkTheme = @"dark_theme",
     .username = @"username",
