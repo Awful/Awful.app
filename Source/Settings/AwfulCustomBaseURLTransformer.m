@@ -19,7 +19,7 @@
 
 - (id)transformedValue:(AwfulSettings *)settings
 {
-    return settings.customBaseURL ?: @"Default";
+    return settings.customBaseURL ?: @"somethingawful.com";
 }
 
 @end
