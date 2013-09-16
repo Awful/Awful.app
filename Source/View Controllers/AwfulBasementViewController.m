@@ -352,4 +352,24 @@ typedef NS_ENUM(NSInteger, AwfulBasementSidebarState)
     return CGRectContainsPoint(self.mainContainerView.frame, [touch locationInView:self.view]);
 }
 
+#pragma mark State preservation and restoration
+
+- (void)encodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super encodeRestorableStateWithCoder:coder];
+    [coder encodeObject:self.selectedViewController forKey:SelectedViewControllerKey];
+    [coder encodeBool:self.sidebarVisible forKey:SidebarVisibleKey];
+}
+
+- (void)decodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super decodeRestorableStateWithCoder:coder];
+    self.selectedViewController = [coder decodeObjectForKey:SelectedViewControllerKey];
+    // TODO test that restoring a visible sidebar actually works
+    self.sidebarVisible = [coder decodeBoolForKey:SidebarVisibleKey];
+}
+
+static NSString * const SelectedViewControllerKey = @"AwfulSelectedViewController";
+static NSString * const SidebarVisibleKey = @"AwfulSidebarVisible";
+
 @end

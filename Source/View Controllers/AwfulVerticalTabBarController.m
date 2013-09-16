@@ -111,4 +111,20 @@
     self.selectedIndex = [tabBar.items indexOfObject:item];
 }
 
+#pragma mark State preservation and restoration
+
+- (void)encodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super encodeRestorableStateWithCoder:coder];
+    [coder encodeObject:self.selectedViewController forKey:SelectedViewControllerKey];
+}
+
+- (void)decodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super decodeRestorableStateWithCoder:coder];
+    self.selectedViewController = [coder decodeObjectForKey:SelectedViewControllerKey];
+}
+
+static NSString * const SelectedViewControllerKey = @"AwfulSelectedViewController";
+
 @end

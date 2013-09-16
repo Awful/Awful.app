@@ -95,54 +95,95 @@ static id _instance;
 
 NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLogOutNotification";
 
-- (void)setUpRootViewController
-{
-    NSMutableArray *viewControllers = [@[ [[AwfulForumsListController new] enclosingNavigationController],
-                                          [[AwfulBookmarksController new] enclosingNavigationController],
-                                          [[AwfulLepersViewController new] enclosingNavigationController],
-                                          [[AwfulSettingsViewController new] enclosingNavigationController] ] mutableCopy];
-    if ([AwfulSettings settings].canSendPrivateMessages) {
-        [viewControllers insertObject:[[AwfulPrivateMessageListController new] enclosingNavigationController]
-                              atIndex:2];
-    }
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        self.basementViewController = [[AwfulBasementViewController alloc] initWithViewControllers:viewControllers];
-        self.window.rootViewController = self.basementViewController;
-    } else {
-        NSMutableArray *splits = [NSMutableArray new];
-        for (UIViewController *viewController in viewControllers) {
-            AwfulExpandingSplitViewController *split;
-            split = [[AwfulExpandingSplitViewController alloc] initWithViewControllers:@[ viewController ]];
-            [splits addObject:split];
-        }
-        self.verticalTabBarController = [[AwfulVerticalTabBarController alloc] initWithViewControllers:splits];
-        self.window.rootViewController = self.verticalTabBarController;
-    }
-}
-
 #pragma mark - UIApplicationDelegate
 
-- (BOOL)application:(UIApplication *)application
-    didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+- (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     _instance = self;
     #if defined(CRASHLYTICS_API_KEY) && !DEBUG
-    [Crashlytics startWithAPIKey:CRASHLYTICS_API_KEY];
+        [Crashlytics startWithAPIKey:CRASHLYTICS_API_KEY];
     #endif
     [[AwfulSettings settings] registerDefaults];
-    [AwfulDataStack sharedDataStack].initFailureAction = AwfulDataStackInitFailureDelete;
+    
     // Migrate Core Data early to avoid problems later!
+    [AwfulDataStack sharedDataStack].initFailureAction = AwfulDataStackInitFailureDelete;
     [[AwfulDataStack sharedDataStack] context];
+    
+    NSMutableArray *viewControllers = [NSMutableArray new];
+    NSMutableArray *expandingIdentifiers = [NSMutableArray new];
+    UINavigationController *nav;
+    
+    nav = [[AwfulForumsListController new] enclosingNavigationController];
+    nav.restorationIdentifier = ForumNavigationControllerIdentifier;
+    [viewControllers addObject:nav];
+    [expandingIdentifiers addObject:ForumExpandingSplitControllerIdentifier];
+    
+    nav = [[AwfulBookmarksController new] enclosingNavigationController];
+    nav.restorationIdentifier = BookmarksNavigationControllerIdentifier;
+    [viewControllers addObject:nav];
+    [expandingIdentifiers addObject:BookmarksExpandingSplitControllerIdentifier];
+    
+    if ([AwfulSettings settings].canSendPrivateMessages) {
+        nav = [[AwfulPrivateMessageListController new] enclosingNavigationController];
+        nav.restorationIdentifier = MessagesNavigationControllerIdentifier;
+        [viewControllers addObject:nav];
+        [expandingIdentifiers addObject:MessagesExpandingSplitControllerIdentifier];
+    }
+
+    nav = [[AwfulLepersViewController new] enclosingNavigationController];
+    nav.restorationIdentifier = LepersColonyNavigationControllerIdentifier;
+    [viewControllers addObject:nav];
+    [expandingIdentifiers addObject:LepersColonyExpandingSplitControllerIdentifier];
+    
+    nav = [[AwfulSettingsViewController new] enclosingNavigationController];
+    nav.restorationIdentifier = SettingsNavigationControllerIdentifier;
+    [viewControllers addObject:nav];
+    [expandingIdentifiers addObject:SettingsExpandingSplitControllerIdentifier];
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        self.basementViewController = [[AwfulBasementViewController alloc] initWithViewControllers:viewControllers];
+        self.basementViewController.restorationIdentifier = RootViewControllerIdentifier;
+    } else {
+        NSMutableArray *splits = [NSMutableArray new];
+        [viewControllers enumerateObjectsUsingBlock:^(UIViewController *viewController, NSUInteger i, BOOL *stop) {
+            AwfulExpandingSplitViewController *split;
+            split = [[AwfulExpandingSplitViewController alloc] initWithViewControllers:@[ viewController ]];
+            split.restorationIdentifier = expandingIdentifiers[i];
+            [splits addObject:split];
+        }];
+        self.verticalTabBarController = [[AwfulVerticalTabBarController alloc] initWithViewControllers:splits];
+        self.verticalTabBarController.restorationIdentifier = RootViewControllerIdentifier;
+    }
+    
+    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    self.window.tintColor = [UIColor colorWithRed:0.118 green:0.518 blue:0.686 alpha:1];
+    self.window.rootViewController = self.basementViewController ?: self.verticalTabBarController;
+    
+    return YES;
+}
+
+static NSString * const RootViewControllerIdentifier = @"AwfulRootViewController";
+
+static NSString * const ForumNavigationControllerIdentifier = @"AwfulForumNavigationController";
+static NSString * const BookmarksNavigationControllerIdentifier = @"AwfulBookmarksNavigationController";
+static NSString * const MessagesNavigationControllerIdentifier = @"AwfulMessagesNavigationController";
+static NSString * const LepersColonyNavigationControllerIdentifier = @"AwfulLepersColonyNavigationController";
+static NSString * const SettingsNavigationControllerIdentifier = @"AwfulSettingsNavigationController";
+
+static NSString * const ForumExpandingSplitControllerIdentifier = @"AwfulForumExpandingSplitController";
+static NSString * const BookmarksExpandingSplitControllerIdentifier = @"AwfulBookmarksExpandingSplitController";
+static NSString * const MessagesExpandingSplitControllerIdentifier = @"AwfulMessagesExpandingSplitController";
+static NSString * const LepersColonyExpandingSplitControllerIdentifier = @"AwfulLepersColonyExpandingSplitController";
+static NSString * const SettingsExpandingSplitControllerIdentifier = @"AwfulSettingsExpandingSplitController";
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
     [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
     [NSURLCache setSharedURLCache:[[NSURLCache alloc] initWithMemoryCapacity:5 * 1024 * 1024
                                                                 diskCapacity:50 * 1024 * 1024
                                                                     diskPath:nil]];
     
     [self ignoreSilentSwitchWhenPlayingEmbeddedVideo];
-    
-    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    self.window.tintColor = [UIColor colorWithRed:0.118 green:0.518 blue:0.686 alpha:1];
-    [self setUpRootViewController];
     
     [self routeAwfulURLs];
     
@@ -293,6 +334,51 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
                    yesButtonTitle:@"Open"
                      onAcceptance:^{ [self openAwfulURL:[url awfulURL]]; }];
 }
+
+- (BOOL)application:(UIApplication *)application shouldSaveApplicationState:(NSCoder *)coder
+{
+    return [AwfulHTTPClient client].isLoggedIn;
+}
+
+- (void)application:(UIApplication *)application willEncodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [coder encodeInteger:0 forKey:InterfaceVersionKey];
+}
+
+- (BOOL)application:(UIApplication *)application shouldRestoreApplicationState:(NSCoder *)coder
+{
+    NSNumber *userInterfaceIdiom = [coder decodeObjectForKey:UIApplicationStateRestorationUserInterfaceIdiomKey];
+    return userInterfaceIdiom.integerValue == UI_USER_INTERFACE_IDIOM() && [AwfulHTTPClient client].loggedIn;
+}
+
+- (UIViewController *)application:(UIApplication *)application viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
+{
+    NSString *identifier = identifierComponents.lastObject;
+    if ([identifier isEqualToString:RootViewControllerIdentifier]) {
+        return self.window.rootViewController;
+    }
+    for (UIViewController *viewController in self.basementViewController.viewControllers) {
+        if ([viewController.restorationIdentifier isEqualToString:identifier]) {
+            return viewController;
+        }
+    }
+    for (UIViewController *viewController in self.verticalTabBarController.viewControllers) {
+        if ([viewController.restorationIdentifier isEqualToString:identifier]) {
+            return viewController;
+        }
+    }
+    for (UIViewController *viewController in [self.verticalTabBarController valueForKeyPath:@"@unionOfObjects.viewControllers.firstObject"]) {
+        if ([viewController.restorationIdentifier isEqualToString:identifier]) {
+            return viewController;
+        }
+    }
+    return nil;
+}
+
+/**
+ * Incremented whenever the state-preservable/restorable user interface changes so restoration code can migrate old saved state.
+ */
+static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
 
 #pragma mark - awful:// URL scheme
 

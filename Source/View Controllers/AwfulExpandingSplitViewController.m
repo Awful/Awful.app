@@ -193,6 +193,22 @@
     }
 }
 
+#pragma mark State preservation and restoration
+
+- (void)encodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super encodeRestorableStateWithCoder:coder];
+    [coder encodeBool:self.detailExpanded forKey:DetailExpandedKey];
+}
+
+- (void)decodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super decodeRestorableStateWithCoder:coder];
+    self.detailExpanded = [coder decodeBoolForKey:DetailExpandedKey];
+}
+
+static NSString * const DetailExpandedKey = @"AwfulDetailExpanded";
+
 @end
 
 @implementation UIViewController (AwfulExpandingSplitViewController)
