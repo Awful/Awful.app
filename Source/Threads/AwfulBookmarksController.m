@@ -115,6 +115,12 @@ static NSString * const kLastBookmarksRefreshDate = @"com.awfulapp.Awful.LastBoo
 
 #pragma mark - AwfulTableViewController
 
+- (void)configureCell:(AwfulThreadCell *)cell atIndexPath:(NSIndexPath *)indexPath
+{
+    [super configureCell:cell atIndexPath:indexPath];
+    cell.stickyImageView.image = nil;
+}
+
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return YES;
