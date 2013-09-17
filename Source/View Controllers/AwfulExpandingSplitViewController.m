@@ -19,7 +19,7 @@
 - (id)initWithViewControllers:(NSArray *)viewControllers
 {
     if (!(self = [super initWithNibName:nil bundle:nil])) return nil;
-    self.viewControllers = viewControllers;
+    _viewControllers = [viewControllers copy];
     return self;
 }
 
