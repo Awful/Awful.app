@@ -826,7 +826,7 @@
 {
     [super viewWillAppear:animated];
     self.toolbarWasHidden = self.navigationController.toolbarHidden;
-    [self.navigationController setToolbarHidden:NO animated:YES];
+    [self.navigationController setToolbarHidden:NO animated:NO];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -837,6 +837,12 @@
     self.navigationItem.backBarButtonItem = nil;
 }
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [self.navigationController setToolbarHidden:self.toolbarWasHidden animated:YES];
+}
+
 - (void)viewDidDisappear:(BOOL)animated
 {    
     // Blank the web view if we're leaving for good. Otherwise we get weirdness like videos
@@ -844,7 +850,6 @@
     if (!self.navigationController) {
         [self.postsView clearAllPosts];
     }
-    [self.navigationController setToolbarHidden:self.toolbarWasHidden animated:YES];
     [super viewDidDisappear:animated];
 }
 
