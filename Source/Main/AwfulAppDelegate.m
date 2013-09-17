@@ -318,6 +318,7 @@ static NSString * const SettingsExpandingSplitControllerIdentifier = @"AwfulSett
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     if (![AwfulHTTPClient client].loggedIn) return;
+    
 	// Get a URL from the pasteboard, and fallback to checking the string pasteboard
 	// in case some app is a big jerk and only sets a string value.
     NSURL *url = [UIPasteboard generalPasteboard].URL;
@@ -325,6 +326,7 @@ static NSString * const SettingsExpandingSplitControllerIdentifier = @"AwfulSett
         url = [NSURL awful_URLWithString:[UIPasteboard generalPasteboard].string];
     }
     if (![url awfulURL]) return;
+    
     // Don't ask about the same URL over and over.
     if ([[AwfulSettings settings].lastOfferedPasteboardURL isEqualToString:[url absoluteString]]) {
         return;

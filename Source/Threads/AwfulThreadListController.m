@@ -179,7 +179,8 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     AwfulIconActionSheet *sheet = [AwfulIconActionSheet new];
     sheet.title = [thread.title stringByCollapsingWhitespace];
     [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeJumpToFirstPage
-                                              action:^{
+                                              action:^
+    {
         AwfulPostsViewController *page = [AwfulPostsViewController new];
         page.restorationIdentifier = @"AwfulPostsViewController";
         page.thread = thread;
