@@ -43,29 +43,27 @@
     UIViewController *oldMasterViewController = _viewControllers[0];
     UIViewController *oldDetailViewController = self.detailViewController;
     _viewControllers = [viewControllers copy];
-    UIViewController *newDetailViewController = _viewControllers.count > 1 ? _viewControllers[1] : nil;
-    if (newDetailViewController) {
-        UINavigationItem *navigationItem = newDetailViewController.navigationItem;
-        if ([newDetailViewController isKindOfClass:[UINavigationController class]]) {
-            UIViewController *root = ((UINavigationController *)newDetailViewController).viewControllers[0];
-            navigationItem = root.navigationItem;
-        }
-        navigationItem.leftBarButtonItem = [self createToggleDetailExpandedItem];
-    }
+    [self ensureToggleDetailExpandedLeftBarButtonItem];
     if ([self isViewLoaded]) {
         UIViewController *newMasterViewController = _viewControllers[0];
         if (![oldMasterViewController isEqual:newMasterViewController]) {
             [self replaceMasterViewController:oldMasterViewController withViewController:newMasterViewController];
         }
+        UIViewController *newDetailViewController = _viewControllers.count > 1 ? _viewControllers[1] : nil;
         [self replaceDetailViewController:oldDetailViewController withViewController:newDetailViewController];
     }
 }
 
-- (UIBarButtonItem *)createToggleDetailExpandedItem
+- (void)ensureToggleDetailExpandedLeftBarButtonItem
 {
-    return [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
-                                                         target:self
-                                                         action:@selector(toggleDetailExpanded)];
+    UINavigationItem *navigationItem = self.detailViewController.navigationItem;
+    if ([self.detailViewController isKindOfClass:[UINavigationController class]]) {
+        UIViewController *root = ((UINavigationController *)self.detailViewController).viewControllers.firstObject;
+        navigationItem = root.navigationItem;
+    }
+    navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+                                                                                     target:self
+                                                                                     action:@selector(toggleDetailExpanded)];
 }
 
 - (void)toggleDetailExpanded
@@ -175,7 +173,11 @@
 
 - (void)setDetailViewController:(UIViewController *)detailViewController
 {
-    self.viewControllers = @[ self.viewControllers[0], detailViewController ];
+    if (detailViewController) {
+        self.viewControllers = @[ self.viewControllers[0], detailViewController ];
+    } else {
+        self.viewControllers = @[ self.viewControllers[0] ];
+    }
 }
 
 - (UITabBarItem *)tabBarItem
@@ -198,15 +200,26 @@
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super encodeRestorableStateWithCoder:coder];
+    [coder encodeObject:self.detailViewController forKey:DetailViewControllerKey];
     [coder encodeBool:self.detailExpanded forKey:DetailExpandedKey];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super decodeRestorableStateWithCoder:coder];
+    self.detailViewController = [coder decodeObjectForKey:DetailViewControllerKey];
     self.detailExpanded = [coder decodeBoolForKey:DetailExpandedKey];
 }
 
+- (void)applicationFinishedRestoringState
+{
+    [super applicationFinishedRestoringState];
+    
+    // If the detailViewController is a UINavigationController, it has no child view controllers as of -decodeRestorableStateWithCoder:. So it doesn't get its left bar button item set. That feels wrong to me, but this works if we do it here, so here we go.
+    [self ensureToggleDetailExpandedLeftBarButtonItem];
+}
+
+static NSString * const DetailViewControllerKey = @"AwfulDetailViewController";
 static NSString * const DetailExpandedKey = @"AwfulDetailExpanded";
 
 @end

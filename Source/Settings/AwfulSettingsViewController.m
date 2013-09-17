@@ -329,7 +329,9 @@ typedef enum SettingType
         page.thread = [AwfulThread firstOrNewThreadWithThreadID:threadID];
         [page loadPage:AwfulThreadPageNextUnread singleUserID:nil];
         if (self.expandingSplitViewController) {
-            self.expandingSplitViewController.detailViewController = [page enclosingNavigationController];
+            UINavigationController * nav = [page enclosingNavigationController];
+            nav.restorationIdentifier = @"Navigation";
+            self.expandingSplitViewController.detailViewController = nav;
         } else {
             [self.navigationController pushViewController:page animated:YES];
         }

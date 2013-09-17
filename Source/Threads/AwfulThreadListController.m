@@ -288,7 +288,9 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
 - (void)displayPage:(AwfulPostsViewController *)page
 {
     if (self.expandingSplitViewController) {
-        self.expandingSplitViewController.detailViewController = [page enclosingNavigationController];
+        UINavigationController *nav = [page enclosingNavigationController];
+        nav.restorationIdentifier = @"Navigation";
+        self.expandingSplitViewController.detailViewController = nav;
     } else {
         [self.navigationController pushViewController:page animated:YES];
     }

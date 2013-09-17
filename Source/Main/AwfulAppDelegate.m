@@ -381,14 +381,13 @@ static NSString * const SettingsExpandingSplitControllerIdentifier = @"AwfulSett
             return viewController;
         }
     }
-    for (UIViewController *viewController in self.verticalTabBarController.viewControllers) {
-        if ([viewController.restorationIdentifier isEqualToString:identifier]) {
-            return viewController;
+    for (AwfulExpandingSplitViewController *split in self.verticalTabBarController.viewControllers) {
+        if ([split.restorationIdentifier isEqualToString:identifier]) {
+            return split;
         }
-    }
-    for (UIViewController *viewController in [self.verticalTabBarController valueForKeyPath:@"@unionOfObjects.viewControllers.firstObject"]) {
-        if ([viewController.restorationIdentifier isEqualToString:identifier]) {
-            return viewController;
+        UIViewController *master = split.viewControllers[0];
+        if ([master.restorationIdentifier isEqualToString:identifier]) {
+            return master;
         }
     }
     for (UIViewController *viewController in [self rootViewControllersUncontained]) {

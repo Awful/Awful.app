@@ -166,7 +166,9 @@ static NSString * const MessageCellIdentifier = @"Message cell";
     AwfulPrivateMessageViewController *vc;
     vc = [[AwfulPrivateMessageViewController alloc] initWithPrivateMessage:pm];
     if (self.expandingSplitViewController) {
-        self.expandingSplitViewController.detailViewController = [vc enclosingNavigationController];
+        UINavigationController *nav = [vc enclosingNavigationController];
+        nav.restorationIdentifier = @"Navigation";
+        self.expandingSplitViewController.detailViewController = nav;
     } else {
         [self.navigationController pushViewController:vc animated:YES];
     }
