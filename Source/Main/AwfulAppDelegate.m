@@ -112,30 +112,41 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     NSMutableArray *viewControllers = [NSMutableArray new];
     NSMutableArray *expandingIdentifiers = [NSMutableArray new];
     UINavigationController *nav;
+    UIViewController *vc;
     
-    nav = [[AwfulForumsListController new] enclosingNavigationController];
+    vc = [AwfulForumsListController new];
+    vc.restorationIdentifier = ForumListControllerIdentifier;
+    nav = [vc enclosingNavigationController];
     nav.restorationIdentifier = ForumNavigationControllerIdentifier;
     [viewControllers addObject:nav];
     [expandingIdentifiers addObject:ForumExpandingSplitControllerIdentifier];
     
-    nav = [[AwfulBookmarksController new] enclosingNavigationController];
+    vc = [AwfulBookmarksController new];
+    vc.restorationIdentifier = BookmarksControllerIdentifier;
+    nav = [vc enclosingNavigationController];
     nav.restorationIdentifier = BookmarksNavigationControllerIdentifier;
     [viewControllers addObject:nav];
     [expandingIdentifiers addObject:BookmarksExpandingSplitControllerIdentifier];
     
     if ([AwfulSettings settings].canSendPrivateMessages) {
-        nav = [[AwfulPrivateMessageListController new] enclosingNavigationController];
+        vc = [AwfulPrivateMessageListController new];
+        vc.restorationIdentifier = MessagesListControllerIdentifier;
+        nav = [vc enclosingNavigationController];
         nav.restorationIdentifier = MessagesNavigationControllerIdentifier;
         [viewControllers addObject:nav];
         [expandingIdentifiers addObject:MessagesExpandingSplitControllerIdentifier];
     }
 
-    nav = [[AwfulLepersViewController new] enclosingNavigationController];
+    vc = [AwfulLepersViewController new];
+    vc.restorationIdentifier = LepersColonyViewControllerIdentifier;
+    nav = [vc enclosingNavigationController];
     nav.restorationIdentifier = LepersColonyNavigationControllerIdentifier;
     [viewControllers addObject:nav];
     [expandingIdentifiers addObject:LepersColonyExpandingSplitControllerIdentifier];
     
-    nav = [[AwfulSettingsViewController new] enclosingNavigationController];
+    vc = [AwfulSettingsViewController new];
+    vc.restorationIdentifier = SettingsViewControllerIdentifier;
+    nav = [vc enclosingNavigationController];
     nav.restorationIdentifier = SettingsNavigationControllerIdentifier;
     [viewControllers addObject:nav];
     [expandingIdentifiers addObject:SettingsExpandingSplitControllerIdentifier];
@@ -163,6 +174,12 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
 }
 
 static NSString * const RootViewControllerIdentifier = @"AwfulRootViewController";
+
+static NSString * const ForumListControllerIdentifier = @"AwfulForumListController";
+static NSString * const BookmarksControllerIdentifier = @"AwfulBookmarksController";
+static NSString * const MessagesListControllerIdentifier = @"AwfulPrivateMessagesListController";
+static NSString * const LepersColonyViewControllerIdentifier = @"AwfulLepersColonyViewController";
+static NSString * const SettingsViewControllerIdentifier = @"AwfulSettingsViewController";
 
 static NSString * const ForumNavigationControllerIdentifier = @"AwfulForumNavigationController";
 static NSString * const BookmarksNavigationControllerIdentifier = @"AwfulBookmarksNavigationController";
@@ -368,6 +385,11 @@ static NSString * const SettingsExpandingSplitControllerIdentifier = @"AwfulSett
         }
     }
     for (UIViewController *viewController in [self.verticalTabBarController valueForKeyPath:@"@unionOfObjects.viewControllers.firstObject"]) {
+        if ([viewController.restorationIdentifier isEqualToString:identifier]) {
+            return viewController;
+        }
+    }
+    for (UIViewController *viewController in [self rootViewControllersUncontained]) {
         if ([viewController.restorationIdentifier isEqualToString:identifier]) {
             return viewController;
         }

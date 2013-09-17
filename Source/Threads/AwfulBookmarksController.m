@@ -25,6 +25,7 @@
 - (id)init
 {
     if (!(self = [super init])) return nil;
+    self.restorationClass = self.class;
     self.title = @"Bookmarks";
     self.tabBarItem.image = [UIImage imageNamed:@"bookmarks.png"];
     UIImage *portrait = [UIImage imageNamed:@"bookmarks.png"];

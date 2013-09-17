@@ -39,14 +39,7 @@
 #import "UINavigationItem+TwoLineTitle.h"
 #import "UIViewController+NavigationEnclosure.h"
 
-@interface AwfulPostsViewController () <AwfulPostsViewDelegate,
-                                        AwfulJumpToPageControllerDelegate,
-                                        NSFetchedResultsControllerDelegate,
-                                        AwfulReplyComposeViewControllerDelegate,
-                                        UIScrollViewDelegate,
-                                        AwfulPrivateMessageComposeViewControllerDelegate,
-                                        AwfulPostsViewSettingsControllerDelegate,
-                                        AwfulPopoverControllerDelegate>
+@interface AwfulPostsViewController () <AwfulPostsViewDelegate, AwfulJumpToPageControllerDelegate, NSFetchedResultsControllerDelegate, AwfulReplyComposeViewControllerDelegate, UIScrollViewDelegate, AwfulPrivateMessageComposeViewControllerDelegate, AwfulPostsViewSettingsControllerDelegate, AwfulPopoverControllerDelegate, UIViewControllerRestoration>
 
 @property (nonatomic) AwfulThreadPage currentPage;
 
@@ -98,6 +91,7 @@
 - (id)init
 {
     if (!(self = [super initWithNibName:nil bundle:nil])) return nil;
+    self.restorationClass = self.class;
     self.hidesBottomBarWhenPushed = YES;
     self.navigationItem.rightBarButtonItem = self.composeItem;
     NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
@@ -1323,6 +1317,39 @@ static char KVOContext;
 {
     self.settingsViewController = nil;
 }
+
+#pragma mark State Preservation and Restoration
+
++ (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
+{
+    AwfulPostsViewController *postsView = [AwfulPostsViewController new];
+    postsView.restorationIdentifier = identifierComponents.lastObject;
+    return postsView;
+}
+
+- (void)encodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super encodeRestorableStateWithCoder:coder];
+    [coder encodeObject:self.thread.threadID forKey:ThreadIDKey];
+    [coder encodeInteger:self.currentPage forKey:CurrentPageKey];
+    [coder encodeObject:(self.singleUserID ?: [NSNull null]) forKey:SingleUserIDKey];
+}
+
+- (void)decodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super decodeRestorableStateWithCoder:coder];
+    self.thread = [AwfulThread firstMatchingPredicate:@"threadID = %@", [coder decodeObjectForKey:ThreadIDKey]];
+    AwfulThreadPage page = [coder decodeIntegerForKey:CurrentPageKey];
+    NSString *singleUserID = [coder decodeObjectForKey:SingleUserIDKey];
+    if ([singleUserID isEqual:[NSNull null]]) {
+        singleUserID = nil;
+    }
+    [self loadPage:page singleUserID:singleUserID];
+}
+
+static NSString * const ThreadIDKey = @"AwfulThreadID";
+static NSString * const CurrentPageKey = @"AwfulCurrentPage";
+static NSString * const SingleUserIDKey = @"AwfulSingleUserID";
 
 @end
 

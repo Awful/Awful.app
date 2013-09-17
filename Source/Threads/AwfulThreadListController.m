@@ -181,12 +181,14 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeJumpToFirstPage
                                               action:^{
         AwfulPostsViewController *page = [AwfulPostsViewController new];
+        page.restorationIdentifier = @"AwfulPostsViewController";
         page.thread = thread;
         [self displayPage:page];
         [page loadPage:1 singleUserID:nil];
     }]];
     [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeJumpToLastPage action:^{
         AwfulPostsViewController *page = [AwfulPostsViewController new];
+        page.restorationIdentifier = @"AwfulPostsViewController";
         page.thread = thread;
         [self displayPage:page];
         [page loadPage:AwfulThreadPageLast singleUserID:nil];
@@ -432,6 +434,7 @@ static UIImage * ThreadRatingImageForRating(NSNumber *boxedRating)
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {
     AwfulPostsViewController *page = [AwfulPostsViewController new];
+    page.restorationIdentifier = @"AwfulPostsViewController";
     AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
     page.thread = thread;
     // For an unread thread, the Forums will interpret "next unread page" to mean "last page",
@@ -449,6 +452,7 @@ static UIImage * ThreadRatingImageForRating(NSNumber *boxedRating)
 {
     [self dismissViewControllerAnimated:YES completion:nil];
     AwfulPostsViewController *page = [AwfulPostsViewController new];
+    page.restorationIdentifier = @"AwfulPostsViewController";
     page.thread = [AwfulThread firstOrNewThreadWithThreadID:threadID];
     [page loadPage:1 singleUserID:nil];
     [self displayPage:page];
@@ -459,5 +463,21 @@ static UIImage * ThreadRatingImageForRating(NSNumber *boxedRating)
     // TODO save draft?
     [self dismissViewControllerAnimated:YES completion:nil];
 }
+
+#pragma mark State preservation and restoration
+
+- (void)encodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super encodeRestorableStateWithCoder:coder];
+    [coder encodeObject:self.forum.forumID forKey:ForumIDKey];
+}
+
+- (void)decodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super decodeRestorableStateWithCoder:coder];
+    self.forum = [AwfulForum firstMatchingPredicate:@"forumID = %@", [coder decodeObjectForKey:ForumIDKey]];
+}
+
+static NSString * const ForumIDKey = @"AwfulForumID";
 
 @end

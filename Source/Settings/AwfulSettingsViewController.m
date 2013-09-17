@@ -324,6 +324,7 @@ typedef enum SettingType
         [alert show];
     } else if ([action isEqualToString:@"GoToAwfulThread"]) {
         AwfulPostsViewController *page = [AwfulPostsViewController new];
+        page.restorationIdentifier = @"Awful's Thread";
         NSString *threadID = setting[@"ThreadID"];
         page.thread = [AwfulThread firstOrNewThreadWithThreadID:threadID];
         [page loadPage:AwfulThreadPageNextUnread singleUserID:nil];
