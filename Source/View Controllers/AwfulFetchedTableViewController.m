@@ -69,6 +69,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    [self createFetchedResultsControllerIfNecessary];
     self.viewVisible = YES;
     if (self.changedWhileNotVisible) {
         [self.tableView reloadData];

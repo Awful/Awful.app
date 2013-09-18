@@ -5,7 +5,7 @@
 #import "AwfulFetchedTableViewController.h"
 @class AwfulForum;
 
-@interface AwfulThreadListController : AwfulFetchedTableViewController
+@interface AwfulThreadListController : AwfulFetchedTableViewController <UIViewControllerRestoration>
 
 // Designated initializer.
 - (id)init;

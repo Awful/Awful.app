@@ -385,6 +385,8 @@ willDisplayHeaderView:(UITableViewHeaderFooterView *)header
     }
     AwfulThreadListController *threadList = [AwfulThreadListController new];
     threadList.forum = forum;
+    threadList.restorationClass = [AwfulThreadListController class];
+    threadList.restorationIdentifier = @"Thread";
     [self.navigationController pushViewController:threadList animated:YES];
 }
 

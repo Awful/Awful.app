@@ -469,6 +469,14 @@ static UIImage * ThreadRatingImageForRating(NSNumber *boxedRating)
 
 #pragma mark State preservation and restoration
 
++ (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
+{
+    AwfulThreadListController *threadList = [self new];
+    threadList.restorationIdentifier = identifierComponents.lastObject;
+    threadList.restorationClass = self;
+    return threadList;
+}
+
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super encodeRestorableStateWithCoder:coder];
