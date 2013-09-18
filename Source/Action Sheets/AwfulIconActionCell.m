@@ -47,27 +47,10 @@
     }
     
     UIGraphicsBeginImageContextWithOptions(ImageSize, NO, 0);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:(CGRect){ .size = ImageSize }
-                                                     cornerRadius:10];
-    path.lineWidth = 4;
+  
+    UIBezierPath *path = [UIBezierPath bezierPathWithOvalInRect:(CGRect){ .size = ImageSize }];
+    path.lineWidth = 2;
     [path addClip];
-    
-    [self.tintColor setFill];
-    [path fill];
-    
-    CGContextSaveGState(context);
-    UIColor *white = [UIColor whiteColor];
-    UIColor *gray = [UIColor colorWithWhite:0.6 alpha:1];
-    NSArray *colors = @[ (id)white.CGColor, (id)gray.CGColor ];
-    CGGradientRef gradient = CGGradientCreateWithColors(CGColorGetColorSpace(gray.CGColor),
-                                                        (__bridge CFArrayRef)colors, NULL);
-    CGContextSetBlendMode(context, kCGBlendModeColorBurn);
-    CGContextDrawLinearGradient(context, gradient, CGPointZero, CGPointMake(0, ImageSize.height),
-                                0);
-    CGGradientRelease(gradient);
-    CGContextRestoreGState(context);
     
     [self.tintColor set];
     [path stroke];
@@ -105,7 +88,7 @@ const CGSize ImageSize = {56, 56};
     if (!(self = [super initWithFrame:frame])) return nil;
     self.titleLabel = [UILabel new];
     self.titleLabel.backgroundColor = nil;
-    self.titleLabel.font = [UIFont boldSystemFontOfSize:12];
+    self.titleLabel.font = [UIFont systemFontOfSize:12];
     self.titleLabel.textColor = [UIColor whiteColor];
     self.titleLabel.shadowColor = [UIColor blackColor];
     self.titleLabel.shadowOffset = CGSizeMake(0, 1);
