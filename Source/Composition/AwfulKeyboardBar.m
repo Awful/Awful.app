@@ -47,15 +47,8 @@
 - (id)initWithFrame:(CGRect)frame
 {
     if (!(self = [super initWithFrame:frame])) return nil;
-    self.backgroundColor = [UIColor clearColor];
-    self.opaque = NO;
-    CAGradientLayer *gradient = [CAGradientLayer new];
-    gradient.colors = @[
-        (id)[UIColor colorWithWhite:0 alpha:0.6].CGColor,
-        (id)[UIColor colorWithWhite:0 alpha:0.7].CGColor
-    ];
-    [self.layer insertSublayer:gradient atIndex:0];
-    _gradient = gradient;
+    self.backgroundColor = [UIColor colorWithRed:0.078 green:0.078 blue:0.078 alpha:1];
+    self.opaque = YES;
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     return self;
 }
@@ -95,21 +88,13 @@
     if (!(self = [super init])) return nil;
     _character = [character copy];
     [self setTitle:_character forState:UIControlStateNormal];
-    [self setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
+		[self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     
-    self.titleLabel.font = [UIFont boldSystemFontOfSize:22];
-    self.titleLabel.shadowOffset = CGSizeMake(0, 1);
+    self.titleLabel.font = [UIFont systemFontOfSize:22];
     
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        self.backgroundColor = [UIColor colorWithHue:0.667 saturation:0.019 brightness:0.827
-                                               alpha:1];
-    } else {
-        self.backgroundColor = [UIColor colorWithWhite:0.96 alpha:1];
-    }
-    self.layer.cornerRadius = 5;
-    self.layer.borderColor = [UIColor blackColor].CGColor;
-    self.layer.borderWidth = 1;
+		self.backgroundColor = [UIColor colorWithRed:0.353 green:0.353 blue:0.353 alpha:1];
+		self.layer.cornerRadius = 3.5;
+    self.layer.borderWidth = 0;
     return self;
 }
 

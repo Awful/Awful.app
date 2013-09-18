@@ -128,11 +128,13 @@ header {
 .ipad .bbc-block {
   margin: 0 10px 1em 10px;
 }
-.bbc-block.mention {
-  background-color: rgba(162, 205, 90, 0.5);
+.bbc-block.mention,
+.bbc-block.mention h4 a {
+  color: #7409a0;
+  border-color: #7409a0;
 }
 span.mention {
-  color: #b373fc;
+  color: #7409a0;
 }
 .quote_link {
   text-decoration: none;
