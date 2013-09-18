@@ -165,6 +165,7 @@ static NSString * const MessageCellIdentifier = @"Message cell";
     AwfulPrivateMessage *pm = [self.fetchedResultsController objectAtIndexPath:indexPath];
     AwfulPrivateMessageViewController *vc;
     vc = [[AwfulPrivateMessageViewController alloc] initWithPrivateMessage:pm];
+    vc.restorationIdentifier = @"Private Message";
     if (self.expandingSplitViewController) {
         UINavigationController *nav = [vc enclosingNavigationController];
         nav.restorationIdentifier = @"Navigation";

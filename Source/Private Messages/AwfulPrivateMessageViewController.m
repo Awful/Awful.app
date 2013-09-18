@@ -26,7 +26,7 @@
 #import "NSURL+Punycode.h"
 #import "UIViewController+NavigationEnclosure.h"
 
-@interface AwfulPrivateMessageViewController () <AwfulPostsViewDelegate, AwfulPrivateMessageComposeViewControllerDelegate>
+@interface AwfulPrivateMessageViewController () <AwfulPostsViewDelegate, AwfulPrivateMessageComposeViewControllerDelegate, UIViewControllerRestoration>
 
 @property (nonatomic) AwfulPrivateMessage *privateMessage;
 @property (readonly) AwfulPostsView *postsView;
@@ -41,11 +41,18 @@
 {
     if (!(self = [super initWithNibName:nil bundle:nil])) return nil;;
     _privateMessage = privateMessage;
+    self.restorationClass = self.class;
     self.title = privateMessage.subject;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDidChange:)
                                                  name:AwfulSettingsDidChangeNotification
                                                object:nil];
     return self;
+}
+
+- (void)setPrivateMessage:(AwfulPrivateMessage *)privateMessage
+{
+    _privateMessage = privateMessage;
+    self.title = _privateMessage.subject;
 }
 
 - (void)settingsDidChange:(NSNotification *)note
@@ -307,5 +314,30 @@
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
+
+#pragma mark State preservation and restoration
+
++ (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
+{
+    AwfulPrivateMessageViewController *messageView = [self new];
+    messageView.restorationIdentifier = identifierComponents.lastObject;
+    return messageView;
+}
+
+- (void)encodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super encodeRestorableStateWithCoder:coder];
+    [coder encodeObject:self.privateMessage.messageID forKey:MessageIDKey];
+}
+
+- (void)decodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super decodeRestorableStateWithCoder:coder];
+    NSString *messageID = [coder decodeObjectForKey:MessageIDKey];
+    self.privateMessage = [AwfulPrivateMessage firstMatchingPredicate:@"messageID = %@", messageID];
+    [self.postsView reloadData];
+}
+
+static NSString * const MessageIDKey = @"AwfulMessageID";
 
 @end
