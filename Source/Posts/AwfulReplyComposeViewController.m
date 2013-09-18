@@ -284,4 +284,35 @@ static NSURL *CachedImageDirectoryForIdentifier(id identifier)
     [self enableSendButtonIfReady];
 }
 
+#pragma mark State preservation and restoration
+
+- (void)encodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super encodeRestorableStateWithCoder:coder];
+    [coder encodeObject:self.thread.threadID forKey:ThreadIDKey];
+    [coder encodeObject:self.editedPost.postID forKey:EditedPostIDKey];
+    [coder encodeObject:self.imageCacheIdentifier forKey:ImageCacheIdentifierKey];
+}
+
+- (void)decodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super decodeRestorableStateWithCoder:coder];
+    id imageCacheIdentifier = [coder decodeObjectForKey:ImageCacheIdentifierKey];
+    NSString *threadID = [coder decodeObjectForKey:ThreadIDKey];
+    NSString *editedPostID = [coder decodeObjectForKey:EditedPostIDKey];
+    if (threadID) {
+        [self replyToThread:[AwfulThread firstMatchingPredicate:@"threadID = %@", threadID]
+        withInitialContents:self.textView.text
+       imageCacheIdentifier:imageCacheIdentifier];
+    } else if (editedPostID) {
+        [self editPost:[AwfulPost firstMatchingPredicate:@"postID = %@", editedPostID]
+                  text:self.textView.text
+  imageCacheIdentifier:imageCacheIdentifier];
+    }
+}
+
+static NSString * const ThreadIDKey = @"AwfulThreadID";
+static NSString * const EditedPostIDKey = @"AwfulEditedPostID";
+static NSString * const ImageCacheIdentifierKey = @"AwfulImageCacheIdentifier";
+
 @end

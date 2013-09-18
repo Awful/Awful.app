@@ -75,6 +75,8 @@
 
 @property (nonatomic) NSMutableArray *cachedUpdatesWhileScrolling;
 
+@property (strong, nonatomic) AwfulReplyComposeViewController *composeViewController;
+
 @end
 
 @interface UIBarButtonItem (Awful)
@@ -120,18 +122,21 @@
 
 - (void)didTapCompose
 {
-    AwfulReplyComposeViewController *reply = [AwfulReplyComposeViewController new];
-    reply.delegate = self;
+    self.composeViewController = [AwfulReplyComposeViewController new];
+    self.composeViewController.restorationIdentifier = @"Compose reply";
+    self.composeViewController.delegate = self;
     if (self.ongoingEditedPost) {
-        [reply editPost:self.ongoingEditedPost
-                   text:self.ongoingReplyText
-   imageCacheIdentifier:self.ongoingReplyImageCacheIdentifier];
+        [self.composeViewController editPost:self.ongoingEditedPost
+                                        text:self.ongoingReplyText
+                        imageCacheIdentifier:self.ongoingReplyImageCacheIdentifier];
     } else {
-        [reply replyToThread:self.thread
-         withInitialContents:self.ongoingReplyText
-        imageCacheIdentifier:self.ongoingReplyImageCacheIdentifier];
+        [self.composeViewController replyToThread:self.thread
+                              withInitialContents:self.ongoingReplyText
+                             imageCacheIdentifier:self.ongoingReplyImageCacheIdentifier];
     }
-    [self presentViewController:[reply enclosingNavigationController] animated:YES completion:nil];
+    UINavigationController *nav = [self.composeViewController enclosingNavigationController];
+    nav.restorationIdentifier = @"Compose reply navigation controller";
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (UIBarButtonItem *)settingsItem
@@ -1035,11 +1040,13 @@ static char KVOContext;
                      return;
                  }
                  [self forgetOngoingReply];
-                 AwfulReplyComposeViewController *reply = [AwfulReplyComposeViewController new];
-                 reply.delegate = self;
-                 [reply editPost:post text:text imageCacheIdentifier:nil];
-                 [self presentViewController:[reply enclosingNavigationController]
-                                    animated:YES completion:nil];
+                 self.composeViewController = [AwfulReplyComposeViewController new];
+                 self.composeViewController.restorationIdentifier = @"Compose reply";
+                 self.composeViewController.delegate = self;
+                 [self.composeViewController editPost:post text:text imageCacheIdentifier:nil];
+                 UINavigationController *nav = [self.composeViewController enclosingNavigationController];
+                 nav.restorationIdentifier = @"Compose reply navigation controller";
+                 [self presentViewController:nav animated:YES completion:nil];
              }];
         }]];
     }
@@ -1059,19 +1066,21 @@ static char KVOContext;
                      [contents appendString:@"\n"];
                  }
                  [contents appendString:quotedText];
-                 AwfulReplyComposeViewController *reply = [AwfulReplyComposeViewController new];
-                 reply.delegate = self;
+                 self.composeViewController = [AwfulReplyComposeViewController new];
+                 self.composeViewController.restorationIdentifier = @"Compose reply";
+                 self.composeViewController.delegate = self;
                  if (self.ongoingEditedPost) {
-                     [reply editPost:self.ongoingEditedPost
-                                text:contents
-                imageCacheIdentifier:self.ongoingReplyImageCacheIdentifier];
+                     [self.composeViewController editPost:self.ongoingEditedPost
+                                                     text:contents
+                                     imageCacheIdentifier:self.ongoingReplyImageCacheIdentifier];
                  } else {
-                     [reply replyToThread:self.thread
-                      withInitialContents:contents
-                     imageCacheIdentifier:self.ongoingReplyImageCacheIdentifier];
+                     [self.composeViewController replyToThread:self.thread
+                                           withInitialContents:contents
+                                          imageCacheIdentifier:self.ongoingReplyImageCacheIdentifier];
                  }
-                 [self presentViewController:[reply enclosingNavigationController]
-                                    animated:YES completion:nil];
+                 UINavigationController *nav = [self.composeViewController enclosingNavigationController];
+                 nav.restorationIdentifier = @"Compose reply navigation controller";
+                 [self presentViewController:nav animated:YES completion:nil];
              }];
         }]];
     }
@@ -1249,6 +1258,7 @@ static char KVOContext;
     [self dismissViewControllerAnimated:YES completion:^{
         [self loadPage:AwfulThreadPageNextUnread singleUserID:nil];
     }];
+    self.composeViewController = nil;
 }
 
 - (void)replyComposeController:(AwfulReplyComposeViewController *)controller
@@ -1260,6 +1270,7 @@ static char KVOContext;
           singleUserID:self.singleUserID];
         [self jumpToPostWithID:post.postID];
     }];
+    self.composeViewController = nil;
 }
 
 - (void)replyComposeControllerDidCancel:(AwfulReplyComposeViewController *)controller
@@ -1268,6 +1279,7 @@ static char KVOContext;
     self.ongoingReplyImageCacheIdentifier = [controller imageCacheIdentifier];
     self.ongoingEditedPost = controller.editedPost;
     [self dismissViewControllerAnimated:YES completion:nil];
+    self.composeViewController = nil;
 }
 
 #pragma mark - UIScrollViewDelegate
@@ -1324,7 +1336,8 @@ static char KVOContext;
     [super encodeRestorableStateWithCoder:coder];
     [coder encodeObject:self.thread.threadID forKey:ThreadIDKey];
     [coder encodeInteger:self.currentPage forKey:CurrentPageKey];
-    [coder encodeObject:(self.singleUserID ?: [NSNull null]) forKey:SingleUserIDKey];
+    [coder encodeObject:self.singleUserID forKey:SingleUserIDKey];
+    [coder encodeObject:self.composeViewController forKey:ComposeViewControllerKey];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
@@ -1332,16 +1345,15 @@ static char KVOContext;
     [super decodeRestorableStateWithCoder:coder];
     self.thread = [AwfulThread firstMatchingPredicate:@"threadID = %@", [coder decodeObjectForKey:ThreadIDKey]];
     AwfulThreadPage page = [coder decodeIntegerForKey:CurrentPageKey];
-    NSString *singleUserID = [coder decodeObjectForKey:SingleUserIDKey];
-    if ([singleUserID isEqual:[NSNull null]]) {
-        singleUserID = nil;
-    }
-    [self loadPage:page singleUserID:singleUserID];
+    [self loadPage:page singleUserID:[coder decodeObjectForKey:SingleUserIDKey]];
+    self.composeViewController = [coder decodeObjectForKey:ComposeViewControllerKey];
+    self.composeViewController.delegate = self;
 }
 
 static NSString * const ThreadIDKey = @"AwfulThreadID";
 static NSString * const CurrentPageKey = @"AwfulCurrentPage";
 static NSString * const SingleUserIDKey = @"AwfulSingleUserID";
+static NSString * const ComposeViewControllerKey = @"AwfulComposeViewController";
 
 @end
 
