@@ -69,7 +69,7 @@
             return;
         }
         [SVProgressHUD showSuccessWithStatus:@"Sent"];
-        [self.delegate privateMessageComposeControllerDidSendMessage:self];
+        [self dismissViewControllerAnimated:YES completion:nil];
     }];
     self.networkOperation = op;
 }
@@ -83,10 +83,7 @@
         [self setTextFieldsAndViewUserInteractionEnabled:YES];
         [self.textView becomeFirstResponder];
     } else {
-        SEL selector = @selector(privateMessageComposeControllerDidCancel:);
-        if ([self.delegate respondsToSelector:selector]) {
-            [self.delegate privateMessageComposeControllerDidCancel:self];
-        }
+        [self dismissViewControllerAnimated:YES completion:nil];
     }
 }
 

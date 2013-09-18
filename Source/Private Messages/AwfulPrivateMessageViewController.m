@@ -26,7 +26,7 @@
 #import "NSURL+Punycode.h"
 #import "UIViewController+NavigationEnclosure.h"
 
-@interface AwfulPrivateMessageViewController () <AwfulPostsViewDelegate, AwfulPrivateMessageComposeViewControllerDelegate, UIViewControllerRestoration>
+@interface AwfulPrivateMessageViewController () <AwfulPostsViewDelegate, UIViewControllerRestoration>
 
 @property (nonatomic) AwfulPrivateMessage *privateMessage;
 @property (readonly) AwfulPostsView *postsView;
@@ -167,7 +167,6 @@
             } else {
                 AwfulPrivateMessageComposeViewController *compose;
                 compose = [AwfulPrivateMessageComposeViewController new];
-                compose.delegate = self;
                 [compose setRegardingMessage:self.privateMessage];
                 [compose setMessageBody:bbcode];
                 [self presentViewController:[compose enclosingNavigationController]
@@ -185,7 +184,6 @@
             } else {
                 AwfulPrivateMessageComposeViewController *compose;
                 compose = [AwfulPrivateMessageComposeViewController new];
-                compose.delegate = self;
                 [compose setForwardedMessage:self.privateMessage];
                 [compose setMessageBody:bbcode];
                 [self presentViewController:[compose enclosingNavigationController]
@@ -299,20 +297,6 @@
     } else {
         [[UIApplication sharedApplication] openURL:url];
     }
-}
-
-#pragma mark - AwfulPrivateMessageComposeViewControllerDelegate
-
-- (void)privateMessageComposeControllerDidSendMessage:(AwfulPrivateMessageComposeViewController *)controller
-{
-    [self dismissViewControllerAnimated:YES completion:^{
-        [self.navigationController popViewControllerAnimated:YES]; 
-    }];
-}
-
-- (void)privateMessageComposeControllerDidCancel:(AwfulPrivateMessageComposeViewController *)controller
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark State preservation and restoration

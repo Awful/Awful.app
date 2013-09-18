@@ -19,7 +19,7 @@
 #import <SVPullToRefresh/UIScrollView+SVInfiniteScrolling.h>
 #import "UIViewController+NavigationEnclosure.h"
 
-@interface AwfulPrivateMessageListController () <AwfulPrivateMessageComposeViewControllerDelegate>
+@interface AwfulPrivateMessageListController ()
 
 @property (nonatomic) UIBarButtonItem *composeItem;
 
@@ -60,7 +60,6 @@
 {
     AwfulPrivateMessageComposeViewController *compose = [AwfulPrivateMessageComposeViewController new];
     compose.restorationIdentifier = @"Message compose view";
-    compose.delegate = self;
     UINavigationController *nav = [compose enclosingNavigationController];
     nav.restorationIdentifier = @"Message compose nav view";
     [self presentViewController:nav animated:YES completion:nil];
@@ -200,18 +199,6 @@ static NSString * const MessageCellIdentifier = @"Message cell";
             [[AwfulDataStack sharedDataStack] save];
         }
     }];
-}
-
-#pragma mark - AwfulPrivateMessageComposeViewControllerDelegate
-
-- (void)privateMessageComposeControllerDidSendMessage:(AwfulPrivateMessageComposeViewController *)controller
-{
-    [controller dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void)privateMessageComposeControllerDidCancel:(AwfulPrivateMessageComposeViewController *)controller
-{
-    [controller dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

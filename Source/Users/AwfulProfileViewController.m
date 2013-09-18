@@ -20,8 +20,7 @@
 #import <SVProgressHUD/SVProgressHUD.h>
 #import "UIViewController+NavigationEnclosure.h"
 
-@interface AwfulProfileViewController () <UIWebViewDelegate, UIGestureRecognizerDelegate,
-                                          AwfulPrivateMessageComposeViewControllerDelegate>
+@interface AwfulProfileViewController () <UIWebViewDelegate, UIGestureRecognizerDelegate>
 
 @property (readonly, nonatomic) UIWebView *webView;
 @property (nonatomic) AwfulUser *user;
@@ -158,7 +157,6 @@
     } else if ([service[@"service"] isEqual:AwfulServicePrivateMessage]) {
         AwfulPrivateMessageComposeViewController *compose;
         compose = [AwfulPrivateMessageComposeViewController new];
-        compose.delegate = self;
         [compose setRecipient:self.user.username];
         
         // Try setting the delay to 0 then causing this to run. That is, as a user who can send PMs,
@@ -274,18 +272,6 @@
 {
     [self updateDarkTheme];
     [self renderUser];
-}
-
-#pragma mark - AwfulPrivateMessageComposeViewControllerDelegate
-
-- (void)privateMessageComposeControllerDidCancel:(AwfulPrivateMessageComposeViewController *)controller
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void)privateMessageComposeControllerDidSendMessage:(AwfulPrivateMessageComposeViewController *)controller
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - UIGestureRecognizerDelegate

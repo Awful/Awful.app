@@ -4,11 +4,8 @@
 
 #import "AwfulComposeViewController.h"
 #import "AwfulModels.h"
-@protocol AwfulPrivateMessageComposeViewControllerDelegate;
 
 @interface AwfulPrivateMessageComposeViewController : AwfulComposeViewController
-
-@property (weak, nonatomic) id <AwfulPrivateMessageComposeViewControllerDelegate> delegate;
 
 - (void)setRecipient:(NSString *)recipient;
 - (void)setSubject:(NSString *)subject;
@@ -21,17 +18,5 @@
 // To forward a message, send this to prepopulate the subject and link the new message as a forward
 // of the forwardedMessage.
 - (void)setForwardedMessage:(AwfulPrivateMessage *)forwardedMessage;
-
-@end
-
-
-@protocol AwfulPrivateMessageComposeViewControllerDelegate <NSObject>
-@optional
-
-// Sent after successfully sending a new message.
-- (void)privateMessageComposeControllerDidSendMessage:(AwfulPrivateMessageComposeViewController *)controller;
-
-// Sent if the user cancels the message.
-- (void)privateMessageComposeControllerDidCancel:(AwfulPrivateMessageComposeViewController *)controller;
 
 @end

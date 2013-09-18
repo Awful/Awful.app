@@ -39,7 +39,7 @@
 #import "UINavigationItem+TwoLineTitle.h"
 #import "UIViewController+NavigationEnclosure.h"
 
-@interface AwfulPostsViewController () <AwfulPostsViewDelegate, AwfulJumpToPageControllerDelegate, NSFetchedResultsControllerDelegate, AwfulReplyComposeViewControllerDelegate, UIScrollViewDelegate, AwfulPrivateMessageComposeViewControllerDelegate, AwfulPostsViewSettingsControllerDelegate, AwfulPopoverControllerDelegate, UIViewControllerRestoration>
+@interface AwfulPostsViewController () <AwfulPostsViewDelegate, AwfulJumpToPageControllerDelegate, NSFetchedResultsControllerDelegate, AwfulReplyComposeViewControllerDelegate, UIScrollViewDelegate, AwfulPostsViewSettingsControllerDelegate, AwfulPopoverControllerDelegate, UIViewControllerRestoration>
 
 @property (nonatomic) AwfulThreadPage currentPage;
 
@@ -1083,7 +1083,6 @@ static char KVOContext;
         {
             AwfulPrivateMessageComposeViewController *compose;
             compose = [AwfulPrivateMessageComposeViewController new];
-            compose.delegate = self;
             [compose setRecipient:post.author.username];
             [self presentViewController:[compose enclosingNavigationController]
                                animated:YES completion:nil];
@@ -1302,18 +1301,6 @@ static char KVOContext;
     [self.postsView beginUpdates];
     [invocations makeObjectsPerformSelector:@selector(invokeWithTarget:) withObject:self];
     [self.postsView endUpdates];
-}
-
-#pragma mark - AwfulPrivateMessageComposeViewControllerDelegate
-
-- (void)privateMessageComposeControllerDidSendMessage:(AwfulPrivateMessageComposeViewController *)controller
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void)privateMessageComposeControllerDidCancel:(AwfulPrivateMessageComposeViewController *)controller
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - AwfulPostsViewSettingsControllerDelegate
