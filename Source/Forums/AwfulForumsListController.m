@@ -17,7 +17,7 @@
 
 @property (nonatomic) NSDate *lastRefresh;
 @property (nonatomic) NSMutableArray *favoriteForums;
-@property (nonatomic) AwfulForumTreeController *treeController;
+@property (strong, nonatomic) AwfulForumTreeController *treeController;
 @property (nonatomic) BOOL userDrivenChange;
 
 @end
@@ -39,14 +39,20 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDidChange:)
                                                  name:AwfulSettingsDidChangeNotification
                                                object:nil];
-    self.treeController = [AwfulForumTreeController new];
-    self.treeController.delegate = self;
     return self;
 }
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
     return [self init];
+}
+
+- (AwfulForumTreeController *)treeController
+{
+    if (_treeController) return _treeController;
+    _treeController = [AwfulForumTreeController new];
+    _treeController.delegate = self;
+    return _treeController;
 }
 
 - (NSArray *)fetchFavoriteForumsWithIDsFromSettings
@@ -507,5 +513,23 @@ moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
 {
     [self.tableView endUpdates];
 }
+
+#pragma mark State preservation and restoration
+
+- (void)encodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super encodeRestorableStateWithCoder:coder];
+    [coder encodeObject:self.treeController forKey:TreeControllerKey];
+}
+
+- (void)decodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super decodeRestorableStateWithCoder:coder];
+    self.treeController = [coder decodeObjectForKey:TreeControllerKey];
+    self.treeController.delegate = self;
+    [self.tableView reloadData];
+}
+
+static NSString * const TreeControllerKey = @"AwfulForumTreeController";
 
 @end

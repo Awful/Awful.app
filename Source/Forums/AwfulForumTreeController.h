@@ -9,7 +9,7 @@
 /**
  * An AwfulForumTreeController manages the hierarchy of category -> forum -> subforum, translating to and from a flat list of visible forums and remembering whether each forum is expanded.
  */
-@interface AwfulForumTreeController : NSObject
+@interface AwfulForumTreeController : NSObject <NSCoding>
 
 /**
  * Returns the number of categories.

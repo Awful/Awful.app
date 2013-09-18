@@ -42,6 +42,36 @@
     return self;
 }
 
+- (id)initWithCoder:(NSCoder *)coder
+{
+    if (!(self = [self init])) return nil;
+    NSSet *hiddenForumIDs = [coder decodeObjectForKey:HiddenForumsKey];
+    [_frc.sections enumerateObjectsUsingBlock:^(id <NSFetchedResultsSectionInfo> section, NSUInteger i, BOOL *stop) {
+        NSMutableIndexSet *hiddenSet = _hiddenForumsInCategory[i];
+        [section.objects enumerateObjectsUsingBlock:^(AwfulForum *forum, NSUInteger forumIndex, BOOL *stop) {
+            if ([hiddenForumIDs containsObject:forum.forumID]) {
+                [hiddenSet addIndex:forumIndex];
+            } else {
+                [hiddenSet removeIndex:forumIndex];
+            }
+        }];
+    }];
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    NSMutableSet *hiddenForumIDs = [NSMutableSet new];
+    [_frc.sections enumerateObjectsUsingBlock:^(id <NSFetchedResultsSectionInfo> section, NSUInteger i, BOOL *stop) {
+        NSIndexSet *hiddenSet = _hiddenForumsInCategory[i];
+        NSArray *forums = [section.objects objectsAtIndexes:hiddenSet];
+        [hiddenForumIDs addObjectsFromArray:[forums valueForKey:@"forumID"]];
+    }];
+    [coder encodeObject:[hiddenForumIDs copy] forKey:HiddenForumsKey];
+}
+
+static NSString * const HiddenForumsKey = @"HiddenForums";
+
 - (NSMutableIndexSet *)initialHiddenForumsWithSection:(id <NSFetchedResultsSectionInfo>)section
 {
     NSMutableIndexSet *hiddenForums = [NSMutableIndexSet new];

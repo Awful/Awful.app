@@ -49,8 +49,9 @@
         if (![oldMasterViewController isEqual:newMasterViewController]) {
             [self replaceMasterViewController:oldMasterViewController withViewController:newMasterViewController];
         }
-        UIViewController *newDetailViewController = _viewControllers.count > 1 ? _viewControllers[1] : nil;
-        [self replaceDetailViewController:oldDetailViewController withViewController:newDetailViewController];
+        if (_viewControllers.count > 1) {
+            [self replaceDetailViewController:oldDetailViewController withViewController:_viewControllers[1]];
+        }
     }
 }
 
@@ -200,14 +201,14 @@
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super encodeRestorableStateWithCoder:coder];
-    [coder encodeObject:self.detailViewController forKey:DetailViewControllerKey];
+    [coder encodeObject:self.viewControllers forKey:ViewControllersKey];
     [coder encodeBool:self.detailExpanded forKey:DetailExpandedKey];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super decodeRestorableStateWithCoder:coder];
-    self.detailViewController = [coder decodeObjectForKey:DetailViewControllerKey];
+    self.viewControllers = [coder decodeObjectForKey:ViewControllersKey];
     self.detailExpanded = [coder decodeBoolForKey:DetailExpandedKey];
 }
 
@@ -219,7 +220,7 @@
     [self ensureToggleDetailExpandedLeftBarButtonItem];
 }
 
-static NSString * const DetailViewControllerKey = @"AwfulDetailViewController";
+static NSString * const ViewControllersKey = @"AwfulViewControllers";
 static NSString * const DetailExpandedKey = @"AwfulDetailExpanded";
 
 @end
