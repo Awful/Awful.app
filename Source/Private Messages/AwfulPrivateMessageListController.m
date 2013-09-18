@@ -58,10 +58,12 @@
 
 - (void)didTapCompose
 {
-    AwfulPrivateMessageComposeViewController *compose;
-    compose = [AwfulPrivateMessageComposeViewController new];
+    AwfulPrivateMessageComposeViewController *compose = [AwfulPrivateMessageComposeViewController new];
+    compose.restorationIdentifier = @"Message compose view";
     compose.delegate = self;
-    [self presentViewController:[compose enclosingNavigationController] animated:YES completion:nil];
+    UINavigationController *nav = [compose enclosingNavigationController];
+    nav.restorationIdentifier = @"Message compose nav view";
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (void)didGetNewPMCount:(NSNotification *)notification

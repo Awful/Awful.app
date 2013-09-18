@@ -15,4 +15,23 @@
     return @"empty-pm-tag";
 }
 
+#pragma mark NSCoding
+
+- (id)initWithCoder:(NSCoder *)coder
+{
+    if (!(self = [self init])) return nil;
+    _imageName = [coder decodeObjectForKey:ImageNameKey];
+    _composeID = [coder decodeObjectForKey:ComposeIDKey];
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [coder encodeObject:self.imageName forKey:ImageNameKey];
+    [coder encodeObject:self.composeID forKey:ComposeIDKey];
+}
+
+static NSString * const ImageNameKey = @"Image name";
+static NSString * const ComposeIDKey = @"Compose ID";
+
 @end

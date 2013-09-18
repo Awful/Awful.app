@@ -7,7 +7,7 @@
 #import "AwfulKeyboardBar.h"
 #import "ImgurHTTPClient.h"
 
-@interface AwfulComposeViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPopoverControllerDelegate>
+@interface AwfulComposeViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPopoverControllerDelegate, UIViewControllerRestoration>
 
 @property (nonatomic) AwfulTextView *textView;
 @property (nonatomic) AwfulKeyboardBar *bbcodeBar;
@@ -177,6 +177,7 @@ static NSArray * ImagePlaceholderResultsWithMessageBody(NSString *messageBody)
 {
     if (!(self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) return nil;
     _images = [NSMutableDictionary new];
+    self.restorationClass = self.class;
     self.navigationItem.rightBarButtonItem = self.sendButton;
     self.navigationItem.leftBarButtonItem = self.cancelButton;
     self.modalPresentationStyle = UIModalPresentationPageSheet;
@@ -379,5 +380,28 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     if (![popoverController isEqual:self.pickerPopover]) return;
     [self.textView becomeFirstResponder];
 }
+
+#pragma mark State preservation and restoration
+
++ (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
+{
+    AwfulComposeViewController *composeView = [self new];
+    composeView.restorationIdentifier = identifierComponents.lastObject;
+    return composeView;
+}
+
+- (void)encodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super encodeRestorableStateWithCoder:coder];
+    [coder encodeObject:self.textView.attributedText forKey:TextKey];
+}
+
+- (void)decodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super decodeRestorableStateWithCoder:coder];
+    self.textView.attributedText = [coder decodeObjectForKey:TextKey];
+}
+
+static NSString * const TextKey = @"AwfulText";
 
 @end

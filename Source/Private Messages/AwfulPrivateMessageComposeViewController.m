@@ -315,12 +315,6 @@
     [self updateTitleWithSubjectField:self.subjectField.textField];
     UIImage *emptyImage = [UIImage imageNamed:[AwfulThreadTag emptyPrivateMessageTagImageName]];
     [self.postIconButton setImage:emptyImage forState:UIControlStateNormal];
-    [[AwfulHTTPClient client] listAvailablePrivateMessagePostIconsAndThen:^(NSError *error,
-                                                                            NSArray *postIcons)
-     {
-         self.availablePostIcons = postIcons;
-         [self.postIconPicker reloadData];
-     }];
     self.topView.backgroundColor = [UIColor colorWithWhite:0.8 alpha:1];
     self.postIconButton.backgroundColor = [UIColor whiteColor];
     self.toField.backgroundColor = [UIColor whiteColor];
@@ -331,6 +325,15 @@
     self.subjectField.label.textColor = [UIColor grayColor];
     self.subjectField.label.backgroundColor = [UIColor whiteColor];
     self.subjectField.textField.textColor = [UIColor blackColor];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [[AwfulHTTPClient client] listAvailablePrivateMessagePostIconsAndThen:^(NSError *error, NSArray *postIcons) {
+        self.availablePostIcons = postIcons;
+        [self.postIconPicker reloadData];
+    }];
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
@@ -402,5 +405,27 @@
 {
     [self updateSendButton];
 }
+
+#pragma mark State preservation and restoration
+
+- (void)encodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super encodeRestorableStateWithCoder:coder];
+    [coder encodeObject:self.recipient forKey:RecipientKey];
+    [coder encodeObject:self.subject forKey:SubjectKey];
+    [coder encodeObject:self.postIcon forKey:PostIconKey];
+}
+
+- (void)decodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super decodeRestorableStateWithCoder:coder];
+    self.recipient = [coder decodeObjectForKey:RecipientKey];
+    self.subject = [coder decodeObjectForKey:SubjectKey];
+    self.postIcon = [coder decodeObjectForKey:PostIconKey];
+}
+
+static NSString * const RecipientKey = @"AwfulRecipient";
+static NSString * const SubjectKey = @"AwfulSubject";
+static NSString * const PostIconKey = @"AwfulPostIcon";
 
 @end

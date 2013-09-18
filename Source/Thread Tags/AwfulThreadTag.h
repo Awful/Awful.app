@@ -4,7 +4,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface AwfulThreadTag : NSObject
+@interface AwfulThreadTag : NSObject <NSCoding>
 
 @property (copy, nonatomic) NSString *imageName;
 @property (copy, nonatomic) NSString *composeID;
