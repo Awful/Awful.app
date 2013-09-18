@@ -244,7 +244,7 @@ static NSArray * ImagePlaceholderResultsWithMessageBody(NSString *messageBody)
                          completion:(void (^)(BOOL finished))completion
 {
     UIViewAnimationCurve curve = [userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
-    // TODO this animation is busted on iOS 7 with a non-zero delay. It just bounces continuously behind the keyboard.
+    // TODO this animation is busted on iOS 7. It just bounces continuously behind the keyboard.
     [UIView animateWithDuration:0
                           delay:0
                         options:AnimationOptionsWithAnimationCurve(curve)
