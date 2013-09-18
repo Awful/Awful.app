@@ -15,9 +15,6 @@
 @property (weak, nonatomic) id <ImgurHTTPClientCancelToken> imageUploadCancelToken;
 @property (nonatomic) UIPopoverController *pickerPopover;
 
-@property (copy, nonatomic) NSString *savedReplyContents;
-@property (nonatomic) NSRange savedSelectedRange;
-
 @property (nonatomic) BOOL viewIsDisappearing;
 
 @end
