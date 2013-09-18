@@ -327,6 +327,8 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    [self updateSendButton];
+    [self updateTitleWithSubjectField:self.subjectField.textField];
     [[AwfulHTTPClient client] listAvailablePrivateMessagePostIconsAndThen:^(NSError *error, NSArray *postIcons) {
         self.availablePostIcons = postIcons;
         [self.postIconPicker reloadData];
