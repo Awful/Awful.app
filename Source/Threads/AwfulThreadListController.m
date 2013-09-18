@@ -26,6 +26,7 @@
 
 @property (nonatomic) NSMutableSet *cellsMissingThreadTags;
 @property (nonatomic) UIBarButtonItem *newThreadButtonItem;
+@property (strong, nonatomic) AwfulThreadComposeViewController *composeViewController;
 
 @end
 
@@ -51,11 +52,12 @@
 
 - (void)didTapNewThreadButtonItem
 {
-    AwfulThreadComposeViewController *compose = [[AwfulThreadComposeViewController alloc]
-                                                 initWithForum:self.forum];
-    compose.delegate = self;
-    [self presentViewController:[compose enclosingNavigationController] animated:YES
-                     completion:nil];
+    self.composeViewController = [[AwfulThreadComposeViewController alloc] initWithForum:self.forum];
+    self.composeViewController.restorationIdentifier = @"Compose thread view";
+    self.composeViewController.delegate = self;
+    UINavigationController *nav = [self.composeViewController enclosingNavigationController];
+    nav.restorationIdentifier = @"Compose thread navigation view";
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (void)dealloc
@@ -453,6 +455,7 @@ static UIImage * ThreadRatingImageForRating(NSNumber *boxedRating)
 - (void)threadComposeController:(AwfulThreadComposeViewController *)controller
             didPostThreadWithID:(NSString *)threadID
 {
+    self.composeViewController = nil;
     [self dismissViewControllerAnimated:YES completion:nil];
     AwfulPostsViewController *page = [AwfulPostsViewController new];
     page.restorationIdentifier = @"AwfulPostsViewController";
@@ -464,6 +467,7 @@ static UIImage * ThreadRatingImageForRating(NSNumber *boxedRating)
 - (void)threadComposeControllerDidCancel:(AwfulThreadComposeViewController *)controller
 {
     // TODO save draft?
+    self.composeViewController = nil;
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -481,14 +485,18 @@ static UIImage * ThreadRatingImageForRating(NSNumber *boxedRating)
 {
     [super encodeRestorableStateWithCoder:coder];
     [coder encodeObject:self.forum.forumID forKey:ForumIDKey];
+    [coder encodeObject:self.composeViewController forKey:ComposeViewControllerKey];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super decodeRestorableStateWithCoder:coder];
     self.forum = [AwfulForum firstMatchingPredicate:@"forumID = %@", [coder decodeObjectForKey:ForumIDKey]];
+    self.composeViewController = [coder decodeObjectForKey:ComposeViewControllerKey];
+    self.composeViewController.delegate = self;
 }
 
 static NSString * const ForumIDKey = @"AwfulForumID";
+static NSString * const ComposeViewControllerKey = @"AwfulComposeViewController";
 
 @end

@@ -52,6 +52,11 @@
     return self;
 }
 
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    return [self initWithForum:nil];
+}
+
 - (void)resetTitle
 {
     self.title = @"Post New Thread";
@@ -285,6 +290,13 @@
 {
     [super viewDidLoad];
     [self updatePostIconButtonImage];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self subjectFieldDidChange:self.subjectField.textField];
+    [self enableSendButtonIfReady];
     [[AwfulHTTPClient client] listAvailablePostIconsForForumWithID:self.forum.forumID
                                                            andThen:^(NSError *error,
                                                                      NSArray *postIcons,
@@ -296,13 +308,7 @@
          self.secondaryPostIcon = self.availableSecondaryPostIcons[0];
          self.secondaryIconKey = secondaryIconKey;
          [self.postIconPicker reloadData];
-    }];
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    [self enableSendButtonIfReady];
+     }];
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
@@ -401,5 +407,31 @@ didSelectSecondaryIconAtIndex:(NSInteger)index
 {
     [self enableSendButtonIfReady];
 }
+
+#pragma mark State preservation and restoration
+
+- (void)encodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super encodeRestorableStateWithCoder:coder];
+    [coder encodeObject:self.forum.forumID forKey:ForumIDKey];
+    [coder encodeObject:self.subject forKey:SubjectKey];
+    [coder encodeObject:self.postIcon forKey:PostIconKey];
+    [coder encodeObject:self.secondaryPostIcon forKey:SecondaryPostIconKey];
+}
+
+- (void)decodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super decodeRestorableStateWithCoder:coder];
+    NSString *forumID = [coder decodeObjectForKey:ForumIDKey];
+    self.forum = [AwfulForum firstMatchingPredicate:@"forumID = %@", forumID];
+    self.subject = [coder decodeObjectForKey:SubjectKey];
+    self.postIcon = [coder decodeObjectForKey:PostIconKey];
+    self.secondaryPostIcon = [coder decodeObjectForKey:SecondaryPostIconKey];
+}
+
+static NSString * const ForumIDKey = @"AwfulForumID";
+static NSString * const SubjectKey = @"AwfulSubject";
+static NSString * const PostIconKey = @"AwfulPostIcon";
+static NSString * const SecondaryPostIconKey = @"AwfulSecondaryPostIcon";
 
 @end
