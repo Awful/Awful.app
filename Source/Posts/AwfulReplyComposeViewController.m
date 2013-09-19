@@ -256,7 +256,7 @@ static NSURL *CachedImageDirectoryForIdentifier(id identifier)
     NSURL *cacheDirectory = [[NSFileManager defaultManager] cachesDirectory];
     NSURL *imageCache = [cacheDirectory URLByAppendingPathComponent:(NSString *)imageCacheIdentifier];
     imageCache = [imageCache URLByStandardizingPath];
-    if ([[imageCache pathComponents] count] <= [[cacheDirectory pathComponents] count]) return;
+    if (imageCache.pathComponents.count <= cacheDirectory.pathComponents.count) return;
     NSError *error;
     BOOL ok = [[NSFileManager defaultManager] removeItemAtURL:imageCache error:&error];
     if (!ok) {
