@@ -680,21 +680,11 @@
 {
     AwfulProfileViewController *profile = [AwfulProfileViewController new];
     profile.userID = user.userID;
-    UIBarButtonItem *item;
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                                             target:self
-                                                             action:@selector(doneWithProfile)];
-        profile.navigationItem.leftBarButtonItem = item;
-        [self presentViewController:[profile enclosingNavigationController]
-                           animated:YES completion:nil];
-    } else {
-        profile.hidesBottomBarWhenPushed = YES;
-        item = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleBordered
-                                               target:nil action:NULL];
-        self.navigationItem.backBarButtonItem = item;
-        [self.navigationController pushViewController:profile animated:YES];
-    }
+    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                          target:self
+                                                                          action:@selector(doneWithProfile)];
+    profile.navigationItem.leftBarButtonItem = item;
+    [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
 }
 
 - (void)doneWithProfile
@@ -822,14 +812,6 @@
     [self.navigationController setToolbarHidden:NO animated:NO];
 }
 
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    // When the built-in browser or a user profile gets pushed, we change the back button. This
-    // resets it to the default.
-    self.navigationItem.backBarButtonItem = nil;
-}
-
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
@@ -943,13 +925,15 @@ static char KVOContext;
 {
     AwfulBrowserViewController *browser = [AwfulBrowserViewController new];
     browser.URL = url;
-    browser.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:browser animated:YES];
-    UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithTitle:@"Back"
-                                                             style:UIBarButtonItemStyleBordered
-                                                            target:nil
-                                                            action:NULL];
-    self.navigationItem.backBarButtonItem = back;
+    browser.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                             target:self
+                                                                                             action:@selector(doneWithBrowser)];
+    [self presentViewController:[browser enclosingNavigationController] animated:YES completion:nil];
+}
+
+- (void)doneWithBrowser
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)postsView:(AwfulPostsView *)postsView didReceiveSingleTapAtPoint:(CGPoint)point
