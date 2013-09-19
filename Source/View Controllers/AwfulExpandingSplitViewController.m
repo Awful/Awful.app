@@ -81,6 +81,7 @@
     [_masterViewControllerConstraints removeAllObjects];
     [oldMasterViewController.view removeFromSuperview];
     newMasterViewController.view.translatesAutoresizingMaskIntoConstraints = NO;
+    newMasterViewController.view.clipsToBounds = YES;
     [self.view insertSubview:newMasterViewController.view atIndex:0];
     NSDictionary *views = @{ @"master": newMasterViewController.view };
     [_masterViewControllerConstraints addObjectsFromArray:
@@ -111,6 +112,7 @@
     }
     [oldDetailViewController.view removeFromSuperview];
     newDetailViewController.view.translatesAutoresizingMaskIntoConstraints = NO;
+    newDetailViewController.view.clipsToBounds = YES;
     [self.view addSubview:newDetailViewController.view];
     UIViewController *master = self.viewControllers[0];
     NSDictionary *views = @{ @"master": master.view,
