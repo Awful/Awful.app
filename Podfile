@@ -1,4 +1,4 @@
-platform :ios, '6.0'
+platform :ios, '7.0'
 xcodeproj 'Xcode/Awful'
 link_with ['Awful', 'Imgur API Test']
 
@@ -6,8 +6,9 @@ pod 'AFNetworking', '1.3.0'
 pod 'GRMustache', '6.7.3', :inhibit_warnings => true
 pod 'JLRoutes', '1.2'
 pod 'PocketAPI', '1.0.2'
-pod 'SVProgressHUD', '0.9'
+pod 'SVProgressHUD', '0.9', :inhibit_warnings => true
 pod 'SVPullToRefresh', '0.4.1'
+pod 'WYPopoverController', '0.1.4'
 
 # Custom text atop the "Acknowledgements" Settings screen.
 class ::Pod::Generator::Acknowledgements
