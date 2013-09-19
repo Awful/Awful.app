@@ -57,6 +57,10 @@ imageCacheIdentifier:(id)imageCacheIdentifier
         self.imageCacheIdentifier = imageCacheIdentifier;
         [self holdPlacesForCachedImages];
     }
+    if ([post.thread.forum.forumID isEqualToString:@"219"]) {
+        self.textView.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        self.textView.autocorrectionType = UITextAutocorrectionTypeNo;
+    }
 }
 
 - (void)replyToThread:(AwfulThread *)thread
@@ -70,6 +74,10 @@ imageCacheIdentifier:(id)imageCacheIdentifier
     if (imageCacheIdentifier) {
         self.imageCacheIdentifier = imageCacheIdentifier;
         [self holdPlacesForCachedImages];
+    }
+    if ([self.thread.forum.forumID isEqualToString:@"219"]) {
+        self.textView.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        self.textView.autocorrectionType = UITextAutocorrectionTypeNo;
     }
 }
 
