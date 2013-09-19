@@ -207,7 +207,6 @@
 		1CBDB5FB1625E7320004BDF4 /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7C613BE4ECB00B9D271 /* XPathQuery.m */; };
 		1CBDB5FC1625E7440004BDF4 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
 		1CBDB5FF162600D40004BDF4 /* NSManagedObject+Awful.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5FE162600D40004BDF4 /* NSManagedObject+Awful.m */; };
-		1CBEE26317389DB300C4884A /* AwfulPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBEE26217389DB300C4884A /* AwfulPopoverController.m */; };
 		1CC38BB3160D8C5900C35A11 /* AwfulCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC38BB2160D8C5800C35A11 /* AwfulCategory.m */; };
 		1CC38BB6160D8C6000C35A11 /* _AwfulCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC38BB5160D8C6000C35A11 /* _AwfulCategory.m */; };
 		1CC7801C1612D8AF002AF958 /* AwfulForumsListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780171612D8AF002AF958 /* AwfulForumsListController.m */; };
@@ -602,8 +601,6 @@
 		1CBDB5F51625BACE0004BDF4 /* AwfulParsing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulParsing.m; sourceTree = "<group>"; };
 		1CBDB5FD162600D30004BDF4 /* NSManagedObject+Awful.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+Awful.h"; sourceTree = "<group>"; };
 		1CBDB5FE162600D40004BDF4 /* NSManagedObject+Awful.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObject+Awful.m"; sourceTree = "<group>"; };
-		1CBEE26117389DB300C4884A /* AwfulPopoverController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPopoverController.h; sourceTree = "<group>"; };
-		1CBEE26217389DB300C4884A /* AwfulPopoverController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPopoverController.m; sourceTree = "<group>"; };
 		1CC38BB1160D8C5800C35A11 /* AwfulCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCategory.h; sourceTree = "<group>"; };
 		1CC38BB2160D8C5800C35A11 /* AwfulCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCategory.m; sourceTree = "<group>"; };
 		1CC38BB4160D8C6000C35A11 /* _AwfulCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _AwfulCategory.h; sourceTree = "<group>"; };
@@ -924,8 +921,6 @@
 				1CE2D9C3166ABD0D0024AC1C /* AwfulFetchedTableViewController.h */,
 				1CE2D9C4166ABD0D0024AC1C /* AwfulFetchedTableViewController.m */,
 				1CE2D9C5166ABD0D0024AC1C /* AwfulFetchedTableViewControllerSubclass.h */,
-				1CBEE26117389DB300C4884A /* AwfulPopoverController.h */,
-				1CBEE26217389DB300C4884A /* AwfulPopoverController.m */,
 				1CE8FDF51703D648006A3B84 /* AwfulSemiModalViewController.h */,
 				1CE8FDF61703D648006A3B84 /* AwfulSemiModalViewController.m */,
 				1C5F701017D9B2BD005ABD6F /* AwfulTabBarButton.h */,
@@ -2190,7 +2185,6 @@
 				1C5F700C17D87C0C005ABD6F /* AwfulVerticalTabBar.m in Sources */,
 				1C28B3591729F38400254EE7 /* AwfulIconActionCell.m in Sources */,
 				F432C2D91734572000012A88 /* AwfulPocketStatusTransformer.m in Sources */,
-				1CBEE26317389DB300C4884A /* AwfulPopoverController.m in Sources */,
 				1C00E0A3173973FA008895E7 /* AwfulScreenCoverView.m in Sources */,
 				1C00E0AA1739F91E008895E7 /* AwfulPageBarBackgroundView.m in Sources */,
 				1C7D22EF173B3335008A802C /* InstapaperAPIClient.m in Sources */,

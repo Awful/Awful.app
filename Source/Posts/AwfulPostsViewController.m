@@ -17,7 +17,6 @@
 #import "AwfulLoadingView.h"
 #import "AwfulModels.h"
 #import "AwfulPageTopBar.h"
-#import "AwfulPopoverController.h"
 #import "AwfulPostsView.h"
 #import "AwfulPostsViewSettingsController.h"
 #import "AwfulPostViewModel.h"
@@ -38,8 +37,9 @@
 #import <SVProgressHUD/SVProgressHUD.h>
 #import "UINavigationItem+TwoLineTitle.h"
 #import "UIViewController+NavigationEnclosure.h"
+#import <WYPopoverController/WYPopoverController.h>
 
-@interface AwfulPostsViewController () <AwfulPostsViewDelegate, AwfulJumpToPageControllerDelegate, NSFetchedResultsControllerDelegate, AwfulReplyComposeViewControllerDelegate, UIScrollViewDelegate, AwfulPostsViewSettingsControllerDelegate, AwfulPopoverControllerDelegate, UIViewControllerRestoration>
+@interface AwfulPostsViewController () <AwfulPostsViewDelegate, AwfulJumpToPageControllerDelegate, NSFetchedResultsControllerDelegate, AwfulReplyComposeViewControllerDelegate, UIScrollViewDelegate, AwfulPostsViewSettingsControllerDelegate, WYPopoverControllerDelegate, UIViewControllerRestoration>
 
 @property (nonatomic) AwfulThreadPage currentPage;
 
@@ -49,7 +49,7 @@
 
 @property (nonatomic) AwfulPageTopBar *topBar;
 @property (strong, nonatomic) AwfulPostsView *postsView;
-@property (nonatomic) AwfulPopoverController *jumpToPagePopover;
+@property (strong, nonatomic) WYPopoverController *jumpToPagePopover;
 @property (nonatomic) AwfulPullToRefreshControl *pullUpToRefreshControl;
 @property (nonatomic) UIBarButtonItem *composeItem;
 @property (copy, nonatomic) NSString *ongoingReplyText;
@@ -214,13 +214,13 @@
         else if (self.currentPage == AwfulThreadPageLast && relevantNumberOfPages > 0) {
             jump.selectedPage = relevantNumberOfPages;
         }
-        self.jumpToPagePopover = [[AwfulPopoverController alloc]
-                                  initWithContentViewController:jump];
+        UINavigationController *nav = [jump enclosingNavigationController];
+        self.jumpToPagePopover = [[WYPopoverController alloc] initWithContentViewController:nav];
         self.jumpToPagePopover.delegate = self;
     }
-    // TODO this is dumb, present from the item.
-    UIToolbar *toolbar = self.navigationController.toolbar;
-    [self.jumpToPagePopover presentPopoverFromRect:toolbar.frame inView:toolbar.superview animated:NO];
+    [self.jumpToPagePopover presentPopoverFromBarButtonItem:sender
+                                   permittedArrowDirections:WYPopoverArrowDirectionAny
+                                                   animated:YES];
 }
 
 - (UIBarButtonItem *)forwardItem
@@ -891,12 +891,6 @@ static char KVOContext;
     }
 }
 
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
-                                duration:(NSTimeInterval)duration
-{
-    [self.jumpToPagePopover dismissPopoverAnimated:NO];
-}
-
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
                                          duration:(NSTimeInterval)duration
 {
@@ -1242,9 +1236,9 @@ static char KVOContext;
     self.jumpToPagePopover = nil;
 }
 
-#pragma mark - AwfulPopoverControllerDelegate
+#pragma mark - WYPopoverControllerDelegate
 
-- (void)popoverControllerDidDismissPopover:(AwfulPopoverController *)popover
+- (void)popoverControllerDidDismiss:(WYPopoverController *)popoverController
 {
     self.jumpToPagePopover = nil;
 }
