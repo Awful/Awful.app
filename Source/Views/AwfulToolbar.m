@@ -9,8 +9,7 @@
 - (id)initWithFrame:(CGRect)frame
 {
     if (!(self = [super initWithFrame:frame])) return nil;
-    self.barStyle = UIBarStyleBlackTranslucent;
-    self.tintColor = [UIColor whiteColor];
+    self.tintColor = [UIColor blackColor];
     return self;
 }
 
