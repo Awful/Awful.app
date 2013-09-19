@@ -211,7 +211,7 @@ imageCacheIdentifier:(id)imageCacheIdentifier
     }
 }
 
-- (id)imageCacheIdentifier
+- (id <NSCoding>)imageCacheIdentifier
 {
     if ([self.images count] == 0 || [self.cachedImages count] == [self.images count]) {
         return _imageCacheIdentifier;
@@ -251,10 +251,10 @@ static NSURL *CachedImageDirectoryForIdentifier(id identifier)
     return [cacheDirectory URLByAppendingPathComponent:identifier];
 }
 
-+ (void)deleteImageCacheWithIdentifier:(id)imageCacheIdentifier
++ (void)deleteImageCacheWithIdentifier:(id <NSCoding>)imageCacheIdentifier
 {
     NSURL *cacheDirectory = [[NSFileManager defaultManager] cachesDirectory];
-    NSURL *imageCache = [cacheDirectory URLByAppendingPathComponent:imageCacheIdentifier];
+    NSURL *imageCache = [cacheDirectory URLByAppendingPathComponent:(NSString *)imageCacheIdentifier];
     imageCache = [imageCache URLByStandardizingPath];
     if ([[imageCache pathComponents] count] <= [[cacheDirectory pathComponents] count]) return;
     NSError *error;

@@ -32,10 +32,10 @@ imageCacheIdentifier:(id)imageCacheIdentifier;
 // Caches folder, so iOS can conceivably erase its contents with no recourse.
 //
 // Returns an opaque object that can be used when recreating a reply or to delete the cache.
-- (id)imageCacheIdentifier;
+- (id <NSCoding>)imageCacheIdentifier;
 
 // Deletes any cached images stored with the given identifier.
-+ (void)deleteImageCacheWithIdentifier:(id)imageCacheIdentifier;
++ (void)deleteImageCacheWithIdentifier:(id <NSCoding>)imageCacheIdentifier;
 
 @end
 
