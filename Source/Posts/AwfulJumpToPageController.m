@@ -60,7 +60,7 @@
 - (UIBarButtonItem *)jumpToPageItem
 {
     if (_jumpToPageItem) return _jumpToPageItem;
-    _jumpToPageItem = [[UIBarButtonItem alloc] initWithTitle:@"Jump"
+    _jumpToPageItem = [[UIBarButtonItem alloc] initWithTitle:@"Go"
                                                        style:UIBarButtonItemStyleDone
                                                       target:self
                                                       action:@selector(didTapJumpToPage)];
