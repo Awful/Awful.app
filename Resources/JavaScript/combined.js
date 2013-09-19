@@ -73,7 +73,7 @@ Awful.showAvatars = function(on){
   Awful._showAvatars = !!on
   if (on) {
     $('#posts > article > header[data-avatar]').each(function(){
-      $('<img>', { src: $(this).data('avatar'), alt: '', class: 'avatar' }).insertBefore($(this).children('button'))
+      $('<img>', { src: $(this).data('avatar'), alt: '', class: 'avatar' }).prependTo($(this))
       $(this).data('avatar', null)
       $(this).closest('article').removeClass('no-avatar')
     })
