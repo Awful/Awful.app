@@ -37,7 +37,7 @@ static UIColor * SelectedColor()
 - (id)initWithFrame:(CGRect)frame
 {
     if (CGRectEqualToRect(frame, CGRectZero)) {
-        frame = CGRectMake(0, 0, 0, 32);
+        frame = CGRectMake(0, 0, 32, 32);
     }
     if (!(self = [super initWithFrame:frame])) return nil;
     self.layer.cornerRadius = 10;

@@ -6,6 +6,17 @@
 #import "AwfulThemeButton.h"
 
 @implementation AwfulThemePicker
+{
+    NSMutableArray *_constraints;
+}
+
+- (id)initWithFrame:(CGRect)frame
+{
+    if (!(self = [super initWithFrame:frame])) return nil;
+    _selectedThemeIndex = UISegmentedControlNoSegment;
+    _constraints = [NSMutableArray new];
+    return self;
+}
 
 - (void)setSelectedThemeIndex:(NSInteger)index
 {
@@ -24,6 +35,7 @@
 - (void)insertThemeWithColor:(UIColor *)color atIndex:(NSInteger)index
 {
     AwfulThemeButton *button = [AwfulThemeButton new];
+    button.translatesAutoresizingMaskIntoConstraints = NO;
     button.backgroundColor = color;
     button.accessibilityLabel = color.accessibilityLabel;
     [button addTarget:self action:@selector(didTapThemeButton:)
@@ -32,7 +44,10 @@
         index = [self.subviews count];
     }
     [self insertSubview:button atIndex:index];
-    [self setNeedsLayout];
+    [self invalidateIntrinsicContentSize];
+    [self removeConstraints:_constraints];
+    [_constraints removeAllObjects];
+    [self setNeedsUpdateConstraints];
 }
 
 - (void)didTapThemeButton:(UIButton *)button
@@ -41,28 +56,49 @@
     [self sendActionsForControlEvents:UIControlEventValueChanged];
 }
 
-#pragma mark - UIView
+static const CGFloat Padding = 8;
 
-- (id)initWithFrame:(CGRect)frame
+- (CGSize)intrinsicContentSize
 {
-    if (!(self = [super initWithFrame:frame])) return nil;
-    _selectedThemeIndex = UISegmentedControlNoSegment;
-    return self;
+    NSUInteger numberOfButtons = self.subviews.count;
+    if (numberOfButtons == 0) return CGSizeZero;
+    UIView *button = self.subviews.firstObject;
+    return CGSizeMake(CGRectGetWidth(button.frame) * numberOfButtons + Padding * (numberOfButtons - 1),
+                      CGRectGetHeight(button.frame));
 }
 
-- (void)layoutSubviews
+- (void)updateConstraints
 {
-    NSInteger buttonCount = [self.subviews count];
-    NSInteger separatorCount = buttonCount - 1;
-    const CGFloat separation = 8;
-    CGFloat buttonWidth = floorf((CGRectGetWidth(self.bounds) - separation * separatorCount) / buttonCount);
-    CGFloat x = 0;
-    CGFloat y = CGRectGetMidY(self.bounds) - CGRectGetHeight([[self.subviews lastObject] bounds]) / 2;
-    for (NSInteger i = 0; i < buttonCount; i++) {
-        UIView *subview = self.subviews[i];
-        subview.frame = CGRectMake(x, y, buttonWidth, CGRectGetHeight(subview.bounds));
-        x += buttonWidth + separation;
+    [super updateConstraints];
+    UIView *previous;
+    for (UIView *subview in self.subviews) {
+        [_constraints addObjectsFromArray:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[subview]|"
+                                                 options:0
+                                                 metrics:nil
+                                                   views:NSDictionaryOfVariableBindings(subview)]];
+        if (!previous) {
+            [_constraints addObject:
+             [NSLayoutConstraint constraintWithItem:subview
+                                          attribute:NSLayoutAttributeLeft
+                                          relatedBy:NSLayoutRelationEqual
+                                             toItem:self
+                                          attribute:NSLayoutAttributeLeft
+                                         multiplier:1
+                                           constant:0]];
+        } else {
+            [_constraints addObject:
+             [NSLayoutConstraint constraintWithItem:subview
+                                          attribute:NSLayoutAttributeLeft
+                                          relatedBy:NSLayoutRelationEqual
+                                             toItem:previous
+                                          attribute:NSLayoutAttributeRight
+                                         multiplier:1
+                                           constant:Padding]];
+        }
+        previous = subview;
     }
+    [self addConstraints:_constraints];
 }
 
 @end

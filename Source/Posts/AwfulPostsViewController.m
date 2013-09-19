@@ -16,9 +16,9 @@
 #import "AwfulJumpToPageController.h"
 #import "AwfulLoadingView.h"
 #import "AwfulModels.h"
+#import "AwfulPageSettingsViewController.h"
 #import "AwfulPageTopBar.h"
 #import "AwfulPostsView.h"
-#import "AwfulPostsViewSettingsController.h"
 #import "AwfulPostViewModel.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulPrivateMessageComposeViewController.h"
@@ -39,7 +39,7 @@
 #import "UIViewController+NavigationEnclosure.h"
 #import <WYPopoverController/WYPopoverController.h>
 
-@interface AwfulPostsViewController () <AwfulPostsViewDelegate, AwfulJumpToPageControllerDelegate, NSFetchedResultsControllerDelegate, AwfulReplyComposeViewControllerDelegate, UIScrollViewDelegate, AwfulPostsViewSettingsControllerDelegate, WYPopoverControllerDelegate, UIViewControllerRestoration>
+@interface AwfulPostsViewController () <AwfulPostsViewDelegate, AwfulJumpToPageControllerDelegate, NSFetchedResultsControllerDelegate, AwfulReplyComposeViewControllerDelegate, UIScrollViewDelegate, WYPopoverControllerDelegate, UIViewControllerRestoration>
 
 @property (nonatomic) AwfulThreadPage currentPage;
 
@@ -50,12 +50,12 @@
 @property (nonatomic) AwfulPageTopBar *topBar;
 @property (strong, nonatomic) AwfulPostsView *postsView;
 @property (strong, nonatomic) WYPopoverController *jumpToPagePopover;
+@property (strong, nonatomic) WYPopoverController *pageSettingsPopover;
 @property (nonatomic) AwfulPullToRefreshControl *pullUpToRefreshControl;
 @property (nonatomic) UIBarButtonItem *composeItem;
 @property (copy, nonatomic) NSString *ongoingReplyText;
 @property (nonatomic) id ongoingReplyImageCacheIdentifier;
 @property (nonatomic) AwfulPost *ongoingEditedPost;
-@property (nonatomic) AwfulPostsViewSettingsController *settingsViewController;
 @property (assign, nonatomic) BOOL toolbarWasHidden;
 
 @property (strong, nonatomic) UIBarButtonItem *settingsItem;
@@ -151,25 +151,13 @@
 
 - (void)toggleSettings:(UIBarButtonItem *)sender
 {
-    if (self.settingsViewController) {
-        [self.settingsViewController dismiss];
-        self.settingsViewController = nil;
-    } else {
-        self.settingsViewController = [AwfulPostsViewSettingsController new];
-        self.settingsViewController.delegate = self;
-        if ([self.thread.forum.forumID isEqualToString:@"25"]) {
-            self.settingsViewController.availableThemes = AwfulPostsViewSettingsControllerThemesGasChamber;
-        } else if ([self.thread.forum.forumID isEqualToString:@"26"]) {
-            self.settingsViewController.availableThemes = AwfulPostsViewSettingsControllerThemesFYAD;
-        } else if ([self.thread.forum.forumID isEqualToString:@"219"]) {
-            self.settingsViewController.availableThemes = AwfulPostsViewSettingsControllerThemesYOSPOS;
-        }
-        // TODO this is dumb, show it from the item.
-        UIToolbar *toolbar = self.navigationController.toolbar;
-        CGRect rect = toolbar.bounds;
-        rect.size.width = 40;
-        [self.settingsViewController presentFromViewController:self.navigationController fromRect:rect inView:toolbar];
-    }
+    AwfulPageSettingsViewController *settings = [AwfulPageSettingsViewController new];
+    // TODO configure for available themes
+    self.pageSettingsPopover = [[WYPopoverController alloc] initWithContentViewController:settings];
+    self.pageSettingsPopover.delegate = self;
+    [self.pageSettingsPopover presentPopoverFromBarButtonItem:sender
+                                     permittedArrowDirections:WYPopoverArrowDirectionAny
+                                                     animated:YES];
 }
 
 - (UIBarButtonItem *)backItem
@@ -1241,6 +1229,7 @@ static char KVOContext;
 - (void)popoverControllerDidDismiss:(WYPopoverController *)popoverController
 {
     self.jumpToPagePopover = nil;
+    self.pageSettingsPopover = nil;
 }
 
 #pragma mark - AwfulReplyComposeViewControllerDelegate
@@ -1307,13 +1296,6 @@ static char KVOContext;
     [self.postsView beginUpdates];
     [invocations makeObjectsPerformSelector:@selector(invokeWithTarget:) withObject:self];
     [self.postsView endUpdates];
-}
-
-#pragma mark - AwfulPostsViewSettingsControllerDelegate
-
-- (void)userDidDismissPostsViewSettings:(AwfulPostsViewSettingsController *)settings
-{
-    self.settingsViewController = nil;
 }
 
 #pragma mark State Preservation and Restoration
