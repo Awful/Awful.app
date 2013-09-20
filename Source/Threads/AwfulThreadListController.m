@@ -21,15 +21,22 @@
 #import "AwfulTheme.h"
 #import "AwfulThreadCell.h"
 #import "AwfulThreadComposeViewController.h"
+#import "AwfulThreadTag.h"
+#import "AwfulThreadTagFilterController.h"
 #import "AwfulThreadTags.h"
 #import "NSString+CollapseWhitespace.h"
 #import <SVProgressHUD/SVProgressHUD.h>
 #import "UIViewController+NavigationEnclosure.h"
 
-@interface AwfulThreadListController () <AwfulThreadComposeViewControllerDelegate>
+@interface AwfulThreadListController () <AwfulThreadComposeViewControllerDelegate,
+                                            AwfulPostIconPickerControllerDelegate>
 
 @property (nonatomic) NSMutableSet *cellsMissingThreadTags;
 @property (nonatomic) UIBarButtonItem *newThreadButtonItem;
+@property (nonatomic) UIBarButtonItem *filterButtonItem;
+@property (nonatomic) AwfulThreadTagFilterController *filterPicker;
+@property (copy, nonatomic) NSArray *availablePostIcons;
+@property (nonatomic) AwfulThreadTag *postIcon;
 
 @end
 
@@ -43,7 +50,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsChanged:)
                                                  name:AwfulSettingsDidChangeNotification
                                                object:nil];
-    self.navigationItem.rightBarButtonItem = self.newThreadButtonItem;
+    self.navigationItem.rightBarButtonItems = @[self.newThreadButtonItem, self.filterButtonItem];
     return self;
 }
 
@@ -63,6 +70,36 @@
     compose.delegate = self;
     [self presentViewController:[compose enclosingNavigationController] animated:YES
                      completion:nil];
+}
+
+- (UIBarButtonItem* )filterButtonItem
+{
+    if (_filterButtonItem) return _filterButtonItem;
+    _filterButtonItem = [[AwfulPlainBarButtonItem alloc]
+                        initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
+                        target:self action:@selector(didTapFilterButtonItem)];
+    return _filterButtonItem;
+}
+
+- (void)didTapFilterButtonItem
+{
+    if (!self.filterPicker) {
+        self.filterPicker = [[AwfulThreadTagFilterController alloc] initWithDelegate:self];
+        [self.filterPicker reloadData];
+    }
+    if (self.postIcon) {
+        NSUInteger index = [self.availablePostIcons indexOfObject:self.postIcon];
+        self.filterPicker.selectedIndex = index;
+    } else {
+        self.filterPicker.selectedIndex = 0;
+    }
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [self.filterPicker showFromBarButtonItem:self.filterButtonItem];
+    } else {
+        [self presentViewController:[self.filterPicker enclosingNavigationController]
+                           animated:YES
+                         completion:nil];
+    }
 }
 
 - (void)dealloc
@@ -116,6 +153,65 @@
     }
 }
 
+#pragma mark - AwfulPostIconPickerControllerDelegate
+
+- (NSInteger)numberOfIconsInPostIconPicker:(AwfulPostIconPickerController *)picker
+{
+    // +1 for the empty thread tag.
+    return [self.availablePostIcons count] + 1;
+}
+
+- (UIImage *)postIconPicker:(AwfulPostIconPickerController *)picker postIconAtIndex:(NSInteger)index
+{
+    // -1 for the "empty thread" tag.
+    index -= 1;
+    if (index < 0) {
+        return [UIImage imageNamed:[AwfulThreadTag emptyThreadTagImageName]];
+    } else {
+        NSString *iconName = [self.availablePostIcons[index] imageName];
+        return [[AwfulThreadTags sharedThreadTags] threadTagNamed:iconName];
+    }
+}
+
+- (void)postIconPickerDidComplete:(AwfulPostIconPickerController *)picker
+{
+    NSInteger index = picker.selectedIndex - 1;
+    if (index < 0 || index > (NSInteger)self.availablePostIcons.count) {
+        self.postIcon = nil;
+        self.filterButtonItem.tintColor = [UIColor whiteColor];
+    } else {
+        self.postIcon = self.availablePostIcons[index];
+        self.filterButtonItem.tintColor = [UIColor yellowColor];
+        self.forum.lastRefresh = nil;
+    }
+    
+    self.filterPicker = nil;
+    [self dismissViewControllerAnimated:YES completion:nil];
+    [self refresh];
+}
+
+- (void)postIconPickerDidCancel:(AwfulPostIconPickerController *)picker
+{
+    self.filterPicker = nil;
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)postIconPicker:(AwfulPostIconPickerController *)picker didSelectIconAtIndex:(NSInteger)index
+{
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        index -= 1;
+        if (index < 0 || index > (NSInteger)self.availablePostIcons.count) {
+            self.postIcon = nil;
+            self.filterButtonItem.tintColor = [UIColor whiteColor];
+        } else {
+            self.postIcon = self.availablePostIcons[index];
+            self.filterButtonItem.tintColor = [UIColor yellowColor];
+            self.forum.lastRefresh = nil;
+        }
+    }
+    [self refresh];
+}
+
 #pragma mark - Table view controller
 
 - (void)refresh
@@ -156,6 +252,7 @@
     [self.networkOperation cancel];
     __block id op;
     op = [[AwfulHTTPClient client] listThreadsInForumWithID:self.forum.forumID
+                                                  threadTag:self.postIcon.composeID
                                                      onPage:pageNum
                                                     andThen:^(NSError *error, NSArray *threads)
     {
@@ -187,6 +284,18 @@
     // Hide separators after the last cell.
     self.tableView.tableFooterView = [UIView new];
     self.tableView.tableFooterView.backgroundColor = [UIColor clearColor];
+
+    if (self.forum.forumID) {
+        [[AwfulHTTPClient client] listAvailablePostIconsForForumWithID:self.forum.forumID
+                                                               andThen:^(NSError *error,
+                                                                         NSArray *postIcons,
+                                                                         NSArray *secondaryPostIcons,
+                                                                         NSString *secondaryIconKey)
+         {
+             self.availablePostIcons = postIcons;
+             [self.filterPicker reloadData];
+         }];
+    }
 }
 
 - (void)showThreadActionsForThread:(AwfulThread *)thread

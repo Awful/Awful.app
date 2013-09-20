@@ -131,14 +131,19 @@ static AwfulHTTPClient *instance = nil;
 }
 
 - (NSOperation *)listThreadsInForumWithID:(NSString *)forumID
+                                threadTag:(NSString*)tag
                                    onPage:(NSInteger)page
                                   andThen:(void (^)(NSError *error, NSArray *threads))callback
 {
-    NSDictionary *parameters = @{
+    NSMutableDictionary *parameters = [@{
         @"forumid": forumID,
         @"perpage": @40,
         @"pagenumber": @(page),
-    };
+    } mutableCopy];
+    if (tag) {
+        parameters[@"posticon"] = tag;
+    }
+
     NSURLRequest *request = [self requestWithMethod:@"GET" path:@"forumdisplay.php"
                                          parameters:parameters];
     id op = [self HTTPRequestOperationWithRequest:request

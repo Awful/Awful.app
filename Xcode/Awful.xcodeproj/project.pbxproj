@@ -23,6 +23,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		0318740017EBCF3C001C31BF /* AwfulThreadTagFilterController.m in Sources */ = {isa = PBXBuildFile; fileRef = 031873FF17EBCF3C001C31BF /* AwfulThreadTagFilterController.m */; };
 		10D34FA9128F41160026C7C2 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10D34FA8128F41160026C7C2 /* CFNetwork.framework */; };
 		10D34FAF128F413C0026C7C2 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10D34FAE128F413C0026C7C2 /* MobileCoreServices.framework */; };
 		10D34FB1128F413C0026C7C2 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10D34FB0128F413C0026C7C2 /* SystemConfiguration.framework */; };
@@ -358,6 +359,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		031873FE17EBCF3C001C31BF /* AwfulThreadTagFilterController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTagFilterController.h; sourceTree = "<group>"; };
+		031873FF17EBCF3C001C31BF /* AwfulThreadTagFilterController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTagFilterController.m; sourceTree = "<group>"; };
 		10D34FA8128F41160026C7C2 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		10D34FAE128F413C0026C7C2 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		10D34FB0128F413C0026C7C2 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -1069,6 +1072,8 @@
 				1C3447C7174D7284007377C5 /* AwfulThreadTagView.m */,
 				1C3447D0174D9B01007377C5 /* AwfulThreadTagButton.h */,
 				1C3447D1174D9B01007377C5 /* AwfulThreadTagButton.m */,
+				031873FE17EBCF3C001C31BF /* AwfulThreadTagFilterController.h */,
+				031873FF17EBCF3C001C31BF /* AwfulThreadTagFilterController.m */,
 			);
 			path = "Thread Tags";
 			sourceTree = "<group>";
@@ -2327,6 +2332,7 @@
 				1C3447E1175D9991007377C5 /* AwfulPostViewModel.m in Sources */,
 				1C3447E7175DAAAD007377C5 /* AwfulProfileViewModel.m in Sources */,
 				1C3447EC175E5D78007377C5 /* AwfulLoadingView.m in Sources */,
+				0318740017EBCF3C001C31BF /* AwfulThreadTagFilterController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
