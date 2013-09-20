@@ -169,6 +169,10 @@
         }];
         [self hideBarsAfterShortDuration];
     }];
+    [sheet addButtonWithTitle:@"Copy Image to Clipboard" block:^{
+        [UIPasteboard generalPasteboard].image = self.imageView.image;
+        [self hideBarsAfterShortDuration];
+    }];
     [sheet addCancelButtonWithTitle:@"Cancel" block:^{
         [self hideBarsAfterShortDuration];
     }];

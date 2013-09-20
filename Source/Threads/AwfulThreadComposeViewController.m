@@ -115,6 +115,10 @@
 {
     self.textView.userInteractionEnabled = enabled;
     self.subjectField.textField.userInteractionEnabled = enabled;
+    if ([self.forum.forumID isEqualToString:@"219"]) {
+        self.textView.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        self.textView.autocorrectionType = UITextAutocorrectionTypeNo;
+    }
 }
 
 - (void)setPostIcon:(AwfulThreadTag *)postIcon
