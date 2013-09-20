@@ -31,6 +31,7 @@
 //
 // Returns the enqueued network operation.
 - (NSOperation *)listThreadsInForumWithID:(NSString *)forumID
+                                threadTag:(NSString*)tag
                                    onPage:(NSInteger)page
                                   andThen:(void (^)(NSError *error, NSArray *threads))callback;
 
