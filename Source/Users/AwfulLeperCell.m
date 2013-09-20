@@ -30,6 +30,7 @@
     reasonLabel.backgroundColor = [UIColor clearColor];
     reasonLabel.highlightedTextColor = self.usernameLabel.highlightedTextColor;
     [self.contentView addSubview:reasonLabel];
+    self.contentView.autoresizingMask = self.contentView.autoresizingMask | UIViewAutoresizingFlexibleWidth;
     _reasonLabel = reasonLabel;
     
     return self;

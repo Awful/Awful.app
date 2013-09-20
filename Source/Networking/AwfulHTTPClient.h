@@ -232,6 +232,7 @@ extern NSString * const AwfulUserDidLogInNotification;
 //
 // Returns the enqueued network operation.
 - (NSOperation *)listBansOnPage:(NSInteger)page
+                        forUser:(NSString *)userID
                         andThen:(void (^)(NSError *error, NSArray *bans))callback;
 
 // List private messages in the logged-in user's Inbox.

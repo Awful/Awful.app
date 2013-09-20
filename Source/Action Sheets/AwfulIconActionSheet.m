@@ -99,7 +99,13 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     PSUICollectionViewFlowLayout *layout = (id)self.collectionView.collectionViewLayout;
     CGRect frame = self.view.frame;
-    frame.size.height = 225;
+
+    const float itemsPerRow = 3.0;
+    const NSInteger numberOfRows = ceil([self.items count] / itemsPerRow);
+    const CGFloat rowHeight = layout.itemSize.height + layout.minimumLineSpacing;
+    const CGFloat margin = 20;
+    frame.size.height = (numberOfRows * rowHeight) + margin;
+
     if ([self.title length] == 0) {
         layout.headerReferenceSize = CGSizeZero;
         self.collectionView.contentInset = UIEdgeInsetsZero;

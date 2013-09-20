@@ -26,6 +26,7 @@
 #import "AwfulProfileViewController.h"
 #import "AwfulPrivateMessageComposeViewController.h"
 #import "AwfulPullToRefreshControl.h"
+#import "AwfulRapSheetViewController.h"
 #import "AwfulReadLaterService.h"
 #import "AwfulReplyComposeViewController.h"
 #import "AwfulSettings.h"
@@ -608,6 +609,32 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (void)showRapSheetWithUser:(AwfulUser *)user
+{
+    AwfulRapSheetViewController *rapSheet = [AwfulRapSheetViewController new];
+    rapSheet.userID = user.userID;
+    UIBarButtonItem *item;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                             target:nil
+                                                             action:@selector(doneWithRapSheet)];
+        rapSheet.navigationItem.leftBarButtonItem = item;
+        [self presentViewController:[rapSheet enclosingNavigationController]
+                           animated:YES completion:nil];
+    } else {
+        rapSheet.hidesBottomBarWhenPushed = YES;
+        item = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleBordered
+                                               target:nil action:NULL];
+        self.navigationItem.backBarButtonItem = item;
+        [self.navigationController pushViewController:rapSheet animated:YES];
+    }
+}
+
+- (void)doneWithRapSheet
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 #pragma mark - AwfulThemingViewController
 
 - (void)retheme
@@ -1094,6 +1121,9 @@ static char KVOContext;
                                animated:YES completion:nil];
         }]];
     }
+    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeRapSheet action:^{
+        [self showRapSheetWithUser:post.author];
+    }]];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         [sheet presentFromViewController:self fromRect:rect inView:self.postsView];
     } else {
