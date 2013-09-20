@@ -40,6 +40,7 @@ header:after {
 }
 .iphone .avatar {
   max-height: 2.5em;
+  max-width: 2.5em;
   margin: 6px 5px 0 0;
 }
 .ipad .avatar {
@@ -70,7 +71,6 @@ header:after {
 }
 header {
   padding-bottom: 0;
-  border-bottom: 1px solid;
 }
 .username {
   font: -apple-system-headline;
