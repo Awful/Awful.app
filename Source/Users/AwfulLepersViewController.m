@@ -111,7 +111,14 @@
 {
     [self.networkOperation cancel];
     __block id op;
+
+    NSString *userID = nil;
+    if ([self respondsToSelector:@selector(userID)]) {
+        userID = [(id)self userID];
+    }
+
     op = [[AwfulHTTPClient client] listBansOnPage:pageNum
+                                          forUser:userID
                                              andThen:^(NSError *error, NSArray *bans)
     {
         if (![self.networkOperation isEqual:op]) return;

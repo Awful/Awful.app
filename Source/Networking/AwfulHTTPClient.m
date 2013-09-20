@@ -698,9 +698,15 @@ andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))call
 }
 
 - (NSOperation *)listBansOnPage:(NSInteger)page
+                        forUser:(NSString *)userID
                         andThen:(void (^)(NSError *error, NSArray *bans))callback
 {
-    NSDictionary *parameters = @{ @"pagenumber": @(page) };
+    NSDictionary *parameters;
+    if (userID) {
+        parameters = @{ @"userid": userID, @"pagenumber": @(page) };
+    } else {
+        parameters = @{ @"pagenumber": @(page) };
+    }
     NSURLRequest *request = [self requestWithMethod:@"GET" path:@"banlist.php"
                                          parameters:parameters];
     id op = [self HTTPRequestOperationWithRequest:request

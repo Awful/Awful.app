@@ -72,6 +72,12 @@
             tintColor = [UIColor colorWithWhite:0.325 alpha:1];
             icon = [UIImage imageNamed:@"quote-post"];
             break;
+
+        case AwfulIconActionItemTypeRapSheet:
+            title = @"Rap Sheet";
+            tintColor = [UIColor colorWithHue:0.117 saturation:1.0 brightness:0.96 alpha:1];
+            icon = [UIImage imageNamed:@"rap-sheet"];
+            break;
         
         case AwfulIconActionItemTypeRemoveBookmark:
             title = @"Remove Bookmark";
