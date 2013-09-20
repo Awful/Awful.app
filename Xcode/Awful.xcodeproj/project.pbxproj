@@ -23,6 +23,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		03A7496217E7AC64006D2FC2 /* AwfulRapSheetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03A7496117E7AC64006D2FC2 /* AwfulRapSheetViewController.m */; };
+		03A7496417E7CAFD006D2FC2 /* rap-sheet@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03A7496317E7CAFC006D2FC2 /* rap-sheet@2x.png */; };
 		10D34FA9128F41160026C7C2 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10D34FA8128F41160026C7C2 /* CFNetwork.framework */; };
 		10D34FAF128F413C0026C7C2 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10D34FAE128F413C0026C7C2 /* MobileCoreServices.framework */; };
 		10D34FB1128F413C0026C7C2 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10D34FB0128F413C0026C7C2 /* SystemConfiguration.framework */; };
@@ -334,6 +336,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		03A7496017E7AC64006D2FC2 /* AwfulRapSheetViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulRapSheetViewController.h; sourceTree = "<group>"; };
+		03A7496117E7AC64006D2FC2 /* AwfulRapSheetViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulRapSheetViewController.m; sourceTree = "<group>"; };
+		03A7496317E7CAFC006D2FC2 /* rap-sheet@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rap-sheet@2x.png"; sourceTree = "<group>"; };
 		10D34FA8128F41160026C7C2 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		10D34FAE128F413C0026C7C2 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		10D34FB0128F413C0026C7C2 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -994,6 +999,7 @@
 				1C28B366172A151B00254EE7 /* mark-as-unread@2x.png */,
 				1CAAE105172C652100D2AE6E /* mark-read-up-to-here@2x.png */,
 				1CAAE103172C09EF00D2AE6E /* quote-post@2x.png */,
+				03A7496317E7CAFC006D2FC2 /* rap-sheet@2x.png */,
 				1C28B360172A119B00254EE7 /* remove-bookmark@2x.png */,
 				1CAAE107172C658F00D2AE6E /* send-private-message@2x.png */,
 				1CAAE109172C664800D2AE6E /* single-users-posts@2x.png */,
@@ -1161,6 +1167,8 @@
 				1C09963B16C0AECA00A62D5E /* AwfulLeperCell.m */,
 				1C6ED63B1691055E0015CDD5 /* AwfulProfileViewController.h */,
 				1C6ED63C1691055E0015CDD5 /* AwfulProfileViewController.m */,
+				03A7496017E7AC64006D2FC2 /* AwfulRapSheetViewController.h */,
+				03A7496117E7AC64006D2FC2 /* AwfulRapSheetViewController.m */,
 				1C8BE4F9169115020022B331 /* profile-view.css */,
 				1C6ED636169104150015CDD5 /* profile-view.html */,
 			);
@@ -1888,6 +1896,7 @@
 				1C3447E4175D9CCE007377C5 /* Post.mustache in Resources */,
 				1C3447E9175DAED4007377C5 /* Profile.mustache in Resources */,
 				1CF186A617D48E5700B26717 /* Thread Tags in Resources */,
+				03A7496417E7CAFD006D2FC2 /* rap-sheet@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2199,6 +2208,7 @@
 				1C5F700117D8521F005ABD6F /* AwfulBasementViewController.m in Sources */,
 				1C3447E7175DAAAD007377C5 /* AwfulProfileViewModel.m in Sources */,
 				1C3447EC175E5D78007377C5 /* AwfulLoadingView.m in Sources */,
+				03A7496217E7AC64006D2FC2 /* AwfulRapSheetViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
