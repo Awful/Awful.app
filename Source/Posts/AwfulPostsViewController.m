@@ -1097,7 +1097,7 @@ static char KVOContext;
         [sheet presentFromViewController:self fromRect:rect inView:self.postsView];
     } else {
         UIToolbar *toolbar = self.navigationController.toolbar;
-        [sheet presentFromViewController:self fromRect:toolbar.bounds inView:toolbar];
+        [sheet presentFromViewController:self.navigationController fromRect:toolbar.bounds inView:toolbar];
     }
 }
 - (void)postsView:(AwfulPostsView *)postsView didReceiveLongTapAtPoint:(CGPoint)point
