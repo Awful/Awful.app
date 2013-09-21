@@ -966,10 +966,16 @@ static char KVOContext;
 - (void)postsView:(AwfulPostsView *)postsView didReceiveSingleTapAtPoint:(CGPoint)point
 {
     CGRect rect;
-    NSInteger postIndex = [postsView indexOfPostWithActionButtonAtPoint:point rect:&rect];
-    if (postIndex == NSNotFound) return;
-    AwfulPost *post = self.fetchedResultsController.fetchedObjects[postIndex + self.hiddenPosts];
-    [self showActionsForPost:post fromRect:rect];
+		NSInteger postIndex = [postsView indexOfPostWithActionButtonAtPoint:point rect:&rect];
+		NSInteger usersPostIndex = [postsView indexOfPostWithUserNameAtPoint:point rect:&rect];
+		if (postIndex != NSNotFound) {
+			AwfulPost *post = self.fetchedResultsController.fetchedObjects[postIndex + self.hiddenPosts];
+			[self showActionsForPost:post fromRect:rect];
+		}
+		else if(usersPostIndex != NSNotFound) {
+			AwfulPost *post = self.fetchedResultsController.fetchedObjects[usersPostIndex + self.hiddenPosts];
+			[self showActionsForUser:post fromRect:rect];
+		}
 }
 
 - (void)showActionsForPost:(AwfulPost *)post fromRect:(CGRect)rect
@@ -990,9 +996,6 @@ static char KVOContext;
             (id)kUTTypePlainText: url,
         }];
     }]];
-    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
-        [self showProfileWithUser:post.author];
-    }]];
     if (!self.singleUserID) {
         [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkReadUpToHere
                                                   action:^
@@ -1011,14 +1014,6 @@ static char KVOContext;
                      [[AwfulDataStack sharedDataStack] save];
                  }
              }];
-        }]];
-        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSingleUsersPosts
-                                                  action:^
-        {
-            AwfulPostsViewController *postsView = [AwfulPostsViewController new];
-            postsView.thread = self.thread;
-            [postsView loadPage:1 singleUserID:post.author.userID];
-            [self.navigationController pushViewController:postsView animated:YES];
         }]];
     }
     if (post.editableValue) {
@@ -1077,28 +1072,52 @@ static char KVOContext;
              }];
         }]];
     }
-    if ([AwfulSettings settings].canSendPrivateMessages &&
-        post.author.canReceivePrivateMessagesValue &&
-        ![post.author.userID isEqual:[AwfulSettings settings].userID]) {
-        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSendPrivateMessage
-                                                  action:^
-        {
-            AwfulPrivateMessageComposeViewController *compose;
-            compose = [AwfulPrivateMessageComposeViewController new];
-            [compose setRecipient:post.author.username];
-            [self presentViewController:[compose enclosingNavigationController]
-                               animated:YES completion:nil];
-        }]];
-    }
-    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeRapSheet action:^{
-        [self showRapSheetWithUser:post.author];
-    }]];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         [sheet presentFromViewController:self fromRect:rect inView:self.postsView];
     } else {
         UIToolbar *toolbar = self.navigationController.toolbar;
         [sheet presentFromViewController:self.navigationController fromRect:toolbar.bounds inView:toolbar];
     }
+}
+- (void)showActionsForUser:(AwfulPost *)post fromRect:(CGRect)rect
+{
+	AwfulIconActionSheet *sheet = [AwfulIconActionSheet new];
+	sheet.title = [NSString stringWithFormat:@"%@", post.author.username];
+	[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
+		[self showProfileWithUser:post.author];
+	}]];
+	if (!self.singleUserID) {
+		[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSingleUsersPosts
+																							action:^
+										{
+											AwfulPostsViewController *postsView = [AwfulPostsViewController new];
+											postsView.thread = self.thread;
+											[postsView loadPage:1 singleUserID:post.author.userID];
+											[self.navigationController pushViewController:postsView animated:YES];
+										}]];
+	}
+	if ([AwfulSettings settings].canSendPrivateMessages &&
+			post.author.canReceivePrivateMessagesValue &&
+			![post.author.userID isEqual:[AwfulSettings settings].userID]) {
+		[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSendPrivateMessage
+																							action:^
+										{
+											AwfulPrivateMessageComposeViewController *compose;
+											compose = [AwfulPrivateMessageComposeViewController new];
+											[compose setRecipient:post.author.username];
+											[self presentViewController:[compose enclosingNavigationController]
+																				 animated:YES completion:nil];
+										}]];
+	}
+	[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeRapSheet action:^{
+		[self showRapSheetWithUser:post.author];
+	}]];
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+		[sheet presentFromViewController:self fromRect:rect inView:self.postsView];
+	} else {
+		UIToolbar *toolbar = self.navigationController.toolbar;
+		[sheet presentFromViewController:self.navigationController fromRect:toolbar.bounds inView:toolbar];
+	}
 }
 - (void)postsView:(AwfulPostsView *)postsView didReceiveLongTapAtPoint:(CGPoint)point
 {

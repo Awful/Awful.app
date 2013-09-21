@@ -54,6 +54,13 @@
 //         the posts view's frame coordinates on success.
 - (NSInteger)indexOfPostWithActionButtonAtPoint:(CGPoint)point rect:(out CGRect *)rect;
 
+// Returns the index of the post whose username heading is at point, or NSNotFound on failure.
+//
+// point - A point in the posts view's frame coordinates.
+// rect  - A pointer to a CGRect that, if non-NULL, will contain the bounds of the username heading in
+//         the posts view's frame coordinates on success.
+- (NSInteger)indexOfPostWithUserNameAtPoint:(CGPoint)point rect:(out CGRect *)rect;
+
 // Returns the URL of the first image in a post at point, or nil on failure.
 - (NSURL *)URLOfSpoiledImageForPoint:(CGPoint)point;
 

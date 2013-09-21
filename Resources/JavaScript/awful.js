@@ -103,6 +103,14 @@ Awful.postWithButtonForPoint = function(x, y){
     return JSON.stringify({ rect: rectOf(button), postIndex: post.index() })
   }
 }
+	
+Awful.postWithUserNameForPoint = function(x, y){
+	var usernameHeading = $(document.elementFromPoint(x, y)).closest('h1')
+	if (usernameHeading.length) {
+		var post = usernameHeading.closest('article')
+		return JSON.stringify({ rect: rectOf(usernameHeading), postIndex: post.index() })
+	}
+}
 
 function rectOf(el) {
   var rect = el.offset()

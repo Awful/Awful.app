@@ -351,6 +351,17 @@ static NSString * JSONizeBool(BOOL aBool)
     return [postInfo[@"postIndex"] integerValue];
 }
 
+- (NSInteger)indexOfPostWithUserNameAtPoint:(CGPoint)point rect:(CGRect *)rect
+{
+	NSDictionary *postInfo = [self evalJavaScriptWithJSONResponse:
+														@"Awful.postWithUserNameForPoint(%d, %d)", (int)point.x, (int)point.y];
+	if (![postInfo isKindOfClass:[NSDictionary class]]) return NSNotFound;
+	if (rect) {
+		*rect = [self rectOfElementWithRectDictionary:postInfo[@"rect"]];
+	}
+	return [postInfo[@"postIndex"] integerValue];
+}
+
 - (id)evalJavaScriptWithJSONResponse:(NSString *)script, ...
 {
     va_list args;

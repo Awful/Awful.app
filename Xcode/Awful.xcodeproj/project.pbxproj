@@ -285,6 +285,8 @@
 		8C299D7416877AE9001B9D96 /* winpos95-heading.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C299D7116877AE9001B9D96 /* winpos95-heading.png */; };
 		8C483FC216852E5D00D02482 /* macinyos-loading@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C483FC116852E5D00D02482 /* macinyos-loading@2x.png */; };
 		8C4F06B51686C1CB003CE53C /* macinyos-heading-left.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C4F06B41686C1CB003CE53C /* macinyos-heading-left.png */; };
+		8C662CA717ED1648009B5FD2 /* userarrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C662CA617ED1648009B5FD2 /* userarrow.png */; };
+		8C662CA917ED194F009B5FD2 /* userarrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C662CA817ED194F009B5FD2 /* userarrow@2x.png */; };
 		8C70028A169C6EFA00FC0B78 /* FVGifAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C700289169C6EFA00FC0B78 /* FVGifAnimation.m */; };
 		8C8AB95016DC49BA00D85404 /* CustomBadge.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C8AB94F16DC49BA00D85404 /* CustomBadge.m */; };
 		8C9834E2169091CE009F0CD6 /* fyad-bubble.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9834E1169091CE009F0CD6 /* fyad-bubble.png */; };
@@ -724,6 +726,8 @@
 		8C299D7116877AE9001B9D96 /* winpos95-heading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading.png"; sourceTree = "<group>"; };
 		8C483FC116852E5D00D02482 /* macinyos-loading@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-loading@2x.png"; sourceTree = "<group>"; };
 		8C4F06B41686C1CB003CE53C /* macinyos-heading-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading-left.png"; sourceTree = "<group>"; };
+		8C662CA617ED1648009B5FD2 /* userarrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = userarrow.png; sourceTree = "<group>"; };
+		8C662CA817ED194F009B5FD2 /* userarrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "userarrow@2x.png"; sourceTree = "<group>"; };
 		8C700288169C6EFA00FC0B78 /* FVGifAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FVGifAnimation.h; sourceTree = "<group>"; };
 		8C700289169C6EFA00FC0B78 /* FVGifAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FVGifAnimation.m; sourceTree = "<group>"; };
 		8C8AB94E16DC49BA00D85404 /* CustomBadge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomBadge.h; sourceTree = "<group>"; };
@@ -1350,6 +1354,8 @@
 				8CCD525F15B783FC00E5893B /* rating3@2x.png */,
 				8CCD526015B783FC00E5893B /* rating4@2x.png */,
 				8CCD526115B783FC00E5893B /* rating5@2x.png */,
+				8C662CA617ED1648009B5FD2 /* userarrow.png */,
+				8C662CA817ED194F009B5FD2 /* userarrow@2x.png */,
 			);
 			name = "Posts View";
 			sourceTree = "<group>";
@@ -1882,6 +1888,7 @@
 				1C28B361172A119B00254EE7 /* remove-bookmark@2x.png in Resources */,
 				1C28B363172A122400254EE7 /* user-profile@2x.png in Resources */,
 				1C28B365172A14A400254EE7 /* jump-to-last-page@2x.png in Resources */,
+				8C662CA717ED1648009B5FD2 /* userarrow.png in Resources */,
 				1C28B367172A151B00254EE7 /* mark-as-unread@2x.png in Resources */,
 				1C28B369172A15AC00254EE7 /* add-bookmark@2x.png in Resources */,
 				1C28B36B172A165500254EE7 /* copy-url@2x.png in Resources */,
@@ -1896,6 +1903,7 @@
 				1C3447E4175D9CCE007377C5 /* Post.mustache in Resources */,
 				1C3447E9175DAED4007377C5 /* Profile.mustache in Resources */,
 				1CF186A617D48E5700B26717 /* Thread Tags in Resources */,
+				8C662CA917ED194F009B5FD2 /* userarrow@2x.png in Resources */,
 				03A7496417E7CAFD006D2FC2 /* rap-sheet@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
