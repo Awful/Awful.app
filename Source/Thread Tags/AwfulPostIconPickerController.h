@@ -2,10 +2,10 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <UIKit/UIKit.h>
+#import "UIViewController+AwfulTheme.h"
 @protocol AwfulPostIconPickerControllerDelegate;
 
-@interface AwfulPostIconPickerController : UICollectionViewController
+@interface AwfulPostIconPickerController : AwfulCollectionViewController
 
 // Designated initializer.
 - (instancetype)initWithDelegate:(id <AwfulPostIconPickerControllerDelegate>)delegate;

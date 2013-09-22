@@ -2,13 +2,13 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <UIKit/UIKit.h>
+#import "UIViewController+AwfulTheme.h"
 @protocol AwfulBasementSidebarViewControllerDelegate;
 
 /**
  * An AwfulBasementSidebarViewController is created by an AwfulBasementViewController to list the available view controllers.
  */
-@interface AwfulBasementSidebarViewController : UITableViewController
+@interface AwfulBasementSidebarViewController : AwfulTableViewController
 
 /**
  * An array of UITabBarItem objects.

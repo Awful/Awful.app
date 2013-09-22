@@ -213,6 +213,12 @@ static NSString * const HeaderIdentifier = @"Header";
 static NSString * const ForumCellIdentifier = @"Forum";
 static NSString * const FavoriteCellIdentifier = @"Favorite";
 
+- (void)themeDidChange
+{
+    [super themeDidChange];
+    [self.tableView reloadData];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -297,8 +303,8 @@ static NSString * const FavoriteCellIdentifier = @"Favorite";
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     UITableViewHeaderFooterView *header = [tableView dequeueReusableHeaderFooterViewWithIdentifier:HeaderIdentifier];
-    header.contentView.backgroundColor = [UIColor colorWithWhite:0.898 alpha:1];
-    header.textLabel.textColor = [UIColor colorWithWhite:0.502 alpha:1];
+    header.contentView.backgroundColor = self.theme[@"forumsListHeaderBackgroundColor"];
+    header.textLabel.textColor = self.theme[@"forumsListHeaderTextColor"];
     if (self.favoriteForums.count > 0 && section == 0) {
         header.textLabel.text = @"Favorites";
     } else {

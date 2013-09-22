@@ -2,10 +2,10 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <UIKit/UIKit.h>
+#import "UIViewController+AwfulTheme.h"
 @protocol AwfulInstapaperLogInControllerDelegate;
 
-@interface AwfulInstapaperLogInController : UITableViewController
+@interface AwfulInstapaperLogInController : AwfulTableViewController
 
 @property (copy, nonatomic) NSString *username;
 @property (copy, nonatomic) NSString *password;

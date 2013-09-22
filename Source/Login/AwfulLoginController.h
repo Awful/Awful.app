@@ -2,12 +2,12 @@
 //
 //  Copyright 2010 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <UIKit/UIKit.h>
+#import "UIViewController+AwfulTheme.h"
 
 @protocol AwfulLoginControllerDelegate;
 
 
-@interface AwfulLoginController : UITableViewController
+@interface AwfulLoginController : AwfulTableViewController
 
 @property (weak, nonatomic) id <AwfulLoginControllerDelegate> delegate;
 

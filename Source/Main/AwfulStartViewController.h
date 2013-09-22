@@ -2,8 +2,8 @@
 //
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <UIKit/UIKit.h>
+#import "UIViewController+AwfulTheme.h"
 
-@interface AwfulStartViewController : UIViewController
+@interface AwfulStartViewController : AwfulViewController
 
 @end

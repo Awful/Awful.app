@@ -20,7 +20,6 @@
 {
     if (!(self = [super initWithFrame:frame])) return nil;
     _label = [UILabel new];
-    _label.textColor = [UIColor grayColor];
     _label.font = [UIFont systemFontOfSize:16];
     [self addSubview:_label];
     _textField = [UITextField new];

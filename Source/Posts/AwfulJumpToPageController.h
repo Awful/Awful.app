@@ -2,14 +2,14 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <UIKit/UIKit.h>
+#import "UIViewController+AwfulTheme.h"
 #import "AwfulThreadPage.h"
 @protocol AwfulJumpToPageControllerDelegate;
 
 /**
  * A page picker with navigation bar item shortcuts for first page and last page.
  */
-@interface AwfulJumpToPageController : UIViewController
+@interface AwfulJumpToPageController : AwfulViewController
 
 /**
  * Returns an initialized AwfulJumpToPageController. This is the designated initializer.

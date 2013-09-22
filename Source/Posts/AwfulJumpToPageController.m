@@ -114,10 +114,16 @@
                                                views:views]];
 }
 
+- (void)themeDidChange
+{
+    [super themeDidChange];
+    self.view.backgroundColor = self.theme[@"jumpToPageBackgroundColor"];
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    self.navigationController.navigationBar.tintColor = [UIColor colorWithRed:0.118 green:0.518 blue:0.686 alpha:1];
+    self.navigationController.navigationBar.tintColor = self.theme[@"tintColor"];
 }
 
 // UIPickerView is rather picky (lol) about its height. Make sure you pick a value it likes.

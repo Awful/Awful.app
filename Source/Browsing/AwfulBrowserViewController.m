@@ -178,7 +178,6 @@ static UIButton * MakeBorderlessButton(UIImage *image, id target, SEL action)
 - (void)loadView
 {
     self.view = [[UIView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
-    self.view.backgroundColor = [UIColor whiteColor];
     CGRect webViewFrame = (CGRect){ .size = self.view.frame.size };
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         CGRect toolbarFrame;
@@ -222,6 +221,12 @@ static UIButton * MakeBorderlessButton(UIImage *image, id target, SEL action)
     webView.opaque = NO;
     [self.view addSubview:webView];
     self.webView = webView;
+}
+
+- (void)themeDidChange
+{
+    [super themeDidChange];
+    self.view.backgroundColor = self.theme[@"browserBackgroundColor"];
 }
 
 static UISegmentedControl * MakeSegmentedBarButton(NSArray *items)
@@ -273,6 +278,7 @@ static UISegmentedControl * MakeSegmentedBarButton(NSArray *items)
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
+    // Websites expect a white background if they don't explicitly set one themselves, so this should be a hardcoded white.
     webView.backgroundColor = [UIColor whiteColor];
     webView.opaque = YES;
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;

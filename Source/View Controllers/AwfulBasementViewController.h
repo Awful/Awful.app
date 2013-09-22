@@ -2,12 +2,12 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <UIKit/UIKit.h>
+#import "UIViewController+AwfulTheme.h"
 
 /**
  * An AwfulBasementViewController is a container view controller that keeps a sidebar underneath its main view.
  */
-@interface AwfulBasementViewController : UIViewController
+@interface AwfulBasementViewController : AwfulViewController
 
 /**
  * Returns an initialized AwfulBasementViewController. This is the designated initializer.

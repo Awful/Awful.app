@@ -2,12 +2,12 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <UIKit/UIKit.h>
+#import "UIViewController+AwfulTheme.h"
 
 /**
  * An AwfulVerticalTabBarController is a container view controller with a permanently visible tab bar along its left edge.
  */
-@interface AwfulVerticalTabBarController : UIViewController
+@interface AwfulVerticalTabBarController : AwfulViewController
 
 /**
  * Returns an initialized AwfulVerticalTabBarController.

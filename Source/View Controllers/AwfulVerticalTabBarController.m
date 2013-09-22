@@ -62,7 +62,6 @@
     self.tabBar.delegate = self;
     self.tabBar.selectedItem = self.selectedViewController.tabBarItem;
     self.tabBar.translatesAutoresizingMaskIntoConstraints = NO;
-    self.tabBar.tintColor = [UIColor colorWithRed:0.078 green:0.514 blue:0.694 alpha:1];
     [self.view addSubview:self.tabBar];
     NSDictionary *views = @{ @"tabBar": self.tabBar,
                              @"top": self.topLayoutGuide };
@@ -75,6 +74,13 @@
                                                                       metrics:nil
                                                                         views:views]];
     [self replaceMainViewController:nil withViewController:self.selectedViewController];
+}
+
+- (void)themeDidChange
+{
+    [super themeDidChange];
+    self.tabBar.tintColor = self.theme[@"tintColor"];
+    self.tabBar.backgroundColor = self.theme[@"tabBarBackgroundColor"];
 }
 
 - (void)replaceMainViewController:(UIViewController *)oldViewController

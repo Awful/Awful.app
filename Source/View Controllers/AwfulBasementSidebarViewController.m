@@ -18,16 +18,28 @@
 - (void)loadView
 {
     [super loadView];
-    self.tableView.backgroundColor = [UIColor colorWithRed:0.075 green:0.235 blue:0.306 alpha:1];
     self.tableView.tableFooterView = [UIView new];
     
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:CellIdentifier];
     
     // Leaving `scrollsToTop` set to its default `YES` prevents the basement's main content view from ever scrolling to top when someone taps the status bar. (If multiple scroll views can scroll to top, none of them actually will.) We set it to `NO` so main content views work as expected. Any sidebar with enough items to make scrolling to top a valuable behaviour is probably ill-conceived anyway, so this is a reasonable setting.
     self.tableView.scrollsToTop = NO;
+    [self updateThemedProperties];
 }
 
 static NSString * const CellIdentifier = @"Cell";
+
+- (void)themeDidChange
+{
+    [super themeDidChange];
+    [self updateThemedProperties];
+    [self.tableView reloadData];
+}
+
+- (void)updateThemedProperties
+{
+    self.view.backgroundColor = self.theme[@"basementBackgroundColor"];
+}
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -82,7 +94,7 @@ static NSString * const CellIdentifier = @"Cell";
     cell.imageView.contentMode = UIViewContentModeCenter;
     cell.imageView.image = item.image;
     cell.textLabel.text = item.title;
-    cell.textLabel.textColor = [UIColor whiteColor];
+    cell.textLabel.textColor = self.theme[@"basementLabelColor"];
     return cell;
 }
 
@@ -90,7 +102,7 @@ static NSString * const CellIdentifier = @"Cell";
   willDisplayCell:(UITableViewCell *)cell
 forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    cell.backgroundColor = [UIColor colorWithRed:0.075 green:0.235 blue:0.306 alpha:1];
+    cell.backgroundColor = self.theme[@"basementBackgroundColor"];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

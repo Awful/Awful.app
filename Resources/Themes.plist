@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>default</key>
+	<dict>
+		<key>tintColor</key>
+		<string>#1e84af</string>
+		<key>actionSheetBackgroundColor</key>
+		<string>#000000d8</string>
+		<key>basementBackgroundColor</key>
+		<string>#133c4e</string>
+		<key>basementLabelColor</key>
+		<string>#ffffff</string>
+		<key>browserBackgroundColor</key>
+		<string>#ffffff</string>
+		<key>forumsListHeaderBackgroundColor</key>
+		<string>#e4e4e4</string>
+		<key>forumsListHeaderTextColor</key>
+		<string>#808080</string>
+		<key>jumpToPageBackgroundColor</key>
+		<string>#ffffff</string>
+		<key>splitViewBackgroundColor</key>
+		<string>#1e84af</string>
+		<key>tabBarBackgroundColor</key>
+		<string>#151515</string>
+	</dict>
+	<key>dark</key>
+	<dict/>
+</dict>
+</plist>

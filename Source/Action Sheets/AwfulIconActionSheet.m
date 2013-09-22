@@ -159,10 +159,15 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath
     self.view = collectionView;
     self.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                   UIViewAutoresizingFlexibleTopMargin);
-    self.view.backgroundColor = [UIColor colorWithWhite:0 alpha:0.85];
 }
 
 const UIEdgeInsets SectionInsets = {15, 23, 5, 23};
+
+- (void)themeDidChange
+{
+    [super themeDidChange];
+    self.view.backgroundColor = self.theme[@"actionSheetBackgroundColor"];
+}
 
 @end
 

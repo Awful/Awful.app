@@ -2,12 +2,12 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <UIKit/UIKit.h>
+#import "UIViewController+AwfulTheme.h"
 
 /**
  * An AwfulExpandingSplitViewController is a container view controller with two views, one on the left and one on the right. The right view can optionally encompass the entire view as needed.
  */
-@interface AwfulExpandingSplitViewController : UIViewController
+@interface AwfulExpandingSplitViewController : AwfulViewController
 
 /**
  * Returns an initialized AwfulExpandingSplitViewController. This is the designated initializer.

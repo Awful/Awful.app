@@ -21,6 +21,7 @@
 #import "AwfulSettings.h"
 #import "AwfulSettingsViewController.h"
 #import "AwfulStartViewController.h"
+#import "AwfulThemeLoader.h"
 #import "AwfulVerticalTabBarController.h"
 #import <AFNetworking/AFNetworking.h>
 #import <AVFoundation/AVFoundation.h>
@@ -32,12 +33,15 @@
 #import "NSURL+Punycode.h"
 #import <PocketAPI/PocketAPI.h>
 #import <SVProgressHUD/SVProgressHUD.h>
+#import "UIViewController+AwfulTheme.h"
 #import "UIViewController+NavigationEnclosure.h"
 
 @interface AwfulAppDelegate () <AwfulLoginControllerDelegate>
 
 @property (strong, nonatomic) AwfulBasementViewController *basementViewController;
 @property (strong, nonatomic) AwfulVerticalTabBarController *verticalTabBarController;
+@property (strong, nonatomic) AwfulThemeLoader *themeLoader;
+@property (strong, nonatomic) AwfulTheme *theme;
 
 @end
 
@@ -167,8 +171,9 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     }
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    self.window.tintColor = [UIColor colorWithRed:0.118 green:0.518 blue:0.686 alpha:1];
     self.window.rootViewController = self.basementViewController ?: self.verticalTabBarController;
+    self.themeLoader = [AwfulThemeLoader new];
+    self.theme = self.themeLoader.defaultTheme;
     
     return YES;
 }
@@ -192,6 +197,14 @@ static NSString * const BookmarksExpandingSplitControllerIdentifier = @"AwfulBoo
 static NSString * const MessagesExpandingSplitControllerIdentifier = @"AwfulMessagesExpandingSplitController";
 static NSString * const LepersColonyExpandingSplitControllerIdentifier = @"AwfulLepersColonyExpandingSplitController";
 static NSString * const SettingsExpandingSplitControllerIdentifier = @"AwfulSettingsExpandingSplitController";
+
+- (void)setTheme:(AwfulTheme *)theme
+{
+    if (_theme == theme) return;
+    _theme = theme;
+    self.window.tintColor = _theme[@"tintColor"];
+    self.window.rootViewController.theme = _theme;
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -247,6 +260,7 @@ static NSString * const SettingsExpandingSplitControllerIdentifier = @"AwfulSett
 - (void)settingsDidChange:(NSNotification *)note
 {
     NSArray *changes = note.userInfo[AwfulSettingsDidChangeSettingsKey];
+    
     if ([changes containsObject:AwfulSettingsKeys.canSendPrivateMessages]) {
         
         // Add the private message list if it's needed, or remove it if it isn't.
@@ -278,6 +292,14 @@ static NSString * const SettingsExpandingSplitControllerIdentifier = @"AwfulSett
                     self.verticalTabBarController.viewControllers = viewControllers;
                 }
             }
+        }
+    }
+    
+    if ([changes containsObject:AwfulSettingsKeys.darkTheme]) {
+        if ([AwfulSettings settings].darkTheme) {
+            self.theme = [self.themeLoader themeNamed:@"dark"];
+        } else {
+            self.theme = self.themeLoader.defaultTheme;
         }
     }
 }

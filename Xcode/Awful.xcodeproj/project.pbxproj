@@ -221,6 +221,10 @@
 		1CD52C6416CCE6F30078A9F2 /* ExtractFavorites.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 1CD52C6316CCE6F30078A9F2 /* ExtractFavorites.xcmappingmodel */; };
 		1CD52C6716CCE7AD0078A9F2 /* ExtractFavoritesMigrationPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD52C6616CCE7AD0078A9F2 /* ExtractFavoritesMigrationPolicy.m */; };
 		1CDD00E116C63C2800E72D62 /* AwfulJSONOrScrapeOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD00E016C63C2800E72D62 /* AwfulJSONOrScrapeOperation.m */; };
+		1CDD48B717EE1CD000E4DAE3 /* AwfulTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD48B617EE1CD000E4DAE3 /* AwfulTheme.m */; };
+		1CDD48BA17EE1F1700E4DAE3 /* AwfulThemeLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD48B917EE1F1700E4DAE3 /* AwfulThemeLoader.m */; };
+		1CDD48BC17EE288A00E4DAE3 /* Themes.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CDD48BB17EE288A00E4DAE3 /* Themes.plist */; };
+		1CDD48CB17EE8FB400E4DAE3 /* UIViewController+AwfulTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD48CA17EE8FB400E4DAE3 /* UIViewController+AwfulTheme.m */; };
 		1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD5198154294D400326C7B /* AwfulSettings.m */; };
 		1CE2D983165F8B8D0024AC1C /* star-off-dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CE2D981165F8B8D0024AC1C /* star-off-dark.png */; };
 		1CE2D984165F8B8D0024AC1C /* star-off-dark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CE2D982165F8B8D0024AC1C /* star-off-dark@2x.png */; };
@@ -632,6 +636,13 @@
 		1CD52C6616CCE7AD0078A9F2 /* ExtractFavoritesMigrationPolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExtractFavoritesMigrationPolicy.m; sourceTree = "<group>"; };
 		1CDD00DF16C63C2800E72D62 /* AwfulJSONOrScrapeOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulJSONOrScrapeOperation.h; sourceTree = "<group>"; };
 		1CDD00E016C63C2800E72D62 /* AwfulJSONOrScrapeOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulJSONOrScrapeOperation.m; sourceTree = "<group>"; };
+		1CDD48B517EE1CD000E4DAE3 /* AwfulTheme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTheme.h; sourceTree = "<group>"; };
+		1CDD48B617EE1CD000E4DAE3 /* AwfulTheme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTheme.m; sourceTree = "<group>"; };
+		1CDD48B817EE1F1700E4DAE3 /* AwfulThemeLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThemeLoader.h; sourceTree = "<group>"; };
+		1CDD48B917EE1F1700E4DAE3 /* AwfulThemeLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThemeLoader.m; sourceTree = "<group>"; };
+		1CDD48BB17EE288A00E4DAE3 /* Themes.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Themes.plist; sourceTree = "<group>"; };
+		1CDD48C917EE8FB400E4DAE3 /* UIViewController+AwfulTheme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+AwfulTheme.h"; sourceTree = "<group>"; };
+		1CDD48CA17EE8FB400E4DAE3 /* UIViewController+AwfulTheme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+AwfulTheme.m"; sourceTree = "<group>"; };
 		1CDD5197154294D400326C7B /* AwfulSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettings.h; sourceTree = "<group>"; };
 		1CDD5198154294D400326C7B /* AwfulSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettings.m; sourceTree = "<group>"; };
 		1CE2D981165F8B8D0024AC1C /* star-off-dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "star-off-dark.png"; sourceTree = "<group>"; };
@@ -1501,6 +1512,10 @@
 		1CDD51951542949600326C7B /* Theming */ = {
 			isa = PBXGroup;
 			children = (
+				1CDD48B517EE1CD000E4DAE3 /* AwfulTheme.h */,
+				1CDD48B617EE1CD000E4DAE3 /* AwfulTheme.m */,
+				1CDD48B817EE1F1700E4DAE3 /* AwfulThemeLoader.h */,
+				1CDD48B917EE1F1700E4DAE3 /* AwfulThemeLoader.m */,
 				1C40E5B11640FC2C004AAFA6 /* posts-view.css */,
 				1C8BE51A16917FB60022B331 /* posts-view-25.css */,
 				8CC4AD6216907DD100639C80 /* posts-view-26.css */,
@@ -1508,6 +1523,8 @@
 				1C6D3EF2168D89FC00B91A65 /* posts-view-219-amber.css */,
 				8CEBABE7167FFE2500680935 /* posts-view-219-macinyos.css */,
 				8C299D6616877330001B9D96 /* posts-view-219-winpos95.css */,
+				1CDD48C917EE8FB400E4DAE3 /* UIViewController+AwfulTheme.h */,
+				1CDD48CA17EE8FB400E4DAE3 /* UIViewController+AwfulTheme.m */,
 			);
 			path = Theming;
 			sourceTree = "<group>";
@@ -1614,6 +1631,7 @@
 				1C3447DC175D2D5E007377C5 /* Settings.bundle */,
 				8CCD4CC315B497A800E5893B /* Settings.plist */,
 				1C3447E2175D9CCE007377C5 /* Templates */,
+				1CDD48BB17EE288A00E4DAE3 /* Themes.plist */,
 				1CD33EDB16F397FC0059587E /* Theming */,
 				1CF186A517D48E5700B26717 /* Thread Tags */,
 			);
@@ -1897,6 +1915,7 @@
 				1C3447DD175D2D5E007377C5 /* Settings.bundle in Resources */,
 				1C3447E4175D9CCE007377C5 /* Post.mustache in Resources */,
 				1C3447E9175DAED4007377C5 /* Profile.mustache in Resources */,
+				1CDD48BC17EE288A00E4DAE3 /* Themes.plist in Resources */,
 				1CF186A617D48E5700B26717 /* Thread Tags in Resources */,
 				8C662CA917ED194F009B5FD2 /* userarrow@2x.png in Resources */,
 				03A7496417E7CAFD006D2FC2 /* rap-sheet@2x.png in Resources */,
@@ -2195,10 +2214,12 @@
 				1C28B3501729DDDA00254EE7 /* AwfulIconActionItem.m in Sources */,
 				1C5F700C17D87C0C005ABD6F /* AwfulVerticalTabBar.m in Sources */,
 				1C28B3591729F38400254EE7 /* AwfulIconActionCell.m in Sources */,
+				1CDD48BA17EE1F1700E4DAE3 /* AwfulThemeLoader.m in Sources */,
 				F432C2D91734572000012A88 /* AwfulPocketStatusTransformer.m in Sources */,
 				1C00E0A3173973FA008895E7 /* AwfulScreenCoverView.m in Sources */,
 				1C00E0AA1739F91E008895E7 /* AwfulPageBarBackgroundView.m in Sources */,
 				1C7D22EF173B3335008A802C /* InstapaperAPIClient.m in Sources */,
+				1CDD48B717EE1CD000E4DAE3 /* AwfulTheme.m in Sources */,
 				1C7D22F2173B553B008A802C /* AwfulInstapaperStatusTransformer.m in Sources */,
 				1C7D22F5173B5D1A008A802C /* AwfulInstapaperLogInController.m in Sources */,
 				1C7D22F9173B66F7008A802C /* AwfulReadLaterService.m in Sources */,
@@ -2206,6 +2227,7 @@
 				1C3447C9174D728B007377C5 /* AwfulThreadTagView.m in Sources */,
 				1C3447CF174D8D7A007377C5 /* AwfulThreadTag.m in Sources */,
 				1C3447D2174D9B01007377C5 /* AwfulThreadTagButton.m in Sources */,
+				1CDD48CB17EE8FB400E4DAE3 /* UIViewController+AwfulTheme.m in Sources */,
 				1C3447E1175D9991007377C5 /* AwfulPostViewModel.m in Sources */,
 				1C5F700117D8521F005ABD6F /* AwfulBasementViewController.m in Sources */,
 				1C3447E7175DAAAD007377C5 /* AwfulProfileViewModel.m in Sources */,
