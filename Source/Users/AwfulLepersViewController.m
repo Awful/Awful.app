@@ -5,7 +5,6 @@
 #import "AwfulLepersViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulDisclosureIndicatorView.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulLeperCell.h"
 #import "AwfulParsing.h"
@@ -190,7 +189,6 @@ static NSString * CreateBanIDForBan(BanParsedInfo *ban)
         cell = [[AwfulLeperCell alloc] initWithReuseIdentifier:Identifier];
         cell.textLabel.numberOfLines = 0;
         cell.detailTextLabel.numberOfLines = 0;
-        cell.accessoryView = [AwfulDisclosureIndicatorView new];
         UIImageView *background = [[UIImageView alloc] initWithImage:self.cellBackgroundImage];
         background.frame = cell.bounds;
         background.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
@@ -235,9 +233,6 @@ static NSString * CreateBanIDForBan(BanParsedInfo *ban)
     cell.dateAndModLabel.text = [NSString stringWithFormat:@"%@ by %@",
                                  [df stringFromDate:ban.banDate], ban.requesterUserName];
     cell.reasonLabel.text = ban.banReason;
-    cell.disclosureIndicator = ban.postID ? [AwfulDisclosureIndicatorView new] : nil;
-    cell.disclosureIndicator.color = [UIColor grayColor];
-    cell.disclosureIndicator.highlightedColor = [UIColor whiteColor];
     
     NSString *banDescription = @"banned";
     if (ban.banType == AwfulBanTypeProbation) banDescription = @"probated";

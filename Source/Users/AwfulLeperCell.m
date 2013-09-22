@@ -46,14 +46,6 @@
     return self.detailTextLabel;
 }
 
-- (void)setDisclosureIndicator:(AwfulDisclosureIndicatorView *)disclosureIndicator
-{
-    if ([_disclosureIndicator isEqual:disclosureIndicator]) return;
-    [_disclosureIndicator removeFromSuperview];
-    _disclosureIndicator = disclosureIndicator;
-    [self.contentView addSubview:disclosureIndicator];
-}
-
 + (CGFloat)rowHeightWithBanReason:(NSString *)banReason width:(CGFloat)width
 {
     const UIEdgeInsets reasonInsets = (UIEdgeInsets){
@@ -109,16 +101,7 @@
     CGFloat cellHeight = [[self class] rowHeightWithBanReason:self.reasonLabel.text
                                                         width:CGRectGetWidth(self.contentView.frame)];
     reasonFrame.size.height = cellHeight - CGRectGetMinY(reasonFrame) - cellMargin.bottom;
-    self.reasonLabel.frame = reasonFrame;
-    
-    if (self.disclosureIndicator) {
-        const CGFloat disclosureCenterXFromRight = 15;
-        self.disclosureIndicator.center = (CGPoint){
-            .x = CGRectGetWidth(self.contentView.frame) - disclosureCenterXFromRight,
-            .y = CGRectGetMidY(reasonFrame),
-        };
-        self.disclosureIndicator.frame = CGRectIntegral(self.disclosureIndicator.frame);
-    }
+    self.reasonLabel.frame = reasonFrame;    
 }
 
 @end
