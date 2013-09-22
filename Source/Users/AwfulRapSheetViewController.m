@@ -9,6 +9,7 @@
 @interface AwfulRapSheetViewController ()
 
 @property (nonatomic) AwfulUser *user;
+@property (nonatomic) UILabel *goodUserLabel;
 
 @end
 
@@ -20,6 +21,15 @@
     if (!(self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) return nil;
     self.modalPresentationStyle = UIModalPresentationFormSheet;
     return self;
+}
+
+- (void) viewDidLoad
+{
+    [super viewDidLoad];
+
+    // Hide separators after the last cell.
+    self.tableView.tableFooterView = [UIView new];
+    self.tableView.tableFooterView.backgroundColor = [UIColor clearColor];
 }
 
 - (void)setUserID:(NSString *)userID
@@ -45,6 +55,32 @@
         [self dismissViewControllerAnimated:YES completion:nil];
     }
     [super tableView:tableView didSelectRowAtIndexPath:indexPath];
+}
+
+- (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    NSInteger numberOfBans = [super tableView:tableView numberOfRowsInSection:section];
+
+    if (!numberOfBans && self.refreshing) {
+        self.tableView.scrollEnabled = NO;
+        [self.view addSubview:self.goodUserLabel];
+        self.goodUserLabel.frame = self.view.bounds;
+    } else {
+        self.tableView.scrollEnabled = YES;
+        [self.goodUserLabel removeFromSuperview];
+    }
+
+    return numberOfBans;
+}
+
+- (UILabel*) goodUserLabel
+{
+    if (_goodUserLabel) return _goodUserLabel;
+    _goodUserLabel = [[UILabel alloc] init];
+    _goodUserLabel.frame = self.view.bounds;
+    _goodUserLabel.text = @"This user has no ban history!";
+    _goodUserLabel.textAlignment = NSTextAlignmentCenter;
+    return _goodUserLabel;
 }
 
 @end
