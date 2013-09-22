@@ -21,15 +21,26 @@
 #import "AwfulTheme.h"
 #import "AwfulThreadCell.h"
 #import "AwfulThreadComposeViewController.h"
+#import "AwfulThreadTag.h"
+#import "AwfulThreadTagButton.h"
+#import "AwfulThreadTagFilterController.h"
 #import "AwfulThreadTags.h"
 #import "NSString+CollapseWhitespace.h"
 #import <SVProgressHUD/SVProgressHUD.h>
 #import "UIViewController+NavigationEnclosure.h"
 
-@interface AwfulThreadListController () <AwfulThreadComposeViewControllerDelegate>
+@interface AwfulThreadListController () <AwfulThreadComposeViewControllerDelegate, AwfulPostIconPickerControllerDelegate>
 
 @property (nonatomic) NSMutableSet *cellsMissingThreadTags;
 @property (nonatomic) UIBarButtonItem *newThreadButtonItem;
+
+@property (nonatomic) UIView *threadTagFilterBar;
+@property (nonatomic) UILabel *threadTagFilterLabel;
+@property (nonatomic) AwfulThreadTagButton *threadTagFilterButton;
+
+@property (nonatomic) AwfulThreadTagFilterController *filterPicker;
+@property (copy, nonatomic) NSArray *availablePostIcons;
+@property (nonatomic) AwfulThreadTag *postIcon;
 
 @end
 
@@ -149,6 +160,9 @@
     [super retheme];
     self.view.backgroundColor = [AwfulTheme currentTheme].threadListBackgroundColor;
     self.tableView.separatorColor = [AwfulTheme currentTheme].threadListSeparatorColor;
+    self.threadTagFilterBar.backgroundColor = [AwfulTheme currentTheme].threadListSeparatorColor;
+    self.threadTagFilterLabel.backgroundColor = [AwfulTheme currentTheme].threadListBackgroundColor;
+    self.threadTagFilterLabel.textColor = [AwfulTheme currentTheme].threadCellTextColor;
 }
 
 - (void)loadPageNum:(NSUInteger)pageNum
@@ -156,6 +170,7 @@
     [self.networkOperation cancel];
     __block id op;
     op = [[AwfulHTTPClient client] listThreadsInForumWithID:self.forum.forumID
+                                                  threadTag:self.postIcon.composeID
                                                      onPage:pageNum
                                                     andThen:^(NSError *error, NSArray *threads)
     {
@@ -167,7 +182,11 @@
                 [self.forum.threads setValue:@YES forKey:@"hideFromList"];
             }
             [threads setValue:@NO forKey:@"hideFromList"];
-            self.forum.lastRefresh = [NSDate date];
+            if (self.postIcon) {
+                self.forum.lastRefresh = [NSDate distantPast];
+            } else {
+                self.forum.lastRefresh = [NSDate date];
+            }
             self.ignoreUpdates = YES;
             [[AwfulDataStack sharedDataStack] save];
             self.ignoreUpdates = NO;
@@ -187,6 +206,30 @@
     // Hide separators after the last cell.
     self.tableView.tableFooterView = [UIView new];
     self.tableView.tableFooterView.backgroundColor = [UIColor clearColor];
+
+    if ([self shouldShowFilterBar]) {
+        self.tableView.tableHeaderView = [self threadTagFilterBar];
+        [self updateFilterIconButtonImage];
+        [[AwfulHTTPClient client] listAvailablePostIconsForForumWithID:self.forum.forumID
+                                                               andThen:^(NSError *error,
+                                                                         NSArray *postIcons,
+                                                                         NSArray *secondaryPostIcons,
+                                                                         NSString *secondaryIconKey)
+         {
+             self.availablePostIcons = postIcons;
+             [self.filterPicker reloadData];
+         }];
+    }
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    if ([self shouldShowFilterBar]) {
+        if (!self.refreshing) {
+            [self hideFilterBar];
+        }
+    }
 }
 
 - (void)showThreadActionsForThread:(AwfulThread *)thread
@@ -310,6 +353,140 @@
         [self.navigationController pushViewController:page animated:YES];
     }
 }
+
+#pragma mark - Thread filter bar
+
+- (BOOL) shouldShowFilterBar
+{
+    return self.forum.forumID != 0;
+}
+
+- (void) hideFilterBar
+{
+    self.tableView.contentOffset = CGPointMake(0, self.threadTagFilterBar.frame.size.height);
+}
+
+- (UIView* )threadTagFilterBar
+{
+    if (_threadTagFilterBar) return _threadTagFilterBar;
+    _threadTagFilterBar = [[UIView alloc] init];
+    const CGFloat kFilterBarHeight = 46;
+    _threadTagFilterBar.frame = CGRectMake(0, 0, 320, kFilterBarHeight);
+
+    CGRect postIconFrame, labelFrame;
+    CGRectDivide(_threadTagFilterBar.bounds, &postIconFrame, &labelFrame,
+                 kFilterBarHeight, CGRectMaxXEdge);
+
+    labelFrame.size.height -= 2;
+    labelFrame.origin.y = 1;
+    self.threadTagFilterLabel = [[UILabel alloc] initWithFrame:labelFrame];
+    self.threadTagFilterLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    self.threadTagFilterLabel.text = @" Filter by tag";
+    [_threadTagFilterBar addSubview:self.threadTagFilterLabel];
+
+    postIconFrame.size.height -= 2;
+    postIconFrame.origin.y = 1;
+    self.threadTagFilterButton = [[AwfulThreadTagButton alloc] initWithFrame:postIconFrame];
+    self.threadTagFilterButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+    [self.threadTagFilterButton addTarget:self action:@selector(didTapFilterButton) forControlEvents:UIControlEventTouchUpInside];
+    [_threadTagFilterBar addSubview:self.threadTagFilterButton];
+
+    return _threadTagFilterBar;
+}
+
+- (void)didTapFilterButton
+{
+    if (!self.filterPicker) {
+        self.filterPicker = [[AwfulThreadTagFilterController alloc] initWithDelegate:self];
+        [self.filterPicker reloadData];
+    }
+    if (self.postIcon) {
+        NSUInteger index = [self.availablePostIcons indexOfObject:self.postIcon];
+        self.filterPicker.selectedIndex = index;
+    } else {
+        self.filterPicker.selectedIndex = 0;
+    }
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [self.filterPicker showFromRect:self.threadTagFilterButton.frame inView:self.view];
+    } else {
+        [self presentViewController:[self.filterPicker enclosingNavigationController]
+                           animated:YES
+                         completion:nil];
+    }
+}
+
+#pragma mark - AwfulPostIconPickerControllerDelegate
+
+- (NSInteger)numberOfIconsInPostIconPicker:(AwfulPostIconPickerController *)picker
+{
+    // +1 for the empty thread tag.
+    return [self.availablePostIcons count] + 1;
+}
+
+- (UIImage *)postIconPicker:(AwfulPostIconPickerController *)picker postIconAtIndex:(NSInteger)index
+{
+    // -1 for the "empty thread" tag.
+    index -= 1;
+    if (index < 0) {
+        return [UIImage imageNamed:[AwfulThreadTag emptyThreadTagImageName]];
+    } else {
+        NSString *iconName = [self.availablePostIcons[index] imageName];
+        return [[AwfulThreadTags sharedThreadTags] threadTagNamed:iconName];
+    }
+}
+
+- (void)postIconPickerDidComplete:(AwfulPostIconPickerController *)picker
+{
+    NSInteger index = picker.selectedIndex - 1;
+    if (index < 0 || index > (NSInteger)self.availablePostIcons.count) {
+        self.postIcon = nil;
+    } else {
+        self.postIcon = self.availablePostIcons[index];
+    }
+
+    self.filterPicker = nil;
+    [self dismissViewControllerAnimated:YES completion:nil];
+    [self refresh];
+}
+
+- (void)postIconPickerDidCancel:(AwfulPostIconPickerController *)picker
+{
+    self.filterPicker = nil;
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)postIconPicker:(AwfulPostIconPickerController *)picker didSelectIconAtIndex:(NSInteger)index
+{
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        index -= 1;
+        if (index < 0 || index > (NSInteger)self.availablePostIcons.count) {
+            self.postIcon = nil;
+        } else {
+            self.postIcon = self.availablePostIcons[index];
+        }
+    }
+    [self refresh];
+}
+
+
+- (void)setPostIcon:(AwfulThreadTag *)postIcon
+{
+    if (_postIcon == postIcon) return;
+    _postIcon = postIcon;
+    [self updateFilterIconButtonImage];
+}
+
+- (void)updateFilterIconButtonImage
+{
+    UIImage *image;
+    if (self.postIcon) {
+        image = [[AwfulThreadTags sharedThreadTags] threadTagNamed:self.postIcon.imageName];
+    } else {
+        image = [UIImage imageNamed:@"empty-thread-tag"];
+    }
+    [self.threadTagFilterButton setImage:image forState:UIControlStateNormal];
+}
+
 
 #pragma mark - UITableViewDataSource and UITableViewDelegate
 
