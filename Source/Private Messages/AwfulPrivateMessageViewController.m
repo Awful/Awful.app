@@ -21,6 +21,7 @@
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "AwfulThemingViewController.h"
+#import "AwfulURLActionSheet.h"
 #import <GRMustache/GRMustache.h>
 #import "NSFileManager+UserDirectories.h"
 #import "NSURL+Awful.h"
@@ -255,7 +256,8 @@
         [[UIApplication sharedApplication] openURL:url];
         return;
     }
-    AwfulActionSheet *sheet = [AwfulActionSheet new];
+    AwfulURLActionSheet *sheet = [AwfulURLActionSheet new];
+    sheet.url = url;
     sheet.title = url.absoluteString;
     [sheet addButtonWithTitle:@"Open" block:^{
         if ([url awfulURL]) {
@@ -264,24 +266,10 @@
             [self openURLInBuiltInBrowser:url];
         }
     }];
-    [sheet addButtonWithTitle:@"Open in Safari"
-                        block:^{ [[UIApplication sharedApplication] openURL:url]; }];
-    for (AwfulExternalBrowser *browser in [AwfulExternalBrowser installedBrowsers]) {
-        if (![browser canOpenURL:url]) continue;
-        [sheet addButtonWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title]
-                            block:^{ [browser openURL:url]; }];
-    }
-    for (AwfulReadLaterService *service in [AwfulReadLaterService availableServices]) {
-        [sheet addButtonWithTitle:service.callToAction block:^{
-            [service saveURL:url];
-        }];
-    }
-    [sheet addButtonWithTitle:@"Copy URL" block:^{
-        [UIPasteboard generalPasteboard].items = @[ @{
-            (id)kUTTypeURL: url,
-            (id)kUTTypePlainText: url.absoluteString
-        }];
-    }];
+    [sheet addSafariButton];
+    [sheet addExternalBrowserButtons];
+    [sheet addReadLaterButtons];
+    [sheet addCopyURLButton];
     [sheet addCancelButtonWithTitle:@"Cancel"];
     rect = [self.postsView.superview convertRect:rect fromView:self.postsView];
     [sheet showFromRect:rect inView:self.postsView.superview animated:YES];

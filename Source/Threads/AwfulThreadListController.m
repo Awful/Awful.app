@@ -25,6 +25,7 @@
 #import "AwfulThreadTagButton.h"
 #import "AwfulThreadTagFilterController.h"
 #import "AwfulThreadTags.h"
+#import "AwfulURLActionSheet.h"
 #import "NSString+CollapseWhitespace.h"
 #import <SVProgressHUD/SVProgressHUD.h>
 #import "UIViewController+NavigationEnclosure.h"
@@ -292,15 +293,33 @@
         profileItem.title = @"View OP's Profile";
         [sheet addItem:profileItem];
     }
-    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
+    
+    AwfulIconActionItem *openURL = [AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL
+                                                              action:^{
         NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
                          "showthread.php?threadid=%@", thread.threadID];
-        [AwfulSettings settings].lastOfferedPasteboardURL = url;
-        [UIPasteboard generalPasteboard].items = @[ @{
-            (id)kUTTypeURL: [NSURL URLWithString:url],
-            (id)kUTTypePlainText: url
-        }];
-    }]];
+        AwfulURLActionSheet *browserSheet = [AwfulURLActionSheet new];
+        browserSheet.title = url;
+        browserSheet.url = [NSURL URLWithString:url];
+        [browserSheet addSafariButton];
+        [browserSheet addExternalBrowserButtons];
+        [browserSheet addCopyURLButton];
+        [browserSheet addCancelButtonWithTitle:@"Cancel"];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:thread];
+            UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+            // We've seen the occasional crash result from the cell being nil, i.e. invisible or out of
+            // range. Fall back to pointing at the table view.
+            CGRect targetRect = CGRectMake(cell.frame.size.width, cell.frame.size.height/2, 1, 1);
+            [browserSheet showFromRect:targetRect inView:cell ?: self.tableView animated:YES];
+        } else {
+            AwfulTabBar *tabBar = self.awfulTabBarController.tabBar;
+            [browserSheet showFromRect:tabBar.bounds inView:tabBar animated:YES];
+        }
+    }];
+    openURL.title = @"Open Thread With";
+    [sheet addItem:openURL];
+
     if (thread.beenSeen) {
         [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkAsUnread
                                                   action:^{

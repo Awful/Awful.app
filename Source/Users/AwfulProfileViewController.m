@@ -14,6 +14,7 @@
 #import "AwfulProfileViewModel.h"
 #import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
+#import "AwfulURLActionSheet.h"
 #import <GRMustache/GRMustache.h>
 #import "NSManagedObject+Awful.h"
 #import "NSURL+Punycode.h"
@@ -190,27 +191,13 @@
 
 - (void)showActionsForHomepage:(NSURL *)homepage atRect:(CGRect)rect
 {
-    AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:[homepage absoluteString]];
-    [sheet addButtonWithTitle:@"Open in Safari" block:^{
-        [[UIApplication sharedApplication] openURL:homepage];
-    }];
-    for (AwfulExternalBrowser *browser in [AwfulExternalBrowser installedBrowsers]) {
-        if (![browser canOpenURL:homepage]) continue;
-        [sheet addButtonWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title]
-                            block:^{ [browser openURL:homepage]; }];
-    }
-    for (AwfulReadLaterService *service in [AwfulReadLaterService availableServices]) {
-        [sheet addButtonWithTitle:service.callToAction block:^{
-            [service saveURL:homepage];
-        }];
-    }
-    [sheet addButtonWithTitle:@"Copy URL" block:^{
-        [AwfulSettings settings].lastOfferedPasteboardURL = [homepage absoluteString];
-        [UIPasteboard generalPasteboard].items = @[ @{
-            (id)kUTTypeURL: homepage,
-            (id)kUTTypePlainText: [homepage absoluteString],
-        }];
-    }];
+    AwfulURLActionSheet *sheet = [AwfulURLActionSheet new];
+    sheet.title = [homepage absoluteString];
+    sheet.url = homepage;
+    [sheet addSafariButton];
+    [sheet addExternalBrowserButtons];
+    [sheet addReadLaterButtons];
+    [sheet addCopyURLButton];
     [sheet addCancelButtonWithTitle:@"Cancel"];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         [sheet showFromRect:rect inView:self.view animated:YES];

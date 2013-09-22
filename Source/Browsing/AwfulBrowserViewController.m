@@ -10,6 +10,7 @@
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "AwfulThemingViewController.h"
+#import "AwfulURLActionSheet.h"
 #import "UINavigationItem+TwoLineTitle.h"
 
 @interface AwfulBrowserViewController () <UIWebViewDelegate, AwfulThemingViewController>
@@ -33,28 +34,12 @@
     if (url.absoluteString.length == 0) {
         url = self.URL;
     }
-    AwfulActionSheet *sheet = [AwfulActionSheet new];
-    [sheet addButtonWithTitle:@"Open in Safari" block:^{
-        [[UIApplication sharedApplication] openURL:url];
-    }];
-    for (AwfulExternalBrowser *browser in [AwfulExternalBrowser installedBrowsers]) {
-        if (![browser canOpenURL:url]) continue;
-        [sheet addButtonWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title]
-                            block:^{ [browser openURL:url]; }];
-    }
-    for (AwfulReadLaterService *service in [AwfulReadLaterService availableServices]) {
-        [sheet addButtonWithTitle:service.callToAction block:^{
-            [service saveURL:url];
-        }];
-    }
-    [sheet addButtonWithTitle:@"Copy URL" block:^{
-        NSURL *url = self.webView.request.URL;
-        [AwfulSettings settings].lastOfferedPasteboardURL = [url absoluteString];
-        [UIPasteboard generalPasteboard].items = @[ @{
-            (id)kUTTypeURL: url,
-            (id)kUTTypePlainText: [url absoluteString]
-        } ];
-    }];
+    AwfulURLActionSheet *sheet = [AwfulURLActionSheet new];
+    sheet.url = url;
+    [sheet addSafariButton];
+    [sheet addExternalBrowserButtons];
+    [sheet addReadLaterButtons];
+    [sheet addCopyURLButton];
     [sheet addCancelButtonWithTitle:@"Cancel"];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         [sheet showFromBarButtonItem:self.actionButton animated:YES];

@@ -32,6 +32,7 @@
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "AwfulThemingViewController.h"
+#import "AwfulURLActionSheet.h"
 #import <GRMustache/GRMustache.h>
 #import "NSFileManager+UserDirectories.h"
 #import "NSManagedObject+Awful.h"
@@ -523,19 +524,22 @@
 {
     AwfulIconActionSheet *sheet = [AwfulIconActionSheet new];
     sheet.title = self.title;
-    AwfulIconActionItem *copyURL = [AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL
+    AwfulIconActionItem *openURL = [AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL
                                                               action:^{
         NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
                          "showthread.php?threadid=%@&perpage=40&pagenumber=%@",
                          self.thread.threadID, @(self.currentPage)];
-        [AwfulSettings settings].lastOfferedPasteboardURL = url;
-        [UIPasteboard generalPasteboard].items = @[ @{
-                                                        (id)kUTTypeURL: [NSURL URLWithString:url],
-                                                        (id)kUTTypePlainText: url
-                                                        }];
+        AwfulURLActionSheet *urlSheet = [AwfulURLActionSheet new];
+        urlSheet.url = [NSURL URLWithString:url];
+        [urlSheet addSafariButton];
+        [urlSheet addExternalBrowserButtons];
+        [urlSheet addCopyURLButton];
+        [urlSheet addCancelButtonWithTitle:@"Cancel"];
+        [urlSheet showFromRect:rect inView:view animated:YES];
     }];
-    copyURL.title = @"Copy Thread URL";
-    [sheet addItem:copyURL];
+    openURL.title = @"Open Thread With";
+    [sheet addItem:openURL];
+
     [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeVote action:^{
         AwfulActionSheet *vote = [AwfulActionSheet new];
         for (int i = 5; i >= 1; i--) {
@@ -1012,18 +1016,27 @@ static char KVOContext;
     if ([post.author.username isEqualToString:[AwfulSettings settings].username]) {
         possessiveUsername = @"Your";
     }
+
     AwfulIconActionSheet *sheet = [AwfulIconActionSheet new];
     sheet.title = [NSString stringWithFormat:@"%@ Post", possessiveUsername];
-    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
+    
+    AwfulIconActionItem *openURL = [AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL
+                                                              action:^{
         NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
                          "showthread.php?threadid=%@&perpage=40&pagenumber=%@#post%@",
                          self.thread.threadID, @(self.currentPage), post.postID];
-        [AwfulSettings settings].lastOfferedPasteboardURL = url;
-        [UIPasteboard generalPasteboard].items = @[ @{
-            (id)kUTTypeURL: [NSURL URLWithString:url],
-            (id)kUTTypePlainText: url,
-        }];
-    }]];
+        AwfulURLActionSheet *browserSheet = [AwfulURLActionSheet new];
+        browserSheet.title = url;
+        browserSheet.url = [NSURL URLWithString:url];
+        [browserSheet addSafariButton];
+        [browserSheet addExternalBrowserButtons];
+        [browserSheet addCopyURLButton];
+        [browserSheet addCancelButtonWithTitle:@"Cancel"];
+        [browserSheet showFromRect:rect inView:self.postsView animated:YES];
+    }];
+    openURL.title = @"Open Post With";
+    [sheet addItem:openURL];
+    
     [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
         [self showProfileWithUser:post.author];
     }]];
@@ -1174,8 +1187,9 @@ static char KVOContext;
         [[UIApplication sharedApplication] openURL:url];
         return;
     }
-    AwfulActionSheet *sheet = [AwfulActionSheet new];
+    AwfulURLActionSheet *sheet = [AwfulURLActionSheet new];
     sheet.title = url.absoluteString;
+    sheet.url = url;
     [sheet addButtonWithTitle:@"Open" block:^{
         if ([url awfulURL]) {
             [[AwfulAppDelegate instance] openAwfulURL:[url awfulURL]];
@@ -1183,24 +1197,10 @@ static char KVOContext;
             [self openURLInBuiltInBrowser:url];
         }
     }];
-    [sheet addButtonWithTitle:@"Open in Safari"
-                        block:^{ [[UIApplication sharedApplication] openURL:url]; }];
-    for (AwfulExternalBrowser *browser in [AwfulExternalBrowser installedBrowsers]) {
-        if (![browser canOpenURL:url]) continue;
-        [sheet addButtonWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title]
-                            block:^{ [browser openURL:url]; }];
-    }
-    for (AwfulReadLaterService *service in [AwfulReadLaterService availableServices]) {
-        [sheet addButtonWithTitle:service.callToAction block:^{
-            [service saveURL:url];
-        }];
-    }
-    [sheet addButtonWithTitle:@"Copy URL" block:^{
-        [UIPasteboard generalPasteboard].items = @[ @{
-            (id)kUTTypeURL: url,
-            (id)kUTTypePlainText: url.absoluteString,
-        } ];
-    }];
+    [sheet addSafariButton];
+    [sheet addExternalBrowserButtons];
+    [sheet addReadLaterButtons];
+    [sheet addCopyURLButton];
     [sheet addCancelButtonWithTitle:@"Cancel"];
     [sheet showFromRect:rect inView:self.postsView animated:YES];
 }
