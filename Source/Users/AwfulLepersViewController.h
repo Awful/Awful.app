@@ -2,9 +2,9 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulTableViewController.h"
+#import "AwfulOldTableViewController.h"
 
-@interface AwfulLepersViewController : AwfulTableViewController
+@interface AwfulLepersViewController : AwfulOldTableViewController
 
 // Designated initializer.
 - (id)init;

@@ -1,18 +1,18 @@
-//  AwfulTableViewController.m
+//  AwfulOldTableViewController.m
 //
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulTableViewController.h"
+#import "AwfulOldTableViewController.h"
 #import "AwfulHTTPClient.h"
 #import <SVPullToRefresh/UIScrollView+SVInfiniteScrolling.h>
 
-@interface AwfulTableViewController ()
+@interface AwfulOldTableViewController ()
 
 @property (nonatomic, getter=isObserving) BOOL observing;
 
 @end
 
-@implementation AwfulTableViewController
+@implementation AwfulOldTableViewController
 
 - (void)dealloc
 {

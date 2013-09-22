@@ -1,10 +1,10 @@
-//  AwfulTableViewController.h
+//  AwfulOldTableViewController.h
 //
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import <UIKit/UIKit.h>
 
-@interface AwfulTableViewController : UITableViewController
+@interface AwfulOldTableViewController : UITableViewController
 
 @property (nonatomic) NSOperation *networkOperation;
 
