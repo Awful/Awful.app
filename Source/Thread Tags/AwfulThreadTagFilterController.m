@@ -24,10 +24,7 @@
 
 - (UIBarButtonItem *)pickButtonItem
 {
-    if (_pickButtonItem) return _pickButtonItem;
-    _pickButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Filter" style:UIBarButtonItemStyleDone
-                                                      target:self action:@selector(didTapPick)];
-    return _pickButtonItem;
+    return nil;
 }
 
 @end
