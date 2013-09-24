@@ -35,8 +35,6 @@
     
     _themePicker = [AwfulThemePicker new];
     _themePicker.translatesAutoresizingMaskIntoConstraints = NO;
-    [_themePicker insertThemeWithColor:[UIColor blackColor] atIndex:0];
-    [_themePicker insertThemeWithColor:[UIColor whiteColor] atIndex:1];
     [self addSubview:_themePicker];
     
     [self setNeedsUpdateConstraints];

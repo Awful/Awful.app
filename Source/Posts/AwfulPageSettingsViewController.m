@@ -6,10 +6,6 @@
 #import "AwfulPageSettingsView.h"
 #import "AwfulSettings.h"
 
-@interface AwfulPageSettingsViewController ()
-
-@end
-
 @implementation AwfulPageSettingsViewController
 {
     AwfulPageSettingsView *_settingsView;
@@ -27,6 +23,10 @@
     [_settingsView.themePicker addTarget:self
                                   action:@selector(didTapThemePicker:)
                         forControlEvents:UIControlEventValueChanged];
+    [self.themes enumerateObjectsUsingBlock:^(AwfulTheme *theme, NSUInteger i, BOOL *stop) {
+        [_settingsView.themePicker insertThemeWithColor:theme.descriptiveColor atIndex:i];
+    }];
+    _settingsView.themePicker.selectedThemeIndex = [self.themes indexOfObject:self.selectedTheme];
     self.view = _settingsView;
 }
 
@@ -42,7 +42,8 @@
 
 - (void)didTapThemePicker:(AwfulThemePicker *)themePicker
 {
-    // TODO
+    self.selectedTheme = self.themes[themePicker.selectedThemeIndex];
+    [self.delegate pageSettingsSelectedThemeDidChange:self];
 }
 
 - (void)viewDidLoad
@@ -50,7 +51,6 @@
     [super viewDidLoad];
     _settingsView.avatarsEnabledSwitch.on = [AwfulSettings settings].showAvatars;
     _settingsView.imagesEnabledSwitch.on = [AwfulSettings settings].showImages;
-    // TODO select current theme
 }
 
 - (CGSize)preferredContentSize

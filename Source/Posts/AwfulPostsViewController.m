@@ -27,6 +27,7 @@
 #import "AwfulReadLaterService.h"
 #import "AwfulReplyComposeViewController.h"
 #import "AwfulSettings.h"
+#import "AwfulThemeLoader.h"
 #import <GRMustache/GRMustache.h>
 #import "NSFileManager+UserDirectories.h"
 #import "NSManagedObject+Awful.h"
@@ -40,7 +41,7 @@
 #import "UIViewController+NavigationEnclosure.h"
 #import <WYPopoverController/WYPopoverController.h>
 
-@interface AwfulPostsViewController () <AwfulPostsViewDelegate, AwfulJumpToPageControllerDelegate, NSFetchedResultsControllerDelegate, AwfulReplyComposeViewControllerDelegate, UIScrollViewDelegate, WYPopoverControllerDelegate, UIViewControllerRestoration>
+@interface AwfulPostsViewController () <AwfulPostsViewDelegate, AwfulJumpToPageControllerDelegate, NSFetchedResultsControllerDelegate, AwfulReplyComposeViewControllerDelegate, UIScrollViewDelegate, WYPopoverControllerDelegate, UIViewControllerRestoration, AwfulPageSettingsViewControllerDelegate>
 
 @property (nonatomic) AwfulThreadPage currentPage;
 
@@ -153,7 +154,9 @@
 - (void)toggleSettings:(UIBarButtonItem *)sender
 {
     AwfulPageSettingsViewController *settings = [AwfulPageSettingsViewController new];
-    // TODO configure for available themes
+    settings.delegate = self;
+    settings.themes = [[AwfulThemeLoader sharedLoader] themesForForumWithID:self.thread.forum.forumID];
+    settings.selectedTheme = self.theme;
     self.pageSettingsPopover = [[WYPopoverController alloc] initWithContentViewController:settings];
     self.pageSettingsPopover.delegate = self;
     [self.pageSettingsPopover presentPopoverFromBarButtonItem:sender
@@ -270,6 +273,12 @@
     if (themeKey && [keys containsObject:themeKey]) {
         [self configurePostsViewSettings];
     }
+}
+
+- (void)themeDidChange
+{
+    [super themeDidChange];
+    [self configurePostsViewSettings];
 }
 
 - (void)willResetDataStack:(NSNotification *)note
@@ -1326,6 +1335,13 @@ static char KVOContext;
     [self.postsView beginUpdates];
     [invocations makeObjectsPerformSelector:@selector(invokeWithTarget:) withObject:self];
     [self.postsView endUpdates];
+}
+
+#pragma mark AwfulPageSettingsViewControllerDelegate
+
+- (void)pageSettingsSelectedThemeDidChange:(AwfulPageSettingsViewController *)pageSettings
+{
+    self.theme = pageSettings.selectedTheme;
 }
 
 #pragma mark State Preservation and Restoration
