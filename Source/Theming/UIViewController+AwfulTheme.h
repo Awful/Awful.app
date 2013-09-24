@@ -43,6 +43,13 @@
 @end
 
 /**
+ * An AwfulThemedNavigationController is a thin customization of UINavigationController that extends AwfulTheme support.
+ */
+@interface AwfulThemedNavigationController : UINavigationController
+
+@end
+
+/**
  * Utility function to call -themeDidChange when appropriate on a subtree of a view controller hierarchy.
  *
  * @param viewController The root of the subtree to call -themeDidChange on.

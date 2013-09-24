@@ -6,9 +6,9 @@
 
 @interface UIViewController (NavigationEnclosure)
 
-// Gets this view controller's navigation controller, lazily creating one if needed. If a navigation
-// controller is created, it uses AwfulNavigationBar for its navigation bar and adopts the
-// modalPresentationStyle of its root view controller.
+/**
+ * Returns the view controller's navigation controller, lazily creating an AwfulNavigationController if needed. Created navigation controllers adopt the modalPresentationStyle of the view controller.
+ */
 @property (readonly, nonatomic) UINavigationController *enclosingNavigationController;
 
 @end

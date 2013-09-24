@@ -79,6 +79,18 @@ static const char ThemePropertyKey;
 
 @end
 
+@implementation AwfulThemedNavigationController
+
+- (void)didMoveToParentViewController:(UIViewController *)parent
+{
+    [super didMoveToParentViewController:parent];
+    if (parent) {
+        RecursivelyCallThemeDidChangeOn(self);
+    }
+}
+
+@end
+
 void RecursivelyCallThemeDidChangeOn(UIViewController *viewController)
 {
     if ([viewController isViewLoaded]) {
