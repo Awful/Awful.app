@@ -1,5 +1,5 @@
 platform :ios, '7.0'
-xcodeproj 'Xcode/Awful'
+xcodeproj 'Xcode/Awful', 'Awful Beta' => :release, 'Awful App Store' => :release
 link_with ['Awful', 'Imgur API Test']
 
 pod 'AFNetworking', '1.3.0'
