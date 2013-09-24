@@ -5,6 +5,8 @@
 #import "UIViewController+AwfulTheme.h"
 #import <objc/runtime.h>
 
+static void RecursivelyCallThemeDidChangeOn(UIViewController *);
+
 @implementation UIViewController (AwfulTheme)
 
 - (AwfulTheme *)theme
@@ -91,7 +93,7 @@ static const char ThemePropertyKey;
 
 @end
 
-void RecursivelyCallThemeDidChangeOn(UIViewController *viewController)
+static void RecursivelyCallThemeDidChangeOn(UIViewController *viewController)
 {
     if ([viewController isViewLoaded]) {
         [viewController themeDidChange];
