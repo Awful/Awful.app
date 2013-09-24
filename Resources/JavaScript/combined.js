@@ -27,13 +27,8 @@ Awful.post = function(i, post){
   $('#posts > article').eq(i).replaceWith(render(post))
 }
 
-Awful.stylesheetURL = function(url){
-  if ($('link').length) {
-    $('link').attr('href', url)
-  } else {
-    $('head').append($('<link>', { rel: 'stylesheet', href: url }))
-    $('#awful-inline-style').remove()
-  }
+Awful.stylesheet = function(style){
+  $('#awful-inline-style').text(style)
 }
 
 Awful.ad = function(ad){

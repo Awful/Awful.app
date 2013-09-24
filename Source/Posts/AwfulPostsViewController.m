@@ -295,8 +295,7 @@
     [self didChangeValueForKey:@"thread"];
     [self updateFetchedResultsController];
     [self updateUserInterface];
-    self.postsView.stylesheetURL = StylesheetURLForForumWithIDAndSettings(self.thread.forum.forumID,
-                                                                          [AwfulSettings settings]);
+    self.postsView.stylesheet = self.theme[@"postsViewCSS"];
     [self forgetOngoingReply];
 }
 
@@ -466,8 +465,7 @@
     self.postsView.showImages = [AwfulSettings settings].showImages;
     self.postsView.highlightMentionUsername = [AwfulSettings settings].username;
     self.postsView.highlightQuoteUsername = [AwfulSettings settings].username;
-    self.postsView.stylesheetURL = StylesheetURLForForumWithIDAndSettings(self.thread.forum.forumID,
-                                                                          [AwfulSettings settings]);
+    self.postsView.stylesheet = self.theme[@"postsViewCSS"];
     if (self.loadingView) {
         NSString *message = self.loadingView.message;
         [self clearLoadingMessage];

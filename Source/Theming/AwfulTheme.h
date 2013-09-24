@@ -18,6 +18,7 @@
  * The source dictionary for this theme. Conventions are:
  *
  * - Colors have a key ending with "Color" and are written as CSS hexadecimal color codes with an optional alpha component (defaults to FF) at the end. For example: "backgroundColor" = "#000000" or, equivalently, "backgroundColor" = "#000000ff".
+ * - CSS files have a key ending in "CSS" and are written as a filename of a resource in the main bundle.
  */
 @property (readonly, copy, nonatomic) NSDictionary *dictionary;
 
@@ -34,7 +35,7 @@
 @property (weak, nonatomic) AwfulTheme *parentTheme;
 
 /**
- * Returns a UIColor for the given key.
+ * Returns an NSString or a UIColor for the given key.
  */
 - (id)objectForKeyedSubscript:(id)key;
 

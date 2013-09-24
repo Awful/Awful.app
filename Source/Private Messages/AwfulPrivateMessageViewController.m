@@ -83,7 +83,7 @@
     view.frame = [UIScreen mainScreen].applicationFrame;
     view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     view.delegate = self;
-    view.stylesheetURL = StylesheetURLForForumWithIDAndSettings(nil, nil);
+    view.stylesheet = self.theme[@"postsViewCSS"];
     self.view = view;
     [self configurePostsViewSettings];
     self.view.backgroundColor = [UIColor whiteColor];

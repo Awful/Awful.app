@@ -23,6 +23,8 @@
 {
     if ([key hasSuffix:@"Color"]) {
         return [self colorForKey:key];
+    } else if ([key hasSuffix:@"CSS"]) {
+        return [self stylesheetForKey:key];
     }
     return [self objectForKey:key];
 }
@@ -41,6 +43,17 @@
         [[NSScanner scannerWithString:[hexString substringWithRange:NSMakeRange(6, 2)]] scanHexInt:&alpha];
     }
     return [UIColor colorWithRed:(red / 255.) green:(green / 255.) blue:(blue / 255.) alpha:(alpha / 255.)];
+}
+
+- (NSString *)stylesheetForKey:(NSString *)key
+{
+    NSURL *url = [[NSBundle mainBundle] URLForResource:[self objectForKey:key] withExtension:nil];
+    NSError *error;
+    NSString *stylesheet = [NSString stringWithContentsOfURL:url
+                                                usedEncoding:nil
+                                                       error:&error];
+    NSAssert(stylesheet, @"could not load stylesheet in theme %@ for key %@; error: %@", self.name, key, error);
+    return stylesheet;
 }
 
 @end

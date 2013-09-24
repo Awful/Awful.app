@@ -20,12 +20,47 @@
 		<string>#808080</string>
 		<key>jumpToPageBackgroundColor</key>
 		<string>#ffffff</string>
+		<key>postsViewCSS</key>
+		<string>posts-view.css</string>
 		<key>splitViewBackgroundColor</key>
 		<string>#1e84af</string>
 		<key>tabBarBackgroundColor</key>
 		<string>#151515</string>
 	</dict>
 	<key>dark</key>
-	<dict/>
+	<dict>
+		<key>postsViewCSS</key>
+		<string>posts-view-dark.css</string>
+	</dict>
+	<key>FYAD</key>
+	<dict>
+		<key>postsViewCSS</key>
+		<string>posts-view-fyad.css</string>
+	</dict>
+	<key>Gas Chamber</key>
+	<dict>
+		<key>postsViewCSS</key>
+		<string>posts-view-gas-chamber.css</string>
+	</dict>
+	<key>Macinyos</key>
+	<dict>
+		<key>postsViewCSS</key>
+		<string>posts-view-macinyos.css</string>
+	</dict>
+	<key>Winpos 95</key>
+	<dict>
+		<key>postsViewCSS</key>
+		<string>posts-view-winpos95.css</string>
+	</dict>
+	<key>YOSPOS</key>
+	<dict>
+		<key>postsViewCSS</key>
+		<string>posts-view-yospos.css</string>
+	</dict>
+	<key>YOSPOS (amber)</key>
+	<dict>
+		<key>postsViewCSS</key>
+		<string>posts-view-amberpos.css</string>
+	</dict>
 </dict>
 </plist>

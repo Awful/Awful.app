@@ -28,7 +28,7 @@
 
 - (void)jumpToElementWithID:(NSString *)elementID;
 
-@property (nonatomic) NSURL *stylesheetURL;
+@property (copy, nonatomic) NSString *stylesheet;
 
 @property (nonatomic) BOOL showAvatars;
 
@@ -97,7 +97,3 @@
 - (void)postsView:(AwfulPostsView *)postsView didReceiveLongTapAtPoint:(CGPoint)point;
 
 @end
-
-
-extern NSURL * StylesheetURLForForumWithIDAndSettings(NSString * const forumID,
-                                                      AwfulSettings *settings);
