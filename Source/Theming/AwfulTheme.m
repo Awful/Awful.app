@@ -77,4 +77,20 @@ static UIColor * ColorWithPatternImageNamed(NSString *name)
     return stylesheet;
 }
 
+- (BOOL)isEqual:(AwfulTheme *)other
+{
+    if (![other isKindOfClass:[AwfulTheme class]]) return NO;
+    return [self.name isEqualToString:other.name];
+}
+
+- (NSUInteger)hash
+{
+    return self.name.hash;
+}
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"<%@: %p %@>", self.class, self, self.name];
+}
+
 @end
