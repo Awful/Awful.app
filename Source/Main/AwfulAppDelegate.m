@@ -107,6 +107,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         [Crashlytics startWithAPIKey:CRASHLYTICS_API_KEY];
     #endif
     [[AwfulSettings settings] registerDefaults];
+    [[AwfulSettings settings] migrateOldSettings];
     
     // Migrate Core Data early to avoid problems later!
     [AwfulDataStack sharedDataStack].initFailureAction = AwfulDataStackInitFailureDelete;

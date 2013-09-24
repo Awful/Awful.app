@@ -254,23 +254,10 @@
     NSArray *importantKeys = @[
         AwfulSettingsKeys.showAvatars,
         AwfulSettingsKeys.showImages,
-        AwfulSettingsKeys.username,
-        AwfulSettingsKeys.yosposStyle,
-        AwfulSettingsKeys.darkTheme
+        AwfulSettingsKeys.username
     ];
     NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
     if ([keys firstObjectCommonWithArray:importantKeys]) {
-        return [self configurePostsViewSettings];
-    }
-    NSString *themeKey = nil;
-    if ([self.thread.forum.forumID isEqualToString:@"219"]) {
-        themeKey = AwfulSettingsKeys.yosposStyle;
-    } else if ([self.thread.forum.forumID isEqualToString:@"25"]) {
-        themeKey = AwfulSettingsKeys.gasChamberStyle;
-    } else if ([self.thread.forum.forumID isEqualToString:@"26"]) {
-        themeKey = AwfulSettingsKeys.fyadStyle;
-    }
-    if (themeKey && [keys containsObject:themeKey]) {
         [self configurePostsViewSettings];
     }
 }
@@ -426,37 +413,20 @@
 {
     if (!self.loadingView) {
         AwfulLoadingViewType loadingViewType = AwfulLoadingViewTypeDefault;
-        UIColor *tintColor = [UIColor whiteColor];
-        if ([self.thread.forum.forumID isEqualToString:@"25"]) {
-            if ([AwfulSettings settings].gasChamberStyle == AwfulGasChamberStyleSickly) {
-                loadingViewType = AwfulLoadingViewTypeGasChamber;
-            }
-        } else if ([self.thread.forum.forumID isEqualToString:@"26"]) {
-            if ([AwfulSettings settings].fyadStyle == AwfulFYADStylePink) {
-                loadingViewType = AwfulLoadingViewTypeFYAD;
-            }
-        } else if ([self.thread.forum.forumID isEqualToString:@"219"]) {
-            switch ([AwfulSettings settings].yosposStyle) {
-                case AwfulYOSPOSStyleAmber:
-                    loadingViewType = AwfulLoadingViewTypeYOSPOS;
-                    tintColor = [UIColor colorWithRed:0.918 green:0.812 blue:0.298 alpha:1];
-                    break;
-                case AwfulYOSPOSStyleGreen:
-                    loadingViewType = AwfulLoadingViewTypeYOSPOS;
-                    tintColor = [UIColor colorWithRed:0.373 green:0.992 blue:0.38 alpha:1];
-                    break;
-                case AwfulYOSPOSStyleMacinyos:
-                    loadingViewType = AwfulLoadingViewTypeMacinyos;
-                    break;
-                case AwfulYOSPOSStyleWinpos95:
-                    loadingViewType = AwfulLoadingViewTypeWinpos95;
-                    break;
-                default:
-                    break;
-            }
+        NSString *loadingViewTypeString = self.theme[@"postsLoadingViewType"];
+        if ([loadingViewTypeString isEqualToString:@"FYAD"]) {
+            loadingViewType = AwfulLoadingViewTypeFYAD;
+        } else if ([loadingViewTypeString isEqualToString:@"GasChamber"]) {
+            loadingViewType = AwfulLoadingViewTypeGasChamber;
+        } else if ([loadingViewTypeString isEqualToString:@"Macinyos"]) {
+            loadingViewType = AwfulLoadingViewTypeMacinyos;
+        } else if ([loadingViewTypeString isEqualToString:@"Winpos95"]) {
+            loadingViewType = AwfulLoadingViewTypeWinpos95;
+        } else if ([loadingViewTypeString isEqualToString:@"YOSPOS"]) {
+            loadingViewType = AwfulLoadingViewTypeYOSPOS;
         }
         self.loadingView = [AwfulLoadingView loadingViewWithType:loadingViewType];
-        if (tintColor) self.loadingView.tintColor = tintColor;
+        self.loadingView.tintColor = self.theme[@"postsLoadingViewTintColor"];
     }
     self.loadingView.message = message;
     [self.postsView addSubview:self.loadingView];
@@ -735,6 +705,10 @@
 
 - (void)loadView
 {
+    NSString *specificThemeName = [[AwfulSettings settings] themeNameForForumID:self.thread.forum.forumID];
+    if (specificThemeName) {
+        self.theme = [[AwfulThemeLoader sharedLoader] themeNamed:specificThemeName];
+    }
     self.postsView = [AwfulPostsView new];
     self.postsView.delegate = self;
     self.postsView.scrollView.delegate = self;
@@ -1337,14 +1311,22 @@ static char KVOContext;
     [self.postsView endUpdates];
 }
 
-#pragma mark AwfulPageSettingsViewControllerDelegate
+#pragma mark - AwfulPageSettingsViewControllerDelegate
 
 - (void)pageSettingsSelectedThemeDidChange:(AwfulPageSettingsViewController *)pageSettings
 {
-    self.theme = pageSettings.selectedTheme;
+    AwfulTheme *theme = pageSettings.selectedTheme;
+    if (theme.forumSpecific) {
+        self.theme = theme;
+        [[AwfulSettings settings] setThemeName:theme.name forForumID:self.thread.forum.forumID];
+    } else {
+        self.theme = nil;
+        [[AwfulSettings settings] setThemeName:nil forForumID:self.thread.forum.forumID];
+        [AwfulSettings settings].darkTheme = ![theme isEqual:[AwfulThemeLoader sharedLoader].defaultTheme];
+    }
 }
 
-#pragma mark State Preservation and Restoration
+#pragma mark - State Preservation and Restoration
 
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {

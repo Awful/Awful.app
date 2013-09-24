@@ -25,6 +25,11 @@
     return self[@"descriptiveColor"];
 }
 
+- (BOOL)forumSpecific
+{
+    return !!_dictionary[@"relevantForumID"];
+}
+
 - (id)objectForKey:(id)key
 {
     return _dictionary[key] ?: [self.parentTheme objectForKey:key];

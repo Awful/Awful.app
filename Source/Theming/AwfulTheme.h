@@ -38,6 +38,11 @@
 @property (readonly, strong, nonatomic) UIColor *descriptiveColor;
 
 /**
+ * YES if the theme is forum-specific, NO if it applies to all forums (the default).
+ */
+@property (readonly, assign, nonatomic) BOOL forumSpecific;
+
+/**
  * An AwfulTheme to use for looking up values not set by this theme.
  *
  * In the plist, the key is "parent"  and the value is the name of another theme. Defaults to the theme called "default".

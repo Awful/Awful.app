@@ -50,6 +50,49 @@
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaults];
 }
 
+struct {
+    __unsafe_unretained NSString *yosposStyle;
+    __unsafe_unretained NSString *fyadStyle;
+    __unsafe_unretained NSString *gasChamberStyle;
+} OldSettingsKeys = {
+    .yosposStyle = @"yospos_style",
+    .fyadStyle = @"fyad_style",
+    .gasChamberStyle = @"gas_chamber_style",
+};
+
+- (void)migrateOldSettings
+{
+    NSString *YOSPOSStyle = self[OldSettingsKeys.yosposStyle];
+    if ([YOSPOSStyle isEqualToString:@"green"]) {
+        self[@"theme-219"] = @"YOSPOS";
+    } else if ([YOSPOSStyle isEqualToString:@"amber"]) {
+        self[@"theme-219"] = @"YOSPOS (amber)";
+    } else if ([YOSPOSStyle isEqualToString:@"macinyos"]) {
+        self[@"theme-219"] = @"Macinyos";
+    } else if ([YOSPOSStyle isEqualToString:@"winpos95"]) {
+        self[@"theme-219"] = @"Winpos 95";
+    }
+    if (YOSPOSStyle) {
+        self[OldSettingsKeys.yosposStyle] = nil;
+    }
+    
+    NSString *FYADStyle = self[OldSettingsKeys.fyadStyle];
+    if ([FYADStyle isEqualToString:@"pink"]) {
+        self[@"theme-26"] = @"FYAD";
+    }
+    if (FYADStyle) {
+        self[OldSettingsKeys.fyadStyle] = nil;
+    }
+    
+    NSString *gasChamberStyle = self[OldSettingsKeys.gasChamberStyle];
+    if ([gasChamberStyle isEqualToString:@"sickly"]) {
+        self[@"theme-25"] = @"Gas Chamber";
+    }
+    if (gasChamberStyle) {
+        self[OldSettingsKeys.gasChamberStyle] = nil;
+    }
+}
+
 @synthesize sections = _sections;
 
 - (NSDictionary *)infoForSettingWithKey:(NSString *)key
@@ -78,119 +121,6 @@
 BOOL_PROPERTY(showAvatars, setShowAvatars)
 
 BOOL_PROPERTY(showImages, setShowImages)
-
-struct {
-    __unsafe_unretained NSString *None;
-    __unsafe_unretained NSString *Green;
-    __unsafe_unretained NSString *Amber;
-    __unsafe_unretained NSString *Macinyos;
-    __unsafe_unretained NSString *Winpos95;
-} AwfulYOSPOSStyles = {
-    @"none",
-    @"green",
-    @"amber",
-    @"macinyos",
-    @"winpos95",
-};
-
-- (AwfulYOSPOSStyle)yosposStyle
-{
-    NSString *val = self[AwfulSettingsKeys.yosposStyle];
-    if([val isEqualToString:AwfulYOSPOSStyles.None]) {
-        return AwfulYOSPOSStyleNone;
-    } else if ([val isEqualToString:AwfulYOSPOSStyles.Amber]) {
-        return AwfulYOSPOSStyleAmber;
-    } else if ([val isEqualToString:AwfulYOSPOSStyles.Green]) {
-        return AwfulYOSPOSStyleGreen;
-    } else if ([val isEqualToString:AwfulYOSPOSStyles.Macinyos])
-    {
-        return AwfulYOSPOSStyleMacinyos;
-    } else if ([val isEqualToString:AwfulYOSPOSStyles.Winpos95])
-    {
-        return AwfulYOSPOSStyleWinpos95;
-    } else {
-        return AwfulYOSPOSStyleGreen;
-    }
-}
-
-- (void)setYosposStyle:(AwfulYOSPOSStyle)yosposStyle
-{
-    NSString *val;
-    switch (yosposStyle) {
-        case AwfulYOSPOSStyleWinpos95:
-            val = AwfulYOSPOSStyles.Winpos95;
-            break;
-        case AwfulYOSPOSStyleMacinyos:
-            val = AwfulYOSPOSStyles.Macinyos;
-            break;
-        case AwfulYOSPOSStyleAmber:
-            val = AwfulYOSPOSStyles.Amber;
-            break;
-        case AwfulYOSPOSStyleGreen:
-            val = AwfulYOSPOSStyles.Green;
-            break;
-        case AwfulYOSPOSStyleNone:
-            val = AwfulYOSPOSStyles.None;
-            break;
-        default:
-            return;
-    }
-    self[AwfulSettingsKeys.yosposStyle] = val;
-}
-
-struct {
-    __unsafe_unretained NSString *None;
-    __unsafe_unretained NSString *Pink;
-} AwfulFYADStyles = {
-    @"none",
-    @"pink",
-};
-
-- (AwfulFYADStyle)fyadStyle
-{
-    NSString *val = self[AwfulSettingsKeys.fyadStyle];
-    if ([val isEqual:AwfulFYADStyles.None]) {
-        return AwfulFYADStyleNone;
-    } else {
-        return AwfulFYADStylePink;
-    }
-}
-
-- (void)setFyadStyle:(AwfulFYADStyle)fyadStyle
-{
-    switch (fyadStyle) {
-        case AwfulFYADStyleNone: self[AwfulSettingsKeys.fyadStyle] = AwfulFYADStyles.None; break;
-        case AwfulFYADStylePink: self[AwfulSettingsKeys.fyadStyle] = AwfulFYADStyles.Pink; break;
-    }
-}
-
-struct {
-    __unsafe_unretained NSString *None;
-    __unsafe_unretained NSString *Sickly;
-} AwfulGasChamberStyles = {
-    @"none",
-    @"sickly",
-};
-
-- (AwfulGasChamberStyle)gasChamberStyle
-{
-    NSString *val = self[AwfulSettingsKeys.gasChamberStyle];
-    if ([val isEqualToString:AwfulGasChamberStyles.None]) {
-        return AwfulGasChamberStyleNone;
-    } else {
-        return AwfulGasChamberStyleSickly;
-    }
-}
-
-- (void)setGasChamberStyle:(AwfulGasChamberStyle)gasChamberStyle
-{
-    switch (gasChamberStyle) {
-        case AwfulGasChamberStyleNone:
-            self[AwfulSettingsKeys.gasChamberStyle] = AwfulGasChamberStyles.None; break;
-        case AwfulGasChamberStyleSickly:
-            self[AwfulSettingsKeys.gasChamberStyle] = AwfulGasChamberStyles.Sickly; break;
-    }
-}
 
 BOOL_PROPERTY(confirmNewPosts, setConfirmNewPosts)
 
@@ -332,6 +262,16 @@ static NSString * const InstapaperUsernameKey = @"username";
     }
 }
 
+- (NSString *)themeNameForForumID:(NSString *)forumID
+{
+    return self[[NSString stringWithFormat:@"theme-%@", forumID]];
+}
+
+- (void)setThemeName:(NSString *)themeName forForumID:(NSString *)forumID
+{
+    self[[NSString stringWithFormat:@"theme-%@", forumID]] = themeName;
+}
+
 - (id)objectForKeyedSubscript:(id)key
 {
     return [[NSUserDefaults standardUserDefaults] objectForKey:key];
@@ -391,9 +331,6 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .userID = @"userID",
     .canSendPrivateMessages = @"can_send_private_messages",
     .showThreadTags = @"show_thread_tags",
-    .yosposStyle = @"yospos_style",
-    .fyadStyle = @"fyad_style",
-    .gasChamberStyle = @"gas_chamber_style",
     .favoriteForums = @"favorite_forums",
     .lastOfferedPasteboardURL = @"last_offered_pasteboard_URL",
     .lastForcedUserInfoUpdateVersion = @"last_forced_user_info_update_version",

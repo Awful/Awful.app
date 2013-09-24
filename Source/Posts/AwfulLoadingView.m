@@ -103,9 +103,11 @@
     [super retheme];
     self.backgroundColor = self.tintColor;
     self.spinner.backgroundColor = self.backgroundColor;
-    CGFloat whiteness;
+    CGFloat whiteness = 1;
     BOOL ok = [self.tintColor getWhite:&whiteness alpha:nil];
-    if (!ok) whiteness = 1;
+    if (!ok) {
+        ok = [self.tintColor getRed:&whiteness green:nil blue:nil alpha:nil];
+    }
     if (whiteness < 0.1) {
         self.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
         self.messageLabel.textColor = [UIColor colorWithWhite:0.95 alpha:1];

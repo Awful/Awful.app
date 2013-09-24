@@ -11,6 +11,8 @@
 
 - (void)registerDefaults;
 
+- (void)migrateOldSettings;
+
 @property (readonly, strong) NSArray *sections;
 
 - (NSDictionary *)infoForSettingWithKey:(NSString *)key;
@@ -33,30 +35,6 @@
 
 @property (assign, nonatomic) BOOL showThreadTags;
 
-typedef NS_ENUM(NSInteger, AwfulYOSPOSStyle) {
-    AwfulYOSPOSStyleNone,
-    AwfulYOSPOSStyleGreen,
-    AwfulYOSPOSStyleAmber,
-    AwfulYOSPOSStyleMacinyos,
-    AwfulYOSPOSStyleWinpos95,
-};
-
-@property (assign, nonatomic) AwfulYOSPOSStyle yosposStyle;
-
-typedef NS_ENUM(NSInteger, AwfulFYADStyle) {
-    AwfulFYADStyleNone,
-    AwfulFYADStylePink,
-};
-
-@property (assign, nonatomic) AwfulFYADStyle fyadStyle;
-
-typedef NS_ENUM(NSInteger, AwfulGasChamberStyle) {
-    AwfulGasChamberStyleNone,
-    AwfulGasChamberStyleSickly,
-};
-
-@property (assign, nonatomic) AwfulGasChamberStyle gasChamberStyle;
-
 @property (copy, nonatomic) NSArray *favoriteForums;
 
 @property (copy, nonatomic) NSString *lastOfferedPasteboardURL;
@@ -68,6 +46,10 @@ typedef NS_ENUM(NSInteger, AwfulGasChamberStyle) {
 @property (copy, nonatomic) NSString *instapaperUsername;
 
 @property (copy, nonatomic) NSString *instapaperPassword;
+
+- (NSString *)themeNameForForumID:(NSString *)forumID;
+
+- (void)setThemeName:(NSString *)themeName forForumID:(NSString *)forumID;
 
 - (id)objectForKeyedSubscript:(id)key;
 
@@ -86,6 +68,8 @@ extern NSString * const AwfulSettingsDidChangeNotification;
 extern NSString * const AwfulSettingsDidChangeSettingsKey;
 
 // Possible values in the AwfulSettingsDidChangeSettingsKey collection, and keys for subscripting.
+// Undocumented here:
+//   - "theme-X", where X is a forum ID.
 extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *showAvatars;
     __unsafe_unretained NSString *showImages;
@@ -95,9 +79,6 @@ extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *userID;
     __unsafe_unretained NSString *canSendPrivateMessages;
     __unsafe_unretained NSString *showThreadTags;
-    __unsafe_unretained NSString *yosposStyle;
-    __unsafe_unretained NSString *fyadStyle;
-    __unsafe_unretained NSString *gasChamberStyle;
     __unsafe_unretained NSString *favoriteForums;
     __unsafe_unretained NSString *lastOfferedPasteboardURL;
     __unsafe_unretained NSString *lastForcedUserInfoUpdateVersion;

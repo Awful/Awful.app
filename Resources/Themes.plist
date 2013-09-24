@@ -24,6 +24,8 @@
 		<string>#808080</string>
 		<key>jumpToPageBackgroundColor</key>
 		<string>#ffffff</string>
+		<key>postsLoadingViewTintColor</key>
+		<string>#ffffff</string>
 		<key>postsViewCSS</key>
 		<string>posts-view.css</string>
 		<key>splitViewBackgroundColor</key>
@@ -37,6 +39,8 @@
 		<string>Dark</string>
 		<key>descriptiveColor</key>
 		<string>#000000</string>
+		<key>postsLoadingViewTintColor</key>
+		<string>#000000</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-dark.css</string>
 	</dict>
@@ -48,6 +52,8 @@
 		<string>#fd9a9a</string>
 		<key>relevantForumID</key>
 		<string>26</string>
+		<key>postsLoadingViewType</key>
+		<string>FYAD</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-fyad.css</string>
 	</dict>
@@ -59,6 +65,8 @@
 		<string>#68cc24</string>
 		<key>relevantForumID</key>
 		<string>25</string>
+		<key>postsLoadingViewType</key>
+		<string>GasChamber</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-gas-chamber.css</string>
 	</dict>
@@ -70,6 +78,8 @@
 		<string>macinyos-wallpaper</string>
 		<key>relevantForumID</key>
 		<string>219</string>
+		<key>postsLoadingViewType</key>
+		<string>Macinyos</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-macinyos.css</string>
 	</dict>
@@ -81,6 +91,8 @@
 		<string>#107f7f</string>
 		<key>relevantForumID</key>
 		<string>219</string>
+		<key>postsLoadingViewType</key>
+		<string>Winpos95</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-winpos95.css</string>
 	</dict>
@@ -92,17 +104,23 @@
 		<string>#57ff57</string>
 		<key>relevantForumID</key>
 		<string>219</string>
+		<key>postsLoadingViewType</key>
+		<string>YOSPOS</string>
+		<key>postsLoadingViewTintColor</key>
+		<string>#5ffc60</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-yospos.css</string>
 	</dict>
 	<key>YOSPOS (amber)</key>
 	<dict>
+		<key>parent</key>
+		<string>YOSPOS</string>
 		<key>description</key>
 		<string>Amber console</string>
 		<key>descriptiveColor</key>
 		<string>#ebd04b</string>
-		<key>relevantForumID</key>
-		<string>219</string>
+		<key>postsLoadingViewTintColor</key>
+		<string>#eacf4b</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-amberpos.css</string>
 	</dict>
